@@ -50,7 +50,7 @@ typedef struct
   Scalar min;     ///< Minimum parameter value.
   int    has_max; ///< Zero if the parameter has no upper limit.
   Scalar max;     ///< Maximum parameter value.
-  Scalar typical; ///< Typical parameter value.
+  char  *typical; ///< Typical parameter value.
 
 } AlgParamMetadata;
 
