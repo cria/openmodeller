@@ -370,8 +370,8 @@ double GarpRule::evaluate(GarpCustomSampler * sampler)
   dimension = sampler->dim();
   n = sampler->resamples();
 
-  //g_log("Resamples: %d\n", n);
-  
+  //FILE * flog = fopen("evaluate.log", "w");
+
   for(i = 0; i < n; i++)
     {	
       // Get an in range data point
@@ -393,15 +393,15 @@ double GarpRule::evaluate(GarpCustomSampler * sampler)
       }
 
       /*
-      g_log("Sample %5d: [%d %d %d] (%+3.2f) ", 
+      fprintf(flog, "Sample %5d: [%d %d %d] (%+3.2f) ", 
 	    i, strength, certainty, min(strength, certainty), pointValue);
       for (u = 0; u < dimension; u++)
-	g_log("%+8.4f ", values[u]);
-      g_log("\n");
+	{ 
+	  fprintf(flog, "%+8.4f ", values[u]);
+	}
+      fprintf(flog, "\n");
       */
     }
-
-  //g_log("Sums (pXs, pYs, pXYs, n, no): %d %d %d %d %d\n", pXs, pYs, pXYs, n, no);
 
   if (no != pXs)
     { g_log.error(1, "Assertion failed (no != pXs): %d != %d", no, pXs); }
@@ -440,7 +440,28 @@ double GarpRule::evaluate(GarpCustomSampler * sampler)
   // Record performance in rule
   for (i = 0; i < 10; i++) 
     _performance[i] = utility[i];
-  
+
+
+  /*
+  fprintf(flog, "Sums (pXs, pYs, pXYs, n, no): %5d %5d %5d %5d %5d ([%c] pred=%+3.1f sig=%+10.4f)\n", 
+	  pXs, pYs, pXYs, n, no, type(), _prediction, utility[8]);
+
+  if ((utility[8] > 15) && (_prediction == 0.0))
+    {
+      Scalar *gen = _genes;
+      Scalar *end = gen + 2 * _numGenes;
+      fprintf(flog, "Genes: ");
+      while ( gen < end )
+	fprintf(flog, "%+8.4f ", *gen++ );
+      
+      fprintf(flog, "- (%.2f) : %f\n", _prediction, getPerformance(PerfSig) );
+
+      fclose(flog);
+      g_log.error(1, "Check rule statistics"); //DEBUG
+    }
+  fclose(flog);
+  */
+
   return (utility[0]);
 }
 

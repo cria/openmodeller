@@ -345,11 +345,11 @@ int Garp::iterate()
   char msg[256];
   const PerfIndex defaultPerfIndex = PerfSig;
 
+  //GarpRuleSet aux_rs(_popsize * 2); 
+
   if (!done())
     {
       _gen++;
-
-      g_log( "%4d] ", _gen );
 
       evaluate(_offspring, _custom_sampler);
       select(_offspring, _fittest, defaultPerfIndex);
@@ -365,6 +365,7 @@ int Garp::iterate()
       _fittest->performanceSummary(PerfSig, 
                                    &perfBest, &perfWorst, &perfAvg);
 
+      g_log( "%4d] ", _gen );
       g_log( "[%2d] %+8.3f %+8.3f %+8.3f | %s\n", 
 	     _fittest->numRules(), perfBest, perfWorst, perfAvg, msg );
       
@@ -387,6 +388,24 @@ int Garp::iterate()
           _offspring->trim(_popsize);
           mutate(_offspring);
           crossover(_offspring);
+
+	  /*
+	  // re-evaluate fittest rules 
+	  int i, n;
+	  GarpRule * rule;
+	  n = _fittest->numRules();
+	  for (i = 0; i < n; i++)
+	    {
+	      double old_perf, new_perf;
+
+	      rule = _fittest->get(i);
+	      old_perf = rule->getPerformance((PerfIndex) 8);
+	      rule->evaluate(_custom_sampler);
+	      new_perf = rule->getPerformance((PerfIndex) 8);
+
+	      g_log("*[%2d] (%c | %d) Perf: %+8.4f %+8.4f (diff=%+8.4f)\n", i, rule->type(), (int) rule->getCertainty(1.0), old_perf, new_perf, new_perf - old_perf);
+	    }
+	  */
         }
     }
 
