@@ -270,10 +270,9 @@ int GarpRuleSet::findSimilar(GarpRule * rule)
   for (i = 0; i < _numRules; i++)
     {
       if (_rules[i]->similar(rule))
-	{ 
-	  return i; 
-	}
+	{ return i; }
     }
+
   return -1;
 }
 

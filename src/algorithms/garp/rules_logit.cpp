@@ -42,6 +42,7 @@
 #include "rules_logit.hh"
 #include "garp_sampler.hh"
 
+const double coeficientThreshold = 0.05;
 
 // ==========================================================================
 //  LogitRule implelentation
@@ -182,17 +183,13 @@ bool LogitRule::similar(GarpRule * rule)
   // rules are similar if they share the same relevant coeficients, 
   // i.e., abs(gene) > 0.05.
   similar = true;
-  const double threshold = 0.05;
   for (k = 0; k < _numGenes * 2; k++)
     { 
       thisGene  = fabs(_genes[k]);
       otherGene = fabs(otherRule->_genes[k]);
 
-      //printf(">%+7.4f %+7.4f %+7.4f %+7.4f %d %d %d\n", 
-      //     thisGene0, thisGene1, otherGene0, otherGene1, rA, rB, rA==rB);
-
-      if ( ( (thisGene < threshold) && (otherGene > threshold) ) ||
-	   ( (thisGene > threshold) && (otherGene < threshold) ) ) 
+      if ( ( (thisGene < coeficientThreshold) && (otherGene > coeficientThreshold) ) ||
+	   ( (thisGene > coeficientThreshold) && (otherGene < coeficientThreshold) ) ) 
 	{
 	  similar = false;
 	  break;
@@ -206,7 +203,16 @@ bool LogitRule::similar(GarpRule * rule)
 void LogitRule::log()
 {
   g_log( "Logit: " );
-  GarpRule::log();
+
+  for (int i = 0; i < _numGenes * 2; i += 2)
+    {
+      if (fabs(_genes[i]) + fabs(_genes[i + 1]) <= coeficientThreshold)
+	g_log( "******** ******** ");
+      else
+	g_log( "%+8.4f %+8.4f ", _genes[i], _genes[i + 1] );
+    }
+
+  g_log( "- (%.2f) : %f\n", _prediction, getPerformance(PerfSig));
 }
 
 // ==========================================================================

@@ -86,7 +86,7 @@ public:
   void set( Level level, FILE *out, char *pref="" );
 
   /** Change log level.*/
-  void setLevel( Level level )  {   printf("Level: %d\n", _level); _level = level; }
+  void setLevel( Level level )  { _level = level; }
 
   /** Set the log output. Do not closes the file in the
    * destructor.

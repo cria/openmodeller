@@ -267,10 +267,10 @@ void GarpRule::crossover(GarpRule * rule, int xpt1, int xpt2)
 
   if (diff)
   {
-    _origin = 'c';
+    _origin = OriginCrossover;
     forceEvaluation();
 
-    rule->_origin = 'c';
+    rule->_origin = OriginCrossover;
     rule->forceEvaluation();
   }
 }
@@ -499,13 +499,10 @@ void GarpRule::log()
 {
   for (int i = 0; i < _numGenes * 2; i += 2)
     {
-      if (type() != 'r')
-	{
-	  if (fabs(_genes[i] - _genes[i + 1]) >= 2.0)
-	    g_log( "******** ******** ");
-	  else
-	    g_log( "%+8.4f %+8.4f ", _genes[i], _genes[i + 1] );
-	}
+      if (fabs(_genes[i] - _genes[i + 1]) >= 2.0)
+	g_log( "******** ******** ");
+      else
+	g_log( "%+8.4f %+8.4f ", _genes[i], _genes[i + 1] );
     }
 
   g_log( "- (%.2f) : %f\n", _prediction, getPerformance(PerfSig));

@@ -179,7 +179,7 @@ AlgParamMetadata parameters_bs[NUM_PARAM] =
     1,        // Parameter's lower limit.
     1,        // Not zero if the parameter has upper limit.
     1024,     // Parameter's upper limit.
-    "5"       // Parameter's typical (default) value.
+    "1"       // Parameter's typical (default) value.
   },
 
   // GARP parameters
@@ -199,7 +199,7 @@ AlgParamMetadata parameters_bs[NUM_PARAM] =
     1,      // Parameter's lower limit.
     0,      // Not zero if the parameter has upper limit.
     0,      // Parameter's upper limit.
-    "20"   // Parameter's typical (default) value.
+    "400"   // Parameter's typical (default) value.
   },
 
   {
@@ -218,7 +218,7 @@ AlgParamMetadata parameters_bs[NUM_PARAM] =
     0.0,   // Parameter's lower limit.
     1,     // Not zero if the parameter has upper limit.
     1.0,   // Parameter's upper limit.
-    "0.05"  // Parameter's typical (default) value.
+    "0.001"  // Parameter's typical (default) value.
   },
 
   {
