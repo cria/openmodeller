@@ -299,6 +299,18 @@ public:
    */
   int createMap( char *output_file=0, char *output_mask=0 );
 
+
+  /** Get prediction at a given point.
+   * @param env  Pointer to Environment class with the layers 
+   *  to get environmental values from.
+   * @param x X coordinate of point being queried
+   * @param y Y coordinate of point being queried
+   * @return    Prediction value at the specified point. Valid 
+   *   values range from 0.0 to 1.0. Value -1.0 means there is
+   *   no prediction for that point (masked or not predicted)
+   */
+  Scalar getValue(Environment * env, Coord x, Coord y);
+
   char *error()  { return _error; }
 
   //
