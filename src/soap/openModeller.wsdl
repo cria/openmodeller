@@ -104,13 +104,13 @@
   <complexType name="soap-AlgorithmParameter">
    <sequence>
     <element name="name" type="xsd:string" minOccurs="0" maxOccurs="1" nillable="true"/>
-    <element name="type" type="xsd:string" minOccurs="0" maxOccurs="1" nillable="true"/>
+    <element name="data-type" type="xsd:string" minOccurs="0" maxOccurs="1" nillable="true"/>
     <element name="description" type="xsd:string" minOccurs="0" maxOccurs="1" nillable="true"/>
     <element name="has-min" type="xsd:int" minOccurs="1" maxOccurs="1"/>
     <element name="min" type="xsd:double" minOccurs="1" maxOccurs="1"/>
     <element name="has-max" type="xsd:int" minOccurs="1" maxOccurs="1"/>
     <element name="max" type="xsd:double" minOccurs="1" maxOccurs="1"/>
-    <element name="typical" type="xsd:string" minOccurs="0" maxOccurs="1" nillable="true"/>
+    <element name="typical-value" type="xsd:string" minOccurs="0" maxOccurs="1" nillable="true"/>
    </sequence>
   </complexType>
   <complexType name="soap-AlgorithmMetadata">
@@ -118,12 +118,12 @@
     <element name="id" type="xsd:string" minOccurs="0" maxOccurs="1" nillable="true"/>
     <element name="name" type="xsd:string" minOccurs="0" maxOccurs="1" nillable="true"/>
     <element name="version" type="xsd:string" minOccurs="0" maxOccurs="1" nillable="true"/>
-    <element name="biblio" type="xsd:string" minOccurs="0" maxOccurs="1" nillable="true"/>
+    <element name="bibliography" type="xsd:string" minOccurs="0" maxOccurs="1" nillable="true"/>
     <element name="description" type="xsd:string" minOccurs="0" maxOccurs="1" nillable="true"/>
     <element name="author" type="xsd:string" minOccurs="0" maxOccurs="1" nillable="true"/>
     <element name="contact" type="xsd:string" minOccurs="0" maxOccurs="1" nillable="true"/>
-    <element name="categorical" type="xsd:int" minOccurs="1" maxOccurs="1"/>
-    <element name="absence" type="xsd:int" minOccurs="1" maxOccurs="1"/>
+    <element name="accepts-categorical-maps" type="xsd:int" minOccurs="1" maxOccurs="1"/>
+    <element name="accepts-absence-points" type="xsd:int" minOccurs="1" maxOccurs="1"/>
     <element name="parameter" type="om:AlgorithmParameter" minOccurs="1" maxOccurs="unbounded"/>
    </sequence>
   </complexType>

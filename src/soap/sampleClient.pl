@@ -258,8 +258,8 @@ sub get_algorithms
 		
 		my %algorithm = %{$alg};
 
-		my $accepts_categorical_data = ($algorithm{categorical}) ? 'yes': 'no';
-		my $accepts_absence_data = ($algorithm{absence}) ? 'yes': 'no';
+		my $accepts_categorical_data = ($algorithm{'accepts-categorical-maps'}) ? 'yes': 'no';
+		my $accepts_absence_data = ($algorithm{'accepts-absence-points'}) ? 'yes': 'no';
 		
 		my @params = $response->valueof("/Envelope/Body/[1]/[1]/[$i]/parameter");
 		
@@ -269,7 +269,7 @@ sub get_algorithms
   $algorithm{id}
      * author: $algorithm{author} - $algorithm{contact}
      * description: $algorithm{description}
-     * bibliography: $algorithm{biblio}
+     * bibliography: $algorithm{bibliography}
      * accepts categorical data: $accepts_categorical_data
      * accepts absence data: $accepts_absence_data
 EOM
@@ -292,9 +292,9 @@ EOM
 		    
 			print <<EOM if $option == 2;
         $parameter{name} ($parameter{description})
-          - type: $parameter{type}
+          - type: $parameter{data-type}
           - domain: $domain
-          - typical value: $parameter{typical}
+          - typical value: $parameter{'typical-value'}
 EOM
                     }
 		}
@@ -355,14 +355,14 @@ sub get_algorithm_parameter
     print "\nParameter: $param->{name}";
     print " ($param->{description})" if $param->{description};
     print "\n domain: $domain";
-    print "\n default: $param->{typical}" if $param->{typical};
+    print "\n default: $param->{'typical-value'}" if $param->{'typical-value'};
 
     print "\n value: ";
 
     my $val = <STDIN>;
     chomp($val);
 
-    $val = $param->{typical} unless length($val);
+    $val = $param->{'typical-value'} unless length($val);
 
     return $val;
 }

@@ -62,7 +62,7 @@ USE INSTRUCTIONS:
 TODO:
 ----
 
-- Use another thread or different process to run models.
+- Find a way to track progress of model generation.
 - Get available layers from a layer server.
 - Accept as input layers from remote machines.
 - Implement getFileFormats (need changes in openModeller).

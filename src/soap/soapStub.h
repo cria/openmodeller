@@ -24,13 +24,13 @@ struct SOAP_ENV__Header
 struct soap_AlgorithmParameter
 {
 	char *name;
-	char *type;
+	char *data_type;
 	char *description;
 	int has_min;
 	double min;
 	int has_max;
 	double max;
-	char *typical;
+	char *typical_value;
 };
 
 /* soap-AlgorithmMetadata: */
@@ -39,12 +39,12 @@ struct soap_AlgorithmMetadata
 	char *id;
 	char *name;
 	char *version;
-	char *biblio;
+	char *bibliography;
 	char *description;
 	char *author;
 	char *contact;
-	int categorical;
-	int absence;
+	int accepts_categorical_maps;
+	int accepts_absence_points;
 	int __size;	/* sequence of elements <parameter> */
 	struct soap_AlgorithmParameter *__ptrparameter;
 };
