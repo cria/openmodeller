@@ -1,4 +1,4 @@
-# Copyright (C) 2004 Ricardo Scachetti Pereira <rpereira at ku.edu>
+# Copyright (C) 2004 Jens Oberender <j.obi at troja.net>
 #  
 # This file is free software; as a special exception the author gives
 # unlimited permission to copy and/or distribute it, with or without 
@@ -8,4 +8,12 @@
 # WITHOUT ANY WARRANTY, to the extent permitted by law; without even the
 # implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
-SUBDIRS = python java
+lib_LTLIBRARIES = libomjava.la
+
+libomjava_la_SOURCES = om_wrap.cxx ../../console/occurrences_file.cpp
+libomjava_la_LDFLAGS = -module
+libomjava_la_CPPFLAGS = -I../../inc -I ../../console
+libomjava_la_LIBADD = $(GDAL_LIB) ../../lib/libopenmodeller.la ../../lib/env_io/libenv_io.la
+
+om_wrap.cxx: om_java.i
+	swig -c++ -java -o om_wrap.cxx om_java.i 

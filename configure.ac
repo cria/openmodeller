@@ -123,6 +123,7 @@ AC_CONFIG_FILES([
 	src/console/graph/Makefile
 	src/swig/Makefile
 	src/swig/python/Makefile
+	src/swig/java/Makefile
 	src/soap/Makefile
 	openmodeller.spec
 ])
