@@ -361,6 +361,9 @@ OpenModeller::setAlgorithm( char *id, int nparam,
       return 0;
     }
 
+  if ( nparam && ! param )
+    g_log.error( 1, "Incoherent number of parameters and parameters pointer" );
+
   // Check if _env is initialized
   if ( ! _env )
     {
