@@ -186,7 +186,9 @@ int GarpRuleSet::insert(PerfIndex perfIndex, GarpRule * rule)
 
   _rules[i] = rule;
 
-  return ++_numRules;
+  _numRules++;
+
+  return i;
 }
 
 /****************************************************************/

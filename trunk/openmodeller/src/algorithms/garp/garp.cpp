@@ -43,7 +43,7 @@
 
 #include <random.hh>
 
-#define NUM_PARAM 6
+#define NUM_PARAM 4
 
 
 /************************************/
@@ -68,7 +68,7 @@ AlgParamMetadata parameters[NUM_PARAM] =
     1,      // Parameter's lower limit.
     0,      // Not zero if the parameter has upper limit.
     0,      // Parameter's upper limit.
-    "100"   // Parameter's typical (default) value.
+    "200"   // Parameter's typical (default) value.
   },
 
   {
@@ -87,7 +87,7 @@ AlgParamMetadata parameters[NUM_PARAM] =
     0.0,   // Parameter's lower limit.
     1,     // Not zero if the parameter has upper limit.
     1.0,   // Parameter's upper limit.
-    "0.05"  // Parameter's typical (default) value.
+    "0.001"  // Parameter's typical (default) value.
   },
 
   {
@@ -121,43 +121,7 @@ AlgParamMetadata parameters[NUM_PARAM] =
     1,     // Not zero if the parameter has upper limit.
     100000,   // Parameter's upper limit.
     "2500"  // Parameter's typical (default) value.
-  },
-
-  {
-    "MutationRate",        // Id.
-    "Mutation rate",       // Name.
-    "Real",                // Type.
-
-    // Overview.
-    "Chance of a mutation occurring during reproduction.",
-
-    // Description.
-    "",
-
-    1,     // Not zero if the parameter has lower limit.
-    0.0,   // Parameter's lower limit.
-    1,     // Not zero if the parameter has upper limit.
-    1.0,   // Parameter's upper limit.
-    "0.25"  // Parameter's typical (default) value.
-  },
-
-  {
-    "CrossoverRate",      // Id.
-    "Crossover rate",     // Name.
-    "Real",               // Type.
-
-    // Overview.
-    "Chance of a crossover occurring during reproduction.",
-
-    // Description.
-    "",
-
-    1,     // Not zero if the parameter has lower limit.
-    0.0,   // Parameter's lower limit.
-    1,     // Not zero if the parameter has upper limit.
-    1.0,   // Parameter's upper limit.
-    "0.25"  // Parameter's typical (default) value.
-  },
+  }
 };
 
 
@@ -168,7 +132,7 @@ AlgMetadata metadata = {
   
   "GARP",                                            // Id.
   "GARP: Genetic Algorithm for Rule Set Production", // Name.
-  "3.0.1 alpha",                                     // Version.
+  "3.1 beta",                                        // Version.
 
   // Overview.
   "GARP is a genetic algorithm that creates ecological niche \
@@ -241,13 +205,14 @@ Garp::Garp()
   _popsize        = 0;
   _resamples      = 0;
   _max_gen        = 0;
-  _crossover_rate = 0.0;
-  _mutation_rate  = 0.0;
   _conv_limit     = 0.0;
 
   _mortality      = 0.9;
   _gapsize        = 0.9;
   _acc_limit      = 0.0;
+
+  _crossover_rate = 0.25;
+  _mutation_rate  = 0.25;
 
   _significance   = 2.70;
 
@@ -314,12 +279,6 @@ int Garp::initialize()
   if (!getParameter("Resamples",        &_resamples))      
       g_log.error(1, "Parameter Resamples not set properly.");
 
-  if (!getParameter("MutationRate",     &_mutation_rate))  
-      g_log.error(1, "Parameter MutationRate not set properly.");
-
-  if (!getParameter("CrossoverRate",    &_crossover_rate)) 
-      g_log.error(1, "Parameter CrossoverRate not set properly.");
-
   g_log("MaxGenerations set to %d\n", _max_gen);
 
   _offspring  = new GarpRuleSet(2 * _popsize);
@@ -340,9 +299,8 @@ int Garp::initialize()
 int Garp::iterate()
 {
   char msg[256];
+  double perfBest, perfWorst, perfAvg;
   const PerfIndex defaultPerfIndex = PerfSig;
-
-  //GarpRuleSet aux_rs(_popsize * 2); 
 
   if (!done())
     {
@@ -352,19 +310,14 @@ int Garp::iterate()
       select(_offspring, _fittest, defaultPerfIndex);
       _fittest->trim(_popsize);
 
-      double perfBest, perfWorst, perfAvg;
       _offspring->performanceSummary(PerfSig, 
                                      &perfBest, &perfWorst, &perfAvg);
 
-      sprintf(msg, "[%2d] %+8.3f %+8.3f %+8.3f", 
-	     _offspring->numRules(), perfBest, perfWorst, perfAvg );
-
-      _fittest->performanceSummary(PerfSig, 
-                                   &perfBest, &perfWorst, &perfAvg);
-
-      //g_log( "%4d] ", _gen );
-      //g_log( "[%2d] %+8.3f %+8.3f %+8.3f | %s\n", 
-      //     _fittest->numRules(), perfBest, perfWorst, perfAvg, msg );
+      /*
+      g_log( "%4d] ", _gen );
+      g_log( "[%2d] %+8.3f %+8.3f %+8.3f | %s\n", 
+           _fittest->numRules(), perfBest, perfWorst, perfAvg, msg );
+      */
       
       if (done())
         {
@@ -385,24 +338,6 @@ int Garp::iterate()
           _offspring->trim(_popsize);
           mutate(_offspring);
           crossover(_offspring);
-
-	  /*
-	  // re-evaluate fittest rules 
-	  int i, n;
-	  GarpRule * rule;
-	  n = _fittest->numRules();
-	  for (i = 0; i < n; i++)
-	    {
-	      double old_perf, new_perf;
-
-	      rule = _fittest->get(i);
-	      old_perf = rule->getPerformance((PerfIndex) 8);
-	      rule->evaluate(_custom_sampler);
-	      new_perf = rule->getPerformance((PerfIndex) 8);
-
-	      g_log("*[%2d] (%c | %d) Perf: %+8.4f %+8.4f (diff=%+8.4f)\n", i, rule->type(), (int) rule->getCertainty(1.0), old_perf, new_perf, new_perf - old_perf);
-	    }
-	  */
         }
     }
 
@@ -551,19 +486,21 @@ Garp::deserialize(Deserializer * ds)
 void Garp::select(GarpRuleSet * source, GarpRuleSet * target, 
                   PerfIndex perfIndex)
 {
-  int i, n, accepted, similarIndex;
+  int i, n, accepted, converged, similarIndex, insertIndex;
   GarpRule * candidateRule, * similarRule;
-  //int discardedRuleOrigin;
+
+  converged = 0;
 
   // step through source rule-set trying to insert rules into target
   n = source->numRules();
   for (i = 0; i < n; i++)
     {
+      insertIndex = -1;
       accepted = 0;
       candidateRule = source->get(i);
       similarIndex = target->findSimilar(candidateRule);
-      if ((similarIndex < -1) || (similarIndex >= target->numRules()))
-        g_log.error(1, "Index out of bounds (#8). Limits are (-1, %d), index is %d\n", target->numRules(), similarIndex);
+      //if ((similarIndex < -1) || (similarIndex >= target->numRules()))
+      //  g_log.error(1, "Index out of bounds (#8). Limits are (-1, %d), index is %d\n", target->numRules(), similarIndex);
 
       if (similarIndex >= 0)
         {
@@ -575,7 +512,7 @@ void Garp::select(GarpRuleSet * source, GarpRuleSet * target,
               // first create a clone of the rule, then replace the old one
               candidateRule = candidateRule->clone();
 	      target->remove(similarIndex);
-	      target->insert(perfIndex, candidateRule);
+	      insertIndex = target->insert(perfIndex, candidateRule);
             }
         }
       else
@@ -586,10 +523,23 @@ void Garp::select(GarpRuleSet * source, GarpRuleSet * target,
           candidateRule = candidateRule->clone();
           target->insert(perfIndex, candidateRule);
         }
+
+      if ((insertIndex != -1) /*&& (insertIndex < _popsize)*/)
+	{ converged++; } 
+
+      //printf("InsertIndex=%+3d | converged=%3d\n", insertIndex, converged);
     }
 
-  // TODO: trim target rule-set to population size, keeping track of what 
-  //       rules where excluded
+  // update convergence value
+  _improvements += converged;
+  if (_improvements)
+    { _convergence = ( _convergence + ( (double) converged ) / _improvements ) / 2.0; }
+  else
+    { _convergence = 1.0; }
+
+  //printf("Convergence: %+7.4f at generation %5d (%3d; %6d; %+7.4f)\n", _convergence, 
+  //	 _gen, converged, _improvements, ( (double) converged ) / _improvements);
+
   // TODO: update heuristic rates based on who entered the target rule-set
 }
 

@@ -114,7 +114,7 @@ public:
   *			set gains control over memory allocated to rule
   *			after insertion, i.e., rule set will deallocate
   *			memory for that rule when rule is eliminated.
-  * @return Number of rules in rule set after insertion.
+  * @return Index where rule was inserted in the rule set.
   */
   int insert(PerfIndex perfIndex, GarpRule * rule);
 
