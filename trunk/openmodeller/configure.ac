@@ -4,10 +4,6 @@ AC_INIT
 
 AM_INIT_AUTOMAKE(openmodeller, 0.1.1)
 
-# TODO: should include Python support
-# But AM_CHECK_PYTHON macro (below) is not found
-#AM_CHECK_PYTHON(module)
-
 AC_PREFIX_PROGRAM(gcc)
 
 AC_PROG_CXX
@@ -112,6 +108,14 @@ if test x"$ac_gsl" != "xno" ; then
 fi
 AM_CONDITIONAL([HAVE_GSL], [test "$GSL_CFLAGS" != "" -a "$GSL_LIBS" != ""])
 
+dnl ---------------------------------------------------------------------------
+dnl  Python
+dnl ---------------------------------------------------------------------------
+AM_PATH_PYTHON
+AM_CHECK_PYTHON_HEADERS([PYSUBDIR=python],[])
+AC_SUBST(PYSUBDIR)
+
+dnl ---------------------------------------------------------------------------
 AC_CONFIG_FILES([
 	Makefile
 	algorithms/Makefile
