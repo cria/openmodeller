@@ -62,7 +62,7 @@ public class OMTest1 {
 	    for (j = 0; j < parammdArray.length; j++) {
 		AlgParamMetadata parammd = parammdArray[j];
 		System.out.println(" - - - - - - - - - - - -");
-		System.out.println(" Parameter:   " + parammd.getId());
+		System.out.println(" Parameter " + (j + 1) + ": " + parammd.getId());
 		System.out.println(" Name:        " + parammd.getName());
 		System.out.println(" Type:        " + parammd.getType());
 		System.out.println(" Overview:    " + parammd.getOverview());
@@ -72,14 +72,14 @@ public class OMTest1 {
 		    System.out.println(" Lower bound:  " + parammd.getMin());
 		}
 		else {
-		    System.out.println(" No lower bound. " + parammd.getDescription());
+		    System.out.println(" No lower bound. ");
 		}
 
 		if (parammd.getHas_max() == 0) {
 		    System.out.println(" Upper bound: " + parammd.getMax());
 		}
 		else {
-		    System.out.println(" No upper bound. " + parammd.getDescription());
+		    System.out.println(" No upper bound. ");
 		}
 	    }
 

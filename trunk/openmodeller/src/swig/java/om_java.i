@@ -290,15 +290,11 @@ jmethodID JNI_getSetDoubleMethod(JNIEnv * jenv, jclass clazz, char * methodName)
 
     // return an array of AlgParam back to caller
     int i, len = 0;
-	cp("#1");
-
-    while ((*$1) + len) len++;    
+    while ((*$1)[len].id) len++;    
     jclass clazz = JNI_getClass(jenv, "AlgParamMetadata");
 
     // get method ids for later use
     jmethodID constrID = JNI_getConstructor(jenv, clazz);
-
-	printf("Array length: %d\n", len); fflush(stdout);
 
     jmethodID mID_setId          = JNI_getSetStringMethod(jenv, clazz, "setId");
     jmethodID mID_setName        = JNI_getSetStringMethod(jenv, clazz, "setName");
@@ -311,19 +307,16 @@ jmethodID JNI_getSetDoubleMethod(JNIEnv * jenv, jclass clazz, char * methodName)
     jmethodID mID_setMin         = JNI_getSetDoubleMethod(jenv, clazz, "setMin");
     jmethodID mID_setMax         = JNI_getSetDoubleMethod(jenv, clazz, "setMax");
 
-    jresult = (jobjectArray)jenv->NewObjectArray(len, clazz, jenv->NewObject(clazz, constrID));
-	cp("#2");
-    if (jresult == 0) { JNIException("Could not allocate array of AlgParameter.\n"); return 0; }
+    jresult = (jobjectArray)jenv->NewObjectArray(len, clazz, 0);
+    if (jresult == 0) { JNIException("Could not allocate array of AlgParamMetadata.\n"); return 0; }
 
     for (i = 0; i < len; i++)
     {
-	cp("#3");
 	AlgParamMetadata * currParam = (*result + i);
 
 	// create new AlgParameter object
         jobject algParam = jenv->NewObject(clazz, constrID);
 
-	cp("#4");
         // set data members 
         jstring sid = jenv->NewStringUTF(currParam->id);
         jenv->CallVoidMethod(algParam, mID_setId, sid);
@@ -348,12 +341,8 @@ jmethodID JNI_getSetDoubleMethod(JNIEnv * jenv, jclass clazz, char * methodName)
         jenv->CallVoidMethod(algParam, mID_setMin, currParam->min);
         jenv->CallVoidMethod(algParam, mID_setMax, currParam->max);
 
-	cp("#5");
-
         // add it to main array
         jenv->SetObjectArrayElement(jresult, i, algParam);
-
-	cp("#6");
 
         jenv->DeleteLocalRef(sid);
         jenv->DeleteLocalRef(sname);
@@ -361,10 +350,7 @@ jmethodID JNI_getSetDoubleMethod(JNIEnv * jenv, jclass clazz, char * methodName)
         jenv->DeleteLocalRef(soverview);
         jenv->DeleteLocalRef(sdescription);
         jenv->DeleteLocalRef(stypical);
-
-	cp("#7");
     }
-cp("#8");
 }
 
 /* These 3 typemaps tell SWIG what JNI and Java types to use */
@@ -379,7 +365,12 @@ cp("#8");
 
 AlgParamMetadata ** getParameterList(AlgMetadata * metadata)
 {
-    return &(metadata->param);
+    int n = metadata->nparam;
+    AlgParamMetadata ** arrayCopy = new AlgParamMetadata*;
+    *arrayCopy = new AlgParamMetadata[n + 1];
+    memcpy((void *) *arrayCopy, metadata->param, n * sizeof(AlgParamMetadata));
+    memset((void *) &((*arrayCopy)[n]), 0, sizeof(AlgParamMetadata));
+    return arrayCopy;
 }
 
 %}
