@@ -321,7 +321,7 @@ public:
   
   /** This method is used when projecting the model.  
     * @note This method is inherited from the Algorithm class
-    * @return     
+    * @return Scalar of the probablitiy of occurence    
     * @param Scalar *x a pointer to a vector of openModeller Scalar type (currently double). The vector should contain values looked up on the environmental variable layers into which the mode is being projected. */
   Scalar getValue( Scalar *x );
   
@@ -379,8 +379,10 @@ private:
   gsl_vector * f_gsl_eigenvalue_vector;
   /** This is a pointer to a gsl matrix that will hold the eigen vectors */
   gsl_matrix * f_gsl_eigenvector_matrix;
-  
-  int     f_layer_count;  ///< Dimension of environmental space.
+  /** Dimension of environmental space. */
+  int f_layer_count; 
+  /** Number of components that are actually kept after Keiser-Gutman test */
+  int f_retained_components_count;
   /** the number of localities used to construct the model */
   int f_localityCount; 
 
