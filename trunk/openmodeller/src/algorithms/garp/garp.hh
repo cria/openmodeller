@@ -36,11 +36,13 @@
 #ifndef _GARP_HH_
 #define _GARP_HH_
 
-#include "garp.hh"
-#include "garp_rules.hh"
-#include "garp_sampler.hh"
-
 #include <om.hh>
+
+// required include because of enum PerfIndex and class GarpRule
+#include <rules.hh>
+
+class GarpRuleSet;
+class GarpCustomSampler;
 
 class Sampler;
 class SampledData;
