@@ -20,8 +20,7 @@ EXTRA_DIST = \
 	doc/openModeller.doxygen \
 	doc/overview.dia \
 	examples/furcata_boliviana.txt \
-	examples/request.txt \
-	examples/request_win.txt
+	examples/request.txt
 
 SUBDIRS = test src algorithms
 
