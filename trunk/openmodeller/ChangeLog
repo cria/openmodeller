@@ -1,3 +1,10 @@
+Release 0.2 (2005-01-25)
+------------------------
+
+	* Compatibility with Windows.
+	* Compatibility with Mac OS.
+	* Fixed issues with GDAL 1.2.5.
+
 Release 0.2-rc1 (2004-12-10)
 ----------------------------
 

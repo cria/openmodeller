@@ -1,10 +1,11 @@
 OVERVIEW:
 ---------
-There was an initial effort to create a SOAP interface for 
-openModeller, enabling its use as a web service. However,
-the results are still far from a production release.
+The available SOAP interface is an initial effort to provide 
+modelling services across the web. The current implementation 
+is only a prototype, therefore results are still far from a 
+production release.
 
-The existing implementation is completely based on gSOAP v2.5
+The implementation is completely based on gSOAP v2.5
 (http://gsoap2.sourceforge.net) and has only been tested with 
 Linux. gSOAP seems to be compliant with "Windows, Unix, 
 Linux, Pocket PC, Mac OS X, TRU64, VxWorks, etc". However,
@@ -13,7 +14,7 @@ to run in other platforms - these parts include sigpipe
 handling (if multi-threading is enabled), unique temporary 
 file name generator (mkstemp function), and process forking.
 
-Although the SOAP server is already prepared to run as a
+Note: although the SOAP server is already prepared to run as a
 multi-threaded daemon server, openModeller is not!!
 
 CURRENT FUNCTIONALITY:
