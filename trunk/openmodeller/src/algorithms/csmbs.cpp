@@ -26,7 +26,7 @@
 /****************************************************************/
 /********************** Algorithm's Metadata ********************/
 
-#define NUM_PARAM 2
+#define NUM_PARAM 5
 
 
 /************************************/
@@ -65,6 +65,48 @@ Any components whose eigen values are above this threshold are retained.", // De
     1,     // Not zero if the parameter has upper limit.
     10,   // Parameter's upper limit.
     "2"  // Parameter's typical (default) value.
+  }
+  ,
+  {
+    "MinRandomiserRepeats",          // Id.
+    "Number of shuffles per column",        // Name.
+    "Integer",        // Type.
+    "Increase this number to increase randomness of component selection eigen vector", //overview
+    "How many times each column should be shuffled to ensure randomness when generating \
+the randomised eigen vector used in the broken stick component selection method.", // Description.
+    1,     // Not zero if the parameter has lower limit.
+    1,   // Parameter's lower limit.
+    1,     // Not zero if the parameter has upper limit.
+    100,   // Parameter's upper limit.
+    "5"  // Parameter's typical (default) value.
+  }
+  ,
+  {
+    "MinComponents",          // Id.
+    "Minimum number of components in model",        // Name.
+    "Integer",        // Type.
+    "The minimum number of components that the model must have.", //overview
+    "If not enough components are selected, the model produced will be erroneous or fail. \
+Usually three or more components is acceptible", // Description.
+    1,     // Not zero if the parameter has lower limit.
+    3,   // Parameter's lower limit.
+    1,     // Not zero if the parameter has upper limit.
+    100,   // Parameter's upper limit.
+    "3"  // Parameter's typical (default) value.
+  }
+  ,
+  {
+    "MaxAttempts",          // Id.
+    "How many attempts wil be made",        // Name.
+    "Integer",        // Type.
+    "If not enough components are selected, the model will retry this many times", //overview
+    "If not enough components are selected, the model be rerun. If MaxAttempts is reached \
+Csm Broken Stick will give up and abort.", // Description.
+    1,     // Not zero if the parameter has lower limit.
+    1,   // Parameter's lower limit.
+    1,     // Not zero if the parameter has upper limit.
+    10,   // Parameter's upper limit.
+    "3"  // Parameter's typical (default) value.
   }
 };
 
@@ -161,8 +203,23 @@ int CsmBS::initialize()
   {
     return 0;
   }
+  if ( ! getParameter( "MinRandomiserRepeats", &minRandomiserRepeatsInt) )
+  {
+    return 0;
+  }
+  if ( ! getParameter( "MinComponents", &minComponentsInt) )
+  {
+    return 0;
+  }
+  if ( ! getParameter( "MaxAttempts", &maxAttemptsInt) )
+  {
+    return 0;
+  }
   printf ("Randomisations parameter set to: %i\n",numberOfRandomisationsInt);
   printf ("StandardDeviations parameter set to: %f\n",numberOfStdDevsFloat);
+  printf ("MinRandomiserRepeats parameter set to: %f\n",minRandomiserRepeatsInt);
+  printf ("MinComponents parameter set to: MinComponents%f\n",minComponentsInt);
+  printf ("MaxAttempts parameter set to: %f\n",maxAttemptsInt);
   if ( numberOfRandomisationsInt <= 0 || numberOfRandomisationsInt > 1000 )
   {
     g_log.warn( "CSM - Broken Stick - Randomisations parameter out of range: %f\n",
@@ -173,6 +230,24 @@ int CsmBS::initialize()
   {
     g_log.warn( "CSM - Broken Stick - StandardDeviations parameter out of range: %f\n",
             numberOfRandomisationsInt );
+    return 0;
+  }
+  if ( minRandomiserRepeatsInt<= 0 || minRandomiserRepeatsInt> 10 )
+  {
+    g_log.warn( "CSM - Broken Stick - MinRandomiserRepeats parameter out of range: %f\n",
+            minRandomiserRepeatsInt);
+    return 0;
+  }
+  if (minComponentsInt <= 0 ||minComponentsInt > 10 )
+  {
+    g_log.warn( "CSM - Broken Stick - MinComponents parameter out of range: %f\n",
+            minComponentsInt);
+    return 0;
+  }
+  if ( maxAttemptsInt<= 0 || maxAttemptsInt> 10 )
+  {
+    g_log.warn( "CSM - Broken Stick - MaxAttempts parameter out of range: %f\n",
+            maxAttemptsInt);
     return 0;
   }
 
@@ -242,8 +317,7 @@ int CsmBS::discardComponents()
       //  thats sounds good 
 
       //this extra loop is to increase the amount of shuffling that takes place!  
-      int minRandomiserRepeats=5; //softcode later
-      for (int myRandomiserRepeats=0;myRandomiserRepeats<minRandomiserRepeats;myRandomiserRepeats++)
+      for (int myRandomiserRepeats=0;myRandomiserRepeats<minRandomiserRepeatsInt;myRandomiserRepeats++)
       {
         //loop through each cell in the column swapping it with another cell
         for (int k=0; k < m->size1; k++)

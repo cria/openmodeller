@@ -66,10 +66,20 @@ class CsmBS : public Csm
         int discardComponents();
 
         /** How many times the env must be shuffled */
-        int numberOfRandomisationsInt; //hard coded for now
+        int numberOfRandomisationsInt;
         /** How many standard deviations should be added to the random derived
          * eigenvalues when doing discard components */
-        float numberOfStdDevsFloat; //hard coded for now
+        float numberOfStdDevsFloat; 
+        /**Increase this number to increase randomness of component selection eigen vector
+         */
+        int minRandomiserRepeatsInt; 
+
+        /* Number of attempts to get a model with sufficient components before giving up */
+        int maxAttemptsInt;
+
+        /* Minumum number of components required for a valid model */
+        int minComponentsInt;
+
 };
 
 #endif
