@@ -342,13 +342,14 @@ int Garp::initialize()
 
 int Garp::iterate()
 {
+  char msg[256];
   const PerfIndex defaultPerfIndex = PerfSig;
 
   if (!done())
     {
       _gen++;
 
-      g_log( "Iteration: %d\n", _gen );
+      g_log( "%4d] ", _gen );
 
       evaluate(_offspring, _custom_sampler);
       select(_offspring, _fittest, defaultPerfIndex);
@@ -358,14 +359,14 @@ int Garp::iterate()
       _offspring->performanceSummary(PerfSig, 
                                      &perfBest, &perfWorst, &perfAvg);
 
-      g_log.debug( "Performances (offspring): [%2d] %6.4f %6.4f %6.4f.\n", 
-                   _offspring->numRules(), perfBest, perfWorst, perfAvg );
+      sprintf(msg, "[%2d] %+8.3f %+8.3f %+8.3f", 
+	     _offspring->numRules(), perfBest, perfWorst, perfAvg );
 
       _fittest->performanceSummary(PerfSig, 
                                    &perfBest, &perfWorst, &perfAvg);
 
-      g_log.debug( "Performances (fittest)  : [%2d] %6.4f %6.4f %6.4f.\n", 
-                   _fittest->numRules(), perfBest, perfWorst, perfAvg );
+      g_log( "[%2d] %+8.3f %+8.3f %+8.3f | %s\n", 
+	     _fittest->numRules(), perfBest, perfWorst, perfAvg, msg );
       
       if (done())
         {
@@ -381,9 +382,9 @@ int Garp::iterate()
           reproduce(_fittest, _offspring, _gapsize);
 
           // fill rest
-          int new_popsize = (int) (_mortality * (double) _popsize);
-          colonize(_offspring, _custom_sampler, new_popsize);
-          _offspring->trim(new_popsize);
+          //int new_popsize = (int) (_mortality * (double) _popsize);
+          colonize(_offspring, _custom_sampler, _popsize);
+          _offspring->trim(_popsize);
           mutate(_offspring);
           crossover(_offspring);
         }
@@ -499,16 +500,18 @@ void Garp::colonize(GarpRuleSet * ruleset, GarpCustomSampler * sampler,
   for (i = ruleset->numRules(); i < numRules; i++)
     {
       // pick the next rule to be generated
-      p = i % 2;
+      p = i % 4;
 
       switch (p)
-	    {
-	    case 0: rule = new RangeRule(); break;
-	    case 1: rule = new LogitRule(); break;
-	    //case 2: rule = new NegatedRangeRule(); break;
-	    //case 3: rule = new AtomicRule(); break;
-	    }
-      
+	{
+	case 0: rule = new RangeRule(); break;
+	case 1: rule = new LogitRule(); break;
+	case 2: rule = new NegatedRangeRule(); break;
+	case 3: rule = new AtomicRule(); break;
+	}
+
+      //g_log("[%c] ", rule->type());
+
       rule->initialize(sampler);
       ruleset->add(rule);
     }

@@ -151,8 +151,8 @@ int Raster::copyNormalizationValues(Raster * source)
   f_offset = source->f_offset;
   f_normal = 1;
 
-  printf("Layer copied normalization. Min=%f Max=%f Scale=%f Offset=%f\n", 
-	f_hdr.min, f_hdr.max, f_scale, f_offset);
+  //g_log("Layer copied normalization. Min=%f Max=%f Scale=%f Offset=%f\n", 
+  //f_hdr.min, f_hdr.max, f_scale, f_offset);
 
   return 1;
 }
