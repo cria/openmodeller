@@ -21,7 +21,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				AdditionalIncludeDirectories="../../algorithms,../../inc,../../inc/env_io,$(GDAL_DIR)/include"
-				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE;PLUGINPATH=\&quot;C:\\@Ricardo\\Proj\\modeller\\src\\om_vcpp7\\om_garp\\Debug\&quot;"
+				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE;PLUGINPATH=$(OM_PLUGIN_PATH)"
 				MinimalRebuild="TRUE"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="5"
@@ -160,9 +160,6 @@
 			</File>
 			<File
 				RelativePath="..\..\console\om_console.cpp">
-			</File>
-			<File
-				RelativePath="..\..\lib\OmAlgParameter.cpp">
 			</File>
 			<File
 				RelativePath="..\..\lib\os_specific_win.cpp">
