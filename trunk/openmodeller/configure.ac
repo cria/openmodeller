@@ -163,6 +163,9 @@ AC_ARG_ENABLE(python,
    case "${enableval}" in
     yes)
       build_python=yes
+      AM_PATH_PYTHON
+      AM_CHECK_PYTHON_HEADERS([PYSUBDIR=python],[])
+      AC_SUBST(PYSUBDIR)
       ;;
     no)
       build_python=no
@@ -215,9 +218,6 @@ AM_CONDITIONAL([BUILD_SWIG], [test x$build_python = xyes -o x$build_java = xyes]
 dnl ---------------------------------------------------------------------------
 dnl  Python
 dnl ---------------------------------------------------------------------------
-AM_PATH_PYTHON
-AM_CHECK_PYTHON_HEADERS([PYSUBDIR=python],[])
-AC_SUBST(PYSUBDIR)
 
 
 dnl ---------------------------------------------------------------------------
