@@ -30,60 +30,21 @@
 
 #include <CppUnitLite/TestHarness.h>
 #include <rules_range.hh>
+#include <rules_negrange.hh>
+#include <rules_logit.hh>
+#include <rules_atomic.hh>
 #include <garp_sampler.hh>
+#include <test_rules_defs.hh>
 #include <test_rules_evaluate_data.cpp>
 
-class ExtRangeRule : public RangeRule
-{
-public:
-  ExtRangeRule() {};
-  GarpRule * objFactory()   { return new ExtRangeRule; } 
-  Scalar * getGenes()       { return _genes; };
-  double * getPerformanceArray() { return _performance; }
-  void setPrediction(Scalar newPrediction) { _prediction = newPrediction; }
-  void initialize(GarpCustomSampler * sampler) { GarpRule::initialize(sampler); }
-  void setGenes(Scalar * genes, int numGenes);
-};
+class GarpCustomSamplerDummy2;
 
-void ExtRangeRule::setGenes(Scalar * genes, int numGenes)
-{
-  int i;
-
-  _numGenes = numGenes;
-  if (_genes) { delete _genes; } 
-
-  if (genes)
-    {
-      _genes = new Scalar[_numGenes * 2];
-      
-      g_log("Setting genes: ");
-      for (i = 0; i < _numGenes * 2; i++)
-	{
-	  _genes[i] = genes[i]; 
-	  g_log("%+8.4f ", _genes[i]);
-	}
-      g_log("\n");
-    }
-}
-
-
-class Sampler;
-
-SampledData::SampledData() {}
-SampledData::~SampledData() {}
-GarpCustomSampler::GarpCustomSampler() {}
-GarpCustomSampler::~GarpCustomSampler() {}
-void GarpCustomSampler::initialize(Sampler *, int) {}
-int GarpCustomSampler::resamples() {}
-Scalar * GarpCustomSampler::getSample(Scalar *) { g_log("#### dummy getSample() called ####\n"); }
-int * GarpCustomSampler::getFrequencies(double, int *) {} 
-void GarpCustomSampler::createBioclimHistogram(double, double, double) {}
-void GarpCustomSampler::getBioclimRange(Scalar, int, Scalar *, Scalar *) {}
-int GarpCustomSampler::dim() { g_log("#### dummy dim() called ####\n"); }
-
+EXTENDED_DUMMY_RULE ( RangeRule );
+EXTENDED_DUMMY_RULE ( NegatedRangeRule );
+EXTENDED_DUMMY_RULE ( LogitRule );
+EXTENDED_DUMMY_RULE ( AtomicRule );
 
 #define eps 10e-6
-
 
 class GarpCustomSamplerDummy2 : public GarpCustomSampler
 {
@@ -115,7 +76,6 @@ Scalar * GarpCustomSamplerDummy2::getSample(Scalar * pointValue)
   return (Scalar *) &(values[1]);
 }
 
-
 // helper function
 bool checkEqualArray(Scalar * array1, Scalar * array2, int size, double veps)
 {
@@ -140,46 +100,68 @@ bool checkEqualArray(Scalar * array1, Scalar * array2, int size, double veps)
   return result;
 }
 
-
-bool TestRule(int sampleIndex, Scalar * ruleGenes, 
-	      Scalar rulePred, Scalar * rulePerfs)
-{
-  int i;
-  double * perf;
-  bool result;
-  ExtRangeRule * rule;
-  
-  GarpCustomSamplerDummy2 * sampler = new GarpCustomSamplerDummy2;
-
-  rule = new ExtRangeRule;
-  sampler->chooseSampleSet(sampleIndex);
-  rule->initialize(sampler);
-  rule->setPrediction(rulePred);
-  rule->setGenes(ruleGenes, sampler->dim());
-  rule->evaluate(sampler);
-  perf = rule->getPerformanceArray();
-  result = checkEqualArray(perf, rulePerfs, 10, eps);
-
-  delete rule;
-  delete sampler;
-
-  return result;
+#define TEST_DUMMY_EVALUATE( name ) \
+bool test##name##Evaluate(int sampleIndex, Scalar * ruleGenes, \
+                          Scalar rulePred, Scalar * rulePerfs) \
+{ \
+  int i; \
+  double * perf; \
+  bool result; \
+  Ext##name * rule = new Ext##name; \
+  GarpCustomSamplerDummy2 * sampler = new GarpCustomSamplerDummy2; \
+  sampler->chooseSampleSet(sampleIndex); \
+  rule->initialize(sampler);\
+  rule->setPrediction(rulePred);\
+  rule->setGenes(ruleGenes, sampler->dim());\
+  rule->evaluate(sampler);\
+  perf = rule->getPerformanceArray();\
+  result = checkEqualArray(perf, rulePerfs, 10, eps);\
+  delete rule;\
+  delete sampler;\
+  return result;\
 }
 
+
+// ========================
+// RangeRule tests
+TEST_DUMMY_EVALUATE ( RangeRule );
+
 TEST( evaluate1_1, RangeRule )
-{ CHECK(TestRule(0, RuleGenes1_1, RulePred1_1, RulePerfs1_1)); }
+{ CHECK(testRangeRuleEvaluate(0, RuleGenes1_1, RulePred1_1, RulePerfs1_1)); }
 
 TEST( evaluate1_2, RangeRule )
-{ CHECK(TestRule(0, RuleGenes1_2, RulePred1_2, RulePerfs1_2)); }
+{ CHECK(testRangeRuleEvaluate(0, RuleGenes1_2, RulePred1_2, RulePerfs1_2)); }
 
 TEST( evaluate2_1, RangeRule )
-{ CHECK(TestRule(1, RuleGenes2_1, RulePred2_1, RulePerfs2_1)); }
+{ CHECK(testRangeRuleEvaluate(1, RuleGenes2_1, RulePred2_1, RulePerfs2_1)); }
 
 TEST( evaluate2_2, RangeRule )
-{ CHECK(TestRule(1, RuleGenes2_2, RulePred2_2, RulePerfs2_2)); }
+{ CHECK(testRangeRuleEvaluate(1, RuleGenes2_2, RulePred2_2, RulePerfs2_2)); }
 
 TEST( evaluate2_3, RangeRule )
-{ CHECK(TestRule(1, RuleGenes2_3, RulePred2_3, RulePerfs2_3)); }
+{ CHECK(testRangeRuleEvaluate(1, RuleGenes2_3, RulePred2_3, RulePerfs2_3)); }
 
 TEST( evaluate2_4, RangeRule )
-{ CHECK(TestRule(1, RuleGenes2_4, RulePred2_4, RulePerfs2_4)); }
+{ CHECK(testRangeRuleEvaluate(1, RuleGenes2_4, RulePred2_4, RulePerfs2_4)); }
+
+
+// ========================
+// negated range rules
+TEST_DUMMY_EVALUATE ( NegatedRangeRule );
+
+TEST( evaluate1_3, NegatedRangeRule )
+{ CHECK(testNegatedRangeRuleEvaluate(0, RuleGenes1_3, RulePred1_3, RulePerfs1_3)); }
+
+TEST( evaluate1_4, NegatedRangeRule )
+{ CHECK(testNegatedRangeRuleEvaluate(0, RuleGenes1_4, RulePred1_4, RulePerfs1_4)); }
+
+
+// ========================
+// logistic regration rules
+TEST_DUMMY_EVALUATE ( LogitRule );
+
+
+// ========================
+// atomic rules
+TEST_DUMMY_EVALUATE ( AtomicRule );
+

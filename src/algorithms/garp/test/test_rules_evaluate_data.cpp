@@ -126,7 +126,7 @@ Scalar SampleSetValues0[84][3] =
 }; 
 
 // rules to be tested with this sample set
-Scalar RulePred1_1 = 1.0;
+Scalar RulePred1_1 = 1.0; // range rule
 Scalar RuleGenes1_1[4] = {-0.51, +0.51, -0.51, +0.51};
 
 Scalar RulePerfs1_1[10] = {-1000,        
@@ -141,7 +141,7 @@ Scalar RulePerfs1_1[10] = {-1000,
  			   -1000
 };
 
-Scalar RulePred1_2 = 0.0;
+Scalar RulePred1_2 = 0.0; // range rule
 Scalar RuleGenes1_2[4] = {-0.51, +0.51, -0.51, +0.51};
 
 Scalar RulePerfs1_2[10] = {-1000,        
@@ -155,6 +155,37 @@ Scalar RulePerfs1_2[10] = {-1000,
 			   0.0,           // significance
  			   -1000
 };
+
+Scalar RulePred1_3 = 1.0; // negated range rule
+Scalar RuleGenes1_3[4] = {-0.51, +0.51, -0.51, +0.51};
+
+Scalar RulePerfs1_3[10] = {-1000,        
+			   0.4761904762,  // pXs/n = 40/84
+			   0.5000,        // pYs/n = 42/84
+			   -1000,  
+			   0.4761904762,  // no/n = pXs/n = 40/84
+			   0.5000,        // pXYs/no = 20/40
+			   -1000,
+			   0.4761904762,  // no/n = 40/84
+			   0.0,           // significance
+ 			   -1000
+};
+
+Scalar RulePred1_4 = 0.0; // negated range rule
+Scalar RuleGenes1_4[4] = {-0.51, +0.51, -0.51, +0.51};
+
+Scalar RulePerfs1_4[10] = {-1000,        
+			   0.4761904762,  // pXs/n = 40/84
+			   0.5000,        // pYs/n = 42/84
+			   -1000,  
+			   0.4761904762,  // no/n = pXs/n = 40/84
+			   0.5000,        // pXYs/no = 20/40
+			   -1000,
+			   0.4761904762,  // no/n = 40/84
+			   0.0,           // significance
+ 			   -1000
+};
+
 
 
 Scalar SampleSetValues1[84][3] =  
@@ -225,7 +256,7 @@ Scalar SampleSetValues1[84][3] =
 };
 
 // rules to be tested with this sample set
-Scalar RulePred2_1 = 1.0;
+Scalar RulePred2_1 = 1.0; // range rule
 Scalar RuleGenes2_1[4] = {-0.51, +0.51, -0.51, +0.51};
 
 Scalar RulePerfs2_1[10] = {-1000,        
@@ -240,7 +271,7 @@ Scalar RulePerfs2_1[10] = {-1000,
  			   -1000
 };
 
-Scalar RulePred2_2 = 0.0;
+Scalar RulePred2_2 = 0.0; // range rule
 Scalar RuleGenes2_2[4] = {-0.51, +0.51, -0.51, +0.51};
 
 Scalar RulePerfs2_2[10] = {-1000,        
@@ -256,7 +287,7 @@ Scalar RulePerfs2_2[10] = {-1000,
 };
 
 // rules to be tested with this sample set
-Scalar RulePred2_3 = 1.0;
+Scalar RulePred2_3 = 1.0; // range rule
 Scalar RuleGenes2_3[4] = {-1.01, +1.01, -1.01, +1.01};
 
 Scalar RulePerfs2_3[10] = {-1000,        
@@ -271,7 +302,7 @@ Scalar RulePerfs2_3[10] = {-1000,
  			   -1000
 };
 
-Scalar RulePred2_4 = 0.0;
+Scalar RulePred2_4 = 0.0; // range rule
 Scalar RuleGenes2_4[4] = {-1.01, +1.01, -1.01, +1.01};
 
 Scalar RulePerfs2_4[10] = {-1000,        

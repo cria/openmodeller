@@ -11,6 +11,7 @@
 GARP_UNIT_TESTS = 	test_ruleset \
 			test_rules_base \
 			test_rules_range \
+			test_rules_negrange \
 			test_rules_evaluate
 
 TESTS = $(GARP_UNIT_TESTS)
@@ -30,6 +31,7 @@ test_ruleset_CPPFLAGS = -I../../../test -I.. -I../../../src/inc
 # ============ test_rules_base ===============================
 
 test_rules_base_SOURCES  = test_main.cpp test_rules_base.cpp \
+			test_rules_dummy_sampler.cpp \
 			../rules_base.cpp \
 			../../../src/lib/random.cpp \
 			../../../src/lib/log.cpp \
@@ -43,6 +45,7 @@ test_rules_base_CPPFLAGS = -I../../../test -I.. -I../../../src/inc
 # ============ test_rules_range ==============================
 
 test_rules_range_SOURCES  = test_main.cpp test_rules_range.cpp \
+			test_rules_dummy_sampler.cpp \
 			../rules_base.cpp ../rules_range.cpp \
 			../../../src/lib/random.cpp \
 			../../../src/lib/log.cpp \
@@ -53,10 +56,28 @@ test_rules_range_LDADD = ../../../test/CppUnitLite/libcppunitlite.la -ldl
 test_rules_range_CPPFLAGS = -I../../../test -I.. -I../../../src/inc
 
 
+# ============ test_rules_negrange ===========================
+
+test_rules_negrange_SOURCES  = test_main.cpp test_rules_negrange.cpp \
+				test_rules_dummy_sampler.cpp \
+				../rules_base.cpp ../rules_range.cpp \
+				../rules_negrange.cpp \
+				../../../src/lib/random.cpp \
+				../../../src/lib/log.cpp \
+				../../../src/lib/os_specific.cpp
+
+test_rules_negrange_LDADD = ../../../test/CppUnitLite/libcppunitlite.la -ldl
+
+test_rules_negrange_CPPFLAGS = -I../../../test -I.. -I../../../src/inc
+
+
 # ============ test_rules_evaluate ===========================
 
 test_rules_evaluate_SOURCES  = test_main.cpp test_rules_evaluate.cpp \
-				../rules_base.cpp ../rules_range.cpp \
+				test_rules_dummy_sampler.cpp \
+				../rules_base.cpp ../rules_logit.cpp \
+				../rules_range.cpp ../rules_negrange.cpp \
+				../rules_atomic.cpp \
 				../../../src/lib/random.cpp \
 				../../../src/lib/log.cpp \
 				../../../src/lib/os_specific.cpp
