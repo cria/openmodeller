@@ -41,7 +41,7 @@
 #include <string.h>
 #include <stdio.h>
 
-#ifdef WIN32
+#if (defined(WIN32) || (defined(__CYGWIN__)))
 #include <float.h>
 #define MAXFLOAT FLT_MAX
 #else
