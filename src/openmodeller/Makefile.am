@@ -17,17 +17,18 @@ lib_LTLIBRARIES = libopenmodeller.la
 libopenmodeller_la_SOURCES = \
 	algorithm.cpp \
 	algorithm_factory.cpp \
+	alg_parameter.cpp \
 	control.cpp \
 	environment.cpp \
 	file_parser.cpp \
 	log.cpp \
+	map_format.cpp \
 	occurrences.cpp \
 	occurrence.cpp \
 	os_specific.cpp \
 	random.cpp \
 	sampler.cpp \
-	sampled_data.cpp \
-	alg_parameter.cpp
+	sampled_data.cpp 
 
 libopenmodeller_la_CPPFLAGS = -I../inc -I../.. $(PLUGINPATH)
 libopenmodeller_la_LIBADD = env_io/libenv_io.la

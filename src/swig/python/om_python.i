@@ -3,9 +3,10 @@
 %{
 #include "../../inc/om_defs.hh"
 #include "../../inc/om_control.hh"
+#include "../../inc/environment.hh"
+#include "../../inc/map_format.hh"
 #include "../../inc/om_alg_parameter.hh"
 #include "../../inc/om_algorithm_metadata.hh"
-#include "../../inc/env_io/header.hh"
 #include "../../inc/file_parser.hh"
 #include "../../console/occurrences_file.hh"
 %}
@@ -156,9 +157,10 @@ int print_alg_params(int n, AlgParameter *param)
 
 %include "../../inc/om_defs.hh"
 %include "../../inc/om_control.hh"
+%include "../../inc/environment.hh"
+%include "../../inc/map_format.hh"
 %include "../../inc/om_alg_parameter.hh"
 %include "../../inc/om_algorithm_metadata.hh"
-%include "../../inc/env_io/header.hh"
 %include "../../inc/file_parser.hh"
 %include "../../console/occurrences_file.hh"
 
