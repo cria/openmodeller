@@ -54,7 +54,7 @@ static AlgParamMetadata parameters[NUM_PARAM] = {
     0.0,       // Parameter's lower limit.
     1,         // Not zero if the parameter has upper limit.
     1.0,       // Parameter's upper limit.
-    0.8        // Parameter's typical (default) value.
+    "0.8"      // Parameter's typical (default) value.
   },
 };
 

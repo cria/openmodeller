@@ -298,16 +298,16 @@ readParameters( OmAlgParameter *result, AlgMetadata *metadata,
             printf( " %s >= %f\n", param->name, param->min );
           if ( param->has_max )
             printf( " %s <= %f\n\n", param->name, param->max );
-          printf( "Value [%f]: ", param->typical );
+          printf( "Value [%s]: ", param->typical );
 
           // Read parameter's value or use the "typical" value
           // if the user does not enter a new value.
           char value[64];
 	  *value = 0;
-	  if ( ! fgets( value, 64, stdin ) || (*value < ' ') )
-            sprintf( value, "%16f", param->typical );
-
-          result->setValue( value );
+	  if ( fgets( value, 64, stdin ) && (*value >= ' ') )
+            result->setValue( value );
+          else
+            result->setValue( param->typical );
         }
     }
 
