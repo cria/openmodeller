@@ -94,6 +94,9 @@ public:
   int getRegion( Coord *xmin, Coord *ymin, Coord *xmax,
                  Coord *ymax);
 
+  /** Cell dimensions. */
+  int getCell( Coord *xcel, Coord *ycel ) { f_rst->getCell(xcel, ycel); }
+
   /**
    * Fills 'val' with the map bands values at (x,y).
    * Returns zero if (x,y) is not defined in the map.
