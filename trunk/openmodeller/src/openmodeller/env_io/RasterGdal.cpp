@@ -30,79 +30,93 @@
 #include <env_io/raster.hh>
 #include <om_log.hh>
 
+#include <Exceptions.hh>
+
 #include <gdal.h>
 #include <gdal_priv.h>
 #include <cpl_string.h>
 
 #include <string.h>
 
+using std::string;
+using std::vector;
+
+struct {
+  char const *GDalDriverName;
+  GDALDataType dataType;
+  bool hasMeta;
+}
+Formats[3] = {
+  // Floating GeoTiff
+  { "GTiff",
+    (sizeof(Scalar) == 4) ? GDT_Float32 : GDT_Float64,
+    true },
+  // Greyscale GeoTiff
+  { "GTiff",
+    GDT_Byte,
+    true },
+  // Greyscale BMP
+  { "BMP",
+    GDT_Byte,
+    false }
+};
+
+static const GDALDataType f_type = (sizeof(Scalar) == 4) ? GDT_Float32 : GDT_Float64;
 
 /****************************************************************/
 /************************** Raster Gdal *************************/
 
-static char error[256];
-
-// Used to translate Header::DataType to GDAL data types.
-static GDALDataType g_dtype[Header::MaxDataType] = {
-  GDT_Byte,
-  GDT_Int16, GDT_UInt16,
-  GDT_Int32, GDT_UInt32,
-  GDT_Float32, GDT_Float64
-};
-
-
 /*******************/
 /*** constructor ***/
 
-RasterGdal::RasterGdal( char *file, char mode )
+RasterGdal::RasterGdal( const string& file, char mode ) :
+  f_name( file ),
+  f_data(0),
+  f_size(0),
+  f_currentRow(-1),
+  f_changed(0)
 {
   initGdal();
-
-  // Is 'Scalar' a float or a double?
-  f_type = (sizeof(Scalar) == 4) ? GDT_Float32 : GDT_Float64;
-
-  if ( ! open( file, mode ) )
-    {
-      sprintf( error, "RasterGdal: can't open file '%s'.\n",
-               file );
-      throw error;
-    }
+  open( mode );
 }
 
-RasterGdal::RasterGdal( char *file, Header &hdr )
+RasterGdal::RasterGdal( const string& file, int format, const Header& hdr ) :
+  f_name( file ),
+  f_hdr( hdr ),
+  f_data(0),
+  f_size(0),
+  f_currentRow(-1),
+  f_changed(0)
 {
   initGdal();
-
-  // Is 'Scalar' a float or a double?
-  f_type = (sizeof(Scalar) == 4) ? GDT_Float32 : GDT_Float64;
-
-  if ( ! create( file, hdr ) )
-    {
-      sprintf( error, "RasterGdal: can't create file '%s'.\n",
-               file );
-      throw error;
-    }
+  create( format );
 }
 
 
 /*****************/
-/*** destrutor ***/
+/*** destructor ***/
 
 RasterGdal::~RasterGdal()
 {
+  // Save the last line read, if needed.
+  saveRow();
+
+  if ( f_data )
+    delete [] f_data;
+
   GDALClose( f_ds );
+
 }
 
 
 /************/
 /*** read ***/
-int
+void
 RasterGdal::read( Scalar *buf, int frow, int nrow )
 {
   // Header's data.
   int nband = f_hdr.nband;
-  int xdim  = f_hdr.xdim; // Elements in a row (by band).
-  int size  = xdim * nrow;
+  int size  = f_size * nrow;
 
   // Read each band
   for ( int i = 1; i <= nband; i++, buf += size )
@@ -111,56 +125,55 @@ RasterGdal::read( Scalar *buf, int frow, int nrow )
       GDALRasterBand *band = f_ds->GetRasterBand( i );
 
       // Fills 'buf' with new data.
-      band->RasterIO( GF_Read, 0, frow, xdim, nrow,
-                      buf, xdim, nrow,
-		      (GDALDataType) f_type, 0, 0 );
+      band->RasterIO( GF_Read, 0, frow, f_size, nrow,
+                      buf, f_size, nrow,
+		      f_type, 0, 0 );
     }
 
-  return 1;
 }
 
 
 /*************/
 /*** write ***/
-int
+void
 RasterGdal::write( Scalar *buf, int frow, int nrow )
 {
   // Header's data.
   int nband = f_hdr.nband;
-  int xdim  = f_hdr.xdim; // Elements in a row (by band).
-  int size  = xdim * nrow;
-
+  int size  = f_size * nrow;
+  
   // Write each band in the file.
-  for ( int i = 1; i <= nband; i++, buf += size )
-    {
-      // Gets the i-th band.
-      GDALRasterBand *band = f_ds->GetRasterBand( i );
+  for ( int i = 1; i <= nband; i++, buf += size ) {
+    // Gets the i-th band.
+    GDALRasterBand *band = f_ds->GetRasterBand( i );
+    
+    // Write the buffer's data in the file.
+    int ret = band->RasterIO( GF_Write, 0, frow, f_size, nrow,
+			      buf, f_size, nrow,
+			      f_type, 0, 0 );
+    
+    if ( ret == CE_Failure ) {
+      g_log.warn( "Unable to write to file %s\n", f_name.c_str());
+      throw FileIOException( "Unable to write to file " + f_name, f_name );
+      }
+  }
 
-      // Write the buffer's data in the file.
-      int ret = band->RasterIO( GF_Write, 0, frow, xdim, nrow,
-                                buf, xdim, nrow,
-				(GDALDataType) f_type, 0, 0 );
-
-      if ( ret == CE_Failure )
-        return 0;
-    }
-
-  return 1;
 }
-
 
 /************/
 /*** open ***/
-int
-RasterGdal::open( char *file, char mode )
+void
+RasterGdal::open( char mode )
 {
   // Mode: write or read.
   GDALAccess gmod = (mode == 'w') ? GA_Update : GA_ReadOnly;
 
   // Opens the file.
-  f_ds = (GDALDataset *)GDALOpen( file, gmod );
-  if ( ! f_ds )
-    return 0;
+  f_ds = (GDALDataset *)GDALOpen( f_name.c_str(), gmod );
+  if ( ! f_ds ) {
+    g_log.warn( "Unable to open file %s\n", f_name.c_str());
+    throw FileIOException( "Unable to open file " + f_name, f_name );
+  }
 
   // Number of bands (channels).
   f_hdr.nband = f_ds->GetRasterCount();
@@ -168,7 +181,7 @@ RasterGdal::open( char *file, char mode )
   // Projection.
   f_hdr.setProj( (char *) f_ds->GetProjectionRef() );
   if ( ! f_hdr.hasProj() )
-    g_log.warn( "The map %s is not georeferenced!\n", file );
+    g_log.info( "The map %s is not georeferenced!\n", f_name.c_str() );
 
 
   // Assumes that all bands have the same georeference
@@ -206,112 +219,88 @@ RasterGdal::open( char *file, char mode )
   // todo: how can I read this with GDAL?
   f_hdr.grid = 0;
 
-  return 1;
+  // Initialize the Buffer
+  initBuffer();
 }
 
 
 /**************/
 /*** create ***/
-int
-RasterGdal::create( char *file, Header &hdr )
+void
+RasterGdal::create(int format)
 {
   //
   GDALDriver *poDriver;
   char **papszMetadata; 
   GDALAllRegister();
-  // Find GDAL particular string to describe the raster file type
-  // to create.
-  RasterFormat format( file );
-  char *fmt = format.name();
+
+  char const *fmt = Formats[ format ].GDalDriverName;
 
   // Added by Tim to see if the chosen format supports the gdal create method
   poDriver = GetGDALDriverManager()->GetDriverByName(fmt);
 
-  if( poDriver == NULL )
-    exit( 1 );
+  if( poDriver == NULL ) {
+    throw FileIOException( "Unable to load graphics driver " + string(fmt), f_name );
+  }
 
   papszMetadata = poDriver->GetMetadata();
-  if( CSLFetchBoolean( papszMetadata, GDAL_DCAP_CREATE, FALSE ) )
-  {
-    printf( "Driver %s, format %s supports Create() method.\n",
-            poDriver->GetDescription(),
-            fmt
-            );
-  }
-  else
-  {
-    printf( "Driver %s, format %s  DOES NOT support Create() method.\n", 
-            poDriver->GetDescription(),
-            fmt
-            );
-    return 0;
-  }
-  if( CSLFetchBoolean( papszMetadata, GDAL_DCAP_CREATECOPY, FALSE ) )
-  {
-    printf( "Driver %s, format %s  supports CreateCopy() method.\n" ,
-            poDriver->GetDescription(),
-            fmt
-            );
-  }
-  else
-  {
-    printf( "Driver %s, format %s  DOES NOT support CreateCopy() method.\n",
-            poDriver->GetDescription(),
-            fmt
-            );
+  if( ! CSLFetchBoolean( papszMetadata, GDAL_DCAP_CREATE, FALSE ) ) {
+    g_log.warn( "Driver %s, format %s  DOES NOT support Create() method.\n", 
+		poDriver->GetDescription(),
+		fmt
+		);
+    throw FileIOException( "Driver " + string(fmt)
+			   + " does not support Create() method", f_name );
   }
 
-
-  // GDAL's driver.
-  GDALDriver *drv = GetGDALDriverManager()->GetDriverByName(fmt);
-  if ( ! drv )
-  {
-    g_log.warn( "GDAL driver %s not found.\n", fmt );
-    return 0;
-  }
   // 
   // Read the parameters in 'hdr' used to create the file.
   //
-  // todo: insert in header: xmin, ymin, xmax, ymax, noVal,
-  //       grid, etc.
-  //
-  int xdim  = hdr.xdim;
-  int ydim  = hdr.ydim;
-  int nband = hdr.nband;
-
-  // Find the GDAL data type to be used.
-  Header::DataType dt = hdr.dtype;
-  GDALDataType dtype = GDT_Byte;   // default.
-  if ( ( dt >= 0 ) && ( dt < Header::MaxDataType ) )
-    dtype = g_dtype[dt];
+  // The other parameters come from the copied header.
+  f_hdr.nband = 1;
 
   // Create the file.
-  f_ds = drv->Create( file, xdim, ydim, nband, dtype, NULL );
-  if ( ! f_ds )
-  {
-    fprintf( stderr,
-            "RasterMemory::saveGdal: error creating %s.\n",
-            file );
-    return 0;
+  f_ds = poDriver->Create( f_name.c_str(),
+			   f_hdr.xdim, f_hdr.ydim,
+			   f_hdr.nband,
+			   /* data type */ Formats[format].dataType,
+			   /* opt parameters */ NULL );
+  if ( ! f_ds ) {
+    g_log.warn( "Unable to create file %s.\n",f_name.c_str() );
+    throw FileIOException( "Unable to create file " + f_name, f_name );
   }
-  f_hdr = hdr;
 
 
-  /*** Metadata ***/
+  if ( Formats[format].hasMeta ) {
+    /*** Metadata ***/
 
-  // Limits (without rotations).
-  f_ds->SetGeoTransform( f_hdr.gt );
+    // Limits (without rotations).
+    f_ds->SetGeoTransform( f_hdr.gt );
+    
+    // Projection.
+    f_ds->SetProjection( f_hdr.proj.c_str() );
 
-  // Projection.
-  f_ds->SetProjection( hdr.proj );
+    // Sets the "nodata" value in all bands.
+    f_ds->GetRasterBand(1)->SetNoDataValue( f_hdr.noval );
+  }
 
-  // Sets the "nodata" value in all bands.
-  for ( int b = 1; b <= nband; b++ )
-    f_ds->GetRasterBand(b)->SetNoDataValue( hdr.noval );
-
-  return 1;
+  // Initialize the Buffer
+  initBuffer();
 }
 
+void
+RasterGdal::initBuffer() {
+  //
+  // Initialize the buffer.
+  f_size = f_hdr.xdim;
+  if ( f_data ) {
+    delete [] f_data;
+  }
+  f_data = new Scalar[ f_size * f_hdr.nband ];
+
+  f_changed = 0;
+  f_currentRow = -1;
+}
 
 /*****************/
 /*** init Gdal ***/
@@ -328,3 +317,70 @@ RasterGdal::initGdal()
 }
 
 
+/************/
+/*** iput ***/
+int
+RasterGdal::iput( int x, int y, Scalar val )
+{
+  // Be sure that 'y' line is in the buffer 'f_data'.
+  loadRow( y );
+
+  // Put values in the first band of (x,y) position.
+  f_data[x] = val;
+
+  // Indicates the line 'f_last' has changed.
+  f_changed = 1;
+
+  return 1;
+}
+
+/************/
+/*** iget ***/
+int
+RasterGdal::iget( int x, int y, Scalar *val )
+{
+  // Be sure that 'y' line is in the buffer 'f_data'.
+  loadRow( y );
+
+  // Get all band's values.
+  Scalar *pv = val;
+  int nband = f_hdr.nband;
+  for ( int i = 0; i < nband; i++, x += f_size )
+    if ( (*pv++ = f_data[x]) == f_hdr.noval )
+      return 0;
+
+  return 1;
+}
+
+
+/****************/
+/*** load Row ***/
+void
+RasterGdal::loadRow( int row )
+{
+  // If the line is already read, return.
+  if ( row == f_currentRow )
+    return;
+
+  saveRow();
+
+  read( f_data, row, 1 );
+
+  f_currentRow = row;
+  f_changed = 0;
+
+}
+
+
+/****************/
+/*** save Row ***/
+void
+RasterGdal::saveRow()
+{
+  if ( ! f_changed )
+    return;
+
+  write( f_data, f_currentRow, 1 );
+
+  f_changed = 0;
+}

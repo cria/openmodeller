@@ -1,5 +1,5 @@
 /**
- * Declaration of Occurrence class.
+ * Declaration of OccurrenceImpl class.
  * 
  * @file
  * @author Mauro E S Muñoz (mauro@cria.org.br)
@@ -26,10 +26,11 @@
  * http://www.gnu.org/copyleft/gpl.html
  */
 
+#include <om_log.hh>
+
 #include <occurrence.hh>
 
 #include <string.h>
-
 
 /****************************************************************/
 /************************** Occurrence **************************/
@@ -37,39 +38,32 @@
 /******************/
 /*** destructor ***/
 
-Occurrence::~Occurrence()
+OccurrenceImpl::~OccurrenceImpl()
 {
-  delete _attr;
+// g_log( "OccurrenceImpl::~OccurrenceImpl() at %x\n", this );
 }
 
-
-/***********************/
-/*** read Attributes ***/
-int
-Occurrence::readAttributes( Scalar *buffer )
+OccurrenceImpl&
+OccurrenceImpl::operator=( const OccurrenceImpl & rhs )
 {
-  memcpy( buffer, _attr, _nattr * sizeof(Scalar) );
-  return _nattr;
+  if ( this == &rhs ) {
+    return *this;
+  }
+
+  x_ = rhs.x_;
+  y_ = rhs.y_;
+  error_ = rhs.error_;
+  abundance_ = rhs.abundance_;
+
+  attr_ = rhs.attr_;
+  env_ = rhs.env_;
+
+  return *this;
+
 }
 
-
-/************/
-/*** init ***/
 void
-Occurrence::init( Coord x, Coord y, Scalar error,
-		  Scalar abundance, int nattr, Scalar *attr )
+OccurrenceImpl::setEnvironment( const Sample& s )
 {
-  _x = x;
-  _y = y;
-  _error = error;
-
-  _nattr = 1 + nattr;
-  _attr  = new Scalar[_nattr];
-
-  // The first attribute is the abundance.
-  *_attr = abundance;
-
-  if ( nattr && attr )
-    memcpy( _attr + 1, attr, nattr * sizeof(Scalar) );
+  env_ = s;
 }
-

@@ -28,48 +28,203 @@
 
 #include <environment.hh>
 #include <occurrence.hh>
+#include <configuration.hh>
 
 #include <om_sampler.hh>
 #include <om_sampled_data.hh>
 #include <om_occurrences.hh>
+#include <om_log.hh>
 #include <random.hh>
 
 #include <string.h>
 
 #include <stdio.h>
 
+#include <string>
+#include <algorithm>
+
+using std::string;
+
+#undef DEBUG_MEMORY
 
 /****************************************************************/
 /*************************** Sampler ****************************/
 
+SamplerPtr createSampler( const EnvironmentPtr& env,
+			  const OccurrencesPtr& presence,
+			  const OccurrencesPtr& absence )
+{
+  return SamplerPtr( new SamplerImpl( env, presence, absence ) );
+}
+
+SamplerPtr createSampler( const ConstConfigurationPtr& config )
+{
+  SamplerPtr samp( new SamplerImpl() );
+  samp->setConfiguration( config );
+  return samp;
+}
+
 /*******************/
 /*** constructor ***/
 
-Sampler::Sampler( Environment *env, Occurrences *presence,
-		  Occurrences *absence )
+SamplerImpl::SamplerImpl() :
+  ReferenceCountedObject(),
+  _presence(),
+  _absence(),
+  _env()
 {
-  _env = env;
-
-  _presence = presence;
-  _presence->head();
-
-  if ( _absence = absence )
-    _absence->head();
+#ifdef DEBUG_MEMORY
+  g_log.debug("SamplerImpl::SamplerImpl() at %x\n",this);
+#endif
 }
 
+SamplerImpl::SamplerImpl( const EnvironmentPtr& env, 
+			  const OccurrencesPtr& presence,
+			  const OccurrencesPtr& absence ) :
+  ReferenceCountedObject(),
+  _presence( presence ),
+  _absence( absence ),
+  _env( env )
+{
+#ifdef DEBUG_MEMORY
+  g_log.debug("SamplerImpl::SamplerImpl( args ) at %x\n",this);
+#endif
+  initialize();
+}
 
 /******************/
 /*** destructor ***/
 
-Sampler::~Sampler()
+SamplerImpl::~SamplerImpl()
 {
+#ifdef DEBUG_MEMORY
+  g_log.debug("SamplerImpl::~SamplerImpl() at %x\n",this);
+#endif
 }
 
+static
+void SetEnvironmentInOccurrences( EnvironmentPtr& env, OccurrencesPtr& occurs, const char *type = "Sample" )
+{
+
+  if ( !occurs )
+    return;
+
+  if ( occurs->isEmpty() )
+    return;
+
+  OccurrencesImpl::iterator oc = occurs->begin();
+  OccurrencesImpl::iterator fin = occurs->end();
+
+  while (oc != fin ) {
+
+    Sample sample = env->get( (*oc)->x(), (*oc)->y() );
+
+    if ( sample.size() == 0 ) {
+
+      g_log( "%s Point at (%f,%f) has no environment.  It is removed.\n", type, (*oc)->x(), (*oc)->y() );
+      oc = occurs->erase( oc );
+      fin = occurs->end();
+
+    } else {
+
+      (*oc)->setEnvironment( sample );
+
+      ++oc;
+    }
+
+  }
+}
+
+void
+SamplerImpl::initialize()
+{
+  // Copy data from environment into the presence and absence points.
+  SetEnvironmentInOccurrences( _env, _presence, "Presence" );
+  SetEnvironmentInOccurrences( _env, _absence, "Absence" );
+}
+
+/******************/
+/*** configuration ***/
+
+ConfigurationPtr
+SamplerImpl::getConfiguration( ) const
+{
+
+  ConfigurationPtr config( new ConfigurationImpl( "Sampler" ) );
+
+  config->addSubsection( _env->getConfiguration() );
+
+  if ( _presence ) {
+    ConfigurationPtr cfg( _presence->getConfiguration() );
+    cfg->setName( "Presence" );
+    config->addSubsection( cfg );
+  }
+
+  if (_absence ) {
+    ConfigurationPtr cfg( _absence->getConfiguration() );
+    cfg->setName( "Absence" );
+    config->addSubsection( cfg );
+  }
+
+  return config;
+}
+
+void
+SamplerImpl::setConfiguration( const ConstConfigurationPtr& config )
+{
+
+  EnvironmentPtr env( new EnvironmentImpl() );
+  env->setConfiguration( config->getSubsection( "Environment" ) );
+
+  //
+  // Here's a hack for ya.  We need the Presence points to have abundance=1.0
+  // So the Occurrences container now has a default abundance so if
+  // the record in the configuration doesn't have an abundance for a point
+  // it is set to the default value.
+  //
+  // As of now, the configuration for occurrences do not set/get
+  // abundance values.
+  //
+
+  g_log.debug( "Getting presence\n");
+  OccurrencesPtr presence( new OccurrencesImpl(1.0) );
+  presence->setConfiguration( config->getSubsection( "Presence" ) );
+
+  g_log.debug( "Getting absence\n");
+  OccurrencesPtr absence;
+
+  if (ConstConfigurationPtr absence_config = config->getSubsection( "Absence", false ) ) {
+    absence = new OccurrencesImpl(0.0);
+    absence->setConfiguration( absence_config );
+  }
+
+  _env = env;
+  _presence = presence;
+  _absence = absence;
+
+  initialize();
+
+}
+
+/*****************/
+/*** normalize ***/
+void SamplerImpl::computeNormalization(Scalar min, Scalar max, Sample *offsets, Sample *scales) const
+{
+  _env->computeNormalization(min, max, offsets, scales);
+}
+
+/** Set specific normalization parameters
+ */
+void SamplerImpl::setNormalization( bool use_norm, const Sample& offsets, const Sample& scales )
+{
+  _env->setNormalization( use_norm, offsets, scales );
+  initialize();
+}
 
 /***********************/
 /*** num Independent ***/
 int
-Sampler::numIndependent()
+SamplerImpl::numIndependent() const
 {
   return _env->numLayers();
 }
@@ -78,7 +233,7 @@ Sampler::numIndependent()
 /*********************/
 /*** num Dependent ***/
 int
-Sampler::numDependent()
+SamplerImpl::numDependent() const
 {
   return _presence->numAttributes();
 }
@@ -87,7 +242,7 @@ Sampler::numDependent()
 /********************/
 /*** num Presence ***/
 int
-Sampler::numPresence()
+SamplerImpl::numPresence() const
 {
   return _presence->numOccurrences();
 }
@@ -96,92 +251,26 @@ Sampler::numPresence()
 /*******************/
 /*** num Absence ***/
 int
-Sampler::numAbsence()
+SamplerImpl::numAbsence() const
 {
   return _absence ? _absence->numOccurrences() : 0;
 }
 
 
-/********************/
-/*** get Presence ***/
-int
-Sampler::getPresence( SampledData *data, int npnt )
-{
-  return getOccurrence( _presence, data, npnt );
-}
-
-
-/*******************/
-/*** get Absence ***/
-int
-Sampler::getAbsence( SampledData *data, int npnt )
-{
-  return _absence ? getOccurrence( _absence, data, npnt ) : 0;
-}
-
-
-/**************************/
-/*** get Pseudo Absence ***/
-int
-Sampler::getPseudoAbsence( SampledData *data, int npnt )
-{
-  if ( npnt <= 0 )
-    return 0;
-
-  int num_indep = numIndependent();
-  int num_dep   = numDependent();
-  data->redim( npnt, num_indep, num_dep );
-
-  Scalar **indep = data->getIndependentBase();
-  Scalar **dep   = data->getDependentBase();
-  Scalar **end   = dep + npnt;
-
-  // Size (in bytes) of the dependent variable vectors.
-  int dep_size = num_dep * sizeof(Scalar);
-
-  while ( dep < end )
-    {
-      // Independent (environment) variables.
-      _env->getRandom( *indep++ );
-
-      // Dependent variables. For absence they are always null.
-      memset( *dep++, 0, dep_size );
-    }
-
-  return npnt;
-}
-
-
-/*******************/
-/*** get Samples ***/
-int
-Sampler::getSamples( SampledData *data, int npnt )
-{
-  data->redim( npnt, numIndependent(), numDependent() );
-
-  Scalar **indep = data->getIndependentBase();
-  Scalar **dep   = data->getDependentBase();
-  Scalar **end   = dep + npnt;
-
-  while ( dep < end )
-    getOneSample( *indep++, *dep++ );
-
-  return npnt;
-}
-
-
-/**********************/
-/*** get One Sample ***/
-int
-Sampler::getOneSample( Scalar *indep, Scalar *dep )
+ConstOccurrencePtr
+SamplerImpl::getOneSample( ) const
 {
   Random rnd;
+
+  if (!_presence->numOccurrences())
+    { 
+      g_log.error(1, "No presence points available!!!\n"); 
+    }
 
   // Probability of 0.5 of get a presence point.
   if ( rnd() < 0.5 )
     {
-      getRandomOccurrence( _presence, indep, dep );
-      return 1;
+      return getPresence();
     }
 
   //
@@ -189,184 +278,136 @@ Sampler::getOneSample( Scalar *indep, Scalar *dep )
   //
 
   // If there are real absence points...
-  if ( _absence )
+  if ( _absence && _absence->numOccurrences())
     {
-      getRandomOccurrence( _absence, indep, dep );
-
-      // FIXME: abundance, which is the first dependent variable
-      // is hardcoded to be always 1 in Occurrences::insert()
-      // should fix that so absences can have abundance = 0
-      // this is a temporary fix, until absences are properly
-      // handled.
-      memset( dep, 0, numDependent() * sizeof(Scalar) );
-      return 0;
+      return getAbsence();
     }
+
+  return getPseudoAbsence();
+}
+
+ConstOccurrencePtr
+SamplerImpl::getPseudoAbsence() const {
 
   //
   // Get a random pseudo-absence point.
   //
+  static const Sample absenceSample( numDependent() );
+  Coord x,y;
 
-  // Independent (environment) variables.
-  _env->getRandom( indep );
+  Sample env( _env->getRandom( &x, &y ) );
 
-  // Dependent variables. For absence they are always null.
-  memset( dep, 0, numDependent() * sizeof(Scalar) );
+  ConstOccurrencePtr oc = new OccurrenceImpl( x, y, 0.0, 0.0, absenceSample, env );
 
-  // Got an absence point.
-  return 0;
+  return oc;
 }
-
 
 /*****************/
 /*** var Types ***/
 int
-Sampler::varTypes( int *types )
+SamplerImpl::isCategorical( int i )
 {
-  return _env->varTypes( types );
+  return _env->isCategorical( i );
 }
 
 
 /*****************************/
 /*** get Random Occurrence ***/
-int
-Sampler::getRandomOccurrence( Occurrences *occur,
-			      Scalar *indep, Scalar *dep )
+ConstOccurrencePtr
+SamplerImpl::getRandomOccurrence( const OccurrencesPtr& occur ) const
 {
-  Occurrence *oc;
-
-  // Choose an occurrence point with defined environmental
-  // variable values.
-  while ( (oc = occur->getRandom()) &&
-	  ! _env->get( oc->x(), oc->y(), indep ) )
-  { 
-    //printf("Point is no good: %8.3f, %8.3f\r", oc->x(), oc->y()); 
-  };
-
-  oc->readAttributes( dep );
+  // This has been rewritten to eliminate the
+  // possibly endless loop.
+  // It assumes that by the time this routine is called,
+  // all occurrences have valid environment data.
   
-  return 1;
+  return occur->getRandom();
+
 }
 
-
-/**********************/
-/*** get Occurrence ***/
-int
-Sampler::getOccurrence( Occurrences *occur, SampledData *data,
-			int npnt )
+/**************************/
+/**** splitOccurrences ****/
+static void splitOccurrences(OccurrencesPtr& occurrences, 
+			     OccurrencesPtr& trainOccurrences, 
+			     OccurrencesPtr& testOccurrences, 
+			     double propTrain)
 {
- if ( ! npnt )
-    return 0;
+  // add all samples to an array
+  int i;
+  int n = occurrences->numOccurrences();
+  int k = (int) (n * propTrain);
+  std::vector<int> goToTrainSet(n);
 
-  // Get all occurrences.
-  if ( npnt < 0 )
-    npnt = occur->numOccurrences();
+  // first k are set to go to train set
+  for (i = 0; i < k; i++) {
+    goToTrainSet[i] = 1;
+  }
 
-  // Redimension of 'data' to stores the presence samples.
-  int num_indep = numIndependent();
-  int num_dep   = occur->numAttributes();
-  data->redim( npnt, num_indep, num_dep );
+  // all others are set to go to test set
+  for (; i < n; i++) {
+    goToTrainSet[i] = 0;
+  }
 
-  int dep_size = num_dep * sizeof(Scalar);
+  // shuffle elements well
+  std::random_shuffle(goToTrainSet.begin(), goToTrainSet.end());
 
-  Scalar **indep = data->getIndependentBase();
-  Scalar **dep   = data->getDependentBase();
+  // traverse occurrences copying them to the right sampler
+  OccurrencesImpl::const_iterator it = occurrences->begin();
+  OccurrencesImpl::const_iterator fin = occurrences->end();
 
-  Occurrence *oc = 0;
-  int n = 0;
-  for ( ; n < npnt && (oc = occur->get()); occur->next() )
-    {
-      // Read environmental variables (independent variables).
-      if ( _env->get( oc->x(), oc->y(), *indep ) )
-        {
-	  // Read occurrence attributes (dependent variables).
-	  oc->readAttributes( *dep++ );
+  i = 0;
+  while( it != fin ) {
 
-	  // Prepare to read next sample.
-	  indep++;
-          n++;
-        }
+    if ( goToTrainSet[i] ) {
+      trainOccurrences->insert( new OccurrenceImpl( *(*it) ) );
+      //printf("+");
     }
+    else {
+      testOccurrences->insert( new OccurrenceImpl( *(*it) ) );
+      //printf("-");
+    }
+    ++i; ++it;
+  }
 
-  // If finished by reaching the end of list, go back to the
-  // beginning so that the next call can read again the
-  // occurrences.
-  if ( ! oc )
-    occur->head();
-
-  // Number of occurrences read.
-  return n;
+  //printf("\n");
+ 
 }
+
 
 /********************/
 /**** split *********/
-void Sampler::split(Sampler ** train, Sampler ** test, double propTrain)
+void splitSampler(const SamplerPtr& orig, 
+		  SamplerPtr * train,
+		  SamplerPtr * test,
+		  double propTrain)
 {
-  Occurrences * train_presence, * train_absence, 
-    * test_presence, * test_absence;
+  // split presences
+  OccurrencesPtr presence = orig->getPresences();
+  OccurrencesPtr test_presence(new OccurrencesImpl(presence->name(),  
+						   presence->coordSystem()));
 
-  // copy presence and absence occurrences
-  test_presence  = new Occurrences(_presence->name(), _presence->coordSystem());
-  train_presence = copyOccurrences(_presence);
-  moveRandomOccurrences(train_presence, test_presence, propTrain);
-  
-  if (_absence)
-    { 
-      test_absence  = new Occurrences(_absence->name(), _absence->coordSystem());
-      train_absence = copyOccurrences(_absence);
-      moveRandomOccurrences(train_absence, test_absence, propTrain);
-    }
-  else
-    { train_absence = test_absence = NULL; }
+  OccurrencesPtr train_presence(new OccurrencesImpl(presence->name(),
+						    presence->coordSystem()));
 
-  *train = new Sampler(_env, train_presence, train_absence);
-  *test  = new Sampler(_env, test_presence,  test_absence);
-}
+  splitOccurrences(presence, train_presence, test_presence, propTrain);
 
-/******************************/
-/**** copyOccurrences *********/
-Occurrences * Sampler::copyOccurrences(Occurrences * occs)
-{
-  Occurrence * oc;
-  Occurrences * newOccs = new Occurrences(occs->name(), occs->coordSystem());
+  // split absences if there are any
+  OccurrencesPtr train_absence;
+  OccurrencesPtr test_absence;
 
-  for (occs->head(); oc = occs->get(); occs->next())
-    { newOccs->insert(oc->x(), oc->y(), oc->error(), 1.0, 0, 0); }
+  OccurrencesPtr absence = orig->getAbsences();
 
-  return newOccs;
-}
+  if ( absence ) { 
+      OccurrencesPtr test_absence = 
+	new OccurrencesImpl( absence->name(), absence->coordSystem());
 
-/************************************/
-/**** moveRandomOccurrences *********/
-void Sampler::moveRandomOccurrences(Occurrences * train, 
-				    Occurrences * test, double propTrain)
-{
-  Occurrence * oc;
+      OccurrencesPtr train_absence = 
+	new OccurrencesImpl( absence->name(), absence->coordSystem());
 
-  int i = 0;
-  int n = train->numOccurrences();
+      splitOccurrences(absence, train_absence, test_absence, propTrain);
+  }
 
-  Random rnd;
+  *train = new SamplerImpl( orig->getEnvironment(), 
+			    train_presence, train_absence );
 
-  train->head();
-  while (i < n)
-    {
-      oc = train->get();
-      if (!oc)
-	{ 
-	  train->head(); 
-	  oc = train->get();
-	}
-
-      // flip a coin
-      if (rnd() > propTrain)
-	{ 
-	  oc = train->remove(); 
-	  test->insert(oc->x(), oc->y(), oc->error(), 0.0, 0, 0);
-	  delete oc;
-	}
-      else
-	{ train->next(); }
-
-      i++;
-    }
 }

@@ -51,7 +51,7 @@
   * Garp runs in parallel. Takes advantage of multi-processor 
   * servers and workstations.
   */
-class BestSubsets : public Algorithm, public BSAlgorithmFactory
+class BestSubsets : public AlgorithmImpl, public BSAlgorithmFactory
 {
 public:
   BestSubsets(AlgMetadata * metadata);
@@ -66,7 +66,7 @@ public:
 	*        Always set to +1.0 in GARP_BS
     * @return Always return 1 for GARP_BS.
    */
-  int needNormalization( Scalar *min, Scalar *max );
+  int needNormalization( Scalar *min, Scalar *max ) const;
   
   /** Initialize data structures
     * @note This method is inherited from the Algorithm class
@@ -84,10 +84,10 @@ public:
    *  point has been met. 
    *  @return Implementation specific but usually 1 for completion.
    */
-  int done();
+  int done() const;
 
   /** Return progress so far */
-  float getProgress();
+  float getProgress() const;
 
   //
   // Methods used to project the model
@@ -101,7 +101,7 @@ public:
    *         looked up on the environmental variable layers into which 
    *         the mode is being projected. 
    */
-  Scalar getValue( Scalar *x );
+  Scalar getValue( const Sample& x ) const;
   
   /** Returns a value that represents the convergence of the algorithm
     * expressed as a number between 0 and 1 where 0 represents model
@@ -120,7 +120,7 @@ protected:
 
 
 private:
-  virtual Algorithm * getBSAlgorithm() = 0;
+  virtual AlgorithmImpl * getBSAlgorithm() = 0;
   virtual int transferParametersToAlgorithm() = 0;
 
   int numActiveThreads();
@@ -157,7 +157,7 @@ private:
 
   int _done;
 
-  float _maxProgress;
+  mutable float _maxProgress;
 };
 
 

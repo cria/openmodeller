@@ -162,7 +162,7 @@ public:
 /** Returns rule prediction for a given data vector.
   * @return Prediction value for the data vector based on GARP model
   */
-  Scalar getValue(Scalar *x);
+  Scalar getValue( const Sample& x ) const;
   
 
 /** Returns performance statistics of the rule set.

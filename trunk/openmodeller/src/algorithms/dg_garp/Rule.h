@@ -81,6 +81,9 @@ public:
 	virtual Rule * clone();
 	virtual void copy(Rule * fromRule);
 
+	/// Restore Model
+	void RestoreRule( double *perf, unsigned char *genes, int arry_len, int *gene_index );
+
 	virtual void log();
 	virtual char type() const				{ return 'v'; }
 

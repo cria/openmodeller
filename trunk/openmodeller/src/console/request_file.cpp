@@ -30,24 +30,37 @@
 #include "file_parser.hh"
 #include "occurrences_file.hh"
 
+#include <om_sampler.hh>
+
 #include <om.hh>
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
 
+static void
+internStrings( int count, char **arry ) {
+
+  for (int i=0; i<count; ++i ) {
+
+    char *tmp = arry[i];
+    int len = strlen( tmp ) + 1;
+    arry[i] = new char[len];
+    strcpy( arry[i], tmp );
+
+  }
+
+}
 
 /**************************************************************/
 /************************ Request File ************************/
 
-RequestFile::RequestFile()  
+RequestFile::RequestFile() :
+  _occurrences()
 { 
-  _occurrences = 0; 
 }
 
 RequestFile::~RequestFile() 
 {
-  if (_occurrences)
-    { delete _occurrences; }
 }
 
 /*****************/
@@ -60,12 +73,11 @@ RequestFile::configure( OpenModeller *om, char *request_file )
   _occurrences_set = setOccurrences( om, fp );
   _environment_set = setEnvironment( om, fp );
   _projection_set  = setProjection ( om, fp );
-  _outputmap_set   = setOutputMap  ( om, fp );
   _algorithm_set   = setAlgorithm  ( om, fp );
 
   // Returns ZERO if all was set correctly.
-  return 5 - _occurrences_set - _environment_set -
-    _projection_set - _outputmap_set - _algorithm_set;
+  return 4 - _occurrences_set - _environment_set -
+    _projection_set - _algorithm_set;
 }
 
 
@@ -112,12 +124,12 @@ RequestFile::setEnvironment( OpenModeller *om, FileParser &fp )
   // Initiate the environment with all maps.
   fp.getAll( cat_label, cat );
   fp.getAll( map_label, map );
-  int resp = om->setEnvironment( ncat, cat, nmap, map, mask );
+  om->setEnvironment( ncat, cat, nmap, map, mask );
 
-  delete cat;
-  delete map;
+  delete [] cat;
+  delete [] map;
 
-  return resp;
+  return 1;
 }
 
 
@@ -126,66 +138,72 @@ RequestFile::setEnvironment( OpenModeller *om, FileParser &fp )
 int
 RequestFile::setProjection( OpenModeller *om, FileParser &fp )
 {
-  // Categorical environmental maps and the number of these maps.
-  char *cat_label = "Categorical output map";
-  int  ncat  = fp.count( cat_label );
-  char **cat = 0;
-  if ( ncat )
-    cat = new char *[ncat];
 
-  // Continuous environmental maps and the number of these maps.
-  char *map_label = "Output Map";
-  int  nmap  = fp.count( map_label );
-  char **map = 0;
-  if ( nmap )
-    map = new char *[nmap];
-
-  // It is ok to not set the projection.
-  if ( ! (ncat + nmap) )
-    return 1;
-
-  // Initiate the environment with all maps.
-  fp.getAll( cat_label, cat );
-  fp.getAll( map_label, map );
-  int resp = om->setProjection( ncat, cat, nmap, map );
-
-  delete cat;
-  delete map;
-
-  return resp;
-}
-
-
-/***********************/
-/*** set OutputMap ***/
-int
-RequestFile::setOutputMap( OpenModeller *om, FileParser &fp )
-{
-  // Get the details for the output Map
-  char *mask   = fp.get( "Output mask" );
-  char *file   = fp.get( "Output file" );
-  char *format = fp.get( "Output format" );
-
-  // Used to scale the model results e.g. from [0,1] to
-  // [0,255] - useful for image generation.
-  char *multiplier = fp.get( "Scale" );
-
-  // Make sure the basic variables have been defined in the
-  // parameter file...
-  if ( ! file )
+  _file   = fp.get( "Output file" );
+  if ( !_file )
     {
       g_log( "The 'Output file' file name was not specified!\n" );
       return 0;
     }
-  if ( ! format )
+  internStrings( 1, &_file );
+
+  // Used to scale the model results e.g. from [0,1] to
+  // [0,255] - useful for image generation.
+  char *mult = fp.get( "Scale" );
+
+  _multiplier = 255.0;
+  if ( mult ) {
+    _multiplier = atof( mult );
+  }
+
+  // Categorical environmental maps and the number of these maps.
+  char *cat_label = "Categorical output map";
+  _ncat  = fp.count( cat_label );
+  _cat = 0;
+  if ( _ncat )
+    _cat = new char *[_ncat];
+  fp.getAll( cat_label, _cat );
+  internStrings( _ncat, _cat );
+
+  // Continuous environmental maps and the number of these maps.
+  char *map_label = "Output Map";
+  _nmap  = fp.count( map_label );
+  _map = 0;
+  if ( _nmap )
+    _map = new char *[_nmap];
+  fp.getAll( map_label, _map );
+  internStrings( _nmap, _map );
+
+  // It is ok to not set the projection.
+  if ( ! (_ncat + _nmap) )
     {
-      g_log( "The 'Output format' was not specified!\n" );
+      g_log("Projection not set: using training Environment for projection\n");
+      _nonNativeProjection = false;
+      return 1;
+    }
+
+  _nonNativeProjection = true;
+
+ // Get the details for the output Map
+  _mask   = fp.get( "Output mask" );
+  if ( !_mask )
+    {
+      g_log( "The 'Output mask' file name was not specified!\n" );
       return 0;
     }
-  if ( ! multiplier )
-    multiplier = "255.0";
+  internStrings( 1, &_mask );
 
-  return om->setOutputMap( atof(multiplier), file, mask, format );
+  char *format = fp.get( "Output format" );
+  if ( format != 0 )
+    {
+      g_log("Output format parameter ignored using mask file for format\n");
+    }
+
+  // Make sure the basic variables have been defined in the
+  // parameter file...
+
+  return 1;
+
 }
 
 
@@ -195,7 +213,7 @@ int
 RequestFile::setAlgorithm( OpenModeller *om, FileParser &fp )
 {
   // Find out which model algorithm is to be used.
-  AlgMetadata *metadata;
+  AlgMetadata const *metadata;
   char *alg_id = fp.get( "Algorithm" );
 
   // Try to used the algorithm specified in the request file.
@@ -232,19 +250,11 @@ RequestFile::setAlgorithm( OpenModeller *om, FileParser &fp )
 
 /************************/
 /*** read Occurrences ***/
-Occurrences *
+OccurrencesPtr
 RequestFile::readOccurrences( char *file, char *name,
                               char *coord_system )
 {
   OccurrencesFile oc_file( file, coord_system );
-
-  // Take last species from the list, which corresponds to the
-  // first inside the file.
-  if ( ! name )
-    {
-      oc_file.tail();
-      name = oc_file.get()->name();
-    }
 
   return oc_file.remove( name );
 }
@@ -254,7 +264,7 @@ RequestFile::readOccurrences( char *file, char *name,
 /*** read Parameters ***/
 int
 RequestFile::readParameters( AlgParameter *result,
-                             AlgMetadata *metadata,
+                             AlgMetadata const *metadata,
                              int str_nparam,
                              char **str_param )
 {
@@ -294,7 +304,7 @@ RequestFile::readParameters( AlgParameter *result,
  * otherwise returns 0.
  */
 char *
-RequestFile::extractParameter( char *name, int nvet, char **vet )
+RequestFile::extractParameter( char const *name, int nvet, char **vet )
 {
   int length = strlen( name );
   char **end = vet + nvet;
@@ -307,3 +317,22 @@ RequestFile::extractParameter( char *name, int nvet, char **vet )
 }
 
 
+void
+RequestFile::makeProjection( OpenModeller *om )
+{
+
+  if ( !_nonNativeProjection ) {
+    om->createMap( _file );
+  }
+  else {
+
+    EnvironmentPtr env = new EnvironmentImpl( _ncat, _cat,
+					      _nmap, _map,
+					      _mask );
+
+    om->createMap( env, _file );
+
+  }
+
+
+}

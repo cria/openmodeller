@@ -27,6 +27,7 @@
 
 #include <time.h>
 
+#include <string>
 
 #define NUM_PARAM 4
 
@@ -114,9 +115,9 @@ static AlgParamMetadata parameters[NUM_PARAM] =
 
 static AlgMetadata metadata = {
   
-  "GARP",                                           // Id.
-  "GARP 2.1",                                       // Name
-  "2.1 beta",                                       // Version.
+  "DG_GARP",                                         // Id.
+  "GARP: as implemented in DesktopGarp package",     // Name.
+  "1.1 alpha",                                       // Version.
 
   // Overview.
   "This is the 2nd implementation of GARP algorithm, based on the \
@@ -168,14 +169,14 @@ Computers in Simulation 33:385-390.",
 /****************** Algorithm's factory function ****************/
 #ifndef DONT_EXPORT_GARP_FACTORY
 dllexp 
-Algorithm * 
+AlgorithmImpl * 
 algorithmFactory()
 {
   return new GarpAlgorithm();
 }
 
 dllexp
-AlgMetadata *
+AlgMetadata const *
 algorithmMetadata()
 {
   return &metadata;
@@ -188,8 +189,7 @@ algorithmMetadata()
 //  GarpAlgorithm implementation
 // ==========================================================================
 GarpAlgorithm::GarpAlgorithm()
-  : Algorithm(& metadata),
-    Gen(0), Convergence(1.0)
+  : AlgorithmImpl(& metadata)
 { 
 	GarpUtil::randomize(0);
 	srand((unsigned)time(NULL));
@@ -202,6 +202,7 @@ GarpAlgorithm::GarpAlgorithm()
 
 	// data points used for training
 	objTrainSet = NULL;
+	//g_log("GarpAlgorithm::GarpAlgorithm() at %x\n", this );
 }
 
 // ==========================================================================
@@ -214,13 +215,14 @@ GarpAlgorithm::~GarpAlgorithm()
 		if (objTrainSet)
 			delete objTrainSet;
 	}
+	//g_log("GarpAlgorithm::~GarpAlgorithm() at %x\n", this );
 }
 
 
 // ****************************************************************
 // ************* needNormalization ********************************
 
-int GarpAlgorithm::needNormalization( Scalar *min, Scalar *max )
+int GarpAlgorithm::needNormalization( Scalar *min, Scalar *max ) const
 {
   *min = 1.0;
   *max = 253.0;
@@ -255,16 +257,15 @@ int GarpAlgorithm::initialize()
 
   //printf("Dimensions: %d\n", dim);
 
+  //printf("Presences: %d\nAbsences:  %d\n", _samp->numPresence(), _samp->numAbsence());
+
   EnvCellSet * cellSet = new EnvCellSet;
   cellSet->initialize(Resamples);
-  SampledData samples;
-  _samp->getSamples(&samples, Resamples);
   for (int i = 0; i < Resamples; i++)
     {
-      Random rnd;
-      int sample_index = rnd.get(Resamples);
-      Scalar dep = samples.isPresence( sample_index );
-      Scalar * indep = samples.getIndependentSample( sample_index );
+      OccurrencePtr oc = _samp->getOneSample();
+      Sample sample = (*oc).environment();
+      Scalar dep = (*oc).abundance();
 
       // transfer values to cell
       BYTE * values = new BYTE[dim + 2];
@@ -273,8 +274,8 @@ int GarpAlgorithm::initialize()
       //printf("%5d]: dep=[%d] ", i, values[0]);
       for (int j = 0; j < dim; j++)
 	{ 
-	  values[j + 1] = (BYTE) indep[j]; 
-	  //printf("%3d (%8.3f) ", values[j + 1], indep[j]);
+	  values[j + 1] = (BYTE) sample[j]; 
+	  //printf("%3d (%8.3f) ", values[j + 1], sample[j]);
 	}
 
       //printf("\n");
@@ -290,7 +291,7 @@ int GarpAlgorithm::initialize()
 /****************************************************************/
 /****************** getProgress *********************************/
 
-float GarpAlgorithm::getProgress()
+float GarpAlgorithm::getProgress() const
 {
   if (done())
     { return 1.0; }
@@ -299,8 +300,6 @@ float GarpAlgorithm::getProgress()
       float byIterations  = ( Gen / (float) Totalgens );
       float byConvergence = ( Conv_limit / Convergence );
       float progress = (byIterations > byConvergence) ? byIterations : byConvergence; 
-
-      //printf("DG: ByIt=%5.3f ByConv=%5.3f Prog=%5.3f (%d | %7.3f)\n", byIterations, byConvergence, progress, Gen, Convergence);
 
       if (progress > _maxProgress)
 	{ _maxProgress = progress; }
@@ -322,7 +321,7 @@ int GarpAlgorithm::getConvergence( Scalar *val )
 /****************************************************************/
 /****************** getValue ************************************/
 
-Scalar GarpAlgorithm::getValue( Scalar *x )
+Scalar GarpAlgorithm::getValue( const Sample& x ) const
 {
   return objBest.getValue(x);
 }
@@ -635,11 +634,12 @@ int GarpAlgorithm::iterate()
 }
 
 // ==========================================================================
-int GarpAlgorithm::done()
+int GarpAlgorithm::done() const
 {
-	return ((Gen >= Totalgens) || 
-			(Spin >= Maxspin) ||
-			(Convergence < Conv_limit));
+  return Doneflag = ( Doneflag ||
+		  (Gen >= Totalgens) || 
+		  (Spin >= Maxspin) ||
+		  (Convergence < Conv_limit) );
 }
 
 // ==========================================================================
@@ -670,6 +670,7 @@ void GarpAlgorithm::generate(EnvCellSet * objTrainSet)
 	Doneflag = done();
 
 	//objBest.gatherRuleSetStats(Gen);
+	//objNew.gatherRuleSetStats(-Gen);
 
 	if (Doneflag)
     {
@@ -754,6 +755,8 @@ void GarpAlgorithm::measure()
 
 		for (i = 0; i < 5; i++) 
 			Heuristic[0][i] = Heuristic[1][i];
+
+		//printf("gs=%4.2f ", Gapsize);
 	}
 
 	// update overall performance measures
@@ -1317,3 +1320,116 @@ void GarpAlgorithm::getInitialModel(int intSize, EnvCellSet * objTrainSet)
 }
 
 // ==========================================================================
+
+/****************************************************************/
+/****************** configuration *******************************/
+void
+GarpAlgorithm::_getConfiguration( ConfigurationPtr& config ) const
+{
+
+  // Only get the Model portion.  Since the parameter portion is
+  // handled by the base class AlgorithmImpl.
+  if ( !done() )
+    return;
+
+  // Const hack.
+  // To accomodate other's const-incorrectness.
+  RuleSet* rs = const_cast<RuleSet*>( & objBest );
+
+  ConfigurationPtr model_config ( new ConfigurationImpl("GarpModel") );
+  config->addSubsection( model_config );
+
+  const int rule_count = rs->size();
+
+  model_config->addNameValue( "ActiveGenes", iActiveGenes );
+  model_config->addNameValue( "RuleCount", rule_count );
+  
+  for ( int i=0; i<rule_count; i++ ) {
+
+    g_log.debug( "Gettting Rule %d\n",i );
+
+    Rule *rule = rs->get(i);
+
+    ConfigurationPtr rule_config ( new ConfigurationImpl("Rule") );
+    model_config->addSubsection( rule_config );
+
+    char type[2];
+    sprintf(type, "%c", rule->type() );
+    rule_config->addNameValue( "Type", type );
+
+    rule_config->addNameValue( "Performance", rule->dblPerformance, 10 );
+
+    rule_config->addNameValue( "Genes", rule->Gene, rule->intLength );
+
+  }
+  
+
+}
+
+void
+GarpAlgorithm::_setConfiguration( const ConstConfigurationPtr& config )
+{
+
+  ConstConfigurationPtr model_config = config->getSubsection( "GarpModel", false );
+
+  if (!model_config)
+    return;
+
+  Doneflag = true;
+  //
+  // Clear out the rule set.
+  objBest.clear();
+
+  iActiveGenes = model_config->getAttributeAsInt( "ActiveGenes", 0 );
+
+  objBest.setDimension( iActiveGenes );
+
+  Configuration::subsection_list::const_iterator ss;
+  for( ss = model_config->getAllSubsections().begin();
+       ss != model_config->getAllSubsections().end();
+       ++ss ) {
+
+    const ConstConfigurationPtr& c(*ss);
+
+    std::string type = c->getAttribute( "Type" );
+    
+    double *perf;
+    c->getAttributeAsDoubleArray( "Performance", &perf, 0 );
+
+    int n_genes;
+    unsigned char *p_genes;
+    c->getAttributeAsByteArray( "Genes", &p_genes, &n_genes );
+
+    Rule * newRule;
+    switch( type [0] ) {
+
+    case 'a':
+      newRule = new AtomicRule();
+      newRule->RestoreRule( perf, p_genes, n_genes, iGeneIndex );
+      break;
+
+    case 'd':
+      newRule = new RangeRule();
+      newRule->RestoreRule( perf, p_genes, n_genes, iGeneIndex );
+      break;
+
+    case 'r':
+      newRule = new LogitRule();
+      newRule->RestoreRule( perf, p_genes, n_genes, iGeneIndex );
+      break;
+
+    case '!':
+      newRule = new NegatedRangeRule();
+      newRule->RestoreRule( perf, p_genes, n_genes, iGeneIndex );
+      break;
+
+    }
+
+    objBest.add(newRule);
+    delete [] p_genes;
+    delete [] perf;
+  }
+
+  return;
+
+}

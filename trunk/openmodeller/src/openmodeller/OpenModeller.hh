@@ -32,18 +32,19 @@
 #include <om_defs.hh>
 #include <om_log.hh>
 #include <om_algorithm_metadata.hh>
-#include <om_serializable.hh>
+#include <configurable.hh>
+#include <om_sampler.hh>
+#include <om_algorithm.hh>
 
-class Algorithm;
 class AlgParameter;
-class AlgorithmFactory;
-class Environment;
-class Sampler;
-class Occurrences;
-class RasterFile;
-class Map;
-class MapFormat;
-class Header;
+
+#include <om_occurrences.hh>
+#include <environment.hh>
+
+// Since MapCommand's defn/decl have been moved to om_projector.hh,
+// we need to actually include the entire header.
+#include <om_projector.hh>
+
 class ConfusionMatrix;
 class AreaStats;
 
@@ -56,7 +57,7 @@ class AreaStats;
  * generator.
  * 
  */
-class dllexp OpenModeller : public Serializable
+class dllexp OpenModeller : public Configurable
 {
 public:
 
@@ -97,41 +98,9 @@ public:
    */
   char *getVersion();
 
-  /** Returns configuration file name used by openModeller 
-   */
-  char *getConfigFileName();
-
-  /** Returns openModeller plugin path (path where to look for
-   * algorithms)
-   */
-  char *getPluginPath();
-
-  /** Sets new plugin path for openModeller
-   * @param search_dirs Null terminated list of directory 
-   *        paths to search for algorithms.
-   */
-  void setPluginPath(char ** search_dirs);
-
-  /** Reset plugin path to default (from config file or from
-   *  hardcoded PLUGINPATH)
-   */
-  void resetPluginPath();
-
   //
   // Algorithms related methods.
   //
-
-  /** Load the system available algorithms. If there are
-   * algorithm already loaded they are unloaded.
-   * 
-   * Warning:
-   * 
-   * The pointers to old algorithms are invalid after a call to
-   * this method.
-   * 
-   * @return Number of loaded algorithms.
-   */
-  int loadAlgorithms();
 
   /** Finds the system available algorithms' metadata.
    *
@@ -142,14 +111,14 @@ public:
    *
    * @return a null terminated list of available algorithms.
    */
-  AlgMetadata **availableAlgorithms();
+  AlgMetadata const **availableAlgorithms();
 
   /** Returns an specific algorithm metadata
    * @param algorithm_id Identifier of the algorithm.
    * @return Algorithm's metadata or zero if there algorithm
    *  was not found.
    */
-  AlgMetadata *algorithmMetadata( char *algorithm_id );
+  AlgMetadata const *algorithmMetadata( char const *algorithm_id );
 
   /** Number of available algorithms.
    * If the algorithms are not already searched in the system,
@@ -163,9 +132,9 @@ public:
   // Attributes reading methods
   //
 
-  Environment *getEnvironment() { return _env; }
-  Algorithm *getAlgorithm() { return _alg; }
-
+  EnvironmentPtr getEnvironment() { return _env; }
+  AlgorithmPtr getAlgorithm() { return _alg; }
+  Model getModel() { return _alg->getModel(); }
 
   //
   // Parameters setting methods
@@ -179,8 +148,8 @@ public:
    * @param absence Occurrence points which the abundance
    *  attribute is zero.
    */
-  int setOccurrences( Occurrences *presence,
-                      Occurrences *absence=0 );
+  int setOccurrences( const OccurrencesPtr& presence,
+                      const OccurrencesPtr& absence=OccurrencesPtr() );
 
   /** Define algorithm that will be used to generate the
    *  distribution map.
@@ -192,7 +161,7 @@ public:
    * @return zero if something goes wrong like the algorithm ID
    *  does not exist, use different number of parameters, etc.
    */
-  int setAlgorithm( char *id, int nparam, AlgParameter *param );
+  int setAlgorithm( char const *id, int nparam, AlgParameter const *param );
 
   /** Defines environmental layers and the mask. Also creates
    *  the Environment object used for native range projection.
@@ -202,51 +171,67 @@ public:
    * @param continuos_map File names of continuos map layers.
    * @param mask File name of the mask map layer.
    */
-  int setEnvironment( int num_categ,     char **categ_map,
+  void setEnvironment( int num_categ,     char **categ_map,
                       int num_continuos, char **continuous_map,
                       char *mask=0 );
 
-  /** Defines environmental layers and the mask to be used for
-   *  model projection.
-   *  Obs: the mask is set using setOutputMap().
-   *  
-   * @param num_categ Number of categorical map layers.
-   * @param categ_map File names of categorical map layers.
-   * @param num_continuos Number of continuos map layers.
-   * @param continuos_map File names of continuos map layers.
+  /** Defines sampler to be used for modeling.
+   * @sampler Sampler object to be used for modeling
    */
-  int setProjection( int num_categ,     char **categ_map,
-                     int num_continuos, char **continuous_map );
+  void setSampler(const SamplerPtr& sampler);
 
-  /** Set the output distribution map file format and its map
-   *  properties.
-   * @param mult Value that the probabilities will be multiplied
-   *  to.
-   * @param output_file Output file name.
-   * @param mask Georeferenced map file which will define the
-   *  valid pixels on the output map.
-   * @param file_with_format Georeferenced map file whose
-   *  header will be used in the output.
+  const SamplerPtr& getSampler() const { return _samp; }
+
+  /*****************************************************************************
+   *
+   * Projection / Map Generation Methods
+   *
+   ****************************************************************************/
+
+  /** Sets a callback function to be called after each map
+   * distribution line generation.
+   * @param func Pointer to the callback function.
+   * @param param User parameter to be passed to the callback
+   *  function.
    */
-  int setOutputMap( Scalar mult, char *output_file,
-                    char *output_mask, char *file_with_format );
+  void setMapCallback( MapCallback func, void *param=0 );
 
-  /** Set the output distribution map file format and its map
-   *  properties.
-   * @param mult Value that the probabilities will be multiplied
-   *  to.
-   * @param output_file Output file name.
-   * @param output_mask Georeferenced map file which will define the
-   *  valid pixels on the output map.
-   * @param format Pointer to MapFormat object defining the
-   *  parameters of the output map.
+  /** Sets a callback function to be called after each map
+   * distribution line generation.
+   * @param func Pointer to the callback function.
+   * @param param User parameter to be passed to the callback
+   *  function.
    */
-  int setOutputMap( Scalar mult, char *output_file,
-                    char *output_mask, MapFormat *format );
+  void setMapCommand( Projector::MapCommand *func );
 
-  //
-  // Callback related methods.
-  //
+  /** Create and save distribution map to disk.
+   * @param env Pointer to Environment object with the layers 
+   *  to project the model onto. Defaults to environment set
+   *  with setEnvironment().
+   * @param output_file Output file name. Defaults to file set
+   *  with setOutputMap().
+   * @param output_mask Georeferenced map file which will define
+   *  the valid pixels on the output map. Defaults to mask set
+   *  with setOutputMap().
+   */
+  void createMap( const EnvironmentPtr & env, char const *output_file );
+
+  /** Create and save distribution map to disk using the projection
+   * environment set by setProjection() method.
+   * @param output_file Output file name. Defaults to file set
+   *  with setOutputMap().
+   * @param output_mask Georeferenced map file which will define
+   *  the valid pixels on the output map. Defaults to mask set
+   *  with setOutputMap().
+   */
+  void createMap( char const *output_file );
+
+
+  /*****************************************************************************
+   *
+   * Model generation procedures.
+   *
+   ****************************************************************************/
 
   /** Sets a callback function to be called after each iteration
    * of the model creation.
@@ -279,38 +264,6 @@ public:
     }
     _model_command = func; }
 
-  /** Sets a callback function to be called after each map
-   * distribution line generation.
-   * @param func Pointer to the callback function.
-   * @param param User parameter to be passed to the callback
-   *  function.
-   */
-  void setMapCallback( MapCallback func, void *param=0 );
-
-  /** Map callback function.
-   * @param progress A number between 0.0 and 1.0 reflecting the
-   *  avance of the map creating task. 0.0 is the begin and
-   *  1.0 is finished.
-   */
-  class MapCommand {
-  public: 
-    virtual ~MapCommand() {};
-    virtual void operator()( float ) = 0;
-  };
-  
-  /** Sets a callback function to be called after each map
-   * distribution line generation.
-   * @param func Pointer to the callback function.
-   * @param param User parameter to be passed to the callback
-   *  function.
-   */
-  void setMapCommand( MapCommand *func )
-  {
-    if (_map_command) delete _map_command;
-    _map_command = func;
-  }
-
-
   //
   // Model and distribution map related methods.
   //
@@ -323,30 +276,6 @@ public:
    */
   int run()  { return createModel(); }
 
-  /** Create and save distribution map to disk.
-   * @param env Pointer to Environment object with the layers 
-   *  to project the model onto. Defaults to environment set
-   *  with setEnvironment().
-   * @param output_file Output file name. Defaults to file set
-   *  with setOutputMap().
-   * @param output_mask Georeferenced map file which will define
-   *  the valid pixels on the output map. Defaults to mask set
-   *  with setOutputMap().
-   */
-  int createMap( Environment *env, char *output_file=0,
-                 char *output_mask=0 );
-
-  /** Create and save distribution map to disk using the projection
-   * environment set by setProjection() method.
-   * @param output_file Output file name. Defaults to file set
-   *  with setOutputMap().
-   * @param output_mask Georeferenced map file which will define
-   *  the valid pixels on the output map. Defaults to mask set
-   *  with setOutputMap().
-   */
-  int createMap( char *output_file=0, char *output_mask=0 );
-
-
   /** Get prediction at a given point.
    * @param env  Pointer to Environment class with the layers 
    *  to get environmental values from.
@@ -356,7 +285,7 @@ public:
    *   values range from 0.0 to 1.0. Value -1.0 means there is
    *   no prediction for that point (masked or not predicted)
    */
-  Scalar getValue(Environment * env, Coord x, Coord y);
+  Scalar getValue(const ConstEnvironmentPtr& env, Coord x, Coord y);
 
   /** Get prediction at a given point.
    * @param ambiental_conditions Vector with ambiental conditions values
@@ -365,7 +294,7 @@ public:
    *   values range from 0.0 to 1.0. Value -1.0 means there is
    *   no prediction for that point (masked or not predicted)
    */
-  Scalar getValue( Scalar *ambiental_conditions );
+  Scalar getValue( Scalar const *ambiental_conditions );
 
   char *error()  { return _error; }
 
@@ -386,81 +315,35 @@ public:
    */
   AreaStats * getEstimatedAreaStats(double proportionAreaToSample = 0.01);
 
-  //
-  // Serialization methods
-  //
-  int serialize(Serializer * serializer);
-  int deserialize(Deserializer * deserializer);
+  ConfusionMatrix *getConfusionMatrix();
 
+  ConfigurationPtr getConfiguration() const;
+
+  void setConfiguration( const ConstConfigurationPtr & );
 
 private:
-
-  /** Set the output distribution map file format and its map
-   *  properties and save distribution map to disk.
-   * @param env  Pointer to Environment class with the layers 
-   *  to project the model onto.
-   * @param file Output file name for the distribution map.
-   * @param mult Multiplier for the prediction probabilities.
-   * @param mask Georeferenced map file which will define the
-   *  valid pixels on the output map.
-   * @param hdr  Georeferencing header with the map properties.
-   */
-  int createMap( Environment *env, char *file, Scalar mult, 
-		 char * mask, Header *hdr );
-
-  /** Reallocate *dst and copy content from *src.*/
-  void stringCopy( char **dst, char *src );
 
   /** Check if all necessary parameters to create the model
    *  have been defined. If not, an error message is returned.
    */
   char *parameterModelCheck();
 
-  /** Filter occurrence points in Occurrences object that 
-   *  fall outside the mask (cells with NODATA in mask)
-   */
-  void filterMaskedOccurrences(Occurrences * occur);
+  SamplerPtr _samp;           ///< Sampler object
+  AlgorithmPtr _alg;          ///< Algorithm object
 
-  /** Leave only one spatially unique occurrence point
-   *  representing each grid cell  
-   */
-  void filterSpatiallyUniqueOccurrences(Occurrences * occur);
+  OccurrencesPtr _presence; ///< Presence occurrences points.
+  OccurrencesPtr _absence;  ///< Absence occurrences points.
 
-  /** Delete every string in array of strings and then delete
-   *  array itself.
-   */
-  void deleteStringArray(char ** array);
+  EnvironmentPtr _env;   ///< Original environmental layers
 
-  AlgorithmFactory *_factory;
-
-  Sampler * _samp;           ///< Sampler object
-  Algorithm * _alg;          ///< Algorithm object
-  AlgParameter *_alg_param;  ///< Algorithm parameters.
-  char *_alg_id;     ///< Algorithm's ID and parameters.
-  int   _alg_nparam; ///< Number of algorithm parameters.
-
-  Occurrences *_presence; ///< Presence occurrences points.
-  Occurrences *_absence;  ///< Absence occurrences points.
-
-  Environment *_env;   ///< Original environmental layers
-  Environment *_proj;  ///< Projection environmental layers
-
-  // Output map default data.
-  Scalar _output_mult;    ///< Output multiplier factor.
-  char   *_output_file;   ///< Output file name.
-  char   *_output_mask;   ///< Output mask.
-  Header *_output_header; ///< Output associated metadata.
+  Projector::MapCommand *_map_command;    ///< map call back pointer.
 
   // Command functions and user parameters.
   ModelCommand *_model_command;
-  MapCommand   *_map_command;
 
   // model statistics: helper objects
   AreaStats * _actualAreaStats;
   AreaStats * _estimatedAreaStats;
-
-  // plugin path
-  char ** _plugin_path;
 
   char _error[256];
 };

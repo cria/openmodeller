@@ -38,7 +38,7 @@
  * Algorithm to generate models based on the cartesian distance
  * from the closest occurrence point.
  */
-class MinimumDistance : public Algorithm
+class MinimumDistance : public AlgorithmImpl
 {
 public:
 
@@ -48,26 +48,29 @@ public:
   virtual ~MinimumDistance();
 
   // Inherited from Algorithm class.
-  int needNormalization( Scalar *min, Scalar *max );
+  int needNormalization( Scalar *min, Scalar *max ) const;
 
   int initialize();
   int iterate();
-  int done();
+  int done() const;
 
-  Scalar getValue( Scalar *x );
+  Scalar getValue( const Sample& x ) const;
   int    getConvergence( Scalar *val );
 
 private:
 
   /** Calculate cartesian distance between 'x' and 'pnt',
    *  with dimensions equal to dim.*/
-  Scalar findDist( Scalar *x, Scalar *pnt, int dim );
+  Scalar findDist( const Sample& x, const Sample& pnt ) const;
 
+  Scalar _dist;  ///< Parameter for MaxDistance
 
-  int    _done;
-  Scalar _dist;
+  bool _hasCategorical;
+  int _numLayers;
+  Sample _isCategorical;
 
-  SampledData *_presence;
+  OccurrencesPtr _presences;
+
 };
 
 

@@ -29,54 +29,44 @@
  */
 
 #include <CppUnitLite/TestHarness.h>
+#include <om_occurrences.hh>
+#include <Sample.hh>
+
 #include <rules_range.hh>
 #include <rules_negrange.hh>
 #include <rules_logit.hh>
-#include <rules_atomic.hh>
-#include <garp_sampler.hh>
 #include <test_rules_defs.hh>
 #include <test_rules_evaluate_data.cpp>
 
-class GarpCustomSamplerDummy2;
+typedef ExtendedDummyRule<RangeRule> ExtRangeRule;
+typedef ExtendedDummyRule<NegatedRangeRule> ExtNegatedRangeRule;
+typedef ExtendedDummyRule<LogitRule> ExtLogitRule;
 
-EXTENDED_DUMMY_RULE ( RangeRule );
-EXTENDED_DUMMY_RULE ( NegatedRangeRule );
-EXTENDED_DUMMY_RULE ( LogitRule );
-EXTENDED_DUMMY_RULE ( AtomicRule );
 
 #define eps 10e-6
 
-class GarpCustomSamplerDummy2 : public GarpCustomSampler
+OccurrencesPtr getSampleSet(int hardcodedSamplesIndex, int *dim)
 {
-public: 
-  GarpCustomSamplerDummy2() {};
-  void chooseSampleSet(int hardcodedSamplesIndex);
-  Scalar * getSample(Scalar * values);
-  int resamples() { g_log("Resamples:  %d\n", _sample->resamples); return _sample->resamples; }
-  int dim()       { g_log("Dimensions: %d\n", _sample->dimension); return _sample->dimension; }
+  HardcodedSample * data = SamplesSet + hardcodedSamplesIndex;
+  OccurrencesPtr occs ( new OccurrencesImpl("") );
 
-private:
-  int _nextSample;
-  int _sampleDimension;
-  HardcodedSample * _sample;
-};
+  *dim = data->dimension;
 
-void GarpCustomSamplerDummy2::chooseSampleSet(int hardcodedSamplesIndex)
-{
-  _sample = SamplesSet + hardcodedSamplesIndex;
-  _sampleDimension = _sample->dimension + 1;
-  _nextSample = 0;
+  int valDim = data->dimension + 1;
+ 
+  for (int i = 0; i < data->resamples; ++i)
+    {
+      Scalar pred = *(data->values + (valDim * i));
+      Sample s(data->dimension, data->values + (valDim * i) + 1);
+      OccurrencePtr oc( new OccurrenceImpl(0.0, 0.0, -1.0, pred) );
+      oc->setEnvironment(s);
+      occs->insert(oc);
+    }
+
+  return occs;
 }
 
-Scalar * GarpCustomSamplerDummy2::getSample(Scalar * pointValue)
-{
-  //g_log("Getting sample #%d\n", _nextSample);
-  // returns first value in sample as point value
-  Scalar * values = (Scalar *) &(_sample->samples[_sampleDimension * _nextSample]);
-  *pointValue = values[0];
-  _nextSample++;
-  return (Scalar *) &(values[1]);
-}
+
 
 // helper function
 bool checkEqualArray(Scalar * array1, Scalar * array2, int size, double veps)
@@ -89,141 +79,138 @@ bool checkEqualArray(Scalar * array1, Scalar * array2, int size, double veps)
 
   for (i = 0; i < size; i++)
     {
-      g_log("Comparing (%2d): %+12.8f == %+12.8f => ", i, array1[i], array2[i]);
-
+      //printf("Comparing (%2d): %+12.8f == %+12.8f => ", i, array1[i], array2[i]);
       if ((array1[i] != -1000) && (array2[i] != -1000))
-	{ 
-	  result = result && (fabs(array1[i] - array2[i]) <= veps); 
-	}
-      
-      g_log("%d\n", result);
+	{ result = result && (fabs(array1[i] - array2[i]) <= veps); }
+     
+      //printf("%d\n", result);
     }
+
+  //printf("\n");
 
   return result;
 }
 
-#define TEST_DUMMY_EVALUATE( name ) \
-bool test##name##Evaluate(int sampleIndex, Scalar * ruleGenes, \
-                          Scalar rulePred, Scalar * rulePerfs) \
-{ \
-  int i; \
-  double * perf; \
-  bool result; \
-  Ext##name * rule = new Ext##name; \
-  GarpCustomSamplerDummy2 * sampler = new GarpCustomSamplerDummy2; \
-  sampler->chooseSampleSet(sampleIndex); \
-  rule->setPrediction(rulePred);\
-  rule->setGenes(ruleGenes, sampler->dim());\
-  rule->evaluate(sampler);\
-  perf = rule->getPerformanceArray();\
-  result = checkEqualArray(perf, rulePerfs, 10, eps);\
-  delete rule;\
-  delete sampler;\
-  return result;\
+template <class T>
+bool testEvaluate(int sampleIndex, Scalar * ruleGenes,
+		  Scalar rulePred, Scalar * rulePerfs)
+{
+  int i, dim;
+  double * perf;
+  bool result;
+
+  T * rule = new T();
+  OccurrencesPtr occs = getSampleSet(sampleIndex, &dim);
+  rule->setPrediction(rulePred);
+  rule->setGenes(ruleGenes, dim);
+  rule->evaluate(occs);
+  perf = rule->getPerformanceArray();
+
+  /*
+  OccurrencesImpl::const_iterator it = occs->begin();
+  OccurrencesImpl::const_iterator end = occs->end();
+
+  int k = 0;
+  while (it != end)
+    {
+      Scalar y = (*it)->abundance();
+      Sample s = (*it)->environment();
+      
+      printf("occs[%2d]: (occ=%-7.3f) ", k, y);
+      for (int i = 0; i < dim; ++i)
+	  printf("%-7.3f | ", s[i]); 
+      printf("\n");
+
+      ++it; ++k;
+    }
+    
+  printf("Rule (pred=%7.3f): ", rule->getPrediction());
+  for (int i = 0; i < dim; ++i)
+    printf("%-7.3f %-7.3f | ", rule->getChrom1()[i], rule->getChrom2()[i]); 
+  printf("\n");
+  */
+
+  result = checkEqualArray(perf, rulePerfs, 10, eps);
+  delete rule;
+  return result;
 }
-
-
-TEST_DUMMY_EVALUATE ( RangeRule );
-TEST_DUMMY_EVALUATE ( NegatedRangeRule );
-TEST_DUMMY_EVALUATE ( LogitRule );
-TEST_DUMMY_EVALUATE ( AtomicRule );
 
 
 // SampleSet 1
 // ===========
 TEST( evaluate1_1, RangeRule )
-{ CHECK(testRangeRuleEvaluate(1, RuleGenes1_1, RulePred1_1, RulePerfs1_1)); }
+{ CHECK(testEvaluate<ExtRangeRule>(1, RuleGenes1_1, RulePred1_1, RulePerfs1_1)); }
 
 TEST( evaluate1_2, RangeRule )
-{ CHECK(testRangeRuleEvaluate(1, RuleGenes1_2, RulePred1_2, RulePerfs1_2)); }
+{ CHECK(testEvaluate<ExtRangeRule>(1, RuleGenes1_2, RulePred1_2, RulePerfs1_2)); }
 
 TEST( evaluate1_3, NegatedRangeRule )
-{ CHECK(testNegatedRangeRuleEvaluate(1, RuleGenes1_3, RulePred1_3, RulePerfs1_3)); }
+{ CHECK(testEvaluate<ExtNegatedRangeRule>(1, RuleGenes1_3, RulePred1_3, RulePerfs1_3)); }
 
 TEST( evaluate1_4, NegatedRangeRule )
-{ CHECK(testNegatedRangeRuleEvaluate(1, RuleGenes1_4, RulePred1_4, RulePerfs1_4)); }
+{ CHECK(testEvaluate<ExtNegatedRangeRule>(1, RuleGenes1_4, RulePred1_4, RulePerfs1_4)); }
 
-TEST( evaluate1_5, RangeRule )
-{ CHECK(testAtomicRuleEvaluate(1, RuleGenes1_5, RulePred1_5, RulePerfs1_5)); }
-
-TEST( evaluate1_6, RangeRule )
-{ CHECK(testAtomicRuleEvaluate(1, RuleGenes1_6, RulePred1_6, RulePerfs1_6)); }
 
 // SampleSet 2
 // ===========
 TEST( evaluate2_1, RangeRule )
-{ CHECK(testRangeRuleEvaluate(2, RuleGenes2_1, RulePred2_1, RulePerfs2_1)); }
+{ CHECK(testEvaluate<ExtRangeRule>(2, RuleGenes2_1, RulePred2_1, RulePerfs2_1)); }
 
 TEST( evaluate2_2, RangeRule )
-{ CHECK(testRangeRuleEvaluate(2, RuleGenes2_2, RulePred2_2, RulePerfs2_2)); }
+{ CHECK(testEvaluate<ExtRangeRule>(2, RuleGenes2_2, RulePred2_2, RulePerfs2_2)); }
  
 TEST( evaluate2_3, RangeRule )
-{ CHECK(testRangeRuleEvaluate(2, RuleGenes2_3, RulePred2_3, RulePerfs2_3)); }
+{ CHECK(testEvaluate<ExtRangeRule>(2, RuleGenes2_3, RulePred2_3, RulePerfs2_3)); }
 
 TEST( evaluate2_4, RangeRule )
-{ CHECK(testRangeRuleEvaluate(2, RuleGenes2_4, RulePred2_4, RulePerfs2_4)); }
+{ CHECK(testEvaluate<ExtRangeRule>(2, RuleGenes2_4, RulePred2_4, RulePerfs2_4)); }
 
 
 // SampleSet 3
 // ===========
 TEST( evaluate3_1, RangeRule )
-{ CHECK(testRangeRuleEvaluate(3, RuleGenes3_1, RulePred3_1, RulePerfs3_1)); }
+{ CHECK(testEvaluate<ExtRangeRule>(3, RuleGenes3_1, RulePred3_1, RulePerfs3_1)); }
 
 TEST( evaluate3_2, RangeRule )
-{ CHECK(testRangeRuleEvaluate(3, RuleGenes3_2, RulePred3_2, RulePerfs3_2)); }
+{ CHECK(testEvaluate<ExtRangeRule>(3, RuleGenes3_2, RulePred3_2, RulePerfs3_2)); }
 
 
 // SampleSet 4
 // ===========
 TEST( evaluate4_1, RangeRule )
-{ CHECK(testRangeRuleEvaluate(4, RuleGenes4_1, RulePred4_1, RulePerfs4_1)); }
+{ CHECK(testEvaluate<ExtRangeRule>(4, RuleGenes4_1, RulePred4_1, RulePerfs4_1)); }
 
 TEST( evaluate4_2, RangeRule )
-{ CHECK(testRangeRuleEvaluate(4, RuleGenes4_2, RulePred4_2, RulePerfs4_2)); }
+{ CHECK(testEvaluate<ExtRangeRule>(4, RuleGenes4_2, RulePred4_2, RulePerfs4_2)); }
 
 TEST( evaluate4_3, RangeRule )
-{ CHECK(testRangeRuleEvaluate(4, RuleGenes4_3, RulePred4_3, RulePerfs4_3)); }
+{ CHECK(testEvaluate<ExtRangeRule>(4, RuleGenes4_3, RulePred4_3, RulePerfs4_3)); }
 
 TEST( evaluate4_4, NegatedRangeRule )
-{ CHECK(testNegatedRangeRuleEvaluate(4, RuleGenes4_4, RulePred4_4, RulePerfs4_4)); }
+{ CHECK(testEvaluate<ExtNegatedRangeRule>(4, RuleGenes4_4, RulePred4_4, RulePerfs4_4)); }
 
 TEST( evaluate4_5, NegatedRangeRule )
-{ CHECK(testNegatedRangeRuleEvaluate(4, RuleGenes4_5, RulePred4_5, RulePerfs4_5)); }
+{ CHECK(testEvaluate<ExtNegatedRangeRule>(4, RuleGenes4_5, RulePred4_5, RulePerfs4_5)); }
 
 TEST( evaluate4_6, NegatedRangeRule )
-{ CHECK(testNegatedRangeRuleEvaluate(4, RuleGenes4_6, RulePred4_6, RulePerfs4_6)); }
+{ CHECK(testEvaluate<ExtNegatedRangeRule>(4, RuleGenes4_6, RulePred4_6, RulePerfs4_6)); }
 
 
 
 // Logit regression tests
 TEST( regression4_1, LogitRule )
 {
-  double a, b, c;
-  a = b = c = 0.0;
-  ExtLogitRule * rule = new ExtLogitRule;
+  int dim;
+  Regression reg;
 
-  GarpCustomSamplerDummy2 * sampler = new GarpCustomSamplerDummy2;
-  sampler->chooseSampleSet(4);
-  rule->setPrediction(1.0);
-  
-  rule->regression(sampler, 0, a, b, c);
-  DOUBLES_EQUAL(a, +0.336735, eps);
-  DOUBLES_EQUAL(b, -0.459183, eps);
-  DOUBLES_EQUAL(c, -0.445368, eps);
-}
+  OccurrencesPtr occs = getSampleSet(4, &dim);
+  reg.calculateParameters(occs);
 
-TEST( regression4_2, LogitRule )
-{
-  double a, b, c;
-  a = b = c = 0.0;
-  ExtLogitRule * rule = new ExtLogitRule;
+  DOUBLES_EQUAL(reg.getA()[0], +0.336735, eps);
+  DOUBLES_EQUAL(reg.getB()[0], -0.459183, eps);
+  DOUBLES_EQUAL(reg.getC()[0], -0.445368, eps);
 
-  GarpCustomSamplerDummy2 * sampler = new GarpCustomSamplerDummy2;
-  sampler->chooseSampleSet(4);
-  rule->setPrediction(1.0);
-
-  rule->regression(sampler, 1, a, b, c);
-  DOUBLES_EQUAL(a, +0.378012, eps);
-  DOUBLES_EQUAL(b, -0.353916, eps);
-  DOUBLES_EQUAL(c, -0.596326, eps);
+  DOUBLES_EQUAL(reg.getA()[1], +0.378012, eps);
+  DOUBLES_EQUAL(reg.getB()[1], -0.353916, eps);
+  DOUBLES_EQUAL(reg.getC()[1], -0.596326, eps);
 }

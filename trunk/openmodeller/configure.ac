@@ -2,7 +2,7 @@ dnl Process this file with autoconf to produce a configure script.
 
 AC_INIT
 
-AM_INIT_AUTOMAKE(openmodeller, 0.2.1)
+AM_INIT_AUTOMAKE(openmodeller, 0.3-alpha)
 
 AC_PREFIX_PROGRAM(gcc)
 
@@ -306,12 +306,11 @@ AC_CONFIG_FILES([
 	Makefile
 	test/Makefile
 	test/CppUnitLite/Makefile
+	test/library/Makefile
 	src/Makefile
 	src/lib/Makefile
 	src/lib/env_io/Makefile
-	src/lib/serialization/Makefile
-	src/lib/serialization/scew/Makefile
-	src/lib/serialization/test/Makefile
+	src/lib/models/Makefile
 	src/inc/Makefile
 	src/console/Makefile
 	src/console/graph/Makefile
@@ -322,8 +321,8 @@ AC_CONFIG_FILES([
 	algorithms/Makefile
 	algorithms/garp/Makefile
 	algorithms/garp/test/Makefile
-	algorithms/dg_garp/Makefile
 	algorithms/garp/garp_best_subsets/Makefile
+	algorithms/dg_garp/Makefile
 	openmodeller.spec
 ])
 

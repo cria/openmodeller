@@ -37,11 +37,13 @@
 #include <stdio.h>
 #include <windows.h>
 
+using std::vector;
+using std::string;
 
 /****************/
 /*** dll Open ***/
 DLLHandle
-dllOpen( char *dll_file_name )
+dllOpen( char const *dll_file_name )
 {
   return LoadLibrary( dll_file_name );
 }
@@ -50,7 +52,7 @@ dllOpen( char *dll_file_name )
 /********************/
 /*** dll Function ***/
 void *
-dllFunction( DLLHandle handle, char *function_name )
+dllFunction( DLLHandle handle, char const *function_name )
 {
   return GetProcAddress( handle, function_name );
 }
@@ -84,6 +86,34 @@ dllError( DLLHandle )
 
 
 
+/*************************/
+/*** initial Plugin Path ***/
+vector<string>
+initialPluginPath()
+{
+
+  vector<string> entries;
+
+  std::ifstream conf_file( CONFIG_FILE, std::ios::in );
+
+  if ( !conf_file ) {
+
+    entries.reserve(1);
+    entries.push_back( PLUGINPATH );
+    return entries;
+
+  }
+
+  while( conf_file ) {
+    string line;
+    getline( conf_file, line );
+    entries.push_back( line );
+  }
+
+  return entries;
+
+}
+
 /****************************************************************/
 /********************* Scan Directory Entries *******************/
 
@@ -94,12 +124,14 @@ dllError( DLLHandle )
 
 /****************/
 /*** scan Dir ***/
-char **
-scanDirectory( char *dir )
+vector<string>
+scanDirectory( const string& dir )
 {
   char filepattern[1024];
   long dirhandle;
   struct _finddata_t fileinfo;
+
+  vector<string> entries;
 
   // Windows findfirst and findnext calls.
   sprintf(filepattern, "%s\\*.dll", dir);
@@ -111,9 +143,6 @@ scanDirectory( char *dir )
   int nent = 1;
   while (!_findnext(dirhandle, &fileinfo))
   { nent++; }
-
-  // Allocates the array to be returned.
-  char **entries = new char *[ nent + 1 ];
 
   // Directory path size
   int dir_size = strlen( dir );
@@ -128,18 +157,15 @@ scanDirectory( char *dir )
   for ( int i = 0; i < nent; i++ )
     {
       char *found = fileinfo.name;
-      char *name  = new char[dir_size + strlen(found) + 2];
 
-      // Copy the directory path.
-      // Append the library file name.
-      sprintf( name, "%s\\%s", dir, found );
-      entries[i] = name;
+      string name = dir;
+      name += "\\";
+      name += found;
+
+      entries.push_back(name);
 
       _findnext(dirhandle, &fileinfo);
     }
-
-  // Null terminated array.
-  entries[nent] = 0;
 
   _findclose(dirhandle);
 

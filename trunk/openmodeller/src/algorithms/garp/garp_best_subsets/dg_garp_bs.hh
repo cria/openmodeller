@@ -66,11 +66,11 @@ public:
 	*        Always set to +1.0 in GARP_BS
     * @return Always return 1 for GARP_BS.
    */
-  int needNormalization( Scalar *min, Scalar *max );
+  int needNormalization( Scalar *min, Scalar *max ) const;
 
 
 private:
-  Algorithm * getBSAlgorithm();
+  AlgorithmImpl * getBSAlgorithm();
   int transferParametersToAlgorithm();
 
   //

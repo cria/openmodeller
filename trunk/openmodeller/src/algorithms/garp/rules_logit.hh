@@ -39,6 +39,7 @@
 #include <om.hh>
 
 #include "rules_base.hh"
+#include "regression.hh"
 
 /**
   * Implements Garp Logistic Regression rules. Also known as 
@@ -49,24 +50,23 @@ class LogitRule : public GarpRule
 public:
   LogitRule();
 
+  LogitRule(int numRules);
+
   /// Constructor with setters 
   LogitRule(Scalar prediction, int numGenes, 
-	    Scalar * genes, double * performances) : 
-    GarpRule(prediction, numGenes, genes, performances) {}
+            const Sample& chrom1, const Sample& chrom2, 
+            const double * performances);
   
   virtual ~LogitRule();
-  virtual GarpRule * objFactory() { return new LogitRule; }
+  virtual GarpRule * objFactory() const   { return new LogitRule(); }
   
   virtual char type() const				{ return 'r'; }
   
-  virtual void initialize(GarpCustomSampler * sampler);
-  virtual bool applies(Scalar * values);
-  virtual int getStrength(Scalar * values);
+  virtual void initialize(const Regression& regression);
+  virtual bool applies(const Sample& sample) const;
+  virtual int getStrength(const Sample& sample) const;
   
-  virtual bool similar(GarpRule * objOtherRule);
-  
-  int regression(GarpCustomSampler * sampler, int dep, 
-		 double& constant, double& coef1, double& coef2);
+  virtual bool similar(const GarpRule * objOtherRule) const;
 
   void log();
 };

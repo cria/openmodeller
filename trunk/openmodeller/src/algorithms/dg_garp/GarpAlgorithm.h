@@ -30,7 +30,7 @@ class EnvCellSet;
 // ========================================================================
 // GarpAlgorithm
 // ========================================================================
-class GarpAlgorithm : public Algorithm
+class GarpAlgorithm : public AlgorithmImpl
 {
 private:
 	// current ruleset
@@ -48,12 +48,12 @@ private:
 
 public:
 	// OM Algorithm virtual methods
-	int needNormalization( Scalar *min, Scalar *max );
+	int needNormalization( Scalar *min, Scalar *max ) const;
 	int initialize();
 	int iterate();
-	int done();
-	float getProgress();
-	Scalar getValue( Scalar *x );
+	int done() const;
+	float getProgress() const;
+	Scalar getValue( const Sample& x ) const;
 	int getConvergence( Scalar *val );
 	int getGeneration() { return Gen; }
 
@@ -77,6 +77,10 @@ public:
 
 	char * getSelectedLayersAsString();
 	void setSelectedLayers(char * strParamValue);
+
+ protected:
+	void _getConfiguration( ConfigurationPtr& ) const;
+	void _setConfiguration( const ConstConfigurationPtr& );
 
 private:
 	// private methods
@@ -157,7 +161,7 @@ private:
 	double  Best_current_perf;/* best perf in current generation     */
 	int    Best_guy;        /* index of best_current_perf           */
 	int    Conv;            /* number of partially coverged genes   */
-	bool   Doneflag;        /* set when termination conditions hold */
+	mutable bool   Doneflag;        /* set when termination conditions hold */
 	int    Experiment;      /* experiment counter                   */
 	int    Gen;             /* generation counter                   */
 	int    Lost;            /* number of totally coverged positions */
@@ -170,7 +174,8 @@ private:
 								improved by addition or alteration */
 	int Resample;
 
-	float _maxProgress;
+	mutable float _maxProgress;
+
 };
 
 // ========================================================================

@@ -27,21 +27,22 @@
  */
 
 #include <om.hh>
+#include <algorithm_factory.hh>
 #include "request_file.hh"
 #include "file_parser.hh"
 #include "occurrences_file.hh"
+
+#include "configuration.hh"
+#include <istream>
 
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
 
 
-int showAlgorithms ( AlgMetadata **availables );
-char *readParameters ( AlgMetadata *metadata );
-AlgMetadata *readAlgorithm( AlgMetadata **availables );
-Occurrences *readOccurrences( char *file, char *name,
-			      char *coord_system );
-int readParameters( AlgParameter *result, AlgMetadata *metadata );
+int showAlgorithms ( AlgMetadata const **availables );
+AlgMetadata const *readAlgorithm( AlgMetadata const **availables );
+int readParameters( AlgParameter *result, AlgMetadata const *metadata );
 char *extractParameter( char *name, int nvet, char **vet );
 
 void mapCallback( float progress, void *extra_param );
@@ -66,12 +67,15 @@ main( int argc, char **argv )
 
   char *request_file = argv[1];
 
+  AlgorithmFactory::searchDefaultDirs();
   OpenModeller om;
   g_log( "\nopenModeller version %s\n", om.getVersion() );
+#if 0
   g_log( "\nDefault configuration file name is: %s\n\n",
          om.getConfigFileName() );
   g_log( "\nAlgorithms will be loaded from: %s\n\n",
          path = om.getPluginPath() );
+#endif 
   delete[] path;
 
   // Configure the OpenModeller object from data read from the
@@ -88,8 +92,8 @@ main( int argc, char **argv )
       if ( ! request.algorithmSet() )
         {
           // Find out which model algorithm is to be used.
-          AlgMetadata **availables = om.availableAlgorithms();
-          AlgMetadata *metadata;
+          AlgMetadata const **availables = om.availableAlgorithms();
+          AlgMetadata const *metadata;
 
           if ( ! (metadata = readAlgorithm( availables )) )
             return 1;
@@ -113,6 +117,8 @@ main( int argc, char **argv )
         }
     }
 
+  ConfigurationPtr cfg = om.getConfiguration();
+  //Configuration::writeXml( cfg, std::cout );
 
   /*** Run the model ***/
 
@@ -122,12 +128,13 @@ main( int argc, char **argv )
 
   // Prepare the output map
   om.setMapCallback( mapCallback );
-  if ( ! om.createMap() )
-    g_log.error( 2, "Error: %s\n", om.error() );
+
+  // Build the environment for the map.
+  request.makeProjection( &om );
 
   ConfusionMatrix matrix;
-  matrix.calculate(om.getEnvironment(), om.getAlgorithm(),
-		   request.getOccurrences(), NULL);
+  matrix.calculate(om.getEnvironment(), om.getAlgorithm()->getModel(),
+		   request.getOccurrences(), OccurrencesPtr());
   AreaStats * stats = om.getActualAreaStats();
   g_log("\nModel statistics\n");
   g_log("Accuracy:          %7.2f\%\n", matrix.getAccuracy() * 100);
@@ -150,7 +157,7 @@ main( int argc, char **argv )
 // equal to the number of algorithms.
 //
 int
-showAlgorithms( AlgMetadata **availables )
+showAlgorithms( AlgMetadata const **availables )
 {
   if ( ! *availables )
     {
@@ -159,7 +166,7 @@ showAlgorithms( AlgMetadata **availables )
     }
 
   int count = 0;
-  AlgMetadata *metadata;
+  AlgMetadata const *metadata;
   while ( metadata = *availables++ )
     printf( " [%d] %s\n", count++, metadata->name );
 
@@ -176,8 +183,8 @@ showAlgorithms( AlgMetadata **availables )
 // Let the user choose an algorithm and enter its parameters.
 // Returns the choosed algorithm's metadata.
 //
-AlgMetadata *
-readAlgorithm( AlgMetadata **availables )
+AlgMetadata const *
+readAlgorithm( AlgMetadata const **availables )
 {
   char buf[128];
 
@@ -205,7 +212,7 @@ readAlgorithm( AlgMetadata **availables )
 /***********************/
 /*** read Parameters ***/
 int
-readParameters( AlgParameter *result, AlgMetadata *metadata )
+readParameters( AlgParameter *result, AlgMetadata const *metadata )
 {
   AlgParamMetadata *param = metadata->param;
   AlgParamMetadata *end   = param + metadata->nparam;

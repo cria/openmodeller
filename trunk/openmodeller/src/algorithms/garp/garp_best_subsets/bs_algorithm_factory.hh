@@ -36,7 +36,7 @@
 class BSAlgorithmFactory
 {
 public:
-  virtual Algorithm * getBSAlgorithm() = 0;
+  virtual AlgorithmImpl * getBSAlgorithm() = 0;
 };
 
 

@@ -149,6 +149,30 @@ void Rule::copy(Rule * fromRule)
 	_dA = fromRule->_dA;
 	_dSig = fromRule->_dSig;
 }
+// ==========================================================================
+void
+Rule::RestoreRule( double *perf, unsigned char *genes, int arry_len, int *gene_index )
+{
+  for( int i=0; i<10; i++ ) {
+
+    dblPerformance[i] = perf[i];
+  }
+
+  iGeneIndex = gene_index;
+
+  if (Gene)
+    delete [] Gene;
+
+  Gene = new BYTE[arry_len];
+
+  intLength = arry_len;
+  iActiveGenes = arry_len/2;
+  for( int i=0; i<intLength; i++ ) {
+    Gene[i] = (BYTE) genes[i];
+  }
+
+
+}
 
 // ==========================================================================
 void Rule::initialize(EnvCellSet * objEnvCellSet, const RuleSet * objRuleSet, 
@@ -437,6 +461,9 @@ double Rule::testWithData(EnvCellSet * objTrainSet)
 	//if (Sigflag)	
 		Utility[0] *= Utility[8];
   
+		//printf("%c] u0=%+7.3f u1=%+7.3f u2=%+7.3f u8=%+7.3f pXYs=%+7.3f no=%4d n=%4d\n",
+		//type(), Utility[0], Utility[1], Utility[2], Utility[8], pXYs, no, n);
+
 	//if (Ecoflag)
 	//	Utility[0] *= ecoSpace();
   
@@ -558,7 +585,8 @@ double RangeRule::getStrength(EnvCell * cell)
 {
 	int a, b, c;
 	int i, k;	
-  
+
+	//printf("GetStrength(%2d)\n", Gene[0]);
 	for (k = 1; k < iActiveGenes; k++)
     {
 		// get the index of the kth active gene
@@ -572,9 +600,13 @@ double RangeRule::getStrength(EnvCell * cell)
 		c = cell->values[i];
 
 		if (!GarpUtil::membership(a, b, c)) 
-			return 0;
+		  { 
+		    //printf("Strength = 0\n"); 
+		    return 0; 
+		  }
     } 
-  
+
+	//printf("Strength = 1\n");
   return 1.0;
 }
 

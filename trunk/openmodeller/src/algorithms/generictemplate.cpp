@@ -53,7 +53,7 @@ char * GenericTemplate::name()
   * @param Scalar pointer max that the post normalised will be fitted to
   * @return 0 if no normalisation is needed
   */
-int GenericTemplate::needNormalization( Scalar *min, Scalar *max )
+int GenericTemplate::needNormalization( Scalar *min, Scalar *max ) const
 {
 
 }
@@ -102,7 +102,7 @@ int GenericTemplate::done()
   * @note This method is inherited from the Algorithm class
   * @return     
   * @param Scalar *x a pointer to a vector of openModeller Scalar type (currently double). The vector should contain values looked up on the environmental variable layers into which the mode is being projected. */
-Scalar GenericTemplate::getValue( Scalar *x )
+Scalar GenericTemplate::getValue( Scalar const *x ) const
 {
 
 }

@@ -37,8 +37,7 @@
 #define _RULES_BASE_HH_
 
 #include <om.hh>
-
-class GarpCustomSampler;
+#include <Sample.hh>
 
 enum PerfIndex
 {
@@ -111,6 +110,7 @@ bool equalEps(double v1, double v2);
 bool between(double value, double min, double max);
 int membership(double value1, double value2, double value);
 
+
 /****************************************************************/
 /****************** GarpRule class hierarchy ********************/
 
@@ -126,9 +126,13 @@ public:
   /// Default constructor
   GarpRule();
 
+  /// Constructor with defined size
+  GarpRule(const int numGenes);
+
   /// Constructor with setters 
   GarpRule(Scalar prediction, int numGenes, 
-	   Scalar * genes, double * performances);
+	   const Sample& chrom1, const Sample& chrom2, 
+     const double * performances);
   
   /// Default destructor
   virtual ~GarpRule();
@@ -137,43 +141,44 @@ public:
   /** Returns a copy of the rule. Caller is responsible for deallocating
     * memory for this object when it is done using it.
     */
-  virtual GarpRule * clone();
+  virtual GarpRule * clone() const;
 
-  virtual GarpRule * objFactory() = 0;
-
-  virtual int copy(GarpRule * fromRule);
+  virtual GarpRule * objFactory() const = 0;
   
-  virtual void initialize(GarpCustomSampler * sampler);
+  virtual int copy(const GarpRule * fromRule);
 
-  int numGenes() { return _numGenes; }
+  int numGenes() const { return _numGenes; }
 
   virtual char type() const				{ return 'v'; }
-  bool needsEvaluation() { return _needsEvaluation; } 
+  bool needsEvaluation() const    { return _needsEvaluation; } 
   void forceEvaluation() { _needsEvaluation = true; } 
   void evaluated()       { _needsEvaluation = false; } 
+  void setPrediction(double pred) { _prediction = pred; }
 
-  Scalar getPrediction()       { return _prediction; }
-  Scalar * getGenes()          { return _genes; };
-  double * getPerformanceArray() { return _performance; }
-  double getPerformance(PerfIndex perfIndex);
+  Scalar getPrediction() const    { return _prediction; }
+  const Sample& getChrom1() const { return _chrom1; };
+  const Sample& getChrom2() const { return _chrom2; };
+  const double * getPerformanceArray() const { return static_cast<const double *>(_performance); }
+  double getPerformance(PerfIndex perfIndex) const;
 
-  virtual int getStrength(Scalar * values) = 0;
-  virtual int getCertainty(Scalar pred);
-  virtual double getError(Scalar predefinedValue, Scalar prediction);
+  virtual int getStrength(const Sample& sample) const = 0;
+  virtual int getCertainty(const Scalar pred) const;
+  virtual double getError(const Scalar predefinedValue, const Scalar prediction) const;
   
-  virtual bool similar(GarpRule * compareToRule);
+  virtual bool similar(const GarpRule * compareToRule) const;
   virtual void mutate(double temperature);
   virtual void crossover(GarpRule * rule, int xpt1, int xpt2);
 
-  void adjustRange(Scalar * v1, Scalar * v2);
-  virtual bool applies(Scalar * values) = 0;
-  double evaluate(GarpCustomSampler * sampler);
+  void adjustRange(Scalar& v1, Scalar& v2) const;
+  virtual bool applies(const Sample& sample) const = 0;
+  double evaluate(const OccurrencesPtr& occs);
   
   virtual void log();
 
 protected:
   /// BYTE vector containing the genes (representation of the variables in a Genetic Algorithm
-  Scalar * _genes;
+  Sample _chrom1;
+  Sample _chrom2;
   Scalar _prediction;
   
   /// Number of genes stored by the rule

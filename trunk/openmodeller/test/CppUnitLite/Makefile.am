@@ -21,4 +21,6 @@ EXTRA_DIST = \
 
 libcppunitlite_la_SOURCES = \
 	Test.cpp TestRegistry.cpp TestResult.cpp \
-	Failure.cpp SimpleString.cpp
+	Failure.cpp SimpleString.cpp test_main.cpp
+
+libcppunitlite_la_CPPFLAGS = -I../../src/inc

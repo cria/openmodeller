@@ -260,9 +260,9 @@ AlgParamMetadata parameters_bs[NUM_PARAM] =
 
 AlgMetadata metadata_bs = {
   
-  "GARP_BS",                        // Id.
-  "GARP 2.1 with Best Subset Procedure",  // Name.
-  "2.1 beta",                       // Version.
+  "DG_GARP_BS",                        // Id.
+  "DG_GARP with Best Subsets Procedure",  // Name.
+  "3.0.1 alpha",                       // Version.
 
   // Overview.
   "GARP is a genetic algorithm that creates ecological niche \
@@ -305,14 +305,14 @@ for selecting optimal models.Ecological Modelling, v. 162, p. 211 232.",
 /****************** Algorithm's factory function ****************/
 
 dllexp 
-Algorithm * 
+AlgorithmImpl * 
 algorithmFactory()
 {
   return new DgGarpBestSubsets();
 }
 
 dllexp
-AlgMetadata *
+AlgMetadata const *
 algorithmMetadata()
 {
   return &metadata_bs;
@@ -334,7 +334,7 @@ DgGarpBestSubsets::~DgGarpBestSubsets()
 // ****************************************************************
 // ************* needNormalization ********************************
 
-int DgGarpBestSubsets::needNormalization( Scalar *min, Scalar *max )
+int DgGarpBestSubsets::needNormalization( Scalar *min, Scalar *max ) const
 {
   *min = 1.0;
   *max = 253.0;
@@ -343,7 +343,7 @@ int DgGarpBestSubsets::needNormalization( Scalar *min, Scalar *max )
 }
   
 // ****************************************************************
-Algorithm * DgGarpBestSubsets::getBSAlgorithm()
+AlgorithmImpl * DgGarpBestSubsets::getBSAlgorithm()
 {
   return new GarpAlgorithm();
 }
@@ -355,16 +355,16 @@ int DgGarpBestSubsets::transferParametersToAlgorithm()
 {
   // GARP parameters
   if (!getParameter("MaxGenerations",   &_max_gen))        
-      g_log.error(1, "Parameter MaxGenerations not set properly.");
+      g_log.error(1, "Parameter MaxGenerations not set properly.\n");
 
   if (!getParameter("ConvergenceLimit", &_conv_limit))     
-      g_log.error(1, "Parameter ConvergenceLimit not set properly.");
+      g_log.error(1, "Parameter ConvergenceLimit not set properly.\n");
 
   if (!getParameter("PopulationSize",   &_popsize))        
-      g_log.error(1, "Parameter PopulationSize not set properly.");
+      g_log.error(1, "Parameter PopulationSize not set properly.\n");
 
   if (!getParameter("Resamples",        &_resamples))      
-      g_log.error(1, "Parameter Resamples not set properly.");
+      g_log.error(1, "Parameter Resamples not set properly.\n");
 
   if (_alg_params)
     delete[] _alg_params;

@@ -11,7 +11,7 @@
 DPLUGIN_PATH=-DPLUGINPATH=\"$(libdir)/openmodeller/\"
 DCONFIG_FILE=-DCONFIG_FILE=\"om_config\"
 
-SUBDIRS = env_io serialization
+SUBDIRS = env_io models
 
 lib_LTLIBRARIES = libopenmodeller.la
 
@@ -19,21 +19,24 @@ libopenmodeller_la_SOURCES = \
 	algorithm.cpp \
 	algorithm_factory.cpp \
 	alg_parameter.cpp \
+	configuration.cpp \
+	configuration_xmlio.cpp \
 	control.cpp \
 	environment.cpp \
 	file_parser.cpp \
+	icstring.cpp \
 	log.cpp \
-	map_format.cpp \
+	Model.cpp \
 	occurrences.cpp \
 	occurrence.cpp \
 	os_specific.cpp \
 	random.cpp \
 	sampler.cpp \
-	sampled_data.cpp \
+	Sample.cpp \
 	conf_matrix.cpp \
-	area_stats.cpp
+	area_stats.cpp \
+	projector.cpp 
 
 libopenmodeller_la_LDFLAGS = -no-undefined
 libopenmodeller_la_CPPFLAGS = -I../inc -I../.. $(DPLUGIN_PATH) $(DCONFIG_FILE)
-libopenmodeller_la_LIBADD = env_io/libenv_io.la $(GDAL_LIB) \
-			    serialization/libomserialization.la 
+libopenmodeller_la_LIBADD = env_io/libenv_io.la models/libmodels.la $(GDAL_LIB) $(EXPAT_LIBS)

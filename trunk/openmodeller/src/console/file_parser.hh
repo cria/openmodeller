@@ -30,7 +30,11 @@
 #define _FILE_PARSERHH_
 
 #include <om_defs.hh>
-#include <list.hh>
+#include <icstring.hh>
+
+#include <vector>
+#include <string>
+#include <utility>   // for std::pair
 
 /**
  * Read key/value pairs from a configuration file.
@@ -38,59 +42,42 @@
  */
 class dllexp FileParser
 {
-  typedef struct
-  {
-    char *key;
-    char *val;
-  } Item;
-  typedef List<Item *> ItemList;
-
-
 public:
 
-  FileParser( char *file );
+  FileParser( char const *file );
 
   ~FileParser();
 
-  int load( char *file );
+  int load( char const *file );
 
   /**
   * Get the value of a key (case insensitive).
+  * Do not change the char* that is returned.
   */
-  char *get( char *key );
+  char *get( char const *key ) const;
 
   /**
   * Return the number of times that a certain key appears in the file.
   */
-  int count( char *key );
+  int count( char const *key ) const;
 
   /**
-  * Fill 'values' with all values associated with 'key' and 
-  * return the number of values found.
-  */
-  int getAll( char *key, char **values );
+   * The type of values should really be char const **.
+   * Do not change the char*'s returned in values because
+   * they are really pointers into string::c_str().
+   */
+  int getAll( char const *key, char **values) const;
 
-  int length()   { return f_lst.length(); }
+  int length() const
+  {
+    return f_lst.size();
+  }
   
-  void head()    { f_lst.head(); }
-  void next()    { f_lst.next(); }
-
-  char *key()    { return f_lst.get() ? f_lst.get()->key : 0; }
-  char *value()  { return f_lst.get() ? f_lst.get()->val : 0; }
-
-
 private:
-
-  void clear();
-
-  // Aloca '*dst' e copia a string apontado por 'src' para '*dst'.
-  // Elimina os espaços, tabulações e mudança de linhas do início
-  // e do final de 'src'.
-  void transfer( char **dst, char *src );
-
+  typedef std::pair<icstring,std::string> Item;
+  typedef std::vector<Item> ItemList;
 
   ItemList f_lst;
 };
-
 
 #endif

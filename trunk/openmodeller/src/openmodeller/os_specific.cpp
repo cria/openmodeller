@@ -26,9 +26,14 @@
  * http://www.gnu.org/copyleft/gpl.html
  */
 
-#include <stdio.h>
 #include <os_specific.hh>
 
+#include <stdlib.h>
+
+using std::vector;
+using std::string;
+
+#include <fstream>
 
 /****************************************************************/
 /********************* Dynamic Linking Loader *******************/
@@ -39,7 +44,7 @@
 /****************/
 /*** dll Open ***/
 DLLHandle
-dllOpen( char *dll_file_name )
+dllOpen( char const *dll_file_name )
 {
   return dlopen( dll_file_name, RTLD_NOW );
 }
@@ -48,7 +53,7 @@ dllOpen( char *dll_file_name )
 /********************/
 /*** dll Function ***/
 void *
-dllFunction( DLLHandle handle, char *function_name )
+dllFunction( DLLHandle handle, char const *function_name )
 {
   return dlsym( handle, function_name );
 }
@@ -71,8 +76,89 @@ dllError( DLLHandle )
   return dlerror();
 }
 
+/*************************/
+/*** initial Plugin Path ***/
+vector<string>
+initialPluginPath()
+{
 
+  vector<string> entries;
 
+  //
+  // Order of initialization:
+  //
+  // 1) environment variable: OM_LIB_PATH
+  // 2) read from CONFIG_FILE
+  // 3) PLUGINPATH compiled constant.
+
+  char *env = getenv( "OM_LIB_PATH" );
+
+  //
+  // Check if the environment variable is set
+  if ( env != 0 ) {
+
+    string envpath( (char const *)env );
+
+    // If it's set to "" then we return.  Don't know what this means since the
+    // path is emtpy.  Maybe we need to have this drop to using CONFIG_FILE
+    if( envpath.empty() ) {
+      return entries;
+    }
+
+    // Parse the OM_LIB_PATH with colon (':') delimiters just like all other 
+    // unix path structures.
+
+    // string::size_type start marks the beginning of the substring.
+    // initial value is beginning of string, iterate value is one past the ':'
+    for( string::size_type start = 0; start < envpath.length() ; ) {
+      
+      // Find the next ':' after start
+      string::size_type it = envpath.find( ':', start );
+
+      // If no ':' is found..
+      if ( it == string::npos ) {
+
+	// the substring is (start, end-of-string)
+	entries.push_back( envpath.substr( start ) );
+	break;
+	
+      }
+      // Else, test that the substring is non empty.
+      else if ( it > start ) {
+
+	string::size_type len = it - start;
+	entries.push_back( envpath.substr( start, len ) );
+
+      }
+
+      // move the start of the next substring to one after the ':'
+      start = it+1;
+
+    }
+
+    return entries;
+
+  }
+
+  std::ifstream conf_file( CONFIG_FILE, std::ios::in );
+
+  if ( conf_file ) {
+
+    while( conf_file ) {
+      string line;
+      getline( conf_file, line );
+      entries.push_back( line );
+    }
+
+    return entries;
+
+  }
+
+  entries.push_back( PLUGINPATH );
+
+  return entries;
+
+}
 
 /****************************************************************/
 /********************* Scan Directory Entries *******************/
@@ -109,39 +195,37 @@ filter( const TDirent *dir )
 
 /****************/
 /*** scan Dir ***/
-char **
-scanDirectory( char *dir )
+vector<string>
+scanDirectory( string dir )
 {
+  vector<string> entries;
+
+  if ( dir.length() == 0 ) {
+    return entries;
+  }
+
+  if ( dir[ dir.length() ] != '/' ) {
+    dir += "/";
+  }
+
   // Unix scandir call.
   TDirent **namelist;
-  int nent = scandir( dir, &namelist, filter, alphasort );
+
+  int nent = scandir( dir.c_str(), &namelist, filter, alphasort );
+
   if ( nent < 0 )
-    return 0;
-
-  // Allocates the array to be returned.
-  char **entries = new (char *)[ nent + 1 ];
-
-  // Directory path size
-  int dir_size = strlen( dir );
+    return entries;
 
   // Copy from unix structure to the return structure.
-  for ( int i = 0; i < nent; i++ )
-    {
-      char *found = namelist[i]->d_name;
-      char *name  = new char[dir_size + strlen(found) + 1];
+  for ( int i = 0; i < nent; i++ ) {
 
-      // Copy the directory path.
-      strcpy( name, dir );
+    char *found = namelist[i]->d_name;
 
-      // Append the library file name.
-      strcat( name, found );
-      entries[i] = name;
+    string name = dir + found;
+    entries.push_back( name );
 
-      free( namelist[i] );
-    }
-
-  // Null terminated array.
-  entries[nent] = 0;
+    free( namelist[i] );
+  }
 
   // Free unix structure.
   free( namelist );

@@ -32,6 +32,7 @@
 #include <om_defs.hh>
 #include <env_io/raster.hh>
 
+#include <string>
 
 class GeoTransform;
 
@@ -52,82 +53,70 @@ public:
 
   /** 
    * Create a new map based on a predefined raster.
+   * The Map takes ownership of the Raster object pointed
+   * to by rst.  It will be deleted when this is deleted.
    * 
    * @param rst Raster object
    * @param ocs The coordinates given to this object will be in
    *        this geografical coordinate system (in WKT format).
-   * @param del If not zero 'rst' will be destroied with this
-   *        object.
    */
-  Map( Raster *rst, char *ocs, int del=0 );
+  Map( Raster *rst );
   ~Map();
 
-  char * getCoordSystem() { return _cs; }
+  const Header& getHeader() const { return _rst->header(); }
 
-  int isCategorical()  { return _rst->isCategorical(); }
+  int isCategorical() const { return _rst->isCategorical(); }
 
-  /** is it normalized? */
-  int isNormalized() { return _rst->isNormalized(); }
-
-  /** normalization offset */
-  Scalar offset() { return _rst->offset(); }
-
-  /** normalization scale */
-  Scalar scale() { return _rst->scale(); }
-
-  /** Normalize map values to the interval [min,max]. */
-  int normalize( Scalar min, Scalar max ) 
-  {
-    return _rst->normalize( min, max );
-  }
-
-  /** Copy normalized parameters from source map */
-  int copyNormalizationParams(Map * source)
-  {
-    return _rst->copyNormalizationValues((Raster *) (source->_rst));
-  }
-  
   /** Find the minimum and maximum values in the first band. */
-  int getMinMax( Scalar *min, Scalar *max )
+  int getMinMax( Scalar *min, Scalar *max ) const
   {
     return _rst->getMinMax( min, max );
   }
 
   /** Number of bands. */
-  int numBand()   { return _rst->numBand(); }
+  int numBand() const  { return _rst->numBand(); }
 
   /** Get the map limits. */
-  int getRegion( Coord *xmin, Coord *ymin, Coord *xmax,
-                 Coord *ymax);
+  int getRegion( Coord *xmin, Coord *ymin, Coord *xmax, Coord *ymax) const;
 
   /** Map dimensions. */
-  int getDim( int *xdim, int *ydim ) { _rst->getDim(xdim, ydim); return 1; } 
+  int getDim( int *xdim, int *ydim ) const { *xdim = _rst->dimX(); *ydim = _rst->dimY(); return 1; } 
 
   /** Cell width (in map units) */
-  int getCell( Coord *xcel, Coord *ycel ) { _rst->getCell(xcel, ycel); return 1; } 
+  int getCell( Coord *xcel, Coord *ycel ) const { *xcel = _rst->celX(); *ycel = _rst->celY(); return 1; } 
 
   /**
    * Fills 'val' with the map bands values at (x,y).
    * Returns zero if (x,y) is not defined in the map.
    */
-  int get( Coord x, Coord y, Scalar *val );
+  int get( Coord x, Coord y, Scalar *val ) const;
 
   /**
-   * Put the values at 'val' in the map bands at (x,y).
+   * Put the values at 'val' in the first band at (x,y).
    * @return Return zero if (x,y) is not defined in the map or the
    * map is read only.
    */
-  int put( Coord x, Coord y, Scalar *val );
+  int put( Coord x, Coord y, Scalar val );
 
-  GeoTransform *getGT()  { return _gt; }
+  /**
+   * Put the value for noval in the first band at (x,y).
+   * @return Return zero if (x,y) is not defined in the map or the
+   * map is read only.
+   */
+  int put( Coord x, Coord y );
+
+  GeoTransform *getGT() const { return _gt; }
 
 
 private:
 
-  char         *_cs;   ///< coordinate system name       
   Raster       *_rst;
   GeoTransform *_gt;
-  int           _del; ///< If not zero destroy '_rst' in the destructor.
+
+  // Disable copying.
+  Map( const Map& );
+  Map& operator=( const Map& );
+
 };
 
 

@@ -26,13 +26,14 @@ TestRegistry& TestRegistry::instance ()
 
 void TestRegistry::add (Test *test) 
 {
-	if (tests == 0) {
-		tests = test;
+	if (first_test == 0) {
+		first_test = test;
+		last_test = test;
 		return;
 	}
 	
-	test->setNext (tests);
-	tests = test;
+	last_test->setNext (test);
+	last_test = test;
 }
 
 
@@ -40,7 +41,7 @@ int TestRegistry::run (TestResult& result)
 {
 	result.testsStarted ();
 
-	for (Test *test = tests; test != 0; test = test->getNext ())
+	for (Test *test = first_test; test != 0; test = test->getNext ())
 		test->run (result);
 	return result.testsEnded ();
 }

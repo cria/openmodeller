@@ -31,9 +31,6 @@
 #include "om_control.hh"
 
 #include <env_io/map.hh>
-#include <env_io/header.hh>
-#include <env_io/raster_file.hh>
-#include <env_io/geo_transform.hh>
 
 #include <om_defs.hh>
 #include <om_log.hh>
@@ -42,28 +39,16 @@
 #include <om_sampler.hh>
 #include <om_occurrences.hh>
 #include <om_area_stats.hh>
-#include <map_format.hh>
 #include <occurrence.hh>
+#include <om_conf_matrix.hh>
 
 #include <algorithm_factory.hh>
 #include <environment.hh>
+#include <configuration.hh>
+#include <Model.hh>
 
-#include <serialization/om_serializer.hh>
-#include <serialization/om_deserializer.hh>
-
-#include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
-#include <iostream>
-
-// Directories to search for dynamic libraries.
-// Fixme: read this from some configuration file.
-static char *g_search_dirs[] = {
-  PLUGINPATH, 
-  0
-};
-
-const char * g_config_file = CONFIG_FILE;
 
 /*** backward compatible callback helper classes ***/
 
@@ -84,7 +69,7 @@ private:
 
 };
 
-class MapCallbackHelper : public OpenModeller::MapCommand
+class MapCallbackHelper : public Projector::MapCommand
 {
 
 public:
@@ -109,6 +94,10 @@ void OpenModeller::setMapCallback( MapCallback func, void *param ) {
   setMapCommand( new MapCallbackHelper( func, param ) );
 }
 
+void OpenModeller::setMapCommand( Projector::MapCommand *func ) {
+  _map_command = func;
+}
+
 /****************************************************************/
 /************************* Open Modeller ************************/
 
@@ -118,36 +107,15 @@ void OpenModeller::setMapCallback( MapCallback func, void *param ) {
 OpenModeller::OpenModeller()
 {
   setLogLevel(Log::Debug);
-  _env = 0;
-  _proj = 0;
-  _alg = 0;
-  _samp = 0;
 
-  _alg_id     = 0;
-  _alg_param  = 0;
-  _alg_nparam = 0;
-
-  _presence = 0;
-  _absence  = 0;
-
-  _output_file   = 0;
-  _output_mask   = 0;
-  _output_header = 0;
-
-  _model_command       = NULL;
-  _map_command         = NULL;
+  _map_command = 0;
+  _model_command = 0;
 
   _error[0] = '\0';
-
-  // sets _plugin_path with path from config file or hardcoded constant
-  _plugin_path = NULL;
-  _factory = NULL;
-  resetPluginPath();
 
   _actualAreaStats = new AreaStats();
   _estimatedAreaStats = new AreaStats();
 
-  _factory = new AlgorithmFactory( _plugin_path );
 }
 
 
@@ -156,26 +124,13 @@ OpenModeller::OpenModeller()
 
 OpenModeller::~OpenModeller()
 {
-  if ( _samp ) delete _samp;
-  if ( _alg )  delete _alg;
-  if ( _env )  delete _env;
-  if ( _proj ) delete _proj;
-
-  if ( _alg_id )        delete[] _alg_id;
-  if ( _alg_param)      delete[] _alg_param;
-  if ( _output_file )   delete[] _output_file;
-  if ( _output_mask )   delete[] _output_mask;
-  if ( _output_header ) delete _output_header;
-
   if ( _map_command ) delete _map_command;
-  if ( _model_command ) delete _model_command;
 
-  if ( _plugin_path ) deleteStringArray( _plugin_path );
+  if ( _model_command ) delete _model_command;
 
   if ( _estimatedAreaStats ) delete _estimatedAreaStats;
 
   delete _actualAreaStats;
-  delete _factory;
 }
 
 
@@ -198,163 +153,20 @@ OpenModeller::getVersion()
 }
 
 /****************************/
-/*** get Config File name ***/
-char *
-OpenModeller::getConfigFileName()
-{
-  return (char *) g_config_file;
-}
-
-
-/*************************/
-/*** deleteStringArray ***/
-void
-OpenModeller::deleteStringArray(char ** array)
-{
-  //g_log.debug("Deallocating existing string array\n");
-
-  char ** curr_dir;
-
-  // delete existing plugin_path and strings it points to first
-  if (array)
-    {
-      curr_dir = array;
-      while (*curr_dir)
-	{ delete[] *curr_dir++; }
-    }
-  delete[] array;
-}
-
-/***********************/
-/*** set Plugin Path ***/
-void 
-OpenModeller::setPluginPath(char ** new_plugin_path)
-{
-  // pointer to current dir in plugin path passed as argument (read only)
-  char ** curr_arg_dir;      
-
-  // pointer to current dir in instance variable _plugin_path (being set)
-  char ** curr_plugin_dir;
-
-  // get number of directories
-  curr_arg_dir = new_plugin_path;
-  while (*curr_arg_dir++);
-  int num_dirs = curr_arg_dir - new_plugin_path;
-
-  deleteStringArray(_plugin_path);
-
-  // create new array and copy values from argument
-  _plugin_path = new char*[num_dirs + 1];
-  curr_plugin_dir = _plugin_path;
-  curr_arg_dir = new_plugin_path;
-  while (*curr_arg_dir)
-    {
-      //g_log.debug("Copying directory name %s to path\n", *curr_arg_dir);
-      *curr_plugin_dir = new char[strlen(*curr_arg_dir) + 1];
-      strcpy(*curr_plugin_dir++, *curr_arg_dir++);
-    }
-  *curr_plugin_dir = NULL;
-
-  if (_factory)
-    _factory->setDirs(_plugin_path);
-}
-
-/*************************/
-/*** reset Plugin Path ***/
-void
-OpenModeller::resetPluginPath()
-{
-  FILE * conf_file = fopen(g_config_file, "r");
-
-  if (conf_file)
-    {
-      // config file found: read the search path from it
-      const int size = 1024;
-      char line[size];
-
-      // get number of dirs in path
-      int num_dirs = 0;
-      while (fgets(line, size, conf_file))
-	{ num_dirs++; }
-
-      deleteStringArray(_plugin_path);
-      _plugin_path = new char*[num_dirs + 1];
-      rewind(conf_file); 
-      char ** curr_plugin_dir = _plugin_path;
-      while (fgets(line, size, conf_file))
-	{ 
-	  // get rid of new lines
-	  char * new_line;
-	  if (new_line = strchr( line, '\n'))
-	    *new_line = '\0';
-	  *curr_plugin_dir = new char[strlen(line) + 1];
-	  strcpy(*curr_plugin_dir++, line);
-	}
-
-      *curr_plugin_dir = NULL;
-
-      if (_factory)
-	_factory->setDirs(_plugin_path);
-
-      fclose(conf_file);
-    }
-  else
-    {
-      // config file not found, set plugin path to hardcoded default
-      setPluginPath(g_search_dirs);
-    }
-}
-
-
-/***********************/
-/*** get Plugin Path ***/
-char * 
-OpenModeller::getPluginPath()
-{
-  int length = 1;
-  char ** curr_plugin_dir = _plugin_path;
-
-  while (*curr_plugin_dir)
-    { length += strlen(*curr_plugin_dir++) + 2; }
-
-  char * path = new char[length];
-  strcpy(path, "");
-  curr_plugin_dir = _plugin_path;
-  while (*curr_plugin_dir)
-    { 
-      if (curr_plugin_dir != _plugin_path)
-	{ strcat(path, ", "); }
-      strcat(path, *curr_plugin_dir++);
-    }
-
-  return path;
-}
-
-
-/***********************/
-/*** load Algorithms ***/
-int 
-OpenModeller::loadAlgorithms()
-{
-  return _factory->loadAlgorithms();
-}
-
-
-/****************************/
 /*** available Algorithms ***/
-AlgMetadata **
+AlgMetadata const **
 OpenModeller::availableAlgorithms()
 {
-  return _factory->availableAlgorithms();
+  return AlgorithmFactory::availableAlgorithms();
 }
 
 
 /**************************/
 /*** algorithm Metadata ***/
-AlgMetadata *
-OpenModeller::algorithmMetadata( char *algorithm_id )
+AlgMetadata const*
+OpenModeller::algorithmMetadata( char const *algorithm_id )
 {
-  return _factory->algorithmMetadata( algorithm_id );
+  return AlgorithmFactory::algorithmMetadata( algorithm_id );
 }
 
 
@@ -363,61 +175,71 @@ OpenModeller::algorithmMetadata( char *algorithm_id )
 int
 OpenModeller::numAvailableAlgorithms()
 {
-  return _factory->numAvailableAlgorithms();
+  return AlgorithmFactory::numAvailableAlgorithms();
 }
 
 
 /***********************/
-/*** set Environment ***/
+/*** set Occurrences ***/
 int
+OpenModeller::setOccurrences( const OccurrencesPtr& presence,
+                              const OccurrencesPtr& absence )
+{
+  if ( !presence || presence->numOccurrences() == 0 ) {
+    sprintf(_error,"Presences must not be empty");
+    return 0;
+  }
+  _presence = presence;
+  _absence  = absence;
+
+  if (_env)
+    {
+      setSampler( createSampler(_env, 
+				_presence, 
+				_absence));
+    }
+
+  return 1;
+}
+
+/***********************/
+/*** set Environment ***/
+void
 OpenModeller::setEnvironment( int num_categ,
 			      char **categ_map,
 			      int num_continuous,
 			      char **continuous_map,
 			      char *mask )
 {
-  if ( _env )
-    delete _env;
+  _env = new EnvironmentImpl( num_categ, categ_map,
+			      num_continuous, continuous_map, mask );
 
-  _env = new Environment( GeoTransform::cs_default,
-                          num_categ, categ_map,
-                          num_continuous, continuous_map, mask );
+  if (_presence)
+    {
+      setSampler( createSampler(_env, 
+				_presence, 
+				_absence));
+    }
 
   g_log( "Environment initialized.\n" );
-  return 1;
 }
 
 
-/**********************/
-/*** set Projection ***/
-int
-OpenModeller::setProjection( int num_categ,
-                             char **categ_map,
-                             int num_continuous,
-                             char **continuous_map )
+/*******************/
+/*** set Sampler ***/
+void
+OpenModeller::setSampler( const SamplerPtr& sampler )
 {
-  // Obs: mask will be set in createMap()
-  //
-
-  if ( _proj )
-    delete _proj;
-
-  _proj = new Environment( GeoTransform::cs_default,
-                           num_categ, categ_map,
-                           num_continuous, continuous_map );
-
-  g_log( "Projection environment initialized.\n" );
-  return 1;
+  _samp = sampler;
 }
-
 
 /*********************/
 /*** set Algorithm ***/
 int
-OpenModeller::setAlgorithm( char *id, int nparam,
-                            AlgParameter *param )
+OpenModeller::setAlgorithm( char const *id, int nparam,
+                            AlgParameter const *param )
 {
-  AlgMetadata *meta = algorithmMetadata( id );
+  AlgMetadata const *meta = algorithmMetadata( id );
 
   // Check the parameters.
   if ( ! meta || meta->nparam != nparam )
@@ -435,141 +257,23 @@ OpenModeller::setAlgorithm( char *id, int nparam,
   if ( nparam && ! param )
     g_log.error( 1, "Incoherent number of parameters and parameters pointer" );
 
-  // Check if _env is initialized
-  if ( ! _env )
+  // Check if sampler is initialized
+  if ( ! _samp )
     {
-      g_log("Environmental variables not initialized.");
+      g_log( "Sampler not initialized." );
       return 0;
     }
 
-  // Check if occurrence data is initialized
-  if ( ! _presence )
-    {
-      g_log( "Occurrence data not initialized." );
-      return 0;
-    }
-
-  stringCopy( &_alg_id, id );
-
-  // Reallocate '_alg_param' to stores 'nparam' parameters.
-  _alg_nparam = nparam;
-  if ( _alg_param )
-    delete[] _alg_param;
-  _alg_param = new AlgParameter[ _alg_nparam ];
-
-  // Copy 'param' to '_alg_param'.
-  AlgParameter *dst = _alg_param;
-  AlgParameter *end = _alg_param + _alg_nparam;
-  while ( dst < end )
-      *dst++ = *param++;
-
-  // Sampler and algorithm.
-  if ( _samp )
-    delete _samp;
-
-  _samp = new Sampler( _env, _presence, _absence );
-
-  if ( _alg )
-    delete _alg;
-
-  _alg = _factory->newAlgorithm( _samp, _alg_id, _alg_nparam,
-                                 _alg_param );
+  _alg = AlgorithmFactory::newAlgorithm( id );
   if ( ! _alg )
     {
-      sprintf( _error, "Could not find (%s) algorithm.", _alg_id );
+      sprintf( _error, "Could not find (%s) algorithm.", id );
       return 0;
     }
+  _alg->setSampler( _samp );
+  _alg->setParameters( nparam, param );
 
   return 1;
-}
-
-/***********************/
-/*** set Occurrences ***/
-int
-OpenModeller::setOccurrences( Occurrences *presence,
-                              Occurrences *absence )
-{
-  if ( !presence || presence->numOccurrences() == 0 ) {
-    sprintf(_error,"Presences must not be empty");
-    return 0;
-  }
-  _presence = presence;
-  _absence  = absence;
-
-  return 1;
-}
-
-
-/*******************************/
-/*** filter masked occurrences */
-void OpenModeller::filterMaskedOccurrences(Occurrences * occur)
-{
-  if (!occur)
-    { return; }
-
-  int countBefore, countAfter;
-  Scalar * indep = new Scalar[_env->numLayers()];
-
-  Occurrence * oc; 
-  occur->head();
-  countBefore = occur->numOccurrences();
-  while ( oc = occur->get() )
-    {
-      if (!_env->get( oc->x(), oc->y(), indep))
-	{ 
-	  occur->remove(); 
-	  delete oc; 
-	}
-      
-      occur->next();
-    }
-  occur->head();
-  
-  countAfter = occur->numOccurrences();
-  g_log("Masked points: %d out of %d removed (%d remaining)\n", 
-	countBefore - countAfter, countBefore, countAfter);
-
-  delete[] indep;
-}
-
-/*******************************/
-/*** filter masked occurrences */
-void OpenModeller::filterSpatiallyUniqueOccurrences(Occurrences * occur)
-{
-  if (!occur)
-    { return; }
-
-  int countBefore, countAfter, position, xdim, ydim, numCells;
-  RasterFile grid( _env->getMaskFilename() );
-
-  grid.getDim(&xdim, &ydim);
-  numCells = xdim * ydim; 
-  bool * visited = new bool[numCells];
-  memset(visited, false, numCells * sizeof(bool));
-
-  countBefore = occur->numOccurrences();
-  Occurrence * oc; 
-  occur->head();
-  while ( oc = occur->get() )
-    {
-      position = grid.convY(oc->y()) * xdim + grid.convX(oc->x());
-      if (visited[position])
-	{ 
-	  occur->remove(); 
-	  delete oc; 
-	}
-      else
-	{ visited[position] = true; }
-      
-      occur->next();
-    }
-  occur->head();
-  
-  countAfter = occur->numOccurrences();
-  g_log("Spatially redundant points: %d out of %d removed (%d remaining)\n", 
-	countBefore - countAfter, countBefore, countAfter);
-
-  delete[] visited;
 }
 
 /********************/
@@ -584,21 +288,8 @@ OpenModeller::createModel()
       return 0;
     }
 
-  // Check if the algorithm needs normalized variables.
-  Scalar min, max;
-  if ( _alg->needNormalization( &min, &max ) )
-    { _env->normalize( min, max ); }
-
-  // filter presences and absences that are masked out
-  // commented out for now because performance hit
-  // also filter presences and absences leaving only one
-  // spatially unique point per grid cell in the mask
-  //g_log( "Filtering data points\n" );
-
-  //filterMaskedOccurrences(_presence);
-  //filterSpatiallyUniqueOccurrences(_presence);
-  //filterMaskedOccurrences(_absence);
-  //filterSpatiallyUniqueOccurrences(_absence);
+  _alg->computeNormalization( _samp );
+  _alg->setNormalization( _samp );
 
   g_log( "Creating the model\n" );
 
@@ -674,317 +365,89 @@ OpenModeller::createModel()
 }
 
 
-/*******************/
-/*** string Copy ***/
-void
-OpenModeller::stringCopy( char **dst, char *src )
-{
-  if ( *dst )
-    delete *dst;
-
-  if ( src )
-    {
-      *dst = new char[1 + strlen( src )];
-      strcpy( *dst, src );
-    }
-  else
-    *dst = 0;
-}
-
-
 /*****************************/
 /*** parameter Model Check ***/
 char *
 OpenModeller::parameterModelCheck()
 {
-  // Presence occurrence points.
-  if ( ! _presence )
-    return "Presence occurrences points were not set.";
-
   // Sampler
   if ( ! _samp )
     return "Sampler not specified.";
 
-  // Environmental data.
-  if ( ! _env )
-    return "Environmental variables not specified.";
-
-
   // Algorithm.
-  if ( ! _alg_id || ! _alg )
+  if ( ! _alg )
     return "Modeling algorithm not specified.";
 
   return 0;
 }
 
-
-/**********************/
-/*** set Output Map ***/
-int
-OpenModeller::setOutputMap( Scalar mult, char *output_file,
-                            char *mask, char *file_with_format )
-{
-  _output_mult = mult;
-  stringCopy( &_output_file, output_file );
-  stringCopy( &_output_mask, mask );
-
-  // Output file header.
-  RasterFile map( file_with_format );
-  _output_header = new Header( map.header() );
-
-  return 1;
-}
-
-
-/**********************/
-/*** set Output Map ***/
-int
-OpenModeller::setOutputMap( Scalar mult, char *output_file,
-                            char *mask, MapFormat *format )
-{
-  _output_mult = mult;
-  stringCopy( &_output_file, output_file );
-  stringCopy( &_output_mask, mask );
-
-  // Output file header.
-  _output_header = new Header( format->getWidth(),
-                               format->getHeight(),
-                               format->getXMin(),
-                               format->getYMin(),
-                               format->getXMax(),
-                               format->getYMax(),
-                               format->getNoDataValue() );
-
-  _output_header->setProj( format->getProjection() );
-
-  return 1;
-}
-
-
 /******************/
 /*** create Map ***/
-int
-OpenModeller::createMap( Environment *env, char *output_file,
-                         char *output_mask )
+void
+OpenModeller::createMap( const EnvironmentPtr & env, char const *output_file )
 {
-  if ( ! output_mask )
-    output_mask = _output_mask;
+  Model m( _alg->getModel() );
 
-  if ( ! output_file )
-    output_file = _output_file;
-
-  return createMap( env, output_file, _output_mult,
-                    output_mask, _output_header );
-}
-
-
-/******************/
-/*** create Map ***/
-int
-OpenModeller::createMap( char *output_file, char *output_mask )
-{
-  if ( ! output_mask )
-    output_mask = _output_mask;
-
-  if ( ! output_file )
-    output_file = _output_file;
-
-  return createMap( _proj, output_file, _output_mult,
-                    output_mask, _output_header );
-}
-
-
-/******************/
-/*** create Map ***/
-int
-OpenModeller::createMap( Environment *env, char *file, Scalar mult, 
-			 char *mask, Header *hdr )
-{
-  if ( !_alg )
-    {
-      sprintf( _error,
-               "Algorithm object is empty!",
-               file );
-      return 0;
-    }
-  else if ( !_alg->done() )
-    {
-      sprintf( _error,
-               "Algorithm model is not finished yet!",
-               file );
-      return 0;
-    }
-
-  /*
-#ifndef GEO_TRANSFORMATIONS_OFF
-  if ( ! hdr->hasProj() )
-    {
-      sprintf( _error, 
-	       "No coordinate system defined for output map!",
-	       file );
-      return 0;
-    }
-#endif
-  */
-
-  // check if env object is original one (used to create model) or
-  // is a different one (caller wants to project model onto it)
-  if ( ! env || env == _env )
-    { env = _env; }
-
-  // env objects are not the same, so copy normalization
-  // parameters from original source and procced with
-  // projection
-  else
-    {
-      Scalar min, max;
-      if ( _alg->needNormalization( &min, &max ) )
-        {
-          env->copyNormalizationParams( _env );
-        }
-    }
-
-  // Force noval = 0
-  hdr->noval = 0.0;
- 
   // Create map on disc.
-  RasterFile rst( file, *hdr );
-  Map map( &rst , env->getCoordinateSystem() );
+  // Currently hard coded to create greyscale tiff.
+  Map map( new Raster( output_file, 1, env->getMask() ) );
 
-  // Retrieve possible adjustments and/or additions made
-  // on the effective header.
-  *hdr = rst.header();
-
-  // Use "mask" as the output mask of the current environment.
-  env->changeMask( mask );
-
-  // Transformer used by the resulting map.
-  GeoTransform *gt = map.getGT();
-
-  // Dimension of environment space.
-  int dim = env->numLayers();
+  Projector::createMap( m, env,
+			&map,
+			_actualAreaStats,
+			_map_command );
+}
 
 
-  // Debug: minimum and maximum.
-  Scalar min = 1e10;
-  Scalar max = -1e10;
+/******************/
+/*** create Map ***/
+void
+OpenModeller::createMap( char const *output_file )
+{
+  Model m( _alg->getModel() );
 
+  // Create map on disc.
+  // Currently hard coded to create greyscale tiff.
+  Map map( new Raster( output_file, 1, _env->getMask() ) );
 
-  // Fill the map with probabilities given by the model.
-  Scalar *amb; 
-  amb = new Scalar[dim];
-  *amb = 0.0;
-
-  Scalar val;
-  Coord lg, lt;
-  Coord y0 = hdr->ymin; // + 0.5 * hdr.ycel;
-  Coord x0 = hdr->xmin; // + 0.5 * hdr.xcel;
-
-  float progress = 0.0;
-  float progress_step = hdr->ycel / (hdr->ymax - y0);
-
-  _actualAreaStats->reset();
-
-  int row = 0;
-  for ( float y = y0; y < hdr->ymax; y += hdr->ycel, row++ )
-    {
-      int col = 0;
-      for ( float x = x0; x < hdr->xmax; x += hdr->xcel )
-        {
-          // Transform coordinates (x,y) that are in the resulting
-          // map system, in (lat, long) according to the system 
-          // accepted by the environment (env).
-          gt->transfOut( &lg, &lt, x, y );
-          
-          
-          // TODO: use mask to check if pixel should contain prediction
-          // Read environmental values and find the output value.
-          if ( ! env->get( lg, lt, amb ) )
-            {
-              val = hdr->noval; 
-            }
-          else
-            {
-              val = _alg->getValue( amb );
-              if ( val < 0.0 ) val = 0.0;
-              else if ( val > 1.0 ) val = 1.0;
-              _actualAreaStats->addPrediction( val ); 
-              val *= mult;
-            }
-
-          // Write value on map.
-          map.put( lg, lt, &val );
-        }
-
-      // Call the callback function if it is set.
-      if ( _map_command )
-        {
-          if ( (progress += progress_step) > 1.0 )
-            progress = 1.0;
-          try 
-            {
-              (*_map_command)( progress );
-            }
-		  catch(char * message)
-		  {
-		      sprintf( _error, "Exception: %s", message );
-			  g_log( "\n" );
-			  g_log(_error);
-			  g_log( "\n" );
-
-			  delete[] amb;
-			  return 0;
-		  }
-          catch( ... ) {}
-        }
-
-    }
-  g_log( "\n" );
-
-  delete[] amb;
-  return 1;
+  Projector::createMap( m, _env,
+			&map,
+			_actualAreaStats,
+			_map_command );
 }
 
 
 /**********************************/
 /******* get Value ****************/
 Scalar
-OpenModeller::getValue(Environment * env, Coord x, Coord y)
+OpenModeller::getValue(const ConstEnvironmentPtr& env, Coord x, Coord y)
 {
-  int dim;
-  Scalar * amb, val;
+  if ( !_env ) {
+    return -1.0;
+  }
 
   // FIXME: enable geotransformation
-  if (_env)
-    {
-      dim = env->numLayers();
-      amb = new Scalar[dim];
-      *amb = 0.0;
+  const Sample& sample = env->get( x, y );
+  if ( sample.size() == 0 )  {
+    return -1.0;
+  }
 
-      if ( ! env->get( x, y, amb ) )
-        {
-          val = -1.0;
-        }
-      else
-        {
-          val = _alg->getValue( amb );
-          if ( val < 0.0 ) val = 0.0;
-          if ( val > 1.0 ) val = 1.0;
-        }
-      delete[] amb;
-      return val;
-    }
+  Scalar val = _alg->getValue( sample );
+  if ( val < 0.0 ) val = 0.0;
+  if ( val > 1.0 ) val = 1.0;
 
-  return -1;
+  return val;
+
 }
 
 
 /**********************************/
 /******* get Value ****************/
 Scalar
-OpenModeller::getValue( Scalar *amb )
+OpenModeller::getValue( Scalar const *amb )
 {
-  return _alg->getValue( amb );
+  Sample tmp( _env->numLayers() ,amb );
+  return _alg->getValue( tmp );
 }
 
 
@@ -1002,14 +465,11 @@ OpenModeller::getActualAreaStats()
 AreaStats * OpenModeller::getEstimatedAreaStats(double proportionAreaToSample)
 {
   int i, sampleSize, numCells, xdim, ydim;
-  Scalar * sample;
 
   if ( !_estimatedAreaStats )
     { _estimatedAreaStats = new AreaStats; }
   else
     { _estimatedAreaStats->reset(); }
-
-  sample = new Scalar[_env->numLayers()];
 
   // get number of cells to sample
   // note that the total area does not take the mask into account
@@ -1017,280 +477,52 @@ AreaStats * OpenModeller::getEstimatedAreaStats(double proportionAreaToSample)
   _env->getMask()->getDim(&xdim, &ydim);
   numCells = xdim * ydim; 
 
-  Coord x0, y0, x1, y1, xcel, ycel;
-  _env->getMask()->getCell(&xcel, &ycel);
-  _env->getMask()->getRegion(&x0, &y0, &x1, &y1);
-  //printf("xdim=%d ydim=%d\n", xdim, ydim);
-  //printf("x0=%f y0=%f x1=%f y1=%f\n", x0, y0, x1, y1);
-  //printf("xcel=%f ycel=%f\n", xcel, ycel);
-
   sampleSize = (int) (numCells * proportionAreaToSample);
   for (i = 0; i < sampleSize; i++)
     { 
-      _env->getRandom(sample);
+      const Sample& sample = _env->getRandom();
       _estimatedAreaStats->addPrediction(_alg->getValue(sample)); 
     }
-
-  delete[] sample;
 
   return _estimatedAreaStats;
 }
 
 /**********************************/
-/******* serialize ****************/
-int 
-OpenModeller::serialize(Serializer * ser)
+/******* getConfusionMatrix *******/
+ConfusionMatrix * OpenModeller::getConfusionMatrix()
 {
-  int i;
-  Map * layer;
-  char * sectionName, * layerFilename;
+  ConfusionMatrix *cm = new ConfusionMatrix();
 
-  ser->writeStartSection("OpenModeller");
+  cm->calculate( getModel(), getSampler() );
 
-  // environment object and related information
-  ser->writeStartSection("Environment");
-  ser->writeString("CoordinateSystem", _env->getCoordinateSystem());
-  int nlayers = _env->numLayers();
-  ser->writeStartSection("Layers", nlayers);
-  for (i = 0; i <= nlayers; i++)
-    {
-      if (i != nlayers)
-	{
-	  // deal with regular layers
-	  layer = _env->getLayer(i);
-	  layerFilename = _env->getLayerFilename(i);
-	  sectionName = "Map";
-	}
-      else
-	{
-	  layer = _env->getMask();
-	  layerFilename = _env->getMaskFilename();
-	  sectionName = "Mask";
-	}
-
-      ser->writeStartSection(sectionName);
-      ser->writeString("Filename", layerFilename);
-      ser->writeString("CoordinateSystem", layer->getCoordSystem());
-      ser->writeInt("Categorical", layer->isCategorical());
-      ser->writeInt("Normalized", layer->isNormalized());
-      ser->writeDouble("Offset", layer->offset());
-      ser->writeDouble("Scale", layer->scale());
-      ser->writeEndSection(sectionName);
-    }
-  ser->writeEndSection("Layers");
-  ser->writeEndSection("Environment");
-
-  // species occurrences and related info
-  ser->writeStartSection("SpeciesOccurrences");
-  ser->writeString("SpeciesName", _presence->name());
-  ser->writeString("CoordinateSystem", _presence->coordSystem());
-
-  int numOccur = _presence->numOccurrences();
-  ser->writeStartSection("Presences", numOccur);
-  Occurrences * occurrences = _presence;
-  Occurrence * oc;
-  for (oc = NULL; oc = occurrences->get(); occurrences->next())
-    {
-      ser->writeStartSection("Point");
-      ser->writeDouble("X", oc->x());
-      ser->writeDouble("Y", oc->y());
-      ser->writeEndSection("Point");
-    }
-  ser->writeEndSection("Presences");
-  
-  numOccur = (_absence)? _absence->numOccurrences() : 0;
-  ser->writeStartSection("Absences", numOccur);
-  if (_absence)
-    {
-      Occurrences * occurrences = _absence;
-      Occurrence * oc;
-      for (oc = NULL; oc = occurrences->get(); occurrences->next())
-	{
-	  ser->writeStartSection("Point");
-	  ser->writeDouble("X", oc->x());
-	  ser->writeDouble("Y", oc->y());
-	  ser->writeEndSection("Point");
-	}
-    }
-  ser->writeEndSection("Absences");
-
-  ser->writeEndSection("SpeciesOccurrences");
-
-  // algorithm metadata, parameters and model
-  ser->writeStartSection("Algorithm");
-
-  // algorithm metadata
-  AlgMetadata * meta = _alg->getMetadata();
-  ser->writeStartSection("AlgorithmMetadata");
-  ser->writeString("Id", meta->id);
-  ser->writeString("Name", meta->name);
-  ser->writeString("Version", meta->version);
-  ser->writeString("Overview", meta->overview);
-  ser->writeString("Author", meta->author);
-  ser->writeString("CodeAuthor", meta->code_author);
-  ser->writeString("Contact", meta->contact);
-  ser->writeEndSection("AlgorithmMetadata");
-
-  // algorithm parameters
-  ser->writeStartSection("AlgorithmParameters", _alg_nparam);
-  for (i = 0; i < _alg_nparam; i++)
-    {
-      ser->writeStartSection("AlgorithmParameter");
-      ser->writeString("Id", _alg_param[i].id());
-      ser->writeString("Value", _alg_param[i].value());
-      ser->writeEndSection("AlgorithmParameter");
-    }
-  ser->writeEndSection("AlgorithmParameters");
-
-  // model
-  ser->writeObject(_alg);
-
-  ser->writeEndSection("Algorithm");
-
-  ser->writeEndSection("OpenModeller");
-
-  return 1;
+  return cm;
 }
 
-/**********************************/
-/******* deserialize **************/
-int 
-OpenModeller::deserialize(Deserializer * des)
+ConfigurationPtr
+OpenModeller::getConfiguration() const
 {
-  int i, k;
 
-  des->readStartSection("OpenModeller");
+  ConfigurationPtr config( new ConfigurationImpl("OpenModeller"));
 
-  // environment object and related information
-  des->readStartSection("Environment");
-  des->readString("CoordinateSystem");
+  ConfigurationPtr sampler_config( _samp->getConfiguration() );
 
-  int nlayers = des->readStartSection("Layers");
-  char * mask, ** layers;
-  int ncont = 0;
-  int ncateg = 0;
-  layers = new char*[nlayers];
-  for (i = 0; i <= nlayers; i++)
-    {
-      des->readStartSection("Map");
-      char * filename = des->readString("Filename");
-      des->readString("CoordinateSystem");
-      int categorical = des->readInt("Categorical");
-      des->readInt("Normalized");
-      des->readDouble("Offset");
-      des->readDouble("Scale");
-      des->readEndSection("Map");
+  config->addSubsection( sampler_config );
 
-      char * copy = new char[strlen(filename) + 1];
-      strcpy(copy, filename);
-      if (i < nlayers)
-	{
-	  ncateg += categorical;
-	  ncont += 1 - categorical;
-	  layers[i] = copy; 
-	}
-      else
-	{ mask = copy; }
-    }
-  des->readEndSection("Layers");
-  des->readEndSection("Environment");
+  ConfigurationPtr alg_config( _alg->getConfiguration() );
 
-  // serialization assumes first layers are categorical 
-  // and last one is the mask
-  setEnvironment(ncateg, layers, ncont, layers + ncateg, mask); 
+  config->addSubsection( alg_config );
 
-  for (i = 0; i < nlayers; i++)
-    delete[] layers[i];
-  delete[] layers;
-  delete[] mask;
+  return config;
+}
 
-  // species occurrences and related info
-  des->readStartSection("SpeciesOccurrences");
-  char * sp_name = des->readString("SpeciesName");
-  char * cs = des->readString("CoordinateSystem");
+void
+OpenModeller::setConfiguration( const ConstConfigurationPtr & config )
+{
 
-  for (i = 0; i < 2; i++)
-    {
-      int numOccur;
-      char * sectionName;
-      Occurrences * occs;
-      if (i == 0)
-	{
-	  // presences are mandatory
-	  occs = _presence = new Occurrences(sp_name, cs);
-	  sectionName = "Presences";
-	  numOccur = des->readStartSection(sectionName);
-	}
-      else
-	{
-	  // absences are optional
-	  sectionName = "Absences";
-	  numOccur = des->readStartSection(sectionName);
-	  if (numOccur)
-	    { occs = _absence = new Occurrences(sp_name, cs); }
-	  else
-	    { occs = _absence = NULL; }
-	}
+  _samp = createSampler( config->getSubsection( "Sampler" ) );
+  _env = _samp->getEnvironment();
 
+  _alg = AlgorithmFactory::newAlgorithm( config->getSubsection( "Algorithm" ) );
+  _alg->setSampler( _samp );
 
-      for (k = 0; k < numOccur; k++)
-	{
-	  des->readStartSection("Point");
-	  double x = des->readDouble("X");
-	  double y = des->readDouble("Y");
-	  des->readEndSection("Point");
-
-	  occs->insert(x, y, 0.0, 1.0);
-	}
-
-      des->readEndSection(sectionName);
-    }
-
-  des->readEndSection("SpeciesOccurrences");
-
-  // algorithm metadata, parameters and model
-  des->readStartSection("Algorithm");
-
-  // algorithm metadata
-  des->readStartSection("AlgorithmMetadata");
-  char * alg_id = des->readString("Id");
-  char * alg_name = des->readString("Name");
-  char * alg_ver = des->readString("Version");
-  des->readString("Overview");
-  des->readString("Author");
-  des->readString("CodeAuthor");
-  des->readString("Contact");
-  des->readEndSection("AlgorithmMetadata");
-
-  // algorithm parameters
-  int nparam = des->readStartSection("AlgorithmParameters");
-  AlgParameter * param = new AlgParameter[ nparam ];
-  for (i = 0; i < nparam; i++)
-    {
-      des->readStartSection("AlgorithmParameter");
-      char * param_id = des->readString("Id");
-      char * param_value = des->readString("Value");
-      des->readEndSection("AlgorithmParameter");
-
-      param[i].setId(param_id);
-      param[i].setValue(param_value);
-    }
-  des->readEndSection("AlgorithmParameters");
-
-  // model
-  setAlgorithm(alg_id, nparam, param);
-  des->readObject(_alg);
-
-  des->readEndSection("Algorithm");
-
-  des->readEndSection("OpenModeller");
-
-  // Check if the algorithm needs normalized variables.
-  Scalar min, max;
-  if ( _alg->needNormalization( &min, &max ) )
-    { _env->normalize( min, max ); }
-
-  delete[] param;
-
-  return 1;
 }

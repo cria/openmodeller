@@ -66,7 +66,7 @@ GarpRuleSet::GarpRuleSet(int size)
 GarpRuleSet::~GarpRuleSet()
 {
   clear();
-  delete _rules;
+  delete [] _rules;
 }
 
 /****************************************************************/
@@ -279,7 +279,8 @@ int GarpRuleSet::findSimilar(GarpRule * rule)
 /****************************************************************/
 /****************** getValue ************************************/
 
-Scalar GarpRuleSet::getValue(Scalar *x)
+
+Scalar GarpRuleSet::getValue(const Sample& x) const
 {
   int i;
 
@@ -339,12 +340,10 @@ void GarpRuleSet::log()
 void GarpRuleSet::gatherRuleSetStats(int gen)
 {
   char type;
-  int i, j, ct, pres;
-  double sum;
 
-  printf("Gen: %4d ", gen);
+  printf("%4d]", gen);
 
-  for (i = 0; i < 3; i++)
+  for (int i = 0; i < 3; i++)
   {
     switch (i)
     {
@@ -354,10 +353,11 @@ void GarpRuleSet::gatherRuleSetStats(int gen)
 	//case 3: type ='a'; break;
     }
 
-    sum = 0;
-    ct = 0;
-    pres = 0;
-    for (j = 0; j < _numRules; j++)
+    double max = -10000;
+    double sum = 0;
+    int ct = 0;
+    int pres = 0;
+    for (int j = 0; j < _numRules; j++)
     {
       GarpRule * rule = _rules[j];
       if (rule->type() == type)
@@ -365,10 +365,15 @@ void GarpRuleSet::gatherRuleSetStats(int gen)
         ct++;
         sum += rule->getPerformance(PerfUtil);
 	pres += (int) rule->getPrediction();
+	if (max < rule->getPerformance(PerfUtil))
+	  max = rule->getPerformance(PerfUtil);
       }
     }
 
-    printf("[%c %3d %+9.4f %2d] ", type, ct, sum / ct, pres);
+    if (max == -10000)
+      max = 0;
+
+    printf("%c %2d %+7.2f %+7.2f %2d|", type, ct, max, sum / ct, pres);
   }
 
   printf("\n");

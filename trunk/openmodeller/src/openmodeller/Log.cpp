@@ -40,7 +40,7 @@
 
 
 // A default logger object.
-Log g_log( Log::Error , stderr );
+Log g_log( Log::Info , stderr );
 
 
 /****************************************************************/
@@ -86,6 +86,8 @@ Log::~Log()
 {
   if ( _close )
     fclose( _log );
+  if ( _pref )
+    delete [] _pref;
 }
 
 
@@ -116,7 +118,7 @@ void
 Log::setPrefix( char *pref )
 {
  if ( _pref )
-    delete _pref;
+    delete [] _pref;
 
   // Without prefix.
   if ( ! pref )

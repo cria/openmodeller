@@ -1,3 +1,4 @@
+
 /* **************************************
  *  GARP Modeling Package
  *
@@ -402,7 +403,7 @@ double RuleSet::getOveralPerformance(int iPerfIndex, int iFirstRulesToBeIncluded
 }
 
 // ==========================================================================
-Scalar RuleSet::getValue(Scalar const * values) const
+Scalar RuleSet::getValue(const Sample& sample) const
 {
   // convert values to EnvCell
   BYTE bytes[256];
@@ -411,7 +412,13 @@ Scalar RuleSet::getValue(Scalar const * values) const
 
   for (int i = 0; i < _dim; i++)
     {
-      bytes[i + 1] = (BYTE) values[i];
+      // Guard against values outside the normalization range
+      // due to reprojection to a non-native range
+      Scalar value = sample[i];
+      if (value > 253.0) value = 253.0;
+      if (value < 1.0)   value = 1.0;
+	
+      bytes[i + 1] = (BYTE) value;
       //printf("%3d (%8.3f) ", bytes[i + 1], values[i]);
     }
 
@@ -872,6 +879,9 @@ bool RuleSet::projectRuleSet(EnvLayerSet * oToLayerSet, bool bConservative, Rule
 }
 */
 // ==========================================================================
+
+// ==============================================================
+
 // gather rule set statistics
 void RuleSet::gatherRuleSetStats(int gen)
 {
@@ -909,7 +919,7 @@ void RuleSet::gatherRuleSetStats(int gen)
     if (max == -10000)
       max = 0;
 
-    printf("%c %2d %+5.2f %+5.2f %2d|", type, ct, max, sum / ct, pres);
+    printf("%c %2d %+7.2f %+7.2f %2d|", type, ct, max, sum / ct, pres);
   }
 
   printf("\n");

@@ -29,7 +29,8 @@
 #include "env_io/header.hh"
 
 #include <om_log.hh>
-#include <string.h>
+
+using std::string;
 
 
 /****************************************************************/
@@ -39,26 +40,24 @@
 /*** construtor ***/
 
 Header::Header( int xd, int yd, Coord xm, Coord ym,
-                Coord xM, Coord yM, Scalar nv, int nb, int gd )
+                Coord xM, Coord yM, Scalar nv, int nb, int gd ) :
+  xdim( xd ),
+  ydim( yd ),
+  xmin( xm ),
+  ymin( ym ),
+  xmax( xM ),
+  ymax( yM ),
+  xcel( 0 ),
+  ycel( 0 ),
+  noval( nv ),
+  nband( nb ),
+  grid( gd ),
+  categ( 0 ),
+  minmax( 0 ),
+  min( 0.0 ),
+  max( 0.0 ),
+  proj()
 {
-  xdim  = xd;
-  ydim  = yd;
-  xmin  = xm;
-  ymin  = ym;
-  xmax  = xM;
-  ymax  = yM;
-  noval = nv;
-  nband = nb;
-  grid  = gd;
-  dtype = UInt8;
-  categ = 0;
-
-  minmax = 0;
-  min = 0.0;
-  max = 0.0;
-
-  proj  = 0;
-
   calculateCell();
 
   // Given the information provided in this constructor,
@@ -72,9 +71,8 @@ Header::Header( int xd, int yd, Coord xm, Coord ym,
   gt[5] = ycel;
 }
 
-Header::Header( Header &h )
+Header::Header( const Header &h )
 {
-  proj = 0;
   operator=( h );
 }
 
@@ -84,15 +82,13 @@ Header::Header( Header &h )
 
 Header::~Header()
 {
-  if ( proj )
-    delete proj;
 }
 
 
 /******************/
 /*** operator = ***/
 Header &
-Header::operator=( Header &h )
+Header::operator=( const Header &h )
 {
   xdim = h.xdim;
   ydim = h.ydim;
@@ -115,14 +111,13 @@ Header::operator=( Header &h )
   noval = h.noval;
   nband = h.nband;
   grid  = h.grid;
-  dtype = h.dtype;
   categ = h.categ;
 
   minmax = h.minmax;
   min = h.min;
   max = h.max;
 
-  setProj( h.proj );
+  proj = h.proj;
 
   return *this;
 }
@@ -142,17 +137,10 @@ Header::calculateCell()
 
 /****************/
 /*** set Proj ***/
-char *
-Header::setProj( char *projection )
+void 
+Header::setProj( const string& projection )
 {
-  if ( proj )
-    delete proj;
-
-  int len = (strlen(projection) + 1) * sizeof(char);
-  proj = new char[len];
-  memcpy( proj, projection, len );
-
-  return proj;
+  proj = projection;
 }
 
 
@@ -174,7 +162,6 @@ Header::printHeader( char *msg )
   g_log( "noval: %.4f\n", noval );
   g_log( "band: %d\n", nband );
   g_log( "grid: %d\n", grid );
-  g_log( "type: %d\n", dtype );
   g_log( "var : %s\n", categ ? "categórica" : "ordenável" );
 
   if ( minmax )
@@ -185,5 +172,5 @@ Header::printHeader( char *msg )
   else
     g_log( "No minimum or maximum available.\n" );
   
-  g_log( "proj: %s\n", proj ? proj : "" );
+  g_log( "proj: %s\n", proj.c_str() );
 }

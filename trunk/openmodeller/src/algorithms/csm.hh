@@ -265,12 +265,12 @@ Var N   |    |     |     |            |
 
 @author Tim Sutton, Renato De Giovanni
 */
-class Csm : public Algorithm
+class Csm : public AlgorithmImpl
 {
     public:
 
         /** Constructor for Csm */
-        Csm(AlgMetadata * metadata);
+        Csm(AlgMetadata const* metadata);
         /** This is the descructor for the Csm class */
         ~Csm();
 
@@ -300,7 +300,7 @@ class Csm : public Algorithm
          * @return     
          * @return Implementation specific but usually 1 for completion.
          */
-        int done();
+        int done() const;
 
         //
         // Methods used to project the model
@@ -313,7 +313,7 @@ class Csm : public Algorithm
          * @param Scalar *x a pointer to a vector of openModeller Scalar type 
          * (currently double). The vector should contain values looked up on 
          * the environmental variable layers into which the mode is being projected. */
-        Scalar getValue( Scalar *x );
+        Scalar getValue( const Sample& x ) const;
 
         /** Returns a value that represents the convergence of the algorithm
          * expressed as a number between 0 and 1 where 0 represents model
@@ -392,14 +392,14 @@ class Csm : public Algorithm
          * @param vb gsl_vector Input vector b
          * @return double Result
          */
-        double product (gsl_vector * va, gsl_vector * vb);
+        double product (gsl_vector * va, gsl_vector * vb) const;
 
         /** This a utility function to calculate the product between two gsl matrices.
          * @param a gsl_matrix Input matrix a
          * @param b gsl_matrix Input matrix b
          * @return gsl_matrix Output matrix
          */
-        gsl_matrix * product (gsl_matrix * a, gsl_matrix * b);
+        gsl_matrix * product (gsl_matrix * a, gsl_matrix * b) const;
 
         /** This a utility function to calculate the auto covariance of a gsl matrix.
          * @param m gsl_matrix Input matrix

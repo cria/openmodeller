@@ -55,18 +55,21 @@ class NegatedRangeRule : public RangeRule
 {
 public:
   NegatedRangeRule();
+
+  NegatedRangeRule(int numGenes);
+
   /// Constructor with setters 
   NegatedRangeRule(Scalar prediction, int numGenes, 
-		   Scalar * genes, double * performances) : 
-    RangeRule(prediction, numGenes, genes, performances) {};
+		   const Sample& chrom1, const Sample& chrom2, 
+       const double * performances);
   
   virtual ~NegatedRangeRule();
-  virtual GarpRule * objFactory() { return new NegatedRangeRule; }
+  virtual GarpRule * objFactory() const { return new NegatedRangeRule(); }
   
   virtual char type() const				{ return '!'; }
   
-  virtual bool applies(Scalar * values);
-  virtual int getStrength(Scalar * values);
+  virtual bool applies(const Sample& sample) const;
+  virtual int getStrength(const Sample& sample) const;
 
   void log();
 };

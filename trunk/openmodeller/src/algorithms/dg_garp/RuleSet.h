@@ -93,7 +93,7 @@ public:
 	void set(int index, Rule * objRule);
 	Rule * get(int index);
 
-	Scalar getValue(Scalar const * values) const;
+	Scalar getValue(const Sample& sample) const;
 
 	void clear();
 	void sort(int intPerfIndex);

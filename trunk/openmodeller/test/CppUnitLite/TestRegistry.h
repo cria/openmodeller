@@ -28,7 +28,8 @@ private:
 	int			run (TestResult& result);
 
 	
-	Test					*tests;
+	Test *first_test;
+	Test *last_test;
 
 };
 

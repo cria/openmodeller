@@ -28,10 +28,11 @@
 
 #include "distance_to_average.hh"
 
-#include <string.h>
+#include <configuration.hh>
+#include <Exceptions.hh>
+
 #include <stdio.h>
 #include <math.h>
-
 
 /****************************************************************/
 /********************** Algorithm's Metadata ********************/
@@ -106,13 +107,18 @@ static AlgMetadata metadata = {
 /****************** Algorithm's factory function ****************/
 
 dllexp
-Algorithm *
+AlgorithmImpl *
 algorithmFactory()
 {
-  return new DistanceToAverage;
+  return new DistanceToAverage();
 }
 
-
+dllexp
+AlgMetadata const *
+algorithmMetadata()
+{
+  return &metadata;
+}
 
 /****************************************************************/
 /************************ Distance To Average *******************/
@@ -120,13 +126,14 @@ algorithmFactory()
 /*******************/
 /*** constructor ***/
 
-DistanceToAverage::DistanceToAverage()
-  : Algorithm( &metadata )
+DistanceToAverage::DistanceToAverage() :
+  AlgorithmImpl( &metadata ),
+  _done( false ),
+  _dist(0.0),
+  _min(0.0),
+  _max(0.0),
+  _avg()
 {
-  _min = _max = _dist = 0.0;
-
-  _done = 0;
-  _avg  = 0;
 }
 
 
@@ -135,20 +142,15 @@ DistanceToAverage::DistanceToAverage()
 
 DistanceToAverage::~DistanceToAverage()
 {
-  if ( _avg )
-    {
-      g_log( "\nMinimum distance found: %f", _min );
-      g_log( "\nMaximum distance found: %f\n\n", _max );
-
-      delete _avg;
-    }
+  g_log( "\nMinimum distance found: %f", _min );
+  g_log( "\nMaximum distance found: %f\n\n", _max );
 }
 
 
 /**************************/
 /*** need Normalization ***/
 int
-DistanceToAverage::needNormalization( Scalar *min, Scalar *max )
+DistanceToAverage::needNormalization( Scalar *min, Scalar *max ) const
 {
   *min = 0.0;
   *max = 1.0;
@@ -164,60 +166,56 @@ DistanceToAverage::initialize()
   if ( ! getParameter( PARAM_MAXDIST, &_dist ) )
     return 0;
 
-  _dim = _samp->numIndependent();
-
   g_log( "Parameter %s: %f\n", PARAM_MAXDIST, _dist );
 
   // Distance should range from 0 to 1
   if ( _dist > 1.0 )  _dist = 1.0;
   else if ( _dist < 0.0 ) _dist = 0.0;
 
+  int dim = _samp->numIndependent();
+
   // Normalize the distance parameter according to the number
   // of layers.
-  _dist *= sqrt( (double) _dim );
+  _dist *= sqrt( (double) dim );
 
-  g_log( "\nEnvironmental layers: %d\n", _dim );
+  g_log( "\nEnvironmental layers: %d\n", dim );
   g_log( "Parameter normalized: %f\n\n", _dist );
-
-  _avg = new Scalar[_dim];
-
 
   //
   // Generate model from the average of given points.
   //
 
-  g_log( "Reading %d-dimensional occurrence points.\n", _dim );
+  g_log( "Reading %d-dimensional occurrence points.\n", dim );
+
+  int npnt = _samp->numPresence();
+  if ( npnt == 0 ) {
+    g_log( "All occurrences are outside the mask!\n" );
+    return 0;
+  }
 
   // Read all presence occurence points.
-  SampledData presence;
-  int npnt = _samp->getPresence( &presence );
-  if ( ! npnt )
-    {
-      g_log( "All occurrences are outside the mask!\n" );
-      return 0;
-    }
-  Scalar **points = presence.getIndependentBase();
+  OccurrencesPtr presences = _samp->getPresences();
+  OccurrencesImpl::const_iterator pres = presences->begin();
+  OccurrencesImpl::const_iterator fin = presences->end();
 
   g_log( "Finding average from %d occurrences.\n", npnt );
 
-  // Sum of the environmental values for all occurrence points.
-  memset( _avg, 0, _dim * sizeof(Scalar) );
-  for ( int i = 0; i < npnt; i++ )
-    {
-      Scalar *sample_i = *points++;
-      for ( int d = 0; d < _dim; d++ )
-	_avg[d] += *sample_i++;
-    }
+  // Redimension _avg.
+  _avg.resize( dim );
 
-  // Average value.
-  int d;
-  for ( d = 0; d < _dim; d++ )
-    _avg[d] /= npnt;
+  while ( pres != fin ) {
+    _avg += (*pres)->environment();
+    ++pres;
+  }
+
+  _avg /= npnt;
 
   g_log( "Average related to occurrences: " );
-  for ( d = 0; d < _dim; d++ )
+  for ( int d = 0; d < dim; d++ )
     g_log( "%f ", _avg[d] );
   g_log( "\n\n" );
+
+  _done = true;
 
   return 1;
 }
@@ -228,14 +226,14 @@ DistanceToAverage::initialize()
 int
 DistanceToAverage::iterate()
 {
-  return _done = 1;
+  return 1;
 }
 
 
 /************/
 /*** done ***/
 int
-DistanceToAverage::done()
+DistanceToAverage::done() const
 {
   return _done;
 }
@@ -244,23 +242,15 @@ DistanceToAverage::done()
 /*****************/
 /*** get Value ***/
 Scalar
-DistanceToAverage::getValue( Scalar *x )
+DistanceToAverage::getValue( const Sample& x ) const
 {
   static int first_time = 1;
 
-  // First position is the number of occurrences.
-  Scalar *avg = _avg;
-  Scalar *end = _avg + _dim;
-
   // Calculate distance between *x and _avg.
-  Scalar dif;
-  Scalar dist = 0.0;
-  while ( avg < end )
-    {
-      dif = *x++ - *avg++;
-      dist += dif * dif;
-    }
-  dist = sqrt( dist );
+  
+  Sample dif = x;
+  dif -= _avg;
+  Scalar dist = dif.norm();
 
   // Minimum and maximum distances found. Only for log!
   if ( first_time )
@@ -287,33 +277,31 @@ DistanceToAverage::getConvergence( Scalar *val )
   return 1;
 }
 
-
-/*****************/
-/*** serialize ***/
-int
-DistanceToAverage::serialize(Serializer * s)
+/****************************************************************/
+/****************** configuration *******************************/
+void
+DistanceToAverage::_getConfiguration( ConfigurationPtr& config ) const
 {
-  s->writeStartSection("DistanceToAverageModel");
-  s->writeInt("Dimension", _dim);
-  s->writeDouble("Distance", _dist);
-  s->writeArrayDouble("Average", _avg, _dim);
-  s->writeEndSection("DistanceToAverageModel");
-  return 1;
+  if (!_done )
+    return;
+
+  ConfigurationPtr model_config( new ConfigurationImpl("DistanceToAverageModel") );
+  config->addSubsection( model_config );
+
+  model_config->addNameValue( "Distance", _dist );
+  model_config->addNameValue( "Average", _avg );
 }
 
-
-/*******************/
-/*** deserialize ***/
-int
-DistanceToAverage::deserialize(Deserializer * s)
+void
+DistanceToAverage::_setConfiguration( const ConstConfigurationPtr& config )
 {
-  int size;
+  ConstConfigurationPtr model_config = config->getSubsection( "DistanceToAverageModel",false );
 
-  s->readStartSection("DistanceToAverageModel");
-  _dim  = s->readInt("Dimension");
-  _dist = s->readDouble("Distance");
-  _avg  = s->readArrayDouble("Average", &size);
-  s->readEndSection("DistanceToAverageModel");
+  if (!model_config)
+    return;
 
-  return (_dim == size) ? _done = 1 : 0;
+  _done = true;
+  _dist = model_config->getAttributeAsDouble( "Distance", 0.0 );
+  _avg = model_config->getAttributeAsSample( "Average" );
+
 }

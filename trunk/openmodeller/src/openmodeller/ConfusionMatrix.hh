@@ -28,9 +28,11 @@
 
 #include <om_defs.hh>
 
-class Algorithm;
-class Environment;
-class Occurrences;
+#include <Model.hh>
+
+#include <om_occurrences.hh>
+#include <environment.hh>
+#include <om_sampler.hh>
 
 /**
  * Class ConfusionMatrix tabulates the proportions of types of
@@ -73,13 +75,26 @@ public:
   void reset(Scalar predictionThreshold = 0.5);
 
   /** 
-   * Calculate confusion matrix based on model and sampled data.
-   * @param sampler Sampler object that stores the presence 
-   *  and absence data used to build the model
-   * @param alg Algorithm that stores the current model
+   * Calculate confusion matrix based on model and sampled data
+   * from environment and occurrences objects.
+   * @param env Pointer to Environment object containing the 
+   *  environmental data to be used in calculation
+   * @param model Model object to be evaluated
+   * @param presences Pointer to an Occurrences object storing
+   *  the presence points being evaluated
+   * @param absences Pointer to an Occurrences object storing
+   *  the absence points being evaluated
    */
-  void calculate(Environment * env, Algorithm * alg, 
-		 Occurrences * presences, Occurrences * absences);
+  void calculate(const EnvironmentPtr & env, const Model& model, 
+		 const OccurrencesPtr& presences, const OccurrencesPtr& absences = OccurrencesPtr());
+  
+  /** 
+   * Calculate confusion matrix based on an abstract Sampler object
+   * @param model Model object to be evaluated
+   * @param Sampler Pointer to a Sampler object that will provide
+   *  data for evaluation
+   */
+  void calculate(const Model& model, const SamplerPtr& sampler);
   
   /**
    * Returns a value from the confusion matrix.

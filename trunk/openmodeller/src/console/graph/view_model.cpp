@@ -36,6 +36,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#define Abs(x)      ((x) < 0 ? -(x) : x)
 
 /****************************************************************/
 /*************************** View Model *************************/
@@ -46,7 +47,8 @@ ViewModel *ViewModel::f_this = 0;
 /******************/
 /*** construtor ***/
 
-ViewModel::ViewModel( Algorithm *alg, char *name, int dim )
+ViewModel::ViewModel( AlgorithmPtr alg, char *name, int dim ) :
+  f_alg( alg )
 {
   if ( f_this )
     {
@@ -54,8 +56,6 @@ ViewModel::ViewModel( Algorithm *alg, char *name, int dim )
       exit( 1 );
     }
   f_this = this;
-
-  f_alg = alg;
 
   f_frame = createFrame( name, 1, dim, 5*dim/4 );
 
@@ -212,7 +212,7 @@ ViewModel::drawMap( GGraph *gr )
 void
 ViewModel::funcDraw()
 {
-  Algorithm *alg = f_this->f_alg;
+  AlgorithmPtr alg = f_this->f_alg;
 
   if ( ! alg->done() )
     f_this->draw();

@@ -48,21 +48,22 @@
 #endif
 
 
-//================================================================
+/****************************************************************/
 static void printListOfRuns(char * msg, AlgorithmRun ** runs, int numOfRuns)
 {
-  printf(msg);
+  printf("%s\n", msg);
   for (int i = 0; i < numOfRuns; i++)
-    printf("%4d] om=%5.3f comm=%5.3f\n", i, 
+    printf("%4d] om=%5.3f comm=%5.3f (id=%d)\n", i, 
 	   runs[i]->getOmission(), 
-	   runs[i]->getCommission());
+	   runs[i]->getCommission(),
+	   runs[i]->getId());
 }
 
 /****************************************************************/
 /****************** Garp class **********************************/
 
 BestSubsets::BestSubsets(AlgMetadata * metadata)
-  : Algorithm(metadata)
+  : AlgorithmImpl(metadata)
 {
   _trainProp = 0.0;
   _totalRuns = 0;
@@ -115,7 +116,7 @@ BestSubsets::~BestSubsets()
 // ****************************************************************
 // ************* needNormalization ********************************
 
-int BestSubsets::needNormalization( Scalar *min, Scalar *max )
+int BestSubsets::needNormalization( Scalar *min, Scalar *max ) const
 {
   *min = -1.0;
   *max = +1.0;
@@ -130,25 +131,25 @@ int BestSubsets::initialize()
 {
   // BS parameters
   if (!getParameter("TrainingProportion", &_trainProp))        
-      g_log.error(1, "Parameter TrainingProportion not set properly.");
+      g_log.error(1, "Parameter TrainingProportion not set properly.\n");
 
   if (!getParameter("TotalRuns", &_totalRuns))        
-      g_log.error(1, "Parameter TotalRuns not set properly.");
+      g_log.error(1, "Parameter TotalRuns not set properly.\n");
 
   if (!getParameter("HardOmissionThreshold", &_omissionThreshold))        
-      g_log.error(1, "Parameter HardOmissionThreshold not set properly.");
+      g_log.error(1, "Parameter HardOmissionThreshold not set properly.\n");
 
   if (!getParameter("ModelsUnderOmissionThreshold", &_modelsUnderOmission))        
-      g_log.error(1, "Parameter ModelsUnderOmissionThreshold not set properly.");
+      g_log.error(1, "Parameter ModelsUnderOmissionThreshold not set properly.\n");
 
   if (!getParameter("CommissionThreshold", &_commissionThreshold))        
-      g_log.error(1, "Parameter CommissionThreshold not set properly.");
+      g_log.error(1, "Parameter CommissionThreshold not set properly.\n");
 
   if (!getParameter("CommissionSampleSize", &_commissionSampleSize))        
-      g_log.error(1, "Parameter CommissionSampleSize not set properly.");
+      g_log.error(1, "Parameter CommissionSampleSize not set properly.\n");
 
   if (!getParameter("MaxThreads", &_maxThreads))        
-      g_log.error(1, "Parameter MaxThreads not set properly.");
+      g_log.error(1, "Parameter MaxThreads not set properly.\n");
 
   // convert percentages (100%) to proportions (1.0) for external parameters 
   _commissionThreshold /= 100.0;
@@ -157,7 +158,7 @@ int BestSubsets::initialize()
   _softOmissionThreshold = (_omissionThreshold >= 1.0);
   if (_modelsUnderOmission > _totalRuns)
     {
-      g_log.warn("ModelsUnderOmission (%d) is greater than the number of runs (%d)",
+      g_log.warn("ModelsUnderOmission (%d) is greater than the number of runs (%d)\n",
 		 _modelsUnderOmission, _totalRuns);
       _modelsUnderOmission = _totalRuns;
     }
@@ -192,27 +193,29 @@ int BestSubsets::iterate()
       // wait for a slot for a new thread
       if ((active = numActiveThreads()) >= _maxThreads)
 	{
-	  /*
-	    g_log("%5d] Waiting for a slot to run next thread (%d out of %d)\n",
-	    iterations, active, _maxThreads);
-	  */
-	  SLEEP(1); 
+	  //g_log("%5d] Waiting for a slot to run next thread (%d out of %d)\n", iterations, active, _maxThreads);
+	  SLEEP(2); 
 	}
       
       else
 	{
-	  //g_log("%5d] There is an empty slot to run next thread (%d out of %d)\n", iterations, active, _maxThreads);
+	  int runId = _numFinishedRuns + _numActiveRuns;
+
+	  //g_log("%5d] There is an empty slot to run next thread (%d out of %d) - %d\n", iterations, active, _maxThreads, runId);
 	  
 	  // start new Algorithm
-	  Sampler * train, * test;
-	  _samp->split(&train, &test, _trainProp);
+	  SamplerPtr train, test;
+	  splitSampler(_samp, &train, &test, _trainProp);
+
+	  //	  printf("Presences: Orig=%d, train=%d, test=%d\n", _samp->numPresence(), train->numPresence(), test->numPresence());
+	  //	  printf("Absences:  Orig=%d, train=%d, test=%d\n", _samp->numAbsence(), train->numAbsence(), test->numAbsence());
+
 	  algRun = new AlgorithmRun();
-	  algRun->initialize(_numFinishedRuns + _numActiveRuns, 
+	  algRun->initialize(runId,
 			     _commissionSampleSize, train, test, 
 			     _nparam, _alg_params, 
 			     (BSAlgorithmFactory *) this);
-	  _activeRun[_numActiveRuns] = algRun;
-	  _numActiveRuns++;
+	  _activeRun[_numActiveRuns++] = algRun;
 	  algRun->run();
 	}
     }
@@ -299,16 +302,19 @@ int BestSubsets::calculateBestSubset()
   for (i = 0; i < _numFinishedRuns; i++)
     { runList[i] = _finishedRun[i]; }
 
+  //printListOfRuns("Finished Runs:", runList, _numFinishedRuns);
+
   // get list of models that pass omission test
   // sort runs by omission
   // first <_modelsUnderOmission> runs are the selected ones
-  printListOfRuns("Finished Runs (before sorting):\n", runList, _numFinishedRuns);
   sortRuns(runList, _numFinishedRuns, 0);
-  printListOfRuns("Finished Runs (after sorting):\n", runList, _numFinishedRuns);
+
+  //printListOfRuns("Finished Runs by Omission:", runList, _numFinishedRuns);
 
   // get list of models that pass commission test
   sortRuns(runList, _modelsUnderOmission, 1);
-  printListOfRuns("Runs sorted by commission:\n", runList, _modelsUnderOmission);
+
+  //printListOfRuns("Best Omission Runs by Commission:", runList, _numFinishedRuns);
 
   _numBestRuns = (int)(_commissionThreshold * 
 		    (double) _modelsUnderOmission);
@@ -320,8 +326,10 @@ int BestSubsets::calculateBestSubset()
   for (i = 0; i < _numBestRuns; i++)
     { _bestRun[i] = runList[i + firstRun]; }
 
-  printListOfRuns("Best runs:\n", _bestRun, _numBestRuns);
-  printf("Median: %d First: %d\n", medianRun, firstRun);
+  //printListOfRuns("Best Runs:", _bestRun, _numBestRuns);
+
+  //printf("Median: %d First: %d\n", medianRun, firstRun);
+  
 
   delete[] runList;
 
@@ -361,7 +369,7 @@ void BestSubsets::sortRuns(AlgorithmRun ** runList,
 /****************************************************************/
 /****************** done ****************************************/
 
-int BestSubsets::done()
+int BestSubsets::done() const
 {
   return _done;
 }
@@ -369,7 +377,7 @@ int BestSubsets::done()
 /****************************************************************/
 /****************** done ****************************************/
 
-float BestSubsets::getProgress()
+float BestSubsets::getProgress() const
 {
   if (done())
     { return 1.0; } 
@@ -381,11 +389,7 @@ float BestSubsets::getProgress()
 
       float avgProgressActiveRuns = 0.0;
       for (int i = 0; i < _numActiveRuns; i++)
-	{ 
-	  float activeProgress = _activeRun[i]->getProgress(); 
-	  if ( (activeProgress > 0.0) && (activeProgress <= 1.0) )
-	       avgProgressActiveRuns += activeProgress;
-	}
+	{ avgProgressActiveRuns += _activeRun[i]->getProgress(); }
       avgProgressActiveRuns /= _numActiveRuns;
 
       progByTotalRuns = (_numFinishedRuns + avgProgressActiveRuns) / (float) _totalRuns;
@@ -398,9 +402,6 @@ float BestSubsets::getProgress()
 
       float progress = (progByTotalRuns > progByHardOmission)? progByTotalRuns : progByHardOmission;
 
-
-      //printf("BS: ByTR=%5.3f ByHO=%5.3f Prog=%5.3f\n", progByTotalRuns, progByHardOmission, progress);
-
       if (progress > _maxProgress)
 	{ _maxProgress = progress; }
 
@@ -411,7 +412,7 @@ float BestSubsets::getProgress()
 /****************************************************************/
 /****************** getValue ************************************/
 
-Scalar BestSubsets::getValue( Scalar *x ) 
+Scalar BestSubsets::getValue( const Sample& x ) const
 {
   int i;
   double sum = 0.0;
@@ -433,5 +434,4 @@ int BestSubsets::getConvergence( Scalar *val )
   *val = 0;
   return 0;
 }
-
 

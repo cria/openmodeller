@@ -31,11 +31,11 @@
 
 #include  <om_algorithm_metadata.hh>
 
+#include <om_occurrences.hh>
+
 class OpenModeller;
 class FileParser;
-class Occurrences;
 class AlgParameter;
-
 
 /**************************************************************/
 /************************ Request File ************************/
@@ -59,36 +59,43 @@ public:
   int occurrencesSet() { return _occurrences_set; }
   int environmentSet() { return _environment_set; }
   int projectionSet()  { return _projection_set; }
-  int outputMapSet()   { return _outputmap_set; }
   int algorithmSet()   { return _algorithm_set; }
 
-  Occurrences * getOccurrences() { return _occurrences; }
+  OccurrencesPtr getOccurrences() { return _occurrences; }
 
+  void makeProjection( OpenModeller *om );
 
 private:
 
   int setOccurrences( OpenModeller *om, FileParser &fp );
   int setEnvironment( OpenModeller *om, FileParser &fp );
   int setProjection ( OpenModeller *om, FileParser &fp );
-  int setOutputMap  ( OpenModeller *om, FileParser &fp );
   int setAlgorithm  ( OpenModeller *om, FileParser &fp );
 
-  Occurrences *readOccurrences( char *file, char *name,
+  OccurrencesPtr readOccurrences( char *file, char *name,
                                 char *coord_system );
 
-  int readParameters( AlgParameter *result, AlgMetadata *metadata,
+  int readParameters( AlgParameter *result, AlgMetadata const *metadata,
                       int str_nparam, char **str_param );
 
-  char *extractParameter( char *name, int nvet, char **vet );
-
+  char *extractParameter( char const *name, int nvet, char **vet );
 
   int _occurrences_set;
   int _environment_set;
   int _projection_set;
-  int _outputmap_set;
   int _algorithm_set;
 
-  Occurrences * _occurrences;
+  OccurrencesPtr _occurrences;
+
+  bool _nonNativeProjection;
+  double _multiplier;
+  int _ncat;
+  char **_cat;
+  int _nmap;
+  char **_map;
+  char *_mask;
+  char *_file;
+
 };
 
 

@@ -30,14 +30,17 @@
 #ifndef _ALGORITHM_FACTORYHH_
 #define _ALGORITHM_FACTORYHH_
 
-#include <list.hh>
 #include <os_specific.hh>
 #include <om_algorithm_metadata.hh>
+#include <om_sampler.hh>
+#include <om_algorithm.hh>
 
-class Algorithm;
+#include <configuration.hh>
+
+#include <string>
+#include <list>
+
 class AlgParameter;
-class Sampler;
-
 
 /****************************************************************/
 /*********************** Algorithm Factory **********************/
@@ -53,55 +56,30 @@ class Sampler;
  */
 class AlgorithmFactory
 {
-  /** Manages an algorithm with its DLL file. */
-  class DLL
-  {
-  public:
-    DLL( char *file );
-    ~DLL();
-
-    Algorithm *load();
-
-    /**
-     * Returns an algorithm that cannot be deleted.
-     * It is a reference object.
-     */
-    Algorithm *getAlgorithm()  { return _alg; }
-
-    /** Returns a new instantiated algorithm object. **/
-    Algorithm *newAlgorithm();
-
-
-  private:
-    DLLHandle _handle;
-    Algorithm *_alg;
-    char      *_file;
-  };
-
 
 public:
 
-  /** @search_dirs Null terminated list of directory paths to
-   * search for algorithms.
-   */
-  AlgorithmFactory( char **search_dirs );
   ~AlgorithmFactory();
 
-  /** Set directories that will be searched when trying to load algorithms
+  /** Search for all DLLs in default directories.
+   *
+   * The default search algorithm is platform specific.
+   *
+   * @return Number of DLLs loaded.
    */
-  void setDirs(char ** dirs);
+  static int searchDefaultDirs();
 
-  /** Load the system available algorithms. If there are
-   * algorithm already loaded they are unloaded.
-   * 
-   * Warning:
-   * 
-   * The pointers to old algorithms are invalid after a call to
-   * this method.
-   * 
-   * @return Number of loaded algorithms.
+  /** Search for all DLLs in some directories.
+   * @param dir null terminated string representing a directory to scan
+   * @return Number of DLLs found.
    */
-  int loadAlgorithms();
+  static int addDir( const std::string& dirs );
+
+  /** Add a single file to the DLL search list.
+   * @param file name of dll file to attempt to load
+   * @return true for success.
+   */
+  static bool addDll( const std::string& file );
 
   /** Finds the system available algorithms.
    * 
@@ -109,14 +87,13 @@ public:
    * are not initialized with "Sampler" and parameters!
    * To do so, use the method newAlgorithm().
    * 
-   * The pointer returned are copied from an internal storage of
-   * algorithms. So they can not be deallocated.
-   * Another point is that the Algorithms will be reallocated
-   * the next time this method is called.
+   * The pointer to the array must be deallocated by the caller
+   * using delete [].  However, the individual AlgMetadata*'s
+   * in the array must not be deallocated.
    *
    * @return a null terminated list of available algorithms.
    */
-  AlgMetadata **availableAlgorithms();
+  static AlgMetadata const**availableAlgorithms();
 
   /** Number of available algorithms.
    * If the algorithms are not already searched in the system,
@@ -124,56 +101,86 @@ public:
    *
    * @return Number of available algorithms.
    */
-  int numAvailableAlgorithms();
+  static int numAvailableAlgorithms();
 
   /** Returns an specific algorithm metadata
    * @param algorithm_id Identifier of the algorithm.
    * @return Algorithm's metadata or zero if there algorithm
    *  was not found.
    */
-  AlgMetadata *algorithmMetadata( char *algorithm_id );
+  static AlgMetadata const *algorithmMetadata( char const *algorithm_id );
 
   /** Instantiate a new algorithm object.
    *
-   * @param samp Sampler object.
    * @param id Identifier of the algorithm to be instantiated.
-   * @param nparam Number of parameters.
-   * @param param Vector with all parameters. The address 'param'
-   *  points to must exists while the returned algorithm is used.
    * 
    * @return A pointer to the new instantiated algorithm or
    *  null if an algorithm with id was not found.
    */
-  Algorithm *newAlgorithm( Sampler *samp, char *id, int nparam,
-                           AlgParameter *param );
+  static AlgorithmPtr newAlgorithm( char const *id );
 
+  static AlgorithmPtr newAlgorithm( const ConstConfigurationPtr& );
 
 private:
 
+  AlgorithmFactory();
 
-  typedef List<DLL *> ListDLL;
+  static AlgorithmFactory& getInstance();
 
+  class DLL;
+  typedef ReferenceCountedPointer<DLL> DLLPtr;
+  typedef std::list<DLLPtr> ListDLL;
+  typedef std::list<std::string> PluginPath;
 
-  /** Search for all DLLs in some directories.
-   * @param lst Filled with the DLLs found.
-   * @param dirs Null terminated array of directories to search.
-   * @return Number of DLLs found.
-   */
-  int loadDLLs( char **dirs );
+  ListDLL _dlls;
+  PluginPath _pluginpath;
 
-  void cleanDLLs();
-
-
-  /** Scans a directory for dynamic link libraries.
+  /** Implementation of directory scan.
    * @param dir Directory to scan.
-   * @param lst Stores the dynamic link libraries found.
    * @return Number of libraries found.
    */
-  int scanDir( char *dir, ListDLL * ldll );
+  int p_addDir( const std::string& dir );
 
-  static ListDLL * _lstDLL; ///< Algorithms' DLLs paths list.
+  /** Implementation of Dll load.
+   * @param file Name of file to laod.
+   * @return True if successfully loaded.
+   */
+  bool p_addDll( const std::string& dir );
 
-  char    **_dirs;
+  class testDLLId {
+  public:
+    testDLLId( char const *id ) :
+      id(id)
+    {}
+    inline bool operator()( const DLLPtr& dll );
+  private:
+    char const *id;
+  };
+
+  /** Manages an algorithm with its DLL file. */
+  class DLL : private ReferenceCountedObject
+  {
+    friend class ReferenceCountedPointer<DLL>;
+  public:
+    DLL();
+    DLL( const std::string& file );
+    ~DLL();
+
+    operator bool() const;
+
+    /** Returns a new instantiated algorithm object. **/
+    AlgorithmPtr newAlgorithm();
+
+    AlgMetadata *getMetadata();
+
+  private:
+    DLLHandle _handle;
+    TAlgFactory _factory;
+    TAlgMetadata _metadata;
+    std::string _file;
+  };
+
+
 };
 
 

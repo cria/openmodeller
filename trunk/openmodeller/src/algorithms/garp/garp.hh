@@ -37,19 +37,17 @@
 #define _GARP_HH_
 
 #include <om.hh>
+#include <Sample.hh>
 
 // required include because of enum PerfIndex and class GarpRule
 #include <rules_base.hh> 
+#include <bioclim_histogram.hh>
+#include <regression.hh>
+
 
 class GarpRuleSet;
-class GarpCustomSampler;
 
-class Sampler;
-class SampledData;
 class Random;
-
-class Serializer;
-class Deserializer;
 
 /****************************************************************/
 /************************* GARP Algorithm ***********************/
@@ -57,7 +55,7 @@ class Deserializer;
 /**
   * Implementation of GARP: Genetic Algorithm for Rule-set Production
   */
-class Garp : public Algorithm
+class Garp : public AlgorithmImpl
 {
 public:
   Garp();
@@ -72,7 +70,7 @@ public:
 	*        Always set to +1.0 in GARP
     * @return Always return 1 for GARP.
    */
-  int needNormalization( Scalar *min, Scalar *max );
+  int needNormalization( Scalar *min, Scalar *max ) const;
   
   /** Initialize model by colonizing it with new rules.
     * @note This method is inherited from the Algorithm class
@@ -95,10 +93,10 @@ public:
     * point has been met. 
     * @return Implementation specific but usually 1 for completion.
     */
-  int done();
+  int done() const;
 
   /** Return progress so far */
-  float getProgress();
+  float getProgress() const;
 
   //
   // Methods used to project the model
@@ -112,7 +110,7 @@ public:
     *        looked up on the environmental variable layers into which 
     *        the mode is being projected. 
     */
-  Scalar getValue( Scalar *x );
+  Scalar getValue( const Sample& x ) const;
   
   /** Returns a value that represents the convergence of the algorithm
     * expressed as a number between 0 and 1 where 0 represents model
@@ -122,9 +120,6 @@ public:
     */
   int getConvergence( Scalar *val );
 
-  int serialize(Serializer * serializer);
-  int deserialize(Deserializer * deserializer);
-
   int getGeneration() { return _gen; }
 
   /** Deletes data structures that are not needed once the model
@@ -133,8 +128,13 @@ public:
     */
   void deleteTempDataMembers();
 
+protected:
+  virtual void _getConfiguration( ConfigurationPtr& ) const;
+  virtual void _setConfiguration( const ConstConfigurationPtr & );
 
 private:
+
+  void Garp::cacheSamples(const SamplerPtr&, OccurrencesPtr&, int resamples);
 
 /** Fill a rule set with newly generated rules
   * @param GarpRuleSet * ruleset: rule set where rules will be added to
@@ -142,7 +142,7 @@ private:
   *        data points and other data used during rule creation.
   * @param numRules number of rules to be added to the rule set.
   */
-  void colonize(GarpRuleSet * ruleset, GarpCustomSampler * sampler, int numRules);
+  void colonize(GarpRuleSet * ruleset, int numRules);
 
 /** Evaluate rules from a rule set based on their performance to predict 
   *  points provided by a sampler object.
@@ -150,7 +150,7 @@ private:
   * @param GarpCustomSampler * sampler: sampler that will provide
   *        data points for testing.
   */
-  void evaluate(GarpRuleSet * ruleset, GarpCustomSampler * sampler);
+  void evaluate(GarpRuleSet * ruleset);
 
 /** Keep fittest individuals from source rule set storing them in target 
   *   rule set in descending order of fitness.     
@@ -227,8 +227,12 @@ private:
   /** Rule-set that stores the next generation of rules (offspring) */
   GarpRuleSet * _offspring;
 
-  /** Custom sampler to wrap basic sampler */
-  GarpCustomSampler * _custom_sampler;
+  /** BioclimHistogram to assist the creation of bioclim based rules */
+  BioclimHistogram _bioclimHistogram;
+
+  Regression _regression;
+
+  OccurrencesPtr _cachedOccs;
 
   double _convergence;
   int _improvements;
@@ -238,7 +242,7 @@ private:
 
   int _gen;
 
-  float _maxProgress;
+  mutable float _maxProgress;
 };
 
 

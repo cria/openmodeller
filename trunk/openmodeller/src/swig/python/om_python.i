@@ -1,6 +1,6 @@
 %module om
 
-%include "../../inc/om_defs.hh"
+%include "om_defs.hh"
 
 #undef dllexp
 #undef dll_log
@@ -10,19 +10,128 @@
 
 %{
 #include <stdio.h>
-#include "../../inc/om_defs.hh"
-#include "../../inc/om_control.hh"
-#include "../../inc/environment.hh"
-#include "../../inc/map_format.hh"
-#include "../../inc/om_occurrences.hh"
-#include "../../inc/om_alg_parameter.hh"
-#include "../../inc/om_algorithm_metadata.hh"
-#include "../../inc/file_parser.hh"
-#include "../../inc/om_serializable.hh"
-#include "../../inc/om_area_stats.hh"
-#include "../../inc/om_conf_matrix.hh"
-#include "../../console/occurrences_file.hh"
+#include <sstream>
+#include <string>
+#include <stdexcept>
+#include "algorithm_factory.hh"
+#include "env_io/map.hh"
+#include "configuration.hh"
+#include "environment.hh"
+#include "Model.hh"
+#include "models/AverageModel.hh"
+#include "om_alg_parameter.hh"
+#include "om_algorithm.hh"
+#include "om_algorithm_metadata.hh"
+#include "om_area_stats.hh"
+#include "om_conf_matrix.hh"
+#include "om_control.hh"
+#include "om_defs.hh"
+#include "om_occurrences.hh"
+#include "om_projector.hh"
+#include "om_sampler.hh"
+#include "refcount.hh"
 %}
+
+%include "std_string.i"
+
+%init %{
+  AlgorithmFactory::searchDefaultDirs();
+%}
+
+//*****************************************************************************
+//
+// Supplemental c++ code.
+//
+//*****************************************************************************
+%inline %{
+
+int print_args(char **argv) {
+    int i = 0;
+    while (argv[i]) {
+         printf("argv[%d] = %s\n", i,argv[i]);
+         i++;
+    }
+    return i;
+}
+
+int print_alg_params(int n, AlgParameter *param) 
+{
+    int i;
+    for (i = 0; i < n; i++) 
+      printf("Param[%d] = (%s, %s)\n", i, param[i].id(), param[i].value());
+
+    return n;
+}
+
+%}
+
+//*****************************************************************************
+//
+// Wrap the C++ exceptions.
+//
+//*****************************************************************************
+%include "exception.i"
+
+%exception {
+  try {
+    $function
+  }
+  catch( std::runtime_error& e ) {
+    SWIG_exception( SWIG_RuntimeError, e.what() );
+  }
+  catch( ... ) {
+    SWIG_exception( SWIG_RuntimeError, "Unknown Exception in $name" );
+  }
+}
+
+
+//*****************************************************************************
+//
+// Templates are used heavily in the reference counting classes.
+// Define a SWIG macro to help define them below
+//
+//******************************************************************************
+
+%define RCP_WRAP(name, impl)
+%template() UnConst< impl >;
+%template(name) ReferenceCountedPointer< impl >;
+%enddef
+
+// Hack here.
+// This is a pidgeon of the ReferenceCountedPointer class contained in
+// refcount.hh.
+// It is enough to get swig to work correctly.
+//%include "refcount.hh"
+template< class U > struct UnConst
+{	
+    typedef U* PointerType;
+    typedef U* PlainPointerType;
+    typedef U& ReferenceType;
+    typedef U& PlainReferenceType;
+};
+template< class U > struct UnConst<const U>
+{
+    typedef U const * PointerType;
+    typedef U* PlainPointerType;
+    typedef const U & ReferenceType;
+    typedef U& PlainReferenceType;
+};
+template< class T >
+class ReferenceCountedPointer {
+public:
+  typedef typename UnConst<T>::PointerType PointerType;
+  typedef typename UnConst<T>::ReferenceType ReferenceType;
+  typedef typename UnConst<T>::PlainPointerType PlainPointerType;
+  inline PointerType operator->() const;
+private:
+  PlainPointerType _p;
+};
+
+//*****************************************************************************
+//
+// Generic typemaps used at various points below.
+//
+//******************************************************************************
 
 // This tells SWIG to treat char ** as a special case
 // In particular it is for "counted arrays" of strings, where the first
@@ -94,46 +203,167 @@
   }
 }
 
-// Now a test functions
-%inline %{
-
-int print_args(char **argv) {
-    int i = 0;
-    while (argv[i]) {
-         printf("argv[%d] = %s\n", i,argv[i]);
-         i++;
-    }
-    return i;
-}
-
-int print_alg_params(int n, AlgParameter *param) 
+//*****************************************************************************
+//
+// XXXPtr conversion into ConstXXXPtr
+//
+//******************************************************************************
+// Typemap to help with the conversion from XXXPtr to ConstXXXPtr
+%define RCP_CONST_TYPEMAP( const_type, nonconst_type )
+%typemap(in) const const_type &
 {
-    int i;
-    for (i = 0; i < n; i++) 
-      printf("Param[%d] = (%s, %s)\n", i, param[i].id(), param[i].value());
-
-    return n;
+  //%typemap(in) const const_type &
+  if ( ((SWIG_ConvertPtr($input, (void**) &$1, $1_descriptor, SWIG_POINTER_EXCEPTION | 0 )) == -1)
+       &&
+       ((SWIG_ConvertPtr($input, (void**) &$1, $descriptor( nonconst_type *), SWIG_POINTER_EXCEPTION | 0 )) == -1)
+     )
+   {
+     SWIG_fail;
+   }
+   else
+   {
+     PyErr_Clear();
+   }
 }
+%typecheck(SWIG_TYPECHECK_POINTER) const const_type &
+{
+  //%typecheck(SWIG_TYPECHECK_POINTER) const const_type &
+  void *ptr;
+  if (SWIG_ConvertPtr($input, (void**) &ptr, $descriptor( nonconst_type *), SWIG_POINTER_EXCEPTION | 0 ) == -1)
+  {
+    $1 = 0;
+  } else {
+    $1 = 1;
+  }
+}
+%enddef
+
+
+//*****************************************************************************
+//
+// Log enumeration.  taken from om_log.hh
+//
+//******************************************************************************
+
+%include "om_log.hh"
+
+//*****************************************************************************
+//
+// Wrap Configuration
+//
+//******************************************************************************
+
+RCP_WRAP( ConfigurationPtr, ConfigurationImpl );
+RCP_CONST_TYPEMAP( ConstConfigurationPtr, ConfigurationPtr );
+%ignore ConfigurationPtr;
+%ignore ConfigurationImpl;
+
+%extend Configuration {
+  static ConfigurationPtr readXmlFromString( const std::string & in ) {
+    std::stringstream is( in ,std::ios::in );
+    return Configuration::readXml( is );
+  }
+  static std::string writeXmlToString( const ConstConfigurationPtr& config ) {
+    std::stringstream os( std::ios::out );
+    Configuration::writeXml( config, os );
+    return os.str();
+  }
+}
+
+%inline %{
+  ConfigurationPtr makeConfiguration( const char *name ) {
+    return ConfigurationPtr( new ConfigurationImpl( name ) );
+  }
 %}
 
-%rename(printOccurrences)     Occurrences::print(char *);
+%include "configuration.hh"
 
-class Log {
+//*****************************************************************************
+//
+// Sampler classes.... ?????
+//
+//******************************************************************************
+RCP_WRAP( SamplerPtr, SamplerImpl );
+%ignore SamplerPtr;
+
+%ignore SamplerImpl;
+
+%include "om_sampler.hh"
+
+//*****************************************************************************
+//
+// Occurrences.
+//
+//******************************************************************************
+RCP_WRAP( OccurrencesPtr, OccurrencesImpl );
+RCP_CONST_TYPEMAP( ConstOccurrencesPtr, OccurrencesPtr );
+%ignore OccurrencesPtr;
+%ignore ConstOccurrencesPtr;
+
+%ignore OccurrencesImpl;
+%ignore OccurrencesImpl::print(char*) const;
+%ignore OccurrencesImpl::vocType;
+
+%include "om_occurrences.hh"
+
+%inline %{
+  ReferenceCountedPointer<OccurrencesImpl> makeOccurrences( char *species_name, char *cs ) {
+    return ReferenceCountedPointer<OccurrencesImpl>( new OccurrencesImpl( species_name, cs ) );
+  }
+%}
+
+//*****************************************************************************
+//
+// Other things...?
+//
+//******************************************************************************
+
+%include "om_alg_parameter.hh"
+%include "om_area_stats.hh"
+%include "om_conf_matrix.hh"
+
+//*****************************************************************************
+//
+// Model.hh and AverageModel.hh
+//
+//
+//******************************************************************************
+
+RCP_WRAP( Model, ModelImpl );
+%ignore Model;
+%ignore ModelImpl;
+%include "Model.hh"
+
+RCP_WRAP( AverageModelPtr, AverageModelImpl );
+%ignore AverageModelPtr;
+%ignore AverageModelImpl;
+%include "models/AverageModel.hh"
+
+%inline %{
+  ReferenceCountedPointer<AverageModelImpl> makeAverageModel()
+  {
+    return ReferenceCountedPointer<AverageModelImpl> ( new AverageModelImpl() );
+  }
+%}
+
+//*****************************************************************************
+//
+// projector.hh
+//
+//
+//******************************************************************************
+class Projector {
 public:
-  typedef enum {
-    Debug, Info, Warn, Error
-  } Level;
-};
-
-%include "../../inc/om_serializable.hh"
-%include "../../inc/map_format.hh"
-%include "../../inc/om_occurrences.hh"
-%include "../../inc/om_alg_parameter.hh"
-%include "../../inc/file_parser.hh"
-%include "../../inc/om_area_stats.hh"
-%include "../../inc/om_conf_matrix.hh"
-%include "../../console/occurrences_file.hh"
-
+%extend {
+  static void createMap( const ReferenceCountedPointer<AverageModelImpl>& model, const EnvironmentPtr& env, char *filename, Projector::MapCommand *mc = 0 )
+  {
+    Map map( new Raster( filename, 1, env->getMask() ) );
+    Projector::createMap( Model(model), env, &map, 0, mc );
+  }
+} // %extend
+private:
+  Projector();
+}; // class Projector
 
 //*****************************************************************************
 //
@@ -143,7 +373,7 @@ public:
 //
 //******************************************************************************
 
-%include "../../inc/om_algorithm_metadata.hh"
+%include "om_algorithm_metadata.hh"
 
 %extend AlgMetadata {
   PyObject *getParameterList() {
@@ -168,13 +398,32 @@ public:
 //
 //******************************************************************************
 
+RCP_WRAP( EnvironmentPtr, EnvironmentImpl );
+RCP_CONST_TYPEMAP( ConstEnvironmentPtr, EnvironmentPtr );
+
 %apply ( int ncount, char **array)
 {
   ( int ncateg, char **categs ),
   ( int nmap, char **maps )
 }
 
-%include "../../inc/environment.hh"
+%rename (makeEnvironment) createEnvironment( int, char **, int, char **, char * );
+%rename (makeEnvironmentFromConfig) createEnvironment( const ConstConfigurationPtr& );
+
+// This is a hack.
+// Since we're using typemaps to change the number of arguments
+// the overloading & wrapping mechanism for SWIG is confused.
+// Since I like the typemaps, I think it's best to just
+// ignore the currently unneeded constructors.
+%ignore EnvironmentImpl::EnvironmentImpl();
+%ignore EnvironmentImpl::EnvironmentImpl( char *, int, char **, int, char **, char * );
+
+//
+// Ignore Environment because it is a smart pointer class
+%ignore EnvironmentPtr;
+%ignore EnvironmentImpl;
+
+%include "environment.hh"
 
 %clear ( int ncateg, char **categs );
 %clear ( int nmap, char **maps );
@@ -189,16 +438,17 @@ public:
 
 %{
 /*
- * The following two defines are HACKS
+ * The following define is a HACK
  * SWIG does not support nested classes at all.  It will not generate wrappers for them
  * (which we don't need in python) and more importantly, does not properly declare its
  * local variables (which is a problem).  Luckily, we have a way around this.
- * When SWIG hits our typemaps below for the ModelCommand* and MapCommand* types,
- * it declares local vars as type "ModelCommand*" ("MapCommand*", resp).  With a simple
+ * When SWIG hits our typemaps below for the ModelCommand* type,
+ * it declares local vars as type "ModelCommand*".  With a simple
  * #define to the proper nested typename, everything is cool.
+ *
+ * Interestingly enough, Swig does not have this problem with Projector::MapCommand.
  */
 #define ModelCommand OpenModeller::ModelCommand
-#define MapCommand OpenModeller::MapCommand
 
 class PyModelCommand : public ModelCommand {
   public:
@@ -226,7 +476,7 @@ class PyModelCommand : public ModelCommand {
     PyObject *my_func;
 };
 
-class PyMapCommand : public MapCommand {
+class PyMapCommand : public Projector::MapCommand {
   public:
     PyMapCommand( PyObject *func ) {
       Py_INCREF( func );
@@ -265,14 +515,9 @@ class PyMapCommand : public MapCommand {
   }
 }
 
-%typemap( in ) MapCommand* {
-  // %typemap( in ) MapCommand* 
-  if ( $input == NULL || $input == Py_None ) {
-    $1 = NULL;
-    Py_XDECREF( $input );
-  } else {
-    $1 = new PyMapCommand( $input );
-  }
+%typemap( in ) Projector::MapCommand* {
+  // %typemap( in ) Projector::MapCommand* 
+  $1 = new PyMapCommand( $input );
 }
 
 // This tells SWIG to treat AlgParameter * as a special case
@@ -406,10 +651,38 @@ class PyMapCommand : public MapCommand {
   ( int num_continuos, char **continuous_map )
 }
 
-%rename(setOutputMapByFile)   OpenModeller::setOutputMap(Scalar mult, char *output_file, char *mask, char *file_with_format);
-%rename(setOutputMapByFormat) OpenModeller::setOutputMap(Scalar mult, char *output_file, char *mask, MapFormat *format);
+%extend OpenModeller {
+  void projectNativeRange( char *outputfile ) {
+    self->createMap( outputfile );
+  }
+}
 
-%rename(createMapNative) OpenModeller::createMap(Environment *, char *, char *);
-%rename(createMapProj)   OpenModeller::createMap(char *, char *);
+%newobject OpenModeller::getConfusionMatrix;
 
-%include "../../inc/om_control.hh"
+%include "om_control.hh"
+
+//*****************************************************************************
+//
+// om_algorithm.hh
+//
+//
+//******************************************************************************
+RCP_WRAP( Algorithm, AlgorithmImpl );
+RCP_CONST_TYPEMAP( ConstAlgorithmPtr, AlgorithmPtr );
+
+%inline %{
+AlgorithmPtr makeAlgorithm( char const *id ) {
+  return AlgorithmFactory::newAlgorithm( id );
+}
+
+AlgorithmPtr makeAlgorithmFromConfig( const ConstConfigurationPtr& config ) {
+  return AlgorithmFactory::newAlgorithm( config );
+}
+%}
+
+%ignore Algorithm;
+%ignore AlgorithmImpl;
+%ignore algorithmFactory();
+%ignore algorithmMetadata();
+%include "om_algorithm.hh"
+

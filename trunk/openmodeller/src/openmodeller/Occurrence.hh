@@ -31,10 +31,16 @@
 #define _OCCURRENCEHH_
 
 #include <om_defs.hh>
+#include <Sample.hh>
 
+#include <refcount.hh>
 
 /****************************************************************/
 /************************** Occurrence **************************/
+
+class OccurrenceImpl;
+typedef ReferenceCountedPointer< OccurrenceImpl > OccurrencePtr;
+typedef ReferenceCountedPointer< const OccurrenceImpl > ConstOccurrencePtr;
 
 /**
  * Stores a georeferenced occurrence locality (longitude,
@@ -42,80 +48,121 @@
  * possibly others optional attributes).
  * 
  */
-class Occurrence
+class OccurrenceImpl : private ReferenceCountedObject
 {
+  friend class ReferenceCountedPointer<OccurrenceImpl>;
+  friend class ReferenceCountedPointer<const OccurrenceImpl>;
 public:
+
+  /** Occurrence default constructor
+   */
+  OccurrenceImpl( ) :
+    x_( 0.0 ),
+    y_( 0.0 ),
+    error_( 0.0 ),
+    abundance_( 0.0 ),
+    attr_(),
+    env_()
+  {}
 
   /** Occurrence constructor with uncertanty.
    * 
    * @param x Longitude of the occurrence (decimal degrees).
    * @param y Latitude of the occurrence (decimal degrees).
    * @param error (x,y) uncertanty (meters).
-   * @param abundance Number of items found in (x,y).
    * @param num_attributes Number of possible modelling
-   *  attributes.
+   *  attributes. - abundance must be first attribute
    * @param attributes Vector with possible modelling attributes.
    */
-  Occurrence( Coord x, Coord y, Scalar error, Scalar abundance,
-	      int num_attributes=0, Scalar *attributes=0 )
-  {
-    init( x, y, error, abundance, num_attributes, attributes );
-  }
+  OccurrenceImpl( Coord x, Coord y, Scalar error,
+		  Scalar abundance,
+		  int num_attributes=0,
+		  Scalar *attributes=0,
+		  int num_env=0,
+		  Scalar *env=0) :
+    x_( x ),
+    y_( y ),
+    error_( error ),
+    abundance_( abundance ),
+    attr_( num_attributes, attributes ),
+    env_( num_env, env )
+  { }
+
+  /** Occurrence constructor with uncertanty.
+   * 
+   * @param x Longitude of the occurrence (decimal degrees).
+   * @param y Latitude of the occurrence (decimal degrees).
+   * @param error (x,y) uncertanty (meters).
+   * @param num_attributes Number of possible modelling
+   *  attributes. - abundance must be first attribute
+   * @param attributes Vector with possible modelling attributes.
+   */
+  OccurrenceImpl( Coord x, Coord y, Scalar error,
+		  Scalar abundance,
+		  const Sample& attributes,
+		  const Sample& env) :
+    x_( x ),
+    y_( y ),
+    error_( error ),
+    abundance_( abundance ),
+    attr_( attributes ),
+    env_( env )
+  { }
 
   /** Occurrence constructor without uncertanty.
    * 
    * @param x Longitude of the occurrence (decimal degrees).
    * @param y Latitude of the occurrence (decimal degrees).
    * @param error (x,y) uncertanty (meters).
-   * @param abundance Number of items found in (x,y).
    * @param num_attributes Number of possible modelling
-   *  attributes.
+   *  attributes. - abundance must be first attribute
    * @param attributes Vector with possible modelling attributes.
    */
-  Occurrence( Coord x, Coord y, Scalar abundance,
-	      int num_attributes=0, Scalar *attributes=0 )
-  {
-    init( x, y, -1.0, abundance, num_attributes, attributes );
-  }
+  OccurrenceImpl( Coord x, Coord y,
+		  Scalar abundance,
+		  int num_attributes=0,
+		  Scalar *attributes=0 ) :
+    x_( x ),
+    y_( y ),
+    error_( -1.0 ),
+    abundance_( abundance ),
+    attr_( num_attributes, attributes ),
+    env_()
+  { }
 
-  ~Occurrence();
+  ~OccurrenceImpl();
 
+  OccurrenceImpl( const OccurrenceImpl& rhs ) :
+    x_( rhs.x_ ),
+    y_( rhs.y_ ),
+    error_( rhs.error_ ),
+    abundance_( rhs.abundance_ ),
+    attr_( rhs.attr_ ),
+    env_( rhs.env_ )
+  {};
+
+  OccurrenceImpl& operator=(const OccurrenceImpl & );
 
   // Access to the locality information.
-  Coord  x()       { return _x; }
-  Coord  y()       { return _y; }
-  Scalar error()   { return _error; }
+  Coord  x() const         { return x_; }
+  Coord  y() const         { return y_; }
+  Scalar error() const     { return error_; }
+  Scalar abundance() const { return abundance_; }
 
-  // Acces to attributes
-  int numAttributes()        { return _nattr; }
-  Scalar *attributes()       { return _attr; }
-  Scalar attribute( int i )  { return _attr[i]; }
+  Sample const & attributes() const { return attr_; }
 
-  /** Fills 'buffer' with the attributes.
-   * @return The number of attributes read.
-   */
-  int readAttributes( Scalar *buffer );
+  Sample const & environment() const { return env_; }
 
-
-  /** Abundance is the first attribute. */
-  Scalar Abundance()    { return *_attr; }
-
+  void setEnvironment( const Sample& );
 
 private:
+  Coord  x_;
+  Coord  y_;
+  Scalar error_;  ///< (x,y) uncertanty in meters.
+  Scalar abundance_;
 
-  /** Only to do not need to rewrite both constructors. */
-  void init( Coord x, Coord y, Scalar error, Scalar abundance,
-	     int nattr, Scalar *attr );
-
-  Coord  _x;
-  Coord  _y;
-  Scalar _error;  ///< (x,y) uncertanty in meters.
-
-  int    _nattr;  ///< Number of attributes.  
-  Scalar *_attr;  ///< Possible modelling attributes.
+  Sample attr_;
+  Sample env_;
 };
-
-typedef Occurrence *PtOccurrence;
-
 
 #endif

@@ -32,114 +32,48 @@
 #include <om_defs.hh>
 #include <env_io/header.hh>
 
+#include <string>
 
-
-/****************************************************************/
-/************************* Raster Format ************************/
-
-/** 
- * Defines the names of the raster file formats.
- *
- */
-
-/****************/
-class RasterFormat
-{
-public:
-
-  typedef enum {
-    Unknown = 0,
-
-    // GDAL compatible raster formats.
-    AAIGrid, AIG, BMP, BSB, CEOS, DOQ1, DOQ2,
-    DTED, ECW, EHdr, ENVI, Envisat, FAST, FITS,
-    GIF, GIO, GRASS, GTiff, HDF4, HFA, HKV, JDEM,
-    JPEG, JPEG2000, JP2KAK, L1B, MFF, MrSID, NITF,
-    OGDI, PAux, PNG, PNM, SDTS, SAR_CEOS, USGSDEM,
-    XPM,
-
-    Undefined  // Used as the number of formats.
-
-  } Format;
-
-
-public:
-
-  RasterFormat( char *file_name );
-
-  int  code()       { return f_code; }
-  char *name()      { return f_name[f_code]; }
-  char *extension() { return f_ext[f_code]; }
-
-
-private:
-
-  int f_code;
-
-  static char *f_name[];
-  static char *f_ext[];
-};
-
-
-
+class RasterGdal;
+class Map;
 
 /****************************************************************/
 /**************************** Raster ****************************/
 
-/** 
- * Base class to read a georeferenced map stored in some raster
- * file format.
- *
- * This class is an interface between the modelling algorithms
- * and the map datas.
- *
- */
-
-/**********/
 class Raster
 {
 public:
+
+  // This is the output format constants.
+  enum { FloatingTiff = 0,
+	 GreyTiff = 1,
+	 GreyBMP = 2
+  };
 
   /** 
    * If 'categ' != 0 this is a categorical map (ie it can't be
    * interpolated). Othewise this is a continuos map.
    *
    */
-  Raster( int categ=0 );
-  Raster( Header &hdr );
 
-  virtual ~Raster() {}
+  // Open an existing file -- read only.
+  Raster( const std::string& file, int categ=0 );
+
+  /**
+   * Create a new file for projections.
+   * @param file is the name of the output file
+   * @param format must be one of the prescribed constants in the enum.
+   * @param hdr is a Map from which to copy the raster header params..
+   */
+  Raster( const std::string& file, int format, const Map* hdr );
+
+  ~Raster();
 
   /** Get the header. */
-  Header &header()     { return f_hdr; }
+  Header& header() { return f_hdr; }
 
   /** Returns not zero if this map is categorical. */
   int isCategorical()  { return f_hdr.categ; }
-
-  /**
-   * Normalize the map values in the interval [min, max].
-   * For categorical maps it has no effect.
-   */
-  int normalize( Scalar min, Scalar max );
-
-  /**
-   * Copy normalization parameters from a source raster object
-   * This is used when model will be projected onto target layer 
-   * For categorical maps it has no effect.
-   */
-  int copyNormalizationValues(Raster * source);
-
-  /** Deativate the normalization process. */
-  int denormalize()                           { f_normal = 0; }
-
-  /** is it normalized? */
-  int isNormalized() { return f_normal; }
-
-  /** normalization offset */
-  Scalar offset() { return f_offset; }
-
-  /** normalization scale */
-  Scalar scale() { return f_scale; }
 
   /** Lowest longitude. */
   Coord xMin() { return f_hdr.xmin; }
@@ -153,21 +87,17 @@ public:
   /** Highest latitude. */
   Coord yMax() { return f_hdr.ymax; }
 
-  /** Get map limits. */
-  int getRegion( Coord *xmin, Coord *ymin,
-		 Coord *xmax, Coord *ymax);
-
   /** Longitudinal map dimension. */
   int dimX()   { return f_hdr.xdim; }
 
   /** Latitudinal map dimension. */
   int dimY()   { return f_hdr.ydim; }
 
-  /** Longitudinal and latitudinal dimensions. */
-  int getDim( int *xdim, int *ydim );
+  /** Longitudinal cell dimension. */
+  Coord celX()   { return f_hdr.xcel; }
 
-  /** Cell dimensions. */
-  int getCell( Coord *xcel, Coord *ycel );
+  /** Latitudinal cell dimension. */
+  Coord celY()   { return f_hdr.ycel; }
 
   /**
    * Returns not zero if it is stored like a grid map and
@@ -190,26 +120,14 @@ public:
   /**
    * Put '*val' at the (x,y) coordinate.
    * Returns 0 if (x,y) is out of range or the map is read only.
+   * supports only single band output files.
    */
-  int put( Coord x, Coord y, Scalar *val );
+  int put( Coord x, Coord y, Scalar val );
 
   /** Find the minimum and maximum values in the first band. */
   int getMinMax( Scalar *min, Scalar *max );
 
-  /**
-   * The same as 'get()', but uses the image (col,row) instead
-   * of the (longitude, latitude) coordinates.
-   * The (x,y) must be in the image range. Returns 0 if the
-   * value is 'noval'.
-   */
-  virtual int iget( int x, int y, Scalar *val ) = 0;
-
-  /**
-   * The same as 'put()', but uses the image (col,row) instead
-   * of the (longitude, latitude) coordinates.
-   * The (x,y) must be in the image range.
-   */
-  virtual int iput( int x, int y, Scalar *val ) = 0;
+private:
 
   /**
    * Convert georeferenced coordinate x in the map to
@@ -223,37 +141,24 @@ public:
    */
   int convY( Coord y );
 
-
-  virtual int load( char *file ) = 0;
-  virtual int save( char *file ) = 0;
-
-
-  /** Print header in stdout. */
-  virtual int print( char *msg="" );
-
-
-protected:
-
-  int setHeader( Header &hdr );
-
-  /**
-   * Normalizes the first band of '*val'.
-   * todo: to normalize the other bands.
-   */
-  void calcNormal( Scalar *val );
-
   /** Find the minimum and maximum values in 'band'. */
   int calcMinMax( Scalar *min, Scalar *max, int band=0 );
 
+  /** The file format is known by the file name extension. **/
+  void load();
 
-private:
+  RasterGdal *f_rst;
+
+  Scalar f_scalefactor;  // used in projection put.
+
+  std::string f_file;
 
   Header f_hdr;
 
-  /** Todo: to normalize all bands, not just the first. */
-  int    f_normal;  // Should normalizes?
-  Scalar f_offset;  // Values used to normalize.
-  Scalar f_scale;
+  // Disable copying.
+  Raster( const Raster& );
+  Raster& operator=( const Raster& );
+
 };
 
 

@@ -31,9 +31,6 @@
 
 #include <om.hh>
 
-class Serializer;
-class Deserializer;
-
 /****************************************************************/
 /*********************** Bioclim Distance ***********************/
 
@@ -42,7 +39,7 @@ class Deserializer;
  * based on the distance to points' mean value.
  *
  */
-class Bioclim : public Algorithm
+class Bioclim : public AlgorithmImpl
 {
 public:
 
@@ -52,47 +49,31 @@ public:
   // Inherited from Algorithm class.
   int initialize();
   int iterate();
-  int done();
+  int done() const;
 
-  Scalar getValue( Scalar *x );
+  Scalar getValue( const Sample& x ) const;
   int    getConvergence( Scalar *val );
 
-  /*
-   */
-  int serialize(Serializer * serializer);
-  int deserialize(Deserializer * deserializer);
+protected:
+  virtual void _getConfiguration( ConfigurationPtr& ) const;
+  virtual void _setConfiguration( const ConstConfigurationPtr & );
 
 private:
 
-  /** Minimum value of all points for each variable. */
-  Scalar *getMinimum( SampledData *points );
-
-  /** Maximum value of all points for each variable. */
-  Scalar *getMaximum( SampledData *points );
-
-  /** Calculates the average point for all SampledData points.
-   *  There must be at least one point. */
-  Scalar *getMean( SampledData *points );
-
-  /** Calculates the standard deviation independently for each
-   *  dimension of 'points'.
-   *  There must be at least two points.
-   */
-  Scalar *getStandardDeviation( SampledData *points,
-                                Scalar *mean );
+  /** compute the statistic member variables based on
+      the data in the OccurrencesPtr */
+  void computeStats( const OccurrencesPtr& );
 
   /** Log the bioclimatic envelops informations. */
   void logEnvelop();
 
+  bool _done;  ///> is true if the algorithm is finished.
 
-  int _dim;   ///> Number of dimensions in environmental space
+  Sample _minimum; ///> Mininum value for each variable.
+  Sample _maximum; ///> Maximum value for each variable.
+  Sample _mean;        ///> Mean of sampled points.
+  Sample _std_dev;   ///> Standard deviations for each variable.
 
-  Scalar *_minimum; ///> Mininum value for each variable.
-  Scalar *_maximum; ///> Maximum value for each variable.
-
-  Scalar *_mean;        ///> Mean of sampled points.
-  Scalar *_deviation;   ///> Standard deviations for each variable.
-  Scalar _max_distance; ///> Standard deviation vector module.
 };
 
 

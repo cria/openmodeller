@@ -28,11 +28,11 @@
  */
 
 #include <om.hh>
+
 #include "garp_run.hh"
 #include "garp_run_thread.hh"
 #include "bs_algorithm_factory.hh"
 #include "om_alg_parameter.hh"
-#include "om_sampler.hh"
 
 /****************************************************************/
 /************************ GARP Run Thread ***********************/
@@ -51,9 +51,6 @@ THREAD_PROC_RETURN_TYPE AlgorithmRunThreadProc(void * threadData)
 
   algRun->calculateCommission();
   algRun->calculateOmission();
-
-  //printf("%4d] Om=%5.3f Comm=%5.3f\n", algRun->getId(), algRun->getOmission(), algRun->getCommission());
-
   algRun->finalize();
   
   //g_log.debug("Finishing thread (%d).\n", algRun->getId());
@@ -65,7 +62,6 @@ THREAD_PROC_RETURN_TYPE AlgorithmRunThreadProc(void * threadData)
 /****************************************************************/
 /************************* GARP Run *****************************/
 
-
 AlgorithmRun::AlgorithmRun() :
   _id(-1),
   _running( false ),
@@ -73,29 +69,22 @@ AlgorithmRun::AlgorithmRun() :
   _commission( -1.0 ),
   _commission_samples( 0 ),
   _alg( NULL ),
-  _train_sampler(NULL),
-  _test_sampler(NULL)
+  _train_sampler(),
+  _test_sampler()
 {
+  //g_log("Creating an AlgorithmRun at: %x\n",this);
 }
 
 /****************************************************************/
 AlgorithmRun::~AlgorithmRun() 
 {
-  if (_train_sampler)
-    delete _train_sampler;
-
-  if (_test_sampler)
-    delete _test_sampler;
-
-  if (_alg)
-    delete _alg;
-
+  //g_log("Deleting an AlgorithmRun at: %x\n",this);
 }
 
 /****************************************************************/
 int AlgorithmRun::initialize(int id, int comm_samples,
-			     Sampler * train_sampler, 
-			     Sampler * test_sampler, 
+			     const SamplerPtr& train_sampler, 
+			     const SamplerPtr& test_sampler, 
 			     int nparam, AlgParameter * param,
 			     BSAlgorithmFactory * factory)
 {
@@ -125,7 +114,7 @@ int AlgorithmRun::run()
 }
 
 /****************************************************************/
-bool AlgorithmRun::running()
+bool AlgorithmRun::running() const
 { return _running; }
 
 /****************************************************************/
@@ -136,17 +125,12 @@ int AlgorithmRun::iterate()
 }
 
 /****************************************************************/
-int AlgorithmRun::done()
+int AlgorithmRun::done() const
 { return _alg->done(); }
 
 /****************************************************************/
-float AlgorithmRun::getProgress()
-{
-  if (_alg)
-    return _alg->getProgress(); 
-  else
-    return 0.0;
-}
+float AlgorithmRun::getProgress() const
+{ return _alg->getProgress(); }
 
 /****************************************************************/
 int AlgorithmRun::finalize()           
@@ -163,7 +147,6 @@ int AlgorithmRun::calculateCommission()
 {
   int i;
   double sum = 0.0;
-  SampledData sample;
 
   // TODO: check how to use absences in computing commission
 
@@ -171,10 +154,14 @@ int AlgorithmRun::calculateCommission()
 
   // get random points from the background to estimate 
   // area predicted present
-  _train_sampler->getPseudoAbsence(&sample, _commission_samples);
-
   for (i = 0; i < _commission_samples; i++)
-    { sum += _alg->getValue(sample[i]); }
+    {
+      ConstOccurrencePtr occ = _train_sampler->getPseudoAbsence();
+      Scalar value = _alg->getValue(occ->environment()); 
+      // discard novalue (-1); zero is irrelevant to the sim
+      if (value > 0)
+	sum += value;
+    }
 
   _commission = sum / (double) _commission_samples;
 
@@ -184,40 +171,44 @@ int AlgorithmRun::calculateCommission()
 /****************************************************************/
 int AlgorithmRun::calculateOmission()           
 {
-  int i, npresences, nomitted;
-  SampledData sample, absences;
-  Sampler * sampler;
-
   // TODO: check how to use absences in computing omission
 
   //g_log.debug("Calculating omission error (%d).\n", _id);
 
   // test which kind of test (intrinsic or extrinsic) should be performed
+  SamplerPtr sampler;
+
   if (!_test_sampler)
     { sampler = _train_sampler; }
   else
     { sampler = _test_sampler; }
 
-  npresences = sampler->getPresence(&sample);
-  nomitted = 0;
-  for (i = 0; i < npresences; i++)
-    { nomitted = !_alg->getValue(sample[i]); }
+  int nomitted = 0;
+  OccurrencesPtr presences = sampler->getPresences();
+  OccurrencesImpl::const_iterator it  = presences->begin();
+  OccurrencesImpl::const_iterator end = presences->end();
 
-  _omission = (double) nomitted / (double) npresences;
+  while (it != end)
+    {
+      nomitted = !_alg->getValue((*it)->environment()); 
+      ++it;
+    }
+
+  _omission = (double) nomitted / (double) presences->numOccurrences();
 
   return 1;
 }
 
 /****************************************************************/
-double AlgorithmRun::getOmission()     
+double AlgorithmRun::getOmission() const
 { return _omission; }
 
 /****************************************************************/
-double AlgorithmRun::getCommission()   
+double AlgorithmRun::getCommission() const
 { return _commission; }
 
 /****************************************************************/
-double AlgorithmRun::getError(int type)
+double AlgorithmRun::getError(int type) const
 {
   if (!type)
     { return _omission; }
@@ -226,6 +217,6 @@ double AlgorithmRun::getError(int type)
 }
 
 /****************************************************************/
-double AlgorithmRun::getValue(Scalar * x)   
+double AlgorithmRun::getValue(const Sample& x) const   
 { return _alg->getValue(x); }
 

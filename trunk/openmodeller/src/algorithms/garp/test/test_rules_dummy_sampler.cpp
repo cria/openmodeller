@@ -30,14 +30,11 @@
 
 #include <garp_sampler.hh>
 
-
-class Sampler;
-
 SampledData::SampledData() {}
 SampledData::~SampledData() {}
 GarpCustomSampler::GarpCustomSampler() {}
 GarpCustomSampler::~GarpCustomSampler() {}
-void GarpCustomSampler::initialize(Sampler *, int) {}
+void GarpCustomSampler::initialize(const SamplerPtr&, int) {}
 int GarpCustomSampler::resamples() {}
 Scalar * GarpCustomSampler::getSample(Scalar *) { g_log("#### dummy getSample() called ####\n"); }
 int * GarpCustomSampler::getFrequencies(double, int *) {} 

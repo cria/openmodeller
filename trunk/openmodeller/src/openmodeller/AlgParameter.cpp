@@ -32,7 +32,6 @@
 #include <string.h>
 #include <stdio.h>
 
-
 /****************************************************************/
 /*********************** Om Alg Parameter ***********************/
 
@@ -44,7 +43,7 @@ AlgParameter::AlgParameter()
   _id = _value = 0;
 }
 
-AlgParameter::AlgParameter( char *id, char *value )
+AlgParameter::AlgParameter( char const *id, char const *value )
 {
   _id = _value = 0;
 
@@ -52,7 +51,7 @@ AlgParameter::AlgParameter( char *id, char *value )
   newCopy( &_value, value );
 }
 
-AlgParameter::AlgParameter( AlgParameter &param )
+AlgParameter::AlgParameter( const AlgParameter &param )
 {
   _id = _value = 0;
 
@@ -66,16 +65,19 @@ AlgParameter::AlgParameter( AlgParameter &param )
 
 AlgParameter::~AlgParameter()
 {
-  if ( _id  )   delete _id;
-  if ( _value ) delete _value;
+  if ( _id  )   delete [] _id;
+  if ( _value ) delete [] _value;
 }
 
 
 /******************/
 /*** operator = ***/
 AlgParameter &
-AlgParameter::operator=( AlgParameter &param )
+AlgParameter::operator=( const AlgParameter &param )
 {
+  if ( this == &param )
+    return *this;
+
   newCopy( &_id, param._id );
   newCopy( &_value, param._value );
 
@@ -107,16 +109,16 @@ AlgParameter::setValue( double value )
 /****************/
 /*** new Copy ***/
 char *
-AlgParameter::newCopy( char *src )
+AlgParameter::newCopy( char const *src )
 {
   return src ? strcpy( new char[strlen(src)+1], src ) : 0;
 }
 
 char *
-AlgParameter::newCopy( char **dst, char *src )
+AlgParameter::newCopy( char **dst, char const *src )
 {
   if ( *dst )
-    delete *dst;
+    delete [] *dst;
 
   return *dst = newCopy( src );
 }
