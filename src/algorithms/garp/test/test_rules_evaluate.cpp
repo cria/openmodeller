@@ -128,6 +128,7 @@ TEST_DUMMY_EVALUATE ( NegatedRangeRule );
 TEST_DUMMY_EVALUATE ( LogitRule );
 TEST_DUMMY_EVALUATE ( AtomicRule );
 
+
 // SampleSet 1
 // ===========
 TEST( evaluate1_1, RangeRule )
@@ -191,3 +192,38 @@ TEST( evaluate4_5, NegatedRangeRule )
 
 TEST( evaluate4_6, NegatedRangeRule )
 { CHECK(testNegatedRangeRuleEvaluate(4, RuleGenes4_6, RulePred4_6, RulePerfs4_6)); }
+
+
+
+// Logit regression tests
+TEST( regression4_1, LogitRule )
+{
+  double a, b, c;
+  a = b = c = 0.0;
+  ExtLogitRule * rule = new ExtLogitRule;
+
+  GarpCustomSamplerDummy2 * sampler = new GarpCustomSamplerDummy2;
+  sampler->chooseSampleSet(4);
+  rule->setPrediction(1.0);
+  
+  rule->regression(sampler, 0, a, b, c);
+  DOUBLES_EQUAL(a, +0.336735, eps);
+  DOUBLES_EQUAL(b, -0.459183, eps);
+  DOUBLES_EQUAL(c, -0.445368, eps);
+}
+
+TEST( regression4_2, LogitRule )
+{
+  double a, b, c;
+  a = b = c = 0.0;
+  ExtLogitRule * rule = new ExtLogitRule;
+
+  GarpCustomSamplerDummy2 * sampler = new GarpCustomSamplerDummy2;
+  sampler->chooseSampleSet(4);
+  rule->setPrediction(1.0);
+
+  rule->regression(sampler, 1, a, b, c);
+  DOUBLES_EQUAL(a, +0.378012, eps);
+  DOUBLES_EQUAL(b, -0.353916, eps);
+  DOUBLES_EQUAL(c, -0.596326, eps);
+}

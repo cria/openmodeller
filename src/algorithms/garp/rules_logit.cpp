@@ -55,7 +55,7 @@ LogitRule::~LogitRule() {}
 void LogitRule::initialize(GarpCustomSampler * sampler)
 {
   int i, j;
-  double constant, coef[2];
+  double a, b, c;
   Random rnd;
   
   // call inherited initialize
@@ -65,55 +65,62 @@ void LogitRule::initialize(GarpCustomSampler * sampler)
     {
       j = rnd.get(_numGenes);
       
-      regression(sampler, j, constant, coef[0], coef[1]);
+      regression(sampler, j, a, b, c);
       
-      // decide where the constant will go;
-      _genes[j * 2]     = coef[0]; 
-      _genes[j * 2 + 1] = coef[1];
+      // decide where the constant (a) will go;
+      _genes[j * 2]     = b; 
+      _genes[j * 2 + 1] = c;
     }  
 }
 
 // ==========================================================================
-int LogitRule::regression(GarpCustomSampler * sampler, int dep, 
-			  double& constant, double& coef1, double& coef2)
+int LogitRule::regression(GarpCustomSampler * sampler, int pred, 
+			  double& a, double& b, double& c)
 {
-  double a, b, x, y, xi, yi, xiyi, xi2, xb, xx, xxi, xxiyi, xxi2;
-  int i, n, pred;
+  double x;         // predictor (independent) variable for current sample
+  double y;         // outcome (dependent) variable for sample
+  double xx;        // temp storage for x^2
+  double s_xi;      // sum of x for all samples
+  double s_yi;      // sum of y for all samples
+  double s_xiyi;    // sum of x*y for all samples
+  double s_xxi;     // sum of x^2 for all samples
+  double s_xxiyi;   // sum of y*x^2 for all samples
+  double s_xi4;     // sum of x^4 for all samples
+
+  int i;            // index of sample being summed 
+  int n;            // total number of samples
+  
   Scalar * values, pointValue = 0.0;
   
   n = sampler->resamples();
-  pred = 0;
   
-  a = b = x = y = xi = yi = xiyi = xi2 = xb = xx = xxi = xxiyi = xxi2 = 0.0;
+  s_xi = s_yi = s_xiyi = s_xxi = s_xxiyi = s_xi4 = 0.0;
   
   for (i = 0; i < n; i++) 
     {
       values = sampler->getSample(&pointValue);
       
       y = pointValue;
-      x = values[dep];
-      
+      x = values[pred];
       xx =  x * x;
-      xi += x;
-      yi += y;
-      xiyi += x * y;
-      xi2 += x * x;
-      
-      xxi += xx;
-      xxiyi += xx * y;
-      xxi2 += xx * xx;
+
+      s_xi += x;
+      s_yi += y;
+      s_xxi += xx;
+      s_xiyi += x * y;
+      s_xxiyi += xx * y;
+      s_xi4 += xx * xx;
     }
   
-  b = (n * xiyi - xi * yi) / (n * xi2 - (xi * xi));
-  coef1 = ((b * 2.0) - 1.0);
+  c = (n * s_xxiyi - s_xxi * s_yi) / (n * s_xi4 - (s_xxi * s_xxi));
+  b = (n * s_xiyi - s_xi * s_yi) / (n * s_xxi - (s_xi * s_xi));
+  a = s_yi / n - b * s_xi / n;
   
-  a = yi / n - b * xi / n;
-  constant = a;
-  xb = (n * xxiyi - xxi * yi) / (n * xxi2 - (xxi * xxi));
-  coef2 = ((xb * 2.0) - 1.0);
-  
-  //printf("logit: %+8.4f %+8.4f %+8.4f %+8.4f %+8.4f %d\n",
-  // a, b, xb, coef1, coef2, n);
+  /*
+  g_log("logit: a=%+8.4f b=%+8.4f c=%+8.4f n=%d\n", a, b, c, n);
+  g_log("aux: xi=%+8.4f yi=%+8.4f xiyi=%+8.4f xxi=%+8.4f xxiyi=%+8.4f xi4=%+8.4f\n", 
+	s_xi, s_yi, s_xiyi, s_xxi, s_xxiyi, s_xi4);
+  */
   
   return n;
 }
@@ -136,35 +143,30 @@ int LogitRule::getStrength(Scalar * values)
   for (i = 0; i < _numGenes; i++)
     {
       //g_log("i:%2d ", i);
-
-      if (membership(_genes[i * 2], _genes[i * 2 + 1], 1) != 255) 
-	    {
-	      r = ((values[i] + 1.0) / 2.0);
+      
+      if (!equalEps(_genes[i * 2], -1.0))
+	{
+	  r = values[i];
     	  
-	      Sum += (_genes[i * 2] + 1.0) * r;
-	      Sum += (_genes[i * 2 + 1] + 1.0) * r * r;
+	  Sum += _genes[i * 2] * r;
+	  Sum += _genes[i * 2 + 1] * r * r;
+	  
+	  //g_log("gene:%7.4f r:%7.4f v:%7.4f Sum:%7.4f\n ", _genes[i * 2], r, values[i], Sum);
+	}
 
-        //g_log("gene:%7.4f r:%7.4f v:%7.4f Sum:%7.4f ", _genes[i * 2], r, values[i], Sum);
-	    }
-      
-      prob = 1.0 / (1.0 + (double) exp(-Sum));
-      
-      //g_log("prob: %7.4f\n", prob);
+      //Sum += _constant;
     }
-
-  //g_log("\n");
   
-  if (prob > 0.5)
-    return 1;
-  else
-    return 0;
+  prob = 1.0 / (1.0 + (double) exp(-Sum));
+  //g_log("prob: %7.4f\n", prob);
+
+  return (prob >= 0.5);
 }
 
 // ==========================================================================
 bool LogitRule::similar(GarpRule * objRule)
 {
-  bool found;
-  int k;
+  int ct, k;
   
   LogitRule * objOtherRule = (LogitRule *) objRule;
   
@@ -174,15 +176,13 @@ bool LogitRule::similar(GarpRule * objRule)
       if (_prediction != objOtherRule->_prediction) 
 	return 0;
       
-      for (k = 0, found = true; (k < _numGenes * 2) && (found); k ++)
-	{
-	  found = !( ((fabs(_genes[k] - 1.0) < 0.10) && 
-		      (fabs(objOtherRule->_genes[k] - 1.0) > 10)) || 
-		     ((fabs(_genes[k] - 128)>10) && 
-		      (fabs(objOtherRule->_genes[k] - 128)<10)) );
-	}
+      ct = 0;
+      for (k = 0; k < _numGenes * 2; k ++)
+	{ ct += fabs(_genes[k] - objOtherRule->_genes[k]) < 0.2; }
       
-      return found;
+      // rule is similar if more than half of the aleles
+      // are within 0.2 distance of each other
+      return (ct > _numGenes);
     }
   
   return false;

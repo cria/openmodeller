@@ -275,6 +275,7 @@ Scalar GarpRuleSet::getValue(Scalar *x)
   for (i = 0; i < _numRules; i++)
   {
     if (_rules[i]->applies(x))
+      //return i / (double) _numRules;
       return _rules[i]->getPrediction();
   }
 
