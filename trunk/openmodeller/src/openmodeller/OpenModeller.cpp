@@ -620,12 +620,37 @@ OpenModeller::createModel()
 	  {
 	    (*_model_command)( _alg->getProgress() );
 	  }
+		catch(char * message)
+		{
+		    sprintf( _error, "Exception: %s", message );
+			g_log( "\n" );
+			g_log(_error);
+			g_log( "\n" );
+
+			return 0;
+		}
         catch( ... ) {}
     }
 
   // get progress one more time to show final 100% done
   if ( _model_command )
-    { (*_model_command)( _alg->getProgress() ); } 
+    {
+		try
+		{ 
+			(*_model_command)( _alg->getProgress() ); 
+		}
+  		catch(char * message)
+		{
+			sprintf( _error, "Exception: %s", message );
+			g_log( "\n" );
+			g_log(_error);
+			g_log( "\n" );
+
+			return 0;
+		}
+		catch( ... ) {}
+
+    }
 
   // Algorithm terminated with error.
   if ( ! _alg->done() )
@@ -900,6 +925,16 @@ OpenModeller::createMap( Environment *env, char *file, Scalar mult,
             {
               (*_map_command)( progress );
             }
+		  catch(char * message)
+		  {
+		      sprintf( _error, "Exception: %s", message );
+			  g_log( "\n" );
+			  g_log(_error);
+			  g_log( "\n" );
+
+			  delete[] amb;
+			  return 0;
+		  }
           catch( ... ) {}
         }
 
