@@ -33,6 +33,7 @@
 
 #include <string.h>
 
+AlgorithmFactory::ListDLL * AlgorithmFactory::_lstDLL = NULL;
 
 /****************************************************************/
 /*********************** Algorithm Factory **********************/
@@ -111,6 +112,16 @@ AlgorithmFactory::DLL::newAlgorithm()
 
 AlgorithmFactory::AlgorithmFactory( char **dirs )
 {
+  // Allocates memory for (static) list of DLLs only when first 
+  //  AlgorithmFactory object is created. After that, objects will
+  //  use static instance already allocated.
+  // Memory will leak, but only when OM DLL is unloaded from memory
+  //  or when executable finishes, which is fine.
+  // Better control can be implemented with reference counting,
+  //  but it is not required at this moment.
+  if (!_lstDLL)
+    _lstDLL = new ListDLL();
+
   _dirs = dirs;
 }
 
@@ -121,7 +132,7 @@ AlgorithmFactory::AlgorithmFactory( char **dirs )
 AlgorithmFactory::~AlgorithmFactory()
 {
   DLL *dll;
-  for ( _lstDLL.head(); dll = _lstDLL.get(); _lstDLL.next() )
+  for ( _lstDLL->head(); dll = _lstDLL->get(); _lstDLL->next() )
     delete dll;
 }
 
@@ -143,7 +154,7 @@ AlgorithmFactory::loadAlgorithms()
   cleanDLLs();
   loadDLLs( _dirs );
 
-  return _lstDLL.length();
+  return _lstDLL->length();
 }
 
 
@@ -153,17 +164,17 @@ AlgMetadata **
 AlgorithmFactory::availableAlgorithms()
 {
   // If there is no algorithm, try to read them (again).
-  if ( ! _lstDLL.length() )
+  if ( ! _lstDLL->length() )
     loadAlgorithms();
 
   // Make room for the algorithms' metadatas.
   AlgMetadata **all;
-  all = new AlgMetadata *[_lstDLL.length() + 1];
+  all = new AlgMetadata *[_lstDLL->length() + 1];
 
   // For each DLL found:
   AlgMetadata **metadata = all;
   DLL *dll;
-  for ( _lstDLL.head(); dll = _lstDLL.get(); _lstDLL.next() )
+  for ( _lstDLL->head(); dll = _lstDLL->get(); _lstDLL->next() )
     *metadata++ = dll->getAlgorithm()->getMetadata();
 
   // Null terminated.
@@ -179,10 +190,10 @@ int
 AlgorithmFactory::numAvailableAlgorithms()
 {
   // If there is no algorithm, try to read them (again).
-  if ( ! _lstDLL.length() )
+  if ( ! _lstDLL->length() )
     loadAlgorithms();
 
-  return _lstDLL.length();
+  return _lstDLL->length();
 }
 
 
@@ -195,7 +206,7 @@ AlgorithmFactory::algorithmMetadata( char *id )
     return 0;
 
   // If there is no algorithm, try to read them (again).
-  if ( ! _lstDLL.length() )
+  if ( ! _lstDLL->length() )
     loadAlgorithms();
 
   // Metadata to be returned.
@@ -203,7 +214,7 @@ AlgorithmFactory::algorithmMetadata( char *id )
 
   // For each DLL opened.
   DLL *dll;
-  for ( _lstDLL.head(); dll = _lstDLL.get(); _lstDLL.next() )
+  for ( _lstDLL->head(); dll = _lstDLL->get(); _lstDLL->next() )
     {
       metadata = dll->getAlgorithm()->getMetadata();
 
@@ -225,12 +236,12 @@ AlgorithmFactory::newAlgorithm( Sampler *samp, char *id,
   Algorithm *alg;
 
   // If there is no algorithm, try to read them (again).
-  if ( ! _lstDLL.length() )
+  if ( ! _lstDLL->length() )
     loadAlgorithms();
 
   // For each DLL in the list.
   DLL *dll;
-  for ( _lstDLL.head(); dll = _lstDLL.get(); _lstDLL.next() )
+  for ( _lstDLL->head(); dll = _lstDLL->get(); _lstDLL->next() )
     {
       alg = dll->getAlgorithm();
 
@@ -260,7 +271,7 @@ AlgorithmFactory::loadDLLs( char **dirs )
   while ( *dirs )
     scanDir( *dirs++, _lstDLL );
 
-  return _lstDLL.length();
+  return _lstDLL->length();
 }
 
 
@@ -271,17 +282,17 @@ AlgorithmFactory::cleanDLLs()
 {
   // For each DLL in the list.
   DLL *dll;
-  for ( _lstDLL.head(); dll = _lstDLL.get(); _lstDLL.next() )
+  for ( _lstDLL->head(); dll = _lstDLL->get(); _lstDLL->next() )
     delete dll;
 
-  _lstDLL.clear();
+  _lstDLL->clear();
 }
 
 
 /****************/
 /*** scan Dir ***/
 int
-AlgorithmFactory::scanDir( char *dir, ListDLL &lst )
+AlgorithmFactory::scanDir( char *dir, ListDLL * lst )
 {
   char **entries = scanDirectory( dir );
 
@@ -304,7 +315,7 @@ AlgorithmFactory::scanDir( char *dir, ListDLL &lst )
       if ( dll->load() )
         {
           g_log( "ok\n" );
-          lst.append( dll );
+          lst->append( dll );
         }
 
       // If it can not... :(
@@ -315,6 +326,6 @@ AlgorithmFactory::scanDir( char *dir, ListDLL &lst )
 
   delete[] entries;
 
-  return lst.length();
+  return lst->length();
 }
 
