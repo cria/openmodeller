@@ -11,6 +11,9 @@ Package=<5>
 
 Package=<4>
 {{{
+    Begin Project Dependency
+    Project_Dep_Name garp_best_subsets
+    End Project Dependency
 }}}
 
 ###############################################################################
@@ -36,7 +39,7 @@ Package=<5>
 Package=<4>
 {{{
     Begin Project Dependency
-    Project_Dep_Name libopenmodeller_static
+    Project_Dep_Name libopenmodeller_dll
     End Project Dependency
 }}}
 
@@ -51,7 +54,7 @@ Package=<5>
 Package=<4>
 {{{
     Begin Project Dependency
-    Project_Dep_Name libopenmodeller_static
+    Project_Dep_Name libopenmodeller_dll
     End Project Dependency
 }}}
 
@@ -66,7 +69,7 @@ Package=<5>
 Package=<4>
 {{{
     Begin Project Dependency
-    Project_Dep_Name libopenmodeller_static
+    Project_Dep_Name libopenmodeller_dll
     End Project Dependency
 }}}
 
@@ -80,6 +83,9 @@ Package=<5>
 
 Package=<4>
 {{{
+    Begin Project Dependency
+    Project_Dep_Name libopenmodeller_dll
+    End Project Dependency
 }}}
 
 ###############################################################################
@@ -92,6 +98,9 @@ Package=<5>
 
 Package=<4>
 {{{
+    Begin Project Dependency
+    Project_Dep_Name libopenmodeller_dll
+    End Project Dependency
 }}}
 
 ###############################################################################
@@ -105,7 +114,7 @@ Package=<5>
 Package=<4>
 {{{
     Begin Project Dependency
-    Project_Dep_Name libopenmodeller_static
+    Project_Dep_Name libopenmodeller_dll
     End Project Dependency
 }}}
 
@@ -120,7 +129,22 @@ Package=<5>
 Package=<4>
 {{{
     Begin Project Dependency
-    Project_Dep_Name libopenmodeller_static
+    Project_Dep_Name libopenmodeller_dll
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "om_garp_best_subsets"=.\om_garp_best_subsets\om_garp_best_subsets.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name libopenmodeller_dll
     End Project Dependency
 }}}
 
@@ -135,7 +159,7 @@ Package=<5>
 Package=<4>
 {{{
     Begin Project Dependency
-    Project_Dep_Name libopenmodeller_static
+    Project_Dep_Name libopenmodeller_dll
     End Project Dependency
 }}}
 
