@@ -38,6 +38,7 @@
 
 #include <stdlib.h>
 #include <stdio.h>
+#include <math.h>
 
 #ifdef _WINDOWS
 #include <windows.h>
@@ -598,7 +599,7 @@ int GarpBestSubsets::calculateBestSubset()
   _bestRuns = (int)(_commissionThreshold / 100.0 * 
 		    (double) _modelsUnderOmission);
   int medianRun = _bestRuns / 2;
-  int firstRun = ceil((double) medianRun - (double) _bestRuns / 2.0);
+  int firstRun = (int) ceil((double) medianRun - (double) _bestRuns / 2.0);
 
   _bestRun = new GarpRun*[_bestRuns];
 

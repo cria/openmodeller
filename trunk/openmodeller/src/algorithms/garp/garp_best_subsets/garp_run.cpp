@@ -30,7 +30,7 @@
 #include <om.hh>
 #include "garp_run.hh"
 #include "garp_run_thread.hh"
-#include "serialization/serializable.hh"
+#include "om_serializable.hh"
 #include "garp.hh"
 #include "om_alg_parameter.hh"
 #include "om_sampler.hh"
