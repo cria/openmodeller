@@ -17,7 +17,7 @@ public class OMTest1 {
 	}
     }
 
-    public static void main2(String argv[]) {
+    public static void main(String argv[]) {
 	printHeader();
 	printOmInfo();
 	printAlgInfo();
@@ -41,20 +41,14 @@ public class OMTest1 {
     public static void printAlgInfo() {
 	int i, n;
 
-	AlgMetadata[] algmd;
+	AlgMetadata algmd_array[], algmd;
 	
-	algmd = mod.availableAlgorithms();
+	algmd_array = mod.availableAlgorithms();
 	n = mod.numAvailableAlgorithms();
 	for (i = 0; i < n; i++) {
 	    // print info about one algorithm
-	    System.out.println("ID:" + algmd[i].setId());
-	    /*
-	    System.out.println("Name: ");
-	    System.out.println("Author: ");
-	    System.out.println("Implementation Author: ");
-	    System.out.println("Contact:");
-	    System.out.println("");
-	    */
+	    algmd = algmd_array[i];
+	    System.out.println("ID:" + algmd.getId());
 	    System.out.println("");
 	}
     }
@@ -63,13 +57,4 @@ public class OMTest1 {
 	System.out.println("Thanks for using openModeller!");
 	System.out.println("Good bye!");
     }
-
-
-    public static void main(String argv[]) {
-	String animals[] = {"Cat","Dog","Cow","Goat"};
-	om.print_args(animals);
-	String args[] = om.get_args();
-	for (int i=0; i<args.length; i++)
-	    System.out.println(i + ":" + args[i]);
-  }
 }
