@@ -45,7 +45,7 @@ libombioclim_la_CPPFLAGS = -I../src/inc
 libomminimum_distance_la_LIBADD = ../src/lib/libopenmodeller.la
 libomminimum_distance_la_CPPFLAGS = -I../src/inc
 
-libomcsm_la_LIBADD = ../src/lib/libopenmodeller.la
+libomcsm_la_LIBADD = ../src/lib/libopenmodeller.la -lgsl -lgslcblas
 libomcsm_la_CPPFLAGS = $(GSL_CFLAGS) -I../src/inc
 
 
