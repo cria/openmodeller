@@ -313,7 +313,7 @@ void Sampler::split(Sampler ** train, Sampler ** test, double propTrain)
     { 
       test_absence  = new Occurrences(_absence->name(), _absence->coordSystem());
       train_absence = copyOccurrences(_absence);
-      moveRandomOccurrences(train_presence, test_presence, propTrain);
+      moveRandomOccurrences(train_absence, test_absence, propTrain);
     }
   else
     { train_absence = test_absence = NULL; }
