@@ -142,7 +142,7 @@ Header::setProj( char *projection )
 /*************/
 /*** print ***/
 void
-Header::print( char *msg )
+Header::printHeader( char *msg )
 {
   g_log( "%s\n", msg );
 

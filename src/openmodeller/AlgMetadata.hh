@@ -40,8 +40,10 @@
  * Algorithms' parameter metadata structure.
  * 
  **/
-typedef struct
+class AlgParamMetadata
 {
+public: 
+
   char *name;
   char *type;
   char *description;
@@ -51,8 +53,7 @@ typedef struct
   int    has_max; ///< Zero if the parameter has no upper limit.
   Scalar max;     ///< Maximum parameter value.
   char  *typical; ///< Typical parameter value.
-
-} AlgParamMetadata;
+};
 
 
 
@@ -64,8 +65,10 @@ typedef struct
  * Algorithms' metadata structure.
  * 
  */
-typedef struct
+class AlgMetadata
 {
+public:
+
   /** Automatic generated IDentification. */
   char *id;
 
@@ -80,7 +83,7 @@ typedef struct
   int  nparam;       ///< Number of parameters.
   AlgParamMetadata *param;
 
-} AlgMetadata;
+};
 
 
 

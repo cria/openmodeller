@@ -64,6 +64,9 @@ public:
    */
   char *getVersion();
 
+  /** Returns openModeller plugin path (path where to look for algorithms)
+   */
+  char *getPluginPath();
 
   /** Load the system available algorithms. If there are
    * algorithm already loaded they are unloaded.

@@ -48,7 +48,6 @@
 class Log
 {
 public:
-
   typedef enum {
     Debug, Info, Warn, Error
   } Level;

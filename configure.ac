@@ -4,6 +4,10 @@ AC_INIT
 
 AM_INIT_AUTOMAKE(openmodeller, 0.1.1)
 
+# TODO: should include Python support
+# But AM_CHECK_PYTHON macro (below) is not found
+#AM_CHECK_PYTHON(module)
+
 AC_PREFIX_PROGRAM(gcc)
 
 AC_PROG_CXX
@@ -117,6 +121,8 @@ AC_CONFIG_FILES([
 	src/inc/Makefile
 	src/console/Makefile
 	src/console/graph/Makefile
+	src/swig/Makefile
+	src/swig/python/Makefile
 	src/soap/Makefile
 	openmodeller.spec
 ])

@@ -281,7 +281,7 @@ Log::buffer( void *buf, int buf_size, int length )
 
       // Bytes shown as hexadecimal.
       debug( "%p: ", p );
-      for ( int c = 0; c < length; c++ )
+      for ( c = 0; c < length; c++ )
         {
           if ( p >= e ) break;
           debug( "%02x ", *p++ );

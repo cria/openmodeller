@@ -1,4 +1,4 @@
-# Copyright (C) 2004 Jens Oberender <j.obi at troja.net>
+# Copyright (C) 2004 Ricardo Scachetti Pereira <rpereira at ku.edu>
 #  
 # This file is free software; as a special exception the author gives
 # unlimited permission to copy and/or distribute it, with or without 
@@ -8,4 +8,4 @@
 # WITHOUT ANY WARRANTY, to the extent permitted by law; without even the
 # implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
-SUBDIRS = lib inc console soap swig
+SUBDIRS = python
