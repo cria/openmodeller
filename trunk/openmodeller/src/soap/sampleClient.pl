@@ -47,6 +47,15 @@ print_help() if $opt_help;
 
 print "\nWelcome to a demo openModeller SOAP client!\n";
 
+print<<EOM;
+
+Please notice that this interface is just an initial prototype
+and mostly an example of how to build a SOAP client
+to access an openModeller server. Many variables
+(occurrences/absences points and environmental layers)
+are still hardcoded...
+EOM
+
 ### Some global variables
 
 my $url = $opt_server || '';
