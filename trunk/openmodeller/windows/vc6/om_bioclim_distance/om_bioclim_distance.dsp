@@ -53,7 +53,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /machine:I386
-# ADD LINK32 libopenmodeller_static.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib gdal_i.lib libexpat.lib /nologo /dll /machine:I386 /nodefaultlib:"scew_.lib" /libpath:"$(GDAL_HOME)\lib" /libpath:"../build/lib" /libpath:"$(EXPAT_HOME)/libs"
+# ADD LINK32 libopenmodeller_static.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib  libexpat.lib gdal_i.lib libopenmodeller.lib /nologo /dll /machine:I386 /nodefaultlib:"scew_.lib" /libpath:"$(GDAL_HOME)\lib" /libpath:"../build/lib" /libpath:"$(EXPAT_HOME)/libs"
 # Begin Special Build Tool
 TargetDir=.\Release
 TargetName=om_bioclim_distance
@@ -86,7 +86,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /debug /machine:I386 /pdbtype:sept
-# ADD LINK32 libexpat.lib libopenmodeller_static.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib gdal_i.lib /nologo /dll /debug /machine:I386 /nodefaultlib:"scew_d.lib" /pdbtype:sept /libpath:"$(GDAL_HOME)\lib" /libpath:"../build_debug/lib" /libpath:"$(EXPAT_HOME)/libs"
+# ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib  libexpat.lib gdal_i.lib libopenmodeller.lib /nologo /dll /debug /machine:I386 /nodefaultlib:"scew_d.lib" /pdbtype:sept /libpath:"$(GDAL_HOME)\lib" /libpath:"../build_debug/lib" /libpath:"$(EXPAT_HOME)/libs"
 # Begin Special Build Tool
 TargetDir=.\Debug
 TargetName=om_bioclim_distance
@@ -106,79 +106,7 @@ PostBuild_Cmds=echo on	..\CopyDll.bat build_debug $(TargetDir) $(TargetName)
 # PROP Default_Filter "cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
 # Begin Source File
 
-SOURCE=..\..\lib\alg_parameter.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\lib\algorithm.cpp
-# End Source File
-# Begin Source File
-
 SOURCE=..\..\..\algorithms\bioclim_distance.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\lib\environment.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\lib\env_io\geo_transform.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\lib\env_io\header.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\inc\list.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\lib\log.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\lib\env_io\map.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\lib\occurrence.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\lib\occurrences.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\lib\os_specific_win.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\lib\random.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\lib\env_io\raster.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\lib\env_io\raster_file.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\lib\env_io\raster_gdal.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\lib\env_io\raster_mem.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\lib\sampled_data.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\lib\sampler.cpp
 # End Source File
 # End Group
 # Begin Group "Header Files"
