@@ -43,7 +43,7 @@ RSC=rc.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MT /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "OM_JAVA_EXPORTS" /YX /FD /c
-# ADD CPP /nologo /MT /W3 /GX /O2 /I "$(JAVA_HOME)/bin" /I "$(JAVA_HOME)/include" /I "$(JAVA_HOME)/include/win32" /I "../../inc" /I "../../inc/serialization" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "OM_JAVA_EXPORTS" /D "CORE_DLL_IMPORT" /YX /FD /c
+# ADD CPP /nologo /MT /W3 /GX /O2 /I "$(JAVA_HOME)/include" /I "$(JAVA_HOME)/include/win32" /I "../../inc" /I "../../inc/serialization" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "OM_JAVA_EXPORTS" /D "CORE_DLL_IMPORT" /YX /FD /c
 # ADD BASE MTL /nologo /D "NDEBUG" /mktyplib203 /win32
 # ADD MTL /nologo /D "NDEBUG" /mktyplib203 /win32
 # ADD BASE RSC /l 0x409 /d "NDEBUG"
@@ -54,6 +54,13 @@ BSC32=bscmake.exe
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /machine:I386
 # ADD LINK32 gdal_i.lib libexpat.lib libopenmodeller.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /machine:I386 /out:"Release/omjava.dll" /libpath:"$(GDAL_HOME)\lib" /libpath:"$(EXPAT_HOME)/libs" /libpath:"../build/lib"
+# Begin Special Build Tool
+TargetDir=.\Release
+TargetName=omjava
+SOURCE="$(InputPath)"
+PostBuild_Desc=Preparing Java Package
+PostBuild_Cmds=echo on	%JAVA_HOME%\bin\javac ..\build\br\org\cria\OpenModeller\*.java	%JAVA_HOME%\bin\jar cf ..\build\lib\OpenModeller.jar -C ..\build br	..\CopyDll.bat build $(TargetDir) $(TargetName)
+# End Special Build Tool
 
 !ELSEIF  "$(CFG)" == "om_java - Win32 Debug"
 
@@ -84,7 +91,8 @@ LINK32=link.exe
 TargetDir=.\Debug
 TargetName=omjava
 SOURCE="$(InputPath)"
-PostBuild_Cmds=echo on	%JAVA_HOME%\bin\javac ..\build_debug\br\org\cria\OpenModeller\*.java	..\CopyDll.bat build_debug $(TargetDir) $(TargetName)
+PostBuild_Desc=Preparing Java Package
+PostBuild_Cmds=echo on	%JAVA_HOME%\bin\javac ..\build_debug\br\org\cria\OpenModeller\*.java	%JAVA_HOME%\bin\jar cf ..\build_debug\lib\OpenModeller.jar -C ..\build_debug br	..\CopyDll.bat build_debug $(TargetDir) $(TargetName)
 # End Special Build Tool
 
 !ENDIF 
@@ -105,6 +113,15 @@ SOURCE=..\..\console\occurrences_file.cpp
 SOURCE=..\..\swig\java\om_java.i
 
 !IF  "$(CFG)" == "om_java - Win32 Release"
+
+# Begin Custom Build
+InputPath=..\..\swig\java\om_java.i
+
+"om_wrap.cxx" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	echo Generating Java files using SWIG 
+	..\BuildJava.bat build $(InputPath) om_wrap.cxx 
+	
+# End Custom Build
 
 !ELSEIF  "$(CFG)" == "om_java - Win32 Debug"
 
