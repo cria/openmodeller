@@ -22,5 +22,6 @@ libomgarp_la_SOURCES = \
 	rules_base.hh rules_range.hh rules_negrange.hh \
 	rules_atomic.hh rules_logit.hh 
 
+libomgarp_la_LDFLAGS = -no-undefined
 libomgarp_la_LIBADD = ../../src/lib/libopenmodeller.la
 libomgarp_la_CPPFLAGS = -I../../src/inc
