@@ -227,7 +227,7 @@ Computers in Simulation 33:385-390.",
 
 /****************************************************************/
 /****************** Algorithm's factory function ****************/
-
+#ifndef DONT_EXPORT_GARP_FACTORY
 #ifdef WIN32
 __declspec( dllexport )
 #endif
@@ -235,6 +235,7 @@ Algorithm * algorithmFactory()
 {
   return new Garp;
 }
+#endif
 
 
 /****************************************************************/
@@ -278,8 +279,8 @@ Garp::~Garp()
   // debug
   if ( _fittest )
     {
-      g_log( "Resulting rules:\n" );
-      _fittest->log();
+      //g_log( "Resulting rules:\n" );
+      //_fittest->log();
     }
 
   if (_offspring)
@@ -369,9 +370,9 @@ int Garp::iterate()
       _fittest->performanceSummary(PerfSig, 
                                    &perfBest, &perfWorst, &perfAvg);
 
-      g_log( "%4d] ", _gen );
-      g_log( "[%2d] %+8.3f %+8.3f %+8.3f | %s\n", 
-	     _fittest->numRules(), perfBest, perfWorst, perfAvg, msg );
+      //g_log( "%4d] ", _gen );
+      //g_log( "[%2d] %+8.3f %+8.3f %+8.3f | %s\n", 
+      //     _fittest->numRules(), perfBest, perfWorst, perfAvg, msg );
       
       if (done())
         {

@@ -36,6 +36,32 @@
 
 #include <string.h>
 
+void removeSpaces(char * buf)
+{
+  char * loca = strstr(buf," ");
+  while (loca != NULL)     
+    {
+      while( (*loca = *(loca + 1)) != 0) 
+	{ loca++; }
+      loca = strstr(buf," ");
+    }
+}
+
+bool compareCoordSystemStrings(char * s1, char * s2)
+{
+  const int strSize = 2048;
+  char a1[strSize], a2[strSize];
+
+  // make copies of the strings and then remove all spaces from 
+  // the copies
+  strcpy(a1, s1);
+  strcpy(a2, s2);
+
+  removeSpaces(a1);
+  removeSpaces(a2);
+
+  return !strcmp(a1, a2);
+}
 
 /****************************************************************/
 /************************ Occurrences ***************************/
@@ -58,6 +84,7 @@ Occurrences::Occurrences( char *name, char *coord_system )
   // of the given occurrences is different from the internal
   // common openModeller coordinate system.
   //
+  //if ( !compareCoordSystemStrings( coord_system, OM_COORDINATE_SYSTEM ) )
   if ( strcmp( coord_system, OM_COORDINATE_SYSTEM ) )
     _gt = new GeoTransform( coord_system, OM_COORDINATE_SYSTEM );
   else
@@ -101,7 +128,7 @@ Occurrences::insert( Coord longitude, Coord latitude,
   // coordinate system.
   if ( _gt )
     _gt->transfOut( &longitude, &latitude );
-
+  
   Occurrence *oc = new Occurrence( longitude, latitude, error,
 				   abundance, num_attributes,
 				   attributes );

@@ -34,12 +34,10 @@
 #include <om.hh>
 
 #include "serialization/serializable.hh"
-#include "garp_run_thread.hh"
 
 class Garp;
 class Sampler;
-
-void GarpRunThreadProc(void * garpRun);
+class AlgParameter;
 
 /****************************************************************/
 /************************* GARP Run *****************************/
@@ -50,14 +48,24 @@ public:
   GarpRun();
   virtual ~GarpRun();
 
-  int initialize(Sampler *);
+  int initialize(int id, int comm_samples,
+			Sampler * train_sampler, 
+			Sampler * test_sampler, 
+			int nparam, AlgParameter * param);
   int run();
   int iterate();
   int finalize();
 
   int done();
+  bool running();
+  int getId() { return _id; }
   double getOmission();
   double getCommission();
+  double getError(int type);
+  double getValue(Scalar * x); 
+
+  int calculateOmission();
+  int calculateCommission();
 
   int serialize(Serializer * serializer);
   int deserialize(Deserializer * deserializer);
@@ -65,10 +73,13 @@ public:
 private:
 
   int _id;                   /// Identified for this particular garp run
-  bool _active;              /// Indicates whether the thread is running
+  bool _running;             /// Indicates whether the thread is running
   double _omission;          /// Omission error for this run
   double _commission;        /// Commission error, approximated by area predicted present
+  int _commission_samples;   /// Number of points used to calculate commission
   Garp * _garp;              /// Garp algorithm used in this run
+  Sampler * _train_sampler;
+  Sampler * _test_sampler;
 };
 
 

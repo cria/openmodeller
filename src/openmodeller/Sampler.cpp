@@ -288,3 +288,76 @@ Sampler::getOccurrence( Occurrences *occur, SampledData *data,
   return n;
 }
 
+/********************/
+/**** split *********/
+void Sampler::split(Sampler ** train, Sampler ** test, double propTrain)
+{
+  int npresence, nabsence;
+  Occurrences * train_presence, * train_absence, 
+    * test_presence, * test_absence;
+
+  // copy presence and absence occurrences
+  test_presence  = new Occurrences(_presence->name(), _presence->coordSystem());
+  train_presence = copyOccurrences(_presence);
+  moveRandomOccurrences(train_presence, test_presence, propTrain);
+  
+  if (_absence)
+    { 
+      test_absence  = new Occurrences(_absence->name(), _absence->coordSystem());
+      train_absence = copyOccurrences(_absence);
+      moveRandomOccurrences(train_presence, test_presence, propTrain);
+    }
+  else
+    { train_absence = test_absence = NULL; }
+
+  *train = new Sampler(_env, train_presence, train_absence);
+  *test  = new Sampler(_env, test_presence,  test_absence);
+}
+
+/******************************/
+/**** copyOccurrences *********/
+Occurrences * Sampler::copyOccurrences(Occurrences * occs)
+{
+  Occurrence * oc;
+  Occurrences * newOccs = new Occurrences(occs->name(), occs->coordSystem());
+
+  for (occs->head(); oc = occs->get(); occs->next())
+    { newOccs->insert(oc->x(), oc->y(), oc->error(), 1.0, 0, 0); }
+
+  return newOccs;
+}
+
+/************************************/
+/**** moveRandomOccurrences *********/
+void Sampler::moveRandomOccurrences(Occurrences * train, 
+				    Occurrences * test, double propTrain)
+{
+  Occurrence * oc;
+
+  int i = 0;
+  int n = (int) ((1.0 - propTrain) * ((double) train->numOccurrences()));
+
+  Random rnd;
+
+  train->head();
+  while (i < n)
+    {
+      oc = train->get();
+      if (!oc)
+	{ 
+	  train->head(); 
+	  oc = train->get();
+	}
+
+      // flip a coin
+      if (rnd() > propTrain)
+	{ 
+	  i++;
+	  oc = train->remove(); 
+	  test->insert(oc->x(), oc->y(), oc->error(), 1.0, 0, 0);
+	  delete oc;
+	}
+      else
+	{ train->next(); }
+    }
+}

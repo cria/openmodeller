@@ -34,27 +34,31 @@
 #ifdef _WINDOWS
 
 // windows threading
+#include <windows.h>
+#include <process.h>
 #define THREAD_PROC_RETURN_TYPE        void
 #define THREAD_PROC_RETURN_STATEMENT   return;
 
-#define THREAD_START(threadProc, threadData) \
- _beginthread(threadProc, 0, (void *) threadData);
+#define THREAD_START(threadProc, threadData)\
+ { _beginthread(threadProc, 0, (void *) threadData); }
 
-#define THREAD_END() _endthread()
+#define THREAD_END()\
+ { _endthread(); }
 
 #else
 
 // posix threading (linux/unix/cygwin)
+#include <pthread.h>
 #define THREAD_PROC_RETURN_TYPE        void *
 #define THREAD_PROC_RETURN_STATEMENT   return (NULL);
 
-#define THREAD_START(threadProc, threadData) \
- pthread_t pthread; \
- pthread_create(&pthread, NULL threadProc, threadData);
+#define THREAD_START(threadProc, threadData)\
+ { pthread_t pthread;\
+   pthread_create(&pthread, NULL, threadProc, threadData); }
 
-#define THREAD_END() _endthread() \
- int status; \
- pthread_exit(&status);
+#define THREAD_END()\
+ { int status;\
+   pthread_exit(&status); }
 
 
 #endif // _WINDOWS

@@ -121,6 +121,8 @@ public:
   int serialize(Serializer * serializer);
   int deserialize(Deserializer * deserializer);
 
+  int getGeneration() { return _gen; }
+
 private:
 
 /** Fill a rule set with newly generated rules
