@@ -17,8 +17,8 @@ _om_la_LDFLAGS = -module
 _om_la_CPPFLAGS = -I../../inc -I ../../console -I/usr/include/python2.2
 _om_la_LIBADD = $(GDAL_LIB) ../../lib/libopenmodeller.la ../../lib/env_io/libenv_io.la
 
-om_wrap.cxx: ../om.i
-	swig -c++ -python -o om_wrap.cxx ../om.i 
+om_wrap.cxx: om_python.i
+	swig -c++ -python -o om_wrap.cxx om_python.i 
 
 # TODO: remove hardcoded reference to Python directories
 # But AM_CHECK_PYTHON in modeller/configure.ac doesn't work 
