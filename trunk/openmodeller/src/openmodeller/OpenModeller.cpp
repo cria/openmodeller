@@ -800,6 +800,35 @@ OpenModeller::createMap( Environment *env, char *file, Scalar mult,
   return 1;
 }
 
+/**********************************/
+/******* getValue ****************/
+Scalar
+OpenModeller::getValue(Environment * env, Coord x, Coord y)
+{
+  int dim;
+  Scalar * amb, val;
+
+  // FIXME: enable geotransformation
+  if (_env)
+    {
+      dim = env->numLayers();
+      amb = new Scalar[dim];
+      *amb = 0.0;
+
+      if ( ! env->get( x, y, amb ) )
+	{ val = -1.0; }
+      else
+	{
+	  val = _alg->getValue( amb );
+	  if ( val < 0.0 ) val = 0.0;
+	  if ( val > 1.0 ) val = 1.0;
+	}
+      delete[] amb;
+      return val;
+    }
+
+  return -1;
+}
 
 /**********************************/
 /******* serialize ****************/
