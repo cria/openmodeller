@@ -132,12 +132,6 @@ public:
                       int num_continuos, char **continuous_map,
                       char *mask=0 );
 
-  /** Defines environmental layers and the mask using an 
-   *  existing Environment object. 
-   * @param env Environment object to be used when building model.
-   */
-  int setEnvironment( Environment * env);
-
   // Define output map.
   //
 
@@ -232,7 +226,6 @@ private:
   Occurrences *_absence;  ///< Absence occurrences points.
 
   Environment * _env;      ///< Original environmental layers
-  bool _internal;          ///< Flag that indicates whether _env was created internally or provided by the client.
 
   char f_error[256];
 };
