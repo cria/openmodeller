@@ -67,13 +67,13 @@ static AlgMetadata metadata = {
   0,               // Internal usage.
   "Bioclim",       // Name.
   "0.1",       	   // Version.
-  "Bibliography",  // Bibliography.
+  "Nix 1986, Busby 1991, McMahon et al. 1996",  // Bibliography.
 
   // Description.
-  "Bioclimatic Envelope Algorithm - Nix, 1984.",
+  "Bioclimatic Envelope Algorithm",
 
   "Ricardo Scachetti Pereira",  // Author.
-  "ricardo [at] cria.org.br",     // Author's contact.
+  "ricardo [at] cria.org.br",   // Author's contact.
 
   0,  // Does not accept categorical data.
   0,  // Does not need (pseudo)absence points.
