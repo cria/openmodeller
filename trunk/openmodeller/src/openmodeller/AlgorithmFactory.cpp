@@ -79,9 +79,10 @@ AlgorithmFactory::DLL::load()
   factory = (TAlgFactory) dllFunction( _handle,
                                        "algorithmFactory" );
 
-  error = dllError( _handle );
-  if ( error != NULL )
+  
+  if ( !factory )
     {
+	  error = dllError( _handle );
       g_log.warn( "%s is not openModeller compatible! ", _file );
       g_log.warn( "Error: %s\n", error );
       return 0;
@@ -123,7 +124,7 @@ AlgorithmFactory::availableAlgorithms()
 
   // Make room for the algorithms' metadatas.
   AlgMetadata **all;
-  all = new (AlgMetadata *)[_lstDLL.length() + 1];
+  all = new AlgMetadata *[_lstDLL.length() + 1];
 
   // For each DLL found:
   AlgMetadata **metadata = all;

@@ -33,7 +33,12 @@
 /****************************************************************/
 /********************* Dynamic Linking Loader *******************/
 
+#ifndef WIN32
 typedef void *DLLHandle;
+#else
+#include <windows.h>
+typedef HMODULE DLLHandle;
+#endif
 
 extern DLLHandle dllOpen    ( char *dll_file_name );
 extern void     *dllFunction( DLLHandle, char *function_name );

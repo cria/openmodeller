@@ -46,6 +46,9 @@ class Algorithm;
 typedef Algorithm *(*TAlgFactory)();
 extern "C"
 {
+#ifdef WIN32
+__declspec( dllexport )
+#endif
   Algorithm *algorithmFactory();
 }
 

@@ -48,8 +48,6 @@
 #include <stdlib.h>
 #include <iostream>
 
-
-
 // Directories to search for dynamic libraries.
 // Fixme: read this from some configuration file.
 static char *g_search_dirs[] = {
