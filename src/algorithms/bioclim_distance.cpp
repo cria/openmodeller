@@ -48,21 +48,18 @@ static AlgParamMetadata parameters[NUM_PARAM] = {
 
   // Metadata of the first parameter.
   {
-    CUTOFF_NAME, // Name.
-    "Real",      // Type.
+    CUTOFF_NAME,                 // Id
+    "Standard deviation cutoff", // Name.
+    "Real",                      // Type.
 
-// Description.
-"Standard deviation cutoff for all bioclimatic envelop.\n\
-Examples:\n\
-\n\
- Fraction of   Parameter\n\
- inclusion     value\n\
-\n\
- 50.0%         0.674\n\
- 68.3%         1.000\n\
- 90.0%         1.645\n\
- 95.0%         1.960\n\
- 99.7%         3.000\n",
+    // Overview
+    "The envelop is given by this parameter multiplied by the\
+ standard deviation.",
+
+    "Standard deviation cutoff for all bioclimatic envelop.\
+ Examples of (fraction of inclusion, parameter value) are:\
+ (50.0%, 0.674); (68.3%, 1.000); (90.0%, 1.645); (95.0%, 1.960);\
+ (99.7%, 3.000)",
 
     1,         // Not zero if the parameter has lower limit.
     0.0,       // Parameter's lower limit.
@@ -78,10 +75,14 @@ Examples:\n\
 
 static AlgMetadata metadata = {
 
-  0,                     // Internal usage.
+  "BioclimDistance",     // Id.
   "Bioclim (distance)",  // Name.
   "0.1",                 // Version.
-  "Nix 1986, Busby 1991, McMahon et al. 1996",  // Bibliography.
+
+  // Overview
+  "Uses the mean and standard deviation of each variable separately\
+ to calculate the envelop. When with the envelop uses the distance\
+ to the mean.",
 
   // Description.
   "Implements the Bioclimatic Envelope Algorithm using a \
@@ -93,7 +94,10 @@ envelop represented by the interval [m - c*s, m + c*s], \
 where 'm' is the mean; 'c' is cutoff input parameter; and 's' is the \
 standard deviation.\n",
 
-  "Mauro Muñoz",  // Author.
+  "Nix, H. A. Modified by Mauro Muñoz",  // Author.
+  "",                                    // Bibliography.
+
+  "Mauro Muñoz",              // Code author.
   "mauro [at] cria.org.br",   // Author's contact.
 
   0,  // Does not accept categorical data.

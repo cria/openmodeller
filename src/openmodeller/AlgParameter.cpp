@@ -41,22 +41,22 @@
 
 AlgParameter::AlgParameter()
 {
-  _name = _value = 0;
+  _id = _value = 0;
 }
 
-AlgParameter::AlgParameter( char *name, char *value )
+AlgParameter::AlgParameter( char *id, char *value )
 {
-  _name = _value = 0;
+  _id = _value = 0;
 
-  newCopy( &_name, name );
+  newCopy( &_id, id );
   newCopy( &_value, value );
 }
 
 AlgParameter::AlgParameter( AlgParameter &param )
 {
-  _name = _value = 0;
+  _id = _value = 0;
 
-  newCopy( &_name, param._name );
+  newCopy( &_id, param._id );
   newCopy( &_value, param._value );
 }
 
@@ -66,7 +66,7 @@ AlgParameter::AlgParameter( AlgParameter &param )
 
 AlgParameter::~AlgParameter()
 {
-  if ( _name  ) delete _name;
+  if ( _id  )   delete _id;
   if ( _value ) delete _value;
 }
 
@@ -76,7 +76,7 @@ AlgParameter::~AlgParameter()
 AlgParameter &
 AlgParameter::operator=( AlgParameter &param )
 {
-  newCopy( &_name, param._name );
+  newCopy( &_id, param._id );
   newCopy( &_value, param._value );
 
   return *this;

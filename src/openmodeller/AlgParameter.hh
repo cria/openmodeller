@@ -37,7 +37,7 @@
 /*********************** Alg Parameter ***********************/
 
 /**
- * Algorithms' parameters. A couple (name, value)
+ * Algorithms' parameters. A couple (id, value)
  * 
  **/
 class AlgParameter
@@ -45,21 +45,21 @@ class AlgParameter
 public:
 
   AlgParameter();
-  AlgParameter( char *name, char *value=0 );
+  AlgParameter( char *id, char *value=0 );
   AlgParameter( AlgParameter & );
   ~AlgParameter();
 
   AlgParameter &operator=( AlgParameter & );
 
 
-  /** Returns the parameter's name. */
-  char *name()  { return _name; }
+  /** Returns the parameter's id. */
+  char *id()  { return _id; }
 
-  /** Returns an allocated copy of name. */
-  char *nameCopy()  { return newCopy( _name ); }
+  /** Returns an allocated copy of id. */
+  char *idCopy()  { return newCopy( _id ); }
 
-  /** Set parameter's name. */
-  char *setName( char *name )  { return newCopy(&_name, name); }
+  /** Set parameter's id. */
+  char *setId( char *id )  { return newCopy(&_id, id); }
 
 
   /** Returns the parameter's value. */
@@ -82,7 +82,7 @@ private:
   char *newCopy( char **dst, char *src );
 
 
-  char *_name;
+  char *_id;
   char *_value;
 
 };

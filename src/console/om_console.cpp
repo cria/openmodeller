@@ -88,7 +88,7 @@ main( int argc, char **argv )
           if ( ! (metadata = readAlgorithm( availables )) )
             return 1;
 
-          g_log( "Algorithm used: %s\n", metadata->id );
+          g_log( "\n> Algorithm used: %s\n\n", metadata->name );
           g_log( " %s\n\n", metadata->description );
 
           // For resulting parameters storage.
@@ -143,7 +143,7 @@ showAlgorithms( AlgMetadata **availables )
   int count = 0;
   AlgMetadata *metadata;
   while ( metadata = *availables++ )
-    printf( " [%d] %s\n", count++, metadata->id );
+    printf( " [%d] %s\n", count++, metadata->name );
 
   printf( " [%d] Quit\n", count );
   printf( "\n" );
@@ -184,25 +184,6 @@ readAlgorithm( AlgMetadata **availables )
 }
 
 
-/************************/
-/*** read Occurrences ***/
-Occurrences *
-readOccurrences( char *file, char *name, char *coord_system )
-{
-  OccurrencesFile oc_file( file, coord_system );
-
-  // Take last species from the list, which corresponds to the
-  // first inside the file.
-  if ( ! name )
-    {
-      oc_file.tail();
-      name = oc_file.get()->name();
-    }
-
-  return oc_file.remove( name );
-}
-
-
 /***********************/
 /*** read Parameters ***/
 int
@@ -214,18 +195,18 @@ readParameters( AlgParameter *result, AlgMetadata *metadata )
   // Read from stdin each algorithm parameter.
   for ( ; param < end; param++, result++ )
     {
-      // The resulting name is equal the name set in
-      // algorithm's metadata.
-      result->setName( param->name );
+      // The resulting ID is equal the ID set in algorithm's
+      // metadata.
+      result->setId( param->id );
 
       // Informs the parameter's metadata to the user.
-      printf( "\nParameter %s:\n", param->name );
+      printf( "\n* Parameter: %s\n\n", param->name );
       printf( " %s:\n", param->description );
       if ( param->has_min )
         printf( " %s >= %f\n", param->name, param->min );
       if ( param->has_max )
         printf( " %s <= %f\n\n", param->name, param->max );
-      printf( "Value [%s]: ", param->typical );
+      printf( "Enter with value [%s]: ", param->typical );
 
       // Read parameter's value or use the "typical" value
       // if the user does not enter a new value.
@@ -244,19 +225,19 @@ readParameters( AlgParameter *result, AlgMetadata *metadata )
 /*************************/
 /*** extract Parameter ***/
 /**
- * Search for 'name' in the 'nvet' elements of the vector 'vet'.
- * If the string 'name' is in the begining of some string vet[i]
+ * Search for 'id' in the 'nvet' elements of the vector 'vet'.
+ * If the string 'id' is in the begining of some string vet[i]
  * then returns a pointer to the next character of vet[i],
  * otherwise returns 0.
  */
 char *
-extractParameter( char *name, int nvet, char **vet )
+extractParameter( char *id, int nvet, char **vet )
 {
-  int length = strlen( name );
+  int length = strlen( id );
   char **end = vet + nvet;
 
   while ( vet < end )
-    if ( ! strncmp( name, *vet++, length ) )
+    if ( ! strncmp( id, *vet++, length ) )
       return *(vet-1) + length;
 
   return 0;

@@ -38,7 +38,7 @@
 
 #define NUM_PARAM 1
 
-#define CUTOFF_NAME "StandadDeviationCutoff"
+#define CUTOFF_ID "StandadDeviationCutoff"
 
 
 /*************************************/
@@ -48,21 +48,19 @@ static AlgParamMetadata parameters[NUM_PARAM] = {
 
   // Metadata of the first parameter.
   {
-    CUTOFF_NAME, // Name.
-    "Real",      // Type.
+    CUTOFF_ID,                 // Id
+    "Standard deviation cutoff", // Name.
+    "Real",                      // Type.
 
-// Description.
-"Standard deviation cutoff for all bioclimatic envelop.\n\
-Examples:\n\
-\n\
- Fraction of   Parameter\n\
- inclusion     value\n\
-\n\
- 50.0%         0.674\n\
- 68.3%         1.000\n\
- 90.0%         1.645\n\
- 95.0%         1.960\n\
- 99.7%         3.000\n",
+    // Overview
+    "The envelop is given by this parameter multiplied by the\
+ standard deviation.",
+
+    // Description.
+    "Standard deviation cutoff for all bioclimatic envelop.\n\
+ Examples of (fraction of inclusion, parameter value) are:\n\
+ (50.0%, 0.674); (68.3%, 1.000); (90.0%, 1.645); (95.0%, 1.960);\
+ (99.7%, 3.000)",
 
     1,         // Not zero if the parameter has lower limit.
     0.0,       // Parameter's lower limit.
@@ -78,42 +76,43 @@ Examples:\n\
 
 static AlgMetadata metadata = {
 
-  0,           // Internal usage.
+  "Bioclim",   // Id.
   "Bioclim",   // Name.
   "0.1",       // Version.
 
-  // Bibliography.
-  "Nix, H.A. (1986) A biogeographic analysis of Australian elapid \
-snakes. In: Atlas of Elapid Snakes of Australia. (Ed.) R. Longmore, \
-pp. 4-15. Australian Flora and Fauna Series Number 7. Australian \
-Government Publishing Service: Canberra.",
+  // Overview
+  "Uses the mean and standard deviation of each variable separately\
+ to calculate the envelop.",
 
   // Description.
-  "Implements the Bioclimatic Envelope Algorithm.\n\
-For each given environmental variable the algorithm finds the mean \
-and standard deviation (assuming normal distribution). Each variable \
-has its own envelop represented by the interval [m - c*s, m + c*s], \
-where 'm' is the mean; 'c' is the cutoff input parameter; and 's' is \
-the standard deviation.\n\
-The output is one of the following:\n\n\
-  suitable: values that fall within the envelops of all variables;\n\
-  marginal: values fall outside some envelop, but within the upper \
-and lower limits.\n\
-  unsuitable: values that fall outside the upper and lower limits \
-for some variable.\n\n\
-The upper and lower limits are taken from the maximum and minimum \
-input points values for each variable.\n\
-The bioclim categorical output is mapped to the continuous output of \
-openModeller as:\n\
-\n\
- Bioclim Category   Probability\n\
-\n\
- suitable           1.0\n\
- marginal           0.5\n\
- unsuitable         0.0\n",
+  "Implements the Bioclimatic Envelope Algorithm.\
+ For each given environmental variable the algorithm finds the mean\
+ and standard deviation (assuming normal distribution). Each\
+ variable has its own envelop represented by the interval\
+ [m - c*s, m + c*s], where 'm' is the mean; 'c' is the cutoff input\
+ parameter; and 's' is the standard deviation.\n\
+The output is one of the following:\n\
+ Suitable: values that fall within the envelops of all variables;\n\
+ Marginal: values fall outside some envelop, but within the upper\
+ and lower limits.\n\
+ Unsuitable: values that fall outside the upper and lower limits\
+ for some variable.\n\
+The upper and lower limits are taken from the maximum and minimum\
+ input points values for each variable.\n\
+The bioclim categorical output is mapped to the continuous output of\
+ openModeller as Suitable, Marginal and Unsuitable for probabilities\
+ of 1.0, 0.5 and 0.0 respectively.",
 
-  "Mauro Muñoz",  // Author.
-  "mauro [at] cria.org.br",   // Author's contact.
+  "Nix, H. A.",  // Author
+
+  // Bibliography.
+  "Nix, H.A. (1986) A biogeographic analysis of Australian elapid\
+ snakes. In: Atlas of Elapid Snakes of Australia. (Ed.) R. Longmore,\
+ pp. 4-15. Australian Flora and Fauna Series Number 7. Australian\
+ Government Publishing Service: Canberra.",
+
+  "Mauro Muñoz",            // Code author.
+  "mauro [at] cria.org.br", // Code author's contact.
 
   0,  // Does not accept categorical data.
   0,  // Does not need (pseudo)absence points.
@@ -168,7 +167,7 @@ Bioclim::initialize()
 {
   // Read and check the standard deviation cutoff parameter.
   Scalar cutoff;
-  if ( ! getParameter( CUTOFF_NAME, &cutoff ) )
+  if ( ! getParameter( CUTOFF_ID, &cutoff ) )
     return 0;
   if ( cutoff <= 0 )
     {

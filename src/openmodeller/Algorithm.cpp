@@ -48,8 +48,6 @@ Algorithm::Algorithm( AlgMetadata *metadata )
   _categ  = 0;
   _nparam = 0;
   _param  = 0;
-  
-  allocID( _metadata );
 }
 
 
@@ -60,9 +58,6 @@ Algorithm::~Algorithm()
 {
   if ( _categ )
     delete _categ;
-
-  if ( _metadata && _metadata->id )
-    delete _metadata->id;
 }
 
 
@@ -91,42 +86,15 @@ Algorithm::setParameters( int nparam, AlgParameter *param )
 }
 
 
-/****************/
-/*** alloc ID ***/
-int
-Algorithm::allocID( AlgMetadata *meta )
-{
-  const int id_size = 256;
-
-  char *id = meta->id = new char[id_size];
-
-  // String to link algorithm's "name" and "version";
-  char *link = " v";
-
-  strncpy( id, meta->name, id_size );
-  int name_size = id_size;
-  name_size -= strlen( meta->name ) + strlen( link );
-
-  if ( name_size > 0 )
-    {
-      strcat( id, link );
-      strncat( id, meta->version, name_size );
-    }
-
-  id[id_size - 1] = '\0';
-  return 1;
-}
-
-
 /*********************/
 /*** get Parameter ***/
 int
-Algorithm::getParameter( char *name, char **value )
+Algorithm::getParameter( char *id, char **value )
 {
-  if ( ! name )
+  if ( ! id )
     {
-      g_log.warn( "Algorithm %s wants a parameter named \"%s\"!\n",
-		  _metadata->name, name );
+      g_log.warn( "Algorithm %s wants a parameter with id '%s'!\n",
+		  _metadata->id, id );
       return 0;
     }
 		
@@ -140,7 +108,7 @@ Algorithm::getParameter( char *name, char **value )
   AlgParameter *end   = _param + _nparam;
 
   for( ; param < end; param++ )  
-    if ( ! strcmp( name, param->name() ) )
+    if ( ! strcmp( id, param->id() ) )
       return (*value = param->value()) ? 1 : 0;
 
   return 0;
@@ -150,11 +118,11 @@ Algorithm::getParameter( char *name, char **value )
 /*********************/
 /*** get Parameter ***/
 int
-Algorithm::getParameter( char *name, int *value )
+Algorithm::getParameter( char *id, int *value )
 {
   char *str_value;
 
-  if ( ! getParameter( name, &str_value ) )
+  if ( ! getParameter( id, &str_value ) )
     return 0;
 
   *value = atoi( str_value );
@@ -165,11 +133,11 @@ Algorithm::getParameter( char *name, int *value )
 /*********************/
 /*** get Parameter ***/
 int
-Algorithm::getParameter( char *name, double *value )
+Algorithm::getParameter( char *id, double *value )
 {
   char *str_value;
 
-  if ( ! getParameter( name, &str_value ) )
+  if ( ! getParameter( id, &str_value ) )
     return 0;
 
   *value = atof( str_value );
@@ -180,11 +148,11 @@ Algorithm::getParameter( char *name, double *value )
 /*********************/
 /*** get Parameter ***/
 int
-Algorithm::getParameter( char *name, float *value )
+Algorithm::getParameter( char *id, float *value )
 {
   char *str_value;
 
-  if ( ! getParameter( name, &str_value ) )
+  if ( ! getParameter( id, &str_value ) )
     return 0;
 
   *value = float( atof( str_value ) );

@@ -220,10 +220,10 @@ RequestFile::readParameters( AlgParameter *result,
     {
       // The resulting name is equal the name set in
       // algorithm's metadata.
-      result->setName( param->name );
+      result->setId( param->id );
 
       // Read the resulting value from str_param.
-      char *value = extractParameter( result->name(), str_nparam,
+      char *value = extractParameter( result->id(), str_nparam,
                                       str_param );
 
       // If the parameter is not referenced in the file, set it
