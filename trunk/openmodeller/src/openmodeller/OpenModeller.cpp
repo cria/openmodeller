@@ -123,6 +123,9 @@ OpenModeller::~OpenModeller()
   delete _factory;
 }
 
+void OpenModeller::setLogLevel(Log::Level level)
+{ g_log.setLevel(level); }
+
 
 /*******************/
 /*** get Version ***/
@@ -383,7 +386,7 @@ OpenModeller::setAlgorithm( char *id, int nparam,
   AlgParameter *dst = _alg_param;
   AlgParameter *end = _alg_param + _alg_nparam;
   while ( dst < end )
-    *dst++ = *param++;
+      *dst++ = *param++;
 
   // Sampler and algorithm.
   if ( _samp )
