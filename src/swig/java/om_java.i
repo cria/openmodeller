@@ -14,8 +14,8 @@
 #include "../../inc/om_control.hh"
 #include "../../inc/environment.hh"
 #include "../../inc/map_format.hh"
-#include "../../inc/om_alg_parameter.hh"
 #include "../../inc/om_algorithm_metadata.hh"
+#include "../../inc/om_alg_parameter.hh"
 #include "../../inc/om_serializable.hh"
 #include "../../console/occurrences_file.hh"
 %}
@@ -175,7 +175,7 @@ jmethodID JNI_getSetDoubleMethod(JNIEnv * jenv, jclass clazz, char * methodName)
     int len=0;
     jobject algMd;
 
-    const jclass clazz = JNI_getClass(jenv, "AlgMetadata");
+    const jclass clazz = JNI_getClass(jenv, "br/org/cria/OpenModeller/AlgMetadata");
     jmethodID constrID = JNI_getConstructor(jenv, clazz);
 
     jmethodID mID_setId          = JNI_getSetStringMethod(jenv, clazz, "setId");
@@ -297,7 +297,7 @@ jmethodID JNI_getSetDoubleMethod(JNIEnv * jenv, jclass clazz, char * methodName)
     // return an array of AlgParam back to caller
     int i, len = 0;
     while ((*$1)[len].id) len++;    
-    jclass clazz = JNI_getClass(jenv, "AlgParamMetadata");
+    jclass clazz = JNI_getClass(jenv, "br/org/cria/OpenModeller/AlgParamMetadata");
 
     // get method ids for later use
     jmethodID constrID = JNI_getConstructor(jenv, clazz);
@@ -386,7 +386,6 @@ AlgParamMetadata ** getParameterList(AlgMetadata * metadata)
 %include "../../inc/om_control.hh"
 %include "../../inc/environment.hh"
 %include "../../inc/map_format.hh"
-%include "../../inc/om_alg_parameter.hh"
 %include "../../inc/om_algorithm_metadata.hh"
 %include "../../console/occurrences_file.hh"
 

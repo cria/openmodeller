@@ -69,7 +69,7 @@ LINK32=link.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MTd /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "OM_JAVA_EXPORTS" /YX /FD /GZ /c
-# ADD CPP /nologo /MTd /W3 /Gm /GX /ZI /Od /I "$(JAVA_HOME)/include" /I "$(JAVA_HOME)/include/win32" /I "../../inc" /I "../../inc/serialization" /D "_DEBUG" /D "WIN32" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "OM_JAVA_EXPORTS" /D "CORE_DLL_IMPORT" /YX /FD /GZ /c
+# ADD CPP /nologo /MTd /W3 /Gm /GX /ZI /Od /I "$(JAVA_HOME)/include" /I "$(JAVA_HOME)/include/win32" /I "../../inc" /I "../../inc/serialization" /D "_DEBUG" /D "WIN32" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "OM_JAVA_EXPORTS" /D "CORE_DLL_IMPORT" /FR /YX /FD /GZ /c
 # ADD BASE MTL /nologo /D "_DEBUG" /mktyplib203 /win32
 # ADD MTL /nologo /D "_DEBUG" /mktyplib203 /win32
 # ADD BASE RSC /l 0x409 /d "_DEBUG"
@@ -80,6 +80,12 @@ BSC32=bscmake.exe
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /debug /machine:I386 /pdbtype:sept
 # ADD LINK32 gdal_i.lib libexpat.lib libopenmodeller.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /debug /machine:I386 /out:"Debug/omjava.dll" /pdbtype:sept /libpath:"$(GDAL_HOME)\lib" /libpath:"$(EXPAT_HOME)/libs" /libpath:"../build_debug/lib"
+# Begin Special Build Tool
+TargetDir=.\Debug
+TargetName=omjava
+SOURCE="$(InputPath)"
+PostBuild_Cmds=echo on	%JAVA_HOME%\bin\javac ..\build_debug\br\org\cria\OpenModeller\*.java	..\CopyDll.bat build_debug $(TargetDir) $(TargetName)
+# End Special Build Tool
 
 !ENDIF 
 
@@ -105,11 +111,9 @@ SOURCE=..\..\swig\java\om_java.i
 # Begin Custom Build
 InputPath=..\..\swig\java\om_java.i
 
-"om_wrap.cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	echo Generating om_wrap.cpp using SWIG 
-	rem del om_wrap.cpp 
-	rem $(SWIG_HOME)\swig.exe -c++ -java -o om_wrap.cxx  $(InputPath) 
-	REM -D_WINDOWS -DCORE_DLL_IMPORT 
+"om_wrap.cxx" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	echo Generating Java files using SWIG 
+	..\BuildJava.bat build_debug $(InputPath) om_wrap.cxx 
 	
 # End Custom Build
 
