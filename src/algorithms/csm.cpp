@@ -27,38 +27,6 @@
 
 #define NUM_PARAM 0
 static AlgParamMetadata *parameters = 0;
-static AlgMetadata metadata = {
-
-  "CSM",                 // Id.
-  "Climate Space Model", // Name.
-  "0.1 alpha",           // Version.
-
-  // Overview
-  "Climate Space Model [CSM] is a principle components based \
-algorithm developed by Dr. Neil Caithness",
-
-  // Description.
-  "Climate Space Model [CSM] is a principle components based \
-algorithm developed by Dr. Neil Caithness. The component \
-selection process is based on either the Keiser-Gutman \
-method or the broken-stick method (not implemented yet). \
-\n \
-The original CSM was written as series of Matlab functions. \
-   ",
-
-  "Neil Caithness",  // Author
-  "",                 // Bibliography.
-
-  "Tim Sutton, Renato De Giovanni",  // Code author.
-  "t.sutton [at] reading.ac.uk",     // Code author's contact.
-
-  0,  // Does not accept categorical data.
-  0,  // Does not need (pseudo)absence points.
-
-  NUM_PARAM,   // Algorithm's parameters.
-  parameters
-};
-
 
 /****************************************************************/
 /****************************** Csm *****************************/
@@ -67,7 +35,7 @@ The original CSM was written as series of Matlab functions. \
    * 
    * @param Sampler is class that will fetch environment variable values at each occurrence / locality
    */
-Csm::Csm(): Algorithm( &metadata )
+Csm::Csm(AlgMetadata * metadata): Algorithm( metadata )
 {
   _initialized = 0;
 }

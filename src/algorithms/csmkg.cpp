@@ -111,7 +111,7 @@ algorithmFactory()
    * 
    * @param Sampler is class that will fetch environment variable values at each occurrence / locality
    */
-CsmKG::CsmKG(): Csm( )
+CsmKG::CsmKG(): Csm(&metadata)
 {
   _initialized = 0;
 }
