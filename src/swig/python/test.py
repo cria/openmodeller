@@ -7,9 +7,9 @@ print "Loading algorithms from:        ", mod.getPluginPath();
 print "Algorithms loaded:              ", mod.loadAlgorithms();
 print "Number of available algorithms: ", mod.numAvailableAlgorithms();
 
-#md = mod.algorithmMetadata("MinimumDistance v0.1");
-md = mod.algorithmMetadata("GARP v3.0.1 alpha");
-#md = mod.algorithmMetadata("CSM v0.1 alpha");
+#md = mod.algorithmMetadata("MinimumDistance");
+md = mod.algorithmMetadata("GARP");
+#md = mod.algorithmMetadata("CSM");
 
 print "Algorithm info: ";
 print "Id:             ", md.id;
@@ -40,7 +40,8 @@ print "Reading occurrences.        ", mod.setOccurrences(occurr);
 print "Setting Environment object. ", mod.setEnvironment(0, [], 7, maps, "mask");
 print "Setting algorithm params.   ", mod.setAlgorithm(md.id, 6, params);
 print "Running algorithm.          ", mod.run();
-print "Creating output map.        ", mod.createMap(mod.getEnvironment(), "map.tif", 255, "mask", "mask");
+print "Setting output format       ", mod.setOutputMapByFile(255, "map.tif", "mask", "mask");      
+print "Creating output map.        ", mod.createMap(mod.getEnvironment(), "map.tif", "mask");
 
 print "Finalizing algorithm";
 
