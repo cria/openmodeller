@@ -26,6 +26,7 @@
  * http://www.gnu.org/copyleft/gpl.html
  */
 
+#include <stdio.h>
 #include <os_specific.hh>
 
 
@@ -180,6 +181,8 @@ initRandom()
   seed = (unsigned int) time( NULL );
 
 #endif
+
+  //printf("Random seed: %d\n", seed);
 
   srand( seed );
   return 1;
