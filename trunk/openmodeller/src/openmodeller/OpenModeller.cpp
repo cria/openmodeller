@@ -326,22 +326,15 @@ OpenModeller::setEnvironment( int num_categ,
 			      char *mask )
 {
   // set up environmental variables.
-  printf("Entered OM:setEnvironment(). _env=%d\n", _env); fflush(stdout);
 
   if ( _env )
     delete _env;
-
-  printf("About to create Environment object.\n"); fflush(stdout);
 
   _env = new Environment( GeoTransform::cs_default,
                           num_categ, categ_map,
                           num_continuous, continuous_map, mask );
 
-  printf("Environment object created.\n"); fflush(stdout);
-
   g_log( "Environment initialized.\n" );
-
-  printf("Exiting set environment.\n"); fflush(stdout);
 
   return 1;
 }
@@ -382,6 +375,10 @@ OpenModeller::setAlgorithm( char *id, int nparam,
       return 0;
     }
 
+  // filter presences and absences that are masked out
+  filterMaskedOccurrences(_presence);
+  filterMaskedOccurrences(_absence);
+
   stringCopy( &_alg_id, id );
 
   // Reallocate '_alg_param' to stores 'nparam' parameters.
@@ -416,6 +413,30 @@ OpenModeller::setAlgorithm( char *id, int nparam,
   return 1;
 }
 
+
+/*******************************/
+/*** filter masked occurrences */
+void OpenModeller::filterMaskedOccurrences(Occurrences * occur)
+{
+  int i = 0, j = 0;
+  Scalar * indep = new Scalar[_env->numLayers()];
+
+  if (occur)
+  {
+    Occurrence * oc; 
+    occur->head();
+    while ( oc = occur->get() )
+    {
+      if (!_env->get( oc->x(), oc->y(), indep))
+      { delete occur->remove(); j++; }
+      
+      occur->next(); i++;
+    }
+  occur->head();
+  }
+
+  delete[] indep;
+}
 
 /***********************/
 /*** set Occurrences ***/

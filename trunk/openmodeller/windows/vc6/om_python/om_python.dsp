@@ -145,6 +145,10 @@ InputPath=..\..\swig\python\om_python.i
 
 SOURCE=.\om_wrap.cxx
 # End Source File
+# Begin Source File
+
+SOURCE=.\swig_diff.txt
+# End Source File
 # End Group
 # Begin Group "Header Files"
 

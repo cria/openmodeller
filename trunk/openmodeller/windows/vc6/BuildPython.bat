@@ -10,3 +10,6 @@ del %3
 
 echo Creating SWIG interface for Python
 %SWIG_HOME%\swig.exe -c++ -python -o %3 %2
+
+echo Patching SWIG generated file
+C:\Cygwin\bin\patch.exe %3 swig_diff.txt

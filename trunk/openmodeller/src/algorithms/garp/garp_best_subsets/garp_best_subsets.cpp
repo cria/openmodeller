@@ -89,7 +89,7 @@ AlgParamMetadata parameters_bs[NUM_PARAM] =
     0,      // Parameter's lower limit.
     1,      // Not zero if the parameter has upper limit.
     10000,  // Parameter's upper limit.
-    "100"   // Parameter's typical (default) value.
+    "10"   // Parameter's typical (default) value.
   },
 
   {
@@ -199,7 +199,7 @@ AlgParamMetadata parameters_bs[NUM_PARAM] =
     1,      // Parameter's lower limit.
     0,      // Not zero if the parameter has upper limit.
     0,      // Parameter's upper limit.
-    "200"   // Parameter's typical (default) value.
+    "20"   // Parameter's typical (default) value.
   },
 
   {
@@ -387,6 +387,7 @@ int GarpBestSubsets::initialize()
 {
   // Reconfigure the global logger.
   //g_log.set( Log::Debug, stdout, "Garp" );
+  g_log.setLevel( Log::Debug );
 
   // BS parameters
   if (!getParameter("TrainingProportion", &_trainProp))        

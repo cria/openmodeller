@@ -13,6 +13,7 @@
 #include "../../inc/om_control.hh"
 #include "../../inc/environment.hh"
 #include "../../inc/map_format.hh"
+#include "../../inc/om_occurrences.hh"
 #include "../../inc/om_alg_parameter.hh"
 #include "../../inc/om_algorithm_metadata.hh"
 #include "../../inc/file_parser.hh"
@@ -202,11 +203,14 @@ int print_alg_params(int n, AlgParameter *param)
 %rename(setOutputMapByFile)   OpenModeller::setOutputMap(Scalar mult, char *output_file, char *mask, char *file_with_format);
 %rename(setOutputMapByFormat) OpenModeller::setOutputMap(Scalar mult, char *output_file, char *mask, MapFormat *format);
 
+%rename(printOccurrences)     Occurrences::print(char *);
+
 %include "../../inc/om_defs.hh"
 %include "../../inc/om_serializable.hh"
 %include "../../inc/om_control.hh"
 %include "../../inc/environment.hh"
 %include "../../inc/map_format.hh"
+%include "../../inc/om_occurrences.hh"
 %include "../../inc/om_alg_parameter.hh"
 %include "../../inc/om_algorithm_metadata.hh"
 %include "../../inc/file_parser.hh"

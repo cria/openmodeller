@@ -231,7 +231,9 @@ Sampler::getRandomOccurrence( Occurrences *occur,
   // variable values.
   while ( (oc = occur->getRandom()) &&
 	  ! _env->get( oc->x(), oc->y(), indep ) )
-  { printf("Point is no good: %8.3f, %8.3f\r", oc->x(), oc->y()); };
+  { 
+      printf("Point is no good: %8.3f, %8.3f\r", oc->x(), oc->y()); 
+  };
 
   oc->readAttributes( dep );
   
@@ -292,7 +294,6 @@ Sampler::getOccurrence( Occurrences *occur, SampledData *data,
 /**** split *********/
 void Sampler::split(Sampler ** train, Sampler ** test, double propTrain)
 {
-  int npresence, nabsence;
   Occurrences * train_presence, * train_absence, 
     * test_presence, * test_absence;
 

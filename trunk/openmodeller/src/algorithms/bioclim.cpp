@@ -125,7 +125,8 @@ The bioclim categorical output is mapped to the continuous output of\
 /****************************************************************/
 /****************** Algorithm's factory function ****************/
 
-Algorithm * dllexp
+dllexp
+Algorithm *
 algorithmFactory()
 {
   return new Bioclim;

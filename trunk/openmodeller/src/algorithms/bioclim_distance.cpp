@@ -112,7 +112,8 @@ standard deviation.\n",
 /****************************************************************/
 /****************** Algorithm's factory function ****************/
 
-Algorithm * dllexp
+dllexp
+Algorithm *
 algorithmFactory()
 {
   return new BioclimDistance;
