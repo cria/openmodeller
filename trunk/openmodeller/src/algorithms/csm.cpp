@@ -58,7 +58,7 @@ static AlgMetadata metadata = {
   0,               // Internal usage.
   "CSM",           // Name.
   "0.1",       	   // Version.
-  "Bibliography",  // Bibliography.
+  "",              // Bibliography.
 
   // Description.
   "",

@@ -68,11 +68,11 @@ static AlgMetadata metadata = {
   0,                    // Internal usage.
   "DistanceToAverage", 	// Name.
   "0.1",       	        // Version.
-  "Bibliography",     	// Bibliography.
+  "none",     	        // Bibliography.
 
   // Description.
   "Find the distance between the given environmental conditions \
-and the point represented the average of all occurrences.\n \
+and the point represented by the average of all occurrences.\n \
  If the distance 'dist' is in [0, MaxDist] then the output will \
 be in [0,1]. If 'dist' > MaxDist the output will be Zero.",
 

@@ -71,12 +71,12 @@ static AlgMetadata metadata = {
   0,                    // Internal usage.
   "MinimumDistance", 	// Name.
   "0.1",       	        // Version.
-  "Bibliography",     	// Bibliography.
+  "none",     	        // Bibliography.
 
   // Description.
   "Finds the distance between the given environmental conditions \
-to each occurrence points.\n\
- Then choose the lower distance. \n\
+to each occurrence point.\n\
+ Then choose the closest distance. \n\
  If the distance 'dist' is in [0, MaxDist] then the output will \
 be in [0,1]. If 'dist' > MaxDist the output will be Zero.",
 
