@@ -119,7 +119,10 @@ scanDirectory( char *dir )
   int dir_size = strlen( dir );
 
   // Windows findfirst and findnext calls.
-  dirhandle = _findfirst("*.dll", &fileinfo); 
+  dirhandle = _findfirst(filepattern, &fileinfo); 
+
+  if (dirhandle == -1L)
+    return 0;
 
   // Copy from windows structure to the return structure.
   for ( int i = 0; i < nent; i++ )

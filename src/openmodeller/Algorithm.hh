@@ -131,7 +131,7 @@ protected:
    *  All protected methods should not be called before
    *  initialized(). This is because the sampler object _samp
    *  is not initialized in the constructor and the algorithm's
-   *  parameters were not setted yet.
+   *  parameters were not set yet.
    */
 
   /** @return A vertor describing the environmental variable
@@ -156,7 +156,7 @@ protected:
    *  @param name Parameters name.
    *  @param value Filled with parameter's value.
    *  @return Zero if the parameter does not exists or the
-   *   parameters were not setted yet.
+   *   parameters were not set yet.
    **/
   int getParameter( char *name, char **value );
 
@@ -165,11 +165,19 @@ protected:
    *  @param name Parameters name.
    *  @param value Filled with parameter's value.
    *  @return Zero if the parameter does not exists or the
-   *   parameters were not setted yet.
+   *   parameters were not set yet.
    **/
   int getParameter( char *name, double *value );
   int getParameter( char *name, float  *value );
 
+  /** Returns an algorithm parameter of int point type.
+   *   
+   *  @param name Parameters name.
+   *  @param value Filled with parameter's value.
+   *  @return Zero if the parameter does not exists or the
+   *   parameters were not set yet.
+   **/
+  int getParameter( char *name, int *value );
 
   Sampler *_samp;
 

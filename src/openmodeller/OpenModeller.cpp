@@ -51,7 +51,7 @@
 // Directories to search for dynamic libraries.
 // Fixme: read this from some configuration file.
 static char *g_search_dirs[] = {
-  PLUGINPATH,
+  PLUGINPATH, 
   0
 };
 
@@ -173,8 +173,9 @@ ControlInterface::setEnvironment( int num_categ,
   end += num_continuos;
   while ( layers < end )
     stringCopy( layers++, *continuous_map++ );
-}
 
+  return 1;
+}
 
 /**********************/
 /*** set Output Map ***/
@@ -239,6 +240,8 @@ ControlInterface::setOccurrences( Occurrences *presence,
 {
   _presence = presence;
   _absence  = absence;
+
+  return 1;
 }
 
 

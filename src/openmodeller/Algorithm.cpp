@@ -131,7 +131,7 @@ Algorithm::getParameter( char *name, char **value )
     }
 		
 
-  // If parameters were not setted or zero parameters were setted.
+  // If parameters were not set or zero parameters were set.
   if ( ! _param || ! _nparam )
     return 0;
 
@@ -139,11 +139,26 @@ Algorithm::getParameter( char *name, char **value )
   AlgParameter *param = _param;
   AlgParameter *end   = _param + _nparam;
 
-  while ( param < end )
+  for( ; param < end; param++ )  
     if ( ! strcmp( name, param->name() ) )
       return (*value = param->value()) ? 1 : 0;
 
   return 0;
+}
+
+
+/*********************/
+/*** get Parameter ***/
+int
+Algorithm::getParameter( char *name, int *value )
+{
+  char *str_value;
+
+  if ( ! getParameter( name, &str_value ) )
+    return 0;
+
+  *value = atoi( str_value );
+  return 1;
 }
 
 
