@@ -74,16 +74,16 @@ double GarpRule::getPerformance(PerfIndex perfIndex)
 }
 
 GarpRule::~GarpRule() {};
-GarpRule * GarpRule::clone() { printf("Cl"); };
-int GarpRule::copy(GarpRule * fromRule) { printf("Cp"); };
-void GarpRule::initialize(GarpCustomSampler * sampler) { printf("In"); };
-int GarpRule::getCertainty(Scalar pred) { printf("Ct"); };
-double GarpRule::getError(Scalar predefinedValue, Scalar pred) { printf("Er"); };
-void GarpRule::adjustRange(Scalar * v1, Scalar * v2) { printf("Ad"); };
-void GarpRule::crossover(GarpRule * rule, int xpt1, int xpt2) { printf("Co"); };
-void GarpRule::mutate(double temperature) { printf("Mu"); };
-bool GarpRule::similar(GarpRule * objOtherRule) { printf("Si"); };
-double GarpRule::evaluate(GarpCustomSampler * sampler) { printf("Ev"); };
+GarpRule * GarpRule::clone() { g_log("Cl"); };
+int GarpRule::copy(GarpRule * fromRule) { g_log("Cp"); };
+void GarpRule::initialize(GarpCustomSampler * sampler) { g_log("In"); };
+int GarpRule::getCertainty(Scalar pred) { g_log("Ct"); };
+double GarpRule::getError(Scalar predefinedValue, Scalar pred) { g_log("Er"); };
+void GarpRule::adjustRange(Scalar * v1, Scalar * v2) { g_log("Ad"); };
+void GarpRule::crossover(GarpRule * rule, int xpt1, int xpt2) { g_log("Co"); };
+void GarpRule::mutate(double temperature) { g_log("Mu"); };
+bool GarpRule::similar(GarpRule * objOtherRule) { g_log("Si"); };
+double GarpRule::evaluate(GarpCustomSampler * sampler) { g_log("Ev"); };
 void GarpRule::log() {};
 
 void testHelperAddRules(GarpRuleSet * ruleset, int from, int to)

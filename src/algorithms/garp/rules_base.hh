@@ -133,7 +133,7 @@ public:
 
   virtual int copy(GarpRule * fromRule);
   
-  virtual void initialize(GarpCustomSampler * sampler) = 0;
+  virtual void initialize(GarpCustomSampler * sampler);
 
   virtual char type() const				{ return 'v'; }
   bool needsEvaluation() { return _needsEvaluation; } 

@@ -89,7 +89,7 @@ int RangeRule::getStrength(Scalar * values)
 {
   double a, b, c;
   int i;	
-  
+
   for (i = 0; i < _numGenes; i++)
     {
       a = _genes[i * 2];

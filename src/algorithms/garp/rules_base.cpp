@@ -60,6 +60,7 @@ bool equalEps(double v1, double v2)
 
 bool between(double value, double min, double max)
 {
+  //g_log("Between: %f <= %f <= %f? %d\n", min, value, max, ((value >= min) && (value <= max)));
   return ((value >= min) && (value <= max));
 }
 
@@ -310,7 +311,9 @@ bool GarpRule::similar(GarpRule * objOtherRule)
 double GarpRule::evaluate(GarpCustomSampler * sampler)
 {
   double utility[10];
-  
+
+  int u, dimension;
+
   // number of resamples
   int n;
 
@@ -363,8 +366,11 @@ double GarpRule::evaluate(GarpCustomSampler * sampler)
     utility[i] = 0.0;
   
   utility[0] = 1.0;
-  
+
+  dimension = sampler->dim();
   n = sampler->resamples();
+
+  //g_log("Resamples: %d\n", n);
   
   for(i = 0; i < n; i++)
     {	
@@ -382,10 +388,20 @@ double GarpRule::evaluate(GarpCustomSampler * sampler)
       if (strength > 0)
       {
         no++;
-        pXYs += min(certainty, strength); 
+        pXYs += certainty;  // strength is always 1, then success == certainty
         pYcXs += getError(error, pointValue);
       }
+
+      /*
+      g_log("Sample %5d: [%d %d %d] (%+3.2f) ", 
+	    i, strength, certainty, min(strength, certainty), pointValue);
+      for (u = 0; u < dimension; u++)
+	g_log("%+8.4f ", values[u]);
+      g_log("\n");
+      */
     }
+
+  //g_log("Sums (pXs, pYs, pXYs, n, no): %d %d %d %d %d\n", pXs, pYs, pXYs, n, no);
 
   if (no != pXs)
     { g_log.error(1, "Assertion failed (no != pXs): %d != %d", no, pXs); }
