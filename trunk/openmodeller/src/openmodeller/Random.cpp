@@ -26,34 +26,16 @@
  * http://www.gnu.org/copyleft/gpl.html
  */
 
-// Obs.:   The function 'drand48()' returns a number (double) between 0 and 1
-//         with uniform distribution.
-
-
 #include "random.hh"
-#include <stdio.h>
+#include "os_specific.hh"
+
 #include <stdlib.h>
-
-#ifdef WIN32
-#include <time.h>
-
-void _srand(long seed)	{ srand(seed); };
-double _drand(void)		{ return ((double) rand() / (double) RAND_MAX); };
-
-#else
-#include <sys/time.h>
-#include <sys/resource.h>
-
-void _srand(long seed)	{ srand48(seed); };
-double _drand(void)		{ return drand48(); };
-
-#endif
 
 
 /********************************************************/
 /************************ Random ************************/
 
-int Random::not_initialized = 1;
+int Random::_initialized = 0;
 
 
 /*******************/
@@ -61,113 +43,83 @@ int Random::not_initialized = 1;
 
 Random::Random()
 {
-  if ( not_initialized )
-    {
-	  long seed;
-
-#ifndef WIN32
-      struct timeval time;
-      if ( gettimeofday( &time, (struct timezone *)NULL ) != 0 )
-		{
-			fprintf( stderr, "Random::Random <error>.\n" );
-			exit( 0 );
-		}
-	  seed = time.tv_usec;
-
-#else
-	  // WIN32 version
-	  seed = (unsigned)time( NULL );
-#endif
-      
-      _srand( seed );
-      not_initialized = 0;
-    }
+  if ( ! _initialized )
+    _initialized = initRandom();
 }
 
 
-/*********************/
-/*** Get  (double) ***/
+/********************/
+/*** get (double) ***/
 double
-Random::Get( double min, double max )
+Random::get( double min, double max )
 {
-  return( (max-min) * _drand() + min );
+  return( (max-min) * random() + min );
 }
 
 double
-Random::Get( double max )
+Random::get( double max )
 {
-  return( max * _drand() );
+  return( max * random() );
 }
 
-double
-Random::Get()
-{
-  return( _drand() );
-}
 
-/****************************/
-/*** operator()  (double) ***/
+/***************************/
+/*** operator() (double) ***/
 double
 Random::operator()( double min, double max )
 {
-  return( (max-min) * _drand() + min );
+  return( (max-min) * random() + min );
 }
 
 double
 Random::operator()( double max )
 {
-  return( max * _drand() );
-}
-
-double
-Random::operator()()
-{
-  return( _drand() );
+  return( max * random() );
 }
 
 
-/******************/
-/*** Get  (int) ***/
+/*****************/
+/*** get (int) ***/
 int
-Random::Get( int min, int max )
+Random::get( int min, int max )
 {
-  return( int((max-min) * _drand()) + min );
+  return( int((max-min) * random()) + min );
 }
 
 int
-Random::Get( int max )
+Random::get( int max )
 {
-  return( int(max * _drand()) );
+  return( int(max * random()) );
 }
 
 
-/*************************/
-/*** operator()  (int) ***/
+/************************/
+/*** operator() (int) ***/
 int
 Random::operator()( int min, int max )
 {
-  return( int((max-min) * _drand()) + min );
+  return( int((max-min) * random()) + min );
 }
 
 int
 Random::operator()( int max )
 {
-  return( int(max * _drand()) );
+  return( int(max * random()) );
 }
 
 
 /*******************/
-/*** Get  (long) ***/
+/*** get  (long) ***/
 long
-Random::Get( long min, long max )
+Random::get( long min, long max )
 {
-  return( long((max-min) * _drand()) + min );
+  return( long((max-min) * random()) + min );
 }
 
 long
-Random::Get( long max )
+Random::get( long max )
 {
-  return( long(max * _drand()) );
+  return( long(max * random()) );
 }
 
 
@@ -176,24 +128,33 @@ Random::Get( long max )
 long
 Random::operator()( long min, long max )
 {
-  return( long((max-min) * _drand()) + min );
+  return( long((max-min) * random()) + min );
 }
 
 long
 Random::operator()( long max )
 {
-  return( long(max * _drand()) );
+  return( long(max * random()) );
 }
 
 
 /****************/
-/*** Discrete ***/
+/*** discrete ***/
 double
-Random::Discrete( float range, float dim_interv )
+Random::discrete( float range, float dim_interv )
 {
   double d = 2.0 * range / dim_interv;
-  int k = int( (d + 1) * _drand() );
+  int k = int( (d + 1) * random() );
   return( k * dim_interv - range );
+}
+
+
+/**************/
+/*** random ***/
+double
+Random::random()
+{
+  return ::rand() / (RAND_MAX + 1.0);
 }
 
 
