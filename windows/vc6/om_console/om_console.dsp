@@ -66,7 +66,7 @@ LINK32=link.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /YX /FD /GZ /c
-# ADD CPP /nologo /W3 /Gm /GX /ZI /Od /I "../../algorithms" /I "../../inc" /I "../../inc/env_io" /I "$(GDAL_DIR)/include" /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /D PLUGINPATH=\"C:\\@Ricardo\\Proj\\modeller\\src\\om_vcpp7\\om_garp\\Debug\" /FR /YX /FD /GZ /c
+# ADD CPP /nologo /W3 /Gm /GX /ZI /Od /I "../../algorithms" /I "../../inc" /I "../../inc/env_io" /I "$(GDAL_DIR)/include" /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /D PLUGINPATH=\"C:\\@Ricardo\\Proj\\modeller\\src\\om_vcc6\\om_mindist\\Debug\"","\"C:\\@Ricardo\\Proj\\modeller\\src\\om_vcc6\\om_garp\\Debug\" /FR /YX /FD /GZ /c
 # ADD BASE RSC /l 0x409 /d "_DEBUG"
 # ADD RSC /l 0x409 /d "_DEBUG"
 BSC32=bscmake.exe
@@ -85,6 +85,10 @@ LINK32=link.exe
 # Begin Group "Source Files"
 
 # PROP Default_Filter "cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
+# Begin Source File
+
+SOURCE=..\..\lib\alg_parameter.cpp
+# End Source File
 # Begin Source File
 
 SOURCE=..\..\lib\algorithm.cpp
@@ -119,10 +123,6 @@ SOURCE=..\..\..\algorithms\garp_sampler.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\algorithms\test\garptest.cpp
-# End Source File
-# Begin Source File
-
 SOURCE=..\..\lib\env_io\geo_transform.cpp
 # End Source File
 # Begin Source File
@@ -151,7 +151,7 @@ SOURCE=..\..\console\occurrences_file.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\lib\OmAlgParameter.cpp
+SOURCE=..\..\console\om_console.cpp
 # End Source File
 # Begin Source File
 
