@@ -143,7 +143,7 @@ protected:
   /** Dimension of problem domain: number of independent 
    *  variables (climatic + soil) added to the number of
    *  dependent variables (occurrence prediction). */
-  int dimDomain()  { return _samp ? _samp->dimEnv() : 0; }
+  int dimDomain()  { return _samp ? _samp->numIndependent() : 0; }
 
   /** Returns the i-th setted parameter.
    *  The number of parameters is given by metadata.

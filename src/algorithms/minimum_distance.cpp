@@ -73,9 +73,9 @@ static AlgorithmMetadata metadata = {
   "Bibliography",     	// Bibliography.
 
   // Description.
-  "Find the distance between the given environmental conditions \
-and the all the occurrence points.\n\
- Then choose the lower one. \n\
+  "Finds the distance between the given environmental conditions \
+to each occurrence points.\n\
+ Then choose the lower distance. \n\
  If the distance 'dist' is in [0, MaxDist] then the output will \
 be in [0,1]. If 'dist' > MaxDist the output will be Zero.",
 
@@ -145,7 +145,7 @@ MinimumDistance::initialize( int ncicle )
   if ( ! getParameter( 0, &_dist ) )
     return 0;
 
-  int dim = _samp->dimEnv();
+  int dim = _samp->numIndependent();
 
   // Distance should range from 0 to 1
   if (_dist > 1.0)       _dist = 1.0;
@@ -190,19 +190,19 @@ MinimumDistance::done()
 Scalar
 MinimumDistance::getValue( Scalar *x )
 {
-  int dim  = _presence->dim;
-  int npnt = _presence->npnt;
+  int dim  = _presence->numIndependent();
+  int npnt = _presence->numSamples();
 
   // Calculate the smallest distance between *x and the occurrence
   // points.
-  Scalar *pnt = _presence->pnt;
-  Scalar *end = pnt + dim * npnt;
+  Scalar **pnt = _presence->getIndependentBase();
+  Scalar **end = pnt + npnt;
 
   Scalar min = -1;
   Scalar dist;
-  for ( ; pnt < end; pnt += dim )
+  while ( pnt < end )
     {
-      dist = findDist( x, pnt, dim );
+      dist = findDist( x, *pnt++, dim );
 
       if ( (dist >= 0) && (dist < min || min < 0) )
 	min = dist;

@@ -128,7 +128,7 @@ Bioclim::initialize( int ncicle )
   if ( ! getParameter( 0, &_cutoff ) )
     return 0;
 
-  _dim    = _samp->dimEnv();
+  _dim    = _samp->numIndependent();
   _max    = new Scalar[_dim];
   _min    = new Scalar[_dim];
   _avg    = new Scalar[_dim];
@@ -145,8 +145,8 @@ Bioclim::iterate()
 
   SampledData presence;
   _samp->getPresence( &presence );  // Get all presence points.
-  Scalar *pnt = presence.pnt;
-  int    npnt = presence.npnt;
+  Scalar **pnt = presence.getIndependentBase();
+  int    npnt = presence.numSamples();
 
   if ( ! npnt )
     _log.error( 1, "All occurrences are outside the mask!\n" );
@@ -181,7 +181,7 @@ Bioclim::iterate()
       // get all values for this variable and store in second array
       memset( values, 0, npnt * sizeof(Scalar) );
       for ( i = 0; i < npnt; i++)
-	values[i] = pnt[ i * _dim + d ];
+	values[i] = pnt[i][d];
 
       // sort the values of this env variable
       // using bubble sort for simplicity

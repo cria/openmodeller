@@ -12,8 +12,8 @@ plugindir = ${pkglibdir}
 
 plugin_LTLIBRARIES = \
 		libomdistance_to_average.la \
-		libombioclim.la \
 		libomminimum_distance.la \
+		libombioclim.la \
                 libomgarp.la
 
 libomdistance_to_average_la_SOURCES = \

@@ -147,13 +147,13 @@ DistanceToAverage::initialize( int ncicle )
   if ( ! getParameter( 0, &_dist ) )
     return 0;
 
-  _dim = _samp->dimEnv();
+  _dim = _samp->numIndependent();
 
   printf( "Parameter passed: %f\n", _dist );
 
   // Distance should range from 0 to 1
-  if (_dist > 1.0)  _dist = 1.0;
-  else if (_dist < 0.0) _dist = 0.0;
+  if ( _dist > 1.0 )  _dist = 1.0;
+  else if ( _dist < 0.0 ) _dist = 0.0;
 
   // Normalize the distance parameter according to the number
   // of layers.
@@ -180,16 +180,18 @@ DistanceToAverage::initialize( int ncicle )
       printf( "All occurrences are outside the mask!\n" );
       return 0;
     }
-  Scalar *points = presence.pnt;
+  Scalar **points = presence.getIndependentBase();
 
   printf( "Finding average from %d occurrences.\n", npnt );
 
-  // Sum of the environment values for all occurrence points.
-  Scalar *pnt = points;
+  // Sum of the environmental values for all occurrence points.
   memset( _avg, 0, _dim * sizeof(Scalar) );
   for ( int i = 0; i < npnt; i++ )
-    for ( int d = 0; d < _dim; d++ )
-      _avg[d] += *pnt++;
+    {
+      Scalar *sample_i = *points++;
+      for ( int d = 0; d < _dim; d++ )
+	_avg[d] += *sample_i++;
+    }
 
   // Average value.
   for ( int d = 0; d < _dim; d++ )
@@ -243,7 +245,7 @@ DistanceToAverage::getValue( Scalar *x )
     }
   dist = sqrt( dist );
 
-  // Minimum and maximum distances found.
+  // Minimum and maximum distances found. Only for log!
   if ( first_time )
     {
       _min = _max = dist;

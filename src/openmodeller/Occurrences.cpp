@@ -30,6 +30,7 @@
 
 #include "list.cpp"     // Template.
 #include "occurrence.hh"
+#include "random.hh"
 
 #include <string.h>
 
@@ -42,7 +43,8 @@
 
 Occurrences::Occurrences( char *name, char *id )
 {
-  _ocur = new LstOccur;
+  _occur  = new LstOccur;
+  _vector = 0;
 
   _name = new char[ strlen(name) + 1 ];
   strcpy( _name, name );
@@ -58,10 +60,13 @@ Occurrences::Occurrences( char *name, char *id )
 Occurrences::~Occurrences()
 {
   Occurrence *oc;
-  for ( _ocur->head(); oc = _ocur->get(); _ocur->next() )
+  for ( _occur->head(); oc = _occur->get(); _occur->next() )
     delete( oc );
 
-  delete _ocur;
+  delete _occur;
+
+  if ( _vector )
+    delete _vector;
 }
 
 
@@ -71,7 +76,15 @@ void
 Occurrences::insert( Coord longitude, Coord latitude, float pop )
 {
   Occurrence *oc = new Occurrence( longitude, latitude, pop );
-  _ocur->insertLast( oc );
+  _occur->insertLast( oc );
+
+  // Signal to rebuild vector view the next time "getRandom()"
+  // is called.
+  if ( _vector )
+    {
+      delete _vector;
+      _vector = 0;
+    }
 }
 
 
@@ -80,7 +93,7 @@ Occurrences::insert( Coord longitude, Coord latitude, float pop )
 int
 Occurrences::numOccurrences()
 {
-  return _ocur->length();
+  return _occur->length();
 }
 
 
@@ -89,7 +102,7 @@ Occurrences::numOccurrences()
 void
 Occurrences::head()
 {
-  _ocur->head();
+  _occur->head();
 }
 
 
@@ -98,7 +111,7 @@ Occurrences::head()
 void
 Occurrences::next()
 {
-  _ocur->next();
+  _occur->next();
 }
 
 
@@ -107,7 +120,7 @@ Occurrences::next()
 Occurrence *
 Occurrences::get()
 {
-  return _ocur->get();
+  return _occur->get();
 }
 
 
@@ -116,7 +129,22 @@ Occurrences::get()
 Occurrence *
 Occurrences::remove()
 {
-  return _ocur->remove();
+  return _occur->remove();
+}
+
+
+/******************/
+/*** get Random ***/
+Occurrence *
+Occurrences::getRandom()
+{
+  if ( ! _vector )
+    buildVector();
+
+  Random rnd;
+  int selected = (int) rnd( numOccurrences() );
+
+  return _vector[ selected ];
 }
 
 
@@ -136,6 +164,26 @@ Occurrences::print( char *msg )
   Occurrence *c;
   for ( head(); c = get(); next() )
     printf( "(%+9.4f, %+8.4f)\n", c->x, c->y );
+}
+
+
+/********************/
+/*** build Vector ***/
+void
+Occurrences::buildVector()
+{
+  // Stores the actual node of "_occur".
+  void *list_pos = _occur->getPos();
+
+  int noccur = numOccurrences();
+  Occurrence **vector = _vector = new (Occurrence *)[ noccur ];
+
+  Occurrence *oc;
+  for ( _occur->head(); oc = _occur->get(); _occur->next() )
+    *vector++ = oc;
+
+  // Restores the actual node of "_occur".
+  _occur->setPos( list_pos );
 }
 
 

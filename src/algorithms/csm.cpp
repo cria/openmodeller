@@ -133,7 +133,7 @@ int Csm::initialize( int ncycle )
 
     //set the class member that holds the number of environmental variables
     //we subtract 1 because the first column contains the specimen count
-    _layer_count = _samp->dimEnv();
+    _layer_count = _samp->numIndependent();
     //set the class member that holds the number of occurences
     _localityCount = _samp->numPresence();
 
@@ -212,8 +212,7 @@ int Csm::SamplerToMatrix()
     SampledData localities;
     if ( ! _samp->getPresence(&localities, _localityCount))
       return 0;
-    Scalar *mySamples = localities.pnt;
-    _localityCount   = localities.npnt;
+    _localityCount = localities.numSamples();
 
     // Allocate the gsl matrix to store environment data at each locality
     _gsl_environment_matrix = gsl_matrix_alloc (_localityCount, _layer_count);
@@ -223,7 +222,7 @@ int Csm::SamplerToMatrix()
         for (int j=0;j<_layer_count;j++)
         {
             //we add one to j in order to omit the specimen count column
-            float myCellValue = mySamples[i * _layer_count + j];
+            float myCellValue = localities.getIndependent(i,j);
             gsl_matrix_set (_gsl_environment_matrix,i,j,myCellValue);
         }
     }

@@ -32,6 +32,9 @@
 #include <om_sampler.hh>
 #include <om_sampled_data.hh>
 #include <om_occurrences.hh>
+#include <random.hh>
+
+#include <string.h>
 
 #include <stdio.h>
 
@@ -63,12 +66,21 @@ Sampler::~Sampler()
 }
 
 
-/***************/
-/*** dim Env ***/
+/***********************/
+/*** num Independent ***/
 int
-Sampler::dimEnv()
+Sampler::numIndependent()
 {
   return _env->numLayers();
+}
+
+
+/*********************/
+/*** num Dependent ***/
+int
+Sampler::numDependent()
+{
+  return _presence->numAttributes();
 }
 
 
@@ -93,65 +105,108 @@ Sampler::numAbsence()
 /********************/
 /*** get Presence ***/
 int
-Sampler::getPresence( SampledData *env, int npnt )
+Sampler::getPresence( SampledData *data, int npnt )
 {
-  return getOccurrence( _presence, env, npnt );
+  return getOccurrence( _presence, data, npnt );
 }
 
 
 /*******************/
 /*** get Absence ***/
 int
-Sampler::getAbsence( SampledData *env, int npnt )
+Sampler::getAbsence( SampledData *data, int npnt )
 {
-  return _absence ? getOccurrence( _absence, env, npnt ) : 0;
+  return _absence ? getOccurrence( _absence, data, npnt ) : 0;
 }
 
 
 /**************************/
 /*** get Pseudo Absence ***/
 int
-Sampler::getPseudoAbsence( SampledData *env, int npnt )
+Sampler::getPseudoAbsence( SampledData *data, int npnt )
 {
   if ( npnt <= 0 )
     return 0;
 
-  int dim = dimEnv();
+  int num_indep = numIndependent();
+  int num_dep   = numDependent();
+  data->redim( npnt, num_indep, num_dep );
 
-  env->redim( npnt, dim );
-  Scalar *pnt = env->pnt;
+  Scalar **indep = data->getIndependentBase();
+  Scalar **dep   = data->getDependentBase();
+  Scalar **end   = dep + npnt;
 
-  for ( Scalar *end = pnt + npnt * dim; pnt < end; pnt += dim )
-    _env->getRandom( pnt );
+  // Size (in bytes) of the dependent variable vectors.
+  int dep_size = num_dep * sizeof(Scalar);
 
-  return dim;
+  while ( dep < end )
+    {
+      // Independent (environment) variables.
+      _env->getRandom( *indep++ );
+
+      // Dependent variables. For absence they are always null.
+      memset( *dep++, 0, dep_size );
+    }
+
+  return npnt;
 }
 
 
 /*******************/
 /*** get Samples ***/
 int
-Sampler::getSamples( SampledData *presence, SampledData *absence,
-		     int npnt )
+Sampler::getSamples( SampledData *data, int npnt )
 {
-  if ( ! npnt )
-    return 0;
+  data->redim( npnt, numIndependent(), numDependent() );
 
-  getPresence( presence, npnt - npnt/2 );
-  getAbsence( absence, npnt - presence->npnt );
+  Scalar **indep = data->getIndependentBase();
+  Scalar **dep   = data->getDependentBase();
+  Scalar **end   = dep + npnt;
 
-  // If it do not read all the needed points, try to get the
-  // missing points through pseudo-absence method.
-  int missing = npnt - presence->npnt - absence->npnt;
-  if ( missing )
+  while ( dep < end )
+    getOneSample( *indep++, *dep++ );
+
+  return npnt;
+}
+
+
+/**********************/
+/*** get One Sample ***/
+int
+Sampler::getOneSample( Scalar *indep, Scalar *dep )
+{
+  Random rnd;
+
+  // Probability of 0.5 of get a presence point.
+  if ( rnd() < 0.5 )
     {
-      SampledData pseudo;
-      getPseudoAbsence( &pseudo, missing );
-
-      absence->add( pseudo );
+      getRandomOccurrence( _presence, indep, dep );
+      return 1;
     }
 
-  return presence->npnt + absence->npnt;
+  //
+  // Probability of 0.5 of get an absence point.
+  //
+
+  // If there are real absence points...
+  if ( _absence )
+    {
+      getRandomOccurrence( _absence, indep, dep );
+      return 0;
+    }
+
+  //
+  // Get a random pseudo-absence point.
+  //
+
+  // Independent (environment) variables.
+  _env->getRandom( indep );
+
+  // Dependent variables. For absence they are always null.
+  memset( dep, 0, numIndependent() * sizeof(Scalar) );
+
+  // Got an absence point.
+  return 0;
 }
 
 
@@ -164,33 +219,61 @@ Sampler::varTypes( int *types )
 }
 
 
+/*****************************/
+/*** get Random Occurrence ***/
+int
+Sampler::getRandomOccurrence( Occurrences *occur,
+			      Scalar *indep, Scalar *dep )
+{
+  Occurrence *oc;
+
+  // Choose an occurrence point with defined environmental
+  // variable values.
+  while ( (oc = occur->getRandom()) &&
+	  ! _env->get( oc->x, oc->y, indep ) );
+
+  int size = occur->numAttributes() * sizeof(Scalar);
+  memcpy( dep, oc->attr, size );
+  
+  return 1;
+}
+
+
 /**********************/
 /*** get Occurrence ***/
 int
-Sampler::getOccurrence( Occurrences *occur, SampledData *env,
+Sampler::getOccurrence( Occurrences *occur, SampledData *data,
 			int npnt )
 {
-  if ( ! npnt )
+ if ( ! npnt )
     return 0;
 
   // Get all occurrences.
   if ( npnt < 0 )
     npnt = occur->numOccurrences();
 
-  // Number of environmental variables.
-  int dim = dimEnv();
+  // Redimension of 'data' to stores the presence samples.
+  int num_indep = numIndependent();
+  int num_dep   = occur->numAttributes();
+  data->redim( npnt, num_indep, num_dep );
 
-  env->redim( npnt, dim );
-  Scalar *pnt = env->pnt;
+  int dep_size = num_dep * sizeof(Scalar);
+
+  Scalar **indep = data->getIndependentBase();
+  Scalar **dep   = data->getDependentBase();
 
   Occurrence *oc = 0;
   int n = 0;
   for ( ; n < npnt && (oc = occur->get()); occur->next() )
     {
-      // Read environmental variables.
-      if ( _env->get( oc->x, oc->y, pnt ) )
+      // Read environmental variables (independent variables).
+      if ( _env->get( oc->x, oc->y, *indep ) )
         {
-          pnt += dim;
+	  // Read occurrence attributes (dependent variables).
+	  memcpy( *dep++, oc->attr, dep_size );
+
+	  // Prepare to read next sample.
+	  indep++;
           n++;
         }
     }
@@ -201,6 +284,7 @@ Sampler::getOccurrence( Occurrences *occur, SampledData *env,
   if ( ! oc )
     occur->head();
 
+  // Number of occurrences read.
   return n;
 }
 
