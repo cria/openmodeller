@@ -66,6 +66,49 @@ static char *g_search_dirs[] = {
 
 const char * g_config_file = CONFIG_FILE;
 
+/*** backward compatible callback helper classes ***/
+
+class ModelCallbackHelper : public OpenModeller::ModelCommand
+{
+
+public:
+  ModelCallbackHelper( OpenModeller::ModelCallback func, void *param ) :
+    arg( param ),
+    func( func ) {};
+  void operator()( int i ) {
+    func(i, arg );
+  }
+
+private:
+  void *arg;
+  OpenModeller::ModelCallback func;
+
+};
+
+class MapCallbackHelper : public OpenModeller::MapCommand
+{
+
+public:
+  MapCallbackHelper( OpenModeller::MapCallback func, void *param ) :
+    arg( param ),
+    func( func ) {};
+  void operator()( float d ) {
+    func(d, arg );
+  }
+
+private:
+  void *arg;
+  OpenModeller::MapCallback func;
+
+};
+
+void OpenModeller::setModelCallback( ModelCallback func, void *param ) {
+  setModelCommand( new ModelCallbackHelper( func, param ) );
+}
+
+void OpenModeller::setMapCallback( MapCallback func, void *param ) {
+  setMapCommand( new MapCallbackHelper( func, param ) );
+}
 
 /****************************************************************/
 /************************* Open Modeller ************************/
@@ -92,10 +135,8 @@ OpenModeller::OpenModeller()
   _output_mask   = 0;
   _output_header = 0;
 
-  _model_callback       = 0;
-  _model_callback_param = 0;
-  _map_callback         = 0;
-  _map_callback_param   = 0;
+  _model_command       = NULL;
+  _map_command         = NULL;
 
   _error[0] = '\0';
 
@@ -127,6 +168,9 @@ OpenModeller::~OpenModeller()
   if ( _output_file )   delete[] _output_file;
   if ( _output_mask )   delete[] _output_mask;
   if ( _output_header ) delete _output_header;
+
+  if ( _map_command ) delete _map_command;
+  if ( _model_command ) delete _model_command;
 
   if ( _plugin_path ) deleteStringArray( _plugin_path );
 
@@ -488,6 +532,10 @@ int
 OpenModeller::setOccurrences( Occurrences *presence,
                               Occurrences *absence )
 {
+  if ( !presence || presence->numOccurrences() == 0 ) {
+    sprintf(_error,"Presences must not be empty");
+    return 0;
+  }
   _presence = presence;
   _absence  = absence;
 
@@ -532,8 +580,12 @@ OpenModeller::createModel()
   while ( _alg->iterate() && ! _alg->done() )
     {
       ncycle++;
-      if ( _model_callback )
-        (*_model_callback)( ncycle, _model_callback_param );
+      if ( _model_command )
+        try {
+          (*_model_command)( ncycle );
+        }
+        catch( ... ) {
+        }
     }
 
   // Algorithm terminated with error.
@@ -805,11 +857,15 @@ OpenModeller::createMap( Environment *env, char *file, Scalar mult,
 	  
 	}
       // Call the callback function if it is set.
-      if ( _map_callback )
+      if ( _map_command )
         {
           if ( (progress += progress_step) > 1.0 )
             progress = 1.0;
-          (*_map_callback)( progress, _map_callback_param );
+          try {
+            (*_map_command)( progress );
+          }
+          catch( ... ) {
+          }
         }
 
     }
