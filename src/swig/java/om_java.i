@@ -261,6 +261,9 @@ jmethodID JNI_getSetStringMethod(JNIEnv * jenv, jclass clazz, char * methodName)
 
 /* This typemap handles the conversion of the jtype to jstype typemap type and visa versa */
 %typemap(javain)  AlgParameter * "$javainput"
+%typemap(javaout) AlgParameter * {
+    return $jnicall;
+}
 
 
 
