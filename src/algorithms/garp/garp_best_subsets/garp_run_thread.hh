@@ -39,6 +39,9 @@
 #define THREAD_PROC_RETURN_TYPE        void
 #define THREAD_PROC_RETURN_STATEMENT   return;
 
+#define THREAD_REDUCE_PRIORITY()\
+ { SetThreadPriority(GetCurrentThread(), THREAD_PRIORITY_BELOW_NORMAL); }
+
 #define THREAD_START(threadProc, threadData)\
  { _beginthread(threadProc, 0, (void *) threadData); }
 
@@ -49,8 +52,12 @@
 
 // posix threading (linux/unix/cygwin)
 #include <pthread.h>
+#include <sys/resource.h>
 #define THREAD_PROC_RETURN_TYPE        void *
 #define THREAD_PROC_RETURN_STATEMENT   return (NULL);
+
+#define THREAD_REDUCE_PRIORITY()\
+ { setpriority(PRIO_PROCESS, getpid(), 10); }
 
 #define THREAD_START(threadProc, threadData)\
  { pthread_t pthread;\
