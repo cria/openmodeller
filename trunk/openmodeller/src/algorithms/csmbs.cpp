@@ -148,6 +148,10 @@ CsmBS::~CsmBS()
 
 int CsmBS::initialize()
 {
+  printf ("vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv\n");
+  printf ("     Starting CSM - Broken Stick \n");
+  printf ("         Model Initialisation \n");
+  printf ("vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv\n");
   //set up parameters
   if ( ! getParameter( "Randomisations", &numberOfRandomisationsInt ) )
   {
@@ -157,7 +161,8 @@ int CsmBS::initialize()
   {
     return 0;
   }
-
+  printf ("Randomisations parameter set to: %i\n",numberOfRandomisationsInt);
+  printf ("StandardDeviations parameter set to: %f\n",numberOfStdDevsFloat);
   if ( numberOfRandomisationsInt <= 0 || numberOfRandomisationsInt > 1000 )
   {
     g_log.warn( "CSM - Broken Stick - Randomisations parameter out of range: %f\n",
@@ -172,7 +177,7 @@ int CsmBS::initialize()
   }
 
   //call the superclass initialier now...
-  Csm::initialize();
+  return Csm::initialize();
 }
 int CsmBS::discardComponents()
 {
