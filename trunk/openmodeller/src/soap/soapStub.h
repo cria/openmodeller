@@ -23,7 +23,7 @@ struct SOAP_ENV__Header
 /* soap-AlgorithmParameter: */
 struct soap_AlgorithmParameter
 {
-	char *id;
+	char *om_id;	/* attribute */
 	char *name;
 	char *data_type;
 	char *overview;
@@ -38,7 +38,7 @@ struct soap_AlgorithmParameter
 /* soap-AlgorithmMetadata: */
 struct soap_AlgorithmMetadata
 {
-	char *id;
+	char *om_id;	/* attribute */
 	char *name;
 	char *version;
 	char *overview;
@@ -124,14 +124,14 @@ struct soap_Mask
 /* soap-Parameter: */
 struct soap_Parameter
 {
-	char *name;	/* attribute */
+	char *om_id;	/* attribute */
 	char *value;	/* attribute */
 };
 
 /* soap-Algorithm: */
 struct soap_Algorithm
 {
-	char *id;
+	char *om_id;	/* attribute */
 	int __size;	/* sequence of elements <parameter> */
 	struct soap_Parameter *__ptrparameter;
 };

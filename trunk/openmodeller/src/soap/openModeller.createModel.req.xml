@@ -24,9 +24,8 @@
    </maps>
    <mask xsi:type="om:Mask" location="">
    </mask>
-   <algorithm xsi:type="om:Algorithm">
-    <id xsi:type="xsd:string"></id>
-    <parameter xsi:type="om:Parameter" name="" value="">
+   <algorithm xsi:type="om:Algorithm" om-id="">
+    <parameter xsi:type="om:Parameter" om-id="" value="">
     </parameter>
    </algorithm>
    <output xsi:type="om:Output">

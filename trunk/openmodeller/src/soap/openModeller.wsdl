@@ -103,7 +103,6 @@
   </complexType>
   <complexType name="soap-AlgorithmParameter">
    <sequence>
-    <element name="id" type="xsd:string" minOccurs="0" maxOccurs="1" nillable="true"/>
     <element name="name" type="xsd:string" minOccurs="0" maxOccurs="1" nillable="true"/>
     <element name="data-type" type="xsd:string" minOccurs="0" maxOccurs="1" nillable="true"/>
     <element name="overview" type="xsd:string" minOccurs="0" maxOccurs="1" nillable="true"/>
@@ -114,10 +113,10 @@
     <element name="max" type="xsd:double" minOccurs="1" maxOccurs="1"/>
     <element name="typical-value" type="xsd:string" minOccurs="0" maxOccurs="1" nillable="true"/>
    </sequence>
+   <attribute name="om-id" type="xsd:string" use="optional"/>
   </complexType>
   <complexType name="soap-AlgorithmMetadata">
    <sequence>
-    <element name="id" type="xsd:string" minOccurs="0" maxOccurs="1" nillable="true"/>
     <element name="name" type="xsd:string" minOccurs="0" maxOccurs="1" nillable="true"/>
     <element name="version" type="xsd:string" minOccurs="0" maxOccurs="1" nillable="true"/>
     <element name="overview" type="xsd:string" minOccurs="0" maxOccurs="1" nillable="true"/>
@@ -130,6 +129,7 @@
     <element name="accepts-absence-points" type="xsd:int" minOccurs="1" maxOccurs="1"/>
     <element name="parameter" type="om:AlgorithmParameter" minOccurs="1" maxOccurs="unbounded"/>
    </sequence>
+   <attribute name="om-id" type="xsd:string" use="optional"/>
   </complexType>
   <complexType name="soap-Algorithms">
    <sequence>
@@ -183,14 +183,14 @@
   <complexType name="soap-Parameter">
    <sequence>
    </sequence>
-   <attribute name="name" type="xsd:string" use="optional"/>
+   <attribute name="om-id" type="xsd:string" use="optional"/>
    <attribute name="value" type="xsd:string" use="optional"/>
   </complexType>
   <complexType name="soap-Algorithm">
    <sequence>
-    <element name="id" type="xsd:string" minOccurs="0" maxOccurs="1" nillable="true"/>
     <element name="parameter" type="om:Parameter" minOccurs="1" maxOccurs="unbounded"/>
    </sequence>
+   <attribute name="om-id" type="xsd:string" use="optional"/>
   </complexType>
   <complexType name="soap-Output">
    <sequence>

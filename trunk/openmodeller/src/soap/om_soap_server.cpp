@@ -65,6 +65,18 @@ int main(int argc, char **argv)
       OM_SOAP_TMPDIR = s;
     }
 
+  char log_file[256];
+  strcpy(log_file, OM_SOAP_TMPDIR);
+  strcat(log_file, "/om.log");
+
+  FILE *flog = fopen(log_file, "w");
+  if (!flog)
+    {
+      fprintf(stderr, "Could not open log file\n");
+    }
+
+  g_log.set(Log::Debug, flog);
+
   struct soap soap;
   soap_init(&soap);
 
@@ -176,6 +188,8 @@ int main(int argc, char **argv)
 	    }
 	}
     }
+
+  fclose(flog);
   
   return 0;
 }
@@ -251,14 +265,12 @@ om__createModel( struct soap *soap, om__Points *points, om__Maps *maps, om__Mask
   soap->header = (struct SOAP_ENV__Header*)soap_malloc( soap, sizeof(struct SOAP_ENV__Header) ); 
   soap->header->om__version = om.getVersion();
 
-  // Set the algorithm to be used
-  om.setAlgorithm( algorithm->id, algorithm->__size, (AlgParameter *)algorithm->__ptrparameter );
-
-  AlgMetadata *alg_metadata = om.algorithmMetadata( algorithm->id );
+  // Get algorithm metadata
+  AlgMetadata *alg_metadata = om.algorithmMetadata( algorithm->om_id );
 
   if ( ! alg_metadata )
     {
-      return soap_receiver_fault( soap, "Could not load the requested algorithm", NULL );
+      return soap_receiver_fault( soap, "Could not retrieve algorithm metadata", NULL );
     }
 
   // Points
@@ -316,6 +328,12 @@ om__createModel( struct soap *soap, om__Points *points, om__Maps *maps, om__Mask
   delete cat_layers;
   delete cont_layers;
 
+  // Set the algorithm to be used
+  if ( ! om.setAlgorithm( algorithm->om_id, algorithm->__size, (AlgParameter *)algorithm->__ptrparameter ) )
+  {
+      return soap_receiver_fault( soap, "Could not load the requested algorithm", NULL );
+  }
+
   // Output map  (FIX ME: use a portable and better solution for unique names)
   char *t_fname = (char*)soap_malloc(soap, strlen(OM_SOAP_TMPDIR) + strlen(TEMPLATE_FILE_NAME) +2);
   strcpy(t_fname, OM_SOAP_TMPDIR);
@@ -327,9 +345,19 @@ om__createModel( struct soap *soap, om__Points *points, om__Maps *maps, om__Mask
   strcpy(r_fname, t_fname);
   strcat(r_fname, output->format); // output file is unique name + file format (should include dot)
 
-  om.createModel();
-  om.setOutputMap( (xsd__double)output->scale, r_fname, mask->location, output->format );
-  om.createMap();
+  if ( ! om.createModel() )
+    {
+      return soap_receiver_fault( soap, "Could not create model", NULL );
+    }
+
+  om.setOutputMap( (xsd__double)output->scale, r_fname, mask->location, output->header );
+
+  printf("before create map.\n"); fflush(stdout);
+  if ( ! om.createMap() )
+    {
+      return soap_receiver_fault( soap, "Could not create map", NULL );
+    }
+  printf("after create map.\n"); fflush(stdout);
 
   *ticket = rindex(r_fname, '/')+1; //ticket is actually the file name
 

@@ -31,6 +31,7 @@ use SOAP::Lite
 		      die ref $res ? $res->faultstring : $soap->transport->status, "\n";
 		  };
 use Getopt::Long;
+use Data::Dumper;
 
 ### Settings
 
@@ -252,7 +253,7 @@ sub get_algorithms
     unless ($response->fault)
     { 
 	my @algorithms = $response->valueof('//algorithm');
-	
+
 	my $num_algs = scalar(@algorithms);
 	
 	if ($num_algs > 0)
@@ -264,18 +265,18 @@ sub get_algorithms
 	    foreach my $alg (@algorithms)
 	    {
 		print '-' x 25 . "\n" if $option == 2;
+
+		my $alg_path = "/Envelope/Body/[1]/[1]/[$i]";
 		
 		my %algorithm = %{$alg};
+
+		$algorithm{'om-id'} = $response->dataof($alg_path)->attr->{'om-id'};
 
 		my $accepts_categorical_data = ($algorithm{'accepts-categorical-maps'}) ? 'yes': 'no';
 		my $accepts_absence_data = ($algorithm{'accepts-absence-points'}) ? 'yes': 'no';
 		
-		my @params = $response->valueof("/Envelope/Body/[1]/[1]/[$i]/parameter");
-		
-		my $num_params = scalar(@params);
-		
 		print <<EOM if $option == 2;
-  $algorithm{id}
+  $algorithm{name}
      * creator: $algorithm{creator}
      * bibliography: $algorithm{bibliography}
      * developer: $algorithm{developer} - $algorithm{contact}
@@ -286,15 +287,20 @@ EOM
 
 		$algorithm{parameters} = ();
 
+		my @params = $response->dataof("$alg_path/parameter");
+		
+		my $num_params = scalar(@params);
+
                 if ($num_params > 0)
                 {
 		    print "     * parameters ($num_params):\n" if $option == 2;
 
 		    foreach my $par (@params)
 		    {
-			my %parameter = %{$par};
+			my %complete_par = %{$par};
+			my %parameter = %{$complete_par{'_value'}[0]};
 
-			$algorithm{parameters}{$parameter{name}} = \%parameter;
+			$algorithm{parameters}{$complete_par{'_attr'}{'om-id'}} = \%parameter;
 			
 			my $min = ($parameter{'has-min'}) ? '['.$parameter{'min'}: '(oo';
 			my $max = ($parameter{'has-max'}) ? $parameter{'max'}.']': 'oo)';
@@ -340,7 +346,7 @@ sub get_algorithm
 
     foreach my $key (sort(keys %algorithms))
     {
-	print "  [$key] $algorithms{$key}{id}\n";
+	print "  [$key] $algorithms{$key}{name}\n";
     }
 
     print "\nYour choice: ";
@@ -406,7 +412,8 @@ sub create_model
     my $algorithm = SOAP::Data
 	-> name('algorithm')
 	-> prefix('om')
-	-> type('om:Algorithm');
+	-> type('om:Algorithm')
+	-> attr({'om-id'=>$algorithms{$alg_code}{'om-id'}});
 
     if (scalar(keys(%{$algorithms{$alg_code}{parameters}})))
     {
@@ -416,12 +423,10 @@ sub create_model
 	{
 	    my $value = get_algorithm_parameter(\%{$algorithms{$alg_code}{parameters}{$param}});
 
-	    push(@parameters, {'name'=> $param, 'value'=> $value});
+	    push(@parameters, {'om_id'=> $param, 'value'=> $value});
 	}
 
 	my @alg_tags =  map(SOAP::Data->type('struct')->name('parameter')->attr(\%{$_}), @parameters);
-
-	unshift(@alg_tags, SOAP::Data->type('string')->name('id')->value($algorithms{$alg_code}{'id'}));
 
 	$algorithm->set_value(\@alg_tags);
     }

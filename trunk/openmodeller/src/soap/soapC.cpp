@@ -8,7 +8,7 @@
 
 SOAP_BEGIN_NAMESPACE(soap)
 
-SOAP_SOURCE_STAMP("@(#) soapC.cpp ver 2.5.2 2004-07-07 20:32:38 GMT")
+SOAP_SOURCE_STAMP("@(#) soapC.cpp ver 2.5.2 2004-09-28 20:13:56 GMT")
 
 
 #ifndef WITH_NOGLOBAL
@@ -2603,8 +2603,6 @@ SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_om__Algorithm(struct soap *soap, struc
 
 SOAP_FMAC3 void SOAP_FMAC4 soap_mark_om__Algorithm(struct soap *soap, const struct soap_Algorithm *a)
 {
-	soap_embedded(soap, &a->id, SOAP_TYPE_xsd__string);
-	soap_mark_xsd__string(soap, &a->id);
 	if (a->__ptrparameter)
 	{	int i;
 		for (i = 0; i < a->__size; i++)
@@ -2616,7 +2614,7 @@ SOAP_FMAC3 void SOAP_FMAC4 soap_mark_om__Algorithm(struct soap *soap, const stru
 
 SOAP_FMAC3 void SOAP_FMAC4 soap_default_om__Algorithm(struct soap *soap, struct soap_Algorithm *a)
 {
-	soap_default_xsd__string(soap, &a->id);
+	soap_default_xsd__string(soap, &a->om_id);
 	a->__size = 0;
 	a->__ptrparameter = NULL;
 }
@@ -2630,8 +2628,9 @@ SOAP_FMAC3 int SOAP_FMAC4 soap_put_om__Algorithm(struct soap *soap, struct soap_
 
 SOAP_FMAC3 int SOAP_FMAC4 soap_out_om__Algorithm(struct soap *soap, const char *tag, int id, const struct soap_Algorithm *a, const char *type)
 {
+	if (a->om_id)
+		soap_set_attr(soap, "om-id", a->om_id);
 	soap_element_begin_out(soap, tag, soap_embedded_id(soap, id, a, SOAP_TYPE_om__Algorithm), type);
-	soap_out_xsd__string(soap, "id", -1, &a->id, "xsd:string");
 	if (a->__ptrparameter)
 	{	int i;
 		for (i = 0; i < a->__size; i++)
@@ -2650,7 +2649,7 @@ SOAP_FMAC3 struct soap_Algorithm * SOAP_FMAC4 soap_get_om__Algorithm(struct soap
 
 SOAP_FMAC3 struct soap_Algorithm * SOAP_FMAC4 soap_in_om__Algorithm(struct soap *soap, const char *tag, struct soap_Algorithm *a, const char *type)
 {
-	short soap_flag_id = 1, soap_flag___ptrparameter = 1;
+	short soap_flag___ptrparameter = 1;
 	if (soap_element_begin_in(soap, tag))
 		return NULL;
 	if (*soap->type && soap_match_tag(soap, soap->type, type))
@@ -2672,14 +2671,11 @@ SOAP_FMAC3 struct soap_Algorithm * SOAP_FMAC4 soap_in_om__Algorithm(struct soap 
 			return NULL;
 		if (soap->alloced)
 			soap_default_om__Algorithm(soap, a);
+		if (soap_s2string(soap, soap_attr_value(soap, "om-id"), &a->om_id))
+			return NULL;
 		if (soap->body)
 		{	for (;;)
 			{	soap->error = SOAP_TAG_MISMATCH;
-			if (soap_flag_id && soap->error == SOAP_TAG_MISMATCH)
-				if (soap_in_xsd__string(soap, "id", &a->id, "xsd:string"))
-				{	soap_flag_id = 0;
-					continue;
-				}
 			if (soap_flag___ptrparameter && soap->error == SOAP_TAG_MISMATCH)
 			{	struct soap_Parameter *p;
 				soap_new_block(soap);
@@ -2726,8 +2722,6 @@ SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_soap_Algorithm(struct soap *soap, stru
 
 SOAP_FMAC3 void SOAP_FMAC4 soap_mark_soap_Algorithm(struct soap *soap, const struct soap_Algorithm *a)
 {
-	soap_embedded(soap, &a->id, SOAP_TYPE_xsd__string);
-	soap_mark_xsd__string(soap, &a->id);
 	if (a->__ptrparameter)
 	{	int i;
 		for (i = 0; i < a->__size; i++)
@@ -2739,7 +2733,7 @@ SOAP_FMAC3 void SOAP_FMAC4 soap_mark_soap_Algorithm(struct soap *soap, const str
 
 SOAP_FMAC3 void SOAP_FMAC4 soap_default_soap_Algorithm(struct soap *soap, struct soap_Algorithm *a)
 {
-	soap_default_xsd__string(soap, &a->id);
+	soap_default_xsd__string(soap, &a->om_id);
 	a->__size = 0;
 	a->__ptrparameter = NULL;
 }
@@ -2753,8 +2747,9 @@ SOAP_FMAC3 int SOAP_FMAC4 soap_put_soap_Algorithm(struct soap *soap, struct soap
 
 SOAP_FMAC3 int SOAP_FMAC4 soap_out_soap_Algorithm(struct soap *soap, const char *tag, int id, const struct soap_Algorithm *a, const char *type)
 {
+	if (a->om_id)
+		soap_set_attr(soap, "om-id", a->om_id);
 	soap_element_begin_out(soap, tag, soap_embedded_id(soap, id, a, SOAP_TYPE_soap_Algorithm), type);
-	soap_out_xsd__string(soap, "id", -1, &a->id, "xsd:string");
 	if (a->__ptrparameter)
 	{	int i;
 		for (i = 0; i < a->__size; i++)
@@ -2773,7 +2768,7 @@ SOAP_FMAC3 struct soap_Algorithm * SOAP_FMAC4 soap_get_soap_Algorithm(struct soa
 
 SOAP_FMAC3 struct soap_Algorithm * SOAP_FMAC4 soap_in_soap_Algorithm(struct soap *soap, const char *tag, struct soap_Algorithm *a, const char *type)
 {
-	short soap_flag_id = 1, soap_flag___ptrparameter = 1;
+	short soap_flag___ptrparameter = 1;
 	if (soap_element_begin_in(soap, tag))
 		return NULL;
 	if (*soap->type && soap_match_tag(soap, soap->type, type))
@@ -2795,14 +2790,11 @@ SOAP_FMAC3 struct soap_Algorithm * SOAP_FMAC4 soap_in_soap_Algorithm(struct soap
 			return NULL;
 		if (soap->alloced)
 			soap_default_soap_Algorithm(soap, a);
+		if (soap_s2string(soap, soap_attr_value(soap, "om-id"), &a->om_id))
+			return NULL;
 		if (soap->body)
 		{	for (;;)
 			{	soap->error = SOAP_TAG_MISMATCH;
-			if (soap_flag_id && soap->error == SOAP_TAG_MISMATCH)
-				if (soap_in_xsd__string(soap, "id", &a->id, "xsd:string"))
-				{	soap_flag_id = 0;
-					continue;
-				}
 			if (soap_flag___ptrparameter && soap->error == SOAP_TAG_MISMATCH)
 			{	struct soap_Parameter *p;
 				soap_new_block(soap);
@@ -2853,7 +2845,7 @@ SOAP_FMAC3 void SOAP_FMAC4 soap_mark_om__Parameter(struct soap *soap, const stru
 
 SOAP_FMAC3 void SOAP_FMAC4 soap_default_om__Parameter(struct soap *soap, struct soap_Parameter *a)
 {
-	soap_default_xsd__string(soap, &a->name);
+	soap_default_xsd__string(soap, &a->om_id);
 	soap_default_xsd__string(soap, &a->value);
 }
 
@@ -2866,8 +2858,8 @@ SOAP_FMAC3 int SOAP_FMAC4 soap_put_om__Parameter(struct soap *soap, struct soap_
 
 SOAP_FMAC3 int SOAP_FMAC4 soap_out_om__Parameter(struct soap *soap, const char *tag, int id, const struct soap_Parameter *a, const char *type)
 {
-	if (a->name)
-		soap_set_attr(soap, "name", a->name);
+	if (a->om_id)
+		soap_set_attr(soap, "om-id", a->om_id);
 	if (a->value)
 		soap_set_attr(soap, "value", a->value);
 	soap_element_begin_out(soap, tag, soap_embedded_id(soap, id, a, SOAP_TYPE_om__Parameter), type);
@@ -2905,7 +2897,7 @@ SOAP_FMAC3 struct soap_Parameter * SOAP_FMAC4 soap_in_om__Parameter(struct soap 
 			return NULL;
 		if (soap->alloced)
 			soap_default_om__Parameter(soap, a);
-		if (soap_s2string(soap, soap_attr_value(soap, "name"), &a->name))
+		if (soap_s2string(soap, soap_attr_value(soap, "om-id"), &a->om_id))
 			return NULL;
 		if (soap_s2string(soap, soap_attr_value(soap, "value"), &a->value))
 			return NULL;
@@ -2946,7 +2938,7 @@ SOAP_FMAC3 void SOAP_FMAC4 soap_mark_soap_Parameter(struct soap *soap, const str
 
 SOAP_FMAC3 void SOAP_FMAC4 soap_default_soap_Parameter(struct soap *soap, struct soap_Parameter *a)
 {
-	soap_default_xsd__string(soap, &a->name);
+	soap_default_xsd__string(soap, &a->om_id);
 	soap_default_xsd__string(soap, &a->value);
 }
 
@@ -2959,8 +2951,8 @@ SOAP_FMAC3 int SOAP_FMAC4 soap_put_soap_Parameter(struct soap *soap, struct soap
 
 SOAP_FMAC3 int SOAP_FMAC4 soap_out_soap_Parameter(struct soap *soap, const char *tag, int id, const struct soap_Parameter *a, const char *type)
 {
-	if (a->name)
-		soap_set_attr(soap, "name", a->name);
+	if (a->om_id)
+		soap_set_attr(soap, "om-id", a->om_id);
 	if (a->value)
 		soap_set_attr(soap, "value", a->value);
 	soap_element_begin_out(soap, tag, soap_embedded_id(soap, id, a, SOAP_TYPE_soap_Parameter), type);
@@ -2998,7 +2990,7 @@ SOAP_FMAC3 struct soap_Parameter * SOAP_FMAC4 soap_in_soap_Parameter(struct soap
 			return NULL;
 		if (soap->alloced)
 			soap_default_soap_Parameter(soap, a);
-		if (soap_s2string(soap, soap_attr_value(soap, "name"), &a->name))
+		if (soap_s2string(soap, soap_attr_value(soap, "om-id"), &a->om_id))
 			return NULL;
 		if (soap_s2string(soap, soap_attr_value(soap, "value"), &a->value))
 			return NULL;
@@ -4920,8 +4912,6 @@ SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_om__AlgorithmMetadata(struct soap *soa
 
 SOAP_FMAC3 void SOAP_FMAC4 soap_mark_om__AlgorithmMetadata(struct soap *soap, const struct soap_AlgorithmMetadata *a)
 {
-	soap_embedded(soap, &a->id, SOAP_TYPE_xsd__string);
-	soap_mark_xsd__string(soap, &a->id);
 	soap_embedded(soap, &a->name, SOAP_TYPE_xsd__string);
 	soap_mark_xsd__string(soap, &a->name);
 	soap_embedded(soap, &a->version, SOAP_TYPE_xsd__string);
@@ -4951,7 +4941,7 @@ SOAP_FMAC3 void SOAP_FMAC4 soap_mark_om__AlgorithmMetadata(struct soap *soap, co
 
 SOAP_FMAC3 void SOAP_FMAC4 soap_default_om__AlgorithmMetadata(struct soap *soap, struct soap_AlgorithmMetadata *a)
 {
-	soap_default_xsd__string(soap, &a->id);
+	soap_default_xsd__string(soap, &a->om_id);
 	soap_default_xsd__string(soap, &a->name);
 	soap_default_xsd__string(soap, &a->version);
 	soap_default_xsd__string(soap, &a->overview);
@@ -4975,8 +4965,9 @@ SOAP_FMAC3 int SOAP_FMAC4 soap_put_om__AlgorithmMetadata(struct soap *soap, stru
 
 SOAP_FMAC3 int SOAP_FMAC4 soap_out_om__AlgorithmMetadata(struct soap *soap, const char *tag, int id, const struct soap_AlgorithmMetadata *a, const char *type)
 {
+	if (a->om_id)
+		soap_set_attr(soap, "om-id", a->om_id);
 	soap_element_begin_out(soap, tag, soap_embedded_id(soap, id, a, SOAP_TYPE_om__AlgorithmMetadata), type);
-	soap_out_xsd__string(soap, "id", -1, &a->id, "xsd:string");
 	soap_out_xsd__string(soap, "name", -1, &a->name, "xsd:string");
 	soap_out_xsd__string(soap, "version", -1, &a->version, "xsd:string");
 	soap_out_xsd__string(soap, "overview", -1, &a->overview, "xsd:string");
@@ -5005,7 +4996,7 @@ SOAP_FMAC3 struct soap_AlgorithmMetadata * SOAP_FMAC4 soap_get_om__AlgorithmMeta
 
 SOAP_FMAC3 struct soap_AlgorithmMetadata * SOAP_FMAC4 soap_in_om__AlgorithmMetadata(struct soap *soap, const char *tag, struct soap_AlgorithmMetadata *a, const char *type)
 {
-	short soap_flag_id = 1, soap_flag_name = 1, soap_flag_version = 1, soap_flag_overview = 1, soap_flag_description = 1, soap_flag_creator = 1, soap_flag_bibliography = 1, soap_flag_developer = 1, soap_flag_contact = 1, soap_flag_accepts_categorical_maps = 1, soap_flag_accepts_absence_points = 1, soap_flag___ptrparameter = 1;
+	short soap_flag_name = 1, soap_flag_version = 1, soap_flag_overview = 1, soap_flag_description = 1, soap_flag_creator = 1, soap_flag_bibliography = 1, soap_flag_developer = 1, soap_flag_contact = 1, soap_flag_accepts_categorical_maps = 1, soap_flag_accepts_absence_points = 1, soap_flag___ptrparameter = 1;
 	if (soap_element_begin_in(soap, tag))
 		return NULL;
 	if (*soap->type && soap_match_tag(soap, soap->type, type))
@@ -5027,14 +5018,11 @@ SOAP_FMAC3 struct soap_AlgorithmMetadata * SOAP_FMAC4 soap_in_om__AlgorithmMetad
 			return NULL;
 		if (soap->alloced)
 			soap_default_om__AlgorithmMetadata(soap, a);
+		if (soap_s2string(soap, soap_attr_value(soap, "om-id"), &a->om_id))
+			return NULL;
 		if (soap->body)
 		{	for (;;)
 			{	soap->error = SOAP_TAG_MISMATCH;
-			if (soap_flag_id && soap->error == SOAP_TAG_MISMATCH)
-				if (soap_in_xsd__string(soap, "id", &a->id, "xsd:string"))
-				{	soap_flag_id = 0;
-					continue;
-				}
 			if (soap_flag_name && soap->error == SOAP_TAG_MISMATCH)
 				if (soap_in_xsd__string(soap, "name", &a->name, "xsd:string"))
 				{	soap_flag_name = 0;
@@ -5135,8 +5123,6 @@ SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_soap_AlgorithmMetadata(struct soap *so
 
 SOAP_FMAC3 void SOAP_FMAC4 soap_mark_soap_AlgorithmMetadata(struct soap *soap, const struct soap_AlgorithmMetadata *a)
 {
-	soap_embedded(soap, &a->id, SOAP_TYPE_xsd__string);
-	soap_mark_xsd__string(soap, &a->id);
 	soap_embedded(soap, &a->name, SOAP_TYPE_xsd__string);
 	soap_mark_xsd__string(soap, &a->name);
 	soap_embedded(soap, &a->version, SOAP_TYPE_xsd__string);
@@ -5166,7 +5152,7 @@ SOAP_FMAC3 void SOAP_FMAC4 soap_mark_soap_AlgorithmMetadata(struct soap *soap, c
 
 SOAP_FMAC3 void SOAP_FMAC4 soap_default_soap_AlgorithmMetadata(struct soap *soap, struct soap_AlgorithmMetadata *a)
 {
-	soap_default_xsd__string(soap, &a->id);
+	soap_default_xsd__string(soap, &a->om_id);
 	soap_default_xsd__string(soap, &a->name);
 	soap_default_xsd__string(soap, &a->version);
 	soap_default_xsd__string(soap, &a->overview);
@@ -5190,8 +5176,9 @@ SOAP_FMAC3 int SOAP_FMAC4 soap_put_soap_AlgorithmMetadata(struct soap *soap, str
 
 SOAP_FMAC3 int SOAP_FMAC4 soap_out_soap_AlgorithmMetadata(struct soap *soap, const char *tag, int id, const struct soap_AlgorithmMetadata *a, const char *type)
 {
+	if (a->om_id)
+		soap_set_attr(soap, "om-id", a->om_id);
 	soap_element_begin_out(soap, tag, soap_embedded_id(soap, id, a, SOAP_TYPE_soap_AlgorithmMetadata), type);
-	soap_out_xsd__string(soap, "id", -1, &a->id, "xsd:string");
 	soap_out_xsd__string(soap, "name", -1, &a->name, "xsd:string");
 	soap_out_xsd__string(soap, "version", -1, &a->version, "xsd:string");
 	soap_out_xsd__string(soap, "overview", -1, &a->overview, "xsd:string");
@@ -5220,7 +5207,7 @@ SOAP_FMAC3 struct soap_AlgorithmMetadata * SOAP_FMAC4 soap_get_soap_AlgorithmMet
 
 SOAP_FMAC3 struct soap_AlgorithmMetadata * SOAP_FMAC4 soap_in_soap_AlgorithmMetadata(struct soap *soap, const char *tag, struct soap_AlgorithmMetadata *a, const char *type)
 {
-	short soap_flag_id = 1, soap_flag_name = 1, soap_flag_version = 1, soap_flag_overview = 1, soap_flag_description = 1, soap_flag_creator = 1, soap_flag_bibliography = 1, soap_flag_developer = 1, soap_flag_contact = 1, soap_flag_accepts_categorical_maps = 1, soap_flag_accepts_absence_points = 1, soap_flag___ptrparameter = 1;
+	short soap_flag_name = 1, soap_flag_version = 1, soap_flag_overview = 1, soap_flag_description = 1, soap_flag_creator = 1, soap_flag_bibliography = 1, soap_flag_developer = 1, soap_flag_contact = 1, soap_flag_accepts_categorical_maps = 1, soap_flag_accepts_absence_points = 1, soap_flag___ptrparameter = 1;
 	if (soap_element_begin_in(soap, tag))
 		return NULL;
 	if (*soap->type && soap_match_tag(soap, soap->type, type))
@@ -5242,14 +5229,11 @@ SOAP_FMAC3 struct soap_AlgorithmMetadata * SOAP_FMAC4 soap_in_soap_AlgorithmMeta
 			return NULL;
 		if (soap->alloced)
 			soap_default_soap_AlgorithmMetadata(soap, a);
+		if (soap_s2string(soap, soap_attr_value(soap, "om-id"), &a->om_id))
+			return NULL;
 		if (soap->body)
 		{	for (;;)
 			{	soap->error = SOAP_TAG_MISMATCH;
-			if (soap_flag_id && soap->error == SOAP_TAG_MISMATCH)
-				if (soap_in_xsd__string(soap, "id", &a->id, "xsd:string"))
-				{	soap_flag_id = 0;
-					continue;
-				}
 			if (soap_flag_name && soap->error == SOAP_TAG_MISMATCH)
 				if (soap_in_xsd__string(soap, "name", &a->name, "xsd:string"))
 				{	soap_flag_name = 0;
@@ -5350,8 +5334,6 @@ SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_om__AlgorithmParameter(struct soap *so
 
 SOAP_FMAC3 void SOAP_FMAC4 soap_mark_om__AlgorithmParameter(struct soap *soap, const struct soap_AlgorithmParameter *a)
 {
-	soap_embedded(soap, &a->id, SOAP_TYPE_xsd__string);
-	soap_mark_xsd__string(soap, &a->id);
 	soap_embedded(soap, &a->name, SOAP_TYPE_xsd__string);
 	soap_mark_xsd__string(soap, &a->name);
 	soap_embedded(soap, &a->data_type, SOAP_TYPE_xsd__string);
@@ -5370,7 +5352,7 @@ SOAP_FMAC3 void SOAP_FMAC4 soap_mark_om__AlgorithmParameter(struct soap *soap, c
 
 SOAP_FMAC3 void SOAP_FMAC4 soap_default_om__AlgorithmParameter(struct soap *soap, struct soap_AlgorithmParameter *a)
 {
-	soap_default_xsd__string(soap, &a->id);
+	soap_default_xsd__string(soap, &a->om_id);
 	soap_default_xsd__string(soap, &a->name);
 	soap_default_xsd__string(soap, &a->data_type);
 	soap_default_xsd__string(soap, &a->overview);
@@ -5391,8 +5373,9 @@ SOAP_FMAC3 int SOAP_FMAC4 soap_put_om__AlgorithmParameter(struct soap *soap, str
 
 SOAP_FMAC3 int SOAP_FMAC4 soap_out_om__AlgorithmParameter(struct soap *soap, const char *tag, int id, const struct soap_AlgorithmParameter *a, const char *type)
 {
+	if (a->om_id)
+		soap_set_attr(soap, "om-id", a->om_id);
 	soap_element_begin_out(soap, tag, soap_embedded_id(soap, id, a, SOAP_TYPE_om__AlgorithmParameter), type);
-	soap_out_xsd__string(soap, "id", -1, &a->id, "xsd:string");
 	soap_out_xsd__string(soap, "name", -1, &a->name, "xsd:string");
 	soap_out_xsd__string(soap, "data-type", -1, &a->data_type, "xsd:string");
 	soap_out_xsd__string(soap, "overview", -1, &a->overview, "xsd:string");
@@ -5415,7 +5398,7 @@ SOAP_FMAC3 struct soap_AlgorithmParameter * SOAP_FMAC4 soap_get_om__AlgorithmPar
 
 SOAP_FMAC3 struct soap_AlgorithmParameter * SOAP_FMAC4 soap_in_om__AlgorithmParameter(struct soap *soap, const char *tag, struct soap_AlgorithmParameter *a, const char *type)
 {
-	short soap_flag_id = 1, soap_flag_name = 1, soap_flag_data_type = 1, soap_flag_overview = 1, soap_flag_description = 1, soap_flag_has_min = 1, soap_flag_min = 1, soap_flag_has_max = 1, soap_flag_max = 1, soap_flag_typical_value = 1;
+	short soap_flag_name = 1, soap_flag_data_type = 1, soap_flag_overview = 1, soap_flag_description = 1, soap_flag_has_min = 1, soap_flag_min = 1, soap_flag_has_max = 1, soap_flag_max = 1, soap_flag_typical_value = 1;
 	if (soap_element_begin_in(soap, tag))
 		return NULL;
 	if (*soap->type && soap_match_tag(soap, soap->type, type))
@@ -5437,14 +5420,11 @@ SOAP_FMAC3 struct soap_AlgorithmParameter * SOAP_FMAC4 soap_in_om__AlgorithmPara
 			return NULL;
 		if (soap->alloced)
 			soap_default_om__AlgorithmParameter(soap, a);
+		if (soap_s2string(soap, soap_attr_value(soap, "om-id"), &a->om_id))
+			return NULL;
 		if (soap->body)
 		{	for (;;)
 			{	soap->error = SOAP_TAG_MISMATCH;
-			if (soap_flag_id && soap->error == SOAP_TAG_MISMATCH)
-				if (soap_in_xsd__string(soap, "id", &a->id, "xsd:string"))
-				{	soap_flag_id = 0;
-					continue;
-				}
 			if (soap_flag_name && soap->error == SOAP_TAG_MISMATCH)
 				if (soap_in_xsd__string(soap, "name", &a->name, "xsd:string"))
 				{	soap_flag_name = 0;
@@ -5524,8 +5504,6 @@ SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_soap_AlgorithmParameter(struct soap *s
 
 SOAP_FMAC3 void SOAP_FMAC4 soap_mark_soap_AlgorithmParameter(struct soap *soap, const struct soap_AlgorithmParameter *a)
 {
-	soap_embedded(soap, &a->id, SOAP_TYPE_xsd__string);
-	soap_mark_xsd__string(soap, &a->id);
 	soap_embedded(soap, &a->name, SOAP_TYPE_xsd__string);
 	soap_mark_xsd__string(soap, &a->name);
 	soap_embedded(soap, &a->data_type, SOAP_TYPE_xsd__string);
@@ -5544,7 +5522,7 @@ SOAP_FMAC3 void SOAP_FMAC4 soap_mark_soap_AlgorithmParameter(struct soap *soap, 
 
 SOAP_FMAC3 void SOAP_FMAC4 soap_default_soap_AlgorithmParameter(struct soap *soap, struct soap_AlgorithmParameter *a)
 {
-	soap_default_xsd__string(soap, &a->id);
+	soap_default_xsd__string(soap, &a->om_id);
 	soap_default_xsd__string(soap, &a->name);
 	soap_default_xsd__string(soap, &a->data_type);
 	soap_default_xsd__string(soap, &a->overview);
@@ -5565,8 +5543,9 @@ SOAP_FMAC3 int SOAP_FMAC4 soap_put_soap_AlgorithmParameter(struct soap *soap, st
 
 SOAP_FMAC3 int SOAP_FMAC4 soap_out_soap_AlgorithmParameter(struct soap *soap, const char *tag, int id, const struct soap_AlgorithmParameter *a, const char *type)
 {
+	if (a->om_id)
+		soap_set_attr(soap, "om-id", a->om_id);
 	soap_element_begin_out(soap, tag, soap_embedded_id(soap, id, a, SOAP_TYPE_soap_AlgorithmParameter), type);
-	soap_out_xsd__string(soap, "id", -1, &a->id, "xsd:string");
 	soap_out_xsd__string(soap, "name", -1, &a->name, "xsd:string");
 	soap_out_xsd__string(soap, "data-type", -1, &a->data_type, "xsd:string");
 	soap_out_xsd__string(soap, "overview", -1, &a->overview, "xsd:string");
@@ -5589,7 +5568,7 @@ SOAP_FMAC3 struct soap_AlgorithmParameter * SOAP_FMAC4 soap_get_soap_AlgorithmPa
 
 SOAP_FMAC3 struct soap_AlgorithmParameter * SOAP_FMAC4 soap_in_soap_AlgorithmParameter(struct soap *soap, const char *tag, struct soap_AlgorithmParameter *a, const char *type)
 {
-	short soap_flag_id = 1, soap_flag_name = 1, soap_flag_data_type = 1, soap_flag_overview = 1, soap_flag_description = 1, soap_flag_has_min = 1, soap_flag_min = 1, soap_flag_has_max = 1, soap_flag_max = 1, soap_flag_typical_value = 1;
+	short soap_flag_name = 1, soap_flag_data_type = 1, soap_flag_overview = 1, soap_flag_description = 1, soap_flag_has_min = 1, soap_flag_min = 1, soap_flag_has_max = 1, soap_flag_max = 1, soap_flag_typical_value = 1;
 	if (soap_element_begin_in(soap, tag))
 		return NULL;
 	if (*soap->type && soap_match_tag(soap, soap->type, type))
@@ -5611,14 +5590,11 @@ SOAP_FMAC3 struct soap_AlgorithmParameter * SOAP_FMAC4 soap_in_soap_AlgorithmPar
 			return NULL;
 		if (soap->alloced)
 			soap_default_soap_AlgorithmParameter(soap, a);
+		if (soap_s2string(soap, soap_attr_value(soap, "om-id"), &a->om_id))
+			return NULL;
 		if (soap->body)
 		{	for (;;)
 			{	soap->error = SOAP_TAG_MISMATCH;
-			if (soap_flag_id && soap->error == SOAP_TAG_MISMATCH)
-				if (soap_in_xsd__string(soap, "id", &a->id, "xsd:string"))
-				{	soap_flag_id = 0;
-					continue;
-				}
 			if (soap_flag_name && soap->error == SOAP_TAG_MISMATCH)
 				if (soap_in_xsd__string(soap, "name", &a->name, "xsd:string"))
 				{	soap_flag_name = 0;
