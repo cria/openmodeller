@@ -173,7 +173,13 @@ TEST( evaluate1_2, RangeRule )
 { CHECK(TestRule(0, RuleGenes1_2, RulePred1_2, RulePerfs1_2)); }
 
 TEST( evaluate2_1, RangeRule )
-{ CHECK(TestRule(0, RuleGenes2_1, RulePred2_1, RulePerfs2_1)); }
+{ CHECK(TestRule(1, RuleGenes2_1, RulePred2_1, RulePerfs2_1)); }
 
 TEST( evaluate2_2, RangeRule )
-{ CHECK(TestRule(0, RuleGenes2_2, RulePred2_2, RulePerfs2_2)); }
+{ CHECK(TestRule(1, RuleGenes2_2, RulePred2_2, RulePerfs2_2)); }
+
+TEST( evaluate2_3, RangeRule )
+{ CHECK(TestRule(1, RuleGenes2_3, RulePred2_3, RulePerfs2_3)); }
+
+TEST( evaluate2_4, RangeRule )
+{ CHECK(TestRule(1, RuleGenes2_4, RulePred2_4, RulePerfs2_4)); }
