@@ -11,7 +11,7 @@
 DPLUGIN_PATH=-DPLUGINPATH=\"$(libdir)/openmodeller/\"
 DCONFIG_FILE=-DCONFIG_FILE=\"om_config\"
 
-SUBDIRS = env_io
+SUBDIRS = env_io serialization
 
 lib_LTLIBRARIES = libopenmodeller.la
 
@@ -33,4 +33,5 @@ libopenmodeller_la_SOURCES = \
 
 libopenmodeller_la_LDFLAGS = -no-undefined
 libopenmodeller_la_CPPFLAGS = -I../inc -I../.. $(DPLUGIN_PATH) $(DCONFIG_FILE)
-libopenmodeller_la_LIBADD = env_io/libenv_io.la $(GDAL_LIB)
+libopenmodeller_la_LIBADD = env_io/libenv_io.la $(GDAL_LIB) \
+			    serialization/libomserialization.la 

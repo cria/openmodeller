@@ -48,6 +48,11 @@ class NegatedRangeRule : public RangeRule
 {
 public:
   NegatedRangeRule();
+  /// Constructor with setters 
+  NegatedRangeRule(Scalar prediction, int numGenes, 
+		   Scalar * genes, double * performances) : 
+    RangeRule(prediction, numGenes, genes, performances) {};
+  
   virtual ~NegatedRangeRule();
   virtual GarpRule * objFactory() { return new NegatedRangeRule; }
   

@@ -45,6 +45,12 @@ class LogitRule : public GarpRule
 {
 public:
   LogitRule();
+
+  /// Constructor with setters 
+  LogitRule(Scalar prediction, int numGenes, 
+	    Scalar * genes, double * performances) : 
+    GarpRule(prediction, numGenes, genes, performances) {}
+  
   virtual ~LogitRule();
   virtual GarpRule * objFactory() { return new LogitRule; }
   

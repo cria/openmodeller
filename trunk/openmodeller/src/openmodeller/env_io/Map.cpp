@@ -26,6 +26,8 @@
  * http://www.gnu.org/copyleft/gpl.html
  */
 
+#include <string.h>
+
 #include "env_io/map.hh"
 
 #include <env_io/geo_transform.hh>
@@ -47,6 +49,10 @@ Map::Map( Raster *rst, char *ocs, int del )
       rst->header().setProj( OM_WGS84 );
     }
 
+  int len = 1 + strlen(ocs);
+  _cs = new char[len];
+  memcpy( _cs, ocs, len );
+
   f_rst = rst;
   f_gt  = new GeoTransform( rst->header().proj, ocs );
   f_del = del;
@@ -58,6 +64,7 @@ Map::Map( Raster *rst, char *ocs, int del )
 
 Map::~Map()
 {
+  delete _cs;
   delete f_gt;
   if ( f_del )
     delete f_rst;

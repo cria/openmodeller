@@ -31,7 +31,6 @@
 
 #include <om.hh>
 
-
 /****************************************************************/
 /************************* Minimum Distance *********************/
 
@@ -57,7 +56,6 @@ public:
 
   Scalar getValue( Scalar *x );
   int    getConvergence( Scalar *val );
-
 
 private:
 

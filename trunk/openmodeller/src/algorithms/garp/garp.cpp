@@ -438,6 +438,111 @@ int Garp::getConvergence( Scalar *val )
   return 0;
 }
 
+/******************/
+/*** serialize ***/
+int
+Garp::serialize(Serializer * s)
+{
+  char type[16];
+  int i, nrules, ngenes;
+
+  s->writeStartSection("GarpModel");
+  s->writeInt("Generations", _gen);
+  s->writeInt("MaxGenerations", _max_gen);
+  s->writeInt("PopulationSize", _popsize);
+  s->writeInt("Resamples", _resamples);
+  s->writeDouble("AccuracyLimit", _acc_limit);
+  s->writeDouble("ConvergenceLimit", _conv_limit);
+  s->writeDouble("Mortality", _mortality);
+  s->writeDouble("Significance", _significance);
+  s->writeDouble("FinalCrossoverRate", _crossover_rate);
+  s->writeDouble("FinalMutationRate", _mutation_rate);
+  s->writeDouble("FinalGapSize", _gapsize);
+
+  // dump fittest rule set
+  nrules = _fittest->numRules();
+  ngenes = 2 * _custom_sampler->dim();
+  s->writeStartSection("FittestRules", nrules);
+  for (i = 0; i < nrules; i++)
+    {
+      GarpRule * rule = _fittest->get(i);
+      sprintf(type, "%c", rule->type());
+      s->writeStartSection("Rule");
+      s->writeString("Type", type);
+      s->writeDouble("Prediction", rule->getPrediction());
+      s->writeArrayDouble("Genes", rule->getGenes(), rule->numGenes() * 2);
+      s->writeArrayDouble("Performance", rule->getPerformanceArray(), 10);
+      s->writeEndSection("Rule");
+    }
+  s->writeEndSection("FittestRules");
+  s->writeEndSection("GarpModel");
+
+  return 1;
+}
+
+/********************/
+/*** deserialize ***/
+int
+Garp::deserialize(Deserializer * ds)
+{
+  int i, nelems, ngenes, nperf, nrules;
+
+  ds->readStartSection("GarpModel");
+  _gen = ds->readInt("Generations");
+  _max_gen = ds->readInt("MaxGenerations");
+  _popsize = ds->readInt("PopulationSize");
+  _resamples = ds->readInt("Resamples");
+  _acc_limit = ds->readDouble("AccuracyLimit");
+  _conv_limit = ds->readDouble("ConvergenceLimit");
+  _mortality = ds->readDouble("Mortality");
+  _significance = ds->readDouble("Significance");
+  _crossover_rate = ds->readDouble("FinalCrossoverRate");
+  _mutation_rate = ds->readDouble("FinalMutationRate");
+  _gapsize = ds->readDouble("FinalGapSize");
+
+  // set parameters that were ommited above with values from parameter array
+  // also initialize data structures with default values
+  _offspring  = new GarpRuleSet(2 * _popsize);
+  _fittest    = new GarpRuleSet(2 * _popsize);
+
+  _custom_sampler = new GarpCustomSampler;
+  _custom_sampler->initialize(_samp, _resamples);
+  //_custom_sampler->createBioclimHistogram();
+
+  // load fittest rule set
+  nrules = ds->readStartSection("FittestRules");
+  
+  for (i = 0; i < nrules; i++)
+    {
+      GarpRule * rule = NULL;
+
+      ds->readStartSection("Rule");
+      char * type = ds->readString("Type");
+      Scalar pred = ds->readDouble("Prediction");
+      Scalar * genes = ds->readArrayDouble("Genes", &nelems); 
+      ngenes = nelems / 2;
+      Scalar * perfs = ds->readArrayDouble("Performance", &nperf);
+      ds->readEndSection("Rule");
+
+      switch (*type)
+	{
+	case 'a': rule = new AtomicRule(pred, ngenes, genes, perfs); break;
+	case 'd': rule = new RangeRule(pred, ngenes, genes, perfs); break;
+	case 'r': rule = new LogitRule(pred, ngenes, genes, perfs); break;
+	case '!': rule = new NegatedRangeRule(pred, ngenes, genes, perfs); break;
+	}
+
+      delete genes;
+      delete perfs;
+
+      _fittest->add(rule);
+    }
+
+  ds->readEndSection("FittestRules");
+  ds->readEndSection("GarpModel");
+
+  return 1;
+}
 
 /****************************************************************/
 /***************** GARP Algorithm private methods ***************/

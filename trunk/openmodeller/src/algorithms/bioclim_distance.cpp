@@ -94,10 +94,10 @@ envelop represented by the interval [m - c*s, m + c*s], \
 where 'm' is the mean; 'c' is cutoff input parameter; and 's' is the \
 standard deviation.\n",
 
-  "Nix, H. A. Modified by Mauro Muñoz",  // Author.
+  "Nix, H. A. Modified by Mauro Munoz",  // Author.
   "",                                    // Bibliography.
 
-  "Mauro Muñoz",              // Code author.
+  "Mauro Munoz",              // Code author.
   "mauro [at] cria.org.br",   // Author's contact.
 
   0,  // Does not accept categorical data.
@@ -345,5 +345,35 @@ BioclimDistance::getStandardDeviation( SampledData *points,
 
   delete variance;
   return std_dev;
+}
+
+/******************/
+/*** serialize ***/
+int
+BioclimDistance::serialize(Serializer * s)
+{
+  s->writeStartSection("BioclimDistanceModel");
+  s->writeDouble("MaxDistance", _max_distance);
+  s->writeArrayDouble("Mean", _mean, _dim);
+  s->writeArrayDouble("StdDev", _std_dev, _dim);
+  s->writeEndSection("BioclimDistanceModel");
+  return 1;
+}
+
+/********************/
+/*** deserialize ***/
+int
+BioclimDistance::deserialize(Deserializer * s)
+{
+  int size1, size2;
+
+  s->readStartSection("BioclimDistanceModel");
+  _max_distance = s->readDouble("MaxDistance");
+  _mean = s->readArrayDouble("Mean", &size1);
+  _std_dev = s->readArrayDouble("StdDev", &size2);
+  s->readEndSection("BioclimDistanceModel");
+  _dim = size2;
+  
+  return (size1 == size2);
 }
 

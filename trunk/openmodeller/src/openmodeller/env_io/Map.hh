@@ -62,7 +62,18 @@ public:
   Map( Raster *rst, char *ocs, int del=0 );
   ~Map();
 
+  char * getCoordSystem() { return _cs; }
+
   int isCategorical()  { return f_rst->isCategorical(); }
+
+  /** is it normalized? */
+  int isNormalized() { return f_rst->isNormalized(); }
+
+  /** normalization offset */
+  Scalar offset() { return f_rst->offset(); }
+
+  /** normalization scale */
+  Scalar scale() { return f_rst->scale(); }
 
   /** Normalize map values to the interval [min,max]. */
   int normalize( Scalar min, Scalar max ) 
@@ -101,6 +112,7 @@ public:
 
 private:
 
+  char         *_cs;   ///< coordinate system name       
   Raster       *f_rst;
   GeoTransform *f_gt;
   int           f_del; ///< If not zero destroy 'f_rst' in the destructor.

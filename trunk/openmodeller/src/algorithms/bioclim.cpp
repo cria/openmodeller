@@ -111,7 +111,7 @@ The bioclim categorical output is mapped to the continuous output of\
  pp. 4-15. Australian Flora and Fauna Series Number 7. Australian\
  Government Publishing Service: Canberra.",
 
-  "Mauro Muñoz",            // Code author.
+  "Mauro Munoz",            // Code author.
   "mauro [at] cria.org.br", // Code author's contact.
 
   0,  // Does not accept categorical data.
@@ -451,6 +451,39 @@ Bioclim::getStandardDeviation( SampledData *points,
   return deviation;
 }
 
+/******************/
+/*** serialize ***/
+int
+Bioclim::serialize(Serializer * s)
+{
+  s->writeStartSection("BioclimModel");
+  s->writeDouble("MaxDistance", _max_distance);
+  s->writeArrayDouble("Mean", _mean, _dim);
+  s->writeArrayDouble("StdDev", _deviation, _dim);
+  s->writeArrayDouble("Minumum", _minimum, _dim);
+  s->writeArrayDouble("Maximum", _maximum, _dim);
+  s->writeEndSection("BioclimModel");
+  return 1;
+}
+
+/********************/
+/*** deserialize ***/
+int
+Bioclim::deserialize(Deserializer * s)
+{
+  int size1, size2, size3, size4;
+
+  s->readStartSection("BioclimModel");
+  _max_distance = s->readDouble("MaxDistance");
+  _mean = s->readArrayDouble("Mean", &size1);
+  _deviation = s->readArrayDouble("StdDev", &size2);
+  _minimum = s->readArrayDouble("Minumum", &size3);
+  _maximum = s->readArrayDouble("Maximum", &size4);
+  s->readEndSection("BioclimModel");
+  _dim = size4;
+  
+  return ((size1 == size2) && (size2 == size3) && (size3 == size4));
+}
 
 /*******************/
 /*** log Envelop ***/

@@ -119,6 +119,10 @@ class GarpRule
 public:
   /// Default constructor
   GarpRule();
+
+  /// Constructor with setters 
+  GarpRule(Scalar prediction, int numGenes, 
+	   Scalar * genes, double * performances);
   
   /// Default destructor
   virtual ~GarpRule();
@@ -135,12 +139,16 @@ public:
   
   virtual void initialize(GarpCustomSampler * sampler);
 
+  int numGenes() { return _numGenes; }
+
   virtual char type() const				{ return 'v'; }
   bool needsEvaluation() { return _needsEvaluation; } 
   void forceEvaluation() { _needsEvaluation = true; } 
   void evaluated()       { _needsEvaluation = false; } 
 
-  Scalar getPrediction() {return _prediction; }
+  Scalar getPrediction()       { return _prediction; }
+  Scalar * getGenes()          { return _genes; };
+  double * getPerformanceArray() { return _performance; }
   double getPerformance(PerfIndex perfIndex);
 
   virtual int getStrength(Scalar * values) = 0;

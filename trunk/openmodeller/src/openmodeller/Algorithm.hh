@@ -33,6 +33,7 @@
 
 #include <om_sampler.hh>
 #include <om_algorithm_metadata.hh>
+#include <serialization/serializable.hh>
 
 class AlgParameter;
 
@@ -62,7 +63,7 @@ __declspec( dllexport )
  * methods to all derived classes so that they can do data sampling
  * and access the environmental layers to build the model.
  */
-class Algorithm
+class Algorithm : public Serializable
 {
 public:
 

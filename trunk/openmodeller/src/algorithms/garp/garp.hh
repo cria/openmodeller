@@ -39,7 +39,8 @@
 #include <om.hh>
 
 // required include because of enum PerfIndex and class GarpRule
-#include <rules_base.hh>
+#include <rules_base.hh> 
+#include <serialization/serializable.hh>
 
 class GarpRuleSet;
 class GarpCustomSampler;
@@ -99,7 +100,11 @@ public:
   /** This method is used when projecting the model.  
     * @note This method is inherited from the Algorithm class
     * @return     
-    * @param Scalar *x a pointer to a vector of openModeller Scalar type (currently double). The vector should contain values looked up on the environmental variable layers into which the mode is being projected. */
+    * @param Scalar *x a pointer to a vector of openModeller Scalar 
+    *        type (currently double). The vector should contain values 
+    *        looked up on the environmental variable layers into which 
+    *        the mode is being projected. 
+    */
   Scalar getValue( Scalar *x );
   
   /** Returns a value that represents the convergence of the algorithm
@@ -107,9 +112,13 @@ public:
     * completion. 
     * @return 
     * @param Scalar *val 
-  */
+    */
   int getConvergence( Scalar *val );
 
+  /*
+   */
+  int serialize(Serializer * serializer);
+  int deserialize(Deserializer * deserializer);
 
 private:
 

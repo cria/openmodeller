@@ -99,6 +99,8 @@ Raster::Raster( int categ )
 {
   f_normal = 0;
   f_hdr.categ = categ;
+  f_offset = 0;
+  f_scale = 0;
 }
 
 Raster::Raster( Header &hdr )

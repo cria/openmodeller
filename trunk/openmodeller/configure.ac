@@ -76,6 +76,74 @@ else
 fi
 
 dnl ---------------------------------------------------------------------------
+dnl Expat - XML parser
+dnl ---------------------------------------------------------------------------
+dnl Stuff to find Expat
+
+AC_ARG_WITH([expat],AC_HELP_STRING([--with-expat],[where to find Expat]),[with_expat=$withval],[with_expat=/usr])
+if test x$with_expat = xno; then
+	AC_MSG_ERROR("we require Expat.")
+fi
+expat_cflags=$CFLAGS
+expat_ldflags=$LDFLAGS
+expat_libs=$LIBS
+expat_cxxflags=$CXXFLAGS
+EXPAT_CFLAGS=''
+EXPAT_CXXFLAGS=''
+EXPAT_LDFLAGS=''
+EXPAT_LIBS=''
+have_expat=no
+expat_dirs='/usr /usr/local'
+if test x$with_expat != x/usr; then
+	expat_dirs="$with_expat $expat_dirs"
+fi
+for dir in $expat_dirs; do
+	expat_okay=''
+	for expat_dir in include include/expat; do
+		AC_MSG_NOTICE([looking for expat.h in $dir/$expat_dir])
+		CFLAGS="${expat_cflags} -I$dir/${expat_dir}"
+		LDFLAGS="${expat_ldflags} -L$dir/lib"
+		AC_CHECK_HEADER([expat.h],[
+if test x$with_expat != x/usr; then
+	EXPAT_CFLAGS="-I$dir/$expat_dir"
+	EXPAT_LDFLAGS="-L$dir/lib"
+fi
+expat_okay='x'
+have_expat=yes
+break
+],)
+	done
+	if test x$expat_okay = xx; then
+		break
+	fi
+done
+for expat_libname in -1 ''; do
+	CFLAGS="${expat_cflags} $EXPAT_CFLAGS"
+	LDFLAGS="${expat_ldflags} $EXPAT_LDFLAGS"
+	LIBS="${expat_libs} -lexpat${expat_libname}"
+	AC_MSG_CHECKING([whether linking with expat${expat_libname} works])
+	AC_TRY_LINK( [
+#include <expat.h>
+], [
+	XML_Parser foo( XML_ParserCreate( "UTF-8" ) );
+	XML_ParserFree( foo );
+], [
+EXPAT_LIBS="-lexpat$expat_libname"
+AC_MSG_RESULT([yes])
+break
+], )
+done
+CFLAGS=$expat_cflags
+CXXFLAGS=$expat_cxxflags
+LDFLAGS=$expat_ldflags
+LIBS=$expat_libs
+AC_SUBST(have_expat)
+AC_SUBST(EXPAT_CFLAGS)
+AC_SUBST(EXPAT_CXXFLAGS)
+AC_SUBST(EXPAT_LDFLAGS)
+AC_SUBST(EXPAT_LIBS)
+
+dnl ---------------------------------------------------------------------------
 dnl Proj4
 dnl ---------------------------------------------------------------------------
 dnl AC_CHECK_LIB(proj, pj_init, [], [AC_MSG_ERROR("Cannot find Proj4 library")])
@@ -241,6 +309,9 @@ AC_CONFIG_FILES([
 	src/Makefile
 	src/lib/Makefile
 	src/lib/env_io/Makefile
+	src/lib/serialization/Makefile
+	src/lib/serialization/scew/Makefile
+	src/lib/serialization/test/Makefile
 	src/inc/Makefile
 	src/console/Makefile
 	src/console/graph/Makefile

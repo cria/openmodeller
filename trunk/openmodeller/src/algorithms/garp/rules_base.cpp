@@ -91,6 +91,28 @@ GarpRule::GarpRule()
     _performance[i] = 0.0;
 }
 
+// *****************
+GarpRule::GarpRule(Scalar prediction, int numGenes, 
+	   Scalar * genes, double * performances)
+{
+  int i;
+
+  _needsEvaluation = true;
+  _origin = OriginColonization;
+
+  _numGenes = numGenes;
+  int numElems = _numGenes * 2;
+  _genes = new Scalar[numElems];
+  
+  for (i = 0; i < numElems; i++)
+  { *(_genes + i) = *(genes + i); }
+
+  for (i = 0; i < 10; i++)
+  { *(_performance + i) = *(performances + i); }
+
+  _prediction = prediction;
+}
+  
 /****************************************************************/
 /****************** GarpRule Classes ****************************/
 /****************************************************************/
