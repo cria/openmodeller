@@ -33,86 +33,113 @@
 
 
 /****************************************************************/
-/**************************** Samples ***************************/
-
-/** 
- * Facilitate dealing with samples.
- */
-class Samples
-{
-public:
-
-  /** If 'points' is given, do not free the memory pointed to! */
-  Samples( int length, int dimension, Scalar *points=0 );
-  ~Samples();
-
-  /** Redimension. */
-  int redim( int length, int dimension, Scalar *points=0 );
-
-  Scalar *operator[](int i)        {return pnt + i*dim;}
-  Scalar  operator()(int i, int j) {return *(pnt + i*dim + j);}
-
-  int dim;  ///< Spatial dimension of each point.
-  int len;  ///< Number of points.
-
-  Scalar *pnt;
-
-
-private:
-
-  int f_free;
-};
-
-
-
-
-/****************************************************************/
 /*************************** Sampler ****************************/
 
 class Occurrences;
 class Environment;
+class SampledData;
 
 /** 
  * Base class to create samplers of environmental variables and
  * occurrence data. Each derived class can implement different 
  * behaviors, such as proportional sampling according to the 
- * distribution of occurrence data, disproportionate sampling
+ * distribution of occurrence data, disproportional sampling
  * regarding presence and absence data, etc.
  */
 class Sampler
 {
 public:
 
-  Sampler( Occurrences *oc, Environment *env );
-
+  Sampler( Environment *env, Occurrences *presence,
+	   Occurrences *absence=0 );
   ~Sampler();
 
 
-  /** Dimension of sampled space (number of dependent and independend variables). */
-  int dim();
+  /** Number of environmental variables. */
+  int dimEnv();
 
-  /** Number of occurrences (presence). */
-  int numOccurrences();
 
-  /** Return only presence data. */
-  virtual int getOccurrences( int numPoints, Scalar *points );
-  /** Return only presence data. */
-  int getOccurrences( int numPoints, Samples *data );
+  /** Number of presences (occurrence points). */
+  int numPresence();
 
-  /** By default, sample uniformly presence and absence data. */
-  virtual int getSamples( int numPoints, Scalar *points );
-  /** By default, sample uniformly presence and absence data. */
-  int getSamples( int numPoints, Samples *data );
+  /** Number of absences (localities with no occurrence). */
+  int numAbsence();
 
-  /** Set types[i] = 1 if variable associated to "i" is categorical (eg:
-      soil), otherwise set types[i] = 0. i = 0, ..., dim()-1 */
+  /** Get the environment values at the presence localities.
+   *
+   * @param npnt Maximum number of localities to get.
+   *  If it is negative, gets all avaiable localities.
+   * @param env Filled with the environmental vector values.
+   * 
+   * @return Number of presence points filled in.
+   */
+  virtual int getPresence( SampledData *env, int npnt=-1 );
+
+  /** Get the environment values at the absence localities.
+   *
+   * @param npnt Maximum number of localities to get.
+   *  If it is negative, gets all avaiable localities.
+   * @param env Filled with the environmental vector values.
+   *  
+   * @return Number of absence points filled in.
+   */
+  virtual int getAbsence( SampledData *env, int npnt=-1 );
+
+  /** Get the environment values at some random localities.
+   * It is not garanteed that the environment values are different
+   * from some presence data!
+   * 
+   * @param npnt Maximum number of localities to get (>= 0).
+   * @param env Filled with the environmental vector values.
+   *
+   * @return Number of absence points filled in.
+   */
+  virtual int getPseudoAbsence( SampledData *env, int npnt );
+
+
+  /** Samples presence and absence (or pseudo-absence) points.
+   * By default, returns npnt/2 (upper rounded) points of presence
+   * and npnt/2 (lower rounded) points of absence.
+   * 
+   * @param npnt Maximum number of localities to sample.
+   * @param npresence Number of presences sampled.
+   * @param presence Filled with environmental values of presence
+   *  localities.
+   * @param nabsence Number of absences sampled.
+   * @param absence Filled with environmental values of absence
+   *  (or pseudo-absence) localities.
+   *
+   * @return Total of sampled localities.
+   */
+  virtual int getSamples( SampledData *presence, SampledData *absence,
+			  int npnt );
+
+  /** Sets types[i] = 1 if variable associated to "i" is
+   * categorical (eg: soil), otherwise set types[i] = 0.
+   * i = 0, ..., dim()-1
+   */
   int varTypes( int *types );
 
 
 protected:
 
-  Occurrences *f_oc;
-  Environment *f_env;
+  /** Get the environment values at the given localities.
+   *
+   * @param occur Localities points.
+   * @param npnt Maximum number of localities to get.
+   * @param env Filled with the environmental vector values.
+   *  env[i * dim(), j] is the j-th environmental value for the
+   *  i-th point.
+   *  
+   * @return Number of localities found.
+   */
+  int getOccurrence( Occurrences *occur, SampledData *env,
+		     int npnt );
+
+
+  Occurrences *_presence;
+  Occurrences *_absence;
+  Environment *_env;
 };
 
 

@@ -37,10 +37,10 @@
 
 Algorithm::Algorithm( Sampler *samp )
 {
-  f_samp = samp;
+  _samp = samp;
 
-  f_categ = new int[ f_samp->dim() ];
-  f_samp->varTypes( f_categ );
+  _categ = new int[ _samp->dimEnv() ];
+  _samp->varTypes( _categ );
 }
 
 
@@ -49,6 +49,6 @@ Algorithm::Algorithm( Sampler *samp )
 
 Algorithm::~Algorithm()
 {
-  delete f_categ;
+  delete _categ;
 }
 

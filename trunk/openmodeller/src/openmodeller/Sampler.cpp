@@ -30,60 +30,10 @@
 #include <occurrence.hh>
 
 #include <om_sampler.hh>
+#include <om_sampled_data.hh>
 #include <om_occurrences.hh>
 
 #include <stdio.h>
-
-
-/****************************************************************/
-/**************************** Samples ***************************/
-
-/*******************/
-/*** constructor ***/
-
-Samples::Samples( int length, int dimension, Scalar *points )
-{
-  f_free = 0;
-
-  redim( length, dimension, points );
-}
-
-
-/******************/
-/*** destructor ***/
-
-Samples::~Samples()
-{
-  if ( f_free )
-    delete pnt;
-}
-
-
-/*************/
-/*** redim ***/
-int
-Samples::redim( int length, int dimension, Scalar *points )
-{
-  dim = dimension;
-  len = length;
-
-  if ( f_free )
-    delete pnt;
-
-  if ( points )
-    {
-      pnt = points;
-      f_free = 0;
-    }
-  else
-    {
-      pnt = new Scalar[ len * dim ];
-      f_free = 1;
-    }
-
-  return 0;
-}
-
 
 
 /****************************************************************/
@@ -92,12 +42,16 @@ Samples::redim( int length, int dimension, Scalar *points )
 /*******************/
 /*** constructor ***/
 
-Sampler::Sampler( Occurrences *oc, Environment *env )
+Sampler::Sampler( Environment *env, Occurrences *presence,
+		  Occurrences *absence )
 {
-  f_oc  = oc;
-  f_env = env;
+  _env = env;
 
-  f_oc->head();
+  _presence = presence;
+  _presence->head();
+
+  if ( _absence = absence )
+    _absence->head();
 }
 
 
@@ -109,111 +63,95 @@ Sampler::~Sampler()
 }
 
 
-/***********/
-/*** dim ***/
+/***************/
+/*** dim Env ***/
 int
-Sampler::dim()
+Sampler::dimEnv()
 {
-  return 1 + f_env->numLayers();
+  return _env->numLayers();
 }
 
 
-/***********************/
-/*** num Occurrences ***/
+/********************/
+/*** num Presence ***/
 int
-Sampler::numOccurrences()
+Sampler::numPresence()
 {
-  return f_oc->numOccurrences();
+  return _presence->numOccurrences();
 }
 
 
-/***********************/
-/*** get Occurrences ***/
+/*******************/
+/*** num Absence ***/
 int
-Sampler::getOccurrences( int numPoints, Samples *data )
+Sampler::numAbsence()
 {
-  if ( numPoints != data->len || dim() != data->dim )
-    data->redim( numPoints, dim() );
-
-  return getOccurrences( numPoints, data->pnt );
+  return _absence ? _absence->numOccurrences() : 0;
 }
 
 
-/***********************/
-/*** get Occurrences ***/
+/********************/
+/*** get Presence ***/
 int
-Sampler::getOccurrences( int npnt, Scalar *pnt )
+Sampler::getPresence( SampledData *env, int npnt )
 {
-  // Number of environmental variables.
-  int dim = f_env->numLayers();
+  return getOccurrence( _presence, env, npnt );
+}
 
-  int n;
-  Occurrence *ocur = NULL;
 
-  for ( n = 0; n < npnt && (ocur = f_oc->get()); f_oc->next() )
-    {
-      // Read environmental variables.
-      if ( f_env->get( ocur->x, ocur->y, pnt+1 ) )
-        {
-          // Number of individuals on the occurrence point.
-          *pnt++ = ocur->pop;
+/*******************/
+/*** get Absence ***/
+int
+Sampler::getAbsence( SampledData *env, int npnt )
+{
+  return _absence ? getOccurrence( _absence, env, npnt ) : 0;
+}
 
-          pnt += dim;
-          n++;
-        }
-    }
 
-  // If finished by reaching the end of list, go back to the
-  // beginning so that the next call can read again the
-  // occurrences.
-  if ( ! ocur )
-    f_oc->head();
+/**************************/
+/*** get Pseudo Absence ***/
+int
+Sampler::getPseudoAbsence( SampledData *env, int npnt )
+{
+  if ( npnt <= 0 )
+    return 0;
 
-  return n;
+  int dim = dimEnv();
+
+  env->redim( npnt, dim );
+  Scalar *pnt = env->pnt;
+
+  for ( Scalar *end = pnt + npnt * dim; pnt < end; pnt += dim )
+    _env->getRandom( pnt );
+
+  return dim;
 }
 
 
 /*******************/
 /*** get Samples ***/
 int
-Sampler::getSamples( int numPoints, Samples *data )
+Sampler::getSamples( SampledData *presence, SampledData *absence,
+		     int npnt )
 {
-  data->redim( numPoints, dim() );
+  if ( ! npnt )
+    return 0;
 
-  return getSamples( numPoints, data->pnt );
-}
+  getPresence( presence, npnt - npnt/2 );
+  getAbsence( absence, npnt - presence->npnt );
 
-
-/*******************/
-/*** get Samples ***/
-int
-Sampler::getSamples( int npnt, Scalar *pnt )
-{
-  int dim = f_env->numLayers();
-
-  // Fill 'pnt' with samples of presence and absence
-  // alternatingly.
-  int pres = 1;
-  for ( int i = 0; i < npnt; pres = 1-pres )
+  // If it do not read all the needed points, try to get the
+  // missing points through pseudo-absence method.
+  int missing = npnt - presence->npnt - absence->npnt;
+  if ( missing )
     {
-      // Absence point.
-      if ( ! pres )
-        {
-          *pnt++ = 0.0;
-          f_env->getRandom( pnt );
-          pnt += dim;
-          i++;
-        }
+      SampledData pseudo;
+      getPseudoAbsence( &pseudo, missing );
 
-      // Presence point.
-      else if ( getOccurrences( 1, pnt ) )
-	{
-	  pnt += dim + 1;
-	  i++;
-	}
+      absence->add( pseudo );
     }
 
-  return npnt;
+  return presence->npnt + absence->npnt;
 }
 
 
@@ -222,10 +160,47 @@ Sampler::getSamples( int npnt, Scalar *pnt )
 int
 Sampler::varTypes( int *types )
 {
-  // The first variable is always the probability of occurrence, therefore
-  // it is never categorical.
-  *types++ = 0;
+  return _env->varTypes( types );
+}
 
-  return 1 + f_env->varTypes( types );
+
+/**********************/
+/*** get Occurrence ***/
+int
+Sampler::getOccurrence( Occurrences *occur, SampledData *env,
+			int npnt )
+{
+  if ( ! npnt )
+    return 0;
+
+  // Get all occurrences.
+  if ( npnt < 0 )
+    npnt = occur->numOccurrences();
+
+  // Number of environmental variables.
+  int dim = dimEnv();
+
+  env->redim( npnt, dim );
+  Scalar *pnt = env->pnt;
+
+  Occurrence *oc = 0;
+  int n = 0;
+  for ( ; n < npnt && (oc = occur->get()); occur->next() )
+    {
+      // Read environmental variables.
+      if ( _env->get( oc->x, oc->y, pnt ) )
+        {
+          pnt += dim;
+          n++;
+        }
+    }
+
+  // If finished by reaching the end of list, go back to the
+  // beginning so that the next call can read again the
+  // occurrences.
+  if ( ! oc )
+    occur->head();
+
+  return n;
 }
 

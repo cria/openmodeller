@@ -42,13 +42,13 @@
 
 Occurrences::Occurrences( char *name, char *id )
 {
-  f_ocur = new LstOccur;
+  _ocur = new LstOccur;
 
-  f_name = new char[ strlen(name) + 1 ];
-  strcpy( f_name, name );
+  _name = new char[ strlen(name) + 1 ];
+  strcpy( _name, name );
 
-  f_id = new char[ strlen(id) + 1 ];
-  strcpy( f_id, id );
+  _id = new char[ strlen(id) + 1 ];
+  strcpy( _id, id );
 }
 
 
@@ -58,10 +58,10 @@ Occurrences::Occurrences( char *name, char *id )
 Occurrences::~Occurrences()
 {
   Occurrence *oc;
-  for ( f_ocur->Head(); oc = f_ocur->Get(); f_ocur->Next() )
+  for ( _ocur->Head(); oc = _ocur->Get(); _ocur->Next() )
     delete( oc );
 
-  delete f_ocur;
+  delete _ocur;
 }
 
 
@@ -71,7 +71,7 @@ void
 Occurrences::insert( Coord longitude, Coord latitude, float pop )
 {
   Occurrence *oc = new Occurrence( longitude, latitude, pop );
-  f_ocur->InsertLast( oc );
+  _ocur->InsertLast( oc );
 }
 
 
@@ -80,7 +80,7 @@ Occurrences::insert( Coord longitude, Coord latitude, float pop )
 int
 Occurrences::numOccurrences()
 {
-  return f_ocur->Length();
+  return _ocur->Length();
 }
 
 
@@ -89,7 +89,7 @@ Occurrences::numOccurrences()
 void
 Occurrences::head()
 {
-  f_ocur->Head();
+  _ocur->Head();
 }
 
 
@@ -98,7 +98,7 @@ Occurrences::head()
 void
 Occurrences::next()
 {
-  f_ocur->Next();
+  _ocur->Next();
 }
 
 
@@ -107,7 +107,7 @@ Occurrences::next()
 Occurrence *
 Occurrences::get()
 {
-  return f_ocur->Get();
+  return _ocur->Get();
 }
 
 
@@ -116,7 +116,7 @@ Occurrences::get()
 Occurrence *
 Occurrences::remove()
 {
-  return f_ocur->Delete();
+  return _ocur->Delete();
 }
 
 
@@ -128,8 +128,8 @@ Occurrences::print( char *msg )
   printf( "%s\n", msg );
 
   // Occurrences general data.
-  printf( "Name: %s\n", f_name );
-  printf( "ID  : %s\n", f_id );
+  printf( "Name: %s\n", _name );
+  printf( "ID  : %s\n", _id );
   printf( "\nOccurrences: %d\n\n", numOccurrences() );
 
   // Occurrence points.

@@ -86,7 +86,7 @@ public:
   int getRandom( Scalar *sample );
 
 
-  /** Return 0 if (x,y) fall outside the mask. If there's no 
+  /** Return 0 if (x,y) falls outside the mask. If there's no 
    *  mask, return != 0 always. */
   int check( Coord x, Coord y );
 
@@ -116,10 +116,10 @@ private:
   Map **f_layers; ///< Vector with all layers that describe the variables.
   Map  *f_mask;   ///< Mask (can be 0).
 
-  Coord f_xmin; ///< Widest region among all layers.
-  Coord f_ymin; ///< Widest region among all layers.
-  Coord f_xmax; ///< Widest region among all layers.
-  Coord f_ymax; ///< Widest region among all layers.
+  Coord f_xmin; ///< Intersection of all layers.
+  Coord f_ymin; ///< Intersection of all layers.
+  Coord f_xmax; ///< Intersection of all layers.
+  Coord f_ymax; ///< Intersection of all layers.
 
   char *f_cs;  ///< Coordinate system to be used.
 };

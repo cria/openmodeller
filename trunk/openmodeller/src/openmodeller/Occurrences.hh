@@ -31,7 +31,6 @@
 #define _OCCURRENCESHH_
 
 #include "om_defs.hh"
-//#include "list.hh"
 
 class Occurrence;
 template<class T> class DList;
@@ -54,8 +53,8 @@ public:
   Occurrences( char *name, char *id );
   ~Occurrences();
 
-  char *name()   { return f_name; }
-  char *id()     { return f_id;   }
+  char *name()   { return _name; }
+  char *id()     { return _id;   }
 
   /** Insert an occurrence. */
   void insert( Coord longitude, Coord latitude, float pop=1.0 );
@@ -79,10 +78,10 @@ public:
 
 private:
 
-  char *f_name; ///< A name for the list of occurrences (e.g. species name).
-  char *f_id;   ///< An identifier for the list of occurrences.
+  char *_name; ///< A name for the list of occurrences (e.g. species name).
+  char *_id;   ///< An identifier for the list of occurrences.
 
-  LstOccur *f_ocur;  ///< Coordinates of the occurrences.
+  LstOccur *_ocur;  ///< Coordinates of the occurrences.
 };
 
 

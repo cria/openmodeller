@@ -52,16 +52,21 @@ public:
   virtual char *name()  { return "Undefined"; }
 
   /** The algorithm should return != 0 if it needs normalization
-   *  of environmental variables (non categorical ones). */
+   *  of environmental variables (non categorical ones).
+   */
   virtual int needNormalization( Scalar *min, Scalar *max )
   { return 0; }
+
+  virtual int onlyContinuosMaps() { return 0; }
+
 
   /** Initiate a new training. If 'ncicle' != 0, then the 
    *  new training will have 'ncycle' cicles. */
   virtual int initialize( int ncycle ) { return 1; }
 
   /** One step further on the training. Return 0 if something 
-   *  wrong happened. */
+   * wrong happened.
+   */
   virtual int iterate() = 0;
 
   /** Return != 0 if algorithm finished. */
@@ -69,41 +74,45 @@ public:
 
   /** Read algorithm state. */
   virtual int load( int fd )  { return 0; }
+
   /** Store algorithm state. */
   virtual int save( int fd )  { return 0; }
 
-  /** Return value of model on coordinates (x1,...,xN).
-   *  Note that N is known as 'Sampler'.
-   *  The value will be better visualized if within the range [-1,+1]. */
+  /** The algorithm must return the occurrence probability at
+   * the given environment conditions.
+   *
+   * @param x Environmental conditions.
+   * 
+   * @return The occurrence probability in the range [0,1].
+   */
   virtual Scalar getValue( Scalar *x ) = 0;
 
-  /** Return value of the convergence function. */
+
+  /** Returns the algorithm's convergence value at the moment */
   virtual int getConvergence( Scalar *val )  { return 0; }
 
 
 protected:
 
-  Sampler *getSampler()  { return f_samp; }
-
-  int *getCategories()   { return f_categ; }
+  int *getCategories()   { return _categ; }
 
   /** Return != 0 if variable "i" in the domain is categorical.
    *  Obs: i = 0 is the probability of occurrrence, therefore it is 
    *  never categorical. */
-  int isCategorical( int i )  { return f_categ[i]; }
+  int isCategorical( int i )  { return _categ[i]; }
 
   /** Dimension of problem domain: number of independent 
    *  variables (climatic + soil) added to the number of
    *  dependent variables (occurrence prediction). */
-  int dimDomain()  { return f_samp->dim(); }
+  int dimDomain()  { return _samp->dimEnv(); }
 
-  Sampler *f_samp;
+
+  Sampler *_samp;
+
 
 private:
 
-
-
-  int *f_categ; ///< f_categ[i] != 0 if map "i" is categorical.
+  int *_categ; ///< f_categ[i] != 0 if map "i" is categorical.
 };
 
 
