@@ -43,7 +43,7 @@ RSC=rc.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MT /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "OM_GARP_EXPORTS" /YX /FD /c
-# ADD CPP /nologo /MT /W3 /GX /O2 /I "../../algorithms" /I "../../inc" /I "../../inc/env_io" /I "$(GDAL_HOME)/include" /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "OM_GARP_EXPORTS" /YX /FD /c
+# ADD CPP /nologo /MT /W3 /GX /O2 /I "../../../algorithms/garp" /I "../../inc" /I "../../inc/env_io" /I "$(GDAL_HOME)/include" /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "OM_GARP_EXPORTS" /YX /FD /c
 # ADD BASE MTL /nologo /D "NDEBUG" /mktyplib203 /win32
 # ADD MTL /nologo /D "NDEBUG" /mktyplib203 /win32
 # ADD BASE RSC /l 0x409 /d "NDEBUG"
@@ -75,7 +75,7 @@ PostBuild_Cmds=if not exist ..\build mkdir ..\build	if not exist ..\build\lib mk
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MTd /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "OM_GARP_EXPORTS" /YX /FD /GZ /c
-# ADD CPP /nologo /MTd /W3 /Gm /GX /ZI /Od /I "../../algorithms" /I "../../inc" /I "../../inc/env_io" /I "$(GDAL_HOME)/include" /D "_WINDOWS" /D "_USRDLL" /D "OM_GARP_EXPORTS" /D "WIN32" /D "_DEBUG" /D "_MBCS" /D VERSION=\"0.2\" /D PLUGINPATH=$(OM_PLUGIN_PATH) /FR /YX /FD /GZ /c
+# ADD CPP /nologo /MTd /W3 /Gm /GX /ZI /Od /I "../../../algorithms/garp" /I "../../inc" /I "../../inc/env_io" /I "$(GDAL_HOME)/include" /D "_WINDOWS" /D "_USRDLL" /D "OM_GARP_EXPORTS" /D "WIN32" /D "_DEBUG" /D "_MBCS" /D VERSION=\"0.2\" /D PLUGINPATH=$(OM_PLUGIN_PATH) /FR /YX /FD /GZ /c
 # ADD BASE MTL /nologo /D "_DEBUG" /mktyplib203 /win32
 # ADD MTL /nologo /D "_DEBUG" /mktyplib203 /win32
 # ADD BASE RSC /l 0x409 /d "_DEBUG"
@@ -110,15 +110,11 @@ SOURCE=..\..\lib\environment.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\algorithms\garp.cpp
+SOURCE=..\..\..\algorithms\garp\garp.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\algorithms\garp_rules.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\algorithms\garp_sampler.cpp
+SOURCE=..\..\..\algorithms\garp\garp_sampler.cpp
 # End Source File
 # Begin Source File
 
@@ -174,6 +170,30 @@ SOURCE=..\..\lib\env_io\raster_mem.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\..\algorithms\garp\rules_atomic.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\algorithms\garp\rules_base.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\algorithms\garp\rules_logit.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\algorithms\garp\rules_negrange.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\algorithms\garp\rules_range.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\algorithms\garp\ruleset.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\lib\sampled_data.cpp
 # End Source File
 # Begin Source File
@@ -190,15 +210,11 @@ SOURCE=..\..\inc\environment.hh
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\algorithms\garp.hh
+SOURCE=..\..\..\algorithms\garp\garp.hh
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\algorithms\garp_rules.hh
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\algorithms\garp_sampler.hh
+SOURCE=..\..\..\algorithms\garp\garp_sampler.hh
 # End Source File
 # Begin Source File
 
@@ -283,6 +299,30 @@ SOURCE=..\..\inc\env_io\raster_gdal.hh
 # Begin Source File
 
 SOURCE=..\..\inc\env_io\raster_mem.hh
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\algorithms\garp\rules_atomic.hh
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\algorithms\garp\rules_base.hh
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\algorithms\garp\rules_logit.hh
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\algorithms\garp\rules_negrange.hh
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\algorithms\garp\rules_range.hh
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\algorithms\garp\ruleset.hh
 # End Source File
 # End Group
 # Begin Group "Resource Files"
