@@ -79,19 +79,6 @@ Map::getRegion( Coord *xmin, Coord *ymin, Coord *xmax,
 {
   _rst->getRegion( xmin, ymin, xmax, ymax );
 
-  //todo:
-  // OGRCoordinateTransformation::Transform() used by _gt->transform()
-  // does not correctly transform points outside
-  // { (x,y) | -180 < x < 180, -90 < y < -90 } and does not return error!
-  if ( _gt->isInDegrees() )
-    {
-      double static dif = 1e-10;
-      if ( *xmin <= -180.0 ) *xmin = -180.0 + dif;
-      if ( *xmax >=  180.0 ) *xmax =  180.0 - dif;
-      if ( *ymin <= -90.0 ) *ymin = -90.0 + dif;
-      if ( *ymax >=  90.0 ) *ymax =  90.0 - dif;
-    }
-
   return
     _gt->transfOut( xmin, ymin ) &&
     _gt->transfOut( xmax, ymax );
