@@ -52,8 +52,8 @@ Scale = 255
 #Algorithm = MinimumDistance v0.1
 #Parameter = MaxDist 0.05
 
-#Algorithm  = Bioclim
-#Parameter = StandadDeviationCutoff 0.05
+Algorithm  = Bioclim
+Parameter = StandadDeviationCutoff 0.05
 
 #Algorithm  = CSM
 

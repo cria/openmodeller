@@ -274,9 +274,6 @@ Raster::setHeader( Header &hdr )
 {
   f_hdr = hdr;
 
-  // Confirm the coherence of (xcel, ycel).
-  f_hdr.calculateCell();
-
   return 0;
 }
 
@@ -286,7 +283,7 @@ Raster::setHeader( Header &hdr )
 int
 Raster::convX( Coord x )
 {
-  x = (x - f_hdr.xmin) / f_hdr.xcel;
+  x = (x - f_hdr.gt[0]) / f_hdr.gt[1];
   return int( f_hdr.grid ? x : (x + 0.5) );
 }
 
@@ -296,7 +293,7 @@ Raster::convX( Coord x )
 int
 Raster::convY( Coord y )
 {
-  y = (y - f_hdr.ymin) / f_hdr.ycel;
+  y = (y - f_hdr.gt[3]) / f_hdr.gt[5];
   return f_hdr.ydim - int( f_hdr.grid ? y : (y + 0.5) );
 }
 

@@ -191,6 +191,12 @@ RasterGdal::open( char *file, char mode )
   f_hdr.ymax = (Scalar) cf[3];
   f_hdr.ymin = (Scalar) (cf[3] + xd * cf[4] + yd * cf[5]);
 
+  f_hdr.calculateCell();
+
+  for( int i=0; i<6; ++i ) {
+    f_hdr.gt[i] = cf[i];
+  }
+
   // Minimum and maximum values.
   f_hdr.min = band->GetMinimum( &f_hdr.minmax );
   if ( f_hdr.minmax )
@@ -294,10 +300,7 @@ RasterGdal::create( char *file, Header &hdr )
   /*** Metadata ***/
 
   // Limits (without rotations).
-  double gt[6] = {
-    hdr.xmin, hdr.xcel, 0.0, hdr.ymax, 0.0, hdr.ycel
-  };
-  f_ds->SetGeoTransform( gt );
+  f_ds->SetGeoTransform( f_hdr.gt );
 
   // Projection.
   f_ds->SetProjection( hdr.proj );
