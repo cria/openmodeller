@@ -323,8 +323,9 @@ int Csm::done()
 Scalar Csm::getValue( Scalar *x )
 {
     float myFloat;
-    //first thing we do is convert the oM primitive env value array to a gsl vector
-    gsl_vector * tmp_gsl_vector = gsl_vector_alloc (f_layer_count);
+    //first thing we do is convert the oM primitive env value array to a gsl matrix
+    //with only one row so we can do matrix multplication with it
+    gsl_matrix * tmp_gsl_matrix = gsl_matrix_alloc (1,f_layer_count);
     for (int i=0;i<f_layer_count;++i)
     {
         myFloat = static_cast<float>(x[i]);
@@ -334,28 +335,31 @@ Scalar Csm::getValue( Scalar *x )
         //subtract the mean from the value then divide by the standard deviation
         myFloat = (myFloat-myAverage)/myStdDev;
         //assign the result to our vector
-        gsl_vector_set (tmp_gsl_vector,i,myFloat);
+        gsl_matrix_set (tmp_gsl_matrix,0,i,myFloat);
         //printf ("%f\t", myFloat );
     }
 
+    gsl_matrix * p = product(tmp_gsl_matrix, f_gsl_eigenvector_matrix);
+
     //create a temporary vector and place component 1 in it - could make this a class member to improve performance!
-    gsl_vector * component1_gsl_vector = gsl_vector_alloc (f_layer_count);
-    gsl_matrix_get_col (component1_gsl_vector, f_gsl_eigenvector_matrix, 0);
+    //gsl_vector * component1_gsl_vector = gsl_vector_alloc (f_layer_count);
+    //gsl_matrix_get_col (component1_gsl_vector, f_gsl_eigenvector_matrix, 0);
 
     //multiply the result vector by the first component in the eigenvector
-    gsl_vector_mul (tmp_gsl_vector, component1_gsl_vector);
+    //gsl_vector_mul (tmp_gsl_vector, component1_gsl_vector);
 
     //probabily for the cell is now the sum of the tmp vector
     myFloat=0;
-    for (int j=0;j<f_layer_count;j++)
-    {
-        myFloat+=gsl_vector_get (tmp_gsl_vector,j);
-    }
+    for (int i=0;i<p->size1;i++)
+        for (int j=0;j<p->size2;j++)
+            myFloat+=gsl_matrix_get (p,i,j);
+
     //printf ("Prob: %f\n",myFloat);
     //now we
     //now clear away the temporary vars
-    gsl_vector_free (component1_gsl_vector);
-    gsl_vector_free (tmp_gsl_vector);
+    gsl_matrix_free (p);
+    //gsl_vector_free (component1_gsl_vector);
+    gsl_matrix_free (tmp_gsl_matrix);
     return myFloat;
 }
 
@@ -546,7 +550,7 @@ gsl_matrix * Csm::autoCovariance(gsl_matrix * original_matrix)
     // divide by "n"
     gsl_matrix_scale (s, (double)1/numrows);
 
-    // subtract the result from x 
+    // subtract the result from x
     gsl_matrix_sub (m, s);
 
     // get x'
