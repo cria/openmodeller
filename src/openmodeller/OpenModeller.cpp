@@ -56,6 +56,8 @@ static char *g_search_dirs[] = {
   0
 };
 
+const char * g_config_file = CONFIG_FILE;
+
 
 /****************************************************************/
 /************************* Open Modeller ************************/
@@ -65,8 +67,6 @@ static char *g_search_dirs[] = {
 
 OpenModeller::OpenModeller()
 {
-  _factory = new AlgorithmFactory( g_search_dirs );
-
   _env = 0;
   _alg = 0;
   _samp = 0;
@@ -88,6 +88,13 @@ OpenModeller::OpenModeller()
   _map_callback_param   = 0;
 
   _error[0] = '\0';
+
+  // sets _plugin_path with path from config file or hardcoded constant
+  _plugin_path = NULL;
+  _factory = NULL;
+  resetPluginPath();
+
+  _factory = new AlgorithmFactory( _plugin_path );
 }
 
 
@@ -107,6 +114,8 @@ OpenModeller::~OpenModeller()
   if ( _output_mask )   delete _output_mask;
   if ( _output_header ) delete _output_header;
 
+  if (_plugin_path) deleteStringArray(_plugin_path);
+
   delete _factory;
 }
 
@@ -120,13 +129,146 @@ OpenModeller::getVersion()
   return OM_VERSION;
 }
 
+/****************************/
+/*** get Config File name ***/
+char *
+OpenModeller::getConfigFileName()
+{
+  return (char *) g_config_file;
+}
+
+
+/*************************/
+/*** deleteStringArray ***/
+void
+OpenModeller::deleteStringArray(char ** array)
+{
+  //g_log.debug("Deallocating existing string array\n");
+
+  char ** curr_dir;
+
+  // delete existing plugin_path and strings it points to first
+  if (array)
+    {
+      curr_dir = array;
+      while (*curr_dir)
+	{ delete[] *curr_dir++; }
+    }
+  delete[] array;
+}
+
+/***********************/
+/*** set Plugin Path ***/
+void 
+OpenModeller::setPluginPath(char ** new_plugin_path)
+{
+  //g_log.debug("Setting new plugin path\n");
+
+  // pointer to current dir in plugin path passed as argument (read only)
+  char ** curr_arg_dir;      
+
+  // pointer to current dir in instance variable _plugin_path (being set)
+  char ** curr_plugin_dir;
+
+  // get number of directories
+  curr_arg_dir = new_plugin_path;
+  while (*curr_arg_dir++);
+  //{ g_log.debug("Visiting directory %s\n", *curr_arg_dir++); }
+  int num_dirs = curr_arg_dir - new_plugin_path;
+  //g_log.debug("Total directories found: %d\n", num_dirs);
+
+  deleteStringArray(_plugin_path);
+
+  // create new array and copy values from argument
+  _plugin_path = new char*[num_dirs + 1];
+  curr_plugin_dir = _plugin_path;
+  curr_arg_dir = new_plugin_path;
+  while (*curr_arg_dir)
+    {
+      //g_log.debug("Copying directory name %s to path\n", *curr_arg_dir);
+      *curr_plugin_dir = new char[strlen(*curr_arg_dir) + 1];
+      strcpy(*curr_plugin_dir++, *curr_arg_dir++);
+    }
+  *curr_plugin_dir = NULL;
+
+  if (_factory)
+    _factory->setDirs(_plugin_path);
+}
+
+/***********************/
+/*** reset Plugin Path ***/
+void
+OpenModeller::resetPluginPath()
+{
+  //g_log.debug("Resetting plugin path to default value\n");
+
+  FILE * conf_file = fopen(g_config_file, "r");
+
+  if (conf_file)
+    {
+      //g_log.debug("Loading plugin path from configuration file\n");
+
+      // config file found: read the search path from it
+      const int size = 1024;
+      char line[size];
+
+      // get number of dirs in path
+      int num_dirs = 0;
+      while (fgets(line, size, conf_file))
+	{ num_dirs++; }
+
+      deleteStringArray(_plugin_path);
+      _plugin_path = new char*[num_dirs + 1];
+      rewind(conf_file); 
+      char ** curr_plugin_dir = _plugin_path;
+      while (fgets(line, size, conf_file))
+	{ 
+	  // get rid of new lines
+	  char * new_line;
+	  if (new_line = strchr( line, '\n'))
+	    *new_line = '\0';
+	  *curr_plugin_dir = new char[strlen(line) + 1];
+	  strcpy(*curr_plugin_dir++, line);
+	}
+
+      *curr_plugin_dir = NULL;
+
+      if (_factory)
+	_factory->setDirs(_plugin_path);
+
+      fclose(conf_file);
+    }
+  else
+    {
+      //g_log.debug("Loading plugin path from hardcoded default\n");
+
+      // config file not found, set plugin path to hardcoded default
+      setPluginPath(g_search_dirs);
+    }
+}
 
 /***********************/
 /*** get Plugin Path ***/
 char * 
 OpenModeller::getPluginPath()
 {
-  return PLUGINPATH;
+  int length = 0;
+  char ** curr_plugin_dir = _plugin_path;
+
+  while (*curr_plugin_dir)
+    { length += strlen(*curr_plugin_dir++) + 2; }
+
+  char * path = new char[length];
+  strcpy(path, "");
+  curr_plugin_dir = _plugin_path;
+  while (*curr_plugin_dir)
+    { 
+      if (curr_plugin_dir != _plugin_path)
+	{ strcat(path, ", "); }
+      strcat(path, *curr_plugin_dir++);
+    }
+
+  return path;
 }
 
 
