@@ -8,6 +8,8 @@
 # WITHOUT ANY WARRANTY, to the extent permitted by law; without even the
 # implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
+PLUGINPATH=-DPLUGINPATH=\"$(libdir)/openmodeller\"
+
 SUBDIRS = env_io
 
 lib_LTLIBRARIES = libopenmodeller.la
@@ -25,5 +27,5 @@ libopenmodeller_la_SOURCES = \
 	sampler.cpp \
 	sampled_data.cpp
 
-libopenmodeller_la_CPPFLAGS = -I../inc -I../..
+libopenmodeller_la_CPPFLAGS = -I../inc -I../.. $(PLUGINPATH)
 libopenmodeller_la_LIBADD = env_io/libenv_io.la

@@ -5,4 +5,4 @@ aclocal  \
   && automake --add-missing --foreign --copy \
   && autoconf --force \
   && echo Now running configure to configure openmodeller \
-  && ./configure
+  && ./configure $@
