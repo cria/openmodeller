@@ -89,6 +89,10 @@ char **get_args() {
 
 
 
+// ==========================
+//  JNI Helper Functions
+// ==========================
+
 
 %inline %{
 
@@ -116,6 +120,9 @@ jmethodID JNI_getSetStringMethod(JNIEnv * jenv, jclass clazz, char * methodName)
 
 %}
 
+// ===========================
+//  AlgMetadata typemaps
+// ===========================
 
 /* This allows a C function to return a AlgMetadata** as a Java array */
 %typemap(out) AlgMetadata ** {
@@ -127,6 +134,7 @@ jmethodID JNI_getSetStringMethod(JNIEnv * jenv, jclass clazz, char * methodName)
     if (clazz == 0) { JNIException("System could not find class AlgMetadata\n"); }
 
     jmethodID constrID = JNI_getConstructor(jenv, clazz);
+
     jmethodID mID_setId          = JNI_getSetStringMethod(jenv, clazz, "setId");
     jmethodID mID_setName        = JNI_getSetStringMethod(jenv, clazz, "setName");
     jmethodID mID_setVersion     = JNI_getSetStringMethod(jenv, clazz, "setVersion");
@@ -198,7 +206,71 @@ jmethodID JNI_getSetStringMethod(JNIEnv * jenv, jclass clazz, char * methodName)
 /* These 2 typemaps handle the conversion of the jtype to jstype typemap type and visa versa */
 %typemap(javaout) AlgMetadata ** {
     return $jnicall;
-  }
+}
+
+
+// ===============================
+//  AlgParameter typemaps
+// ===============================
+
+/* This tells SWIG to treat char ** as a special case when used as a parameter in a function call */
+%typemap(in) AlgParameter * {
+    int i = 0;
+
+    // turn hashtable in $1 into a Set (using es = $1.entrySet())
+
+    // turn entry set into an array using obj[] = es.toArray()
+
+    // get length of entry set array
+    size = jenv->GetArrayLength($input);
+    $1 = (AlgParameter*) malloc((size+1)*sizeof(AlgParameter));
+    /* make a copy of each parameter */
+    for (i = 0; i<size; i++) {
+        jobject obj = jenv->GetObjectArrayElement($input, i);
+
+	// turn hash into vector of AlgParameter objects
+        $1[i].setId(...);
+	$1[i].setValue(...);
+    }
+    $1[i] = 0;
+}
+
+/* This cleans up the memory we malloc'd before the function call */
+%typemap(freearg) AlgParameter * {
+    free((char *) $1);
+}
+
+/* These 3 typemaps tell SWIG what JNI and Java types to use */
+%typemap(jni) AlgParameter * "jobjectArray"
+%typemap(jtype) AlgParameter * "Hashtable"
+%typemap(jstype) AlgParameter * "Hashtable"
+
+/* This typemap handles the conversion of the jtype to jstype typemap type and visa versa */
+%typemap(javain)  AlgParameter * "$javainput"
+
+
+
+// ====== Returns a java object with list of parameters =========
+
+%inline %{
+
+PyObject * getParameterList(AlgMetadata * metadata)
+{
+    int i;
+    PyObject * paramMetadata;
+    PyObject * list = PyList_New(0);
+    for (i = 0; i < metadata->nparam; i++)
+    {
+	paramMetadata = SWIG_NewPointerObj((void *) &(metadata->param[i]), 
+                                           SWIGTYPE_p_AlgParamMetadata, 1);
+        PyList_Append(list, paramMetadata);
+    }
+
+    return list;
+}
+
+%}
+
 
 
 %include "../../inc/om_defs.hh"
