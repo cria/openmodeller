@@ -112,6 +112,15 @@ void JNIException(char * msg){
   fprintf(stderr, msg);
 }
 
+jclass JNI_getClass(JNIEnv * jenv, char * className) {
+    jclass clazz = jenv->FindClass(className);
+    if (clazz == 0) { 
+	JNIException("System could not find specified Java class.\n");
+	return 0;
+    }
+    else return clazz;
+}
+
 jmethodID JNI_getConstructor(JNIEnv * jenv, jclass clazz){
     jmethodID mID = jenv->GetMethodID(clazz, "<init>", "()V");
     if (mID == 0) { 
@@ -123,6 +132,24 @@ jmethodID JNI_getConstructor(JNIEnv * jenv, jclass clazz){
 
 jmethodID JNI_getSetStringMethod(JNIEnv * jenv, jclass clazz, char * methodName){
     jmethodID mID = jenv->GetMethodID(clazz, methodName, "(Ljava/lang/String;)V");
+    if (mID == 0) { 
+	JNIException("System could not find method.\n"); 
+        return 0;
+    }
+    else return mID;
+}
+
+jmethodID JNI_getSetIntMethod(JNIEnv * jenv, jclass clazz, char * methodName){
+    jmethodID mID = jenv->GetMethodID(clazz, methodName, "(I)V");
+    if (mID == 0) { 
+	JNIException("System could not find method.\n"); 
+        return 0;
+    }
+    else return mID;
+}
+
+jmethodID JNI_getSetDoubleMethod(JNIEnv * jenv, jclass clazz, char * methodName){
+    jmethodID mID = jenv->GetMethodID(clazz, methodName, "(D)V");
     if (mID == 0) { 
 	JNIException("System could not find method.\n"); 
         return 0;
@@ -142,9 +169,7 @@ jmethodID JNI_getSetStringMethod(JNIEnv * jenv, jclass clazz, char * methodName)
     int len=0;
     jobject algMd;
 
-    const jclass clazz = jenv->FindClass("AlgMetadata");
-    if (clazz == 0) { JNIException("System could not find class AlgMetadata\n"); }
-
+    const jclass clazz = JNI_getClass(jenv, "AlgMetadata");
     jmethodID constrID = JNI_getConstructor(jenv, clazz);
 
     jmethodID mID_setId          = JNI_getSetStringMethod(jenv, clazz, "setId");
@@ -157,7 +182,7 @@ jmethodID JNI_getSetStringMethod(JNIEnv * jenv, jclass clazz, char * methodName)
     jmethodID mID_setCodeAuthor  = JNI_getSetStringMethod(jenv, clazz, "setCode_author");
     jmethodID mID_setContact     = JNI_getSetStringMethod(jenv, clazz, "setContact");
 
-	// todo: add integer members
+    // todo: add integer members
 
     while ($1[len]) len++;    
     jresult = (jobjectArray) jenv->NewObjectArray(len, clazz, NULL);
@@ -258,37 +283,84 @@ jmethodID JNI_getSetStringMethod(JNIEnv * jenv, jclass clazz, char * methodName)
 %typemap(jni) AlgParameter * "jobjectArray"
 %typemap(jtype) AlgParameter * "String[][]"
 %typemap(jstype) AlgParameter * "String[][]"
-
-/* This typemap handles the conversion of the jtype to jstype typemap type and visa versa */
 %typemap(javain)  AlgParameter * "$javainput"
-%typemap(javaout) AlgParameter * {
-    return $jnicall;
-}
 
 
 
-// ====== Returns a java object with list of parameters =========
 
+%typemap(out) AlgParamMetadata * {
 
-//%inline %{
+    // return an array of AlgParam back to caller
+    int i, len = 0;
 
-/*
-PyObject * getParameterList(AlgMetadata * metadata)
-{
-    int i;
-    PyObject * paramMetadata;
-    PyObject * list = PyList_New(0);
-    for (i = 0; i < metadata->nparam; i++)
+    while ($1[len]) len++;    
+    jclass clazz = JNI_getClass(jenv, "AlgParameter");
+    jresult = jenv->NewObjectArray(len, clazz, 0);
+    if (arrayObj== 0) { JNIException("Could not allocate array of AlgParameter.\n"); return 0; }
+
+    // get method ids for later use
+    jmethodID constrID = JNI_getConstructor(jenv, clazz);
+
+    jmethodID mID_setId          = JNI_getSetStringMethod(jenv, clazz, "setId");
+    jmethodID mID_setName        = JNI_getSetStringMethod(jenv, clazz, "setName");
+    jmethodID mID_setType        = JNI_getSetStringMethod(jenv, clazz, "setType");
+    jmethodID mID_setOverview    = JNI_getSetStringMethod(jenv, clazz, "setOverview");
+    jmethodID mID_setDescription = JNI_getSetStringMethod(jenv, clazz, "setDescription");
+    jmethodID mID_setTypical     = JNI_getSetStringMethod(jenv, clazz, "setTypical");
+    jmethodID mID_setHas_min     = JNI_getSetIntMethod(jenv, clazz, "setHas_min");
+    jmethodID mID_setHas_max     = JNI_getSetIntMethod(jenv, clazz, "setHas_min");
+    jmethodID mID_setMin         = JNI_getSetDoubleMethod(jenv, clazz, "setMin");
+    jmethodID mID_setMax         = JNI_getSetDoubleMethod(jenv, clazz, "setMax");
+
+    for (i = 0; i < len; i++)
     {
-	paramMetadata = SWIG_NewPointerObj((void *) &(metadata->param[i]), 
-                                           SWIGTYPE_p_AlgParamMetadata, 1);
-        PyList_Append(list, paramMetadata);
-    }
+	AlgParamMetadata * currParam = (result + i);
 
-    return list;
+	// create new AlgParameter object
+        algParam = jenv->NewObject(clazz, constrID);
+
+        // set data members 
+        jstring sid = jenv->NewStringUTF(currParam->id);
+        jenv->CallVoidMethod(algParam, mID_setId, sid);
+
+        jstring sname = jenv->NewStringUTF(currParam->name);
+        jenv->CallVoidMethod(algParam, mID_setName, sname);
+
+        jstring stype = jenv->NewStringUTF(currParam->type);
+        jenv->CallVoidMethod(algParam, mID_setType, stype);
+
+        jstring soverview = jenv->NewStringUTF(currParam->overview);
+        jenv->CallVoidMethod(algParam, mID_setOverview, soverview);
+
+        jstring sdescription = jenv->NewStringUTF(currParam->description);
+        jenv->CallVoidMethod(algParam, mID_setDescription, sdescription);
+
+        jstring stypical = jenv->NewStringUTF(currParam->typical);
+        jenv->CallVoidMethod(algParam, mID_setTypical, stypical);
+
+        jenv->CallVoidMethod(algParam, mID_setHas_min, currParam->has_min);
+        jenv->CallVoidMethod(algParam, mID_setHas_max, currParam->has_max);
+        jenv->CallVoidMethod(algParam, mID_setMin, currParam->min);
+        jenv->CallVoidMethod(algParam, mID_setMax, currParam->max);
+
+        // add it to main array
+        jenv->SetObjectArrayElement(arrayObj, i, jresult);
+
+        jenv->DeleteLocalRef(sid);
+        jenv->DeleteLocalRef(sname);
+        jenv->DeleteLocalRef(stype);
+        jenv->DeleteLocalRef(soverview);
+        jenv->DeleteLocalRef(sdescription);
+        jenv->DeleteLocalRef(stypical);
+    }
 }
-*/
-//%}
+
+/* These 3 typemaps tell SWIG what JNI and Java types to use */
+%typemap(jni) AlgParaMetadata * "jobjectArray"
+%typemap(jtype) AlgParaMetadata * "AlgParamMetadata[]"
+%typemap(jstype) AlgParaMetadata * "AlgParamMetadata[]"
+%typemap(javaout) AlgParaMetadata * { return $jnicall; }
+
 
 
 

@@ -326,14 +326,22 @@ OpenModeller::setEnvironment( int num_categ,
 			      char *mask )
 {
   // set up environmental variables.
+  printf("Entered OM:setEnvironment(). _env=%d\n", _env); fflush(stdout);
+
   if ( _env )
     delete _env;
+
+  printf("About to create Environment object.\n"); fflush(stdout);
 
   _env = new Environment( GeoTransform::cs_default,
                           num_categ, categ_map,
                           num_continuous, continuous_map, mask );
 
+  printf("Environment object created.\n"); fflush(stdout);
+
   g_log( "Environment initialized.\n" );
+
+  printf("Exiting set environment.\n"); fflush(stdout);
 
   return 1;
 }
