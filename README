@@ -1,0 +1,109 @@
+openModeller - Open Source Spatial Distribution Modeller
+--------------------------------------------------------
+
+* Coordination:
+
+  CRIA - Centro de Referencia em Informacao Ambiental (SP - Brazil)
+  (Reference Center on Environmental Information)
+  http://www.cria.org.br/
+
+* Funding:
+
+  FAPESP - Fundacao de Amparo a Pesquisa do Estado de SP
+  http://www.fapesp.br/
+
+* Project page: 
+
+  http://www.sf.net/projects/openmodeller
+
+* Developers:
+
+  Mauro E. S. Munoz <mauro [at] cria.org.br>
+  Renato De Giovanni <renato [at] cria.org.br>
+  Ricardo Scachetti Pereira <rpereira [at] ku.edu>
+  Tim Sutton <t.sutton [at] reading.ac.uk>
+
+
+OVERVIEW
+--------
+
+The original goal of openModeller was to automate the tedious and complex 
+tasks involved in biological distribution modelling regarding map file 
+formats, georeference issues, resamples, map interpolations, etc. Some 
+consequences arise from this automation:
+
+a) One can spend time developing algorithms, testing, tunning or comparing
+   results. To compare two or more different algorithms we need the same 
+   input data, the same sample methodology, etc.
+
+b) Different tasks can be performed by independent components in distributed
+   frameworks. A framework could look for species data (in sources like 
+   the GBIF portal) and for environmental data. These data are hard to find
+   (with high quality) and some times are enormous.
+
+c) Powerfull computers could be used to run heavy algorithms (like GARP) 
+   and it could also be done in parallel (clustering).
+
+
+CURRENT STATUS
+--------------
+
+We started to build the server of a client-server version. A simple
+command line interface (om_console) is already available and included in this
+package. There's also a free desktop client, "Gyps", being developed by Tim
+Sutton. See: http://www.sf.net/projects/gyps
+The next step is to define a protocol, and build a distributed version 
+probably using webServices. This way we will be able to share data and 
+machine resources.
+
+
+LICENSE
+-------
+
+This program is free software; you can redistribute it and/or
+modify it under the terms of the GNU General Public License
+as published by the Free Software Foundation; either version 2
+of the License, or (at your option) any later version.
+ 
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU General Public License for more details:
+ 
+http://www.gnu.org/copyleft/gpl.html
+
+
+REQUIREMENTS
+------------
+
+* Proj.4 (Cartographic Projections Library)
+  http://remotesensing.org/proj/
+
+* GDAL (Geospatial Data Abstraction Library) version >= 1.1.9
+  http://www.remotesensing.org/gdal
+
+* to run the simple map viewer (om_viewer) you'll need libX11
+  (tested with version 6.2)
+
+
+INSTALLATION
+------------
+See the INSTALL file for instructions on how to build 
+openModeler under Linux/Unix and INSTALL.win file for windows.
+
+
+DOCUMENTATION
+-------------
+
+For now only Doxygen documentation is available.
+
+Download Doxygen from: http://www.doxygen.org
+
+In the main directory, run: make doc
+
+Then have a look at the "html" or "latex" directories that
+will be created.
+
+------------ x -----------
+
+
