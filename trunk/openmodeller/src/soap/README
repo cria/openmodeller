@@ -1,9 +1,10 @@
-WARNING:
--------
-This is just an initial effort to create a SOAP interface to use 
-openModeller services - it is still far from a production release!
+OVERVIEW:
+---------
+There was an initial effort to create a SOAP interface for 
+openModeller, enabling its use as a web service. However,
+the results are still far from a production release.
 
-The implementation is completely based on gSOAP v2.5
+The existing implementation is completely based on gSOAP v2.5
 (http://gsoap2.sourceforge.net) and has only been tested with 
 Linux. gSOAP seems to be compliant with "Windows, Unix, 
 Linux, Pocket PC, Mac OS X, TRU64, VxWorks, etc". However,
@@ -18,7 +19,7 @@ multi-threaded daemon server, openModeller is not!!
 CURRENT FUNCTIONALITY:
 ---------------------
 
-- Server can run as CGI application, stand alone server (daemon), 
+- Server can run as a CGI application, stand alone server (daemon), 
   or multi-threaded server.
 - Server can handle getAlgorithms requests (returning metadata 
   about all available algorithms).
@@ -33,11 +34,13 @@ CURRENT FUNCTIONALITY:
 COMPILING:
 ---------
 
-By default the SOAP server is not compiled. You need to use:
+By default the SOAP server is not compiled. To enable it:
 
  ./configure --enable-soap
  make
 
+Note: gSOAP doesn't need to be installed to run openModeller's 
+SOAP server - all necessary files are included in the distribution.
 
 USE INSTRUCTIONS:
 ----------------
@@ -78,13 +81,13 @@ USE INSTRUCTIONS:
 
   ./sampleClient.pl --help
 
-TODO:
-----
+TODO-LIST:
+----------
 
 - Move distribution map creation to a new method createMap.
 - Implement getModel.
-- Synchronize request/response XML structures with serialization
-  format.
+- Synchronize request/response XML structures with format used
+  in model serialization.
 - Get available layers from a layer server.
 - Accept input layers from remote machines.
 - Implement getFileFormats (need changes in openModeller).
@@ -97,8 +100,8 @@ TODO:
 MAINTENANCE:
 -----------
 
-- To change anything in the SOAP interface you'll need gSOAP 
-  installed.
+- To change anything in the SOAP interface it is necessary
+  to have gSOAP installed.
 
 - To generate the SOAP stubs and skeletons use:
  
