@@ -125,7 +125,7 @@ bool GarpRun::running()
 /****************************************************************/
 int GarpRun::iterate()
 {
-  //g_log("Iteration %6d on run %d.\n", _garp->getGeneration(), _id);
+  g_log("Iteration %6d on run %d.\n", _garp->getGeneration(), _id);
   return _garp->iterate();
 }
 

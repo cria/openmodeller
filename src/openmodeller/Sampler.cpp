@@ -192,6 +192,13 @@ Sampler::getOneSample( Scalar *indep, Scalar *dep )
   if ( _absence )
     {
       getRandomOccurrence( _absence, indep, dep );
+
+      // FIXME: abundance, which is the first dependent variable
+      // is hardcoded to be always 1 in Occurrences::insert()
+      // should fix that so absences can have abundance = 0
+      // this is a temporary fix, until absences are properly
+      // handled.
+      memset( dep, 0, numDependent() * sizeof(Scalar) );
       return 0;
     }
 
