@@ -348,7 +348,7 @@ ControlInterface::createModel( Algorithm *alg, Sampler *samp,
 			       int max )
 {
   // Initialize algorithm.  
-  if ( ! alg->initialize( 1 ) )
+  if ( ! alg->initialize( 10 ) )
     {
       sprintf( f_error, "Algorithm (%s) could not be initialized.",
 	       alg->getID() );
@@ -357,7 +357,7 @@ ControlInterface::createModel( Algorithm *alg, Sampler *samp,
 
   // Generate model.
   int ncycle = 0;
-  while ( alg->iterate() && ! alg->done() && ncycle < max )
+  while ( alg->iterate() && ! alg->done() /*&& ncycle < max*/ )
     ncycle++;
 
   return alg->done() || ncycle >= max;

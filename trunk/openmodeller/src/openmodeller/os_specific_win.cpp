@@ -125,7 +125,7 @@ scanDirectory( char *dir )
   for ( int i = 0; i < nent; i++ )
     {
       char *found = fileinfo.name;
-      char *name  = new char[dir_size + strlen(found) + 1];
+      char *name  = new char[dir_size + strlen(found) + 2];
 
       // Copy the directory path.
       // Append the library file name.
