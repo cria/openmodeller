@@ -30,5 +30,6 @@ libopenmodeller_la_SOURCES = \
 	sampler.cpp \
 	sampled_data.cpp 
 
+libopenmodeller_la_LDFLAGS = -no-undefined
 libopenmodeller_la_CPPFLAGS = -I../inc -I../.. $(DPLUGIN_PATH)
-libopenmodeller_la_LIBADD = env_io/libenv_io.la
+libopenmodeller_la_LIBADD = env_io/libenv_io.la $(GDAL_LIB)
