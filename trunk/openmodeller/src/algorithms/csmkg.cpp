@@ -156,6 +156,7 @@ int CsmKG::discardComponents()
     }
     if (myColumnNo > -1)
     {
+        int j;
         _retained_components_count = myColumnNo-1;
         printf ("\n\nNumber of components retained: %i of %i\n",
                 _retained_components_count,
@@ -179,14 +180,14 @@ int CsmKG::discardComponents()
 
         //now copy over just the components we intend to keep
         //...first the vector
-        for (int j=0;j<_retained_components_count;j++)
+        for (j=0;j<_retained_components_count;j++)
         {
             float myFloat = gsl_vector_get (tmp_gsl_eigenvalue_vector,j);
             gsl_vector_set (_gsl_eigenvalue_vector,j,myFloat);
         }
         //...now the matrix
         gsl_vector * tmp_gsl_vector = gsl_vector_alloc (_layer_count);
-        for (int j=0;j<_retained_components_count;j++)
+        for (j=0;j<_retained_components_count;j++)
         {
             gsl_matrix_get_col (tmp_gsl_vector, tmp_gsl_eigenvector_matrix, j);
             gsl_matrix_set_col (_gsl_eigenvector_matrix,j,tmp_gsl_vector);

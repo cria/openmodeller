@@ -828,6 +828,8 @@ OpenModeller::serialize(Serializer * ser)
   ser->writeEndSection("Algorithm");
 
   ser->writeEndSection("OpenModeller");
+
+  return 1;
 }
 
 /**********************************/
@@ -972,4 +974,6 @@ OpenModeller::deserialize(Deserializer * des)
     }
 
   delete[] param;
+
+  return 1;
 }

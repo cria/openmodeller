@@ -3,7 +3,7 @@ Microsoft Developer Studio Workspace File, Format Version 6.00
 
 ###############################################################################
 
-Project: "libopenmodeller_static"=.\libopenmodeller_static\libopenmodeller_static.dsp - Package Owner=<4>
+Project: "libopenmodeller_dll"=.\libopenmodeller_dll\libopenmodeller_dll.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -15,7 +15,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "libopenmodeller_dll"=.\libopenmodeller_dll\libopenmodeller_dll.dsp - Package Owner=<4>
+Project: "libopenmodeller_static"=.\libopenmodeller_static\libopenmodeller_static.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -72,7 +72,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "om_csm"=.\om_csm\om_csm.dsp - Package Owner=<4>
+Project: "om_csmbs"=.\om_csmbs\om_csmbs.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -80,9 +80,18 @@ Package=<5>
 
 Package=<4>
 {{{
-    Begin Project Dependency
-    Project_Dep_Name libopenmodeller_static
-    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "om_csmkg"=.\om_csmkg\om_csmkg.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
 }}}
 
 ###############################################################################

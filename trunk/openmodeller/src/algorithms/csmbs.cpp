@@ -130,7 +130,7 @@ algorithm developed by Dr. Neil Caithness",//Overview
   "Climate Space Model [CSM] is a principle components based \
 algorithm developed by Dr. Neil Caithness. The component \
 selection process int this algorithm implementation is \
-based on the Broken-Stick cutoff where any component with \ 
+based on the Broken-Stick cutoff where any component with \
 an eigenvalue < (n stddevs above a randomised sample) is discarded.\
 \n\
 The original CSM was written as series of Matlab functions. ", //description
@@ -264,6 +264,8 @@ int CsmBS::initialize()
 }
 int CsmBS::discardComponents()
 {
+  int i, j;
+
   printf ("vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv\n");
   printf ("     Starting CSM - Broken Stick \n");
   printf ("     Component discarding routine \n");
@@ -274,7 +276,7 @@ int CsmBS::discardComponents()
   gsl_matrix * myMatrixOfEigenValueVectors = 
       gsl_matrix_alloc (numberOfRandomisationsInt,_gsl_environment_matrix->size2);
   printf ("Calculating %i randomised matrices\n", numberOfRandomisationsInt);
-  for (int i=0; i<numberOfRandomisationsInt;i++)
+  for (i=0; i<numberOfRandomisationsInt;i++)
   {
     printf ("Calculating randomised matrix : %i \n", i);
 
@@ -288,7 +290,7 @@ int CsmBS::discardComponents()
     int myRandUpperBoundInt=m->size1; //number of rows
     time_t mySeconds;
     //loop through the matrix columns
-    for (int j=0; j < m->size2; j++)
+    for (j=0; j < m->size2; j++)
     {
       // retrieve this column as a gsl_vector : 
       // int gsl_matrix_get_col (gsl_vector * v, const gsl_matrix * m, size_t j)
@@ -384,7 +386,7 @@ int CsmBS::discardComponents()
 
   //  in a new vector save the mean plus (numberOfStdDeviationsFloat * stddev)
   gsl_vector * myMeanPlusStdDevsVector = gsl_vector_alloc(myMeanVector->size);
-  for (int i=0; i<myMeanVector->size; ++i)
+  for (i=0; i<myMeanVector->size; ++i)
   {
     double myMean = gsl_vector_get (myMeanVector,i);
     double myStdDev = gsl_vector_get (myStdDevVector,i);
@@ -396,7 +398,7 @@ int CsmBS::discardComponents()
 
   int _retained_components_count=0;
   float sumOfEigenValues = 0;//sum should total number of layers
-  for (int i=0; i<myMeanPlusStdDevsVector->size; ++i)
+  for (i=0; i<myMeanPlusStdDevsVector->size; ++i)
   {
     float myFloat = gsl_vector_get(myMeanPlusStdDevsVector,i); 
     sumOfEigenValues += myFloat; 
@@ -458,7 +460,7 @@ int CsmBS::discardComponents()
   //now copy over just the components we intend to keep into the blank resized
   //_gsl_eigenvalue_vector and _gsl_eigenvector_matrix
   int myCurrentColInt=0;
-  for (int j=0;j<_retained_components_count;j++)
+  for (j=0;j<_retained_components_count;j++)
   {
     float myFloat = gsl_vector_get (tmp_gsl_eigenvalue_vector,j);
     if (myFloat > gsl_vector_get (myMeanPlusStdDevsVector,j))
