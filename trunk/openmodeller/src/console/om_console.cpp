@@ -124,6 +124,13 @@ main( int argc, char **argv )
   if ( ! om.createMap() )
     g_log.error( 2, "Error: %s\n", om.error() );
 
+  ConfusionMatrix * matrix = om.getConfusionMatrix();
+  AreaStats * stats = om.getActualAreaStats();
+  g_log("Omission error        : %+7.4f\n", matrix->getOmissionError());
+  g_log("Area predicted present: %+7.4f\n", 
+	stats->getAreaPredictedPresent() / (double) stats->getTotalArea());
+  g_log("Total area            : %d\n", stats->getTotalArea());
+
   g_log( "Done.\n" );
   return 0;
 }

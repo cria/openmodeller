@@ -268,8 +268,12 @@ int GarpRuleSet::findSimilar(GarpRule * rule)
 {
   int i;
   for (i = 0; i < _numRules; i++)
-    if (_rules[i]->similar(rule))
-      return i;
+    {
+      if (_rules[i]->similar(rule))
+	{ 
+	  return i; 
+	}
+    }
   return -1;
 }
 
@@ -325,7 +329,7 @@ void GarpRuleSet::log()
 {
   for ( int i = 0; i < _numRules; i++ )
     {
-      g_log( "%d] ", i );
+      g_log( "%2d] ", i );
       _rules[i]->log();
     }
 }
@@ -336,7 +340,7 @@ void GarpRuleSet::log()
 void GarpRuleSet::gatherRuleSetStats(int gen)
 {
   char type;
-  int i, j, ct;
+  int i, j, ct, pres;
   double sum;
 
   printf("Gen: %4d ", gen);
@@ -353,6 +357,7 @@ void GarpRuleSet::gatherRuleSetStats(int gen)
 
     sum = 0;
     ct = 0;
+    pres = 0;
     for (j = 0; j < _numRules; j++)
     {
       GarpRule * rule = _rules[j];
@@ -360,10 +365,11 @@ void GarpRuleSet::gatherRuleSetStats(int gen)
       {
         ct++;
         sum += rule->getPerformance(PerfUtil);
+	pres += (int) rule->getPrediction();
       }
     }
 
-    printf("[%c %3d %+9.4f %+9.4f] ", type, ct, sum, sum / ct);
+    printf("[%c %3d %+9.4f %2d] ", type, ct, sum / ct, pres);
   }
 
   printf("\n");

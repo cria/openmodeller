@@ -46,7 +46,7 @@ TEST( LogitRule_similar1, LogitRule )
   rule1->setGenes(genes1, 4);
   rule2->setGenes(genes2, 4);
   
-  LONGS_EQUAL(rule1->similar(rule2), true);
+  LONGS_EQUAL(true, rule1->similar(rule2));
   
   delete rule1; 
   delete rule2;
@@ -62,7 +62,7 @@ TEST( LogitRule_similar2, LogitRule )
   rule1->setGenes(genes3, 4);
   rule2->setGenes(genes4, 4);
   
-  LONGS_EQUAL(rule1->similar(rule2), true);
+  LONGS_EQUAL(true, rule1->similar(rule2));
   
   delete rule1; 
   delete rule2;
@@ -132,6 +132,21 @@ TEST( LogitRule_similar6, LogitRule )
   delete rule2;
 }
 
+Scalar genes13[8] = {-0.01, +0.02, -0.8, +0.8, -0.8, +0.8, -0.8, +0.8};
+Scalar genes14[8] = {-0.50, +0.80, -0.8, +0.8, -0.8, +0.8, -0.8, +0.8};
+
+TEST( LogitRule_similar7, LogitRule )
+{
+  ExtLogitRule * rule1 = new ExtLogitRule;
+  ExtLogitRule * rule2 = new ExtLogitRule;
+  rule1->setGenes(genes13, 4);
+  rule2->setGenes(genes14, 4);
+  
+  LONGS_EQUAL(false, rule1->similar(rule2));
+  
+  delete rule1; 
+  delete rule2;
+}
 
 // Rule below applies to all points
 // TODO: come up with tests for other cases

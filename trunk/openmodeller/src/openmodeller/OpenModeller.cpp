@@ -933,9 +933,9 @@ AreaStats * OpenModeller::getEstimatedAreaStats(double proportionAreaToSample)
   Coord x0, y0, x1, y1, xcel, ycel;
   _env->getMask()->getCell(&xcel, &ycel);
   _env->getMask()->getRegion(&x0, &y0, &x1, &y1);
-  printf("xdim=%d ydim=%d\n", xdim, ydim);
-  printf("x0=%f y0=%f x1=%f y1=%f\n", x0, y0, x1, y1);
-  printf("xcel=%f ycel=%f\n", xcel, ycel);
+  //printf("xdim=%d ydim=%d\n", xdim, ydim);
+  //printf("x0=%f y0=%f x1=%f y1=%f\n", x0, y0, x1, y1);
+  //printf("xcel=%f ycel=%f\n", xcel, ycel);
 
   sampleSize = numCells * proportionAreaToSample;
   for (i = 0; i < sampleSize; i++)

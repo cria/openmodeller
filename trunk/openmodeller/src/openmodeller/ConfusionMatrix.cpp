@@ -26,6 +26,7 @@
  * http://www.gnu.org/copyleft/gpl.html
  */
 
+#include <stdio.h>
 
 #include <om_conf_matrix.hh>
 #include <om_sampler.hh>
@@ -78,6 +79,10 @@ void ConfusionMatrix::calculate(Sampler * sampler, Algorithm * alg)
       actualIndex = data.isPresence(i);
 
       _confMatrix[predictionIndex][actualIndex]++;
+
+      //      printf("%4d] Matrix[pred=%1d][actual=%1d]=%d\n", 
+      //	     i, predictionIndex, actualIndex, 
+      //	     _confMatrix[predictionIndex][actualIndex]);
     }
 
   _ready = true;

@@ -297,36 +297,37 @@ void GarpRule::mutate(double temperature)
 }
 
 // ==========================================================================
-bool GarpRule::similar(GarpRule * objOtherRule)
+bool GarpRule::similar(GarpRule * otherRule)
 {
-  bool found;
-  int j;
-  Scalar ng_2k, ng_2k_1, bg_2k, bg_2k_1;
+  bool similar, rA, rB;
+  int i;
+  Scalar r0g0, r0g1, r1g0, r1g1;
   
-  if (type() == objOtherRule->type())
+  if (type() != otherRule->type())
+    { return false; }
+
+  // check rule value (presence/absence)
+  if (_prediction != otherRule->_prediction) 
+    return false;
+  
+  similar = true;
+  for (i = 0; i < _numGenes; i++)
     {
-      // check rule value (presence/absence)
-      if (_prediction != objOtherRule->_prediction) 
-	return false;
+      // rA and rB indicates whether gene <i> is being used or not
+      rA = (equalEps(_genes[i * 2], -1.0) && 
+	    equalEps(_genes[i * 2 + 1], +1.0));
       
-      for (j = 1, found = true; (j < _numGenes) && (found); j += 1)
+      rB = (equalEps(otherRule->_genes[i * 2], -1.0) && 
+	    equalEps(otherRule->_genes[i * 2 + 1], +1.0));
+      
+      if ( rA != rB )
 	{
-	  ng_2k_1 = _genes[j * 2 + 1];
-	  ng_2k   = _genes[j * 2];
-	  
-	  bg_2k_1 = objOtherRule->_genes[j * 2 + 1];
-	  bg_2k   = objOtherRule->_genes[j * 2];
-	  
-	  found = !( ((ng_2k_1 - ng_2k) == 2.0 && 
-		      (bg_2k_1 - bg_2k) != 2.0 ) || 
-		     ((ng_2k_1 - ng_2k) != 2.0 && 
-		      (bg_2k_1 - bg_2k) == 2.0 ) );
+	  similar = false;
+	  break;
 	}
-      
-      return found;
     }
   
-  return false;
+  return similar;
 }
 
 // ==========================================================================
@@ -496,12 +497,18 @@ double GarpRule::evaluate(GarpCustomSampler * sampler)
 // ==========================================================================
 void GarpRule::log()
 {
-  Scalar *gen = _genes;
-  Scalar *end = gen + 2 * _numGenes;
-  while ( gen < end )
-    g_log( "%+8.4f ", *gen++ );
+  for (int i = 0; i < _numGenes * 2; i += 2)
+    {
+      if (type() != 'r')
+	{
+	  if (fabs(_genes[i] - _genes[i + 1]) >= 2.0)
+	    g_log( "******** ******** ");
+	  else
+	    g_log( "%+8.4f %+8.4f ", _genes[i], _genes[i + 1] );
+	}
+    }
 
-  g_log( "- (%.2f) : %f\n", _prediction, getPerformance(PerfSig) );
+  g_log( "- (%.2f) : %f\n", _prediction, getPerformance(PerfSig));
 }
 
 // ==========================================================================

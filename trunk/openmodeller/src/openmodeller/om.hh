@@ -46,7 +46,8 @@
 #include <om_serializable.hh>
 #include <om_deserializer.hh>
 #include <om_serializer.hh>
-#include <om_log.hh>
+#include <om_area_stats.hh>
+#include <om_conf_matrix.hh>
 
 
 // openModeller algorithms specific includes
