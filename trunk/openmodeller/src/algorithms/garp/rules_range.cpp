@@ -85,7 +85,7 @@ bool RangeRule::applies(Scalar * values)
 }
 
 // ==========================================================================
-double RangeRule::getStrength(Scalar * values)
+int RangeRule::getStrength(Scalar * values)
 {
   double a, b, c;
   int i;	
@@ -97,10 +97,10 @@ double RangeRule::getStrength(Scalar * values)
       c = values[i];
       
       if (!membership(a, b, c)) 
-	return 0.0;
+	return 0;
     } 
   
-  return 1.0;
+  return 1;
 }
 
 // ==========================================================================

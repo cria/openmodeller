@@ -38,7 +38,7 @@ public:
   DummyRule(int id = -1);
   GarpRule * objFactory() { return new DummyRule; } 
   void initialize(GarpCustomSampler *) {}
-  double getStrength(Scalar *) {}
+  int getStrength(Scalar *) {}
   double getValue(Scalar *) {}
   bool applies(Scalar *) {}
 
@@ -77,7 +77,7 @@ GarpRule::~GarpRule() {};
 GarpRule * GarpRule::clone() { printf("Cl"); };
 int GarpRule::copy(GarpRule * fromRule) { printf("Cp"); };
 void GarpRule::initialize(GarpCustomSampler * sampler) { printf("In"); };
-double GarpRule::getCertainty(Scalar pred) { printf("Ct"); };
+int GarpRule::getCertainty(Scalar pred) { printf("Ct"); };
 double GarpRule::getError(Scalar predefinedValue, Scalar pred) { printf("Er"); };
 void GarpRule::adjustRange(Scalar * v1, Scalar * v2) { printf("Ad"); };
 void GarpRule::crossover(GarpRule * rule, int xpt1, int xpt2) { printf("Co"); };

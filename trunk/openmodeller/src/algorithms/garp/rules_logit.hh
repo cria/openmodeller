@@ -52,7 +52,7 @@ public:
   
   virtual void initialize(GarpCustomSampler * sampler);
   virtual bool applies(Scalar * values);
-  virtual double getStrength(Scalar * values);
+  virtual int getStrength(Scalar * values);
   
   virtual bool similar(GarpRule * objOtherRule);
   

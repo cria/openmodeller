@@ -54,7 +54,7 @@ public:
   virtual char type() const				{ return '!'; }
   
   virtual bool applies(Scalar * values);
-  virtual double getStrength(Scalar * values);
+  virtual int getStrength(Scalar * values);
 
   void log();
 };

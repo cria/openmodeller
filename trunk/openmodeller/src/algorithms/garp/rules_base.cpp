@@ -48,7 +48,7 @@
 #define INFINITY 1000000000
 #endif
 
-double min(double v1, double v2)
+int min(int v1, int v2)
 {
   return (v1 < v2)? v1 : v2;
 }
@@ -191,7 +191,7 @@ double GarpRule::getPerformance(PerfIndex perfIndex)
 }
 
 // ==========================================================================
-double GarpRule::getCertainty(Scalar pred)
+int GarpRule::getCertainty(Scalar pred)
 { 
   return (_prediction == pred); 
 }
@@ -311,11 +311,54 @@ double GarpRule::evaluate(GarpCustomSampler * sampler)
 {
   double utility[10];
   
-  Scalar pointValue = 0.0, * values;
-  int n, i;
-  double prediction, certainty, strength;
-  double pXs=0.0, pYs=0.0, pXYs=0.0, pYcXs=0.0, pXSs=0.0, pYcs=0.0, no=0.0;
-  
+  // number of resamples
+  int n;
+
+  // index of current sample point being evaluated (just a counter)
+  int i;
+
+  // value of dependent variable from the current sample point
+  Scalar pointValue = 0.0;
+
+  // environmental (independent) variables values from current sample point
+  Scalar * values;
+
+  // 1 if rule applies to sample point, i.e., values satisfies rule precondition
+  // 0 otherwise
+  int strength;
+
+  // indicates whether rule has the same conclusion as the current point  
+  // (i.e., rule prediction is equal to value dependent variable)
+  int certainty;
+
+  // error
+  double error;
+
+  // number of points that rule applies to (sum of strength)
+  int pXs;
+
+  // number of points with the same conclusion as the rule (sum of certainty)
+  int pYs;
+
+  // sum of points correctly predicted by the rule
+  int pXYs;
+
+  // number of points selected by the rule
+  int no;
+
+  // other intermediate statistics
+  double pYcXs, pYcs;
+
+  // prior probability
+  double priorProb;
+
+  // note that pXSs is always equals to no, so it has been removed
+
+  // reset counters
+  pXs = pYs = pXYs = no = 0;
+  pYcXs = pYcs = 0.0;
+
+  // reset utility values
   for (i = 1; i < 10; i++) 
     utility[i] = 0.0;
   
@@ -327,71 +370,56 @@ double GarpRule::evaluate(GarpCustomSampler * sampler)
     {	
       // Get an in range data point
       values = sampler->getSample(&pointValue);
-      
+
       strength = getStrength(values);
       certainty = getCertainty(pointValue);
-      prediction = getError(0, _prediction);
-      
+      error = getError(0, pointValue);
+
       pXs  += strength;
       pYs  += certainty;
-      pYcs += prediction;
+      pYcs += error;
       
       if (strength > 0)
       {
-        pXSs  += strength;
-        pYcXs += getError(prediction, pointValue);
-        pXYs  += (min(certainty, strength)) / strength;
         no++;
+        pXYs += min(certainty, strength); 
+        pYcXs += getError(error, pointValue);
       }
     }
+
+  if (no != pXs)
+    { g_log.error(1, "Assertion failed (no != pXs): %d != %d", no, pXs); }
   
   // Priors
   utility[1] = pXs  / (double) n;		// proportion 
   utility[2] = pYs  / (double) n;		// Prior probability
   utility[3] = pYcs / (double) n;
-  
-  // Posteriors
-  if (no > 0) 
-    utility[4] = pXSs/no;
-  else 
-    utility[4] = 0;
-  
-  if (no > 0)					// Posterior probability
-    utility[5] = pXYs/no; 
-  else 
-    utility[5] = 0;
-  
-  if (no>0) 
-    utility[6] = (pYcXs/no);
-  else 
-    utility[6] = 0;
-  
-  utility[7] = ((double)no)/n;
-  
+
+  priorProb = utility[2];
+
+  if (no > 0)
+    {
+      utility[4] = no    / (double) n;          // Posterior strength
+      utility[5] = pXYs  / (double) no;  	// Posterior probability
+      utility[6] = pYcXs / no;
+      utility[7] = no    / (double) n;          // Coverage
+    }
+ 
   // Crisp Significance
-  if (no >= MIN_SIG_NO && utility[2] > 0 && utility[2] < 1.0)	
-    utility[8]= (pXYs-utility[2] * no) / sqrt( no * utility[2] * (1.0 - utility[2]));
-  else 
-    utility[8] = 0;
-  
-  utility[9] = 0.0;
-	
+  if ( (no >= MIN_SIG_NO) && (priorProb > 0) && (priorProb < 1.0))	
+    utility[8] = (pXYs - priorProb * no) / 
+                  sqrt( no * priorProb * (1.0 - priorProb));
+
   //flags!!! not implemented yet
   //if (Postflag)   
   utility[0] *= utility[5];
   
-  //if (Compflag) 
-	//	utility[0] *= utility[7];
-  
-	//if (Sigflag)	
+  //if (Sigflag)	
   utility[0] *= utility[8];
   
-  //if (Ecoflag)
-  //	utility[0] *= ecoSpace();
-  
-  //if (Lengthflag) 
-  //	utility[0] /= length();
-  //*/
+  //if (Compflag) utility[0] *= utility[7];
+  //if (Ecoflag) utility[0] *= ecoSpace();
+  //if (Lengthflag) utility[0] /= length();
   
   // Record performance in rule
   for (i = 0; i < 10; i++) 

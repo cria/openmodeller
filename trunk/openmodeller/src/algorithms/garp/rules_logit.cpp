@@ -119,11 +119,11 @@ int LogitRule::regression(GarpCustomSampler * sampler, int dep, double& constant
 // ==========================================================================
 bool LogitRule::applies(Scalar * values)
 { 
-  return (getStrength(values) == 1.0); 
+  return (getStrength(values) == 1); 
 }
 
 // ==========================================================================
-double LogitRule::getStrength(Scalar * values)
+int LogitRule::getStrength(Scalar * values)
 {
   int i;
   Scalar Sum, prob, r;
@@ -153,9 +153,9 @@ double LogitRule::getStrength(Scalar * values)
   //g_log("\n");
   
   if (prob > 0.5)
-    return 1.0;
+    return 1;
   else
-    return 0.0;
+    return 0;
 }
 
 // ==========================================================================
