@@ -338,30 +338,40 @@ private:
   /** This is a utility function to convert a Sampler to a gsl_matrix.
     * @return 0 on error
     */
-    int SamplerToMatrix(Sampler *samp);
-    
-  /** This is a utility function to display the state of the following vars:
-    * f_gsl_environment_matrix
-    * f_gsl_avg_vector
-    * f_gsl_stddev_vector
-    * The state is displayed on std::out. */
-  void displaySamples();
+    int SamplerToMatrix();
   
-    /** This is a utility function to display the state of the following vars:
-    * f_gsl_covariance_matrix
-    * The state is displayed on std::out. */
-  void displayCovarianceMatrix();
-  
-  /** This is a utility function to display the state of the following vars 
-    * (which represent the eigen vector and values)
-    * f_gsl_eigenvalue_vector
-    * _gsl_eigenvector_matrix
+  /** Calculate the mean and standard deviation of the environment
+    * variables at the occurence points.
+    * @note This method must be called after SamplerToMatrix
+    * @return 0 on error
     */
-  void displayEigen();
+  int calculateMeanAndSd();
+          
+  /** Center and standardise.
+    * Subtract the column mean from every value in each column
+    * Divide each resultant column value by the stddev for that column
+    * @note This method must be called after calculateMeanAndSd
+    * @return 0 on error    
+    */
+  int center();
+  
+  /** Discard unwanted components.
+    * Currently this is done using the Keiser-Gutman method
+    * where all eigenvectors with an eigenvalue < 1 are discarded.
+    * @note This method must be called after center
+    * @return 0 on error    
+    */  
+  int discardComponents();
+  
+  /** This a utility function to display the content of a gsl vector.
+   * @param v gsl_vector Input vector
+   * @param name char Vector name / message
+   */
+  void displayVector(gsl_vector * v, char * name);
 
   /** This a utility function to display the content of a gsl matrix.
    * @param m gsl_matrix Input matrix
-   * @param name char Matrix name
+   * @param name char Matrix name / message
    */
   void displayMatrix(gsl_matrix * m, char * name);
 

@@ -29,11 +29,7 @@ Csm::Csm( Sampler *samp ): Algorithm( samp )
     f_layer_count = samp->dim()-1;
     //set the class member that holds the number of occurences
     f_localityCount = samp->numOccurrences();
-    //convert the sampler to a matrix and store in the local gsl_matrix
-    if (!SamplerToMatrix(samp))
-    {
-        printf ("All occurences are outside the masked area!\n");
-    }
+
 }
 
 
@@ -48,24 +44,105 @@ Csm::~Csm()
     gsl_matrix_free (f_gsl_eigenvector_matrix);
 }
 
-/** This is a utility function to convert a Sampler to a gsl_matrix.
+
+//
+// Methods used to build the model
+//
+
+
+/** This method is used when you want to ensure that all variables in all
+  * environmental layers are scaled to the same value range. 
+  * @note This method is inherited from the Algorithm class
+  * @param Scalar pointer min that the post normalised will be fitted to
+  * @param Scalar pointer max that the post normalised will be fitted to
+  * @return 0 if no normalisation is needed
+  */
+int Csm::needNormalization( Scalar *min, Scalar *max )
+{}
+
+
+/** Initialise the model specifying a threshold / cutoff point.
+  * Any model definition building stuff is done here.
+  * This is optional (model dependent).
+  * @note This method is inherited from the Algorithm class
+  * @param 
   * @return 0 on error
   */
-int Csm::SamplerToMatrix(Sampler *samp)
+int Csm::initialize( int ncycle )
 {
-    //Initialise the vector to hold the mean of each column
-    f_gsl_avg_vector = gsl_vector_alloc (f_layer_count);
-    gsl_vector_set_zero(f_gsl_avg_vector);
+    printf ("\n*************************************************\n");
+    printf ("Csm::initialise - Csm Model Definition Commencing\n");
+    printf ("\n*************************************************\n\n");
+    //convert the sampler to a matrix and store in the local gsl_matrix
+    if (!SamplerToMatrix())
+    {
+        printf ("All occurences are outside the masked area!\n");
+    }
+    //show what we have calculated so far....
+    displayMatrix(f_gsl_environment_matrix,"Environemntal Layer Samples");
+    //calculate the mean and std deviation
+    calculateMeanAndSd();
+    //center and standardise the data
+    center();
+    //show what we have calculated so far....
+    displayMatrix(f_gsl_environment_matrix,"Environemntal Layer Samples (after centering)");
 
-    //Initialise the vector to hold the stddev of each column
-    f_gsl_stddev_vector = gsl_vector_alloc (f_layer_count) ;
-    gsl_vector_set_zero(f_gsl_stddev_vector);
+    //Now calculate the covariance matrix:
+    f_gsl_covariance_matrix = autoCovariance(f_gsl_environment_matrix);
+    //the rows and columns in the cavariance matrix should be equal, otherwise abort
+    if (f_gsl_covariance_matrix->size1 != f_gsl_covariance_matrix->size2)
+    {
+        printf ("\n\n\nCsm :: A critical error has occurred - cavariance matrix is not square...aborting\n\n\n");
+        return 0;
+    }
+    //and display the result...
+    displayMatrix(f_gsl_covariance_matrix,"Covariance Matrix");
+
+    //now compute the eigen value and vector
+    f_gsl_eigenvalue_vector = gsl_vector_alloc (f_layer_count);
+    f_gsl_eigenvector_matrix = gsl_matrix_alloc (f_layer_count, f_layer_count);
+    //create a temporary workspace
+    gsl_eigen_symmv_workspace * myWorkpace = gsl_eigen_symmv_alloc (f_layer_count);
+    gsl_eigen_symmv (f_gsl_covariance_matrix,
+                     f_gsl_eigenvalue_vector,
+                     f_gsl_eigenvector_matrix,
+                     myWorkpace);
+    //free the temporary workspace again
+    gsl_eigen_symmv_free (myWorkpace);
+    //Initialise the retained components count (to be used further down and in displayEigen())
+    f_retained_components_count = f_layer_count;
+    //show the eigen before sorting
+    printf ("\n\nBefore sorting : \n");
+    displayVector(f_gsl_eigenvalue_vector,"Eigen Values");
+    displayMatrix(f_gsl_eigenvector_matrix,"Eigen Vector");
+    //sort the eigen vector by the eigen values (in descending order)
+    gsl_eigen_symmv_sort (f_gsl_eigenvalue_vector, f_gsl_eigenvector_matrix,
+                          GSL_EIGEN_SORT_VAL_DESC);
+    //print out the result
+    printf ("\n\nAfter sorting : \n");
+    displayVector(f_gsl_eigenvalue_vector,"Eigen Values");
+    displayMatrix(f_gsl_eigenvector_matrix,"Eigen Vector");
+    discardComponents();
+    //print out the result
+    printf ("\n\nAfter discarding unwanted components : \n");
+    displayVector(f_gsl_eigenvalue_vector,"Eigen Values");
+    displayMatrix(f_gsl_eigenvector_matrix,"Eigen Vector");
+    printf ("\n*************************************************\n");
+    printf ("        CSM Model Generation Completed ");
+    printf ("\n*************************************************\n");
+}
+/** This is a utility function to convert the f_sampl Sampler to a gsl_matrix.
+  * @return 0 on error
+  */
+int Csm::SamplerToMatrix()
+{
 
     //create a samples container to hold the values retrieved
     //from the environmental layers at each point - this will be
     //converted to a gsl structure in the next step
+    //f_samp is defined in the Algorithm class from which Csm inherits
     Samples mySamples (f_localityCount,f_layer_count);
-    if (!samp->getOccurrences(f_localityCount, &mySamples))
+    if (!f_samp->getOccurrences(f_localityCount, &mySamples))
     {
         return 0;
     }
@@ -82,23 +159,11 @@ int Csm::SamplerToMatrix(Sampler *samp)
             gsl_matrix_set (f_gsl_environment_matrix,i,j,myCellValue);
         }
     }
+    return 1;
+}
 
-    //calculate the mean  and stddev of each column
-    for (int j = 0; j < f_layer_count; j++)
-    {
-        //get the current column from the array as a vector
-        gsl_vector_view myColumn = gsl_matrix_column (f_gsl_environment_matrix, j);
-        //calculate the average for the column ...
-        double myAverage = gsl_stats_mean (myColumn.vector.data, myColumn.vector.stride, myColumn.vector.size);
-        // ...and assign it to the jth element in the column means vector
-        gsl_vector_set (f_gsl_avg_vector,j,myAverage);
-        //calculate the stddev for the column and ...
-        double myStdDev = gsl_stats_sd (myColumn.vector.data, myColumn.vector.stride, myColumn.vector.size);
-        // ...and assign it to the jth element in the column stddev vector
-        gsl_vector_set (f_gsl_stddev_vector,j,myStdDev);
-    }
-    //show what we have calculated so far....
-    displaySamples();
+int Csm::center()
+{
     //
     //Subtract the column mean from every value in each column
     //Divide each resultant column value by the stddev for that column
@@ -119,65 +184,11 @@ int Csm::SamplerToMatrix(Sampler *samp)
             gsl_matrix_set(f_gsl_environment_matrix,i,j,myDouble);
         }
     }
+}
 
-    //show what we have calculated so far....
-    displaySamples();
 
-    //Now calculate the covariance matrix:
-    //f_gsl_covariance_matrix = gsl_matrix_alloc (f_layer_count, f_layer_count);
-    //gsl_multifit_covar (f_gsl_environment_matrix, 0.0, f_gsl_covariance_matrix);
-    
-    f_gsl_covariance_matrix = autoCovariance(f_gsl_environment_matrix);
-
-    // gsl_stats_covariance (f_gsl_environment_matrix->data,
-    //                      sizeof(float),
-    //			  f_gsl_environment_matrix->data,
-    //                      sizeof(float),
-    //			  (f_gsl_environment_matrix->size1 * f_gsl_environment_matrix->size1));
-    //and display the result...
-    displayCovarianceMatrix();
-
-    //now compute the eigen value and vector
-    f_gsl_eigenvalue_vector = gsl_vector_alloc (f_layer_count);
-    f_gsl_eigenvector_matrix = gsl_matrix_alloc (f_layer_count, f_layer_count);
-    //create a temporary workspace
-    gsl_eigen_symmv_workspace * myWorkpace = gsl_eigen_symmv_alloc (f_layer_count);
-    gsl_eigen_symmv (f_gsl_covariance_matrix,
-                     f_gsl_eigenvalue_vector,
-                     f_gsl_eigenvector_matrix,
-                     myWorkpace);
-    //free the temporary workspace again
-    gsl_eigen_symmv_free (myWorkpace);
-    //Initialise the retained components count (to be used further down and in displayEigen())
-    f_retained_components_count = f_layer_count;
-    //show the eigen before sorting
-    printf ("\n\nBefore sorting : \n");
-    displayEigen();
-    //sort the eigen vector by the eigen values (in descending order)
-    gsl_eigen_symmv_sort (f_gsl_eigenvalue_vector, f_gsl_eigenvector_matrix,
-                          GSL_EIGEN_SORT_VAL_DESC);
-    //print out the result
-    printf ("\n\nAfter sorting : \n");
-    displayEigen();
-
-    //the sum of the eigen values should be equal to the number of columns
-    // so we check this quickly
-    /*
-    //
-    // Not sure this is correct so leaving out for now
-    //
-    float mySum = 0;
-    for ( int i = 0; i < f_layer_count; i++ ) 
-    {
-         mySum += gsl_vector_get(f_gsl_eigenvalue_vector, i);
-    }
-    if (mySum != f_layer_count) 
-    {
-      printf ("Sanity check for eigen vector and matrix failed");
-      return 0;
-    }
-    */
-
+int Csm::discardComponents()
+{
     // Discard any columns from the eigenvector where the eigenvalue is < 1
     // (Keiser-Gutman method)
     // because the eigenvalues are sorted, we can discard any columns after the
@@ -245,39 +256,37 @@ int Csm::SamplerToMatrix(Sampler *samp)
                 f_retained_components_count,
                 f_layer_count);
     }
-    //print out the result
-    printf ("\n\nAfter discarding unwanted components : \n");
-    displayEigen();
-    printf ("\n\n-------------------------------------- \n");
-    printf ("        CSM Model Generation Completed ");
-    printf ("\n\n-------------------------------------- \n");
+    return 1;
 }
 
-//
-// Methods used to build the model
-//
+int Csm::calculateMeanAndSd()
+{
+    //Initialise the vector to hold the mean of each column
+    f_gsl_avg_vector = gsl_vector_alloc (f_layer_count);
+    gsl_vector_set_zero(f_gsl_avg_vector);
+
+    //Initialise the vector to hold the stddev of each column
+    f_gsl_stddev_vector = gsl_vector_alloc (f_layer_count) ;
+    gsl_vector_set_zero(f_gsl_stddev_vector);
 
 
-/** This method is used when you want to ensure that all variables in all
-  * environmental layers are scaled to the same value range. 
-  * @note This method is inherited from the Algorithm class
-  * @param Scalar pointer min that the post normalised will be fitted to
-  * @param Scalar pointer max that the post normalised will be fitted to
-  * @return 0 if no normalisation is needed
-  */
-int Csm::needNormalization( Scalar *min, Scalar *max )
-{}
+    //calculate the mean  and stddev of each column
+    for (int j = 0; j < f_layer_count; j++)
+    {
+        //get the current column from the array as a vector
+        gsl_vector_view myColumn = gsl_matrix_column (f_gsl_environment_matrix, j);
+        //calculate the average for the column ...
+        double myAverage = gsl_stats_mean (myColumn.vector.data, myColumn.vector.stride, myColumn.vector.size);
+        // ...and assign it to the jth element in the column means vector
+        gsl_vector_set (f_gsl_avg_vector,j,myAverage);
+        //calculate the stddev for the column and ...
+        double myStdDev = gsl_stats_sd (myColumn.vector.data, myColumn.vector.stride, myColumn.vector.size);
+        // ...and assign it to the jth element in the column stddev vector
+        gsl_vector_set (f_gsl_stddev_vector,j,myStdDev);
+    }
 
-
-/** Initialise the model specifying a threshold / cutoff point.
-  * This is optional (model dependent).
-  * @note This method is inherited from the Algorithm class
-  * @param 
-  * @return 0 on error
-  */
-int Csm::initialize( int ncycle )
-{}
-
+    return 0;
+}
 
 /** Start model execution (build the model).
   * @note This method is inherited from the Algorithm class
@@ -317,31 +326,31 @@ Scalar Csm::getValue( Scalar *x )
     //first thing we do is convert the oM primitive env value array to a gsl vector
     gsl_vector * tmp_gsl_vector = gsl_vector_alloc (f_layer_count);
     for (int i=0;i<f_layer_count;++i)
-    {   
+    {
         myFloat = static_cast<float>(x[i]);
-	//get the stddev and mean for this column
+        //get the stddev and mean for this column
         float myAverage = gsl_vector_get (f_gsl_avg_vector,i);
         float myStdDev = gsl_vector_get (f_gsl_stddev_vector,i);
-	//subtract the mean from the value then divide by the standard deviation
-	myFloat = (myFloat-myAverage)/myStdDev;
-	//assign the result to our vector
+        //subtract the mean from the value then divide by the standard deviation
+        myFloat = (myFloat-myAverage)/myStdDev;
+        //assign the result to our vector
         gsl_vector_set (tmp_gsl_vector,i,myFloat);
         //printf ("%f\t", myFloat );
     }
-    
+
     //create a temporary vector and place component 1 in it - could make this a class member to improve performance!
     gsl_vector * component1_gsl_vector = gsl_vector_alloc (f_layer_count);
     gsl_matrix_get_col (component1_gsl_vector, f_gsl_eigenvector_matrix, 0);
-    
-    //multiply the result vector by the first component in the eigenvector        
+
+    //multiply the result vector by the first component in the eigenvector
     gsl_vector_mul (tmp_gsl_vector, component1_gsl_vector);
-    
+
     //probabily for the cell is now the sum of the tmp vector
     myFloat=0;
     for (int j=0;j<f_layer_count;j++)
     {
         myFloat+=gsl_vector_get (tmp_gsl_vector,j);
-    }    
+    }
     //printf ("Prob: %f\n",myFloat);
     //now we
     //now clear away the temporary vars
@@ -363,77 +372,20 @@ int Csm::getConvergence( Scalar *val )
 // General Helper Methods
 //
 
-void Csm::displaySamples()
+
+void Csm::displayVector(gsl_vector * v, char * name)
 {
-    //for debuggin print out the env matrix
-    printf ("----------------------------------------------\n ");
-    for (int i=0;i<f_localityCount;++i)
+    printf ("\n Displaying Vector %s (%i): \n----------------------------------------------\n[ ", name, v->size);
+    for (int i=0;i<v->size;++i)
     {
-        for (int j=0;j<f_layer_count;j++)
-        {
-            double myDouble = gsl_matrix_get (f_gsl_environment_matrix,i,j);
-            printf ("%f\t ", myDouble);
-        }
-        printf ("\n");
-    }
-    printf ("----------------------------------------------\n ");
+        char sep1[] = ",";
 
-    // for debuggin print out the averages
-    for (int j=0;j<f_layer_count;j++)
-    {
-        float myAverage = gsl_vector_get (f_gsl_avg_vector,j);
-        printf ("%f\t", myAverage);
-    }
-    printf (" Average \n----------------------------------------------\n ");
+        double myDouble = gsl_vector_get (v,i);
 
-    // for debuggin print out the stddevs
-    for (int j=0;j<f_layer_count;j++)
-    {
-        float myStdDev = gsl_vector_get (f_gsl_stddev_vector,j);
-        printf ("%f\t", myStdDev);
-    }
-    printf (" StdDev \n----------------------------------------------\n ");
-}
 
-void Csm::displayCovarianceMatrix()
-{
-    //for debuggin print out the cov matrix (which should be f_layer_count x f_layer_count in size)
-    printf ("\n Covariance Matrix: \n----------------------------------------------\n ");
-    for (int i=0;i<f_layer_count;++i)
-    {
-        for (int j=0;j<f_layer_count;j++)
-        {
-            double myDouble = gsl_matrix_get (f_gsl_covariance_matrix,i,j);
-            printf ("%f\t ", myDouble);
-        }
-        printf ("\n");
+        printf ("%g %s ", myDouble, sep1);
     }
-    printf ("----------------------------------------------\n ");
-}
-
-void Csm::displayEigen()
-{
-    //for debuggin print out the eigen vector and value
-
-    //first display the eigen values
-    printf ("\n Eigen values and vector: \n----------------------------------------------\n ");
-    for (int j=0;j<f_retained_components_count;j++)
-    {
-        float myValue = gsl_vector_get (f_gsl_eigenvalue_vector,j);
-        printf ("%f\t", myValue);
-    }
-    printf ("\n----------------------------------------------\n ");
-    //now the eigen vectors
-    for (int i=0;i<f_layer_count;++i)
-    {
-        for (int j=0;j<f_retained_components_count;j++)
-        {
-            double myDouble = gsl_matrix_get (f_gsl_eigenvector_matrix,i,j);
-            printf ("%f\t ", myDouble);
-        }
-        printf ("\n");
-    }
-    printf ("----------------------------------------------\n ");
+    printf ("]\n----------------------------------------------\n ");
 }
 
 
@@ -441,7 +393,7 @@ void Csm::displayEigen()
 /**** displayMatrix ***/
 void Csm::displayMatrix(gsl_matrix * m, char * name)
 {
-    printf ("\n Displaying %s (%i / %i): \n----------------------------------------------\n[ ", name, m->size1, m->size2);
+    printf ("\n Displaying Matrix %s (%i / %i): \n----------------------------------------------\n[ ", name, m->size1, m->size2);
     for (int i=0;i<m->size1;++i)
     {
         char sep1[] = ",";
@@ -451,12 +403,14 @@ void Csm::displayMatrix(gsl_matrix * m, char * name)
         {
             double myDouble = gsl_matrix_get (m,i,j);
 
-	    if (j == m->size2 -1) strcpy(sep1, "");
+            if (j == m->size2 -1)
+                strcpy(sep1, "");
 
             printf ("%g %s ", myDouble, sep1);
         }
-	
-	if (i == m->size1 -1) strcpy(sep2, "");
+
+        if (i == m->size1 -1)
+            strcpy(sep2, "");
 
         printf ("%s\n", sep2);
     }
@@ -469,14 +423,14 @@ void Csm::displayMatrix(gsl_matrix * m, char * name)
 gsl_matrix * Csm::transpose (gsl_matrix * m)
 {
     gsl_matrix * t = gsl_matrix_alloc (m->size2, m->size1);
-  
+
     for (int i = 0; i < m->size1; i++)
     {
         gsl_vector * v = gsl_vector_alloc(m->size2);
         gsl_matrix_get_row (v, m, i);
         gsl_matrix_set_col (t, i, v);
     }
-  
+
     return t;
 }
 
@@ -487,7 +441,7 @@ double Csm::product (gsl_vector * va, gsl_vector * vb)
     // fix me: need to check if vectors are of the same size !!!
 
     double res = 0.0;
-  
+
     for (int i = 0; i < va->size; i++)
     {
         res += gsl_vector_get(va, i)*gsl_vector_get(vb, i);
@@ -503,7 +457,7 @@ gsl_matrix * Csm::product (gsl_matrix * a, gsl_matrix * b)
     // fix me: need to check if a->size2 is equal to b->size1 !!!
 
     gsl_matrix * p = gsl_matrix_alloc (a->size1, b->size2);
-  
+
     for (int i = 0; i < a->size1; i++)
     {
         gsl_vector * va = gsl_vector_alloc(a->size2);
@@ -511,7 +465,7 @@ gsl_matrix * Csm::product (gsl_matrix * a, gsl_matrix * b)
         gsl_matrix_get_row (va, a, i);
 
         for (int j = 0; j < b->size2; j++)
-	{
+        {
             gsl_vector * vb = gsl_vector_alloc(a->size2);
 
             gsl_matrix_get_col (vb, b, j);
@@ -519,32 +473,32 @@ gsl_matrix * Csm::product (gsl_matrix * a, gsl_matrix * b)
             double vp = product(va, vb);
 
             gsl_matrix_set (p, i, j, vp);
-	}
+        }
     }
-  
+
     return p;
 }
 
 /***********************/
 /**** autoCovariance ***/
 /**
-
+ 
 This method tries to mimic the octave "cov" function when it
 receives only one parameter:
-
+ 
 function c = cov (x)
-
+ 
   if (rows (x) == 1)
     x = x';
   endif
-
+ 
   n = rows (x);
-
+ 
   x = x - ones (n, 1) * sum (x) / n;
   c = conj (x' * x / (n - 1));
-
+ 
 endfunction
-
+ 
 */
 gsl_matrix * Csm::autoCovariance(gsl_matrix * original_matrix)
 {
@@ -554,10 +508,10 @@ gsl_matrix * Csm::autoCovariance(gsl_matrix * original_matrix)
 
     int numrows = m->size1;
     int numcols = m->size2;
-  
+
     if (numrows == 1)
     {
-         m = transpose(m);
+        m = transpose(m);
     }
 
     // compute: ones (n, 1) * sum (x)
@@ -572,21 +526,21 @@ gsl_matrix * Csm::autoCovariance(gsl_matrix * original_matrix)
         gsl_vector * v = gsl_vector_alloc(numcols);
 
         for (int i = 0; i < numcols; i++)
-	{
-	    double val = 0.0;
+        {
+            double val = 0.0;
 
             for (int j = 0; j < numrows; j++)
-	    {
-	        val += gsl_matrix_get (m, j, i);
-	    }
+            {
+                val += gsl_matrix_get (m, j, i);
+            }
 
             gsl_vector_set (v, i, val);
 
             for (int j = 0; j < numrows; j++)
-	    {
-	        gsl_matrix_set_row (s, j, v);
-	    }
-	}
+            {
+                gsl_matrix_set_row (s, j, v);
+            }
+        }
     }
 
     // divide by "n"
