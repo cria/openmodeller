@@ -19,6 +19,7 @@ libopenmodeller_la_SOURCES = \
 	algorithm_factory.cpp \
 	control.cpp \
 	environment.cpp \
+	file_parser.cpp \
 	log.cpp \
 	occurrences.cpp \
 	occurrences_file.cpp \
