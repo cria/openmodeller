@@ -21,6 +21,5 @@ om_wrap.cxx: om_java.i
 	-mkdir br/org/cria
 	-mkdir br/org/cria/OpenModeller
 	swig -c++ -java -package br.org.cria.OpenModeller \
-                        -o om_wrap.cxx om_java.i.bak.mod
+                        -o om_wrap.cxx om_java.i
 
-#                        -outdir br/org/cria/OpenModeller
