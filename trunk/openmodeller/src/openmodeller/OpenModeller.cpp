@@ -435,7 +435,13 @@ OpenModeller::createMap( Environment *env, char *file, Scalar mult,
 
       g_log("Preparing target environment object for projection.");
 
-      env->copyNormalizationParams(_env);
+      Scalar min, max;
+      if ( _alg->needNormalization( &min, &max ) )
+	{
+	  g_log( "Normalizing environment variables on projection Environment object.\n" );
+	  env->copyNormalizationParams(_env);
+	}
+
       /*
       if (!env->copyNormalizationParams(_env))
 	{
