@@ -1,6 +1,6 @@
 import om;
 
-mod = om.ControlInterface();
+mod = om.OpenModeller();
 print "Welcome to openModeller Python Binding test.\n";
 print "Using openModeller version:     ", mod.getVersion();
 print "Loading algorithms from:        ", mod.getPluginPath();
@@ -26,8 +26,6 @@ params = [["MaxGenerations",   "25"],
           ["Resamples",        "2500"],
           ["MutationRate",     "0.25"],
           ["CrossoverRate",    "0.25"]];
-
-hdr = om.Header();
 
 wktsys = "GEOGCS[\"WGS84\", DATUM[\"WGS84\", SPHEROID[\"WGS84\", 6378137.0, 298.257223563]], PRIMEM[\"Greenwich\", 0.0], UNIT[\"degree\", 0.017453292519943295], AXIS[\"Longitude\",EAST], AXIS[\"Latitude\",NORTH]]";
 spfile = "Strix_varia.txt";

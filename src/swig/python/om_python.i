@@ -156,6 +156,8 @@ int print_alg_params(int n, AlgParameter *param)
 %}
 
 %rename(setEnvironmentRef) OpenModeller::setEnvironment(Environment * env);
+%rename(createMapByFile)   OpenModeller::createMap(Environment *, char *, Scalar mult, char *, char *);
+%rename(createMapByFormat) OpenModeller::createMap(Environment *, char *, Scalar mult, char *, MapFormat *);
 
 %include "../../inc/om_defs.hh"
 %include "../../inc/om_control.hh"
