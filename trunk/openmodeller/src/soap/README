@@ -1,0 +1,86 @@
+WARNING:
+-------
+This is just an initial effort to setup a SOAP interface to use 
+openModeller services. It is still far from a production release!
+
+The implementation is completely based on gSOAP v2.5
+(http://gsoap2.sourceforge.net) and has only been tested with 
+Linux. Now gSOAP itself claims compliance with "Windows, Unix, 
+Linux, Pocket PC, Mac OS X, TRU64, VxWorks, etc". However,
+parts of the openModeller SOAP server code are not prepared
+to work in other platforms - such as the sigpipe handling (if
+multi-threading is enabled), the unique temporary file
+generator (mkstemp function), and the process forking.
+
+Although the server should be prepared to run as a
+multi-threaded daemon server, openModeller is not!!
+
+CURRENT FUNCTIONALITY:
+---------------------
+
+- Server can run as CGI application, stand alone server (daemon), 
+  or multi-threaded server.
+- Handle getAlgorithms requests (returning metadata about all 
+  available algorithms).
+- Handle createModel requests (now generating distribution maps).
+- Handle getDistributionMap requests.
+- A simple command line perl client is available (depends on 
+  SOAP::Lite)
+
+
+USE INSTRUCTIONS:
+----------------
+
+- set an environment variable called OM_SOAP_TMPDIR indicating
+  where the distribution maps should be generated:
+
+  export OM_SOAP_TMPDIR
+
+- To run the server as a CGI application, just put it inside an 
+  accessible cgi-bin directory:
+
+  cp om_soap_server /var/www/cgi-bin/om_soap_server.cgi
+
+- To run the server as a stand alone non-multi-threaded service,
+  just start it passing as a parameter the port number and then
+  another parameter indicating the number of threads (=1):
+
+  ./om_soap_server 8085 1 &
+
+- To run the server as a stand alone multi-threaded service, just
+  start it passing as a parameter the port number and then another
+  parameter indicating the number of threads (>1). 
+
+  ./om_soap_server 8085 10 &
+
+- Run the client to test your server (you'll need perl and the 
+  SOAP::Lite module):
+
+  ./sampleClient.pl --server=http://localhost:8085/
+
+
+TODO:
+----
+
+- Use another thread or different process to run models.
+- Get available layers from a layer server.
+- Accept as input layers from remote machines.
+- Implement getFileFormats (need changes in openModeller).
+- Implement garbage collecttion for distribution maps.
+- Implement sigpipe handler.
+- Find portable and better solution to unique temporary files.
+- Implement getModel (need changes in openModeller ).
+
+
+MAINTENANCE:
+-----------
+
+- To change anything in the SOAP interface you'll need gSOAP 
+  installed.
+
+- To generate the SOAP stubs and skeletons use:
+ 
+  soapcpp2 om_soap.hh
+
+- To activate server debug logging, add -DDEBUG in the
+  beginning of om_soap_server_CPPFLAGS in Makefile.am

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<SOAP-ENV:Envelope
+ xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/"
+ xmlns:SOAP-ENC="http://schemas.xmlsoap.org/soap/encoding/"
+ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+ xmlns:om="http://openmodeller.sf.net/ns/1.0">
+ <SOAP-ENV:Body id="_0">
+  <om:createModel>
+   <points xsi:type="om:Points">
+    <coordsystem xsi:type="xsd:string"></coordsystem>
+    <presences xsi:type="om:PresencePoints">
+     <point xsi:type="om:Point" latitude="0.0" longitude="0.0">
+     </point>
+    </presences>
+    <absences xsi:type="om:AbsencePoints">
+     <point xsi:type="om:Point" latitude="0.0" longitude="0.0">
+     </point>
+    </absences>
+   </points>
+   <maps xsi:type="om:Maps">
+    <map xsi:type="om:Map" location="" categorical="0">
+    </map>
+   </maps>
+   <mask xsi:type="om:Mask" location="">
+   </mask>
+   <algorithm xsi:type="om:Algorithm">
+    <id xsi:type="xsd:string"></id>
+    <parameter xsi:type="om:Parameter" name="" value="">
+    </parameter>
+   </algorithm>
+   <output xsi:type="om:Output">
+    <header xsi:type="xsd:string"></header>
+    <scale xsi:type="xsd:int">0</scale>
+    <format xsi:type="xsd:string"></format>
+   </output>
+  </om:createModel>
+ </SOAP-ENV:Body>
+</SOAP-ENV:Envelope>
