@@ -613,7 +613,7 @@ gsl_matrix * Csm::autoCovariance(gsl_matrix * original_matrix)
 {
     // Build a copy of the input matrix to work with
     gsl_matrix * m = gsl_matrix_alloc (original_matrix->size1, original_matrix->size2);
-    gsl_matrix_memcpy (original_matrix, m);
+    gsl_matrix_memcpy (m, original_matrix);
 
     int numrows = m->size1;
     int numcols = m->size2;
