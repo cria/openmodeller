@@ -159,7 +159,6 @@ int
 RequestFile::setAlgorithm( OpenModeller *om, FileParser &fp )
 {
   // Find out which model algorithm is to be used.
-  AlgMetadata **availables = om->availableAlgorithms();
   AlgMetadata *metadata;
   char *alg_id = fp.get( "Algorithm" );
 

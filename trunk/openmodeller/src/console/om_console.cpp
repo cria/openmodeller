@@ -55,6 +55,8 @@ void mapCallback( float progress, void *extra_param );
 int
 main( int argc, char **argv )
 {
+  char * path = 0;
+
   // Reconfigure the global logger.
   g_log.setLevel( Log::Debug );
   g_log.setPrefix( "Console" );
