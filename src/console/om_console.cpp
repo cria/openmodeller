@@ -204,7 +204,7 @@ readParameters( AlgParameter *result, AlgMetadata *metadata )
 
       // Informs the parameter's metadata to the user.
       printf( "\n* Parameter: %s\n\n", param->name );
-      printf( " %s:\n", param->description );
+      printf( " %s:\n", param->overview );
       if ( param->has_min )
         printf( " %s >= %f\n", param->name, param->min );
       if ( param->has_max )
