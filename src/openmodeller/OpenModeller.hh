@@ -30,6 +30,7 @@
 #define _OM_CONTROLHH_
 
 #include <om_defs.hh>
+#include <om_log.hh>
 #include <om_algorithm_metadata.hh>
 #include <om_serializable.hh>
 
@@ -80,6 +81,13 @@ public:
 
   OpenModeller();
   ~OpenModeller();
+
+  /** Sets the log level on the global Log g_log object.
+   *
+   *  Note: We need to add control over the log file and prefix
+   *   as well.
+   */
+  void setLogLevel(Log::Level level);
 
 
   /** Returns the openModeller client interface version in the

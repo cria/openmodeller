@@ -303,9 +303,6 @@ int Garp::needNormalization( Scalar *min, Scalar *max )
 
 int Garp::initialize()
 {
-  // Reconfigure the global logger.
-  g_log.set( Log::Debug, stdout, "Garp" );
-
   if (!getParameter("MaxGenerations",   &_max_gen))        
       g_log.error(1, "Parameter MaxGenerations not set properly.");
 
@@ -323,6 +320,8 @@ int Garp::initialize()
 
   if (!getParameter("CrossoverRate",    &_crossover_rate)) 
       g_log.error(1, "Parameter CrossoverRate not set properly.");
+
+  g_log("MaxGenerations set to %d\n", _max_gen);
 
   _offspring  = new GarpRuleSet(2 * _popsize);
   _fittest    = new GarpRuleSet(2 * _popsize);

@@ -12,6 +12,7 @@ public class OMTest3 {
 	System.loadLibrary("omjava");
 
 	_mod = new OpenModeller();
+	_mod.setLogLevel( Log.Debug );
 	if (_mod == null) {
 	    System.out.println("Could not load omjava library.");
 	}
@@ -69,7 +70,7 @@ public class OMTest3 {
 	    {"CrossoverRate",    "0.25"}};
 
 	String wktsys = "GEOGCS[\"WGS84\", DATUM[\"WGS84\", SPHEROID[\"WGS84\", 6378137.0, 298.257223563]], PRIMEM[\"Greenwich\", 0.0], UNIT[\"degree\", 0.017453292519943295], AXIS[\"Longitude\",EAST], AXIS[\"Latitude\",NORTH]]";
-	String spfile = "Strix_varia.txt";
+	String spfile = "acc_test_data.txt";
 	String spname = "Strix varia";
 
 	OccurrencesFile ocfile = new OccurrencesFile(spfile, wktsys);

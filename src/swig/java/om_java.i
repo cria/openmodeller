@@ -20,7 +20,6 @@ void cp(char * msg) { printf("cp: %s\n", msg); fflush(stdout); }
 
 /* This tells SWIG to treat char ** as a special case when used as a parameter in a function call */
 %typemap(in) char ** (jint size) {
-g_log.set( Log::Debug, stdout, "omjava" );
     if ($input){ 
         size = jenv->GetArrayLength($input);
         $1 = (char **) malloc((size+1)*sizeof(char *));
@@ -232,7 +231,6 @@ jmethodID JNI_getSetStringMethod(JNIEnv * jenv, jclass clazz, char * methodName)
     // expect a Java array of String[2] as input
     // first string is the parameter id and the second is its value
     int i = 0;
-
     // get length of array
     jsize size = jenv->GetArrayLength($input);
     $1 = (AlgParameter*) malloc(size*sizeof(AlgParameter));
@@ -245,7 +243,7 @@ jmethodID JNI_getSetStringMethod(JNIEnv * jenv, jclass clazz, char * methodName)
 	char * cid    = (char *) jenv->GetStringUTFChars(id, NULL);
 	char * cvalue = (char *) jenv->GetStringUTFChars(value, NULL);
         $1[i].setId(cid);
-	$1[i].setValue(cid);
+	$1[i].setValue(cvalue);
 	jenv->ReleaseStringUTFChars(id, cid);
 	jenv->ReleaseStringUTFChars(value, cvalue);
     }
@@ -291,6 +289,7 @@ PyObject * getParameterList(AlgMetadata * metadata)
 
 
 
+%include "../../inc/om_log.hh"
 %include "../../inc/om_defs.hh"
 %include "../../inc/om_serializable.hh"
 %include "../../inc/om_control.hh"
