@@ -44,7 +44,7 @@ class Bioclim : public Algorithm
 public:
 
   Bioclim();
-  virtual ~Bioclim();
+  ~Bioclim();
 
   // Inherited from Algorithm class.
   int initialize( int ncycle );

@@ -77,7 +77,6 @@ is an example:
 
      ./configure CC=c89 CFLAGS=-O2 LIBS=-lposix
 
-   *Note Defining Variables::, for more details.
 
 Compiling For Multiple Architectures
 ====================================

@@ -42,7 +42,7 @@
 /******************************/
 /*** Algorithm's parameters ***/
 
-AlgorithmParameter parameters[NUM_PARAM] = {
+static AlgorithmParameter parameters[NUM_PARAM] = {
 
   // Metadata of the first parameter.
   {
@@ -62,7 +62,7 @@ AlgorithmParameter parameters[NUM_PARAM] = {
 /************************************/
 /*** Algorithm's general metadata ***/
 
-AlgorithmMetadata metadata = {
+static AlgorithmMetadata metadata = {
 
   "DistanceToAverage", 	// Name.
   "0.1",       	        // Version.
@@ -106,6 +106,8 @@ algorithmFactory()
 DistanceToAverage::DistanceToAverage()
   : Algorithm( &metadata )
 {
+  _min = _max = _dist = 0.0;
+
   _done = 0;
   _avg  = 0;
 }
@@ -116,11 +118,13 @@ DistanceToAverage::DistanceToAverage()
 
 DistanceToAverage::~DistanceToAverage()
 {
-  printf( "\nMinimum distance found: %f", _min );
-  printf( "\nMaximum distance found: %f\n\n", _max );
-
   if ( _avg )
-    delete _avg;
+    {
+      printf( "\nMinimum distance found: %f", _min );
+      printf( "\nMaximum distance found: %f\n\n", _max );
+
+      delete _avg;
+    }
 }
 
 

@@ -33,6 +33,9 @@
 #include <stdlib.h>
 #include <math.h>
 
+//debug
+#include <iostream>
+
 
 /****************************************************************/
 /********************** Algorithm's Metadata ********************/
@@ -43,7 +46,7 @@
 /******************************/
 /*** Algorithm's parameters ***/
 
-AlgorithmParameter parameters[NUM_PARAM] = {
+static AlgorithmParameter parameters[NUM_PARAM] = {
 
   // Metadata of the first parameter.
   {
@@ -63,7 +66,7 @@ AlgorithmParameter parameters[NUM_PARAM] = {
 /************************************/
 /*** Algorithm's general metadata ***/
 
-AlgorithmMetadata metadata = {
+static AlgorithmMetadata metadata = {
 
   "MinimumDistance", 	// Name.
   "0.1",       	        // Version.
@@ -144,8 +147,6 @@ MinimumDistance::initialize( int ncicle )
 
   int dim = _samp->dimEnv();
 
-  printf( "Parameter passed: %f\n", _dist );
-
   // Distance should range from 0 to 1
   if (_dist > 1.0)       _dist = 1.0;
   else if (_dist < 0.0)  _dist = 0.0;
@@ -155,9 +156,6 @@ MinimumDistance::initialize( int ncicle )
   _dist *= sqrt( dim );
 
   _presence = new SampledData;
-
-  printf( "\nEnvironmental layers: %d\n", dim );
-  printf( "Parameter normalized: %f\n\n", _dist );
 
 
   // Get occurrences from Samples object.

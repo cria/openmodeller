@@ -46,6 +46,8 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include <iostream>
+
 
 Log _log( Log::Debug );
 
@@ -85,7 +87,7 @@ ControlInterface::ControlInterface()
   _oc_cs   = 0;
   _oc_name = 0;
 
-  _error = 0;
+  f_error[0] = '\0';
 }
 
 ControlInterface::ControlInterface( int ncateg, int nlayer,
@@ -107,7 +109,7 @@ ControlInterface::ControlInterface( int ncateg, int nlayer,
   _oc_cs   = 0;
   _oc_name = 0;
 
-  _error = 0;
+  f_error[0] = '\0';
 
   setEnvironment( ncateg, nlayer, layers, mask );
 }
@@ -123,7 +125,7 @@ ControlInterface::~ControlInterface()
 
   if ( _layers )  delete _layers;
   if ( _file )    delete _file;
-  if ( _alg_id )     delete _alg_id;
+  if ( _alg_id )  delete _alg_id;
   if ( _oc_file ) delete _oc_file;
   if ( _oc_cs )   delete _oc_cs;
   if ( _oc_name ) delete _oc_name;
@@ -211,19 +213,23 @@ ControlInterface::setOccurrences( char *file, char *cs, char *oc )
 int
 ControlInterface::run()
 {
-  if ( _error = basicCheck() )
-    return 0;
+  char *error = basicCheck();
+  if ( error )
+    {
+      strcpy( f_error, error );
+      return 0;
+    }
+
+  // Must implement absence points reading.
+  Occurrences *absence = 0;
 
   // Ocurrence points.
   Occurrences *presence = readOccurrences( _oc_file, _oc_cs,
 					   _oc_name );
-
-  // Must implement the reading of absence points.
-  Occurrences *absence = 0;
-
   if ( ! presence )
     {
-      _error = "Occurrences not found with the given name.";
+      sprintf( f_error, "Occurrences (%s) not found in file (%s).",
+	       _oc_name, _oc_file );
       return 0;
     }
   _log.info( "Modelling occurrences of: %s.\n", presence->name() );
@@ -240,11 +246,13 @@ ControlInterface::run()
 
   // Sampler and algorithm.
   Sampler samp( env, presence, absence );
+
   Algorithm *alg;
   alg = _factory->newAlgorithm( &samp, _alg_id, _alg_param );
+
   if ( ! alg )
     {
-      _error = "Could not find an algorithm with the given name.";
+      sprintf( f_error, "Could not find (%s) algorithm.", _alg_id );
       return 0;
     }
 
@@ -257,27 +265,19 @@ ControlInterface::run()
       env->normalize( min, max );
     }
 
-
   _log.info( "Creating the model\n" );
 
   // Generate the model.
   if ( ! createModel( alg, &samp, _ncycle ) )
-    {
-      _error = "Model creation error.";
-      return 0;
-    }
+    return 0;
 
   _log.info( "Saving distribution's file:\n" );
 
   // Create the map with probabilities of occurence.
   if ( ! createMap( env, alg ) )
-    {
-      _error = "Occurrence probability map creation error.";
-      return 0;
-    }
+    return 0;
 
   delete presence;
-  delete alg;
   delete env;
 
   return 1;
@@ -352,31 +352,6 @@ ControlInterface::readOccurrences( char *file, char *cs,
 }
 
 
-/*************************/
-/*** algorithm Factory ***/
-/*
-Algorithm *
-ControlInterface::algorithmFactory( Sampler *samp, char *name,
-			       char *param )
-{
-  if ( ! strcasecmp( name, "Distance" ) )
-    return new DistanceModel( samp, param ? atof(param) : 0 );
-
-  if ( ! strcasecmp( name, "MinDistance" ) )
-    return new MinDistanceModel( samp, param ? atof(param) : 0 );
-
-  if ( ! strcasecmp( name, "Bioclim" ) )
-    return new BioclimModel( samp, param ? atof(param) : 0 );
-
-  if ( ! strcasecmp( name, "Csm" ) )
-    return new Csm( samp );
-    
-
-  return 0;
-}
-*/
-
-
 /********************/
 /*** create Model ***/
 int
@@ -385,8 +360,11 @@ ControlInterface::createModel( Algorithm *alg, Sampler *samp,
 {
   // Initialize algorithm.  
   if ( ! alg->initialize( 1 ) )
-    _log.error( 1, "Algorithm %s could not be initialized.\n",
-		alg->getID() );
+    {
+      sprintf( f_error, "Algorithm (%s) could not be initialized.",
+	       alg->getID() );
+      return 0;
+    }
 
   // Generate model.
   int ncycle = 0;
@@ -404,9 +382,9 @@ ControlInterface::createMap( Environment *env, Algorithm *alg )
 {
   if ( ! _hdr->hasProj() )
     {
-      _log.error( 1,
-		  "Output map without a coordinate system!\n\n",
-		  _file );
+      sprintf( f_error,
+	       "Output map (%s) without a coordinate system!\n\n",
+	       _file );
       return 0;
     }
 
