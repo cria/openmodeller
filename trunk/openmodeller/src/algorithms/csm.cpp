@@ -18,6 +18,7 @@
 #include <gsl/gsl_math.h>
 #include <gsl/gsl_eigen.h>
 
+#include <math.h>
 
 /****************************************************************/
 /********************** Algorithm's Metadata ********************/
@@ -398,12 +399,18 @@ int Csm::done()
 Scalar Csm::getValue( Scalar *x )
 {
     float myFloat;
+    bool myAllAreZeroFlag=true;
     //first thing we do is convert the oM primitive env value array to a gsl matrix
     //with only one row so we can do matrix multplication with it
     gsl_matrix * tmp_gsl_matrix = gsl_matrix_alloc (1,_layer_count);
     for (int i=0;i<_layer_count;++i)
     {
         myFloat = static_cast<float>(x[i]);
+        if (myFloat!=0) 
+        { 
+          myAllAreZeroFlag=false; 
+        }
+          printf("%f ",myFloat);
         //get the stddev and mean for this column
         float myAverage = gsl_vector_get (_gsl_avg_vector,i);
         float myStdDev = gsl_vector_get (_gsl_stddev_vector,i);
@@ -413,26 +420,48 @@ Scalar Csm::getValue( Scalar *x )
         gsl_matrix_set (tmp_gsl_matrix,0,i,myFloat);
         //printf ("%f\t", myFloat );
     }
+    printf(" ----  end of scalar\n ");
+    if (myAllAreZeroFlag) {return 0;}
+    
+    displayMatrix(tmp_gsl_matrix,"tmp_gsl_matrix before matrix multiplication");
 
-    gsl_matrix * p = product(tmp_gsl_matrix, _gsl_eigenvector_matrix);
+    gsl_matrix * z = product(tmp_gsl_matrix, _gsl_eigenvector_matrix);
 
-    //create a temporary vector and place component 1 in it - could make this a class member to improve performance!
-    //gsl_vector * component1_gsl_vector = gsl_vector_alloc (_layer_count);
-    //gsl_matrix_get_col (component1_gsl_vector, _gsl_eigenvector_matrix, 0);
+    // z should match the dimensions of tmp_gsl_matrix so do some error checking
+    if (z->size1 != tmp_gsl_matrix->size1)
+    {
+      printf("Error during creation of product Z in CSM getValue - number of rows dont match\n");
+      exit(0);
+    }
+    if (z->size2 != tmp_gsl_matrix->size2)
+    {
+      printf("Error during creation of product Z in CSM getValue - number of cols dont match\n");
+      //exit(0);
+    }
 
-    //multiply the result vector by the first component in the eigenvector
-    //gsl_vector_mul (tmp_gsl_vector, component1_gsl_vector);
+    displayMatrix(z,"z ");
+    // now we standardise the values in z
+    // we do this by dividing each element in z by the square root of its associated element in 
+    // the eigenvalues vector
 
-    //probabily for the cell is now the sum of the tmp vector
+    for (int i=0;i<z->size2;i++)
+    {
+      gsl_matrix_set(z,0,i,gsl_matrix_get (z,0,i)/sqrt(gsl_vector_get(_gsl_eigenvalue_vector,i)));
+    }
+    displayMatrix(z,"After standardising z");
+    // now we square each element and sum them    
     myFloat=0;
-    for (int i=0;i<p->size1;i++)
-        for (int j=0;j<p->size2;j++)
-            myFloat+=gsl_matrix_get (p,i,j);
+    for (int i=0;i<z->size2;i++)
+    {
+      myFloat= pow(gsl_matrix_get (z,0,i), 2); 
+    }       
+    displayMatrix(z,"After sum of squares in z");
+    
 
-    //printf ("Prob: %f\n",myFloat);
+    printf ("Prob: %f\n",myFloat);
     //now we
     //now clear away the temporary vars
-    gsl_matrix_free (p);
+    gsl_matrix_free (z);
     //gsl_vector_free (component1_gsl_vector);
     gsl_matrix_free (tmp_gsl_matrix);
 
