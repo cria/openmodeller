@@ -66,7 +66,7 @@ static AlgMetadata metadata = {
 
   0,               // Internal usage.
   "Bioclim",       // Name.
-  "0.1",       	   // Version.
+  "0.1 test",      // Version.
   "Nix 1986, Busby 1991, McMahon et al. 1996",  // Bibliography.
 
   // Description.
