@@ -50,6 +50,9 @@ public:
   BioclimDistance();
   ~BioclimDistance();
 
+  // Need normalization to calculate distance.
+  int needNormalization( Scalar *min, Scalar *max );
+
   // Inherited from Algorithm class.
   int initialize();
   int iterate();

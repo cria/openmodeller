@@ -159,6 +159,17 @@ BioclimDistance::~BioclimDistance()
 }
 
 
+/**************************/
+/*** need Normalization ***/
+int
+BioclimDistance::needNormalization( Scalar *min, Scalar *max )
+{
+  *min = 0.0;
+  *max = 1.0;
+  return 1;
+}
+
+
 /******************/
 /*** initialize ***/
 int
