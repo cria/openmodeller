@@ -8,11 +8,13 @@
 # WITHOUT ANY WARRANTY, to the extent permitted by law; without even the
 # implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
-#EXTRA_DIST = doc
-
 SUBDIRS = lib inc
 
-bin_PROGRAMS = om_console om_viewer
+if HAVE_X11
+OM_VIEWER = om_viewer
+endif
+
+bin_PROGRAMS = om_console $(OM_VIEWER)
 
 om_console_SOURCES = om_console.cpp
 om_console_CPPFLAGS = -Iinc
