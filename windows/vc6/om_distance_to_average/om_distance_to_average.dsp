@@ -122,6 +122,10 @@ SOURCE=..\..\lib\env_io\header.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\inc\list.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\lib\log.cpp
 # End Source File
 # Begin Source File
@@ -172,6 +176,98 @@ SOURCE=..\..\lib\sampler.cpp
 # Begin Group "Header Files"
 
 # PROP Default_Filter "h;hpp;hxx;hm;inl"
+# Begin Source File
+
+SOURCE=..\..\..\algorithms\distance_to_average.hh
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\inc\environment.hh
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\inc\env_io\geo_transform.hh
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\inc\env_io\header.hh
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\inc\list.hh
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\inc\env_io\map.hh
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\inc\occurrence.hh
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\inc\om.hh
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\inc\om_alg_parameter.hh
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\inc\om_algorithm.hh
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\inc\om_algorithm_metadata.hh
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\inc\om_control.hh
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\inc\om_defs.hh
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\inc\om_log.hh
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\inc\om_occurrences.hh
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\inc\om_sampled_data.hh
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\inc\om_sampler.hh
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\inc\os_specific.hh
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\inc\random.hh
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\inc\env_io\raster.hh
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\inc\env_io\raster_file.hh
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\inc\env_io\raster_gdal.hh
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\inc\env_io\raster_mem.hh
+# End Source File
 # End Group
 # Begin Group "Resource Files"
 
