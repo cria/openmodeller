@@ -21,24 +21,20 @@ running the following commands on OM root directory:
 	make
 	make install
 
-2) Download the test data files from:
+2) Set your PYTHON_PATH environmental variable to include Python site-packages
+directory. In Linux Fedora 2 and Python 2.3, the default directory is:
 
-	 http://www.cria.org.br/~ricardo/openModeller/acc_test_data.tar.gz
+	/usr/lib/python2.3/site-packages
 
-3) Extract the file in the directory modeller/test/user using the following
-command: 
+3) Run the tests with the command:
 
-	tar -xzvf acc_test_data.tar.gz
+	./runtest.sh
 
-That will create directory called data which contains layers and species
-occurrence data points used in the test.
+First, the test script will download test data from 
+http://www.cria.org.br/~ricardo/openModeller/acc_test_data.tar.gz.
+Then it will untar it locally and run the full python test script on it.
 
-4) Run the tests with the command:
-
-	python AccTest.py
-
-
-5) The test will run and results will be output to html reports in the file:
+4) The test will run and results will be output to html reports in the file:
 
 	SummaryReports.html
 
@@ -49,8 +45,22 @@ side to sample of expected results.
 One would browse through the maps visually comparing actual results
 agains expected samples.
 
-Optionally the script ./runtest.sh will do it all for you.
 
+COMMAND LINE OPTIONS
+--------------------
+
+The test script can be configured to run only a subset of the tests. To 
+do that, use the following command line switches:
+
+-g, --group:     Specify the test group to be run
+                 1: Create models of 7 species with all OM available algorithms
+                 2: Runs one GARP model and generates maps using several 
+                   different output formats
+
+-s, --species:   Run modes on group 1 for only the specified species 
+                 index (0-6).
+
+-a, --algorithm: Specify which algorithm to run, defined by its ID
 
 
 CURRENT STATUS
@@ -62,18 +72,9 @@ CURRENT STATUS
 final result files. It would be nice if tests were more robust to keep going
 even if a particular test fails;
 
-- Need to come up with different testing levels (full, smoke, etc) for 
-different purposes. Currently only full test is available. It might take
-way to long to run it as a simple pre-commit requirement.
-
 - Need to add those tests to autotools setup. That would include a separate
 make action, that in turn would include automatic download and extraction 
 of test datasets. The test would require python interface to be enabled. 
-
-- There are some allocation issues with OpenModeller object that causes the
-script to fail if OM destructor is active. Before those issues are sorted 
-out, one need to comment out OM destructor code out. That causes the script
-to leak a lot of memory :( 
 
 
 
