@@ -13,6 +13,7 @@ Building and installing openModeller
    Password: anonymous
    % cvs checkout gdal
 
+3. Install GSL - GNU Scientific Library (www.gnu.org/software/gsl).
 
 4. Follow this procedure:
 
