@@ -114,8 +114,8 @@ public:
 
 private:
 
-  int checkActiveThreads();
-  int checkForEarlyTermination();
+  int numActiveThreads();
+  int earlyTerminationConditionMet();
   int calculateBestSubset();
   void sortRuns(GarpRun ** runList, int nelements, int errorType);
 
