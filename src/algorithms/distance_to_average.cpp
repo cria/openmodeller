@@ -104,6 +104,9 @@ If 'dist' > MAXDIST then the probability will be zero.",
 /****************************************************************/
 /****************** Algorithm's factory function ****************/
 
+#ifdef WIN32
+__declspec( dllexport )
+#endif
 Algorithm *
 algorithmFactory()
 {
