@@ -1,0 +1,36 @@
+CRIA - Centro de Referencia em Informacao Ambiental:
+
+  * Mauro E. S. Munoz <mauro [at] cria.org.br>
+
+     Main developer and system architecture designer.
+     Implemented distance algorithms.
+     Implemented command-line interface.
+
+  * Renato De Giovanni <renato [at] cria.org.br>
+
+     Implemented SOAP interface.
+
+The University of Kansas:
+
+ * Ricardo Scachetti Pereira <rpereira [at] ku.edu>
+
+     Participated in the design of the system.
+     Implemented Bioclim and GARP algorithm.
+     Maintainer of vc++ Win version.
+
+The University of Reading:
+
+ * Tim Sutton <t.sutton [at] reading.ac.uk>
+
+     Implemented CSM algorithm.
+     Developed plug-in for Quantum GIS.
+
+ * Peter Brewer <p.w.brewer [at] reading.ac.uk>
+
+     Logo and website designer.
+
+Quantum GIS development team:
+
+ * Jens Oberender <j.obi [at] troja.net>
+
+     Release Technician and Packager.
