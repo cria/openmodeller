@@ -97,6 +97,15 @@ public:
    */
   int numAvailableAlgorithms();
 
+  /** Define algorithm that will be used to generate the
+   *  distribution map.
+   * @param alg_id Algorithm's identifier. Must match
+   *  Algorithm::getID() method.
+   * @param param String with algorithm's parameters separated by
+   *  space and/or TABs.
+   */
+  void setAlgorithm( char *alg_id, char *param=0 );
+
 
   // Define environmental layers and other basic settings.
   void setEnvironment( int ncateg, int nlayer, char **layers,
@@ -107,25 +116,16 @@ public:
   void setOutputMap( char *file, char *map_file, Scalar mult );
 
 
-  /** Define algorithm that will be used to generate the
-   *  distribution map.
-   * @param alg_id Algorithm's identifier. Must match
-   *  Algorithm::getID() method.
-   * @param param String with algorithm's parameters separated by
-   *  space and/or TABs.
-   */
-  void setAlgorithm( char *alg_id, char *param=0 );
-
   /**
    * Define occurrence points to be used.
    * 
-   * @param file File name with localities (coordinates) from
-   *             the occurrences;
-   * @param cs   Coordinate system of all localities in the file.
-   * @param oc   Name of the species of interest. If == 0, then
-   *             use the first species found in file.
+   * @param presence Occurrence points which the abundance
+   *  attribute is not zero.
+   * @param absence Occurrence points which the abundance
+   *  attribute is zero.
    */
-  void setOccurrences( char *file, char *cs, char *oc=0 );
+  void setOccurrences( Occurrences *presence,
+		       Occurrences *absence=0 );
 
   int run();
 
@@ -141,15 +141,6 @@ private:
    *  If not, an error message is returned.*/
   char *basicCheck();
 
-  /** Read occurences of species 'name', provided in the coordinate
-   *  system 'cs', from the file 'file'.*/
-  Occurrences *readOccurrences( char *file, char *cs, char *name=0 );
-
-  /** Return the object that implements the algorithm to be used.*/
-  /*
-  Algorithm *algorithmFactory( Sampler *samp, char *name,
-			       char *params );
-  */
 
   /** Build the model based on 'samp' and on algorithm.*/
   int createModel( Algorithm *alg, Sampler *samp, int max_cicles);
@@ -173,9 +164,8 @@ private:
   char *_alg_param;
   int   _ncycle;    ///< Max algorithm cicles.
 
-  char *_oc_file; ///< Occurrences file name.
-  char *_oc_cs;   ///< Occurrences Coordinate System.
-  char *_oc_name; ///< Occurrences ID (eg species name).
+  Occurrences *_presence; ///< Presence occurrences points.
+  Occurrences *_absence;  ///< Absence occurrences points.
 
   char f_error[256];
 };

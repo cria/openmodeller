@@ -33,6 +33,8 @@
 #include "om_defs.hh"
 
 class Occurrence;
+class GeoTransform;
+
 template<class T> class DList;
 
 
@@ -50,17 +52,24 @@ class Occurrences
 
 public:
 
-  Occurrences( char *name, char *id );
+  /** Creates a collection of occurrences points.
+   *  @param name Collection of occurrences' name.
+   *  @param coord_system Coordinate system of the occurrences
+   *   points to be inserted in this collection (in WKT format).
+   */
+  Occurrences( char *name, char *coord_system=OM_WGS84 );
   ~Occurrences();
 
   char *name()   { return _name; }
-  char *id()     { return _id;   }
 
   /** Insert an occurrence. */
-  void insert( Coord longitude, Coord latitude, float abundance=1.0 );
+  void insert( Coord longitude, Coord latitude, Scalar error,
+	       Scalar abundance=1.0, int num_attributes=0,
+	       Scalar *attributes=0 );
 
-  /** Number of attributes of the thing occurred. This is the number
-   *  of dependent variables, ie the variables to be modelled.
+  /** Number of attributes of the thing occurred. This is the
+   *  number of dependent variables, ie the variables to be
+   *  modelled.
    *  
    *  Fix: By now this is hardcoded to 1 (= abundance).
    */
@@ -86,11 +95,14 @@ public:
 
 private:
 
-  /** Build a vector view for the occurrences in the list _occur. */
+  /** Build a vector view for the occurrences in _occur */
   void buildVector();
 
-  char *_name; ///< A name for the list of occurrences (e.g. species name).
-  char *_id;   ///< An identifier for the list of occurrences.
+
+  char *_name; ///< List of occurrences' name (e.g. species name).
+
+  /** Object to transform between different coordinate systems. */
+  GeoTransform *_gt;
 
   LstOccur *_occur;  ///< Coordinates of the occurrences.
 

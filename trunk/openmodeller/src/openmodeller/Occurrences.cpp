@@ -31,6 +31,7 @@
 #include "list.cpp"     // Template.
 #include "occurrence.hh"
 #include "random.hh"
+#include "env_io/geo_transform.hh"
 
 #include <string.h>
 
@@ -41,7 +42,7 @@
 /*******************/
 /*** Constructor ***/
 
-Occurrences::Occurrences( char *name, char *id )
+Occurrences::Occurrences( char *name, char *coord_system )
 {
   _occur  = new LstOccur;
   _vector = 0;
@@ -49,8 +50,14 @@ Occurrences::Occurrences( char *name, char *id )
   _name = new char[ strlen(name) + 1 ];
   strcpy( _name, name );
 
-  _id = new char[ strlen(id) + 1 ];
-  strcpy( _id, id );
+  // Only use the GeoTransform object if the coordinate system
+  // of the given occurrences is different from the internal
+  // common openModeller coordinate system.
+  //
+  if ( strcmp( coord_system, OM_COORDINATE_SYSTEM ) )
+    _gt = new GeoTransform( coord_system, OM_COORDINATE_SYSTEM );
+  else
+    _gt = 0;
 }
 
 
@@ -63,19 +70,31 @@ Occurrences::~Occurrences()
   for ( _occur->head(); oc = _occur->get(); _occur->next() )
     delete( oc );
 
-  delete _occur;
-
   if ( _vector )
     delete _vector;
+
+  delete _occur;
+
+  if ( _gt )
+    delete _gt;
 }
 
 
 /**************/
 /*** insert ***/
 void
-Occurrences::insert( Coord longitude, Coord latitude, float pop )
+Occurrences::insert( Coord longitude, Coord latitude,
+		     Scalar error, Scalar abundance,
+		     int num_attributes, Scalar *attributes )
 {
-  Occurrence *oc = new Occurrence( longitude, latitude, pop );
+  // Transforms the given coordinates in the common openModeller
+  // coordinate system.
+  if ( _gt )
+    _gt->transfOut( &longitude, &latitude );
+
+  Occurrence *oc = new Occurrence( longitude, latitude, error,
+				   abundance, num_attributes,
+				   attributes );
   _occur->insertLast( oc );
 
   // Signal to rebuild vector view the next time "getRandom()"
@@ -157,13 +176,23 @@ Occurrences::print( char *msg )
 
   // Occurrences general data.
   printf( "Name: %s\n", _name );
-  printf( "ID  : %s\n", _id );
   printf( "\nOccurrences: %d\n\n", numOccurrences() );
 
   // Occurrence points.
   Occurrence *c;
   for ( head(); c = get(); next() )
-    printf( "(%+9.4f, %+8.4f)\n", c->x, c->y );
+    {
+      printf( "(%+8.4f, %+8.4f)", c->x(), c->y() );
+      printf( " - %6.2", c->error() );
+
+      // Print the attributes.
+      Scalar *attr = c->attributes();
+      Scalar *end  = attr + c->numAttributes();
+      printf( " [%+8,4f", *attr++ );
+      while ( attr < end )
+	printf( "%+8.4f, ", *attr++ );
+      printf( "]\n" );
+    }
 }
 
 

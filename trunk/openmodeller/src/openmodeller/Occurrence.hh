@@ -33,23 +33,86 @@
 #include <om_defs.hh>
 
 
+/****************************************************************/
+/************************** Occurrence **************************/
+
 /**
- * Geographic coordinates (longitude, latitude) in decimal degrees
- * and the number of individuals.
+ * Stores a georeferenced occurrence locality (longitude,
+ * latitude and uncertanty) and its attributes (abundance and
+ * possibly others optional attributes).
  * 
  */
 class Occurrence
 {
 public:
 
-  Occurrence( Coord px, Coord py, float a )
-  { x = px; y = py; *attr = a; }
+  /** Occurrence constructor with uncertanty.
+   * 
+   * @param px Longitude of the occurrence (decimal degrees).
+   * @param py Latitude of the occurrence (decimal degrees).
+   * @param error (x,y) uncertanty (meters).
+   * @param abundance Number of items found in (x,y).
+   * @param num_attributes Number of possible modelling
+   *  attributes.
+   * @param attributes Vector with possible modelling attributes.
+   */
+  Occurrence( Coord x, Coord y, Scalar error, Scalar abundance,
+	      int num_attributes=0, Scalar *attributes=0 )
+  {
+    init( x, y, error, abundance, num_attributes, attributes );
+  }
+
+  /** Occurrence constructor without uncertanty.
+   * 
+   * @param px Longitude of the occurrence (decimal degrees).
+   * @param py Latitude of the occurrence (decimal degrees).
+   * @param error (x,y) uncertanty (meters).
+   * @param abundance Number of items found in (x,y).
+   * @param num_attributes Number of possible modelling
+   *  attributes.
+   * @param attributes Vector with possible modelling attributes.
+   */
+  Occurrence( Coord x, Coord y, Scalar abundance,
+	      int num_attributes=0, Scalar *attributes=0 )
+  {
+    init( x, y, -1.0, abundance, num_attributes, attributes );
+  }
+
+  ~Occurrence();
 
 
-  Coord  x, y;
+  // Access to the locality information.
+  Coord  x()       { return _x; }
+  Coord  y()       { return _y; }
+  Scalar error()   { return _error; }
 
-  // Fix: hardcoded number of attributes (= abundance).
-  Scalar attr[1];  ///< Attributes of the occurred thing.
+  // Acces to attributes
+  int numAttributes()        { return _nattr; }
+  Scalar *attributes()       { return _attr; }
+  Scalar attribute( int i )  { return _attr[i]; }
+
+  /** Fills 'buffer' with the attributes.
+   * @return The number of attributes read.
+   */
+  int readAttributes( Scalar *buffer );
+
+
+  /** Abundance is the first attribute. */
+  Scalar Abundance()    { return *_attr; }
+
+
+private:
+
+  /** Only to do not need to rewrite both constructors. */
+  void init( Coord x, Coord y, Scalar error, Scalar abundance,
+	     int nattr, Scalar *attr );
+
+  Coord  _x;
+  Coord  _y;
+  Scalar _error;  ///< (x,y) uncertanty in meters.
+
+  int    _nattr;  ///< Number of attributes.  
+  Scalar *_attr;  ///< Possible modelling attributes.
 };
 
 typedef Occurrence *PtOccurrence;

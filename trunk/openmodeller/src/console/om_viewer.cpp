@@ -51,7 +51,7 @@ GColor _bg( 0, 140, 150 );
 int   _nmap;
 Map **_maps;
 
-OccurrencesFile *_ocf;
+Occurrences *_occurs;
 
 GImage  *_cnv;
 GImage  *_pm;
@@ -60,9 +60,11 @@ GGraph *_graph;
 
 void draw();
 void draw_map( GGraph *graph, Map *map );
-void draw_occur( GGraph *graph, Map *map, OccurrencesFile *ocf );
+void draw_occur( GGraph *graph, Map *map, Occurrences * );
 void findRegion( int nmap, Map **map, Coord *xmin, Coord *ymin,
 		 Coord *xmax, Coord *ymax );
+Occurrences *readOccurrences( char *file, char *name,
+			      char *coord_system );
 
 
 /**************************************************************/
@@ -134,11 +136,10 @@ main( int argc, char **argv )
 
 
   // Occurrences file.
-  char *ocs     = fp.get( "WKT Coord System" );
+  char *oc_cs   = fp.get( "WKT Coord System" );
   char *oc_file = fp.get( "Species file" );
-  char *species = fp.get( "Species" );
-  _ocf = new OccurrencesFile( oc_file, ocs,
-			      GeoTransform::cs_default );
+  char *oc_name = fp.get( "Species" );
+  _occurs = readOccurrences( oc_file, oc_name, oc_cs );
 
 
   // Instantiate graphical window.
@@ -180,7 +181,7 @@ draw()
       for ( int i = 0; i < _nmap; i++ )
 	{
 	  draw_map( _graph, _maps[i] );
-	  draw_occur( _graph, _maps[i], _ocf );
+	  draw_occur( _graph, _maps[i], _occurs );
 	}
 
       _redraw = 0;
@@ -225,24 +226,20 @@ draw_map( GGraph *graph, Map *map )
 /******************/
 /*** draw occur ***/
 void
-draw_occur( GGraph *graph, Map *map, OccurrencesFile *ocf )
+draw_occur( GGraph *graph, Map *map, Occurrences *occurs )
 {
   GColor color = GColor::Red;
 
-  Occurrence *occur;
+  // Draw each set of occurrences.
   float x, y;
-
-  Occurrences *occurSet;
-  for ( ocf->head(); occurSet = ocf->get(); ocf->next() )
+  Occurrence *oc;
+  for ( occurs->head(); oc = occurs->get(); occurs->next() )
     {
-      // Draw each set of occurrences.
-      for ( occurSet->head(); occur = occurSet->get(); occurSet->next() )
-	{
-	  //	  gt->transfIn( &x, &y, occur->x, occur->y );
-	  x = float( occur->x );
-	  y = float( occur->y );
-	  graph->markAxe( x, y, 1, color);
-	}
+      //	  gt->transfIn( &x, &y, occur->x, occur->y );
+      x = float( oc->x() );
+      y = float( oc->y() );
+
+      graph->markAxe( x, y, 1, color);
     }
 }
 
@@ -254,4 +251,23 @@ findRegion( int nmap, Map **map, Coord *xmin, Coord *ymin,
 	    Coord *xmax, Coord *ymax )
 {
   map[0]->getRegion( xmin, ymin, xmax, ymax );
+}
+
+
+/************************/
+/*** read Occurrences ***/
+Occurrences *
+readOccurrences( char *file, char *name, char *coord_system )
+{
+  OccurrencesFile oc_file( file, coord_system );
+
+  // Take last species from the list, which corresponds to the
+  // first inside the file.
+  if ( ! name )
+    {
+      oc_file.tail();
+      name = oc_file.get()->name();
+    }
+
+  return oc_file.remove( name );
 }
