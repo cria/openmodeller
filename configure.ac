@@ -2,7 +2,9 @@ dnl Process this file with autoconf to produce a configure script.
 
 AC_INIT
 
-AM_INIT_AUTOMAKE(openmodeller, 0.1.1)
+OM_VERSION=0.2.0
+
+AM_INIT_AUTOMAKE(openmodeller, $OM_VERSION)
 
 AC_PREFIX_PROGRAM(gcc)
 
@@ -109,6 +111,36 @@ fi
 AM_CONDITIONAL([HAVE_GSL], [test "$GSL_CFLAGS" != "" -a "$GSL_LIBS" != ""])
 
 dnl ---------------------------------------------------------------------------
+dnl SOAP interface
+dnl ---------------------------------------------------------------------------
+AC_MSG_CHECKING([if the SOAP server is to be compiled])
+
+AC_ARG_ENABLE(soap,
+  AC_HELP_STRING([--enable-soap],
+                 [The SOAP interface is an optional feature. You need to explicitly enable it if you want to compile the SOAP server by using '--enable-soap']),
+  [
+   case "${enableval}" in
+    yes)
+      build_soap=yes
+      ;;
+    no)
+      build_soap=no
+      ;;
+    *)
+      AC_MSG_ERROR([bad value ${enableval} for --enable-soap])
+      ;;
+   esac
+  ],
+  [
+    build_soap=no
+  ]
+)
+AC_MSG_RESULT([$build_soap])
+
+AM_CONDITIONAL([BUILD_SOAP], [test x$build_soap = xyes])
+
+
+dnl ---------------------------------------------------------------------------
 dnl  Python
 dnl ---------------------------------------------------------------------------
 AM_PATH_PYTHON
@@ -125,10 +157,10 @@ AC_CONFIG_FILES([
 	src/inc/Makefile
 	src/console/Makefile
 	src/console/graph/Makefile
+	src/soap/Makefile
 	src/swig/Makefile
 	src/swig/python/Makefile
 	src/swig/java/Makefile
-	src/soap/Makefile
 	openmodeller.spec
 ])
 

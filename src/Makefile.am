@@ -8,4 +8,8 @@
 # WITHOUT ANY WARRANTY, to the extent permitted by law; without even the
 # implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
-SUBDIRS = lib inc console soap swig
+if BUILD_SOAP
+SOAP_DIR=soap
+endif
+
+SUBDIRS = lib inc console $(SOAP_DIR) swig

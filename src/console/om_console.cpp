@@ -56,8 +56,6 @@ main( int argc, char **argv )
   // Reconfigure the global logger.
   g_log.set( Log::Debug, stdout, "Console" );
 
-  g_log( "\nopenModeller version %s\n", OM_VERSION );
-
   if ( argc < 2 )
     g_log.error( 1, "\n%s <request>\n\n", argv[0] );
 
@@ -65,6 +63,8 @@ main( int argc, char **argv )
   // controlInterface to manage the model process.
   FileParser fp( argv[1] );
   OpenModeller om;
+
+  g_log( "\nopenModeller version %s\n", om.getVersion() );
 
   g_log( "\nAlgorithms will be loaded from: %s\n\n", om.getPluginPath() );
 
