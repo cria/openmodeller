@@ -30,7 +30,7 @@
 #ifndef _OCCURRENCEHH_
 #define _OCCURRENCEHH_
 
-#include <defs.hh>
+#include <om_defs.hh>
 
 
 /**

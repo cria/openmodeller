@@ -15,14 +15,33 @@
    a cvs check out).
 
 
-4. Set the environment variables OM_HOME (to: bla/bla/openModeller)
-   and, if necessary, GDAL_DIR. If you didn't change the "--prefix="
-   parameter in "configure" when installing GDAL (the default is
-  /usr/local) you don't need to set GDAL_DIR.
+4. Set the environment variables:
+
+   * OM_HOME (mandatory)
+     openModeller's home directory (eg: bla/bla/openModeller)
+
+   * OM_INSTALL (optional)
+     openModeller will be installed in:
+     - executables in $(OM_INSTALL)/bin
+     - includes    in $(OM_INSTALL)/include
+     - libraries   in $(OM_INSTALL)/lib
+     The OM_INSTALL default is /usr/local
+     If you need different install directories for execs, incs or
+     libs you can edit INST_BIN, INST_INC and INST_LIB in file
+     $(OM_HOME)/Makefile.
+
+   * GDAL_DIR (optional)
+     If you didn't change the "--prefix=" parameter in "configure"
+     when installing GDAL (the default is /usr/local) you don't need
+     to set GDAL_DIR.
 
 
 5. Go to $(OM_HOME) and do a "make". It will create a
    $(OM_HOME)/src/om_console executable.
+
+   If you have X11 you can do a "make viewer". It will create a
+   $(OM_HOME)/src/om_viewer executable. It is simple graphical
+   interface to visualize the maps, models and occurrence points.
 
 
 6. If you want to build the code documentation and have doxygen
@@ -31,29 +50,34 @@
    $(OM_HOME)/doc/latex
 
 
-7. Go to $(OM_HOME)/examples and get at least one map file do a simple
-   test: 
+7. In $(OM_HOME) directory do a "make install" to install the
+   executables and libraries in $(OM_INSTALL) directory.
+
+
+8. Go to $(OM_HOME)/examples and get at least one map file to do a
+   simple test: 
     $ wget http://openmodeller.cria.org.br/download/rain_coolest.tgz
     $ tar xvzf rain_coolest.tgz
 
 
-8. Read the request.txt file. It tells openModeller what to do.
+9. Read the request.txt file. It tells openModeller what to do.
 
 
-9. Go to $(OM_HOME)/src and execute:
-    $ om_console ../examples/request.txt
+10. Run openModeller console version:
+    $ om_console request.txt
 
-    The output will be in ../examples/furcata.tif.
+    The output will be in furcata.tif.
+
+    Obs: be sure that $(OM_INSTALL)/bin is in your PATH!
 
 
-10. If you have X11 you can:
-    $ make om_viewer
+11. If you built om_viewer (step 5) you can:
 
-    And visualize the maps with:
-    $ om_viewer ../examples/request.txt
+    Visualize the maps with:
+    $ om_viewer request.txt
 
-    And the resulted model with
-    $ om_viewer -r ../examples/request.txt
+    Visualize the resulted model with:
+    $ om_viewer -r request.txt
 
 
 

@@ -29,11 +29,7 @@
 #ifndef _BIOCLIMHH_
 #define _BIOCLIMHH_
 
-
-#include <algorithm.hh>
-
-class Occurrences;
-class Sampler;
+#include <om.hh>
 
 
 /****************************************************************/

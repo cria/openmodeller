@@ -29,7 +29,7 @@
 #ifndef _RASTERHH_
 #define _RASTERHH_
 
-#include <defs.hh>
+#include <om_defs.hh>
 #include <env_io/header.hh>
 
 

@@ -30,11 +30,6 @@
 
 #include "bioclim.hh"
 
-#include <log.hh>
-#include <defs.hh>
-#include <occurrences.hh>
-#include <sampler.hh>
-
 #include <string.h>
 #include <stdio.h>
 #include <math.h>

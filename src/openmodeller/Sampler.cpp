@@ -26,12 +26,13 @@
  * http://www.gnu.org/copyleft/gpl.html
  */
 
-#include <stdio.h>
-#include <sampler.hh>
-
-#include <occurrences.hh>
 #include <environment.hh>
 #include <occurrence.hh>
+
+#include <om_sampler.hh>
+#include <om_occurrences.hh>
+
+#include <stdio.h>
 
 
 /****************************************************************/

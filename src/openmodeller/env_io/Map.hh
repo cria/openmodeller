@@ -29,7 +29,7 @@
 #ifndef _MAPHH_
 #define _MAPHH_
 
-#include <defs.hh>
+#include <om_defs.hh>
 #include <env_io/raster.hh>
 
 
