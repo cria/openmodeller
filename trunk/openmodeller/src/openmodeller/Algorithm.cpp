@@ -71,7 +71,7 @@ Algorithm::setSampler( Sampler *samp )
   if ( _categ )
     delete _categ;
 
-  _categ = new int[ _samp->dimEnv() ];
+  _categ = new int[ _samp->numIndependent() ];
   _samp->varTypes( _categ );
 }
 

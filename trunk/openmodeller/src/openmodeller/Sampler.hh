@@ -55,8 +55,13 @@ public:
   ~Sampler();
 
 
-  /** Number of environmental variables. */
-  int dimEnv();
+  /** Number of independent variables (environmental variables). */
+  int numIndependent();
+
+  /** Number of dependent variables (attributes of the occurred
+   *  thing). These are the variables to be modelled.
+   */
+  int numDependent();
 
 
   /** Number of presences (occurrence points). */
@@ -73,7 +78,7 @@ public:
    * 
    * @return Number of presence points filled in.
    */
-  virtual int getPresence( SampledData *env, int npnt=-1 );
+  virtual int getPresence( SampledData *data, int npnt=-1 );
 
   /** Get the environment values at the absence localities.
    *
@@ -83,7 +88,7 @@ public:
    *  
    * @return Number of absence points filled in.
    */
-  virtual int getAbsence( SampledData *env, int npnt=-1 );
+  virtual int getAbsence( SampledData *data, int npnt=-1 );
 
   /** Get the environment values at some random localities.
    * It is not garanteed that the environment values are different
@@ -94,25 +99,42 @@ public:
    *
    * @return Number of absence points filled in.
    */
-  virtual int getPseudoAbsence( SampledData *env, int npnt );
+  virtual int getPseudoAbsence( SampledData *data, int npnt );
 
 
-  /** Samples presence and absence (or pseudo-absence) points.
-   * By default, returns npnt/2 (upper rounded) points of presence
-   * and npnt/2 (lower rounded) points of absence.
+  /** Samples presence and absence (or pseudo-absence) points in
+   * a uniform way.
+   * There is 50% of chance to get a presence point and 50% of
+   * get an absence or pseudo-absence point.
+   * If there are real absence points (user input) then only
+   * absence are sampled. If there are not real absence, samples
+   * pseudo-absence points.
    * 
+   * @param data Filled with environmental values of presence and
+   *  absence localities.
    * @param npnt Maximum number of localities to sample.
-   * @param npresence Number of presences sampled.
-   * @param presence Filled with environmental values of presence
-   *  localities.
-   * @param nabsence Number of absences sampled.
-   * @param absence Filled with environmental values of absence
-   *  (or pseudo-absence) localities.
    *
    * @return Total of sampled localities.
    */
-  virtual int getSamples( SampledData *presence, SampledData *absence,
-			  int npnt );
+  virtual int getSamples( SampledData *data, int npnt );
+
+  /** Samples one presence, absence or pseudo-absence point in
+   * a uniform way.
+   * There is 50% of chance to get a presence point and 50% of
+   * get an absence or pseudo-absence point.
+   * If there are real absence points (user input) then only
+   * absence are sampled. If there are not real absence, samples
+   * pseudo-absence points.
+   * 
+   * @param independent Filled in with values of the independent
+   *  variables of the sample.
+   *
+   * @return Zero if got an absence or pseudo-absence point and
+   *  not zero if got a presence point.
+   */
+  virtual int getOneSample( Scalar *independent,
+			    Scalar *dependent );
+
 
   /** Sets types[i] = 1 if variable associated to "i" is
    * categorical (eg: soil), otherwise set types[i] = 0.
@@ -122,6 +144,11 @@ public:
 
 
 protected:
+
+  int getRandomOccurrence( Occurrences *occur,
+			   Scalar *independent,
+			   Scalar *dependent );
+
 
   /** Get the environment values at the given localities.
    *

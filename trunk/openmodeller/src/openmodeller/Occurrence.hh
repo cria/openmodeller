@@ -42,10 +42,14 @@ class Occurrence
 {
 public:
 
-  Occurrence( Coord px, Coord py, float p )  {x=px; y=py; pop=p;}
+  Occurrence( Coord px, Coord py, float a )
+  { x = px; y = py; *attr = a; }
 
-  Coord x, y;
-  float pop;  ///< Population size.
+
+  Coord  x, y;
+
+  // Fix: hardcoded number of attributes (= abundance).
+  Scalar attr[1];  ///< Attributes of the occurred thing.
 };
 
 typedef Occurrence *PtOccurrence;

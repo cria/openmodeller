@@ -57,8 +57,14 @@ public:
   char *id()     { return _id;   }
 
   /** Insert an occurrence. */
-  void insert( Coord longitude, Coord latitude, float pop=1.0 );
+  void insert( Coord longitude, Coord latitude, float abundance=1.0 );
 
+  /** Number of attributes of the thing occurred. This is the number
+   *  of dependent variables, ie the variables to be modelled.
+   *  
+   *  Fix: By now this is hardcoded to 1 (= abundance).
+   */
+  int numAttributes()  { return 1; }
 
   /** Number of occurrences. */
   int numOccurrences();
@@ -70,7 +76,9 @@ public:
 
   /** Remove from list the current coordinate, returning it. */
   Occurrence *remove();
-  
+
+  /** Choose an occurrence at random. */
+  Occurrence *getRandom();
 
   /** Print occurrence data and its points. */
   void print( char *msg="" );
@@ -78,10 +86,15 @@ public:
 
 private:
 
+  /** Build a vector view for the occurrences in the list _occur. */
+  void buildVector();
+
   char *_name; ///< A name for the list of occurrences (e.g. species name).
   char *_id;   ///< An identifier for the list of occurrences.
 
-  LstOccur *_ocur;  ///< Coordinates of the occurrences.
+  LstOccur *_occur;  ///< Coordinates of the occurrences.
+
+  Occurrence **_vector; ///< Vector view to the occurrences.
 };
 
 
