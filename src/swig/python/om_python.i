@@ -15,6 +15,41 @@
 // an output value.  We'll append the value to the current result which 
 // is guaranteed to be a List object by SWIG.
 
+%typemap(out) AlgMetadata ** 
+{
+    // get size of metadata 
+    int i = 0;
+    PyObject * list = PyList_New(0);
+    AlgMetadata * algMetadata = $1[0];
+    while (algMetadata) 
+    {
+	PyObject * pyObj = SWIG_NewPointerObj(algMetadata, SWIGTYPE_p_AlgMetadata, 1);
+        PyList_Append(list, pyObj);
+	algMetadata = $1[++i];
+    }
+    $result = list;
+    delete $1;
+}
+
+%inline %{
+
+PyObject * getParameterList(AlgMetadata * metadata)
+{
+    int i;
+    PyObject * paramMetadata;
+    PyObject * list = PyList_New(0);
+    for (i = 0; i < metadata->nparam; i++)
+    {
+	paramMetadata = SWIG_NewPointerObj((void *) &(metadata->param[i]), 
+                                           SWIGTYPE_p_AlgParamMetadata, 1);
+        PyList_Append(list, paramMetadata);
+    }
+
+    return list;
+}
+
+%}
+
 %typemap(argout) double *OutValue {
     PyObject *o, *o2, *o3;
     o = PyFloat_FromDouble(*$1);
