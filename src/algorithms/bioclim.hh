@@ -57,14 +57,17 @@ public:
 
 private:
 
-  int    f_done;
-  Scalar f_cutoff;
+  Scalar cartesianDistance( Scalar *x, Scalar *y );
 
-  Scalar *f_min;   ///> Minimum value for variables after cutoff 
-  Scalar *f_max;   ///> Maximum value for variables after curoff
-  Scalar *f_avg;   ///> Average value
-  Scalar *f_range; ///> Range of values
-  int     f_dim;   ///> Number of dimensions in environmental space
+
+  int    _done;
+  Scalar _cutoff;
+
+  Scalar *_min;   ///> Minimum value for variables after cutoff 
+  Scalar *_max;   ///> Maximum value for variables after curoff
+  Scalar *_avg;   ///> Average value
+  Scalar *_half_range; ///> (Max - Min) / 2
+  int     _dim;   ///> Number of dimensions in environmental space
 };
 
 

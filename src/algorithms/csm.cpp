@@ -26,9 +26,9 @@ Csm::Csm( Sampler *samp ): Algorithm( samp )
 {
     //set the class member that holds the number of environmental variables
     //we subtract 1 because the first column contains the specimen count
-    f_layer_count = samp->dim()-1;
+    f_layer_count = samp->dimEnv();
     //set the class member that holds the number of occurences
-    f_localityCount = samp->numOccurrences();
+    f_localityCount = samp->numPresence();
 
 }
 
@@ -131,7 +131,8 @@ int Csm::initialize( int ncycle )
     printf ("        CSM Model Generation Completed ");
     printf ("\n*************************************************\n");
 }
-/** This is a utility function to convert the f_sampl Sampler to a gsl_matrix.
+/** This is a utility function to convert the f_sampl Sampler to a
+  * gsl_matrix.
   * @return 0 on error
   */
 int Csm::SamplerToMatrix()
@@ -141,11 +142,11 @@ int Csm::SamplerToMatrix()
     //from the environmental layers at each point - this will be
     //converted to a gsl structure in the next step
     //f_samp is defined in the Algorithm class from which Csm inherits
-    Samples mySamples (f_localityCount,f_layer_count);
-    if (!f_samp->getOccurrences(f_localityCount, &mySamples))
-    {
-        return 0;
-    }
+    SampledData localities;
+    if ( ! _samp->getPresence(&localities, f_localityCount))
+      return 0;
+    Scalar *mySamples = localities.pnt;
+    f_localityCount   = localities.npnt;
 
     // Allocate the gsl matrix to store environment data at each locality
     f_gsl_environment_matrix = gsl_matrix_alloc (f_localityCount, f_layer_count);
@@ -155,7 +156,7 @@ int Csm::SamplerToMatrix()
         for (int j=0;j<f_layer_count;j++)
         {
             //we add one to j in order to omit the specimen count column
-            float myCellValue = mySamples(i,j+1);
+            float myCellValue = mySamples[i * f_layer_count + j];
             gsl_matrix_set (f_gsl_environment_matrix,i,j,myCellValue);
         }
     }
@@ -360,6 +361,7 @@ Scalar Csm::getValue( Scalar *x )
     gsl_matrix_free (p);
     //gsl_vector_free (component1_gsl_vector);
     gsl_matrix_free (tmp_gsl_matrix);
+
     return myFloat;
 }
 
