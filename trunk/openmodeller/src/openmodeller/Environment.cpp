@@ -313,7 +313,6 @@ Environment::newMap( char *file, int categ )
 int
 Environment::calcRegion()
 {
-  GeoTransform *gt;
   Coord xmin, ymin, xmax, ymax;
 
   _xmin = _ymin =  MAXFLOAT;
