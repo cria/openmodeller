@@ -93,7 +93,7 @@ if [ "$LT_ERROR" = "1" ]; then
 fi
 
 echo Configuring build environment for openmodeller
-aclocal  \
+aclocal \
   && libtoolize --force --copy \
   && automake --add-missing --foreign --copy \
   && autoconf --force \
