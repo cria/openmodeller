@@ -122,8 +122,11 @@ int Csm::SamplerToMatrix(Sampler *samp)
     displaySamples();
 
     //Now calculate the covariance matrix:
-    f_gsl_covariance_matrix = gsl_matrix_alloc (f_layer_count, f_layer_count);
-    gsl_multifit_covar (f_gsl_environment_matrix, 0.0, f_gsl_covariance_matrix);
+    //f_gsl_covariance_matrix = gsl_matrix_alloc (f_layer_count, f_layer_count);
+    //gsl_multifit_covar (f_gsl_environment_matrix, 0.0, f_gsl_covariance_matrix);
+    
+    f_gsl_covariance_matrix = autoCovariance(f_gsl_environment_matrix);
+
     // gsl_stats_covariance (f_gsl_environment_matrix->data,
     //                      sizeof(float),
     //			  f_gsl_environment_matrix->data,
@@ -430,3 +433,148 @@ void Csm::displayEigen()
     }
     printf ("----------------------------------------------\n ");
 }
+
+
+/******************/
+/**** transpose ***/
+gsl_matrix * transpose (gsl_matrix * m)
+{
+    gsl_matrix * t = gsl_matrix_alloc (m->size2, m->size1);
+  
+    for (int i = 0; i < m->size1; i++)
+    {
+        gsl_vector * v = gsl_vector_alloc(m->size2);
+        gsl_matrix_get_row (v, m, i);
+        gsl_matrix_set_col (t, i, v);
+    }
+  
+    return t;
+}
+
+/************************/
+/**** Vectors product ***/
+double product (gsl_vector * va, gsl_vector * vb)
+{
+    // fix me: need to check if vectors are of the same size !!!
+
+    double res = 0.0;
+  
+    for (int i = 0; i < va->size; i++)
+    {
+        res += gsl_vector_get(va, i)*gsl_vector_get(vb, i);
+    }
+
+    return res;
+}
+
+/*************************/
+/**** Matrices product ***/
+gsl_matrix * product (gsl_matrix * a, gsl_matrix * b)
+{
+    // fix me: need to check if a->size2 is equal to b->size1 !!!
+
+    gsl_matrix * p = gsl_matrix_alloc (a->size1, b->size2);
+  
+    for (int i = 0; i < a->size1; i++)
+    {
+        gsl_vector * va = gsl_vector_alloc(a->size2);
+
+        gsl_matrix_get_row (va, a, i);
+
+        for (int j = 0; j < b->size2; j++)
+	{
+            gsl_vector * vb = gsl_vector_alloc(a->size2);
+
+            gsl_matrix_get_col (vb, b, j);
+
+            double vp = product(va, vb);
+
+            gsl_matrix_set (p, i, j, vp);
+	}
+    }
+  
+    return p;
+}
+
+/***********************/
+/**** autoCovariance ***/
+/**
+
+This method tries to mimic the octave "cov" function when it
+receives only one parameter:
+
+function c = cov (x)
+
+  if (rows (x) == 1)
+    x = x';
+  endif
+
+  n = rows (x);
+
+  x = x - ones (n, 1) * sum (x) / n;
+  c = conj (x' * x / (n - 1));
+
+endfunction
+
+*/
+gsl_matrix * autoCovariance(gsl_matrix * m)
+{
+    int numrows = m->size1;
+    int numcols = m->size2;
+  
+    if (numrows == 1)
+    {
+         m = transpose(m);
+    }
+
+    // compute: ones (n, 1) * sum (x)
+    gsl_matrix * s = gsl_matrix_alloc (numrows, numcols);
+
+    if (numrows == 1)
+    {
+        s = m;
+    }
+    else
+    {
+        gsl_vector * v = gsl_vector_alloc(numcols);
+
+        for (int i = 0; i < numcols; i++)
+	{
+	    double val = 0.0;
+
+            for (int j = 0; j < numrows; j++)
+	    {
+	        val += gsl_matrix_get (m, j, i);
+	    }
+
+            gsl_vector_set (v, i, val);
+
+            for (int j = 0; j < numrows; j++)
+	    {
+	        gsl_matrix_set_row (s, j, v);
+	    }
+	}
+    }
+
+    // divide by "n"
+    gsl_matrix_scale (s, (double)1/numrows);
+
+    // subtract the result from x 
+    gsl_matrix_sub (m, s);
+
+    // get x'
+    gsl_matrix * mt = transpose(m);
+
+    // x / (n - 1)
+    gsl_matrix_scale (m, (double)1/(numrows-1));
+
+    // multiply by x'
+    gsl_matrix * p = product(mt, m);
+
+    gsl_matrix_free (mt);
+    gsl_matrix_free (p);
+    gsl_matrix_free (s);
+
+    return m;
+}
+

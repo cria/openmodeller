@@ -358,6 +358,32 @@ private:
     * _gsl_eigenvector_matrix
     */
   void displayEigen();
+
+  /** This a utility function to calculate a transposed gsl matrix.
+   * @param m gsl_matrix Input matrix
+   * @return gsl_matrix Transposed matrix
+   */
+  gsl_matrix * transpose (gsl_matrix * m);
+
+  /** This a utility function to calculate the internal product of two gsl vectors.
+   * @param va gsl_vector Input vector a
+   * @param vb gsl_vector Input vector b
+   * @return double Result
+   */
+  double product (gsl_vector * va, gsl_vector * vb);
+
+  /** This a utility function to calculate the product between two gsl matrices.
+   * @param a gsl_matrix Input matrix a
+   * @param b gsl_matrix Input matrix b
+   * @return gsl_matrix Output matrix
+   */
+  gsl_matrix * product (gsl_matrix * a, gsl_matrix * b);
+
+  /** This a utility function to calculate the auto covariance of a gsl matrix.
+   * @param m gsl_matrix Input matrix
+   * @return gsl_matrix Output matrix
+   */
+  gsl_matrix * autoCovariance(gsl_matrix * m);
     
   
   /** This member variable is used to indicate whether the model 
