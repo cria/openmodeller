@@ -117,6 +117,7 @@ AC_CONFIG_FILES([
 	src/inc/Makefile
 	src/console/Makefile
 	src/console/graph/Makefile
+	openmodeller.spec
 ])
 
 AC_OUTPUT

@@ -12,6 +12,9 @@ EXTRA_DIST = \
 	AUTHORS \
 	README \
 	INSTALL \
+	NEWS \
+	ChangeLog \
+	COPYING \
 	doc/classes.dia \
 	doc/classes.png \
 	doc/openModeller.doxygen \
@@ -25,9 +28,9 @@ SUBDIRS = src algorithms
 release: distdir
 	-chmod -R a+r $(distdir)
 	GZIP=$(GZIP_ENV) $(AMTAR)$(TAR) chozf $(distdir).tar.gz $(distdir)
+	rm -f $(distdir)/openmodeller.spec
+	sed '/^Source:/s/\.tar\.gz$$/\.tar\.bz2/' openmodeller.spec \
+			> $(distdir)/openmodeller.spec
 	BZIP2=$(BZIP2_ENV) $(AMTAR)$(TAR) --bzip2 -chof $(distdir).tar.bz2 $(distdir)
 	-rm -rf $(distdir)
 
-#	rm -f $(distdir)/openmodeller.spec
-#	sed '/^Source:/s/\.tar\.gz$$/\.tar\.bz2/' openmodeller.spec \
-#			> $(distdir)/openmodeller.spec
