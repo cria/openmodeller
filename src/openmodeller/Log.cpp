@@ -40,7 +40,7 @@
 
 
 // A default logger object.
-Log g_log( Log::Error, stderr );
+Log g_log( Log::Error , stderr );
 
 
 /****************************************************************/
@@ -68,6 +68,9 @@ Log::Log( char *name, char *pref, int overwrite )
   // Closes '_log' in destructor.
   _close = 1;
 }
+
+/*******************/
+/*** constructor ***/
 
 Log::Log( Log::Level level, FILE *out, char *pref )
 {
@@ -117,7 +120,7 @@ Log::setPrefix( char *pref )
 
   // Without prefix.
   if ( ! pref )
-    pref = "";
+    pref = "[]";
 
   _pref = new char[ 1 + strlen(pref) ];
   strcpy( _pref, pref );

@@ -67,7 +67,7 @@ public:
    * @param extra_param A parameter set by user when
    *  setModelCallback() is called.
    */
-  typedef void (*ModelCallback)( int step, void *extra_param );
+  typedef void (*ModelCallback)( float progress, void *extra_param );
 
   /** Model callback function.
    * @param progress A number between 0.0 and 1.0 reflecting the
@@ -263,7 +263,7 @@ public:
   class ModelCommand {
   public: 
     virtual ~ModelCommand() {};
-    virtual void operator()( int ) = 0;
+    virtual void operator()( float ) = 0;
   };
 
   /** Sets a callback function to be called after each iteration

@@ -45,7 +45,7 @@ int readParameters( AlgParameter *result, AlgMetadata *metadata );
 char *extractParameter( char *name, int nvet, char **vet );
 
 void mapCallback( float progress, void *extra_param );
-
+void modelCallback( float progress, void * extra_param );
 
 /**************************************************************/
 /*************** openModeller Console Interface ***************/
@@ -58,7 +58,7 @@ main( int argc, char **argv )
   char * path = 0;
 
   // Reconfigure the global logger.
-  g_log.setLevel( Log::Debug );
+  g_log.setLevel( Log::Error );
   g_log.setPrefix( "Console" );
 
   if ( argc < 2 )
@@ -116,6 +116,7 @@ main( int argc, char **argv )
 
   /*** Run the model ***/
 
+  om.setModelCallback( modelCallback );
   if ( ! om.createModel() )
     g_log.error( 1, "Error: %s\n", om.error() );
 
@@ -126,12 +127,15 @@ main( int argc, char **argv )
 
   ConfusionMatrix * matrix = om.getConfusionMatrix();
   AreaStats * stats = om.getActualAreaStats();
-  g_log("Omission error        : %+7.4f\n", matrix->getOmissionError());
-  g_log("Area predicted present: %+7.4f\n", 
-	stats->getAreaPredictedPresent() / (double) stats->getTotalArea());
-  g_log("Total area            : %d\n", stats->getTotalArea());
+  g_log("\nModel statistics\n");
+  g_log("Accuracy:          %7.2f\%\n", matrix->getAccuracy() * 100);
+  g_log("Omission error:    %7.2f\%\n", matrix->getOmissionError() * 100);
+  //g_log("Commission error:  %7.2f\%\n", matrix->getCommissionError() * 100);
+  g_log("Percentage of cells predicted present: %7.2f\%\n", 
+	stats->getAreaPredictedPresent() / (double) stats->getTotalArea() * 100);
+  g_log("Total number of cells: %d\n", stats->getTotalArea());
 
-  g_log( "Done.\n" );
+  g_log( "\nDone.\n" );
   return 0;
 }
 
@@ -255,6 +259,17 @@ extractParameter( char *id, int nvet, char **vet )
   return 0;
 }
 
+
+/********************/
+/*** map Callback ***/
+/**
+ * Shows the map creation progress.
+ */
+void
+modelCallback( float progress, void *extra_param )
+{
+  g_log( "Model creation: %07.4f\% \r", 100 * progress );
+}
 
 /********************/
 /*** map Callback ***/

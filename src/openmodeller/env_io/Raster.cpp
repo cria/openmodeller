@@ -133,9 +133,6 @@ Raster::normalize( Scalar min, Scalar max )
   f_offset = min - f_scale * f_hdr.min;
   f_normal = 1;
 
-  printf("Layer normalized. Min=%f Max=%f Scale=%f Offset=%f\n", 
-	f_hdr.min, f_hdr.max, f_scale, f_offset);
-
   return 1;
 }
 

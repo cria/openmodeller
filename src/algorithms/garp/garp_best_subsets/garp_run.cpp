@@ -45,7 +45,7 @@ THREAD_PROC_RETURN_TYPE GarpRunThreadProc(void * threadData)
 {
   GarpRun * garpRun = (GarpRun *) threadData;
 
-  g_log("Starting new thread (%d).\n", garpRun->getId());
+  //g_log.debug("Starting new thread (%d).\n", garpRun->getId());
 
   while (!garpRun->done())
     garpRun->iterate();
@@ -54,7 +54,7 @@ THREAD_PROC_RETURN_TYPE GarpRunThreadProc(void * threadData)
   garpRun->calculateOmission();
   garpRun->finalize();
   
-  g_log("Finishing thread (%d).\n", garpRun->getId());
+  //g_log.debug("Finishing thread (%d).\n", garpRun->getId());
 
   THREAD_PROC_RETURN_STATEMENT;
 }
@@ -93,7 +93,7 @@ int GarpRun::initialize(int id, int comm_samples,
 			Sampler * test_sampler, 
 			int nparam, AlgParameter * param)
 {
-  g_log("Initializing garp run (%d)\n", id);
+  //g_log.debug("Initializing garp run (%d)\n", id);
 
   _id = id;
   _commission_samples = comm_samples;
@@ -112,7 +112,7 @@ int GarpRun::initialize(int id, int comm_samples,
 /****************************************************************/
 int GarpRun::run()
 {
-  g_log("Starting new garp run (%d).\n", _id);
+  //g_log.debug("Starting new garp run (%d).\n", _id);
   _running = true;
   THREAD_START(GarpRunThreadProc, this); 
   return 1;  
@@ -125,7 +125,7 @@ bool GarpRun::running()
 /****************************************************************/
 int GarpRun::iterate()
 {
-  g_log("Iteration %6d on run %d.\n", _garp->getGeneration(), _id);
+  //g_log.debug("Iteration %6d on run %d.\n", _garp->getGeneration(), _id);
   return _garp->iterate();
 }
 
@@ -134,9 +134,13 @@ int GarpRun::done()
 { return _garp->done(); }
 
 /****************************************************************/
+float GarpRun::getProgress()
+{ return _garp->getProgress(); }
+
+/****************************************************************/
 int GarpRun::finalize()           
 {
-  g_log("Finishing up garp run.(%d)\n", _id);
+  //g_log.debug("Finishing up garp run.(%d)\n", _id);
   _running = false;
   _garp->deleteTempDataMembers();
   THREAD_END();
@@ -152,7 +156,7 @@ int GarpRun::calculateCommission()
 
   // TODO: check how to use absences in computing commission
 
-  g_log("Calculating commission error (%d).\n", _id);
+  //g_log.debug("Calculating commission error (%d).\n", _id);
 
   // get random points from the background to estimate 
   // area predicted present
@@ -175,7 +179,7 @@ int GarpRun::calculateOmission()
 
   // TODO: check how to use absences in computing omission
 
-  g_log("Calculating omission error (%d).\n", _id);
+  //g_log.debug("Calculating omission error (%d).\n", _id);
 
   // test which kind of test (intrinsic or extrinsic) should be performed
   if (!_test_sampler)
