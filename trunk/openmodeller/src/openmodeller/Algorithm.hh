@@ -98,10 +98,10 @@ public:
   /** One step further on the training. Return 0 if something 
    * wrong happened.
    */
-  virtual int iterate() = 0;
+  virtual int iterate() { return 1; };
 
   /** Return != 0 if algorithm finished. */
-  virtual int done() = 0;
+  virtual int done() { return 1; }
 
   /** Read algorithm state. */
   virtual int load( int fd )  { return 0; }
@@ -116,7 +116,7 @@ public:
    * 
    * @return The occurrence probability in the range [0,1].
    */
-  virtual Scalar getValue( Scalar *x ) = 0;
+  virtual Scalar getValue( Scalar *x ) { return 0.0; };
 
 
   /** Returns the algorithm's convergence value at the moment */

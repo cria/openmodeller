@@ -65,7 +65,7 @@ public:
   char *setProj( char *projection );
   int   hasProj()                      { return proj && *proj; }
 
-  void print( char *msg="" );
+  void printHeader( char *msg="" ); // conflicts with Python SWIG interface
 
 
   int xdim;    /**< Map width **/

@@ -66,6 +66,7 @@ main( int argc, char **argv )
   FileParser fp( argv[1] );
   ControlInterface om;
 
+  g_log( "\nAlgorithms will be loaded from: %s\n\n", om.getPluginPath() );
 
   /*** Environmental data (mask and maps) ***/
 
@@ -126,6 +127,8 @@ main( int argc, char **argv )
   AlgMetadata **availables = om.availableAlgorithms();
   AlgMetadata *metadata;
   char *alg_id = fp.get( "Algorithm" );
+
+  g_log( "\nNumber of available algorithms: %d\n", om.numAvailableAlgorithms() );
 
   // Try to used the algorithm specified in the request file.
   // If it can not be used, read it from stdin.

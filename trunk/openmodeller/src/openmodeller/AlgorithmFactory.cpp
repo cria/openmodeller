@@ -259,7 +259,10 @@ AlgorithmFactory::scanDir( char *dir, ListDLL &lst )
   char **entries = scanDirectory( dir );
 
   if ( ! entries )
-    return 0;
+    {
+      g_log( "No algoritm found in directory %s\n", dir );
+      return 0;
+    }
 
   char **pent = entries;
   while ( *pent )

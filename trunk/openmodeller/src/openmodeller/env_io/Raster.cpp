@@ -223,7 +223,7 @@ Raster::print( char *msg )
 {
   g_log( "%s\n", msg );
 
-  f_hdr.print();
+  f_hdr.printHeader();
   return 1;
 }
 

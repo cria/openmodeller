@@ -113,6 +113,21 @@ ControlInterface::getVersion()
 }
 
 
+char * 
+ControlInterface::getPluginPath()
+{
+  return PLUGINPATH;
+}
+
+
+/****************************/
+/*** load Algorithms ***/
+int 
+ControlInterface::loadAlgorithms()
+{
+  return _factory->loadAlgorithms();
+}
+
 /****************************/
 /*** available Algorithms ***/
 AlgMetadata **
@@ -212,7 +227,16 @@ ControlInterface::setAlgorithm( char *id, int nparam,
 
   // Check the parameters.
   if ( ! meta || meta->nparam != nparam )
-    return 0;
+    {
+      if (!meta)
+	g_log("Can't get metadata for algorithm %s", id);
+
+      if (meta->nparam != nparam)
+	g_log("Number of parameters provided (%d) does not match required parameters (%d)", 
+	      nparam, meta->nparam);
+
+      return 0;
+    }
 
   stringCopy( &_alg_id, id );
 
