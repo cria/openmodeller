@@ -294,7 +294,15 @@ SOURCE=..\..\inc\algorithm_factory.hh
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\inc\environment.hh
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\inc\file_parser.hh
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\inc\list.hh
 # End Source File
 # Begin Source File
 
@@ -302,7 +310,55 @@ SOURCE=..\..\inc\map_format.hh
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\inc\occurrence.hh
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\inc\om.hh
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\inc\om_alg_parameter.hh
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\inc\om_algorithm.hh
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\inc\om_algorithm_metadata.hh
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\inc\om_control.hh
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\inc\om_defs.hh
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\inc\om_log.hh
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\inc\om_occurrences.hh
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\inc\om_sampled_data.hh
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\inc\om_sampler.hh
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\inc\os_specific.hh
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\inc\random.hh
 # End Source File
 # End Group
 # Begin Group "env_io_h"
@@ -312,6 +368,42 @@ SOURCE=..\..\inc\om.hh
 # Begin Group "serialization_h"
 
 # PROP Default_Filter ""
+# Begin Source File
+
+SOURCE=..\..\inc\serialization\ascii_deserializer.hh
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\inc\serialization\ascii_serializer.hh
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\inc\serialization\om_deserializer.hh
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\inc\om_serializable.hh
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\inc\serialization\om_serializer.hh
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\inc\serialization\om_serializer_factory.hh
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\inc\serialization\stack.hh
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\inc\serialization\xml_deserializer.hh
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\inc\serialization\xml_serializer.hh
+# End Source File
 # End Group
 # End Group
 # Begin Group "Resource Files"
