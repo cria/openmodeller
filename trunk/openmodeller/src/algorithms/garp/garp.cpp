@@ -28,7 +28,7 @@
  * http://www.gnu.org/copyleft/gpl.html
  * 
  * This is an implementation of the GARP algorithm first developed 
- * by David Stockwell
+ * by David Stockwell and modified by Ricardo Scachetti Pereira
  * 
  */
 
@@ -191,7 +191,8 @@ is known to occur and a set of geographic layers representing \
 the environmental parameters that might limit the species' \
 capabilities to survive.",
 
-  "Stockwell, D. R. B.",  // Author
+  // Author
+  "Stockwell, D. R. B., modified by Ricardo Scachetti Pereira",  
 
   // Bibliography.
   "Stockwell, D. R. B. 1999. Genetic algorithms II. \
