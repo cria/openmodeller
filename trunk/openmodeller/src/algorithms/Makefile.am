@@ -13,7 +13,8 @@ plugindir = ${pkglibdir}
 plugin_LTLIBRARIES = \
 		libomdistance_to_average.la \
 		libombioclim.la \
-		libomminimum_distance.la
+		libomminimum_distance.la \
+                libomgarp.la
 
 libomdistance_to_average_la_SOURCES = \
 	distance_to_average.cpp \
@@ -26,6 +27,13 @@ libombioclim_la_SOURCES = \
 libomminimum_distance_la_SOURCES = \
 	minimum_distance.cpp \
 	minimum_distance.hh
+
+libomgarp_la_SOURCES = \
+	garp.cpp garp_rules.cpp garp_sampler.cpp  \
+	garp.hh  garp_rules.hh  garp_sampler.hh
+
+libomgarp_la_LIBADD = ../src/lib/libopenmodeller.la
+libomgarp_la_CPPFLAGS = -I../src/inc
 
 libomdistance_to_average_la_LIBADD = ../src/lib/libopenmodeller.la
 libomdistance_to_average_la_CPPFLAGS = -I../src/inc
