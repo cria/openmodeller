@@ -160,6 +160,10 @@ AlgorithmFactory::algorithmMetadata( char *id )
   if ( ! id )
     return 0;
 
+  // If there is no algorithm, try to read them (again).
+  if ( ! _lstDLL.length() )
+    availableAlgorithms();
+
   // Metadata to be returned.
   AlgMetadata *metadata;
 
