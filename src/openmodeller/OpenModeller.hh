@@ -305,10 +305,10 @@ public:
    *  function.
    */
   void setMapCommand( MapCommand *func )
-  { if (_map_command) {
-      delete _map_command;
-    }
-    _map_command = func; }
+  {
+    if (_map_command) delete _map_command;
+    _map_command = func;
+  }
 
 
   //
@@ -357,6 +357,15 @@ public:
    *   no prediction for that point (masked or not predicted)
    */
   Scalar getValue(Environment * env, Coord x, Coord y);
+
+  /** Get prediction at a given point.
+   * @param ambiental_conditions Vector with ambiental conditions values
+   *  to be passed to the model.
+   * @return Prediction value at the specified point. Valid 
+   *   values range from 0.0 to 1.0. Value -1.0 means there is
+   *   no prediction for that point (masked or not predicted)
+   */
+  Scalar getValue( Scalar *ambiental_conditions );
 
   char *error()  { return _error; }
 

@@ -138,13 +138,12 @@ Raster::normalize( Scalar min, Scalar max )
 
 /*******************************/
 /*** copyNormalizationValues ***/
-int Raster::copyNormalizationValues(Raster * source)
+int
+Raster::copyNormalizationValues(Raster * source)
 {
   // Calculate the map's minimum and maximum.
-  if ( ! f_hdr.minmax &&
-       ! calcMinMax( &f_hdr.min, &f_hdr.max ) )
+  if ( ! getMinMax( &f_hdr.min, &f_hdr.max ) )
     return 0;
-  f_hdr.minmax = 1;
 
   f_scale = source->f_scale;
   f_offset = source->f_offset;
@@ -238,6 +237,24 @@ Raster::put( Coord px, Coord py, Scalar *val )
 }
 
 
+/*******************/
+/*** get Min Max ***/
+int
+Raster::getMinMax( Scalar *min, Scalar *max )
+{
+  if ( ! f_hdr.minmax && ! calcMinMax( &f_hdr.min, &f_hdr.max ) )
+    return 0;
+
+  *min = f_hdr.min;
+  calcNormal( min );
+
+  *max = f_hdr.max;
+  calcNormal( max );
+
+  return f_hdr.minmax = 1;
+}
+
+
 /*************/
 /*** print ***/
 int
@@ -311,13 +328,13 @@ Raster::calcMinMax( Scalar *min, Scalar *max, int band )
   // Scan all map values.
   for ( int y = 0; y < f_hdr.ydim; y++ )
     for ( int x = 0; x < f_hdr.xdim; x++ )
-      if ( ! iget( x, y, bands ) )
-	{
-	  if ( *min > *val )
-	    *min = *val;
-	  else if ( *max < *val )
-	    *max = *val;
-	}
+      if ( iget( x, y, bands ) )
+        {
+          if ( *min > *val )
+            *min = *val;
+          else if ( *max < *val )
+            *max = *val;
+        }
 
   delete bands;
 

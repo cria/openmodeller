@@ -104,6 +104,10 @@ public:
   int getRegion( Coord *xmin, Coord *ymin, Coord *xmax,
                  Coord *ymax );
 
+  /** Returns the minimum and maximum values of each layer. */
+  int getExtremes( Scalar *min, Scalar *max );
+
+
   char *getCoordinateSystem()   { return _cs; }
 
   Map * getLayer(int index) { return _layers[index]; }

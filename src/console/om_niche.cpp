@@ -1,9 +1,9 @@
 /**
- * openModeller console interface.
+ * Simple species niche visualizer.
  * 
  * @file
  * @author Mauro E S Muñoz (mauro@cria.org.br)
- * @date   2003-09-16
+ * @date   2003-10-09
  * $Id$
  * 
  * LICENSE INFORMATION 
@@ -27,15 +27,36 @@
  */
 
 #include <om.hh>
+#include <environment.hh>
+#include <occurrence.hh>
 #include "request_file.hh"
 #include "file_parser.hh"
 #include "occurrences_file.hh"
+#include "graph/graphic.hh"
 
-#include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
+#include <stdlib.h>
 
 
+float _zoom;
+int   _redraw    = 1;
+int   _last_draw = 0;
+
+GColor _bg( 0, 140, 150 );
+
+int   _nmap;
+Map **_maps;
+
+Occurrences *_occurs;
+
+OpenModeller *_om;
+GImage  *_cnv;
+GImage  *_pm;
+GGraph *_graph;
+
+
+OpenModeller *createModel( char *request_file );
 int showAlgorithms ( AlgMetadata **availables );
 char *readParameters ( AlgMetadata *metadata );
 AlgMetadata *readAlgorithm( AlgMetadata **availables );
@@ -45,39 +66,95 @@ int readParameters( AlgParameter *result, AlgMetadata *metadata );
 char *extractParameter( char *name, int nvet, char **vet );
 
 void mapCallback( float progress, void *extra_param );
-void modelCallback( float progress, void * extra_param );
+
+
+void draw();
+void draw_niche( GGraph *graph, OpenModeller *om );
+void draw_occur( GGraph *graph, Occurrences *oc );
+Occurrences *readOccurrences( char *file, char *name,
+			      char *coord_system );
+
+
 
 /**************************************************************/
-/*************** openModeller Console Interface ***************/
+/**************************** main ****************************/
 
-/************/
-/*** main ***/
 int
 main( int argc, char **argv )
 {
-  char * path = 0;
-
   // Reconfigure the global logger.
-  g_log.setLevel( Log::Error );
-  g_log.setPrefix( "Console" );
+  g_log.set( Log::Debug, stdout, "Niche Viewer" );
 
-  if ( argc < 2 )
-    g_log.error( 1, "\n%s <request>\n\n", argv[0] );
+  if ( argc < 1 )
+    {
+      g_log( "\n%s <request>\n\n", argv[0] );
+      exit( 1 );
+    }
+  g_log( "\nopenModeller Niche Viewer - CRIA\n" );
 
-  char *request_file = argv[1];
+  char *request = argv[1];
+  FileParser fp( request );
 
-  OpenModeller om;
-  g_log( "\nopenModeller version %s\n", om.getVersion() );
-  g_log( "\nDefault configuration file name is: %s\n\n",
-         om.getConfigFileName() );
-  g_log( "\nAlgorithms will be loaded from: %s\n\n",
-         path = om.getPluginPath() );
-  delete[] path;
+  // Create the model using openModeller.
+  //
+  _om = createModel( request );
+  Environment *env = _om->getEnvironment();
+  int nmap = env->numLayers();
+  Scalar *min = new Scalar[nmap];
+  Scalar *max = new Scalar[nmap];
+  env->getExtremes( min, max );
+
+  if ( nmap < 2 )
+    g_log.error( 1, "Need more than one environmental variable!\n" );
+  else if ( nmap > 2 )
+    g_log.info( "Using only the two fNeed more than one environmental variable!\n" );
+
+
+  // Occurrences file (used to draw, not to create the model).
+  char *oc_cs   = fp.get( "WKT Coord System" );
+  char *oc_file = fp.get( "Species file" );
+  char *oc_name = fp.get( "Species" );
+  _occurs = readOccurrences( oc_file, oc_name, oc_cs );
+
+  // Instantiate graphical window.
+  int dimx = 256;
+  int dimy = 256;
+  GFrame *frame = createFrame( "openModeller Niche Viewer", 1, dimx, dimy );
+  _cnv = frame->newCanvas( 0, 0, dimx, dimy );
+  _pm  = frame->newPixmap( _cnv, dimx, dimy );
+
+  // Drawing area.
+  _graph = new GGraph( _pm );
+  _graph->scale( min[0], min[1], max[0], max[1] );
+  _graph->background( _bg );
+  _graph->clear();
+
+  // Zoom in and out with mouse buttons.
+  _zoom = 2.0;
+  frame->funcShow( draw );
+
+  frame->exec();
+
+  delete _graph;
+  delete frame;
+
+  delete _om;
+  delete min;
+  delete max;
+}
+
+
+/********************/
+/*** create Model ***/
+OpenModeller *
+createModel( char *request_file )
+{
+  OpenModeller *om = new OpenModeller;
 
   // Configure the OpenModeller object from data read from the
   // request file.
   RequestFile request;
-  int resp = request.configure( &om, request_file );
+  int resp = request.configure( om, request_file );
 
   if ( resp < 0 )
     g_log.error( 1, "Can't read request file %s", request_file );
@@ -88,11 +165,11 @@ main( int argc, char **argv )
       if ( ! request.algorithmSet() )
         {
           // Find out which model algorithm is to be used.
-          AlgMetadata **availables = om.availableAlgorithms();
+          AlgMetadata **availables = om->availableAlgorithms();
           AlgMetadata *metadata;
 
           if ( ! (metadata = readAlgorithm( availables )) )
-            return 1;
+            return 0;
 
           g_log( "\n> Algorithm used: %s\n\n", metadata->name );
           g_log( " %s\n\n", metadata->description );
@@ -107,7 +184,7 @@ main( int argc, char **argv )
           readParameters( param, metadata );
 
           // Set the model algorithm to be used by the controller
-          om.setAlgorithm( metadata->id, nparam, param );
+          om->setAlgorithm( metadata->id, nparam, param );
 
           delete[] param;
         }
@@ -116,29 +193,10 @@ main( int argc, char **argv )
 
   /*** Run the model ***/
 
-  om.setModelCallback( modelCallback );
-  if ( ! om.createModel() )
-    g_log.error( 1, "Error: %s\n", om.error() );
+  if ( ! om->createModel() )
+    g_log.error( 1, "Error: %s\n", om->error() );
 
-  // Prepare the output map
-  om.setMapCallback( mapCallback );
-  if ( ! om.createMap() )
-    g_log.error( 2, "Error: %s\n", om.error() );
-
-  ConfusionMatrix matrix;
-  matrix.calculate(om.getEnvironment(), om.getAlgorithm(),
-		   request.getOccurrences(), NULL);
-  AreaStats * stats = om.getActualAreaStats();
-  g_log("\nModel statistics\n");
-  g_log("Accuracy:          %7.2f\%\n", matrix.getAccuracy() * 100);
-  g_log("Omission error:    %7.2f\%\n", matrix.getOmissionError() * 100);
-  //g_log("Commission error:  %7.2f\%\n", matrix.getCommissionError() * 100);
-  g_log("Percentage of cells predicted present: %7.2f\%\n", 
-	stats->getAreaPredictedPresent() / (double) stats->getTotalArea() * 100);
-  g_log("Total number of cells: %d\n", stats->getTotalArea());
-
-  g_log( "\nDone.\n" );
-  return 0;
+  return om;
 }
 
 
@@ -193,11 +251,11 @@ readAlgorithm( AlgMetadata **availables )
       option = atoi( buf );
 
       if ( option == quit )
-        return 0;
+	return 0;
 
       // An algorithm was choosed.
       else if ( option >= 0 && option < quit )
-        return availables[option];
+	return availables[option];
     }
 }
 
@@ -268,19 +326,101 @@ extractParameter( char *id, int nvet, char **vet )
  * Shows the map creation progress.
  */
 void
-modelCallback( float progress, void *extra_param )
-{
-  g_log( "Model creation: %07.4f\% \r", 100 * progress );
-}
-
-
-/********************/
-/*** map Callback ***/
-/**
- * Shows the map creation progress.
- */
-void
 mapCallback( float progress, void *extra_param )
 {
   g_log( "Map creation: %07.4f\% \r", 100 * progress );
+}
+
+
+/**************************************************************/
+
+/************/
+/*** draw ***/
+void
+draw()
+{
+  if ( _redraw )
+    {
+      draw_niche( _graph, _om );
+      draw_occur( _graph, _occurs );
+
+      _redraw = 0;
+    }
+
+  _cnv->put( _graph );
+}
+
+
+/******************/
+/*** draw niche ***/
+void
+draw_niche( GGraph *graph, OpenModeller *om )
+{
+  Scalar xmin  = graph->minX();
+  Scalar ymin  = graph->minY();
+  Scalar xmax  = graph->maxX();
+  Scalar ymax  = graph->maxY();
+  Scalar xstep = graph->stepX();
+  Scalar ystep = graph->stepY();
+
+
+  int i = 0;
+  Scalar amb[2];
+  Scalar *x = amb;
+  Scalar *y = amb + 1;
+  GColor color;
+  for ( *y = ymin; *y < ymax; *y += ystep )
+    {
+      for ( *x = xmin; *x < xmax; *x += xstep )
+        {
+          GColor color = GColor::Blue;
+          color.scale( om->getValue( amb ) );
+          graph->pixel( float(*x), float(*y), color );
+        }
+
+
+      if ( ! (++i % 10) )
+	_cnv->put( graph );
+    }
+}
+
+
+/******************/
+/*** draw occur ***/
+void
+draw_occur( GGraph *graph, Occurrences *occurs )
+{
+  GColor color = GColor::Red;
+
+  // Draw each set of occurrences.
+  float x, y;
+  Occurrence *oc;
+  Environment *env = _om->getEnvironment();
+  Scalar *amb = new Scalar[env->numLayers()];
+  for ( occurs->head(); oc = occurs->get(); occurs->next() )
+    {
+      env->get( oc->x(), oc->y(), amb );
+      graph->markAxe( amb[0], amb[1], 1, color);
+    }
+
+  delete amb;
+}
+
+
+/************************/
+/*** read Occurrences ***/
+Occurrences *
+readOccurrences( char *file, char *name, char *coord_system )
+{
+  OccurrencesFile oc_file( file, coord_system );
+
+  // Take last species from the list, which corresponds to the
+  // first inside the file.
+  if ( ! name )
+    {
+      oc_file.tail();
+      name = oc_file.get()->name();
+    }
+
+  return oc_file.remove( name );
 }

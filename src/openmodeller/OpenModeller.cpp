@@ -864,8 +864,6 @@ OpenModeller::createMap( Environment *env, char *file, Scalar mult,
       int col = 0;
       for ( float x = x0; x < hdr->xmax; x += hdr->xcel )
         {
-          g_log( "Map creation: (%05d, %05d) ", col++, row );
-
           // Transform coordinates (x,y) that are in the resulting
           // map system, in (lat, long) according to the system 
           // accepted by the environment (env).
@@ -877,7 +875,6 @@ OpenModeller::createMap( Environment *env, char *file, Scalar mult,
           if ( ! env->get( lg, lt, amb ) )
             {
               val = hdr->noval; 
-              g_log( "No val \r" );
             }
           else
             {
@@ -886,13 +883,12 @@ OpenModeller::createMap( Environment *env, char *file, Scalar mult,
               else if ( val > 1.0 ) val = 1.0;
               _actualAreaStats->addPrediction( val ); 
               val *= mult;
-              g_log( "   val \r" );
             }
 
           // Write value on map.
           map.put( lg, lt, &val );
-	  
         }
+
       // Call the callback function if it is set.
       if ( _map_command )
         {
@@ -912,8 +908,9 @@ OpenModeller::createMap( Environment *env, char *file, Scalar mult,
   return 1;
 }
 
+
 /**********************************/
-/******* getValue ****************/
+/******* get Value ****************/
 Scalar
 OpenModeller::getValue(Environment * env, Coord x, Coord y)
 {
@@ -928,13 +925,15 @@ OpenModeller::getValue(Environment * env, Coord x, Coord y)
       *amb = 0.0;
 
       if ( ! env->get( x, y, amb ) )
-	{ val = -1.0; }
+        {
+          val = -1.0;
+        }
       else
-	{
-	  val = _alg->getValue( amb );
-	  if ( val < 0.0 ) val = 0.0;
-	  if ( val > 1.0 ) val = 1.0;
-	}
+        {
+          val = _alg->getValue( amb );
+          if ( val < 0.0 ) val = 0.0;
+          if ( val > 1.0 ) val = 1.0;
+        }
       delete[] amb;
       return val;
     }
@@ -942,10 +941,24 @@ OpenModeller::getValue(Environment * env, Coord x, Coord y)
   return -1;
 }
 
+
+/**********************************/
+/******* get Value ****************/
+Scalar
+OpenModeller::getValue( Scalar *amb )
+{
+  return _alg->getValue( amb );
+}
+
+
 /**********************************/
 /******* getActualAreaStats *******/
-AreaStats * OpenModeller::getActualAreaStats()
-{ return _actualAreaStats; }
+AreaStats *
+OpenModeller::getActualAreaStats()
+{
+  return _actualAreaStats;
+}
+
 
 /**********************************/
 /******* getActualAreaStats *******/
