@@ -55,10 +55,10 @@ public:
    */
   int configure( OpenModeller *om, char *request_file );
 
-  int noOccurrencesSetted()  { return _no_occurrences_setted; }
-  int noEnvironmentSetted()  { return _no_environment_setted; }
-  int noOutputMapSetted()    { return _no_outputmap_setted; }
-  int noAlgorithmSetted()    { return _no_algorithm_setted; }
+  int occurrencesSetted()  { return _occurrences_setted; }
+  int environmentSetted()  { return _environment_setted; }
+  int outputMapSetted()    { return _outputmap_setted; }
+  int algorithmSetted()    { return _algorithm_setted; }
 
 
 private:
@@ -77,10 +77,10 @@ private:
   char *extractParameter( char *name, int nvet, char **vet );
 
 
-  int _no_occurrences_setted;
-  int _no_environment_setted;
-  int _no_outputmap_setted;
-  int _no_algorithm_setted;
+  int _occurrences_setted;
+  int _environment_setted;
+  int _outputmap_setted;
+  int _algorithm_setted;
 };
 
 

@@ -15,6 +15,7 @@ endif
 
 EXTRA_DIST = \
 	occurrences_file.hh \
+	request_file.hh \
 	graph/color.hh \
 	graph/graphic.hh \
 	graph/graphic_x11.hh \
@@ -23,11 +24,16 @@ EXTRA_DIST = \
 
 SUBDIRS = $(GRAPH)
 
+#bin_PROGRAMS = om_console om_test $(OM_VIEWER)
 bin_PROGRAMS = om_console $(OM_VIEWER)
 
-om_console_SOURCES = om_console.cpp occurrences_file.cpp
+om_console_SOURCES = om_console.cpp occurrences_file.cpp request_file.cpp
 om_console_CPPFLAGS = -I../inc -g
 om_console_LDADD = $(GDAL_LIB) ../lib/libopenmodeller.la
+
+#om_test_SOURCES = om_test.cpp occurrences_file.cpp
+#om_test_CPPFLAGS = -I../inc -g
+#om_test_LDADD = $(GDAL_LIB) ../lib/libopenmodeller.la
 
 om_viewer_SOURCES = om_viewer.cpp occurrences_file.cpp
 om_viewer_CPPFLAGS = -I../inc

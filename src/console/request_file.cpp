@@ -75,9 +75,7 @@ RequestFile::setOccurrences( OpenModeller *om, FileParser &fp )
   Occurrences *oc = readOccurrences( oc_file, oc_name, oc_cs );
 
   // Populate the occurences list from the localities file
-  om->setOccurrences( oc );
-
-  return 1;
+  return om->setOccurrences( oc );
 }
 
 
@@ -102,10 +100,12 @@ RequestFile::setEnvironment( OpenModeller *om, FileParser &fp )
   // Initiate the environment with all maps.
   fp.getAll( cat_label, cat );
   fp.getAll( map_label, map );
-  om->setEnvironment( ncat, cat, nmap, map, mask );
+  int resp = om->setEnvironment( ncat, cat, nmap, map, mask );
 
   delete cat;
-  delete map;  
+  delete map;
+
+  return resp;
 }
 
 
@@ -115,18 +115,19 @@ int
 RequestFile::setOutputMap( OpenModeller *om, FileParser &fp )
 {
   // Get the details for the output Map
-  char *output = fp.get( "Output" );
+  char *mask   = fp.get( "Output mask" );
+  char *file   = fp.get( "Output file" );
   char *format = fp.get( "Output format" );
 
-  // scale is used to scale the model results e.g. from [0,1] to
+  // Used to scale the model results e.g. from [0,1] to
   // [0,255] - useful for image generation.
-  char *scale  = fp.get( "Scale" );
+  char *multiplier = fp.get( "Scale" );
 
   // Make sure the basic variables have been defined in the
   // parameter file...
-  if ( ! output )
+  if ( ! file )
     {
-      g_log( "The 'Output' file name was not speciefied!\n" );
+      g_log( "The 'Output file' file name was not speciefied!\n" );
       return 0;
     }
   if ( ! format )
@@ -134,10 +135,10 @@ RequestFile::setOutputMap( OpenModeller *om, FileParser &fp )
       g_log( "The 'Output format' was not specified!\n" );
       return 0;
     }
-  if ( ! scale )
-    scale = "255.0";
+  if ( ! multiplier )
+    multiplier = "255.0";
 
-  return 1;
+  return om->setOutputMap( atof(multiplier), file, mask, format );
 }
 
 
@@ -174,12 +175,12 @@ RequestFile::setAlgorithm( OpenModeller *om, FileParser &fp )
   readParameters( param, metadata, req_nparam, req_param );
 
   // Set the model algorithm to be used by the controller
-  om->setAlgorithm( metadata->id, nparam, param );
+  int resp = om->setAlgorithm( metadata->id, nparam, param );
 
   delete[] param;
   delete[] req_param;
 
-  return 1;
+  return resp;
 }
 
 

@@ -116,7 +116,11 @@ main( int argc, char **argv )
     {
       _nmap = 1;
       _maps = new (Map *)[_nmap];
-      char *result = fp.get( "Output" );
+      char *result = fp.get( "Output file" );
+
+      if ( ! result )
+        g_log.error( 1, "The 'Output file' parameter not found!\n" );
+
       rst = new (Raster *)[_nmap];
       rst[0] = new RasterFile( result );
       _maps[0] = new Map( rst[0], GeoTransform::cs_default );
