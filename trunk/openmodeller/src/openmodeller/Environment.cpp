@@ -370,16 +370,16 @@ Environment::calcRegion()
       (*lay++)->getRegion( &xmin, &ymin, &xmax, &ymax );
 
       if ( xmin > _xmin )
-	_xmin = xmin;
+        _xmin = xmin;
       
       if ( ymin > _ymin )
-	_ymin = ymin;
+        _ymin = ymin;
       
       if ( xmax < _xmax )
-	_xmax = xmax;
+        _xmax = xmax;
       
       if ( ymax < _ymax )
-	_ymax = ymax;
+        _ymax = ymax;
     }
 
   return (_xmin < _xmax) && (_ymin < _ymax);

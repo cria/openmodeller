@@ -75,6 +75,8 @@ public:
   int transfOut( double *x, double *y );
   int transfOut( double *x, double *y, double x0, double y0 );
 
+  int isInDegrees()   { return _is_in_degrees; }
+
 
   // Default coordinate system.
   static char *cs_default;
@@ -82,8 +84,15 @@ public:
 
 private:
 
+  // Return not zero if the WKT string in 'cs' use degree as the
+  // coordinate system unit. Needed to 
+  int checkDegrees( char *cs );
+
+
   OGRCoordinateTransformation *f_ctin;
   OGRCoordinateTransformation *f_ctout;
+
+  int _is_in_degrees;  ///< Source CS is in degrees.
 };
 
 

@@ -812,7 +812,9 @@ OpenModeller::createMap( Environment *env, char *file, Scalar mult,
     {
       Scalar min, max;
       if ( _alg->needNormalization( &min, &max ) )
-	{ env->copyNormalizationParams( _env ); }
+        {
+          env->copyNormalizationParams( _env );
+        }
     }
 
   // Force noval = 0
@@ -857,45 +859,49 @@ OpenModeller::createMap( Environment *env, char *file, Scalar mult,
   _actualAreaStats->reset();
 
   int row = 0;
-  for ( float y = y0; y < hdr->ymax; y += hdr->ycel )
+  for ( float y = y0; y < hdr->ymax; y += hdr->ycel, row++ )
     {
       int col = 0;
       for ( float x = x0; x < hdr->xmax; x += hdr->xcel )
-	{
-	  // Transform coordinates (x,y) that are in the resulting
-	  // map system, in (lat, long) according to the system 
-	  // accepted by the environment (env).
-	  gt->transfOut( &lg, &lt, x, y );
+        {
+          g_log( "Map creation: (%05d, %05d) ", col++, row );
 
+          // Transform coordinates (x,y) that are in the resulting
+          // map system, in (lat, long) according to the system 
+          // accepted by the environment (env).
+          gt->transfOut( &lg, &lt, x, y );
+          
+          
+          // TODO: use mask to check if pixel should contain prediction
+          // Read environmental values and find the output value.
+          if ( ! env->get( lg, lt, amb ) )
+            {
+              val = hdr->noval; 
+              g_log( "No val \r" );
+            }
+          else
+            {
+              val = _alg->getValue( amb );
+              if ( val < 0.0 ) val = 0.0;
+              else if ( val > 1.0 ) val = 1.0;
+              _actualAreaStats->addPrediction( val ); 
+              val *= mult;
+              g_log( "   val \r" );
+            }
 
-	  // TODO: use mask to check if pixel should contain prediction
-	  // Read environmental values and find the output value.
-	  if ( ! env->get( lg, lt, amb ) )
-	    {
-	      val = hdr->noval; 
-	    }
-	  else
-	    {
-	      val = _alg->getValue( amb );
-	      if ( val < 0.0 ) val = 0.0;
-	      else if ( val > 1.0 ) val = 1.0;
-	      _actualAreaStats->addPrediction( val ); 
-	      val *= mult;
-	    }
-
-	  // Write value on map.
-	  map.put( lg, lt, &val );
+          // Write value on map.
+          map.put( lg, lt, &val );
 	  
-	}
+        }
       // Call the callback function if it is set.
       if ( _map_command )
         {
           if ( (progress += progress_step) > 1.0 )
             progress = 1.0;
           try 
-	    {
-	      (*_map_command)( progress );
-	    }
+            {
+              (*_map_command)( progress );
+            }
           catch( ... ) {}
         }
 
