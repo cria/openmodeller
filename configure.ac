@@ -212,6 +212,7 @@ dnl ---------------------------------------------------------------------------
 AC_CONFIG_FILES([
 	Makefile
 	algorithms/Makefile
+	algorithms/garp/Makefile
 	src/Makefile
 	src/lib/Makefile
 	src/lib/env_io/Makefile
