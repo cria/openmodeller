@@ -265,7 +265,9 @@ Log::buffer( void *buf, int buf_size, int length )
 {
   if ( _level > Debug )
     return 0;
-  
+ 
+  int c;
+
   debug( "Log::buffer( %p, %d )\n", buf, buf_size );
 
   unsigned char *p = (unsigned char *) buf;
@@ -288,7 +290,7 @@ Log::buffer( void *buf, int buf_size, int length )
       // Bytes shown as characters.
       p = aux;
       debug( " " );
-      for ( int c = 0; c < length; c++, *p++ )
+      for ( c = 0; c < length; c++, *p++ )
         {
           if ( p >= e ) break;
           debug( "%c", (*p < 32 ? '.' : *p) );

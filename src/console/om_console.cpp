@@ -75,12 +75,12 @@ main( int argc, char **argv )
   // Categorical environmental maps and the number of these maps.
   char *cat_label = "Categorical map";
   int  ncat  = fp.count( cat_label );
-  char **cat = new (char *)[ncat];
+  char **cat = new char *[ncat];
 
   // Continuous environmental maps and the number of these maps.
   char *map_label = "Map";
   int  nmap  = fp.count( map_label );
-  char **map = new (char *)[nmap];
+  char **map = new char *[nmap];
 
   // Initiate the environment with all maps.
   fp.getAll( cat_label, cat );
@@ -139,7 +139,7 @@ main( int argc, char **argv )
   // Obtain any model parameter specified in the request file.
   char *param_label = "Parameter";
   int   req_nparam  = fp.count( param_label );
-  char **req_param  = new (char *)[req_nparam];
+  char **req_param  = new char *[req_nparam];
 
   // For resulting parameters storage.
   int nparam = metadata->nparam;

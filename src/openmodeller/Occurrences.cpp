@@ -216,7 +216,7 @@ Occurrences::buildVector()
   void *list_pos = _occur->getPos();
 
   int noccur = numOccurrences();
-  Occurrence **vector = _vector = new (Occurrence *)[ noccur ];
+  Occurrence **vector = _vector = new Occurrence *[ noccur ];
 
   Occurrence *oc;
   for ( _occur->head(); oc = _occur->get(); _occur->next() )
