@@ -22,8 +22,10 @@ struct SOAP_ENV__Header
  */
 typedef struct soap_AlgorithmParameter
 {
+  xsd__string id;
   xsd__string name;
   xsd__string data_type;
+  xsd__string overview;
   xsd__string description;
 
   xsd__int     has_min;
@@ -42,12 +44,15 @@ typedef struct soap_AlgorithmParameter
 typedef struct soap_AlgorithmMetadata
 {
   xsd__string id;
-
   xsd__string name;
   xsd__string version;
-  xsd__string bibliography;
+  xsd__string overview;
   xsd__string description;
-  xsd__string author;
+
+  xsd__string creator;
+  xsd__string bibliography;
+
+  xsd__string developer;
   xsd__string contact;
 
   xsd__int accepts_categorical_maps;

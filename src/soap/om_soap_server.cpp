@@ -327,7 +327,9 @@ om__createModel( struct soap *soap, om__Points *points, om__Maps *maps, om__Mask
   strcpy(r_fname, t_fname);
   strcat(r_fname, output->format); // output file is unique name + file format (should include dot)
 
-  om.createMap( om.getEnvironment(), r_fname, (xsd__double)output->scale, mask->location, output->format );
+  om.createModel();
+  om.setOutputMap( (xsd__double)output->scale, r_fname, mask->location, output->format );
+  om.createMap();
 
   *ticket = rindex(r_fname, '/')+1; //ticket is actually the file name
 

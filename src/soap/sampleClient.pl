@@ -276,9 +276,10 @@ sub get_algorithms
 		
 		print <<EOM if $option == 2;
   $algorithm{id}
-     * author: $algorithm{author} - $algorithm{contact}
-     * description: $algorithm{description}
+     * creator: $algorithm{creator}
      * bibliography: $algorithm{bibliography}
+     * developer: $algorithm{developer} - $algorithm{contact}
+     * overview: $algorithm{overview}
      * accepts categorical data: $accepts_categorical_data
      * accepts absence data: $accepts_absence_data
 EOM
@@ -300,7 +301,7 @@ EOM
 			my $domain = $min . ', ' . $max;
 		    
 			print <<EOM if $option == 2;
-        $parameter{name} ($parameter{description})
+        $parameter{name} ($parameter{overview})
           - type: $parameter{'data-type'}
           - domain: $domain
           - typical value: $parameter{'typical-value'}
