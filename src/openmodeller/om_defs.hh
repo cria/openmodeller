@@ -29,9 +29,12 @@
 #ifndef _DEFSHH_
 #define _DEFSHH_
 
+// openModeller version number.
+//
+#define OM_VERSION VERSION
+
 // Coordinate systems.
 //
-
 #define OM_WGS84 "GEOGCS[\"WGS84\", DATUM[\"WGS84\", \
   SPHEROID[\"WGS84\", 6378137.0, 298.257223563]], \
   PRIMEM[\"Greenwich\", 0.0], \

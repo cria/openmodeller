@@ -383,14 +383,14 @@ om__createModel( struct soap *soap, om__Points *points, om__Maps *maps, om__Mask
 int 
 om__getDistributionMap( struct soap *soap, xsd__string ticket, xsd__base64Binary &file )
 { 
-    if (!ticket)
-      return soap_sender_fault(soap, "Ticket required", NULL);
+  if (!ticket)
+    return soap_sender_fault(soap, "Ticket required", NULL);
 
-    if (getData(soap, ticket, file))
-      return soap_sender_fault(soap, "Access denied", NULL);
+  if (getData(soap, ticket, file))
+    return soap_sender_fault(soap, "Access denied", NULL);
 
-    file.type = "image/tif";
-    file.options = soap_dime_option(soap, 0, "Distribution map");
+  file.type = "image/tif";
+  file.options = soap_dime_option(soap, 0, "Distribution map");
 
   return SOAP_OK;
 }

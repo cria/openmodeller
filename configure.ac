@@ -113,7 +113,7 @@ AM_CONDITIONAL([HAVE_GSL], [test "$GSL_CFLAGS" != "" -a "$GSL_LIBS" != ""])
 dnl ---------------------------------------------------------------------------
 dnl SOAP interface
 dnl ---------------------------------------------------------------------------
-AC_MSG_CHECKING([if the SOAP server is to be compiled])
+AC_MSG_CHECKING([if SOAP server is enabled])
 
 AC_ARG_ENABLE(soap,
   AC_HELP_STRING([--enable-soap],
@@ -139,6 +139,69 @@ AC_MSG_RESULT([$build_soap])
 
 AM_CONDITIONAL([BUILD_SOAP], [test x$build_soap = xyes])
 
+dnl ---------------------------------------------------------------------------
+dnl SWIG interface
+dnl ---------------------------------------------------------------------------
+
+dnl python
+
+AC_MSG_CHECKING([if SWIG python interface is enabled])
+
+AC_ARG_ENABLE(python,
+  AC_HELP_STRING([--enable-python],
+                 [The SWIG python interface is an optional feature. If you want to enable it use '--enable-python']),
+  [
+   case "${enableval}" in
+    yes)
+      build_python=yes
+      ;;
+    no)
+      build_python=no
+      ;;
+    *)
+      AC_MSG_ERROR([bad value ${enableval} for --enable-python])
+      ;;
+   esac
+  ],
+  [
+    build_python=no
+  ]
+)
+AC_MSG_RESULT([$build_python])
+
+AM_CONDITIONAL([BUILD_PYTHON], [test x$build_python = xyes])
+
+dnl java
+
+AC_MSG_CHECKING([if SWIG java interface is enabled])
+
+AC_ARG_ENABLE(java,
+  AC_HELP_STRING([--enable-java],
+                 [The SWIG java interface is an optional feature. If you want to enable it use '--enable-java']),
+  [
+   case "${enableval}" in
+    yes)
+      build_java=yes
+      ;;
+    no)
+      build_java=no
+      ;;
+    *)
+      AC_MSG_ERROR([bad value ${enableval} for --enable-java])
+      ;;
+   esac
+  ],
+  [
+    build_java=no
+  ]
+)
+AC_MSG_RESULT([$build_java])
+
+AM_CONDITIONAL([BUILD_JAVA], [test x$build_java = xyes])
+
+dnl SWIG
+
+AM_CONDITIONAL([BUILD_SWIG], [test x$build_python = xyes -o x$build_java = xyes])
 
 dnl ---------------------------------------------------------------------------
 dnl  Python

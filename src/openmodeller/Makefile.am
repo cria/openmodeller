@@ -9,7 +9,6 @@
 # implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
 DPLUGIN_PATH=-DPLUGINPATH=\"$(libdir)/openmodeller/\"
-DOM_VERSION=-DOM_VERSION=\"$(OM_VERSION)\"
 
 SUBDIRS = env_io
 
@@ -31,5 +30,5 @@ libopenmodeller_la_SOURCES = \
 	sampler.cpp \
 	sampled_data.cpp 
 
-libopenmodeller_la_CPPFLAGS = -I../inc -I../.. $(DPLUGIN_PATH) $(DOM_VERSION)
+libopenmodeller_la_CPPFLAGS = -I../inc -I../.. $(DPLUGIN_PATH)
 libopenmodeller_la_LIBADD = env_io/libenv_io.la

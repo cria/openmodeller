@@ -301,7 +301,7 @@ EOM
 		    
 			print <<EOM if $option == 2;
         $parameter{name} ($parameter{description})
-          - type: $parameter{data-type}
+          - type: $parameter{'data-type'}
           - domain: $domain
           - typical value: $parameter{'typical-value'}
 EOM
