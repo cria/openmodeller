@@ -8,10 +8,6 @@
 # WITHOUT ANY WARRANTY, to the extent permitted by law; without even the
 # implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
-if BUILD_TEST
-TEST_DIR=test
-endif
-
 EXTRA_DIST = \
 	AUTHORS \
 	README \
@@ -27,7 +23,7 @@ EXTRA_DIST = \
 	examples/request.txt \
 	examples/request_win.txt
 
-SUBDIRS = $(TEST_DIR) src algorithms
+SUBDIRS = test src algorithms
 
 release: distdir
 	-chmod -R a+r $(distdir)
