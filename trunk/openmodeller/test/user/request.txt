@@ -62,6 +62,6 @@ Scale = 255
 
 Algorithm  = GARP
 Parameter = MaxGenerations 500
-Parameter = ConvergenceLimit 0.001
+Parameter = ConvergenceLimit 0.01
 Parameter = PopulationSize 50
 Parameter = Resamples 2500
