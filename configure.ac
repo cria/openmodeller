@@ -22,10 +22,9 @@ dnl ---------------------------------------------------------------------------
 AC_PATH_X
 if test "$x_includes" != "" -a "$x_includes" != "NONE"; then
   X11_CFLAGS="-I$x_includes"
-  AC_MSG_RESULT($x_includes)
 fi
 if test "$x_libraries" != "" -a "$x_libraries" != "NONE"; then
-    X11_LIB="-L$x_libraries -lX11"
+  X11_LIB="-L$x_libraries -lX11"
 fi
 AC_SUBST(X11_LIB)
 AC_SUBST(X11_CFLAGS)
@@ -107,11 +106,12 @@ if test x"$ac_gsl" != "xno" ; then
   AC_SUBST(GSL_LIB)
   AC_SUBST(GSL_CFLAGS)
 fi
+AM_CONDITIONAL([HAVE_GSL], [test "$GSL_CFLAGS" != "" -a "$GSL_LIB" != ""])
 
 AC_CONFIG_FILES([
-  Makefile
+	Makefile
 	algorithms/Makefile
-  src/Makefile
+	src/Makefile
 	src/lib/Makefile
 	src/lib/env_io/Makefile
 	src/lib/graph/Makefile

@@ -8,17 +8,35 @@
 # WITHOUT ANY WARRANTY, to the extent permitted by law; without even the
 # implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
+plugindir = ${pkglibdir}
 
-noinst_LTLIBRARIES = libalgorithms.la
+if HAVE_GSL
 
-libalgorithms_la_SOURCES = \
+endif
+
+plugin_LTLIBRARIES = \
+	libombioclim.la \
+	libomcsm.la \
+	libomdist_min.la \
+	libomdistance.la
+
+libombioclim_la_SOURCES = \
 	bioclim.cpp \
-	bioclim.hh \
+	bioclim.hh
+
+libomcsm_la_SOURCES = \
 	csm.cpp \
-	csm.hh \
+	csm.hh
+
+libomdist_min_la_SOURCES = \
 	dist_min.cpp \
-	dist_min.hh \
+	dist_min.hh
+
+libomdistance_la_SOURCES = \
 	distance.cpp \
 	distance.hh
 
-libalgorithms_la_CPPFLAGS = $(GSL_CFLAGS) -I../src/inc
+libombioclim_la_CPPFLAGS = -I../src/inc
+libomcsm_la_CPPFLAGS = -I../src/inc
+libomdist_min_la_CPPFLAGS = -I../src/inc
+libomdistance_la_CPPFLAGS = $(GSL_CFLAGS) -I../src/inc
