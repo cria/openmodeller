@@ -45,14 +45,14 @@ Scale = 255
 # Name of the algorithm to construct the model
 # and algorithm specific parameters.
 
-#Algorithm  = MinimumDistance v0.1
-#Parameters = 0.05
+#Algorithm = MinimumDistance v0.1
+#Parameter = MaxDist 0.05
 
 #Algorithm  = Bioclim
-#Parameters = 0.05
+#Parameter = CuttOff 0.05
 
 #Algorithm  = CSM
 
-#Algorithm  = DistanceToAverage v0.1
-#Parameters = 0.2
+#Algorithm = DistanceToAverage v0.1
+#Parameter = MaxDist 0.2
 

@@ -64,7 +64,7 @@ static AlgParamMetadata parameters[NUM_PARAM] = {
 
 static AlgMetadata metadata = {
 
-  "",              // Internal usage.
+  0,               // Internal usage.
   "Bioclim",       // Name.
   "0.1",       	   // Version.
   "Bibliography",  // Bibliography.
@@ -126,7 +126,7 @@ Bioclim::~Bioclim()
 int
 Bioclim::initialize( int ncicle )
 {
-  if ( ! getParameter( 0, &_cutoff ) )
+  if ( ! getParameter( "CutOff", &_cutoff ) )
     return 0;
 
   _dim    = _samp->numIndependent();

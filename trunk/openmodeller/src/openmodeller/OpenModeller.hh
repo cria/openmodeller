@@ -114,7 +114,25 @@ public:
 		       char *mask=0 );
 
   // Define output map.
+  //
+
+  /** Set the output distribution map file format and its map
+   *  properties.
+   * @param file File name.
+   * @param hdr Georeferencing header with the map properties.
+   * @param mult Value that the probabilities will be multiplied
+   *  to.
+   */
   void setOutputMap( char *file, Header *hdr, Scalar mult );
+
+  /** Set the output distribution map file format and its map
+   *  properties.
+   * @param file File name.
+   * @param map_file Georeferenced map file whose header will be
+   *  used in the output.
+   * @param mult Value that the probabilities will be multiplied
+   *  to.
+   */
   void setOutputMap( char *file, char *map_file, Scalar mult );
 
 

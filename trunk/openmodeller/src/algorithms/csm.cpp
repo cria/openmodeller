@@ -55,7 +55,7 @@ AlgParamMetadata parameters[NUM_PARAM] = {
 
 static AlgMetadata metadata = {
 
-  "",              // Internal usage.
+  0,               // Internal usage.
   "CSM",           // Name.
   "0.1",       	   // Version.
   "Bibliography",  // Bibliography.
