@@ -60,6 +60,16 @@ Header::Header( int xd, int yd, Coord xm, Coord ym,
   proj  = 0;
 
   calculateCell();
+
+  // Given the information provided in this constructor,
+  // We pretty much have to assume this is the geotransform.
+
+  gt[0] = xmin;
+  gt[1] = xcel;
+  gt[2] = 0.0;
+  gt[3] = ymin;
+  gt[4] = 0.0;
+  gt[5] = ycel;
 }
 
 Header::Header( Header &h )
@@ -94,6 +104,13 @@ Header::operator=( Header &h )
 
   xcel = h.xcel;
   ycel = h.ycel;
+
+  gt[0] = h.gt[0];
+  gt[1] = h.gt[1];
+  gt[2] = h.gt[2];
+  gt[3] = h.gt[3];
+  gt[4] = h.gt[4];
+  gt[5] = h.gt[5];
 
   noval = h.noval;
   nband = h.nband;

@@ -76,6 +76,7 @@ public:
   Coord ymax;  /**< Highest latitude **/
   Coord xcel;  /**< Cell width **/
   Coord ycel;  /**< Cell hight **/
+  Coord gt[6]; /**< The actual gdal geotransform **/
 
   Scalar noval; /**< Value indicating absence of information. **/
   int nband; /**< Number of bands. **/
