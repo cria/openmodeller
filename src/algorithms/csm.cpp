@@ -304,7 +304,7 @@ int Csm::done()
 
 /** This method is used when projecting the model.
   * @note This method is inherited from the Algorithm class
-  * @return Scalar of the probablitiy of occurence  
+  * @return Scalar of the probablitiy of occurence must be between 0 and 1  
   * @param Scalar *x a pointer to a vector of openModeller Scalar type (currently double). The vector should contain values looked up on the environmental variable layers into which the mode is being projected. */
 Scalar Csm::getValue( Scalar *x )
 {
