@@ -14,7 +14,7 @@ LT_1=1
 LT_2=5
 
 # Check automake version
-AM_VERSION=`automake --version | sed -n -e 's#[^0-9]* \([0-9]*\)\.\([0-9]*\)\.\([0-9]*\).*$#\1 \2 \3#p'`
+AM_VERSION=`automake --version | sed -n -e 's#^automake.* \([0-9]*\)\((\.\([0-9]*\)\)\{0,1\}\(\.\([0-9]*\)\)\{0,1\}.*$#\1 \3 \5#p'`
 AM_V1=`echo $AM_VERSION | awk '{print $1}'`
 AM_V2=`echo $AM_VERSION | awk '{print $2}'`
 AM_V3=`echo $AM_VERSION | awk '{print $3}'`
