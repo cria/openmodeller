@@ -39,6 +39,8 @@
 #include <om_alg_parameter.hh>
 #include <om_sampler.hh>
 #include <om_occurrences.hh>
+#include <om_area_stats.hh>
+#include <om_conf_matrix.hh>
 #include <map_format.hh>
 #include <occurrence.hh>
 
@@ -100,6 +102,9 @@ OpenModeller::OpenModeller()
   _factory = NULL;
   resetPluginPath();
 
+  _areaStats = new AreaStats();
+  _confMatrix = new ConfusionMatrix();
+
   _factory = new AlgorithmFactory( _plugin_path );
 }
 
@@ -123,6 +128,8 @@ OpenModeller::~OpenModeller()
   if ( _plugin_path ) deleteStringArray( _plugin_path );
 
   delete _factory;
+  delete _areaStats;
+  delete _confMatrix;
 }
 
 
@@ -540,6 +547,8 @@ OpenModeller::createModel()
       return 0;
     }
 
+  _confMatrix->calculate(_samp, _alg);
+
   return 1;
 }
 
@@ -757,6 +766,8 @@ OpenModeller::createMap( Environment *env, char *file, Scalar mult,
   float progress = 0.0;
   float progress_step = hdr->ycel / (hdr->ymax - y0);
 
+  _areaStats->reset();
+
   int row = 0;
   for ( float y = y0; y < hdr->ymax; y += hdr->ycel )
     {
@@ -772,12 +783,15 @@ OpenModeller::createMap( Environment *env, char *file, Scalar mult,
 	  // TODO: use mask to check if pixel should contain prediction
 	  // Read environmental values and find the output value.
 	  if ( ! env->get( lg, lt, amb ) )
-	    val = hdr->noval;
+	    {
+	      val = hdr->noval; 
+	    }
 	  else
 	    {
 	      val = _alg->getValue( amb );
 	      if ( val < 0.0 ) val = 0.0;
 	      else if ( val > 1.0 ) val = 1.0;
+	      _areaStats->addPrediction( val ); 
 	      val *= mult;
 	    }
 

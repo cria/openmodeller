@@ -44,6 +44,8 @@ class RasterFile;
 class Map;
 class MapFormat;
 class Header;
+class ConfusionMatrix;
+class AreaStats;
 
 
 /****************************************************************/
@@ -313,6 +315,12 @@ public:
 
   char *error()  { return _error; }
 
+  // model statistics helper methods
+  AreaStats * getAreaStats() { return _areaStats; }
+
+  ConfusionMatrix * getConfusionMatrix() { return _confMatrix; }
+
+
   //
   // Serialization methods
   //
@@ -378,6 +386,10 @@ private:
   void         *_model_callback_param;
   MapCallback   _map_callback;
   void         *_map_callback_param;
+
+  // model statistics: helper objects
+  AreaStats * _areaStats;
+  ConfusionMatrix * _confMatrix;
 
   // plugin path
   char ** _plugin_path;
