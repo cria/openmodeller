@@ -34,7 +34,9 @@
 
 
 #include "garp.hh"
-#include "garp_rules.hh"
+#include "rules.hh"
+#include "ruleset.hh"
+#include "garp_sampler.hh"
 
 #include <om.hh>
 #include <random.hh>

@@ -1,0 +1,318 @@
+/**
+ * Declaration of Rule-sets used by GARP
+ * 
+ * @file   ruleset.cpp
+ * @author Ricardo Scachetti Pereira (rpereira@ku.edu)
+ * @date   2004-04-02
+ * $Id$
+ * 
+ * LICENSE INFORMATION 
+ * 
+ * Copyright(c), The Center for Research, University of Kansas, 
+ *                 2385 Irving Hill Road, Lawrence, KS 66044-4755, USA.
+ * Copyright(c), David R.B. Stockwell of Symbiotik Pty. Ltd.
+ * Copyright(c), CRIA - Centro de Referencia em Informacao Ambiental
+ *
+ * http://www.nhm.ku.edu
+ * 
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details:
+ * 
+ * http://www.gnu.org/copyleft/gpl.html
+ * 
+ * This is an implementation of the GARP algorithm first developed 
+ * by David Stockwell
+ * 
+ */
+
+
+#include <random.hh>
+#include <math.h>
+#include <string.h>
+
+#include <om_log.hh>
+
+#include "rules.hh"
+#include "ruleset.hh"
+
+
+
+/****************************************************************/
+/****************** GarpRuleSet class ***************************/
+/****************************************************************/
+
+
+/****************************************************************/
+/****************** Constructor *********************************/
+
+GarpRuleSet::GarpRuleSet(int size)
+{
+  _size = size;
+  _rules = new GarpRule*[size];
+  _numRules = 0;
+  memset(_rules, 0, size * sizeof(GarpRule*));
+}
+
+
+/****************************************************************/
+/****************** Destructor **********************************/
+
+GarpRuleSet::~GarpRuleSet()
+{
+  clear();
+  delete _rules;
+}
+
+/****************************************************************/
+/****************** size ****************************************/
+
+int GarpRuleSet::size()
+{ 
+  return _size; 
+}
+
+/****************************************************************/
+/****************** Destructor **********************************/
+
+int GarpRuleSet::numRules()
+{ 
+  return _numRules; 
+}
+
+/****************************************************************/
+/****************** Destructor **********************************/
+
+void GarpRuleSet::clear()
+{ 
+  trim(0); 
+}
+
+/****************************************************************/
+/****************** Destructor **********************************/
+
+void GarpRuleSet::trim(int rules)
+{
+  int i;
+
+  if (rules >= _numRules)
+    // there are less rules than specified: nothing to do
+    return;
+
+  for (i = rules; i < _size; i++)
+  {
+    if (_rules[i]) 
+      {
+        delete _rules[i];
+        _rules[i] = NULL;
+      }
+  }
+
+  _numRules = rules;
+}
+
+/****************************************************************/
+/****************** Destructor **********************************/
+
+void GarpRuleSet::filter(PerfIndex index, double threshold)
+{
+  int i, j;
+  
+  i = 0;
+  while (i < _numRules)
+    {
+      if (_rules[i]->getPerformance(index) < threshold)
+	{
+	  // this rule has not enough performance
+	  // delete rule 
+	  delete _rules[i];
+	  
+	  // and shift rules up
+	  for (j = i; j < _numRules - 1; j++)
+	    _rules[j] = _rules[j + 1];
+	  
+	  // remove the duplicated reference to the last rule
+	  _rules[_numRules - 1] = NULL;
+	  
+	  // update the number of rules in this set
+	  // no need to increment <i> because the rules were shifted up one position
+	  _numRules--;
+	}
+      else
+	{
+	  // this rule passed the test
+	  // go to the next one
+	  i++;
+	}
+    }
+}
+
+/****************************************************************/
+/****************** Destructor **********************************/
+
+int GarpRuleSet::insert(PerfIndex perfIndex, GarpRule * rule)
+{
+  double newRulePerformance;
+  int i, j;
+  bool found;
+
+  // insert rule and keep set sorted by performance index specified (_performance[perfIndex])
+  // find place where rule should be inserted
+  newRulePerformance = rule->getPerformance(perfIndex);
+  found = false;
+  for (i = 0; i < _numRules; i++)
+  { 
+    if (newRulePerformance > _rules[i]->getPerformance(perfIndex))
+      break;
+  }
+
+  // <i> has the index where new rule should be inserted
+  // move remaining rules one position down
+  // and insert new rule at index <i>
+  for (j = _numRules - 1; j >= i; j--)
+  { _rules[j + 1] = _rules[j]; }
+
+  _rules[i] = rule;
+
+  return ++_numRules;
+}
+
+/****************************************************************/
+/****************** Destructor **********************************/
+
+GarpRule * GarpRuleSet::get(int index)
+{ 
+  if (index >= 0 || index < _numRules)
+    return _rules[index];
+  else
+    return NULL;
+}
+
+/****************************************************************/
+/****************** replace *************************************/
+
+int GarpRuleSet::replace(int index, GarpRule * rule)
+{
+  if (!rule || index < 0 || index >= _numRules) 
+    return 0;
+
+  delete _rules[index];
+  _rules[index] = rule;
+  return 1;
+}
+
+/****************************************************************/
+/****************** remove **************************************/
+
+int GarpRuleSet::remove(int index)
+{
+  if (index < 0 || index >= _numRules) 
+    return 0;
+
+  delete _rules[index];
+
+  int i;
+  for (i = index; i < _numRules - 1; i++)
+    _rules[i] = _rules[i + 1];
+
+  _rules[--_numRules] = NULL;
+
+  return 1;
+}
+
+/****************************************************************/
+/****************** Destructor **********************************/
+
+int GarpRuleSet::add(GarpRule * rule)
+{
+  if (rule)
+    {
+      if (_numRules < _size)
+	{
+	  _rules[_numRules++] = rule;
+	  return _numRules;
+	}
+      else
+	// "Cannot add rule. Ruleset is full"
+	return 0;
+    }
+  else
+    // Cannot add null rule
+    return 0;
+}
+
+/****************************************************************/
+/****************** Destructor **********************************/
+
+int GarpRuleSet::findSimilar(GarpRule * rule)
+{
+  int i;
+  for (i = 0; i < _numRules; i++)
+    if (_rules[i]->similar(rule))
+      return i;
+  return -1;
+}
+
+/****************************************************************/
+/****************** Destructor **********************************/
+
+Scalar GarpRuleSet::getValue(Scalar *x)
+{
+  int i;
+
+  for (i = 0; i < _numRules; i++)
+  {
+    if (_rules[i]->applies(x))
+      return _rules[i]->getPrediction();
+  }
+
+  return 0.0;
+}
+
+/****************************************************************/
+/****************** Destructor **********************************/
+
+void GarpRuleSet::performanceSummary(PerfIndex perfIndex, 
+				     double * best, 
+				     double * worst, 
+				     double * average)
+{
+  int i;
+  double performance;
+
+  *worst = *best = *average = 0.0;
+
+  if (!_numRules)
+    return;
+
+  for (i = 0; i < _numRules; i++)
+    {
+      performance = _rules[i]->getPerformance(perfIndex);
+      
+      if (performance < *worst || !i) *worst = performance;
+      if (performance > *best  || !i) *best  = performance;
+      *average += performance;
+    }
+
+  *average /= _numRules;
+}
+
+/****************************************************************/
+/****************** Destructor **********************************/
+
+void GarpRuleSet::log()
+{
+  for ( int i = 0; i < _numRules; i++ )
+    {
+      g_log( "%d] ", i );
+      _rules[i]->log();
+    }
+}
+
+// ==========================================================================

@@ -13,8 +13,8 @@ plugindir = ${pkglibdir}
 plugin_LTLIBRARIES = libomgarp.la
 
 libomgarp_la_SOURCES = \
-	garp.cpp garp_rules.cpp garp_sampler.cpp  \
-	garp.hh  garp_rules.hh  garp_sampler.hh
+	garp.cpp ruleset.cpp rules.cpp garp_sampler.cpp  \
+	garp.hh  ruleset.hh  rules.hh  garp_sampler.hh
 
 libomgarp_la_LIBADD = ../../src/lib/libopenmodeller.la
 libomgarp_la_CPPFLAGS = -I../../src/inc
