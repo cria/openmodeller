@@ -85,7 +85,7 @@ Occurrences::Occurrences( char *name, char *coord_system )
   // common openModeller coordinate system.
   //
   //if ( !compareCoordSystemStrings( coord_system, OM_COORDINATE_SYSTEM ) )
-  if ( strcmp( coord_system, OM_COORDINATE_SYSTEM ) )
+  if ( !compareCoordSystemStrings( coord_system, OM_COORDINATE_SYSTEM ) )
     _gt = new GeoTransform( coord_system, OM_COORDINATE_SYSTEM );
   else
     _gt = 0;
