@@ -414,7 +414,7 @@ Scalar Csm::getValue( Scalar *x )
     }
     //printf(" ----  end of scalar\n ");
     //displayMatrix(tmp_gsl_matrix,"tmp_gsl_matrix before matrix multiplication");
-    if (myAllAreZeroFlag) {return 0;}
+    //if (myAllAreZeroFlag) {return 0;}
     
 
     gsl_matrix * z = product(tmp_gsl_matrix, _gsl_eigenvector_matrix);
@@ -453,9 +453,9 @@ Scalar Csm::getValue( Scalar *x )
     
  
     //now work out the probability of myFloat between 0 and 1  
-    myFloat=1-gsl_sf_gamma_inc_Q (myFloat/2,(_gsl_eigenvector_matrix->size1)/2);
+    myFloat=1-gsl_sf_gamma_inc_Q ((_gsl_eigenvector_matrix->size1)/2,myFloat/2);
  
-    //printf ("Prob: %f\n",myFloat);
+    printf ("Prob: %f \r",myFloat);
     //now we
     //now clear away the temporary vars
     gsl_matrix_free (z);
