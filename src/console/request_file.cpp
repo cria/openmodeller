@@ -59,12 +59,13 @@ RequestFile::configure( OpenModeller *om, char *request_file )
 
   _occurrences_set = setOccurrences( om, fp );
   _environment_set = setEnvironment( om, fp );
+  _projection_set  = setProjection ( om, fp );
   _outputmap_set   = setOutputMap  ( om, fp );
   _algorithm_set   = setAlgorithm  ( om, fp );
 
   // Returns ZERO if all was set correctly.
-  return 4 - _occurrences_set - _environment_set -
-    _outputmap_set - _algorithm_set;
+  return 5 - _occurrences_set - _environment_set -
+    _projection_set - _outputmap_set - _algorithm_set;
 }
 
 
@@ -112,6 +113,41 @@ RequestFile::setEnvironment( OpenModeller *om, FileParser &fp )
   fp.getAll( cat_label, cat );
   fp.getAll( map_label, map );
   int resp = om->setEnvironment( ncat, cat, nmap, map, mask );
+
+  delete cat;
+  delete map;
+
+  return resp;
+}
+
+
+/**********************/
+/*** set Projection ***/
+int
+RequestFile::setProjection( OpenModeller *om, FileParser &fp )
+{
+  // Categorical environmental maps and the number of these maps.
+  char *cat_label = "Categorical output map";
+  int  ncat  = fp.count( cat_label );
+  char **cat = 0;
+  if ( ncat )
+    cat = new char *[ncat];
+
+  // Continuous environmental maps and the number of these maps.
+  char *map_label = "Output Map";
+  int  nmap  = fp.count( map_label );
+  char **map = 0;
+  if ( nmap )
+    map = new char *[nmap];
+
+  // It is ok to not set the projection.
+  if ( ! (ncat + nmap) )
+    return 1;
+
+  // Initiate the environment with all maps.
+  fp.getAll( cat_label, cat );
+  fp.getAll( map_label, map );
+  int resp = om->setProjection( ncat, cat, nmap, map );
 
   delete cat;
   delete map;

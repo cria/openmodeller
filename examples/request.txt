@@ -1,3 +1,6 @@
+#####################
+### Input section ###
+
 # Coordinate system and projection in WKT format.
 #
 WKT Coord System = GEOGCS["WGS84", DATUM["WGS84", SPHEROID["WGS84", 6378137.0, 298.257223563]], PRIMEM["Greenwich", 0.0], UNIT["degree", 0.017453292519943295], AXIS["Longitude",EAST], AXIS["Latitude",NORTH]]
@@ -8,58 +11,132 @@ WKT Coord System = GEOGCS["WGS84", DATUM["WGS84", SPHEROID["WGS84", 6378137.0, 2
 #
 Species file = furcata_boliviana.txt
 
-# Only the occurrences of this species in the file will be used.
+# Only the occurrences of this species will be used.
 # Defaults to the first species found.
 #
 Species = furcata boliviana
 
-# Maps to be used as environmental continuous variables.
+# Maps to be used as environmental variables to generate the model
 #
-#Map = /mylayersdir/mylayer1.asc
-#Map = /mylayersdir/mylayer2/
-Map = rain_coolest/
+Map = rain_coolest
 
-# Mask to delimit the region of interest.
+# Mask to delimit the region to be used to generate the model (filter
+# the species ocurrencies/absences points).
 #
-Mask = rain_coolest/
+Mask = rain_coolest
+
+
+######################
+### Output section ###
 
 # File to be used as the output format.
 #
-Output format = rain_coolest/
+Output format = rain_coolest
+
+# Maps to be used as environmental variables to project the model
+# to create the output distribution map.
+#
+Output map = rain_coolest
+
+# Mask to delimit the region to project the model onto.
+#
+Output mask = rain_coolest
 
 # Output file name.
 #
 Output file = furcata.tif
 
-# Scale each algorithm output (originaly between 0 and 1) by
+# Scale each algorithm output (originaly in the range [0,1]) by
 # this factor.
 # 
-# Currently the output file is written in "byte" (hardcoded)
-# until an output format type error handling code is implemented.
-# So, you have to choose:
+# The output cell type defaults to "byte", but it will overwritten
+# by the header of the "Output format" file.
+# You must scale the output according to the cell type chosen.
+# For the default type, you have to choose:
 #
 #  1 <= Scale <= 255
 #
 Scale = 255
 
+
+#########################
+### Algorithm section ###
+
 # Name of the algorithm to construct the model
 # and algorithm specific parameters.
 
-#Algorithm = MinimumDistance v0.1
-#Parameter = MaxDist 0.05
 
-#Algorithm  = Bioclim
-#Parameter = CuttOff 0.05
+########
+# Bioclimatic Envelop
+#
+#Algorithm = Bioclim
+#Parameter = StandadDeviationCutoff 0.674
 
-#Algorithm  = CSM
 
-#Algorithm = DistanceToAverage v0.1
-#Parameter = MaxDist 0.2
+########
+# Bioclimatic Envelop using distance to average
+#
+#Algorithm = BioclimDistance
+#Parameter = StandadDeviationCutoff 0.674
 
-#Algorithm  = GARP v3.0.1 alpha
-#Parameter = MaxGenerations 10
-#Parameter = ConvergenceLimit 0.0
+
+########
+# Climate Space Model - Broken-Stick
+#
+#Algorithm = CSMBS
+#Parameter = Randomisations 8
+#Parameter = RandomiserRepeats 50
+#Parameter = StandardDeviations 0.05
+#Parameter = MinComponents 2
+#Parameter = MaxAttempts 1
+
+
+########
+# Climate Space Model - Kaiser-Gutman
+#
+#Algorithm = CSMKG
+
+
+########
+# Distance to average
+#
+#Algorithm = DistanceToAverage
+#Parameter = MaxDist 0.1
+
+
+########
+# GARP: Genetic Algorithm for Rule Set Production
+#
+#Algorithm = GARP
+#Parameter = MaxGenerations 100
+#Parameter = ConvergenceLimit 0.05
 #Parameter = PopulationSize 50
 #Parameter = Resamples 2500
 #Parameter = MutationRate 0.25
 #Parameter = CrossoverRate 0.25
+
+
+########
+# GARP with Best Subsets Procedure
+#
+#Algorithm = GARP_BS
+#Parameter = TrainingProportion 0.5
+#Parameter = TotalRuns 10
+#Parameter = HardOmissionThreshold 100
+#Parameter = ModelsUnderOmissionThreshold 20
+#Parameter = CommissionThreshold 50
+#Parameter = CommissionSampleSize 10000
+#Parameter = MaxThreads 5
+#Parameter = MaxGenerations 20
+#Parameter = ConvergenceLimit 0.05
+#Parameter = PopulationSize 50
+#Parameter = Resamples 2500
+#Parameter = MutationRate 0.25
+#Parameter = CrossoverRate 0.25
+
+
+########
+# Minimum distance
+#
+#Algorithm = MinimumDistance
+#Parameter = MaxDist 0.1

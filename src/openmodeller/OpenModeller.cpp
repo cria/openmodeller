@@ -73,6 +73,7 @@ OpenModeller::OpenModeller()
 {
   setLogLevel(Log::Debug);
   _env = 0;
+  _proj = 0;
   _alg = 0;
   _samp = 0;
 
@@ -108,9 +109,10 @@ OpenModeller::OpenModeller()
 
 OpenModeller::~OpenModeller()
 {
-  if ( _samp )     delete _samp;
-  if ( _alg )      delete _alg;
-  if ( _env )      delete _env;
+  if ( _samp ) delete _samp;
+  if ( _alg )  delete _alg;
+  if ( _env )  delete _env;
+  if ( _proj ) delete _proj;
 
   if ( _alg_id )        delete[] _alg_id;
   if ( _alg_param)      delete[] _alg_param;
@@ -118,13 +120,19 @@ OpenModeller::~OpenModeller()
   if ( _output_mask )   delete[] _output_mask;
   if ( _output_header ) delete _output_header;
 
-  if (_plugin_path) deleteStringArray(_plugin_path);
+  if ( _plugin_path ) deleteStringArray( _plugin_path );
 
   delete _factory;
 }
 
-void OpenModeller::setLogLevel(Log::Level level)
-{ g_log.setLevel(level); }
+
+/*******************/
+/*** get Version ***/
+void
+OpenModeller::setLogLevel( Log::Level level )
+{
+  g_log.setLevel( level );
+}
 
 
 /*******************/
@@ -325,8 +333,6 @@ OpenModeller::setEnvironment( int num_categ,
 			      char **continuous_map,
 			      char *mask )
 {
-  // set up environmental variables.
-
   if ( _env )
     delete _env;
 
@@ -335,7 +341,29 @@ OpenModeller::setEnvironment( int num_categ,
                           num_continuous, continuous_map, mask );
 
   g_log( "Environment initialized.\n" );
+  return 1;
+}
 
+
+/**********************/
+/*** set Projection ***/
+int
+OpenModeller::setProjection( int num_categ,
+                             char **categ_map,
+                             int num_continuous,
+                             char **continuous_map )
+{
+  // Obs: mask will be set in createMap()
+  //
+
+  if ( _proj )
+    delete _proj;
+
+  _proj = new Environment( GeoTransform::cs_default,
+                           num_categ, categ_map,
+                           num_continuous, continuous_map );
+
+  g_log( "Projection environment initialized.\n" );
   return 1;
 }
 
@@ -623,6 +651,22 @@ OpenModeller::createMap( Environment *env, char *output_file,
 /******************/
 /*** create Map ***/
 int
+OpenModeller::createMap( char *output_file, char *output_mask )
+{
+  if ( ! output_mask )
+    output_mask = _output_mask;
+
+  if ( ! output_file )
+    output_file = _output_file;
+
+  return createMap( _proj, output_file, _output_mult,
+                    output_mask, _output_header );
+}
+
+
+/******************/
+/*** create Map ***/
+int
 OpenModeller::createMap( Environment *env, char *file, Scalar mult, 
 			 char *mask, Header *hdr )
 {
@@ -670,7 +714,7 @@ OpenModeller::createMap( Environment *env, char *file, Scalar mult,
       if ( _alg->needNormalization( &min, &max ) )
 	{
 	  g_log( "Normalizing environment variables on projection Environment object.\n" );
-	  env->copyNormalizationParams(_env);
+	  env->copyNormalizationParams( _env );
 	}
     }
 
@@ -682,9 +726,11 @@ OpenModeller::createMap( Environment *env, char *file, Scalar mult,
   Map map( &rst , env->getCoordinateSystem() );
 
   // Retrieve possible adjustments and/or additions made
-  // on the the effective header.
+  // on the effective header.
   *hdr = rst.header();
 
+  // Use "mask" as the output mask of the current environment.
+  env->changeMask( mask );
 
   // Transformer used by the resulting map.
   GeoTransform *gt = map.getGT();
@@ -715,7 +761,6 @@ OpenModeller::createMap( Environment *env, char *file, Scalar mult,
   for ( float y = y0; y < hdr->ymax; y += hdr->ycel )
     {
       int col = 0;
-      Scalar sum = 0.0;
       for ( float x = x0; x < hdr->xmax; x += hdr->xcel )
 	{
 	  // Transform coordinates (x,y) that are in the resulting
@@ -732,15 +777,12 @@ OpenModeller::createMap( Environment *env, char *file, Scalar mult,
 	    {
 	      val = _alg->getValue( amb );
 	      if ( val < 0.0 ) val = 0.0;
-	      if ( val > 1.0 ) val = 1.0;
+	      else if ( val > 1.0 ) val = 1.0;
 	      val *= mult;
 	    }
 
 	  // Write value on map.
 	  map.put( lg, lt, &val );
-
-	  // Sum of line values.
-	  sum += val;
 	}
 
       // Call the callback function if it is set.
