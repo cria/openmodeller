@@ -53,7 +53,7 @@
 
 
 /****************************************************************/
-/*************************** Acme Control ***********************/
+/************************* Control Interface ********************/
 
 /********************/
 /*** constructors ***/
@@ -62,7 +62,6 @@ ControlInterface::ControlInterface()
 {
   f_hdr = new Header;
 
-  f_cs      = 0;
   f_nlayers = 0;
   f_layers  = 0;
   f_mask    = 0;
@@ -79,9 +78,8 @@ ControlInterface::ControlInterface()
   f_error = 0;
 }
 
-ControlInterface::ControlInterface( char *cs, int ncateg,
-				    int nlayer, char **layers,
-				    char *mask )
+ControlInterface::ControlInterface( int ncateg, int nlayer,
+				    char **layers, char *mask )
 {
   f_hdr = new Header;
 
@@ -98,7 +96,7 @@ ControlInterface::ControlInterface( char *cs, int ncateg,
 
   f_error = 0;
 
-  setEnvironment( cs, ncateg, nlayer, layers, mask );
+  setEnvironment( ncateg, nlayer, layers, mask );
 }
 
 
@@ -109,7 +107,6 @@ ControlInterface::~ControlInterface()
 {
   delete f_hdr;
 
-  if ( f_cs )      delete f_cs;
   if ( f_layers )  delete f_layers;
   if ( f_file )    delete f_file;
   if ( f_alg )     delete f_alg;
@@ -122,11 +119,10 @@ ControlInterface::~ControlInterface()
 /***********************/
 /*** set Environment ***/
 void
-ControlInterface::setEnvironment( char *cs, int ncateg, int nlayer,
+ControlInterface::setEnvironment( int ncateg, int nlayer,
 				  char **layers, char *mask )
 {
   f_ncateg = ncateg;
-  stringCopy( &f_cs,   cs );
   stringCopy( &f_mask, mask );
 
   // Reallocate vector that stores the names of the layers.
@@ -152,6 +148,17 @@ ControlInterface::setOutputMap( char *file, Header *hdr,
   stringCopy( &f_file, file );
   *f_hdr = *hdr;
   f_mult = mult;
+}
+
+
+/**********************/
+/*** set Output Map ***/
+void
+ControlInterface::setOutputMap( char *file, char *map_file,
+				Scalar mult )
+{
+  RasterFile map( map_file );
+  setOutputMap( file, &map.header(), mult );
 }
 
 
@@ -184,26 +191,32 @@ ControlInterface::run()
   if ( f_error = basicCheck() )
     return 0;
 
-  // Ocurrences.
-  Occurrences *oc = readOccurrences( f_oc_file, f_oc_cs, f_oc_name );
-  if ( ! oc )
+  // Ocurrence points.
+  Occurrences *presence = readOccurrences( f_oc_file, f_oc_cs,
+					   f_oc_name );
+
+  // Must implement the reading of absence points.
+  Occurrences *absence = 0;
+
+  if ( ! presence )
     {
       f_error = "Occurrences not found with the given name.";
       return 0;
     }
-  _log.info( "Modelling occurrences of: %s.\n", oc->name() );
+  _log.info( "Modelling occurrences of: %s.\n", presence->name() );
 
   // Environmental variables.
   char **categs = f_layers;
   char **maps = categs + f_ncateg;
   int nmaps   = f_nlayers - f_ncateg;
-  Environment *env = new Environment( f_cs, f_ncateg, categs,
+  Environment *env = new Environment( GeoTransform::cs_default,
+				      f_ncateg, categs,
 				      nmaps, maps, f_mask );
 
   _log.info( "Environment initialized.\n" );
 
   // Sampler and algorithm.
-  Sampler samp( oc, env );
+  Sampler samp( env, presence, absence );
   Algorithm *alg = algorithmFactory( &samp, f_alg, f_param );
   if ( ! alg )
     {
@@ -224,7 +237,7 @@ ControlInterface::run()
   _log.info( "Creating the model\n" );
 
   // Generate the model.
-  if ( ! createModel( alg, &samp, f_ncicle ) )
+  if ( ! createModel( alg, &samp, f_ncycle ) )
     {
       f_error = "Model creation error.";
       return 0;
@@ -239,7 +252,7 @@ ControlInterface::run()
       return 0;
     }
 
-  delete oc;
+  delete presence;
   delete alg;
   delete env;
 
@@ -278,10 +291,6 @@ ControlInterface::basicCheck()
     return "Occurrences' coordinate system not specified.";
 
 
-  // Variáveis ambientais.
-  if ( ! f_cs )
-    return "Common coordinate system not specified.";
-
   if ( ! f_nlayers )
     return "Environmental variables not specified.";
 
@@ -299,12 +308,12 @@ ControlInterface::basicCheck()
 }
 
 
-/********************/
-/*** read Species ***/
+/************************/
+/*** read Occurrences ***/
 Occurrences *
 ControlInterface::readOccurrences( char *file, char *cs, char *name )
 {
-  OccurrencesFile lsp( file, cs, f_cs );
+  OccurrencesFile lsp( file, cs, GeoTransform::cs_default );
 
   // Take last species from the list, which corresponds to the first 
   // inside the file.
@@ -333,10 +342,10 @@ ControlInterface::algorithmFactory( Sampler *samp, char *name,
   if ( ! strcasecmp( name, "Bioclim" ) )
     return new BioclimModel( samp, param ? atof(param) : 0 );
 
-
   if ( ! strcasecmp( name, "Csm" ) )
     return new Csm( samp );
     
+
   return 0;
 }
 
@@ -352,11 +361,11 @@ ControlInterface::createModel( Algorithm *alg, Sampler *samp, int max )
 		alg->name() );
 
   // Generate model.
-  int ncicle = 0;
-  while ( alg->iterate() && ! alg->done() && ncicle < max )
-    ncicle++;
+  int ncycle = 0;
+  while ( alg->iterate() && ! alg->done() && ncycle < max )
+    ncycle++;
 
-  return alg->done() || ncicle >= max;
+  return alg->done() || ncycle >= max;
 }
 
 
@@ -373,7 +382,7 @@ ControlInterface::createMap( Environment *env, Algorithm *alg )
       return 0;
     }
 
-  // debug: Force noval = 0
+  // Force noval = 0
   f_hdr->noval = 0.0;
  
   // Create map on disc.
@@ -391,10 +400,6 @@ ControlInterface::createMap( Environment *env, Algorithm *alg )
   // Dimension of environment space.
   int dim = env->numLayers();
 
-
-  // Debug: Histogram.
-  int hist[256];
-  memset( hist, 0, 256 * sizeof(int) );
 
   // Debug: minimum and maximum.
   Scalar min = 1e10;
@@ -422,48 +427,26 @@ ControlInterface::createMap( Environment *env, Algorithm *alg )
 	  // map system, in (lat, long) according to the system 
 	  // accepted by the environment (env).
 	  gt->transfOut( &lg, &lt, x, y );
-	  
-	  // Read environmental values.
+
+
+	  // Read environmental values and find the output value.
 	  if ( env->get( lg, lt, amb ) )
-	    {
-	      // All variables are defined.
-	      val = f_mult * alg->getValue( amb );
-
-	      // debug
-	      // min = Min( *amb, min );
-	      // max = Max( *amb, max );
-	    }
+	    val = f_mult * alg->getValue( amb );
 	  else
-	    {
-	      val = f_hdr->noval;
-	    }
-
+	    val = f_hdr->noval;
 
 	  // Write value on map.
 	  map.put( lg, lt, &val );
 
 	  // Sum of line values.
 	  sum += val;
-
-	  // Histogram.
-	  int v = int(val);
-	  if ( v > 255 ) v = 255;
-	  if ( v < 0   ) v = 0;
-	  hist[v]++;
 	}
 
-      _log.info( "Line %04d / %4d : %.2f, %.4f           \r",
-		 ++row, f_hdr->ydim, sum / f_hdr->xdim, *amb );
+      _log.info( "Line %04d / %4d : %.2f          \r",
+		 ++row, f_hdr->ydim, sum / f_hdr->xdim );
     }
   _log.info( "\n" );
 
   delete amb;
-
-  /*
-  // Show histogram.
-  for ( int i = 0; i < 256; i++ )
-    _log.info( "%03d] %d\n", i, hist[i] );
-  */
-
   return 1;
 }
