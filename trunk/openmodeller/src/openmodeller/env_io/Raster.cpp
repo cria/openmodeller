@@ -294,7 +294,7 @@ int
 Raster::convY( Coord y )
 {
   y = (y - f_hdr.gt[3]) / f_hdr.gt[5];
-  return f_hdr.ydim - int( f_hdr.grid ? y : (y + 0.5) );
+  return int( f_hdr.grid ? y : (y + 0.5) );
 }
 
 
