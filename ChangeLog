@@ -1,0 +1,28 @@
+Release 0.2 (???)
+-----------------
+
+	* GARP algorithm, including best subsets procedure.
+	* CSM splitted into Kaiser-Gutman and Broken Stick cutoff methods.
+	* SOAP interface.
+	* SWIG interfaces for python and java.
+	* Bioclim algorithm refactored and splitted in two implementations.
+	* Model serialization.
+	* Reprojection capabilities.
+
+Release 0.1.1 (2004-04-29)
+--------------------------
+
+	* Bugfix release: corrected problem of reading only the first algorithm's parameter.
+
+Release 0.1 (2004-04-27)
+------------------------
+
+Features:
+	
+	* A simple command-line (console) interface. 
+	* A driver to the GDAL library to read and write multiple map file formats. 
+	* Capability to deal with multiple coordinate systems using the proj4 library. 
+	* Two simple distance-based algorithms. 
+	* Bioclim algorithm. 
+	* Climate Space Model algorithm using Kaiser-Gutman cutoff.
+
