@@ -61,7 +61,7 @@ char *RasterFormat::f_ext[] = {
 
   // GDAL compatible extensions.
   ".asc", ".adf", ".bmp", ".kap", ".ceo", ".doq", ".doq",
-  ".dt1", ".ecw", ".hdr", ".hdr", ".n1", ".fast", ".fits",
+  ".dt1", ".ecw", ".bil", ".hdr", ".n1", ".fast", ".fits",
   ".gif", ".adf", ".grass", ".tif", ".hdf4", ".img", ".hkv",
   ".mem",
   ".jpg", ".jp2", ".jp2", ".l1b", ".mff", ".msid", ".nitf",
