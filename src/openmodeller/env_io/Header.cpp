@@ -64,6 +64,7 @@ Header::Header( int xd, int yd, Coord xm, Coord ym,
 
 Header::Header( Header &h )
 {
+  proj = 0;
   operator=( h );
 }
 
