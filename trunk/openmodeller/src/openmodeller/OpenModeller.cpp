@@ -82,6 +82,11 @@ OpenModeller::OpenModeller()
   _output_mask   = 0;
   _output_header = 0;
 
+  _model_callback       = 0;
+  _model_callback_param = 0;
+  _map_callback         = 0;
+  _map_callback_param   = 0;
+
   _error[0] = '\0';
 }
 
@@ -266,12 +271,12 @@ OpenModeller::setOccurrences( Occurrences *presence,
 }
 
 
-/***********/
-/*** run ***/
+/********************/
+/*** create Model ***/
 int
-OpenModeller::run()
+OpenModeller::createModel()
 {
-  char *error = basicCheck();
+  char *error = parameterModelCheck();
   if ( error )
     {
       strcpy( _error, error );
@@ -290,9 +295,38 @@ OpenModeller::run()
 
   g_log( "Creating the model\n" );
 
-  // Generate the model.
-  if ( ! createModel( _alg, _samp ) )
-    return 0;
+  // Initialize algorithm.  
+  if ( ! _alg->initialize() )
+    {
+      sprintf( _error, "Algorithm (%s) could not be initialized.",
+	       _alg->getID() );
+      return 0;
+    }
+
+  // Generate model.
+  int ncycle = 0;
+  while ( _alg->iterate() && ! _alg->done() )
+    {
+      ncycle++;
+      if ( _model_callback )
+        (*_model_callback)( ncycle, _model_callback_param );
+    }
+
+  // Algorithm terminated with error.
+  if ( ! _alg->done() )
+    {
+      sprintf( _error, "Algorithm (%s) iteraction error.",
+	       _alg->getID() );
+      return 0;
+    }
+
+  // Finalise algorithm.  
+  if ( ! _alg->finalize() )
+    {
+      sprintf( _error, "Algorithm (%s) could not be finalized.",
+	       _alg->getID() );
+      return 0;
+    }
 
   return 1;
 }
@@ -316,10 +350,10 @@ OpenModeller::stringCopy( char **dst, char *src )
 }
 
 
-/*******************/
-/*** basic Check ***/
+/*****************************/
+/*** parameter Model Check ***/
 char *
-OpenModeller::basicCheck()
+OpenModeller::parameterModelCheck()
 {
   // Presence occurrence points.
   if ( ! _presence )
@@ -339,28 +373,6 @@ OpenModeller::basicCheck()
     return "Modeling algorithm not specified.";
 
   return 0;
-}
-
-
-/********************/
-/*** create Model ***/
-int
-OpenModeller::createModel( Algorithm *alg, Sampler *samp )
-{
-  // Initialize algorithm.  
-  if ( ! alg->initialize() )
-    {
-      sprintf( _error, "Algorithm (%s) could not be initialized.",
-	       alg->getID() );
-      return 0;
-    }
-
-  // Generate model.
-  int ncycle = 0;
-  while ( alg->iterate() && ! alg->done() )
-    ncycle++;
-
-  return alg->done();
 }
 
 
@@ -455,12 +467,17 @@ OpenModeller::createMap( Environment *env, char *file, Scalar mult,
 
   // check if env object is original one (used to create model) or
   // is a different one (caller wants to project model onto it)
-  if ( env != _env )
+  if ( ! env || env == _env )
     {
-      // env objects are not the same, so copy normalization
-      // parameters from original source and procced with
-      // projection
+      env = _env;
+      g_log("Native range projection (using original env object).\n");
+    }
 
+  // env objects are not the same, so copy normalization
+  // parameters from original source and procced with
+  // projection
+  else
+    {
       g_log("Preparing target environment object for projection.\n");
 
       Scalar min, max;
@@ -469,10 +486,6 @@ OpenModeller::createMap( Environment *env, char *file, Scalar mult,
 	  g_log( "Normalizing environment variables on projection Environment object.\n" );
 	  env->copyNormalizationParams(_env);
 	}
-    }
-  else
-    {
-      g_log("Native range projection (using original env object).\n");
     }
 
   // Force noval = 0
@@ -509,6 +522,9 @@ OpenModeller::createMap( Environment *env, char *file, Scalar mult,
   Coord y0 = hdr->ymin; // + 0.5 * hdr.ycel;
   Coord x0 = hdr->xmin; // + 0.5 * hdr.xcel;
 
+  float progress = 0.0;
+  float progress_step = hdr->ycel / (hdr->ymax - y0);
+
   int row = 0;
   for ( float y = y0; y < hdr->ymax; y += hdr->ycel )
     {
@@ -541,8 +557,14 @@ OpenModeller::createMap( Environment *env, char *file, Scalar mult,
 	  sum += val;
 	}
 
-      g_log( "Line %04d / %4d : %+7.2f \r", ++row, hdr->ydim,
-	     sum / hdr->xdim );
+      // Call the callback function if it is set.
+      if ( _map_callback )
+        {
+          if ( (progress += progress_step) > 1.0 )
+            progress = 1.0;
+          (*_map_callback)( progress, _map_callback_param );
+        }
+
     }
   g_log( "\n" );
 

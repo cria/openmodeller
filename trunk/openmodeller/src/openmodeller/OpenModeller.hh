@@ -56,6 +56,27 @@ class OpenModeller
 {
 public:
 
+  /** Model callback function.
+   * @param step Number of the iteration already done. Note that
+   *  in model generation it is not always possible to know how
+   *  many steps the algorithm will need.
+   * @param extra_param A parameter set by user when
+   *  setModelCallback() is called.
+   */
+  typedef void (*ModelCallback)( int step, void *extra_param );
+
+  /** Model callback function.
+   * @param progress A number between 0.0 and 1.0 reflecting the
+   *  avance of the map creating task. 0.0 is the begin and
+   *  1.0 is finished.
+   * @param extra_param A parameter set by user when
+   *  setModelCallback() is called.
+   */
+  typedef void (*MapCallback)( float progress, void *extra_param );
+
+
+public:
+
   OpenModeller();
   ~OpenModeller();
 
@@ -65,9 +86,14 @@ public:
    */
   char *getVersion();
 
-  /** Returns openModeller plugin path (path where to look for algorithms)
+  /** Returns openModeller plugin path (path where to look for
+   * algorithms)
    */
   char *getPluginPath();
+
+  //
+  // Algorithms related methods.
+  //
 
   /** Load the system available algorithms. If there are
    * algorithm already loaded they are unloaded.
@@ -107,6 +133,28 @@ public:
    */
   int numAvailableAlgorithms();
 
+  //
+  // Attributes reading methods
+  //
+
+  Environment *getEnvironment() { return _env; }
+
+
+  //
+  // Parameters setting methods
+  //
+
+  /**
+   * Define occurrence points to be used.
+   * 
+   * @param presence Occurrence points which the abundance
+   *  attribute is not zero.
+   * @param absence Occurrence points which the abundance
+   *  attribute is zero.
+   */
+  int setOccurrences( Occurrences *presence,
+                      Occurrences *absence=0 );
+
   /** Define algorithm that will be used to generate the
    *  distribution map.
    * @param id Algorithm's identifier. Must match the
@@ -119,7 +167,6 @@ public:
    */
   int setAlgorithm( char *id, int nparam, AlgParameter *param );
 
-
   /** Defines environmental layers and the mask. Also creates
    *  the Environment object used for native range projection.
    * @param num_categ Number of categorical map layers.
@@ -131,9 +178,6 @@ public:
   int setEnvironment( int num_categ,     char **categ_map,
                       int num_continuos, char **continuous_map,
                       char *mask=0 );
-
-  // Define output map.
-  //
 
   /** Set the output distribution map file format and its map
    *  properties.
@@ -161,38 +205,49 @@ public:
   int setOutputMap( Scalar mult, char *output_file,
                     char *output_mask, MapFormat *format );
 
+  //
+  // Callback related methods.
+  //
+
+  /** Sets a callback function to be called after each iteration
+   * of the model creation.
+   * @param func Pointer to the callback function.
+   * @param param User parameter to be passed to the callback
+   *  function.
+   */
+  void setModelCallback( ModelCallback func, void *param=0 )
+  { _model_callback = func; _model_callback_param = param; }
+
+  /** Sets a callback function to be called after each map
+   * distribution line generation.
+   * @param func Pointer to the callback function.
+   * @param param User parameter to be passed to the callback
+   *  function.
+   */
+  void setMapCallback( MapCallback func, void *param=0 )
+  { _map_callback = func; _map_callback_param = param; }
+
+
+  //
+  // Model and distribution map related methods.
+  //
+
+  /** Run the algorithm to create the model.
+   */
+  int createModel();
+
   /** Save distribution map to disk.
    * @param env  Pointer to Environment class with the layers 
-   *  to project the model onto.
-   * @param file File name.
-   * @param mult Value that the probabilities will be multiplied
-   *  to.
-   * @param mask Georeferenced map file which will define the
-   *  valid pixels on the output map.
-   * @param map_file Georeferenced map file whose header will be
-   *  used in the output.
+   *  to project the model onto. Defaults to environment set
+   *  with setEnvironment().
+   * @param output_file Output file name. Defaults to file set
+   *  with setOutputMap().
+   * @param output_mask Georeferenced map file which will define
+   *  the valid pixels on the output map. Defaults to mask set
+   *  with setOutputMap().
    */
-  int createMap( Environment *env, char *output_file=0,
+  int createMap( Environment *env=0, char *output_file=0,
                  char *output_mask=0 );
-
-  /**
-   * Define occurrence points to be used.
-   * 
-   * @param presence Occurrence points which the abundance
-   *  attribute is not zero.
-   * @param absence Occurrence points which the abundance
-   *  attribute is zero.
-   */
-  int setOccurrences( Occurrences *presence,
-                      Occurrences *absence=0 );
-
-  Environment *getEnvironment() { return _env; }
-
-  /**
-   * Run the algorithm.
-   * 
-   */
-  int run();
 
   char *error()  { return _error; }
 
@@ -215,13 +270,10 @@ private:
   /** Reallocate *dst and copy content from *src.*/
   void stringCopy( char **dst, char *src );
 
-  /** Check if all necessary parameters have been defined.
-   *  If not, an error message is returned.*/
-  char *basicCheck();
-
-
-  /** Build the model based on 'samp' and on algorithm.*/
-  int createModel( Algorithm *alg, Sampler *samp);
+  /** Check if all necessary parameters to create the model
+   *  have been defined. If not, an error message is returned.
+   */
+  char *parameterModelCheck();
 
 
   AlgorithmFactory *_factory;
@@ -242,6 +294,13 @@ private:
   char   *_output_file;   ///< Output file name.
   char   *_output_mask;   ///< Output mask.
   Header *_output_header; ///< Output associated metadata.
+
+  // Callback functions and user parameters.
+  ModelCallback _model_callback;
+  void         *_model_callback_param;
+  MapCallback   _map_callback;
+  void         *_map_callback_param;
+
 
   char _error[256];
 };

@@ -44,6 +44,8 @@ Occurrences *readOccurrences( char *file, char *name,
 int readParameters( AlgParameter *result, AlgMetadata *metadata );
 char *extractParameter( char *name, int nvet, char **vet );
 
+void mapCallback( float progress, void *extra_param );
+
 
 /**************************************************************/
 /*************** openModeller Console Interface ***************/
@@ -74,10 +76,10 @@ main( int argc, char **argv )
   if ( resp < 0 )
     g_log.error( 1, "Can't read request file %s", request_file );
 
-  // If something was not setted...
+  // If something was not set...
   if ( resp )
     {
-      if ( ! request.algorithmSetted() )
+      if ( ! request.algorithmSet() )
         {
           // Find out which model algorithm is to be used.
           AlgMetadata **availables = om.availableAlgorithms();
@@ -108,13 +110,14 @@ main( int argc, char **argv )
 
   /*** Run the model ***/
 
-  if ( ! om.run() )
+  if ( ! om.createModel() )
     g_log.error( 1, "Error: %s\n", om.error() );
   else
     g_log( "Done.\n" );
 
   // Prepare the output map
-  om.createMap( om.getEnvironment() );
+  om.setMapCallback( mapCallback );
+  om.createMap();
 
   g_log( "\n" );
   return 0;
@@ -257,4 +260,16 @@ extractParameter( char *name, int nvet, char **vet )
       return *(vet-1) + length;
 
   return 0;
+}
+
+
+/********************/
+/*** map Callback ***/
+/**
+ * Shows the map creation progress.
+ */
+void
+mapCallback( float progress, void *extra_param )
+{
+  g_log( "Map creation: %07.4f\% \r", 100 * progress );
 }

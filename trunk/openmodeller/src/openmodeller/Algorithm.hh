@@ -101,10 +101,15 @@ public:
    */
   virtual int initialize() = 0;
 
-  /** One step further on the training. Return 0 if something 
-   * wrong happened.
+  /** One step further on the training.
+   * Return 0 if something wrong happened.
    */
   virtual int iterate() { return 1; };
+
+  /** Called after the training phase has finished,
+   * ie after done() returned not zero.
+   */
+  virtual int finalize() { return 1; }
 
   /** Return != 0 if algorithm finished. */
   virtual int done() { return 1; }
