@@ -87,22 +87,27 @@ AC_ARG_WITH(gsl,
                  [Full path to 'gsl-config' script, e.g. '--with-gsl=/usr/local/bin/gsl-config']))
                  
 AC_MSG_CHECKING([for gsl])
-if test x"$with_gsl" = "xyes" -o x"$with_gsl" = "x" ; then
-  GSL_CONFIG=`which gsl-config`
+GSL_CONFIG=`which gsl-config 2>/dev/null`
+if test x"$with_gsl" = "xno" ; then
+  ac_gsl=no
+  AC_MSG_RESULT([no])
+elif test -x "$GSL_CONFIG" ; then
+  AC_MSG_RESULT([yes])
+elif test x"$with_gsl" = "xyes" ; then
   if test ! -x "$GSL_CONFIG" ; then
     AC_MSG_ERROR(["Cannot find gsl-config, try to use --with-gsl option"])
   fi
   AC_MSG_RESULT([yes])
-elif test x"$with_gsl" = "xno" ; then
-  ac_gsl=no
-  AC_MSG_RESULT([no])
-else
+elif test ! x"$with_gsl" = "x" ; then 
   if test -x "$with_gsl/gsl-config" ; then
     GSL_CONFIG="$with_gsl/gsl-config"
     AC_MSG_RESULT([yes])
   else
     AC_MSG_ERROR("Cannot find $with_gsl/gsl-config")
   fi
+else
+  ac_gsl=no
+  AC_MSG_RESULT([no])
 fi
 
 if test x"$ac_gsl" != "xno" ; then
