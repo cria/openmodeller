@@ -29,12 +29,9 @@
 #include <algorithm_factory.hh>
 #include <om_algorithm.hh>
 #include <list.cpp>
+#include <om_log.hh>
 
 #include <string.h>
-
-//debug
-#include <iostream>
-#include <stdio.h>
 
 
 /****************************************************************/
@@ -67,19 +64,26 @@ AlgorithmFactory::DLL::~DLL()
 Algorithm *
 AlgorithmFactory::DLL::load()
 {
+  char *error;
+
   // Opens the DLL file.
   if ( ! (_handle = dllOpen( _file )) )
-    return 0;
+    {
+      error = dllError( _handle );
+      _log.warn( "Error loading %s: %s\n", _file, error );
+      return 0;
+    }
 
   // Instantiated the algorithm.
   TAlgFactory factory;
   factory = (TAlgFactory) dllFunction( _handle,
 				       "algorithmFactory" );
 
-  char *error = dllError( _handle );
+  error = dllError( _handle );
   if ( error != NULL )
     {
-      fprintf( stderr, "%s\n", error );
+      _log.warn( "%s is not openModeller compatible! ", _file );
+      _log.warn( "Error: %s\n", error );
       return 0;
     }
 
@@ -134,6 +138,19 @@ AlgorithmFactory::availableAlgorithms()
 }
 
 
+/********************************/
+/*** num Available Algorithms ***/
+int
+AlgorithmFactory::numAvailableAlgorithms()
+{
+  // If there is no algorithm, try to read them (again).
+  if ( ! _lstDLL.length() )
+    availableAlgorithms();
+
+  return _lstDLL.length();
+}
+
+
 /*********************/
 /*** new Algorithm ***/
 Algorithm *
@@ -142,7 +159,7 @@ AlgorithmFactory::newAlgorithm( Sampler *samp, char *id,
 {
   Algorithm *alg;
 
-  // If there is no algorithm, try to read them again.
+  // If there is no algorithm, try to read them (again).
   if ( ! _lstDLL.length() )
     availableAlgorithms();
 
@@ -204,7 +221,7 @@ AlgorithmFactory::scanDir( char *dir, ListDLL &lst )
   char **pent = entries;
   while ( *pent )
     {
-      fprintf( stderr, "-- Loading: %s ... ", *pent );
+      _log.info( "-- Loading: %s ... ", *pent );
 
       // Create a new DLL for each directory entry found.
       DLL *dll = new DLL( *pent++ );
@@ -213,17 +230,14 @@ AlgorithmFactory::scanDir( char *dir, ListDLL &lst )
       // the list.
       if ( dll->load() )
 	{
-	  fprintf( stderr, "ok\n" );
-	lst.append( dll );
+	  _log.info( "ok\n" );
+	  lst.append( dll );
 	}
 
       // If it can not... :(
       // This deallocate the directory entry setted!
       else
-{
-	  fprintf( stderr, "ERROR\n" );
 	delete dll;
-}
     }
 
   delete entries;

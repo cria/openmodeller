@@ -77,18 +77,28 @@ public:
   AlgorithmFactory( char **search_dirs );
   ~AlgorithmFactory();
 
-  /** @return a null terminated list of available algorithms
+  /** Finds the system available algorithms.
    * 
    * Note that the returned algorithms can not run because they
    * are not initialized with "Sampler" and parameters!
    * To do so, use the method newAlgorithm().
    * 
    * The pointer returned are copied from an internal storage of
-   * algorithms. Note that the pointers returned can not be
-   * deallocated and the objects they point to will be reallocated
+   * algorithms. So they can not be deallocated.
+   * Another point is that the Algorithms will be reallocated
    * the next time this method is called.
+   *
+   * @return a null terminated list of available algorithms.
    */
   Algorithm **availableAlgorithms();
+
+  /** Number of available algorithms.
+   * If the algorithms are not already searched in the system,
+   * searchs them first.
+   *
+   * @return Number of available algorithms.
+   */
+  int numAvailableAlgorithms();
 
   /** Instantiate a new algorithm object.
    *

@@ -26,10 +26,12 @@
  * http://www.gnu.org/copyleft/gpl.html
  */
 
-
-
 #ifndef _DEFSHH_
 #define _DEFSHH_
+
+// openModeller version number.
+//
+#define OM_VERSION "0.1"
 
 
 // Types.
@@ -49,12 +51,14 @@ typedef double Coord;    ///< Type of map coordinates.
 typedef double Scalar;   ///< Type of map values.
 
 
-// Types for funtion pointers.
+// Types for function pointers.
 //
 typedef double (*doubleFunc)(double);
 typedef float  (*floatFunc)(float);
 
 
+// General macros
+//
 #define Zero        (1e-8)
 #define Abs(x)      ((x) < 0 ? -(x) : x)
 #define IsZero(x)   ((x) > -Zero && (x) < Zero)
@@ -62,7 +66,8 @@ typedef float  (*floatFunc)(float);
 #define Max( a, b ) ((a) > (b) ? (a) : (b))
 
 
-// windows only defs
+// Windows only defs
+//
 #ifdef WIN32
 
 #define strcasecmp _stricmp

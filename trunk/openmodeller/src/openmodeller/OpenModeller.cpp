@@ -132,12 +132,31 @@ ControlInterface::~ControlInterface()
 }
 
 
+/*******************/
+/*** get Version ***/
+char *
+ControlInterface::getVersion()
+{
+  // Defined in "om_defs.hh".
+  return OM_VERSION;
+}
+
+
 /****************************/
 /*** available Algorithms ***/
 Algorithm **
 ControlInterface::availableAlgorithms()
 {
   return _factory->availableAlgorithms();
+}
+
+
+/********************************/
+/*** num Available Algorithms ***/
+int
+ControlInterface::numAvailableAlgorithms()
+{
+  return _factory->numAvailableAlgorithms();
 }
 
 
