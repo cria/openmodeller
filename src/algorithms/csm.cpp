@@ -212,21 +212,21 @@ int Csm::SamplerToMatrix(Sampler *samp)
         f_gsl_eigenvector_matrix = gsl_matrix_alloc (f_layer_count, f_retained_components_count);
 
         //now copy over just the components we intend to keep
-	//...first the vector
+        //...first the vector
         for (int j=0;j<f_retained_components_count;j++)
         {
             float myFloat = gsl_vector_get (tmp_gsl_eigenvalue_vector,j);
             gsl_vector_set (f_gsl_eigenvalue_vector,j,myFloat);
         }
-	//...now the matrix
-	gsl_vector * tmp_gsl_vector = gsl_vector_alloc (f_layer_count);
+        //...now the matrix
+        gsl_vector * tmp_gsl_vector = gsl_vector_alloc (f_layer_count);
         for (int j=0;j<f_retained_components_count;j++)
-        {   
-	    gsl_matrix_get_col (tmp_gsl_vector, tmp_gsl_eigenvector_matrix, j);
+        {
+            gsl_matrix_get_col (tmp_gsl_vector, tmp_gsl_eigenvector_matrix, j);
             gsl_matrix_set_col (f_gsl_eigenvector_matrix,j,tmp_gsl_vector);
-        }	
+        }
         //now clear away the temporary vars
-	gsl_vector_free (tmp_gsl_vector);
+        gsl_vector_free (tmp_gsl_vector);
         gsl_vector_free (tmp_gsl_eigenvalue_vector);
         gsl_matrix_free (tmp_gsl_eigenvector_matrix);
 
@@ -243,7 +243,9 @@ int Csm::SamplerToMatrix(Sampler *samp)
     //print out the result
     printf ("\n\nAfter discarding unwanted components : \n");
     displayEigen();
-
+    printf ("\n\n-------------------------------------- \n");
+    printf ("        CSM Model Generation Completed ");
+    printf ("\n\n-------------------------------------- \n");
 }
 
 //
@@ -278,10 +280,6 @@ int Csm::initialize( int ncycle )
   */
 int Csm::iterate()
 {
-
-
-
-
     f_done=1;
     return 1;
 }
@@ -310,7 +308,41 @@ int Csm::done()
   * @param Scalar *x a pointer to a vector of openModeller Scalar type (currently double). The vector should contain values looked up on the environmental variable layers into which the mode is being projected. */
 Scalar Csm::getValue( Scalar *x )
 {
-
+    float myFloat;
+    //first thing we do is convert the oM primitive env value array to a gsl vector
+    gsl_vector * tmp_gsl_vector = gsl_vector_alloc (f_layer_count);
+    for (int i=0;i<f_layer_count;++i)
+    {   
+        myFloat = static_cast<float>(x[i]);
+	//get the stddev and mean for this column
+        float myAverage = gsl_vector_get (f_gsl_avg_vector,i);
+        float myStdDev = gsl_vector_get (f_gsl_stddev_vector,i);
+	//subtract the mean from the value then divide by the standard deviation
+	myFloat = (myFloat-myAverage)/myStdDev;
+	//assign the result to our vector
+        gsl_vector_set (tmp_gsl_vector,i,myFloat);
+        printf ("%f\t", myFloat );
+    }
+    
+    //create a temporary vector and place component 1 in it - could make this a class member to improve performance!
+    gsl_vector * component1_gsl_vector = gsl_vector_alloc (f_layer_count);
+    gsl_matrix_get_col (component1_gsl_vector, f_gsl_eigenvector_matrix, 0);
+    
+    //multiply the result vector by the first component in the eigenvector        
+    gsl_vector_mul (tmp_gsl_vector, component1_gsl_vector);
+    
+    //probabily for the cell is now the sum of the tmp vector
+    myFloat=0;
+    for (int j=0;j<f_layer_count;j++)
+    {
+        myFloat+=gsl_vector_get (tmp_gsl_vector,j);
+    }    
+    printf ("Prob: %f\n",myFloat);
+    //now we
+    //now clear away the temporary vars
+    gsl_vector_free (component1_gsl_vector);
+    gsl_vector_free (tmp_gsl_vector);
+    return myFloat;
 }
 
 /** Returns a value that represents the convergence of the algorithm
