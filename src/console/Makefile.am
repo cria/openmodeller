@@ -26,9 +26,9 @@ bin_PROGRAMS = om_console $(OM_VIEWER)
 
 om_console_SOURCES = om_console.cpp
 om_console_CPPFLAGS = -I../inc -g
-om_console_LDADD = $(GSL_LIB) $(GDAL_LIB) ../lib/libopenmodeller.la
+om_console_LDADD = $(GDAL_LIB) ../lib/libopenmodeller.la
 
 om_viewer_SOURCES = om_viewer.cpp
 om_viewer_CPPFLAGS = -I../inc
-om_viewer_LDADD = $(GSL_LIB) $(GDAL_LIB) $(X11_LIB) graph/libopenmodellergraph.la \
+om_viewer_LDADD = $(GDAL_LIB) $(X11_LIB) graph/libopenmodellergraph.la \
 	../lib/libopenmodeller.la
