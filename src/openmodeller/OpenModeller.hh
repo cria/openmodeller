@@ -39,6 +39,10 @@ class RasterFile;
 class Map;
 class Header;
 
+
+/****************************************************************/
+/************************* Control Interface ********************/
+
 /**
  * Defines and implements all commands to interface with the model
  * generator.
@@ -52,24 +56,28 @@ public:
 
   /**
    * @param cs     Common coordinate system.
-   * @param ncateg Number of categorical layers (they all need to be in the initial portion of "layers");
+   * @param ncateg Number of categorical layers (they all need to be
+   *  in the initial portion of "layers");
    * @param nlayer Total number of environmental layers;
    * @param layer  Names of the environmental layers;
    */
-  ControlInterface( char *cs, int ncateg, int nlayer, char **layers,
+  ControlInterface( int ncateg, int nlayer, char **layers,
 		    char *mask=0 );
 
   ~ControlInterface();
 
 
   // Define environmental layers and other basic settings.
-  void setEnvironment( char *cs, int ncateg, int nlayer,
-		       char **layers, char *mask=0 );
+  void setEnvironment( int ncateg, int nlayer, char **layers,
+		       char *mask=0 );
 
   // Define output map.
   void setOutputMap( char *file, Header *hdr, Scalar mult );
+  void setOutputMap( char *file, char *map_file, Scalar mult );
 
-  // Define algorithm that will be used to generate the distribution map.
+
+  // Define algorithm that will be used to generate the distribution
+  // map.
   void setAlgorithm( char *alg, char *param=0 );
 
   /**
@@ -112,7 +120,6 @@ private:
   int createMap( Environment *env, Algorithm *alg );
 
 
-  char  *f_cs;     ///< Common Coordinate System.
   int    f_ncateg;
   int    f_nlayers;
   char **f_layers;
@@ -120,11 +127,11 @@ private:
 
   char   *f_file;  ///< Output map.
   Header *f_hdr;
-  Scalar f_mult;  ///< Output multiplier.
+  Scalar  f_mult;  ///< Output multiplier.
 
   char *f_alg;    ///< Algorithm's name and parameters.
   char *f_param;
-  int   f_ncicle; ///< Max algorithm cicles.
+  int   f_ncycle; ///< Max algorithm cicles.
 
   char *f_oc_file;
   char *f_oc_cs;   ///< Occurrences Coordinate System.
