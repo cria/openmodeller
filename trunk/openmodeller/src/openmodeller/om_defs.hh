@@ -29,11 +29,6 @@
 #ifndef _DEFSHH_
 #define _DEFSHH_
 
-// openModeller version number.
-//
-#define OM_VERSION "0.1"
-
-
 // Coordinate systems.
 //
 

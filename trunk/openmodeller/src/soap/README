@@ -12,7 +12,7 @@ to work in other platforms - such as the sigpipe handling (if
 multi-threading is enabled), the unique temporary file
 generator (mkstemp function), and the process forking.
 
-Although the server should be prepared to run as a
+Although the SOAP server should be prepared to run as a
 multi-threaded daemon server, openModeller is not!!
 
 CURRENT FUNCTIONALITY:
@@ -26,6 +26,15 @@ CURRENT FUNCTIONALITY:
 - Handle getDistributionMap requests.
 - A simple command line perl client is available (depends on 
   SOAP::Lite)
+
+
+COMPILING:
+---------
+
+By default the SOAP server is not compiled. You need to use:
+
+ ./configure --enable-soap
+ make
 
 
 USE INSTRUCTIONS:
