@@ -1,9 +1,9 @@
 /**
- * Declaration of GARP with Best Subsets Procedure
+ * Declaration of DG GARP with Best Subsets Procedure
  * 
- * @file   garp_best_subsets.hh
+ * @file   dg_garp_bs.hh
  * @author Ricardo Scachetti Pereira (rpereira@ku.edu)
- * @date   2004-08-24
+ * @date   2004-12-10
  * $Id$
  * 
  * LICENSE INFORMATION 
@@ -28,12 +28,12 @@
  */
 
 
-#ifndef _GARP_BEST_SUBSETS_HH_
-#define _GARP_BEST_SUBSETS_HH_
+#ifndef _DG_GARP_BEST_SUBSETS_HH_
+#define _DG_GARP_BEST_SUBSETS_HH_
 
 #include <om.hh>
 
-#include "garp.hh"
+#include "GarpAlgorithm.h"
 #include "best_subsets.hh"
 
 
@@ -51,11 +51,11 @@
   * Garp runs in parallel. Takes advantage of multi-processor 
   * servers and workstations.
   */
-class GarpBestSubsets : public BestSubsets
+class DgGarpBestSubsets : public BestSubsets
 {
 public:
-  GarpBestSubsets();
-  virtual ~GarpBestSubsets();
+  DgGarpBestSubsets();
+  virtual ~DgGarpBestSubsets();
 
   /** This method is used when you want to ensure that all variables in all
     * environmental layers are scaled to the same value range. 
@@ -70,7 +70,6 @@ public:
 
 
 private:
-  // AlgorithmRun object factory
   Algorithm * getBSAlgorithm();
   int transferParametersToAlgorithm();
 

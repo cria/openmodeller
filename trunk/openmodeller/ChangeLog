@@ -1,3 +1,12 @@
+Release 0.2.1 (2005-02-19)
+--------------------------
+
+	* Added DesktopGarp version of GARP (as GARP 2.1).
+	* Removed GARP 3.x from build due to instability under high dimensional datasets.
+	* Best Subset Procedure was substituted by a new generic version that can be extended to encapsulate any GARP version.
+	* Fixed bug in Bioclim distance algorithm (probabilities were greater than zero outside the envelop depending on the cutoff parameter).
+	* Fixed bug in sampler class: when absence data was available, it was splitting train samplers once again and test samplers were coming out empty.
+
 Release 0.2 (2005-01-25)
 ------------------------
 

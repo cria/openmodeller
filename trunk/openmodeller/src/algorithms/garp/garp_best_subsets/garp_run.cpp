@@ -1,5 +1,5 @@
 /**
- * Definition of GarpRun class
+ * Definition of AlgorithmRun class
  * 
  * @file   garp_run.cpp
  * @author Ricardo Scachetti Pereira (rpereira@ku.edu)
@@ -30,8 +30,7 @@
 #include <om.hh>
 #include "garp_run.hh"
 #include "garp_run_thread.hh"
-#include "om_serializable.hh"
-#include "garp.hh"
+#include "bs_algorithm_factory.hh"
 #include "om_alg_parameter.hh"
 #include "om_sampler.hh"
 
@@ -41,20 +40,23 @@
 // TODO: modify strategy to reuse threads instead of creating a 
 //       new one for every garp run
 
-THREAD_PROC_RETURN_TYPE GarpRunThreadProc(void * threadData)
+THREAD_PROC_RETURN_TYPE AlgorithmRunThreadProc(void * threadData)
 {
-  GarpRun * garpRun = (GarpRun *) threadData;
+  AlgorithmRun * algRun = (AlgorithmRun *) threadData;
 
-  //g_log.debug("Starting new thread (%d).\n", garpRun->getId());
+  //g_log.debug("Starting new thread (%d).\n", algRun->getId());
 
-  while (!garpRun->done())
-    garpRun->iterate();
+  while (!algRun->done())
+    algRun->iterate();
 
-  garpRun->calculateCommission();
-  garpRun->calculateOmission();
-  garpRun->finalize();
+  algRun->calculateCommission();
+  algRun->calculateOmission();
+
+  //printf("%4d] Om=%5.3f Comm=%5.3f\n", algRun->getId(), algRun->getOmission(), algRun->getCommission());
+
+  algRun->finalize();
   
-  //g_log.debug("Finishing thread (%d).\n", garpRun->getId());
+  //g_log.debug("Finishing thread (%d).\n", algRun->getId());
 
   THREAD_PROC_RETURN_STATEMENT;
 }
@@ -63,35 +65,39 @@ THREAD_PROC_RETURN_TYPE GarpRunThreadProc(void * threadData)
 /****************************************************************/
 /************************* GARP Run *****************************/
 
-GarpRun::GarpRun() 
+
+AlgorithmRun::AlgorithmRun() :
+  _id(-1),
+  _running( false ),
+  _omission( -1.0 ),
+  _commission( -1.0 ),
+  _commission_samples( 0 ),
+  _alg( NULL ),
+  _train_sampler(NULL),
+  _test_sampler(NULL)
 {
-  _id = -1;
-  _running = false;
-  _omission = -1.0;
-  _commission = -1.0;
-  _commission_samples = 0;
-  _garp = NULL;
-  _train_sampler = _test_sampler = NULL;
 }
 
 /****************************************************************/
-GarpRun::~GarpRun() 
+AlgorithmRun::~AlgorithmRun() 
 {
-  if (_garp)
-    delete _garp;
-
   if (_train_sampler)
     delete _train_sampler;
 
   if (_test_sampler)
     delete _test_sampler;
+
+  if (_alg)
+    delete _alg;
+
 }
 
 /****************************************************************/
-int GarpRun::initialize(int id, int comm_samples,
-			Sampler * train_sampler, 
-			Sampler * test_sampler, 
-			int nparam, AlgParameter * param)
+int AlgorithmRun::initialize(int id, int comm_samples,
+			     Sampler * train_sampler, 
+			     Sampler * test_sampler, 
+			     int nparam, AlgParameter * param,
+			     BSAlgorithmFactory * factory)
 {
   //g_log.debug("Initializing garp run (%d)\n", id);
 
@@ -101,54 +107,59 @@ int GarpRun::initialize(int id, int comm_samples,
   _train_sampler = train_sampler;
   _test_sampler = test_sampler;
 
-  _garp = new Garp;
-  _garp->setSampler(train_sampler);
-  _garp->setParameters(nparam, param);
-  _garp->initialize();
+  _alg = factory->getBSAlgorithm();
+  _alg->setSampler(train_sampler);
+  _alg->setParameters(nparam, param);
+  _alg->initialize();
 
   return 1;
 }
 
 /****************************************************************/
-int GarpRun::run()
+int AlgorithmRun::run()
 {
   //g_log.debug("Starting new garp run (%d).\n", _id);
   _running = true;
-  THREAD_START(GarpRunThreadProc, this); 
+  THREAD_START(AlgorithmRunThreadProc, this); 
   return 1;  
 }
 
 /****************************************************************/
-bool GarpRun::running()
+bool AlgorithmRun::running()
 { return _running; }
 
 /****************************************************************/
-int GarpRun::iterate()
+int AlgorithmRun::iterate()
 {
-  //g_log.debug("Iteration %6d on run %d.\n", _garp->getGeneration(), _id);
-  return _garp->iterate();
+  //g_log.debug("Iteration %6d on run %d.\n", _alg->getGeneration(), _id);
+  return _alg->iterate();
 }
 
 /****************************************************************/
-int GarpRun::done()
-{ return _garp->done(); }
+int AlgorithmRun::done()
+{ return _alg->done(); }
 
 /****************************************************************/
-float GarpRun::getProgress()
-{ return _garp->getProgress(); }
+float AlgorithmRun::getProgress()
+{
+  if (_alg)
+    return _alg->getProgress(); 
+  else
+    return 0.0;
+}
 
 /****************************************************************/
-int GarpRun::finalize()           
+int AlgorithmRun::finalize()           
 {
   //g_log.debug("Finishing up garp run.(%d)\n", _id);
   _running = false;
-  _garp->deleteTempDataMembers();
+  //_alg->deleteTempDataMembers(); // this is not in Algorithm interface
   THREAD_END();
   return 1;
 }
 
 /****************************************************************/
-int GarpRun::calculateCommission()           
+int AlgorithmRun::calculateCommission()           
 {
   int i;
   double sum = 0.0;
@@ -163,7 +174,7 @@ int GarpRun::calculateCommission()
   _train_sampler->getPseudoAbsence(&sample, _commission_samples);
 
   for (i = 0; i < _commission_samples; i++)
-    { sum += _garp->getValue(sample[i]); }
+    { sum += _alg->getValue(sample[i]); }
 
   _commission = sum / (double) _commission_samples;
 
@@ -171,7 +182,7 @@ int GarpRun::calculateCommission()
 }
 
 /****************************************************************/
-int GarpRun::calculateOmission()           
+int AlgorithmRun::calculateOmission()           
 {
   int i, npresences, nomitted;
   SampledData sample, absences;
@@ -190,7 +201,7 @@ int GarpRun::calculateOmission()
   npresences = sampler->getPresence(&sample);
   nomitted = 0;
   for (i = 0; i < npresences; i++)
-    { nomitted = !_garp->getValue(sample[i]); }
+    { nomitted = !_alg->getValue(sample[i]); }
 
   _omission = (double) nomitted / (double) npresences;
 
@@ -198,15 +209,15 @@ int GarpRun::calculateOmission()
 }
 
 /****************************************************************/
-double GarpRun::getOmission()     
+double AlgorithmRun::getOmission()     
 { return _omission; }
 
 /****************************************************************/
-double GarpRun::getCommission()   
+double AlgorithmRun::getCommission()   
 { return _commission; }
 
 /****************************************************************/
-double GarpRun::getError(int type)
+double AlgorithmRun::getError(int type)
 {
   if (!type)
     { return _omission; }
@@ -215,21 +226,6 @@ double GarpRun::getError(int type)
 }
 
 /****************************************************************/
-double GarpRun::getValue(Scalar * x)   
-{ return _garp->getValue(x); }
+double AlgorithmRun::getValue(Scalar * x)   
+{ return _alg->getValue(x); }
 
-/****************************************************************/
-int GarpRun::serialize(Serializer * serializer)
-{
-  // TODO: finish implementation
-  return 0;
-}
-
-/****************************************************************/
-int GarpRun::deserialize(Deserializer * deserializer)
-{
-  // TODO: finish implementation
-  return 0;
-}
-
-/****************************************************************/

@@ -344,14 +344,14 @@ void GarpRuleSet::gatherRuleSetStats(int gen)
 
   printf("Gen: %4d ", gen);
 
-  for (i = 0; i < 4; i++)
+  for (i = 0; i < 3; i++)
   {
     switch (i)
     {
       case 0: type ='d'; break;
       case 1: type ='!'; break;
       case 2: type ='r'; break;
-      case 3: type ='a'; break;
+	//case 3: type ='a'; break;
     }
 
     sum = 0;

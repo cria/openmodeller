@@ -343,7 +343,7 @@ void Sampler::moveRandomOccurrences(Occurrences * train,
   Occurrence * oc;
 
   int i = 0;
-  int n = (int) ((1.0 - propTrain) * ((double) train->numOccurrences()));
+  int n = train->numOccurrences();
 
   Random rnd;
 
@@ -360,12 +360,13 @@ void Sampler::moveRandomOccurrences(Occurrences * train,
       // flip a coin
       if (rnd() > propTrain)
 	{ 
-	  i++;
 	  oc = train->remove(); 
-	  test->insert(oc->x(), oc->y(), oc->error(), 1.0, 0, 0);
+	  test->insert(oc->x(), oc->y(), oc->error(), 0.0, 0, 0);
 	  delete oc;
 	}
       else
 	{ train->next(); }
+
+      i++;
     }
 }

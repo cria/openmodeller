@@ -1,0 +1,25 @@
+# Copyright (C) 2004 Jens Oberender <j.obi at troja.net>
+#  
+# This file is free software; as a special exception the author gives
+# unlimited permission to copy and/or distribute it, with or without 
+# modifications, as long as this notice is preserved.
+# 
+# This program is distributed in the hope that it will be useful, but
+# WITHOUT ANY WARRANTY, to the extent permitted by law; without even the
+# implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+SUBDIRS = 
+
+plugindir = ${pkglibdir}
+
+plugin_LTLIBRARIES = libomdg_garp.la
+
+libomdg_garp_la_SOURCES = \
+	GarpAlgorithm.cpp GarpAlgorithm.h \
+	EnvCell.cpp EnvCell.h EnvCellSet.cpp EnvCellSet.h \
+	Rule.cpp Rule.h RuleSet.cpp RuleSet.h \
+	Utilities.cpp Utilities.h
+
+libomdg_garp_la_LDFLAGS  = -no-undefined
+libomdg_garp_la_LIBADD   = ../../src/lib/libopenmodeller.la
+libomdg_garp_la_CPPFLAGS = -I../../src/inc -I../../src/inc/serialization

@@ -1,5 +1,5 @@
 /**
- * Declaration of GarpRun class
+ * Declaration of AlgorithmRun class
  * 
  * @file   garp_run.hh
  * @author Ricardo Scachetti Pereira (rpereira@ku.edu)
@@ -33,30 +33,29 @@
 
 #include <om.hh>
 
-#include "om_serializable.hh"
-
-class Garp;
-class Sampler;
+class AlgorithmImpl;
 class AlgParameter;
+class BSAlgorithmFactory;
 
 /****************************************************************/
-/************************* GARP Run *****************************/
+/************************* AlgorithmRun *************************/
 
 /**
-  * Wraps up a single GARP run and its results (calculated error
+  * Wraps up a single Algorithm run and its results (calculated error
   * components). Also handles multi-threading aspects of
   * computation.
   */
-class GarpRun : public Serializable
+class AlgorithmRun
 {
 public:
-  GarpRun();
-  virtual ~GarpRun();
+  AlgorithmRun();
+  virtual ~AlgorithmRun();
 
   int initialize(int id, int comm_samples,
-			Sampler * train_sampler, 
-			Sampler * test_sampler, 
-			int nparam, AlgParameter * param);
+		 Sampler * train_sampler, 
+		 Sampler * test_sampler, 
+		 int nparam, AlgParameter * param,
+		 BSAlgorithmFactory * factory);
   int run();
   int iterate();
   int finalize();
@@ -73,9 +72,6 @@ public:
   int calculateOmission();
   int calculateCommission();
 
-  int serialize(Serializer * serializer);
-  int deserialize(Deserializer * deserializer);
-
 private:
 
   int _id;                   /// Identified for this particular garp run
@@ -83,7 +79,7 @@ private:
   double _omission;          /// Omission error for this run
   double _commission;        /// Commission error, approximated by area predicted present
   int _commission_samples;   /// Number of points used to calculate commission
-  Garp * _garp;              /// Garp algorithm used in this run
+  Algorithm * _alg;      /// Algorithm used in this run
   Sampler * _train_sampler;
   Sampler * _test_sampler;
 };

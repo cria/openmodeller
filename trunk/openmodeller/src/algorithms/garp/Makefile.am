@@ -12,17 +12,18 @@ SUBDIRS = garp_best_subsets test
 
 plugindir = ${pkglibdir}
 
-plugin_LTLIBRARIES = libomgarp.la
-
-libomgarp_la_SOURCES = \
-	garp.cpp ruleset.cpp garp_sampler.cpp \
-	rules_base.cpp rules_range.cpp rules_negrange.cpp \
-	rules_atomic.cpp rules_logit.cpp \
-	garp.hh  ruleset.hh  garp_sampler.hh \
-	rules_base.hh rules_range.hh rules_negrange.hh \
-	rules_atomic.hh rules_logit.hh 
-
-libomgarp_la_LDFLAGS = -no-undefined
-libomgarp_la_LIBADD = ../../src/lib/libopenmodeller.la
-libomgarp_la_CPPFLAGS = -I../../src/inc \
-                        -I../../src/inc/serialization
+# left out of build due to instabilities in algorithm
+#plugin_LTLIBRARIES = libomgarp.la
+#
+#libomgarp_la_SOURCES = \
+#	garp.cpp ruleset.cpp garp_sampler.cpp \
+#	rules_base.cpp rules_range.cpp rules_negrange.cpp \
+#	rules_atomic.cpp rules_logit.cpp \
+#	garp.hh  ruleset.hh  garp_sampler.hh \
+#	rules_base.hh rules_range.hh rules_negrange.hh \
+#	rules_atomic.hh rules_logit.hh 
+#
+#libomgarp_la_LDFLAGS = -no-undefined
+#libomgarp_la_LIBADD = ../../src/lib/libopenmodeller.la
+#libomgarp_la_CPPFLAGS = -I../../src/inc \
+#                        -I../../src/inc/serialization
