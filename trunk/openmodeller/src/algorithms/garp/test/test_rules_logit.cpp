@@ -78,7 +78,7 @@ TEST( LogitRule_similar3, LogitRule )
   rule1->setGenes(genes5, 4);
   rule2->setGenes(genes6, 4);
   
-  LONGS_EQUAL(rule1->similar(rule2), false);
+  LONGS_EQUAL(rule1->similar(rule2), true);
   
   delete rule1; 
   delete rule2;
@@ -94,6 +94,38 @@ TEST( LogitRule_similar4, LogitRule )
   rule1->setGenes(genes7, 4);
   rule2->setGenes(genes8, 4);
   
+  LONGS_EQUAL(rule1->similar(rule2), true);
+  
+  delete rule1; 
+  delete rule2;
+}
+
+Scalar genes9[8]  = {+0.02, -0.8, +0.8, -0.8, +0.8, -0.8, +0.8, -0.8};
+Scalar genes10[8] = {-0.04, -0.8, +0.8, -0.8, +0.8, -0.8, +0.8, -0.8};
+
+TEST( LogitRule_similar5, LogitRule )
+{
+  ExtLogitRule * rule1 = new ExtLogitRule;
+  ExtLogitRule * rule2 = new ExtLogitRule;
+  rule1->setGenes(genes9, 4);
+  rule2->setGenes(genes10, 4);
+  
+  LONGS_EQUAL(rule1->similar(rule2), true);
+  
+  delete rule1; 
+  delete rule2;
+}
+
+Scalar genes11[8] = {-0.01, +0.8, -0.8, +0.8, -0.8, +0.8, -0.8, +0.8};
+Scalar genes12[8] = {-0.50, +0.8, -0.8, +0.8, -0.8, +0.8, -0.8, +0.8};
+
+TEST( LogitRule_similar6, LogitRule )
+{
+  ExtLogitRule * rule1 = new ExtLogitRule;
+  ExtLogitRule * rule2 = new ExtLogitRule;
+  rule1->setGenes(genes11, 4);
+  rule2->setGenes(genes12, 4);
+  
   LONGS_EQUAL(rule1->similar(rule2), false);
   
   delete rule1; 
@@ -103,15 +135,15 @@ TEST( LogitRule_similar4, LogitRule )
 
 // Rule below applies to all points
 // TODO: come up with tests for other cases
-Scalar genes9[8] = {-1.0, +0.8, -1.0, +0.8, -1.0, +0.8, -1.0, +0.8};
-Scalar vals91[8] = {+0.8,       +0.8,       +0.8,       +0.8      };
-Scalar vals92[8] = {+0.8,       +0.8,       +0.8,       +0.8      };
-Scalar vals93[8] = {+0.8,       +0.8,       +0.8,       +0.8      };
+Scalar genes100[8] = {-1.0, +0.8, -1.0, +0.8, -1.0, +0.8, -1.0, +0.8};
+Scalar vals91[8]   = {+0.8,       +0.8,       +0.8,       +0.8      };
+Scalar vals92[8]   = {+0.8,       +0.8,       +0.8,       +0.8      };
+Scalar vals93[8]   = {+0.8,       +0.8,       +0.8,       +0.8      };
 
 TEST( LogitRule_applies1, LogitRule )
 {
   ExtLogitRule * rule = new ExtLogitRule;
-  rule->setGenes(genes9, 4);
+  rule->setGenes(genes100, 4);
   LONGS_EQUAL(true, rule->applies(vals91));
   delete rule; 
 }
@@ -119,7 +151,7 @@ TEST( LogitRule_applies1, LogitRule )
 TEST( LogitRule_applies2, LogitRule )
 {
   ExtLogitRule * rule = new ExtLogitRule;
-  rule->setGenes(genes9, 4);
+  rule->setGenes(genes100, 4);
   LONGS_EQUAL(true, rule->applies(vals92));
   delete rule; 
 }
@@ -127,7 +159,7 @@ TEST( LogitRule_applies2, LogitRule )
 TEST( LogitRule_applies3, LogitRule )
 {
   ExtLogitRule * rule = new ExtLogitRule;
-  rule->setGenes(genes9, 4);
+  rule->setGenes(genes100, 4);
   LONGS_EQUAL(true, rule->applies(vals93));
   delete rule; 
 }

@@ -174,6 +174,12 @@ int GarpRuleSet::insert(PerfIndex perfIndex, GarpRule * rule)
   found = false;
   for (i = 0; i < _numRules; i++)
   { 
+    /*
+    printf("Perfs[%3d/%3d]: (%+8.4f > %+8.4f)? %2d\n", i, _numRules, 
+	   newRulePerformance, _rules[i]->getPerformance(perfIndex),
+	   (newRulePerformance > _rules[i]->getPerformance(perfIndex)));
+    */
+
     if (newRulePerformance > _rules[i]->getPerformance(perfIndex))
       break;
   }
@@ -325,3 +331,40 @@ void GarpRuleSet::log()
 }
 
 // ==============================================================
+
+// gather rule set statistics
+void GarpRuleSet::gatherRuleSetStats(int gen)
+{
+  char type;
+  int i, j, ct;
+  double sum;
+
+  printf("Gen: %4d ", gen);
+
+  for (i = 0; i < 4; i++)
+  {
+    switch (i)
+    {
+      case 0: type ='d'; break;
+      case 1: type ='!'; break;
+      case 2: type ='r'; break;
+      case 3: type ='a'; break;
+    }
+
+    sum = 0;
+    ct = 0;
+    for (j = 0; j < _numRules; j++)
+    {
+      GarpRule * rule = _rules[j];
+      if (rule->type() == type)
+      {
+        ct++;
+        sum += rule->getPerformance(PerfUtil);
+      }
+    }
+
+    printf("[%c %3d %+9.4f %+9.4f] ", type, ct, sum, sum / ct);
+  }
+
+  printf("\n");
+}
