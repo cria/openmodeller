@@ -10,15 +10,10 @@
 
 plugindir = ${pkglibdir}
 
-if HAVE_GSL
-
-endif
-
 plugin_LTLIBRARIES = \
-	libomdistance_to_average.la \
-	libombioclim.la \
-	libomminimum_distance.la \
-	libomcsm.la
+		libomdistance_to_average.la \
+		libombioclim.la \
+		libomminimum_distance.la
 
 libomdistance_to_average_la_SOURCES = \
 	distance_to_average.cpp \
@@ -32,10 +27,6 @@ libomminimum_distance_la_SOURCES = \
 	minimum_distance.cpp \
 	minimum_distance.hh
 
-libomcsm_la_SOURCES = \
-	csm.cpp \
-	csm.hh
-
 libomdistance_to_average_la_LIBADD = ../src/lib/libopenmodeller.la
 libomdistance_to_average_la_CPPFLAGS = -I../src/inc
 
@@ -45,7 +36,14 @@ libombioclim_la_CPPFLAGS = -I../src/inc
 libomminimum_distance_la_LIBADD = ../src/lib/libopenmodeller.la
 libomminimum_distance_la_CPPFLAGS = -I../src/inc
 
+#
+# Build csm only when gsl is available
+#
+if HAVE_GSL
+plugin_LTLIBRARIES += libomcsm.la
+libomcsm_la_SOURCES = \
+	csm.cpp \
+	csm.hh
 libomcsm_la_LIBADD = ../src/lib/libopenmodeller.la -lgsl -lgslcblas
 libomcsm_la_CPPFLAGS = $(GSL_CFLAGS) -I../src/inc
-
-
+endif
