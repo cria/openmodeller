@@ -71,16 +71,21 @@ static AlgMetadata metadata = {
   "none",     	        // Bibliography.
 
   // Description.
-  "Find the distance between the given environmental conditions \
-and the point represented by the average of all occurrences.\n \
- If the distance 'dist' is in [0, MaxDist] then the output will \
-be in [0,1]. If 'dist' > MaxDist the output will be Zero.",
+  "Normalizes the environmental variables values and the \
+parameter (according to the number of environmental variables). \
+Calculates the average point in the environmental space \
+considering all given presence points. When projecting the \
+result, it calculates the Euclidean distance between the \
+average point and each point in the environmental space. \
+If the distance 'dist' is in [0, MAXDIST] then the probability \
+of occurrence will be in [1,0] (linear decay). \
+If 'dist' > MAXDIST then the probability will be zero.",
 
   "Mauro E. S. Muñoz",       // Author.
   "mauro [at] cria.org.br",  // Author's contact.
 
   0,  // Does not accept categorical data.
-  0,  // Does not need (pseudo)absence points.
+  0,  // Does not use (pseudo)absence points.
 
   NUM_PARAM,   // Algorithm's parameters.
   parameters
