@@ -270,7 +270,7 @@ class Csm : public Algorithm
 public:
 
   /** Constructor for Csm */
-  Csm();
+  Csm(AlgMetadata * metadata);
   /** This is the descructor for the Csm class */
   ~Csm();
     
