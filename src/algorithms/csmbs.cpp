@@ -81,7 +81,7 @@ Any components whose eigen values are above this threshold are retained.", // De
     -10,   // Parameter's lower limit.
     1,     // Not zero if the parameter has upper limit.
     10,   // Parameter's upper limit.
-    "1"  // Parameter's typical (default) value.
+    "0.05"  // Parameter's typical (default) value.
   }
   ,
   {
@@ -95,7 +95,7 @@ Usually three or more components is acceptible", // Description.
     2,   // Parameter's lower limit.
     1,     // Not zero if the parameter has upper limit.
     20,   // Parameter's upper limit.
-    "3"  // Parameter's typical (default) value.
+    "2"  // Parameter's typical (default) value.
   }
   ,
   {
