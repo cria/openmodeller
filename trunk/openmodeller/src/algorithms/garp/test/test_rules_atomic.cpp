@@ -1,9 +1,9 @@
 /**
- * Unit tests for rules_negrange.cpp
+ * Unit tests for rules_atomic.cpp
  * 
- * @file   test_rules_negrange.cpp
+ * @file   test_rules_atomic.cpp
  * @author Ricardo Scachetti Pereira (rpereira@ku.edu)
- * @date   2004-07-22
+ * @date   2004-04-07
  * $Id$
  * 
  * LICENSE INFORMATION 
@@ -29,38 +29,39 @@
  */
 
 #include <CppUnitLite/TestHarness.h>
-#include <rules_negrange.hh>
+#include <rules_atomic.hh>
 #include <garp_sampler.hh>
 #include <test_rules_defs.hh>
 
-EXTENDED_DUMMY_RULE( NegatedRangeRule );
+EXTENDED_DUMMY_RULE( AtomicRule );
 
 
 Scalar genes1[8] = {-0.8, +0.8, -0.8, +0.8, -0.8, +0.8, -0.8, +0.8};
 Scalar vals11[8] = {-0.5, +0.5, -0.5, +0.5, -0.5, +0.5, -0.5, +0.5};
 Scalar vals12[8] = {-0.0, +0.0, -0.0, +0.0, -0.0, +0.0, -0.0, +0.0};
-Scalar vals13[8] = {-0.9, +1.0, -1.0, +1.0, -1.0, +1.0, -1.0, +1.0};
+Scalar vals13[8] = {-0.8, +0.8, -0.8, +0.8, -0.8, +0.8, -0.8, +0.8};
 
-TEST( NegatedRangeRule_applies11 , NegatedRangeRule )
-{
-  ExtNegatedRangeRule * rule = new ExtNegatedRangeRule;
+TEST( AtomicRule_applies11 , AtomicRule )
+{ 
+  ExtAtomicRule * rule = new ExtAtomicRule;
   rule->setGenes(genes1, 4);
   LONGS_EQUAL(rule->applies(vals11), false);
 }
 
-TEST( NegatedRangeRule_applies12 , NegatedRangeRule )
-{
-  ExtNegatedRangeRule * rule = new ExtNegatedRangeRule;
+TEST( AtomicRule_applies12 , AtomicRule )
+{ 
+  ExtAtomicRule * rule = new ExtAtomicRule;
   rule->setGenes(genes1, 4);
   LONGS_EQUAL(rule->applies(vals12), false);
 }
 
-TEST( NegatedRangeRule_applies13 , NegatedRangeRule )
-{
-  ExtNegatedRangeRule * rule = new ExtNegatedRangeRule;
+TEST( AtomicRule_applies13 , AtomicRule )
+{ 
+  ExtAtomicRule * rule = new ExtAtomicRule;
   rule->setGenes(genes1, 4);
   LONGS_EQUAL(rule->applies(vals13), true);
 }
+
 
 
 Scalar genes2[8] = {-1.0, +1.0, -1.0, +1.0, -1.0, +1.0, -1.0, +1.0};
@@ -68,49 +69,78 @@ Scalar vals21[8] = {-0.5, +0.5, -0.5, +0.5, -0.5, +0.5, -0.5, +0.5};
 Scalar vals22[8] = {-0.0, +0.0, -0.0, +0.0, -0.0, +0.0, -0.0, +0.0};
 Scalar vals23[8] = {-2.9, +3.0, -1.0, +1.0, -1.0, +1.0, -1.0, +1.0};
 
-TEST( NegatedRangeRule_applies21 , NegatedRangeRule )
+TEST( AtomicRule_applies21 , AtomicRule )
 {
-  ExtNegatedRangeRule * rule = new ExtNegatedRangeRule;
+  ExtAtomicRule * rule = new ExtAtomicRule;
   rule->setGenes(genes2, 4);
-  LONGS_EQUAL(rule->applies(vals21), false);
+  LONGS_EQUAL(rule->applies(vals21), true);
 }
 
-TEST( NegatedRangeRule_applies22 , NegatedRangeRule )
+TEST( AtomicRule_applies22 , AtomicRule )
 {
-  ExtNegatedRangeRule * rule = new ExtNegatedRangeRule;
+  ExtAtomicRule * rule = new ExtAtomicRule;
   rule->setGenes(genes2, 4);
-  LONGS_EQUAL(rule->applies(vals22), false);
+  LONGS_EQUAL(rule->applies(vals22), true);
 }
 
-TEST( NegatedRangeRule_applies23 , NegatedRangeRule )
+TEST( AtomicRule_applies23 , AtomicRule )
 {
-  ExtNegatedRangeRule * rule = new ExtNegatedRangeRule;
+  ExtAtomicRule * rule = new ExtAtomicRule;
   rule->setGenes(genes2, 4);
-  LONGS_EQUAL(rule->applies(vals23), false);
+  LONGS_EQUAL(rule->applies(vals23), true);
 }
+
 
 Scalar genes3[8] = {-1.0, +1.0, -0.1, +0.1, -1.0, +1.0, -1.0, +1.0};
 Scalar vals31[8] = {-0.5, +0.5, -0.5, +0.5, -0.5, +0.5, -0.5, +0.5};
 Scalar vals32[8] = {-0.0, +0.0, -0.0, +0.0, -0.0, +0.0, -0.0, +0.0};
-Scalar vals33[8] = {-2.9, +3.0, -1.0, +1.0, -1.0, +1.0, -1.0, +1.0};
+Scalar vals33[8] = {-2.9, +3.0, -0.1, +0.1, -1.0, +1.0, -1.0, +1.0};
 
-TEST( NegatedRangeRule_applies31 , NegatedRangeRule )
+TEST( AtomicRule_applies31 , AtomicRule )
 {
-  ExtNegatedRangeRule * rule = new ExtNegatedRangeRule;
+  ExtAtomicRule * rule = new ExtAtomicRule;
   rule->setGenes(genes3, 4);
-  LONGS_EQUAL(rule->applies(vals31), true);
+  LONGS_EQUAL(rule->applies(vals31), false);
 }
 
-TEST( NegatedRangeRule_applies32 , NegatedRangeRule )
+TEST( AtomicRule_applies32 , AtomicRule )
 {
-  ExtNegatedRangeRule * rule = new ExtNegatedRangeRule;
+  ExtAtomicRule * rule = new ExtAtomicRule;
   rule->setGenes(genes3, 4);
   LONGS_EQUAL(rule->applies(vals32), false);
 }
 
-TEST( NegatedRangeRule_applies33 , NegatedRangeRule )
+TEST( AtomicRule_applies33 , AtomicRule )
 {
-  ExtNegatedRangeRule * rule = new ExtNegatedRangeRule;
+  ExtAtomicRule * rule = new ExtAtomicRule;
   rule->setGenes(genes3, 4);
   LONGS_EQUAL(rule->applies(vals33), true);
 }
+
+
+Scalar genes4[8] = {-0.8, +0.8, -1.0, +1.0, -0.8, +0.0, -0.0, +1.0};
+Scalar vals41[8] = {-0.8, +0.0, -0.5, +0.5, -0.8, +0.5, -0.5, +0.5};
+Scalar vals42[8] = {-0.8, +0.0, -0.0, +0.0, -0.8, +0.0, -0.0, +0.0};
+Scalar vals43[8] = {-0.8, +0.0, -9.0, +1.0, -0.8, +1.0, -0.0, +1.0};
+
+TEST( AtomicRule_applies41 , AtomicRule )
+{
+  ExtAtomicRule * rule = new ExtAtomicRule;
+  rule->setGenes(genes4, 4);
+  LONGS_EQUAL(rule->applies(vals41), false);
+}
+
+TEST( AtomicRule_applies42 , AtomicRule )
+{
+  ExtAtomicRule * rule = new ExtAtomicRule;
+  rule->setGenes(genes4, 4);
+  LONGS_EQUAL(rule->applies(vals42), true);
+}
+
+TEST( AtomicRule_applies43 , AtomicRule )
+{
+  ExtAtomicRule * rule = new ExtAtomicRule;
+  rule->setGenes(genes4, 4);
+  LONGS_EQUAL(rule->applies(vals43), true);
+}
+

@@ -74,7 +74,8 @@ void LogitRule::initialize(GarpCustomSampler * sampler)
 }
 
 // ==========================================================================
-int LogitRule::regression(GarpCustomSampler * sampler, int dep, double& constant, double& coef1, double& coef2)
+int LogitRule::regression(GarpCustomSampler * sampler, int dep, 
+			  double& constant, double& coef1, double& coef2)
 {
   double a, b, x, y, xi, yi, xiyi, xi2, xb, xx, xxi, xxiyi, xxi2;
   int i, n, pred;
@@ -111,7 +112,8 @@ int LogitRule::regression(GarpCustomSampler * sampler, int dep, double& constant
   xb = (n * xxiyi - xxi * yi) / (n * xxi2 - (xxi * xxi));
   coef2 = ((xb * 2.0) - 1.0);
   
-  //printf("\nb= %f %f %f %f %f %f %d",b,a,xb,coef[0],coef[1],coef[2],n);
+  //printf("\nlogit: %+8.4f %+8.4f %+8.4f %+8.4f %+8.4f %+8.4f %d",
+  // b, a, xb, coef[0], coef[1], coef[2], n);
   
   return n;
 }
