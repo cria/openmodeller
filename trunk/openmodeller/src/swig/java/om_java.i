@@ -90,48 +90,103 @@ char **get_args() {
 
 
 
+%inline %{
+
+void JNIException(char * msg){
+  fprintf(stderr, msg);
+}
+
+jmethodID JNI_getConstructor(JNIEnv * jenv, jclass clazz){
+    jmethodID mID = jenv->GetMethodID(clazz, "<init>", "()V");
+    if (mID == 0) { 
+	JNIException("System could not find constructor for class.\n"); 
+	return 0;
+    }
+    else return mID;
+}
+
+jmethodID JNI_getSetStringMethod(JNIEnv * jenv, jclass clazz, char * methodName){
+    jmethodID mID = jenv->GetMethodID(clazz, methodName, "(Ljava/lang/String;)V");
+    if (mID == 0) { 
+	JNIException("System could not find method.\n"); 
+        return 0;
+    }
+    else return mID;
+}
+
+%}
+
+
 /* This allows a C function to return a AlgMetadata** as a Java array */
 %typemap(out) AlgMetadata ** {
     int i;
     int len=0;
-    jobject temp_obj;
-    jstring temp_string;
+    jobject algMd;
+
     const jclass clazz = jenv->FindClass("AlgMetadata");
-    if (clazz == 0) {
-	fprintf(stderr, "System could not find class AlgMetadata\n");
-	return 0;
-    }
+    if (clazz == 0) { JNIException("System could not find class AlgMetadata\n"); }
 
-    jmethodID constrID = jenv->GetMethodID(clazz, "<init>", "()V");
+    jmethodID constrID = JNI_getConstructor(jenv, clazz);
+    jmethodID mID_setId          = JNI_getSetStringMethod(jenv, clazz, "setId");
+    jmethodID mID_setName        = JNI_getSetStringMethod(jenv, clazz, "setName");
+    jmethodID mID_setVersion     = JNI_getSetStringMethod(jenv, clazz, "setVersion");
+    jmethodID mID_setOverview    = JNI_getSetStringMethod(jenv, clazz, "setOverview");
+    jmethodID mID_setDescription = JNI_getSetStringMethod(jenv, clazz, "setDescription");
+    jmethodID mID_setAuthor      = JNI_getSetStringMethod(jenv, clazz, "setAuthor");
+    jmethodID mID_setBiblio      = JNI_getSetStringMethod(jenv, clazz, "setBiblio");
+    jmethodID mID_setCodeAuthor  = JNI_getSetStringMethod(jenv, clazz, "setCode_author");
+    jmethodID mID_setContact     = JNI_getSetStringMethod(jenv, clazz, "setContact");
 
-    if (constrID == 0) {
-      fprintf(stderr, "System could not find AlgMetadata constructor.\n");
-      return 0;
-    }
-
-    jmethodID methodID = jenv->GetMethodID(clazz, "setId", 
-                                          "(Ljava/lang/String;)V");
-
-    if (methodID == 0) {
-      fprintf(stderr, "System could not find method AlgMetadata::setId()\n");
-      return 0;
-    }
+	// todo: add integer members
 
     while ($1[len]) len++;    
     jresult = (jobjectArray) jenv->NewObjectArray(len, clazz, NULL);
-    /* exception checking omitted */
+    if (jresult == 0) { JNIException("System could not allocate array of objects"); }
 
     for (i=0; i<len; i++) {
+      algMd = jenv->NewObject(clazz, constrID);
 
-      char * cstr = (*(result + i))->id;
-      printf("Id[%d]=%s\n", i, cstr); fflush(stdout);
+      jstring sid = jenv->NewStringUTF((*(result + i))->id);
+      jenv->CallVoidMethod(algMd, mID_setId, sid);
 
-      temp_string = jenv->NewStringUTF(cstr);
-      temp_obj = jenv->NewObject(clazz, constrID);
-      jenv->CallVoidMethod(temp_obj, methodID, temp_string);
-      jenv->SetObjectArrayElement(jresult, i, temp_obj);
-      jenv->DeleteLocalRef(temp_obj);
-      jenv->DeleteLocalRef(temp_string);
+      jstring sname = jenv->NewStringUTF((*(result + i))->name);
+      jenv->CallVoidMethod(algMd, mID_setName, sname);
+
+      jstring sversion = jenv->NewStringUTF((*(result + i))->version);
+      jenv->CallVoidMethod(algMd, mID_setVersion, sversion);
+
+      jstring soverview = jenv->NewStringUTF((*(result + i))->overview);
+      jenv->CallVoidMethod(algMd, mID_setOverview, soverview);
+
+      jstring sdescription = jenv->NewStringUTF((*(result + i))->description);
+      jenv->CallVoidMethod(algMd, mID_setDescription, sdescription);
+
+      jstring sauthor = jenv->NewStringUTF((*(result + i))->author);
+      jenv->CallVoidMethod(algMd, mID_setAuthor, sauthor);
+
+      jstring sbiblio = jenv->NewStringUTF((*(result + i))->biblio);
+      jenv->CallVoidMethod(algMd, mID_setBiblio, sbiblio);
+
+      jstring scode_author = jenv->NewStringUTF((*(result + i))->code_author);
+      jenv->CallVoidMethod(algMd, mID_setCodeAuthor, scode_author);
+
+      jstring scontact = jenv->NewStringUTF((*(result + i))->contact);
+      jenv->CallVoidMethod(algMd, mID_setContact, scontact);
+
+	// todo: add integer members
+
+      jenv->SetObjectArrayElement(jresult, i, algMd);
+
+      jenv->DeleteLocalRef(sid);
+      jenv->DeleteLocalRef(sname);
+      jenv->DeleteLocalRef(sversion);
+      jenv->DeleteLocalRef(soverview);
+      jenv->DeleteLocalRef(sdescription);
+      jenv->DeleteLocalRef(sauthor);
+      jenv->DeleteLocalRef(sbiblio);
+      jenv->DeleteLocalRef(scode_author);
+      jenv->DeleteLocalRef(scontact);
+      jenv->DeleteLocalRef(algMd);
     }
 }
 
