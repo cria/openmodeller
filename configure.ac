@@ -2,7 +2,7 @@ dnl Process this file with autoconf to produce a configure script.
 
 AC_INIT
 
-AM_INIT_AUTOMAKE(openmodeller, 0.2-rc1)
+AM_INIT_AUTOMAKE(openmodeller, 0.2)
 
 AC_PREFIX_PROGRAM(gcc)
 
