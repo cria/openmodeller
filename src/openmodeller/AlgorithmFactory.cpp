@@ -300,7 +300,7 @@ AlgorithmFactory::scanDir( char *dir, ListDLL &lst )
         }
 
       // If it can not... :(
-      // This deallocate the directory entry setted!
+      // This deallocate the directory entry set!
       else
 	delete dll;
     }
