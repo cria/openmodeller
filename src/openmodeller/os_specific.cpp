@@ -28,14 +28,12 @@
 
 #include <os_specific.hh>
 
-#include <dlfcn.h>
-#include <dirent.h>
-#include <string.h>
-#include <stdlib.h>
-
 
 /****************************************************************/
 /********************* Dynamic Linking Loader *******************/
+
+#include <dlfcn.h>
+
 
 /****************/
 /*** dll Open ***/
@@ -77,6 +75,10 @@ dllError( DLLHandle )
 
 /****************************************************************/
 /********************* Scan Directory Entries *******************/
+
+#include <dirent.h>
+#include <string.h>
+#include <stdlib.h>
 
 typedef struct dirent TDirent;
 
@@ -139,3 +141,39 @@ scanDirectory( char *dir )
   return entries;
 }
 
+
+
+
+/****************************************************************/
+/*********************** Random Generation **********************/
+
+#ifndef WIN32
+#include <sys/time.h>
+#include <sys/resource.h>
+
+#else
+#include <time.h>
+
+#endif
+
+
+/*******************/
+/*** init Random ***/
+int
+initRandom()
+{
+  unsigned int seed;
+
+#ifndef WIN32
+  struct timeval time;
+  gettimeofday( &time, (struct timezone *)NULL );
+  seed = time.tv_usec;
+
+#else
+  seed = (unsigned int) time( NULL );
+
+#endif
+
+  srand( seed );
+  return 1;
+}

@@ -46,42 +46,45 @@ public:
   Random();
 
   /** Return real numbers between [min, max).*/
-  double Get( double min, double max );
+  double get( double min, double max );
   /** Return real numbers between [0, max).*/
-  double Get( double max );
+  double get( double max );
   /** Return real numbers between [0, 1).*/
-  double Get();
+  double get()   { return random(); }
 
   double operator()( double min, double max );
   double operator()( double max );
-  double operator()();
+  double operator()()  { return random(); }
 
 
   /** Return integer numbers between [min, max).*/
-  int Get( int min, int max );
+  int get( int min, int max );
   /** Return integer numbers between [0, max).*/
-  int Get( int max );
+  int get( int max );
 
   int operator()( int min, int max );
   int operator()( int max );
 
   /** Return numbers "long int's" between [min, max).*/
-  long Get( long min, long max );
+  long get( long min, long max );
   /** Return numbers "long int's" between [0, max).*/
-  long Get( long max );
+  long get( long max );
 
   long operator()( long min, long max );
   long operator()( long max );
 
-  /** Generate a random number, r, between [-range, range], so that
-   *  r = -range + k * dim_interv, where k = 0,..,N.
+  /** Generate a random number, r, between [-range, range], so
+   *  that r = -range + k * dim_interv, where k = 0,..,N.
    */
-  double Discrete( float range, float dim_interv );
+  double discrete( float range, float dim_interv );
 
 
 private:
 
-  static int not_initialized;
+  /** Return real numbers in the interval [0, 1).*/
+  double random();
+
+  static int _initialized;
 };
 
 

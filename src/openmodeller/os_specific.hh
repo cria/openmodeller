@@ -53,5 +53,17 @@ extern char     *dllError   ( DLLHandle );
 char **scanDirectory( char *dir );
 
 
+/****************************************************************/
+/*********************** Random Generation **********************/
+
+/**
+ * Generates a pseudo-random seed and initializes the system
+ * random sequence generator. The seed is based in the
+ * micro-seconds of the current machine time.
+ * @return Not zero if the generator was initiated.
+ */
+int initRandom();
+
+
 
 #endif
