@@ -8,7 +8,7 @@
 # WITHOUT ANY WARRANTY, to the extent permitted by law; without even the
 # implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
-PLUGINPATH=-DPLUGINPATH=\"$(libdir)/openmodeller\"
+PLUGINPATH=-DPLUGINPATH=\"$(libdir)/openmodeller/\"
 
 SUBDIRS = env_io
 
