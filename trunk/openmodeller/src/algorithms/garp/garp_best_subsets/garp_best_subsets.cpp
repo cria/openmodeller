@@ -485,11 +485,11 @@ int GarpBestSubsets::iterate()
     {
       // check if it should start new runs
       if ((_finishedRuns + _activeRuns < _totalRuns) && 
-	  !checkForEarlyTermination())
+	  !earlyTerminationConditionMet())
 	{
 	  // it needs to start more runs
 	  // wait for a slot for a new thread
-	  if ((active = checkActiveThreads()) >= _maxThreads)
+	  if ((active = numActiveThreads()) >= _maxThreads)
 	    {
 	      g_log("%5d] Waiting for a slot to run next thread (%d out of %d)\n",
 		    i, active, _maxThreads);
@@ -517,7 +517,7 @@ int GarpBestSubsets::iterate()
 	{
 	  // no more runs are needed
 	  // check if all active threads have finished
-	  if (active = checkActiveThreads())
+	  if (active = numActiveThreads())
 	    {
 	      // there are still threads running
 	      g_log("%5d] Waiting for %d active thread(s) to finish.\n", 
@@ -540,7 +540,7 @@ int GarpBestSubsets::iterate()
 }
 
 /****************************************************************/
-int GarpBestSubsets::checkActiveThreads()
+int GarpBestSubsets::numActiveThreads()
 {
   int i;
   GarpRun * run;
@@ -576,10 +576,10 @@ int GarpBestSubsets::checkActiveThreads()
 }
 
 /****************************************************************/
-int GarpBestSubsets::checkForEarlyTermination()
+int GarpBestSubsets::earlyTerminationConditionMet()
 {
-  return (_softOmissionThreshold) &&
-         (_currentModelsUnderOmissionThreshold < _modelsUnderOmission);
+  return (!_softOmissionThreshold) &&
+         (_currentModelsUnderOmissionThreshold >= _modelsUnderOmission);
 }
 
 /****************************************************************/
