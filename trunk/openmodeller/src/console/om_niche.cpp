@@ -83,20 +83,18 @@ int
 main( int argc, char **argv )
 {
   // Reconfigure the global logger.
-  g_log.set( Log::Debug, stdout, "Niche Viewer" );
+  g_log.setLevel( Log::Error );
+  g_log.setPrefix( "Niche" );
 
-  if ( argc < 1 )
-    {
-      g_log( "\n%s <request>\n\n", argv[0] );
-      exit( 1 );
-    }
-  g_log( "\nopenModeller Niche Viewer - CRIA\n" );
+  if ( argc < 2 )
+      g_log.error( 1, "\n%s <request>\n\n", argv[0] );
+
+  g_log( "\nopenModeller Two-dimensional Niche Viewer - CRIA\n" );
 
   char *request = argv[1];
   FileParser fp( request );
 
   // Create the model using openModeller.
-  //
   _om = createModel( request );
   Environment *env = _om->getEnvironment();
   int nmap = env->numLayers();
@@ -105,10 +103,9 @@ main( int argc, char **argv )
   env->getExtremes( min, max );
 
   if ( nmap < 2 )
-    g_log.error( 1, "Need more than one environmental variable!\n" );
+    g_log.error( 2, "Need more than one environmental variable!\n" );
   else if ( nmap > 2 )
-    g_log.info( "Using only the two fNeed more than one environmental variable!\n" );
-
+    g_log.error( 3, "Maximum number of environmental variables (2) exceeded!\n" );
 
   // Occurrences file (used to draw, not to create the model).
   char *oc_cs   = fp.get( "WKT Coord System" );
