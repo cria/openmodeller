@@ -42,8 +42,8 @@ static AlgParamMetadata parameters[NUM_PARAM] = {
     "Integer",        // Type.
     "The number of eigenvalues to generate from randomly 'shuffled' environment data.", //overview
     "The Broken Stick method of selecting the number of components to keep \n\
-is carried out by randomising the row order of each column in the environemntal \n\
-matrix and then otaining the eigen value for the randomised matrix. \n\
+is carried out by randomising the row order of each column in the environmental \n\
+matrix and then obtaining the eigen value for the randomised matrix. \n\
 This is repeatedly carried out for the amount of times specified by the user here.", // Description.
 
     1,     // Not zero if the parameter has lower limit.

@@ -75,15 +75,16 @@ static AlgMetadata metadata = {
   "0.1",       	        // Version.
 
   // Overview
-  "Probability proporcional to the inverse of the cartesian \
-distance to the nearest presence point.",
+  "Probability is inversely proportional to the cartesian\
+ distance in environmental space to the nearest presence point.",
 
   // Description.
-  "Finds the distance between the given environmental conditions \
-to each occurrence point.\n\
- Then choose the closest distance. \n\
- If the distance 'dist' is in [0, MaxDist] then the output will \
-be in [0,1]. If 'dist' > MaxDist the output will be Zero.",
+  "Normalizes the environmental variables values and the\
+ parameter (according to the number of environmental variables).\
+ Calculates the distance between the given environmental conditions\
+ to each occurrence point and selects the closest distance.\n\
+ If distance 'dist' is within [0, MaxDist] then probability will\
+ be in [0,1]. If 'dist' > MaxDist then probability will be zero.",
 
 
   "Mauro E. S. Muñoz",  // Algorithm author.

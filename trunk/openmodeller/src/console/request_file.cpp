@@ -127,7 +127,7 @@ RequestFile::setOutputMap( OpenModeller *om, FileParser &fp )
   // parameter file...
   if ( ! file )
     {
-      g_log( "The 'Output file' file name was not speciefied!\n" );
+      g_log( "The 'Output file' file name was not specified!\n" );
       return 0;
     }
   if ( ! format )
