@@ -154,6 +154,8 @@ int GarpRun::calculateCommission()
 
   g_log("Calculating commission error (%d).\n", _id);
 
+  // get random points from the background to estimate 
+  // area predicted present
   _train_sampler->getPseudoAbsence(&sample, _commission_samples);
 
   for (i = 0; i < _commission_samples; i++)
