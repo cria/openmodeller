@@ -114,7 +114,7 @@ public:
 
   int run();
 
-  char *error()  { return _error; }
+  char *error()  { return f_error; }
 
 
 private:
@@ -158,11 +158,11 @@ private:
   char *_alg_param;
   int   _ncycle;    ///< Max algorithm cicles.
 
-  char *_oc_file;
+  char *_oc_file; ///< Occurrences file name.
   char *_oc_cs;   ///< Occurrences Coordinate System.
-  char *_oc_name;
+  char *_oc_name; ///< Occurrences ID (eg species name).
 
-  char *_error;
+  char f_error[256];
 };
 
 

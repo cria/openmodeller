@@ -42,7 +42,7 @@
 /******************************/
 /*** Algorithm's parameters ***/
 
-AlgorithmParameter parameters[NUM_PARAM] = {
+static AlgorithmParameter parameters[NUM_PARAM] = {
 
   // Metadata of the first parameter.
   {
@@ -62,7 +62,7 @@ AlgorithmParameter parameters[NUM_PARAM] = {
 /************************************/
 /*** Algorithm's general metadata ***/
 
-AlgorithmMetadata metadata = {
+static AlgorithmMetadata metadata = {
 
   "Bioclim",       // Name.
   "0.1",       	   // Version.
@@ -103,7 +103,8 @@ algorithmFactory()
 Bioclim::Bioclim()
   : Algorithm( &metadata )
 {
-  _done   = 0;
+  _min = _max = _avg = _half_range = 0;
+  _done = 0;
 }
 
 
@@ -112,8 +113,10 @@ Bioclim::Bioclim()
 
 Bioclim::~Bioclim()
 {
-  delete _min;
-  delete _max;
+  if ( _min ) delete _min;
+  if ( _max ) delete _max;
+  if ( _avg ) delete _avg;
+  if ( _half_range ) delete _half_range;
 }
 
 

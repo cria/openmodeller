@@ -28,7 +28,7 @@
 /******************************/
 /*** Algorithm's parameters ***/
 
-AlgorithmParameter *parameters = 0;
+static AlgorithmParameter *parameters = 0;
 /*
 AlgorithmParameter parameters[NUM_PARAM] = {
 
@@ -51,7 +51,7 @@ AlgorithmParameter parameters[NUM_PARAM] = {
 /************************************/
 /*** Algorithm's general metadata ***/
 
-AlgorithmMetadata metadata = {
+static AlgorithmMetadata metadata = {
 
   "CSM",           // Name.
   "0.1",       	   // Version.
@@ -92,18 +92,22 @@ algorithmFactory()
    */
 Csm::Csm(): Algorithm( &metadata )
 {
+  _initialized = 0;
 }
 
 
 /** This is the descructor for the Csm class */
 Csm::~Csm()
 {
-    gsl_matrix_free (_gsl_environment_matrix);
-    gsl_matrix_free (_gsl_covariance_matrix);
-    gsl_vector_free (_gsl_avg_vector);
-    gsl_vector_free (_gsl_stddev_vector);
-    gsl_vector_free (_gsl_eigenvalue_vector);
-    gsl_matrix_free (_gsl_eigenvector_matrix);
+  if ( _initialized )
+    {
+      gsl_matrix_free (_gsl_environment_matrix);
+      gsl_matrix_free (_gsl_covariance_matrix);
+      gsl_vector_free (_gsl_avg_vector);
+      gsl_vector_free (_gsl_stddev_vector);
+      gsl_vector_free (_gsl_eigenvalue_vector);
+      gsl_matrix_free (_gsl_eigenvector_matrix);
+    }
 }
 
 
@@ -132,6 +136,8 @@ int Csm::needNormalization( Scalar *min, Scalar *max )
   */
 int Csm::initialize( int ncycle )
 {
+    _initialized = 1;
+
     //set the class member that holds the number of environmental variables
     //we subtract 1 because the first column contains the specimen count
     _layer_count = _samp->dimEnv();

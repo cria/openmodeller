@@ -44,7 +44,7 @@ Scale = 255
 # Name of the algorithm to construct the model
 # and algorithm specific parameters.
 
-Algorithm  = MinimumDistance v0.1
+#Algorithm  = MinimumDistance v0.1
 #Parameters = 0.05
 
 #Algorithm  = Bioclim

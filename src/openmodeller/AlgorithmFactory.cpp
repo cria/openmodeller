@@ -32,6 +32,10 @@
 
 #include <string.h>
 
+//debug
+#include <iostream>
+#include <stdio.h>
+
 
 /****************************************************************/
 /*********************** Algorithm Factory **********************/
@@ -52,14 +56,9 @@ AlgorithmFactory::DLL::DLL( char *file )
 
 AlgorithmFactory::DLL::~DLL()
 {
-  if ( _file )
-    delete _file;
-
-  if ( _handle )
-    dllClose( _handle );
-
-  if ( _alg )
-    delete _alg;
+  if ( _file )   delete _file;
+  if ( _alg )    delete _alg;
+  if ( _handle ) dllClose( _handle );
 }
 
 
@@ -103,6 +102,9 @@ AlgorithmFactory::AlgorithmFactory( char **dirs )
 
 AlgorithmFactory::~AlgorithmFactory()
 {
+  DLL *dll;
+  for ( _lstDLL.head(); dll = _lstDLL.get(); _lstDLL.next() )
+    delete dll;
 }
 
 
@@ -139,6 +141,10 @@ AlgorithmFactory::newAlgorithm( Sampler *samp, char *id,
 				char *param )
 {
   Algorithm *alg;
+
+  // If there is no algorithm, try to read them again.
+  if ( ! _lstDLL.length() )
+    availableAlgorithms();
 
   // For each DLL in the list.
   DLL *dll;
@@ -191,24 +197,33 @@ int
 AlgorithmFactory::scanDir( char *dir, ListDLL &lst )
 {
   char **entries = scanDirectory( dir );
+
   if ( ! entries )
     return 0;
 
   char **pent = entries;
   while ( *pent )
     {
+      fprintf( stderr, "-- Loading: %s ... ", *pent );
+
       // Create a new DLL for each directory entry found.
       DLL *dll = new DLL( *pent++ );
 
       // If the dll can create an algorithm, insert it in to
       // the list.
       if ( dll->load() )
+	{
+	  fprintf( stderr, "ok\n" );
 	lst.append( dll );
+	}
 
       // If it can not... :(
       // This deallocate the directory entry setted!
       else
+{
+	  fprintf( stderr, "ERROR\n" );
 	delete dll;
+}
     }
 
   delete entries;

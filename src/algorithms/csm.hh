@@ -392,6 +392,8 @@ private:
   gsl_matrix * autoCovariance(gsl_matrix * m);
     
   
+  /** This is a flag to indicate that the algorithm was initialized. */
+  int _initialized;
   /** This member variable is used to indicate whether the model 
     * building process has completed yet. */
   int _done;
