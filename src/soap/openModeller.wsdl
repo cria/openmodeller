@@ -1,0 +1,320 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions name="openModeller"
+ xmlns="http://schemas.xmlsoap.org/wsdl/"
+ targetNamespace="http://openmodeller.sf.net/ns/1.0"
+ xmlns:tns="http://openmodeller.sf.net/ns/1.0"
+ xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/"
+ xmlns:SOAP-ENC="http://schemas.xmlsoap.org/soap/encoding/"
+ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+ xmlns:om="http://openmodeller.sf.net/ns/1.0"
+ xmlns:SOAP="http://schemas.xmlsoap.org/wsdl/soap/"
+ xmlns:WSDL="http://schemas.xmlsoap.org/wsdl/">
+
+<types>
+
+ <schema targetNamespace="http://openmodeller.sf.net/ns/1.0"
+  xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/"
+  xmlns:SOAP-ENC="http://schemas.xmlsoap.org/soap/encoding/"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+  xmlns:om="http://openmodeller.sf.net/ns/1.0"
+  xmlns="http://www.w3.org/2001/XMLSchema"
+  elementFormDefault="unqualified"
+  attributeFormDefault="unqualified">
+  <import namespace="http://schemas.xmlsoap.org/soap/encoding/"/>
+  <complexType name="AlgorithmParameter">
+   <complexContent>
+    <restriction base="om:soap-AlgorithmParameter">
+    </restriction>
+   </complexContent>
+  </complexType>
+  <complexType name="AlgorithmMetadata">
+   <complexContent>
+    <restriction base="om:soap-AlgorithmMetadata">
+    </restriction>
+   </complexContent>
+  </complexType>
+  <complexType name="Algorithms">
+   <complexContent>
+    <restriction base="om:soap-Algorithms">
+    </restriction>
+   </complexContent>
+  </complexType>
+  <complexType name="Point">
+   <complexContent>
+    <restriction base="om:soap-Point">
+    </restriction>
+   </complexContent>
+  </complexType>
+  <complexType name="PresencePoints">
+   <complexContent>
+    <restriction base="om:soap-PresencePoints">
+    </restriction>
+   </complexContent>
+  </complexType>
+  <complexType name="AbsencePoints">
+   <complexContent>
+    <restriction base="om:soap-AbsencePoints">
+    </restriction>
+   </complexContent>
+  </complexType>
+  <complexType name="Points">
+   <complexContent>
+    <restriction base="om:soap-Points">
+    </restriction>
+   </complexContent>
+  </complexType>
+  <complexType name="Map">
+   <complexContent>
+    <restriction base="om:soap-Map">
+    </restriction>
+   </complexContent>
+  </complexType>
+  <complexType name="Maps">
+   <complexContent>
+    <restriction base="om:soap-Maps">
+    </restriction>
+   </complexContent>
+  </complexType>
+  <complexType name="Mask">
+   <complexContent>
+    <restriction base="om:soap-Mask">
+    </restriction>
+   </complexContent>
+  </complexType>
+  <complexType name="Parameter">
+   <complexContent>
+    <restriction base="om:soap-Parameter">
+    </restriction>
+   </complexContent>
+  </complexType>
+  <complexType name="Algorithm">
+   <complexContent>
+    <restriction base="om:soap-Algorithm">
+    </restriction>
+   </complexContent>
+  </complexType>
+  <complexType name="Output">
+   <complexContent>
+    <restriction base="om:soap-Output">
+    </restriction>
+   </complexContent>
+  </complexType>
+  <complexType name="soap-AlgorithmParameter">
+   <sequence>
+    <element name="name" type="xsd:string" minOccurs="0" maxOccurs="1" nillable="true"/>
+    <element name="type" type="xsd:string" minOccurs="0" maxOccurs="1" nillable="true"/>
+    <element name="description" type="xsd:string" minOccurs="0" maxOccurs="1" nillable="true"/>
+    <element name="has-min" type="xsd:int" minOccurs="1" maxOccurs="1"/>
+    <element name="min" type="xsd:double" minOccurs="1" maxOccurs="1"/>
+    <element name="has-max" type="xsd:int" minOccurs="1" maxOccurs="1"/>
+    <element name="max" type="xsd:double" minOccurs="1" maxOccurs="1"/>
+    <element name="typical" type="xsd:string" minOccurs="0" maxOccurs="1" nillable="true"/>
+   </sequence>
+  </complexType>
+  <complexType name="soap-AlgorithmMetadata">
+   <sequence>
+    <element name="id" type="xsd:string" minOccurs="0" maxOccurs="1" nillable="true"/>
+    <element name="name" type="xsd:string" minOccurs="0" maxOccurs="1" nillable="true"/>
+    <element name="version" type="xsd:string" minOccurs="0" maxOccurs="1" nillable="true"/>
+    <element name="biblio" type="xsd:string" minOccurs="0" maxOccurs="1" nillable="true"/>
+    <element name="description" type="xsd:string" minOccurs="0" maxOccurs="1" nillable="true"/>
+    <element name="author" type="xsd:string" minOccurs="0" maxOccurs="1" nillable="true"/>
+    <element name="contact" type="xsd:string" minOccurs="0" maxOccurs="1" nillable="true"/>
+    <element name="categorical" type="xsd:int" minOccurs="1" maxOccurs="1"/>
+    <element name="absence" type="xsd:int" minOccurs="1" maxOccurs="1"/>
+    <element name="parameter" type="om:AlgorithmParameter" minOccurs="1" maxOccurs="unbounded"/>
+   </sequence>
+  </complexType>
+  <complexType name="soap-Algorithms">
+   <sequence>
+    <element name="algorithm" type="om:AlgorithmMetadata" minOccurs="1" maxOccurs="unbounded"/>
+   </sequence>
+  </complexType>
+  <complexType name="getAlgorithmsResponse">
+   <sequence>
+    <element name="return" type="om:Algorithms" minOccurs="1" maxOccurs="1"/>
+   </sequence>
+  </complexType>
+  <complexType name="soap-Point">
+   <sequence>
+   </sequence>
+   <attribute name="latitude" type="xsd:double" use="required"/>
+   <attribute name="longitude" type="xsd:double" use="required"/>
+  </complexType>
+  <complexType name="soap-PresencePoints">
+   <sequence>
+    <element name="point" type="om:Point" minOccurs="1" maxOccurs="unbounded"/>
+   </sequence>
+  </complexType>
+  <complexType name="soap-AbsencePoints">
+   <sequence>
+    <element name="point" type="om:Point" minOccurs="1" maxOccurs="unbounded"/>
+   </sequence>
+  </complexType>
+  <complexType name="soap-Points">
+   <sequence>
+    <element name="coordsystem" type="xsd:string" minOccurs="0" maxOccurs="1" nillable="true"/>
+    <element name="presences" type="om:PresencePoints" minOccurs="0" maxOccurs="1" nillable="true"/>
+    <element name="absences" type="om:AbsencePoints" minOccurs="0" maxOccurs="1" nillable="true"/>
+   </sequence>
+  </complexType>
+  <complexType name="soap-Map">
+   <sequence>
+   </sequence>
+   <attribute name="location" type="xsd:string" use="optional"/>
+   <attribute name="categorical" type="xsd:int" use="required"/>
+  </complexType>
+  <complexType name="soap-Maps">
+   <sequence>
+    <element name="map" type="om:Map" minOccurs="1" maxOccurs="unbounded"/>
+   </sequence>
+  </complexType>
+  <complexType name="soap-Mask">
+   <sequence>
+   </sequence>
+   <attribute name="location" type="xsd:string" use="optional"/>
+  </complexType>
+  <complexType name="soap-Parameter">
+   <sequence>
+   </sequence>
+   <attribute name="name" type="xsd:string" use="optional"/>
+   <attribute name="value" type="xsd:string" use="optional"/>
+  </complexType>
+  <complexType name="soap-Algorithm">
+   <sequence>
+    <element name="id" type="xsd:string" minOccurs="0" maxOccurs="1" nillable="true"/>
+    <element name="parameter" type="om:Parameter" minOccurs="1" maxOccurs="unbounded"/>
+   </sequence>
+  </complexType>
+  <complexType name="soap-Output">
+   <sequence>
+    <element name="header" type="xsd:string" minOccurs="0" maxOccurs="1" nillable="true"/>
+    <element name="scale" type="xsd:int" minOccurs="1" maxOccurs="1"/>
+    <element name="format" type="xsd:string" minOccurs="0" maxOccurs="1" nillable="true"/>
+   </sequence>
+  </complexType>
+  <element name="version" type="xsd:string"/>
+  <element name="return" type="om:Algorithms"/>
+  <element name="points" type="om:Points"/>
+  <element name="maps" type="om:Maps"/>
+  <element name="mask" type="om:Mask"/>
+  <element name="algorithm" type="om:Algorithm"/>
+  <element name="output" type="om:Output"/>
+  <element name="ticket" type="xsd:string"/>
+  <element name="file" type="xsd:base64Binary"/>
+  <element name="status" type="xsd:int"/>
+ </schema>
+
+</types>
+
+<message name="getAlgorithmsRequest">
+</message>
+
+<message name="getAlgorithmsResponse">
+ <part name="return" element="om:return"/>
+</message>
+
+<message name="createModelRequest">
+ <part name="points" element="om:points"/>
+ <part name="maps" element="om:maps"/>
+ <part name="mask" element="om:mask"/>
+ <part name="algorithm" element="om:algorithm"/>
+ <part name="output" element="om:output"/>
+</message>
+
+<message name="createModelResponse">
+ <part name="ticket" element="om:ticket"/>
+</message>
+
+<message name="getDistributionMapRequest">
+ <part name="ticket" element="om:ticket"/>
+</message>
+
+<message name="getDistributionMapResponse">
+ <part name="file" element="om:file"/>
+</message>
+
+<message name="pingRequest">
+</message>
+
+<message name="pingResponse">
+ <part name="status" element="om:status"/>
+</message>
+
+<message name="openModellerHeader">
+ <part name="version" element="om:version"/>
+</message>
+
+<portType name="openModellerPortType">
+ <operation name="getAlgorithms">
+  <documentation>Service definition of function om__getAlgorithms</documentation>
+  <input message="tns:getAlgorithmsRequest"/>
+  <output message="tns:getAlgorithmsResponse"/>
+ </operation>
+ <operation name="createModel">
+  <documentation>Service definition of function om__createModel</documentation>
+  <input message="tns:createModelRequest"/>
+  <output message="tns:createModelResponse"/>
+ </operation>
+ <operation name="getDistributionMap">
+  <documentation>Service definition of function om__getDistributionMap</documentation>
+  <input message="tns:getDistributionMapRequest"/>
+  <output message="tns:getDistributionMapResponse"/>
+ </operation>
+ <operation name="ping">
+  <documentation>Service definition of function om__ping</documentation>
+  <input message="tns:pingRequest"/>
+  <output message="tns:pingResponse"/>
+ </operation>
+</portType>
+
+<binding name="openModeller" type="tns:openModellerPortType">
+ <SOAP:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http"/>
+ <operation name="getAlgorithms">
+  <SOAP:operation soapAction=""/>
+  <input>
+   <SOAP:body use="literal" namespace="http://openmodeller.sf.net/ns/1.0"/>
+  </input>
+  <output>
+   <SOAP:body use="literal" namespace="http://openmodeller.sf.net/ns/1.0"/>
+  </output>
+ </operation>
+ <operation name="createModel">
+  <SOAP:operation soapAction=""/>
+  <input>
+   <SOAP:body use="literal" namespace="http://openmodeller.sf.net/ns/1.0"/>
+  </input>
+  <output>
+   <SOAP:body use="literal" namespace="http://openmodeller.sf.net/ns/1.0"/>
+  </output>
+ </operation>
+ <operation name="getDistributionMap">
+  <SOAP:operation soapAction=""/>
+  <input>
+   <SOAP:body use="literal" namespace="http://openmodeller.sf.net/ns/1.0"/>
+  </input>
+  <output>
+   <SOAP:body use="literal" namespace="http://openmodeller.sf.net/ns/1.0"/>
+  </output>
+ </operation>
+ <operation name="ping">
+  <SOAP:operation soapAction=""/>
+  <input>
+   <SOAP:body use="literal" namespace="http://openmodeller.sf.net/ns/1.0"/>
+  </input>
+  <output>
+   <SOAP:body use="literal" namespace="http://openmodeller.sf.net/ns/1.0"/>
+  </output>
+ </operation>
+</binding>
+
+<service name="openModeller">
+ <documentation>gSOAP 2.5.2 generated service definition</documentation>
+ <port name="openModeller" binding="tns:openModeller">
+  <SOAP:address location="http://localhost:8085"/>
+ </port>
+</service>
+
+</definitions>
