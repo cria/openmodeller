@@ -169,10 +169,9 @@ private:
    * @param lst Stores the dynamic link libraries found.
    * @return Number of libraries found.
    */
-  int scanDir( char *dir, ListDLL &ldll );
+  int scanDir( char *dir, ListDLL * ldll );
 
-  
-  ListDLL _lstDLL; ///< Algorithms' DLLs paths list.
+  static ListDLL * _lstDLL; ///< Algorithms' DLLs paths list.
 
   char    **_dirs;
 };
