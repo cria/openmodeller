@@ -10,13 +10,14 @@ public class OMTest1 {
 
     static {
 	System.loadLibrary("omjava");
+
 	mod = new OpenModeller();
 	if (mod == null) {
 	    System.out.println("Could not load omjava library.");
 	}
     }
 
-    public static void main(String argv[]) {
+    public static void main2(String argv[]) {
 	printHeader();
 	printOmInfo();
 	printAlgInfo();
@@ -41,14 +42,12 @@ public class OMTest1 {
 	int i, n;
 
 	SWIGTYPE_p_p_AlgMetadata algmd;
-	AlgMetadata pAlgmd;
 	
 	algmd = mod.availableAlgorithms();
-	pAlgmd = (AlgMetadata) algmd;
 	n = mod.numAvailableAlgorithms();
 	for (i = 0; i < n; i++) {
 	    // print info about one algorithm
-	    System.out.println("ID:" + pAlgmd.id());
+	    System.out.println("ID:" + algmd[i].setId());
 	    /*
 	    System.out.println("Name: ");
 	    System.out.println("Author: ");
@@ -57,7 +56,6 @@ public class OMTest1 {
 	    System.out.println("");
 	    */
 	    System.out.println("");
-	    pAlgmd = om.NextAlgMetadata(pAlgmd);
 	}
     }
 
@@ -65,4 +63,13 @@ public class OMTest1 {
 	System.out.println("Thanks for using openModeller!");
 	System.out.println("Good bye!");
     }
+
+
+    public static void main(String argv[]) {
+	String animals[] = {"Cat","Dog","Cow","Goat"};
+	om.print_args(animals);
+	String args[] = om.get_args();
+	for (int i=0; i<args.length; i++)
+	    System.out.println(i + ":" + args[i]);
+  }
 }
