@@ -1,15 +1,15 @@
 /**
- * Declaration of Bioclimatic Envelope Algorithm - Nix, 1984.
+ * Declaration of Bioclimatic Envelope Algorithm - Nix, 1986.
  * 
  * @file
- * @author Ricardo Scachetti Pereira <ricardo@cria.org.br>
- * @date 2003-09-29
+ * @author Mauro Muñoz <mauro@cria.org.br>
+ * @date 2004-05-05
  * $Id$
  *
  * LICENSE INFORMATION
  * 
- * Copyright(c) 2003 by The University of Kansas Natural History 
- * Museum and Biodiversity Research Center.
+ * Copyright(c) 2004 by CRIA -
+ * Centro de Referência em Informação Ambiental
  *
  * http://www.cria.org.br
  * 
@@ -33,10 +33,11 @@
 
 
 /****************************************************************/
-/***************************** Bioclim **************************/
+/*********************** Bioclim Distance ***********************/
 
 /** 
- * Bioclimatic Envelope Algorithm
+ * Bioclimatic Envelope Algorithm with occurrence probability
+ * based on the distance to points' mean value.
  *
  */
 class Bioclim : public Algorithm
@@ -57,17 +58,35 @@ public:
 
 private:
 
-  Scalar cartesianDistance( Scalar *x, Scalar *y );
+  /** Minimum value of all points for each variable. */
+  Scalar *getMinimum( SampledData *points );
+
+  /** Maximum value of all points for each variable. */
+  Scalar *getMaximum( SampledData *points );
+
+  /** Calculates the average point for all SampledData points.
+   *  There must be at least one point. */
+  Scalar *getMean( SampledData *points );
+
+  /** Calculates the standard deviation independently for each
+   *  dimension of 'points'.
+   *  There must be at least two points.
+   */
+  Scalar *getStandardDeviation( SampledData *points,
+                                Scalar *mean );
+
+  /** Log the bioclimatic envelops informations. */
+  void logEnvelop();
 
 
-  int    _done;
-  Scalar _cutoff;
+  int _dim;   ///> Number of dimensions in environmental space
 
-  Scalar *_min;   ///> Minimum value for variables after cutoff 
-  Scalar *_max;   ///> Maximum value for variables after curoff
-  Scalar *_avg;   ///> Average value
-  Scalar *_half_range; ///> (Max - Min) / 2
-  int     _dim;   ///> Number of dimensions in environmental space
+  Scalar *_minimum; ///> Mininum value for each variable.
+  Scalar *_maximum; ///> Maximum value for each variable.
+
+  Scalar *_mean;        ///> Mean of sampled points.
+  Scalar *_deviation;   ///> Standard deviations for each variable.
+  Scalar _max_distance; ///> Standard deviation vector module.
 };
 
 
