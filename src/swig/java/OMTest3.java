@@ -21,7 +21,6 @@ public class OMTest3 {
     public static void main(String argv[]) {
 	printHeader();
 	printOmInfo();
-	printAlgInfo();
 	runGarpModel();
 	printFooter();
     }
@@ -40,29 +39,12 @@ public class OMTest3 {
 	System.out.println("");
     }
 
-    public static void printAlgInfo() {
-	int i, n;
-
-	AlgMetadata algmd[];
-	
-	algmd = _mod.availableAlgorithms();
-	n = _mod.numAvailableAlgorithms();
-	for (i = 0; i < n; i++) {
-	    // print info about one algorithm
-	    System.out.println("ID:       " + algmd[i].getId());
-	    System.out.println("Name:     " + algmd[i].getName());
-	    System.out.println("Version:  " + algmd[i].getVersion());
-	    System.out.println("Overview: " + algmd[i].getOverview());
-	    System.out.println("");
-	}
-    }
-
     public static void runGarpModel() {
 
 	String maps[] = {"data/aspect", "data/dem", "data/slope", "data/dtr", "data/prec", "data/temp", "data/wet"};
 
 	String params[][] = {
-	    {"MaxGenerations",   "25"}, 
+	    {"MaxGenerations",   "200"}, 
 	    {"ConvergenceLimit", "0.0"},
 	    {"PopulationSize",   "50"},
 	    {"Resamples",        "2500"},
