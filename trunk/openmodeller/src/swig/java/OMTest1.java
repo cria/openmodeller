@@ -39,7 +39,7 @@ public class OMTest1 {
     }
 
     public static void printAlgInfo() {
-	int i, n;
+	int i, j, n;
 
 	AlgMetadata algmd[];
 	
@@ -47,28 +47,43 @@ public class OMTest1 {
 	n = mod.numAvailableAlgorithms();
 	for (i = 0; i < n; i++) {
 	    // print info about one algorithm
+	    System.out.println("===============================");
 	    System.out.println("ID:         " + algmd[i].getId());
 	    System.out.println("Name:       " + algmd[i].getName());
 	    System.out.println("Version:    " + algmd[i].getVersion());
 	    System.out.println("Overview:   " + algmd[i].getOverview());
-	    System.out.println("Parameters: " + algmd[i].getNparam());
 
-	    AlgParamMetadata parammd = algmd[i].getParam();
-	    if (parammd != null)
-		System.out.println("First Param ID: " + parammd.getId());
-	    
 	    AlgMetadata algmd2 = mod.algorithmMetadata(algmd[i].getId());
-	    
-	    System.out.println("*ID:         " + algmd2.getId());
-	    System.out.println("*Name:       " + algmd2.getName());
-	    System.out.println("*Version:    " + algmd2.getVersion());
-	    System.out.println("*Overview:   " + algmd2.getOverview());
-	    System.out.println("*Parameters: " + algmd2.getNparam());
 
-	    parammd = algmd2.getParam();
-	    if (parammd != null)
-		System.out.println("*First Param ID: " + parammd.getId());
-	    
+	    AlgParamMetadata[] parammdArray = om.getParameterList(algmd2);
+
+	    System.out.println("Parameters: " + parammdArray.length);
+
+	    for (j = 0; j < parammdArray.length; j++) {
+		AlgParamMetadata parammd = parammdArray[j];
+		System.out.println(" - - - - - - - - - - - -");
+		System.out.println(" Parameter:   " + parammd.getId());
+		System.out.println(" Name:        " + parammd.getName());
+		System.out.println(" Type:        " + parammd.getType());
+		System.out.println(" Overview:    " + parammd.getOverview());
+		System.out.println(" Description: " + parammd.getDescription());
+
+		if (parammd.getHas_min() == 0) {
+		    System.out.println(" Lower bound:  " + parammd.getMin());
+		}
+		else {
+		    System.out.println(" No lower bound. " + parammd.getDescription());
+		}
+
+		if (parammd.getHas_max() == 0) {
+		    System.out.println(" Upper bound: " + parammd.getMax());
+		}
+		else {
+		    System.out.println(" No upper bound. " + parammd.getDescription());
+		}
+	    }
+
+	    System.out.println("===============================");
 	}
     }
 

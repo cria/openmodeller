@@ -286,20 +286,19 @@ jmethodID JNI_getSetDoubleMethod(JNIEnv * jenv, jclass clazz, char * methodName)
 %typemap(javain)  AlgParameter * "$javainput"
 
 
-
-
-%typemap(out) AlgParamMetadata * {
+%typemap(out) AlgParamMetadata ** {
 
     // return an array of AlgParam back to caller
     int i, len = 0;
+	cp("#1");
 
-    while ($1[len]) len++;    
-    jclass clazz = JNI_getClass(jenv, "AlgParameter");
-    jresult = jenv->NewObjectArray(len, clazz, 0);
-    if (arrayObj== 0) { JNIException("Could not allocate array of AlgParameter.\n"); return 0; }
+    while ((*$1) + len) len++;    
+    jclass clazz = JNI_getClass(jenv, "AlgParamMetadata");
 
     // get method ids for later use
     jmethodID constrID = JNI_getConstructor(jenv, clazz);
+
+	printf("Array length: %d\n", len); fflush(stdout);
 
     jmethodID mID_setId          = JNI_getSetStringMethod(jenv, clazz, "setId");
     jmethodID mID_setName        = JNI_getSetStringMethod(jenv, clazz, "setName");
@@ -312,13 +311,19 @@ jmethodID JNI_getSetDoubleMethod(JNIEnv * jenv, jclass clazz, char * methodName)
     jmethodID mID_setMin         = JNI_getSetDoubleMethod(jenv, clazz, "setMin");
     jmethodID mID_setMax         = JNI_getSetDoubleMethod(jenv, clazz, "setMax");
 
+    jresult = (jobjectArray)jenv->NewObjectArray(len, clazz, jenv->NewObject(clazz, constrID));
+	cp("#2");
+    if (jresult == 0) { JNIException("Could not allocate array of AlgParameter.\n"); return 0; }
+
     for (i = 0; i < len; i++)
     {
-	AlgParamMetadata * currParam = (result + i);
+	cp("#3");
+	AlgParamMetadata * currParam = (*result + i);
 
 	// create new AlgParameter object
-        algParam = jenv->NewObject(clazz, constrID);
+        jobject algParam = jenv->NewObject(clazz, constrID);
 
+	cp("#4");
         // set data members 
         jstring sid = jenv->NewStringUTF(currParam->id);
         jenv->CallVoidMethod(algParam, mID_setId, sid);
@@ -343,8 +348,12 @@ jmethodID JNI_getSetDoubleMethod(JNIEnv * jenv, jclass clazz, char * methodName)
         jenv->CallVoidMethod(algParam, mID_setMin, currParam->min);
         jenv->CallVoidMethod(algParam, mID_setMax, currParam->max);
 
+	cp("#5");
+
         // add it to main array
-        jenv->SetObjectArrayElement(arrayObj, i, jresult);
+        jenv->SetObjectArrayElement(jresult, i, algParam);
+
+	cp("#6");
 
         jenv->DeleteLocalRef(sid);
         jenv->DeleteLocalRef(sname);
@@ -352,16 +361,28 @@ jmethodID JNI_getSetDoubleMethod(JNIEnv * jenv, jclass clazz, char * methodName)
         jenv->DeleteLocalRef(soverview);
         jenv->DeleteLocalRef(sdescription);
         jenv->DeleteLocalRef(stypical);
+
+	cp("#7");
     }
+cp("#8");
 }
 
 /* These 3 typemaps tell SWIG what JNI and Java types to use */
-%typemap(jni) AlgParaMetadata * "jobjectArray"
-%typemap(jtype) AlgParaMetadata * "AlgParamMetadata[]"
-%typemap(jstype) AlgParaMetadata * "AlgParamMetadata[]"
-%typemap(javaout) AlgParaMetadata * { return $jnicall; }
+%typemap(jni) AlgParamMetadata ** "jobjectArray"
+%typemap(jtype) AlgParamMetadata ** "AlgParamMetadata[]"
+%typemap(jstype) AlgParamMetadata ** "AlgParamMetadata[]"
+%typemap(javaout) AlgParamMetadata ** { 
+	return $jnicall; 
+}
 
+%inline %{
 
+AlgParamMetadata ** getParameterList(AlgMetadata * metadata)
+{
+    return &(metadata->param);
+}
+
+%}
 
 
 %include "../../inc/om_log.hh"
