@@ -1,6 +1,7 @@
 %module om
 
 %{
+#include "../../inc/om_log.hh"
 #include "../../inc/om_defs.hh"
 #include "../../inc/om_control.hh"
 #include "../../inc/environment.hh"
@@ -12,30 +13,42 @@
 #include "../../console/occurrences_file.hh"
 %}
 
+%inline %{
+
+void cp(char * msg) { printf("cp: %s\n", msg); fflush(stdout); }
+%}
 
 /* This tells SWIG to treat char ** as a special case when used as a parameter in a function call */
 %typemap(in) char ** (jint size) {
-    int i = 0;
-    size = jenv->GetArrayLength($input);
-    $1 = (char **) malloc((size+1)*sizeof(char *));
-    /* make a copy of each string */
-    for (i = 0; i<size; i++) {
-        jstring j_string = (jstring)jenv->GetObjectArrayElement($input, i);
-        const char * c_string = jenv->GetStringUTFChars(j_string, 0);
-        $1[i] = (char *) malloc((strlen(c_string)+1)*sizeof(const char *));
-        strcpy($1[i], c_string);
-        jenv->ReleaseStringUTFChars(j_string, c_string);
-        jenv->DeleteLocalRef(j_string);
+g_log.set( Log::Debug, stdout, "omjava" );
+    if ($input){ 
+        size = jenv->GetArrayLength($input);
+        $1 = (char **) malloc((size+1)*sizeof(char *));
+        /* make a copy of each string */
+	int i;
+    	for (i = 0; i<size; i++) {
+        	jstring j_string = (jstring)jenv->GetObjectArrayElement($input, i);
+        	const char * c_string = jenv->GetStringUTFChars(j_string, 0);
+        	$1[i] = (char *) malloc((strlen(c_string)+1)*sizeof(const char *));
+        	strcpy($1[i], c_string);
+        	jenv->ReleaseStringUTFChars(j_string, c_string);
+        	jenv->DeleteLocalRef(j_string);
+   	}
+        $1[i] = 0;
     }
-    $1[i] = 0;
+    else {
+    	$1 = 0; 
+    }
 }
 
 /* This cleans up the memory we malloc'd before the function call */
 %typemap(freearg) char ** {
-    int i;
-    for (i=0; i<size$argnum-1; i++)
-      free($1[i]);
-    free($1);
+    if ($1) {
+        int i;
+        for (i=0; i<size$argnum-1; i++)
+            free($1[i]);
+        free($1);
+    }
 }
 
 /* This allows a C function to return a char ** as a Java String array */
@@ -221,22 +234,21 @@ jmethodID JNI_getSetStringMethod(JNIEnv * jenv, jclass clazz, char * methodName)
     int i = 0;
 
     // get length of array
-    size = jenv->GetArrayLength($input);
-    $1 = (AlgParameter*) malloc((size+1)*sizeof(AlgParameter));
+    jsize size = jenv->GetArrayLength($input);
+    $1 = (AlgParameter*) malloc(size*sizeof(AlgParameter));
+    memset($1, 0, size*sizeof(AlgParameter));
     /* make a copy of each parameter */
     for (i = 0; i<size; i++) {
-        jobject obj = jenv->GetObjectArrayElement($input, i);
-
-	jstring key   = (jstring) jenv->GetObjectArrayElement(obj, 0);
-	jstring value = (jstring) jenv->GetObjectArrayElement(obj, 1);
-
-	char * ckey = jenv->
-
-	// turn hash into vector of AlgParameter objects
-        $1[i].setId();
-	$1[i].setValue(...);
+        jobjectArray array = (jobjectArray) jenv->GetObjectArrayElement($input, i);
+	jstring id    = (jstring) jenv->GetObjectArrayElement(array, 0);
+	jstring value = (jstring) jenv->GetObjectArrayElement(array, 1);
+	char * cid    = (char *) jenv->GetStringUTFChars(id, NULL);
+	char * cvalue = (char *) jenv->GetStringUTFChars(value, NULL);
+        $1[i].setId(cid);
+	$1[i].setValue(cid);
+	jenv->ReleaseStringUTFChars(id, cid);
+	jenv->ReleaseStringUTFChars(value, cvalue);
     }
-    $1[i] = 0;
 }
 
 /* This cleans up the memory we malloc'd before the function call */
@@ -246,8 +258,8 @@ jmethodID JNI_getSetStringMethod(JNIEnv * jenv, jclass clazz, char * methodName)
 
 /* These 3 typemaps tell SWIG what JNI and Java types to use */
 %typemap(jni) AlgParameter * "jobjectArray"
-%typemap(jtype) AlgParameter * "Hashtable"
-%typemap(jstype) AlgParameter * "Hashtable"
+%typemap(jtype) AlgParameter * "String[][]"
+%typemap(jstype) AlgParameter * "String[][]"
 
 /* This typemap handles the conversion of the jtype to jstype typemap type and visa versa */
 %typemap(javain)  AlgParameter * "$javainput"
@@ -256,8 +268,10 @@ jmethodID JNI_getSetStringMethod(JNIEnv * jenv, jclass clazz, char * methodName)
 
 // ====== Returns a java object with list of parameters =========
 
-%inline %{
 
+//%inline %{
+
+/*
 PyObject * getParameterList(AlgMetadata * metadata)
 {
     int i;
@@ -272,8 +286,8 @@ PyObject * getParameterList(AlgMetadata * metadata)
 
     return list;
 }
-
-%}
+*/
+//%}
 
 
 
