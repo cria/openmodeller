@@ -21,7 +21,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				AdditionalIncludeDirectories="../../algorithms,../../inc,../../inc/env_io,$(GDAL_DIR)/include"
-				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE;PLUGINPATH=$(OM_PLUGIN_PATH)"
+				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE;VERSION=\&quot;0.2\&quot;;PLUGINPATH=$(OM_PLUGIN_PATH)"
 				MinimalRebuild="TRUE"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="5"
