@@ -213,23 +213,27 @@ jmethodID JNI_getSetStringMethod(JNIEnv * jenv, jclass clazz, char * methodName)
 //  AlgParameter typemaps
 // ===============================
 
-/* This tells SWIG to treat char ** as a special case when used as a parameter in a function call */
+/* This tells SWIG to treat AlgParameter * as a special case when used as a parameter in a function call */
 %typemap(in) AlgParameter * {
+
+    // expect a Java array of String[2] as input
+    // first string is the parameter id and the second is its value
     int i = 0;
 
-    // turn hashtable in $1 into a Set (using es = $1.entrySet())
-
-    // turn entry set into an array using obj[] = es.toArray()
-
-    // get length of entry set array
+    // get length of array
     size = jenv->GetArrayLength($input);
     $1 = (AlgParameter*) malloc((size+1)*sizeof(AlgParameter));
     /* make a copy of each parameter */
     for (i = 0; i<size; i++) {
         jobject obj = jenv->GetObjectArrayElement($input, i);
 
+	jstring key   = (jstring) jenv->GetObjectArrayElement(obj, 0);
+	jstring value = (jstring) jenv->GetObjectArrayElement(obj, 1);
+
+	char * ckey = jenv->
+
 	// turn hash into vector of AlgParameter objects
-        $1[i].setId(...);
+        $1[i].setId();
 	$1[i].setValue(...);
     }
     $1[i] = 0;
