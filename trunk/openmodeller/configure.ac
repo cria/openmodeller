@@ -100,13 +100,13 @@ else
 fi
 
 if test x"$ac_gsl" != "xno" ; then
-  GSL_LIB="`$GSL_CONFIG --libs`"
+  GSL_LIBS="`$GSL_CONFIG --libs`"
   GSL_CFLAGS="`$GSL_CONFIG --cflags`"
 
-  AC_SUBST(GSL_LIB)
+  AC_SUBST(GSL_LIBS)
   AC_SUBST(GSL_CFLAGS)
 fi
-AM_CONDITIONAL([HAVE_GSL], [test "$GSL_CFLAGS" != "" -a "$GSL_LIB" != ""])
+AM_CONDITIONAL([HAVE_GSL], [test "$GSL_CFLAGS" != "" -a "$GSL_LIBS" != ""])
 
 AC_CONFIG_FILES([
 	Makefile
