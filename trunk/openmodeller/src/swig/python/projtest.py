@@ -7,9 +7,9 @@ print "Loading algorithms from:        ", mod.getPluginPath();
 print "Algorithms loaded:              ", mod.loadAlgorithms();
 print "Number of available algorithms: ", mod.numAvailableAlgorithms();
 
-#md = mod.algorithmMetadata("MinimumDistance v0.1");
-#md = mod.algorithmMetadata("GARP v3.0.1 alpha");
-md = mod.algorithmMetadata("CSM v0.1 alpha");
+#md = mod.algorithmMetadata("MinimumDistance");
+md = mod.algorithmMetadata("GARP");
+#md = mod.algorithmMetadata("CSM");
 
 print "\nSelected algorithm info: ";
 print "Id:             ", md.id;
@@ -35,18 +35,6 @@ params2 = [];
 #min dist
 #params = [["MaxDist", "0.1"]];
 
-hdr = om.Header();
-#hdr = om.Header_Params(360, 180, -180, -90, 180, 90, 0, 1);
-
-hdr.xdim = 360;
-hdr.ydim = 180;
-hdr.xmin = -180;
-hdr.ymin = -90;
-hdr.xmax = 180;
-hdr.ymax = 90;
-hdr.noval = 0;
-hdr.nband = 1;
-
 wktsys = "GEOGCS[\"WGS84\", DATUM[\"WGS84\", SPHEROID[\"WGS84\", 6378137.0, 298.257223563]], PRIMEM[\"Greenwich\", 0.0], UNIT[\"degree\", 0.017453292519943295], AXIS[\"Longitude\",EAST], AXIS[\"Latitude\",NORTH]]";
 spfile = "Strix_varia.txt";
 spname = "Strix varia";
@@ -58,11 +46,12 @@ occurr = ocfile.remove(spname);
 print "\nInitializing algorithm.";
 print "Reading occurrences.        ", mod.setOccurrences(occurr);
 print "Setting Environment object. ", mod.setEnvironment(0, [], 7, maps, "mask");
-#print "Setting algorithm params.   ", mod.setAlgorithm(md.id, 6, params); # GARP
-print "Setting algorithm params.   ", mod.setAlgorithm(md.id, 0, params2); #CSM
+print "Setting algorithm params.   ", mod.setAlgorithm(md.id, 6, params); # GARP
+#print "Setting algorithm params.   ", mod.setAlgorithm(md.id, 0, params2); #CSM
 #print "Setting algorithm params.   ", mod.setAlgorithm(md.id, 1, params); #mindist
 print "Running algorithm.          ", mod.run();
-print "Creating output map.        ", mod.createMap(mod.getEnvironment(), "map.tif", 255, "mask", "mask");
+print "Setting output map          ", mod.setOutputMapByFile(255, "map.tif", "mask", "mask");
+print "Creating output map.        ", mod.createMap(mod.getEnvironment(), "map.tif", "mask");
 
 projmaps1 = ["aspect", "OMProjDS/elev_times2/dem_2x", "slope", "dtr", "prec", "temp", "wet"];
 projmaps2 = ["aspect", "dem", "slope", "dtr", "prec", "OMProjDS/climate_plus2dg/temp_pls2dg", "wet"];
@@ -70,8 +59,9 @@ projmaps2 = ["aspect", "dem", "slope", "dtr", "prec", "OMProjDS/climate_plus2dg/
 projenv1 = om.Environment(wktsys, 0, [], 7, projmaps1, "mask");
 projenv2 = om.Environment(wktsys, 0, [], 7, projmaps2, "mask");
 
-print "Creating projection map (elevation): ", mod.createMap(projenv1, "elevproj.tif", 255, "mask", "mask");
-print "Creating projection map (climate):   ", mod.createMap(projenv2, "climproj.tif", 255, "mask", "mask");
+print "Setting output map                   ", mod.setOutputMapByFile(255, "", "mask", "mask");
+print "Creating projection map (elevation): ", mod.createMap(projenv1, "elevproj.tif", "mask");
+print "Creating projection map (climate):   ", mod.createMap(projenv2, "climproj.tif", "mask");
 
 print "Finalizing processing.";
 

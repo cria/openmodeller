@@ -14,6 +14,7 @@ algList = mod.availableAlgorithms();
 for i in range(0, len(algList)):
     md = algList[i];
 
+    print "==================================================";
     print "\nAlgorithm info: ";
     print "Id:             ", md.id;
     print "Name:           ", md.name;
@@ -36,7 +37,9 @@ for i in range(0, len(algList)):
         else:
             max = "unbounded";
 
-        print "\nParameter: ", param.name;
+        print "\n-------------";
+        print "Parameter:   ", param.id;
+        print "Name         ", param.name;
         print "Description: ", param.description;
         print "Type:        ", param.type;
         print "Min:         ", min;
@@ -44,6 +47,7 @@ for i in range(0, len(algList)):
         print "Default:     ", param.typical;
 
 
+print "==================================================";
 print "\nThanks for using openModeller.";
 print "Good bye!\n";
 
