@@ -37,9 +37,9 @@ EXTENDED_DUMMY_RULE( AtomicRule );
 
 
 Scalar genes1[8] = {-0.8, +0.8, -0.8, +0.8, -0.8, +0.8, -0.8, +0.8};
-Scalar vals11[8] = {-0.5, +0.5, -0.5, +0.5, -0.5, +0.5, -0.5, +0.5};
-Scalar vals12[8] = {-0.0, +0.0, -0.0, +0.0, -0.0, +0.0, -0.0, +0.0};
-Scalar vals13[8] = {-0.8, +0.8, -0.8, +0.8, -0.8, +0.8, -0.8, +0.8};
+Scalar vals11[8] = {-0.5,       -0.5,       -0.5,       -0.5      };
+Scalar vals12[8] = {-0.0,       -0.0,       -0.0,       -0.0      };
+Scalar vals13[8] = {-0.8,       -0.8,       -0.8,       -0.8      };
 
 TEST( AtomicRule_applies11 , AtomicRule )
 { 
@@ -62,12 +62,10 @@ TEST( AtomicRule_applies13 , AtomicRule )
   LONGS_EQUAL(rule->applies(vals13), true);
 }
 
-
-
 Scalar genes2[8] = {-1.0, +1.0, -1.0, +1.0, -1.0, +1.0, -1.0, +1.0};
-Scalar vals21[8] = {-0.5, +0.5, -0.5, +0.5, -0.5, +0.5, -0.5, +0.5};
-Scalar vals22[8] = {-0.0, +0.0, -0.0, +0.0, -0.0, +0.0, -0.0, +0.0};
-Scalar vals23[8] = {-2.9, +3.0, -1.0, +1.0, -1.0, +1.0, -1.0, +1.0};
+Scalar vals21[8] = {-0.5,       -0.5,       -0.5,       -0.5      };
+Scalar vals22[8] = {-0.0,       -0.0,       -0.0,       -0.0      };
+Scalar vals23[8] = {-2.9,       -1.0,       -1.0,       -1.0      };
 
 TEST( AtomicRule_applies21 , AtomicRule )
 {
@@ -92,9 +90,9 @@ TEST( AtomicRule_applies23 , AtomicRule )
 
 
 Scalar genes3[8] = {-1.0, +1.0, -0.1, +0.1, -1.0, +1.0, -1.0, +1.0};
-Scalar vals31[8] = {-0.5, +0.5, -0.5, +0.5, -0.5, +0.5, -0.5, +0.5};
-Scalar vals32[8] = {-0.0, +0.0, -0.0, +0.0, -0.0, +0.0, -0.0, +0.0};
-Scalar vals33[8] = {-2.9, +3.0, -0.1, +0.1, -1.0, +1.0, -1.0, +1.0};
+Scalar vals31[8] = {-0.5,       -0.5,       -0.5,       -0.5      };
+Scalar vals32[8] = {-0.0,       -0.0,       -0.0,       -0.0      };
+Scalar vals33[8] = {-2.9,       -0.1,       -1.0,       -1.0      };
 
 TEST( AtomicRule_applies31 , AtomicRule )
 {
@@ -119,9 +117,9 @@ TEST( AtomicRule_applies33 , AtomicRule )
 
 
 Scalar genes4[8] = {-0.8, +0.8, -1.0, +1.0, -0.8, +0.0, -0.0, +1.0};
-Scalar vals41[8] = {-0.8, +0.0, -0.5, +0.5, -0.8, +0.5, -0.5, +0.5};
-Scalar vals42[8] = {-0.8, +0.0, -0.0, +0.0, -0.8, +0.0, -0.0, +0.0};
-Scalar vals43[8] = {-0.8, +0.0, -9.0, +1.0, -0.8, +1.0, -0.0, +1.0};
+Scalar vals41[8] = {-0.8,       -0.5,       -0.8,       -0.5      };
+Scalar vals42[8] = {-0.8,       -0.0,       -0.8,       -0.0      };
+Scalar vals43[8] = {-0.8,       -9.0,       -0.8,       -0.0      };
 
 TEST( AtomicRule_applies41 , AtomicRule )
 {
@@ -142,5 +140,16 @@ TEST( AtomicRule_applies43 , AtomicRule )
   ExtAtomicRule * rule = new ExtAtomicRule;
   rule->setGenes(genes4, 4);
   LONGS_EQUAL(rule->applies(vals43), true);
+}
+
+
+Scalar genes5[8] = {-0.5, -0.5, -0.5, -0.5};
+Scalar vals51[8] = {-0.5,       -0.5      };
+
+TEST( AtomicRule_applies51 , AtomicRule )
+{
+  ExtAtomicRule * rule = new ExtAtomicRule;
+  rule->setGenes(genes5, 2);
+  LONGS_EQUAL(rule->applies(vals51), true);
 }
 

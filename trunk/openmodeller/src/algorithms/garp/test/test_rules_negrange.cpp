@@ -37,9 +37,9 @@ EXTENDED_DUMMY_RULE( NegatedRangeRule );
 
 
 Scalar genes1[8] = {-0.8, +0.8, -0.8, +0.8, -0.8, +0.8, -0.8, +0.8};
-Scalar vals11[8] = {-0.5, +0.5, -0.5, +0.5, -0.5, +0.5, -0.5, +0.5};
-Scalar vals12[8] = {-0.0, +0.0, -0.0, +0.0, -0.0, +0.0, -0.0, +0.0};
-Scalar vals13[8] = {-0.9, +1.0, -1.0, +1.0, -1.0, +1.0, -1.0, +1.0};
+Scalar vals11[8] = {-0.5,       -0.5,       -0.5,       -0.5      };
+Scalar vals12[8] = {-0.0,       -0.0,       -0.0,       -0.0      };
+Scalar vals13[8] = {-0.9,       -1.0,       -1.0,       -1.0      };
 
 TEST( NegatedRangeRule_applies11 , NegatedRangeRule )
 {
@@ -64,9 +64,9 @@ TEST( NegatedRangeRule_applies13 , NegatedRangeRule )
 
 
 Scalar genes2[8] = {-1.0, +1.0, -1.0, +1.0, -1.0, +1.0, -1.0, +1.0};
-Scalar vals21[8] = {-0.5, +0.5, -0.5, +0.5, -0.5, +0.5, -0.5, +0.5};
-Scalar vals22[8] = {-0.0, +0.0, -0.0, +0.0, -0.0, +0.0, -0.0, +0.0};
-Scalar vals23[8] = {-2.9, +3.0, -1.0, +1.0, -1.0, +1.0, -1.0, +1.0};
+Scalar vals21[8] = {-0.5,       -0.5,       -0.5,       -0.5      };
+Scalar vals22[8] = {-0.0,       -0.0,       -0.0,       -0.0      };
+Scalar vals23[8] = {-2.9,       -1.0,       -1.0,       -1.0      };
 
 TEST( NegatedRangeRule_applies21 , NegatedRangeRule )
 {
@@ -90,9 +90,9 @@ TEST( NegatedRangeRule_applies23 , NegatedRangeRule )
 }
 
 Scalar genes3[8] = {-1.0, +1.0, -0.1, +0.1, -1.0, +1.0, -1.0, +1.0};
-Scalar vals31[8] = {-0.5, +0.5, -0.5, +0.5, -0.5, +0.5, -0.5, +0.5};
-Scalar vals32[8] = {-0.0, +0.0, -0.0, +0.0, -0.0, +0.0, -0.0, +0.0};
-Scalar vals33[8] = {-2.9, +3.0, -1.0, +1.0, -1.0, +1.0, -1.0, +1.0};
+Scalar vals31[8] = {-0.5        -0.5,       -0.5,       -0.5      };
+Scalar vals32[8] = {-0.0        -0.0,       -0.0,       -0.0      };
+Scalar vals33[8] = {-2.9        -1.0,       -1.0,       -1.0      };
 
 TEST( NegatedRangeRule_applies31 , NegatedRangeRule )
 {

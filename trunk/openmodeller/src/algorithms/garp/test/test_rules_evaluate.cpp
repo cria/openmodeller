@@ -141,11 +141,11 @@ TEST( evaluate1_3, NegatedRangeRule )
 TEST( evaluate1_4, NegatedRangeRule )
 { CHECK(testNegatedRangeRuleEvaluate(1, RuleGenes1_4, RulePred1_4, RulePerfs1_4)); }
 
-//TEST( evaluate1_5, RangeRule )
-//{ CHECK(testAtomicRuleEvaluate(1, RuleGenes1_5, RulePred1_5, RulePerfs1_5)); }
+TEST( evaluate1_5, RangeRule )
+{ CHECK(testAtomicRuleEvaluate(1, RuleGenes1_5, RulePred1_5, RulePerfs1_5)); }
 
-//TEST( evaluate1_6, RangeRule )
-//{ CHECK(testAtomicRuleEvaluate(1, RuleGenes1_6, RulePred1_6, RulePerfs1_6)); }
+TEST( evaluate1_6, RangeRule )
+{ CHECK(testAtomicRuleEvaluate(1, RuleGenes1_6, RulePred1_6, RulePerfs1_6)); }
 
 
 // SampleSet 2
