@@ -132,6 +132,14 @@ public:
   /** Deativate the normalization process. */
   int denormalize()                           { f_normal = 0; }
 
+  /** is it normalized? */
+  int isNormalized() { return f_normal; }
+
+  /** normalization offset */
+  Scalar offset() { return f_offset; }
+
+  /** normalization scale */
+  Scalar scale() { return f_scale; }
 
   /** Lowest longitude. */
   Coord xMin() { return f_hdr.xmin; }

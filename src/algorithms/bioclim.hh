@@ -30,7 +30,7 @@
 #define _BIOCLIMHH_
 
 #include <om.hh>
-
+#include <serialization/serializable.hh>
 
 /****************************************************************/
 /*********************** Bioclim Distance ***********************/
@@ -55,6 +55,10 @@ public:
   Scalar getValue( Scalar *x );
   int    getConvergence( Scalar *val );
 
+  /*
+   */
+  int serialize(Serializer * serializer);
+  int deserialize(Deserializer * deserializer);
 
 private:
 

@@ -62,6 +62,9 @@ public:
 
   char *name()   { return _name; }
 
+  /** coordinate system name */
+  char *coordSystem() { return _cs; }
+
   /** Insert an occurrence.
    * 
    * @param longitude Longitude in decimal degrees.
@@ -115,6 +118,7 @@ private:
 
 
   char *_name; ///< List of occurrences' name (e.g. species name).
+  char *_cs;   ///< Coordinate system name
 
   /** Object to transform between different coordinate systems. */
   GeoTransform *_gt;

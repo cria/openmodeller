@@ -51,6 +51,9 @@ Occurrences::Occurrences( char *name, char *coord_system )
   _name = new char[ strlen(name) + 1 ];
   strcpy( _name, name );
 
+  _cs = new char[ strlen(coord_system) + 1 ];
+  strcpy( _cs, coord_system );
+
   // Only use the GeoTransform object if the coordinate system
   // of the given occurrences is different from the internal
   // common openModeller coordinate system.
@@ -78,6 +81,12 @@ Occurrences::~Occurrences()
 
   if ( _gt )
     delete _gt;
+
+  if (_name)
+    delete[] _name;
+
+  if (_cs)
+    delete[] _cs;
 }
 
 

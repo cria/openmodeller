@@ -109,10 +109,13 @@ Environment::Environment( char *cs, int ncateg, char **categs,
 
   // Initialize mask and read its region.
   if ( ! mask )
-    _maskfile = 0;
-
-  else if ( ! (_mask = newMap( mask )) )
-    g_log.error( 1, "Cannot read mask file '%s'.\n", mask );
+    { _maskfile = 0; }
+  else 
+    {
+      stringCopy(&_maskfile, mask);
+      if ( ! (_mask = newMap( mask )) )
+	{ g_log.error( 1, "Cannot read mask file '%s'.\n", mask ); }
+    }
 
   _layers = 0;
   changeLayers( ncateg, categs, nmap, maps );

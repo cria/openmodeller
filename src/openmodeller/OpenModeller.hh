@@ -31,6 +31,7 @@
 
 #include <om_defs.hh>
 #include <om_algorithm_metadata.hh>
+#include <serialization/serializable.hh>
 
 class Algorithm;
 class AlgParameter;
@@ -52,7 +53,7 @@ class Header;
  * generator.
  * 
  */
-class OpenModeller
+class OpenModeller : public Serializable
 {
 public:
 
@@ -270,6 +271,11 @@ public:
 
   char *error()  { return _error; }
 
+  //
+  // Serialization methods
+  //
+  int serialize(Serializer * serializer);
+  int deserialize(Deserializer * deserializer);
 
 private:
 

@@ -103,6 +103,13 @@ public:
 
   char *getCoordinateSystem()   { return _cs; }
 
+  Map * getLayer(int index) { return _layers[index]; }
+
+  Map * getMask() { return _mask; }
+
+  char * getLayerFilename(int index) { return _layerfiles[index]; }
+
+  char * getMaskFilename() { return _maskfile; }
 
 private:
 

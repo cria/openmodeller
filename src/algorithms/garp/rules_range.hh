@@ -47,6 +47,12 @@ class RangeRule : public GarpRule
 {
 public:
   RangeRule();
+
+  /// Constructor with setters 
+  RangeRule(Scalar prediction, int numGenes, 
+	     Scalar * genes, double * performances) : 
+    GarpRule(prediction, numGenes, genes, performances) {}
+  
   virtual ~RangeRule();
   virtual GarpRule * objFactory() { return new RangeRule; }
   

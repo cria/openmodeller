@@ -40,6 +40,7 @@
 #include <om_sampler.hh>
 #include <om_occurrences.hh>
 #include <map_format.hh>
+#include <occurrence.hh>
 
 #include <algorithm_factory.hh>
 #include <environment.hh>
@@ -712,4 +713,263 @@ OpenModeller::createMap( Environment *env, char *file, Scalar mult,
 
   delete amb;
   return 1;
+}
+
+
+/**********************************/
+/******* serialize ****************/
+int 
+OpenModeller::serialize(Serializer * ser)
+{
+  int i;
+  Map * layer;
+  char * sectionName, * layerFilename;
+
+  ser->writeStartSection("OpenModeller");
+
+  // environment object and related information
+  ser->writeStartSection("Environment");
+  ser->writeString("CoordinateSystem", _env->getCoordinateSystem());
+  int nlayers = _env->numLayers();
+  ser->writeStartSection("Layers", nlayers);
+  for (i = 0; i <= nlayers; i++)
+    {
+      if (i != nlayers)
+	{
+	  // deal with regular layers
+	  layer = _env->getLayer(i);
+	  layerFilename = _env->getLayerFilename(i);
+	  sectionName = "Map";
+	}
+      else
+	{
+	  layer = _env->getMask();
+	  layerFilename = _env->getMaskFilename();
+	  sectionName = "Mask";
+	}
+
+      ser->writeStartSection(sectionName);
+      ser->writeString("Filename", layerFilename);
+      ser->writeString("CoordinateSystem", layer->getCoordSystem());
+      ser->writeInt("Categorical", layer->isCategorical());
+      ser->writeInt("Normalized", layer->isNormalized());
+      ser->writeDouble("Offset", layer->offset());
+      ser->writeDouble("Scale", layer->scale());
+      ser->writeEndSection(sectionName);
+    }
+  ser->writeEndSection("Layers");
+  ser->writeEndSection("Environment");
+
+  // species occurrences and related info
+  ser->writeStartSection("SpeciesOccurrences");
+  ser->writeString("SpeciesName", _presence->name());
+  ser->writeString("CoordinateSystem", _presence->coordSystem());
+
+  int numOccur = _presence->numOccurrences();
+  ser->writeStartSection("Presences", numOccur);
+  Occurrences * occurrences = _presence;
+  Occurrence * oc;
+  for (oc = NULL; oc = occurrences->get(); occurrences->next())
+    {
+      ser->writeStartSection("Point");
+      ser->writeDouble("X", oc->x());
+      ser->writeDouble("Y", oc->y());
+      ser->writeEndSection("Point");
+    }
+  ser->writeEndSection("Presences");
+  
+  numOccur = (_absence)? _absence->numOccurrences() : 0;
+  ser->writeStartSection("Absences", numOccur);
+  if (_absence)
+    {
+      Occurrences * occurrences = _absence;
+      Occurrence * oc;
+      for (oc = NULL; oc = occurrences->get(); occurrences->next())
+	{
+	  ser->writeStartSection("Point");
+	  ser->writeDouble("X", oc->x());
+	  ser->writeDouble("Y", oc->y());
+	  ser->writeEndSection("Point");
+	}
+    }
+  ser->writeEndSection("Absences");
+
+  ser->writeEndSection("SpeciesOccurrences");
+
+  // algorithm metadata, parameters and model
+  ser->writeStartSection("Algorithm");
+
+  // algorithm metadata
+  AlgMetadata * meta = _alg->getMetadata();
+  ser->writeStartSection("AlgorithmMetadata");
+  ser->writeString("Id", meta->id);
+  ser->writeString("Name", meta->name);
+  ser->writeString("Version", meta->version);
+  ser->writeString("Overview", meta->overview);
+  ser->writeString("Author", meta->author);
+  ser->writeString("CodeAuthor", meta->code_author);
+  ser->writeString("Contact", meta->contact);
+  ser->writeEndSection("AlgorithmMetadata");
+
+  // algorithm parameters
+  ser->writeStartSection("AlgorithmParameters", _alg_nparam);
+  for (i = 0; i < _alg_nparam; i++)
+    {
+      ser->writeStartSection("AlgorithmParameter");
+      ser->writeString("Id", _alg_param[i].id());
+      ser->writeString("Value", _alg_param[i].value());
+      ser->writeEndSection("AlgorithmParameter");
+    }
+  ser->writeEndSection("AlgorithmParameters");
+
+  // model
+  ser->writeObject(_alg);
+
+  ser->writeEndSection("Algorithm");
+
+  ser->writeEndSection("OpenModeller");
+}
+
+/**********************************/
+/******* deserialize **************/
+int 
+OpenModeller::deserialize(Deserializer * des)
+{
+  int i, k;
+
+  des->readStartSection("OpenModeller");
+
+  // environment object and related information
+  des->readStartSection("Environment");
+  des->readString("CoordinateSystem");
+
+  int nlayers = des->readStartSection("Layers");
+  char * mask, ** layers;
+  int ncont = 0;
+  int ncateg = 0;
+  layers = new char*[nlayers];
+  for (i = 0; i <= nlayers; i++)
+    {
+      des->readStartSection("Map");
+      char * filename = des->readString("Filename");
+      des->readString("CoordinateSystem");
+      int categorical = des->readInt("Categorical");
+      des->readInt("Normalized");
+      des->readDouble("Offset");
+      des->readDouble("Scale");
+      des->readEndSection("Map");
+
+      char * copy = new char[strlen(filename) + 1];
+      strcpy(copy, filename);
+      if (i < nlayers)
+	{
+	  ncateg += categorical;
+	  ncont += 1 - categorical;
+	  layers[i] = copy; 
+	}
+      else
+	{ mask = copy; }
+    }
+  des->readEndSection("Layers");
+  des->readEndSection("Environment");
+
+  // serialization assumes first layers are categorical 
+  // and last one is the mask
+  setEnvironment(ncateg, layers, ncont, layers + ncateg, mask); 
+
+  for (i = 0; i < nlayers; i++)
+    delete[] layers[i];
+  delete[] layers;
+  delete[] mask;
+
+  // species occurrences and related info
+  des->readStartSection("SpeciesOccurrences");
+  char * sp_name = des->readString("SpeciesName");
+  char * cs = des->readString("CoordinateSystem");
+
+  for (i = 0; i < 2; i++)
+    {
+      int numOccur;
+      char * sectionName;
+      Occurrences * occs;
+      if (i == 0)
+	{
+	  // presences are mandatory
+	  occs = _presence = new Occurrences(sp_name, cs);
+	  sectionName = "Presences";
+	  numOccur = des->readStartSection(sectionName);
+	}
+      else
+	{
+	  // absences are optional
+	  sectionName = "Absences";
+	  numOccur = des->readStartSection(sectionName);
+	  if (numOccur)
+	    { occs = _absence = new Occurrences(sp_name, cs); }
+	  else
+	    { occs = _absence = NULL; }
+	}
+
+
+      for (k = 0; k < numOccur; k++)
+	{
+	  des->readStartSection("Point");
+	  double x = des->readDouble("X");
+	  double y = des->readDouble("Y");
+	  des->readEndSection("Point");
+
+	  occs->insert(x, y, 0.0, 1.0);
+	}
+
+      des->readEndSection(sectionName);
+    }
+
+  des->readEndSection("SpeciesOccurrences");
+
+  // algorithm metadata, parameters and model
+  des->readStartSection("Algorithm");
+
+  // algorithm metadata
+  des->readStartSection("AlgorithmMetadata");
+  char * alg_id = des->readString("Id");
+  char * alg_name = des->readString("Name");
+  char * alg_ver = des->readString("Version");
+  des->readString("Overview");
+  des->readString("Author");
+  des->readString("CodeAuthor");
+  des->readString("Contact");
+  des->readEndSection("AlgorithmMetadata");
+
+  // algorithm parameters
+  int nparam = des->readStartSection("AlgorithmParameters");
+  AlgParameter * param = new AlgParameter[ nparam ];
+  for (i = 0; i < nparam; i++)
+    {
+      des->readStartSection("AlgorithmParameter");
+      char * param_id = des->readString("Id");
+      char * param_value = des->readString("Value");
+      des->readEndSection("AlgorithmParameter");
+
+      param[i].setId(param_id);
+      param[i].setValue(param_value);
+    }
+  des->readEndSection("AlgorithmParameters");
+
+  // model
+  setAlgorithm(alg_id, nparam, param);
+  des->readObject(_alg);
+
+  des->readEndSection("Algorithm");
+
+  des->readEndSection("OpenModeller");
+
+  // Check if the algorithm needs normalized variables.
+  Scalar min, max;
+  if ( _alg->needNormalization( &min, &max ) )
+    {
+      g_log( "Normalizing environment variables.\n" );
+      _env->normalize( min, max );
+    }
+
+  delete[] param;
 }

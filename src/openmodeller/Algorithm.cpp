@@ -40,7 +40,7 @@
 /*******************/
 /*** constructor ***/
 
-Algorithm::Algorithm( AlgMetadata *metadata )
+Algorithm::Algorithm( AlgMetadata *metadata ) : Serializable()
 {
   _metadata = metadata;
 

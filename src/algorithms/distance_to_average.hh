@@ -31,6 +31,7 @@
 #define _CSMHH_
 
 #include <om.hh>
+#include <serialization/serializable.hh>
 
 
 /****************************************************************/
@@ -62,6 +63,10 @@ public:
   Scalar getValue( Scalar *x );
   int    getConvergence( Scalar *val );
 
+  /*
+   */
+  int serialize(Serializer * serializer);
+  int deserialize(Deserializer * deserializer);
 
 private:
 

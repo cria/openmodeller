@@ -86,10 +86,10 @@ If the distance 'dist' is in [0, MAXDIST] then the probability \
 of occurrence will be in [1,0] (linear decay). \
 If 'dist' > MAXDIST then the probability will be zero.",
 
-  "Mauro E. S. Muñoz",  // Algorithm author
+  "Mauro E. S. Munoz",  // Algorithm author
   "",     	        // Bibliography.
 
-  "Mauro E. S. Muñoz",       // Code author.
+  "Mauro E. S. Munoz",       // Code author.
   "mauro [at] cria.org.br",  // Code author contact.
 
   0,  // Does not accept categorical data.
@@ -288,3 +288,34 @@ DistanceToAverage::getConvergence( Scalar *val )
   return 1;
 }
 
+/******************/
+/*** serialize ***/
+int
+DistanceToAverage::serialize(Serializer * s)
+{
+  s->writeStartSection("DistanceToAverageModel");
+  s->writeInt("Dimension", _dim);
+  s->writeDouble("Distance", _dist);
+  s->writeArrayDouble("Average", _avg, _dim);
+  s->writeEndSection("DistanceToAverageModel");
+  return 1;
+}
+
+/********************/
+/*** deserialize ***/
+int
+DistanceToAverage::deserialize(Deserializer * s)
+{
+  int size;
+
+  s->readStartSection("DistanceToAverageModel");
+  _dim = s->readInt("Dimension");
+  _dist = s->readDouble("Distance");
+  _avg = s->readArrayDouble("Average", &size);
+  s->readEndSection("DistanceToAverageModel");
+
+  if (_dim == size)
+    { _done = 1; } 
+  
+  return (_dim == size);
+}
