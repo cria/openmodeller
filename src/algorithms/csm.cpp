@@ -17,7 +17,7 @@
 #include <gsl/gsl_multifit_nlin.h> //remove this when we have proper covar matrix
 #include <gsl/gsl_math.h>
 #include <gsl/gsl_eigen.h>
-#include <gsl/gsl_randist.h>
+#include <gsl/gsl_sf_gamma.h>
 
 #include <math.h>
 
@@ -453,7 +453,7 @@ Scalar Csm::getValue( Scalar *x )
     
  
     //now work out the probability of myFloat between 0 and 1  
-    myFloat=1-gsl_ran_gamma_pdf (myFloat,1,1);
+    myFloat=1-gsl_sf_gamma_inc_Q (myFloat/2,(_gsl_eigenvector_matrix->size1)/2);
  
     //printf ("Prob: %f\n",myFloat);
     //now we
