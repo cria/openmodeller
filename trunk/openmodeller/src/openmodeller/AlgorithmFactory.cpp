@@ -78,11 +78,10 @@ AlgorithmFactory::DLL::load()
   TAlgFactory factory;
   factory = (TAlgFactory) dllFunction( _handle,
                                        "algorithmFactory" );
-
   
-  if ( !factory )
+  if ( ! factory )
     {
-	  error = dllError( _handle );
+      error = dllError( _handle );
       g_log.warn( "%s is not openModeller compatible! ", _file );
       g_log.warn( "Error: %s\n", error );
       return 0;
@@ -113,14 +112,27 @@ AlgorithmFactory::~AlgorithmFactory()
 }
 
 
+/***********************/
+/*** load Algorithms ***/
+int
+AlgorithmFactory::loadAlgorithms()
+{
+  // Reloads (refresh) the DLLs in _lstDLL.
+  cleanDLLs();
+  loadDLLs( _dirs );
+
+  return _lstDLL.length();
+}
+
+
 /****************************/
 /*** available Algorithms ***/
 AlgMetadata **
 AlgorithmFactory::availableAlgorithms()
 {
-  // Reloads (refresh) the DLLs in _lstDLL.
-  cleanDLLs();
-  loadDLLs( _dirs );
+  // If there is no algorithm, try to read them (again).
+  if ( ! _lstDLL.length() )
+    loadAlgorithms();
 
   // Make room for the algorithms' metadatas.
   AlgMetadata **all;
@@ -146,7 +158,7 @@ AlgorithmFactory::numAvailableAlgorithms()
 {
   // If there is no algorithm, try to read them (again).
   if ( ! _lstDLL.length() )
-    availableAlgorithms();
+    loadAlgorithms();
 
   return _lstDLL.length();
 }
@@ -162,7 +174,7 @@ AlgorithmFactory::algorithmMetadata( char *id )
 
   // If there is no algorithm, try to read them (again).
   if ( ! _lstDLL.length() )
-    availableAlgorithms();
+    loadAlgorithms();
 
   // Metadata to be returned.
   AlgMetadata *metadata;
@@ -192,7 +204,7 @@ AlgorithmFactory::newAlgorithm( Sampler *samp, char *id,
 
   // If there is no algorithm, try to read them (again).
   if ( ! _lstDLL.length() )
-    availableAlgorithms();
+    loadAlgorithms();
 
   // For each DLL in the list.
   DLL *dll;

@@ -65,6 +65,18 @@ public:
   char *getVersion();
 
 
+  /** Load the system available algorithms. If there are
+   * algorithm already loaded they are unloaded.
+   * 
+   * Warning:
+   * 
+   * The pointers to old algorithms are invalid after a call to
+   * this method.
+   * 
+   * @return Number of loaded algorithms.
+   */
+  int loadAlgorithms();
+
   /** Finds the system available algorithms' metadata.
    *
    * The pointer returned are copied from an internal storage of
@@ -98,8 +110,10 @@ public:
    * @param nparam Number of parameters.
    * @param param Vector with all parameters. The address 'param'
    *  points to must exists when the method "run()" is called.
+   * @return zero if something goes wrong like the algorithm ID
+   *  does not exist, use different number of parameters, etc.
    */
-  void setAlgorithm( char *id, int nparam, AlgParameter *param );
+  int setAlgorithm( char *id, int nparam, AlgParameter *param );
 
 
   /** Defines environmental layers and the mask.
@@ -109,9 +123,9 @@ public:
    * @param continuos_map File names of continuos map layers.
    * @param mask File name of the mask map layer.
    */
-  void setEnvironment( int num_categ,     char **categ_map,
-		       int num_continuos, char **continuous_map,
-		       char *mask=0 );
+  int setEnvironment( int num_categ,     char **categ_map,
+                      int num_continuos, char **continuous_map,
+                      char *mask=0 );
 
   // Define output map.
   //
@@ -123,7 +137,7 @@ public:
    * @param mult Value that the probabilities will be multiplied
    *  to.
    */
-  void setOutputMap( char *file, Header *hdr, Scalar mult );
+  int setOutputMap( char *file, Header *hdr, Scalar mult );
 
   /** Set the output distribution map file format and its map
    *  properties.
@@ -133,7 +147,7 @@ public:
    * @param mult Value that the probabilities will be multiplied
    *  to.
    */
-  void setOutputMap( char *file, char *map_file, Scalar mult );
+  int setOutputMap( char *file, char *map_file, Scalar mult );
 
 
   /**
@@ -144,8 +158,8 @@ public:
    * @param absence Occurrence points which the abundance
    *  attribute is zero.
    */
-  void setOccurrences( Occurrences *presence,
-		       Occurrences *absence=0 );
+  int setOccurrences( Occurrences *presence,
+                      Occurrences *absence=0 );
 
   int run();
 

@@ -142,14 +142,14 @@ ControlInterface::numAvailableAlgorithms()
 
 /***********************/
 /*** set Environment ***/
-void
+int
 ControlInterface::setEnvironment( int num_categ,
 				  char **categ_map,
 				  int num_continuos,
 				  char **continuous_map,
 				  char *mask )
 {
-  _ncateg = num_categ;
+  _ncateg  = num_categ;
   _nlayers = num_categ + num_continuos;
 
   stringCopy( &_mask, mask );
@@ -178,33 +178,41 @@ ControlInterface::setEnvironment( int num_categ,
 
 /**********************/
 /*** set Output Map ***/
-void
+int
 ControlInterface::setOutputMap( char *file, Header *hdr,
 				Scalar mult )
 {
   stringCopy( &_file, file );
   *_hdr = *hdr;
   _mult = mult;
+
+  return 1;
 }
 
 
 /**********************/
 /*** set Output Map ***/
-void
+int
 ControlInterface::setOutputMap( char *file, char *map_file,
 				Scalar mult )
 {
   RasterFile map( map_file );
-  setOutputMap( file, &map.header(), mult );
+  return setOutputMap( file, &map.header(), mult );
 }
 
 
 /*********************/
 /*** set Algorithm ***/
-void
+int
 ControlInterface::setAlgorithm( char *id, int nparam,
 				AlgParameter *param )
 {
+  AlgMetadata *meta = algorithmMetadata( id );
+
+  // Check the parameters.
+  if ( ! meta || meta->nparam != nparam )
+    return 0;
+
   stringCopy( &_alg_id, id );
 
   // Reallocate '_alg_param' to stores 'nparam' parameters.
@@ -218,12 +226,14 @@ ControlInterface::setAlgorithm( char *id, int nparam,
   AlgParameter *end = _alg_param + _alg_nparam;
   while ( dst < end )
     *dst++ = *param++;
+
+  return 1;
 }
 
 
 /***********************/
 /*** set Occurrences ***/
-void
+int
 ControlInterface::setOccurrences( Occurrences *presence,
 				  Occurrences *absence )
 {

@@ -141,10 +141,7 @@ Algorithm::getParameter( char *name, char **value )
 
   while ( param < end )
     if ( ! strcmp( name, param->name() ) )
-      {
-        *value = param->value();
-        return 1;
-      }
+      return (*value = param->value()) ? 1 : 0;
 
   return 0;
 }
