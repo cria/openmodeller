@@ -8,11 +8,7 @@
 # WITHOUT ANY WARRANTY, to the extent permitted by law; without even the
 # implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
-if HAVE_X11
-GRAPH = graph
-endif
-
-SUBDIRS = env_io $(GRAPH)
+SUBDIRS = env_io
 
 lib_LTLIBRARIES = libopenmodeller.la
 
@@ -20,7 +16,6 @@ libopenmodeller_la_SOURCES = \
 	algorithm.cpp \
 	control.cpp \
 	environment.cpp \
-	file_parser.cpp \
 	log.cpp \
 	occurrences.cpp \
 	occurrences_file.cpp \

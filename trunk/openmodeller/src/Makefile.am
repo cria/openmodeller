@@ -8,18 +8,18 @@
 # WITHOUT ANY WARRANTY, to the extent permitted by law; without even the
 # implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
-SUBDIRS = lib inc
+SUBDIRS = lib inc console
 
-if HAVE_X11
-OM_VIEWER = om_viewer
-endif
+#if HAVE_X11
+#OM_VIEWER = om_viewer
+#endif
 
-bin_PROGRAMS = om_console $(OM_VIEWER)
+#bin_PROGRAMS = om_console $(OM_VIEWER)
 
-om_console_SOURCES = om_console.cpp
-om_console_CPPFLAGS = -Iinc
-om_console_LDADD = $(GSL_LIB) $(GDAL_LIB) ./lib/libopenmodeller.la ./lib/env_io/libenv_io.la
+#om_console_SOURCES = om_console.cpp
+#om_console_CPPFLAGS = -Iinc
+#om_console_LDADD = $(GSL_LIB) $(GDAL_LIB) ./lib/libopenmodeller.la ./lib/env_io/libenv_io.la
 
-om_viewer_SOURCES = om_viewer.cpp
-om_viewer_CPPFLAGS = -Iinc
-om_viewer_LDADD = $(GSL_LIB) $(GDAL_LIB) $(X11_LIB) ./lib/libopenmodeller.la ./lib/env_io/libenv_io.la ./lib/graph/libopenmodellergraph.la
+#om_viewer_SOURCES = om_viewer.cpp
+#om_viewer_CPPFLAGS = -Iinc
+#om_viewer_LDADD = $(GSL_LIB) $(GDAL_LIB) $(X11_LIB) ./lib/libopenmodeller.la ./lib/env_io/libenv_io.la ./lib/graph/libopenmodellergraph.la
