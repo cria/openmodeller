@@ -14,6 +14,7 @@ OM_VIEWER = om_viewer
 endif
 
 EXTRA_DIST = \
+	occurrences_file.hh \
 	graph/color.hh \
 	graph/graphic.hh \
 	graph/graphic_x11.hh \
