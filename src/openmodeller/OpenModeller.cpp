@@ -51,7 +51,9 @@
 #include <string.h>
 #include <stdlib.h>
 
-Log _log( Log::Info );
+Log _log( Log::Debug );
+
+
 /****************************************************************/
 /************************* Control Interface ********************/
 
@@ -216,8 +218,7 @@ ControlInterface::run()
   _log.info( "Environment initialized.\n" );
 
   // Sampler and algorithm.
-  //Sampler samp( env, presence, absence );
-  Sampler samp( presence, env );
+  Sampler samp( env, presence, absence );
   Algorithm *alg = algorithmFactory( &samp, f_alg, f_param );
   if ( ! alg )
     {
@@ -431,10 +432,15 @@ ControlInterface::createMap( Environment *env, Algorithm *alg )
 
 
 	  // Read environmental values and find the output value.
-	  if ( env->get( lg, lt, amb ) )
-	    val = f_mult * alg->getValue( amb );
-	  else
+	  if ( ! env->get( lg, lt, amb ) )
 	    val = f_hdr->noval;
+	  else
+	    {
+	      val = alg->getValue( amb );
+	      if ( val < 0.0 ) val = 0.0;
+	      if ( val > 1.0 ) val = 1.0;
+	      val *= f_mult;
+	    }
 
 	  // Write value on map.
 	  map.put( lg, lt, &val );
