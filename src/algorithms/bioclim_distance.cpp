@@ -53,7 +53,7 @@ static AlgParamMetadata parameters[NUM_PARAM] = {
     "Real",                      // Type.
 
     // Overview
-    "The envelop is given by this parameter multiplied by the\
+    "The envelop is determined by multiplying this parameter and the\
  standard deviation.",
 
     "Standard deviation cutoff for all bioclimatic envelop.\
@@ -80,19 +80,34 @@ static AlgMetadata metadata = {
   "0.1",                 // Version.
 
   // Overview
-  "Uses the mean and standard deviation of each variable separately\
- to calculate the envelop. When with the envelop uses the distance\
- to the mean.",
+  "Uses mean and standard deviation for each environmental\
+ variable separately to calculate bioclimatic envelops.\
+ Probability of presence is inversely proportional to the euclidean\
+ distance to the mean point, and is limited to Suitable regions.",
 
   // Description.
-  "Implements the Bioclimatic Envelope Algorithm using a \
-normalized distance to the points' mean to compute the occurrence \
-probability.\n\
-For each given variable the algorithm finds the mean and standard \
-deviation (assuming normal distribution). Each variable has its own \
-envelop represented by the interval [m - c*s, m + c*s], \
-where 'm' is the mean; 'c' is cutoff input parameter; and 's' is the \
-standard deviation.\n",
+  "Implements the Bioclimatic Envelop Algorithm.\
+ For each given environmental variable the algorithm finds the mean\
+ and standard deviation (assuming normal distribution) associated\
+ to the occurrence points. Each variable has its own envelop\
+ represented by the interval [m - c*s, m + c*s], where 'm' is the\
+ mean; 'c' is the cutoff input parameter; and 's' is the standard\
+ deviation. Besides the envelop, each environmental variable has\
+ additional upper and lower limits taken from the maximum and\
+ minimum values related to the set of occurrence points.\nIn this\
+ model, any point can be classified as:\n\
+ Suitable: if all associated environmental values fall within\
+ the calculated envelops;\n\
+ Marginal: if one or more associated environmental value falls\
+ outside the calculated envelop, but still within the upper and\
+ lower limits.\n\
+ Unsuitable: if one or more associated enviromental value falls\
+ outside the upper and lower limits.\n\
+In this algorithm, only Suitable regions are considered (points falling\
+ inside Marginal or Unsuitable regions have probability 0). Probability of\
+ presence for points inside the Suitable region is inversely\
+ proportional to the normalized euclidean distance between a point\
+ and the mean point in environmental space.",
 
   "Nix, H. A. Modified by Mauro Munoz",  // Author.
   "",                                    // Bibliography.

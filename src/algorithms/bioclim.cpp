@@ -52,11 +52,11 @@ static AlgParamMetadata parameters[NUM_PARAM] = {
     "Real",                      // Type.
 
     // Overview
-    "The envelop is given by this parameter multiplied by the\
+    "The envelop is determined by multiplying this parameter and the\
  standard deviation.",
 
     // Description.
-    "Standard deviation cutoff for all bioclimatic envelop.\n\
+    "Standard deviation cutoff for all bioclimatic envelops.\n\
  Examples of (fraction of inclusion, parameter value) are:\n\
  (50.0%, 0.674); (68.3%, 1.000); (90.0%, 1.645); (95.0%, 1.960);\
  (99.7%, 3.000)",
@@ -80,26 +80,31 @@ static AlgMetadata metadata = {
   "0.1",       // Version.
 
   // Overview
-  "Uses the mean and standard deviation of each variable separately\
- to calculate the envelop.",
+  "Uses mean and standard deviation for each environmental\
+ variable separately to calculate bioclimatic envelops.\
+ Level of fitness between the environmental values on a point\
+ and the respective envelops classifies points as\
+ Suitable, Marginal, or Unsuitable for presence.",
 
   // Description.
-  "Implements the Bioclimatic Envelope Algorithm.\
+  "Implements the Bioclimatic Envelop Algorithm.\
  For each given environmental variable the algorithm finds the mean\
- and standard deviation (assuming normal distribution). Each\
- variable has its own envelop represented by the interval\
- [m - c*s, m + c*s], where 'm' is the mean; 'c' is the cutoff input\
- parameter; and 's' is the standard deviation.\n\
-The output is one of the following:\n\
- Suitable: values that fall within the envelops of all variables;\n\
- Marginal: values fall outside some envelop, but within the upper\
- and lower limits.\n\
- Unsuitable: values that fall outside the upper and lower limits\
- for some variable.\n\
-The upper and lower limits are taken from the maximum and minimum\
- input points values for each variable.\n\
-The bioclim categorical output is mapped to the continuous output of\
- openModeller as Suitable, Marginal and Unsuitable for probabilities\
+ and standard deviation (assuming normal distribution) associated\
+ to the occurrence points. Each variable has its own envelop\
+ represented by the interval [m - c*s, m + c*s], where 'm' is the\
+ mean; 'c' is the cutoff input parameter; and 's' is the standard\
+ deviation. Besides the envelop, each environmental variable has\
+ additional upper and lower limits taken from the maximum and\
+ minimum values related to the set of occurrence points.\nIn this\
+ model, any point can be classified as:\n\
+ Suitable: if all associated environmental values fall within\
+ the calculated envelops;\n\
+ Marginal: if one or more associated environmental value falls\
+ outside the calculated envelop, but still within the upper and\
+ lower limits.\n\
+ Unsuitable: if one or more associated enviromental value falls\
+ outside the upper and lower limits.\n\
+Bioclim's categorical output is mapped to probabilities\
  of 1.0, 0.5 and 0.0 respectively.",
 
   "Nix, H. A.",  // Author

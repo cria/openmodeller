@@ -72,19 +72,20 @@ static AlgMetadata metadata = {
   "0.1",       	          // Version.
 
   // Overview
-  "Probability proporcional to inverse of cartesian distance \
-to the mean of all presence points.",
+  "Probability is inversely proportional to the cartesian distance\
+ in environmental space to the mean point (calculated with all\
+ presence points).",
 
   // Description.
-  "Normalizes the environmental variables values and the \
-parameter (according to the number of environmental variables). \
-Calculates the average point in the environmental space \
-considering all given presence points. When projecting the \
-result, it calculates the Euclidean distance between the \
-average point and each point in the environmental space. \
-If the distance 'dist' is in [0, MAXDIST] then the probability \
-of occurrence will be in [1,0] (linear decay). \
-If 'dist' > MAXDIST then the probability will be zero.",
+  "Normalizes the environmental variables values and the\
+ parameter (according to the number of environmental variables).\
+ Calculates the mean point in environmental space\
+ considering all given presence points. When projecting the\
+ result, it calculates the Euclidean distance between the\
+ average point and each point in the environmental space.\
+ If the distance 'dist' is in [0, MAXDIST] then the probability\
+ of occurrence will be in [1,0] (linear decay).\
+ If 'dist' > MAXDIST then the probability will be zero.",
 
   "Mauro E. S. Munoz",  // Algorithm author
   "",     	        // Bibliography.
