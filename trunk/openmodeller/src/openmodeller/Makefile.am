@@ -29,4 +29,3 @@ libopenmodeller_la_SOURCES = \
 	sampled_data.cpp
 	
 libopenmodeller_la_CPPFLAGS = -I../inc -I../..
-libopenmodeller_la_LIBADD = ../../algorithms/libalgorithms.la
