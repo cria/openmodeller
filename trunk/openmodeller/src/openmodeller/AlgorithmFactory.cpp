@@ -30,6 +30,7 @@
 #include <om_algorithm.hh>
 #include <om_log.hh>
 #include <configuration.hh>
+#include <Exceptions.hh>
 
 #include <string>
 #include <list>
@@ -38,6 +39,18 @@
 using namespace std;
 
 #include <string.h>
+
+class testDLLId {
+public:
+  testDLLId( char const *id ) :
+    id(id)
+  {}
+  inline bool operator()( const AlgorithmFactory::DLLPtr& dll ) {
+    return !strcmp( id, dll->getMetadata()->id );
+  }
+private:
+  char const *id;
+};
 
 /**************************************************************************
  *
@@ -134,21 +147,10 @@ AlgorithmFactory::DLL::newAlgorithm()
 
 /*************************/
 /*** DLL new Algorithm ***/
-AlgMetadata *
+AlgMetadata const *
 AlgorithmFactory::DLL::getMetadata()
 {
   return (*_metadata)();
-}
-
-/**************************************************************************
- *
- * Implementation of AlgorithmFactory::testDLLId object.  Helper.
- *
- *************************************************************************/
-bool
-AlgorithmFactory::testDLLId::operator()(const DLLPtr& dll )
-{
-  return !strcmp( id, dll->getMetadata()->id );
 }
 
 /**************************************************************************
@@ -233,7 +235,7 @@ AlgMetadata const *
 AlgorithmFactory::algorithmMetadata( char const *id )
 {
   if ( ! id )
-    return 0;
+    throw InvalidParameterException( "Algorithm id not specified" );
 
   AlgorithmFactory& af = getInstance();
 
@@ -246,10 +248,10 @@ AlgorithmFactory::algorithmMetadata( char const *id )
 				   test );
 
   if ( dll != af._dlls.end() ) {
-    metadata = (*dll)->getMetadata();
+    return (*dll)->getMetadata();
   }
 
-  return metadata;
+  throw InvalidParameterException( "Algorithm not found" );
 }
 
 /*********************/
@@ -263,7 +265,7 @@ AlgorithmFactory::newAlgorithm( char const *id )
   int dll_count = af._dlls.size();
 
   if ( dll_count == 0 )
-    return AlgorithmPtr();
+    throw InvalidParameterException( "No algorithms loaded");
 
   testDLLId test( id );
   ListDLL::iterator dll = find_if( af._dlls.begin(), af._dlls.end(), test );
@@ -271,10 +273,8 @@ AlgorithmFactory::newAlgorithm( char const *id )
   if ( dll != af._dlls.end() ) {
     return (*dll)->newAlgorithm();
   }
-  else {
-    return AlgorithmPtr();
-  }
 
+  throw InvalidParameterException( "Algorithm not found");
 }
 
 AlgorithmPtr
