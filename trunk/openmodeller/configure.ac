@@ -209,10 +209,41 @@ AM_CHECK_PYTHON_HEADERS([PYSUBDIR=python],[])
 AC_SUBST(PYSUBDIR)
 
 dnl ---------------------------------------------------------------------------
+dnl  Test
+dnl ---------------------------------------------------------------------------
+
+AC_MSG_CHECKING([if test is enabled])
+
+AC_ARG_ENABLE(test,
+  AC_HELP_STRING([--enable-test],
+                 [The Unit Tests are optional. If you want to enable them use '--enable-test']),
+  [
+   case "${enableval}" in
+    yes)
+      build_test=yes
+      ;;
+    no)
+      build_test=no
+      ;;
+    *)
+      AC_MSG_ERROR([bad value ${enableval} for --enable-test])
+      ;;
+   esac
+  ],
+  [
+    build_test=no
+  ]
+)
+AC_MSG_RESULT([$build_test])
+
+AM_CONDITIONAL([BUILD_TEST], [test x$build_test = xyes])
+
+dnl ---------------------------------------------------------------------------
 AC_CONFIG_FILES([
 	Makefile
 	algorithms/Makefile
 	algorithms/garp/Makefile
+	algorithms/garp/test/Makefile
 	src/Makefile
 	src/lib/Makefile
 	src/lib/env_io/Makefile
@@ -223,6 +254,8 @@ AC_CONFIG_FILES([
 	src/swig/Makefile
 	src/swig/python/Makefile
 	src/swig/java/Makefile
+	test/Makefile
+	test/CppUnitLite/Makefile
 	openmodeller.spec
 ])
 
