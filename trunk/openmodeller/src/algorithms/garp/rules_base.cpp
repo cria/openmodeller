@@ -484,6 +484,12 @@ double GarpRule::evaluate(GarpCustomSampler * sampler)
   fclose(flog);
   */
 
+  /*
+  static int ii = 0;
+  if (utility[8] < 2.7)
+    printf("%4d] Rule performance is low: %+6.2f\n", ++ii, utility[8]);
+  */
+
   return (utility[0]);
 }
 

@@ -641,6 +641,7 @@ OpenModeller::createMap( Environment *env, char *file, Scalar mult,
       return 0;
     }
 
+#ifndef GEO_TRANSFORMATIONS_OFF
   if ( ! hdr->hasProj() )
     {
       sprintf( _error, 
@@ -648,6 +649,7 @@ OpenModeller::createMap( Environment *env, char *file, Scalar mult,
 	       file );
       return 0;
     }
+#endif
 
   // check if env object is original one (used to create model) or
   // is a different one (caller wants to project model onto it)
