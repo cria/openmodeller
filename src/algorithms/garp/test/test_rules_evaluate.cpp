@@ -70,9 +70,11 @@ void GarpCustomSamplerDummy2::chooseSampleSet(int hardcodedSamplesIndex)
 
 Scalar * GarpCustomSamplerDummy2::getSample(Scalar * pointValue)
 {
+  //g_log("Getting sample #%d\n", _nextSample);
   // returns first value in sample as point value
-  Scalar * values = (Scalar *) &(_sample->samples[_sampleDimension * _nextSample++]);
+  Scalar * values = (Scalar *) &(_sample->samples[_sampleDimension * _nextSample]);
   *pointValue = values[0];
+  _nextSample++;
   return (Scalar *) &(values[1]);
 }
 
@@ -110,7 +112,6 @@ bool test##name##Evaluate(int sampleIndex, Scalar * ruleGenes, \
   Ext##name * rule = new Ext##name; \
   GarpCustomSamplerDummy2 * sampler = new GarpCustomSamplerDummy2; \
   sampler->chooseSampleSet(sampleIndex); \
-  rule->initialize(sampler);\
   rule->setPrediction(rulePred);\
   rule->setGenes(ruleGenes, sampler->dim());\
   rule->evaluate(sampler);\
@@ -147,7 +148,6 @@ TEST( evaluate1_5, RangeRule )
 TEST( evaluate1_6, RangeRule )
 { CHECK(testAtomicRuleEvaluate(1, RuleGenes1_6, RulePred1_6, RulePerfs1_6)); }
 
-
 // SampleSet 2
 // ===========
 TEST( evaluate2_1, RangeRule )
@@ -155,7 +155,7 @@ TEST( evaluate2_1, RangeRule )
 
 TEST( evaluate2_2, RangeRule )
 { CHECK(testRangeRuleEvaluate(2, RuleGenes2_2, RulePred2_2, RulePerfs2_2)); }
-
+ 
 TEST( evaluate2_3, RangeRule )
 { CHECK(testRangeRuleEvaluate(2, RuleGenes2_3, RulePred2_3, RulePerfs2_3)); }
 
@@ -183,11 +183,11 @@ TEST( evaluate4_2, RangeRule )
 TEST( evaluate4_3, RangeRule )
 { CHECK(testRangeRuleEvaluate(4, RuleGenes4_3, RulePred4_3, RulePerfs4_3)); }
 
-//TEST( evaluate4_4, NegatedRangeRule )
-//{ CHECK(testNegatedRangeRuleEvaluate(4, RuleGenes4_4, RulePred4_4, RulePerfs4_4)); }
+TEST( evaluate4_4, NegatedRangeRule )
+{ CHECK(testNegatedRangeRuleEvaluate(4, RuleGenes4_4, RulePred4_4, RulePerfs4_4)); }
 
-//TEST( evaluate4_5, NegatedRangeRule )
-//{ CHECK(testNegatedRangeRuleEvaluate(4, RuleGenes4_5, RulePred4_5, RulePerfs4_5)); }
+TEST( evaluate4_5, NegatedRangeRule )
+{ CHECK(testNegatedRangeRuleEvaluate(4, RuleGenes4_5, RulePred4_5, RulePerfs4_5)); }
 
-//TEST( evaluate4_6, NegatedRangeRule )
-//{ CHECK(testNegatedRangeRuleEvaluate(4, RuleGenes4_6, RulePred4_6, RulePerfs4_6)); }
+TEST( evaluate4_6, NegatedRangeRule )
+{ CHECK(testNegatedRangeRuleEvaluate(4, RuleGenes4_6, RulePred4_6, RulePerfs4_6)); }
