@@ -107,7 +107,6 @@ enum RuleType
   AtomicRuleType = 3
 };
 
-double min(double v1, double v2);
 bool equalEps(double v1, double v2);
 bool between(double value, double min, double max);
 int membership(double value1, double value2, double value);
@@ -144,9 +143,9 @@ public:
   Scalar getPrediction() {return _prediction; }
   double getPerformance(PerfIndex perfIndex);
 
-  virtual double getCertainty(Scalar pred);
+  virtual int getStrength(Scalar * values) = 0;
+  virtual int getCertainty(Scalar pred);
   virtual double getError(Scalar predefinedValue, Scalar prediction);
-  virtual double getStrength(Scalar * values) = 0;
   
   virtual bool similar(GarpRule * compareToRule);
   virtual void mutate(double temperature);

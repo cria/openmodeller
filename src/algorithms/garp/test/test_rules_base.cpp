@@ -38,7 +38,7 @@ public:
   ExtGarpRule();
   GarpRule * objFactory()  { return new ExtGarpRule; } 
   void initialize(GarpCustomSampler *) {}
-  double getStrength(Scalar *) {}
+  int getStrength(Scalar *) {}
   bool applies (Scalar *) {}
 
   Scalar * getGenes()      { return _genes; };

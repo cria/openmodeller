@@ -67,14 +67,14 @@ bool NegatedRangeRule::applies(Scalar * values)
 }
 
 // ==========================================================================
-double NegatedRangeRule::getStrength(Scalar * values)
+int NegatedRangeRule::getStrength(Scalar * values)
 {
-	double strength, neg_strength;
+  int strength, neg_strength;
 	
-	strength     = RangeRule::getStrength(values);
-	neg_strength = 1 - strength;
-	
-	return neg_strength;
+  strength     = RangeRule::getStrength(values);
+  neg_strength = 1 - strength;
+  
+  return neg_strength;
 }
 
 // ==========================================================================
