@@ -274,14 +274,6 @@ public:
   // Methods used to build the model
   //
   
-  /** This method is used when you want to ensure that all variables in all
-    * environmental layers are scaled to the same value range. 
-    * @note This method is inherited from the Algorithm class
-    * @param Scalar pointer min that the post normalised will be fitted to
-    * @param Scalar pointer max that the post normalised will be fitted to
-    * @return 0 if no normalisation is needed
-    */
-  int needNormalization( Scalar *min, Scalar *max );
   
   /** Initialise the model specifying a threshold / cutoff point.
     * This is optional (model dependent).

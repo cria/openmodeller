@@ -117,15 +117,6 @@ Csm::~Csm()
 //
 
 
-/** This method is used when you want to ensure that all variables in all
-  * environmental layers are scaled to the same value range. 
-  * @note This method is inherited from the Algorithm class
-  * @param Scalar pointer min that the post normalised will be fitted to
-  * @param Scalar pointer max that the post normalised will be fitted to
-  * @return 0 if no normalisation is needed
-  */
-int Csm::needNormalization( Scalar *min, Scalar *max )
-{}
 
 
 /** Initialise the model specifying a threshold / cutoff point.
@@ -410,7 +401,7 @@ Scalar Csm::getValue( Scalar *x )
         { 
           myAllAreZeroFlag=false; 
         }
-          printf("%f ",myFloat);
+        //printf("%f ",myFloat);
         //get the stddev and mean for this column
         float myAverage = gsl_vector_get (_gsl_avg_vector,i);
         float myStdDev = gsl_vector_get (_gsl_stddev_vector,i);
@@ -420,10 +411,10 @@ Scalar Csm::getValue( Scalar *x )
         gsl_matrix_set (tmp_gsl_matrix,0,i,myFloat);
         //printf ("%f\t", myFloat );
     }
-    printf(" ----  end of scalar\n ");
+    //printf(" ----  end of scalar\n ");
+    displayMatrix(tmp_gsl_matrix,"tmp_gsl_matrix before matrix multiplication");
     if (myAllAreZeroFlag) {return 0;}
     
-    displayMatrix(tmp_gsl_matrix,"tmp_gsl_matrix before matrix multiplication");
 
     gsl_matrix * z = product(tmp_gsl_matrix, _gsl_eigenvector_matrix);
 
