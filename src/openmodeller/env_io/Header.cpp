@@ -28,8 +28,8 @@
 
 #include "env_io/header.hh"
 
+#include <om_log.hh>
 #include <string.h>
-#include <stdio.h>
 
 
 /****************************************************************/
@@ -144,29 +144,29 @@ Header::setProj( char *projection )
 void
 Header::print( char *msg )
 {
-  printf( "%s\n", msg );
+  g_log( "%s\n", msg );
 
-  printf( "xdim: %d\n", xdim );
-  printf( "ydim: %d\n", ydim );
-  printf( "xmin: %.4f\n", xmin );
-  printf( "ymin: %.4f\n", ymin );
-  printf( "xmax: %.4f\n", xmax );
-  printf( "ymax: %.4f\n", ymax );
-  printf( "xcel: %.4f\n", xcel );
-  printf( "ycel: %.4f\n", ycel );
-  printf( "noval: %.4f\n", noval );
-  printf( "band: %d\n", nband );
-  printf( "grid: %d\n", grid );
-  printf( "type: %d\n", dtype );
-  printf( "var : %s\n", categ ? "categórica" : "ordenável" );
+  g_log( "xdim: %d\n", xdim );
+  g_log( "ydim: %d\n", ydim );
+  g_log( "xmin: %.4f\n", xmin );
+  g_log( "ymin: %.4f\n", ymin );
+  g_log( "xmax: %.4f\n", xmax );
+  g_log( "ymax: %.4f\n", ymax );
+  g_log( "xcel: %.4f\n", xcel );
+  g_log( "ycel: %.4f\n", ycel );
+  g_log( "noval: %.4f\n", noval );
+  g_log( "band: %d\n", nband );
+  g_log( "grid: %d\n", grid );
+  g_log( "type: %d\n", dtype );
+  g_log( "var : %s\n", categ ? "categórica" : "ordenável" );
 
   if ( minmax )
     {
-      printf( "min: %f\n", min  );
-      printf( "max: %f\n", max  );
+      g_log( "min: %f\n", min  );
+      g_log( "max: %f\n", max  );
     }
   else
-    printf( "No minimum or maximum available.\n" );
+    g_log( "No minimum or maximum available.\n" );
   
-  printf( "proj: %s\n", proj ? proj : "" );
+  g_log( "proj: %s\n", proj ? proj : "" );
 }

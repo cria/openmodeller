@@ -33,10 +33,6 @@
 #include <om_log.hh>
 
 
-// Debug
-#include <string.h>
-
-
 /****************************************************************/
 /****************************** Map *****************************/
 
@@ -46,7 +42,7 @@
 Map::Map( Raster *rst, char *ocs, int del )
 {
   if ( ! rst->header().hasProj() )
-    _log.error( 1, "Not a georeferenced map!\n" );
+    g_log.error( 1, "Not a georeferenced map!\n" );
 
   f_rst = rst;
   f_gt  = new GeoTransform( rst->header().proj, ocs );
@@ -85,24 +81,6 @@ int
 Map::get( Coord x, Coord y, Scalar *val )
 {
   return f_gt->transfIn( &x, &y ) ? f_rst->get( x, y, val ) : 0;
-
-  /*
-  printf( "\nMap::get: (%f, %f)\n", x, y );
-  if ( f_gt->transfIn( &x, &y ) )
-    {
-      printf( "transformou: (%f, %f)\n", x, y );
-      int ret = f_rst->get( x, y, val );
-      if ( ret )
-	printf( "Leu: %f\n", val );
-      else
-	printf( "Não leu\n" );
-      return ret;
-    }
-  else
-    printf( "Não transformou\n" );
-
-  return 0;
-  */
 }
 
 

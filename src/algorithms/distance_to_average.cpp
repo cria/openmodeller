@@ -120,8 +120,8 @@ DistanceToAverage::~DistanceToAverage()
 {
   if ( _avg )
     {
-      printf( "\nMinimum distance found: %f", _min );
-      printf( "\nMaximum distance found: %f\n\n", _max );
+      g_log( "\nMinimum distance found: %f", _min );
+      g_log( "\nMaximum distance found: %f\n\n", _max );
 
       delete _avg;
     }
@@ -149,7 +149,7 @@ DistanceToAverage::initialize( int ncicle )
 
   _dim = _samp->numIndependent();
 
-  printf( "Parameter passed: %f\n", _dist );
+  g_log( "Parameter passed: %f\n", _dist );
 
   // Distance should range from 0 to 1
   if ( _dist > 1.0 )  _dist = 1.0;
@@ -159,8 +159,8 @@ DistanceToAverage::initialize( int ncicle )
   // of layers.
   _dist *= sqrt( _dim );
 
-  printf( "\nEnvironmental layers: %d\n", _dim );
-  printf( "Parameter normalized: %f\n\n", _dist );
+  g_log( "\nEnvironmental layers: %d\n", _dim );
+  g_log( "Parameter normalized: %f\n\n", _dist );
 
   _avg = new Scalar[_dim];
 
@@ -169,20 +169,19 @@ DistanceToAverage::initialize( int ncicle )
   // Generate model from the average of given points.
   //
 
-  printf( "Reading %d-dimensional occurrence points.\n",
-	  _dim );
+  g_log( "Reading %d-dimensional occurrence points.\n", _dim );
 
   // Read all presence occurence points.
   SampledData presence;
   int npnt = _samp->getPresence( &presence );
   if ( ! npnt )
     {
-      printf( "All occurrences are outside the mask!\n" );
+      g_log( "All occurrences are outside the mask!\n" );
       return 0;
     }
   Scalar **points = presence.getIndependentBase();
 
-  printf( "Finding average from %d occurrences.\n", npnt );
+  g_log( "Finding average from %d occurrences.\n", npnt );
 
   // Sum of the environmental values for all occurrence points.
   memset( _avg, 0, _dim * sizeof(Scalar) );
@@ -197,10 +196,10 @@ DistanceToAverage::initialize( int ncicle )
   for ( int d = 0; d < _dim; d++ )
     _avg[d] /= npnt;
 
-  printf( "Average related to occurrences: " );
+  g_log( "Average related to occurrences: " );
   for ( int d = 0; d < _dim; d++ )
-    printf( "%f ", _avg[d] );
-  printf( "\n\n" );
+    g_log( "%f ", _avg[d] );
+  g_log( "\n\n" );
 
   return 1;
 }

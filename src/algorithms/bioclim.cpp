@@ -141,7 +141,7 @@ Bioclim::initialize( int ncicle )
 int
 Bioclim::iterate()
 {
-  _log.info( "Reading %d-dimensional occurrence points.\n", _dim );
+  g_log.info( "Reading %d-dimensional occurrence points.\n", _dim );
 
   SampledData presence;
   _samp->getPresence( &presence );  // Get all presence points.
@@ -149,9 +149,9 @@ Bioclim::iterate()
   int    npnt = presence.numSamples();
 
   if ( ! npnt )
-    _log.error( 1, "All occurrences are outside the mask!\n" );
+    g_log.error( 1, "All occurrences are outside the mask!\n" );
 
-  _log.info( "Finding the bioclimatic envelope using %d points.\n",
+  g_log.info( "Finding the bioclimatic envelope using %d points.\n",
 	     npnt );
 
   // sort values of each independent variable and apply cutoffs
@@ -176,7 +176,7 @@ Bioclim::iterate()
   int d, i, j, k;
   for ( d = 0; d < _dim; d++ )
     {
-      _log.info( "Bioclimatic Envelope on dimension %d.\n", d );
+      g_log.info( "Bioclimatic Envelope on dimension %d.\n", d );
 
       // get all values for this variable and store in second array
       memset( values, 0, npnt * sizeof(Scalar) );
@@ -185,13 +185,13 @@ Bioclim::iterate()
 
       // sort the values of this env variable
       // using bubble sort for simplicity
-      _log.debug( "Sorting vector.\n" );
+      g_log.debug( "Sorting vector.\n" );
       for ( j = 0; j < npnt; j++)
 	{
 	  for ( k = 0; k < npnt - 1 - j; k++)
 	    {
 	      /* bubble sort DEBUG
-	      _log.debug ("j = %d; k = %d\n", j, k);
+	      g_log.debug ("j = %d; k = %d\n", j, k);
 	      
 	      for (int ii = 0; ii < npnt; ii++)
 		{
@@ -211,7 +211,7 @@ Bioclim::iterate()
 			c = ' ';
 		    }
 		  
-		  _log.debug ("  %c %12.4f\n", c, values[ii]);
+		  g_log.debug ("  %c %12.4f\n", c, values[ii]);
 		}
 	      */
 
@@ -233,11 +233,11 @@ Bioclim::iterate()
       _half_range[d] = (_max[d] - _min[d]) / 2.0;
       _avg[d] = (_max[d] + _min[d]) / 2.0;
 
-      _log.debug( "%d] Min: %f, Max: %f, Avg: %f, Range: %f\n",
+      g_log.debug( "%d] Min: %f, Max: %f, Avg: %f, Range: %f\n",
 		  d, _min[d], _max[d], _avg[d], _half_range[d] );
     }
 
-  _log.debug( "Finished model\n" );
+  g_log.debug( "Finished model\n" );
 
   delete values;
 

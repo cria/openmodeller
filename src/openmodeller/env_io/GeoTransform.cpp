@@ -28,6 +28,7 @@
 
 #include "env_io/geo_transform.hh"
 #include <om_defs.hh>
+#include <om_log.hh>
 
 #include <ogr_api.h>
 #include <ogr_spatialref.h>
@@ -42,7 +43,7 @@ char *GeoTransform::cs_default = OM_COORDINATE_SYSTEM;
 void
 errorHandler( CPLErr eErrClass, int err_no, const char *msg )
 {
-  printf( "Error: %s\n", msg );
+  g_log( "Error: %s\n", msg );
 }
 
 
@@ -56,34 +57,24 @@ GeoTransform::GeoTransform( char *dst_desc, char *src_desc )
   if ( src.importFromWkt( &src_desc ) != OGRERR_NONE ||
        dst.importFromWkt( &dst_desc ) != OGRERR_NONE )
     {
-      printf("GeoTransform::GeoTransform - invalid projection:\n");
-      printf( " src: (%s)\n", src_desc );
-      printf( " dst: (%s)\n", dst_desc );
-      exit( 1 );
+      g_log.error( 1, "GeoTransform - invalid projection:\n src: (%s)\n dst: (%s)\n",
+		   src_desc, dst_desc );
     }
 
   f_ctin = OGRCreateCoordinateTransformation( &src, &dst );
 
   if ( ! f_ctin )
     {
-      printf("GeoTransform::GeoTransform - invalid projection.\n");
-      printf("De:\n" );
-      printf("*  %s\n", src_desc );
-      printf("Para:\n" );
-      printf("*  %s\n", dst_desc );
-      exit( 1 );
+      g_log.error( 1, "GeoTransform - invalid projection:\n src: (%s)\n dst: (%s)\n",
+		   src_desc, dst_desc );
     }
 
   f_ctout = OGRCreateCoordinateTransformation( &dst, &src );
 
   if ( ! f_ctout )
     {
-      printf("GeoTransform::GeoTransform - invalid projection.\n");
-      printf("De:\n" );
-      printf("*  %s\n", dst_desc );
-      printf("Para:\n" );
-      printf("*  %s\n", src_desc );
-      exit( 1 );
+      g_log.error( 1, "GeoTransform - invalid projection:\n src: (%s)\n dst: (%s)\n",
+		   src_desc, dst_desc );
     }
 
   // Deactivate GDAL error messages.

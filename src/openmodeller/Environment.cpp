@@ -65,9 +65,7 @@ Environment::Environment( char *cs, int ncateg, char **categs,
     f_mask = 0;
 
   else if ( ! (f_mask = newMap( mask )) )
-    {
-      _log.error(1, "Cannot read mask file '%s'.\n", mask );
-    }
+    g_log.error( 1, "Cannot read mask file '%s'.\n", mask );
 
   f_layers = 0;
   changeLayers( ncateg, categs, nmap, maps );
@@ -116,7 +114,7 @@ Environment::changeLayers( int ncateg, char **categs, int nmap,
 
 
   if ( ! calcRegion() )
-    _log.warn( "Maps intersection is empty!!!\n" );
+    g_log.warn( "Maps intersection is empty!!!\n" );
 
   return f_nlay;
 }

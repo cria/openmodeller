@@ -48,8 +48,6 @@
 #include <iostream>
 
 
-Log _log( Log::Debug );
-
 
 // Directories to search for dynamic libraries.
 // Fixme: read this from some configuration file.
@@ -235,8 +233,7 @@ ControlInterface::run()
       return 0;
     }
 
-  _log.info( "Modelling occurrences of: %s.\n",
-	     _presence->name() );
+  g_log( "Modelling occurrences of: %s.\n", _presence->name() );
 
   // Environmental variables.
   char **categs = _layers;
@@ -246,7 +243,7 @@ ControlInterface::run()
 				      _ncateg, categs,
 				      nmaps, maps, _mask );
 
-  _log.info( "Environment initialized.\n" );
+  g_log( "Environment initialized.\n" );
 
   // Sampler and algorithm.
   Sampler samp( env, _presence, _absence );
@@ -265,17 +262,17 @@ ControlInterface::run()
   Scalar min, max;
   if ( alg->needNormalization( &min, &max ) )
     {
-      _log.info( "Normalizing environment variables.\n" );
+      g_log( "Normalizing environment variables.\n" );
       env->normalize( min, max );
     }
 
-  _log.info( "Creating the model\n" );
+  g_log( "Creating the model\n" );
 
   // Generate the model.
   if ( ! createModel( alg, &samp, _ncycle ) )
     return 0;
 
-  _log.info( "Saving distribution's file:\n" );
+  g_log( "Saving distribution's file:\n" );
 
   // Create the map with probabilities of occurence.
   if ( ! createMap( env, alg ) )
@@ -433,10 +430,10 @@ ControlInterface::createMap( Environment *env, Algorithm *alg )
 	  sum += val;
 	}
 
-      _log.info( "Line %04d / %4d : %.2f          \r",
-		 ++row, _hdr->ydim, sum / _hdr->xdim );
+      g_log( "Line %04d / %4d : %+08.2f \r", ++row, _hdr->ydim,
+	     sum / _hdr->xdim );
     }
-  _log.info( "\n" );
+  g_log( "\n" );
 
   delete amb;
   return 1;
