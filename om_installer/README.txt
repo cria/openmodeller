@@ -13,6 +13,9 @@ To Use:
 
 * Copy this om_installer directory into the build directory.
 
+* Copy any sample data you wish to distribute into [build dir]\om_sample_data\
+  (or just make the above dir but leave it blank if you wish)
+
 * open the NSIS app
 
 * Choose MakeNSISW (compiler interface) option
