@@ -4,6 +4,8 @@
  *
  */
 
+import br.org.cria.OpenModeller.*;
+
 public class OMTest1 {
 
     static OpenModeller mod;

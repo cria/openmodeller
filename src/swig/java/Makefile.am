@@ -16,4 +16,11 @@ libomjava_la_CPPFLAGS = -I../../inc -I ../../console
 libomjava_la_LIBADD = $(GDAL_LIB) ../../lib/libopenmodeller.la ../../lib/env_io/libenv_io.la
 
 om_wrap.cxx: om_java.i
-	swig -c++ -java -o om_wrap.cxx om_java.i 
+	-mkdir br
+	-mkdir br/org
+	-mkdir br/org/cria
+	-mkdir br/org/cria/OpenModeller
+	swig -c++ -java -package br.org.cria.OpenModeller \
+                        -o om_wrap.cxx om_java.i.bak.mod
+
+#                        -outdir br/org/cria/OpenModeller
