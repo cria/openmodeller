@@ -122,46 +122,72 @@ bool test##name##Evaluate(int sampleIndex, Scalar * ruleGenes, \
 }
 
 
-// ========================
-// RangeRule tests
 TEST_DUMMY_EVALUATE ( RangeRule );
-
-TEST( evaluate1_1, RangeRule )
-{ CHECK(testRangeRuleEvaluate(0, RuleGenes1_1, RulePred1_1, RulePerfs1_1)); }
-
-TEST( evaluate1_2, RangeRule )
-{ CHECK(testRangeRuleEvaluate(0, RuleGenes1_2, RulePred1_2, RulePerfs1_2)); }
-
-TEST( evaluate2_1, RangeRule )
-{ CHECK(testRangeRuleEvaluate(1, RuleGenes2_1, RulePred2_1, RulePerfs2_1)); }
-
-TEST( evaluate2_2, RangeRule )
-{ CHECK(testRangeRuleEvaluate(1, RuleGenes2_2, RulePred2_2, RulePerfs2_2)); }
-
-TEST( evaluate2_3, RangeRule )
-{ CHECK(testRangeRuleEvaluate(1, RuleGenes2_3, RulePred2_3, RulePerfs2_3)); }
-
-TEST( evaluate2_4, RangeRule )
-{ CHECK(testRangeRuleEvaluate(1, RuleGenes2_4, RulePred2_4, RulePerfs2_4)); }
-
-
-// ========================
-// negated range rules
 TEST_DUMMY_EVALUATE ( NegatedRangeRule );
-
-TEST( evaluate1_3, NegatedRangeRule )
-{ CHECK(testNegatedRangeRuleEvaluate(0, RuleGenes1_3, RulePred1_3, RulePerfs1_3)); }
-
-TEST( evaluate1_4, NegatedRangeRule )
-{ CHECK(testNegatedRangeRuleEvaluate(0, RuleGenes1_4, RulePred1_4, RulePerfs1_4)); }
-
-
-// ========================
-// logistic regration rules
 TEST_DUMMY_EVALUATE ( LogitRule );
-
-
-// ========================
-// atomic rules
 TEST_DUMMY_EVALUATE ( AtomicRule );
 
+// SampleSet 1
+// ===========
+TEST( evaluate1_1, RangeRule )
+{ CHECK(testRangeRuleEvaluate(1, RuleGenes1_1, RulePred1_1, RulePerfs1_1)); }
+
+TEST( evaluate1_2, RangeRule )
+{ CHECK(testRangeRuleEvaluate(1, RuleGenes1_2, RulePred1_2, RulePerfs1_2)); }
+
+TEST( evaluate1_3, NegatedRangeRule )
+{ CHECK(testNegatedRangeRuleEvaluate(1, RuleGenes1_3, RulePred1_3, RulePerfs1_3)); }
+
+TEST( evaluate1_4, NegatedRangeRule )
+{ CHECK(testNegatedRangeRuleEvaluate(1, RuleGenes1_4, RulePred1_4, RulePerfs1_4)); }
+
+//TEST( evaluate1_5, RangeRule )
+//{ CHECK(testAtomicRuleEvaluate(1, RuleGenes1_5, RulePred1_5, RulePerfs1_5)); }
+
+//TEST( evaluate1_6, RangeRule )
+//{ CHECK(testAtomicRuleEvaluate(1, RuleGenes1_6, RulePred1_6, RulePerfs1_6)); }
+
+
+// SampleSet 2
+// ===========
+TEST( evaluate2_1, RangeRule )
+{ CHECK(testRangeRuleEvaluate(2, RuleGenes2_1, RulePred2_1, RulePerfs2_1)); }
+
+TEST( evaluate2_2, RangeRule )
+{ CHECK(testRangeRuleEvaluate(2, RuleGenes2_2, RulePred2_2, RulePerfs2_2)); }
+
+TEST( evaluate2_3, RangeRule )
+{ CHECK(testRangeRuleEvaluate(2, RuleGenes2_3, RulePred2_3, RulePerfs2_3)); }
+
+TEST( evaluate2_4, RangeRule )
+{ CHECK(testRangeRuleEvaluate(2, RuleGenes2_4, RulePred2_4, RulePerfs2_4)); }
+
+
+// SampleSet 3
+// ===========
+TEST( evaluate3_1, RangeRule )
+{ CHECK(testRangeRuleEvaluate(3, RuleGenes3_1, RulePred3_1, RulePerfs3_1)); }
+
+TEST( evaluate3_2, RangeRule )
+{ CHECK(testRangeRuleEvaluate(3, RuleGenes3_2, RulePred3_2, RulePerfs3_2)); }
+
+
+// SampleSet 4
+// ===========
+TEST( evaluate4_1, RangeRule )
+{ CHECK(testRangeRuleEvaluate(4, RuleGenes4_1, RulePred4_1, RulePerfs4_1)); }
+
+TEST( evaluate4_2, RangeRule )
+{ CHECK(testRangeRuleEvaluate(4, RuleGenes4_2, RulePred4_2, RulePerfs4_2)); }
+
+TEST( evaluate4_3, RangeRule )
+{ CHECK(testRangeRuleEvaluate(4, RuleGenes4_3, RulePred4_3, RulePerfs4_3)); }
+
+//TEST( evaluate4_4, NegatedRangeRule )
+//{ CHECK(testNegatedRangeRuleEvaluate(4, RuleGenes4_4, RulePred4_4, RulePerfs4_4)); }
+
+//TEST( evaluate4_5, NegatedRangeRule )
+//{ CHECK(testNegatedRangeRuleEvaluate(4, RuleGenes4_5, RulePred4_5, RulePerfs4_5)); }
+
+//TEST( evaluate4_6, NegatedRangeRule )
+//{ CHECK(testNegatedRangeRuleEvaluate(4, RuleGenes4_6, RulePred4_6, RulePerfs4_6)); }
