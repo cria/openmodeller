@@ -68,6 +68,7 @@ OpenModeller::OpenModeller()
 {
   _factory = new AlgorithmFactory( g_search_dirs );
 
+  _internal = false;
   _env = 0;
   _alg = 0;
   _samp = 0;
@@ -154,6 +155,23 @@ OpenModeller::numAvailableAlgorithms()
 /***********************/
 /*** set Environment ***/
 int
+OpenModeller::setEnvironment( Environment * env )
+{
+  // set up environmental variables.
+  if (_env && _internal)
+    delete _env;
+
+  _internal = false;
+  _env = env;
+
+  g_log( "Environment initialized.\n" );
+
+  return 1;
+}
+
+/***********************/
+/*** set Environment ***/
+int
 OpenModeller::setEnvironment( int num_categ,
 			      char **categ_map,
 			      int num_continuous,
@@ -161,9 +179,10 @@ OpenModeller::setEnvironment( int num_categ,
 			      char *mask )
 {
   // set up environmental variables.
-  if (_env)
+  if (_env && _internal)
     delete _env;
 
+  _internal = true;
   _env = new Environment( GeoTransform::cs_default,
 			 num_categ, categ_map,
 			 num_continuous, continuous_map, mask );
