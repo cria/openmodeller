@@ -28,20 +28,61 @@
 
 #include <om_defs.hh>
 
-
+/* Class AreaStats counts several cell statistics collected during
+ * output map generation.
+ */
 class AreaStats
 {
 public:
+  /** 
+   * Default constructor.
+   * @param predictionThreshold Threshold for prediction values, above
+   *        which a prediction value means a predicted presence.
+   */
   AreaStats(Scalar predictionThreshold = 0.5);
+
+  /** 
+   * Destructor.
+   */
   ~AreaStats();
 
+  /** 
+   * Resets area counters.
+   * @param predictionThreshold New threshold for prediction 
+   *   values, above which a prediction value means a predicted
+   *   presence.
+   */
   void reset(Scalar predictionThreshold = 0.5);
+
+  /** 
+   * Count another cell based on its prediction value.
+   * @param predictionValue Value of the prediction in the current cell.
+   */
   void addPrediction(Scalar predictionValue);
+
+  /** 
+   * Count a cell where the prediction doesn't apply.
+   */
   void addNonPrediction();
   
+  /** 
+   * Returns total number of cells counted.
+   */
   int getTotalArea()              { return _areaTotal; }
+
+  /** 
+   * Returns total number of cell predicted present.
+   */
   int getAreaPredictedPresent()   { return _areaPredPresent; }
+
+  /** 
+   * Returns total number of cell predicted absent.
+   */
   int getAreaPredictedAbsent()    { return _areaPredAbsent; }
+
+  /** 
+   * Returns total number of cells where prediction doesn't apply.
+   */
   int getAreaNotPredicted()       { return _areaNotPredicted; }
 
 private:
