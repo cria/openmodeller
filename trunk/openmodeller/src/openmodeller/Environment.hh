@@ -65,6 +65,9 @@ public:
   int changeLayers( int ncateg, char **categs, int nmap,
 		    char **maps );
 
+  /** Change the mask. */
+  int changeMask( char *mask_file );
+
   /** Set types[i] = 1 if layer "i" represents a categoprical
    *  variable (e.g. soil), otherwise set types[i] = 0. */
   int varTypes( int *types );
@@ -109,7 +112,8 @@ public:
 
   char * getLayerFilename(int index) { return _layerfiles[index]; }
 
-  char * getMaskFilename() { return _maskfile; }
+  char * getMaskFilename() { return _mask_file; }
+
 
 private:
 
@@ -124,10 +128,13 @@ private:
    *  otherwise, a categorical one. */
   Map *newMap( char *file_name, int categ=0 );
 
+  static void stringCopy( char **dst, char *src );
+
+
   int    _ncateg;       ///< Number of categorical variables
   int    _nlayers;      ///< Total number of layers
   char **_layerfiles;   ///< Filename of all layers
-  char  *_maskfile;     ///< Mask filename
+  char  *_mask_file;    ///< Mask filename
 
   Map **_layers; ///< Vector with all layers that describe the variables.
   Map  *_mask;   ///< Mask (can be 0).

@@ -48,21 +48,6 @@
 #define MAXFLOAT FLT_MAX
 #endif
 
-/*******************/
-/*** string Copy ***/
-void stringCopy( char **dst, char *src )
-{
-  if ( *dst )
-    delete *dst;
-
-  if ( src )
-    {
-      *dst = new char[1 + strlen( src )];
-      strcpy( *dst, src );
-    }
-  else
-    *dst = 0;
-}
 
 /****************************************************************/
 /************************* Environment **************************/
@@ -80,16 +65,16 @@ Environment::Environment( char *cs, int ncateg, char **categs,
   _cs = 0;
 
   _layerfiles = 0;
-  _maskfile = 0;
+  _mask_file = 0;
 
   setCoordSystem( cs );
 
   // Initialize mask and read its region.
   if ( ! mask )
-    { _maskfile = 0; }
-  else 
+    { _mask_file = 0; }
+  else
     {
-      stringCopy(&_maskfile, mask);
+      stringCopy( &_mask_file, mask );
       if ( ! (_mask = newMap( mask )) )
 	{ g_log.error( 1, "Cannot read mask file '%s'.\n", mask ); }
     }
@@ -118,8 +103,8 @@ Environment::~Environment()
       delete[] _layers;
     }
 
-  if ( _maskfile )
-    delete[] _maskfile;
+  if ( _mask_file )
+    delete[] _mask_file;
 
   if ( _mask )
     delete _mask;
@@ -190,6 +175,45 @@ Environment::changeLayers( int ncateg, char **categs, int nmap,
     g_log.warn( "Maps intersection is empty!!!\n" );
 
   return _nlayers;
+}
+
+
+/*******************/
+/*** change Mask ***/
+int
+Environment::changeMask( char *mask_file )
+{
+  int ret = 1;
+
+  // Deallocate old mask.
+  if ( _mask )
+    {
+      delete _mask;
+      _mask = 0;
+    }
+  if ( _mask_file )
+    {
+      delete _mask_file;
+      _mask_file = 0;
+    }
+
+  // New mask
+  if ( mask_file )
+    {
+      stringCopy( &_mask_file, mask_file );
+      if ( ! (_mask = newMap( _mask_file )) )
+        {
+          delete _mask_file;
+          _mask_file = 0;
+          ret = 0;
+          g_log.warn( "Cannot read mask file '%s'.\n", _mask_file );
+        }
+    }
+
+  if ( ! calcRegion() )
+    g_log.warn( "changeMask: Maps intersection is empty!!!\n" );
+
+  return ret;
 }
 
 
@@ -324,16 +348,6 @@ Environment::setCoordSystem( char *cs )
 }
 
 
-/***************/
-/*** new Map ***/
-Map *
-Environment::newMap( char *file, int categ )
-{
-  return new Map( new RasterFile( file, categ ), _cs, 1 );
-  //  return new Map( new RasterMemory( file, categ ), _cs, 1 );
-}
-
-
 /*******************/
 /*** calc Region ***/
 int
@@ -341,13 +355,12 @@ Environment::calcRegion()
 {
   Coord xmin, ymin, xmax, ymax;
 
-  _xmin = _ymin =  MAXFLOAT;
-  _xmax = _ymax = -MAXFLOAT;
+  _xmin = _ymin = -MAXFLOAT;
+  _xmax = _ymax =  MAXFLOAT;
 
   // The mask region is the default.
   if ( _mask )
     _mask->getRegion( &_xmin, &_ymin, &_xmax, &_ymax );
-
 
   // Crop region to fit all layers.
   Map **lay = _layers;
@@ -372,3 +385,30 @@ Environment::calcRegion()
   return (_xmin < _xmax) && (_ymin < _ymax);
 }
 
+
+/***************/
+/*** new Map ***/
+Map *
+Environment::newMap( char *file, int categ )
+{
+  return new Map( new RasterFile( file, categ ), _cs, 1 );
+  //  return new Map( new RasterMemory( file, categ ), _cs, 1 );
+}
+
+
+/*******************/
+/*** string Copy ***/
+void
+Environment::stringCopy( char **dst, char *src )
+{
+  if ( *dst )
+    delete *dst;
+
+  if ( src )
+    {
+      *dst = new char[1 + strlen( src )];
+      strcpy( *dst, src );
+    }
+  else
+    *dst = 0;
+}

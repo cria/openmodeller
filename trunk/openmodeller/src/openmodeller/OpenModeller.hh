@@ -203,6 +203,18 @@ public:
                       int num_continuos, char **continuous_map,
                       char *mask=0 );
 
+  /** Defines environmental layers and the mask to be used for
+   *  model projection.
+   *  Obs: the mask is set using setOutputMap().
+   *  
+   * @param num_categ Number of categorical map layers.
+   * @param categ_map File names of categorical map layers.
+   * @param num_continuos Number of continuos map layers.
+   * @param continuos_map File names of continuos map layers.
+   */
+  int setProjection( int num_categ,     char **categ_map,
+                     int num_continuos, char **continuous_map );
+
   /** Set the output distribution map file format and its map
    *  properties.
    * @param mult Value that the probabilities will be multiplied
@@ -264,8 +276,8 @@ public:
    */
   int run()  { return createModel(); }
 
-  /** Save distribution map to disk.
-   * @param env  Pointer to Environment class with the layers 
+  /** Create and save distribution map to disk.
+   * @param env Pointer to Environment object with the layers 
    *  to project the model onto. Defaults to environment set
    *  with setEnvironment().
    * @param output_file Output file name. Defaults to file set
@@ -274,8 +286,18 @@ public:
    *  the valid pixels on the output map. Defaults to mask set
    *  with setOutputMap().
    */
-  int createMap( Environment *env=0, char *output_file=0,
+  int createMap( Environment *env, char *output_file=0,
                  char *output_mask=0 );
+
+  /** Create and save distribution map to disk using the projection
+   * environment set by setProjection() method.
+   * @param output_file Output file name. Defaults to file set
+   *  with setOutputMap().
+   * @param output_mask Georeferenced map file which will define
+   *  the valid pixels on the output map. Defaults to mask set
+   *  with setOutputMap().
+   */
+  int createMap( char *output_file=0, char *output_mask=0 );
 
   char *error()  { return _error; }
 
@@ -330,7 +352,8 @@ private:
   Occurrences *_presence; ///< Presence occurrences points.
   Occurrences *_absence;  ///< Absence occurrences points.
 
-  Environment * _env;      ///< Original environmental layers
+  Environment *_env;   ///< Original environmental layers
+  Environment *_proj;  ///< Projection environmental layers
 
   // Output map default data.
   Scalar _output_mult;    ///< Output multiplier factor.
