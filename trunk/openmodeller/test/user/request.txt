@@ -53,17 +53,17 @@ Scale = 255
 #Parameter = MaxDist 0.05
 
 #Algorithm  = Bioclim
-#Parameter = CuttOff 0.05
+#Parameter = StandadDeviationCutoff 0.05
 
 #Algorithm  = CSM
 
 #Algorithm = DistanceToAverage v0.1
 #Parameter = MaxDist 0.2
 
-Algorithm  = GARP
-Parameter = MaxGenerations 100
-Parameter = ConvergenceLimit 0.0
-Parameter = PopulationSize 50
-Parameter = Resamples 2500
-Parameter = MutationRate 0.25
-Parameter = CrossoverRate 0.25
+#Algorithm  = GARP
+#Parameter = MaxGenerations 100
+#Parameter = ConvergenceLimit 0.0
+#Parameter = PopulationSize 50
+#Parameter = Resamples 2500
+#Parameter = MutationRate 0.25
+#Parameter = CrossoverRate 0.25
