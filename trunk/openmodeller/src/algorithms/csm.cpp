@@ -546,9 +546,11 @@ function c = cov (x)
 endfunction
 
 */
-gsl_matrix * Csm::autoCovariance(gsl_matrix * m)
+gsl_matrix * Csm::autoCovariance(gsl_matrix * original_matrix)
 {
-    displayMatrix(m, "Original Matrix");
+    // Build a copy of the input matrix to work with
+    gsl_matrix * m = gsl_matrix_alloc (original_matrix->size1, original_matrix->size2);
+    gsl_matrix_memcpy (original_matrix, m);
 
     int numrows = m->size1;
     int numcols = m->size2;
@@ -563,7 +565,7 @@ gsl_matrix * Csm::autoCovariance(gsl_matrix * m)
 
     if (numrows == 1)
     {
-        s = m;
+        gsl_matrix_memcpy (m, s);
     }
     else
     {
@@ -587,22 +589,14 @@ gsl_matrix * Csm::autoCovariance(gsl_matrix * m)
 	}
     }
 
-    displayMatrix(s, "ones (n, 1) * sum (x)");
-
     // divide by "n"
     gsl_matrix_scale (s, (double)1/numrows);
-
-    displayMatrix(s, "last one divided by n");
 
     // subtract the result from x 
     gsl_matrix_sub (m, s);
 
-    displayMatrix(s, "x - last one");
-
     // get x'
     gsl_matrix * mt = transpose(m);
-
-    displayMatrix(s, "x - last one");
 
     // x / (n - 1)
     gsl_matrix_scale (m, (double)1/(numrows-1));
@@ -611,9 +605,9 @@ gsl_matrix * Csm::autoCovariance(gsl_matrix * m)
     gsl_matrix * p = product(mt, m);
 
     gsl_matrix_free (mt);
-    gsl_matrix_free (p);
+    gsl_matrix_free (m);
     gsl_matrix_free (s);
 
-    return m;
+    return p;
 }
 
