@@ -13,6 +13,14 @@ GRAPH = graph
 OM_VIEWER = om_viewer
 endif
 
+EXTRA_DIST = \
+	file_parser.hh \
+	graph/color.hh \
+	graph/graphic.hh \
+	graph/graphic_x11.hh \
+	graph/view_model.hh
+
+
 SUBDIRS = $(GRAPH)
 
 bin_PROGRAMS = om_console $(OM_VIEWER)
