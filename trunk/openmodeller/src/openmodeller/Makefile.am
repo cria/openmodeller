@@ -26,3 +26,4 @@ libopenmodeller_la_SOURCES = \
 	sampled_data.cpp
 
 libopenmodeller_la_CPPFLAGS = -I../inc -I../..
+libopenmodeller_la_LIBADD = env_io/libenv_io.la
