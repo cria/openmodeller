@@ -186,6 +186,36 @@ Scalar RulePerfs1_4[10] = {-1000,
  			   -1000
 };
 
+Scalar RulePred1_5 = 1.0; // atomic rule
+Scalar RuleGenes1_5[4] = {-0.50, +0.50, -0.50, +0.50};
+
+Scalar RulePerfs1_5[10] = {-1000,        
+			   0.4761904762,  // pXs/n = 40/84
+			   0.5000,        // pYs/n = 42/84
+			   -1000,  
+			   0.4761904762,  // no/n = pXs/n = 40/84
+			   0.5000,        // pXYs/no = 20/40
+			   -1000,
+			   0.4761904762,  // no/n = 40/84
+			   0.0,           // significance
+ 			   -1000
+};
+
+Scalar RulePred1_6 = 0.0; // atomic rule
+Scalar RuleGenes1_6[4] = {-0.50, +0.50, -0.50, +0.50};
+
+Scalar RulePerfs1_6[10] = {-1000,        
+			   0.4761904762,  // pXs/n = 40/84
+			   0.5000,        // pYs/n = 42/84
+			   -1000,  
+			   0.4761904762,  // no/n = pXs/n = 40/84
+			   0.5000,        // pXYs/no = 20/40
+			   -1000,
+			   0.4761904762,  // no/n = 40/84
+			   0.0,           // significance
+ 			   -1000
+};
+
 
 
 Scalar SampleSetValues1[84][3] =  

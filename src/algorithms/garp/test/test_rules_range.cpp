@@ -36,51 +36,82 @@
 EXTENDED_DUMMY_RULE( RangeRule );
 
 
-TEST( RangeRule_applies1 , RangeRule )
+Scalar genes1[8] = {-0.8, +0.8, -0.8, +0.8, -0.8, +0.8, -0.8, +0.8};
+Scalar vals11[8] = {-0.5, +0.5, -0.5, +0.5, -0.5, +0.5, -0.5, +0.5};
+Scalar vals12[8] = {-0.0, +0.0, -0.0, +0.0, -0.0, +0.0, -0.0, +0.0};
+Scalar vals13[8] = {-0.9, +1.0, -1.0, +1.0, -1.0, +1.0, -1.0, +1.0};
+
+TEST( RangeRule_applies11 , RangeRule )
 {
   ExtRangeRule * rule = new ExtRangeRule;
-  
-  Scalar genes[8] = {-0.8, +0.8, -0.8, +0.8, -0.8, +0.8, -0.8, +0.8};
-  Scalar vals1[8] = {-0.5, +0.5, -0.5, +0.5, -0.5, +0.5, -0.5, +0.5};
-  Scalar vals2[8] = {-0.0, +0.0, -0.0, +0.0, -0.0, +0.0, -0.0, +0.0};
-  Scalar vals3[8] = {-0.9, +1.0, -1.0, +1.0, -1.0, +1.0, -1.0, +1.0};
+  rule->setGenes(genes1, 4);
+  LONGS_EQUAL(rule->applies(vals11), true);
+}
 
-  rule->setGenes(genes, 4);
+TEST( RangeRule_applies12 , RangeRule )
+{
+  ExtRangeRule * rule = new ExtRangeRule;
+  rule->setGenes(genes1, 4);
+  LONGS_EQUAL(rule->applies(vals12), true);
+}
 
-  CHECK_EQUAL(rule->applies(vals1), true);
-  CHECK_EQUAL(rule->applies(vals2), true);
-  CHECK_EQUAL(rule->applies(vals3), false);
+TEST( RangeRule_applies13 , RangeRule )
+{
+  ExtRangeRule * rule = new ExtRangeRule;
+  rule->setGenes(genes1, 4);
+  LONGS_EQUAL(rule->applies(vals13), false);
 }
 
 
-TEST( RangeRule_applies2 , RangeRule )
+Scalar genes2[8] = {-1.0, +1.0, -1.0, +1.0, -1.0, +1.0, -1.0, +1.0};
+Scalar vals21[8] = {-0.5, +0.5, -0.5, +0.5, -0.5, +0.5, -0.5, +0.5};
+Scalar vals22[8] = {-0.0, +0.0, -0.0, +0.0, -0.0, +0.0, -0.0, +0.0};
+Scalar vals23[8] = {-2.9, +3.0, -1.0, +1.0, -1.0, +1.0, -1.0, +1.0};
+
+TEST( RangeRule_applies21 , RangeRule )
 {
   ExtRangeRule * rule = new ExtRangeRule;
-  
-  Scalar genes[8] = {-1.0, +1.0, -1.0, +1.0, -1.0, +1.0, -1.0, +1.0};
-  Scalar vals1[8] = {-0.5, +0.5, -0.5, +0.5, -0.5, +0.5, -0.5, +0.5};
-  Scalar vals2[8] = {-0.0, +0.0, -0.0, +0.0, -0.0, +0.0, -0.0, +0.0};
-  Scalar vals3[8] = {-2.9, +3.0, -1.0, +1.0, -1.0, +1.0, -1.0, +1.0};
-
-  rule->setGenes(genes, 4);
-
-  CHECK_EQUAL(rule->applies(vals1), true);
-  CHECK_EQUAL(rule->applies(vals2), true);
-  CHECK_EQUAL(rule->applies(vals3), true);
+  rule->setGenes(genes2, 4);
+  LONGS_EQUAL(rule->applies(vals21), true);
 }
 
-TEST( RangeRule_applies3 , RangeRule )
+TEST( RangeRule_applies22 , RangeRule )
 {
   ExtRangeRule * rule = new ExtRangeRule;
-  
-  Scalar genes[8] = {-1.0, +1.0, -0.1, +0.1, -1.0, +1.0, -1.0, +1.0};
-  Scalar vals1[8] = {-0.5, +0.5, -0.5, +0.5, -0.5, +0.5, -0.5, +0.5};
-  Scalar vals2[8] = {-0.0, +0.0, -0.0, +0.0, -0.0, +0.0, -0.0, +0.0};
-  Scalar vals3[8] = {-2.9, +3.0, -1.0, +1.0, -1.0, +1.0, -1.0, +1.0};
+  rule->setGenes(genes2, 4);
+  LONGS_EQUAL(rule->applies(vals22), true);
+}
 
-  rule->setGenes(genes, 4);
+TEST( RangeRule_applies23 , RangeRule )
+{
+  ExtRangeRule * rule = new ExtRangeRule;
+  rule->setGenes(genes2, 4);
+  LONGS_EQUAL(rule->applies(vals23), true);
+}
 
-  CHECK_EQUAL(rule->applies(vals1), false);
-  CHECK_EQUAL(rule->applies(vals2), true);
-  CHECK_EQUAL(rule->applies(vals3), false);
+
+Scalar genes3[8] = {-1.0, +1.0, -0.1, +0.1, -1.0, +1.0, -1.0, +1.0};
+Scalar vals31[8] = {-0.5, +0.5, -0.5, +0.5, -0.5, +0.5, -0.5, +0.5};
+Scalar vals32[8] = {-0.0, +0.0, -0.0, +0.0, -0.0, +0.0, -0.0, +0.0};
+Scalar vals33[8] = {-2.9, +3.0, -1.0, +1.0, -1.0, +1.0, -1.0, +1.0};
+
+TEST( RangeRule_applies31 , RangeRule )
+{
+  ExtRangeRule * rule = new ExtRangeRule;
+  rule->setGenes(genes3, 4);
+  LONGS_EQUAL(rule->applies(vals31), false);
+}
+
+TEST( RangeRule_applies32 , RangeRule )
+{
+  ExtRangeRule * rule = new ExtRangeRule;
+  rule->setGenes(genes3, 4);
+  LONGS_EQUAL(rule->applies(vals32), true);
+}
+
+TEST( RangeRule_applies33 , RangeRule )
+{
+  ExtRangeRule * rule = new ExtRangeRule;
+  rule->setGenes(genes3, 4);
+  LONGS_EQUAL(rule->applies(vals33), false);
 }
