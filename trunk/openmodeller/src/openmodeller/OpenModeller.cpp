@@ -45,6 +45,7 @@
 #include <algorithms/distance.hh>
 #include <algorithms/dist_min.hh>
 #include <algorithms/bioclim.hh>
+#include <algorithms/csm.hh>
 
 #include <stdio.h>
 #include <string.h>
@@ -327,6 +328,10 @@ ControlInterface::algorithmFactory( Sampler *samp, char *name,
   if ( ! strcasecmp( name, "Bioclim" ) )
     return new BioclimModel( samp, param ? atof(param) : 0 );
 
+
+  if ( ! strcasecmp( name, "Csm" ) )
+    return new Csm( samp );
+    
   return 0;
 }
 
