@@ -157,9 +157,6 @@
 				RelativePath="..\..\lib\occurrences.cpp">
 			</File>
 			<File
-				RelativePath="..\..\lib\OmAlgParameter.cpp">
-			</File>
-			<File
 				RelativePath="..\..\lib\os_specific_win.cpp">
 			</File>
 			<File
