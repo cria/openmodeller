@@ -96,4 +96,15 @@ public:
   {}
 };
 
+//
+// Invalid Parameter Exception -- thrown in the library when an
+// a parameter value is invalid
+//
+class InvalidParameterException : public OmException {
+public:
+  InvalidParameterException( const std::string& msg ) :
+    OmException( msg )
+  {}
+};
+
 #endif
