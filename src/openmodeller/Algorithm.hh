@@ -173,8 +173,8 @@ protected:
 
 private:
 
-  /** Fills md->id with the algorithm ID. */
-  int findID( AlgMetadata *md );
+  /** Allocates and fills md->id with the algorithm ID. */
+  int allocID( AlgMetadata *md );
 
 
   int *_categ; ///< f_categ[i] != 0 if map "i" is categorical.

@@ -60,8 +60,6 @@ typedef struct
 /****************************************************************/
 /********************** Algorithm Metadata **********************/
 
-#define OM_ALG_ID_SIZE 256
-
 /** 
  * Algorithms' metadata structure.
  * 
@@ -69,7 +67,7 @@ typedef struct
 typedef struct
 {
   /** Automatic generated IDentification. */
-  char id[OM_ALG_ID_SIZE];
+  char *id;
 
   char *name;        ///< Well known name.
   char *version;     ///< Built version.

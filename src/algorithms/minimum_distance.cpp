@@ -68,7 +68,7 @@ static AlgParamMetadata parameters[NUM_PARAM] = {
 
 static AlgMetadata metadata = {
 
-  "",                   // Internal usage.
+  0,                    // Internal usage.
   "MinimumDistance", 	// Name.
   "0.1",       	        // Version.
   "Bibliography",     	// Bibliography.
@@ -143,7 +143,7 @@ MinimumDistance::needNormalization( Scalar *min, Scalar *max )
 int
 MinimumDistance::initialize( int ncicle )
 {
-  if ( ! getParameter( 0, &_dist ) )
+  if ( ! getParameter( "MaxDist", &_dist ) )
     return 0;
 
   int dim = _samp->numIndependent();

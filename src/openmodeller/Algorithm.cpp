@@ -49,7 +49,7 @@ Algorithm::Algorithm( AlgMetadata *metadata )
   _nparam = 0;
   _param  = 0;
   
-  findID( _metadata );
+  allocID( _metadata );
 }
 
 
@@ -58,7 +58,11 @@ Algorithm::Algorithm( AlgMetadata *metadata )
 
 Algorithm::~Algorithm()
 {
-  if ( _categ ) delete _categ;
+  if ( _categ )
+    delete _categ;
+
+  if ( _metadata && _metadata->id )
+    delete _metadata->id;
 }
 
 
@@ -87,18 +91,20 @@ Algorithm::setParameters( int nparam, OmAlgParameter *param )
 }
 
 
-/***************/
-/*** find ID ***/
+/****************/
+/*** alloc ID ***/
 int
-Algorithm::findID( AlgMetadata *meta )
+Algorithm::allocID( AlgMetadata *meta )
 {
-  char *id = meta->id;
+  const int id_size = 256;
+
+  char *id = meta->id = new char[id_size];
 
   // String to link algorithm's "name" and "version";
   char *link = " v";
 
-  strncpy( id, meta->name, OM_ALG_ID_SIZE );
-  int name_size = OM_ALG_ID_SIZE;
+  strncpy( id, meta->name, id_size );
+  int name_size = id_size;
   name_size -= strlen( meta->name ) + strlen( link );
 
   if ( name_size > 0 )
@@ -107,7 +113,7 @@ Algorithm::findID( AlgMetadata *meta )
       strncat( id, meta->version, name_size );
     }
 
-  id[OM_ALG_ID_SIZE - 1] = '\0';
+  id[id_size - 1] = '\0';
   return 1;
 }
 
