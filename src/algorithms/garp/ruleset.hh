@@ -175,6 +175,7 @@ public:
 			  double * best, double * worst, double * average);
 
 
+  void gatherRuleSetStats(int gen);
   void log();
   
 

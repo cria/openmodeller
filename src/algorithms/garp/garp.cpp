@@ -198,6 +198,8 @@ algorithmFactory()
 /****************************************************************/
 /****************** Garp class **********************************/
 
+const PerfIndex defaultPerfIndex = PerfUtil;
+
 Garp::Garp()
   : Algorithm(& metadata)
 {
@@ -208,7 +210,7 @@ Garp::Garp()
   _conv_limit     = 0.0;
 
   _mortality      = 0.9;
-  _gapsize        = 0.9;
+  _gapsize        = 0.7;
   _acc_limit      = 0.0;
 
   _crossover_rate = 0.25;
@@ -300,7 +302,6 @@ int Garp::iterate()
 {
   char msg[256];
   double perfBest, perfWorst, perfAvg;
-  const PerfIndex defaultPerfIndex = PerfSig;
 
   if (!done())
     {
@@ -310,8 +311,11 @@ int Garp::iterate()
       select(_offspring, _fittest, defaultPerfIndex);
       _fittest->trim(_popsize);
 
-      _offspring->performanceSummary(PerfSig, 
+      _offspring->performanceSummary(defaultPerfIndex, 
                                      &perfBest, &perfWorst, &perfAvg);
+
+      //_fittest->gatherRuleSetStats(_gen);
+      //_offspring->gatherRuleSetStats(-_gen);
 
       /*
       g_log( "%4d] ", _gen );
@@ -333,7 +337,6 @@ int Garp::iterate()
           reproduce(_fittest, _offspring, _gapsize);
 
           // fill rest
-          //int new_popsize = (int) (_mortality * (double) _popsize);
           colonize(_offspring, _custom_sampler, _popsize);
           _offspring->trim(_popsize);
           mutate(_offspring);
@@ -537,9 +540,10 @@ void Garp::select(GarpRuleSet * source, GarpRuleSet * target,
   else
     { _convergence = 1.0; }
 
-  //printf("Convergence: %+7.4f at generation %5d (%3d; %6d; %+7.4f)\n", _convergence, 
-  //	 _gen, converged, _improvements, ( (double) converged ) / _improvements);
-
+  /*
+  printf("Convergence: %+7.4f at generation %5d (%3d; %6d; %+7.4f) similar=%d\n", _convergence, 
+  	 _gen, converged, _improvements, ( (double) converged ) / _improvements, similarIndex);
+  */
   // TODO: update heuristic rates based on who entered the target rule-set
 }
 
@@ -602,7 +606,7 @@ void Garp::reproduce(GarpRuleSet * source, GarpRuleSet * target,
   perfBest = perfWorst = perfAvg = 0.0;
   GarpRule * pRuleBeingInserted;
   
-  source->performanceSummary(PerfSig, &perfBest, &perfWorst, &perfAvg);
+  source->performanceSummary(defaultPerfIndex, &perfBest, &perfWorst, &perfAvg);
 
   //g_log( "Performances: %f %f %f.\n", perfBest, perfWorst, perfAvg );
 
@@ -620,14 +624,11 @@ void Garp::reproduce(GarpRuleSet * source, GarpRuleSet * target,
     sample[i] = i % n;
 
   ptr = rnd.get(1.0);
-  for (sum = i = 0; i < n; i++)
+  sum = 0.0;
+  for (i = 0; i < n; i++)
     {
-      rulePerf = source->get(i)->getPerformance(PerfUtil);
-      if ( rulePerf > perfWorst)
-        expected = (rulePerf - perfWorst) * factor;
-      else 
-        expected = 0.0;
-
+      rulePerf = source->get(i)->getPerformance(defaultPerfIndex);
+      expected = (rulePerf - perfWorst) * factor;
       for (sum += expected; (sum > ptr) && (k <= _popsize); ptr++)	
         {
           if ((k < 0) || (k > _popsize))
@@ -661,7 +662,7 @@ void Garp::reproduce(GarpRuleSet * source, GarpRuleSet * target,
         // target rs is full
         g_log.error(1, "Garp::reproduce(): Target rule set is full");
     }
-  delete sample;
+  delete[] sample;
 }
 
 /****************************************************************/

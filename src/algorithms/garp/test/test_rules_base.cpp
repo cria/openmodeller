@@ -196,3 +196,21 @@ TEST( getError , GarpRule )
 
   delete rule;
 }
+
+
+Scalar genes1[8] = {-0.8, +0.8, -0.8, +0.8, -0.8, +0.8, -0.8, +0.8};
+Scalar genes2[8] = {-0.8, +0.8, -0.8, +0.8, -0.8, +0.8, -0.8, +0.8};
+
+TEST( Similar1, GarpRule )
+{
+  ExtGarpRule * rule1 = new ExtGarpRule;
+  ExtGarpRule * rule2 = new ExtGarpRule;
+  rule1->setGenes(genes1, 4);
+  rule2->setGenes(genes2, 4);
+  
+  LONGS_EQUAL(rule1->similar(rule2), true);
+  
+  delete rule1; 
+  delete rule2;
+}
+

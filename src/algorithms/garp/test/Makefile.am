@@ -27,7 +27,9 @@ test_ruleset_SOURCES = test_main.cpp test_ruleset.cpp \
 
 test_ruleset_LDADD = ../../../test/CppUnitLite/libcppunitlite.la
 
-test_ruleset_CPPFLAGS = -I../../../test -I.. -I../../../src/inc
+test_ruleset_CPPFLAGS = -I../../../test -I.. \
+			-I../../../src/inc \
+			-I../../../src/inc/serialization
 
 
 # ============ test_rules_base ===============================
@@ -41,7 +43,9 @@ test_rules_base_SOURCES  = test_main.cpp test_rules_base.cpp \
 
 test_rules_base_LDADD = ../../../test/CppUnitLite/libcppunitlite.la -ldl
 
-test_rules_base_CPPFLAGS = -I../../../test -I.. -I../../../src/inc
+test_rules_base_CPPFLAGS = -I../../../test -I.. \
+			-I../../../src/inc \
+			-I../../../src/inc/serialization
 
 
 # ============ test_rules_range ==============================
@@ -55,7 +59,10 @@ test_rules_range_SOURCES  = test_main.cpp test_rules_range.cpp \
 
 test_rules_range_LDADD = ../../../test/CppUnitLite/libcppunitlite.la -ldl
 
-test_rules_range_CPPFLAGS = -I../../../test -I.. -I../../../src/inc
+test_rules_range_CPPFLAGS = -I../../../test -I.. \
+				-I../../../src/inc \
+				-I../../../src/inc/serialization
+
 
 
 # ============ test_rules_negrange ===========================
@@ -70,7 +77,10 @@ test_rules_negrange_SOURCES  = test_main.cpp test_rules_negrange.cpp \
 
 test_rules_negrange_LDADD = ../../../test/CppUnitLite/libcppunitlite.la -ldl
 
-test_rules_negrange_CPPFLAGS = -I../../../test -I.. -I../../../src/inc
+test_rules_negrange_CPPFLAGS = -I../../../test -I.. \
+				-I../../../src/inc \
+				-I../../../src/inc/serialization
+
 
 
 # ============ test_rules_atomic ==============================
@@ -84,7 +94,9 @@ test_rules_atomic_SOURCES  = test_main.cpp test_rules_atomic.cpp \
 
 test_rules_atomic_LDADD = ../../../test/CppUnitLite/libcppunitlite.la -ldl
 
-test_rules_atomic_CPPFLAGS = -I../../../test -I.. -I../../../src/inc
+test_rules_atomic_CPPFLAGS = -I../../../test -I.. \
+			-I../../../src/inc \
+			-I../../../src/inc/serialization
 
 
 # ============ test_rules_logit ===============================
@@ -98,7 +110,9 @@ test_rules_logit_SOURCES  = test_main.cpp test_rules_logit.cpp \
 
 test_rules_logit_LDADD = ../../../test/CppUnitLite/libcppunitlite.la -ldl
 
-test_rules_logit_CPPFLAGS = -I../../../test -I.. -I../../../src/inc
+test_rules_logit_CPPFLAGS = -I../../../test -I.. \
+			-I../../../src/inc \
+			-I../../../src/inc/serialization
 
 
 # ============ test_rules_evaluate ===========================
@@ -114,7 +128,9 @@ test_rules_evaluate_SOURCES  = test_main.cpp test_rules_evaluate.cpp \
 
 test_rules_evaluate_LDADD = ../../../test/CppUnitLite/libcppunitlite.la -ldl
 
-test_rules_evaluate_CPPFLAGS = -I../../../test -I.. -I../../../src/inc
+test_rules_evaluate_CPPFLAGS = -I../../../test -I.. \
+			-I../../../src/inc \
+			-I../../../src/inc/serialization
 
 
 # ============================================================

@@ -59,7 +59,7 @@ void LogitRule::initialize(GarpCustomSampler * sampler)
   Random rnd;
   
   // call inherited initialize
-  GarpRule::initialize(sampler);
+  GarpRule::initialize(sampler); 
 
   for (i = 0; i < _numGenes; i++)
     {
@@ -166,7 +166,9 @@ int LogitRule::getStrength(Scalar * values)
 // ==========================================================================
 bool LogitRule::similar(GarpRule * objRule)
 {
-  int ct, k;
+  int k;
+  Scalar thisGene, otherGene;
+  bool similar = true;
   
   LogitRule * objOtherRule = (LogitRule *) objRule;
   
@@ -176,13 +178,21 @@ bool LogitRule::similar(GarpRule * objRule)
       if (_prediction != objOtherRule->_prediction) 
 	return 0;
       
-      ct = 0;
-      for (k = 0; k < _numGenes * 2; k ++)
-	{ ct += fabs(_genes[k] - objOtherRule->_genes[k]) < 0.2; }
+      // rules are similar if they share the same relevant coeficients, 
+      // i.e., abs(gene) > 0.05.
+      for (k = 0; k < _numGenes * 2; k++)
+	{ 
+	  thisGene  = fabs(_genes[k]);
+	  otherGene = fabs(objOtherRule->_genes[k]); 
+	  if ( ( (thisGene < 0.05) && (otherGene > 0.05) ) || 
+	       ( (thisGene > 0.05) && (otherGene < 0.05) ) )
+	    {
+	      similar = false;
+	      break;
+	    }
+	}
       
-      // rule is similar if more than half of the aleles
-      // are within 0.2 distance of each other
-      return (ct > _numGenes);
+      return similar;
     }
   
   return false;

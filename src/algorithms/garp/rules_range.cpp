@@ -58,7 +58,7 @@ void RangeRule::initialize(GarpCustomSampler * sampler)
   Random rnd;
 
   // call parent initialize
-  GarpRule::initialize(sampler);
+  GarpRule::initialize(sampler); 
   
   // loop iterates through variables
   for(i = 0; i < _numGenes; i++)
