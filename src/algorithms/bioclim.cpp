@@ -32,7 +32,6 @@
 #include <stdio.h>
 #include <math.h>
 
-
 /****************************************************************/
 /********************** Algorithm's Metadata ********************/
 
@@ -126,10 +125,7 @@ The bioclim categorical output is mapped to the continuous output of\
 /****************************************************************/
 /****************** Algorithm's factory function ****************/
 
-#ifdef WIN32
-__declspec( dllexport )
-#endif
-Algorithm *
+Algorithm * dllexp
 algorithmFactory()
 {
   return new Bioclim;

@@ -40,7 +40,7 @@
  * Algorithms' parameters. A couple (id, value)
  * 
  **/
-class AlgParameter
+class dllexp AlgParameter
 {
 public:
 

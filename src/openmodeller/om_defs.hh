@@ -79,9 +79,21 @@ typedef float  (*floatFunc)(float);
 
 // Windows only defs
 //
-#ifdef WIN32
+#ifdef _WINDOWS
 
 #define strcasecmp _stricmp
+#define dllexp __declspec(dllexport)
+
+#ifdef CORE_DLL_IMPORT
+#define dll_log __declspec(dllimport)
+#else
+#define dll_log __declspec(dllexport)
+#endif
+
+#else
+
+#define dllexp
+#define dll_log
 
 #endif
 

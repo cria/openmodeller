@@ -29,6 +29,8 @@
 #ifndef _LOGHH_
 #define _LOGHH_
 
+#include <om_defs.hh>
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdarg.h>
@@ -45,7 +47,7 @@
  * A system interface class with more advanced logging 
  * mechanisms (libraries).
  */
-class Log
+class dllexp Log
 {
 public:
   typedef enum {
@@ -124,7 +126,7 @@ private:
 };
 
 
-extern Log g_log;
+extern dll_log Log g_log;
 
 
 #endif

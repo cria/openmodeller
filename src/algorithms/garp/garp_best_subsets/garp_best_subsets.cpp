@@ -304,10 +304,9 @@ for selecting optimal models.Ecological Modelling, v. 162, p. 211 232.",
 /****************************************************************/
 /****************** Algorithm's factory function ****************/
 
-#ifdef WIN32
-__declspec( dllexport )
-#endif
-Algorithm * algorithmFactory()
+dllexp 
+Algorithm * 
+algorithmFactory()
 {
   return new GarpBestSubsets;
 }

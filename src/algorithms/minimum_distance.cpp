@@ -104,10 +104,7 @@ be in [0,1]. If 'dist' > MaxDist the output will be Zero.",
 /****************************************************************/
 /****************** Algorithm's factory function ****************/
 
-#ifdef WIN32
-__declspec( dllexport )
-#endif
-Algorithm *
+Algorithm * dllexp
 algorithmFactory()
 {
   return new MinimumDistance;

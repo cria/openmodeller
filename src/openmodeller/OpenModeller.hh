@@ -54,7 +54,7 @@ class Header;
  * generator.
  * 
  */
-class OpenModeller : public Serializable
+class dllexp OpenModeller : public Serializable
 {
 public:
 

@@ -71,7 +71,7 @@ PostBuild_Cmds=echo on	..\CopyStaticLib.bat build $(TargetDir) $(TargetName)	..\
 # PROP Intermediate_Dir "Debug"
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_MBCS" /D "_LIB" /YX /FD /GZ /c
-# ADD CPP /nologo /MTd /W3 /Gm /GX /ZI /Od /I "../../inc" /I "$(GDAL_HOME)/include" /I "$(EXPAT_HOME)/Source/lib" /D "WIN32" /D "_DEBUG" /D "_MBCS" /D "_LIB" /D VERSION=\"0.2\" /D PLUGINPATH=$(OM_PLUGIN_PATH) /D CONFIG_FILE=\"om_config.txt\" /YX /FD /GZ /c
+# ADD CPP /nologo /MTd /W3 /Gm /GX /ZI /Od /I "../../inc" /I "../../inc/env_io" /I "$(GDAL_HOME)/include" /I "../../lib/serialization" /I "$(EXPAT_HOME)/Source/lib" /D "_WINDOWS" /D "WIN32" /D "_DEBUG" /D "_MBCS" /D "_LIB" /D VERSION=\"0.2\" /D PLUGINPATH=$(OM_PLUGIN_PATH) /D CONFIG_FILE=\"om_config.txt\" /YX /FD /GZ /c
 # ADD BASE RSC /l 0x409 /d "_DEBUG"
 # ADD RSC /l 0x409 /d "_DEBUG"
 BSC32=bscmake.exe
