@@ -174,7 +174,7 @@ DistanceToAverage::initialize()
 
   // Normalize the distance parameter according to the number
   // of layers.
-  _dist *= sqrt( _dim );
+  _dist *= sqrt( (double) _dim );
 
   g_log( "\nEnvironmental layers: %d\n", _dim );
   g_log( "Parameter normalized: %f\n\n", _dist );

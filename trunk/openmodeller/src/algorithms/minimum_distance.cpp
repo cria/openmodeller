@@ -165,7 +165,7 @@ MinimumDistance::initialize()
 
   // Normalize the distance parameter according to the number
   // of layers
-  _dist *= sqrt( dim );
+  _dist *= sqrt( (double) dim );
 
   _presence = new SampledData;
 
