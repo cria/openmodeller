@@ -15,20 +15,14 @@
 Installation notes for GNU/Linux
 ================================
 
-1. Install proj4 library (http://www.remotesensing.org/proj/).
-   Note that openModeller was tested with version 4.4.7
+1. Install proj4 library: http://www.remotesensing.org/proj/
+   (known to work with version 4.4.7)
 
-2. Install the latest GDAL version (http://www.remotesensing.org/gdal/).
-   At this moment the stable version is 1.1.9 but it is better to get 
-   the latest source from CVS:
+2. Install the GDAL library: http://www.remotesensing.org/gdal/
+   (known to work with version 1.2.5)
 
-   % export CVSROOT=:pserver:anonymous@cvs.remotesensing.org:/cvsroot
-   % cvs login
-   Password: anonymous
-   % cvs checkout gdal
-
-3. Install GSL - GNU Scientific Library (http://www.gnu.org/software/gsl).
-   Tested with version 1.4
+3. Install GSL - GNU Scientific Library: http://www.gnu.org/software/gsl/
+   (known to work with version 1.4)
 
 4. Download the latest openModeller package from the sourceforge site
    (http://www.sf.net/projects/openmodeller), uncompress it, get into the
