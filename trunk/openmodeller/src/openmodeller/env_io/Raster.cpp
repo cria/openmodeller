@@ -317,16 +317,17 @@ Raster::calcMinMax( Scalar *min, Scalar *max, int band )
   bands = new Scalar[ f_hdr.nband ];
   Scalar *val = bands + band;
 
-  // Initial values.
-  if ( ! iget( 0, 0, bands ) )
-    return 0;
-  *min = *max = *val;
+  bool initialized = false;
 
   // Scan all map values.
   for ( int y = 0; y < f_hdr.ydim; y++ )
     for ( int x = 0; x < f_hdr.xdim; x++ )
       if ( iget( x, y, bands ) )
         {
+          if (!initialized) {
+            initialized = true;
+            *min = *max = *val;
+          }
           if ( *min > *val )
             *min = *val;
           else if ( *max < *val )
@@ -334,6 +335,9 @@ Raster::calcMinMax( Scalar *min, Scalar *max, int band )
         }
 
   delete bands;
+
+  if (!initialized)
+    return 0;
 
   return 1;
 }
