@@ -72,7 +72,8 @@ GarpRun::GarpRun()
   _omission = -1.0;
   _commission = -1.0;
   _commission_samples = 0;
-  _garp = NULL;      
+  _garp = NULL;
+  _train_sampler = _test_sampler = NULL;
 }
 
 /****************************************************************/
@@ -80,6 +81,12 @@ GarpRun::~GarpRun()
 {
   if (_garp)
     delete _garp;
+
+  if (_train_sampler)
+    delete _train_sampler;
+
+  if (_test_sampler)
+    delete _test_sampler;
 }
 
 /****************************************************************/
@@ -130,6 +137,7 @@ int GarpRun::finalize()
 {
   g_log("Finishing up garp run.(%d)\n", _id);
   _running = false;
+  _garp->deleteTempDataMembers();
   THREAD_END();
 }
 

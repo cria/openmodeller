@@ -756,6 +756,18 @@ void Garp::crossover(GarpRuleSet * ruleset)
 }
 
 
+// *****************
+void Garp::deleteTempDataMembers()
+{
+  if (_offspring)
+    delete _offspring;
+  _offspring = NULL;
+
+  if (_custom_sampler)
+    delete _custom_sampler;
+  _custom_sampler = NULL;
+}
+
 /****************************************************************/
 /**** This is a debug function that checks if a rule set is 
  **** correctly sorted. If not it dumps the performance values

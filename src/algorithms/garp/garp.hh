@@ -123,6 +123,9 @@ public:
 
   int getGeneration() { return _gen; }
 
+  void deleteTempDataMembers();
+
+
 private:
 
 /** Fill a rule set with newly generated rules

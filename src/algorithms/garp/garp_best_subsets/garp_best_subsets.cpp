@@ -360,11 +360,14 @@ GarpBestSubsets::~GarpBestSubsets()
     }
 
   if (_activeRun)
-    delete[] _activeRun;
+    { delete[] _activeRun; }
 
   // bestRun just point to objects referenced by _finishedRun object
   if (_bestRun)
     { delete[] _bestRun; }
+
+  if (_garp_params)
+    delete[] _garp_params;
 }
 
 // ****************************************************************
@@ -435,6 +438,9 @@ int GarpBestSubsets::initialize()
   _activeRun = new GarpRun*[_maxThreads];
 
   // setup AlgParam object for GARP
+  if (_garp_params)
+    delete[] _garp_params;
+
   _garp_nparam = 6;
   _garp_params = new AlgParameter[_garp_nparam];
 
