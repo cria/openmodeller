@@ -125,12 +125,14 @@ main( int argc, char **argv )
   if ( ! om.createMap() )
     g_log.error( 2, "Error: %s\n", om.error() );
 
-  ConfusionMatrix * matrix = om.getConfusionMatrix();
+  ConfusionMatrix matrix;
+  matrix.calculate(om.getEnvironment(), om.getAlgorithm(),
+		   request.getOccurrences(), NULL);
   AreaStats * stats = om.getActualAreaStats();
   g_log("\nModel statistics\n");
-  g_log("Accuracy:          %7.2f\%\n", matrix->getAccuracy() * 100);
-  g_log("Omission error:    %7.2f\%\n", matrix->getOmissionError() * 100);
-  //g_log("Commission error:  %7.2f\%\n", matrix->getCommissionError() * 100);
+  g_log("Accuracy:          %7.2f\%\n", matrix.getAccuracy() * 100);
+  g_log("Omission error:    %7.2f\%\n", matrix.getOmissionError() * 100);
+  //g_log("Commission error:  %7.2f\%\n", matrix.getCommissionError() * 100);
   g_log("Percentage of cells predicted present: %7.2f\%\n", 
 	stats->getAreaPredictedPresent() / (double) stats->getTotalArea() * 100);
   g_log("Total number of cells: %d\n", stats->getTotalArea());

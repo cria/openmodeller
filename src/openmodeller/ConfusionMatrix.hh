@@ -28,8 +28,9 @@
 
 #include <om_defs.hh>
 
-class Sampler;
 class Algorithm;
+class Environment;
+class Occurrences;
 
 /**
  * Class ConfusionMatrix tabulates the proportions of types of
@@ -77,7 +78,8 @@ public:
    *  and absence data used to build the model
    * @param alg Algorithm that stores the current model
    */
-  void calculate(Sampler * sampler, Algorithm * alg);
+  void calculate(Environment * env, Algorithm * alg, 
+		 Occurrences * presences, Occurrences * absences);
   
   /**
    * Returns a value from the confusion matrix.

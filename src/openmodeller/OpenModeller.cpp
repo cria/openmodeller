@@ -42,7 +42,6 @@
 #include <om_sampler.hh>
 #include <om_occurrences.hh>
 #include <om_area_stats.hh>
-#include <om_conf_matrix.hh>
 #include <map_format.hh>
 #include <occurrence.hh>
 
@@ -147,7 +146,6 @@ OpenModeller::OpenModeller()
 
   _actualAreaStats = new AreaStats();
   _estimatedAreaStats = new AreaStats();
-  _confMatrix = new ConfusionMatrix();
 
   _factory = new AlgorithmFactory( _plugin_path );
 }
@@ -178,7 +176,6 @@ OpenModeller::~OpenModeller()
 
   delete _actualAreaStats;
   delete _factory;
-  delete _confMatrix;
 }
 
 
@@ -646,8 +643,6 @@ OpenModeller::createModel()
       return 0;
     }
 
-  _confMatrix->calculate(_samp, _alg);
-
   g_log( "\n" );
 
   return 1;
@@ -984,11 +979,6 @@ AreaStats * OpenModeller::getEstimatedAreaStats(double proportionAreaToSample)
 
   return _estimatedAreaStats;
 }
-
-/**********************************/
-/******* getConfusionMatrix *******/
-ConfusionMatrix * OpenModeller::getConfusionMatrix()
-{ return _confMatrix; }
 
 /**********************************/
 /******* serialize ****************/

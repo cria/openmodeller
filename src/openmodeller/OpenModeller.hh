@@ -164,6 +164,7 @@ public:
   //
 
   Environment *getEnvironment() { return _env; }
+  Algorithm *getAlgorithm() { return _alg; }
 
 
   //
@@ -376,14 +377,6 @@ public:
    */
   AreaStats * getEstimatedAreaStats(double proportionAreaToSample = 0.01);
 
-  /**
-   * Returns a pointer to the model ConfusionMatrix object 
-   * which contains statistics about points predicted correctly
-   * or not.
-   */
-  ConfusionMatrix * getConfusionMatrix();
-
-
   //
   // Serialization methods
   //
@@ -456,7 +449,6 @@ private:
   // model statistics: helper objects
   AreaStats * _actualAreaStats;
   AreaStats * _estimatedAreaStats;
-  ConfusionMatrix * _confMatrix;
 
   // plugin path
   char ** _plugin_path;
