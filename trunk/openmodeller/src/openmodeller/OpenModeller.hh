@@ -86,10 +86,25 @@ public:
    */
   char *getVersion();
 
+  /** Returns configuration file name used by openModeller 
+   */
+  char *getConfigFileName();
+
   /** Returns openModeller plugin path (path where to look for
    * algorithms)
    */
   char *getPluginPath();
+
+  /** Sets new plugin path for openModeller
+   * @param search_dirs Null terminated list of directory 
+   *        paths to search for algorithms.
+   */
+  void setPluginPath(char ** search_dirs);
+
+  /** Reset plugin path to default (from config file or from hardcoded 
+   * PLUGINPATH)
+   */
+  void resetPluginPath();
 
   //
   // Algorithms related methods.
@@ -279,6 +294,10 @@ private:
    */
   char *parameterModelCheck();
 
+  /** Delete every string in array of strings and then delete
+   *  array itself.
+   */
+  void deleteStringArray(char ** array);
 
   AlgorithmFactory *_factory;
 
@@ -305,6 +324,8 @@ private:
   MapCallback   _map_callback;
   void         *_map_callback_param;
 
+  // plugin path
+  char ** _plugin_path;
 
   char _error[256];
 };

@@ -125,6 +125,14 @@ AlgorithmFactory::~AlgorithmFactory()
     delete dll;
 }
 
+/***************/
+/*** setDirs ***/
+void
+AlgorithmFactory::setDirs( char **dirs )
+{
+  _dirs = dirs;
+}
+
 
 /***********************/
 /*** load Algorithms ***/

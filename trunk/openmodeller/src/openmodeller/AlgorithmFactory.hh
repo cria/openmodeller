@@ -87,6 +87,10 @@ public:
   AlgorithmFactory( char **search_dirs );
   ~AlgorithmFactory();
 
+  /** Set directories that will be searched when trying to load algorithms
+   */
+  void setDirs(char ** dirs);
+
   /** Load the system available algorithms. If there are
    * algorithm already loaded they are unloaded.
    * 
