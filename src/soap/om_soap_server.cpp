@@ -252,7 +252,7 @@ om__createModel( struct soap *soap, om__Points *points, om__Maps *maps, om__Mask
   soap->header->om__version = om.getVersion();
 
   // Set the algorithm to be used
-  om.setAlgorithm( algorithm->id, algorithm->__size, (OmAlgParameter *)algorithm->__ptrparameter );
+  om.setAlgorithm( algorithm->id, algorithm->__size, (AlgParameter *)algorithm->__ptrparameter );
 
   AlgMetadata *alg_metadata = om.algorithmMetadata( algorithm->id );
 

@@ -35,7 +35,7 @@
 #include <om_algorithm_metadata.hh>
 
 class Algorithm;
-class OmAlgParameter;
+class AlgParameter;
 class Sampler;
 
 
@@ -120,7 +120,7 @@ public:
    *  null if an algorithm with id was not found.
    */
   Algorithm *newAlgorithm( Sampler *samp, char *id, int nparam,
-                           OmAlgParameter *param );
+                           AlgParameter *param );
 
 
 private:

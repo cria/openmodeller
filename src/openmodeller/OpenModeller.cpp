@@ -36,7 +36,7 @@
 #include <om_defs.hh>
 #include <om_log.hh>
 #include <om_algorithm.hh>
-#include <OmAlgParameter.hh>
+#include <om_alg_parameter.hh>
 #include <om_sampler.hh>
 #include <om_occurrences.hh>
 
@@ -203,7 +203,7 @@ ControlInterface::setOutputMap( char *file, char *map_file,
 /*** set Algorithm ***/
 void
 ControlInterface::setAlgorithm( char *id, int nparam,
-				OmAlgParameter *param )
+				AlgParameter *param )
 {
   stringCopy( &_alg_id, id );
 
@@ -211,11 +211,11 @@ ControlInterface::setAlgorithm( char *id, int nparam,
   _alg_nparam = nparam;
   if ( _alg_param )
     delete[] _alg_param;
-  _alg_param = new OmAlgParameter[ _alg_nparam ];
+  _alg_param = new AlgParameter[ _alg_nparam ];
 
   // Copy 'param' to '_alg_param'.
-  OmAlgParameter *dst = _alg_param;
-  OmAlgParameter *end = _alg_param + _alg_nparam;
+  AlgParameter *dst = _alg_param;
+  AlgParameter *end = _alg_param + _alg_nparam;
   while ( dst < end )
     *dst++ = *param++;
 }

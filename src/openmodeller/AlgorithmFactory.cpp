@@ -186,7 +186,7 @@ AlgorithmFactory::algorithmMetadata( char *id )
 Algorithm *
 AlgorithmFactory::newAlgorithm( Sampler *samp, char *id,
                                 int nparam,
-                                OmAlgParameter *param )
+                                AlgParameter *param )
 {
   Algorithm *alg;
 
