@@ -37,7 +37,7 @@
 #define _RULESET_HH_
 
 #include <om.hh>
-#include <rules.hh>
+#include <rules_base.hh>
 
 
 /****************************************************************/
