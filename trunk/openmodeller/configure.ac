@@ -16,7 +16,7 @@ AC_PROG_INSTALL
 
 AC_PROG_LIBTOOL
 
-AC_CHECK_HEADERS([float.h] [values.h])
+AC_CHECK_HEADERS([float.h] [values.h] [jni.h])
 
 dnl ---------------------------------------------------------------------------
 dnl X11
@@ -170,12 +170,14 @@ AC_ARG_ENABLE(python,
    case "${enableval}" in
     yes)
       build_python=yes
+      AC_MSG_RESULT([$build_python])
       AM_PATH_PYTHON
       AM_CHECK_PYTHON_HEADERS([PYSUBDIR=python],[])
       AC_SUBST(PYSUBDIR)
       ;;
     no)
       build_python=no
+      AC_MSG_RESULT([$build_python])
       ;;
     *)
       AC_MSG_ERROR([bad value ${enableval} for --enable-python])
@@ -184,9 +186,9 @@ AC_ARG_ENABLE(python,
   ],
   [
     build_python=no
+    AC_MSG_RESULT([$build_python])
   ]
 )
-AC_MSG_RESULT([$build_python])
 
 AM_CONDITIONAL([BUILD_PYTHON], [test x$build_python = xyes])
 
@@ -200,7 +202,11 @@ AC_ARG_ENABLE(java,
   [
    case "${enableval}" in
     yes)
-      build_java=yes
+      if test "y$ac_cv_header_jni_h" == "yyes"; then
+        build_java=yes
+      else
+        AC_MSG_ERROR([java is enabled, but jni.h is not available])
+      fi
       ;;
     no)
       build_java=no
