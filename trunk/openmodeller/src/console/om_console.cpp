@@ -148,9 +148,9 @@ main( int argc, char **argv )
   int nparam = metadata->nparam;
   AlgParameter *param = new AlgParameter[nparam];
 
-  // Read from console the parameters not setted by request
+  // Read from console the parameters not set by request
   // file. Fills 'param' with all 'metadata->nparam' parameters
-  // setted.
+  // set.
   readParameters( param, metadata, req_nparam, req_param );
 
   // Set the model algorithm to be used by the controller
@@ -280,7 +280,7 @@ readParameters( AlgParameter *result, AlgMetadata *metadata,
   // For each algorithm parameter metadata...
   for ( ; param < end; param++, result++ )
     {
-      // The resulting name is equal the name setted in
+      // The resulting name is equal the name set in
       // algorithm's metadata.
       result->setName( param->name );
 
