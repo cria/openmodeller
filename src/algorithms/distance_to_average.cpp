@@ -208,11 +208,12 @@ DistanceToAverage::initialize()
     }
 
   // Average value.
-  for ( int d = 0; d < _dim; d++ )
+  int d;
+  for ( d = 0; d < _dim; d++ )
     _avg[d] /= npnt;
 
   g_log( "Average related to occurrences: " );
-  for ( int d = 0; d < _dim; d++ )
+  for ( d = 0; d < _dim; d++ )
     g_log( "%f ", _avg[d] );
   g_log( "\n\n" );
 
