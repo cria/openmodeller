@@ -90,6 +90,12 @@ public:
   virtual int needNormalization( Scalar *min, Scalar *max )
   { return 0; }
 
+  /** If algorithm returns 0 then it does not support projection
+   *  of models to other environmental data layers. By default
+   *  all algorithms support that feature. 
+   */
+  virtual int supportsModelProjection()
+  { return 1; }
 
   /** Initiate a new training.
    */
@@ -121,6 +127,7 @@ public:
 
   /** Returns the algorithm's convergence value at the moment */
   virtual int getConvergence( Scalar *val )  { return 0; }
+
 
   AlgMetadata *getMetadata()  { return _metadata; }
 

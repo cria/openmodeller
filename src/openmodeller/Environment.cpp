@@ -48,6 +48,22 @@
 #include <values.h>
 #endif
 
+/*******************/
+/*** string Copy ***/
+void stringCopy( char **dst, char *src )
+{
+  if ( *dst )
+    delete *dst;
+
+  if ( src )
+    {
+      *dst = new char[1 + strlen( src )];
+      strcpy( *dst, src );
+    }
+  else
+    *dst = 0;
+}
+
 /****************************************************************/
 /************************* Environment **************************/
 
@@ -57,17 +73,48 @@
 Environment::Environment( char *cs, int ncateg, char **categs,
 			  int nmap, char **maps, char *mask )
 {
-  f_cs = 0;
+  _ncateg  = ncateg;
+  _nlayers = ncateg + nmap;
+  _layers  = 0;
+  _mask    = 0;
+  _cs = 0;
+
+  _layerfiles = 0;
+  _maskfile = 0;
+
+  char ** currmap = maps;  
+  char ** currcateg = categs;
+
   setCoordSystem( cs );
+
+  // Reallocate vector that stores the names of the layers.
+  if ( _layerfiles )
+    delete[] _layerfiles;
+  _layerfiles = new char*[_nlayers];
+
+  // stringCopy() needs this.
+  memset( _layerfiles, 0, _nlayers * sizeof(char *) );
+
+  char **layers = _layerfiles;
+
+  // Copy categorical maps.
+  char **end = _layerfiles + _ncateg;
+  while ( layers < end )
+    stringCopy( layers++, *currcateg++ );
+
+  // Copy continuos maps.
+  end += nmap;
+  while ( layers < end )
+    stringCopy( layers++, *currmap++ );
 
   // Initialize mask and read its region.
   if ( ! mask )
-    f_mask = 0;
+    _maskfile = 0;
 
-  else if ( ! (f_mask = newMap( mask )) )
+  else if ( ! (_mask = newMap( mask )) )
     g_log.error( 1, "Cannot read mask file '%s'.\n", mask );
 
-  f_layers = 0;
+  _layers = 0;
   changeLayers( ncateg, categs, nmap, maps );
 }
 
@@ -77,14 +124,14 @@ Environment::Environment( char *cs, int ncateg, char **categs,
 
 Environment::~Environment()
 {
-  if ( f_mask )
-    delete f_mask;
+  if ( _mask )
+    delete _mask;
 
-  if ( f_layers )
-    delete[] f_layers;
+  if ( _layers )
+    delete[] _layers;
 
-  if ( f_cs )
-    delete f_cs;
+  if ( _cs )
+    delete _cs;
 }
 
 
@@ -94,13 +141,13 @@ int
 Environment::changeLayers( int ncateg, char **categs, int nmap,
 			   char **maps )
 {
-  if ( ! (f_nlay = ncateg + nmap) )
+  if ( ! (_nlayers = ncateg + nmap) )
     return 0;
 
   // Reallocate vector that stores environmental layers.
-  if ( f_layers )
-    delete[] f_layers;
-  Map **lay = f_layers = new Map *[f_nlay];
+  if ( _layers )
+    delete[] _layers;
+  Map **lay = _layers = new Map *[_nlayers];
 
   // Categorical maps.
   Map **end = lay + ncateg;
@@ -116,7 +163,7 @@ Environment::changeLayers( int ncateg, char **categs, int nmap,
   if ( ! calcRegion() )
     g_log.warn( "Maps intersection is empty!!!\n" );
 
-  return f_nlay;
+  return _nlayers;
 }
 
 
@@ -125,12 +172,12 @@ Environment::changeLayers( int ncateg, char **categs, int nmap,
 int
 Environment::varTypes( int *types )
 {
-  Map **lay = f_layers;
-  Map **end = lay + f_nlay;
+  Map **lay = _layers;
+  Map **end = lay + _nlayers;
   while ( lay < end )
     *types++ = (*lay++)->isCategorical();
 
-  return f_nlay;
+  return _nlayers;
 }
 
 
@@ -141,8 +188,8 @@ Environment::normalize( Scalar min, Scalar max )
 {
   int n = 0;
 
-  Map **lay = f_layers;
-  Map **end = lay + f_nlay;
+  Map **lay = _layers;
+  Map **end = lay + _nlayers;
   while ( lay < end )
     if ( (*lay++)->normalize( min, max ) )
       n++;
@@ -150,6 +197,18 @@ Environment::normalize( Scalar min, Scalar max )
   return n;
 }
 
+int 
+Environment::copyNormalizationParams( Environment * source )
+{
+  //TODO: should check whether order of layers and maybe file names match with original
+  //TODO: as of now, no check is performed: layer order and value units must match
+  int i;
+
+  for (i = 0; i < _nlayers; i++)
+    _layers[i]->copyNormalizationParams(source->_layers[i]);
+
+  return _nlayers;
+}
 
 /***********/
 /*** get ***/
@@ -162,8 +221,8 @@ Environment::get( Coord x, Coord y, Scalar *sample )
     return 0;
 
   // Read variables values from the layers.
-  Map **lay = f_layers;
-  Map **end = lay + f_nlay;
+  Map **lay = _layers;
+  Map **end = lay + _nlayers;
   while ( lay < end )
     if ( ! (*lay++)->get( x, y, sample++ ) )
       return 0;
@@ -182,8 +241,8 @@ Environment::getRandom( Scalar *sample )
 
   do
     {
-      x = rand( f_xmin, f_xmax );
-      y = rand( f_ymin, f_ymax );
+      x = rand( _xmin, _xmax );
+      y = rand( _ymin, _ymax );
 
     } while ( ! get( x, y, sample ) );
 
@@ -198,15 +257,15 @@ Environment::check( Coord x, Coord y )
 {
   // Accept the point, regardless of mask, if
   // it falls in a common region among all layers.
-  if ( x < f_xmin || x > f_xmax || y < f_ymin || y > f_ymax )
+  if ( x < _xmin || x > _xmax || y < _ymin || y > _ymax )
     return 0;
 
   // If there's no mask, accept the point.
-  if ( ! f_mask )
+  if ( ! _mask )
     return 1;
 
   Scalar val;
-  return f_mask->get( x, y, &val ) && val;
+  return _mask->get( x, y, &val ) && val;
 }
 
 
@@ -216,10 +275,10 @@ int
 Environment::getRegion( Coord *xmin, Coord *ymin,
 			Coord *xmax, Coord *ymax )
 {
-  *xmin = f_xmin;
-  *ymin = f_ymin;
-  *xmax = f_xmax;
-  *ymax = f_ymax;
+  *xmin = _xmin;
+  *ymin = _ymin;
+  *xmax = _xmax;
+  *ymax = _ymax;
 
   return 1;
 }
@@ -230,12 +289,12 @@ Environment::getRegion( Coord *xmin, Coord *ymin,
 void
 Environment::setCoordSystem( char *cs )
 {
-  if ( f_cs )
-    delete f_cs;
+  if ( _cs )
+    delete _cs;
 
   int len = 1 + strlen(cs);
-  f_cs = new char[len];
-  memcpy( f_cs, cs, len );
+  _cs = new char[len];
+  memcpy( _cs, cs, len );
 }
 
 
@@ -244,8 +303,8 @@ Environment::setCoordSystem( char *cs )
 Map *
 Environment::newMap( char *file, int categ )
 {
-  return new Map( new RasterFile( file, categ ), f_cs, 1 );
-  //  return new Map( new RasterMemory( file, categ ), f_cs, 1 );
+  return new Map( new RasterFile( file, categ ), _cs, 1 );
+  //  return new Map( new RasterMemory( file, categ ), _cs, 1 );
 }
 
 
@@ -257,34 +316,34 @@ Environment::calcRegion()
   GeoTransform *gt;
   Coord xmin, ymin, xmax, ymax;
 
-  f_xmin = f_ymin =  MAXFLOAT;
-  f_xmax = f_ymax = -MAXFLOAT;
+  _xmin = _ymin =  MAXFLOAT;
+  _xmax = _ymax = -MAXFLOAT;
 
   // The mask region is the default.
-  if ( f_mask )
-    f_mask->getRegion( &f_xmin, &f_ymin, &f_xmax, &f_ymax );
+  if ( _mask )
+    _mask->getRegion( &_xmin, &_ymin, &_xmax, &_ymax );
 
 
   // Crop region to fit all layers.
-  Map **lay = f_layers;
-  Map **end = lay + f_nlay;
+  Map **lay = _layers;
+  Map **end = lay + _nlayers;
   while ( lay < end )
     {
       (*lay++)->getRegion( &xmin, &ymin, &xmax, &ymax );
 
-      if ( xmin > f_xmin )
-	f_xmin = xmin;
+      if ( xmin > _xmin )
+	_xmin = xmin;
       
-      if ( ymin > f_ymin )
-	f_ymin = ymin;
+      if ( ymin > _ymin )
+	_ymin = ymin;
       
-      if ( xmax < f_xmax )
-	f_xmax = xmax;
+      if ( xmax < _xmax )
+	_xmax = xmax;
       
-      if ( ymax < f_ymax )
-	f_ymax = ymax;
+      if ( ymax < _ymax )
+	_ymax = ymax;
     }
 
-  return (f_xmin < f_xmax) && (f_ymin < f_ymax);
+  return (_xmin < _xmax) && (_ymin < _ymax);
 }
 

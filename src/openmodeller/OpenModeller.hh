@@ -1,5 +1,5 @@
 /**
- * Declaration of ControlInterface class.
+ * Declaration of OpenModeller class (former ControlInterface class).
  * 
  * @file
  * @author Mauro E S Muñoz <mauro@cria.org.br>
@@ -40,23 +40,24 @@ class Sampler;
 class Occurrences;
 class RasterFile;
 class Map;
+class MapFormat;
 class Header;
 
 
 /****************************************************************/
-/************************* Control Interface ********************/
+/************************* OpenModeller ********************/
 
 /**
  * Defines and implements all commands to interface with the model
  * generator.
  * 
  */
-class ControlInterface
+class OpenModeller
 {
 public:
 
-  ControlInterface();
-  ~ControlInterface();
+  OpenModeller();
+  ~OpenModeller();
 
 
   /** Returns the openModeller client interface version in the
@@ -119,7 +120,8 @@ public:
   int setAlgorithm( char *id, int nparam, AlgParameter *param );
 
 
-  /** Defines environmental layers and the mask.
+  /** Defines environmental layers and the mask. Also creates
+   *  the Environment object used for native range projection.
    * @param num_categ Number of categorical map layers.
    * @param categ_map File names of categorical map layers.
    * @param num_continuos Number of continuos map layers.
@@ -134,24 +136,34 @@ public:
   //
 
   /** Set the output distribution map file format and its map
-   *  properties.
+   *  properties and save distribution map to disk.
+   * @param env  Pointer to Environment class with the layers 
+   *  to project the model onto.
    * @param file File name.
-   * @param hdr Georeferencing header with the map properties.
    * @param mult Value that the probabilities will be multiplied
    *  to.
-   */
-  int setOutputMap( char *file, Header *hdr, Scalar mult );
-
-  /** Set the output distribution map file format and its map
-   *  properties.
-   * @param file File name.
+   * @param mask Georeferenced map file which will define the
+   *  valid pixels on the output map.
    * @param map_file Georeferenced map file whose header will be
    *  used in the output.
+   */
+  int createMap( Environment *env, char *file, Scalar mult, 
+		 char * mask, char *map_file );
+
+  /** Set the output distribution map file format and its map
+   *  properties and save distribution map to disk.
+   * @param env  Pointer to Environment class with the layers 
+   *  to project the model onto.
+   * @param file File name.
    * @param mult Value that the probabilities will be multiplied
    *  to.
+   * @param mask Georeferenced map file which will define the
+   *  valid pixels on the output map.
+   * @param format Pointer to MapFormat object defining the
+   *  parameters of the output map.
    */
-  int setOutputMap( char *file, char *map_file, Scalar mult );
-
+  int createMap( Environment *env, char *file, Scalar mult, 
+		 char * mask, MapFormat * format );
 
   /**
    * Define occurrence points to be used.
@@ -164,12 +176,31 @@ public:
   int setOccurrences( Occurrences *presence,
                       Occurrences *absence=0 );
 
+  Environment * getEnvironment() { return _env; }
+
+  /**
+   * Run the algorithm.
+   * 
+   */
   int run();
 
   char *error()  { return f_error; }
 
 
 private:
+
+  /** Set the output distribution map file format and its map
+   *  properties and save distribution map to disk.
+   * @param env  Pointer to Environment class with the layers 
+   *  to project the model onto.
+   * @param file Output file name for the distribution map.
+   * @param mult Multiplier for the prediction probabilities.
+   * @param mask Georeferenced map file which will define the
+   *  valid pixels on the output map.
+   * @param hdr  Georeferencing header with the map properties.
+   */
+  int createMap( Environment *env, char *file, Scalar mult, 
+		 char * mask, Header *hdr );
 
   /** Reallocate *dst and copy content from *src.*/
   void stringCopy( char **dst, char *src );
@@ -182,27 +213,19 @@ private:
   /** Build the model based on 'samp' and on algorithm.*/
   int createModel( Algorithm *alg, Sampler *samp);
 
-  /** Generate output map defined by '_file' and '_hdr'.*/
-  int createMap( Environment *env, Algorithm *alg );
-
 
   AlgorithmFactory *_factory;
 
-  int    _ncateg;
-  int    _nlayers;
-  char **_layers;
-  char  *_mask;
-
-  char   *_file;  ///< Output map.
-  Header *_hdr;
-  Scalar  _mult;  ///< Output multiplier.
-
+  Sampler * _samp;           ///< Sampler object
+  Algorithm * _alg;          ///< Algorithm object
   AlgParameter *_alg_param;  ///< Algorithm parameters.
   char *_alg_id;     ///< Algorithm's ID and parameters.
   int   _alg_nparam; ///< Number of algorithm parameters.
 
   Occurrences *_presence; ///< Presence occurrences points.
   Occurrences *_absence;  ///< Absence occurrences points.
+
+  Environment * _env;      ///< Original environmental layers
 
   char f_error[256];
 };

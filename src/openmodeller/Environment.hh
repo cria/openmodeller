@@ -59,7 +59,7 @@ public:
   ~Environment();
 
 
-  int numLayers()   { return f_nlay; }
+  int numLayers()   { return _nlayers; }
 
   /** Rebuild the layer representation. */
   int changeLayers( int ncateg, char **categs, int nmap,
@@ -72,6 +72,12 @@ public:
   /** Indicate that all non categorical variable layers must
    *  be normalized according to the interval [min, max]. */
   int normalize( Scalar min, Scalar max );
+
+  /** Copy normalization parameters from source environment object
+   *  to the current one in order to allow projection of models
+   *  created with the original env object. 
+   */
+  int copyNormalizationParams( Environment * source );
 
   /** Read for vector 'sample' all values of environmental variables
    *  of coordinate (x,y). Return 0 if there's a mask and the point
@@ -95,7 +101,7 @@ public:
   int getRegion( Coord *xmin, Coord *ymin, Coord *xmax,
                  Coord *ymax );
 
-  char *getCoordinateSystem()   { return f_cs; }
+  char *getCoordinateSystem()   { return _cs; }
 
 
 private:
@@ -111,17 +117,20 @@ private:
    *  otherwise, a categorical one. */
   Map *newMap( char *file_name, int categ=0 );
 
+  int    _ncateg;       ///< Number of categorical variables
+  int    _nlayers;      ///< Total number of layers
+  char **_layerfiles;   ///< Filename of all layers
+  char  *_maskfile;     ///< Mask filename
 
-  int   f_nlay;   ///< Number of variables.
-  Map **f_layers; ///< Vector with all layers that describe the variables.
-  Map  *f_mask;   ///< Mask (can be 0).
+  Map **_layers; ///< Vector with all layers that describe the variables.
+  Map  *_mask;   ///< Mask (can be 0).
 
-  Coord f_xmin; ///< Intersection of all layers.
-  Coord f_ymin; ///< Intersection of all layers.
-  Coord f_xmax; ///< Intersection of all layers.
-  Coord f_ymax; ///< Intersection of all layers.
+  Coord _xmin; ///< Intersection of all layers.
+  Coord _ymin; ///< Intersection of all layers.
+  Coord _xmax; ///< Intersection of all layers.
+  Coord _ymax; ///< Intersection of all layers.
 
-  char *f_cs;  ///< Coordinate system to be used.
+  char *_cs;  ///< Coordinate system to be used.
 };
 
 

@@ -1,5 +1,5 @@
 /**
- * Definition of ControlInterface class.
+ * Definition of OpenModeller class (former ControlInterface class).
  * 
  * @file
  * @author Mauro E S Muñoz <mauro@cria.org.br>
@@ -39,6 +39,7 @@
 #include <om_alg_parameter.hh>
 #include <om_sampler.hh>
 #include <om_occurrences.hh>
+#include <map_format.hh>
 
 #include <algorithm_factory.hh>
 #include <environment.hh>
@@ -63,18 +64,13 @@ static char *g_search_dirs[] = {
 /********************/
 /*** constructors ***/
 
-ControlInterface::ControlInterface()
+OpenModeller::OpenModeller()
 {
   _factory = new AlgorithmFactory( g_search_dirs );
 
-  _hdr = new Header;
-
-  _nlayers = 0;
-  _layers  = 0;
-  _mask    = 0;
-
-  _file = 0;
-  _mult = 1.0;
+  _env = 0;
+  _alg = 0;
+  _samp = 0;
 
   _alg_id     = 0;
   _alg_param  = 0;
@@ -90,13 +86,13 @@ ControlInterface::ControlInterface()
 /******************/
 /*** destructor ***/
 
-ControlInterface::~ControlInterface()
+OpenModeller::~OpenModeller()
 {
   delete _factory;
-  delete _hdr;
 
-  if ( _layers )   delete _layers;
-  if ( _file )     delete _file;
+  if ( _samp )     delete _samp;
+  //if ( _alg )      delete _alg;
+  if ( _env )      delete _env;
   if ( _alg_id )   delete _alg_id;
   if ( _presence ) delete _presence;
   if ( _absence )  delete _absence;
@@ -106,7 +102,7 @@ ControlInterface::~ControlInterface()
 /*******************/
 /*** get Version ***/
 char *
-ControlInterface::getVersion()
+OpenModeller::getVersion()
 {
   // Defined in "om_defs.hh".
   return OM_VERSION;
@@ -114,7 +110,7 @@ ControlInterface::getVersion()
 
 
 char * 
-ControlInterface::getPluginPath()
+OpenModeller::getPluginPath()
 {
   return PLUGINPATH;
 }
@@ -123,7 +119,7 @@ ControlInterface::getPluginPath()
 /****************************/
 /*** load Algorithms ***/
 int 
-ControlInterface::loadAlgorithms()
+OpenModeller::loadAlgorithms()
 {
   return _factory->loadAlgorithms();
 }
@@ -131,7 +127,7 @@ ControlInterface::loadAlgorithms()
 /****************************/
 /*** available Algorithms ***/
 AlgMetadata **
-ControlInterface::availableAlgorithms()
+OpenModeller::availableAlgorithms()
 {
   return _factory->availableAlgorithms();
 }
@@ -140,7 +136,7 @@ ControlInterface::availableAlgorithms()
 /**************************/
 /*** algorithm Metadata ***/
 AlgMetadata *
-ControlInterface::algorithmMetadata( char *algorithm_id )
+OpenModeller::algorithmMetadata( char *algorithm_id )
 {
   return _factory->algorithmMetadata( algorithm_id );
 }
@@ -149,7 +145,7 @@ ControlInterface::algorithmMetadata( char *algorithm_id )
 /********************************/
 /*** num Available Algorithms ***/
 int
-ControlInterface::numAvailableAlgorithms()
+OpenModeller::numAvailableAlgorithms()
 {
   return _factory->numAvailableAlgorithms();
 }
@@ -158,70 +154,29 @@ ControlInterface::numAvailableAlgorithms()
 /***********************/
 /*** set Environment ***/
 int
-ControlInterface::setEnvironment( int num_categ,
-				  char **categ_map,
-				  int num_continuos,
-				  char **continuous_map,
-				  char *mask )
+OpenModeller::setEnvironment( int num_categ,
+			      char **categ_map,
+			      int num_continuous,
+			      char **continuous_map,
+			      char *mask )
 {
-  _ncateg  = num_categ;
-  _nlayers = num_categ + num_continuos;
+  // set up environmental variables.
+  if (_env)
+    delete _env;
 
-  stringCopy( &_mask, mask );
+  _env = new Environment( GeoTransform::cs_default,
+			 num_categ, categ_map,
+			 num_continuous, continuous_map, mask );
 
-  // Reallocate vector that stores the names of the layers.
-  if ( _layers )
-    delete[] _layers;
-  _layers = new char*[_nlayers];
-
-  // stringCopy() needs this.
-  memset( _layers, 0, _nlayers * sizeof(char *) );
-
-  char **layers = _layers;
-
-  // Copy categorical maps.
-  char **end = _layers + _ncateg;
-  while ( layers < end )
-    stringCopy( layers++, *categ_map++ );
-
-  // Copy continuos maps.
-  end += num_continuos;
-  while ( layers < end )
-    stringCopy( layers++, *continuous_map++ );
+  g_log( "Environment initialized.\n" );
 
   return 1;
 }
-
-/**********************/
-/*** set Output Map ***/
-int
-ControlInterface::setOutputMap( char *file, Header *hdr,
-				Scalar mult )
-{
-  stringCopy( &_file, file );
-  *_hdr = *hdr;
-  _mult = mult;
-
-  return 1;
-}
-
-
-/**********************/
-/*** set Output Map ***/
-int
-ControlInterface::setOutputMap( char *file, char *map_file,
-				Scalar mult )
-{
-  RasterFile map( map_file );
-  return setOutputMap( file, &map.header(), mult );
-}
-
 
 /*********************/
 /*** set Algorithm ***/
 int
-ControlInterface::setAlgorithm( char *id, int nparam,
-				AlgParameter *param )
+OpenModeller::setAlgorithm( char *id, int nparam, AlgParameter *param )
 {
   AlgMetadata *meta = algorithmMetadata( id );
 
@@ -235,6 +190,20 @@ ControlInterface::setAlgorithm( char *id, int nparam,
 	g_log("Number of parameters provided (%d) does not match required parameters (%d)", 
 	      nparam, meta->nparam);
 
+      return 0;
+    }
+
+  // Check if _env is initialized
+  if ( !_env)
+    {
+      g_log("Environmental variables not initialized.");
+      return 0;
+    }
+
+  // Check if occurrence data is initialized
+  if ( !_presence)
+    {
+      g_log("Occurrence data not initialized.");
       return 0;
     }
 
@@ -252,6 +221,23 @@ ControlInterface::setAlgorithm( char *id, int nparam,
   while ( dst < end )
     *dst++ = *param++;
 
+  // Sampler and algorithm.
+  if (_samp)
+    delete _samp;
+
+  _samp = new Sampler( _env, _presence, _absence );
+
+  if (_alg)
+    delete _alg;
+
+  _alg = _factory->newAlgorithm( _samp, _alg_id, _alg_nparam, _alg_param );
+
+  if ( ! _alg )
+    {
+      sprintf( f_error, "Could not find (%s) algorithm.", _alg_id );
+      return 0;
+    }
+
   return 1;
 }
 
@@ -259,7 +245,7 @@ ControlInterface::setAlgorithm( char *id, int nparam,
 /***********************/
 /*** set Occurrences ***/
 int
-ControlInterface::setOccurrences( Occurrences *presence,
+OpenModeller::setOccurrences( Occurrences *presence,
 				  Occurrences *absence )
 {
   _presence = presence;
@@ -272,7 +258,7 @@ ControlInterface::setOccurrences( Occurrences *presence,
 /***********/
 /*** run ***/
 int
-ControlInterface::run()
+OpenModeller::run()
 {
   char *error = basicCheck();
   if ( error )
@@ -283,51 +269,20 @@ ControlInterface::run()
 
   g_log( "Modelling occurrences of: %s.\n", _presence->name() );
 
-  // Environmental variables.
-  char **categs = _layers;
-  char **maps   = categs + _ncateg;
-  int  nmaps    = _nlayers - _ncateg;
-  Environment *env = new Environment( GeoTransform::cs_default,
-				      _ncateg, categs,
-				      nmaps, maps, _mask );
-
-  g_log( "Environment initialized.\n" );
-
-  // Sampler and algorithm.
-  Sampler samp( env, _presence, _absence );
-
-  Algorithm *alg;
-  alg = _factory->newAlgorithm( &samp, _alg_id, _alg_nparam,
-                                _alg_param );
-
-  if ( ! alg )
-    {
-      sprintf( f_error, "Could not find (%s) algorithm.", _alg_id );
-      return 0;
-    }
-
-
   // Check if the algorithm needs normalized variables.
   Scalar min, max;
-  if ( alg->needNormalization( &min, &max ) )
+  if ( _alg->needNormalization( &min, &max ) )
     {
       g_log( "Normalizing environment variables.\n" );
-      env->normalize( min, max );
+      _env->normalize( min, max );
     }
 
   g_log( "Creating the model\n" );
 
   // Generate the model.
-  if ( ! createModel( alg, &samp ) )
+  if ( ! createModel( _alg, _samp ) )
     return 0;
 
-  g_log( "Saving distribution's file:\n" );
-
-  // Create the map with probabilities of occurence.
-  if ( ! createMap( env, alg ) )
-    return 0;
-
-  delete env;
   return 1;
 }
 
@@ -335,7 +290,7 @@ ControlInterface::run()
 /*******************/
 /*** string Copy ***/
 void
-ControlInterface::stringCopy( char **dst, char *src )
+OpenModeller::stringCopy( char **dst, char *src )
 {
   if ( *dst )
     delete *dst;
@@ -353,26 +308,24 @@ ControlInterface::stringCopy( char **dst, char *src )
 /*******************/
 /*** basic Check ***/
 char *
-ControlInterface::basicCheck()
+OpenModeller::basicCheck()
 {
   // Presence occurrence points.
   if ( ! _presence )
-    return "Presence occurrences points were not setted.";
+    return "Presence occurrences points were not set.";
 
+  // Sampler
+  if ( ! _samp )
+    return "Sampler not specified.";
 
   // Environmental data.
-  if ( ! _nlayers )
+  if ( ! _env )
     return "Environmental variables not specified.";
 
 
   // Algorithm.
-  if ( ! _alg_id )
+  if ( ! _alg_id || ! _alg )
     return "Modeling algorithm not specified.";
-
-
-  // Output map file name.
-  if ( ! _file )
-    return "The output file name not specified.";
 
   return 0;
 }
@@ -381,7 +334,7 @@ ControlInterface::basicCheck()
 /********************/
 /*** create Model ***/
 int
-ControlInterface::createModel( Algorithm *alg, Sampler *samp )
+OpenModeller::createModel( Algorithm *alg, Sampler *samp )
 {
   // Initialize algorithm.  
   if ( ! alg->initialize() )
@@ -399,30 +352,96 @@ ControlInterface::createModel( Algorithm *alg, Sampler *samp )
   return alg->done();
 }
 
+/******************/
+/*** create Map ***/
+int
+OpenModeller::createMap( Environment *env, char *file, Scalar mult,
+			 char * mask, char *map_file )
+{
+  RasterFile map( map_file );
+  return createMap( env, file, mult, mask, &map.header() );
+}
 
 /******************/
 /*** create Map ***/
 int
-ControlInterface::createMap( Environment *env, Algorithm *alg )
+OpenModeller::createMap( Environment *env, char *file, Scalar mult,
+			 char * mask, MapFormat * format )
 {
-  if ( ! _hdr->hasProj() )
+  Header hdr(format->getWidth(), format->getHeight(),
+	     format->getXMin(),  format->getYMin(),
+	     format->getXMax(),  format->getYMax(),
+	     format->getNoDataValue() );
+
+  hdr.setProj( format->getProjection() );
+
+  return createMap( env, file, mult, mask, &hdr );
+}
+
+/******************/
+/*** create Map ***/
+int
+OpenModeller::createMap( Environment *env, char *file, Scalar mult, 
+			 char * mask, Header *hdr )
+{
+  if (!_alg)
     {
-      sprintf( f_error,
-	       "Output map (%s) without a coordinate system!\n\n",
-	       _file );
+      sprintf( f_error, 
+	       "Algorithm object is empty!\n\n",
+	       file );
+      return 0;
+    }
+  else if (!_alg->done())
+    {
+      sprintf( f_error, 
+	       "Algorithm model is not finished yet!\n\n",
+	       file );
       return 0;
     }
 
+  if ( ! hdr->hasProj() )
+    {
+      sprintf( f_error, 
+	       "Output map (%s) without a coordinate system!\n\n",
+	       file );
+      return 0;
+    }
+
+  // check if env object is original one (used to create model) or
+  // is a different one (caller wants to project model onto it)
+  if (env != _env)
+    {
+      // env objects are not the same, so copy normalization parameters
+      // from original source and procced with projection
+
+      g_log("Preparing target environment object for projection.");
+
+      env->copyNormalizationParams(_env);
+      /*
+      if (!env->copyNormalizationParams(_env))
+	{
+	  sprintf( f_error, 
+		   "Coult not set normalization parameters to projection environment object\n\n",
+		   file );
+	}
+	return 0;
+      */
+    }
+  else
+    {
+      g_log("Native range projection (using original env object)");
+    }
+
   // Force noval = 0
-  _hdr->noval = 0.0;
+  hdr->noval = 0.0;
  
   // Create map on disc.
-  RasterFile rst( _file, *_hdr );
+  RasterFile rst( file, *hdr );
   Map map( &rst , env->getCoordinateSystem() );
 
   // Retrieve possible adjustments and/or additions made
   // on the the effective header.
-  *_hdr = rst.header();
+  *hdr = rst.header();
 
 
   // Transformer used by the resulting map.
@@ -444,15 +463,15 @@ ControlInterface::createMap( Environment *env, Algorithm *alg )
 
   Scalar val;
   Coord lg, lt;
-  Coord y0 = _hdr->ymin; // + 0.5 * _hdr.ycel;
-  Coord x0 = _hdr->xmin; // + 0.5 * _hdr.xcel;
+  Coord y0 = hdr->ymin; // + 0.5 * hdr.ycel;
+  Coord x0 = hdr->xmin; // + 0.5 * hdr.xcel;
 
   int row = 0;
-  for ( float y = y0; y < _hdr->ymax; y += _hdr->ycel )
+  for ( float y = y0; y < hdr->ymax; y += hdr->ycel )
     {
       int col = 0;
       Scalar sum = 0.0;
-      for ( float x = x0; x < _hdr->xmax; x += _hdr->xcel )
+      for ( float x = x0; x < hdr->xmax; x += hdr->xcel )
 	{
 	  // Transform coordinates (x,y) that are in the resulting
 	  // map system, in (lat, long) according to the system 
@@ -460,15 +479,16 @@ ControlInterface::createMap( Environment *env, Algorithm *alg )
 	  gt->transfOut( &lg, &lt, x, y );
 
 
+	  // TODO: use mask to check if pixel should contain prediction
 	  // Read environmental values and find the output value.
 	  if ( ! env->get( lg, lt, amb ) )
-	    val = _hdr->noval;
+	    val = hdr->noval;
 	  else
 	    {
-	      val = alg->getValue( amb );
+	      val = _alg->getValue( amb );
 	      if ( val < 0.0 ) val = 0.0;
 	      if ( val > 1.0 ) val = 1.0;
-	      val *= _mult;
+	      val *= mult;
 	    }
 
 	  // Write value on map.
@@ -478,8 +498,8 @@ ControlInterface::createMap( Environment *env, Algorithm *alg )
 	  sum += val;
 	}
 
-      g_log( "Line %04d / %4d : %+7.2f \r", ++row, _hdr->ydim,
-	     sum / _hdr->xdim );
+      g_log( "Line %04d / %4d : %+7.2f \r", ++row, hdr->ydim,
+	     sum / hdr->xdim );
     }
   g_log( "\n" );
 
