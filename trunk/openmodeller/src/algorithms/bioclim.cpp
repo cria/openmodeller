@@ -32,6 +32,8 @@
 #include <stdio.h>
 #include <math.h>
 
+#include <serialization/serializer.hh>
+#include <serialization/deserializer.hh>
 
 /****************************************************************/
 /********************** Algorithm's Metadata ********************/

@@ -45,6 +45,9 @@
 #include <algorithm_factory.hh>
 #include <environment.hh>
 
+#include <serialization/serializer.hh>
+#include <serialization/deserializer.hh>
+
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>

@@ -33,7 +33,7 @@
 
 #include <om_sampler.hh>
 #include <om_algorithm_metadata.hh>
-#include <serialization/serializable.hh>
+#include <om_serializable.hh>
 
 class AlgParameter;
 

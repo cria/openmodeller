@@ -31,7 +31,8 @@
 
 #include <om.hh>
 
-#include <serialization/serializable.hh>
+class Serializer;
+class Deserializer;
 
 
 /****************************************************************/

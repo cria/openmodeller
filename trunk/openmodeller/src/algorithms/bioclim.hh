@@ -30,7 +30,9 @@
 #define _BIOCLIMHH_
 
 #include <om.hh>
-#include <serialization/serializable.hh>
+
+class Serializer;
+class Deserializer;
 
 /****************************************************************/
 /*********************** Bioclim Distance ***********************/
