@@ -33,6 +33,8 @@
 #include <om_defs.hh>
 
 
+
+
 /****************************************************************/
 /***************** Algorithm Parameter Metadata *****************/
 
@@ -54,8 +56,6 @@ typedef struct
   Scalar max;     ///< Maximum parameter value.
   char  *typical; ///< Typical parameter value.
 } AlgParamMetadata;
-
-
 
 
 /****************************************************************/
