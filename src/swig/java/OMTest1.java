@@ -41,7 +41,7 @@ public class OMTest1 {
     public static void printAlgInfo() {
 	int i, n;
 
-	SWIGTYPE_p_p_AlgMetadata algmd;
+	AlgMetadata[] algmd;
 	
 	algmd = mod.availableAlgorithms();
 	n = mod.numAvailableAlgorithms();
