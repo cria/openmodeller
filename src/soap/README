@@ -42,8 +42,12 @@ USE INSTRUCTIONS:
 
 - set an environment variable called OM_SOAP_TMPDIR indicating
   where the distribution maps should be generated:
+  
+  For bash:
+  export OM_SOAP_TMPDIR=/tmp/om
 
-  export OM_SOAP_TMPDIR
+  For tcsh:
+  setenv OM_SOAP_TMPDIR /tmp/om
 
 - To run the server as a CGI application, just put it inside an 
   accessible cgi-bin directory:

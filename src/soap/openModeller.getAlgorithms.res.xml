@@ -8,8 +8,7 @@
  <SOAP-ENV:Body id="_0">
   <om:getAlgorithmsResponse>
    <return xsi:type="om:Algorithms">
-    <algorithm xsi:type="om:AlgorithmMetadata">
-     <id xsi:type="xsd:string"></id>
+    <algorithm xsi:type="om:AlgorithmMetadata" om-id="">
      <name xsi:type="xsd:string"></name>
      <version xsi:type="xsd:string"></version>
      <overview xsi:type="xsd:string"></overview>
@@ -20,8 +19,7 @@
      <contact xsi:type="xsd:string"></contact>
      <accepts-categorical-maps xsi:type="xsd:int">0</accepts-categorical-maps>
      <accepts-absence-points xsi:type="xsd:int">0</accepts-absence-points>
-     <parameter xsi:type="om:AlgorithmParameter">
-      <id xsi:type="xsd:string"></id>
+     <parameter xsi:type="om:AlgorithmParameter" om-id="">
       <name xsi:type="xsd:string"></name>
       <data-type xsi:type="xsd:string"></data-type>
       <overview xsi:type="xsd:string"></overview>

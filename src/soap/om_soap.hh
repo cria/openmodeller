@@ -22,11 +22,11 @@ struct SOAP_ENV__Header
  */
 typedef struct soap_AlgorithmParameter
 {
-  xsd__string id;
-  xsd__string name;
-  xsd__string data_type;
-  xsd__string overview;
-  xsd__string description;
+  @xsd__string om_id;
+  xsd__string  name;
+  xsd__string  data_type;
+  xsd__string  overview;
+  xsd__string  description;
 
   xsd__int     has_min;
   xsd__double  min;
@@ -43,11 +43,11 @@ typedef struct soap_AlgorithmParameter
  */
 typedef struct soap_AlgorithmMetadata
 {
-  xsd__string id;
-  xsd__string name;
-  xsd__string version;
-  xsd__string overview;
-  xsd__string description;
+  @xsd__string om_id;
+  xsd__string  name;
+  xsd__string  version;
+  xsd__string  overview;
+  xsd__string  description;
 
   xsd__string creator;
   xsd__string bibliography;
@@ -152,7 +152,7 @@ typedef struct soap_Mask
  */
 typedef struct soap_Parameter
 {
-  @xsd__string name;
+  @xsd__string om_id;
   @xsd__string value;
 
 } om__Parameter;
@@ -161,7 +161,7 @@ typedef struct soap_Parameter
  */
 typedef struct soap_Algorithm
 {
-  xsd__string id;
+  @xsd__string om_id;
 
   int __size;
   om__Parameter *__ptrparameter;
