@@ -92,7 +92,14 @@ typedef struct dirent TDirent;
 int
 filter( const TDirent *dir )
 {
+#ifndef __CYGWIN__
   char *ext = ".so";
+#else
+  // under cygwin, libraries can be loaded using dlopen
+  // but their extension is .dll
+  char *ext = ".dll";
+#endif
+
   char *found = strstr( dir->d_name, ext );
 
   return found ? ! strcmp( found, ext ) : 0;
