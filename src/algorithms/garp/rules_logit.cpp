@@ -112,8 +112,8 @@ int LogitRule::regression(GarpCustomSampler * sampler, int dep,
   xb = (n * xxiyi - xxi * yi) / (n * xxi2 - (xxi * xxi));
   coef2 = ((xb * 2.0) - 1.0);
   
-  //printf("\nlogit: %+8.4f %+8.4f %+8.4f %+8.4f %+8.4f %+8.4f %d",
-  // b, a, xb, coef[0], coef[1], coef[2], n);
+  //printf("logit: %+8.4f %+8.4f %+8.4f %+8.4f %+8.4f %d\n",
+  // a, b, xb, coef1, coef2, n);
   
   return n;
 }
