@@ -203,7 +203,7 @@ Sampler::getOneSample( Scalar *indep, Scalar *dep )
   _env->getRandom( indep );
 
   // Dependent variables. For absence they are always null.
-  memset( dep, 0, numIndependent() * sizeof(Scalar) );
+  memset( dep, 0, numDependent() * sizeof(Scalar) );
 
   // Got an absence point.
   return 0;
