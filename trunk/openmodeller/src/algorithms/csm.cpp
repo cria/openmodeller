@@ -141,20 +141,24 @@ int Csm::initialize( int ncycle )
     printf ("Csm::initialise - Csm Model Definition Commencing (ncycle = %i)\n", ncycle);
     printf ("\n*************************************************\n\n");
     //convert the sampler to a matrix and store in the local gsl_matrix
+    printf ("\nConverting samples to GSL_Matrix\n");
     if (!SamplerToMatrix())
     {
         printf ("All occurences are outside the masked area!\n");
     }
     //show what we have calculated so far....
-    displayMatrix(_gsl_environment_matrix,"Environemntal Layer Samples");
+    //displayMatrix(_gsl_environment_matrix,"Environemntal Layer Samples");
     //calculate the mean and std deviation
+    printf ("Calculating mean and stddev\n");
     calculateMeanAndSd();
     //center and standardise the data
+    printf ("Centering and standardising\n");
     center();
     //show what we have calculated so far....
-    displayMatrix(_gsl_environment_matrix,"Environemntal Layer Samples (after centering)");
+   // displayMatrix(_gsl_environment_matrix,"Environemntal Layer Samples (after centering)");
 
     //Now calculate the covariance matrix:
+    printf ("Calculating covariance matrix");
     _gsl_covariance_matrix = autoCovariance(_gsl_environment_matrix);
     //the rows and columns in the cavariance matrix should be equal, otherwise abort
     if (_gsl_covariance_matrix->size1 != _gsl_covariance_matrix->size2)
@@ -163,9 +167,10 @@ int Csm::initialize( int ncycle )
         return 0;
     }
     //and display the result...
-    displayMatrix(_gsl_covariance_matrix,"Covariance Matrix");
+    //displayMatrix(_gsl_covariance_matrix,"Covariance Matrix");
 
     //now compute the eigen value and vector
+    printf("Calculating eigenvalue and eigenvector");
     _gsl_eigenvalue_vector = gsl_vector_alloc (_layer_count);
     _gsl_eigenvector_matrix = gsl_matrix_alloc (_layer_count, _layer_count);
     //create a temporary workspace
@@ -179,21 +184,21 @@ int Csm::initialize( int ncycle )
     //Initialise the retained components count (to be used further down and in displayEigen())
     _retained_components_count = _layer_count;
     //show the eigen before sorting
-    printf ("\n\nBefore sorting : \n");
-    displayVector(_gsl_eigenvalue_vector,"Eigen Values");
-    displayMatrix(_gsl_eigenvector_matrix,"Eigen Vector");
+    //printf ("\n\nBefore sorting : \n");
+    //displayVector(_gsl_eigenvalue_vector,"Eigen Values");
+    //displayMatrix(_gsl_eigenvector_matrix,"Eigen Vector");
     //sort the eigen vector by the eigen values (in descending order)
     gsl_eigen_symmv_sort (_gsl_eigenvalue_vector, _gsl_eigenvector_matrix,
                           GSL_EIGEN_SORT_VAL_DESC);
     //print out the result
-    printf ("\n\nAfter sorting : \n");
-    displayVector(_gsl_eigenvalue_vector,"Eigen Values");
-    displayMatrix(_gsl_eigenvector_matrix,"Eigen Vector");
+    printf ("\n\nEigenvector sorted : \n");
+    //displayVector(_gsl_eigenvalue_vector,"Eigen Values");
+    //displayMatrix(_gsl_eigenvector_matrix,"Eigen Vector");
     discardComponents();
     //print out the result
-    printf ("\n\nAfter discarding unwanted components : \n");
-    displayVector(_gsl_eigenvalue_vector,"Eigen Values");
-    displayMatrix(_gsl_eigenvector_matrix,"Eigen Vector");
+    printf ("\n\nUnwanted components discarded \n");
+    //displayVector(_gsl_eigenvalue_vector,"Eigen Values");
+    //displayMatrix(_gsl_eigenvector_matrix,"Eigen Vector");
     printf ("\n*************************************************\n");
     printf ("        CSM Model Generation Completed ");
     printf ("\n*************************************************\n");
@@ -446,13 +451,21 @@ Scalar Csm::getValue( Scalar *x )
     myFloat=0;
     for (int i=0;i<z->size2;i++)
     {
-      myFloat= pow(gsl_matrix_get (z,0,i), 2); 
+      float myValue=gsl_matrix_get (z,0,i);
+      if (!isnan(myValue))
+      {
+        myFloat+= pow(gsl_matrix_get (z,0,i), 2); 
+        //Warning uncommenting the next line will spew a lot of stuff to stdout!!!!
+        //printf ("myValue : %f Cumulative : %f\n",myValue,myFloat);
+      }
     }       
-    //displayMatrix(z,"After sum of squares in z");
     
  
-    //now work out the probability of myFloat between 0 and 1  
-    myFloat=1-gsl_sf_gamma_inc_Q ((_gsl_eigenvector_matrix->size1)/2,myFloat/2);
+    //now work out the probability of myFloat between 0 and 1 
+    double myHalfComponentCountDouble=(z->size2)/2;
+    double myHalfSumOfSquaresDouble=myFloat/2;
+    //printf ("Component count %f , Half sum of squares %f ,",myHalfComponentCountDouble,myHalfSumOfSquaresDouble);
+    myFloat=1-gsl_sf_gamma_inc_Q (myHalfSumOfSquaresDouble,myHalfComponentCountDouble);
  
     printf ("Prob: %f \r",myFloat);
     //now we
