@@ -253,8 +253,30 @@ public:
    * @param param User parameter to be passed to the callback
    *  function.
    */
-  void setModelCallback( ModelCallback func, void *param=0 )
-  { _model_callback = func; _model_callback_param = param; }
+  void setModelCallback( ModelCallback func, void *param=0 );
+
+  /** Model command object.
+   * @param step Number of the iteration already done. Note that
+   *  in model generation it is not always possible to know how
+   *  many steps the algorithm will need.
+   */
+  class ModelCommand {
+  public: 
+    virtual ~ModelCommand() {};
+    virtual void operator()( int ) = 0;
+  };
+
+  /** Sets a callback function to be called after each iteration
+   * of the model creation.
+   * @param func Pointer to the callback function.
+   * @param param User parameter to be passed to the callback
+   *  function.
+   */
+  void setModelCommand( ModelCommand *func )
+  { if (_model_command) {
+      delete _model_command;
+    }
+    _model_command = func; }
 
   /** Sets a callback function to be called after each map
    * distribution line generation.
@@ -262,8 +284,30 @@ public:
    * @param param User parameter to be passed to the callback
    *  function.
    */
-  void setMapCallback( MapCallback func, void *param=0 )
-  { _map_callback = func; _map_callback_param = param; }
+  void setMapCallback( MapCallback func, void *param=0 );
+
+  /** Map callback function.
+   * @param progress A number between 0.0 and 1.0 reflecting the
+   *  avance of the map creating task. 0.0 is the begin and
+   *  1.0 is finished.
+   */
+  class MapCommand {
+  public: 
+    virtual ~MapCommand() {};
+    virtual void operator()( float ) = 0;
+  };
+  
+  /** Sets a callback function to be called after each map
+   * distribution line generation.
+   * @param func Pointer to the callback function.
+   * @param param User parameter to be passed to the callback
+   *  function.
+   */
+  void setMapCommand( MapCommand *func )
+  { if (_map_command) {
+      delete _map_command;
+    }
+    _map_command = func; }
 
 
   //
@@ -400,11 +444,9 @@ private:
   char   *_output_mask;   ///< Output mask.
   Header *_output_header; ///< Output associated metadata.
 
-  // Callback functions and user parameters.
-  ModelCallback _model_callback;
-  void         *_model_callback_param;
-  MapCallback   _map_callback;
-  void         *_map_callback_param;
+  // Command functions and user parameters.
+  ModelCommand *_model_command;
+  MapCommand   *_map_command;
 
   // model statistics: helper objects
   AreaStats * _actualAreaStats;
