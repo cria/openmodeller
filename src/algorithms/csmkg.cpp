@@ -120,6 +120,8 @@ CsmKG::CsmKG(): Csm(&metadata)
 /** This is the descructor for the Csm class */
 CsmKG::~CsmKG()
 {
+  //This is handled by the parent class I think...
+  /*
   if ( _initialized )
     {
       gsl_matrix_free (_gsl_environment_matrix);
@@ -129,6 +131,7 @@ CsmKG::~CsmKG()
       gsl_vector_free (_gsl_eigenvalue_vector);
       gsl_matrix_free (_gsl_eigenvector_matrix);
     }
+    */
 }
 int CsmKG::discardComponents()
 {
