@@ -230,7 +230,8 @@ Sampler::getRandomOccurrence( Occurrences *occur,
   // Choose an occurrence point with defined environmental
   // variable values.
   while ( (oc = occur->getRandom()) &&
-	  ! _env->get( oc->x(), oc->y(), indep ) );
+	  ! _env->get( oc->x(), oc->y(), indep ) )
+  { printf("Point is no good: %8.3f, %8.3f\r", oc->x(), oc->y()); };
 
   oc->readAttributes( dep );
   
