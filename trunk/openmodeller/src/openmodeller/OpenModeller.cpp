@@ -621,19 +621,19 @@ OpenModeller::createMap( Environment *env, char *output_file,
 /*** create Map ***/
 int
 OpenModeller::createMap( Environment *env, char *file, Scalar mult, 
-			 char * mask, Header *hdr )
+			 char *mask, Header *hdr )
 {
   if ( !_alg )
     {
       sprintf( _error,
-               "Algorithm object is empty!\n\n",
+               "Algorithm object is empty!",
                file );
       return 0;
     }
   else if ( !_alg->done() )
     {
       sprintf( _error,
-               "Algorithm model is not finished yet!\n\n",
+               "Algorithm model is not finished yet!",
                file );
       return 0;
     }
@@ -641,7 +641,7 @@ OpenModeller::createMap( Environment *env, char *file, Scalar mult,
   if ( ! hdr->hasProj() )
     {
       sprintf( _error, 
-	       "Output map (%s) without a coordinate system!\n\n",
+	       "No coordinate system defined for output map!",
 	       file );
       return 0;
     }
