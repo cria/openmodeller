@@ -16,6 +16,8 @@
 #include "../../inc/om_algorithm_metadata.hh"
 #include "../../inc/om_alg_parameter.hh"
 #include "../../inc/om_serializable.hh"
+#include "../../inc/om_area_stats.hh"
+#include "../../inc/om_conf_matrix.hh"
 #include "../../console/occurrences_file.hh"
 %}
 
@@ -386,5 +388,7 @@ AlgParamMetadata ** getParameterList(AlgMetadata * metadata)
 %include "../../inc/environment.hh"
 %include "../../inc/map_format.hh"
 %include "../../inc/om_algorithm_metadata.hh"
+%include "../../inc/om_area_stats.hh"
+%include "../../inc/om_conf_matrix.hh"
 %include "../../console/occurrences_file.hh"
 

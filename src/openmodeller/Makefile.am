@@ -29,7 +29,9 @@ libopenmodeller_la_SOURCES = \
 	os_specific.cpp \
 	random.cpp \
 	sampler.cpp \
-	sampled_data.cpp 
+	sampled_data.cpp \
+	conf_matrix.cpp \
+	area_stats.cpp
 
 libopenmodeller_la_LDFLAGS = -no-undefined
 libopenmodeller_la_CPPFLAGS = -I../inc -I../.. $(DPLUGIN_PATH) $(DCONFIG_FILE)

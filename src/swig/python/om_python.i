@@ -18,6 +18,8 @@
 #include "../../inc/om_algorithm_metadata.hh"
 #include "../../inc/file_parser.hh"
 #include "../../inc/om_serializable.hh"
+#include "../../inc/om_area_stats.hh"
+#include "../../inc/om_conf_matrix.hh"
 #include "../../console/occurrences_file.hh"
 %}
 
@@ -203,6 +205,9 @@ int print_alg_params(int n, AlgParameter *param)
 %rename(setOutputMapByFile)   OpenModeller::setOutputMap(Scalar mult, char *output_file, char *mask, char *file_with_format);
 %rename(setOutputMapByFormat) OpenModeller::setOutputMap(Scalar mult, char *output_file, char *mask, MapFormat *format);
 
+%rename(createMapNative) OpenModeller::createMap(Environment *, char *, char *);
+%rename(createMapProj)   OpenModeller::createMap(char *, char *);
+
 %rename(printOccurrences)     Occurrences::print(char *);
 
 %include "../../inc/om_defs.hh"
@@ -214,5 +219,7 @@ int print_alg_params(int n, AlgParameter *param)
 %include "../../inc/om_alg_parameter.hh"
 %include "../../inc/om_algorithm_metadata.hh"
 %include "../../inc/file_parser.hh"
+%include "../../inc/om_area_stats.hh"
+%include "../../inc/om_conf_matrix.hh"
 %include "../../console/occurrences_file.hh"
 
