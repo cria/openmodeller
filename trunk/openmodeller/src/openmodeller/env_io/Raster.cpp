@@ -27,9 +27,8 @@
  */
 
 #include <env_io/raster.hh>
-#include <om_log.hh>
 
-#include <stdio.h>
+#include <om_log.hh>
 #include <string.h>
 
 
@@ -222,7 +221,7 @@ Raster::put( Coord px, Coord py, Scalar *val )
 int
 Raster::print( char *msg )
 {
-  printf( "%s\n", msg );
+  g_log( "%s\n", msg );
 
   f_hdr.print();
   return 1;

@@ -73,12 +73,15 @@ Occurrences *readOccurrences( char *file, char *name,
 int
 main( int argc, char **argv )
 {
+  // Reconfigure the global logger.
+  g_log.set( Log::Debug, stdout, "Console" );
+
   if ( argc < 2 )
     {
-      printf( "\n%s [-r] <request>\n\n", argv[0] );
+      g_log( "\n%s [-r] <request>\n\n", argv[0] );
       exit( 1 );
     }
-  printf( "\nopenModeller Viewer - CRIA\n" );
+  g_log( "\nopenModeller Viewer - CRIA\n" );
 
   int show_map  = strcmp( argv[1], "-r" );
   char *request = (show_map ? argv[1] : argv[2]);
@@ -92,7 +95,7 @@ main( int argc, char **argv )
       _nmap = fp.count( "Map" );
 
       if ( ! _nmap )
-	_log.error( 1, "No map to be shown!?!\n" );
+	g_log.error( 1, "No map to be shown!?!\n" );
 
       _maps = new (Map *)[_nmap];
       rst = new (Raster *)[_nmap];
@@ -132,7 +135,7 @@ main( int argc, char **argv )
       dimy = 700;
       dimx = int( dimy * (xmax - xmin) / (ymax - ymin) );
     }
-  printf( "Dimensions: %d x %d\n", dimx, dimy );
+  g_log( "Dimensions: %d x %d\n", dimx, dimy );
 
 
   // Occurrences file.

@@ -37,8 +37,8 @@
 //   Obs: Need to implement compatibility with sockets.
 
 
-/**************************************************************/
-/***************************** Log ****************************/
+/****************************************************************/
+/****************************** Log *****************************/
 
 /** 
  * Class that allows sending of log messages to "stream" devices.
@@ -57,19 +57,41 @@ public:
 public:
 
   /** 
-   * @param name File name for 'debug()'output
-   * @param pref Prefix to be shown on every message
-   * @param overwrite If != 0 truncate the file before first use,
-   *                  otherwise begin from the end.
+   * @param name Name of the output log file.
+   * @param pref Prefix to be shown on every message.
+   * @param overwrite If != 0 truncates the file before usage,
+   *  otherwise begin from the end.
    */
   Log( char *name, char *pref="", int overwrite=0 );
 
-  /** Use Log object as an output for 'debug()'.*/
-  Log( Level level=Warn, FILE *log=stdout, char *pref="" );
+  /**
+   * @param level Log level.
+   * @param out Where to output logs. Will not be closed in
+   *  destructor.
+   * @param pref Prefix to be shown on every message.
+   */
+  Log( Level level=Warn, FILE *out=stdout, char *pref="" );
+
   ~Log();
 
+
+  /** Configure the logger.
+   * 
+   * @param level Log level.
+   * @param out Where to output logs. Will not be closed in
+   *  destructor.
+   * @param pref Prefix to be shown on every message.
+   */
+  void set( Level level, FILE *out, char *pref="" );
+
   /** Change log level.*/
-  void setLevel( Level level )  { f_level = level; }
+  void setLevel( Level level )  { _level = level; }
+
+  /** Set the log output. Do not closes the file in the
+   * destructor.
+   * @param out Log output file handle
+   */
+  void setOutput( FILE *out );
 
   /** Change prefix to be shown befeore any message.*/
   void setPrefix( char *pref );
@@ -80,9 +102,12 @@ public:
   int debug( char *format, ... );  ///< 'Debug' level.
   int info ( char *format, ... );  ///< 'Info' level.
 
+  /** 'Info' level, but does not print "Info:<prefix>" before. */
+  int operator()( char *format, ... );
+
   // Are necessarily printed in log.
   int warn ( char *format, ... );  ///< stderr and continue.
-  int error( int exit_code, char *format, ... );  ///< stderr and exit.
+  int error( int exit_code, char *format, ... ); ///< stderr and exit.
 
   /** Print 'size' bytes from memory counting from 'buf'.
    * 'length' informs the number of bytes per line.
@@ -92,13 +117,15 @@ public:
 
 private:
 
-  FILE  *f_log;
-  Level  f_level;
-  char  *f_pref;
+  FILE *_log;
+  int   _close; ///< If not zero closes '_log' in destructor.
+
+  Level  _level;
+  char  *_pref;
 };
 
 
-extern Log _log;
+extern Log g_log;
 
 
 #endif

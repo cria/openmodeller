@@ -31,6 +31,7 @@
 #include "list.cpp"     // Template.
 #include "occurrence.hh"
 #include "random.hh"
+#include "om_log.hh"
 #include "env_io/geo_transform.hh"
 
 #include <string.h>
@@ -172,26 +173,26 @@ Occurrences::getRandom()
 void
 Occurrences::print( char *msg )
 {
-  printf( "%s\n", msg );
+  g_log( "%s\n", msg );
 
   // Occurrences general data.
-  printf( "Name: %s\n", _name );
-  printf( "\nOccurrences: %d\n\n", numOccurrences() );
+  g_log( "Name: %s\n", _name );
+  g_log( "\nOccurrences: %d\n\n", numOccurrences() );
 
   // Occurrence points.
   Occurrence *c;
   for ( head(); c = get(); next() )
     {
-      printf( "(%+8.4f, %+8.4f)", c->x(), c->y() );
-      printf( " - %6.2", c->error() );
+      g_log( "(%+8.4f, %+8.4f)", c->x(), c->y() );
+      g_log( " - %6.2", c->error() );
 
       // Print the attributes.
       Scalar *attr = c->attributes();
       Scalar *end  = attr + c->numAttributes();
-      printf( " [%+8,4f", *attr++ );
+      g_log( " [%+8,4f", *attr++ );
       while ( attr < end )
-	printf( "%+8.4f, ", *attr++ );
-      printf( "]\n" );
+	g_log( "%+8.4f, ", *attr++ );
+      g_log( "]\n" );
     }
 }
 

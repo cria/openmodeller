@@ -70,7 +70,7 @@ AlgorithmFactory::DLL::load()
   if ( ! (_handle = dllOpen( _file )) )
     {
       error = dllError( _handle );
-      _log.warn( "Error loading %s: %s\n", _file, error );
+      g_log.warn( "Error loading %s: %s\n", _file, error );
       return 0;
     }
 
@@ -82,8 +82,8 @@ AlgorithmFactory::DLL::load()
   error = dllError( _handle );
   if ( error != NULL )
     {
-      _log.warn( "%s is not openModeller compatible! ", _file );
-      _log.warn( "Error: %s\n", error );
+      g_log.warn( "%s is not openModeller compatible! ", _file );
+      g_log.warn( "Error: %s\n", error );
       return 0;
     }
 
@@ -221,7 +221,7 @@ AlgorithmFactory::scanDir( char *dir, ListDLL &lst )
   char **pent = entries;
   while ( *pent )
     {
-      _log.info( "-- Loading: %s ... ", *pent );
+      g_log.info( "- Loading: %s ... ", *pent );
 
       // Create a new DLL for each directory entry found.
       DLL *dll = new DLL( *pent++ );
@@ -230,7 +230,7 @@ AlgorithmFactory::scanDir( char *dir, ListDLL &lst )
       // the list.
       if ( dll->load() )
 	{
-	  _log.info( "ok\n" );
+	  g_log.info( "ok\n" );
 	  lst.append( dll );
 	}
 

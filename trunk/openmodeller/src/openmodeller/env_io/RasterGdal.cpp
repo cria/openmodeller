@@ -167,7 +167,7 @@ RasterGdal::open( char *file, char mode )
   // Projection.
   f_hdr.setProj( (char *) f_ds->GetProjectionRef() );
   if ( ! f_hdr.hasProj() )
-    _log.warn( "The map %s is not georeferenced!\n", file );
+    g_log.warn( "The map %s is not georeferenced!\n", file );
 
 
   // Assumes that all bands have the same georeference
@@ -217,7 +217,7 @@ RasterGdal::create( char *file, Header &hdr )
   GDALDriver *drv = GetGDALDriverManager()->GetDriverByName(fmt);
   if ( ! drv )
     {
-      fprintf( stderr, "GDAL driver %s not found.\n", fmt );
+      g_log.warn( "GDAL driver %s not found.\n", fmt );
       return 0;
     }
 
@@ -227,8 +227,8 @@ RasterGdal::create( char *file, Header &hdr )
   char **md = drv->GetMetadata();
   if ( CSLFetchBoolean( md, GDAL_DCAP_CREATE, FALSE ) )
     {
-      printf( "GDAL driver %s cannot support Create().\n",
-              format );
+      g_log.warn( "GDAL driver %s cannot support Create().\n",
+                  format );
       return 0;
     }
   */

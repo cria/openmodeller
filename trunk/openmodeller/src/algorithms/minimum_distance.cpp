@@ -162,7 +162,7 @@ MinimumDistance::initialize( int ncicle )
   if ( _samp->getPresence( _presence ) )
     return 1;
 
-  _log.warn( "MinDistance: No occurrences inside the mask!\n" );
+  g_log.warn( "MinDistance: No occurrences inside the mask!\n" );
   return 0;
 }
 

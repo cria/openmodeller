@@ -39,33 +39,40 @@
 #endif
 
 
-/**************************************************************/
-/***************************** Log ****************************/
+// A default logger object.
+Log g_log( Log::Error, stderr );
+
+
+/****************************************************************/
+/****************************** Log *****************************/
 
 /*******************/
 /*** constructor ***/
 
 Log::Log( char *name, char *pref, int overwrite )
 {
-  f_level = Warn;
+  _level = Warn;
 
-  f_pref = 0;
+  _pref = 0;
   setPrefix( pref );
 
   const char *str_open = overwrite ? "w+" : "a";
 
-  if ( (f_log = fopen( name, str_open )) == NULL )
-    error( 1, "Log: could not create or open %s :(\n", name );
+  if ( (_log = fopen( name, str_open )) == NULL )
+    {
+      fprintf( stderr, "Log: could not create or open %s :(\n",
+	       name );
+      exit( 1 );
+    }
+
+  // Closes '_log' in destructor.
+  _close = 1;
 }
 
-Log::Log( Log::Level level, FILE *log, char *pref )
+Log::Log( Log::Level level, FILE *out, char *pref )
 {
-  f_level = level;
-
-  f_pref = 0;
-  setPrefix( pref );
-
-  f_log = log;
+  _pref = 0;
+  set( level, out, pref );
 }
 
 
@@ -74,7 +81,29 @@ Log::Log( Log::Level level, FILE *log, char *pref )
 
 Log::~Log()
 {
-  fclose( f_log );
+  if ( _close )
+    fclose( _log );
+}
+
+
+/***********/
+/*** set ***/
+void
+Log::set( Log::Level level, FILE *out, char *pref )
+{
+  setLevel( level );
+  setOutput( out );
+  setPrefix( pref );
+}
+
+
+/******************/
+/*** set Output ***/
+void
+Log::setOutput( FILE *out )
+{
+  _log   = out;
+  _close = 0;   // Does not close '_log' in destructor.
 }
 
 
@@ -83,15 +112,15 @@ Log::~Log()
 void
 Log::setPrefix( char *pref )
 {
-  if ( f_pref )
-    delete f_pref;
+ if ( _pref )
+    delete _pref;
 
   // Without prefix.
   if ( ! pref )
     pref = "";
 
-  f_pref = new char[ 1 + strlen(pref) ];
-  strcpy( f_pref, pref );
+  _pref = new char[ 1 + strlen(pref) ];
+  strcpy( _pref, pref );
 }
 
 
@@ -100,14 +129,14 @@ Log::setPrefix( char *pref )
 int
 Log::debug( char *format, ... )
 {
-  if ( f_level > Debug )
+  if ( _level > Debug )
     return 0;
 
   va_list ap;
   va_start( ap, format );
-  fprintf( f_log, "Debug:%s ", f_pref );
-  vfprintf( f_log, format, ap );
-  fflush( f_log );
+  fprintf( _log, "Debug:%s ", _pref );
+  vfprintf( _log, format, ap );
+  fflush( _log );
   va_end( ap );
 
   return 1;
@@ -119,14 +148,32 @@ Log::debug( char *format, ... )
 int
 Log::info( char *format, ... )
 {
-  if (  f_level > Info )
+  if ( _level > Info )
     return 0;
 
   va_list ap;
   va_start( ap, format );
-  fprintf( f_log, "Info:%s ", f_pref );
-  vfprintf( f_log, format, ap );
-  fflush( f_log );
+  fprintf( _log, "Info:%s ", _pref );
+  vfprintf( _log, format, ap );
+  fflush( _log );
+  va_end( ap );
+
+  return 1;
+}
+
+
+/*******************/
+/*** operator () ***/
+int
+Log::operator()( char *format, ... )
+{
+  if ( _level > Info )
+    return 0;
+
+  va_list ap;
+  va_start( ap, format );
+  vfprintf( _log, format, ap );
+  fflush( _log );
   va_end( ap );
 
   return 1;
@@ -138,7 +185,7 @@ Log::info( char *format, ... )
 int
 Log::warn( char *format, ... )
 {
-  if (  f_level > Warn )
+  if ( _level > Warn )
     return 0;
 
   const int buf_size = 1024;
@@ -150,7 +197,7 @@ Log::warn( char *format, ... )
   va_start( ap, format );
 
   // Header.
-  snprintf( buf, buf_size, "Warn:%s ", f_pref );
+  snprintf( buf, buf_size, "Warn:%s ", _pref );
 
   // Print message after header.
   int len = strlen( buf );
@@ -160,12 +207,12 @@ Log::warn( char *format, ... )
 
 
   // Print 'buf' in standard error output.
-  //  fprintf( stderr, "%s", buf );
+  if ( _log != stderr )
+    fprintf( stderr, "%s", buf );
 
 
   // Print 'buf' in log stream.
-  if ( f_level <= Warn )
-    fprintf( f_log, "%s", buf );
+  fprintf( _log, "%s", buf );
 
 
   return 1;
@@ -177,6 +224,9 @@ Log::warn( char *format, ... )
 int
 Log::error( int exit_code, char *format, ... )
 {
+  if ( _level > Error )
+    return 0;
+
   const int buf_size = 1024;
   char buf[buf_size];
 
@@ -186,7 +236,7 @@ Log::error( int exit_code, char *format, ... )
   va_start( ap, format );
 
   // Header.
-  snprintf( buf, buf_size, "Error:%s ", f_pref );
+  snprintf( buf, buf_size, "Error:%s ", _pref );
 
   // Print message after header.
   int len = strlen( buf );
@@ -196,12 +246,12 @@ Log::error( int exit_code, char *format, ... )
 
 
   // Print 'buf' in standard error output.
-  //  fprintf( stderr, "%s", buf );
+  if ( _log != stderr )
+    fprintf( stderr, "%s", buf );
 
 
   // Print 'buf' in log stream.
-  if ( f_level <= Warn )
-    fprintf( f_log, "%s", buf );
+  fprintf( _log, "%s", buf );
 
 
   ::exit( exit_code );
@@ -213,7 +263,7 @@ Log::error( int exit_code, char *format, ... )
 int
 Log::buffer( void *buf, int buf_size, int length )
 {
-  if ( f_level > Debug )
+  if ( _level > Debug )
     return 0;
   
   debug( "Log::buffer( %p, %d )\n", buf, buf_size );

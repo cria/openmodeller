@@ -51,10 +51,13 @@ Occurrences *readOccurrences( char *file, char *name,
 int
 main( int argc, char **argv )
 {
-  printf( "\nopenModeller version %s\n", OM_VERSION );
+  // Reconfigure the global logger.
+  g_log.set( Log::Debug, stdout, "Console" );
+
+  g_log( "\nopenModeller version %s\n", OM_VERSION );
 
   if ( argc < 2 )
-    _log.error( 1, "\n%s <request>\n\n", argv[0] );
+    g_log.error( 1, "\n%s <request>\n\n", argv[0] );
 
   // Create a fileparser to read in the request file and a
   // controlInterface to manage the model process.
@@ -103,12 +106,12 @@ main( int argc, char **argv )
   // parameter file...
   if ( ! output )
     {
-      printf( "The 'Output' file name was not speciefied!\n" );
+      g_log( "The 'Output' file name was not speciefied!\n" );
       return 1;
     }
   if ( ! format )
     {
-      printf( "The 'Output format' was not specified!\n" );
+      g_log( "The 'Output format' was not specified!\n" );
       return 1;
     }
   if ( ! scale )
@@ -131,8 +134,8 @@ main( int argc, char **argv )
        ! (alg = readAlgorithm( algorithms )) )
     return 1;
 
-  printf( "Algorithm used: %s\n", alg->getID() );
-  printf( " %s\n\n", alg->getMetadata()->description );
+  g_log( "Algorithm used: %s\n", alg->getID() );
+  g_log( " %s\n\n", alg->getMetadata()->description );
 
   // Obtain any model parameters that are specified in the request
   // file
@@ -166,11 +169,11 @@ main( int argc, char **argv )
   /*** Run the model ***/
 
   if ( ! om.run() )
-    printf( "Error: %s\n", om.error() );
+    g_log.error( 1, "Error: %s\n", om.error() );
   else
-    printf( "Done.\n" );
-  printf( "\n" );
+    g_log( "Done.\n" );
 
+  g_log( "\n" );
   return 0;
 }
 

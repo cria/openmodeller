@@ -28,9 +28,8 @@
 
 #include "occurrences_file.hh"
 
-#include <om_occurrences.hh>       // List of occurrences.
-#include <om_log.hh>
-#include <list.cpp>    // Template.
+#include <om_occurrences.hh>  // List of occurrences.
+#include <list.cpp>           // Template.
 
 #include <stdio.h>
 #include <stdlib.h>
