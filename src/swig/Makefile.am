@@ -8,4 +8,12 @@
 # WITHOUT ANY WARRANTY, to the extent permitted by law; without even the
 # implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
-SUBDIRS = python java
+if BUILD_JAVA
+JAVA_DIR=java
+endif
+
+if BUILD_PYTHON
+PYTHON_DIR=python
+endif
+
+SUBDIRS = $(JAVA_DIR) $(PYTHON_DIR)
