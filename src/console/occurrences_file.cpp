@@ -29,6 +29,7 @@
 #include "occurrences_file.hh"
 
 #include <om_occurrences.hh>  // List of occurrences.
+#include <om_log.hh>
 #include <list.cpp>           // Template.
 
 #include <stdio.h>
@@ -88,6 +89,11 @@ OccurrencesFile::addOccurrences( char *file_name )
 {
   // Opens the input file.
   FILE *file = fopen( file_name, "r" );
+  if ( ! file )
+    {
+      g_log.warn( "Can't open file %s.", file_name );
+      return 0;
+    }
 
   // Fixme: read this from file.
   Scalar error     	= -1.0;
