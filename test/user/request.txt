@@ -33,7 +33,7 @@ Output format = data/NAm_0_1deg/mask/
 
 # Output file name.
 #
-Output file = map.bil
+Output file = map.tif
 
 # Scale each algorithm output (originaly between 0 and 1) by
 # this factor.

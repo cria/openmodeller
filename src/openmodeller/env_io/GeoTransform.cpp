@@ -97,6 +97,8 @@ GeoTransform::~GeoTransform()
 int
 GeoTransform::transfIn( float *x, float *y )
 {
+#ifndef GEO_TRANSFORMATIONS_OFF
+
   double px = *x;
   double py = *y;
 
@@ -106,6 +108,13 @@ GeoTransform::transfIn( float *x, float *y )
   *x = px;
   *y = py;
   return 1;
+
+#else
+
+// if GeoTransformations are turned off, just leave the values alone
+  return 1;
+
+#endif
 }
 
 
@@ -115,6 +124,8 @@ int
 GeoTransform::transfIn( float *x, float *y,
 			double x0, double y0 )
 {
+#ifndef GEO_TRANSFORMATIONS_OFF
+
   double px = x0;
   double py = y0;
 
@@ -124,6 +135,15 @@ GeoTransform::transfIn( float *x, float *y,
   *x = px;
   *y = py;
   return 1;
+
+#else
+
+  // if GeoTransformations are turned off, just copy the values over
+  *x = x0;
+  *y = y0;
+  return 1;
+
+#endif
 }
 
 
@@ -132,7 +152,11 @@ GeoTransform::transfIn( float *x, float *y,
 int
 GeoTransform::transfIn( double *x, double *y )
 {
+#ifndef GEO_TRANSFORMATIONS_OFF
   return f_ctin->Transform( 1, x, y );
+#else
+  return 1;
+#endif
 }
 
 
@@ -145,7 +169,11 @@ GeoTransform::transfIn( double *x, double *y,
   *x = x0;
   *y = y0;
 
+#ifndef GEO_TRANSFORMATIONS_OFF
   return f_ctin->Transform( 1, x, y );
+#else
+  return 1;
+#endif
 }
 
 
@@ -154,6 +182,8 @@ GeoTransform::transfIn( double *x, double *y,
 int
 GeoTransform::transfOut( float *x, float *y )
 {
+#ifndef GEO_TRANSFORMATIONS_OFF
+
   double px = *x;
   double py = *y;
 
@@ -163,6 +193,13 @@ GeoTransform::transfOut( float *x, float *y )
   *x = px;
   *y = py;
   return 1;
+
+#else
+
+// if GeoTransformations are turned off, just leave the values alone
+  return 1;
+
+#endif
 }
 
 
@@ -172,6 +209,8 @@ int
 GeoTransform::transfOut( float *x, float *y,
 			double x0, double y0 )
 {
+#ifndef GEO_TRANSFORMATIONS_OFF
+
   double px = x0;
   double py = y0;
 
@@ -181,6 +220,14 @@ GeoTransform::transfOut( float *x, float *y,
   *x = px;
   *y = py;
   return 1;
+
+#else
+
+  *x = x0;
+  *y = y0;
+  return 1;
+
+#endif
 }
 
 
@@ -189,7 +236,11 @@ GeoTransform::transfOut( float *x, float *y,
 int
 GeoTransform::transfOut( double *x, double *y )
 {
+#ifndef GEO_TRANSFORMATIONS_OFF
   return f_ctout->Transform( 1, x, y );
+#else
+  return 1;
+#endif
 }
 
 
@@ -202,5 +253,9 @@ GeoTransform::transfOut( double *x, double *y,
   *x = x0;
   *y = y0;
 
+#ifndef GEO_TRANSFORMATIONS_OFF
   return f_ctout->Transform( 1, x, y );
+#else
+  return 1;
+#endif
 }

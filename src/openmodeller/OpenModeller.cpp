@@ -110,12 +110,13 @@ OpenModeller::~OpenModeller()
   if ( _samp )     delete _samp;
   if ( _alg )      delete _alg;
   if ( _env )      delete _env;
-  if ( _alg_id )   delete _alg_id;
   if ( _presence ) delete _presence;
   if ( _absence )  delete _absence;
 
-  if ( _output_file )   delete _output_file;
-  if ( _output_mask )   delete _output_mask;
+  if ( _alg_id )        delete[] _alg_id;
+  if ( _alg_param)      delete[] _alg_param;
+  if ( _output_file )   delete[] _output_file;
+  if ( _output_mask )   delete[] _output_mask;
   if ( _output_header ) delete _output_header;
 
   if (_plugin_path) deleteStringArray(_plugin_path);
