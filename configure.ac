@@ -76,7 +76,7 @@ fi
 dnl ---------------------------------------------------------------------------
 dnl Proj4
 dnl ---------------------------------------------------------------------------
-AC_CHECK_LIB(proj, pj_init, [], [AC_MSG_ERROR("Cannot find Proj4 library")])
+dnl AC_CHECK_LIB(proj, pj_init, [], [AC_MSG_ERROR("Cannot find Proj4 library")])
 
 
 dnl ---------------------------------------------------------------------------
