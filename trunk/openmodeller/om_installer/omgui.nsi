@@ -93,6 +93,7 @@ Section "MainSection" SEC01
   File "..\wkt_defs.txt"  
   File "..\msvcr80.dll" 
   File "..\msvcp80.dll" 
+  File "..\msvcp60.dll" ; <-- needed for qt hopefully this req will go away after i rebuild qt with vc8 
 
   ;
   ; Now the algs
@@ -100,6 +101,11 @@ Section "MainSection" SEC01
   SetOutPath $INSTDIR\algs
   SetOverwrite try
   File "..\algs\*.dll" ;once again I am sure only the dll's need copying  
+  
+  ; Now the sample data
+  SetOutPath $INSTDIR\sample_data
+  SetOverwrite try
+  File /r "..\om_sample_data\" ;<-- /r = recursive copy
 
   ;you could also say just
   ;File "..\"  
