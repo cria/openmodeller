@@ -104,7 +104,8 @@ If 'dist' > MAXDIST then the probability will be zero.",
 /****************************************************************/
 /****************** Algorithm's factory function ****************/
 
-Algorithm * dllexp
+dllexp
+Algorithm *
 algorithmFactory()
 {
   return new DistanceToAverage;

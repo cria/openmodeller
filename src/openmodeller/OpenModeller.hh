@@ -309,6 +309,11 @@ private:
    */
   char *parameterModelCheck();
 
+  /** Filter occurrence points in Occurrences object that 
+   *  fall outside the mask (cells with NODATA in mask)
+   */
+  void filterMaskedOccurrences(Occurrences * occur);
+
   /** Delete every string in array of strings and then delete
    *  array itself.
    */

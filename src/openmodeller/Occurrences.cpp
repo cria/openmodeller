@@ -36,32 +36,28 @@
 
 #include <string.h>
 
-void removeSpaces(char * buf)
-{
-  char * loca = strstr(buf," ");
-  while (loca != NULL)     
-    {
-      while( (*loca = *(loca + 1)) != 0) 
-	{ loca++; }
-      loca = strstr(buf," ");
-    }
-}
-
 bool compareCoordSystemStrings(char * s1, char * s2)
 {
-  const int strSize = 2048;
-  char a1[strSize], a2[strSize];
+ int i = 0, j = 0;
+ while (s1[i])
+ {
+  // skip spaces in both strings
+  while (s1[i] == ' ') i++;
+  while (s2[j] == ' ') j++; 
 
-  // make copies of the strings and then remove all spaces from 
-  // the copies
-  strcpy(a1, s1);
-  strcpy(a2, s2);
+  if (s1[i] != s2[j]) 
+   return false;
+  
+  if (s1[i]) i++;
+  if (s2[j]) j++;
+ }
+ // skip trailing spaces that s2 might still have
+ while (s2[j] == ' ') j++;
 
-  removeSpaces(a1);
-  removeSpaces(a2);
-
-  return !strcmp(a1, a2);
+ // both s1[i] and s2[j] should be NULL to be equal
+ return (s1[i] == s2[j]);
 }
+
 
 /****************************************************************/
 /************************ Occurrences ***************************/
