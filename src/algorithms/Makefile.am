@@ -47,13 +47,28 @@ libomminimum_distance_la_LIBADD = ../src/lib/libopenmodeller.la
 libomminimum_distance_la_CPPFLAGS = -I../src/inc
 
 #
-# Build csm only when gsl is available
+# Build csm - kaiser-gutman only when gsl is available
 #
 if HAVE_GSL
-plugin_LTLIBRARIES += libomcsm.la
-libomcsm_la_SOURCES = \
+plugin_LTLIBRARIES += libomcsmkg.la
+libomcsmkg_la_SOURCES = \
 	csm.cpp \
-	csm.hh
-libomcsm_la_LIBADD = $(GSL_LIBS) ../src/lib/libopenmodeller.la
-libomcsm_la_CPPFLAGS = $(GSL_CFLAGS) -I../src/inc
+	csm.hh \
+	csmkg.cpp \
+	csmkg.hh
+libomcsmkg_la_LIBADD = $(GSL_LIBS) ../src/lib/libopenmodeller.la
+libomcsmkg_la_CPPFLAGS = $(GSL_CFLAGS) -I../src/inc
+endif
+#
+# Build csm - broken stick only when gsl is available
+#
+if HAVE_GSL
+plugin_LTLIBRARIES += libomcsmbs.la
+libomcsmbs_la_SOURCES = \
+	csm.cpp \
+	csm.hh \
+	csmbs.cpp \
+	csmbs.hh
+libomcsmbs_la_LIBADD = $(GSL_LIBS) ../src/lib/libopenmodeller.la
+libomcsmbs_la_CPPFLAGS = $(GSL_CFLAGS) -I../src/inc
 endif
