@@ -21,7 +21,7 @@ om_wrap.cxx: ../om.i
 	swig -c++ -python -o om_wrap.cxx ../om.i 
 
 # TODO: remove hardcoded reference to Python directories
-# But AM_CHECK_PYTHON in modeller/configure.ac doesn't work
+# But AM_CHECK_PYTHON in modeller/configure.ac doesn't work 
 # When it works, those two lines below should replace the ones above
 #pythonSitePackagesdir = $(PYTHON_SITE_PACKAGE)
 #_om_la_CPPFLAGS = -I../../inc -I$(includedir)/python$(PYTHON_VERSION)
