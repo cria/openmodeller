@@ -38,6 +38,8 @@
 
 #define BACKLOG (100) // Max. request backlog 
 #define TEMPLATE_FILE_NAME "dmapXXXXXX"
+#define min *60
+#define h *3600
 
 /*****************************/
 /***  Forward declarations ***/
@@ -65,7 +67,10 @@ int main(int argc, char **argv)
 
   struct soap soap;
   soap_init(&soap);
-  soap.accept_timeout = 600; // let server time out after 10 minutes of inactivity 
+
+  soap.accept_timeout = 0;  // always listening
+  soap.send_timeout = 10 h;
+  soap.recv_timeout = 3 min;
 
   if (argc < 2) // no args: assume this is a CGI application
     { 
@@ -246,8 +251,6 @@ om__createModel( struct soap *soap, om__Points *points, om__Maps *maps, om__Mask
   soap->header = (struct SOAP_ENV__Header*)soap_malloc( soap, sizeof(struct SOAP_ENV__Header) ); 
   soap->header->om__version = om.getVersion();
 
-  g_log.setOutput(stderr);
-
   // Set the algorithm to be used
   om.setAlgorithm( algorithm->id, algorithm->__size, (OmAlgParameter *)algorithm->__ptrparameter );
 
@@ -262,21 +265,19 @@ om__createModel( struct soap *soap, om__Points *points, om__Maps *maps, om__Mask
   Occurrences presences ( "presences", points->coordsystem );
   Occurrences absences  ( "absences" , points->coordsystem );
 
-  soap_Point *point;
+  soap_Point *point = points->__ptrpresences->__ptrpoint;
 
-  for ( int i = 0; i < points->__ptrpresences->__size; i++)
+  for ( int i = 0; i < points->__ptrpresences->__size; i++, point++)
     {
-      point = points->__ptrpresences->__ptrpoint+i;
-
       presences.insert( (Coord)point->longitude, (Coord)point->latitude );
     }
 
   if ( points->__ptrabsences && alg_metadata->absence )
     {
-      for ( int i = 0; i < points->__ptrabsences->__size; i++)
-	{
-	  point = points->__ptrabsences->__ptrpoint+i;
+      point = points->__ptrabsences->__ptrpoint;
 
+      for ( int i = 0; i < points->__ptrabsences->__size; i++, point++)
+	{
 	  absences.insert( (Coord)point->longitude, (Coord)point->latitude);
 	}
       
@@ -315,19 +316,18 @@ om__createModel( struct soap *soap, om__Points *points, om__Maps *maps, om__Mask
   delete cat_layers;
   delete cont_layers;
 
-  // Output map
-  char *t = (char*)soap_malloc(soap, strlen(OM_SOAP_TMPDIR) + strlen(TEMPLATE_FILE_NAME) + 2);
-  strcpy(t, OM_SOAP_TMPDIR);
-  strcat(t, "/");
-  strcat(t, TEMPLATE_FILE_NAME);
-  char *tname = (char *) mkstemp(t); // Fix me: use a portable and better solution for unique names
-  remove(t);
+  // Output map  (FIX ME: use a portable and better solution for unique names)
+  char *t_fname = (char*)soap_malloc(soap, strlen(OM_SOAP_TMPDIR) + strlen(TEMPLATE_FILE_NAME) +2);
+  strcpy(t_fname, OM_SOAP_TMPDIR);
+  strcat(t_fname, "/");
+  strcat(t_fname, TEMPLATE_FILE_NAME);
+  mkstemp(t_fname); // generate file with unique name, and keep it
 
-  char *fname = (char*)soap_malloc(soap, strlen(t) + strlen(output->format) + 1);
-  strcat(fname, t);
-  strcat(fname, output->format);
+  char *r_fname = (char*)soap_malloc(soap, strlen(t_fname) + strlen(output->format) + 1);
+  strcat(r_fname, t_fname);
+  strcat(r_fname, output->format); // output file is unique name + file format (should include dot)
 
-  om.setOutputMap( fname, output->header, (xsd__double)output->scale );
+  om.setOutputMap( r_fname, output->header, (xsd__double)output->scale );
 
   pid_t pid = fork();
 
@@ -338,11 +338,26 @@ om__createModel( struct soap *soap, om__Points *points, om__Maps *maps, om__Mask
 	  return soap_receiver_fault(soap, om.error(), NULL);
 	}
 
+      // Create flag in file system indicating job done
+      char *flag_file = (char*)soap_malloc(soap, strlen(t_fname) + 4);
+      strcpy(flag_file, t_fname);
+      strcat(flag_file, ".end");
+
+      fprintf(stderr, flag_file);
+      fprintf(stderr, "\n");
+
+      FILE *fd = fopen(flag_file, "wb");
+      if (!fd)
+	{
+	  return soap_receiver_fault(soap, "Could not save ticket flag", NULL);
+	}
+      fclose(fd);
+
       return SOAP_OK;
     }
   else if (pid == 0) // child process
     {
-      *ticket = rindex(fname, '/')+1;
+      *ticket = rindex(r_fname, '/')+1; // ticket is actually the file name
       
       return SOAP_OK;
     }

@@ -12,21 +12,21 @@
      <id xsi:type="xsd:string"></id>
      <name xsi:type="xsd:string"></name>
      <version xsi:type="xsd:string"></version>
-     <biblio xsi:type="xsd:string"></biblio>
+     <bibliography xsi:type="xsd:string"></bibliography>
      <description xsi:type="xsd:string"></description>
      <author xsi:type="xsd:string"></author>
      <contact xsi:type="xsd:string"></contact>
-     <categorical xsi:type="xsd:int">0</categorical>
-     <absence xsi:type="xsd:int">0</absence>
+     <accepts-categorical-maps xsi:type="xsd:int">0</accepts-categorical-maps>
+     <accepts-absence-points xsi:type="xsd:int">0</accepts-absence-points>
      <parameter xsi:type="om:AlgorithmParameter">
       <name xsi:type="xsd:string"></name>
-      <type xsi:type="xsd:string"></type>
+      <data-type xsi:type="xsd:string"></data-type>
       <description xsi:type="xsd:string"></description>
       <has-min xsi:type="xsd:int">0</has-min>
       <min xsi:type="xsd:double">0.0</min>
       <has-max xsi:type="xsd:int">0</has-max>
       <max xsi:type="xsd:double">0.0</max>
-      <typical xsi:type="xsd:string"></typical>
+      <typical-value xsi:type="xsd:string"></typical-value>
      </parameter>
     </algorithm>
    </return>
