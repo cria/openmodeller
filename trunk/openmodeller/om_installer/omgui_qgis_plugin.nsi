@@ -49,7 +49,7 @@
 ; MUI end ------
 
 Name "${PRODUCT_NAME} ${PRODUCT_VERSION}"
-OutFile "openmodeller0.2_qgis_plugin_setup.exe"
+OutFile "openmodellerGUI-0.1_qgis_plugin_setup.exe"
 InstallDir "$PROGRAMFILES\Quantum GIS"
 InstallDirRegKey HKLM "${PRODUCT_DIR_REGKEY}" ""
 ShowInstDetails show
@@ -59,33 +59,32 @@ Section "MainSection" SEC01
   SetOutPath "$INSTDIR"
   SetOverwrite ifnewer
   
-  File "om_logo.bmp"
+  File "om_logo.bmp"  
   File "..\ecw_cs.dat"
   File "..\gcs.csv"
-  File "..\gdal12.dll"
   File "..\gsl.dll"
   File "..\gslcblas.dll"
   File "..\libexif-9.dll"
   File "..\libexpat.dll"
   File "..\libexpatMT.lib"
   File "..\libopenmodeller.dll"
+  File "..\msvcp60.dll"
   File "..\om_config.txt"
   File "..\om_console.exe"
+  File "..\om_logo.bmp"
   File "..\omgui.exe"
   File "..\pcs.csv"
-  File "..\prime_meridian.csv" 
-  File "..\proj.dll"  
-  File "..\projop_wparm.csv"  
-  File "..\qt-mtnc321.dll" ;QT Non Commercial lib  
-  File "..\s57attributes.csv"  
-  File "..\s57expectedinput.csv"  
-  File "..\s57objectclasses.csv"  
-  File "..\stateplane.csv"  
-  File "..\unit_of_measure.csv"  
-  File "..\wkt_defs.txt"  
-  File "..\msvcr80.dll" 
-  File "..\msvcp80.dll" 
-  File "..\msvcp60.dll" ; <-- needed for qt hopefully this req will go away after i rebuild qt with vc8 
+  File "..\prime_meridian.csv"
+  File "..\proj.dll"
+  File "..\projop_wparm.csv"
+  File "..\qt-mtnc321.dll"
+  File "..\s57attributes.csv"
+  File "..\s57expectedinput.csv"
+  File "..\s57objectclasses.csv"
+  File "..\stateplane.csv"
+  File "..\unit_of_measure.csv"
+  File "..\wkt_defs.txt"
+
 
   ;
   ; Now the algs
@@ -116,19 +115,21 @@ SectionEnd
 Section -AdditionalIcons
   SetOutPath $INSTDIR
   WriteIniStr "$INSTDIR\${PRODUCT_NAME}.url" "InternetShortcut" "URL" "${PRODUCT_WEB_SITE}"
-  CreateShortCut "$SMPROGRAMS\Quantum GIS\open Modeller Website.lnk" "$INSTDIR\${PRODUCT_NAME}.url"
-  CreateShortCut "$SMPROGRAMS\Quantum GIS\openModellerPluginUninstall.lnk" "$INSTDIR\uninst.exe"
+  CreateShortCut "$SMPROGRAMS\Quantum GIS\openModeller Website.lnk" "$INSTDIR\${PRODUCT_NAME}.url"
+  CreateShortCut "$SMPROGRAMS\Quantum GIS\Uninstall openModeller Plugin.lnk" "$INSTDIR\uninst_omplugin.exe"
+  CreateShortCut "$SMPROGRAMS\Quantum GIS\openModeller Standalone.lnk" "$INSTDIR\omgui.exe"
 SectionEnd
 
 Section -Post
-  WriteUninstaller "$INSTDIR\uninst.exe"
+  WriteUninstaller "$INSTDIR\uninst_omplugin.exe"
   WriteRegStr HKLM "${PRODUCT_DIR_REGKEY}" "" "$INSTDIR\qgis.exe"
   WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "DisplayName" "$(^Name)"
-  WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "UninstallString" "$INSTDIR\uninst.exe"
+  WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "UninstallString" "$INSTDIR\uninst_omplugin.exe"
   WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "DisplayIcon" "$INSTDIR\qgis.exe"
   WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "DisplayVersion" "${PRODUCT_VERSION}"
   WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "URLInfoAbout" "${PRODUCT_WEB_SITE}"
   WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "Publisher" "${PRODUCT_PUBLISHER}"
+  WriteRegDWORD ${PRODUCT_UNINST_ROOT_KEY} "SOFTWARE\Qgis\Plugins" "openModeller Wizard" 0x00000001
 SectionEnd
 
 
@@ -143,17 +144,41 @@ Function un.onInit
 FunctionEnd
 
 Section Uninstall
-  Delete "$INSTDIR\${PRODUCT_NAME}.url"
-  Delete "$INSTDIR\uninst.exe"
+  Delete /REBOOTOK "$INSTDIR\${PRODUCT_NAME}.url"
+  Delete /REBOOTOK "$INSTDIR\lib\qgis\omgui.dll"
+  Delete /REBOOTOK "$INSTDIR\uninst_omplugin.exe"
 
-  Delete "$SMPROGRAMS\Quantum GIS\Uninstall.lnk"
-  Delete "$SMPROGRAMS\Quantum GIS\openModeller.lnk"
-  Delete "$DESKTOP\openModeller.lnk"
-  Delete "$SMPROGRAMS\Quantum GIS\openModeller.lnk"
+  Delete /REBOOTOK "$INSTDIR\ecw_cs.dat"
+  Delete /REBOOTOK "$INSTDIR\gcs.csv"
+  Delete /REBOOTOK "$INSTDIR\gsl.dll"
+  Delete /REBOOTOK "$INSTDIR\gslcblas.dll"
+  Delete /REBOOTOK "$INSTDIR\libexif-9.dll"
+  Delete /REBOOTOK "$INSTDIR\libexpat.dll"
+  Delete /REBOOTOK "$INSTDIR\libexpatMT.lib"
+  Delete /REBOOTOK "$INSTDIR\libopenmodeller.dll"
+  Delete /REBOOTOK "$INSTDIR\msvcp60.dll"
+  Delete /REBOOTOK "$INSTDIR\om_config.txt"
+  Delete /REBOOTOK "$INSTDIR\om_console.exe"
+  Delete /REBOOTOK "$INSTDIR\om_logo.bmp"
+  Delete /REBOOTOK "$INSTDIR\omgui.exe"
+  Delete /REBOOTOK "$INSTDIR\pcs.csv"
+  Delete /REBOOTOK "$INSTDIR\prime_meridian.csv"
+  Delete /REBOOTOK "$INSTDIR\proj.dll"
+  Delete /REBOOTOK "$INSTDIR\projop_wparm.csv"
+  Delete /REBOOTOK "$INSTDIR\qt-mtnc321.dll"
+  Delete /REBOOTOK "$INSTDIR\s57attributes.csv"
+  Delete /REBOOTOK "$INSTDIR\s57expectedinput.csv"
+  Delete /REBOOTOK "$INSTDIR\s57objectclasses.csv"
+  Delete /REBOOTOK "$INSTDIR\stateplane.csv"
+  Delete /REBOOTOK "$INSTDIR\unist.exe"
+  Delete /REBOOTOK "$INSTDIR\unit_of_measure.csv"
+  Delete /REBOOTOK "$INSTDIR\wkt_defs.txt"
 
-  RMDir "$SMPROGRAMS\Quantum GIS"
-  RMDir "$INSTDIR\algs"
-  RMDir "$INSTDIR"
+  Delete "$SMPROGRAMS\Quantum GIS\openModeller Website.lnk"  
+  Delete "$SMPROGRAMS\Quantum GIS\Uninstall openModeller Plugin.lnk"
+  Delete "$SMPROGRAMS\Quantum GIS\openModeller Standalone.lnk"
+
+  RMDir /r /REBOOTOK "$INSTDIR\algs"
 
   DeleteRegKey ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}"
   DeleteRegKey HKLM "${PRODUCT_DIR_REGKEY}"

@@ -49,7 +49,7 @@
 ; MUI end ------
 
 Name "${PRODUCT_NAME} ${PRODUCT_VERSION}"
-OutFile "openModeller0.2_setup.exe"
+OutFile "openModellerGUI-0.1_setup.exe"
 InstallDir "$PROGRAMFILES\openModeller"
 InstallDirRegKey HKLM "${PRODUCT_DIR_REGKEY}" ""
 ShowInstDetails show
@@ -144,12 +144,12 @@ Section Uninstall
 
   Delete "$SMPROGRAMS\openModeller\Uninstall.lnk"
   Delete "$SMPROGRAMS\openModeller\openModeller.lnk"
+  Delete "$SMPROGRAMS\openModeller\Website.lnk"
   Delete "$DESKTOP\openModeller.lnk"
-  Delete "$SMPROGRAMS\openModeller\openModeller.lnk"
 
-  RMDir "$SMPROGRAMS\openModeller"
-  RMDir "$INSTDIR\algs"
-  RMDir "$INSTDIR"
+  RMDir /r "$SMPROGRAMS\openModeller"
+  RMDir /r /REBOOTOK $INSTDIR\algs
+  RMDir /r /REBOOTOK $INSTDIR
 
   DeleteRegKey ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}"
   DeleteRegKey HKLM "${PRODUCT_DIR_REGKEY}"
