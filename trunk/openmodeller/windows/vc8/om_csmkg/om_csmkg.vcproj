@@ -174,7 +174,6 @@
 				LinkIncremental="1"
 				SuppressStartupBanner="TRUE"
 				AdditionalLibraryDirectories="$(GDAL_HOME)\lib,../build/lib,$(EXPAT_HOME)/libs,$(GSL_HOME)/lib"
-				IgnoreDefaultLibraryNames="scew_.lib"
 				ProgramDatabaseFile=".\Release/om_csmkg.pdb"
 				ImportLibrary=".\Release/om_csmkg.lib"
 				TargetMachine="1"
