@@ -68,6 +68,12 @@ public:
 
 private:
 
+  /** Minimum value of all points for each variable. */
+  Scalar *getMinimum( SampledData *points );
+
+  /** Maximum value of all points for each variable. */
+  Scalar *getMaximum( SampledData *points );
+
   /** Calculates the average point for all SampledData points.
    *  There must be at least one point. */
   Scalar *getMean( SampledData *points );
@@ -81,6 +87,9 @@ private:
 
 
   int _dim;   ///> Number of dimensions in environmental space
+
+  Scalar *_minimum; ///> Mininum value for each variable.
+  Scalar *_maximum; ///> Maximum value for each variable.
 
   Scalar *_mean;    ///> Mean of sampled points.
   Scalar *_std_dev; ///> Standard deviations for each variable.
