@@ -27,6 +27,8 @@
  */
 
 #include <om_algorithm.hh>
+#include <OmAlgParameter.hh>
+#include <om_log.hh>
 
 #include <string.h>
 #include <stdlib.h>
@@ -38,14 +40,14 @@
 /*******************/
 /*** constructor ***/
 
-Algorithm::Algorithm( AlgorithmMetadata *metadata )
+Algorithm::Algorithm( AlgMetadata *metadata )
 {
   _metadata = metadata;
 
-  _samp  = 0;
-  _categ = 0;
-  _param = 0;
-  _param_setted = 0;
+  _samp   = 0;
+  _categ  = 0;
+  _nparam = 0;
+  _param  = 0;
   
   findID( _metadata );
 }
@@ -57,7 +59,6 @@ Algorithm::Algorithm( AlgorithmMetadata *metadata )
 Algorithm::~Algorithm()
 {
   if ( _categ ) delete _categ;
-  if ( _param ) delete _param;
 }
 
 
@@ -78,62 +79,35 @@ Algorithm::setSampler( Sampler *samp )
 
 /**********************/
 /*** set Parameters ***/
-int
-Algorithm::setParameters( char *str_param )
+void
+Algorithm::setParameters( int nparam, OmAlgParameter *param )
 {
-  _param_setted = 1;
-
-  if ( _param )
-    delete _param;
-
-  // Number of parameters setted in metadata.
-  int nparam = _metadata->nparam;
-  if ( ! nparam )
-    {
-      _param = 0;
-      return 0;
-    }
-  
-  // Vector of parameters.
-  Scalar *par = _param = new Scalar[nparam];
-
-  // Read the parameters from str_param string.
-  for ( int i = 0; i < nparam; i++ )
-    *par++ = strtod( str_param, &str_param );
-
-  return nparam;
-}
-
-
-/***************/
-/*** copy ID ***/
-char *
-Algorithm::copyID()
-{
-  char *id = new char[ strlen(_id) + 1 ];
-  strcpy( id, _id );
-  return id;
+  _nparam = nparam;
+  _param  = param;
 }
 
 
 /***************/
 /*** find ID ***/
 int
-Algorithm::findID( AlgorithmMetadata *meta )
+Algorithm::findID( AlgMetadata *meta )
 {
+  char *id = meta->id;
+
   // String to link algorithm's "name" and "version";
   char *link = " v";
 
-  strncpy( _id, meta->name, 256 );
-  int name_size = 256 - strlen( meta->name ) - strlen(link);
+  strncpy( id, meta->name, OM_ALG_ID_SIZE );
+  int name_size = OM_ALG_ID_SIZE;
+  name_size -= strlen( meta->name ) + strlen( link );
 
   if ( name_size > 0 )
     {
-      strcat( _id, link );
-      strncat( _id, meta->version, name_size );
+      strcat( id, link );
+      strncat( id, meta->version, name_size );
     }
 
-  _id[255] = '\0';
+  id[OM_ALG_ID_SIZE - 1] = '\0';
   return 1;
 }
 
@@ -141,17 +115,62 @@ Algorithm::findID( AlgorithmMetadata *meta )
 /*********************/
 /*** get Parameter ***/
 int
-Algorithm::getParameter( int i, Scalar *value )
+Algorithm::getParameter( char *name, char **value )
 {
-  // Parameters were not setted or the i-th parameter does not
-  // exits.
-  if ( ! _param_setted || i >= _metadata->nparam )
+  if ( ! name )
+    {
+      g_log.warn( "Algorithm %s wants a parameter named \"%s\"!\n",
+		  _metadata->name, name );
+      return 0;
+    }
+		
+
+  // If parameters were not setted or zero parameters were setted.
+  if ( ! _param || ! _nparam )
     return 0;
 
-  // It could be that parameters were setted to none!
-  if ( _param )
-    *value = _param[i];
+  
+  OmAlgParameter *param = _param;
+  OmAlgParameter *end   = _param + _nparam;
 
+  while ( param < end )
+    if ( ! strcmp( name, param->name() ) )
+      {
+        *value = param->value();
+        return 1;
+      }
+
+  return 0;
+}
+
+
+/*********************/
+/*** get Parameter ***/
+int
+Algorithm::getParameter( char *name, double *value )
+{
+  char *str_value;
+
+  if ( ! getParameter( name, &str_value ) )
+    return 0;
+
+  *value = atof( str_value );
   return 1;
 }
+
+
+/*********************/
+/*** get Parameter ***/
+int
+Algorithm::getParameter( char *name, float *value )
+{
+  char *str_value;
+
+  if ( ! getParameter( name, &str_value ) )
+    return 0;
+
+  *value = float( atof( str_value ) );
+  return 1;
+}
+
 

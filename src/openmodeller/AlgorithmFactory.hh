@@ -35,6 +35,7 @@
 #include <om_algorithm_metadata.hh>
 
 class Algorithm;
+class OmAlgParameter;
 class Sampler;
 
 
@@ -90,7 +91,7 @@ public:
    *
    * @return a null terminated list of available algorithms.
    */
-  Algorithm **availableAlgorithms();
+  AlgMetadata **availableAlgorithms();
 
   /** Number of available algorithms.
    * If the algorithms are not already searched in the system,
@@ -100,16 +101,26 @@ public:
    */
   int numAvailableAlgorithms();
 
+  /** Returns an specific algorithm metadata
+   * @param algorithm_id Identifier of the algorithm.
+   * @return Algorithm's metadata or zero if there algorithm
+   *  was not found.
+   */
+  AlgMetadata *algorithmMetadata( char *algorithm_id );
+
   /** Instantiate a new algorithm object.
    *
    * @param samp Sampler object.
    * @param id Identifier of the algorithm to be instantiated.
-   * @param param String with parameters separeted with spaces.
+   * @param nparam Number of parameters.
+   * @param param Vector with all parameters. The address 'param'
+   *  points to must exists while the returned algorithm is used.
    * 
    * @return A pointer to the new instantiated algorithm or
-   * null if an algorithm with id was not found.
+   *  null if an algorithm with id was not found.
    */
-  Algorithm *newAlgorithm( Sampler *samp, char *id, char *param );
+  Algorithm *newAlgorithm( Sampler *samp, char *id, int nparam,
+                           OmAlgParameter *param );
 
 
 private:

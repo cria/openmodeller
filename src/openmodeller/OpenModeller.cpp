@@ -36,6 +36,7 @@
 #include <om_defs.hh>
 #include <om_log.hh>
 #include <om_algorithm.hh>
+#include <OmAlgParameter.hh>
 #include <om_sampler.hh>
 #include <om_occurrences.hh>
 
@@ -77,36 +78,14 @@ ControlInterface::ControlInterface()
   _file = 0;
   _mult = 1.0;
 
-  _alg_id    = 0;
-  _alg_param = 0;
+  _alg_id     = 0;
+  _alg_param  = 0;
+  _alg_nparam = 0;
 
   _presence = 0;
   _absence  = 0;
 
   f_error[0] = '\0';
-}
-
-ControlInterface::ControlInterface( int ncateg, int nlayer,
-				    char **layers, char *mask )
-{
-  _factory = new AlgorithmFactory( g_search_dirs );
-
-  _hdr = new Header;
-
-  _layers = 0;
-
-  _file = 0;
-  _mult = 1.0;
-
-  _alg_id    = 0;
-  _alg_param = 0;
-
-  _presence = 0;
-  _absence  = 0;
-
-  f_error[0] = '\0';
-
-  setEnvironment( ncateg, nlayer, layers, mask );
 }
 
 
@@ -138,10 +117,19 @@ ControlInterface::getVersion()
 
 /****************************/
 /*** available Algorithms ***/
-Algorithm **
+AlgMetadata **
 ControlInterface::availableAlgorithms()
 {
   return _factory->availableAlgorithms();
+}
+
+
+/**************************/
+/*** algorithm Metadata ***/
+AlgMetadata *
+ControlInterface::algorithmMetadata( char *algorithm_id )
+{
+  return _factory->algorithmMetadata( algorithm_id );
 }
 
 
@@ -157,23 +145,36 @@ ControlInterface::numAvailableAlgorithms()
 /***********************/
 /*** set Environment ***/
 void
-ControlInterface::setEnvironment( int ncateg, int nlayer,
-				  char **layers, char *mask )
+ControlInterface::setEnvironment( int num_categ,
+				  char **categ_map,
+				  int num_continuos,
+				  char **continuous_map,
+				  char *mask )
 {
-  _ncateg = ncateg;
+  _ncateg = num_categ;
+  _nlayers = num_categ + num_continuos;
+
   stringCopy( &_mask, mask );
 
   // Reallocate vector that stores the names of the layers.
   if ( _layers )
     delete[] _layers;
-  _nlayers = nlayer;
   _layers = new char*[_nlayers];
 
-  for ( int i = 0; i < _nlayers; i++ )
-    {
-      _layers[i] = 0;
-      stringCopy( _layers + i, layers[i] );
-    }
+  // stringCopy() needs this.
+  memset( _layers, 0, _nlayers * sizeof(char *) );
+
+  char **layers = _layers;
+
+  // Copy categorical maps.
+  char **end = _layers + _ncateg;
+  while ( layers < end )
+    stringCopy( layers++, *categ_map++ );
+
+  // Copy continuos maps.
+  end += num_continuos;
+  while ( layers < end )
+    stringCopy( layers++, *continuous_map++ );
 }
 
 
@@ -203,10 +204,22 @@ ControlInterface::setOutputMap( char *file, char *map_file,
 /*********************/
 /*** set Algorithm ***/
 void
-ControlInterface::setAlgorithm( char *id, char *param )
+ControlInterface::setAlgorithm( char *id, int nparam,
+				OmAlgParameter *param )
 {
   stringCopy( &_alg_id, id );
-  stringCopy( &_alg_param, param );
+
+  // Reallocate '_alg_param' to stores 'nparam' parameters.
+  _alg_nparam = nparam;
+  if ( _alg_param )
+    delete[] _alg_param;
+  _alg_param = new OmAlgParameter[ _alg_nparam ];
+
+  // Copy 'param' to '_alg_param'.
+  OmAlgParameter *dst = _alg_param;
+  OmAlgParameter *end = _alg_param + _alg_nparam;
+  while ( dst < end )
+    *dst++ = *param++;
 }
 
 
@@ -249,7 +262,8 @@ ControlInterface::run()
   Sampler samp( env, _presence, _absence );
 
   Algorithm *alg;
-  alg = _factory->newAlgorithm( &samp, _alg_id, _alg_param );
+  alg = _factory->newAlgorithm( &samp, _alg_id, _alg_nparam,
+                                _alg_param );
 
   if ( ! alg )
     {
@@ -430,7 +444,7 @@ ControlInterface::createMap( Environment *env, Algorithm *alg )
 	  sum += val;
 	}
 
-      g_log( "Line %04d / %4d : %+08.2f \r", ++row, _hdr->ydim,
+      g_log( "Line %04d / %4d : %+7.2f \r", ++row, _hdr->ydim,
 	     sum / _hdr->xdim );
     }
   g_log( "\n" );

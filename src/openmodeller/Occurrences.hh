@@ -62,8 +62,23 @@ public:
 
   char *name()   { return _name; }
 
-  /** Insert an occurrence. */
+  /** Insert an occurrence.
+   * 
+   * @param longitude Longitude in decimal degrees.
+   * @param latitude Latitude in decimal degrees.
+   * @param error (longitude, latitude) uncertanty in meters.
+   * @param abundance Number of items found in (longitude,
+   *  latitude).
+   * @param num_attributes Number of possible modelling
+   *  attributes.
+   * @param attributes Vector with possible modelling attributes.
+   */
   void insert( Coord longitude, Coord latitude, Scalar error,
+	       Scalar abundance=1.0, int num_attributes=0,
+	       Scalar *attributes=0 );
+
+  /** Insert an occurrence without uncertanty. */
+  void insert( Coord longitude, Coord latitude,
 	       Scalar abundance=1.0, int num_attributes=0,
 	       Scalar *attributes=0 );
 

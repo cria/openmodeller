@@ -33,6 +33,7 @@
 #include <om_control.hh>
 #include <om_algorithm.hh>
 #include <om_algorithm_metadata.hh>
+#include <OmAlgParameter.hh>
 #include <om_sampler.hh>
 #include <om_sampled_data.hh>
 #include <om_occurrences.hh>

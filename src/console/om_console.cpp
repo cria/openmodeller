@@ -35,12 +35,14 @@
 #include <stdio.h>
 
 
-int          showAlgorithms ( Algorithm **algs );
-Algorithm   *getAlgorithm   ( Algorithm **algs, char *alg_id );
-char        *readParameters ( Algorithm *algs );
-Algorithm   *readAlgorithm  ( Algorithm **algs );
+int showAlgorithms ( AlgMetadata **availables );
+char *readParameters ( AlgMetadata *metadata );
+AlgMetadata *readAlgorithm( AlgMetadata **availables );
 Occurrences *readOccurrences( char *file, char *name,
 			      char *coord_system );
+int readParameters( OmAlgParameter *result, AlgMetadata *metadata,
+                    int num_param_values, char **param_values );
+char *extractParameter( char *name, int nvet, char **vet );
 
 
 /**************************************************************/
@@ -72,24 +74,21 @@ main( int argc, char **argv )
 
   // Categorical environmental maps and the number of these maps.
   char *cat_label = "Categorical map";
-  int  ncat = fp.count( cat_label );
+  int  ncat  = fp.count( cat_label );
+  char **cat = new (char *)[ncat];
 
   // Continuous environmental maps and the number of these maps.
   char *map_label = "Map";
-  int nmap = fp.count( map_label );
-
-  // Total number of maps of any type.
-  int nlayers = nmap + ncat;
-
-  // create a char array and populate it with all layer names
-  char **layers = new char*[nlayers];
+  int  nmap  = fp.count( map_label );
+  char **map = new (char *)[nmap];
 
   // Initiate the environment with all maps.
-  fp.getAll( cat_label, layers );
-  fp.getAll( map_label, layers + ncat );
-  om.setEnvironment( ncat, nlayers, layers, mask );
+  fp.getAll( cat_label, cat );
+  fp.getAll( map_label, map );
+  om.setEnvironment( ncat, cat, nmap, map, mask );
 
-  delete layers;
+  delete cat;
+  delete map;
 
 
   /*** Output Map ***/
@@ -124,28 +123,37 @@ main( int argc, char **argv )
   /*** Algorithm ***/
 
   // Find out which model algorithm is to be used.
-  Algorithm **algorithms = om.availableAlgorithms();
-  Algorithm *alg;
+  AlgMetadata **availables = om.availableAlgorithms();
+  AlgMetadata *metadata;
   char *alg_id = fp.get( "Algorithm" );
 
   // Try to used the algorithm specified in the request file.
   // If it can not be used, read it from stdin.
-  if ( ! (alg = getAlgorithm( algorithms, alg_id )) &&
-       ! (alg = readAlgorithm( algorithms )) )
+  if ( ! (metadata = om.algorithmMetadata( alg_id )) &&
+       ! (metadata = readAlgorithm( availables )) )
     return 1;
 
-  g_log( "Algorithm used: %s\n", alg->getID() );
-  g_log( " %s\n\n", alg->getMetadata()->description );
+  g_log( "Algorithm used: %s\n", metadata->id );
+  g_log( " %s\n\n", metadata->description );
 
-  // Obtain any model parameters that are specified in the request
-  // file
-  char *param = fp.get( "Parameters" );
-  if ( ! param )
-    param = readParameters( alg );
+  // Obtain any model parameter specified in the request file.
+  char *param_label = "Parameter";
+  int   req_nparam  = fp.count( param_label );
+  char **req_param  = new (char *)[req_nparam];
 
+  // For resulting parameters storage.
+  int nparam = metadata->nparam;
+  OmAlgParameter *param = new OmAlgParameter[nparam];
+
+  // Read from console the parameters not setted by request
+  // file. Fills 'param' with all 'metadata->nparam' parameters
+  // setted.
+  readParameters( param, metadata, req_nparam, req_param );
 
   // Set the model algorithm to be used by the controller
-  om.setAlgorithm( alg->getID(), param );
+  om.setAlgorithm( metadata->id, nparam, param );
+
+  delete[] param;
 
 
   /*** Occurrence points ***/
@@ -186,85 +194,23 @@ main( int argc, char **argv )
 // equal to the number of algorithms.
 //
 int
-showAlgorithms( Algorithm **algorithms )
+showAlgorithms( AlgMetadata **availables )
 {
-  if ( ! *algorithms )
+  if ( ! *availables )
     {
-      printf( "No algorithms available.\n" );
+      printf( "No algorithm available.\n" );
       return 0;
     }
 
-  int nalg = 0;
-  Algorithm *alg;
-  while ( alg = *algorithms++ )
-    printf( " [%d] %s\n", nalg++, alg->getID() );
+  int count = 0;
+  AlgMetadata *metadata;
+  while ( metadata = *availables++ )
+    printf( " [%d] %s\n", count++, metadata->id );
 
-  printf( " [%d] Quit\n", nalg );
+  printf( " [%d] Quit\n", count );
   printf( "\n" );
 
-  return nalg;
-}
-
-
-/*********************/
-/*** get algorithm ***/
-Algorithm *
-getAlgorithm( Algorithm **algorithms, char *alg_id )
-{
-  if ( ! alg_id )
-    return 0;
-
-  Algorithm *alg;
-  while ( alg = *algorithms++ )
-    if ( ! strcmp( alg_id, alg->getID() ) )
-      return alg;
-
-  return 0;
-}
-
-
-/***********************/
-/*** read parameters ***/
-//
-// Let the user choose the algorithm's parameters.
-//
-char *
-readParameters( Algorithm *algorithms )
-{
-  AlgorithmMetadata *meta = algorithms->getMetadata();
-
-  int nparam = meta->nparam;
-  AlgorithmParameter *param = meta->param;
-
-  // Read the parameters' values in an array of floats.
-  float *values = new float[nparam];
-  for ( int i = 0; i < nparam; i++, param++ )
-    {
-      printf( "\nParameter %s:\n", param->name );
-      printf( " %s:\n", param->description );
-      if ( param->has_min )
-	printf( " %s >= %f\n", param->name, param->min );
-      if ( param->has_max )
-	printf( " %s <= %f\n\n", param->name, param->max );
-
-      // Read parameter's value.
-      printf( "Value [%f]: ", values[i] = param->typical );
-      scanf( "%f", values+i );
-    }
-
-  // Transform the array of floats in a string.
-  char *str_values = new char[32 * nparam];
-  char *end = str_values;
-  for ( int i = 0; i < nparam; i++ )
-    {
-      sprintf( end, "%10.4f", values[i] );
-      end += strlen(end);
-    }
-
-  // Array of floats.
-  delete values;
-
-  return str_values;
+  return count;
 }
 
 
@@ -274,25 +220,28 @@ readParameters( Algorithm *algorithms )
 // Let the user choose an algorithm and enter its parameters.
 // Returns the choosed algorithm's metadata.
 //
-Algorithm *
-readAlgorithm( Algorithm **algorithms )
+AlgMetadata *
+readAlgorithm( AlgMetadata **availables )
 {
+  char buf[128];
+
   while ( 1 )
     {
       printf( "\nChoose an algorithm between:\n" );
 
-      int quit = showAlgorithms( algorithms );
+      int quit = showAlgorithms( availables );
       int option = -1;
 
       printf( "\nOption: " );
-      scanf( "%d", &option );
+      fgets( buf, 128, stdin );
+      option = atoi( buf );
 
       if ( option == quit )
 	return 0;
 
       // An algorithm was choosed.
       else if ( option >= 0 && option < quit )
-	return algorithms[option];
+	return availables[option];
     }
 }
 
@@ -313,4 +262,74 @@ readOccurrences( char *file, char *name, char *coord_system )
     }
 
   return oc_file.remove( name );
+}
+
+
+/***********************/
+/*** read Parameters ***/
+int
+readParameters( OmAlgParameter *result, AlgMetadata *metadata,
+                int str_nparam, char **str_param )
+{
+  AlgParamMetadata *param = metadata->param;
+  AlgParamMetadata *end   = param + metadata->nparam;
+
+  // For each algorithm parameter metadata...
+  for ( ; param < end; param++, result++ )
+    {
+      // The resulting name is equal the name setted in
+      // algorithm's metadata.
+      result->setName( param->name );
+
+      // Read the resulting value from str_param.
+      char *value = extractParameter( result->name(), str_nparam,
+                                      str_param );
+
+      if ( value )
+        result->setValue( value );
+
+      // If the value is not in str_param, read it from console.
+      else
+        {
+          // Informs the parameter's metadata to the user.
+          printf( "\nParameter %s:\n", param->name );
+          printf( " %s:\n", param->description );
+          if ( param->has_min )
+            printf( " %s >= %f\n", param->name, param->min );
+          if ( param->has_max )
+            printf( " %s <= %f\n\n", param->name, param->max );
+          printf( "Value [%f]: ", param->typical );
+
+          // Read parameter's value or use the "typical" value
+          // if the user does not enter a new value.
+          char value[64];
+	  *value = 0;
+	  if ( ! fgets( value, 64, stdin ) || (*value < ' ') )
+            sprintf( value, "%16f", param->typical );
+
+          result->setValue( value );
+        }
+    }
+
+  return metadata->nparam;
+}
+
+
+/*************************/
+/*** extract Parameter ***/
+/**
+ * Search for 'name' in the 'nvet' elements of the vector 'vet'.
+ * If the string 'name' is in the begining of some string vet[i]
+ * then returns a pointer to the next character of vet[i],
+ * otherwise returns 0.
+ */
+char *
+extractParameter( char *name, int nvet, char **vet )
+{
+  int length = strlen( name );
+  char **end = vet + nvet;
+
+  while ( vet < end )
+    if ( ! strncmp( name, *vet++, length ) )
+      return *(vet-1) + length;
 }

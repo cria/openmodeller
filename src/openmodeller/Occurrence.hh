@@ -48,8 +48,8 @@ public:
 
   /** Occurrence constructor with uncertanty.
    * 
-   * @param px Longitude of the occurrence (decimal degrees).
-   * @param py Latitude of the occurrence (decimal degrees).
+   * @param x Longitude of the occurrence (decimal degrees).
+   * @param y Latitude of the occurrence (decimal degrees).
    * @param error (x,y) uncertanty (meters).
    * @param abundance Number of items found in (x,y).
    * @param num_attributes Number of possible modelling
@@ -64,8 +64,8 @@ public:
 
   /** Occurrence constructor without uncertanty.
    * 
-   * @param px Longitude of the occurrence (decimal degrees).
-   * @param py Latitude of the occurrence (decimal degrees).
+   * @param x Longitude of the occurrence (decimal degrees).
+   * @param y Latitude of the occurrence (decimal degrees).
    * @param error (x,y) uncertanty (meters).
    * @param abundance Number of items found in (x,y).
    * @param num_attributes Number of possible modelling

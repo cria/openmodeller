@@ -108,6 +108,16 @@ Occurrences::insert( Coord longitude, Coord latitude,
 }
 
 
+/**************/
+/*** insert ***/
+void
+Occurrences::insert( Coord longitude, Coord latitude,
+		     Scalar abundance, int nattr, Scalar *attr )
+{
+  insert( longitude, latitude, abundance, -1.0, nattr, attr );
+}
+
+
 /***********************/
 /*** num Occurrences ***/
 int

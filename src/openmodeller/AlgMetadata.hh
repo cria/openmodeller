@@ -33,6 +33,9 @@
 #include <om_defs.hh>
 
 
+/****************************************************************/
+/***************** Algorithm Parameter Metadata *****************/
+
 /**
  * Algorithms' parameter metadata structure.
  * 
@@ -43,14 +46,21 @@ typedef struct
   char *type;
   char *description;
 
-  int    has_min; //< Zero if the parameter has no lower limit.
-  Scalar min;     //< Minimum parameter value.
-  int    has_max; //< Zero if the parameter has no upper limit.
-  Scalar max;     //< Maximum parameter value.
-  Scalar typical; //< Typical parameter value.
+  int    has_min; ///< Zero if the parameter has no lower limit.
+  Scalar min;     ///< Minimum parameter value.
+  int    has_max; ///< Zero if the parameter has no upper limit.
+  Scalar max;     ///< Maximum parameter value.
+  Scalar typical; ///< Typical parameter value.
 
-} AlgorithmParameter;
+} AlgParamMetadata;
 
+
+
+
+/****************************************************************/
+/********************** Algorithm Metadata **********************/
+
+#define OM_ALG_ID_SIZE 256
 
 /** 
  * Algorithms' metadata structure.
@@ -58,19 +68,21 @@ typedef struct
  */
 typedef struct
 {
-  char *name;
-  char *version;
-  char *biblio;
-  char *description;
-  char *author;
-  char *contact;
+  /** Automatic generated IDentification. */
+  char id[OM_ALG_ID_SIZE];
 
-  int  categorical;
-  int  absence;
-  int  nparam;
-  AlgorithmParameter *param;
+  char *name;        ///< Well known name.
+  char *version;     ///< Built version.
+  char *biblio;      ///< Bibliography reference.
+  char *description; ///< Textual description.
+  char *author;      ///< Who implemented.
+  char *contact;     ///< author's contact (eg e-mail).
+  int  categorical;  ///< Is not zero accept categorical maps.
+  int  absence;      ///< Needs absence points to run.
+  int  nparam;       ///< Number of parameters.
+  AlgParamMetadata *param;
 
-} AlgorithmMetadata;
+} AlgMetadata;
 
 
 

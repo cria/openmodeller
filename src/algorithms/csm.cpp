@@ -27,12 +27,12 @@
 #define NUM_PARAM 0
 
 
-/******************************/
-/*** Algorithm's parameters ***/
+/************************************/
+/*** Algorithm parameter metadata ***/
 
-static AlgorithmParameter *parameters = 0;
+static AlgParamMetadata *parameters = 0;
 /*
-AlgorithmParameter parameters[NUM_PARAM] = {
+AlgParamMetadata parameters[NUM_PARAM] = {
 
   // Metadata of the first parameter.
   {
@@ -53,8 +53,9 @@ AlgorithmParameter parameters[NUM_PARAM] = {
 /************************************/
 /*** Algorithm's general metadata ***/
 
-static AlgorithmMetadata metadata = {
+static AlgMetadata metadata = {
 
+  "",              // Internal usage.
   "CSM",           // Name.
   "0.1",       	   // Version.
   "Bibliography",  // Bibliography.

@@ -205,11 +205,11 @@ Log::warn( char *format, ... )
   vsnprintf( end, buf_size - len, format, ap );
   va_end( ap );
 
-
+  /*
   // Print 'buf' in standard error output.
   if ( _log != stderr )
     fprintf( stderr, "%s", buf );
-
+  */
 
   // Print 'buf' in log stream.
   fprintf( _log, "%s", buf );
@@ -244,11 +244,11 @@ Log::error( int exit_code, char *format, ... )
   vsnprintf( end, buf_size - len, format, ap );
   va_end( ap );
 
-
+  /*
   // Print 'buf' in standard error output.
   if ( _log != stderr )
     fprintf( stderr, "%s", buf );
-
+  */
 
   // Print 'buf' in log stream.
   fprintf( _log, "%s", buf );

@@ -77,7 +77,7 @@ AlgorithmFactory::DLL::load()
   // Instantiated the algorithm.
   TAlgFactory factory;
   factory = (TAlgFactory) dllFunction( _handle,
-				       "algorithmFactory" );
+                                       "algorithmFactory" );
 
   error = dllError( _handle );
   if ( error != NULL )
@@ -114,7 +114,7 @@ AlgorithmFactory::~AlgorithmFactory()
 
 /****************************/
 /*** available Algorithms ***/
-Algorithm **
+AlgMetadata **
 AlgorithmFactory::availableAlgorithms()
 {
   // Reloads (refresh) the DLLs in _lstDLL.
@@ -122,17 +122,17 @@ AlgorithmFactory::availableAlgorithms()
   loadDLLs( _dirs );
 
   // Make room for the algorithms' metadatas.
-  Algorithm **all;
-  all = new (Algorithm *)[_lstDLL.length() + 1];
+  AlgMetadata **all;
+  all = new (AlgMetadata *)[_lstDLL.length() + 1];
 
   // For each DLL found:
-  Algorithm **alg = all;
+  AlgMetadata **metadata = all;
   DLL *dll;
   for ( _lstDLL.head(); dll = _lstDLL.get(); _lstDLL.next() )
-    *alg++ = dll->getAlgorithm();
+    *metadata++ = dll->getAlgorithm()->getMetadata();
 
   // Null terminated.
-  *alg = 0;
+  *metadata = 0;
   
   return all;
 }
@@ -151,11 +151,37 @@ AlgorithmFactory::numAvailableAlgorithms()
 }
 
 
+/***************************/
+/***  algorithm Metadata ***/
+AlgMetadata *
+AlgorithmFactory::algorithmMetadata( char *id )
+{
+  if ( ! id )
+    return 0;
+
+  // Metadata to be returned.
+  AlgMetadata *metadata;
+
+  // For each DLL opened.
+  DLL *dll;
+  for ( _lstDLL.head(); dll = _lstDLL.get(); _lstDLL.next() )
+    {
+      metadata = dll->getAlgorithm()->getMetadata();
+
+      if ( ! strcmp( id, metadata->id ) )
+	return metadata;
+    }
+
+  return 0;
+}
+
+
 /*********************/
 /*** new Algorithm ***/
 Algorithm *
 AlgorithmFactory::newAlgorithm( Sampler *samp, char *id,
-				char *param )
+                                int nparam,
+                                OmAlgParameter *param )
 {
   Algorithm *alg;
 
@@ -172,7 +198,7 @@ AlgorithmFactory::newAlgorithm( Sampler *samp, char *id,
       if ( ! strcmp ( id, alg->getID() ) )
 	{
 	  alg->setSampler( samp );
-	  alg->setParameters( param );
+	  alg->setParameters( nparam, param );
 	  return alg;
 	}
     }
@@ -221,7 +247,7 @@ AlgorithmFactory::scanDir( char *dir, ListDLL &lst )
   char **pent = entries;
   while ( *pent )
     {
-      g_log.info( "- Loading: %s ... ", *pent );
+      g_log( "- Loading: %s ... ", *pent );
 
       // Create a new DLL for each directory entry found.
       DLL *dll = new DLL( *pent++ );
@@ -229,10 +255,10 @@ AlgorithmFactory::scanDir( char *dir, ListDLL &lst )
       // If the dll can create an algorithm, insert it in to
       // the list.
       if ( dll->load() )
-	{
-	  g_log.info( "ok\n" );
-	  lst.append( dll );
-	}
+        {
+          g_log( "ok\n" );
+          lst.append( dll );
+        }
 
       // If it can not... :(
       // This deallocate the directory entry setted!
