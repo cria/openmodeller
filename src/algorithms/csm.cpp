@@ -412,7 +412,7 @@ Scalar Csm::getValue( Scalar *x )
         //printf ("%f\t", myFloat );
     }
     //printf(" ----  end of scalar\n ");
-    displayMatrix(tmp_gsl_matrix,"tmp_gsl_matrix before matrix multiplication");
+    //displayMatrix(tmp_gsl_matrix,"tmp_gsl_matrix before matrix multiplication");
     if (myAllAreZeroFlag) {return 0;}
     
 
@@ -424,13 +424,15 @@ Scalar Csm::getValue( Scalar *x )
       printf("Error during creation of product Z in CSM getValue - number of rows dont match\n");
       exit(0);
     }
-    if (z->size2 != tmp_gsl_matrix->size2)
+
+    // number of cols in z should == number of components
+    if (z->size2 != tmp_gsl_matrix->size1)
     {
-      printf("Error during creation of product Z in CSM getValue - number of cols dont match\n");
+      //printf("Error during creation of product Z in CSM getValue - number of cols dont match number of components\n");
       //exit(0);
     }
 
-    displayMatrix(z,"z ");
+    //displayMatrix(z,"z ");
     // now we standardise the values in z
     // we do this by dividing each element in z by the square root of its associated element in 
     // the eigenvalues vector
@@ -439,17 +441,17 @@ Scalar Csm::getValue( Scalar *x )
     {
       gsl_matrix_set(z,0,i,gsl_matrix_get (z,0,i)/sqrt(gsl_vector_get(_gsl_eigenvalue_vector,i)));
     }
-    displayMatrix(z,"After standardising z");
+    //displayMatrix(z,"After standardising z");
     // now we square each element and sum them    
     myFloat=0;
     for (int i=0;i<z->size2;i++)
     {
       myFloat= pow(gsl_matrix_get (z,0,i), 2); 
     }       
-    displayMatrix(z,"After sum of squares in z");
+    //displayMatrix(z,"After sum of squares in z");
     
 
-    printf ("Prob: %f\n",myFloat);
+    //printf ("Prob: %f\n",myFloat);
     //now we
     //now clear away the temporary vars
     gsl_matrix_free (z);
