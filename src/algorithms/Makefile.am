@@ -36,9 +36,16 @@ libomcsm_la_SOURCES = \
 	csm.cpp \
 	csm.hh
 
-libomdistance_to_average_la_CPPFLAGS = $(GSL_CFLAGS) -I../src/inc
+libomdistance_to_average_la_LIBADD = ../src/lib/libopenmodeller.la
+libomdistance_to_average_la_CPPFLAGS = -I../src/inc
+
+libombioclim_la_LIBADD = ../src/lib/libopenmodeller.la
 libombioclim_la_CPPFLAGS = -I../src/inc
+
+libomminimum_distance_la_LIBADD = ../src/lib/libopenmodeller.la
 libomminimum_distance_la_CPPFLAGS = -I../src/inc
-libomcsm_la_CPPFLAGS = -I../src/inc
+
+libomcsm_la_LIBADD = ../src/lib/libopenmodeller.la
+libomcsm_la_CPPFLAGS = $(GSL_CFLAGS) -I../src/inc
 
 
