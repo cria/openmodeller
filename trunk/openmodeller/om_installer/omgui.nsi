@@ -95,18 +95,102 @@ Section "MainSection" SEC01
   ;
   SetOutPath $INSTDIR\algs
   SetOverwrite try
-  File "..\algs\*.dll" ;once again I am sure only the dll's need copying  
+  File "..\algs\om_bioclim.dll"
+  File "..\algs\om_bioclim_distance.dll"
+  File "..\algs\om_csmbs.dll"
+  File "..\algs\om_csmkg.dll"
+  File "..\algs\om_distance_to_average.dll"
+  File "..\algs\om_garp.dll"
+  File "..\algs\om_garp_best_subsets.dll"
+  File "..\algs\om_mindist.dll"
   
+  ;
   ; Now the sample data
+  ;
+  CreateDirectory  $INSTDIR\sample_data
   SetOutPath $INSTDIR\sample_data
   SetOverwrite try
-  File /r "..\om_sample_data\" ;<-- /r = recursive copy
+  File "..\om_sample_data\furcata_boliviana.txt"
 
-  ;you could also say just
-  ;File "..\"  
-  ;and that would include all files in the above directory
-  ;but I want to be sure to strip out just the required files
+  CreateDirectory $INSTDIR\sample_data\rain_coolest
+  SetOutPath $INSTDIR\sample_data\rain_coolest
+  SetOverWrite try
+  File "..\om_sample_data\rain_coolest\dblbnd.adf"
+  File "..\om_sample_data\rain_coolest\hdr.adf"
+  File "..\om_sample_data\rain_coolest\prj.adf"
+  File "..\om_sample_data\rain_coolest\sta.adf"
+  File "..\om_sample_data\rain_coolest\w001001.adf"
+  File "..\om_sample_data\rain_coolest\w001001x.adf"
 
+  CreateDirectory $INSTDIR\sample_data\rain_hottest
+  SetOutPath $INSTDIR\sample_data\rain_hottest
+  SetOverWrite try
+  File "..\om_sample_data\rain_hottest\dblbnd.adf"
+  File "..\om_sample_data\rain_hottest\hdr.adf"
+  File "..\om_sample_data\rain_hottest\prj.adf"
+  File "..\om_sample_data\rain_hottest\sta.adf"
+  File "..\om_sample_data\rain_hottest\w001001.adf"
+  File "..\om_sample_data\rain_hottest\w001001x.adf"
+
+  CreateDirectory $INSTDIR\sample_data\rain_tot
+  SetOutPath $INSTDIR\sample_data\rain_tot
+  SetOverWrite try
+  File "..\om_sample_data\rain_tot\dblbnd.adf"
+  File "..\om_sample_data\rain_tot\hdr.adf"
+  File "..\om_sample_data\rain_tot\prj.adf"
+  File "..\om_sample_data\rain_tot\sta.adf"
+  File "..\om_sample_data\rain_tot\w001001.adf"
+  File "..\om_sample_data\rain_tot\w001001x.adf"
+
+  CreateDirectory $INSTDIR\sample_data\temp_avg
+  SetOutPath $INSTDIR\sample_data\temp_avg
+  SetOverWrite try
+  File "..\om_sample_data\temp_avg\dblbnd.adf"
+  File "..\om_sample_data\temp_avg\hdr.adf"
+  File "..\om_sample_data\temp_avg\prj.adf"
+  File "..\om_sample_data\temp_avg\sta.adf"
+  File "..\om_sample_data\temp_avg\w001001.adf"
+  File "..\om_sample_data\temp_avg\w001001x.adf"
+
+  CreateDirectory $INSTDIR\sample_data\temp_coolest
+  SetOutPath $INSTDIR\sample_data\temp_coolest
+  SetOverWrite try
+  File "..\om_sample_data\temp_coolest\dblbnd.adf"
+  File "..\om_sample_data\temp_coolest\hdr.adf"
+  File "..\om_sample_data\temp_coolest\prj.adf"
+  File "..\om_sample_data\temp_coolest\sta.adf"
+  File "..\om_sample_data\temp_coolest\w001001.adf"
+  File "..\om_sample_data\temp_coolest\w001001x.adf"
+
+  CreateDirectory $INSTDIR\sample_data\temp_dryest
+  SetOutPath $INSTDIR\sample_data\temp_dryest
+  SetOverWrite try
+  File "..\om_sample_data\temp_dryest\dblbnd.adf"
+  File "..\om_sample_data\temp_dryest\hdr.adf"
+  File "..\om_sample_data\temp_dryest\prj.adf"
+  File "..\om_sample_data\temp_dryest\sta.adf"
+  File "..\om_sample_data\temp_dryest\w001001.adf"
+  File "..\om_sample_data\temp_dryest\w001001x.adf"
+
+  CreateDirectory $INSTDIR\sample_data\temp_hotest
+  SetOutPath $INSTDIR\sample_data\temp_hotest
+  SetOverWrite try
+  File "..\om_sample_data\temp_hotest\dblbnd.adf"
+  File "..\om_sample_data\temp_hotest\hdr.adf"
+  File "..\om_sample_data\temp_hotest\prj.adf"
+  File "..\om_sample_data\temp_hotest\sta.adf"
+  File "..\om_sample_data\temp_hotest\w001001.adf"
+  File "..\om_sample_data\temp_hotest\w001001x.adf"
+
+  CreateDirectory $INSTDIR\sample_data\temp_wettest
+  SetOutPath $INSTDIR\sample_data\temp_wettest
+  SetOverWrite try
+  File "..\om_sample_data\temp_wettest\dblbnd.adf"
+  File "..\om_sample_data\temp_wettest\hdr.adf"
+  File "..\om_sample_data\temp_wettest\prj.adf"
+  File "..\om_sample_data\temp_wettest\sta.adf"
+  File "..\om_sample_data\temp_wettest\w001001.adf"
+  File "..\om_sample_data\temp_wettest\w001001x.adf"
 SectionEnd
 
 Section -AdditionalIcons
@@ -139,18 +223,119 @@ Function un.onInit
 FunctionEnd
 
 Section Uninstall
-  Delete "$INSTDIR\${PRODUCT_NAME}.url"
-  Delete "$INSTDIR\uninst.exe"
+  ;PROGRAM FILES
+  Delete /REBOOTOK "$INSTDIR\${PRODUCT_NAME}.url"
+  Delete /REBOOTOK "$INSTDIR\uninst.exe"
+  Delete /REBOOTOK "$INSTDIR\om_logo.bmp"
+  Delete /REBOOTOK "$INSTDIR\ecw_cs.dat"
+  Delete /REBOOTOK "$INSTDIR\gcs.csv"
+  Delete /REBOOTOK "$INSTDIR\gdal12.dll"
+  Delete /REBOOTOK "$INSTDIR\gsl.dll"
+  Delete /REBOOTOK "$INSTDIR\gslcblas.dll"
+  Delete /REBOOTOK "$INSTDIR\libexif-9.dll"
+  Delete /REBOOTOK "$INSTDIR\libexpat.dll"
+  Delete /REBOOTOK "$INSTDIR\libexpatMT.lib"
+  Delete /REBOOTOK "$INSTDIR\libopenmodeller.dll"
+  Delete /REBOOTOK "$INSTDIR\om_config.txt"
+  Delete /REBOOTOK "$INSTDIR\om_console.exe"
+  Delete /REBOOTOK "$INSTDIR\omgui.exe"
+  Delete /REBOOTOK "$INSTDIR\pcs.csv"
+  Delete /REBOOTOK "$INSTDIR\prime_meridian.csv" 
+  Delete /REBOOTOK "$INSTDIR\proj.dll"  
+  Delete /REBOOTOK "$INSTDIR\projop_wparm.csv"  
+  Delete /REBOOTOK "$INSTDIR\qt-mtnc321.dll" ;QT Non Commercial lib  
+  Delete /REBOOTOK "$INSTDIR\s57attributes.csv"  
+  Delete /REBOOTOK "$INSTDIR\s57expectedinput.csv"  
+  Delete /REBOOTOK "$INSTDIR\s57objectclasses.csv"  
+  Delete /REBOOTOK "$INSTDIR\stateplane.csv"  
+  Delete /REBOOTOK "$INSTDIR\unit_of_measure.csv"  
+  Delete /REBOOTOK "$INSTDIR\wkt_defs.txt"  
+  Delete /REBOOTOK "$INSTDIR\msvcr80.dll" 
+  Delete /REBOOTOK "$INSTDIR\msvcp80.dll" 
+  Delete /REBOOTOK "$INSTDIR\msvcp60.dll"
 
-  Delete "$SMPROGRAMS\openModeller\Uninstall.lnk"
-  Delete "$SMPROGRAMS\openModeller\openModeller.lnk"
-  Delete "$SMPROGRAMS\openModeller\Website.lnk"
-  Delete "$DESKTOP\openModeller.lnk"
+  ;ALGORITHMS
+  Delete /REBOOTOK "$INSTDIR\algs\om_bioclim.dll"
+  Delete /REBOOTOK "$INSTDIR\algs\om_bioclim_distance.dll"
+  Delete /REBOOTOK "$INSTDIR\algs\om_csmbs.dll"
+  Delete /REBOOTOK "$INSTDIR\algs\om_csmkg.dll"
+  Delete /REBOOTOK "$INSTDIR\algs\om_distance_to_average.dll"
+  Delete /REBOOTOK "$INSTDIR\algs\om_garp.dll"
+  Delete /REBOOTOK "$INSTDIR\algs\om_garp_best_subsets.dll"
+  Delete /REBOOTOK "$INSTDIR\algs\om_mindist.dll"
 
-  RMDir /r "$SMPROGRAMS\openModeller"
-  RMDir /r /REBOOTOK $INSTDIR\algs
-  RMDir /r /REBOOTOK $INSTDIR
+  ;SAMPLE DATA
+  Delete /REBOOTOK "$INSTDIR\sample_data\furcata_boliviana.txt"
+  Delete /REBOOTOK "$INSTDIR\sample_data\rain_coolest\dblbnd.adf"
+  Delete /REBOOTOK "$INSTDIR\sample_data\rain_coolest\hdr.adf"
+  Delete /REBOOTOK "$INSTDIR\sample_data\rain_coolest\prj.adf"
+  Delete /REBOOTOK "$INSTDIR\sample_data\rain_coolest\sta.adf"
+  Delete /REBOOTOK "$INSTDIR\sample_data\rain_coolest\w001001.adf"
+  Delete /REBOOTOK "$INSTDIR\sample_data\rain_coolest\w001001x.adf"
+  Delete /REBOOTOK "$INSTDIR\sample_data\rain_hottest\dblbnd.adf"
+  Delete /REBOOTOK "$INSTDIR\sample_data\rain_hottest\hdr.adf"
+  Delete /REBOOTOK "$INSTDIR\sample_data\rain_hottest\prj.adf"
+  Delete /REBOOTOK "$INSTDIR\sample_data\rain_hottest\sta.adf"
+  Delete /REBOOTOK "$INSTDIR\sample_data\rain_hottest\w001001.adf"
+  Delete /REBOOTOK "$INSTDIR\sample_data\rain_hottest\w001001x.adf"
+  Delete /REBOOTOK "$INSTDIR\sample_data\rain_tot\dblbnd.adf"
+  Delete /REBOOTOK "$INSTDIR\sample_data\rain_tot\hdr.adf"
+  Delete /REBOOTOK "$INSTDIR\sample_data\rain_tot\prj.adf"
+  Delete /REBOOTOK "$INSTDIR\sample_data\rain_tot\sta.adf"
+  Delete /REBOOTOK "$INSTDIR\sample_data\rain_tot\w001001.adf"
+  Delete /REBOOTOK "$INSTDIR\sample_data\rain_tot\w001001x.adf"
+  Delete /REBOOTOK "$INSTDIR\sample_data\temp_avg\dblbnd.adf"
+  Delete /REBOOTOK "$INSTDIR\sample_data\temp_avg\hdr.adf"
+  Delete /REBOOTOK "$INSTDIR\sample_data\temp_avg\prj.adf"
+  Delete /REBOOTOK "$INSTDIR\sample_data\temp_avg\sta.adf"
+  Delete /REBOOTOK "$INSTDIR\sample_data\temp_avg\w001001.adf"
+  Delete /REBOOTOK "$INSTDIR\sample_data\temp_avg\w001001x.adf"
+  Delete /REBOOTOK "$INSTDIR\sample_data\temp_coolest\dblbnd.adf"
+  Delete /REBOOTOK "$INSTDIR\sample_data\temp_coolest\hdr.adf"
+  Delete /REBOOTOK "$INSTDIR\sample_data\temp_coolest\prj.adf"
+  Delete /REBOOTOK "$INSTDIR\sample_data\temp_coolest\sta.adf"
+  Delete /REBOOTOK "$INSTDIR\sample_data\temp_coolest\w001001.adf"
+  Delete /REBOOTOK "$INSTDIR\sample_data\temp_coolest\w001001x.adf"
+  Delete /REBOOTOK "$INSTDIR\sample_data\temp_dryest\dblbnd.adf"
+  Delete /REBOOTOK "$INSTDIR\sample_data\temp_dryest\hdr.adf"
+  Delete /REBOOTOK "$INSTDIR\sample_data\temp_dryest\prj.adf"
+  Delete /REBOOTOK "$INSTDIR\sample_data\temp_dryest\sta.adf"
+  Delete /REBOOTOK "$INSTDIR\sample_data\temp_dryest\w001001.adf"
+  Delete /REBOOTOK "$INSTDIR\sample_data\temp_dryest\w001001x.adf"
+  Delete /REBOOTOK "$INSTDIR\sample_data\temp_hotest\dblbnd.adf"
+  Delete /REBOOTOK "$INSTDIR\sample_data\temp_hotest\hdr.adf"
+  Delete /REBOOTOK "$INSTDIR\sample_data\temp_hotest\prj.adf"
+  Delete /REBOOTOK "$INSTDIR\sample_data\temp_hotest\sta.adf"
+  Delete /REBOOTOK "$INSTDIR\sample_data\temp_hotest\w001001.adf"
+  Delete /REBOOTOK "$INSTDIR\sample_data\temp_hotest\w001001x.adf"
+  Delete /REBOOTOK "$INSTDIR\sample_data\temp_wettest\dblbnd.adf"
+  Delete /REBOOTOK "$INSTDIR\sample_data\temp_wettest\hdr.adf"
+  Delete /REBOOTOK "$INSTDIR\sample_data\temp_wettest\prj.adf"
+  Delete /REBOOTOK "$INSTDIR\sample_data\temp_wettest\sta.adf"
+  Delete /REBOOTOK "$INSTDIR\sample_data\temp_wettest\w001001.adf"
+  Delete /REBOOTOK "$INSTDIR\sample_data\temp_wettest\w001001x.adf"
 
+  ;SHORTCUT FILES
+  Delete /REBOOTOK "$SMPROGRAMS\openModeller\Uninstall.lnk"
+  Delete /REBOOTOK "$SMPROGRAMS\openModeller\openModeller.lnk"
+  Delete /REBOOTOK "$SMPROGRAMS\openModeller\Website.lnk"
+  Delete /REBOOTOK "$DESKTOP\openModeller.lnk"
+
+  ;REMOVE DIRECTORIES
+  RMDir /REBOOTOK "$SMPROGRAMS\openModeller"
+  RMDir /REBOOTOK $INSTDIR\algs    
+  RMDir /REBOOTOK $INSTDIR          
+  RMDir /REBOOTOK $INSTDIR\sample_data\temp_wettest
+  RMDir /REBOOTOK $INSTDIR\sample_data\temp_hotest
+  RMDir /REBOOTOK $INSTDIR\sample_data\temp_dryest
+  RMDir /REBOOTOK $INSTDIR\sample_data\temp_coolest
+  RMDir /REBOOTOK $INSTDIR\sample_data\temp_avg
+  RMDir /REBOOTOK $INSTDIR\sample_data\rain_tot
+  RMDir /REBOOTOK $INSTDIR\sample_data\rain_hottest
+  RMDir /REBOOTOK $INSTDIR\sample_data\rain_coolest
+  RMDir /REBOOTOK $INSTDIR\sample_data
+
+  ;DELETE REGISTRY ENTRIES
   DeleteRegKey ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}"
   DeleteRegKey HKLM "${PRODUCT_DIR_REGKEY}"
   SetAutoClose true
