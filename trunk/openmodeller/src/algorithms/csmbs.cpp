@@ -11,6 +11,7 @@
 //
 
 #include <string.h>
+#include <iostream>
 #include "csmbs.hh"
 
 #include <gsl/gsl_statistics_double.h>
@@ -37,9 +38,9 @@ static AlgParamMetadata parameters[NUM_PARAM] = {
   // Metadata of the first parameter.
   {
     "Randomisations",          // Id.
-    "Number of randomsations",        // Name.
+    "Number of random eigenvalues",        // Name.
     "Integer",        // Type.
-    "The number of times the environmental matrix is randomly 'shuffled'.", //overview
+    "The number of eigenvalues to generate from randomly 'shuffled' environment data.", //overview
     "The Broken Stick method of selecting the number of components to keep \n\
 is carried out by randomising the row order of each column in the environemntal \n\
 matrix and then otaining the eigen value for the randomised matrix. \n\
@@ -49,8 +50,24 @@ This is repeatedly carried out for the amount of times specified by the user her
     1,   // Parameter's lower limit.
     1,     // Not zero if the parameter has upper limit.
     1000,   // Parameter's upper limit.
-    "10"  // Parameter's typical (default) value.
+    "8"  // Parameter's typical (default) value.
   },
+  
+  {
+    "RandomiserRepeats",          // Id.
+    "Number of shuffles per column",        // Name.
+    "Integer",        // Type.
+    "Increase this number to increase randomness of data used for component selection eigen vector\n", //overview
+    "How many times each column should be shuffled to ensure randomness when generating \n\
+the randomised eigen vector used in the broken stick component selection method.\n\
+Note that increasing this parameter will cause models to take longer to run.\n", // Description.
+    1,     // Not zero if the parameter has lower limit.
+    1,   // Parameter's lower limit.
+    1,     // Not zero if the parameter has upper limit.
+    1000,   // Parameter's upper limit.
+    "50"  // Parameter's typical (default) value.
+  }
+  ,
   {
     "StandardDeviations",          // Id.
     "Number of standard deviations",        // Name.
@@ -61,24 +78,10 @@ this number of standard deviations is added to the mean of the eigen values. \n\
 Any components whose eigen values are above this threshold are retained.", // Description.
 
     1,     // Not zero if the parameter has lower limit.
-    0,   // Parameter's lower limit.
+    -10,   // Parameter's lower limit.
     1,     // Not zero if the parameter has upper limit.
     10,   // Parameter's upper limit.
-    "2"  // Parameter's typical (default) value.
-  }
-  ,
-  {
-    "MinRandomiserRepeats",          // Id.
-    "Number of shuffles per column",        // Name.
-    "Integer",        // Type.
-    "Increase this number to increase randomness of component selection eigen vector", //overview
-    "How many times each column should be shuffled to ensure randomness when generating \
-the randomised eigen vector used in the broken stick component selection method.", // Description.
-    1,     // Not zero if the parameter has lower limit.
-    1,   // Parameter's lower limit.
-    1,     // Not zero if the parameter has upper limit.
-    100,   // Parameter's upper limit.
-    "5"  // Parameter's typical (default) value.
+    "1"  // Parameter's typical (default) value.
   }
   ,
   {
@@ -89,9 +92,9 @@ the randomised eigen vector used in the broken stick component selection method.
     "If not enough components are selected, the model produced will be erroneous or fail. \
 Usually three or more components is acceptible", // Description.
     1,     // Not zero if the parameter has lower limit.
-    3,   // Parameter's lower limit.
+    2,   // Parameter's lower limit.
     1,     // Not zero if the parameter has upper limit.
-    100,   // Parameter's upper limit.
+    20,   // Parameter's upper limit.
     "3"  // Parameter's typical (default) value.
   }
   ,
@@ -106,7 +109,7 @@ Csm Broken Stick will give up and abort.", // Description.
     1,   // Parameter's lower limit.
     1,     // Not zero if the parameter has upper limit.
     10,   // Parameter's upper limit.
-    "3"  // Parameter's typical (default) value.
+    "1"  // Parameter's typical (default) value.
   }
 };
 
@@ -203,7 +206,7 @@ int CsmBS::initialize()
   {
     return 0;
   }
-  if ( ! getParameter( "MinRandomiserRepeats", &minRandomiserRepeatsInt) )
+  if ( ! getParameter( "RandomiserRepeats", &randomiserRepeatsInt) )
   {
     return 0;
   }
@@ -215,36 +218,37 @@ int CsmBS::initialize()
   {
     return 0;
   }
-  printf ("Randomisations parameter set to: %i\n",numberOfRandomisationsInt);
-  printf ("StandardDeviations parameter set to: %f\n",numberOfStdDevsFloat);
-  printf ("MinRandomiserRepeats parameter set to: %f\n",minRandomiserRepeatsInt);
-  printf ("MinComponents parameter set to: MinComponents%f\n",minComponentsInt);
-  printf ("MaxAttempts parameter set to: %f\n",maxAttemptsInt);
+  std::cout << "Randomisations parameter set to: " << numberOfRandomisationsInt << std::endl;
+  std::cout << "RandomiserRepeats parameter set to: " << randomiserRepeatsInt << std::endl;
+  std::cout << "StandardDeviations parameter set to: " << numberOfStdDevsFloat << std::endl;
+  std::cout << "MinComponents parameter set to: " << minComponentsInt << std::endl;
+  std::cout << "MaxAttempts parameter set to: " << maxAttemptsInt << std::endl;
+  
   if ( numberOfRandomisationsInt <= 0 || numberOfRandomisationsInt > 1000 )
   {
     g_log.warn( "CSM - Broken Stick - Randomisations parameter out of range: %f\n",
             numberOfRandomisationsInt );
     return 0;
   }
-  if ( numberOfStdDevsFloat<= 0 || numberOfStdDevsFloat> 10 )
+  if ( numberOfStdDevsFloat<= -10 || numberOfStdDevsFloat> 10 )
   {
     g_log.warn( "CSM - Broken Stick - StandardDeviations parameter out of range: %f\n",
             numberOfRandomisationsInt );
     return 0;
   }
-  if ( minRandomiserRepeatsInt<= 0 || minRandomiserRepeatsInt> 10 )
+  if ( randomiserRepeatsInt< 1 || randomiserRepeatsInt> 1000 )
   {
-    g_log.warn( "CSM - Broken Stick - MinRandomiserRepeats parameter out of range: %f\n",
-            minRandomiserRepeatsInt);
+    g_log.warn( "CSM - Broken Stick - RandomiserRepeats parameter out of range: %f\n",
+            randomiserRepeatsInt);
     return 0;
   }
-  if (minComponentsInt <= 0 ||minComponentsInt > 10 )
+  if (minComponentsInt < 1 ||minComponentsInt > 20 )
   {
     g_log.warn( "CSM - Broken Stick - MinComponents parameter out of range: %f\n",
             minComponentsInt);
     return 0;
   }
-  if ( maxAttemptsInt<= 0 || maxAttemptsInt> 10 )
+  if ( maxAttemptsInt< 1 || maxAttemptsInt> 10 )
   {
     g_log.warn( "CSM - Broken Stick - MaxAttempts parameter out of range: %f\n",
             maxAttemptsInt);
@@ -317,7 +321,7 @@ int CsmBS::discardComponents()
       //  thats sounds good 
 
       //this extra loop is to increase the amount of shuffling that takes place!  
-      for (int myRandomiserRepeats=0;myRandomiserRepeats<minRandomiserRepeatsInt;myRandomiserRepeats++)
+      for (int myRandomiserRepeats=0;myRandomiserRepeats<randomiserRepeatsInt;myRandomiserRepeats++)
       {
         //loop through each cell in the column swapping it with another cell
         for (int k=0; k < m->size1; k++)
@@ -387,17 +391,43 @@ int CsmBS::discardComponents()
   // We do this my iterating throught the eigenvalues, checking which are above the mean+stddev
 
   int _retained_components_count=0;
+  float sumOfEigenValues = 0;//sum should total number of layers
   for (int i=0; i<myMeanPlusStdDevsVector->size; ++i)
   {
-    if (gsl_vector_get(myMeanPlusStdDevsVector,i) < gsl_vector_get(_gsl_eigenvalue_vector,i))
+    float myFloat = gsl_vector_get(myMeanPlusStdDevsVector,i); 
+    sumOfEigenValues += myFloat; 
+    if (myFloat < gsl_vector_get(_gsl_eigenvalue_vector,i))
     {
       ++_retained_components_count;
+      std::cout << gsl_vector_get(_gsl_eigenvalue_vector,i) 
+          << " > "
+          << myFloat
+          << ":: Component "
+          << i
+          << " is greater than randomised component...retaining it."
+          << std::endl;
+    }
+    else
+    {
+      std::cout << gsl_vector_get(_gsl_eigenvalue_vector,i) 
+          << " < "
+          << myFloat
+          << ":: Component "
+          << i
+          << " is less than randomised component...discarding it."
+          << std::endl;
     }
   }
+  std::cout << "Sum of eigenvalues is "  
+            << sumOfEigenValues
+            << "(should be "
+            << _layer_count
+            << ")\n";
+  std::cout << "Small differences are acceptible here." << std::endl;
   //it seems we need at least 4 components to produce a decent model
-  if (_retained_components_count < 4) 
+  if (_retained_components_count < minComponentsInt) 
   {
-    printf ("Only %i components were retained - aborting discart components routine",_retained_components_count);
+    printf ("Only %i components were retained %i required. \nAborting discard components routine\n",_retained_components_count, minComponentsInt);
     return 0;
   }
 
@@ -452,7 +482,7 @@ int CsmBS::discardComponents()
   gsl_matrix_free (myMatrixOfEigenValueVectors);
 
   displayVector( _gsl_eigenvalue_vector, "Vector of retained eigen values:");
-  displayMatrix( _gsl_eigenvector_matrix,"Matrix of retained eigen vector:");
+  //displayMatrix( _gsl_eigenvector_matrix,"Matrix of retained eigen vector:");
 
   printf ("\nvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv\n");
   printf ("     Completed CSM - Broken Stick \n");

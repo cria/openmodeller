@@ -267,174 +267,179 @@ Var N   |    |     |     |            |
 */
 class Csm : public Algorithm
 {
-public:
+    public:
 
-  /** Constructor for Csm */
-  Csm(AlgMetadata * metadata);
-  /** This is the descructor for the Csm class */
-  ~Csm();
-    
-
-
-  //
-  // Methods used to build the model
-  //
-  
-  
-  /** Initialise the model specifying a threshold / cutoff point.
-    * This is optional (model dependent).
-    * @note This method is inherited from the Algorithm class
-    * @return 0 on error
-    */
-  virtual int initialize();
-  
-  /** Start model execution (build the model).     
-    * @note This method is inherited from the Algorithm class
-    * @return 0 on error 
-    */
-  int iterate();
-  
-  /** Use this method to find out if the model has completed (e.g. convergence
-    * point has been met. 
-    * @note This method is inherited from the Algorithm class
-    * @return     
-    * @return Implementation specific but usually 1 for completion.
-    */
-  int done();
-
-  //
-  // Methods used to project the model
-  //
-  
-  
-  /** This method is used when projecting the model.  
-    * @note This method is inherited from the Algorithm class
-    * @return Scalar of the probablitiy of occurence    
-    * @param Scalar *x a pointer to a vector of openModeller Scalar type 
-    * (currently double). The vector should contain values looked up on 
-    * the environmental variable layers into which the mode is being projected. */
-  Scalar getValue( Scalar *x );
-  
-  /** Returns a value that represents the convergence of the algorithm
-    * expressed as a number between 0 and 1 where 0 represents model
-    * completion. 
-    * @return 
-    * @param Scalar *val 
-  */
-  int getConvergence( Scalar *val );
+        /** Constructor for Csm */
+        Csm(AlgMetadata * metadata);
+        /** This is the descructor for the Csm class */
+        ~Csm();
 
 
-  
-private:
 
-protected:  
-  /** This is a utility function to convert a Sampler to a gsl_matrix.
-    * @return 0 on error
-    */
-    int SamplerToMatrix();
-  
+        //
+        // Methods used to build the model
+        //
 
-  /** This is a wrapper to call several of the methods below to generate the
-   * initial model. */
-  bool csm1();
-    
-  /** Calculate the mean and standard deviation of the environment
-    * variables at the occurence points.
-    * @note The matrix, mean and stddev vectors MUST be pre-initialised! 
-    * @param theMatrix - a gsl_matrix pointer from which mean and stddev will be obtained
-    * @param theMeanVector - a pointer to a gsl_vector in which the column means will be stored
-    * @param theStdDevVector - a pointer to a gsl_vector in which the column stddevs will be stored
-    * @return 0 on error
-    */
-  int calculateMeanAndSd( gsl_matrix * theMatrix, 
-                            gsl_vector * theMeanVector,
-                            gsl_vector * theStdDevVector);
-          
-  /** Center and standardise.
-    * Subtract the column mean from every value in each column
-    * Divide each resultant column value by the stddev for that column
-    * @note This method must be called after calculateMeanAndSd
-    * @return 0 on error    
-    */
-  int center();
-  
-  /** Discard unwanted components.
-   * This is a pure virtual function - it must be implemented by the derived
-   * class. Currently two derived classes are expected to be implemented -
-   * one for kaiser-gutman cutoff and one for broken-stick cutoff.
-    * @note This method must be called after center
-    * @return 0 on error    
-    */  
-  virtual int discardComponents()=0;
-  
 
-  
-  /** This a utility function to display the content of a gsl vector.
-   * @param v gsl_vector Input vector
-   * @param name char Vector name / message
-   */
-  void displayVector(gsl_vector * v, char * name);
+        /** Initialise the model specifying a threshold / cutoff point.
+         * This is optional (model dependent).
+         * @note This method is inherited from the Algorithm class
+         * @return 0 on error
+         */
+        virtual int initialize();
 
-  /** This a utility function to display the content of a gsl matrix.
-   * @param m gsl_matrix Input matrix
-   * @param name char Matrix name / message
-   */
-  void displayMatrix(gsl_matrix * m, char * name);
+        /** Start model execution (build the model).     
+         * @note This method is inherited from the Algorithm class
+         * @return 0 on error 
+         */
+        int iterate();
 
-  /** This a utility function to calculate a transposed gsl matrix.
-   * @param m gsl_matrix Input matrix
-   * @return gsl_matrix Transposed matrix
-   */
-  gsl_matrix * transpose (gsl_matrix * m);
+        /** Use this method to find out if the model has completed (e.g. convergence
+         * point has been met. 
+         * @note This method is inherited from the Algorithm class
+         * @return     
+         * @return Implementation specific but usually 1 for completion.
+         */
+        int done();
 
-  /** This a utility function to calculate the internal product of two gsl vectors.
-   * @param va gsl_vector Input vector a
-   * @param vb gsl_vector Input vector b
-   * @return double Result
-   */
-  double product (gsl_vector * va, gsl_vector * vb);
+        //
+        // Methods used to project the model
+        //
 
-  /** This a utility function to calculate the product between two gsl matrices.
-   * @param a gsl_matrix Input matrix a
-   * @param b gsl_matrix Input matrix b
-   * @return gsl_matrix Output matrix
-   */
-  gsl_matrix * product (gsl_matrix * a, gsl_matrix * b);
 
-  /** This a utility function to calculate the auto covariance of a gsl matrix.
-   * @param m gsl_matrix Input matrix
-   * @return gsl_matrix Output matrix
-   */
-  gsl_matrix * autoCovariance(gsl_matrix * m);
-    
-  
-  /** This is a flag to indicate that the algorithm was initialized. */
-  int _initialized;
-  /** This member variable is used to indicate whether the model 
-    * building process has completed yet. */
-  int _done;
-  /** This is a pointer to a gsl matrix containing the 'looked up' environmental 
-  * variables at each locality. It is converted to a gsl matrix from the oM 
-  * Sampler.samples primitive structure. */
-  gsl_matrix * _gsl_environment_matrix;
-  /** This is a pointer to a gsl matrix that will hold the covariance matrix generated
-  from the environmental data matrix */
-  gsl_matrix * _gsl_covariance_matrix;
-  /** This is a pointer to a gsl vector that will hold the mean of each environmental 
-  variable column */
-  gsl_vector * _gsl_avg_vector;
-  /** This is a pointer to a gsl vector that will hold the stddev of each environmental variable column */
-  gsl_vector * _gsl_stddev_vector;
-  /** This is a pointer to a gsl vector that will hold the eigen values */
-  gsl_vector * _gsl_eigenvalue_vector;
-  /** This is a pointer to a gsl matrix that will hold the eigen vectors */
-  gsl_matrix * _gsl_eigenvector_matrix;
-  /** Dimension of environmental space. */
-  int _layer_count; 
-  /** Number of components that are actually kept after Keiser-Gutman test */
-  int _retained_components_count;
-  /** the number of localities used to construct the model */
-  int _localityCount; 
+        /** This method is used when projecting the model.  
+         * @note This method is inherited from the Algorithm class
+         * @return Scalar of the probablitiy of occurence    
+         * @param Scalar *x a pointer to a vector of openModeller Scalar type 
+         * (currently double). The vector should contain values looked up on 
+         * the environmental variable layers into which the mode is being projected. */
+        Scalar getValue( Scalar *x );
+
+        /** Returns a value that represents the convergence of the algorithm
+         * expressed as a number between 0 and 1 where 0 represents model
+         * completion. 
+         * @return 
+         * @param Scalar *val 
+         */
+        int getConvergence( Scalar *val );
+
+
+
+    private:
+
+    protected:  
+        /** This is a utility function to convert a Sampler to a gsl_matrix.
+         * @return 0 on error
+         */
+        int SamplerToMatrix();
+
+
+        /** This is a wrapper to call several of the methods below to generate the
+         * initial model. */
+        bool csm1();
+
+        /** Calculate the mean and standard deviation of the environment
+         * variables at the occurence points.
+         * @note The matrix, mean and stddev vectors MUST be pre-initialised! 
+         * @param theMatrix - a gsl_matrix pointer from which mean and stddev will be obtained
+         * @param theMeanVector - a pointer to a gsl_vector in which the column means will be stored
+         * @param theStdDevVector - a pointer to a gsl_vector in which the column stddevs will be stored
+         * @return 0 on error
+         */
+        int calculateMeanAndSd( gsl_matrix * theMatrix, 
+                gsl_vector * theMeanVector,
+                gsl_vector * theStdDevVector);
+
+        /** Center and standardise.
+         * Subtract the column mean from every value in each column
+         * Divide each resultant column value by the stddev for that column
+         * @note This method must be called after calculateMeanAndSd
+         * @return 0 on error    
+         */
+        int center();
+
+        /** Discard unwanted components.
+         * This is a pure virtual function - it must be implemented by the derived
+         * class. Currently two derived classes are expected to be implemented -
+         * one for kaiser-gutman cutoff and one for broken-stick cutoff.
+         * @note This method must be called after center
+         * @return 0 on error    
+         */  
+        virtual int discardComponents()=0;
+
+
+
+        /** This a utility function to display the content of a gsl vector.
+         * @param v gsl_vector Input vector
+         * @param name char Vector name / message
+         */
+        void displayVector(gsl_vector * v, char * name);
+
+        /** This a utility function to display the content of a gsl matrix.
+         * @param m gsl_matrix Input matrix
+         * @param name char Matrix name / message
+         */
+        void displayMatrix(gsl_matrix * m, char * name);
+
+        /** This a utility function to calculate a transposed gsl matrix.
+         * @param m gsl_matrix Input matrix
+         * @return gsl_matrix Transposed matrix
+         */
+        gsl_matrix * transpose (gsl_matrix * m);
+
+        /** This a utility function to calculate the internal product of two gsl vectors.
+         * @param va gsl_vector Input vector a
+         * @param vb gsl_vector Input vector b
+         * @return double Result
+         */
+        double product (gsl_vector * va, gsl_vector * vb);
+
+        /** This a utility function to calculate the product between two gsl matrices.
+         * @param a gsl_matrix Input matrix a
+         * @param b gsl_matrix Input matrix b
+         * @return gsl_matrix Output matrix
+         */
+        gsl_matrix * product (gsl_matrix * a, gsl_matrix * b);
+
+        /** This a utility function to calculate the auto covariance of a gsl matrix.
+         * @param m gsl_matrix Input matrix
+         * @return gsl_matrix Output matrix
+         */
+        gsl_matrix * autoCovariance(gsl_matrix * m);
+
+
+        /** This is a flag to indicate that the algorithm was initialized. */
+        int _initialized;
+        /** This member variable is used to indicate whether the model 
+         * building process has completed yet. */
+        int _done;
+        /** This is a pointer to a gsl matrix containing the 'looked up' environmental 
+         * variables at each locality. It is converted to a gsl matrix from the oM 
+         * Sampler.samples primitive structure. */
+        gsl_matrix * _gsl_environment_matrix;
+        /** This is a pointer to a gsl matrix that will hold the covariance matrix generated
+          from the environmental data matrix */
+        gsl_matrix * _gsl_covariance_matrix;
+        /** This is a pointer to a gsl vector that will hold the mean of each environmental 
+          variable column */
+        gsl_vector * _gsl_avg_vector;
+        /** This is a pointer to a gsl vector that will hold the stddev of each environmental variable column */
+        gsl_vector * _gsl_stddev_vector;
+        /** This is a pointer to a gsl vector that will hold the eigen values */
+        gsl_vector * _gsl_eigenvalue_vector;
+        /** This is a pointer to a gsl matrix that will hold the eigen vectors */
+        gsl_matrix * _gsl_eigenvector_matrix;
+        /** Dimension of environmental space. */
+        int _layer_count; 
+        /** Number of components that are actually kept after Keiser-Gutman test */
+        int _retained_components_count;
+        /** the number of localities used to construct the model */
+        int _localityCount; 
+        
+        /* Number of attempts to get a model with sufficient components before giving up */
+        int maxAttemptsInt;
+        /* Minumum number of components required for a valid model */
+        int minComponentsInt;
 
 };
 
