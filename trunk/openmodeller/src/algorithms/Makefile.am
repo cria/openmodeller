@@ -44,6 +44,6 @@ plugin_LTLIBRARIES += libomcsm.la
 libomcsm_la_SOURCES = \
 	csm.cpp \
 	csm.hh
-libomcsm_la_LIBADD = ../src/lib/libopenmodeller.la -lgsl -lgslcblas
+libomcsm_la_LIBADD = $(GSL_LIBS) ../src/lib/libopenmodeller.la
 libomcsm_la_CPPFLAGS = $(GSL_CFLAGS) -I../src/inc
 endif
