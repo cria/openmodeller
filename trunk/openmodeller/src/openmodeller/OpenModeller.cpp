@@ -348,7 +348,7 @@ ControlInterface::createModel( Algorithm *alg, Sampler *samp,
 			       int max )
 {
   // Initialize algorithm.  
-  if ( ! alg->initialize( 10 ) )
+  if ( ! alg->initialize( 100 ) )
     {
       sprintf( f_error, "Algorithm (%s) could not be initialized.",
 	       alg->getID() );
