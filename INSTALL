@@ -1,3 +1,6 @@
+Building and installing openModeller
+====================================
+
 1. Install proj4 library (www.remotesensing.org/proj).
    Note that openModeller was tested with version 4.4.7
 
@@ -11,30 +14,71 @@
    % cvs checkout gdal
 
 
-3. Untar openModeller.tgz (if you downloaded the file instead of doing
-   a cvs check out).
+4. Follow this procedure:
+
+   a) Unpack openModeller:
+
+      $ tar xvzf openmodeller*
+
+   b) Change to the openModeller directory:
+
+      $ cd openmodeller*
+
+   c) Configure openModeller for your particular system:
+
+      $ ./configure
+
+   d) Build openModeller:
+
+      $ make
+
+   e) Install openModeller in your system (you need root privileges).
+
+      $ su -c 'make install'
+
+   If you do not have root privileges or if you want to install openModeller
+   in another path than "/usr", i.e. in a non standard place, you can do:
+
+   $ tar xvzf openmodeller*
+   $ cd openmodeller*
+   $ ./configure --prefix=<OMPATH>
+   $ make
+   $ make install
+
+   Where <OMPATH> represents the directory path to install openModeller.
 
 
-5. Go to $(OM_HOME) and do a "make". It will create a
-   $(OM_HOME)/src/om_console executable.
+5. In the default installation <OMPATH>=/usr. The following files are installed:
 
-   If you have X11 you can do a "make viewer". It will create a
-   $(OM_HOME)/src/om_viewer executable. It is simple graphical
-   interface to visualize the maps, models and occurrence points.
+   # Binaries
+   <OMPATH>/bin/om_console           # A simple openModeller console client
+   <OMPATH>/bin/om_viewer            # A simple X11 modeller viewer.
+
+   # Libraries
+   <OMPATH>/lib/libopenmodeller.so   # openModeller dynamic shared library.
+   <OMPATH>/lib/libopenmodeller.a    # openModeller static library.
+   <OMPATH>/lib/libopenmodeller.la
+   <OMPATH>/lib/libopenmodeller.so.0
+   <OMPATH>/lib/libopenmodeller.so.0.0.0
+
+   # C++ headers
+   <OMPATH>/include/om_algorithm.hh
+   <OMPATH>/include/om_algorithm_metadata.hh
+   <OMPATH>/include/om_control.hh
+   <OMPATH>/include/om_defs.hh
+   <OMPATH>/include/om.hh
+   <OMPATH>/include/om_log.hh
+   <OMPATH>/include/om_occurrences.hh
+   <OMPATH>/include/om_sampled_data.hh
+   <OMPATH>/include/om_sampler.hh
+
+   # Modelling algorithms plugins
+   <OMPATH>/lib/openmodeller/*
 
 
-6. If you want to build the code documentation and have doxygen
-   (www.doxygen.org) installed you do a "make documentation". It will
-   create two documentation directories: $(OM_HOME)/doc/html and
-   $(OM_HOME)/doc/latex
-
-
-7. In $(OM_HOME) directory do a "make install" to install the
-   executables and libraries in $(OM_INSTALL) directory.
-
-
-8. Go to $(OM_HOME)/examples and get at least one map file to do a
-   simple test: 
+8. To run om_console go to directory "examples" and get at least one
+   map file to do a simple test: 
+    $ cd examples
     $ wget http://openmodeller.cria.org.br/download/rain_coolest.tgz
     $ tar xvzf rain_coolest.tgz
 
@@ -47,10 +91,10 @@
 
     The output will be in furcata.tif.
 
-    Obs: be sure that $(OM_INSTALL)/bin is in your PATH!
+    Obs: be sure that "<PATH_TO_INSTALL>/bin" is in your PATH!
 
 
-11. If you built om_viewer (step 5) you can:
+11. If you have a system with X11 you can:
 
     Visualize the maps with:
     $ om_viewer request.txt
