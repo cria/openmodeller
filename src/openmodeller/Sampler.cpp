@@ -230,10 +230,9 @@ Sampler::getRandomOccurrence( Occurrences *occur,
   // Choose an occurrence point with defined environmental
   // variable values.
   while ( (oc = occur->getRandom()) &&
-	  ! _env->get( oc->x, oc->y, indep ) );
+	  ! _env->get( oc->x(), oc->y(), indep ) );
 
-  int size = occur->numAttributes() * sizeof(Scalar);
-  memcpy( dep, oc->attr, size );
+  oc->readAttributes( dep );
   
   return 1;
 }
@@ -267,10 +266,10 @@ Sampler::getOccurrence( Occurrences *occur, SampledData *data,
   for ( ; n < npnt && (oc = occur->get()); occur->next() )
     {
       // Read environmental variables (independent variables).
-      if ( _env->get( oc->x, oc->y, *indep ) )
+      if ( _env->get( oc->x(), oc->y(), *indep ) )
         {
 	  // Read occurrence attributes (dependent variables).
-	  memcpy( *dep++, oc->attr, dep_size );
+	  oc->readAttributes( *dep++ );
 
 	  // Prepare to read next sample.
 	  indep++;

@@ -34,6 +34,19 @@
 #define OM_VERSION "0.1"
 
 
+// Coordinate systems.
+//
+
+#define OM_WGS84 "GEOGCS[\"WGS84\", DATUM[\"WGS84\", \
+  SPHEROID[\"WGS84\", 6378137.0, 298.257223563]], \
+  PRIMEM[\"Greenwich\", 0.0], \
+  UNIT[\"degree\",0.017453292519943295], \
+  AXIS[\"Longitude\",EAST], AXIS[\"Latitude\",NORTH]]"
+
+// Common Coordinate System for openModeller.
+#define OM_COORDINATE_SYSTEM OM_WGS84
+
+
 // Types.
 //
 typedef unsigned char uchar;

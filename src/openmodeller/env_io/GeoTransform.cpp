@@ -27,6 +27,7 @@
  */
 
 #include "env_io/geo_transform.hh"
+#include <om_defs.hh>
 
 #include <ogr_api.h>
 #include <ogr_spatialref.h>
@@ -36,12 +37,7 @@
 /****************************************************************/
 /******************** Geographic Transformation *****************/
 
-char *GeoTransform::cs_default = "GEOGCS[\"1924 ellipsoid\",DATUM[\
-\"Not_specified\",SPHEROID[\"International 1924\",6378388,297,\
-AUTHORITY[\"EPSG\",\"7022\"]],AUTHORITY[\"EPSG\",\"6022\"]],\
-PRIMEM[\"Greenwich\",0,AUTHORITY[\"EPSG\",\"8901\"]],UNIT[\
-\"degree\",0.0174532925199433,AUTHORITY[\"EPSG\",\"9108\"]],\
-AUTHORITY[\"EPSG\",\"4022\"]]";
+char *GeoTransform::cs_default = OM_COORDINATE_SYSTEM;
 
 void
 errorHandler( CPLErr eErrClass, int err_no, const char *msg )

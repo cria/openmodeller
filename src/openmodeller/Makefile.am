@@ -22,7 +22,7 @@ libopenmodeller_la_SOURCES = \
 	file_parser.cpp \
 	log.cpp \
 	occurrences.cpp \
-	occurrences_file.cpp \
+	occurrence.cpp \
 	os_specific.cpp \
 	random.cpp \
 	sampler.cpp \
