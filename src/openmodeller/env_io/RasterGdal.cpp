@@ -167,7 +167,7 @@ RasterGdal::open( char *file, char mode )
   // Projection.
   f_hdr.setProj( (char *) f_ds->GetProjectionRef() );
   if ( ! f_hdr.hasProj() )
-    _log.warn( "O mapa %s não está georeferenciado!\n", file );
+    _log.warn( "The map %s is not georeferenced!\n", file );
 
 
   // Assumes that all bands have the same georeference
