@@ -1,15 +1,15 @@
 /**
- * Definition of Bioclimatic Envelope Algorithm - Nix, 1984.
+ * Declaration of Bioclimatic Envelope Algorithm - Nix, 1986.
  * 
  * @file
- * @author Ricardo Scachetti Pereira <ricardo@cria.org.br>
- * @date 2003-09-29
+ * @author Mauro Muñoz <mauro@cria.org.br>
+ * @date 2004-05-05
  * $Id$
  *
  * LICENSE INFORMATION
  * 
- * Copyright(c) 2003 by The University of Kansas Natural History 
- * Museum and Biodiversity Research Center.
+ * Copyright(c) 2004 by CRIA -
+ * Centro de Referência em Informação Ambiental
  *
  * http://www.cria.org.br
  * 
@@ -38,6 +38,8 @@
 
 #define NUM_PARAM 1
 
+#define CUTOFF_NAME "StandadDeviationCutoff"
+
 
 /*************************************/
 /*** Algorithm parameters metadata ***/
@@ -46,15 +48,27 @@ static AlgParamMetadata parameters[NUM_PARAM] = {
 
   // Metadata of the first parameter.
   {
-    "CutOff",    // Name.
+    CUTOFF_NAME, // Name.
     "Real",      // Type.
-    "Envelop cutoff", // Description.
+
+// Description.
+"Standard deviation cutoff for all bioclimatic envelop.\n\
+Examples:\n\
+\n\
+ Fraction of   Parameter\n\
+ inclusion     value\n\
+\n\
+ 50.0%         0.674\n\
+ 68.3%         1.000\n\
+ 90.0%         1.645\n\
+ 95.0%         1.960\n\
+ 99.7%         3.000\n",
 
     1,         // Not zero if the parameter has lower limit.
     0.0,       // Parameter's lower limit.
-    1,         // Not zero if the parameter has upper limit.
-    1.0,       // Parameter's upper limit.
-    "0.8"      // Parameter's typical (default) value.
+    0,         // Not zero if the parameter has upper limit.
+    0.0,       // Parameter's upper limit.
+    "0.674"    // Parameter's typical (default) value.
   },
 };
 
@@ -64,16 +78,42 @@ static AlgParamMetadata parameters[NUM_PARAM] = {
 
 static AlgMetadata metadata = {
 
-  0,               // Internal usage.
-  "Bioclim",       // Name.
-  "0.1 test",      // Version.
-  "Nix 1986, Busby 1991, McMahon et al. 1996",  // Bibliography.
+  0,           // Internal usage.
+  "Bioclim",   // Name.
+  "0.1",       // Version.
+
+  // Bibliography.
+  "Nix, H.A. (1986) A biogeographic analysis of Australian elapid \
+snakes. In: Atlas of Elapid Snakes of Australia. (Ed.) R. Longmore, \
+pp. 4-15. Australian Flora and Fauna Series Number 7. Australian \
+Government Publishing Service: Canberra.",
 
   // Description.
-  "Bioclimatic Envelope Algorithm",
+  "Implements the Bioclimatic Envelope Algorithm.\n\
+For each given environmental variable the algorithm finds the mean \
+and standard deviation (assuming normal distribution). Each variable \
+has its own envelop represented by the interval [m - c*s, m + c*s], \
+where 'm' is the mean; 'c' is the cutoff input parameter; and 's' is \
+the standard deviation.\n\
+The output is one of the following:\n\n\
+  suitable: values that fall within the envelops of all variables;\n\
+  marginal: values fall outside some envelop, but within the upper \
+and lower limits.\n\
+  unsuitable: values that fall outside the upper and lower limits \
+for some variable.\n\n\
+The upper and lower limits are taken from the maximum and minimum \
+input points values for each variable.\n\
+The bioclim categorical output is mapped to the continuous output of \
+openModeller as:\n\
+\n\
+ Bioclim Category   Probability\n\
+\n\
+ suitable           1.0\n\
+ marginal           0.5\n\
+ unsuitable         0.0\n",
 
-  "Ricardo Scachetti Pereira",  // Author.
-  "ricardo [at] cria.org.br",   // Author's contact.
+  "Mauro Muñoz",  // Author.
+  "mauro [at] cria.org.br",   // Author's contact.
 
   0,  // Does not accept categorical data.
   0,  // Does not need (pseudo)absence points.
@@ -96,7 +136,7 @@ algorithmFactory()
 
 
 /****************************************************************/
-/***************************** Bioclim **************************/
+/**************************** Bioclim ***************************/
 
 /*******************/
 /*** constructor ***/
@@ -104,8 +144,8 @@ algorithmFactory()
 Bioclim::Bioclim()
   : Algorithm( &metadata )
 {
-  _min = _max = _avg = _half_range = 0;
-  _done = 0;
+  _mean = _deviation = 0;
+  _minimum = _maximum = 0;
 }
 
 
@@ -114,10 +154,10 @@ Bioclim::Bioclim()
 
 Bioclim::~Bioclim()
 {
-  if ( _min ) delete _min;
-  if ( _max ) delete _max;
-  if ( _avg ) delete _avg;
-  if ( _half_range ) delete _half_range;
+  if ( _maximum )   delete _maximum;
+  if ( _minimum )   delete _minimum;
+  if ( _mean )      delete _mean;
+  if ( _deviation ) delete _deviation;
 }
 
 
@@ -126,14 +166,53 @@ Bioclim::~Bioclim()
 int
 Bioclim::initialize()
 {
-  if ( ! getParameter( "CutOff", &_cutoff ) )
+  // Read and check the standard deviation cutoff parameter.
+  Scalar cutoff;
+  if ( ! getParameter( CUTOFF_NAME, &cutoff ) )
     return 0;
+  if ( cutoff <= 0 )
+    {
+      g_log.warn( "Bioclim - parameter out of range: %f\n",
+                  cutoff );
+      return 0;
+    }
 
-  _dim    = _samp->numIndependent();
-  _max    = new Scalar[_dim];
-  _min    = new Scalar[_dim];
-  _avg    = new Scalar[_dim];
-  _half_range = new Scalar[_dim];
+  // Number of independent variables.
+  _dim = _samp->numIndependent();
+  g_log.info( "Reading %d-dimensional occurrence points.\n",
+              _dim );
+
+  // Get all presence points.
+  SampledData presence;
+  _samp->getPresence( &presence );
+
+  // Check the number of sampled points.
+  int npnt = presence.numSamples();
+  if ( npnt < 2 )
+    g_log.error( 1, "Bioclim needs at least 2 point inside the mask!\n" );
+  g_log( "Using %d points to find the bioclimatic envelop.\n", npnt );
+
+  // Gets the minimum, maximum, mean and standard deviations for
+  // each variable.
+  _minimum = getMinimum( &presence );
+  _maximum = getMaximum( &presence );
+  _mean    = getMean( &presence );
+  _deviation = getStandardDeviation( &presence, _mean );
+
+  // Stores the real standard deviation cutoff value and
+  // calculates the standard deviation vector module to be used
+  // as the maximum possible distance of a accepted point to the
+  // points' mean.
+  Scalar module = 0.0;
+  Scalar *deviation = _deviation;
+  for ( Scalar *end = deviation + _dim; deviation < end; deviation++ )
+    {
+      *deviation *= cutoff;
+      module += *deviation * *deviation;
+    }
+  _max_distance = sqrt(module);
+
+  return 1;
 }
 
 
@@ -142,107 +221,7 @@ Bioclim::initialize()
 int
 Bioclim::iterate()
 {
-  g_log.info( "Reading %d-dimensional occurrence points.\n", _dim );
-
-  SampledData presence;
-  _samp->getPresence( &presence );  // Get all presence points.
-  Scalar **pnt = presence.getIndependentBase();
-  int    npnt = presence.numSamples();
-
-  if ( ! npnt )
-    g_log.error( 1, "All occurrences are outside the mask!\n" );
-
-  g_log.info( "Finding the bioclimatic envelope using %d points.\n",
-	     npnt );
-
-  // sort values of each independent variable and apply cutoffs
-  memset( _min, 0, _dim * sizeof(Scalar) );
-  memset( _max, 0, _dim * sizeof(Scalar) );
-  memset( _avg, 0, _dim * sizeof(Scalar) );
-  memset( _half_range, 0, _dim * sizeof(Scalar) );
-
-  // temp array that will store the values of the current env variable
-  // this will be used by the sort algorithm
-  Scalar *values = new Scalar[npnt];
-
-  // get number of points on the borders of distribution to be removed
-  if (_cutoff > 1.0)
-    _cutoff = 1.0;
-  else if (_cutoff < 0.0)
-    _cutoff = 0.0;
-
-  int ncutoff = (int) ceil(npnt * (1 - _cutoff) / 2.0);
-
-  // visit each variable
-  int d, i, j, k;
-  for ( d = 0; d < _dim; d++ )
-    {
-      g_log.info( "Bioclimatic Envelope on dimension %d.\n", d );
-
-      // get all values for this variable and store in second array
-      memset( values, 0, npnt * sizeof(Scalar) );
-      for ( i = 0; i < npnt; i++)
-	values[i] = pnt[i][d];
-
-      // sort the values of this env variable
-      // using bubble sort for simplicity
-      g_log.debug( "Sorting vector.\n" );
-      for ( j = 0; j < npnt; j++)
-	{
-	  for ( k = 0; k < npnt - 1 - j; k++)
-	    {
-	      /* bubble sort DEBUG
-	      g_log.debug ("j = %d; k = %d\n", j, k);
-	      
-	      for (int ii = 0; ii < npnt; ii++)
-		{
-		  char c;
-		  if (ii == j)
-		    {
-		      if (ii == k)
-			c = '*';
-		      else
-			c = 'j';
-		    }
-		  else
-		    {
-		      if (ii == k)
-			c = 'k';
-		      else
-			c = ' ';
-		    }
-		  
-		  g_log.debug ("  %c %12.4f\n", c, values[ii]);
-		}
-	      */
-
-	      if ( values[k] > values[k + 1] )
-		{
-		  // exchange values[k] with values[k + 1]
-		  Scalar aux = values[k];
-		  values[k] = values[k + 1];
-		  values[k + 1] = aux;
-		}
-	    }
-	}
-
-      // get cutoff values by picking the ncutoff-th and 
-      // (npnt-ncutoff)-th elements
-      _min[d] = values[ncutoff];
-      _max[d] = values[npnt - ncutoff - 1];
-
-      _half_range[d] = (_max[d] - _min[d]) / 2.0;
-      _avg[d] = (_max[d] + _min[d]) / 2.0;
-
-      g_log.debug( "%d] Min: %f, Max: %f, Avg: %f, Range: %f\n",
-		  d, _min[d], _max[d], _avg[d], _half_range[d] );
-    }
-
-  g_log.debug( "Finished model\n" );
-
-  delete values;
-
-  _done = 1;
+  // This is not an iterative algorithm.
   return 1;
 }
 
@@ -252,7 +231,8 @@ Bioclim::iterate()
 int
 Bioclim::done()
 {
-  return _done;
+  // This is not an iterative algorithm.
+  return 1;
 }
 
 
@@ -262,22 +242,41 @@ Scalar
 Bioclim::getValue( Scalar *x )
 {
   Scalar dif;
-  Scalar result[_dim];
 
-  // check whether x is inside all variable intervals
-  for ( int d = 0; d < _dim; d++ )
+  // Zero if some point valuble is outside its respective envelop.
+  Scalar outside_envelop = 0;
 
-    if ( (x[d] < _min[d]) || (x[d] > _max[d]) )
-      return 0.0;
+  // Square of the distance between 'x' and '_mean'.
+  Scalar square_distance = 0.0;
 
-    else
-      {
-	dif = x[d] - _avg[d];
-	result[d] = Abs(dif) / _half_range[d];
-      }
+  // Finds the distance the each variable mean to the respective
+  // point value.
+  Scalar *minimum   = _minimum;
+  Scalar *maximum   = _maximum;
+  Scalar *mean      = _mean;
+  Scalar *mean_end  = mean + _dim;
+  Scalar *deviation = _deviation;
+  while ( mean < mean_end )
+    {
+      // Point value for each variable: x[i].
+      Scalar xi = *x++;
 
-  // Inverse of the distance normalized in [0,1].
-  return 1.0 - cartesianDistance( result, _avg ) / sqrt( _dim );
+      // If some x[i] is out of the upper and lower range, predicts
+      // no occurrence.
+      if ( xi < *minimum++ || xi > *maximum++ )
+        return 0.0;
+
+      // If some x[i] is outside its envelop, signals.
+      Scalar cutoff = *deviation++;
+      dif = xi - *mean++;
+      if ( dif > cutoff || dif < -cutoff )
+        outside_envelop = 1;
+    }
+
+  // If all point values are within the envelop, returns probability
+  // 1.0. Else, if some point is outside the envelop but inside
+  // the upper and lower ranges, returns 0.5 of probability.
+  return outside_envelop ? 0.5 : 1.0;
 }
 
 
@@ -291,21 +290,180 @@ Bioclim::getConvergence( Scalar *val )
 }
 
 
-/**************************/
-/*** cartesian Distance ***/
-Scalar
-Bioclim::cartesianDistance( Scalar *x, Scalar *y )
+/*******************/
+/*** get Minimum ***/
+Scalar *
+Bioclim::getMinimum( SampledData *points )
 {
-  Scalar dif;
-  Scalar dist = 0.0;
+  int npnt = points->numSamples();
+  int dim  = points->numIndependent();
 
-  Scalar *end = x + _dim;
-  while ( x < end )
+  if ( ! npnt )
+    return 0;
+
+  // Allocates the minimum vector.
+  Scalar *minimum = new Scalar[dim];
+  Scalar *minimum_end = minimum + dim;
+
+  // To pass through all points.
+  Scalar **pnt = points->getIndependentBase();
+  Scalar **pnt_end = pnt + npnt;
+
+  // Initializes the minimum vector with the first point.
+  Scalar *m = minimum;
+  Scalar *p = *pnt++;
+  while ( m < minimum_end )
+    *m++ = *p++;
+
+  // For each point, finds the minimum values.
+  while ( pnt < pnt_end )
     {
-      dif = *x++ - *y++;
-      dist += dif * dif;
+      // Finds the minimum value.
+      p = *pnt++;
+      for ( m = minimum; m < minimum_end; m++, p++ )
+        if ( *p < *m )
+          *m = *p;
     }
 
-  return sqrt( dist );
+  return minimum;
 }
 
+
+/*******************/
+/*** get Maximum ***/
+Scalar *
+Bioclim::getMaximum( SampledData *points )
+{
+  int npnt = points->numSamples();
+  int dim  = points->numIndependent();
+
+  if ( ! npnt )
+    return 0;
+
+  // Allocates the maximum vector.
+  Scalar *maximum = new Scalar[dim];
+  Scalar *maximum_end = maximum + dim;
+
+  // To pass through all points.
+  Scalar **pnt = points->getIndependentBase();
+  Scalar **pnt_end = pnt + npnt;
+
+  // Initializes the maximum vector with the first point.
+  Scalar *m = maximum;
+  Scalar *p = *pnt++;
+  while ( m < maximum_end )
+    *m++ = *p++;
+
+  // For each point, finds the maximum values.
+  while ( pnt < pnt_end )
+    {
+      // Finds the maximum value.
+      p = *pnt++;
+      for ( m = maximum; m < maximum_end; m++, p++ )
+        if ( *p > *m )
+          *m = *p;
+    }
+
+  return maximum;
+}
+
+
+/****************/
+/*** get Mean ***/
+Scalar *
+Bioclim::getMean( SampledData *points )
+{
+  int npnt = points->numSamples();
+  int dim  = points->numIndependent();
+
+  // Initialize the mean to zero.
+  Scalar *mean = new Scalar[dim];
+  memset( mean, 0, dim * sizeof(Scalar) );
+
+  // Last position of the mean point.
+  Scalar *mean_end = mean + dim;
+
+  // For each point...
+  Scalar **pnt = points->getIndependentBase();
+  Scalar **pnt_end = pnt + npnt;
+  while ( pnt < pnt_end )
+    {
+      // Calculates the sum of all points in 'mean'.
+      Scalar *m = mean;
+      Scalar *p = *pnt++;
+      while ( m < mean_end )
+        *m++ += *p++;
+    }
+
+  // Divides each mean component by the number of points summed.
+  Scalar *m = mean;
+  while ( m < mean_end )
+    *m++ /= npnt;
+
+  return mean;
+}
+
+
+/******************************/
+/*** get Standard Deviation ***/
+Scalar *
+Bioclim::getStandardDeviation( SampledData *points,
+                                       Scalar *mean )
+{
+  int npnt = points->numSamples();
+  int dim  = points->numIndependent();
+
+  // Variance vector initialized with zeros.
+  Scalar *variance = new Scalar[dim];
+  memset( variance, 0, dim * sizeof( Scalar ) );
+  Scalar *variance_end = variance + dim;
+
+  // For each point...
+  Scalar **pnt = points->getIndependentBase();
+  Scalar **pnt_end = pnt + npnt;
+  while ( pnt < pnt_end )
+    {
+      // Calculates the variance for each variable (dimension).
+      Scalar *v = variance;
+      Scalar *m = mean;
+      Scalar *p = *pnt++;
+      while ( v < variance_end )
+        {
+          Scalar dif = *p++ - *m++;
+          *v++ += dif * dif;
+        }
+    }
+
+  // In variance, we divide by (npnt - 1), not npnt!
+  npnt--;
+
+  // Calculates the standard deviation (square root of variance).
+  // Standard deviation vector initialized with zeros.
+  Scalar *deviation = new Scalar[dim];
+  Scalar *sd  = deviation;
+  Scalar *var = variance;
+  while ( var < variance_end )
+    *sd++ = sqrt( *var++ / npnt );
+
+  delete variance;
+  return deviation;
+}
+
+
+/*******************/
+/*** log Envelop ***/
+void
+Bioclim::logEnvelop()
+{
+  g_log( "Envelop with %d dimensions (variables).\n\n", _dim );
+
+  for ( int i = 0; i < _dim; i++ )
+    {
+      g_log( "Variable %02d:", i );
+      g_log( " Mean     : %f\n", _mean[i] );
+      g_log( " Deviation: %f\n", _deviation[i] );
+      g_log( " Minumum  : %f\n", _minimum[i] );
+      g_log( " Maximum  : %f\n", _maximum[i] );
+      g_log( "\n" );
+    }
+}
