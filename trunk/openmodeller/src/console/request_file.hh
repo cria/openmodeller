@@ -62,6 +62,8 @@ public:
   int outputMapSet()   { return _outputmap_set; }
   int algorithmSet()   { return _algorithm_set; }
 
+  Occurrences * getOccurrences() { return _occurrences; }
+
 
 private:
 

@@ -32,6 +32,8 @@
 #include <om_sampler.hh>
 #include <om_sampled_data.hh>
 #include <om_algorithm.hh>
+#include <om_occurrences.hh>
+#include <environment.hh>
 
 #include <string.h>
 
@@ -61,7 +63,9 @@ void ConfusionMatrix::reset(Scalar predictionThreshold)
  *  2nd column is actual presence (index [y][1])
  */
 
-void ConfusionMatrix::calculate(Sampler * sampler, Algorithm * alg)
+void ConfusionMatrix::calculate(Environment * env, Algorithm * alg, 
+				Occurrences * presences, 
+				Occurrences * absences)
 {
   int i, n;
   int predictionIndex, actualIndex;
@@ -69,20 +73,31 @@ void ConfusionMatrix::calculate(Sampler * sampler, Algorithm * alg)
   SampledData data;
 
   reset(_predictionThreshold);
-  sampler->getPresence(&data);
-  n = data.numSamples();
+  Sampler sampler(env, presences, absences);
 
+  printf("Calculating confusion matrix\n");
+
+  sampler.getPresence(&data);
+  n = data.numSamples();
   for (i = 0; i < n; i++)
     {
       predictionValue = alg->getValue(data.getIndependentSample(i));
       predictionIndex = (predictionValue >= _predictionThreshold);
-      actualIndex = data.isPresence(i);
-
+      actualIndex = 1; //data.isPresence(i);
       _confMatrix[predictionIndex][actualIndex]++;
+    }
 
-      //      printf("%4d] Matrix[pred=%1d][actual=%1d]=%d\n", 
-      //	     i, predictionIndex, actualIndex, 
-      //	     _confMatrix[predictionIndex][actualIndex]);
+  if (absences && 0)
+    {
+      sampler.getAbsence(&data);
+      n = data.numSamples();
+      for (i = 0; i < n; i++)
+	{
+	  predictionValue = alg->getValue(data.getIndependentSample(i));
+	  predictionIndex = (predictionValue >= _predictionThreshold);
+	  actualIndex = 0; //data.isPresence(i);
+	  _confMatrix[predictionIndex][actualIndex]++;
+	}
     }
 
   _ready = true;

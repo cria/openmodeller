@@ -319,7 +319,7 @@ int Garp::iterate()
   keepFittest(_offspring, _fittest, defaultPerfIndex);
   _fittest->trim(_popsize);
   
-  _fittest->gatherRuleSetStats(_gen);
+  //_fittest->gatherRuleSetStats(_gen);
   //_offspring->gatherRuleSetStats(-_gen);
   
   
