@@ -91,7 +91,17 @@ int Csm::initialize()
     }
     //show what we have calculated so far....
     //displayMatrix(_gsl_environment_matrix,"Environemntal Layer Samples");
-    csm1();
+    bool myFlag = csm1();
+    if (myFlag)
+    {
+       printf("Model initialisation completed ok.!\n");
+    }
+    else
+    {
+       printf("Model initialisation failed! Aborting!\n");
+      
+    }
+    return myFlag;
 }
 /** This is a utility function to convert the _sampl Sampler to a
   * gsl_matrix.
@@ -523,76 +533,77 @@ gsl_matrix * Csm::autoCovariance(gsl_matrix * original_matrix)
 /** Csm1 is used to produce the model definition */
 bool Csm::csm1()
 {
-    //calculate the mean and std deviation
-    printf ("Calculating mean and stddev\n");
-    _gsl_avg_vector = gsl_vector_alloc (_gsl_environment_matrix->size2);
-    _gsl_stddev_vector = gsl_vector_alloc (_gsl_environment_matrix->size2) ;
-    calculateMeanAndSd(_gsl_environment_matrix,_gsl_avg_vector,_gsl_stddev_vector);
-    //displayVector(_gsl_avg_vector,"Average vector");
-    //displayVector(_gsl_stddev_vector,"Standard Deviation vector");
-    //center and standardise the data
-    printf ("Centering and standardising\n");
-    center();
-    //show what we have calculated so far....
-   // displayMatrix(_gsl_environment_matrix,"Environemntal Layer Samples (after centering)");
+  //calculate the mean and std deviation
+  printf ("Calculating mean and stddev\n");
+  _gsl_avg_vector = gsl_vector_alloc (_gsl_environment_matrix->size2);
+  _gsl_stddev_vector = gsl_vector_alloc (_gsl_environment_matrix->size2) ;
+  calculateMeanAndSd(_gsl_environment_matrix,_gsl_avg_vector,_gsl_stddev_vector);
+  //displayVector(_gsl_avg_vector,"Average vector");
+  //displayVector(_gsl_stddev_vector,"Standard Deviation vector");
+  //center and standardise the data
+  printf ("Centering and standardising\n");
+  center();
+  //show what we have calculated so far....
+  // displayMatrix(_gsl_environment_matrix,"Environemntal Layer Samples (after centering)");
 
-    //Now calculate the covariance matrix:
-    printf ("Calculating covariance matrix");
-    _gsl_covariance_matrix = autoCovariance(_gsl_environment_matrix);
-    //the rows and columns in the cavariance matrix should be equal, otherwise abort
-    if (_gsl_covariance_matrix->size1 != _gsl_covariance_matrix->size2)
+  //Now calculate the covariance matrix:
+  printf ("Calculating covariance matrix");
+  _gsl_covariance_matrix = autoCovariance(_gsl_environment_matrix);
+  //the rows and columns in the cavariance matrix should be equal, otherwise abort
+  if (_gsl_covariance_matrix->size1 != _gsl_covariance_matrix->size2)
+  {
+    printf ("\n\n\nCsm :: A critical error has occurred - cavariance matrix is not square...aborting\n\n\n");
+    return 0;
+  }
+  //and display the result...
+  //displayMatrix(_gsl_covariance_matrix,"Covariance Matrix");
+
+  //now compute the eigen value and vector
+  printf("Calculating eigenvalue and eigenvector");
+  _gsl_eigenvalue_vector = gsl_vector_alloc (_layer_count);
+  _gsl_eigenvector_matrix = gsl_matrix_alloc (_layer_count, _layer_count);
+  //create a temporary workspace
+  gsl_eigen_symmv_workspace * myWorkpace = gsl_eigen_symmv_alloc (_layer_count);
+  gsl_eigen_symmv (_gsl_covariance_matrix,
+          _gsl_eigenvalue_vector,
+          _gsl_eigenvector_matrix,
+          myWorkpace);
+  //free the temporary workspace again
+  gsl_eigen_symmv_free (myWorkpace);
+  //Initialise the retained components count (to be used further down and in displayEigen())
+  _retained_components_count = _layer_count;
+  //show the eigen before sorting
+  //printf ("\n\nBefore sorting : \n");
+  //displayVector(_gsl_eigenvalue_vector,"Eigen Values");
+  //displayMatrix(_gsl_eigenvector_matrix,"Eigen Vector");
+  //sort the eigen vector by the eigen values (in descending order)
+  gsl_eigen_symmv_sort (_gsl_eigenvalue_vector, _gsl_eigenvector_matrix,
+          GSL_EIGEN_SORT_VAL_DESC);
+  //print out the result
+  printf ("\n\nEigenvector sorted : \n");
+  //displayVector(_gsl_eigenvalue_vector,"Eigen Values");
+  //displayMatrix(_gsl_eigenvector_matrix,"Eigen Vector");
+  //displayVector(_gsl_eigenvalue_vector,"Eigen Values");
+  //displayMatrix(_gsl_eigenvector_matrix,"Eigen Vector");
+  printf ("\n*************************************************\n");
+  printf ("        CSM Model Generation Completed ");
+  printf ("\n*************************************************\n");
+
+  //After the mode is generated, we can discard unwanted components!
+  int myNumberOfAttempts=0;
+  while ( myNumberOfAttempts++ < maxAttemptsInt)
+  {
+    if (discardComponents())
     {
-        printf ("\n\n\nCsm :: A critical error has occurred - cavariance matrix is not square...aborting\n\n\n");
-        return 0;
+      printf ("\n\nUnwanted components discarded \n");
+      return true;
     }
-    //and display the result...
-    //displayMatrix(_gsl_covariance_matrix,"Covariance Matrix");
-
-    //now compute the eigen value and vector
-    printf("Calculating eigenvalue and eigenvector");
-    _gsl_eigenvalue_vector = gsl_vector_alloc (_layer_count);
-    _gsl_eigenvector_matrix = gsl_matrix_alloc (_layer_count, _layer_count);
-    //create a temporary workspace
-    gsl_eigen_symmv_workspace * myWorkpace = gsl_eigen_symmv_alloc (_layer_count);
-    gsl_eigen_symmv (_gsl_covariance_matrix,
-                     _gsl_eigenvalue_vector,
-                     _gsl_eigenvector_matrix,
-                     myWorkpace);
-    //free the temporary workspace again
-    gsl_eigen_symmv_free (myWorkpace);
-    //Initialise the retained components count (to be used further down and in displayEigen())
-    _retained_components_count = _layer_count;
-    //show the eigen before sorting
-    //printf ("\n\nBefore sorting : \n");
-    //displayVector(_gsl_eigenvalue_vector,"Eigen Values");
-    //displayMatrix(_gsl_eigenvector_matrix,"Eigen Vector");
-    //sort the eigen vector by the eigen values (in descending order)
-    gsl_eigen_symmv_sort (_gsl_eigenvalue_vector, _gsl_eigenvector_matrix,
-                          GSL_EIGEN_SORT_VAL_DESC);
-    //print out the result
-    printf ("\n\nEigenvector sorted : \n");
-    //displayVector(_gsl_eigenvalue_vector,"Eigen Values");
-    //displayMatrix(_gsl_eigenvector_matrix,"Eigen Vector");
-    //displayVector(_gsl_eigenvalue_vector,"Eigen Values");
-    //displayMatrix(_gsl_eigenvector_matrix,"Eigen Vector");
-    printf ("\n*************************************************\n");
-    printf ("        CSM Model Generation Completed ");
-    printf ("\n*************************************************\n");
-
-    //After the mode is generated, we can discard unwanted components!
-    int maxComponentAttempts=10; //soft code using parameters later! - only relevant to broken stick!
-    int myNumberOfAttempts=0;
-    while (!discardComponents() && myNumberOfAttempts++ < maxComponentAttempts)
+    else
     {
       printf ("Discard components retained to few components - trying again!\n");
     }
-    if (myNumberOfAttempts==maxComponentAttempts)
-    {
-      printf ("Error could not generate a model with sufficient components!\n");
-      return false;
-    }
-      
-    //print out the result
-    printf ("\n\nUnwanted components discarded \n");
-    return true;
+  }
+  printf ("Error could not generate a model with sufficient components!\n");
+  return false;
+  //print out the result
 }
