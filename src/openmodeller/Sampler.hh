@@ -30,15 +30,38 @@
 #define _SAMPLERHH_
 
 #include <om_defs.hh>
+#include <om_occurrences.hh>
+#include <occurrence.hh>
+#include <environment.hh>
+#include <configurable.hh>
+
+#include <refcount.hh>
 
 
 /****************************************************************/
 /*************************** Sampler ****************************/
 
-class Occurrences;
-class Environment;
-class SampledData;
+class SamplerImpl;
+typedef ReferenceCountedPointer<SamplerImpl> SamplerPtr;
+typedef ReferenceCountedPointer<const SamplerImpl> ConstSamplerPtr;
 
+/** Splits data points into to 2 new samplers
+ *  @param orig  Original sampler to split
+ *  @param train Pointer to train sampler to be returned
+ *  @param test  Pointer to test sampler to be returned
+ *  @param propTrain Percentage of points to go to train sampler
+ */
+void splitSampler(const SamplerPtr& orig, SamplerPtr *train, SamplerPtr *test, double propTrain);
+
+/**
+ * Factory method that creates a Sampler based on Environment
+ * and Occurrences objects
+ */
+SamplerPtr createSampler(const EnvironmentPtr& env,
+			 const OccurrencesPtr& presence,
+			 const OccurrencesPtr& absence = OccurrencesPtr() );
+
+SamplerPtr createSampler( const ConstConfigurationPtr& config );
 /** 
  * Base class to create samplers of environmental variables and
  * occurrence data. Each derived class can implement different 
@@ -46,77 +69,51 @@ class SampledData;
  * distribution of occurrence data, disproportional sampling
  * regarding presence and absence data, etc.
  */
-class dllexp Sampler
+class dllexp SamplerImpl : public Configurable, private ReferenceCountedObject
 {
+  friend class ReferenceCountedPointer<SamplerImpl>;
+  friend class ReferenceCountedPointer<const SamplerImpl>;
+  friend SamplerPtr createSampler( const ConstConfigurationPtr & );
 public:
 
-  Sampler( Environment *env, Occurrences *presence,
-	   Occurrences *absence=0 );
-  ~Sampler();
+  SamplerImpl();
+  SamplerImpl( const EnvironmentPtr& env,
+	       const OccurrencesPtr& presences,
+	       const OccurrencesPtr& absence);
+  ~SamplerImpl();
 
+  EnvironmentPtr getEnvironment() { return _env; }
+  ConstEnvironmentPtr getEnvironment() const { return _env; }
+
+  OccurrencesPtr getPresences() { return _presence; }
+  ConstOccurrencesPtr getPresences() const { return _presence; }
+
+  OccurrencesPtr getAbsences() { return _absence; }
+  ConstOccurrencesPtr getAbsences() const { return _absence; }
+
+  /** Indicate that all non categorical variable layers must
+   *  be normalized according to the interval [min, max].
+   *  Returns through offsets, scales the normalization parameters.
+   */
+  void computeNormalization(Scalar min, Scalar max, Sample *offsets, Sample *scales ) const;
+
+  /** Set specific normalization parameters
+   */
+  void setNormalization( bool use_norm, const Sample& offsets, const Sample& scales );
 
   /** Number of independent variables (environmental variables). */
-  int numIndependent();
+  int numIndependent() const;
 
   /** Number of dependent variables (attributes of the occurred
    *  thing). These are the variables to be modelled.
    */
-  int numDependent();
-
+  int numDependent() const;
 
   /** Number of presences (occurrence points). */
-  int numPresence();
+  int numPresence() const;
 
   /** Number of absences (localities with no occurrence). */
-  int numAbsence();
-
-  /** Get the environment values at the presence localities.
-   *
-   * @param npnt Maximum number of localities to get.
-   *  If it is negative, gets all avaiable localities.
-   * @param env Filled with the environmental vector values.
-   * 
-   * @return Number of presence points filled in.
-   */
-  virtual int getPresence( SampledData *data, int npnt=-1 );
-
-  /** Get the environment values at the absence localities.
-   *
-   * @param npnt Maximum number of localities to get.
-   *  If it is negative, gets all avaiable localities.
-   * @param env Filled with the environmental vector values.
-   *  
-   * @return Number of absence points filled in.
-   */
-  virtual int getAbsence( SampledData *data, int npnt=-1 );
-
-  /** Get the environment values at some random localities.
-   * It is not garanteed that the environment values are different
-   * from some presence data!
-   * 
-   * @param npnt Maximum number of localities to get (>= 0).
-   * @param env Filled with the environmental vector values.
-   *
-   * @return Number of absence points filled in.
-   */
-  virtual int getPseudoAbsence( SampledData *data, int npnt );
-
-
-  /** Samples presence and absence (or pseudo-absence) points in
-   * a uniform way.
-   * There is 50% of chance to get a presence point and 50% of
-   * get an absence or pseudo-absence point.
-   * If there are real absence points (user input) then only
-   * absence are sampled. If there are not real absence, samples
-   * pseudo-absence points.
-   * 
-   * @param data Filled with environmental values of presence and
-   *  absence localities.
-   * @param npnt Maximum number of localities to sample.
-   *
-   * @return Total of sampled localities.
-   */
-  virtual int getSamples( SampledData *data, int npnt );
+  int numAbsence() const;
 
   /** Samples one presence, absence or pseudo-absence point in
    * a uniform way.
@@ -132,65 +129,43 @@ public:
    * @return Zero if got an absence or pseudo-absence point and
    *  not zero if got a presence point.
    */
-  virtual int getOneSample( Scalar *independent,
-			    Scalar *dependent );
+  ConstOccurrencePtr getOneSample( ) const;
 
-
-  /** Sets types[i] = 1 if variable associated to "i" is
-   * categorical (eg: soil), otherwise set types[i] = 0.
-   * i = 0, ..., dim()-1
+  /**
+   * Get one Presence point
    */
-  int varTypes( int *types );
+  ConstOccurrencePtr getPresence() const 
+  { return getRandomOccurrence( _presence ); }
 
-  /** Splits data points into to 2 new samplers
-   *  @param train Pointer to train sampler to be returned
-   *  @param test  Pointer to test sampler to be returned
-   *  @param propTrain Percentage of points to go to train sampler
+  /**
+   * Get one Absence point
    */
-  void split(Sampler ** train, Sampler ** test, double propTrain);
+  ConstOccurrencePtr getAbsence() const 
+  { return getRandomOccurrence( _absence ); }
 
+  /**
+   * Get one pseudoAbsence point
+   */
+  ConstOccurrencePtr getPseudoAbsence() const;
+
+  /** Returns 1 if i-th variable is categorical,
+   * otherwise returns 0.
+   */
+  int isCategorical( int i );
+
+  ConfigurationPtr getConfiguration() const;
+
+  void setConfiguration ( const ConstConfigurationPtr& );
 
 protected:
 
-  int getRandomOccurrence( Occurrences *occur,
-			   Scalar *independent,
-			   Scalar *dependent );
+  ConstOccurrencePtr getRandomOccurrence( const OccurrencesPtr& occur ) const;
 
-
-  /** Get the environment values at the given localities.
-   *
-   * @param occur Localities points.
-   * @param npnt Maximum number of localities to get.
-   * @param env Filled with the environmental vector values.
-   *  env[i * dim(), j] is the j-th environmental value for the
-   *  i-th point.
-   *  
-   * @return Number of localities found.
-   */
-  int getOccurrence( Occurrences *occur, SampledData *env,
-		     int npnt );
-
-  /** Copy occurrences to a new Occurrences object.
-   *
-   * @param occs Source object to copy occurrences from.
-   *  
-   * @return A copy of source Occurrences object.
-   */
-  Occurrences * copyOccurrences(Occurrences * occs);
+  void initialize();
   
-  /** Move occurrences from train to test set
-   *
-   * @param train Source object to move occurrences from.
-   * @param test Destination object to move occurrences to.
-   * @param propTrain Proportion of points that will remain on train set.
-   */
-  void moveRandomOccurrences(Occurrences * train, 
-			     Occurrences * test, double propTrain);
-
-
-  Occurrences *_presence;
-  Occurrences *_absence;
-  Environment *_env;
+  OccurrencesPtr _presence;
+  OccurrencesPtr _absence;
+  EnvironmentPtr _env;
 };
 
 

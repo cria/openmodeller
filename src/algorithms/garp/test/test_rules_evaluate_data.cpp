@@ -32,7 +32,7 @@ struct HardcodedSample
 {
   int resamples;
   int dimension;
-  Scalar * samples;
+  Scalar * values;
 };
 
 Scalar SampleSetValues1[84][3] =  

@@ -39,7 +39,8 @@ static AlgParamMetadata *parameters = 0;
    * 
    * @param Sampler is class that will fetch environment variable values at each occurrence / locality
    */
-Csm::Csm(AlgMetadata * metadata): Algorithm( metadata )
+Csm::Csm(AlgMetadata const * metadata) :
+  AlgorithmImpl( metadata )
 {
   _initialized = 0;
 }
@@ -114,28 +115,22 @@ int Csm::initialize()
 int Csm::SamplerToMatrix()
 {
 
-    //create a samples container to hold the values retrieved
-    //from the environmental layers at each point - this will be
-    //converted to a gsl structure in the next step
-    //_samp is defined in the Algorithm class from which Csm inherits
-    SampledData localities;
-    if ( ! _samp->getPresence(&localities, _localityCount))
-      return 0;
-    _localityCount = localities.numSamples();
+  OccurrencesImpl::const_iterator pit = _samp->getPresences()->begin();
+  OccurrencesImpl::const_iterator fin = _samp->getPresences()->end();
 
-    // Allocate the gsl matrix to store environment data at each locality
-    _gsl_environment_matrix = gsl_matrix_alloc (_localityCount, _layer_count);
-    // now populate the gsl matrix from the sample data
-    for (int i=0;i<_localityCount;++i)
+  // Allocate the gsl matrix to store environment data at each locality
+  _gsl_environment_matrix = gsl_matrix_alloc (_localityCount, _layer_count);
+  // now populate the gsl matrix from the sample data
+  for (int i=0; pit != fin; ++pit, ++i)
     {
-        for (int j=0;j<_layer_count;j++)
+      for (int j=0;j<_layer_count;j++)
         {
-            //we add one to j in order to omit the specimen count column
-            float myCellValue = localities.getIndependent(i,j);
-            gsl_matrix_set (_gsl_environment_matrix,i,j,myCellValue);
+	  //we add one to j in order to omit the specimen count column
+	  float myCellValue = (*pit)->environment()[j];
+	  gsl_matrix_set (_gsl_environment_matrix,i,j,myCellValue);
         }
     }
-    return 1;
+  return 1;
 }
 
 
@@ -225,7 +220,7 @@ int Csm::iterate()
   * @return     
   * @return Implementation specific but usually 1 for completion.
   */
-int Csm::done()
+int Csm::done() const
 {
     return _done;
 }
@@ -240,7 +235,7 @@ int Csm::done()
   * @note This method is inherited from the Algorithm class
   * @return Scalar of the probablitiy of occurence must be between 0 and 1  
   * @param Scalar *x a pointer to a vector of openModeller Scalar type (currently double). The vector should contain values looked up on the environmental variable layers into which the mode is being projected. */
-Scalar Csm::getValue( Scalar *x )
+Scalar Csm::getValue( const Sample& x ) const
 {
     int i;
 
@@ -406,7 +401,7 @@ gsl_matrix * Csm::transpose (gsl_matrix * m)
 
 /************************/
 /**** Vectors product ***/
-double Csm::product (gsl_vector * va, gsl_vector * vb)
+double Csm::product (gsl_vector * va, gsl_vector * vb) const
 {
     // fix me: need to check if vectors are of the same size !!!
 
@@ -422,7 +417,7 @@ double Csm::product (gsl_vector * va, gsl_vector * vb)
 
 /*************************/
 /**** Matrices product ***/
-gsl_matrix * Csm::product (gsl_matrix * a, gsl_matrix * b)
+gsl_matrix * Csm::product (gsl_matrix * a, gsl_matrix * b) const
 {
     // fix me: need to check if a->size2 is equal to b->size1 !!!
 

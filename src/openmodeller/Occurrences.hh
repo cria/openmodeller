@@ -30,13 +30,18 @@
 #ifndef _OCCURRENCESHH_
 #define _OCCURRENCESHH_
 
-#include "om_defs.hh"
+#include <om_defs.hh>
+#include <occurrence.hh>
+#include <configurable.hh>
+#include <refcount.hh>
+#include <env_io/geo_transform.hh>
 
-class Occurrence;
-class GeoTransform;
+#include <vector>
+#include <string>
 
-template<class T> class DList;
-
+class OccurrencesImpl;
+typedef ReferenceCountedPointer<OccurrencesImpl> OccurrencesPtr;
+typedef ReferenceCountedPointer<const OccurrencesImpl> ConstOccurrencesPtr;
 
 /****************************************************************/
 /************************* Occurrences **************************/
@@ -45,87 +50,136 @@ template<class T> class DList;
  * Representation of a set of occurrences.
  *
  */
-class dllexp Occurrences
+class dllexp OccurrencesImpl : public Configurable, private ReferenceCountedObject
 {
-  typedef DList<Occurrence *> LstOccur;
+  friend class ReferenceCountedPointer<OccurrencesImpl>;
+  friend class ReferenceCountedPointer<const OccurrencesImpl>;
 
+  typedef std::vector< OccurrencePtr > vocType;
 
 public:
+
+  typedef vocType::const_iterator const_iterator;
+  typedef vocType::iterator iterator;
+
+  /** Creates a collection of occurrences points.
+   *
+   */
+  inline OccurrencesImpl( double default_abundance ) :
+    name_( ),
+    cs_( GeoTransform::cs_default ),
+    gt_( 0 ),
+    occur_( ),
+    default_abundance_( default_abundance )
+  {
+    initGeoTransform();
+  };
 
   /** Creates a collection of occurrences points.
    *  @param name Collection of occurrences' name.
    *  @param coord_system Coordinate system of the occurrences
    *   points to be inserted in this collection (in WKT format).
    */
-  Occurrences( char *name, char *coord_system=OM_WGS84 );
-  ~Occurrences();
+  inline OccurrencesImpl( const std::string& name, 
+			  const std::string& coord_system=GeoTransform::cs_default ) :
+    name_( name ),
+    cs_( coord_system ),
+    gt_( 0 ),
+    occur_(),
+    default_abundance_( 0.0 )
+  {
+    initGeoTransform();
+  };
 
-  char *name()   { return _name; }
+  ~OccurrencesImpl();
+
+  /** Deep copy of this. */
+  OccurrencesImpl* clone() const;
+
+  /** change the reserve setting for the container */
+  void reserve( int estimate ) { occur_.reserve( estimate ); }
+
+  /** name of the occurrences/species */
+  char const * name() const { return name_.c_str(); }
 
   /** coordinate system name */
-  char *coordSystem() { return _cs; }
+  char const * coordSystem() const { return cs_.c_str(); }
 
-  /** Insert an occurrence.
-   * 
-   * @param longitude Longitude in decimal degrees.
-   * @param latitude Latitude in decimal degrees.
-   * @param error (longitude, latitude) uncertanty in meters.
-   * @param abundance Number of items found in (longitude,
-   *  latitude).
-   * @param num_attributes Number of possible modelling
-   *  attributes.
-   * @param attributes Vector with possible modelling attributes.
+  /** set the coordinate system
+   *
+   *  All occurrences inserted after this call are assumed to be
+   *  in this coordinate system.
    */
-  void insert( Coord longitude, Coord latitude, Scalar error,
-	       Scalar abundance=1.0, int num_attributes=0,
-	       Scalar *attributes=0 );
+  void setCoordinateSystem( const std::string& cs );
 
-  /** Insert an occurrence without uncertanty. */
-  void insert( Coord longitude, Coord latitude,
-	       Scalar abundance=1.0, int num_attributes=0,
-	       Scalar *attributes=0 );
+  /** Create an occurrence.
+   * 
+   * @param longitude Longitude in native coordinates
+   * @param latitude Latitude in native coordinates
+   * @param error (longitude, latitude) uncertanty in meters.
+   * @param abundance - the abundance of the species: 0 for absence points.
+   * @param num_attributes Number of possible modelling attributes.
+   * @param attributes Vector with possible modelling attributes.
+   * @param num_env Number of environment variables at sample
+   * @param env Vector with environment variables.
+   */
+  void createOccurrence( Coord longitude, Coord latitude,
+			 Scalar error, Scalar abundance,
+			 int num_attributes = 0, Scalar *attributes = 0,
+			 int num_env = 0, Scalar *env = 0 );
+
+  /** Add an occurrence created outside. */
+  void insert( const OccurrencePtr& );
+
+  /** Remove a single entry */
+  iterator erase( const iterator& it );
 
   /** Number of attributes of the thing occurred. This is the
    *  number of dependent variables, ie the variables to be
    *  modelled.
-   *  
-   *  Fix: By now this is hardcoded to 1 (= abundance).
+   * 
+   *  Fixme - this is currently hard-coded to 0.
    */
-  int numAttributes()  { return 1; }
+  int numAttributes() const { return 0; }
 
   /** Number of occurrences. */
-  int numOccurrences();
+  int numOccurrences() const { return occur_.size(); }
 
-  /** Navigate on the list of occurrences. */
-  void head();
-  void next();
-  Occurrence *get();
+  /** Test for empty. */
+  bool isEmpty() const { return occur_.empty(); }
 
-  /** Remove from list the current coordinate, returning it. */
-  Occurrence *remove();
+  /** Vector/Random access */
+  ConstOccurrencePtr operator[]( int i ) const { return occur_[i]; }
+
+  /** Linear access */
+  const_iterator begin() const { return occur_.begin(); }
+  const_iterator end() const { return occur_.end(); }
+  iterator begin() { return occur_.begin(); }
+  iterator end() { return occur_.end(); }
 
   /** Choose an occurrence at random. */
-  Occurrence *getRandom();
+  ConstOccurrencePtr getRandom() const;
 
   /** Print occurrence data and its points. */
-  void print( char *msg="" );
+  void print( char *msg="" ) const;
 
+  virtual ConfigurationPtr getConfiguration() const;
+
+  virtual void setConfiguration( const ConstConfigurationPtr & );
 
 private:
 
-  /** Build a vector view for the occurrences in _occur */
-  void buildVector();
+  void initGeoTransform();
 
+  double default_abundance_;
 
-  char *_name; ///< List of occurrences' name (e.g. species name).
-  char *_cs;   ///< Coordinate system name
+  std::string name_; ///< List of occurrences' name (e.g. species name).
+  std::string cs_;   ///< Coordinate system name
 
   /** Object to transform between different coordinate systems. */
-  GeoTransform *_gt;
+  GeoTransform *gt_;
 
-  LstOccur *_occur;  ///< Coordinates of the occurrences.
-
-  Occurrence **_vector; ///< Vector view to the occurrences.
+  vocType occur_;  ///< Coordinates of the occurrences.
 };
 
 

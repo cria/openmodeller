@@ -26,14 +26,11 @@
  * http://www.gnu.org/copyleft/gpl.html
  */
 
-#include <string.h>
-
 #include "env_io/map.hh"
 
 #include <env_io/geo_transform.hh>
 #include <env_io/raster.hh>
 #include <om_log.hh>
-
 
 /****************************************************************/
 /****************************** Map *****************************/
@@ -41,21 +38,16 @@
 /******************/
 /*** construtor ***/
 
-Map::Map( Raster *rst, char *ocs, int del )
+Map::Map( Raster *rst )
 {
   if ( ! rst->header().hasProj() )
     {
       g_log.warn( "Not a georeferenced map! Assuming WGS84\n" );
-      rst->header().setProj( OM_WGS84 );
+      rst->header().setProj( GeoTransform::cs_default );
     }
 
-  int len = 1 + strlen(ocs);
-  _cs = new char[len];
-  memcpy( _cs, ocs, len );
-
   _rst = rst;
-  _gt  = new GeoTransform( rst->header().proj, ocs );
-  _del = del;
+  _gt  = new GeoTransform( rst->header().proj, GeoTransform::cs_default );
 }
 
 
@@ -64,10 +56,8 @@ Map::Map( Raster *rst, char *ocs, int del )
 
 Map::~Map()
 {
-  delete _cs;
   delete _gt;
-  if ( _del )
-    delete _rst;
+  delete _rst;
 }
 
 
@@ -75,9 +65,12 @@ Map::~Map()
 /*** getRegion  ***/
 int
 Map::getRegion( Coord *xmin, Coord *ymin, Coord *xmax,
-                Coord *ymax)
+                Coord *ymax) const
 {
-  _rst->getRegion( xmin, ymin, xmax, ymax );
+  *xmin = _rst->xMin();
+  *ymin = _rst->yMin();
+  *xmax = _rst->xMax();
+  *ymax = _rst->yMax();
 
   return
     _gt->transfOut( xmin, ymin ) &&
@@ -88,17 +81,23 @@ Map::getRegion( Coord *xmin, Coord *ymin, Coord *xmax,
 /***********/
 /*** get ***/
 int
-Map::get( Coord x, Coord y, Scalar *val )
+Map::get( Coord x, Coord y, Scalar *val ) const
 {
   return _gt->transfIn( &x, &y ) ? _rst->get( x, y, val ) : 0;
 }
 
-
 /***********/
 /*** put ***/
 int
-Map::put( Coord x, Coord y, Scalar *val )
+Map::put( Coord x, Coord y, Scalar val )
 {
   return _gt->transfIn( &x, &y ) ? _rst->put( x, y, val ) : 0;
 }
 
+/***********/
+/*** put ***/
+int
+Map::put( Coord x, Coord y )
+{
+  return put( x,y,_rst->header().noval );
+}

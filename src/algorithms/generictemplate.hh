@@ -61,7 +61,7 @@ public:
     * @param Scalar pointer max that the post normalised will be fitted to
     * @return 0 if no normalisation is needed
     */
-  int needNormalization( Scalar *min, Scalar *max );
+  int needNormalization( Scalar *min, Scalar *max ) const;
   
   /** Initialise the model specifying a threshold / cutoff point.
     * This is optional (model dependent).
@@ -82,7 +82,7 @@ public:
     * @return     
     * @return Implementation specific but usually 1 for completion.
     */
-  int done();
+  int done() const;
 
   //
   // Methods used to project the model
@@ -93,7 +93,7 @@ public:
     * @note This method is inherited from the Algorithm class
     * @return     
     * @param Scalar *x a pointer to a vector of openModeller Scalar type (currently double). The vector should contain values looked up on the environmental variable layers into which the mode is being projected. */
-  Scalar getValue( Scalar *x );
+  Scalar getValue( Scalar const *x ) const;
   
   /** Returns a value that represents the convergence of the algorithm
     * expressed as a number between 0 and 1 where 0 represents model

@@ -37,11 +37,15 @@
 #include "rules_range.hh"
 #include "rules_negrange.hh"
 #include "rules_logit.hh"
-#include "rules_atomic.hh"
 #include "ruleset.hh"
-#include "garp_sampler.hh"
-
+#include "bioclim_histogram.hh"
+#include "regression.hh"
+#include <configuration.hh>
 #include <random.hh>
+#include <Exceptions.hh>
+
+#include <string>
+using std::string;
 
 #define NUM_PARAM 4
 
@@ -186,10 +190,17 @@ Computers in Simulation 33:385-390.",
 /****************** Algorithm's factory function ****************/
 #ifndef DONT_EXPORT_GARP_FACTORY
 dllexp 
-Algorithm * 
+AlgorithmImpl * 
 algorithmFactory()
 {
-  return new Garp;
+  return new Garp();
+}
+
+dllexp
+AlgMetadata const *
+algorithmMetadata()
+{
+  return &metadata;
 }
 #endif
 
@@ -203,7 +214,7 @@ const PerfIndex defaultPerfIndex = PerfSig;
 /****************** Garp constructor ****************************/
 
 Garp::Garp()
-  : Algorithm(& metadata)
+  : AlgorithmImpl(& metadata)
 {
   // fill in default values for parameters
   _popsize        = 0;
@@ -224,7 +235,6 @@ Garp::Garp()
 
   // reset private attributes
   _fittest = _offspring = NULL;
-  _custom_sampler = NULL;
 
   _gen = 0;
   _convergence = 1.0;
@@ -254,15 +264,12 @@ Garp::~Garp()
   
   if (_fittest)
     delete _fittest;
-
-  if (_custom_sampler)
-    delete _custom_sampler;
 }
 
 // ****************************************************************
 // ************* needNormalization ********************************
 
-int Garp::needNormalization( Scalar *min, Scalar *max )
+int Garp::needNormalization( Scalar *min, Scalar *max ) const
 {
   *min = -1.0;
   *max = +1.0;
@@ -295,14 +302,34 @@ int Garp::initialize()
   _offspring  = new GarpRuleSet(2 * _popsize);
   _fittest    = new GarpRuleSet(2 * _popsize);
 
-  _custom_sampler = new GarpCustomSampler;
-  _custom_sampler->initialize(_samp, _resamples);
+  cacheSamples(_samp, _cachedOccs, _resamples);
+  _bioclimHistogram.initialize(_cachedOccs);
+  _regression.calculateParameters(_cachedOccs);
 
-  colonize(_offspring, _custom_sampler, _popsize);
+  colonize(_offspring, _popsize);
 
   return 1;
 }
   
+/****************************************************************/
+/****************************************************************/
+void Garp::cacheSamples(const SamplerPtr& sampler, 
+			OccurrencesPtr& cachedOccs, 
+			int resamples)
+{
+  OccurrencesImpl * occs = new OccurrencesImpl( "", 
+						GeoTransform::cs_default );
+  occs->reserve( resamples );
+  cachedOccs = ReferenceCountedPointer<OccurrencesImpl>( occs );
+  
+  for (int i = 0; i < resamples; ++i)
+    {
+      OccurrencePtr oc = sampler->getOneSample();
+      cachedOccs->insert(oc); 
+    }
+}
+
+
 /****************************************************************/
 /****************** iterate *************************************/
 
@@ -315,7 +342,7 @@ int Garp::iterate()
 
   _gen++;
   
-  evaluate(_offspring, _custom_sampler);
+  evaluate(_offspring);
   keepFittest(_offspring, _fittest, defaultPerfIndex);
   _fittest->trim(_popsize);
   
@@ -345,7 +372,7 @@ int Garp::iterate()
   select(_fittest, _offspring, _gapsize);
   
   // create new offspring
-  colonize(_offspring, _custom_sampler, _popsize);
+  colonize(_offspring, _popsize);
   _offspring->trim(_popsize);
   mutate(_offspring);
   crossover(_offspring);
@@ -356,7 +383,7 @@ int Garp::iterate()
 /****************************************************************/
 /****************** getProgress *********************************/
 
-float Garp::getProgress()
+float Garp::getProgress() const
 {
   if (done())
     { return 1.0; }
@@ -374,7 +401,7 @@ float Garp::getProgress()
 /****************************************************************/
 /****************** done ****************************************/
 
-int Garp::done()
+int Garp::done() const
 {
   return ( (_gen >= _max_gen) || (_convergence < _conv_limit) );
 }
@@ -382,7 +409,7 @@ int Garp::done()
 /****************************************************************/
 /****************** getValue ************************************/
 
-Scalar Garp::getValue( Scalar *x )
+Scalar Garp::getValue( const Sample& x ) const
 {
   return _fittest->getValue(x);
 }
@@ -397,109 +424,121 @@ int Garp::getConvergence( Scalar *val )
 }
 
 /****************************************************************/
-/****************** serialize ***********************************/
-int
-Garp::serialize(Serializer * s)
+/****************** configuration *******************************/
+void
+Garp::_getConfiguration( ConfigurationPtr& config ) const
 {
-  char type[16];
-  int i, nrules, ngenes;
+  if ( !done() )
+    return;
 
-  s->writeStartSection("GarpModel");
-  s->writeInt("Generations", _gen);
-  s->writeInt("MaxGenerations", _max_gen);
-  s->writeInt("PopulationSize", _popsize);
-  s->writeInt("Resamples", _resamples);
-  s->writeDouble("AccuracyLimit", _acc_limit);
-  s->writeDouble("ConvergenceLimit", _conv_limit);
-  s->writeDouble("Mortality", _mortality);
-  s->writeDouble("Significance", _significance);
-  s->writeDouble("FinalCrossoverRate", _crossover_rate);
-  s->writeDouble("FinalMutationRate", _mutation_rate);
-  s->writeDouble("FinalGapSize", _gapsize);
+  ConfigurationPtr model_config ( new ConfigurationImpl("GarpModel") );
+  config->addSubsection( model_config );
 
-  // dump fittest rule set
-  nrules = _fittest->numRules();
-  ngenes = 2 * _custom_sampler->dim();
-  s->writeStartSection("FittestRules", nrules);
-  for (i = 0; i < nrules; i++)
-    {
-      GarpRule * rule = _fittest->get(i);
-      sprintf(type, "%c", rule->type());
-      s->writeStartSection("Rule");
-      s->writeString("Type", type);
-      s->writeDouble("Prediction", rule->getPrediction());
-      s->writeArrayDouble("Genes", rule->getGenes(), rule->numGenes() * 2);
-      s->writeArrayDouble("Performance", rule->getPerformanceArray(), 10);
-      s->writeEndSection("Rule");
+  model_config->addNameValue( "Generations", _gen );
+  model_config->addNameValue( "AccuracyLimit", _acc_limit );
+  model_config->addNameValue( "Mortality", _mortality );
+  model_config->addNameValue( "Significance", _significance );
+  model_config->addNameValue( "FinalCrossoverRate", _crossover_rate );
+  model_config->addNameValue( "FinalMutationRate", _mutation_rate );
+  model_config->addNameValue( "FinalGapSize", _gapsize );
+
+  if ( _fittest ) {
+    int nrules = _fittest->numRules();
+ 
+    ConfigurationPtr rules_config( new ConfigurationImpl("FittestRules") );
+    model_config->addSubsection( rules_config );
+
+    rules_config->addNameValue( "Count", nrules );
+
+    for( int i=0; i<nrules; i++ ) {
+      GarpRule *rule = _fittest->get(i);
+      char type[16];
+      sprintf(type, "%c", rule->type() );
+
+      ConfigurationPtr rule_config( new ConfigurationImpl("Rule") );
+      rules_config->addSubsection( rule_config );
+
+      rule_config->addNameValue( "Type", type );
+      rule_config->addNameValue( "Prediction", rule->getPrediction() );
+      rule_config->addNameValue( "Chromosome1", rule->getChrom1());
+      rule_config->addNameValue( "Chromosome2", rule->getChrom2());
+      rule_config->addNameValue( "Performance", rule->getPerformanceArray(), 10 );
     }
-  s->writeEndSection("FittestRules");
-  s->writeEndSection("GarpModel");
+  }
 
-  return 1;
 }
 
-/****************************************************************/
-/****************** deserialize *********************************/
-int
-Garp::deserialize(Deserializer * ds)
+void
+Garp::_setConfiguration( const ConstConfigurationPtr& config )
 {
-  int i, nelems, ngenes, nperf, nrules;
+  ConstConfigurationPtr model_config = config->getSubsection( "GarpModel", false );
 
-  ds->readStartSection("GarpModel");
-  _gen = ds->readInt("Generations");
-  _max_gen = ds->readInt("MaxGenerations");
-  _popsize = ds->readInt("PopulationSize");
-  _resamples = ds->readInt("Resamples");
-  _acc_limit = ds->readDouble("AccuracyLimit");
-  _conv_limit = ds->readDouble("ConvergenceLimit");
-  _mortality = ds->readDouble("Mortality");
-  _significance = ds->readDouble("Significance");
-  _crossover_rate = ds->readDouble("FinalCrossoverRate");
-  _mutation_rate = ds->readDouble("FinalMutationRate");
-  _gapsize = ds->readDouble("FinalGapSize");
+  if (!model_config)
+    return;
 
-  // set parameters that were ommited above with values from parameter array
-  // also initialize data structures with default values
-  _offspring  = new GarpRuleSet(2 * _popsize);
-  _fittest    = new GarpRuleSet(2 * _popsize);
+  _gen = model_config->getAttributeAsInt( "Generations", 0 );
+  _acc_limit = model_config->getAttributeAsDouble( "AccuracyLimit", 0.0 );
+  _mortality = model_config->getAttributeAsDouble( "Mortality", 0.0 );
+  _significance = model_config->getAttributeAsDouble( "Significance", 0.0 );
+  _crossover_rate = model_config->getAttributeAsDouble( "FinalCrossoverRate", 0.0 );
+  _mutation_rate = model_config->getAttributeAsDouble( "FinalMutationRate", 0.0 );
+  _gapsize = model_config->getAttributeAsDouble( "FinalGapSize", 0.0 );
 
-  _custom_sampler = new GarpCustomSampler;
-  _custom_sampler->initialize(_samp, _resamples);
-  //_custom_sampler->createBioclimHistogram();
+  _offspring = new GarpRuleSet( 2 * _popsize );
+  _fittest = new GarpRuleSet( 2 * _popsize );
 
-  // load fittest rule set
-  nrules = ds->readStartSection("FittestRules");
-  
-  for (i = 0; i < nrules; i++)
-    {
-      GarpRule * rule = NULL;
+  /*
+   * This code is commented out for now.  Need to figure out how
+   * to get the algorithm primed with its custom sampler after
+   * it's deserialized.
+   */
+  //_bioclimHistogram.initialize( _samp, _resamples );
 
-      ds->readStartSection("Rule");
-      char * type = ds->readString("Type");
-      Scalar pred = ds->readDouble("Prediction");
-      Scalar * genes = ds->readArrayDouble("Genes", &nelems); 
-      ngenes = nelems / 2;
-      Scalar * perfs = ds->readArrayDouble("Performance", &nperf);
-      ds->readEndSection("Rule");
+  ConstConfigurationPtr rules_config = model_config->getSubsection( "FittestRules" );
 
-      switch (*type)
-	{
-	case 'a': rule = new AtomicRule(pred, ngenes, genes, perfs); break;
-	case 'd': rule = new RangeRule(pred, ngenes, genes, perfs); break;
-	case 'r': rule = new LogitRule(pred, ngenes, genes, perfs); break;
-	case '!': rule = new NegatedRangeRule(pred, ngenes, genes, perfs); break;
-	}
+  int nrules = rules_config->getAttributeAsInt( "Count", 0 );
 
-      delete genes;
-      delete perfs;
+  Configuration::subsection_list::const_iterator ss;
+  for( ss = rules_config->getAllSubsections().begin();
+       ss != rules_config->getAllSubsections().end();
+       ++ss ) {
 
-      _fittest->add(rule);
+    const ConstConfigurationPtr& c(*ss);
+    GarpRule * rule = NULL;
+
+    string type = c->getAttribute( "Type" );
+
+    Scalar pred = c->getAttributeAsDouble( "Prediction", 0.0 );
+
+    Sample p_chrom1 = c->getAttributeAsSample( "Chromosome1" ); 
+
+    Sample p_chrom2 = c->getAttributeAsSample( "Chromosome2" );
+
+    Scalar *p_perf;
+    int n_perf;
+    c->getAttributeAsDoubleArray( "Performance", &p_perf, &n_perf );
+
+    switch( type[0] ) {
+    case 'd':
+      rule = new RangeRule( pred, p_chrom1.size(), p_chrom1, p_chrom2, p_perf );
+      break;
+
+    case 'r':
+      rule = new LogitRule( pred, p_chrom1.size(), p_chrom1, p_chrom2, p_perf );
+      break;
+
+    case '!':
+      rule = new NegatedRangeRule( pred, p_chrom1.size(), p_chrom1, p_chrom2, p_perf );
+      break;
+
     }
 
-  ds->readEndSection("FittestRules");
-  ds->readEndSection("GarpModel");
+    delete [] p_perf;
 
-  return 1;
+    _fittest->add(rule);
+
+  }
+
 }
 
 /****************************************************************/
@@ -575,14 +614,14 @@ void Garp::keepFittest(GarpRuleSet * source, GarpRuleSet * target,
 /****************************************************************/
 /***************** evaluate *************************************/
 
-void Garp::evaluate(GarpRuleSet * ruleset, GarpCustomSampler * sampler)
+void Garp::evaluate(GarpRuleSet * ruleset)
 {
   int i, n;
   
   n = ruleset->numRules();
   for (i = 0; i < n; i++)
   { 
-    ruleset->get(i)->evaluate(sampler);
+    ruleset->get(i)->evaluate(_cachedOccs);
   }
 
   return;
@@ -591,28 +630,42 @@ void Garp::evaluate(GarpRuleSet * ruleset, GarpCustomSampler * sampler)
 /****************************************************************/
 /***************** colonize *************************************/
 
-void Garp::colonize(GarpRuleSet * ruleset, GarpCustomSampler * sampler, 
-                    int numRules)
+void Garp::colonize(GarpRuleSet * ruleset, int numRules)
 {
-  int i, p;
+  int i, p, dim;
   GarpRule * rule;
+  Random rnd;
   
+  dim = _samp->numIndependent();
+
   for (i = ruleset->numRules(); i < numRules; i++)
     {
       // pick the next rule to be generated
-      p = i % 3;
+      p = rnd(3);
 
       switch (p)
 	{
-	case 0: rule = new RangeRule(); break;
-	case 1: rule = new NegatedRangeRule(); break;
-	case 2: rule = new LogitRule(); break;
-	case 3: rule = new AtomicRule(); break;
+      case 0: 
+        rule = new RangeRule(dim);
+	rule->setPrediction(1.0);
+        ((RangeRule *) rule)->initialize(_bioclimHistogram);
+        break;
+
+      case 1: 
+        rule = new NegatedRangeRule(dim); 
+	rule->setPrediction(0.0);
+        ((NegatedRangeRule *) rule)->initialize(_bioclimHistogram);
+        break;
+
+      case 2: 
+        rule = new LogitRule(dim); 
+	Scalar pred = (rnd.get(0.0, 1.0) > 0.5) ? 1.0 : 0.0;
+	rule->setPrediction(pred);
+        ((LogitRule *) rule)->initialize(_regression);
+        break;
 	}
 
       //g_log.debug("[%c] ", rule->type());
-
-      rule->initialize(sampler);
       ruleset->add(rule);
     }
 }
@@ -718,7 +771,7 @@ void Garp::crossover(GarpRuleSet * ruleset)
   Random rnd;
   int nrules, genes, xcount, last, diff, mom, dad, xpt1, xpt2;
 
-  genes = _samp->numIndependent() * 2;
+  genes = _samp->numIndependent();
   nrules = ruleset->numRules();
   last = (int) (_crossover_rate * (double) nrules);
 
@@ -744,10 +797,6 @@ void Garp::deleteTempDataMembers()
   if (_offspring)
     delete _offspring;
   _offspring = NULL;
-
-  if (_custom_sampler)
-    delete _custom_sampler;
-  _custom_sampler = NULL;
 }
 
 /****************************************************************/

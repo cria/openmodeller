@@ -12,14 +12,14 @@ SUBDIRS =
 
 plugindir = ${pkglibdir}
 
-plugin_LTLIBRARIES = libomdg_garp.la
+plugin_LTLIBRARIES = libomoldgarp.la
 
-libomdg_garp_la_SOURCES = \
+libomoldgarp_la_SOURCES = \
 	GarpAlgorithm.cpp GarpAlgorithm.h \
 	EnvCell.cpp EnvCell.h EnvCellSet.cpp EnvCellSet.h \
 	Rule.cpp Rule.h RuleSet.cpp RuleSet.h \
 	Utilities.cpp Utilities.h
 
-libomdg_garp_la_LDFLAGS  = -no-undefined
-libomdg_garp_la_LIBADD   = ../../src/lib/libopenmodeller.la
-libomdg_garp_la_CPPFLAGS = -I../../src/inc -I../../src/inc/serialization
+libomoldgarp_la_LDFLAGS  = -no-undefined
+libomoldgarp_la_LIBADD   = ../../src/lib/libopenmodeller.la
+libomoldgarp_la_CPPFLAGS = -I../../src/inc

@@ -31,6 +31,7 @@
 
 #include <om_defs.hh>
 
+#include <string>
 
 /****************************************************************/
 /***************************** Header ***************************/
@@ -50,20 +51,23 @@ public:
   };
 
 
-  Header() { proj = 0; }
-  Header( Header &h );
+  Header() :
+    proj()
+  {}
+
+  Header( const Header &h );
   Header( int xd, int yd, Coord xm, Coord ym,
           Coord xM, Coord yM, Scalar nv, int nb=1, int gd=0 );
   ~Header();
 
-  Header &operator=( Header &h );
+  Header &operator=( const Header &h );
 
   // Calculate (xcel, ycel) using xmin, ymin, xmax, ymax,
   // xdim e ydim.
   void calculateCell();
 
-  char *setProj( char *projection );
-  int   hasProj()                      { return proj && *proj; }
+  void  setProj( const std::string& projection );
+  int   hasProj() const { return (proj.size() > 0); }
 
   void printHeader( char *msg="" ); // conflicts with Python SWIG interface
 
@@ -100,9 +104,7 @@ public:
   Scalar min; /**< Minimum map value. */
   Scalar max; /**< Maximum map value. */
 
-  DataType dtype; /**< File data type. */
-
-  char *proj;  /**< Projection specification (in WKT). */
+  std::string proj;  /**< Projection specification (in WKT). */
 };
 
 

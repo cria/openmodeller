@@ -30,7 +30,7 @@
 
 #include <env_io/map.hh>
 #include <env_io/geo_transform.hh>
-#include <env_io/raster_file.hh>
+#include <env_io/raster.hh>
 #include <occurrences_file.hh>
 #include <occurrence.hh>
 #include <file_parser.hh>
@@ -51,7 +51,7 @@ GColor _bg( 0, 140, 150 );
 int   _nmap;
 Map **_maps;
 
-Occurrences *_occurs;
+OccurrencesPtr _occurs;
 
 GImage  *_cnv;
 GImage  *_pm;
@@ -60,10 +60,10 @@ GGraph *_graph;
 
 void draw();
 void draw_map( GGraph *graph, Map *map );
-void draw_occur( GGraph *graph, Map *map, Occurrences * );
+void draw_occur( GGraph *graph, Map *map, const OccurrencesPtr& );
 void findRegion( int nmap, Map **map, Coord *xmin, Coord *ymin,
 		 Coord *xmax, Coord *ymax );
-Occurrences *readOccurrences( char *file, char *name,
+OccurrencesPtr readOccurrences( char *file, char *name,
 			      char *coord_system );
 
 
@@ -98,16 +98,14 @@ main( int argc, char **argv )
         g_log.error( 1, "No map to be shown!?!\n" );
 
       _maps = new (Map *)[_nmap];
-      rst = new (Raster *)[_nmap];
       char *mapfile[_nmap];
       fp.getAll( "Map", mapfile );
       
       for ( int i = 0; i < _nmap; i++ )
         {
           // Generate a raster using map "i".
-          rst[i]   = new RasterFile( mapfile[i] );
-          _maps[i] = new Map( rst[i], GeoTransform::cs_default );
-          _maps[i]->normalize( 0.0, 255.0 );
+          _maps[i] = new Map( new Raster( mapfile[i] ) );
+          //_maps[i]->normalize( 0.0, 255.0 );
         }
     }
 
@@ -121,10 +119,8 @@ main( int argc, char **argv )
       if ( ! result )
         g_log.error( 1, "The 'Output file' parameter not found!\n" );
 
-      rst = new (Raster *)[_nmap];
-      rst[0] = new RasterFile( result );
-      _maps[0] = new Map( rst[0], GeoTransform::cs_default );
-      _maps[0]->normalize( 0.0, 255.0 );
+      _maps[0] = new Map( new Raster( result ) );
+      //_maps[0]->normalize( 0.0, 255.0 );
     }
 
   // Region to be visualized. Must include all maps.
@@ -174,7 +170,6 @@ main( int argc, char **argv )
   delete frame;
 
   delete[] _maps;
-  delete[] rst;
 }
 
 
@@ -233,21 +228,20 @@ draw_map( GGraph *graph, Map *map )
 /******************/
 /*** draw occur ***/
 void
-draw_occur( GGraph *graph, Map *map, Occurrences *occurs )
+draw_occur( GGraph *graph, Map *map, const OccurrencesPtr& occurs )
 {
   GColor color = GColor::Red;
 
   // Draw each set of occurrences.
   float x, y;
-  Occurrence *oc;
-  for ( occurs->head(); oc = occurs->get(); occurs->next() )
-    {
-      //	  gt->transfIn( &x, &y, occur->x, occur->y );
-      x = float( oc->x() );
-      y = float( oc->y() );
-
-      graph->markAxe( x, y, 1, color);
-    }
+  OccurrencesImpl::const_iterator oc = occurs->begin();
+  for( ; oc != occurs->end(); ++oc ) {
+    //	  gt->transfIn( &x, &y, occur->x, occur->y );
+    x = float( (*oc)->x() );
+    y = float( (*oc)->y() );
+    
+    graph->markAxe( x, y, 1, color);
+  }
 }
 
 
@@ -263,18 +257,10 @@ findRegion( int nmap, Map **map, Coord *xmin, Coord *ymin,
 
 /************************/
 /*** read Occurrences ***/
-Occurrences *
+OccurrencesPtr
 readOccurrences( char *file, char *name, char *coord_system )
 {
   OccurrencesFile oc_file( file, coord_system );
-
-  // Take last species from the list, which corresponds to the
-  // first inside the file.
-  if ( ! name )
-    {
-      oc_file.tail();
-      name = oc_file.get()->name();
-    }
 
   return oc_file.remove( name );
 }

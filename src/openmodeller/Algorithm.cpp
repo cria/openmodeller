@@ -29,103 +29,168 @@
 #include <om_algorithm.hh>
 #include <om_alg_parameter.hh>
 #include <om_log.hh>
+#include <configuration.hh>
+#include <environment.hh>
+#include <Exceptions.hh>
 
-#include <string.h>
-#include <stdlib.h>
+#include <models/AlgoAdapterModel.hh>
 
+using std::string;
 
-/****************************************************************/
-/************************** Algorithm ***************************/
+#undef DEBUG_MEMORY
 
 /*******************/
 /*** constructor ***/
 
-Algorithm::Algorithm( AlgMetadata *metadata ) : Serializable()
+AlgorithmImpl::AlgorithmImpl( AlgMetadata const *metadata ) :
+  ReferenceCountedObject(),
+  _samp(),
+  _metadata( metadata ),
+  _param(),
+  _norm_offsets(),
+  _norm_scales(),
+  _has_norm_params( false )
 {
-  _metadata = metadata;
-
-  _samp   = 0;
-  _categ  = 0;
-  _nparam = 0;
-  _param  = 0;
+#if defined(DEBUG_MEMORY)
+  g_log.debug( "AlgorithmImpl::AlgorithmImpl() at %x\n", this );
+#endif
 }
 
 
 /******************/
 /*** destructor ***/
 
-Algorithm::~Algorithm()
+AlgorithmImpl::~AlgorithmImpl()
 {
-  if ( _categ )
-    delete _categ;
+#if defined(DEBUG_MEMORY)
+  g_log.debug("AlgorithmImpl::~AlgorithmImpl() at %x\n",this);
+#endif
 }
 
+/******************/
+/*** configuration ***/
+
+ConfigurationPtr
+AlgorithmImpl::getConfiguration() const
+{
+
+  ConfigurationPtr config( new ConfigurationImpl("Algorithm") );
+
+  ConfigurationPtr meta_config( new ConfigurationImpl("AlgorithmMetadata") );
+
+  meta_config->addNameValue( "Id", _metadata->id );
+  meta_config->addNameValue( "Name", _metadata->name );
+  meta_config->addNameValue( "Version", _metadata->version );
+
+  ConfigurationPtr overview( new ConfigurationImpl("Overview" ) );
+  overview->setValue( _metadata->overview );
+  meta_config->addSubsection( overview );
+
+  meta_config->addNameValue( "Author", _metadata->author );
+  meta_config->addNameValue( "CodeAuthor", _metadata->code_author );
+  meta_config->addNameValue( "Contact", _metadata->contact );
+
+  config->addSubsection( meta_config );
+
+  ConfigurationPtr param_config( new ConfigurationImpl("AlgorithmParameters") );
+  ParamSetType::const_iterator p = _param.begin();
+  for( ; p != _param.end() ; ++p ) {
+    ConfigurationPtr cfg( new ConfigurationImpl("Param") );
+    param_config->addSubsection( cfg );
+    cfg->addNameValue( "Id", p->first );
+    cfg->addNameValue( "Value", p->second );
+  }
+
+  config->addSubsection( param_config );
+
+  if ( _has_norm_params ) {
+    ConfigurationPtr norm_config( new ConfigurationImpl("NormalizationParameters") );
+  
+    norm_config->addNameValue( "Offsets", _norm_offsets );
+    norm_config->addNameValue( "Scales", _norm_scales );
+
+    config->addSubsection( norm_config );
+  }
+
+  _getConfiguration( config );
+
+  return config;
+  
+}
+
+void
+AlgorithmImpl::setConfiguration( const ConstConfigurationPtr &config )
+{
+  ConstConfigurationPtr param_config = config->getSubsection( "AlgorithmParameters" );
+  
+  Configuration::subsection_list params = param_config->getAllSubsections();
+
+  _param.clear();
+
+  Configuration::subsection_list::const_iterator nv;
+  for ( nv = params.begin(); nv != params.end(); ) {
+    string id = (*nv)->getAttribute( "Id" );
+    string value = (*nv)->getAttribute( "Value" );
+    _param.insert( ParamSetValueType( id, value ) );
+    ++nv;
+  }
+
+  try { 
+    ConstConfigurationPtr norm_config = config->getSubsection( "NormalizationParameters" );
+
+    _has_norm_params = true;
+    _norm_offsets = norm_config->getAttributeAsSample( "Offsets" );
+    _norm_scales = norm_config->getAttributeAsSample( "Scales" );
+    
+  }
+  catch( SubsectionNotFound& e ) {
+    _has_norm_params = false;
+  }
+
+  _setConfiguration( config );
+
+}
 
 /*******************/
 /*** set Sampler ***/
 void
-Algorithm::setSampler( Sampler *samp )
+AlgorithmImpl::setSampler( const SamplerPtr& samp )
 {
   _samp = samp;
 
-  if ( _categ )
-    delete _categ;
-
-  _categ = new int[ _samp->numIndependent() ];
-  _samp->varTypes( _categ );
 }
-
 
 /**********************/
 /*** set Parameters ***/
 void
-Algorithm::setParameters( int nparam, AlgParameter *param )
+AlgorithmImpl::setParameters( int nparam, AlgParameter const *param )
 {
-  _nparam = nparam;
-  _param  = param;
-}
 
+  _param.clear();
+
+  // Copy 'param' to '_alg_param'.
+  AlgParameter const *end = param + nparam;
+  while ( param < end ) {
+    _param.insert( ParamSetValueType( param->id(), param->value() ) );
+    ++param;
+  }
+
+}
 
 /*********************/
 /*** get Parameter ***/
 int
-Algorithm::getParameter( char *id, char **value )
+AlgorithmImpl::getParameter( string const &id, string *value )
 {
-  if ( ! id )
-    {
-      g_log.warn( "Algorithm %s wants a parameter with id '%s'!\n",
-		  _metadata->id, id );
-      return 0;
-    }
-  
 
-  // If parameters were not set or zero parameters were set.
-  if ( ! _param || ! _nparam )
+  ParamSetType::const_iterator pos = _param.find( id );
+
+  if ( pos == _param.end() ) {
     return 0;
+  }
+   
+  *value = pos->second;
 
-  
-  AlgParameter *param = _param;
-  AlgParameter *end   = _param + _nparam;
-
-  for( ; param < end; param++ )
-    if ( param->id() && ! strcmp( id, param->id() ) )
-      return (*value = param->value()) ? 1 : 0;
-
-  return 0;
-}
-
-
-/*********************/
-/*** get Parameter ***/
-int
-Algorithm::getParameter( char *id, int *value )
-{
-  char *str_value;
-
-  if ( ! getParameter( id, &str_value ) )
-    return 0;
-
-  *value = atoi( str_value );
   return 1;
 }
 
@@ -133,14 +198,14 @@ Algorithm::getParameter( char *id, int *value )
 /*********************/
 /*** get Parameter ***/
 int
-Algorithm::getParameter( char *id, double *value )
+AlgorithmImpl::getParameter( string const &id, int *value )
 {
-  char *str_value;
+  string str_value;
 
   if ( ! getParameter( id, &str_value ) )
     return 0;
 
-  *value = atof( str_value );
+  *value = atoi( str_value.c_str() );
   return 1;
 }
 
@@ -148,15 +213,65 @@ Algorithm::getParameter( char *id, double *value )
 /*********************/
 /*** get Parameter ***/
 int
-Algorithm::getParameter( char *id, float *value )
+AlgorithmImpl::getParameter( string const &id, double *value )
 {
-  char *str_value;
+  string str_value;
 
   if ( ! getParameter( id, &str_value ) )
     return 0;
 
-  *value = float( atof( str_value ) );
+  *value = atof( str_value.c_str() );
   return 1;
 }
 
 
+/*********************/
+/*** get Parameter ***/
+int
+AlgorithmImpl::getParameter( string const &id, float *value )
+{
+  string str_value;
+
+  if ( ! getParameter( id, &str_value ) )
+    return 0;
+
+  *value = float( atof( str_value.c_str() ) );
+  return 1;
+}
+
+/*********************/
+/*** get Parameter ***/
+void
+AlgorithmImpl::computeNormalization( const ConstSamplerPtr& samp )
+{
+
+  Scalar min, max;
+  if ( needNormalization( &min, &max ) ) {
+
+    _has_norm_params = true;
+    samp->computeNormalization( min, max, &_norm_offsets, &_norm_scales );
+    
+  }
+}
+
+void
+AlgorithmImpl::setNormalization( const SamplerPtr& samp) const
+{
+  samp->setNormalization( _has_norm_params, _norm_offsets, _norm_scales );
+}
+
+void
+AlgorithmImpl::setNormalization( const EnvironmentPtr& env) const
+{
+  env->setNormalization( _has_norm_params, _norm_offsets, _norm_scales );
+}
+
+Model
+AlgorithmImpl::getModel() const
+{
+  // Need the ugly const_cast to cast away constness of this.
+  // ConstAlgorithmPtr must be initialized with the PlainPoinerType = AlgorithmImpl *
+  // and not with the const AlgorithmImpl*.
+  // Once the ConstAlgorihtmPtr is created, then it behaves as if its const.
+  return Model( new AlgoAdapterModelImpl( ConstAlgorithmPtr( const_cast<AlgorithmImpl*>(this) )));
+}

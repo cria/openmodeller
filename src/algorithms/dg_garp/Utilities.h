@@ -258,12 +258,12 @@ public:
 	// ------------------------------------------------
 	static int membership(BYTE rval1, BYTE rval2, BYTE value) 
 	{
-		if (rval1 == 0 && rval2 == 255) 
-			return 255;
-		else if (value < rval1 || value > rval2 ) 
-			return 0;
-		else
-			return 1;
+	  if (rval1 == 0 && rval2 == 255) 
+	    return 255; 
+	  else if (value < rval1 || value > rval2 ) 
+	    return 0; 
+	  else
+	    return 1;
 	}
 
 

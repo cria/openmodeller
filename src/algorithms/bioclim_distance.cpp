@@ -28,17 +28,19 @@
 
 #include "bioclim_distance.hh"
 
+#include <configuration.hh>
+#include <Exceptions.hh>
+
 #include <string.h>
 #include <stdio.h>
 #include <math.h>
-
 
 /****************************************************************/
 /********************** Algorithm's Metadata ********************/
 
 #define NUM_PARAM 1
 
-#define CUTOFF_NAME "StandadDeviationCutoff"
+#define CUTOFF_ID "StandadDeviationCutoff"
 
 
 /*************************************/
@@ -48,7 +50,7 @@ static AlgParamMetadata parameters[NUM_PARAM] = {
 
   // Metadata of the first parameter.
   {
-    CUTOFF_NAME,                 // Id
+    CUTOFF_ID,                 // Id
     "Standard deviation cutoff", // Name.
     "Real",                      // Type.
 
@@ -120,12 +122,18 @@ static AlgMetadata metadata = {
 /****************** Algorithm's factory function ****************/
 
 dllexp
-Algorithm *
+AlgorithmImpl *
 algorithmFactory()
 {
-  return new BioclimDistance;
+  return new BioclimDistance();
 }
 
+dllexp
+AlgMetadata const *
+algorithmMetadata()
+{
+  return &metadata;
+}
 
 
 /****************************************************************/
@@ -134,12 +142,15 @@ algorithmFactory()
 /*******************/
 /*** constructor ***/
 
-BioclimDistance::BioclimDistance()
-  : Algorithm( &metadata )
-{
-  _mean = _std_dev = 0;
-  _minimum = _maximum = 0;
-}
+BioclimDistance::BioclimDistance() :
+  AlgorithmImpl( &metadata ),
+  _done( false ),
+  _max_distance(0.0),
+  _minimum(),
+  _maximum(),
+  _mean(),
+  _std_dev()
+{ }
 
 
 /******************/
@@ -147,17 +158,13 @@ BioclimDistance::BioclimDistance()
 
 BioclimDistance::~BioclimDistance()
 {
-  if ( _maximum ) delete _maximum;
-  if ( _minimum ) delete _minimum;
-  if ( _mean )    delete _mean;
-  if ( _std_dev ) delete _std_dev;
 }
 
 
 /**************************/
 /*** need Normalization ***/
 int
-BioclimDistance::needNormalization( Scalar *min, Scalar *max )
+BioclimDistance::needNormalization( Scalar *min, Scalar *max ) const
 {
   *min = 0.0;
   *max = 1.0;
@@ -170,9 +177,9 @@ BioclimDistance::needNormalization( Scalar *min, Scalar *max )
 int
 BioclimDistance::initialize()
 {
+  Scalar cutoff = 0.0;
   // Read and check the standard deviation cutoff parameter.
-  Scalar cutoff;
-  if ( ! getParameter( CUTOFF_NAME, &cutoff ) )
+  if ( ! getParameter( CUTOFF_ID, &cutoff ) )
     return 0;
   if ( cutoff <= 0 )
     {
@@ -182,26 +189,18 @@ BioclimDistance::initialize()
     }
 
   // Number of independent variables.
-  _dim = _samp->numIndependent();
+  int dim = _samp->numIndependent();
   g_log.info( "Reading %d-dimensional occurrence points.\n",
-              _dim );
+              dim );
 
-  // Get all presence points.
-  SampledData presence;
-  _samp->getPresence( &presence );
-
-  // Check the number of sampled points.
-  int npnt = presence.numSamples();
+  // Check the number of presence points.
+  int npnt = _samp->numPresence();
   if ( npnt < 2 )
     g_log.error( 1, "BioclimDistance needs at least 2 point inside the mask!\n" );
   g_log.info( "Using %d points to find the bioclimatic envelop.\n",
               npnt );
 
-  // Gets the the minimum, maximum, mean and standard deviations for each variable
-  _minimum = getMinimum( &presence );
-  _maximum = getMaximum( &presence );
-  _mean    = getMean( &presence );
-  _std_dev = getStandardDeviation( &presence, _mean );
+  computeStats( _samp->getPresences() );
 
   g_log( "BioclimDistanceatic envelop width used:\n" );
   int i = 0;
@@ -210,16 +209,11 @@ BioclimDistance::initialize()
   // calculates the standard deviation vector module to be used
   // as the maximum possible distance of a accepted point to the
   // points' mean.
-  Scalar module = 0.0;
-  Scalar *std_dev = _std_dev;
-  for ( Scalar *end = std_dev + _dim; std_dev < end; std_dev++ )
-    {
-      *std_dev *= cutoff;
-      module += *std_dev * *std_dev;
+  _std_dev *= cutoff;
+  
+  _max_distance = _std_dev.norm();
 
-      g_log( " %02d] %f\n", i++, *std_dev );
-    }
-  _max_distance = sqrt(module);
+  _done = true;
 
   return 1;
 }
@@ -238,50 +232,43 @@ BioclimDistance::iterate()
 /************/
 /*** done ***/
 int
-BioclimDistance::done()
+BioclimDistance::done() const
 {
   // This is not an iterative algorithm.
-  return 1;
+  return _done;
 }
 
 
 /*****************/
 /*** get Value ***/
 Scalar
-BioclimDistance::getValue( Scalar *x )
+BioclimDistance::getValue( const Sample& x ) const
 {
-  Scalar dif;
+  // Finds the distance from each variable mean to the respective
+  // point value.
+  Sample dif = x;
+  dif -= _mean;
 
   // Square of the distance between 'x' and '_mean'.
   Scalar square_distance = 0.0;
 
-  // Finds the distance from each variable mean to the respective
-  // point value.
-  Scalar *minimum  = _minimum;
-  Scalar *maximum  = _maximum;
-  Scalar *mean     = _mean;
-  Scalar *mean_end = mean + _dim;
-  Scalar *std_dev  = _std_dev;
-  while ( mean < mean_end )
-    {
-      // Point value for each variable: x[i].
-      Scalar xi = *x++;
+  for( int i=0; i<x.size(); i++) {
 
-      // If some x[i] is out of the upper and lower range, predicts
-      // no occurrence.
-      if ( xi < *minimum++ || xi > *maximum++ )
-        return 0.0;
-
-      Scalar cutoff = *std_dev++;
-      dif = xi - *mean++;
-
-      // If some x[i] is out of its bioclimatic envelop, predicts
-      // no occurrence.
-      if ( dif > cutoff || dif < -cutoff )
-        return 0.0;
-
-      square_distance += dif * dif;
+    if ( x[i] < _minimum[i] || x[i] > _maximum[i] ) {
+      return 0.0;
     }
+
+    Scalar cutoff = _std_dev[i];
+    Scalar diffi = dif[i];
+    
+    // If some x[i] is out of its bioclimatic envelop, predicts
+    // no occurrence.
+    if ( dif[i] > cutoff || dif[i] < -cutoff )
+      return 0.0;
+
+    square_distance += dif[i] * dif[i];
+
+  }
 
   return 1.0 - (sqrt( square_distance ) / _max_distance);
 }
@@ -296,193 +283,98 @@ BioclimDistance::getConvergence( Scalar *val )
   return 1;
 }
 
-
 /*******************/
 /*** get Minimum ***/
-Scalar *
-BioclimDistance::getMinimum( SampledData *points )
+void
+BioclimDistance::computeStats( const OccurrencesPtr& occs )
 {
-  int npnt = points->numSamples();
-  int dim  = points->numIndependent();
 
-  if ( ! npnt )
-    return 0;
+  // Compute min, max, and mean
+  {
+    OccurrencesImpl::const_iterator oc = occs->begin();
+    OccurrencesImpl::const_iterator end = occs->end();
 
-  // Allocates the minimum vector.
-  Scalar *minimum = new Scalar[dim];
-  Scalar *minimum_end = minimum + dim;
-
-  // To pass through all points.
-  Scalar **pnt = points->getIndependentBase();
-  Scalar **pnt_end = pnt + npnt;
-
-  // Initializes the minimum vector with the first point.
-  Scalar *m = minimum;
-  Scalar *p = *pnt++;
-  while ( m < minimum_end )
-    *m++ = *p++;
-
-  // For each point, finds the minimum values.
-  while ( pnt < pnt_end )
-    {
-      // Finds the minimum value.
-      p = *pnt++;
-      for ( m = minimum; m < minimum_end; m++, p++ )
-        if ( *p < *m )
-          *m = *p;
+    // Intialize _minimum, _maximum, and _mean
+    // to the values of the first point, and increment
+    // to get it out of the loop.
+    _minimum &= (*oc)->environment();
+    _maximum |= (*oc)->environment();
+    _mean = (*oc)->environment();
+    
+    ++oc;
+    
+    // For each Occurrence, update the
+    // statistics for _minimum, _maximum, and _mean
+    
+    while ( oc != end ) {
+      _mean += (*oc)->environment();
+      ++oc;
     }
 
-  return minimum;
-}
+    // Divide for the mean.
+    _mean /= Scalar( occs->numOccurrences() );
 
+  }
 
-/*******************/
-/*** get Maximum ***/
-Scalar *
-BioclimDistance::getMaximum( SampledData *points )
-{
-  int npnt = points->numSamples();
-  int dim  = points->numIndependent();
+  // Now compute the std deviation by first computing the variance.
+  {
 
-  if ( ! npnt )
-    return 0;
+    _std_dev.resize( _mean.size() );
+    OccurrencesImpl::const_iterator oc = occs->begin();
+    OccurrencesImpl::const_iterator end = occs->end();
 
-  // Allocates the maximum vector.
-  Scalar *maximum = new Scalar[dim];
-  Scalar *maximum_end = maximum + dim;
-
-  // To pass through all points.
-  Scalar **pnt = points->getIndependentBase();
-  Scalar **pnt_end = pnt + npnt;
-
-  // Initializes the maximum vector with the first point.
-  Scalar *m = maximum;
-  Scalar *p = *pnt++;
-  while ( m < maximum_end )
-    *m++ = *p++;
-
-  // For each point, finds the maximum values.
-  while ( pnt < pnt_end )
-    {
-      // Finds the maximum value.
-      p = *pnt++;
-      for ( m = maximum; m < maximum_end; m++, p++ )
-        if ( *p > *m )
-          *m = *p;
+    // Now we compute the variance.
+    while ( oc != end ) {
+      Sample tmp( (*oc)->environment() );
+      tmp -= _mean;
+      tmp *= tmp;
+      _std_dev += tmp;
+      ++oc;
     }
 
-  return maximum;
-}
+    // In variance, we divide by (npnt - 1), not npnt!
+    Scalar npts = Scalar( occs->numOccurrences() - 1 );
 
+    // Now divide and root to get deviation.
+    _std_dev /= npts;
+    _std_dev.sqrt();
 
-/****************/
-/*** get Mean ***/
-Scalar *
-BioclimDistance::getMean( SampledData *points )
-{
-  int npnt = points->numSamples();
-  int dim  = points->numIndependent();
+  }
 
-  // Initialize the mean to zero.
-  Scalar *mean = new Scalar[dim];
-  memset( mean, 0, dim * sizeof(Scalar) );
-
-  // Last position of the mean point.
-  Scalar *mean_end = mean + dim;
-
-  // For each point...
-  Scalar **pnt = points->getIndependentBase();
-  Scalar **pnt_end = pnt + npnt;
-  while ( pnt < pnt_end )
-    {
-      // Calculates the sum of all points in 'mean'.
-      Scalar *m = mean;
-      Scalar *p = *pnt++;
-      while ( m < mean_end )
-        *m++ += *p++;
-    }
-
-  // Divides each mean component by the number of points summed.
-  Scalar *m = mean;
-  while ( m < mean_end )
-    *m++ /= npnt;
-
-  return mean;
-}
-
-
-/******************************/
-/*** get Standard Deviation ***/
-Scalar *
-BioclimDistance::getStandardDeviation( SampledData *points,
-                                       Scalar *mean )
-{
-  int npnt = points->numSamples();
-  int dim  = points->numIndependent();
-
-  // Variance vector initialized with zeros.
-  Scalar *variance = new Scalar[dim];
-  memset( variance, 0, dim * sizeof( Scalar ) );
-  Scalar *variance_end = variance + dim;
-
-  // For each point...
-  Scalar **pnt = points->getIndependentBase();
-  Scalar **pnt_end = pnt + npnt;
-  while ( pnt < pnt_end )
-    {
-      // Calculates the variance for each variable (dimension).
-      Scalar *v = variance;
-      Scalar *m = mean;
-      Scalar *p = *pnt++;
-      while ( v < variance_end )
-        {
-          Scalar dif = *p++ - *m++;
-          *v++ += dif * dif;
-        }
-    }
-
-  // In variance, we divide by (npnt - 1), not npnt!
-  npnt--;
-
-  // Calculates the standard deviation (square root of variance).
-  // Standard deviation vector initialized with zeros.
-  Scalar *std_dev = new Scalar[dim];
-  Scalar *sd  = std_dev;
-  Scalar *var = variance;
-  while ( var < variance_end )
-    *sd++ = sqrt( *var++ / npnt );
-
-  delete variance;
-  return std_dev;
 }
 
 /******************/
-/*** serialize ***/
-int
-BioclimDistance::serialize(Serializer * s)
+/*** configuration ***/
+void
+BioclimDistance::_getConfiguration( ConfigurationPtr& config ) const
 {
-  s->writeStartSection("BioclimDistanceModel");
-  s->writeDouble("MaxDistance", _max_distance);
-  s->writeArrayDouble("Mean", _mean, _dim);
-  s->writeArrayDouble("StdDev", _std_dev, _dim);
-  s->writeEndSection("BioclimDistanceModel");
-  return 1;
-}
+  if ( !_done ) 
+    return;
 
-/********************/
-/*** deserialize ***/
-int
-BioclimDistance::deserialize(Deserializer * s)
-{
-  int size1, size2;
-
-  s->readStartSection("BioclimDistanceModel");
-  _max_distance = s->readDouble("MaxDistance");
-  _mean = s->readArrayDouble("Mean", &size1);
-  _std_dev = s->readArrayDouble("StdDev", &size2);
-  s->readEndSection("BioclimDistanceModel");
-  _dim = size2;
+  ConfigurationPtr model_config( new ConfigurationImpl( "BioclimDistanceModel") );
+  config->addSubsection( model_config );
   
-  return (size1 == size2);
+  model_config->addNameValue( "MaxDistance", _max_distance );
+  model_config->addNameValue( "Mean", _mean );
+  model_config->addNameValue( "StdDev", _std_dev );
+  model_config->addNameValue( "Minimum", _minimum );
+  model_config->addNameValue( "Maximum", _maximum );
 }
 
+void
+BioclimDistance::_setConfiguration( const ConstConfigurationPtr & config )
+{
+  ConstConfigurationPtr model_config = config->getSubsection( "BioclimDistanceModel", false );
+
+  if (!model_config)
+    return;
+
+  _done = true;
+
+  _max_distance = model_config->getAttributeAsDouble( "MaxDistance", 0.0 );
+  _mean = model_config->getAttributeAsSample( "Mean" );
+  _std_dev = model_config->getAttributeAsSample( "StdDev" );
+  _minimum = model_config->getAttributeAsSample( "Minimum" );
+  _maximum = model_config->getAttributeAsSample( "Maximum" );
+
+}

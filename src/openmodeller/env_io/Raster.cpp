@@ -26,68 +26,15 @@
  * http://www.gnu.org/copyleft/gpl.html
  */
 
+#include <env_io/map.hh>
 #include <env_io/raster.hh>
+#include <env_io/raster_gdal.hh>
 
 #include <om_log.hh>
-#include <string.h>
 
+#include <Exceptions.hh>
 
-/****************************************************************/
-/************************ Raster Format *************************/
-
-char *RasterFormat::f_name[] = {
-  "Undefined",
-
-  // GDAL compatible names.
-  "AAIGrid", "AIG", "BMP", "BSB", "CEOS", "DOQ1", "DOQ2",
-  "DTED", "ECW", "EHdr", "ENVI", "Envisat", "FAST", "FITS",
-  "GIF", "GIO", "GRASS", "GTiff", "HDF4", "HFA", "HKV", "JDEM",
-  "JPEG", "JPEG2000", "JP2KAK", "L1B", "MFF", "MrSID", "NITF",
-  "OGDI", "PAux", "PNG", "PNM", "SDTS", "SAR_CEOS", "USGSDEM",
-  "XPM",
-
-  "Undefined"
-};
-
-char *RasterFormat::f_ext[] = {
-  "",
-
-  // todo:
-  //
-  // - There are distinct file formats using the same extention!
-  //   (ex: ".doq")
-  // - There are different extensions for the same file format!
-  //   These are not included here!
-
-  // GDAL compatible extensions.
-  ".asc", ".adf", ".bmp", ".kap", ".ceo", ".doq", ".doq",
-  ".dt1", ".ecw", ".bil", ".hdr", ".n1", ".fast", ".fits",
-  ".gif", ".adf", ".grass", ".tif", ".hdf4", ".img", ".hkv",
-  ".mem",
-  ".jpg", ".jp2", ".jp2", ".l1b", ".mff", ".msid", ".nitf",
-  ".ogdi", ".aux", ".png", ".pnm", ".ddf", ".ceos", ".dem",
-  ".xpm",
-
-  "Undefined"
-};
-
-
-/******************/
-/*** construtor ***/
-
-RasterFormat::RasterFormat( char *file_name )
-{
-  // Finds the file format based on the file name extention.
-  char *ext;
-  f_code = Unknown;
-  if ( ext = strrchr( file_name, '.' ) )
-    for ( f_code = 1; f_code < Undefined; f_code++ )
-      if ( ! strcmp( ext, f_ext[f_code] ) )
-        break;
-}
-
-
-
+using std::string;
 
 /****************************************************************/
 /**************************** Raster ****************************/
@@ -95,113 +42,61 @@ RasterFormat::RasterFormat( char *file_name )
 /******************/
 /*** construtor ***/
 
-Raster::Raster( int categ )
+Raster::Raster( const string& file, int categ ) :
+  f_rst(0),
+  f_scalefactor(1.0),
+  f_file(file),
+  f_hdr()
 {
-  f_normal = 0;
+  // Opens read only and init the class attributes.
+  load();
+
+  // set categorical status.  It's not stored as part of
+  // the gdal file's header.
   f_hdr.categ = categ;
-  f_offset = 0;
-  f_scale = 0;
 }
 
-Raster::Raster( Header &hdr )
+Raster::Raster( const string& file, int format, const Map* hdr ) :
+  f_file( file ),
+  f_hdr( hdr->getHeader() )
 {
-  f_normal = 0;
-  setHeader( hdr );
-}
 
+  if ( format >= 3 ) {
+    throw GraphicsDriverException( "Unsupported output format" );
+  }
+
+  switch( format ) {
+  case GreyBMP:
+    f_scalefactor = 255.0;
+    f_hdr.noval = 0.0;
+    break;
+  case GreyTiff:
+    f_scalefactor = 254.0;
+    f_hdr.noval = -1.0;
+    break;
+  case FloatingTiff:
+  default:
+    f_scalefactor = 1.0;
+    f_hdr.noval = -1.0;
+  }
+
+  // Create a new file in disk.
+  f_rst = new RasterGdal( file, format, f_hdr );
+
+  f_hdr = f_rst->header();
+
+}
 
 /*****************/
-/*** normalize ***/
-int
-Raster::normalize( Scalar min, Scalar max )
+/*** destrutor ***/
+
+Raster::~Raster()
 {
-  // Normalization is not for categorical maps.
-  if ( f_hdr.categ )
-    return 0;
-
-  // Calculate the map's minimum and maximum.
-  if ( ! f_hdr.minmax &&
-       ! calcMinMax( &f_hdr.min, &f_hdr.max ) )
-    return 0;
-  f_hdr.minmax = 1;
-
-  // Calculates the scale and offset to transform a value
-  // in [f_hdr.min, f_hdr.max] to a value in [min, max]
-  // using the transformation: x' = x * f_scale + f_offset.
-  //
-  f_scale  = (max - min) / (f_hdr.max - f_hdr.min);
-  f_offset = min - f_scale * f_hdr.min;
-  f_normal = 1;
-
-  return 1;
+  delete f_rst;
 }
-
-/*******************************/
-/*** copyNormalizationValues ***/
-int
-Raster::copyNormalizationValues(Raster * source)
-{
-  // Calculate the map's minimum and maximum.
-  if ( ! getMinMax( &f_hdr.min, &f_hdr.max ) )
-    return 0;
-
-  f_scale = source->f_scale;
-  f_offset = source->f_offset;
-  f_normal = 1;
-
-  //g_log("Layer copied normalization. Min=%f Max=%f Scale=%f Offset=%f\n", 
-  //f_hdr.min, f_hdr.max, f_scale, f_offset);
-
-  return 1;
-}
-
-
-/******************/
-/*** get Region ***/
-int
-Raster::getRegion( Coord *xmin, Coord *ymin, Coord *xmax,
-                   Coord *ymax )
-{
-  *xmin = f_hdr.xmin;
-  *ymin = f_hdr.ymin;
-  *xmax = f_hdr.xmax;
-  *ymax = f_hdr.ymax;
-
-  return 1;
-}
-
-
-/***************/
-/*** get Dim ***/
-int
-Raster::getDim( int *xdim, int *ydim )
-{
-  *xdim = f_hdr.xdim;
-  *ydim = f_hdr.ydim;
-
-  return 1;
-}
-
-
-/****************/
-/*** get Cell ***/
-int
-Raster::getCell( Coord *xcel, Coord *ycel )
-{
-  *xcel = f_hdr.xcel;
-  *ycel = f_hdr.ycel;
-
-  return 1;
-}
-
 
 /***********/
 /*** get ***/
-/**
- * The normalization is done in iget() (derived classes) not
- * in get(). This way one can normalizes even reading through
- * integer coordinates.
- */
 int
 Raster::get( Coord px, Coord py, Scalar *val )
 {
@@ -218,14 +113,13 @@ Raster::get( Coord px, Coord py, Scalar *val )
 
   // 'iget()' detects if the coordinate has or not valid
   // information (noval);
-  return iget( x, y, val );
+  return f_rst->iget( x, y, val );
 }
-
 
 /***********/
 /*** put ***/
 int
-Raster::put( Coord px, Coord py, Scalar *val )
+Raster::put( Coord px, Coord py, Scalar val )
 {
   int x = convX( px );
   int y = convY( py );
@@ -233,48 +127,22 @@ Raster::put( Coord px, Coord py, Scalar *val )
   if ( x < 0 || x >= f_hdr.xdim || y < 0 || y >= f_hdr.ydim )
     return 0;
 
-  return iput( x, y, val );
+  return f_rst->iput( x, y, f_scalefactor*val );
 }
-
 
 /*******************/
 /*** get Min Max ***/
 int
 Raster::getMinMax( Scalar *min, Scalar *max )
 {
-  if ( ! f_hdr.minmax && ! calcMinMax( &f_hdr.min, &f_hdr.max ) )
+  if ( ! calcMinMax( &f_hdr.min, &f_hdr.max ) )
     return 0;
 
   *min = f_hdr.min;
-  calcNormal( min );
 
   *max = f_hdr.max;
-  calcNormal( max );
 
-  return f_hdr.minmax = 1;
-}
-
-
-/*************/
-/*** print ***/
-int
-Raster::print( char *msg )
-{
-  g_log( "%s\n", msg );
-
-  f_hdr.printHeader();
   return 1;
-}
-
-
-/******************/
-/*** set Header ***/
-int
-Raster::setHeader( Header &hdr )
-{
-  f_hdr = hdr;
-
-  return 0;
 }
 
 
@@ -297,22 +165,14 @@ Raster::convY( Coord y )
   return int( f_hdr.grid ? y : (y + 0.5) );
 }
 
-
-/*******************/
-/*** calc Normal ***/
-void
-Raster::calcNormal( Scalar *val )
-{
-  if ( f_normal )
-    *val = f_scale * (*val) + f_offset;
-}
-
-
 /********************/
 /*** calc Min Max ***/
 int
 Raster::calcMinMax( Scalar *min, Scalar *max, int band )
 {
+  if ( f_hdr.minmax ) {
+    return 1;
+  }
   Scalar *bands;
   bands = new Scalar[ f_hdr.nband ];
   Scalar *val = bands + band;
@@ -322,19 +182,23 @@ Raster::calcMinMax( Scalar *min, Scalar *max, int band )
   // Scan all map values.
   for ( int y = 0; y < f_hdr.ydim; y++ )
     for ( int x = 0; x < f_hdr.xdim; x++ )
-      if ( iget( x, y, bands ) )
-        {
-          if (!initialized) {
-            initialized = true;
-            *min = *max = *val;
-          }
-          if ( *min > *val )
-            *min = *val;
-          else if ( *max < *val )
-            *max = *val;
+      if ( f_rst->iget( x, y, bands ) ) {
+        if ( !initialized ) {
+          initialized = true;
+          *min = *max = *val;
         }
+        if ( *min > *val )
+          *min = *val;
+        else if ( *max < *val )
+          *max = *val;
+      }
 
-  delete bands;
+  delete [] bands;
+
+  if (!initialized)
+    return 0;
+
+  f_hdr.minmax = 1;
 
   if (!initialized)
     return 0;
@@ -342,4 +206,20 @@ Raster::calcMinMax( Scalar *min, Scalar *max, int band )
   return 1;
 }
 
+
+/************/
+/*** load ***/
+void
+Raster::load( )
+{
+  // Opens read only.
+  if ( f_rst ) {
+    delete f_rst;
+  }
+  f_rst = new RasterGdal( f_file, 'r' );
+
+  // Read the new file's header.
+  f_hdr = f_rst->header();
+
+}
 

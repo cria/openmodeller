@@ -52,22 +52,22 @@ public:
   virtual ~AlgorithmRun();
 
   int initialize(int id, int comm_samples,
-		 Sampler * train_sampler, 
-		 Sampler * test_sampler, 
+		 const SamplerPtr& train_sampler, 
+		 const SamplerPtr& test_sampler, 
 		 int nparam, AlgParameter * param,
 		 BSAlgorithmFactory * factory);
   int run();
   int iterate();
   int finalize();
 
-  int done();
-  bool running();
-  int getId() { return _id; }
-  float getProgress();
-  double getOmission();
-  double getCommission();
-  double getError(int type);
-  double getValue(Scalar * x); 
+  int done() const;
+  bool running() const;
+  int getId() const { return _id; }
+  float getProgress() const;
+  double getOmission() const;
+  double getCommission() const;
+  double getError(int type) const;
+  Scalar getValue(const Sample& x) const; 
 
   int calculateOmission();
   int calculateCommission();
@@ -79,9 +79,12 @@ private:
   double _omission;          /// Omission error for this run
   double _commission;        /// Commission error, approximated by area predicted present
   int _commission_samples;   /// Number of points used to calculate commission
-  Algorithm * _alg;      /// Algorithm used in this run
-  Sampler * _train_sampler;
-  Sampler * _test_sampler;
+  AlgorithmPtr _alg;      /// Algorithm used in this run
+  SamplerPtr _train_sampler;
+  SamplerPtr _test_sampler;
+
+  AlgorithmRun( const AlgorithmRun& );
+  AlgorithmRun& operator=(const AlgorithmRun& );
 };
 
 

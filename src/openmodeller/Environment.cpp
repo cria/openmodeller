@@ -32,10 +32,11 @@
 #include <om_log.hh>
 #include <env_io/map.hh>
 #include <env_io/raster.hh>
-#include <env_io/raster_file.hh>
-#include <env_io/raster_mem.hh>
 #include <env_io/geo_transform.hh>
 #include <random.hh>
+#include <configuration.hh>
+#include <om_sampled_data.hh>
+#include <occurrence.hh>
 
 #include <stdlib.h>
 #include <string.h>
@@ -48,38 +49,91 @@
 #define MAXFLOAT FLT_MAX
 #endif
 
+using std::string;
+using std::vector;
 
 /****************************************************************/
-/************************* Environment **************************/
+/*********************** factory methods ************************/
+
+EnvironmentPtr createEnvironment( int ncateg, char **categs,
+				  int nmap, char **maps,
+				  char *mask_file )
+{
+  return EnvironmentPtr( new EnvironmentImpl( ncateg, categs, nmap, maps, mask_file ) );
+}
+
+EnvironmentPtr createEnvironment( const ConstConfigurationPtr& config )
+{
+  EnvironmentPtr env( new EnvironmentImpl() );
+
+  env->setConfiguration( config );
+
+  return env;
+}
+
+
+/****************************************************************/
+/******************* static utility functions *******************/
+
+ConfigurationPtr
+EnvironmentImpl::getLayerConfig( const layer& l ) {
+  ConfigurationPtr cfg( new ConfigurationImpl() );
+
+  cfg->addNameValue("Filename", l.first );
+  cfg->addNameValue("Categorical", l.second->isCategorical());
+
+  return cfg;
+
+}
+
+EnvironmentImpl::layer
+EnvironmentImpl::makeLayer( const string& filename, int categ ) {
+  layer l;
+  Map *map = new Map( new Raster( filename, categ ) );
+  if ( !map ) {
+    g_log.warn( "Cannot read environment file: '%s'\n", filename.c_str() );
+  }
+  else {
+    l.first = filename;
+    l.second = map;
+  }
+  return l;
+}
+
+
+/****************************************************************/
+/************************* EnvironmentImpl **************************/
 
 /*******************/
 /*** constructor ***/
 
-Environment::Environment( char *cs, int ncateg, char **categs,
-			  int nmap, char **maps, char *mask )
+EnvironmentImpl::EnvironmentImpl() :
+  _layers(),
+  _mask(),
+  _xmin(0),
+  _ymin(0),
+  _xmax(0),
+  _ymax(0),
+  _normalize( false ),
+  _scales(),
+  _offsets()
 {
-  _ncateg  = ncateg;
-  _nlayers = ncateg + nmap;
-  _layers  = 0;
-  _mask    = 0;
-  _cs = 0;
+}
 
-  _layerfiles = 0;
-  _mask_file = 0;
+EnvironmentImpl::EnvironmentImpl( int ncateg, char **categs,
+				  int nmap, char **maps, char *mask_file)
+{
+  initialize( ncateg, categs, nmap, maps, mask_file );
+}
 
-  setCoordSystem( cs );
+void
+EnvironmentImpl::initialize( int ncateg, char **categs,
+			     int nmap, char **maps, char *mask )
+{
+  _normalize = false;
 
   // Initialize mask and read its region.
-  if ( ! mask )
-    { _mask_file = 0; }
-  else
-    {
-      stringCopy( &_mask_file, mask );
-      if ( ! (_mask = newMap( mask )) )
-	{ g_log.error( 1, "Cannot read mask file '%s'.\n", mask ); }
-    }
-
-  _layers = 0;
+  changeMask( mask );
   changeLayers( ncateg, categs, nmap, maps );
 }
 
@@ -87,223 +141,266 @@ Environment::Environment( char *cs, int ncateg, char **categs,
 /******************/
 /*** destructor ***/
 
-Environment::~Environment()
+EnvironmentImpl::~EnvironmentImpl()
 {
-  if (_layerfiles)
-    {
-      for (int i = 0; i < _nlayers; i++)
-	{ delete[] _layerfiles[i]; }
-      delete[] _layerfiles;
-    }
-
-  if ( _layers )
-    {
-      for (int i = 0; i < _nlayers; i++)
-	{ delete _layers[i]; }
-      delete[] _layers;
-    }
-
-  if ( _mask_file )
-    delete[] _mask_file;
-
-  if ( _mask )
-    delete _mask;
-
-  if ( _cs )
-    delete _cs;
+  clearLayers();
+  clearMask();
 }
 
+void
+EnvironmentImpl::clearLayers() {
+  layers::iterator first = _layers.begin();
+  layers::iterator end = _layers.end();
+  for ( ; first != end; ++ first ) {
+    delete (*first).second;
+  }
+  _layers.clear();
+}
+
+void
+EnvironmentImpl::clearMask() {
+  if ( _mask.second )
+    delete _mask.second;
+
+  _mask.first = "";
+  _mask.second = 0;
+}
+
+/******************/
+/*** configuration ***/
+
+ConfigurationPtr
+EnvironmentImpl::getConfiguration() const
+{
+
+  ConfigurationPtr config( new ConfigurationImpl("Environment") );
+
+  config->addNameValue( "Layers", (int) _layers.size() );
+
+  layers::const_iterator l = _layers.begin();
+  layers::const_iterator end = _layers.end();
+  for( ; l != end; ++l ) {
+    ConfigurationPtr cfg( getLayerConfig( *l ) );
+    cfg->setName("Map");
+    config->addSubsection( cfg );
+  }
+
+  ConfigurationPtr maskcfg( getLayerConfig( _mask ) );
+  maskcfg->setName( "Mask" );
+  config->addSubsection( maskcfg );
+
+  return config;
+}
+
+void
+EnvironmentImpl::setConfiguration( const ConstConfigurationPtr & config )
+{
+
+  clearMask();
+  clearLayers();
+
+  // Suck in all the filenames.
+  Configuration::subsection_list subs = config->getAllSubsections();
+  Configuration::subsection_list::const_iterator it = subs.begin();
+  int layercount = 0;
+  while( it != subs.end() ) {
+
+    string subname = (*it)->getName();
+    string filename = (*it)->getAttribute( "Filename" );
+    int categ = (*it)->getAttributeAsInt( "Categorical", 0 );
+    
+    layer l = makeLayer( filename, categ );
+
+    if ( subname == "Mask" ) {
+      _mask = l;
+    }
+    else if ( l.second ) {
+      _layers.push_back( l );
+    }
+
+    ++it;
+  }
+
+  calcRegion();
+
+}
 
 /*********************/
 /*** change Layers ***/
 int
-Environment::changeLayers( int ncateg, char **categs, int nmap,
+EnvironmentImpl::changeLayers( int ncateg, char **categs, int nmap,
 			   char **maps )
 {
   if ( ! (ncateg + nmap) )
     return 0;
 
-  if (_layerfiles)
-    {
-      for (int i = 0; i < _nlayers; i++)
-	{ delete[] _layerfiles[i]; }
-      delete[] _layerfiles;
-    }
-
-  if ( _layers )
-    {
-      for (int i = 0; i < _nlayers; i++)
-	{ delete[] _layers[i]; }
-      delete[] _layers;
-    }
-
-  _nlayers = ncateg + nmap;
-
-  _layerfiles = new char*[_nlayers];
-
-  // stringCopy() needs this.
-  memset( _layerfiles, 0, _nlayers * sizeof(char *) );
-
-  char **layers = _layerfiles;
-  char ** currmap = maps;  
-  char ** currcateg = categs;
-
-  // Copy categorical maps.
-  char **files_end = _layerfiles + _ncateg;
-  while ( layers < files_end )
-    stringCopy( layers++, *currcateg++ );
-
-  // Copy continuos maps.
-  files_end += nmap;
-  while ( layers < files_end )
-    stringCopy( layers++, *currmap++ );
-
-  // Reallocate vector that stores environmental layers.
-  Map **lay = _layers = new Map *[_nlayers];
+  clearLayers();
 
   // Categorical maps.
-  Map **end = lay + ncateg;
-  while ( lay < end )
-    *lay++ = newMap( *categs++, 1 );
+  char ** currcateg = categs;
+  for( int i = 0; i< ncateg; i++ ) {
+    _layers.push_back( makeLayer( *currcateg, 1 ) );
+    currcateg++;
+  }
 
-  // Continuous maps.
-  end = lay + nmap;
-  while ( lay < end )
-    *lay++ = newMap( *maps++ );
+  // Copy continuos maps.
+  char ** currmap = maps;  
+  for( int i = 0; i< nmap; i++ ) {
+    _layers.push_back( makeLayer( *currmap, 0 ) );
+    ++currmap;
+  }
 
-  if ( ! calcRegion() )
-    g_log.warn( "Maps intersection is empty!!!\n" );
+  calcRegion();
 
-  return _nlayers;
+  return ncateg+nmap;
 }
 
 
 /*******************/
 /*** change Mask ***/
 int
-Environment::changeMask( char *mask_file )
+EnvironmentImpl::changeMask( char const *mask_file )
 {
   int ret = 1;
 
-  // Deallocate old mask.
-  if ( _mask )
-    {
-      delete _mask;
-      _mask = 0;
-    }
-  if ( _mask_file )
-    {
-      delete _mask_file;
-      _mask_file = 0;
-    }
+  clearMask();
 
   // New mask
-  if ( mask_file )
-    {
-      stringCopy( &_mask_file, mask_file );
-      if ( ! (_mask = newMap( _mask_file )) )
-        {
-          delete _mask_file;
-          _mask_file = 0;
-          ret = 0;
-          g_log.warn( "Cannot read mask file '%s'.\n", _mask_file );
-        }
+  if ( mask_file ) {
+    _mask = makeLayer( mask_file, 0 );
+    if ( !_mask.second ) {
+      ret = 0;
     }
+  }
 
-  if ( ! calcRegion() )
-    g_log.warn( "changeMask: Maps intersection is empty!!!\n" );
+  calcRegion();
 
   return ret;
 }
 
 
 /*****************/
-/*** var Types ***/
+/*** get Type ***/
 int
-Environment::varTypes( int *types )
+EnvironmentImpl::isCategorical( int i )
 {
-  Map **lay = _layers;
-  Map **end = lay + _nlayers;
-  while ( lay < end )
-    *types++ = (*lay++)->isCategorical();
-
-  return _nlayers;
+  return _layers[i].second->isCategorical();
 }
 
 
 /*****************/
 /*** normalize ***/
 int
-Environment::normalize( Scalar min, Scalar max )
+EnvironmentImpl::computeNormalization( Scalar min, Scalar max, Sample *offsets, Sample *scales ) const
 {
   int n = 0;
 
-  Map **lay = _layers;
-  Map **end = lay + _nlayers;
-  while ( lay < end )
-    if ( (*lay++)->normalize( min, max ) )
-      n++;
+  int nlayers = _layers.size();
+  offsets->resize( nlayers );
+  scales->resize( nlayers );
+
+  int i =0;
+
+  layers::const_iterator lay = _layers.begin();
+  layers::const_iterator end = _layers.end();
+
+  while ( lay != end ) {
+    Map *map = lay->second;
+    Scalar scale = 1.0;
+    Scalar offset = 0.0;
+
+    if ( !map->isCategorical() ) {
+      Scalar mapMin, mapMax;
+      map->getMinMax( &mapMin, &mapMax );
+      if ( mapMax != mapMin ) {
+        scale = (max-min)/(mapMax-mapMin);
+        offset = min - scale * mapMin;
+        n++;
+      }
+    }
+
+    (*scales)[i] = scale;
+    (*offsets)[i] = offset;
+    
+    ++lay;
+    i++;
+  }
 
   return n;
 }
 
-int 
-Environment::copyNormalizationParams( Environment * source )
-{
-  //TODO: should check whether order of layers and maybe file names match with original
-  //TODO: as of now, no check is performed: layer order and value units must match
-  int i;
-
-  for (i = 0; i < _nlayers; i++)
-    _layers[i]->copyNormalizationParams(source->_layers[i]);
-
-  return _nlayers;
+void
+EnvironmentImpl::setNormalization( bool use_norm, const Sample& offsets, const Sample& scales ) {
+  _normalize = use_norm;
+  _offsets = offsets;
+  _scales = scales;
 }
 
-/***********/
-/*** get ***/
-int
-Environment::get( Coord x, Coord y, Scalar *sample )
+Sample
+EnvironmentImpl::get( Coord x, Coord y ) const
 {
   // Make sure that (x,y) belong to a common region among all
   // layers and the mask, if possible.
   if ( ! check( x, y ) )
-    return 0;
+    {
+    return Sample();
+    }
+
+  // Create the return value.
+  Sample sample( _layers.size() );
 
   // Read variables values from the layers.
-  Map **lay = _layers;
-  Map **end = lay + _nlayers;
-  while ( lay < end )
-    if ( ! (*lay++)->get( x, y, sample++ ) )
-      return 0;
-  
-  return 1;
+  layers::const_iterator lay = _layers.begin();
+  layers::const_iterator end = _layers.end();
+  Sample::iterator s = sample.begin();
+
+  while ( lay != end ) {
+    if ( ! lay->second->get( x, y, s ) ) {
+      return Sample();
+    }
+    ++lay;
+    ++s;
+  }
+
+  if ( _normalize ) {
+    sample *= _scales;
+    sample += _offsets;
+  }
+
+  return sample;
 }
 
-
-/******************/
-/*** get Random ***/
-int
-Environment::getRandom( Scalar *sample )
+Sample
+EnvironmentImpl::getRandom( Coord *xout, Coord *yout) const
 {
   Random rand;
   Coord x, y;
+
+  Sample s;
 
   do
     {
       x = rand( _xmin, _xmax );
       y = rand( _ymin, _ymax );
 
-    } while ( ! get( x, y, sample ) );
+      s = get(x,y);
 
-  return 1;
+    } while ( s.size() == 0 );
+
+
+  if ( xout != 0 )
+    *xout = x;
+  if ( yout != 0 )
+    *yout = y;
+
+  return s;
 }
 
 
 /*************/
 /*** check ***/
 int
-Environment::check( Coord x, Coord y )
+EnvironmentImpl::check( Coord x, Coord y ) const
 {
   // Accept the point, regardless of mask, if
   // it falls in a common region among all layers.
@@ -311,19 +408,19 @@ Environment::check( Coord x, Coord y )
     return 0;
 
   // If there's no mask, accept the point.
-  if ( ! _mask )
+  if ( ! _mask.second )
     return 1;
 
   Scalar val;
-  return _mask->get( x, y, &val ) && val;
+  return _mask.second->get( x, y, &val ) && val;
 }
 
 
 /******************/
 /*** get Region ***/
 int
-Environment::getRegion( Coord *xmin, Coord *ymin,
-			Coord *xmax, Coord *ymax )
+EnvironmentImpl::getRegion( Coord *xmin, Coord *ymin,
+			Coord *xmax, Coord *ymax ) const
 {
   *xmin = _xmin;
   *ymin = _ymin;
@@ -333,39 +430,31 @@ Environment::getRegion( Coord *xmin, Coord *ymin,
   return 1;
 }
 
-
-/********************/
-/*** get Extremes ***/
 int
-Environment::getExtremes( Scalar *min, Scalar *max )
+EnvironmentImpl::getExtremes( Sample* min, Sample* max ) const
 {
-  Map **map = _layers;
-  Map **end = map + _nlayers;
-  while ( map < end )
-    (*map++)->getMinMax( min++, max++ );
+  int nlayers = _layers.size();
+  min->resize( nlayers );
+  max->resize( nlayers );
+
+  layers::const_iterator map = _layers.begin();
+
+  for ( int i = 0; i < nlayers; i++  ) {
+    Scalar amin, amax;
+    map->second->getMinMax( &amin, &amax );
+    (*min)[i] = amin;
+    (*max)[i] = amax;
+    ++map;
+  }
 
   return 1;
 }
 
 
-/************************/
-/*** set Coord System ***/
-void
-Environment::setCoordSystem( char *cs )
-{
-  if ( _cs )
-    delete _cs;
-
-  int len = 1 + strlen(cs);
-  _cs = new char[len];
-  memcpy( _cs, cs, len );
-}
-
-
 /*******************/
 /*** calc Region ***/
-int
-Environment::calcRegion()
+void
+EnvironmentImpl::calcRegion()
 {
   Coord xmin, ymin, xmax, ymax;
 
@@ -373,56 +462,31 @@ Environment::calcRegion()
   _xmax = _ymax =  MAXFLOAT;
 
   // The mask region is the default.
-  if ( _mask )
-    _mask->getRegion( &_xmin, &_ymin, &_xmax, &_ymax );
+  if ( _mask.second )
+    _mask.second->getRegion( &_xmin, &_ymin, &_xmax, &_ymax );
 
   // Crop region to fit all layers.
-  Map **lay = _layers;
-  Map **end = lay + _nlayers;
-  while ( lay < end )
-    {
-      (*lay++)->getRegion( &xmin, &ymin, &xmax, &ymax );
+  layers::const_iterator lay = _layers.begin();
+  layers::const_iterator end = _layers.end();
+  while ( lay != end ) {
+    lay->second->getRegion( &xmin, &ymin, &xmax, &ymax );
+    ++lay;
 
-      if ( xmin > _xmin )
-	_xmin = xmin;
-      
-      if ( ymin > _ymin )
-	_ymin = ymin;
-      
-      if ( xmax < _xmax )
-	_xmax = xmax;
-      
-      if ( ymax < _ymax )
-	_ymax = ymax;
-    }
+    if ( xmin > _xmin )
+      _xmin = xmin;
+    
+    if ( ymin > _ymin )
+      _ymin = ymin;
+    
+    if ( xmax < _xmax )
+      _xmax = xmax;
+    
+    if ( ymax < _ymax )
+      _ymax = ymax;
+  }
 
-  return (_xmin < _xmax) && (_ymin < _ymax);
-}
+  if ( (_xmin >= _xmax)  || ( _ymin >= _ymax ) ) {
+    g_log.warn( "Maps intersection is empty!!!\n" );
+  }
 
-
-/***************/
-/*** new Map ***/
-Map *
-Environment::newMap( char *file, int categ )
-{
-  return new Map( new RasterFile( file, categ ), _cs, 1 );
-  //  return new Map( new RasterMemory( file, categ ), _cs, 1 );
-}
-
-
-/*******************/
-/*** string Copy ***/
-void
-Environment::stringCopy( char **dst, char *src )
-{
-  if ( *dst )
-    delete *dst;
-
-  if ( src )
-    {
-      *dst = new char[1 + strlen( src )];
-      strcpy( *dst, src );
-    }
-  else
-    *dst = 0;
 }

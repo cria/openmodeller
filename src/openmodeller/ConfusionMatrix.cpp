@@ -30,7 +30,6 @@
 
 #include <om_conf_matrix.hh>
 #include <om_sampler.hh>
-#include <om_sampled_data.hh>
 #include <om_algorithm.hh>
 #include <om_occurrences.hh>
 #include <environment.hh>
@@ -63,49 +62,63 @@ void ConfusionMatrix::reset(Scalar predictionThreshold)
  *  2nd column is actual presence (index [y][1])
  */
 
-void ConfusionMatrix::calculate(Environment * env, Algorithm * alg, 
-				Occurrences * presences, 
-				Occurrences * absences)
+void ConfusionMatrix::calculate(const EnvironmentPtr & env,
+				const Model& model,
+				const OccurrencesPtr& presences, 
+				const OccurrencesPtr& absences)
 {
-  int i, n;
+  int i;
   int predictionIndex, actualIndex;
   Scalar predictionValue;
-  SampledData data;
 
   reset(_predictionThreshold);
-  Sampler sampler(env, presences, absences);
 
-  printf("Calculating confusion matrix\n");
+  OccurrencesImpl::const_iterator it = presences->begin();
+  OccurrencesImpl::const_iterator fin = presences->end();
 
-  sampler.getPresence(&data);
-  n = data.numSamples();
-  for (i = 0; i < n; i++)
-    {
-      predictionValue = alg->getValue(data.getIndependentSample(i));
+  model->setNormalization(env);
+
+  i =0;
+  while( it != fin ) {
+    const Sample & sample = env->get( (*it)->x(), (*it)->y() );
+    if ( sample.size() >0 ) {
+      predictionValue = model->getValue( sample );
       predictionIndex = (predictionValue >= _predictionThreshold);
+
       actualIndex = 1; //data.isPresence(i);
       _confMatrix[predictionIndex][actualIndex]++;
     }
+    ++it;
+  }
 
-  if (absences && 0)
-    {
-      sampler.getAbsence(&data);
-      n = data.numSamples();
-      for (i = 0; i < n; i++)
-	{
-	  predictionValue = alg->getValue(data.getIndependentSample(i));
-	  predictionIndex = (predictionValue >= _predictionThreshold);
-	  actualIndex = 0; //data.isPresence(i);
-	  _confMatrix[predictionIndex][actualIndex]++;
-	}
+  if ( absences && ! absences->isEmpty() ) {
+    it = absences->begin();
+    fin = absences->end();
+
+    while( it != fin ) {
+      const Sample & sample = env->get( (*it)->x(), (*it)->y() );
+      if ( sample.size() >0 ) {
+	predictionValue = model->getValue( sample );
+	predictionIndex = (predictionValue >= _predictionThreshold);
+	actualIndex = 0; //data.isAbsence(i);
+	_confMatrix[predictionIndex][actualIndex]++;
+      }
+      ++it;
     }
+  }
 
   _ready = true;
 }
 
+void ConfusionMatrix::calculate(const Model& model, const SamplerPtr& sampler)
+{
+
+  calculate(sampler->getEnvironment(), model, sampler->getPresences(), sampler->getAbsences() );
+}
+
 
 int ConfusionMatrix::getValue(Scalar predictionValue, 
-			 Scalar actualValue)
+			      Scalar actualValue)
 {
   int predictedIndex, actualIndex;
 

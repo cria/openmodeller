@@ -28,36 +28,15 @@
 
 #include "om_occurrences.hh"
 
-#include "list.cpp"     // Template.
 #include "occurrence.hh"
 #include "random.hh"
 #include "om_log.hh"
 #include "env_io/geo_transform.hh"
+#include "configuration.hh"
+#include "Exceptions.hh"
 
-#include <string.h>
-
-bool compareCoordSystemStrings(char * s1, char * s2)
-{
- int i = 0, j = 0;
- while (s1[i])
- {
-  // skip spaces in both strings
-  while (s1[i] == ' ') i++;
-  while (s2[j] == ' ') j++; 
-
-  if (s1[i] != s2[j]) 
-   return false;
-  
-  if (s1[i]) i++;
-  if (s2[j]) j++;
- }
- // skip trailing spaces that s2 might still have
- while (s2[j] == ' ') j++;
-
- // both s1[i] and s2[j] should be NULL to be equal
- return (s1[i] == s2[j]);
-}
-
+#include <string>
+using std::string;
 
 /****************************************************************/
 /************************ Occurrences ***************************/
@@ -65,197 +44,190 @@ bool compareCoordSystemStrings(char * s1, char * s2)
 /*******************/
 /*** Constructor ***/
 
-Occurrences::Occurrences( char *name, char *coord_system )
+OccurrencesImpl::~OccurrencesImpl()
 {
-  _occur  = new LstOccur;
-  _vector = 0;
-
-  _name = new char[ strlen(name) + 1 ];
-  strcpy( _name, name );
-
-  _cs = new char[ strlen(coord_system) + 1 ];
-  strcpy( _cs, coord_system );
-
-  // Only use the GeoTransform object if the coordinate system
-  // of the given occurrences is different from the internal
-  // common openModeller coordinate system.
-  //
-  //if ( !compareCoordSystemStrings( coord_system, OM_COORDINATE_SYSTEM ) )
-  if ( !compareCoordSystemStrings( coord_system, OM_COORDINATE_SYSTEM ) )
-    _gt = new GeoTransform( coord_system, OM_COORDINATE_SYSTEM );
-  else
-    _gt = 0;
+  delete gt_;
 }
 
+void
+OccurrencesImpl::setCoordinateSystem( const string& cs )
+{
+  cs_ = cs;
+  initGeoTransform();
+}
+
+void
+OccurrencesImpl::initGeoTransform()
+{
+  if (gt_) delete gt_;
+
+  gt_ = new GeoTransform( cs_, GeoTransform::cs_default );
+
+}
 
 /******************/
-/*** Destructor ***/
+/*** configuration ***/
 
-Occurrences::~Occurrences()
+ConfigurationPtr
+OccurrencesImpl::getConfiguration() const
 {
-  Occurrence *oc;
-  for ( _occur->head(); oc = _occur->get(); _occur->next() )
-    { delete oc; }
+  ConfigurationPtr config( new ConfigurationImpl("Occurrences") );
 
-  if ( _vector )
-    { delete[] _vector; }
+  config->addNameValue( "SpeciesName", name() );
 
-  delete _occur;
+  ConfigurationPtr cs( new ConfigurationImpl( "CoordinateSystem" ) );
+  cs->setValue( coordSystem() );
 
-  if ( _gt )
-    { delete _gt; }
-  
-  if (_name)
-    { delete[] _name; }
+  config->addSubsection( cs );
 
-  if (_cs)
-    { delete[] _cs; }
+  config->addNameValue( "Count", int(occur_.size()) );
+
+  const_iterator oc = occur_.begin();
+  const_iterator end = occur_.end();
+
+  while( oc != end ) {
+
+    ConfigurationPtr cfg( new ConfigurationImpl("Point") );
+    Scalar x = (*oc)->x();
+    Scalar y = (*oc)->y();
+    gt_->transfIn( &x, &y );
+    cfg->addNameValue( "X", x );
+    cfg->addNameValue( "Y", y );
+    config->addSubsection( cfg );
+
+    oc++;
+
+  }
+
+  return config;
 }
 
+void
+OccurrencesImpl::setConfiguration( const ConstConfigurationPtr& config )
+{
+
+  name_ = config->getAttribute("SpeciesName");
+  
+  ConstConfigurationPtr cs_config = config->getSubsection( "CoordinateSystem" );
+  
+  if ( !cs_config ) {
+    g_log.warn( "Occurrences has no Coordinate System.  Assuming WSG84" );
+    cs_ = GeoTransform::cs_default;
+  }
+  else {
+    cs_ = cs_config->getValue();
+  }
+
+  initGeoTransform( );
+
+  Configuration::subsection_list subs = config->getAllSubsections();
+
+  Configuration::subsection_list::iterator begin = subs.begin();
+  Configuration::subsection_list::iterator end = subs.end();
+  for ( ; begin != end; ++begin ) {
+
+    if ( (*begin)->getName() != "Point" ) 
+      continue;
+
+    Scalar x = (*begin)->getAttributeAsDouble( "X", 0.0 );
+    Scalar y = (*begin)->getAttributeAsDouble( "Y", 0.0 );
+    Scalar abundance = (*begin)->getAttributeAsDouble( "Abundance", default_abundance_ );
+
+    createOccurrence( x, y, 0, abundance, 0, 0, 0, 0 );
+    
+  }
+
+}
 
 /**************/
 /*** insert ***/
 void
-Occurrences::insert( Coord longitude, Coord latitude,
-		     Scalar error, Scalar abundance,
-		     int num_attributes, Scalar *attributes )
+OccurrencesImpl::createOccurrence( Coord longitude, Coord latitude,
+				   Scalar error, Scalar abundance,
+				   int num_attributes, Scalar *attributes,
+				   int num_env, Scalar *env )
 {
   // Transforms the given coordinates in the common openModeller
   // coordinate system.
-  if ( _gt )
-    _gt->transfOut( &longitude, &latitude );
+  gt_->transfOut( &longitude, &latitude );
   
-  Occurrence *oc = new Occurrence( longitude, latitude, error,
-				   abundance, num_attributes,
-				   attributes );
-  _occur->insertLast( oc );
-
-  // Signal to rebuild vector view the next time "getRandom()"
-  // is called.
-  if ( _vector )
-    {
-      delete _vector;
-      _vector = 0;
-    }
+  insert( new OccurrenceImpl( longitude, latitude, error, abundance,
+			      num_attributes, attributes,
+			      num_env, env ) );
+  
 }
 
-
-/**************/
-/*** insert ***/
 void
-Occurrences::insert( Coord longitude, Coord latitude,
-		     Scalar abundance, int nattr, Scalar *attr )
+OccurrencesImpl::insert( const OccurrencePtr& oc )
 {
-  insert( longitude, latitude, abundance, -1.0, nattr, attr );
+  occur_.push_back(oc);
 }
 
-
-/***********************/
-/*** num Occurrences ***/
-int
-Occurrences::numOccurrences()
+OccurrencesImpl*
+OccurrencesImpl::clone() const
 {
-  return _occur->length();
+  
+  const_iterator it = occur_.begin();
+  const_iterator end = occur_.end();
+  
+  OccurrencesImpl* clone = new OccurrencesImpl( name_, cs_ );
+
+  while( it != end ) {
+    
+    clone->insert( new OccurrenceImpl( *(*it) ) );
+    
+    it++;
+  }
+
+  return clone;
 }
-
-
-/************/
-/*** head ***/
-void
-Occurrences::head()
-{
-  _occur->head();
-}
-
-
-/************/
-/*** next ***/
-void
-Occurrences::next()
-{
-  _occur->next();
-}
-
-
-/***********/
-/*** get ***/
-Occurrence *
-Occurrences::get()
-{
-  return _occur->get();
-}
-
-
-/**************/
-/*** remove ***/
-Occurrence *
-Occurrences::remove()
-{
-  return _occur->remove();
-}
-
 
 /******************/
 /*** get Random ***/
-Occurrence *
-Occurrences::getRandom()
+ConstOccurrencePtr
+OccurrencesImpl::getRandom() const
 {
-  if ( ! _vector )
-    buildVector();
 
   Random rnd;
   int selected = (int) rnd( numOccurrences() );
 
-  return _vector[ selected ];
+  return occur_[ selected ];
 }
 
+OccurrencesImpl::iterator
+OccurrencesImpl::erase( const iterator& it ) {
+  swap( occur_.back(), (*it) );
+  occur_.pop_back();
+  return it;
+}
 
 /*************/
 /*** print ***/
 void
-Occurrences::print( char *msg )
+OccurrencesImpl::print( char *msg ) const
 {
   g_log( "%s\n", msg );
 
   // Occurrences general data.
-  g_log( "Name: %s\n", _name );
+  g_log( "Name: %s\n", name_.c_str() );
   g_log( "\nOccurrences: %d\n\n", numOccurrences() );
 
-  // Occurrence points.
-  Occurrence *c;
-  for ( head(); c = get(); next() )
-    {
-      g_log( "(%+8.4f, %+8.4f)", c->x(), c->y() );
-      g_log( " - %6.2", c->error() );
-
-      // Print the attributes.
-      Scalar *attr = c->attributes();
-      Scalar *end  = attr + c->numAttributes();
-      g_log( " [%+8,4f", *attr++ );
-      while ( attr < end )
-	g_log( "%+8.4f, ", *attr++ );
-      g_log( "]\n" );
+  const_iterator c = occur_.begin();
+  const_iterator end = occur_.end();
+  while ( c != end ) {
+    g_log( "(%+8.4f, %+8.4f)", (*c)->x(), (*c)->y() );
+    g_log( " - %6.2", (*c)->error() );
+    
+    // Print the attributes.
+    Sample::const_iterator attr = (*c)->attributes().begin();
+    Sample::const_iterator end = (*c)->attributes().end();
+    g_log(" [" );
+    while ( attr != end ) {
+      g_log( "%+8.4f, ", *attr++ );
     }
-}
-
-
-/********************/
-/*** build Vector ***/
-void
-Occurrences::buildVector()
-{
-  // Stores the actual node of "_occur".
-  void *list_pos = _occur->getPos();
-
-  int noccur = numOccurrences();
-  Occurrence **vector = _vector = new Occurrence *[ noccur ];
-
-  Occurrence *oc;
-  for ( _occur->head(); oc = _occur->get(); _occur->next() )
-    *vector++ = oc;
-
-  // Restores the actual node of "_occur".
-  _occur->setPos( list_pos );
+    g_log( "]\n" );
+    c++;
+  }
 }
 
 

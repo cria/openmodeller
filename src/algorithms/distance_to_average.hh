@@ -32,10 +32,6 @@
 
 #include <om.hh>
 
-class Serializer;
-class Deserializer;
-
-
 /****************************************************************/
 /************************ Distance To Average *******************/
 
@@ -44,7 +40,7 @@ class Deserializer;
  * DistanceToAverage from the average related to occurrence
  * points.
  */
-class DistanceToAverage : public Algorithm
+class DistanceToAverage : public AlgorithmImpl
 {
 public:
 
@@ -55,30 +51,27 @@ public:
   virtual ~DistanceToAverage();
 
   // Inherited from Algorithm class.
-  int needNormalization( Scalar *min, Scalar *max );
+  int needNormalization( Scalar *min, Scalar *max ) const;
 
   int initialize();
   int iterate();
-  int done();
+  int done() const;
 
-
-  Scalar getValue( Scalar *x );
+  Scalar getValue( const Sample& x ) const;
   int    getConvergence( Scalar *val );
 
-  /*
-   */
-  int serialize(Serializer * serializer);
-  int deserialize(Deserializer * deserializer);
+protected:
+  virtual void _getConfiguration( ConfigurationPtr& ) const;
+  virtual void _setConfiguration( const ConstConfigurationPtr&  );
 
 private:
 
-  int    _done;
+  bool _done;
   Scalar _dist;
-  Scalar _min; ///< Store the minimum distance (for debug).
-  Scalar _max; ///< Store the maximum distance (for debug).
+  mutable Scalar _min; ///< Store the minimum distance (for debug).
+  mutable Scalar _max; ///< Store the maximum distance (for debug).
 
-  Scalar *_avg;  ///< Average related to occurrence points.
-  int     _dim;  ///< Dimension of environmental space.
+  Sample  _avg;  ///< Average related to occurrence points.
 };
 
 

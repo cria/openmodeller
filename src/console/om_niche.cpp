@@ -48,7 +48,7 @@ GColor _bg( 0, 140, 150 );
 int   _nmap;
 Map **_maps;
 
-Occurrences *_occurs;
+OccurrencesPtr _occurs;
 
 OpenModeller *_om;
 GImage  *_cnv;
@@ -57,12 +57,12 @@ GGraph *_graph;
 
 
 OpenModeller *createModel( char *request_file );
-int showAlgorithms ( AlgMetadata **availables );
+int showAlgorithms ( AlgMetadata const **availables );
 char *readParameters ( AlgMetadata *metadata );
-AlgMetadata *readAlgorithm( AlgMetadata **availables );
-Occurrences *readOccurrences( char *file, char *name,
+AlgMetadata const *readAlgorithm( AlgMetadata const **availables );
+OccurrencesPtr readOccurrences( char *file, char *name,
 			      char *coord_system );
-int readParameters( AlgParameter *result, AlgMetadata *metadata );
+int readParameters( AlgParameter *result, AlgMetadata const *metadata );
 char *extractParameter( char *name, int nvet, char **vet );
 
 void mapCallback( float progress, void *extra_param );
@@ -70,9 +70,7 @@ void mapCallback( float progress, void *extra_param );
 
 void draw();
 void draw_niche( GGraph *graph, OpenModeller *om );
-void draw_occur( GGraph *graph, Occurrences *oc );
-Occurrences *readOccurrences( char *file, char *name,
-			      char *coord_system );
+void draw_occur( GGraph *graph, const OccurrencesPtr& oc );
 
 
 
@@ -96,7 +94,7 @@ main( int argc, char **argv )
 
   // Create the model using openModeller.
   _om = createModel( request );
-  Environment *env = _om->getEnvironment();
+  EnvironmentPtr env = _om->getEnvironment();
   int nmap = env->numLayers();
   Scalar *min = new Scalar[nmap];
   Scalar *max = new Scalar[nmap];
@@ -162,8 +160,8 @@ createModel( char *request_file )
       if ( ! request.algorithmSet() )
         {
           // Find out which model algorithm is to be used.
-          AlgMetadata **availables = om->availableAlgorithms();
-          AlgMetadata *metadata;
+          AlgMetadata const **availables = om->availableAlgorithms();
+          AlgMetadata const *metadata;
 
           if ( ! (metadata = readAlgorithm( availables )) )
             return 0;
@@ -205,7 +203,7 @@ createModel( char *request_file )
 // equal to the number of algorithms.
 //
 int
-showAlgorithms( AlgMetadata **availables )
+showAlgorithms( AlgMetadata const **availables )
 {
   if ( ! *availables )
     {
@@ -214,7 +212,7 @@ showAlgorithms( AlgMetadata **availables )
     }
 
   int count = 0;
-  AlgMetadata *metadata;
+  AlgMetadata const *metadata;
   while ( metadata = *availables++ )
     printf( " [%d] %s\n", count++, metadata->name );
 
@@ -231,8 +229,8 @@ showAlgorithms( AlgMetadata **availables )
 // Let the user choose an algorithm and enter its parameters.
 // Returns the choosed algorithm's metadata.
 //
-AlgMetadata *
-readAlgorithm( AlgMetadata **availables )
+AlgMetadata const *
+readAlgorithm( AlgMetadata const **availables )
 {
   char buf[128];
 
@@ -260,7 +258,7 @@ readAlgorithm( AlgMetadata **availables )
 /***********************/
 /*** read Parameters ***/
 int
-readParameters( AlgParameter *result, AlgMetadata *metadata )
+readParameters( AlgParameter *result, AlgMetadata const *metadata )
 {
   AlgParamMetadata *param = metadata->param;
   AlgParamMetadata *end   = param + metadata->nparam;
@@ -385,39 +383,26 @@ draw_niche( GGraph *graph, OpenModeller *om )
 /******************/
 /*** draw occur ***/
 void
-draw_occur( GGraph *graph, Occurrences *occurs )
+draw_occur( GGraph *graph, const OccurrencesPtr& occurs )
 {
   GColor color = GColor::Red;
 
   // Draw each set of occurrences.
-  float x, y;
-  Occurrence *oc;
-  Environment *env = _om->getEnvironment();
+  EnvironmentPtr env = _om->getEnvironment();
   Scalar *amb = new Scalar[env->numLayers()];
-  for ( occurs->head(); oc = occurs->get(); occurs->next() )
-    {
-      env->get( oc->x(), oc->y(), amb );
-      graph->markAxe( amb[0], amb[1], 1, color);
-    }
-
-  delete amb;
+  OccurrencesImpl::const_iterator oc = occurs->begin();
+  for( ; oc != occurs->end(); ++oc ) {
+    env->get( (*oc)->x(), (*oc)->y(), amb );
+    graph->markAxe( amb[0], amb[1], 1, color);
+  }
 }
-
 
 /************************/
 /*** read Occurrences ***/
-Occurrences *
+OccurrencesPtr 
 readOccurrences( char *file, char *name, char *coord_system )
 {
   OccurrencesFile oc_file( file, coord_system );
-
-  // Take last species from the list, which corresponds to the
-  // first inside the file.
-  if ( ! name )
-    {
-      oc_file.tail();
-      name = oc_file.get()->name();
-    }
 
   return oc_file.remove( name );
 }

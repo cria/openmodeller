@@ -45,25 +45,24 @@ class dllexp AlgParameter
 public:
 
   AlgParameter();
-  AlgParameter( char *id, char *value=0 );
-  AlgParameter( AlgParameter & );
+  AlgParameter( char const *id, char const *value=0 );
+  AlgParameter( const AlgParameter & );
   ~AlgParameter();
 
-  AlgParameter &operator=( AlgParameter & );
+  AlgParameter &operator=( const AlgParameter & );
 
 
   /** Returns the parameter's id. */
-  char *id()  { return _id; }
+  char const *id() const { return _id; }
 
   /** Returns an allocated copy of id. */
-  char *idCopy()  { return newCopy( _id ); }
+  char *idCopy() const { return newCopy( _id ); }
 
   /** Set parameter's id. */
-  char *setId( char *id )  { return newCopy(&_id, id); }
-
+  char *setId( char const *id )  { return newCopy(&_id, id); }
 
   /** Returns the parameter's value. */
-  char *value()  { return _value; }
+  char const *value() const { return _value; }
 
   /** Returns the parameter's value converted to double. */
   double valueReal();
@@ -72,15 +71,14 @@ public:
   char *valueCopy()  { return newCopy( _value ); }
 
   /** Set parameter's value. */
-  char *setValue( char  *val )  { return newCopy(&_value,val); }
+  char *setValue( char  const *val )  { return newCopy(&_value,val); }
   char *setValue( double val );
 
 
 private:
 
-  char *newCopy( char *src );
-  char *newCopy( char **dst, char *src );
-
+  static char *newCopy( char const *src );
+  static char *newCopy( char **dst, char const *src );
 
   char *_id;
   char *_value;

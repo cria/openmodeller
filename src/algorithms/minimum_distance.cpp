@@ -106,13 +106,18 @@ static AlgMetadata metadata = {
 /****************** Algorithm's factory function ****************/
 
 dllexp
-Algorithm *
+AlgorithmImpl *
 algorithmFactory()
 {
-  return new MinimumDistance;
+  return new MinimumDistance();
 }
 
-
+dllexp
+AlgMetadata const *
+algorithmMetadata()
+{
+  return &metadata;
+}
 
 /****************************************************************/
 /************************ Minimum Distance **********************/
@@ -120,11 +125,13 @@ algorithmFactory()
 /*******************/
 /*** constructor ***/
 
-MinimumDistance::MinimumDistance()
-  : Algorithm( &metadata )
+MinimumDistance::MinimumDistance() :
+  AlgorithmImpl( &metadata ),
+  _dist(0.0),
+  _hasCategorical( false ),
+  _numLayers( 0 ),
+  _presences()
 {
-  _done  = 0;
-  _presence = 0;
 }
 
 
@@ -133,15 +140,13 @@ MinimumDistance::MinimumDistance()
 
 MinimumDistance::~MinimumDistance()
 {
-  if ( _presence )
-    delete _presence;
 }
 
 
 /**************************/
 /*** need Normalization ***/
 int
-MinimumDistance::needNormalization( Scalar *min, Scalar *max )
+MinimumDistance::needNormalization( Scalar *min, Scalar *max ) const
 {
   *min = 0.0;
   *max = 1.0;
@@ -157,25 +162,33 @@ MinimumDistance::initialize()
   if ( ! getParameter( "MaxDist", &_dist ) )
     return 0;
 
-  int dim = _samp->numIndependent();
-
   // Distance should range from 0 to 1
   if (_dist > 1.0)       _dist = 1.0;
   else if (_dist < 0.0)  _dist = 0.0;
 
-  // Normalize the distance parameter according to the number
-  // of layers
+  int dim = _samp->numIndependent();
+
   _dist *= sqrt( (double) dim );
 
-  _presence = new SampledData;
+  if ( _samp->numPresence() == 0 ) {
+    g_log.warn( "MinDistance: No occurrences inside the mask!\n" );
+    return 0;
+  }
 
+  _presences = _samp->getPresences();
 
-  // Get occurrences from Samples object.
-  if ( _samp->getPresence( _presence ) )
-    return 1;
+  _numLayers = _samp->numIndependent();
+  _isCategorical.resize( _numLayers );
 
-  g_log.warn( "MinDistance: No occurrences inside the mask!\n" );
-  return 0;
+  for( int i = 0; i < _numLayers; ++i ) {
+    if ( _samp->isCategorical( i ) ) {
+      _hasCategorical = true;
+      _isCategorical[i] = 1.0;
+    }
+  }
+
+  return 1;
+
 }
 
 
@@ -184,47 +197,46 @@ MinimumDistance::initialize()
 int
 MinimumDistance::iterate()
 {
-  return _done = 1;
+  return 1;
 }
 
 
 /************/
 /*** done ***/
 int
-MinimumDistance::done()
+MinimumDistance::done() const
 {
-  return _done;
+  return 1;
 }
 
 
 /*****************/
 /*** get Value ***/
 Scalar
-MinimumDistance::getValue( Scalar *x )
+MinimumDistance::getValue( const Sample& x ) const
 {
-  int dim  = _presence->numIndependent();
-  int npnt = _presence->numSamples();
-
   // Calculate the smallest distance between *x and the occurrence
   // points.
-  Scalar **pnt = _presence->getIndependentBase();
-  Scalar **end = pnt + npnt;
-
   Scalar min = -1;
-  Scalar dist;
-  while ( pnt < end )
-    {
-      dist = findDist( x, *pnt++, dim );
 
-      if ( (dist >= 0) && (dist < min || min < 0) )
-	min = dist;
-    }
+  OccurrencesImpl::const_iterator pit = _presences->begin();
+  OccurrencesImpl::const_iterator fin = _presences->end();
+  while ( pit != fin ) {
 
+    Scalar dist = findDist( x, (*pit)->environment() );
+
+    if ( (dist >= 0) && (dist < min || min < 0) )
+      min = dist;
+
+    ++pit;
+  }
+  
   // Too far away or categories didn't match any occurrence
   if ( min < 0 || min > _dist )
     return 0.0;
-
+  
   return 1.0 - (min / _dist);
+
 }
 
 
@@ -241,30 +253,24 @@ MinimumDistance::getConvergence( Scalar *val )
 /*****************/
 /*** find Dist ***/
 Scalar
-MinimumDistance::findDist( Scalar *x, Scalar *pnt, int dim )
+MinimumDistance::findDist( const Sample& x, const Sample& pnt ) const
 {
-  int i = 0;
-  int *categ = getCategories();
+  int layer = 0;
 
-  Scalar dif;
-  Scalar dist = 0.0;
-  for ( Scalar *end = pnt + dim;  pnt < end;  x++, pnt++ )
-    {
-      // If dealing with a categorical variable, continue only if
-      // it is equal the input.
-      if ( *categ++ )
-	{
-	  if ( *x != *pnt )
-	    return -1.0;
+  if ( _hasCategorical ) {
+    for( int i=0; i< _numLayers ; ++i ) {
+      if ( _isCategorical[i] ) {
+	if ( x[i] != pnt[i] ) {
+	  return -1.0;
 	}
-
-      else
-	{
-	  dif = *x - *pnt;
-	  dist += dif * dif;
-	}
+      }
     }
+  }
   
-  return sqrt( dist );
+  Sample dif = x;
+  dif -= pnt;
+  
+  return dif.norm();
+
 }
 

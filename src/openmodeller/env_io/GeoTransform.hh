@@ -29,6 +29,8 @@
 #ifndef _GEO_TRANSFHH_
 #define _GEO_TRANSFHH_
 
+#include <string>
+
 class OGRCoordinateTransformation;
 
 
@@ -60,29 +62,38 @@ public:
   //
   // fazer: expandir para usar EPSG, ESRI ou Proj4.
   //
-  GeoTransform( char *in, char *out );
+  GeoTransform();
+  GeoTransform( const std::string& in, const std::string& out );
   ~GeoTransform();
 
+  void change( const std::string& in, const std::string& out );
+  void change();
+
   // From 'out' to 'in'.
-  int transfIn( float *x, float *y );
-  int transfIn( float *x,  float *y,  double x0, double y0 );
-  int transfIn( double *x, double *y );
-  int transfIn( double *x, double *y, double x0, double y0 );
+  int transfIn( float *x, float *y ) const;
+  int transfIn( float *x,  float *y,  double x0, double y0 ) const;
+  int transfIn( double *x, double *y ) const;
+  int transfIn( double *x, double *y, double x0, double y0 ) const;
 
   // From 'in' to 'out'.
-  int transfOut( float *x, float *y );
-  int transfOut( float *x,  float *y,  double x0, double y0 );
-  int transfOut( double *x, double *y );
-  int transfOut( double *x, double *y, double x0, double y0 );
+  int transfOut( float *x, float *y ) const;
+  int transfOut( float *x,  float *y,  double x0, double y0 ) const;
+  int transfOut( double *x, double *y ) const;
+  int transfOut( double *x, double *y, double x0, double y0 ) const;
 
   // Default coordinate system.
-  static char *cs_default;
-
+  static char const *cs_default;
 
 private:
 
+  bool identity;
+
   OGRCoordinateTransformation *f_ctin;
   OGRCoordinateTransformation *f_ctout;
+
+  // Disable copying.
+  GeoTransform( const GeoTransform& );
+  GeoTransform& operator=( const GeoTransform& );
 
 };
 

@@ -29,37 +29,40 @@
  */
 
 #include <CppUnitLite/TestHarness.h>
+#include <Sample.hh>
 #include <rules_negrange.hh>
-#include <garp_sampler.hh>
 #include <test_rules_defs.hh>
 
-EXTENDED_DUMMY_RULE( NegatedRangeRule );
+typedef ExtendedDummyRule<NegatedRangeRule> ExtNegatedRangeRule;
 
 
 Scalar genes1[8] = {-0.8, +0.8, -0.8, +0.8, -0.8, +0.8, -0.8, +0.8};
-Scalar vals11[8] = {-0.5,       -0.5,       -0.5,       -0.5      };
-Scalar vals12[8] = {-0.0,       -0.0,       -0.0,       -0.0      };
-Scalar vals13[8] = {-0.9,       -1.0,       -1.0,       -1.0      };
+Scalar vals11[4] = {-0.5,       -0.5,       -0.5,       -0.5      };
+Scalar vals12[4] = {-0.0,       -0.0,       -0.0,       -0.0      };
+Scalar vals13[4] = {-0.9,       -1.0,       -1.0,       -1.0      };
 
 TEST( NegatedRangeRule_applies11 , NegatedRangeRule )
 {
   ExtNegatedRangeRule * rule = new ExtNegatedRangeRule;
   rule->setGenes(genes1, 4);
-  LONGS_EQUAL(rule->applies(vals11), false);
+  Sample sample(4, vals11);
+  LONGS_EQUAL(rule->applies(sample), false);
 }
 
 TEST( NegatedRangeRule_applies12 , NegatedRangeRule )
 {
   ExtNegatedRangeRule * rule = new ExtNegatedRangeRule;
   rule->setGenes(genes1, 4);
-  LONGS_EQUAL(rule->applies(vals12), false);
+  Sample sample(4, vals12);
+  LONGS_EQUAL(rule->applies(sample), false);
 }
 
 TEST( NegatedRangeRule_applies13 , NegatedRangeRule )
 {
   ExtNegatedRangeRule * rule = new ExtNegatedRangeRule;
   rule->setGenes(genes1, 4);
-  LONGS_EQUAL(rule->applies(vals13), true);
+  Sample sample(4, vals13);
+  LONGS_EQUAL(rule->applies(sample), true);
 }
 
 
@@ -72,21 +75,24 @@ TEST( NegatedRangeRule_applies21 , NegatedRangeRule )
 {
   ExtNegatedRangeRule * rule = new ExtNegatedRangeRule;
   rule->setGenes(genes2, 4);
-  LONGS_EQUAL(rule->applies(vals21), true);
+  Sample sample(4, vals21);
+  LONGS_EQUAL(rule->applies(sample), true);
 }
 
 TEST( NegatedRangeRule_applies22 , NegatedRangeRule )
 {
   ExtNegatedRangeRule * rule = new ExtNegatedRangeRule;
   rule->setGenes(genes2, 4);
-  LONGS_EQUAL(rule->applies(vals22), true);
+  Sample sample(4, vals22);
+  LONGS_EQUAL(rule->applies(sample), true);
 }
 
 TEST( NegatedRangeRule_applies23 , NegatedRangeRule )
 {
   ExtNegatedRangeRule * rule = new ExtNegatedRangeRule;
   rule->setGenes(genes2, 4);
-  LONGS_EQUAL(rule->applies(vals23), true);
+  Sample sample(4, vals23);
+  LONGS_EQUAL(rule->applies(sample), true);
 }
 
 Scalar genes3[8] = {-1.0, +1.0, -0.1, +0.1, -1.0, +1.0, -1.0, +1.0};
@@ -98,19 +104,22 @@ TEST( NegatedRangeRule_applies31 , NegatedRangeRule )
 {
   ExtNegatedRangeRule * rule = new ExtNegatedRangeRule;
   rule->setGenes(genes3, 4);
-  LONGS_EQUAL(rule->applies(vals31), true);
+  Sample sample(4, vals31);
+  LONGS_EQUAL(rule->applies(sample), true);
 }
 
 TEST( NegatedRangeRule_applies32 , NegatedRangeRule )
 {
   ExtNegatedRangeRule * rule = new ExtNegatedRangeRule;
   rule->setGenes(genes3, 4);
-  LONGS_EQUAL(rule->applies(vals32), false);
+  Sample sample(4, vals32);
+  LONGS_EQUAL(rule->applies(sample), false);
 }
 
 TEST( NegatedRangeRule_applies33 , NegatedRangeRule )
 {
   ExtNegatedRangeRule * rule = new ExtNegatedRangeRule;
   rule->setGenes(genes3, 4);
-  LONGS_EQUAL(rule->applies(vals33), true);
+  Sample sample(4, vals33);
+  LONGS_EQUAL(rule->applies(sample), true);
 }

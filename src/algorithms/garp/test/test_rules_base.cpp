@@ -29,74 +29,68 @@
  */
 
 #include <CppUnitLite/TestHarness.h>
+#include <Sample.hh>
 #include <rules_base.hh>
-#include <garp_sampler.hh>
 
 class ExtGarpRule : public GarpRule
 {
 public:
-  ExtGarpRule();
-  GarpRule * objFactory()  { return new ExtGarpRule; } 
-  int getStrength(Scalar *) {}
-  bool applies (Scalar *) {}
+  ExtGarpRule(int numGenes = 0) : GarpRule(numGenes) {};
 
-  Scalar * getGenes()      { return _genes; };
+  ExtGarpRule(Scalar pred, int numGenes, 
+	      Sample& ch1, Sample& ch2, double * perf) :
+    GarpRule(pred, numGenes, ch1, ch2, perf) {};
+
+  GarpRule * objFactory() const { return new ExtGarpRule(); } 
+  int getStrength(const Sample&) const {}
+  bool applies (const Sample&) const {}
+
   void setPrediction(Scalar newPrediction) { _prediction = newPrediction; }
   void setGenes(Scalar * genes, int numGenes);
 };
 
-
-ExtGarpRule::ExtGarpRule() : GarpRule() {}
 
 void ExtGarpRule::setGenes(Scalar * genes, int numGenes)
 {
   int i;
 
   _numGenes = numGenes;
-  if (_genes) { delete _genes; } 
 
   if (genes)
     {
-      _genes = new Scalar[_numGenes * 2];
+      Scalar values1[_numGenes];
+      Scalar values2[_numGenes];
       
-      for (i = 0; i < _numGenes * 2; i++)
-	{ _genes[i] = genes[i]; }
+      for (i = 0; i < _numGenes; i++)
+	{
+	  values1[i] = genes[i * 2];
+	  values2[i] = genes[i * 2 + 1];
+	}
+
+      _chrom1 = Sample(_numGenes, values1);
+      _chrom2 = Sample(_numGenes, values2);
     }
 }
 
 
 #define eps 10e-6
 
-class GarpCustomSamplerDummy1 : public GarpCustomSampler
-{
-public: 
-  GarpCustomSamplerDummy1(int dim) { _dim = dim; }
-  int dim() { g_log("**** 2nd dummy dim() ****\n"); return _dim; }
-private: 
-  int _dim;
-};
-
 TEST( initialize, GarpRule )
 {
   int i, n = 5;
 
-  ExtGarpRule * rule = new ExtGarpRule;
-  GarpCustomSamplerDummy1 * sampler = new GarpCustomSamplerDummy1(n);
+  ExtGarpRule * rule = new ExtGarpRule(n);
 
-  // make sure sampler is returning the correct value
-  LONGS_EQUAL(n, sampler->dim());
+  Sample chrom1 = rule->getChrom1();
+  Sample chrom2 = rule->getChrom2();
 
-  rule->initialize(sampler);
-  Scalar * genes = rule->getGenes();
-
-  for (i = 0; i < n * 2; i += 2)
+  for (i = 0; i < n; ++i)
     { 
-      DOUBLES_EQUAL((double) genes[i],     -1.0, eps);
-      DOUBLES_EQUAL((double) genes[i + 1], +1.0, eps);
+      DOUBLES_EQUAL((double) chrom1[i], -1.0, eps);
+      DOUBLES_EQUAL((double) chrom2[i], +1.0, eps);
     }
 
   delete rule;
-  delete sampler;
 }
 
 
@@ -118,18 +112,21 @@ bool checkEqualArray(Scalar * array1, Scalar * array2, int size, double veps)
 
 TEST( copy , GarpRule )
 {
-  ExtGarpRule * src = new ExtGarpRule;
-  ExtGarpRule * dst = new ExtGarpRule;
-  
-  Scalar genes[8] = {-0.9, +1.0, -1.0, +1.0, -1.0, +1.0, -1.0, +1.0};
-  Scalar blank[8] = { 0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0};
+  double perfs[10];
+  Sample c1(4, -0.5);
+  Sample c2(4, +0.5);
+  Sample blank(4);
 
-  src->setGenes(genes, 4);
-  dst->setGenes(blank, 4);
-  CHECK(dst->copy(src) == 1); 
-  CHECK(src->getGenes() != NULL);
-  CHECK(dst->getGenes() != NULL);
-  CHECK(checkEqualArray(src->getGenes(), dst->getGenes(), 8, eps));
+  ExtGarpRule * src = new ExtGarpRule(1.0, 4, c1, c2, perfs);
+  ExtGarpRule * dst = new ExtGarpRule(1.0, 4, blank, blank, perfs);
+  
+  LONGS_EQUAL(1, dst->copy(src));
+
+  for (int i = 0; i < 4; ++i)
+    {
+      DOUBLES_EQUAL(-0.5, dst->getChrom1()[i], eps);
+      DOUBLES_EQUAL(+0.5, dst->getChrom2()[i], eps);
+    }
   
   delete src;
   delete dst;
@@ -138,18 +135,18 @@ TEST( copy , GarpRule )
 
 TEST( clone , GarpRule )
 {
-  ExtGarpRule * src = new ExtGarpRule;
-  ExtGarpRule * dst;
+  double perfs[10];
+  Sample c1(4, -0.5);
+  Sample c2(4, +0.5);
+
+  ExtGarpRule * src = new ExtGarpRule(1.0, 4, c1, c2, perfs);
+  ExtGarpRule * dst = (ExtGarpRule *) src->clone();
   
-  Scalar genes[8] = {-0.9, +1.0, -1.0, +1.0, -1.0, +1.0, -1.0, +1.0};
-
-  src->setGenes(genes, 4);
-  dst = (ExtGarpRule *) src->clone();
-
-  CHECK(src->type() == dst->type());  // check if factory works
-  CHECK(src->getGenes() != NULL);
-  CHECK(dst->getGenes() != NULL);
-  CHECK(checkEqualArray(src->getGenes(), dst->getGenes(), 8, eps));
+  for (int i = 0; i < 4; ++i)
+    {
+      DOUBLES_EQUAL(-0.5, dst->getChrom1()[i], eps);
+      DOUBLES_EQUAL(+0.5, dst->getChrom2()[i], eps);
+    }
   
   delete src;
   delete dst;

@@ -305,14 +305,14 @@ for selecting optimal models.Ecological Modelling, v. 162, p. 211 232.",
 /****************** Algorithm's factory function ****************/
 
 dllexp 
-Algorithm * 
+AlgorithmImpl * 
 algorithmFactory()
 {
   return new GarpBestSubsets();
 }
 
 dllexp
-AlgMetadata *
+AlgMetadata const *
 algorithmMetadata()
 {
   return &metadata_bs;
@@ -332,7 +332,7 @@ GarpBestSubsets::~GarpBestSubsets()
 }
 
 // ****************************************************************
-Algorithm * GarpBestSubsets::getBSAlgorithm()
+AlgorithmImpl * GarpBestSubsets::getBSAlgorithm()
 {
   return new Garp();
 }
@@ -340,7 +340,7 @@ Algorithm * GarpBestSubsets::getBSAlgorithm()
 // ****************************************************************
 // ************* needNormalization ********************************
 
-int GarpBestSubsets::needNormalization( Scalar *min, Scalar *max )
+int GarpBestSubsets::needNormalization( Scalar *min, Scalar *max ) const
 {
   *min = -1.0;
   *max = +1.0;
@@ -355,16 +355,16 @@ int GarpBestSubsets::transferParametersToAlgorithm()
 {
   // GARP parameters
   if (!getParameter("MaxGenerations",   &_max_gen))        
-      g_log.error(1, "Parameter MaxGenerations not set properly.");
+      g_log.error(1, "Parameter MaxGenerations not set properly.\n");
 
   if (!getParameter("ConvergenceLimit", &_conv_limit))     
-      g_log.error(1, "Parameter ConvergenceLimit not set properly.");
+      g_log.error(1, "Parameter ConvergenceLimit not set properly.\n");
 
   if (!getParameter("PopulationSize",   &_popsize))        
-      g_log.error(1, "Parameter PopulationSize not set properly.");
+      g_log.error(1, "Parameter PopulationSize not set properly.\n");
 
   if (!getParameter("Resamples",        &_resamples))      
-      g_log.error(1, "Parameter Resamples not set properly.");
+      g_log.error(1, "Parameter Resamples not set properly.\n");
 
   if (_alg_params)
     delete[] _alg_params;

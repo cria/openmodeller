@@ -40,6 +40,8 @@
 
 #include "rules_base.hh"
 
+class BioclimHistogram;
+
 /****************************************************************/
 /****************** RangeRule class hierarchy ********************/
 
@@ -56,19 +58,21 @@ class RangeRule : public GarpRule
 public:
   RangeRule();
 
+  RangeRule(int numGenes);
+
   /// Constructor with setters 
   RangeRule(Scalar prediction, int numGenes, 
-	     Scalar * genes, double * performances) : 
-    GarpRule(prediction, numGenes, genes, performances) {}
+	     const Sample& chrom1, const Sample& chrom2, 
+       const double * performances);  
   
   virtual ~RangeRule();
-  virtual GarpRule * objFactory() { return new RangeRule; }
+  virtual GarpRule * objFactory() const { return new RangeRule(); }
   
   virtual char type() const				{ return 'd'; }
   
-  virtual void initialize(GarpCustomSampler * sampler);
-  virtual bool applies(Scalar * values);
-  virtual int getStrength(Scalar * values);
+  virtual void initialize(const BioclimHistogram& histogram);
+  virtual bool applies(const Sample& sample) const;
+  virtual int getStrength(const Sample& sample) const;
 
   void log();
 };

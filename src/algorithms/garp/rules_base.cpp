@@ -38,9 +38,10 @@
 #include <string.h>
 
 #include <om_log.hh>
+#include <Sample.hh>
+#include <occurrence.hh>
 
 #include "rules_base.hh"
-#include "garp_sampler.hh"
 
 #define MIN_SIG_NO 10
 
@@ -67,80 +68,73 @@ bool between(double value, double min, double max)
 int membership(double value1, double value2, double value)
 {
   if (equalEps(value1, -1.0) && equalEps(value2, +1.0))
-    return 255;
+    return 255; 
   else if (value < value1 || value > value2)
-    return 0;
+    return 0; 
   else
-    return 1;
+    return 1; 
 }
 
 
 /****************************************************************/
 /****************** GarpRule Constructor ************************/
 
-GarpRule::GarpRule() 
+GarpRule::GarpRule() :
+  _numGenes(0),
+  _prediction(0),
+  _needsEvaluation(true),
+  _chrom1(), 
+  _chrom2()
 {
-  _genes = NULL;
-  _numGenes = 0;
-  _prediction = 0.0;
-  _needsEvaluation = true;
-  _origin = OriginColonization;
-  
-  int i = 0;
-  for (i = 0; i < 10; i++)
+  _origin = type();
+  for (int i = 0; i < 10; i++)
     _performance[i] = 0.0;
 }
 
-// *****************
-GarpRule::GarpRule(Scalar prediction, int numGenes, 
-	   Scalar * genes, double * performances)
+GarpRule::GarpRule(int numGenes) :
+  _numGenes(numGenes),
+  _prediction(0),
+  _needsEvaluation(true),
+  _chrom1(numGenes, -1.0), 
+  _chrom2(numGenes, +1.0)
 {
-  int i;
+  _origin = type();
 
-  _needsEvaluation = true;
-  _origin = OriginColonization;
-
-  _numGenes = numGenes;
-  int numElems = _numGenes * 2;
-  _genes = new Scalar[numElems];
-  
-  for (i = 0; i < numElems; i++)
-  { *(_genes + i) = *(genes + i); }
-
-  for (i = 0; i < 10; i++)
-  { *(_performance + i) = *(performances + i); }
-
-  _prediction = prediction;
+  for (int i = 0; i < 10; i++)
+    _performance[i] = 0.0;
 }
   
-/****************************************************************/
-/****************** GarpRule Classes ****************************/
-/****************************************************************/
-
-
+// *****************
+GarpRule::GarpRule(Scalar prediction, int numGenes, 
+				   const Sample& chrom1, const Sample& chrom2, 
+				   const double * performances) :
+  _numGenes(numGenes),
+  _prediction(prediction),
+  _needsEvaluation(true),
+  _chrom1(chrom1), 
+  _chrom2(chrom2),
+  _origin(OriginColonization)
+  
+{
+  for (int i = 0; i < 10; i++)
+  { *(_performance + i) = *(performances + i); }
+}
+  
 /****************************************************************/
 /****************** GarpRule Destructor *************************/
 
 GarpRule::~GarpRule() 
-{
-  if (_genes)
-    delete _genes;
-}
+{ }
 
-GarpRule * GarpRule::clone()
+GarpRule * GarpRule::clone() const
 {
-  int i, n;
-  
   GarpRule * newRule = objFactory();
-  
+
   newRule->_numGenes = _numGenes;
-  newRule->_genes = new Scalar[_numGenes * 2];
+  newRule->_chrom1 = _chrom1;
+  newRule->_chrom2 = _chrom2;
   
-  n = _numGenes * 2;
-  for (i = 0;i < n; i++)
-    newRule->_genes[i] = _genes[i];
-  
-  for (i = 0; i < 10; i++) 
+  for (int i = 0; i < 10; i++) 
     newRule->_performance[i] = _performance[i];
   
   newRule->_needsEvaluation = _needsEvaluation;
@@ -155,18 +149,15 @@ GarpRule * GarpRule::clone()
   *        to set current rule.
   * @return 1 on success or 0 on failure (if types are different).
   */
-int GarpRule::copy(GarpRule * fromRule)
+int GarpRule::copy(const GarpRule * fromRule)
 {
-  int i, n;
-  
   if (type() != fromRule->type())
     return 0;
   
-  n = _numGenes * 2;
-  for (i = 0;i < n; i++)
-    _genes[i] = fromRule->_genes[i];
+  _chrom1 = fromRule->_chrom1;
+  _chrom2 = fromRule->_chrom2;
   
-  for (i = 0; i < 10; i++) 
+  for (int i = 0; i < 10; i++) 
     _performance[i] = fromRule->_performance[i];
   
   _needsEvaluation = fromRule->_needsEvaluation;
@@ -176,69 +167,39 @@ int GarpRule::copy(GarpRule * fromRule)
   return 1;
 }
 
-/** Copy data from another rule to the current rule.
-  * @param fromRule Pointer to source rule providing data
-  *        to set current rule.
-  * @return 1 on success or 0 on failure (if types are different).
-  */
-void GarpRule::initialize(GarpCustomSampler * sampler)
-{
-  int i;
-  Random rnd;
-  
-  _prediction = (rnd.get(0.0, 1.0) > 0.5) ? 1.0 : 0.0;
-  _origin = OriginColonization;
-  _needsEvaluation = true;
-  _origin = type();
-  
-  // number of genes is equal to the number of values in a cell
-  // dont take the mask into account
-  _numGenes = sampler->dim();
-  
-  if (_genes) 
-    delete _genes;
-  
-  _genes = new Scalar[_numGenes * 2];
-  
-  for (i = 0;i < _numGenes; i++)
-    {
-      _genes[i * 2]     = -1.0;
-      _genes[i * 2 + 1] = +1.0;
-    }
-}
 
 // ==========================================================================
-double GarpRule::getPerformance(PerfIndex perfIndex)
+double GarpRule::getPerformance(PerfIndex perfIndex) const
 {
   return _performance[perfIndex];
 }
 
 // ==========================================================================
-int GarpRule::getCertainty(Scalar pred)
+int GarpRule::getCertainty(Scalar pred) const
 { 
   return (_prediction == pred); 
 }
 
 // ==========================================================================
-double GarpRule::getError(Scalar predefinedValue, Scalar pred)
+double GarpRule::getError(Scalar predefinedValue, Scalar pred) const
 { 
   return (double) fabs(predefinedValue - pred); 
 }
  
 // ==========================================================================
-void GarpRule::adjustRange(Scalar * v1, Scalar * v2)
+void GarpRule::adjustRange(Scalar& v1, Scalar& v2) const
 {
-  if (*v1 > +1.0) *v1 = +1.0;
-  if (*v2 > +1.0) *v2 = +1.0;
-  if (*v1 < -1.0) *v1 = -1.0;
-  if (*v2 < -1.0) *v2 = -1.0;
+  if (v1 > +1.0) v1 = +1.0;
+  if (v2 > +1.0) v2 = +1.0;
+  if (v1 < -1.0) v1 = -1.0;
+  if (v2 < -1.0) v2 = -1.0;
 
-  if (*v1 > *v2)
+  if (v1 > v2)
     {
       // swap v1 and v2
-      Scalar aux = *v1;
-      *v1 = *v2;
-      *v2 = aux;
+      Scalar aux = v1;
+      v1 = v2;
+      v2 = aux;
     }
 }
 
@@ -258,11 +219,16 @@ void GarpRule::crossover(GarpRule * rule, int xpt1, int xpt2)
 
   for ( i = xpt1; i < xpt2; i++)
   {
-	  temp = _genes[i];
-	  _genes[i] = rule->_genes[i];
-	  rule->_genes[i] = temp;
+    temp = _chrom1[i]; 
+    _chrom1[i] = rule->_chrom1[i];
+    rule->_chrom1[i] = temp;
+    diff += (_chrom1[i] != rule->_chrom1[i]);
 
-	  diff += (_genes[i] != rule->_genes[i]);
+    temp = _chrom2[i]; 
+    _chrom2[i] = rule->_chrom2[i];
+    rule->_chrom2[i] = temp;
+    
+    diff += (_chrom2[i] != rule->_chrom2[i]);
   }
 
   if (diff)
@@ -287,67 +253,54 @@ void GarpRule::mutate(double temperature)
   rnd1 = rnd.get(-temperature, +temperature);
   rnd2 = rnd.get(-temperature, +temperature);
 
-  _genes[j * 2]     -= rnd1;
-  _genes[j * 2 + 1] += rnd2;
+  _chrom1[j] -= rnd1;
+  _chrom2[j] += rnd2;
 
-  adjustRange(&_genes[j * 2], &_genes[j * 2 + 1]);
+  adjustRange(_chrom1[j], _chrom2[j]);
   
   _needsEvaluation = true;
   _origin = OriginMutation;
 }
 
 // ==========================================================================
-bool GarpRule::similar(GarpRule * otherRule)
+bool GarpRule::similar(const GarpRule * otherRule) const
 {
-  bool similar, rA, rB;
-  int i;
-  Scalar r0g0, r0g1, r1g0, r1g1;
-  
   if (type() != otherRule->type())
     { return false; }
 
   // check rule value (presence/absence)
   if (_prediction != otherRule->_prediction) 
-    return false;
+  {  return false; }
   
-  similar = true;
-  for (i = 0; i < _numGenes; i++)
+  for (int i = 0; i < _numGenes; i++)
     {
       // rA and rB indicates whether gene <i> is being used or not
-      rA = (equalEps(_genes[i * 2], -1.0) && 
-	    equalEps(_genes[i * 2 + 1], +1.0));
+	  bool rA = (equalEps(_chrom1[i], -1.0) && 
+		           equalEps(_chrom2[i], +1.0));
       
-      rB = (equalEps(otherRule->_genes[i * 2], -1.0) && 
-	    equalEps(otherRule->_genes[i * 2 + 1], +1.0));
+	  bool rB = (equalEps(otherRule->_chrom1[i], -1.0) && 
+               equalEps(otherRule->_chrom2[i], +1.0));
       
       if ( rA != rB )
-	{
-	  similar = false;
-	  break;
-	}
+    {  return false; }
     }
   
-  return similar;
+  return true;
 }
 
 // ==========================================================================
-double GarpRule::evaluate(GarpCustomSampler * sampler)
+double GarpRule::evaluate(const OccurrencesPtr& occs)
 {
+  int i;
+
   double utility[10];
 
-  int dimension;
+  int dimension = (*occs)[0]->environment().size();
 
-  // number of resamples
-  int n;
-
-  // index of current sample point being evaluated (just a counter)
-  int i;
+  int n = occs->numOccurrences();
 
   // value of dependent variable from the current sample point
   Scalar pointValue = 0.0;
-
-  // environmental (independent) variables values from current sample point
-  Scalar * values;
 
   // 1 if rule applies to sample point, i.e., values satisfies rule precondition
   // 0 otherwise
@@ -390,17 +343,18 @@ double GarpRule::evaluate(GarpCustomSampler * sampler)
   
   utility[0] = 1.0;
 
-  dimension = sampler->dim();
-  n = sampler->resamples();
-
   //FILE * flog = fopen("evaluate.log", "w");
 
-  for(i = 0; i < n; i++)
-    {	
-      // Get an in range data point
-      values = sampler->getSample(&pointValue);
+  OccurrencesImpl::const_iterator it  = occs->begin();
+  OccurrencesImpl::const_iterator end = occs->end();
 
-      strength = getStrength(values);
+  while (it != end)
+    {	
+      // environmental (independent) variables values from current sample point
+      Scalar pointValue = (*it)->abundance();
+      Sample sample = (*it)->environment();
+
+      strength = getStrength(sample);
       certainty = getCertainty(pointValue);
       error = getError(0, pointValue);
 
@@ -414,6 +368,8 @@ double GarpRule::evaluate(GarpCustomSampler * sampler)
         pXYs += certainty;  // strength is always 1, then success == certainty
         pYcXs += getError(error, pointValue);
       }
+
+      ++it;
 
       /*
       fprintf(flog, "Sample %5d: [%d %d %d] (%+3.2f) ", 
@@ -433,7 +389,7 @@ double GarpRule::evaluate(GarpCustomSampler * sampler)
   utility[1] = pXs  / (double) n;		// proportion 
   utility[2] = pYs  / (double) n;		// Prior probability
   utility[3] = pYcs / (double) n;
-
+  
   priorProb = utility[2];
 
   if (no > 0)
@@ -443,11 +399,13 @@ double GarpRule::evaluate(GarpCustomSampler * sampler)
       utility[6] = pYcXs / no;
       utility[7] = no    / (double) n;          // Coverage
     }
- 
+
   // Crisp Significance
   if ( (no >= MIN_SIG_NO) && (priorProb > 0) && (priorProb < 1.0))	
-    utility[8] = (pXYs - priorProb * no) / 
-                  sqrt( no * priorProb * (1.0 - priorProb));
+    {
+      utility[8] = (pXYs - priorProb * no) / 
+	sqrt( no * priorProb * (1.0 - priorProb));
+    }
 
   //flags!!! not implemented yet
   //if (Postflag)   
@@ -455,7 +413,10 @@ double GarpRule::evaluate(GarpCustomSampler * sampler)
   
   //if (Sigflag)	
   utility[0] *= utility[8];
-  
+
+  //printf("%c] u0=%+7.3f u1=%+7.3f u2=%+7.3f u8=%+7.3f pXYs=%5d no=%4d n=%4d\n",
+  // type(), utility[0], utility[1], utility[2], utility[8], pXYs, no, n);
+
   //if (Compflag) utility[0] *= utility[7];
   //if (Ecoflag) utility[0] *= ecoSpace();
   //if (Lengthflag) utility[0] /= length();
@@ -499,10 +460,10 @@ void GarpRule::log()
 {
   for (int i = 0; i < _numGenes * 2; i += 2)
     {
-      if (fabs(_genes[i] - _genes[i + 1]) >= 2.0)
-	g_log( "******** ******** ");
+      if (fabs(_chrom1[i] - _chrom2[i]) >= 2.0)
+	g_log( "****** ****** ");
       else
-	g_log( "%+8.4f %+8.4f ", _genes[i], _genes[i + 1] );
+	      g_log( "%+6.2f %+6.2f ", _chrom1[i], _chrom2[i] );
     }
 
   g_log( "- (%.2f) : %f\n", _prediction, getPerformance(PerfSig));

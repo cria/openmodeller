@@ -36,11 +36,10 @@ class DummyRule : public GarpRule
 {
 public:
   DummyRule(int id = -1);
-  GarpRule * objFactory() { return new DummyRule; } 
-  void initialize(GarpCustomSampler *) {}
-  int getStrength(Scalar *) {}
-  double getValue(Scalar *) {}
-  bool applies(Scalar *) {}
+  GarpRule * objFactory() const { return new DummyRule(); } 
+  int getStrength(const Sample&) const {}
+  double getValue(const Sample&) const {}
+  bool applies(const Sample&) const {}
 
   int getId() { return _id; }
   void setPerformance(PerfIndex index, double newPerf) { _performance[index] = newPerf; }
@@ -55,35 +54,33 @@ DummyRule::DummyRule(int id) : GarpRule()
 }
 
 // dummy implementation of GarpRule methods
-GarpRule::GarpRule() 
+GarpRule::GarpRule() :
+  _numGenes(0),
+  _prediction(0),
+  _needsEvaluation(true),
+  _chrom1(), 
+  _chrom2()
 {
-  _genes = NULL;
-  _numGenes = 0;
-  _prediction = 0.0;
-  _needsEvaluation = true;
-  _origin = OriginColonization;
-  
-  int i = 0;
-  for (i = 0; i < 10; i++)
+  _origin = type();
+  for (int i = 0; i < 10; i++)
     _performance[i] = 0.0;
 }
 
-double GarpRule::getPerformance(PerfIndex perfIndex)
+double GarpRule::getPerformance(PerfIndex perfIndex) const
 {
   return _performance[perfIndex];
 }
 
 GarpRule::~GarpRule() {};
-GarpRule * GarpRule::clone() { g_log("Cl"); };
-int GarpRule::copy(GarpRule * fromRule) { g_log("Cp"); };
-void GarpRule::initialize(GarpCustomSampler * sampler) { g_log("In"); };
-int GarpRule::getCertainty(Scalar pred) { g_log("Ct"); };
-double GarpRule::getError(Scalar predefinedValue, Scalar pred) { g_log("Er"); };
-void GarpRule::adjustRange(Scalar * v1, Scalar * v2) { g_log("Ad"); };
+GarpRule * GarpRule::clone() const { g_log("Cl"); };
+int GarpRule::copy(const GarpRule * fromRule) { g_log("Cp"); };
+int GarpRule::getCertainty(Scalar pred) const { g_log("Ct"); };
+double GarpRule::getError(Scalar predefinedValue, Scalar pred) const { g_log("Er"); };
+void GarpRule::adjustRange(Scalar& v1, Scalar& v2) const { g_log("Ad"); };
 void GarpRule::crossover(GarpRule * rule, int xpt1, int xpt2) { g_log("Co"); };
 void GarpRule::mutate(double temperature) { g_log("Mu"); };
-bool GarpRule::similar(GarpRule * objOtherRule) { g_log("Si"); };
-double GarpRule::evaluate(GarpCustomSampler * sampler) { g_log("Ev"); };
+bool GarpRule::similar(const GarpRule * objOtherRule) const { g_log("Si"); };
+double GarpRule::evaluate(const OccurrencesPtr& occs) { g_log("Ev"); };
 void GarpRule::log() {};
 
 void testHelperAddRules(GarpRuleSet * ruleset, int from, int to)

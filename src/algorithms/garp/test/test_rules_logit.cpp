@@ -30,16 +30,28 @@
 
 #include <CppUnitLite/TestHarness.h>
 #include <rules_logit.hh>
-#include <garp_sampler.hh>
 #include <test_rules_defs.hh>
 
-EXTENDED_DUMMY_RULE( LogitRule );
-
+typedef ExtendedDummyRule<LogitRule> ExtLogitRule;
 
 Scalar genes1[8] = {-0.8, +0.8, -0.8, +0.8, -0.8, +0.8, -0.8, +0.8};
 Scalar genes2[8] = {-0.8, +0.8, -0.8, +0.8, -0.8, +0.8, -0.8, +0.8};
 
+
 TEST( LogitRule_similar1, LogitRule )
+{
+  ExtLogitRule * rule1 = new ExtLogitRule;
+  ExtLogitRule * rule2 = new ExtLogitRule;
+  rule1->setGenes(genes1, 4);
+  rule2->setGenes(genes2, 4);
+  
+  LONGS_EQUAL(true, rule1->similar(rule2));
+  
+  delete rule1; 
+  delete rule2;
+}
+
+TEST( LogitRule_similar1b, LogitRule )
 {
   ExtLogitRule * rule1 = new ExtLogitRule;
   ExtLogitRule * rule2 = new ExtLogitRule;
@@ -78,7 +90,7 @@ TEST( LogitRule_similar3, LogitRule )
   rule1->setGenes(genes5, 4);
   rule2->setGenes(genes6, 4);
   
-  LONGS_EQUAL(rule1->similar(rule2), true);
+  LONGS_EQUAL(true, rule1->similar(rule2));
   
   delete rule1; 
   delete rule2;
@@ -94,7 +106,7 @@ TEST( LogitRule_similar4, LogitRule )
   rule1->setGenes(genes7, 4);
   rule2->setGenes(genes8, 4);
   
-  LONGS_EQUAL(rule1->similar(rule2), true);
+  LONGS_EQUAL(true, rule1->similar(rule2));
   
   delete rule1; 
   delete rule2;
@@ -110,7 +122,7 @@ TEST( LogitRule_similar5, LogitRule )
   rule1->setGenes(genes9, 4);
   rule2->setGenes(genes10, 4);
   
-  LONGS_EQUAL(rule1->similar(rule2), true);
+  LONGS_EQUAL(true, rule1->similar(rule2));
   
   delete rule1; 
   delete rule2;
@@ -126,7 +138,7 @@ TEST( LogitRule_similar6, LogitRule )
   rule1->setGenes(genes11, 4);
   rule2->setGenes(genes12, 4);
   
-  LONGS_EQUAL(rule1->similar(rule2), false);
+  LONGS_EQUAL(false, rule1->similar(rule2));
   
   delete rule1; 
   delete rule2;
@@ -159,7 +171,8 @@ TEST( LogitRule_applies1, LogitRule )
 {
   ExtLogitRule * rule = new ExtLogitRule;
   rule->setGenes(genes100, 4);
-  LONGS_EQUAL(true, rule->applies(vals91));
+  Sample sample (4, vals91);
+  LONGS_EQUAL(true, rule->applies(sample));
   delete rule; 
 }
 
@@ -167,7 +180,8 @@ TEST( LogitRule_applies2, LogitRule )
 {
   ExtLogitRule * rule = new ExtLogitRule;
   rule->setGenes(genes100, 4);
-  LONGS_EQUAL(true, rule->applies(vals92));
+  Sample sample (4, vals92);
+  LONGS_EQUAL(true, rule->applies(sample));
   delete rule; 
 }
 
@@ -175,7 +189,8 @@ TEST( LogitRule_applies3, LogitRule )
 {
   ExtLogitRule * rule = new ExtLogitRule;
   rule->setGenes(genes100, 4);
-  LONGS_EQUAL(true, rule->applies(vals93));
+  Sample sample (4, vals93);
+  LONGS_EQUAL(true, rule->applies(sample));
   delete rule; 
 }
 

@@ -40,38 +40,50 @@
 #include <om_log.hh>
 
 #include "rules_negrange.hh"
-#include "garp_sampler.hh"
 
 
 // ==========================================================================
 //  NegatedRangeRule implelentation
 // ==========================================================================
-NegatedRangeRule::NegatedRangeRule() : RangeRule() {} 
+NegatedRangeRule::NegatedRangeRule() : 
+  RangeRule() 
+{}
+
+NegatedRangeRule::NegatedRangeRule(int numGenes) : 
+  RangeRule(numGenes) 
+{ }
+
+NegatedRangeRule::NegatedRangeRule(Scalar prediction, int numGenes, 
+	                          const Sample& chrom1, const Sample& chrom2, 
+                            const double * performances) : 
+  RangeRule(prediction, numGenes, chrom1, chrom2, performances) 
+{}
+
 // ==========================================================================
 NegatedRangeRule::~NegatedRangeRule() {} 
 
 // ==========================================================================
-bool NegatedRangeRule::applies(Scalar * values)
+bool NegatedRangeRule::applies(const Sample& sample) const
 {
   int i;
   
   // visit each of the genes
   for (i = 0; i < _numGenes; i++)
     {
-      if (!(equalEps(_genes[i * 2], -1.0) && equalEps(_genes[i * 2 + 1], +1.0)))
-	if (between(values[i], _genes[i * 2], _genes[i * 2 + 1]))
-	  return false;
+      if (!(equalEps(_chrom1[i], -1.0) && equalEps(_chrom2[i], +1.0)))
+	      if (!between(sample[i], _chrom1[i], _chrom2[i]))
+	  return true;
     }
   
-  return true;
+  return false;
 }
 
 // ==========================================================================
-int NegatedRangeRule::getStrength(Scalar * values)
+int NegatedRangeRule::getStrength(const Sample& sample) const
 {
   int strength, neg_strength;
 	
-  strength     = RangeRule::getStrength(values);
+  strength     = RangeRule::getStrength(sample);
   neg_strength = 1 - strength;
   
   return neg_strength;

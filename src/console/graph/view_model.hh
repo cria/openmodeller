@@ -31,11 +31,11 @@
 #ifndef _VIEW_MODELHH_
 #define _VIEW_MODELHH_
 
+#include <om_algorithm.hh>
 
 class GFrame;
 class GGraph;
 class GImage;
-class Algorithm;
 
 
 /****************************************************************/
@@ -51,7 +51,7 @@ class ViewModel
 {
 public:
 
-  ViewModel( Algorithm *alg, char *name, int dim );
+  ViewModel( AlgorithmPtr alg, char *name, int dim );
   virtual ~ViewModel();
 
   // Bottom window function scale.
@@ -79,7 +79,7 @@ private:
   // ter apenas uma instância por processo.
   static ViewModel *f_this;
 
-  Algorithm *f_alg;
+  AlgorithmPtr f_alg;
 
   GFrame *f_frame;
   GGraph *f_gmap;  // Mapa.

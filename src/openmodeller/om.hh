@@ -43,9 +43,6 @@
 #include <om_algorithm.hh>
 #include <om_algorithm_metadata.hh>
 #include <om_alg_parameter.hh>
-#include <om_serializable.hh>
-#include <om_deserializer.hh>
-#include <om_serializer.hh>
 #include <om_area_stats.hh>
 #include <om_conf_matrix.hh>
 
@@ -61,7 +58,6 @@
 // openModeller clients specific includes
 //
 #include <om_control.hh>
-#include <om_serializer_factory.hh>
 
 
 #endif

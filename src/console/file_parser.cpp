@@ -26,13 +26,14 @@
  */
 
 #include <file_parser.hh>
-#include <om_defs.hh>
 
-#include <list.cpp>
-
-#include <stdio.h>
-#include <string.h>
-
+#if 0
+// Need an ostream inserter for the special icstring type.
+inline std::ostream& operator<<( std::ostream& strm, const FileParser::icstring& s )
+{
+  return strm << std::string(s.data(),s.length() );
+}
+#endif
 
 /****************************************************************/
 /**************************** File Parser ***********************/
@@ -42,7 +43,7 @@ static char error[256];
 /******************/
 /*** constructor ***/
 
-FileParser::FileParser( char *file )
+FileParser::FileParser( char const *file )
 {
   if ( ! load( file ) )
     {
@@ -59,42 +60,80 @@ FileParser::FileParser( char *file )
 
 FileParser::~FileParser()
 {
-  clear();
 }
-
 
 /************/
 /*** load ***/
 int
-FileParser::load( char *file )
+FileParser::load( char const *file )
 {
   FILE *fd = fopen( file, "r" );
   if ( ! fd )
     return 0;
 
-  clear();
+  f_lst.clear();
 
   const int size = 1024;
   char line[size];
 
-  Item *item;
-  char *sep;
-  while ( fgets( line, size, fd ) )
-    {
-      // Remove comments
-      if ( sep = strchr( line, '#' ) )
-	*sep = '\0';
+  while ( fgets( line, size, fd ) ) {
+    // Find the first # which indicates the start of comment.
+    char *sep = strchr( line,'#' );
+    // If it's at the beginning of the line
+    // loop.
+    if ( sep == line )
+      continue;
 
-      // Separate key and value
-      if ( sep = strchr( line, '=' ) )
-	{
-	  *sep++ = '\0';
-	  f_lst.append( item = new Item );
-	  transfer( &item->key, line );
-	  transfer( &item->val, sep );
-	}
+    // If it's not at the beginning of the line,
+    // assign it to "null", terminating the string,
+    // and effectively commenting to end of line.
+    if ( sep )
+      *sep = '\0';
+
+    // Find the start of the key.
+    // Trim the whitespace from the front of the line.
+    char *start_key = line;
+    while ( isspace( *start_key ) && (*start_key != '\0') ) {
+      start_key++;
     }
 
+    // Nothing but whitespace.  Loop.
+    if ( *start_key == '\0' )
+      continue;
+
+    // Separate key and value
+    sep = strchr( line, '=' );
+    if ( sep ) {
+      // Find the start of the value.
+      char *start_val = sep+1;
+      // Left trim the whitespace.
+      while( isspace( *start_val ) && ( *start_val != '\0' ) ) {
+	start_val++;
+      }
+      // No value?  loop.
+      if ( *start_val == '\0' )
+	continue;
+
+      // Null terminate the key.
+      *sep-- = '\0';
+      // and right trim it.
+      while( isspace( *sep ) )
+	*sep-- = '\0';
+
+      // Right trim the value.
+      sep = start_val + strlen(start_val)-1;
+      // Remember the \0 we substitued for the '='?
+      // use that to terminate the loop.
+      while( isspace( *sep) && (*sep != '\0') )
+	*sep-- = '\0';
+      
+      if ( *sep == '\0' )
+	continue;
+      
+      f_lst.push_back( std::make_pair( start_key, start_val ) );
+    }
+  }
+  
   fclose( fd );
   return 1;
 }
@@ -103,13 +142,15 @@ FileParser::load( char *file )
 /***********/
 /*** get ***/
 char *
-FileParser::get( char *key )
+FileParser::get( char const *key ) const
 {
-  Item *i;
-  for ( f_lst.head(); i = f_lst.get(); f_lst.next() )
-    if ( ! strcasecmp( key, i->key ) )
-      return i->val;
-
+  ItemList::const_iterator it = f_lst.begin();
+  while ( it != f_lst.end() ) {
+    if (  (*it).first == key ) {
+      return const_cast<char*>(it->second.c_str());
+    }
+    ++it;
+  }
   return 0;
 }
 
@@ -117,78 +158,35 @@ FileParser::get( char *key )
 /*************/
 /*** count ***/
 int
-FileParser::count( char *key )
+FileParser::count( char const *key ) const
 {
   int n = 0;
 
-  Item *i;
-  for ( f_lst.head(); i = f_lst.get(); f_lst.next() )
-    if ( ! strcasecmp( key, i->key ) )
-      n++;
-
+  ItemList::const_iterator it = f_lst.begin();
+  while ( it != f_lst.end() ) {
+    if (  it->first == key ) {
+      ++n;
+    }
+    ++it;
+  }
   return n;
 }
-
 
 /***************/
 /*** get All ***/
 int
-FileParser::getAll( char *key, char **values )
+FileParser::getAll( char const *key, char **values ) const
 {
   int n = 0;
 
-  Item *i;
-  for ( f_lst.head(); i = f_lst.get(); f_lst.next() )
-    if ( ! strcasecmp( key, i->key ) )
-      {
-	*values++ = i->val;
-	n++;
-      }
-
+  ItemList::const_iterator it = f_lst.begin();
+  while ( it != f_lst.end() ) {
+    if (  it->first == key ) {
+      *values++ = const_cast<char*>(it->second.c_str());
+      ++n;
+    }
+    ++it;
+  }
   return n;
 }
-
-
-/****************/
-/*** transfer ***/
-void
-FileParser::transfer( char **dst, char *src )
-{
-  // Ignore leading white characters
-  while ( (*src == ' ') || (*src == '\t') ||
-	  (*src == '\n') || (*src == '\r') )
-    src++;
-
-  // Find the end
-  int len = strlen(src);
-  char *end = src + len - 1;
-  while ( (*end == ' ') || (*end == '\t') ||
-	  (*end == '\n') || (*end == '\r') )
-    end--;
-
-  // 'end' will point to the first character that should not be copied
-  end++;
-
-  // Copy string
-  char *d = *dst = new char[len+1];
-  while ( src < end )
-    *d++ = *src++;
-  *d = '\0';
-}
-
-
-/*************/
-/*** clear ***/
-void
-FileParser::clear()
-{
-  Item *i;
-  for ( f_lst.head(); i = f_lst.get(); f_lst.next() )
-    {
-      delete i->key;
-      delete i->val;
-      delete i;
-    }
-}
-
 

@@ -38,46 +38,58 @@
 #include <string.h>
 
 #include <om_log.hh>
+#include <Sample.hh>
 
 #include "rules_range.hh"
-#include "garp_sampler.hh"
+#include "bioclim_histogram.hh"
 
 
 // ==========================================================================
 //  RangeRule implelentation
 // ==========================================================================
-RangeRule::RangeRule() : GarpRule() { }
+RangeRule::RangeRule() : 
+  GarpRule() 
+{}
+
+RangeRule::RangeRule(int numGenes) : 
+  GarpRule(numGenes) 
+{ }
+
+RangeRule::RangeRule(Scalar prediction, int numGenes, 
+	                   const Sample& chrom1, const Sample& chrom2, 
+                     const double * performances) : 
+  GarpRule(prediction, numGenes, chrom1, chrom2, performances) 
+{}
 
 // ==========================================================================
 RangeRule::~RangeRule() { }
 
 // ==========================================================================
-void RangeRule::initialize(GarpCustomSampler * sampler)
+void RangeRule::initialize(const BioclimHistogram& histogram)
 {
   int i, j;
   Random rnd;
 
-  // call parent initialize
-  GarpRule::initialize(sampler); 
-  
   // loop iterates through variables
   for(i = 0; i < _numGenes; i++)
     {
       j = rnd.get(_numGenes);
       
-      sampler->getBioclimRange(_prediction, j, &_genes[j * 2], &_genes[j * 2 + 1]);
+      Scalar a = 0 , b = 0;
+      histogram.getBioclimRange(_prediction, j, a, b);
+      _chrom1[j] = a;
+      _chrom2[j] = b;
     }
 }
 
 // ==========================================================================
-bool RangeRule::applies(Scalar * values)
+bool RangeRule::applies(const Sample& sample) const
 {
   // visit each of the genes
-  int i;
-  for (i = 0; i < _numGenes; i++)
+  for (int i = 0; i < _numGenes; i++)
     {
-      if (!(equalEps(_genes[i * 2], -1.0) && equalEps(_genes[i * 2 + 1], +1.0)))
-        if (!between(values[i], _genes[i * 2], _genes[i * 2 + 1]))
+      if (!(equalEps(_chrom1[i], -1.0) && equalEps(_chrom2[i], +1.0)))
+        if (!between(sample[i], _chrom1[i], _chrom2[i]))
           return false;
     }
 
@@ -85,21 +97,19 @@ bool RangeRule::applies(Scalar * values)
 }
 
 // ==========================================================================
-int RangeRule::getStrength(Scalar * values)
+int RangeRule::getStrength(const Sample& sample) const
 {
-  double a, b, c;
-  int i;	
-
-  for (i = 0; i < _numGenes; i++)
+  //printf("GetStrength(%+7.3f)\n", _prediction);
+  for (int i = 0; i < _numGenes; i++)
     {
-      a = _genes[i * 2];
-      b = _genes[i * 2 + 1];
-      c = values[i];
-      
-      if (!membership(a, b, c)) 
-	return 0;
+      if (!membership(_chrom1[i], _chrom2[i], sample[i])) 
+	{ 
+	  //printf("Strength = 0\n"); 
+	  return 0; 
+	}
     } 
   
+  //printf("Strength = 1\n");
   return 1;
 }
 

@@ -1,3 +1,4 @@
+
 /**
  * Declaration of AlgorithmFactory class.
  * 
@@ -29,6 +30,8 @@
 #ifndef _OS_SPECIFICHH_
 #define _OS_SPECIFICHH_
 
+#include <vector>
+#include <string>
 
 /****************************************************************/
 /********************* Dynamic Linking Loader *******************/
@@ -40,10 +43,15 @@ typedef void *DLLHandle;
 typedef HMODULE DLLHandle;
 #endif
 
-extern DLLHandle dllOpen    ( char *dll_file_name );
-extern void     *dllFunction( DLLHandle, char *function_name );
+extern DLLHandle dllOpen    ( char const *dll_file_name );
+extern void     *dllFunction( DLLHandle, char const *function_name );
 extern int       dllClose   ( DLLHandle );
 extern char     *dllError   ( DLLHandle );
+
+/****************************************************************/
+/*************** Retrieve initial library path ******************/
+
+std::vector<std::string> initialPluginPath();
 
 
 /****************************************************************/
@@ -51,11 +59,12 @@ extern char     *dllError   ( DLLHandle );
 
 /**
  * Scan directory entries.
- * @param dir Path of the directory to be scanned.
+ * @param dir Path of the directory to be scanned. (pass by value,
+ * routine needs local copy).
  * @return A null terminated array of allocated strings with the
  * directory scanned entries. Return null if an error occurs.
  */
-char **scanDirectory( char *dir );
+std::vector<std::string> scanDirectory( std::string dir );
 
 
 /****************************************************************/

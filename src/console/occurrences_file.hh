@@ -29,11 +29,11 @@
 #ifndef _OCCURRENCES_FILEHH_
 #define _OCCURRENCES_FILEHH_
 
-#include <list.hh>
 #include <om_defs.hh>
 
-class Occurrences;
+#include <om_occurrences.hh>
 
+#include <vector>
 
 /****************************************************************/
 /********************* Occurrences File *************************/
@@ -61,8 +61,7 @@ class Occurrences;
  */
 class OccurrencesFile
 {
-  typedef Occurrences *PtOccurrences;
-  typedef DList<PtOccurrences> LstOccurrences;
+  typedef std::vector<OccurrencesPtr> LstOccurrences;
 
 
 public:
@@ -74,18 +73,12 @@ public:
   int addOccurrences( char *file_name );
 
   /** Return the number of occurrences. */
-  int numOccurrences()  { return f_sp.length(); }
-
-  /** Navigate on the list of occurrences. */
-  void head()     { f_sp.head(); }
-  void tail()     { f_sp.tail(); }
-  void next()     { f_sp.next(); }
-  Occurrences *get()   { return f_sp.get(); }
+  int numOccurrences()  { return f_sp.size(); }
 
   /** Return the group of occurrences known by 'name' or 0 if
    *  not found.
    */
-  Occurrences *remove( char *name );
+  OccurrencesPtr remove( char *name );
 
   void printOccurrences( char *msg="" );
 

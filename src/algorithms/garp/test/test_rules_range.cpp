@@ -30,10 +30,9 @@
 
 #include <CppUnitLite/TestHarness.h>
 #include <rules_range.hh>
-#include <garp_sampler.hh>
 #include <test_rules_defs.hh>
 
-EXTENDED_DUMMY_RULE( RangeRule );
+typedef class ExtendedDummyRule<RangeRule> ExtRangeRule;
 
 
 Scalar genes1[8] = {-0.8, +0.8, -0.8, +0.8, -0.8, +0.8, -0.8, +0.8};
@@ -43,23 +42,26 @@ Scalar vals13[8] = {-0.9,       -1.0,       -1.0,       -1.0      };
 
 TEST( RangeRule_applies11 , RangeRule )
 {
-  ExtRangeRule * rule = new ExtRangeRule;
+  ExtRangeRule * rule = new ExtRangeRule(4);
   rule->setGenes(genes1, 4);
-  LONGS_EQUAL(rule->applies(vals11), true);
+  Sample sample(4, vals11); 
+  LONGS_EQUAL(rule->applies(sample), true);
 }
 
 TEST( RangeRule_applies12 , RangeRule )
 {
   ExtRangeRule * rule = new ExtRangeRule;
   rule->setGenes(genes1, 4);
-  LONGS_EQUAL(rule->applies(vals12), true);
+  Sample sample(4, vals12); 
+  LONGS_EQUAL(rule->applies(sample), true);
 }
 
 TEST( RangeRule_applies13 , RangeRule )
 {
   ExtRangeRule * rule = new ExtRangeRule;
   rule->setGenes(genes1, 4);
-  LONGS_EQUAL(rule->applies(vals13), false);
+  Sample sample(4, vals13); 
+  LONGS_EQUAL(rule->applies(sample), false);
 }
 
 
@@ -72,21 +74,24 @@ TEST( RangeRule_applies21 , RangeRule )
 {
   ExtRangeRule * rule = new ExtRangeRule;
   rule->setGenes(genes2, 4);
-  LONGS_EQUAL(rule->applies(vals21), true);
+  Sample sample(4, vals21); 
+  LONGS_EQUAL(rule->applies(sample), true);
 }
 
 TEST( RangeRule_applies22 , RangeRule )
 {
   ExtRangeRule * rule = new ExtRangeRule;
   rule->setGenes(genes2, 4);
-  LONGS_EQUAL(rule->applies(vals22), true);
+  Sample sample(4, vals22); 
+  LONGS_EQUAL(rule->applies(sample), true);
 }
 
 TEST( RangeRule_applies23 , RangeRule )
 {
   ExtRangeRule * rule = new ExtRangeRule;
   rule->setGenes(genes2, 4);
-  LONGS_EQUAL(rule->applies(vals23), true);
+  Sample sample(4, vals23); 
+  LONGS_EQUAL(rule->applies(sample), true);
 }
 
 
@@ -99,19 +104,22 @@ TEST( RangeRule_applies31 , RangeRule )
 {
   ExtRangeRule * rule = new ExtRangeRule;
   rule->setGenes(genes3, 4);
-  LONGS_EQUAL(rule->applies(vals31), false);
+  Sample sample(4, vals31); 
+  LONGS_EQUAL(rule->applies(sample), false);
 }
 
 TEST( RangeRule_applies32 , RangeRule )
 {
   ExtRangeRule * rule = new ExtRangeRule;
   rule->setGenes(genes3, 4);
-  LONGS_EQUAL(rule->applies(vals32), true);
+  Sample sample(4, vals32); 
+  LONGS_EQUAL(rule->applies(sample), true);
 }
 
 TEST( RangeRule_applies33 , RangeRule )
 {
   ExtRangeRule * rule = new ExtRangeRule;
   rule->setGenes(genes3, 4);
-  LONGS_EQUAL(rule->applies(vals33), false);
+  Sample sample(4, vals33); 
+  LONGS_EQUAL(rule->applies(sample), false);
 }

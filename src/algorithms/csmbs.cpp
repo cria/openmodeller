@@ -154,13 +154,18 @@ The original CSM was written as series of Matlab functions. ", //description
 /****************** Algorithm's factory function ****************/
 
 dllexp
-Algorithm *
+AlgorithmImpl *
 algorithmFactory()
 {
-  return new CsmBS;
+  return new CsmBS();
 }
 
-
+dllexp
+AlgMetadata const *
+algorithmMetadata()
+{
+  return &metadata;
+}
 
 /****************************************************************/
 /****************************** Csm *****************************/

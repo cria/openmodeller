@@ -28,155 +28,185 @@
 
 #include <algorithm_factory.hh>
 #include <om_algorithm.hh>
-#include <list.cpp>
 #include <om_log.hh>
+#include <configuration.hh>
+
+#include <string>
+#include <list>
+#include <vector>
+#include <algorithm>
+using namespace std;
 
 #include <string.h>
 
-AlgorithmFactory::ListDLL * AlgorithmFactory::_lstDLL = NULL;
-
-/****************************************************************/
-/*********************** Algorithm Factory **********************/
+/**************************************************************************
+ *
+ * Implementation of AlgorithmFactory::DLL object
+ *
+ * Handles status of dlls.
+ *************************************************************************/
 
 /***********************/
-/*** DLL constructor ***/
+/*** DLL class definitions ***/
 
-AlgorithmFactory::DLL::DLL( char *file )
+AlgorithmFactory::DLL::DLL() :
+  _handle( 0 ),
+  _factory( 0 ),
+  _metadata( 0 ),
+  _file()
 {
-  _file   = file;
-  _handle = 0;
-  _alg    = 0;
 }
 
+AlgorithmFactory::DLL::DLL( const string& file ) :
+  _handle( 0 ),
+  _factory( 0 ),
+  _metadata( 0 ),
+  _file( file )
+{
+  _handle = dllOpen( file.c_str() );
+
+  // Opens the DLL file.
+  if ( ! _handle )
+    {
+      char *error = dllError( _handle );
+      g_log.warn( "Error loading %s: %s\n", file.c_str(), error );
+      goto error;
+    }
+
+  _factory = (TAlgFactory) dllFunction( _handle,
+					"algorithmFactory" );
+  if ( ! _factory )
+    {
+      char *error = dllError( _handle );
+      g_log.warn( "%s is not openModeller compatible! ", file.c_str() );
+      g_log.warn( "Error: %s\n", error );
+      goto error;
+    }
+
+  _metadata = (TAlgMetadata) dllFunction( _handle,
+					"algorithmMetadata" );
+  
+  if ( ! _metadata )
+    {
+      char *error = dllError( _handle );
+      g_log.warn( "%s is not openModeller compatible! ", file.c_str() );
+      g_log.warn( "Error: %s\n", error );
+      goto error;
+    }
+
+  return;
+
+ error:
+  _handle = 0;
+  _factory = 0;
+  _metadata = 0;
+
+}
 
 /**********************/
 /*** DLL destructor ***/
 
 AlgorithmFactory::DLL::~DLL()
 {
-  if ( _file )   delete[] _file;
-  if ( _alg )    delete _alg;
-  if ( _handle ) dllClose( _handle );
+  if ( _handle ) {
+    g_log( "- Unloading: %s ...", _file.c_str() );
+    //    dllClose( _handle );
+    g_log( " currently, dlls are not closed.\n" );
+  }
 }
 
+/**********************/
+/*** DLL operator bool() ***/
 
-/****************/
-/*** DLL load ***/
-Algorithm *
-AlgorithmFactory::DLL::load()
+AlgorithmFactory::DLL::operator bool() const
 {
-  char *error;
-
-  // Opens the DLL file.
-  if ( ! (_handle = dllOpen( _file )) )
-    {
-      error = dllError( _handle );
-      g_log.warn( "Error loading %s: %s\n", _file, error );
-      return 0;
-    }
-
-  return _alg = newAlgorithm();
+  return ( _handle != 0 );
 }
-
 
 /*************************/
 /*** DLL new Algorithm ***/
-Algorithm *
+AlgorithmPtr
 AlgorithmFactory::DLL::newAlgorithm()
 {
-  if ( ! _handle )
-    return 0;
-
-  char *error;
-
-  // Instantiate the algorithm.
-  TAlgFactory factory;
-  factory = (TAlgFactory) dllFunction( _handle,
-                                       "algorithmFactory" );
-  
-  if ( ! factory )
-    {
-      error = dllError( _handle );
-      g_log.warn( "%s is not openModeller compatible! ", _file );
-      g_log.warn( "Error: %s\n", error );
-      return 0;
-    }
-
-  return (*factory)();
+  AlgorithmImpl *ai = (*_factory)();
+  return AlgorithmPtr(ai);
 }
 
+/*************************/
+/*** DLL new Algorithm ***/
+AlgMetadata *
+AlgorithmFactory::DLL::getMetadata()
+{
+  return (*_metadata)();
+}
 
+/**************************************************************************
+ *
+ * Implementation of AlgorithmFactory::testDLLId object.  Helper.
+ *
+ *************************************************************************/
+bool
+AlgorithmFactory::testDLLId::operator()(const DLLPtr& dll )
+{
+  return !strcmp( id, dll->getMetadata()->id );
+}
+
+/**************************************************************************
+ *
+ * Implementation of AlgorithmFactory object
+ *
+ *************************************************************************/
 
 /*******************/
 /*** constructor ***/
 
-AlgorithmFactory::AlgorithmFactory( char **dirs )
+AlgorithmFactory::AlgorithmFactory() :
+  _dlls(),
+  _pluginpath()
 {
-  // Allocates memory for (static) list of DLLs only when first 
-  //  AlgorithmFactory object is created. After that, objects will
-  //  use static instance already allocated.
-  // Memory will leak, but only when OM DLL is unloaded from memory
-  //  or when executable finishes, which is fine.
-  // Better control can be implemented with reference counting,
-  //  but it is not required at this moment.
-  if (!_lstDLL)
-    _lstDLL = new ListDLL();
-
-  _dirs = dirs;
 }
-
 
 /******************/
 /*** destructor ***/
 
 AlgorithmFactory::~AlgorithmFactory()
 {
-  DLL *dll;
-  for ( _lstDLL->head(); dll = _lstDLL->get(); _lstDLL->next() )
-    delete dll;
 }
 
-/***************/
-/*** setDirs ***/
-void
-AlgorithmFactory::setDirs( char **dirs )
+/******************/
+/*** Singleton accessor ***/
+
+AlgorithmFactory&
+AlgorithmFactory::getInstance()
 {
-  _dirs = dirs;
+  static AlgorithmFactory theInstance;
+  return theInstance;
 }
-
-
-/***********************/
-/*** load Algorithms ***/
-int
-AlgorithmFactory::loadAlgorithms()
-{
-  // Reloads (refresh) the DLLs in _lstDLL.
-  cleanDLLs();
-  loadDLLs( _dirs );
-
-  return _lstDLL->length();
-}
-
 
 /****************************/
 /*** available Algorithms ***/
-AlgMetadata **
+AlgMetadata const **
 AlgorithmFactory::availableAlgorithms()
 {
-  // If there is no algorithm, try to read them (again).
-  if ( ! _lstDLL->length() )
-    loadAlgorithms();
+
+  AlgorithmFactory& af = getInstance();
+
+  int dll_count = af._dlls.size();
 
   // Make room for the algorithms' metadatas.
-  AlgMetadata **all;
-  all = new AlgMetadata *[_lstDLL->length() + 1];
+  AlgMetadata const **all = new AlgMetadata const *[ dll_count + 1];
 
-  // For each DLL found:
-  AlgMetadata **metadata = all;
-  DLL *dll;
-  for ( _lstDLL->head(); dll = _lstDLL->get(); _lstDLL->next() )
-    *metadata++ = dll->getAlgorithm()->getMetadata();
+  AlgMetadata const **metadata = all;
 
+  // If there are no DLLs loaded, return NULL;
+  if ( dll_count > 0 ) {
+
+    // For each DLL found:
+    ListDLL::iterator dll = af._dlls.begin();
+    for ( ; dll != af._dlls.end(); ++metadata, ++dll )
+      *metadata = (*dll)->getMetadata();
+
+  }
   // Null terminated.
   *metadata = 0;
   
@@ -189,143 +219,156 @@ AlgorithmFactory::availableAlgorithms()
 int
 AlgorithmFactory::numAvailableAlgorithms()
 {
-  // If there is no algorithm, try to read them (again).
-  if ( ! _lstDLL->length() )
-    loadAlgorithms();
+  AlgorithmFactory& af = getInstance();
 
-  return _lstDLL->length();
+  int dll_count = af._dlls.size();
+
+  return dll_count;
 }
 
 
 /***************************/
 /***  algorithm Metadata ***/
-AlgMetadata *
-AlgorithmFactory::algorithmMetadata( char *id )
+AlgMetadata const *
+AlgorithmFactory::algorithmMetadata( char const *id )
 {
   if ( ! id )
     return 0;
 
-  // If there is no algorithm, try to read them (again).
-  if ( ! _lstDLL->length() )
-    loadAlgorithms();
+  AlgorithmFactory& af = getInstance();
 
   // Metadata to be returned.
-  AlgMetadata *metadata;
+  AlgMetadata *metadata = 0;
 
-  // For each DLL opened.
-  DLL *dll;
-  for ( _lstDLL->head(); dll = _lstDLL->get(); _lstDLL->next() )
-    {
-      metadata = dll->getAlgorithm()->getMetadata();
+  testDLLId test( id );
+  ListDLL::iterator dll = find_if( af._dlls.begin(),
+				   af._dlls.end(),
+				   test );
 
-      if ( ! strcmp( id, metadata->id ) )
-	return metadata;
-    }
+  if ( dll != af._dlls.end() ) {
+    metadata = (*dll)->getMetadata();
+  }
 
-  return 0;
+  return metadata;
 }
-
 
 /*********************/
 /*** new Algorithm ***/
-Algorithm *
-AlgorithmFactory::newAlgorithm( Sampler *samp, char *id,
-                                int nparam,
-                                AlgParameter *param )
+AlgorithmPtr
+AlgorithmFactory::newAlgorithm( char const *id )
 {
-  Algorithm *alg;
 
-  // If there is no algorithm, try to read them (again).
-  if ( ! _lstDLL->length() )
-    loadAlgorithms();
+  AlgorithmFactory& af = getInstance();
 
-  // For each DLL in the list.
-  DLL *dll;
-  for ( _lstDLL->head(); dll = _lstDLL->get(); _lstDLL->next() )
-    {
-      alg = dll->getAlgorithm();
+  int dll_count = af._dlls.size();
 
-      if ( ! strcmp ( id, alg->getID() ) )
-	{
-          // New algorithm instance from the same dll.
-          Algorithm *new_alg = dll->newAlgorithm();
+  if ( dll_count == 0 )
+    return AlgorithmPtr();
 
-          // Setup new algorithm.
-	  new_alg->setSampler( samp );
-	  new_alg->setParameters( nparam, param );
+  testDLLId test( id );
+  ListDLL::iterator dll = find_if( af._dlls.begin(), af._dlls.end(), test );
 
-	  return new_alg;
-	}
-    }
+  if ( dll != af._dlls.end() ) {
+    return (*dll)->newAlgorithm();
+  }
+  else {
+    return AlgorithmPtr();
+  }
 
-  return 0;
 }
 
+AlgorithmPtr
+AlgorithmFactory::newAlgorithm( const ConstConfigurationPtr & config ) {
+
+  ConstConfigurationPtr meta_config = config->getSubsection( "AlgorithmMetadata" );
+
+  string id = meta_config->getAttribute( "Id" );
+
+  AlgorithmPtr alg( newAlgorithm( id.c_str() ) );
+
+  if ( !alg )
+    return alg;
+
+  alg->setConfiguration( config );
+
+  return alg;
+}
 
 /*****************/
 /*** load DLLs ***/
 int
-AlgorithmFactory::loadDLLs( char **dirs )
+AlgorithmFactory::searchDefaultDirs( )
 {
-  // Gets all DLLs from all directories.
-  while ( *dirs )
-    scanDir( *dirs++, _lstDLL );
 
-  return _lstDLL->length();
+  vector<string> entries = initialPluginPath();
+
+  vector<string>::iterator it = entries.begin();
+  while( it != entries.end() ) {
+    AlgorithmFactory::addDir( (*it).c_str() );
+    ++it;
+  }
 }
 
-
-/******************/
-/*** clean DLLs ***/
-void
-AlgorithmFactory::cleanDLLs()
+int
+AlgorithmFactory::addDir( const string& dir )
 {
-  // For each DLL in the list.
-  DLL *dll;
-  for ( _lstDLL->head(); dll = _lstDLL->get(); _lstDLL->next() )
-    delete dll;
+  AlgorithmFactory& af = getInstance();
 
-  _lstDLL->clear();
+  return af.p_addDir( dir );
 }
-
 
 /****************/
-/*** scan Dir ***/
+/*** p_addDir ***/
 int
-AlgorithmFactory::scanDir( char *dir, ListDLL * lst )
+AlgorithmFactory::p_addDir( const string& dir )
 {
-  char **entries = scanDirectory( dir );
+  vector<string> entries = scanDirectory( dir );
 
-  if ( ! entries )
-    {
-      g_log( "No algoritm found in directory %s\n", dir );
-      return 0;
-    }
+  if ( entries.empty() ) {
+    g_log( "No algoritm found in directory %s\n", dir.c_str() );
+    return 0;
+  }
 
-  char **pent = entries;
-  while ( *pent )
-    {
-      g_log( "- Loading: %s ... ", *pent );
+  vector<string>::const_iterator it = entries.begin();
+  while( it != entries.end() ) {
 
-      // Create a new DLL for each directory entry found.
-      DLL *dll = new DLL( *pent++ );
+    p_addDll( *it );
 
-      // If the dll can create an algorithm, insert it in to
-      // the list.
-      if ( dll->load() )
-        {
-          g_log( "ok\n" );
-          lst->append( dll );
-        }
+    ++it;
+  }
 
-      // If it can not... :(
-      // This deallocate the directory entry set!
-      else
-	delete dll;
-    }
-
-  delete[] entries;
-
-  return lst->length();
+  return _dlls.size();
 }
+
+/*****************/
+/*** load one dll ***/
+bool
+AlgorithmFactory::addDll( const string& file )
+{
+  AlgorithmFactory& af = getInstance();
+
+  return af.p_addDll( file );
+}
+
+/****************/
+/*** p_addDll ***/
+bool
+AlgorithmFactory::p_addDll( const string& file )
+{
+  g_log( "- Loading: %s ... ", file.c_str() );
+    
+  // Create a new DLL for each directory entry found.
+  DLLPtr dll( new DLL( file.c_str() ) );
+
+  // Test if the dll was successfully loaded.
+  if ( !(*dll) ) {
+    return false;
+  }
+  
+  g_log( "ok\n" );
+  _dlls.push_back( dll );
+  return true;
+
+}
+
 

@@ -31,10 +31,6 @@
 
 #include <om.hh>
 
-class Serializer;
-class Deserializer;
-
-
 /****************************************************************/
 /*********************** Bioclim Distance ***********************/
 
@@ -43,7 +39,7 @@ class Deserializer;
  * based on the distance to points' mean value.
  *
  */
-class BioclimDistance : public Algorithm
+class BioclimDistance : public AlgorithmImpl
 {
 public:
 
@@ -51,49 +47,33 @@ public:
   ~BioclimDistance();
 
   // Need normalization to calculate distance.
-  int needNormalization( Scalar *min, Scalar *max );
+  int needNormalization( Scalar *min, Scalar *max ) const;
 
   // Inherited from Algorithm class.
   int initialize();
   int iterate();
-  int done();
+  int done() const;
 
-  Scalar getValue( Scalar *x );
+  Scalar getValue( const Sample& x ) const;
   int    getConvergence( Scalar *val );
 
-  /*
-   */
-  int serialize(Serializer * serializer);
-  int deserialize(Deserializer * deserializer);
+protected:
+  virtual void _getConfiguration( ConfigurationPtr & ) const;
+  virtual void _setConfiguration( const ConstConfigurationPtr & );
 
 private:
 
-  /** Minimum value of all points for each variable. */
-  Scalar *getMinimum( SampledData *points );
-
-  /** Maximum value of all points for each variable. */
-  Scalar *getMaximum( SampledData *points );
-
-  /** Calculates the average point for all SampledData points.
+  /** Calculates the average and standard deviation.
    *  There must be at least one point. */
-  Scalar *getMean( SampledData *points );
+  void computeStats( const OccurrencesPtr& );
 
-  /** Calculates the standard deviation independently for each
-   *  dimension of 'points'.
-   *  There must be at least two points.
-   */
-  Scalar *getStandardDeviation( SampledData *points,
-                                Scalar *mean );
+  bool _done;  ///> true if the model has been generated.
 
-
-  int _dim;   ///> Number of dimensions in environmental space
-
-  Scalar *_minimum; ///> Mininum value for each variable.
-  Scalar *_maximum; ///> Maximum value for each variable.
-
-  Scalar *_mean;    ///> Mean of sampled points.
-  Scalar *_std_dev; ///> Standard deviations for each variable.
   Scalar _max_distance; ///> Standard deviation vector module.
+  Sample _minimum; ///> Minimum value for each variable.
+  Sample _maximum; ///> Maximum value for each variable.
+  Sample _mean;    ///> Mean of sampled points.
+  Sample _std_dev; ///> Standard deviations for each variable.
 };
 
 
