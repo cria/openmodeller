@@ -55,7 +55,7 @@ LINK32=link.exe
 TargetPath=.\Release\om_console.exe
 SOURCE="$(InputPath)"
 PostBuild_Desc=Install
-PostBuild_Cmds=echo Installing executable $(TargetPath) in .\build\bin	copy $(TargetPath) ..\build\bin	echo Copying gdal12.dll to .\build\bin	copy $(GDAL_HOME)\bin\gdal12.dll ..\build\bin
+PostBuild_Cmds=if not exist ..\build mkdir ..\build	if not exist ..\build\bin mkdir ..\build\bin	echo Installing executable $(TargetPath) in .\build\bin	copy $(TargetPath) ..\build\bin	echo Copying gdal12.dll to .\build\bin	copy $(GDAL_HOME)\bin\gdal12.dll ..\build\bin
 # End Special Build Tool
 
 !ELSEIF  "$(CFG)" == "om_console - Win32 Debug"

@@ -58,7 +58,7 @@ LINK32=link.exe
 TargetPath=.\Release\om_garp.dll
 SOURCE="$(InputPath)"
 PostBuild_Desc=Install
-PostBuild_Cmds=echo Installing library $(TargetPath) in .\build\lib	copy $(TargetPath) ..\build\lib
+PostBuild_Cmds=if not exist ..\build mkdir ..\build	if not exist ..\build\lib mkdir ..\build\lib	echo Installing library $(TargetPath) in .\build\lib	copy $(TargetPath) ..\build\lib
 # End Special Build Tool
 
 !ELSEIF  "$(CFG)" == "om_garp - Win32 Debug"
