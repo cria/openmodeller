@@ -41,14 +41,16 @@ public class OMTest1 {
     public static void printAlgInfo() {
 	int i, n;
 
-	AlgMetadata algmd_array[], algmd;
+	AlgMetadata algmd[];
 	
-	algmd_array = mod.availableAlgorithms();
+	algmd = mod.availableAlgorithms();
 	n = mod.numAvailableAlgorithms();
 	for (i = 0; i < n; i++) {
 	    // print info about one algorithm
-	    algmd = algmd_array[i];
-	    System.out.println("ID:" + algmd.getId());
+	    System.out.println("ID:       " + algmd[i].getId());
+	    System.out.println("Name:     " + algmd[i].getName());
+	    System.out.println("Version:  " + algmd[i].getVersion());
+	    System.out.println("Overview: " + algmd[i].getOverview());
 	    System.out.println("");
 	}
     }
