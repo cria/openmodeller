@@ -177,7 +177,7 @@ private:
 
 
   /** Build the model based on 'samp' and on algorithm.*/
-  int createModel( Algorithm *alg, Sampler *samp, int max_cicles);
+  int createModel( Algorithm *alg, Sampler *samp);
 
   /** Generate output map defined by '_file' and '_hdr'.*/
   int createMap( Environment *env, Algorithm *alg );
@@ -197,7 +197,6 @@ private:
   AlgParameter *_alg_param;  ///< Algorithm parameters.
   char *_alg_id;     ///< Algorithm's ID and parameters.
   int   _alg_nparam; ///< Number of algorithm parameters.
-  int   _ncycle;     ///< Max algorithm cicles.
 
   Occurrences *_presence; ///< Presence occurrences points.
   Occurrences *_absence;  ///< Absence occurrences points.

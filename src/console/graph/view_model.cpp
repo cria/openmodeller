@@ -134,7 +134,7 @@ ViewModel::draw()
   if ( ! f_cicle )
     {
       x0 = y0 = 0.0;
-      f_alg->initialize( 1 );
+      f_alg->initialize();
     }
 
   f_alg->iterate();

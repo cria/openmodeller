@@ -144,7 +144,7 @@ DistanceToAverage::needNormalization( Scalar *min, Scalar *max )
 /******************/
 /*** initialize ***/
 int
-DistanceToAverage::initialize( int ncicle )
+DistanceToAverage::initialize()
 {
   if ( ! getParameter( PARAM_MAXDIST, &_dist ) )
     return 0;

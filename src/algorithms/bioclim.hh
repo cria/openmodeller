@@ -47,7 +47,7 @@ public:
   ~Bioclim();
 
   // Inherited from Algorithm class.
-  int initialize( int ncycle );
+  int initialize();
   int iterate();
   int done();
 

@@ -124,7 +124,7 @@ Bioclim::~Bioclim()
 /******************/
 /*** initialize ***/
 int
-Bioclim::initialize( int ncicle )
+Bioclim::initialize()
 {
   if ( ! getParameter( "CutOff", &_cutoff ) )
     return 0;

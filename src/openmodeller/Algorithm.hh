@@ -91,9 +91,9 @@ public:
   { return 0; }
 
 
-  /** Initiate a new training. If 'ncicle' != 0, then the 
-   *  new training will have 'ncycle' cicles. */
-  virtual int initialize( int ncycle ) { return 1; }
+  /** Initiate a new training.
+   */
+  virtual int initialize() { return 1; }
 
   /** One step further on the training. Return 0 if something 
    * wrong happened.
