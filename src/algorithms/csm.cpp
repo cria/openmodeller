@@ -71,7 +71,7 @@ int Csm::needNormalization( Scalar *min, Scalar *max )
 int Csm::initialize( int ncycle )
 {
     printf ("\n*************************************************\n");
-    printf ("Csm::initialise - Csm Model Definition Commencing\n");
+    printf ("Csm::initialise - Csm Model Definition Commencing (ncycle = %i)\n", ncycle);
     printf ("\n*************************************************\n\n");
     //convert the sampler to a matrix and store in the local gsl_matrix
     if (!SamplerToMatrix())
@@ -549,6 +549,7 @@ gsl_matrix * Csm::autoCovariance(gsl_matrix * original_matrix)
                 gsl_matrix_set_row (s, j, v);
             }
         }
+	gsl_vector_free(v);
     }
 
     // divide by "n"
