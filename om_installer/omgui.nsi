@@ -49,7 +49,7 @@
 ; MUI end ------
 
 Name "${PRODUCT_NAME} ${PRODUCT_VERSION}"
-OutFile "Setup.exe"
+OutFile "openModeller0.2_setup.exe"
 InstallDir "$PROGRAMFILES\openModeller"
 InstallDirRegKey HKLM "${PRODUCT_DIR_REGKEY}" ""
 ShowInstDetails show
