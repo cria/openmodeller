@@ -16,21 +16,14 @@ openModeller - Open Source Spatial Distribution Modeller
 
   http://www.sf.net/projects/openmodeller
 
-* Developers:
-
-  Mauro E. S. Munoz <mauro [at] cria.org.br>
-  Renato De Giovanni <renato [at] cria.org.br>
-  Ricardo Scachetti Pereira <rpereira [at] ku.edu>
-  Tim Sutton <t.sutton [at] reading.ac.uk>
-  Jens Oberender <j.obi [at] troja.net>
 
 OVERVIEW
 --------
 
-The original goal of openModeller was to automate the tedious and complex 
-tasks involved in biological distribution modelling regarding map file 
-formats, georeference issues, resamples, map interpolations, etc. Some 
-consequences arise from this automation:
+The original motivation of openModeller was to automate the tedious and
+complex tasks involved in biological distribution modelling regarding 
+map file formats, georeferencing issues, resamples, map interpolations, etc.
+Some consequences arise from this automation:
 
 a) One can spend time developing algorithms, testing, tunning or comparing
    results. To compare two or more different algorithms we need the same 
@@ -42,19 +35,18 @@ b) Different tasks can be performed by independent components in distributed
    (with high quality) and some times are enormous.
 
 c) Powerfull computers could be used to run heavy algorithms (like GARP) 
-   and it could also be done in parallel (clustering).
+   and that could also be done in parallel (clustering).
 
 
 CURRENT STATUS
 --------------
 
-We started to build the server of a client-server version. A simple
-command line interface (om_console) is already available and included in this
-package. There's also a free desktop client, "Gyps", being developed by Tim
-Sutton. See: http://www.sf.net/projects/gyps
-The next step is to define a protocol, and build a distributed version 
-probably using webServices. This way we will be able to share data and 
-machine resources.
+- Core modelling interface implemented in c++ (control interface).
+- Algorithms dinamically loaded as separate c++ libraries (algorithm
+  interface).
+- Simple command-line (console) interface.
+- SOAP interface prototype.
+- Desktop interface available as a plug-in to Quantum GIS.
 
 
 LICENSE
@@ -82,14 +74,12 @@ REQUIREMENTS
 * GDAL (Geospatial Data Abstraction Library) version >= 1.1.9
   http://www.remotesensing.org/gdal
 
-* to run the simple map viewer (om_viewer) you'll need libX11
+* to run the simple map viewer (om_viewer) libX11 is needed
   (tested with version 6.2)
 
-
-INSTALLATION
-------------
-See the INSTALL file for instructions on how to build 
-openModeler under Linux/Unix and INSTALL.win file for windows.
+* to run the CSM (Climate Space Model) algorithm the GSL (GNU
+  Scientific Library) version >= 1.4 is needed
+  http://www.gnu.org/software/gsl
 
 
 DOCUMENTATION
