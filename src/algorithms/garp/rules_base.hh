@@ -114,6 +114,12 @@ int membership(double value1, double value2, double value);
 /****************************************************************/
 /****************** GarpRule class hierarchy ********************/
 
+/** 
+  * Base class for specific Garp rules. Provides the basic 
+  * interface for methods that all kinds of Garp rules should 
+  * provide.
+  */
+
 class GarpRule  
 {
 public:
@@ -128,9 +134,9 @@ public:
   virtual ~GarpRule();
 
 
-/** Returns a copy of the rule. Caller is responsible for deallocating
-  * memory for this object when it is done using it.
-  */
+  /** Returns a copy of the rule. Caller is responsible for deallocating
+    * memory for this object when it is done using it.
+    */
   virtual GarpRule * clone();
 
   virtual GarpRule * objFactory() = 0;

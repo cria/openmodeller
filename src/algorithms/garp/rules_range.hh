@@ -43,6 +43,14 @@
 /****************************************************************/
 /****************** RangeRule class hierarchy ********************/
 
+/**
+  * Implements Garp Range rules. Also known as Bioclim rules. 
+  * Examples of Range rules are:
+  *
+  * IF temp between 10 and 20C THEN sp=PRESENT
+  * IF temp between 10 and 20C AND 
+  *    elevation between 500 and 2000m THEN sp=ABSENT
+  */
 class RangeRule : public GarpRule
 {
 public:

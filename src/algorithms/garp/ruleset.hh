@@ -46,7 +46,10 @@
 class GarpRule;
 
 /** 
- */
+  * Stores a set of Garp rules. Consists of a valid Garp model.
+  * Provide basic methods for manipulating the set of rules as 
+  * a whole.
+  */
 class GarpRuleSet
 {
 public:

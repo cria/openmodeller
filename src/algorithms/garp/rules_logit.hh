@@ -40,7 +40,10 @@
 
 #include "rules_base.hh"
 
-// ====================================================================
+/**
+  * Implements Garp Logistic Regression rules. Also known as 
+  * Logit rules. 
+  */
 class LogitRule : public GarpRule
 {
 public:

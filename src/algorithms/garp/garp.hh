@@ -54,6 +54,9 @@ class Deserializer;
 /****************************************************************/
 /************************* GARP Algorithm ***********************/
 
+/**
+  * Implementation of GARP: Genetic Algorithm for Rule-set Production
+  */
 class Garp : public Algorithm
 {
 public:
@@ -116,13 +119,15 @@ public:
     */
   int getConvergence( Scalar *val );
 
-  /*
-   */
   int serialize(Serializer * serializer);
   int deserialize(Deserializer * deserializer);
 
   int getGeneration() { return _gen; }
 
+  /** Deletes data structures that are not needed once the model
+	* is generated. Implemented to save some memory when clients
+	* have to store too many Garp objects.
+    */
   void deleteTempDataMembers();
 
 
