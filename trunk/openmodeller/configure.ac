@@ -1,0 +1,117 @@
+dnl Process this file with autoconf to produce a configure script.
+
+AC_INIT
+
+AM_INIT_AUTOMAKE(openModeller, 0.1)
+
+AC_PREFIX_PROGRAM(gcc)
+
+AC_PROG_CXX
+
+AC_LANG([C++])
+
+AC_PROG_LN_S
+AC_PROG_MAKE_SET
+AC_PROG_INSTALL
+
+AC_PROG_LIBTOOL
+
+dnl ---------------------------------------------------------------------------
+dnl X11
+dnl ---------------------------------------------------------------------------
+AC_PATH_X
+if test "$x_includes" != "" ; then
+    X11_CFLAGS="-I$x_includes"
+fi
+if test "$x_libraries" != "" ; then
+    X11_LIB="-L$x_libraries -lX11"
+fi
+AC_SUBST(X11_LIB)
+AC_SUBST(X11_CFLAGS)
+
+dnl ---------------------------------------------------------------------------
+dnl GDAL/OGR
+dnl ---------------------------------------------------------------------------
+AC_ARG_WITH(gdal,
+  AC_HELP_STRING([--with-gdal=path],
+                 [Full path to 'gdal-config' script, e.g. '--with-gdal=/usr/local/bin/gdal-config']))
+                 
+AC_MSG_CHECKING([for GDAL])
+if test x"$with_gdal" = "xyes" -o x"$with_gdal" = "x" ; then
+  GDAL_CONFIG=`which gdal-config`
+  if test ! -x "$GDAL_CONFIG" ; then
+    AC_MSG_ERROR(["Cannot find gdal-config, try to use --with-gdal option"])
+  fi
+  AC_MSG_RESULT([yes])
+elif test x"$with_gdal" = "xno" ; then
+  ac_gdalogr=no
+  AC_MSG_RESULT([no])
+else
+  if test -x "$with_gdal/gdal-config" ; then
+    GDAL_CONFIG="$with_gdal/gdal-config"
+    AC_MSG_RESULT([yes])
+  else
+    AC_MSG_ERROR("Cannot find $with_gdal/gdal-config")
+  fi
+fi
+
+if test x"$ac_gdalogr" != "xno" ; then
+  AC_MSG_CHECKING([for OGR in GDAL])
+  if test x`$GDAL_CONFIG --ogr-enabled` = "xno" ; then
+    AC_MSG_ERROR([GDAL must be compiled with OGR support and currently is not.])
+  fi
+  AC_MSG_RESULT(yes)
+  ac_gdalogr=yes
+
+  GDAL_LIB="`$GDAL_CONFIG --libs`"
+  GDAL_CFLAGS="`$GDAL_CONFIG --cflags`"
+
+  AC_SUBST(GDAL_LIB)
+  AC_SUBST(GDAL_CFLAGS)
+fi
+
+dnl ---------------------------------------------------------------------------
+dnl gsl
+dnl ---------------------------------------------------------------------------
+AC_ARG_WITH(gsl,
+  AC_HELP_STRING([--with-gsl=path],
+                 [Full path to 'gsl-config' script, e.g. '--with-gsl=/usr/local/bin/gsl-config']))
+                 
+AC_MSG_CHECKING([for gsl])
+if test x"$with_gsl" = "xyes" -o x"$with_gsl" = "x" ; then
+  GSL_CONFIG=`which gsl-config`
+  if test ! -x "$GSL_CONFIG" ; then
+    AC_MSG_ERROR(["Cannot find gsl-config, try to use --with-gsl option"])
+  fi
+  AC_MSG_RESULT([yes])
+elif test x"$with_gsl" = "xno" ; then
+  ac_gsl=no
+  AC_MSG_RESULT([no])
+else
+  if test -x "$with_gsl/gsl-config" ; then
+    GSL_CONFIG="$with_gsl/gsl-config"
+    AC_MSG_RESULT([yes])
+  else
+    AC_MSG_ERROR("Cannot find $with_gsl/gsl-config")
+  fi
+fi
+
+if test x"$ac_gsl" != "xno" ; then
+  GSL_LIB="`$GSL_CONFIG --libs`"
+  GSL_CFLAGS="`$GSL_CONFIG --cflags`"
+
+  AC_SUBST(GSL_LIB)
+  AC_SUBST(GSL_CFLAGS)
+fi
+
+AC_CONFIG_FILES([
+  Makefile
+	algorithms/Makefile
+  src/Makefile
+	src/lib/Makefile
+	src/lib/env_io/Makefile
+	src/lib/graph/Makefile
+	src/inc/Makefile
+])
+
+AC_OUTPUT
