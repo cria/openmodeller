@@ -86,28 +86,20 @@ static AlgMetadata metadata = {
  distance to the mean point, and is limited to Suitable regions.",
 
   // Description.
-  "Implements the Bioclimatic Envelop Algorithm.\
+  "Implements a variant of the Bioclimatic Envelop Algorithm.\
  For each given environmental variable the algorithm finds the mean\
  and standard deviation (assuming normal distribution) associated\
  to the occurrence points. Each variable has its own envelop\
  represented by the interval [m - c*s, m + c*s], where 'm' is the\
  mean; 'c' is the cutoff input parameter; and 's' is the standard\
- deviation. Besides the envelop, each environmental variable has\
- additional upper and lower limits taken from the maximum and\
- minimum values related to the set of occurrence points.\nIn this\
- model, any point can be classified as:\n\
- Suitable: if all associated environmental values fall within\
- the calculated envelops;\n\
- Marginal: if one or more associated environmental value falls\
- outside the calculated envelop, but still within the upper and\
- lower limits.\n\
- Unsuitable: if one or more associated enviromental value falls\
- outside the upper and lower limits.\n\
-In this algorithm, only Suitable regions are considered (points falling\
- inside Marginal or Unsuitable regions have probability 0). Probability of\
- presence for points inside the Suitable region is inversely\
- proportional to the normalized euclidean distance between a point\
- and the mean point in environmental space.",
+ deviation. The original Bioclim specification defines three regions:\
+ Suitable, Marginal and Unsuitable. The Suitable region relates to the\
+ envelop mentioned before, and is the only region considered in this\
+ implementation (i.e. points falling inside Marginal or Unsuitable\
+ regions have probability 0 here). Probability of presence for points\
+ inside the Suitable region is inversely proportional to the normalized\
+ euclidean distance between a point and the mean point in environmental\
+ space.",
 
   "Nix, H. A. Modified by Mauro Munoz",  // Author.
   "",                                    // Bibliography.
@@ -146,6 +138,7 @@ BioclimDistance::BioclimDistance()
   : Algorithm( &metadata )
 {
   _mean = _std_dev = 0;
+  _minimum = _maximum = 0;
 }
 
 
@@ -154,6 +147,8 @@ BioclimDistance::BioclimDistance()
 
 BioclimDistance::~BioclimDistance()
 {
+  if ( _maximum ) delete _maximum;
+  if ( _minimum ) delete _minimum;
   if ( _mean )    delete _mean;
   if ( _std_dev ) delete _std_dev;
 }
@@ -202,7 +197,9 @@ BioclimDistance::initialize()
   g_log.info( "Using %d points to find the bioclimatic envelop.\n",
               npnt );
 
-  // Gets the mean and standard deviations for each variable
+  // Gets the the minimum, maximum, mean and standard deviations for each variable
+  _minimum = getMinimum( &presence );
+  _maximum = getMaximum( &presence );
   _mean    = getMean( &presence );
   _std_dev = getStandardDeviation( &presence, _mean );
 
@@ -260,13 +257,23 @@ BioclimDistance::getValue( Scalar *x )
 
   // Finds the distance from each variable mean to the respective
   // point value.
+  Scalar *minimum  = _minimum;
+  Scalar *maximum  = _maximum;
   Scalar *mean     = _mean;
   Scalar *mean_end = mean + _dim;
   Scalar *std_dev  = _std_dev;
   while ( mean < mean_end )
     {
+      // Point value for each variable: x[i].
+      Scalar xi = *x++;
+
+      // If some x[i] is out of the upper and lower range, predicts
+      // no occurrence.
+      if ( xi < *minimum++ || xi > *maximum++ )
+        return 0.0;
+
       Scalar cutoff = *std_dev++;
-      dif = *x++ - *mean++;
+      dif = xi - *mean++;
 
       // If some x[i] is out of its bioclimatic envelop, predicts
       // no occurrence.
@@ -287,6 +294,84 @@ BioclimDistance::getConvergence( Scalar *val )
 {
   *val = 1.0;
   return 1;
+}
+
+
+/*******************/
+/*** get Minimum ***/
+Scalar *
+BioclimDistance::getMinimum( SampledData *points )
+{
+  int npnt = points->numSamples();
+  int dim  = points->numIndependent();
+
+  if ( ! npnt )
+    return 0;
+
+  // Allocates the minimum vector.
+  Scalar *minimum = new Scalar[dim];
+  Scalar *minimum_end = minimum + dim;
+
+  // To pass through all points.
+  Scalar **pnt = points->getIndependentBase();
+  Scalar **pnt_end = pnt + npnt;
+
+  // Initializes the minimum vector with the first point.
+  Scalar *m = minimum;
+  Scalar *p = *pnt++;
+  while ( m < minimum_end )
+    *m++ = *p++;
+
+  // For each point, finds the minimum values.
+  while ( pnt < pnt_end )
+    {
+      // Finds the minimum value.
+      p = *pnt++;
+      for ( m = minimum; m < minimum_end; m++, p++ )
+        if ( *p < *m )
+          *m = *p;
+    }
+
+  return minimum;
+}
+
+
+/*******************/
+/*** get Maximum ***/
+Scalar *
+BioclimDistance::getMaximum( SampledData *points )
+{
+  int npnt = points->numSamples();
+  int dim  = points->numIndependent();
+
+  if ( ! npnt )
+    return 0;
+
+  // Allocates the maximum vector.
+  Scalar *maximum = new Scalar[dim];
+  Scalar *maximum_end = maximum + dim;
+
+  // To pass through all points.
+  Scalar **pnt = points->getIndependentBase();
+  Scalar **pnt_end = pnt + npnt;
+
+  // Initializes the maximum vector with the first point.
+  Scalar *m = maximum;
+  Scalar *p = *pnt++;
+  while ( m < maximum_end )
+    *m++ = *p++;
+
+  // For each point, finds the maximum values.
+  while ( pnt < pnt_end )
+    {
+      // Finds the maximum value.
+      p = *pnt++;
+      for ( m = maximum; m < maximum_end; m++, p++ )
+        if ( *p > *m )
+          *m = *p;
+    }
+
+  return maximum;
 }
 
 
