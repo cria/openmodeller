@@ -2,7 +2,7 @@ dnl Process this file with autoconf to produce a configure script.
 
 AC_INIT
 
-AM_INIT_AUTOMAKE(openModeller, 0.1)
+AM_INIT_AUTOMAKE(openmodeller, 0.1)
 
 AC_PREFIX_PROGRAM(gcc)
 
@@ -20,14 +20,16 @@ dnl ---------------------------------------------------------------------------
 dnl X11
 dnl ---------------------------------------------------------------------------
 AC_PATH_X
-if test "$x_includes" != "" ; then
-    X11_CFLAGS="-I$x_includes"
+if test "$x_includes" != "" -a "$x_includes" != "NONE"; then
+  X11_CFLAGS="-I$x_includes"
+  AC_MSG_RESULT($x_includes)
 fi
-if test "$x_libraries" != "" ; then
+if test "$x_libraries" != "" -a "$x_libraries" != "NONE"; then
     X11_LIB="-L$x_libraries -lX11"
 fi
 AC_SUBST(X11_LIB)
 AC_SUBST(X11_CFLAGS)
+AM_CONDITIONAL([HAVE_X11], [test "$X11_CFLAGS" != "" -a "$X11_LIB" != ""])
 
 dnl ---------------------------------------------------------------------------
 dnl GDAL/OGR
@@ -68,6 +70,8 @@ if test x"$ac_gdalogr" != "xno" ; then
 
   AC_SUBST(GDAL_LIB)
   AC_SUBST(GDAL_CFLAGS)
+else
+  AC_ERROR([GDAL with OGR support is needed to build openmodeller])
 fi
 
 dnl ---------------------------------------------------------------------------

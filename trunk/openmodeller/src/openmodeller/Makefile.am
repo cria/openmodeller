@@ -8,7 +8,11 @@
 # WITHOUT ANY WARRANTY, to the extent permitted by law; without even the
 # implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
-SUBDIRS = env_io graph
+if HAVE_X11
+GRAPH = graph
+endif
+
+SUBDIRS = env_io $(GRAPH)
 
 lib_LTLIBRARIES = libopenmodeller.la
 
