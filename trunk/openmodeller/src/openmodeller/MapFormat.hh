@@ -31,6 +31,7 @@
 #ifndef _OM_MAPFORMATHH_
 #define _OM_MAPFORMATHH_
 
+#include <string.h>
 #include <om_defs.hh>
 #include <env_io/header.hh>
 
