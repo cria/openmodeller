@@ -41,9 +41,17 @@ Output = furcata.tif
 #
 Scale = 255
 
-# Name of the algorithm to construct the model.
-Algorithm  = MinDistance
+# Name of the algorithm to construct the model
+# and algorithm specific parameters.
 
-# Algorithm specific parameters.
-Parameters = 0.003
+#Algorithm  = Distance
+#Parameters = 0.05
+
+#Algorithm  = MinDistance
+#Parameters = 0.05
+
+#Algorithm  = CSM
+
+Algorithm  = Bioclim
+Parameters = 0.2
 
