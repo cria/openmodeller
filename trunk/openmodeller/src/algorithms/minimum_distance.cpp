@@ -50,8 +50,10 @@ static AlgParamMetadata parameters[NUM_PARAM] = {
 
   // Metadata of the first parameter.
   {
-    "MaxDist",   // Name.
-    "Real",      // Type.
+    "MaxDist",          // Id.
+    "Maximum distance", // Name.
+    "Real",             // Type.
+    "Maximum cartesian distance to be considered", // Overview
     "Maximum cartesian distance to be considered", // Description.
 
     1,         // Not zero if the parameter has lower limit.
@@ -68,10 +70,13 @@ static AlgParamMetadata parameters[NUM_PARAM] = {
 
 static AlgMetadata metadata = {
 
-  0,                    // Internal usage.
-  "MinimumDistance", 	// Name.
+  "MinimumDistance", 	// Id.
+  "Minimum distance", 	// Name.
   "0.1",       	        // Version.
-  "none",     	        // Bibliography.
+
+  // Overview
+  "Probability proporcional to the inverse of the cartesian \
+distance to the nearest presence point.",
 
   // Description.
   "Finds the distance between the given environmental conditions \
@@ -80,8 +85,12 @@ to each occurrence point.\n\
  If the distance 'dist' is in [0, MaxDist] then the output will \
 be in [0,1]. If 'dist' > MaxDist the output will be Zero.",
 
-  "Mauro E. S. Muñoz",       // Author.
-  "mauro [at] cria.org.br",  // Author's contact.
+
+  "Mauro E. S. Muñoz",  // Algorithm author.
+  "",     	        // Bibliography.
+
+  "Mauro E. S. Muñoz",       // Code author.
+  "mauro [at] cria.org.br",  // Code author's contact.
 
   0,  // Does not accept categorical data.
   0,  // Does not need (pseudo)absence points.

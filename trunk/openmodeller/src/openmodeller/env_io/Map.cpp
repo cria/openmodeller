@@ -42,7 +42,10 @@
 Map::Map( Raster *rst, char *ocs, int del )
 {
   if ( ! rst->header().hasProj() )
-    g_log.error( 1, "Not a georeferenced map!\n" );
+    {
+      g_log.warn( "Not a georeferenced map! Assuming WGS84\n" );
+      rst->header().setProj( OM_WGS84 );
+    }
 
   f_rst = rst;
   f_gt  = new GeoTransform( rst->header().proj, ocs );

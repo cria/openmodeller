@@ -36,8 +36,10 @@ AlgParamMetadata parameters[NUM_PARAM] = {
 
   // Metadata of the first parameter.
   {
+    "First parameter id",          // Id.
     "First parameter name",        // Name.
     "First parameter type",        // Type.
+    "First parameter overview",    // Overview.
     "First parameter description", // Description.
 
     1,     // Not zero if the parameter has lower limit.
@@ -55,10 +57,13 @@ AlgParamMetadata parameters[NUM_PARAM] = {
 
 static AlgMetadata metadata = {
 
-  0,               // Internal usage.
-  "CSM",           // Name.
-  "0.1 alpha",     // Version.
-  "",              // Bibliography.
+  "CSM",                 // Id.
+  "Climate Space Model", // Name.
+  "0.1 alpha",           // Version.
+
+  // Overview
+  "Climate Space Model [CSM] is a principle components based \
+algorithm developed by Dr. Neil Caithness",
 
   // Description.
   "Climate Space Model [CSM] is a principle components based \
@@ -69,8 +74,11 @@ method or the broken-stick method (not implemented yet). \
 The original CSM was written as series of Matlab functions. \
    ",
 
-  "Tim Sutton, Renato De Giovanni (openModeller c++ implementation)",       // Author.
-  "t.sutton [at] reading.ac.uk",  // Author's contact.
+  " Neil Caithness",  // Author
+  "",                 // Bibliography.
+
+  "Tim Sutton, Renato De Giovanni",  // Code author.
+  "t.sutton [at] reading.ac.uk",     // Code author's contact.
 
   0,  // Does not accept categorical data.
   0,  // Does not need (pseudo)absence points.

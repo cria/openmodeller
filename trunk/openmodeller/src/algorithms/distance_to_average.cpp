@@ -47,9 +47,11 @@ static AlgParamMetadata parameters[NUM_PARAM] = {
 
   // Metadata of the first parameter.
   {
-    PARAM_MAXDIST,   // Name.
-    "Real",          // Type.
-    "Maximum cartesian distance to be considered", // Description.
+    PARAM_MAXDIST,      // Id
+    "Maximum distance", // Name
+    "Real",             // Type.
+    "Maximum cartesian distance to be considered", // Overview
+    "Maximum cartesian distance to be considered", // Description
 
     1,         // Not zero if the parameter has lower limit.
     0.0,       // Parameter's lower limit.
@@ -65,10 +67,13 @@ static AlgParamMetadata parameters[NUM_PARAM] = {
 
 static AlgMetadata metadata = {
 
-  0,                    // Internal usage.
-  "DistanceToAverage", 	// Name.
-  "0.1",       	        // Version.
-  "none",     	        // Bibliography.
+  "DistanceToAverage",    // Id.
+  "Distance to average",  // Name.
+  "0.1",       	          // Version.
+
+  // Overview
+  "Probability proporcional to inverse of cartesian distance \
+to the mean of all presence points.",
 
   // Description.
   "Normalizes the environmental variables values and the \
@@ -81,11 +86,14 @@ If the distance 'dist' is in [0, MAXDIST] then the probability \
 of occurrence will be in [1,0] (linear decay). \
 If 'dist' > MAXDIST then the probability will be zero.",
 
-  "Mauro E. S. Muñoz",       // Author.
-  "mauro [at] cria.org.br",  // Author's contact.
+  "Mauro E. S. Muñoz",  // Algorithm author
+  "",     	        // Bibliography.
+
+  "Mauro E. S. Muñoz",       // Code author.
+  "mauro [at] cria.org.br",  // Code author contact.
 
   0,  // Does not accept categorical data.
-  0,  // Does not use (pseudo)absence points.
+  0,  // Does not needs absence points to run.
 
   NUM_PARAM,   // Algorithm's parameters.
   parameters

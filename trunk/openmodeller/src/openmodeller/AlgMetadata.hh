@@ -42,9 +42,11 @@
  **/
 typedef struct 
 {
-  char *name;
-  char *type;
-  char *description;
+  char *id;          ///< Identifier to be used by programmers.
+  char *name;        ///< Name to be shown to end users.
+  char *type;        ///< Real, Integer, String.
+  char *overview;    ///< Short description.
+  char *description; ///< Detailed description.
 
   int    has_min; ///< Zero if the parameter has no lower limit.
   Scalar min;     ///< Minimum parameter value.
@@ -65,16 +67,19 @@ typedef struct
  */
 typedef struct 
 {
-  /** Automatic generated IDentification. */
-  char *id;
-
-  char *name;        ///< Well known name.
+  char *id;          ///< Identifier to be used by programmers.
+  char *name;        ///< Name to be shown to end users.
   char *version;     ///< Built version.
+  char *overview;    ///< Short description.
+  char *description; ///< Detailed description.
+
+  char *author;      ///< Algorithm's author.
   char *biblio;      ///< Bibliography reference.
-  char *description; ///< Textual description.
-  char *author;      ///< Who implemented.
-  char *contact;     ///< author's contact (eg e-mail).
-  int  categorical;  ///< Is not zero accept categorical maps.
+
+  char *code_author; ///< Who implemented.
+  char *contact;     ///< code_author contact (eg e-mail).
+
+  int  categorical;  ///< If not zero accept categorical maps.
   int  absence;      ///< Needs absence points to run.
   int  nparam;       ///< Number of parameters.
   AlgParamMetadata *param;
