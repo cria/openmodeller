@@ -16,6 +16,8 @@ AC_PROG_INSTALL
 
 AC_PROG_LIBTOOL
 
+AC_CHECK_HEADERS([float.h] [values.h])
+
 dnl ---------------------------------------------------------------------------
 dnl X11
 dnl ---------------------------------------------------------------------------
@@ -116,6 +118,11 @@ if test x"$ac_gsl" != "xno" ; then
 
   AC_SUBST(GSL_LIBS)
   AC_SUBST(GSL_CFLAGS)
+else
+  echo "------"
+  echo "The GNU Scientific Library is needed to build the CSM - Kaiser-Gutman and "
+  echo "CSM - Broken algorithms."
+  echo "------"
 fi
 AM_CONDITIONAL([HAVE_GSL], [test "$GSL_CFLAGS" != "" -a "$GSL_LIBS" != ""])
 

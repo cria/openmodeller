@@ -41,11 +41,11 @@
 #include <string.h>
 #include <stdio.h>
 
-#if (defined(WIN32) || (defined(__CYGWIN__)))
+#ifdef HAVE_VALUES_H
+#include <values.h>
+#else
 #include <float.h>
 #define MAXFLOAT FLT_MAX
-#else
-#include <values.h>
 #endif
 
 /*******************/
