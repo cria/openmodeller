@@ -45,7 +45,7 @@ class Header;
 
 
 /****************************************************************/
-/************************* OpenModeller ********************/
+/************************* Open Modeller ************************/
 
 /**
  * Defines and implements all commands to interface with the model
@@ -136,7 +136,32 @@ public:
   //
 
   /** Set the output distribution map file format and its map
-   *  properties and save distribution map to disk.
+   *  properties.
+   * @param mult Value that the probabilities will be multiplied
+   *  to.
+   * @param output_file Output file name.
+   * @param mask Georeferenced map file which will define the
+   *  valid pixels on the output map.
+   * @param file_with_format Georeferenced map file whose
+   *  header will be used in the output.
+   */
+  int setOutputMap( Scalar mult, char *output_file,
+                    char *output_mask, char *file_with_format );
+
+  /** Set the output distribution map file format and its map
+   *  properties.
+   * @param mult Value that the probabilities will be multiplied
+   *  to.
+   * @param output_file Output file name.
+   * @param mask Georeferenced map file which will define the
+   *  valid pixels on the output map.
+   * @param format Pointer to MapFormat object defining the
+   *  parameters of the output map.
+   */
+  int setOutputMap( Scalar mult, char *output_file,
+                    char *output_mask, MapFormat *format );
+
+  /** Save distribution map to disk.
    * @param env  Pointer to Environment class with the layers 
    *  to project the model onto.
    * @param file File name.
@@ -147,23 +172,8 @@ public:
    * @param map_file Georeferenced map file whose header will be
    *  used in the output.
    */
-  int createMap( Environment *env, char *file, Scalar mult, 
-		 char * mask, char *map_file );
-
-  /** Set the output distribution map file format and its map
-   *  properties and save distribution map to disk.
-   * @param env  Pointer to Environment class with the layers 
-   *  to project the model onto.
-   * @param file File name.
-   * @param mult Value that the probabilities will be multiplied
-   *  to.
-   * @param mask Georeferenced map file which will define the
-   *  valid pixels on the output map.
-   * @param format Pointer to MapFormat object defining the
-   *  parameters of the output map.
-   */
-  int createMap( Environment *env, char *file, Scalar mult, 
-		 char * mask, MapFormat * format );
+  int createMap( Environment *env, char *output_file=0,
+                 char *output_mask=0 );
 
   /**
    * Define occurrence points to be used.
@@ -176,7 +186,7 @@ public:
   int setOccurrences( Occurrences *presence,
                       Occurrences *absence=0 );
 
-  Environment * getEnvironment() { return _env; }
+  Environment *getEnvironment() { return _env; }
 
   /**
    * Run the algorithm.
@@ -184,7 +194,7 @@ public:
    */
   int run();
 
-  char *error()  { return f_error; }
+  char *error()  { return _error; }
 
 
 private:
@@ -227,7 +237,13 @@ private:
 
   Environment * _env;      ///< Original environmental layers
 
-  char f_error[256];
+  // Output map default data.
+  Scalar _output_mult;    ///< Output multiplier factor.
+  char   *_output_file;   ///< Output file name.
+  char   *_output_mask;   ///< Output mask.
+  Header *_output_header; ///< Output associated metadata.
+
+  char _error[256];
 };
 
 

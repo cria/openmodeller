@@ -27,7 +27,8 @@
  */
 
 #include <om.hh>
-#include <file_parser.hh>
+#include "request_file.hh"
+#include "file_parser.hh"
 #include "occurrences_file.hh"
 
 #include <stdlib.h>
@@ -40,8 +41,7 @@ char *readParameters ( AlgMetadata *metadata );
 AlgMetadata *readAlgorithm( AlgMetadata **availables );
 Occurrences *readOccurrences( char *file, char *name,
 			      char *coord_system );
-int readParameters( AlgParameter *result, AlgMetadata *metadata,
-                    int num_param_values, char **param_values );
+int readParameters( AlgParameter *result, AlgMetadata *metadata );
 char *extractParameter( char *name, int nvet, char **vet );
 
 
@@ -59,123 +59,51 @@ main( int argc, char **argv )
   if ( argc < 2 )
     g_log.error( 1, "\n%s <request>\n\n", argv[0] );
 
-  // Create a fileparser to read in the request file and a
-  // controlInterface to manage the model process.
-  FileParser fp( argv[1] );
+  char *request_file = argv[1];
+
   OpenModeller om;
-
   g_log( "\nopenModeller version %s\n", om.getVersion() );
+  g_log( "\nAlgorithms will be loaded from: %s\n\n",
+         om.getPluginPath() );
 
-  g_log( "\nAlgorithms will be loaded from: %s\n\n", om.getPluginPath() );
+  // Configure the OpenModeller object from data read from the
+  // request file.
+  RequestFile request;
+  int resp = request.configure( &om, request_file );
 
+  if ( resp < 0 )
+    g_log.error( 1, "Can't read request file %s", request_file );
 
-  /*** Occurrence points ***/
-
-  // Obtain the Well Known Text string for the localities
-  // coordinate system.
-  char *oc_cs = fp.get( "WKT coord system" );
-
-  // Get the name of the file containing localities
-  char *oc_file = fp.get( "Species file" );
-
-  // Get the name of the taxon being modelled!
-  char *oc_name = fp.get( "Species" );
-
-  Occurrences *oc = readOccurrences( oc_file, oc_name, oc_cs );
-
-  // Populate the occurences list from the localities file
-  om.setOccurrences( oc );
-
-
-  /*** Environmental data (mask and maps) ***/
-
-  // Mask to select the desired species occurrence points
-  char *mask = fp.get( "Mask" );
-
-  // Categorical environmental maps and the number of these maps.
-  char *cat_label = "Categorical map";
-  int  ncat  = fp.count( cat_label );
-  char **cat = new char *[ncat];
-
-  // Continuous environmental maps and the number of these maps.
-  char *map_label = "Map";
-  int  nmap  = fp.count( map_label );
-  char **map = new char *[nmap];
-
-  // Initiate the environment with all maps.
-  fp.getAll( cat_label, cat );
-  fp.getAll( map_label, map );
-  om.setEnvironment( ncat, cat, nmap, map, mask );
-
-  delete cat;
-  delete map;
-
-
-  /*** Output Map ***/
-
-  // Get the details for the output Map
-  char *output = fp.get( "Output" );
-  char *format = fp.get( "Output format" );
-
-  // scale is used to scale the model results e.g. from [0,1] to
-  // [0,255] - useful for image generation.
-  char *scale  = fp.get( "Scale" );
-
-  // Make sure the basic variables have been defined in the
-  // parameter file...
-  if ( ! output )
+  // If something was not setted...
+  if ( resp )
     {
-      g_log( "The 'Output' file name was not speciefied!\n" );
-      return 1;
+      if ( ! request.algorithmSetted() )
+        {
+          // Find out which model algorithm is to be used.
+          AlgMetadata **availables = om.availableAlgorithms();
+          AlgMetadata *metadata;
+
+          if ( ! (metadata = readAlgorithm( availables )) )
+            return 1;
+
+          g_log( "Algorithm used: %s\n", metadata->id );
+          g_log( " %s\n\n", metadata->description );
+
+          // For resulting parameters storage.
+          int nparam = metadata->nparam;
+          AlgParameter *param = new AlgParameter[nparam];
+
+          // Read from console the parameters not set by request
+          // file. Fills 'param' with all 'metadata->nparam'
+          // parameters set.
+          readParameters( param, metadata );
+
+          // Set the model algorithm to be used by the controller
+          om.setAlgorithm( metadata->id, nparam, param );
+
+          delete[] param;
+        }
     }
-  if ( ! format )
-    {
-      g_log( "The 'Output format' was not specified!\n" );
-      return 1;
-    }
-  if ( ! scale )
-    scale = "255.0";
-
-
-  /*** Algorithm ***/
-
-  // Find out which model algorithm is to be used.
-  AlgMetadata **availables = om.availableAlgorithms();
-  AlgMetadata *metadata;
-  char *alg_id = fp.get( "Algorithm" );
-
-  g_log( "\nNumber of available algorithms: %d\n", om.numAvailableAlgorithms() );
-
-  // Try to used the algorithm specified in the request file.
-  // If it can not be used, read it from stdin.
-  if ( ! (metadata = om.algorithmMetadata( alg_id )) &&
-       ! (metadata = readAlgorithm( availables )) )
-    return 1;
-
-  g_log( "Algorithm used: %s\n", metadata->id );
-  g_log( " %s\n\n", metadata->description );
-
-  // Obtain any model parameter specified in the request file.
-  char *param_label = "Parameter";
-  int   req_nparam  = fp.count( param_label );
-  char **req_param  = new char *[req_nparam];
-
-  // read parameters from file into req_param parameters
-  fp.getAll(param_label, req_param);
-
-  // For resulting parameters storage.
-  int nparam = metadata->nparam;
-  AlgParameter *param = new AlgParameter[nparam];
-
-  // Read from console the parameters not set by request
-  // file. Fills 'param' with all 'metadata->nparam' parameters
-  // set.
-  readParameters( param, metadata, req_nparam, req_param );
-
-  // Set the model algorithm to be used by the controller
-  om.setAlgorithm( metadata->id, nparam, param );
-
-  delete[] param;
 
 
   /*** Run the model ***/
@@ -186,7 +114,7 @@ main( int argc, char **argv )
     g_log( "Done.\n" );
 
   // Prepare the output map
-  om.createMap( om.getEnvironment(), output, atof(scale), 0, format);
+  om.createMap( om.getEnvironment() );
 
   g_log( "\n" );
   return 0;
@@ -275,47 +203,35 @@ readOccurrences( char *file, char *name, char *coord_system )
 /***********************/
 /*** read Parameters ***/
 int
-readParameters( AlgParameter *result, AlgMetadata *metadata,
-                int str_nparam, char **str_param )
+readParameters( AlgParameter *result, AlgMetadata *metadata )
 {
   AlgParamMetadata *param = metadata->param;
   AlgParamMetadata *end   = param + metadata->nparam;
 
-  // For each algorithm parameter metadata...
+  // Read from stdin each algorithm parameter.
   for ( ; param < end; param++, result++ )
     {
       // The resulting name is equal the name set in
       // algorithm's metadata.
       result->setName( param->name );
 
-      // Read the resulting value from str_param.
-      char *value = extractParameter( result->name(), str_nparam,
-                                      str_param );
+      // Informs the parameter's metadata to the user.
+      printf( "\nParameter %s:\n", param->name );
+      printf( " %s:\n", param->description );
+      if ( param->has_min )
+        printf( " %s >= %f\n", param->name, param->min );
+      if ( param->has_max )
+        printf( " %s <= %f\n\n", param->name, param->max );
+      printf( "Value [%s]: ", param->typical );
 
-      if ( value )
+      // Read parameter's value or use the "typical" value
+      // if the user does not enter a new value.
+      char value[64];
+      *value = 0;
+      if ( fgets( value, 64, stdin ) && (*value >= ' ') )
         result->setValue( value );
-
-      // If the value is not in str_param, read it from console.
       else
-        {
-          // Informs the parameter's metadata to the user.
-          printf( "\nParameter %s:\n", param->name );
-          printf( " %s:\n", param->description );
-          if ( param->has_min )
-            printf( " %s >= %f\n", param->name, param->min );
-          if ( param->has_max )
-            printf( " %s <= %f\n\n", param->name, param->max );
-          printf( "Value [%s]: ", param->typical );
-
-          // Read parameter's value or use the "typical" value
-          // if the user does not enter a new value.
-          char value[64];
-	  *value = 0;
-	  if ( fgets( value, 64, stdin ) && (*value >= ' ') )
-            result->setValue( value );
-          else
-            result->setValue( param->typical );
-        }
+        result->setValue( param->typical );
     }
 
   return metadata->nparam;

@@ -29,7 +29,7 @@ Output format = rain_coolest/
 
 # Output file name.
 #
-Output = furcata.tif
+Output file = furcata.tif
 
 # Scale each algorithm output (originaly between 0 and 1) by
 # this factor.
