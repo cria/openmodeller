@@ -12,7 +12,7 @@ pythonSitePackagesdir = $(pythondir)
 pythonSitePackages_LTLIBRARIES = _om.la
 pythonSitePackages_SCRIPTS = om.py
 
-_om_la_SOURCES = om_wrap.cxx ../../console/occurrences_file.cpp
+_om_la_SOURCES = om_wrap.cxx ../../console/occurrences_file.cpp om_python.i
 _om_la_LDFLAGS = -module -no-undefined
 _om_la_CPPFLAGS = -I../../inc -I../../console $(PYTHON_INCLUDES)
 _om_la_LIBADD = $(GDAL_LIB) ../../lib/libopenmodeller.la ../../lib/env_io/libenv_io.la
