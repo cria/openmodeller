@@ -89,7 +89,7 @@ FileParser::load( char *file )
       if ( sep = strchr( line, '=' ) )
 	{
 	  *sep++ = '\0';
-	  f_lst.Append( item = new Item );
+	  f_lst.append( item = new Item );
 	  transfer( &item->key, line );
 	  transfer( &item->val, sep );
 	}
@@ -106,7 +106,7 @@ char *
 FileParser::get( char *key )
 {
   Item *i;
-  for ( f_lst.Head(); i = f_lst.Get(); f_lst.Next() )
+  for ( f_lst.head(); i = f_lst.get(); f_lst.next() )
     if ( ! strcasecmp( key, i->key ) )
       return i->val;
 
@@ -122,7 +122,7 @@ FileParser::count( char *key )
   int n = 0;
 
   Item *i;
-  for ( f_lst.Head(); i = f_lst.Get(); f_lst.Next() )
+  for ( f_lst.head(); i = f_lst.get(); f_lst.next() )
     if ( ! strcasecmp( key, i->key ) )
       n++;
 
@@ -138,7 +138,7 @@ FileParser::getAll( char *key, char **values )
   int n = 0;
 
   Item *i;
-  for ( f_lst.Head(); i = f_lst.Get(); f_lst.Next() )
+  for ( f_lst.head(); i = f_lst.get(); f_lst.next() )
     if ( ! strcasecmp( key, i->key ) )
       {
 	*values++ = i->val;
@@ -183,7 +183,7 @@ void
 FileParser::clear()
 {
   Item *i;
-  for ( f_lst.Head(); i = f_lst.Get(); f_lst.Next() )
+  for ( f_lst.head(); i = f_lst.get(); f_lst.next() )
     {
       delete i->key;
       delete i->val;

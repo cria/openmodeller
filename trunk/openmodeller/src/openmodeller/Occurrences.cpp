@@ -58,7 +58,7 @@ Occurrences::Occurrences( char *name, char *id )
 Occurrences::~Occurrences()
 {
   Occurrence *oc;
-  for ( _ocur->Head(); oc = _ocur->Get(); _ocur->Next() )
+  for ( _ocur->head(); oc = _ocur->get(); _ocur->next() )
     delete( oc );
 
   delete _ocur;
@@ -71,7 +71,7 @@ void
 Occurrences::insert( Coord longitude, Coord latitude, float pop )
 {
   Occurrence *oc = new Occurrence( longitude, latitude, pop );
-  _ocur->InsertLast( oc );
+  _ocur->insertLast( oc );
 }
 
 
@@ -80,7 +80,7 @@ Occurrences::insert( Coord longitude, Coord latitude, float pop )
 int
 Occurrences::numOccurrences()
 {
-  return _ocur->Length();
+  return _ocur->length();
 }
 
 
@@ -89,7 +89,7 @@ Occurrences::numOccurrences()
 void
 Occurrences::head()
 {
-  _ocur->Head();
+  _ocur->head();
 }
 
 
@@ -98,7 +98,7 @@ Occurrences::head()
 void
 Occurrences::next()
 {
-  _ocur->Next();
+  _ocur->next();
 }
 
 
@@ -107,7 +107,7 @@ Occurrences::next()
 Occurrence *
 Occurrences::get()
 {
-  return _ocur->Get();
+  return _ocur->get();
 }
 
 
@@ -116,7 +116,7 @@ Occurrences::get()
 Occurrence *
 Occurrences::remove()
 {
-  return _ocur->Delete();
+  return _ocur->remove();
 }
 
 

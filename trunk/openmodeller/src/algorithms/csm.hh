@@ -263,26 +263,16 @@ class Csm : public Algorithm
 {
 public:
 
-    /** Constructor for Csm
-      * 
-      * @param Sampler is class that will fetch environment variable 
-      * values at each occurrence / locality
-      */
-    Csm( Sampler *samp );
-    /** This is the descructor for the Csm class */
-    ~Csm();
+  /** Constructor for Csm */
+  Csm();
+  /** This is the descructor for the Csm class */
+  ~Csm();
     
 
 
   //
   // Methods used to build the model
   //
-  
-  /** Metadata field returning the name of this algorithm.
-    * @note This method is inherited from the Algorithm class 
-    * @return a character array containing the name of the algorithm
-    */
-  char *name()    { return "Csm"; } //replace this name!
   
   /** This method is used when you want to ensure that all variables in all
     * environmental layers are scaled to the same value range. 
@@ -304,7 +294,7 @@ public:
     * @note This method is inherited from the Algorithm class
     * @return 0 on error 
     */
-  int   iterate();
+  int iterate();
   
   /** Use this method to find out if the model has completed (e.g. convergence
     * point has been met. 
@@ -312,7 +302,7 @@ public:
     * @return     
     * @return Implementation specific but usually 1 for completion.
     */
-  int   done();
+  int done();
 
   //
   // Methods used to project the model
@@ -331,7 +321,7 @@ public:
     * @return 
     * @param Scalar *val 
   */
-  int    getConvergence( Scalar *val );
+  int getConvergence( Scalar *val );
 
 
 private:
@@ -404,29 +394,29 @@ private:
   
   /** This member variable is used to indicate whether the model 
     * building process has completed yet. */
-  int    f_done;
+  int _done;
   /** This is a pointer to a gsl matrix containing the 'looked up' environmental 
   * variables at each locality. It is converted to a gsl matrix from the oM 
   * Sampler.samples primitive structure. */
-  gsl_matrix * f_gsl_environment_matrix;
+  gsl_matrix * _gsl_environment_matrix;
   /** This is a pointer to a gsl matrix that will hold the covariance matrix generated
   from the environmental data matrix */
-  gsl_matrix * f_gsl_covariance_matrix;
+  gsl_matrix * _gsl_covariance_matrix;
   /** This is a pointer to a gsl vector that will hold the mean of each environmental 
   variable column */
-  gsl_vector * f_gsl_avg_vector;
+  gsl_vector * _gsl_avg_vector;
   /** This is a pointer to a gsl vector that will hold the stddev of each environmental variable column */
-  gsl_vector * f_gsl_stddev_vector;
+  gsl_vector * _gsl_stddev_vector;
   /** This is a pointer to a gsl vector that will hold the eigen values */
-  gsl_vector * f_gsl_eigenvalue_vector;
+  gsl_vector * _gsl_eigenvalue_vector;
   /** This is a pointer to a gsl matrix that will hold the eigen vectors */
-  gsl_matrix * f_gsl_eigenvector_matrix;
+  gsl_matrix * _gsl_eigenvector_matrix;
   /** Dimension of environmental space. */
-  int f_layer_count; 
+  int _layer_count; 
   /** Number of components that are actually kept after Keiser-Gutman test */
-  int f_retained_components_count;
+  int _retained_components_count;
   /** the number of localities used to construct the model */
-  int f_localityCount; 
+  int _localityCount; 
 
 };
 
