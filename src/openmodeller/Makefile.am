@@ -21,7 +21,8 @@ libopenmodeller_la_SOURCES = \
 	occurrences.cpp \
 	occurrences_file.cpp \
 	random.cpp \
-	sampler.cpp
+	sampler.cpp \
+	sampled_data.cpp
 	
 libopenmodeller_la_CPPFLAGS = -I../inc -I../..
 libopenmodeller_la_LIBADD = ../../algorithms/libalgorithms.la
