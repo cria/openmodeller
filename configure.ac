@@ -322,6 +322,7 @@ AC_CONFIG_FILES([
 	algorithms/Makefile
 	algorithms/garp/Makefile
 	algorithms/garp/test/Makefile
+	algorithms/dg_garp/Makefile
 	algorithms/garp/garp_best_subsets/Makefile
 	openmodeller.spec
 ])

@@ -4,8 +4,8 @@
 # Project related configuration options
 #---------------------------------------------------------------------------
 PROJECT_NAME           = openModeller
-PROJECT_NUMBER         = "Version 0.2 alpha"
-OUTPUT_DIRECTORY       = doc
+PROJECT_NUMBER         = "Version 0.2.1"
+OUTPUT_DIRECTORY       = doxygen
 OUTPUT_LANGUAGE        = English
 USE_WINDOWS_ENCODING   = NO
 BRIEF_MEMBER_DESC      = YES

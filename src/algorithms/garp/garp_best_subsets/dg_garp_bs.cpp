@@ -28,8 +28,8 @@
  */
 
 
-#include "garp_best_subsets.hh"
-#include "garp.hh"
+#include "dg_garp_bs.hh"
+#include "GarpAlgorithm.h"
 
 #include <om.hh>
 #include <random.hh>
@@ -260,9 +260,9 @@ AlgParamMetadata parameters_bs[NUM_PARAM] =
 
 AlgMetadata metadata_bs = {
   
-  "GARP_BS",                           // Id.
-  "GARP with Best Subsets Procedure",  // Name.
-  "3.0.1 alpha",                       // Version.
+  "GARP_BS",                        // Id.
+  "GARP 2.1 with Best Subset Procedure",  // Name.
+  "2.1 beta",                       // Version.
 
   // Overview.
   "GARP is a genetic algorithm that creates ecological niche \
@@ -308,7 +308,7 @@ dllexp
 Algorithm * 
 algorithmFactory()
 {
-  return new GarpBestSubsets();
+  return new DgGarpBestSubsets();
 }
 
 dllexp
@@ -321,37 +321,37 @@ algorithmMetadata()
 /****************************************************************/
 /****************** Garp class **********************************/
 
-GarpBestSubsets::GarpBestSubsets()
+DgGarpBestSubsets::DgGarpBestSubsets()
   : BestSubsets(& metadata_bs)
 {
 }
 
 // ****************************************************************
-GarpBestSubsets::~GarpBestSubsets()
+DgGarpBestSubsets::~DgGarpBestSubsets()
 {
-}
-
-// ****************************************************************
-Algorithm * GarpBestSubsets::getBSAlgorithm()
-{
-  return new Garp();
 }
 
 // ****************************************************************
 // ************* needNormalization ********************************
 
-int GarpBestSubsets::needNormalization( Scalar *min, Scalar *max )
+int DgGarpBestSubsets::needNormalization( Scalar *min, Scalar *max )
 {
-  *min = -1.0;
-  *max = +1.0;
+  *min = 1.0;
+  *max = 253.0;
 
   return 1;
 }
   
 // ****************************************************************
+Algorithm * DgGarpBestSubsets::getBSAlgorithm()
+{
+  return new GarpAlgorithm();
+}
+
+// ****************************************************************
 // ************* initialize ***************************************
 
-int GarpBestSubsets::transferParametersToAlgorithm()
+int DgGarpBestSubsets::transferParametersToAlgorithm()
 {
   // GARP parameters
   if (!getParameter("MaxGenerations",   &_max_gen))        
