@@ -388,6 +388,7 @@ int GarpBestSubsets::initialize()
   // Reconfigure the global logger.
   //g_log.set( Log::Debug, stdout, "Garp" );
   //g_log.setLevel( Log::Debug );
+  //g_log.setLevel( Log::Error );
 
   // BS parameters
   if (!getParameter("TrainingProportion", &_trainProp))        
@@ -411,8 +412,11 @@ int GarpBestSubsets::initialize()
   if (!getParameter("MaxThreads", &_maxThreads))        
       g_log.error(1, "Parameter MaxThreads not set properly.");
 
+  // convert percentages (100%) to proportions (1.0) for external parameters 
+  _commissionThreshold /= 100.0;
+  _omissionThreshold /= 100.0;
 
-  _softOmissionThreshold = (_omissionThreshold < 100.0);
+  _softOmissionThreshold = (_omissionThreshold >= 1.0);
   if (_modelsUnderOmission > _totalRuns)
     {
       g_log.warn("ModelsUnderOmission (%d) is greater than the number of runs (%d)",
@@ -461,12 +465,6 @@ int GarpBestSubsets::initialize()
   _garp_params[3].setId("Resamples");
   _garp_params[3].setValue(buffer);
 
-  _garp_params[4].setId("MutationRate");
-  _garp_params[4].setValue("0.25");
-
-  _garp_params[5].setId("CrossoverRate");
-  _garp_params[5].setValue("0.25");
-
   return 1;
 }
   
@@ -491,8 +489,10 @@ int GarpBestSubsets::iterate()
 	  // wait for a slot for a new thread
 	  if ((active = numActiveThreads()) >= _maxThreads)
 	    {
+	      /*
 	      g_log("%5d] Waiting for a slot to run next thread (%d out of %d)\n",
 		    i, active, _maxThreads);
+	      */
 	      SLEEP(1); 
 	    }
 	  
@@ -520,8 +520,10 @@ int GarpBestSubsets::iterate()
 	  if (active = numActiveThreads())
 	    {
 	      // there are still threads running
+	      /*
 	      g_log("%5d] Waiting for %d active thread(s) to finish.\n", 
 		    i, active);
+	      */
 	      SLEEP(1); 
 	    }
 
@@ -562,9 +564,9 @@ int GarpBestSubsets::numActiveThreads()
 	  _activeRun[_activeRuns] = NULL;
 	  
 	  // update count of models under omission threshold
-	  if (_softOmissionThreshold)
+	  if (!_softOmissionThreshold)
 	    {
-	      if (run->getOmission() < _omissionThreshold)
+	      if (run->getOmission() <= _omissionThreshold)
 		{ _currentModelsUnderOmissionThreshold++; }
 	    }
 
@@ -593,7 +595,7 @@ int GarpBestSubsets::calculateBestSubset()
   GarpRun ** runList = new GarpRun*[_finishedRuns];
   for (i = 0; i < _finishedRuns; i++)
     { runList[i] = _finishedRun[i]; }
-  
+
   // get list of models that pass omission test
   // sort runs by omission
   // first <_modelsUnderOmission> runs are the selected ones
@@ -602,15 +604,24 @@ int GarpBestSubsets::calculateBestSubset()
   // get list of models that pass commission test
   sortRuns(runList, _modelsUnderOmission, 1);
 
-  _bestRuns = (int)(_commissionThreshold / 100.0 * 
+  _bestRuns = (int)(_commissionThreshold * 
 		    (double) _modelsUnderOmission);
-  int medianRun = _bestRuns / 2;
+  int medianRun = _modelsUnderOmission / 2;
   int firstRun = (int) ceil((double) medianRun - (double) _bestRuns / 2.0);
 
   _bestRun = new GarpRun*[_bestRuns];
 
   for (i = 0; i < _bestRuns; i++)
     { _bestRun[i] = runList[i + firstRun]; }
+
+  /*
+  printf("Best list:\n");
+  for (i = 0; i < _bestRuns; i++)
+    printf("%4d] om=%5.3f comm=%5.3f\n", i, 
+	   _bestRun[i]->getOmission(), 
+	   _bestRun[i]->getCommission());
+  printf("Median: %d First: %d\n", medianRun, firstRun);
+  */
 
   delete[] runList;
 
@@ -633,7 +644,7 @@ void GarpBestSubsets::sortRuns(GarpRun ** runList,
   // TODO: change to quicksort if this becomes a bottleneck
   for (i = 0; i < nelements - 1; i++)
     { 
-      for (j = 0; j < nelements - i - 2; j++)
+      for (j = 0; j < nelements - i - 1; j++)
 	{
 	  runJ0 = runList[j];
 	  runJ1 = runList[j + 1];

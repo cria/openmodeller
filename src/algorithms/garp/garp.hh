@@ -149,7 +149,7 @@ private:
   */
   void evaluate(GarpRuleSet * ruleset, GarpCustomSampler * sampler);
 
-/** Select fittest individuals from source rule set storing them in target 
+/** Keep fittest individuals from source rule set storing them in target 
   *   rule set in descending order of fitness.     
   * @param GarpRuleSet * source: pointer to the source rule set where rules 
   *        will be selected from (usually the previous generated population)
@@ -163,16 +163,16 @@ private:
   *        future generations) and overall rule performance that will be used
   *        to compute the changes to the convergence value.
   */
-  void select(GarpRuleSet * source, GarpRuleSet * target, PerfIndex perfIndex);
+  void keepFittest(GarpRuleSet * source, GarpRuleSet * target, PerfIndex perfIndex);
 
 
-/** Perform reproduction, generating a new offspring from current population
+/** Select fittest individuals and store them into target ruleset
   * @param GarpRuleSet * source: pointer to the rule set containing parents
   *        (individuals that will provide genes to create new individuals).
   * @param GarpRuleSet * target: pointer to the target rule set where 
   *        offspring will be transferred to.
   */
-  void reproduce(GarpRuleSet * source, GarpRuleSet * target, double gapsize);
+  void select(GarpRuleSet * source, GarpRuleSet * target, double gapsize);
 
 
 /** Mutate rules in a rule set

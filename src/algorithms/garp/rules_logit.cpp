@@ -164,38 +164,42 @@ int LogitRule::getStrength(Scalar * values)
 }
 
 // ==========================================================================
-bool LogitRule::similar(GarpRule * objRule)
+bool LogitRule::similar(GarpRule * rule)
 {
   int k;
+  bool similar;
   Scalar thisGene, otherGene;
-  bool similar = true;
   
-  LogitRule * objOtherRule = (LogitRule *) objRule;
+  if (type() != rule->type())
+    { return false; }
+
+  LogitRule * otherRule = (LogitRule *) rule;
   
-  if (type() == objOtherRule->type())
-    {
-      // check rule value (presence/absence)
-      if (_prediction != objOtherRule->_prediction) 
-	return 0;
-      
-      // rules are similar if they share the same relevant coeficients, 
-      // i.e., abs(gene) > 0.05.
-      for (k = 0; k < _numGenes * 2; k++)
-	{ 
-	  thisGene  = fabs(_genes[k]);
-	  otherGene = fabs(objOtherRule->_genes[k]); 
-	  if ( ( (thisGene < 0.05) && (otherGene > 0.05) ) || 
-	       ( (thisGene > 0.05) && (otherGene < 0.05) ) )
-	    {
-	      similar = false;
-	      break;
-	    }
+  // check rule value (presence/absence)
+  if (_prediction != otherRule->_prediction) 
+    { return false; }
+  
+  // rules are similar if they share the same relevant coeficients, 
+  // i.e., abs(gene) > 0.05.
+  similar = true;
+  const double threshold = 0.05;
+  for (k = 0; k < _numGenes * 2; k++)
+    { 
+      thisGene  = fabs(_genes[k]);
+      otherGene = fabs(otherRule->_genes[k]);
+
+      //printf(">%+7.4f %+7.4f %+7.4f %+7.4f %d %d %d\n", 
+      //     thisGene0, thisGene1, otherGene0, otherGene1, rA, rB, rA==rB);
+
+      if ( ( (thisGene < threshold) && (otherGene > threshold) ) ||
+	   ( (thisGene > threshold) && (otherGene < threshold) ) ) 
+	{
+	  similar = false;
+	  break;
 	}
-      
-      return similar;
     }
   
-  return false;
+  return similar;
 }
 
 // ==========================================================================

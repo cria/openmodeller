@@ -45,7 +45,6 @@
 
 #define NUM_PARAM 4
 
-
 /************************************/
 /*** Algorithm parameter metadata ***/
 
@@ -198,7 +197,7 @@ algorithmFactory()
 /****************************************************************/
 /****************** Garp class **********************************/
 
-const PerfIndex defaultPerfIndex = PerfUtil;
+const PerfIndex defaultPerfIndex = PerfSig;
 
 Garp::Garp()
   : Algorithm(& metadata)
@@ -210,7 +209,7 @@ Garp::Garp()
   _conv_limit     = 0.0;
 
   _mortality      = 0.9;
-  _gapsize        = 0.7;
+  _gapsize        = 0.1;
   _acc_limit      = 0.0;
 
   _crossover_rate = 0.25;
@@ -239,7 +238,7 @@ Garp::~Garp()
   // debug
   if ( _fittest )
     {
-      //g_log( "Resulting rules:\n" );
+      //g_log( "Resulting rules: (similar=%d/%d)\n", similar, total);
       //_fittest->log();
     }
 
@@ -281,14 +280,16 @@ int Garp::initialize()
   if (!getParameter("Resamples",        &_resamples))      
       g_log.error(1, "Parameter Resamples not set properly.");
 
-  g_log("MaxGenerations set to %d\n", _max_gen);
+  g_log("MaxGenerations set to:   %d\n", _max_gen);
+  g_log("ConvergenceLimit set to: %.4f\n", _conv_limit);
+  g_log("PopulationSize set to:   %d\n", _popsize);
+  g_log("Resamples set to:        %d\n", _resamples);
 
   _offspring  = new GarpRuleSet(2 * _popsize);
   _fittest    = new GarpRuleSet(2 * _popsize);
 
   _custom_sampler = new GarpCustomSampler;
   _custom_sampler->initialize(_samp, _resamples);
-  _custom_sampler->createBioclimHistogram();
 
   colonize(_offspring, _custom_sampler, _popsize);
 
@@ -300,49 +301,47 @@ int Garp::initialize()
 
 int Garp::iterate()
 {
-  char msg[256];
   double perfBest, perfWorst, perfAvg;
 
-  if (!done())
+  if (done())
+    return 1;
+
+  _gen++;
+  
+  evaluate(_offspring, _custom_sampler);
+  keepFittest(_offspring, _fittest, defaultPerfIndex);
+  _fittest->trim(_popsize);
+  
+  //_fittest->gatherRuleSetStats(_gen);
+  //_offspring->gatherRuleSetStats(-_gen);
+  
+  
+  _fittest->performanceSummary(defaultPerfIndex, 
+			       &perfBest, &perfWorst, &perfAvg);
+  
+#ifndef DONT_EXPORT_GARP_FACTORY
+  g_log( "%4d] ", _gen );
+  g_log( "[%2d] conv=%+7.4f | perfs=%+8.3f, %+8.3f, %+8.3f\n", _fittest->numRules(), 
+	 _convergence, perfBest, perfWorst, perfAvg );
+#endif
+  
+  if (done())
     {
-      _gen++;
-
-      evaluate(_offspring, _custom_sampler);
-      select(_offspring, _fittest, defaultPerfIndex);
-      _fittest->trim(_popsize);
-
-      _offspring->performanceSummary(defaultPerfIndex, 
-                                     &perfBest, &perfWorst, &perfAvg);
-
-      //_fittest->gatherRuleSetStats(_gen);
-      //_offspring->gatherRuleSetStats(-_gen);
-
-      /*
-      g_log( "%4d] ", _gen );
-      g_log( "[%2d] %+8.3f %+8.3f %+8.3f | %s\n", 
-           _fittest->numRules(), perfBest, perfWorst, perfAvg, msg );
-      */
-      
-      if (done())
-        {
-          // finalize processing of model
-          // by filtering out rules that have low performance 
-          _fittest->filter(defaultPerfIndex, _significance);
-        }
-
-      else
-        {
-          // algorithm is not done yet
-          // create new offspring
-          reproduce(_fittest, _offspring, _gapsize);
-
-          // fill rest
-          colonize(_offspring, _custom_sampler, _popsize);
-          _offspring->trim(_popsize);
-          mutate(_offspring);
-          crossover(_offspring);
-        }
+      // finalize processing of model
+      // by filtering out rules that have low performance 
+      _fittest->filter(defaultPerfIndex, _significance);
+      return 1;
     }
+  
+  // algorithm is not done yet
+  // select fittest individuals 
+  select(_fittest, _offspring, _gapsize);
+  
+  // create new offspring
+  colonize(_offspring, _custom_sampler, _popsize);
+  _offspring->trim(_popsize);
+  mutate(_offspring);
+  crossover(_offspring);
 
   return 1;
 }
@@ -486,8 +485,8 @@ Garp::deserialize(Deserializer * ds)
 /****************************************************************/
 /***************** select ***************************************/
 
-void Garp::select(GarpRuleSet * source, GarpRuleSet * target, 
-                  PerfIndex perfIndex)
+void Garp::keepFittest(GarpRuleSet * source, GarpRuleSet * target, 
+		     PerfIndex perfIndex)
 {
   int i, n, accepted, converged, similarIndex, insertIndex;
   GarpRule * candidateRule, * similarRule;
@@ -514,6 +513,7 @@ void Garp::select(GarpRuleSet * source, GarpRuleSet * target,
             {
               // first create a clone of the rule, then replace the old one
               candidateRule = candidateRule->clone();
+	      //target->replace(similarIndex, candidateRule);
 	      target->remove(similarIndex);
 	      insertIndex = target->insert(perfIndex, candidateRule);
             }
@@ -593,9 +593,9 @@ void Garp::colonize(GarpRuleSet * ruleset, GarpCustomSampler * sampler,
 }
 
 /****************************************************************/
-/***************** reproduce ************************************/
+/***************** select ***************************************/
 
-void Garp::reproduce(GarpRuleSet * source, GarpRuleSet * target, 
+void Garp::select(GarpRuleSet * source, GarpRuleSet * target, 
                      double gapsize)
 {
   Random rnd;
@@ -639,6 +639,13 @@ void Garp::reproduce(GarpRuleSet * source, GarpRuleSet * target,
         }
     }
 
+  /*
+  FILE * f = stdout;
+  fprintf(f, "Generation: %4d\n", _gen);
+  for (i = 0; i < _popsize; i++)
+    fprintf(f, "%+9.4f %3d\n", source->get(sample[i])->getPerformance(defaultPerfIndex), sample[i]);
+  */
+
   // randomly shuffle pointers to new structures 
   for (i = 0; i < _popsize; i++)
     {
@@ -672,7 +679,7 @@ void Garp::mutate(GarpRuleSet * ruleset)
 {
   int i, n;
 
-  double temperature = (double) _max_gen / (double) _gen;
+  double temperature = 2.0 / (double) _gen;
   n = ruleset->numRules();
   for (i = 0; i < n; i++)
     ruleset->get(i)->mutate(temperature);
@@ -722,7 +729,7 @@ void Garp::deleteTempDataMembers()
 /**** This is a debug function that checks if a rule set is 
  **** correctly sorted. If not it dumps the performance values
  **** for that rule set. 
- **** It was used to debug Garp::select() (replace call bug)
+ **** It was used to debug Garp::keepFittest() (replace call bug)
  **** TODO: move this code to the test harness when we have one */
 
 void printPerfs(char * msg, int index, GarpRuleSet * ruleset)

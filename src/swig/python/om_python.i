@@ -152,7 +152,7 @@ public:
      PyObject * list = PyList_New(0);
      for (i = 0; i < self->nparam; i++)
      {
-       paramMetadata = SWIG_NewPointerObj((void *) &(metadata->param[i]), 
+       paramMetadata = SWIG_NewPointerObj((void *) &(self->param[i]), 
                                             SWIGTYPE_p_AlgParamMetadata, 1);
        PyList_Append(list, paramMetadata);
      }

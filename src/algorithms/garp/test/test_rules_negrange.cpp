@@ -72,21 +72,21 @@ TEST( NegatedRangeRule_applies21 , NegatedRangeRule )
 {
   ExtNegatedRangeRule * rule = new ExtNegatedRangeRule;
   rule->setGenes(genes2, 4);
-  LONGS_EQUAL(rule->applies(vals21), false);
+  LONGS_EQUAL(rule->applies(vals21), true);
 }
 
 TEST( NegatedRangeRule_applies22 , NegatedRangeRule )
 {
   ExtNegatedRangeRule * rule = new ExtNegatedRangeRule;
   rule->setGenes(genes2, 4);
-  LONGS_EQUAL(rule->applies(vals22), false);
+  LONGS_EQUAL(rule->applies(vals22), true);
 }
 
 TEST( NegatedRangeRule_applies23 , NegatedRangeRule )
 {
   ExtNegatedRangeRule * rule = new ExtNegatedRangeRule;
   rule->setGenes(genes2, 4);
-  LONGS_EQUAL(rule->applies(vals23), false);
+  LONGS_EQUAL(rule->applies(vals23), true);
 }
 
 Scalar genes3[8] = {-1.0, +1.0, -0.1, +0.1, -1.0, +1.0, -1.0, +1.0};
