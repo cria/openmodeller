@@ -18,6 +18,10 @@
    */
 GenericTemplate::GenericTemplate( Sampler *samp )
 {
+  //set the class member that holds the number of environmental variables
+  f_dim = samp->dim();
+  //set the class member that holds the number of occurences
+  f_localityCount = samp->numOccurrences();
 }
 
 /** This is the descructor for the GenericTemplate class */

@@ -30,7 +30,7 @@
 #ifndef GENERIC_TEMPLATE_H
 #define GENERIC_TEMPLATE_H
 
-#include <algorithm.hh>
+#include <om.hh>
 
 /**
 This is a simple template for creating new algorithms.  Note it does not actually run a model - rather it demonstrates how to do a new algorithm implementation.
@@ -120,7 +120,8 @@ private:
   
   Scalar *f_avg;  ///< Average related to occurrence points.
   int     f_dim;  ///< Dimension of environmental space.
-
+  //set the class member that holds the number of occurences
+  int f_localityCount;
 };
 
 #endif
