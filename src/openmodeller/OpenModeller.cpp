@@ -45,8 +45,8 @@
 #include <algorithm_factory.hh>
 #include <environment.hh>
 
-#include <serialization/serializer.hh>
-#include <serialization/deserializer.hh>
+#include <serialization/om_serializer.hh>
+#include <serialization/om_deserializer.hh>
 
 #include <stdio.h>
 #include <string.h>
@@ -199,7 +199,7 @@ OpenModeller::setPluginPath(char ** new_plugin_path)
     _factory->setDirs(_plugin_path);
 }
 
-/***********************/
+/*************************/
 /*** reset Plugin Path ***/
 void
 OpenModeller::resetPluginPath()
@@ -251,6 +251,7 @@ OpenModeller::resetPluginPath()
     }
 }
 
+
 /***********************/
 /*** get Plugin Path ***/
 char * 
@@ -283,6 +284,7 @@ OpenModeller::loadAlgorithms()
 {
   return _factory->loadAlgorithms();
 }
+
 
 /****************************/
 /*** available Algorithms ***/

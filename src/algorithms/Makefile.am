@@ -36,19 +36,19 @@ libomminimum_distance_la_SOURCES = \
 
 libomdistance_to_average_la_LDFLAGS = -no-undefined
 libomdistance_to_average_la_LIBADD = ../src/lib/libopenmodeller.la
-libomdistance_to_average_la_CPPFLAGS = -I../src/inc
+libomdistance_to_average_la_CPPFLAGS = -I../src/inc -I../src/inc/serialization
 
 libombioclim_la_LDFLAGS = -no-undefined
 libombioclim_la_LIBADD = ../src/lib/libopenmodeller.la
-libombioclim_la_CPPFLAGS = -I../src/inc
+libombioclim_la_CPPFLAGS = -I../src/inc -I../src/inc/serialization
 
 libombioclim_distance_la_LDFLAGS = -no-undefined
 libombioclim_distance_la_LIBADD = ../src/lib/libopenmodeller.la
-libombioclim_distance_la_CPPFLAGS = -I../src/inc
+libombioclim_distance_la_CPPFLAGS = -I../src/inc -I../src/inc/serialization
 
 libomminimum_distance_la_LDFLAGS = -no-undefined
 libomminimum_distance_la_LIBADD = ../src/lib/libopenmodeller.la
-libomminimum_distance_la_CPPFLAGS = -I../src/inc
+libomminimum_distance_la_CPPFLAGS = -I../src/inc -I../src/inc/serialization
 
 #
 # Build csm - kaiser-gutman only when gsl is available
@@ -62,7 +62,7 @@ libomcsmkg_la_SOURCES = \
 	csmkg.hh
 libomcsmkg_la_LDFLAGS = -no-undefined
 libomcsmkg_la_LIBADD = $(GSL_LIBS) ../src/lib/libopenmodeller.la
-libomcsmkg_la_CPPFLAGS = $(GSL_CFLAGS) -I../src/inc
+libomcsmkg_la_CPPFLAGS = $(GSL_CFLAGS) -I../src/inc -I../src/inc/serialization
 endif
 #
 # Build csm - broken stick only when gsl is available
@@ -76,5 +76,5 @@ libomcsmbs_la_SOURCES = \
 	csmbs.hh
 libomcsmbs_la_LDFLAGS = -no-undefined
 libomcsmbs_la_LIBADD = $(GSL_LIBS) ../src/lib/libopenmodeller.la
-libomcsmbs_la_CPPFLAGS = $(GSL_CFLAGS) -I../src/inc
+libomcsmbs_la_CPPFLAGS = $(GSL_CFLAGS) -I../src/inc -I../src/inc/serialization
 endif

@@ -102,8 +102,8 @@ public:
    */
   void setPluginPath(char ** search_dirs);
 
-  /** Reset plugin path to default (from config file or from hardcoded 
-   * PLUGINPATH)
+  /** Reset plugin path to default (from config file or from
+   *  hardcoded PLUGINPATH)
    */
   void resetPluginPath();
 
@@ -276,6 +276,7 @@ public:
   //
   int serialize(Serializer * serializer);
   int deserialize(Deserializer * deserializer);
+
 
 private:
 

@@ -24,4 +24,5 @@ libomgarp_la_SOURCES = \
 
 libomgarp_la_LDFLAGS = -no-undefined
 libomgarp_la_LIBADD = ../../src/lib/libopenmodeller.la
-libomgarp_la_CPPFLAGS = -I../../src/inc
+libomgarp_la_CPPFLAGS = -I../../src/inc \
+                        -I../../src/inc/serialization

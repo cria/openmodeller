@@ -26,5 +26,8 @@ libomgarp_bs_la_SOURCES = \
 
 libomgarp_bs_la_LDFLAGS = -no-undefined
 libomgarp_bs_la_LIBADD = ../../../src/lib/libopenmodeller.la -lpthread
-libomgarp_bs_la_CPPFLAGS = -I.. -I../../../src/inc -DDONT_EXPORT_GARP_FACTORY
+libomgarp_bs_la_CPPFLAGS = -I.. \
+                           -I../../../src/inc \
+                           -I../../../src/inc/serialization \
+                           -DDONT_EXPORT_GARP_FACTORY
 

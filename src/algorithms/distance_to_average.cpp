@@ -32,8 +32,6 @@
 #include <stdio.h>
 #include <math.h>
 
-#include <serialization/serializer.hh>
-#include <serialization/deserializer.hh>
 
 /****************************************************************/
 /********************** Algorithm's Metadata ********************/
@@ -290,7 +288,8 @@ DistanceToAverage::getConvergence( Scalar *val )
   return 1;
 }
 
-/******************/
+
+/*****************/
 /*** serialize ***/
 int
 DistanceToAverage::serialize(Serializer * s)
@@ -303,7 +302,8 @@ DistanceToAverage::serialize(Serializer * s)
   return 1;
 }
 
-/********************/
+
+/*******************/
 /*** deserialize ***/
 int
 DistanceToAverage::deserialize(Deserializer * s)
@@ -311,13 +311,10 @@ DistanceToAverage::deserialize(Deserializer * s)
   int size;
 
   s->readStartSection("DistanceToAverageModel");
-  _dim = s->readInt("Dimension");
+  _dim  = s->readInt("Dimension");
   _dist = s->readDouble("Distance");
-  _avg = s->readArrayDouble("Average", &size);
+  _avg  = s->readArrayDouble("Average", &size);
   s->readEndSection("DistanceToAverageModel");
 
-  if (_dim == size)
-    { _done = 1; } 
-  
-  return (_dim == size);
+  return (_dim == size) ? _done = 1 : 0;
 }

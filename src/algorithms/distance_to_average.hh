@@ -27,8 +27,8 @@
  */
 
 
-#ifndef _CSMHH_
-#define _CSMHH_
+#ifndef _DISTANCE_TO_AVERAGEHH__
+#define _DISTANCE_TO_AVERAGEHH__
 
 #include <om.hh>
 
