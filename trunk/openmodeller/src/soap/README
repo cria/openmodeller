@@ -84,6 +84,7 @@ USE INSTRUCTIONS:
 TODO-LIST:
 ----------
 
+- Use the ticket file as a log file.
 - Move distribution map creation to a new method createMap.
 - Implement getModel.
 - Synchronize request/response XML structures with format used

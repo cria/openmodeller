@@ -1,13 +1,14 @@
-Release 0.2 (???)
------------------
+Release 0.2-rc1 (2004-12-10)
+----------------------------
 
 	* GARP algorithm, including best subsets procedure.
 	* CSM splitted into Kaiser-Gutman and Broken Stick cutoff methods.
-	* SOAP interface.
+	* Prototype SOAP interface.
 	* SWIG interfaces for python and java.
 	* Bioclim algorithm refactored and splitted in two implementations.
-	* Model serialization.
+	* Prototype model serialization for most algorithms.
 	* Reprojection capabilities.
+	* New tool to visualize models in environmental space (only the first 2 variables).
 
 Release 0.1.1 (2004-04-29)
 --------------------------
