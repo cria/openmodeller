@@ -27,7 +27,7 @@
  */
 
 #include <om_algorithm.hh>
-#include <OmAlgParameter.hh>
+#include <om_alg_parameter.hh>
 #include <om_log.hh>
 
 #include <string.h>
@@ -84,7 +84,7 @@ Algorithm::setSampler( Sampler *samp )
 /**********************/
 /*** set Parameters ***/
 void
-Algorithm::setParameters( int nparam, OmAlgParameter *param )
+Algorithm::setParameters( int nparam, AlgParameter *param )
 {
   _nparam = nparam;
   _param  = param;
@@ -136,8 +136,8 @@ Algorithm::getParameter( char *name, char **value )
     return 0;
 
   
-  OmAlgParameter *param = _param;
-  OmAlgParameter *end   = _param + _nparam;
+  AlgParameter *param = _param;
+  AlgParameter *end   = _param + _nparam;
 
   while ( param < end )
     if ( ! strcmp( name, param->name() ) )

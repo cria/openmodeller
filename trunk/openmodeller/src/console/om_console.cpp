@@ -40,7 +40,7 @@ char *readParameters ( AlgMetadata *metadata );
 AlgMetadata *readAlgorithm( AlgMetadata **availables );
 Occurrences *readOccurrences( char *file, char *name,
 			      char *coord_system );
-int readParameters( OmAlgParameter *result, AlgMetadata *metadata,
+int readParameters( AlgParameter *result, AlgMetadata *metadata,
                     int num_param_values, char **param_values );
 char *extractParameter( char *name, int nvet, char **vet );
 
@@ -143,7 +143,7 @@ main( int argc, char **argv )
 
   // For resulting parameters storage.
   int nparam = metadata->nparam;
-  OmAlgParameter *param = new OmAlgParameter[nparam];
+  AlgParameter *param = new AlgParameter[nparam];
 
   // Read from console the parameters not setted by request
   // file. Fills 'param' with all 'metadata->nparam' parameters
@@ -268,7 +268,7 @@ readOccurrences( char *file, char *name, char *coord_system )
 /***********************/
 /*** read Parameters ***/
 int
-readParameters( OmAlgParameter *result, AlgMetadata *metadata,
+readParameters( AlgParameter *result, AlgMetadata *metadata,
                 int str_nparam, char **str_param )
 {
   AlgParamMetadata *param = metadata->param;

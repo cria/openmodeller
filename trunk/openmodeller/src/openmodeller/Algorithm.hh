@@ -34,7 +34,7 @@
 #include <om_sampler.hh>
 #include <om_algorithm_metadata.hh>
 
-class OmAlgParameter;
+class AlgParameter;
 
 
 /**
@@ -79,7 +79,7 @@ public:
    * @param param Vector with all parameters. The address 'param'
    *  points to must exists while this object is used.
    */
-  void setParameters( int nparam, OmAlgParameter *param );
+  void setParameters( int nparam, AlgParameter *param );
 
   char *getID()   { return _metadata ? _metadata->id : 0; }
 
@@ -185,7 +185,7 @@ private:
   AlgMetadata *_metadata;
 
   int            _nparam;
-  OmAlgParameter *_param;
+  AlgParameter *_param;
 };
 
 

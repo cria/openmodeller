@@ -33,7 +33,7 @@
 #include <om_algorithm_metadata.hh>
 
 class Algorithm;
-class OmAlgParameter;
+class AlgParameter;
 class AlgorithmFactory;
 class Environment;
 class Sampler;
@@ -99,7 +99,7 @@ public:
    * @param param Vector with all parameters. The address 'param'
    *  points to must exists when the method "run()" is called.
    */
-  void setAlgorithm( char *id, int nparam, OmAlgParameter *param );
+  void setAlgorithm( char *id, int nparam, AlgParameter *param );
 
 
   /** Defines environmental layers and the mask.
@@ -180,7 +180,7 @@ private:
   Header *_hdr;
   Scalar  _mult;  ///< Output multiplier.
 
-  OmAlgParameter *_alg_param;  ///< Algorithm parameters.
+  AlgParameter *_alg_param;  ///< Algorithm parameters.
   char *_alg_id;     ///< Algorithm's ID and parameters.
   int   _alg_nparam; ///< Number of algorithm parameters.
   int   _ncycle;     ///< Max algorithm cicles.

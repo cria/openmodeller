@@ -27,7 +27,7 @@ libopenmodeller_la_SOURCES = \
 	random.cpp \
 	sampler.cpp \
 	sampled_data.cpp \
-	OmAlgParameter.cpp
+	alg_parameter.cpp
 
 libopenmodeller_la_CPPFLAGS = -I../inc -I../.. $(PLUGINPATH)
 libopenmodeller_la_LIBADD = env_io/libenv_io.la
