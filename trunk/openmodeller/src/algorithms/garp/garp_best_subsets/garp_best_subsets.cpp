@@ -386,7 +386,7 @@ int GarpBestSubsets::needNormalization( Scalar *min, Scalar *max )
 int GarpBestSubsets::initialize()
 {
   // Reconfigure the global logger.
-  g_log.set( Log::Debug, stdout, "Garp" );
+  //g_log.set( Log::Debug, stdout, "Garp" );
 
   // BS parameters
   if (!getParameter("TrainingProportion", &_trainProp))        

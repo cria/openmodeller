@@ -56,7 +56,8 @@ int
 main( int argc, char **argv )
 {
   // Reconfigure the global logger.
-  g_log.set( Log::Debug, stdout, "Console" );
+  g_log.setLevel( Log::Debug );
+  g_log.setPrefix( "Console" );
 
   if ( argc < 2 )
     g_log.error( 1, "\n%s <request>\n\n", argv[0] );
