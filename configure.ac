@@ -114,8 +114,9 @@ AC_CONFIG_FILES([
 	src/Makefile
 	src/lib/Makefile
 	src/lib/env_io/Makefile
-	src/lib/graph/Makefile
 	src/inc/Makefile
+	src/console/Makefile
+	src/console/graph/Makefile
 ])
 
 AC_OUTPUT
