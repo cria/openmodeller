@@ -59,11 +59,11 @@ bool NegatedRangeRule::applies(Scalar * values)
   for (i = 0; i < _numGenes; i++)
     {
       if (!(equalEps(_genes[i * 2], -1.0) && equalEps(_genes[i * 2 + 1], +1.0)))
-	if (!between(values[i], _genes[i * 2], _genes[i * 2 + 1]))
-	  return true;
+	if (between(values[i], _genes[i * 2], _genes[i * 2 + 1]))
+	  return false;
     }
   
-  return false;
+  return true;
 }
 
 // ==========================================================================
