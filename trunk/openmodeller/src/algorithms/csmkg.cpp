@@ -93,10 +93,7 @@ The original CSM was written as series of Matlab functions. \
 /****************************************************************/
 /****************** Algorithm's factory function ****************/
 
-#ifdef WIN32
-__declspec( dllexport )
-#endif
-Algorithm *
+Algorithm * dllexp
 algorithmFactory()
 {
   return new CsmKG;

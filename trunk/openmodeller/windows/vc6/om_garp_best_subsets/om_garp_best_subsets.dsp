@@ -43,7 +43,7 @@ RSC=rc.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MT /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "OM_GARP_BEST_SUBSETS_EXPORTS" /YX /FD /c
-# ADD CPP /nologo /MT /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "OM_GARP_BEST_SUBSETS_EXPORTS" /YX /FD /c
+# ADD CPP /nologo /MT /W3 /GX /O2 /I "../../../algorithms/garp" /I "../../inc" /I "../../inc/serialization" /I "$(GDAL_HOME)/include" /D "NDEBUG" /D "_WINDOWS" /D "_USRDLL" /D "OM_GARP_BEST_SUBSETS_EXPORTS" /D "WIN32" /D "_MBCS" /D "CORE_DLL_IMPORT" /D "DONT_EXPORT_GARP_FACTORY" /YX /FD /c
 # ADD BASE MTL /nologo /D "NDEBUG" /mktyplib203 /win32
 # ADD MTL /nologo /D "NDEBUG" /mktyplib203 /win32
 # ADD BASE RSC /l 0x409 /d "NDEBUG"
@@ -53,7 +53,14 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /machine:I386
-# ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib  libexpat.lib gdal_i.lib libopenmodeller.lib /nologo /dll /machine:I386
+# ADD LINK32 gdal_i.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib libexpat.lib /nologo /dll /machine:I386 /nodefaultlib:"scew_.lib" /libpath:"$(GDAL_HOME)\lib" /libpath:"../build/lib" /libpath:"$(EXPAT_HOME)/libs"
+# Begin Special Build Tool
+TargetDir=.\Release
+TargetName=om_garp_best_subsets
+SOURCE="$(InputPath)"
+PostBuild_Desc=Install
+PostBuild_Cmds=echo on	..\CopyDLL.bat build $(TargetDir) $(TargetName)
+# End Special Build Tool
 
 !ELSEIF  "$(CFG)" == "om_garp_best_subsets - Win32 Debug"
 
@@ -69,7 +76,7 @@ LINK32=link.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MTd /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "OM_GARP_BEST_SUBSETS_EXPORTS" /YX /FD /GZ /c
-# ADD CPP /nologo /MTd /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "OM_GARP_BEST_SUBSETS_EXPORTS" /YX /FD /GZ /c
+# ADD CPP /nologo /MTd /W3 /Gm /GX /ZI /Od /I "../../../algorithms/garp" /I "../../inc" /I "../../inc/serialization" /I "$(GDAL_HOME)/include" /D "_DEBUG" /D VERSION=\"0.2\" /D PLUGINPATH=$(OM_PLUGIN_PATH) /D "_WINDOWS" /D "_USRDLL" /D "OM_GARP_BEST_SUBSETS_EXPORTS" /D "WIN32" /D "_MBCS" /D "CORE_DLL_IMPORT" /D "DONT_EXPORT_GARP_FACTORY" /FR /YX /FD /GZ /c
 # ADD BASE MTL /nologo /D "_DEBUG" /mktyplib203 /win32
 # ADD MTL /nologo /D "_DEBUG" /mktyplib203 /win32
 # ADD BASE RSC /l 0x409 /d "_DEBUG"
@@ -79,7 +86,14 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /debug /machine:I386 /pdbtype:sept
-# ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib  libexpat.lib gdal_i.lib libopenmodeller.lib /nologo /dll /debug /machine:I386 /pdbtype:sept
+# ADD LINK32 gdal_i.lib libexpat.lib libopenmodeller.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /debug /machine:I386 /pdbtype:sept /libpath:"$(GDAL_HOME)\lib" /libpath:"../build_debug/lib" /libpath:"$(EXPAT_HOME)/libs"
+# Begin Special Build Tool
+TargetDir=.\Debug
+TargetName=om_garp_best_subsets
+SOURCE="$(InputPath)"
+PostBuild_Desc=Install (debug)
+PostBuild_Cmds=echo on	..\CopyDll.bat build_debug $(TargetDir) $(TargetName)
+# End Special Build Tool
 
 !ENDIF 
 

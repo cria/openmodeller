@@ -30,7 +30,7 @@
 #ifndef _ALGORITHMHH_
 #define _ALGORITHMHH_
 
-
+#include <om_defs.hh>
 #include <om_sampler.hh>
 #include <om_algorithm_metadata.hh>
 #include <om_serializable.hh>
@@ -47,10 +47,7 @@ class Algorithm;
 typedef Algorithm *(*TAlgFactory)();
 extern "C"
 {
-#ifdef WIN32
-__declspec( dllexport )
-#endif
-  Algorithm *algorithmFactory();
+dllexp Algorithm *algorithmFactory();
 }
 
 
@@ -63,7 +60,7 @@ __declspec( dllexport )
  * methods to all derived classes so that they can do data sampling
  * and access the environmental layers to build the model.
  */
-class Algorithm : public Serializable
+class dllexp Algorithm : public Serializable
 {
 public:
 

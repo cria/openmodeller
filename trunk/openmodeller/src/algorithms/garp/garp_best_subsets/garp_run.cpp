@@ -54,8 +54,6 @@ THREAD_PROC_RETURN_TYPE GarpRunThreadProc(void * threadData)
   garpRun->calculateOmission();
   garpRun->finalize();
   
-  return NULL;
-
   g_log("Finishing thread (%d).\n", garpRun->getId());
 
   THREAD_PROC_RETURN_STATEMENT;
@@ -107,6 +105,8 @@ int GarpRun::initialize(int id, int comm_samples,
   _garp->setSampler(train_sampler);
   _garp->setParameters(nparam, param);
   _garp->initialize();
+
+  return 1;
 }
 
 /****************************************************************/
@@ -115,6 +115,7 @@ int GarpRun::run()
   g_log("Starting new garp run (%d).\n", _id);
   _running = true;
   THREAD_START(GarpRunThreadProc, this); 
+  return 1;  
 }
 
 /****************************************************************/
@@ -125,7 +126,7 @@ bool GarpRun::running()
 int GarpRun::iterate()
 {
   //g_log("Iteration %6d on run %d.\n", _garp->getGeneration(), _id);
-  _garp->iterate(); 
+  return _garp->iterate();
 }
 
 /****************************************************************/
@@ -139,6 +140,7 @@ int GarpRun::finalize()
   _running = false;
   _garp->deleteTempDataMembers();
   THREAD_END();
+  return 1;
 }
 
 /****************************************************************/
@@ -214,12 +216,14 @@ double GarpRun::getValue(Scalar * x)
 int GarpRun::serialize(Serializer * serializer)
 {
   // TODO: finish implementation
+  return 0;
 }
 
 /****************************************************************/
 int GarpRun::deserialize(Deserializer * deserializer)
 {
   // TODO: finish implementation
+  return 0;
 }
 
 /****************************************************************/

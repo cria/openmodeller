@@ -334,7 +334,7 @@ double GarpRule::evaluate(GarpCustomSampler * sampler)
 {
   double utility[10];
 
-  int u, dimension;
+  int dimension;
 
   // number of resamples
   int n;

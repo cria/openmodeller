@@ -45,7 +45,7 @@ template<class T> class DList;
  * Representation of a set of occurrences.
  *
  */
-class Occurrences
+class dllexp Occurrences
 {
   typedef DList<Occurrence *> LstOccur;
 

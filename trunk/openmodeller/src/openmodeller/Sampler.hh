@@ -46,7 +46,7 @@ class SampledData;
  * distribution of occurrence data, disproportional sampling
  * regarding presence and absence data, etc.
  */
-class Sampler
+class dllexp Sampler
 {
 public:
 

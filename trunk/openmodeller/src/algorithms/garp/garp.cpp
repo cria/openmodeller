@@ -222,10 +222,9 @@ Computers in Simulation 33:385-390.",
 /****************************************************************/
 /****************** Algorithm's factory function ****************/
 #ifndef DONT_EXPORT_GARP_FACTORY
-#ifdef WIN32
-__declspec( dllexport )
-#endif
-Algorithm * algorithmFactory()
+dllexp 
+Algorithm * 
+algorithmFactory()
 {
   return new Garp;
 }

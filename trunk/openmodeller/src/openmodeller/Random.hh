@@ -31,6 +31,7 @@
 #ifndef _RANDOMHH_
 #define _RANDOMHH_
 
+#include <om_defs.hh>
 
 
 /********************************************************/
@@ -40,7 +41,7 @@
  * Class to generate random numbers
  *
  */
-class Random
+class dllexp Random
 {
 public:
   Random();

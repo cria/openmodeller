@@ -42,7 +42,7 @@
  * Defines the format of the output projection map, i.e., its
  * extent (coordinates), width, height, novalue data and projection
  */
-class MapFormat
+class dllexp MapFormat
 {
 public:
 
