@@ -69,7 +69,8 @@ main( int argc, char **argv )
   g_log( "\nDefault configuration file name is: %s\n\n",
          om.getConfigFileName() );
   g_log( "\nAlgorithms will be loaded from: %s\n\n",
-         om.getPluginPath() );
+         path = om.getPluginPath() );
+  delete[] path;
 
   // Configure the OpenModeller object from data read from the
   // request file.

@@ -95,21 +95,21 @@ Occurrences::~Occurrences()
 {
   Occurrence *oc;
   for ( _occur->head(); oc = _occur->get(); _occur->next() )
-    delete( oc );
+    { delete oc; }
 
   if ( _vector )
-    delete _vector;
+    { delete[] _vector; }
 
   delete _occur;
 
   if ( _gt )
-    delete _gt;
-
+    { delete _gt; }
+  
   if (_name)
-    delete[] _name;
+    { delete[] _name; }
 
   if (_cs)
-    delete[] _cs;
+    { delete[] _cs; }
 }
 
 

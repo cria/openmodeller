@@ -39,6 +39,17 @@
 /**************************************************************/
 /************************ Request File ************************/
 
+RequestFile::RequestFile()  
+{ 
+  _occurrences = 0; 
+}
+
+RequestFile::~RequestFile() 
+{
+  if (_occurrences)
+    { delete _occurrences; }
+}
+
 /*****************/
 /*** configure ***/
 int
@@ -72,10 +83,10 @@ RequestFile::setOccurrences( OpenModeller *om, FileParser &fp )
   // Get the name of the taxon being modelled!
   char *oc_name = fp.get( "Species" );
 
-  Occurrences *oc = readOccurrences( oc_file, oc_name, oc_cs );
+  _occurrences = readOccurrences( oc_file, oc_name, oc_cs );
 
   // Populate the occurences list from the localities file
-  return om->setOccurrences( oc );
+  return om->setOccurrences( _occurrences );
 }
 
 
