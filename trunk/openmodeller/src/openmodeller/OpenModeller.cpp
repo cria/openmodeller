@@ -311,7 +311,7 @@ OpenModeller::resetPluginPath()
 char * 
 OpenModeller::getPluginPath()
 {
-  int length = 0;
+  int length = 1;
   char ** curr_plugin_dir = _plugin_path;
 
   while (*curr_plugin_dir)
@@ -790,6 +790,7 @@ OpenModeller::createMap( Environment *env, char *file, Scalar mult,
       return 0;
     }
 
+  /*
 #ifndef GEO_TRANSFORMATIONS_OFF
   if ( ! hdr->hasProj() )
     {
@@ -799,6 +800,7 @@ OpenModeller::createMap( Environment *env, char *file, Scalar mult,
       return 0;
     }
 #endif
+  */
 
   // check if env object is original one (used to create model) or
   // is a different one (caller wants to project model onto it)
