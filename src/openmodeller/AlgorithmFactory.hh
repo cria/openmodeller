@@ -127,6 +127,7 @@ private:
 
   static AlgorithmFactory& getInstance();
 
+  friend class testDLLId;
   class DLL;
   typedef ReferenceCountedPointer<DLL> DLLPtr;
   typedef std::list<DLLPtr> ListDLL;
@@ -147,16 +148,6 @@ private:
    */
   bool p_addDll( const std::string& dir );
 
-  class testDLLId {
-  public:
-    testDLLId( char const *id ) :
-      id(id)
-    {}
-    inline bool operator()( const DLLPtr& dll );
-  private:
-    char const *id;
-  };
-
   /** Manages an algorithm with its DLL file. */
   class DLL : private ReferenceCountedObject
   {
@@ -171,7 +162,7 @@ private:
     /** Returns a new instantiated algorithm object. **/
     AlgorithmPtr newAlgorithm();
 
-    AlgMetadata *getMetadata();
+    AlgMetadata const *getMetadata();
 
   private:
     DLLHandle _handle;
