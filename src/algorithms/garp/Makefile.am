@@ -8,11 +8,7 @@
 # WITHOUT ANY WARRANTY, to the extent permitted by law; without even the
 # implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
-if BUILD_TEST
-TEST_DIR=test
-endif
-
-SUBDIRS = $(TEST_DIR)
+SUBDIRS = test
 
 plugindir = ${pkglibdir}
 

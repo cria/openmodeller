@@ -208,35 +208,6 @@ AM_PATH_PYTHON
 AM_CHECK_PYTHON_HEADERS([PYSUBDIR=python],[])
 AC_SUBST(PYSUBDIR)
 
-dnl ---------------------------------------------------------------------------
-dnl  Test
-dnl ---------------------------------------------------------------------------
-
-AC_MSG_CHECKING([if test is enabled])
-
-AC_ARG_ENABLE(test,
-  AC_HELP_STRING([--enable-test],
-                 [The Unit Tests are optional. If you want to enable them use '--enable-test']),
-  [
-   case "${enableval}" in
-    yes)
-      build_test=yes
-      ;;
-    no)
-      build_test=no
-      ;;
-    *)
-      AC_MSG_ERROR([bad value ${enableval} for --enable-test])
-      ;;
-   esac
-  ],
-  [
-    build_test=no
-  ]
-)
-AC_MSG_RESULT([$build_test])
-
-AM_CONDITIONAL([BUILD_TEST], [test x$build_test = xyes])
 
 dnl ---------------------------------------------------------------------------
 AC_CONFIG_FILES([
