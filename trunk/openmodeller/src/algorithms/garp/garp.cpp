@@ -49,8 +49,6 @@
 
 #define NUM_PARAM 6
 
-#define INFINITY 1000000000
-
 /************************************/
 /*** Algorithm parameter metadata ***/
 
@@ -476,23 +474,17 @@ void Garp::select(GarpRuleSet * source, GarpRuleSet * target,
 /****************************************************************/
 /***************** evaluate *************************************/
 
-double Garp::evaluate(GarpRuleSet * ruleset, GarpCustomSampler * sampler)
+void Garp::evaluate(GarpRuleSet * ruleset, GarpCustomSampler * sampler)
 {
   int i, n;
-  //GarpRule * rule;
-  double perf, best;
-
-  best = -INFINITY;
-
+  
   n = ruleset->numRules();
   for (i = 0; i < n; i++)
-  {
-      perf = ruleset->get(i)->evaluate(sampler);
-      if ( perf > best || ! i )
-        best = perf;
+  { 
+    ruleset->get(i)->evaluate(sampler);
   }
 
-  return best;
+  return;
 }
 
 /****************************************************************/

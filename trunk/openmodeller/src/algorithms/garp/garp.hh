@@ -127,7 +127,7 @@ private:
   * @param GarpCustomSampler * sampler: sampler that will provide
   *        data points for testing.
   */
-  double evaluate(GarpRuleSet * ruleset, GarpCustomSampler * sampler);
+  void evaluate(GarpRuleSet * ruleset, GarpCustomSampler * sampler);
 
 /** Select fittest individuals from source rule set storing them in target 
   *   rule set in descending order of fitness.     
