@@ -8,9 +8,14 @@
 # WITHOUT ANY WARRANTY, to the extent permitted by law; without even the
 # implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
-TESTS = test_ruleset test_rules_base test_rules_range
+GARP_UNIT_TESTS = 	test_ruleset \
+			test_rules_base \
+			test_rules_range \
+			test_rules_evaluate
 
-check_PROGRAMS = test_ruleset test_rules_base test_rules_range
+TESTS = $(GARP_UNIT_TESTS)
+
+check_PROGRAMS = $(GARP_UNIT_TESTS)
 
 # ============ test_ruleset ==================================
 
@@ -46,6 +51,19 @@ test_rules_range_SOURCES  = test_main.cpp test_rules_range.cpp \
 test_rules_range_LDADD = ../../../test/CppUnitLite/libcppunitlite.la -ldl
 
 test_rules_range_CPPFLAGS = -I../../../test -I.. -I../../../src/inc
+
+
+# ============ test_rules_evaluate ===========================
+
+test_rules_evaluate_SOURCES  = test_main.cpp test_rules_evaluate.cpp \
+				../rules_base.cpp ../rules_range.cpp \
+				../../../src/lib/random.cpp \
+				../../../src/lib/log.cpp \
+				../../../src/lib/os_specific.cpp
+
+test_rules_evaluate_LDADD = ../../../test/CppUnitLite/libcppunitlite.la -ldl
+
+test_rules_evaluate_CPPFLAGS = -I../../../test -I.. -I../../../src/inc
 
 
 # ============================================================
