@@ -78,6 +78,18 @@ public:
   AlgorithmFactory( char **search_dirs );
   ~AlgorithmFactory();
 
+  /** Load the system available algorithms. If there are
+   * algorithm already loaded they are unloaded.
+   * 
+   * Warning:
+   * 
+   * The pointers to old algorithms are invalid after a call to
+   * this method.
+   * 
+   * @return Number of loaded algorithms.
+   */
+  int loadAlgorithms();
+
   /** Finds the system available algorithms.
    * 
    * Note that the returned algorithms can not run because they
