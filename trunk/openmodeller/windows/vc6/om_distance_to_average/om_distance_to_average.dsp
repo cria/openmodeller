@@ -53,12 +53,13 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /machine:I386
-# ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib gdal_i.lib /nologo /dll /machine:I386 /libpath:"$(GDAL_HOME)\lib"
+# ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib gdal_i.lib libopenmodeller_static.lib /nologo /dll /machine:I386 /libpath:"$(GDAL_HOME)\lib" /libpath:"../build/lib"
 # Begin Special Build Tool
-TargetPath=.\Release\om_distance_to_average.dll
+TargetDir=.\Release
+TargetName=om_distance_to_average
 SOURCE="$(InputPath)"
 PostBuild_Desc=Install
-PostBuild_Cmds=if not exist ..\build mkdir ..\build	if not exist ..\build\lib mkdir ..\build\lib	echo Installing library $(TargetPath) in .\build\lib	copy $(TargetPath) ..\build\lib
+PostBuild_Cmds=echo on	..\CopyDLL.bat build $(TargetDir) $(TargetName)
 # End Special Build Tool
 
 !ELSEIF  "$(CFG)" == "om_distance_to_average - Win32 Debug"
@@ -85,7 +86,14 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /debug /machine:I386 /pdbtype:sept
-# ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib gdal_i.lib /nologo /dll /debug /machine:I386 /pdbtype:sept /libpath:"$(GDAL_HOME)\lib"
+# ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib gdal_i.lib libopenmodeller_static.lib /nologo /dll /debug /machine:I386 /pdbtype:sept /libpath:"$(GDAL_HOME)\lib" /libpath:"../build_debug/lib"
+# Begin Special Build Tool
+TargetDir=.\Debug
+TargetName=om_distance_to_average
+SOURCE="$(InputPath)"
+PostBuild_Desc=Install (debug)
+PostBuild_Cmds=echo on	..\CopyDll.bat build_debug $(TargetDir) $(TargetName)
+# End Special Build Tool
 
 !ENDIF 
 
