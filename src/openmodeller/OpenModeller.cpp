@@ -205,6 +205,11 @@ ControlInterface::run()
   // Sampler and algorithm.
   Sampler samp( oc, env );
   Algorithm *alg = algorithmFactory( &samp, f_alg, f_param );
+  if ( ! alg )
+    {
+      f_error = "Could not find an algorithm with the given name.";
+      return 0;
+    }
 
 
   // Check if the algorithm needs normalized variables.
