@@ -1,0 +1,68 @@
+<Algorithm Id="GARP v0.1.1 aplha">
+
+  <AlgMetadata>
+    <Name>GARP</Name>
+    <Version>0.1.1 alpha</Version>
+    <Bibliography></Bibliography>
+    <Description></Description>
+    <Author></Author>
+    <Contact></Contact>
+    <AcceptsCategorical>1</AcceptsCategorical>
+    <NeedsAbsences>0</NeedsAbsences>
+    <NumberOfParameters>6</NumberOfParameters>
+  </AlgMetadata>
+
+  <AlgParameters>
+    <AlgParameter Name="MaxGenerations" Value="1000"  />
+    <AlgParameter Name="Convergence"    Value="0.001" />
+    <AlgParameter Name="PopulationSize" Value="50"    />
+  </AlgParameters>
+
+  <Sampler>
+
+    <Environment>
+      <CoordinateSystem>WGS84</CoordinateSystem>
+
+      <Layers Type="Native">
+        <Map Continuous="1" Normalized="1" Offset="1.0" Scale="1.345">
+          <File></File>
+          <CoordinateSystem>WGS84</CoordinateSystem>
+        </Map>
+
+      </Layers>
+
+      <Layers Type="Projection">
+        <Map Continuous="1" Normalized="1" Offset="1.0" Scale="1.345">
+          <File></File>
+          <CoordinateSystem>WGS84</CoordinateSystem>
+        </Map>
+
+      </Layers>
+
+    </Environment>
+
+
+    <SpeciesOccurrences Name="Acacia polyphylla">
+      <CoordinateSystem>WGS84</CoordinateSystem>
+
+      <Occurrences Type="Presence">
+        <Occurrence X="" Y="" Error="" Abundance=""/>
+        <Occurrence X="" Y="" Error="" Abundance="">
+          <Attributes>1.2 2.6 0.01</Attributes>
+        </Occurrence>
+      </Occurrences>
+
+      <Occurrences Type="Absence">
+      </Occurrences>
+
+    </SpeciesOccurrences>
+
+  </Sampler>
+
+
+  <!-- Algorithm Specific Schema -->
+
+  <Atributes>
+  </Atributes>
+
+</Algorithm>
