@@ -14,7 +14,6 @@ OM_VIEWER = om_viewer
 endif
 
 EXTRA_DIST = \
-	file_parser.hh \
 	graph/color.hh \
 	graph/graphic.hh \
 	graph/graphic_x11.hh \
@@ -25,11 +24,11 @@ SUBDIRS = $(GRAPH)
 
 bin_PROGRAMS = om_console $(OM_VIEWER)
 
-om_console_SOURCES = om_console.cpp file_parser.cpp
+om_console_SOURCES = om_console.cpp
 om_console_CPPFLAGS = -I../inc
 om_console_LDADD = $(GSL_LIB) $(GDAL_LIB) ../lib/libopenmodeller.la
 
-om_viewer_SOURCES = om_viewer.cpp file_parser.cpp
+om_viewer_SOURCES = om_viewer.cpp
 om_viewer_CPPFLAGS = -I../inc
 om_viewer_LDADD = $(GSL_LIB) $(GDAL_LIB) $(X11_LIB) graph/libopenmodellergraph.la \
 	../lib/libopenmodeller.la
