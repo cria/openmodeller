@@ -1,5 +1,13 @@
 %module om
 
+%include "../../inc/om_defs.hh"
+
+#undef dllexp
+#undef dll_log
+
+#define dllexp
+#define dll_log
+
 %{
 #include "../../inc/om_defs.hh"
 #include "../../inc/om_control.hh"
