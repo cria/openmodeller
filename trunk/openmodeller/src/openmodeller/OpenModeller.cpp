@@ -294,7 +294,7 @@ ControlInterface::run()
   g_log( "Creating the model\n" );
 
   // Generate the model.
-  if ( ! createModel( alg, &samp, _ncycle ) )
+  if ( ! createModel( alg, &samp ) )
     return 0;
 
   g_log( "Saving distribution's file:\n" );
@@ -357,11 +357,10 @@ ControlInterface::basicCheck()
 /********************/
 /*** create Model ***/
 int
-ControlInterface::createModel( Algorithm *alg, Sampler *samp,
-			       int max )
+ControlInterface::createModel( Algorithm *alg, Sampler *samp )
 {
   // Initialize algorithm.  
-  if ( ! alg->initialize( 100 ) )
+  if ( ! alg->initialize() )
     {
       sprintf( f_error, "Algorithm (%s) could not be initialized.",
 	       alg->getID() );
@@ -370,10 +369,10 @@ ControlInterface::createModel( Algorithm *alg, Sampler *samp,
 
   // Generate model.
   int ncycle = 0;
-  while ( alg->iterate() && ! alg->done() /*&& ncycle < max*/ )
+  while ( alg->iterate() && ! alg->done() )
     ncycle++;
 
-  return alg->done() || ncycle >= max;
+  return alg->done();
 }
 
 

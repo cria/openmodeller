@@ -141,7 +141,7 @@ MinimumDistance::needNormalization( Scalar *min, Scalar *max )
 /******************/
 /*** initialize ***/
 int
-MinimumDistance::initialize( int ncicle )
+MinimumDistance::initialize()
 {
   if ( ! getParameter( "MaxDist", &_dist ) )
     return 0;

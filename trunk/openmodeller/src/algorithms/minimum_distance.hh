@@ -51,7 +51,7 @@ public:
   // Inherited from Algorithm class.
   int needNormalization( Scalar *min, Scalar *max );
 
-  int initialize( int ncicle );
+  int initialize();
   int iterate();
   int done();
 

@@ -280,7 +280,7 @@ public:
     * @note This method is inherited from the Algorithm class
     * @return 0 on error
     */
-  int initialize( int ncycle );
+  int initialize();
   
   /** Start model execution (build the model).     
     * @note This method is inherited from the Algorithm class

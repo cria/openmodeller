@@ -128,7 +128,7 @@ Csm::~Csm()
   * @param 
   * @return 0 on error
   */
-int Csm::initialize( int ncycle )
+int Csm::initialize()
 {
     _initialized = 1;
 
@@ -139,7 +139,7 @@ int Csm::initialize( int ncycle )
     _localityCount = _samp->numPresence();
 
     printf ("\n*************************************************\n");
-    printf ("Csm::initialise - Csm Model Definition Commencing (ncycle = %i)\n", ncycle);
+    printf ("Csm::initialise - Csm Model Definition Commencing\n");
     printf ("\n*************************************************\n\n");
     //convert the sampler to a matrix and store in the local gsl_matrix
     printf ("\nConverting samples to GSL_Matrix\n");
