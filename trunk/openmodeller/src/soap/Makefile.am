@@ -31,5 +31,5 @@ EXTRA_DIST = \
 SOAPHEADER = om_soap.hh
 
 om_soap_server_SOURCES = om_soap_server.cpp $(SOAPHEADER) stdsoap2.cpp soapServer.cpp soapC.cpp
-om_soap_server_CPPFLAGS = -I../inc -g
+om_soap_server_CPPFLAGS = -I../inc -I../inc/serialization -g
 om_soap_server_LDADD = $(GDAL_LIB) ../lib/libopenmodeller.la -lpthread
