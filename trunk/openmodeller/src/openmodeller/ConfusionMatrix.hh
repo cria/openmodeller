@@ -49,7 +49,7 @@ class Occurrences;
  * Values a and d are correct predictions, while b and c are
  * Type I and Type II errors.
  */
-class ConfusionMatrix
+class dllexp ConfusionMatrix
 {
 public:
   /** 

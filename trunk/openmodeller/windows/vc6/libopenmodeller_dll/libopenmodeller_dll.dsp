@@ -122,6 +122,14 @@ SOURCE=..\..\lib\algorithm_factory.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\lib\area_stats.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\lib\conf_matrix.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\lib\control.cpp
 # End Source File
 # Begin Source File
@@ -331,6 +339,14 @@ SOURCE=..\..\inc\om_algorithm.hh
 # Begin Source File
 
 SOURCE=..\..\inc\om_algorithm_metadata.hh
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\inc\om_area_stats.hh
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\inc\om_conf_matrix.hh
 # End Source File
 # Begin Source File
 

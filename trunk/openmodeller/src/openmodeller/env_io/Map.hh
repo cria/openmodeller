@@ -101,10 +101,10 @@ public:
                  Coord *ymax);
 
   /** Map dimensions. */
-  int getDim( int *xdim, int *ydim ) { _rst->getDim(xdim, ydim); } 
+  int getDim( int *xdim, int *ydim ) { _rst->getDim(xdim, ydim); return 1; } 
 
   /** Cell width (in map units) */
-  int getCell( Coord *xcel, Coord *ycel ) { _rst->getCell(xcel, ycel); } 
+  int getCell( Coord *xcel, Coord *ycel ) { _rst->getCell(xcel, ycel); return 1; } 
 
   /**
    * Fills 'val' with the map bands values at (x,y).

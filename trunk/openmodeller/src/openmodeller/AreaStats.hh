@@ -31,7 +31,7 @@
 /* Class AreaStats counts several cell statistics collected during
  * output map generation.
  */
-class AreaStats
+class dllexp AreaStats
 {
 public:
   /** 
