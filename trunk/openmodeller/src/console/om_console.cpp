@@ -64,9 +64,28 @@ main( int argc, char **argv )
   // Create a fileparser to read in the request file and a
   // controlInterface to manage the model process.
   FileParser fp( argv[1] );
-  ControlInterface om;
+  OpenModeller om;
 
   g_log( "\nAlgorithms will be loaded from: %s\n\n", om.getPluginPath() );
+
+
+  /*** Occurrence points ***/
+
+  // Obtain the Well Known Text string for the localities
+  // coordinate system.
+  char *oc_cs = fp.get( "WKT coord system" );
+
+  // Get the name of the file containing localities
+  char *oc_file = fp.get( "Species file" );
+
+  // Get the name of the taxon being modelled!
+  char *oc_name = fp.get( "Species" );
+
+  Occurrences *oc = readOccurrences( oc_file, oc_name, oc_cs );
+
+  // Populate the occurences list from the localities file
+  om.setOccurrences( oc );
+
 
   /*** Environmental data (mask and maps) ***/
 
@@ -117,9 +136,6 @@ main( int argc, char **argv )
   if ( ! scale )
     scale = "255.0";
 
-  // Prepare the output map
-  om.setOutputMap( output, format, atof(scale) );
-
 
   /*** Algorithm ***/
 
@@ -162,30 +178,15 @@ main( int argc, char **argv )
   delete[] param;
 
 
-  /*** Occurrence points ***/
-
-  // Obtain the Well Known Text string for the localities
-  // coordinate system.
-  char *oc_cs = fp.get( "WKT coord system" );
-
-  // Get the name of the file containing localities
-  char *oc_file = fp.get( "Species file" );
-
-  // Get the name of the taxon being modelled!
-  char *oc_name = fp.get( "Species" );
-
-  Occurrences *oc = readOccurrences( oc_file, oc_name, oc_cs );
-
-  // Populate the occurences list from the localities file
-  om.setOccurrences( oc );
-
-
   /*** Run the model ***/
 
   if ( ! om.run() )
     g_log.error( 1, "Error: %s\n", om.error() );
   else
     g_log( "Done.\n" );
+
+  // Prepare the output map
+  om.createMap( om.getEnvironment(), output, atof(scale), 0, format);
 
   g_log( "\n" );
   return 0;

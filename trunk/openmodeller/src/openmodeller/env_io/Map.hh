@@ -65,10 +65,17 @@ public:
   int isCategorical()  { return f_rst->isCategorical(); }
 
   /** Normalize map values to the interval [min,max]. */
-  int normalize( Scalar min, Scalar max ) {
+  int normalize( Scalar min, Scalar max ) 
+  {
     return f_rst->normalize( min, max );
   }
 
+  /** Copy normalized parameters from source map */
+  int copyNormalizationParams(Map * source)
+  {
+    return f_rst->copyNormalizationValues((Raster *) (source->f_rst));
+  }
+  
   /** Number of bands. */
   int numBand()   { return f_rst->numBand(); }
 

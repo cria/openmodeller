@@ -202,7 +202,7 @@ om__getAlgorithms( struct soap *soap, void *_, struct om__getAlgorithmsResponse 
 {
   // This object _must_ be static, otherwise all data pointed by the soap structs
   // will vanish in the end of this scope!!
-  static ControlInterface om;
+  static OpenModeller om;
 
   // alloc new header
   soap->header = (struct SOAP_ENV__Header*)soap_malloc( soap, sizeof(struct SOAP_ENV__Header) ); 
@@ -245,7 +245,7 @@ om__createModel( struct soap *soap, om__Points *points, om__Maps *maps, om__Mask
 {
   // This object _must_ be static, otherwise all data pointed by the soap structs
   // will vanish in the end of this scope!!
-  static ControlInterface om;
+  static OpenModeller om;
 
   // alloc new header
   soap->header = (struct SOAP_ENV__Header*)soap_malloc( soap, sizeof(struct SOAP_ENV__Header) ); 
@@ -327,7 +327,7 @@ om__createModel( struct soap *soap, om__Points *points, om__Maps *maps, om__Mask
   strcpy(r_fname, t_fname);
   strcat(r_fname, output->format); // output file is unique name + file format (should include dot)
 
-  om.setOutputMap( r_fname, output->header, (xsd__double)output->scale );
+  om.createMap( om.getEnvironment(), r_fname, (xsd__double)output->scale, mask->location, output->format );
 
   *ticket = rindex(r_fname, '/')+1; //ticket is actually the file name
 

@@ -131,6 +131,29 @@ Raster::normalize( Scalar min, Scalar max )
   f_offset = min - f_scale * f_hdr.min;
   f_normal = 1;
 
+  printf("Layer normalized. Min=%f Max=%f Scale=%f Offset=%f\n", 
+	f_hdr.min, f_hdr.max, f_scale, f_offset);
+
+  return 1;
+}
+
+/*******************************/
+/*** copyNormalizationValues ***/
+int Raster::copyNormalizationValues(Raster * source)
+{
+  // Calculate the map's minimum and maximum.
+  if ( ! f_hdr.minmax &&
+       ! calcMinMax( &f_hdr.min, &f_hdr.max ) )
+    return 0;
+  f_hdr.minmax = 1;
+
+  f_scale = source->f_scale;
+  f_offset = source->f_offset;
+  f_normal = 1;
+
+  printf("Layer copied normalization. Min=%f Max=%f Scale=%f Offset=%f\n", 
+	f_hdr.min, f_hdr.max, f_scale, f_offset);
+
   return 1;
 }
 

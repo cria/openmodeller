@@ -122,6 +122,13 @@ public:
    */
   int normalize( Scalar min, Scalar max );
 
+  /**
+   * Copy normalization parameters from a source raster object
+   * This is used when model will be projected onto target layer 
+   * For categorical maps it has no effect.
+   */
+  int copyNormalizationValues(Raster * source);
+
   /** Deativate the normalization process. */
   int denormalize()                           { f_normal = 0; }
 
