@@ -25,6 +25,8 @@
 %}
 
 // This tells SWIG to treat char ** as a special case
+// In particular it is for "counted arrays" of strings, where the first
+// parameter is the number of elementes in the second array.
 %typemap(in,numargs=1) (int ncount,char **array)
 {
   // %typemap(in,numargs=1) (int ncount,char **array)
@@ -127,11 +129,36 @@ public:
 %include "../../inc/map_format.hh"
 %include "../../inc/om_occurrences.hh"
 %include "../../inc/om_alg_parameter.hh"
-%include "../../inc/om_algorithm_metadata.hh"
 %include "../../inc/file_parser.hh"
 %include "../../inc/om_area_stats.hh"
 %include "../../inc/om_conf_matrix.hh"
 %include "../../console/occurrences_file.hh"
+
+
+//*****************************************************************************
+//
+// om_algorithm_metadata.hh typemaps and supporting delcs.
+//
+// Defines the AlgMetadata and AlgParamMetadata structs
+//
+//******************************************************************************
+
+%include "../../inc/om_algorithm_metadata.hh"
+
+%extend AlgMetadata {
+  PyObject *getParameterList() {
+     int i;
+     PyObject * paramMetadata;
+     PyObject * list = PyList_New(0);
+     for (i = 0; i < self->nparam; i++)
+     {
+       paramMetadata = SWIG_NewPointerObj((void *) &(metadata->param[i]), 
+                                            SWIGTYPE_p_AlgParamMetadata, 1);
+       PyList_Append(list, paramMetadata);
+     }
+     return list;
+  }
+}
 
 //*****************************************************************************
 //
