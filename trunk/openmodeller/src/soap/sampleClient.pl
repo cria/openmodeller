@@ -423,7 +423,7 @@ sub create_model
 	{
 	    my $value = get_algorithm_parameter(\%{$algorithms{$alg_code}{parameters}{$param}});
 
-	    push(@parameters, {'om_id'=> $param, 'value'=> $value});
+	    push(@parameters, {'om-id'=> $param, 'value'=> $value});
 	}
 
 	my @alg_tags =  map(SOAP::Data->type('struct')->name('parameter')->attr(\%{$_}), @parameters);

@@ -345,20 +345,6 @@ om__createModel( struct soap *soap, om__Points *points, om__Maps *maps, om__Mask
   strcpy(r_fname, t_fname);
   strcat(r_fname, output->format); // output file is unique name + file format (should include dot)
 
-  if ( ! om.createModel() )
-    {
-      return soap_receiver_fault( soap, "Could not create model", NULL );
-    }
-
-  om.setOutputMap( (xsd__double)output->scale, r_fname, mask->location, output->header );
-
-  printf("before create map.\n"); fflush(stdout);
-  if ( ! om.createMap() )
-    {
-      return soap_receiver_fault( soap, "Could not create map", NULL );
-    }
-  printf("after create map.\n"); fflush(stdout);
-
   *ticket = rindex(r_fname, '/')+1; //ticket is actually the file name
 
   pid_t pid = fork();
@@ -371,10 +357,19 @@ om__createModel( struct soap *soap, om__Points *points, om__Maps *maps, om__Mask
   // becomes "defunct" (?).
   if (pid > 0) // parent process
     {
-      if ( ! om.run() )
-	{
-	  return soap_receiver_fault(soap, om.error(), NULL);
-	}
+      if ( ! om.createModel() )
+        {
+	  g_log( om.error() );
+          return soap_receiver_fault( soap, "Could not create model", NULL );
+        }
+
+      om.setOutputMap( (xsd__double)output->scale, r_fname, mask->location, output->header );
+
+      if ( ! om.createMap() )
+        {
+	  g_log( om.error() );
+          return soap_receiver_fault( soap, "Could not create map", NULL );
+        }
 
       // Create flag in file system indicating job done
       char *flag_file = (char*)soap_malloc(soap, strlen(t_fname) + 4);
