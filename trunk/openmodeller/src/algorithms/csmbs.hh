@@ -40,23 +40,36 @@
 */
 class CsmBS : public Csm
 {
-public:
+    public:
 
-  /** Constructor for Csm */
-  CsmBS();
-  /** This is the descructor for the Csm class */
-  ~CsmBS();
+        /** Constructor for Csm */
+        CsmBS();
+        /** This is the descructor for the Csm class */
+        ~CsmBS();
+        /** Initialise the model specifying a threshold / cutoff point.
+         * Any model definition building stuff is done here.
+         * This is optional (model dependent).
+         * @note This method is inherited from the Algorithm class
+         * @param 
+         * @return 0 on error
+         */
+        int initialize();
 
 
-private:
-  
-  /** Discard unwanted components.
-   * This method uses the broken-stick cutoff.
-    * @note This method must be called after center
-    * @return 0 on error    
-    */  
-  int discardComponents();
+    private:
 
+        /** Discard unwanted components.
+         * This method uses the broken-stick cutoff.
+         * @note This method must be called after center
+         * @return 0 on error    
+         */  
+        int discardComponents();
+
+        /** How many times the env must be shuffled */
+        int numberOfRandomisationsInt; //hard coded for now
+        /** How many standard deviations should be added to the random derived
+         * eigenvalues when doing discard components */
+        float numberOfStdDevsFloat; //hard coded for now
 };
 
 #endif

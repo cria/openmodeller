@@ -26,32 +26,47 @@
 /****************************************************************/
 /********************** Algorithm's Metadata ********************/
 
-#define NUM_PARAM 0
+#define NUM_PARAM 2
 
 
 /************************************/
 /*** Algorithm parameter metadata ***/
 
-static AlgParamMetadata *parameters = 0;
-/*
-AlgParamMetadata parameters[NUM_PARAM] = {
+static AlgParamMetadata parameters[NUM_PARAM] = {
 
   // Metadata of the first parameter.
   {
-    "First parameter id",          // Id.
-    "First parameter name",        // Name.
-    "First parameter type",        // Type.
-    "First parameter overview",    // Overview.
-    "First parameter description", // Description.
+    "Randomisations",          // Id.
+    "Number of randomsations",        // Name.
+    "Integer",        // Type.
+    "The number of times the environmental matrix is randomly 'shuffled'.", //overview
+    "The Broken Stick method of selecting the number of components to keep \n\
+is carried out by randomising the row order of each column in the environemntal \n\
+matrix and then otaining the eigen value for the randomised matrix. \n\
+This is repeatedly carried out for the amount of times specified by the user here.", // Description.
 
     1,     // Not zero if the parameter has lower limit.
-    0.0,   // Parameter's lower limit.
+    1,   // Parameter's lower limit.
     1,     // Not zero if the parameter has upper limit.
-    1.0,   // Parameter's upper limit.
-    "0.1"  // Parameter's typical (default) value.
+    1000,   // Parameter's upper limit.
+    "10"  // Parameter's typical (default) value.
   },
+  {
+    "StandardDeviations",          // Id.
+    "Number of standard deviations",        // Name.
+    "Real",        // Type.
+    "The number of standard deviations added to the randomised eigen value.", //overview
+    "When all the eigen values for the 'shuffled' environmental matrix have been summed \n\
+this number of standard deviations is added to the mean of the eigen values. \n\
+Any components whose eigen values are above this threshold are retained.", // Description.
+
+    1,     // Not zero if the parameter has lower limit.
+    0,   // Parameter's lower limit.
+    1,     // Not zero if the parameter has upper limit.
+    10,   // Parameter's upper limit.
+    "2"  // Parameter's typical (default) value.
+  }
 };
-*/
 
 
 /************************************/
@@ -63,19 +78,17 @@ static AlgMetadata metadata = {
   "Climate Space Model - Broken-Stick", // Name.
   "0.1 alpha",           // Version.
 
-  // Overview
+  
   "Climate Space Model [CSM] is a principle components based \
-algorithm developed by Dr. Neil Caithness",
+algorithm developed by Dr. Neil Caithness",//Overview
 
-  // Description.
   "Climate Space Model [CSM] is a principle components based \
 algorithm developed by Dr. Neil Caithness. The component \
 selection process int this algorithm implementation is \
 based on the Broken-Stick cutoff where any component with \ 
 an eigenvalue < (n stddevs above a randomised sample) is discarded.\
-\n \
-The original CSM was written as series of Matlab functions. \
-   ",
+\n\
+The original CSM was written as series of Matlab functions. ", //description
 
   "Neil Caithness",  // Author
   "",                 // Bibliography.
@@ -132,6 +145,35 @@ CsmBS::~CsmBS()
       gsl_matrix_free (_gsl_eigenvector_matrix);
     }
 }
+
+int CsmBS::initialize()
+{
+  //set up parameters
+  if ( ! getParameter( "Randomisations", &numberOfRandomisationsInt ) )
+  {
+    return 0;
+  }
+  if ( ! getParameter( "StandardDeviations", &numberOfStdDevsFloat) )
+  {
+    return 0;
+  }
+
+  if ( numberOfRandomisationsInt <= 0 || numberOfRandomisationsInt > 1000 )
+  {
+    g_log.warn( "CSM - Broken Stick - Randomisations parameter out of range: %f\n",
+            numberOfRandomisationsInt );
+    return 0;
+  }
+  if ( numberOfStdDevsFloat<= 0 || numberOfStdDevsFloat> 10 )
+  {
+    g_log.warn( "CSM - Broken Stick - StandardDeviations parameter out of range: %f\n",
+            numberOfRandomisationsInt );
+    return 0;
+  }
+
+  //call the superclass initialier now...
+  Csm::initialize();
+}
 int CsmBS::discardComponents()
 {
   printf ("vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv\n");
@@ -139,14 +181,12 @@ int CsmBS::discardComponents()
   printf ("     Component discarding routine \n");
   printf ("vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv\n");
 
-  int myNumberOfRandomisations=8; //hard coded for now
-  float myNumberOfStdDevs=1.5; //hard coded for now
       //create a matrix that will store the eigenvalue vector of each of the
       //the randomised environment variables we create
       gsl_matrix * myMatrixOfEigenValueVectors = 
-      gsl_matrix_alloc (myNumberOfRandomisations,_gsl_environment_matrix->size2);
+      gsl_matrix_alloc (numberOfRandomisationsInt,_gsl_environment_matrix->size2);
 
-  for (int i=0; i<myNumberOfRandomisations;i++)
+  for (int i=0; i<numberOfRandomisationsInt;i++)
   {
 
     //    
@@ -253,7 +293,7 @@ int CsmBS::discardComponents()
   {
     double myMean = gsl_vector_get (myMeanVector,i);
     double myStdDev = gsl_vector_get (myStdDevVector,i);
-    gsl_vector_set(myMeanPlusStdDevsVector,i,myMean+(myStdDev*myNumberOfStdDevs));
+    gsl_vector_set(myMeanPlusStdDevsVector,i,myMean+(myStdDev*numberOfStdDevsFloat));
   }
 
   // First determine how many components we are going to keep
@@ -317,4 +357,9 @@ int CsmBS::discardComponents()
   gsl_vector_free (myStdDevVector);
   gsl_vector_free (myMeanPlusStdDevsVector);
   gsl_matrix_free (myMatrixOfEigenValueVectors);
+  
+  printf ("vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv\n");
+  printf ("     Completed CSM - Broken Stick \n");
+  printf ("     %i out of %i components retained \n",_retained_components_count,_layer_count );
+  printf ("vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv\n");
 }
