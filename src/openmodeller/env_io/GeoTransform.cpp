@@ -79,6 +79,9 @@ GeoTransform::GeoTransform( char *dst_desc, char *src_desc )
 
   // Deactivate GDAL error messages.
   CPLSetErrorHandler( errorHandler );
+
+  // Guess if the source CS is in degrees.
+  _is_in_degrees = ! *src_desc || checkDegrees( src_desc );
 }
 
 
@@ -248,7 +251,7 @@ GeoTransform::transfOut( double *x, double *y )
 /*** transf Out ***/
 int
 GeoTransform::transfOut( double *x, double *y,
-			 double x0, double y0 )
+                         double x0, double y0 )
 {
   *x = x0;
   *y = y0;
@@ -258,4 +261,28 @@ GeoTransform::transfOut( double *x, double *y,
 #else
   return 1;
 #endif
+}
+
+
+/*********************/
+/*** check Degrees ***/
+int
+GeoTransform::checkDegrees( char *cs )
+{
+  //dummy:
+  // This implementation is not robust, but it seems that
+  // OGRSpatialReference::GetLinearUnits() is not working
+  // correctly :(
+
+  // wkt is a lower case copy of cs.
+  char *wkt = new char[strlen(cs) + 1];
+  strcpy( wkt, cs );
+  char *str = wkt;
+  while ( *str )
+    *str++ = tolower( *str );
+
+  int ret = strstr( wkt, "unit[\"degree\"" ) ? 1 : 0;
+  delete wkt;
+
+  return ret;
 }

@@ -273,6 +273,7 @@ modelCallback( float progress, void *extra_param )
   g_log( "Model creation: %07.4f\% \r", 100 * progress );
 }
 
+
 /********************/
 /*** map Callback ***/
 /**
@@ -281,5 +282,5 @@ modelCallback( float progress, void *extra_param )
 void
 mapCallback( float progress, void *extra_param )
 {
-  g_log( "Map creation: %07.4f\% \r", 100 * progress );
+  //  g_log( "Map creation: %07.4f\% \r", 100 * progress );
 }

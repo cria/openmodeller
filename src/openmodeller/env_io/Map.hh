@@ -64,41 +64,41 @@ public:
 
   char * getCoordSystem() { return _cs; }
 
-  int isCategorical()  { return f_rst->isCategorical(); }
+  int isCategorical()  { return _rst->isCategorical(); }
 
   /** is it normalized? */
-  int isNormalized() { return f_rst->isNormalized(); }
+  int isNormalized() { return _rst->isNormalized(); }
 
   /** normalization offset */
-  Scalar offset() { return f_rst->offset(); }
+  Scalar offset() { return _rst->offset(); }
 
   /** normalization scale */
-  Scalar scale() { return f_rst->scale(); }
+  Scalar scale() { return _rst->scale(); }
 
   /** Normalize map values to the interval [min,max]. */
   int normalize( Scalar min, Scalar max ) 
   {
-    return f_rst->normalize( min, max );
+    return _rst->normalize( min, max );
   }
 
   /** Copy normalized parameters from source map */
   int copyNormalizationParams(Map * source)
   {
-    return f_rst->copyNormalizationValues((Raster *) (source->f_rst));
+    return _rst->copyNormalizationValues((Raster *) (source->_rst));
   }
   
   /** Number of bands. */
-  int numBand()   { return f_rst->numBand(); }
+  int numBand()   { return _rst->numBand(); }
 
   /** Get the map limits. */
   int getRegion( Coord *xmin, Coord *ymin, Coord *xmax,
                  Coord *ymax);
 
   /** Map dimensions. */
-  int getDim( int *xdim, int *ydim ) { f_rst->getDim(xdim, ydim); } 
+  int getDim( int *xdim, int *ydim ) { _rst->getDim(xdim, ydim); } 
 
   /** Cell width (in map units) */
-  int getCell( Coord *xcel, Coord *ycel ) { f_rst->getCell(xcel, ycel); } 
+  int getCell( Coord *xcel, Coord *ycel ) { _rst->getCell(xcel, ycel); } 
 
   /**
    * Fills 'val' with the map bands values at (x,y).
@@ -113,15 +113,15 @@ public:
    */
   int put( Coord x, Coord y, Scalar *val );
 
-  GeoTransform *getGT()  { return f_gt; }
+  GeoTransform *getGT()  { return _gt; }
 
 
 private:
 
   char         *_cs;   ///< coordinate system name       
-  Raster       *f_rst;
-  GeoTransform *f_gt;
-  int           f_del; ///< If not zero destroy 'f_rst' in the destructor.
+  Raster       *_rst;
+  GeoTransform *_gt;
+  int           _del; ///< If not zero destroy '_rst' in the destructor.
 };
 
 

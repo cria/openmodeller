@@ -53,9 +53,9 @@ Map::Map( Raster *rst, char *ocs, int del )
   _cs = new char[len];
   memcpy( _cs, ocs, len );
 
-  f_rst = rst;
-  f_gt  = new GeoTransform( rst->header().proj, ocs );
-  f_del = del;
+  _rst = rst;
+  _gt  = new GeoTransform( rst->header().proj, ocs );
+  _del = del;
 }
 
 
@@ -65,9 +65,9 @@ Map::Map( Raster *rst, char *ocs, int del )
 Map::~Map()
 {
   delete _cs;
-  delete f_gt;
-  if ( f_del )
-    delete f_rst;
+  delete _gt;
+  if ( _del )
+    delete _rst;
 }
 
 
@@ -77,11 +77,25 @@ int
 Map::getRegion( Coord *xmin, Coord *ymin, Coord *xmax,
                 Coord *ymax)
 {
-  f_rst->getRegion( xmin, ymin, xmax, ymax );
+  _rst->getRegion( xmin, ymin, xmax, ymax );
+
+  //todo:
+  // OGRCoordinateTransformation::Transform() used by _gt->transform()
+  // does not correctly transform points outside
+  // { (x,y) | -180 < x < 180, -90 < y < -90 } and does not return error!
+  if ( _gt->isInDegrees() )
+    {
+      double static dif = 1e-10;
+      if ( *xmin <= -180.0 ) *xmin = -180.0 + dif;
+      if ( *xmax >=  180.0 ) *xmax =  180.0 - dif;
+      if ( *ymin <= -90.0 ) *ymin = -90.0 + dif;
+      if ( *ymax >=  90.0 ) *ymax =  90.0 - dif;
+    }
+  _rst->print( "Header:" );
 
   return
-    f_gt->transfOut( xmin, ymin ) &&
-    f_gt->transfOut( xmax, ymax );
+    _gt->transfOut( xmin, ymin ) &&
+    _gt->transfOut( xmax, ymax );
 }
 
 
@@ -90,7 +104,7 @@ Map::getRegion( Coord *xmin, Coord *ymin, Coord *xmax,
 int
 Map::get( Coord x, Coord y, Scalar *val )
 {
-  return f_gt->transfIn( &x, &y ) ? f_rst->get( x, y, val ) : 0;
+  return _gt->transfIn( &x, &y ) ? _rst->get( x, y, val ) : 0;
 }
 
 
@@ -99,6 +113,6 @@ Map::get( Coord x, Coord y, Scalar *val )
 int
 Map::put( Coord x, Coord y, Scalar *val )
 {
-  return f_gt->transfIn( &x, &y ) ? f_rst->put( x, y, val ) : 0;
+  return _gt->transfIn( &x, &y ) ? _rst->put( x, y, val ) : 0;
 }
 

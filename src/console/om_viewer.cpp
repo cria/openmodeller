@@ -95,7 +95,7 @@ main( int argc, char **argv )
       _nmap = fp.count( "Map" );
 
       if ( ! _nmap )
-	g_log.error( 1, "No map to be shown!?!\n" );
+        g_log.error( 1, "No map to be shown!?!\n" );
 
       _maps = new (Map *)[_nmap];
       rst = new (Raster *)[_nmap];
@@ -103,12 +103,12 @@ main( int argc, char **argv )
       fp.getAll( "Map", mapfile );
       
       for ( int i = 0; i < _nmap; i++ )
-	{
-	  // Generate a raster using map "i".
-	  rst[i]   = new RasterFile( mapfile[i] );
-	  _maps[i] = new Map( rst[i], GeoTransform::cs_default );
-	  _maps[i]->normalize( 0.0, 255.0 );
-	}
+        {
+          // Generate a raster using map "i".
+          rst[i]   = new RasterFile( mapfile[i] );
+          _maps[i] = new Map( rst[i], GeoTransform::cs_default );
+          _maps[i]->normalize( 0.0, 255.0 );
+        }
     }
 
   // Visualize result.
@@ -157,7 +157,7 @@ main( int argc, char **argv )
   // Drawing area.
   _graph = new GGraph( _pm );
   _graph->scale( float(xmin), float(ymin), float(xmax),
-		 float(ymax) );
+                 float(ymax) );
   _graph->background( _bg );
   _graph->clear();
 
@@ -186,10 +186,10 @@ draw()
   if ( _redraw )
     {
       for ( int i = 0; i < _nmap; i++ )
-	{
-	  draw_map( _graph, _maps[i] );
-	  draw_occur( _graph, _maps[i], _occurs );
-	}
+        {
+          draw_map( _graph, _maps[i] );
+          draw_occur( _graph, _maps[i], _occurs );
+        }
 
       _redraw = 0;
     }
@@ -217,15 +217,15 @@ draw_map( GGraph *graph, Map *map )
   for ( Coord y = ymin; y < ymax; y += ystep )
     {
       for ( Coord x = xmin; x < xmax; x += xstep )
-	if ( map->get( x, y, val ) )
-	  {
-	    color = int( *val );
-	    graph->pixel( float(x), float(y), color );
-	  }
+        if ( map->get( x, y, val ) )
+          {
+            color = int( *val );
+            graph->pixel( float(x), float(y), color );
+          }
 
 
       if ( ! (++i % 10) )
-	_cnv->put( graph );
+        _cnv->put( graph );
     }
 }
 
@@ -255,7 +255,7 @@ draw_occur( GGraph *graph, Map *map, Occurrences *occurs )
 /*** find Region ***/
 void
 findRegion( int nmap, Map **map, Coord *xmin, Coord *ymin,
-	    Coord *xmax, Coord *ymax )
+            Coord *xmax, Coord *ymax )
 {
   map[0]->getRegion( xmin, ymin, xmax, ymax );
 }
