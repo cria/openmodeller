@@ -142,6 +142,13 @@ public:
    */
   int varTypes( int *types );
 
+  /** Splits data points into to 2 new samplers
+   *  @param train Pointer to train sampler to be returned
+   *  @param test  Pointer to test sampler to be returned
+   *  @param propTrain Percentage of points to go to train sampler
+   */
+  void split(Sampler ** train, Sampler ** test, double propTrain);
+
 
 protected:
 
@@ -162,6 +169,23 @@ protected:
    */
   int getOccurrence( Occurrences *occur, SampledData *env,
 		     int npnt );
+
+  /** Copy occurrences to a new Occurrences object.
+   *
+   * @param occs Source object to copy occurrences from.
+   *  
+   * @return A copy of source Occurrences object.
+   */
+  Occurrences * copyOccurrences(Occurrences * occs);
+  
+  /** Move occurrences from train to test set
+   *
+   * @param train Source object to move occurrences from.
+   * @param test Destination object to move occurrences to.
+   * @param propTrain Proportion of points that will remain on train set.
+   */
+  void moveRandomOccurrences(Occurrences * train, 
+			     Occurrences * test, double propTrain);
 
 
   Occurrences *_presence;

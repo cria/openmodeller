@@ -29,9 +29,11 @@
 
 #include <om.hh>
 #include "garp_run.hh"
+#include "garp_run_thread.hh"
 #include "serialization/serializable.hh"
 #include "garp.hh"
-#include "sampler.hh"
+#include "om_alg_parameter.hh"
+#include "om_sampler.hh"
 
 /****************************************************************/
 /************************ GARP Run Thread ***********************/
@@ -39,14 +41,22 @@
 // TODO: modify strategy to reuse threads instead of creating a 
 //       new one for every garp run
 
-THREAD_PROC_RETURN_TYPE GarpRunThreadProc(void * garpRun)
+THREAD_PROC_RETURN_TYPE GarpRunThreadProc(void * threadData)
 {
+  GarpRun * garpRun = (GarpRun *) threadData;
+
+  g_log("Starting new thread (%d).\n", garpRun->getId());
+
   while (!garpRun->done())
     garpRun->iterate();
 
-  garpRun->project();
-  garpRun->test();
+  garpRun->calculateCommission();
+  garpRun->calculateOmission();
   garpRun->finalize();
+  
+  return NULL;
+
+  g_log("Finishing thread (%d).\n", garpRun->getId());
 
   THREAD_PROC_RETURN_STATEMENT;
 }
@@ -58,65 +68,150 @@ THREAD_PROC_RETURN_TYPE GarpRunThreadProc(void * garpRun)
 GarpRun::GarpRun() 
 {
   _id = -1;
-  _active = false;
+  _running = false;
   _omission = -1.0;
   _commission = -1.0;
+  _commission_samples = 0;
   _garp = NULL;      
 }
 
+/****************************************************************/
 GarpRun::~GarpRun() 
 {
   if (_garp)
     delete _garp;
 }
 
-int
-GarpRun::initialize(int id, Sampler * sampler, int nparam)
+/****************************************************************/
+int GarpRun::initialize(int id, int comm_samples,
+			Sampler * train_sampler, 
+			Sampler * test_sampler, 
+			int nparam, AlgParameter * param)
 {
+  g_log("Initializing garp run (%d)\n", id);
+
   _id = id;
-  // TODO: finish implementation
+  _commission_samples = comm_samples;
+
+  _train_sampler = train_sampler;
+  _test_sampler = test_sampler;
+
+  _garp = new Garp;
+  _garp->setSampler(train_sampler);
+  _garp->setParameters(nparam, param);
+  _garp->initialize();
 }
 
-int 
-GarpRun::run()
+/****************************************************************/
+int GarpRun::run()
 {
-  _active = true;
+  g_log("Starting new garp run (%d).\n", _id);
+  _running = true;
   THREAD_START(GarpRunThreadProc, this); 
 }
 
-int 
-GarpRun::iterate()
-{ _garp->iterate(); }
+/****************************************************************/
+bool GarpRun::running()
+{ return _running; }
 
-int 
-GarpRun::done()
+/****************************************************************/
+int GarpRun::iterate()
+{
+  //g_log("Iteration %6d on run %d.\n", _garp->getGeneration(), _id);
+  _garp->iterate(); 
+}
+
+/****************************************************************/
+int GarpRun::done()
 { return _garp->done(); }
 
-int 
-GarpRun::finalize()           
+/****************************************************************/
+int GarpRun::finalize()           
 {
-  _active = false;
-  _done = true; 
+  g_log("Finishing up garp run.(%d)\n", _id);
+  _running = false;
   THREAD_END();
 }
 
-double 
-GarpRun::getOmission()     
+/****************************************************************/
+int GarpRun::calculateCommission()           
+{
+  int i;
+  double sum = 0.0;
+  SampledData sample;
+
+  // TODO: check how to use absences in computing commission
+
+  g_log("Calculating commission error (%d).\n", _id);
+
+  _train_sampler->getPseudoAbsence(&sample, _commission_samples);
+
+  for (i = 0; i < _commission_samples; i++)
+    { sum += _garp->getValue(sample[i]); }
+
+  _commission = sum / (double) _commission_samples;
+
+  return 1;
+}
+
+/****************************************************************/
+int GarpRun::calculateOmission()           
+{
+  int i, npresences, nomitted;
+  SampledData sample, absences;
+  Sampler * sampler;
+
+  // TODO: check how to use absences in computing omission
+
+  g_log("Calculating omission error (%d).\n", _id);
+
+  // test which kind of test (intrinsic or extrinsic) should be performed
+  if (!_test_sampler)
+    { sampler = _train_sampler; }
+  else
+    { sampler = _test_sampler; }
+
+  npresences = sampler->getPresence(&sample);
+  nomitted = 0;
+  for (i = 0; i < npresences; i++)
+    { nomitted = !_garp->getValue(sample[i]); }
+
+  _omission = (double) nomitted / (double) npresences;
+
+  return 1;
+}
+
+/****************************************************************/
+double GarpRun::getOmission()     
 { return _omission; }
 
-double 
-GarpRun::getCommission()   
+/****************************************************************/
+double GarpRun::getCommission()   
 { return _commission; }
 
-int 
-GarpRun::serialize(Serializer * serializer)
+/****************************************************************/
+double GarpRun::getError(int type)
+{
+  if (!type)
+    { return _omission; }
+  else
+    { return _commission; }
+}
+
+/****************************************************************/
+double GarpRun::getValue(Scalar * x)   
+{ return _garp->getValue(x); }
+
+/****************************************************************/
+int GarpRun::serialize(Serializer * serializer)
 {
   // TODO: finish implementation
 }
 
-int
-GarpRun::deserialize(Deserializer * deserializer)
+/****************************************************************/
+int GarpRun::deserialize(Deserializer * deserializer)
 {
   // TODO: finish implementation
 }
 
+/****************************************************************/

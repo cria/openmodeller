@@ -103,11 +103,26 @@ public:
 
 private:
 
+  int checkActiveThreads();
+  int checkForEarlyTermination();
+  int calculateBestSubset();
+  void sortRuns(GarpRun ** runList, int nelements, int errorType);
+
+
   //
-  // Algorithm parameters
+  // best subsets parameters
   //
 
-  /** */
+  double _trainProp;
+  int _totalRuns;
+  double _omissionThreshold;
+  int _modelsUnderOmission;
+  double _commissionThreshold;
+  int _commissionSampleSize;
+  int _maxThreads;
+
+  bool _softOmissionThreshold;
+  int _currentModelsUnderOmissionThreshold;
 
   //
   // GARP parameters
@@ -122,30 +137,24 @@ private:
   /** Number of points to be considered after resampling (with replacement) */
   int _resamples;
 
-  /** Minimum posterior probability of a rule */
-  double _acc_limit;
-
   /** Minimum value for convergence that triggers termination of execution */
   double _conv_limit;
-
-  /** Percentage of rules that are killed at the end of a iteration */
-  double _mortality;
-
-  /** */
-  double _significance; 
-  double _crossover_rate;
-  double _mutation_rate;
-  double _gapsize;
 
   //
   // Internal data structures for Best Subsets
   //
-  GarpRun * garpRun[];
-  GarpRun * bestRun[];
+  GarpRun ** _finishedRun;
+  GarpRun ** _activeRun;
+  GarpRun ** _bestRun;
 
-  int activeRuns;
-  int runCount;
-  int done;
+  int _garp_nparam;
+  AlgParameter * _garp_params;
+
+  int _finishedRuns;
+  int _activeRuns;
+  int _bestRuns;
+
+  int _done;
 };
 
 
