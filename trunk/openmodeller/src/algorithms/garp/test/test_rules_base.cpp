@@ -47,10 +47,7 @@ public:
 };
 
 
-ExtGarpRule::ExtGarpRule() : GarpRule() 
-{
-}
-
+ExtGarpRule::ExtGarpRule() : GarpRule() {}
 
 void ExtGarpRule::setGenes(Scalar * genes, int numGenes)
 {
@@ -80,12 +77,37 @@ void GarpCustomSampler::getBioclimRange(Scalar, int, Scalar *, Scalar *) {}
 
 #define eps 10e-6
 
-TEST( GarpRule_getCertainty , GarpRule )
+TEST( GarpRule_getCertainty1 , GarpRule )
 {
   ExtGarpRule * rule = new ExtGarpRule;
   
   rule->setPrediction(0.0);
+
   DOUBLES_EQUAL(rule->getCertainty(0.0), 1.0, eps);
   DOUBLES_EQUAL(rule->getCertainty(1.0), 0.0, eps);
   DOUBLES_EQUAL(rule->getCertainty(0.5), 0.0, eps);
+}
+
+
+TEST( GarpRule_getCertainty2 , GarpRule )
+{
+  ExtGarpRule * rule = new ExtGarpRule;
+  
+  rule->setPrediction(1.0);
+
+  DOUBLES_EQUAL(rule->getCertainty(0.0), 0.0, eps);
+  DOUBLES_EQUAL(rule->getCertainty(1.0), 1.0, eps);
+  DOUBLES_EQUAL(rule->getCertainty(0.5), 0.0, eps);
+}
+
+
+TEST( GarpRule_getError , GarpRule )
+{
+  ExtGarpRule * rule = new ExtGarpRule;
+  
+  DOUBLES_EQUAL(rule->getError(0.0, 0.0), 0.0, eps);
+  DOUBLES_EQUAL(rule->getError(1.0, 0.0), 1.0, eps);
+  DOUBLES_EQUAL(rule->getError(1.0, -1.0), 2.0, eps);
+  DOUBLES_EQUAL(rule->getError(-1.0, 1.0), 2.0, eps);
+  DOUBLES_EQUAL(rule->getError(0.0, 0.5), 0.5, eps);
 }
