@@ -29,13 +29,14 @@
 #ifndef _FILE_PARSERHH_
 #define _FILE_PARSERHH_
 
+#include <om_defs.hh>
 #include <list.hh>
 
 /**
  * Read key/value pairs from a configuration file.
  * 
  */
-class FileParser
+class dllexp FileParser
 {
   typedef struct
   {

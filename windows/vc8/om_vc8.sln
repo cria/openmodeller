@@ -3,8 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 9.00
 # Visual C++ Express 2005
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libopenmodeller_dll", "libopenmodeller_dll\libopenmodeller_dll.vcproj", "{524F2298-7DCD-4C7D-B837-3B13F072C059}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libopenmodeller_static", "libopenmodeller_static\libopenmodeller_static.vcproj", "{513AC8EA-BF16-4BCC-BFDA-0B766DA0C09F}"
-EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "om_bioclim", "om_bioclim\om_bioclim.vcproj", "{70482A69-CBB5-4151-B963-A119B8C12730}"
 	ProjectSection(ProjectDependencies) = postProject
 		{524F2298-7DCD-4C7D-B837-3B13F072C059} = {524F2298-7DCD-4C7D-B837-3B13F072C059}
@@ -45,17 +43,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "om_garp_best_subsets", "om_
 		{524F2298-7DCD-4C7D-B837-3B13F072C059} = {524F2298-7DCD-4C7D-B837-3B13F072C059}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "om_java", "om_java\om_java.vcproj", "{E8A743B8-9D2C-465E-82F2-0C4A174B8F07}"
-	ProjectSection(ProjectDependencies) = postProject
-		{524F2298-7DCD-4C7D-B837-3B13F072C059} = {524F2298-7DCD-4C7D-B837-3B13F072C059}
-	EndProjectSection
-EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "om_mindist", "om_mindist\om_mindist.vcproj", "{53D80323-3A9E-4B56-B103-535A0B20D362}"
-	ProjectSection(ProjectDependencies) = postProject
-		{524F2298-7DCD-4C7D-B837-3B13F072C059} = {524F2298-7DCD-4C7D-B837-3B13F072C059}
-	EndProjectSection
-EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "om_python", "om_python\om_python.vcproj", "{522FDCAD-6AAB-4919-924F-AF938109A391}"
 	ProjectSection(ProjectDependencies) = postProject
 		{524F2298-7DCD-4C7D-B837-3B13F072C059} = {524F2298-7DCD-4C7D-B837-3B13F072C059}
 	EndProjectSection
@@ -70,10 +58,6 @@ Global
 		{524F2298-7DCD-4C7D-B837-3B13F072C059}.Debug|Win32.Build.0 = Debug|Win32
 		{524F2298-7DCD-4C7D-B837-3B13F072C059}.Release|Win32.ActiveCfg = Release|Win32
 		{524F2298-7DCD-4C7D-B837-3B13F072C059}.Release|Win32.Build.0 = Release|Win32
-		{513AC8EA-BF16-4BCC-BFDA-0B766DA0C09F}.Debug|Win32.ActiveCfg = Debug|Win32
-		{513AC8EA-BF16-4BCC-BFDA-0B766DA0C09F}.Debug|Win32.Build.0 = Debug|Win32
-		{513AC8EA-BF16-4BCC-BFDA-0B766DA0C09F}.Release|Win32.ActiveCfg = Release|Win32
-		{513AC8EA-BF16-4BCC-BFDA-0B766DA0C09F}.Release|Win32.Build.0 = Release|Win32
 		{70482A69-CBB5-4151-B963-A119B8C12730}.Debug|Win32.ActiveCfg = Debug|Win32
 		{70482A69-CBB5-4151-B963-A119B8C12730}.Debug|Win32.Build.0 = Debug|Win32
 		{70482A69-CBB5-4151-B963-A119B8C12730}.Release|Win32.ActiveCfg = Release|Win32
@@ -106,18 +90,10 @@ Global
 		{8EC952C2-FACB-4F1D-A09F-700604FB0B27}.Debug|Win32.Build.0 = Debug|Win32
 		{8EC952C2-FACB-4F1D-A09F-700604FB0B27}.Release|Win32.ActiveCfg = Release|Win32
 		{8EC952C2-FACB-4F1D-A09F-700604FB0B27}.Release|Win32.Build.0 = Release|Win32
-		{E8A743B8-9D2C-465E-82F2-0C4A174B8F07}.Debug|Win32.ActiveCfg = Debug|Win32
-		{E8A743B8-9D2C-465E-82F2-0C4A174B8F07}.Debug|Win32.Build.0 = Debug|Win32
-		{E8A743B8-9D2C-465E-82F2-0C4A174B8F07}.Release|Win32.ActiveCfg = Release|Win32
-		{E8A743B8-9D2C-465E-82F2-0C4A174B8F07}.Release|Win32.Build.0 = Release|Win32
 		{53D80323-3A9E-4B56-B103-535A0B20D362}.Debug|Win32.ActiveCfg = Debug|Win32
 		{53D80323-3A9E-4B56-B103-535A0B20D362}.Debug|Win32.Build.0 = Debug|Win32
 		{53D80323-3A9E-4B56-B103-535A0B20D362}.Release|Win32.ActiveCfg = Release|Win32
 		{53D80323-3A9E-4B56-B103-535A0B20D362}.Release|Win32.Build.0 = Release|Win32
-		{522FDCAD-6AAB-4919-924F-AF938109A391}.Debug|Win32.ActiveCfg = Debug|Win32
-		{522FDCAD-6AAB-4919-924F-AF938109A391}.Debug|Win32.Build.0 = Debug|Win32
-		{522FDCAD-6AAB-4919-924F-AF938109A391}.Release|Win32.ActiveCfg = Release|Win32
-		{522FDCAD-6AAB-4919-924F-AF938109A391}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

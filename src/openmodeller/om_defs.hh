@@ -80,7 +80,6 @@ typedef float  (*floatFunc)(float);
 // Windows only defs
 //
 #ifdef _WINDOWS
-
 #define strcasecmp _stricmp
 #define dllexp __declspec(dllexport)
 
