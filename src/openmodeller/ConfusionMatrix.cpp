@@ -67,6 +67,7 @@ void ConfusionMatrix::calculate(Sampler * sampler, Algorithm * alg)
   Scalar predictionValue;
   SampledData data;
 
+  reset(_predictionThreshold);
   sampler->getPresence(&data);
   n = data.numSamples();
 

@@ -858,8 +858,7 @@ AreaStats * OpenModeller::getActualAreaStats()
 /******* getActualAreaStats *******/
 AreaStats * OpenModeller::getEstimatedAreaStats(double proportionAreaToSample)
 {
-  int i, sampleSize, numCells;
-  Coord x0, y0, x1, y1, xcel, ycel;
+  int i, sampleSize, numCells, xdim, ydim;
   Scalar * sample;
 
   if ( !_estimatedAreaStats )
@@ -870,9 +869,17 @@ AreaStats * OpenModeller::getEstimatedAreaStats(double proportionAreaToSample)
   sample = new Scalar[_env->numLayers()];
 
   // get number of cells to sample
-  _env->getRegion(&x0, &y0, &x1, &y1);
+  // note that the total area does not take the mask into account
+  // thus all cells (masked or unmasked) are counted
+  _env->getMask()->getDim(&xdim, &ydim);
+  numCells = xdim * ydim; 
+
+  Coord x0, y0, x1, y1, xcel, ycel;
   _env->getMask()->getCell(&xcel, &ycel);
-  numCells = (int) ((fabs(y1 - y0) / ycel) * (fabs(x1 - y0) / xcel));
+  _env->getMask()->getRegion(&x0, &y0, &x1, &y1);
+  printf("xdim=%d ydim=%d\n", xdim, ydim);
+  printf("x0=%f y0=%f x1=%f y1=%f\n", x0, y0, x1, y1);
+  printf("xcel=%f ycel=%f\n", xcel, ycel);
 
   sampleSize = numCells * proportionAreaToSample;
   for (i = 0; i < sampleSize; i++)

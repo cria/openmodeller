@@ -94,8 +94,11 @@ public:
   int getRegion( Coord *xmin, Coord *ymin, Coord *xmax,
                  Coord *ymax);
 
-  /** Cell dimensions. */
-  int getCell( Coord *xcel, Coord *ycel ) { f_rst->getCell(xcel, ycel); }
+  /** Map dimensions. */
+  int getDim( int *xdim, int *ydim ) { f_rst->getDim(xdim, ydim); } 
+
+  /** Cell width (in map units) */
+  int getCell( Coord *xcel, Coord *ycel ) { f_rst->getCell(xcel, ycel); } 
 
   /**
    * Fills 'val' with the map bands values at (x,y).
