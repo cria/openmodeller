@@ -45,8 +45,8 @@
 
 #define NUM_PARAM 4
 
-/************************************/
-/*** Algorithm parameter metadata ***/
+/****************************************************************/
+/*** Algorithm parameter metadata *******************************/
 
 AlgParamMetadata parameters[NUM_PARAM] = 
 {
@@ -124,8 +124,8 @@ AlgParamMetadata parameters[NUM_PARAM] =
 };
 
 
-/************************************/
-/*** Algorithm's general metadata ***/
+/*****************************************************************/
+/*** Algorithm's general metadata ********************************/
 
 AlgMetadata metadata = {
   
@@ -199,6 +199,9 @@ algorithmFactory()
 
 const PerfIndex defaultPerfIndex = PerfSig;
 
+/****************************************************************/
+/****************** Garp constructor ****************************/
+
 Garp::Garp()
   : Algorithm(& metadata)
 {
@@ -217,6 +220,8 @@ Garp::Garp()
 
   _significance   = 2.70;
 
+  _maxProgress = 0.0;
+
   // reset private attributes
   _fittest = _offspring = NULL;
   _custom_sampler = NULL;
@@ -233,12 +238,14 @@ Garp::Garp()
     }
 }
 
+/****************************************************************/
+/****************** Garp destructor *****************************/
 Garp::~Garp()
 {
   // debug
   if ( _fittest )
     {
-      //g_log( "Resulting rules: (similar=%d/%d)\n", similar, total);
+      //g_log.debug( "Resulting rules: (similar=%d/%d)\n", similar, total);
       //_fittest->log();
     }
 
@@ -280,10 +287,10 @@ int Garp::initialize()
   if (!getParameter("Resamples",        &_resamples))      
       g_log.error(1, "Parameter Resamples not set properly.");
 
-  g_log("MaxGenerations set to:   %d\n", _max_gen);
-  g_log("ConvergenceLimit set to: %.4f\n", _conv_limit);
-  g_log("PopulationSize set to:   %d\n", _popsize);
-  g_log("Resamples set to:        %d\n", _resamples);
+  //g_log.debug("MaxGenerations set to:   %d\n", _max_gen);
+  //g_log.debug("ConvergenceLimit set to: %.4f\n", _conv_limit);
+  //g_log.debug("PopulationSize set to:   %d\n", _popsize);
+  //g_log.debug("Resamples set to:        %d\n", _resamples);
 
   _offspring  = new GarpRuleSet(2 * _popsize);
   _fittest    = new GarpRuleSet(2 * _popsize);
@@ -297,7 +304,7 @@ int Garp::initialize()
 }
   
 /****************************************************************/
-/****************** Algorithm's factory function ****************/
+/****************** iterate *************************************/
 
 int Garp::iterate()
 {
@@ -318,13 +325,14 @@ int Garp::iterate()
   
   _fittest->performanceSummary(defaultPerfIndex, 
 			       &perfBest, &perfWorst, &perfAvg);
-  
+  /*  
 #ifndef DONT_EXPORT_GARP_FACTORY
-  g_log( "%4d] ", _gen );
-  g_log( "[%2d] conv=%+7.4f | perfs=%+8.3f, %+8.3f, %+8.3f\n", _fittest->numRules(), 
+  g_log.debug( "%4d] ", _gen );
+  g_log.debug( "[%2d] conv=%+7.4f | perfs=%+8.3f, %+8.3f, %+8.3f\n", _fittest->numRules(), 
 	 _convergence, perfBest, perfWorst, perfAvg );
 #endif
-  
+  */
+
   if (done())
     {
       // finalize processing of model
@@ -347,7 +355,25 @@ int Garp::iterate()
 }
   
 /****************************************************************/
-/****************** Algorithm's factory function ****************/
+/****************** getProgress *********************************/
+
+float Garp::getProgress()
+{
+  if (done())
+    { return 1.0; }
+  else
+    { 
+      float byIterations  = ( _gen / (float) _max_gen );
+      float byConvergence = ( _conv_limit / _convergence );
+      float progress = (byIterations > byConvergence) ? byIterations : byConvergence; 
+      if (progress > _maxProgress)
+	{ _maxProgress = progress; }
+      return _maxProgress;
+    } 
+}
+
+/****************************************************************/
+/****************** done ****************************************/
 
 int Garp::done()
 {
@@ -355,7 +381,7 @@ int Garp::done()
 }
 
 /****************************************************************/
-/****************** Algorithm's factory function ****************/
+/****************** getValue ************************************/
 
 Scalar Garp::getValue( Scalar *x )
 {
@@ -363,7 +389,7 @@ Scalar Garp::getValue( Scalar *x )
 }
   
 /****************************************************************/
-/****************** Algorithm's factory function ****************/
+/****************** getConvergence ******************************/
 
 int Garp::getConvergence( Scalar *val )
 {
@@ -371,8 +397,8 @@ int Garp::getConvergence( Scalar *val )
   return 0;
 }
 
-/******************/
-/*** serialize ***/
+/****************************************************************/
+/****************** serialize ***********************************/
 int
 Garp::serialize(Serializer * s)
 {
@@ -413,8 +439,8 @@ Garp::serialize(Serializer * s)
   return 1;
 }
 
-/********************/
-/*** deserialize ***/
+/****************************************************************/
+/****************** deserialize *********************************/
 int
 Garp::deserialize(Deserializer * ds)
 {
@@ -483,7 +509,7 @@ Garp::deserialize(Deserializer * ds)
 
 
 /****************************************************************/
-/***************** select ***************************************/
+/***************** keepFittest **********************************/
 
 void Garp::keepFittest(GarpRuleSet * source, GarpRuleSet * target, 
 		     PerfIndex perfIndex)
@@ -585,7 +611,7 @@ void Garp::colonize(GarpRuleSet * ruleset, GarpCustomSampler * sampler,
 	case 3: rule = new AtomicRule(); break;
 	}
 
-      //g_log("[%c] ", rule->type());
+      //g_log.debug("[%c] ", rule->type());
 
       rule->initialize(sampler);
       ruleset->add(rule);
@@ -608,7 +634,7 @@ void Garp::select(GarpRuleSet * source, GarpRuleSet * target,
   
   source->performanceSummary(defaultPerfIndex, &perfBest, &perfWorst, &perfAvg);
 
-  //g_log( "Performances: %f %f %f.\n", perfBest, perfWorst, perfAvg );
+  //g_log.debug( "Performances: %f %f %f.\n", perfBest, perfWorst, perfAvg );
 
   // normalizer for proportional selection probabilities
   if (perfAvg - perfWorst) 

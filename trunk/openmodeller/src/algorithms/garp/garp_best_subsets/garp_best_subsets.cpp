@@ -344,6 +344,8 @@ GarpBestSubsets::GarpBestSubsets()
   _activeRuns = 0;
   _done = false;
 
+  _maxProgress = 0.0;
+
 }
 
 // ****************************************************************
@@ -385,11 +387,6 @@ int GarpBestSubsets::needNormalization( Scalar *min, Scalar *max )
 
 int GarpBestSubsets::initialize()
 {
-  // Reconfigure the global logger.
-  //g_log.set( Log::Debug, stdout, "Garp" );
-  //g_log.setLevel( Log::Debug );
-  //g_log.setLevel( Log::Error );
-
   // BS parameters
   if (!getParameter("TrainingProportion", &_trainProp))        
       g_log.error(1, "Parameter TrainingProportion not set properly.");
@@ -453,7 +450,7 @@ int GarpBestSubsets::initialize()
   _garp_params[0].setId("MaxGenerations");
   _garp_params[0].setValue(buffer);
   
-  sprintf(buffer, "%d", _conv_limit); 
+  sprintf(buffer, "%f", _conv_limit); 
   _garp_params[1].setId("ConvergenceLimit");
   _garp_params[1].setValue(buffer);
 
@@ -469,72 +466,71 @@ int GarpBestSubsets::initialize()
 }
   
 /****************************************************************/
-/****************** Algorithm's factory function ****************/
+/****************** iterate *************************************/
 
 int GarpBestSubsets::iterate()
 {
-  static int i = 0;
+  static int iterations = 0;
   int active;
   GarpRun * garpRun;
 
-  ++i;
+  ++iterations;
 
-  if (!_done)
+  if (_done)
+    { return 1; }
+
+  // check if it should start new runs
+  if ((_finishedRuns + _activeRuns < _totalRuns) && 
+      !earlyTerminationConditionMet())
     {
-      // check if it should start new runs
-      if ((_finishedRuns + _activeRuns < _totalRuns) && 
-	  !earlyTerminationConditionMet())
+      // it needs to start more runs
+      // wait for a slot for a new thread
+      if ((active = numActiveThreads()) >= _maxThreads)
 	{
-	  // it needs to start more runs
-	  // wait for a slot for a new thread
-	  if ((active = numActiveThreads()) >= _maxThreads)
-	    {
-	      /*
-	      g_log("%5d] Waiting for a slot to run next thread (%d out of %d)\n",
-		    i, active, _maxThreads);
-	      */
-	      SLEEP(1); 
-	    }
-	  
-	  else
-	    {
-	      g_log("%5d] There is an empty slot to run next thread (%d out of %d)\n",
-		    i, active, _maxThreads);
-
-	      // start new GarpRun
-	      Sampler * train, * test;
-	      _samp->split(&train, &test, _trainProp);
-	      garpRun = new GarpRun();
-	      garpRun->initialize(_finishedRuns + _activeRuns,
-				  _commissionSampleSize, train, test, 
-				  _garp_nparam, _garp_params);
-	      _activeRun[_activeRuns++] = garpRun;
-	      garpRun->run();
-	    }
+	  /*
+	    g_log("%5d] Waiting for a slot to run next thread (%d out of %d)\n",
+	    iterations, active, _maxThreads);
+	  */
+	  SLEEP(2); 
 	}
-
+      
       else
 	{
-	  // no more runs are needed
-	  // check if all active threads have finished
-	  if (active = numActiveThreads())
-	    {
-	      // there are still threads running
-	      /*
-	      g_log("%5d] Waiting for %d active thread(s) to finish.\n", 
-		    i, active);
-	      */
-	      SLEEP(1); 
-	    }
-
-	  else
-	    {
-	      // all running threads terminated
-	      // calculate best subset and exit
-	      g_log("%5d] Calculating best and terminating algorithm.\n", i);
-	      calculateBestSubset();
-	      _done = true;
-	    }
+	  //g_log("%5d] There is an empty slot to run next thread (%d out of %d)\n", iterations, active, _maxThreads);
+	  
+	  // start new GarpRun
+	  Sampler * train, * test;
+	  _samp->split(&train, &test, _trainProp);
+	  garpRun = new GarpRun();
+	  garpRun->initialize(_finishedRuns + _activeRuns,
+			      _commissionSampleSize, train, test, 
+			      _garp_nparam, _garp_params);
+	  _activeRun[_activeRuns++] = garpRun;
+	  garpRun->run();
+	}
+    }
+  
+  else
+    {
+      // no more runs are needed
+      // check if all active threads have finished
+      if (active = numActiveThreads())
+	{
+	  // there are still threads running
+	  /*
+	    g_log("%5d] Waiting for %d active thread(s) to finish.\n", 
+	    iterations, active);
+	  */
+	  SLEEP(2); 
+	}
+      
+      else
+	{
+	  // all running threads terminated
+	  // calculate best subset and exit
+	  //g_log("%5d] Calculating best and terminating algorithm.\n", i);
+	  calculateBestSubset();
+	  _done = true;
 	}
     }
 
@@ -554,7 +550,7 @@ int GarpBestSubsets::numActiveThreads()
 
       if (!run->running())
 	{
-	  g_log("Thread %d has just finished.\n", run->getId());
+	  //g_log("Thread %d has just finished.\n", run->getId());
 
 	  // run finished its work
 	  // move it to finished runs
@@ -589,7 +585,7 @@ int GarpBestSubsets::calculateBestSubset()
 {
   int i;
 
-  g_log("Calculating best subset of models.\n");
+  //g_log("Calculating best subset of models.\n");
       
   // make a copy of finished runs to play with
   GarpRun ** runList = new GarpRun*[_finishedRuns];
@@ -625,7 +621,7 @@ int GarpBestSubsets::calculateBestSubset()
 
   delete[] runList;
 
-  g_log("Selected best %d models out of %d.\n", _bestRuns, _totalRuns);
+  //g_log("Selected best %d models out of %d.\n", _bestRuns, _totalRuns);
 
   return 1;
 }
@@ -637,8 +633,7 @@ void GarpBestSubsets::sortRuns(GarpRun ** runList,
   int i, j;
   GarpRun * runJ0, * runJ1;
 
-  g_log("Sorting list %d of %d elements by index %d.\n", 
-	runList, nelements, errorType);
+  //g_log("Sorting list %d of %d elements by index %d.\n", runList, nelements, errorType);
 
   // bubble sort
   // TODO: change to quicksort if this becomes a bottleneck
@@ -660,7 +655,7 @@ void GarpBestSubsets::sortRuns(GarpRun ** runList,
 }
 
 /****************************************************************/
-/****************** Algorithm's factory function ****************/
+/****************** done ****************************************/
 
 int GarpBestSubsets::done()
 {
@@ -668,7 +663,42 @@ int GarpBestSubsets::done()
 }
 
 /****************************************************************/
-/****************** Algorithm's factory function ****************/
+/****************** done ****************************************/
+
+float GarpBestSubsets::getProgress()
+{
+  if (done())
+    { return 1.0; } 
+
+  else
+    {
+      float progByTotalRuns = 0.0;
+      float progByHardOmission = 0.0;
+
+      float avgProgressActiveRuns = 0.0;
+      for (int i = 0; i < _activeRuns; i++)
+	{ avgProgressActiveRuns += _activeRun[i]->getProgress(); }
+      avgProgressActiveRuns /= _activeRuns;
+
+      progByTotalRuns = (_finishedRuns + avgProgressActiveRuns) / (float) _totalRuns;
+      
+      if (!_softOmissionThreshold)
+	{
+	  progByHardOmission = (_currentModelsUnderOmissionThreshold / 
+				(float) _modelsUnderOmission); 
+	}
+
+      float progress = (progByTotalRuns > progByHardOmission)? progByTotalRuns : progByHardOmission;
+
+      if (progress > _maxProgress)
+	{ _maxProgress = progress; }
+
+      return _maxProgress;
+    }
+}
+
+/****************************************************************/
+/****************** getValue ************************************/
 
 Scalar GarpBestSubsets::getValue( Scalar *x )
 {
@@ -685,7 +715,7 @@ Scalar GarpBestSubsets::getValue( Scalar *x )
 }
   
 /****************************************************************/
-/****************** Algorithm's factory function ****************/
+/****************** getConvergence ******************************/
 
 int GarpBestSubsets::getConvergence( Scalar *val )
 {
@@ -693,16 +723,16 @@ int GarpBestSubsets::getConvergence( Scalar *val )
   return 0;
 }
 
-/******************/
-/*** serialize ***/
+/****************************************************************/
+/****************** serialize ***********************************/
 int
 GarpBestSubsets::serialize(Serializer * s)
 {
   return 0;
 }
 
-/********************/
-/*** deserialize ***/
+/****************************************************************/
+/****************** deserialize *********************************/
 int
 GarpBestSubsets::deserialize(Deserializer * ds)
 {

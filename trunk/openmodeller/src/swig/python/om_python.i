@@ -209,8 +209,8 @@ class PyModelCommand : public ModelCommand {
     ~PyModelCommand() {
       Py_DECREF( my_func );
     }
-    void operator()( int iterations ) {
-      PyObject *arg = Py_BuildValue( "(i)", iterations );
+    void operator()( float progress ) {
+      PyObject *arg = Py_BuildValue( "(f)", progress );
       PyObject *result = PyEval_CallObject( my_func, arg );
       Py_DECREF( arg );
       Py_DECREF( result );

@@ -75,8 +75,8 @@ public:
   ModelCallbackHelper( OpenModeller::ModelCallback func, void *param ) :
     arg( param ),
     func( func ) {};
-  void operator()( int i ) {
-    func(i, arg );
+  void operator()( float d ) {
+    func(d, arg );
   }
 
 private:
@@ -182,8 +182,8 @@ OpenModeller::~OpenModeller()
 }
 
 
-/*******************/
-/*** get Version ***/
+/*********************/
+/*** get log level ***/
 void
 OpenModeller::setLogLevel( Log::Level level )
 {
@@ -233,8 +233,6 @@ OpenModeller::deleteStringArray(char ** array)
 void 
 OpenModeller::setPluginPath(char ** new_plugin_path)
 {
-  //g_log.debug("Setting new plugin path\n");
-
   // pointer to current dir in plugin path passed as argument (read only)
   char ** curr_arg_dir;      
 
@@ -244,9 +242,7 @@ OpenModeller::setPluginPath(char ** new_plugin_path)
   // get number of directories
   curr_arg_dir = new_plugin_path;
   while (*curr_arg_dir++);
-  //{ g_log.debug("Visiting directory %s\n", *curr_arg_dir++); }
   int num_dirs = curr_arg_dir - new_plugin_path;
-  //g_log.debug("Total directories found: %d\n", num_dirs);
 
   deleteStringArray(_plugin_path);
 
@@ -271,14 +267,10 @@ OpenModeller::setPluginPath(char ** new_plugin_path)
 void
 OpenModeller::resetPluginPath()
 {
-  //g_log.debug("Resetting plugin path to default value\n");
-
   FILE * conf_file = fopen(g_config_file, "r");
 
   if (conf_file)
     {
-      //g_log.debug("Loading plugin path from configuration file\n");
-
       // config file found: read the search path from it
       const int size = 1024;
       char line[size];
@@ -311,8 +303,6 @@ OpenModeller::resetPluginPath()
     }
   else
     {
-      //g_log.debug("Loading plugin path from hardcoded default\n");
-
       // config file not found, set plugin path to hardcoded default
       setPluginPath(g_search_dirs);
     }
@@ -555,15 +545,10 @@ OpenModeller::createModel()
       return 0;
     }
 
-  g_log( "Modelling occurrences of: %s.\n", _presence->name() );
-
   // Check if the algorithm needs normalized variables.
   Scalar min, max;
   if ( _alg->needNormalization( &min, &max ) )
-    {
-      g_log( "Normalizing environment variables.\n" );
-      _env->normalize( min, max );
-    }
+    { _env->normalize( min, max ); }
 
   g_log( "Creating the model\n" );
 
@@ -581,12 +566,16 @@ OpenModeller::createModel()
     {
       ncycle++;
       if ( _model_command )
-        try {
-          (*_model_command)( ncycle );
-        }
-        catch( ... ) {
-        }
+        try 
+	  {
+	    (*_model_command)( _alg->getProgress() );
+	  }
+        catch( ... ) {}
     }
+
+  // get progress one more time to show final 100% done
+  if ( _model_command )
+    { (*_model_command)( _alg->getProgress() ); } 
 
   // Algorithm terminated with error.
   if ( ! _alg->done() )
@@ -605,6 +594,8 @@ OpenModeller::createModel()
     }
 
   _confMatrix->calculate(_samp, _alg);
+
+  g_log( "\n" );
 
   return 1;
 }
@@ -764,24 +755,16 @@ OpenModeller::createMap( Environment *env, char *file, Scalar mult,
   // check if env object is original one (used to create model) or
   // is a different one (caller wants to project model onto it)
   if ( ! env || env == _env )
-    {
-      env = _env;
-      g_log("Native range projection (using original env object).\n");
-    }
+    { env = _env; }
 
   // env objects are not the same, so copy normalization
   // parameters from original source and procced with
   // projection
   else
     {
-      g_log("Preparing target environment object for projection.\n");
-
       Scalar min, max;
       if ( _alg->needNormalization( &min, &max ) )
-	{
-	  g_log( "Normalizing environment variables on projection Environment object.\n" );
-	  env->copyNormalizationParams( _env );
-	}
+	{ env->copyNormalizationParams( _env ); }
     }
 
   // Force noval = 0
@@ -861,11 +844,11 @@ OpenModeller::createMap( Environment *env, char *file, Scalar mult,
         {
           if ( (progress += progress_step) > 1.0 )
             progress = 1.0;
-          try {
-            (*_map_command)( progress );
-          }
-          catch( ... ) {
-          }
+          try 
+	    {
+	      (*_map_command)( progress );
+	    }
+          catch( ... ) {}
         }
 
     }
@@ -937,7 +920,7 @@ AreaStats * OpenModeller::getEstimatedAreaStats(double proportionAreaToSample)
   //printf("x0=%f y0=%f x1=%f y1=%f\n", x0, y0, x1, y1);
   //printf("xcel=%f ycel=%f\n", xcel, ycel);
 
-  sampleSize = numCells * proportionAreaToSample;
+  sampleSize = (int) (numCells * proportionAreaToSample);
   for (i = 0; i < sampleSize; i++)
     { 
       _env->getRandom(sample);
@@ -1206,10 +1189,7 @@ OpenModeller::deserialize(Deserializer * des)
   // Check if the algorithm needs normalized variables.
   Scalar min, max;
   if ( _alg->needNormalization( &min, &max ) )
-    {
-      g_log( "Normalizing environment variables.\n" );
-      _env->normalize( min, max );
-    }
+    { _env->normalize( min, max ); }
 
   delete[] param;
 

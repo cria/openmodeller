@@ -85,6 +85,9 @@ public:
    */
   int done();
 
+  /** Return progress so far */
+  float getProgress();
+
   //
   // Methods used to project the model
   //
@@ -166,6 +169,8 @@ private:
   int _bestRuns;
 
   int _done;
+
+  float _maxProgress;
 };
 
 

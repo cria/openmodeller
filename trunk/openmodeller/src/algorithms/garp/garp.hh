@@ -97,6 +97,9 @@ public:
     */
   int done();
 
+  /** Return progress so far */
+  float getProgress();
+
   //
   // Methods used to project the model
   //
@@ -234,6 +237,8 @@ private:
   int _prev_heur_count[5];
 
   int _gen;
+
+  float _maxProgress;
 };
 
 

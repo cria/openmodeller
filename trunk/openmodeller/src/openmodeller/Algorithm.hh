@@ -112,12 +112,6 @@ public:
   /** Return != 0 if algorithm finished. */
   virtual int done() { return 1; }
 
-  /** Read algorithm state. */
-  virtual int load( int fd )  { return 0; }
-
-  /** Store algorithm state. */
-  virtual int save( int fd )  { return 0; }
-
   /** The algorithm must return the occurrence probability at
    * the given environment conditions.
    *
@@ -130,6 +124,9 @@ public:
 
   /** Returns the algorithm's convergence value at the moment */
   virtual int getConvergence( Scalar *val )  { return 0; }
+
+  /** Returns progress so far (between 0.0 and 1.0) */
+  virtual float getProgress() { return (float) done(); }
 
 
   AlgMetadata *getMetadata()  { return _metadata; }

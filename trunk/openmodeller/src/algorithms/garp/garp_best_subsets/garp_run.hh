@@ -64,6 +64,7 @@ public:
   int done();
   bool running();
   int getId() { return _id; }
+  float getProgress();
   double getOmission();
   double getCommission();
   double getError(int type);
