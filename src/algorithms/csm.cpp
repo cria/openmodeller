@@ -22,6 +22,10 @@
 
 #include <math.h>
 
+#ifdef _WINDOWS
+#define isnan _isnan
+#endif
+
 /****************************************************************/
 /********************** Algorithm's Metadata ********************/
 
@@ -199,6 +203,8 @@ int Csm::center()
             gsl_matrix_set(_gsl_environment_matrix,i,j,myDouble);
         }
     }
+
+    return 0;
 }
 
 
@@ -236,12 +242,14 @@ int Csm::done()
   * @param Scalar *x a pointer to a vector of openModeller Scalar type (currently double). The vector should contain values looked up on the environmental variable layers into which the mode is being projected. */
 Scalar Csm::getValue( Scalar *x )
 {
+    int i;
+
     float myFloat;
     bool myAllAreZeroFlag=true;
     //first thing we do is convert the oM primitive env value array to a gsl matrix
     //with only one row so we can do matrix multplication with it
     gsl_matrix * tmp_gsl_matrix = gsl_matrix_alloc (1,_layer_count);
-    for (int i=0;i<_layer_count;++i)
+    for (i=0;i<_layer_count;++i)
     {
         myFloat = static_cast<float>(x[i]);
         if (myFloat!=0) 
@@ -284,14 +292,14 @@ Scalar Csm::getValue( Scalar *x )
     // we do this by dividing each element in z by the square root of its associated element in 
     // the eigenvalues vector
 
-    for (int i=0;i<z->size2;i++)
+    for (i=0;i<z->size2;i++)
     {
       gsl_matrix_set(z,0,i,gsl_matrix_get (z,0,i)/sqrt(gsl_vector_get(_gsl_eigenvalue_vector,i)));
     }
     //displayMatrix(z,"After standardising z");
     // now we square each element and sum them    
     myFloat=0;
-    for (int i=0;i<z->size2;i++)
+    for (i=0;i<z->size2;i++)
     {
       float myValue=gsl_matrix_get (z,0,i);
       if (!isnan(myValue))
@@ -326,7 +334,9 @@ Scalar Csm::getValue( Scalar *x )
   * @param Scalar *val 
 */
 int Csm::getConvergence( Scalar *val )
-{}
+{
+    return 0;
+}
 
 //
 // General Helper Methods
@@ -466,6 +476,8 @@ endfunction
 */
 gsl_matrix * Csm::autoCovariance(gsl_matrix * original_matrix)
 {
+    int j;
+
     // Build a copy of the input matrix to work with
     gsl_matrix * m = gsl_matrix_alloc (original_matrix->size1, original_matrix->size2);
     gsl_matrix_memcpy (m, original_matrix);
@@ -493,14 +505,14 @@ gsl_matrix * Csm::autoCovariance(gsl_matrix * original_matrix)
         {
             double val = 0.0;
 
-            for (int j = 0; j < numrows; j++)
+            for (j = 0; j < numrows; j++)
             {
                 val += gsl_matrix_get (m, j, i);
             }
 
             gsl_vector_set (v, i, val);
 
-            for (int j = 0; j < numrows; j++)
+            for (j = 0; j < numrows; j++)
             {
                 gsl_matrix_set_row (s, j, v);
             }
