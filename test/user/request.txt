@@ -1,0 +1,69 @@
+# Coordinate system and projection in WKT format.
+#
+WKT Coord System = GEOGCS["WGS84", DATUM["WGS84", SPHEROID["WGS84", 6378137.0, 298.257223563]], PRIMEM["Greenwich", 0.0], UNIT["degree", 0.017453292519943295], AXIS["Longitude",EAST], AXIS["Latitude",NORTH]]
+
+
+# File with a list of species occurrence. Each line is a record
+# with: <genus> <ephitet> <longitude> <latitude>
+#
+Species file = data/species/acc_test_data.txt
+
+# Only the occurrences of this species in the file will be used.
+# Defaults to the first species found.
+#
+Species = Strix varia
+
+# Maps to be used as environmental continuous variables.
+#
+Map = data/NAm_0_1deg/aspect/
+Map = data/NAm_0_1deg/dem/
+Map = data/NAm_0_1deg/slope/
+Map = data/NAm_0_1deg/dtr/
+Map = data/NAm_0_1deg/prec/
+Map = data/NAm_0_1deg/temp/
+Map = data/NAm_0_1deg/wet/
+
+# Mask to delimit the region of interest.
+#
+Mask = data/NAm_0_1deg/mask/
+
+# File to be used as the output format.
+#
+Output format = data/NAm_0_1deg/mask/
+
+# Output file name.
+#
+Output file = map.tif
+
+# Scale each algorithm output (originaly between 0 and 1) by
+# this factor.
+# 
+# Currently the output file is written in "byte" (hardcoded)
+# until an output format type error handling code is implemented.
+# So, you have to choose:
+#
+#  1 <= Scale <= 255
+#
+Scale = 255
+
+# Name of the algorithm to construct the model
+# and algorithm specific parameters.
+
+#Algorithm = MinimumDistance v0.1
+#Parameter = MaxDist 0.05
+
+#Algorithm  = Bioclim
+#Parameter = CuttOff 0.05
+
+#Algorithm  = CSM
+
+#Algorithm = DistanceToAverage v0.1
+#Parameter = MaxDist 0.2
+
+Algorithm  = GARP
+Parameter = MaxGenerations 100
+Parameter = ConvergenceLimit 0.0
+Parameter = PopulationSize 50
+Parameter = Resamples 2500
+Parameter = MutationRate 0.25
+Parameter = CrossoverRate 0.25
