@@ -26,6 +26,8 @@
  * http://www.gnu.org/copyleft/gpl.html
  */
 
+#include <gdal.h>
+
 #include "om_control.hh"
 
 #include <env_io/map.hh>
@@ -102,7 +104,8 @@ OpenModeller::OpenModeller()
   _factory = NULL;
   resetPluginPath();
 
-  _areaStats = new AreaStats();
+  _actualAreaStats = new AreaStats();
+  _estimatedAreaStats = new AreaStats();
   _confMatrix = new ConfusionMatrix();
 
   _factory = new AlgorithmFactory( _plugin_path );
@@ -127,8 +130,10 @@ OpenModeller::~OpenModeller()
 
   if ( _plugin_path ) deleteStringArray( _plugin_path );
 
+  if ( _estimatedAreaStats ) delete _estimatedAreaStats;
+
+  delete _actualAreaStats;
   delete _factory;
-  delete _areaStats;
   delete _confMatrix;
 }
 
@@ -766,7 +771,7 @@ OpenModeller::createMap( Environment *env, char *file, Scalar mult,
   float progress = 0.0;
   float progress_step = hdr->ycel / (hdr->ymax - y0);
 
-  _areaStats->reset();
+  _actualAreaStats->reset();
 
   int row = 0;
   for ( float y = y0; y < hdr->ymax; y += hdr->ycel )
@@ -791,14 +796,14 @@ OpenModeller::createMap( Environment *env, char *file, Scalar mult,
 	      val = _alg->getValue( amb );
 	      if ( val < 0.0 ) val = 0.0;
 	      else if ( val > 1.0 ) val = 1.0;
-	      _areaStats->addPrediction( val ); 
+	      _actualAreaStats->addPrediction( val ); 
 	      val *= mult;
 	    }
 
 	  // Write value on map.
 	  map.put( lg, lt, &val );
+	  
 	}
-
       // Call the callback function if it is set.
       if ( _map_callback )
         {
@@ -843,6 +848,48 @@ OpenModeller::getValue(Environment * env, Coord x, Coord y)
 
   return -1;
 }
+
+/**********************************/
+/******* getActualAreaStats *******/
+AreaStats * OpenModeller::getActualAreaStats()
+{ return _actualAreaStats; }
+
+/**********************************/
+/******* getActualAreaStats *******/
+AreaStats * OpenModeller::getEstimatedAreaStats(double proportionAreaToSample)
+{
+  int i, sampleSize, numCells;
+  Coord x0, y0, x1, y1, xcel, ycel;
+  Scalar * sample;
+
+  if ( !_estimatedAreaStats )
+    { _estimatedAreaStats = new AreaStats; }
+  else
+    { _estimatedAreaStats->reset(); }
+
+  sample = new Scalar[_env->numLayers()];
+
+  // get number of cells to sample
+  _env->getRegion(&x0, &y0, &x1, &y1);
+  _env->getMask()->getCell(&xcel, &ycel);
+  numCells = (int) ((fabs(y1 - y0) / ycel) * (fabs(x1 - y0) / xcel));
+
+  sampleSize = numCells * proportionAreaToSample;
+  for (i = 0; i < sampleSize; i++)
+    { 
+      _env->getRandom(sample);
+      _estimatedAreaStats->addPrediction(_alg->getValue(sample)); 
+    }
+
+  delete[] sample;
+
+  return _estimatedAreaStats;
+}
+
+/**********************************/
+/******* getConfusionMatrix *******/
+ConfusionMatrix * OpenModeller::getConfusionMatrix()
+{ return _confMatrix; }
 
 /**********************************/
 /******* serialize ****************/
