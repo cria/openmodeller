@@ -14,15 +14,15 @@ lib_LTLIBRARIES = libopenmodeller.la
 
 libopenmodeller_la_SOURCES = \
 	algorithm.cpp \
+	algorithm_factory.cpp \
 	control.cpp \
 	environment.cpp \
 	log.cpp \
 	occurrences.cpp \
 	occurrences_file.cpp \
+	os_specific.cpp \
 	random.cpp \
 	sampler.cpp \
-	sampled_data.cpp \
-	algorithm_factory.cpp \
-	os_specific.cpp
+	sampled_data.cpp
 
 libopenmodeller_la_CPPFLAGS = -I../inc -I../..
