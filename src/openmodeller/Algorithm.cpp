@@ -97,7 +97,7 @@ Algorithm::getParameter( char *id, char **value )
 		  _metadata->id, id );
       return 0;
     }
-		
+  
 
   // If parameters were not set or zero parameters were set.
   if ( ! _param || ! _nparam )
@@ -107,8 +107,8 @@ Algorithm::getParameter( char *id, char **value )
   AlgParameter *param = _param;
   AlgParameter *end   = _param + _nparam;
 
-  for( ; param < end; param++ )  
-    if ( ! strcmp( id, param->id() ) )
+  for( ; param < end; param++ )
+    if ( param->id() && ! strcmp( id, param->id() ) )
       return (*value = param->value()) ? 1 : 0;
 
   return 0;
