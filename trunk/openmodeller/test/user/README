@@ -75,6 +75,14 @@ script to fail if OM destructor is active. Before those issues are sorted
 out, one need to comment out OM destructor code out. That causes the script
 to leak a lot of memory :( 
 
+
+
+ACKNOWLEDGEMENTS
+----------------
+
+Many thanks to Peter Brewer and A. Townsend Peterson for contributing with
+some of the datasets used in this test script.
+
 ------------ x -----------
 
 
