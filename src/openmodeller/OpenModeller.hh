@@ -236,6 +236,10 @@ public:
    */
   int createModel();
 
+  /** Compatibility with old oM client versions.
+   */
+  int run()  { return createModel(); }
+
   /** Save distribution map to disk.
    * @param env  Pointer to Environment class with the layers 
    *  to project the model onto. Defaults to environment set
