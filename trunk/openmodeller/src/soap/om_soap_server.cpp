@@ -181,17 +181,17 @@ int main(int argc, char **argv)
 }
 
 
-void *process_request(void *soap) 
-{ 
-  pthread_detach(pthread_self()); 
-  ((struct soap*)soap)->recv_timeout = 300; // Timeout after 5 minutes stall on recv 
-  ((struct soap*)soap)->send_timeout = 60; // Timeout after 1 minute stall on send 
-  soap_serve((struct soap*)soap); 
-  soap_destroy((struct soap*)soap); 
-  soap_end((struct soap*)soap); 
-  soap_done((struct soap*)soap); 
-  free(soap); 
-  return NULL; 
+void *process_request(void *soap)
+{
+  pthread_detach(pthread_self());
+  ((struct soap*)soap)->recv_timeout = 300; // Timeout after 5 minutes stall on recv
+  ((struct soap*)soap)->send_timeout = 60; // Timeout after 1 minute stall on send
+  soap_serve((struct soap*)soap);
+  soap_destroy((struct soap*)soap);
+  soap_end((struct soap*)soap);
+  soap_done((struct soap*)soap);
+  free(soap);
+  return NULL;
 }
 
 
@@ -324,13 +324,21 @@ om__createModel( struct soap *soap, om__Points *points, om__Maps *maps, om__Mask
   mkstemp(t_fname); // generate file with unique name, and keep it
 
   char *r_fname = (char*)soap_malloc(soap, strlen(t_fname) + strlen(output->format) + 1);
-  strcat(r_fname, t_fname);
+  strcpy(r_fname, t_fname);
   strcat(r_fname, output->format); // output file is unique name + file format (should include dot)
 
   om.setOutputMap( r_fname, output->header, (xsd__double)output->scale );
 
+  *ticket = rindex(r_fname, '/')+1; //ticket is actually the file name
+
   pid_t pid = fork();
 
+  // The idea is to immediately return the ticket in one of the processes
+  // and to generate the model in the other (which exits in the end).
+  // If the parent overtake the model creation and exit, the child process
+  // will always persist, and the PIDs will be changing over the time.
+  // If the child overtake the model creation and exit, its process 
+  // becomes "defunct" (?).
   if (pid > 0) // parent process
     {
       if ( ! om.run() )
@@ -343,9 +351,6 @@ om__createModel( struct soap *soap, om__Points *points, om__Maps *maps, om__Mask
       strcpy(flag_file, t_fname);
       strcat(flag_file, ".end");
 
-      fprintf(stderr, flag_file);
-      fprintf(stderr, "\n");
-
       FILE *fd = fopen(flag_file, "wb");
       if (!fd)
 	{
@@ -353,12 +358,17 @@ om__createModel( struct soap *soap, om__Points *points, om__Maps *maps, om__Mask
 	}
       fclose(fd);
 
-      return SOAP_OK;
+      // do we need this here?
+      soap_destroy((struct soap*)soap);
+      soap_end((struct soap*)soap);
+      soap_done((struct soap*)soap);
+      free(soap);
+
+      exit(0); // kill process
     }
   else if (pid == 0) // child process
     {
-      *ticket = rindex(r_fname, '/')+1; // ticket is actually the file name
-      
+      // return ticket and keep listening 
       return SOAP_OK;
     }
   else
