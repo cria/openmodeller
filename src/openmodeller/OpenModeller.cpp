@@ -71,6 +71,7 @@ const char * g_config_file = CONFIG_FILE;
 
 OpenModeller::OpenModeller()
 {
+  setLogLevel(Log::Debug);
   _env = 0;
   _alg = 0;
   _samp = 0;
@@ -110,8 +111,6 @@ OpenModeller::~OpenModeller()
   if ( _samp )     delete _samp;
   if ( _alg )      delete _alg;
   if ( _env )      delete _env;
-  if ( _presence ) delete _presence;
-  if ( _absence )  delete _absence;
 
   if ( _alg_id )        delete[] _alg_id;
   if ( _alg_param)      delete[] _alg_param;
@@ -377,8 +376,9 @@ OpenModeller::setAlgorithm( char *id, int nparam,
     }
 
   // filter presences and absences that are masked out
-  filterMaskedOccurrences(_presence);
-  filterMaskedOccurrences(_absence);
+  // commented out for now because performance hit
+  //filterMaskedOccurrences(_presence);
+  //filterMaskedOccurrences(_absence);
 
   stringCopy( &_alg_id, id );
 
@@ -749,7 +749,7 @@ OpenModeller::createMap( Environment *env, char *file, Scalar mult,
     }
   g_log( "\n" );
 
-  delete amb;
+  delete[] amb;
   return 1;
 }
 

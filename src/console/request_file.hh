@@ -44,7 +44,8 @@ class RequestFile
 {
 public:
 
-  RequestFile()  {}
+  RequestFile();
+  ~RequestFile();
 
   /** Loads parameters from the request file.
    * 
@@ -81,6 +82,8 @@ private:
   int _environment_set;
   int _outputmap_set;
   int _algorithm_set;
+
+  Occurrences * _occurrences;
 };
 
 
