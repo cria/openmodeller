@@ -452,11 +452,6 @@ OpenModeller::setAlgorithm( char *id, int nparam,
       return 0;
     }
 
-  // filter presences and absences that are masked out
-  // commented out for now because performance hit
-  //filterMaskedOccurrences(_presence);
-  //filterMaskedOccurrences(_absence);
-
   stringCopy( &_alg_id, id );
 
   // Reallocate '_alg_param' to stores 'nparam' parameters.
@@ -491,31 +486,6 @@ OpenModeller::setAlgorithm( char *id, int nparam,
   return 1;
 }
 
-
-/*******************************/
-/*** filter masked occurrences */
-void OpenModeller::filterMaskedOccurrences(Occurrences * occur)
-{
-  int i = 0, j = 0;
-  Scalar * indep = new Scalar[_env->numLayers()];
-
-  if (occur)
-  {
-    Occurrence * oc; 
-    occur->head();
-    while ( oc = occur->get() )
-    {
-      if (!_env->get( oc->x(), oc->y(), indep))
-      { delete occur->remove(); j++; }
-      
-      occur->next(); i++;
-    }
-  occur->head();
-  }
-
-  delete[] indep;
-}
-
 /***********************/
 /*** set Occurrences ***/
 int
@@ -533,6 +503,78 @@ OpenModeller::setOccurrences( Occurrences *presence,
 }
 
 
+/*******************************/
+/*** filter masked occurrences */
+void OpenModeller::filterMaskedOccurrences(Occurrences * occur)
+{
+  if (!occur)
+    { return; }
+
+  int countBefore, countAfter;
+  Scalar * indep = new Scalar[_env->numLayers()];
+
+  Occurrence * oc; 
+  occur->head();
+  countBefore = occur->numOccurrences();
+  while ( oc = occur->get() )
+    {
+      if (!_env->get( oc->x(), oc->y(), indep))
+	{ 
+	  occur->remove(); 
+	  delete oc; 
+	}
+      
+      occur->next();
+    }
+  occur->head();
+  
+  countAfter = occur->numOccurrences();
+  g_log("Masked points: %d out of %d removed (%d remaining)\n", 
+	countBefore - countAfter, countBefore, countAfter);
+
+  delete[] indep;
+}
+
+/*******************************/
+/*** filter masked occurrences */
+void OpenModeller::filterSpatiallyUniqueOccurrences(Occurrences * occur)
+{
+  if (!occur)
+    { return; }
+
+  int countBefore, countAfter, position, xdim, ydim, numCells;
+  RasterFile grid( _env->getMaskFilename() );
+
+  grid.getDim(&xdim, &ydim);
+  numCells = xdim * ydim; 
+  bool * visited = new bool[numCells];
+  memset(visited, false, numCells * sizeof(bool));
+
+  countBefore = occur->numOccurrences();
+  Occurrence * oc; 
+  occur->head();
+  while ( oc = occur->get() )
+    {
+      position = grid.convY(oc->y()) * xdim + grid.convX(oc->x());
+      if (visited[position])
+	{ 
+	  occur->remove(); 
+	  delete oc; 
+	}
+      else
+	{ visited[position] = true; }
+      
+      occur->next();
+    }
+  occur->head();
+  
+  countAfter = occur->numOccurrences();
+  g_log("Spatially redundant points: %d out of %d removed (%d remaining)\n", 
+	countBefore - countAfter, countBefore, countAfter);
+
+  delete[] visited;
+}
+
 /********************/
 /*** create Model ***/
 int
@@ -549,6 +591,17 @@ OpenModeller::createModel()
   Scalar min, max;
   if ( _alg->needNormalization( &min, &max ) )
     { _env->normalize( min, max ); }
+
+  // filter presences and absences that are masked out
+  // commented out for now because performance hit
+  // also filter presences and absences leaving only one
+  // spatially unique point per grid cell in the mask
+  //g_log( "Filtering data points\n" );
+
+  //filterMaskedOccurrences(_presence);
+  //filterSpatiallyUniqueOccurrences(_presence);
+  //filterMaskedOccurrences(_absence);
+  //filterSpatiallyUniqueOccurrences(_absence);
 
   g_log( "Creating the model\n" );
 

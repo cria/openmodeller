@@ -208,6 +208,19 @@ public:
    */
   virtual int iput( int x, int y, Scalar *val ) = 0;
 
+  /**
+   * Convert georeferenced coordinate x in the map to
+   * (column) coordinated in raster image.
+   */
+  int convX( Coord x );
+
+  /**
+   * Convert georeferenced coordinate y in the map to
+   * (row) coordinated in raster image.
+   */
+  int convY( Coord y );
+
+
   virtual int load( char *file ) = 0;
   virtual int save( char *file ) = 0;
 
@@ -219,13 +232,6 @@ public:
 protected:
 
   int setHeader( Header &hdr );
-
-  /**
-   * Convert georeferenced coordinates (x,y) in the map to
-   * (col,row) coordinated in raster image.
-   */
-  int convX( Coord x );
-  int convY( Coord y );
 
   /**
    * Normalizes the first band of '*val'.

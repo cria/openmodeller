@@ -86,7 +86,7 @@ AlgParamMetadata parameters[NUM_PARAM] =
     0.0,   // Parameter's lower limit.
     1,     // Not zero if the parameter has upper limit.
     1.0,   // Parameter's upper limit.
-    "0.005"  // Parameter's typical (default) value.
+    "0.001"  // Parameter's typical (default) value.
   },
 
   {
@@ -245,7 +245,7 @@ Garp::~Garp()
   // debug
   if ( _fittest )
     {
-      //g_log.debug( "Resulting rules: (similar=%d/%d)\n", similar, total);
+      //g_log.debug( "Resulting rules:\n");
       //_fittest->log();
     }
 
@@ -319,18 +319,17 @@ int Garp::iterate()
   keepFittest(_offspring, _fittest, defaultPerfIndex);
   _fittest->trim(_popsize);
   
-  //_fittest->gatherRuleSetStats(_gen);
+  _fittest->gatherRuleSetStats(_gen);
   //_offspring->gatherRuleSetStats(-_gen);
   
   
   _fittest->performanceSummary(defaultPerfIndex, 
 			       &perfBest, &perfWorst, &perfAvg);
   /*  
-#ifndef DONT_EXPORT_GARP_FACTORY
+  // log info about current iteration
   g_log.debug( "%4d] ", _gen );
   g_log.debug( "[%2d] conv=%+7.4f | perfs=%+8.3f, %+8.3f, %+8.3f\n", _fittest->numRules(), 
 	 _convergence, perfBest, perfWorst, perfAvg );
-#endif
   */
 
   if (done())
@@ -532,7 +531,9 @@ void Garp::keepFittest(GarpRuleSet * source, GarpRuleSet * target,
 
       if (similarIndex >= 0)
         {
-          // similar rule found replace it if better
+          converged++;
+
+	  // similar rule found replace it if better
           similarRule = target->get(similarIndex);
           if (candidateRule->getPerformance(perfIndex) > 
               similarRule->getPerformance(perfIndex))
@@ -552,9 +553,6 @@ void Garp::keepFittest(GarpRuleSet * source, GarpRuleSet * target,
           candidateRule = candidateRule->clone();
           target->insert(perfIndex, candidateRule);
         }
-
-      if ((insertIndex != -1) /*&& (insertIndex < _popsize)*/)
-	{ converged++; } 
 
       //printf("InsertIndex=%+3d | converged=%3d\n", insertIndex, converged);
     }
@@ -601,13 +599,13 @@ void Garp::colonize(GarpRuleSet * ruleset, GarpCustomSampler * sampler,
   for (i = ruleset->numRules(); i < numRules; i++)
     {
       // pick the next rule to be generated
-      p = i % 4;
+      p = i % 3;
 
       switch (p)
 	{
 	case 0: rule = new RangeRule(); break;
-	case 1: rule = new LogitRule(); break;
-	case 2: rule = new NegatedRangeRule(); break;
+	case 1: rule = new NegatedRangeRule(); break;
+	case 2: rule = new LogitRule(); break;
 	case 3: rule = new AtomicRule(); break;
 	}
 

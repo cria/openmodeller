@@ -419,6 +419,11 @@ private:
    */
   void filterMaskedOccurrences(Occurrences * occur);
 
+  /** Leave only one spatially unique occurrence point
+   *  representing each grid cell  
+   */
+  void filterSpatiallyUniqueOccurrences(Occurrences * occur);
+
   /** Delete every string in array of strings and then delete
    *  array itself.
    */
