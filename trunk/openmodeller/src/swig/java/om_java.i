@@ -10,7 +10,6 @@
 
 %{
 #include "../../inc/om_defs.hh"
-#include "../../inc/om_log.hh"
 #include "../../inc/om_control.hh"
 #include "../../inc/environment.hh"
 #include "../../inc/map_format.hh"

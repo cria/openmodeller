@@ -10,6 +10,15 @@
 
 noinst_LTLIBRARIES = libcppunitlite.la
 
+EXTRA_DIST = \
+	Test.h \
+	TestRegistry.h \
+	TestResult.h \
+	Failure.h \
+	SimpleString.h \
+	TestHarness.h
+
+
 libcppunitlite_la_SOURCES = \
 	Test.cpp TestRegistry.cpp TestResult.cpp \
 	Failure.cpp SimpleString.cpp
