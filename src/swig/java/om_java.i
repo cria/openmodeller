@@ -102,10 +102,17 @@ char **get_args() {
 	return 0;
     }
 
-    jmethodID setIdMethod = jenv->GetStaticMethodID(clazz, 
-      "setId", "(Ljava/lang/String;)V");
+    jmethodID constrID = jenv->GetMethodID(clazz, "<init>", "()V");
 
-    if (setIdMethod == 0) {
+    if (constrID == 0) {
+      fprintf(stderr, "System could not find AlgMetadata constructor.\n");
+      return 0;
+    }
+
+    jmethodID methodID = jenv->GetMethodID(clazz, "setId", 
+                                          "(Ljava/lang/String;)V");
+
+    if (methodID == 0) {
       fprintf(stderr, "System could not find method AlgMetadata::setId()\n");
       return 0;
     }
@@ -115,9 +122,13 @@ char **get_args() {
     /* exception checking omitted */
 
     for (i=0; i<len; i++) {
-      temp_obj = jenv->AllocObject(clazz);
-      temp_string = jenv->NewStringUTF(result[i]->id);
-      jenv->VoidMethodSetObjectField(temp_obj, field, temp_string);
+
+      char * cstr = (*(result + i))->id;
+      printf("Id[%d]=%s\n", i, cstr); fflush(stdout);
+
+      temp_string = jenv->NewStringUTF(cstr);
+      temp_obj = jenv->NewObject(clazz, constrID);
+      jenv->CallVoidMethod(temp_obj, methodID, temp_string);
       jenv->SetObjectArrayElement(jresult, i, temp_obj);
       jenv->DeleteLocalRef(temp_obj);
       jenv->DeleteLocalRef(temp_string);
