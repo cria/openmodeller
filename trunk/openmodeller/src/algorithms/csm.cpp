@@ -9,6 +9,8 @@
 // Copyright: See COPYING file that comes with this distribution
 //
 //
+
+#include <string.h>
 #include "csm.hh"
 
 #include <gsl/gsl_statistics_double.h>
@@ -324,7 +326,7 @@ Scalar Csm::getValue( Scalar *x )
 	myFloat = (myFloat-myAverage)/myStdDev;
 	//assign the result to our vector
         gsl_vector_set (tmp_gsl_vector,i,myFloat);
-        printf ("%f\t", myFloat );
+        //printf ("%f\t", myFloat );
     }
     
     //create a temporary vector and place component 1 in it - could make this a class member to improve performance!
@@ -340,7 +342,7 @@ Scalar Csm::getValue( Scalar *x )
     {
         myFloat+=gsl_vector_get (tmp_gsl_vector,j);
     }    
-    printf ("Prob: %f\n",myFloat);
+    //printf ("Prob: %f\n",myFloat);
     //now we
     //now clear away the temporary vars
     gsl_vector_free (component1_gsl_vector);
@@ -435,9 +437,36 @@ void Csm::displayEigen()
 }
 
 
+/**********************/
+/**** displayMatrix ***/
+void Csm::displayMatrix(gsl_matrix * m, char * name)
+{
+    printf ("\n Displaying %s (%i / %i): \n----------------------------------------------\n[ ", name, m->size1, m->size2);
+    for (int i=0;i<m->size1;++i)
+    {
+        char sep1[] = ",";
+        char sep2[] = ";";
+
+        for (int j=0;j<m->size2;j++)
+        {
+            double myDouble = gsl_matrix_get (m,i,j);
+
+	    if (j == m->size2 -1) strcpy(sep1, "");
+
+            printf ("%g %s ", myDouble, sep1);
+        }
+	
+	if (i == m->size1 -1) strcpy(sep2, "");
+
+        printf ("%s\n", sep2);
+    }
+    printf ("]\n----------------------------------------------\n ");
+}
+
+
 /******************/
 /**** transpose ***/
-gsl_matrix * transpose (gsl_matrix * m)
+gsl_matrix * Csm::transpose (gsl_matrix * m)
 {
     gsl_matrix * t = gsl_matrix_alloc (m->size2, m->size1);
   
@@ -453,7 +482,7 @@ gsl_matrix * transpose (gsl_matrix * m)
 
 /************************/
 /**** Vectors product ***/
-double product (gsl_vector * va, gsl_vector * vb)
+double Csm::product (gsl_vector * va, gsl_vector * vb)
 {
     // fix me: need to check if vectors are of the same size !!!
 
@@ -469,7 +498,7 @@ double product (gsl_vector * va, gsl_vector * vb)
 
 /*************************/
 /**** Matrices product ***/
-gsl_matrix * product (gsl_matrix * a, gsl_matrix * b)
+gsl_matrix * Csm::product (gsl_matrix * a, gsl_matrix * b)
 {
     // fix me: need to check if a->size2 is equal to b->size1 !!!
 
@@ -517,8 +546,10 @@ function c = cov (x)
 endfunction
 
 */
-gsl_matrix * autoCovariance(gsl_matrix * m)
+gsl_matrix * Csm::autoCovariance(gsl_matrix * m)
 {
+    displayMatrix(m, "Original Matrix");
+
     int numrows = m->size1;
     int numcols = m->size2;
   
@@ -556,14 +587,22 @@ gsl_matrix * autoCovariance(gsl_matrix * m)
 	}
     }
 
+    displayMatrix(s, "ones (n, 1) * sum (x)");
+
     // divide by "n"
     gsl_matrix_scale (s, (double)1/numrows);
+
+    displayMatrix(s, "last one divided by n");
 
     // subtract the result from x 
     gsl_matrix_sub (m, s);
 
+    displayMatrix(s, "x - last one");
+
     // get x'
     gsl_matrix * mt = transpose(m);
+
+    displayMatrix(s, "x - last one");
 
     // x / (n - 1)
     gsl_matrix_scale (m, (double)1/(numrows-1));

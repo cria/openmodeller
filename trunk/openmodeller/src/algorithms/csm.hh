@@ -359,6 +359,12 @@ private:
     */
   void displayEigen();
 
+  /** This a utility function to display the content of a gsl matrix.
+   * @param m gsl_matrix Input matrix
+   * @param name char Matrix name
+   */
+  void displayMatrix(gsl_matrix * m, char * name);
+
   /** This a utility function to calculate a transposed gsl matrix.
    * @param m gsl_matrix Input matrix
    * @return gsl_matrix Transposed matrix
