@@ -57,8 +57,8 @@ public:
   { return 0; }
 
   /** Initiate a new training. If 'ncicle' != 0, then the 
-   *  new training will have 'ncicle' cicles. */
-  virtual int initialize( int ncicle ) { return 1; }
+   *  new training will have 'ncycle' cicles. */
+  virtual int initialize( int ncycle ) { return 1; }
 
   /** One step further on the training. Return 0 if something 
    *  wrong happened. */
@@ -97,10 +97,11 @@ protected:
    *  dependent variables (occurrence prediction). */
   int dimDomain()  { return f_samp->dim(); }
 
+  Sampler *f_samp;
 
 private:
 
-  Sampler *f_samp;
+
 
   int *f_categ; ///< f_categ[i] != 0 if map "i" is categorical.
 };
