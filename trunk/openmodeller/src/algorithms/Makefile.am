@@ -14,6 +14,7 @@ plugin_LTLIBRARIES = \
 		libomdistance_to_average.la \
 		libomminimum_distance.la \
 		libombioclim.la \
+		libombioclim_distance.la \
                 libomgarp.la
 
 libomdistance_to_average_la_SOURCES = \
@@ -23,6 +24,10 @@ libomdistance_to_average_la_SOURCES = \
 libombioclim_la_SOURCES = \
 	bioclim.cpp \
 	bioclim.hh
+
+libombioclim_distance_la_SOURCES = \
+	bioclim_distance.cpp \
+	bioclim_distance.hh
 
 libomminimum_distance_la_SOURCES = \
 	minimum_distance.cpp \
@@ -40,6 +45,9 @@ libomdistance_to_average_la_CPPFLAGS = -I../src/inc
 
 libombioclim_la_LIBADD = ../src/lib/libopenmodeller.la
 libombioclim_la_CPPFLAGS = -I../src/inc
+
+libombioclim_distance_la_LIBADD = ../src/lib/libopenmodeller.la
+libombioclim_distance_la_CPPFLAGS = -I../src/inc
 
 libomminimum_distance_la_LIBADD = ../src/lib/libopenmodeller.la
 libomminimum_distance_la_CPPFLAGS = -I../src/inc
