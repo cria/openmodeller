@@ -93,7 +93,7 @@ public:
 
   /** Initiate a new training.
    */
-  virtual int initialize() { return 1; }
+  virtual int initialize() = 0;
 
   /** One step further on the training. Return 0 if something 
    * wrong happened.
@@ -116,7 +116,7 @@ public:
    * 
    * @return The occurrence probability in the range [0,1].
    */
-  virtual Scalar getValue( Scalar *x ) { return 0.0; };
+  virtual Scalar getValue( Scalar *x ) = 0;
 
 
   /** Returns the algorithm's convergence value at the moment */
