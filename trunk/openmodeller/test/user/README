@@ -62,6 +62,9 @@ do that, use the following command line switches:
 
 -a, --algorithm: Specify which algorithm to run, defined by its ID
 
+-f, --full:      Force execution of all specified tests (even if test 
+                 results are already present in the directory).
+
 
 CURRENT STATUS
 --------------
