@@ -115,14 +115,13 @@ main( int argc, char **argv )
 
   if ( ! om.createModel() )
     g_log.error( 1, "Error: %s\n", om.error() );
-  else
-    g_log( "Done.\n" );
 
   // Prepare the output map
   om.setMapCallback( mapCallback );
-  om.createMap();
+  if ( ! om.createMap() )
+    g_log.error( 2, "Error: %s\n", om.error() );
 
-  g_log( "\n" );
+  g_log( "Done.\n" );
   return 0;
 }
 

@@ -134,7 +134,7 @@ Log::debug( char *format, ... )
 
   va_list ap;
   va_start( ap, format );
-  fprintf( _log, "Debug:%s ", _pref );
+  fprintf( _log, "[Debug] %s ", _pref );
   vfprintf( _log, format, ap );
   fflush( _log );
   va_end( ap );
@@ -153,7 +153,7 @@ Log::info( char *format, ... )
 
   va_list ap;
   va_start( ap, format );
-  fprintf( _log, "Info:%s ", _pref );
+  fprintf( _log, "[Info] %s ", _pref );
   vfprintf( _log, format, ap );
   fflush( _log );
   va_end( ap );
@@ -197,7 +197,7 @@ Log::warn( char *format, ... )
   va_start( ap, format );
 
   // Header.
-  snprintf( buf, buf_size, "Warn:%s ", _pref );
+  snprintf( buf, buf_size, "[Warn] %s ", _pref );
 
   // Print message after header.
   int len = strlen( buf );
@@ -236,7 +236,7 @@ Log::error( int exit_code, char *format, ... )
   va_start( ap, format );
 
   // Header.
-  snprintf( buf, buf_size, "Error:%s ", _pref );
+  snprintf( buf, buf_size, "[Error] %s ", _pref );
 
   // Print message after header.
   int len = strlen( buf );

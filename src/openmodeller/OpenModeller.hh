@@ -221,7 +221,7 @@ public:
    * @param mult Value that the probabilities will be multiplied
    *  to.
    * @param output_file Output file name.
-   * @param mask Georeferenced map file which will define the
+   * @param output_mask Georeferenced map file which will define the
    *  valid pixels on the output map.
    * @param format Pointer to MapFormat object defining the
    *  parameters of the output map.
