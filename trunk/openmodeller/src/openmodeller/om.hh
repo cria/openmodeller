@@ -26,18 +26,42 @@
  * http://www.gnu.org/copyleft/gpl.html
  */
 
+//
+// This file must be included to let you use libopenmodeller in
+// both ways:
+//
+// - Development of an openModeller algorithm;
+// - Development of an openModeller client interface.
+//
+
 #ifndef _OMHH_
 #define _OMHH_
 
+// General includes (clients and algorithms)
+//
 #include <om_defs.hh>
-#include <om_control.hh>
 #include <om_algorithm.hh>
 #include <om_algorithm_metadata.hh>
 #include <om_alg_parameter.hh>
+#include <om_serializable.hh>
+#include <om_deserializer.hh>
+#include <om_serializer.hh>
+#include <om_log.hh>
+
+
+// openModeller algorithms specific includes
+//
 #include <om_sampler.hh>
 #include <om_sampled_data.hh>
 #include <om_occurrences.hh>
-#include <om_log.hh>
+#include <om_occurrences.hh>
+
+
+// openModeller clients specific includes
+//
+#include <om_control.hh>
+#include <om_serializer_factory.hh>
+
 
 #endif
 

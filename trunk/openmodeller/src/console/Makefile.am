@@ -28,7 +28,7 @@ SUBDIRS = $(GRAPH)
 bin_PROGRAMS = om_console $(OM_VIEWER)
 
 om_console_SOURCES = om_console.cpp occurrences_file.cpp request_file.cpp
-om_console_CPPFLAGS = -I../inc
+om_console_CPPFLAGS = -I../inc -I../inc/serialization
 om_console_LDADD = $(GDAL_LIB) ../lib/libopenmodeller.la
 
 #om_test_SOURCES = om_test.cpp occurrences_file.cpp
@@ -36,6 +36,6 @@ om_console_LDADD = $(GDAL_LIB) ../lib/libopenmodeller.la
 #om_test_LDADD = $(GDAL_LIB) ../lib/libopenmodeller.la
 
 om_viewer_SOURCES = om_viewer.cpp occurrences_file.cpp
-om_viewer_CPPFLAGS = -I../inc
+om_viewer_CPPFLAGS = -I../inc -I../inc/serialization
 om_viewer_LDADD = $(GDAL_LIB) $(X11_LIB) graph/libopenmodellergraph.la \
 	../lib/libopenmodeller.la
