@@ -20,7 +20,7 @@ EXTRA_DIST = \
 	examples/request.txt \
 	examples/request_win.txt
 
-SUBDIRS = algorithms src
+SUBDIRS = src algorithms
 
 release: distdir
 	-chmod -R a+r $(distdir)
