@@ -1,9 +1,9 @@
 /**
- * Unit tests for rules_range.cpp
+ * Unit tests for rules_negrange.cpp
  * 
- * @file   test_rules_range.cpp
+ * @file   test_rules_negrange.cpp
  * @author Ricardo Scachetti Pereira (rpereira@ku.edu)
- * @date   2004-04-07
+ * @date   2004-07-22
  * $Id$
  * 
  * LICENSE INFORMATION 
@@ -29,16 +29,16 @@
  */
 
 #include <CppUnitLite/TestHarness.h>
-#include <rules_range.hh>
+#include <rules_negrange.hh>
 #include <garp_sampler.hh>
 #include <test_rules_defs.hh>
 
-EXTENDED_DUMMY_RULE( RangeRule );
+EXTENDED_DUMMY_RULE( NegatedRangeRule );
 
 
-TEST( RangeRule_applies1 , RangeRule )
+TEST( NegatedRangeRule_applies1 , NegatedRangeRule )
 {
-  ExtRangeRule * rule = new ExtRangeRule;
+  ExtNegatedRangeRule * rule = new ExtNegatedRangeRule;
   
   Scalar genes[8] = {-0.8, +0.8, -0.8, +0.8, -0.8, +0.8, -0.8, +0.8};
   Scalar vals1[8] = {-0.5, +0.5, -0.5, +0.5, -0.5, +0.5, -0.5, +0.5};
@@ -47,15 +47,15 @@ TEST( RangeRule_applies1 , RangeRule )
 
   rule->setGenes(genes, 4);
 
-  CHECK_EQUAL(rule->applies(vals1), true);
-  CHECK_EQUAL(rule->applies(vals2), true);
-  CHECK_EQUAL(rule->applies(vals3), false);
+  CHECK_EQUAL(rule->applies(vals1), false);
+  CHECK_EQUAL(rule->applies(vals2), false);
+  CHECK_EQUAL(rule->applies(vals3), true);
 }
 
 
-TEST( RangeRule_applies2 , RangeRule )
+TEST( NegatedRangeRule_applies2 , NegatedRangeRule )
 {
-  ExtRangeRule * rule = new ExtRangeRule;
+  ExtNegatedRangeRule * rule = new ExtNegatedRangeRule;
   
   Scalar genes[8] = {-1.0, +1.0, -1.0, +1.0, -1.0, +1.0, -1.0, +1.0};
   Scalar vals1[8] = {-0.5, +0.5, -0.5, +0.5, -0.5, +0.5, -0.5, +0.5};
@@ -64,14 +64,14 @@ TEST( RangeRule_applies2 , RangeRule )
 
   rule->setGenes(genes, 4);
 
-  CHECK_EQUAL(rule->applies(vals1), true);
-  CHECK_EQUAL(rule->applies(vals2), true);
-  CHECK_EQUAL(rule->applies(vals3), true);
+  CHECK_EQUAL(rule->applies(vals1), false);
+  CHECK_EQUAL(rule->applies(vals2), false);
+  CHECK_EQUAL(rule->applies(vals3), false);
 }
 
-TEST( RangeRule_applies3 , RangeRule )
+TEST( NegatedRangeRule_applies3 , NegatedRangeRule )
 {
-  ExtRangeRule * rule = new ExtRangeRule;
+  ExtNegatedRangeRule * rule = new ExtNegatedRangeRule;
   
   Scalar genes[8] = {-1.0, +1.0, -0.1, +0.1, -1.0, +1.0, -1.0, +1.0};
   Scalar vals1[8] = {-0.5, +0.5, -0.5, +0.5, -0.5, +0.5, -0.5, +0.5};
@@ -80,7 +80,7 @@ TEST( RangeRule_applies3 , RangeRule )
 
   rule->setGenes(genes, 4);
 
-  CHECK_EQUAL(rule->applies(vals1), false);
-  CHECK_EQUAL(rule->applies(vals2), true);
-  CHECK_EQUAL(rule->applies(vals3), false);
+  CHECK_EQUAL(rule->applies(vals1), true);
+  CHECK_EQUAL(rule->applies(vals2), false);
+  CHECK_EQUAL(rule->applies(vals3), true);
 }

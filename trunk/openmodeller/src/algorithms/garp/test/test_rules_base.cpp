@@ -65,21 +65,6 @@ void ExtGarpRule::setGenes(Scalar * genes, int numGenes)
 }
 
 
-class Sampler;
-
-SampledData::SampledData() {}
-SampledData::~SampledData() {}
-GarpCustomSampler::GarpCustomSampler() {}
-GarpCustomSampler::~GarpCustomSampler() {}
-void GarpCustomSampler::initialize(Sampler *, int) {}
-int GarpCustomSampler::resamples() {}
-Scalar * GarpCustomSampler::getSample(Scalar *) { g_log("#### dummy getSample() called ####\n"); }
-int * GarpCustomSampler::getFrequencies(double, int *) {} 
-void GarpCustomSampler::createBioclimHistogram(double, double, double) {}
-void GarpCustomSampler::getBioclimRange(Scalar, int, Scalar *, Scalar *) {}
-int GarpCustomSampler::dim() { g_log("#### dummy dim() called ####\n"); }
-
-
 #define eps 10e-6
 
 class GarpCustomSamplerDummy1 : public GarpCustomSampler
