@@ -17,6 +17,12 @@ The University of Kansas:
      Participated in the design of the system.
      Implemented Bioclim and GARP algorithm.
      Maintainer of vc++ Win version.
+     Implemented SWIG python and java interfaces.
+
+ * Kevin Ruland <kruland [at] ku.edu>
+
+     Performed code review, making general improvements.
+     Joined development of SWIG python interface.
 
 The University of Reading:
 
@@ -24,10 +30,12 @@ The University of Reading:
 
      Implemented CSM algorithm.
      Developed plug-in for Quantum GIS.
+     Maintainer of Mac OS version.
 
  * Peter Brewer <p.w.brewer [at] reading.ac.uk>
 
      Logo and website designer.
+     Avid user and tester.
 
 Quantum GIS development team:
 
