@@ -215,8 +215,8 @@ Garp::Garp()
   _gapsize        = 0.1;
   _acc_limit      = 0.0;
 
-  _crossover_rate = 0.25;
-  _mutation_rate  = 0.25;
+  _crossover_rate = 0.1;
+  _mutation_rate  = 0.6;
 
   _significance   = 2.70;
 
@@ -568,6 +568,7 @@ void Garp::keepFittest(GarpRuleSet * source, GarpRuleSet * target,
   printf("Convergence: %+7.4f at generation %5d (%3d; %6d; %+7.4f) similar=%d\n", _convergence, 
   	 _gen, converged, _improvements, ( (double) converged ) / _improvements, similarIndex);
   */
+
   // TODO: update heuristic rates based on who entered the target rule-set
 }
 
