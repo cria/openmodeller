@@ -8,3 +8,11 @@
 # WITHOUT ANY WARRANTY, to the extent permitted by law; without even the
 # implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
+noinst_PROGRAMS = test_ruleset
+
+test_ruleset_SOURCES  = test_main.cpp test_ruleset.cpp \
+			../ruleset.cpp ../../../src/lib/log.cpp
+
+test_ruleset_LDADD    = ../../../test/CppUnitLite/libcppunitlite.la
+
+test_ruleset_CPPFLAGS = -I../../../test -I.. -I../../../src/inc

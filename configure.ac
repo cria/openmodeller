@@ -241,9 +241,8 @@ AM_CONDITIONAL([BUILD_TEST], [test x$build_test = xyes])
 dnl ---------------------------------------------------------------------------
 AC_CONFIG_FILES([
 	Makefile
-	algorithms/Makefile
-	algorithms/garp/Makefile
-	algorithms/garp/test/Makefile
+	test/Makefile
+	test/CppUnitLite/Makefile
 	src/Makefile
 	src/lib/Makefile
 	src/lib/env_io/Makefile
@@ -254,8 +253,9 @@ AC_CONFIG_FILES([
 	src/swig/Makefile
 	src/swig/python/Makefile
 	src/swig/java/Makefile
-	test/Makefile
-	test/CppUnitLite/Makefile
+	algorithms/Makefile
+	algorithms/garp/Makefile
+	algorithms/garp/test/Makefile
 	openmodeller.spec
 ])
 
