@@ -26,7 +26,7 @@
  * http://www.gnu.org/copyleft/gpl.html
  */
 
-#include <algorithm.hh>
+#include <om_algorithm.hh>
 
 
 /****************************************************************/

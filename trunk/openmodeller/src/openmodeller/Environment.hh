@@ -30,7 +30,7 @@
 #ifndef _ENVIRONMENTHH_
 #define _ENVIRONMENTHH_
 
-#include <defs.hh>
+#include <om_defs.hh>
 
 class Map;
 

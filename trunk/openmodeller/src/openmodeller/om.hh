@@ -29,17 +29,12 @@
 #ifndef _OMHH_
 #define _OMHH_
 
-#include <defs.hh>
-#include <algorithm.hh>
-#include <sampler.hh>
-#include <environment.hh>
-#include <occurrences.hh>
-#include <occurrences_file.hh>
-
-#include <env_io/header.hh>
-#include <env_io/map.hh>
-#include <env_io/geo_transform.hh>
-#include <env_io/raster_file.hh>
+#include <om_defs.hh>
+#include <om_control.hh>
+#include <om_algorithm.hh>
+#include <om_sampler.hh>
+#include <om_occurrences.hh>
+#include <om_log.hh>
 
 #endif
 

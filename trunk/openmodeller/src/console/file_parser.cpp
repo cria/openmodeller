@@ -26,7 +26,7 @@
  */
 
 #include <file_parser.hh>
-#include <defs.hh>
+#include <om_defs.hh>
 
 #include <list.cpp>
 

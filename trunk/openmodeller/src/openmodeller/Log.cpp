@@ -26,7 +26,7 @@
  * http://www.gnu.org/copyleft/gpl.html
  */
 
-#include <log.hh>
+#include <om_log.hh>
 
 #include <stdarg.h>
 #include <string.h>

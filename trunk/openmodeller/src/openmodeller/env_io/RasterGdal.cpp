@@ -28,7 +28,7 @@
 
 #include <env_io/raster_gdal.hh>
 #include <env_io/raster.hh>
-#include <log.hh>
+#include <om_log.hh>
 
 #include <gdal.h>
 #include <gdal_priv.h>

@@ -29,13 +29,13 @@
 
 #include <environment.hh>
 
+#include <om_log.hh>
 #include <env_io/map.hh>
 #include <env_io/raster.hh>
 #include <env_io/raster_file.hh>
 #include <env_io/raster_mem.hh>
 #include <env_io/geo_transform.hh>
 #include <random.hh>
-#include <log.hh>
 
 #include <stdlib.h>
 #include <string.h>

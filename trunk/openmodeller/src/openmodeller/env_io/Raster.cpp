@@ -27,7 +27,7 @@
  */
 
 #include <env_io/raster.hh>
-#include <log.hh>
+#include <om_log.hh>
 
 #include <stdio.h>
 #include <string.h>

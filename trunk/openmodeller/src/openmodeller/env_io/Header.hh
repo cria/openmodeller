@@ -29,7 +29,7 @@
 #ifndef _HEADERHH_
 #define _HEADERHH_
 
-#include <defs.hh>
+#include <om_defs.hh>
 
 
 /****************************************************************/

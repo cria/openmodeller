@@ -5,7 +5,7 @@ WKT Coord System = GEOGCS[/"1924 ellipsoid/",DATUM[/"Not_specified/",SPHEROID[/"
 # File with a list of species occurrence. Each line is a record
 # with: <genus> <ephitet> <longitude> <latitude>
 #
-Species file = ../examples/furcata_boliviana.txt
+Species file = furcata_boliviana.txt
 
 # Only the occurrences of this species in the file will be used.
 # Defaults to the first species found.
@@ -16,19 +16,19 @@ Species = furcata boliviana
 #
 #Map = /mylayersdir/mylayer1.asc
 #Map = /mylayersdir/mylayer2/
-Map = ../examples/rain_coolest/
+Map = rain_coolest/
 
 # Mask to delimit the region of interest.
 #
-Mask = ../examples/rain_coolest/
+Mask = rain_coolest/
 
 # File to be used as the output format.
 #
-Output format = ../examples/rain_coolest/
+Output format = rain_coolest/
 
 # Output file name.
 #
-Output = ../examples/furcata.tif
+Output = furcata.tif
 
 # Scale each algorithm output (originaly between 0 and 1) by
 # this factor.

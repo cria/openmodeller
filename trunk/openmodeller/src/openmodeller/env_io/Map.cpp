@@ -30,7 +30,7 @@
 
 #include <env_io/geo_transform.hh>
 #include <env_io/raster.hh>
-#include <log.hh>
+#include <om_log.hh>
 
 
 // Debug

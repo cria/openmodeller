@@ -26,7 +26,7 @@
  * http://www.gnu.org/copyleft/gpl.html
  */
 
-#include "occurrences.hh"
+#include "om_occurrences.hh"
 
 #include "list.cpp"     // Template.
 #include "occurrence.hh"
@@ -42,6 +42,8 @@
 
 Occurrences::Occurrences( char *name, char *id )
 {
+  f_ocur = new LstOccur;
+
   f_name = new char[ strlen(name) + 1 ];
   strcpy( f_name, name );
 
@@ -56,8 +58,10 @@ Occurrences::Occurrences( char *name, char *id )
 Occurrences::~Occurrences()
 {
   Occurrence *oc;
-  for ( f_ocur.Head(); oc = f_ocur.Get(); f_ocur.Next() )
+  for ( f_ocur->Head(); oc = f_ocur->Get(); f_ocur->Next() )
     delete( oc );
+
+  delete f_ocur;
 }
 
 
@@ -67,7 +71,52 @@ void
 Occurrences::insert( Coord longitude, Coord latitude, float pop )
 {
   Occurrence *oc = new Occurrence( longitude, latitude, pop );
-  f_ocur.InsertLast( oc );
+  f_ocur->InsertLast( oc );
+}
+
+
+/***********************/
+/*** num Occurrences ***/
+int
+Occurrences::numOccurrences()
+{
+  return f_ocur->Length();
+}
+
+
+/************/
+/*** head ***/
+void
+Occurrences::head()
+{
+  f_ocur->Head();
+}
+
+
+/************/
+/*** next ***/
+void
+Occurrences::next()
+{
+  f_ocur->Next();
+}
+
+
+/***********/
+/*** get ***/
+Occurrence *
+Occurrences::get()
+{
+  return f_ocur->Get();
+}
+
+
+/**************/
+/*** remove ***/
+Occurrence *
+Occurrences::remove()
+{
+  return f_ocur->Delete();
 }
 
 
