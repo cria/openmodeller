@@ -52,19 +52,73 @@ Installation notes for GNU/Linux
 Installation notes for Windows
 ==============================
 
-- Check out openModeller
-- Check out GDAL from CVS repository
-- Install Proj.4 for windows
-- Set the variable GDAL_DIR to the GDAL base directory
-- Set GDAL_HOME variable in nmake.opt file (in GDAL_DIR)
-- Set GDAL_DATA variable to %GDAL_DIR%\data
-- Build GDAL with the commands: 
+1. Download, build and install the following software:
+  * Proj4 (http://www.remotesensing.org/proj/) - required
+  * GDAL (http://www.remotesensing.org/gdal/) - required
+  * Expat (http://expat.sourceforge.net/) - required
+  * GSL (http://www.gnu.org/software/gsl) - required for CSM algorithms
+  * SWIG (http://www.swig.org/) - required for Java and Python bindings
+  * Java 2 SDK (http://java.sun.com/j2se/) - required for Java binding
+  * Python (http://www.python.org/) - required for Python binding 
+
+2. To build GDAL on Windows: 
+  - Set the variable GDAL_DIR to the GDAL base directory
+  - Set GDAL_HOME variable in nmake.opt file (in GDAL_DIR)
+  - Set GDAL_DATA variable to %GDAL_DIR%\data
+  - Change to %GDAL_DIR% and build GDAL with the commands: 
 	nmake /f makefile.vc
 	nmake /f makefile.vc install
 	nmake /f makefile.vc devinstall
-- Open om_vcpp.dsw in Visual C++ 6
-- Copy gdal.dll and proj.dll to the directory where you built the 
-  openModeller executable
+
+  NOTE: Make sure that nmake (Visual C++ make) is in your PATH.
+
+3. Checkout a working copy of openModeller modeller module from CVS 
+   (a release won't do it at this moment)
+
+4. Set the following environment variables:
+  * GDAL_DIR to the directory where GDAL was built and installed
+  * EXPAT_HOME to the base directory of Expat install
+  * GSL_HOME to the base directory of GSL install
+  * SWIG_HOME to the base directory of SWIG install
+  * JAVA_HOME to the base directory of Java 2 SDK install
+  * PYTHON_HOME to the base directory of Python install
+  * PYTHON_INCLUDE to the directory of Python includes
+ 
+5. Open the project workspace file .\src\om_vcc6\om_vcpp.dsw in Visual C++ 6
+
+6. Select menu Build->Batch Build...
+
+7. Select all items and click Build button.
+
+8. The built binaries will appear in:
+  .\src\om_vcc6\build          (production binaries)
+  .\src\om_vcc6\build_debug    (debug binaries)
+
+9. To run any of openModeller clients you need to have the following 
+DLLs in your PATH: 
+   * libopenmodeller.dll,
+   * proj4.dll,
+   * gdal_i.dll,
+   * expat.dll,
+   * gsl.dll,
+   * gslcblas.dll,
+   * python23.dll,
+
+and all of your algorithm DLLs on the PLUGIN_PATH.
+
+
+NOTE:
+* Currently, openModeller has only Windows build files for MS Visual C++ 6.0 
+  located on directory ./src/om_vcc6. If you need to build OM using a newer 
+  version of Microsoft Visual Studio, open the workspace file .dsw under 
+  your version of Visual Studio. It will convert the workspace automatically 
+  to the current format. Good luck. 
+  Make sure you don't commit the converted workspace and project files to CVS.
+
+* Java and Python builds are currently disabled because the build files are
+  not up to date. You can load their respective projects into the workspace 
+  and try to build them yourself.
+
 
 
 
