@@ -31,7 +31,7 @@
 
 #include <om_defs.hh>
 #include <om_algorithm_metadata.hh>
-#include <serialization/serializable.hh>
+#include <om_serializable.hh>
 
 class Algorithm;
 class AlgParameter;

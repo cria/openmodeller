@@ -40,7 +40,6 @@
 
 // required include because of enum PerfIndex and class GarpRule
 #include <rules_base.hh> 
-#include <serialization/serializable.hh>
 
 class GarpRuleSet;
 class GarpCustomSampler;
@@ -49,6 +48,8 @@ class Sampler;
 class SampledData;
 class Random;
 
+class Serializer;
+class Deserializer;
 
 /****************************************************************/
 /************************* GARP Algorithm ***********************/

@@ -47,6 +47,9 @@
 #include <om_sampler.hh>
 #include <om_sampled_data.hh>
 
+#include <serialization/serializer.hh>
+#include <serialization/deserializer.hh>
+
 #define NUM_PARAM 6
 
 /************************************/
