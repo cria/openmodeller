@@ -32,6 +32,7 @@
 
 #include <gdal.h>
 #include <gdal_priv.h>
+#include <cpl_string.h>
 
 #include <string.h>
 
@@ -208,31 +209,61 @@ RasterGdal::open( char *file, char mode )
 int
 RasterGdal::create( char *file, Header &hdr )
 {
+  //
+  GDALDriver *poDriver;
+  char **papszMetadata; 
+  GDALAllRegister();
   // Find GDAL particular string to describe the raster file type
   // to create.
   RasterFormat format( file );
   char *fmt = format.name();
 
+  // Added by Tim to see if the chosen format supports the gdal create method
+  poDriver = GetGDALDriverManager()->GetDriverByName(fmt);
+
+  if( poDriver == NULL )
+    exit( 1 );
+
+  papszMetadata = poDriver->GetMetadata();
+  if( CSLFetchBoolean( papszMetadata, GDAL_DCAP_CREATE, FALSE ) )
+  {
+    printf( "Driver %s, format %s supports Create() method.\n",
+            poDriver->GetDescription(),
+            fmt
+            );
+  }
+  else
+  {
+    printf( "Driver %s, format %s  DOES NOT support Create() method.\n", 
+            poDriver->GetDescription(),
+            fmt
+            );
+    return 0;
+  }
+  if( CSLFetchBoolean( papszMetadata, GDAL_DCAP_CREATECOPY, FALSE ) )
+  {
+    printf( "Driver %s, format %s  supports CreateCopy() method.\n" ,
+            poDriver->GetDescription(),
+            fmt
+            );
+  }
+  else
+  {
+    printf( "Driver %s, format %s  DOES NOT support CreateCopy() method.\n",
+            poDriver->GetDescription(),
+            fmt
+            );
+  }
+
+
   // GDAL's driver.
   GDALDriver *drv = GetGDALDriverManager()->GetDriverByName(fmt);
   if ( ! drv )
-    {
-      g_log.warn( "GDAL driver %s not found.\n", fmt );
-      return 0;
-    }
-
-  // If the driver cannot support the Crete() method, returns 0.
-  // => Why this does not work?!
-  /*
-  char **md = drv->GetMetadata();
-  if ( CSLFetchBoolean( md, GDAL_DCAP_CREATE, FALSE ) )
-    {
-      g_log.warn( "GDAL driver %s cannot support Create().\n",
-                  format );
-      return 0;
-    }
-  */
-
+  {
+    g_log.warn( "GDAL driver %s not found.\n", fmt );
+    return 0;
+  }
+  // 
   // Read the parameters in 'hdr' used to create the file.
   //
   // todo: insert in header: xmin, ymin, xmax, ymax, noVal,
@@ -251,12 +282,12 @@ RasterGdal::create( char *file, Header &hdr )
   // Create the file.
   f_ds = drv->Create( file, xdim, ydim, nband, dtype, NULL );
   if ( ! f_ds )
-    {
-      fprintf( stderr,
-               "RasterMemory::saveGdal: error creating %s.\n",
-               file );
-      return 0;
-    }
+  {
+    fprintf( stderr,
+            "RasterMemory::saveGdal: error creating %s.\n",
+            file );
+    return 0;
+  }
   f_hdr = hdr;
 
 
