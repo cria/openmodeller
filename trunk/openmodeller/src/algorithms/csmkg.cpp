@@ -93,7 +93,8 @@ The original CSM was written as series of Matlab functions. \
 /****************************************************************/
 /****************** Algorithm's factory function ****************/
 
-Algorithm * dllexp
+dllexp
+Algorithm *
 algorithmFactory()
 {
   return new CsmKG;
