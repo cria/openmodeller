@@ -42,7 +42,7 @@ RSC=rc.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS" /YX /FD /c
-# ADD CPP /nologo /W3 /GX /O2 /I "../../algorithms" /I "../../inc" /I "../../inc/env_io" /I "$(GDAL_DIR)/include" /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS" /YX /FD /c
+# ADD CPP /nologo /W3 /GX /O2 /I "../../algorithms" /I "../../inc" /I "../../inc/env_io" /I "$(GDAL_HOME)/include" /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS" /D VERSION=\"0.2\" /D PLUGINPATH=$(OM_PLUGIN_PATH) /YX /FD /c
 # ADD BASE RSC /l 0x409 /d "NDEBUG"
 # ADD RSC /l 0x409 /d "NDEBUG"
 BSC32=bscmake.exe
@@ -50,7 +50,13 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /machine:I386
-# ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib gdal_i.lib /nologo /subsystem:console /machine:I386 /libpath:"$(GDAL_DIR)/lib"
+# ADD LINK32 gdal_i.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /machine:I386 /libpath:"$(GDAL_HOME)\lib"
+# Begin Special Build Tool
+TargetPath=.\Release\om_console.exe
+SOURCE="$(InputPath)"
+PostBuild_Desc=Install
+PostBuild_Cmds=echo Installing executable $(TargetPath) in .\build\bin	copy $(TargetPath) ..\build\bin	echo Copying gdal12.dll to .\build\bin	copy $(GDAL_HOME)\bin\gdal12.dll ..\build\bin
+# End Special Build Tool
 
 !ELSEIF  "$(CFG)" == "om_console - Win32 Debug"
 
@@ -66,7 +72,7 @@ LINK32=link.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /YX /FD /GZ /c
-# ADD CPP /nologo /W3 /Gm /GX /ZI /Od /I "../../algorithms" /I "../../inc" /I "../../inc/env_io" /I "$(GDAL_DIR)/include" /D "_CONSOLE" /D "WIN32" /D "_DEBUG" /D "_MBCS" /D VERSION=\"0.2\" /D PLUGINPATH=$(OM_PLUGIN_PATH) /FR /YX /FD /D /GZ /c
+# ADD CPP /nologo /W3 /Gm /GX /ZI /Od /I "../../algorithms" /I "../../inc" /I "../../inc/env_io" /I "$(GDAL_HOME)/include" /D "_CONSOLE" /D "WIN32" /D "_DEBUG" /D "_MBCS" /D VERSION=\"0.2\" /D PLUGINPATH=$(OM_PLUGIN_PATH) /FR /YX /FD /D /GZ /c
 # ADD BASE RSC /l 0x409 /d "_DEBUG"
 # ADD RSC /l 0x409 /d "_DEBUG"
 BSC32=bscmake.exe
@@ -74,7 +80,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /debug /machine:I386 /pdbtype:sept
-# ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib gdal_i.lib /nologo /subsystem:console /debug /machine:I386 /pdbtype:sept /libpath:"$(GDAL_DIR)/lib"
+# ADD LINK32 gdal_i.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /debug /machine:I386 /pdbtype:sept /libpath:"$(GDAL_HOME)\lib"
 
 !ENDIF 
 
@@ -176,6 +182,10 @@ SOURCE=..\..\lib\env_io\raster_gdal.cpp
 # Begin Source File
 
 SOURCE=..\..\lib\env_io\raster_mem.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\console\request_file.cpp
 # End Source File
 # Begin Source File
 
