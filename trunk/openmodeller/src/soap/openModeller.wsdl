@@ -103,8 +103,10 @@
   </complexType>
   <complexType name="soap-AlgorithmParameter">
    <sequence>
+    <element name="id" type="xsd:string" minOccurs="0" maxOccurs="1" nillable="true"/>
     <element name="name" type="xsd:string" minOccurs="0" maxOccurs="1" nillable="true"/>
     <element name="data-type" type="xsd:string" minOccurs="0" maxOccurs="1" nillable="true"/>
+    <element name="overview" type="xsd:string" minOccurs="0" maxOccurs="1" nillable="true"/>
     <element name="description" type="xsd:string" minOccurs="0" maxOccurs="1" nillable="true"/>
     <element name="has-min" type="xsd:int" minOccurs="1" maxOccurs="1"/>
     <element name="min" type="xsd:double" minOccurs="1" maxOccurs="1"/>
@@ -118,9 +120,11 @@
     <element name="id" type="xsd:string" minOccurs="0" maxOccurs="1" nillable="true"/>
     <element name="name" type="xsd:string" minOccurs="0" maxOccurs="1" nillable="true"/>
     <element name="version" type="xsd:string" minOccurs="0" maxOccurs="1" nillable="true"/>
-    <element name="bibliography" type="xsd:string" minOccurs="0" maxOccurs="1" nillable="true"/>
+    <element name="overview" type="xsd:string" minOccurs="0" maxOccurs="1" nillable="true"/>
     <element name="description" type="xsd:string" minOccurs="0" maxOccurs="1" nillable="true"/>
-    <element name="author" type="xsd:string" minOccurs="0" maxOccurs="1" nillable="true"/>
+    <element name="creator" type="xsd:string" minOccurs="0" maxOccurs="1" nillable="true"/>
+    <element name="bibliography" type="xsd:string" minOccurs="0" maxOccurs="1" nillable="true"/>
+    <element name="developer" type="xsd:string" minOccurs="0" maxOccurs="1" nillable="true"/>
     <element name="contact" type="xsd:string" minOccurs="0" maxOccurs="1" nillable="true"/>
     <element name="accepts-categorical-maps" type="xsd:int" minOccurs="1" maxOccurs="1"/>
     <element name="accepts-absence-points" type="xsd:int" minOccurs="1" maxOccurs="1"/>
