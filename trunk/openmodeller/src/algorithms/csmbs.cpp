@@ -180,6 +180,8 @@ CsmBS::CsmBS() : Csm(&metadata)
 /** This is the descructor for the Csm class */
 CsmBS::~CsmBS()
 {
+  //I think this is delegated to the superclass destructor
+  /*
   if ( _initialized )
     {
       gsl_matrix_free (_gsl_environment_matrix);
@@ -188,7 +190,9 @@ CsmBS::~CsmBS()
       gsl_vector_free (_gsl_stddev_vector);
       gsl_vector_free (_gsl_eigenvalue_vector);
       gsl_matrix_free (_gsl_eigenvector_matrix);
+    
     }
+    */
 }
 
 int CsmBS::initialize()
