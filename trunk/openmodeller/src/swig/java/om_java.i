@@ -12,17 +12,6 @@
 #include "../../console/occurrences_file.hh"
 %}
 
-%include "../../inc/om_defs.hh"
-%include "../../inc/om_serializable.hh"
-%include "../../inc/om_control.hh"
-%include "../../inc/environment.hh"
-%include "../../inc/map_format.hh"
-%include "../../inc/om_alg_parameter.hh"
-%include "../../inc/om_algorithm_metadata.hh"
-%include "../../inc/file_parser.hh"
-%include "../../console/occurrences_file.hh"
-
-
 
 /* This tells SWIG to treat char ** as a special case when used as a parameter in a function call */
 %typemap(in) char ** (jint size) {
@@ -106,17 +95,31 @@ char **get_args() {
     int i;
     int len=0;
     jobject temp_obj;
+    jstring temp_string;
     const jclass clazz = jenv->FindClass("AlgMetadata");
+    if (clazz == 0) {
+	fprintf(stderr, "System could not find class AlgMetadata\n");
+	return 0;
+    }
+
+    jmethodID setIdMethod = jenv->GetStaticMethodID(clazz, 
+      "setId", "(Ljava/lang/String;)V");
+
+    if (setIdMethod == 0) {
+      fprintf(stderr, "System could not find method AlgMetadata::setId()\n");
+      return 0;
+    }
 
     while ($1[len]) len++;    
     jresult = (jobjectArray) jenv->NewObjectArray(len, clazz, NULL);
     /* exception checking omitted */
 
     for (i=0; i<len; i++) {
-      temp_obj = jenv->NewObject(clazz, jenv->GetMethodId(clazz, "<init>", "v"));
-      temp_obj->setId(*(result[i])->id());
-      temp_obj->setName(*(result[i])->name());
+      temp_obj = jenv->AllocObject(clazz);
+      temp_string = jenv->NewStringUTF(result[i]->id);
+      jenv->VoidMethodSetObjectField(temp_obj, field, temp_string);
       jenv->SetObjectArrayElement(jresult, i, temp_obj);
+      jenv->DeleteLocalRef(temp_obj);
       jenv->DeleteLocalRef(temp_string);
     }
 }
@@ -130,4 +133,15 @@ char **get_args() {
 %typemap(javaout) AlgMetadata ** {
     return $jnicall;
   }
+
+
+%include "../../inc/om_defs.hh"
+%include "../../inc/om_serializable.hh"
+%include "../../inc/om_control.hh"
+%include "../../inc/environment.hh"
+%include "../../inc/map_format.hh"
+%include "../../inc/om_alg_parameter.hh"
+%include "../../inc/om_algorithm_metadata.hh"
+%include "../../inc/file_parser.hh"
+%include "../../console/occurrences_file.hh"
 
