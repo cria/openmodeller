@@ -117,7 +117,6 @@ AC_CONFIG_FILES([
 	src/inc/Makefile
 	src/console/Makefile
 	src/console/graph/Makefile
-	src/soap/Makefile
 	openmodeller.spec
 ])
 
