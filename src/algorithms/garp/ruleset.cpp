@@ -39,8 +39,8 @@
 
 #include <om_log.hh>
 
-#include "rules.hh"
 #include "ruleset.hh"
+#include "rules_base.hh"
 
 
 /****************************************************************/
@@ -126,8 +126,13 @@ void GarpRuleSet::filter(PerfIndex index, double threshold)
   i = 0;
   while (i < _numRules)
     {
+      //printf("%3d] Performance: %+8.4f (threshold=%+8.4f) - ", 
+      //	    i, _rules[i]->getPerformance(index), threshold);
+
       if (_rules[i]->getPerformance(index) < threshold)
 	{
+	  //printf("deleting\n");
+
 	  // this rule has not enough performance
 	  // delete rule 
 	  delete _rules[i];
@@ -145,6 +150,8 @@ void GarpRuleSet::filter(PerfIndex index, double threshold)
 	}
       else
 	{
+	  //printf("keeping\n");
+
 	  // this rule passed the test
 	  // go to the next one
 	  i++;

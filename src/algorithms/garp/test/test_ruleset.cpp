@@ -29,12 +29,13 @@
  */
 
 #include <CppUnitLite/TestHarness.h>
-#include <ruleset.hh> 
+#include <ruleset.hh>
+#include <rules_base.hh>
 
 class DummyRule : public GarpRule
 {
 public:
-  DummyRule(int id = -1) { _id = id; }
+  DummyRule(int id = -1);
   GarpRule * objFactory() { return new DummyRule; } 
   void initialize(GarpCustomSampler *) {}
   double getStrength(Scalar *) {}
@@ -48,22 +49,42 @@ private:
   int _id;
 };
 
-// dummy implementation of base class GarpRule methods
-GarpRule::GarpRule() {};
-GarpRule::~GarpRule() {};
-GarpRule * GarpRule::clone() {};
-int GarpRule::copy(GarpRule * fromRule) {};
-void GarpRule::initialize(GarpCustomSampler * sampler) {};
-double GarpRule::getPerformance(PerfIndex perfIndex) {};
-double GarpRule::getCertainty(Scalar pred) {};
-double GarpRule::getError(Scalar predefinedValue, Scalar pred) {};
-void GarpRule::adjustRange(Scalar * v1, Scalar * v2) {};
-void GarpRule::crossover(GarpRule * rule, int xpt1, int xpt2) {};
-void GarpRule::mutate(double temperature) {};
-bool GarpRule::similar(GarpRule * objOtherRule) {};
-double GarpRule::evaluate(GarpCustomSampler * sampler) {};
-void GarpRule::log() {};
+DummyRule::DummyRule(int id) : GarpRule()
+{ 
+  _id = id; 
+}
 
+// dummy implementation of GarpRule methods
+GarpRule::GarpRule() 
+{
+  _genes = NULL;
+  _numGenes = 0;
+  _prediction = 0.0;
+  _needsEvaluation = true;
+  _origin = OriginColonization;
+  
+  int i = 0;
+  for (i = 0; i < 10; i++)
+    _performance[i] = 0.0;
+}
+
+double GarpRule::getPerformance(PerfIndex perfIndex)
+{
+  return _performance[perfIndex];
+}
+
+GarpRule::~GarpRule() {};
+GarpRule * GarpRule::clone() { printf("Cl"); };
+int GarpRule::copy(GarpRule * fromRule) { printf("Cp"); };
+void GarpRule::initialize(GarpCustomSampler * sampler) { printf("In"); };
+double GarpRule::getCertainty(Scalar pred) { printf("Ct"); };
+double GarpRule::getError(Scalar predefinedValue, Scalar pred) { printf("Er"); };
+void GarpRule::adjustRange(Scalar * v1, Scalar * v2) { printf("Ad"); };
+void GarpRule::crossover(GarpRule * rule, int xpt1, int xpt2) { printf("Co"); };
+void GarpRule::mutate(double temperature) { printf("Mu"); };
+bool GarpRule::similar(GarpRule * objOtherRule) { printf("Si"); };
+double GarpRule::evaluate(GarpCustomSampler * sampler) { printf("Ev"); };
+void GarpRule::log() {};
 
 void testHelperAddRules(GarpRuleSet * ruleset, int from, int to)
 {

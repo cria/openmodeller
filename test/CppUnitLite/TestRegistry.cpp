@@ -11,9 +11,9 @@ void TestRegistry::addTest (Test *test)
 }
 
 
-void TestRegistry::runAllTests (TestResult& result) 
+int TestRegistry::runAllTests (TestResult& result) 
 {
-	instance ().run (result);
+	return instance ().run (result);
 }
 
 
@@ -36,14 +36,11 @@ void TestRegistry::add (Test *test)
 }
 
 
-void TestRegistry::run (TestResult& result) 
+int TestRegistry::run (TestResult& result) 
 {
 	result.testsStarted ();
 
 	for (Test *test = tests; test != 0; test = test->getNext ())
 		test->run (result);
-	result.testsEnded ();
+	return result.testsEnded ();
 }
-
-
-

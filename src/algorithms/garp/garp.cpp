@@ -34,7 +34,11 @@
 
 
 #include "garp.hh"
-#include "rules.hh"
+#include "rules_base.hh"
+#include "rules_range.hh"
+#include "rules_negrange.hh"
+#include "rules_logit.hh"
+#include "rules_atomic.hh"
 #include "ruleset.hh"
 #include "garp_sampler.hh"
 

@@ -39,7 +39,7 @@
 #include <om.hh>
 
 // required include because of enum PerfIndex and class GarpRule
-#include <rules.hh>
+#include <rules_base.hh>
 
 class GarpRuleSet;
 class GarpCustomSampler;
