@@ -89,6 +89,7 @@ Section "MainSection" SEC01
   File "..\s57attributes.csv"  
   File "..\s57expectedinput.csv"  
   File "..\s57objectclasses.csv"  
+  File "..\stateplane.csv"  
   File "..\unit_of_measure.csv"  
   File "..\wkt_defs.txt"  
   File "..\msvcr80.dll" 
