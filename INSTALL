@@ -15,27 +15,6 @@
    a cvs check out).
 
 
-4. Set the environment variables:
-
-   * OM_HOME (mandatory)
-     openModeller's home directory (eg: bla/bla/openModeller)
-
-   * OM_INSTALL (optional)
-     openModeller will be installed in:
-     - executables in $(OM_INSTALL)/bin
-     - includes    in $(OM_INSTALL)/include
-     - libraries   in $(OM_INSTALL)/lib
-     The OM_INSTALL default is /usr/local
-     If you need different install directories for execs, incs or
-     libs you can edit INST_BIN, INST_INC and INST_LIB in file
-     $(OM_HOME)/Makefile.
-
-   * GDAL_DIR (optional)
-     If you didn't change the "--prefix=" parameter in "configure"
-     when installing GDAL (the default is /usr/local) you don't need
-     to set GDAL_DIR.
-
-
 5. Go to $(OM_HOME) and do a "make". It will create a
    $(OM_HOME)/src/om_console executable.
 

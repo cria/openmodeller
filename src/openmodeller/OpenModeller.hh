@@ -30,8 +30,10 @@
 #define _OM_CONTROLHH_
 
 #include <om_defs.hh>
+#include <om_algorithm_metadata.hh>
 
 class Algorithm;
+class AlgorithmFactory;
 class Environment;
 class Sampler;
 class Occurrences;
@@ -56,8 +58,8 @@ public:
 
   /**
    * @param cs     Common coordinate system.
-   * @param ncateg Number of categorical layers (they all need to be
-   *  in the initial portion of "layers");
+   * @param ncateg Number of categorical layers (they all need to
+   *  be in the initial portion of "layers");
    * @param nlayer Total number of environmental layers;
    * @param layer  Names of the environmental layers;
    */
@@ -65,6 +67,12 @@ public:
 		    char *mask=0 );
 
   ~ControlInterface();
+
+
+  /** @return a null terminated list of available algorithms'
+   *  metadata.
+   */
+  AlgorithmMetadata **availableAlgorithms();
 
 
   // Define environmental layers and other basic settings.
@@ -76,9 +84,14 @@ public:
   void setOutputMap( char *file, char *map_file, Scalar mult );
 
 
-  // Define algorithm that will be used to generate the distribution
-  // map.
-  void setAlgorithm( char *alg, char *param=0 );
+  /** Define algorithm that will be used to generate the
+   *  distribution map.
+   * @param alg_id Algorithm's identifier. Must match
+   *  Algorithm::getID() method.
+   * @param param String with algorithm's parameters separated by
+   *  space and/or TABs.
+   */
+  void setAlgorithm( char *alg_id, char *param=0 );
 
   /**
    * Define occurrence points to be used.
@@ -93,7 +106,7 @@ public:
 
   int run();
 
-  char *error()  { return f_error; }
+  char *error()  { return _error; }
 
 
 private:
@@ -110,34 +123,38 @@ private:
   Occurrences *readOccurrences( char *file, char *cs, char *name=0 );
 
   /** Return the object that implements the algorithm to be used.*/
+  /*
   Algorithm *algorithmFactory( Sampler *samp, char *name,
 			       char *params );
+  */
 
   /** Build the model based on 'samp' and on algorithm.*/
   int createModel( Algorithm *alg, Sampler *samp, int max_cicles);
 
-  /** Generate output map defined by 'f_file' and 'f_hdr'.*/
+  /** Generate output map defined by '_file' and '_hdr'.*/
   int createMap( Environment *env, Algorithm *alg );
 
 
-  int    f_ncateg;
-  int    f_nlayers;
-  char **f_layers;
-  char  *f_mask;
+  AlgorithmFactory *_factory;
 
-  char   *f_file;  ///< Output map.
-  Header *f_hdr;
-  Scalar  f_mult;  ///< Output multiplier.
+  int    _ncateg;
+  int    _nlayers;
+  char **_layers;
+  char  *_mask;
 
-  char *f_alg;    ///< Algorithm's name and parameters.
-  char *f_param;
-  int   f_ncycle; ///< Max algorithm cicles.
+  char   *_file;  ///< Output map.
+  Header *_hdr;
+  Scalar  _mult;  ///< Output multiplier.
 
-  char *f_oc_file;
-  char *f_oc_cs;   ///< Occurrences Coordinate System.
-  char *f_oc_name;
+  char *_alg_id;    ///< Algorithm's ID and parameters.
+  char *_alg_param;
+  int   _ncycle;    ///< Max algorithm cicles.
 
-  char *f_error;
+  char *_oc_file;
+  char *_oc_cs;   ///< Occurrences Coordinate System.
+  char *_oc_name;
+
+  char *_error;
 };
 
 

@@ -69,13 +69,13 @@ public:
   */
   int getAll( char *key, char **values );
 
-  int length()   { return f_lst.Length(); }
+  int length()   { return f_lst.length(); }
   
-  void head()    { f_lst.Head(); }
-  void next()    { f_lst.Next(); }
+  void head()    { f_lst.head(); }
+  void next()    { f_lst.next(); }
 
-  char *key()    { return f_lst.Get() ? f_lst.Get()->key : 0; }
-  char *value()  { return f_lst.Get() ? f_lst.Get()->val : 0; }
+  char *key()    { return f_lst.get() ? f_lst.get()->key : 0; }
+  char *value()  { return f_lst.get() ? f_lst.get()->val : 0; }
 
 
 private:

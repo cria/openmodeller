@@ -15,28 +15,30 @@ if HAVE_GSL
 endif
 
 plugin_LTLIBRARIES = \
+	libomdistance_to_average.la \
 	libombioclim.la \
-	libomcsm.la \
-	libomdist_min.la \
-	libomdistance.la
+	libomminimum_distance.la \
+	libomcsm.la
+
+libomdistance_to_average_la_SOURCES = \
+	distance_to_average.cpp \
+	distance_to_average.hh
 
 libombioclim_la_SOURCES = \
 	bioclim.cpp \
 	bioclim.hh
 
+libomminimum_distance_la_SOURCES = \
+	minimum_distance.cpp \
+	minimum_distance.hh
+
 libomcsm_la_SOURCES = \
 	csm.cpp \
 	csm.hh
 
-libomdist_min_la_SOURCES = \
-	dist_min.cpp \
-	dist_min.hh
-
-libomdistance_la_SOURCES = \
-	distance.cpp \
-	distance.hh
-
+libomdistance_to_average_la_CPPFLAGS = $(GSL_CFLAGS) -I../src/inc
 libombioclim_la_CPPFLAGS = -I../src/inc
+libomminimum_distance_la_CPPFLAGS = -I../src/inc
 libomcsm_la_CPPFLAGS = -I../src/inc
-libomdist_min_la_CPPFLAGS = -I../src/inc
-libomdistance_la_CPPFLAGS = $(GSL_CFLAGS) -I../src/inc
+
+

@@ -32,6 +32,21 @@
 
 
 #include <om_sampler.hh>
+#include <om_algorithm_metadata.hh>
+
+
+/**
+ * Declares the function and function pointer to be used for the
+ * algorithms Dynamic Linked to instantiate an object of its own
+ * class. It is in C to avoid C++ name signatures.
+ */
+class Algorithm;
+typedef Algorithm *(*TAlgFactory)();
+extern "C"
+{
+  Algorithm *algorithmFactory();
+}
+
 
 
 /****************************************************************/
@@ -46,18 +61,28 @@ class Algorithm
 {
 public:
 
-  Algorithm( Sampler *samp );
+  Algorithm( AlgorithmMetadata *metadata );
   virtual ~Algorithm();
 
-  virtual char *name()  { return "Undefined"; }
+  /** Set the sampler object. Need to be called before start
+   *  the algorithm initialization or iteration.
+   */
+  void setSampler( Sampler *samp );
+
+  /** String with parameters separated with spaces and/or TABs.
+   * @return Number of parameters setted.
+   */
+  int setParameters( char *param );
+
+  char *getID()     { return _id; }
+  char *copyID();
+
 
   /** The algorithm should return != 0 if it needs normalization
    *  of environmental variables (non categorical ones).
    */
   virtual int needNormalization( Scalar *min, Scalar *max )
   { return 0; }
-
-  virtual int onlyContinuosMaps() { return 0; }
 
 
   /** Initiate a new training. If 'ncicle' != 0, then the 
@@ -91,20 +116,44 @@ public:
   /** Returns the algorithm's convergence value at the moment */
   virtual int getConvergence( Scalar *val )  { return 0; }
 
+  AlgorithmMetadata *getMetadata()  { return _metadata; }
+
 
 protected:
 
+  /**
+   *  All protected methods should not be called before
+   *  initialized(). This is because the sampler object _samp
+   *  is not initialized in the constructor and the algorithm's
+   *  parameters were not setted yet.
+   */
+
+  /** @return A vertor describing the environmental variable
+   *  types: 0 for continuous and 1 for categorical.
+   */
   int *getCategories()   { return _categ; }
 
   /** Return != 0 if variable "i" in the domain is categorical.
-   *  Obs: i = 0 is the probability of occurrrence, therefore it is 
-   *  never categorical. */
+   *  Obs: i = 0 is the probability of occurrrence, therefore it
+   *   is never categorical. This method can only be called after
+   *   setSampler().
+   */
   int isCategorical( int i )  { return _categ[i]; }
 
   /** Dimension of problem domain: number of independent 
    *  variables (climatic + soil) added to the number of
    *  dependent variables (occurrence prediction). */
-  int dimDomain()  { return _samp->dimEnv(); }
+  int dimDomain()  { return _samp ? _samp->dimEnv() : 0; }
+
+  /** Returns the i-th setted parameter.
+   *  The number of parameters is given by metadata.
+   *   
+   *  @param i Index of the parameter to be read.
+   *  @param value Filled with i-th parameter's value.
+   *  @return Zero if the i-th parameters does not exists or
+   *   parameters were not setted yet.
+   **/
+  int getParameter( int i, Scalar *value );
 
 
   Sampler *_samp;
@@ -112,7 +161,16 @@ protected:
 
 private:
 
+  int findID( AlgorithmMetadata * );
+
+
+  char _id[256];
   int *_categ; ///< f_categ[i] != 0 if map "i" is categorical.
+
+  AlgorithmMetadata *_metadata;
+
+  int     _param_setted;
+  Scalar *_param;
 };
 
 

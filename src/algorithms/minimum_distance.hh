@@ -1,15 +1,15 @@
 /**
- * Declaration of Bioclimatic Envelope Algorithm - Nix, 1984.
+ * Declaration of Minimum Distance algorithm.
  * 
  * @file
- * @author Ricardo Scachetti Pereira <ricardo@cria.org.br>
- * @date 2003-09-29
+ * @author Mauro E S Muñoz (mauro@cria.org.br)
+ * @date   2003-09-20
  * $Id$
- *
- * LICENSE INFORMATION
  * 
- * Copyright(c) 2003 by The University of Kansas Natural History 
- * Museum and Biodiversity Research Center.
+ * LICENSE INFORMATION 
+ * 
+ * Copyright(c) 2003 by CRIA -
+ * Centro de Referencia em Informacao Ambiental
  *
  * http://www.cria.org.br
  * 
@@ -26,28 +26,32 @@
  * http://www.gnu.org/copyleft/gpl.html
  */
 
-#ifndef _BIOCLIMHH_
-#define _BIOCLIMHH_
+#ifndef _MINIMUM_DISTANCEHH_
+#define _MINIMUM_DISTANCEHH_
 
 #include <om.hh>
 
 
 /****************************************************************/
-/***************************** Bioclim **************************/
+/************************* Minimum Distance *********************/
 
 /** 
- * Bioclimatic Envelope Algorithm
- *
+ * Algorithm to generate models based on the cartesian distance
+ * from the closest occurrence point.
  */
-class Bioclim : public Algorithm
+class MinimumDistance : public Algorithm
 {
 public:
 
-  Bioclim();
-  virtual ~Bioclim();
+  /** Occurrences within this distance will be considered
+   *  the same one. */
+  MinimumDistance();
+  virtual ~MinimumDistance();
 
   // Inherited from Algorithm class.
-  int initialize( int ncycle );
+  int needNormalization( Scalar *min, Scalar *max );
+
+  int initialize( int ncicle );
   int iterate();
   int done();
 
@@ -57,17 +61,15 @@ public:
 
 private:
 
-  Scalar cartesianDistance( Scalar *x, Scalar *y );
+  /** Calculate cartesian distance between 'x' and 'pnt',
+   *  with dimensions equal to dim.*/
+  Scalar findDist( Scalar *x, Scalar *pnt, int dim );
 
 
   int    _done;
-  Scalar _cutoff;
+  Scalar _dist;
 
-  Scalar *_min;   ///> Minimum value for variables after cutoff 
-  Scalar *_max;   ///> Maximum value for variables after curoff
-  Scalar *_avg;   ///> Average value
-  Scalar *_half_range; ///> (Max - Min) / 2
-  int     _dim;   ///> Number of dimensions in environmental space
+  SampledData *_presence;
 };
 
 

@@ -26,8 +26,6 @@
  * http://www.gnu.org/copyleft/gpl.html
  */
 
-
-
 #include "bioclim.hh"
 
 #include <string.h>
@@ -36,16 +34,97 @@
 
 
 /****************************************************************/
-/************************* Bioclim Model ***********************/
+/********************** Algorithm's Metadata ********************/
+
+#define NUM_PARAM 1
+
+
+/******************************/
+/*** Algorithm's parameters ***/
+
+AlgorithmParameter parameters[NUM_PARAM] = {
+
+  // Metadata of the first parameter.
+  {
+    "CutOff",    // Name.
+    "Real",      // Type.
+    "Envelop cutoff", // Description.
+
+    1,         // Not zero if the parameter has lower limit.
+    0.0,       // Parameter's lower limit.
+    1,         // Not zero if the parameter has upper limit.
+    1.0,       // Parameter's upper limit.
+    0.8        // Parameter's typical (default) value.
+  },
+};
+
+
+/************************************/
+/*** Algorithm's general metadata ***/
+
+AlgorithmMetadata metadata = {
+
+  "Bioclim",       // Name.
+  "0.1",       	   // Version.
+  "Bibliography",  // Bibliography.
+
+  // Description.
+  "Bioclimatic Envelope Algorithm - Nix, 1984.",
+
+  "Ricardo Scachetti Pereira",  // Author.
+  "ricardo [at] cria.org.br",     // Author's contact.
+
+  0,  // Does not accept categorical data.
+  0,  // Does not need (pseudo)absence points.
+
+  NUM_PARAM,   // Algorithm's parameters.
+  parameters
+};
+
+
+
+/****************************************************************/
+/****************** Algorithm's factory function ****************/
+
+Algorithm *
+algorithmFactory()
+{
+  return new Bioclim;
+}
+
+
+
+/****************************************************************/
+/***************************** Bioclim **************************/
 
 /*******************/
 /*** constructor ***/
 
-BioclimModel::BioclimModel( Sampler *samp, Scalar cutoff )
-  : Algorithm( samp )
+Bioclim::Bioclim()
+  : Algorithm( &metadata )
 {
   _done   = 0;
-  _cutoff = cutoff;
+}
+
+
+/******************/
+/*** destructor ***/
+
+Bioclim::~Bioclim()
+{
+  delete _min;
+  delete _max;
+}
+
+
+/******************/
+/*** initialize ***/
+int
+Bioclim::initialize( int ncicle )
+{
+  if ( ! getParameter( 0, &_cutoff ) )
+    return 0;
+
   _dim    = _samp->dimEnv();
   _max    = new Scalar[_dim];
   _min    = new Scalar[_dim];
@@ -54,20 +133,10 @@ BioclimModel::BioclimModel( Sampler *samp, Scalar cutoff )
 }
 
 
-/******************/
-/*** destructor ***/
-
-BioclimModel::~BioclimModel()
-{
-  delete _min;
-  delete _max;
-}
-
-
 /***************/
 /*** iterate ***/
 int
-BioclimModel::iterate()
+Bioclim::iterate()
 {
   _log.info( "Reading %d-dimensional occurrence points.\n", _dim );
 
@@ -177,7 +246,7 @@ BioclimModel::iterate()
 /************/
 /*** done ***/
 int
-BioclimModel::done()
+Bioclim::done()
 {
   return _done;
 }
@@ -186,7 +255,7 @@ BioclimModel::done()
 /*****************/
 /*** get Value ***/
 Scalar
-BioclimModel::getValue( Scalar *x )
+Bioclim::getValue( Scalar *x )
 {
   Scalar dif;
   Scalar result[_dim];
@@ -211,7 +280,7 @@ BioclimModel::getValue( Scalar *x )
 /***********************/
 /*** get Convergence ***/
 int
-BioclimModel::getConvergence( Scalar *val )
+Bioclim::getConvergence( Scalar *val )
 {
   *val = 1.0;
   return 1;
@@ -221,7 +290,7 @@ BioclimModel::getConvergence( Scalar *val )
 /**************************/
 /*** cartesian Distance ***/
 Scalar
-BioclimModel::cartesianDistance( Scalar *x, Scalar *y )
+Bioclim::cartesianDistance( Scalar *x, Scalar *y )
 {
   Scalar dif;
   Scalar dist = 0.0;
