@@ -67,7 +67,7 @@ AlgParamMetadata parameters[NUM_PARAM] =
     1,      // Parameter's lower limit.
     0,      // Not zero if the parameter has upper limit.
     0,      // Parameter's upper limit.
-    "200"   // Parameter's typical (default) value.
+    "400"   // Parameter's typical (default) value.
   },
 
   {
@@ -86,7 +86,7 @@ AlgParamMetadata parameters[NUM_PARAM] =
     0.0,   // Parameter's lower limit.
     1,     // Not zero if the parameter has upper limit.
     1.0,   // Parameter's upper limit.
-    "0.001"  // Parameter's typical (default) value.
+    "0.005"  // Parameter's typical (default) value.
   },
 
   {
