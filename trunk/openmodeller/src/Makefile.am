@@ -12,4 +12,8 @@ if BUILD_SOAP
 SOAP_DIR=soap
 endif
 
-SUBDIRS = lib inc console $(SOAP_DIR) swig
+if BUILD_SWIG
+SWIG_DIR=swig
+endif
+
+SUBDIRS = lib inc console $(SOAP_DIR) $(SWIG_DIR)
