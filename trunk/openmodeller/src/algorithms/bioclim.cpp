@@ -126,6 +126,9 @@ The bioclim categorical output is mapped to the continuous output of\
 /****************************************************************/
 /****************** Algorithm's factory function ****************/
 
+#ifdef WIN32
+__declspec( dllexport )
+#endif
 Algorithm *
 algorithmFactory()
 {
