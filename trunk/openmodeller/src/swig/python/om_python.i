@@ -38,7 +38,7 @@
 	algMetadata = $1[++i];
     }
     $result = list;
-    delete $1;
+    delete[] $1;
 }
 
 %inline %{

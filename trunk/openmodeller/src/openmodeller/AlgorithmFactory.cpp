@@ -53,7 +53,7 @@ AlgorithmFactory::DLL::DLL( char *file )
 
 AlgorithmFactory::DLL::~DLL()
 {
-  if ( _file )   delete _file;
+  if ( _file )   delete[] _file;
   if ( _alg )    delete _alg;
   if ( _handle ) dllClose( _handle );
 }
@@ -313,7 +313,7 @@ AlgorithmFactory::scanDir( char *dir, ListDLL &lst )
 	delete dll;
     }
 
-  delete entries;
+  delete[] entries;
 
   return lst.length();
 }

@@ -82,30 +82,7 @@ Environment::Environment( char *cs, int ncateg, char **categs,
   _layerfiles = 0;
   _maskfile = 0;
 
-  char ** currmap = maps;  
-  char ** currcateg = categs;
-
   setCoordSystem( cs );
-
-  // Reallocate vector that stores the names of the layers.
-  if ( _layerfiles )
-    delete[] _layerfiles;
-  _layerfiles = new char*[_nlayers];
-
-  // stringCopy() needs this.
-  memset( _layerfiles, 0, _nlayers * sizeof(char *) );
-
-  char **layers = _layerfiles;
-
-  // Copy categorical maps.
-  char **end = _layerfiles + _ncateg;
-  while ( layers < end )
-    stringCopy( layers++, *currcateg++ );
-
-  // Copy continuos maps.
-  end += nmap;
-  while ( layers < end )
-    stringCopy( layers++, *currmap++ );
 
   // Initialize mask and read its region.
   if ( ! mask )
@@ -127,11 +104,25 @@ Environment::Environment( char *cs, int ncateg, char **categs,
 
 Environment::~Environment()
 {
-  if ( _mask )
-    delete _mask;
+  if (_layerfiles)
+    {
+      for (int i = 0; i < _nlayers; i++)
+	{ delete[] _layerfiles[i]; }
+      delete[] _layerfiles;
+    }
 
   if ( _layers )
-    delete[] _layers;
+    {
+      for (int i = 0; i < _nlayers; i++)
+	{ delete _layers[i]; }
+      delete[] _layers;
+    }
+
+  if ( _maskfile )
+    delete[] _maskfile;
+
+  if ( _mask )
+    delete _mask;
 
   if ( _cs )
     delete _cs;
@@ -144,12 +135,45 @@ int
 Environment::changeLayers( int ncateg, char **categs, int nmap,
 			   char **maps )
 {
-  if ( ! (_nlayers = ncateg + nmap) )
+  if ( ! (ncateg + nmap) )
     return 0;
 
-  // Reallocate vector that stores environmental layers.
+  if (_layerfiles)
+    {
+      for (int i = 0; i < _nlayers; i++)
+	{ delete[] _layerfiles[i]; }
+      delete[] _layerfiles;
+    }
+
   if ( _layers )
-    delete[] _layers;
+    {
+      for (int i = 0; i < _nlayers; i++)
+	{ delete[] _layers[i]; }
+      delete[] _layers;
+    }
+
+  _nlayers = ncateg + nmap;
+
+  _layerfiles = new char*[_nlayers];
+
+  // stringCopy() needs this.
+  memset( _layerfiles, 0, _nlayers * sizeof(char *) );
+
+  char **layers = _layerfiles;
+  char ** currmap = maps;  
+  char ** currcateg = categs;
+
+  // Copy categorical maps.
+  char **files_end = _layerfiles + _ncateg;
+  while ( layers < files_end )
+    stringCopy( layers++, *currcateg++ );
+
+  // Copy continuos maps.
+  files_end += nmap;
+  while ( layers < files_end )
+    stringCopy( layers++, *currmap++ );
+
+  // Reallocate vector that stores environmental layers.
   Map **lay = _layers = new Map *[_nlayers];
 
   // Categorical maps.
@@ -161,7 +185,6 @@ Environment::changeLayers( int ncateg, char **categs, int nmap,
   end = lay + nmap;
   while ( lay < end )
     *lay++ = newMap( *maps++ );
-
 
   if ( ! calcRegion() )
     g_log.warn( "Maps intersection is empty!!!\n" );
