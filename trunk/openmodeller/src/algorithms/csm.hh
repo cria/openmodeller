@@ -1,8 +1,10 @@
 /**
- * This is a generic template intended to be used as the basis for
- * creating new algorithms.
+ * This is an ABC (Abstract Base Class) for use in csm modelling.
+ * It provides the core functionality and leaves the specifics
+ * of what component cutoff methodology should be used to 
+ * inheriting classes.
  * 
- * @file
+ * @file csm
  * @author Tim Sutton (t.sutton@reading.ac.uk)
  * @date   2003-09-12
  * $Id$
@@ -13,6 +15,9 @@
  * Centro de Referencia em Informacao Ambiental
  *
  * http://www.cria.org.br
+ * 
+ * Copyright(c) Neil Caithness 2004 (Model Methodology)
+ * Copyright(c) Tim Sutton 2004 (C++ implementation)
  * 
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -188,9 +193,10 @@ Var N |    |     |     |     |     xN     |
 -------------------------------------------
 
 
-The next step is to remove any column from the eigenvector where the eigenvalue is less than 1.
-This is called the Keiser-Gutman method. There are other approaches to deciding which values to discard, which 
-could be substituted at this be point.
+The next step is to remove any column from the eigenvector 
+where the eigenvalue is less than 1 (in the kaiser-gutman method), or
+to remove any column where the eigenvalue is less than a randomised
+cutoff) broken stick method.
 
 
 -------------------------------------
@@ -304,7 +310,9 @@ public:
   /** This method is used when projecting the model.  
     * @note This method is inherited from the Algorithm class
     * @return Scalar of the probablitiy of occurence    
-    * @param Scalar *x a pointer to a vector of openModeller Scalar type (currently double). The vector should contain values looked up on the environmental variable layers into which the mode is being projected. */
+    * @param Scalar *x a pointer to a vector of openModeller Scalar type 
+    * (currently double). The vector should contain values looked up on 
+    * the environmental variable layers into which the mode is being projected. */
   Scalar getValue( Scalar *x );
   
   /** Returns a value that represents the convergence of the algorithm
@@ -316,18 +324,31 @@ public:
   int getConvergence( Scalar *val );
 
 
+  
 private:
+
+protected:  
   /** This is a utility function to convert a Sampler to a gsl_matrix.
     * @return 0 on error
     */
     int SamplerToMatrix();
   
+
+  /** This is a wrapper to call several of the methods below to generate the
+   * initial model. */
+  bool csm1();
+    
   /** Calculate the mean and standard deviation of the environment
     * variables at the occurence points.
-    * @note This method must be called after SamplerToMatrix
+    * @note The matrix, mean and stddev vectors MUST be pre-initialised! 
+    * @param theMatrix - a gsl_matrix pointer from which mean and stddev will be obtained
+    * @param theMeanVector - a pointer to a gsl_vector in which the column means will be stored
+    * @param theStdDevVector - a pointer to a gsl_vector in which the column stddevs will be stored
     * @return 0 on error
     */
-  int calculateMeanAndSd();
+  int calculateMeanAndSd( gsl_matrix * theMatrix, 
+                            gsl_vector * theMeanVector,
+                            gsl_vector * theStdDevVector);
           
   /** Center and standardise.
     * Subtract the column mean from every value in each column
@@ -338,12 +359,15 @@ private:
   int center();
   
   /** Discard unwanted components.
-    * Currently this is done using the Keiser-Gutman method
-    * where all eigenvectors with an eigenvalue < 1 are discarded.
+   * This is a pure virtual function - it must be implemented by the derived
+   * class. Currently two derived classes are expected to be implemented -
+   * one for kaiser-gutman cutoff and one for broken-stick cutoff.
     * @note This method must be called after center
     * @return 0 on error    
     */  
-  int discardComponents();
+  virtual int discardComponents()=0;
+  
+
   
   /** This a utility function to display the content of a gsl vector.
    * @param v gsl_vector Input vector
