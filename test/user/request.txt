@@ -60,8 +60,8 @@ Scale = 255
 #Algorithm = DistanceToAverage v0.1
 #Parameter = MaxDist 0.2
 
-Algorithm  = GARP
-Parameter = MaxGenerations 500
-Parameter = ConvergenceLimit 0.01
-Parameter = PopulationSize 50
-Parameter = Resamples 2500
+#Algorithm  = GARP
+#Parameter = MaxGenerations 500
+#Parameter = ConvergenceLimit 0.01
+#Parameter = PopulationSize 50
+#Parameter = Resamples 2500
