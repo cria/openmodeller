@@ -33,7 +33,7 @@
 
 #include <om.hh>
 
-#include "serialization/serializable.hh"
+#include "om_serializable.hh"
 
 class Garp;
 class Sampler;
