@@ -91,7 +91,8 @@ Section "MainSection" SEC01
   File "..\s57objectclasses.csv"  
   File "..\unit_of_measure.csv"  
   File "..\wkt_defs.txt"  
- 
+  File "..\msvcr80.dll" 
+  File "..\msvcp80.dll" 
 
   ;
   ; Now the algs
