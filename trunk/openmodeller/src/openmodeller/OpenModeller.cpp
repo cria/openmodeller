@@ -51,7 +51,7 @@
 #include <string.h>
 #include <stdlib.h>
 
-
+Log _log( Log::Info );
 /****************************************************************/
 /************************* Control Interface ********************/
 
@@ -216,7 +216,8 @@ ControlInterface::run()
   _log.info( "Environment initialized.\n" );
 
   // Sampler and algorithm.
-  Sampler samp( env, presence, absence );
+  //Sampler samp( env, presence, absence );
+  Sampler samp( presence, env );
   Algorithm *alg = algorithmFactory( &samp, f_alg, f_param );
   if ( ! alg )
     {
