@@ -149,7 +149,7 @@ OccurrencesFile::remove( char *name )
 /*************/
 /*** print ***/
 void
-OccurrencesFile::print( char *msg )
+OccurrencesFile::printOccurrences( char *msg )
 {
   printf( "%s", msg );
 
