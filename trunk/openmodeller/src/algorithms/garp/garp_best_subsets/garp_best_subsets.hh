@@ -39,6 +39,17 @@
 /****************************************************************/
 /************************* GARP Algorithm ***********************/
 
+/**
+  * Implements GARP with Best Subset Procedure (Anderson et al. 2003).
+  * 
+  * It runs <n> Garp models, filter the best ones based on the
+  * procedure defined by Anderson et al. 2003 and sum them to obtain
+  * a probability map for the species distribution.
+  * 
+  * Current implementation uses multi-threading to run multiple 
+  * Garp runs in parallel. Takes advantage of multi-processor 
+  * servers and workstations.
+  */
 class GarpBestSubsets : public Algorithm
 {
 public:
@@ -49,10 +60,10 @@ public:
     * environmental layers are scaled to the same value range. 
     * GARP requires values to be normalized between -1.0 and 1.0.
     * @param Scalar pointer min that the post normalised will be fitted to
-	*        Always set to -1.0 in GARP
+	*        Always set to -1.0 in GARP_BS
     * @param Scalar pointer max that the post normalised will be fitted to
-	*        Always set to +1.0 in GARP
-    * @return Always return 1 for GARP.
+	*        Always set to +1.0 in GARP_BS
+    * @return Always return 1 for GARP_BS.
    */
   int needNormalization( Scalar *min, Scalar *max );
   

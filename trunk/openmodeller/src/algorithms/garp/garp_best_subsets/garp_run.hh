@@ -42,6 +42,11 @@ class AlgParameter;
 /****************************************************************/
 /************************* GARP Run *****************************/
 
+/**
+  * Wraps up a single GARP run and its results (calculated error
+  * components). Also handles multi-threading aspects of
+  * computation.
+  */
 class GarpRun : public Serializable
 {
 public:

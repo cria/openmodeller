@@ -43,7 +43,14 @@
 /****************************************************************/
 /****************** NegatedRangeRule class **********************/
 
-// ====================================================================
+/**
+  * Implements Garp Negated Range rules. They are simply a negation
+  * of an equivalent Range rule. Examples of Negated Range rules are:
+  *
+  * IF NOT (temp between 10 and 20C) THEN sp=PRESENT
+  * IF NOT (temp between 10 and 20C AND 
+  *    elevation between 500 and 2000m) THEN sp=ABSENT
+  */
 class NegatedRangeRule : public RangeRule
 {
 public:
