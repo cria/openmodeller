@@ -141,6 +141,9 @@ main( int argc, char **argv )
   int   req_nparam  = fp.count( param_label );
   char **req_param  = new char *[req_nparam];
 
+  // read parameters from file into req_param parameters
+  fp.getAll(param_label, req_param);
+
   // For resulting parameters storage.
   int nparam = metadata->nparam;
   AlgParameter *param = new AlgParameter[nparam];
@@ -332,4 +335,6 @@ extractParameter( char *name, int nvet, char **vet )
   while ( vet < end )
     if ( ! strncmp( name, *vet++, length ) )
       return *(vet-1) + length;
+
+  return 0;
 }
