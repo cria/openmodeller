@@ -1,0 +1,72 @@
+openModeller Acceptance Test Script
+===================================
+
+This directory contains a python script designed to perform extensive tests
+on many of openModeller features to ensure its quality.
+
+The tests should be run every time that significant changes have been made
+to the code base as well as when new releases are being prepared.
+
+
+INSTRUCTIONS
+------------
+
+Here are some instructions on how to setup and run the tests:
+
+1) Configure openModeller to build the Python interface. This can be done by
+running the following commands on OM root directory:
+
+	./autogen.sh
+	./configure --enable-python
+	make
+	make install
+
+2) Download the test data files from http://...
+
+3) Extract the file to the directory modeller/test/user. That will create
+a directory called data which contains layers and species occurrence data
+points used in the test.
+
+4) Run the tests with the command:
+
+	python AccTest.py
+
+
+5) The test will run and results will be output to html reports in the file:
+
+	SummaryReports.html
+
+That page shows a summary of test results. There is a link to a second 
+html page that shows the actual maps generated during the tests side by 
+side to sample of expected results.
+
+One would browse through the maps visually comparing actual results
+agains expected samples.
+
+
+
+CURRENT STATUS
+--------------
+
+- Need to add expected results images;
+ 
+- Most failures during test make the script abort thus not generating the
+final result files. It would be nice if tests were more robust to keep going
+even if a particular test fails;
+
+- Need to come up with different testing levels (full, smoke, etc) for 
+different purposes. Currently only full test is available. It might take
+way to long to run it as a simple pre-commit requirement.
+
+- Need to add those tests to autotools setup. That would include a separate
+make action, that in turn would include automatic download and extraction 
+of test datasets. The test would require python interface to be enabled. 
+
+- There are some allocation issues with OpenModeller object that causes the
+script to fail if OM destructor is active. Before those issues are sorted 
+out, one need to comment out OM destructor code out. That causes the script
+to leak a lot of memory :( 
+
+------------ x -----------
+
+
