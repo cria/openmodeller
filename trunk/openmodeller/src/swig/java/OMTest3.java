@@ -4,6 +4,8 @@
  *
  */
 
+import br.org.cria.OpenModeller.*;
+
 public class OMTest3 {
 
     static OpenModeller _mod;
@@ -12,7 +14,7 @@ public class OMTest3 {
 	System.loadLibrary("omjava");
 
 	_mod = new OpenModeller();
-	_mod.setLogLevel( Log.Debug );
+	//_mod.setLogLevel( Log.Debug );
 	if (_mod == null) {
 	    System.out.println("Could not load omjava library.");
 	}
