@@ -127,7 +127,7 @@ PyObject * getParameterList(AlgMetadata * metadata)
           {
 	    char * name = PyString_AsString(PyList_GetItem(o,0));
             char * value = PyString_AsString(PyList_GetItem(o,1));
-	    $1[i].setName(name);
+	    $1[i].setId(name);
 	    $1[i].setValue(value);
           }
           else 
@@ -184,14 +184,14 @@ int print_alg_params(int n, AlgParameter *param)
 {
     int i;
     for (i = 0; i < n; i++) 
-      printf("Param[%d] = (%s, %s)\n", i, param[i].name(), param[i].value());
+      printf("Param[%d] = (%s, %s)\n", i, param[i].id(), param[i].value());
 
     return n;
 }
 %}
 
-%rename(createMapByFile)   OpenModeller::createMap(Environment *, char *, Scalar mult, char *, char *);
-%rename(createMapByFormat) OpenModeller::createMap(Environment *, char *, Scalar mult, char *, MapFormat *);
+%rename(setOutputMapByFile)   OpenModeller::setOutputMap(Scalar mult, char *output_file, char *mask, char *file_with_format);
+%rename(setOutputMapByFormat) OpenModeller::setOutputMap(Scalar mult, char *output_file, char *mask, MapFormat *format);
 
 %include "../../inc/om_defs.hh"
 %include "../../inc/om_control.hh"
