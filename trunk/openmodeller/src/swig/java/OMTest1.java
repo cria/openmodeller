@@ -47,11 +47,28 @@ public class OMTest1 {
 	n = mod.numAvailableAlgorithms();
 	for (i = 0; i < n; i++) {
 	    // print info about one algorithm
-	    System.out.println("ID:       " + algmd[i].getId());
-	    System.out.println("Name:     " + algmd[i].getName());
-	    System.out.println("Version:  " + algmd[i].getVersion());
-	    System.out.println("Overview: " + algmd[i].getOverview());
-	    System.out.println("");
+	    System.out.println("ID:         " + algmd[i].getId());
+	    System.out.println("Name:       " + algmd[i].getName());
+	    System.out.println("Version:    " + algmd[i].getVersion());
+	    System.out.println("Overview:   " + algmd[i].getOverview());
+	    System.out.println("Parameters: " + algmd[i].getNparam());
+
+	    AlgParamMetadata parammd = algmd[i].getParam();
+	    if (parammd != null)
+		System.out.println("First Param ID: " + parammd.getId());
+	    
+	    AlgMetadata algmd2 = mod.algorithmMetadata(algmd[i].getId());
+	    
+	    System.out.println("*ID:         " + algmd2.getId());
+	    System.out.println("*Name:       " + algmd2.getName());
+	    System.out.println("*Version:    " + algmd2.getVersion());
+	    System.out.println("*Overview:   " + algmd2.getOverview());
+	    System.out.println("*Parameters: " + algmd2.getNparam());
+
+	    parammd = algmd2.getParam();
+	    if (parammd != null)
+		System.out.println("*First Param ID: " + parammd.getId());
+	    
 	}
     }
 
