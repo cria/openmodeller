@@ -132,7 +132,7 @@ ControlInterface::~ControlInterface()
 
 /****************************/
 /*** available Algorithms ***/
-AlgorithmMetadata **
+Algorithm **
 ControlInterface::availableAlgorithms()
 {
   return _factory->availableAlgorithms();
