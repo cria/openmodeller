@@ -1,4 +1,4 @@
-# Copyright (C) 2004 Jens Oberender <j.obi at troja.net>
+# Copyright (C) 2004 Ricardo Scachetti Pereira <rpereira at ku.edu>
 #  
 # This file is free software; as a special exception the author gives
 # unlimited permission to copy and/or distribute it, with or without 
@@ -8,19 +8,8 @@
 # WITHOUT ANY WARRANTY, to the extent permitted by law; without even the
 # implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
-if BUILD_TEST
-TEST_DIR=test
-endif
+noinst_LTLIBRARIES = libcppunitlite.la
 
-SUBDIRS = $(TEST_DIR)
-
-plugindir = ${pkglibdir}
-
-plugin_LTLIBRARIES = libomgarp.la
-
-libomgarp_la_SOURCES = \
-	garp.cpp ruleset.cpp rules.cpp garp_sampler.cpp  \
-	garp.hh  ruleset.hh  rules.hh  garp_sampler.hh
-
-libomgarp_la_LIBADD = ../../src/lib/libopenmodeller.la
-libomgarp_la_CPPFLAGS = -I../../src/inc
+libcppunitlite_la_SOURCES = \
+	Test.cpp TestRegistry.cpp TestResult.cpp \
+	Failure.cpp SimpleString.cpp
