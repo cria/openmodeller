@@ -61,7 +61,16 @@ class AlgorithmFactory
     ~DLL();
 
     Algorithm *load();
+
+    /**
+     * Returns an algorithm that cannot be deleted.
+     * It is a reference object.
+     */
     Algorithm *getAlgorithm()  { return _alg; }
+
+    /** Returns a new instantiated algorithm object. **/
+    Algorithm *newAlgorithm();
+
 
   private:
     DLLHandle _handle;

@@ -74,7 +74,21 @@ AlgorithmFactory::DLL::load()
       return 0;
     }
 
-  // Instantiated the algorithm.
+  return _alg = newAlgorithm();
+}
+
+
+/*************************/
+/*** DLL new Algorithm ***/
+Algorithm *
+AlgorithmFactory::DLL::newAlgorithm()
+{
+  if ( ! _handle )
+    return 0;
+
+  char *error;
+
+  // Instantiate the algorithm.
   TAlgFactory factory;
   factory = (TAlgFactory) dllFunction( _handle,
                                        "algorithmFactory" );
@@ -87,7 +101,7 @@ AlgorithmFactory::DLL::load()
       return 0;
     }
 
-  return _alg = (*factory)();
+  return (*factory)();
 }
 
 
@@ -214,9 +228,14 @@ AlgorithmFactory::newAlgorithm( Sampler *samp, char *id,
 
       if ( ! strcmp ( id, alg->getID() ) )
 	{
-	  alg->setSampler( samp );
-	  alg->setParameters( nparam, param );
-	  return alg;
+          // New algorithm instance from the same dll.
+          Algorithm *new_alg = dll->newAlgorithm();
+
+          // Setup new algorithm.
+	  new_alg->setSampler( samp );
+	  new_alg->setParameters( nparam, param );
+
+	  return new_alg;
 	}
     }
 
