@@ -43,7 +43,7 @@ RSC=rc.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MT /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "LIBOPENMODELLER_DLL_EXPORTS" /YX /FD /c
-# ADD CPP /nologo /MT /W3 /GX /O2 /I "../../inc" /I "../../inc/serialization" /I "$(GDAL_HOME)/include" /I "../../lib/serialization" /I "$(EXPAT_HOME)/Source/lib" /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "LIBOPENMODELLER_DLL_EXPORTS" /D VERSION=\"0.2\" /D PLUGINPATH=$(OM_PLUGIN_PATH) /D CONFIG_FILE=\"om_config.txt\" /YX /FD /c
+# ADD CPP /nologo /MT /W3 /GX /O2 /I "../../inc" /I "../../inc/serialization" /I "$(GDAL_HOME)/include" /I "../../lib/serialization" /I "$(EXPAT_HOME)/Source/lib" /I "$(JAVA_HOME)/include" /I "$(JAVA_HOME)/bin" /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "LIBOPENMODELLER_DLL_EXPORTS" /D VERSION=\"0.2\" /D PLUGINPATH=$(OM_PLUGIN_PATH) /D CONFIG_FILE=\"om_config.txt\" /YX /FD /c
 # ADD BASE MTL /nologo /D "NDEBUG" /mktyplib203 /win32
 # ADD MTL /nologo /D "NDEBUG" /mktyplib203 /win32
 # ADD BASE RSC /l 0x409 /d "NDEBUG"
@@ -135,6 +135,10 @@ SOURCE=..\..\lib\file_parser.cpp
 # Begin Source File
 
 SOURCE=..\..\lib\log.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\lib\map_format.cpp
 # End Source File
 # Begin Source File
 

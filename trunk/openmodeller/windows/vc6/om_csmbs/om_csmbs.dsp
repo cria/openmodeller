@@ -43,7 +43,7 @@ RSC=rc.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MT /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "OM_CSMBS_EXPORTS" /YX /FD /c
-# ADD CPP /nologo /MT /W3 /GX /O2 /I "../../algorithms" /I "../../inc" /I "../../inc/serialization" /I "$(GDAL_HOME)/include" /I "$(GSL_HOME)/include" /D "_WINDOWS" /D "WIN32" /D "NDEBUG" /D "_MBCS" /D "_USRDLL" /D "OM_CSMBS_EXPORTS" /D "CORE_DLL_IMPORT" /YX /FD /c
+# ADD CPP /nologo /MT /W3 /GX /O2 /I "../../algorithms" /I "../../inc" /I "../../inc/serialization" /I "$(GDAL_HOME)/include" /I "$(GSL_HOME)/include" /I "$(JAVA_HOME)/include" /I "$(JAVA_HOME)/bin" /D "_WINDOWS" /D "WIN32" /D "NDEBUG" /D "_MBCS" /D "_USRDLL" /D "OM_CSMBS_EXPORTS" /D "CORE_DLL_IMPORT" /YX /FD /c
 # ADD BASE MTL /nologo /D "NDEBUG" /mktyplib203 /win32
 # ADD MTL /nologo /D "NDEBUG" /mktyplib203 /win32
 # ADD BASE RSC /l 0x409 /d "NDEBUG"
@@ -53,7 +53,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /machine:I386
-# ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib gdal_i.lib libexpat.lib gsl.lib gslcblas.lib /nologo /dll /machine:I386 /nodefaultlib:"scew_.lib" /libpath:"$(GDAL_HOME)\lib" /libpath:"../build/lib" /libpath:"$(EXPAT_HOME)/libs" /libpath:"$(GSL_HOME)/lib"
+# ADD LINK32 gdal_i.lib libexpat.lib gsl.lib gslcblas.lib libopenmodeller.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /machine:I386 /nodefaultlib:"scew_.lib" /libpath:"$(GDAL_HOME)\lib" /libpath:"../build/lib" /libpath:"$(EXPAT_HOME)/libs" /libpath:"$(GSL_HOME)/lib"
 # Begin Special Build Tool
 TargetDir=.\Release
 TargetName=om_csmbs
@@ -86,7 +86,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /debug /machine:I386 /pdbtype:sept
-# ADD LINK32 libexpat.lib libopenmodeller.lib gsl.lib gslcblas.lib gdal_i.lib libexpat.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /debug /machine:I386 /pdbtype:sept /libpath:"$(GDAL_HOME)\lib" /libpath:"../build_debug/lib" /libpath:"$(EXPAT_HOME)/libs" /libpath:"$(GSL_HOME)/lib"
+# ADD LINK32 libexpat.lib libopenmodeller.lib gsl.lib gslcblas.lib gdal_i.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /debug /machine:I386 /pdbtype:sept /libpath:"$(GDAL_HOME)\lib" /libpath:"../build_debug/lib" /libpath:"$(EXPAT_HOME)/libs" /libpath:"$(GSL_HOME)/lib"
 # Begin Special Build Tool
 TargetDir=.\Debug
 TargetName=om_csmbs

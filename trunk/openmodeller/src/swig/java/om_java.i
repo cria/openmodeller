@@ -1,20 +1,26 @@
 %module om
 
+%include "../../inc/om_defs.hh"
+
+#undef dllexp
+#undef dll_log
+
+#define dllexp
+#define dll_log
+
 %{
-#include "../../inc/om_log.hh"
 #include "../../inc/om_defs.hh"
+#include "../../inc/om_log.hh"
 #include "../../inc/om_control.hh"
 #include "../../inc/environment.hh"
 #include "../../inc/map_format.hh"
 #include "../../inc/om_alg_parameter.hh"
 #include "../../inc/om_algorithm_metadata.hh"
-#include "../../inc/file_parser.hh"
 #include "../../inc/om_serializable.hh"
 #include "../../console/occurrences_file.hh"
 %}
 
 %inline %{
-
 void cp(char * msg) { printf("cp: %s\n", msg); fflush(stdout); }
 %}
 
@@ -375,15 +381,12 @@ AlgParamMetadata ** getParameterList(AlgMetadata * metadata)
 
 %}
 
-
 %include "../../inc/om_log.hh"
-%include "../../inc/om_defs.hh"
 %include "../../inc/om_serializable.hh"
 %include "../../inc/om_control.hh"
 %include "../../inc/environment.hh"
 %include "../../inc/map_format.hh"
 %include "../../inc/om_alg_parameter.hh"
 %include "../../inc/om_algorithm_metadata.hh"
-%include "../../inc/file_parser.hh"
 %include "../../console/occurrences_file.hh"
 

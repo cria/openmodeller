@@ -41,7 +41,7 @@ RSC=rc.exe
 # PROP Intermediate_Dir "Release"
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_MBCS" /D "_LIB" /YX /FD /c
-# ADD CPP /nologo /MT /W3 /GX /O2 /I "../../inc" /I "../../inc/env_io" /I "$(GDAL_HOME)/include" /I "../../lib/serialization" /I "$(EXPAT_HOME)/Source/lib" /D "WIN32" /D "NDEBUG" /D "_MBCS" /D "_LIB" /D VERSION=\"0.2\" /D PLUGINPATH=$(OM_PLUGIN_PATH) /D CONFIG_FILE=\"om_config.txt\" /YX /FD /c
+# ADD CPP /nologo /MT /W3 /GX /O2 /I "../../inc" /I "../../inc/env_io" /I "$(GDAL_HOME)/include" /I "../../lib/serialization" /I "$(EXPAT_HOME)/Source/lib" /I "$(JAVA_HOME)/include" /I "$(JAVA_HOME)/bin" /D "WIN32" /D "NDEBUG" /D "_MBCS" /D "_LIB" /D VERSION=\"0.2\" /D PLUGINPATH=$(OM_PLUGIN_PATH) /D CONFIG_FILE=\"om_config.txt\" /YX /FD /c
 # ADD BASE RSC /l 0x409 /d "NDEBUG"
 # ADD RSC /l 0x409 /d "NDEBUG"
 BSC32=bscmake.exe

@@ -42,7 +42,7 @@ class Map;
  * Allow access to environmental variables by means of vectors
  * gathering data from all layers on the sampled points.
  */
-class Environment
+class dllexp Environment
 {
 public:
 
