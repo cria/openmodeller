@@ -477,7 +477,11 @@ gsl_matrix * Csm::product (gsl_matrix * a, gsl_matrix * b)
             double vp = product(va, vb);
 
             gsl_matrix_set (p, i, j, vp);
+
+	    gsl_vector_free (vb);
         }
+
+	gsl_vector_free (va);
     }
 
     return p;
