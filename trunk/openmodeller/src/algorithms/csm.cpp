@@ -61,9 +61,15 @@ static AlgMetadata metadata = {
   "",              // Bibliography.
 
   // Description.
-  "",
+  "Climate Space Model [CSM] is a principle components based 
+   algorithm developed by Dr. Neil Caithness. The component 
+   selection process is based on either the Keiser-Gutman
+   method or the broken-stick method (not implemented yet).
+   
+   The original CSM was written as series of Matlab functions.
+   ",
 
-  "Tim Sutton",       // Author.
+  "Tim Sutton, Renato De Giovanni (openModeller c++ implementation)",       // Author.
   "t.sutton [at] reading.ac.uk",  // Author's contact.
 
   0,  // Does not accept categorical data.
