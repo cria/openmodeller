@@ -87,7 +87,7 @@ public:
    */
   Occurrences *remove( char *name );
 
-  void print( char *msg="" );
+  void printOccurrences( char *msg="" );
 
 
 private:
