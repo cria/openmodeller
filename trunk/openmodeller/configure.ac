@@ -121,7 +121,7 @@ if test x"$ac_gsl" != "xno" ; then
 else
   echo "------"
   echo "The GNU Scientific Library is needed to build the CSM - Kaiser-Gutman and "
-  echo "CSM - Broken algorithms."
+  echo "CSM - Broken Stick algorithms."
   echo "------"
 fi
 AM_CONDITIONAL([HAVE_GSL], [test "$GSL_CFLAGS" != "" -a "$GSL_LIBS" != ""])
