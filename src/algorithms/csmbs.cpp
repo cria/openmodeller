@@ -186,13 +186,14 @@ int CsmBS::discardComponents()
   printf ("     Component discarding routine \n");
   printf ("vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv\n");
 
-      //create a matrix that will store the eigenvalue vector of each of the
-      //the randomised environment variables we create
-      gsl_matrix * myMatrixOfEigenValueVectors = 
+  //create a matrix that will store the eigenvalue vector of each of the
+  //the randomised environment variables we create
+  gsl_matrix * myMatrixOfEigenValueVectors = 
       gsl_matrix_alloc (numberOfRandomisationsInt,_gsl_environment_matrix->size2);
-
+  printf ("Calculating %i randomised matrices\n", numberOfRandomisationsInt);
   for (int i=0; i<numberOfRandomisationsInt;i++)
   {
+    printf ("Calculating randomised matrix : %i \n", i);
 
     //    
     //retreive centered and standardised environmental matrix & clone it
@@ -220,6 +221,8 @@ int CsmBS::discardComponents()
       //
       //
       //  -------------------------------------------------------------------------------------        
+      //  -------------------------------------------------------------------------------------        
+      //  -------------------------------------------------------------------------------------        
       //  e.g. before:      e.g. after
       //  33 | 56 | 88  |   12| 12 | 34
       //  34 | 12 | 63  |   34 | 44 | 63
@@ -237,14 +240,21 @@ int CsmBS::discardComponents()
       //  You can call this method (gsl swap) in a loop for k = 0,...,N and r = random between 0 and N...
       //  so you are saying always swap the kth element with rth element?
       //  thats sounds good 
-      for (int k=0; k < m->size1; k++)
+
+      //this extra loop is to increase the amount of shuffling that takes place!  
+      int minRandomiserRepeats=5; //softcode later
+      for (int myRandomiserRepeats=0;myRandomiserRepeats<minRandomiserRepeats;myRandomiserRepeats++)
       {
-        time(&mySeconds); //get time from sys clock
-        srand((unsigned int) mySeconds); //seed randomiser
-        int myRandomRowInt = rand() % (myRandUpperBoundInt-1) ; //get random number from 0 to row count
-        //now do the swap
-        gsl_vector_swap_elements (myColumnVector,k,myRandomRowInt);
-      } //k loop
+        //loop through each cell in the column swapping it with another cell
+        for (int k=0; k < m->size1; k++)
+        {
+          time(&mySeconds); //get time from sys clock
+          srand((unsigned int) mySeconds); //seed randomiser
+          int myRandomRowInt = rand() % (myRandUpperBoundInt-1) ; //get random number from 0 to row count
+          //now do the swap
+          gsl_vector_swap_elements (myColumnVector,k,myRandomRowInt);
+        } //k loop
+      }//myRandomiserRepeats loop
       //replace the column with the new randomised column
       gsl_matrix_set_col(m,j,myColumnVector);
       //clean up
@@ -253,11 +263,9 @@ int CsmBS::discardComponents()
     //  
     //  build a cov matrix on the randomised environmental matrix
     //
-    printf ("Calculating covariance matrix for randomised sample %i\n",i);
     gsl_matrix * myGslCovarianceMatrix = autoCovariance(m);
 
     //  obtain eigenvalue and eigenvector on the new cov matrix
-    printf("Calculating eigenvalue and eigenvector\n");
     gsl_vector * myGslEigenValueVector = gsl_vector_alloc (m->size2);
     gsl_matrix * myGslEigenVectorMatrix = gsl_matrix_alloc (m->size2, m->size2);
     //create a temporary workspace
@@ -312,6 +320,12 @@ int CsmBS::discardComponents()
       ++_retained_components_count;
     }
   }
+  //it seems we need at least 4 components to produce a decent model
+  if (_retained_components_count < 4) 
+  {
+    printf ("Only %i components were retained - aborting discart components routine",_retained_components_count);
+    return 0;
+  }
 
   //  this vector is then used to discard component from the eigenvalue vector where
   //  the eigen value is greater than the randomised eigen value
@@ -362,9 +376,13 @@ int CsmBS::discardComponents()
   gsl_vector_free (myStdDevVector);
   gsl_vector_free (myMeanPlusStdDevsVector);
   gsl_matrix_free (myMatrixOfEigenValueVectors);
-  
-  printf ("vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv\n");
+
+  displayVector( _gsl_eigenvalue_vector, "Vector of retained eigen values:");
+  displayMatrix( _gsl_eigenvector_matrix,"Matrix of retained eigen vector:");
+
+  printf ("\nvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv\n");
   printf ("     Completed CSM - Broken Stick \n");
   printf ("     %i out of %i components retained \n",_retained_components_count,_layer_count );
   printf ("vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv\n");
+  return 1;
 }

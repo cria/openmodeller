@@ -580,9 +580,19 @@ bool Csm::csm1()
     printf ("\n*************************************************\n");
 
     //After the mode is generated, we can discard unwanted components!
-    
-    discardComponents();
+    int maxComponentAttempts=10; //soft code using parameters later! - only relevant to broken stick!
+    int myNumberOfAttempts=0;
+    while (!discardComponents() && myNumberOfAttempts++ < maxComponentAttempts)
+    {
+      printf ("Discard components retained to few components - trying again!\n");
+    }
+    if (myNumberOfAttempts==maxComponentAttempts)
+    {
+      printf ("Error could not generate a model with sufficient components!\n");
+      return false;
+    }
+      
     //print out the result
     printf ("\n\nUnwanted components discarded \n");
-
+    return true;
 }
