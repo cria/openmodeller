@@ -212,8 +212,15 @@ class PyModelCommand : public ModelCommand {
     void operator()( float progress ) {
       PyObject *arg = Py_BuildValue( "(f)", progress );
       PyObject *result = PyEval_CallObject( my_func, arg );
+      // If an error occurred in the Callback
+      if ( PyErr_Occurred() ) {
+        // Print it out, clear the error
+        PyErr_Print();
+      }
       Py_DECREF( arg );
-      Py_DECREF( result );
+      // If the callback raises an expcetion, the result is a null pointer.
+      // we use Py_XDECREF here since it tests for null
+      Py_XDECREF( result );
     }
 
     PyObject *my_func;
@@ -231,8 +238,15 @@ class PyMapCommand : public MapCommand {
     void operator()( float progress ) {
       PyObject *arg = Py_BuildValue( "(f)", progress );
       PyObject *result = PyEval_CallObject( my_func, arg );
+      // If an error occurred in the Callback
+      if ( PyErr_Occurred() ) {
+        // Print it out, clear the error
+        PyErr_Print();
+      }
       Py_DECREF( arg );
-      Py_DECREF( result );
+      // If the callback raises an expcetion, the result is a null pointer.
+      // we use Py_XDECREF here since it tests for null
+      Py_XDECREF( result );
     }
 
     PyObject *my_func;
@@ -242,12 +256,23 @@ class PyMapCommand : public MapCommand {
 
 %typemap( in ) ModelCommand*  {
   // %typemap( in ) ModelCommand* 
-  $1 = new PyModelCommand( $input );
+  if ( $input == NULL || $input == Py_None ) {
+    $1 = NULL;
+    Py_XDECREF( $input );
+  } else {
+    $1 = new PyModelCommand( $input );
+
+  }
 }
 
 %typemap( in ) MapCommand* {
   // %typemap( in ) MapCommand* 
-  $1 = new PyMapCommand( $input );
+  if ( $input == NULL || $input == Py_None ) {
+    $1 = NULL;
+    Py_XDECREF( $input );
+  } else {
+    $1 = new PyMapCommand( $input );
+  }
 }
 
 // This tells SWIG to treat AlgParameter * as a special case
