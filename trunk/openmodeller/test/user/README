@@ -21,11 +21,17 @@ running the following commands on OM root directory:
 	make
 	make install
 
-2) Download the test data files from http://...
+2) Download the test data files from:
 
-3) Extract the file to the directory modeller/test/user. That will create
-a directory called data which contains layers and species occurrence data
-points used in the test.
+	 http://www.cria.org.br/~ricardo/openModeller/acc_test_data.tar.gz
+
+3) Extract the file in the directory modeller/test/user using the following
+command: 
+
+	tar -xzvf acc_test_data.tar.gz
+
+That will create directory called data which contains layers and species
+occurrence data points used in the test.
 
 4) Run the tests with the command:
 
@@ -42,6 +48,8 @@ side to sample of expected results.
 
 One would browse through the maps visually comparing actual results
 agains expected samples.
+
+Optionally the script ./runtest.sh will do it all for you.
 
 
 
