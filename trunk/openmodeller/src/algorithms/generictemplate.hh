@@ -33,7 +33,9 @@
 #include <om.hh>
 
 /**
-This is a simple template for creating new algorithms.  Note it does not actually run a model - rather it demonstrates how to do a new algorithm implementation.
+This is a simple template for creating new algorithms.
+Note it does not actually run a model - rather it demonstrates
+how to do a new algorithm implementation.
 
 @author Tim Sutton
 */
@@ -41,12 +43,8 @@ class GenericTemplate : public Algorithm
 {
 public:
 
-    /** Constructor for GenericTemplate
-      * 
-      * @param Sampler is class that will fetch environment variable 
-      * values at each occurrence / locality
-      */
-    GenericTemplate( Sampler *samp );
+    /** Constructor for GenericTemplate */
+    GenericTemplate();
     /** This is the descructor for the GenericTemplate class */
     ~GenericTemplate();
     
@@ -55,12 +53,6 @@ public:
   //
   // Methods used to build the model
   //
-  
-  /** Metadata field returning the name of this algorithm.
-    * @note This method is inherited from the Algorithm class 
-    * @return a character array containing the name of the algorithm
-    */
-  char *name()    { return "GenericTemplate"; } //replace this name!
   
   /** This method is used when you want to ensure that all variables in all
     * environmental layers are scaled to the same value range. 
@@ -82,7 +74,7 @@ public:
     * @note This method is inherited from the Algorithm class
     * @return 0 on error 
     */
-  int   iterate();
+  int iterate();
   
   /** Use this method to find out if the model has completed (e.g. convergence
     * point has been met. 
@@ -90,7 +82,7 @@ public:
     * @return     
     * @return Implementation specific but usually 1 for completion.
     */
-  int   done();
+  int done();
 
   //
   // Methods used to project the model
@@ -109,7 +101,7 @@ public:
     * @return 
     * @param Scalar *val 
   */
-  int    getConvergence( Scalar *val );
+  int getConvergence( Scalar *val );
 
 
 private:

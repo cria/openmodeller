@@ -108,7 +108,7 @@ AlgorithmFactory::~AlgorithmFactory()
 
 /****************************/
 /*** available Algorithms ***/
-AlgorithmMetadata **
+Algorithm **
 AlgorithmFactory::availableAlgorithms()
 {
   // Reloads (refresh) the DLLs in _lstDLL.
@@ -116,19 +116,19 @@ AlgorithmFactory::availableAlgorithms()
   loadDLLs( _dirs );
 
   // Make room for the algorithms' metadatas.
-  AlgorithmMetadata **all_metadata;
-  all_metadata = new (AlgorithmMetadata *)[_lstDLL.length() + 1];
+  Algorithm **all;
+  all = new (Algorithm *)[_lstDLL.length() + 1];
 
   // For each DLL found:
-  AlgorithmMetadata **meta = all_metadata;
+  Algorithm **alg = all;
   DLL *dll;
   for ( _lstDLL.head(); dll = _lstDLL.get(); _lstDLL.next() )
-    *meta++ = dll->getAlgorithm()->getMetadata();
+    *alg++ = dll->getAlgorithm();
 
   // Null terminated.
-  *meta = 0;
+  *alg = 0;
   
-  return all_metadata;
+  return all;
 }
 
 

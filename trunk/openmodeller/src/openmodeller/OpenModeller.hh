@@ -69,10 +69,18 @@ public:
   ~ControlInterface();
 
 
-  /** @return a null terminated list of available algorithms'
-   *  metadata.
+  /** @return a null terminated list of available algorithms
+   * 
+   * Note that the returned algorithms can not run because they
+   * are not initialized with "Sampler" and parameters!
+   * To do so, use the method newAlgorithm().
+   * 
+   * The pointer returned are copied from an internal storage of
+   * algorithms. Note that the pointers returned can not be
+   * deallocated and the objects they point to will be reallocated
+   * the next time this method is called.
    */
-  AlgorithmMetadata **availableAlgorithms();
+  Algorithm **availableAlgorithms();
 
 
   // Define environmental layers and other basic settings.
