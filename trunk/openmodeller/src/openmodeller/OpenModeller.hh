@@ -33,6 +33,7 @@
 #include <om_algorithm_metadata.hh>
 
 class Algorithm;
+class OmAlgParameter;
 class AlgorithmFactory;
 class Environment;
 class Sampler;
@@ -55,17 +56,6 @@ class ControlInterface
 public:
 
   ControlInterface();
-
-  /**
-   * @param cs     Common coordinate system.
-   * @param ncateg Number of categorical layers (they all need to
-   *  be in the initial portion of "layers");
-   * @param nlayer Total number of environmental layers;
-   * @param layer  Names of the environmental layers;
-   */
-  ControlInterface( int ncateg, int nlayer, char **layers,
-		    char *mask=0 );
-
   ~ControlInterface();
 
 
@@ -75,19 +65,23 @@ public:
   char *getVersion();
 
 
-  /** Finds the system available algorithms.
+  /** Finds the system available algorithms' metadata.
    *
-   * The returned algorithms can not run because they are not
-   * initialized with "Sampler" and parameters!
-   * 
    * The pointer returned are copied from an internal storage of
    * algorithms. So they can not be deallocated.
-   * Another point is that the Algorithms will be reallocated
-   * the next time this method is called.
+   * Another point is that the AlgMetadata will be
+   * reallocated the next time this method is called.
    *
    * @return a null terminated list of available algorithms.
    */
-  Algorithm **availableAlgorithms();
+  AlgMetadata **availableAlgorithms();
+
+  /** Returns an specific algorithm metadata
+   * @param algorithm_id Identifier of the algorithm.
+   * @return Algorithm's metadata or zero if there algorithm
+   *  was not found.
+   */
+  AlgMetadata *algorithmMetadata( char *algorithm_id );
 
   /** Number of available algorithms.
    * If the algorithms are not already searched in the system,
@@ -99,16 +93,24 @@ public:
 
   /** Define algorithm that will be used to generate the
    *  distribution map.
-   * @param alg_id Algorithm's identifier. Must match
-   *  Algorithm::getID() method.
-   * @param param String with algorithm's parameters separated by
-   *  space and/or TABs.
+   * @param id Algorithm's identifier. Must match the
+   *  Algorithm::getID() returned string.
+   * @param nparam Number of parameters.
+   * @param param Vector with all parameters. The address 'param'
+   *  points to must exists when the method "run()" is called.
    */
-  void setAlgorithm( char *alg_id, char *param=0 );
+  void setAlgorithm( char *id, int nparam, OmAlgParameter *param );
 
 
-  // Define environmental layers and other basic settings.
-  void setEnvironment( int ncateg, int nlayer, char **layers,
+  /** Defines environmental layers and the mask.
+   * @param num_categ Number of categorical map layers.
+   * @param categ_map File names of categorical map layers.
+   * @param num_continuos Number of continuos map layers.
+   * @param continuos_map File names of continuos map layers.
+   * @param mask File name of the mask map layer.
+   */
+  void setEnvironment( int num_categ,     char **categ_map,
+		       int num_continuos, char **continuous_map,
 		       char *mask=0 );
 
   // Define output map.
@@ -160,9 +162,10 @@ private:
   Header *_hdr;
   Scalar  _mult;  ///< Output multiplier.
 
-  char *_alg_id;    ///< Algorithm's ID and parameters.
-  char *_alg_param;
-  int   _ncycle;    ///< Max algorithm cicles.
+  OmAlgParameter *_alg_param;  ///< Algorithm parameters.
+  char *_alg_id;     ///< Algorithm's ID and parameters.
+  int   _alg_nparam; ///< Number of algorithm parameters.
+  int   _ncycle;     ///< Max algorithm cicles.
 
   Occurrences *_presence; ///< Presence occurrences points.
   Occurrences *_absence;  ///< Absence occurrences points.

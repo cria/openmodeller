@@ -39,10 +39,10 @@
 #define NUM_PARAM 1
 
 
-/******************************/
-/*** Algorithm's parameters ***/
+/*************************************/
+/*** Algorithm parameters metadata ***/
 
-static AlgorithmParameter parameters[NUM_PARAM] = {
+static AlgParamMetadata parameters[NUM_PARAM] = {
 
   // Metadata of the first parameter.
   {
@@ -62,8 +62,9 @@ static AlgorithmParameter parameters[NUM_PARAM] = {
 /************************************/
 /*** Algorithm's general metadata ***/
 
-static AlgorithmMetadata metadata = {
+static AlgMetadata metadata = {
 
+  "",              // Internal usage.
   "Bioclim",       // Name.
   "0.1",       	   // Version.
   "Bibliography",  // Bibliography.

@@ -36,17 +36,18 @@
 /****************************************************************/
 /********************** Algorithm's Metadata ********************/
 
-#define NUM_PARAM 1
+#define NUM_PARAM     1
+#define NAME_MAXDIST  "MaxDist"
 
 
-/******************************/
-/*** Algorithm's parameters ***/
+/*************************************/
+/*** Algorithm parameters metadata ***/
 
-static AlgorithmParameter parameters[NUM_PARAM] = {
+static AlgParamMetadata parameters[NUM_PARAM] = {
 
   // Metadata of the first parameter.
   {
-    "MaxDist",   // Name.
+    NAME_MAXDIST,   // Name.
     "Real",      // Type.
     "Maximum cartesian distance to be considered", // Description.
 
@@ -62,8 +63,9 @@ static AlgorithmParameter parameters[NUM_PARAM] = {
 /************************************/
 /*** Algorithm's general metadata ***/
 
-static AlgorithmMetadata metadata = {
+static AlgMetadata metadata = {
 
+  "",                   // Internal usage.
   "DistanceToAverage", 	// Name.
   "0.1",       	        // Version.
   "Bibliography",     	// Bibliography.
@@ -144,12 +146,12 @@ DistanceToAverage::needNormalization( Scalar *min, Scalar *max )
 int
 DistanceToAverage::initialize( int ncicle )
 {
-  if ( ! getParameter( 0, &_dist ) )
+  if ( ! getParameter( NAME_MAXDIST, &_dist ) )
     return 0;
 
   _dim = _samp->numIndependent();
 
-  g_log( "Parameter passed: %f\n", _dist );
+  g_log( "Parameter %s: %f\n", NAME_MAXDIST, _dist );
 
   // Distance should range from 0 to 1
   if ( _dist > 1.0 )  _dist = 1.0;

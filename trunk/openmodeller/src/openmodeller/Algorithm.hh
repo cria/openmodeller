@@ -34,6 +34,8 @@
 #include <om_sampler.hh>
 #include <om_algorithm_metadata.hh>
 
+class OmAlgParameter;
+
 
 /**
  * Declares the function and function pointer to be used for the
@@ -61,7 +63,7 @@ class Algorithm
 {
 public:
 
-  Algorithm( AlgorithmMetadata *metadata );
+  Algorithm( AlgMetadata *metadata );
   virtual ~Algorithm();
 
   /** Set the sampler object. Need to be called before start
@@ -69,13 +71,14 @@ public:
    */
   void setSampler( Sampler *samp );
 
-  /** String with parameters separated with spaces and/or TABs.
-   * @return Number of parameters setted.
+  /** Configure the algorithm's parameters.
+   * @param nparam Number of parameters.
+   * @param param Vector with all parameters. The address 'param'
+   *  points to must exists while this object is used.
    */
-  int setParameters( char *param );
+  void setParameters( int nparam, OmAlgParameter *param );
 
-  char *getID()     { return _id; }
-  char *copyID();
+  char *getID()   { return _metadata ? _metadata->id : 0; }
 
 
   /** The algorithm should return != 0 if it needs normalization
@@ -116,7 +119,7 @@ public:
   /** Returns the algorithm's convergence value at the moment */
   virtual int getConvergence( Scalar *val )  { return 0; }
 
-  AlgorithmMetadata *getMetadata()  { return _metadata; }
+  AlgMetadata *getMetadata()  { return _metadata; }
 
 
 protected:
@@ -145,15 +148,24 @@ protected:
    *  dependent variables (occurrence prediction). */
   int dimDomain()  { return _samp ? _samp->numIndependent() : 0; }
 
-  /** Returns the i-th setted parameter.
-   *  The number of parameters is given by metadata.
+  /** Returns an algorithm parameter of string type.
    *   
-   *  @param i Index of the parameter to be read.
-   *  @param value Filled with i-th parameter's value.
-   *  @return Zero if the i-th parameters does not exists or
+   *  @param name Parameters name.
+   *  @param value Filled with parameter's value.
+   *  @return Zero if the parameter does not exists or the
    *   parameters were not setted yet.
    **/
-  int getParameter( int i, Scalar *value );
+  int getParameter( char *name, char **value );
+
+  /** Returns an algorithm parameter of floating point type.
+   *   
+   *  @param name Parameters name.
+   *  @param value Filled with parameter's value.
+   *  @return Zero if the parameter does not exists or the
+   *   parameters were not setted yet.
+   **/
+  int getParameter( char *name, double *value );
+  int getParameter( char *name, float  *value );
 
 
   Sampler *_samp;
@@ -161,16 +173,16 @@ protected:
 
 private:
 
-  int findID( AlgorithmMetadata * );
+  /** Fills md->id with the algorithm ID. */
+  int findID( AlgMetadata *md );
 
 
-  char _id[256];
   int *_categ; ///< f_categ[i] != 0 if map "i" is categorical.
 
-  AlgorithmMetadata *_metadata;
+  AlgMetadata *_metadata;
 
-  int     _param_setted;
-  Scalar *_param;
+  int            _nparam;
+  OmAlgParameter *_param;
 };
 
 
