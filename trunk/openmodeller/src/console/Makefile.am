@@ -11,6 +11,7 @@
 if HAVE_X11
 GRAPH = graph
 OM_VIEWER = om_viewer
+OM_NICHE  = om_niche
 endif
 
 EXTRA_DIST = \
@@ -25,7 +26,7 @@ EXTRA_DIST = \
 SUBDIRS = $(GRAPH)
 
 #bin_PROGRAMS = om_console om_test $(OM_VIEWER)
-bin_PROGRAMS = om_console $(OM_VIEWER)
+bin_PROGRAMS = om_console $(OM_VIEWER) $(OM_NICHE)
 
 om_console_SOURCES = om_console.cpp occurrences_file.cpp request_file.cpp
 om_console_CPPFLAGS = -I../inc -I../inc/serialization
@@ -38,4 +39,9 @@ om_console_LDADD = $(GDAL_LIB) ../lib/libopenmodeller.la
 om_viewer_SOURCES = om_viewer.cpp occurrences_file.cpp
 om_viewer_CPPFLAGS = -I../inc -I../inc/serialization
 om_viewer_LDADD = $(GDAL_LIB) $(X11_LIB) graph/libopenmodellergraph.la \
+	../lib/libopenmodeller.la
+
+om_niche_SOURCES = om_niche.cpp occurrences_file.cpp request_file.cpp
+om_niche_CPPFLAGS = -I../inc -I../inc/serialization
+om_niche_LDADD = $(GDAL_LIB) $(X11_LIB) graph/libopenmodellergraph.la \
 	../lib/libopenmodeller.la

@@ -334,6 +334,20 @@ Environment::getRegion( Coord *xmin, Coord *ymin,
 }
 
 
+/********************/
+/*** get Extremes ***/
+int
+Environment::getExtremes( Scalar *min, Scalar *max )
+{
+  Map **map = _layers;
+  Map **end = map + _nlayers;
+  while ( map < end )
+    (*map++)->getMinMax( min++, max++ );
+
+  return 1;
+}
+
+
 /************************/
 /*** set Coord System ***/
 void
@@ -370,16 +384,16 @@ Environment::calcRegion()
       (*lay++)->getRegion( &xmin, &ymin, &xmax, &ymax );
 
       if ( xmin > _xmin )
-        _xmin = xmin;
+	_xmin = xmin;
       
       if ( ymin > _ymin )
-        _ymin = ymin;
+	_ymin = ymin;
       
       if ( xmax < _xmax )
-        _xmax = xmax;
+	_xmax = xmax;
       
       if ( ymax < _ymax )
-        _ymax = ymax;
+	_ymax = ymax;
     }
 
   return (_xmin < _xmax) && (_ymin < _ymax);

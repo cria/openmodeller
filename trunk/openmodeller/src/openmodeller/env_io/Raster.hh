@@ -193,6 +193,9 @@ public:
    */
   int put( Coord x, Coord y, Scalar *val );
 
+  /** Find the minimum and maximum values in the first band. */
+  int getMinMax( Scalar *min, Scalar *max );
+
   /**
    * The same as 'get()', but uses the image (col,row) instead
    * of the (longitude, latitude) coordinates.

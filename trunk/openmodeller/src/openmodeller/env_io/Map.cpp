@@ -91,7 +91,6 @@ Map::getRegion( Coord *xmin, Coord *ymin, Coord *xmax,
       if ( *ymin <= -90.0 ) *ymin = -90.0 + dif;
       if ( *ymax >=  90.0 ) *ymax =  90.0 - dif;
     }
-  _rst->print( "Header:" );
 
   return
     _gt->transfOut( xmin, ymin ) &&

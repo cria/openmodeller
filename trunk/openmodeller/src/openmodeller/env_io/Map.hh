@@ -87,6 +87,12 @@ public:
     return _rst->copyNormalizationValues((Raster *) (source->_rst));
   }
   
+  /** Find the minimum and maximum values in the first band. */
+  int getMinMax( Scalar *min, Scalar *max )
+  {
+    return _rst->getMinMax( min, max );
+  }
+
   /** Number of bands. */
   int numBand()   { return _rst->numBand(); }
 
