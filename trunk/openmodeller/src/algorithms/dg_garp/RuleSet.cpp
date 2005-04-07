@@ -409,16 +409,16 @@ Scalar RuleSet::getValue(const Sample& sample) const
   BYTE bytes[256];
   EnvCell cell(_dim + 2, bytes);
 
-
-  for (int i = 0; i < _dim; i++)
+  // first element of bytes is reserved for presence/absence value
+  for (int i = 1; i < _dim; i++)
     {
       // Guard against values outside the normalization range
       // due to reprojection to a non-native range
-      Scalar value = sample[i];
+      Scalar value = sample[i - 1];
       if (value > 253.0) value = 253.0;
       if (value < 1.0)   value = 1.0;
 	
-      bytes[i + 1] = (BYTE) value;
+      bytes[i] = (BYTE) value;
       //printf("%3d (%8.3f) ", bytes[i + 1], values[i]);
     }
 
