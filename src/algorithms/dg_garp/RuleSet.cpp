@@ -419,7 +419,6 @@ Scalar RuleSet::getValue(const Sample& sample) const
       if (value < 1.0)   value = 1.0;
 	
       bytes[i] = (BYTE) value;
-      //printf("%3d (%8.3f) ", bytes[i + 1], values[i]);
     }
 
   int ruleIndex = applyRulesToCell(&cell, 0.0);
