@@ -42,9 +42,6 @@ private:
 	// data points used for training
 	EnvCellSet * objTrainSet;
 
-	// indicates when the above datasets can be deallocated in destructor
-	bool bAutoDeleteDatasets;
-
 
 public:
 	// OM Algorithm virtual methods
@@ -62,8 +59,6 @@ public:
 	virtual ~GarpAlgorithm();
 
 	virtual char * type() { return "GarpAlgorithm"; }
-
-	void initialize(EnvCellSet * objTrnSet);
 
 	RuleSet * getBestSet() { return &objBest; }
 	void getInitialModel(int intSize, EnvCellSet * objTrainSet);
