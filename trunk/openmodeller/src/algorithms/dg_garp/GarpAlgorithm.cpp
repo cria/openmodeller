@@ -193,9 +193,6 @@ GarpAlgorithm::GarpAlgorithm()
 { 
 	GarpUtil::randomize(0);
 	srand((unsigned)time(NULL));
-	// indicates when the above datasets can be deallocated in destructor
-	// by default they cannot
-	bAutoDeleteDatasets = true;
 
 	// initialize properties to default values
 	initializeProperties(); 
@@ -209,13 +206,11 @@ GarpAlgorithm::GarpAlgorithm()
 GarpAlgorithm::~GarpAlgorithm()
 {
   //objBest.log();
-	// indicates when the above datasets can be deallocated in destructor
-	if (bAutoDeleteDatasets)
-	{
-		if (objTrainSet)
-			delete objTrainSet;
-	}
-	//g_log("GarpAlgorithm::~GarpAlgorithm() at %x\n", this );
+
+  if (objTrainSet)
+    delete objTrainSet;
+
+  //g_log("GarpAlgorithm::~GarpAlgorithm() at %x\n", this );
 }
 
 
@@ -259,8 +254,8 @@ int GarpAlgorithm::initialize()
 
   //printf("Presences: %d\nAbsences:  %d\n", _samp->numPresence(), _samp->numAbsence());
 
-  EnvCellSet * cellSet = new EnvCellSet;
-  cellSet->initialize(Resamples);
+  objTrainSet = new EnvCellSet;
+  objTrainSet->initialize(Resamples);
   for (int i = 0; i < Resamples; i++)
     {
       OccurrencePtr oc = _samp->getOneSample();
@@ -279,10 +274,14 @@ int GarpAlgorithm::initialize()
 	}
 
       //printf("\n");
-      cellSet->add(cell);
+      objTrainSet->add(cell);
     }
   
-  initialize(cellSet);
+  // create histograms of occurrence of each layer value for bioclim/range rules
+  objTrainSet->createBioclimHistogram();
+	
+  // get initial model
+  getInitialModel(Popsize, objTrainSet);
 
   return 1;
 }
@@ -326,26 +325,6 @@ Scalar GarpAlgorithm::getValue( const Sample& x ) const
   return objBest.getValue(x);
 }
   
-// ==========================================================================
-void GarpAlgorithm::initialize(EnvCellSet * objTrnSet)
-{
-	// indicates when the above datasets can be deallocated in destructor
-	// they cannot because they were created externally
-	bAutoDeleteDatasets = false;
-
-	// init main objects
-	objTrainSet		 = objTrnSet;
-
-	if (objTrnSet->count() == 0)
-		throw GarpException(81, "Cannot initialize GarpAlgorithm with an empty train set");
-
-	// create histograms of occurrence of each layer value for bioclim/range rules
-	objTrnSet->createBioclimHistogram();
-	
-	// get initial model
-	getInitialModel(Popsize, objTrainSet);
-}
-
 // ==========================================================================
 void GarpAlgorithm::initializeProperties()
 {
