@@ -96,9 +96,9 @@ main( int argc, char **argv )
   _om = createModel( request );
   EnvironmentPtr env = _om->getEnvironment();
   int nmap = env->numLayers();
-  Scalar *min = new Scalar[nmap];
-  Scalar *max = new Scalar[nmap];
-  env->getExtremes( min, max );
+  Sample min;
+  Sample max;
+  env->getExtremes( &min, &max );
 
   if ( nmap < 2 )
     g_log.error( 2, "Need more than one environmental variable!\n" );
@@ -134,8 +134,6 @@ main( int argc, char **argv )
   delete frame;
 
   delete _om;
-  delete min;
-  delete max;
 }
 
 
@@ -389,11 +387,12 @@ draw_occur( GGraph *graph, const OccurrencesPtr& occurs )
 
   // Draw each set of occurrences.
   EnvironmentPtr env = _om->getEnvironment();
-  Scalar *amb = new Scalar[env->numLayers()];
+  Sample amb;
   OccurrencesImpl::const_iterator oc = occurs->begin();
   for( ; oc != occurs->end(); ++oc ) {
-    env->get( (*oc)->x(), (*oc)->y(), amb );
-    graph->markAxe( amb[0], amb[1], 1, color);
+    amb = env->get( (*oc)->x(), (*oc)->y() );
+    if ( amb.size() >= 2 ) 
+      graph->markAxe( amb[0], amb[1], 1, color);
   }
 }
 
