@@ -141,17 +141,17 @@ FileParser::load( char const *file )
 
 /***********/
 /*** get ***/
-char *
+std::string
 FileParser::get( char const *key ) const
 {
   ItemList::const_iterator it = f_lst.begin();
   while ( it != f_lst.end() ) {
     if (  (*it).first == key ) {
-      return const_cast<char*>(it->second.c_str());
+      return it->second;
     }
     ++it;
   }
-  return 0;
+  return "";
 }
 
 
@@ -174,19 +174,17 @@ FileParser::count( char const *key ) const
 
 /***************/
 /*** get All ***/
-int
-FileParser::getAll( char const *key, char **values ) const
+std::vector<std::string>
+FileParser::getAll( char const *key ) const
 {
-  int n = 0;
-
+  std::vector<std::string> values;
   ItemList::const_iterator it = f_lst.begin();
   while ( it != f_lst.end() ) {
     if (  it->first == key ) {
-      *values++ = const_cast<char*>(it->second.c_str());
-      ++n;
+      values.push_back(it->second);
     }
     ++it;
   }
-  return n;
+  return values;
 }
 

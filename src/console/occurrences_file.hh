@@ -66,11 +66,11 @@ class OccurrencesFile
 
 public:
 
-  OccurrencesFile( char *file_name, char *coord_system );
+  OccurrencesFile( const char *file_name, const char *coord_system );
   ~OccurrencesFile();
 
   /** Add the occurrences from the file. */
-  int addOccurrences( char *file_name );
+  int addOccurrences( const char *file_name );
 
   /** Return the number of occurrences. */
   int numOccurrences()  { return f_sp.size(); }
@@ -78,7 +78,7 @@ public:
   /** Return the group of occurrences known by 'name' or 0 if
    *  not found.
    */
-  OccurrencesPtr remove( char *name );
+  OccurrencesPtr remove( const char *name );
 
   void printOccurrences( char *msg="" );
 

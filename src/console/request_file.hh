@@ -33,6 +33,9 @@
 
 #include <om_occurrences.hh>
 
+#include <string>
+#include <vector>
+
 class OpenModeller;
 class FileParser;
 class AlgParameter;
@@ -72,13 +75,14 @@ private:
   int setProjection ( OpenModeller *om, FileParser &fp );
   int setAlgorithm  ( OpenModeller *om, FileParser &fp );
 
-  OccurrencesPtr readOccurrences( char *file, char *name,
-                                char *coord_system );
+  OccurrencesPtr readOccurrences( std::string file, std::string name,
+                                std::string coord_system );
 
   int readParameters( AlgParameter *result, AlgMetadata const *metadata,
-                      int str_nparam, char **str_param );
+		      std::vector<std::string> str_param );
 
-  char *extractParameter( char const *name, int nvet, char **vet );
+  std::string extractParameter( std::string const name, 
+				std::vector<std::string> vet );
 
   int _occurrences_set;
   int _environment_set;
@@ -89,12 +93,10 @@ private:
 
   bool _nonNativeProjection;
   double _multiplier;
-  int _ncat;
-  char **_cat;
-  int _nmap;
-  char **_map;
-  char *_mask;
-  char *_file;
+  std::vector<std::string> _cat;
+  std::vector<std::string> _map;
+  std::string _mask;
+  std::string _file;
 
 };
 

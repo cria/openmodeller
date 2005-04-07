@@ -63,10 +63,10 @@ using std::vector;
 /*******************/
 /*** Constructor ***/
 
-OccurrencesFile::OccurrencesFile( char *file_name,
-				  char *coord_system )
+OccurrencesFile::OccurrencesFile( const char *file_name,
+				  const char *coord_system )
 {
-  _coord_system = coord_system;
+  _coord_system = const_cast<char *>(coord_system);
   addOccurrences( file_name );
 }
 
@@ -82,7 +82,7 @@ OccurrencesFile::~OccurrencesFile()
 /**********************/
 /*** add Ocurrences ***/
 int
-OccurrencesFile::addOccurrences( char *file_name )
+OccurrencesFile::addOccurrences( const char *file_name )
 {
   // Opens the input file.
   FILE *file = fopen( file_name, "r" );
@@ -138,7 +138,7 @@ OccurrencesFile::addOccurrences( char *file_name )
 /**************/
 /*** remove ***/
 OccurrencesPtr
-OccurrencesFile::remove( char *name )
+OccurrencesFile::remove( const char *name )
 {
   // If name is not specified,
   // remove the last entry, and return it.
