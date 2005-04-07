@@ -61,6 +61,20 @@ RequestFile::RequestFile() :
 
 RequestFile::~RequestFile() 
 {
+  if (_file)
+    delete [] _file;
+  if (_nmap>0) {
+    for(int i=0;i<_nmap; i++)
+      delete [] _map[i];
+    delete [] _map;
+  }
+  if (_ncat>0) {
+    for(int i=0;i<_ncat; i++ )
+      delete [] _cat[i];
+    delete [] _cat;
+  }
+  if (_mask)
+    delete [] _mask;
 }
 
 /*****************/
@@ -320,6 +334,9 @@ RequestFile::extractParameter( char const *name, int nvet, char **vet )
 void
 RequestFile::makeProjection( OpenModeller *om )
 {
+
+  if ( _projection_set == 0 )
+    return;
 
   if ( !_nonNativeProjection ) {
     om->createMap( _file );
