@@ -32,6 +32,7 @@
 
 #include <graphic.hh>
 #include <om_algorithm.hh>
+#include <Sample.hh>
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -170,7 +171,7 @@ ViewModel::drawMap( GGraph *gr )
 
   float contraste = 256.0;
 
-  Scalar coord[2];
+  Sample coord(2);
   float x0 = gr->transfX( 0 );
   float y0 = gr->transfY( 0 );
 
