@@ -54,14 +54,12 @@ EnvironmentPtr createEnvironment( int ncateg, char **categs,
 				  int nmap, char **maps,
 				  char *mask_file = 0 );
 
-/* To be added later
 EnvironmentPtr createEnvironment( std::vector<std::string> categs,
 				  std::vector<std::string> maps,
 				  std::string mask_file );
 
 EnvironmentPtr createEnvironment( std::vector<std::string> categs,
 				  std::vector<std::string> maps );
-*/
 
 EnvironmentPtr createEnvironment( const ConstConfigurationPtr& config );
 
@@ -82,6 +80,15 @@ public:
 
   EnvironmentImpl();
 
+  /** Vector with file names that contain the variables to
+   *  be used and also the mask layer.
+   *
+   * @param categs Categorical layers (e.g. soil).
+   * @param maps   Continuous layers (e.g. temperature).
+   */
+  EnvironmentImpl( std::vector<std::string> categs,
+		   std::vector<std::string> maps, 
+		   std::string mask_file = "" );
   /** Vector with file names that contain the variables to
    *  be used and also the mask layer.
    *
@@ -135,7 +142,7 @@ public:
   Map * getLayer(int index) const { return _layers[index].second; }
 
   /** Change the mask. */
-  int changeMask( char const *mask_file );
+  int changeMask( std::string mask_file );
 
   Map * getMask() const { return _mask.second; }
 
@@ -149,8 +156,9 @@ public:
 
 private:
 
-  void initialize( int ncateg, char **categs,
-		   int nmap, char **maps, char *mask_file=0 );
+  void initialize( std::vector<std::string> categs,
+		   std::vector<std::string> maps, 
+		   std::string mask_file="" );
 
   /* utility to clear the mask information.  Deallocates memory.  Does not computeRegion() */
   void clearMask();
@@ -170,8 +178,8 @@ private:
   makeLayer( const std::string& filename, int categ );
 
   /** Rebuild the layer representation. */
-  int changeLayers( int ncateg, char **categs, int nmap,
-		    char **maps );
+  int changeLayers( std::vector<std::string> categs, 
+		    std::vector<std::string> maps );
 
   /** Calculate the widest region common to all layers. */
   void calcRegion();

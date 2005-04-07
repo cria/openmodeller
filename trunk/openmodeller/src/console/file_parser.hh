@@ -52,9 +52,8 @@ public:
 
   /**
   * Get the value of a key (case insensitive).
-  * Do not change the char* that is returned.
   */
-  char *get( char const *key ) const;
+  std::string get( char const *key ) const;
 
   /**
   * Return the number of times that a certain key appears in the file.
@@ -62,12 +61,13 @@ public:
   int count( char const *key ) const;
 
   /**
-   * The type of values should really be char const **.
-   * Do not change the char*'s returned in values because
-   * they are really pointers into string::c_str().
+   * Get a set of values with the same key specified in the argument.
    */
-  int getAll( char const *key, char **values) const;
+  std::vector<std::string> getAll( char const *key) const;
 
+  /**
+   * Returns the number of lines in file.
+   */
   int length() const
   {
     return f_lst.size();

@@ -50,6 +50,7 @@
 #include <string.h>
 #include <stdlib.h>
 
+
 /*** backward compatible callback helper classes ***/
 
 class ModelCallbackHelper : public OpenModeller::ModelCommand
@@ -200,6 +201,24 @@ OpenModeller::setOccurrences( const OccurrencesPtr& presence,
     }
 
   return 1;
+}
+
+/***********************/
+/*** set Environment ***/
+void
+OpenModeller::setEnvironment( std::vector<std::string> categ_map,
+			      std::vector<std::string> continuous_map,
+			      std::string& mask )
+{
+  _env = new EnvironmentImpl( categ_map, continuous_map, mask);
+
+  // TODO: remove duplication of code below
+  if (_presence)
+    { 
+      setSampler( createSampler(_env, _presence, _absence) );
+    }
+
+  g_log( "Environment initialized by STL constructor.\n" );
 }
 
 /***********************/

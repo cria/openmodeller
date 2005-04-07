@@ -62,6 +62,19 @@ EnvironmentPtr createEnvironment( int ncateg, char **categs,
   return EnvironmentPtr( new EnvironmentImpl( ncateg, categs, nmap, maps, mask_file ) );
 }
 
+EnvironmentPtr createEnvironment( std::vector<std::string> categs,
+                                  std::vector<std::string> maps,
+                                  std::string mask_file )
+{
+  return EnvironmentPtr( new EnvironmentImpl( categs, maps, mask_file ) );
+}
+
+EnvironmentPtr createEnvironment( std::vector<std::string> categs,
+                                  std::vector<std::string> maps )
+{
+  return EnvironmentPtr( new EnvironmentImpl( categs, maps, "" ) );
+}
+
 EnvironmentPtr createEnvironment( const ConstConfigurationPtr& config )
 {
   EnvironmentPtr env( new EnvironmentImpl() );
@@ -120,21 +133,45 @@ EnvironmentImpl::EnvironmentImpl() :
 {
 }
 
+EnvironmentImpl::EnvironmentImpl( std::vector<std::string> categs,
+				  std::vector<std::string> maps, 
+				  std::string mask )
+{
+  initialize( categs, maps, mask );
+}
+
 EnvironmentImpl::EnvironmentImpl( int ncateg, char **categs,
 				  int nmap, char **maps, char *mask_file)
 {
-  initialize( ncateg, categs, nmap, maps, mask_file );
+  // create vectors and pass them on to initialize
+  std::vector<std::string> vcategs;
+  std::vector<std::string> vmaps;
+
+  vcategs.reserve(ncateg);
+  vmaps.reserve(nmap);
+
+  int i;
+  for (i = 0; i < ncateg; ++i) {
+    vcategs.push_back(categs[i]);
+  }
+
+  for (i = 0; i < nmap; ++i) {
+    vmaps.push_back(maps[i]);
+  }
+  
+  initialize( vcategs, vmaps, std::string(mask_file) );
 }
 
 void
-EnvironmentImpl::initialize( int ncateg, char **categs,
-			     int nmap, char **maps, char *mask )
+EnvironmentImpl::initialize( std::vector<std::string> categs,
+			     std::vector<std::string> maps, 
+			     std::string mask )
 {
   _normalize = false;
 
   // Initialize mask and read its region.
   changeMask( mask );
-  changeLayers( ncateg, categs, nmap, maps );
+  changeLayers( categs, maps );
 }
 
 
@@ -228,45 +265,41 @@ EnvironmentImpl::setConfiguration( const ConstConfigurationPtr & config )
 /*********************/
 /*** change Layers ***/
 int
-EnvironmentImpl::changeLayers( int ncateg, char **categs, int nmap,
-			   char **maps )
+EnvironmentImpl::changeLayers( std::vector<std::string> categs,
+			       std::vector<std::string> maps )
 {
-  if ( ! (ncateg + nmap) )
+  if ( ! (categs.size() + maps.size()) )
     return 0;
 
   clearLayers();
 
   // Categorical maps.
-  char ** currcateg = categs;
-  for( int i = 0; i< ncateg; i++ ) {
-    _layers.push_back( makeLayer( *currcateg, 1 ) );
-    currcateg++;
+  for( int i = 0; i< categs.size(); i++ ) {
+    _layers.push_back( makeLayer( categs[i], 1 ) );
   }
 
   // Copy continuos maps.
-  char ** currmap = maps;  
-  for( int i = 0; i< nmap; i++ ) {
-    _layers.push_back( makeLayer( *currmap, 0 ) );
-    ++currmap;
+  for( int i = 0; i< maps.size(); i++ ) {
+    _layers.push_back( makeLayer( maps[i], 0 ) );
   }
 
   calcRegion();
 
-  return ncateg+nmap;
+  return categs.size() + maps.size();
 }
 
 
 /*******************/
 /*** change Mask ***/
 int
-EnvironmentImpl::changeMask( char const *mask_file )
+EnvironmentImpl::changeMask( std::string mask_file )
 {
   int ret = 1;
 
   clearMask();
 
   // New mask
-  if ( mask_file ) {
+  if ( !mask_file.empty() ) {
     _mask = makeLayer( mask_file, 0 );
     if ( !_mask.second ) {
       ret = 0;

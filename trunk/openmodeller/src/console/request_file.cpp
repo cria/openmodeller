@@ -37,19 +37,6 @@
 #include <string.h>
 #include <stdio.h>
 
-static void
-internStrings( int count, char **arry ) {
-
-  for (int i=0; i<count; ++i ) {
-
-    char *tmp = arry[i];
-    int len = strlen( tmp ) + 1;
-    arry[i] = new char[len];
-    strcpy( arry[i], tmp );
-
-  }
-
-}
 
 /**************************************************************/
 /************************ Request File ************************/
@@ -61,20 +48,6 @@ RequestFile::RequestFile() :
 
 RequestFile::~RequestFile() 
 {
-  if (_file)
-    delete [] _file;
-  if (_nmap>0) {
-    for(int i=0;i<_nmap; i++)
-      delete [] _map[i];
-    delete [] _map;
-  }
-  if (_ncat>0) {
-    for(int i=0;i<_ncat; i++ )
-      delete [] _cat[i];
-    delete [] _cat;
-  }
-  if (_mask)
-    delete [] _mask;
 }
 
 /*****************/
@@ -102,13 +75,13 @@ RequestFile::setOccurrences( OpenModeller *om, FileParser &fp )
 {
   // Obtain the Well Known Text string for the localities
   // coordinate system.
-  char *oc_cs = fp.get( "WKT coord system" );
+  std::string oc_cs = fp.get( "WKT coord system" );
 
   // Get the name of the file containing localities
-  char *oc_file = fp.get( "Species file" );
+  std::string oc_file = fp.get( "Species file" );
 
   // Get the name of the taxon being modelled!
-  char *oc_name = fp.get( "Species" );
+  std::string oc_name = fp.get( "Species" );
 
   _occurrences = readOccurrences( oc_file, oc_name, oc_cs );
 
@@ -123,25 +96,12 @@ int
 RequestFile::setEnvironment( OpenModeller *om, FileParser &fp )
 {
   // Mask to select the desired species occurrence points
-  char *mask = fp.get( "Mask" );
-
-  // Categorical environmental maps and the number of these maps.
-  char *cat_label = "Categorical map";
-  int  ncat  = fp.count( cat_label );
-  char **cat = new char *[ncat];
-
-  // Continuous environmental maps and the number of these maps.
-  char *map_label = "Map";
-  int  nmap  = fp.count( map_label );
-  char **map = new char *[nmap];
+  std::string mask = fp.get( "Mask" );
 
   // Initiate the environment with all maps.
-  fp.getAll( cat_label, cat );
-  fp.getAll( map_label, map );
-  om->setEnvironment( ncat, cat, nmap, map, mask );
-
-  delete [] cat;
-  delete [] map;
+  std::vector<std::string> cat = fp.getAll( "Categorical map" );
+  std::vector<std::string> map = fp.getAll( "Map" );
+  om->setEnvironment( cat, map, mask );
 
   return 1;
 }
@@ -153,43 +113,30 @@ int
 RequestFile::setProjection( OpenModeller *om, FileParser &fp )
 {
 
-  _file   = fp.get( "Output file" );
-  if ( !_file )
+  _file = fp.get( "Output file" );
+  if ( _file.empty() )
     {
       g_log( "The 'Output file' file name was not specified!\n" );
       return 0;
     }
-  internStrings( 1, &_file );
 
   // Used to scale the model results e.g. from [0,1] to
   // [0,255] - useful for image generation.
-  char *mult = fp.get( "Scale" );
+  std::string mult = fp.get( "Scale" );
 
   _multiplier = 255.0;
-  if ( mult ) {
-    _multiplier = atof( mult );
+  if ( !mult.empty() ) {
+    _multiplier = atof( mult.c_str() );
   }
 
   // Categorical environmental maps and the number of these maps.
-  char *cat_label = "Categorical output map";
-  _ncat  = fp.count( cat_label );
-  _cat = 0;
-  if ( _ncat )
-    _cat = new char *[_ncat];
-  fp.getAll( cat_label, _cat );
-  internStrings( _ncat, _cat );
+  _cat = fp.getAll( "Categorical output map" );
 
   // Continuous environmental maps and the number of these maps.
-  char *map_label = "Output Map";
-  _nmap  = fp.count( map_label );
-  _map = 0;
-  if ( _nmap )
-    _map = new char *[_nmap];
-  fp.getAll( map_label, _map );
-  internStrings( _nmap, _map );
+  _map = fp.getAll( "Output Map" );
 
   // It is ok to not set the projection.
-  if ( ! (_ncat + _nmap) )
+  if ( ! (_cat.size() + _map.size()) )
     {
       g_log("Projection not set: using training Environment for projection\n");
       _nonNativeProjection = false;
@@ -198,17 +145,16 @@ RequestFile::setProjection( OpenModeller *om, FileParser &fp )
 
   _nonNativeProjection = true;
 
- // Get the details for the output Map
-  _mask   = fp.get( "Output mask" );
-  if ( !_mask )
+  // Get the details for the output Map
+  _mask = fp.get( "Output mask" );
+  if ( _mask.empty() )
     {
       g_log( "The 'Output mask' file name was not specified!\n" );
       return 0;
     }
-  internStrings( 1, &_mask );
 
-  char *format = fp.get( "Output format" );
-  if ( format != 0 )
+  std::string format = fp.get( "Output format" );
+  if ( format.empty() )
     {
       g_log("Output format parameter ignored using mask file for format\n");
     }
@@ -228,25 +174,21 @@ RequestFile::setAlgorithm( OpenModeller *om, FileParser &fp )
 {
   // Find out which model algorithm is to be used.
   AlgMetadata const *metadata;
-  char *alg_id = fp.get( "Algorithm" );
+  std::string alg_id = fp.get( "Algorithm" );
 
   // Try to used the algorithm specified in the request file.
   // If it can not be used, return 0.
   try {
     // An exception here means that the algorithm wasn't found.
-    metadata = om->algorithmMetadata( alg_id );
+    metadata = om->algorithmMetadata( alg_id.c_str() );
   }
   catch (...) {
     return 0;
   }
 
   // Obtain any model parameter specified in the request file.
-  char *param_label = "Parameter";
-  int   req_nparam  = fp.count( param_label );
-  char **req_param  = new char *[req_nparam];
-
   // read parameters from file into req_param parameters
-  fp.getAll( param_label, req_param );
+  std::vector<std::string> req_param = fp.getAll( "Parameter" );
 
   // For resulting parameters storage.
   int nparam = metadata->nparam;
@@ -255,13 +197,12 @@ RequestFile::setAlgorithm( OpenModeller *om, FileParser &fp )
   // Read from console the parameters not set by request
   // file. Fills 'param' with all 'metadata->nparam' parameters
   // set.
-  readParameters( param, metadata, req_nparam, req_param );
+  readParameters( param, metadata, req_param );
 
   // Set the model algorithm to be used by the controller
   int resp = om->setAlgorithm( metadata->id, nparam, param );
 
   delete[] param;
-  delete[] req_param;
 
   return resp;
 }
@@ -270,12 +211,12 @@ RequestFile::setAlgorithm( OpenModeller *om, FileParser &fp )
 /************************/
 /*** read Occurrences ***/
 OccurrencesPtr
-RequestFile::readOccurrences( char *file, char *name,
-                              char *coord_system )
+RequestFile::readOccurrences( std::string file, std::string name,
+                              std::string coord_system )
 {
-  OccurrencesFile oc_file( file, coord_system );
+  OccurrencesFile oc_file( file.c_str(), coord_system.c_str() );
 
-  return oc_file.remove( name );
+  return oc_file.remove( name.c_str() );
 }
 
 
@@ -284,8 +225,7 @@ RequestFile::readOccurrences( char *file, char *name,
 int
 RequestFile::readParameters( AlgParameter *result,
                              AlgMetadata const *metadata,
-                             int str_nparam,
-                             char **str_param )
+                             std::vector<std::string> str_param )
 {
   AlgParamMetadata *param = metadata->param;
   AlgParamMetadata *end   = param + metadata->nparam;
@@ -298,16 +238,15 @@ RequestFile::readParameters( AlgParameter *result,
       result->setId( param->id );
 
       // Read the resulting value from str_param.
-      char *value = extractParameter( result->id(), str_nparam,
-                                      str_param );
+      std::string value = extractParameter( result->id(), str_param );
 
       // If the parameter is not referenced in the file, set it
       // with the default value extracted from the parameter
       // metadata.
-      if ( ! value )
+      if ( value.empty() )
         value = param->typical;
 
-      result->setValue( value );
+      result->setValue( value.c_str() );
     }
 
   return metadata->nparam;
@@ -322,17 +261,22 @@ RequestFile::readParameters( AlgParameter *result,
  * then returns a pointer to the next character of vet[i],
  * otherwise returns 0.
  */
-char *
-RequestFile::extractParameter( char const *name, int nvet, char **vet )
+std::string
+RequestFile::extractParameter( std::string const name, 
+			       std::vector<std::string> vet )
 {
-  int length = strlen( name );
-  char **end = vet + nvet;
+  int length = name.length();
+  std::vector<std::string>::iterator it = vet.begin();
+  std::vector<std::string>::iterator end = vet.end();
 
-  while ( vet < end )
-    if ( ! strncmp( name, *vet++, length ) )
-      return *(vet-1) + length;
+  while ( it != end ) {
+    if ( name == (*it).substr(0, length) ) {
+      return (*it).substr( length );
+    }
+    ++it;
+  }
 
-  return 0;
+  return "";
 }
 
 
@@ -344,15 +288,13 @@ RequestFile::makeProjection( OpenModeller *om )
     return;
 
   if ( !_nonNativeProjection ) {
-    om->createMap( _file );
+    om->createMap( _file.c_str() );
   }
   else {
 
-    EnvironmentPtr env = new EnvironmentImpl( _ncat, _cat,
-					      _nmap, _map,
-					      _mask );
+    EnvironmentPtr env = new EnvironmentImpl( _cat, _map, _mask );
 
-    om->createMap( env, _file );
+    om->createMap( env, _file.c_str() );
 
   }
 

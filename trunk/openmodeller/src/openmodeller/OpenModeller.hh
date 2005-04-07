@@ -48,6 +48,9 @@ class AlgParameter;
 class ConfusionMatrix;
 class AreaStats;
 
+#include <string>
+#include <vector>
+
 
 /****************************************************************/
 /************************* Open Modeller ************************/
@@ -163,6 +166,18 @@ public:
    */
   int setAlgorithm( char const *id, int nparam, AlgParameter const *param );
 
+  /** Defines environmental layers and the mask using STL arguments.
+   * Also creates the Environment object used for native range projection.
+   * @param categ_map Vector of strings containing the file names 
+   *  of categorical map layers.
+   * @param continuous_map Vector of strings containing the file names 
+   *  of continuous map layers.
+   * @param mask File name of the mask map layer.
+   */
+  void setEnvironment( std::vector<std::string> categ_map,
+		       std::vector<std::string> continuous_map,
+		       std::string& mask );
+    
   /** Defines environmental layers and the mask. Also creates
    *  the Environment object used for native range projection.
    * @param num_categ Number of categorical map layers.
