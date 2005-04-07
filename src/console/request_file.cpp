@@ -232,8 +232,13 @@ RequestFile::setAlgorithm( OpenModeller *om, FileParser &fp )
 
   // Try to used the algorithm specified in the request file.
   // If it can not be used, return 0.
-  if ( ! (metadata = om->algorithmMetadata( alg_id )) )
+  try {
+    // An exception here means that the algorithm wasn't found.
+    metadata = om->algorithmMetadata( alg_id );
+  }
+  catch (...) {
     return 0;
+  }
 
   // Obtain any model parameter specified in the request file.
   char *param_label = "Parameter";
