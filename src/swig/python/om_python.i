@@ -17,6 +17,7 @@
 #include "env_io/map.hh"
 #include "configuration.hh"
 #include "environment.hh"
+#include "map_format.hh"
 #include "Model.hh"
 #include "models/AverageModel.hh"
 #include "om_alg_parameter.hh"
@@ -33,6 +34,7 @@
 %}
 
 %include "std_string.i"
+%include "std_vector.i"
 
 %init %{
   AlgorithmFactory::searchDefaultDirs();
@@ -133,74 +135,31 @@ private:
 //
 //******************************************************************************
 
-// This tells SWIG to treat char ** as a special case
-// In particular it is for "counted arrays" of strings, where the first
-// parameter is the number of elementes in the second array.
-%typemap(in,numargs=1) (int ncount,char **array)
+// Typemap for std::vector<std::string>
+%typemap(in) std::vector<std::string> ( std::vector<std::string> v )
 {
-  // %typemap(in,numargs=1) (int ncount,char **array)
+  // %typemap(in) ( std::vector<std::string> )
   /* Check if is a list */
   if (! PySequence_Check($input)) {
     PyErr_SetString(PyExc_TypeError,"not a sequence");
     SWIG_fail;
   } 
   int size = PySequence_Size($input);
-  $1 = size;
-  int i = 0;
-  $2 = (char **) malloc((size+1)*sizeof(char *));
-  for (i = 0; i < size; i++) {
+  for (int i = 0; i < size; i++) {
     PyObject *o = PySequence_GetItem($input,i);
-    if (PyString_Check(o))
-      $2[i] = PyString_AsString(o);
-    else {
+    if (PyString_Check(o)) {
+      v.push_back(  static_cast<std::string>( PyString_AsString(o) ) );
+    } else {
       PyErr_SetString(PyExc_TypeError,"list must contain strings");
-      free($2);
       return NULL;
     }
   }
-  $2[i] = 0;
+  $1 = v;
 }
-
-// This cleans up the char ** array we malloc'd before the function call
-%typemap(freearg) (int ncount, char **array) {
-  // %typemap(freearg) char **
-  if ( $2 ) {
-    free((char *) $2);
-  }
-}
-
-// This tells SWIG to treat char ** as a special case
-%typemap(in) char **
+%typecheck(SWIG_TYPECHECK_POINTER) ( std::vector<std::string> )
 {
-  // %typemap(in) char **
-  /* Check if is a list */
-  if ( ! PySequence_Check($input)) {
-    PyErr_SetString(PyExc_TypeError,"not a sequence");
-    SWIG_fail;
-  }
-
-  int size = PySequence_Size($input);
-  int i = 0;
-  $1 = (char **) malloc((size+1)*sizeof(char *));
-  for (i = 0; i < size; i++) {
-    PyObject *o = PySequence_GetItem($input,i);
-    if (PyString_Check(o))
-      $1[i] = PyString_AsString(o);
-    else {
-     PyErr_SetString(PyExc_TypeError,"sequence must contain strings");
-     SWIG_fail;
-    }
-  }
-  $1[i] = 0;
-}
-
-// This cleans up the char ** array we malloc'd before the function call
-%typemap(freearg) char **
-{
-  // %typemap(freearg) char **
-  if ( $1 ) {
-    free((char *) $1);
-  }
+  // %typecheck(SWIG_TYPECHECK_POINTER) ( std::vector<std::string> )
+  $1 = (PySequence_Check( $input ) ) ? 1 : 0;
 }
 
 //*****************************************************************************
@@ -301,8 +260,7 @@ RCP_CONST_TYPEMAP( ConstOccurrencesPtr, OccurrencesPtr );
 %ignore ConstOccurrencesPtr;
 
 %ignore OccurrencesImpl;
-%ignore OccurrencesImpl::print(char*) const;
-%ignore OccurrencesImpl::vocType;
+%ignore OccurrencesImpl::print;
 
 %include "om_occurrences.hh"
 
@@ -321,6 +279,7 @@ RCP_CONST_TYPEMAP( ConstOccurrencesPtr, OccurrencesPtr );
 %include "om_alg_parameter.hh"
 %include "om_area_stats.hh"
 %include "om_conf_matrix.hh"
+%include "map_format.hh"
 
 //*****************************************************************************
 //
@@ -357,7 +316,9 @@ public:
 %extend {
   static void createMap( const ReferenceCountedPointer<AverageModelImpl>& model, const EnvironmentPtr& env, char *filename, Projector::MapCommand *mc = 0 )
   {
-    Map map( new Raster( filename, 1, env->getMask() ) );
+    MapFormat mf;
+    mf.copyDefaults( *env->getMask() );
+    Map map( new Raster( filename, mf ) );
     Projector::createMap( Model(model), env, &map, 0, mc );
   }
 } // %extend
@@ -401,14 +362,9 @@ private:
 RCP_WRAP( EnvironmentPtr, EnvironmentImpl );
 RCP_CONST_TYPEMAP( ConstEnvironmentPtr, EnvironmentPtr );
 
-%apply ( int ncount, char **array)
-{
-  ( int ncateg, char **categs ),
-  ( int nmap, char **maps )
-}
-
-%rename (makeEnvironment) createEnvironment( int, char **, int, char **, char * );
+%rename (makeEnvironment) createEnvironment( std::vector<std::string>, std::vector<std::string>, std::string );
 %rename (makeEnvironmentFromConfig) createEnvironment( const ConstConfigurationPtr& );
+%ignore createEnvironment;
 
 // This is a hack.
 // Since we're using typemaps to change the number of arguments
@@ -418,15 +374,13 @@ RCP_CONST_TYPEMAP( ConstEnvironmentPtr, EnvironmentPtr );
 %ignore EnvironmentImpl::EnvironmentImpl();
 %ignore EnvironmentImpl::EnvironmentImpl( char *, int, char **, int, char **, char * );
 
+
 //
 // Ignore Environment because it is a smart pointer class
 %ignore EnvironmentPtr;
 %ignore EnvironmentImpl;
 
 %include "environment.hh"
-
-%clear ( int ncateg, char **categs );
-%clear ( int nmap, char **maps );
 
 //*****************************************************************************
 //
@@ -644,12 +598,6 @@ class PyMapCommand : public Projector::MapCommand {
  * Would need to have a different %exception for each method this applies to
  * since %apply does not appear to work for %exceptions :(
  */
-
-%apply ( int ncount, char **array)
-{
-  ( int num_categ, char **categ_map ),
-  ( int num_continuos, char **continuous_map )
-}
 
 %extend OpenModeller {
   void projectNativeRange( char *outputfile ) {
