@@ -34,6 +34,7 @@
 
 #include <string>
 
+class MapFormat;
 class RasterGdal;
 class Map;
 
@@ -43,12 +44,6 @@ class Map;
 class Raster
 {
 public:
-
-  // This is the output format constants.
-  enum { FloatingTiff = 0,
-	 GreyTiff = 1,
-	 GreyBMP = 2
-  };
 
   /** 
    * If 'categ' != 0 this is a categorical map (ie it can't be
@@ -62,10 +57,9 @@ public:
   /**
    * Create a new file for projections.
    * @param file is the name of the output file
-   * @param format must be one of the prescribed constants in the enum.
-   * @param hdr is a Map from which to copy the raster header params..
+   * @param format is the output format specification.
    */
-  Raster( const std::string& file, int format, const Map* hdr );
+  Raster( const std::string& file, const MapFormat& format );
 
   ~Raster();
 
