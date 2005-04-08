@@ -32,6 +32,8 @@
 
 #include <om_log.hh>
 
+#include <map_format.hh>
+
 #include <Exceptions.hh>
 
 using std::string;
@@ -56,32 +58,44 @@ Raster::Raster( const string& file, int categ ) :
   f_hdr.categ = categ;
 }
 
-Raster::Raster( const string& file, int format, const Map* hdr ) :
+Raster::Raster( const string& file, const MapFormat& format) :
   f_file( file ),
-  f_hdr( hdr->getHeader() )
+  f_hdr()
 {
 
-  if ( format >= 3 ) {
+  Scalar nv; 
+
+  switch( format.getFormat() ) {
+  case MapFormat::GreyBMP:
+    f_scalefactor = 255.0;
+    nv = 0.0;
+    break;
+  case MapFormat::GreyTiff:
+    f_scalefactor = 254.0;
+    nv = -1.0;
+    break;
+  case MapFormat::FloatingTiff:
+    f_scalefactor = 1.0;
+    nv = -1.0;
+    break;
+  default:
     throw GraphicsDriverException( "Unsupported output format" );
   }
 
-  switch( format ) {
-  case GreyBMP:
-    f_scalefactor = 255.0;
-    f_hdr.noval = 0.0;
-    break;
-  case GreyTiff:
-    f_scalefactor = 254.0;
-    f_hdr.noval = -1.0;
-    break;
-  case FloatingTiff:
-  default:
-    f_scalefactor = 1.0;
-    f_hdr.noval = -1.0;
-  }
+  f_hdr = Header( format.getWidth(),
+		  format.getHeight(),
+		  format.getXMin(),
+		  format.getYMin(),
+		  format.getXMax(),
+		  format.getYMax(),
+		  nv,
+		  1,
+		  0 );
+
+  f_hdr.setProj( format.getProjection() );
 
   // Create a new file in disk.
-  f_rst = new RasterGdal( file, format, f_hdr );
+  f_rst = new RasterGdal( file, format.getFormat(), f_hdr );
 
   f_hdr = f_rst->header();
 

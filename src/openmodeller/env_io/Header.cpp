@@ -66,9 +66,9 @@ Header::Header( int xd, int yd, Coord xm, Coord ym,
   gt[0] = xmin;
   gt[1] = xcel;
   gt[2] = 0.0;
-  gt[3] = ymin;
+  gt[3] = ymax;
   gt[4] = 0.0;
-  gt[5] = ycel;
+  gt[5] = -1.0*ycel;
 }
 
 Header::Header( const Header &h )
@@ -147,7 +147,7 @@ Header::setProj( const string& projection )
 /*************/
 /*** print ***/
 void
-Header::printHeader( char *msg )
+Header::printHeader( char *msg ) const
 {
   g_log( "%s\n", msg );
 
@@ -171,6 +171,10 @@ Header::printHeader( char *msg )
     }
   else
     g_log( "No minimum or maximum available.\n" );
+
+  for( int i=0;i<6; i++ ) {
+    g_log( "GT[%d] = %f\n",i,gt[i] );
+  }
   
   g_log( "proj: %s\n", proj.c_str() );
 }

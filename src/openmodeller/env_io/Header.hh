@@ -45,12 +45,6 @@ class Header
 {
 public:
 
-  enum DataType {
-    UInt8, Int16, UInt16, Int32, UInt32, Float32, Float64,
-    MaxDataType
-  };
-
-
   Header() :
     proj()
   {}
@@ -69,7 +63,7 @@ public:
   void  setProj( const std::string& projection );
   int   hasProj() const { return (proj.size() > 0); }
 
-  void printHeader( char *msg="" ); // conflicts with Python SWIG interface
+  void printHeader( char *msg="" ) const; // conflicts with Python SWIG interface
 
 
   int xdim;    /**< Map width **/
