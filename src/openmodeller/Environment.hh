@@ -50,10 +50,6 @@ typedef ReferenceCountedPointer<const EnvironmentImpl> ConstEnvironmentPtr;
 /****************************************************************/
 /************************* Environment **************************/
 
-EnvironmentPtr createEnvironment( int ncateg, char **categs,
-				  int nmap, char **maps,
-				  char *mask_file = 0 );
-
 EnvironmentPtr createEnvironment( std::vector<std::string> categs,
 				  std::vector<std::string> maps,
 				  std::string mask_file );
@@ -73,10 +69,19 @@ class dllexp EnvironmentImpl : public Configurable, private ReferenceCountedObje
   friend class ReferenceCountedPointer<EnvironmentImpl>;
   friend class ReferenceCountedPointer<const EnvironmentImpl>;
 
+  friend EnvironmentPtr createEnvironment( std::vector<std::string> categs,
+					   std::vector<std::string> maps,
+					   std::string mask_file );
+  
+  friend EnvironmentPtr createEnvironment( std::vector<std::string> categs,
+					   std::vector<std::string> maps );
+
+  friend EnvironmentPtr createEnvironment( const ConstConfigurationPtr& config );
+
+  friend EnvironmentPtr createEnvironment( );
+
   typedef std::pair<std::string, Map*> layer;
   typedef std::vector<layer> layers;
-
-public:
 
   EnvironmentImpl();
 
@@ -89,14 +94,8 @@ public:
   EnvironmentImpl( std::vector<std::string> categs,
 		   std::vector<std::string> maps, 
 		   std::string mask_file = "" );
-  /** Vector with file names that contain the variables to
-   *  be used and also the mask layer.
-   *
-   * @param categs Categorical layers (e.g. soil).
-   * @param maps   Continuous layers (e.g. temperature).
-   */
-  EnvironmentImpl( int ncateg, char **categs,
-		   int nmap, char **maps, char *mask_file=0 );
+
+public:
 
   ~EnvironmentImpl();
 
