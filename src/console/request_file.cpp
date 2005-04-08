@@ -292,7 +292,7 @@ RequestFile::makeProjection( OpenModeller *om )
   }
   else {
 
-    EnvironmentPtr env = new EnvironmentImpl( _cat, _map, _mask );
+    EnvironmentPtr env = createEnvironment( _cat, _map, _mask );
 
     om->createMap( env, _file.c_str() );
 
