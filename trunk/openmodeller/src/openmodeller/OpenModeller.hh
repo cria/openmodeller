@@ -45,6 +45,7 @@ class AlgParameter;
 // we need to actually include the entire header.
 #include <om_projector.hh>
 
+class MapFormat;
 class ConfusionMatrix;
 class AreaStats;
 
@@ -176,20 +177,8 @@ public:
    */
   void setEnvironment( std::vector<std::string> categ_map,
 		       std::vector<std::string> continuous_map,
-		       std::string& mask );
+		       const std::string& mask );
     
-  /** Defines environmental layers and the mask. Also creates
-   *  the Environment object used for native range projection.
-   * @param num_categ Number of categorical map layers.
-   * @param categ_map File names of categorical map layers.
-   * @param num_continuos Number of continuos map layers.
-   * @param continuos_map File names of continuos map layers.
-   * @param mask File name of the mask map layer.
-   */
-  void setEnvironment( int num_categ,     char **categ_map,
-                      int num_continuos, char **continuous_map,
-                      char *mask=0 );
-
   /** Defines sampler to be used for modeling.
    * @sampler Sampler object to be used for modeling
    */
@@ -229,7 +218,10 @@ public:
    *  the valid pixels on the output map. Defaults to mask set
    *  with setOutputMap().
    */
+  void createMap( const EnvironmentPtr & env, char const *output_file, MapFormat& format );
   void createMap( const EnvironmentPtr & env, char const *output_file );
+  
+  //  void createMap( const EnvironmentPtr & env, char const *output_file );
 
   /** Create and save distribution map to disk using the projection
    * environment set by setProjection() method.
@@ -239,6 +231,7 @@ public:
    *  the valid pixels on the output map. Defaults to mask set
    *  with setOutputMap().
    */
+  void createMap( char const *output_file, MapFormat& format );
   void createMap( char const *output_file );
 
 
