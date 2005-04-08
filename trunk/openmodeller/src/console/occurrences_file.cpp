@@ -66,7 +66,7 @@ using std::vector;
 OccurrencesFile::OccurrencesFile( const char *file_name,
 				  const char *coord_system )
 {
-  _coord_system = const_cast<char *>(coord_system);
+  _coord_system = (char *) coord_system;
   addOccurrences( file_name );
 }
 
