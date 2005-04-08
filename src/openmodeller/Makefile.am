@@ -26,6 +26,7 @@ libopenmodeller_la_SOURCES = \
 	file_parser.cpp \
 	icstring.cpp \
 	log.cpp \
+	map_format.cpp \
 	Model.cpp \
 	occurrences.cpp \
 	occurrence.cpp \
