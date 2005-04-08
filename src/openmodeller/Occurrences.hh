@@ -55,12 +55,10 @@ class dllexp OccurrencesImpl : public Configurable, private ReferenceCountedObje
   friend class ReferenceCountedPointer<OccurrencesImpl>;
   friend class ReferenceCountedPointer<const OccurrencesImpl>;
 
-  typedef std::vector< OccurrencePtr > vocType;
-
 public:
 
-  typedef vocType::const_iterator const_iterator;
-  typedef vocType::iterator iterator;
+  typedef std::vector< OccurrencePtr> ::const_iterator const_iterator;
+  typedef std::vector< OccurrencePtr> ::iterator iterator;
 
   /** Creates a collection of occurrences points.
    *
@@ -179,7 +177,7 @@ private:
   /** Object to transform between different coordinate systems. */
   GeoTransform *gt_;
 
-  vocType occur_;  ///< Coordinates of the occurrences.
+  std::vector< OccurrencePtr > occur_;  ///< Coordinates of the occurrences.
 };
 
 
