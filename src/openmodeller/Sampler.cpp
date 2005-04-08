@@ -173,7 +173,7 @@ void
 SamplerImpl::setConfiguration( const ConstConfigurationPtr& config )
 {
 
-  EnvironmentPtr env( new EnvironmentImpl() );
+  EnvironmentPtr env = createEnvironment();
   env->setConfiguration( config->getSubsection( "Environment" ) );
 
   //
