@@ -297,9 +297,10 @@ BioclimDistance::computeStats( const OccurrencesPtr& occs )
     // Intialize _minimum, _maximum, and _mean
     // to the values of the first point, and increment
     // to get it out of the loop.
-    _minimum &= (*oc)->environment();
-    _maximum |= (*oc)->environment();
-    _mean = (*oc)->environment();
+    Sample const & sample = (*oc)->environment();
+    _minimum = sample;
+    _maximum = sample;
+    _mean = sample;
     
     ++oc;
     
@@ -307,7 +308,12 @@ BioclimDistance::computeStats( const OccurrencesPtr& occs )
     // statistics for _minimum, _maximum, and _mean
     
     while ( oc != end ) {
-      _mean += (*oc)->environment();
+      Sample const& sample = (*oc)->environment();
+      
+      _mean += sample;
+      _minimum &= sample;
+      _maximum |= sample;
+
       ++oc;
     }
 
