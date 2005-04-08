@@ -31,9 +31,11 @@
 #ifndef _OM_MAPFORMATHH_
 #define _OM_MAPFORMATHH_
 
-#include <string.h>
+#include <string>
+
 #include <om_defs.hh>
-#include <env_io/header.hh>
+
+class Map;
 
 /****************************************************************/
 /************************* MapFormat ****************************/
@@ -46,42 +48,94 @@ class dllexp MapFormat
 {
 public:
 
-  // TODO: Add default constructor when sets and gets are implemented
-  //       Right now default constructor is useless
+  MapFormat();
 
-  MapFormat(int xd, int yd, Coord xm, Coord ym,
-	    Coord xM, Coord yM, Scalar nv, char * proj);
+  MapFormat(int width, int height, Coord xmin, Coord ymin,
+	    Coord xmax, Coord ymax, Scalar noval, char const * proj);
+
+  MapFormat( char const *filenameWithFormat );
+
+  // Compiler generated copy constructor and copy assignment operator are fine for
+  // this class.
+
   ~MapFormat();
 
-  // TODO: create set methods (acessors)
+  void copyDefaults( const Map& map );
 
-  int getWidth()          { return _xdim; }
-  int getHeight()         { return _ydim; }
-  Coord getXMin()         { return _xmin; }
-  Coord getYMin()         { return _ymin; }
-  Coord getXMax()         { return _xmax; }
-  Coord getYMax()         { return _ymax; }
-  Scalar getNoDataValue() { return _noval; }
-  char * getProjection()  { return _proj; }
+  // This is the output format constants.
+  enum { FloatingTiff = 0,
+	 GreyTiff = 1,
+	 GreyBMP = 2
+  };
 
+  void unsetFormat() { format = FloatingTiff; }
+  void unsetWidth()  { widthIsSet = false; }
+  void unsetHeight() { heightIsSet = false; }
+  void unsetXMin() { xminIsSet = false; }
+  void unsetYMin() { yminIsSet = false; }
+  void unsetXMax() { xmaxIsSet = false; }
+  void unsetYMax() { ymaxIsSet = false; }
+  void unsetNoDataValue() { novalIsSet = false; }
+  void unsetProjection() { projIsSet = false; }
+
+  void setFormat( int format );
+  void setWidth( int width );
+  void setHeight( int height );
+  void setXMin( Coord xmin );
+  void setYMin( Coord ymin );
+  void setXMax( Coord xmax );
+  void setYMax( Coord ymax );
+  void setNoDataValue( Scalar noval );
+  void setProjection( const std::string& proj);
+
+  int getFormat() const { return format; }
+  int getWidth() const;
+  int getHeight() const;
+  Coord getXMin() const;
+  Coord getYMin() const;
+  Coord getXMax() const;
+  Coord getYMax() const;
+  Scalar getNoDataValue() const;
+  std::string getProjection() const;
 
 private:
-  int _xdim;    /**< Map width **/
-  int _ydim;    /**< Map height **/
-  Coord _xmin;  /**< Lowest longitude **/
-  Coord _ymin;  /**< Lowest latitude **/
-  Coord _xmax;  /**< Highest longitude **/
-  Coord _ymax;  /**< Highest latitude **/
-  Coord _xcel;  /**< Cell width **/
-  Coord _ycel;  /**< Cell hight **/
+  int format;
+  bool formatIsSet;
 
-  Scalar _noval; /**< Value indicating absence of information. **/
+  int width;    /**< Map width **/
+  bool widthIsSet;
+
+  int height;    /**< Map height **/
+  bool heightIsSet;
+
+  Coord xmin;  /**< Lowest longitude **/
+  bool xminIsSet;
+
+  Coord ymin;  /**< Lowest latitude **/
+  bool yminIsSet;
+
+  Coord xmax;  /**< Highest longitude **/
+  bool xmaxIsSet;
+
+  Coord ymax;  /**< Highest latitude **/
+  bool ymaxIsSet;
+
+  Coord xcel;  /**< Cell width **/
+  bool xcelIsSet;
+
+  Coord ycel;  /**< Cell hight **/
+  bool ycelIsSet;
+
+  Scalar noval; /**< Value indicating absence of information. **/
+  bool novalIsSet;
 
   //TODO: Perhaps DataType is required, but need to figure out a way
   //       for the user to represent it.
   //DataType dtype; /**< File data type. */
 
-  char *_proj;  /**< Projection specification (in WKT). */
+  std::string proj;  /**< Projection specification (in WKT). */
+  bool projIsSet;
+
 };
 
 
