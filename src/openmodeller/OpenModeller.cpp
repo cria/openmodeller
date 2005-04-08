@@ -41,6 +41,7 @@
 #include <om_area_stats.hh>
 #include <occurrence.hh>
 #include <om_conf_matrix.hh>
+#include <map_format.hh>
 
 #include <algorithm_factory.hh>
 #include <environment.hh>
@@ -208,41 +209,17 @@ OpenModeller::setOccurrences( const OccurrencesPtr& presence,
 void
 OpenModeller::setEnvironment( std::vector<std::string> categ_map,
 			      std::vector<std::string> continuous_map,
-			      std::string& mask )
+			      const std::string& mask )
 {
-  _env = new EnvironmentImpl( categ_map, continuous_map, mask);
+  _env = createEnvironment( categ_map, continuous_map, mask);
 
-  // TODO: remove duplication of code below
   if (_presence)
     { 
       setSampler( createSampler(_env, _presence, _absence) );
     }
 
-  g_log( "Environment initialized by STL constructor.\n" );
-}
-
-/***********************/
-/*** set Environment ***/
-void
-OpenModeller::setEnvironment( int num_categ,
-			      char **categ_map,
-			      int num_continuous,
-			      char **continuous_map,
-			      char *mask )
-{
-  _env = new EnvironmentImpl( num_categ, categ_map,
-			      num_continuous, continuous_map, mask );
-
-  if (_presence)
-    {
-      setSampler( createSampler(_env, 
-				_presence, 
-				_absence));
-    }
-
   g_log( "Environment initialized.\n" );
 }
-
 
 /*******************/
 /*** set Sampler ***/
@@ -400,16 +377,19 @@ OpenModeller::parameterModelCheck()
   return 0;
 }
 
+
 /******************/
 /*** create Map ***/
 void
-OpenModeller::createMap( const EnvironmentPtr & env, char const *output_file )
+OpenModeller::createMap( const EnvironmentPtr & env, char const *output_file, MapFormat& output_format )
 {
   Model m( _alg->getModel() );
 
+  output_format.copyDefaults( *env->getMask() );
+
   // Create map on disc.
   // Currently hard coded to create greyscale tiff.
-  Map map( new Raster( output_file, 1, env->getMask() ) );
+  Map map( new Raster( output_file, output_format ) );
 
   Projector::createMap( m, env,
 			&map,
@@ -417,24 +397,29 @@ OpenModeller::createMap( const EnvironmentPtr & env, char const *output_file )
 			_map_command );
 }
 
+void
+OpenModeller::createMap( const EnvironmentPtr & env, char const *output_file )
+{
+  MapFormat mf;
+  return createMap( env, output_file, mf );
+}
 
 /******************/
 /*** create Map ***/
 void
 OpenModeller::createMap( char const *output_file )
 {
-  Model m( _alg->getModel() );
-
-  // Create map on disc.
-  // Currently hard coded to create greyscale tiff.
-  Map map( new Raster( output_file, 1, _env->getMask() ) );
-
-  Projector::createMap( m, _env,
-			&map,
-			_actualAreaStats,
-			_map_command );
+  MapFormat mf;
+  return createMap( _env, output_file, mf );
 }
 
+/******************/
+/*** create Map ***/
+void
+OpenModeller::createMap( char const *output_file, MapFormat& output_format )
+{
+  return createMap( _env, output_file, output_format );
+}
 
 /**********************************/
 /******* get Value ****************/
