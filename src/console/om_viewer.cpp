@@ -41,6 +41,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include <string>
+#include <vector>
+using std::string;
+using std::vector;
 
 float _zoom;
 int   _redraw    = 1;
@@ -63,8 +67,8 @@ void draw_map( GGraph *graph, Map *map );
 void draw_occur( GGraph *graph, Map *map, const OccurrencesPtr& );
 void findRegion( int nmap, Map **map, Coord *xmin, Coord *ymin,
 		 Coord *xmax, Coord *ymax );
-OccurrencesPtr readOccurrences( char *file, char *name,
-			      char *coord_system );
+OccurrencesPtr readOccurrences( char const *file, char const *name,
+			      char const *coord_system );
 
 
 /**************************************************************/
@@ -98,8 +102,8 @@ main( int argc, char **argv )
         g_log.error( 1, "No map to be shown!?!\n" );
 
       _maps = new (Map *)[_nmap];
-      char *mapfile[_nmap];
-      fp.getAll( "Map", mapfile );
+
+      vector<string> mapfile = fp.getAll( "Map" );
       
       for ( int i = 0; i < _nmap; i++ )
         {
@@ -114,9 +118,9 @@ main( int argc, char **argv )
     {
       _nmap = 1;
       _maps = new (Map *)[_nmap];
-      char *result = fp.get( "Output file" );
+      string result = fp.get( "Output file" );
 
-      if ( ! result )
+      if ( result.empty() )
         g_log.error( 1, "The 'Output file' parameter not found!\n" );
 
       _maps[0] = new Map( new Raster( result ) );
@@ -139,10 +143,10 @@ main( int argc, char **argv )
 
 
   // Occurrences file.
-  char *oc_cs   = fp.get( "WKT Coord System" );
-  char *oc_file = fp.get( "Species file" );
-  char *oc_name = fp.get( "Species" );
-  _occurs = readOccurrences( oc_file, oc_name, oc_cs );
+  string oc_cs   = fp.get( "WKT Coord System" );
+  string oc_file = fp.get( "Species file" );
+  string oc_name = fp.get( "Species" );
+  _occurs = readOccurrences( oc_file.c_str(), oc_name.c_str(), oc_cs.c_str() );
 
 
   // Instantiate graphical window.
@@ -258,7 +262,7 @@ findRegion( int nmap, Map **map, Coord *xmin, Coord *ymin,
 /************************/
 /*** read Occurrences ***/
 OccurrencesPtr
-readOccurrences( char *file, char *name, char *coord_system )
+readOccurrences( char const *file, char const *name, char const *coord_system )
 {
   OccurrencesFile oc_file( file, coord_system );
 

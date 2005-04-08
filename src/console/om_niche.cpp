@@ -38,6 +38,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include <string>
+using std::string;
 
 float _zoom;
 int   _redraw    = 1;
@@ -60,8 +62,8 @@ OpenModeller *createModel( char *request_file );
 int showAlgorithms ( AlgMetadata const **availables );
 char *readParameters ( AlgMetadata *metadata );
 AlgMetadata const *readAlgorithm( AlgMetadata const **availables );
-OccurrencesPtr readOccurrences( char *file, char *name,
-			      char *coord_system );
+OccurrencesPtr readOccurrences( char const *file, char const *name,
+			      char const *coord_system );
 int readParameters( AlgParameter *result, AlgMetadata const *metadata );
 char *extractParameter( char *name, int nvet, char **vet );
 
@@ -106,10 +108,10 @@ main( int argc, char **argv )
     g_log.error( 3, "Maximum number of environmental variables (2) exceeded!\n" );
 
   // Occurrences file (used to draw, not to create the model).
-  char *oc_cs   = fp.get( "WKT Coord System" );
-  char *oc_file = fp.get( "Species file" );
-  char *oc_name = fp.get( "Species" );
-  _occurs = readOccurrences( oc_file, oc_name, oc_cs );
+  string oc_cs   = fp.get( "WKT Coord System" );
+  string oc_file = fp.get( "Species file" );
+  string oc_name = fp.get( "Species" );
+  _occurs = readOccurrences( oc_file.c_str(), oc_name.c_str(), oc_cs.c_str() );
 
   // Instantiate graphical window.
   int dimx = 256;
@@ -399,7 +401,7 @@ draw_occur( GGraph *graph, const OccurrencesPtr& occurs )
 /************************/
 /*** read Occurrences ***/
 OccurrencesPtr 
-readOccurrences( char *file, char *name, char *coord_system )
+readOccurrences( char const *file, char const *name, char const *coord_system )
 {
   OccurrencesFile oc_file( file, coord_system );
 
