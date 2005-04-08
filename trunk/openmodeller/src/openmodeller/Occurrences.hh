@@ -57,8 +57,8 @@ class dllexp OccurrencesImpl : public Configurable, private ReferenceCountedObje
 
 public:
 
-  typedef std::vector< OccurrencePtr> ::const_iterator const_iterator;
-  typedef std::vector< OccurrencePtr> ::iterator iterator;
+  typedef std::vector<OccurrencePtr>::const_iterator const_iterator;
+  typedef std::vector<OccurrencePtr>::iterator iterator;
 
   /** Creates a collection of occurrences points.
    *
