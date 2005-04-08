@@ -54,14 +54,6 @@ using std::vector;
 
 /****************************************************************/
 /*********************** factory methods ************************/
-
-EnvironmentPtr createEnvironment( int ncateg, char **categs,
-				  int nmap, char **maps,
-				  char *mask_file )
-{
-  return EnvironmentPtr( new EnvironmentImpl( ncateg, categs, nmap, maps, mask_file ) );
-}
-
 EnvironmentPtr createEnvironment( std::vector<std::string> categs,
                                   std::vector<std::string> maps,
                                   std::string mask_file )
@@ -82,6 +74,11 @@ EnvironmentPtr createEnvironment( const ConstConfigurationPtr& config )
   env->setConfiguration( config );
 
   return env;
+}
+
+EnvironmentPtr createEnvironment( )
+{
+  return EnvironmentPtr( new EnvironmentImpl( ) );
 }
 
 
@@ -138,28 +135,6 @@ EnvironmentImpl::EnvironmentImpl( std::vector<std::string> categs,
 				  std::string mask )
 {
   initialize( categs, maps, mask );
-}
-
-EnvironmentImpl::EnvironmentImpl( int ncateg, char **categs,
-				  int nmap, char **maps, char *mask_file)
-{
-  // create vectors and pass them on to initialize
-  std::vector<std::string> vcategs;
-  std::vector<std::string> vmaps;
-
-  vcategs.reserve(ncateg);
-  vmaps.reserve(nmap);
-
-  int i;
-  for (i = 0; i < ncateg; ++i) {
-    vcategs.push_back(categs[i]);
-  }
-
-  for (i = 0; i < nmap; ++i) {
-    vmaps.push_back(maps[i]);
-  }
-  
-  initialize( vcategs, vmaps, std::string(mask_file) );
 }
 
 void
