@@ -285,9 +285,9 @@ Bioclim::computeStats( const OccurrencesPtr& occs )
     // to the values of the first point, and increment
     // to get it out of the loop.
     Sample const & sample = (*oc)->environment();
-    _minimum = (*oc)->environment();
-    _maximum = (*oc)->environment();
-    _mean = (*oc)->environment();
+    _minimum = sample;
+    _maximum = sample;
+    _mean = sample;
     
     ++oc;
     
