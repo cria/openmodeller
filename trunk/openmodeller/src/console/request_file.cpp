@@ -42,7 +42,16 @@
 /************************ Request File ************************/
 
 RequestFile::RequestFile() :
-  _occurrences()
+  _occurrences_set(0),
+  _environment_set(0),
+  _projection_set(0),
+  _occurrences(),
+  _nonNativeProjection( false ),
+  _cat(),
+  _map(),
+  _mask(),
+  _file(),
+  _outputFormat()
 { 
 }
 
@@ -120,14 +129,11 @@ RequestFile::setProjection( OpenModeller *om, FileParser &fp )
       return 0;
     }
 
-  // Used to scale the model results e.g. from [0,1] to
-  // [0,255] - useful for image generation.
-  std::string mult = fp.get( "Scale" );
-
-  _multiplier = 255.0;
-  if ( !mult.empty() ) {
-    _multiplier = atof( mult.c_str() );
-  }
+  std::string format = fp.get( "Output format" );
+  if ( ! format.empty() )
+    {
+      _outputFormat = MapFormat( format.c_str() );
+    }
 
   // Categorical environmental maps and the number of these maps.
   _cat = fp.getAll( "Categorical output map" );
@@ -151,12 +157,6 @@ RequestFile::setProjection( OpenModeller *om, FileParser &fp )
     {
       g_log( "The 'Output mask' file name was not specified!\n" );
       return 0;
-    }
-
-  std::string format = fp.get( "Output format" );
-  if ( format.empty() )
-    {
-      g_log("Output format parameter ignored using mask file for format\n");
     }
 
   // Make sure the basic variables have been defined in the
@@ -294,7 +294,7 @@ RequestFile::makeProjection( OpenModeller *om )
 
     EnvironmentPtr env = createEnvironment( _cat, _map, _mask );
 
-    om->createMap( env, _file.c_str() );
+    om->createMap( env, _file.c_str(), _outputFormat );
 
   }
 
