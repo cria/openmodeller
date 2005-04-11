@@ -235,28 +235,13 @@ int
 OpenModeller::setAlgorithm( char const *id, int nparam,
                             AlgParameter const *param )
 {
-  AlgMetadata const *meta = algorithmMetadata( id );
-
-  // Check the parameters.
-  if ( ! meta || meta->nparam != nparam )
-    {
-      if ( ! meta )
-	g_log( "Can't get metadata for algorithm %s", id );
-
-      if ( meta->nparam != nparam )
-	g_log( "Number of parameters provided (%d) does not match required parameters (%d)",
-               nparam, meta->nparam);
-
-      return 0;
-    }
-
   if ( nparam && ! param )
-    g_log.error( 1, "Incoherent number of parameters and parameters pointer" );
+    g_log.error( 1, "Incoherent number of parameters and parameters pointer\n" );
 
   // Check if sampler is initialized
   if ( ! _samp )
     {
-      g_log( "Sampler not initialized." );
+      g_log( "Sampler not initialized.\n" );
       return 0;
     }
 
