@@ -48,9 +48,8 @@
 #include <configuration.hh>
 #include <Model.hh>
 
-#include <string.h>
-#include <stdlib.h>
-
+#include <string>
+using std::string;
 
 /*** backward compatible callback helper classes ***/
 
@@ -371,6 +370,13 @@ OpenModeller::createMap( const EnvironmentPtr & env, char const *output_file, Ma
   Model m( _alg->getModel() );
 
   output_format.copyDefaults( *env->getMask() );
+
+  // try to infer the output format.
+  string fname(output_file);
+  int pos = fname.length() - 4;
+  if (pos >0 && fname.compare( pos, 4, ".bmp" ) == 0 ) {
+    output_format.setFormat( MapFormat::GreyBMP );
+  }
 
   // Create map on disc.
   // Currently hard coded to create greyscale tiff.
