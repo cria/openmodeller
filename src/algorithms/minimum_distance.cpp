@@ -87,10 +87,10 @@ static AlgMetadata metadata = {
  be in [0,1]. If 'dist' > MaxDist then probability will be zero.",
 
 
-  "Mauro E. S. Muñoz",  // Algorithm author.
+  "Mauro E. S. Munoz",  // Algorithm author.
   "",     	        // Bibliography.
 
-  "Mauro E. S. Muñoz",       // Code author.
+  "Mauro E. S. Munoz",       // Code author.
   "mauro [at] cria.org.br",  // Code author's contact.
 
   0,  // Does not accept categorical data.
