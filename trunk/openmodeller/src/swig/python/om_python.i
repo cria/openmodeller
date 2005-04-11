@@ -603,6 +603,9 @@ class PyMapCommand : public Projector::MapCommand {
   void projectNativeRange( char *outputfile ) {
     self->createMap( outputfile );
   }
+  void projectNativeRange( char *outputfile, MapFormat& format ) {
+    self->createMap( outputfile, format );
+  }
 }
 
 %newobject OpenModeller::getConfusionMatrix;
