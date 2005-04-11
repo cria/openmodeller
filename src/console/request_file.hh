@@ -32,6 +32,7 @@
 #include  <om_algorithm_metadata.hh>
 
 #include <om_occurrences.hh>
+#include <map_format.hh>
 
 #include <string>
 #include <vector>
@@ -92,11 +93,12 @@ private:
   OccurrencesPtr _occurrences;
 
   bool _nonNativeProjection;
-  double _multiplier;
   std::vector<std::string> _cat;
   std::vector<std::string> _map;
   std::string _mask;
   std::string _file;
+
+  MapFormat _outputFormat;
 
 };
 
