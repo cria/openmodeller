@@ -100,7 +100,6 @@ public:
 
 private:
   int format;
-  bool formatIsSet;
 
   int width;    /**< Map width **/
   bool widthIsSet;

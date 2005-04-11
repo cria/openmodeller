@@ -143,15 +143,9 @@ MapFormat::~MapFormat()
 {}
 
 void MapFormat::setFormat( int f ) {
-  switch( f ) {
-  FloatingTiff:
-  GreyTiff:
-  GreyBMP:
-    format = f;
-    break;
-  default:
+  format = f;
+  if ( format < 0 || format > GreyBMP ) 
     format = FloatingTiff;
-  }
 }
 
 void MapFormat::setWidth( int v ) {
