@@ -192,18 +192,21 @@ readAlgorithm( AlgMetadata const **availables )
     {
       printf( "\nChoose an algorithm between:\n" );
 
-      int quit = showAlgorithms( availables );
+      int quit_option = showAlgorithms( availables );
+      if ( ! quit_option )
+	return 0;
+
       int option = -1;
 
       printf( "\nOption: " );
       fgets( buf, 128, stdin );
       option = atoi( buf );
 
-      if ( option == quit )
+      if ( option == quit_option )
         return 0;
 
       // An algorithm was choosed.
-      else if ( option >= 0 && option < quit )
+      else if ( option >= 0 && option < quit_option )
         return availables[option];
     }
 }
