@@ -27,6 +27,7 @@
  */
 
 #include <om.hh>
+#include <algorithm_factory.hh>
 #include <environment.hh>
 #include <occurrence.hh>
 #include "request_file.hh"
@@ -71,7 +72,7 @@ void mapCallback( float progress, void *extra_param );
 
 
 void draw();
-void draw_niche( GGraph *graph, OpenModeller *om );
+void draw_niche( GGraph *graph );
 void draw_occur( GGraph *graph, const OccurrencesPtr& oc );
 
 
@@ -89,13 +90,14 @@ main( int argc, char **argv )
   if ( argc < 2 )
       g_log.error( 1, "\n%s <request>\n\n", argv[0] );
 
+  char *request_file = argv[1];
+
   g_log( "\nopenModeller Two-dimensional Niche Viewer - CRIA\n" );
 
-  char *request = argv[1];
-  FileParser fp( request );
+  FileParser fp( request_file );
 
   // Create the model using openModeller.
-  _om = createModel( request );
+  _om = createModel( request_file );
   EnvironmentPtr env = _om->getEnvironment();
   int nmap = env->numLayers();
   Sample min;
@@ -134,8 +136,9 @@ main( int argc, char **argv )
 
   delete _graph;
   delete frame;
-
   delete _om;
+
+  return 0;
 }
 
 
@@ -144,6 +147,7 @@ main( int argc, char **argv )
 OpenModeller *
 createModel( char *request_file )
 {
+  AlgorithmFactory::searchDefaultDirs();
   OpenModeller *om = new OpenModeller;
 
   // Configure the OpenModeller object from data read from the
@@ -184,7 +188,6 @@ createModel( char *request_file )
           delete[] param;
         }
     }
-
 
   /*** Run the model ***/
 
@@ -339,7 +342,7 @@ draw()
 {
   if ( _redraw )
     {
-      draw_niche( _graph, _om );
+      draw_niche( _graph );
       draw_occur( _graph, _occurs );
 
       _redraw = 0;
@@ -352,7 +355,7 @@ draw()
 /******************/
 /*** draw niche ***/
 void
-draw_niche( GGraph *graph, OpenModeller *om )
+draw_niche( GGraph *graph )
 {
   Scalar xmin  = graph->minX();
   Scalar ymin  = graph->minY();
@@ -372,7 +375,7 @@ draw_niche( GGraph *graph, OpenModeller *om )
       for ( *x = xmin; *x < xmax; *x += xstep )
         {
           GColor color = GColor::Blue;
-          color.scale( om->getValue( amb ) );
+          color.scale( _om->getValue( amb ) );
           graph->pixel( float(*x), float(*y), color );
         }
 
