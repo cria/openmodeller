@@ -90,7 +90,7 @@ Any components whose eigen values are above this threshold are retained.", // De
     "Integer",        // Type.
     "The minimum number of components that the model must have.", //overview
     "If not enough components are selected, the model produced will be erroneous or fail. \
-Usually three or more components is acceptible", // Description.
+Usually three or more components are acceptable", // Description.
     1,     // Not zero if the parameter has lower limit.
     2,   // Parameter's lower limit.
     1,     // Not zero if the parameter has upper limit.
@@ -183,53 +183,42 @@ CsmBS::CsmBS() : Csm(&metadata)
 /** This is the descructor for the Csm class */
 CsmBS::~CsmBS()
 {
-  //I think this is delegated to the superclass destructor
-  /*
-  if ( _initialized )
-    {
-      gsl_matrix_free (_gsl_environment_matrix);
-      gsl_matrix_free (_gsl_covariance_matrix);
-      gsl_vector_free (_gsl_avg_vector);
-      gsl_vector_free (_gsl_stddev_vector);
-      gsl_vector_free (_gsl_eigenvalue_vector);
-      gsl_matrix_free (_gsl_eigenvector_matrix);
-    
-    }
-    */
 }
 
 int CsmBS::initialize()
 {
-  printf ("vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv\n");
-  printf ("     Starting CSM - Broken Stick \n");
-  printf ("         Model Initialisation \n");
-  printf ("vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv\n");
+  g_log.debug( "Starting CSM - Broken Stick\n" );
   //set up parameters
   if ( ! getParameter( "Randomisations", &numberOfRandomisationsInt ) )
   {
+    g_log.warn( "Parameter Randomisations not set properly.\n");
     return 0;
   }
   if ( ! getParameter( "StandardDeviations", &numberOfStdDevsFloat) )
   {
+    g_log.warn( "Parameter StandardDeviations not set properly.\n");
     return 0;
   }
   if ( ! getParameter( "RandomiserRepeats", &randomiserRepeatsInt) )
   {
+    g_log.warn( "Parameter RandomiserRepeats not set properly.\n");
     return 0;
   }
   if ( ! getParameter( "MinComponents", &minComponentsInt) )
   {
+    g_log.warn( "Parameter MinComponents not set properly.\n");
     return 0;
   }
   if ( ! getParameter( "MaxAttempts", &maxAttemptsInt) )
   {
+    g_log.warn( "Parameter MaxAttempts not set properly.\n");
     return 0;
   }
-  std::cout << "Randomisations parameter set to: " << numberOfRandomisationsInt << std::endl;
-  std::cout << "RandomiserRepeats parameter set to: " << randomiserRepeatsInt << std::endl;
-  std::cout << "StandardDeviations parameter set to: " << numberOfStdDevsFloat << std::endl;
-  std::cout << "MinComponents parameter set to: " << minComponentsInt << std::endl;
-  std::cout << "MaxAttempts parameter set to: " << maxAttemptsInt << std::endl;
+  g_log.debug( "Randomisations parameter set to: %d\n", numberOfRandomisationsInt );
+  g_log.debug( "RandomiserRepeats parameter set to: %d\n", randomiserRepeatsInt );
+  g_log.debug( "StandardDeviations parameter set to: %.4f\n", numberOfStdDevsFloat );
+  g_log.debug( "MinComponents parameter set to: %d\n", minComponentsInt );
+  g_log.debug( "MaxAttempts parameter set to: %d\n", maxAttemptsInt );
   
   if ( numberOfRandomisationsInt <= 0 || numberOfRandomisationsInt > 1000 )
   {
@@ -269,19 +258,16 @@ int CsmBS::discardComponents()
 {
   int i, j;
 
-  printf ("vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv\n");
-  printf ("     Starting CSM - Broken Stick \n");
-  printf ("     Component discarding routine \n");
-  printf ("vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv\n");
+  g_log.debug( "Discarding components\n" );
 
   //create a matrix that will store the eigenvalue vector of each of the
   //the randomised environment variables we create
   gsl_matrix * myMatrixOfEigenValueVectors = 
       gsl_matrix_alloc (numberOfRandomisationsInt,_gsl_environment_matrix->size2);
-  printf ("Calculating %i randomised matrices\n", numberOfRandomisationsInt);
+  g_log.debug( "Calculating %i randomised matrices...\n", numberOfRandomisationsInt );
   for (i=0; i<numberOfRandomisationsInt;i++)
   {
-    printf ("Calculating randomised matrix : %i \n", i);
+     g_log.debug( "Calculating randomised matrix: %i\n", i );
 
     //    
     //retreive centered and standardised environmental matrix & clone it
@@ -408,35 +394,35 @@ int CsmBS::discardComponents()
     if (myFloat < gsl_vector_get(_gsl_eigenvalue_vector,i))
     {
       ++_retained_components_count;
-      std::cout << gsl_vector_get(_gsl_eigenvalue_vector,i) 
+      std::cerr << gsl_vector_get(_gsl_eigenvalue_vector,i) 
           << " > "
           << myFloat
-          << ":: Component "
+          << ": Component "
           << i
-          << " is greater than randomised component...retaining it."
+          << " is greater than randomised component... retaining it."
           << std::endl;
     }
     else
     {
-      std::cout << gsl_vector_get(_gsl_eigenvalue_vector,i) 
+      std::cerr << gsl_vector_get(_gsl_eigenvalue_vector,i) 
           << " < "
           << myFloat
-          << ":: Component "
+          << ": Component "
           << i
-          << " is less than randomised component...discarding it."
+          << " is less than randomised component... discarding it."
           << std::endl;
     }
   }
-  std::cout << "Sum of eigenvalues is "  
+  std::cerr << "Sum of eigenvalues is "  
             << sumOfEigenValues
             << "(should be "
             << _layer_count
             << ")\n";
-  std::cout << "Small differences are acceptible here." << std::endl;
+  std::cerr << "Small differences are acceptable here." << std::endl;
   //it seems we need at least 4 components to produce a decent model
   if (_retained_components_count < minComponentsInt) 
   {
-    printf ("Only %i components were retained %i required. \nAborting discard components routine\n",_retained_components_count, minComponentsInt);
+    g_log.debug( "Only %i component(s) retained. %i required. \nAborting discard components routine\n",_retained_components_count, minComponentsInt );
     return 0;
   }
 
@@ -491,11 +477,9 @@ int CsmBS::discardComponents()
   gsl_matrix_free (myMatrixOfEigenValueVectors);
 
   displayVector( _gsl_eigenvalue_vector, "Vector of retained eigen values:");
-  //displayMatrix( _gsl_eigenvector_matrix,"Matrix of retained eigen vector:");
+  displayMatrix( _gsl_eigenvector_matrix,"Matrix of retained eigen vector:");
 
-  printf ("\nvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv\n");
-  printf ("     Completed CSM - Broken Stick \n");
-  printf ("     %i out of %i components retained \n",_retained_components_count,_layer_count );
-  printf ("vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv\n");
+  g_log.debug( "Completed CSM - Broken Stick\n" );
+  g_log.debug( "%i out of %i components retained \n", _retained_components_count, _layer_count );
   return 1;
 }
