@@ -284,6 +284,19 @@ RasterGdal::create(int format)
     f_ds->GetRasterBand(1)->SetNoDataValue( f_hdr.noval );
   }
 
+  // Here we fill the raster with novals.  So we don't need to worry about
+  // having the projector actually cover every pixel.
+  Scalar buffer[f_hdr.xdim];
+  for( int x=0;x<f_hdr.xdim;x++ )
+    buffer[x] = f_hdr.noval;
+
+  GDALRasterBand *band = f_ds->GetRasterBand(1);
+  for( int y=0;y<f_hdr.ydim;y++ ) {
+    band->RasterIO( GF_Write, 0, y, f_hdr.xdim, 1,
+		    buffer, f_hdr.xdim, 1,
+		    f_type, 0, 0 );
+  }
+
   // Initialize the Buffer
   initBuffer();
 }
