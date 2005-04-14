@@ -81,7 +81,7 @@ static AlgMetadata metadata = {
 
   "Bioclim",   // Id.
   "Bioclim",   // Name.
-  "0.1",       // Version.
+  "0.2",       // Version.
 
   // Overview
   "Uses mean and standard deviation for each environmental\
@@ -241,14 +241,17 @@ Bioclim::getValue( const Sample& x ) const
       return 0.0;
     }
 
-    Scalar cutoff = _std_dev[i];
-    Scalar diffi = dif[i];
+    if ( ! outside_envelop ) {
+
+      Scalar cutoff = _std_dev[i];
+
+      Scalar diffi = dif[i];
     
-    // If some x[i] is out of its bioclimatic envelop, predicts
-    // no occurrence.
-    if ( dif[i] > cutoff || dif[i] < -cutoff ) {
-      outside_envelop = 1;
-      break;
+      // If some x[i] is out of its bioclimatic envelop, predicts
+      // no occurrence.
+      if ( dif[i] > cutoff || dif[i] < -cutoff ) {
+        outside_envelop = 1;
+      }
     }
 
   }
