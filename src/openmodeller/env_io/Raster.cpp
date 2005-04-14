@@ -144,6 +144,22 @@ Raster::put( Coord px, Coord py, Scalar val )
   return f_rst->iput( x, y, f_scalefactor*val );
 }
 
+/***********/
+/*** put ***/
+int
+Raster::put( Coord px, Coord py  )
+{
+  int x = convX( px );
+  int y = convY( py );
+  Scalar val = f_hdr.noval;
+
+  g_log( "x = %d, y= %d\n", x, y );
+  if ( x < 0 || x >= f_hdr.xdim || y < 0 || y >= f_hdr.ydim )
+    return 0;
+
+  return f_rst->iput( x, y, val );
+}
+
 /*******************/
 /*** get Min Max ***/
 int

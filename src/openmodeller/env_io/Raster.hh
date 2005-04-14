@@ -118,6 +118,13 @@ public:
    */
   int put( Coord x, Coord y, Scalar val );
 
+  /**
+   * Put 'no data val' at the (x,y) coordinate.
+   * Returns 0 if (x,y) is out of range or the map is read only.
+   * supports only single band output files.
+   */
+  int put( Coord x, Coord y );
+
   /** Find the minimum and maximum values in the first band. */
   int getMinMax( Scalar *min, Scalar *max );
 
