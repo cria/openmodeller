@@ -99,5 +99,5 @@ Map::put( Coord x, Coord y, Scalar val )
 int
 Map::put( Coord x, Coord y )
 {
-  return put( x,y,_rst->header().noval );
+  return _gt->transfIn(&x,&y) ? _rst->put( x,y ) : 0;
 }
