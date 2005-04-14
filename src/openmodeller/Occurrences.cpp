@@ -108,7 +108,7 @@ OccurrencesImpl::setConfiguration( const ConstConfigurationPtr& config )
 
   name_ = config->getAttribute("SpeciesName");
   
-  ConstConfigurationPtr cs_config = config->getSubsection( "CoordinateSystem" );
+  ConstConfigurationPtr cs_config = config->getSubsection( "CoordinateSystem", false );
   
   if ( !cs_config ) {
     g_log.warn( "Occurrences has no Coordinate System.  Assuming WSG84" );
