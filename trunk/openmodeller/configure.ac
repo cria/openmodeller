@@ -89,7 +89,6 @@ expat_ldflags=$LDFLAGS
 expat_libs=$LIBS
 expat_cxxflags=$CXXFLAGS
 EXPAT_CFLAGS=''
-EXPAT_CXXFLAGS=''
 EXPAT_LDFLAGS=''
 EXPAT_LIBS=''
 have_expat=no
@@ -119,6 +118,7 @@ break
 done
 for expat_libname in -1 ''; do
 	CFLAGS="${expat_cflags} $EXPAT_CFLAGS"
+	CXXFLAGS="${expat_cflags} $EXPAT_CXXFLAGS"
 	LDFLAGS="${expat_ldflags} $EXPAT_LDFLAGS"
 	LIBS="${expat_libs} -lexpat${expat_libname}"
 	AC_MSG_CHECKING([whether linking with expat${expat_libname} works])
@@ -139,7 +139,6 @@ LDFLAGS=$expat_ldflags
 LIBS=$expat_libs
 AC_SUBST(have_expat)
 AC_SUBST(EXPAT_CFLAGS)
-AC_SUBST(EXPAT_CXXFLAGS)
 AC_SUBST(EXPAT_LDFLAGS)
 AC_SUBST(EXPAT_LIBS)
 
