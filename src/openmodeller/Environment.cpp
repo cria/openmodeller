@@ -214,7 +214,6 @@ EnvironmentImpl::setConfiguration( const ConstConfigurationPtr & config )
   // Suck in all the filenames.
   Configuration::subsection_list subs = config->getAllSubsections();
   Configuration::subsection_list::const_iterator it = subs.begin();
-  int layercount = 0;
   while( it != subs.end() ) {
 
     string subname = (*it)->getName();
