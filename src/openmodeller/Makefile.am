@@ -39,5 +39,5 @@ libopenmodeller_la_SOURCES = \
 	projector.cpp 
 
 libopenmodeller_la_LDFLAGS = -no-undefined
-libopenmodeller_la_CPPFLAGS = -I../inc -I../.. $(DPLUGIN_PATH) $(DCONFIG_FILE)
-libopenmodeller_la_LIBADD = env_io/libenv_io.la models/libmodels.la $(GDAL_LIB) $(EXPAT_LIBS)
+libopenmodeller_la_CPPFLAGS = -I../inc -I../.. $(DPLUGIN_PATH) $(DCONFIG_FILE) $(EXPAT_CFLAGS)
+libopenmodeller_la_LIBADD = env_io/libenv_io.la models/libmodels.la $(GDAL_LIB) $(EXPAT_LDFLAGS) $(EXPAT_LIBS)
