@@ -111,7 +111,7 @@ OccurrencesImpl::setConfiguration( const ConstConfigurationPtr& config )
   ConstConfigurationPtr cs_config = config->getSubsection( "CoordinateSystem", false );
   
   if ( !cs_config ) {
-    g_log.warn( "Occurrences has no Coordinate System.  Assuming WSG84" );
+    g_log.warn( "Occurrences has no Coordinate System.  Assuming WSG84\n" );
     cs_ = GeoTransform::cs_default;
   }
   else {
