@@ -34,9 +34,13 @@ First, the test script will download test data from
 http://www.cria.org.br/~ricardo/openModeller/acc_test_data.tar.gz.
 Then it will untar it locally and run the full python test script on it.
 
+Optionally, you can specify the directories containing tests you want to run. By default the script executes all tests in "./algs" directory.
+
+A sample test script can be found in ./samples.
+
 4) The test will run and results will be output to html reports in the file:
 
-	SummaryReports.html
+	SummaryReport.html
 
 That page shows a summary of test results. There is a link to a second 
 html page that shows the actual maps generated during the tests side by 
@@ -49,21 +53,7 @@ agains expected samples.
 COMMAND LINE OPTIONS
 --------------------
 
-The test script can be configured to run only a subset of the tests. To 
-do that, use the following command line switches:
-
--g, --group:     Specify the test group to be run
-                 1: Create models of 7 species with all OM available algorithms
-                 2: Runs one GARP model and generates maps using several 
-                   different output formats
-
--s, --species:   Run modes on group 1 for only the specified species 
-                 index (0-6).
-
--a, --algorithm: Specify which algorithm to run, defined by its ID
-
--f, --full:      Force execution of all specified tests (even if test 
-                 results are already present in the directory).
+This version of the test script accepts no command line options.
 
 
 CURRENT STATUS
@@ -71,10 +61,6 @@ CURRENT STATUS
 
 - Need to add expected results images;
  
-- Most failures during test make the script abort thus not generating the
-final result files. It would be nice if tests were more robust to keep going
-even if a particular test fails;
-
 - Need to add those tests to autotools setup. That would include a separate
 make action, that in turn would include automatic download and extraction 
 of test datasets. The test would require python interface to be enabled. 
