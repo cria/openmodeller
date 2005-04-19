@@ -14,8 +14,8 @@
 #include <string>
 #include <stdexcept>
 #include "algorithm_factory.hh"
-#include "env_io/map.hh"
 #include "configuration.hh"
+#include "env_io/map.hh"
 #include "environment.hh"
 #include "map_format.hh"
 #include "Model.hh"
