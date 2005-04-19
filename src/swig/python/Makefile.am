@@ -12,7 +12,7 @@ pythonSitePackagesdir = $(pythondir)
 pythonSitePackages_LTLIBRARIES = _om.la
 pythonSitePackages_SCRIPTS = om.py
 
-_om_la_SOURCES = om_wrap.cxx ../../console/occurrences_file.cpp om_python.i
+_om_la_SOURCES = om_wrap.cxx om_python.i
 _om_la_LDFLAGS = -module -no-undefined
 _om_la_CPPFLAGS = -I../../inc -I../../console $(PYTHON_INCLUDES)
 _om_la_LIBADD = $(GDAL_LIB) ../../lib/libopenmodeller.la ../../lib/env_io/libenv_io.la
@@ -20,20 +20,22 @@ _om_la_LIBADD = $(GDAL_LIB) ../../lib/libopenmodeller.la ../../lib/env_io/libenv
 CLEANFILES = om_wrap.cxx
 
 om_wrap.cxx:	om_python.i \
-		../../inc/om_defs.hh \
-		../../inc/om_control.hh \
-		../../inc/om_sampler.hh \
-		../../inc/environment.hh \
-		../../inc/om_occurrences.hh \
-		../../inc/om_alg_parameter.hh \
-		../../inc/om_algorithm_metadata.hh \
-		../../inc/file_parser.hh \
+		../../inc/algorithm_factory.hh \
 		../../inc/configuration.hh \
-		../../inc/om_area_stats.hh \
-		../../inc/om_conf_matrix.hh \
-		../../console/occurrences_file.hh \
-		../../inc/om_projector.hh \
+		../../inc/env_io/map.hh \
+		../../inc/environment.hh \
+		../../inc/map_format.hh \
 		../../inc/Model.hh \
 		../../inc/models/AverageModel.hh \
-		../../inc/om_algorithm.hh
-	/usr/bin/swig -c++ -I../../inc -python -o om_wrap.cxx om_python.i 
+		../../inc/om_alg_parameter.hh \
+		../../inc/om_algorithm_metadata.hh \
+		../../inc/om_area_stats.hh \
+		../../inc/om_conf_matrix.hh \
+		../../inc/om_control.hh \
+		../../inc/om_defs.hh \
+		../../inc/om_occurrences.hh \
+		../../inc/om_projector.hh \
+		../../inc/om_algorithm.hh \
+		../../inc/om_sampler.hh \
+		../../inc/refcount.hh
+	swig -c++ -I../../inc -python -o om_wrap.cxx om_python.i 
