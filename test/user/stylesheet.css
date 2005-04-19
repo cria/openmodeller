@@ -1,0 +1,80 @@
+body, td, select, input, li
+{
+  font-family: Verdana, Helvetica, Arial, sans-serif;
+  font-size: 13px;
+}
+
+a 
+{
+  text-decoration: none;
+}
+
+a:link 
+{
+  color:#36a;
+}
+
+a:visited  
+{
+  color:#47a;
+}
+
+a:active, a:hover 
+{
+  color:#69c;
+}
+
+h2 
+{
+  padding: 4px 4px 4px 6px;
+  border: 1px solid #999;
+  color: black;
+  background-color: #9999ff;
+  font-weight:900;
+  font-size: x-large;
+}
+
+h3 
+{
+  padding: 4px 4px 4px 6px;
+  border: 1px solid #aaa;
+  color: black;
+  background-color: #ccccff;
+  font-weight: normal;
+  font-size: large;
+}
+
+th 
+{
+  color: black;
+  background-color: #9999ff;
+  text-align: left;
+  font-weight: bold;
+}
+
+tr.a, tr.success
+{
+  background-color: #ccccff;
+}
+
+tr.b, tr.passed2
+{
+  background-color: #ccccff;
+}
+
+tr.g, tr.skip
+{
+  color: gray;
+  background-color: white;
+}
+
+tr.r, tr.fail
+{
+  color: white;
+  background-color: #ff0000;
+}
+
+.source 
+{
+  border: 1px solid #999;
+}
