@@ -37,10 +37,7 @@
 #include <configuration.hh>
 #include <om_sampled_data.hh>
 #include <occurrence.hh>
-
-#include <stdlib.h>
-#include <string.h>
-#include <stdio.h>
+#include <Exceptions.hh>
 
 #ifdef HAVE_VALUES_H
 #include <values.h>
@@ -51,6 +48,8 @@
 
 using std::string;
 using std::vector;
+
+#undef DEBUG_GET
 
 /****************************************************************/
 /*********************** factory methods ************************/
@@ -92,7 +91,42 @@ EnvironmentImpl::getLayerConfig( const layer& l ) {
   cfg->addNameValue("Filename", l.first );
   cfg->addNameValue("Categorical", l.second->isCategorical());
 
+  if ( l.second->hasMinMax() ) {
+    Scalar min;
+    Scalar max;
+    l.second->getMinMax( &min, &max );
+    cfg->addNameValue( "Min", min );
+    cfg->addNameValue( "Max", max );
+  }
+
   return cfg;
+
+}
+
+EnvironmentImpl::layer
+EnvironmentImpl::makeLayer( const ConstConfigurationPtr& config ) {
+  string filename = config->getAttribute( "Filename" );
+  int categ = config->getAttributeAsInt( "Categorical", 0 );
+
+  layer l = makeLayer( filename, categ );
+  try {
+    // The calls to getAttribute( string ) will throw if
+    // the attribute is not found.
+    config->getAttribute("Min");
+    config->getAttribute("Max");
+
+    // If we make it here, the attributes exist, and the
+    // hard coded default value of 0.0 will not be used.
+    double min = config->getAttributeAsDouble( "Min", 0.0 );
+    double max = config->getAttributeAsDouble( "Max", 0.0 );
+
+    l.second->setMinMax( min, max );
+
+  }
+  catch (AttributeNotFound& e) {
+  }
+
+  return l;
 
 }
 
@@ -197,9 +231,11 @@ EnvironmentImpl::getConfiguration() const
     config->addSubsection( cfg );
   }
 
-  ConfigurationPtr maskcfg( getLayerConfig( _mask ) );
-  maskcfg->setName( "Mask" );
-  config->addSubsection( maskcfg );
+  if ( _mask.second ) {
+    ConfigurationPtr maskcfg( getLayerConfig( _mask ) );
+    maskcfg->setName( "Mask" );
+    config->addSubsection( maskcfg );
+  }
 
   return config;
 }
@@ -348,10 +384,12 @@ EnvironmentImpl::get( Coord x, Coord y ) const
 {
   // Make sure that (x,y) belong to a common region among all
   // layers and the mask, if possible.
-  if ( ! check( x, y ) )
-    {
+  if ( ! check( x, y ) ) {
+#if defined(DEBUG_GET)
+    g_log.debug( "EnvironmentImpl::get() Coordinate (%f,%f) is not in common region\n",x,y);
+#endif
     return Sample();
-    }
+  }
 
   // Create the return value.
   Sample sample( _layers.size() );
@@ -363,6 +401,9 @@ EnvironmentImpl::get( Coord x, Coord y ) const
 
   while ( lay != end ) {
     if ( ! lay->second->get( x, y, s ) ) {
+#if defined(DEBUG_GET)
+      g_log.debug( "EnvironmentImpl::get() Coordinate (%f,%f) does not have data in layer %s\n",x,y,lay->first.c_str());
+#endif
       return Sample();
     }
     ++lay;
@@ -411,15 +452,34 @@ EnvironmentImpl::check( Coord x, Coord y ) const
 {
   // Accept the point, regardless of mask, if
   // it falls in a common region among all layers.
-  if ( x < _xmin || x > _xmax || y < _ymin || y > _ymax )
+  if ( x < _xmin || x > _xmax || y < _ymin || y > _ymax ) {
+#if defined(DEBUG_GET)
+    g_log.debug( "EnvironmentImpl::check() Coordinate (%f,%f) not in extent of all regions\n",x,y);
+#endif
     return 0;
+  }
 
   // If there's no mask, accept the point.
   if ( ! _mask.second )
     return 1;
 
   Scalar val;
-  return _mask.second->get( x, y, &val ) && val;
+
+  bool hasmaskevalue = _mask.second->get(x,y,&val);
+
+  if (!hasmaskevalue) {
+#if defined(DEBUG_GET)
+    g_log.debug( "EnvironmentImpl::check() Coordinate (%f,%f) has no mask value\n",x,y);
+#endif
+  }
+
+  if ( !val ) {
+#if defined(DEBUG_GET)
+    g_log.debug( "EnvironmentImpl::check() Coordinate (%f,%f) has mask value of Zero\n",x,y);
+#endif
+  }
+
+  return hasmaskevalue && val;
 }
 
 

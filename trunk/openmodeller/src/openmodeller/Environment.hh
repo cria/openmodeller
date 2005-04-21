@@ -175,6 +175,8 @@ private:
      It is declared a member so it has access to the private typedef for layer */
   static layer
   makeLayer( const std::string& filename, int categ );
+  static layer
+  makeLayer( const ConstConfigurationPtr& config );
 
   /** Rebuild the layer representation. */
   int changeLayers( std::vector<std::string> categs, 
