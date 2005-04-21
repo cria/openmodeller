@@ -112,7 +112,7 @@ Raster::~Raster()
 /***********/
 /*** get ***/
 int
-Raster::get( Coord px, Coord py, Scalar *val )
+Raster::get( Coord px, Coord py, Scalar *val ) const
 {
   Scalar *pv = val;
   for ( int i = 0; i < f_hdr.nband; i++ )
@@ -122,8 +122,10 @@ Raster::get( Coord px, Coord py, Scalar *val )
   int y = convY( py );
 
   // If the point is out of range, returns 0.
-  if ( x < 0 || x >= f_hdr.xdim || y < 0 || y >= f_hdr.ydim )
+  if ( x < 0 || x >= f_hdr.xdim || y < 0 || y >= f_hdr.ydim ) {
+    g_log.debug( "Raster::get() Pixel (%d,%d) is not in extent\n",x,y);
     return 0;
+  }
 
   // 'iget()' detects if the coordinate has or not valid
   // information (noval);
@@ -160,11 +162,23 @@ Raster::put( Coord px, Coord py  )
 }
 
 /*******************/
+/*** set Min Max ***/
+void
+Raster::setMinMax( Scalar min, Scalar max )
+{
+
+  f_hdr.minmax = 1;
+  f_hdr.min = min;
+  f_hdr.max = max;
+
+}
+
+/*******************/
 /*** get Min Max ***/
 int
-Raster::getMinMax( Scalar *min, Scalar *max )
+Raster::getMinMax( Scalar *min, Scalar *max ) const
 {
-  if ( ! calcMinMax( &f_hdr.min, &f_hdr.max ) )
+  if ( ! calcMinMax() )
     return 0;
 
   *min = f_hdr.min;
@@ -178,7 +192,7 @@ Raster::getMinMax( Scalar *min, Scalar *max )
 /**************/
 /*** conv X ***/
 int
-Raster::convX( Coord x )
+Raster::convX( Coord x ) const
 {
   x = (x - f_hdr.gt[0]) / f_hdr.gt[1];
   return int( f_hdr.grid ? x : (x + 0.5) );
@@ -188,7 +202,7 @@ Raster::convX( Coord x )
 /**************/
 /*** conv Y ***/
 int
-Raster::convY( Coord y )
+Raster::convY( Coord y ) const
 {
   y = (y - f_hdr.gt[3]) / f_hdr.gt[5];
   return int( f_hdr.grid ? y : (y + 0.5) );
@@ -197,7 +211,7 @@ Raster::convY( Coord y )
 /********************/
 /*** calc Min Max ***/
 int
-Raster::calcMinMax( Scalar *min, Scalar *max, int band )
+Raster::calcMinMax( int band ) const
 {
   if ( f_hdr.minmax ) {
     return 1;
@@ -205,6 +219,8 @@ Raster::calcMinMax( Scalar *min, Scalar *max, int band )
   Scalar *bands;
   bands = new Scalar[ f_hdr.nband ];
   Scalar *val = bands + band;
+  Scalar min;
+  Scalar max;
 
   bool initialized = false;
 
@@ -214,12 +230,12 @@ Raster::calcMinMax( Scalar *min, Scalar *max, int band )
       if ( f_rst->iget( x, y, bands ) ) {
         if ( !initialized ) {
           initialized = true;
-          *min = *max = *val;
+          min = max = *val;
         }
-        if ( *min > *val )
-          *min = *val;
-        else if ( *max < *val )
-          *max = *val;
+        if ( min > *val )
+          min = *val;
+        else if ( max < *val )
+          max = *val;
       }
 
   delete [] bands;
@@ -227,10 +243,14 @@ Raster::calcMinMax( Scalar *min, Scalar *max, int band )
   if (!initialized)
     return 0;
 
-  f_hdr.minmax = 1;
-
-  if (!initialized)
-    return 0;
+  /*
+    This is only logically const.  Here we cast away const to cache the min/max
+  */
+  Header *f_hdrNoConst = const_cast<Header*>(&f_hdr);
+  
+  f_hdrNoConst->minmax = 1;
+  f_hdrNoConst->min = min;
+  f_hdrNoConst->max = max;
 
   return 1;
 }

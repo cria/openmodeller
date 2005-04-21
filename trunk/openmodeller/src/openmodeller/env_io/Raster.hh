@@ -67,49 +67,49 @@ public:
   Header& header() { return f_hdr; }
 
   /** Returns not zero if this map is categorical. */
-  int isCategorical()  { return f_hdr.categ; }
+  int isCategorical() const { return f_hdr.categ; }
 
   /** Lowest longitude. */
-  Coord xMin() { return f_hdr.xmin; }
+  Coord xMin() const { return f_hdr.xmin; }
 
   /** Lowest latitude. */
-  Coord yMin() { return f_hdr.ymin; }
+  Coord yMin() const { return f_hdr.ymin; }
 
   /** Highest longitude. */
-  Coord xMax() { return f_hdr.xmax; }
+  Coord xMax() const { return f_hdr.xmax; }
 
   /** Highest latitude. */
-  Coord yMax() { return f_hdr.ymax; }
+  Coord yMax() const { return f_hdr.ymax; }
 
   /** Longitudinal map dimension. */
-  int dimX()   { return f_hdr.xdim; }
+  int dimX() const { return f_hdr.xdim; }
 
   /** Latitudinal map dimension. */
-  int dimY()   { return f_hdr.ydim; }
+  int dimY() const { return f_hdr.ydim; }
 
   /** Longitudinal cell dimension. */
-  Coord celX()   { return f_hdr.xcel; }
+  Coord celX() const { return f_hdr.xcel; }
 
   /** Latitudinal cell dimension. */
-  Coord celY()   { return f_hdr.ycel; }
+  Coord celY() const { return f_hdr.ycel; }
 
   /**
    * Returns not zero if it is stored like a grid map and
    * zero if it is stored like a pixel map.
    */
-  int getGrid()   { return f_hdr.grid; }
+  int getGrid() const  { return f_hdr.grid; }
 
   /** Returns the "noval" value. */
-  Scalar noVal()  { return f_hdr.noval; }
+  Scalar noVal() const { return f_hdr.noval; }
 
   /** Number of bands. */
-  int numBand()   { return f_hdr.nband; }
+  int numBand() const { return f_hdr.nband; }
 
   /**
    * Fills '*val' with the map value at (x,y).
    * Returns zero if (x,y) is out of range.
    */
-  int get( Coord x, Coord y, Scalar *val );
+  int get( Coord x, Coord y, Scalar *val ) const;
 
   /**
    * Put '*val' at the (x,y) coordinate.
@@ -125,8 +125,16 @@ public:
    */
   int put( Coord x, Coord y );
 
+  /** Has the min max already been computed */
+  bool hasMinMax() const {
+    return f_hdr.minmax;
+  }
+  
+  /** Support external specification of min/max */
+  void setMinMax( Scalar min, Scalar max );
+
   /** Find the minimum and maximum values in the first band. */
-  int getMinMax( Scalar *min, Scalar *max );
+  int getMinMax( Scalar *min, Scalar *max ) const;
 
 private:
 
@@ -134,16 +142,16 @@ private:
    * Convert georeferenced coordinate x in the map to
    * (column) coordinated in raster image.
    */
-  int convX( Coord x );
+  int convX( Coord x ) const;
 
   /**
    * Convert georeferenced coordinate y in the map to
    * (row) coordinated in raster image.
    */
-  int convY( Coord y );
+  int convY( Coord y ) const;
 
   /** Find the minimum and maximum values in 'band'. */
-  int calcMinMax( Scalar *min, Scalar *max, int band=0 );
+  int calcMinMax( int band=0 ) const;
 
   /** The file format is known by the file name extension. **/
   void load();
