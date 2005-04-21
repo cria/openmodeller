@@ -317,7 +317,10 @@ public:
   static void createMap( const ReferenceCountedPointer<AverageModelImpl>& model, const EnvironmentPtr& env, char *filename, Projector::MapCommand *mc = 0 )
   {
     MapFormat mf;
-    mf.copyDefaults( *env->getMask() );
+    Map *mask = env->getMask();
+    if (!mask)
+      mask = env->getLayer(0);
+    mf.copyDefaults( *mask );
     Map map( new Raster( filename, mf ) );
     Projector::createMap( Model(model), env, &map, 0, mc );
   }
