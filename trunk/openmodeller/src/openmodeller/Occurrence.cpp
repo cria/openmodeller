@@ -67,3 +67,9 @@ OccurrenceImpl::setEnvironment( const Sample& s )
 {
   env_ = s;
 }
+
+bool
+OccurrenceImpl::hasEnvironment() const
+{
+  return env_.size() != 0;
+}
