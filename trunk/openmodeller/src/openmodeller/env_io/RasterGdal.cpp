@@ -28,6 +28,7 @@
 
 #include <env_io/raster_gdal.hh>
 #include <env_io/raster.hh>
+#include <env_io/geo_transform.hh>
 #include <om_log.hh>
 
 #include <Exceptions.hh>
@@ -180,8 +181,11 @@ RasterGdal::open( char mode )
 
   // Projection.
   f_hdr.setProj( (char *) f_ds->GetProjectionRef() );
-  if ( ! f_hdr.hasProj() )
-    g_log.info( "The map %s is not georeferenced!\n", f_name.c_str() );
+  if ( ! f_hdr.hasProj() ) {
+    g_log.warn( "The raster %s is not georeferenced.  Assuming WGS84\n", f_name.c_str() );
+    f_hdr.setProj( GeoTransform::cs_default );
+  }
+    
 
 
   // Assumes that all bands have the same georeference
