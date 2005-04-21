@@ -67,6 +67,17 @@ public:
 
   int isCategorical() const { return _rst->isCategorical(); }
 
+  /** Support external specification of the min/max */
+  void setMinMax( Scalar min, Scalar max )
+  {
+    _rst->setMinMax( min, max );
+  }
+
+  bool hasMinMax() const
+  {
+    _rst->hasMinMax();
+  }
+
   /** Find the minimum and maximum values in the first band. */
   int getMinMax( Scalar *min, Scalar *max ) const
   {
