@@ -261,6 +261,8 @@ OpenModeller::setAlgorithm( char const *id, int nparam,
 int
 OpenModeller::createModel()
 {
+  g_log( "Creating the model\n" );
+
   char *error = parameterModelCheck();
   if ( error )
     {
@@ -270,8 +272,6 @@ OpenModeller::createModel()
 
   _alg->computeNormalization( _samp );
   _alg->setNormalization( _samp );
-
-  g_log( "Creating the model\n" );
 
   // Initialize algorithm.  
   if ( ! _alg->initialize() )
@@ -339,7 +339,7 @@ OpenModeller::createModel()
       return 0;
     }
 
-  g_log( "\n" );
+  g_log( "Finished Creating Model\n" );
 
   return 1;
 }
@@ -369,7 +369,12 @@ OpenModeller::createMap( const EnvironmentPtr & env, char const *output_file, Ma
 {
   Model m( _alg->getModel() );
 
-  output_format.copyDefaults( *env->getMask() );
+  Map *mask = env->getMask();
+
+  if (!mask)
+    mask = env->getLayer(0);
+
+  output_format.copyDefaults( *mask );
 
   // try to infer the output format.
   string fname(output_file);
