@@ -40,12 +40,6 @@
 
 Map::Map( Raster *rst )
 {
-  if ( ! rst->header().hasProj() )
-    {
-      g_log.warn( "Not a georeferenced map! Assuming WGS84\n" );
-      rst->header().setProj( GeoTransform::cs_default );
-    }
-
   _rst = rst;
   _gt  = new GeoTransform( rst->header().proj, GeoTransform::cs_default );
 }
