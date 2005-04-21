@@ -155,6 +155,8 @@ public:
 
   void setEnvironment( const Sample& );
 
+  bool hasEnvironment() const;
+
 private:
   Coord  x_;
   Coord  y_;
