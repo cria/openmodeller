@@ -29,6 +29,12 @@
 ###############################################################################
 # 
 # $Log$
+# Revision 1.2  2005/04/22 12:10:09  scachett
+# Added dependent python modules (htmltmpl) to repository so developers
+# don't need to include a bunch of modules just to run the tests.
+#
+# Removed dependency on module csv.
+#
 # Revision 1.1  2005/04/19 14:24:23  scachett
 # Reimplemented user tests using GDAL/OGR autotest as a template.
 # Main changes:
@@ -46,7 +52,6 @@ import sys
 import os
 import string
 import om
-import csv
 import ConfigParser
 
 from htmltmpl import TemplateManager, TemplateProcessor
@@ -332,8 +337,7 @@ def get_occurrences(filename, sppName, coordSys, sppNameColumn,
                     xCoordColumn, yCoordColumn, abundanceColumn):
     
     file = open(filename)
-    csv_parser = csv.parser()
-    
+   
     # get point data from open file
     line = file.readline()
 
@@ -342,7 +346,7 @@ def get_occurrences(filename, sppName, coordSys, sppNameColumn,
 
     while line:
 
-        row = csv_parser.parse(string.lower(line))
+        row = string.lower(line).split(",")
 
         if row:
             validRow = False

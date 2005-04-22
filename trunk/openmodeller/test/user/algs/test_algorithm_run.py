@@ -26,6 +26,12 @@
 ###############################################################################
 # 
 #  $Log$
+#  Revision 1.2  2005/04/22 12:10:09  scachett
+#  Added dependent python modules (htmltmpl) to repository so developers
+#  don't need to include a bunch of modules just to run the tests.
+#
+#  Removed dependency on module csv.
+#
 #  Revision 1.1  2005/04/19 14:24:23  scachett
 #  Reimplemented user tests using GDAL/OGR autotest as a template.
 #  Main changes:
@@ -66,6 +72,10 @@ def algorithm_run(args):
     occ_file = args[3]
     spp_name = args[4]
 
+    # TODO: add switch to control which algs to test
+    # DEBUG
+    #if alg_id != "Bioclim":
+    #    return ('skip', None)
 
     coordSys = "GEOGCS[\"WGS84\", DATUM[\"WGS84\", SPHEROID[\"WGS84\", 6378137.0, 298.257223563]], PRIMEM[\"Greenwich\", 0.0], UNIT[\"degree\", 0.017453292519943295], AXIS[\"Longitude\",EAST], AXIS[\"Latitude\",NORTH]]"
 
