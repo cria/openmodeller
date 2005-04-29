@@ -50,7 +50,8 @@ RequestFile::RequestFile() :
   _cat(),
   _map(),
   _mask(),
-  _file(),
+  _model_file(),
+  _projection_file(),
   _outputFormat()
 { 
 }
@@ -70,6 +71,8 @@ RequestFile::configure( OpenModeller *om, char *request_file )
   _environment_set = setEnvironment( om, fp );
   _projection_set  = setProjection ( om, fp );
   _algorithm_set   = setAlgorithm  ( om, fp );
+
+  _model_file = fp.get( "Output model" );
 
   // Returns ZERO if all was set correctly.
   return 4 - _occurrences_set - _environment_set -
@@ -122,8 +125,8 @@ int
 RequestFile::setProjection( OpenModeller *om, FileParser &fp )
 {
 
-  _file = fp.get( "Output file" );
-  if ( _file.empty() )
+  _projection_file = fp.get( "Output file" );
+  if ( _projection_file.empty() )
     {
       g_log( "The 'Output file' file name was not specified!\n" );
       return 0;
@@ -176,13 +179,19 @@ RequestFile::setAlgorithm( OpenModeller *om, FileParser &fp )
   AlgMetadata const *metadata;
   std::string alg_id = fp.get( "Algorithm" );
 
-  // Try to used the algorithm specified in the request file.
-  // If it can not be used, return 0.
+  // Note: console tries to get an algorithm from user input
+  // if it was not specified in the request file.
+  if ( alg_id.empty() )
+    return 0;
+
+  // Try to use the algorithm specified in the request file.
+  // If it cannot be used, return 0.
   try {
     // An exception here means that the algorithm wasn't found.
     metadata = om->algorithmMetadata( alg_id.c_str() );
   }
   catch (...) {
+    g_log( "Algorithm '%s' specified in the request file was not found\n", alg_id.c_str() );
     return 0;
   }
 
@@ -201,6 +210,9 @@ RequestFile::setAlgorithm( OpenModeller *om, FileParser &fp )
 
   // Set the model algorithm to be used by the controller
   int resp = om->setAlgorithm( metadata->id, nparam, param );
+
+  if ( resp == 0 )
+    g_log.error( 1, "Resp from setAlg was zero\n" );
 
   delete[] param;
 
@@ -255,12 +267,6 @@ RequestFile::readParameters( AlgParameter *result,
 
 /*************************/
 /*** extract Parameter ***/
-/**
- * Search for 'name' in the 'nvet' elements of the vector 'vet'.
- * If the string 'name' is in the begining of some string vet[i]
- * then returns a pointer to the next character of vet[i],
- * otherwise returns 0.
- */
 std::string
 RequestFile::extractParameter( std::string const name, 
 			       std::vector<std::string> vet )
@@ -280,23 +286,44 @@ RequestFile::extractParameter( std::string const name,
 }
 
 
+/******************/
+/*** make Model ***/
+void
+RequestFile::makeModel( OpenModeller *om )
+{
+  // Build model
+  if ( ! om->createModel() ) {
+    g_log.error( 1, "Error during model creation: %s\n", om->error() );
+  }
+
+  // Serialize model, if requested
+  if ( ! _model_file.empty() ) {
+
+    char* file_name = new char [_model_file.size()];
+    strcpy( file_name, _model_file.c_str() );
+
+    ConfigurationPtr cfg = om->getConfiguration();
+    Configuration::writeXml( cfg, file_name );
+  }
+}
+
+
+/***********************/
+/*** make Projection ***/
 void
 RequestFile::makeProjection( OpenModeller *om )
 {
-
   if ( _projection_set == 0 )
-    return;
+    g_log.error( 1, "Error during projection: Request not properly initialized\n" );
 
   if ( !_nonNativeProjection ) {
-    om->createMap( _file.c_str() );
+
+    om->createMap( _projection_file.c_str() );
   }
   else {
 
     EnvironmentPtr env = createEnvironment( _cat, _map, _mask );
 
-    om->createMap( env, _file.c_str(), _outputFormat );
-
+    om->createMap( env, _projection_file.c_str(), _outputFormat );
   }
-
-
 }

@@ -117,19 +117,14 @@ main( int argc, char **argv )
         }
     }
 
-  ConfigurationPtr cfg = om.getConfiguration();
-  //Configuration::writeXml( cfg, std::cout );
-
-  /*** Run the model ***/
-
+  // Run model
   om.setModelCallback( modelCallback );
-  if ( ! om.createModel() )
-    g_log.error( 1, "Error: %s\n", om.error() );
 
-  // Prepare the output map
+  request.makeModel( &om );
+
+  // Run projection
   om.setMapCallback( mapCallback );
 
-  // Build the environment for the map.
   request.makeProjection( &om );
 
   ConfusionMatrix matrix;
@@ -143,7 +138,6 @@ main( int argc, char **argv )
   g_log("Percentage of cells predicted present: %7.2f\%\n", 
 	stats->getAreaPredictedPresent() / (double) stats->getTotalArea() * 100);
   g_log("Total number of cells: %d\n", stats->getTotalArea());
-
   g_log( "\nDone.\n" );
   return 0;
 }
