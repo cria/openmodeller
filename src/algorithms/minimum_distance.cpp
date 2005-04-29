@@ -127,6 +127,7 @@ algorithmMetadata()
 
 MinimumDistance::MinimumDistance() :
   AlgorithmImpl( &metadata ),
+  _done( false ),
   _dist(0.0),
   _hasCategorical( false ),
   _numLayers( 0 ),
@@ -187,6 +188,8 @@ MinimumDistance::initialize()
     }
   }
 
+  _done = true;
+
   return 1;
 
 }
@@ -206,7 +209,7 @@ MinimumDistance::iterate()
 int
 MinimumDistance::done() const
 {
-  return 1;
+  return _done;
 }
 
 
@@ -274,3 +277,30 @@ MinimumDistance::findDist( const Sample& x, const Sample& pnt ) const
 
 }
 
+
+/****************************************************************/
+/****************** configuration *******************************/
+void
+MinimumDistance::_getConfiguration( ConfigurationPtr& config ) const
+{
+  if (!_done )
+    return;
+
+  ConfigurationPtr model_config( new ConfigurationImpl("MinimumDistanceModel") );
+  config->addSubsection( model_config );
+
+  model_config->addNameValue( "Distance", _dist );
+}
+
+void
+MinimumDistance::_setConfiguration( const ConstConfigurationPtr& config )
+{
+  ConstConfigurationPtr model_config = config->getSubsection( "MinimumDistanceModel",false );
+
+  if (!model_config)
+    return;
+
+  _done = true;
+  _dist = model_config->getAttributeAsDouble( "Distance", 0.0 );
+
+}
