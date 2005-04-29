@@ -57,7 +57,13 @@ public:
   Scalar getValue( const Sample& x ) const;
   int    getConvergence( Scalar *val );
 
+protected:
+  virtual void _getConfiguration( ConfigurationPtr& ) const;
+  virtual void _setConfiguration( const ConstConfigurationPtr& );
+
 private:
+
+  bool _done;
 
   /** Calculate cartesian distance between 'x' and 'pnt',
    *  with dimensions equal to dim.*/
