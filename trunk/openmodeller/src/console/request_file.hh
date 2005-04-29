@@ -1,5 +1,6 @@
 /**
- * Se an OpenModeller object reading parameters from a request file.
+ * Class used to configure an OpenModeller object reading parameters from a standard request file.
+ * It also has methods to encapsulate model creation and projection.
  * 
  * @file
  * @author Mauro E S Muñoz (mauro@cria.org.br)
@@ -67,6 +68,7 @@ public:
 
   OccurrencesPtr getOccurrences() { return _occurrences; }
 
+  void makeModel( OpenModeller *om );
   void makeProjection( OpenModeller *om );
 
 private:
@@ -82,6 +84,16 @@ private:
   int readParameters( AlgParameter *result, AlgMetadata const *metadata,
 		      std::vector<std::string> str_param );
 
+  /** Search for 'name' in the 'nvet' elements of the vector 'vet'.
+   * If the string 'name' is in the beginning of some string vet[i]
+   * then returns a pointer to the next character of vet[i],
+   * otherwise returns 0.
+   *
+   * @param name Name to be searched.
+   * @param vet Vector of names.
+   * 
+   * @return Pointer to the next character of matching vector element.
+   */
   std::string extractParameter( std::string const name, 
 				std::vector<std::string> vet );
 
@@ -96,7 +108,8 @@ private:
   std::vector<std::string> _cat;
   std::vector<std::string> _map;
   std::string _mask;
-  std::string _file;
+  std::string _model_file;
+  std::string _projection_file;
 
   MapFormat _outputFormat;
 
