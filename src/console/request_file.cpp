@@ -304,6 +304,8 @@ RequestFile::makeModel( OpenModeller *om )
 
     ConfigurationPtr cfg = om->getConfiguration();
     Configuration::writeXml( cfg, file_name );
+
+    delete[] file_name;
   }
 }
 
