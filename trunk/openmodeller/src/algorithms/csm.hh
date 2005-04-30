@@ -407,6 +407,16 @@ class Csm : public AlgorithmImpl
          */
         gsl_matrix * autoCovariance(gsl_matrix * m);
 
+        /** Method to serialize a CSM model.
+         * @param ConfigurationPtr Pointer to the serializer object
+         */
+        virtual void _getConfiguration( ConfigurationPtr& ) const;
+
+        /** Method to deserialize a CSM model.
+         * @param ConstConfigurationPtr Pointer to the serializer object
+         */
+        virtual void _setConfiguration( const ConstConfigurationPtr& );
+
 
         /** This is a flag to indicate that the algorithm was initialized. */
         int _initialized;

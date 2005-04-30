@@ -593,7 +593,7 @@ bool Csm::csm1()
   //displayMatrix(_gsl_eigenvector_matrix,"Eigen Vector");
   g_log.debug( "CSM Model Generation Completed\n" );
 
-  //After the mode is generated, we can discard unwanted components!
+  //After the model is generated, we can discard unwanted components!
   int myNumberOfAttempts=0;
   while ( myNumberOfAttempts++ < maxAttemptsInt)
   {
@@ -610,4 +610,105 @@ bool Csm::csm1()
   g_log.warn( "Could not generate a model with sufficient components!\n" );
   return false;
   //print out the result
+}
+
+
+
+/****************************************************************/
+/****************** configuration *******************************/
+void
+Csm::_getConfiguration( ConfigurationPtr& config ) const
+{
+  if (!_done )
+    return;
+
+  ConfigurationPtr model_config( new ConfigurationImpl("CsmModel") );
+  config->addSubsection( model_config );
+
+  // _gsl_avg_vector
+  double *values = new double[_layer_count];
+
+  for (int i=0; i < _layer_count; ++i)
+     values[i] = gsl_vector_get(_gsl_avg_vector, i);
+
+  model_config->addNameValue( "AvgVector", values, _layer_count );
+
+  // _gsl_stddev_vector
+  for (int i=0; i < _layer_count; ++i)
+     values[i] = gsl_vector_get(_gsl_stddev_vector, i);
+
+  model_config->addNameValue( "StddevVector", values, _layer_count );
+
+  // _gsl_eigenvalue_vector
+  for (int i=0; i < _retained_components_count; ++i)
+     values[i] = gsl_vector_get(_gsl_eigenvalue_vector, i);
+
+  model_config->addNameValue( "EigenvalueVector", values, _retained_components_count );
+
+  delete[] values;
+
+  // _gsl_eigenvector_matrix
+  int num_cells = _layer_count * _retained_components_count;
+
+  double *flat_eigenvector_matrix = new double[num_cells];
+
+  int cnt = 0;
+
+  for (int i=0; i < _layer_count; ++i)
+    for (int j=0; j < _retained_components_count; ++j, ++cnt)
+      flat_eigenvector_matrix[cnt] = gsl_matrix_get( _gsl_eigenvector_matrix, i, j );
+
+  model_config->addNameValue( "EigenvectorMatrix", flat_eigenvector_matrix, num_cells );
+
+  delete[] flat_eigenvector_matrix;
+}
+
+void
+Csm::_setConfiguration( const ConstConfigurationPtr& config )
+{
+  ConstConfigurationPtr model_config = config->getSubsection( "CsmModel",false );
+
+  if (!model_config)
+    return;
+
+  // _gsl_avg_vector
+  std::vector<double> stl_vector = model_config->getAttributeAsVecDouble( "AvgVector" );
+
+  _layer_count = stl_vector.size();
+
+  _gsl_avg_vector = gsl_vector_alloc( _layer_count );
+
+  for (int i=0; i < _layer_count; ++i)
+     gsl_vector_set( _gsl_avg_vector, i, stl_vector[i] );
+
+  // _gsl_stddev_vector
+  stl_vector = model_config->getAttributeAsVecDouble( "StddevVector" );
+
+  _gsl_stddev_vector = gsl_vector_alloc( _layer_count );
+
+  for (int i=0; i < _layer_count; ++i)
+     gsl_vector_set( _gsl_stddev_vector, i, stl_vector[i] );
+
+  // _gsl_eigenvalue_vector
+  stl_vector = model_config->getAttributeAsVecDouble( "EigenvalueVector" );
+
+  _retained_components_count = stl_vector.size();
+
+  _gsl_eigenvalue_vector = gsl_vector_alloc( _retained_components_count );
+
+  for (int i=0; i < _retained_components_count; ++i)
+     gsl_vector_set( _gsl_eigenvalue_vector, i, stl_vector[i] );
+
+  // _gsl_eigenvector_matrix
+  stl_vector = model_config->getAttributeAsVecDouble( "EigenvectorMatrix" );
+
+  _gsl_eigenvector_matrix = gsl_matrix_alloc( _layer_count, _retained_components_count );
+
+  int cnt = 0;
+
+  for (int i=0; i < _layer_count; ++i)
+    for (int j=0; j < _retained_components_count; ++j, ++cnt)
+      gsl_matrix_set( _gsl_eigenvector_matrix, i, j, stl_vector[cnt] );
+
+  _done = true;
 }
