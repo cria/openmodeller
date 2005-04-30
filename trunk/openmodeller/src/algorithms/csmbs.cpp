@@ -121,7 +121,7 @@ static AlgMetadata metadata = {
 
   "CSMBS",                 // Id.
   "Climate Space Model - Broken-Stick", // Name.
-  "0.1 alpha",           // Version.
+  "0.2 beta",           // Version.
 
   
   "Climate Space Model [CSM] is a principle components based \
@@ -383,9 +383,8 @@ int CsmBS::discardComponents()
   }
 
   // First determine how many components we are going to keep
-  // We do this my iterating throught the eigenvalues, checking which are above the mean+stddev
+  // We do this by iterating through the eigenvalues, checking which are above the mean+stddev
 
-  int _retained_components_count=0;
   float sumOfEigenValues = 0;//sum should total number of layers
   for (i=0; i<myMeanPlusStdDevsVector->size; ++i)
   {
@@ -393,7 +392,6 @@ int CsmBS::discardComponents()
     sumOfEigenValues += myFloat; 
     if (myFloat < gsl_vector_get(_gsl_eigenvalue_vector,i))
     {
-      ++_retained_components_count;
       std::cerr << gsl_vector_get(_gsl_eigenvalue_vector,i) 
           << " > "
           << myFloat
@@ -404,6 +402,7 @@ int CsmBS::discardComponents()
     }
     else
     {
+      --_retained_components_count;
       std::cerr << gsl_vector_get(_gsl_eigenvalue_vector,i) 
           << " < "
           << myFloat
