@@ -42,7 +42,11 @@ Output map = rain_coolest
 #
 Output mask = rain_coolest
 
-# Output file name.
+# Output model name (serialized model).
+#
+Output model = furcata.xml
+
+# Output file name (projected map).
 #
 Output file = furcata.tif
 
