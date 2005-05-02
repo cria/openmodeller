@@ -433,7 +433,7 @@ sub create_model
 
     ### Maps
 
-    my $base_dir = '../../examples/layers/';
+    my $base_dir = '../../../examples/layers/'; # Hard coded! remember it's a simple prototype!
 
     my @maps = ( {'location'=> $base_dir.'rain_coolest', 'categorical' => 0},
 		 {'location'=> $base_dir.'rain_tot'    , 'categorical' => 0},
