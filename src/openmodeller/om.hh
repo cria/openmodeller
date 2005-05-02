@@ -58,6 +58,8 @@
 // openModeller clients specific includes
 //
 #include <om_control.hh>
+#include <algorithm_factory.hh>
+#include <map_format.hh>
 
 
 #endif
