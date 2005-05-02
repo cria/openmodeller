@@ -604,7 +604,7 @@ bool Csm::csm1()
     }
     else
     {
-      g_log.debug( "Discard components retained to few components - trying again!\n" );
+      g_log.debug( "Discard components retained too few components - trying again!\n" );
     }
   }
   g_log.warn( "Could not generate a model with sufficient components!\n" );
