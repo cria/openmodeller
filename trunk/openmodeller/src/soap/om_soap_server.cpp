@@ -214,6 +214,9 @@ void *process_request(void *soap)
 int 
 om__getAlgorithms( struct soap *soap, void *_, struct om__getAlgorithmsResponse &r )
 {
+  // Set directories to search for algorithms
+  AlgorithmFactory::searchDefaultDirs();
+
   // This object _must_ be static, otherwise all data pointed by the soap structs
   // will vanish in the end of this scope!!
   static OpenModeller om;
@@ -222,7 +225,7 @@ om__getAlgorithms( struct soap *soap, void *_, struct om__getAlgorithmsResponse 
   soap->header = (struct SOAP_ENV__Header*)soap_malloc( soap, sizeof(struct SOAP_ENV__Header) ); 
   soap->header->om__version = om.getVersion();
 
-  AlgMetadata **algorithms = om.availableAlgorithms();
+  AlgMetadata const **algorithms = om.availableAlgorithms();
 
   int nalg = om.numAvailableAlgorithms();
 
@@ -239,7 +242,7 @@ om__getAlgorithms( struct soap *soap, void *_, struct om__getAlgorithmsResponse 
 
   // Remember that the algorithms library and this soap server should have been compiled
   // with the same structure-alignment, otherwise memcpy will fail!!
-  AlgMetadata *metadata;
+  AlgMetadata const *metadata;
   while ( metadata = *algorithms++ )
    {
      memcpy( soapAlgsPtr++, metadata, sizeof(soap_AlgorithmMetadata) );
@@ -257,6 +260,9 @@ om__getAlgorithms( struct soap *soap, void *_, struct om__getAlgorithmsResponse 
 int 
 om__createModel( struct soap *soap, om__Points *points, om__Maps *maps, om__Mask *mask, om__Algorithm *algorithm, om__Output *output, xsd__string *ticket )
 {
+  // Set directories to search for algorithms
+  AlgorithmFactory::searchDefaultDirs();
+
   // This object _must_ be static, otherwise all data pointed by the soap structs
   // will vanish in the end of this scope!!
   static OpenModeller om;
@@ -266,7 +272,7 @@ om__createModel( struct soap *soap, om__Points *points, om__Maps *maps, om__Mask
   soap->header->om__version = om.getVersion();
 
   // Get algorithm metadata
-  AlgMetadata *alg_metadata = om.algorithmMetadata( algorithm->om_id );
+  AlgMetadata const *alg_metadata = om.algorithmMetadata( algorithm->om_id );
 
   if ( ! alg_metadata )
     {
@@ -274,14 +280,15 @@ om__createModel( struct soap *soap, om__Points *points, om__Maps *maps, om__Mask
     }
 
   // Points
-  Occurrences presences ( "presences", points->coordsystem );
-  Occurrences absences  ( "absences" , points->coordsystem );
+  OccurrencesPtr presences = new OccurrencesImpl( "presences", points->coordsystem );
+  OccurrencesPtr absences  = new OccurrencesImpl( "absences" , points->coordsystem );
 
   soap_Point *point = points->__ptrpresences->__ptrpoint;
 
   for ( int i = 0; i < points->__ptrpresences->__size; i++, point++)
     {
-      presences.insert( (Coord)point->longitude, (Coord)point->latitude );
+      presences->createOccurrence( (Coord)point->longitude, (Coord)point->latitude, 
+                                   (Scalar)-1.0, (Scalar)1.0 );
     }
 
   if ( points->__ptrabsences && alg_metadata->absence )
@@ -290,62 +297,57 @@ om__createModel( struct soap *soap, om__Points *points, om__Maps *maps, om__Mask
 
       for ( int i = 0; i < points->__ptrabsences->__size; i++, point++)
 	{
-	  absences.insert( (Coord)point->longitude, (Coord)point->latitude);
+          absences->createOccurrence( (Coord)point->longitude, (Coord)point->latitude, 
+                                      (Scalar)-1.0, (Scalar)0.0 );
 	}
       
-      om.setOccurrences( &presences, &absences );
+      om.setOccurrences( presences, absences );
     }
   else
     {
-      om.setOccurrences( &presences );
+      om.setOccurrences( presences );
     }
 
   // Environmental layers
-  int nlayers = maps->__size; // total number of maps
-  int ncat = 0; // number of categorical maps
-  int ncont = 0; // number of continuous maps
-
-  char **cat_layers = new char*[nlayers];
-  char **cont_layers = new char*[nlayers];
+  std::vector<std::string> categorical_layers;
+  std::vector<std::string> continuous_layers;
 
   soap_Map *map = maps->__ptrmap;
   for ( int i = 0; i < maps->__size; i++, map++)
     {
       if ( map->categorical && alg_metadata->categorical )
 	{
-	  cat_layers[i] = map->location;
-	  ++ncat;
+          categorical_layers.push_back( map->location );
 	}
       else
 	{
-	  cont_layers[i] = map->location;
-	  ++ncont;
+          continuous_layers.push_back( map->location );
 	}
     }
 
-  om.setEnvironment( ncat, cat_layers, ncont, cont_layers, mask->location );
-
-  delete cat_layers;
-  delete cont_layers;
+  om.setEnvironment( categorical_layers, continuous_layers, mask->location );
 
   // Set the algorithm to be used
-  if ( ! om.setAlgorithm( algorithm->om_id, algorithm->__size, (AlgParameter *)algorithm->__ptrparameter ) )
+  if ( ! om.setAlgorithm( algorithm->om_id, algorithm->__size, 
+                          (AlgParameter *)algorithm->__ptrparameter ) )
   {
       return soap_receiver_fault( soap, "Could not load the requested algorithm", NULL );
   }
 
   // Output map  (FIX ME: use a portable and better solution for unique names)
-  char *t_fname = (char*)soap_malloc(soap, strlen(OM_SOAP_TMPDIR) + strlen(TEMPLATE_FILE_NAME) +2);
-  strcpy(t_fname, OM_SOAP_TMPDIR);
-  strcat(t_fname, "/");
-  strcat(t_fname, TEMPLATE_FILE_NAME);
-  mkstemp(t_fname); // generate file with unique name, and keep it
+  char *template_file_name = (char*)soap_malloc( soap, strlen(OM_SOAP_TMPDIR) + 
+                                                       strlen(TEMPLATE_FILE_NAME) +2 );
+  strcpy( template_file_name, OM_SOAP_TMPDIR );
+  strcat( template_file_name, "/" );
+  strcat( template_file_name, TEMPLATE_FILE_NAME );
+  mkstemp( template_file_name ); // generate file with unique name, and keep it
 
-  char *r_fname = (char*)soap_malloc(soap, strlen(t_fname) + strlen(output->format) + 1);
-  strcpy(r_fname, t_fname);
-  strcat(r_fname, output->format); // output file is unique name + file format (should include dot)
+  char *projection_file_name = (char*)soap_malloc( soap, strlen(template_file_name) + 
+                                            strlen(output->format) + 1 );
+  strcpy( projection_file_name, template_file_name );
+  strcat( projection_file_name, output->format ); // unique name + file format (should include dot)
 
-  *ticket = rindex(r_fname, '/')+1; //ticket is actually the file name
+  *ticket = rindex( projection_file_name, '/' ) + 1; //ticket is actually the output map file name
 
   pid_t pid = fork();
 
@@ -363,25 +365,29 @@ om__createModel( struct soap *soap, om__Points *points, om__Maps *maps, om__Mask
           return soap_receiver_fault( soap, "Could not create model", NULL );
         }
 
-      om.setOutputMap( (xsd__double)output->scale, r_fname, mask->location, output->header );
+      // Serialize model
+      char *model_file_name = (char*)soap_malloc( soap, strlen(template_file_name) + 5 );
+      strcpy( model_file_name, template_file_name );
+      strcat( model_file_name, ".xml" );
 
-      if ( ! om.createMap() )
-        {
-	  g_log( om.error() );
-          return soap_receiver_fault( soap, "Could not create map", NULL );
-        }
+      ConfigurationPtr cfg = om.getConfiguration();
+      Configuration::writeXml( cfg, model_file_name );
 
-      // Create flag in file system indicating job done
-      char *flag_file = (char*)soap_malloc(soap, strlen(t_fname) + 4);
-      strcpy(flag_file, t_fname);
-      strcat(flag_file, ".end");
+      // Output map format
 
-      FILE *fd = fopen(flag_file, "wb");
-      if (!fd)
-	{
-	  return soap_receiver_fault(soap, "Could not save ticket flag", NULL);
-	}
-      fclose(fd);
+      //      om.setOutputMap( (xsd__double)output->scale, projection_file_name, mask->location, output->header );
+      //
+      // TODO: confirm if "scale" parameter should be removed.
+      MapFormat map_format = MapFormat( output->header );
+
+      // Make projection
+
+      //      if ( ! om.createMap( projection_file_name ) )
+      //        {
+      //	  g_log( om.error() );
+      //          return soap_receiver_fault( soap, "Could not create map", NULL );
+      //        }
+      om.createMap( projection_file_name, map_format );
 
       // do we need this here?
       soap_destroy((struct soap*)soap);
