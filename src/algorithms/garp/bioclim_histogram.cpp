@@ -91,7 +91,7 @@ void BioclimHistogram::initialize(const OccurrencesPtr& occs)
       //printf("layers: %d %d \n", numLayers, sample.size() );
       for ( int layerIndex = 0; layerIndex < numLayers; layerIndex++)
 	    {
-	      int normValue = (int) ((sample[layerIndex] + 1.0) / 2.0 * 255.0);
+	      int normValue = (int) ((sample[layerIndex] + 1.0) / 2.0 * 253.0) + 1;
 	      if (normValue < 0) {
 		normValue = 0;
 	      }
