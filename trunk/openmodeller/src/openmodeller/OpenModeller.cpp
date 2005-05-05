@@ -224,21 +224,24 @@ OpenModeller::setAlgorithm( char const *id, int nparam,
 {
   if ( nparam && ! param )
     g_log.error( 1, "Incoherent number of parameters and parameters pointer\n" );
-  
-  if (!_env)
+
+  if (!_samp)
     {
-      g_log( "Sampler could not initialized. Environment not set.\n" );
-      return 0;
-    }
-  else if (!_presence)
-    {
-      g_log( "Sampler could not initialized. Occurrences not set.\n" );
-      return 0;
-    }
-  else
-    {
-      // _env and _presence are both set
-      setSampler( createSampler(_env, _presence, _absence));
+      if (!_env)
+	{
+	  g_log( "Sampler could not initialized. Environment not set.\n" );
+	  return 0;
+	}
+      else if (!_presence)
+	{
+	  g_log( "Sampler could not initialized. Occurrences not set.\n" );
+	  return 0;
+	}
+      else
+	{
+	  // _env and _presence are both set
+	  setSampler( createSampler(_env, _presence, _absence));
+	}
     }
 
   _alg = AlgorithmFactory::newAlgorithm( id );
