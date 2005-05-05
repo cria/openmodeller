@@ -193,13 +193,6 @@ OpenModeller::setOccurrences( const OccurrencesPtr& presence,
   _presence = presence;
   _absence  = absence;
 
-  if (_env)
-    {
-      setSampler( createSampler(_env, 
-				_presence, 
-				_absence));
-    }
-
   return 1;
 }
 
@@ -211,11 +204,6 @@ OpenModeller::setEnvironment( std::vector<std::string> categ_map,
 			      const std::string& mask )
 {
   _env = createEnvironment( categ_map, continuous_map, mask);
-
-  if (_presence)
-    { 
-      setSampler( createSampler(_env, _presence, _absence) );
-    }
 
   g_log( "Environment initialized.\n" );
 }
@@ -236,12 +224,21 @@ OpenModeller::setAlgorithm( char const *id, int nparam,
 {
   if ( nparam && ! param )
     g_log.error( 1, "Incoherent number of parameters and parameters pointer\n" );
-
-  // Check if sampler is initialized
-  if ( ! _samp )
+  
+  if (!_env)
     {
-      g_log( "Sampler not initialized.\n" );
+      g_log( "Sampler could not initialized. Environment not set.\n" );
       return 0;
+    }
+  else if (!_presence)
+    {
+      g_log( "Sampler could not initialized. Occurrences not set.\n" );
+      return 0;
+    }
+  else
+    {
+      // _env and _presence are both set
+      setSampler( createSampler(_env, _presence, _absence));
     }
 
   _alg = AlgorithmFactory::newAlgorithm( id );
