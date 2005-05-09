@@ -40,7 +40,7 @@
 
 #define NUM_PARAM 1
 
-#define CUTOFF_ID "StandadDeviationCutoff"
+#define CUTOFF_ID "StandardDeviationCutoff"
 
 
 /*************************************/
@@ -179,8 +179,10 @@ BioclimDistance::initialize()
 {
   Scalar cutoff = 0.0;
   // Read and check the standard deviation cutoff parameter.
-  if ( ! getParameter( CUTOFF_ID, &cutoff ) )
+  if ( ! getParameter( CUTOFF_ID, &cutoff ) ) {
+    g_log.error(1, "Parameter " CUTOFF_ID " not set properly.\n");
     return 0;
+  }
   if ( cutoff <= 0 )
     {
       g_log.warn( "BioclimDistance - parameter out of range: %f\n",
