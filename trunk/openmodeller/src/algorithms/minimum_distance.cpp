@@ -42,6 +42,8 @@
 
 #define NUM_PARAM 1
 
+#define MAXDIST_ID "MaximumDistance"
+
 
 /******************************/
 /*** Algorithm's parameters ***/
@@ -50,11 +52,11 @@ static AlgParamMetadata parameters[NUM_PARAM] = {
 
   // Metadata of the first parameter.
   {
-    "MaxDist",          // Id.
+    MAXDIST_ID,         // Id.
     "Maximum distance", // Name.
     "Real",             // Type.
-    "Maximum cartesian distance to be considered", // Overview
-    "Maximum cartesian distance to be considered", // Description.
+    "Maximum cartesian distance to closest point", // Overview
+    "Maximum cartesian distance to closest point", // Description.
 
     1,         // Not zero if the parameter has lower limit.
     0.0,       // Parameter's lower limit.
@@ -72,7 +74,7 @@ static AlgMetadata metadata = {
 
   "MinimumDistance", 	// Id.
   "Minimum distance", 	// Name.
-  "0.1",       	        // Version.
+  "0.2",       	        // Version.
 
   // Overview
   "Probability is inversely proportional to the cartesian\
@@ -130,8 +132,7 @@ MinimumDistance::MinimumDistance() :
   _done( false ),
   _dist(0.0),
   _hasCategorical( false ),
-  _numLayers( 0 ),
-  _presences()
+  _numLayers( 0 )
 {
 }
 
@@ -160,8 +161,10 @@ MinimumDistance::needNormalization( Scalar *min, Scalar *max ) const
 int
 MinimumDistance::initialize()
 {
-  if ( ! getParameter( "MaxDist", &_dist ) )
+  if ( ! getParameter( MAXDIST_ID, &_dist ) ) {
+    g_log.error(1, "Parameter '" MAXDIST_ID "' not set properly.\n");
     return 0;
+  }
 
   // Distance should range from 0 to 1
   if (_dist > 1.0)       _dist = 1.0;
@@ -176,8 +179,23 @@ MinimumDistance::initialize()
     return 0;
   }
 
-  _presences = _samp->getPresences();
+  OccurrencesPtr presences = _samp->getPresences();
 
+  // Load vector with samples containing the environmental
+  // values at each presence point
+  OccurrencesImpl::const_iterator p_iterator = presences->begin();
+  OccurrencesImpl::const_iterator p_end = presences->end();
+
+  while ( p_iterator != p_end ) {
+
+    Sample point = (*p_iterator)->environment();
+ 
+    _envPoints.push_back(point);
+
+    ++p_iterator;
+  }
+
+  // Identify categorical layers
   _numLayers = _samp->numIndependent();
   _isCategorical.resize( _numLayers );
 
@@ -222,16 +240,12 @@ MinimumDistance::getValue( const Sample& x ) const
   // points.
   Scalar min = -1;
 
-  OccurrencesImpl::const_iterator pit = _presences->begin();
-  OccurrencesImpl::const_iterator fin = _presences->end();
-  while ( pit != fin ) {
+  for( int i=0; i<_envPoints.size(); i++) {
 
-    Scalar dist = findDist( x, (*pit)->environment() );
+    Scalar dist = findDist( x, _envPoints[i] );
 
     if ( (dist >= 0) && (dist < min || min < 0) )
       min = dist;
-
-    ++pit;
   }
   
   // Too far away or categories didn't match any occurrence
@@ -289,7 +303,19 @@ MinimumDistance::_getConfiguration( ConfigurationPtr& config ) const
   ConfigurationPtr model_config( new ConfigurationImpl("MinimumDistanceModel") );
   config->addSubsection( model_config );
 
+  model_config->addNameValue( "IsCategoricalLayer", _isCategorical );
   model_config->addNameValue( "Distance", _dist );
+
+  ConfigurationPtr envpoints_config( new ConfigurationImpl("EnvironmentalReferences") );
+  model_config->addSubsection( envpoints_config );
+
+  for( int i=0; i<_envPoints.size(); i++) {
+
+    ConfigurationPtr point_config( new ConfigurationImpl("Reference") );
+    envpoints_config->addSubsection( point_config );
+
+    point_config->addNameValue( "Value", _envPoints[i] );
+  }
 }
 
 void
@@ -300,7 +326,38 @@ MinimumDistance::_setConfiguration( const ConstConfigurationPtr& config )
   if (!model_config)
     return;
 
-  _done = true;
+  // Information about categorical layers
+  _isCategorical = model_config->getAttributeAsSample( "IsCategoricalLayer" );
+  _numLayers = (int)_isCategorical.size();
+
+  for( int i=0; i<_numLayers; i++) {
+
+    if ( _isCategorical[i] ) {
+
+      _hasCategorical = true;
+      break;
+    }
+  }
+
+  // Maximum distance
   _dist = model_config->getAttributeAsDouble( "Distance", 0.0 );
 
+  // Environmental points
+  ConstConfigurationPtr envpoints_config = model_config->getSubsection( "EnvironmentalReferences",false );
+
+  Configuration::subsection_list subs = envpoints_config->getAllSubsections();
+
+  Configuration::subsection_list::iterator begin = subs.begin();
+  Configuration::subsection_list::iterator end = subs.end();
+  for ( ; begin != end; ++begin ) {
+
+    if ( (*begin)->getName() != "Reference" ) 
+      continue;
+
+    Sample point = (*begin)->getAttributeAsSample( "Value" );
+
+    _envPoints.push_back( point );
+  }
+
+  _done = true;
 }

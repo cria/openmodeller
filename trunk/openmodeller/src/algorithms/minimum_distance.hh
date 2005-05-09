@@ -75,7 +75,7 @@ private:
   int _numLayers;
   Sample _isCategorical;
 
-  OccurrencesPtr _presences;
+  std::vector<Sample> _envPoints;
 
 };
 
