@@ -41,7 +41,7 @@
 
 #define NUM_PARAM 1
 
-#define CUTOFF_ID "StandadDeviationCutoff"
+#define CUTOFF_ID "StandardDeviationCutoff"
 
 
 /*************************************/
@@ -181,6 +181,7 @@ Bioclim::initialize()
   Scalar cutoff = 0.0;
   // Read and check the standard deviation cutoff parameter.
   if ( ! getParameter( CUTOFF_ID, &cutoff ) ) {
+    g_log.error(1, "Parameter " CUTOFF_ID " not set properly.\n");
     return 0;
   }
   
