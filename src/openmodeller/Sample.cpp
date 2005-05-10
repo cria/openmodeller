@@ -277,7 +277,13 @@ Sample::operator&=( const Sample& rhs )
   Scalar *vr = rhs.value_;
   size_t count = min( size_, rhs.size_);
   for( size_t i = 0; i<count; ++i ) {
-    *vl++ = min(*vl,*vr++);
+    // The increments are not in the min() statement
+    // because gcc has problems producing good code
+    // when using -fno-inline.  For safety sake
+    // the increments are explicitly after the min.
+    *vl = min(*vl,*vr);
+     vl++;
+     vr++;
   }
   return *this;
 }
@@ -289,7 +295,13 @@ Sample::operator|=( const Sample& rhs )
   Scalar *vr = rhs.value_;
   size_t count = min( size_, rhs.size_);
   for( size_t i = 0; i<count; ++i ) {
-    *vl++ = max(*vl,*vr++);
+    // The increments are not in the max() statement
+    // because gcc has problems producing good code
+    // when using -fno-inline.  For safety sake
+    // the increments are explicitly after the max.
+    *vl = max(*vl,*vr);
+    vl++;
+    vr++;
   }
   return *this;
 }
