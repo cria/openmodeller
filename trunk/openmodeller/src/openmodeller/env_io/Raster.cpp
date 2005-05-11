@@ -123,7 +123,7 @@ Raster::get( Coord px, Coord py, Scalar *val ) const
 
   // If the point is out of range, returns 0.
   if ( x < 0 || x >= f_hdr.xdim || y < 0 || y >= f_hdr.ydim ) {
-    g_log.debug( "Raster::get() Pixel (%d,%d) is not in extent\n",x,y);
+    //g_log.debug( "Raster::get() Pixel (%d,%d) is not in extent\n",x,y);
     return 0;
   }
 
