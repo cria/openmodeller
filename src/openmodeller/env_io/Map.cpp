@@ -66,9 +66,23 @@ Map::getRegion( Coord *xmin, Coord *ymin, Coord *xmax,
   *xmax = _rst->xMax();
   *ymax = _rst->yMax();
 
-  return
+  bool result = 
     _gt->transfOut( xmin, ymin ) &&
     _gt->transfOut( xmax, ymax );
+
+  if (*xmin > *xmax)
+    {
+      *xmin = -180;
+      *xmax = 180;
+    }
+
+  if (*ymin > *ymax)
+    {
+      *ymin = -90;
+      *ymax = 90;
+    }
+
+  return result;
 }
 
 
