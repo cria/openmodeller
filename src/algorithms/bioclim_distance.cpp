@@ -79,7 +79,7 @@ static AlgMetadata metadata = {
 
   "BioclimDistance",     // Id.
   "Bioclim (distance)",  // Name.
-  "0.1",                 // Version.
+  "0.2",                 // Version.
 
   // Overview
   "Uses mean and standard deviation for each environmental\
@@ -183,29 +183,25 @@ BioclimDistance::initialize()
     g_log.error(1, "Parameter " CUTOFF_ID " not set properly.\n");
     return 0;
   }
-  if ( cutoff <= 0 )
-    {
-      g_log.warn( "BioclimDistance - parameter out of range: %f\n",
-                  cutoff );
-      return 0;
-    }
+
+  if ( cutoff <= 0 ) {
+    g_log.warn( "BioclimDistance - parameter out of range: %f\n", cutoff );
+    return 0;
+  }
 
   // Number of independent variables.
   int dim = _samp->numIndependent();
-  g_log.info( "Reading %d-dimensional occurrence points.\n",
-              dim );
+  g_log.info( "Reading %d-dimensional occurrence points.\n", dim );
 
   // Check the number of presence points.
   int npnt = _samp->numPresence();
-  if ( npnt < 2 )
-    g_log.error( 1, "BioclimDistance needs at least 2 point inside the mask!\n" );
-  g_log.info( "Using %d points to find the bioclimatic envelop.\n",
-              npnt );
+  if ( npnt < 2 ) {
+    g_log.error( 1, "BioclimDistance needs at least 2 points inside the mask!\n" );
+  }
+
+  g_log.info( "Using %d points to find the bioclimatic envelop.\n", npnt );
 
   computeStats( _samp->getPresences() );
-
-  g_log( "BioclimDistanceatic envelop width used:\n" );
-  int i = 0;
 
   // Stores the real standard deviation cutoff value and
   // calculates the standard deviation vector module to be used
@@ -261,12 +257,14 @@ BioclimDistance::getValue( const Sample& x ) const
     }
 
     Scalar cutoff = _std_dev[i];
+
     Scalar diffi = dif[i];
     
     // If some x[i] is out of its bioclimatic envelop, predicts
     // no occurrence.
-    if ( dif[i] > cutoff || dif[i] < -cutoff )
+    if ( dif[i] > cutoff || dif[i] < -cutoff ) {
       return 0.0;
+    }
 
     square_distance += dif[i] * dif[i];
 
