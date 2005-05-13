@@ -26,6 +26,12 @@
 ###############################################################################
 # 
 #  $Log$
+#  Revision 1.2  2005/05/13 15:14:18  scachett
+#  Changed python tests to accept command line options to restrict tests to
+#  be executed.
+#
+#  Fixed type in reference to Bioclim parameter in request.txt. (was Standad)
+#
 #  Revision 1.1  2005/04/19 14:24:23  scachett
 #  Reimplemented user tests using GDAL/OGR autotest as a template.
 #  Main changes:
@@ -53,28 +59,38 @@ import om
 
 ###############################################################################
 
-def sample_dummy_success(args):
+def sample_dummy_success(args, options):
     return ('success', None)
 
-def sample_dummy_failure(args):
+def sample_dummy_failure(args, options):
     return ('fail', None)
 
-def sample_dummy_blowup(args):
+def sample_dummy_blowup(args, options):
     (a, b) = 0
     return ('fail', None)
+
+def sample_dummy_skip(args, options):
+    # you can test the command line arguments like that:
+    if not omtest.checkArguments(options, "algorithm", "bioclim"):
+        return ('success', None)
+    else:
+        return ('skip', None)
+
+
 
 ###############################################################################
 
 omtest_list = [ 
     sample_dummy_success, 
     sample_dummy_failure,
-    sample_dummy_blowup ]
+    sample_dummy_blowup,
+    sample_dummy_skip ]
 
 if __name__ == '__main__':
 
     omtest.setup_run( 'dummy_test' )
 
-    omtest.run_tests( omtest_list )
+    omtest.run_tests( omtest_list, omtest.parseOptions() )
 
     omtest.summarize()
 

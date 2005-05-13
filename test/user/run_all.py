@@ -32,15 +32,10 @@ import sys
 sys.path.append( 'pymod' )
 import omtest
 
-test_list = []
-for i in range(1,len(sys.argv)):
-    test_list.append( sys.argv[i] )
-
-if len(test_list) == 0:
-    test_list = [ 'algs' ]
+test_list = [ 'algs' ]
 
 omtest.setup_run( 'om_user_test_all' )
 
-omtest.run_all( test_list, [] )
+omtest.run_all( test_list, omtest.parseOptions() )
 
 omtest.summarize()

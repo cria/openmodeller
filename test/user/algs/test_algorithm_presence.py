@@ -26,6 +26,12 @@
 ###############################################################################
 # 
 #  $Log$
+#  Revision 1.2  2005/05/13 15:14:18  scachett
+#  Changed python tests to accept command line options to restrict tests to
+#  be executed.
+#
+#  Fixed type in reference to Bioclim parameter in request.txt. (was Standad)
+#
 #  Revision 1.1  2005/04/19 14:24:23  scachett
 #  Reimplemented user tests using GDAL/OGR autotest as a template.
 #  Main changes:
@@ -53,9 +59,13 @@ import om
 
 ###############################################################################
 
-def check_algorithm(args):
+def check_algorithm(args, options):
 
     alg_id = args
+
+    if not omtest.checkArguments(options, "algorithm", alg_id):
+        return ('skip', None)
+
     mod = om.OpenModeller()
     try:
         algMetadata = mod.algorithmMetadata(alg_id)
@@ -84,7 +94,7 @@ if __name__ == '__main__':
 
     omtest.setup_run( 'algorithm_presence_test' )
 
-    omtest.run_tests( omtest_list )
+    omtest.run_tests( omtest_list, omtest.parseOptions() )
 
     omtest.summarize()
 

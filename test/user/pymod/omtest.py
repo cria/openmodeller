@@ -29,6 +29,12 @@
 ###############################################################################
 # 
 # $Log$
+# Revision 1.3  2005/05/13 15:14:18  scachett
+# Changed python tests to accept command line options to restrict tests to
+# be executed.
+#
+# Fixed type in reference to Bioclim parameter in request.txt. (was Standad)
+#
 # Revision 1.2  2005/04/22 12:10:09  scachett
 # Added dependent python modules (htmltmpl) to repository so developers
 # don't need to include a bunch of modules just to run the tests.
@@ -78,7 +84,7 @@ def setup_run( name ):
     cur_name = name
 
 
-def run_tests( test_list ):
+def run_tests( test_list, options ):
     global success_counter, failure_counter, blow_counter, skip_counter
     global cur_name, reason
     global report_entry_set, map_stats_entry_set
@@ -101,8 +107,9 @@ def run_tests( test_list ):
             
         reason = None
         map_stats = None
+        
         try:
-            (result, map_stats) = func(param)
+            (result, map_stats) = func(param, options)
             print result
         except:
             result = 'blowup'
@@ -111,7 +118,7 @@ def run_tests( test_list ):
             import traceback
             traceback.print_exc()
 
-
+                
         if reason is not None:
             print '    ' + reason
 
@@ -161,6 +168,13 @@ def summarize():
     print
 
 
+    # find whether we are in test root dir or one level up
+    if os.path.exists(os.path.join("..", "SummaryReport.tmpl")):
+        os.chdir("..")
+        
+    elif not os.path.exists("SummaryReport.tmpl"):
+        raise "Could not find HTML template files."
+
     # Compile or load already precompiled template.
     template = TemplateManager().prepare("SummaryReport.tmpl")
     tproc = TemplateProcessor()
@@ -187,7 +201,7 @@ def summarize():
     tproc.set("Algorithms", Algorithms)
     
     # write the processed template to disk
-    summary_file = file("SummaryReport.html", "w")
+    summary_file = file("index.html", "w")
     summary_file.write( tproc.process(template) )
     summary_file.close()
     
@@ -205,12 +219,16 @@ def summarize():
     map_file.close()
     
     
-###############################################################################
-
-def run_all( dirlist, option_list ):
+def run_all( dirlist, options ):
     global report_entry_set
 
     for dir_name in dirlist:
+
+        # check whether to execute tests in current directory
+        if not checkArguments(options, "directory", dir_name):
+            print "Skipping directory " + dirname
+            continue
+
         files = os.listdir(dir_name)
 
         old_path = sys.path
@@ -218,6 +236,11 @@ def run_all( dirlist, option_list ):
         
         for file in files:
             if not file[-3:] == '.py':
+                continue
+
+            # check whether to execute current test
+            if not checkArguments(options, "test", file):
+                print "Skipping test script: " + file
                 continue
 
             module = file[:-3]
@@ -231,7 +254,7 @@ def run_all( dirlist, option_list ):
 
                     print '\nRunning tests from %s/%s' % (dir_name,file)
                     report_entry_set.append( get_report_separator('%s/%s' % (dir_name, file) ) )
-                    run_tests( test_list )
+                    run_tests( test_list, options )
                 except:
                     pass
                 
@@ -446,3 +469,74 @@ def get_alg_default_params(alg_id):
             return algParamList
 
     return None
+
+
+def printUsageAndExit():
+
+    print sys.argv[0] + "[<options>]\n" + \
+          " options:\n" + \
+          "          -d, --directory=<dir name>     :   shows only specified directory\n" + \
+          "          -t, --test=<test id>           :   shows only specified test\n" + \
+          "          -a, --algorithm=<algorithm ids>:   shows only specified algorithm\n" + \
+          "          -h, --help:                            displays this message\n\n"
+    sys.exit(-1);
+    
+
+
+def parseOptions():
+
+    import getopt
+
+    try:
+        opts, args = getopt.getopt(sys.argv[1:], "d:t:a:h",
+                                   ["directory", "test", "algorithm"])
+
+    except:
+        printUsageAndExit()
+
+
+    options = {}
+
+    for opt, arg in opts:
+
+        fullOpt = opt
+        if opt == "-d":
+            fullOpt = "directory"
+        elif opt == "-t":
+            fullOpt = "test"
+        elif opt == "-a":
+            fullOpt = "algorithm"
+        else:
+            continue
+
+        arg.lower()
+        options[fullOpt] = arg.split(" ")
+
+        #print "Parsing " + fullOpt + " (" + opt + ") = " + arg + " (" + str(options[fullOpt]) + ")"
+
+    return options
+
+
+def checkArguments(options, argument, value):
+
+    # parse command line arguments
+    #print "\nChecking whether value " + value + " is in argument " + argument
+    #print "Options provided: " + str(options)
+
+    # test whether argument being tested has been specified
+    try:
+        options[argument.lower()]
+    except:
+        # no, it hasn't: should run this one
+        return True
+    
+    try:
+        options[argument.lower()].index(value.lower())
+        # no exception means value was found
+        return True
+
+    except:
+        return False
+
+
+

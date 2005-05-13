@@ -26,6 +26,12 @@
 ###############################################################################
 # 
 #  $Log$
+#  Revision 1.3  2005/05/13 15:14:18  scachett
+#  Changed python tests to accept command line options to restrict tests to
+#  be executed.
+#
+#  Fixed type in reference to Bioclim parameter in request.txt. (was Standad)
+#
 #  Revision 1.2  2005/04/22 12:10:09  scachett
 #  Added dependent python modules (htmltmpl) to repository so developers
 #  don't need to include a bunch of modules just to run the tests.
@@ -65,17 +71,15 @@ def get_env_list(filename):
 
 ###############################################################################
 
-def algorithm_run(args):
+def algorithm_run(args, options):
     nat_env_file = args[0]
     nat_env_name = args[1]
     alg_id = args[2]
     occ_file = args[3]
     spp_name = args[4]
 
-    # TODO: add switch to control which algs to test
-    # DEBUG
-    #if alg_id != "Bioclim":
-    #    return ('skip', None)
+    if not omtest.checkArguments(options, "algorithm", alg_id):
+        return ('skip', None)
 
     coordSys = "GEOGCS[\"WGS84\", DATUM[\"WGS84\", SPHEROID[\"WGS84\", 6378137.0, 298.257223563]], PRIMEM[\"Greenwich\", 0.0], UNIT[\"degree\", 0.017453292519943295], AXIS[\"Longitude\",EAST], AXIS[\"Latitude\",NORTH]]"
 
@@ -161,7 +165,7 @@ if __name__ == '__main__':
 
     omtest.setup_run( 'algorithm_run_test' )
 
-    omtest.run_tests( omtest_list )
+    omtest.run_tests( omtest_list, omtest.parseOptions() )
 
     omtest.summarize()
 
