@@ -380,6 +380,9 @@ om__createModel( struct soap *soap, om__Points *points, om__Maps *maps, om__Mask
       // TODO: confirm if "scale" parameter should be removed.
       MapFormat map_format = MapFormat( output->header );
 
+      // hard coded for now: 8-bit grey tiffs
+      map_format.setFormat( MapFormat::GreyTiff );
+
       // Make projection
 
       //      if ( ! om.createMap( projection_file_name ) )
