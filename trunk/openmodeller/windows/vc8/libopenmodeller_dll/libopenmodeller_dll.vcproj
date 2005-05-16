@@ -4,6 +4,7 @@
 	Version="8.00"
 	Name="libopenmodeller_dll"
 	ProjectGUID="{524F2298-7DCD-4C7D-B837-3B13F072C059}"
+	SignManifests="true"
 	>
 	<Platforms>
 		<Platform
@@ -19,7 +20,7 @@
 			IntermediateDirectory=".\Debug"
 			ConfigurationType="2"
 			UseOfMFC="0"
-			ATLMinimizesCRunTimeLibraryUsage="FALSE"
+			ATLMinimizesCRunTimeLibraryUsage="false"
 			CharacterSet="2"
 			>
 			<Tool
@@ -37,8 +38,8 @@
 			<Tool
 				Name="VCMIDLTool"
 				PreprocessorDefinitions="_DEBUG"
-				MkTypLibCompatible="TRUE"
-				SuppressStartupBanner="TRUE"
+				MkTypLibCompatible="true"
+				SuppressStartupBanner="true"
 				TargetEnvironment="1"
 				TypeLibraryName=".\Debug/libopenmodeller_dll.tlb"
 				HeaderFileName=""
@@ -46,9 +47,9 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="../../inc,../../inc/serialization,$(GDAL_HOME)/include,../../lib/serialization,$(EXPAT_HOME)/Source/lib"
-				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;LIBOPENMODELLER_DLL_EXPORTS;VERSION=\&quot;0.2\&quot;;PLUGINPATH=$(OM_PLUGIN_PATH);CONFIG_FILE=\&quot;om_config.txt\&quot;"
-				MinimalRebuild="TRUE"
+				AdditionalIncludeDirectories="../../inc,$(GDAL_HOME)/include,$(EXPAT_HOME)/Source/lib"
+				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;LIBOPENMODELLER_DLL_EXPORTS;VERSION=\&quot;0.2\&quot;;PLUGINPATH=\&quot;.\&quot;;CONFIG_FILE=\&quot;om_config.txt\&quot;"
+				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="1"
 				UsePrecompiledHeader="0"
@@ -57,7 +58,7 @@
 				ObjectFile=".\Debug/"
 				ProgramDataBaseFileName=".\Debug/"
 				WarningLevel="3"
-				SuppressStartupBanner="TRUE"
+				SuppressStartupBanner="true"
 				DebugInformationFormat="4"
 			/>
 			<Tool
@@ -76,11 +77,11 @@
 				AdditionalDependencies="libexpat.lib gdal_i.lib"
 				OutputFile="Debug/libopenmodeller.dll"
 				LinkIncremental="2"
-				SuppressStartupBanner="TRUE"
-				AdditionalLibraryDirectories="$(GDAL_HOME)\lib,$(EXPAT_HOME)/libs"
-				GenerateDebugInformation="TRUE"
+				SuppressStartupBanner="true"
+				AdditionalLibraryDirectories="$GDAL_HOME\lib,$EXPAT_HOME\libs"
+				GenerateDebugInformation="true"
 				ProgramDatabaseFile=".\Debug/libopenmodeller.pdb"
-				GenerateMapFile="TRUE"
+				GenerateMapFile="true"
 				MapFileName=".\Debug/libopenmodeller.map"
 				ImportLibrary=".\Debug/libopenmodeller.lib"
 				TargetMachine="1"
@@ -96,8 +97,11 @@
 			/>
 			<Tool
 				Name="VCBscMakeTool"
-				SuppressStartupBanner="TRUE"
+				SuppressStartupBanner="true"
 				OutputFile=".\Debug/libopenmodeller_dll.bsc"
+			/>
+			<Tool
+				Name="VCFxCopTool"
 			/>
 			<Tool
 				Name="VCAppVerifierTool"
@@ -117,7 +121,7 @@
 			IntermediateDirectory=".\Release"
 			ConfigurationType="2"
 			UseOfMFC="0"
-			ATLMinimizesCRunTimeLibraryUsage="FALSE"
+			ATLMinimizesCRunTimeLibraryUsage="false"
 			CharacterSet="2"
 			>
 			<Tool
@@ -135,8 +139,8 @@
 			<Tool
 				Name="VCMIDLTool"
 				PreprocessorDefinitions="NDEBUG"
-				MkTypLibCompatible="TRUE"
-				SuppressStartupBanner="TRUE"
+				MkTypLibCompatible="true"
+				SuppressStartupBanner="true"
 				TargetEnvironment="1"
 				TypeLibraryName=".\Release/libopenmodeller_dll.tlb"
 				HeaderFileName=""
@@ -145,18 +149,18 @@
 				Name="VCCLCompilerTool"
 				Optimization="2"
 				InlineFunctionExpansion="1"
-				AdditionalIncludeDirectories="../../inc,../../inc/serialization,$(GDAL_HOME)/include,../../lib/serialization,$(EXPAT_HOME)/Source/lib,$(JAVA_HOME)/include,$(JAVA_HOME)/bin"
-				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;LIBOPENMODELLER_DLL_EXPORTS;VERSION=\&quot;0.2\&quot;;PLUGINPATH=$(OM_PLUGIN_PATH);CONFIG_FILE=\&quot;om_config.txt\&quot;"
-				StringPooling="TRUE"
+				AdditionalIncludeDirectories="../../inc,$(GDAL_HOME)/include,$(EXPAT_HOME)/Source/lib,$(JAVA_HOME)/include,$(JAVA_HOME)/bin"
+				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;LIBOPENMODELLER_DLL_EXPORTS;VERSION=\&quot;0.2\&quot;;PLUGINPATH=\&quot;.\&quot;;CONFIG_FILE=\&quot;om_config.txt\&quot;"
+				StringPooling="true"
 				RuntimeLibrary="0"
-				EnableFunctionLevelLinking="TRUE"
+				EnableFunctionLevelLinking="true"
 				UsePrecompiledHeader="0"
 				PrecompiledHeaderFile=".\Release/libopenmodeller_dll.pch"
 				AssemblerListingLocation=".\Release/"
 				ObjectFile=".\Release/"
 				ProgramDataBaseFileName=".\Release/"
 				WarningLevel="3"
-				SuppressStartupBanner="TRUE"
+				SuppressStartupBanner="true"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
@@ -174,8 +178,8 @@
 				AdditionalDependencies="libexpat.lib gdal_i.lib"
 				OutputFile="Release/libopenmodeller.dll"
 				LinkIncremental="1"
-				SuppressStartupBanner="TRUE"
-				AdditionalLibraryDirectories="$(GDAL_HOME)\lib,$(EXPAT_HOME)/libs"
+				SuppressStartupBanner="true"
+				AdditionalLibraryDirectories="$GDAL_HOME\lib,$EXPAT_HOME/libs"
 				ProgramDatabaseFile=".\Release/libopenmodeller.pdb"
 				ImportLibrary=".\Release/libopenmodeller.lib"
 				TargetMachine="1"
@@ -191,8 +195,11 @@
 			/>
 			<Tool
 				Name="VCBscMakeTool"
-				SuppressStartupBanner="TRUE"
+				SuppressStartupBanner="true"
 				OutputFile=".\Release/libopenmodeller_dll.bsc"
+			/>
+			<Tool
+				Name="VCFxCopTool"
 			/>
 			<Tool
 				Name="VCAppVerifierTool"
@@ -347,6 +354,10 @@
 				</File>
 				<File
 					RelativePath="..\..\lib\configuration.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\lib\configuration_xmlio.cpp"
 					>
 				</File>
 				<File
@@ -582,30 +593,6 @@
 					>
 				</File>
 				<File
-					RelativePath="..\..\lib\sampled_data.cpp"
-					>
-					<FileConfiguration
-						Name="Debug|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-							UsePrecompiledHeader="0"
-						/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-							UsePrecompiledHeader="0"
-						/>
-					</FileConfiguration>
-				</File>
-				<File
 					RelativePath="..\..\lib\sampler.cpp"
 					>
 					<FileConfiguration
@@ -734,55 +721,7 @@
 					</FileConfiguration>
 				</File>
 				<File
-					RelativePath="..\..\lib\env_io\raster_file.cpp"
-					>
-					<FileConfiguration
-						Name="Debug|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-							UsePrecompiledHeader="0"
-						/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-							UsePrecompiledHeader="0"
-						/>
-					</FileConfiguration>
-				</File>
-				<File
 					RelativePath="..\..\lib\env_io\raster_gdal.cpp"
-					>
-					<FileConfiguration
-						Name="Debug|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-							UsePrecompiledHeader="0"
-						/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-							UsePrecompiledHeader="0"
-						/>
-					</FileConfiguration>
-				</File>
-				<File
-					RelativePath="..\..\lib\env_io\raster_mem.cpp"
 					>
 					<FileConfiguration
 						Name="Debug|Win32"

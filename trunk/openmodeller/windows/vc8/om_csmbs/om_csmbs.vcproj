@@ -4,6 +4,7 @@
 	Version="8.00"
 	Name="om_csmbs"
 	ProjectGUID="{1DC8EBE5-763E-4632-A72B-001D9F873999}"
+	SignManifests="true"
 	>
 	<Platforms>
 		<Platform
@@ -19,7 +20,7 @@
 			IntermediateDirectory=".\Release"
 			ConfigurationType="2"
 			UseOfMFC="0"
-			ATLMinimizesCRunTimeLibraryUsage="FALSE"
+			ATLMinimizesCRunTimeLibraryUsage="false"
 			CharacterSet="2"
 			>
 			<Tool
@@ -37,8 +38,8 @@
 			<Tool
 				Name="VCMIDLTool"
 				PreprocessorDefinitions="NDEBUG"
-				MkTypLibCompatible="TRUE"
-				SuppressStartupBanner="TRUE"
+				MkTypLibCompatible="true"
+				SuppressStartupBanner="true"
 				TargetEnvironment="1"
 				TypeLibraryName=".\Release/om_csmbs.tlb"
 				HeaderFileName=""
@@ -47,18 +48,18 @@
 				Name="VCCLCompilerTool"
 				Optimization="2"
 				InlineFunctionExpansion="1"
-				AdditionalIncludeDirectories="../../algorithms,../../inc,../../inc/serialization,$(GDAL_HOME)/include,$(GSL_HOME)/include,$(JAVA_HOME)/include,$(JAVA_HOME)/bin"
+				AdditionalIncludeDirectories="../../algorithms,../../inc,$(GDAL_HOME)/include,$(GSL_HOME)/include,$(JAVA_HOME)/include,$(JAVA_HOME)/bin"
 				PreprocessorDefinitions="_WINDOWS;WIN32;NDEBUG;_USRDLL;OM_CSMBS_EXPORTS;CORE_DLL_IMPORT"
-				StringPooling="TRUE"
+				StringPooling="true"
 				RuntimeLibrary="0"
-				EnableFunctionLevelLinking="TRUE"
+				EnableFunctionLevelLinking="true"
 				UsePrecompiledHeader="0"
 				PrecompiledHeaderFile=".\Release/om_csmbs.pch"
 				AssemblerListingLocation=".\Release/"
 				ObjectFile=".\Release/"
 				ProgramDataBaseFileName=".\Release/"
 				WarningLevel="3"
-				SuppressStartupBanner="TRUE"
+				SuppressStartupBanner="true"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
@@ -73,12 +74,12 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="gdal_i.lib libexpat.lib gsl.lib gslcblas.lib libopenmodeller.lib"
+				AdditionalDependencies="gdal_i.lib libexpat.lib libgsl.lib libgslcblas.lib libopenmodeller.lib"
 				OutputFile=".\Release/om_csmbs.dll"
 				LinkIncremental="1"
-				SuppressStartupBanner="TRUE"
-				AdditionalLibraryDirectories="$(GDAL_HOME)\lib,../build/lib,$(EXPAT_HOME)/libs,$(GSL_HOME)/lib"
-				IgnoreDefaultLibraryNames="scew_.lib"
+				SuppressStartupBanner="true"
+				AdditionalLibraryDirectories="$(GSL_HOME)/lib,$(GDAL_HOME)/lib,../build/lib,$(EXPAT_HOME)/libs"
+				IgnoreDefaultLibraryNames=""
 				ProgramDatabaseFile=".\Release/om_csmbs.pdb"
 				ImportLibrary=".\Release/om_csmbs.lib"
 				TargetMachine="1"
@@ -94,8 +95,11 @@
 			/>
 			<Tool
 				Name="VCBscMakeTool"
-				SuppressStartupBanner="TRUE"
+				SuppressStartupBanner="true"
 				OutputFile=".\Release/om_csmbs.bsc"
+			/>
+			<Tool
+				Name="VCFxCopTool"
 			/>
 			<Tool
 				Name="VCAppVerifierTool"
@@ -115,7 +119,7 @@
 			IntermediateDirectory=".\Debug"
 			ConfigurationType="2"
 			UseOfMFC="0"
-			ATLMinimizesCRunTimeLibraryUsage="FALSE"
+			ATLMinimizesCRunTimeLibraryUsage="false"
 			CharacterSet="2"
 			>
 			<Tool
@@ -133,8 +137,8 @@
 			<Tool
 				Name="VCMIDLTool"
 				PreprocessorDefinitions="_DEBUG"
-				MkTypLibCompatible="TRUE"
-				SuppressStartupBanner="TRUE"
+				MkTypLibCompatible="true"
+				SuppressStartupBanner="true"
 				TargetEnvironment="1"
 				TypeLibraryName=".\Debug/om_csmbs.tlb"
 				HeaderFileName=""
@@ -142,9 +146,9 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="../../algorithms,../../inc,../../inc/serialization,$(GDAL_HOME)/include,$(GSL_HOME)/include"
+				AdditionalIncludeDirectories="../../algorithms,../../inc,$(GDAL_HOME)/include,$(GSL_HOME)/include,$(JAVA_HOME)/include,$(JAVA_HOME)/bin"
 				PreprocessorDefinitions="_WINDOWS;WIN32;_DEBUG;_USRDLL;OM_CSMBS_EXPORTS;CORE_DLL_IMPORT"
-				MinimalRebuild="TRUE"
+				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="1"
 				UsePrecompiledHeader="0"
@@ -153,7 +157,7 @@
 				ObjectFile=".\Debug/"
 				ProgramDataBaseFileName=".\Debug/"
 				WarningLevel="3"
-				SuppressStartupBanner="TRUE"
+				SuppressStartupBanner="true"
 				DebugInformationFormat="4"
 			/>
 			<Tool
@@ -169,12 +173,12 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="libexpat.lib libopenmodeller.lib gsl.lib gslcblas.lib gdal_i.lib"
+				AdditionalDependencies="gdal_i.lib libexpat.lib libgsl.lib libgslcblas.lib libopenmodeller.lib"
 				OutputFile=".\Debug/om_csmbs.dll"
 				LinkIncremental="2"
-				SuppressStartupBanner="TRUE"
-				AdditionalLibraryDirectories="$(GDAL_HOME)\lib,../build_debug/lib,$(EXPAT_HOME)/libs,$(GSL_HOME)/lib"
-				GenerateDebugInformation="TRUE"
+				SuppressStartupBanner="true"
+				AdditionalLibraryDirectories="$(GDAL_HOME)/lib,../build_debug/lib,$(EXPAT_HOME)/libs,$(GSL_HOME)/lib"
+				GenerateDebugInformation="true"
 				ProgramDatabaseFile=".\Debug/om_csmbs.pdb"
 				ImportLibrary=".\Debug/om_csmbs.lib"
 				TargetMachine="1"
@@ -190,8 +194,11 @@
 			/>
 			<Tool
 				Name="VCBscMakeTool"
-				SuppressStartupBanner="TRUE"
+				SuppressStartupBanner="true"
 				OutputFile=".\Debug/om_csmbs.bsc"
+			/>
+			<Tool
+				Name="VCFxCopTool"
 			/>
 			<Tool
 				Name="VCAppVerifierTool"
@@ -238,6 +245,10 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath="..\..\..\algorithms\csm.hh"
+				>
+			</File>
+			<File
 				RelativePath="..\..\..\algorithms\csmbs.cpp"
 				>
 				<FileConfiguration
@@ -261,16 +272,10 @@
 					/>
 				</FileConfiguration>
 			</File>
-		</Filter>
-		<Filter
-			Name="Header Files"
-			Filter="h;hpp;hxx;hm;inl"
-			>
-		</Filter>
-		<Filter
-			Name="Resource Files"
-			Filter="ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe"
-			>
+			<File
+				RelativePath="..\..\..\algorithms\csmbs.hh"
+				>
+			</File>
 		</Filter>
 	</Files>
 	<Globals>
