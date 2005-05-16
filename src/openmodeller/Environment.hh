@@ -50,14 +50,14 @@ typedef ReferenceCountedPointer<const EnvironmentImpl> ConstEnvironmentPtr;
 /****************************************************************/
 /************************* Environment **************************/
 
-EnvironmentPtr createEnvironment( std::vector<std::string> categs,
+EnvironmentPtr dllexp createEnvironment( std::vector<std::string> categs,
 				  std::vector<std::string> maps,
 				  std::string mask_file );
 
-EnvironmentPtr createEnvironment( std::vector<std::string> categs,
+EnvironmentPtr dllexp createEnvironment( std::vector<std::string> categs,
 				  std::vector<std::string> maps );
 
-EnvironmentPtr createEnvironment( const ConstConfigurationPtr& config );
+EnvironmentPtr dllexp createEnvironment( const ConstConfigurationPtr& config );
 
 
 /** 

@@ -44,18 +44,23 @@ typedef double Scalar;   ///< Type of map values.
 //
 #ifdef _WINDOWS
 # define strcasecmp _stricmp
-# define dllexp __declspec(dllexport)
 
+// used to export symbols out of OM algorithm dlls
+# define OM_ALG_DLL_EXPORT __declspec(dllexport)
+
+// used to import or export classes and objects from OM main library
+// clients importing objects will declare symbol CORE_DLL_IMPORT
+// main library (openmodeller_dll project) won't declare it
 # ifdef CORE_DLL_IMPORT
-#  define dll_log __declspec(dllimport)
+#  define dllexp __declspec(dllimport)
 # else
-#  define dll_log __declspec(dllexport)
+#  define dllexp __declspec(dllexport)
 # endif
 
 #else
 
+# define OM_ALG_DLL_EXPORT
 # define dllexp
-# define dll_log
 
 #endif
 

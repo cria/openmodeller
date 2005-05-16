@@ -42,7 +42,7 @@ class ConfigurationImpl;
 typedef ReferenceCountedPointer<ConfigurationImpl> ConfigurationPtr;
 typedef ReferenceCountedPointer<const ConfigurationImpl> ConstConfigurationPtr;
 
-struct Configuration {
+struct dllexp Configuration {
 
   typedef std::vector<ConfigurationPtr> subsection_list;
   typedef std::pair<std::string,std::string> attribute;
@@ -56,7 +56,7 @@ struct Configuration {
 
 };
 
-class ConfigurationImpl : private ReferenceCountedObject
+class dllexp ConfigurationImpl : private ReferenceCountedObject
 {
   friend class ReferenceCountedPointer<ConfigurationImpl>;
   friend class ReferenceCountedPointer<const ConfigurationImpl>;

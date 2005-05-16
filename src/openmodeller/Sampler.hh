@@ -51,7 +51,7 @@ typedef ReferenceCountedPointer<const SamplerImpl> ConstSamplerPtr;
  *  @param test  Pointer to test sampler to be returned
  *  @param propTrain Percentage of points to go to train sampler
  */
-void splitSampler(const SamplerPtr& orig, SamplerPtr *train, SamplerPtr *test, double propTrain);
+dllexp void splitSampler(const SamplerPtr& orig, SamplerPtr *train, SamplerPtr *test, double propTrain);
 
 /**
  * Factory method that creates a Sampler based on Environment

@@ -126,7 +126,7 @@ private:
 };
 
 
-extern dll_log Log g_log;
+extern dllexp Log g_log;
 
 
 #endif

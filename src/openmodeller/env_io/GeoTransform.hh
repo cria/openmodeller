@@ -29,6 +29,7 @@
 #ifndef _GEO_TRANSFHH_
 #define _GEO_TRANSFHH_
 
+#include <om_defs.hh>
 #include <string>
 
 class OGRCoordinateTransformation;
@@ -53,7 +54,7 @@ class OGRCoordinateTransformation;
  */
 
 /****************/
-class GeoTransform
+class dllexp GeoTransform
 {
 public:
 

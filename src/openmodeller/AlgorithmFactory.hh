@@ -54,7 +54,7 @@ class AlgParameter;
  *  Algorithm::setSample().
  * 
  */
-class AlgorithmFactory
+class dllexp AlgorithmFactory
 {
 
 public:
