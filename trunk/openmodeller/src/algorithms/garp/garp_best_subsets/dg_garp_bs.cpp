@@ -303,14 +303,14 @@ for selecting optimal models.Ecological Modelling, v. 162, p. 211 232.",
 /****************************************************************/
 /****************** Algorithm's factory function ****************/
 
-dllexp 
+OM_ALG_DLL_EXPORT 
 AlgorithmImpl * 
 algorithmFactory()
 {
   return new DgGarpBestSubsets();
 }
 
-dllexp
+OM_ALG_DLL_EXPORT
 AlgMetadata const *
 algorithmMetadata()
 {

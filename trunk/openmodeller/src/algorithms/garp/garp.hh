@@ -40,9 +40,9 @@
 #include <Sample.hh>
 
 // required include because of enum PerfIndex and class GarpRule
-#include <rules_base.hh> 
-#include <bioclim_histogram.hh>
-#include <regression.hh>
+#include "rules_base.hh" 
+#include "bioclim_histogram.hh"
+#include "regression.hh"
 
 
 class GarpRuleSet;

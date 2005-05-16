@@ -134,14 +134,14 @@ Bioclim's categorical output is mapped to probabilities\
 /****************************************************************/
 /****************** Algorithm's factory function ****************/
 
-dllexp
+OM_ALG_DLL_EXPORT
 AlgorithmImpl *
 algorithmFactory()
 {
   return new Bioclim();
 }
 
-dllexp
+OM_ALG_DLL_EXPORT
 AlgMetadata const *
 algorithmMetadata()
 {
