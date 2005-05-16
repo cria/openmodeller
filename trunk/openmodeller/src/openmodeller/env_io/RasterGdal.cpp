@@ -290,7 +290,8 @@ RasterGdal::create(int format)
 
   // Here we fill the raster with novals.  So we don't need to worry about
   // having the projector actually cover every pixel.
-  Scalar buffer[f_hdr.xdim];
+  Scalar * buffer;
+  buffer = new Scalar[f_hdr.xdim];
   for( int x=0;x<f_hdr.xdim;x++ )
     buffer[x] = f_hdr.noval;
 
@@ -303,6 +304,8 @@ RasterGdal::create(int format)
 
   // Initialize the Buffer
   initBuffer();
+
+  delete[] buffer;
 }
 
 void

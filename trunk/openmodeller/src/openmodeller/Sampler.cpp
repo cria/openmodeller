@@ -277,7 +277,7 @@ SamplerImpl::getOneSample( ) const
   //
 
   // If there are real absence points...
-  if ( _absence && _absence->numOccurrences())
+  if ( _absence.operator bool() && _absence->numOccurrences())
     {
       return getAbsence();
     }

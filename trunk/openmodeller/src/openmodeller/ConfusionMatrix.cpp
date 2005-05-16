@@ -91,7 +91,7 @@ void ConfusionMatrix::calculate(const EnvironmentPtr & env,
     ++it;
   }
 
-  if ( absences && ! absences->isEmpty() ) {
+  if ( absences.operator bool() && (! absences->isEmpty()) ) {
     it = absences->begin();
     fin = absences->end();
 

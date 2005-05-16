@@ -307,6 +307,8 @@ AlgorithmFactory::searchDefaultDirs( )
     AlgorithmFactory::addDir( (*it).c_str() );
     ++it;
   }
+
+  return 1;
 }
 
 int

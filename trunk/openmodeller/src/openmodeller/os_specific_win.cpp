@@ -40,6 +40,8 @@
 using std::vector;
 using std::string;
 
+#include <fstream>
+
 /****************/
 /*** dll Open ***/
 DLLHandle
@@ -124,8 +126,9 @@ initialPluginPath()
 
 /****************/
 /*** scan Dir ***/
-vector<string>
-scanDirectory( const string& dir )
+
+vector<string> 
+scanDirectory( string dir )
 {
   char filepattern[1024];
   long dirhandle;
@@ -138,20 +141,20 @@ scanDirectory( const string& dir )
   dirhandle = _findfirst(filepattern, &fileinfo); 
 
   if (dirhandle == -1L)
-    return 0;
+    return entries;
 
   int nent = 1;
   while (!_findnext(dirhandle, &fileinfo))
   { nent++; }
 
   // Directory path size
-  int dir_size = strlen( dir );
+  int dir_size = dir.size();
 
   // Windows findfirst and findnext calls.
   dirhandle = _findfirst(filepattern, &fileinfo); 
 
   if (dirhandle == -1L)
-    return 0;
+    return entries;
 
   // Copy from windows structure to the return structure.
   for ( int i = 0; i < nent; i++ )
