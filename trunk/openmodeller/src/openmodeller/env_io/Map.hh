@@ -75,7 +75,7 @@ public:
 
   bool hasMinMax() const
   {
-    _rst->hasMinMax();
+    return _rst->hasMinMax();
   }
 
   /** Find the minimum and maximum values in the first band. */
