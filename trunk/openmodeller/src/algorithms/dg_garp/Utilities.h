@@ -120,7 +120,7 @@ public:
 	// ------------------------------------------------
 	static void randomize(unsigned long iOrigSeedProvided = 0)
 	{
-		long clock;
+		time_t clock;
 
 		if (iOrigSeedProvided == 0)
 		{
