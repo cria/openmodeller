@@ -121,14 +121,14 @@ static AlgMetadata metadata = {
 /****************************************************************/
 /****************** Algorithm's factory function ****************/
 
-dllexp
+OM_ALG_DLL_EXPORT
 AlgorithmImpl *
 algorithmFactory()
 {
   return new BioclimDistance();
 }
 
-dllexp
+OM_ALG_DLL_EXPORT
 AlgMetadata const *
 algorithmMetadata()
 {

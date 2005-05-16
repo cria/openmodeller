@@ -49,10 +49,12 @@
 #define INFINITY 1000000000
 #endif
 
+#ifndef WIN32
 int min(int v1, int v2)
 {
   return (v1 < v2)? v1 : v2;
 }
+#endif
 
 bool equalEps(double v1, double v2)
 {

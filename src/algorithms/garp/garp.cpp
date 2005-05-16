@@ -189,14 +189,14 @@ Computers in Simulation 33:385-390.",
 /****************************************************************/
 /****************** Algorithm's factory function ****************/
 #ifndef DONT_EXPORT_GARP_FACTORY
-dllexp 
+OM_ALG_DLL_EXPORT 
 AlgorithmImpl * 
 algorithmFactory()
 {
   return new Garp();
 }
 
-dllexp
+OM_ALG_DLL_EXPORT
 AlgMetadata const *
 algorithmMetadata()
 {
