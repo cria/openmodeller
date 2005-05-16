@@ -50,7 +50,6 @@
 // openModeller algorithms specific includes
 //
 #include <om_sampler.hh>
-#include <om_sampled_data.hh>
 #include <om_occurrences.hh>
 #include <om_occurrences.hh>
 

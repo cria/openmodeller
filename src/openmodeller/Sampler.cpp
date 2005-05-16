@@ -31,7 +31,6 @@
 #include <configuration.hh>
 
 #include <om_sampler.hh>
-#include <om_sampled_data.hh>
 #include <om_occurrences.hh>
 #include <om_log.hh>
 #include <random.hh>
