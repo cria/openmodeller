@@ -35,7 +35,6 @@
 #include <env_io/geo_transform.hh>
 #include <random.hh>
 #include <configuration.hh>
-#include <om_sampled_data.hh>
 #include <occurrence.hh>
 #include <Exceptions.hh>
 

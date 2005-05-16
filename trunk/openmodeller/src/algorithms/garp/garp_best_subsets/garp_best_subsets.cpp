@@ -34,7 +34,6 @@
 #include <om.hh>
 #include <random.hh>
 #include <om_sampler.hh>
-#include <om_sampled_data.hh>
 
 #include <stdlib.h>
 #include <stdio.h>
