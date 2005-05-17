@@ -29,6 +29,10 @@
 ###############################################################################
 # 
 # $Log$
+# Revision 1.4  2005/05/17 18:17:41  scachett
+# Fixed bug in python tests that prevented last algorithm to be tested.
+# Python range(1,n) function returns a range between 1 and n-1 not 1 and n.
+#
 # Revision 1.3  2005/05/13 15:14:18  scachett
 # Changed python tests to accept command line options to restrict tests to
 # be executed.
@@ -459,7 +463,7 @@ def get_alg_default_params(alg_id):
 
     algParamList = [];
     algList = mod.availableAlgorithms()
-    for i in range(0, len(algList) - 1):
+    for i in range(0, len(algList)):
         if algList[i].id == alg_id:
 
             algParams = algList[i].getParameterList()
