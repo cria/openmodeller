@@ -26,6 +26,10 @@
 ###############################################################################
 # 
 #  $Log$
+#  Revision 1.4  2005/05/17 18:17:40  scachett
+#  Fixed bug in python tests that prevented last algorithm to be tested.
+#  Python range(1,n) function returns a range between 1 and n-1 not 1 and n.
+#
 #  Revision 1.3  2005/05/13 15:14:18  scachett
 #  Changed python tests to accept command line options to restrict tests to
 #  be executed.
@@ -150,7 +154,7 @@ num = mod.numAvailableAlgorithms()
 omtest_list = []
 
 # run every experiment for every algorithm available
-for i in range(0, num - 1):
+for i in range(0, num):
     alg_id = algmd[i].id
     for exp in experiment_list:
         # append a list with function to be executed, test name
