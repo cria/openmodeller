@@ -1,3 +1,17 @@
+Release 0.3 (2005-05-25)
+------------------------
+
+	* Reimplemented serialization/deserialization mechanism using generic configuration objects.
+	* All available algorithms are serializable.
+	* om_console has new keyword "Output model" (file name to store the serialized model).
+	* New framework for test cases is available (depends on the SWIG/Python interface).
+	* Moved normalization from the individual raster files to the "environment" object.
+	* Implemented Model and Algorithm separation (new interface called Model abstracts the portion of Algorithm used for evaluations).
+	* Implemented reference-counting smart pointers for all major objects.
+	* Fixed various problems with memory leaks and uninitialized values.
+	* Removed CSM Kaiser-Gutman from build.
+	* Included GARP 3.x again.
+
 Release 0.2.1 (2005-02-19)
 --------------------------
 
