@@ -32,6 +32,7 @@
 #include <om_defs.hh>
 
 #include <string>
+#include <utility>
 
 /****************************************************************/
 /***************************** Header ***************************/
@@ -65,6 +66,8 @@ public:
 
   void printHeader( char *msg="" ) const; // conflicts with Python SWIG interface
 
+  std::pair<Coord,Coord> convertXY2LonLat( int x, int y ) const;
+  std::pair<int,int> convertLonLat2XY( Coord lon, Coord lat ) const;
 
   int xdim;    /**< Map width **/
   int ydim;    /**< Map height **/
