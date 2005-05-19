@@ -134,7 +134,7 @@ AlgParamMetadata parameters[NUM_PARAM] =
 AlgMetadata metadata = {
   
   "GARP",                                            // Id.
-  "GARP: Genetic Algorithm for Rule Set Production", // Name.
+  "GARP - oM implementation", // Name.
   "3.1 beta",                                        // Version.
 
   // Overview.

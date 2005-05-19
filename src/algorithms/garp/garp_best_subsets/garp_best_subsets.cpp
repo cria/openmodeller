@@ -260,7 +260,7 @@ AlgParamMetadata parameters_bs[NUM_PARAM] =
 AlgMetadata metadata_bs = {
   
   "GARP_BS",                           // Id.
-  "GARP with Best Subsets Procedure",  // Name.
+  "GARP with best subsets - oM implementation",  // Name.
   "3.0.1 alpha",                       // Version.
 
   // Overview.
