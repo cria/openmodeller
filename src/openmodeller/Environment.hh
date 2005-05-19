@@ -115,14 +115,19 @@ public:
   void setNormalization( bool use_norm, const Sample& offsets, const Sample& scales );
 
   /** Read for vector 'sample' all values of environmental variables
-   *  of coordinate (x,y). Return sample of dim 0 if environment has
-   *  a mask and point is outside its borders.
+   *  of coordinate (x,y).
+   *  Returns a Sample of dim 0 if environment has a mask and point is
+   *  outside its borders.
+   *  If the environment has been normalized, the Sample returned will be
+   *  normalized.
    */
   Sample get( Coord x, Coord y ) const;
 
   /** Read for 'sample' all values of environmental variables of a
    *  valid coordinate (inside the mask) randomly chosen
    *  returns coordinates (x,y) through pointer arguments.
+   *  If the environment has been normalized, the Sample returned will be
+   *  normalized.
    */
   Sample getRandom( Coord *x = 0, Coord *y = 0 ) const;
 
@@ -135,7 +140,10 @@ public:
   int getRegion( Coord *xmin, Coord *ymin, Coord *xmax,
                  Coord *ymax ) const;
 
-  /** Returns the minimum and maximum values of each layer. */
+  /** Returns the minimum and maximum values of each layer.
+   *  If the environment has been normalized, the values returned
+   *  are normalized.
+   */
   int getExtremes( Sample* min, Sample* max ) const;
 
   Map * getLayer(int index) const { return _layers[index].second; }
