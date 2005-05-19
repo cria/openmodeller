@@ -513,6 +513,13 @@ EnvironmentImpl::getExtremes( Sample* min, Sample* max ) const
     ++map;
   }
 
+  if ( _normalize ) {
+    *min *= _scales;
+    *min += _offsets;
+    *max *= _scales;
+    *max += _offsets;
+  }
+
   return 1;
 }
 
