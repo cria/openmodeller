@@ -31,11 +31,11 @@
 
 #include <om_defs.hh>
 #include <env_io/raster.hh>
+#include <env_io/map_iter.hh>
 
 #include <string>
 
 class GeoTransform;
-
 
 /****************************************************************/
 /****************************** Map *****************************/
@@ -62,6 +62,10 @@ public:
    */
   Map( Raster *rst );
   ~Map();
+
+  MapIterator begin() const {
+    return MapIterator( _rst->header(), _gt );
+  }
 
   const Header& getHeader() const { return _rst->header(); }
 
@@ -117,7 +121,6 @@ public:
   int put( Coord x, Coord y );
 
   GeoTransform *getGT() const { return _gt; }
-
 
 private:
 
