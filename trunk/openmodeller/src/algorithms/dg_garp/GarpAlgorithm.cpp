@@ -116,7 +116,7 @@ static AlgParamMetadata parameters[NUM_PARAM] =
 static AlgMetadata metadata = {
   
   "DG_GARP",                                         // Id.
-  "GARP: as implemented in DesktopGarp package",     // Name.
+  "GARP - DesktopGARP implementation",     // Name.
   "1.1 alpha",                                       // Version.
 
   // Overview.

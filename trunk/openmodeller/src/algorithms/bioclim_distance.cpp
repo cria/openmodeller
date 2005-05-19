@@ -78,7 +78,7 @@ static AlgParamMetadata parameters[NUM_PARAM] = {
 static AlgMetadata metadata = {
 
   "BioclimDistance",     // Id.
-  "Bioclim (distance)",  // Name.
+  "Bioclim distance",  // Name.
   "0.2",                 // Version.
 
   // Overview

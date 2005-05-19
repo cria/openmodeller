@@ -120,7 +120,7 @@ Csm Broken Stick will give up and abort.", // Description.
 static AlgMetadata metadata = {
 
   "CSMBS",                 // Id.
-  "Climate Space Model - Broken-Stick", // Name.
+  "Climate Space Model", // Name.
   "0.2 beta",           // Version.
 
   
