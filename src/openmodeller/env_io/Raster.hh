@@ -93,12 +93,6 @@ public:
   /** Latitudinal cell dimension. */
   Coord celY() const { return f_hdr.ycel; }
 
-  /**
-   * Returns not zero if it is stored like a grid map and
-   * zero if it is stored like a pixel map.
-   */
-  int getGrid() const  { return f_hdr.grid; }
-
   /** Returns the "noval" value. */
   Scalar noVal() const { return f_hdr.noval; }
 
@@ -137,18 +131,6 @@ public:
   int getMinMax( Scalar *min, Scalar *max ) const;
 
 private:
-
-  /**
-   * Convert georeferenced coordinate x in the map to
-   * (column) coordinated in raster image.
-   */
-  int convX( Coord x ) const;
-
-  /**
-   * Convert georeferenced coordinate y in the map to
-   * (row) coordinated in raster image.
-   */
-  int convY( Coord y ) const;
 
   /** Find the minimum and maximum values in 'band'. */
   int calcMinMax( int band=0 ) const;
