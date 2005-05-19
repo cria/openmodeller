@@ -36,6 +36,9 @@
 
 #include <Exceptions.hh>
 
+#include <utility>
+using std::pair;
+
 using std::string;
 
 /****************************************************************/
@@ -118,8 +121,9 @@ Raster::get( Coord px, Coord py, Scalar *val ) const
   for ( int i = 0; i < f_hdr.nband; i++ )
     *pv++ = f_hdr.noval;
 
-  int x = convX( px );
-  int y = convY( py );
+  pair<int,int> xy = f_hdr.convertLonLat2XY( px, py );
+  int x = xy.first;
+  int y = xy.second;
 
   // If the point is out of range, returns 0.
   if ( x < 0 || x >= f_hdr.xdim || y < 0 || y >= f_hdr.ydim ) {
@@ -137,8 +141,9 @@ Raster::get( Coord px, Coord py, Scalar *val ) const
 int
 Raster::put( Coord px, Coord py, Scalar val )
 {
-  int x = convX( px );
-  int y = convY( py );
+  pair<int,int> xy = f_hdr.convertLonLat2XY( px, py );
+  int x = xy.first;
+  int y = xy.second;
 
   if ( x < 0 || x >= f_hdr.xdim || y < 0 || y >= f_hdr.ydim )
     return 0;
@@ -151,8 +156,10 @@ Raster::put( Coord px, Coord py, Scalar val )
 int
 Raster::put( Coord px, Coord py  )
 {
-  int x = convX( px );
-  int y = convY( py );
+  pair<int,int> xy = f_hdr.convertLonLat2XY( px, py );
+  int x = xy.first;
+  int y = xy.second;
+
   Scalar val = f_hdr.noval;
 
   if ( x < 0 || x >= f_hdr.xdim || y < 0 || y >= f_hdr.ydim )
@@ -186,26 +193,6 @@ Raster::getMinMax( Scalar *min, Scalar *max ) const
   *max = f_hdr.max;
 
   return 1;
-}
-
-
-/**************/
-/*** conv X ***/
-int
-Raster::convX( Coord x ) const
-{
-  x = (x - f_hdr.gt[0]) / f_hdr.gt[1];
-  return int( f_hdr.grid ? x : (x + 0.5) );
-}
-
-
-/**************/
-/*** conv Y ***/
-int
-Raster::convY( Coord y ) const
-{
-  y = (y - f_hdr.gt[3]) / f_hdr.gt[5];
-  return int( f_hdr.grid ? y : (y + 0.5) );
 }
 
 /********************/
