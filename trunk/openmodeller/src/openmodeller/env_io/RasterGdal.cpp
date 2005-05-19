@@ -397,7 +397,7 @@ RasterGdal::loadRow( int row )
 void
 RasterGdal::saveRow()
 {
-  if ( ! f_changed )
+  if ( ! f_changed || f_currentRow < 0)
     return;
 
   write( f_data, f_currentRow, 1 );
