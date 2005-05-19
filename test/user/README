@@ -21,7 +21,7 @@ running the following commands on OM root directory:
 	make
 	make install
 
-2) Set your PYTHON_PATH environmental variable to include Python site-packages
+2) Set your PYTHONPATH environmental variable to include Python site-packages
 directory. In Linux Fedora 2 and Python 2.3, the default directory is:
 
 	/usr/lib/python2.3/site-packages
@@ -31,7 +31,7 @@ directory. In Linux Fedora 2 and Python 2.3, the default directory is:
 	./runtest.sh
 
 First, the test script will download test data from 
-http://www.cria.org.br/~ricardo/openModeller/acc_test_data.tar.gz.
+http://openmodeller.cria.org.br/download/acc_test_data.tar.gz
 Then it will untar it locally and run the full python test script on it.
 
 Optionally, you can specify the directories containing tests you want to run. By default the script executes all tests in "./algs" directory.
@@ -40,7 +40,7 @@ A sample test script can be found in ./samples.
 
 4) The test will run and results will be output to html reports in the file:
 
-	SummaryReport.html
+	index.html
 
 That page shows a summary of test results. There is a link to a second 
 html page that shows the actual maps generated during the tests side by 
