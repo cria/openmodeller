@@ -68,7 +68,7 @@ OccurrencesPtr readOccurrences( char const *file, char const *name,
 int readParameters( AlgParameter *result, AlgMetadata const *metadata );
 char *extractParameter( char *name, int nvet, char **vet );
 
-void mapCallback( float progress, void *extra_param );
+void modelCallback( float progress, void *extra_param );
 
 
 void draw();
@@ -190,6 +190,7 @@ createModel( char *request_file )
     }
 
   /*** Run the model ***/
+  om->setModelCallback( modelCallback );
 
   if ( ! om->createModel() )
     g_log.error( 1, "Error: %s\n", om->error() );
@@ -322,14 +323,14 @@ extractParameter( char *id, int nvet, char **vet )
 
 
 /********************/
-/*** map Callback ***/
+/*** model Callback ***/
 /**
- * Shows the map creation progress.
+ * Shows the model creation progress.
  */
 void
-mapCallback( float progress, void *extra_param )
+modelCallback( float progress, void *extra_param )
 {
-  g_log( "Map creation: %07.4f\% \r", 100 * progress );
+  g_log( "Model creation: %07.4f\% \r", 100 * progress );
 }
 
 
