@@ -403,6 +403,8 @@ void GarpAlgorithm::initializeProperties()
 		bGeneIsActive[i] = true;
 		iGeneIndex[i] = i;
 	}
+
+	_maxProgress = 0.0;
 }
 
 // ==========================================================================
