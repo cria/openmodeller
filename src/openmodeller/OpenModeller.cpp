@@ -291,44 +291,45 @@ OpenModeller::createModel()
 	  {
 	    (*_model_command)( _alg->getProgress() );
 	  }
-		catch(char * message)
-		{
-		    sprintf( _error, "Exception: %s", message );
-			g_log( "\n" );
-			g_log(_error);
-			g_log( "\n" );
+        catch(char * message)
+          {
+            sprintf( _error, "Exception: %s", message );
+            g_log( "\n" );
+            g_log(_error);
+            g_log( "\n" );
 
-			return 0;
-		}
+            return 0;
+          }
         catch( ... ) {}
-    }
-
-  // get progress one more time to show final 100% done
-  if ( _model_command )
-    {
-		try
-		{ 
-			(*_model_command)( _alg->getProgress() ); 
-		}
-  		catch(char * message)
-		{
-			sprintf( _error, "Exception: %s", message );
-			g_log( "\n" );
-			g_log(_error);
-			g_log( "\n" );
-
-			return 0;
-		}
-		catch( ... ) {}
-
     }
 
   // Algorithm terminated with error.
   if ( ! _alg->done() )
     {
-      sprintf( _error, "Algorithm (%s) iteraction error.",
+      sprintf( _error, "Algorithm (%s) iteration error.",
 	       _alg->getID() );
       return 0;
+    }
+  else
+    {
+      // show final 100%
+      if ( _model_command )
+        {
+          try
+            { 
+              (*_model_command)( 1.0 ); 
+            }
+          catch(char * message)
+            {
+              sprintf( _error, "Exception: %s", message );
+              g_log( "\n" );
+              g_log(_error);
+              g_log( "\n" );
+
+              return 0;
+            }
+          catch( ... ) {}
+        }
     }
 
   // Finalise algorithm.  
@@ -339,7 +340,7 @@ OpenModeller::createModel()
       return 0;
     }
 
-  g_log( "Finished Creating Model\n" );
+  g_log( "\nFinished Creating Model\n" );
 
   return 1;
 }
@@ -376,7 +377,7 @@ OpenModeller::createMap( const EnvironmentPtr & env, char const *output_file, Ma
 
   output_format.copyDefaults( *mask );
 
-  // try to infer the output format.
+  // try to infer the output format (default is 64 bit floating tiff).
   string fname(output_file);
   int pos = fname.length() - 4;
   if (pos >0 && fname.compare( pos, 4, ".bmp" ) == 0 ) {
@@ -384,7 +385,6 @@ OpenModeller::createMap( const EnvironmentPtr & env, char const *output_file, Ma
   }
 
   // Create map on disc.
-  // Currently hard coded to create greyscale tiff.
   Map map( new Raster( output_file, output_format ) );
 
   Projector::createMap( m, env,

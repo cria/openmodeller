@@ -66,20 +66,21 @@ class dllexp OpenModeller : public Configurable
 public:
 
   /** Model callback function.
-   * @param step Number of the iteration already done. Note that
-   *  in model generation it is not always possible to know how
-   *  many steps the algorithm will need.
+   * @param progress A number between 0.0 and 1.0 reflecting the
+   *  avance of the map creating task. 0.0 is the begin and
+   *  1.0 is finished. Note that in model generation it is not 
+   * always possible to know how many steps the algorithm will need.
    * @param extra_param A parameter set by user when
    *  setModelCallback() is called.
    */
   typedef void (*ModelCallback)( float progress, void *extra_param );
 
-  /** Model callback function.
+  /** Map callback function.
    * @param progress A number between 0.0 and 1.0 reflecting the
    *  avance of the map creating task. 0.0 is the begin and
    *  1.0 is finished.
    * @param extra_param A parameter set by user when
-   *  setModelCallback() is called.
+   *  setMapCallback() is called.
    */
   typedef void (*MapCallback)( float progress, void *extra_param );
 
@@ -203,8 +204,6 @@ public:
   /** Sets a callback function to be called after each map
    * distribution line generation.
    * @param func Pointer to the callback function.
-   * @param param User parameter to be passed to the callback
-   *  function.
    */
   void setMapCommand( Projector::MapCommand *func );
 
@@ -250,9 +249,6 @@ public:
   void setModelCallback( ModelCallback func, void *param=0 );
 
   /** Model command object.
-   * @param step Number of the iteration already done. Note that
-   *  in model generation it is not always possible to know how
-   *  many steps the algorithm will need.
    */
   class ModelCommand {
   public: 
@@ -263,14 +259,13 @@ public:
   /** Sets a callback function to be called after each iteration
    * of the model creation.
    * @param func Pointer to the callback function.
-   * @param param User parameter to be passed to the callback
-   *  function.
    */
-  void setModelCommand( ModelCommand *func )
-  { if (_model_command) {
+  void setModelCommand( ModelCommand *func ) {
+    if (_model_command) {
       delete _model_command;
     }
-    _model_command = func; }
+    _model_command = func;
+  }
 
   //
   // Model and distribution map related methods.
