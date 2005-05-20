@@ -10,7 +10,7 @@ Release 0.3 (2005-05-25)
 	* Implemented reference-counting smart pointers for all major objects.
 	* Fixed various problems with memory leaks and uninitialized values.
 	* Removed CSM Kaiser-Gutman from build.
-	* Included GARP 3.x again.
+	* Removed SWIG/Java binding from build.
 
 Release 0.2.1 (2005-02-19)
 --------------------------
