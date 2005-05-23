@@ -26,6 +26,12 @@
 #define isnan _isnan
 #endif
 
+#ifdef __APPLE_CC__
+extern "C" {
+  int isnan(double);
+}
+#endif
+
 /****************************************************************/
 /********************** Algorithm's Metadata ********************/
 
