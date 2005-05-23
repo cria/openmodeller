@@ -29,8 +29,8 @@
 #include <om_log.hh>
 
 #include <stdarg.h>
-#include <string.h>
 
+#include <Exceptions.hh>
 
 // WIN32 function defines
 #ifdef WIN32
@@ -259,7 +259,7 @@ Log::error( int exit_code, char *format, ... )
   fprintf( _log, "%s", buf );
 
 
-  ::exit( exit_code );
+  throw OmException( buf );
 }
 
 
