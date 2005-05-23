@@ -32,12 +32,8 @@
 #include <om_defs.hh>
 
 #include <stdio.h>
-#include <stdlib.h>
-#include <stdarg.h>
-
 
 //   Obs: Need to implement compatibility with sockets.
-
 
 /****************************************************************/
 /****************************** Log *****************************/
