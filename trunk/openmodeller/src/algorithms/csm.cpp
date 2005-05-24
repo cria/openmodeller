@@ -317,7 +317,7 @@ Scalar Csm::getValue( const Sample& x ) const
     //g_log.debug( "Component count %f , Half sum of squares %f\n", myHalfComponentCountDouble, myHalfSumOfSquaresDouble );
     myFloat=1-gsl_sf_gamma_inc_Q (myHalfSumOfSquaresDouble,myHalfComponentCountDouble);
  
-    g_log.debug( "Prob: %f \r", myFloat );
+    //g_log.debug( "Prob: %f \r", myFloat );
     //now clear away the temporary vars
     gsl_matrix_free (z);
     //gsl_vector_free (component1_gsl_vector);
