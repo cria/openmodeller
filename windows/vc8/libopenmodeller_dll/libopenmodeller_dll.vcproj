@@ -4,7 +4,6 @@
 	Version="8.00"
 	Name="libopenmodeller_dll"
 	ProjectGUID="{524F2298-7DCD-4C7D-B837-3B13F072C059}"
-	SignManifests="true"
 	>
 	<Platforms>
 		<Platform
