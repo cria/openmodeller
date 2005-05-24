@@ -90,6 +90,7 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
+				CommandLine="echo on&#x0D;&#x0A;..\CopyDll.bat build_debug &quot;$(TargetDir)&quot; &quot;$(TargetName)&quot;&#x0D;&#x0A;"
 			/>
 		</Configuration>
 		<Configuration
@@ -167,6 +168,7 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
+				CommandLine="echo on&#x0D;&#x0A;..\CopyDll.bat build &quot;$(TargetDir)&quot; &quot;$(TargetName)&quot;&#x0D;&#x0A;"
 			/>
 		</Configuration>
 	</Configurations>
