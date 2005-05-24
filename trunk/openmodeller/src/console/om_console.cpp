@@ -38,6 +38,7 @@
 #include <string.h>
 #include <stdio.h>
 
+#include <stdexcept>
 
 int showAlgorithms ( AlgMetadata const **availables );
 AlgMetadata const *readAlgorithm( AlgMetadata const **availables );
@@ -143,9 +144,12 @@ main( int argc, char **argv )
     g_log( "Total number of cells: %d\n", stats->getTotalArea() );
     g_log( "\nDone.\n" );
   }
-  catch (...) {
-    // no exceptions being handled
-    // g_log.error already prints error in log stream
+  catch ( std::exception& e ) {
+    g_log( "Exception occurred\n" );
+    g_log( "Message is %s\n", e.what() );
+  }
+  catch ( ... ) {
+    g_log( "Unknown Error occurred\n" );
   }
 
   return 0;
