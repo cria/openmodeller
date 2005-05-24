@@ -39,6 +39,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include <stdexcept>
+
 #include <string>
 using std::string;
 
@@ -94,49 +96,59 @@ main( int argc, char **argv )
 
   g_log( "\nopenModeller Two-dimensional Niche Viewer - CRIA\n" );
 
-  FileParser fp( request_file );
+  try {
 
-  // Create the model using openModeller.
-  _om = createModel( request_file );
-  EnvironmentPtr env = _om->getEnvironment();
-  int nmap = env->numLayers();
-  Sample min;
-  Sample max;
-  env->getExtremes( &min, &max );
+    FileParser fp( request_file );
 
-  if ( nmap < 2 )
-    g_log.error( 2, "Need more than one environmental variable!\n" );
-  else if ( nmap > 2 )
-    g_log.error( 3, "Maximum number of environmental variables (2) exceeded!\n" );
+    // Create the model using openModeller.
+    _om = createModel( request_file );
+    EnvironmentPtr env = _om->getEnvironment();
+    int nmap = env->numLayers();
+    Sample min;
+    Sample max;
+    env->getExtremes( &min, &max );
 
-  // Occurrences file (used to draw, not to create the model).
-  string oc_cs   = fp.get( "WKT Coord System" );
-  string oc_file = fp.get( "Species file" );
-  string oc_name = fp.get( "Species" );
-  _occurs = readOccurrences( oc_file.c_str(), oc_name.c_str(), oc_cs.c_str() );
+    if ( nmap < 2 )
+      g_log.error( 2, "Need more than one environmental variable!\n" );
+    else if ( nmap > 2 )
+      g_log.error( 3, "Maximum number of environmental variables (2) exceeded!\n" );
 
-  // Instantiate graphical window.
-  int dimx = 256;
-  int dimy = 256;
-  GFrame *frame = createFrame( "openModeller Niche Viewer", 1, dimx, dimy );
-  _cnv = frame->newCanvas( 0, 0, dimx, dimy );
-  _pm  = frame->newPixmap( _cnv, dimx, dimy );
+    // Occurrences file (used to draw, not to create the model).
+    string oc_cs   = fp.get( "WKT Coord System" );
+    string oc_file = fp.get( "Species file" );
+    string oc_name = fp.get( "Species" );
+    _occurs = readOccurrences( oc_file.c_str(), oc_name.c_str(), oc_cs.c_str() );
 
-  // Drawing area.
-  _graph = new GGraph( _pm );
-  _graph->scale( min[0], min[1], max[0], max[1] );
-  _graph->background( _bg );
-  _graph->clear();
+    // Instantiate graphical window.
+    int dimx = 256;
+    int dimy = 256;
+    GFrame *frame = createFrame( "openModeller Niche Viewer", 1, dimx, dimy );
+    _cnv = frame->newCanvas( 0, 0, dimx, dimy );
+    _pm  = frame->newPixmap( _cnv, dimx, dimy );
 
-  // Zoom in and out with mouse buttons.
-  _zoom = 2.0;
-  frame->funcShow( draw );
+    // Drawing area.
+    _graph = new GGraph( _pm );
+    _graph->scale( min[0], min[1], max[0], max[1] );
+    _graph->background( _bg );
+    _graph->clear();
 
-  frame->exec();
+    // Zoom in and out with mouse buttons.
+    _zoom = 2.0;
+    frame->funcShow( draw );
 
-  delete _graph;
-  delete frame;
-  delete _om;
+    frame->exec();
+
+    delete _graph;
+    delete frame;
+    delete _om;
+  }
+  catch ( std::exception& e ) {
+    g_log( "Exception occurred\n" );
+    g_log( "Message is %s\n", e.what() );
+  }
+  catch ( ... ) {
+    g_log( "Unknown Error occurred\n" );
+  }
 
   return 0;
 }

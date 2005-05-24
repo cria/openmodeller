@@ -41,6 +41,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include <stdexcept>
+
 #include <string>
 #include <vector>
 using std::string;
@@ -90,90 +92,100 @@ main( int argc, char **argv )
   int show_map  = strcmp( argv[1], "-r" );
   char *request = (show_map ? argv[1] : argv[2]);
 
-  FileParser fp( request );
+  try {
 
-  Raster **rst;
-  if ( show_map )
-    {
-      // Maps to be shown.
-      _nmap = fp.count( "Map" );
+    FileParser fp( request );
 
-      if ( ! _nmap )
-        g_log.error( 1, "No map to be shown!?!\n" );
+    Raster **rst;
+    if ( show_map )
+      {
+        // Maps to be shown.
+        _nmap = fp.count( "Map" );
 
-      _maps = new (Map *)[_nmap];
+        if ( ! _nmap )
+          g_log.error( 1, "No map to be shown!?!\n" );
 
-      vector<string> mapfile = fp.getAll( "Map" );
+        _maps = new (Map *)[_nmap];
+
+        vector<string> mapfile = fp.getAll( "Map" );
       
-      for ( int i = 0; i < _nmap; i++ )
-        {
-          // Generate a raster using map "i".
-          _maps[i] = new Map( new Raster( mapfile[i] ) );
-          //_maps[i]->normalize( 0.0, 255.0 );
-        }
-    }
+        for ( int i = 0; i < _nmap; i++ )
+          {
+            // Generate a raster using map "i".
+            _maps[i] = new Map( new Raster( mapfile[i] ) );
+            //_maps[i]->normalize( 0.0, 255.0 );
+          }
+      }
 
-  // Visualize result.
-  else
-    {
-      _nmap = 1;
-      _maps = new (Map *)[_nmap];
-      string result = fp.get( "Output file" );
+    // Visualize result.
+    else
+      {
+        _nmap = 1;
+        _maps = new (Map *)[_nmap];
+        string result = fp.get( "Output file" );
 
-      if ( result.empty() )
-        g_log.error( 1, "The 'Output file' parameter not found!\n" );
+        if ( result.empty() )
+          g_log.error( 1, "The 'Output file' parameter not found!\n" );
 
-      _maps[0] = new Map( new Raster( result ) );
-      //_maps[0]->normalize( 0.0, 255.0 );
-    }
+        _maps[0] = new Map( new Raster( result ) );
+        //_maps[0]->normalize( 0.0, 255.0 );
+      }
 
-  // Region to be visualized. Must include all maps.
-  Coord xmin, ymin, xmax, ymax;
-  findRegion( _nmap, _maps, &xmin, &ymin, &xmax, &ymax );
+    // Region to be visualized. Must include all maps.
+    Coord xmin, ymin, xmax, ymax;
+    findRegion( _nmap, _maps, &xmin, &ymin, &xmax, &ymax );
 
-  // Image dimensions.
-  int dimx = 1024;
-  int dimy = int( dimx * (ymax - ymin) / (xmax - xmin) );
-  if ( dimy > 700 )
-    {
-      dimy = 700;
-      dimx = int( dimy * (xmax - xmin) / (ymax - ymin) );
-    }
-  g_log( "Dimensions: %d x %d\n", dimx, dimy );
-
-
-  // Occurrences file.
-  string oc_cs   = fp.get( "WKT Coord System" );
-  string oc_file = fp.get( "Species file" );
-  string oc_name = fp.get( "Species" );
-  _occurs = readOccurrences( oc_file.c_str(), oc_name.c_str(), oc_cs.c_str() );
+    // Image dimensions.
+    int dimx = 1024;
+    int dimy = int( dimx * (ymax - ymin) / (xmax - xmin) );
+    if ( dimy > 700 )
+      {
+        dimy = 700;
+        dimx = int( dimy * (xmax - xmin) / (ymax - ymin) );
+      }
+    g_log( "Dimensions: %d x %d\n", dimx, dimy );
 
 
-  // Instantiate graphical window.
-  GFrame *frame = createFrame( "openModeller Viewer", 1, dimx, dimy );
-  _cnv = frame->newCanvas( 0, 0, dimx, dimy );
-  _pm  = frame->newPixmap( _cnv, dimx, dimy );
-
-  // Drawing area.
-  _graph = new GGraph( _pm );
-  _graph->scale( float(xmin), float(ymin), float(xmax),
-                 float(ymax) );
-  _graph->background( _bg );
-  _graph->clear();
+    // Occurrences file.
+    string oc_cs   = fp.get( "WKT Coord System" );
+    string oc_file = fp.get( "Species file" );
+    string oc_name = fp.get( "Species" );
+    _occurs = readOccurrences( oc_file.c_str(), oc_name.c_str(), oc_cs.c_str() );
 
 
-  // Zoom in and out with mouse buttons.
-  _zoom = 2.0;
-  //  frame->FuncBtPress( _cnv, set_float_coord, 1 );
-  //  frame->FuncBtPress( _cnv, set_int_coord,  3 );
-  frame->funcShow( draw );
+    // Instantiate graphical window.
+    GFrame *frame = createFrame( "openModeller Viewer", 1, dimx, dimy );
+    _cnv = frame->newCanvas( 0, 0, dimx, dimy );
+    _pm  = frame->newPixmap( _cnv, dimx, dimy );
 
-  frame->exec();
+    // Drawing area.
+    _graph = new GGraph( _pm );
+    _graph->scale( float(xmin), float(ymin), float(xmax),
+                   float(ymax) );
+    _graph->background( _bg );
+    _graph->clear();
 
-  delete _graph;
-  delete frame;
 
-  delete[] _maps;
+    // Zoom in and out with mouse buttons.
+    _zoom = 2.0;
+    //  frame->FuncBtPress( _cnv, set_float_coord, 1 );
+    //  frame->FuncBtPress( _cnv, set_int_coord,  3 );
+    frame->funcShow( draw );
+
+    frame->exec();
+
+    delete _graph;
+    delete frame;
+
+    delete[] _maps;
+  }
+  catch ( std::exception& e ) {
+    g_log( "Exception occurred\n" );
+    g_log( "Message is %s\n", e.what() );
+  }
+  catch ( ... ) {
+    g_log( "Unknown Error occurred\n" );
+  }
 }
 
 
