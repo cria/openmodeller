@@ -66,78 +66,88 @@ main( int argc, char **argv )
 
   char *request_file = argv[1];
 
-  AlgorithmFactory::searchDefaultDirs();
-  OpenModeller om;
-  g_log( "\nopenModeller version %s\n", om.getVersion() );
+  try {
+
+    AlgorithmFactory::searchDefaultDirs();
+    OpenModeller om;
+    g_log( "\nopenModeller version %s\n", om.getVersion() );
+
 #if 0
-  g_log( "\nDefault configuration file name is: %s\n\n",
-         om.getConfigFileName() );
-  g_log( "\nAlgorithms will be loaded from: %s\n\n",
-         path = om.getPluginPath() );
+    g_log( "\nDefault configuration file name is: %s\n\n",
+           om.getConfigFileName() );
+    g_log( "\nAlgorithms will be loaded from: %s\n\n",
+           path = om.getPluginPath() );
 #endif 
-  delete[] path;
 
-  // Configure the OpenModeller object from data read from the
-  // request file.
-  RequestFile request;
-  int resp = request.configure( &om, request_file );
+    delete[] path;
 
-  if ( resp < 0 )
-    g_log.error( 1, "Can't read request file %s", request_file );
+    // Configure the OpenModeller object from data read from the
+    // request file.
+    RequestFile request;
+    int resp = request.configure( &om, request_file );
 
-  // If something was not set...
-  if ( resp )
-    {
-      if ( ! request.algorithmSet() )
-        {
-          // Find out which model algorithm is to be used.
-          AlgMetadata const **availables = om.availableAlgorithms();
-          AlgMetadata const *metadata;
+    if ( resp < 0 )
+      g_log.error( 1, "Can't read request file %s", request_file );
 
-          if ( ! (metadata = readAlgorithm( availables )) )
-            return 1;
+    // If something was not set...
+    if ( resp )
+      {
+        if ( ! request.algorithmSet() )
+          {
+            // Find out which model algorithm is to be used.
+            AlgMetadata const **availables = om.availableAlgorithms();
+            AlgMetadata const *metadata;
 
-          g_log( "\n> Algorithm used: %s\n\n", metadata->name );
-          g_log( " %s\n\n", metadata->description );
+            if ( ! (metadata = readAlgorithm( availables )) )
+              return 1;
 
-          // For resulting parameters storage.
-          int nparam = metadata->nparam;
-          AlgParameter *param = new AlgParameter[nparam];
+            g_log( "\n> Algorithm used: %s\n\n", metadata->name );
+            g_log( " %s\n\n", metadata->description );
 
-          // Read from console the parameters not set by request
-          // file. Fills 'param' with all 'metadata->nparam'
-          // parameters set.
-          readParameters( param, metadata );
+            // For resulting parameters storage.
+            int nparam = metadata->nparam;
+            AlgParameter *param = new AlgParameter[nparam];
 
-          // Set the model algorithm to be used by the controller
-          om.setAlgorithm( metadata->id, nparam, param );
+            // Read from console the parameters not set by request
+            // file. Fills 'param' with all 'metadata->nparam'
+            // parameters set.
+            readParameters( param, metadata );
 
-          delete[] param;
-        }
-    }
+            // Set the model algorithm to be used by the controller
+            om.setAlgorithm( metadata->id, nparam, param );
 
-  // Run model
-  om.setModelCallback( modelCallback );
+            delete[] param;
+          }
+      }
 
-  request.makeModel( &om );
+    // Run model
+    om.setModelCallback( modelCallback );
 
-  // Run projection
-  om.setMapCallback( mapCallback );
+    request.makeModel( &om );
 
-  request.makeProjection( &om );
+    // Run projection
+    om.setMapCallback( mapCallback );
 
-  ConfusionMatrix matrix;
-  matrix.calculate(om.getEnvironment(), om.getAlgorithm()->getModel(),
-		   request.getOccurrences(), OccurrencesPtr());
-  AreaStats * stats = om.getActualAreaStats();
-  g_log("\nModel statistics\n");
-  g_log("Accuracy:          %7.2f\%\n", matrix.getAccuracy() * 100);
-  g_log("Omission error:    %7.2f\%\n", matrix.getOmissionError() * 100);
-  //g_log("Commission error:  %7.2f\%\n", matrix.getCommissionError() * 100);
-  g_log("Percentage of cells predicted present: %7.2f\%\n", 
-	stats->getAreaPredictedPresent() / (double) stats->getTotalArea() * 100);
-  g_log("Total number of cells: %d\n", stats->getTotalArea());
-  g_log( "\nDone.\n" );
+    request.makeProjection( &om );
+
+    ConfusionMatrix matrix;
+    matrix.calculate( om.getEnvironment(), om.getAlgorithm()->getModel(),
+                      request.getOccurrences(), OccurrencesPtr() );
+    AreaStats * stats = om.getActualAreaStats();
+    g_log( "\nModel statistics\n" );
+    g_log( "Accuracy:          %7.2f\%\n", matrix.getAccuracy() * 100 );
+    g_log( "Omission error:    %7.2f\%\n", matrix.getOmissionError() * 100 );
+    //g_log( "Commission error:  %7.2f\%\n", matrix.getCommissionError() * 100 );
+    g_log( "Percentage of cells predicted present: %7.2f\%\n", 
+           stats->getAreaPredictedPresent() / (double) stats->getTotalArea() * 100 );
+    g_log( "Total number of cells: %d\n", stats->getTotalArea() );
+    g_log( "\nDone.\n" );
+  }
+  catch (...) {
+    // no exceptions being handled
+    // g_log.error already prints error in log stream
+  }
+
   return 0;
 }
 
