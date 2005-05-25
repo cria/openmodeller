@@ -2,9 +2,9 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="7.10"
-	Name="om_garp"
-	ProjectGUID="{76CA7567-EBF3-4036-9567-D1C3F7FBFDD7}"
-	RootNamespace="om_garp"
+	Name="om_dg_garp_bs"
+	ProjectGUID="{C48187B7-6E4A-4B48-9E16-E52BF3BFAC6A}"
+	RootNamespace="om_dg_garp_bs"
 	>
 	<Platforms>
 		<Platform
@@ -39,8 +39,8 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="../../../src/inc"
-				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;OM_GARP_EXPORTS;CORE_DLL_IMPORT"
+				AdditionalIncludeDirectories="../../../src/inc,../../../algorithms/dg_garp"
+				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;OM_DG_GARP_BS_EXPORTS;CORE_DLL_IMPORT;DONT_EXPORT_GARP_FACTORY"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
@@ -118,8 +118,8 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="2"
-				AdditionalIncludeDirectories="../../../src/inc"
-				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;OM_GARP_EXPORTS;CORE_DLL_IMPORT"
+				AdditionalIncludeDirectories="../../../src/inc,../../../algorithms/dg_garp"
+				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;OM_GARP__BEST_SUBSETS_EXPORTS;CORE_DLL_IMPORT;DONT_EXPORT_GARP_FACTORY"
 				RuntimeLibrary="2"
 				UsePrecompiledHeader="0"
 				WarningLevel="3"
@@ -181,38 +181,50 @@
 			Filter="cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx"
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
-			<File
-				RelativePath="..\..\..\algorithms\garp\bioclim_histogram.cpp"
+			<Filter
+				Name="Garp"
 				>
-			</File>
-			<File
-				RelativePath="..\..\..\algorithms\garp\garp.cpp"
+				<File
+					RelativePath="..\..\..\algorithms\dg_garp\EnvCell.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\..\algorithms\dg_garp\EnvCellSet.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\..\algorithms\dg_garp\GarpAlgorithm.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\..\algorithms\dg_garp\Rule.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\..\algorithms\dg_garp\RuleSet.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\..\algorithms\dg_garp\Utilities.cpp"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="BS"
 				>
-			</File>
-			<File
-				RelativePath="..\..\..\algorithms\garp\regression.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\..\algorithms\garp\rules_base.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\..\algorithms\garp\rules_logit.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\..\algorithms\garp\rules_negrange.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\..\algorithms\garp\rules_range.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\..\algorithms\garp\ruleset.cpp"
-				>
-			</File>
+				<File
+					RelativePath="..\..\..\algorithms\garp\garp_best_subsets\best_subsets.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\..\algorithms\garp\garp_best_subsets\dg_garp_bs.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\..\algorithms\garp\garp_best_subsets\garp_run.cpp"
+					>
+				</File>
+			</Filter>
 		</Filter>
 		<Filter
 			Name="Header Files"
@@ -220,35 +232,35 @@
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
 			<File
-				RelativePath="..\..\..\algorithms\garp\bioclim_histogram.hh"
+				RelativePath="..\..\..\algorithms\dg_garp_bs\bioclim_histogram.hh"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\algorithms\garp\garp.hh"
+				RelativePath="..\..\..\algorithms\dg_garp_bs\dg_garp_bs.hh"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\algorithms\garp\regression.hh"
+				RelativePath="..\..\..\algorithms\dg_garp_bs\regression.hh"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\algorithms\garp\rules_base.hh"
+				RelativePath="..\..\..\algorithms\dg_garp_bs\rules_base.hh"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\algorithms\garp\rules_logit.hh"
+				RelativePath="..\..\..\algorithms\dg_garp_bs\rules_logit.hh"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\algorithms\garp\rules_negrange.hh"
+				RelativePath="..\..\..\algorithms\dg_garp_bs\rules_negrange.hh"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\algorithms\garp\rules_range.hh"
+				RelativePath="..\..\..\algorithms\dg_garp_bs\rules_range.hh"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\algorithms\garp\ruleset.hh"
+				RelativePath="..\..\..\algorithms\dg_garp_bs\ruleset.hh"
 				>
 			</File>
 		</Filter>
