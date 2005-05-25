@@ -24,7 +24,7 @@
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;LIBOPENMODELLER_DLL_EXPORTS;VERSION=\&quot;0.2\&quot;;PLUGINPATH=\&quot;.\&quot;;CONFIG_FILE=\&quot;om_config.txt\&quot;"
 				MinimalRebuild="TRUE"
 				BasicRuntimeChecks="3"
-				RuntimeLibrary="1"
+				RuntimeLibrary="3"
 				UsePrecompiledHeader="0"
 				PrecompiledHeaderFile=".\Debug/libopenmodeller_dll.pch"
 				AssemblerListingLocation=".\Debug/"
@@ -42,6 +42,8 @@
 				LinkIncremental="2"
 				SuppressStartupBanner="TRUE"
 				AdditionalLibraryDirectories="$(GDAL_HOME)\lib,$(EXPAT_HOME)\libs"
+				IgnoreAllDefaultLibraries="FALSE"
+				IgnoreDefaultLibraryNames=""
 				GenerateDebugInformation="TRUE"
 				ProgramDatabaseFile=".\Debug/libopenmodeller.pdb"
 				GenerateMapFile="TRUE"
@@ -96,7 +98,7 @@
 				AdditionalIncludeDirectories="../../inc,$(GDAL_HOME)/include,$(EXPAT_HOME)/Source/lib,$(JAVA_HOME)/include,$(JAVA_HOME)/bin"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;LIBOPENMODELLER_DLL_EXPORTS;VERSION=\&quot;0.2\&quot;;PLUGINPATH=\&quot;.\&quot;;CONFIG_FILE=\&quot;om_config.txt\&quot;"
 				StringPooling="TRUE"
-				RuntimeLibrary="0"
+				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="TRUE"
 				UsePrecompiledHeader="0"
 				PrecompiledHeaderFile=".\Release/libopenmodeller_dll.pch"
@@ -587,6 +589,9 @@
 				</File>
 				<File
 					RelativePath="..\..\inc\environment.hh">
+				</File>
+				<File
+					RelativePath="..\..\inc\Exceptions.hh">
 				</File>
 				<File
 					RelativePath="..\..\inc\file_parser.hh">

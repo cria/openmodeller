@@ -4,6 +4,7 @@
 	Version="8.00"
 	Name="om_bioclim_distance"
 	ProjectGUID="{0067E378-5AEB-4A71-A083-BA7160F305B9}"
+	SignManifests="true"
 	>
 	<Platforms>
 		<Platform
@@ -19,7 +20,7 @@
 			IntermediateDirectory=".\Debug"
 			ConfigurationType="2"
 			UseOfMFC="0"
-			ATLMinimizesCRunTimeLibraryUsage="FALSE"
+			ATLMinimizesCRunTimeLibraryUsage="false"
 			CharacterSet="2"
 			>
 			<Tool
@@ -37,8 +38,8 @@
 			<Tool
 				Name="VCMIDLTool"
 				PreprocessorDefinitions="_DEBUG"
-				MkTypLibCompatible="TRUE"
-				SuppressStartupBanner="TRUE"
+				MkTypLibCompatible="true"
+				SuppressStartupBanner="true"
 				TargetEnvironment="1"
 				TypeLibraryName=".\Debug/om_bioclim_distance.tlb"
 				HeaderFileName=""
@@ -48,16 +49,16 @@
 				Optimization="0"
 				AdditionalIncludeDirectories="../../algorithms,../../inc,../../inc/serialization,$(GDAL_HOME)/include"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;OM_BIOCLIM_DISTANCE_EXPORTS;CORE_DLL_IMPORT"
-				MinimalRebuild="TRUE"
+				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
-				RuntimeLibrary="1"
+				RuntimeLibrary="3"
 				UsePrecompiledHeader="2"
 				PrecompiledHeaderFile=".\Debug/om_bioclim_distance.pch"
 				AssemblerListingLocation=".\Debug/"
 				ObjectFile=".\Debug/"
 				ProgramDataBaseFileName=".\Debug/"
 				WarningLevel="3"
-				SuppressStartupBanner="TRUE"
+				SuppressStartupBanner="true"
 				DebugInformationFormat="4"
 			/>
 			<Tool
@@ -76,9 +77,9 @@
 				AdditionalDependencies="libexpat.lib libopenmodeller.lib gdal_i.lib"
 				OutputFile=".\Debug/om_bioclim_distance.dll"
 				LinkIncremental="2"
-				SuppressStartupBanner="TRUE"
+				SuppressStartupBanner="true"
 				AdditionalLibraryDirectories="$(GDAL_HOME)\lib,../build_debug/lib,$(EXPAT_HOME)/libs"
-				GenerateDebugInformation="TRUE"
+				GenerateDebugInformation="true"
 				ProgramDatabaseFile=".\Debug/om_bioclim_distance.pdb"
 				ImportLibrary=".\Debug/om_bioclim_distance.lib"
 				TargetMachine="1"
@@ -94,8 +95,11 @@
 			/>
 			<Tool
 				Name="VCBscMakeTool"
-				SuppressStartupBanner="TRUE"
+				SuppressStartupBanner="true"
 				OutputFile=".\Debug/om_bioclim_distance.bsc"
+			/>
+			<Tool
+				Name="VCFxCopTool"
 			/>
 			<Tool
 				Name="VCAppVerifierTool"
@@ -115,7 +119,7 @@
 			IntermediateDirectory=".\Release"
 			ConfigurationType="2"
 			UseOfMFC="0"
-			ATLMinimizesCRunTimeLibraryUsage="FALSE"
+			ATLMinimizesCRunTimeLibraryUsage="false"
 			CharacterSet="2"
 			>
 			<Tool
@@ -133,8 +137,8 @@
 			<Tool
 				Name="VCMIDLTool"
 				PreprocessorDefinitions="NDEBUG"
-				MkTypLibCompatible="TRUE"
-				SuppressStartupBanner="TRUE"
+				MkTypLibCompatible="true"
+				SuppressStartupBanner="true"
 				TargetEnvironment="1"
 				TypeLibraryName=".\Release/om_bioclim_distance.tlb"
 				HeaderFileName=""
@@ -145,16 +149,16 @@
 				InlineFunctionExpansion="1"
 				AdditionalIncludeDirectories="../../algorithms,../../inc,../../inc/serialization,$(GDAL_HOME)/include,$(JAVA_HOME)/include,$(JAVA_HOME)/bin"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;OM_BIOCLIM_DISTANCE_EXPORTS;CORE_DLL_IMPORT"
-				StringPooling="TRUE"
-				RuntimeLibrary="0"
-				EnableFunctionLevelLinking="TRUE"
+				StringPooling="true"
+				RuntimeLibrary="2"
+				EnableFunctionLevelLinking="true"
 				UsePrecompiledHeader="2"
 				PrecompiledHeaderFile=".\Release/om_bioclim_distance.pch"
 				AssemblerListingLocation=".\Release/"
 				ObjectFile=".\Release/"
 				ProgramDataBaseFileName=".\Release/"
 				WarningLevel="3"
-				SuppressStartupBanner="TRUE"
+				SuppressStartupBanner="true"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
@@ -172,7 +176,7 @@
 				AdditionalDependencies="gdal_i.lib libexpat.lib libopenmodeller.lib"
 				OutputFile=".\Release/om_bioclim_distance.dll"
 				LinkIncremental="1"
-				SuppressStartupBanner="TRUE"
+				SuppressStartupBanner="true"
 				AdditionalLibraryDirectories="$(GDAL_HOME)\lib,../build/lib,$(EXPAT_HOME)/libs"
 				IgnoreDefaultLibraryNames="scew_.lib"
 				ProgramDatabaseFile=".\Release/om_bioclim_distance.pdb"
@@ -190,8 +194,11 @@
 			/>
 			<Tool
 				Name="VCBscMakeTool"
-				SuppressStartupBanner="TRUE"
+				SuppressStartupBanner="true"
 				OutputFile=".\Release/om_bioclim_distance.bsc"
+			/>
+			<Tool
+				Name="VCFxCopTool"
 			/>
 			<Tool
 				Name="VCAppVerifierTool"

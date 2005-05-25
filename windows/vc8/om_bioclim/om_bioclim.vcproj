@@ -4,7 +4,6 @@
 	Version="8.00"
 	Name="om_bioclim"
 	ProjectGUID="{70482A69-CBB5-4151-B963-A119B8C12730}"
-	SignManifests="true"
 	>
 	<Platforms>
 		<Platform
@@ -51,7 +50,7 @@
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;OM_BIOCLIM_EXPORTS;CORE_DLL_IMPORT"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
-				RuntimeLibrary="1"
+				RuntimeLibrary="3"
 				UsePrecompiledHeader="2"
 				PrecompiledHeaderFile=".\Debug/om_bioclim.pch"
 				AssemblerListingLocation=".\Debug/"
@@ -150,7 +149,7 @@
 				AdditionalIncludeDirectories="../../algorithms,../../inc,../../inc/serialization,$(GDAL_HOME)/include,$(JAVA_HOME)/include,$(JAVA_HOME)/bin"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;OM_BIOCLIM_EXPORTS;CORE_DLL_IMPORT"
 				StringPooling="true"
-				RuntimeLibrary="0"
+				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="true"
 				UsePrecompiledHeader="0"
 				PrecompiledHeaderFile=".\Release/om_bioclim.pch"
