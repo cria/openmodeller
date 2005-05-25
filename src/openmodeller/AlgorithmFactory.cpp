@@ -91,7 +91,7 @@ AlgorithmFactory::DLL::DLL( const string& file ) :
   if ( ! _factory )
     {
       char *error = dllError( _handle );
-      g_log.warn( "%s is not openModeller compatible! ", file.c_str() );
+      g_log.warn( "%s is not openModeller compatible!\n", file.c_str() );
       g_log.warn( "Error: %s\n", error );
       goto error;
     }
@@ -102,7 +102,7 @@ AlgorithmFactory::DLL::DLL( const string& file ) :
   if ( ! _metadata )
     {
       char *error = dllError( _handle );
-      g_log.warn( "%s is not openModeller compatible! ", file.c_str() );
+      g_log.warn( "%s is not openModeller compatible!\n", file.c_str() );
       g_log.warn( "Error: %s\n", error );
       goto error;
     }
@@ -122,9 +122,8 @@ AlgorithmFactory::DLL::DLL( const string& file ) :
 AlgorithmFactory::DLL::~DLL()
 {
   if ( _handle ) {
-    g_log( "- Unloading: %s ...", _file.c_str() );
+    g_log( "- Unloading: %s ...currently, dlls are not closed.\n", _file.c_str() );
     //    dllClose( _handle );
-    g_log( " currently, dlls are not closed.\n" );
   }
 }
 
@@ -357,7 +356,7 @@ AlgorithmFactory::addDll( const string& file )
 bool
 AlgorithmFactory::p_addDll( const string& file )
 {
-  g_log( "- Loading: %s ... ", file.c_str() );
+  g_log( "- Loading: %s ...\n", file.c_str() );
     
   // Create a new DLL for each directory entry found.
   DLLPtr dll( new DLL( file.c_str() ) );
@@ -367,7 +366,7 @@ AlgorithmFactory::p_addDll( const string& file )
     return false;
   }
   
-  g_log( "ok\n" );
+  g_log( "- Successfully Loaded %s\n", file.c_str() );
   _dlls.push_back( dll );
   return true;
 
