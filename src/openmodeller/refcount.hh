@@ -137,11 +137,6 @@ private:
   inline void releasePointer();
   inline void takePointer( PlainPointerType ptr );
 
-  // This conversion operator is provide to ambiguate conversions to
-  // numerical types.  This prevents ptr * 5 from compiling.
-  // Note:  declared but not defined.
-  inline operator int() const;
-
   PlainPointerType _p;
 
 };
