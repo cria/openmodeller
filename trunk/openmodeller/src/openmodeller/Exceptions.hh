@@ -1,6 +1,9 @@
 #ifndef _EXCEPTIONS_HH
 #define _EXCEPTIONS_HH
 
+// Microsoft VC8 requires <string> before <stdexcept> in order for
+// this code to compile.
+#include <string>
 #include <stdexcept>
 
 //
