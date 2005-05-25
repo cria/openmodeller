@@ -33,6 +33,7 @@ om_wrap.cxx:	om_python.i \
 		../../inc/om_conf_matrix.hh \
 		../../inc/om_control.hh \
 		../../inc/om_defs.hh \
+		../../inc/om_log.hh \
 		../../inc/om_occurrences.hh \
 		../../inc/om_projector.hh \
 		../../inc/om_algorithm.hh \
