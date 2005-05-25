@@ -4,6 +4,7 @@
 	Version="8.00"
 	Name="om_csmbs"
 	ProjectGUID="{1DC8EBE5-763E-4632-A72B-001D9F873999}"
+	SignManifests="true"
 	>
 	<Platforms>
 		<Platform
@@ -50,7 +51,7 @@
 				AdditionalIncludeDirectories="../../algorithms,../../inc,$(GDAL_HOME)/include,C:\Documents and Settings\ricardo\My Documents\Code\Packages\gsl-1.6-lib/include,$(JAVA_HOME)/include,$(JAVA_HOME)/bin"
 				PreprocessorDefinitions="_WINDOWS;WIN32;NDEBUG;_USRDLL;OM_CSMBS_EXPORTS;CORE_DLL_IMPORT"
 				StringPooling="true"
-				RuntimeLibrary="0"
+				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="true"
 				UsePrecompiledHeader="0"
 				PrecompiledHeaderFile=".\Release/om_csmbs.pch"
@@ -149,7 +150,7 @@
 				PreprocessorDefinitions="_WINDOWS;WIN32;_DEBUG;_USRDLL;OM_CSMBS_EXPORTS;CORE_DLL_IMPORT"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
-				RuntimeLibrary="1"
+				RuntimeLibrary="3"
 				UsePrecompiledHeader="0"
 				PrecompiledHeaderFile=".\Debug/om_csmbs.pch"
 				AssemblerListingLocation=".\Debug/"

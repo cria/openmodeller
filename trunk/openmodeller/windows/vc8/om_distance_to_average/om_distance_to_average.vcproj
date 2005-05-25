@@ -4,7 +4,6 @@
 	Version="8.00"
 	Name="om_distance_to_average"
 	ProjectGUID="{06FC981D-29B3-4A47-B257-663B7E7766FB}"
-	SignManifests="true"
 	>
 	<Platforms>
 		<Platform
@@ -51,7 +50,7 @@
 				AdditionalIncludeDirectories="../../algorithms,../../inc,../../inc/serialization,$(GDAL_HOME)/include,$(JAVA_HOME)/include,$(JAVA_HOME)/bin"
 				PreprocessorDefinitions="_WINDOWS;WIN32;NDEBUG;_USRDLL;OM_DISTANCE_TO_AVERAGE_EXPORTS;CORE_DLL_IMPORT"
 				StringPooling="true"
-				RuntimeLibrary="0"
+				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="true"
 				UsePrecompiledHeader="0"
 				PrecompiledHeaderFile=".\Release/om_distance_to_average.pch"
@@ -150,7 +149,7 @@
 				PreprocessorDefinitions="_WINDOWS;WIN32;_DEBUG;_USRDLL;OM_DISTANCE_TO_AVERAGE_EXPORTS;CORE_DLL_IMPORT"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
-				RuntimeLibrary="1"
+				RuntimeLibrary="3"
 				UsePrecompiledHeader="0"
 				PrecompiledHeaderFile=".\Debug/om_distance_to_average.pch"
 				AssemblerListingLocation=".\Debug/"

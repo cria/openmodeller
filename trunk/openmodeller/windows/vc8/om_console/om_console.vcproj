@@ -4,6 +4,7 @@
 	Version="8.00"
 	Name="om_console"
 	ProjectGUID="{3868CFCA-7A02-43B6-B876-E5F60C42AAB6}"
+	SignManifests="true"
 	>
 	<Platforms>
 		<Platform
@@ -47,7 +48,7 @@
 				PreprocessorDefinitions="_WINDOWS;_CONSOLE;WIN32;_DEBUG;VERSION=\&quot;0.3\&quot;;PLUGINPATH=\&quot;.\&quot;;CORE_DLL_IMPORT"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
-				RuntimeLibrary="1"
+				RuntimeLibrary="3"
 				UsePrecompiledHeader="0"
 				PrecompiledHeaderFile=".\Debug/om_console.pch"
 				AssemblerListingLocation=".\Debug/"
@@ -143,7 +144,7 @@
 				AdditionalIncludeDirectories="../../algorithms,../../inc,$GDAL_HOME/include,$(JAVA_HOME)/include,$(JAVA_HOME)/bin"
 				PreprocessorDefinitions="_WINDOWS;WIN32;NDEBUG;_CONSOLE;VERSION=\&quot;0.3\&quot;;PLUGINPATH=\&quot;.\&quot;;CORE_DLL_IMPORT"
 				StringPooling="true"
-				RuntimeLibrary="0"
+				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="true"
 				UsePrecompiledHeader="0"
 				PrecompiledHeaderFile=".\Release/om_console.pch"
