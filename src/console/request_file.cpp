@@ -323,7 +323,7 @@ RequestFile::makeProjection( OpenModeller *om )
 
   if ( !_nonNativeProjection ) {
 
-    om->createMap( _projection_file.c_str() );
+    om->createMap( _projection_file.c_str(), _outputFormat );
   }
   else {
 
