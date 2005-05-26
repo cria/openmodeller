@@ -75,7 +75,7 @@ Raster::Raster( const string& file, const MapFormat& format) :
     break;
   case MapFormat::GreyTiff:
     f_scalefactor = 254.0;
-    nv = -1.0;
+    nv = 255.0;
     break;
   case MapFormat::FloatingTiff:
     f_scalefactor = 1.0;
