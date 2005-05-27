@@ -50,18 +50,6 @@ Output model = furcata.xml
 #
 Output file = furcata.tif
 
-# Scale each algorithm output (originaly in the range [0,1]) by
-# this factor.
-# 
-# The output cell type defaults to "byte", but it will overwritten
-# by the header of the "Output format" file.
-# You must scale the output according to the cell type chosen.
-# For the default type, you have to choose:
-#
-#  1 <= Scale <= 255
-#
-Scale = 255
-
 
 #########################
 ### Algorithm section ###
