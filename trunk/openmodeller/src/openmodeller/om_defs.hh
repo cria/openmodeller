@@ -57,6 +57,12 @@ typedef double Scalar;   ///< Type of map values.
 #  define dllexp __declspec(dllexport)
 # endif
 
+// disable warnings about lack of DLL export in inner class members
+#pragma warning( disable : 4251)
+#pragma warning( disable : 4275)
+// disable warning on deprecation of standard C functions and others
+#pragma warning( disable : 4996)
+
 #else
 
 # define OM_ALG_DLL_EXPORT
