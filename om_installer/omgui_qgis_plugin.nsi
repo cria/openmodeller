@@ -2,7 +2,7 @@
 
 ; HM NIS Edit Wizard helper defines
 !define PRODUCT_NAME "openModeller QGIS plugin"
-!define PRODUCT_VERSION "0.2.1"
+!define PRODUCT_VERSION "0.3"
 !define PRODUCT_PUBLISHER "openModeller Development Team"
 !define PRODUCT_WEB_SITE "http://openmodeller.sourceforge.net"
 !define PRODUCT_DIR_REGKEY "Software\Microsoft\Windows\CurrentVersion\App Paths\qgis.exe"
@@ -66,7 +66,6 @@ Section "MainSection" SEC01
   File "..\gslcblas.dll"
   File "..\libexif-9.dll"
   File "..\libexpat.dll"
-  File "..\libexpatMT.lib"
   File "..\libopenmodeller.dll"
   File "..\msvcp60.dll"
   File "..\om_config.txt"
@@ -93,8 +92,9 @@ Section "MainSection" SEC01
   File "..\algs\om_bioclim.dll"
   File "..\algs\om_bioclim_distance.dll"
   File "..\algs\om_csmbs.dll"
-  File "..\algs\om_csmkg.dll"
   File "..\algs\om_distance_to_average.dll"
+  File "..\algs\om_dg_garp.dll"
+  File "..\algs\om_dg_garp_bs.dll"
   File "..\algs\om_garp.dll"
   File "..\algs\om_garp_best_subsets.dll"
   File "..\algs\om_mindist.dll" 
@@ -104,7 +104,7 @@ Section "MainSection" SEC01
   ;
   SetOutPath $INSTDIR\lib\qgis
   SetOverwrite try
-  File "..\lib\qgis\omgui.dll" ;once again I am sure only the dll's need copying  
+  File "..\omgui.dll" ;once again I am sure only the dll's need copying  
   
   ;
   ; Now the sample data
