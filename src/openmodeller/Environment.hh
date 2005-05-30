@@ -69,16 +69,16 @@ class dllexp EnvironmentImpl : public Configurable, private ReferenceCountedObje
   friend class ReferenceCountedPointer<EnvironmentImpl>;
   friend class ReferenceCountedPointer<const EnvironmentImpl>;
 
-  friend EnvironmentPtr createEnvironment( std::vector<std::string> categs,
+  friend EnvironmentPtr dllexp createEnvironment( std::vector<std::string> categs,
 					   std::vector<std::string> maps,
 					   std::string mask_file );
   
-  friend EnvironmentPtr createEnvironment( std::vector<std::string> categs,
+  friend EnvironmentPtr dllexp createEnvironment( std::vector<std::string> categs,
 					   std::vector<std::string> maps );
 
-  friend EnvironmentPtr createEnvironment( const ConstConfigurationPtr& config );
+  friend EnvironmentPtr dllexp createEnvironment( const ConstConfigurationPtr& config );
 
-  friend EnvironmentPtr createEnvironment( );
+  friend EnvironmentPtr dllexp createEnvironment( );
 
   typedef std::pair<std::string, Map*> layer;
   typedef std::vector<layer> layers;
