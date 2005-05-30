@@ -108,13 +108,13 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="gdal_i.lib libexpat.lib libgsl.lib libgslcblas.lib libopenmodeller.lib"
-				OutputFile=".\Debug/om_csmbs.dll"
+				OutputFile=".\Debug/om_csmbs_debug.dll"
 				LinkIncremental="2"
 				SuppressStartupBanner="TRUE"
 				AdditionalLibraryDirectories="$(GDAL_HOME)/lib,../build_debug/lib,$(EXPAT_HOME)/libs,$(GSL_HOME)/lib"
 				GenerateDebugInformation="TRUE"
 				ProgramDatabaseFile=".\Debug/om_csmbs.pdb"
-				ImportLibrary=".\Debug/om_csmbs.lib"
+				ImportLibrary="$(OutDir)/$(TargetName).lib"
 				TargetMachine="1"/>
 			<Tool
 				Name="VCMIDLTool"
