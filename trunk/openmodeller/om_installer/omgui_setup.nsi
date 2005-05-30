@@ -2,7 +2,7 @@
 
 ; HM NIS Edit Wizard helper defines
 !define PRODUCT_NAME "openModeller"
-!define PRODUCT_VERSION "0.3"
+!define PRODUCT_VERSION "0.3-rc1"
 !define PRODUCT_PUBLISHER "openModeller Development Team"
 !define PRODUCT_WEB_SITE "http://openmodeller.sourceforge.net"
 !define PRODUCT_DIR_REGKEY "Software\Microsoft\Windows\CurrentVersion\App Paths\omgui.exe"
@@ -105,7 +105,9 @@ Section "Algorithms" SectionAlgorithms
   File "..\build\algs\om_garp.dll"
   File "..\build\algs\om_garp_best_subsets.dll"
   File "..\build\algs\om_mindist.dll"
-  File "..\build\gsl.dll"                           ; required by CSM
+
+  SetOutPath $INSTDIR
+  File "..\build\libgsl.dll"                        ; required by CSM
   File "..\build\gslcblas.dll"                      ; required by CSM
 SectionEnd
   
@@ -113,7 +115,7 @@ SectionEnd
 ; Now the algs
 ;
 Section "-OMGUI Standalone" SectionOmGuiStandalone
-  SetOutPath $INSTDIR\algs
+  SetOutPath "$INSTDIR"
   SetOverwrite try
   File "..\build\omgui.exe"
 SectionEnd
@@ -255,8 +257,6 @@ Section Uninstall
   Delete /REBOOTOK "$INSTDIR\ecw_cs.dat"
   Delete /REBOOTOK "$INSTDIR\gcs.csv"
   Delete /REBOOTOK "$INSTDIR\gdal12.dll"
-  Delete /REBOOTOK "$INSTDIR\gsl.dll"
-  Delete /REBOOTOK "$INSTDIR\gslcblas.dll"
   Delete /REBOOTOK "$INSTDIR\libexif-9.dll"
   Delete /REBOOTOK "$INSTDIR\libexpat.dll"
   Delete /REBOOTOK "$INSTDIR\libopenmodeller.dll"
@@ -276,7 +276,10 @@ Section Uninstall
   Delete /REBOOTOK "$INSTDIR\wkt_defs.txt"  
   Delete /REBOOTOK "$INSTDIR\msvcr80.dll" 
   Delete /REBOOTOK "$INSTDIR\msvcp80.dll" 
+  Delete /REBOOTOK "$INSTDIR\msvcr71.dll" 
+  Delete /REBOOTOK "$INSTDIR\msvcp71.dll" 
   Delete /REBOOTOK "$INSTDIR\msvcp60.dll"
+  Delete /REBOOTOK "$INSTDIR\lib\qgis\omgui.dll"
 
   ;ALGORITHMS
   Delete /REBOOTOK "$INSTDIR\algs\om_bioclim.dll"
@@ -288,6 +291,8 @@ Section Uninstall
   Delete /REBOOTOK "$INSTDIR\algs\om_garp.dll"
   Delete /REBOOTOK "$INSTDIR\algs\om_garp_best_subsets.dll"
   Delete /REBOOTOK "$INSTDIR\algs\om_mindist.dll"
+  Delete /REBOOTOK "$INSTDIR\libgsl.dll"
+  Delete /REBOOTOK "$INSTDIR\gslcblas.dll"
 
   ;SAMPLE DATA
   Delete /REBOOTOK "$INSTDIR\sample_data\furcata_boliviana.txt"
