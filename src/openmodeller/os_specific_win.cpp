@@ -130,15 +130,24 @@ initialPluginPath()
 vector<string> 
 scanDirectory( string dir )
 {
-  char filepattern[1024];
+  string filepattern(dir);
   long dirhandle;
   struct _finddata_t fileinfo;
 
   vector<string> entries;
 
-  // Windows findfirst and findnext calls.
-  sprintf(filepattern, "%s\\*.dll", dir);
-  dirhandle = _findfirst(filepattern, &fileinfo); 
+  // check for empty string
+  if (!dir.length())
+	  return entries;
+
+  // check for slashes at the end of directory name
+  if ( (filepattern.find_last_of("/")  != filepattern.length() - 1) && 
+	   (filepattern.find_last_of("\\") != filepattern.length() - 1) )
+	  filepattern.append("\\");
+
+	  // Windows findfirst and findnext calls.
+  filepattern.append("*.dll");
+  dirhandle = _findfirst(filepattern.c_str(), &fileinfo); 
 
   if (dirhandle == -1L)
     return entries;
@@ -151,7 +160,7 @@ scanDirectory( string dir )
   int dir_size = dir.size();
 
   // Windows findfirst and findnext calls.
-  dirhandle = _findfirst(filepattern, &fileinfo); 
+  dirhandle = _findfirst(filepattern.c_str(), &fileinfo); 
 
   if (dirhandle == -1L)
     return entries;
