@@ -4,118 +4,71 @@
 	Version="7.10"
 	Name="om_garp_best_subsets"
 	ProjectGUID="{7BF414D5-538E-4046-BB5F-9C815BED8E5B}"
-	RootNamespace="om_garp_best_subsets"
-	SignManifests="true"
-	>
+	RootNamespace="om_garp_best_subsets">
 	<Platforms>
 		<Platform
-			Name="Win32"
-		/>
+			Name="Win32"/>
 	</Platforms>
-	<ToolFiles>
-	</ToolFiles>
 	<Configurations>
 		<Configuration
 			Name="Debug|Win32"
 			OutputDirectory="Debug"
 			IntermediateDirectory="Debug"
 			ConfigurationType="2"
-			CharacterSet="2"
-			>
-			<Tool
-				Name="VCPreBuildEventTool"
-			/>
-			<Tool
-				Name="VCCustomBuildTool"
-			/>
-			<Tool
-				Name="VCXMLDataGeneratorTool"
-			/>
-			<Tool
-				Name="VCWebServiceProxyGeneratorTool"
-			/>
-			<Tool
-				Name="VCMIDLTool"
-			/>
+			CharacterSet="2">
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				AdditionalIncludeDirectories="../../../src/inc,../../../algorithms/garp"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;OM_GARP_BEST_SUBSETS_EXPORTS;CORE_DLL_IMPORT;DONT_EXPORT_GARP_FACTORY"
-				MinimalRebuild="true"
+				MinimalRebuild="TRUE"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
 				UsePrecompiledHeader="0"
 				WarningLevel="3"
-				Detect64BitPortabilityProblems="true"
-				DebugInformationFormat="4"
-			/>
+				Detect64BitPortabilityProblems="TRUE"
+				DebugInformationFormat="4"/>
 			<Tool
-				Name="VCManagedResourceCompilerTool"
-			/>
-			<Tool
-				Name="VCResourceCompilerTool"
-			/>
-			<Tool
-				Name="VCPreLinkEventTool"
-			/>
+				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="gdal_i.lib libexpat.lib libopenmodeller.lib"
+				OutputFile="$(OutDir)/$(ProjectName)_debug.dll"
 				AdditionalLibraryDirectories="$(GDAL_HOME)/lib,$(EXPAT_HOME)/libs,../build_debug/lib"
-				GenerateDebugInformation="true"
+				GenerateDebugInformation="TRUE"
 				SubSystem="2"
-				TargetMachine="1"
-			/>
+				TargetMachine="1"/>
 			<Tool
-				Name="VCALinkTool"
-			/>
-			<Tool
-				Name="VCManifestTool"
-			/>
-			<Tool
-				Name="VCXDCMakeTool"
-			/>
-			<Tool
-				Name="VCBscMakeTool"
-			/>
-			<Tool
-				Name="VCFxCopTool"
-			/>
-			<Tool
-				Name="VCAppVerifierTool"
-			/>
-			<Tool
-				Name="VCWebDeploymentTool"
-			/>
+				Name="VCMIDLTool"/>
 			<Tool
 				Name="VCPostBuildEventTool"
 				Description="Install"
-				CommandLine="echo on&#x0D;&#x0A;..\CopyDLL.bat build_debug &quot;$(TargetDir)&quot; &quot;$(TargetName)&quot;&#x0D;&#x0A;"
-			/>
+				CommandLine="echo on
+..\CopyDLL.bat build_debug &quot;$(TargetDir)&quot; &quot;$(TargetName)&quot;
+"/>
+			<Tool
+				Name="VCPreBuildEventTool"/>
+			<Tool
+				Name="VCPreLinkEventTool"/>
+			<Tool
+				Name="VCResourceCompilerTool"/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"/>
+			<Tool
+				Name="VCWebDeploymentTool"/>
+			<Tool
+				Name="VCManagedWrapperGeneratorTool"/>
+			<Tool
+				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
 		</Configuration>
 		<Configuration
 			Name="Release|Win32"
 			OutputDirectory="Release"
 			IntermediateDirectory="Release"
 			ConfigurationType="2"
-			CharacterSet="2"
-			>
-			<Tool
-				Name="VCPreBuildEventTool"
-			/>
-			<Tool
-				Name="VCCustomBuildTool"
-			/>
-			<Tool
-				Name="VCXMLDataGeneratorTool"
-			/>
-			<Tool
-				Name="VCWebServiceProxyGeneratorTool"
-			/>
-			<Tool
-				Name="VCMIDLTool"
-			/>
+			CharacterSet="2">
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="2"
@@ -124,54 +77,43 @@
 				RuntimeLibrary="2"
 				UsePrecompiledHeader="0"
 				WarningLevel="3"
-				Detect64BitPortabilityProblems="true"
-				DebugInformationFormat="3"
-			/>
+				Detect64BitPortabilityProblems="TRUE"
+				DebugInformationFormat="3"/>
 			<Tool
-				Name="VCManagedResourceCompilerTool"
-			/>
-			<Tool
-				Name="VCResourceCompilerTool"
-			/>
-			<Tool
-				Name="VCPreLinkEventTool"
-			/>
+				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="gdal_i.lib libexpat.lib libopenmodeller.lib"
 				AdditionalLibraryDirectories="$(GDAL_HOME)/lib,$(EXPAT_HOME)/libs,../build/lib"
-				GenerateDebugInformation="true"
+				GenerateDebugInformation="TRUE"
 				SubSystem="2"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
-				TargetMachine="1"
-			/>
+				TargetMachine="1"/>
 			<Tool
-				Name="VCALinkTool"
-			/>
-			<Tool
-				Name="VCManifestTool"
-			/>
-			<Tool
-				Name="VCXDCMakeTool"
-			/>
-			<Tool
-				Name="VCBscMakeTool"
-			/>
-			<Tool
-				Name="VCFxCopTool"
-			/>
-			<Tool
-				Name="VCAppVerifierTool"
-			/>
-			<Tool
-				Name="VCWebDeploymentTool"
-			/>
+				Name="VCMIDLTool"/>
 			<Tool
 				Name="VCPostBuildEventTool"
 				Description="Install"
-				CommandLine="echo on&#x0D;&#x0A;..\CopyDLL.bat build &quot;$(TargetDir)&quot; &quot;$(TargetName)&quot;&#x0D;&#x0A;"
-			/>
+				CommandLine="echo on
+..\CopyDLL.bat build &quot;$(TargetDir)&quot; &quot;$(TargetName)&quot;
+"/>
+			<Tool
+				Name="VCPreBuildEventTool"/>
+			<Tool
+				Name="VCPreLinkEventTool"/>
+			<Tool
+				Name="VCResourceCompilerTool"/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"/>
+			<Tool
+				Name="VCWebDeploymentTool"/>
+			<Tool
+				Name="VCManagedWrapperGeneratorTool"/>
+			<Tool
+				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
 		</Configuration>
 	</Configurations>
 	<References>
@@ -180,104 +122,80 @@
 		<Filter
 			Name="Source Files"
 			Filter="cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx"
-			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
-			>
+			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}">
 			<Filter
-				Name="Garp"
-				>
+				Name="Garp">
 				<File
-					RelativePath="..\..\..\algorithms\garp\bioclim_histogram.cpp"
-					>
+					RelativePath="..\..\..\algorithms\garp\bioclim_histogram.cpp">
 				</File>
 				<File
-					RelativePath="..\..\..\algorithms\garp\garp.cpp"
-					>
+					RelativePath="..\..\..\algorithms\garp\garp.cpp">
 				</File>
 				<File
-					RelativePath="..\..\..\algorithms\garp\regression.cpp"
-					>
+					RelativePath="..\..\..\algorithms\garp\regression.cpp">
 				</File>
 				<File
-					RelativePath="..\..\..\algorithms\garp\rules_base.cpp"
-					>
+					RelativePath="..\..\..\algorithms\garp\rules_base.cpp">
 				</File>
 				<File
-					RelativePath="..\..\..\algorithms\garp\rules_logit.cpp"
-					>
+					RelativePath="..\..\..\algorithms\garp\rules_logit.cpp">
 				</File>
 				<File
-					RelativePath="..\..\..\algorithms\garp\rules_negrange.cpp"
-					>
+					RelativePath="..\..\..\algorithms\garp\rules_negrange.cpp">
 				</File>
 				<File
-					RelativePath="..\..\..\algorithms\garp\rules_range.cpp"
-					>
+					RelativePath="..\..\..\algorithms\garp\rules_range.cpp">
 				</File>
 				<File
-					RelativePath="..\..\..\algorithms\garp\ruleset.cpp"
-					>
+					RelativePath="..\..\..\algorithms\garp\ruleset.cpp">
 				</File>
 			</Filter>
 			<Filter
-				Name="BS"
-				>
+				Name="BS">
 				<File
-					RelativePath="..\..\..\algorithms\garp\garp_best_subsets\best_subsets.cpp"
-					>
+					RelativePath="..\..\..\algorithms\garp\garp_best_subsets\best_subsets.cpp">
 				</File>
 				<File
-					RelativePath="..\..\..\algorithms\garp\garp_best_subsets\garp_best_subsets.cpp"
-					>
+					RelativePath="..\..\..\algorithms\garp\garp_best_subsets\garp_best_subsets.cpp">
 				</File>
 				<File
-					RelativePath="..\..\..\algorithms\garp\garp_best_subsets\garp_run.cpp"
-					>
+					RelativePath="..\..\..\algorithms\garp\garp_best_subsets\garp_run.cpp">
 				</File>
 			</Filter>
 		</Filter>
 		<Filter
 			Name="Header Files"
 			Filter="h;hpp;hxx;hm;inl;inc;xsd"
-			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
-			>
+			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}">
 			<File
-				RelativePath="..\..\..\algorithms\garp_best_subsets\bioclim_histogram.hh"
-				>
+				RelativePath="..\..\..\algorithms\garp_best_subsets\bioclim_histogram.hh">
 			</File>
 			<File
-				RelativePath="..\..\..\algorithms\garp_best_subsets\garp_best_subsets.hh"
-				>
+				RelativePath="..\..\..\algorithms\garp_best_subsets\garp_best_subsets.hh">
 			</File>
 			<File
-				RelativePath="..\..\..\algorithms\garp_best_subsets\regression.hh"
-				>
+				RelativePath="..\..\..\algorithms\garp_best_subsets\regression.hh">
 			</File>
 			<File
-				RelativePath="..\..\..\algorithms\garp_best_subsets\rules_base.hh"
-				>
+				RelativePath="..\..\..\algorithms\garp_best_subsets\rules_base.hh">
 			</File>
 			<File
-				RelativePath="..\..\..\algorithms\garp_best_subsets\rules_logit.hh"
-				>
+				RelativePath="..\..\..\algorithms\garp_best_subsets\rules_logit.hh">
 			</File>
 			<File
-				RelativePath="..\..\..\algorithms\garp_best_subsets\rules_negrange.hh"
-				>
+				RelativePath="..\..\..\algorithms\garp_best_subsets\rules_negrange.hh">
 			</File>
 			<File
-				RelativePath="..\..\..\algorithms\garp_best_subsets\rules_range.hh"
-				>
+				RelativePath="..\..\..\algorithms\garp_best_subsets\rules_range.hh">
 			</File>
 			<File
-				RelativePath="..\..\..\algorithms\garp_best_subsets\ruleset.hh"
-				>
+				RelativePath="..\..\..\algorithms\garp_best_subsets\ruleset.hh">
 			</File>
 		</Filter>
 		<Filter
 			Name="Resource Files"
 			Filter="rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav"
-			UniqueIdentifier="{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}"
-			>
+			UniqueIdentifier="{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}">
 		</Filter>
 	</Files>
 	<Globals>

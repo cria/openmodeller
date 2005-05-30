@@ -40,7 +40,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="gdal_i.lib libexpat.lib libopenmodeller.lib"
-				OutputFile=".\Debug/om_console.exe"
+				OutputFile=".\Debug/om_console_debug.exe"
 				LinkIncremental="2"
 				SuppressStartupBanner="TRUE"
 				AdditionalLibraryDirectories="$(GDAL_HOME)/lib,../build_debug/lib,$(EXPAT_HOME)/libs"

@@ -38,13 +38,13 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="libexpat.lib libopenmodeller.lib gdal_i.lib"
-				OutputFile=".\Debug/om_bioclim.dll"
+				OutputFile=".\Debug/om_bioclim_debug.dll"
 				LinkIncremental="2"
 				SuppressStartupBanner="TRUE"
 				AdditionalLibraryDirectories="../build_debug/lib,$(GDAL_HOME)\lib,$(EXPAT_HOME)/libs"
 				GenerateDebugInformation="TRUE"
 				ProgramDatabaseFile=".\Debug/om_bioclim.pdb"
-				ImportLibrary=".\Debug/om_bioclim.lib"
+				ImportLibrary="$(OutDir)/$(TargetName).lib"
 				TargetMachine="1"/>
 			<Tool
 				Name="VCMIDLTool"
