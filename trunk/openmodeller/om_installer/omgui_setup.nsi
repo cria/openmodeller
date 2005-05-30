@@ -64,30 +64,30 @@ Section "-RequiredComponents" SectionRequiredComponents
   CreateShortCut "$DESKTOP\openModeller.lnk" "$INSTDIR\omgui.exe"
   
   File "om_logo.bmp"
-  File "..\ecw_cs.dat"
-  File "..\gcs.csv"
-  File "..\gdal12.dll"
-  File "..\libexif-9.dll"
-  File "..\libexpat.dll"
-  File "..\libopenmodeller.dll"
-  File "..\om_config.txt"
-  File "..\om_console.exe"
-  File "..\pcs.csv"
-  File "..\prime_meridian.csv" 
-  File "..\proj.dll"  
-  File "..\projop_wparm.csv"  
-  File "..\qt-mtnc321.dll" ;QT Non Commercial lib  
-  File "..\s57attributes.csv"  
-  File "..\s57expectedinput.csv"  
-  File "..\s57objectclasses.csv"  
-  File "..\stateplane.csv"  
-  File "..\unit_of_measure.csv"  
-  File "..\wkt_defs.txt"  
-  File "..\msvcr71.dll" 
-  File "..\msvcp71.dll" 
-  File "..\msvcr80.dll" 
-  File "..\msvcp80.dll" 
-  File "..\msvcp60.dll" ; <-- needed for qt hopefully this req will go away after i rebuild qt with vc8 
+  File "..\build\ecw_cs.dat"
+  File "..\build\gcs.csv"
+  File "..\build\gdal12.dll"
+  File "..\build\libexif-9.dll"
+  File "..\build\libexpat.dll"
+  File "..\build\libopenmodeller.dll"
+  File "..\build\om_config.txt"
+  File "..\build\om_console.exe"
+  File "..\build\pcs.csv"
+  File "..\build\prime_meridian.csv" 
+  File "..\build\proj.dll"  
+  File "..\build\projop_wparm.csv"  
+  File "..\build\qt-mtnc321.dll" ;QT Non Commercial lib  
+  File "..\build\s57attributes.csv"  
+  File "..\build\s57expectedinput.csv"  
+  File "..\build\s57objectclasses.csv"  
+  File "..\build\stateplane.csv"  
+  File "..\build\unit_of_measure.csv"  
+  File "..\build\wkt_defs.txt"  
+  File "..\build\msvcr71.dll" 
+  File "..\build\msvcp71.dll" 
+  File "..\build\msvcr80.dll" 
+  File "..\build\msvcp80.dll" 
+  File "..\build\msvcp60.dll" ; <-- needed for qt hopefully this req will go away after i rebuild qt with vc8 
 SectionEnd
 
 ;
@@ -96,17 +96,17 @@ SectionEnd
 Section "Algorithms" SectionAlgorithms
   SetOutPath $INSTDIR\algs
   SetOverwrite try
-  File "..\algs\om_bioclim.dll"
-  File "..\algs\om_bioclim_distance.dll"
-  File "..\algs\om_csmbs.dll"
-  File "..\algs\om_distance_to_average.dll"
-  File "..\algs\om_dg_garp.dll"
-  File "..\algs\om_dg_garp_bs.dll"
-  File "..\algs\om_garp.dll"
-  File "..\algs\om_garp_best_subsets.dll"
-  File "..\algs\om_mindist.dll"
-  File "..\gsl.dll"                           ; required by CSM
-  File "..\gslcblas.dll"                      ; required by CSM
+  File "..\build\algs\om_bioclim.dll"
+  File "..\build\algs\om_bioclim_distance.dll"
+  File "..\build\algs\om_csmbs.dll"
+  File "..\build\algs\om_distance_to_average.dll"
+  File "..\build\algs\om_dg_garp.dll"
+  File "..\build\algs\om_dg_garp_bs.dll"
+  File "..\build\algs\om_garp.dll"
+  File "..\build\algs\om_garp_best_subsets.dll"
+  File "..\build\algs\om_mindist.dll"
+  File "..\build\gsl.dll"                           ; required by CSM
+  File "..\build\gslcblas.dll"                      ; required by CSM
 SectionEnd
   
 ;
@@ -115,7 +115,7 @@ SectionEnd
 Section "-OMGUI Standalone" SectionOmGuiStandalone
   SetOutPath $INSTDIR\algs
   SetOverwrite try
-  File "..\omgui.exe"
+  File "..\build\omgui.exe"
 SectionEnd
 
 ;
@@ -125,7 +125,7 @@ Section "Quantum GIS Plugin" SectionOmGuiQgisPlugin
   SetOutPath "$INSTDIR"
   SetOutPath $INSTDIR\lib\qgis
   SetOverwrite try
-  File "..\omgui.dll" ;once again I am sure only the dll's need copying  
+  File "..\build\omgui.dll" ;once again I am sure only the dll's need copying  
 SectionEnd
   
 ;
@@ -135,87 +135,87 @@ Section "Sample Data" SectionSampleData
   CreateDirectory  $INSTDIR\sample_data
   SetOutPath $INSTDIR\sample_data
   SetOverwrite try
-  File "..\om_sample_data\furcata_boliviana.txt"
+  File "..\build\om_sample_data\furcata_boliviana.txt"
 
   CreateDirectory $INSTDIR\sample_data\rain_coolest
   SetOutPath $INSTDIR\sample_data\rain_coolest
   SetOverWrite try
-  File "..\om_sample_data\rain_coolest\dblbnd.adf"
-  File "..\om_sample_data\rain_coolest\hdr.adf"
-  File "..\om_sample_data\rain_coolest\prj.adf"
-  File "..\om_sample_data\rain_coolest\sta.adf"
-  File "..\om_sample_data\rain_coolest\w001001.adf"
-  File "..\om_sample_data\rain_coolest\w001001x.adf"
+  File "..\build\om_sample_data\rain_coolest\dblbnd.adf"
+  File "..\build\om_sample_data\rain_coolest\hdr.adf"
+  File "..\build\om_sample_data\rain_coolest\prj.adf"
+  File "..\build\om_sample_data\rain_coolest\sta.adf"
+  File "..\build\om_sample_data\rain_coolest\w001001.adf"
+  File "..\build\om_sample_data\rain_coolest\w001001x.adf"
 
   CreateDirectory $INSTDIR\sample_data\rain_hottest
   SetOutPath $INSTDIR\sample_data\rain_hottest
   SetOverWrite try
-  File "..\om_sample_data\rain_hottest\dblbnd.adf"
-  File "..\om_sample_data\rain_hottest\hdr.adf"
-  File "..\om_sample_data\rain_hottest\prj.adf"
-  File "..\om_sample_data\rain_hottest\sta.adf"
-  File "..\om_sample_data\rain_hottest\w001001.adf"
-  File "..\om_sample_data\rain_hottest\w001001x.adf"
+  File "..\build\om_sample_data\rain_hottest\dblbnd.adf"
+  File "..\build\om_sample_data\rain_hottest\hdr.adf"
+  File "..\build\om_sample_data\rain_hottest\prj.adf"
+  File "..\build\om_sample_data\rain_hottest\sta.adf"
+  File "..\build\om_sample_data\rain_hottest\w001001.adf"
+  File "..\build\om_sample_data\rain_hottest\w001001x.adf"
 
   CreateDirectory $INSTDIR\sample_data\rain_tot
   SetOutPath $INSTDIR\sample_data\rain_tot
   SetOverWrite try
-  File "..\om_sample_data\rain_tot\dblbnd.adf"
-  File "..\om_sample_data\rain_tot\hdr.adf"
-  File "..\om_sample_data\rain_tot\prj.adf"
-  File "..\om_sample_data\rain_tot\sta.adf"
-  File "..\om_sample_data\rain_tot\w001001.adf"
-  File "..\om_sample_data\rain_tot\w001001x.adf"
+  File "..\build\om_sample_data\rain_tot\dblbnd.adf"
+  File "..\build\om_sample_data\rain_tot\hdr.adf"
+  File "..\build\om_sample_data\rain_tot\prj.adf"
+  File "..\build\om_sample_data\rain_tot\sta.adf"
+  File "..\build\om_sample_data\rain_tot\w001001.adf"
+  File "..\build\om_sample_data\rain_tot\w001001x.adf"
 
   CreateDirectory $INSTDIR\sample_data\temp_avg
   SetOutPath $INSTDIR\sample_data\temp_avg
   SetOverWrite try
-  File "..\om_sample_data\temp_avg\dblbnd.adf"
-  File "..\om_sample_data\temp_avg\hdr.adf"
-  File "..\om_sample_data\temp_avg\prj.adf"
-  File "..\om_sample_data\temp_avg\sta.adf"
-  File "..\om_sample_data\temp_avg\w001001.adf"
-  File "..\om_sample_data\temp_avg\w001001x.adf"
+  File "..\build\om_sample_data\temp_avg\dblbnd.adf"
+  File "..\build\om_sample_data\temp_avg\hdr.adf"
+  File "..\build\om_sample_data\temp_avg\prj.adf"
+  File "..\build\om_sample_data\temp_avg\sta.adf"
+  File "..\build\om_sample_data\temp_avg\w001001.adf"
+  File "..\build\om_sample_data\temp_avg\w001001x.adf"
 
   CreateDirectory $INSTDIR\sample_data\temp_coolest
   SetOutPath $INSTDIR\sample_data\temp_coolest
   SetOverWrite try
-  File "..\om_sample_data\temp_coolest\dblbnd.adf"
-  File "..\om_sample_data\temp_coolest\hdr.adf"
-  File "..\om_sample_data\temp_coolest\prj.adf"
-  File "..\om_sample_data\temp_coolest\sta.adf"
-  File "..\om_sample_data\temp_coolest\w001001.adf"
-  File "..\om_sample_data\temp_coolest\w001001x.adf"
+  File "..\build\om_sample_data\temp_coolest\dblbnd.adf"
+  File "..\build\om_sample_data\temp_coolest\hdr.adf"
+  File "..\build\om_sample_data\temp_coolest\prj.adf"
+  File "..\build\om_sample_data\temp_coolest\sta.adf"
+  File "..\build\om_sample_data\temp_coolest\w001001.adf"
+  File "..\build\om_sample_data\temp_coolest\w001001x.adf"
 
   CreateDirectory $INSTDIR\sample_data\temp_dryest
   SetOutPath $INSTDIR\sample_data\temp_dryest
   SetOverWrite try
-  File "..\om_sample_data\temp_dryest\dblbnd.adf"
-  File "..\om_sample_data\temp_dryest\hdr.adf"
-  File "..\om_sample_data\temp_dryest\prj.adf"
-  File "..\om_sample_data\temp_dryest\sta.adf"
-  File "..\om_sample_data\temp_dryest\w001001.adf"
-  File "..\om_sample_data\temp_dryest\w001001x.adf"
+  File "..\build\om_sample_data\temp_dryest\dblbnd.adf"
+  File "..\build\om_sample_data\temp_dryest\hdr.adf"
+  File "..\build\om_sample_data\temp_dryest\prj.adf"
+  File "..\build\om_sample_data\temp_dryest\sta.adf"
+  File "..\build\om_sample_data\temp_dryest\w001001.adf"
+  File "..\build\om_sample_data\temp_dryest\w001001x.adf"
 
   CreateDirectory $INSTDIR\sample_data\temp_hotest
   SetOutPath $INSTDIR\sample_data\temp_hotest
   SetOverWrite try
-  File "..\om_sample_data\temp_hotest\dblbnd.adf"
-  File "..\om_sample_data\temp_hotest\hdr.adf"
-  File "..\om_sample_data\temp_hotest\prj.adf"
-  File "..\om_sample_data\temp_hotest\sta.adf"
-  File "..\om_sample_data\temp_hotest\w001001.adf"
-  File "..\om_sample_data\temp_hotest\w001001x.adf"
+  File "..\build\om_sample_data\temp_hotest\dblbnd.adf"
+  File "..\build\om_sample_data\temp_hotest\hdr.adf"
+  File "..\build\om_sample_data\temp_hotest\prj.adf"
+  File "..\build\om_sample_data\temp_hotest\sta.adf"
+  File "..\build\om_sample_data\temp_hotest\w001001.adf"
+  File "..\build\om_sample_data\temp_hotest\w001001x.adf"
 
   CreateDirectory $INSTDIR\sample_data\temp_wettest
   SetOutPath $INSTDIR\sample_data\temp_wettest
   SetOverWrite try
-  File "..\om_sample_data\temp_wettest\dblbnd.adf"
-  File "..\om_sample_data\temp_wettest\hdr.adf"
-  File "..\om_sample_data\temp_wettest\prj.adf"
-  File "..\om_sample_data\temp_wettest\sta.adf"
-  File "..\om_sample_data\temp_wettest\w001001.adf"
-  File "..\om_sample_data\temp_wettest\w001001x.adf"
+  File "..\build\om_sample_data\temp_wettest\dblbnd.adf"
+  File "..\build\om_sample_data\temp_wettest\hdr.adf"
+  File "..\build\om_sample_data\temp_wettest\prj.adf"
+  File "..\build\om_sample_data\temp_wettest\sta.adf"
+  File "..\build\om_sample_data\temp_wettest\w001001.adf"
+  File "..\build\om_sample_data\temp_wettest\w001001x.adf"
 SectionEnd
 
 Section -AdditionalIcons
