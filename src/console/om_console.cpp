@@ -62,12 +62,12 @@ main( int argc, char **argv )
   g_log.setLevel( Log::Error );
   g_log.setPrefix( "Console" );
 
-  if ( argc < 2 )
-    g_log.error( 1, "\n%s <request>\n\n", argv[0] );
-
-  char *request_file = argv[1];
-
   try {
+
+    if ( argc < 2 )
+      g_log.error( 1, "\n%s <request>\n\n", argv[0] );
+
+    char *request_file = argv[1];
 
     AlgorithmFactory::searchDefaultDirs();
     OpenModeller om;
