@@ -107,13 +107,13 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="gdal_i.lib libexpat.lib libopenmodeller.lib"
+				AdditionalDependencies="gdal_i.lib libexpat.lib libopenmodeller_debug.lib"
 				OutputFile=".\Debug/om_distance_to_average_debug.dll"
 				LinkIncremental="2"
 				SuppressStartupBanner="TRUE"
 				AdditionalLibraryDirectories="$(GDAL_HOME)\lib,../build_debug/lib,$(EXPAT_HOME)/libs"
 				GenerateDebugInformation="TRUE"
-				ProgramDatabaseFile=".\Debug/om_distance_to_average.pdb"
+				ProgramDatabaseFile="$(OutDir)/$(TargetName).pdb"
 				ImportLibrary="$(OutDir)/$(TargetName).lib"
 				TargetMachine="1"/>
 			<Tool

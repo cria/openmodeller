@@ -32,7 +32,7 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="gdal_i.lib libexpat.lib libopenmodeller.lib"
+				AdditionalDependencies="gdal_i.lib libexpat.lib libopenmodeller_debug.lib"
 				OutputFile="$(OutDir)/$(ProjectName)_debug.dll"
 				AdditionalLibraryDirectories="$(GDAL_HOME)/lib,$(EXPAT_HOME)/libs,../build_debug/lib"
 				GenerateDebugInformation="TRUE"
