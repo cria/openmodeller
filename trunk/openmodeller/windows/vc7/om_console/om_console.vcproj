@@ -39,13 +39,13 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="gdal_i.lib libexpat.lib libopenmodeller.lib"
+				AdditionalDependencies="gdal_i.lib libexpat.lib libopenmodeller_debug.lib"
 				OutputFile=".\Debug/om_console_debug.exe"
 				LinkIncremental="2"
 				SuppressStartupBanner="TRUE"
 				AdditionalLibraryDirectories="$(GDAL_HOME)/lib,../build_debug/lib,$(EXPAT_HOME)/libs"
 				GenerateDebugInformation="TRUE"
-				ProgramDatabaseFile=".\Debug/om_console.pdb"
+				ProgramDatabaseFile="$(OutDir)/$(TargetName).pdb"
 				SubSystem="1"
 				TargetMachine="1"/>
 			<Tool

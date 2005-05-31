@@ -38,17 +38,17 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="libexpat.lib gdal_i.lib"
-				OutputFile="Debug/libopenmodeller.dll"
+				OutputFile="Debug/libopenmodeller_debug.dll"
 				LinkIncremental="2"
 				SuppressStartupBanner="TRUE"
 				AdditionalLibraryDirectories="$(GDAL_HOME)\lib,$(EXPAT_HOME)\libs"
 				IgnoreAllDefaultLibraries="FALSE"
 				IgnoreDefaultLibraryNames=""
 				GenerateDebugInformation="TRUE"
-				ProgramDatabaseFile=".\Debug/libopenmodeller.pdb"
+				ProgramDatabaseFile="$(OutDir)/$(TargetName).pdb"
 				GenerateMapFile="TRUE"
-				MapFileName=".\Debug/libopenmodeller.map"
-				ImportLibrary=".\Debug/libopenmodeller.lib"
+				MapFileName="$(OutDir)/$(TargetName).map"
+				ImportLibrary="$(OutDir)/$(TargetName).lib"
 				TargetMachine="1"/>
 			<Tool
 				Name="VCMIDLTool"
