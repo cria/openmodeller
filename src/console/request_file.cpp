@@ -302,7 +302,7 @@ RequestFile::makeModel( OpenModeller *om )
   // Serialize model, if requested
   if ( ! _model_file.empty() ) {
 
-    char* file_name = new char [_model_file.size()];
+    char* file_name = new char [_model_file.size() + 1];
     strcpy( file_name, _model_file.c_str() );
 
     ConfigurationPtr cfg = om->getConfiguration();
