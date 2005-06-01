@@ -55,6 +55,7 @@ public:
     Error   =4
   } Level;
 
+#ifndef SWIG
   class LogCallback {
   public:
     virtual void operator()( Level level, const std::string& msg ) = 0;
@@ -67,6 +68,7 @@ public:
   private:
     std::ostream& os;
   };
+#endif
 
 public:
 
