@@ -34,7 +34,7 @@
 				Name="VCLinkerTool"
 				AdditionalDependencies="gdal_i.lib libexpat.lib libopenmodeller_debug.lib"
 				OutputFile="$(OutDir)/$(ProjectName)_debug.dll"
-				AdditionalLibraryDirectories="$(GDAL_HOME)/lib,$(EXPAT_HOME)/libs,../build_debug/lib"
+				AdditionalLibraryDirectories="$(GDAL_HOME)/lib,$(EXPAT_HOME)/libs,../build_debug"
 				GenerateDebugInformation="TRUE"
 				SubSystem="2"
 				TargetMachine="1"/>
@@ -84,7 +84,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="gdal_i.lib libexpat.lib libopenmodeller.lib"
-				AdditionalLibraryDirectories="$(GDAL_HOME)/lib,$(EXPAT_HOME)/libs,../build/lib"
+				AdditionalLibraryDirectories="$(GDAL_HOME)/lib,$(EXPAT_HOME)/libs,../build"
 				GenerateDebugInformation="TRUE"
 				SubSystem="2"
 				OptimizeReferences="2"
