@@ -31,9 +31,10 @@
 
 #include <om_defs.hh>
 
-#include <stdio.h>
+#include <iostream>
+#include <string>
 
-//   Obs: Need to implement compatibility with sockets.
+#include <stdio.h>
 
 /****************************************************************/
 /****************************** Log *****************************/
@@ -47,19 +48,27 @@ class dllexp Log
 {
 public:
   typedef enum {
-    Debug, Info, Warn, Error
+    Debug   =0,
+    Default =1,
+    Info    =2,
+    Warn    =3,
+    Error   =4
   } Level;
 
+  class LogCallback {
+  public:
+    virtual void operator()( Level level, const std::string& msg ) = 0;
+  };
+
+  class OstreamCallback : public LogCallback {
+  public:
+    OstreamCallback( std::ostream& os );
+    void operator()( Level level, const std::string& msg );
+  private:
+    std::ostream& os;
+  };
 
 public:
-
-  /** 
-   * @param name Name of the output log file.
-   * @param pref Prefix to be shown on every message.
-   * @param overwrite If != 0 truncates the file before usage,
-   *  otherwise begin from the end.
-   */
-  Log( char *name, char *pref="", int overwrite=0 );
 
   /**
    * @param level Log level.
@@ -67,10 +76,9 @@ public:
    *  destructor.
    * @param pref Prefix to be shown on every message.
    */
-  Log( Level level=Warn, FILE *out=stdout, char *pref="" );
+  Log( Level level=Default, const char *pref="" );
 
   ~Log();
-
 
   /** Configure the logger.
    * 
@@ -79,46 +87,39 @@ public:
    *  destructor.
    * @param pref Prefix to be shown on every message.
    */
-  void set( Level level, FILE *out, char *pref="" );
+  void set( Level level, FILE *out, char const *pref="" );
+
+  /** Change the call back mechanism
+   *  The Log object takes ownership of the object
+   *  and will delete it when the Log is destroyed
+   *  or when setCallback is called again
+   */
+  void setCallback( LogCallback *lc );
 
   /** Change log level.*/
   void setLevel( Level level )  { _level = level; }
 
-  /** Set the log output. Do not closes the file in the
-   * destructor.
-   * @param out Log output file handle
-   */
-  void setOutput( FILE *out );
-
   /** Change prefix to be shown befeore any message.*/
-  void setPrefix( char *pref );
-
+  void setPrefix( const char *pref );
 
   // Not necessarily printed (depend on current log level).
   //
-  int debug( char *format, ... );  ///< 'Debug' level.
-  int info ( char *format, ... );  ///< 'Info' level.
+  void debug( const char *format, ... );  ///< 'Debug' level.
+  void info ( const char *format, ... );  ///< 'Info' level.
 
-  /** 'Info' level, but does not print "Info:<prefix>" before. */
-  int operator()( char *format, ... );
+  /** 'Default' level. */
+  void operator()( const char *format, ... );
 
   // Are necessarily printed in log.
-  int warn ( char *format, ... );  ///< stderr and continue.
-  int error( int exit_code, char *format, ... ); ///< stderr and exit.
-
-  /** Print 'size' bytes from memory counting from 'buf'.
-   * 'length' informs the number of bytes per line.
-   * Available only during 'Debug' level.*/
-  int buffer( void *buf, int size, int length=16 );
-
+  void warn ( const char *format, ... );  ///< stderr and continue.
+  void error( int exit_code, const char *format, ... ); ///< stderr and exit.
 
 private:
 
-  FILE *_log;
-  int   _close; ///< If not zero closes '_log' in destructor.
+  LogCallback* callback;
 
   Level  _level;
-  char  *_pref;
+  std::string _pref;
 };
 
 

@@ -32,16 +32,76 @@
 
 #include <Exceptions.hh>
 
+using std::ostream;
+using std::endl;
+using std::string;
+
 // WIN32 function defines
 #ifdef WIN32
 #define snprintf		_snprintf
 #define vsnprintf		_vsnprintf
 #endif
 
-
 // A default logger object.
-Log g_log( Log::Info , stderr );
+Log g_log( Log::Info );
 
+/* This callback class is a simple interface to the old FILE*
+ * mechanism from standard C.
+ */
+class StdFileLogCallback : public Log::LogCallback {
+public:
+  StdFileLogCallback( FILE* file ) :
+    file( file )
+  {}
+  void operator()( Log::Level level, const std::string& msg ) {
+    fprintf( file, msg.c_str() );
+  }
+  FILE *file;
+};
+
+/****************************************************************/
+/******************** OstreamCallback ***************************/
+
+Log::OstreamCallback::OstreamCallback( ostream& os ) :
+  os( os )
+{}
+
+void
+Log::OstreamCallback::operator()(Level level, const string& msg ) {
+  os << msg;
+}
+
+/****************************************************************/
+/******************** output function ***************************/
+const char *
+LevelLabels[5] =
+  {
+    "[Debug] ",
+    "", 
+    "[Info] ",
+    "[Warn] ",
+    "[Error] "
+  };
+
+static void
+FormatAndWrite( Log::LogCallback& lc, Log::Level level, std::string _pref, const char* format, va_list ap ) {
+
+  const int buf_size = 1024;
+  char buf[buf_size];
+
+  // Print in 'buf'.
+  //
+  // Header.
+  snprintf( buf, buf_size, "%s%s", LevelLabels[level], _pref.c_str() );
+
+  // Print message after header.
+  int len = strlen( buf );
+  char *end = buf + len;
+  vsnprintf( end, buf_size - len, format, ap );
+
+  lc( level, buf );
+
+}
 
 /****************************************************************/
 /****************************** Log *****************************/
@@ -49,33 +109,11 @@ Log g_log( Log::Info , stderr );
 /*******************/
 /*** constructor ***/
 
-Log::Log( char *name, char *pref, int overwrite )
+Log::Log( Log::Level level, const char *pref ) :
+  callback( new Log::OstreamCallback( std::cerr ) ),
+  _level( level )
 {
-  _level = Warn;
-
-  _pref = 0;
   setPrefix( pref );
-
-  const char *str_open = overwrite ? "w+" : "a";
-
-  if ( (_log = fopen( name, str_open )) == NULL )
-    {
-      fprintf( stderr, "Log: could not create or open %s :(\n",
-	       name );
-      exit( 1 );
-    }
-
-  // Closes '_log' in destructor.
-  _close = 1;
-}
-
-/*******************/
-/*** constructor ***/
-
-Log::Log( Log::Level level, FILE *out, char *pref )
-{
-  _pref = 0;
-  set( level, out, pref );
 }
 
 
@@ -84,228 +122,134 @@ Log::Log( Log::Level level, FILE *out, char *pref )
 
 Log::~Log()
 {
-  if ( _close )
-    fclose( _log );
-  if ( _pref )
-    delete [] _pref;
+  if (callback)
+    delete callback;
 }
 
-
-/***********/
-/*** set ***/
+/******************/
+/*** set all parameters ***/
 void
-Log::set( Log::Level level, FILE *out, char *pref )
+Log::set( Log::Level level, FILE* out, char const *pref )
 {
   setLevel( level );
-  setOutput( out );
+  setCallback( new StdFileLogCallback( out ) );
   setPrefix( pref );
 }
 
-
 /******************/
-/*** set Output ***/
+/*** set Callback ***/
 void
-Log::setOutput( FILE *out )
+Log::setCallback( LogCallback *lc )
 {
-  _log   = out;
-  _close = 0;   // Does not close '_log' in destructor.
+  if (callback)
+    delete callback;
+  callback = lc;
 }
 
 
 /******************/
 /*** set Prefix ***/
 void
-Log::setPrefix( char *pref )
+Log::setPrefix( const char *pref )
 {
- if ( _pref )
-    delete [] _pref;
-
-  // Without prefix.
-  if ( ! pref )
-    pref = "[]";
-
-  _pref = new char[ 1 + strlen(pref) ];
-  strcpy( _pref, pref );
+  _pref = pref;
+  // If the prefix is non-empty, we need a trailing
+  // space
+  if ( _pref.size() > 0 ) 
+    _pref += " ";
 }
 
 
 /*************/
 /*** debug ***/
-int
-Log::debug( char *format, ... )
+void
+Log::debug( const char *format, ... )
 {
-  if ( _level > Debug )
-    return 0;
+  if ( _level > Debug || !callback )
+    return;
 
   va_list ap;
   va_start( ap, format );
-  fprintf( _log, "[Debug] %s ", _pref );
-  vfprintf( _log, format, ap );
-  fflush( _log );
+  FormatAndWrite( *callback, Debug, _pref, format, ap );
   va_end( ap );
 
-  return 1;
+  return;
 }
 
 
 /************/
 /*** info ***/
-int
-Log::info( char *format, ... )
+void
+Log::info( const char *format, ... )
 {
-  if ( _level > Info )
-    return 0;
+  if ( _level > Info || !callback )
+    return;
 
   va_list ap;
   va_start( ap, format );
-  fprintf( _log, "[Info] %s ", _pref );
-  vfprintf( _log, format, ap );
-  fflush( _log );
+  FormatAndWrite( *callback, Info, _pref, format, ap );
   va_end( ap );
 
-  return 1;
+  return;
 }
 
 
 /*******************/
 /*** operator () ***/
-int
-Log::operator()( char *format, ... )
+void
+Log::operator()( const char *format, ... )
 {
-  if ( _level > Info )
-    return 0;
+  if ( _level > Default || !callback )
+    return;
 
   va_list ap;
   va_start( ap, format );
-  vfprintf( _log, format, ap );
-  fflush( _log );
+  FormatAndWrite( *callback, Default, _pref, format, ap );
   va_end( ap );
 
-  return 1;
+  return;
 }
 
 
 /************/
 /*** warn ***/
-int
-Log::warn( char *format, ... )
+void
+Log::warn( const char *format, ... )
 {
-  if ( _level > Warn )
-    return 0;
+  if ( _level > Warn || !callback )
+    return;
 
-  const int buf_size = 1024;
-  char buf[buf_size];
-
-  // Print in 'buf'.
-  //
   va_list ap;
   va_start( ap, format );
-
-  // Header.
-  snprintf( buf, buf_size, "[Warn] %s ", _pref );
-
-  // Print message after header.
-  int len = strlen( buf );
-  char *end = buf + len;
-  vsnprintf( end, buf_size - len, format, ap );
+  FormatAndWrite( *callback, Warn, _pref, format, ap );
   va_end( ap );
 
-  /*
-  // Print 'buf' in standard error output.
-  if ( _log != stderr )
-    fprintf( stderr, "%s", buf );
-  */
-
-  // Print 'buf' in log stream.
-  fprintf( _log, "%s", buf );
-
-
-  return 1;
+  return;
 }
 
 
 /*************/
 /*** error ***/
-int
-Log::error( int exit_code, char *format, ... )
+void
+Log::error( int exit_code, const char *format, ... )
 {
-  if ( _level > Error )
-    return 0;
+  if ( _level > Error || !callback )
+    return;
+
+  va_list ap;
+  va_start( ap, format );
+  FormatAndWrite( *callback, Error, _pref, format, ap );
+  va_end( ap );
 
   const int buf_size = 1024;
   char buf[buf_size];
 
   // Print in 'buf'.
   //
-  va_list ap;
   va_start( ap, format );
-
-  // Header.
-  snprintf( buf, buf_size, "[Error] %s ", _pref );
-
-  // Print message after header.
-  int len = strlen( buf );
-  char *end = buf + len;
-  vsnprintf( end, buf_size - len, format, ap );
+  vsnprintf( buf, buf_size, format, ap );
   va_end( ap );
-
-  /*
-  // Print 'buf' in standard error output.
-  if ( _log != stderr )
-    fprintf( stderr, "%s", buf );
-  */
-
-  // Print 'buf' in log stream.
-  fprintf( _log, "%s", buf );
-
 
   throw OmException( buf );
 }
-
-
-/**************/
-/*** buffer ***/
-int
-Log::buffer( void *buf, int buf_size, int length )
-{
-  if ( _level > Debug )
-    return 0;
- 
-  int c;
-
-  debug( "Log::buffer( %p, %d )\n", buf, buf_size );
-
-  unsigned char *p = (unsigned char *) buf;
-  unsigned char *e = p + buf_size;
-  unsigned char *aux;
-
-  do
-    {
-      // Hold beginning of line.
-      aux = p;
-
-      // Bytes shown as hexadecimal.
-      debug( "%p: ", p );
-      for ( c = 0; c < length; c++ )
-        {
-          if ( p >= e ) break;
-          debug( "%02x ", *p++ );
-        }
-
-      // Bytes shown as characters.
-      p = aux;
-      debug( " " );
-      for ( c = 0; c < length; c++, *p++ )
-        {
-          if ( p >= e ) break;
-          debug( "%c", (*p < 32 ? '.' : *p) );
-        }
-
-      debug( "\n" );
-      
-    } while ( p < e );
-
-  return 0;
-}
-
 
