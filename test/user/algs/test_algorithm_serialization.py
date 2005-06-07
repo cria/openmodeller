@@ -26,6 +26,10 @@
 ###############################################################################
 # 
 #  $Log$
+#  Revision 1.4  2005/06/07 13:33:32  scachett
+#  Changed filename of expected results so it does not conflict with expected
+#  results of algorithm run tests.
+#
 #  Revision 1.3  2005/05/17 18:17:41  scachett
 #  Fixed bug in python tests that prevented last algorithm to be tested.
 #  Python range(1,n) function returns a range between 1 and n-1 not 1 and n.
@@ -98,7 +102,7 @@ def algorithm_serialization(args, options):
     filename_prefix = "%s %s" % (alg_id, spp_name)
     bmp_filename = filename_prefix + " projection.bmp"
     xml_filename = filename_prefix + ".xml"
-    expected_filename = filename_prefix + " expected.bmp"
+    expected_filename = filename_prefix + " expected serializ.bmp"
 
     mod = om.OpenModeller()
     mod.setOccurrences(presences, absences)
