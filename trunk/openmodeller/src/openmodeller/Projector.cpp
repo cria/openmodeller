@@ -38,6 +38,9 @@
 
 #include <om_area_stats.hh>
 
+#include <utility>
+using std::pair;
+
 /******************/
 /*** create Map ***/
 void
@@ -62,53 +65,49 @@ Projector::createMap( const Model& model,
   // Normalize the environment.
   model->setNormalization( env );
  
-  // Transformer used by the resulting map.
-  GeoTransform *gt = map->getGT();
-
-  // Dimension of environment space.
-  int dim = env->numLayers();
-
-  Coord lg, lt;
-  Coord y0 = hdr.ymin; // + 0.5 * hdr.ycel;
-  Coord x0 = hdr.xmin; // + 0.5 * hdr.xcel;
-
-  float progress = 0.0;
-  float progress_step = hdr.ycel / (hdr.ymax - y0);
-
   if ( areaStats ) {
     areaStats->reset();
   }
 
-  for ( float y = y0; y < hdr.ymax; y += hdr.ycel ) {
-    for ( float x = x0; x < hdr.xmax; x += hdr.xcel ) {
-      // Transform coordinates (x,y) that are in the resulting
-      // map system, in (lat, long) according to the system 
-      // accepted by the environment (env).
-      gt->transfOut( &lg, &lt, x, y );
+  MapIterator fin;
+  MapIterator it = map->begin();
 
-      Sample const &amb = env->get( lg, lt );
-      // TODO: use mask to check if pixel should contain prediction
-      // Read environmental values and find the output value.
-      if ( amb.size() == 0 ) {
-	// Write noval on the map.
-	map->put( lg, lt );
-      }
-      else {
-	Scalar val = model->getValue( amb );
-	if ( val < 0.0 ) val = 0.0;
-	else if ( val > 1.0 ) val = 1.0;
-	if ( areaStats ) {
-	  areaStats->addPrediction( val ); 
-	}
-	// Write value on map.
-	map->put( lg, lt, val );
-      }
+  int pixels = 0;
+  int pixelcount = hdr.ydim * hdr.xdim;
+  int pixelstep = pixelcount/20;
+  while( it != fin ) {
+    
+    pair<Coord,Coord> lonlat = *it;
 
-	  
+    pixels++;
+    ++it;
+
+    Coord lg = lonlat.first;
+    Coord lt = lonlat.second;
+
+    Sample const &amb = env->get( lg, lt );
+    // TODO: use mask to check if pixel should contain prediction
+    // Read environmental values and find the output value.
+    if ( amb.size() == 0 ) {
+      // Write noval on the map.
+      map->put( lg, lt );
     }
+    else {
+      Scalar val = model->getValue( amb );
+      if ( val < 0.0 ) val = 0.0;
+      else if ( val > 1.0 ) val = 1.0;
+      if ( areaStats ) {
+	areaStats->addPrediction( val ); 
+      }
+      // Write value on map.
+      map->put( lg, lt, val );
+    }
+
+    
     // Call the callback function if it is set.
-    if ( mapcommand ) {
-      if ( (progress += progress_step) > 1.0 )
+    if ( mapcommand && pixels%pixelstep==0) {
+      float progress = pixels/(float)pixelcount;
+      if ( progress > 1.0 )
 	progress = 1.0;
       try 
 	{
@@ -116,8 +115,17 @@ Projector::createMap( const Model& model,
 	}
       catch( ... ) {}
     }
-
+    
   }
   
+  // Call the callback function if it is set.
+  if ( mapcommand ) {
+    try 
+      {
+	(*mapcommand)( 1.0 );
+      }
+    catch( ... ) {}
+    }
+
 }
 
