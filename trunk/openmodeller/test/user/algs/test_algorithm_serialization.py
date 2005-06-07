@@ -26,6 +26,9 @@
 ###############################################################################
 # 
 #  $Log$
+#  Revision 1.5  2005/06/07 14:53:48  scachett
+#  Replaced spaces by underscores in all output filenames.
+#
 #  Revision 1.4  2005/06/07 13:33:32  scachett
 #  Changed filename of expected results so it does not conflict with expected
 #  results of algorithm run tests.
@@ -99,10 +102,10 @@ def algorithm_serialization(args, options):
 
     alg_params = omtest.get_alg_default_params(alg_id)
 
-    filename_prefix = "%s %s" % (alg_id, spp_name)
-    bmp_filename = filename_prefix + " projection.bmp"
+    filename_prefix = "%s_%s" % (alg_id, spp_name)
+    bmp_filename = filename_prefix + "_projection.bmp"
     xml_filename = filename_prefix + ".xml"
-    expected_filename = filename_prefix + " expected serializ.bmp"
+    expected_filename = filename_prefix + "_expected_serializ.bmp"
 
     mod = om.OpenModeller()
     mod.setOccurrences(presences, absences)
