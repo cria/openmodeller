@@ -55,9 +55,6 @@ public:
   /** Returns the parameter's id. */
   char const *id() const { return _id; }
 
-  /** Returns an allocated copy of id. */
-  char *idCopy() const { return newCopy( _id ); }
-
   /** Set parameter's id. */
   char *setId( char const *id )  { return newCopy(&_id, id); }
 
@@ -66,9 +63,6 @@ public:
 
   /** Returns the parameter's value converted to double. */
   double valueReal();
-
-  /** Returns an allocated copy of value. */
-  char *valueCopy()  { return newCopy( _value ); }
 
   /** Set parameter's value. */
   char *setValue( char  const *val )  { return newCopy(&_value,val); }
