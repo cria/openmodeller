@@ -308,13 +308,10 @@ AC_CONFIG_FILES([
 	test/library/Makefile
 	src/Makefile
 	src/lib/Makefile
-	src/lib/env_io/Makefile
-	src/lib/models/Makefile
 	src/inc/Makefile
 	src/inc/env_io/Makefile
 	src/inc/models/Makefile
 	src/console/Makefile
-	src/console/graph/Makefile
 	src/soap/Makefile
 	src/swig/Makefile
 	src/swig/python/Makefile

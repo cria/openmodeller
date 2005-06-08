@@ -8,10 +8,10 @@
 # WITHOUT ANY WARRANTY, to the extent permitted by law; without even the
 # implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
+AUTOMAKE_OPTIONS=subdir-objects
+
 DPLUGIN_PATH=-DPLUGINPATH=\"$(libdir)/openmodeller/\"
 DCONFIG_FILE=-DCONFIG_FILE=\"om_config\"
-
-SUBDIRS = env_io models
 
 lib_LTLIBRARIES = libopenmodeller.la
 
@@ -36,8 +36,17 @@ libopenmodeller_la_SOURCES = \
 	Sample.cpp \
 	conf_matrix.cpp \
 	area_stats.cpp \
-	projector.cpp 
+	projector.cpp \
+	env_io/geo_transform.cpp \
+	env_io/header.cpp \
+	env_io/map.cpp \
+	env_io/map_iter.cpp \
+	env_io/raster.cpp \
+	env_io/raster_gdal.cpp \
+	models/AlgoAdapterModel.cpp \
+	models/AverageModel.cpp \
+	models/ScaledModel.cpp
 
 libopenmodeller_la_LDFLAGS = -no-undefined
 libopenmodeller_la_CPPFLAGS = -I../inc -I../.. $(DPLUGIN_PATH) $(DCONFIG_FILE) $(EXPAT_CFLAGS)
-libopenmodeller_la_LIBADD = env_io/libenv_io.la models/libmodels.la $(GDAL_LIB) $(EXPAT_LDFLAGS) $(EXPAT_LIBS)
+libopenmodeller_la_LIBADD = $(GDAL_LIB) $(EXPAT_LDFLAGS) $(EXPAT_LIBS)
