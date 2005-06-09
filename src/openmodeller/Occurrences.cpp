@@ -38,6 +38,7 @@
 #include <string>
 using std::string;
 
+
 /****************************************************************/
 /************************ Occurrences ***************************/
 
@@ -93,6 +94,7 @@ OccurrencesImpl::getConfiguration() const
     gt_->transfIn( &x, &y );
     cfg->addNameValue( "X", x );
     cfg->addNameValue( "Y", y );
+    cfg->addNameValue( "Sample", (*oc)->environment() );
     config->addSubsection( cfg );
 
     oc++;
@@ -139,6 +141,86 @@ OccurrencesImpl::setConfiguration( const ConstConfigurationPtr& config )
 
 }
 
+void 
+OccurrencesImpl::setEnvironment( const EnvironmentPtr& env, const char *type )
+{
+  if ( isEmpty() )
+    return;
+
+  OccurrencesImpl::iterator oc = occur_.begin();
+  OccurrencesImpl::iterator fin = occur_.end();
+
+  while (oc != fin ) {
+
+    Sample sample = env->get( (*oc)->x(), (*oc)->y() );
+
+    if ( sample.size() == 0 ) {
+
+      g_log( "%s Point at (%f,%f) has no environment.  It is removed.\n", type, (*oc)->x(), (*oc)->y() );
+      oc = occur_.erase( oc );
+      fin = occur_.end();
+
+    } else {
+
+      (*oc)->setUnnormalizedEnvironment( sample );
+      (*oc)->setNormalizedEnvironment( Sample() );
+
+      ++oc;
+    }
+
+  }
+}
+
+/*****************/
+/*** normalize ***/
+void 
+OccurrencesImpl::normalize(bool useNormalization,
+			   const Sample& offsets, const Sample& scales)
+{
+  if (!useNormalization)
+    return;
+
+  OccurrencesImpl::const_iterator occ = occur_.begin();
+  OccurrencesImpl::const_iterator end = occur_.end();
+  
+  int dim = (*occ)->environment().size();
+
+  // set the normalized values 
+  while ( occ != end ) 
+    {
+      Sample sample = (*occ)->environment();
+      Sample normSample(dim);
+
+      for (int i = 0; i < dim; i++)
+	  normSample[i] = sample[i] * scales[i] + offsets[i];
+      
+      (*occ)->setNormalizedEnvironment( normSample );
+
+      ++occ;
+    }
+}
+
+
+void
+OccurrencesImpl::getMinMax(Sample * min, Sample * max ) const
+{
+  OccurrencesImpl::const_iterator occ = occur_.begin();
+  OccurrencesImpl::const_iterator end = occur_.end();
+
+  *min = Sample( (*occ)->environment() );
+  *max = Sample( (*occ)->environment() );
+
+  // grab max and min values per variable
+  while ( occ != end ) 
+    {
+      Sample sample = (*occ)->environment();
+      *min &= sample;
+      *max |= sample;
+      ++occ;
+    }
+}
+
+
 /**************/
 /*** insert ***/
 void
@@ -154,6 +236,21 @@ OccurrencesImpl::createOccurrence( Coord longitude, Coord latitude,
   insert( new OccurrenceImpl( longitude, latitude, error, abundance,
 			      num_attributes, attributes,
 			      num_env, env ) );
+  
+}
+
+void 
+OccurrencesImpl::createOccurrence( Coord longitude, Coord latitude,
+				   Scalar error, Scalar abundance,
+				   std::vector<double> attributes,
+				   std::vector<double> env)
+{
+  // Transforms the given coordinates in the common openModeller
+  // coordinate system.
+  gt_->transfOut( &longitude, &latitude );
+  
+  insert( new OccurrenceImpl( longitude, latitude, error, abundance,
+			      attributes, env ) );
   
 }
 
@@ -182,6 +279,30 @@ OccurrencesImpl::clone() const
   return clone;
 }
 
+bool
+OccurrencesImpl::hasEnvironment() const
+{
+  if (!numOccurrences())
+      return false;
+
+  const_iterator it = occur_.begin();
+  return (*it)->hasEnvironment();
+}
+
+int
+OccurrencesImpl::dimension() const
+{
+  if (hasEnvironment())
+    {
+      const_iterator it = occur_.begin();
+      return (*it)->environment().size();
+    }
+  else
+    { 
+      return 0;
+    }
+}
+
 /******************/
 /*** get Random ***/
 ConstOccurrencePtr
@@ -200,6 +321,20 @@ OccurrencesImpl::erase( const iterator& it ) {
   occur_.pop_back();
   return it;
 }
+
+
+void 
+OccurrencesImpl::appendFrom(const OccurrencesPtr& source)
+{
+  const_iterator it = source->begin();
+  const_iterator end = source->end();
+  while ( it != end)
+    {
+      insert(*it);
+      ++it;
+    }
+}
+
 
 /*************/
 /*** print ***/

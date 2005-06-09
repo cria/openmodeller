@@ -34,6 +34,7 @@
 #include <occurrence.hh>
 #include <environment.hh>
 #include <configurable.hh>
+#include <normalizable.hh>
 
 #include <refcount.hh>
 
@@ -62,6 +63,7 @@ SamplerPtr createSampler(const EnvironmentPtr& env,
 			 const OccurrencesPtr& absence = OccurrencesPtr() );
 
 SamplerPtr createSampler( const ConstConfigurationPtr& config );
+
 /** 
  * Base class to create samplers of environmental variables and
  * occurrence data. Each derived class can implement different 
@@ -69,7 +71,7 @@ SamplerPtr createSampler( const ConstConfigurationPtr& config );
  * distribution of occurrence data, disproportional sampling
  * regarding presence and absence data, etc.
  */
-class dllexp SamplerImpl : public Configurable, private ReferenceCountedObject
+class dllexp SamplerImpl : public Configurable, public Normalizable, private ReferenceCountedObject
 {
   friend class ReferenceCountedPointer<SamplerImpl>;
   friend class ReferenceCountedPointer<const SamplerImpl>;
@@ -95,11 +97,11 @@ public:
    *  be normalized according to the interval [min, max].
    *  Returns through offsets, scales the normalization parameters.
    */
-  void computeNormalization(Scalar min, Scalar max, Sample *offsets, Sample *scales ) const;
+  void getMinMax(Sample * min, Sample * max ) const;
 
   /** Set specific normalization parameters
    */
-  void setNormalization( bool use_norm, const Sample& offsets, const Sample& scales );
+  void normalize( bool use_norm, const Sample& offsets, const Sample& scales );
 
   /** Number of independent variables (environmental variables). */
   int numIndependent() const;
@@ -157,11 +159,12 @@ public:
 
   void setConfiguration ( const ConstConfigurationPtr& );
 
-protected:
+private:
 
   ConstOccurrencePtr getRandomOccurrence( const OccurrencesPtr& occur ) const;
 
-  void initialize();
+  // this was former method ::initialize()
+  void setEnvironmentInOccurrences();
   
   OccurrencesPtr _presence;
   OccurrencesPtr _absence;

@@ -67,6 +67,28 @@ Sample::Sample( size_t size, Scalar const * values ) :
   copy( size, values );
 }
 
+Sample::Sample( std::vector<Scalar> values ) :
+  size_( 0 ),
+  value_( 0 )
+{
+  size_ = values.size();
+  if ( size_ == 0 ) {
+    return;
+  }
+
+  alloc( size_ );
+
+  std::vector<Scalar>::const_iterator it = values.begin();
+  std::vector<Scalar>::const_iterator end = values.end();
+
+  Scalar *v = value_;
+  while (it != end) {
+    *v = (*it);
+    ++v;
+    ++it;
+  }
+}
+
 Sample::Sample( const Sample & rhs ) :
   size_( 0 ),
   value_( 0 )

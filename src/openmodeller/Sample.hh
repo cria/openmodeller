@@ -14,6 +14,7 @@
 #include <om_defs.hh>
 #include <cstddef>
 #include <iostream>
+#include <vector>
 
 // Decl of SExp which is defined in SampleExpr.hh
 template< typename T > class SExpr;
@@ -34,6 +35,10 @@ public:
   // Construct one with these values.
   // Copies the contents of the values array.
   Sample( std::size_t size, Scalar const * values );
+
+  // Construct one with these values from a std::vector<Scalar>
+  Sample( std::vector<Scalar> );
+
 
   // Copy one.
   // Currently implemented slowly by doing an

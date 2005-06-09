@@ -332,47 +332,33 @@ EnvironmentImpl::isCategorical( int i )
 
 /*****************/
 /*** normalize ***/
-int
-EnvironmentImpl::computeNormalization( Scalar min, Scalar max, Sample *offsets, Sample *scales ) const
+void 
+EnvironmentImpl::getMinMax( Sample * min, Sample * max ) const
 {
-  int n = 0;
-
   int nlayers = _layers.size();
-  offsets->resize( nlayers );
-  scales->resize( nlayers );
 
-  int i =0;
+  int i = 0;
 
   layers::const_iterator lay = _layers.begin();
   layers::const_iterator end = _layers.end();
 
   while ( lay != end ) {
     Map *map = lay->second;
-    Scalar scale = 1.0;
-    Scalar offset = 0.0;
 
     if ( !map->isCategorical() ) {
       Scalar mapMin, mapMax;
       map->getMinMax( &mapMin, &mapMax );
-      if ( mapMax != mapMin ) {
-        scale = (max-min)/(mapMax-mapMin);
-        offset = min - scale * mapMin;
-        n++;
-      }
+      (*min)[i] = mapMin;
+      (*max)[i] = mapMax;
     }
 
-    (*scales)[i] = scale;
-    (*offsets)[i] = offset;
-    
     ++lay;
     i++;
   }
-
-  return n;
 }
 
 void
-EnvironmentImpl::setNormalization( bool use_norm, const Sample& offsets, const Sample& scales ) {
+EnvironmentImpl::normalize( bool use_norm, const Sample& offsets, const Sample& scales ) {
   _normalize = use_norm;
   _offsets = offsets;
   _scales = scales;

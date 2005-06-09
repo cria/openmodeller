@@ -33,6 +33,8 @@
 #include <om_defs.hh>
 #include <occurrence.hh>
 #include <configurable.hh>
+#include <environment.hh>
+#include <normalizable.hh>
 #include <refcount.hh>
 #include <env_io/geo_transform.hh>
 
@@ -50,7 +52,7 @@ typedef ReferenceCountedPointer<const OccurrencesImpl> ConstOccurrencesPtr;
  * Representation of a set of occurrences.
  *
  */
-class dllexp OccurrencesImpl : public Configurable, private ReferenceCountedObject
+class dllexp OccurrencesImpl : public Configurable, public Normalizable, private ReferenceCountedObject
 {
   friend class ReferenceCountedPointer<OccurrencesImpl>;
   friend class ReferenceCountedPointer<const OccurrencesImpl>;
@@ -103,6 +105,15 @@ public:
   /** coordinate system name */
   char const * coordSystem() const { return cs_.c_str(); }
 
+  /* Indicates whether the object contains environmental samples
+   * that can be used instead of a full blown Environment object
+   */
+  bool hasEnvironment() const;
+
+  /* Dimension of environmental space in samples stored in this object
+   */
+  int dimension() const;
+
   /** set the coordinate system
    *
    *  All occurrences inserted after this call are assumed to be
@@ -120,11 +131,21 @@ public:
    * @param attributes Vector with possible modelling attributes.
    * @param num_env Number of environment variables at sample
    * @param env Vector with environment variables.
+   * 
+   * deprecated by STL vector version.
    */
   void createOccurrence( Coord longitude, Coord latitude,
 			 Scalar error, Scalar abundance,
 			 int num_attributes = 0, Scalar *attributes = 0,
 			 int num_env = 0, Scalar *env = 0 );
+
+  /** Create an occurrence using STL vectors to input attributes and
+   *  environment data
+   */
+  void createOccurrence( Coord longitude, Coord latitude,
+			 Scalar error, Scalar abundance,
+			 std::vector<double> attributes,
+			 std::vector<double> env);
 
   /** Add an occurrence created outside. */
   void insert( const OccurrencePtr& );
@@ -157,6 +178,24 @@ public:
 
   /** Choose an occurrence at random. */
   ConstOccurrencePtr getRandom() const;
+
+  // normalizable interface
+  void getMinMax( Sample * min, Sample * max ) const;
+
+  void normalize( bool useNormalization, 
+		  const Sample& offsets, const Sample& scales );
+
+
+  /** Sets environment object in each occurrence object
+   */
+  void setEnvironment( const EnvironmentPtr& env, 
+		       const char *type = "Sample" );
+
+  /** Appends all occurrences from source
+   * @param source Occurrences object where occurrence pointers will
+   *        be appended from.
+   */
+  void appendFrom(const OccurrencesPtr& source);
 
   /** Print occurrence data and its points. */
   void print( char *msg="" ) const;

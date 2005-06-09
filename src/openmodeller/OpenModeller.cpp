@@ -179,6 +179,11 @@ OpenModeller::numAvailableAlgorithms()
   return AlgorithmFactory::numAvailableAlgorithms();
 }
 
+bool
+OpenModeller::hasEnvironment()
+{
+  return ( _env || ( (_presence)? _presence->hasEnvironment() : false ) );
+}
 
 /***********************/
 /*** set Occurrences ***/
@@ -224,24 +229,21 @@ OpenModeller::setAlgorithm( char const *id, int nparam,
 {
   if ( nparam && ! param )
     g_log.error( 1, "Incoherent number of parameters and parameters pointer\n" );
-
-  if (!_samp)
+  
+  if (!hasEnvironment())
     {
-      if (!_env)
-	{
-	  g_log( "Sampler could not initialized. Environment not set.\n" );
-	  return 0;
-	}
-      else if (!_presence)
-	{
-	  g_log( "Sampler could not initialized. Occurrences not set.\n" );
-	  return 0;
-	}
-      else
-	{
-	  // _env and _presence are both set
-	  setSampler( createSampler(_env, _presence, _absence));
-	}
+      g_log( "Sampler could not initialized. Environment not set.\n" );
+      return 0;
+    }
+  else if (!_presence)
+    {
+      g_log( "Sampler could not initialized. Occurrences not set.\n" );
+      return 0;
+    }
+  else
+    {
+      // _env and _presence are both set
+      setSampler( createSampler(_env, _presence, _absence));
     }
 
   _alg = AlgorithmFactory::newAlgorithm( id );
@@ -464,7 +466,17 @@ OpenModeller::getActualAreaStats()
 /******* getActualAreaStats *******/
 AreaStats * OpenModeller::getEstimatedAreaStats(double proportionAreaToSample)
 {
+  return getEstimatedAreaStats(_env, proportionAreaToSample);
+}
+
+AreaStats * OpenModeller::getEstimatedAreaStats(const ConstEnvironmentPtr& env,
+						double proportionAreaToSample)
+{
   int i, sampleSize, numCells, xdim, ydim;
+
+  if ( !env)
+    // this method does not work without _env properly set
+    return NULL;
 
   if ( !_estimatedAreaStats )
     { _estimatedAreaStats = new AreaStats; }
@@ -474,13 +486,13 @@ AreaStats * OpenModeller::getEstimatedAreaStats(double proportionAreaToSample)
   // get number of cells to sample
   // note that the total area does not take the mask into account
   // thus all cells (masked or unmasked) are counted
-  _env->getMask()->getDim(&xdim, &ydim);
+  env->getMask()->getDim(&xdim, &ydim);
   numCells = xdim * ydim; 
 
   sampleSize = (int) (numCells * proportionAreaToSample);
   for (i = 0; i < sampleSize; i++)
     { 
-      const Sample& sample = _env->getRandom();
+      const Sample& sample = env->getRandom();
       _estimatedAreaStats->addPrediction(_alg->getValue(sample)); 
     }
 
