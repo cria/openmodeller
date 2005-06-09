@@ -309,8 +309,6 @@ AC_CONFIG_FILES([
 	src/Makefile
 	src/lib/Makefile
 	src/inc/Makefile
-	src/inc/env_io/Makefile
-	src/inc/models/Makefile
 	src/console/Makefile
 	src/soap/Makefile
 	src/swig/Makefile
