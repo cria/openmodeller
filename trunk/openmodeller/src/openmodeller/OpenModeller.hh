@@ -317,6 +317,8 @@ public:
    *  use as sample size.
    */
   AreaStats * getEstimatedAreaStats(double proportionAreaToSample = 0.01);
+  AreaStats * getEstimatedAreaStats(const ConstEnvironmentPtr& env, 
+				    double proportionAreaToSample = 0.01);
 
   ConfusionMatrix *getConfusionMatrix();
 
@@ -330,6 +332,8 @@ private:
    *  have been defined. If not, an error message is returned.
    */
   char *parameterModelCheck();
+
+  bool hasEnvironment();
 
   SamplerPtr _samp;           ///< Sampler object
   AlgorithmPtr _alg;          ///< Algorithm object

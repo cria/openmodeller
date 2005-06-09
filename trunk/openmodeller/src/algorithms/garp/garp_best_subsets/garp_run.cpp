@@ -154,11 +154,17 @@ int AlgorithmRun::calculateCommission()
 
   // get random points from the background to estimate 
   // area predicted present
+  bool hasAbsences = (_train_sampler->numAbsence() != 0);
   for (i = 0; i < _commission_samples; i++)
     {
-      ConstOccurrencePtr occ = _train_sampler->getPseudoAbsence();
+      ConstOccurrencePtr occ;
+      if (hasAbsences)
+	occ = _train_sampler->getAbsence();
+      else
+	occ = _train_sampler->getPseudoAbsence();
+
       Scalar value = _alg->getValue(occ->environment()); 
-      // discard novalue (-1); zero is irrelevant to the sim
+      // discard novalue (-1); zero is irrelevant to the sum
       if (value > 0)
 	sum += value;
     }

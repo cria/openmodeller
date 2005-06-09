@@ -29,6 +29,14 @@
 ###############################################################################
 # 
 # $Log$
+# Revision 1.5  2005/06/09 02:14:44  scachett
+# Merged branch-sampler-matrix-input2 to CVS HEAD.
+# This set of changes allow OM to take Occurrences objects already
+# filled with Sample objects. In this case OM doesn't need an Environment
+# object to get env data samples from.
+# This feature allows users to gather data from several different env datasets
+# (time-educated sampling) or from a table (depending on client implementation).
+#
 # Revision 1.4  2005/05/17 18:17:41  scachett
 # Fixed bug in python tests that prevented last algorithm to be tested.
 # Python range(1,n) function returns a range between 1 and n-1 not 1 and n.
@@ -312,7 +320,7 @@ def get_report_entry( test_name, result, links, id ):
     return report_entry
 
 
-def get_map_results_obj( mod, presences, absences,
+def get_map_results_obj( mod, envObj, presences, absences,
                          actual_filename, expected_filename, model_filename ):
     
     result = {}
@@ -325,26 +333,45 @@ def get_map_results_obj( mod, presences, absences,
     
     # get map statistics
     act = mod.getActualAreaStats()
-    est = mod.getEstimatedAreaStats(0.01)
 
     result["Act_TotalArea"] = str(act.getTotalArea())
-    result["Est_TotalArea"] = str(est.getTotalArea())
     result["Act_AreaPresent"] = str(act.getAreaPredictedPresent())
-    result["Est_AreaPresent"] = str(est.getAreaPredictedPresent())
-    result["Act_PercPresent"] = str(round(100.0 * act.getAreaPredictedPresent() / act.getTotalArea(), 2))
-    result["Est_PercPresent"] = str(round(100.0 * est.getAreaPredictedPresent() / est.getTotalArea(), 2))
+    result["Act_PercPresent"] = str(round(100.0 *
+                                          act.getAreaPredictedPresent() /
+                                          act.getTotalArea(), 2))
     result["Act_AreaAbsent"] = str(act.getAreaPredictedAbsent())
-    result["Est_AreaAbsent"] = str(est.getAreaPredictedAbsent())
-    result["Act_PercAbsent"] = str(round(100.0 * act.getAreaPredictedAbsent() / act.getTotalArea(), 2))
-    result["Est_PercAbsent"] = str(round(100.0 * est.getAreaPredictedAbsent() / est.getTotalArea(), 2))
+    result["Act_PercAbsent"] = str(round(100.0 *
+                                         act.getAreaPredictedAbsent() /
+                                         act.getTotalArea(), 2))
     result["Act_AreaNonPredicted"] = str(act.getAreaNotPredicted())
+    result["Act_PercNonPredicted"] = str(round(100.0 *
+                                               act.getAreaNotPredicted() /
+                                               act.getTotalArea(), 2))
+
+    if (envObj == None):
+        actualEnvObj = mod.getEnvironment()
+        est = mod.getEstimatedAreaStats(0.01)
+    else:
+        actualEnvObj = envObj
+        est = mod.getEstimatedAreaStats(envObj, 0.01)
+    
+    result["Est_TotalArea"] = str(est.getTotalArea())
+    result["Est_AreaPresent"] = str(est.getAreaPredictedPresent())
+    result["Est_PercPresent"] = str(round(100.0 *
+                                          est.getAreaPredictedPresent() /
+                                          est.getTotalArea(), 2))
+    result["Est_AreaAbsent"] = str(est.getAreaPredictedAbsent())
+    result["Est_PercAbsent"] = str(round(100.0 *
+                                         est.getAreaPredictedAbsent() /
+                                         est.getTotalArea(), 2))
     result["Est_AreaNonPredicted"] = str(est.getAreaNotPredicted())
-    result["Act_PercNonPredicted"] = str(round(100.0 * act.getAreaNotPredicted() / act.getTotalArea(), 2))
-    result["Est_PercNonPredicted"] = str(round(100.0 * est.getAreaNotPredicted() / est.getTotalArea(), 2))
+    result["Est_PercNonPredicted"] = str(round(100.0 *
+                                               est.getAreaNotPredicted() /
+                                               est.getTotalArea(), 2))
 
     # get conf matrix
     matrix = om.ConfusionMatrix()
-    matrix.calculate(mod.getEnvironment(),
+    matrix.calculate(actualEnvObj,
                      mod.getAlgorithm().getModel(),
                      presences, absences)
     
@@ -513,7 +540,7 @@ def parseOptions():
         else:
             continue
 
-        arg.lower()
+        arg = arg.lower()
         options[fullOpt] = arg.split(" ")
 
         #print "Parsing " + fullOpt + " (" + opt + ") = " + arg + " (" + str(options[fullOpt]) + ")"

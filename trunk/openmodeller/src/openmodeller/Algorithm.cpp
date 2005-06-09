@@ -245,25 +245,36 @@ void
 AlgorithmImpl::computeNormalization( const ConstSamplerPtr& samp )
 {
 
-  Scalar min, max;
-  if ( needNormalization( &min, &max ) ) {
+  Scalar lbound, ubound;
+  if ( needNormalization( &lbound, &ubound ) ) {
 
     _has_norm_params = true;
-    samp->computeNormalization( min, max, &_norm_offsets, &_norm_scales );
-    
+
+    int dim = samp->numIndependent();
+    Sample min(dim), max(dim);
+    samp->getMinMax(&min, &max);
+
+    _norm_scales.resize(dim);
+    _norm_offsets.resize(dim);
+
+    for (int i = 0; i < dim; ++i)
+      {
+	_norm_scales[i] = (ubound - lbound) / (max[i] - min[i]);
+	_norm_offsets[i] = min[i] - _norm_scales[i] * min[i];
+      }
   }
 }
 
 void
 AlgorithmImpl::setNormalization( const SamplerPtr& samp) const
 {
-  samp->setNormalization( _has_norm_params, _norm_offsets, _norm_scales );
+  samp->normalize( _has_norm_params, _norm_offsets, _norm_scales );
 }
 
 void
 AlgorithmImpl::setNormalization( const EnvironmentPtr& env) const
 {
-  env->setNormalization( _has_norm_params, _norm_offsets, _norm_scales );
+  env->normalize( _has_norm_params, _norm_offsets, _norm_scales );
 }
 
 Model

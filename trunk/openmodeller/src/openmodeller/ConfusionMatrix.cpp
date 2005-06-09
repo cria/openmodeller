@@ -80,7 +80,12 @@ void ConfusionMatrix::calculate(const EnvironmentPtr & env,
 
   i =0;
   while( it != fin ) {
-    const Sample & sample = env->get( (*it)->x(), (*it)->y() );
+    Sample sample; 
+    if (env)
+      sample = env->get( (*it)->x(), (*it)->y() );
+    else
+      sample = (*it)->environment();
+
     if ( sample.size() >0 ) {
       predictionValue = model->getValue( sample );
       predictionIndex = (predictionValue >= _predictionThreshold);
@@ -96,7 +101,12 @@ void ConfusionMatrix::calculate(const EnvironmentPtr & env,
     fin = absences->end();
 
     while( it != fin ) {
-      const Sample & sample = env->get( (*it)->x(), (*it)->y() );
+      Sample sample;
+      if (env)
+	sample = env->get( (*it)->x(), (*it)->y() );
+      else
+	sample = (*it)->environment();
+
       if ( sample.size() >0 ) {
 	predictionValue = model->getValue( sample );
 	predictionIndex = (predictionValue >= _predictionThreshold);

@@ -162,6 +162,38 @@ private:
   $1 = (PySequence_Check( $input ) ) ? 1 : 0;
 }
 
+
+// Typemap for std::vector<double>
+%typemap(in) std::vector<double> ( std::vector<double> v )
+{
+  // %typemap(in) ( std::vector<double > )
+  /* Check if is a list */
+  if (! PySequence_Check($input)) {
+    PyErr_SetString(PyExc_TypeError,"not a sequence");
+    SWIG_fail;
+  } 
+  int size = PySequence_Size($input);
+  for (int i = 0; i < size; i++) {
+    PyObject *o = PySequence_GetItem($input,i);
+    if (PyInt_Check(o)) {
+      v.push_back(  static_cast<double >( PyInt_AsLong(o) ) );
+    } 
+    else if (PyFloat_Check(o)) {
+      v.push_back(  static_cast<double >( PyFloat_AsDouble(o) ) );
+    } 
+    else {
+      PyErr_SetString(PyExc_TypeError,"list must contain numbers");
+      return NULL;
+    }
+  }
+  $1 = v;
+}
+%typecheck(SWIG_TYPECHECK_POINTER) ( std::vector<double > )
+{
+  // %typecheck(SWIG_TYPECHECK_POINTER) ( std::vector<double > )
+  $1 = (PySequence_Check( $input ) ) ? 1 : 0;
+}
+
 //*****************************************************************************
 //
 // XXXPtr conversion into ConstXXXPtr

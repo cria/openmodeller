@@ -26,7 +26,7 @@
 ###############################################################################
 # 
 #  $Log$
-#  Revision 1.7  2005/06/09 02:14:43  scachett
+#  Revision 1.1  2005/06/09 02:14:43  scachett
 #  Merged branch-sampler-matrix-input2 to CVS HEAD.
 #  This set of changes allow OM to take Occurrences objects already
 #  filled with Sample objects. In this case OM doesn't need an Environment
@@ -52,7 +52,7 @@ def get_env_list(filename):
 
 ###############################################################################
 
-def algorithm_run(args, options):
+def matrix_input(args, options):
     nat_env_file = args[0]
     nat_env_name = args[1]
     alg_id = args[2]
@@ -69,18 +69,23 @@ def algorithm_run(args, options):
                                                        "../data")
 
     (presences, absences) = omtest.get_occurrences(occ_file, spp_name,
-                                                   coordSys, 0, 1, 2, None)
+                                                   coordSys, 0, 1, 2, 3)
+
+    # sample environment at presence and points
+    natEnv = om.makeEnvironment([], nat_env_list, nat_env_mask)
+    presences.setEnvironment(natEnv)
+    absences.setEnvironment(natEnv)
 
     alg_params = omtest.get_alg_default_params(alg_id)
 
-    filename_prefix = "run_%s_%s" % (alg_id, spp_name.replace(" ", "_"))
+    filename_prefix = "matrix_input_%s_%s" % (alg_id,
+                                              spp_name.replace(" ", "_"))
     bmp_filename = filename_prefix + ".bmp"
     xml_filename = filename_prefix + ".xml"
     expected_filename = filename_prefix + "_expected.bmp"
 
     mod = om.OpenModeller()
     mod.setOccurrences(presences, absences)
-    mod.setEnvironment([], nat_env_list, nat_env_mask)
     mod.setAlgorithm(alg_id, alg_params)
     mod.run()
 
@@ -89,9 +94,10 @@ def algorithm_run(args, options):
 
     mf = om.MapFormat()
     mf.setFormat( om.MapFormat.GreyBMP )
-    mod.projectNativeRange(bmp_filename, mf)
+    mod.createMap(natEnv, bmp_filename, mf)
 
-    result = omtest.get_map_results_obj( mod, None, presences, absences,
+    result = omtest.get_map_results_obj( mod, natEnv,
+                                         presences, absences,
                                          "algs/" + bmp_filename,
                                          "algs/" + expected_filename,
                                          "algs/" + xml_filename )
@@ -103,25 +109,7 @@ def algorithm_run(args, options):
 
 experiment_list = [
     ( "environmental_datasets.cfg", "CRU10",
-      "../data/species/occ_data.csv", "peromyscus maniculatus" ),
-
-    ( "environmental_datasets.cfg", "CRU10",
-      "../data/species/occ_data.csv", "leucaena leucocephala" ),
-
-    ( "environmental_datasets.cfg", "CRU10",
-      "../data/species/occ_data.csv", "lathyrus japonicus" ),
-
-    ( "environmental_datasets.cfg", "CRU10",
-      "../data/species/occ_data.csv", "senna obtusifolia" ),
-
-    ( "environmental_datasets.cfg", "CRU10",
-      "../data/species/occ_data.csv", "strix varia" ),
-
-    ( "environmental_datasets.cfg", "CRU10",
-      "../data/species/occ_data.csv", "mephitis mephitis" ),
-
-    ( "environmental_datasets.cfg", "CRU10",
-      "../data/species/occ_data.csv", "ursus americanus" ) ]
+      "../data/species/abs_data.csv", "strix varia" ) ]
 
     
 mod = om.OpenModeller()
@@ -133,18 +121,19 @@ omtest_list = []
 # run every experiment for every algorithm available
 for i in range(0, num):
     alg_id = algmd[i].id
+
     for exp in experiment_list:
         # append a list with function to be executed, test name
         # and parameters to be passed to function
-        omtest_list.append(
-            (algorithm_run, "%s: %s" % (alg_id, exp[3].capitalize() ),
-             [ exp[0], exp[1], alg_id, exp[2], exp[3] ] ) )
 
+        omtest_list.append(
+            (matrix_input, "%s: %s" % (alg_id, exp[3].capitalize() ),
+             [ exp[0], exp[1], alg_id, exp[2], exp[3] ] ) )
 
 
 if __name__ == '__main__':
 
-    omtest.setup_run( 'algorithm_run_test' )
+    omtest.setup_run( 'matrix_input_test' )
 
     omtest.run_tests( omtest_list, omtest.parseOptions() )
 

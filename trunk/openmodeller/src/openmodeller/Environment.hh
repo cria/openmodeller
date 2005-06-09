@@ -33,8 +33,8 @@
 #include <om_defs.hh>
 #include <refcount.hh>
 #include <configurable.hh>
+#include <normalizable.hh>
 #include <Sample.hh>
-#include <om_occurrences.hh>
 
 #include <vector>
 #include <string>
@@ -64,7 +64,7 @@ EnvironmentPtr dllexp createEnvironment( const ConstConfigurationPtr& config );
  * Allow access to environmental variables by means of vectors
  * gathering data from all layers on the sampled points.
  */
-class dllexp EnvironmentImpl : public Configurable, private ReferenceCountedObject
+class dllexp EnvironmentImpl : public Configurable, public Normalizable, private ReferenceCountedObject
 {
   friend class ReferenceCountedPointer<EnvironmentImpl>;
   friend class ReferenceCountedPointer<const EnvironmentImpl>;
@@ -108,11 +108,11 @@ public:
 
   /** Indicate that all non categorical variable layers must
    *  be normalized according to the interval [min, max]. */
-  int computeNormalization( Scalar min, Scalar max, Sample *offsets, Sample *scales ) const;
+  void getMinMax( Sample * min, Sample * max ) const;
 
   /** Set specific normalization parameters
    */
-  void setNormalization( bool use_norm, const Sample& offsets, const Sample& scales );
+  void normalize( bool use_norm, const Sample& offsets, const Sample& scales );
 
   /** Read for vector 'sample' all values of environmental variables
    *  of coordinate (x,y).

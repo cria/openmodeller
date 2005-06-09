@@ -62,7 +62,8 @@ public:
     error_( 0.0 ),
     abundance_( 0.0 ),
     attr_(),
-    env_()
+    normEnv_(),
+    unnormEnv_()
   {}
 
   /** Occurrence constructor with uncertanty.
@@ -85,7 +86,23 @@ public:
     error_( error ),
     abundance_( abundance ),
     attr_( num_attributes, attributes ),
-    env_( num_env, env )
+    unnormEnv_( num_env, env ),
+    normEnv_()
+  { }
+
+  /** Occurrence constructor with uncertanty, using std::vector
+   */
+  OccurrenceImpl( Coord x, Coord y, Scalar error,
+		  Scalar abundance,
+		  std::vector<Scalar> attributes,
+		  std::vector<Scalar> env) :
+    x_( x ),
+    y_( y ),
+    error_( error ),
+    abundance_( abundance ),
+    attr_( attributes ),
+    unnormEnv_( env ),
+    normEnv_()
   { }
 
   /** Occurrence constructor with uncertanty.
@@ -106,7 +123,8 @@ public:
     error_( error ),
     abundance_( abundance ),
     attr_( attributes ),
-    env_( env )
+    unnormEnv_( env ),
+    normEnv_()
   { }
 
   /** Occurrence constructor without uncertanty.
@@ -127,7 +145,8 @@ public:
     error_( -1.0 ),
     abundance_( abundance ),
     attr_( num_attributes, attributes ),
-    env_()
+    unnormEnv_(),
+    normEnv_()
   { }
 
   ~OccurrenceImpl();
@@ -138,7 +157,8 @@ public:
     error_( rhs.error_ ),
     abundance_( rhs.abundance_ ),
     attr_( rhs.attr_ ),
-    env_( rhs.env_ )
+    unnormEnv_( rhs.unnormEnv_ ),
+    normEnv_( rhs.normEnv_ )
   {};
 
   OccurrenceImpl& operator=(const OccurrenceImpl & );
@@ -151,9 +171,11 @@ public:
 
   Sample const & attributes() const { return attr_; }
 
-  Sample const & environment() const { return env_; }
+  Sample const & environment() const; 
 
-  void setEnvironment( const Sample& );
+  void setNormalizedEnvironment( const Sample& );
+
+  void setUnnormalizedEnvironment( const Sample& );
 
   bool hasEnvironment() const;
 
@@ -164,7 +186,8 @@ private:
   Scalar abundance_;
 
   Sample attr_;
-  Sample env_;
+  Sample unnormEnv_;
+  Sample normEnv_;
 };
 
 #endif

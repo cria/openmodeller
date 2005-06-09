@@ -42,6 +42,8 @@
 #include <string>
 #include <algorithm>
 
+#include <Exceptions.hh>
+
 using std::string;
 
 #undef DEBUG_MEMORY
@@ -88,7 +90,7 @@ SamplerImpl::SamplerImpl( const EnvironmentPtr& env,
 #ifdef DEBUG_MEMORY
   g_log.debug("SamplerImpl::SamplerImpl( args ) at %x\n",this);
 #endif
-  initialize();
+  setEnvironmentInOccurrences();
 }
 
 /******************/
@@ -101,45 +103,19 @@ SamplerImpl::~SamplerImpl()
 #endif
 }
 
-static
-void SetEnvironmentInOccurrences( EnvironmentPtr& env, OccurrencesPtr& occurs, const char *type = "Sample" )
-{
-
-  if ( !occurs )
-    return;
-
-  if ( occurs->isEmpty() )
-    return;
-
-  OccurrencesImpl::iterator oc = occurs->begin();
-  OccurrencesImpl::iterator fin = occurs->end();
-
-  while (oc != fin ) {
-
-    Sample sample = env->get( (*oc)->x(), (*oc)->y() );
-
-    if ( sample.size() == 0 ) {
-
-      g_log( "%s Point at (%f,%f) has no environment.  It is removed.\n", type, (*oc)->x(), (*oc)->y() );
-      oc = occurs->erase( oc );
-      fin = occurs->end();
-
-    } else {
-
-      (*oc)->setEnvironment( sample );
-
-      ++oc;
-    }
-
-  }
-}
-
 void
-SamplerImpl::initialize()
+SamplerImpl::setEnvironmentInOccurrences()
 {
-  // Copy data from environment into the presence and absence points.
-  SetEnvironmentInOccurrences( _env, _presence, "Presence" );
-  SetEnvironmentInOccurrences( _env, _absence, "Absence" );
+  // renamed former method ::initialize()
+
+  if ( !_presence->hasEnvironment() )
+    {
+      // Copy data from environment into the presence and absence points.
+      _presence->setEnvironment( _env, "Presence" );
+
+      if ( _absence && _absence->numOccurrences())
+	_absence->setEnvironment( _env, "Absence" );
+    }
 }
 
 /******************/
@@ -151,7 +127,9 @@ SamplerImpl::getConfiguration( ) const
 
   ConfigurationPtr config( new ConfigurationImpl( "Sampler" ) );
 
-  config->addSubsection( _env->getConfiguration() );
+  if ( _env ) {
+    config->addSubsection( _env->getConfiguration() );
+  }
 
   if ( _presence ) {
     ConfigurationPtr cfg( _presence->getConfiguration() );
@@ -171,9 +149,12 @@ SamplerImpl::getConfiguration( ) const
 void
 SamplerImpl::setConfiguration( const ConstConfigurationPtr& config )
 {
-
-  EnvironmentPtr env = createEnvironment();
-  env->setConfiguration( config->getSubsection( "Environment" ) );
+  EnvironmentPtr env;
+  if (ConstConfigurationPtr env_config = 
+        config->getSubsection( "Environment", false ) ) {
+    env = createEnvironment();
+    env->setConfiguration( env_config );
+  }
 
   //
   // Here's a hack for ya.  We need the Presence points to have abundance=1.0
@@ -201,23 +182,51 @@ SamplerImpl::setConfiguration( const ConstConfigurationPtr& config )
   _presence = presence;
   _absence = absence;
 
-  initialize();
+  setEnvironmentInOccurrences();
 
 }
 
 /*****************/
 /*** normalize ***/
-void SamplerImpl::computeNormalization(Scalar min, Scalar max, Sample *offsets, Sample *scales) const
+void SamplerImpl::getMinMax(Sample * min, Sample * max) const
 {
-  _env->computeNormalization(min, max, offsets, scales);
+  // if Sampler has both Environment object and a sampled Occurrences, then
+  // favor Environment when doing normalization
+  if (_env)
+    { _env->getMinMax(min, max); }
+
+  else
+    {
+      // no environment object exists, so normalize samples in occs objects
+      // first get all occurrence objects in the same container
+      OccurrencesPtr allOccs( new OccurrencesImpl( _presence->name(),
+						   _presence->coordSystem() ) );
+      allOccs->appendFrom(_presence);
+      allOccs->appendFrom(_absence);
+
+      // now compute normalization parameters
+      allOccs->getMinMax(min, max);
+    }
 }
 
 /** Set specific normalization parameters
  */
-void SamplerImpl::setNormalization( bool use_norm, const Sample& offsets, const Sample& scales )
+void SamplerImpl::normalize( bool use_norm, const Sample& offsets, const Sample& scales )
 {
-  _env->setNormalization( use_norm, offsets, scales );
-  initialize();
+  if (_env)
+    {
+      // set env in all occurrences before normalizing env so that
+      // occurrences get the unnormalized values
+      setEnvironmentInOccurrences();
+      _env->normalize( use_norm, offsets, scales );
+    }
+
+  // need to normalize presences and absences even if _env is present
+  // because environment in occurrences was set with unnormalized values
+  // if _env doesn't exist, then normalize occurrences anyway
+  _presence->normalize( use_norm, offsets, scales );
+  if ( _absence && _absence->numOccurrences())
+    _absence->normalize( use_norm, offsets, scales );
 }
 
 /***********************/
@@ -225,7 +234,17 @@ void SamplerImpl::setNormalization( bool use_norm, const Sample& offsets, const 
 int
 SamplerImpl::numIndependent() const
 {
-  return _env->numLayers();
+  if (_env)
+    // get number of dimensions from environment object if it exists
+    return _env->numLayers();
+
+  else if (_presence->hasEnvironment())
+    // otherwise tries to get it from occurrences
+    return _presence->dimension();
+
+  else
+    // neither object has dimensions defined
+    return 0;
 }
 
 
@@ -263,7 +282,7 @@ SamplerImpl::getOneSample( ) const
 
   if (!_presence->numOccurrences())
     { 
-      g_log.error(1, "No presence points available!!!\n"); 
+      throw SamplerException("No presence points available."); 
     }
 
   // Probability of 0.5 of get a presence point.
@@ -286,7 +305,12 @@ SamplerImpl::getOneSample( ) const
 }
 
 ConstOccurrencePtr
-SamplerImpl::getPseudoAbsence() const {
+SamplerImpl::getPseudoAbsence() const 
+{
+
+  if (!_env) {
+    throw SamplerException("Trying to get a pseudo absence point without setting up an Environment object");
+  }
 
   //
   // Get a random pseudo-absence point.
@@ -306,7 +330,15 @@ SamplerImpl::getPseudoAbsence() const {
 int
 SamplerImpl::isCategorical( int i )
 {
-  return _env->isCategorical( i );
+  if (_env)
+    return _env->isCategorical( i );
+
+  else
+    // if there is no environment obj, assumes all variables are continuous
+    // right now there is no mechanism to define whether a variable is 
+    // continuous or categorical when occurrences already come with their
+    // samples populated
+    return false;
 }
 
 
@@ -323,6 +355,7 @@ SamplerImpl::getRandomOccurrence( const OccurrencesPtr& occur ) const
   return occur->getRandom();
 
 }
+
 
 /**************************/
 /**** splitOccurrences ****/
@@ -397,10 +430,10 @@ void splitSampler(const SamplerPtr& orig,
   OccurrencesPtr absence = orig->getAbsences();
 
   if ( absence ) { 
-      OccurrencesPtr test_absence = 
+      test_absence = 
 	new OccurrencesImpl( absence->name(), absence->coordSystem());
 
-      OccurrencesPtr train_absence = 
+      train_absence = 
 	new OccurrencesImpl( absence->name(), absence->coordSystem());
 
       splitOccurrences(absence, train_absence, test_absence, propTrain);

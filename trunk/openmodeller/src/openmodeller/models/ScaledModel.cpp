@@ -30,12 +30,12 @@ ScaledModelImpl::~ScaledModelImpl()
 void
 ScaledModelImpl::setNormalization( const SamplerPtr& sampl ) const 
 {
-  sampl->setNormalization( _has_norm_params, _norm_offsets, _norm_scales );
+  sampl->normalize( _has_norm_params, _norm_offsets, _norm_scales );
 }
 
 void
 ScaledModelImpl::setNormalization( const EnvironmentPtr& env) const
 {
-    env->setNormalization( _has_norm_params, _norm_offsets, _norm_scales );
+    env->normalize( _has_norm_params, _norm_offsets, _norm_scales );
 }
 

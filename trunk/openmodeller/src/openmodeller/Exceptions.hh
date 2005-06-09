@@ -110,4 +110,16 @@ public:
   {}
 };
 
+//
+// Invalid Sampling Configuration Exception -- thrown when clients try
+// to get a pseudo absence sample without specifying the Environment
+// object
+class SamplerException : public OmException {
+public:
+  SamplerException( const std::string& msg ) :
+    OmException( msg )
+  {}
+};
+
+
 #endif

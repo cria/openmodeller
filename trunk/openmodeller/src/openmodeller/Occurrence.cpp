@@ -56,20 +56,35 @@ OccurrenceImpl::operator=( const OccurrenceImpl & rhs )
   abundance_ = rhs.abundance_;
 
   attr_ = rhs.attr_;
-  env_ = rhs.env_;
+  unnormEnv_ = rhs.unnormEnv_;
+  normEnv_ = rhs.normEnv_;
 
   return *this;
 
 }
 
-void
-OccurrenceImpl::setEnvironment( const Sample& s )
+Sample const & OccurrenceImpl::environment() const
 {
-  env_ = s;
+  if (normEnv_.size() != 0)
+    return normEnv_;
+  else 
+    return unnormEnv_;
+}
+
+void
+OccurrenceImpl::setNormalizedEnvironment( const Sample& s )
+{
+  normEnv_ = s;
+}
+
+void
+OccurrenceImpl::setUnnormalizedEnvironment( const Sample& s )
+{
+  unnormEnv_ = s;
 }
 
 bool
 OccurrenceImpl::hasEnvironment() const
 {
-  return env_.size() != 0;
+  return unnormEnv_.size() != 0;
 }

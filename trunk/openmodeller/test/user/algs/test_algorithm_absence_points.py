@@ -26,7 +26,7 @@
 ###############################################################################
 # 
 #  $Log$
-#  Revision 1.7  2005/06/09 02:14:43  scachett
+#  Revision 1.1  2005/06/09 02:14:43  scachett
 #  Merged branch-sampler-matrix-input2 to CVS HEAD.
 #  This set of changes allow OM to take Occurrences objects already
 #  filled with Sample objects. In this case OM doesn't need an Environment
@@ -34,6 +34,37 @@
 #  This feature allows users to gather data from several different env datasets
 #  (time-educated sampling) or from a table (depending on client implementation).
 #
+#  Revision 1.4  2005/05/17 18:17:40  scachett
+#  Fixed bug in python tests that prevented last algorithm to be tested.
+#  Python range(1,n) function returns a range between 1 and n-1 not 1 and n.
+#
+#  Revision 1.3  2005/05/13 15:14:18  scachett
+#  Changed python tests to accept command line options to restrict tests to
+#  be executed.
+#
+#  Fixed type in reference to Bioclim parameter in request.txt. (was Standad)
+#
+#  Revision 1.2  2005/04/22 12:10:09  scachett
+#  Added dependent python modules (htmltmpl) to repository so developers
+#  don't need to include a bunch of modules just to run the tests.
+#
+#  Removed dependency on module csv.
+#
+#  Revision 1.1  2005/04/19 14:24:23  scachett
+#  Reimplemented user tests using GDAL/OGR autotest as a template.
+#  Main changes:
+#
+#  - Code is clearer.
+#  - It is simpler to add new tests. Just create a new directory and copy the sample test from ./samples directory.
+#  - HTML generation is now separated from test coding by using the Python htmltmpl templating engine.
+#
+#  Also removed some obsolete Python test scripts.
+#
+#  Revision 1.2  2003/06/10 14:27:09  warmerda
+#  comment
+#
+#  Revision 1.1  2003/03/05 05:05:10  warmerda
+#  New
 #
 
 import os
@@ -52,12 +83,16 @@ def get_env_list(filename):
 
 ###############################################################################
 
-def algorithm_run(args, options):
+def algorithm_absences(args, options):
     nat_env_file = args[0]
     nat_env_name = args[1]
     alg_id = args[2]
-    occ_file = args[3]
-    spp_name = args[4]
+    uses_absences = args[3]
+    occ_file = args[4]
+    spp_name = args[5]
+
+    if not uses_absences:
+        return ('skip', None)
 
     if not omtest.checkArguments(options, "algorithm", alg_id):
         return ('skip', None)
@@ -69,11 +104,11 @@ def algorithm_run(args, options):
                                                        "../data")
 
     (presences, absences) = omtest.get_occurrences(occ_file, spp_name,
-                                                   coordSys, 0, 1, 2, None)
+                                                   coordSys, 0, 1, 2, 3)
 
     alg_params = omtest.get_alg_default_params(alg_id)
 
-    filename_prefix = "run_%s_%s" % (alg_id, spp_name.replace(" ", "_"))
+    filename_prefix = "abs_%s_%s" % (alg_id, spp_name)
     bmp_filename = filename_prefix + ".bmp"
     xml_filename = filename_prefix + ".xml"
     expected_filename = filename_prefix + "_expected.bmp"
@@ -103,25 +138,7 @@ def algorithm_run(args, options):
 
 experiment_list = [
     ( "environmental_datasets.cfg", "CRU10",
-      "../data/species/occ_data.csv", "peromyscus maniculatus" ),
-
-    ( "environmental_datasets.cfg", "CRU10",
-      "../data/species/occ_data.csv", "leucaena leucocephala" ),
-
-    ( "environmental_datasets.cfg", "CRU10",
-      "../data/species/occ_data.csv", "lathyrus japonicus" ),
-
-    ( "environmental_datasets.cfg", "CRU10",
-      "../data/species/occ_data.csv", "senna obtusifolia" ),
-
-    ( "environmental_datasets.cfg", "CRU10",
-      "../data/species/occ_data.csv", "strix varia" ),
-
-    ( "environmental_datasets.cfg", "CRU10",
-      "../data/species/occ_data.csv", "mephitis mephitis" ),
-
-    ( "environmental_datasets.cfg", "CRU10",
-      "../data/species/occ_data.csv", "ursus americanus" ) ]
+      "../data/species/abs_data.csv", "strix varia" ) ]
 
     
 mod = om.OpenModeller()
@@ -133,18 +150,22 @@ omtest_list = []
 # run every experiment for every algorithm available
 for i in range(0, num):
     alg_id = algmd[i].id
+
+    # find out whether algorithm accepts absence data
+    usesAbsences = algmd[i].absence
+        
     for exp in experiment_list:
         # append a list with function to be executed, test name
         # and parameters to be passed to function
-        omtest_list.append(
-            (algorithm_run, "%s: %s" % (alg_id, exp[3].capitalize() ),
-             [ exp[0], exp[1], alg_id, exp[2], exp[3] ] ) )
 
+        omtest_list.append(
+            (algorithm_absences, "%s: %s" % (alg_id, exp[3].capitalize() ),
+             [ exp[0], exp[1], alg_id, usesAbsences, exp[2], exp[3] ] ) )
 
 
 if __name__ == '__main__':
 
-    omtest.setup_run( 'algorithm_run_test' )
+    omtest.setup_run( 'algorithm_absences_test' )
 
     omtest.run_tests( omtest_list, omtest.parseOptions() )
 
