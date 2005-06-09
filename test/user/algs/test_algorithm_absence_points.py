@@ -26,6 +26,10 @@
 ###############################################################################
 # 
 #  $Log$
+#  Revision 1.2  2005/06/09 12:33:50  scachett
+#  Made test with absence points run with all algorithms, regardless of whether
+#  they use absence data or not.
+#
 #  Revision 1.1  2005/06/09 02:14:43  scachett
 #  Merged branch-sampler-matrix-input2 to CVS HEAD.
 #  This set of changes allow OM to take Occurrences objects already
@@ -91,8 +95,10 @@ def algorithm_absences(args, options):
     occ_file = args[4]
     spp_name = args[5]
 
-    if not uses_absences:
-        return ('skip', None)
+    # disregar whether the alg uses absences or not
+    # test whether alg runs if absence points are present
+    #if not uses_absences:
+    #    return ('skip', None)
 
     if not omtest.checkArguments(options, "algorithm", alg_id):
         return ('skip', None)
