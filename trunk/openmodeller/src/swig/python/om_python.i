@@ -220,7 +220,7 @@ private:
 {
   //%typecheck(SWIG_TYPECHECK_POINTER) const const_type &
   void *ptr;
-  if (SWIG_ConvertPtr($input, (void**) &ptr, $descriptor( nonconst_type *), SWIG_POINTER_EXCEPTION | 0 ) == -1)
+  if (SWIG_ConvertPtr($input, (void**) &ptr, $descriptor( nonconst_type *) , 0 ) == -1)
   {
     $1 = 0;
   } else {
