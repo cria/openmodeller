@@ -40,10 +40,10 @@ using std::string;
 
 MapFormat::MapFormat( ) :
   format( DEFAULT_FORMAT ),
-  width( 0 ),
-  widthIsSet( false ),
-  height( 0 ),
-  heightIsSet( false ),
+  xcel( 0.0 ),
+  xcelIsSet( false ),
+  ycel( 0.0 ),
+  ycelIsSet( false ),
   xmin( 0 ),
   xminIsSet( false ),
   ymin( 0 ),
@@ -58,13 +58,13 @@ MapFormat::MapFormat( ) :
   projIsSet( false )
 {}
 
-MapFormat::MapFormat( int width, int height, Coord xmin, Coord ymin,
+MapFormat::MapFormat( Coord xcel, Coord ycel, Coord xmin, Coord ymin,
 		      Coord xmax, Coord ymax, Scalar noval, char const * proj ) :
   format( DEFAULT_FORMAT ),
-  width( width ),
-  widthIsSet( true ),
-  height( height ),
-  heightIsSet( true ),
+  xcel( xcel ),
+  xcelIsSet( true ),
+  ycel( ycel ),
+  ycelIsSet( true ),
   xmin( xmin ),
   xminIsSet( true ),
   ymin( ymin ),
@@ -87,8 +87,8 @@ MapFormat::MapFormat( char const *filenameWithFormat ) :
 
   Header h = r.header();
 
-  setWidth( h.xdim );
-  setHeight( h.ydim );
+  setXCel( h.xcel );
+  setYCel( h.ycel );
   setXMin( h.xmin );
   setYMin( h.ymin );
   setXMax( h.xmax );
@@ -102,14 +102,14 @@ void MapFormat::copyDefaults( const Map& map ) {
 
   Header h = map.getHeader();
 
-  if (!widthIsSet) {
-    g_log.debug( "Copying width = %d\n", h.xdim );
-    setWidth( h.xdim );
+  if (!xcelIsSet) {
+    g_log.debug( "Copying cell width = %d\n", h.xcel );
+    setXCel( h.xcel );
   }
 
-  if (!heightIsSet) {
-    g_log.debug( "Copying height = %d\n", h.ydim );
-    setHeight( h.ydim );
+  if (!ycelIsSet) {
+    g_log.debug( "Copying cell height = %d\n", h.ycel );
+    setYCel( h.ycel );
   }
 
   if (!xminIsSet) {
@@ -148,14 +148,14 @@ void MapFormat::setFormat( int f ) {
     format = FloatingTiff;
 }
 
-void MapFormat::setWidth( int v ) {
-  width = v;
-  widthIsSet = true;
+void MapFormat::setXCel( Coord v ) {
+  xcel = v;
+  xcelIsSet = true;
 }
 
-void MapFormat::setHeight( int v ) {
-  height = v;
-  heightIsSet = true;
+void MapFormat::setYCel( Coord v ) {
+  ycel = v;
+  ycelIsSet = true;
 }
 
 void MapFormat::setXMin( Coord v ) {
@@ -189,18 +189,38 @@ void MapFormat::setProjection( const string& v ) {
 }
 
 int MapFormat::getWidth() const {
-  if ( !widthIsSet )
-    throw InvalidParameterException( "Width not set" );
+  Coord xmin = getXMin();
+  Coord xmax = getXMax();
+  Coord xcel = getXCel();
+
+  int width = static_cast<int>(  (xmax-xmin) / xcel ) + 1;
 
   return width;
-
 }
 
 int MapFormat::getHeight() const {
-  if ( !heightIsSet )
-    throw InvalidParameterException( "Height not set" );
+  Coord Ymin = getYMin();
+  Coord Ymax = getYMax();
+  Coord Ycel = getYCel();
+
+  int height = static_cast<int>(  (ymax-ymin) / ycel ) + 1;
 
   return height;
+}
+
+Coord MapFormat::getXCel() const {
+  if ( !xcelIsSet )
+    throw InvalidParameterException( "Cell width not set" );
+
+  return xcel;
+
+}
+
+Coord MapFormat::getYCel() const {
+  if ( !ycelIsSet )
+    throw InvalidParameterException( "Cell height not set" );
+
+  return ycel;
 
 }
 

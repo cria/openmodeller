@@ -45,7 +45,7 @@
 #include <om_alg_parameter.hh>
 #include <om_area_stats.hh>
 #include <om_conf_matrix.hh>
-
+#include <om_log.hh>
 
 // openModeller algorithms specific includes
 //
@@ -59,7 +59,8 @@
 #include <om_control.hh>
 #include <algorithm_factory.hh>
 #include <map_format.hh>
-
+#include <env_io/map.hh>
+#include <env_io/raster.hh>
 
 #endif
 

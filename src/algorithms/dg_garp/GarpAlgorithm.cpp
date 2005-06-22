@@ -1327,7 +1327,7 @@ GarpAlgorithm::_getConfiguration( ConfigurationPtr& config ) const
   
   for ( int i=0; i<rule_count; i++ ) {
 
-    g_log.debug( "Gettting Rule %d\n",i );
+    //g_log.debug( "Gettting Rule %d\n",i );
 
     Rule *rule = rs->get(i);
 

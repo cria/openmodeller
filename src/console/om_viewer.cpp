@@ -80,7 +80,7 @@ int
 main( int argc, char **argv )
 {
   // Reconfigure the global logger.
-  g_log.set( Log::Debug, stdout, "Console" );
+  g_log.set( Log::Error, stdout, "[Viewer]" );
 
   if ( argc < 2 )
     {
@@ -125,7 +125,7 @@ main( int argc, char **argv )
         string result = fp.get( "Output file" );
 
         if ( result.empty() )
-          g_log.error( 1, "The 'Output file' parameter not found!\n" );
+          g_log.error( 1, "'Output file' was not specified!\n" );
 
         _maps[0] = new Map( new Raster( result ) );
         //_maps[0]->normalize( 0.0, 255.0 );
@@ -150,8 +150,19 @@ main( int argc, char **argv )
     string oc_cs   = fp.get( "WKT Coord System" );
     string oc_file = fp.get( "Species file" );
     string oc_name = fp.get( "Species" );
-    _occurs = readOccurrences( oc_file.c_str(), oc_name.c_str(), oc_cs.c_str() );
 
+    if ( ! oc_cs.empty() && ! oc_file.empty() )
+      {
+        _occurs = readOccurrences( oc_file.c_str(), oc_name.c_str(), oc_cs.c_str() );
+      }
+    else
+      {
+        if ( oc_file.empty() )
+          g_log.warn( "'Species file' was not specified!\n" );
+
+        if ( oc_cs.empty() )
+          g_log.warn( "'WKT coord system' was not specified!\n" );
+      }
 
     // Instantiate graphical window.
     GFrame *frame = createFrame( "openModeller Viewer", 1, dimx, dimy );
@@ -199,7 +210,8 @@ draw()
       for ( int i = 0; i < _nmap; i++ )
         {
           draw_map( _graph, _maps[i] );
-          draw_occur( _graph, _maps[i], _occurs );
+          if ( _occurs )
+            draw_occur( _graph, _maps[i], _occurs );
         }
 
       _redraw = 0;
