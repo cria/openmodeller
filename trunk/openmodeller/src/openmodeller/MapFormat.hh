@@ -50,7 +50,7 @@ public:
 
   MapFormat();
 
-  MapFormat(int width, int height, Coord xmin, Coord ymin,
+  MapFormat(Coord xcel, Coord ycel, Coord xmin, Coord ymin,
 	    Coord xmax, Coord ymax, Scalar noval, char const * proj);
 
   MapFormat( char const *filenameWithFormat );
@@ -69,8 +69,8 @@ public:
   };
 
   void unsetFormat() { format = FloatingTiff; }
-  void unsetWidth()  { widthIsSet = false; }
-  void unsetHeight() { heightIsSet = false; }
+  void unsetXCel()  { xcelIsSet = false; }
+  void unsetYCel() { ycelIsSet = false; }
   void unsetXMin() { xminIsSet = false; }
   void unsetYMin() { yminIsSet = false; }
   void unsetXMax() { xmaxIsSet = false; }
@@ -79,8 +79,8 @@ public:
   void unsetProjection() { projIsSet = false; }
 
   void setFormat( int format );
-  void setWidth( int width );
-  void setHeight( int height );
+  void setXCel( Coord xcel );
+  void setYCel( Coord ycel );
   void setXMin( Coord xmin );
   void setYMin( Coord ymin );
   void setXMax( Coord xmax );
@@ -89,8 +89,10 @@ public:
   void setProjection( const std::string& proj);
 
   int getFormat() const { return format; }
-  int getWidth() const;
-  int getHeight() const;
+  int getWidth() const; /**< Computed width in pixels **/
+  int getHeight() const; /**< Computed height in pixels **/
+  Coord getXCel() const;
+  Coord getYCel() const;
   Coord getXMin() const;
   Coord getYMin() const;
   Coord getXMax() const;
@@ -101,11 +103,11 @@ public:
 private:
   int format;
 
-  int width;    /**< Map width **/
-  bool widthIsSet;
+  Coord xcel;    /**< Map cell width **/
+  bool xcelIsSet;
 
-  int height;    /**< Map height **/
-  bool heightIsSet;
+  Coord ycel;    /**< Map cell height **/
+  bool ycelIsSet;
 
   Coord xmin;  /**< Lowest longitude **/
   bool xminIsSet;
@@ -118,12 +120,6 @@ private:
 
   Coord ymax;  /**< Highest latitude **/
   bool ymaxIsSet;
-
-  Coord xcel;  /**< Cell width **/
-  bool xcelIsSet;
-
-  Coord ycel;  /**< Cell hight **/
-  bool ycelIsSet;
 
   Scalar noval; /**< Value indicating absence of information. **/
   bool novalIsSet;

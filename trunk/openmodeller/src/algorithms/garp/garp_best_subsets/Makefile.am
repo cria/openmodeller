@@ -12,26 +12,28 @@ SUBDIRS =
 
 plugindir = ${pkglibdir}
 
-plugin_LTLIBRARIES = libomgarp_bs.la libomdg_garp_bs.la
+#plugin_LTLIBRARIES = libomgarp_bs.la libomdg_garp_bs.la
+plugin_LTLIBRARIES = libomdg_garp_bs.la
 
-libomgarp_bs_la_SOURCES = \
-	best_subsets.cpp garp_best_subsets.cpp garp_run.cpp \
-	best_subsets.hh garp_best_subsets.hh  garp_run.hh \
-	garp_run_thread.hh \
-	../garp.cpp ../ruleset.cpp \
-	../bioclim_histogram.cpp ../regression.cpp \
-	../rules_base.cpp ../rules_logit.cpp \
-	../rules_range.cpp ../rules_negrange.cpp \
-	../garp.hh  ../ruleset.hh \
-	../bioclim_histogram.hh ../regression.hh \
-	../rules_base.hh ../rules_logit.hh \
-	../rules_range.hh ../rules_negrange.hh
-
-libomgarp_bs_la_LDFLAGS = -no-undefined
-libomgarp_bs_la_LIBADD = ../../../src/lib/libopenmodeller.la -lpthread
-libomgarp_bs_la_CPPFLAGS = -I.. -I../../../src/inc \
-			   -I../../../src/inc/serialization \
-                           -DDONT_EXPORT_GARP_FACTORY
+# left out of build due to algorithm instabilities
+#libomgarp_bs_la_SOURCES = \
+#	best_subsets.cpp garp_best_subsets.cpp garp_run.cpp \
+#	best_subsets.hh garp_best_subsets.hh  garp_run.hh \
+#	garp_run_thread.hh \
+#	../garp.cpp ../ruleset.cpp \
+#	../bioclim_histogram.cpp ../regression.cpp \
+#	../rules_base.cpp ../rules_logit.cpp \
+#	../rules_range.cpp ../rules_negrange.cpp \
+#	../garp.hh  ../ruleset.hh \
+#	../bioclim_histogram.hh ../regression.hh \
+#	../rules_base.hh ../rules_logit.hh \
+#	../rules_range.hh ../rules_negrange.hh
+#
+#libomgarp_bs_la_LDFLAGS = -no-undefined
+#libomgarp_bs_la_LIBADD = ../../../src/lib/libopenmodeller.la -lpthread
+#libomgarp_bs_la_CPPFLAGS = -I.. -I../../../src/inc \
+#			   -I../../../src/inc/serialization \
+#                           -DDONT_EXPORT_GARP_FACTORY
 
 
 libomdg_garp_bs_la_SOURCES = \

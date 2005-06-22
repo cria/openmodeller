@@ -156,7 +156,7 @@ OccurrencesImpl::setEnvironment( const EnvironmentPtr& env, const char *type )
 
     if ( sample.size() == 0 ) {
 
-      g_log( "%s Point at (%f,%f) has no environment.  It is removed.\n", type, (*oc)->x(), (*oc)->y() );
+      g_log( "%s Point at (%f,%f) has no environment.  It is discarded.\n", type, (*oc)->x(), (*oc)->y() );
       oc = occur_.erase( oc );
       fin = occur_.end();
 

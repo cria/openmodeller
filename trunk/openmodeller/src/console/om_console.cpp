@@ -60,7 +60,7 @@ main( int argc, char **argv )
 
   // Reconfigure the global logger.
   g_log.setLevel( Log::Error );
-  g_log.setPrefix( "Console" );
+  g_log.setPrefix( "[Console]" );
 
   try {
 
@@ -131,13 +131,14 @@ main( int argc, char **argv )
 
     request.makeProjection( &om );
 
-    ConfusionMatrix matrix;
-    matrix.calculate( om.getEnvironment(), om.getAlgorithm()->getModel(),
-                      request.getOccurrences(), OccurrencesPtr() );
+    //ConfusionMatrix matrix;
+    ConfusionMatrix * matrix = om.getConfusionMatrix();
+
     AreaStats * stats = om.getActualAreaStats();
+
     g_log( "\nModel statistics\n" );
-    g_log( "Accuracy:          %7.2f\%\n", matrix.getAccuracy() * 100 );
-    g_log( "Omission error:    %7.2f\%\n", matrix.getOmissionError() * 100 );
+    g_log( "Accuracy:          %7.2f\%\n", matrix->getAccuracy() * 100 );
+    g_log( "Omission error:    %7.2f\%\n", matrix->getOmissionError() * 100 );
     //g_log( "Commission error:  %7.2f\%\n", matrix.getCommissionError() * 100 );
     g_log( "Percentage of cells predicted present: %7.2f\%\n", 
            stats->getAreaPredictedPresent() / (double) stats->getTotalArea() * 100 );

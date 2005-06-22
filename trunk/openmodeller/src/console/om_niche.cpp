@@ -87,7 +87,7 @@ main( int argc, char **argv )
 {
   // Reconfigure the global logger.
   g_log.setLevel( Log::Error );
-  g_log.setPrefix( "Niche" );
+  g_log.setPrefix( "[Niche]" );
 
   if ( argc < 2 )
       g_log.error( 1, "\n%s <request>\n\n", argv[0] );
