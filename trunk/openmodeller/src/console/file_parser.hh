@@ -29,8 +29,8 @@
 #ifndef _FILE_PARSERHH_
 #define _FILE_PARSERHH_
 
-#include <om_defs.hh>
-#include <icstring.hh>
+#include <openmodeller/om_defs.hh>
+#include <openmodeller/ignorecase_traits.hh>
 
 #include <vector>
 #include <string>

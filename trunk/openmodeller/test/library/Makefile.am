@@ -2,6 +2,9 @@
 # General unit tests for OpenModeller library
 #
 
+OMSRCDIR = @top_srcdir@/src
+OMLIB = $(OMSRCDIR)/openmodeller/libopenmodeller.la
+
 LIB_UNIT_TESTS =	test_configuration\
 			test_icstring \
 			test_sample\
@@ -12,9 +15,9 @@ TESTS = $(LIB_UNIT_TESTS)
 
 check_PROGRAMS = $(LIB_UNIT_TESTS)
 
-LDADD = ../CppUnitLite/libcppunitlite.la ../../src/lib/libopenmodeller.la
+LDADD = ../CppUnitLite/libcppunitlite.la $(OMLIB)
 
-CPPFLAGS = -I.. -I../../src/inc
+CPPFLAGS = -I.. -I$(OMSRCDIR)
 
 test_configuration_SOURCES = test_configuration.cpp
 

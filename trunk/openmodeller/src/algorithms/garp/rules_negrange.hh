@@ -36,7 +36,7 @@
 #ifndef _RULES_NEGRANGE_HH_
 #define _RULES_NEGRANGE_HH_
 
-#include <om.hh>
+#include <openmodeller/om.hh>
 
 #include "rules_range.hh"
 

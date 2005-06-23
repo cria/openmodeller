@@ -30,7 +30,7 @@
 #ifndef _DISTANCE_TO_AVERAGEHH__
 #define _DISTANCE_TO_AVERAGEHH__
 
-#include <om.hh>
+#include <openmodeller/om.hh>
 
 /****************************************************************/
 /************************ Distance To Average *******************/

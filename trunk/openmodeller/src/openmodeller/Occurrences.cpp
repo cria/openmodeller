@@ -26,14 +26,14 @@
  * http://www.gnu.org/copyleft/gpl.html
  */
 
-#include "om_occurrences.hh"
+#include <openmodeller/Occurrences.hh>
 
-#include "occurrence.hh"
-#include "random.hh"
-#include "om_log.hh"
-#include "env_io/geo_transform.hh"
-#include "configuration.hh"
-#include "Exceptions.hh"
+#include <openmodeller/Occurrence.hh>
+#include <openmodeller/Random.hh>
+#include <openmodeller/Log.hh>
+#include <openmodeller/env_io/GeoTransform.hh>
+#include <openmodeller/Configuration.hh>
+#include <openmodeller/Exceptions.hh>
 
 #include <string>
 using std::string;

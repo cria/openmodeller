@@ -26,13 +26,13 @@
  * http://www.gnu.org/copyleft/gpl.html
  */
 
-#include <om_defs.hh>
+#include <openmodeller/om_defs.hh>
 
-#include <Model.hh>
+#include <openmodeller/Model.hh>
 
-#include <om_occurrences.hh>
-#include <environment.hh>
-#include <om_sampler.hh>
+#include <openmodeller/Occurrences.hh>
+#include <openmodeller/Environment.hh>
+#include <openmodeller/Sampler.hh>
 
 /**
  * Class ConfusionMatrix tabulates the proportions of types of

@@ -26,7 +26,7 @@
  * http://www.gnu.org/copyleft/gpl.html
  */
 
-#include <om_defs.hh>
+#include <openmodeller/om_defs.hh>
 
 /* Class AreaStats counts several cell statistics collected during
  * output map generation.

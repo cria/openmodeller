@@ -30,12 +30,12 @@
 #ifndef _ALGORITHM_FACTORYHH_
 #define _ALGORITHM_FACTORYHH_
 
-#include <os_specific.hh>
-#include <om_algorithm_metadata.hh>
-#include <om_sampler.hh>
-#include <om_algorithm.hh>
+#include <openmodeller/os_specific.hh>
+#include <openmodeller/AlgMetadata.hh>
+#include <openmodeller/Sampler.hh>
+#include <openmodeller/Algorithm.hh>
 
-#include <configuration.hh>
+#include <openmodeller/Configuration.hh>
 
 #include <string>
 #include <list>

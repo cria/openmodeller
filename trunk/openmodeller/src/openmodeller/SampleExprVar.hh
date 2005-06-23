@@ -1,7 +1,7 @@
 #ifndef _SAMPLEEXPRVAR_HH
 #define _SAMPLEEXPRVAR_HH
 
-#include <SampleExpr.hh>
+#include <openmodeller/SampleExpr.hh>
 
 template< int I, typename T >
 class SExprPlaceHolder

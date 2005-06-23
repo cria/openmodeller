@@ -29,7 +29,7 @@
 #ifndef _LOGHH_
 #define _LOGHH_
 
-#include <om_defs.hh>
+#include <openmodeller/om_defs.hh>
 
 #include <iostream>
 #include <string>

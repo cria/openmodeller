@@ -30,10 +30,10 @@
 #ifndef _OCCURRENCEHH_
 #define _OCCURRENCEHH_
 
-#include <om_defs.hh>
-#include <Sample.hh>
+#include <openmodeller/om_defs.hh>
+#include <openmodeller/Sample.hh>
 
-#include <refcount.hh>
+#include <openmodeller/refcount.hh>
 
 /****************************************************************/
 /************************** Occurrence **************************/

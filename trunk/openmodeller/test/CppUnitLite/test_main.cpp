@@ -30,7 +30,7 @@
 
 #include "TestHarness.h"
 
-#include <om_log.hh>
+#include <openmodeller/Log.hh>
 #include <string.h>
 
 extern Log g_log;

@@ -22,8 +22,8 @@
 #include "Utilities.h"
 #include "EnvCellSet.h"
 
-#include <om.hh>
-#include <random.hh>
+#include <openmodeller/om.hh>
+#include <openmodeller/Random.hh>
 
 #include <time.h>
 

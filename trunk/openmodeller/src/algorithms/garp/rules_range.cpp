@@ -33,12 +33,12 @@
  */
 
 
-#include <random.hh>
+#include <openmodeller/Random.hh>
 #include <math.h>
 #include <string.h>
 
-#include <om_log.hh>
-#include <Sample.hh>
+#include <openmodeller/Log.hh>
+#include <openmodeller/Sample.hh>
 
 #include "rules_range.hh"
 #include "bioclim_histogram.hh"

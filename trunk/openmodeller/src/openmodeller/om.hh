@@ -39,28 +39,27 @@
 
 // General includes (clients and algorithms)
 //
-#include <om_defs.hh>
-#include <om_algorithm.hh>
-#include <om_algorithm_metadata.hh>
-#include <om_alg_parameter.hh>
-#include <om_area_stats.hh>
-#include <om_conf_matrix.hh>
-#include <om_log.hh>
+#include <openmodeller/om_defs.hh>
+#include <openmodeller/Algorithm.hh>
+#include <openmodeller/AlgMetadata.hh>
+#include <openmodeller/AlgParameter.hh>
+#include <openmodeller/AreaStats.hh>
+#include <openmodeller/ConfusionMatrix.hh>
+#include <openmodeller/Log.hh>
 
 // openModeller algorithms specific includes
 //
-#include <om_sampler.hh>
-#include <om_occurrences.hh>
-#include <om_occurrences.hh>
+#include <openmodeller/Sampler.hh>
+#include <openmodeller/Occurrences.hh>
 
 
 // openModeller clients specific includes
 //
-#include <om_control.hh>
-#include <algorithm_factory.hh>
-#include <map_format.hh>
-#include <env_io/map.hh>
-#include <env_io/raster.hh>
+#include <openmodeller/OpenModeller.hh>
+#include <openmodeller/AlgorithmFactory.hh>
+#include <openmodeller/MapFormat.hh>
+#include <openmodeller/env_io/Map.hh>
+#include <openmodeller/env_io/Raster.hh>
 
 #endif
 

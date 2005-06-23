@@ -1,4 +1,4 @@
-#include <icstring.hh>
+#include <openmodeller/ignorecase_traits.hh>
 
 using std::size_t;
 

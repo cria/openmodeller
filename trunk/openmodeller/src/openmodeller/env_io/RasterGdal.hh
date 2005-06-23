@@ -29,7 +29,7 @@
 #ifndef _RASTER_GDALHH_
 #define _RASTER_GDALHH_
 
-#include "env_io/header.hh"
+#include <openmodeller/env_io/Header.hh>
 
 #include <string>
 #include <vector>

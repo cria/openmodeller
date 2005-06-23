@@ -26,9 +26,9 @@
  * http://www.gnu.org/copyleft/gpl.html
  */
 
-#include <env_io/map_iter.hh>
-#include <env_io/map.hh>
-#include <env_io/geo_transform.hh>
+#include <openmodeller/env_io/MapIterator.hh>
+#include <openmodeller/env_io/Map.hh>
+#include <openmodeller/env_io/GeoTransform.hh>
 
 using std::pair;
 

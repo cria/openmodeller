@@ -1,8 +1,8 @@
 #ifndef _SAMPLEEXPR_HH
 #define _SAMPLEEXPR_HH
 
-#include <om_defs.hh>
-#include <Sample.hh>
+#include <openmodeller/om_defs.hh>
+#include <openmodeller/Sample.hh>
 
 #include <cmath>
 #include <algorithm>

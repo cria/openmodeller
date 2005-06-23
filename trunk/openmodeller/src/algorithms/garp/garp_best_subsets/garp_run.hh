@@ -31,7 +31,7 @@
 #ifndef _GARP_RUN_HH_
 #define _GARP_RUN_HH_
 
-#include <om.hh>
+#include <openmodeller/om.hh>
 
 class AlgorithmImpl;
 class AlgParameter;

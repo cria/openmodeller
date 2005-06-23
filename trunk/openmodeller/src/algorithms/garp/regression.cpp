@@ -33,8 +33,8 @@
  */
 
 
-#include <om.hh>
-#include <Sample.hh>
+#include <openmodeller/om.hh>
+#include <openmodeller/Sample.hh>
 
 #include "regression.hh"
 

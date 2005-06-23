@@ -33,17 +33,17 @@
 #include <map>
 #include <string>
 
-#include <om_defs.hh>
-#include <om_sampler.hh>
-#include <om_algorithm_metadata.hh>
-#include <icstring.hh>
+#include <openmodeller/om_defs.hh>
+#include <openmodeller/Sampler.hh>
+#include <openmodeller/AlgMetadata.hh>
+#include <openmodeller/ignorecase_traits.hh>
 
-#include <configurable.hh>
-#include <configuration.hh>
+#include <openmodeller/Configurable.hh>
+#include <openmodeller/Configuration.hh>
 
-#include <refcount.hh>
+#include <openmodeller/refcount.hh>
 
-#include <Model.hh>
+#include <openmodeller/Model.hh>
 
 class AlgParameter;
 

@@ -10,6 +10,9 @@
 
 SUBDIRS = garp dg_garp
 
+OMSRCDIR = @top_srcdir@/src
+OMLIB = $(OMSRCDIR)/openmodeller/libopenmodeller.la
+
 plugindir = ${pkglibdir}
 
 plugin_LTLIBRARIES = \
@@ -35,20 +38,20 @@ libomminimum_distance_la_SOURCES = \
 	minimum_distance.hh
 
 libomdistance_to_average_la_LDFLAGS = -no-undefined
-libomdistance_to_average_la_LIBADD = ../src/lib/libopenmodeller.la
-libomdistance_to_average_la_CPPFLAGS = -I../src/inc -I../src/inc/serialization
+libomdistance_to_average_la_LIBADD = $(OMLIB)
+libomdistance_to_average_la_CPPFLAGS = -I$(OMSRCDIR)
 
 libombioclim_la_LDFLAGS = -no-undefined
-libombioclim_la_LIBADD = ../src/lib/libopenmodeller.la
-libombioclim_la_CPPFLAGS = -I../src/inc -I../src/inc/serialization
+libombioclim_la_LIBADD = $(OMLIB)
+libombioclim_la_CPPFLAGS = -I$(OMSRCDIR)
 
 libombioclim_distance_la_LDFLAGS = -no-undefined
-libombioclim_distance_la_LIBADD = ../src/lib/libopenmodeller.la
-libombioclim_distance_la_CPPFLAGS = -I../src/inc -I../src/inc/serialization
+libombioclim_distance_la_LIBADD = $(OMLIB)
+libombioclim_distance_la_CPPFLAGS = -I$(OMSRCDIR)
 
 libomminimum_distance_la_LDFLAGS = -no-undefined
-libomminimum_distance_la_LIBADD = ../src/lib/libopenmodeller.la
-libomminimum_distance_la_CPPFLAGS = -I../src/inc -I../src/inc/serialization
+libomminimum_distance_la_LIBADD = $(OMLIB)
+libomminimum_distance_la_CPPFLAGS = -I$(OMSRCDIR)
 
 #
 # Build csm - kaiser-gutman only when gsl is available
@@ -75,6 +78,6 @@ libomcsmbs_la_SOURCES = \
 	csmbs.cpp \
 	csmbs.hh
 libomcsmbs_la_LDFLAGS = -no-undefined
-libomcsmbs_la_LIBADD = $(GSL_LIBS) ../src/lib/libopenmodeller.la
-libomcsmbs_la_CPPFLAGS = $(GSL_CFLAGS) -I../src/inc -I../src/inc/serialization
+libomcsmbs_la_LIBADD = $(GSL_LIBS) $(OMLIB)
+libomcsmbs_la_CPPFLAGS = $(GSL_CFLAGS) -I$(OMSRCDIR)
 endif

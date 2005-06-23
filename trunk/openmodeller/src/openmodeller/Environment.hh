@@ -30,11 +30,11 @@
 #ifndef _ENVIRONMENTHH_
 #define _ENVIRONMENTHH_
 
-#include <om_defs.hh>
-#include <refcount.hh>
-#include <configurable.hh>
-#include <normalizable.hh>
-#include <Sample.hh>
+#include <openmodeller/om_defs.hh>
+#include <openmodeller/refcount.hh>
+#include <openmodeller/Configurable.hh>
+#include <openmodeller/Normalizable.hh>
+#include <openmodeller/Sample.hh>
 
 #include <vector>
 #include <string>

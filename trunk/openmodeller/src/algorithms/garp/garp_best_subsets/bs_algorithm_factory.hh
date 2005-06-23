@@ -31,7 +31,7 @@
 #ifndef _BS_ALGORITHM_FACTORY_HH_
 #define _BS_ALGORITHM_FACTORY_HH_
 
-#include <om.hh>
+#include <openmodeller/om.hh>
 
 class BSAlgorithmFactory
 {

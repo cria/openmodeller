@@ -29,7 +29,7 @@
 #ifndef _CONFIGURATION_HH_
 #define _CONFIGURATION_HH_
 
-#include <refcount.hh>
+#include <openmodeller/refcount.hh>
 
 #include <string>
 #include <vector>

@@ -307,18 +307,17 @@ AC_CONFIG_FILES([
 	test/CppUnitLite/Makefile
 	test/library/Makefile
 	src/Makefile
-	src/lib/Makefile
-	src/inc/Makefile
+	src/openmodeller/Makefile
 	src/console/Makefile
 	src/soap/Makefile
 	src/swig/Makefile
 	src/swig/python/Makefile
 	src/swig/java/Makefile
-	algorithms/Makefile
-	algorithms/garp/Makefile
-	algorithms/garp/test/Makefile
-	algorithms/garp/garp_best_subsets/Makefile
-	algorithms/dg_garp/Makefile
+	src/algorithms/Makefile
+	src/algorithms/garp/Makefile
+	src/algorithms/garp/test/Makefile
+	src/algorithms/garp/garp_best_subsets/Makefile
+	src/algorithms/dg_garp/Makefile
 	openmodeller.spec
 ])
 

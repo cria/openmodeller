@@ -10,6 +10,9 @@
 
 SUBDIRS = 
 
+OMSRCDIR = @top_srcdir@/src
+OMLIB = $(OMSRCDIR)/openmodeller/libopenmodeller.la
+
 plugindir = ${pkglibdir}
 
 plugin_LTLIBRARIES = libomoldgarp.la
@@ -21,5 +24,5 @@ libomoldgarp_la_SOURCES = \
 	Utilities.cpp Utilities.h
 
 libomoldgarp_la_LDFLAGS  = -no-undefined
-libomoldgarp_la_LIBADD   = ../../src/lib/libopenmodeller.la
-libomoldgarp_la_CPPFLAGS = -I../../src/inc
+libomoldgarp_la_LIBADD   = $(OMLIB)
+libomoldgarp_la_CPPFLAGS = -I$(OMSRCDIR)

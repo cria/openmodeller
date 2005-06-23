@@ -35,7 +35,7 @@
 #ifndef CSM_H
 #define CSM_H
 
-#include "om.hh"
+#include <openmodeller/om.hh>
 #include <gsl/gsl_matrix.h>
 #include <gsl/gsl_blas.h>
 

@@ -1,7 +1,7 @@
 #ifndef _REFCOUNT_HH
 #define _REFCOUNT_HH
 
-#include <om_log.hh>
+#include <openmodeller/Log.hh>
 
 #undef DEBUG_MEMORY
 

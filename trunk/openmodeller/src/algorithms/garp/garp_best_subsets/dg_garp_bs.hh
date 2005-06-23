@@ -31,7 +31,7 @@
 #ifndef _DG_GARP_BEST_SUBSETS_HH_
 #define _DG_GARP_BEST_SUBSETS_HH_
 
-#include <om.hh>
+#include <openmodeller/om.hh>
 
 #include "GarpAlgorithm.h"
 #include "best_subsets.hh"

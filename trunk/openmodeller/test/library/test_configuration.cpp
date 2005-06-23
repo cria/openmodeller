@@ -1,12 +1,12 @@
 
 
-#include <configuration.hh>
-#include <Exceptions.hh>
-#include <Sample.hh>
+#include <openmodeller/Configuration.hh>
+#include <openmodeller/Exceptions.hh>
+#include <openmodeller/Sample.hh>
 
 #include <CppUnitLite/TestHarness.h>
 
-#include <om_log.hh>
+#include <openmodeller/Log.hh>
 
 #include <sstream>
 using namespace std;

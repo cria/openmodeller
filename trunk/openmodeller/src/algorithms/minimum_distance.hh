@@ -29,7 +29,7 @@
 #ifndef _MINIMUM_DISTANCEHH_
 #define _MINIMUM_DISTANCEHH_
 
-#include <om.hh>
+#include <openmodeller/om.hh>
 
 /****************************************************************/
 /************************* Minimum Distance *********************/

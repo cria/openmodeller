@@ -33,11 +33,11 @@
  */
 
 
-#include <random.hh>
+#include <openmodeller/Random.hh>
 #include <math.h>
 #include <string.h>
 
-#include <om_log.hh>
+#include <openmodeller/Log.hh>
 
 #include "ruleset.hh"
 #include "rules_base.hh"

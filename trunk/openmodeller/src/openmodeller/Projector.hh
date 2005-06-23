@@ -29,10 +29,10 @@
 #ifndef _PROJECTOR_HH_
 #define _PROJECTOR_HH_
 
-#include <om_defs.hh>
-#include <environment.hh>
-#include <Model.hh>
-#include <env_io/header.hh>
+#include <openmodeller/om_defs.hh>
+#include <openmodeller/Environment.hh>
+#include <openmodeller/Model.hh>
+#include <openmodeller/env_io/Header.hh>
 
 #include <string>
 

@@ -26,11 +26,11 @@
  * http://www.gnu.org/copyleft/gpl.html
  */
 
-#include <algorithm_factory.hh>
-#include <om_algorithm.hh>
-#include <om_log.hh>
-#include <configuration.hh>
-#include <Exceptions.hh>
+#include <openmodeller/AlgorithmFactory.hh>
+#include <openmodeller/Algorithm.hh>
+#include <openmodeller/Log.hh>
+#include <openmodeller/Configuration.hh>
+#include <openmodeller/Exceptions.hh>
 
 #include <string>
 #include <list>

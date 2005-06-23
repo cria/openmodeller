@@ -31,7 +31,7 @@
 #ifndef _VIEW_MODELHH_
 #define _VIEW_MODELHH_
 
-#include <om_algorithm.hh>
+#include <openmodeller/Algorithm.hh>
 
 class GFrame;
 class GGraph;

@@ -1,9 +1,9 @@
 
 
-#include <icstring.hh>
+#include <openmodeller/ignorecase_traits.hh>
 #include <CppUnitLite/TestHarness.h>
 
-#include <om_log.hh>
+#include <openmodeller/Log.hh>
 
 #include <string>
 

@@ -36,8 +36,8 @@
 #ifndef _GARP_HH_
 #define _GARP_HH_
 
-#include <om.hh>
-#include <Sample.hh>
+#include <openmodeller/om.hh>
+#include <openmodeller/Sample.hh>
 
 // required include because of enum PerfIndex and class GarpRule
 #include "rules_base.hh" 

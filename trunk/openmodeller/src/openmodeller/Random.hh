@@ -31,7 +31,7 @@
 #ifndef _RANDOMHH_
 #define _RANDOMHH_
 
-#include <om_defs.hh>
+#include <openmodeller/om_defs.hh>
 
 
 /********************************************************/

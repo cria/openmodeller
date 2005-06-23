@@ -36,7 +36,7 @@
 #ifndef _BIOCLIM_HISTOGRAM_HH_
 #define _BIOCLIM_HISTOGRAM_HH_
 
-#include <om.hh>
+#include <openmodeller/om.hh>
 
 #define HIST_BOX_RESOLUTION           0.01
 #define BIOCLIM_LEVEL_RESOLUTION      0.005

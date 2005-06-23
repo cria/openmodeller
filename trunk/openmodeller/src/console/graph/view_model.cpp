@@ -31,8 +31,8 @@
 #include <view_model.hh>
 
 #include <graphic.hh>
-#include <om_algorithm.hh>
-#include <Sample.hh>
+#include <openmodeller/Algorithm.hh>
+#include <openmodeller/Sample.hh>
 
 #include <stdio.h>
 #include <stdlib.h>

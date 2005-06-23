@@ -30,7 +30,7 @@
 #ifndef _NORMALIZABLE_HH
 #define _NORMALIZABLE_HH
 
-#include <Sample.hh>
+#include <openmodeller/Sample.hh>
 
 class Normalizable {
 

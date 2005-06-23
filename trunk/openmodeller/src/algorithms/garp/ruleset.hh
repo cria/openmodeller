@@ -36,7 +36,7 @@
 #ifndef _RULESET_HH_
 #define _RULESET_HH_
 
-#include <om.hh>
+#include <openmodeller/om.hh>
 #include "rules_base.hh"
 
 

@@ -30,7 +30,7 @@
 #ifndef _CONFIGURABLE_HH
 #define _CONFIGURABLE_HH
 
-#include "configuration.hh"
+#include <openmodeller/Configuration.hh>
 
 class Configurable {
 

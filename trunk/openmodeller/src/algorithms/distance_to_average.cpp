@@ -28,8 +28,8 @@
 
 #include "distance_to_average.hh"
 
-#include <configuration.hh>
-#include <Exceptions.hh>
+#include <openmodeller/Configuration.hh>
+#include <openmodeller/Exceptions.hh>
 
 #include <stdio.h>
 #include <math.h>

@@ -27,12 +27,12 @@
  * 
  */
 
-#include <om.hh>
+#include <openmodeller/om.hh>
 
 #include "garp_run.hh"
 #include "garp_run_thread.hh"
 #include "bs_algorithm_factory.hh"
-#include "om_alg_parameter.hh"
+#include <openmodeller/AlgParameter.hh>
 
 /****************************************************************/
 /************************ GARP Run Thread ***********************/

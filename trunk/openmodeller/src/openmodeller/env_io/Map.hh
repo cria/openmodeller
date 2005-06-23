@@ -29,9 +29,9 @@
 #ifndef _MAPHH_
 #define _MAPHH_
 
-#include <om_defs.hh>
-#include <env_io/raster.hh>
-#include <env_io/map_iter.hh>
+#include <openmodeller/om_defs.hh>
+#include <openmodeller/env_io/Raster.hh>
+#include <openmodeller/env_io/MapIterator.hh>
 
 #include <string>
 

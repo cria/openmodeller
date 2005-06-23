@@ -28,8 +28,8 @@
  * 
  */
 
-#include <CppUnitLite/TestHarness.h>
-#include <Sample.hh>
+#include <TestHarness.h>
+#include <openmodeller/Sample.hh>
 #include <rules_base.hh>
 
 class ExtGarpRule : public GarpRule

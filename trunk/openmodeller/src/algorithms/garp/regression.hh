@@ -36,7 +36,7 @@
 #ifndef _REGRESSION_HH_
 #define _REGRESSION_HH_
 
-#include <om.hh>
+#include <openmodeller/om.hh>
 
 class Regression
 {

@@ -1,8 +1,8 @@
 
-#include <models/ScaledModel.hh>
+#include <openmodeller/models/ScaledModel.hh>
 
-#include <om_sampler.hh>
-#include <environment.hh>
+#include <openmodeller/Sampler.hh>
+#include <openmodeller/Environment.hh>
 
 /*********************************************************************************
  *

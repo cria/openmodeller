@@ -31,9 +31,9 @@
 #include "garp_best_subsets.hh"
 #include "garp.hh"
 
-#include <om.hh>
-#include <random.hh>
-#include <om_sampler.hh>
+#include <openmodeller/om.hh>
+#include <openmodeller/Random.hh>
+#include <openmodeller/Sampler.hh>
 
 #include <stdlib.h>
 #include <stdio.h>

@@ -1,10 +1,10 @@
 
 
-#include <Sample.hh>
-#include <SampleExpr.hh>
+#include <openmodeller/Sample.hh>
+#include <openmodeller/SampleExpr.hh>
 #include <CppUnitLite/TestHarness.h>
 
-#include <om_log.hh>
+#include <openmodeller/Log.hh>
 
 #include <cmath>
 #include <algorithm>

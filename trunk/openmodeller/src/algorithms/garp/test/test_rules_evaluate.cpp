@@ -28,9 +28,9 @@
  * 
  */
 
-#include <CppUnitLite/TestHarness.h>
-#include <om_occurrences.hh>
-#include <Sample.hh>
+#include <TestHarness.h>
+#include <openmodeller/Occurrences.hh>
+#include <openmodeller/Sample.hh>
 
 #include <rules_range.hh>
 #include <rules_negrange.hh>
@@ -59,7 +59,7 @@ OccurrencesPtr getSampleSet(int hardcodedSamplesIndex, int *dim)
       Scalar pred = *(data->values + (valDim * i));
       Sample s(data->dimension, data->values + (valDim * i) + 1);
       OccurrencePtr oc( new OccurrenceImpl(0.0, 0.0, -1.0, pred) );
-      oc->setEnvironment(s);
+      oc->setUnnormalizedEnvironment(s);
       occs->insert(oc);
     }
 

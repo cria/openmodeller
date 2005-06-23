@@ -35,7 +35,7 @@
 
 #include "bioclim_histogram.hh"
 
-#include <random.hh>
+#include <openmodeller/Random.hh>
 #include <string.h>
 
 /****************************************************************/
