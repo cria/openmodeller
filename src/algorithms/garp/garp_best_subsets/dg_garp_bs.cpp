@@ -31,9 +31,9 @@
 #include "dg_garp_bs.hh"
 #include "GarpAlgorithm.h"
 
-#include <om.hh>
-#include <random.hh>
-#include <om_sampler.hh>
+#include <openmodeller/om.hh>
+#include <openmodeller/Random.hh>
+#include <openmodeller/Sampler.hh>
 
 #include <stdlib.h>
 #include <stdio.h>

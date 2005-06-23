@@ -31,7 +31,7 @@
 #ifndef _GARP_BEST_SUBSETS_HH_
 #define _GARP_BEST_SUBSETS_HH_
 
-#include <om.hh>
+#include <openmodeller/om.hh>
 
 #include "garp.hh"
 #include "best_subsets.hh"

@@ -26,15 +26,15 @@
  * http://www.gnu.org/copyleft/gpl.html
  */
 
-#include <env_io/map.hh>
-#include <env_io/raster.hh>
-#include <env_io/raster_gdal.hh>
+#include <openmodeller/env_io/Map.hh>
+#include <openmodeller/env_io/Raster.hh>
+#include <openmodeller/env_io/RasterGdal.hh>
 
-#include <om_log.hh>
+#include <openmodeller/Log.hh>
 
-#include <map_format.hh>
+#include <openmodeller/MapFormat.hh>
 
-#include <Exceptions.hh>
+#include <openmodeller/Exceptions.hh>
 
 #include <utility>
 using std::pair;

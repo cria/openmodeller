@@ -26,8 +26,8 @@
  * http://www.gnu.org/copyleft/gpl.html
  */
 
-#include "random.hh"
-#include "os_specific.hh"
+#include <openmodeller/Random.hh>
+#include <openmodeller/os_specific.hh>
 
 #include <stdlib.h>
 

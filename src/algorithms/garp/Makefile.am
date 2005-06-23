@@ -10,19 +10,22 @@
 
 SUBDIRS = garp_best_subsets test
 
+OMSRCDIR = @top_srcdir@/src
+OMLIB = $(OMSRCDIR)/openmodeller/libopenmodeller.la
+
 plugindir = ${pkglibdir}
 
 # left out of build due to instabilities in algorithm
 #plugin_LTLIBRARIES = libomgarp.la
-#
-#libomgarp_la_SOURCES = \
-#	garp.cpp ruleset.cpp \
-#	bioclim_histogram.cpp regression.cpp \
-#	rules_base.cpp rules_range.cpp rules_negrange.cpp rules_logit.cpp \
-#	garp.hh  ruleset.hh \
-#	bioclim_histogram.hh  regression.hh \
-#	rules_base.hh rules_range.hh rules_negrange.hh rules_logit.hh 
-#
-#libomgarp_la_LDFLAGS = -no-undefined
-#libomgarp_la_LIBADD = ../../src/lib/libopenmodeller.la
-#libomgarp_la_CPPFLAGS = -I../../src/inc
+
+libomgarp_la_SOURCES = \
+	garp.cpp ruleset.cpp \
+	bioclim_histogram.cpp regression.cpp \
+	rules_base.cpp rules_range.cpp rules_negrange.cpp rules_logit.cpp \
+	garp.hh  ruleset.hh \
+	bioclim_histogram.hh  regression.hh \
+	rules_base.hh rules_range.hh rules_negrange.hh rules_logit.hh 
+
+libomgarp_la_LDFLAGS = -no-undefined
+libomgarp_la_LIBADD = $(OMLIB)
+libomgarp_la_CPPFLAGS = -I$(OMSRCDIR)

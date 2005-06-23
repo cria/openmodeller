@@ -26,10 +26,10 @@
  * http://www.gnu.org/copyleft/gpl.html
  */
 
-#include <om.hh>
-#include <algorithm_factory.hh>
-#include <environment.hh>
-#include <occurrence.hh>
+#include <openmodeller/om.hh>
+#include <openmodeller/AlgorithmFactory.hh>
+#include <openmodeller/Environment.hh>
+#include <openmodeller/Occurrence.hh>
 #include "request_file.hh"
 #include "file_parser.hh"
 #include "occurrences_file.hh"

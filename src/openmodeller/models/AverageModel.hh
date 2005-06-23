@@ -2,8 +2,8 @@
 #ifndef _AVERAGEMODEL_HH
 #define _AVERAGEMODEL_HH
 
-#include <om_defs.hh>
-#include <Model.hh>
+#include <openmodeller/om_defs.hh>
+#include <openmodeller/Model.hh>
 
 #include <vector>
 

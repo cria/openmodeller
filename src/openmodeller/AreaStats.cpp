@@ -27,7 +27,7 @@
  */
 
 
-#include <om_area_stats.hh>
+#include <openmodeller/AreaStats.hh>
 
 AreaStats::AreaStats(Scalar predictionThreshold)
 {

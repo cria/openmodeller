@@ -11,7 +11,7 @@
 #ifndef _SAMPLE_HH_
 #define _SAMPLE_HH_
 
-#include <om_defs.hh>
+#include <openmodeller/om_defs.hh>
 #include <cstddef>
 #include <iostream>
 #include <vector>

@@ -26,9 +26,9 @@
  * http://www.gnu.org/copyleft/gpl.html
  */
 
-#include <om_log.hh>
+#include <openmodeller/Log.hh>
 
-#include <occurrence.hh>
+#include <openmodeller/Occurrence.hh>
 
 #include <string.h>
 

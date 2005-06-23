@@ -36,8 +36,8 @@
 #ifndef _RULES_BASE_HH_
 #define _RULES_BASE_HH_
 
-#include <om.hh>
-#include <Sample.hh>
+#include <openmodeller/om.hh>
+#include <openmodeller/Sample.hh>
 
 enum PerfIndex
 {

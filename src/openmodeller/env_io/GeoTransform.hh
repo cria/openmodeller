@@ -29,7 +29,7 @@
 #ifndef _GEO_TRANSFHH_
 #define _GEO_TRANSFHH_
 
-#include <om_defs.hh>
+#include <openmodeller/om_defs.hh>
 #include <string>
 
 class OGRCoordinateTransformation;

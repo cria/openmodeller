@@ -26,11 +26,11 @@
  * http://www.gnu.org/copyleft/gpl.html
  */
 
-#include <om_log.hh>
+#include <openmodeller/Log.hh>
 
 #include <stdarg.h>
 
-#include <Exceptions.hh>
+#include <openmodeller/Exceptions.hh>
 
 using std::ostream;
 using std::endl;

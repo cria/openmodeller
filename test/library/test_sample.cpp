@@ -1,9 +1,9 @@
 
 
-#include <Sample.hh>
+#include <openmodeller/Sample.hh>
 #include <CppUnitLite/TestHarness.h>
 
-#include <om_log.hh>
+#include <openmodeller/Log.hh>
 
 #include <algorithm>
 

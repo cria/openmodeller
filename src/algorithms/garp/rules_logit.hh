@@ -36,7 +36,7 @@
 #ifndef _RULES_LOGIT_HH_
 #define _RULES_LOGIT_HH_
 
-#include <om.hh>
+#include <openmodeller/om.hh>
 
 #include "rules_base.hh"
 #include "regression.hh"

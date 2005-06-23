@@ -26,9 +26,9 @@
  * http://www.gnu.org/copyleft/gpl.html
  */
 
-#include "env_io/header.hh"
+#include <openmodeller/env_io/Header.hh>
 
-#include <om_log.hh>
+#include <openmodeller/Log.hh>
 
 using std::string;
 using std::pair;

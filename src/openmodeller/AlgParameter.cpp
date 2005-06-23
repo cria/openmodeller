@@ -26,7 +26,7 @@
  * http://www.gnu.org/copyleft/gpl.html
  */
 
-#include <om_alg_parameter.hh>
+#include <openmodeller/AlgParameter.hh>
 
 #include <stdlib.h>
 #include <string.h>

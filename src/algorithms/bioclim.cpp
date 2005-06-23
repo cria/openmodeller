@@ -28,9 +28,9 @@
 
 #include "bioclim.hh"
 
-#include <configuration.hh>
+#include <openmodeller/Configuration.hh>
 
-#include <Exceptions.hh>
+#include <openmodeller/Exceptions.hh>
 
 #include <string.h>
 #include <stdio.h>

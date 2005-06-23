@@ -16,4 +16,4 @@ if BUILD_SWIG
 SWIG_DIR=swig
 endif
 
-SUBDIRS = lib inc console $(SOAP_DIR) $(SWIG_DIR)
+SUBDIRS = openmodeller algorithms console $(SOAP_DIR) $(SWIG_DIR)

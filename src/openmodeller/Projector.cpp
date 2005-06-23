@@ -26,17 +26,17 @@
  * http://www.gnu.org/copyleft/gpl.html
  */
 
-#include <om_projector.hh>
-#include <om_log.hh>
-#include <environment.hh>
-#include <Model.hh>
+#include <openmodeller/Projector.hh>
+#include <openmodeller/Log.hh>
+#include <openmodeller/Environment.hh>
+#include <openmodeller/Model.hh>
 
-#include <env_io/header.hh>
-#include <env_io/map.hh>
-#include <env_io/raster.hh>
-#include <env_io/geo_transform.hh>
+#include <openmodeller/env_io/Header.hh>
+#include <openmodeller/env_io/Map.hh>
+#include <openmodeller/env_io/Raster.hh>
+#include <openmodeller/env_io/GeoTransform.hh>
 
-#include <om_area_stats.hh>
+#include <openmodeller/AreaStats.hh>
 
 #include <utility>
 using std::pair;

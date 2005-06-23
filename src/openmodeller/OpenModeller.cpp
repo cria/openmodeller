@@ -28,25 +28,25 @@
 
 #include <gdal.h>
 
-#include "om_control.hh"
+#include <openmodeller/OpenModeller.hh>
 
-#include <env_io/map.hh>
+#include <openmodeller/env_io/Map.hh>
 
-#include <om_defs.hh>
-#include <om_log.hh>
-#include <om_algorithm.hh>
-#include <om_alg_parameter.hh>
-#include <om_sampler.hh>
-#include <om_occurrences.hh>
-#include <om_area_stats.hh>
-#include <occurrence.hh>
-#include <om_conf_matrix.hh>
-#include <map_format.hh>
+#include <openmodeller/om_defs.hh>
+#include <openmodeller/Log.hh>
+#include <openmodeller/Algorithm.hh>
+#include <openmodeller/AlgParameter.hh>
+#include <openmodeller/Sampler.hh>
+#include <openmodeller/Occurrences.hh>
+#include <openmodeller/AreaStats.hh>
+#include <openmodeller/Occurrence.hh>
+#include <openmodeller/ConfusionMatrix.hh>
+#include <openmodeller/MapFormat.hh>
 
-#include <algorithm_factory.hh>
-#include <environment.hh>
-#include <configuration.hh>
-#include <Model.hh>
+#include <openmodeller/AlgorithmFactory.hh>
+#include <openmodeller/Environment.hh>
+#include <openmodeller/Configuration.hh>
+#include <openmodeller/Model.hh>
 
 #include <string>
 using std::string;

@@ -29,14 +29,14 @@
 #ifndef _SAMPLERHH_
 #define _SAMPLERHH_
 
-#include <om_defs.hh>
-#include <om_occurrences.hh>
-#include <occurrence.hh>
-#include <environment.hh>
-#include <configurable.hh>
-#include <normalizable.hh>
+#include <openmodeller/om_defs.hh>
+#include <openmodeller/Occurrences.hh>
+#include <openmodeller/Occurrence.hh>
+#include <openmodeller/Environment.hh>
+#include <openmodeller/Configurable.hh>
+#include <openmodeller/Normalizable.hh>
 
-#include <refcount.hh>
+#include <openmodeller/refcount.hh>
 
 
 /****************************************************************/

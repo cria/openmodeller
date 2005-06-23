@@ -28,11 +28,11 @@
  * http://www.gnu.org/copyleft/gpl.html
  */
 
-#include <map_format.hh>
-#include <env_io/map.hh>
-#include <env_io/raster.hh>
-#include <Exceptions.hh>
-#include <om_log.hh>
+#include <openmodeller/MapFormat.hh>
+#include <openmodeller/env_io/Map.hh>
+#include <openmodeller/env_io/Raster.hh>
+#include <openmodeller/Exceptions.hh>
+#include <openmodeller/Log.hh>
 
 using std::string;
 

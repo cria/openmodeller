@@ -28,8 +28,8 @@
  * 
  */
 
-#include <CppUnitLite/TestHarness.h>
-#include <Sample.hh>
+#include <TestHarness.h>
+#include <openmodeller/Sample.hh>
 #include <rules_negrange.hh>
 #include <test_rules_defs.hh>
 

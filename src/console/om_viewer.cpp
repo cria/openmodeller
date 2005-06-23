@@ -26,16 +26,16 @@
  * http://www.gnu.org/copyleft/gpl.html
  */
 
-#include <om.hh>
+#include <openmodeller/om.hh>
 
-#include <env_io/map.hh>
-#include <env_io/geo_transform.hh>
-#include <env_io/raster.hh>
-#include <occurrences_file.hh>
-#include <occurrence.hh>
-#include <file_parser.hh>
+#include <openmodeller/env_io/Map.hh>
+#include <openmodeller/env_io/GeoTransform.hh>
+#include <openmodeller/env_io/Raster.hh>
+#include "occurrences_file.hh"
+#include <openmodeller/Occurrence.hh>
+#include "file_parser.hh"
 
-#include <graph/graphic.hh>
+#include "graph/graphic.hh"
 
 #include <string.h>
 #include <stdio.h>

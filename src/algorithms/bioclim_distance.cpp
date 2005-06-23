@@ -28,8 +28,8 @@
 
 #include "bioclim_distance.hh"
 
-#include <configuration.hh>
-#include <Exceptions.hh>
+#include <openmodeller/Configuration.hh>
+#include <openmodeller/Exceptions.hh>
 
 #include <string.h>
 #include <stdio.h>

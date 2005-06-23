@@ -1,6 +1,6 @@
 %module om
 
-%include "om_defs.hh"
+%include "openmodeller/om_defs.hh"
 
 #undef dllexp
 #undef dll_log
@@ -13,24 +13,24 @@
 #include <sstream>
 #include <string>
 #include <stdexcept>
-#include "algorithm_factory.hh"
-#include "configuration.hh"
-#include "env_io/map.hh"
-#include "environment.hh"
-#include "map_format.hh"
-#include "Model.hh"
-#include "models/AverageModel.hh"
-#include "om_alg_parameter.hh"
-#include "om_algorithm.hh"
-#include "om_algorithm_metadata.hh"
-#include "om_area_stats.hh"
-#include "om_conf_matrix.hh"
-#include "om_control.hh"
-#include "om_defs.hh"
-#include "om_occurrences.hh"
-#include "om_projector.hh"
-#include "om_sampler.hh"
-#include "refcount.hh"
+#include "openmodeller/AlgorithmFactory.hh"
+#include "openmodeller/Configuration.hh"
+#include "openmodeller/env_io/Map.hh"
+#include "openmodeller/Environment.hh"
+#include "openmodeller/MapFormat.hh"
+#include "openmodeller/Model.hh"
+#include "openmodeller/models/AverageModel.hh"
+#include "openmodeller/AlgParameter.hh"
+#include "openmodeller/Algorithm.hh"
+#include "openmodeller/AlgMetadata.hh"
+#include "openmodeller/AreaStats.hh"
+#include "openmodeller/ConfusionMatrix.hh"
+#include "openmodeller/OpenModeller.hh"
+#include "openmodeller/om_defs.hh"
+#include "openmodeller/Occurrences.hh"
+#include "openmodeller/Projector.hh"
+#include "openmodeller/Sampler.hh"
+#include "openmodeller/refcount.hh"
 %}
 
 %include "std_string.i"
@@ -103,7 +103,7 @@ int print_alg_params(int n, AlgParameter *param)
 // This is a pidgeon of the ReferenceCountedPointer class contained in
 // refcount.hh.
 // It is enough to get swig to work correctly.
-//%include "refcount.hh"
+//%include "openmodeller/refcount.hh"
 template< class U > struct UnConst
 {	
     typedef U* PointerType;
@@ -239,7 +239,7 @@ private:
 %ignore Log::LogCallback;
 %ignore Log::OstreamCallback;
 %ignore Log::setCallback;
-%include "om_log.hh"
+%include "openmodeller/Log.hh"
 
 //*****************************************************************************
 //
@@ -270,7 +270,7 @@ RCP_CONST_TYPEMAP( ConstConfigurationPtr, ConfigurationPtr );
   }
 %}
 
-%include "configuration.hh"
+%include "openmodeller/Configuration.hh"
 
 //*****************************************************************************
 //
@@ -282,7 +282,7 @@ RCP_WRAP( SamplerPtr, SamplerImpl );
 
 %ignore SamplerImpl;
 
-%include "om_sampler.hh"
+%include "openmodeller/Sampler.hh"
 
 //*****************************************************************************
 //
@@ -297,7 +297,7 @@ RCP_CONST_TYPEMAP( ConstOccurrencesPtr, OccurrencesPtr );
 %ignore OccurrencesImpl;
 %ignore OccurrencesImpl::print;
 
-%include "om_occurrences.hh"
+%include "openmodeller/Occurrences.hh"
 
 %inline %{
   ReferenceCountedPointer<OccurrencesImpl> makeOccurrences( char *species_name, char *cs ) {
@@ -311,10 +311,10 @@ RCP_CONST_TYPEMAP( ConstOccurrencesPtr, OccurrencesPtr );
 //
 //******************************************************************************
 
-%include "om_alg_parameter.hh"
-%include "om_area_stats.hh"
-%include "om_conf_matrix.hh"
-%include "map_format.hh"
+%include "openmodeller/AlgParameter.hh"
+%include "openmodeller/AreaStats.hh"
+%include "openmodeller/ConfusionMatrix.hh"
+%include "openmodeller/MapFormat.hh"
 
 //*****************************************************************************
 //
@@ -326,12 +326,12 @@ RCP_CONST_TYPEMAP( ConstOccurrencesPtr, OccurrencesPtr );
 RCP_WRAP( Model, ModelImpl );
 %ignore Model;
 %ignore ModelImpl;
-%include "Model.hh"
+%include "openmodeller/Model.hh"
 
 RCP_WRAP( AverageModelPtr, AverageModelImpl );
 %ignore AverageModelPtr;
 %ignore AverageModelImpl;
-%include "models/AverageModel.hh"
+%include "openmodeller/models/AverageModel.hh"
 
 %inline %{
   ReferenceCountedPointer<AverageModelImpl> makeAverageModel()
@@ -372,7 +372,7 @@ private:
 //
 //******************************************************************************
 
-%include "om_algorithm_metadata.hh"
+%include "openmodeller/AlgMetadata.hh"
 
 %extend AlgMetadata {
   PyObject *getParameterList() {
@@ -418,7 +418,7 @@ RCP_CONST_TYPEMAP( ConstEnvironmentPtr, EnvironmentPtr );
 %ignore EnvironmentPtr;
 %ignore EnvironmentImpl;
 
-%include "environment.hh"
+%include "openmodeller/Environment.hh"
 
 //*****************************************************************************
 //
@@ -648,7 +648,7 @@ class PyMapCommand : public Projector::MapCommand {
 
 %newobject OpenModeller::getConfusionMatrix;
 
-%include "om_control.hh"
+%include "openmodeller/OpenModeller.hh"
 
 //*****************************************************************************
 //
@@ -673,5 +673,5 @@ AlgorithmPtr makeAlgorithmFromConfig( const ConstConfigurationPtr& config ) {
 %ignore AlgorithmImpl;
 %ignore algorithmFactory();
 %ignore algorithmMetadata();
-%include "om_algorithm.hh"
+%include "openmodeller/Algorithm.hh"
 

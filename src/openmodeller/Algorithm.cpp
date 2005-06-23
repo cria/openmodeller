@@ -26,14 +26,14 @@
  * http://www.gnu.org/copyleft/gpl.html
  */
 
-#include <om_algorithm.hh>
-#include <om_alg_parameter.hh>
-#include <om_log.hh>
-#include <configuration.hh>
-#include <environment.hh>
-#include <Exceptions.hh>
+#include <openmodeller/Algorithm.hh>
+#include <openmodeller/AlgParameter.hh>
+#include <openmodeller/Log.hh>
+#include <openmodeller/Configuration.hh>
+#include <openmodeller/Environment.hh>
+#include <openmodeller/Exceptions.hh>
 
-#include <models/AlgoAdapterModel.hh>
+#include <openmodeller/models/AlgoAdapterModel.hh>
 
 using std::string;
 

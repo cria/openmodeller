@@ -29,8 +29,8 @@
 #ifndef _RASTERHH_
 #define _RASTERHH_
 
-#include <om_defs.hh>
-#include <env_io/header.hh>
+#include <openmodeller/om_defs.hh>
+#include <openmodeller/env_io/Header.hh>
 
 #include <string>
 

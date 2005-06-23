@@ -29,21 +29,21 @@
 #ifndef _OM_CONTROLHH_
 #define _OM_CONTROLHH_
 
-#include <om_defs.hh>
-#include <om_log.hh>
-#include <om_algorithm_metadata.hh>
-#include <configurable.hh>
-#include <om_sampler.hh>
-#include <om_algorithm.hh>
+#include <openmodeller/om_defs.hh>
+#include <openmodeller/Log.hh>
+#include <openmodeller/AlgMetadata.hh>
+#include <openmodeller/Configurable.hh>
+#include <openmodeller/Sampler.hh>
+#include <openmodeller/Algorithm.hh>
 
 class AlgParameter;
 
-#include <om_occurrences.hh>
-#include <environment.hh>
+#include <openmodeller/Occurrences.hh>
+#include <openmodeller/Environment.hh>
 
 // Since MapCommand's defn/decl have been moved to om_projector.hh,
 // we need to actually include the entire header.
-#include <om_projector.hh>
+#include <openmodeller/Projector.hh>
 
 class MapFormat;
 class ConfusionMatrix;

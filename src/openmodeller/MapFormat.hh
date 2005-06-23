@@ -33,7 +33,7 @@
 
 #include <string>
 
-#include <om_defs.hh>
+#include <openmodeller/om_defs.hh>
 
 class Map;
 

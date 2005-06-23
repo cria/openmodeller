@@ -28,7 +28,7 @@
  * 
  */
 
-#include <CppUnitLite/TestHarness.h>
+#include <TestHarness.h>
 #include <ruleset.hh>
 #include <rules_base.hh>
 

@@ -22,7 +22,7 @@ EXTRA_DIST = \
 	examples/furcata_boliviana.txt \
 	examples/request.txt
 
-SUBDIRS = test src algorithms
+SUBDIRS = test src 
 
 release: distdir
 	-chmod -R a+r $(distdir)

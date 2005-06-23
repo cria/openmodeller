@@ -26,14 +26,14 @@
  * http://www.gnu.org/copyleft/gpl.html
  */
 
-#include <environment.hh>
-#include <occurrence.hh>
-#include <configuration.hh>
+#include <openmodeller/Environment.hh>
+#include <openmodeller/Occurrence.hh>
+#include <openmodeller/Configuration.hh>
 
-#include <om_sampler.hh>
-#include <om_occurrences.hh>
-#include <om_log.hh>
-#include <random.hh>
+#include <openmodeller/Sampler.hh>
+#include <openmodeller/Occurrences.hh>
+#include <openmodeller/Log.hh>
+#include <openmodeller/Random.hh>
 
 #include <string.h>
 
@@ -42,7 +42,7 @@
 #include <string>
 #include <algorithm>
 
-#include <Exceptions.hh>
+#include <openmodeller/Exceptions.hh>
 
 using std::string;
 

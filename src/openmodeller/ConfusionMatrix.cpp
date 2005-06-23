@@ -28,11 +28,11 @@
 
 #include <stdio.h>
 
-#include <om_conf_matrix.hh>
-#include <om_sampler.hh>
-#include <om_algorithm.hh>
-#include <om_occurrences.hh>
-#include <environment.hh>
+#include <openmodeller/ConfusionMatrix.hh>
+#include <openmodeller/Sampler.hh>
+#include <openmodeller/Algorithm.hh>
+#include <openmodeller/Occurrences.hh>
+#include <openmodeller/Environment.hh>
 
 #include <string.h>
 

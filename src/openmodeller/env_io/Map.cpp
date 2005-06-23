@@ -26,11 +26,11 @@
  * http://www.gnu.org/copyleft/gpl.html
  */
 
-#include "env_io/map.hh"
+#include <openmodeller/env_io/Map.hh>
 
-#include <env_io/geo_transform.hh>
-#include <env_io/raster.hh>
-#include <om_log.hh>
+#include <openmodeller/env_io/GeoTransform.hh>
+#include <openmodeller/env_io/Raster.hh>
+#include <openmodeller/Log.hh>
 
 /****************************************************************/
 /****************************** Map *****************************/

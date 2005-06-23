@@ -23,7 +23,7 @@
 #include "Utilities.h"
 #include "Rule.h"
 
-#include <om.hh>
+#include <openmodeller/om.hh>
 
 class EnvCell;
 class EnvCellSet;

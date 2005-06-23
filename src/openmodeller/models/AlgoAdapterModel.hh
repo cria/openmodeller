@@ -2,9 +2,9 @@
 #ifndef _ALGOADAPTERMODEL_HH
 #define _ALGOADAPTERMODEL_HH
 
-#include <Model.hh>
+#include <openmodeller/Model.hh>
 
-#include <om_algorithm.hh>
+#include <openmodeller/Algorithm.hh>
 
 class AlgoAdapterModelImpl : public ModelImpl
 {

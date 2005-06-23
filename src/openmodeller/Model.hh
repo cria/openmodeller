@@ -29,11 +29,11 @@
 #ifndef _MODEL_HH
 #define _MODEL_HH
 
-#include <om_defs.hh>
+#include <openmodeller/om_defs.hh>
 
-#include <om_sampler.hh>
-#include <environment.hh>
-#include <refcount.hh>
+#include <openmodeller/Sampler.hh>
+#include <openmodeller/Environment.hh>
+#include <openmodeller/refcount.hh>
 
 class ModelImpl;
 

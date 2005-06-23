@@ -26,12 +26,12 @@
  * http://www.gnu.org/copyleft/gpl.html
  */
 
-#include <om.hh>
+#include <openmodeller/om.hh>
 #include "request_file.hh"
 #include "file_parser.hh"
 #include "occurrences_file.hh"
 
-#include "configuration.hh"
+#include <openmodeller/Configuration.hh>
 #include <istream>
 
 #include <stdlib.h>

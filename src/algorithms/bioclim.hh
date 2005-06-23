@@ -29,7 +29,7 @@
 #ifndef _BIOCLIMHH_
 #define _BIOCLIMHH_
 
-#include <om.hh>
+#include <openmodeller/om.hh>
 
 /****************************************************************/
 /*********************** Bioclim Distance ***********************/

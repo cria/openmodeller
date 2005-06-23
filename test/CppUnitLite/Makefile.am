@@ -10,6 +10,8 @@
 
 noinst_LTLIBRARIES = libcppunitlite.la
 
+OMDIR = @top_srcdir@/src
+
 EXTRA_DIST = \
 	Test.h \
 	TestRegistry.h \
@@ -23,4 +25,4 @@ libcppunitlite_la_SOURCES = \
 	Test.cpp TestRegistry.cpp TestResult.cpp \
 	Failure.cpp SimpleString.cpp test_main.cpp
 
-libcppunitlite_la_CPPFLAGS = -I../../src/inc
+libcppunitlite_la_CPPFLAGS = -I$(OMDIR)

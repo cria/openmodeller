@@ -1,4 +1,4 @@
-#include <configuration.hh>
+#include <openmodeller/Configuration.hh>
 
 #include <iostream>
 #include <functional>
@@ -6,8 +6,8 @@
 #include <sstream>
 #include <iterator>
 
-#include <Sample.hh>
-#include <Exceptions.hh>
+#include <openmodeller/Sample.hh>
+#include <openmodeller/Exceptions.hh>
 
 using namespace std;
 

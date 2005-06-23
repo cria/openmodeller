@@ -26,12 +26,12 @@
  * http://www.gnu.org/copyleft/gpl.html
  */
 
-#include <env_io/raster_gdal.hh>
-#include <env_io/raster.hh>
-#include <env_io/geo_transform.hh>
-#include <om_log.hh>
+#include <openmodeller/env_io/RasterGdal.hh>
+#include <openmodeller/env_io/Raster.hh>
+#include <openmodeller/env_io/GeoTransform.hh>
+#include <openmodeller/Log.hh>
 
-#include <Exceptions.hh>
+#include <openmodeller/Exceptions.hh>
 
 #include <gdal.h>
 #include <gdal_priv.h>

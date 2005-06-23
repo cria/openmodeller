@@ -40,9 +40,9 @@
 #include "ruleset.hh"
 #include "bioclim_histogram.hh"
 #include "regression.hh"
-#include <configuration.hh>
-#include <random.hh>
-#include <Exceptions.hh>
+#include <openmodeller/Configuration.hh>
+#include <openmodeller/Random.hh>
+#include <openmodeller/Exceptions.hh>
 
 #include <string>
 using std::string;

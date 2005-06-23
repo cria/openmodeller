@@ -1,7 +1,7 @@
 
-#include <models/AlgoAdapterModel.hh>
+#include <openmodeller/models/AlgoAdapterModel.hh>
 
-#include <om_algorithm.hh>
+#include <openmodeller/Algorithm.hh>
 
 /*********************************************************************************
  *

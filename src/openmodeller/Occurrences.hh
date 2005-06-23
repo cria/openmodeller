@@ -30,13 +30,13 @@
 #ifndef _OCCURRENCESHH_
 #define _OCCURRENCESHH_
 
-#include <om_defs.hh>
-#include <occurrence.hh>
-#include <configurable.hh>
-#include <environment.hh>
-#include <normalizable.hh>
-#include <refcount.hh>
-#include <env_io/geo_transform.hh>
+#include <openmodeller/om_defs.hh>
+#include <openmodeller/Occurrence.hh>
+#include <openmodeller/Configurable.hh>
+#include <openmodeller/Environment.hh>
+#include <openmodeller/Normalizable.hh>
+#include <openmodeller/refcount.hh>
+#include <openmodeller/env_io/GeoTransform.hh>
 
 #include <vector>
 #include <string>

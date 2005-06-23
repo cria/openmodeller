@@ -26,9 +26,9 @@
  * http://www.gnu.org/copyleft/gpl.html
  */
 
-#include "env_io/geo_transform.hh"
-#include <om_defs.hh>
-#include <om_log.hh>
+#include <openmodeller/env_io/GeoTransform.hh>
+#include <openmodeller/om_defs.hh>
+#include <openmodeller/Log.hh>
 
 #include <ogr_api.h>
 #include <ogr_spatialref.h>

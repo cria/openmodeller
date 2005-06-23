@@ -27,16 +27,16 @@
  */
 
 
-#include <environment.hh>
+#include <openmodeller/Environment.hh>
 
-#include <om_log.hh>
-#include <env_io/map.hh>
-#include <env_io/raster.hh>
-#include <env_io/geo_transform.hh>
-#include <random.hh>
-#include <configuration.hh>
-#include <occurrence.hh>
-#include <Exceptions.hh>
+#include <openmodeller/Log.hh>
+#include <openmodeller/env_io/Map.hh>
+#include <openmodeller/env_io/Raster.hh>
+#include <openmodeller/env_io/GeoTransform.hh>
+#include <openmodeller/Random.hh>
+#include <openmodeller/Configuration.hh>
+#include <openmodeller/Occurrence.hh>
+#include <openmodeller/Exceptions.hh>
 
 #ifdef HAVE_VALUES_H
 #include <values.h>

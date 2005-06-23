@@ -30,7 +30,7 @@
 #ifndef _OM_ALGORITHM_METADATAHH_
 #define _OM_ALGORITHM_METADATAHH_
 
-#include <om_defs.hh>
+#include <openmodeller/om_defs.hh>
 
 
 

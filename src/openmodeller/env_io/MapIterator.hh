@@ -29,12 +29,12 @@
 #ifndef MAP_ITER_HH
 #define MAP_ITER_HH
 
-#include <om_defs.hh>
+#include <openmodeller/om_defs.hh>
 
 // For pair
 #include <utility>
 
-#include <env_io/header.hh>
+#include <openmodeller/env_io/Header.hh>
 class GeoTransform;
 
 class MapIterator {
