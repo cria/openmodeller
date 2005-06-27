@@ -27,7 +27,7 @@
  */
 
 #include "openModeller.nsmap"
-#include <om.hh>
+#include <openmodeller/om.hh>
 
 #include <stdlib.h>
 #include <string.h>
