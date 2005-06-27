@@ -8,6 +8,9 @@
 # WITHOUT ANY WARRANTY, to the extent permitted by law; without even the
 # implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
+OMSRCDIR = @top_srcdir@/src
+OMLIB = $(OMSRCDIR)/openmodeller/libopenmodeller.la
+
 noinst_PROGRAMS = om_soap_server
 
 EXTRA_DIST = \
@@ -31,5 +34,5 @@ EXTRA_DIST = \
 SOAPHEADER = om_soap.hh
 
 om_soap_server_SOURCES = om_soap_server.cpp $(SOAPHEADER) stdsoap2.cpp soapServer.cpp soapC.cpp
-om_soap_server_CPPFLAGS = -I../inc -I../inc/serialization
-om_soap_server_LDADD = $(GDAL_LIB) ../lib/libopenmodeller.la -lpthread
+om_soap_server_CPPFLAGS = -I$(OMSRCDIR)
+om_soap_server_LDADD = $(GDAL_LIB) $(OMLIB) -lpthread
