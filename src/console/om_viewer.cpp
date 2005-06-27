@@ -105,7 +105,7 @@ main( int argc, char **argv )
         if ( ! _nmap )
           g_log.error( 1, "No map to be shown!?!\n" );
 
-        _maps = new (Map *)[_nmap];
+        _maps = new Map * [_nmap];
 
         vector<string> mapfile = fp.getAll( "Map" );
       
@@ -121,7 +121,7 @@ main( int argc, char **argv )
     else
       {
         _nmap = 1;
-        _maps = new (Map *)[_nmap];
+        _maps = new Map * [_nmap];
         string result = fp.get( "Output file" );
 
         if ( result.empty() )
