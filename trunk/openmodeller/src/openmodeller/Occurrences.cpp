@@ -311,9 +311,6 @@ OccurrencesImpl::getRandom() const
 
   Random rnd;
   int selected = (int) rnd( numOccurrences() );
-
-  printf("selected = %d\n", selected);
-
   return occur_[ selected ];
 }
 
