@@ -48,7 +48,7 @@ typedef ReferenceCountedPointer< const OccurrenceImpl > ConstOccurrencePtr;
  * possibly others optional attributes).
  * 
  */
-class OccurrenceImpl : private ReferenceCountedObject
+class dllexp OccurrenceImpl : private ReferenceCountedObject
 {
   friend class ReferenceCountedPointer<OccurrenceImpl>;
   friend class ReferenceCountedPointer<const OccurrenceImpl>;

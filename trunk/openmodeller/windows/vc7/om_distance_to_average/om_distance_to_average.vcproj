@@ -21,7 +21,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="2"
 				InlineFunctionExpansion="1"
-				AdditionalIncludeDirectories="../../algorithms,../../inc,../../inc/serialization,$(GDAL_HOME)/include,$(JAVA_HOME)/include,$(JAVA_HOME)/bin"
+				AdditionalIncludeDirectories="../../algorithms,../../../src,../../../src/openmodeller,../../../src,../../../src/openmodeller/serialization,$(GDAL_HOME)/include,$(JAVA_HOME)/include,$(JAVA_HOME)/bin"
 				PreprocessorDefinitions="_WINDOWS;WIN32;NDEBUG;_USRDLL;OM_DISTANCE_TO_AVERAGE_EXPORTS;CORE_DLL_IMPORT"
 				StringPooling="TRUE"
 				RuntimeLibrary="2"
@@ -90,7 +90,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="../../algorithms,../../inc,../../inc/serialization,$(GDAL_HOME)/include"
+				AdditionalIncludeDirectories="../../algorithms,../../../src,../../../src/openmodeller,../../../src,../../../src/openmodeller/serialization,$(GDAL_HOME)/include"
 				PreprocessorDefinitions="_WINDOWS;WIN32;_DEBUG;_USRDLL;OM_DISTANCE_TO_AVERAGE_EXPORTS;CORE_DLL_IMPORT"
 				MinimalRebuild="TRUE"
 				BasicRuntimeChecks="3"
@@ -157,26 +157,10 @@
 			Name="Source Files"
 			Filter="cpp;c;cxx;rc;def;r;odl;idl;hpj;bat">
 			<File
-				RelativePath="..\..\..\algorithms\distance_to_average.cpp">
-				<FileConfiguration
-					Name="Release|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						UsePrecompiledHeader="0"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						UsePrecompiledHeader="0"/>
-				</FileConfiguration>
+				RelativePath="..\..\..\src\algorithms\distance_to_average.cpp">
 			</File>
 			<File
-				RelativePath="..\..\..\algorithms\distance_to_average.hh">
+				RelativePath="..\..\..\src\algorithms\distance_to_average.hh">
 			</File>
 		</Filter>
 	</Files>

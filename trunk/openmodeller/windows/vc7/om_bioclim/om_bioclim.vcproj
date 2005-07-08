@@ -20,7 +20,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="../../algorithms,../../inc,$(GDAL_HOME)/include"
+				AdditionalIncludeDirectories="../../algorithms,../../../src,../../../src/openmodeller,$(GDAL_HOME)/include"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;OM_BIOCLIM_EXPORTS;CORE_DLL_IMPORT"
 				MinimalRebuild="TRUE"
 				BasicRuntimeChecks="3"
@@ -91,7 +91,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="2"
 				InlineFunctionExpansion="1"
-				AdditionalIncludeDirectories="../../algorithms,../../inc,../../inc/serialization,$(GDAL_HOME)/include,$(JAVA_HOME)/include,$(JAVA_HOME)/bin"
+				AdditionalIncludeDirectories="../../algorithms,../../../src,../../../src/openmodeller,../../../src,../../../src/openmodeller/serialization,$(GDAL_HOME)/include,$(JAVA_HOME)/include,$(JAVA_HOME)/bin"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;OM_BIOCLIM_EXPORTS;CORE_DLL_IMPORT"
 				StringPooling="TRUE"
 				RuntimeLibrary="2"
@@ -157,26 +157,10 @@
 			Name="Source Files"
 			Filter=".cpp">
 			<File
-				RelativePath="..\..\..\algorithms\bioclim.cpp">
-				<FileConfiguration
-					Name="Debug|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						UsePrecompiledHeader="0"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						UsePrecompiledHeader="0"/>
-				</FileConfiguration>
+				RelativePath="..\..\..\src\algorithms\bioclim.cpp">
 			</File>
 			<File
-				RelativePath="..\..\..\algorithms\bioclim.hh">
+				RelativePath="..\..\..\src\algorithms\bioclim.hh">
 			</File>
 		</Filter>
 	</Files>
