@@ -60,7 +60,7 @@ main( int argc, char **argv )
 
   // Reconfigure the global logger.
   g_log.setLevel( Log::Error );
-  g_log.setPrefix( "[Console]" );
+  g_log.setPrefix( "" );
 
   try {
 
