@@ -5,7 +5,7 @@
 #include <string>
 #include <cctype>    // for std::toupper in this file and std::size_t in the .cpp
 
-#include <om_defs.hh>
+#include <openmodeller/om_defs.hh>
 
 // Define a char_traits struct to make strings case insensitive.
 // Taken from Josuttis.
