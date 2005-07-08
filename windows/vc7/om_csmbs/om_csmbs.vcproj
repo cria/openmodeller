@@ -21,7 +21,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="2"
 				InlineFunctionExpansion="1"
-				AdditionalIncludeDirectories="../../algorithms,../../inc,$(GDAL_HOME)/include,$(GSL_HOME)/include,$(JAVA_HOME)/include,$(JAVA_HOME)/bin"
+				AdditionalIncludeDirectories="../../algorithms,../../../src,../../../src/openmodeller,$(GDAL_HOME)/include,$(GSL_HOME)/include,$(JAVA_HOME)/include,$(JAVA_HOME)/bin"
 				PreprocessorDefinitions="_WINDOWS;WIN32;NDEBUG;_USRDLL;OM_CSMBS_EXPORTS;CORE_DLL_IMPORT"
 				StringPooling="TRUE"
 				RuntimeLibrary="2"
@@ -90,7 +90,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="../../algorithms,../../inc,$(GSL_HOME)/include,$(GDAL_HOME)/include,$(JAVA_HOME)/include,$(JAVA_HOME)/bin"
+				AdditionalIncludeDirectories="../../algorithms,../../../src,../../../src/openmodeller,$(GSL_HOME)/include,$(GDAL_HOME)/include,$(JAVA_HOME)/include,$(JAVA_HOME)/bin"
 				PreprocessorDefinitions="_WINDOWS;WIN32;_DEBUG;_USRDLL;OM_CSMBS_EXPORTS;CORE_DLL_IMPORT"
 				MinimalRebuild="TRUE"
 				BasicRuntimeChecks="3"
@@ -157,48 +157,16 @@
 			Name="Source Files"
 			Filter="cpp;c;cxx;rc;def;r;odl;idl;hpj;bat">
 			<File
-				RelativePath="..\..\..\algorithms\csm.cpp">
-				<FileConfiguration
-					Name="Release|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						UsePrecompiledHeader="0"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						UsePrecompiledHeader="0"/>
-				</FileConfiguration>
+				RelativePath="..\..\..\src\algorithms\csm.cpp">
 			</File>
 			<File
-				RelativePath="..\..\..\algorithms\csm.hh">
+				RelativePath="..\..\..\src\algorithms\csm.hh">
 			</File>
 			<File
-				RelativePath="..\..\..\algorithms\csmbs.cpp">
-				<FileConfiguration
-					Name="Release|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						UsePrecompiledHeader="0"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						UsePrecompiledHeader="0"/>
-				</FileConfiguration>
+				RelativePath="..\..\..\src\algorithms\csmbs.cpp">
 			</File>
 			<File
-				RelativePath="..\..\..\algorithms\csmbs.hh">
+				RelativePath="..\..\..\src\algorithms\csmbs.hh">
 			</File>
 		</Filter>
 	</Files>

@@ -19,7 +19,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="../../../src/inc"
+				AdditionalIncludeDirectories="../../../src,../../../src/openmodeller"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;OM_DG_GARP_EXPORTS;CORE_DLL_IMPORT"
 				MinimalRebuild="TRUE"
 				BasicRuntimeChecks="3"
@@ -72,7 +72,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="2"
-				AdditionalIncludeDirectories="../../../src/inc"
+				AdditionalIncludeDirectories="../../../src,../../../src/openmodeller"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;OM_DG_GARP_EXPORTS;CORE_DLL_IMPORT"
 				RuntimeLibrary="2"
 				UsePrecompiledHeader="0"
@@ -124,22 +124,22 @@
 			Filter="cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx"
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}">
 			<File
-				RelativePath="..\..\..\algorithms\dg_garp\EnvCell.cpp">
+				RelativePath="..\..\..\src\algorithms\dg_garp\EnvCell.cpp">
 			</File>
 			<File
-				RelativePath="..\..\..\algorithms\dg_garp\EnvCellSet.cpp">
+				RelativePath="..\..\..\src\algorithms\dg_garp\EnvCellSet.cpp">
 			</File>
 			<File
-				RelativePath="..\..\..\algorithms\dg_garp\GarpAlgorithm.cpp">
+				RelativePath="..\..\..\src\algorithms\dg_garp\GarpAlgorithm.cpp">
 			</File>
 			<File
-				RelativePath="..\..\..\algorithms\dg_garp\Rule.cpp">
+				RelativePath="..\..\..\src\algorithms\dg_garp\Rule.cpp">
 			</File>
 			<File
-				RelativePath="..\..\..\algorithms\dg_garp\RuleSet.cpp">
+				RelativePath="..\..\..\src\algorithms\dg_garp\RuleSet.cpp">
 			</File>
 			<File
-				RelativePath="..\..\..\algorithms\dg_garp\Utilities.cpp">
+				RelativePath="..\..\..\src\algorithms\dg_garp\Utilities.cpp">
 			</File>
 		</Filter>
 		<Filter
@@ -147,25 +147,25 @@
 			Filter="h;hpp;hxx;hm;inl;inc;xsd"
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}">
 			<File
-				RelativePath="..\..\..\algorithms\dg_garp\EnvCell.h">
+				RelativePath="..\..\..\src\algorithms\dg_garp\EnvCell.h">
 			</File>
 			<File
-				RelativePath="..\..\..\algorithms\dg_garp\EnvCellSet.h">
+				RelativePath="..\..\..\src\algorithms\dg_garp\EnvCellSet.h">
 			</File>
 			<File
-				RelativePath="..\..\..\algorithms\dg_garp\GarpAlgorithm.h">
+				RelativePath="..\..\..\src\algorithms\dg_garp\GarpAlgorithm.h">
 			</File>
 			<File
-				RelativePath="..\..\..\algorithms\dg_garp\Global.h">
+				RelativePath="..\..\..\src\algorithms\dg_garp\Global.h">
 			</File>
 			<File
-				RelativePath="..\..\..\algorithms\dg_garp\Rule.h">
+				RelativePath="..\..\..\src\algorithms\dg_garp\Rule.h">
 			</File>
 			<File
-				RelativePath="..\..\..\algorithms\dg_garp\RuleSet.h">
+				RelativePath="..\..\..\src\algorithms\dg_garp\RuleSet.h">
 			</File>
 			<File
-				RelativePath="..\..\..\algorithms\dg_garp\Utilities.h">
+				RelativePath="..\..\..\src\algorithms\dg_garp\Utilities.h">
 			</File>
 		</Filter>
 		<Filter

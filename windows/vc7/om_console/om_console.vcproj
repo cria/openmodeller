@@ -21,7 +21,7 @@
 				Name="VCCLCompilerTool"
 				AdditionalOptions=""
 				Optimization="0"
-				AdditionalIncludeDirectories="../../algorithms,../../inc,../../inc/serialization,$(GDAL_HOME)/include"
+				AdditionalIncludeDirectories="../../../src/console,../../../src,../../../src/openmodeller,../../../src,$(GDAL_HOME)/include../../../src/console,../../../src,../../../src/openmodeller,../../../src,../../../src/openmodeller/serialization,$(GDAL_HOME)/include"
 				PreprocessorDefinitions="_WINDOWS;_CONSOLE;WIN32;_DEBUG;VERSION=\&quot;0.3\&quot;;PLUGINPATH=\&quot;.\&quot;;CORE_DLL_IMPORT"
 				MinimalRebuild="TRUE"
 				BasicRuntimeChecks="3"
@@ -89,7 +89,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="2"
 				InlineFunctionExpansion="1"
-				AdditionalIncludeDirectories="../../algorithms,../../inc,$(GDAL_HOME)/include,$(JAVA_HOME)/include,$(JAVA_HOME)/bin"
+				AdditionalIncludeDirectories="../../../src/console,../../../src,../../../src/openmodeller,../../../src,$(GDAL_HOME)/include../../../src/console,../../../src,../../../src/openmodeller,../../../src,../../../src/openmodeller/serialization,$(GDAL_HOME)/include"
 				PreprocessorDefinitions="_WINDOWS;WIN32;NDEBUG;_CONSOLE;VERSION=\&quot;0.3\&quot;;PLUGINPATH=\&quot;.\&quot;;CORE_DLL_IMPORT"
 				StringPooling="TRUE"
 				RuntimeLibrary="2"
@@ -151,64 +151,16 @@
 			Name="Source Files"
 			Filter="cpp;c;cxx;rc;def;r;odl;idl;hpj;bat">
 			<File
-				RelativePath="..\..\console\occurrences_file.cpp">
-				<FileConfiguration
-					Name="Debug|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						UsePrecompiledHeader="0"
-						BrowseInformation="1"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						UsePrecompiledHeader="0"/>
-				</FileConfiguration>
+				RelativePath="..\..\..\src\console\file_parser.cpp">
 			</File>
 			<File
-				RelativePath="..\..\console\om_console.cpp">
-				<FileConfiguration
-					Name="Debug|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						UsePrecompiledHeader="0"
-						BrowseInformation="1"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						UsePrecompiledHeader="0"/>
-				</FileConfiguration>
+				RelativePath="..\..\..\src\console\occurrences_file.cpp">
 			</File>
 			<File
-				RelativePath="..\..\console\request_file.cpp">
-				<FileConfiguration
-					Name="Debug|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						UsePrecompiledHeader="0"
-						BrowseInformation="1"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						UsePrecompiledHeader="0"/>
-				</FileConfiguration>
+				RelativePath="..\..\..\src\console\om_console.cpp">
+			</File>
+			<File
+				RelativePath="..\..\..\src\console\request_file.cpp">
 			</File>
 		</Filter>
 		<Filter
