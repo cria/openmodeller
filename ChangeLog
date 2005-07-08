@@ -1,9 +1,14 @@
-Release 0.3 (2005-05-25)
-------------------------
+Release 0.3.1 (2005-07-13)
+--------------------------
+
+	* Major restructuring of directories, file locations and file names.
+
+Release 0.3 (planned to 2005-05-25, but never happened)
+-------------------------------------------------------
 
 	* Reimplemented serialization/deserialization mechanism using generic configuration objects.
 	* All available algorithms are serializable.
-	* om_console has new keyword "Output model" (file name to store the serialized model).
+	* om_console accepts new keywords "Output model" (file name to store the serialized model) and "Input model" to load a serialized model (instead of using "WKT format", "Species file", "Species" and "Map" to generate a model).
 	* New framework for test cases is available (depends on the SWIG/Python interface).
 	* Moved normalization from the individual raster files to the "environment" object.
 	* Implemented Model and Algorithm separation (new interface called Model abstracts the portion of Algorithm used for evaluations).
@@ -11,6 +16,8 @@ Release 0.3 (2005-05-25)
 	* Fixed various problems with memory leaks and uninitialized values.
 	* Removed CSM Kaiser-Gutman from build.
 	* Removed SWIG/Java binding from build.
+	* Projected maps now have the mask extent and cell size of a specified "map format".
+	
 
 Release 0.2.1 (2005-02-19)
 --------------------------
