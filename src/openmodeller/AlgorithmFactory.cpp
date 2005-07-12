@@ -122,7 +122,7 @@ AlgorithmFactory::DLL::DLL( const string& file ) :
 AlgorithmFactory::DLL::~DLL()
 {
   if ( _handle ) {
-    g_log( "- Unloading: %s ...currently, dlls are not closed.\n", _file.c_str() );
+    //g_log( "- Unloading: %s ...currently, dlls are not closed.\n", _file.c_str() );
     //    dllClose( _handle );
   }
 }
