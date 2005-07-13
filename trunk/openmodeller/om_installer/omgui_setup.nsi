@@ -2,7 +2,7 @@
 
 ; HM NIS Edit Wizard helper defines
 !define PRODUCT_NAME "openModeller"
-!define PRODUCT_VERSION "0.3.1-rc1"
+!define PRODUCT_VERSION "0.3.1-rc2"
 !define PRODUCT_PUBLISHER "openModeller Development Team"
 !define PRODUCT_WEB_SITE "http://openmodeller.sourceforge.net"
 !define PRODUCT_DIR_REGKEY "Software\Microsoft\Windows\CurrentVersion\App Paths\omgui.exe"
@@ -85,8 +85,6 @@ Section "-RequiredComponents" SectionRequiredComponents
   File "..\build\wkt_defs.txt"  
   File "..\build\msvcr71.dll" 
   File "..\build\msvcp71.dll" 
-  File "..\build\msvcr80.dll" 
-  File "..\build\msvcp80.dll" 
   File "..\build\msvcp60.dll" ; <-- needed for qt hopefully this req will go away after i rebuild qt with vc8 
 
   ;
@@ -331,8 +329,6 @@ Section Uninstall
   Delete /REBOOTOK "$INSTDIR\stateplane.csv"  
   Delete /REBOOTOK "$INSTDIR\unit_of_measure.csv"  
   Delete /REBOOTOK "$INSTDIR\wkt_defs.txt"  
-  Delete /REBOOTOK "$INSTDIR\msvcr80.dll" 
-  Delete /REBOOTOK "$INSTDIR\msvcp80.dll" 
   Delete /REBOOTOK "$INSTDIR\msvcr71.dll" 
   Delete /REBOOTOK "$INSTDIR\msvcp71.dll" 
   Delete /REBOOTOK "$INSTDIR\msvcp60.dll"
