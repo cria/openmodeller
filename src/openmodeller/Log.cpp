@@ -113,7 +113,6 @@ Log::Log( Log::Level level, const char *pref ) :
   callback( new Log::OstreamCallback( std::cerr ) ),
   _level( level )
 {
-  callback = NULL;
   setPrefix( pref );
 }
 
