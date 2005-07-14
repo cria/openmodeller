@@ -2,7 +2,7 @@
 
 ; HM NIS Edit Wizard helper defines
 !define PRODUCT_NAME "openModeller"
-!define PRODUCT_VERSION "0.3.1-rc2"
+!define PRODUCT_VERSION "0.3.1-rc3"
 !define PRODUCT_PUBLISHER "openModeller Development Team"
 !define PRODUCT_WEB_SITE "http://openmodeller.sourceforge.net"
 !define PRODUCT_DIR_REGKEY "Software\Microsoft\Windows\CurrentVersion\App Paths\omgui.exe"
@@ -98,8 +98,8 @@ Section "-RequiredComponents" SectionRequiredComponents
   File "..\build\algs\om_distance_to_average.dll"
   File "..\build\algs\om_dg_garp.dll"
   File "..\build\algs\om_dg_garp_bs.dll"
-  File "..\build\algs\om_garp.dll"
-  File "..\build\algs\om_garp_best_subsets.dll"
+  ;File "..\build\algs\om_garp.dll"                 ; <-- OM Garp implementations are excluded because they are broken
+  ;File "..\build\algs\om_garp_best_subsets.dll"    ; <-- OM Garp implementations are excluded because they are broken
   File "..\build\algs\om_mindist.dll"
 
   SetOutPath $INSTDIR
@@ -167,8 +167,8 @@ PluginInstall:
   File "..\build\algs\om_distance_to_average.dll"
   File "..\build\algs\om_dg_garp.dll"
   File "..\build\algs\om_dg_garp_bs.dll"
-  File "..\build\algs\om_garp.dll"
-  File "..\build\algs\om_garp_best_subsets.dll"
+  ;File "..\build\algs\om_garp.dll"                  ; <-- OM Garp implementations are excluded because they are broken
+  ;File "..\build\algs\om_garp_best_subsets.dll"     ; <-- OM Garp implementations are excluded because they are broken
   File "..\build\algs\om_mindist.dll"
 
   SetOutPath $2
@@ -341,8 +341,8 @@ Section Uninstall
   Delete /REBOOTOK "$INSTDIR\algs\om_distance_to_average.dll"
   Delete /REBOOTOK "$INSTDIR\algs\om_dg_garp.dll"
   Delete /REBOOTOK "$INSTDIR\algs\om_dg_garp_bs.dll"
-  Delete /REBOOTOK "$INSTDIR\algs\om_garp.dll"
-  Delete /REBOOTOK "$INSTDIR\algs\om_garp_best_subsets.dll"
+  ;Delete /REBOOTOK "$INSTDIR\algs\om_garp.dll"                ; <-- OM Garp implementations are excluded because they are broken
+  ;Delete /REBOOTOK "$INSTDIR\algs\om_garp_best_subsets.dll"   ; <-- OM Garp implementations are excluded because they are broken
   Delete /REBOOTOK "$INSTDIR\algs\om_mindist.dll"
   Delete /REBOOTOK "$INSTDIR\libgsl.dll"
   Delete /REBOOTOK "$INSTDIR\gslcblas.dll"
@@ -381,8 +381,8 @@ Section Uninstall
   Delete /REBOOTOK "$2\algs\om_distance_to_average.dll"
   Delete /REBOOTOK "$2\algs\om_dg_garp.dll"
   Delete /REBOOTOK "$2\algs\om_dg_garp_bs.dll"
-  Delete /REBOOTOK "$2\algs\om_garp.dll"
-  Delete /REBOOTOK "$2\algs\om_garp_best_subsets.dll"
+  ;Delete /REBOOTOK "$2\algs\om_garp.dll"                  ; <-- OM Garp implementations are excluded because they are broken
+  ;Delete /REBOOTOK "$2\algs\om_garp_best_subsets.dll"     ; <-- OM Garp implementations are excluded because they are broken
   Delete /REBOOTOK "$2\algs\om_mindist.dll"
   Delete /REBOOTOK "$2\libgsl.dll"
   Delete /REBOOTOK "$2\gslcblas.dll"
