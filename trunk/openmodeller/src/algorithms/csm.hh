@@ -45,6 +45,7 @@ Herewith follows a detailed explanation of the Climate Space Model (CSM).
 Note that the CSM model was developed by Dr Neil Caithness.
 This implementation of CSM was written by Tim Sutton and Renato De Giovanni.
 
+\verbatim
 //////////////////////////////////////////////////////
 // Model Creation
 //////////////////////////////////////////////////////
@@ -262,6 +263,7 @@ Layer 3 |    |     |     |            |
 -------------------------------------
 Var N   |    |     |     |            |
 -------------------------------------
+\endverbatim
 
 @author Tim Sutton, Renato De Giovanni
 */
