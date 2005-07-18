@@ -2,7 +2,7 @@
 
 ; HM NIS Edit Wizard helper defines
 !define PRODUCT_NAME "openModeller"
-!define PRODUCT_VERSION "0.3.1"
+!define PRODUCT_VERSION "0.3.2"
 !define PRODUCT_PUBLISHER "openModeller Development Team"
 !define PRODUCT_WEB_SITE "http://openmodeller.sourceforge.net"
 !define PRODUCT_DIR_REGKEY "Software\Microsoft\Windows\CurrentVersion\App Paths\omgui.exe"
