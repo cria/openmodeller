@@ -2,7 +2,7 @@
 
 ; HM NIS Edit Wizard helper defines
 !define PRODUCT_NAME "openModeller"
-!define PRODUCT_VERSION "0.3.1-rc4"
+!define PRODUCT_VERSION "0.3.1"
 !define PRODUCT_PUBLISHER "openModeller Development Team"
 !define PRODUCT_WEB_SITE "http://openmodeller.sourceforge.net"
 !define PRODUCT_DIR_REGKEY "Software\Microsoft\Windows\CurrentVersion\App Paths\omgui.exe"
@@ -87,6 +87,7 @@ Section "-RequiredComponents" SectionRequiredComponents
   File "..\build\ellipsoid.csv"
   File "..\build\esri_extra.wkt"
   File "..\build\gdal_datum.csv"
+  File "..\build\epsg.wkt"
   File "..\build\msvcr71.dll" 
   File "..\build\msvcp71.dll" 
   File "..\build\msvcp60.dll" ; <-- needed for qt hopefully this req will go away after i rebuild qt with vc8 
@@ -157,6 +158,7 @@ PluginInstall:
   File "..\build\ellipsoid.csv"
   File "..\build\esri_extra.wkt"
   File "..\build\gdal_datum.csv"
+  File "..\build\epsg.wkt"
   File "..\build\msvcr71.dll" 
   File "..\build\msvcp71.dll" 
 
@@ -341,6 +343,7 @@ Section Uninstall
   Delete /REBOOTOK "$INSTDIR\ellipsoid.csv"
   Delete /REBOOTOK "$INSTDIR\esri_extra.wkt"
   Delete /REBOOTOK "$INSTDIR\gdal_datum.csv"
+  Delete /REBOOTOK "$INSTDIR\epsg.wkt"
   Delete /REBOOTOK "$INSTDIR\msvcr71.dll" 
   Delete /REBOOTOK "$INSTDIR\msvcp71.dll" 
   Delete /REBOOTOK "$INSTDIR\msvcp60.dll"
@@ -386,6 +389,7 @@ Section Uninstall
   Delete /REBOOTOK "$2\ellipsoid.csv"
   Delete /REBOOTOK "$2\esri_extra.wkt"
   Delete /REBOOTOK "$2\gdal_datum.csv"
+  Delete /REBOOTOK "$2\epsg.wkt"
   Delete /REBOOTOK "$2\msvcr71.dll" 
   Delete /REBOOTOK "$2\msvcp71.dll" 
   Delete /REBOOTOK "$2\lib\qgis\omgui.dll"
