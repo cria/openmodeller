@@ -13,7 +13,7 @@ SUBDIRS = garp_best_subsets test
 OMSRCDIR = @top_srcdir@/src
 OMLIB = $(OMSRCDIR)/openmodeller/libopenmodeller.la
 
-plugindir = ${pkglibdir}
+plugindir = ${libdir}/openmodeller
 
 # left out of build due to instabilities in algorithm
 #plugin_LTLIBRARIES = libomgarp.la

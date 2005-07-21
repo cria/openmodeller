@@ -20,16 +20,17 @@ EXTRA_DIST = \
 	doc/openModeller.doxygen \
 	doc/overview.dia \
 	examples/furcata_boliviana.txt \
-	examples/request.txt
+	examples/request.txt \
+	libopenmodeller.spec
 
 SUBDIRS = test src 
 
 release: distdir
 	-chmod -R a+r $(distdir)
 	GZIP=$(GZIP_ENV) $(AMTAR)$(TAR) chozf $(distdir).tar.gz $(distdir)
-	rm -f $(distdir)/openmodeller.spec
-	sed '/^Source:/s/\.tar\.gz$$/\.tar\.bz2/' openmodeller.spec \
-			> $(distdir)/openmodeller.spec
+	rm -f $(distdir)/libopenmodeller.spec
+	sed '/^Source:/s/\.tar\.gz$$/\.tar\.bz2/' libopenmodeller.spec \
+			> $(distdir)/libopenmodeller.spec
 	BZIP2=$(BZIP2_ENV) $(AMTAR)$(TAR) --bzip2 -chof $(distdir).tar.bz2 $(distdir)
 	-rm -rf $(distdir)
 
