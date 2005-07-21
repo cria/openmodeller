@@ -13,7 +13,7 @@ SUBDIRS =
 OMSRCDIR = @top_srcdir@/src
 OMLIB = $(OMSRCDIR)/openmodeller/libopenmodeller.la
 
-plugindir = ${pkglibdir}
+plugindir = ${libdir}/openmodeller
 
 plugin_LTLIBRARIES = libomoldgarp.la
 

@@ -2,7 +2,7 @@ dnl Process this file with autoconf to produce a configure script.
 
 AC_INIT
 
-AM_INIT_AUTOMAKE(openmodeller, 0.3.2)
+AM_INIT_AUTOMAKE(libopenmodeller, 0.3.2)
 
 AC_PREFIX_PROGRAM(gcc)
 
@@ -318,7 +318,7 @@ AC_CONFIG_FILES([
 	src/algorithms/garp/test/Makefile
 	src/algorithms/garp/garp_best_subsets/Makefile
 	src/algorithms/dg_garp/Makefile
-	openmodeller.spec
+	libopenmodeller.spec
 ])
 
 AC_OUTPUT

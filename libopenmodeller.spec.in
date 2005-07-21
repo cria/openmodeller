@@ -1,6 +1,6 @@
 %define prefix /usr
 
-Name:         openmodeller
+Name:         libopenmodeller
 License:      GPL
 Group:        Libraries/Research
 Autoreqprov:  on
@@ -8,7 +8,7 @@ Version:      @VERSION@
 Release:      0
 Source:       %{name}-%{version}.tar.gz
 Url:          http://openmodeller.sf.net
-Summary:      Static Spatial Distribution Modelling Tool
+Summary:      Static Spatial Distribution Modelling Tool - Library
 BuildRoot:    %{_tmppath}/%{name}-%{version}-build
 
 %description
@@ -40,6 +40,14 @@ Summary:      Static Spatial Distribution Modelling Tool - Development Files
 Include files and libraries to link programs against openModeller
 or develope own algorithms. 
 
+%package -n openmodeller
+Requires:     %{name} = %{version}
+Group:        Applications/Research
+Summary:      Static Spatial Distribution Modelling Tool - Tools
+
+%description -n openmodeller
+Tools for using openModeller 
+
 %prep
 %setup
 autoreconf --force --install
@@ -63,7 +71,6 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(-,root,root)
-/usr/bin/*
 %{_libdir}/libopenmodeller.so.*
 %dir %{_libdir}/openmodeller
 %{_libdir}/openmodeller/*so*
@@ -77,6 +84,13 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{prefix}/include/openmodeller
 %{prefix}/include/openmodeller
 
-%changelog -n openmodeller
+%files -n openmodeller
+%defattr(-,root,root)
+/usr/bin/*
+
+%changelog -n libopenmodeller
+* Thu Jul 21 2005 - Jens Oberender <j.obi@troja.net>
+- renamed to libopenmodeller
+- splitted up openmodeller for the tools
 * Wed Mar 24 2004 - Jens Oberender <j.obi@troja.net>
 - initial build

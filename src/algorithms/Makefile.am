@@ -13,7 +13,7 @@ SUBDIRS = garp dg_garp
 OMSRCDIR = @top_srcdir@/src
 OMLIB = $(OMSRCDIR)/openmodeller/libopenmodeller.la
 
-plugindir = ${pkglibdir}
+plugindir = ${libdir}/openmodeller
 
 plugin_LTLIBRARIES = \
 		libomdistance_to_average.la \
