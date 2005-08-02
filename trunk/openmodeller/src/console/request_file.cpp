@@ -202,7 +202,7 @@ RequestFile::setProjection( OpenModeller *om, FileParser &fp )
   _projectionMap = fp.getAll( "Output Map" );
 
   // If user provided a serialized model
-  if ( _inputModelFile.empty() ) {
+  if ( !_inputModelFile.empty() ) {
 
     // note: should we accept native projections using environment from serialized models?
     _nonNativeProjection = true;
