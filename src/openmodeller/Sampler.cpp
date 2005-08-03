@@ -442,4 +442,6 @@ void splitSampler(const SamplerPtr& orig,
   *train = new SamplerImpl( orig->getEnvironment(), 
 			    train_presence, train_absence );
 
+  *test = new SamplerImpl( orig->getEnvironment(),
+			   test_presence, test_absence );
 }
