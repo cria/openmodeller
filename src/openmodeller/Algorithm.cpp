@@ -260,7 +260,7 @@ AlgorithmImpl::computeNormalization( const ConstSamplerPtr& samp )
     for (int i = 0; i < dim; ++i)
       {
 	_norm_scales[i] = (ubound - lbound) / (max[i] - min[i]);
-	_norm_offsets[i] = min[i] - _norm_scales[i] * min[i];
+	_norm_offsets[i] = lbound - _norm_scales[i] * min[i];
       }
   }
 }
