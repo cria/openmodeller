@@ -1,3 +1,8 @@
+Release 0.3.2 (2005-08-11)
+--------------------------
+
+        * Fixed bug that was making GARP produce null models (100% omission) most part of the time.
+
 Release 0.3.1 (2005-07-18)
 --------------------------
 
