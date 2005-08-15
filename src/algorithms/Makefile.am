@@ -8,7 +8,7 @@
 # WITHOUT ANY WARRANTY, to the extent permitted by law; without even the
 # implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
-SUBDIRS = garp dg_garp
+SUBDIRS = garp dg_garp best_subsets
 
 OMSRCDIR = @top_srcdir@/src
 OMLIB = $(OMSRCDIR)/openmodeller/libopenmodeller.la
