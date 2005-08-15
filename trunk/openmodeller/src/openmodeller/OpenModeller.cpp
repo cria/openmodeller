@@ -53,7 +53,7 @@ using std::string;
 
 /*** backward compatible callback helper classes ***/
 
-class ModelCallbackHelper : public OpenModeller::ModelCommand
+class ModelCallbackHelper : public Algorithm::ModelCommand
 {
 
 public:
@@ -89,6 +89,12 @@ private:
 
 void OpenModeller::setModelCallback( ModelCallback func, void *param ) {
   setModelCommand( new ModelCallbackHelper( func, param ) );
+}
+
+void OpenModeller::setModelCommand( Algorithm::ModelCommand *func ) {
+  if (_model_command) 
+    delete _model_command;
+  _model_command = func;
 }
 
 void OpenModeller::setMapCallback( MapCallback func, void *param ) {
@@ -272,75 +278,7 @@ OpenModeller::createModel()
       return 0;
     }
 
-  _alg->computeNormalization( _samp );
-  _alg->setNormalization( _samp );
-
-  // Initialize algorithm.  
-  if ( ! _alg->initialize() )
-    {
-      sprintf( _error, "Algorithm (%s) could not be initialized.",
-	       _alg->getID() );
-      return 0;
-    }
-
-  // Generate model.
-  int ncycle = 0;
-  while ( _alg->iterate() && ! _alg->done() )
-    {
-      ncycle++;
-      if ( _model_command )
-        try 
-	  {
-	    (*_model_command)( _alg->getProgress() );
-	  }
-        catch(char * message)
-          {
-            sprintf( _error, "Exception: %s", message );
-            g_log( "\n" );
-            g_log(_error);
-            g_log( "\n" );
-
-            return 0;
-          }
-        catch( ... ) {}
-    }
-
-  // Algorithm terminated with error.
-  if ( ! _alg->done() )
-    {
-      sprintf( _error, "Algorithm (%s) iteration error.",
-	       _alg->getID() );
-      return 0;
-    }
-  else
-    {
-      // show final 100%
-      if ( _model_command )
-        {
-          try
-            { 
-              (*_model_command)( 1.0 ); 
-            }
-          catch(char * message)
-            {
-              sprintf( _error, "Exception: %s", message );
-              g_log( "\n" );
-              g_log(_error);
-              g_log( "\n" );
-
-              return 0;
-            }
-          catch( ... ) {}
-        }
-    }
-
-  // Finalise algorithm.  
-  if ( ! _alg->finalize() )
-    {
-      sprintf( _error, "Algorithm (%s) could not be finalized.",
-	       _alg->getID() );
-      return 0;
-    }
+  _alg->createModel( _samp, _model_command );
 
   g_log( "\nFinished Creating Model\n" );
 
