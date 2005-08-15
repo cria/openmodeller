@@ -250,7 +250,10 @@ AlgorithmFactory::algorithmMetadata( char const *id )
     return (*dll)->getMetadata();
   }
 
-  throw InvalidParameterException( "Algorithm not found" );
+  string msg("Algorithm ");
+  msg += id;
+  msg += " not found";
+  throw InvalidParameterException( msg );
 }
 
 /*********************/
