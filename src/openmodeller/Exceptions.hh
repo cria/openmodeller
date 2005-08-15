@@ -121,5 +121,15 @@ public:
   {}
 };
 
+//
+// AlgorithmException -- thrown in the library when an
+// algorithm cannot execute correctly.
+//
+class AlgorithmException : public OmException {
+public:
+  AlgorithmException( const std::string& msg ) :
+    OmException( msg )
+  {}
+};
 
 #endif
