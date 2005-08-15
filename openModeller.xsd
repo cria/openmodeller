@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema
+ xmlns:xs="http://www.w3.org/2001/XMLSchema"
+ xmlns="http://brc.ku.edu/OpenModeller/3.0/types"
+ targetNamespace="http://brc.ku.edu/OpenModeller/3.0/types"
+ xmlns:tns="http://brc.ku.edu/OpenModeller/3.0/types">
+
+ <xs:element name="OpenModeller" type="tns:problem-defn"/>
+
+ <xs:element name="AvailableAlgorithms" type="tns:avail-algo-list-defn"/>
+
+ <xs:complexType name="problem-defn">
+  <xs:sequence>
+   <xs:element name="Sampler">
+    <xs:complexType>
+     <xs:sequence>
+      <xs:element name="Environment" type="tns:environ-defn"/>
+      <xs:element name="Presence" type="tns:occurrence-list-defn"/>
+      <xs:element name="Absence" type="tns:occurrence-list-defn" minOccurs="0"/>
+     </xs:sequence>
+    </xs:complexType>
+   </xs:element>
+   <xs:element name="Algorithm" type="tns:algo-defn"/>
+  </xs:sequence>
+ </xs:complexType>
+
+ <xs:complexType name="avail-algo-list-defn">
+  <xs:sequence>
+   <xs:element name="Algorithm" type="tns:avail-algo-defn" minOccurs="0" maxOccurs="unbounded"/>
+  </xs:sequence>
+ </xs:complexType>
+
+ <xs:complexType name="avail-algo-defn">
+  <xs:attribute name="Id" type="xs:string" use="required"/>
+  <xs:sequence>
+   <xs:element name="AlgorithmMetadata">
+    <xs:complexType>
+     <xs:sequence>
+      <xs:element name="Id" type="xs:string" use="optional"/>
+      <xs:element name="Name" type="xs:string" use="optional"/>
+      <xs:element name="Overview" type="xs:string" use="optional"/>
+      <xs:element name="Description" type="xs:string" use="optional"/>
+      <xs:element name="Author" type="xs:string" use="optional"/>
+      <xs:element name="Biblio" type="xs:string" use="optional"/>
+      <xs:element name="CodeAuthor" type="xs:string" use="optional"/>
+      <xs:element name="Contact" type="xs:string" use="optional"/>
+      <xs:element name="Categorical" type="xs:integer" use="optional"/>
+      <xs:element name="Absence" type="xs:integer" use="optional"/>
+     </xs:sequence>
+    </xs:complexType>
+   </xs:element>
+   <xs:element name="AlgorithmParameters">
+    <xs:complexType>
+     <xs:sequence>
+      <xs:element name="Param" minOccurs="0" maxOccurs="unbounded">
+       <xs:complexType>
+        <xs:sequence>
+         <xs:element name="Id" type="xs:string" use="required"/>
+         <xs:element name="Name" type="xs:string" use="required"/>
+         <xs:element name="Type" type="xs:string" use="required"/>
+         <xs:element name="Overview" type="xs:string" use="required"/>
+         <xs:element name="Description" type="xs:string" use="required"/>
+         <xs:element name="Min" type="xs:string" use="optional"/>
+         <xs:element name="Max" type="xs:string" use="optional"/>
+         <xs:element name="Typical" type="xs:string" use="optional"/>
+        </xs:sequence>
+       </xs:complexType>
+      </xs:element>
+     </xs:sequence>
+    </xs:complexType>
+   </xs:element>
+  </xs:sequence>
+ </xs:complexType>
+
+ <xs:complexType name="environ-defn">
+  <xs:sequence>
+   <xs:sequence>
+    <xs:element name="Map" maxOccurs="unbounded" type="tns:map-file-defn"/>
+   </xs:sequence>
+   <xs:element name="Mask" type="tns:map-file-defn"/>
+  </xs:sequence>
+  <xs:attribute name="Layers" type="xs:int" use="optional"/>
+ </xs:complexType>
+
+ <xs:complexType name="map-file-defn">
+  <xs:attribute name="Categorical" type="xs:boolean" use="optional" default="false"/>
+  <xs:attribute name="Filename" type="xs:string" use="required"/>
+ </xs:complexType>
+
+ <xs:complexType name="algo-defn">
+  <xs:sequence>
+   <xs:element name="AlgorithmMetadata">
+    <xs:complexType>
+     <xs:attribute name="Id" type="xs:string" use="required"/>
+    </xs:complexType>
+   </xs:element>
+   <xs:element name="AlgorithmParameters">
+    <xs:complexType>
+     <xs:sequence>
+      <xs:element name="Param" minOccurs="0" maxOccurs="unbounded">
+       <xs:complexType>
+        <xs:attribute name="Value" type="xs:string" use="required"/>
+        <xs:attribute name="Id" type="xs:string" use="required"/>
+       </xs:complexType>
+      </xs:element>
+     </xs:sequence>
+    </xs:complexType>
+   </xs:element>
+  </xs:sequence>
+ </xs:complexType>
+
+ <xs:complexType name="occurrence-list-defn">
+  <xs:sequence>
+   <xs:element name="CoordinateSystem" type="xs:string" minOccurs="0"/>
+   <xs:element name="Point" maxOccurs="unbounded">
+    <xs:complexType>
+     <xs:attribute name="Y" type="xs:string" use="required"/>
+     <xs:attribute name="X" type="xs:string" use="required"/>
+    </xs:complexType>
+   </xs:element>
+  </xs:sequence>
+  <xs:attribute name="Count" type="xs:int" use="optional"/>
+  <xs:attribute name="SpeciesName" type="xs:string" use="optional"/>
+ </xs:complexType>
+ 
+</xs:schema>
