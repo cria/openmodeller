@@ -177,6 +177,13 @@ AlgorithmImpl::setParameters( int nparam, AlgParameter const *param )
 
 }
 
+void
+AlgorithmImpl::setParameters( const ParamSetType &params )
+{
+  _param.clear();
+  _param = params;
+}
+
 /*********************/
 /*** get Parameter ***/
 int
@@ -275,6 +282,61 @@ void
 AlgorithmImpl::setNormalization( const EnvironmentPtr& env) const
 {
   env->normalize( _has_norm_params, _norm_offsets, _norm_scales );
+}
+
+Model
+AlgorithmImpl::createModel( const SamplerPtr& samp, Algorithm::ModelCommand *model_command ) {
+
+  if ( !samp )
+    throw AlgorithmException( "Sampler not specified." );
+
+  setSampler( samp );
+
+  computeNormalization( _samp );
+  setNormalization( _samp );
+
+  if ( !initialize() )
+    throw AlgorithmException( "Algorithm could not be initialized." );
+
+  // Generate model.
+  int ncycle = 0;
+  while ( iterate() && ! done () ) {
+    ncycle++;
+    if ( model_command ) {
+      try {
+	(*model_command)(getProgress() );
+      }
+      catch ( char * message ) {
+	string error( "Exception: " );
+	error += message;
+	g_log( error.c_str() );
+	return 0;
+      }
+      catch (...) {}
+    }
+  }
+
+  if ( !done() )
+    throw AlgorithmException( "Algorithm error in done().") ;
+
+  if ( ! finalize() )
+    throw AlgorithmException( "Algorithm error in finalize." );
+
+  if ( model_command ) {
+    try {
+      (*model_command)( 1.0 );
+    }
+    catch ( char * message ) {
+      string error( "Exception: " );
+      error += message;
+      g_log( error.c_str() );
+      return 0;
+    }
+    catch (...) {}
+  }
+  
+  return getModel();
+
 }
 
 Model

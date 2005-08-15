@@ -66,6 +66,19 @@ dllexp AlgorithmImpl *algorithmFactory();
 dllexp AlgMetadata const *algorithmMetadata();
 }
 
+class dllexp Algorithm {
+public:
+
+  /** Model command object.
+   */
+  class ModelCommand {
+  public: 
+    virtual ~ModelCommand() {};
+    virtual void operator()( float ) = 0;
+  };
+
+};
+
 /** 
  * Base class for all distribution modeling algorithms. Provide 
  * methods to all derived classes so that they can do data sampling
@@ -79,6 +92,8 @@ class dllexp AlgorithmImpl : public Configurable, private ReferenceCountedObject
 
 public:
 
+  typedef std::map< icstring, std::string > ParamSetType;
+
   // This constructor should only be used by default constructors
   // of derived classes.
   explicit AlgorithmImpl( AlgMetadata const *metadata );
@@ -91,6 +106,7 @@ public:
    *  points to must exists while this object is used.
    */
   void setParameters( int nparam, AlgParameter const *param );
+  void setParameters( const ParamSetType& );
   
   char const *getID() const { return _metadata ? _metadata->id : 0; }
   
@@ -106,7 +122,8 @@ public:
   /*
    * Training Methods
    */
-  
+
+  Model createModel( const SamplerPtr& samp, Algorithm::ModelCommand *func = 0 );
   /** Set the sampler object. Need to be called before start
    *  the algorithm initialization or iteration.
    */
@@ -145,6 +162,12 @@ public:
    * Model Implementation.
    */
   
+   /** The algorithm should return != 0 if it needs normalization
+   *  of environmental variables (non categorical ones).
+   */
+  virtual int needNormalization( Scalar *min, Scalar *max ) const
+  { return 0; }
+
   /** Normalize the given environment.
    * @param samp Sampler to normalize.
    */
@@ -226,21 +249,14 @@ protected:
 protected:
   
   SamplerPtr _samp;
+  ParamSetType  _param;
+  
   
 private:
-  
-  /** The algorithm should return != 0 if it needs normalization
-   *  of environmental variables (non categorical ones).
-   */
-  virtual int needNormalization( Scalar *min, Scalar *max ) const
-  { return 0; }
-  
   AlgMetadata const *_metadata;
   
-  typedef std::map< icstring, std::string > ParamSetType;
   typedef ParamSetType::value_type ParamSetValueType;
 
-  ParamSetType  _param;
   
   /* Defines normalization parameters
    * This might be moved in the near future to
