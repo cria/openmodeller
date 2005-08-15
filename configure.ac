@@ -314,6 +314,7 @@ AC_CONFIG_FILES([
 	src/swig/python/Makefile
 	src/swig/java/Makefile
 	src/algorithms/Makefile
+	src/algorithms/best_subsets/Makefile
 	src/algorithms/garp/Makefile
 	src/algorithms/garp/test/Makefile
 	src/algorithms/garp/garp_best_subsets/Makefile
