@@ -45,6 +45,8 @@ class AlgParameter;
 // we need to actually include the entire header.
 #include <openmodeller/Projector.hh>
 
+#include <openmodeller/Algorithm.hh>
+
 class MapFormat;
 class ConfusionMatrix;
 class AreaStats;
@@ -248,24 +250,11 @@ public:
    */
   void setModelCallback( ModelCallback func, void *param=0 );
 
-  /** Model command object.
-   */
-  class ModelCommand {
-  public: 
-    virtual ~ModelCommand() {};
-    virtual void operator()( float ) = 0;
-  };
-
   /** Sets a callback function to be called after each iteration
    * of the model creation.
    * @param func Pointer to the callback function.
    */
-  void setModelCommand( ModelCommand *func ) {
-    if (_model_command) {
-      delete _model_command;
-    }
-    _model_command = func;
-  }
+  void setModelCommand( Algorithm::ModelCommand *func );
 
   //
   // Model and distribution map related methods.
@@ -346,7 +335,7 @@ private:
   Projector::MapCommand *_map_command;    ///< map call back pointer.
 
   // Command functions and user parameters.
-  ModelCommand *_model_command;
+  Algorithm::ModelCommand *_model_command;
 
   // model statistics: helper objects
   AreaStats * _actualAreaStats;
