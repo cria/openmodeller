@@ -72,6 +72,19 @@ Sample const & OccurrenceImpl::environment() const
 }
 
 void
+OccurrenceImpl::normalize( const Sample& offsets, const Sample& scales )
+{
+  normEnv_ = unnormEnv_;
+
+  int dim = normEnv_.size();
+  for( int i = 0; i<dim; i++ ) {
+    normEnv_[i] *= scales[i];
+    normEnv_[i] += offsets[i];
+  }
+
+}
+
+void
 OccurrenceImpl::setNormalizedEnvironment( const Sample& s )
 {
   normEnv_ = s;
