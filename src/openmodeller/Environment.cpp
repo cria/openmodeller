@@ -364,43 +364,68 @@ EnvironmentImpl::normalize( bool use_norm, const Sample& offsets, const Sample& 
   _scales = scales;
 }
 
-Sample
-EnvironmentImpl::get( Coord x, Coord y ) const
+void
+EnvironmentImpl::getUnnormalizedInternal( Sample *sample, Coord x, Coord y ) const
 {
-  // Make sure that (x,y) belong to a common region among all
   // layers and the mask, if possible.
   if ( ! check( x, y ) ) {
 #if defined(DEBUG_GET)
     g_log.debug( "EnvironmentImpl::get() Coordinate (%f,%f) is not in common region\n",x,y);
 #endif
-    return Sample();
+    return;
   }
 
   // Create the return value.
-  Sample sample( _layers.size() );
+  sample->resize( _layers.size() );
 
   // Read variables values from the layers.
   layers::const_iterator lay = _layers.begin();
   layers::const_iterator end = _layers.end();
-  Sample::iterator s = sample.begin();
+  Sample::iterator s = sample->begin();
 
   while ( lay != end ) {
     if ( ! lay->second->get( x, y, s ) ) {
 #if defined(DEBUG_GET)
       g_log.debug( "EnvironmentImpl::get() Coordinate (%f,%f) does not have data in layer %s\n",x,y,lay->first.c_str());
 #endif
-      return Sample();
+      sample->resize(0);
+      return;
     }
     ++lay;
     ++s;
   }
+}
 
-  if ( _normalize ) {
+Sample
+EnvironmentImpl::getUnnormalized( Coord x, Coord y ) const
+{
+  Sample sample;
+  getUnnormalizedInternal( &sample, x, y );
+  return sample;
+}
+
+Sample
+EnvironmentImpl::getNormalized( Coord x, Coord y ) const
+{
+  Sample sample;
+  getUnnormalizedInternal( &sample, x, y);
+  if ( sample.size() != 0 && _normalize ) {
     sample *= _scales;
     sample += _offsets;
   }
 
   return sample;
+}
+
+Sample
+EnvironmentImpl::get( Coord x, Coord y ) const
+{
+  if ( _normalize ) {
+    return getNormalized(x,y);
+  }
+  else {
+    return getUnnormalized(x,y);
+  }
 }
 
 Sample
