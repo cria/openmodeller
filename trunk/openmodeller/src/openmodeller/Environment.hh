@@ -123,6 +123,9 @@ public:
    */
   Sample get( Coord x, Coord y ) const;
 
+  Sample getNormalized( Coord x, Coord y ) const;
+  Sample getUnnormalized( Coord x, Coord y ) const;
+
   /** Read for 'sample' all values of environmental variables of a
    *  valid coordinate (inside the mask) randomly chosen
    *  returns coordinates (x,y) through pointer arguments.
@@ -166,6 +169,12 @@ private:
   void initialize( std::vector<std::string> categs,
 		   std::vector<std::string> maps, 
 		   std::string mask_file="" );
+
+  /* utility function to extract unnormalized environment vector
+   * Only needed to prevent unnecessary memory copy due to Sample
+   * not having a reasonable copy constructor/temporary
+   */
+  void getUnnormalizedInternal( Sample *, Coord x, Coord y ) const;
 
   /* utility to clear the mask information.  Deallocates memory.  Does not computeRegion() */
   void clearMask();
