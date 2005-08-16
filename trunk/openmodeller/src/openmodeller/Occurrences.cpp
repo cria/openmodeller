@@ -152,7 +152,7 @@ OccurrencesImpl::setEnvironment( const EnvironmentPtr& env, const char *type )
 
   while (oc != fin ) {
 
-    Sample sample = env->get( (*oc)->x(), (*oc)->y() );
+    Sample sample = env->getUnnormalized( (*oc)->x(), (*oc)->y() );
 
     if ( sample.size() == 0 ) {
 
@@ -186,18 +186,11 @@ OccurrencesImpl::normalize(bool useNormalization,
   int dim = (*occ)->environment().size();
 
   // set the normalized values 
-  while ( occ != end ) 
-    {
-      Sample sample = (*occ)->environment();
-      Sample normSample(dim);
+  while ( occ != end ) {
 
-      for (int i = 0; i < dim; i++)
-	  normSample[i] = sample[i] * scales[i] + offsets[i];
-      
-      (*occ)->setNormalizedEnvironment( normSample );
-
-      ++occ;
-    }
+    (*occ)->normalize( offsets, scales );
+    ++occ;
+  }
 }
 
 
