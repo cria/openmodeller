@@ -10,5 +10,5 @@
 # Set software group
 # The package maintainer (.deb)
 
-checkinstall --default --exclude ~/.ccache/stats --pkgname=libopenmodeller --pkgversion=0.3.2 --pkggroup=GIS --maintainer=tim@reading.ac.uk        
+checkinstall --default --exclude ~/.ccache/stats --pkgname=libopenmodeller --pkgversion=0.3.3 --pkggroup=GIS --maintainer=tim@reading.ac.uk        
 
