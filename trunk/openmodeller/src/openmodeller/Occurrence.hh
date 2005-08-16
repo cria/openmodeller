@@ -173,6 +173,8 @@ public:
 
   Sample const & environment() const; 
 
+  void normalize( const Sample& offsets, const Sample& scales );
+
   void setNormalizedEnvironment( const Sample& );
 
   void setUnnormalizedEnvironment( const Sample& );
