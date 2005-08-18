@@ -440,9 +440,8 @@ RCP_CONST_TYPEMAP( ConstEnvironmentPtr, EnvironmentPtr );
  *
  * Interestingly enough, Swig does not have this problem with Projector::MapCommand.
  */
-#define ModelCommand OpenModeller::ModelCommand
 
-class PyModelCommand : public ModelCommand {
+class PyModelCommand : public Algorithm::ModelCommand {
   public:
     PyModelCommand( PyObject *func ) {
       Py_INCREF( func );
