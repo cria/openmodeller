@@ -38,7 +38,7 @@
 #include <openmodeller/Occurrence.hh>
 #include <openmodeller/Exceptions.hh>
 
-#ifdef HAVE_VALUES_H
+#if defined (HAVE_VALUES_H) && !defined(WIN32)
 #include <values.h>
 #else
 #include <float.h>

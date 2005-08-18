@@ -15,6 +15,13 @@ OMLIB = $(OMSRCDIR)/openmodeller/libopenmodeller.la
 
 plugindir = ${libdir}/openmodeller
 
+# do not use -lpthread on windows
+if ISWINDOWS
+LIB_PTHREAD = 
+else
+LIB_PTHREAD = -lpthread
+endif
+
 # left out of build due to algorithm instabilities
 #plugin_LTLIBRARIES = libomgarp_bs.la libomdg_garp_bs.la
 plugin_LTLIBRARIES = libomdg_garp_bs.la
@@ -33,7 +40,7 @@ libomgarp_bs_la_SOURCES = \
 	../rules_range.hh ../rules_negrange.hh
 
 libomgarp_bs_la_LDFLAGS = -no-undefined
-libomgarp_bs_la_LIBADD = $(OMLIB) -lpthread
+libomgarp_bs_la_LIBADD = $(OMLIB) $(LIB_PTHREAD)
 libomgarp_bs_la_CPPFLAGS = -I.. -I$(OMSRCDIR) -DDONT_EXPORT_GARP_FACTORY
 
 
@@ -56,7 +63,7 @@ libomdg_garp_bs_la_SOURCES = \
 	../../dg_garp/Global.h
 
 libomdg_garp_bs_la_LDFLAGS  = -no-undefined
-libomdg_garp_bs_la_LIBADD   = $(OMLIB) -lpthread
+libomdg_garp_bs_la_LIBADD   = $(OMLIB) $(LIB_PTHREAD)
 libomdg_garp_bs_la_CPPFLAGS = -I.. -I$(OMSRCDIR) -I../../dg_garp \
                               -DDONT_EXPORT_GARP_FACTORY
 

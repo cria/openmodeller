@@ -15,6 +15,12 @@ DCONFIG_FILE=-DCONFIG_FILE=\"om_config\"
 
 lib_LTLIBRARIES = libopenmodeller.la
 
+if ISWINDOWS
+SOURCEOS = os_specific_win.cpp
+else
+SOURCEOS = os_specific.cpp
+endif
+
 libopenmodeller_la_SOURCES = \
 	Algorithm.cpp \
 	AlgorithmFactory.cpp \
@@ -30,7 +36,7 @@ libopenmodeller_la_SOURCES = \
 	Occurrence.cpp \
 	Occurrences.cpp \
 	OpenModeller.cpp \
-	os_specific.cpp \
+	$(SOURCEOS) \
 	Projector.cpp \
 	Random.cpp \
 	Sample.cpp \

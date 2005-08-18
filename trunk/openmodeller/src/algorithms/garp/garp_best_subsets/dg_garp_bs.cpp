@@ -39,7 +39,7 @@
 #include <stdio.h>
 #include <math.h>
 
-#ifdef _WINDOWS
+#ifdef WIN32
 #include <windows.h>
 #define SLEEP(secs) Sleep(secs * 1000)
 #else

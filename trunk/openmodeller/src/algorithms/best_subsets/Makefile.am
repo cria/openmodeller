@@ -15,6 +15,13 @@ OMLIB = $(OMSRCDIR)/openmodeller/libopenmodeller.la
 
 plugindir = ${libdir}/openmodeller
 
+# do not use -lpthread on windows
+if ISWINDOWS
+LIB_PTHREAD = 
+else
+LIB_PTHREAD = -lpthread
+endif
+
 plugin_LTLIBRARIES = libomdg_bs.la
 
 libomdg_bs_la_SOURCES = \
@@ -23,7 +30,7 @@ libomdg_bs_la_SOURCES = \
 	DgGarpBestSubsets.cpp
 
 libomdg_bs_la_LDFLAGS = -no-undefined
-libomdg_bs_la_LIBADD = $(OMLIB) -lpthread
+libomdg_bs_la_LIBADD = $(OMLIB) $(LIB_PTHREAD)
 libomdg_bs_la_CPPFLAGS = -I.. -I$(OMSRCDIR) -I../dg_garp
 
 #libombs_la_SOURCES = \
@@ -32,5 +39,5 @@ libomdg_bs_la_CPPFLAGS = -I.. -I$(OMSRCDIR) -I../dg_garp
 #	GenericBestSubsets.cpp
 #
 #libombs_la_LDFLAGS = -no-undefined
-#libombs_la_LIBADD = $(OMLIB) -lpthread
+#libombs_la_LIBADD = $(OMLIB) $(LIB_PTHREAD)
 #libombs_la_CPPFLAGS = -I.. -I$(OMSRCDIR) -I../dg_garp

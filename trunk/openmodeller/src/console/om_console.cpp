@@ -73,12 +73,12 @@ main( int argc, char **argv )
     OpenModeller om;
     g_log( "\nopenModeller version %s\n", om.getVersion() );
 
-#if 0
+    /*
     g_log( "\nDefault configuration file name is: %s\n\n",
            om.getConfigFileName() );
     g_log( "\nAlgorithms will be loaded from: %s\n\n",
            path = om.getPluginPath() );
-#endif 
+    */ 
 
     delete[] path;
 

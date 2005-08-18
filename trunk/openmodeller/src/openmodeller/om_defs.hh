@@ -42,7 +42,7 @@ typedef double Scalar;   ///< Type of map values.
 
 // Windows only defs
 //
-#ifdef _WINDOWS
+#ifdef WIN32
 # define strcasecmp _stricmp
 
 // used to export symbols out of OM algorithm dlls

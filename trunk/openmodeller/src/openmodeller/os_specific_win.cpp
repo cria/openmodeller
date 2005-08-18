@@ -56,7 +56,7 @@ dllOpen( char const *dll_file_name )
 void *
 dllFunction( DLLHandle handle, char const *function_name )
 {
-  return GetProcAddress( handle, function_name );
+  return (void *) GetProcAddress( handle, function_name );
 }
 
 
