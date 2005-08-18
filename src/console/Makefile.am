@@ -35,7 +35,7 @@ EXTRA_DIST = \
 bin_PROGRAMS = om_console $(OM_VIEWER) $(OM_NICHE)
 
 om_console_SOURCES = om_console.cpp occurrences_file.cpp request_file.cpp file_parser.cpp
-om_console_CPPFLAGS = -I$(OMSRCDIR)
+om_console_CPPFLAGS = -DCORE_DLL_IMPORT -I$(OMSRCDIR)
 om_console_LDADD = $(GDAL_LIB) $(OMLIB) $(EXPAT_LIBS)
 
 #om_test_SOURCES = om_test.cpp occurrences_file.cpp

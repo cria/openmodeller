@@ -22,7 +22,7 @@
 
 #include <math.h>
 
-#ifdef _WINDOWS
+#ifdef WIN32
 #define isnan _isnan
 #endif
 

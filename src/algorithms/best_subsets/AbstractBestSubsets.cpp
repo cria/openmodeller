@@ -32,7 +32,9 @@ using std::string;
 
 #include "AbstractBestSubsets.hh"
 
-#ifdef _WINDOWS
+#include <math.h> // for function ceil()
+
+#ifdef WIN32
 #include <windows.h>
 #define SLEEP(secs) Sleep(secs * 1000)
 #else

@@ -31,7 +31,7 @@
 #ifndef _GARP_RUN_THREAD_HH_
 #define _GARP_RUN_THREAD_HH_
 
-#ifdef _WINDOWS
+#ifdef WIN32
 
 // windows threading
 #include <windows.h>
@@ -68,6 +68,6 @@
    pthread_exit(&status); }
 
 
-#endif // _WINDOWS
+#endif // WIN32
 
 #endif // _GARP_RUN_THREAD_HH_

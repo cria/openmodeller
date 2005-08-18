@@ -40,7 +40,7 @@
  * Read key/value pairs from a configuration file.
  * 
  */
-class dllexp FileParser
+class FileParser
 {
 public:
 
