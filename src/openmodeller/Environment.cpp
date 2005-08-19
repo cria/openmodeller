@@ -52,15 +52,15 @@ using std::vector;
 
 /****************************************************************/
 /*********************** factory methods ************************/
-EnvironmentPtr createEnvironment( std::vector<std::string> categs,
-                                  std::vector<std::string> maps,
-                                  std::string mask_file )
+EnvironmentPtr createEnvironment( const std::vector<std::string>& categs,
+                                  const std::vector<std::string>& maps,
+                                  const std::string& mask_file )
 {
   return EnvironmentPtr( new EnvironmentImpl( categs, maps, mask_file ) );
 }
 
-EnvironmentPtr createEnvironment( std::vector<std::string> categs,
-                                  std::vector<std::string> maps )
+EnvironmentPtr createEnvironment( const std::vector<std::string>& categs,
+                                  const std::vector<std::string>& maps )
 {
   return EnvironmentPtr( new EnvironmentImpl( categs, maps, "" ) );
 }
@@ -163,17 +163,17 @@ EnvironmentImpl::EnvironmentImpl() :
 {
 }
 
-EnvironmentImpl::EnvironmentImpl( std::vector<std::string> categs,
-				  std::vector<std::string> maps, 
-				  std::string mask )
+EnvironmentImpl::EnvironmentImpl( const std::vector<std::string>& categs,
+				  const std::vector<std::string>& maps, 
+				  const std::string& mask )
 {
   initialize( categs, maps, mask );
 }
 
 void
-EnvironmentImpl::initialize( std::vector<std::string> categs,
-			     std::vector<std::string> maps, 
-			     std::string mask )
+EnvironmentImpl::initialize( const std::vector<std::string>& categs,
+			     const std::vector<std::string>& maps, 
+			     const std::string& mask )
 {
   _normalize = false;
 
@@ -274,8 +274,8 @@ EnvironmentImpl::setConfiguration( const ConstConfigurationPtr & config )
 /*********************/
 /*** change Layers ***/
 int
-EnvironmentImpl::changeLayers( std::vector<std::string> categs,
-			       std::vector<std::string> maps )
+EnvironmentImpl::changeLayers( const std::vector<std::string>& categs,
+			       const std::vector<std::string>& maps )
 {
   if ( ! (categs.size() + maps.size()) )
     return 0;
@@ -301,7 +301,7 @@ EnvironmentImpl::changeLayers( std::vector<std::string> categs,
 /*******************/
 /*** change Mask ***/
 int
-EnvironmentImpl::changeMask( std::string mask_file )
+EnvironmentImpl::changeMask( const std::string& mask_file )
 {
   int ret = 1;
 

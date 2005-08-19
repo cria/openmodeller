@@ -50,12 +50,12 @@ typedef ReferenceCountedPointer<const EnvironmentImpl> ConstEnvironmentPtr;
 /****************************************************************/
 /************************* Environment **************************/
 
-EnvironmentPtr dllexp createEnvironment( std::vector<std::string> categs,
-				  std::vector<std::string> maps,
-				  std::string mask_file );
+EnvironmentPtr dllexp createEnvironment( const std::vector<std::string>& categs,
+				  const std::vector<std::string>& maps,
+				  const std::string& mask_file );
 
-EnvironmentPtr dllexp createEnvironment( std::vector<std::string> categs,
-				  std::vector<std::string> maps );
+EnvironmentPtr dllexp createEnvironment( const std::vector<std::string>& categs,
+				  const std::vector<std::string>& maps );
 
 EnvironmentPtr dllexp createEnvironment( const ConstConfigurationPtr& config );
 
@@ -69,12 +69,12 @@ class dllexp EnvironmentImpl : public Configurable, public Normalizable, private
   friend class ReferenceCountedPointer<EnvironmentImpl>;
   friend class ReferenceCountedPointer<const EnvironmentImpl>;
 
-  friend EnvironmentPtr dllexp createEnvironment( std::vector<std::string> categs,
-					   std::vector<std::string> maps,
-					   std::string mask_file );
+  friend EnvironmentPtr dllexp createEnvironment( const std::vector<std::string>& categs,
+					   const std::vector<std::string>& maps,
+					   const std::string& mask_file );
   
-  friend EnvironmentPtr dllexp createEnvironment( std::vector<std::string> categs,
-					   std::vector<std::string> maps );
+  friend EnvironmentPtr dllexp createEnvironment( const std::vector<std::string>& categs,
+					   const std::vector<std::string>& maps );
 
   friend EnvironmentPtr dllexp createEnvironment( const ConstConfigurationPtr& config );
 
@@ -91,9 +91,9 @@ class dllexp EnvironmentImpl : public Configurable, public Normalizable, private
    * @param categs Categorical layers (e.g. soil).
    * @param maps   Continuous layers (e.g. temperature).
    */
-  EnvironmentImpl( std::vector<std::string> categs,
-		   std::vector<std::string> maps, 
-		   std::string mask_file = "" );
+  EnvironmentImpl( const std::vector<std::string>& categs,
+		   const std::vector<std::string>& maps, 
+		   const std::string& mask_file = "" );
 
 public:
 
@@ -152,7 +152,7 @@ public:
   Map * getLayer(int index) const { return _layers[index].second; }
 
   /** Change the mask. */
-  int changeMask( std::string mask_file );
+  int changeMask( const std::string& mask_file );
 
   Map * getMask() const { return _mask.second; }
 
@@ -166,9 +166,9 @@ public:
 
 private:
 
-  void initialize( std::vector<std::string> categs,
-		   std::vector<std::string> maps, 
-		   std::string mask_file="" );
+  void initialize( const std::vector<std::string>& categs,
+		   const std::vector<std::string>& maps, 
+		   const std::string& mask_file="" );
 
   /* utility function to extract unnormalized environment vector
    * Only needed to prevent unnecessary memory copy due to Sample
@@ -196,8 +196,8 @@ private:
   makeLayer( const ConstConfigurationPtr& config );
 
   /** Rebuild the layer representation. */
-  int changeLayers( std::vector<std::string> categs, 
-		    std::vector<std::string> maps );
+  int changeLayers( const std::vector<std::string>& categs, 
+		    const std::vector<std::string>& maps );
 
   /** Calculate the widest region common to all layers. */
   void calcRegion();
