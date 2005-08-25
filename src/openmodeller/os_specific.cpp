@@ -179,12 +179,17 @@ typedef struct dirent TDirent;
 int
 filter( const TDirent *dir )
 {
-#ifndef __CYGWIN__
-  char *ext = ".so";
-#else
+#ifdef __CYGWIN__
   // under cygwin, libraries can be loaded using dlopen
   // but their extension is .dll
   char *ext = ".dll";
+
+#elif defined(__APPLE_CC__)
+
+  char *ext = ".dylib";
+
+#else
+  char *ext = ".so";
 #endif
 
   char *found = strstr( dir->d_name, ext );
