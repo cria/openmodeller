@@ -5,7 +5,6 @@
 #
 WKT Coord System = GEOGCS["WGS84", DATUM["WGS84", SPHEROID["WGS84", 6378137.0, 298.257223563]], PRIMEM["Greenwich", 0.0], UNIT["degree", 0.017453292519943295], AXIS["Longitude",EAST], AXIS["Latitude",NORTH]]
 
-
 # File with a list of species occurrence. Each line is a record
 # with: <genus> <ephitet> <longitude> <latitude>
 #
@@ -17,6 +16,8 @@ Species file = furcata_boliviana.txt
 Species = furcata boliviana
 
 # Maps to be used as environmental variables to generate the model
+# note: You can find the map below in this address:
+#       http://openmodeller.cria.org.br/download/rain_coolest.tgz
 #
 Map = rain_coolest
 
