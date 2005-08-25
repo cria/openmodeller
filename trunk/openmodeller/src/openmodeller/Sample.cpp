@@ -1,8 +1,6 @@
 
 #include <Sample.hh>
 
-#include <malloc.h>
-
 // cmath is included for std::sqrt
 #include <cmath>
 
