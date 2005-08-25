@@ -1,6 +1,10 @@
 
 #include <Sample.hh>
 
+#ifndef __APPLE__
+#include <malloc.h>
+#endif
+
 // cmath is included for std::sqrt
 #include <cmath>
 

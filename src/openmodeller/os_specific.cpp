@@ -177,17 +177,21 @@ typedef struct dirent TDirent;
  * libraries.
  */
 int
+#ifdef __APPLE__
+filter( TDirent *dir )
+#else
 filter( const TDirent *dir )
+#endif
 {
-#ifdef __CYGWIN__
+#if defined(__APPLE__)
+  // constant version number should not be in filter but
+  // symlinks ending in .0.dylib and .dylib also exist
+  // and each library should be found only once
+  char *ext = ".0.0.0.dylib";
+#elif defined(__CYGWIN__)
   // under cygwin, libraries can be loaded using dlopen
   // but their extension is .dll
   char *ext = ".dll";
-
-#elif defined(__APPLE_CC__)
-
-  char *ext = ".dylib";
-
 #else
   char *ext = ".so";
 #endif

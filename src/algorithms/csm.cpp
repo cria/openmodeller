@@ -26,7 +26,7 @@
 #define isnan _isnan
 #endif
 
-#ifdef __APPLE_CC__
+#if defined(__APPLE__) && (__APPLE_CC__ < 4000)
 extern "C" {
   int isnan(double);
 }
