@@ -1,7 +1,7 @@
 /**
- * Declaration of GARP with Best Subsets Procedure
+ * Generic Best Subsets Procedure - template
  * 
- * @file   garp_best_subsets.cpp
+ * @file   GenericBestSubsets.cpp
  * @author Ricardo Scachetti Pereira (rpereira@ku.edu)
  * @date   2004-08-25
  * $Id$
