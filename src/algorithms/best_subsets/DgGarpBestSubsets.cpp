@@ -249,7 +249,7 @@ AlgParamMetadata parameters_bs[NUM_PARAM] =
 
 AlgMetadata metadata_bs = {
   
-  "DG_GARP_BS_beta",                        // Id.
+  "DG_GARP_BS",                        // Id.
   "GARP with best subsets - DesktopGARP implementation",  // Name.
   "3.0.1 alpha",                       // Version.
 

@@ -24,7 +24,6 @@ endif
 
 # left out of build due to algorithm instabilities
 #plugin_LTLIBRARIES = libomgarp_bs.la libomdg_garp_bs.la
-plugin_LTLIBRARIES = libomdg_garp_bs.la
 
 libomgarp_bs_la_SOURCES = \
 	best_subsets.cpp garp_best_subsets.cpp garp_run.cpp \
