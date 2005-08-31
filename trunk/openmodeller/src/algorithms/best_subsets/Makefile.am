@@ -22,12 +22,19 @@ else
 LIB_PTHREAD = -lpthread
 endif
 
+EXTRA_DIST = \
+	AlgorithmRun.hh \
+	GenericBestSubsets.hh \
+	AbstractBestSubsets.hh \
+	threads.hh
+
 plugin_LTLIBRARIES = libomdg_bs.la
 
 libomdg_bs_la_SOURCES = \
 	AlgorithmRun.cpp \
 	AbstractBestSubsets.cpp \
-	DgGarpBestSubsets.cpp
+	DgGarpBestSubsets.cpp \
+	DgGarpBestSubsets.hh
 
 libomdg_bs_la_LDFLAGS = -no-undefined
 libomdg_bs_la_LIBADD = $(OMLIB) $(LIB_PTHREAD)
