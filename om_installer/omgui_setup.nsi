@@ -102,7 +102,8 @@ Section "-RequiredComponents" SectionRequiredComponents
   File "..\build\algs\om_csmbs.dll"
   File "..\build\algs\om_distance_to_average.dll"
   File "..\build\algs\om_dg_garp.dll"
-  File "..\build\algs\om_dg_garp_bs.dll"
+  ;File "..\build\algs\om_dg_garp_bs.dll"           ; <-- Old BS replaced by new version by Kevin
+  File "..\build\algs\om_dg_garp_bs2.dll"
   ;File "..\build\algs\om_garp.dll"                 ; <-- OM Garp implementations are excluded because they are broken
   ;File "..\build\algs\om_garp_best_subsets.dll"    ; <-- OM Garp implementations are excluded because they are broken
   File "..\build\algs\om_mindist.dll"
@@ -176,7 +177,8 @@ PluginInstall:
   File "..\build\algs\om_csmbs.dll"
   File "..\build\algs\om_distance_to_average.dll"
   File "..\build\algs\om_dg_garp.dll"
-  File "..\build\algs\om_dg_garp_bs.dll"
+  ;File "..\build\algs\om_dg_garp_bs.dll"           ; <-- Old BS replaced by new version by Kevin
+  File "..\build\algs\om_dg_garp_bs2.dll"
   ;File "..\build\algs\om_garp.dll"                  ; <-- OM Garp implementations are excluded because they are broken
   ;File "..\build\algs\om_garp_best_subsets.dll"     ; <-- OM Garp implementations are excluded because they are broken
   File "..\build\algs\om_mindist.dll"
@@ -355,7 +357,8 @@ Section Uninstall
   Delete /REBOOTOK "$INSTDIR\algs\om_csmbs.dll"
   Delete /REBOOTOK "$INSTDIR\algs\om_distance_to_average.dll"
   Delete /REBOOTOK "$INSTDIR\algs\om_dg_garp.dll"
-  Delete /REBOOTOK "$INSTDIR\algs\om_dg_garp_bs.dll"
+  ;Delete /REBOOTOK "$INSTDIR\algs\om_dg_garp_bs.dll"          ; <-- Replaced by new version
+  ;Delete /REBOOTOK "$INSTDIR\algs\om_dg_garp_bs2.dll"
   ;Delete /REBOOTOK "$INSTDIR\algs\om_garp.dll"                ; <-- OM Garp implementations are excluded because they are broken
   ;Delete /REBOOTOK "$INSTDIR\algs\om_garp_best_subsets.dll"   ; <-- OM Garp implementations are excluded because they are broken
   Delete /REBOOTOK "$INSTDIR\algs\om_mindist.dll"
@@ -400,7 +403,8 @@ Section Uninstall
   Delete /REBOOTOK "$2\algs\om_csmbs.dll"
   Delete /REBOOTOK "$2\algs\om_distance_to_average.dll"
   Delete /REBOOTOK "$2\algs\om_dg_garp.dll"
-  Delete /REBOOTOK "$2\algs\om_dg_garp_bs.dll"
+  ;Delete /REBOOTOK "$2\algs\om_dg_garp_bs.dll"             ; <-- Replaced by new version
+  Delete /REBOOTOK "$2\algs\om_dg_garp_bs2.dll"  
   ;Delete /REBOOTOK "$2\algs\om_garp.dll"                  ; <-- OM Garp implementations are excluded because they are broken
   ;Delete /REBOOTOK "$2\algs\om_garp_best_subsets.dll"     ; <-- OM Garp implementations are excluded because they are broken
   Delete /REBOOTOK "$2\algs\om_mindist.dll"
