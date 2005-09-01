@@ -31,6 +31,7 @@
 using std::string;
 
 #include "AbstractBestSubsets.hh"
+#include <openmodeller/Exceptions.hh>
 
 #include <math.h> // for function ceil()
 
@@ -134,7 +135,48 @@ void
 AbstractBestSubsets::_setConfiguration( const ConstConfigurationPtr& config )
 {
 
-  return;
+  ConstConfigurationPtr model_config = config->getSubsection("BestSubsetsModel",false);
+  if (!model_config)
+    return;
+
+  _done = true;
+
+  _numBestRuns = model_config->getAttributeAsInt( "Count", 0 );
+
+  _bestRun = new AlgorithmRun*[_numBestRuns];
+  
+  Configuration::subsection_list runs = model_config->getAllSubsections();
+
+  Configuration::subsection_list::const_iterator fin = runs.end();
+  Configuration::subsection_list::const_iterator it = runs.begin();
+  // The index i is used to populate the _bestRuns array it is incremented after each
+  // new algorithm is found.
+  int i;
+  for( i = 0; it != fin; ++it ) {
+
+    // Test this here rather than at the bottom of loop.
+    // This needs to be done after checking for loop terminal condition.
+    if ( i == _numBestRuns ) {
+      throw ConfigurationException( "Number of deserialized algorithms exceeds Count" );
+    }
+
+    ConstConfigurationPtr run_config = *it;
+
+    if ( run_config->getName() != "Run" ) {
+      continue;
+    }
+    
+    AlgorithmPtr alg = AlgorithmFactory::newAlgorithm( run_config->getSubsection("Algorithm") );
+
+    _bestRun[i] = new AlgorithmRun( alg );
+
+    // increment i after adding algorithmRun to _bestRun
+    ++i;
+  }
+
+  if ( i < _numBestRuns ) {
+    throw ConfigurationException( "Number of deserialized algorithms is smaller than Count" );
+  }
 }
 
 // ****************************************************************
