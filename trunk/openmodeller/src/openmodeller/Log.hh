@@ -58,6 +58,7 @@ public:
 #ifndef SWIG
   class LogCallback {
   public:
+    virtual ~LogCallback(){};
     virtual void operator()( Level level, const std::string& msg ) = 0;
   };
 
