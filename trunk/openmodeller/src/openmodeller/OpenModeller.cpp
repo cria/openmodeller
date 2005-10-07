@@ -238,12 +238,12 @@ OpenModeller::setAlgorithm( char const *id, int nparam,
   
   if (!hasEnvironment())
     {
-      g_log( "Sampler could not initialized. Environment not set.\n" );
+      g_log( "Sampler could not be initialized. Environment not set.\n" );
       return 0;
     }
   else if (!_presence)
     {
-      g_log( "Sampler could not initialized. Occurrences not set.\n" );
+      g_log( "Sampler could not be initialized. Occurrences not set.\n" );
       return 0;
     }
   else
