@@ -135,6 +135,11 @@ int Csm::SamplerToMatrix()
 	  gsl_matrix_set (_gsl_environment_matrix,i,j,myCellValue);
         }
     }
+  g_log.debug( "Csm::SampleToMatrix: x: %i y: %i\n",_layer_count,_localityCount );
+  //for debugging - write matrix to file
+  //FILE * myFile = fopen("/tmp/csm_debug_sample_matrix.dat","w");
+  //gsl_matrix_fwrite(myFile, _gsl_environment_matrix);
+  //fclose(myFile);
   return 1;
 }
 
