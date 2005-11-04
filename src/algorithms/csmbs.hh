@@ -56,7 +56,7 @@ class CsmBS : public Csm
         int initialize();
 
 
-    private:
+    protected:
 
         /** Discard unwanted components.
          * This method uses the broken-stick cutoff.
