@@ -19,9 +19,15 @@
 #include <gsl/gsl_math.h>
 #include <gsl/gsl_eigen.h>
 #include <gsl/gsl_sf_gamma.h>
+#include <gsl/gsl_rng.h>
+#include <gsl/gsl_randist.h>
+#include <gsl/gsl_permutation.h>
+#include <gsl/gsl_heapsort.h>
+#include <gsl/gsl_sort.h>
+#include <gsl/gsl_sort_vector.h>
 
 #include <math.h>
-//next includes needed for rand 
+//next includes needed for rand
 #include <stdlib.h>
 #include <time.h>
 /****************************************************************/
@@ -35,83 +41,83 @@
 
 static AlgParamMetadata parameters[NUM_PARAM] = {
 
-  // Metadata of the first parameter.
-  {
-    "Randomisations",          // Id.
-    "Number of random eigenvalues",        // Name.
-    "Integer",        // Type.
-    "The number of eigenvalues to generate from randomly 'shuffled' environment data.", //overview
-    "The Broken Stick method of selecting the number of components to keep \n\
-is carried out by randomising the row order of each column in the environmental \n\
-matrix and then obtaining the eigen value for the randomised matrix. \n\
-This is repeatedly carried out for the amount of times specified by the user here.", // Description.
+      // Metadata of the first parameter.
+      {
+        "Randomisations",          // Id.
+        "Number of random eigenvalues",        // Name.
+        "Integer",        // Type.
+        "The number of eigenvalues to generate from randomly 'shuffled' environment data.", //overview
+        "The Broken Stick method of selecting the number of components to keep \n\
+        is carried out by randomising the row order of each column in the environmental \n\
+        matrix and then obtaining the eigen value for the randomised matrix. \n\
+        This is repeatedly carried out for the amount of times specified by the user here.", // Description.
 
-    1,     // Not zero if the parameter has lower limit.
-    1,   // Parameter's lower limit.
-    1,     // Not zero if the parameter has upper limit.
-    1000,   // Parameter's upper limit.
-    "8"  // Parameter's typical (default) value.
-  },
-  
-  {
-    "RandomiserRepeats",          // Id.
-    "Number of shuffles per column",        // Name.
-    "Integer",        // Type.
-    "Increase this number to increase randomness of data used for component selection eigen vector\n", //overview
-    "How many times each column should be shuffled to ensure randomness when generating \n\
-the randomised eigen vector used in the broken stick component selection method.\n\
-Note that increasing this parameter will cause models to take longer to run.\n", // Description.
-    1,     // Not zero if the parameter has lower limit.
-    1,   // Parameter's lower limit.
-    1,     // Not zero if the parameter has upper limit.
-    1000,   // Parameter's upper limit.
-    "50"  // Parameter's typical (default) value.
-  }
-  ,
-  {
-    "StandardDeviations",          // Id.
-    "Number of standard deviations",        // Name.
-    "Real",        // Type.
-    "The number of standard deviations added to the randomised eigen value.", //overview
-    "When all the eigen values for the 'shuffled' environmental matrix have been summed \n\
-this number of standard deviations is added to the mean of the eigen values. \n\
-Any components whose eigen values are above this threshold are retained.", // Description.
+        1,     // Not zero if the parameter has lower limit.
+        1,   // Parameter's lower limit.
+        1,     // Not zero if the parameter has upper limit.
+        1000,   // Parameter's upper limit.
+        "8"  // Parameter's typical (default) value.
+      },
 
-    1,     // Not zero if the parameter has lower limit.
-    -10,   // Parameter's lower limit.
-    1,     // Not zero if the parameter has upper limit.
-    10,   // Parameter's upper limit.
-    "0.05"  // Parameter's typical (default) value.
-  }
-  ,
-  {
-    "MinComponents",          // Id.
-    "Minimum number of components in model",        // Name.
-    "Integer",        // Type.
-    "The minimum number of components that the model must have.", //overview
-    "If not enough components are selected, the model produced will be erroneous or fail. \
-Usually three or more components are acceptable", // Description.
-    1,     // Not zero if the parameter has lower limit.
-    2,   // Parameter's lower limit.
-    1,     // Not zero if the parameter has upper limit.
-    20,   // Parameter's upper limit.
-    "2"  // Parameter's typical (default) value.
-  }
-  ,
-  {
-    "MaxAttempts",          // Id.
-    "How many attempts wil be made",        // Name.
-    "Integer",        // Type.
-    "If not enough components are selected, the model will retry this many times", //overview
-    "If not enough components are selected, the model be rerun. If MaxAttempts is reached \
-Csm Broken Stick will give up and abort.", // Description.
-    1,     // Not zero if the parameter has lower limit.
-    1,   // Parameter's lower limit.
-    1,     // Not zero if the parameter has upper limit.
-    10,   // Parameter's upper limit.
-    "1"  // Parameter's typical (default) value.
-  }
-};
+      {
+        "RandomiserRepeats",          // Id.
+        "Number of shuffles per column",        // Name.
+        "Integer",        // Type.
+        "Increase this number to increase randomness of data used for component selection eigen vector\n", //overview
+        "How many times each column should be shuffled to ensure randomness when generating \n\
+        the randomised eigen vector used in the broken stick component selection method.\n\
+        Note that increasing this parameter will cause models to take longer to run.\n", // Description.
+        1,     // Not zero if the parameter has lower limit.
+        1,   // Parameter's lower limit.
+        1,     // Not zero if the parameter has upper limit.
+        1000,   // Parameter's upper limit.
+        "50"  // Parameter's typical (default) value.
+      }
+      ,
+      {
+        "StandardDeviations",          // Id.
+        "Number of standard deviations",        // Name.
+        "Real",        // Type.
+        "The number of standard deviations added to the randomised eigen value.", //overview
+        "When all the eigen values for the 'shuffled' environmental matrix have been summed \n\
+        this number of standard deviations is added to the mean of the eigen values. \n\
+        Any components whose eigen values are above this threshold are retained.", // Description.
+
+        1,     // Not zero if the parameter has lower limit.
+        -10,   // Parameter's lower limit.
+        1,     // Not zero if the parameter has upper limit.
+        10,   // Parameter's upper limit.
+        "0.05"  // Parameter's typical (default) value.
+      }
+      ,
+      {
+        "MinComponents",          // Id.
+        "Minimum number of components in model",        // Name.
+        "Integer",        // Type.
+        "The minimum number of components that the model must have.", //overview
+        "If not enough components are selected, the model produced will be erroneous or fail. \
+        Usually three or more components are acceptable", // Description.
+        1,     // Not zero if the parameter has lower limit.
+        2,   // Parameter's lower limit.
+        1,     // Not zero if the parameter has upper limit.
+        20,   // Parameter's upper limit.
+        "2"  // Parameter's typical (default) value.
+      }
+      ,
+      {
+        "MaxAttempts",          // Id.
+        "How many attempts wil be made",        // Name.
+        "Integer",        // Type.
+        "If not enough components are selected, the model will retry this many times", //overview
+        "If not enough components are selected, the model be rerun. If MaxAttempts is reached \
+        Csm Broken Stick will give up and abort.", // Description.
+        1,     // Not zero if the parameter has lower limit.
+        1,   // Parameter's lower limit.
+        1,     // Not zero if the parameter has upper limit.
+        10,   // Parameter's upper limit.
+        "1"  // Parameter's typical (default) value.
+      }
+    };
 
 
 /************************************/
@@ -119,34 +125,34 @@ Csm Broken Stick will give up and abort.", // Description.
 
 static AlgMetadata metadata = {
 
-  "CSMBS",                 // Id.
-  "Climate Space Model", // Name.
-  "0.2 beta",           // Version.
+                                "CSMBS",                 // Id.
+                                "Climate Space Model", // Name.
+                                "0.2 beta",           // Version.
 
-  
-  "Climate Space Model [CSM] is a principle components based \
-algorithm developed by Dr. Neil Caithness",//Overview
 
-  "Climate Space Model [CSM] is a principle components based \
-algorithm developed by Dr. Neil Caithness. The component \
-selection process int this algorithm implementation is \
-based on the Broken-Stick cutoff where any component with \
-an eigenvalue < (n stddevs above a randomised sample) is discarded.\
-\n\
-The original CSM was written as series of Matlab functions. ", //description
+                                "Climate Space Model [CSM] is a principle components based \
+                                algorithm developed by Dr. Neil Caithness",//Overview
 
-  "Neil Caithness",  // Author
-  "",                 // Bibliography.
+                                "Climate Space Model [CSM] is a principle components based \
+                                algorithm developed by Dr. Neil Caithness. The component \
+                                selection process int this algorithm implementation is \
+                                based on the Broken-Stick cutoff where any component with \
+                                an eigenvalue < (n stddevs above a randomised sample) is discarded.\
+                                \n\
+                                The original CSM was written as series of Matlab functions. ", //description
 
-  "Tim Sutton, Renato De Giovanni",  // Code author.
-  "t.sutton [at] reading.ac.uk",     // Code author's contact.
+                                "Neil Caithness",  // Author
+                                "",                 // Bibliography.
 
-  0,  // Does not accept categorical data.
-  0,  // Does not need (pseudo)absence points.
+                                "Tim Sutton, Renato De Giovanni",  // Code author.
+                                "t.sutton [at] reading.ac.uk",     // Code author's contact.
 
-  NUM_PARAM,   // Algorithm's parameters.
-  parameters
-};
+                                0,  // Does not accept categorical data.
+                                0,  // Does not need (pseudo)absence points.
+
+                                NUM_PARAM,   // Algorithm's parameters.
+                                parameters
+                              };
 
 
 
@@ -182,8 +188,7 @@ CsmBS::CsmBS() : Csm(&metadata)
 
 /** This is the descructor for the Csm class */
 CsmBS::~CsmBS()
-{
-}
+{}
 
 int CsmBS::initialize()
 {
@@ -219,41 +224,106 @@ int CsmBS::initialize()
   g_log.debug( "StandardDeviations parameter set to: %.4f\n", numberOfStdDevsFloat );
   g_log.debug( "MinComponents parameter set to: %d\n", minComponentsInt );
   g_log.debug( "MaxAttempts parameter set to: %d\n", maxAttemptsInt );
-  
+
   if ( numberOfRandomisationsInt <= 0 || numberOfRandomisationsInt > 1000 )
   {
     g_log.warn( "CSM - Broken Stick - Randomisations parameter out of range: %f\n",
-            numberOfRandomisationsInt );
+                numberOfRandomisationsInt );
     return 0;
   }
   if ( numberOfStdDevsFloat<= -10 || numberOfStdDevsFloat> 10 )
   {
     g_log.warn( "CSM - Broken Stick - StandardDeviations parameter out of range: %f\n",
-            numberOfRandomisationsInt );
+                numberOfRandomisationsInt );
     return 0;
   }
   if ( randomiserRepeatsInt< 1 || randomiserRepeatsInt> 1000 )
   {
     g_log.warn( "CSM - Broken Stick - RandomiserRepeats parameter out of range: %f\n",
-            randomiserRepeatsInt);
+                randomiserRepeatsInt);
     return 0;
   }
   if (minComponentsInt < 1 ||minComponentsInt > 20 )
   {
     g_log.warn( "CSM - Broken Stick - MinComponents parameter out of range: %f\n",
-            minComponentsInt);
+                minComponentsInt);
     return 0;
   }
   if ( maxAttemptsInt< 1 || maxAttemptsInt> 10 )
   {
     g_log.warn( "CSM - Broken Stick - MaxAttempts parameter out of range: %f\n",
-            maxAttemptsInt);
+                maxAttemptsInt);
     return 0;
   }
 
   //call the superclass initialier now...
   return Csm::initialize();
 }
+
+gsl_matrix * CsmBS::createRandomMatrix(int size1, int size2)
+{
+  //setup gsl random number generator
+  const gsl_rng_type * myRngType;
+  gsl_rng * myRng;
+  gsl_rng_env_setup();
+  myRngType = gsl_rng_default;
+  myRng = gsl_rng_alloc(myRngType);
+  //seed the random number generator
+  gsl_rng_set(myRng, (unsigned) time( NULL ));
+  //populate the matrix with random nos
+  gsl_matrix * m = gsl_matrix_alloc (size1, size2);
+  for (int j=0; j < m->size2; j++)
+  {
+    for (int k=0; k < m->size1; k++)
+    {
+      double myNo = gsl_rng_uniform_pos(myRng);
+      gsl_matrix_set(m,k,j,myNo);
+    }
+  }
+  return m;
+}
+
+/* randomise the data within each column */
+gsl_matrix * CsmBS::randomiseColumns(gsl_matrix * original_matrix)
+{
+  //for debugging only
+  //gsl_matrix * myIndexMatrix = gsl_matrix_alloc (original_matrix->size1, original_matrix->size2);
+  gsl_matrix * myOuputMatrix = gsl_matrix_alloc (original_matrix->size1, original_matrix->size2);
+  gsl_matrix * m = createRandomMatrix (original_matrix->size1, original_matrix->size2);
+  //loop through the matrix columns
+  for (int j=0; j < m->size2; j++)
+  {
+    //get the column of random numbers
+    gsl_vector * myRandomColumnVector = gsl_vector_alloc (m->size1);
+    gsl_vector * myOriginalColumnVector = gsl_vector_alloc (original_matrix->size1);
+    gsl_matrix_get_col (myRandomColumnVector, m, j);
+    gsl_matrix_get_col (myOriginalColumnVector, original_matrix, j);
+    gsl_permutation * myPermutation = gsl_permutation_alloc(m->size1);
+    //compute the index positions of the sorted random col
+    gsl_sort_vector_index(myPermutation,myRandomColumnVector);
+    //assign values in the output array based on their index relative to the sorted
+    //randomised matrix
+    for (int k=0; k < m->size1; k++)
+    {
+      double myDouble = gsl_vector_get(myOriginalColumnVector,myPermutation->data[k]);
+      //for debugging only
+      //gsl_matrix_set(myIndexMatrix,k,j,myPermutation->data[k]);
+      //write the elemnt straight into the output matrix
+      gsl_matrix_set(myOuputMatrix,k,j,myDouble);
+    } //k loop
+    //set the output column to the randomly sorted column
+    //clean up
+    gsl_permutation_free (myPermutation);
+    gsl_vector_free (myRandomColumnVector);
+    gsl_vector_free (myOriginalColumnVector);
+  }//j loop
+  gsl_matrix_free(m);
+  //for debuggin only
+  //displayMatrix(myIndexMatrix,"Random matrix indexes");
+  //gsl_matrix_free(myIndexMatrix);
+  return myOuputMatrix;
+}
+
 int CsmBS::discardComponents()
 {
   int i, j;
@@ -262,78 +332,20 @@ int CsmBS::discardComponents()
 
   //create a matrix that will store the eigenvalue vector of each of the
   //the randomised environment variables we create
-  gsl_matrix * myMatrixOfEigenValueVectors = 
-      gsl_matrix_alloc (numberOfRandomisationsInt,_gsl_environment_matrix->size2);
+  gsl_matrix * myMatrixOfEigenValueVectors =
+    gsl_matrix_alloc (numberOfRandomisationsInt,_gsl_environment_matrix->size2);
   g_log.debug( "Calculating %i randomised matrices...\n", numberOfRandomisationsInt );
   for (i=0; i<numberOfRandomisationsInt;i++)
   {
-     g_log.debug( "Calculating randomised matrix: %i\n", i );
+    g_log.debug( "Calculating randomised matrix: %i\n", i );
 
-    //    
+    //
     //retreive centered and standardised environmental matrix & clone it
     //
 
     // displayMatrix(_gsl_environment_matrix,"Cloning centered and standardised matrix:");
-    gsl_matrix * m = gsl_matrix_alloc (_gsl_environment_matrix->size1, _gsl_environment_matrix->size2);
-    gsl_matrix_memcpy (m,_gsl_environment_matrix );
-    int myRandUpperBoundInt=m->size1; //number of rows
-    time_t mySeconds;
-    //loop through the matrix columns
-    for (j=0; j < m->size2; j++)
-    {
-      // retrieve this column as a gsl_vector : 
-      // int gsl_matrix_get_col (gsl_vector * v, const gsl_matrix * m, size_t j)
-      // This function copies the elements of the j-th column of the matrix m into the vector v. 
-      // The length of the vector must be the same as the length of the column.
-
-      gsl_vector * myColumnVector = gsl_vector_alloc (myRandUpperBoundInt);
-      gsl_matrix_get_col (myColumnVector, m, j);
-
-
-      //
-      //             shuffle / randomise the row ordering in each column
-      //
-      //
-      //  -------------------------------------------------------------------------------------        
-      //  -------------------------------------------------------------------------------------        
-      //  -------------------------------------------------------------------------------------        
-      //  e.g. before:      e.g. after
-      //  33 | 56 | 88  |   12| 12 | 34
-      //  34 | 12 | 63  |   34 | 44 | 63
-      //  12 | 44 | 34  |   33 | 56 | 88
-      //  -------------------------------------------------------------------------------------        
-      //  Exchanging elements (GSL Documentation)
-      //
-      //  The following function can be used to exchange, or permute, the elements of a vector.
-      //  Function: int gsl_vector_swap_elements (gsl_vector * v, size_t i, size_t j)
-      //  This function exchanges the i-th and j-th elements of the vector v in-place. 
-      //  Function: int gsl_vector_reverse (gsl_vector * v)
-      //  This function reverses the order of the elements of the vector v. 
-      //  -------------------------------------------------------------------------------------        
-      //  Approach (based on chat with Mauro on irc):
-      //  You can call this method (gsl swap) in a loop for k = 0,...,N and r = random between 0 and N...
-      //  so you are saying always swap the kth element with rth element?
-      //  thats sounds good 
-
-      //this extra loop is to increase the amount of shuffling that takes place!  
-      for (int myRandomiserRepeats=0;myRandomiserRepeats<randomiserRepeatsInt;myRandomiserRepeats++)
-      {
-        //loop through each cell in the column swapping it with another cell
-        for (int k=0; k < m->size1; k++)
-        {
-          time(&mySeconds); //get time from sys clock
-          srand((unsigned int) mySeconds); //seed randomiser
-          int myRandomRowInt = rand() % (myRandUpperBoundInt-1) ; //get random number from 0 to row count
-          //now do the swap
-          gsl_vector_swap_elements (myColumnVector,k,myRandomRowInt);
-        } //k loop
-      }//myRandomiserRepeats loop
-      //replace the column with the new randomised column
-      gsl_matrix_set_col(m,j,myColumnVector);
-      //clean up
-      gsl_vector_free (myColumnVector);
-    }//j loop
-    //  
+    gsl_matrix * m = randomiseColumns(_gsl_environment_matrix);
+    //
     //  build a cov matrix on the randomised environmental matrix
     //
     gsl_matrix * myGslCovarianceMatrix = autoCovariance(m);
@@ -344,26 +356,26 @@ int CsmBS::discardComponents()
     //create a temporary workspace
     gsl_eigen_symmv_workspace * myWorkpace = gsl_eigen_symmv_alloc (m->size2);
     gsl_eigen_symmv (myGslCovarianceMatrix,
-            myGslEigenValueVector,
-            myGslEigenVectorMatrix,
-            myWorkpace);
+                     myGslEigenValueVector,
+                     myGslEigenVectorMatrix,
+                     myWorkpace);
     //free the temporary workspace again
     gsl_eigen_symmv_free (myWorkpace);
     //
-    //   sort the eigenvalues from > to  < then discard eigenvector 
+    //   sort the eigenvalues from > to  < then discard eigenvector
     //
     gsl_eigen_symmv_sort (myGslEigenValueVector, myGslEigenVectorMatrix,
-            GSL_EIGEN_SORT_VAL_DESC);
+                          GSL_EIGEN_SORT_VAL_DESC);
 
-    //  keep only the eigen values and add them as a new row to a matrix   
+    //  keep only the eigen values and add them as a new row to a matrix
     //  int gsl_matrix_set_row (gsl_matrix * m, size_t i, const gsl_vector * v)
     gsl_matrix_set_row (myMatrixOfEigenValueVectors,i,myGslEigenValueVector);
 
     // clean up temp vectors and matrix
     gsl_vector_free (myGslEigenValueVector);
     gsl_matrix_free(myGslEigenVectorMatrix);
-    //  clear temp covariance matrix 
-    gsl_matrix_free (m); 
+    //  clear temp covariance matrix
+    gsl_matrix_free (m);
     //  repeat as many times as numberOfRandomisationsInt, ading a new row to the matrix each time
   }//i loop
 
@@ -388,38 +400,38 @@ int CsmBS::discardComponents()
   float sumOfEigenValues = 0;//sum should total number of layers
   for (i=0; i<myMeanPlusStdDevsVector->size; ++i)
   {
-    float myFloat = gsl_vector_get(myMeanPlusStdDevsVector,i); 
-    sumOfEigenValues += myFloat; 
+    float myFloat = gsl_vector_get(myMeanPlusStdDevsVector,i);
+    sumOfEigenValues += myFloat;
     if (myFloat < gsl_vector_get(_gsl_eigenvalue_vector,i))
     {
-      std::cerr << gsl_vector_get(_gsl_eigenvalue_vector,i) 
-          << " > "
-          << myFloat
-          << ": Component "
-          << i
-          << " is greater than randomised component... retaining it."
-          << std::endl;
+      std::cerr << gsl_vector_get(_gsl_eigenvalue_vector,i)
+      << " > "
+      << myFloat
+      << ": Component "
+      << i
+      << " is greater than randomised component... retaining it."
+      << std::endl;
     }
     else
     {
       --_retained_components_count;
-      std::cerr << gsl_vector_get(_gsl_eigenvalue_vector,i) 
-          << " < "
-          << myFloat
-          << ": Component "
-          << i
-          << " is less than randomised component... discarding it."
-          << std::endl;
+      std::cerr << gsl_vector_get(_gsl_eigenvalue_vector,i)
+      << " < "
+      << myFloat
+      << ": Component "
+      << i
+      << " is less than randomised component... discarding it."
+      << std::endl;
     }
   }
-  std::cerr << "Sum of eigenvalues is "  
-            << sumOfEigenValues
-            << "(should be "
-            << _layer_count
-            << ")\n";
+  std::cerr << "Sum of eigenvalues is "
+  << sumOfEigenValues
+  << "(should be "
+  << _layer_count
+  << ")\n";
   std::cerr << "Small differences are acceptable here." << std::endl;
   //it seems we need at least 4 components to produce a decent model
-  if (_retained_components_count < minComponentsInt) 
+  if (_retained_components_count < minComponentsInt)
   {
     g_log.debug( "Only %i component(s) retained. %i required. \nAborting discard components routine\n",_retained_components_count, minComponentsInt );
     return 0;

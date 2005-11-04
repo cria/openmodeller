@@ -28,7 +28,7 @@
  * 
  * http://www.gnu.org/copyleft/gpl.html
  */
- 
+
 #ifndef CSMBS_H
 #define CSMBS_H
 
@@ -40,39 +40,60 @@
 */
 class CsmBS : public Csm
 {
-    public:
+public:
 
-        /** Constructor for Csm */
-        CsmBS();
-        /** This is the descructor for the Csm class */
-        ~CsmBS();
-        /** Initialise the model specifying a threshold / cutoff point.
-         * Any model definition building stuff is done here.
-         * This is optional (model dependent).
-         * @note This method is inherited from the Algorithm class
-         * @param 
-         * @return 0 on error
-         */
-        int initialize();
+  /** Constructor for Csm */
+  CsmBS();
+  /** This is the descructor for the Csm class */
+  ~CsmBS();
+  /** Initialise the model specifying a threshold / cutoff point.
+   * Any model definition building stuff is done here.
+   * This is optional (model dependent).
+   * @note This method is inherited from the Algorithm class
+   * @param 
+   * @return 0 on error
+   */
+  int initialize();
 
 
-    protected:
+protected:
+  /** generate a matrix populated with random numbers between 0 and 1 */
+  gsl_matrix * createRandomMatrix(int size1, int size2);
 
-        /** Discard unwanted components.
-         * This method uses the broken-stick cutoff.
-         * @note This method must be called after center
-         * @return 0 on error    
-         */  
-        int discardComponents();
+  /**
+  shuffle / randomise the row ordering in each column
+  -------------------------------------------------------------------------------------        
+  e.g. before:      e.g. after
+  33 | 56 | 88  |   12| 12 | 34
+  34 | 12 | 63  |   34 | 44 | 63
+  12 | 44 | 34  |   33 | 56 | 88
+  -------------------------------------------------------------------------------------        
+  Exchanging elements (GSL Documentation)
 
-        /** How many times the env must be shuffled */
-        int numberOfRandomisationsInt;
-        /** How many standard deviations should be added to the random derived
-         * eigenvalues when doing discard components */
-        float numberOfStdDevsFloat; 
-        /**Increase this number to increase randomness of component selection eigen vector
-         */
-        int randomiserRepeatsInt; 
+  The following function can be used to exchange, or permute, the elements of a vector.
+  Function: int gsl_vector_swap_elements (gsl_vector * v, size_t i, size_t j)
+  This function exchanges the i-th and j-th elements of the vector v in-place. 
+  Function: int gsl_vector_reverse (gsl_vector * v)
+  This function reverses the order of the elements of the vector v. 
+  -------------------------------------------------------------------------------------        
+  */
+  gsl_matrix * randomiseColumns(gsl_matrix * original_matrix);
+
+  /** Discard unwanted components.
+   * This method uses the broken-stick cutoff.
+   * @note This method must be called after center
+   * @return 0 on error    
+   */
+  int discardComponents();
+
+  /** How many times the env must be shuffled */
+  int numberOfRandomisationsInt;
+  /** How many standard deviations should be added to the random derived
+   * eigenvalues when doing discard components */
+  float numberOfStdDevsFloat;
+  /**Increase this number to increase randomness of component selection eigen vector
+   */
+  int randomiserRepeatsInt;
 
 
 };
