@@ -33,7 +33,7 @@
 /****************************************************************/
 /********************** Algorithm's Metadata ********************/
 
-#define NUM_PARAM 5
+#define NUM_PARAM 4
 
 
 /************************************/
@@ -57,21 +57,6 @@ static AlgParamMetadata parameters[NUM_PARAM] = {
         1,     // Not zero if the parameter has upper limit.
         1000,   // Parameter's upper limit.
         "8"  // Parameter's typical (default) value.
-      },
-
-      {
-        "RandomiserRepeats",          // Id.
-        "Number of shuffles per column",        // Name.
-        "Integer",        // Type.
-        "Increase this number to increase randomness of data used for component selection eigen vector\n", //overview
-        "How many times each column should be shuffled to ensure randomness when generating \n\
-        the randomised eigen vector used in the broken stick component selection method.\n\
-        Note that increasing this parameter will cause models to take longer to run.\n", // Description.
-        1,     // Not zero if the parameter has lower limit.
-        1,   // Parameter's lower limit.
-        1,     // Not zero if the parameter has upper limit.
-        1000,   // Parameter's upper limit.
-        "50"  // Parameter's typical (default) value.
       }
       ,
       {
@@ -87,7 +72,7 @@ static AlgParamMetadata parameters[NUM_PARAM] = {
         -10,   // Parameter's lower limit.
         1,     // Not zero if the parameter has upper limit.
         10,   // Parameter's upper limit.
-        "0.05"  // Parameter's typical (default) value.
+        "2.0"  // Parameter's typical (default) value.
       }
       ,
       {
@@ -204,11 +189,6 @@ int CsmBS::initialize()
     g_log.warn( "Parameter StandardDeviations not set properly.\n");
     return 0;
   }
-  if ( ! getParameter( "RandomiserRepeats", &randomiserRepeatsInt) )
-  {
-    g_log.warn( "Parameter RandomiserRepeats not set properly.\n");
-    return 0;
-  }
   if ( ! getParameter( "MinComponents", &minComponentsInt) )
   {
     g_log.warn( "Parameter MinComponents not set properly.\n");
@@ -220,7 +200,6 @@ int CsmBS::initialize()
     return 0;
   }
   g_log.debug( "Randomisations parameter set to: %d\n", numberOfRandomisationsInt );
-  g_log.debug( "RandomiserRepeats parameter set to: %d\n", randomiserRepeatsInt );
   g_log.debug( "StandardDeviations parameter set to: %.4f\n", numberOfStdDevsFloat );
   g_log.debug( "MinComponents parameter set to: %d\n", minComponentsInt );
   g_log.debug( "MaxAttempts parameter set to: %d\n", maxAttemptsInt );
@@ -235,12 +214,6 @@ int CsmBS::initialize()
   {
     g_log.warn( "CSM - Broken Stick - StandardDeviations parameter out of range: %f\n",
                 numberOfRandomisationsInt );
-    return 0;
-  }
-  if ( randomiserRepeatsInt< 1 || randomiserRepeatsInt> 1000 )
-  {
-    g_log.warn( "CSM - Broken Stick - RandomiserRepeats parameter out of range: %f\n",
-                randomiserRepeatsInt);
     return 0;
   }
   if (minComponentsInt < 1 ||minComponentsInt > 20 )
