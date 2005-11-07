@@ -204,8 +204,16 @@ int Csm::center()
     for (int i=0;i<_localityCount;++i)
     {
       double myDouble = gsl_matrix_get (_gsl_environment_matrix,i,j);
-      myDouble = (myDouble-myAverage)/myStdDev;
+      if (myStdDev > 0)
+      {
+        myDouble = (myDouble-myAverage)/myStdDev;
+      }
+      else
+      {
+        myDouble=0;
+      }
       //update the gsl_matrix with the new value
+      printf ("Setting %i,%i to %d\n",i,j,myDouble);
       gsl_matrix_set(_gsl_environment_matrix,i,j,myDouble);
     }
   }
@@ -255,9 +263,12 @@ Scalar Csm::getValue( const Sample& x ) const
   //first thing we do is convert the oM primitive env value array to a gsl matrix
   //with only one row so we can do matrix multplication with it
   gsl_matrix * tmp_gsl_matrix = gsl_matrix_alloc (1,_layer_count);
+  gsl_matrix * tmp_raw_gsl_matrix = gsl_matrix_alloc (1,_layer_count);
   for (i=0;i<_layer_count;++i)
   {
     myFloat = static_cast<float>(x[i]);
+    gsl_matrix_set (tmp_raw_gsl_matrix,0,i,myFloat);
+    
     if (myFloat!=0)
     {
       myAllAreZeroFlag=false;
@@ -267,13 +278,20 @@ Scalar Csm::getValue( const Sample& x ) const
     float myAverage = gsl_vector_get (_gsl_avg_vector,i);
     float myStdDev = gsl_vector_get (_gsl_stddev_vector,i);
     //subtract the mean from the value then divide by the standard deviation
-    myFloat = (myFloat-myAverage)/myStdDev;
+    if (myStdDev > 0)
+    {
+      myFloat = (myFloat-myAverage)/myStdDev;
+    }
+    else
+    {
+       myFloat=myFloat-myAverage;
+    }
     //assign the result to our vector
     gsl_matrix_set (tmp_gsl_matrix,0,i,myFloat);
     //g_log.debug( "myFloat = %f\n", myFloat );
   }
   //g_log.debug( " ----  end of scalar \n");
-  //displayMatrix(tmp_gsl_matrix,"tmp_gsl_matrix before matrix multiplication");
+  //displayMatrix(tmp_raw_gsl_matrix,"Voxel passed to getValue");
   //if (myAllAreZeroFlag) {return 0;}
 
 
@@ -328,7 +346,7 @@ Scalar Csm::getValue( const Sample& x ) const
   gsl_matrix_free (z);
   //gsl_vector_free (component1_gsl_vector);
   gsl_matrix_free (tmp_gsl_matrix);
-
+  //printf("Probability: %f\n", myFloat); 
   return myFloat;
 }
 
@@ -348,7 +366,7 @@ int Csm::getConvergence( Scalar *val )
 //
 
 
-void Csm::displayVector(gsl_vector * v, char * name, bool roundFlag)
+void Csm::displayVector(const gsl_vector * v, const char * name, const bool roundFlag) const
 {
   if (roundFlag)
   {
@@ -383,7 +401,7 @@ void Csm::displayVector(gsl_vector * v, char * name, bool roundFlag)
 
 /**********************/
 /**** displayMatrix ***/
-void Csm::displayMatrix(gsl_matrix * m, char * name, bool roundFlag)
+void Csm::displayMatrix(const gsl_matrix * m, const char * name, const bool roundFlag) const
 {
   if (!roundFlag)
   {
