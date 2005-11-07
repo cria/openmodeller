@@ -213,7 +213,6 @@ int Csm::center()
         myDouble=0;
       }
       //update the gsl_matrix with the new value
-      printf ("Setting %i,%i to %d\n",i,j,myDouble);
       gsl_matrix_set(_gsl_environment_matrix,i,j,myDouble);
     }
   }
@@ -291,7 +290,10 @@ Scalar Csm::getValue( const Sample& x ) const
     //g_log.debug( "myFloat = %f\n", myFloat );
   }
   //g_log.debug( " ----  end of scalar \n");
-  //displayMatrix(tmp_raw_gsl_matrix,"Voxel passed to getValue");
+  displayMatrix(tmp_raw_gsl_matrix,"Voxel passed to getValue");
+  displayMatrix(tmp_gsl_matrix,"Voxel passed to getValue -Mean / stddev");
+  displayVector(_gsl_avg_vector,"Averages");
+  displayVector(_gsl_stddev_vector,"Stddevs");
   //if (myAllAreZeroFlag) {return 0;}
 
 
@@ -346,7 +348,7 @@ Scalar Csm::getValue( const Sample& x ) const
   gsl_matrix_free (z);
   //gsl_vector_free (component1_gsl_vector);
   gsl_matrix_free (tmp_gsl_matrix);
-  //printf("Probability: %f\n", myFloat); 
+  printf("Probability: %f\n", myFloat); 
   return myFloat;
 }
 
