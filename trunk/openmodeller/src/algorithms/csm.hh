@@ -376,15 +376,14 @@ class Csm : public AlgorithmImpl
          * @param name char Vector name / message
          * @param roundFlag Whether to round numbers to 4 decimal places (default is true)
          */
-        void displayVector(gsl_vector * v, char * name, bool roundFlag=true);
+        void displayVector(const gsl_vector * v, const char * name,const  bool roundFlag=true) const;
 
         /** This a utility function to display the content of a gsl matrix.
          * @param m gsl_matrix Input matrix
          * @param name char Matrix name / message
          * @param roundFlag Whether to round numbers to 4 decimal places (default is true)
          */
-        void displayMatrix(gsl_matrix * m, char * name, bool roundFlag=true);
-
+        void displayMatrix(const gsl_matrix * m, const char * name, const bool roundFlag=true) const;
         /** This a utility function to calculate a transposed gsl matrix.
          * @param m gsl_matrix Input matrix
          * @return gsl_matrix Transposed matrix
