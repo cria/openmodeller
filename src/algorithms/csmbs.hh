@@ -33,6 +33,7 @@
 #define CSMBS_H
 
 #include "csm.hh"
+#include <gsl/gsl_rng.h>
 
 /**
  * CsmBS = Csm broken-stick cutoff for discarded components
@@ -86,15 +87,15 @@ protected:
    */
   int discardComponents();
 
-  /** How many times the env must be shuffled */
-  int numberOfRandomisationsInt;
+
   /** How many standard deviations should be added to the random derived
    * eigenvalues when doing discard components */
   float numberOfStdDevsFloat;
   /**Increase this number to increase randomness of component selection eigen vector
    */
-  int randomiserRepeatsInt;
-
+  int numberOfRandomisationsInt;
+  /** A gsl random number generator for creating randomness randomly... */
+  gsl_rng * _randomNumberGenerator;
 
 };
 
