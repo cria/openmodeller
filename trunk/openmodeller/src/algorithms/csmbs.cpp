@@ -19,7 +19,6 @@
 #include <gsl/gsl_math.h>
 #include <gsl/gsl_eigen.h>
 #include <gsl/gsl_sf_gamma.h>
-#include <gsl/gsl_rng.h>
 #include <gsl/gsl_randist.h>
 #include <gsl/gsl_permutation.h>
 #include <gsl/gsl_heapsort.h>
@@ -168,6 +167,13 @@ algorithmMetadata()
 CsmBS::CsmBS() : Csm(&metadata)
 {
   _initialized = 0;
+  //setup gsl random number generator
+  const gsl_rng_type * myRngType;
+  gsl_rng_env_setup();
+  myRngType = gsl_rng_default;
+  _randomNumberGenerator = gsl_rng_alloc(myRngType);
+  //seed the random number generator
+  gsl_rng_set(_randomNumberGenerator, (unsigned) time( NULL ));
 }
 
 
@@ -235,21 +241,14 @@ int CsmBS::initialize()
 
 gsl_matrix * CsmBS::createRandomMatrix(int size1, int size2)
 {
-  //setup gsl random number generator
-  const gsl_rng_type * myRngType;
-  gsl_rng * myRng;
-  gsl_rng_env_setup();
-  myRngType = gsl_rng_default;
-  myRng = gsl_rng_alloc(myRngType);
-  //seed the random number generator
-  gsl_rng_set(myRng, (unsigned) time( NULL ));
+
   //populate the matrix with random nos
   gsl_matrix * m = gsl_matrix_alloc (size1, size2);
   for (int j=0; j < m->size2; j++)
   {
     for (int k=0; k < m->size1; k++)
     {
-      double myNo = gsl_rng_uniform_pos(myRng);
+      double myNo = gsl_rng_uniform_pos(_randomNumberGenerator);
       gsl_matrix_set(m,k,j,myNo);
     }
   }
@@ -299,8 +298,6 @@ gsl_matrix * CsmBS::randomiseColumns(gsl_matrix * original_matrix)
 
 int CsmBS::discardComponents()
 {
-  int i, j;
-
   g_log.debug( "Discarding components\n" );
 
   //create a matrix that will store the eigenvalue vector of each of the
@@ -308,7 +305,7 @@ int CsmBS::discardComponents()
   gsl_matrix * myMatrixOfEigenValueVectors =
     gsl_matrix_alloc (numberOfRandomisationsInt,_gsl_environment_matrix->size2);
   g_log.debug( "Calculating %i randomised matrices...\n", numberOfRandomisationsInt );
-  for (i=0; i<numberOfRandomisationsInt;i++)
+  for (int i=0; i<numberOfRandomisationsInt;i++)
   {
     g_log.debug( "Calculating randomised matrix: %i\n", i );
 
@@ -318,6 +315,7 @@ int CsmBS::discardComponents()
 
     // displayMatrix(_gsl_environment_matrix,"Cloning centered and standardised matrix:");
     gsl_matrix * m = randomiseColumns(_gsl_environment_matrix);
+    //displayMatrix(m,"Randomised matrix:");
     //
     //  build a cov matrix on the randomised environmental matrix
     //
@@ -334,6 +332,7 @@ int CsmBS::discardComponents()
                      myWorkpace);
     //free the temporary workspace again
     gsl_eigen_symmv_free (myWorkpace);
+    displayVector(myGslEigenValueVector, "Randomised eigenvaluevector");
     //
     //   sort the eigenvalues from > to  < then discard eigenvector
     //
@@ -357,21 +356,21 @@ int CsmBS::discardComponents()
   gsl_vector * myMeanVector = gsl_vector_alloc(myMatrixOfEigenValueVectors->size2);
   gsl_vector * myStdDevVector = gsl_vector_alloc(myMatrixOfEigenValueVectors->size2);;
   calculateMeanAndSd( myMatrixOfEigenValueVectors,myMeanVector,myStdDevVector);
-
+  displayVector (myMeanVector,"Mean of randomised Eigen Vectors");
   //  in a new vector save the mean plus (numberOfStdDeviationsFloat * stddev)
   gsl_vector * myMeanPlusStdDevsVector = gsl_vector_alloc(myMeanVector->size);
-  for (i=0; i<myMeanVector->size; ++i)
+  for (int i=0; i<myMeanVector->size; ++i)
   {
     double myMean = gsl_vector_get (myMeanVector,i);
     double myStdDev = gsl_vector_get (myStdDevVector,i);
     gsl_vector_set(myMeanPlusStdDevsVector,i,myMean+(myStdDev*numberOfStdDevsFloat));
   }
-
+  displayVector (myMeanPlusStdDevsVector,"Mean of randomised Eigen Vectors plus std deviation");
   // First determine how many components we are going to keep
   // We do this by iterating through the eigenvalues, checking which are above the mean+stddev
 
   float sumOfEigenValues = 0;//sum should total number of layers
-  for (i=0; i<myMeanPlusStdDevsVector->size; ++i)
+  for (int i=0; i<myMeanPlusStdDevsVector->size; ++i)
   {
     float myFloat = gsl_vector_get(myMeanPlusStdDevsVector,i);
     sumOfEigenValues += myFloat;
@@ -433,7 +432,7 @@ int CsmBS::discardComponents()
   //now copy over just the components we intend to keep into the blank resized
   //_gsl_eigenvalue_vector and _gsl_eigenvector_matrix
   int myCurrentColInt=0;
-  for (j=0;j<_retained_components_count;j++)
+  for (int j=0;j<_retained_components_count;j++)
   {
     float myFloat = gsl_vector_get (tmp_gsl_eigenvalue_vector,j);
     if (myFloat > gsl_vector_get (myMeanPlusStdDevsVector,j))
