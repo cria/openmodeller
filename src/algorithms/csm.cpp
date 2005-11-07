@@ -9,7 +9,8 @@
 // Copyright: See COPYING file that comes with this distribution
 //
 //
-
+//!todo Make this a runtime selectable parameter
+static const bool csmDebugFlag=false;
 #include <string.h>
 #include <cassert>
 #include "csm.hh"
@@ -267,7 +268,7 @@ Scalar Csm::getValue( const Sample& x ) const
   {
     myFloat = static_cast<float>(x[i]);
     gsl_matrix_set (tmp_raw_gsl_matrix,0,i,myFloat);
-    
+
     if (myFloat!=0)
     {
       myAllAreZeroFlag=false;
@@ -283,7 +284,7 @@ Scalar Csm::getValue( const Sample& x ) const
     }
     else
     {
-       myFloat=myFloat-myAverage;
+      myFloat=myFloat-myAverage;
     }
     //assign the result to our vector
     gsl_matrix_set (tmp_gsl_matrix,0,i,myFloat);
@@ -348,7 +349,7 @@ Scalar Csm::getValue( const Sample& x ) const
   gsl_matrix_free (z);
   //gsl_vector_free (component1_gsl_vector);
   gsl_matrix_free (tmp_gsl_matrix);
-  printf("Probability: %f\n", myFloat); 
+  if (csmDebugFlag) { printf("Probability: %f\n", myFloat);}
   return myFloat;
 }
 
@@ -370,34 +371,37 @@ int Csm::getConvergence( Scalar *val )
 
 void Csm::displayVector(const gsl_vector * v, const char * name, const bool roundFlag) const
 {
-  if (roundFlag)
+  if (csmDebugFlag)
   {
-
-    fprintf( stderr, "\nDisplaying Vector rounded to 4 decimal places '%s' (%i): \n----------------------------------------------\n[  ", name, v->size );
-  }
-  else
-  {
-    fprintf( stderr, "\nDisplaying Vector '%s' (%i): \n----------------------------------------------\n[  ", name, v->size );
-  }
- 
-  char sep1[] = ", ";
-
-  for (int i=0;i<v->size;++i)
-  {
-    if (i == v->size -1)
-      strcpy(sep1, " ]");
-
-    double myDouble = gsl_vector_get (v,i);
     if (roundFlag)
     {
-      fprintf( stderr, "%.4g %s", myDouble, sep1 );
+
+      fprintf( stderr, "\nDisplaying Vector rounded to 4 decimal places '%s' (%i): \n----------------------------------------------\n[  ", name, v->size );
     }
     else
     {
-      fprintf( stderr, "%g %s", myDouble, sep1 );
+      fprintf( stderr, "\nDisplaying Vector '%s' (%i): \n----------------------------------------------\n[  ", name, v->size );
     }
+
+    char sep1[] = ", ";
+
+    for (int i=0;i<v->size;++i)
+    {
+      if (i == v->size -1)
+        strcpy(sep1, " ]");
+
+      double myDouble = gsl_vector_get (v,i);
+      if (roundFlag)
+      {
+        fprintf( stderr, "%.4g %s", myDouble, sep1 );
+      }
+      else
+      {
+        fprintf( stderr, "%g %s", myDouble, sep1 );
+      }
+    }
+    fprintf( stderr, "\n----------------------------------------------\n" );
   }
-  fprintf( stderr, "\n----------------------------------------------\n" );
 }
 
 
@@ -405,38 +409,41 @@ void Csm::displayVector(const gsl_vector * v, const char * name, const bool roun
 /**** displayMatrix ***/
 void Csm::displayMatrix(const gsl_matrix * m, const char * name, const bool roundFlag) const
 {
-  if (!roundFlag)
+  if (csmDebugFlag)
   {
-    fprintf( stderr, "\nDisplaying Matrix '%s' (%i / %i): \n----------------------------------------------\n[\n", name, m->size1, m->size2 );
-  }
-  else
-  {
-    fprintf( stderr, "\nDisplaying Matrix rounded to 4 decimal places '%s' (%i / %i): \n----------------------------------------------\n[\n", name, m->size1, m->size2 );
-  }
-  for (int i=0;i<m->size1;++i)
-  {
-    char sep1[] = ",";
-    char sep2[] = ";";
-
-    for (int j=0;j<m->size2;j++)
+    if (!roundFlag)
     {
-      double myDouble = gsl_matrix_get (m,i,j);
-
-      if (j == m->size2 -1)
-        strcpy(sep1, "");
-      if (!roundFlag)
-      {
-        fprintf( stderr, "%g %s ", myDouble, sep1 );
-      }
-      else
-      {
-        fprintf( stderr, "%.4g %s ", myDouble, sep1 );
-      }
+      fprintf( stderr, "\nDisplaying Matrix '%s' (%i / %i): \n----------------------------------------------\n[\n", name, m->size1, m->size2 );
     }
+    else
+    {
+      fprintf( stderr, "\nDisplaying Matrix rounded to 4 decimal places '%s' (%i / %i): \n----------------------------------------------\n[\n", name, m->size1, m->size2 );
+    }
+    for (int i=0;i<m->size1;++i)
+    {
+      char sep1[] = ",";
+      char sep2[] = ";";
 
-    fprintf( stderr, "%s\n", sep2 );
+      for (int j=0;j<m->size2;j++)
+      {
+        double myDouble = gsl_matrix_get (m,i,j);
+
+        if (j == m->size2 -1)
+          strcpy(sep1, "");
+        if (!roundFlag)
+        {
+          fprintf( stderr, "%g %s ", myDouble, sep1 );
+        }
+        else
+        {
+          fprintf( stderr, "%.4g %s ", myDouble, sep1 );
+        }
+      }
+
+      fprintf( stderr, "%s\n", sep2 );
+    }
+    fprintf( stderr, "]\n----------------------------------------------\n" );
   }
-  fprintf( stderr, "]\n----------------------------------------------\n" );
 }
 
 
