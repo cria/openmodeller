@@ -54,7 +54,7 @@ Csm::Csm(AlgMetadata const * metadata) :
     AlgorithmImpl( metadata )
 {
   _initialized = 0;
-  csmDebugFlag=true;
+  csmDebugFlag=false;
 }
 
 
