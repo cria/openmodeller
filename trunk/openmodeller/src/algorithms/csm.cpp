@@ -20,7 +20,10 @@
 #include <gsl/gsl_math.h>
 #include <gsl/gsl_eigen.h>
 #include <gsl/gsl_sf_gamma.h>
-
+//for chi function gsl_ran_chisq_pdf
+#include <gsl/gsl_randist.h>
+//for gsl_cdf_chisq_Q
+#include <gsl/gsl_cdf.h>
 #include <math.h>
 
 #ifdef WIN32
@@ -327,13 +330,13 @@ Scalar Csm::getValue( const Sample& x ) const
   }
   displayMatrix(z,"Standardised : Each value in z / sqrt of associated element in the eigenvalues vector");
   // now we square each element and sum them
-  myFloat=0;
+  float mySumOfSquares=0;
   for (i=0;i<z->size2;i++)
   {
     float myValue=gsl_matrix_get (z,0,i);
     if (!isnan(myValue))
     {
-      myFloat+= pow(gsl_matrix_get (z,0,i), 2);
+      mySumOfSquares+= pow(gsl_matrix_get (z,0,i), 2);
       //Warning uncommenting the next line will spew a lot of stuff to stderr!!!!
       //g_log.debug( "myValue : %f Cumulative : %f\n", myValue , myFloat );
     }
@@ -341,14 +344,21 @@ Scalar Csm::getValue( const Sample& x ) const
   
   //now work out the probability of myFloat between 0 and 1
   double myHalfComponentCountDouble=(z->size2)/2;
-  double myHalfSumOfSquaresDouble=myFloat/2;
+  double myHalfSumOfSquaresDouble=mySumOfSquares/2;
   //g_log.debug( "Component count %f , Half sum of squares %f\n", myHalfComponentCountDouble, myHalfSumOfSquaresDouble );
-  float myProbability=1-gsl_sf_gamma_inc_Q (myHalfSumOfSquaresDouble,myHalfComponentCountDouble);
+  //
+  //This way id deprecated in favour of the chi square test
+  //
+  //float myProbability=1-gsl_sf_gamma_inc_Q (myHalfSumOfSquaresDouble,myHalfComponentCountDouble);
+  //float myProbability=1-gsl_ran_chisq_pdf(mySumOfSquares,z->size2);
+  float myProbability=gsl_cdf_chisq_Q(mySumOfSquares,z->size2);
   if (csmDebugFlag)
   {
     printf("\n-------------------------------\n");
     printf("Sum of squares calculated as: %f\n",myFloat);
+    printf("Component count : %d\n",z->size2);
     printf("Component count / 2: %f\n",myHalfComponentCountDouble);
+    printf("Sum of squares : %f\n",mySumOfSquares);
     printf("Sum of squares / 2: %f\n",myHalfSumOfSquaresDouble);
     printf("Probability: %f\n\n", myProbability);
     printf("-------------------------------\n");
