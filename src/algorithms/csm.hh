@@ -276,7 +276,7 @@ class Csm : public AlgorithmImpl
         /** This is the descructor for the Csm class */
         ~Csm();
 
-
+        bool csmDebugFlag;
 
         //
         // Methods used to build the model
