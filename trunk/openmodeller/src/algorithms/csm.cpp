@@ -10,7 +10,7 @@
 //
 //
 //!todo Make this a runtime selectable parameter
-static const bool csmDebugFlag=false;
+
 #include <string.h>
 #include <cassert>
 #include "csm.hh"
@@ -51,6 +51,7 @@ Csm::Csm(AlgMetadata const * metadata) :
     AlgorithmImpl( metadata )
 {
   _initialized = 0;
+  csmDebugFlag=true;
 }
 
 
@@ -291,7 +292,7 @@ Scalar Csm::getValue( const Sample& x ) const
     //g_log.debug( "myFloat = %f\n", myFloat );
   }
   //g_log.debug( " ----  end of scalar \n");
-  displayMatrix(tmp_raw_gsl_matrix,"Voxel passed to getValue");
+  displayMatrix(tmp_raw_gsl_matrix,"Voxel passed to getValue",false);
   displayMatrix(tmp_gsl_matrix,"Voxel passed to getValue -Mean / stddev");
   displayVector(_gsl_avg_vector,"Averages");
   displayVector(_gsl_stddev_vector,"Stddevs");
@@ -299,6 +300,7 @@ Scalar Csm::getValue( const Sample& x ) const
 
 
   gsl_matrix * z = product(tmp_gsl_matrix, _gsl_eigenvector_matrix);
+  displayMatrix(z,"z - Product of voxel passed to getValue -Mean / stddev");
 
   // z should match the dimensions of tmp_gsl_matrix so do some error checking
   if (z->size1 != tmp_gsl_matrix->size1)
@@ -323,7 +325,7 @@ Scalar Csm::getValue( const Sample& x ) const
   {
     gsl_matrix_set(z,0,i,gsl_matrix_get (z,0,i)/sqrt(gsl_vector_get(_gsl_eigenvalue_vector,i)));
   }
-  //displayMatrix(z,"After standardising z");
+  displayMatrix(z,"Standardised : Each value in z / sqrt of associated element in the eigenvalues vector");
   // now we square each element and sum them
   myFloat=0;
   for (i=0;i<z->size2;i++)
@@ -336,21 +338,29 @@ Scalar Csm::getValue( const Sample& x ) const
       //g_log.debug( "myValue : %f Cumulative : %f\n", myValue , myFloat );
     }
   }
-
-
+  
   //now work out the probability of myFloat between 0 and 1
   double myHalfComponentCountDouble=(z->size2)/2;
   double myHalfSumOfSquaresDouble=myFloat/2;
   //g_log.debug( "Component count %f , Half sum of squares %f\n", myHalfComponentCountDouble, myHalfSumOfSquaresDouble );
-  myFloat=1-gsl_sf_gamma_inc_Q (myHalfSumOfSquaresDouble,myHalfComponentCountDouble);
+  float myProbability=1-gsl_sf_gamma_inc_Q (myHalfSumOfSquaresDouble,myHalfComponentCountDouble);
+  if (csmDebugFlag)
+  {
+    printf("\n-------------------------------\n");
+    printf("Sum of squares calculated as: %f\n",myFloat);
+    printf("Component count / 2: %f\n",myHalfComponentCountDouble);
+    printf("Sum of squares / 2: %f\n",myHalfSumOfSquaresDouble);
+    printf("Probability: %f\n\n", myProbability);
+    printf("-------------------------------\n");
+    
+  }
 
-  //g_log.debug( "Prob: %f \r", myFloat );
+  //g_log.debug( "Prob: %f \r", myProbability);
   //now clear away the temporary vars
   gsl_matrix_free (z);
   //gsl_vector_free (component1_gsl_vector);
   gsl_matrix_free (tmp_gsl_matrix);
-  if (csmDebugFlag) { printf("Probability: %f\n", myFloat);}
-  return myFloat;
+  return myProbability;
 }
 
 /** Returns a value that represents the convergence of the algorithm
