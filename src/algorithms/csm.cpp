@@ -355,7 +355,6 @@ Scalar Csm::getValue( const Sample& x ) const
   if (csmDebugFlag)
   {
     printf("\n-------------------------------\n");
-    printf("Sum of squares calculated as: %f\n",myFloat);
     printf("Component count : %d\n",z->size2);
     printf("Component count / 2: %f\n",myHalfComponentCountDouble);
     printf("Sum of squares : %f\n",mySumOfSquares);
