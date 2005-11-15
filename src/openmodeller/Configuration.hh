@@ -48,10 +48,10 @@ struct dllexp Configuration {
   typedef std::pair<std::string,std::string> attribute;
   typedef std::vector<attribute> attribute_list;
 
-  static ConfigurationPtr readXml( char *filename );
+  static ConfigurationPtr readXml( char const *filename );
   static ConfigurationPtr readXml( std::istream& is );
 
-  static void writeXml( const ConstConfigurationPtr& config, char *fileaname );
+  static void writeXml( const ConstConfigurationPtr& config, char const *fileaname );
   static void writeXml( const ConstConfigurationPtr& config, std::ostream& os );
 
 };
