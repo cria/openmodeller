@@ -54,7 +54,7 @@ Csm::Csm(AlgMetadata const * metadata) :
     AlgorithmImpl( metadata )
 {
   _initialized = 0;
-  csmDebugFlag=false;
+  verboseDebuggingBool=false;
 }
 
 
@@ -352,7 +352,7 @@ Scalar Csm::getValue( const Sample& x ) const
   //float myProbability=1-gsl_sf_gamma_inc_Q (myHalfSumOfSquaresDouble,myHalfComponentCountDouble);
   //float myProbability=1-gsl_ran_chisq_pdf(mySumOfSquares,z->size2);
   float myProbability=gsl_cdf_chisq_Q(mySumOfSquares,z->size2);
-  if (csmDebugFlag)
+  if (verboseDebuggingBool)
   {
     printf("\n-------------------------------\n");
     printf("Component count : %d\n",z->size2);
@@ -390,7 +390,7 @@ int Csm::getConvergence( Scalar *val )
 
 void Csm::displayVector(const gsl_vector * v, const char * name, const bool roundFlag) const
 {
-  if (csmDebugFlag)
+  if (verboseDebuggingBool)
   {
     if (roundFlag)
     {
@@ -428,7 +428,7 @@ void Csm::displayVector(const gsl_vector * v, const char * name, const bool roun
 /**** displayMatrix ***/
 void Csm::displayMatrix(const gsl_matrix * m, const char * name, const bool roundFlag) const
 {
-  if (csmDebugFlag)
+  if (verboseDebuggingBool)
   {
     if (!roundFlag)
     {
@@ -655,9 +655,9 @@ bool Csm::csm1()
   //create a temporary workspace
   gsl_eigen_symmv_workspace * myWorkpace = gsl_eigen_symmv_alloc (_layer_count);
   gsl_eigen_symmv (_gsl_covariance_matrix,
-                   _gsl_eigenvalue_vector,
-                   _gsl_eigenvector_matrix,
-                   myWorkpace);
+          _gsl_eigenvalue_vector,
+          _gsl_eigenvector_matrix,
+          myWorkpace);
   //free the temporary workspace again
   gsl_eigen_symmv_free (myWorkpace);
   //Initialise the retained components count (to be used further down and in displayEigen())
@@ -668,7 +668,7 @@ bool Csm::csm1()
   //displayMatrix(_gsl_eigenvector_matrix,"Unsorted Eigen Vector");
   //sort the eigen vector by the eigen values (in descending order)
   gsl_eigen_symmv_sort (_gsl_eigenvalue_vector, _gsl_eigenvector_matrix,
-                        GSL_EIGEN_SORT_VAL_DESC);
+          GSL_EIGEN_SORT_VAL_DESC);
   //print out the result
   g_log.debug( "Eigenvector sorted\n" );
   //displayVector(_gsl_eigenvalue_vector,"Sorted Eigen Values");
@@ -678,19 +678,16 @@ bool Csm::csm1()
 
   //After the model is generated, we can discard unwanted components!
   int myNumberOfAttempts=0;
-  while ( myNumberOfAttempts++ < maxAttemptsInt)
+  if (discardComponents())
   {
-    if (discardComponents())
-    {
-      g_log.debug( "Unwanted components discarded\n" );
-      return true;
-    }
-    else
-    {
-      g_log.debug( "Discard components retained too few components - trying again!\n" );
-    }
+    g_log.debug( "Unwanted components discarded\n" );
+    return true;
   }
-  g_log.warn( "Could not generate a model with sufficient components!\n" );
+  else
+  {
+    g_log.debug( "Discard components retained too few components - model can not be generated!\n" );
+    g_log.warn( "Could not generate a model with sufficient components!\n" );
+  }
   return false;
   //print out the result
 }

@@ -89,17 +89,17 @@ static AlgParamMetadata parameters[NUM_PARAM] = {
       }
       ,
       {
-        "MaxAttempts",          // Id.
-        "How many attempts wil be made",        // Name.
+        "VerboseDebugging",          // Id.
+        "Show very detailed debugging info",        // Name.
         "Integer",        // Type.
-        "If not enough components are selected, the model will retry this many times", //overview
-        "If not enough components are selected, the model be rerun. If MaxAttempts is reached \
-        Csm Broken Stick will give up and abort.", // Description.
+        "Warning this will cause a large amount of information to be printed ", //overview
+        "Set this to 1 to show extremely verbose diagnostics \
+         Set this to 0 to disable verbose diagnostics (this is default behaviour).", // Description.
         1,     // Not zero if the parameter has lower limit.
-        1,   // Parameter's lower limit.
+        0,   // Parameter's lower limit.
         1,     // Not zero if the parameter has upper limit.
-        10,   // Parameter's upper limit.
-        "1"  // Parameter's typical (default) value.
+        1,   // Parameter's upper limit.
+        "0"  // Parameter's typical (default) value.
       }
     };
 
@@ -200,15 +200,26 @@ int CsmBS::initialize()
     g_log.warn( "Parameter MinComponents not set properly.\n");
     return 0;
   }
-  if ( ! getParameter( "MaxAttempts", &maxAttemptsInt) )
+  int myTempInt=0;
+  if ( ! getParameter( "VerboseDebugging", &myTempInt) )
   {
-    g_log.warn( "Parameter MaxAttempts not set properly.\n");
+    g_log.warn( "Verbose debugging parameter not set properly.\n");
     return 0;
   }
+  
   g_log.debug( "Randomisations parameter set to: %d\n", numberOfRandomisationsInt );
   g_log.debug( "StandardDeviations parameter set to: %.4f\n", numberOfStdDevsFloat );
   g_log.debug( "MinComponents parameter set to: %d\n", minComponentsInt );
-  g_log.debug( "MaxAttempts parameter set to: %d\n", maxAttemptsInt );
+  if (myTempInt!=0)
+  {
+    verboseDebuggingBool=true;
+    g_log.debug( "VerboseDebugging parameter set to: TRUE\n" );
+  }
+  else
+  {
+    verboseDebuggingBool=false;
+    g_log.debug( "VerboseDebugging parameter set to: FALSE \n" );
+  }
 
   if ( numberOfRandomisationsInt <= 0 || numberOfRandomisationsInt > 1000 )
   {
@@ -228,10 +239,10 @@ int CsmBS::initialize()
                 minComponentsInt);
     return 0;
   }
-  if ( maxAttemptsInt< 1 || maxAttemptsInt> 10 )
+  if ( verboseDebuggingBool< 0 || verboseDebuggingBool> 1 )
   {
-    g_log.warn( "CSM - Broken Stick - MaxAttempts parameter out of range: %f\n",
-                maxAttemptsInt);
+    g_log.warn( "CSM - Broken Stick - Verbose debugging parameter out of range: %f\n",
+                verboseDebuggingBool);
     return 0;
   }
 
