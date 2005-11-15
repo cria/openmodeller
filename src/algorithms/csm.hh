@@ -276,7 +276,7 @@ class Csm : public AlgorithmImpl
         /** This is the descructor for the Csm class */
         ~Csm();
 
-        bool csmDebugFlag;
+        
 
         //
         // Methods used to build the model
@@ -449,10 +449,10 @@ class Csm : public AlgorithmImpl
         /** the number of localities used to construct the model */
         int _localityCount; 
         
-        /* Number of attempts to get a model with sufficient components before giving up */
-        int maxAttemptsInt;
-        /* Minumum number of components required for a valid model */
+        /** Minumum number of components required for a valid model */
         int minComponentsInt;
+        /** Whether verbose debugging is enabled */
+        bool verboseDebuggingBool;
 
 };
 
