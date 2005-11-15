@@ -409,11 +409,10 @@ int CsmBS::discardComponents()
   }
   std::cerr << "Sum of eigenvalues is "
   << sumOfEigenValues
-  << " (should be "
+  << " (layer count is "
   << _layer_count
   << ")\n";
-  std::cerr << "Small differences are acceptable here." << std::endl;
-  //it seems we need at least 4 components to produce a decent model
+  std::cerr << "Difference between sum of eigenvalues and layer count = number of invariant layers" << std::endl;
   if (_retained_components_count < minComponentsInt)
   {
     g_log.debug( "Only %i component(s) retained. %i required. \nAborting discard components routine\n",_retained_components_count, minComponentsInt );
