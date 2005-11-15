@@ -1,14 +1,10 @@
-<Environment Layers='3'>
+<Environment Layers='1'>
     <Map
-        Filename='/data/gnceas_data/awt/awt_env_coarse/topoa'
-        Categorical='0'
-        />
-    <Map
-        Filename='/data/gnceas_data/awt/awt_env_coarse/tria'
+        Filename='rain_coolest.tif'
         Categorical='0'
         />
     <Mask
-        Filename='/data/gnceas_data/awt/awt_env_coarse/bc01a'
+        Filename='rain_coolest.tif'
         Categorical='0'
         />
 </Environment>
