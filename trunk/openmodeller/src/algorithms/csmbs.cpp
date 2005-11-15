@@ -384,7 +384,7 @@ int CsmBS::discardComponents()
   for (int i=0; i<myMeanPlusStdDevsVector->size; ++i)
   {
     float myFloat = gsl_vector_get(myMeanPlusStdDevsVector,i);
-    sumOfEigenValues += myFloat;
+    sumOfEigenValues += gsl_vector_get(_gsl_eigenvalue_vector,i);
     if (myFloat < gsl_vector_get(_gsl_eigenvalue_vector,i))
     {
       std::cerr << gsl_vector_get(_gsl_eigenvalue_vector,i)
@@ -409,7 +409,7 @@ int CsmBS::discardComponents()
   }
   std::cerr << "Sum of eigenvalues is "
   << sumOfEigenValues
-  << "(should be "
+  << " (should be "
   << _layer_count
   << ")\n";
   std::cerr << "Small differences are acceptable here." << std::endl;
