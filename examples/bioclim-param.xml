@@ -277,16 +277,17 @@
                 X='-69.65999999999999658939487'
                 Y='-13.88000000000000078159701'
                 />
-        </Sampler>
-        <Algorithm>
-            <AlgorithmMetadata
-                Id='Bioclim'
-                Name='Bioclim'>
-            </AlgorithmMetadata>
-            <AlgorithmParameters>
-                <Param
-                    Id='StandardDeviationCutoff'
-                    Value='0.05'/>
-            </AlgorithmParameters>
-        </Algorithm>
-    </OpenModeller>
+        </Presence>
+    </Sampler>
+    <Algorithm>
+        <AlgorithmMetadata
+            Id='Bioclim'
+            Name='Bioclim'>
+        </AlgorithmMetadata>
+        <AlgorithmParameters>
+            <Param
+                Id='StandardDeviationCutoff'
+                Value='0.05'/>
+        </AlgorithmParameters>
+    </Algorithm>
+</OpenModeller>
