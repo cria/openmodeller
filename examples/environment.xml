@@ -1,0 +1,14 @@
+<Environment Layers='3'>
+    <Map
+        Filename='/data/gnceas_data/awt/awt_env_coarse/topoa'
+        Categorical='0'
+        />
+    <Map
+        Filename='/data/gnceas_data/awt/awt_env_coarse/tria'
+        Categorical='0'
+        />
+    <Mask
+        Filename='/data/gnceas_data/awt/awt_env_coarse/bc01a'
+        Categorical='0'
+        />
+</Environment>

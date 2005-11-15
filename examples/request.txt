@@ -19,12 +19,12 @@ Species = furcata boliviana
 # note: You can find the map below in this address:
 #       http://openmodeller.cria.org.br/download/rain_coolest.tgz
 #
-Map = rain_coolest
+Map = rain_coolest.tif
 
 # Mask to delimit the region to be used to generate the model (filter
 # the species ocurrencies/absences points).
 #
-Mask = rain_coolest
+Mask = rain_coolest.tif
 
 
 ######################
@@ -32,16 +32,16 @@ Mask = rain_coolest
 
 # File to be used as the output format.
 #
-Output format = rain_coolest
+Output format = rain_coolest.tif
 
 # Maps to be used as environmental variables to project the model
 # to create the output distribution map.
 #
-Output map = rain_coolest
+Output map = rain_coolest.tif
 
 # Mask to delimit the region to project the model onto.
 #
-Output mask = rain_coolest
+Output mask = rain_coolest.tif
 
 # Output model name (serialized model).
 #
@@ -62,8 +62,8 @@ Output file = furcata.tif
 ########
 # Bioclimatic Envelop
 #
-#Algorithm = Bioclim
-#Parameter = StandadDeviationCutoff 0.674
+Algorithm = Bioclim
+Parameter = StandadDeviationCutoff 0.674
 
 
 ########
@@ -78,10 +78,9 @@ Output file = furcata.tif
 #
 #Algorithm = CSMBS
 #Parameter = Randomisations 8
-#Parameter = RandomiserRepeats 50
-#Parameter = StandardDeviations 0.05
-#Parameter = MinComponents 2
-#Parameter = MaxAttempts 1
+#Parameter = StandardDeviations 2
+#Parameter = MinComponents 1
+#Parameter = VerboseDebugging 1
 
 
 ########
