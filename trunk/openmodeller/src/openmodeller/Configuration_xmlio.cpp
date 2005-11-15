@@ -76,7 +76,7 @@ Configuration::writeXml( const ConstConfigurationPtr& config, ostream &_stream )
 }
 
 void
-Configuration::writeXml( const ConstConfigurationPtr& config, char *filename ) {
+Configuration::writeXml( const ConstConfigurationPtr& config, char const *filename ) {
 
   ofstream file( filename );
 
@@ -299,7 +299,7 @@ void charHandler( void * state, const XML_Char *name, int len ) {
  **********************************************************************************/
 
 ConfigurationPtr
-Configuration::readXml( char *filename ) {
+Configuration::readXml( char const *filename ) {
 
   ifstream file( filename, ios::in );
   ConfigurationPtr returnValue( readXml( file ) );
