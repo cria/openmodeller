@@ -32,11 +32,23 @@ EXTRA_DIST = \
 
 
 #bin_PROGRAMS = om_console om_test $(OM_VIEWER)
-bin_PROGRAMS = om_console $(OM_VIEWER) $(OM_NICHE)
+bin_PROGRAMS = om_console $(OM_VIEWER) $(OM_NICHE) om_dump om_sampledump om_project
 
 om_console_SOURCES = om_console.cpp occurrences_file.cpp request_file.cpp file_parser.cpp
 om_console_CPPFLAGS = -DCORE_DLL_IMPORT -I$(OMSRCDIR)
 om_console_LDADD = $(GDAL_LIB) $(OMLIB) $(EXPAT_LIBS)
+
+om_dump_SOURCES = om_dump.cpp occurrences_file.cpp request_file.cpp file_parser.cpp
+om_dump_CPPFLAGS = -DCORE_DLL_IMPORT -I$(OMSRCDIR)
+om_dump_LDADD = $(GDAL_LIB) $(OMLIB) $(EXPAT_LIBS)
+
+om_sampledump_SOURCES = om_sampledump.cpp occurrences_file.cpp request_file.cpp file_parser.cpp
+om_sampledump_CPPFLAGS = -DCORE_DLL_IMPORT -I$(OMSRCDIR)
+om_sampledump_LDADD = $(GDAL_LIB) $(OMLIB) $(EXPAT_LIBS)
+
+om_project_SOURCES = om_project.cpp 
+om_project_CPPFLAGS = -DCORE_DLL_IMPORT -I$(OMSRCDIR)
+om_project_LDADD = $(GDAL_LIB) $(OMLIB) $(EXPAT_LIBS)
 
 #om_test_SOURCES = om_test.cpp occurrences_file.cpp
 #om_test_CPPFLAGS = -I../inc
