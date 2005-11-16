@@ -28,6 +28,7 @@
 #include <stdio.h>
 #include <iostream.h>  // I/O 
 #include <fstream.h>   // file I/O
+#include <sstream>     // treat string as a stream
 
 #include <stdexcept>
 using namespace std;
@@ -40,12 +41,19 @@ class MyLog : public Log::LogCallback
   }
 };
 
+/** Create a model and return the result as a string.
+ * We do it like this instead of writing straight to a file
+ * so that we can pass the result cleanly to third part apps
+ * using this lib, such as the JNI interface. 
+ * */
 std::string createModel(const std::string myConfigFile)
 {
   try 
   {
     g_log.setLevel( Log::Debug );
     g_log.setCallback( new MyLog() );
+
+    ostringstream myOutputStream ;
 
     AlgorithmFactory::searchDefaultDirs();
 
@@ -58,9 +66,9 @@ std::string createModel(const std::string myConfigFile)
     om.createModel();
     {
       ConfigurationPtr c = om.getConfiguration();
-      Configuration::writeXml( c, cout );
+      Configuration::writeXml( c, myOutputStream);
     }
-    return std::string("Return proper output here");
+    return myOutputStream.str();
   }
   catch( exception& e ) {
     std::string myError("Exception caught!\n");

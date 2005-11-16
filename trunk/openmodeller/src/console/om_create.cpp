@@ -29,6 +29,11 @@ int main( int argc, char **argv ) {
     }
   
     std::string myRequest(argv[1]);
+    std::string myFileName(argv[2]);
     std::string myOutput=createModel(myRequest);
+    //write output to file
+    ofstream file( myFileName.c_str());
+    file << myOutput;
+    file.close();
   
 }
