@@ -82,10 +82,10 @@ static AlgParamMetadata parameters[NUM_PARAM] = {
         "If not enough components are selected, the model produced will be erroneous or fail. \
         Usually three or more components are acceptable", // Description.
         1,     // Not zero if the parameter has lower limit.
-        2,   // Parameter's lower limit.
+        1,   // Parameter's lower limit.
         1,     // Not zero if the parameter has upper limit.
         20,   // Parameter's upper limit.
-        "2"  // Parameter's typical (default) value.
+        "1"  // Parameter's typical (default) value.
       }
       ,
       {
