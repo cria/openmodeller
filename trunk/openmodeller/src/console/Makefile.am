@@ -31,9 +31,15 @@ EXTRA_DIST = \
 	graph/view_model.hh
 
 
-#bin_PROGRAMS = om_console om_test $(OM_VIEWER)
 bin_PROGRAMS = om_console $(OM_VIEWER) $(OM_NICHE) om_dump om_sampledump om_project om_create
+lib_LTLIBRARIES = libopenmodellerxml.la
 
+libopenmodellerxml_la_SOURCES = consolexml.cpp
+libopenmodellerxml_la_LDFLAGS = -no-undefined
+libopenmodellerxml_la_CPPFLAGS = -I$(OMSRCDIR)
+libopenmodellerxml_la_LIBADD = $(GDAL_LIB) $(EXPAT_LDFLAGS) $(EXPAT_LIBS)
+
+			     
 om_console_SOURCES = om_console.cpp occurrences_file.cpp request_file.cpp file_parser.cpp
 om_console_CPPFLAGS = -DCORE_DLL_IMPORT -I$(OMSRCDIR)
 om_console_LDADD = $(GDAL_LIB) $(OMLIB) $(EXPAT_LIBS)
@@ -46,13 +52,13 @@ om_sampledump_SOURCES = om_sampledump.cpp occurrences_file.cpp request_file.cpp 
 om_sampledump_CPPFLAGS = -DCORE_DLL_IMPORT -I$(OMSRCDIR)
 om_sampledump_LDADD = $(GDAL_LIB) $(OMLIB) $(EXPAT_LIBS)
 
-om_project_SOURCES = om_project.cpp 
+om_project_SOURCES = om_project.cpp  
 om_project_CPPFLAGS = -DCORE_DLL_IMPORT -I$(OMSRCDIR)
-om_project_LDADD = $(GDAL_LIB) $(OMLIB) $(EXPAT_LIBS)
+om_project_LDADD = $(GDAL_LIB) $(OMLIB) $(EXPAT_LIBS) -lopenmodellerxml
 
 om_create_SOURCES = om_create.cpp 
 om_create_CPPFLAGS = -DCORE_DLL_IMPORT -I$(OMSRCDIR)
-om_create_LDADD = $(GDAL_LIB) $(OMLIB) $(EXPAT_LIBS)
+om_create_LDADD = $(GDAL_LIB) $(OMLIB) $(EXPAT_LIBS) -lopenmodellerxml
 
 #om_test_SOURCES = om_test.cpp occurrences_file.cpp
 #om_test_CPPFLAGS = -I../inc
