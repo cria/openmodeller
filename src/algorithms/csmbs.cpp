@@ -111,7 +111,7 @@ static AlgMetadata metadata = {
 
                                 "CSMBS",                 // Id.
                                 "Climate Space Model", // Name.
-                                "0.2 beta",           // Version.
+                                "0.3",           // Version.
 
 
                                 "Climate Space Model [CSM] is a principle components based \
