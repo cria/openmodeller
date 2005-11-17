@@ -42,12 +42,12 @@
 using std::string;
 using std::vector;
 
-struct {
+struct GDAL_Format {
   char const *GDalDriverName;
   GDALDataType dataType;
   bool hasMeta;
-}
-Formats[3] = {
+};
+GDAL_Format Formats[3] = {
   // Floating GeoTiff
   { "GTiff",
     (sizeof(Scalar) == 4) ? GDT_Float32 : GDT_Float64,
