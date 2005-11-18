@@ -41,12 +41,6 @@ class MyLog : public Log::LogCallback
   }
 };
 
-void helloWorld()
-{
-
-  std::cout << "Hello world";
-}
-
 /** Create a model and return the result as a string.
  * We do it like this instead of writing straight to a file
  * so that we can pass the result cleanly to third part apps
