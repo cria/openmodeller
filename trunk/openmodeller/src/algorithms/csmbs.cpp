@@ -380,13 +380,23 @@ int CsmBS::discardComponents()
   // First determine how many components we are going to keep
   // We do this by iterating through the eigenvalues, checking which are above the mean+stddev
 
+  //
+  // Note: as soon as the first non kept compoinent is encountered, all 
+  // remaining components are discarded. This is because on 64bit
+  // platform it can happen that some component scores at the 'small'
+  // end of the components have a value above the random threshold
+  // which is not desired.
+  //
+  
   float sumOfEigenValues = 0;//sum should total number of layers
+  _retained_components_count=0;
   for (int i=0; i<myMeanPlusStdDevsVector->size; ++i)
   {
     float myFloat = gsl_vector_get(myMeanPlusStdDevsVector,i);
     sumOfEigenValues += gsl_vector_get(_gsl_eigenvalue_vector,i);
     if (myFloat < gsl_vector_get(_gsl_eigenvalue_vector,i))
     {
+      ++_retained_components_count;
       std::cerr << gsl_vector_get(_gsl_eigenvalue_vector,i)
       << " > "
       << myFloat
@@ -397,14 +407,7 @@ int CsmBS::discardComponents()
     }
     else
     {
-      --_retained_components_count;
-      std::cerr << gsl_vector_get(_gsl_eigenvalue_vector,i)
-      << " < "
-      << myFloat
-      << ": Component "
-      << i
-      << " is less than randomised component... discarding it."
-      << std::endl;
+      break;
     }
   }
   std::cerr << "Sum of eigenvalues is "
