@@ -39,7 +39,7 @@ libopenmodellerxml_la_SOURCES = consolexml.cpp
 # Tim to investigate and resolve issues with unresolved symbols
 #libopenmodellerxml_la_LDFLAGS = -no-undefined
 libopenmodellerxml_la_CPPFLAGS = -I$(OMSRCDIR)
-libopenmodellerxml_la_LIBADD = $(GDAL_LIB) $(EXPAT_LDFLAGS) $(EXPAT_LIBS)
+libopenmodellerxml_la_LIBADD = $(GDAL_LIB) $(EXPAT_LDFLAGS) $(EXPAT_LIBS) $(OMLIB)
 
 			     
 om_console_SOURCES = om_console.cpp occurrences_file.cpp request_file.cpp file_parser.cpp
