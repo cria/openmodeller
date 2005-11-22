@@ -131,4 +131,4 @@ Parameter = StandadDeviationCutoff 0.674
 # Minimum distance
 #
 #Algorithm = MinimumDistance
-#Parameter = MaxDist 0.1
+#Parameter = MaximumDistance 0.1
