@@ -16,22 +16,15 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef CONSOLEXML_CPP
-#define CONSOLEXML_CPP
-#include <openmodeller/om.hh>
-#include <openmodeller/Log.hh>
-#include <openmodeller/MapFormat.hh>
+#include <consolexml.hh>
 #include <istream>
-
 #include <stdlib.h>
-#include <string.h>
 #include <stdio.h>
-#include <iostream.h>  // I/O 
-#include <fstream.h>   // file I/O
+#include <iostream>  // I/O 
+#include <fstream>   // file I/O
 #include <sstream>     // treat string as a stream
 
 #include <stdexcept>
-using namespace std;
 
 class MyLog : public Log::LogCallback 
 {
@@ -46,7 +39,7 @@ class MyLog : public Log::LogCallback
  * so that we can pass the result cleanly to third part apps
  * using this lib, such as the JNI interface. 
  * */
-std::string createModel(const std::string myConfigFile)
+std::string ConsoleXml::createModel(const std::string myConfigFile)
 {
   try 
   {
@@ -77,7 +70,7 @@ std::string createModel(const std::string myConfigFile)
   }
 }
 
-int projectModel(const std::string theModel, const  std::string theEnvironment, const std::string theOutput)
+int ConsoleXml::projectModel(const std::string theModel, const  std::string theEnvironment, const std::string theOutput)
 {
   try {
 
@@ -114,4 +107,3 @@ int projectModel(const std::string theModel, const  std::string theEnvironment, 
     return 0;
   }
 }
-#endif

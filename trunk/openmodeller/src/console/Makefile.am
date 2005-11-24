@@ -35,9 +35,7 @@ bin_PROGRAMS = om_console $(OM_VIEWER) $(OM_NICHE) om_dump om_sampledump om_proj
 lib_LTLIBRARIES = libopenmodellerxml.la
 
 libopenmodellerxml_la_SOURCES = consolexml.cpp
-# Dont for no-undefined it fails on mac
-# Tim to investigate and resolve issues with unresolved symbols
-#libopenmodellerxml_la_LDFLAGS = -no-undefined
+libopenmodellerxml_la_LDFLAGS = -no-undefined
 libopenmodellerxml_la_CPPFLAGS = -I$(OMSRCDIR)
 libopenmodellerxml_la_LIBADD = $(GDAL_LIB) $(EXPAT_LDFLAGS) $(EXPAT_LIBS) $(OMLIB)
 
