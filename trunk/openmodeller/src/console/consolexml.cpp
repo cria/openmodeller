@@ -70,8 +70,8 @@ std::string ConsoleXml::createModel(const std::string myConfigFile)
   }
 }
 
-int ConsoleXml::projectModel(const std::string theModel, const  std::string theEnvironment, const std::string theOutput)
-{
+bool ConsoleXml::projectModel(const std::string theModel, const  std::string theEnvironment, const std::string theOutput)
+{  
   try {
 
     g_log.setLevel( Log::Debug );
@@ -99,11 +99,11 @@ int ConsoleXml::projectModel(const std::string theModel, const  std::string theE
 
     om.createMap( e, theOutput.c_str() );
 
-    return 0;
+    return true;
   }
   catch( exception& e ) {
     cerr << "Exception Caught" << endl;
     cerr << e.what() << endl;
-    return 0;
+    return false;
   }
 }
