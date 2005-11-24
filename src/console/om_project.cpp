@@ -17,7 +17,7 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "consolexml.cpp"
+#include "consolexml.hh"
 
 
 int main( int argc, char **argv ) {
@@ -35,5 +35,6 @@ int main( int argc, char **argv ) {
     std::string myModel(argv[1]);
     std::string myEnvironment(argv[2]);
     std::string myOutput(argv[3]);
-    projectModel(myModel,myEnvironment,myOutput);
+    ConsoleXml myConsoleXml;
+    myConsoleXml.projectModel(myModel,myEnvironment,myOutput);
 }

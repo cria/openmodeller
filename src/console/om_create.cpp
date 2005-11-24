@@ -15,7 +15,9 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "consolexml.cpp"
+#include "consolexml.hh"
+#include <fstream>   // file I/O
+
 using namespace std;
 
 int main( int argc, char **argv ) {
@@ -30,7 +32,8 @@ int main( int argc, char **argv ) {
   
     std::string myRequest(argv[1]);
     std::string myFileName(argv[2]);
-    std::string myOutput=createModel(myRequest);
+    ConsoleXml myConsoleXml;
+    std::string myOutput=myConsoleXml.createModel(myRequest);
     //write output to file
     ofstream file( myFileName.c_str());
     file << myOutput;
