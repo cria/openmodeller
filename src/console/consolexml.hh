@@ -36,6 +36,6 @@ class ConsoleXml
         std::string createModel(const std::string myConfigFile);
         /** Project a model into a set of environment layers
          * and put the output image into theOutput */
-        int projectModel(const std::string theModel, const  std::string theEnvironment, const std::string theOutput);
+        bool projectModel(const std::string theModel, const  std::string theEnvironment, const std::string theOutput);
 };
 #endif
