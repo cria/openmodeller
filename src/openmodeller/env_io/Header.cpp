@@ -148,20 +148,20 @@ Header::setProj( const string& projection )
 pair<Coord,Coord>
 Header::convertXY2LonLat( int x, int y ) const
 {
-  Coord lon = gt[1]*x + gt[0];
-  Coord lat = gt[5]*y + gt[3];
-  return make_pair(lon,lat);
+  // Get the coordinates associated with the center of the cell
+  Coord lon = gt[1]*(x+0.5) + gt[0];
+  Coord lat = gt[5]*(y+0.5) + gt[3];
   
+  return make_pair(lon,lat);
 }
 
 // Does not support rotations.
 pair<int,int>
 Header::convertLonLat2XY( Coord lon, Coord lat ) const
 {
-  // We add 0.5 here so the implicit conversion from double to int
-  // is equivalent to a simple round.
-  int x = static_cast<int>((lon - gt[0]) / gt[1] + 0.5);
-  int y = static_cast<int>((lat - gt[3]) / gt[5] + 0.5);
+  int x = static_cast<int>((lon - gt[0]) / gt[1]);
+  int y = static_cast<int>((lat - gt[3]) / gt[5]);
+
   return make_pair(x,y);
 }
 
