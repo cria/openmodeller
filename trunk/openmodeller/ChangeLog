@@ -1,3 +1,10 @@
+Release 0.3.4 (2005-12-02)
+--------------------------
+
+        * Fixed bug in model projector that could cause localized distortions in the distribution map (near the grid cell scale).
+	* New version of the CSM algorithm with several adjustments in code (Broken Stick cutoff method).
+	* New command line tools om_sampledump, om_create, om_project.
+
 Release 0.3.3 (2005-09-01)
 --------------------------
 
