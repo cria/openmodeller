@@ -179,7 +179,10 @@ CsmBS::CsmBS() : Csm(&metadata)
 
 /** This is the descructor for the Csm class */
 CsmBS::~CsmBS()
-{}
+{
+  gsl_rng_free(_randomNumberGenerator);
+}
+
 
 int CsmBS::initialize()
 {

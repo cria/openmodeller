@@ -369,6 +369,7 @@ Scalar Csm::getValue( const Sample& x ) const
   gsl_matrix_free (z);
   //gsl_vector_free (component1_gsl_vector);
   gsl_matrix_free (tmp_gsl_matrix);
+  gsl_matrix_free (tmp_raw_gsl_matrix);
   return myProbability;
 }
 
@@ -477,6 +478,7 @@ gsl_matrix * Csm::transpose (gsl_matrix * m)
     gsl_vector * v = gsl_vector_alloc(m->size2);
     gsl_matrix_get_row (v, m, i);
     gsl_matrix_set_col (t, i, v);
+    gsl_vector_free(v);
   }
 
   return t;
