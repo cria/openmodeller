@@ -361,6 +361,7 @@ int CsmBS::discardComponents()
     gsl_vector_free (myGslEigenValueVector);
     gsl_matrix_free(myGslEigenVectorMatrix);
     //  clear temp covariance matrix
+    gsl_matrix_free(myGslCovarianceMatrix);
     gsl_matrix_free (m);
     //  repeat as many times as numberOfRandomisationsInt, ading a new row to the matrix each time
   }//i loop
