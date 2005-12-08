@@ -118,6 +118,7 @@ main( int argc, char **argv )
             om.setAlgorithm( metadata->id, nparam, param );
 
             delete[] param;
+            delete availables;
           }
       }
 
@@ -144,6 +145,8 @@ main( int argc, char **argv )
            stats->getAreaPredictedPresent() / (double) stats->getTotalArea() * 100 );
     g_log( "Total number of cells: %d\n", stats->getTotalArea() );
     g_log( "\nDone.\n" );
+
+    delete matrix;
   }
   catch ( std::exception& e ) {
     g_log( "Exception occurred\n" );
