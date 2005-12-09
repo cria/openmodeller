@@ -198,6 +198,7 @@ createModel( char *request_file )
           om->setAlgorithm( metadata->id, nparam, param );
 
           delete[] param;
+          delete availables;
         }
     }
 
