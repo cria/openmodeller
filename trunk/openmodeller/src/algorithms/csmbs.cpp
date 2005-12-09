@@ -423,6 +423,10 @@ int CsmBS::discardComponents()
   if (_retained_components_count < minComponentsInt)
   {
     g_log.debug( "Only %i component(s) retained. %i required. \nAborting discard components routine\n",_retained_components_count, minComponentsInt );
+    gsl_vector_free (myMeanVector);
+    gsl_vector_free (myStdDevVector);
+    gsl_vector_free (myMeanPlusStdDevsVector);
+    gsl_matrix_free (myMatrixOfEigenValueVectors);
     return 0;
   }
 
