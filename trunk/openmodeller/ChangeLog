@@ -1,4 +1,4 @@
-Release 0.3.4 (2005-12-02)
+Release 0.3.4 (2005-12-1414141414141414141414141414)
 --------------------------
 
         * Fixed bug in model projector that could cause localized distortions in the distribution map (near the grid cell scale).
