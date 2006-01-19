@@ -83,11 +83,6 @@ Parameter = StandadDeviationCutoff 0.674
 #Parameter = VerboseDebugging 1
 
 
-########
-# Climate Space Model - Kaiser-Gutman
-#
-#Algorithm = CSMKG
-
 
 ########
 # Distance to average
