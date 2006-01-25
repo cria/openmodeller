@@ -75,6 +75,7 @@ bool ConsoleXml::projectModel(const std::string theModel, const  std::string the
   try {
 
     g_log.setLevel( Log::Debug );
+    g_log.setCallback( new MyLog() );
 
     AlgorithmFactory::searchDefaultDirs();
 
