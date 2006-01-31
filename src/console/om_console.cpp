@@ -172,9 +172,11 @@ showAlgorithms( AlgMetadata const **availables )
 {
   if ( ! *availables )
     {
-      printf( "No algorithm available.\n" );
+      printf( "Could not find any algorithms.\n" );
       return 0;
     }
+
+  printf( "\nChoose an algorithm between:\n" );
 
   int count = 0;
   AlgMetadata const *metadata;
@@ -201,8 +203,6 @@ readAlgorithm( AlgMetadata const **availables )
 
   while ( 1 )
     {
-      printf( "\nChoose an algorithm between:\n" );
-
       int quit_option = showAlgorithms( availables );
       if ( ! quit_option )
 	return 0;
