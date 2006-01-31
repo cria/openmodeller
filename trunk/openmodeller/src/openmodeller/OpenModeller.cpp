@@ -216,7 +216,7 @@ OpenModeller::setEnvironment( std::vector<std::string> categ_map,
 {
   _env = createEnvironment( categ_map, continuous_map, mask);
 
-  g_log( "Environment initialized.\n" );
+  //g_log( "Environment initialized.\n" );
 }
 
 /*******************/
