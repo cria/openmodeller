@@ -42,7 +42,7 @@ my $uri = 'http://openmodeller.sf.net/ns/1.0';
 
 use vars qw($opt_help, $opt_debug, $opt_server, $opt_proxy);
 
-&Getopt::Long::GetOptions('help', 'debug', 'server=s', 'proxy=s');
+&Getopt::Long::GetOptions('help', 'debug', 'server=s', 'proxy=s', 'layers_dir=s');
 
 print_help() if $opt_help;
 
@@ -62,6 +62,8 @@ EOM
 my $url = $opt_server || '';
 
 my $proxy_firewall = $opt_proxy if (defined($opt_proxy));
+
+my $base_dir = $opt_layers_dir if (defined($opt_layers_dir));
 
 my %algorithms;
 
@@ -432,8 +434,6 @@ sub create_model
     }
 
     ### Maps
-
-    my $base_dir = '../../../examples/layers/'; # Hard coded! remember it's a simple prototype!
 
     my @maps = ( {'location'=> $base_dir.'rain_coolest', 'categorical' => 0},
 		 {'location'=> $base_dir.'rain_tot'    , 'categorical' => 0},
