@@ -44,7 +44,7 @@ if test "$x_libraries" != "" -a "$x_libraries" != "NONE"; then
 fi
 AC_SUBST(X11_LIB)
 AC_SUBST(X11_CFLAGS)
-AM_CONDITIONAL([HAVE_X11], [test "$X11_CFLAGS" != "" -a "$X11_LIB" != ""])
+AM_CONDITIONAL([HAVE_X11], [test "$X11_LIB" != ""])
 
 dnl ---------------------------------------------------------------------------
 dnl GDAL/OGR
