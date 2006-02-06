@@ -205,7 +205,7 @@ else
   echo "CSM - Broken Stick algorithms."
   echo "------"
 fi
-AM_CONDITIONAL([HAVE_GSL], [test "$GSL_CFLAGS" != "" -a "$GSL_LIBS" != ""])
+AM_CONDITIONAL([HAVE_GSL], [test "$GSL_LIBS" != ""])
 
 dnl ---------------------------------------------------------------------------
 dnl SOAP interface
