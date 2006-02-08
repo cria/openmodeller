@@ -46,16 +46,18 @@ use vars qw($opt_help, $opt_debug, $opt_server, $opt_proxy);
 
 print_help() if $opt_help;
 
-print "\nWelcome to a demo openModeller SOAP client!\n";
+print "\nWelcome to the openModeller SOAP client demo!\n";
 
 print<<EOM;
 
-Please notice that this interface is just an initial prototype
+Please notice that this interface is just a simple prototype
 and mostly an example of how to build a SOAP client
 to access an openModeller server. Many variables
 (occurrences/absences points and environmental layers)
 are still hardcoded...
 EOM
+
+print "\nNote: this machine has SOAP::Lite version $SOAP::Lite::VERSION\n";
 
 ### Some global variables
 
@@ -172,29 +174,38 @@ sub prepare_soap
 {
     unless($soap)
     {
-	my $server = get_url();
+        my $server = get_url();
 
-	unless ($opt_debug)
+        if ($opt_debug)
 	{
-	    $soap = SOAP::Lite
-               #-> service('http://openmodeller.sf.net/ns/1.0/openmodeller.wsdl')
-		-> uri($uri)
-		-> proxy($server)
-		-> encoding('iso-8859-1');
-	}
-	else
-	{
-	    $soap = SOAP::Lite
-               #-> service('http://openmodeller.sf.net/ns/1.0/openmodeller.wsdl')
-		-> uri($uri)
-		-> proxy($server)
-		-> encoding('iso-8859-1')
-		-> on_debug(sub{print @_});
-	}
+
+            use SOAP::Lite +trace => [ transport => \&debug_soap ];
+        }
+
+        $soap = SOAP::Lite
+                          #-> service('http://openmodeller.sf.net/ns/1.0/openmodeller.wsdl')
+		           -> uri($uri)
+		           -> proxy($server)
+		           -> encoding('iso-8859-1');
 
 	$soap->transport->proxy(http => $proxy_firewall) if defined($proxy_firewall);
     }
 }
+
+#################################################
+#  Print out the actual XML request or response # 
+#################################################
+sub debug_soap
+{
+    my ($in) = @_;
+
+    if (ref($in) eq 'HTTP::Request' || ref($in) eq 'HTTP::Response') 
+    {
+        print "\n" . ref($in) . "\n\n";
+        print $in->content . "\n\n";
+    } 
+}
+
 
 ################
 #  Ping server # 
