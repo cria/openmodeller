@@ -29,7 +29,7 @@ CURRENT FUNCTIONALITY:
 - Server can handle getDistributionMap requests (returning maps
   as DIME attachments).
 - A simple command line perl client is available (depends on 
-  SOAP::Lite)
+  SOAP::Lite version >= 0.67)
 
 
 COMPILING:
@@ -76,11 +76,11 @@ USE INSTRUCTIONS:
 - Run the client to test your server (you'll need perl and the 
   SOAP::Lite module):
 
-  ./sampleClient.pl --server=http://localhost:8085/
+  perl sampleClient.pl --server=http://localhost:8085/
 
   For more options, use:
 
-  ./sampleClient.pl --help
+  perl sampleClient.pl --help
 
 TODO-LIST:
 ----------
