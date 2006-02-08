@@ -46,10 +46,10 @@ static AlgParamMetadata parameters[NUM_PARAM] = {
         "Number of random eigenvalues",        // Name.
         "Integer",        // Type.
         "The number of eigenvalues to generate from randomly 'shuffled' environment data.", //overview
-        "The Broken Stick method of selecting the number of components to keep \n\
-        is carried out by randomising the row order of each column in the environmental \n\
-        matrix and then obtaining the eigen value for the randomised matrix. \n\
-        This is repeatedly carried out for the amount of times specified by the user here.", // Description.
+        "The Broken Stick method of selecting the number of components to keep \
+is carried out by randomising the row order of each column in the environmental \
+matrix and then obtaining the eigen value for the randomised matrix. \
+This is repeatedly carried out for the amount of times specified by the user here.", // Description.
 
         1,     // Not zero if the parameter has lower limit.
         1,   // Parameter's lower limit.
@@ -63,9 +63,9 @@ static AlgParamMetadata parameters[NUM_PARAM] = {
         "Number of standard deviations",        // Name.
         "Real",        // Type.
         "The number of standard deviations added to the randomised eigen value.", //overview
-        "When all the eigen values for the 'shuffled' environmental matrix have been summed \n\
-        this number of standard deviations is added to the mean of the eigen values. \n\
-        Any components whose eigen values are above this threshold are retained.", // Description.
+        "When all the eigen values for the 'shuffled' environmental matrix have been summed \
+this number of standard deviations is added to the mean of the eigen values. \
+Any components whose eigen values are above this threshold are retained.", // Description.
 
         1,     // Not zero if the parameter has lower limit.
         -10,   // Parameter's lower limit.
@@ -80,7 +80,7 @@ static AlgParamMetadata parameters[NUM_PARAM] = {
         "Integer",        // Type.
         "The minimum number of components that the model must have.", //overview
         "If not enough components are selected, the model produced will be erroneous or fail. \
-        Usually three or more components are acceptable", // Description.
+Usually three or more components are acceptable", // Description.
         1,     // Not zero if the parameter has lower limit.
         1,   // Parameter's lower limit.
         1,     // Not zero if the parameter has upper limit.
@@ -93,8 +93,8 @@ static AlgParamMetadata parameters[NUM_PARAM] = {
         "Show very detailed debugging info",        // Name.
         "Integer",        // Type.
         "Warning this will cause a large amount of information to be printed ", //overview
-        "Set this to 1 to show extremely verbose diagnostics \
-         Set this to 0 to disable verbose diagnostics (this is default behaviour).", // Description.
+        "Set this to 1 to show extremely verbose diagnostics. \
+Set this to 0 to disable verbose diagnostics (this is default behaviour).", // Description.
         1,     // Not zero if the parameter has lower limit.
         0,   // Parameter's lower limit.
         1,     // Not zero if the parameter has upper limit.
@@ -109,34 +109,32 @@ static AlgParamMetadata parameters[NUM_PARAM] = {
 
 static AlgMetadata metadata = {
 
-                                "CSMBS",                 // Id.
-                                "Climate Space Model", // Name.
-                                "0.3",           // Version.
+    "CSMBS",               // Id.
+    "Climate Space Model", // Name.
+    "0.3",                 // Version.
 
+    "Climate Space Model [CSM] is a principle components based \
+algorithm developed by Dr. Neil Caithness", //Overview
 
-                                "Climate Space Model [CSM] is a principle components based \
-                                algorithm developed by Dr. Neil Caithness",//Overview
+    "Climate Space Model [CSM] is a principle components based \
+algorithm developed by Dr. Neil Caithness. The component \
+selection process int this algorithm implementation is \
+based on the Broken-Stick cutoff where any component with \
+an eigenvalue < (n stddevs above a randomised sample) is discarded. \n\
+The original CSM was written as series of Matlab functions. ", //description
 
-                                "Climate Space Model [CSM] is a principle components based \
-                                algorithm developed by Dr. Neil Caithness. The component \
-                                selection process int this algorithm implementation is \
-                                based on the Broken-Stick cutoff where any component with \
-                                an eigenvalue < (n stddevs above a randomised sample) is discarded.\
-                                \n\
-                                The original CSM was written as series of Matlab functions. ", //description
+    "Neil Caithness",  // Author
+    "",                // Bibliography.
 
-                                "Neil Caithness",  // Author
-                                "",                 // Bibliography.
+    "Tim Sutton, Renato De Giovanni",  // Code author.
+    "t.sutton [at] reading.ac.uk",     // Code author's contact.
 
-                                "Tim Sutton, Renato De Giovanni",  // Code author.
-                                "t.sutton [at] reading.ac.uk",     // Code author's contact.
+    0,  // Does not accept categorical data.
+    0,  // Does not need (pseudo)absence points.
 
-                                0,  // Does not accept categorical data.
-                                0,  // Does not need (pseudo)absence points.
-
-                                NUM_PARAM,   // Algorithm's parameters.
-                                parameters
-                              };
+    NUM_PARAM,   // Algorithm's parameters.
+    parameters
+};
 
 
 
