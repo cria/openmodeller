@@ -242,9 +242,9 @@ readParameters( AlgParameter *result, AlgMetadata const *metadata )
       printf( "\n* Parameter: %s\n\n", param->name );
       printf( " %s:\n", param->overview );
       if ( param->has_min )
-        printf( " %s >= %f\n", param->name, param->min );
+        printf( " %s >= %f\n", param->name, param->min_val );
       if ( param->has_max )
-        printf( " %s <= %f\n\n", param->name, param->max );
+        printf( " %s <= %f\n\n", param->name, param->max_val );
       printf( "Enter with value [%s]: ", param->typical );
 
       // Read parameter's value or use the "typical" value

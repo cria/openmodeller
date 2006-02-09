@@ -265,7 +265,7 @@ sub get_algorithms
     
     unless ($response->fault)
     { 
-	my @algorithms = $response->valueof('//algorithm');
+	my @algorithms = $response->valueof('//Algorithm');
 
 	my $num_algs = scalar(@algorithms);
 	
@@ -280,27 +280,34 @@ sub get_algorithms
 		print '-' x 25 . "\n" if $option == 2;
 
 		my $alg_path = "/Envelope/Body/[1]/[1]/[$i]";
+		my $alg_metadata_path = "$alg_path/AlgorithmMetadata";
+		my $alg_parameters_path = "$alg_path/AlgorithmParameters";
 		
 		my %algorithm = %{$alg};
 
-		$algorithm{'om-id'} = $response->dataof($alg_path)->attr->{'om-id'};
+		$algorithm{'Id'} = $response->dataof($alg_metadata_path)->attr->{'Id'};
 
-		my $accepts_categorical_data = ($algorithm{'accepts-categorical-maps'}) ? 'yes': 'no';
-		my $accepts_absence_data = ($algorithm{'accepts-absence-points'}) ? 'yes': 'no';
+		my $accepts_categorical_data = ($response->dataof($alg_metadata_path)->attr->{'Categorical'}) ? 'yes': 'no';
+		my $accepts_absence_data = ($response->dataof($alg_metadata_path)->attr->{'Absence'}) ? 'yes': 'no';
 		
+		$algorithm{'Name'} = $response->dataof($alg_metadata_path)->attr->{'Name'};
+		my $alg_creator = $response->dataof($alg_metadata_path)->attr->{'Author'};
+		my $alg_developer = $response->dataof($alg_metadata_path)->attr->{'CodeAuthor'};
+		my $alg_developer_contact = $response->dataof($alg_metadata_path)->attr->{'Contact'};
+
 		print <<EOM if $option == 2;
-  $algorithm{name}
-     * creator: $algorithm{creator}
-     * bibliography: $algorithm{bibliography}
-     * developer: $algorithm{developer} - $algorithm{contact}
-     * overview: $algorithm{overview}
+  $algorithm{'Name'}
+     * creator: $alg_creator
+     * bibliography: $algorithm{AlgorithmMetadata}{Bibliography}
+     * developer: $alg_developer - $alg_developer_contact
+     * overview: $algorithm{AlgorithmMetadata}{Overview}
      * accepts categorical data: $accepts_categorical_data
      * accepts absence data: $accepts_absence_data
 EOM
 
 		$algorithm{parameters} = ();
 
-		my @params = $response->dataof("$alg_path/parameter");
+		my @params = $response->dataof("$alg_parameters_path/Param");
 		
 		my $num_params = scalar(@params);
 
@@ -308,23 +315,32 @@ EOM
                 {
 		    print "     * parameters ($num_params):\n" if $option == 2;
 
+                    my $j = 1;
+
 		    foreach my $par (@params)
 		    {
+	                my $param_path = "$alg_parameters_path/[$j]";
+
 			my %complete_par = %{$par};
 			my %parameter = %{$complete_par{'_value'}[0]};
 
-			$algorithm{parameters}{$complete_par{'_attr'}{'om-id'}} = \%parameter;
-			
-			my $min = ($parameter{'has-min'}) ? '['.$parameter{'min'}: '(oo';
-			my $max = ($parameter{'has-max'}) ? $parameter{'max'}.']': 'oo)';
+			$parameter{'Name'} = $response->dataof($param_path)->attr->{'Name'};
+			$parameter{'Type'} = $response->dataof($param_path)->attr->{'Type'};
+			$parameter{'Typical'} = $response->dataof($param_path)->attr->{'Typical'};
+			my $min = ($response->dataof($param_path)->attr->{'HasMin'}) ? '['.$response->dataof($param_path)->attr->{'Min'}: '(oo';
+			my $max = ($response->dataof($param_path)->attr->{'HasMax'}) ? $response->dataof($param_path)->attr->{'Max'}.']': 'oo)';
 			my $domain = $min . ', ' . $max;
+
+			$algorithm{parameters}{$complete_par{'_attr'}{'Id'}} = \%parameter;
 		    
 			print <<EOM if $option == 2;
-        $parameter{name} ($parameter{overview})
-          - type: $parameter{'data-type'}
+        $parameter{'Name'} ($parameter{Overview})
+          - type: $parameter{'Type'}
           - domain: $domain
-          - typical value: $parameter{'typical-value'}
+          - typical value: $parameter{'Typical'}
 EOM
+
+                        ++$j;
                     }
 		}
 
@@ -359,7 +375,7 @@ sub get_algorithm
 
     foreach my $key (sort(keys %algorithms))
     {
-	print "  [$key] $algorithms{$key}{name}\n";
+	print "  [$key] $algorithms{$key}{Name}\n";
     }
 
     print "\nYour choice: ";
@@ -377,21 +393,21 @@ sub get_algorithm_parameter
 {
     my ($param) = @_;
 
-    my $min = ($param->{'has-min'}) ? '['.$param->{'min'}: '(oo';
-    my $max = ($param->{'has-max'}) ? $param->{'max'}.']': 'oo)';
+    my $min = ($param->{'HasMin'}) ? '['.$param->{'Min'}: '(oo';
+    my $max = ($param->{'HasMax'}) ? $param->{'Max'}.']': 'oo)';
     my $domain = $min . ', ' . $max;
     
-    print "\nParameter: $param->{name}";
-    print " ($param->{description})" if $param->{description};
+    print "\nParameter: $param->{Name}";
+    print " ($param->{Description})" if $param->{Description};
     print "\n domain: $domain";
-    print "\n default: $param->{'typical-value'}" if $param->{'typical-value'};
+    print "\n default: $param->{'Typical'}" if $param->{'Typical'};
 
     print "\n value: ";
 
     my $val = <STDIN>;
     chomp($val);
 
-    $val = $param->{'typical-value'} unless length($val);
+    $val = $param->{'Typical'} unless length($val);
 
     return $val;
 }
@@ -426,7 +442,7 @@ sub create_model
 	-> name('algorithm')
 	-> prefix('om')
 	-> type('om:Algorithm')
-	-> attr({'om-id'=>$algorithms{$alg_code}{'om-id'}});
+	-> attr({'Id'=>$algorithms{$alg_code}{'Id'}});
 
     if (scalar(keys(%{$algorithms{$alg_code}{parameters}})))
     {
@@ -436,7 +452,7 @@ sub create_model
 	{
 	    my $value = get_algorithm_parameter(\%{$algorithms{$alg_code}{parameters}{$param}});
 
-	    push(@parameters, {'om-id'=> $param, 'value'=> $value});
+	    push(@parameters, {'Id'=> $param, 'Value'=> $value});
 	}
 
 	my @alg_tags =  map(SOAP::Data->type('struct')->name('parameter')->attr(\%{$_}), @parameters);

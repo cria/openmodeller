@@ -5,33 +5,25 @@
  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
  xmlns:xsd="http://www.w3.org/2001/XMLSchema"
  xmlns:om="http://openmodeller.sf.net/ns/1.0">
- <SOAP-ENV:Body id="_0">
+ <SOAP-ENV:Header>
+ </SOAP-ENV:Header>
+ <SOAP-ENV:Body>
   <om:getAlgorithmsResponse>
-   <return xsi:type="om:Algorithms">
-    <algorithm xsi:type="om:AlgorithmMetadata" om-id="">
-     <name xsi:type="xsd:string"></name>
-     <version xsi:type="xsd:string"></version>
-     <overview xsi:type="xsd:string"></overview>
-     <description xsi:type="xsd:string"></description>
-     <creator xsi:type="xsd:string"></creator>
-     <bibliography xsi:type="xsd:string"></bibliography>
-     <developer xsi:type="xsd:string"></developer>
-     <contact xsi:type="xsd:string"></contact>
-     <accepts-categorical-maps xsi:type="xsd:int">0</accepts-categorical-maps>
-     <accepts-absence-points xsi:type="xsd:int">0</accepts-absence-points>
-     <parameter xsi:type="om:AlgorithmParameter" om-id="">
-      <name xsi:type="xsd:string"></name>
-      <data-type xsi:type="xsd:string"></data-type>
-      <overview xsi:type="xsd:string"></overview>
-      <description xsi:type="xsd:string"></description>
-      <has-min xsi:type="xsd:int">0</has-min>
-      <min xsi:type="xsd:double">0.0</min>
-      <has-max xsi:type="xsd:int">0</has-max>
-      <max xsi:type="xsd:double">0.0</max>
-      <typical-value xsi:type="xsd:string"></typical-value>
-     </parameter>
-    </algorithm>
-   </return>
+   <AvailableAlgorithms>
+    <Algorithm>
+     <AlgorithmMetadata Id="" Name="" Version="" Author="" CodeAuthor="" Contact="" Categorical="0" Absence="0">
+      <Overview></Overview>
+      <Description></Description>
+      <Bibliography></Bibliography>
+     </AlgorithmMetadata>
+     <AlgorithmParameters>
+      <Param Id="" Name="" Type="" HasMin="0" Min="0.0" HasMax="0" Max="0.0" Typical="">
+       <Overview></Overview>
+       <Description></Description>
+      </Param>
+     </AlgorithmParameters>
+    </Algorithm>
+   </AvailableAlgorithms>
   </om:getAlgorithmsResponse>
  </SOAP-ENV:Body>
 </SOAP-ENV:Envelope>

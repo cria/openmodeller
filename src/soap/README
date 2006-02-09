@@ -5,7 +5,7 @@ modelling services across the web. The current implementation
 is only a prototype, therefore results are still far from a 
 production release.
 
-The implementation is completely based on gSOAP v2.5
+The implementation is completely based on gSOAP v2.7
 (http://gsoap2.sourceforge.net) and has only been tested with 
 Linux. gSOAP seems to be compliant with "Windows, Unix, 
 Linux, Pocket PC, Mac OS X, TRU64, VxWorks, etc". However,

@@ -5,7 +5,7 @@
 /** gSOAP data type mappings */
 
 typedef char *xsd__string;
-typedef double xsd__double; 
+typedef double xsd__double;
 typedef int xsd__int; 
 
 /** SOAP header structure.
@@ -15,66 +15,71 @@ struct SOAP_ENV__Header
   xsd__string om__version; 
 }; 
 
-/** SOAP struct to store an algorithm parameter in a metadata request.
- *  @note This struct should be the same (regarding order and base data types) as
- *        the AlgorithmParameter struct defined in om_algorithm_metadata.hh, otherwise
- *        the memcpy command used in getAlgorithms would fail!!).
- */
+/** SOAP struct to store an algorithm parameter metadata.*/
 typedef struct soap_AlgorithmParameter
 {
-  @xsd__string om_id;
-  xsd__string  name;
-  xsd__string  data_type;
-  xsd__string  overview;
-  xsd__string  description;
+  @xsd__string Id;
+  @xsd__string Name;
+  @xsd__string Type;
+  xsd__string  Overview;
+  xsd__string  Description;
 
-  xsd__int     has_min;
-  xsd__double  min;
-  xsd__int     has_max;
-  xsd__double  max;
-  xsd__string  typical_value;
+  @xsd__int     HasMin;
+  @xsd__double  Min;
+  @xsd__int     HasMax;
+  @xsd__double  Max;
+  @xsd__string  Typical;
 
 } om__AlgorithmParameter;
 
-/** SOAP struct to store algorithm metadata.
- *  @note This struct should be the same (regarding order and base data types) as
- *        the AlgorithmMetadata struct defined in om_algorithm_metadata.hh, otherwise
- *        the memcpy command used in getAlgorithms would fail!!).
- */
+/** SOAP struct to store algorithm parameters metadata */
+typedef struct soap_AlgorithmParameters
+{
+  int __size;
+  om__AlgorithmParameter *__ptrParam;
+
+} om__AlgorithmParameters;
+
+/** SOAP struct to store algorithm metadata. */
 typedef struct soap_AlgorithmMetadata
 {
-  @xsd__string om_id;
-  xsd__string  name;
-  xsd__string  version;
-  xsd__string  overview;
-  xsd__string  description;
+  @xsd__string Id;
+  @xsd__string Name;
+  @xsd__string Version;
+  xsd__string  Overview;
+  xsd__string  Description;
 
-  xsd__string creator;
-  xsd__string bibliography;
+  @xsd__string Author;
+  xsd__string  Bibliography;
 
-  xsd__string developer;
-  xsd__string contact;
+  @xsd__string CodeAuthor;
+  @xsd__string Contact;
 
-  xsd__int accepts_categorical_maps;
-  xsd__int accepts_absence_points;
-
-  int __size;
-  om__AlgorithmParameter *__ptrparameter;
+  @xsd__int Categorical;
+  @xsd__int Absence;
 
 } om__AlgorithmMetadata;
 
-/** SOAP struct to store a collection of algorithms' metadata  */
-typedef struct soap_Algorithms
+/** SOAP struct to store an available algorithm */
+typedef struct soap_AvailableAlgorithm
+{
+  om__AlgorithmMetadata   *__ptrAlgorithmMetadata;
+  om__AlgorithmParameters *__ptrAlgorithmParameters;
+
+} om__AvailableAlgorithm;
+
+/** SOAP struct to store a collection of available algorithms */
+typedef struct soap_AvailableAlgorithms
 {
   int __size;
-  om__AlgorithmMetadata *__ptralgorithm;
+  om__AvailableAlgorithm *__ptrAlgorithm;
 
-} om__Algorithms;
+} om__AvailableAlgorithms;
 
 /** This struct exists because getAlgorithms may return more than one output parameter.
  *  See item 8.1.9 from gSOAP documentation ("How to specify multiple output parameters").
  */
-struct om__getAlgorithmsResponse {om__Algorithms _return;}; 
+struct om__getAlgorithmsResponse {om__AvailableAlgorithms _AvailableAlgorithms;};
 
 /** Get all available algorithms and return their metadata in a SOAP structure.
  * @note This method is implemented in om_soap.cpp, where it receives a soap structure as
@@ -152,8 +157,8 @@ typedef struct soap_Mask
  */
 typedef struct soap_Parameter
 {
-  @xsd__string om_id;
-  @xsd__string value;
+  @xsd__string Id;
+  @xsd__string Value;
 
 } om__Parameter;
 
@@ -161,7 +166,7 @@ typedef struct soap_Parameter
  */
 typedef struct soap_Algorithm
 {
-  @xsd__string om_id;
+  @xsd__string Id;
 
   int __size;
   om__Parameter *__ptrparameter;
@@ -220,4 +225,6 @@ int om__getDistributionMap(xsd__string ticket, xsd__base64Binary &file);
  */
 //gsoap om service method-action: Return 1 to indicate availability of the service
 //gsoap om service method-documentation: Simple method that enables monitoring of service availability.
+//int om__ping(void *_, xsd__int *status);
+
 int om__ping(void *_, xsd__int *status); 

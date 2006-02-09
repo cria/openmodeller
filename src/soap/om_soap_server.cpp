@@ -80,6 +80,14 @@ int main(int argc, char **argv)
   struct soap soap;
   soap_init(&soap);
 
+  // Load algorithms
+  AlgorithmFactory::searchDefaultDirs();
+
+  // Instantiate a shared openModeller controller
+  OpenModeller *om;
+
+  soap.user = (void*)om;   
+
   soap.accept_timeout = 0;  // always listening
   soap.send_timeout = 10 h;
   soap.recv_timeout = 3 min;
@@ -214,42 +222,83 @@ void *process_request(void *soap)
 int 
 om__getAlgorithms( struct soap *soap, void *_, struct om__getAlgorithmsResponse &r )
 {
-  // Set directories to search for algorithms
-  AlgorithmFactory::searchDefaultDirs();
-
-  // This object _must_ be static, otherwise all data pointed by the soap structs
-  // will vanish in the end of this scope!!
-  static OpenModeller om;
+  // Get controller object previously instantiated
+  OpenModeller *om = (OpenModeller*)soap->user; 
 
   // alloc new header
   soap->header = (struct SOAP_ENV__Header*)soap_malloc( soap, sizeof(struct SOAP_ENV__Header) ); 
-  soap->header->om__version = om.getVersion();
+  soap->header->om__version = om->getVersion();
 
-  AlgMetadata const **algorithms = om.availableAlgorithms();
+  AlgMetadata const **algorithms = om->availableAlgorithms();
 
-  int nalg = om.numAvailableAlgorithms();
+  int nalg = om->numAvailableAlgorithms();
 
-  if ( ! *algorithms )
-    {
-      return soap_receiver_fault( soap, "No available algorithms", NULL );
+  if ( ! *algorithms ) {
+
+    return soap_receiver_fault( soap, "No available algorithms", NULL );
+  }
+
+  // Instantiate soap structure to be returned
+  soap_AvailableAlgorithm *soapAlgs = new soap_AvailableAlgorithm[nalg];
+
+  // For each algorithm
+  int i = 0;
+  AlgMetadata const *metadata;
+  while ( metadata = *algorithms++ ) {
+
+    // Algorithm metadata
+    soap_AlgorithmMetadata *algMetadata = new soap_AlgorithmMetadata;
+
+    algMetadata->Id           = metadata->id;
+    algMetadata->Name         = metadata->name;
+    algMetadata->Version      = metadata->version;
+    algMetadata->Author       = metadata->author;
+    algMetadata->CodeAuthor   = metadata->code_author;
+    algMetadata->Contact      = metadata->contact;
+    algMetadata->Categorical  = metadata->categorical;
+    algMetadata->Absence      = metadata->absence;
+    algMetadata->Overview     = metadata->overview;
+    algMetadata->Description  = metadata->description;
+    algMetadata->Bibliography = metadata->biblio;
+
+    soapAlgs[i].__ptrAlgorithmMetadata = algMetadata;
+
+    // Algorithm parameters
+    int nparams = metadata->nparam;
+
+    soap_AlgorithmParameters *algParameters = new soap_AlgorithmParameters;
+
+    algParameters->__size = nparams;
+
+    // Instantiate soap parameter structure
+    soap_AlgorithmParameter *soapParam = new soap_AlgorithmParameter[nparams];
+
+    // For each parameter
+    AlgParamMetadata *param = metadata->param;
+
+    for ( int j=0 ; j < nparams; param++, j++ ) {
+
+      soapParam[j].Id          = param->id;
+      soapParam[j].Name        = param->name;
+      soapParam[j].Type        = param->type;
+      soapParam[j].HasMin      = param->has_min;
+      soapParam[j].Min         = param->min_val;
+      soapParam[j].HasMax      = param->has_max;
+      soapParam[j].Max         = param->max_val;
+      soapParam[j].Typical     = param->typical;
+      soapParam[j].Overview    = param->overview;
+      soapParam[j].Description = param->description;
     }
 
-  // Instantiate soap structure to fill in with data
-  soap_AlgorithmMetadata *soapAlgsBase = new soap_AlgorithmMetadata[nalg];
-  // Just a pointer to navigate in the same memory cells. In the end, both
-  // objects will have the same content - but pointing to different cells
-  soap_AlgorithmMetadata *soapAlgsPtr = soapAlgsBase;
+    algParameters->__ptrParam = soapParam;
 
-  // Remember that the algorithms library and this soap server should have been compiled
-  // with the same structure-alignment, otherwise memcpy will fail!!
-  AlgMetadata const *metadata;
-  while ( metadata = *algorithms++ )
-   {
-     memcpy( soapAlgsPtr++, metadata, sizeof(soap_AlgorithmMetadata) );
-   }
+    soapAlgs[i].__ptrAlgorithmParameters = algParameters;
+                  
+    i++;
+  }
 
-  r._return.__size = nalg;
-  r._return.__ptralgorithm = soapAlgsBase;
+  r._AvailableAlgorithms.__size = nalg;
+  r._AvailableAlgorithms.__ptrAlgorithm = soapAlgs;
 
   return SOAP_OK;
 }
@@ -260,19 +309,15 @@ om__getAlgorithms( struct soap *soap, void *_, struct om__getAlgorithmsResponse 
 int 
 om__createModel( struct soap *soap, om__Points *points, om__Maps *maps, om__Mask *mask, om__Algorithm *algorithm, om__Output *output, xsd__string *ticket )
 {
-  // Set directories to search for algorithms
-  AlgorithmFactory::searchDefaultDirs();
-
-  // This object _must_ be static, otherwise all data pointed by the soap structs
-  // will vanish in the end of this scope!!
-  static OpenModeller om;
+  // Will use a special instance to run the model
+  OpenModeller myom;
 
   // alloc new header
   soap->header = (struct SOAP_ENV__Header*)soap_malloc( soap, sizeof(struct SOAP_ENV__Header) ); 
-  soap->header->om__version = om.getVersion();
+  soap->header->om__version = myom.getVersion();
 
   // Get algorithm metadata
-  AlgMetadata const *alg_metadata = om.algorithmMetadata( algorithm->om_id );
+  AlgMetadata const *alg_metadata = myom.algorithmMetadata( algorithm->Id );
 
   if ( ! alg_metadata )
     {
@@ -301,38 +346,40 @@ om__createModel( struct soap *soap, om__Points *points, om__Maps *maps, om__Mask
                                       (Scalar)-1.0, (Scalar)0.0 );
 	}
       
-      om.setOccurrences( presences, absences );
+      myom.setOccurrences( presences, absences );
     }
   else
     {
-      om.setOccurrences( presences );
+      myom.setOccurrences( presences );
     }
+
 
   // Environmental layers
   std::vector<std::string> categorical_layers;
   std::vector<std::string> continuous_layers;
 
   soap_Map *map = maps->__ptrmap;
-  for ( int i = 0; i < maps->__size; i++, map++)
-    {
-      if ( map->categorical && alg_metadata->categorical )
-	{
-          categorical_layers.push_back( map->location );
-	}
-      else
-	{
-          continuous_layers.push_back( map->location );
-	}
-    }
+  for ( int i = 0; i < maps->__size; i++, map++) {
 
-  om.setEnvironment( categorical_layers, continuous_layers, mask->location );
+    if ( map->categorical && alg_metadata->categorical ) {
+
+      categorical_layers.push_back( map->location );
+    }
+    else {
+
+      continuous_layers.push_back( map->location );
+    }
+  }
+
+  myom.setEnvironment( categorical_layers, continuous_layers, mask->location );
 
   // Set the algorithm to be used
-  if ( ! om.setAlgorithm( algorithm->om_id, algorithm->__size, 
+  if ( ! myom.setAlgorithm( algorithm->Id, algorithm->__size, 
                           (AlgParameter *)algorithm->__ptrparameter ) )
   {
       return soap_receiver_fault( soap, "Could not load the requested algorithm", NULL );
   }
+
 
   // Output map  (FIX ME: use a portable and better solution for unique names)
   char *template_file_name = (char*)soap_malloc( soap, strlen(OM_SOAP_TMPDIR) + 
@@ -359,9 +406,9 @@ om__createModel( struct soap *soap, om__Points *points, om__Maps *maps, om__Mask
   // becomes "defunct" (?).
   if (pid > 0) // parent process
     {
-      if ( ! om.createModel() )
+      if ( ! myom.createModel() )
         {
-	  g_log( om.error() );
+	  g_log( myom.error() );
           return soap_receiver_fault( soap, "Could not create model", NULL );
         }
 
@@ -370,12 +417,12 @@ om__createModel( struct soap *soap, om__Points *points, om__Maps *maps, om__Mask
       strcpy( model_file_name, template_file_name );
       strcat( model_file_name, ".xml" );
 
-      ConfigurationPtr cfg = om.getConfiguration();
+      ConfigurationPtr cfg = myom.getConfiguration();
       Configuration::writeXml( cfg, model_file_name );
 
       // Output map format
 
-      //      om.setOutputMap( (xsd__double)output->scale, projection_file_name, mask->location, output->header );
+      //      myom.setOutputMap( (xsd__double)output->scale, projection_file_name, mask->location, output->header );
       //
       // TODO: confirm if "scale" parameter should be removed.
       MapFormat map_format = MapFormat( output->header );
@@ -385,12 +432,12 @@ om__createModel( struct soap *soap, om__Points *points, om__Maps *maps, om__Mask
 
       // Make projection
 
-      //      if ( ! om.createMap( projection_file_name ) )
+      //      if ( ! myom.createMap( projection_file_name ) )
       //        {
-      //	  g_log( om.error() );
+      //	  g_log( myom.error() );
       //          return soap_receiver_fault( soap, "Could not create map", NULL );
       //        }
-      om.createMap( projection_file_name, map_format );
+      myom.createMap( projection_file_name, map_format );
 
       // do we need this here?
       soap_destroy((struct soap*)soap);
@@ -431,6 +478,13 @@ om__getDistributionMap( struct soap *soap, xsd__string ticket, xsd__base64Binary
 
 /**************/
 /**** Ping ****/
+//int
+//om__ping( struct soap *soap, void *_, xsd__int *status )
+//{
+//  *status = 1;
+//
+//  return SOAP_OK;
+//}
 int
 om__ping( struct soap *soap, void *_, xsd__int *status )
 {
@@ -438,6 +492,7 @@ om__ping( struct soap *soap, void *_, xsd__int *status )
 
   return SOAP_OK;
 }
+
 
 
 //////////////////////////////
