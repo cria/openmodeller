@@ -50,11 +50,11 @@ typedef struct
   char *overview;    ///< Short description.
   char *description; ///< Detailed description.
 
-  int    has_min; ///< Zero if the parameter has no lower limit.
-  Scalar min;     ///< Minimum parameter value.
-  int    has_max; ///< Zero if the parameter has no upper limit.
-  Scalar max;     ///< Maximum parameter value.
-  char  *typical; ///< Typical parameter value.
+  int    has_min;    ///< Zero if the parameter has no lower limit.
+  Scalar min_val;    ///< Minimum parameter value.
+  int    has_max;    ///< Zero if the parameter has no upper limit.
+  Scalar max_val;    ///< Maximum parameter value.
+  char  *typical;    ///< Typical parameter value.
 } AlgParamMetadata;
 
 

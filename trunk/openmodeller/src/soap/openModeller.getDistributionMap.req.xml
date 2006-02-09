@@ -5,9 +5,11 @@
  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
  xmlns:xsd="http://www.w3.org/2001/XMLSchema"
  xmlns:om="http://openmodeller.sf.net/ns/1.0">
- <SOAP-ENV:Body id="_0">
+ <SOAP-ENV:Header>
+ </SOAP-ENV:Header>
+ <SOAP-ENV:Body>
   <om:getDistributionMap>
-   <ticket xsi:type="xsd:string"></ticket>
+   <ticket></ticket>
   </om:getDistributionMap>
  </SOAP-ENV:Body>
 </SOAP-ENV:Envelope>

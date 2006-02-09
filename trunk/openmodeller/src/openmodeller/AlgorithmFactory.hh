@@ -121,6 +121,18 @@ public:
 
   static AlgorithmPtr newAlgorithm( const ConstConfigurationPtr& );
 
+  /*
+   * Method to serialize the available algorithms
+   *
+   * Note that this class does not implement "Configurable" 
+   * because it cannot be instantiated from outside (singleton 
+   * pattern). Also the counterpart setConfiguration method is not
+   * implemented in this case because it makes no sense to load
+   * algorithms from XML - they can only be dynamically loaded
+   * from the respective libraries.
+   */
+  static ConfigurationPtr getConfiguration();
+
 private:
 
   AlgorithmFactory();
