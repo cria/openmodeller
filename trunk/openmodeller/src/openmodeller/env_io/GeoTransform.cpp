@@ -175,7 +175,7 @@ GeoTransform::change( const string& dst_desc, const string& src_desc )
     }
 
   // Deactivate GDAL error messages.
-  CPLSetErrorHandler( errorHandler );
+  CPLSetErrorHandler( (CPLErrorHandler) errorHandler );
 }
 
 

@@ -58,6 +58,14 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "om_dg_garp_bs2", "om_dg_gar
 		{524F2298-7DCD-4C7D-B837-3B13F072C059} = {524F2298-7DCD-4C7D-B837-3B13F072C059}
 	EndProjectSection
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "om_project", "om_project\om_project.vcproj", "{3868CFCA-7A02-43B6-B876-E5F60C42AAB6}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "om_create", "om_create\om_create.vcproj", "{3868CFCA-7A02-43B6-B876-E5F60C42AAB6}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfiguration) = preSolution
 		Debug = Debug
@@ -112,6 +120,14 @@ Global
 		{C48187B7-6E4A-4B48-9E16-E52BF3BFAC6A}.Debug.Build.0 = Debug|Win32
 		{C48187B7-6E4A-4B48-9E16-E52BF3BFAC6A}.Release.ActiveCfg = Release|Win32
 		{C48187B7-6E4A-4B48-9E16-E52BF3BFAC6A}.Release.Build.0 = Release|Win32
+		{3868CFCA-7A02-43B6-B876-E5F60C42AAB6}.Debug.ActiveCfg = Debug|Win32
+		{3868CFCA-7A02-43B6-B876-E5F60C42AAB6}.Debug.Build.0 = Debug|Win32
+		{3868CFCA-7A02-43B6-B876-E5F60C42AAB6}.Release.ActiveCfg = Release|Win32
+		{3868CFCA-7A02-43B6-B876-E5F60C42AAB6}.Release.Build.0 = Release|Win32
+		{3868CFCA-7A02-43B6-B876-E5F60C42AAB6}.Debug.ActiveCfg = Debug|Win32
+		{3868CFCA-7A02-43B6-B876-E5F60C42AAB6}.Debug.Build.0 = Debug|Win32
+		{3868CFCA-7A02-43B6-B876-E5F60C42AAB6}.Release.ActiveCfg = Release|Win32
+		{3868CFCA-7A02-43B6-B876-E5F60C42AAB6}.Release.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 	EndGlobalSection
