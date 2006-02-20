@@ -62,8 +62,8 @@ Output file = furcata.tif
 ########
 # Bioclimatic Envelop
 #
-Algorithm = Bioclim
-Parameter = StandadDeviationCutoff 0.674
+#Algorithm = Bioclim
+#Parameter = StandadDeviationCutoff 0.674
 
 
 ########
