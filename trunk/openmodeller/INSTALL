@@ -50,7 +50,7 @@ Installation notes for Windows
   * Proj4 (http://www.remotesensing.org/proj/) - required
   * GDAL (http://www.remotesensing.org/gdal/) - required
   * Expat (http://expat.sourceforge.net/) - required
-  * GSL (http://www.gnu.org/software/gsl) - required for CSM algorithms
+  * GSL (http://www.gnu.org/software/gsl) - required for CSM algorithm
   * SWIG (http://www.swig.org/) - required for Java and Python bindings
   * Java 2 SDK (http://java.sun.com/j2se/) - required for Java binding
   * Python (http://www.python.org/) - required for Python binding 
@@ -66,8 +66,7 @@ Installation notes for Windows
 
   NOTE: Make sure that nmake (Visual C++ make) is in your PATH.
 
-3. Checkout a working copy of openModeller modeller module from CVS 
-   (a release won't do it at this moment)
+3. Checkout a working copy of openModeller's "om" module from CVS 
 
 4. Set the following environment variables:
   * GDAL_DIR to the directory where GDAL was built and installed
@@ -78,15 +77,15 @@ Installation notes for Windows
   * PYTHON_HOME to the base directory of Python install
   * PYTHON_INCLUDE to the directory of Python includes
  
-5. Open the project workspace file .\src\om_vcc6\om_vcpp.dsw in Visual C++ 6
+5. Open the project file .\windows\vc7\libopenmodeller_dll\libopenmodeller_dll.vcproj in Visual C++ 7 
 
 6. Select menu Build->Batch Build...
 
 7. Select all items and click Build button.
 
 8. The built binaries will appear in:
-  .\src\om_vcc6\build          (production binaries)
-  .\src\om_vcc6\build_debug    (debug binaries)
+  .\windows\vc7\build          (production binaries)
+  .\windows\vc7\build_debug    (debug binaries)
 
 9. To run any of openModeller clients you need to have the following 
 DLLs in your PATH: 
@@ -102,9 +101,9 @@ and all of your algorithm DLLs on the PLUGIN_PATH.
 
 
 NOTE:
-* Currently, openModeller has only Windows build files for MS Visual C++ 6.0 
-  located on directory ./src/om_vcc6. If you need to build OM using a newer 
-  version of Microsoft Visual Studio, open the workspace file .dsw under 
+* Currently, openModeller uses Windows build files for MS VC++ 7.1 (2003 release) 
+  located on directory ./windows/vc7. If you need to build OM using a newer 
+  version of Microsoft Visual Studio, open the project file .pro under 
   your version of Visual Studio. It will convert the workspace automatically 
   to the current format. Good luck. 
   Make sure you don't commit the converted workspace and project files to CVS.
