@@ -40,9 +40,9 @@ my $uri = 'http://openmodeller.sf.net/ns/1.0';
 
 ### Possible command line parameters
 
-use vars qw($opt_help, $opt_debug, $opt_server, $opt_proxy);
+use vars qw($opt_help, $opt_debug, $opt_server);
 
-&Getopt::Long::GetOptions('help', 'debug', 'server=s', 'proxy=s', 'layers_dir=s');
+&Getopt::Long::GetOptions('help', 'debug', 'server=s', 'layers_dir=s');
 
 print_help() if $opt_help;
 
@@ -62,8 +62,6 @@ print "\nNote: this machine has SOAP::Lite version $SOAP::Lite::VERSION\n";
 ### Some global variables
 
 my $url = $opt_server || '';
-
-my $proxy_firewall = $opt_proxy if (defined($opt_proxy));
 
 my $base_dir = $opt_layers_dir if (defined($opt_layers_dir));
 
@@ -123,8 +121,9 @@ sub print_help
     print "\nUsage: $0 [options]\n".
           "           -help  Print this usage message\n".
 	  "          -debug  Output all SOAP messages\n".
-	  " -server=address  SOAP server address (URL)\n".
-	  "  -proxy=address  Proxy firewall address (URL)\n\n";
+	  " -server=address  SOAP server address (URL)\n\n".
+          "If you are behind a proxy firewall, set the following environment variables\n".
+          "to their respective values: HTTP_proxy, HTTP_proxy_user, HTTP_proxy_pass\n\n";
     exit;
 }
 
@@ -187,8 +186,6 @@ sub prepare_soap
 		           -> uri($uri)
 		           -> proxy($server)
 		           -> encoding('iso-8859-1');
-
-	$soap->transport->proxy(http => $proxy_firewall) if defined($proxy_firewall);
     }
 }
 
