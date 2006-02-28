@@ -120,7 +120,7 @@ algorithm developed by Dr. Neil Caithness", //Overview
 algorithm developed by Dr. Neil Caithness. The component \
 selection process int this algorithm implementation is \
 based on the Broken-Stick cutoff where any component with \
-an eigenvalue < (n stddevs above a randomised sample) is discarded. \n\
+an eigenvalue less than (n stddevs above a randomised sample) is discarded. \n\
 The original CSM was written as series of Matlab functions. ", //description
 
     "Neil Caithness",  // Author
