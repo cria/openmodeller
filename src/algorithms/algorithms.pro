@@ -8,6 +8,5 @@
 
 TEMPLATE=subdirs
 
-SUBDIRS=src/openmodeller src/algorithms
+SUBDIRS=csm.pro
 
-message(Install prefix set to $$PREFIX)
