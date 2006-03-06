@@ -47,7 +47,12 @@ using std::string;
 DLLHandle
 dllOpen( char const *dll_file_name )
 {
-  return LoadLibrary( dll_file_name );
+#ifdef MINGW_QT 
+  //Added by Tim because under mingw wchar is expected
+  return LoadLibraryA( dll_file_name );
+#else
+  return LoadLibraryA( dll_file_name );
+#endif
 }
 
 
@@ -96,12 +101,22 @@ initialPluginPath()
 
   vector<string> entries;
 
+#ifdef MINGW_QT
+  //added by Tim for when building with qmake TODO softcode!
+  std::ifstream conf_file( "omconfig.txt", std::ios::in );
+#else
   std::ifstream conf_file( CONFIG_FILE, std::ios::in );
+#endif
 
   if ( !conf_file ) {
 
     entries.reserve(1);
+#ifdef MINGW_QT
+  //added by Tim for when building with qmake TODO softcode!
+    entries.push_back( "./" );
+#else
     entries.push_back( PLUGINPATH );
+#endif
     return entries;
 
   }
