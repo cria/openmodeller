@@ -4,7 +4,6 @@
 	Version="8.00"
 	Name="libopenmodeller_dll"
 	ProjectGUID="{524F2298-7DCD-4C7D-B837-3B13F072C059}"
-	SignManifests="true"
 	>
 	<Platforms>
 		<Platform
@@ -149,7 +148,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="2"
 				InlineFunctionExpansion="1"
-				AdditionalIncludeDirectories="../../inc,$(GDAL_HOME)/include,$(EXPAT_HOME)/Source/lib,$(JAVA_HOME)/include,$(JAVA_HOME)/bin"
+				AdditionalIncludeDirectories="C:\dev\cpp\om\src;../../inc;&quot;$(GDAL_HOME)/include&quot;;&quot;$(EXPAT_HOME)/Source/lib&quot;"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;LIBOPENMODELLER_DLL_EXPORTS;VERSION=\&quot;0.2\&quot;;PLUGINPATH=\&quot;.\&quot;;CONFIG_FILE=\&quot;om_config.txt\&quot;"
 				StringPooling="true"
 				RuntimeLibrary="2"
@@ -225,399 +224,87 @@
 				Name="lib"
 				>
 				<File
-					RelativePath="..\..\lib\alg_parameter.cpp"
-					>
-					<FileConfiguration
-						Name="Debug|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-							UsePrecompiledHeader="0"
-						/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-							UsePrecompiledHeader="0"
-						/>
-					</FileConfiguration>
-				</File>
-				<File
-					RelativePath="..\..\lib\models\AlgoAdapterModel.cpp"
+					RelativePath="..\..\..\src\openmodeller\Algorithm.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\lib\algorithm.cpp"
-					>
-					<FileConfiguration
-						Name="Debug|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-							UsePrecompiledHeader="0"
-						/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-							UsePrecompiledHeader="0"
-						/>
-					</FileConfiguration>
-				</File>
-				<File
-					RelativePath="..\..\lib\algorithm_factory.cpp"
-					>
-					<FileConfiguration
-						Name="Debug|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-							UsePrecompiledHeader="0"
-						/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-							UsePrecompiledHeader="0"
-						/>
-					</FileConfiguration>
-				</File>
-				<File
-					RelativePath="..\..\lib\area_stats.cpp"
-					>
-					<FileConfiguration
-						Name="Debug|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-							UsePrecompiledHeader="0"
-						/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-							UsePrecompiledHeader="0"
-						/>
-					</FileConfiguration>
-				</File>
-				<File
-					RelativePath="..\..\lib\models\AverageModel.cpp"
+					RelativePath="..\..\..\src\openmodeller\AlgorithmFactory.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\lib\conf_matrix.cpp"
-					>
-					<FileConfiguration
-						Name="Debug|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-							UsePrecompiledHeader="0"
-						/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-							UsePrecompiledHeader="0"
-						/>
-					</FileConfiguration>
-				</File>
-				<File
-					RelativePath="..\..\lib\configuration.cpp"
+					RelativePath="..\..\..\src\openmodeller\AlgParameter.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\lib\configuration_xmlio.cpp"
+					RelativePath="..\..\..\src\openmodeller\AreaStats.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\lib\control.cpp"
-					>
-					<FileConfiguration
-						Name="Debug|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-							UsePrecompiledHeader="0"
-						/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-							UsePrecompiledHeader="0"
-						/>
-					</FileConfiguration>
-				</File>
-				<File
-					RelativePath="..\..\lib\environment.cpp"
-					>
-					<FileConfiguration
-						Name="Debug|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-							UsePrecompiledHeader="0"
-						/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-							UsePrecompiledHeader="0"
-						/>
-					</FileConfiguration>
-				</File>
-				<File
-					RelativePath="..\..\lib\file_parser.cpp"
-					>
-					<FileConfiguration
-						Name="Debug|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-							UsePrecompiledHeader="0"
-						/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-							UsePrecompiledHeader="0"
-						/>
-					</FileConfiguration>
-				</File>
-				<File
-					RelativePath="..\..\lib\icstring.cpp"
+					RelativePath="..\..\..\src\openmodeller\Configuration.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\lib\log.cpp"
-					>
-					<FileConfiguration
-						Name="Debug|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-							UsePrecompiledHeader="0"
-						/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-							UsePrecompiledHeader="0"
-						/>
-					</FileConfiguration>
-				</File>
-				<File
-					RelativePath="..\..\lib\map_format.cpp"
-					>
-					<FileConfiguration
-						Name="Debug|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-							UsePrecompiledHeader="0"
-						/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-							UsePrecompiledHeader="0"
-						/>
-					</FileConfiguration>
-				</File>
-				<File
-					RelativePath="..\..\lib\Model.cpp"
+					RelativePath="..\..\..\src\openmodeller\Configuration_xmlio.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\lib\occurrence.cpp"
-					>
-					<FileConfiguration
-						Name="Debug|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-							UsePrecompiledHeader="0"
-						/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-							UsePrecompiledHeader="0"
-						/>
-					</FileConfiguration>
-				</File>
-				<File
-					RelativePath="..\..\lib\occurrences.cpp"
-					>
-					<FileConfiguration
-						Name="Debug|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-							UsePrecompiledHeader="0"
-						/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-							UsePrecompiledHeader="0"
-						/>
-					</FileConfiguration>
-				</File>
-				<File
-					RelativePath="..\..\lib\os_specific_win.cpp"
-					>
-					<FileConfiguration
-						Name="Debug|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-							UsePrecompiledHeader="0"
-						/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-							UsePrecompiledHeader="0"
-						/>
-					</FileConfiguration>
-				</File>
-				<File
-					RelativePath="..\..\lib\projector.cpp"
+					RelativePath="..\..\..\src\openmodeller\ConfusionMatrix.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\lib\random.cpp"
-					>
-					<FileConfiguration
-						Name="Debug|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-							UsePrecompiledHeader="0"
-						/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-							UsePrecompiledHeader="0"
-						/>
-					</FileConfiguration>
-				</File>
-				<File
-					RelativePath="..\..\lib\Sample.cpp"
+					RelativePath="..\..\..\src\openmodeller\Environment.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\lib\sampler.cpp"
+					RelativePath="..\..\..\src\openmodeller\ignorecase_traits.cpp"
 					>
-					<FileConfiguration
-						Name="Debug|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-							UsePrecompiledHeader="0"
-						/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-							UsePrecompiledHeader="0"
-						/>
-					</FileConfiguration>
 				</File>
 				<File
-					RelativePath="..\..\lib\models\ScaledModel.cpp"
+					RelativePath="..\..\..\src\openmodeller\Log.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\..\src\openmodeller\MapFormat.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\..\src\openmodeller\Model.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\..\src\openmodeller\Occurrence.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\..\src\openmodeller\Occurrences.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\..\src\openmodeller\OpenModeller.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\..\src\openmodeller\os_specific.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\..\src\openmodeller\os_specific_win.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\..\src\openmodeller\Projector.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\..\src\openmodeller\Random.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\..\src\openmodeller\Sample.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\..\src\openmodeller\Sampler.cpp"
 					>
 				</File>
 			</Filter>
@@ -625,124 +312,28 @@
 				Name="env_io"
 				>
 				<File
-					RelativePath="..\..\lib\env_io\geo_transform.cpp"
+					RelativePath="..\..\..\src\openmodeller\env_io\GeoTransform.cpp"
 					>
-					<FileConfiguration
-						Name="Debug|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-							UsePrecompiledHeader="0"
-						/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-							UsePrecompiledHeader="0"
-						/>
-					</FileConfiguration>
 				</File>
 				<File
-					RelativePath="..\..\lib\env_io\header.cpp"
+					RelativePath="..\..\..\src\openmodeller\env_io\Header.cpp"
 					>
-					<FileConfiguration
-						Name="Debug|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-							UsePrecompiledHeader="0"
-						/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-							UsePrecompiledHeader="0"
-						/>
-					</FileConfiguration>
 				</File>
 				<File
-					RelativePath="..\..\lib\env_io\map.cpp"
+					RelativePath="..\..\..\src\openmodeller\env_io\Map.cpp"
 					>
-					<FileConfiguration
-						Name="Debug|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-							UsePrecompiledHeader="0"
-						/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-							UsePrecompiledHeader="0"
-						/>
-					</FileConfiguration>
 				</File>
 				<File
-					RelativePath="..\..\lib\env_io\raster.cpp"
+					RelativePath="..\..\..\src\openmodeller\env_io\MapIterator.cpp"
 					>
-					<FileConfiguration
-						Name="Debug|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-							UsePrecompiledHeader="0"
-						/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-							UsePrecompiledHeader="0"
-						/>
-					</FileConfiguration>
 				</File>
 				<File
-					RelativePath="..\..\lib\env_io\raster_gdal.cpp"
+					RelativePath="..\..\..\src\openmodeller\env_io\Raster.cpp"
 					>
-					<FileConfiguration
-						Name="Debug|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-							UsePrecompiledHeader="0"
-						/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-							UsePrecompiledHeader="0"
-						/>
-					</FileConfiguration>
+				</File>
+				<File
+					RelativePath="..\..\..\src\openmodeller\env_io\RasterGdal.cpp"
+					>
 				</File>
 			</Filter>
 		</Filter>
@@ -754,125 +345,145 @@
 				Name="lib_h"
 				>
 				<File
-					RelativePath="..\..\inc\algorithm_factory.hh"
+					RelativePath="..\..\..\src\openmodeller\AlgMetadata.hh"
 					>
 				</File>
 				<File
-					RelativePath="..\..\inc\configurable.hh"
+					RelativePath="..\..\..\src\openmodeller\Algorithm.hh"
 					>
 				</File>
 				<File
-					RelativePath="..\..\inc\configuration.hh"
+					RelativePath="..\..\..\src\openmodeller\AlgorithmFactory.hh"
 					>
 				</File>
 				<File
-					RelativePath="..\..\inc\environment.hh"
+					RelativePath="..\..\..\src\openmodeller\AlgParameter.hh"
 					>
 				</File>
 				<File
-					RelativePath="..\..\inc\file_parser.hh"
+					RelativePath="..\..\..\src\openmodeller\AreaStats.hh"
 					>
 				</File>
 				<File
-					RelativePath="..\..\inc\icstring.hh"
+					RelativePath="..\..\..\src\openmodeller\Configurable.hh"
 					>
 				</File>
 				<File
-					RelativePath="..\..\inc\list.hh"
+					RelativePath="..\..\..\src\openmodeller\Configuration.hh"
 					>
 				</File>
 				<File
-					RelativePath="..\..\inc\map_format.hh"
+					RelativePath="..\..\..\src\openmodeller\ConfusionMatrix.hh"
 					>
 				</File>
 				<File
-					RelativePath="..\..\inc\Model.hh"
+					RelativePath="..\..\..\src\openmodeller\Environment.hh"
 					>
 				</File>
 				<File
-					RelativePath="..\..\inc\occurrence.hh"
+					RelativePath="..\..\..\src\openmodeller\Exceptions.hh"
 					>
 				</File>
 				<File
-					RelativePath="..\..\inc\om.hh"
+					RelativePath="..\..\..\src\openmodeller\ignorecase_traits.hh"
 					>
 				</File>
 				<File
-					RelativePath="..\..\inc\om_alg_parameter.hh"
+					RelativePath="..\..\..\src\openmodeller\Log.hh"
 					>
 				</File>
 				<File
-					RelativePath="..\..\inc\om_algorithm.hh"
+					RelativePath="..\..\..\src\openmodeller\MapFormat.hh"
 					>
 				</File>
 				<File
-					RelativePath="..\..\inc\om_algorithm_metadata.hh"
+					RelativePath="..\..\..\src\openmodeller\Model.hh"
 					>
 				</File>
 				<File
-					RelativePath="..\..\inc\om_area_stats.hh"
+					RelativePath="..\..\..\src\openmodeller\Normalizable.hh"
 					>
 				</File>
 				<File
-					RelativePath="..\..\inc\om_conf_matrix.hh"
+					RelativePath="..\..\..\src\openmodeller\Occurrence.hh"
 					>
 				</File>
 				<File
-					RelativePath="..\..\inc\om_control.hh"
+					RelativePath="..\..\..\src\openmodeller\Occurrences.hh"
 					>
 				</File>
 				<File
-					RelativePath="..\..\inc\om_defs.hh"
+					RelativePath="..\..\..\src\openmodeller\om.hh"
 					>
 				</File>
 				<File
-					RelativePath="..\..\inc\om_log.hh"
+					RelativePath="..\..\..\src\openmodeller\om_defs.hh"
 					>
 				</File>
 				<File
-					RelativePath="..\..\inc\om_occurrences.hh"
+					RelativePath="..\..\..\src\openmodeller\OpenModeller.hh"
 					>
 				</File>
 				<File
-					RelativePath="..\..\inc\om_projector.hh"
+					RelativePath="..\..\..\src\openmodeller\os_specific.hh"
 					>
 				</File>
 				<File
-					RelativePath="..\..\inc\om_sampled_data.hh"
+					RelativePath="..\..\..\src\openmodeller\Projector.hh"
 					>
 				</File>
 				<File
-					RelativePath="..\..\inc\om_sampler.hh"
+					RelativePath="..\..\..\src\openmodeller\Random.hh"
 					>
 				</File>
 				<File
-					RelativePath="..\..\inc\os_specific.hh"
+					RelativePath="..\..\..\src\openmodeller\refcount.hh"
 					>
 				</File>
 				<File
-					RelativePath="..\..\inc\random.hh"
+					RelativePath="..\..\..\src\openmodeller\Sample.hh"
 					>
 				</File>
 				<File
-					RelativePath="..\..\inc\refcount.hh"
+					RelativePath="..\..\..\src\openmodeller\SampleExpr.hh"
 					>
 				</File>
 				<File
-					RelativePath="..\..\inc\Sample.hh"
+					RelativePath="..\..\..\src\openmodeller\SampleExprVar.hh"
 					>
 				</File>
 				<File
-					RelativePath="..\..\inc\SampleExpr.hh"
-					>
-				</File>
-				<File
-					RelativePath="..\..\inc\SampleExprVar.hh"
+					RelativePath="..\..\..\src\openmodeller\Sampler.hh"
 					>
 				</File>
 			</Filter>
 			<Filter
 				Name="env_io_h"
 				>
+				<File
+					RelativePath="..\..\..\src\openmodeller\env_io\GeoTransform.hh"
+					>
+				</File>
+				<File
+					RelativePath="..\..\..\src\openmodeller\env_io\Header.hh"
+					>
+				</File>
+				<File
+					RelativePath="..\..\..\src\openmodeller\env_io\Map.hh"
+					>
+				</File>
+				<File
+					RelativePath="..\..\..\src\openmodeller\env_io\MapIterator.hh"
+					>
+				</File>
+				<File
+					RelativePath="..\..\..\src\openmodeller\env_io\Raster.hh"
+					>
+				</File>
+				<File
+					RelativePath="..\..\..\src\openmodeller\env_io\RasterGdal.hh"
+					>
+				</File>
 			</Filter>
 		</Filter>
 		<Filter
