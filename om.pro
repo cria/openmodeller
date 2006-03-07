@@ -8,6 +8,8 @@
 
 TEMPLATE=subdirs
 
-SUBDIRS=src/openmodeller src/algorithms
+SUBDIRS=src/openmodeller \
+ 	src/algorithms \
+	src/console
 
 message(Install prefix set to $$PREFIX)

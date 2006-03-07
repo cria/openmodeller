@@ -8,10 +8,7 @@
 
 TEMPLATE=subdirs
 
-SUBDIRS=csm.pro \
-        bioclim.pro \
-        bioclim_distance.pro \
-        distance_to_average.pro \
-        minimum_distance.pro \
-	dg_garp
+SUBDIRS="om_create.pro" \
+        "om_project.pro" \
+        "om_console.pro" 
 
