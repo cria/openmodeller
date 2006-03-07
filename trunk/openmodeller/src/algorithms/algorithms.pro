@@ -8,5 +8,9 @@
 
 TEMPLATE=subdirs
 
-SUBDIRS=csm.pro
+SUBDIRS=csm.pro \
+        bioclim.pro \
+        bioclim_distance.pro \
+        distance_to_average.pro \
+        minimum_distance.pro
 
