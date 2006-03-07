@@ -9,7 +9,7 @@
 # include global settings from the top level dir
 include (../../settings.pro)
 
-TARGET = csm 
+TARGET =  distance_to_average
 win32{
   #on windows build libs into bin dir!
   DESTDIR=$${PREFIX}/omgui1
