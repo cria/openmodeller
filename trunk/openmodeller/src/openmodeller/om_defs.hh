@@ -51,9 +51,9 @@ typedef double Scalar;   ///< Type of map values.
 
 // Strangely enough, cygwin/mingw windows libs have strcasecmp() function
 // while native VC++7 lib doesn't. Go figure... 
-#  ifdef _VCPP
+//#  ifdef _VCPP
 #    define strcasecmp _stricmp
-#  endif
+//#  endif
 
 // used to export symbols out of OM algorithm dlls
 # define OM_ALG_DLL_EXPORT __declspec(dllexport)

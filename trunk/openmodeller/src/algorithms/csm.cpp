@@ -46,6 +46,8 @@ static AlgParamMetadata *parameters = 0;
 /****************************************************************/
 /****************************** Csm *****************************/
 
+
+
 /** Constructor for Csm
    * 
    * @param Sampler is class that will fetch environment variable values at each occurrence / locality
@@ -156,9 +158,11 @@ int Csm::calculateMeanAndSd(gsl_matrix * theMatrix,
                             gsl_vector * theMeanVector,
                             gsl_vector * theStdDevVector)
 {
+#ifndef WIN32
   assert (theMatrix != 0);
   assert (theMeanVector !=0);
   assert (theStdDevVector !=0);
+#endif
   //Initialise the vector to hold the mean of each column
   gsl_vector_set_zero(theMeanVector);
 
