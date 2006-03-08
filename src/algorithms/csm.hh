@@ -270,7 +270,6 @@ Var N   |    |     |     |            |
 class Csm : public AlgorithmImpl
 {
     public:
-
         /** Constructor for Csm */
         Csm(AlgMetadata const* metadata);
         /** This is the descructor for the Csm class */
