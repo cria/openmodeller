@@ -2,7 +2,7 @@
 
 ; HM NIS Edit Wizard helper defines
 !define PRODUCT_NAME "openModeller"
-!define PRODUCT_VERSION "0.3.3"
+!define PRODUCT_VERSION "0.3.4"
 !define PRODUCT_PUBLISHER "openModeller Development Team"
 !define PRODUCT_WEB_SITE "http://openmodeller.sourceforge.net"
 !define PRODUCT_DIR_REGKEY "Software\Microsoft\Windows\CurrentVersion\App Paths\omgui.exe"
@@ -66,8 +66,8 @@ Section "-RequiredComponents" SectionRequiredComponents
   File "om_logo.bmp"
   File "..\build\ecw_cs.dat"
   File "..\build\gcs.csv"
-  File "..\build\gdal12.dll"
-  File "..\build\libexif-9.dll"
+  File "..\build\gdal13.dll"
+;  File "..\build\libexif-9.dll"
   File "..\build\libexpat.dll"
   File "..\build\libopenmodeller.dll"
   File "..\build\om_config.txt"
@@ -125,77 +125,77 @@ SectionEnd
 ;
 ; Now the omgui plugin
 ;
-Section "Quantum GIS Plugin" SectionOmGuiQgisPlugin
+;Section "Quantum GIS Plugin" SectionOmGuiQgisPlugin
 
   ; OM QGIS plugin require all the main binaries and files to
   ; be placed on QGIS home directory
-  ReadRegStr $1 HKLM "Software\Microsoft\Windows\CurrentVersion\App Paths\qgis.exe" ""
-  StrCpy $2 $1 -9 ; take out the string "\qgis.exe" from the end of the string (9 chars)
-  SetOutPath $2
+;  ReadRegStr $1 HKLM "Software\Microsoft\Windows\CurrentVersion\App Paths\qgis.exe" ""
+;  StrCpy $2 $1 -9 ; take out the string "\qgis.exe" from the end of the string (9 chars)
+;  SetOutPath $2
   
-  IfFileExists $1 PluginInstall SkipPluginInstall
+;  IfFileExists $1 PluginInstall SkipPluginInstall
 
-PluginInstall:
-  File "om_logo.bmp"
-  File "..\build\ecw_cs.dat"
-  File "..\build\gcs.csv"
-  File "..\build\libexif-9.dll"
-  File "..\build\libexpat.dll"
-  File "..\build\libopenmodeller.dll"
-  File "..\build\om_config.txt"
-  File "..\build\om_console.exe"
-  File "..\build\pcs.csv"
-  File "..\build\prime_meridian.csv" 
-  File "..\build\proj.dll"  
-  File "..\build\projop_wparm.csv"  
-  File "..\build\qt-mtnc321.dll" ;QT Non Commercial lib  
-  File "..\build\s57attributes.csv"  
-  File "..\build\s57expectedinput.csv"  
-  File "..\build\s57objectclasses.csv"  
-  File "..\build\stateplane.csv"  
-  File "..\build\unit_of_measure.csv"  
-  File "..\build\wkt_defs.txt"  
-  File "..\build\cubewerx_extra.wkt"
-  File "..\build\ellipsoid.csv"
-  File "..\build\esri_extra.wkt"
-  File "..\build\gdal_datum.csv"
-  File "..\build\epsg.wkt"
-  File "..\build\msvcr71.dll" 
-  File "..\build\msvcp71.dll" 
+;PluginInstall:
+;  File "om_logo.bmp"
+;  File "..\build\ecw_cs.dat"
+;  File "..\build\gcs.csv"
+;  File "..\build\libexif-9.dll"
+;  File "..\build\libexpat.dll"
+;  File "..\build\libopenmodeller.dll"
+;  File "..\build\om_config.txt"
+;  File "..\build\om_console.exe"
+;  File "..\build\pcs.csv"
+;  File "..\build\prime_meridian.csv" 
+;  File "..\build\proj.dll"  
+;  File "..\build\projop_wparm.csv"  
+;  File "..\build\qt-mtnc321.dll" ;QT Non Commercial lib  
+;  File "..\build\s57attributes.csv"  
+;  File "..\build\s57expectedinput.csv"  
+;  File "..\build\s57objectclasses.csv"  
+;  File "..\build\stateplane.csv"  
+;  File "..\build\unit_of_measure.csv"  
+;  File "..\build\wkt_defs.txt"  
+;  File "..\build\cubewerx_extra.wkt"
+;  File "..\build\ellipsoid.csv"
+;  File "..\build\esri_extra.wkt"
+;  File "..\build\gdal_datum.csv"
+;  File "..\build\epsg.wkt"
+;  File "..\build\msvcr71.dll" 
+;  File "..\build\msvcp71.dll" 
 
-  SetOutPath $2\lib\qgis
-  SetOverwrite try
-  File "..\build\omgui.dll" ;once again I am sure only the dll's need copying  
+;  SetOutPath $2\lib\qgis
+;  SetOverwrite try
+;  File "..\build\omgui.dll" ;once again I am sure only the dll's need copying  
 
   ;
   ; Now the algs 
   ;
-  SetOutPath $2\algs
-  SetOverwrite try
-  File "..\build\algs\om_bioclim.dll"
-  File "..\build\algs\om_bioclim_distance.dll"
-  File "..\build\algs\om_csmbs.dll"
-  File "..\build\algs\om_distance_to_average.dll"
-  File "..\build\algs\om_dg_garp.dll"
-  ;File "..\build\algs\om_dg_garp_bs.dll"           ; <-- Old BS replaced by new version by Kevin
-  File "..\build\algs\om_dg_garp_bs2.dll"
-  ;File "..\build\algs\om_garp.dll"                  ; <-- OM Garp implementations are excluded because they are broken
-  ;File "..\build\algs\om_garp_best_subsets.dll"     ; <-- OM Garp implementations are excluded because they are broken
-  File "..\build\algs\om_mindist.dll"
+;  SetOutPath $2\algs
+;  SetOverwrite try
+;  File "..\build\algs\om_bioclim.dll"
+;  File "..\build\algs\om_bioclim_distance.dll"
+;  File "..\build\algs\om_csmbs.dll"
+;  File "..\build\algs\om_distance_to_average.dll"
+;  File "..\build\algs\om_dg_garp.dll"
+;  ;File "..\build\algs\om_dg_garp_bs.dll"           ; <-- Old BS replaced by new version by Kevin
+;  File "..\build\algs\om_dg_garp_bs2.dll"
+;  ;File "..\build\algs\om_garp.dll"                  ; <-- OM Garp implementations are excluded because they are broken
+;  ;File "..\build\algs\om_garp_best_subsets.dll"     ; <-- OM Garp implementations are excluded because they are broken
+;  File "..\build\algs\om_mindist.dll"
 
-  SetOutPath $2
-  File "..\build\libgsl.dll"                        ; required by CSM
-  File "..\build\gslcblas.dll"                      ; required by CSM
+;  SetOutPath $2
+;  File "..\build\libgsl.dll"                        ; required by CSM
+;  File "..\build\gslcblas.dll"                      ; required by CSM
 
-  GoTo EndPluginInstall
+;  GoTo EndPluginInstall
 
-SkipPluginInstall:
-  MessageBox MB_OK "Could not find QGis installed in your system. Skipping QGis Plugin installation." 
+;SkipPluginInstall:
+;  MessageBox MB_OK "Could not find QGis installed in your system. Skipping QGis Plugin installation." 
 
-EndPluginInstall:
-
-
-SectionEnd
+;EndPluginInstall:
+;
+;
+;SectionEnd
   
 ;
 ; Now the sample data
@@ -366,50 +366,50 @@ Section Uninstall
   Delete /REBOOTOK "$INSTDIR\gslcblas.dll"
 
   ; QGIS Plugin
-  ReadRegStr $1 HKLM "Software\Microsoft\Windows\CurrentVersion\App Paths\qgis.exe" ""
-  StrCpy $2 $1 -9 ; take out the string "\qgis.exe" from the end of the string (9 chars)
+;  ReadRegStr $1 HKLM "Software\Microsoft\Windows\CurrentVersion\App Paths\qgis.exe" ""
+;  StrCpy $2 $1 -9 ; take out the string "\qgis.exe" from the end of the string (9 chars)
 
-  Delete /REBOOTOK "$2\${PRODUCT_NAME}.url"
-  Delete /REBOOTOK "$2\om_logo.bmp"
-  Delete /REBOOTOK "$2\ecw_cs.dat"
-  Delete /REBOOTOK "$2\gcs.csv"
-  Delete /REBOOTOK "$2\libexif-9.dll"
-  Delete /REBOOTOK "$2\libexpat.dll"
-  Delete /REBOOTOK "$2\libopenmodeller.dll"
-  Delete /REBOOTOK "$2\om_config.txt"
-  Delete /REBOOTOK "$2\om_console.exe"
-  Delete /REBOOTOK "$2\omgui.exe"
-  Delete /REBOOTOK "$2\pcs.csv"
-  Delete /REBOOTOK "$2\prime_meridian.csv" 
-  Delete /REBOOTOK "$2\projop_wparm.csv"  
-  Delete /REBOOTOK "$2\s57attributes.csv"  
-  Delete /REBOOTOK "$2\s57expectedinput.csv"  
-  Delete /REBOOTOK "$2\s57objectclasses.csv"  
-  Delete /REBOOTOK "$2\stateplane.csv"  
-  Delete /REBOOTOK "$2\unit_of_measure.csv"  
-  Delete /REBOOTOK "$2\wkt_defs.txt"  
-  Delete /REBOOTOK "$2\cubewerx_extra.wkt"
-  Delete /REBOOTOK "$2\ellipsoid.csv"
-  Delete /REBOOTOK "$2\esri_extra.wkt"
-  Delete /REBOOTOK "$2\gdal_datum.csv"
-  Delete /REBOOTOK "$2\epsg.wkt"
-  Delete /REBOOTOK "$2\msvcr71.dll" 
-  Delete /REBOOTOK "$2\msvcp71.dll" 
-  Delete /REBOOTOK "$2\lib\qgis\omgui.dll"
+;  Delete /REBOOTOK "$2\${PRODUCT_NAME}.url"
+;  Delete /REBOOTOK "$2\om_logo.bmp"
+;  Delete /REBOOTOK "$2\ecw_cs.dat"
+;  Delete /REBOOTOK "$2\gcs.csv"
+;  Delete /REBOOTOK "$2\libexif-9.dll"
+;  Delete /REBOOTOK "$2\libexpat.dll"
+;  Delete /REBOOTOK "$2\libopenmodeller.dll"
+;  Delete /REBOOTOK "$2\om_config.txt"
+;  Delete /REBOOTOK "$2\om_console.exe"
+;  Delete /REBOOTOK "$2\omgui.exe"
+;  Delete /REBOOTOK "$2\pcs.csv"
+;  Delete /REBOOTOK "$2\prime_meridian.csv" 
+;  Delete /REBOOTOK "$2\projop_wparm.csv"  
+;  Delete /REBOOTOK "$2\s57attributes.csv"  
+;  Delete /REBOOTOK "$2\s57expectedinput.csv"  
+;  Delete /REBOOTOK "$2\s57objectclasses.csv"  
+;  Delete /REBOOTOK "$2\stateplane.csv"  
+;  Delete /REBOOTOK "$2\unit_of_measure.csv"  
+;  Delete /REBOOTOK "$2\wkt_defs.txt"  
+;  Delete /REBOOTOK "$2\cubewerx_extra.wkt"
+;  Delete /REBOOTOK "$2\ellipsoid.csv"
+;  Delete /REBOOTOK "$2\esri_extra.wkt"
+;  Delete /REBOOTOK "$2\gdal_datum.csv"
+;  Delete /REBOOTOK "$2\epsg.wkt"
+;  Delete /REBOOTOK "$2\msvcr71.dll" 
+;  Delete /REBOOTOK "$2\msvcp71.dll" 
+;  Delete /REBOOTOK "$2\lib\qgis\omgui.dll"
 
   ;ALGORITHMS (Qgis plugin)
-  Delete /REBOOTOK "$2\algs\om_bioclim.dll"
-  Delete /REBOOTOK "$2\algs\om_bioclim_distance.dll"
-  Delete /REBOOTOK "$2\algs\om_csmbs.dll"
-  Delete /REBOOTOK "$2\algs\om_distance_to_average.dll"
-  Delete /REBOOTOK "$2\algs\om_dg_garp.dll"
+;  Delete /REBOOTOK "$2\algs\om_bioclim.dll"
+;  Delete /REBOOTOK "$2\algs\om_bioclim_distance.dll"
+;  Delete /REBOOTOK "$2\algs\om_csmbs.dll"
+;  Delete /REBOOTOK "$2\algs\om_distance_to_average.dll"
+;  Delete /REBOOTOK "$2\algs\om_dg_garp.dll"
   ;Delete /REBOOTOK "$2\algs\om_dg_garp_bs.dll"             ; <-- Replaced by new version
-  Delete /REBOOTOK "$2\algs\om_dg_garp_bs2.dll"  
+;  Delete /REBOOTOK "$2\algs\om_dg_garp_bs2.dll"  
   ;Delete /REBOOTOK "$2\algs\om_garp.dll"                  ; <-- OM Garp implementations are excluded because they are broken
   ;Delete /REBOOTOK "$2\algs\om_garp_best_subsets.dll"     ; <-- OM Garp implementations are excluded because they are broken
-  Delete /REBOOTOK "$2\algs\om_mindist.dll"
-  Delete /REBOOTOK "$2\libgsl.dll"
-  Delete /REBOOTOK "$2\gslcblas.dll"
+;  Delete /REBOOTOK "$2\algs\om_mindist.dll"
+;  Delete /REBOOTOK "$2\libgsl.dll"
+;  Delete /REBOOTOK "$2\gslcblas.dll"
 
   ;SAMPLE DATA
   Delete /REBOOTOK "$INSTDIR\sample_data\furcata_boliviana.txt"
