@@ -105,9 +105,11 @@ public:
    */
   char *getVersion();
 
-  //
-  // Algorithms related methods.
-  //
+  /*****************************************************************************
+   *
+   * Algorithms related methods
+   *
+   ****************************************************************************/
 
   /** Finds the system available algorithms' metadata.
    *
@@ -120,9 +122,9 @@ public:
    */
   AlgMetadata const **availableAlgorithms();
 
-  /** Returns an specific algorithm metadata
+  /** Returns a specific algorithm metadata
    * @param algorithm_id Identifier of the algorithm.
-   * @return Algorithm's metadata or zero if there algorithm
+   * @return Algorithm's metadata or zero if the algorithm
    *  was not found.
    */
   AlgMetadata const *algorithmMetadata( char const *algorithm_id );
@@ -135,17 +137,41 @@ public:
    */
   int numAvailableAlgorithms();
 
-  //
-  // Attributes reading methods
-  //
+  /*****************************************************************************
+   *
+   * Accessor methods
+   *
+   ****************************************************************************/
 
+  /**
+   * Returns the current environment related to model creation.
+   * @return Pointer to environment related to model creation.
+   */
   EnvironmentPtr getEnvironment() { return _env; }
+
+  /**
+   * Returns the current algorithm setting.
+   * @return Pointer to algorithm.
+   */
   AlgorithmPtr getAlgorithm() { return _alg; }
+
+  /**
+   * Returns model created by the algorithm.
+   * @return Model object.
+   */
   Model getModel() { return _alg->getModel(); }
 
-  //
-  // Parameters setting methods
-  //
+  /**
+   * Returns current sampler setting.
+   * @return Pointer to sampler.
+   */
+  const SamplerPtr& getSampler() const { return _samp; }
+
+  /*****************************************************************************
+   *
+   * Parameters setting methods
+   *
+   ****************************************************************************/
 
   /**
    * Define occurrence points to be used.
@@ -158,13 +184,12 @@ public:
   int setOccurrences( const OccurrencesPtr& presence,
                       const OccurrencesPtr& absence=OccurrencesPtr() );
 
-  /** Define algorithm that will be used to generate the
-   *  distribution map.
+  /** Define algorithm that will be used to generate the model.
    * @param id Algorithm's identifier. Must match the
    *  Algorithm::getID() returned string.
    * @param nparam Number of parameters.
    * @param param Vector with all parameters. The address 'param'
-   *  points to must exists when the method "run()" is called.
+   *  points to must exist when the method "run()" is called.
    * @return zero if something goes wrong like the algorithm ID
    *  does not exist, use different number of parameters, etc.
    */
@@ -183,11 +208,9 @@ public:
 		       const std::string& mask );
     
   /** Defines sampler to be used for modeling.
-   * @sampler Sampler object to be used for modeling
+   * @param sampler Sampler object to be used for modeling
    */
   void setSampler(const SamplerPtr& sampler);
-
-  const SamplerPtr& getSampler() const { return _samp; }
 
   /*****************************************************************************
    *
@@ -209,36 +232,49 @@ public:
    */
   void setMapCommand( Projector::MapCommand *func );
 
-  /** Create and save distribution map to disk.
+  /** Create and save distribution map to disk using the specified
+   * projection environment and output format.
    * @param env Pointer to Environment object with the layers 
-   *  to project the model onto. Defaults to environment set
-   *  with setEnvironment().
-   * @param output_file Output file name. Defaults to file set
-   *  with setOutputMap().
-   * @param output_mask Georeferenced map file which will define
-   *  the valid pixels on the output map. Defaults to mask set
-   *  with setOutputMap().
+   *  to project the model onto.
+   * @param output_file Output file name.
+   * @param format Georeferenced map file which will define
+   *  cell size, extent, WKT projection, no data value, and file 
+   *  type for the output map.
    */
   void createMap( const EnvironmentPtr & env, char const *output_file, MapFormat& format );
+
+  /** Create and save distribution map to disk using the specified
+   * projection environment. Output format defaults to the
+   * output mask format.
+   * @param env Pointer to Environment object with the layers 
+   *  to project the model onto.
+   * @param output_file Output file name.
+   */
   void createMap( const EnvironmentPtr & env, char const *output_file );
   
-  //  void createMap( const EnvironmentPtr & env, char const *output_file );
-
-  /** Create and save distribution map to disk using the projection
-   * environment set by setProjection() method.
-   * @param output_file Output file name. Defaults to file set
-   *  with setOutputMap().
-   * @param output_mask Georeferenced map file which will define
-   *  the valid pixels on the output map. Defaults to mask set
-   *  with setOutputMap().
+  /** Create and save distribution map to disk using the specified
+   * output format. Projection environment defaults to the same 
+   * environment used during model creation and previously set 
+   * by calling the setEnvironment() method.
+   * @param output_file Output file name.
+   * @param format Georeferenced map file which will define
+   *  cell size, extent, WKT projection, no data value, and file 
+   *  type for the output map.
    */
   void createMap( char const *output_file, MapFormat& format );
-  void createMap( char const *output_file );
 
+  /** Create and save distribution map to disk. Projection 
+   * environment defaults to the same environment used during 
+   * model creation and previously set by calling the 
+   * setEnvironment() method. Output format defaults to the
+   * output mask format.
+   * @param output_file Output file name.
+   */
+  void createMap( char const *output_file );
 
   /*****************************************************************************
    *
-   * Model generation procedures.
+   * Model generation procedures
    *
    ****************************************************************************/
 
@@ -280,15 +316,20 @@ public:
   Scalar getValue(const ConstEnvironmentPtr& env, Coord x, Coord y);
 
   /** Get prediction at a given point.
-   * @param ambiental_conditions Vector with ambiental conditions values
-   *  to be passed to the model.
+   * @param environment_values Vector with environment values.
    * @return Prediction value at the specified point. Valid 
    *   values range from 0.0 to 1.0. Value -1.0 means there is
    *   no prediction for that point (masked or not predicted)
    */
-  Scalar getValue( Scalar const *ambiental_conditions );
+  Scalar getValue( Scalar const *environment_values );
 
   char *error()  { return _error; }
+
+  /*****************************************************************************
+   *
+   * Statistics
+   *
+   ****************************************************************************/
 
   /**
    * Returns a pointer to the model AreaStats object which 
@@ -310,6 +351,12 @@ public:
 				    double proportionAreaToSample = 0.01);
 
   ConfusionMatrix *getConfusionMatrix();
+
+  /*****************************************************************************
+   *
+   * Serialization & Deserialization
+   *
+   ****************************************************************************/
 
   ConfigurationPtr getConfiguration() const;
 
