@@ -312,12 +312,14 @@ OpenModeller::createMap( const EnvironmentPtr & env, char const *output_file, Ma
 
   Map *mask = env->getMask();
 
+  // If mask is undefined, use first layer as a mask
   if (!mask)
     mask = env->getLayer(0);
 
+  // copy mask settings to the output format ONLY when they are undefined 
   output_format.copyDefaults( *mask );
 
-  // try to infer the output format (default is 64 bit floating tiff).
+  // try to infer the output file format (default is 64 bit floating tiff).
   string fname(output_file);
   int pos = fname.length() - 4;
   if (pos >0 && fname.compare( pos, 4, ".bmp" ) == 0 ) {
@@ -384,9 +386,9 @@ OpenModeller::getValue(const ConstEnvironmentPtr& env, Coord x, Coord y)
 /**********************************/
 /******* get Value ****************/
 Scalar
-OpenModeller::getValue( Scalar const *amb )
+OpenModeller::getValue( Scalar const *environment_values )
 {
-  Sample tmp( _env->numLayers() ,amb );
+  Sample tmp( _env->numLayers() ,environment_values );
   return _alg->getValue( tmp );
 }
 
