@@ -103,7 +103,7 @@ initialPluginPath()
 
 #ifdef MINGW_QT
   //added by Tim for when building with qmake TODO softcode!
-  std::ifstream conf_file( "omconfig.txt", std::ios::in );
+  std::ifstream conf_file( "pluginpath.cfg", std::ios::in );
 #else
   std::ifstream conf_file( CONFIG_FILE, std::ios::in );
 #endif
@@ -113,7 +113,7 @@ initialPluginPath()
     entries.reserve(1);
 #ifdef MINGW_QT
   //added by Tim for when building with qmake TODO softcode!
-    entries.push_back( "./" );
+    entries.push_back( "./algs/" );
 #else
     entries.push_back( PLUGINPATH );
 #endif
