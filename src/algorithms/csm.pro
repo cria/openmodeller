@@ -26,6 +26,8 @@ contains(OMG_STATIC,true){
   #This option is used when creating a statically linked
   #lib to prevent double linked libraries. 
   CONFIG += create_prl        
+  LIBS += c:/MinGW/lib/libgsl.a
+  LIBS += c:/MinGW/lib/libgslcblas.a
 }else{
 }
 
