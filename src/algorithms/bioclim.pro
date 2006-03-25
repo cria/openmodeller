@@ -8,11 +8,10 @@
 
 # include global settings from the top level dir
 include (../../settings.pro)
-
 TARGET = bioclim
 win32{
   #on windows build libs into bin dir!
-  DESTDIR=$${PREFIX}/omgui1
+  DESTDIR=$${PREFIX}/omgui1/algs
 }else{
   DESTDIR=$${PREFIX}/lib
 }
