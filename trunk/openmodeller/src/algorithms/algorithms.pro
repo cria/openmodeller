@@ -7,7 +7,6 @@
 #################################################################
 
 TEMPLATE=subdirs
-
 SUBDIRS=csm.pro \
         bioclim.pro \
         bioclim_distance.pro \

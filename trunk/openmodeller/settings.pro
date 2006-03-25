@@ -7,7 +7,7 @@
 #################################################################
 DEFINES += VERSION='0.3.5' 
 DEFINES += CONFIG_FILE="'./pluginpath.cfg'"
-DEFINES += PLUGINPATH="'./'"
+DEFINES += PLUGINPATH="'./algs/'"
 DEFINES += WIN32
 OMG_DEBUGMODE=false
 OMG_STATIC=false
