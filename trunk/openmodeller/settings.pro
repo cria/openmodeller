@@ -9,6 +9,8 @@ DEFINES += VERSION='0.3.5'
 DEFINES += CONFIG_FILE="'./pluginpath.cfg'"
 DEFINES += PLUGINPATH="'./'"
 DEFINES += WIN32
+OMG_DEBUGMODE=false
+OMG_STATIC=false
 
 win32{
   message(Installing for windows!)
@@ -54,7 +56,6 @@ message(The compiled binaries will be installed in $$DESTDIR)
 
 ####################################################
 
-OMG_DEBUGMODE=false
 contains(OMG_DEBUGMODE,true){
   message("Building with debugging support")
   CONFIG+=debug
@@ -68,7 +69,6 @@ contains(OMG_DEBUGMODE,true){
 ####################################################
 
 
-OMG_STATIC=false
 contains(OMG_STATIC,true){
   message("Building statically")
   CONFIG+=static
