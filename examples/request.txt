@@ -94,7 +94,7 @@ Output file = furcata.tif
 ########
 # GARP: Genetic Algorithm for Rule Set Production
 #
-#Algorithm = GARP
+#Algorithm = DG_GARP
 #Parameter = MaxGenerations 100
 #Parameter = ConvergenceLimit 0.05
 #Parameter = PopulationSize 50
@@ -106,7 +106,7 @@ Output file = furcata.tif
 ########
 # GARP with Best Subsets Procedure
 #
-#Algorithm = GARP_BS
+#Algorithm = DG_GARP_BS
 #Parameter = TrainingProportion 0.5
 #Parameter = TotalRuns 10
 #Parameter = HardOmissionThreshold 100
