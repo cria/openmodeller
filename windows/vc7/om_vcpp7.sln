@@ -60,10 +60,12 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "om_dg_garp_bs2", "om_dg_gar
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "om_project", "om_project\om_project.vcproj", "{3868CFCA-7A02-43B6-B876-E5F60C42AAB6}"
 	ProjectSection(ProjectDependencies) = postProject
+		{524F2298-7DCD-4C7D-B837-3B13F072C059} = {524F2298-7DCD-4C7D-B837-3B13F072C059}
 	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "om_create", "om_create\om_create.vcproj", "{3868CFCA-7A02-43B6-B876-E5F60C42AAB6}"
 	ProjectSection(ProjectDependencies) = postProject
+		{524F2298-7DCD-4C7D-B837-3B13F072C059} = {524F2298-7DCD-4C7D-B837-3B13F072C059}
 	EndProjectSection
 EndProject
 Global

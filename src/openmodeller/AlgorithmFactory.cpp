@@ -86,23 +86,22 @@ AlgorithmFactory::DLL::DLL( const string& file ) :
       goto error;
     }
 
-  _factory = (TAlgFactory) dllFunction( _handle,
-					"algorithmFactory" );
+  _factory = (TAlgFactory) dllFunction( _handle, "algorithmFactory" );
+
   if ( ! _factory )
     {
       char *error = dllError( _handle );
-      g_log.warn( "%s is not openModeller compatible!\n", file.c_str() );
+      g_log.warn( "Algorithm %s is not openModeller compatible! (TAlgFactory mismatch)\n", file.c_str() );
       g_log.warn( "Error: %s\n", error );
       goto error;
     }
 
-  _metadata = (TAlgMetadata) dllFunction( _handle,
-					"algorithmMetadata" );
+  _metadata = (TAlgMetadata) dllFunction( _handle, "algorithmMetadata" );
   
   if ( ! _metadata )
     {
       char *error = dllError( _handle );
-      g_log.warn( "%s is not openModeller compatible!\n", file.c_str() );
+      g_log.warn( "Algorithm %s is not openModeller compatible! (TAlgMetadata mismatch)\n", file.c_str() );
       g_log.warn( "Error: %s\n", error );
       goto error;
     }

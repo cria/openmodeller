@@ -1,9 +1,10 @@
 /**
  * Declarations of Raster and RasterFormat classes.
  * 
- * @file
  * @author Mauro E S Muñoz <mauro@cria.org.br>
  * @date 2003-08-22
+ * @author Alexandre Copertino Jardim <alexcj@dpi.inpe.br>
+ * @date 2006-03-21
  * $Id$
  *
  * LICENSE INFORMATION
@@ -35,7 +36,6 @@
 #include <string>
 
 class MapFormat;
-class RasterGdal;
 class Map;
 
 /****************************************************************/
@@ -45,112 +45,114 @@ class dllexp Raster
 {
 public:
 
-  /** 
-   * If 'categ' != 0 this is a categorical map (ie it can't be
-   * interpolated). Othewise this is a continuos map.
-   *
-   */
+    virtual ~Raster();
+    
+    /** Method to create a raster representation (needed by RasterFactory).
+     * @param source A string pointing to a raster source (file name, URL, etc.)
+     * @param categ Indicates if the raster is categorical or not
+     */
+    virtual void createRaster( const std::string& source, int categ = 0 ) = 0;
 
-  // Open an existing file -- read only.
-  Raster( const std::string& file, int categ=0 );
+    /** Method to create a raster representation (needed by RasterFactory).
+     * @param source A string pointing to a raster source (file name, URL, etc.)
+     * @param format Map format
+     */
+    virtual void createRaster( const std::string& source, const MapFormat& format )= 0;
 
-  /**
-   * Create a new file for projections.
-   * @param file is the name of the output file
-   * @param format is the output format specification.
-   */
-  Raster( const std::string& file, const MapFormat& format );
+    //virtual static Raster* CreateRasterCallback() { return 0; };
 
-  ~Raster();
+    /** Returns the header. */
+    Header& header() { return f_hdr; }
 
-  /** Get the header. */
-  Header& header() { return f_hdr; }
+    /** Returns not zero if this map is categorical. */
+    int isCategorical() const { return f_hdr.categ; }
 
-  /** Returns not zero if this map is categorical. */
-  int isCategorical() const { return f_hdr.categ; }
+    /** Returns the lowest longitude. */
+    Coord xMin() const { return f_hdr.xmin; }
 
-  /** Lowest longitude. */
-  Coord xMin() const { return f_hdr.xmin; }
+    /** Returns the lowest latitude. */
+    Coord yMin() const { return f_hdr.ymin; }
 
-  /** Lowest latitude. */
-  Coord yMin() const { return f_hdr.ymin; }
+    /** Returns the highest longitude. */
+    Coord xMax() const { return f_hdr.xmax; }
 
-  /** Highest longitude. */
-  Coord xMax() const { return f_hdr.xmax; }
+    /** Returns the highest latitude. */
+    Coord yMax() const { return f_hdr.ymax; }
 
-  /** Highest latitude. */
-  Coord yMax() const { return f_hdr.ymax; }
+    /** Returns the longitudinal map dimension. */
+    int dimX() const { return f_hdr.xdim; }
 
-  /** Longitudinal map dimension. */
-  int dimX() const { return f_hdr.xdim; }
+    /** Returns the latitudinal map dimension. */
+    int dimY() const { return f_hdr.ydim; }
 
-  /** Latitudinal map dimension. */
-  int dimY() const { return f_hdr.ydim; }
+    /** Returns the longitudinal cell dimension. */
+    Coord celX() const { return f_hdr.xcel; }
 
-  /** Longitudinal cell dimension. */
-  Coord celX() const { return f_hdr.xcel; }
+    /** Returns the latitudinal cell dimension. */
+    Coord celY() const { return f_hdr.ycel; }
 
-  /** Latitudinal cell dimension. */
-  Coord celY() const { return f_hdr.ycel; }
+    /** Returns the "noval" value. */
+    Scalar noVal() const { return f_hdr.noval; }
 
-  /** Returns the "noval" value. */
-  Scalar noVal() const { return f_hdr.noval; }
+    /** Returns the number of bands. */
+    int numBand() const { return f_hdr.nband; }
 
-  /** Number of bands. */
-  int numBand() const { return f_hdr.nband; }
+    /** Fills '*val' with the map value at (x,y).
+     * @param px Longitude
+     * @param py Latitude
+     * @param val Value
+     * @return zero if (x,y) is out of range.
+     */
+    virtual int get( Coord px, Coord py, Scalar *val ) = 0;
 
-  /**
-   * Fills '*val' with the map value at (x,y).
-   * Returns zero if (x,y) is out of range.
-   */
-  int get( Coord x, Coord y, Scalar *val ) const;
+    /** Put 'val' at the (x,y) coordinate.
+     * Supports only single band output files.
+     * @param px Longitude
+     * @param py Latitude
+     * @param val Value
+     * @return 0 if (x,y) is out of range or the map is read only.
+     */
+    virtual int put( Coord px, Coord py, Scalar val ) = 0;
 
-  /**
-   * Put '*val' at the (x,y) coordinate.
-   * Returns 0 if (x,y) is out of range or the map is read only.
-   * supports only single band output files.
-   */
-  int put( Coord x, Coord y, Scalar val );
+    /** Put 'no data val' at the (x,y) coordinate. 
+     * Supports only single band files.
+     * @param px Longitude
+     * @param py Latitude
+     * @return 0 if (x,y) is out of range or the map is read only.
+     */
+    virtual int put( Coord px, Coord py ) = 0;
 
-  /**
-   * Put 'no data val' at the (x,y) coordinate.
-   * Returns 0 if (x,y) is out of range or the map is read only.
-   * supports only single band output files.
-   */
-  int put( Coord x, Coord y );
+    /** Tells if the min and max have already been computed */
+    bool hasMinMax() { return f_hdr.minmax; }
 
-  /** Has the min max already been computed */
-  bool hasMinMax() const {
-    return f_hdr.minmax;
-  }
-  
-  /** Support external specification of min/max */
-  void setMinMax( Scalar min, Scalar max );
+    /** Support external specification of min/max.
+     * @param min Minimum value
+     * @param max Maximum value
+     */
+    void setMinMax( Scalar min, Scalar max );
 
-  /** Find the minimum and maximum values in the first band. */
-  int getMinMax( Scalar *min, Scalar *max ) const;
+    /** Finds the minimum and maximum values in the first band. 
+     * @param min Pointer to minimum value
+     * @param max Pointer to maximum value
+     * @return 1 if values are present, 0 otherwise
+     */
+    int getMinMax( Scalar *min, Scalar *max );
 
-private:
+protected:
 
-  /** Find the minimum and maximum values in 'band'. */
-  int calcMinMax( int band=0 ) const;
+    Scalar f_scalefactor;  // used in projection put.
 
-  /** The file format is known by the file name extension. **/
-  void load();
+    std::string f_file;
 
-  RasterGdal *f_rst;
+    // Raster header
+    Header f_hdr;
 
-  Scalar f_scalefactor;  // used in projection put.
+    Raster() {}; // Abstract class.
 
-  std::string f_file;
-
-  Header f_hdr;
-
-  // Disable copying.
-  Raster( const Raster& );
-  Raster& operator=( const Raster& );
-
+    // Disable copying.
+    //Raster( const Raster& );
+    //Raster& operator=( const Raster& );
 };
 
-
 #endif
+

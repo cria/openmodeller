@@ -31,6 +31,7 @@
 #include "openmodeller/Projector.hh"
 #include "openmodeller/Sampler.hh"
 #include "openmodeller/refcount.hh"
+#include "openmodeller/env_io/RasterFactory.hh"
 %}
 
 %include "std_string.i"
@@ -356,7 +357,7 @@ public:
     if (!mask)
       mask = env->getLayer(0);
     mf.copyDefaults( *mask );
-    Map map( new Raster( filename, mf ) );
+		Map map( RasterFactory::instance().create( filename, mf ) );
     Projector::createMap( Model(model), env, &map, 0, mc );
   }
 } // %extend

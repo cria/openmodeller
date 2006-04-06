@@ -28,7 +28,6 @@
 
 #include "request_file.hh"
 #include "file_parser.hh"
-#include "occurrences_file.hh"
 
 #include <openmodeller/om.hh>
 
@@ -251,9 +250,9 @@ RequestFile::setProjection( OpenModeller *om, FileParser &fp )
   // Overwrite output extent with values from mask
   const std::string maskFile = ( _nonNativeProjection ) ? _outputMask.c_str() : _inputMask.c_str();
 
-  Raster mask( maskFile );
+  Raster* mask = RasterFactory::instance().create( maskFile );
 
-  Header h = mask.header();
+  Header h = mask->header();
 
   _outputFormat.setXMin( h.xmin );
   _outputFormat.setYMin( h.ymin );
@@ -261,7 +260,6 @@ RequestFile::setProjection( OpenModeller *om, FileParser &fp )
   _outputFormat.setYMax( h.ymax );
 
   return 1;
-
 }
 
 
@@ -333,9 +331,10 @@ OccurrencesPtr
 RequestFile::readOccurrences( std::string file, std::string name,
                               std::string coord_system )
 {
-  OccurrencesFile oc_file( file.c_str(), coord_system.c_str() );
+  OccurrencesReader* oc_file =
+		OccurrencesFactory::instance().create( file.c_str(), coord_system.c_str() );
 
-  return oc_file.remove( name.c_str() );
+  return oc_file->get( name.c_str() );
 }
 
 

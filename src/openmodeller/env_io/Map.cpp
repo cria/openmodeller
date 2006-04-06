@@ -4,6 +4,8 @@
  * @file
  * @author Mauro E S Muñoz <mauro@cria.org.br>
  * @date 2003-09-05
+ * @author Alexandre Copertino Jardim <alexcj@dpi.inpe.br>
+ * @date 2006-03-21
  * $Id$
  *
  * LICENSE INFORMATION
@@ -37,11 +39,10 @@
 
 /******************/
 /*** construtor ***/
-
-Map::Map( Raster *rst )
+Map::Map( Raster *rst ) 
 {
-  _rst = rst;
-  _gt  = new GeoTransform( rst->header().proj, GeoTransform::cs_default );
+	_rst = rst;
+	_gt  = new GeoTransform( rst->header().proj, GeoTransform::cs_default );
 }
 
 
@@ -50,8 +51,8 @@ Map::Map( Raster *rst )
 
 Map::~Map()
 {
-  delete _gt;
-  delete _rst;
+	delete _gt;
+	delete _rst;
 }
 
 
@@ -61,28 +62,28 @@ int
 Map::getRegion( Coord *xmin, Coord *ymin, Coord *xmax,
                 Coord *ymax) const
 {
-  *xmin = _rst->xMin();
-  *ymin = _rst->yMin();
-  *xmax = _rst->xMax();
-  *ymax = _rst->yMax();
+	*xmin = _rst->xMin();
+	*ymin = _rst->yMin();
+	*xmax = _rst->xMax();
+	*ymax = _rst->yMax();
 
-  bool result = 
-    _gt->transfOut( xmin, ymin ) &&
-    _gt->transfOut( xmax, ymax );
+	bool result = 
+	_gt->transfOut( xmin, ymin ) &&
+	_gt->transfOut( xmax, ymax );
 
-  if (*xmin > *xmax)
-    {
-      *xmin = -180;
-      *xmax = 180;
-    }
+	if (*xmin > *xmax)
+	{
+		*xmin = -180;
+		*xmax = 180;
+	}
 
-  if (*ymin > *ymax)
-    {
-      *ymin = -90;
-      *ymax = 90;
-    }
+	if (*ymin > *ymax)
+	{
+		*ymin = -90;
+		*ymax = 90;
+	}
 
-  return result;
+	return result;
 }
 
 
@@ -91,7 +92,7 @@ Map::getRegion( Coord *xmin, Coord *ymin, Coord *xmax,
 int
 Map::get( Coord x, Coord y, Scalar *val ) const
 {
-  return _gt->transfIn( &x, &y ) ? _rst->get( x, y, val ) : 0;
+	return _gt->transfIn( &x, &y ) ? _rst->get( x, y, val ) : 0;
 }
 
 /***********/
@@ -99,7 +100,7 @@ Map::get( Coord x, Coord y, Scalar *val ) const
 int
 Map::put( Coord x, Coord y, Scalar val )
 {
-  return _gt->transfIn( &x, &y ) ? _rst->put( x, y, val ) : 0;
+	return _gt->transfIn( &x, &y ) ? _rst->put( x, y, val ) : 0;
 }
 
 /***********/
@@ -107,5 +108,5 @@ Map::put( Coord x, Coord y, Scalar val )
 int
 Map::put( Coord x, Coord y )
 {
-  return _gt->transfIn(&x,&y) ? _rst->put( x,y ) : 0;
+	return _gt->transfIn(&x,&y) ? _rst->put( x,y ) : 0;
 }

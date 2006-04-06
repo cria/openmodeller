@@ -111,7 +111,7 @@
 				OutputFile=".\Debug/om_csmbs_debug.dll"
 				LinkIncremental="2"
 				SuppressStartupBanner="TRUE"
-				AdditionalLibraryDirectories="../build_debug;&quot;$(GDAL_HOME)/lib&quot;;&quot;$(EXPAT_HOME)/libs&quot;;&quot;C:\libgsl-1.6\lib&quot;"
+				AdditionalLibraryDirectories="../build_debug;&quot;$(GDAL_HOME)/lib&quot;;&quot;$(EXPAT_HOME)/libs&quot;;C:\gsl\lib"
 				IgnoreAllDefaultLibraries="FALSE"
 				IgnoreDefaultLibraryNames=""
 				GenerateDebugInformation="TRUE"

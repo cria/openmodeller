@@ -21,7 +21,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				AdditionalIncludeDirectories="../../../src,../../../src/openmodeller,$(GDAL_HOME)/include,$(EXPAT_HOME)/Source/lib,$(JAVA_HOME)/include,$(JAVA_HOME)/bin"
-				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;LIBOPENMODELLER_DLL_EXPORTS;VERSION=\&quot;0.3.4\&quot;;PLUGINPATH=\&quot;.\&quot;;CONFIG_FILE=\&quot;om_config.txt\&quot;"
+				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;LIBOPENMODELLER_DLL_EXPORTS;VERSION=\&quot;0.4\&quot;;PLUGINPATH=\&quot;.\&quot;;CONFIG_FILE=\&quot;om_config.txt\&quot;"
 				MinimalRebuild="TRUE"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
@@ -96,7 +96,7 @@
 				Optimization="2"
 				InlineFunctionExpansion="1"
 				AdditionalIncludeDirectories="../../../src,../../../src/openmodeller,$(GDAL_HOME)/include,$(EXPAT_HOME)/Source/lib,$(JAVA_HOME)/include,$(JAVA_HOME)/bin"
-				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;LIBOPENMODELLER_DLL_EXPORTS;VERSION=\&quot;0.3.4\&quot;;PLUGINPATH=\&quot;.\&quot;;CONFIG_FILE=\&quot;om_config.txt\&quot;"
+				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;LIBOPENMODELLER_DLL_EXPORTS;VERSION=\&quot;0.4\&quot;;PLUGINPATH=\&quot;.\&quot;;CONFIG_FILE=\&quot;om_config.txt\&quot;"
 				StringPooling="TRUE"
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="TRUE"
@@ -237,6 +237,9 @@
 					RelativePath="..\..\..\src\openmodeller\env_io\Raster.cpp">
 				</File>
 				<File
+					RelativePath="..\..\..\src\openmodeller\env_io\RasterFactory.cpp">
+				</File>
+				<File
 					RelativePath="..\..\..\src\openmodeller\env_io\RasterGdal.cpp">
 				</File>
 			</Filter>
@@ -251,6 +254,19 @@
 				</File>
 				<File
 					RelativePath="..\..\..\src\openmodeller\models\ScaledModel.cpp">
+				</File>
+			</Filter>
+			<Filter
+				Name="occ_io"
+				Filter="">
+				<File
+					RelativePath="..\..\..\src\openmodeller\occ_io\OccurrencesFactory.cpp">
+				</File>
+				<File
+					RelativePath="..\..\..\src\openmodeller\occ_io\OccurrencesFile.cpp">
+				</File>
+				<File
+					RelativePath="..\..\..\src\openmodeller\occ_io\OccurrencesReader.cpp">
 				</File>
 			</Filter>
 		</Filter>
@@ -362,6 +378,9 @@
 					RelativePath="..\..\..\src\openmodeller\env_io\Raster.hh">
 				</File>
 				<File
+					RelativePath="..\..\..\src\openmodeller\env_io\RasterFactory.hh">
+				</File>
+				<File
 					RelativePath="..\..\..\src\openmodeller\env_io\RasterGdal.hh">
 				</File>
 			</Filter>
@@ -376,6 +395,19 @@
 				</File>
 				<File
 					RelativePath="..\..\..\src\openmodeller\models\ScaledModel.hh">
+				</File>
+			</Filter>
+			<Filter
+				Name="occ_io"
+				Filter="">
+				<File
+					RelativePath="..\..\..\src\openmodeller\occ_io\OccurrencesFactory.hh">
+				</File>
+				<File
+					RelativePath="..\..\..\src\openmodeller\occ_io\OccurrencesFile.hh">
+				</File>
+				<File
+					RelativePath="..\..\..\src\openmodeller\occ_io\OccurrencesReader.hh">
 				</File>
 			</Filter>
 		</Filter>

@@ -4,6 +4,8 @@
  * @file
  * @author Mauro E S Muñoz <mauro@cria.org.br>
  * @date 2003-08-22
+ * @author Alexandre Copertino Jardim <alexcj@dpi.inpe.br>
+ * @date 2006-03-21
  * $Id$
  *
  * LICENSE INFORMATION
@@ -29,12 +31,16 @@
 #ifndef _RASTER_GDALHH_
 #define _RASTER_GDALHH_
 
+#include <openmodeller/om_defs.hh>
 #include <openmodeller/env_io/Header.hh>
+#include <openmodeller/env_io/Raster.hh>
 
 #include <string>
 #include <vector>
 
 class GDALDataset;
+class MapFormat;
+//class Map;
 
 /****************************************************************/
 /************************** Raster Gdal *************************/
@@ -44,65 +50,101 @@ class GDALDataset;
  * Library - http://www.remotesensing.org/gdal/index.html)
  *
  */
-
-/**************/
-class RasterGdal
+class dllexp RasterGdal : public Raster
 {
 public:
+	/** 
+	* If 'categ' != 0 this is a categorical map (ie it can't be
+	* interpolated). Othewise this is a continuos map.
+	*
+	*/
+	// Open an existing file -- read only.
+	RasterGdal( const std::string& file, int categ=0 );
 
-  /** Open 'file' for read (mode = 'r') or write (mode = 'w'). **/
-  RasterGdal( const std::string& file, char mode );
+	/**
+	* Create a new file for projections.
+	* @param file is the name of the output file
+	* @param format is the output format specification.
+	*/
+	RasterGdal( const std::string& file, const MapFormat& format );
 
-  /** Create a new file for write based on the header 'hdr'. **/
-  RasterGdal( const std::string& file, int format, const Header& hdr );
+	/**
+	* Destructor
+	*/
+	~RasterGdal();
 
-  ~RasterGdal();
+	/** Returns the file's header **/
+	Header& header() { return f_hdr; }
 
-  /** Returns the file's header **/
-  Header& header() { return f_hdr; }
+	int iget( int x, int y, Scalar *val );
+	int iput( int x, int y, Scalar val );
 
-  int iget( int x, int y, Scalar *val );
-  int iput( int x, int y, Scalar val );
+	/**
+	* Fills '*val' with the map value at (x,y).
+	* Returns zero if (x,y) is out of range.
+	*/
+	int get( Coord x, Coord y, Scalar *val );
+
+	/**
+	* Put '*val' at the (x,y) coordinate.
+	* Returns 0 if (x,y) is out of range or the map is read only.
+	* supports only single band output files.
+	*/
+	int put( Coord x, Coord y, Scalar val );
+
+	/**
+	* Put 'no data val' at the (x,y) coordinate.
+	* Returns 0 if (x,y) is out of range or the map is read only.
+	* supports only single band output files.
+	*/
+	int put( Coord x, Coord y );
+
+	/** Find the minimum and maximum values in 'band'. */
+	int calcMinMax( int band=0 );
 
 private:
+	/** Open a raster file. **/
+	void open( char mode );
 
-  /** Open a raster file. **/
-  void open( char mode );
+	/** Create a new raster file based on 'hdr'. **/
+	void create(int format);
 
-  /** Create a new raster file based on 'hdr'. **/
-  void create(int format);
+	void initBuffer();
 
-  void initBuffer();
+	static void initGdal();
 
-  static void initGdal();
+	/**
+	* Read 'num_rows' rows starting from 'first_row' to the memory
+	* pointed to by 'buf'. Each element read is transformed in a
+	* 'Scalar'.
+	*/
+	void read ( Scalar *buf, int first_row, int num_rows );
 
-  /**
-   * Read 'num_rows' rows starting from 'first_row' to the memory
-   * pointed to by 'buf'. Each element read is transformed in a
-   * 'Scalar'.
-   */
-  void read ( Scalar *buf, int first_row, int num_rows );
+	/**
+	* Write 'num_rows' rows starting from 'first_row' to the memory
+	* pointed to by 'buf'.
+	*/
+	void write( Scalar *buf, int first_row, int num_rows );
 
-  /**
-   * Write 'num_rows' rows starting from 'first_row' to the memory
-   * pointed to by 'buf'.
-   */
-  void write( Scalar *buf, int first_row, int num_rows );
+	void loadRow( int row );
+	void saveRow();           // Save the current row.
 
-  void loadRow( int row );
-  void saveRow();           // Save the current row.
+	GDALDataset *f_ds;
+	
+	Scalar *f_data; // One line data for all bands.
+	int     f_size; // Size of one line.
 
-  Header       f_hdr;
-  GDALDataset *f_ds;
-  std::string f_name;
+	int f_currentRow;
+	int f_changed;
 
-  Scalar *f_data; // One line data for all bands.
-  int     f_size; // Size of one line.
+	// Disable copying.
+	RasterGdal( const RasterGdal& );
+	RasterGdal& operator=( const RasterGdal& );
 
-  int f_currentRow;
-  int f_changed;
-
+	// Only because RasterFactory.
+	void createRaster( const std::string& file, int categ = 0 ) {};
+	void createRaster( const std::string& file, const MapFormat& format ) {};
 };
 
-
 #endif
+
