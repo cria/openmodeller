@@ -1,7 +1,6 @@
 /**
  * Simple map/occurrences viewer.
  * 
- * @file
  * @author Mauro E S Muñoz (mauro@cria.org.br)
  * @date   2003-10-09
  * $Id$
@@ -28,10 +27,9 @@
 
 #include <openmodeller/om.hh>
 
-#include <openmodeller/env_io/Map.hh>
 #include <openmodeller/env_io/GeoTransform.hh>
 #include <openmodeller/env_io/Raster.hh>
-#include "occurrences_file.hh"
+#include <openmodeller/env_io/RasterFactory.hh>
 #include <openmodeller/Occurrence.hh>
 #include "file_parser.hh"
 
@@ -112,7 +110,8 @@ main( int argc, char **argv )
         for ( int i = 0; i < _nmap; i++ )
           {
             // Generate a raster using map "i".
-            _maps[i] = new Map( new Raster( mapfile[i] ) );
+            //_maps[i] = new Map( new Raster( mapfile[i] ) );
+            _maps[i] = new Map( RasterFactory::instance().create( mapfile[i] ) );
             //_maps[i]->normalize( 0.0, 255.0 );
           }
       }
@@ -127,7 +126,9 @@ main( int argc, char **argv )
         if ( result.empty() )
           g_log.error( 1, "'Output file' was not specified!\n" );
 
-        _maps[0] = new Map( new Raster( result ) );
+        //_maps[0] = new Map( new Raster( result ) );
+	_maps[0] = new Map( RasterFactory::instance().create( result ) );
+
         //_maps[0]->normalize( 0.0, 255.0 );
       }
 
@@ -290,5 +291,5 @@ readOccurrences( char const *file, char const *name, char const *coord_system )
 {
   OccurrencesFile oc_file( file, coord_system );
 
-  return oc_file.remove( name );
+  return oc_file.get( name );
 }

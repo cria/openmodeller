@@ -1,7 +1,6 @@
 /**
  * Simple species niche visualizer.
  * 
- * @file
  * @author Mauro E S Muñoz (mauro@cria.org.br)
  * @date   2003-10-09
  * $Id$
@@ -27,12 +26,10 @@
  */
 
 #include <openmodeller/om.hh>
-#include <openmodeller/AlgorithmFactory.hh>
 #include <openmodeller/Environment.hh>
 #include <openmodeller/Occurrence.hh>
 #include "request_file.hh"
 #include "file_parser.hh"
-#include "occurrences_file.hh"
 #include "graph/graphic.hh"
 
 #include <string.h>
@@ -425,5 +422,5 @@ readOccurrences( char const *file, char const *name, char const *coord_system )
 {
   OccurrencesFile oc_file( file, coord_system );
 
-  return oc_file.remove( name );
+  return oc_file.get( name );
 }

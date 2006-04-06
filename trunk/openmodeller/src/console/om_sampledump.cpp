@@ -3,7 +3,6 @@
 #include "request_file.hh"
 #include "request_file.hh"
 #include "file_parser.hh"
-#include "occurrences_file.hh"
 
 #include <istream>
 

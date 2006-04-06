@@ -30,7 +30,7 @@
 
 #include <openmodeller/MapFormat.hh>
 #include <openmodeller/env_io/Map.hh>
-#include <openmodeller/env_io/Raster.hh>
+#include <openmodeller/env_io/RasterFactory.hh>
 #include <openmodeller/Exceptions.hh>
 #include <openmodeller/Log.hh>
 
@@ -83,9 +83,9 @@ MapFormat::MapFormat( char const *filenameWithFormat ) :
   format( DEFAULT_FORMAT )
 {
   // TODO - determine the format from the raster file....
-  Raster r( filenameWithFormat );
+  Raster* r = RasterFactory::instance().create( filenameWithFormat );
 
-  Header h = r.header();
+  Header h = r->header();
 
   setXCel( h.xcel );
   setYCel( h.ycel );
@@ -95,7 +95,6 @@ MapFormat::MapFormat( char const *filenameWithFormat ) :
   setYMax( h.ymax );
   setNoDataValue( h.noval );
   setProjection( h.proj );
-
 }
 
 void MapFormat::copyDefaults( const Map& map ) {

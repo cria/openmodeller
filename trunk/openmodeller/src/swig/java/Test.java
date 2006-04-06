@@ -34,7 +34,7 @@ public class Test
 	
 	//OccurrencesFile ocfile = new OccurrencesFile(spfile, wktsys);
 	//ocfile.tail();
-	//SWIGTYPE_p_Occurrences occurr = ocfile.remove(spname);
+	//SWIGTYPE_p_Occurrences occurr = ocfile.get(spname);
 	
 	System.out.println("\nInitializing algorithm.");
 	//System.out.println("Setting Environment object. " + mod.setEnvironment(0, categs, 7, maps, "mask"));

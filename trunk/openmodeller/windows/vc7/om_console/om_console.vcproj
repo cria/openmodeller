@@ -154,9 +154,6 @@
 				RelativePath="..\..\..\src\console\file_parser.cpp">
 			</File>
 			<File
-				RelativePath="..\..\..\src\console\occurrences_file.cpp">
-			</File>
-			<File
 				RelativePath="..\..\..\src\console\om_console.cpp">
 			</File>
 			<File

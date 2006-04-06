@@ -31,6 +31,7 @@
 #include <openmodeller/OpenModeller.hh>
 
 #include <openmodeller/env_io/Map.hh>
+#include <openmodeller/env_io/RasterFactory.hh>
 
 #include <openmodeller/om_defs.hh>
 #include <openmodeller/Log.hh>
@@ -327,7 +328,7 @@ OpenModeller::createMap( const EnvironmentPtr & env, char const *output_file, Ma
   }
 
   // Create map on disc.
-  Map map( new Raster( output_file, output_format ) );
+  Map map( RasterFactory::instance().create( output_file, output_format ) );
 
   Projector::createMap( m, env,
 			&map,

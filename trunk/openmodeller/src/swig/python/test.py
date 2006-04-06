@@ -33,7 +33,7 @@ spname = "Strix varia";
 
 ocfile = om.OccurrencesFile(spfile, wktsys);
 ocfile.tail();
-occurr = ocfile.remove(spname);
+occurr = ocfile.get(spname);
 
 print "\nInitializing algorithm.";
 print "Reading occurrences.        ", mod.setOccurrences(occurr);

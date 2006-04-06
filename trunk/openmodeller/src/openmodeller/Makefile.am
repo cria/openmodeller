@@ -47,9 +47,13 @@ libopenmodeller_la_SOURCES = \
 	env_io/MapIterator.cpp \
 	env_io/Raster.cpp \
 	env_io/RasterGdal.cpp \
+	env_io/RasterFactory.cpp \
 	models/AlgoAdapterModel.cpp \
 	models/AverageModel.cpp \
-	models/ScaledModel.cpp
+	models/ScaledModel.cpp \
+	occ_io/OccurrencesFactory.cpp \
+        occ_io/OccurrencesFile.cpp \
+  	occ_io/OccurrencesReader.cpp
 
 libopenmodeller_la_LDFLAGS = -no-undefined
 libopenmodeller_la_CPPFLAGS = -I@top_srcdir@/src $(DPLUGIN_PATH) $(DCONFIG_FILE) $(EXPAT_CFLAGS)
@@ -94,6 +98,7 @@ envioinclude_HEADERS = \
 	env_io/Header.hh \
 	env_io/Map.hh \
 	env_io/MapIterator.hh \
+	env_io/RasterFactory.hh \
 	env_io/Raster.hh \
 	env_io/RasterGdal.hh
 
@@ -103,3 +108,11 @@ modelsinclude_HEADERS = \
 	models/AlgoAdapterModel.hh \
 	models/AverageModel.hh \
 	models/ScaledModel.hh
+
+occioincludedir = $(omincludedir)/occ_io
+
+occioinclude_HEADERS = \
+        occ_io/OccurrencesFactory.hh \
+        occ_io/OccurrencesFile.hh \
+        occ_io/OccurrencesReader.hh
+

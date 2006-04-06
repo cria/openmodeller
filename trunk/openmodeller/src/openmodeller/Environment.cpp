@@ -31,7 +31,7 @@
 
 #include <openmodeller/Log.hh>
 #include <openmodeller/env_io/Map.hh>
-#include <openmodeller/env_io/Raster.hh>
+#include <openmodeller/env_io/RasterFactory.hh>
 #include <openmodeller/env_io/GeoTransform.hh>
 #include <openmodeller/Random.hh>
 #include <openmodeller/Configuration.hh>
@@ -132,7 +132,7 @@ EnvironmentImpl::makeLayer( const ConstConfigurationPtr& config ) {
 EnvironmentImpl::layer
 EnvironmentImpl::makeLayer( const string& filename, int categ ) {
   layer l;
-  Map *map = new Map( new Raster( filename, categ ) );
+  Map *map = new Map( RasterFactory::instance().create( filename, categ ) );
   if ( !map ) {
     g_log.warn( "Cannot read environment file: '%s'\n", filename.c_str() );
   }

@@ -1,7 +1,6 @@
 /**
  * openModeller console interface.
  * 
- * @file
  * @author Mauro E S Muñoz (mauro@cria.org.br)
  * @date   2003-09-16
  * $Id$
@@ -29,7 +28,6 @@
 #include <openmodeller/om.hh>
 #include "request_file.hh"
 #include "file_parser.hh"
-#include "occurrences_file.hh"
 
 #include <openmodeller/Configuration.hh>
 #include <istream>
@@ -130,7 +128,11 @@ main( int argc, char **argv )
     // Run projection
     om.setMapCallback( mapCallback );
 
-    request.makeProjection( &om );
+    try
+	{
+	   request.makeProjection( &om );
+	}
+	catch ( ... ) {}
 
     //ConfusionMatrix matrix;
     ConfusionMatrix * matrix = om.getConfusionMatrix();

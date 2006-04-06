@@ -59,7 +59,7 @@ public class OMTest3 {
 
 	OccurrencesFile ocfile = new OccurrencesFile(spfile, wktsys);
 	ocfile.tail();
-	SWIGTYPE_p_Occurrences occurr = ocfile.remove(spname);
+	SWIGTYPE_p_Occurrences occurr = ocfile.get(spname);
 
 	System.out.println("Starting GARP model");
 

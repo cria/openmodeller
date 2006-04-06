@@ -59,7 +59,8 @@
 #include <openmodeller/AlgorithmFactory.hh>
 #include <openmodeller/MapFormat.hh>
 #include <openmodeller/env_io/Map.hh>
-#include <openmodeller/env_io/Raster.hh>
+#include <openmodeller/env_io/RasterFactory.hh>
+#include <openmodeller/occ_io/OccurrencesFactory.hh>
 
 #endif
 
