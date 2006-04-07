@@ -29,7 +29,6 @@
 
 #include <openmodeller/env_io/GeoTransform.hh>
 #include <openmodeller/env_io/Raster.hh>
-#include <openmodeller/env_io/RasterFactory.hh>
 #include <openmodeller/Occurrence.hh>
 #include "file_parser.hh"
 
@@ -289,7 +288,8 @@ findRegion( int nmap, Map **map, Coord *xmin, Coord *ymin,
 OccurrencesPtr
 readOccurrences( char const *file, char const *name, char const *coord_system )
 {
-  OccurrencesFile oc_file( file, coord_system );
+  OccurrencesReader* oc_file =
+  OccurrencesFactory::instance().create( file, coord_system );
 
-  return oc_file.get( name );
+  return oc_file->get( name );
 }

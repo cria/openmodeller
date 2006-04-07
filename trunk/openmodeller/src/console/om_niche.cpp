@@ -420,7 +420,7 @@ draw_occur( GGraph *graph, const OccurrencesPtr& occurs )
 OccurrencesPtr 
 readOccurrences( char const *file, char const *name, char const *coord_system )
 {
-  OccurrencesFile oc_file( file, coord_system );
+  OccurrencesReader* oc_file = OccurrencesFactory::instance().create( file, coord_system );
 
-  return oc_file.get( name );
+  return oc_file->get( name );
 }
