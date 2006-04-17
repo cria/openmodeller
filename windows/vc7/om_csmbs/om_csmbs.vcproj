@@ -21,7 +21,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="2"
 				InlineFunctionExpansion="1"
-				AdditionalIncludeDirectories="../../algorithms,../../../src,../../../src/openmodeller,$(GDAL_HOME)/include,$(GSL_HOME)/include,$(JAVA_HOME)/include,$(JAVA_HOME)/bin"
+				AdditionalIncludeDirectories="../../algorithms,../../../src,../../../src/openmodeller,$(GDAL_HOME)/include,$(GSL_HOME)/include,$(GSL_HOME)/include/gsl,$(GSL_HOME)/include/gsl,$(JAVA_HOME)/include,$(JAVA_HOME)/bin"
 				PreprocessorDefinitions="_WINDOWS;WIN32;NDEBUG;_USRDLL;OM_CSMBS_EXPORTS;CORE_DLL_IMPORT;GSL_DLL"
 				StringPooling="TRUE"
 				RuntimeLibrary="2"
@@ -90,7 +90,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="../../algorithms;../../../src;../../../src/openmodeller;&quot;$(GSL_HOME)/include&quot;;&quot;$(GDAL_HOME)/include&quot;;&quot;$(JAVA_HOME)/include&quot;;&quot;$(JAVA_HOME)/bin&quot;"
+				AdditionalIncludeDirectories="../../algorithms;../../../src;../../../src/openmodeller;&quot;$(GSL_HOME)/include&quot;;&quot;$(GSL_HOME)/include/gsl&quot;;&quot;$(GSL_HOME)/include/gsl&quot;;&quot;$(GDAL_HOME)/include&quot;;&quot;$(JAVA_HOME)/include&quot;;&quot;$(JAVA_HOME)/bin&quot;"
 				PreprocessorDefinitions="_WINDOWS;WIN32;_DEBUG;_USRDLL;OM_CSMBS_EXPORTS;CORE_DLL_IMPORT;GSL_DLL"
 				MinimalRebuild="TRUE"
 				BasicRuntimeChecks="3"
