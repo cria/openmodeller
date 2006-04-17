@@ -69,7 +69,7 @@ Installation notes for Windows
 3. Checkout a working copy of openModeller's "om" module from CVS 
 
 4. Set the following environment variables:
-  * GDAL_DIR to the directory where GDAL was built and installed
+  * GDAL_HOME to the directory where GDAL was built and installed
   * EXPAT_HOME to the base directory of Expat install
   * GSL_HOME to the base directory of GSL install
   * SWIG_HOME to the base directory of SWIG install
