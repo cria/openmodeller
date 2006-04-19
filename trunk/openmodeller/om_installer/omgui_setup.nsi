@@ -2,7 +2,7 @@
 
 ; HM NIS Edit Wizard helper defines
 !define PRODUCT_NAME "openModeller"
-!define PRODUCT_VERSION "0.3.4"
+!define PRODUCT_VERSION "0.3.4-pre2"
 !define PRODUCT_PUBLISHER "openModeller Development Team"
 !define PRODUCT_WEB_SITE "http://openmodeller.sourceforge.net"
 !define PRODUCT_DIR_REGKEY "Software\Microsoft\Windows\CurrentVersion\App Paths\omgui.exe"
@@ -50,13 +50,13 @@
 ; MUI end ------
 
 Name "${PRODUCT_NAME} ${PRODUCT_VERSION}"
-OutFile "openModeller${PRODUCT_VERSION}_setup.exe"
+OutFile "openModellerGUI-${PRODUCT_VERSION}_setup.exe"
 InstallDir "$PROGRAMFILES\openModeller"
 InstallDirRegKey HKLM "${PRODUCT_DIR_REGKEY}" ""
 ShowInstDetails show
 ShowUnInstDetails show
 
-Section "-RequiredComponents" SectionRequiredComponents
+Section "Standalone version" SectionStandAloneVersion
   SetOutPath "$INSTDIR"
   SetOverwrite ifnewer
   CreateDirectory "$SMPROGRAMS\openModeller"
@@ -64,12 +64,21 @@ Section "-RequiredComponents" SectionRequiredComponents
   CreateShortCut "$DESKTOP\openModeller.lnk" "$INSTDIR\omgui.exe"
   
   File "om_logo.bmp"
+  File "..\build\cubewerx_extra.wkt"
   File "..\build\ecw_cs.dat"
+  File "..\build\ellipsoid.csv"
+  File "..\build\epsg.wkt"
+  File "..\build\esri_extra.wkt"
   File "..\build\gcs.csv"
   File "..\build\gdal13.dll"
-;  File "..\build\libexif-9.dll"
+  File "..\build\gdal_datum.csv"
+  File "..\build\libexif-9.dll"
   File "..\build\libexpat.dll"
   File "..\build\libopenmodeller.dll"
+  File "..\build\libpng13.dll"; <-- needed by GDAL
+  File "..\build\msvcr71.dll" 
+  File "..\build\msvcp71.dll" 
+  File "..\build\msvcp60.dll" ; <-- needed for qt hopefully this req will go away after i rebuild qt with vc8 
   File "..\build\om_config.txt"
   File "..\build\om_console.exe"
   File "..\build\pcs.csv"
@@ -83,14 +92,7 @@ Section "-RequiredComponents" SectionRequiredComponents
   File "..\build\stateplane.csv"  
   File "..\build\unit_of_measure.csv"  
   File "..\build\wkt_defs.txt"
-  File "..\build\cubewerx_extra.wkt"
-  File "..\build\ellipsoid.csv"
-  File "..\build\esri_extra.wkt"
-  File "..\build\gdal_datum.csv"
-  File "..\build\epsg.wkt"
-  File "..\build\msvcr71.dll" 
-  File "..\build\msvcp71.dll" 
-  File "..\build\msvcp60.dll" ; <-- needed for qt hopefully this req will go away after i rebuild qt with vc8 
+  File "..\build\zlib1.dll"
 
   ;
   ; Now the algs 
@@ -99,7 +101,7 @@ Section "-RequiredComponents" SectionRequiredComponents
   SetOverwrite try
   File "..\build\algs\om_bioclim.dll"
   File "..\build\algs\om_bioclim_distance.dll"
-  File "..\build\algs\om_csmbs.dll"
+  ;File "..\build\algs\om_csmbs.dll"                ; <-- CSM is excluded because does not work under windows
   File "..\build\algs\om_distance_to_average.dll"
   File "..\build\algs\om_dg_garp.dll"
   ;File "..\build\algs\om_dg_garp_bs.dll"           ; <-- Old BS replaced by new version by Kevin
@@ -110,7 +112,8 @@ Section "-RequiredComponents" SectionRequiredComponents
 
   SetOutPath $INSTDIR
   File "..\build\libgsl.dll"                        ; required by CSM
-  File "..\build\gslcblas.dll"                      ; required by CSM
+  File "..\build\libgslcblas.dll"                   ; required by CSM
+  File "..\build\xerces-c_2_3_0.dll"                ; required by CSM
 SectionEnd
   
 ;
@@ -126,15 +129,15 @@ SectionEnd
 ; Now the omgui plugin
 ;
 ;Section "Quantum GIS Plugin" SectionOmGuiQgisPlugin
-
-  ; OM QGIS plugin require all the main binaries and files to
-  ; be placed on QGIS home directory
+;
+;  ; OM QGIS plugin require all the main binaries and files to
+;  ; be placed on QGIS home directory
 ;  ReadRegStr $1 HKLM "Software\Microsoft\Windows\CurrentVersion\App Paths\qgis.exe" ""
 ;  StrCpy $2 $1 -9 ; take out the string "\qgis.exe" from the end of the string (9 chars)
 ;  SetOutPath $2
-  
+;  
 ;  IfFileExists $1 PluginInstall SkipPluginInstall
-
+;
 ;PluginInstall:
 ;  File "om_logo.bmp"
 ;  File "..\build\ecw_cs.dat"
@@ -161,15 +164,15 @@ SectionEnd
 ;  File "..\build\gdal_datum.csv"
 ;  File "..\build\epsg.wkt"
 ;  File "..\build\msvcr71.dll" 
-;  File "..\build\msvcp71.dll" 
-
+;  File "..\build\msvcp71.dll"
+;
 ;  SetOutPath $2\lib\qgis
 ;  SetOverwrite try
-;  File "..\build\omgui.dll" ;once again I am sure only the dll's need copying  
-
-  ;
-  ; Now the algs 
-  ;
+;  File "..\build\omgui.dll" ;once again I am sure only the dll's need copying
+;
+;  ;
+;  ; Now the algs 
+;  ;
 ;  SetOutPath $2\algs
 ;  SetOverwrite try
 ;  File "..\build\algs\om_bioclim.dll"
@@ -182,16 +185,16 @@ SectionEnd
 ;  ;File "..\build\algs\om_garp.dll"                  ; <-- OM Garp implementations are excluded because they are broken
 ;  ;File "..\build\algs\om_garp_best_subsets.dll"     ; <-- OM Garp implementations are excluded because they are broken
 ;  File "..\build\algs\om_mindist.dll"
-
+;
 ;  SetOutPath $2
 ;  File "..\build\libgsl.dll"                        ; required by CSM
 ;  File "..\build\gslcblas.dll"                      ; required by CSM
-
+;
 ;  GoTo EndPluginInstall
-
+;
 ;SkipPluginInstall:
 ;  MessageBox MB_OK "Could not find QGis installed in your system. Skipping QGis Plugin installation." 
-
+;
 ;EndPluginInstall:
 ;
 ;
@@ -204,87 +207,87 @@ Section "Sample Data" SectionSampleData
   CreateDirectory  $INSTDIR\sample_data
   SetOutPath $INSTDIR\sample_data
   SetOverwrite try
-  File "..\build\om_sample_data\furcata_boliviana.txt"
+  File "..\build\sample_data\furcata_boliviana.txt"
 
   CreateDirectory $INSTDIR\sample_data\rain_coolest
   SetOutPath $INSTDIR\sample_data\rain_coolest
   SetOverWrite try
-  File "..\build\om_sample_data\rain_coolest\dblbnd.adf"
-  File "..\build\om_sample_data\rain_coolest\hdr.adf"
-  File "..\build\om_sample_data\rain_coolest\prj.adf"
-  File "..\build\om_sample_data\rain_coolest\sta.adf"
-  File "..\build\om_sample_data\rain_coolest\w001001.adf"
-  File "..\build\om_sample_data\rain_coolest\w001001x.adf"
+  File "..\build\sample_data\rain_coolest\dblbnd.adf"
+  File "..\build\sample_data\rain_coolest\hdr.adf"
+  File "..\build\sample_data\rain_coolest\prj.adf"
+  File "..\build\sample_data\rain_coolest\sta.adf"
+  File "..\build\sample_data\rain_coolest\w001001.adf"
+  File "..\build\sample_data\rain_coolest\w001001x.adf"
 
   CreateDirectory $INSTDIR\sample_data\rain_hottest
   SetOutPath $INSTDIR\sample_data\rain_hottest
   SetOverWrite try
-  File "..\build\om_sample_data\rain_hottest\dblbnd.adf"
-  File "..\build\om_sample_data\rain_hottest\hdr.adf"
-  File "..\build\om_sample_data\rain_hottest\prj.adf"
-  File "..\build\om_sample_data\rain_hottest\sta.adf"
-  File "..\build\om_sample_data\rain_hottest\w001001.adf"
-  File "..\build\om_sample_data\rain_hottest\w001001x.adf"
+  File "..\build\sample_data\rain_hottest\dblbnd.adf"
+  File "..\build\sample_data\rain_hottest\hdr.adf"
+  File "..\build\sample_data\rain_hottest\prj.adf"
+  File "..\build\sample_data\rain_hottest\sta.adf"
+  File "..\build\sample_data\rain_hottest\w001001.adf"
+  File "..\build\sample_data\rain_hottest\w001001x.adf"
 
   CreateDirectory $INSTDIR\sample_data\rain_tot
   SetOutPath $INSTDIR\sample_data\rain_tot
   SetOverWrite try
-  File "..\build\om_sample_data\rain_tot\dblbnd.adf"
-  File "..\build\om_sample_data\rain_tot\hdr.adf"
-  File "..\build\om_sample_data\rain_tot\prj.adf"
-  File "..\build\om_sample_data\rain_tot\sta.adf"
-  File "..\build\om_sample_data\rain_tot\w001001.adf"
-  File "..\build\om_sample_data\rain_tot\w001001x.adf"
+  File "..\build\sample_data\rain_tot\dblbnd.adf"
+  File "..\build\sample_data\rain_tot\hdr.adf"
+  File "..\build\sample_data\rain_tot\prj.adf"
+  File "..\build\sample_data\rain_tot\sta.adf"
+  File "..\build\sample_data\rain_tot\w001001.adf"
+  File "..\build\sample_data\rain_tot\w001001x.adf"
 
   CreateDirectory $INSTDIR\sample_data\temp_avg
   SetOutPath $INSTDIR\sample_data\temp_avg
   SetOverWrite try
-  File "..\build\om_sample_data\temp_avg\dblbnd.adf"
-  File "..\build\om_sample_data\temp_avg\hdr.adf"
-  File "..\build\om_sample_data\temp_avg\prj.adf"
-  File "..\build\om_sample_data\temp_avg\sta.adf"
-  File "..\build\om_sample_data\temp_avg\w001001.adf"
-  File "..\build\om_sample_data\temp_avg\w001001x.adf"
+  File "..\build\sample_data\temp_avg\dblbnd.adf"
+  File "..\build\sample_data\temp_avg\hdr.adf"
+  File "..\build\sample_data\temp_avg\prj.adf"
+  File "..\build\sample_data\temp_avg\sta.adf"
+  File "..\build\sample_data\temp_avg\w001001.adf"
+  File "..\build\sample_data\temp_avg\w001001x.adf"
 
   CreateDirectory $INSTDIR\sample_data\temp_coolest
   SetOutPath $INSTDIR\sample_data\temp_coolest
   SetOverWrite try
-  File "..\build\om_sample_data\temp_coolest\dblbnd.adf"
-  File "..\build\om_sample_data\temp_coolest\hdr.adf"
-  File "..\build\om_sample_data\temp_coolest\prj.adf"
-  File "..\build\om_sample_data\temp_coolest\sta.adf"
-  File "..\build\om_sample_data\temp_coolest\w001001.adf"
-  File "..\build\om_sample_data\temp_coolest\w001001x.adf"
+  File "..\build\sample_data\temp_coolest\dblbnd.adf"
+  File "..\build\sample_data\temp_coolest\hdr.adf"
+  File "..\build\sample_data\temp_coolest\prj.adf"
+  File "..\build\sample_data\temp_coolest\sta.adf"
+  File "..\build\sample_data\temp_coolest\w001001.adf"
+  File "..\build\sample_data\temp_coolest\w001001x.adf"
 
   CreateDirectory $INSTDIR\sample_data\temp_dryest
   SetOutPath $INSTDIR\sample_data\temp_dryest
   SetOverWrite try
-  File "..\build\om_sample_data\temp_dryest\dblbnd.adf"
-  File "..\build\om_sample_data\temp_dryest\hdr.adf"
-  File "..\build\om_sample_data\temp_dryest\prj.adf"
-  File "..\build\om_sample_data\temp_dryest\sta.adf"
-  File "..\build\om_sample_data\temp_dryest\w001001.adf"
-  File "..\build\om_sample_data\temp_dryest\w001001x.adf"
+  File "..\build\sample_data\temp_dryest\dblbnd.adf"
+  File "..\build\sample_data\temp_dryest\hdr.adf"
+  File "..\build\sample_data\temp_dryest\prj.adf"
+  File "..\build\sample_data\temp_dryest\sta.adf"
+  File "..\build\sample_data\temp_dryest\w001001.adf"
+  File "..\build\sample_data\temp_dryest\w001001x.adf"
 
   CreateDirectory $INSTDIR\sample_data\temp_hotest
   SetOutPath $INSTDIR\sample_data\temp_hotest
   SetOverWrite try
-  File "..\build\om_sample_data\temp_hotest\dblbnd.adf"
-  File "..\build\om_sample_data\temp_hotest\hdr.adf"
-  File "..\build\om_sample_data\temp_hotest\prj.adf"
-  File "..\build\om_sample_data\temp_hotest\sta.adf"
-  File "..\build\om_sample_data\temp_hotest\w001001.adf"
-  File "..\build\om_sample_data\temp_hotest\w001001x.adf"
+  File "..\build\sample_data\temp_hotest\dblbnd.adf"
+  File "..\build\sample_data\temp_hotest\hdr.adf"
+  File "..\build\sample_data\temp_hotest\prj.adf"
+  File "..\build\sample_data\temp_hotest\sta.adf"
+  File "..\build\sample_data\temp_hotest\w001001.adf"
+  File "..\build\sample_data\temp_hotest\w001001x.adf"
 
   CreateDirectory $INSTDIR\sample_data\temp_wettest
   SetOutPath $INSTDIR\sample_data\temp_wettest
   SetOverWrite try
-  File "..\build\om_sample_data\temp_wettest\dblbnd.adf"
-  File "..\build\om_sample_data\temp_wettest\hdr.adf"
-  File "..\build\om_sample_data\temp_wettest\prj.adf"
-  File "..\build\om_sample_data\temp_wettest\sta.adf"
-  File "..\build\om_sample_data\temp_wettest\w001001.adf"
-  File "..\build\om_sample_data\temp_wettest\w001001x.adf"
+  File "..\build\sample_data\temp_wettest\dblbnd.adf"
+  File "..\build\sample_data\temp_wettest\hdr.adf"
+  File "..\build\sample_data\temp_wettest\prj.adf"
+  File "..\build\sample_data\temp_wettest\sta.adf"
+  File "..\build\sample_data\temp_wettest\w001001.adf"
+  File "..\build\sample_data\temp_wettest\w001001x.adf"
 SectionEnd
 
 Section -AdditionalIcons
@@ -321,12 +324,21 @@ Section Uninstall
   Delete /REBOOTOK "$INSTDIR\${PRODUCT_NAME}.url"
   Delete /REBOOTOK "$INSTDIR\uninst.exe"
   Delete /REBOOTOK "$INSTDIR\om_logo.bmp"
+  Delete /REBOOTOK "$INSTDIR\cubewerx_extra.wkt"
   Delete /REBOOTOK "$INSTDIR\ecw_cs.dat"
+  Delete /REBOOTOK "$INSTDIR\ellipsoid.csv"
+  Delete /REBOOTOK "$INSTDIR\epsg.wkt"
+  Delete /REBOOTOK "$INSTDIR\esri_extra.wkt"
   Delete /REBOOTOK "$INSTDIR\gcs.csv"
-  Delete /REBOOTOK "$INSTDIR\gdal12.dll"
+  Delete /REBOOTOK "$INSTDIR\gdal13.dll"
+  Delete /REBOOTOK "$INSTDIR\gdal_datum.csv"
   Delete /REBOOTOK "$INSTDIR\libexif-9.dll"
   Delete /REBOOTOK "$INSTDIR\libexpat.dll"
   Delete /REBOOTOK "$INSTDIR\libopenmodeller.dll"
+  Delete /REBOOTOK "$INSTDIR\libpng13.dll"
+  Delete /REBOOTOK "$INSTDIR\msvcp60.dll"
+  Delete /REBOOTOK "$INSTDIR\msvcp71.dll" 
+  Delete /REBOOTOK "$INSTDIR\msvcr71.dll" 
   Delete /REBOOTOK "$INSTDIR\om_config.txt"
   Delete /REBOOTOK "$INSTDIR\om_console.exe"
   Delete /REBOOTOK "$INSTDIR\omgui.exe"
@@ -341,34 +353,30 @@ Section Uninstall
   Delete /REBOOTOK "$INSTDIR\stateplane.csv"  
   Delete /REBOOTOK "$INSTDIR\unit_of_measure.csv"  
   Delete /REBOOTOK "$INSTDIR\wkt_defs.txt"  
-  Delete /REBOOTOK "$INSTDIR\cubewerx_extra.wkt"
-  Delete /REBOOTOK "$INSTDIR\ellipsoid.csv"
-  Delete /REBOOTOK "$INSTDIR\esri_extra.wkt"
-  Delete /REBOOTOK "$INSTDIR\gdal_datum.csv"
-  Delete /REBOOTOK "$INSTDIR\epsg.wkt"
-  Delete /REBOOTOK "$INSTDIR\msvcr71.dll" 
-  Delete /REBOOTOK "$INSTDIR\msvcp71.dll" 
-  Delete /REBOOTOK "$INSTDIR\msvcp60.dll"
-  Delete /REBOOTOK "$INSTDIR\lib\qgis\omgui.dll"
+  Delete /REBOOTOK "$INSTDIR\zlib1.dll"
+
+  ;Delete /REBOOTOK "$INSTDIR\lib\qgis\omgui.dll"
 
   ;ALGORITHMS
   Delete /REBOOTOK "$INSTDIR\algs\om_bioclim.dll"
   Delete /REBOOTOK "$INSTDIR\algs\om_bioclim_distance.dll"
-  Delete /REBOOTOK "$INSTDIR\algs\om_csmbs.dll"
+  ;Delete /REBOOTOK "$INSTDIR\algs\om_csmbs.dll"               ; <-- Excluded because does not work under windows
   Delete /REBOOTOK "$INSTDIR\algs\om_distance_to_average.dll"
   Delete /REBOOTOK "$INSTDIR\algs\om_dg_garp.dll"
   ;Delete /REBOOTOK "$INSTDIR\algs\om_dg_garp_bs.dll"          ; <-- Replaced by new version
-  ;Delete /REBOOTOK "$INSTDIR\algs\om_dg_garp_bs2.dll"
+  Delete /REBOOTOK "$INSTDIR\algs\om_dg_garp_bs2.dll"
   ;Delete /REBOOTOK "$INSTDIR\algs\om_garp.dll"                ; <-- OM Garp implementations are excluded because they are broken
   ;Delete /REBOOTOK "$INSTDIR\algs\om_garp_best_subsets.dll"   ; <-- OM Garp implementations are excluded because they are broken
   Delete /REBOOTOK "$INSTDIR\algs\om_mindist.dll"
-  Delete /REBOOTOK "$INSTDIR\libgsl.dll"
-  Delete /REBOOTOK "$INSTDIR\gslcblas.dll"
+
+  Delete /REBOOTOK "$INSTDIR\libgsl.dll"                       ; required by CSM
+  Delete /REBOOTOK "$INSTDIR\libgslcblas.dll"                  ; required by CSM
+  Delete /REBOOTOK "$INSTDIR\xerces-c_2_3_0.dll"                ; required by CSM
 
   ; QGIS Plugin
 ;  ReadRegStr $1 HKLM "Software\Microsoft\Windows\CurrentVersion\App Paths\qgis.exe" ""
 ;  StrCpy $2 $1 -9 ; take out the string "\qgis.exe" from the end of the string (9 chars)
-
+;
 ;  Delete /REBOOTOK "$2\${PRODUCT_NAME}.url"
 ;  Delete /REBOOTOK "$2\om_logo.bmp"
 ;  Delete /REBOOTOK "$2\ecw_cs.dat"
@@ -396,21 +404,21 @@ Section Uninstall
 ;  Delete /REBOOTOK "$2\msvcr71.dll" 
 ;  Delete /REBOOTOK "$2\msvcp71.dll" 
 ;  Delete /REBOOTOK "$2\lib\qgis\omgui.dll"
-
-  ;ALGORITHMS (Qgis plugin)
+;
+;  ;ALGORITHMS (Qgis plugin)
 ;  Delete /REBOOTOK "$2\algs\om_bioclim.dll"
 ;  Delete /REBOOTOK "$2\algs\om_bioclim_distance.dll"
 ;  Delete /REBOOTOK "$2\algs\om_csmbs.dll"
 ;  Delete /REBOOTOK "$2\algs\om_distance_to_average.dll"
 ;  Delete /REBOOTOK "$2\algs\om_dg_garp.dll"
-  ;Delete /REBOOTOK "$2\algs\om_dg_garp_bs.dll"             ; <-- Replaced by new version
+;  ;Delete /REBOOTOK "$2\algs\om_dg_garp_bs.dll"             ; <-- Replaced by new version
 ;  Delete /REBOOTOK "$2\algs\om_dg_garp_bs2.dll"  
-  ;Delete /REBOOTOK "$2\algs\om_garp.dll"                  ; <-- OM Garp implementations are excluded because they are broken
-  ;Delete /REBOOTOK "$2\algs\om_garp_best_subsets.dll"     ; <-- OM Garp implementations are excluded because they are broken
+;  ;Delete /REBOOTOK "$2\algs\om_garp.dll"                  ; <-- OM Garp implementations are excluded because they are broken
+;  ;Delete /REBOOTOK "$2\algs\om_garp_best_subsets.dll"     ; <-- OM Garp implementations are excluded because they are broken
 ;  Delete /REBOOTOK "$2\algs\om_mindist.dll"
 ;  Delete /REBOOTOK "$2\libgsl.dll"
 ;  Delete /REBOOTOK "$2\gslcblas.dll"
-
+;
   ;SAMPLE DATA
   Delete /REBOOTOK "$INSTDIR\sample_data\furcata_boliviana.txt"
   Delete /REBOOTOK "$INSTDIR\sample_data\rain_coolest\dblbnd.adf"
@@ -471,7 +479,6 @@ Section Uninstall
   ;REMOVE DIRECTORIES
   RMDir /REBOOTOK "$SMPROGRAMS\openModeller"
   RMDir /REBOOTOK $INSTDIR\algs    
-  RMDir /REBOOTOK $INSTDIR          
   RMDir /REBOOTOK $INSTDIR\sample_data\temp_wettest
   RMDir /REBOOTOK $INSTDIR\sample_data\temp_hotest
   RMDir /REBOOTOK $INSTDIR\sample_data\temp_dryest
@@ -481,6 +488,7 @@ Section Uninstall
   RMDir /REBOOTOK $INSTDIR\sample_data\rain_hottest
   RMDir /REBOOTOK $INSTDIR\sample_data\rain_coolest
   RMDir /REBOOTOK $INSTDIR\sample_data
+  RMDir /REBOOTOK $INSTDIR
 
   ;DELETE REGISTRY ENTRIES
   DeleteRegKey ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}"
@@ -490,13 +498,15 @@ SectionEnd
 
 
 ; MUI Component Descriptions
-LangString DESC_SectionAlgorithms      ${LANG_ENGLISH} "Various OpenModeller compatible algorithms available for ecological niche modeling."
-LangString DESC_SectionOmGuiQgisPlugin ${LANG_ENGLISH} "OpenModeller plugin for Quantum GIS."
-LangString DESC_SectionSampleData      ${LANG_ENGLISH} "Sample data for use with OpenModeller."
+;LangString DESC_SectionAlgorithms      ${LANG_ENGLISH} "Various openModeller compatible algorithms available for ecological niche modeling."
+;LangString DESC_SectionOmGuiQgisPlugin ${LANG_ENGLISH} "openModeller plugin for Quantum GIS."
+LangString DESC_SectionSampleData        ${LANG_ENGLISH} "Sample data for use with openModeller."
+LangString DESC_SectionStandAloneVersion ${LANG_ENGLISH} "Standalone openModeller version."
 
 !insertmacro MUI_FUNCTION_DESCRIPTION_BEGIN
-  !insertmacro MUI_DESCRIPTION_TEXT ${SectionAlgorithms}      $(DESC_SectionAlgorithms)
-  !insertmacro MUI_DESCRIPTION_TEXT ${SectionOmGuiQgisPlugin} $(DESC_SectionOmGuiQgisPlugin)
-  !insertmacro MUI_DESCRIPTION_TEXT ${SectionSampleData}      $(DESC_SectionSampleData)
+  ;!insertmacro MUI_DESCRIPTION_TEXT ${SectionAlgorithms}      $(DESC_SectionAlgorithms)
+  ;!insertmacro MUI_DESCRIPTION_TEXT ${SectionOmGuiQgisPlugin} $(DESC_SectionOmGuiQgisPlugin)
+  !insertmacro MUI_DESCRIPTION_TEXT ${SectionSampleData}        $(DESC_SectionSampleData)
+  !insertmacro MUI_DESCRIPTION_TEXT ${SectionStandaloneVersion} $(DESC_SectionStandaloneVersion)
 !insertmacro MUI_FUNCTION_DESCRIPTION_END
 
