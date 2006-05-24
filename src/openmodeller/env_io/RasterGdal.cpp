@@ -487,6 +487,21 @@ RasterGdal::put( Coord px, Coord py  )
 	return iput( x, y, val );
 }
 
+/*******************/
+/*** get Min Max ***/
+int
+RasterGdal::getMinMax( Scalar *min, Scalar *max )
+{
+	if ( ! calcMinMax() )
+		return 0;
+
+	*min = f_hdr.min;
+
+	*max = f_hdr.max;
+
+	return 1;
+}
+
 /********************/
 /*** calc Min Max ***/
 int

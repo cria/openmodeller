@@ -65,17 +65,3 @@ Raster::setMinMax( Scalar min, Scalar max )
 	f_hdr.max = max;
 }
 
-/*******************/
-/*** get Min Max ***/
-int
-Raster::getMinMax( Scalar *min, Scalar *max )
-{
-	if ( ! f_hdr.minmax )
-		return 0;
-
-	*min = f_hdr.min;
-
-	*max = f_hdr.max;
-
-	return 1;
-}
