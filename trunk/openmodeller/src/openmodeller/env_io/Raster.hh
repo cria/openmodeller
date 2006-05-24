@@ -122,6 +122,13 @@ public:
      */
     virtual int put( Coord px, Coord py ) = 0;
 
+	/** Finds the minimum and maximum values in the first band. 
+     * @param min Pointer to minimum value
+     * @param max Pointer to maximum value
+     * @return 1 if values are present, 0 otherwise
+     */
+    virtual int getMinMax( Scalar *min, Scalar *max ) = 0;
+
     /** Tells if the min and max have already been computed */
     bool hasMinMax() { return f_hdr.minmax; }
 
@@ -130,13 +137,6 @@ public:
      * @param max Maximum value
      */
     void setMinMax( Scalar min, Scalar max );
-
-    /** Finds the minimum and maximum values in the first band. 
-     * @param min Pointer to minimum value
-     * @param max Pointer to maximum value
-     * @return 1 if values are present, 0 otherwise
-     */
-    int getMinMax( Scalar *min, Scalar *max );
 
 protected:
 
