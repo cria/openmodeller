@@ -2,7 +2,7 @@
 
 ; HM NIS Edit Wizard helper defines
 !define PRODUCT_NAME "openModeller"
-!define PRODUCT_VERSION "0.3.4-pre2"
+!define PRODUCT_VERSION "0.3.4"
 !define PRODUCT_PUBLISHER "openModeller Development Team"
 !define PRODUCT_WEB_SITE "http://openmodeller.sourceforge.net"
 !define PRODUCT_DIR_REGKEY "Software\Microsoft\Windows\CurrentVersion\App Paths\omgui.exe"
@@ -64,6 +64,7 @@ Section "Standalone version" SectionStandAloneVersion
   CreateShortCut "$DESKTOP\openModeller.lnk" "$INSTDIR\omgui.exe"
   
   File "om_logo.bmp"
+  File "om_win322.ico"
   File "..\build\cubewerx_extra.wkt"
   File "..\build\ecw_cs.dat"
   File "..\build\ellipsoid.csv"
@@ -101,7 +102,7 @@ Section "Standalone version" SectionStandAloneVersion
   SetOverwrite try
   File "..\build\algs\om_bioclim.dll"
   File "..\build\algs\om_bioclim_distance.dll"
-  ;File "..\build\algs\om_csmbs.dll"                ; <-- CSM is excluded because does not work under windows
+  File "..\build\algs\om_csmbs.dll"  
   File "..\build\algs\om_distance_to_average.dll"
   File "..\build\algs\om_dg_garp.dll"
   ;File "..\build\algs\om_dg_garp_bs.dll"           ; <-- Old BS replaced by new version by Kevin
@@ -302,7 +303,7 @@ Section -Post
   WriteRegStr HKLM "${PRODUCT_DIR_REGKEY}" "" "$INSTDIR\qgis.exe"
   WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "DisplayName" "$(^Name)"
   WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "UninstallString" "$INSTDIR\uninst.exe"
-  WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "DisplayIcon" "$INSTDIR\qgis.exe"
+  WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "DisplayIcon" "$INSTDIR\om_win322.ico"
   WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "DisplayVersion" "${PRODUCT_VERSION}"
   WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "URLInfoAbout" "${PRODUCT_WEB_SITE}"
   WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "Publisher" "${PRODUCT_PUBLISHER}"
@@ -324,6 +325,7 @@ Section Uninstall
   Delete /REBOOTOK "$INSTDIR\${PRODUCT_NAME}.url"
   Delete /REBOOTOK "$INSTDIR\uninst.exe"
   Delete /REBOOTOK "$INSTDIR\om_logo.bmp"
+  Delete /REBOOTOK "$INSTDIR\om_win322.ico"
   Delete /REBOOTOK "$INSTDIR\cubewerx_extra.wkt"
   Delete /REBOOTOK "$INSTDIR\ecw_cs.dat"
   Delete /REBOOTOK "$INSTDIR\ellipsoid.csv"
@@ -360,7 +362,7 @@ Section Uninstall
   ;ALGORITHMS
   Delete /REBOOTOK "$INSTDIR\algs\om_bioclim.dll"
   Delete /REBOOTOK "$INSTDIR\algs\om_bioclim_distance.dll"
-  ;Delete /REBOOTOK "$INSTDIR\algs\om_csmbs.dll"               ; <-- Excluded because does not work under windows
+  Delete /REBOOTOK "$INSTDIR\algs\om_csmbs.dll"     
   Delete /REBOOTOK "$INSTDIR\algs\om_distance_to_average.dll"
   Delete /REBOOTOK "$INSTDIR\algs\om_dg_garp.dll"
   ;Delete /REBOOTOK "$INSTDIR\algs\om_dg_garp_bs.dll"          ; <-- Replaced by new version
