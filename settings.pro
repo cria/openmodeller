@@ -5,18 +5,24 @@
 #                      Tim Sutton 2005
 #
 #################################################################
-DEFINES += VERSION='0.3.5' 
-DEFINES += CONFIG_FILE="'./pluginpath.cfg'"
+
 DEFINES += PLUGINPATH="'./algs/'"
-DEFINES += WIN32
 OMG_DEBUGMODE=false
-OMG_STATIC=false
 
 win32{
+  OMG_STATIC=false
+  DEFINES += CONFIG_FILE="'./pluginpath.cfg'"
+  DEFINES += VERSION='0.4' 
+  DEFINES += WIN32
   message(Installing for windows!)
   DEFINES += MINGW_QT
   LIBS+=-L"C:\Mingw\lib"
   INCLUDEPATH += . 
+  INCLUDEPATH +="c:\dev\cpp\om\src" #hard coded for now!
+  INCLUDEPATH +="c:\dev\cpp\om\src\openmodeller" #hard coded for now!
+  INCLUDEPATH +="c:\dev\cpp\om\src\openmodeller\env_io" #hard coded for now!
+  INCLUDEPATH +="c:\dev\cpp\om\src\openmodeller\models" #hard coded for now!
+  LIBS += -lgdal -lexpat 
 }
 
 #
@@ -31,6 +37,19 @@ unix{
 #
 
 macx{
+  OMG_STATIC=true
+  DEFINES += CONFIG_FILE="'./pluginpath.cfg'"
+  DEFINES += VERSION="'0.4'"
+  DEFINES += MACOSX
+  message(Installing for mac!)
+  LIBS+=-L"/usr/local/lib"
+  INCLUDEPATH += . 
+  INCLUDEPATH +="/Users/timsutton/dev/cpp/om/src" #hard coded for now!
+  INCLUDEPATH +="/Users/timsutton/dev/cpp/om/src/openmodeller" #hard coded for now!
+  INCLUDEPATH +="/Users/timsutton/dev/cpp/om/src/openmodeller/env_io" #hard coded for now!
+  INCLUDEPATH +="/Users/timsutton/dev/cpp/om/src/openmodeller/models" #hard coded for now!
+  LIBS += /usr/local/lib/libgdal.a  # for mac we link to the static versions of gdal and expat
+  LIBS += /usr/local/lib/libexpat.a  # for mac we link to the static versions of gdal and expat
 }
 
 #
@@ -41,11 +60,6 @@ CONFIG += warn_off
 CONFIG -= core network gui
 LANGUAGE  = C++
 LIBS += -L$${PREFIX}/lib/
-LIBS += -lgdal -lexpat 
-INCLUDEPATH +="c:\dev\cpp\om\src" #hard coded for now!
-INCLUDEPATH +="c:\dev\cpp\om\src\openmodeller" #hard coded for now!
-INCLUDEPATH +="c:\dev\cpp\om\src\openmodeller\env_io" #hard coded for now!
-INCLUDEPATH +="c:\dev\cpp\om\src\openmodeller\models" #hard coded for now!
 ####################################################
 
 

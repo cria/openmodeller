@@ -140,7 +140,9 @@ initialPluginPath()
 
   }
 
-  std::ifstream conf_file( CONFIG_FILE, std::ios::in );
+  //std::ifstream conf_file( CONFIG_FILE, std::ios::in );
+  // hard coded by Tim for Mac build
+  std::ifstream conf_file( "./pluginpath.cfg", std::ios::in );
 
   if ( conf_file ) {
 
@@ -154,7 +156,9 @@ initialPluginPath()
 
   }
 
-  entries.push_back( PLUGINPATH );
+  // hard coded by Tim for Mac build
+  //entries.push_back( PLUGINPATH );
+  entries.push_back( "./algs/" );
 
   return entries;
 

@@ -7,10 +7,10 @@
 #################################################################
 
 TEMPLATE=subdirs
-SUBDIRS=csm.pro \
-        bioclim.pro \
+SUBDIRS=bioclim.pro \
         bioclim_distance.pro \
         distance_to_average.pro \
         minimum_distance.pro \
 	dg_garp
 
+#SUBDIRS=csm.pro \

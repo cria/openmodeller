@@ -26,7 +26,9 @@ contains(OMG_STATIC,true){
   #This option is used when creating a statically linked
   #lib to prevent double linked libraries. 
   CONFIG += create_prl        
+win32{
   LIBS += c:/MinGW/lib/libexpat.a
+}
   LIBS += $${PREFIX}/omgui1/libopenmodeller.a
 }else{
 }
