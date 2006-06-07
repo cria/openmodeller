@@ -46,8 +46,7 @@ static AlgParamMetadata parameters[NUM_PARAM] =
     "Maximum number of iterations run by the Genetic Algorithm.",
 
     // Description.
-    "Maximum number of iterations (generations) run by the Genetic\
- Algorithm.",
+    "Maximum number of iterations (generations) run by the Genetic Algorithm.",
 
     1,      // Not zero if the parameter has lower limit.
     1,      // Parameter's lower limit.
@@ -62,11 +61,10 @@ static AlgParamMetadata parameters[NUM_PARAM] =
     "Real",                    // Type.
 
     // Overview.
-    "Defines the convergence value that makes the algorithm stop\
- (before reaching MaxGenerations).",
+    "Defines the convergence value that makes the algorithm stop (before reaching MaxGenerations).",
 
     // Description.
-    "",
+    "Defines the convergence value that makes the algorithm stop (before reaching MaxGenerations).",
 
     1,     // Not zero if the parameter has lower limit.
     0.0,   // Parameter's lower limit.
@@ -81,7 +79,7 @@ static AlgParamMetadata parameters[NUM_PARAM] =
     "Integer",               // Type.
 
     "Maximum number of rules to be kept in solution.", // Overview.
-    "", // Description
+    "Maximum number of rules to be kept in solution.", // Description
 
     1,     // Not zero if the parameter has lower limit.
     1,   // Parameter's lower limit.
@@ -99,7 +97,7 @@ static AlgParamMetadata parameters[NUM_PARAM] =
     "Number of points sampled (with replacement) used to test rules.",
 
     // Description.
-    "",
+    "Number of points sampled (with replacement) used to test rules.",
 
     1,     // Not zero if the parameter has lower limit.
     1,   // Parameter's lower limit.
