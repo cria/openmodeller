@@ -33,7 +33,7 @@
 //
 #ifdef MINGW_QT
 //changed by Tim for wn build! (Temporary hack!)
-#define OM_VERSION "0.3.5"
+#define OM_VERSION "0.4"
 #else
 #define OM_VERSION VERSION
 #endif

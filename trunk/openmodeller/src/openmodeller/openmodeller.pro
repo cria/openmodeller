@@ -20,6 +20,12 @@ win32{
 TEMPLATE = lib
 
 
+win32{
+      SOURCES += os_specific_win.cpp 
+} else {
+      SOURCES += os_specific.cpp 
+}
+
 #################################################################
 
 contains(OMG_STATIC,true){
@@ -108,8 +114,6 @@ SOURCES +=  AlgParameter.cpp \
             MapFormat.cpp \
             #Model.cpp \
             ignorecase_traits.cpp \
-            #os_specific.cpp \
-            os_specific_win.cpp \
             Projector.cpp \
             Random.cpp \
             Sample.cpp \
