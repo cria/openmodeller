@@ -46,6 +46,7 @@ HEADERS +=  env_io/GeoTransform.hh \
             env_io/Map.hh \
             env_io/MapIterator.hh \
             env_io/Raster.hh \
+            env_io/RasterFactory.hh \
             env_io/RasterGdal.hh 
             
 SOURCES +=  env_io/GeoTransform.cpp \
@@ -53,6 +54,7 @@ SOURCES +=  env_io/GeoTransform.cpp \
             env_io/Map.cpp \
             env_io/MapIterator.cpp \
             env_io/Raster.cpp \
+            env_io/RasterFactory.cpp \
             env_io/RasterGdal.cpp 
 
 #
