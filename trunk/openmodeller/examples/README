@@ -102,3 +102,14 @@ build the model and each layer in the projection environment:
 e.g.
 
 om_project furcata-model.xml environment.xml furcata.tif
+
+
+7) om_metadump
+
+This program requires no input files. Simply specify an output 
+file name and it will create and xml document describing all 
+the Algorithms and their associated metadata.
+
+e.g.
+
+om_metadump /tmp/algmetadata.xml

@@ -108,3 +108,23 @@ bool ConsoleXml::projectModel(const std::string theModel, const  std::string the
     return false;
   }
 }
+
+std::string ConsoleXml::getAllAlgorithmMetadataXml()
+{
+  try {
+
+    g_log.setLevel( Log::Debug );
+    g_log.setCallback( new MyLog() );
+
+    AlgorithmFactory::searchDefaultDirs();
+    ostringstream myOutputStream ;
+    ConfigurationPtr cfg = AlgorithmFactory::getConfiguration();
+    Configuration::writeXml( cfg, myOutputStream);
+    return myOutputStream.str();
+  }
+  catch( exception& e ) {
+    cerr << "Exception Caught" << endl;
+    cerr << e.what() << endl;
+    return false;
+  }
+}

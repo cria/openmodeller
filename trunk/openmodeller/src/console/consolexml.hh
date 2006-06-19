@@ -37,5 +37,8 @@ class ConsoleXml
         /** Project a model into a set of environment layers
          * and put the output image into theOutput */
         bool projectModel(const std::string theModel, const  std::string theEnvironment, const std::string theOutput);
+        /** Get a string containing xml metadata for all algorithms
+         */
+        std::string getAllAlgorithmMetadataXml();
 };
 #endif
