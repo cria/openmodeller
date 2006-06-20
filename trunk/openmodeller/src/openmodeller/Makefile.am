@@ -8,7 +8,8 @@
 # WITHOUT ANY WARRANTY, to the extent permitted by law; without even the
 # implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
-AUTOMAKE_OPTIONS=subdir-objects
+#TODO remove 'no-dependencies' and compile without terralib
+AUTOMAKE_OPTIONS=subdir-objects no-dependencies
 
 DPLUGIN_PATH=-DPLUGINPATH=\"$(libdir)/openmodeller/\"
 DCONFIG_FILE=-DCONFIG_FILE=\"om_config\"
@@ -19,6 +20,45 @@ if ISWINDOWS
 SOURCEOS = os_specific_win.cpp
 else
 SOURCEOS = os_specific.cpp
+endif
+
+if BUILD_TERRALIB
+TERRALIB_DATABASES = $(TERRALIB_HOME)/src/terralib/drivers/MySQL/TeMySQL.cpp \
+	$(TERRALIB_HOME)/src/terralib/drivers/OracleSpatial/TeOCIConnect.cpp \
+	$(TERRALIB_HOME)/src/terralib/drivers/OracleSpatial/TeOCICursor.cpp \
+	$(TERRALIB_HOME)/src/terralib/drivers/OracleSpatial/TeOCIOracle.cpp \
+	$(TERRALIB_HOME)/src/terralib/drivers/OracleSpatial/TeOCISDO.cpp \
+	$(TERRALIB_HOME)/src/terralib/drivers/OracleSpatial/TeOracleSpatial.cpp \
+	$(TERRALIB_HOME)/src/terralib/drivers/PostgreSQL/TePGInterface.cpp \
+	$(TERRALIB_HOME)/src/terralib/drivers/PostgreSQL/TePGUtils.cpp \
+	$(TERRALIB_HOME)/src/terralib/drivers/PostgreSQL/TePostGIS.cpp \
+	$(TERRALIB_HOME)/src/terralib/drivers/PostgreSQL/TePostgreSQL.cpp
+
+TERRALIB_CPP = TeUrlParser.cpp \
+	TeDatabaseManager.cpp \
+	env_io/TeOMRaster.cpp \
+	occ_io/TeOccurrences.cpp
+	
+TERRALIB_HH = TeUrlParser.hh \
+	TeDatabaseManager.hh \
+	env_io/TeOMRaster.hh \
+	occ_io/TeOccurrences.hh 
+
+TERRALIB_FLAGS = -I$(TERRALIB_HOME)/src/terralib/kernel \
+	-I$(TERRALIB_HOME)/src/terralib/application \
+	-I$(TERRALIB_HOME)/src/terralib/drivers/MySQL \
+	-I$(TERRALIB_HOME)/src/terralib/drivers/MySQL/include \
+	-I$(TERRALIB_HOME)/src/terralib/drivers/PostgreSQL \
+	-I$(TERRALIB_HOME)/src/terralib/drivers/PostgreSQL/includepg \
+	-I$(TERRALIB_HOME)/src/terralib/drivers/OracleSpatial \
+	-I$(TERRALIB_HOME)/src/terralib/drivers/OracleSpatial/OCI/include \
+	-DBUILD_TERRALIB
+	
+TERRALIB_LIB = $(TERRALIB_HOME)/terralibx/terralib/libterralib.so \
+	$(TERRALIB_HOME)/terralibx/tiff/libtiff.so \
+	/usr/lib/libmysqlclient.so \
+	$(TERRALIB_HOME)/terralibx/PostgreSQL/libpq.a \
+	$(TERRALIB_HOME)/terralibx/Oracle/libclntsh.so
 endif
 
 libopenmodeller_la_SOURCES = \
@@ -52,12 +92,17 @@ libopenmodeller_la_SOURCES = \
 	models/AverageModel.cpp \
 	models/ScaledModel.cpp \
 	occ_io/OccurrencesFactory.cpp \
-        occ_io/OccurrencesFile.cpp \
-  	occ_io/OccurrencesReader.cpp
+	occ_io/OccurrencesFile.cpp \
+	occ_io/OccurrencesReader.cpp \
+	$(TERRALIB_CPP)
+
+if BUILD_TERRALIB
+nodist_libopenmodeller_la_SOURCES = $(TERRALIB_DATABASES)
+endif
 
 libopenmodeller_la_LDFLAGS = -no-undefined
-libopenmodeller_la_CPPFLAGS = -I@top_srcdir@/src $(DPLUGIN_PATH) $(DCONFIG_FILE) $(EXPAT_CFLAGS)
-libopenmodeller_la_LIBADD = $(GDAL_LIB) $(EXPAT_LDFLAGS) $(EXPAT_LIBS)
+libopenmodeller_la_CPPFLAGS = -I@top_srcdir@/src $(DPLUGIN_PATH) $(DCONFIG_FILE) $(EXPAT_CFLAGS) $(TERRALIB_FLAGS)
+libopenmodeller_la_LIBADD = $(GDAL_LIB) $(EXPAT_LDFLAGS) $(EXPAT_LIBS) $(TERRALIB_LIB)
 
 omincludedir = $(includedir)/openmodeller
 
@@ -89,7 +134,8 @@ ominclude_HEADERS = \
 	SampleExpr.hh \
 	SampleExprVar.hh \
 	Sample.hh \
-	Sampler.hh
+	Sampler.hh \
+	$(TERRALIB_HH)
 
 envioincludedir = $(omincludedir)/env_io
 
@@ -115,4 +161,3 @@ occioinclude_HEADERS = \
         occ_io/OccurrencesFactory.hh \
         occ_io/OccurrencesFile.hh \
         occ_io/OccurrencesReader.hh
-
