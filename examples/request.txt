@@ -19,12 +19,12 @@ Species = furcata boliviana
 # note: You can find the map below in this address:
 #       http://openmodeller.cria.org.br/download/rain_coolest.tgz
 #
-Map = rain_coolest
+Map = rain_coolest.tif
 
 # Mask to delimit the region to be used to generate the model (filter
 # the species ocurrencies/absences points).
 #
-Mask = rain_coolest
+Mask = rain_coolest.tif
 
 
 ######################
@@ -32,16 +32,16 @@ Mask = rain_coolest
 
 # File to be used as the output format.
 #
-Output format = rain_coolest
+Output format = rain_coolest.tif
 
 # Maps to be used as environmental variables to project the model
 # to create the output distribution map.
 #
-Output map = rain_coolest
+Output map = rain_coolest.tif
 
 # Mask to delimit the region to project the model onto.
 #
-Output mask = rain_coolest
+Output mask = rain_coolest.tif
 
 # Output model name (serialized model).
 #
