@@ -140,10 +140,14 @@ initialPluginPath()
 
   }
 
-  //std::ifstream conf_file( CONFIG_FILE, std::ios::in );
+#if defined(__APPLE__)
   // hard coded by Tim for Mac build
   std::ifstream conf_file( "./pluginpath.cfg", std::ios::in );
-
+#else
+  //TODO Work out how to not need to do this 
+  std::ifstream conf_file( CONFIG_FILE, std::ios::in );
+#endif
+  
   if ( conf_file ) {
 
     while( conf_file ) {
@@ -156,9 +160,12 @@ initialPluginPath()
 
   }
 
+#if defined(__APPLE__)
   // hard coded by Tim for Mac build
-  //entries.push_back( PLUGINPATH );
   entries.push_back( "./algs/" );
+#else
+  entries.push_back( PLUGINPATH );
+#endif
 
   return entries;
 
