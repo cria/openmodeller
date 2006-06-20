@@ -313,6 +313,37 @@ dnl ---------------------------------------------------------------------------
 dnl  Python
 dnl ---------------------------------------------------------------------------
 
+dnl ---------------------------------------------------------------------------
+dnl TerraLib
+dnl ---------------------------------------------------------------------------
+
+AC_MSG_CHECKING([if TerraLib interface is enabled])
+
+AC_ARG_ENABLE(terralib,
+  AC_HELP_STRING([--enable-terralib],
+                 [The TerraLib is an optional feature. If you want to enable it use '--enable-terralib']),
+  [
+   case "${enableval}" in
+    yes)
+      build_terralib=yes
+      AC_MSG_RESULT([$build_terralib])
+      ;;
+    no)
+      build_terralib=no
+      AC_MSG_RESULT([$build_terralib])
+      ;;
+    *)
+      AC_MSG_ERROR([bad value ${enableval} for --enable-terralib])
+      ;;
+   esac
+  ],
+  [
+    build_terralib=no
+    AC_MSG_RESULT([$build_terralib])
+  ]
+)
+
+AM_CONDITIONAL([BUILD_TERRALIB], [test x$build_terralib = xyes])
 
 dnl ---------------------------------------------------------------------------
 AC_CONFIG_FILES([
