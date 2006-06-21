@@ -58,7 +58,8 @@ TERRALIB_LIB = $(TERRALIB_HOME)/terralibx/terralib/libterralib.so \
 	$(TERRALIB_HOME)/terralibx/tiff/libtiff.so \
 	/usr/lib/libmysqlclient.so \
 	$(TERRALIB_HOME)/terralibx/PostgreSQL/libpq.a \
-	$(TERRALIB_HOME)/terralibx/Oracle/libclntsh.so
+	$(TERRALIB_HOME)/terralibx/Oracle/libclntsh.so \
+	$(TERRALIB_HOME)/terralibx/Oracle/libnnz10.so
 endif
 
 libopenmodeller_la_SOURCES = \
