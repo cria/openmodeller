@@ -82,6 +82,10 @@ void draw_occur( GGraph *graph, const OccurrencesPtr& oc );
 int
 main( int argc, char **argv )
 {
+#ifdef BUILD_TERRALIB
+  USE_TERRALIB_IO
+#endif
+
   // Reconfigure the global logger.
   g_log.setLevel( Log::Error );
   g_log.setPrefix( "[Niche]" );
