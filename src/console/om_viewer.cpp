@@ -76,6 +76,10 @@ OccurrencesPtr readOccurrences( char const *file, char const *name,
 int
 main( int argc, char **argv )
 {
+#ifdef BUILD_TERRALIB
+  USE_TERRALIB_IO
+#endif
+
   // Reconfigure the global logger.
   g_log.set( Log::Error, stdout, "[Viewer]" );
 
