@@ -24,8 +24,8 @@ Installation notes for GNU/Linux
 3. Install GSL - GNU Scientific Library: http://www.gnu.org/software/gsl/
    (known to work with version 1.4)
 
-4. (Optional) Install TerraLib - http://www.dpi.inpe.br/terralib/
-   (known to work with version 3.1.3)
+4. Install TerraLib - http://www.dpi.inpe.br/terralib/
+   (This step is optional, known to work with version 3.1.3)
 
    Set the following environment variables:
    TERRALIB_HOME to the base directory of TerraLib install.
@@ -78,9 +78,15 @@ Installation notes for Windows
 
   NOTE: Make sure that nmake (Visual C++ make) is in your PATH.
 
-3. Checkout a working copy of openModeller's "om" module from CVS 
+3. This step is optional.
+  - Download TerraLib - http://www.dpi.inpe.br/terralib/
+   (known to work with version 3.1.3)
+  - Build terralib.vcproj, tiff.vcproj and libjpeg.vcproj (Release and Debug).
+  - Set TERRALIB_HOME to the base directory of TerraLib install.
 
-4. Set the following environment variables:
+4. Checkout a working copy of openModeller's "om" module from CVS 
+
+5. Set the following environment variables:
   * GDAL_HOME to the directory where GDAL was built and installed
   * EXPAT_HOME to the base directory of Expat install
   * GSL_HOME to the base directory of GSL install
@@ -89,17 +95,22 @@ Installation notes for Windows
   * PYTHON_HOME to the base directory of Python install
   * PYTHON_INCLUDE to the directory of Python includes
  
-5. Open the project file .\windows\vc7\libopenmodeller_dll\libopenmodeller_dll.vcproj in Visual C++ 7 
+6. Open the project file .\windows\vc7\libopenmodeller_dll\libopenmodeller_dll.vcproj in Visual C++ 7 
 
-6. Select menu Build->Batch Build...
+Note: If you want to use TerraLib
+- Open the solution file  .\windows\vc7\om_terralib_vcpp7.sln in Visual C++ 7
+- Build Realse or Debug.
+- Go to step 9.
 
-7. Select all items and click Build button.
+7. Select menu Build->Batch Build...
 
-8. The built binaries will appear in:
+8. Select all items and click Build button.
+
+9. The built binaries will appear in:
   .\windows\vc7\build          (production binaries)
   .\windows\vc7\build_debug    (debug binaries)
 
-9. To run any of openModeller clients you need to have the following 
+10. To run any of openModeller clients you need to have the following 
 DLLs in your PATH: 
    * libopenmodeller.dll,
    * proj4.dll,
@@ -107,7 +118,17 @@ DLLs in your PATH:
    * expat.dll,
    * gsl.dll,
    * gslcblas.dll,
-   * python23.dll,
+   * python23.dll
+If you want to use TerraLib
+   * ijl15.dll
+   * libeay32.dll
+   * libiconv-2.dll
+   * libintl-2.dll
+   * libmysql.dll
+   * libpq.dll
+   * oci.dll
+   * ssleay32.dll
+   * zlib.dll
 
 and all of your algorithm DLLs on the PLUGIN_PATH.
 
