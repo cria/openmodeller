@@ -35,8 +35,8 @@
 #include <openmodeller/Occurrences.hh>
 #include <vector>
 
+//! A common interface to occurrence readers.
 /**
- * A common interface to occurrence readers.
  * Implementations need to define the loadOccurrences method and 
  * a constructor with parameters "const char *source" and "const char *coord_system"
  */
