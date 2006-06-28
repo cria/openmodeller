@@ -207,6 +207,18 @@ TeOMRaster::createRaster( const std::string& url, const MapFormat& format )
 		params_->boundingBoxLinesColumns(format.getXMin(), format.getYMin(),
 			format.getXMax(), format.getYMax(),
 			format.getHeight(), format.getWidth());
+
+		// Block Size.
+		if(format.getHeight() > 128 || format.getWidth() > 128)
+		{
+			params_->blockHeight_ = 128;
+			params_->blockWidth_ = 128; 
+		}
+		else
+		{
+			params_->blockHeight_ = format.getHeight();
+			params_->blockWidth_ = format.getWidth(); 
+		}
 		
 		raster_->init();
 
