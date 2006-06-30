@@ -36,7 +36,6 @@
 #include <TeLayer.h>
 
 #include <openmodeller/env_io/GeoTransform.hh>
-#include <openmodeller/om.hh>
 #include <openmodeller/Log.hh>
 #include <openmodeller/Exceptions.hh>
 #include <openmodeller/MapFormat.hh>
