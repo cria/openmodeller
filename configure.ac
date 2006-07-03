@@ -22,14 +22,19 @@ dnl ---------------------------------------------------------------------------
 dnl Check for Windows hosts
 dnl ---------------------------------------------------------------------------
 
+ac_windows=0 
+ac_apple=0 
 case "${host}" in 
   *-*-cygwin* | *-*-mingw32*) 
     ac_windows=1;; 
+	*-*darwin*)
+	  ac_apple=1;;
   *) 
-    ac_windows=0;; 
+	  ;;
 esac 
 
 AM_CONDITIONAL([ISWINDOWS], [test "$ac_windows" = "1"]) 
+AM_CONDITIONAL([ISAPPLE], [test "$ac_apple" = "1"]) 
 
 
 dnl ---------------------------------------------------------------------------
