@@ -70,14 +70,3 @@ libomminimum_distance_la_CPPFLAGS = -I$(OMSRCDIR)
 #
 # Build csm - broken stick only when gsl is available
 #
-if HAVE_GSL
-plugin_LTLIBRARIES += libomcsmbs.la
-libomcsmbs_la_SOURCES = \
-	csm.cpp \
-	csm.hh \
-	csmbs.cpp \
-	csmbs.hh
-libomcsmbs_la_LDFLAGS = -no-undefined
-libomcsmbs_la_LIBADD = $(GSL_LIBS) $(OMLIB)
-libomcsmbs_la_CPPFLAGS = $(GSL_CFLAGS) -I$(OMSRCDIR)
-endif

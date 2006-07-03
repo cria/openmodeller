@@ -32,6 +32,10 @@
 
 using std::vector;
 using std::string;
+#if defined(__APPLE__)
+//for getting app bundle path
+#include <ApplicationServices/ApplicationServices.h>
+#endif
 
 #include <fstream>
 
@@ -90,6 +94,7 @@ initialPluginPath()
   // 1) environment variable: OM_LIB_PATH
   // 2) read from CONFIG_FILE
   // 3) PLUGINPATH compiled constant.
+	// 4) on mac <application bundle>.app/Contents/Frameworks/openmodeller
 
   char *env = getenv( "OM_LIB_PATH" );
 
@@ -142,9 +147,9 @@ initialPluginPath()
 
 #if defined(__APPLE__)
   // hard coded by Tim for Mac build
+  //TODO Work out how to not need to do this 
   std::ifstream conf_file( "./pluginpath.cfg", std::ios::in );
 #else
-  //TODO Work out how to not need to do this 
   std::ifstream conf_file( CONFIG_FILE, std::ios::in );
 #endif
   
@@ -163,6 +168,15 @@ initialPluginPath()
 #if defined(__APPLE__)
   // hard coded by Tim for Mac build
   entries.push_back( "./algs/" );
+  entries.push_back( "../Frameworks/openmodeller/" );
+	CFURLRef myPluginRef = CFBundleCopyBundleURL(CFBundleGetMainBundle());
+	CFStringRef myMacPath = CFURLCopyFileSystemPath(myPluginRef, kCFURLPOSIXPathStyle);
+	const char *mypPathPtr = CFStringGetCStringPtr(myMacPath,CFStringGetSystemEncoding());
+	CFRelease(myPluginRef);
+	CFRelease(myMacPath);
+	std::string myFullPath(mypPathPtr);
+	myFullPath += "/Contents/Frameworks/openmodeller";
+  entries.push_back(myFullPath.c_str());
 #else
   entries.push_back( PLUGINPATH );
 #endif
