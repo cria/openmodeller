@@ -102,7 +102,7 @@ nodist_libopenmodeller_la_SOURCES = $(TERRALIB_DATABASES)
 endif
 
 if ISAPPLE
-APPLE_LDFLAGS=-F/System/Library/Frameworks/ -framework ApplicationServices
+APPLE_LDFLAGS=-F/System/Library/Frameworks/ -framework CoreFoundation -framework ApplicationServices -framework Carbon
 endif
 
 libopenmodeller_la_LDFLAGS = -no-undefined $(APPLE_LDFLAGS)

@@ -148,7 +148,7 @@ initialPluginPath()
 #if defined(__APPLE__)
   // hard coded by Tim for Mac build
   //TODO Work out how to not need to do this 
-  std::ifstream conf_file( "./pluginpath.cfg", std::ios::in );
+  std::ifstream conf_file( "Contents/MacOS/pluginpath.cfg", std::ios::in );
 #else
   std::ifstream conf_file( CONFIG_FILE, std::ios::in );
 #endif
@@ -168,7 +168,9 @@ initialPluginPath()
 #if defined(__APPLE__)
   // hard coded by Tim for Mac build
   entries.push_back( "./algs/" );
-  entries.push_back( "../Frameworks/openmodeller/" );
+  entries.push_back( "Contents/Frameworks/openmodeller/" );
+  entries.push_back( "/Users/timsutton/dev/cpp/omgui1/bin/omgui1.app/Contents/Frameworks/openmodeller/" );
+	/*
 	CFURLRef myPluginRef = CFBundleCopyBundleURL(CFBundleGetMainBundle());
 	CFStringRef myMacPath = CFURLCopyFileSystemPath(myPluginRef, kCFURLPOSIXPathStyle);
 	const char *mypPathPtr = CFStringGetCStringPtr(myMacPath,CFStringGetSystemEncoding());
@@ -177,6 +179,7 @@ initialPluginPath()
 	std::string myFullPath(mypPathPtr);
 	myFullPath += "/Contents/Frameworks/openmodeller";
   entries.push_back(myFullPath.c_str());
+	*/
 #else
   entries.push_back( PLUGINPATH );
 #endif
