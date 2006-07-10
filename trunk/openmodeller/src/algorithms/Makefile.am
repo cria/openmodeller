@@ -64,6 +64,21 @@ libomcsmkg_la_SOURCES = \
 	csmkg.cpp \
 	csmkg.hh
 libomcsmkg_la_LDFLAGS = -no-undefined
-libomcsmkg_la_LIBADD = $(GSL_LIBS) ../src/lib/libopenmodeller.la
+libomcsmkg_la_LIBADD = $(GSL_LIBS) $(OMLIB)
 libomcsmkg_la_CPPFLAGS = $(GSL_CFLAGS) -I../src/inc -I../src/inc/serialization
+endif
+
+#
+# Build csm - broken stick only when gsl is available
+#
+if HAVE_GSL
+plugin_LTLIBRARIES += libomcsmbs.la
+libomcsmbs_la_SOURCES = \
+	csm.cpp \
+  csm.hh \
+	csmbs.cpp \
+	csmbs.hh
+libomcsmbs_la_LDFLAGS = -no-undefined
+libomcsmbs_la_LIBADD = $(GSL_LIBS) $(OMLIB)
+libomcsmbs_la_CPPFLAGS = $(GSL_CFLAGS) -I$(OMSRCDIR)
 endif
