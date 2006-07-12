@@ -157,8 +157,7 @@ char *
 OpenModeller::getVersion()
 {
   // Defined in "om_defs.hh".
-  return "0.4.0"; //OM_VERSION; //hard coded by Tim while trying to build on mac
-  //return OM_VERSION; //hard coded by Tim while trying to build on mac
+  return OM_VERSION; //hard coded by Tim while trying to build on mac
 }
 
 /****************************/
