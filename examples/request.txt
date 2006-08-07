@@ -49,7 +49,15 @@ Output model = furcata.xml
 
 # Output file name (projected map).
 #
-Output file = furcata.tif
+Output file = furcata.bmp
+
+# Output file type. Options:
+#
+# GreyTiff = grey scale GeoTiff (0 <= cell value <= 255). Default.
+# FloatingTiff = floating point GeoTiff (cell value = probability of presence)
+# GreyBMP = grey scale BMP
+#
+Output file type = GreyTiff
 
 
 #########################

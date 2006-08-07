@@ -244,8 +244,35 @@ RequestFile::setProjection( OpenModeller *om, FileParser &fp )
     _outputFormat = MapFormat( format.c_str() );
   }
 
-  // hard coded for now: 8-bit grey tiffs
-  _outputFormat.setFormat( MapFormat::GreyTiff );
+  // File type
+  std::string fileType = fp.get( "Output file type" );
+
+  // Default is 8-bit tiff
+  int type = MapFormat::GreyTiff;
+
+  if ( ! fileType.empty() ) {
+
+    if ( fileType == "GreyTiff" ) {
+
+      // nothing to do - already the default
+    }
+    else if ( fileType == "FloatingTiff" ) {
+
+      type = MapFormat::FloatingTiff;
+    }
+    else if ( fileType == "GreyBMP" ) {
+
+      type = MapFormat::GreyBMP;
+    }
+    else {
+
+      g_log.error( 0, "Wrong value for 'Output file type' (%s). It should be GreyTiff, FloatingTiff or GreyBMP.\n", fileType.c_str() );
+      return 0;
+    }
+  }
+
+  // Set the file type
+  _outputFormat.setFormat( type );
 
   // Overwrite output extent with values from mask
   const std::string maskFile = ( _nonNativeProjection ) ? _outputMask.c_str() : _inputMask.c_str();
