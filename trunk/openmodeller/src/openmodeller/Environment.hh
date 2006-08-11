@@ -59,6 +59,8 @@ EnvironmentPtr dllexp createEnvironment( const std::vector<std::string>& categs,
 
 EnvironmentPtr dllexp createEnvironment( const ConstConfigurationPtr& config );
 
+EnvironmentPtr dllexp createEnvironment( );
+
 
 /** 
  * Allow access to environmental variables by means of vectors

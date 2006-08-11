@@ -95,7 +95,7 @@ libopenmodeller_la_SOURCES = \
 	occ_io/OccurrencesFactory.cpp \
 	occ_io/OccurrencesFile.cpp \
 	occ_io/OccurrencesReader.cpp \
-	$(TERRALIB_CPP)
+	$(TERRALIB_CPP) 
 
 if BUILD_TERRALIB
 nodist_libopenmodeller_la_SOURCES = $(TERRALIB_DATABASES)
