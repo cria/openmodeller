@@ -21,7 +21,6 @@ endif
 
 if BUILD_TERRALIB
 TERRALIB_LIB = $(TERRALIB_HOME)/terralibx/terralib/libterralib.so \
-	$(TERRALIB_HOME)/terralibx/tiff/libtiff.so \
 	/usr/lib/libmysqlclient.so \
 	$(TERRALIB_HOME)/terralibx/PostgreSQL/libpq.a \
 	$(TERRALIB_HOME)/terralibx/Oracle/libclntsh.so \
