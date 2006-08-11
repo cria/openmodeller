@@ -22,10 +22,10 @@ The University of Kansas:
      Implemented initial versions of the SWIG Python and Java interfaces.
      Contributed in many other parts of the code.
 
- * Kevin Ruland <kruland [at] ku.edu>
+ * Kevin Ruland
 
      Performed general code review, making lots of improvements everywhere.
-     Maintainer of the SWIG Python interface.
+     Finished the SWIG Python interface.
 
 The University of Reading:
 
@@ -49,3 +49,9 @@ Quantum GIS development team:
  * Tom Elwertowski
 
      Achieved build compatibility under MAC OS X.
+
+INPE - Instituto Nacional de Pesquisas Espaciais
+
+ * Alexandre Copertino Jardim <alexcj [at] dpi.inpe.br>
+
+     Integrated openModeller with TerraLib.
