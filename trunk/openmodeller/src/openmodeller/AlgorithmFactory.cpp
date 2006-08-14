@@ -358,7 +358,7 @@ AlgorithmFactory::addDll( const string& file )
 bool
 AlgorithmFactory::p_addDll( const string& file )
 {
-  g_log( "- Loading: %s ...\n", file.c_str() );
+  g_log.debug( "- Loading: %s ...\n", file.c_str() );
     
   // Create a new DLL for each directory entry found.
   DLLPtr dll( new DLL( file.c_str() ) );
