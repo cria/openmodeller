@@ -59,7 +59,7 @@ struct GDAL_Format
 	bool hasMeta;
 };
 
-GDAL_Format Formats[3] =
+GDAL_Format Formats[4] =
 {
 	// Floating GeoTiff
 	{ "GTiff",
@@ -72,7 +72,11 @@ GDAL_Format Formats[3] =
 	// Greyscale BMP
 	{ "BMP",
 	GDT_Byte,
-	false }
+	false },
+	// Floating HDF (Erdas Imagine Format which ArcMap can read directly)
+	{ "HDF",
+	(sizeof(Scalar) == 4) ? GDT_Float32 : GDT_Float64,
+	true }
 };
 
 static const GDALDataType f_type = (sizeof(Scalar) == 4) ? GDT_Float32 : GDT_Float64;
@@ -122,6 +126,10 @@ RasterGdal::RasterGdal( const string& file, const MapFormat& format):
 			nv = 255.0;
 			break;
 		case MapFormat::FloatingTiff:
+            f_scalefactor = 1.0;
+			nv = -1.0;
+			break;
+		case MapFormat::FloatingHDF:
             f_scalefactor = 1.0;
 			nv = -1.0;
 			break;

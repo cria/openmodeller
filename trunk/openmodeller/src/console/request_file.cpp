@@ -264,9 +264,13 @@ RequestFile::setProjection( OpenModeller *om, FileParser &fp )
 
       type = MapFormat::GreyBMP;
     }
+    else if ( fileType == "FloatingHDF" ) {
+
+      type = MapFormat::FloatingHDF;
+    }
     else {
 
-      g_log.error( 0, "Wrong value for 'Output file type' (%s). It should be GreyTiff, FloatingTiff or GreyBMP.\n", fileType.c_str() );
+      g_log.error( 0, "Wrong value for 'Output file type' (%s). It should be GreyTiff, FloatingTiff, GreyBMP or FloatingHDF.\n", fileType.c_str() );
       return 0;
     }
   }
