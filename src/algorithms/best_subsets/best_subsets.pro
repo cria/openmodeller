@@ -7,9 +7,9 @@
 #################################################################
 
 # include global settings from the top level dir
-include (../../settings.pro)
+include (../../../settings.pro)
 
-TARGET =  distance_to_average
+TARGET = garp_bs
 win32{
   #on windows build libs into bin dir!
   CONFIG(debug, debug|release){
@@ -38,7 +38,14 @@ contains(OMG_STATIC,true){
 
 #################################################################
 
-HEADERS += distance_to_average.hh 
-            
-SOURCES += distance_to_average.cpp 
+INCLUDEPATH += ../dg_garp
 
+HEADERS += 	AbstractBestSubsets.hh \
+		AlgorithmRun.hh \
+		DgGarpBestSubsets.hh \
+		threads.hh \
+		GenericBestSubsets.hh 
+            
+SOURCES += 	AbstractBestSubsets.cpp \
+		AlgorithmRun.cpp \
+		DgGarpBestSubsets.cpp 

@@ -9,12 +9,18 @@
 # include global settings from the top level dir
 include (../../settings.pro)
 
-TARGET = openmodeller 
 win32{
   #on windows build libs into bin dir!
-  DESTDIR=$${PREFIX}/omgui1
+  CONFIG(debug, debug|release){
+    DESTDIR=$${PREFIX}/omgui1-debug
+    TARGET = openmodeller-debug
+  }else{
+    DESTDIR=$${PREFIX}/omgui1
+    TARGET = openmodeller
+  }
 }else{
   DESTDIR=$${PREFIX}/lib
+  TARGET = openmodeller
 }
 
 TEMPLATE = lib
