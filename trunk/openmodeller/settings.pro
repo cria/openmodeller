@@ -7,12 +7,13 @@
 #################################################################
 
 DEFINES += PLUGINPATH="'./algs/'"
-OMG_DEBUGMODE=false
-
+OMG_DEBUGMODE=true
+## Dont link to any qt libs!
+CONFIG -= qt
 win32{
   OMG_STATIC=false
   DEFINES += CONFIG_FILE="'./pluginpath.cfg'"
-  DEFINES += VERSION='0.4' 
+  DEFINES += VERSION='0.4snapshot' 
   DEFINES += WIN32
   message(Installing for windows!)
   DEFINES += MINGW_QT
