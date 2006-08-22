@@ -41,6 +41,8 @@
 #include <vector>
 #include <string>
 
+typedef std::vector<Scalar> ScalarVector;
+
 class OccurrencesImpl;
 typedef ReferenceCountedPointer<OccurrencesImpl> OccurrencesPtr;
 typedef ReferenceCountedPointer<const OccurrencesImpl> ConstOccurrencesPtr;
@@ -179,7 +181,7 @@ public:
   /** Choose an occurrence at random. */
   ConstOccurrencePtr getRandom() const;
 
-  // normalizable interface
+  /** normalizable interface */
   void getMinMax( Sample * min, Sample * max ) const;
 
   void normalize( bool useNormalization, 
@@ -196,6 +198,9 @@ public:
    *        be appended from.
    */
   void appendFrom(const OccurrencesPtr& source);
+
+  /** Return matrix as a vector of vectors (layers X respective values for each occurrence). */
+  std::vector<ScalarVector> getEnvironmentMatrix();
 
   /** Print occurrence data and its points. */
   void print( char *msg="" ) const;
