@@ -156,7 +156,7 @@ main( int argc, char **argv )
   }
   catch ( std::exception& e ) {
     g_log( "Exception occurred\n" );
-    g_log( "Message is %s\n", e.what() );
+    //g_log( "Message is: %s\n", e.what() );
   }
   catch ( ... ) {
     g_log( "Unknown Error occurred\n" );
