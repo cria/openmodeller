@@ -181,6 +181,8 @@ public:
 
   bool hasEnvironment() const;
 
+  void setAbundance( Scalar value );
+
 private:
   Coord  x_;
   Coord  y_;
