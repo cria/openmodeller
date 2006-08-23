@@ -47,6 +47,7 @@ OccurrenceImpl&
 OccurrenceImpl::operator=( const OccurrenceImpl & rhs )
 {
   if ( this == &rhs ) {
+
     return *this;
   }
 
@@ -60,15 +61,18 @@ OccurrenceImpl::operator=( const OccurrenceImpl & rhs )
   normEnv_ = rhs.normEnv_;
 
   return *this;
-
 }
 
 Sample const & OccurrenceImpl::environment() const
 {
-  if (normEnv_.size() != 0)
+  if ( normEnv_.size() != 0 ) {
+
     return normEnv_;
-  else 
+  }
+  else {
+
     return unnormEnv_;
+  }
 }
 
 void
@@ -77,11 +81,12 @@ OccurrenceImpl::normalize( const Sample& offsets, const Sample& scales )
   normEnv_ = unnormEnv_;
 
   int dim = normEnv_.size();
+
   for( int i = 0; i<dim; i++ ) {
+
     normEnv_[i] *= scales[i];
     normEnv_[i] += offsets[i];
   }
-
 }
 
 void
@@ -100,4 +105,10 @@ bool
 OccurrenceImpl::hasEnvironment() const
 {
   return unnormEnv_.size() != 0;
+}
+
+void
+OccurrenceImpl::setAbundance( Scalar value )
+{
+  abundance_ = value;
 }
