@@ -113,8 +113,10 @@ SamplerImpl::setEnvironmentInOccurrences()
       // Copy data from environment into the presence and absence points.
       _presence->setEnvironment( _env, "Presence" );
 
-      if ( _absence && _absence->numOccurrences())
+      if ( _absence && _absence->numOccurrences() ) {
+
 	_absence->setEnvironment( _env, "Absence" );
+      }
     }
 }
 
@@ -128,16 +130,19 @@ SamplerImpl::getConfiguration( ) const
   ConfigurationPtr config( new ConfigurationImpl( "Sampler" ) );
 
   if ( _env ) {
+
     config->addSubsection( _env->getConfiguration() );
   }
 
   if ( _presence ) {
+
     ConfigurationPtr cfg( _presence->getConfiguration() );
     cfg->setName( "Presence" );
     config->addSubsection( cfg );
   }
 
   if (_absence ) {
+
     ConfigurationPtr cfg( _absence->getConfiguration() );
     cfg->setName( "Absence" );
     config->addSubsection( cfg );
@@ -150,8 +155,8 @@ void
 SamplerImpl::setConfiguration( const ConstConfigurationPtr& config )
 {
   EnvironmentPtr env;
-  if (ConstConfigurationPtr env_config = 
-        config->getSubsection( "Environment", false ) ) {
+  if ( ConstConfigurationPtr env_config = config->getSubsection( "Environment", false ) ) {
+
     env = createEnvironment();
     env->setConfiguration( env_config );
   }
@@ -173,60 +178,64 @@ SamplerImpl::setConfiguration( const ConstConfigurationPtr& config )
   g_log.debug( "Getting absence\n");
   OccurrencesPtr absence;
 
-  if (ConstConfigurationPtr absence_config = config->getSubsection( "Absence", false ) ) {
+  if ( ConstConfigurationPtr absence_config = config->getSubsection( "Absence", false ) ) {
+
     absence = new OccurrencesImpl(0.0);
     absence->setConfiguration( absence_config );
   }
 
   _env = env;
   _presence = presence;
-  _absence = absence;
+  _absence  = absence;
 
   setEnvironmentInOccurrences();
-
 }
 
 /*****************/
 /*** normalize ***/
-void SamplerImpl::getMinMax(Sample * min, Sample * max) const
+void SamplerImpl::getMinMax( Sample * min, Sample * max ) const
 {
   // if Sampler has both Environment object and a sampled Occurrences, then
   // favor Environment when doing normalization
-  if (_env)
-    { _env->getMinMax(min, max); }
+  if ( _env ) { 
 
-  else
-    {
-      // no environment object exists, so normalize samples in occs objects
-      // first get all occurrence objects in the same container
-      OccurrencesPtr allOccs( new OccurrencesImpl( _presence->name(),
-						   _presence->coordSystem() ) );
-      allOccs->appendFrom(_presence);
-      allOccs->appendFrom(_absence);
+    _env->getMinMax( min, max );
+  }
+  else {
 
-      // now compute normalization parameters
-      allOccs->getMinMax(min, max);
-    }
+    // no environment object exists, so normalize samples in occs objects
+    // first get all occurrence objects in the same container
+    OccurrencesPtr allOccs( new OccurrencesImpl( _presence->name(),
+                                                 _presence->coordSystem() ) );
+    allOccs->appendFrom( _presence );
+    allOccs->appendFrom( _absence );
+
+    // now compute normalization parameters
+    allOccs->getMinMax(min, max);
+  }
 }
 
 /** Set specific normalization parameters
  */
 void SamplerImpl::normalize( bool use_norm, const Sample& offsets, const Sample& scales )
 {
-  if (_env)
-    {
+  if (_env) {
+
       // set env in all occurrences before normalizing env so that
       // occurrences get the unnormalized values
       setEnvironmentInOccurrences();
       _env->normalize( use_norm, offsets, scales );
-    }
+  }
 
   // need to normalize presences and absences even if _env is present
   // because environment in occurrences was set with unnormalized values
   // if _env doesn't exist, then normalize occurrences anyway
   _presence->normalize( use_norm, offsets, scales );
-  if ( _absence && _absence->numOccurrences())
+
+  if ( _absence && _absence->numOccurrences() ) {
+
     _absence->normalize( use_norm, offsets, scales );
+  }
 }
 
 /***********************/
@@ -280,26 +289,23 @@ SamplerImpl::getOneSample( ) const
 {
   Random rnd;
 
-  if (!_presence->numOccurrences())
-    { 
-      throw SamplerException("No presence points available."); 
-    }
+  if ( !_presence->numOccurrences() ) { 
+
+    throw SamplerException("No presence points available."); 
+  }
 
   // Probability of 0.5 of get a presence point.
-  if ( rnd() < 0.5 )
-    {
-      return getPresence();
-    }
+  if ( rnd() < 0.5 ) {
 
-  //
+    return getPresence();
+  }
+
   // Probability of 0.5 of get an absence point.
-  //
+  // (if there are real absence points...)
+  if ( _absence && _absence->numOccurrences() ) {
 
-  // If there are real absence points...
-  if ( _absence && _absence->numOccurrences())
-    {
-      return getAbsence();
-    }
+    return getAbsence();
+  }
 
   return getPseudoAbsence();
 }
@@ -307,8 +313,8 @@ SamplerImpl::getOneSample( ) const
 ConstOccurrencePtr
 SamplerImpl::getPseudoAbsence() const 
 {
+  if ( !_env ) {
 
-  if (!_env) {
     throw SamplerException("Trying to get a pseudo absence point without setting up an Environment object");
   }
 
@@ -330,8 +336,10 @@ SamplerImpl::getPseudoAbsence() const
 int
 SamplerImpl::isCategorical( int i )
 {
-  if (_env)
+  if ( _env ) {
+
     return _env->isCategorical( i );
+  }
 
   else
     // if there is no environment obj, assumes all variables are continuous
@@ -339,6 +347,68 @@ SamplerImpl::isCategorical( int i )
     // continuous or categorical when occurrences already come with their
     // samples populated
     return false;
+}
+
+
+/**************/
+/*** unique ***/
+void 
+SamplerImpl::environmentallyUnique( )
+{
+  // Presences
+  this->environmentallyUnique( _presence, "Presence" );
+
+  // Absences
+  this->environmentallyUnique( _absence, "Absence" );
+}
+
+
+/**************/
+/*** unique ***/
+void 
+SamplerImpl::environmentallyUnique( OccurrencesPtr& occurrencesPtr, const char *type )
+{
+  if ( ! ( occurrencesPtr && occurrencesPtr->numOccurrences() ) ) {
+
+    return;
+  }
+
+  OccurrencesImpl::iterator it   = occurrencesPtr->begin();
+  OccurrencesImpl::iterator last = occurrencesPtr->end();
+
+  while ( it != last ) {
+
+    Sample sample = _env->getUnnormalized( (*it)->x(), (*it)->y() );
+
+    OccurrencesImpl::iterator next = it + 1;
+
+    while ( next != last ) {
+
+      Sample nextSample = _env->getUnnormalized( (*next)->x(), (*next)->y() );
+
+      if ( sample.equals( nextSample ) ) {
+
+        g_log( "%s Point at (%f,%f) has no unique environment. It will be discarded.\n", 
+               type, (*next)->x(), (*next)->y() );
+
+        // Remove duplicates
+        next = occurrencesPtr->erase( next );
+        last = occurrencesPtr->end();
+
+        // Increase abundance in original occurence
+        (*it)->setAbundance( (*it)->abundance() + 1 );
+
+        // No need to increment "next" because "erase" actually swaps 
+        // the last element with the one that was just erased!
+      }
+      else {
+
+        ++next;
+      }
+    }
+
+    ++it;
+  }
 }
 
 
@@ -372,11 +442,13 @@ static void splitOccurrences(OccurrencesPtr& occurrences,
 
   // first k are set to go to train set
   for (i = 0; i < k; i++) {
+
     goToTrainSet[i] = 1;
   }
 
   // all others are set to go to test set
   for (; i < n; i++) {
+
     goToTrainSet[i] = 0;
   }
 
@@ -391,10 +463,12 @@ static void splitOccurrences(OccurrencesPtr& occurrences,
   while( it != fin ) {
 
     if ( goToTrainSet[i] ) {
+
       trainOccurrences->insert( new OccurrenceImpl( *(*it) ) );
       //printf("+");
     }
     else {
+
       testOccurrences->insert( new OccurrenceImpl( *(*it) ) );
       //printf("-");
     }
@@ -402,7 +476,7 @@ static void splitOccurrences(OccurrencesPtr& occurrences,
   }
 
   //printf("\n");
- 
+
 }
 
 
@@ -415,13 +489,13 @@ void splitSampler(const SamplerPtr& orig,
 {
   // split presences
   OccurrencesPtr presence = orig->getPresences();
-  OccurrencesPtr test_presence(new OccurrencesImpl(presence->name(),  
-						   presence->coordSystem()));
+  OccurrencesPtr test_presence( new OccurrencesImpl( presence->name(),  
+                                                     presence->coordSystem() ) );
 
-  OccurrencesPtr train_presence(new OccurrencesImpl(presence->name(),
-						    presence->coordSystem()));
+  OccurrencesPtr train_presence( new OccurrencesImpl( presence->name(),
+                                                      presence->coordSystem() ) );
 
-  splitOccurrences(presence, train_presence, test_presence, propTrain);
+  splitOccurrences( presence, train_presence, test_presence, propTrain );
 
   // split absences if there are any
   OccurrencesPtr train_absence;
@@ -430,18 +504,17 @@ void splitSampler(const SamplerPtr& orig,
   OccurrencesPtr absence = orig->getAbsences();
 
   if ( absence ) { 
-      test_absence = 
-	new OccurrencesImpl( absence->name(), absence->coordSystem());
 
-      train_absence = 
-	new OccurrencesImpl( absence->name(), absence->coordSystem());
+    test_absence = new OccurrencesImpl( absence->name(), absence->coordSystem());
 
-      splitOccurrences(absence, train_absence, test_absence, propTrain);
+    train_absence = new OccurrencesImpl( absence->name(), absence->coordSystem());
+
+    splitOccurrences(absence, train_absence, test_absence, propTrain);
   }
 
   *train = new SamplerImpl( orig->getEnvironment(), 
-			    train_presence, train_absence );
+                            train_presence, train_absence );
 
   *test = new SamplerImpl( orig->getEnvironment(),
-			   test_presence, test_absence );
+                           test_presence, test_absence );
 }
