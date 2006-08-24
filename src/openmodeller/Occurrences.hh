@@ -187,7 +187,6 @@ public:
   void normalize( bool useNormalization, 
 		  const Sample& offsets, const Sample& scales );
 
-
   /** Sets environment object in each occurrence object
    */
   void setEnvironment( const EnvironmentPtr& env, 
