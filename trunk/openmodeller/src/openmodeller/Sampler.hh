@@ -76,6 +76,7 @@ class dllexp SamplerImpl : public Configurable, public Normalizable, private Ref
   friend class ReferenceCountedPointer<SamplerImpl>;
   friend class ReferenceCountedPointer<const SamplerImpl>;
   friend SamplerPtr createSampler( const ConstConfigurationPtr & );
+
 public:
 
   SamplerImpl();
@@ -155,6 +156,11 @@ public:
    */
   int isCategorical( int i );
 
+  /** Remove sample duplicates accross the environment (presences and absences are treated separately).
+   *  After erasing a point, the remaining one increases the abundance by one.
+   */
+  void environmentallyUnique( );
+
   ConfigurationPtr getConfiguration() const;
 
   void setConfiguration ( const ConstConfigurationPtr& );
@@ -165,7 +171,10 @@ private:
 
   // this was former method ::initialize()
   void setEnvironmentInOccurrences();
-  
+
+  // Remove sample duplicates accross the environment given one of the occurrences pointers (presence / absence)
+  void environmentallyUnique( OccurrencesPtr& occurrencesPtr, const char *type );
+
   OccurrencesPtr _presence;
   OccurrencesPtr _absence;
   EnvironmentPtr _env;
