@@ -60,10 +60,12 @@ OccurrencesImpl::setCoordinateSystem( const string& cs )
 void
 OccurrencesImpl::initGeoTransform()
 {
-  if (gt_) delete gt_;
+  if ( gt_ ) {
+
+    delete gt_;
+  }
 
   gt_ = new GeoTransform( cs_, GeoTransform::cs_default );
-
 }
 
 /******************/
@@ -86,7 +88,7 @@ OccurrencesImpl::getConfiguration() const
   const_iterator oc = occur_.begin();
   const_iterator end = occur_.end();
 
-  while( oc != end ) {
+  while ( oc != end ) {
 
     ConfigurationPtr cfg( new ConfigurationImpl("Point") );
     Scalar x = (*oc)->x();
@@ -106,12 +108,11 @@ OccurrencesImpl::getConfiguration() const
 void
 OccurrencesImpl::setConfiguration( const ConstConfigurationPtr& config )
 {
-
   name_ = config->getAttribute("SpeciesName");
   
   ConstConfigurationPtr cs_config = config->getSubsection( "CoordinateSystem", false );
   
-  if ( !cs_config ) {
+  if ( ! cs_config ) {
 
     g_log.warn( "Occurrences has no Coordinate System.  Assuming WSG84\n" );
     cs_ = GeoTransform::cs_default;
@@ -127,10 +128,13 @@ OccurrencesImpl::setConfiguration( const ConstConfigurationPtr& config )
 
   Configuration::subsection_list::iterator begin = subs.begin();
   Configuration::subsection_list::iterator end = subs.end();
+
   for ( ; begin != end; ++begin ) {
 
-    if ( (*begin)->getName() != "Point" ) 
+    if ( (*begin)->getName() != "Point" ) {
+
       continue;
+    }
 
     Scalar x = (*begin)->getAttributeAsDouble( "X", 0.0 );
     Scalar y = (*begin)->getAttributeAsDouble( "Y", 0.0 );
@@ -143,22 +147,25 @@ OccurrencesImpl::setConfiguration( const ConstConfigurationPtr& config )
 void 
 OccurrencesImpl::setEnvironment( const EnvironmentPtr& env, const char *type )
 {
-  if ( isEmpty() )
+  if ( isEmpty() ) {
+
     return;
+  }
 
   OccurrencesImpl::iterator oc = occur_.begin();
   OccurrencesImpl::iterator fin = occur_.end();
 
-  while (oc != fin ) {
+  while ( oc != fin ) {
 
     Sample sample = env->getUnnormalized( (*oc)->x(), (*oc)->y() );
 
     if ( sample.size() == 0 ) {
 
-      g_log( "%s Point at (%f,%f) has no environment. It will be discarded.\n", type, (*oc)->x(), (*oc)->y() );
+      g_log( "%s Point at (%f,%f) has no environment. It will be discarded.\n", 
+             type, (*oc)->x(), (*oc)->y() );
+
       oc = occur_.erase( oc );
       fin = occur_.end();
-
     } 
     else {
 
@@ -176,8 +183,10 @@ void
 OccurrencesImpl::normalize(bool useNormalization,
 			   const Sample& offsets, const Sample& scales)
 {
-  if (!useNormalization)
+  if ( ! useNormalization ) {
+
     return;
+  }
 
   OccurrencesImpl::const_iterator occ = occur_.begin();
   OccurrencesImpl::const_iterator end = occur_.end();
@@ -249,7 +258,7 @@ OccurrencesImpl::createOccurrence( Coord longitude, Coord latitude,
 void
 OccurrencesImpl::insert( const OccurrencePtr& oc )
 {
-  occur_.push_back(oc);
+  occur_.push_back( oc );
 }
 
 OccurrencesImpl*
@@ -274,19 +283,23 @@ OccurrencesImpl::clone() const
 bool
 OccurrencesImpl::hasEnvironment() const
 {
-  if (!numOccurrences())
+  if ( ! numOccurrences() ) {
+
       return false;
+  }
 
   const_iterator it = occur_.begin();
+
   return (*it)->hasEnvironment();
 }
 
 int
 OccurrencesImpl::dimension() const
 {
-  if (hasEnvironment()) {
+  if ( hasEnvironment() ) {
 
       const_iterator it = occur_.begin();
+
       return (*it)->environment().size();
   }
   else { 
@@ -302,6 +315,7 @@ OccurrencesImpl::getRandom() const
 {
   Random rnd;
   int selected = (int) rnd( numOccurrences() );
+
   return occur_[ selected ];
 }
 
@@ -310,6 +324,7 @@ OccurrencesImpl::erase( const iterator& it )
 {
   swap( occur_.back(), (*it) );
   occur_.pop_back();
+
   return it;
 }
 
@@ -319,6 +334,7 @@ OccurrencesImpl::appendFrom(const OccurrencesPtr& source)
 {
   const_iterator it = source->begin();
   const_iterator end = source->end();
+
   while ( it != end) {
 
       insert(*it);
