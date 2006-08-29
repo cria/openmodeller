@@ -8,17 +8,15 @@
 
 # include global settings from the top level dir
 include (../../settings.pro)
-
+TEMPLATE=app
 TARGET = om_project
-win32{
-  #on windows build libs into bin dir!
-  DESTDIR=$${PREFIX}/omgui1
-}else{
-  DESTDIR=$${PREFIX}/lib
+LIBS += $${OMLIBADD}
+INCLUDEPATH += ../lib
+unix:DESTDIR=$${DESTDIR}/bin
+CONFIG(debug, debug|release){
+    TARGET = $$member(TARGET, 0)-debug
 }
-message("Installing to $${PREFIX}")
-TEMPLATE = app
-LIBS += -L$${PREFIX}/omgui1 -lopenmodeller
+message("Installing to $${DESTDIR}")
 
 #################################################################
 
