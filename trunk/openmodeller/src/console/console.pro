@@ -8,7 +8,7 @@
 
 TEMPLATE=subdirs
 
-SUBDIRS="om_create.pro" 
-#        "om_project.pro" \
-#        "om_console.pro" 
+SUBDIRS="om_create.pro" \
+        "om_project.pro" \
+        "om_console.pro" 
 
