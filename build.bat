@@ -1,2 +1,2 @@
-qmake "PREFIX=c:\temp\" -config release
+qmake 
 make
