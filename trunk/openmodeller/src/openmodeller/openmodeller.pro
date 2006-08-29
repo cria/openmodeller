@@ -8,20 +8,12 @@
 
 # include global settings from the top level dir
 include (../../settings.pro)
+TARGET = openmodeller
 
-win32{
-  #on windows build libs into bin dir!
-  CONFIG(debug, debug|release){
-    DESTDIR=$${PREFIX}/omgui1-debug
-    TARGET = openmodeller-debug
-  }else{
-    DESTDIR=$${PREFIX}/omgui1
-    TARGET = openmodeller
-  }
-}else{
-  DESTDIR=$${PREFIX}/lib
-  TARGET = openmodeller
+CONFIG(debug, debug|release){
+  TARGET = $$member(TARGET, 0)-debug  
 }
+unix:DESTDIR=$${DESTDIR}/lib
 
 TEMPLATE = lib
 
@@ -30,15 +22,6 @@ win32{
       SOURCES += os_specific_win.cpp 
 } else {
       SOURCES += os_specific.cpp 
-}
-
-#################################################################
-
-contains(OMG_STATIC,true){
-  #This option is used when creating a statically linked
-  #lib to prevent double linked libraries. 
-  CONFIG += create_prl        
-}else{
 }
 
 #################################################################
