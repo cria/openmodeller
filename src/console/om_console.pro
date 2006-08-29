@@ -20,9 +20,9 @@ CONFIG(debug, debug|release){
 message("Installing to $${DESTDIR}")
 
 #################################################################
-            
+
+
 SOURCES += 	om_console.cpp \
-		occurrences_file.cpp \
 		request_file.cpp \
 		file_parser.cpp
 

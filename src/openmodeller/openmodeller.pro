@@ -59,6 +59,18 @@ SOURCES +=  models/AlgoAdapterModel.cpp \
             models/ScaledModel.cpp 
 
 #
+# occurrences io
+#
+
+HEADERS += occ_io/OccurrencesFactory.hh \
+           occ_io/OccurrencesFile.hh \
+	   occ_io/OccurrencesReader.hh
+
+SOURCES += occ_io/OccurrencesFactory.cpp \
+           occ_io/OccurrencesFile.cpp \
+	   occ_io/OccurrencesReader.cpp
+
+#
 # openmodeller
 # 
 HEADERS +=  AlgMetadata.hh \
