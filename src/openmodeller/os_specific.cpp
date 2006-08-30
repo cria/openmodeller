@@ -168,8 +168,11 @@ initialPluginPath()
 #if defined(__APPLE__)
   // hard coded by Tim for Mac build
   entries.push_back( "./algs/" );
+  entries.push_back( "../Frameworks/openmodeller/" );
+  entries.push_back( "/Applications/omgui1.app/Contents/Frameworks/openmodeller/" );
   entries.push_back( "Contents/Frameworks/openmodeller/" );
   entries.push_back( "/Users/timsutton/dev/cpp/omgui1/bin/omgui1.app/Contents/Frameworks/openmodeller/" );
+
 	/*
 	CFURLRef myPluginRef = CFBundleCopyBundleURL(CFBundleGetMainBundle());
 	CFStringRef myMacPath = CFURLCopyFileSystemPath(myPluginRef, kCFURLPOSIXPathStyle);
