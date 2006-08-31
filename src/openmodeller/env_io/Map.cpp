@@ -41,8 +41,8 @@
 /*** construtor ***/
 Map::Map( Raster *rst ) 
 {
-	_rst = rst;
-	_gt  = new GeoTransform( rst->header().proj, GeoTransform::cs_default );
+  _rst = rst;
+  _gt  = new GeoTransform( rst->header().proj, GeoTransform::cs_default );
 }
 
 
@@ -51,8 +51,8 @@ Map::Map( Raster *rst )
 
 Map::~Map()
 {
-	delete _gt;
-	delete _rst;
+  delete _gt;
+  delete _rst;
 }
 
 
@@ -62,28 +62,28 @@ int
 Map::getRegion( Coord *xmin, Coord *ymin, Coord *xmax,
                 Coord *ymax) const
 {
-	*xmin = _rst->xMin();
-	*ymin = _rst->yMin();
-	*xmax = _rst->xMax();
-	*ymax = _rst->yMax();
+  *xmin = _rst->xMin();
+  *ymin = _rst->yMin();
+  *xmax = _rst->xMax();
+  *ymax = _rst->yMax();
 
-	bool result = 
-	_gt->transfOut( xmin, ymin ) &&
-	_gt->transfOut( xmax, ymax );
+  bool result = 
+  _gt->transfOut( xmin, ymin ) &&
+  _gt->transfOut( xmax, ymax );
 
-	if (*xmin > *xmax)
-	{
-		*xmin = -180;
-		*xmax = 180;
-	}
+  if (*xmin > *xmax)
+  {
+    *xmin = -180;
+    *xmax = 180;
+  }
 
-	if (*ymin > *ymax)
-	{
-		*ymin = -90;
-		*ymax = 90;
-	}
+  if (*ymin > *ymax)
+  {
+    *ymin = -90;
+    *ymax = 90;
+  }
 
-	return result;
+  return result;
 }
 
 
@@ -92,7 +92,7 @@ Map::getRegion( Coord *xmin, Coord *ymin, Coord *xmax,
 int
 Map::get( Coord x, Coord y, Scalar *val ) const
 {
-	return _gt->transfIn( &x, &y ) ? _rst->get( x, y, val ) : 0;
+  return _gt->transfIn( &x, &y ) ? _rst->get( x, y, val ) : 0;
 }
 
 /***********/
@@ -100,7 +100,7 @@ Map::get( Coord x, Coord y, Scalar *val ) const
 int
 Map::put( Coord x, Coord y, Scalar val )
 {
-	return _gt->transfIn( &x, &y ) ? _rst->put( x, y, val ) : 0;
+  return _gt->transfIn( &x, &y ) ? _rst->put( x, y, val ) : 0;
 }
 
 /***********/
@@ -108,5 +108,31 @@ Map::put( Coord x, Coord y, Scalar val )
 int
 Map::put( Coord x, Coord y )
 {
-	return _gt->transfIn(&x,&y) ? _rst->put( x,y ) : 0;
+  return _gt->transfIn(&x,&y) ? _rst->put( x,y ) : 0;
+}
+
+/**********************/
+/*** get row column ***/
+int
+Map::getRowColumn( Coord x, Coord y, int *row, int *col )
+{
+  // Transform the given coordinates into the raster coordinate system & projection
+  bool result = _gt->transfIn( &x, &y );
+
+  Coord xmin = _rst->xMin();
+  Coord ymin = _rst->yMin();
+  Coord xmax = _rst->xMax();
+  Coord ymax = _rst->yMax();
+
+  int xdim = _rst->dimX();
+  int ydim = _rst->dimY();
+
+  double xres = (xmax - xmin) / xdim;
+  double yres = (ymax - ymin) / ydim;
+
+  // Offset, not the cell index -> floor
+  *col = (int) floor ( (x - xmin) / xres );
+  *row = (int) floor ( (ymax - y) / yres );
+
+  return result;
 }
