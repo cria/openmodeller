@@ -39,13 +39,13 @@ class OGRCoordinateTransformation;
 /******************** Geographic Transformation *****************/
 
 /** 
- * Do the geographic transformations between different coordinate
+ * Perform geographic transformations between different coordinate
  * systems and projections.
  *
- * Basicaly the origem and target coordinate systems and
- * theirs projections are specified by its WKT representations.
- * After that one can transforms points from origem to target
- * and from target to origem.
+ * The "source" and "destination" coordinate systems and
+ * theirs projections need to be specified using the WKT representation.
+ * After that, one can transform points from "source" to "destination"
+ * and vice versa.
  *
  * This class is a wrapper to the OGR library.
  *
@@ -58,10 +58,9 @@ class dllexp GeoTransform
 {
 public:
 
-  // 'dst' e 'src' devem seguir o mesmo padrão dentre:
-  // WKT (Well Known Text)
+  // 'dst' and 'src' must follow the WKT (Well Known Text) format.
   //
-  // fazer: expandir para usar EPSG, ESRI ou Proj4.
+  // TODO: expand to use EPSG, ESRI or Proj4 formats.
   //
   GeoTransform();
   GeoTransform( const std::string& in, const std::string& out );
