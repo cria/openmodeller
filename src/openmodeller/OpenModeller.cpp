@@ -234,31 +234,39 @@ int
 OpenModeller::setAlgorithm( char const *id, int nparam,
                             AlgParameter const *param )
 {
-  if ( nparam && ! param )
+  if ( nparam && ! param ) {
+
     g_log.error( 1, "Incoherent number of parameters and parameters pointer\n" );
-  
-  if (!hasEnvironment())
-    {
+  }
+
+  if ( ! _samp ) {
+
+    //  Create a default sampler if none was previously provided
+    if ( ! hasEnvironment() ) {
+
       g_log( "Sampler could not be initialized. Environment not set.\n" );
       return 0;
     }
-  else if (!_presence)
-    {
+    else if ( ! _presence ) {
+
       g_log( "Sampler could not be initialized. Occurrences not set.\n" );
       return 0;
     }
-  else
-    {
+    else {
+
       // _env and _presence are both set
-      setSampler( createSampler(_env, _presence, _absence));
+      setSampler( createSampler( _env, _presence, _absence ) );
     }
+  }
 
   _alg = AlgorithmFactory::newAlgorithm( id );
-  if ( ! _alg )
-    {
-      sprintf( _error, "Could not find (%s) algorithm.", id );
-      return 0;
-    }
+
+  if ( ! _alg ) {
+
+    sprintf( _error, "Could not find (%s) algorithm.", id );
+    return 0;
+  }
+
   _alg->setSampler( _samp );
   _alg->setParameters( nparam, param );
 
