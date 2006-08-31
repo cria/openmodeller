@@ -34,6 +34,7 @@
 #include <openmodeller/Occurrences.hh>
 #include <openmodeller/Log.hh>
 #include <openmodeller/Random.hh>
+#include <openmodeller/env_io/Map.hh>
 
 #include <string.h>
 
@@ -340,18 +341,18 @@ SamplerImpl::isCategorical( int i )
 
     return _env->isCategorical( i );
   }
-
-  else
+  else {
     // if there is no environment obj, assumes all variables are continuous
     // right now there is no mechanism to define whether a variable is 
     // continuous or categorical when occurrences already come with their
     // samples populated
     return false;
+  }
 }
 
 
-/**************/
-/*** unique ***/
+/******************************/
+/*** environmentally unique ***/
 void 
 SamplerImpl::environmentallyUnique( )
 {
@@ -363,8 +364,8 @@ SamplerImpl::environmentallyUnique( )
 }
 
 
-/**************/
-/*** unique ***/
+/******************************/
+/*** environmentally unique ***/
 void 
 SamplerImpl::environmentallyUnique( OccurrencesPtr& occurrencesPtr, const char *type )
 {
@@ -389,6 +390,80 @@ SamplerImpl::environmentallyUnique( OccurrencesPtr& occurrencesPtr, const char *
       if ( sample.equals( nextSample ) ) {
 
         g_log( "%s Point at (%f,%f) has no unique environment. It will be discarded.\n", 
+               type, (*next)->x(), (*next)->y() );
+
+        // Remove duplicates
+        next = occurrencesPtr->erase( next );
+        last = occurrencesPtr->end();
+
+        // Increase abundance in original occurence
+        (*it)->setAbundance( (*it)->abundance() + 1 );
+
+        // No need to increment "next" because "erase" actually swaps 
+        // the last element with the one that was just erased!
+      }
+      else {
+
+        ++next;
+      }
+    }
+
+    ++it;
+  }
+}
+
+
+/************************/
+/*** spatially unique ***/
+void 
+SamplerImpl::spatiallyUnique( )
+{
+  // Presences
+  this->spatiallyUnique( _presence, "Presence" );
+
+  // Absences
+  this->spatiallyUnique( _absence, "Absence" );
+}
+
+
+/************************/
+/*** spatially unique ***/
+void 
+SamplerImpl::spatiallyUnique( OccurrencesPtr& occurrencesPtr, const char *type )
+{
+  if ( ! ( occurrencesPtr && occurrencesPtr->numOccurrences() ) ) {
+
+    return;
+  }
+
+  Map *mask = _env->getMask();
+
+  // If mask is undefined, use first layer as a mask
+  if ( ! mask ) {
+
+    mask = _env->getLayer( 0 );
+  }
+
+  OccurrencesImpl::iterator it   = occurrencesPtr->begin();
+  OccurrencesImpl::iterator last = occurrencesPtr->end();
+
+  while ( it != last ) {
+
+    int row, col;
+
+    mask->getRowColumn( (*it)->x(), (*it)->y(), &row, &col );
+
+    OccurrencesImpl::iterator next = it + 1;
+
+    while ( next != last ) {
+
+      int nextRow, nextCol;
+
+      mask->getRowColumn( (*next)->x(), (*next)->y(), &nextRow, &nextCol );
+
+      if ( row == nextRow && col == nextCol ) {
+
+        g_log( "%s Point at (%f,%f) has no unique geography. It will be discarded.\n", 
                type, (*next)->x(), (*next)->y() );
 
         // Remove duplicates

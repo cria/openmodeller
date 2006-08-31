@@ -161,6 +161,13 @@ public:
    */
   void environmentallyUnique( );
 
+  /** Remove sample duplicates accross geographic space (presences and absences are treated separately).
+   *  After erasing a point, the remaining one increases the abundance by one.
+   *  Uniqueness is considered for row/col pairs defined in the input mask.
+   *  If mask is undefined, use first layer as a mask.
+   */
+  void spatiallyUnique( );
+
   ConfigurationPtr getConfiguration() const;
 
   void setConfiguration ( const ConstConfigurationPtr& );
@@ -172,8 +179,13 @@ private:
   // this was former method ::initialize()
   void setEnvironmentInOccurrences();
 
-  // Remove sample duplicates accross the environment given one of the occurrences pointers (presence / absence)
+  // Remove sample duplicates accross the environment given one of the occurrences 
+  // type (presence / absence)
   void environmentallyUnique( OccurrencesPtr& occurrencesPtr, const char *type );
+
+  // Remove sample duplicates accross the geographic space given one of the occurrences 
+  // type (presence / absence)
+  void spatiallyUnique( OccurrencesPtr& occurrencesPtr, const char *type );
 
   OccurrencesPtr _presence;
   OccurrencesPtr _absence;
