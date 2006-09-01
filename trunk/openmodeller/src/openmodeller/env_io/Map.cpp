@@ -34,6 +34,8 @@
 #include <openmodeller/env_io/Raster.hh>
 #include <openmodeller/Log.hh>
 
+#include <math.h>
+
 /****************************************************************/
 /****************************** Map *****************************/
 
