@@ -315,10 +315,6 @@ dnl SWIG
 AM_CONDITIONAL([BUILD_SWIG], [test x$build_python = xyes -o x$build_java = xyes])
 
 dnl ---------------------------------------------------------------------------
-dnl  Python
-dnl ---------------------------------------------------------------------------
-
-dnl ---------------------------------------------------------------------------
 dnl TerraLib
 dnl ---------------------------------------------------------------------------
 
@@ -351,6 +347,59 @@ AC_ARG_ENABLE(terralib,
 AM_CONDITIONAL([BUILD_TERRALIB], [test x$build_terralib = xyes])
 
 dnl ---------------------------------------------------------------------------
+dnl  SQLite
+dnl ---------------------------------------------------------------------------
+
+AC_ARG_WITH(sqlite3,
+    AC_HELP_STRING([--with-sqlite3=DIR],
+        [ sqlite3 installation directory, e.g. '--with-sqlite3=/usr/local']),
+    [
+    AC_MSG_CHECKING([for Sqlite3 library in $with_sqlite3])
+        if test -d "$with_sqlite3/lib"; then
+          LDFLAGS="$LDFLAGS -L$with_sqlite3/lib"
+          CPPFLAGS="$CPPFLAGS -I$with_sqlite3/include"
+          AC_MSG_RESULT(["$with_sqlite3 exists"])
+          AC_CHECK_HEADERS(sqlite3.h,
+                [SQLITE3_INC="-I$with_sqlite3/include"],
+                [
+                AC_MSG_ERROR([*** Sqlite3 headers not found.])
+                ])
+          AC_CHECK_LIB(sqlite3,sqlite3_open,
+                [
+                have_sqlite3_lib=yes
+                SQLITE3_LIB="-L$with_sqlite3/lib -lsqlite3"
+                ],
+                [
+                AC_MSG_ERROR([*** Sqlite3 library not found.])
+                ])
+                else
+                AC_MSG_ERROR([*** directory $with_sqlite3 does not exist.])
+        fi
+    ],
+    [
+    AC_CHECK_HEADERS(sqlite3.h,[SQLITE3_INC=""],
+        [
+        AC_MSG_ERROR([*** Sqlite3 headers not found.])
+        ])
+    AC_CHECK_LIB(sqlite3,sqlite3_open,
+        [
+        have_sqlite3_lib=yes
+        SQLITE3_LIB="-lsqlite3"
+        ],
+        [
+        AC_MSG_ERROR([*** Sqlite3 library not found.])
+        ])
+    ]
+    )
+
+AC_SUBST(SQLITE3_INC)
+AC_SUBST(SQLITE3_LIB)
+
+AM_CONDITIONAL([HAVE_SQLITE3], [test x$have_sqlite3_lib = xyes])
+
+
+dnl ---------------------------------------------------------------------------
+
 AC_CONFIG_FILES([
 	Makefile
 	test/Makefile
