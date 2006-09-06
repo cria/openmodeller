@@ -94,7 +94,7 @@ initialPluginPath()
   // 1) environment variable: OM_LIB_PATH
   // 2) read from CONFIG_FILE
   // 3) PLUGINPATH compiled constant.
-	// 4) on mac <application bundle>.app/Contents/Frameworks/openmodeller
+  // 4) on mac <application bundle>.app/Contents/Frameworks/openmodeller
 
   char *env = getenv( "OM_LIB_PATH" );
 
