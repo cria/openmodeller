@@ -101,7 +101,6 @@ Section "Standalone version" SectionStandAloneVersion
   SetOutPath $INSTDIR\algs
   SetOverwrite try
   File "..\build\algs\om_bioclim.dll"
-  File "..\build\algs\om_bioclim_distance.dll"
   File "..\build\algs\om_csmbs.dll"  
   File "..\build\algs\om_distance_to_average.dll"
   File "..\build\algs\om_dg_garp.dll"
@@ -177,7 +176,6 @@ SectionEnd
 ;  SetOutPath $2\algs
 ;  SetOverwrite try
 ;  File "..\build\algs\om_bioclim.dll"
-;  File "..\build\algs\om_bioclim_distance.dll"
 ;  File "..\build\algs\om_csmbs.dll"
 ;  File "..\build\algs\om_distance_to_average.dll"
 ;  File "..\build\algs\om_dg_garp.dll"
@@ -361,7 +359,6 @@ Section Uninstall
 
   ;ALGORITHMS
   Delete /REBOOTOK "$INSTDIR\algs\om_bioclim.dll"
-  Delete /REBOOTOK "$INSTDIR\algs\om_bioclim_distance.dll"
   Delete /REBOOTOK "$INSTDIR\algs\om_csmbs.dll"     
   Delete /REBOOTOK "$INSTDIR\algs\om_distance_to_average.dll"
   Delete /REBOOTOK "$INSTDIR\algs\om_dg_garp.dll"
@@ -409,7 +406,6 @@ Section Uninstall
 ;
 ;  ;ALGORITHMS (Qgis plugin)
 ;  Delete /REBOOTOK "$2\algs\om_bioclim.dll"
-;  Delete /REBOOTOK "$2\algs\om_bioclim_distance.dll"
 ;  Delete /REBOOTOK "$2\algs\om_csmbs.dll"
 ;  Delete /REBOOTOK "$2\algs\om_distance_to_average.dll"
 ;  Delete /REBOOTOK "$2\algs\om_dg_garp.dll"

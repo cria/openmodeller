@@ -18,8 +18,7 @@ plugindir = ${libdir}/openmodeller
 plugin_LTLIBRARIES = \
 		libomdistance_to_average.la \
 		libomminimum_distance.la \
-		libombioclim.la \
-		libombioclim_distance.la
+		libombioclim.la
 
 libomdistance_to_average_la_SOURCES = \
 	distance_to_average.cpp \
@@ -28,10 +27,6 @@ libomdistance_to_average_la_SOURCES = \
 libombioclim_la_SOURCES = \
 	bioclim.cpp \
 	bioclim.hh
-
-libombioclim_distance_la_SOURCES = \
-	bioclim_distance.cpp \
-	bioclim_distance.hh
 
 libomminimum_distance_la_SOURCES = \
 	minimum_distance.cpp \
@@ -44,10 +39,6 @@ libomdistance_to_average_la_CPPFLAGS = -I$(OMSRCDIR)
 libombioclim_la_LDFLAGS = -no-undefined
 libombioclim_la_LIBADD = $(OMLIB)
 libombioclim_la_CPPFLAGS = -I$(OMSRCDIR)
-
-libombioclim_distance_la_LDFLAGS = -no-undefined
-libombioclim_distance_la_LIBADD = $(OMLIB)
-libombioclim_distance_la_CPPFLAGS = -I$(OMSRCDIR)
 
 libomminimum_distance_la_LDFLAGS = -no-undefined
 libomminimum_distance_la_LIBADD = $(OMLIB)

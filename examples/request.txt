@@ -73,17 +73,10 @@ Output file type = GreyTiff
 
 
 ########
-# Bioclimatic Envelop
+# Bioclim
 #
 #Algorithm = Bioclim
 #Parameter = StandardDeviationCutoff 0.674
-
-
-########
-# Bioclimatic Envelop using distance to average
-#
-#Algorithm = BioclimDistance
-#Parameter = StandadDeviationCutoff 0.674
 
 
 ########
