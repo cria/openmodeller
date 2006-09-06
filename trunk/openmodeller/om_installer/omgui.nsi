@@ -95,7 +95,6 @@ Section "MainSection" SEC01
   SetOutPath $INSTDIR\algs
   SetOverwrite try
   File "..\algs\om_bioclim.dll"
-  File "..\algs\om_bioclim_distance.dll"
   File "..\algs\om_csmbs.dll"
   File "..\algs\om_distance_to_average.dll"
   File "..\algs\om_dg_garp.dll"
@@ -256,7 +255,6 @@ Section Uninstall
 
   ;ALGORITHMS
   Delete /REBOOTOK "$INSTDIR\algs\om_bioclim.dll"
-  Delete /REBOOTOK "$INSTDIR\algs\om_bioclim_distance.dll"
   Delete /REBOOTOK "$INSTDIR\algs\om_csmbs.dll"
   Delete /REBOOTOK "$INSTDIR\algs\om_csmkg.dll"
   Delete /REBOOTOK "$INSTDIR\algs\om_distance_to_average.dll"
