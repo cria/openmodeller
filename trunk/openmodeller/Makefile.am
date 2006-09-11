@@ -23,7 +23,7 @@ EXTRA_DIST = \
 	examples/request.txt \
 	libopenmodeller.spec
 
-SUBDIRS = test src 
+SUBDIRS = test src data
 
 release: distdir
 	-chmod -R a+r $(distdir)

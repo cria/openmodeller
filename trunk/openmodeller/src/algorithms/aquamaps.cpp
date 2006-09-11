@@ -387,7 +387,14 @@ void
 AquaMaps::readDepthData( const char *species )
 {
   sqlite3 *db;
-  int rc = sqlite3_open( "/tmp/aquamaps.db", &db);
+
+  string dbname( OMDATAPATH ); 
+  dbname.append( "/" );
+  dbname.append( "data" );
+  dbname.append( "/" );
+  dbname.append( "aquamaps.db" );
+
+  int rc = sqlite3_open( dbname.c_str(), &db);
 
   if ( rc ) {
 

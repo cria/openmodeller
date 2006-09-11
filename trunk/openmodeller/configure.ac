@@ -405,6 +405,7 @@ AC_CONFIG_FILES([
 	test/Makefile
 	test/CppUnitLite/Makefile
 	test/library/Makefile
+	data/Makefile
 	src/Makefile
 	src/openmodeller/Makefile
 	src/console/Makefile
