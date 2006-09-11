@@ -56,11 +56,11 @@ static AlgParamMetadata parameters[NUM_PARAM] = {
     "Real",                      // Type.
 
     // Overview
-    "The envelop is determined by multiplying this parameter and the\
+    "The envelope is determined by multiplying this parameter and the\
  standard deviation.",
 
     // Description.
-    "Standard deviation cutoff for all bioclimatic envelops.\n\
+    "Standard deviation cutoff for all bioclimatic envelopes.\n\
  Examples of (fraction of inclusion, parameter value) are:\n\
  (50.0%, 0.674); (68.3%, 1.000); (90.0%, 1.645); (95.0%, 1.960);\
  (99.7%, 3.000)",
@@ -85,26 +85,26 @@ static AlgMetadata metadata = {
 
   // Overview
   "Uses mean and standard deviation for each environmental\
- variable separately to calculate bioclimatic envelops.\
+ variable separately to calculate bioclimatic envelopes.\
  Level of fitness between the environmental values on a point\
- and the respective envelops classifies points as\
+ and the respective envelopes classifies points as\
  Suitable, Marginal, or Unsuitable for presence.",
 
   // Description.
-  "Implements the Bioclimatic Envelop Algorithm.\
+  "Implements the Bioclimatic Envelope Algorithm.\
  For each given environmental variable the algorithm finds the mean\
  and standard deviation (assuming normal distribution) associated\
- to the occurrence points. Each variable has its own envelop\
+ to the occurrence points. Each variable has its own envelope\
  represented by the interval [m - c*s, m + c*s], where 'm' is the\
  mean; 'c' is the cutoff input parameter; and 's' is the standard\
- deviation. Besides the envelop, each environmental variable has\
+ deviation. Besides the envelope, each environmental variable has\
  additional upper and lower limits taken from the maximum and\
  minimum values related to the set of occurrence points.\nIn this\
  model, any point can be classified as:\n\
  Suitable: if all associated environmental values fall within\
- the calculated envelops;\n\
+ the calculated envelopes;\n\
  Marginal: if one or more associated environmental value falls\
- outside the calculated envelop, but still within the upper and\
+ outside the calculated envelope, but still within the upper and\
  lower limits.\n\
  Unsuitable: if one or more associated enviromental value falls\
  outside the upper and lower limits.\n\
@@ -201,7 +201,7 @@ Bioclim::initialize()
     // g_log.error() does a ::exit(rc).
   }
 
-  g_log.info( "Using %d points to find the bioclimatic envelop.\n", npnt );
+  g_log.info( "Using %d points to find the bioclimatic envelope.\n", npnt );
 
   computeStats( _samp->getPresences() );
 
@@ -237,8 +237,8 @@ Bioclim::done() const
 Scalar
 Bioclim::getValue( const Sample& x ) const
 {
-  // Zero if some point valuble is outside its respective envelop.
-  Scalar outside_envelop = 0;
+  // Zero if some point valuble is outside its respective envelope.
+  Scalar outside_envelope = 0;
 
   // Finds the distance from each variable mean to the respective
   // point value.
@@ -251,25 +251,25 @@ Bioclim::getValue( const Sample& x ) const
       return 0.0;
     }
 
-    if ( ! outside_envelop ) {
+    if ( ! outside_envelope ) {
 
       Scalar cutoff = _std_dev[i];
 
       Scalar diffi = dif[i];
     
-      // If some x[i] is out of its bioclimatic envelop, predicts
+      // If some x[i] is out of its bioclimatic envelope, predicts
       // no occurrence.
       if ( dif[i] > cutoff || dif[i] < -cutoff ) {
-        outside_envelop = 1;
+        outside_envelope = 1;
       }
     }
 
   }
 
-  // If all point values are within the envelop, returns probability
-  // 1.0. Else, if some point is outside the envelop but inside
+  // If all point values are within the envelope, returns probability
+  // 1.0. Else, if some point is outside the envelope but inside
   // the upper and lower ranges, returns 0.5 of probability.
-  return outside_envelop ? 0.5 : 1.0;
+  return outside_envelope ? 0.5 : 1.0;
 }
 
 
@@ -385,12 +385,12 @@ Bioclim::_setConfiguration( const ConstConfigurationPtr& config )
   return;
 }
 
-/*******************/
-/*** log Envelop ***/
+/********************/
+/*** log Envelope ***/
 void
-Bioclim::logEnvelop()
+Bioclim::logEnvelope()
 {
-  g_log( "Envelop with %d dimensions (variables).\n\n", _mean.size() );
+  g_log( "Envelope with %d dimensions (variables).\n\n", _mean.size() );
 
   for ( int i = 0; i < _mean.size(); i++ )
     {
