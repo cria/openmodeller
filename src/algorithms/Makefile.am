@@ -78,11 +78,14 @@ endif
 # Build AquaMaps
 #
 if HAVE_SQLITE3
+
+OMDATAPATH=-DOMDATAPATH=\"$(pkgdatadir)\"
+
 plugin_LTLIBRARIES += libomaquamaps.la
 libomaquamaps_la_SOURCES = \
 	aquamaps.cpp \
 	aquamaps.hh
 libomaquamaps_la_LDFLAGS = -no-undefined
 libomaquamaps_la_LIBADD = $(SQLITE3_LIB) $(OMLIB)
-libomaquamaps_la_CPPFLAGS = $(SQLITE3_INC) -I$(OMSRCDIR)
+libomaquamaps_la_CPPFLAGS = $(OMDATAPATH) $(SQLITE3_INC) -I$(OMSRCDIR)
 endif
