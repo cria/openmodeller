@@ -77,16 +77,19 @@ where each variable has an associated preferred range and a broader accepted \
 range. Within the preferred range the probabilty of presence is 1, between the \
 preferred range and the acceptable range the probability varies from 1 to 0 \
 (linear decay), and outside the accepted range the probability is 0. The \
-overall probability is calculated by multiplying all individual probabilities.\n \
+overall probability is calculated by multiplying all individual probabilities.\n\
 This algorithm differs from other traditional ones since it requires a specific \
 set of layers to work, which should also be in this order: maximum depth in meters, \
 minimum depth in meters, mean annual sea ice concentration, mean annual distance to \
 land in Kilometers, mean annual primary production (chlorophyll A), mean annual \
-salinity in psu, mean annual sea surface temperature in Celsius. It also makes use \
-of expert information for the lower and upper limits of each variable. Depth ranges \
-are taken from a database provided by FishBase. To find this information in the \
-database, occurrences must be identified by the scientific name (only genus and \
-species). The database contains depth ranges for about 30k different marine species. \n\
+salinity in psu, mean annual sea surface temperature in Celsius. These layers can \
+be downloaded from here: \n\
+http://openmodeller.cria.org.br/download/marine.zip \n\
+AquaMaps also makes use of expert information for the lower and upper limits of \
+each variable. Depth ranges are taken from a database provided by FishBase. To find \
+this information in the database, occurrences must be identified by the scientific \
+name (only genus and species). The database contains depth ranges for about 30k \
+different marine species. \n\
 For the other variables, preferred ranges are initially calculated based on \
 percentiles 10th and 90th. They are further adjusted using interquartile values and \
 ensuring a minimum envelope size function.",
