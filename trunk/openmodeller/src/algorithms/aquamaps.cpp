@@ -79,8 +79,8 @@ preferred range and the acceptable range the probability varies from 1 to 0 \
 (linear decay), and outside the accepted range the probability is 0. The \
 overall probability is calculated by multiplying all individual probabilities.\n \
 This algorithm differs from other traditional ones since it requires a specific \
-set of layers to work, which should also be in this order: minimum depth in meters, \
-maximum depth in meters, mean annual sea ice concentration, mean annual distance to \
+set of layers to work, which should also be in this order: maximum depth in meters, \
+minimum depth in meters, mean annual sea ice concentration, mean annual distance to \
 land in Kilometers, mean annual primary production (chlorophyll A), mean annual \
 salinity in psu, mean annual sea surface temperature in Celsius. It also makes use \
 of expert information for the lower and upper limits of each variable. Depth ranges \
@@ -164,7 +164,7 @@ AquaMaps::initialize()
   // Check the number of layers.
   if ( dim != 7 ) {
   
-    g_log.error( 1, "AquaMaps needs precisely 7 layers to work, and they should be in this order: minimum depth in meters, maximum depth in meters, mean annual sea ice concentration, mean annual distance to land in Kilometers, mean annual primary production (chlorophyll A), mean annual salinity in psu, mean annual sea surface temperature in Celsius.\n" ); 
+    g_log.error( 1, "AquaMaps needs precisely 7 layers to work, and they should be in this order: maximum depth in meters, minimum depth in meters, mean annual sea ice concentration, mean annual distance to land in Kilometers, mean annual primary production (chlorophyll A), mean annual salinity in psu, mean annual sea surface temperature in Celsius.\n" ); 
     // g_log.error() does a ::exit(rc).
   }
 
@@ -227,8 +227,8 @@ AquaMaps::calculateEnvelopes( const OccurrencesPtr& occs )
 
   g_log.debug("Species is: %s\n", occs->name());
   g_log.debug("Layers are:\n");
-  g_log.debug("0 = Minimum depth\n");
-  g_log.debug("1 = Maximum depth\n");
+  g_log.debug("0 = Maximum depth\n");
+  g_log.debug("1 = Minimum depth\n");
   g_log.debug("2 = Ice concentration\n");
   g_log.debug("3 = Distance to land\n");
   g_log.debug("4 = Primary production (chlorophyll A)\n");
@@ -281,8 +281,8 @@ AquaMaps::calculateEnvelopes( const OccurrencesPtr& occs )
     g_log.debug("Calculating envelope for layer %d\n", j);
     g_log.debug("--------------------------------\n", j);
 
-    // 0 = Minimum depth
-    // 1 = Maximum depth
+    // 0 = Maximum depth
+    // 1 = Minimum depth
     // 2 = Ice concentration
     // 3 = Distance to land
     // 4 = Primary production (chlorophyll A)
@@ -555,22 +555,22 @@ AquaMaps::getValue( const Sample& x ) const
 
   // Depth probability
 
-  if ( _maximum[1] != 9999 ) {  // If there is a depth range
+  if ( _maximum[0] != 9999 ) {  // If there is a depth range
 
     // Probability of occurrence is zero if depth at this point is less
     // than the minimum depth for the species.
     // note: using maximum depth layer here
-    if ( x[1] < _minimum[1] ) {
+    if ( x[0] < _minimum[0] ) {
 
         return 0.0;
     }
 
     // Point is sufficiently deep, but still not enough for the prefered range
     // note: using maximum depth layer here
-    if (  x[1] >= _minimum[1] && x[1] < _pref_minimum[1] ) {
+    if (  x[0] >= _minimum[0] && x[0] < _pref_minimum[0] ) {
 
       // Linear decay
-      prob *= (x[1] - _minimum[1]) / (_pref_minimum[1] - _minimum[1]);
+      prob *= (x[0] - _minimum[0]) / (_pref_minimum[0] - _minimum[0]);
     }
     // Point is sufficiently deep for the prefered range
     // Note: pelagic means "belonging to the upper layers of the open sea". Or in other 
@@ -582,17 +582,17 @@ AquaMaps::getValue( const Sample& x ) const
     // Species needs to feed at the bottom of the sea (or there's no data about this) 
     // and point is within the prefered range
     // note: the inner envelope logic makes use of both minimum and maximum depth layers.
-    else if (  x[1] >= _pref_minimum[1] && x[0] <= _pref_maximum[0] ) {
+    else if (  x[0] >= _pref_minimum[0] && x[1] <= _pref_maximum[1] ) {
 
       // Just keep prob as 1
     }
     // Species needs to feed at the bottom of the sea (or there's no data about this) and 
     // point is deeper than the prefered maximum depth but not so deep as the maximum
     // note: using minimum depth layer here
-    else if (  x[0] >= _pref_maximum[0] && x[0] < _maximum[0] ) {
+    else if (  x[1] >= _pref_maximum[1] && x[1] < _maximum[1] ) {
 
       // Linear decay
-      prob *= (_maximum[0] - x[0]) / (_maximum[0] - _pref_maximum[0]);
+      prob *= (_maximum[1] - x[1]) / (_maximum[1] - _pref_maximum[1]);
     }
     // Species needs to feed at the bottom of the sea (or there's no data about this) 
     // but depth at the point is greater then the maximum accepted depth

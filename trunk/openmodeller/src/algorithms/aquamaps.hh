@@ -66,13 +66,13 @@
 /****************************************/
 /*********** Expert's values ************/
 
-const Scalar MINIMUM_MINDEPTH = 0.0;
-const Scalar MAXIMUM_MINDEPTH = 9999.0;
-const Scalar MINIMUM_ENVELOPE_SIZE_FOR_MINDEPTH = 0.0; // not used, just defined
-
 const Scalar MINIMUM_MAXDEPTH = 0.0;
 const Scalar MAXIMUM_MAXDEPTH = 9999.0;
 const Scalar MINIMUM_ENVELOPE_SIZE_FOR_MAXDEPTH = 0.0; // not used, just defined
+
+const Scalar MINIMUM_MINDEPTH = 0.0;
+const Scalar MAXIMUM_MINDEPTH = 9999.0;
+const Scalar MINIMUM_ENVELOPE_SIZE_FOR_MINDEPTH = 0.0; // not used, just defined
 
 const Scalar MINIMUM_ICE_CONCENTRATION = 0.0;
 const Scalar MAXIMUM_ICE_CONCENTRATION = 8000.0;
@@ -94,24 +94,24 @@ const Scalar MINIMUM_SURFACE_TEMPERATURE = -2.0;
 const Scalar MAXIMUM_SURFACE_TEMPERATURE = 30.0;
 const Scalar MINIMUM_ENVELOPE_SIZE_FOR_SURFACE_TEMPERATURE = 1.0;
 
-const Scalar LOWER_LIMIT [7] = { MINIMUM_MINDEPTH,
-                                 MINIMUM_MAXDEPTH,
+const Scalar LOWER_LIMIT [7] = { MINIMUM_MAXDEPTH,
+                                 MINIMUM_MINDEPTH,
                                  MINIMUM_ICE_CONCENTRATION,
                                  MINIMUM_DISTANCE_TO_LAND,
                                  MINIMUM_PRIMARY_PRODUCTION,
                                  MINIMUM_SALINITY,
                                  MINIMUM_SURFACE_TEMPERATURE };
 
-const Scalar UPPER_LIMIT [7] = { MAXIMUM_MINDEPTH,
-                                 MAXIMUM_MAXDEPTH,
+const Scalar UPPER_LIMIT [7] = { MAXIMUM_MAXDEPTH,
+                                 MAXIMUM_MINDEPTH,
                                  MAXIMUM_ICE_CONCENTRATION,
                                  MAXIMUM_DISTANCE_TO_LAND,
                                  MAXIMUM_PRIMARY_PRODUCTION,
                                  MAXIMUM_SALINITY,
                                  MAXIMUM_SURFACE_TEMPERATURE };
 
-const Scalar INNER_SIZE [7] = { MINIMUM_ENVELOPE_SIZE_FOR_MINDEPTH,
-                                MINIMUM_ENVELOPE_SIZE_FOR_MAXDEPTH,
+const Scalar INNER_SIZE [7] = { MINIMUM_ENVELOPE_SIZE_FOR_MAXDEPTH,
+                                MINIMUM_ENVELOPE_SIZE_FOR_MINDEPTH,
                                 MINIMUM_ENVELOPE_SIZE_FOR_ICE_CONCENTRATION,
                                 MINIMUM_ENVELOPE_SIZE_FOR_DISTANCE_TO_LAND,
                                 MINIMUM_ENVELOPE_SIZE_FOR_PRIMARY_PRODUCTION,
