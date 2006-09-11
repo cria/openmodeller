@@ -64,12 +64,34 @@ static AlgMetadata metadata = {
   "0.1",       // Version.
 
   // Overview
-  "AquaMaps is cool",
+  "Environmental envelope modelling algorithm for marine organisms. \
+Needs 7 predefined layers (see detailed description) to calculate the \
+preferred and accepted envelopes, and also needs a scientific name (genus \
+plus species) labeling each occurrence group." ,
 
   // Description.
-  "AquaMaps is very cool",
+  "AquaMaps is a niche modelling tool developed as part of the Incofish \
+project and particularly tailored towards modelling marine organisms distribution.\n \
+The basic idea follows the environmental envelope type modelling approach, \
+where each variable has an associated preferred range and a broader accepted \
+range. Within the preferred range the probabilty of presence is 1, between the \
+preferred range and the acceptable range the probability varies from 1 to 0 \
+(linear decay), and outside the accepted range the probability is 0. The \
+overall probability is calculated by multiplying all individual probabilities.\n \
+This algorithm differs from other traditional ones since it requires a specific \
+set of layers to work, which should also be in this order: minimum depth in meters, \
+maximum depth in meters, mean annual sea ice concentration, mean annual distance to \
+land in Kilometers, mean annual primary production (chlorophyll A), mean annual \
+salinity in psu, mean annual sea surface temperature in Celsius. It also makes use \
+of expert information for the lower and upper limits of each variable. Depth ranges \
+are taken from a database provided by FishBase. To find this information in the \
+database, occurrences must be identified by the scientific name (only genus and \
+species). The database contains depth ranges for about 30k different marine species. \n\
+For the other variables, preferred ranges are initially calculated based on \
+percentiles 10th and 90th. They are further adjusted using interquartile values and \
+ensuring a minimum envelope size function.",
   
-  "",  // Author
+  "K. Kaschner, J. Ready, S. Kullander, R. Froese",  // Authors
 
   // Bibliography.
   "",
@@ -113,9 +135,9 @@ algorithmMetadata()
 AquaMaps::AquaMaps() :
   AlgorithmImpl( &metadata ),
   _done( false ),
-  _lower_limit( 6, LOWER_LIMIT ),
-  _upper_limit( 6, UPPER_LIMIT ),
-  _inner_size( 6, INNER_SIZE ),
+  _lower_limit( 7, LOWER_LIMIT ),
+  _upper_limit( 7, UPPER_LIMIT ),
+  _inner_size( 7, INNER_SIZE ),
   _minimum(),
   _maximum(),
   _pref_minimum(),
@@ -140,9 +162,9 @@ AquaMaps::initialize()
   g_log.info( "Reading %d-dimensional occurrence points.\n", dim );
 
   // Check the number of layers.
-  if ( dim != 6 ) {
+  if ( dim != 7 ) {
   
-    g_log.error( 1, "AquaMaps needs precisely 6 layers to work, and they should be in this order: depth in meters, mean annual sea ice concentration, mean annual distance to land in Kilometers, mean annual primary production (chlorophyll A), mean annual salinity in psu, mean annual sea surface temperature in Celsius.\n" ); 
+    g_log.error( 1, "AquaMaps needs precisely 7 layers to work, and they should be in this order: minimum depth in meters, maximum depth in meters, mean annual sea ice concentration, mean annual distance to land in Kilometers, mean annual primary production (chlorophyll A), mean annual salinity in psu, mean annual sea surface temperature in Celsius.\n" ); 
     // g_log.error() does a ::exit(rc).
   }
 
@@ -152,7 +174,7 @@ AquaMaps::initialize()
   // Check the number of sampled points.
   int npnt = _samp->numPresence();
 
-  if (  npnt <= 4 ) {
+  if (  npnt < 5 ) {
 
     g_log.error( 1, "AquaMaps needs at least 5 points inside the mask!\n" ); 
     // g_log.error() does a ::exit(rc).
@@ -205,12 +227,13 @@ AquaMaps::calculateEnvelopes( const OccurrencesPtr& occs )
 
   g_log.debug("Species is: %s\n", occs->name());
   g_log.debug("Layers are:\n");
-  g_log.debug("0 = Depth\n");
-  g_log.debug("1 = Ice concentration\n");
-  g_log.debug("2 = Distance to land\n");
-  g_log.debug("3 = Primary production (chlorophyll A)\n");
-  g_log.debug("4 = Salinity\n");
-  g_log.debug("5 = Surface temperature\n");
+  g_log.debug("0 = Minimum depth\n");
+  g_log.debug("1 = Maximum depth\n");
+  g_log.debug("2 = Ice concentration\n");
+  g_log.debug("3 = Distance to land\n");
+  g_log.debug("4 = Primary production (chlorophyll A)\n");
+  g_log.debug("5 = Salinity\n");
+  g_log.debug("6 = Surface temperature\n");
 
   // Compute min, pref_min, pref_max and max
   OccurrencesImpl::const_iterator oc = occs->begin();
@@ -239,8 +262,8 @@ AquaMaps::calculateEnvelopes( const OccurrencesPtr& occs )
   }
 
   // Default values for depth ranges
-  _minimum[0] = _pref_minimum[0] = 0;
-  _maximum[0] = _pref_maximum[0] = 9999;
+  _minimum[0] = _minimum[1] = _pref_minimum[0] = _pref_minimum[1] = 0;
+  _maximum[0] = _maximum[1] = _pref_maximum[0] = _pref_maximum[1] = 9999;
 
   // Try to get expert information about depth range from database
   readDepthData( occs->name() );
@@ -248,22 +271,23 @@ AquaMaps::calculateEnvelopes( const OccurrencesPtr& occs )
   // Get matrix data structure so that we can sort values for each layer
   std::vector<ScalarVector> matrix = occs->getEnvironmentMatrix();
 
-  // For each layer (except depth), calculate the percentiles and set 
+  // For each layer (except min/max depth), calculate the percentiles and set 
   // default values for the prefered min/max
   ScalarVector::iterator lStart, lEnd;
 
-  for ( int j = 1; j < matrix.size(); j++ ) {
+  for ( int j = 2; j < matrix.size(); j++ ) {
 
     g_log.debug("--------------------------------\n", j);
     g_log.debug("Calculating envelope for layer %d\n", j);
     g_log.debug("--------------------------------\n", j);
 
-    // 0 = Depth
-    // 1 = Ice concentration
-    // 2 = Distance to land
-    // 3 = Primary production (chlorophyll A)
-    // 4 = Salinity
-    // 5 = Surface temperature
+    // 0 = Minimum depth
+    // 1 = Maximum depth
+    // 2 = Ice concentration
+    // 3 = Distance to land
+    // 4 = Primary production (chlorophyll A)
+    // 5 = Salinity
+    // 6 = Surface temperature
 
     lStart = matrix[j].begin();
     lEnd = matrix[j].end();
@@ -395,10 +419,16 @@ AquaMaps::readDepthData( const char *species )
       double max     = sqlite3_column_double( ppStmt, 4 );
 
       _pelagic         = pelagic;
+
+      // Repeat the information for both min and max depth for symmetry
       _minimum[0]      = min;
+      _minimum[1]      = min;
       _pref_minimum[0] = prefmin;
+      _pref_minimum[1] = prefmin;
       _pref_maximum[0] = prefmax;
+      _pref_maximum[1] = prefmax;
       _maximum[0]      = max;
+      _maximum[1]      = max;
 
       g_log.debug("Depth values from database:\n");
       g_log.debug("pelagic: %i\n", pelagic);
@@ -518,20 +548,22 @@ AquaMaps::getValue( const Sample& x ) const
 
   // Depth probability
 
-  if ( _maximum[0] != 9999 ) {  // If there is a depth range
+  if ( _maximum[1] != 9999 ) {  // If there is a depth range
 
     // Probability of occurrence is zero if depth at this point is less
-    // than the minimum depth for the species
-    if ( x[0] < _minimum[0] ) {
+    // than the minimum depth for the species.
+    // note: using maximum depth layer here
+    if ( x[1] < _minimum[1] ) {
 
         return 0.0;
     }
 
     // Point is sufficiently deep, but still not enough for the prefered range
-    if (  x[0] >= _minimum[0] && x[0] < _pref_minimum[0] ) {
+    // note: using maximum depth layer here
+    if (  x[1] >= _minimum[1] && x[1] < _pref_minimum[1] ) {
 
       // Linear decay
-      prob *= (x[0] - _minimum[0]) / (_pref_minimum[0] - _minimum[0]);
+      prob *= (x[1] - _minimum[1]) / (_pref_minimum[1] - _minimum[1]);
     }
     // Point is sufficiently deep for the prefered range
     // Note: pelagic means "belonging to the upper layers of the open sea". Or in other 
@@ -542,12 +574,14 @@ AquaMaps::getValue( const Sample& x ) const
     }
     // Species needs to feed at the bottom of the sea (or there's no data about this) 
     // and point is within the prefered range
-    else if (  x[0] >= _pref_minimum[0] && x[0] <= _pref_maximum[0] ) {
+    // note: the inner envelope logic makes use of both minimum and maximum depth layers.
+    else if (  x[1] >= _pref_minimum[1] && x[0] <= _pref_maximum[0] ) {
 
       // Just keep prob as 1
     }
     // Species needs to feed at the bottom of the sea (or there's no data about this) and 
     // point is deeper than the prefered maximum depth but not so deep as the maximum
+    // note: using minimum depth layer here
     else if (  x[0] >= _pref_maximum[0] && x[0] < _maximum[0] ) {
 
       // Linear decay
@@ -565,11 +599,11 @@ AquaMaps::getValue( const Sample& x ) const
     // Just keep prob as 1
   }
 
-  // For all layers except depth
+  // For all layers except min/max depths
 
   int numLayers = x.size();
 
-  for ( int i = 1; i < numLayers; i++ ) {
+  for ( int i = 2; i < numLayers; i++ ) {
 
     // Probability zero for points outside the envelope
     if ( x[i] < _minimum[i] || x[i] > _maximum[i] ) {
