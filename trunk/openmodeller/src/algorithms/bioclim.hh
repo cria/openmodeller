@@ -64,8 +64,8 @@ private:
       the data in the OccurrencesPtr */
   void computeStats( const OccurrencesPtr& );
 
-  /** Log the bioclimatic envelops informations. */
-  void logEnvelop();
+  /** Log the bioclimatic envelopes information. */
+  void logEnvelope();
 
   bool _done;  ///> is true if the algorithm is finished.
 
