@@ -391,12 +391,15 @@ AquaMaps::readDepthData( const char *species )
 {
   sqlite3 *db;
 
+#ifndef WIN32
   string dbname( OMDATAPATH ); 
   dbname.append( "/" );
   dbname.append( "data" );
   dbname.append( "/" );
   dbname.append( "aquamaps.db" );
-
+#else
+  string dbname("data\\aquamaps.db");
+#endif
   int rc = sqlite3_open( dbname.c_str(), &db);
 
   if ( rc ) {
