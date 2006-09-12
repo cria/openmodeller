@@ -8,10 +8,10 @@
 
 TEMPLATE=subdirs
 SUBDIRS=bioclim.pro \
-        bioclim_distance.pro \
         distance_to_average.pro \
         minimum_distance.pro
-
+SUBDIRS+=aquamaps.pro
+#bioclim_distance.pro 
 SUBDIRS+=csm.pro
 SUBDIRS+=dg_garp
 SUBDIRS+=best_subsets

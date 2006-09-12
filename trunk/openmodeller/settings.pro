@@ -27,6 +27,7 @@ win32{
   DEFINES += MINGW_QT
   LIBS+=-L"C:\Mingw\lib"
   INCLUDEPATH += . 
+  INCLUDEPATH +="c:\mingw\include" #hard coded for now! 
   INCLUDEPATH +="c:\dev\cpp\om\src" #hard coded for now!
   INCLUDEPATH +="c:\dev\cpp\om\src\openmodeller" #hard coded for now!
   INCLUDEPATH +="c:\dev\cpp\om\src\openmodeller\env_io" #hard coded for now!
@@ -85,7 +86,7 @@ CONFIG(debug, debug|release){
 }
 unix:LIBS += -L$${DESTDIR}/lib/
 win32:LIBS += -L$${DESTDIR}
-
+SQLITELIBADD = -lsqlite3
 message(Install prefix set to $$PREFIX)
 message(The compiled binaries will be installed in $$DESTDIR)
 
