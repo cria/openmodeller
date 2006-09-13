@@ -35,6 +35,7 @@
 #include <string.h>
 #include <stdio.h>
 #include <math.h>
+#include <sstream>
 #include <sqlite3.h>
 
 // Algorithm is included for std::min and std::max.
@@ -299,12 +300,14 @@ AquaMaps::calculateEnvelopes( const OccurrencesPtr& occs )
     int numOccurrences = occs->numOccurrences();
 
     // Just for debugging
-    std::cerr << "row -->";
+    ostringstream debug;
+    debug << "row -->";
     for ( int w = 0; w < numOccurrences; w++ ) {
 
-      std::cerr << " [" << j << "," << w << "]=" << matrix[j][w];
+	debug << " [" << j << "," << w << "]=" << matrix[j][w];
     }
-    std::cerr << "\n";
+    debug << "\n";
+    g_log.debug( debug.str().c_str() );
 
     // Calculate percentiles
     Scalar v10, v25, v75, v90;
