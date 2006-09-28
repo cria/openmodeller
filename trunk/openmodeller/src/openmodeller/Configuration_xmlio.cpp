@@ -20,16 +20,32 @@ using namespace std;
  *
  **********************************************************************************/
 
+static void 
+escapeXml( const char *data, ostream &_stream )
+{
+  while ( *data != 0 ) {
+    switch ( *data ) {
+      case '<': _stream << "&lt;"; break;
+      case '>': _stream << "&gt;"; break;
+      case '&': _stream << "&amp;"; break;
+      default: _stream << *data; break;
+    }
+    data += 1;
+  }
+}
+
 static void
 writeXmlStartTag( const string &name, Configuration::attribute_list nvlist, bool empty, ostream &_stream ) {
 
-  _stream << "<" << name;
+    _stream << endl << "<" << name;
 
   Configuration::attribute_list::const_iterator nvi = nvlist.begin();
   if ( nvi != nvlist.end() ) {
-    _stream << endl;
+
     while ( nvi != nvlist.end() ) {
-      _stream << " " << nvi->first << "='" << nvi->second << "'" << endl;;
+      _stream << " " << nvi->first << "=\"";
+      escapeXml( nvi->second.c_str(), _stream );
+      _stream << "\"";
       ++nvi;
     }
   }
@@ -44,7 +60,7 @@ writeXmlStartTag( const string &name, Configuration::attribute_list nvlist, bool
 static void
 writeXmlEndTag( const string &name, ostream &_stream ) {
 
-  _stream << "</" << name << ">" << endl;
+  _stream << endl << "</" << name << ">" << endl;
 
 }
 
@@ -58,13 +74,11 @@ Configuration::writeXml( const ConstConfigurationPtr& config, ostream &_stream )
 
   writeXmlStartTag( config->getName(), config->getAllAttributes(), empty, _stream );
 
-  _stream << endl;
-
   if ( empty )
     return;
 
   if ( ! value.empty() )
-    _stream << value << endl;
+    escapeXml( value.c_str(), _stream );
 
   for ( Configuration::subsection_list::const_iterator subsecti = subsects.begin();
 	  subsecti != subsects.end();
