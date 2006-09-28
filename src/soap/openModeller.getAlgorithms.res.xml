@@ -4,26 +4,12 @@
  xmlns:SOAP-ENC="http://schemas.xmlsoap.org/soap/encoding/"
  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
  xmlns:xsd="http://www.w3.org/2001/XMLSchema"
- xmlns:om="http://openmodeller.sf.net/ns/1.0">
+ xmlns:om="http://openmodeller.cria.org.br/xml/1.0"
+ xmlns:omws="http://openmodeller.cria.org.br/ws/1.0">
  <SOAP-ENV:Header>
  </SOAP-ENV:Header>
  <SOAP-ENV:Body>
-  <om:getAlgorithmsResponse>
-   <AvailableAlgorithms>
-    <Algorithm>
-     <AlgorithmMetadata Id="" Name="" Version="" Author="" CodeAuthor="" Contact="" Categorical="0" Absence="0">
-      <Overview></Overview>
-      <Description></Description>
-      <Bibliography></Bibliography>
-     </AlgorithmMetadata>
-     <AlgorithmParameters>
-      <Param Id="" Name="" Type="" HasMin="0" Min="0.0" HasMax="0" Max="0.0" Typical="">
-       <Overview></Overview>
-       <Description></Description>
-      </Param>
-     </AlgorithmParameters>
-    </Algorithm>
-   </AvailableAlgorithms>
-  </om:getAlgorithmsResponse>
+  <omws:getAlgorithmsResponse>
+  </omws:getAlgorithmsResponse>
  </SOAP-ENV:Body>
 </SOAP-ENV:Envelope>

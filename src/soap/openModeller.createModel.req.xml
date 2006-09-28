@@ -4,11 +4,12 @@
  xmlns:SOAP-ENC="http://schemas.xmlsoap.org/soap/encoding/"
  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
  xmlns:xsd="http://www.w3.org/2001/XMLSchema"
- xmlns:om="http://openmodeller.sf.net/ns/1.0">
+ xmlns:om="http://openmodeller.cria.org.br/xml/1.0"
+ xmlns:omws="http://openmodeller.cria.org.br/ws/1.0">
  <SOAP-ENV:Header>
  </SOAP-ENV:Header>
  <SOAP-ENV:Body>
-  <om:createModel>
+  <omws:createModel>
    <points>
     <coordsystem></coordsystem>
     <presences>
@@ -35,6 +36,6 @@
     <scale>0</scale>
     <format></format>
    </output>
-  </om:createModel>
+  </omws:createModel>
  </SOAP-ENV:Body>
 </SOAP-ENV:Envelope>

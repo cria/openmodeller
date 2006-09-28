@@ -36,7 +36,7 @@ use Data::Dumper;
 ### Settings
 
 # namespace to be used
-my $uri = 'http://openmodeller.sf.net/ns/1.0';
+my $uri = 'http://openmodeller.cria.org.br/ws/1.0';
 
 ### Possible command line parameters
 
@@ -200,6 +200,11 @@ sub debug_soap
     {
         print "\n" . ref($in) . "\n\n";
         print $in->content . "\n\n";
+
+        open(OUT, ">>client.debug");
+        print OUT $in->content;
+        print OUT "\n";
+        close(OUT);
     } 
 }
 
@@ -217,7 +222,7 @@ sub ping
 
     my $method = SOAP::Data
 	-> name('ping')
-	-> prefix('om')
+	-> prefix('omws')
 	-> uri($uri);
 
     my $response = $soap->call($method);
@@ -255,7 +260,7 @@ sub get_algorithms
     
     my $method = SOAP::Data
 	-> name('getAlgorithms')
-	-> prefix('om')
+	-> prefix('omws')
 	-> uri($uri);
 
     my $response = $soap->call($method);
@@ -423,7 +428,7 @@ sub create_model
 
     my $method = SOAP::Data
 	-> name('createModel')
-	-> prefix('om')
+	-> prefix('omws')
 	-> uri($uri);
 
     ### Algorithm
@@ -437,7 +442,7 @@ sub create_model
 
     my $algorithm = SOAP::Data
 	-> name('algorithm')
-	-> prefix('om')
+	-> prefix('omws')
 	-> type('om:Algorithm')
 	-> attr({'Id'=>$algorithms{$alg_code}{'Id'}});
 
@@ -467,7 +472,7 @@ sub create_model
 
     my $maps = SOAP::Data
 	-> name('maps')
-	-> prefix('om')
+	-> prefix('omws')
 	-> type('om:Maps');
     
     $maps->set_value(\@maps);
@@ -498,7 +503,7 @@ sub create_model
 
     my $presences = SOAP::Data
 	-> name('presences')
-	-> prefix('om')
+	-> prefix('omws')
 	-> type('om:PresencePoints');
     
     $presences->set_value(\@presencePoints);
@@ -513,14 +518,14 @@ sub create_model
     
     my $absences = SOAP::Data
 	-> name('absences')
-	-> prefix('om')
+	-> prefix('omws')
 	-> type('om:AbsencePoints');
 
     $absences->set_value(\@absencePoints);
 
     my $points = SOAP::Data
 	-> name('points')
-	-> prefix('om')
+	-> prefix('omws')
 	-> type('om:Points')
 	-> value(\SOAP::Data->value($coordsystem, $presences, $absences));
 
@@ -543,7 +548,7 @@ sub create_model
 
     my $output = SOAP::Data
 	-> name('output')
-	-> prefix('om')
+	-> prefix('omws')
 	-> type('om:Output')
 	-> value(\SOAP::Data->value($header, $scale, $format));
     
@@ -583,7 +588,7 @@ sub get_distribution_map
     
     my $method = SOAP::Data
 	-> name('getDistributionMap')
-	-> prefix('om')
+	-> prefix('omws')
 	-> uri($uri);
 
     my $ticket = SOAP::Data

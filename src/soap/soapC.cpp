@@ -7,7 +7,7 @@
 
 #include "soapH.h"
 
-SOAP_SOURCE_STAMP("@(#) soapC.cpp ver 2.7.6d 2006-02-09 21:06:47 GMT")
+SOAP_SOURCE_STAMP("@(#) soapC.cpp ver 2.7.6d 2006-09-28 19:28:42 GMT")
 
 
 #ifndef WITH_NOGLOBAL
@@ -159,82 +159,60 @@ SOAP_FMAC3 void * SOAP_FMAC4 soap_getelement(struct soap *soap, int *type)
 		return soap_in_xsd__base64Binary(soap, NULL, NULL, "xsd:base64Binary");
 	case SOAP_TYPE_SOAP_ENV__Reason:
 		return soap_in_SOAP_ENV__Reason(soap, NULL, NULL, "SOAP-ENV:Reason");
-	case SOAP_TYPE_om__ping:
-		return soap_in_om__ping(soap, NULL, NULL, "om:ping");
-	case SOAP_TYPE_om__pingResponse:
-		return soap_in_om__pingResponse(soap, NULL, NULL, "om:pingResponse");
-	case SOAP_TYPE_om__getDistributionMap:
-		return soap_in_om__getDistributionMap(soap, NULL, NULL, "om:getDistributionMap");
-	case SOAP_TYPE_om__getDistributionMapResponse:
-		return soap_in_om__getDistributionMapResponse(soap, NULL, NULL, "om:getDistributionMapResponse");
-	case SOAP_TYPE_om__createModel:
-		return soap_in_om__createModel(soap, NULL, NULL, "om:createModel");
-	case SOAP_TYPE_om__createModelResponse:
-		return soap_in_om__createModelResponse(soap, NULL, NULL, "om:createModelResponse");
-	case SOAP_TYPE_om__Output:
-		return soap_in_om__Output(soap, NULL, NULL, "om:Output");
+	case SOAP_TYPE_omws__ping:
+		return soap_in_omws__ping(soap, NULL, NULL, "omws:ping");
+	case SOAP_TYPE_omws__pingResponse:
+		return soap_in_omws__pingResponse(soap, NULL, NULL, "omws:pingResponse");
+	case SOAP_TYPE_omws__getDistributionMap:
+		return soap_in_omws__getDistributionMap(soap, NULL, NULL, "omws:getDistributionMap");
+	case SOAP_TYPE_omws__getDistributionMapResponse:
+		return soap_in_omws__getDistributionMapResponse(soap, NULL, NULL, "omws:getDistributionMapResponse");
+	case SOAP_TYPE_omws__createModel:
+		return soap_in_omws__createModel(soap, NULL, NULL, "omws:createModel");
+	case SOAP_TYPE_omws__createModelResponse:
+		return soap_in_omws__createModelResponse(soap, NULL, NULL, "omws:createModelResponse");
+	case SOAP_TYPE_omws__Output:
+		return soap_in_omws__Output(soap, NULL, NULL, "omws:Output");
 	case SOAP_TYPE_soap_Output:
 		return soap_in_soap_Output(soap, NULL, NULL, "soap-Output");
-	case SOAP_TYPE_om__Algorithm:
-		return soap_in_om__Algorithm(soap, NULL, NULL, "om:Algorithm");
+	case SOAP_TYPE_omws__Algorithm:
+		return soap_in_omws__Algorithm(soap, NULL, NULL, "omws:Algorithm");
 	case SOAP_TYPE_soap_Algorithm:
 		return soap_in_soap_Algorithm(soap, NULL, NULL, "soap-Algorithm");
-	case SOAP_TYPE_om__Parameter:
-		return soap_in_om__Parameter(soap, NULL, NULL, "om:Parameter");
+	case SOAP_TYPE_omws__Parameter:
+		return soap_in_omws__Parameter(soap, NULL, NULL, "omws:Parameter");
 	case SOAP_TYPE_soap_Parameter:
 		return soap_in_soap_Parameter(soap, NULL, NULL, "soap-Parameter");
-	case SOAP_TYPE_om__Mask:
-		return soap_in_om__Mask(soap, NULL, NULL, "om:Mask");
+	case SOAP_TYPE_omws__Mask:
+		return soap_in_omws__Mask(soap, NULL, NULL, "omws:Mask");
 	case SOAP_TYPE_soap_Mask:
 		return soap_in_soap_Mask(soap, NULL, NULL, "soap-Mask");
-	case SOAP_TYPE_om__Maps:
-		return soap_in_om__Maps(soap, NULL, NULL, "om:Maps");
+	case SOAP_TYPE_omws__Maps:
+		return soap_in_omws__Maps(soap, NULL, NULL, "omws:Maps");
 	case SOAP_TYPE_soap_Maps:
 		return soap_in_soap_Maps(soap, NULL, NULL, "soap-Maps");
-	case SOAP_TYPE_om__Map:
-		return soap_in_om__Map(soap, NULL, NULL, "om:Map");
+	case SOAP_TYPE_omws__Map:
+		return soap_in_omws__Map(soap, NULL, NULL, "omws:Map");
 	case SOAP_TYPE_soap_Map:
 		return soap_in_soap_Map(soap, NULL, NULL, "soap-Map");
-	case SOAP_TYPE_om__Points:
-		return soap_in_om__Points(soap, NULL, NULL, "om:Points");
+	case SOAP_TYPE_omws__Points:
+		return soap_in_omws__Points(soap, NULL, NULL, "omws:Points");
 	case SOAP_TYPE_soap_Points:
 		return soap_in_soap_Points(soap, NULL, NULL, "soap-Points");
-	case SOAP_TYPE_om__AbsencePoints:
-		return soap_in_om__AbsencePoints(soap, NULL, NULL, "om:AbsencePoints");
+	case SOAP_TYPE_omws__AbsencePoints:
+		return soap_in_omws__AbsencePoints(soap, NULL, NULL, "omws:AbsencePoints");
 	case SOAP_TYPE_soap_AbsencePoints:
 		return soap_in_soap_AbsencePoints(soap, NULL, NULL, "soap-AbsencePoints");
-	case SOAP_TYPE_om__PresencePoints:
-		return soap_in_om__PresencePoints(soap, NULL, NULL, "om:PresencePoints");
+	case SOAP_TYPE_omws__PresencePoints:
+		return soap_in_omws__PresencePoints(soap, NULL, NULL, "omws:PresencePoints");
 	case SOAP_TYPE_soap_PresencePoints:
 		return soap_in_soap_PresencePoints(soap, NULL, NULL, "soap-PresencePoints");
-	case SOAP_TYPE_om__Point:
-		return soap_in_om__Point(soap, NULL, NULL, "om:Point");
+	case SOAP_TYPE_omws__Point:
+		return soap_in_omws__Point(soap, NULL, NULL, "omws:Point");
 	case SOAP_TYPE_soap_Point:
 		return soap_in_soap_Point(soap, NULL, NULL, "soap-Point");
-	case SOAP_TYPE_om__getAlgorithms:
-		return soap_in_om__getAlgorithms(soap, NULL, NULL, "om:getAlgorithms");
-	case SOAP_TYPE_om__getAlgorithmsResponse:
-		return soap_in_om__getAlgorithmsResponse(soap, NULL, NULL, "om:getAlgorithmsResponse");
-	case SOAP_TYPE_om__AvailableAlgorithms:
-		return soap_in_om__AvailableAlgorithms(soap, NULL, NULL, "om:AvailableAlgorithms");
-	case SOAP_TYPE_soap_AvailableAlgorithms:
-		return soap_in_soap_AvailableAlgorithms(soap, NULL, NULL, "soap-AvailableAlgorithms");
-	case SOAP_TYPE_om__AvailableAlgorithm:
-		return soap_in_om__AvailableAlgorithm(soap, NULL, NULL, "om:AvailableAlgorithm");
-	case SOAP_TYPE_soap_AvailableAlgorithm:
-		return soap_in_soap_AvailableAlgorithm(soap, NULL, NULL, "soap-AvailableAlgorithm");
-	case SOAP_TYPE_om__AlgorithmMetadata:
-		return soap_in_om__AlgorithmMetadata(soap, NULL, NULL, "om:AlgorithmMetadata");
-	case SOAP_TYPE_soap_AlgorithmMetadata:
-		return soap_in_soap_AlgorithmMetadata(soap, NULL, NULL, "soap-AlgorithmMetadata");
-	case SOAP_TYPE_om__AlgorithmParameters:
-		return soap_in_om__AlgorithmParameters(soap, NULL, NULL, "om:AlgorithmParameters");
-	case SOAP_TYPE_soap_AlgorithmParameters:
-		return soap_in_soap_AlgorithmParameters(soap, NULL, NULL, "soap-AlgorithmParameters");
-	case SOAP_TYPE_om__AlgorithmParameter:
-		return soap_in_om__AlgorithmParameter(soap, NULL, NULL, "om:AlgorithmParameter");
-	case SOAP_TYPE_soap_AlgorithmParameter:
-		return soap_in_soap_AlgorithmParameter(soap, NULL, NULL, "soap-AlgorithmParameter");
+	case SOAP_TYPE_omws__getAlgorithms:
+		return soap_in_omws__getAlgorithms(soap, NULL, NULL, "omws:getAlgorithms");
 	case SOAP_TYPE_PointerToSOAP_ENV__Reason:
 		return soap_in_PointerToSOAP_ENV__Reason(soap, NULL, NULL, "SOAP-ENV:Reason");
 	case SOAP_TYPE_PointerToxsd__int:
@@ -243,34 +221,31 @@ SOAP_FMAC3 void * SOAP_FMAC4 soap_getelement(struct soap *soap, int *type)
 		return soap_in_PointerTounsignedByte(soap, NULL, NULL, "xsd:unsignedByte");
 	case SOAP_TYPE_PointerToxsd__string:
 		return soap_in_PointerToxsd__string(soap, NULL, NULL, "xsd:string");
-	case SOAP_TYPE_PointerToom__Output:
-		return soap_in_PointerToom__Output(soap, NULL, NULL, "om:Output");
-	case SOAP_TYPE_PointerToom__Algorithm:
-		return soap_in_PointerToom__Algorithm(soap, NULL, NULL, "om:Algorithm");
-	case SOAP_TYPE_PointerToom__Mask:
-		return soap_in_PointerToom__Mask(soap, NULL, NULL, "om:Mask");
-	case SOAP_TYPE_PointerToom__Maps:
-		return soap_in_PointerToom__Maps(soap, NULL, NULL, "om:Maps");
-	case SOAP_TYPE_PointerToom__Points:
-		return soap_in_PointerToom__Points(soap, NULL, NULL, "om:Points");
-	case SOAP_TYPE_PointerToom__Parameter:
-		return soap_in_PointerToom__Parameter(soap, NULL, NULL, "om:Parameter");
-	case SOAP_TYPE_PointerToom__Map:
-		return soap_in_PointerToom__Map(soap, NULL, NULL, "om:Map");
-	case SOAP_TYPE_PointerToom__AbsencePoints:
-		return soap_in_PointerToom__AbsencePoints(soap, NULL, NULL, "om:AbsencePoints");
-	case SOAP_TYPE_PointerToom__PresencePoints:
-		return soap_in_PointerToom__PresencePoints(soap, NULL, NULL, "om:PresencePoints");
-	case SOAP_TYPE_PointerToom__Point:
-		return soap_in_PointerToom__Point(soap, NULL, NULL, "om:Point");
-	case SOAP_TYPE_PointerToom__AvailableAlgorithm:
-		return soap_in_PointerToom__AvailableAlgorithm(soap, NULL, NULL, "om:AvailableAlgorithm");
-	case SOAP_TYPE_PointerToom__AlgorithmParameters:
-		return soap_in_PointerToom__AlgorithmParameters(soap, NULL, NULL, "om:AlgorithmParameters");
-	case SOAP_TYPE_PointerToom__AlgorithmMetadata:
-		return soap_in_PointerToom__AlgorithmMetadata(soap, NULL, NULL, "om:AlgorithmMetadata");
-	case SOAP_TYPE_PointerToom__AlgorithmParameter:
-		return soap_in_PointerToom__AlgorithmParameter(soap, NULL, NULL, "om:AlgorithmParameter");
+	case SOAP_TYPE_PointerToomws__Output:
+		return soap_in_PointerToomws__Output(soap, NULL, NULL, "omws:Output");
+	case SOAP_TYPE_PointerToomws__Algorithm:
+		return soap_in_PointerToomws__Algorithm(soap, NULL, NULL, "omws:Algorithm");
+	case SOAP_TYPE_PointerToomws__Mask:
+		return soap_in_PointerToomws__Mask(soap, NULL, NULL, "omws:Mask");
+	case SOAP_TYPE_PointerToomws__Maps:
+		return soap_in_PointerToomws__Maps(soap, NULL, NULL, "omws:Maps");
+	case SOAP_TYPE_PointerToomws__Points:
+		return soap_in_PointerToomws__Points(soap, NULL, NULL, "omws:Points");
+	case SOAP_TYPE_PointerToomws__Parameter:
+		return soap_in_PointerToomws__Parameter(soap, NULL, NULL, "omws:Parameter");
+	case SOAP_TYPE_PointerToomws__Map:
+		return soap_in_PointerToomws__Map(soap, NULL, NULL, "omws:Map");
+	case SOAP_TYPE_PointerToomws__AbsencePoints:
+		return soap_in_PointerToomws__AbsencePoints(soap, NULL, NULL, "omws:AbsencePoints");
+	case SOAP_TYPE_PointerToomws__PresencePoints:
+		return soap_in_PointerToomws__PresencePoints(soap, NULL, NULL, "omws:PresencePoints");
+	case SOAP_TYPE_PointerToomws__Point:
+		return soap_in_PointerToomws__Point(soap, NULL, NULL, "omws:Point");
+	case SOAP_TYPE_wstring:
+	{	wchar_t **s;
+		s = soap_in_wstring(soap, NULL, NULL, "xsd:string");
+		return s ? *s : NULL;
+	}
 	case SOAP_TYPE_xsd__string:
 	{	char **s;
 		s = soap_in_xsd__string(soap, NULL, NULL, "xsd:string");
@@ -326,157 +301,113 @@ SOAP_FMAC3 void * SOAP_FMAC4 soap_getelement(struct soap *soap, int *type)
 		{	*type = SOAP_TYPE_SOAP_ENV__Reason;
 			return soap_in_SOAP_ENV__Reason(soap, NULL, NULL, NULL);
 		}
-		if (!soap_match_tag(soap, t, "om:ping"))
-		{	*type = SOAP_TYPE_om__ping;
-			return soap_in_om__ping(soap, NULL, NULL, NULL);
+		if (!soap_match_tag(soap, t, "omws:ping"))
+		{	*type = SOAP_TYPE_omws__ping;
+			return soap_in_omws__ping(soap, NULL, NULL, NULL);
 		}
-		if (!soap_match_tag(soap, t, "om:pingResponse"))
-		{	*type = SOAP_TYPE_om__pingResponse;
-			return soap_in_om__pingResponse(soap, NULL, NULL, NULL);
+		if (!soap_match_tag(soap, t, "omws:pingResponse"))
+		{	*type = SOAP_TYPE_omws__pingResponse;
+			return soap_in_omws__pingResponse(soap, NULL, NULL, NULL);
 		}
-		if (!soap_match_tag(soap, t, "om:getDistributionMap"))
-		{	*type = SOAP_TYPE_om__getDistributionMap;
-			return soap_in_om__getDistributionMap(soap, NULL, NULL, NULL);
+		if (!soap_match_tag(soap, t, "omws:getDistributionMap"))
+		{	*type = SOAP_TYPE_omws__getDistributionMap;
+			return soap_in_omws__getDistributionMap(soap, NULL, NULL, NULL);
 		}
-		if (!soap_match_tag(soap, t, "om:getDistributionMapResponse"))
-		{	*type = SOAP_TYPE_om__getDistributionMapResponse;
-			return soap_in_om__getDistributionMapResponse(soap, NULL, NULL, NULL);
+		if (!soap_match_tag(soap, t, "omws:getDistributionMapResponse"))
+		{	*type = SOAP_TYPE_omws__getDistributionMapResponse;
+			return soap_in_omws__getDistributionMapResponse(soap, NULL, NULL, NULL);
 		}
-		if (!soap_match_tag(soap, t, "om:createModel"))
-		{	*type = SOAP_TYPE_om__createModel;
-			return soap_in_om__createModel(soap, NULL, NULL, NULL);
+		if (!soap_match_tag(soap, t, "omws:createModel"))
+		{	*type = SOAP_TYPE_omws__createModel;
+			return soap_in_omws__createModel(soap, NULL, NULL, NULL);
 		}
-		if (!soap_match_tag(soap, t, "om:createModelResponse"))
-		{	*type = SOAP_TYPE_om__createModelResponse;
-			return soap_in_om__createModelResponse(soap, NULL, NULL, NULL);
+		if (!soap_match_tag(soap, t, "omws:createModelResponse"))
+		{	*type = SOAP_TYPE_omws__createModelResponse;
+			return soap_in_omws__createModelResponse(soap, NULL, NULL, NULL);
 		}
-		if (!soap_match_tag(soap, t, "om:Output"))
-		{	*type = SOAP_TYPE_om__Output;
-			return soap_in_om__Output(soap, NULL, NULL, NULL);
+		if (!soap_match_tag(soap, t, "omws:Output"))
+		{	*type = SOAP_TYPE_omws__Output;
+			return soap_in_omws__Output(soap, NULL, NULL, NULL);
 		}
 		if (!soap_match_tag(soap, t, "soap-Output"))
 		{	*type = SOAP_TYPE_soap_Output;
 			return soap_in_soap_Output(soap, NULL, NULL, NULL);
 		}
-		if (!soap_match_tag(soap, t, "om:Algorithm"))
-		{	*type = SOAP_TYPE_om__Algorithm;
-			return soap_in_om__Algorithm(soap, NULL, NULL, NULL);
+		if (!soap_match_tag(soap, t, "omws:Algorithm"))
+		{	*type = SOAP_TYPE_omws__Algorithm;
+			return soap_in_omws__Algorithm(soap, NULL, NULL, NULL);
 		}
 		if (!soap_match_tag(soap, t, "soap-Algorithm"))
 		{	*type = SOAP_TYPE_soap_Algorithm;
 			return soap_in_soap_Algorithm(soap, NULL, NULL, NULL);
 		}
-		if (!soap_match_tag(soap, t, "om:Parameter"))
-		{	*type = SOAP_TYPE_om__Parameter;
-			return soap_in_om__Parameter(soap, NULL, NULL, NULL);
+		if (!soap_match_tag(soap, t, "omws:Parameter"))
+		{	*type = SOAP_TYPE_omws__Parameter;
+			return soap_in_omws__Parameter(soap, NULL, NULL, NULL);
 		}
 		if (!soap_match_tag(soap, t, "soap-Parameter"))
 		{	*type = SOAP_TYPE_soap_Parameter;
 			return soap_in_soap_Parameter(soap, NULL, NULL, NULL);
 		}
-		if (!soap_match_tag(soap, t, "om:Mask"))
-		{	*type = SOAP_TYPE_om__Mask;
-			return soap_in_om__Mask(soap, NULL, NULL, NULL);
+		if (!soap_match_tag(soap, t, "omws:Mask"))
+		{	*type = SOAP_TYPE_omws__Mask;
+			return soap_in_omws__Mask(soap, NULL, NULL, NULL);
 		}
 		if (!soap_match_tag(soap, t, "soap-Mask"))
 		{	*type = SOAP_TYPE_soap_Mask;
 			return soap_in_soap_Mask(soap, NULL, NULL, NULL);
 		}
-		if (!soap_match_tag(soap, t, "om:Maps"))
-		{	*type = SOAP_TYPE_om__Maps;
-			return soap_in_om__Maps(soap, NULL, NULL, NULL);
+		if (!soap_match_tag(soap, t, "omws:Maps"))
+		{	*type = SOAP_TYPE_omws__Maps;
+			return soap_in_omws__Maps(soap, NULL, NULL, NULL);
 		}
 		if (!soap_match_tag(soap, t, "soap-Maps"))
 		{	*type = SOAP_TYPE_soap_Maps;
 			return soap_in_soap_Maps(soap, NULL, NULL, NULL);
 		}
-		if (!soap_match_tag(soap, t, "om:Map"))
-		{	*type = SOAP_TYPE_om__Map;
-			return soap_in_om__Map(soap, NULL, NULL, NULL);
+		if (!soap_match_tag(soap, t, "omws:Map"))
+		{	*type = SOAP_TYPE_omws__Map;
+			return soap_in_omws__Map(soap, NULL, NULL, NULL);
 		}
 		if (!soap_match_tag(soap, t, "soap-Map"))
 		{	*type = SOAP_TYPE_soap_Map;
 			return soap_in_soap_Map(soap, NULL, NULL, NULL);
 		}
-		if (!soap_match_tag(soap, t, "om:Points"))
-		{	*type = SOAP_TYPE_om__Points;
-			return soap_in_om__Points(soap, NULL, NULL, NULL);
+		if (!soap_match_tag(soap, t, "omws:Points"))
+		{	*type = SOAP_TYPE_omws__Points;
+			return soap_in_omws__Points(soap, NULL, NULL, NULL);
 		}
 		if (!soap_match_tag(soap, t, "soap-Points"))
 		{	*type = SOAP_TYPE_soap_Points;
 			return soap_in_soap_Points(soap, NULL, NULL, NULL);
 		}
-		if (!soap_match_tag(soap, t, "om:AbsencePoints"))
-		{	*type = SOAP_TYPE_om__AbsencePoints;
-			return soap_in_om__AbsencePoints(soap, NULL, NULL, NULL);
+		if (!soap_match_tag(soap, t, "omws:AbsencePoints"))
+		{	*type = SOAP_TYPE_omws__AbsencePoints;
+			return soap_in_omws__AbsencePoints(soap, NULL, NULL, NULL);
 		}
 		if (!soap_match_tag(soap, t, "soap-AbsencePoints"))
 		{	*type = SOAP_TYPE_soap_AbsencePoints;
 			return soap_in_soap_AbsencePoints(soap, NULL, NULL, NULL);
 		}
-		if (!soap_match_tag(soap, t, "om:PresencePoints"))
-		{	*type = SOAP_TYPE_om__PresencePoints;
-			return soap_in_om__PresencePoints(soap, NULL, NULL, NULL);
+		if (!soap_match_tag(soap, t, "omws:PresencePoints"))
+		{	*type = SOAP_TYPE_omws__PresencePoints;
+			return soap_in_omws__PresencePoints(soap, NULL, NULL, NULL);
 		}
 		if (!soap_match_tag(soap, t, "soap-PresencePoints"))
 		{	*type = SOAP_TYPE_soap_PresencePoints;
 			return soap_in_soap_PresencePoints(soap, NULL, NULL, NULL);
 		}
-		if (!soap_match_tag(soap, t, "om:Point"))
-		{	*type = SOAP_TYPE_om__Point;
-			return soap_in_om__Point(soap, NULL, NULL, NULL);
+		if (!soap_match_tag(soap, t, "omws:Point"))
+		{	*type = SOAP_TYPE_omws__Point;
+			return soap_in_omws__Point(soap, NULL, NULL, NULL);
 		}
 		if (!soap_match_tag(soap, t, "soap-Point"))
 		{	*type = SOAP_TYPE_soap_Point;
 			return soap_in_soap_Point(soap, NULL, NULL, NULL);
 		}
-		if (!soap_match_tag(soap, t, "om:getAlgorithms"))
-		{	*type = SOAP_TYPE_om__getAlgorithms;
-			return soap_in_om__getAlgorithms(soap, NULL, NULL, NULL);
-		}
-		if (!soap_match_tag(soap, t, "om:getAlgorithmsResponse"))
-		{	*type = SOAP_TYPE_om__getAlgorithmsResponse;
-			return soap_in_om__getAlgorithmsResponse(soap, NULL, NULL, NULL);
-		}
-		if (!soap_match_tag(soap, t, "om:AvailableAlgorithms"))
-		{	*type = SOAP_TYPE_om__AvailableAlgorithms;
-			return soap_in_om__AvailableAlgorithms(soap, NULL, NULL, NULL);
-		}
-		if (!soap_match_tag(soap, t, "soap-AvailableAlgorithms"))
-		{	*type = SOAP_TYPE_soap_AvailableAlgorithms;
-			return soap_in_soap_AvailableAlgorithms(soap, NULL, NULL, NULL);
-		}
-		if (!soap_match_tag(soap, t, "om:AvailableAlgorithm"))
-		{	*type = SOAP_TYPE_om__AvailableAlgorithm;
-			return soap_in_om__AvailableAlgorithm(soap, NULL, NULL, NULL);
-		}
-		if (!soap_match_tag(soap, t, "soap-AvailableAlgorithm"))
-		{	*type = SOAP_TYPE_soap_AvailableAlgorithm;
-			return soap_in_soap_AvailableAlgorithm(soap, NULL, NULL, NULL);
-		}
-		if (!soap_match_tag(soap, t, "om:AlgorithmMetadata"))
-		{	*type = SOAP_TYPE_om__AlgorithmMetadata;
-			return soap_in_om__AlgorithmMetadata(soap, NULL, NULL, NULL);
-		}
-		if (!soap_match_tag(soap, t, "soap-AlgorithmMetadata"))
-		{	*type = SOAP_TYPE_soap_AlgorithmMetadata;
-			return soap_in_soap_AlgorithmMetadata(soap, NULL, NULL, NULL);
-		}
-		if (!soap_match_tag(soap, t, "om:AlgorithmParameters"))
-		{	*type = SOAP_TYPE_om__AlgorithmParameters;
-			return soap_in_om__AlgorithmParameters(soap, NULL, NULL, NULL);
-		}
-		if (!soap_match_tag(soap, t, "soap-AlgorithmParameters"))
-		{	*type = SOAP_TYPE_soap_AlgorithmParameters;
-			return soap_in_soap_AlgorithmParameters(soap, NULL, NULL, NULL);
-		}
-		if (!soap_match_tag(soap, t, "om:AlgorithmParameter"))
-		{	*type = SOAP_TYPE_om__AlgorithmParameter;
-			return soap_in_om__AlgorithmParameter(soap, NULL, NULL, NULL);
-		}
-		if (!soap_match_tag(soap, t, "soap-AlgorithmParameter"))
-		{	*type = SOAP_TYPE_soap_AlgorithmParameter;
-			return soap_in_soap_AlgorithmParameter(soap, NULL, NULL, NULL);
+		if (!soap_match_tag(soap, t, "omws:getAlgorithms"))
+		{	*type = SOAP_TYPE_omws__getAlgorithms;
+			return soap_in_omws__getAlgorithms(soap, NULL, NULL, NULL);
 		}
 		if (!soap_match_tag(soap, t, "xsd:string"))
 		{	char **s;
@@ -569,82 +500,60 @@ SOAP_FMAC3 int SOAP_FMAC4 soap_putelement(struct soap *soap, const void *ptr, co
 		return ((xsd__base64Binary *)ptr)->soap_out(soap, tag, id, "xsd:base64Binary");
 	case SOAP_TYPE_SOAP_ENV__Reason:
 		return soap_out_SOAP_ENV__Reason(soap, tag, id, (const struct SOAP_ENV__Reason *)ptr, "SOAP-ENV:Reason");
-	case SOAP_TYPE_om__ping:
-		return soap_out_om__ping(soap, tag, id, (const struct om__ping *)ptr, "om:ping");
-	case SOAP_TYPE_om__pingResponse:
-		return soap_out_om__pingResponse(soap, tag, id, (const struct om__pingResponse *)ptr, "om:pingResponse");
-	case SOAP_TYPE_om__getDistributionMap:
-		return soap_out_om__getDistributionMap(soap, tag, id, (const struct om__getDistributionMap *)ptr, "om:getDistributionMap");
-	case SOAP_TYPE_om__getDistributionMapResponse:
-		return soap_out_om__getDistributionMapResponse(soap, tag, id, (const struct om__getDistributionMapResponse *)ptr, "om:getDistributionMapResponse");
-	case SOAP_TYPE_om__createModel:
-		return soap_out_om__createModel(soap, tag, id, (const struct om__createModel *)ptr, "om:createModel");
-	case SOAP_TYPE_om__createModelResponse:
-		return soap_out_om__createModelResponse(soap, tag, id, (const struct om__createModelResponse *)ptr, "om:createModelResponse");
-	case SOAP_TYPE_om__Output:
-		return soap_out_om__Output(soap, tag, id, (const struct soap_Output *)ptr, "om:Output");
+	case SOAP_TYPE_omws__ping:
+		return soap_out_omws__ping(soap, tag, id, (const struct omws__ping *)ptr, "omws:ping");
+	case SOAP_TYPE_omws__pingResponse:
+		return soap_out_omws__pingResponse(soap, tag, id, (const struct omws__pingResponse *)ptr, "omws:pingResponse");
+	case SOAP_TYPE_omws__getDistributionMap:
+		return soap_out_omws__getDistributionMap(soap, tag, id, (const struct omws__getDistributionMap *)ptr, "omws:getDistributionMap");
+	case SOAP_TYPE_omws__getDistributionMapResponse:
+		return soap_out_omws__getDistributionMapResponse(soap, tag, id, (const struct omws__getDistributionMapResponse *)ptr, "omws:getDistributionMapResponse");
+	case SOAP_TYPE_omws__createModel:
+		return soap_out_omws__createModel(soap, tag, id, (const struct omws__createModel *)ptr, "omws:createModel");
+	case SOAP_TYPE_omws__createModelResponse:
+		return soap_out_omws__createModelResponse(soap, tag, id, (const struct omws__createModelResponse *)ptr, "omws:createModelResponse");
+	case SOAP_TYPE_omws__Output:
+		return soap_out_omws__Output(soap, tag, id, (const struct soap_Output *)ptr, "omws:Output");
 	case SOAP_TYPE_soap_Output:
 		return soap_out_soap_Output(soap, tag, id, (const struct soap_Output *)ptr, "soap-Output");
-	case SOAP_TYPE_om__Algorithm:
-		return soap_out_om__Algorithm(soap, tag, id, (const struct soap_Algorithm *)ptr, "om:Algorithm");
+	case SOAP_TYPE_omws__Algorithm:
+		return soap_out_omws__Algorithm(soap, tag, id, (const struct soap_Algorithm *)ptr, "omws:Algorithm");
 	case SOAP_TYPE_soap_Algorithm:
 		return soap_out_soap_Algorithm(soap, tag, id, (const struct soap_Algorithm *)ptr, "soap-Algorithm");
-	case SOAP_TYPE_om__Parameter:
-		return soap_out_om__Parameter(soap, tag, id, (const struct soap_Parameter *)ptr, "om:Parameter");
+	case SOAP_TYPE_omws__Parameter:
+		return soap_out_omws__Parameter(soap, tag, id, (const struct soap_Parameter *)ptr, "omws:Parameter");
 	case SOAP_TYPE_soap_Parameter:
 		return soap_out_soap_Parameter(soap, tag, id, (const struct soap_Parameter *)ptr, "soap-Parameter");
-	case SOAP_TYPE_om__Mask:
-		return soap_out_om__Mask(soap, tag, id, (const struct soap_Mask *)ptr, "om:Mask");
+	case SOAP_TYPE_omws__Mask:
+		return soap_out_omws__Mask(soap, tag, id, (const struct soap_Mask *)ptr, "omws:Mask");
 	case SOAP_TYPE_soap_Mask:
 		return soap_out_soap_Mask(soap, tag, id, (const struct soap_Mask *)ptr, "soap-Mask");
-	case SOAP_TYPE_om__Maps:
-		return soap_out_om__Maps(soap, tag, id, (const struct soap_Maps *)ptr, "om:Maps");
+	case SOAP_TYPE_omws__Maps:
+		return soap_out_omws__Maps(soap, tag, id, (const struct soap_Maps *)ptr, "omws:Maps");
 	case SOAP_TYPE_soap_Maps:
 		return soap_out_soap_Maps(soap, tag, id, (const struct soap_Maps *)ptr, "soap-Maps");
-	case SOAP_TYPE_om__Map:
-		return soap_out_om__Map(soap, tag, id, (const struct soap_Map *)ptr, "om:Map");
+	case SOAP_TYPE_omws__Map:
+		return soap_out_omws__Map(soap, tag, id, (const struct soap_Map *)ptr, "omws:Map");
 	case SOAP_TYPE_soap_Map:
 		return soap_out_soap_Map(soap, tag, id, (const struct soap_Map *)ptr, "soap-Map");
-	case SOAP_TYPE_om__Points:
-		return soap_out_om__Points(soap, tag, id, (const struct soap_Points *)ptr, "om:Points");
+	case SOAP_TYPE_omws__Points:
+		return soap_out_omws__Points(soap, tag, id, (const struct soap_Points *)ptr, "omws:Points");
 	case SOAP_TYPE_soap_Points:
 		return soap_out_soap_Points(soap, tag, id, (const struct soap_Points *)ptr, "soap-Points");
-	case SOAP_TYPE_om__AbsencePoints:
-		return soap_out_om__AbsencePoints(soap, tag, id, (const struct soap_AbsencePoints *)ptr, "om:AbsencePoints");
+	case SOAP_TYPE_omws__AbsencePoints:
+		return soap_out_omws__AbsencePoints(soap, tag, id, (const struct soap_AbsencePoints *)ptr, "omws:AbsencePoints");
 	case SOAP_TYPE_soap_AbsencePoints:
 		return soap_out_soap_AbsencePoints(soap, tag, id, (const struct soap_AbsencePoints *)ptr, "soap-AbsencePoints");
-	case SOAP_TYPE_om__PresencePoints:
-		return soap_out_om__PresencePoints(soap, tag, id, (const struct soap_PresencePoints *)ptr, "om:PresencePoints");
+	case SOAP_TYPE_omws__PresencePoints:
+		return soap_out_omws__PresencePoints(soap, tag, id, (const struct soap_PresencePoints *)ptr, "omws:PresencePoints");
 	case SOAP_TYPE_soap_PresencePoints:
 		return soap_out_soap_PresencePoints(soap, tag, id, (const struct soap_PresencePoints *)ptr, "soap-PresencePoints");
-	case SOAP_TYPE_om__Point:
-		return soap_out_om__Point(soap, tag, id, (const struct soap_Point *)ptr, "om:Point");
+	case SOAP_TYPE_omws__Point:
+		return soap_out_omws__Point(soap, tag, id, (const struct soap_Point *)ptr, "omws:Point");
 	case SOAP_TYPE_soap_Point:
 		return soap_out_soap_Point(soap, tag, id, (const struct soap_Point *)ptr, "soap-Point");
-	case SOAP_TYPE_om__getAlgorithms:
-		return soap_out_om__getAlgorithms(soap, tag, id, (const struct om__getAlgorithms *)ptr, "om:getAlgorithms");
-	case SOAP_TYPE_om__getAlgorithmsResponse:
-		return soap_out_om__getAlgorithmsResponse(soap, tag, id, (const struct om__getAlgorithmsResponse *)ptr, "om:getAlgorithmsResponse");
-	case SOAP_TYPE_om__AvailableAlgorithms:
-		return soap_out_om__AvailableAlgorithms(soap, tag, id, (const struct soap_AvailableAlgorithms *)ptr, "om:AvailableAlgorithms");
-	case SOAP_TYPE_soap_AvailableAlgorithms:
-		return soap_out_soap_AvailableAlgorithms(soap, tag, id, (const struct soap_AvailableAlgorithms *)ptr, "soap-AvailableAlgorithms");
-	case SOAP_TYPE_om__AvailableAlgorithm:
-		return soap_out_om__AvailableAlgorithm(soap, tag, id, (const struct soap_AvailableAlgorithm *)ptr, "om:AvailableAlgorithm");
-	case SOAP_TYPE_soap_AvailableAlgorithm:
-		return soap_out_soap_AvailableAlgorithm(soap, tag, id, (const struct soap_AvailableAlgorithm *)ptr, "soap-AvailableAlgorithm");
-	case SOAP_TYPE_om__AlgorithmMetadata:
-		return soap_out_om__AlgorithmMetadata(soap, tag, id, (const struct soap_AlgorithmMetadata *)ptr, "om:AlgorithmMetadata");
-	case SOAP_TYPE_soap_AlgorithmMetadata:
-		return soap_out_soap_AlgorithmMetadata(soap, tag, id, (const struct soap_AlgorithmMetadata *)ptr, "soap-AlgorithmMetadata");
-	case SOAP_TYPE_om__AlgorithmParameters:
-		return soap_out_om__AlgorithmParameters(soap, tag, id, (const struct soap_AlgorithmParameters *)ptr, "om:AlgorithmParameters");
-	case SOAP_TYPE_soap_AlgorithmParameters:
-		return soap_out_soap_AlgorithmParameters(soap, tag, id, (const struct soap_AlgorithmParameters *)ptr, "soap-AlgorithmParameters");
-	case SOAP_TYPE_om__AlgorithmParameter:
-		return soap_out_om__AlgorithmParameter(soap, tag, id, (const struct soap_AlgorithmParameter *)ptr, "om:AlgorithmParameter");
-	case SOAP_TYPE_soap_AlgorithmParameter:
-		return soap_out_soap_AlgorithmParameter(soap, tag, id, (const struct soap_AlgorithmParameter *)ptr, "soap-AlgorithmParameter");
+	case SOAP_TYPE_omws__getAlgorithms:
+		return soap_out_omws__getAlgorithms(soap, tag, id, (const struct omws__getAlgorithms *)ptr, "omws:getAlgorithms");
 	case SOAP_TYPE_PointerToSOAP_ENV__Reason:
 		return soap_out_PointerToSOAP_ENV__Reason(soap, tag, id, (struct SOAP_ENV__Reason *const*)ptr, "SOAP-ENV:Reason");
 	case SOAP_TYPE_PointerToxsd__int:
@@ -653,34 +562,28 @@ SOAP_FMAC3 int SOAP_FMAC4 soap_putelement(struct soap *soap, const void *ptr, co
 		return soap_out_PointerTounsignedByte(soap, tag, id, (unsigned char *const*)ptr, "xsd:unsignedByte");
 	case SOAP_TYPE_PointerToxsd__string:
 		return soap_out_PointerToxsd__string(soap, tag, id, (char **const*)ptr, "xsd:string");
-	case SOAP_TYPE_PointerToom__Output:
-		return soap_out_PointerToom__Output(soap, tag, id, (struct soap_Output *const*)ptr, "om:Output");
-	case SOAP_TYPE_PointerToom__Algorithm:
-		return soap_out_PointerToom__Algorithm(soap, tag, id, (struct soap_Algorithm *const*)ptr, "om:Algorithm");
-	case SOAP_TYPE_PointerToom__Mask:
-		return soap_out_PointerToom__Mask(soap, tag, id, (struct soap_Mask *const*)ptr, "om:Mask");
-	case SOAP_TYPE_PointerToom__Maps:
-		return soap_out_PointerToom__Maps(soap, tag, id, (struct soap_Maps *const*)ptr, "om:Maps");
-	case SOAP_TYPE_PointerToom__Points:
-		return soap_out_PointerToom__Points(soap, tag, id, (struct soap_Points *const*)ptr, "om:Points");
-	case SOAP_TYPE_PointerToom__Parameter:
-		return soap_out_PointerToom__Parameter(soap, tag, id, (struct soap_Parameter *const*)ptr, "om:Parameter");
-	case SOAP_TYPE_PointerToom__Map:
-		return soap_out_PointerToom__Map(soap, tag, id, (struct soap_Map *const*)ptr, "om:Map");
-	case SOAP_TYPE_PointerToom__AbsencePoints:
-		return soap_out_PointerToom__AbsencePoints(soap, tag, id, (struct soap_AbsencePoints *const*)ptr, "om:AbsencePoints");
-	case SOAP_TYPE_PointerToom__PresencePoints:
-		return soap_out_PointerToom__PresencePoints(soap, tag, id, (struct soap_PresencePoints *const*)ptr, "om:PresencePoints");
-	case SOAP_TYPE_PointerToom__Point:
-		return soap_out_PointerToom__Point(soap, tag, id, (struct soap_Point *const*)ptr, "om:Point");
-	case SOAP_TYPE_PointerToom__AvailableAlgorithm:
-		return soap_out_PointerToom__AvailableAlgorithm(soap, tag, id, (struct soap_AvailableAlgorithm *const*)ptr, "om:AvailableAlgorithm");
-	case SOAP_TYPE_PointerToom__AlgorithmParameters:
-		return soap_out_PointerToom__AlgorithmParameters(soap, tag, id, (struct soap_AlgorithmParameters *const*)ptr, "om:AlgorithmParameters");
-	case SOAP_TYPE_PointerToom__AlgorithmMetadata:
-		return soap_out_PointerToom__AlgorithmMetadata(soap, tag, id, (struct soap_AlgorithmMetadata *const*)ptr, "om:AlgorithmMetadata");
-	case SOAP_TYPE_PointerToom__AlgorithmParameter:
-		return soap_out_PointerToom__AlgorithmParameter(soap, tag, id, (struct soap_AlgorithmParameter *const*)ptr, "om:AlgorithmParameter");
+	case SOAP_TYPE_PointerToomws__Output:
+		return soap_out_PointerToomws__Output(soap, tag, id, (struct soap_Output *const*)ptr, "omws:Output");
+	case SOAP_TYPE_PointerToomws__Algorithm:
+		return soap_out_PointerToomws__Algorithm(soap, tag, id, (struct soap_Algorithm *const*)ptr, "omws:Algorithm");
+	case SOAP_TYPE_PointerToomws__Mask:
+		return soap_out_PointerToomws__Mask(soap, tag, id, (struct soap_Mask *const*)ptr, "omws:Mask");
+	case SOAP_TYPE_PointerToomws__Maps:
+		return soap_out_PointerToomws__Maps(soap, tag, id, (struct soap_Maps *const*)ptr, "omws:Maps");
+	case SOAP_TYPE_PointerToomws__Points:
+		return soap_out_PointerToomws__Points(soap, tag, id, (struct soap_Points *const*)ptr, "omws:Points");
+	case SOAP_TYPE_PointerToomws__Parameter:
+		return soap_out_PointerToomws__Parameter(soap, tag, id, (struct soap_Parameter *const*)ptr, "omws:Parameter");
+	case SOAP_TYPE_PointerToomws__Map:
+		return soap_out_PointerToomws__Map(soap, tag, id, (struct soap_Map *const*)ptr, "omws:Map");
+	case SOAP_TYPE_PointerToomws__AbsencePoints:
+		return soap_out_PointerToomws__AbsencePoints(soap, tag, id, (struct soap_AbsencePoints *const*)ptr, "omws:AbsencePoints");
+	case SOAP_TYPE_PointerToomws__PresencePoints:
+		return soap_out_PointerToomws__PresencePoints(soap, tag, id, (struct soap_PresencePoints *const*)ptr, "omws:PresencePoints");
+	case SOAP_TYPE_PointerToomws__Point:
+		return soap_out_PointerToomws__Point(soap, tag, id, (struct soap_Point *const*)ptr, "omws:Point");
+	case SOAP_TYPE_wstring:
+		return soap_out_wstring(soap, tag, id, (wchar_t**)&ptr, "xsd:string");
 	case SOAP_TYPE_xsd__string:
 		return soap_out_string(soap, tag, id, (char**)&ptr, "xsd:string");
 	case SOAP_TYPE__QName:
@@ -704,119 +607,86 @@ SOAP_FMAC3 void SOAP_FMAC4 soap_markelement(struct soap *soap, const void *ptr, 
 	case SOAP_TYPE_SOAP_ENV__Reason:
 		soap_serialize_SOAP_ENV__Reason(soap, (const struct SOAP_ENV__Reason *)ptr);
 		break;
-	case SOAP_TYPE_om__ping:
-		soap_serialize_om__ping(soap, (const struct om__ping *)ptr);
+	case SOAP_TYPE_omws__ping:
+		soap_serialize_omws__ping(soap, (const struct omws__ping *)ptr);
 		break;
-	case SOAP_TYPE_om__pingResponse:
-		soap_serialize_om__pingResponse(soap, (const struct om__pingResponse *)ptr);
+	case SOAP_TYPE_omws__pingResponse:
+		soap_serialize_omws__pingResponse(soap, (const struct omws__pingResponse *)ptr);
 		break;
-	case SOAP_TYPE_om__getDistributionMap:
-		soap_serialize_om__getDistributionMap(soap, (const struct om__getDistributionMap *)ptr);
+	case SOAP_TYPE_omws__getDistributionMap:
+		soap_serialize_omws__getDistributionMap(soap, (const struct omws__getDistributionMap *)ptr);
 		break;
-	case SOAP_TYPE_om__getDistributionMapResponse:
-		soap_serialize_om__getDistributionMapResponse(soap, (const struct om__getDistributionMapResponse *)ptr);
+	case SOAP_TYPE_omws__getDistributionMapResponse:
+		soap_serialize_omws__getDistributionMapResponse(soap, (const struct omws__getDistributionMapResponse *)ptr);
 		break;
-	case SOAP_TYPE_om__createModel:
-		soap_serialize_om__createModel(soap, (const struct om__createModel *)ptr);
+	case SOAP_TYPE_omws__createModel:
+		soap_serialize_omws__createModel(soap, (const struct omws__createModel *)ptr);
 		break;
-	case SOAP_TYPE_om__createModelResponse:
-		soap_serialize_om__createModelResponse(soap, (const struct om__createModelResponse *)ptr);
+	case SOAP_TYPE_omws__createModelResponse:
+		soap_serialize_omws__createModelResponse(soap, (const struct omws__createModelResponse *)ptr);
 		break;
-	case SOAP_TYPE_om__Output:
-		soap_serialize_om__Output(soap, (const struct soap_Output *)ptr);
+	case SOAP_TYPE_omws__Output:
+		soap_serialize_omws__Output(soap, (const struct soap_Output *)ptr);
 		break;
 	case SOAP_TYPE_soap_Output:
 		soap_serialize_soap_Output(soap, (const struct soap_Output *)ptr);
 		break;
-	case SOAP_TYPE_om__Algorithm:
-		soap_serialize_om__Algorithm(soap, (const struct soap_Algorithm *)ptr);
+	case SOAP_TYPE_omws__Algorithm:
+		soap_serialize_omws__Algorithm(soap, (const struct soap_Algorithm *)ptr);
 		break;
 	case SOAP_TYPE_soap_Algorithm:
 		soap_serialize_soap_Algorithm(soap, (const struct soap_Algorithm *)ptr);
 		break;
-	case SOAP_TYPE_om__Parameter:
-		soap_serialize_om__Parameter(soap, (const struct soap_Parameter *)ptr);
+	case SOAP_TYPE_omws__Parameter:
+		soap_serialize_omws__Parameter(soap, (const struct soap_Parameter *)ptr);
 		break;
 	case SOAP_TYPE_soap_Parameter:
 		soap_serialize_soap_Parameter(soap, (const struct soap_Parameter *)ptr);
 		break;
-	case SOAP_TYPE_om__Mask:
-		soap_serialize_om__Mask(soap, (const struct soap_Mask *)ptr);
+	case SOAP_TYPE_omws__Mask:
+		soap_serialize_omws__Mask(soap, (const struct soap_Mask *)ptr);
 		break;
 	case SOAP_TYPE_soap_Mask:
 		soap_serialize_soap_Mask(soap, (const struct soap_Mask *)ptr);
 		break;
-	case SOAP_TYPE_om__Maps:
-		soap_serialize_om__Maps(soap, (const struct soap_Maps *)ptr);
+	case SOAP_TYPE_omws__Maps:
+		soap_serialize_omws__Maps(soap, (const struct soap_Maps *)ptr);
 		break;
 	case SOAP_TYPE_soap_Maps:
 		soap_serialize_soap_Maps(soap, (const struct soap_Maps *)ptr);
 		break;
-	case SOAP_TYPE_om__Map:
-		soap_serialize_om__Map(soap, (const struct soap_Map *)ptr);
+	case SOAP_TYPE_omws__Map:
+		soap_serialize_omws__Map(soap, (const struct soap_Map *)ptr);
 		break;
 	case SOAP_TYPE_soap_Map:
 		soap_serialize_soap_Map(soap, (const struct soap_Map *)ptr);
 		break;
-	case SOAP_TYPE_om__Points:
-		soap_serialize_om__Points(soap, (const struct soap_Points *)ptr);
+	case SOAP_TYPE_omws__Points:
+		soap_serialize_omws__Points(soap, (const struct soap_Points *)ptr);
 		break;
 	case SOAP_TYPE_soap_Points:
 		soap_serialize_soap_Points(soap, (const struct soap_Points *)ptr);
 		break;
-	case SOAP_TYPE_om__AbsencePoints:
-		soap_serialize_om__AbsencePoints(soap, (const struct soap_AbsencePoints *)ptr);
+	case SOAP_TYPE_omws__AbsencePoints:
+		soap_serialize_omws__AbsencePoints(soap, (const struct soap_AbsencePoints *)ptr);
 		break;
 	case SOAP_TYPE_soap_AbsencePoints:
 		soap_serialize_soap_AbsencePoints(soap, (const struct soap_AbsencePoints *)ptr);
 		break;
-	case SOAP_TYPE_om__PresencePoints:
-		soap_serialize_om__PresencePoints(soap, (const struct soap_PresencePoints *)ptr);
+	case SOAP_TYPE_omws__PresencePoints:
+		soap_serialize_omws__PresencePoints(soap, (const struct soap_PresencePoints *)ptr);
 		break;
 	case SOAP_TYPE_soap_PresencePoints:
 		soap_serialize_soap_PresencePoints(soap, (const struct soap_PresencePoints *)ptr);
 		break;
-	case SOAP_TYPE_om__Point:
-		soap_serialize_om__Point(soap, (const struct soap_Point *)ptr);
+	case SOAP_TYPE_omws__Point:
+		soap_serialize_omws__Point(soap, (const struct soap_Point *)ptr);
 		break;
 	case SOAP_TYPE_soap_Point:
 		soap_serialize_soap_Point(soap, (const struct soap_Point *)ptr);
 		break;
-	case SOAP_TYPE_om__getAlgorithms:
-		soap_serialize_om__getAlgorithms(soap, (const struct om__getAlgorithms *)ptr);
-		break;
-	case SOAP_TYPE_om__getAlgorithmsResponse:
-		soap_serialize_om__getAlgorithmsResponse(soap, (const struct om__getAlgorithmsResponse *)ptr);
-		break;
-	case SOAP_TYPE_om__AvailableAlgorithms:
-		soap_serialize_om__AvailableAlgorithms(soap, (const struct soap_AvailableAlgorithms *)ptr);
-		break;
-	case SOAP_TYPE_soap_AvailableAlgorithms:
-		soap_serialize_soap_AvailableAlgorithms(soap, (const struct soap_AvailableAlgorithms *)ptr);
-		break;
-	case SOAP_TYPE_om__AvailableAlgorithm:
-		soap_serialize_om__AvailableAlgorithm(soap, (const struct soap_AvailableAlgorithm *)ptr);
-		break;
-	case SOAP_TYPE_soap_AvailableAlgorithm:
-		soap_serialize_soap_AvailableAlgorithm(soap, (const struct soap_AvailableAlgorithm *)ptr);
-		break;
-	case SOAP_TYPE_om__AlgorithmMetadata:
-		soap_serialize_om__AlgorithmMetadata(soap, (const struct soap_AlgorithmMetadata *)ptr);
-		break;
-	case SOAP_TYPE_soap_AlgorithmMetadata:
-		soap_serialize_soap_AlgorithmMetadata(soap, (const struct soap_AlgorithmMetadata *)ptr);
-		break;
-	case SOAP_TYPE_om__AlgorithmParameters:
-		soap_serialize_om__AlgorithmParameters(soap, (const struct soap_AlgorithmParameters *)ptr);
-		break;
-	case SOAP_TYPE_soap_AlgorithmParameters:
-		soap_serialize_soap_AlgorithmParameters(soap, (const struct soap_AlgorithmParameters *)ptr);
-		break;
-	case SOAP_TYPE_om__AlgorithmParameter:
-		soap_serialize_om__AlgorithmParameter(soap, (const struct soap_AlgorithmParameter *)ptr);
-		break;
-	case SOAP_TYPE_soap_AlgorithmParameter:
-		soap_serialize_soap_AlgorithmParameter(soap, (const struct soap_AlgorithmParameter *)ptr);
+	case SOAP_TYPE_omws__getAlgorithms:
+		soap_serialize_omws__getAlgorithms(soap, (const struct omws__getAlgorithms *)ptr);
 		break;
 	case SOAP_TYPE_PointerToSOAP_ENV__Reason:
 		soap_serialize_PointerToSOAP_ENV__Reason(soap, (struct SOAP_ENV__Reason *const*)ptr);
@@ -830,47 +700,38 @@ SOAP_FMAC3 void SOAP_FMAC4 soap_markelement(struct soap *soap, const void *ptr, 
 	case SOAP_TYPE_PointerToxsd__string:
 		soap_serialize_PointerToxsd__string(soap, (char **const*)ptr);
 		break;
-	case SOAP_TYPE_PointerToom__Output:
-		soap_serialize_PointerToom__Output(soap, (struct soap_Output *const*)ptr);
+	case SOAP_TYPE_PointerToomws__Output:
+		soap_serialize_PointerToomws__Output(soap, (struct soap_Output *const*)ptr);
 		break;
-	case SOAP_TYPE_PointerToom__Algorithm:
-		soap_serialize_PointerToom__Algorithm(soap, (struct soap_Algorithm *const*)ptr);
+	case SOAP_TYPE_PointerToomws__Algorithm:
+		soap_serialize_PointerToomws__Algorithm(soap, (struct soap_Algorithm *const*)ptr);
 		break;
-	case SOAP_TYPE_PointerToom__Mask:
-		soap_serialize_PointerToom__Mask(soap, (struct soap_Mask *const*)ptr);
+	case SOAP_TYPE_PointerToomws__Mask:
+		soap_serialize_PointerToomws__Mask(soap, (struct soap_Mask *const*)ptr);
 		break;
-	case SOAP_TYPE_PointerToom__Maps:
-		soap_serialize_PointerToom__Maps(soap, (struct soap_Maps *const*)ptr);
+	case SOAP_TYPE_PointerToomws__Maps:
+		soap_serialize_PointerToomws__Maps(soap, (struct soap_Maps *const*)ptr);
 		break;
-	case SOAP_TYPE_PointerToom__Points:
-		soap_serialize_PointerToom__Points(soap, (struct soap_Points *const*)ptr);
+	case SOAP_TYPE_PointerToomws__Points:
+		soap_serialize_PointerToomws__Points(soap, (struct soap_Points *const*)ptr);
 		break;
-	case SOAP_TYPE_PointerToom__Parameter:
-		soap_serialize_PointerToom__Parameter(soap, (struct soap_Parameter *const*)ptr);
+	case SOAP_TYPE_PointerToomws__Parameter:
+		soap_serialize_PointerToomws__Parameter(soap, (struct soap_Parameter *const*)ptr);
 		break;
-	case SOAP_TYPE_PointerToom__Map:
-		soap_serialize_PointerToom__Map(soap, (struct soap_Map *const*)ptr);
+	case SOAP_TYPE_PointerToomws__Map:
+		soap_serialize_PointerToomws__Map(soap, (struct soap_Map *const*)ptr);
 		break;
-	case SOAP_TYPE_PointerToom__AbsencePoints:
-		soap_serialize_PointerToom__AbsencePoints(soap, (struct soap_AbsencePoints *const*)ptr);
+	case SOAP_TYPE_PointerToomws__AbsencePoints:
+		soap_serialize_PointerToomws__AbsencePoints(soap, (struct soap_AbsencePoints *const*)ptr);
 		break;
-	case SOAP_TYPE_PointerToom__PresencePoints:
-		soap_serialize_PointerToom__PresencePoints(soap, (struct soap_PresencePoints *const*)ptr);
+	case SOAP_TYPE_PointerToomws__PresencePoints:
+		soap_serialize_PointerToomws__PresencePoints(soap, (struct soap_PresencePoints *const*)ptr);
 		break;
-	case SOAP_TYPE_PointerToom__Point:
-		soap_serialize_PointerToom__Point(soap, (struct soap_Point *const*)ptr);
+	case SOAP_TYPE_PointerToomws__Point:
+		soap_serialize_PointerToomws__Point(soap, (struct soap_Point *const*)ptr);
 		break;
-	case SOAP_TYPE_PointerToom__AvailableAlgorithm:
-		soap_serialize_PointerToom__AvailableAlgorithm(soap, (struct soap_AvailableAlgorithm *const*)ptr);
-		break;
-	case SOAP_TYPE_PointerToom__AlgorithmParameters:
-		soap_serialize_PointerToom__AlgorithmParameters(soap, (struct soap_AlgorithmParameters *const*)ptr);
-		break;
-	case SOAP_TYPE_PointerToom__AlgorithmMetadata:
-		soap_serialize_PointerToom__AlgorithmMetadata(soap, (struct soap_AlgorithmMetadata *const*)ptr);
-		break;
-	case SOAP_TYPE_PointerToom__AlgorithmParameter:
-		soap_serialize_PointerToom__AlgorithmParameter(soap, (struct soap_AlgorithmParameter *const*)ptr);
+	case SOAP_TYPE_wstring:
+		soap_serialize_wstring(soap, (wchar_t**)&ptr);
 		break;
 	case SOAP_TYPE_xsd__string:
 		soap_serialize_string(soap, (char**)&ptr);
@@ -891,8 +752,8 @@ SOAP_FMAC3 void * SOAP_FMAC4 soap_instantiate(struct soap *soap, int t, const ch
 	{
 	case SOAP_TYPE_xsd__base64Binary:
 		return (void*)soap_instantiate_xsd__base64Binary(soap, -1, type, arrayType, n);
-	case SOAP_TYPE_om__getDistributionMapResponse:
-		return (void*)soap_instantiate_om__getDistributionMapResponse(soap, -1, type, arrayType, n);
+	case SOAP_TYPE_omws__getDistributionMapResponse:
+		return (void*)soap_instantiate_omws__getDistributionMapResponse(soap, -1, type, arrayType, n);
 	}
 	return NULL;
 }
@@ -906,11 +767,11 @@ SOAP_FMAC3 void SOAP_FMAC4 soap_fdelete(struct soap_clist *p)
 		else
 			delete[] (xsd__base64Binary*)p->ptr;
 		break;
-	case SOAP_TYPE_om__getDistributionMapResponse:
+	case SOAP_TYPE_omws__getDistributionMapResponse:
 		if (p->size < 0)
-			delete (struct om__getDistributionMapResponse*)p->ptr;
+			delete (struct omws__getDistributionMapResponse*)p->ptr;
 		else
-			delete[] (struct om__getDistributionMapResponse*)p->ptr;
+			delete[] (struct omws__getDistributionMapResponse*)p->ptr;
 		break;
 	}
 }
@@ -1668,42 +1529,42 @@ SOAP_FMAC3 struct SOAP_ENV__Code * SOAP_FMAC4 soap_in_SOAP_ENV__Code(struct soap
 
 #endif
 
-SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_om__ping(struct soap *soap, const struct om__ping *a)
+SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_omws__ping(struct soap *soap, const struct omws__ping *a)
 {
 	(void)soap; (void)a; /* appease -Wall -Werror */
 	/* transient _ skipped */
 }
 
-SOAP_FMAC3 void SOAP_FMAC4 soap_default_om__ping(struct soap *soap, struct om__ping *a)
+SOAP_FMAC3 void SOAP_FMAC4 soap_default_omws__ping(struct soap *soap, struct omws__ping *a)
 {
 	(void)soap; (void)a; /* appease -Wall -Werror */
 	/* transient _ skipped */
 }
 
-SOAP_FMAC3 int SOAP_FMAC4 soap_put_om__ping(struct soap *soap, const struct om__ping *a, const char *tag, const char *type)
+SOAP_FMAC3 int SOAP_FMAC4 soap_put_omws__ping(struct soap *soap, const struct omws__ping *a, const char *tag, const char *type)
 {
-	register int id = soap_embed(soap, (void*)a, NULL, 0, tag, SOAP_TYPE_om__ping);
-	if (soap_out_om__ping(soap, tag, id, a, type))
+	register int id = soap_embed(soap, (void*)a, NULL, 0, tag, SOAP_TYPE_omws__ping);
+	if (soap_out_omws__ping(soap, tag, id, a, type))
 		return soap->error;
 	return soap_putindependent(soap);
 }
 
-SOAP_FMAC3 int SOAP_FMAC4 soap_out_om__ping(struct soap *soap, const char *tag, int id, const struct om__ping *a, const char *type)
+SOAP_FMAC3 int SOAP_FMAC4 soap_out_omws__ping(struct soap *soap, const char *tag, int id, const struct omws__ping *a, const char *type)
 {
-	soap_element_begin_out(soap, tag, soap_embedded_id(soap, id, a, SOAP_TYPE_om__ping), type);
+	soap_element_begin_out(soap, tag, soap_embedded_id(soap, id, a, SOAP_TYPE_omws__ping), type);
 	/* transient _ skipped */
 	soap_element_end_out(soap, tag);
 	return SOAP_OK;
 }
 
-SOAP_FMAC3 struct om__ping * SOAP_FMAC4 soap_get_om__ping(struct soap *soap, struct om__ping *p, const char *tag, const char *type)
+SOAP_FMAC3 struct omws__ping * SOAP_FMAC4 soap_get_omws__ping(struct soap *soap, struct omws__ping *p, const char *tag, const char *type)
 {
-	if ((p = soap_in_om__ping(soap, tag, p, type)))
+	if ((p = soap_in_omws__ping(soap, tag, p, type)))
 		soap_getindependent(soap);
 	return p;
 }
 
-SOAP_FMAC3 struct om__ping * SOAP_FMAC4 soap_in_om__ping(struct soap *soap, const char *tag, struct om__ping *a, const char *type)
+SOAP_FMAC3 struct omws__ping * SOAP_FMAC4 soap_in_omws__ping(struct soap *soap, const char *tag, struct omws__ping *a, const char *type)
 {;
 	if (soap_element_begin_in(soap, tag, 0))
 		return NULL;
@@ -1711,10 +1572,10 @@ SOAP_FMAC3 struct om__ping * SOAP_FMAC4 soap_in_om__ping(struct soap *soap, cons
 	{	soap->error = SOAP_TYPE;
 		return NULL;
 	}
-	a = (struct om__ping *)soap_id_enter(soap, soap->id, a, SOAP_TYPE_om__ping, sizeof(struct om__ping), 0, NULL, NULL, NULL);
+	a = (struct omws__ping *)soap_id_enter(soap, soap->id, a, SOAP_TYPE_omws__ping, sizeof(struct omws__ping), 0, NULL, NULL, NULL);
 	if (!a)
 		return NULL;
-	soap_default_om__ping(soap, a);
+	soap_default_omws__ping(soap, a);
 	if (soap->body && !*soap->href)
 	{
 		for (;;)
@@ -1731,36 +1592,36 @@ SOAP_FMAC3 struct om__ping * SOAP_FMAC4 soap_in_om__ping(struct soap *soap, cons
 			return NULL;
 	}
 	else
-	{	a = (struct om__ping *)soap_id_forward(soap, soap->href, (void**)a, SOAP_TYPE_om__ping, 0, sizeof(struct om__ping), 0, NULL);
+	{	a = (struct omws__ping *)soap_id_forward(soap, soap->href, (void**)a, SOAP_TYPE_omws__ping, 0, sizeof(struct omws__ping), 0, NULL);
 		if (soap->body && soap_element_end_in(soap, tag))
 			return NULL;
 	}
 	return a;
 }
 
-SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_om__pingResponse(struct soap *soap, const struct om__pingResponse *a)
+SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_omws__pingResponse(struct soap *soap, const struct omws__pingResponse *a)
 {
 	(void)soap; (void)a; /* appease -Wall -Werror */
 	soap_serialize_PointerToxsd__int(soap, &a->status);
 }
 
-SOAP_FMAC3 void SOAP_FMAC4 soap_default_om__pingResponse(struct soap *soap, struct om__pingResponse *a)
+SOAP_FMAC3 void SOAP_FMAC4 soap_default_omws__pingResponse(struct soap *soap, struct omws__pingResponse *a)
 {
 	(void)soap; (void)a; /* appease -Wall -Werror */
 	a->status = NULL;
 }
 
-SOAP_FMAC3 int SOAP_FMAC4 soap_put_om__pingResponse(struct soap *soap, const struct om__pingResponse *a, const char *tag, const char *type)
+SOAP_FMAC3 int SOAP_FMAC4 soap_put_omws__pingResponse(struct soap *soap, const struct omws__pingResponse *a, const char *tag, const char *type)
 {
-	register int id = soap_embed(soap, (void*)a, NULL, 0, tag, SOAP_TYPE_om__pingResponse);
-	if (soap_out_om__pingResponse(soap, tag, id, a, type))
+	register int id = soap_embed(soap, (void*)a, NULL, 0, tag, SOAP_TYPE_omws__pingResponse);
+	if (soap_out_omws__pingResponse(soap, tag, id, a, type))
 		return soap->error;
 	return soap_putindependent(soap);
 }
 
-SOAP_FMAC3 int SOAP_FMAC4 soap_out_om__pingResponse(struct soap *soap, const char *tag, int id, const struct om__pingResponse *a, const char *type)
+SOAP_FMAC3 int SOAP_FMAC4 soap_out_omws__pingResponse(struct soap *soap, const char *tag, int id, const struct omws__pingResponse *a, const char *type)
 {
-	soap_element_begin_out(soap, tag, soap_embedded_id(soap, id, a, SOAP_TYPE_om__pingResponse), type);
+	soap_element_begin_out(soap, tag, soap_embedded_id(soap, id, a, SOAP_TYPE_omws__pingResponse), type);
 	if (a->status)
 		soap_element_result(soap, "status");
 	soap_out_PointerToxsd__int(soap, "status", -1, &a->status, "");
@@ -1768,14 +1629,14 @@ SOAP_FMAC3 int SOAP_FMAC4 soap_out_om__pingResponse(struct soap *soap, const cha
 	return SOAP_OK;
 }
 
-SOAP_FMAC3 struct om__pingResponse * SOAP_FMAC4 soap_get_om__pingResponse(struct soap *soap, struct om__pingResponse *p, const char *tag, const char *type)
+SOAP_FMAC3 struct omws__pingResponse * SOAP_FMAC4 soap_get_omws__pingResponse(struct soap *soap, struct omws__pingResponse *p, const char *tag, const char *type)
 {
-	if ((p = soap_in_om__pingResponse(soap, tag, p, type)))
+	if ((p = soap_in_omws__pingResponse(soap, tag, p, type)))
 		soap_getindependent(soap);
 	return p;
 }
 
-SOAP_FMAC3 struct om__pingResponse * SOAP_FMAC4 soap_in_om__pingResponse(struct soap *soap, const char *tag, struct om__pingResponse *a, const char *type)
+SOAP_FMAC3 struct omws__pingResponse * SOAP_FMAC4 soap_in_omws__pingResponse(struct soap *soap, const char *tag, struct omws__pingResponse *a, const char *type)
 {
 	short soap_flag_status = 1;
 	if (soap_element_begin_in(soap, tag, 0))
@@ -1784,10 +1645,10 @@ SOAP_FMAC3 struct om__pingResponse * SOAP_FMAC4 soap_in_om__pingResponse(struct 
 	{	soap->error = SOAP_TYPE;
 		return NULL;
 	}
-	a = (struct om__pingResponse *)soap_id_enter(soap, soap->id, a, SOAP_TYPE_om__pingResponse, sizeof(struct om__pingResponse), 0, NULL, NULL, NULL);
+	a = (struct omws__pingResponse *)soap_id_enter(soap, soap->id, a, SOAP_TYPE_omws__pingResponse, sizeof(struct omws__pingResponse), 0, NULL, NULL, NULL);
 	if (!a)
 		return NULL;
-	soap_default_om__pingResponse(soap, a);
+	soap_default_omws__pingResponse(soap, a);
 	if (soap->body && !*soap->href)
 	{
 		for (;;)
@@ -1808,49 +1669,49 @@ SOAP_FMAC3 struct om__pingResponse * SOAP_FMAC4 soap_in_om__pingResponse(struct 
 			return NULL;
 	}
 	else
-	{	a = (struct om__pingResponse *)soap_id_forward(soap, soap->href, (void**)a, SOAP_TYPE_om__pingResponse, 0, sizeof(struct om__pingResponse), 0, NULL);
+	{	a = (struct omws__pingResponse *)soap_id_forward(soap, soap->href, (void**)a, SOAP_TYPE_omws__pingResponse, 0, sizeof(struct omws__pingResponse), 0, NULL);
 		if (soap->body && soap_element_end_in(soap, tag))
 			return NULL;
 	}
 	return a;
 }
 
-SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_om__getDistributionMap(struct soap *soap, const struct om__getDistributionMap *a)
+SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_omws__getDistributionMap(struct soap *soap, const struct omws__getDistributionMap *a)
 {
 	(void)soap; (void)a; /* appease -Wall -Werror */
 	soap_serialize_xsd__string(soap, &a->ticket);
 }
 
-SOAP_FMAC3 void SOAP_FMAC4 soap_default_om__getDistributionMap(struct soap *soap, struct om__getDistributionMap *a)
+SOAP_FMAC3 void SOAP_FMAC4 soap_default_omws__getDistributionMap(struct soap *soap, struct omws__getDistributionMap *a)
 {
 	(void)soap; (void)a; /* appease -Wall -Werror */
 	soap_default_xsd__string(soap, &a->ticket);
 }
 
-SOAP_FMAC3 int SOAP_FMAC4 soap_put_om__getDistributionMap(struct soap *soap, const struct om__getDistributionMap *a, const char *tag, const char *type)
+SOAP_FMAC3 int SOAP_FMAC4 soap_put_omws__getDistributionMap(struct soap *soap, const struct omws__getDistributionMap *a, const char *tag, const char *type)
 {
-	register int id = soap_embed(soap, (void*)a, NULL, 0, tag, SOAP_TYPE_om__getDistributionMap);
-	if (soap_out_om__getDistributionMap(soap, tag, id, a, type))
+	register int id = soap_embed(soap, (void*)a, NULL, 0, tag, SOAP_TYPE_omws__getDistributionMap);
+	if (soap_out_omws__getDistributionMap(soap, tag, id, a, type))
 		return soap->error;
 	return soap_putindependent(soap);
 }
 
-SOAP_FMAC3 int SOAP_FMAC4 soap_out_om__getDistributionMap(struct soap *soap, const char *tag, int id, const struct om__getDistributionMap *a, const char *type)
+SOAP_FMAC3 int SOAP_FMAC4 soap_out_omws__getDistributionMap(struct soap *soap, const char *tag, int id, const struct omws__getDistributionMap *a, const char *type)
 {
-	soap_element_begin_out(soap, tag, soap_embedded_id(soap, id, a, SOAP_TYPE_om__getDistributionMap), type);
+	soap_element_begin_out(soap, tag, soap_embedded_id(soap, id, a, SOAP_TYPE_omws__getDistributionMap), type);
 	soap_out_xsd__string(soap, "ticket", -1, &a->ticket, "");
 	soap_element_end_out(soap, tag);
 	return SOAP_OK;
 }
 
-SOAP_FMAC3 struct om__getDistributionMap * SOAP_FMAC4 soap_get_om__getDistributionMap(struct soap *soap, struct om__getDistributionMap *p, const char *tag, const char *type)
+SOAP_FMAC3 struct omws__getDistributionMap * SOAP_FMAC4 soap_get_omws__getDistributionMap(struct soap *soap, struct omws__getDistributionMap *p, const char *tag, const char *type)
 {
-	if ((p = soap_in_om__getDistributionMap(soap, tag, p, type)))
+	if ((p = soap_in_omws__getDistributionMap(soap, tag, p, type)))
 		soap_getindependent(soap);
 	return p;
 }
 
-SOAP_FMAC3 struct om__getDistributionMap * SOAP_FMAC4 soap_in_om__getDistributionMap(struct soap *soap, const char *tag, struct om__getDistributionMap *a, const char *type)
+SOAP_FMAC3 struct omws__getDistributionMap * SOAP_FMAC4 soap_in_omws__getDistributionMap(struct soap *soap, const char *tag, struct omws__getDistributionMap *a, const char *type)
 {
 	short soap_flag_ticket = 1;
 	if (soap_element_begin_in(soap, tag, 0))
@@ -1859,10 +1720,10 @@ SOAP_FMAC3 struct om__getDistributionMap * SOAP_FMAC4 soap_in_om__getDistributio
 	{	soap->error = SOAP_TYPE;
 		return NULL;
 	}
-	a = (struct om__getDistributionMap *)soap_id_enter(soap, soap->id, a, SOAP_TYPE_om__getDistributionMap, sizeof(struct om__getDistributionMap), 0, NULL, NULL, NULL);
+	a = (struct omws__getDistributionMap *)soap_id_enter(soap, soap->id, a, SOAP_TYPE_omws__getDistributionMap, sizeof(struct omws__getDistributionMap), 0, NULL, NULL, NULL);
 	if (!a)
 		return NULL;
-	soap_default_om__getDistributionMap(soap, a);
+	soap_default_omws__getDistributionMap(soap, a);
 	if (soap->body && !*soap->href)
 	{
 		for (;;)
@@ -1883,50 +1744,50 @@ SOAP_FMAC3 struct om__getDistributionMap * SOAP_FMAC4 soap_in_om__getDistributio
 			return NULL;
 	}
 	else
-	{	a = (struct om__getDistributionMap *)soap_id_forward(soap, soap->href, (void**)a, SOAP_TYPE_om__getDistributionMap, 0, sizeof(struct om__getDistributionMap), 0, NULL);
+	{	a = (struct omws__getDistributionMap *)soap_id_forward(soap, soap->href, (void**)a, SOAP_TYPE_omws__getDistributionMap, 0, sizeof(struct omws__getDistributionMap), 0, NULL);
 		if (soap->body && soap_element_end_in(soap, tag))
 			return NULL;
 	}
 	return a;
 }
 
-SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_om__getDistributionMapResponse(struct soap *soap, const struct om__getDistributionMapResponse *a)
+SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_omws__getDistributionMapResponse(struct soap *soap, const struct omws__getDistributionMapResponse *a)
 {
 	(void)soap; (void)a; /* appease -Wall -Werror */
 	a->file.soap_serialize(soap);
 }
 
-SOAP_FMAC3 void SOAP_FMAC4 soap_default_om__getDistributionMapResponse(struct soap *soap, struct om__getDistributionMapResponse *a)
+SOAP_FMAC3 void SOAP_FMAC4 soap_default_omws__getDistributionMapResponse(struct soap *soap, struct omws__getDistributionMapResponse *a)
 {
 	(void)soap; (void)a; /* appease -Wall -Werror */
 	a->file.xsd__base64Binary::soap_default(soap);
 }
 
-SOAP_FMAC3 int SOAP_FMAC4 soap_put_om__getDistributionMapResponse(struct soap *soap, const struct om__getDistributionMapResponse *a, const char *tag, const char *type)
+SOAP_FMAC3 int SOAP_FMAC4 soap_put_omws__getDistributionMapResponse(struct soap *soap, const struct omws__getDistributionMapResponse *a, const char *tag, const char *type)
 {
-	register int id = soap_embed(soap, (void*)a, NULL, 0, tag, SOAP_TYPE_om__getDistributionMapResponse);
-	if (soap_out_om__getDistributionMapResponse(soap, tag, id, a, type))
+	register int id = soap_embed(soap, (void*)a, NULL, 0, tag, SOAP_TYPE_omws__getDistributionMapResponse);
+	if (soap_out_omws__getDistributionMapResponse(soap, tag, id, a, type))
 		return soap->error;
 	return soap_putindependent(soap);
 }
 
-SOAP_FMAC3 int SOAP_FMAC4 soap_out_om__getDistributionMapResponse(struct soap *soap, const char *tag, int id, const struct om__getDistributionMapResponse *a, const char *type)
+SOAP_FMAC3 int SOAP_FMAC4 soap_out_omws__getDistributionMapResponse(struct soap *soap, const char *tag, int id, const struct omws__getDistributionMapResponse *a, const char *type)
 {
-	soap_element_begin_out(soap, tag, soap_embedded_id(soap, id, a, SOAP_TYPE_om__getDistributionMapResponse), type);
+	soap_element_begin_out(soap, tag, soap_embedded_id(soap, id, a, SOAP_TYPE_omws__getDistributionMapResponse), type);
 	soap_element_result(soap, "file");
 	a->file.soap_out(soap, "file", -1, "");
 	soap_element_end_out(soap, tag);
 	return SOAP_OK;
 }
 
-SOAP_FMAC3 struct om__getDistributionMapResponse * SOAP_FMAC4 soap_get_om__getDistributionMapResponse(struct soap *soap, struct om__getDistributionMapResponse *p, const char *tag, const char *type)
+SOAP_FMAC3 struct omws__getDistributionMapResponse * SOAP_FMAC4 soap_get_omws__getDistributionMapResponse(struct soap *soap, struct omws__getDistributionMapResponse *p, const char *tag, const char *type)
 {
-	if ((p = soap_in_om__getDistributionMapResponse(soap, tag, p, type)))
+	if ((p = soap_in_omws__getDistributionMapResponse(soap, tag, p, type)))
 		soap_getindependent(soap);
 	return p;
 }
 
-SOAP_FMAC3 struct om__getDistributionMapResponse * SOAP_FMAC4 soap_in_om__getDistributionMapResponse(struct soap *soap, const char *tag, struct om__getDistributionMapResponse *a, const char *type)
+SOAP_FMAC3 struct omws__getDistributionMapResponse * SOAP_FMAC4 soap_in_omws__getDistributionMapResponse(struct soap *soap, const char *tag, struct omws__getDistributionMapResponse *a, const char *type)
 {
 	short soap_flag_file = 1;
 	if (soap_element_begin_in(soap, tag, 0))
@@ -1935,10 +1796,10 @@ SOAP_FMAC3 struct om__getDistributionMapResponse * SOAP_FMAC4 soap_in_om__getDis
 	{	soap->error = SOAP_TYPE;
 		return NULL;
 	}
-	a = (struct om__getDistributionMapResponse *)soap_class_id_enter(soap, soap->id, a, SOAP_TYPE_om__getDistributionMapResponse, sizeof(struct om__getDistributionMapResponse), soap->type, soap->arrayType);
+	a = (struct omws__getDistributionMapResponse *)soap_class_id_enter(soap, soap->id, a, SOAP_TYPE_omws__getDistributionMapResponse, sizeof(struct omws__getDistributionMapResponse), soap->type, soap->arrayType);
 	if (!a)
 		return NULL;
-	soap_default_om__getDistributionMapResponse(soap, a);
+	soap_default_omws__getDistributionMapResponse(soap, a);
 	if (soap->body && !*soap->href)
 	{
 		for (;;)
@@ -1963,58 +1824,58 @@ SOAP_FMAC3 struct om__getDistributionMapResponse * SOAP_FMAC4 soap_in_om__getDis
 			return NULL;
 	}
 	else
-	{	a = (struct om__getDistributionMapResponse *)soap_id_forward(soap, soap->href, (void**)a, SOAP_TYPE_om__getDistributionMapResponse, 0, sizeof(struct om__getDistributionMapResponse), 0, soap_copy_om__getDistributionMapResponse);
+	{	a = (struct omws__getDistributionMapResponse *)soap_id_forward(soap, soap->href, (void**)a, SOAP_TYPE_omws__getDistributionMapResponse, 0, sizeof(struct omws__getDistributionMapResponse), 0, soap_copy_omws__getDistributionMapResponse);
 		if (soap->body && soap_element_end_in(soap, tag))
 			return NULL;
 	}
 	return a;
 }
 
-SOAP_FMAC5 struct om__getDistributionMapResponse * SOAP_FMAC6 soap_new_om__getDistributionMapResponse(struct soap *soap, int n)
-{	return soap_instantiate_om__getDistributionMapResponse(soap, n, NULL, NULL, NULL);
+SOAP_FMAC5 struct omws__getDistributionMapResponse * SOAP_FMAC6 soap_new_omws__getDistributionMapResponse(struct soap *soap, int n)
+{	return soap_instantiate_omws__getDistributionMapResponse(soap, n, NULL, NULL, NULL);
 }
 
-SOAP_FMAC5 void SOAP_FMAC6 soap_delete_om__getDistributionMapResponse(struct soap *soap, struct om__getDistributionMapResponse *p)
+SOAP_FMAC5 void SOAP_FMAC6 soap_delete_omws__getDistributionMapResponse(struct soap *soap, struct omws__getDistributionMapResponse *p)
 {	soap_delete(soap, p);
 }
 
-SOAP_FMAC5 struct om__getDistributionMapResponse * SOAP_FMAC6 soap_instantiate_om__getDistributionMapResponse(struct soap *soap, int n, const char *type, const char *arrayType, size_t *size)
+SOAP_FMAC5 struct omws__getDistributionMapResponse * SOAP_FMAC6 soap_instantiate_omws__getDistributionMapResponse(struct soap *soap, int n, const char *type, const char *arrayType, size_t *size)
 {
-	DBGLOG(TEST, SOAP_MESSAGE(fdebug, "soap_instantiate_om__getDistributionMapResponse(%d, %s, %s)\n", n, type?type:"", arrayType?arrayType:""));
-	struct soap_clist *cp = soap_link(soap, NULL, SOAP_TYPE_om__getDistributionMapResponse, n, soap_fdelete);
+	DBGLOG(TEST, SOAP_MESSAGE(fdebug, "soap_instantiate_omws__getDistributionMapResponse(%d, %s, %s)\n", n, type?type:"", arrayType?arrayType:""));
+	struct soap_clist *cp = soap_link(soap, NULL, SOAP_TYPE_omws__getDistributionMapResponse, n, soap_fdelete);
 	if (!cp)
 		return NULL;
 	if (n < 0)
-	{	cp->ptr = (void*)new struct om__getDistributionMapResponse;
+	{	cp->ptr = (void*)new struct omws__getDistributionMapResponse;
 		if (size)
-			*size = sizeof(struct om__getDistributionMapResponse);
+			*size = sizeof(struct omws__getDistributionMapResponse);
 	}
 	else
-	{	cp->ptr = (void*)new struct om__getDistributionMapResponse[n];
+	{	cp->ptr = (void*)new struct omws__getDistributionMapResponse[n];
 		if (size)
-			*size = n * sizeof(struct om__getDistributionMapResponse);
+			*size = n * sizeof(struct omws__getDistributionMapResponse);
 	}
 		DBGLOG(TEST, SOAP_MESSAGE(fdebug, "Instantiated location=%p\n", cp->ptr));
-	return (struct om__getDistributionMapResponse*)cp->ptr;
+	return (struct omws__getDistributionMapResponse*)cp->ptr;
 }
 
-SOAP_FMAC5 void SOAP_FMAC6 soap_copy_om__getDistributionMapResponse(struct soap *soap, int st, int tt, void *p, const void *q, size_t n)
+SOAP_FMAC5 void SOAP_FMAC6 soap_copy_omws__getDistributionMapResponse(struct soap *soap, int st, int tt, void *p, const void *q, size_t n)
 {
-	DBGLOG(TEST, SOAP_MESSAGE(fdebug, "Copying struct om__getDistributionMapResponse %p -> %p\n", q, p));
-	*(struct om__getDistributionMapResponse*)p = *(struct om__getDistributionMapResponse*)q;
+	DBGLOG(TEST, SOAP_MESSAGE(fdebug, "Copying struct omws__getDistributionMapResponse %p -> %p\n", q, p));
+	*(struct omws__getDistributionMapResponse*)p = *(struct omws__getDistributionMapResponse*)q;
 }
 
-SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_om__createModel(struct soap *soap, const struct om__createModel *a)
+SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_omws__createModel(struct soap *soap, const struct omws__createModel *a)
 {
 	(void)soap; (void)a; /* appease -Wall -Werror */
-	soap_serialize_PointerToom__Points(soap, &a->points);
-	soap_serialize_PointerToom__Maps(soap, &a->maps);
-	soap_serialize_PointerToom__Mask(soap, &a->mask);
-	soap_serialize_PointerToom__Algorithm(soap, &a->algorithm);
-	soap_serialize_PointerToom__Output(soap, &a->output);
+	soap_serialize_PointerToomws__Points(soap, &a->points);
+	soap_serialize_PointerToomws__Maps(soap, &a->maps);
+	soap_serialize_PointerToomws__Mask(soap, &a->mask);
+	soap_serialize_PointerToomws__Algorithm(soap, &a->algorithm);
+	soap_serialize_PointerToomws__Output(soap, &a->output);
 }
 
-SOAP_FMAC3 void SOAP_FMAC4 soap_default_om__createModel(struct soap *soap, struct om__createModel *a)
+SOAP_FMAC3 void SOAP_FMAC4 soap_default_omws__createModel(struct soap *soap, struct omws__createModel *a)
 {
 	(void)soap; (void)a; /* appease -Wall -Werror */
 	a->points = NULL;
@@ -2024,34 +1885,34 @@ SOAP_FMAC3 void SOAP_FMAC4 soap_default_om__createModel(struct soap *soap, struc
 	a->output = NULL;
 }
 
-SOAP_FMAC3 int SOAP_FMAC4 soap_put_om__createModel(struct soap *soap, const struct om__createModel *a, const char *tag, const char *type)
+SOAP_FMAC3 int SOAP_FMAC4 soap_put_omws__createModel(struct soap *soap, const struct omws__createModel *a, const char *tag, const char *type)
 {
-	register int id = soap_embed(soap, (void*)a, NULL, 0, tag, SOAP_TYPE_om__createModel);
-	if (soap_out_om__createModel(soap, tag, id, a, type))
+	register int id = soap_embed(soap, (void*)a, NULL, 0, tag, SOAP_TYPE_omws__createModel);
+	if (soap_out_omws__createModel(soap, tag, id, a, type))
 		return soap->error;
 	return soap_putindependent(soap);
 }
 
-SOAP_FMAC3 int SOAP_FMAC4 soap_out_om__createModel(struct soap *soap, const char *tag, int id, const struct om__createModel *a, const char *type)
+SOAP_FMAC3 int SOAP_FMAC4 soap_out_omws__createModel(struct soap *soap, const char *tag, int id, const struct omws__createModel *a, const char *type)
 {
-	soap_element_begin_out(soap, tag, soap_embedded_id(soap, id, a, SOAP_TYPE_om__createModel), type);
-	soap_out_PointerToom__Points(soap, "points", -1, &a->points, "");
-	soap_out_PointerToom__Maps(soap, "maps", -1, &a->maps, "");
-	soap_out_PointerToom__Mask(soap, "mask", -1, &a->mask, "");
-	soap_out_PointerToom__Algorithm(soap, "algorithm", -1, &a->algorithm, "");
-	soap_out_PointerToom__Output(soap, "output", -1, &a->output, "");
+	soap_element_begin_out(soap, tag, soap_embedded_id(soap, id, a, SOAP_TYPE_omws__createModel), type);
+	soap_out_PointerToomws__Points(soap, "points", -1, &a->points, "");
+	soap_out_PointerToomws__Maps(soap, "maps", -1, &a->maps, "");
+	soap_out_PointerToomws__Mask(soap, "mask", -1, &a->mask, "");
+	soap_out_PointerToomws__Algorithm(soap, "algorithm", -1, &a->algorithm, "");
+	soap_out_PointerToomws__Output(soap, "output", -1, &a->output, "");
 	soap_element_end_out(soap, tag);
 	return SOAP_OK;
 }
 
-SOAP_FMAC3 struct om__createModel * SOAP_FMAC4 soap_get_om__createModel(struct soap *soap, struct om__createModel *p, const char *tag, const char *type)
+SOAP_FMAC3 struct omws__createModel * SOAP_FMAC4 soap_get_omws__createModel(struct soap *soap, struct omws__createModel *p, const char *tag, const char *type)
 {
-	if ((p = soap_in_om__createModel(soap, tag, p, type)))
+	if ((p = soap_in_omws__createModel(soap, tag, p, type)))
 		soap_getindependent(soap);
 	return p;
 }
 
-SOAP_FMAC3 struct om__createModel * SOAP_FMAC4 soap_in_om__createModel(struct soap *soap, const char *tag, struct om__createModel *a, const char *type)
+SOAP_FMAC3 struct omws__createModel * SOAP_FMAC4 soap_in_omws__createModel(struct soap *soap, const char *tag, struct omws__createModel *a, const char *type)
 {
 	short soap_flag_points = 1, soap_flag_maps = 1, soap_flag_mask = 1, soap_flag_algorithm = 1, soap_flag_output = 1;
 	if (soap_element_begin_in(soap, tag, 0))
@@ -2060,36 +1921,36 @@ SOAP_FMAC3 struct om__createModel * SOAP_FMAC4 soap_in_om__createModel(struct so
 	{	soap->error = SOAP_TYPE;
 		return NULL;
 	}
-	a = (struct om__createModel *)soap_id_enter(soap, soap->id, a, SOAP_TYPE_om__createModel, sizeof(struct om__createModel), 0, NULL, NULL, NULL);
+	a = (struct omws__createModel *)soap_id_enter(soap, soap->id, a, SOAP_TYPE_omws__createModel, sizeof(struct omws__createModel), 0, NULL, NULL, NULL);
 	if (!a)
 		return NULL;
-	soap_default_om__createModel(soap, a);
+	soap_default_omws__createModel(soap, a);
 	if (soap->body && !*soap->href)
 	{
 		for (;;)
 		{	soap->error = SOAP_TAG_MISMATCH;
 			if (soap_flag_points && soap->error == SOAP_TAG_MISMATCH)
-				if (soap_in_PointerToom__Points(soap, "points", &a->points, "om:Points"))
+				if (soap_in_PointerToomws__Points(soap, "points", &a->points, "omws:Points"))
 				{	soap_flag_points--;
 					continue;
 				}
 			if (soap_flag_maps && soap->error == SOAP_TAG_MISMATCH)
-				if (soap_in_PointerToom__Maps(soap, "maps", &a->maps, "om:Maps"))
+				if (soap_in_PointerToomws__Maps(soap, "maps", &a->maps, "omws:Maps"))
 				{	soap_flag_maps--;
 					continue;
 				}
 			if (soap_flag_mask && soap->error == SOAP_TAG_MISMATCH)
-				if (soap_in_PointerToom__Mask(soap, "mask", &a->mask, "om:Mask"))
+				if (soap_in_PointerToomws__Mask(soap, "mask", &a->mask, "omws:Mask"))
 				{	soap_flag_mask--;
 					continue;
 				}
 			if (soap_flag_algorithm && soap->error == SOAP_TAG_MISMATCH)
-				if (soap_in_PointerToom__Algorithm(soap, "algorithm", &a->algorithm, "om:Algorithm"))
+				if (soap_in_PointerToomws__Algorithm(soap, "algorithm", &a->algorithm, "omws:Algorithm"))
 				{	soap_flag_algorithm--;
 					continue;
 				}
 			if (soap_flag_output && soap->error == SOAP_TAG_MISMATCH)
-				if (soap_in_PointerToom__Output(soap, "output", &a->output, "om:Output"))
+				if (soap_in_PointerToomws__Output(soap, "output", &a->output, "omws:Output"))
 				{	soap_flag_output--;
 					continue;
 				}
@@ -2104,36 +1965,36 @@ SOAP_FMAC3 struct om__createModel * SOAP_FMAC4 soap_in_om__createModel(struct so
 			return NULL;
 	}
 	else
-	{	a = (struct om__createModel *)soap_id_forward(soap, soap->href, (void**)a, SOAP_TYPE_om__createModel, 0, sizeof(struct om__createModel), 0, NULL);
+	{	a = (struct omws__createModel *)soap_id_forward(soap, soap->href, (void**)a, SOAP_TYPE_omws__createModel, 0, sizeof(struct omws__createModel), 0, NULL);
 		if (soap->body && soap_element_end_in(soap, tag))
 			return NULL;
 	}
 	return a;
 }
 
-SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_om__createModelResponse(struct soap *soap, const struct om__createModelResponse *a)
+SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_omws__createModelResponse(struct soap *soap, const struct omws__createModelResponse *a)
 {
 	(void)soap; (void)a; /* appease -Wall -Werror */
 	soap_serialize_PointerToxsd__string(soap, &a->ticket);
 }
 
-SOAP_FMAC3 void SOAP_FMAC4 soap_default_om__createModelResponse(struct soap *soap, struct om__createModelResponse *a)
+SOAP_FMAC3 void SOAP_FMAC4 soap_default_omws__createModelResponse(struct soap *soap, struct omws__createModelResponse *a)
 {
 	(void)soap; (void)a; /* appease -Wall -Werror */
 	a->ticket = NULL;
 }
 
-SOAP_FMAC3 int SOAP_FMAC4 soap_put_om__createModelResponse(struct soap *soap, const struct om__createModelResponse *a, const char *tag, const char *type)
+SOAP_FMAC3 int SOAP_FMAC4 soap_put_omws__createModelResponse(struct soap *soap, const struct omws__createModelResponse *a, const char *tag, const char *type)
 {
-	register int id = soap_embed(soap, (void*)a, NULL, 0, tag, SOAP_TYPE_om__createModelResponse);
-	if (soap_out_om__createModelResponse(soap, tag, id, a, type))
+	register int id = soap_embed(soap, (void*)a, NULL, 0, tag, SOAP_TYPE_omws__createModelResponse);
+	if (soap_out_omws__createModelResponse(soap, tag, id, a, type))
 		return soap->error;
 	return soap_putindependent(soap);
 }
 
-SOAP_FMAC3 int SOAP_FMAC4 soap_out_om__createModelResponse(struct soap *soap, const char *tag, int id, const struct om__createModelResponse *a, const char *type)
+SOAP_FMAC3 int SOAP_FMAC4 soap_out_omws__createModelResponse(struct soap *soap, const char *tag, int id, const struct omws__createModelResponse *a, const char *type)
 {
-	soap_element_begin_out(soap, tag, soap_embedded_id(soap, id, a, SOAP_TYPE_om__createModelResponse), type);
+	soap_element_begin_out(soap, tag, soap_embedded_id(soap, id, a, SOAP_TYPE_omws__createModelResponse), type);
 	if (a->ticket)
 		soap_element_result(soap, "ticket");
 	soap_out_PointerToxsd__string(soap, "ticket", -1, &a->ticket, "");
@@ -2141,14 +2002,14 @@ SOAP_FMAC3 int SOAP_FMAC4 soap_out_om__createModelResponse(struct soap *soap, co
 	return SOAP_OK;
 }
 
-SOAP_FMAC3 struct om__createModelResponse * SOAP_FMAC4 soap_get_om__createModelResponse(struct soap *soap, struct om__createModelResponse *p, const char *tag, const char *type)
+SOAP_FMAC3 struct omws__createModelResponse * SOAP_FMAC4 soap_get_omws__createModelResponse(struct soap *soap, struct omws__createModelResponse *p, const char *tag, const char *type)
 {
-	if ((p = soap_in_om__createModelResponse(soap, tag, p, type)))
+	if ((p = soap_in_omws__createModelResponse(soap, tag, p, type)))
 		soap_getindependent(soap);
 	return p;
 }
 
-SOAP_FMAC3 struct om__createModelResponse * SOAP_FMAC4 soap_in_om__createModelResponse(struct soap *soap, const char *tag, struct om__createModelResponse *a, const char *type)
+SOAP_FMAC3 struct omws__createModelResponse * SOAP_FMAC4 soap_in_omws__createModelResponse(struct soap *soap, const char *tag, struct omws__createModelResponse *a, const char *type)
 {
 	short soap_flag_ticket = 1;
 	if (soap_element_begin_in(soap, tag, 0))
@@ -2157,10 +2018,10 @@ SOAP_FMAC3 struct om__createModelResponse * SOAP_FMAC4 soap_in_om__createModelRe
 	{	soap->error = SOAP_TYPE;
 		return NULL;
 	}
-	a = (struct om__createModelResponse *)soap_id_enter(soap, soap->id, a, SOAP_TYPE_om__createModelResponse, sizeof(struct om__createModelResponse), 0, NULL, NULL, NULL);
+	a = (struct omws__createModelResponse *)soap_id_enter(soap, soap->id, a, SOAP_TYPE_omws__createModelResponse, sizeof(struct omws__createModelResponse), 0, NULL, NULL, NULL);
 	if (!a)
 		return NULL;
-	soap_default_om__createModelResponse(soap, a);
+	soap_default_omws__createModelResponse(soap, a);
 	if (soap->body && !*soap->href)
 	{
 		for (;;)
@@ -2181,32 +2042,32 @@ SOAP_FMAC3 struct om__createModelResponse * SOAP_FMAC4 soap_in_om__createModelRe
 			return NULL;
 	}
 	else
-	{	a = (struct om__createModelResponse *)soap_id_forward(soap, soap->href, (void**)a, SOAP_TYPE_om__createModelResponse, 0, sizeof(struct om__createModelResponse), 0, NULL);
+	{	a = (struct omws__createModelResponse *)soap_id_forward(soap, soap->href, (void**)a, SOAP_TYPE_omws__createModelResponse, 0, sizeof(struct omws__createModelResponse), 0, NULL);
 		if (soap->body && soap_element_end_in(soap, tag))
 			return NULL;
 	}
 	return a;
 }
 
-SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_om__Output(struct soap *soap, struct soap_Output const*a)
+SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_omws__Output(struct soap *soap, struct soap_Output const*a)
 {	soap_serialize_soap_Output(soap, a);
 }
 
-SOAP_FMAC3 void SOAP_FMAC4 soap_default_om__Output(struct soap *soap, struct soap_Output *a)
+SOAP_FMAC3 void SOAP_FMAC4 soap_default_omws__Output(struct soap *soap, struct soap_Output *a)
 {	soap_default_soap_Output(soap, a);
 }
 
-SOAP_FMAC3 int SOAP_FMAC4 soap_put_om__Output(struct soap *soap, const struct soap_Output *a, const char *tag, const char *type)
+SOAP_FMAC3 int SOAP_FMAC4 soap_put_omws__Output(struct soap *soap, const struct soap_Output *a, const char *tag, const char *type)
 {
-	register int id = soap_embed(soap, (void*)a, NULL, 0, tag, SOAP_TYPE_om__Output);
-	if (soap_out_om__Output(soap, tag, id, a, type))
+	register int id = soap_embed(soap, (void*)a, NULL, 0, tag, SOAP_TYPE_omws__Output);
+	if (soap_out_omws__Output(soap, tag, id, a, type))
 		return soap->error;
 	return soap_putindependent(soap);
 }
 
-SOAP_FMAC3 int SOAP_FMAC4 soap_out_om__Output(struct soap *soap, const char *tag, int id, const struct soap_Output *a, const char *type)
+SOAP_FMAC3 int SOAP_FMAC4 soap_out_omws__Output(struct soap *soap, const char *tag, int id, const struct soap_Output *a, const char *type)
 {
-	soap_element_begin_out(soap, tag, soap_embedded_id(soap, id, a, SOAP_TYPE_om__Output), type);
+	soap_element_begin_out(soap, tag, soap_embedded_id(soap, id, a, SOAP_TYPE_omws__Output), type);
 	soap_out_xsd__string(soap, "header", -1, &a->header, "");
 	soap_out_xsd__int(soap, "scale", -1, &a->scale, "");
 	soap_out_xsd__string(soap, "format", -1, &a->format, "");
@@ -2214,14 +2075,14 @@ SOAP_FMAC3 int SOAP_FMAC4 soap_out_om__Output(struct soap *soap, const char *tag
 	return SOAP_OK;
 }
 
-SOAP_FMAC3 struct soap_Output * SOAP_FMAC4 soap_get_om__Output(struct soap *soap, struct soap_Output *p, const char *tag, const char *type)
+SOAP_FMAC3 struct soap_Output * SOAP_FMAC4 soap_get_omws__Output(struct soap *soap, struct soap_Output *p, const char *tag, const char *type)
 {
-	if ((p = soap_in_om__Output(soap, tag, p, type)))
+	if ((p = soap_in_omws__Output(soap, tag, p, type)))
 		soap_getindependent(soap);
 	return p;
 }
 
-SOAP_FMAC3 struct soap_Output * SOAP_FMAC4 soap_in_om__Output(struct soap *soap, const char *tag, struct soap_Output *a, const char *type)
+SOAP_FMAC3 struct soap_Output * SOAP_FMAC4 soap_in_omws__Output(struct soap *soap, const char *tag, struct soap_Output *a, const char *type)
 {
 	short soap_flag_header = 1, soap_flag_scale = 1, soap_flag_format = 1;
 	if (soap_element_begin_in(soap, tag, 0))
@@ -2230,10 +2091,10 @@ SOAP_FMAC3 struct soap_Output * SOAP_FMAC4 soap_in_om__Output(struct soap *soap,
 	{	soap->error = SOAP_TYPE;
 		return NULL;
 	}
-	a = (struct soap_Output *)soap_id_enter(soap, soap->id, a, SOAP_TYPE_om__Output, sizeof(struct soap_Output), 0, NULL, NULL, NULL);
+	a = (struct soap_Output *)soap_id_enter(soap, soap->id, a, SOAP_TYPE_omws__Output, sizeof(struct soap_Output), 0, NULL, NULL, NULL);
 	if (!a)
 		return NULL;
-	soap_default_om__Output(soap, a);
+	soap_default_omws__Output(soap, a);
 	if (soap->body && !*soap->href)
 	{
 		for (;;)
@@ -2268,7 +2129,7 @@ SOAP_FMAC3 struct soap_Output * SOAP_FMAC4 soap_in_om__Output(struct soap *soap,
 			return NULL;
 	}
 	else
-	{	a = (struct soap_Output *)soap_id_forward(soap, soap->href, (void**)a, SOAP_TYPE_om__Output, 0, sizeof(struct soap_Output), 0, NULL);
+	{	a = (struct soap_Output *)soap_id_forward(soap, soap->href, (void**)a, SOAP_TYPE_omws__Output, 0, sizeof(struct soap_Output), 0, NULL);
 		if (soap->body && soap_element_end_in(soap, tag))
 			return NULL;
 	}
@@ -2370,44 +2231,44 @@ SOAP_FMAC3 struct soap_Output * SOAP_FMAC4 soap_in_soap_Output(struct soap *soap
 	return a;
 }
 
-SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_om__Algorithm(struct soap *soap, struct soap_Algorithm const*a)
+SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_omws__Algorithm(struct soap *soap, struct soap_Algorithm const*a)
 {	soap_serialize_soap_Algorithm(soap, a);
 }
 
-SOAP_FMAC3 void SOAP_FMAC4 soap_default_om__Algorithm(struct soap *soap, struct soap_Algorithm *a)
+SOAP_FMAC3 void SOAP_FMAC4 soap_default_omws__Algorithm(struct soap *soap, struct soap_Algorithm *a)
 {	soap_default_soap_Algorithm(soap, a);
 }
 
-SOAP_FMAC3 int SOAP_FMAC4 soap_put_om__Algorithm(struct soap *soap, const struct soap_Algorithm *a, const char *tag, const char *type)
+SOAP_FMAC3 int SOAP_FMAC4 soap_put_omws__Algorithm(struct soap *soap, const struct soap_Algorithm *a, const char *tag, const char *type)
 {
-	register int id = soap_embed(soap, (void*)a, NULL, 0, tag, SOAP_TYPE_om__Algorithm);
-	if (soap_out_om__Algorithm(soap, tag, id, a, type))
+	register int id = soap_embed(soap, (void*)a, NULL, 0, tag, SOAP_TYPE_omws__Algorithm);
+	if (soap_out_omws__Algorithm(soap, tag, id, a, type))
 		return soap->error;
 	return soap_putindependent(soap);
 }
 
-SOAP_FMAC3 int SOAP_FMAC4 soap_out_om__Algorithm(struct soap *soap, const char *tag, int id, const struct soap_Algorithm *a, const char *type)
+SOAP_FMAC3 int SOAP_FMAC4 soap_out_omws__Algorithm(struct soap *soap, const char *tag, int id, const struct soap_Algorithm *a, const char *type)
 {
 	if (a->Id)
 		soap_set_attr(soap, "Id", a->Id);
-	soap_element_begin_out(soap, tag, soap_embedded_id(soap, id, a, SOAP_TYPE_om__Algorithm), type);
+	soap_element_begin_out(soap, tag, soap_embedded_id(soap, id, a, SOAP_TYPE_omws__Algorithm), type);
 	if (a->__ptrparameter)
 	{	int i;
 		for (i = 0; i < a->__size; i++)
-			soap_out_om__Parameter(soap, "parameter", -1, a->__ptrparameter + i, "");
+			soap_out_omws__Parameter(soap, "parameter", -1, a->__ptrparameter + i, "");
 	}
 	soap_element_end_out(soap, tag);
 	return SOAP_OK;
 }
 
-SOAP_FMAC3 struct soap_Algorithm * SOAP_FMAC4 soap_get_om__Algorithm(struct soap *soap, struct soap_Algorithm *p, const char *tag, const char *type)
+SOAP_FMAC3 struct soap_Algorithm * SOAP_FMAC4 soap_get_omws__Algorithm(struct soap *soap, struct soap_Algorithm *p, const char *tag, const char *type)
 {
-	if ((p = soap_in_om__Algorithm(soap, tag, p, type)))
+	if ((p = soap_in_omws__Algorithm(soap, tag, p, type)))
 		soap_getindependent(soap);
 	return p;
 }
 
-SOAP_FMAC3 struct soap_Algorithm * SOAP_FMAC4 soap_in_om__Algorithm(struct soap *soap, const char *tag, struct soap_Algorithm *a, const char *type)
+SOAP_FMAC3 struct soap_Algorithm * SOAP_FMAC4 soap_in_omws__Algorithm(struct soap *soap, const char *tag, struct soap_Algorithm *a, const char *type)
 {
 	short soap_flag___ptrparameter = 1;
 	if (soap_element_begin_in(soap, tag, 0))
@@ -2416,10 +2277,10 @@ SOAP_FMAC3 struct soap_Algorithm * SOAP_FMAC4 soap_in_om__Algorithm(struct soap 
 	{	soap->error = SOAP_TYPE;
 		return NULL;
 	}
-	a = (struct soap_Algorithm *)soap_id_enter(soap, soap->id, a, SOAP_TYPE_om__Algorithm, sizeof(struct soap_Algorithm), 0, NULL, NULL, NULL);
+	a = (struct soap_Algorithm *)soap_id_enter(soap, soap->id, a, SOAP_TYPE_omws__Algorithm, sizeof(struct soap_Algorithm), 0, NULL, NULL, NULL);
 	if (!a)
 		return NULL;
-	soap_default_om__Algorithm(soap, a);
+	soap_default_omws__Algorithm(soap, a);
 	if (soap_s2string(soap, soap_attr_value(soap, "Id", 0), &a->Id))
 		return NULL;
 	if (soap->body && !*soap->href)
@@ -2431,9 +2292,9 @@ SOAP_FMAC3 struct soap_Algorithm * SOAP_FMAC4 soap_in_om__Algorithm(struct soap 
 				soap_new_block(soap);
 				for (a->__size = 0; !soap_element_begin_in(soap, "parameter", 1); a->__size++)
 				{	p = (struct soap_Parameter *)soap_push_block(soap, sizeof(struct soap_Parameter));
-					soap_default_om__Parameter(soap, p);
+					soap_default_omws__Parameter(soap, p);
 					soap_revert(soap);
-					if (!soap_in_om__Parameter(soap, "parameter", p, "om:Parameter"))
+					if (!soap_in_omws__Parameter(soap, "parameter", p, "omws:Parameter"))
 						break;
 					soap_flag___ptrparameter = 0;
 				}
@@ -2452,7 +2313,7 @@ SOAP_FMAC3 struct soap_Algorithm * SOAP_FMAC4 soap_in_om__Algorithm(struct soap 
 			return NULL;
 	}
 	else
-	{	a = (struct soap_Algorithm *)soap_id_forward(soap, soap->href, (void**)a, SOAP_TYPE_om__Algorithm, 0, sizeof(struct soap_Algorithm), 0, NULL);
+	{	a = (struct soap_Algorithm *)soap_id_forward(soap, soap->href, (void**)a, SOAP_TYPE_omws__Algorithm, 0, sizeof(struct soap_Algorithm), 0, NULL);
 		if (soap->body && soap_element_end_in(soap, tag))
 			return NULL;
 	}
@@ -2466,8 +2327,8 @@ SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_soap_Algorithm(struct soap *soap, cons
 	{	int i;
 		for (i = 0; i < a->__size; i++)
 		{
-			soap_embedded(soap, a->__ptrparameter + i, SOAP_TYPE_om__Parameter);
-			soap_serialize_om__Parameter(soap, a->__ptrparameter + i);
+			soap_embedded(soap, a->__ptrparameter + i, SOAP_TYPE_omws__Parameter);
+			soap_serialize_omws__Parameter(soap, a->__ptrparameter + i);
 		}
 	}
 }
@@ -2496,7 +2357,7 @@ SOAP_FMAC3 int SOAP_FMAC4 soap_out_soap_Algorithm(struct soap *soap, const char 
 	if (a->__ptrparameter)
 	{	int i;
 		for (i = 0; i < a->__size; i++)
-			soap_out_om__Parameter(soap, "parameter", -1, a->__ptrparameter + i, "");
+			soap_out_omws__Parameter(soap, "parameter", -1, a->__ptrparameter + i, "");
 	}
 	soap_element_end_out(soap, tag);
 	return SOAP_OK;
@@ -2533,9 +2394,9 @@ SOAP_FMAC3 struct soap_Algorithm * SOAP_FMAC4 soap_in_soap_Algorithm(struct soap
 				soap_new_block(soap);
 				for (a->__size = 0; !soap_element_begin_in(soap, "parameter", 1); a->__size++)
 				{	p = (struct soap_Parameter *)soap_push_block(soap, sizeof(struct soap_Parameter));
-					soap_default_om__Parameter(soap, p);
+					soap_default_omws__Parameter(soap, p);
 					soap_revert(soap);
-					if (!soap_in_om__Parameter(soap, "parameter", p, "om:Parameter"))
+					if (!soap_in_omws__Parameter(soap, "parameter", p, "omws:Parameter"))
 						break;
 					soap_flag___ptrparameter = 0;
 				}
@@ -2561,41 +2422,41 @@ SOAP_FMAC3 struct soap_Algorithm * SOAP_FMAC4 soap_in_soap_Algorithm(struct soap
 	return a;
 }
 
-SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_om__Parameter(struct soap *soap, struct soap_Parameter const*a)
+SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_omws__Parameter(struct soap *soap, struct soap_Parameter const*a)
 {	soap_serialize_soap_Parameter(soap, a);
 }
 
-SOAP_FMAC3 void SOAP_FMAC4 soap_default_om__Parameter(struct soap *soap, struct soap_Parameter *a)
+SOAP_FMAC3 void SOAP_FMAC4 soap_default_omws__Parameter(struct soap *soap, struct soap_Parameter *a)
 {	soap_default_soap_Parameter(soap, a);
 }
 
-SOAP_FMAC3 int SOAP_FMAC4 soap_put_om__Parameter(struct soap *soap, const struct soap_Parameter *a, const char *tag, const char *type)
+SOAP_FMAC3 int SOAP_FMAC4 soap_put_omws__Parameter(struct soap *soap, const struct soap_Parameter *a, const char *tag, const char *type)
 {
-	register int id = soap_embed(soap, (void*)a, NULL, 0, tag, SOAP_TYPE_om__Parameter);
-	if (soap_out_om__Parameter(soap, tag, id, a, type))
+	register int id = soap_embed(soap, (void*)a, NULL, 0, tag, SOAP_TYPE_omws__Parameter);
+	if (soap_out_omws__Parameter(soap, tag, id, a, type))
 		return soap->error;
 	return soap_putindependent(soap);
 }
 
-SOAP_FMAC3 int SOAP_FMAC4 soap_out_om__Parameter(struct soap *soap, const char *tag, int id, const struct soap_Parameter *a, const char *type)
+SOAP_FMAC3 int SOAP_FMAC4 soap_out_omws__Parameter(struct soap *soap, const char *tag, int id, const struct soap_Parameter *a, const char *type)
 {
 	if (a->Id)
 		soap_set_attr(soap, "Id", a->Id);
 	if (a->Value)
 		soap_set_attr(soap, "Value", a->Value);
-	soap_element_begin_out(soap, tag, soap_embedded_id(soap, id, a, SOAP_TYPE_om__Parameter), type);
+	soap_element_begin_out(soap, tag, soap_embedded_id(soap, id, a, SOAP_TYPE_omws__Parameter), type);
 	soap_element_end_out(soap, tag);
 	return SOAP_OK;
 }
 
-SOAP_FMAC3 struct soap_Parameter * SOAP_FMAC4 soap_get_om__Parameter(struct soap *soap, struct soap_Parameter *p, const char *tag, const char *type)
+SOAP_FMAC3 struct soap_Parameter * SOAP_FMAC4 soap_get_omws__Parameter(struct soap *soap, struct soap_Parameter *p, const char *tag, const char *type)
 {
-	if ((p = soap_in_om__Parameter(soap, tag, p, type)))
+	if ((p = soap_in_omws__Parameter(soap, tag, p, type)))
 		soap_getindependent(soap);
 	return p;
 }
 
-SOAP_FMAC3 struct soap_Parameter * SOAP_FMAC4 soap_in_om__Parameter(struct soap *soap, const char *tag, struct soap_Parameter *a, const char *type)
+SOAP_FMAC3 struct soap_Parameter * SOAP_FMAC4 soap_in_omws__Parameter(struct soap *soap, const char *tag, struct soap_Parameter *a, const char *type)
 {;
 	if (soap_element_begin_in(soap, tag, 0))
 		return NULL;
@@ -2603,10 +2464,10 @@ SOAP_FMAC3 struct soap_Parameter * SOAP_FMAC4 soap_in_om__Parameter(struct soap 
 	{	soap->error = SOAP_TYPE;
 		return NULL;
 	}
-	a = (struct soap_Parameter *)soap_id_enter(soap, soap->id, a, SOAP_TYPE_om__Parameter, sizeof(struct soap_Parameter), 0, NULL, NULL, NULL);
+	a = (struct soap_Parameter *)soap_id_enter(soap, soap->id, a, SOAP_TYPE_omws__Parameter, sizeof(struct soap_Parameter), 0, NULL, NULL, NULL);
 	if (!a)
 		return NULL;
-	soap_default_om__Parameter(soap, a);
+	soap_default_omws__Parameter(soap, a);
 	if (soap_s2string(soap, soap_attr_value(soap, "Id", 0), &a->Id))
 		return NULL;
 	if (soap_s2string(soap, soap_attr_value(soap, "Value", 0), &a->Value))
@@ -2626,7 +2487,7 @@ SOAP_FMAC3 struct soap_Parameter * SOAP_FMAC4 soap_in_om__Parameter(struct soap 
 			return NULL;
 	}
 	else
-	{	a = (struct soap_Parameter *)soap_id_forward(soap, soap->href, (void**)a, SOAP_TYPE_om__Parameter, 0, sizeof(struct soap_Parameter), 0, NULL);
+	{	a = (struct soap_Parameter *)soap_id_forward(soap, soap->href, (void**)a, SOAP_TYPE_omws__Parameter, 0, sizeof(struct soap_Parameter), 0, NULL);
 		if (soap->body && soap_element_end_in(soap, tag))
 			return NULL;
 	}
@@ -2709,39 +2570,39 @@ SOAP_FMAC3 struct soap_Parameter * SOAP_FMAC4 soap_in_soap_Parameter(struct soap
 	return a;
 }
 
-SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_om__Mask(struct soap *soap, struct soap_Mask const*a)
+SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_omws__Mask(struct soap *soap, struct soap_Mask const*a)
 {	soap_serialize_soap_Mask(soap, a);
 }
 
-SOAP_FMAC3 void SOAP_FMAC4 soap_default_om__Mask(struct soap *soap, struct soap_Mask *a)
+SOAP_FMAC3 void SOAP_FMAC4 soap_default_omws__Mask(struct soap *soap, struct soap_Mask *a)
 {	soap_default_soap_Mask(soap, a);
 }
 
-SOAP_FMAC3 int SOAP_FMAC4 soap_put_om__Mask(struct soap *soap, const struct soap_Mask *a, const char *tag, const char *type)
+SOAP_FMAC3 int SOAP_FMAC4 soap_put_omws__Mask(struct soap *soap, const struct soap_Mask *a, const char *tag, const char *type)
 {
-	register int id = soap_embed(soap, (void*)a, NULL, 0, tag, SOAP_TYPE_om__Mask);
-	if (soap_out_om__Mask(soap, tag, id, a, type))
+	register int id = soap_embed(soap, (void*)a, NULL, 0, tag, SOAP_TYPE_omws__Mask);
+	if (soap_out_omws__Mask(soap, tag, id, a, type))
 		return soap->error;
 	return soap_putindependent(soap);
 }
 
-SOAP_FMAC3 int SOAP_FMAC4 soap_out_om__Mask(struct soap *soap, const char *tag, int id, const struct soap_Mask *a, const char *type)
+SOAP_FMAC3 int SOAP_FMAC4 soap_out_omws__Mask(struct soap *soap, const char *tag, int id, const struct soap_Mask *a, const char *type)
 {
 	if (a->location)
 		soap_set_attr(soap, "location", a->location);
-	soap_element_begin_out(soap, tag, soap_embedded_id(soap, id, a, SOAP_TYPE_om__Mask), type);
+	soap_element_begin_out(soap, tag, soap_embedded_id(soap, id, a, SOAP_TYPE_omws__Mask), type);
 	soap_element_end_out(soap, tag);
 	return SOAP_OK;
 }
 
-SOAP_FMAC3 struct soap_Mask * SOAP_FMAC4 soap_get_om__Mask(struct soap *soap, struct soap_Mask *p, const char *tag, const char *type)
+SOAP_FMAC3 struct soap_Mask * SOAP_FMAC4 soap_get_omws__Mask(struct soap *soap, struct soap_Mask *p, const char *tag, const char *type)
 {
-	if ((p = soap_in_om__Mask(soap, tag, p, type)))
+	if ((p = soap_in_omws__Mask(soap, tag, p, type)))
 		soap_getindependent(soap);
 	return p;
 }
 
-SOAP_FMAC3 struct soap_Mask * SOAP_FMAC4 soap_in_om__Mask(struct soap *soap, const char *tag, struct soap_Mask *a, const char *type)
+SOAP_FMAC3 struct soap_Mask * SOAP_FMAC4 soap_in_omws__Mask(struct soap *soap, const char *tag, struct soap_Mask *a, const char *type)
 {;
 	if (soap_element_begin_in(soap, tag, 0))
 		return NULL;
@@ -2749,10 +2610,10 @@ SOAP_FMAC3 struct soap_Mask * SOAP_FMAC4 soap_in_om__Mask(struct soap *soap, con
 	{	soap->error = SOAP_TYPE;
 		return NULL;
 	}
-	a = (struct soap_Mask *)soap_id_enter(soap, soap->id, a, SOAP_TYPE_om__Mask, sizeof(struct soap_Mask), 0, NULL, NULL, NULL);
+	a = (struct soap_Mask *)soap_id_enter(soap, soap->id, a, SOAP_TYPE_omws__Mask, sizeof(struct soap_Mask), 0, NULL, NULL, NULL);
 	if (!a)
 		return NULL;
-	soap_default_om__Mask(soap, a);
+	soap_default_omws__Mask(soap, a);
 	if (soap_s2string(soap, soap_attr_value(soap, "location", 0), &a->location))
 		return NULL;
 	if (soap->body && !*soap->href)
@@ -2770,7 +2631,7 @@ SOAP_FMAC3 struct soap_Mask * SOAP_FMAC4 soap_in_om__Mask(struct soap *soap, con
 			return NULL;
 	}
 	else
-	{	a = (struct soap_Mask *)soap_id_forward(soap, soap->href, (void**)a, SOAP_TYPE_om__Mask, 0, sizeof(struct soap_Mask), 0, NULL);
+	{	a = (struct soap_Mask *)soap_id_forward(soap, soap->href, (void**)a, SOAP_TYPE_omws__Mask, 0, sizeof(struct soap_Mask), 0, NULL);
 		if (soap->body && soap_element_end_in(soap, tag))
 			return NULL;
 	}
@@ -2848,42 +2709,42 @@ SOAP_FMAC3 struct soap_Mask * SOAP_FMAC4 soap_in_soap_Mask(struct soap *soap, co
 	return a;
 }
 
-SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_om__Maps(struct soap *soap, struct soap_Maps const*a)
+SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_omws__Maps(struct soap *soap, struct soap_Maps const*a)
 {	soap_serialize_soap_Maps(soap, a);
 }
 
-SOAP_FMAC3 void SOAP_FMAC4 soap_default_om__Maps(struct soap *soap, struct soap_Maps *a)
+SOAP_FMAC3 void SOAP_FMAC4 soap_default_omws__Maps(struct soap *soap, struct soap_Maps *a)
 {	soap_default_soap_Maps(soap, a);
 }
 
-SOAP_FMAC3 int SOAP_FMAC4 soap_put_om__Maps(struct soap *soap, const struct soap_Maps *a, const char *tag, const char *type)
+SOAP_FMAC3 int SOAP_FMAC4 soap_put_omws__Maps(struct soap *soap, const struct soap_Maps *a, const char *tag, const char *type)
 {
-	register int id = soap_embed(soap, (void*)a, NULL, 0, tag, SOAP_TYPE_om__Maps);
-	if (soap_out_om__Maps(soap, tag, id, a, type))
+	register int id = soap_embed(soap, (void*)a, NULL, 0, tag, SOAP_TYPE_omws__Maps);
+	if (soap_out_omws__Maps(soap, tag, id, a, type))
 		return soap->error;
 	return soap_putindependent(soap);
 }
 
-SOAP_FMAC3 int SOAP_FMAC4 soap_out_om__Maps(struct soap *soap, const char *tag, int id, const struct soap_Maps *a, const char *type)
+SOAP_FMAC3 int SOAP_FMAC4 soap_out_omws__Maps(struct soap *soap, const char *tag, int id, const struct soap_Maps *a, const char *type)
 {
-	soap_element_begin_out(soap, tag, soap_embedded_id(soap, id, a, SOAP_TYPE_om__Maps), type);
+	soap_element_begin_out(soap, tag, soap_embedded_id(soap, id, a, SOAP_TYPE_omws__Maps), type);
 	if (a->__ptrmap)
 	{	int i;
 		for (i = 0; i < a->__size; i++)
-			soap_out_om__Map(soap, "map", -1, a->__ptrmap + i, "");
+			soap_out_omws__Map(soap, "map", -1, a->__ptrmap + i, "");
 	}
 	soap_element_end_out(soap, tag);
 	return SOAP_OK;
 }
 
-SOAP_FMAC3 struct soap_Maps * SOAP_FMAC4 soap_get_om__Maps(struct soap *soap, struct soap_Maps *p, const char *tag, const char *type)
+SOAP_FMAC3 struct soap_Maps * SOAP_FMAC4 soap_get_omws__Maps(struct soap *soap, struct soap_Maps *p, const char *tag, const char *type)
 {
-	if ((p = soap_in_om__Maps(soap, tag, p, type)))
+	if ((p = soap_in_omws__Maps(soap, tag, p, type)))
 		soap_getindependent(soap);
 	return p;
 }
 
-SOAP_FMAC3 struct soap_Maps * SOAP_FMAC4 soap_in_om__Maps(struct soap *soap, const char *tag, struct soap_Maps *a, const char *type)
+SOAP_FMAC3 struct soap_Maps * SOAP_FMAC4 soap_in_omws__Maps(struct soap *soap, const char *tag, struct soap_Maps *a, const char *type)
 {
 	short soap_flag___ptrmap = 1;
 	if (soap_element_begin_in(soap, tag, 0))
@@ -2892,10 +2753,10 @@ SOAP_FMAC3 struct soap_Maps * SOAP_FMAC4 soap_in_om__Maps(struct soap *soap, con
 	{	soap->error = SOAP_TYPE;
 		return NULL;
 	}
-	a = (struct soap_Maps *)soap_id_enter(soap, soap->id, a, SOAP_TYPE_om__Maps, sizeof(struct soap_Maps), 0, NULL, NULL, NULL);
+	a = (struct soap_Maps *)soap_id_enter(soap, soap->id, a, SOAP_TYPE_omws__Maps, sizeof(struct soap_Maps), 0, NULL, NULL, NULL);
 	if (!a)
 		return NULL;
-	soap_default_om__Maps(soap, a);
+	soap_default_omws__Maps(soap, a);
 	if (soap->body && !*soap->href)
 	{
 		for (;;)
@@ -2905,9 +2766,9 @@ SOAP_FMAC3 struct soap_Maps * SOAP_FMAC4 soap_in_om__Maps(struct soap *soap, con
 				soap_new_block(soap);
 				for (a->__size = 0; !soap_element_begin_in(soap, "map", 1); a->__size++)
 				{	p = (struct soap_Map *)soap_push_block(soap, sizeof(struct soap_Map));
-					soap_default_om__Map(soap, p);
+					soap_default_omws__Map(soap, p);
 					soap_revert(soap);
-					if (!soap_in_om__Map(soap, "map", p, "om:Map"))
+					if (!soap_in_omws__Map(soap, "map", p, "omws:Map"))
 						break;
 					soap_flag___ptrmap = 0;
 				}
@@ -2926,7 +2787,7 @@ SOAP_FMAC3 struct soap_Maps * SOAP_FMAC4 soap_in_om__Maps(struct soap *soap, con
 			return NULL;
 	}
 	else
-	{	a = (struct soap_Maps *)soap_id_forward(soap, soap->href, (void**)a, SOAP_TYPE_om__Maps, 0, sizeof(struct soap_Maps), 0, NULL);
+	{	a = (struct soap_Maps *)soap_id_forward(soap, soap->href, (void**)a, SOAP_TYPE_omws__Maps, 0, sizeof(struct soap_Maps), 0, NULL);
 		if (soap->body && soap_element_end_in(soap, tag))
 			return NULL;
 	}
@@ -2940,8 +2801,8 @@ SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_soap_Maps(struct soap *soap, const str
 	{	int i;
 		for (i = 0; i < a->__size; i++)
 		{
-			soap_embedded(soap, a->__ptrmap + i, SOAP_TYPE_om__Map);
-			soap_serialize_om__Map(soap, a->__ptrmap + i);
+			soap_embedded(soap, a->__ptrmap + i, SOAP_TYPE_omws__Map);
+			soap_serialize_omws__Map(soap, a->__ptrmap + i);
 		}
 	}
 }
@@ -2967,7 +2828,7 @@ SOAP_FMAC3 int SOAP_FMAC4 soap_out_soap_Maps(struct soap *soap, const char *tag,
 	if (a->__ptrmap)
 	{	int i;
 		for (i = 0; i < a->__size; i++)
-			soap_out_om__Map(soap, "map", -1, a->__ptrmap + i, "");
+			soap_out_omws__Map(soap, "map", -1, a->__ptrmap + i, "");
 	}
 	soap_element_end_out(soap, tag);
 	return SOAP_OK;
@@ -3002,9 +2863,9 @@ SOAP_FMAC3 struct soap_Maps * SOAP_FMAC4 soap_in_soap_Maps(struct soap *soap, co
 				soap_new_block(soap);
 				for (a->__size = 0; !soap_element_begin_in(soap, "map", 1); a->__size++)
 				{	p = (struct soap_Map *)soap_push_block(soap, sizeof(struct soap_Map));
-					soap_default_om__Map(soap, p);
+					soap_default_omws__Map(soap, p);
 					soap_revert(soap);
-					if (!soap_in_om__Map(soap, "map", p, "om:Map"))
+					if (!soap_in_omws__Map(soap, "map", p, "omws:Map"))
 						break;
 					soap_flag___ptrmap = 0;
 				}
@@ -3030,40 +2891,40 @@ SOAP_FMAC3 struct soap_Maps * SOAP_FMAC4 soap_in_soap_Maps(struct soap *soap, co
 	return a;
 }
 
-SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_om__Map(struct soap *soap, struct soap_Map const*a)
+SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_omws__Map(struct soap *soap, struct soap_Map const*a)
 {	soap_serialize_soap_Map(soap, a);
 }
 
-SOAP_FMAC3 void SOAP_FMAC4 soap_default_om__Map(struct soap *soap, struct soap_Map *a)
+SOAP_FMAC3 void SOAP_FMAC4 soap_default_omws__Map(struct soap *soap, struct soap_Map *a)
 {	soap_default_soap_Map(soap, a);
 }
 
-SOAP_FMAC3 int SOAP_FMAC4 soap_put_om__Map(struct soap *soap, const struct soap_Map *a, const char *tag, const char *type)
+SOAP_FMAC3 int SOAP_FMAC4 soap_put_omws__Map(struct soap *soap, const struct soap_Map *a, const char *tag, const char *type)
 {
-	register int id = soap_embed(soap, (void*)a, NULL, 0, tag, SOAP_TYPE_om__Map);
-	if (soap_out_om__Map(soap, tag, id, a, type))
+	register int id = soap_embed(soap, (void*)a, NULL, 0, tag, SOAP_TYPE_omws__Map);
+	if (soap_out_omws__Map(soap, tag, id, a, type))
 		return soap->error;
 	return soap_putindependent(soap);
 }
 
-SOAP_FMAC3 int SOAP_FMAC4 soap_out_om__Map(struct soap *soap, const char *tag, int id, const struct soap_Map *a, const char *type)
+SOAP_FMAC3 int SOAP_FMAC4 soap_out_omws__Map(struct soap *soap, const char *tag, int id, const struct soap_Map *a, const char *type)
 {
 	if (a->location)
 		soap_set_attr(soap, "location", a->location);
 	soap_set_attr(soap, "categorical", soap_int2s(soap, a->categorical));
-	soap_element_begin_out(soap, tag, soap_embedded_id(soap, id, a, SOAP_TYPE_om__Map), type);
+	soap_element_begin_out(soap, tag, soap_embedded_id(soap, id, a, SOAP_TYPE_omws__Map), type);
 	soap_element_end_out(soap, tag);
 	return SOAP_OK;
 }
 
-SOAP_FMAC3 struct soap_Map * SOAP_FMAC4 soap_get_om__Map(struct soap *soap, struct soap_Map *p, const char *tag, const char *type)
+SOAP_FMAC3 struct soap_Map * SOAP_FMAC4 soap_get_omws__Map(struct soap *soap, struct soap_Map *p, const char *tag, const char *type)
 {
-	if ((p = soap_in_om__Map(soap, tag, p, type)))
+	if ((p = soap_in_omws__Map(soap, tag, p, type)))
 		soap_getindependent(soap);
 	return p;
 }
 
-SOAP_FMAC3 struct soap_Map * SOAP_FMAC4 soap_in_om__Map(struct soap *soap, const char *tag, struct soap_Map *a, const char *type)
+SOAP_FMAC3 struct soap_Map * SOAP_FMAC4 soap_in_omws__Map(struct soap *soap, const char *tag, struct soap_Map *a, const char *type)
 {;
 	if (soap_element_begin_in(soap, tag, 0))
 		return NULL;
@@ -3071,10 +2932,10 @@ SOAP_FMAC3 struct soap_Map * SOAP_FMAC4 soap_in_om__Map(struct soap *soap, const
 	{	soap->error = SOAP_TYPE;
 		return NULL;
 	}
-	a = (struct soap_Map *)soap_id_enter(soap, soap->id, a, SOAP_TYPE_om__Map, sizeof(struct soap_Map), 0, NULL, NULL, NULL);
+	a = (struct soap_Map *)soap_id_enter(soap, soap->id, a, SOAP_TYPE_omws__Map, sizeof(struct soap_Map), 0, NULL, NULL, NULL);
 	if (!a)
 		return NULL;
-	soap_default_om__Map(soap, a);
+	soap_default_omws__Map(soap, a);
 	if (soap_s2string(soap, soap_attr_value(soap, "location", 0), &a->location))
 		return NULL;
 	if (soap_s2int(soap, soap_attr_value(soap, "categorical", 0), &a->categorical))
@@ -3094,7 +2955,7 @@ SOAP_FMAC3 struct soap_Map * SOAP_FMAC4 soap_in_om__Map(struct soap *soap, const
 			return NULL;
 	}
 	else
-	{	a = (struct soap_Map *)soap_id_forward(soap, soap->href, (void**)a, SOAP_TYPE_om__Map, 0, sizeof(struct soap_Map), 0, NULL);
+	{	a = (struct soap_Map *)soap_id_forward(soap, soap->href, (void**)a, SOAP_TYPE_omws__Map, 0, sizeof(struct soap_Map), 0, NULL);
 		if (soap->body && soap_element_end_in(soap, tag))
 			return NULL;
 	}
@@ -3176,40 +3037,40 @@ SOAP_FMAC3 struct soap_Map * SOAP_FMAC4 soap_in_soap_Map(struct soap *soap, cons
 	return a;
 }
 
-SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_om__Points(struct soap *soap, struct soap_Points const*a)
+SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_omws__Points(struct soap *soap, struct soap_Points const*a)
 {	soap_serialize_soap_Points(soap, a);
 }
 
-SOAP_FMAC3 void SOAP_FMAC4 soap_default_om__Points(struct soap *soap, struct soap_Points *a)
+SOAP_FMAC3 void SOAP_FMAC4 soap_default_omws__Points(struct soap *soap, struct soap_Points *a)
 {	soap_default_soap_Points(soap, a);
 }
 
-SOAP_FMAC3 int SOAP_FMAC4 soap_put_om__Points(struct soap *soap, const struct soap_Points *a, const char *tag, const char *type)
+SOAP_FMAC3 int SOAP_FMAC4 soap_put_omws__Points(struct soap *soap, const struct soap_Points *a, const char *tag, const char *type)
 {
-	register int id = soap_embed(soap, (void*)a, NULL, 0, tag, SOAP_TYPE_om__Points);
-	if (soap_out_om__Points(soap, tag, id, a, type))
+	register int id = soap_embed(soap, (void*)a, NULL, 0, tag, SOAP_TYPE_omws__Points);
+	if (soap_out_omws__Points(soap, tag, id, a, type))
 		return soap->error;
 	return soap_putindependent(soap);
 }
 
-SOAP_FMAC3 int SOAP_FMAC4 soap_out_om__Points(struct soap *soap, const char *tag, int id, const struct soap_Points *a, const char *type)
+SOAP_FMAC3 int SOAP_FMAC4 soap_out_omws__Points(struct soap *soap, const char *tag, int id, const struct soap_Points *a, const char *type)
 {
-	soap_element_begin_out(soap, tag, soap_embedded_id(soap, id, a, SOAP_TYPE_om__Points), type);
+	soap_element_begin_out(soap, tag, soap_embedded_id(soap, id, a, SOAP_TYPE_omws__Points), type);
 	soap_out_xsd__string(soap, "coordsystem", -1, &a->coordsystem, "");
-	soap_out_PointerToom__PresencePoints(soap, "presences", -1, &a->__ptrpresences, "");
-	soap_out_PointerToom__AbsencePoints(soap, "absences", -1, &a->__ptrabsences, "");
+	soap_out_PointerToomws__PresencePoints(soap, "presences", -1, &a->__ptrpresences, "");
+	soap_out_PointerToomws__AbsencePoints(soap, "absences", -1, &a->__ptrabsences, "");
 	soap_element_end_out(soap, tag);
 	return SOAP_OK;
 }
 
-SOAP_FMAC3 struct soap_Points * SOAP_FMAC4 soap_get_om__Points(struct soap *soap, struct soap_Points *p, const char *tag, const char *type)
+SOAP_FMAC3 struct soap_Points * SOAP_FMAC4 soap_get_omws__Points(struct soap *soap, struct soap_Points *p, const char *tag, const char *type)
 {
-	if ((p = soap_in_om__Points(soap, tag, p, type)))
+	if ((p = soap_in_omws__Points(soap, tag, p, type)))
 		soap_getindependent(soap);
 	return p;
 }
 
-SOAP_FMAC3 struct soap_Points * SOAP_FMAC4 soap_in_om__Points(struct soap *soap, const char *tag, struct soap_Points *a, const char *type)
+SOAP_FMAC3 struct soap_Points * SOAP_FMAC4 soap_in_omws__Points(struct soap *soap, const char *tag, struct soap_Points *a, const char *type)
 {
 	short soap_flag_coordsystem = 1, soap_flag___ptrpresences = 1, soap_flag___ptrabsences = 1;
 	if (soap_element_begin_in(soap, tag, 0))
@@ -3218,10 +3079,10 @@ SOAP_FMAC3 struct soap_Points * SOAP_FMAC4 soap_in_om__Points(struct soap *soap,
 	{	soap->error = SOAP_TYPE;
 		return NULL;
 	}
-	a = (struct soap_Points *)soap_id_enter(soap, soap->id, a, SOAP_TYPE_om__Points, sizeof(struct soap_Points), 0, NULL, NULL, NULL);
+	a = (struct soap_Points *)soap_id_enter(soap, soap->id, a, SOAP_TYPE_omws__Points, sizeof(struct soap_Points), 0, NULL, NULL, NULL);
 	if (!a)
 		return NULL;
-	soap_default_om__Points(soap, a);
+	soap_default_omws__Points(soap, a);
 	if (soap->body && !*soap->href)
 	{
 		for (;;)
@@ -3232,12 +3093,12 @@ SOAP_FMAC3 struct soap_Points * SOAP_FMAC4 soap_in_om__Points(struct soap *soap,
 					continue;
 				}
 			if (soap_flag___ptrpresences && soap->error == SOAP_TAG_MISMATCH)
-				if (soap_in_PointerToom__PresencePoints(soap, "presences", &a->__ptrpresences, "om:PresencePoints"))
+				if (soap_in_PointerToomws__PresencePoints(soap, "presences", &a->__ptrpresences, "omws:PresencePoints"))
 				{	soap_flag___ptrpresences--;
 					continue;
 				}
 			if (soap_flag___ptrabsences && soap->error == SOAP_TAG_MISMATCH)
-				if (soap_in_PointerToom__AbsencePoints(soap, "absences", &a->__ptrabsences, "om:AbsencePoints"))
+				if (soap_in_PointerToomws__AbsencePoints(soap, "absences", &a->__ptrabsences, "omws:AbsencePoints"))
 				{	soap_flag___ptrabsences--;
 					continue;
 				}
@@ -3252,7 +3113,7 @@ SOAP_FMAC3 struct soap_Points * SOAP_FMAC4 soap_in_om__Points(struct soap *soap,
 			return NULL;
 	}
 	else
-	{	a = (struct soap_Points *)soap_id_forward(soap, soap->href, (void**)a, SOAP_TYPE_om__Points, 0, sizeof(struct soap_Points), 0, NULL);
+	{	a = (struct soap_Points *)soap_id_forward(soap, soap->href, (void**)a, SOAP_TYPE_omws__Points, 0, sizeof(struct soap_Points), 0, NULL);
 		if (soap->body && soap_element_end_in(soap, tag))
 			return NULL;
 	}
@@ -3263,8 +3124,8 @@ SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_soap_Points(struct soap *soap, const s
 {
 	(void)soap; (void)a; /* appease -Wall -Werror */
 	soap_serialize_xsd__string(soap, &a->coordsystem);
-	soap_serialize_PointerToom__PresencePoints(soap, &a->__ptrpresences);
-	soap_serialize_PointerToom__AbsencePoints(soap, &a->__ptrabsences);
+	soap_serialize_PointerToomws__PresencePoints(soap, &a->__ptrpresences);
+	soap_serialize_PointerToomws__AbsencePoints(soap, &a->__ptrabsences);
 }
 
 SOAP_FMAC3 void SOAP_FMAC4 soap_default_soap_Points(struct soap *soap, struct soap_Points *a)
@@ -3287,8 +3148,8 @@ SOAP_FMAC3 int SOAP_FMAC4 soap_out_soap_Points(struct soap *soap, const char *ta
 {
 	soap_element_begin_out(soap, tag, soap_embedded_id(soap, id, a, SOAP_TYPE_soap_Points), type);
 	soap_out_xsd__string(soap, "coordsystem", -1, &a->coordsystem, "");
-	soap_out_PointerToom__PresencePoints(soap, "presences", -1, &a->__ptrpresences, "");
-	soap_out_PointerToom__AbsencePoints(soap, "absences", -1, &a->__ptrabsences, "");
+	soap_out_PointerToomws__PresencePoints(soap, "presences", -1, &a->__ptrpresences, "");
+	soap_out_PointerToomws__AbsencePoints(soap, "absences", -1, &a->__ptrabsences, "");
 	soap_element_end_out(soap, tag);
 	return SOAP_OK;
 }
@@ -3323,12 +3184,12 @@ SOAP_FMAC3 struct soap_Points * SOAP_FMAC4 soap_in_soap_Points(struct soap *soap
 					continue;
 				}
 			if (soap_flag___ptrpresences && soap->error == SOAP_TAG_MISMATCH)
-				if (soap_in_PointerToom__PresencePoints(soap, "presences", &a->__ptrpresences, "om:PresencePoints"))
+				if (soap_in_PointerToomws__PresencePoints(soap, "presences", &a->__ptrpresences, "omws:PresencePoints"))
 				{	soap_flag___ptrpresences--;
 					continue;
 				}
 			if (soap_flag___ptrabsences && soap->error == SOAP_TAG_MISMATCH)
-				if (soap_in_PointerToom__AbsencePoints(soap, "absences", &a->__ptrabsences, "om:AbsencePoints"))
+				if (soap_in_PointerToomws__AbsencePoints(soap, "absences", &a->__ptrabsences, "omws:AbsencePoints"))
 				{	soap_flag___ptrabsences--;
 					continue;
 				}
@@ -3350,42 +3211,42 @@ SOAP_FMAC3 struct soap_Points * SOAP_FMAC4 soap_in_soap_Points(struct soap *soap
 	return a;
 }
 
-SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_om__AbsencePoints(struct soap *soap, struct soap_AbsencePoints const*a)
+SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_omws__AbsencePoints(struct soap *soap, struct soap_AbsencePoints const*a)
 {	soap_serialize_soap_AbsencePoints(soap, a);
 }
 
-SOAP_FMAC3 void SOAP_FMAC4 soap_default_om__AbsencePoints(struct soap *soap, struct soap_AbsencePoints *a)
+SOAP_FMAC3 void SOAP_FMAC4 soap_default_omws__AbsencePoints(struct soap *soap, struct soap_AbsencePoints *a)
 {	soap_default_soap_AbsencePoints(soap, a);
 }
 
-SOAP_FMAC3 int SOAP_FMAC4 soap_put_om__AbsencePoints(struct soap *soap, const struct soap_AbsencePoints *a, const char *tag, const char *type)
+SOAP_FMAC3 int SOAP_FMAC4 soap_put_omws__AbsencePoints(struct soap *soap, const struct soap_AbsencePoints *a, const char *tag, const char *type)
 {
-	register int id = soap_embed(soap, (void*)a, NULL, 0, tag, SOAP_TYPE_om__AbsencePoints);
-	if (soap_out_om__AbsencePoints(soap, tag, id, a, type))
+	register int id = soap_embed(soap, (void*)a, NULL, 0, tag, SOAP_TYPE_omws__AbsencePoints);
+	if (soap_out_omws__AbsencePoints(soap, tag, id, a, type))
 		return soap->error;
 	return soap_putindependent(soap);
 }
 
-SOAP_FMAC3 int SOAP_FMAC4 soap_out_om__AbsencePoints(struct soap *soap, const char *tag, int id, const struct soap_AbsencePoints *a, const char *type)
+SOAP_FMAC3 int SOAP_FMAC4 soap_out_omws__AbsencePoints(struct soap *soap, const char *tag, int id, const struct soap_AbsencePoints *a, const char *type)
 {
-	soap_element_begin_out(soap, tag, soap_embedded_id(soap, id, a, SOAP_TYPE_om__AbsencePoints), type);
+	soap_element_begin_out(soap, tag, soap_embedded_id(soap, id, a, SOAP_TYPE_omws__AbsencePoints), type);
 	if (a->__ptrpoint)
 	{	int i;
 		for (i = 0; i < a->__size; i++)
-			soap_out_om__Point(soap, "point", -1, a->__ptrpoint + i, "");
+			soap_out_omws__Point(soap, "point", -1, a->__ptrpoint + i, "");
 	}
 	soap_element_end_out(soap, tag);
 	return SOAP_OK;
 }
 
-SOAP_FMAC3 struct soap_AbsencePoints * SOAP_FMAC4 soap_get_om__AbsencePoints(struct soap *soap, struct soap_AbsencePoints *p, const char *tag, const char *type)
+SOAP_FMAC3 struct soap_AbsencePoints * SOAP_FMAC4 soap_get_omws__AbsencePoints(struct soap *soap, struct soap_AbsencePoints *p, const char *tag, const char *type)
 {
-	if ((p = soap_in_om__AbsencePoints(soap, tag, p, type)))
+	if ((p = soap_in_omws__AbsencePoints(soap, tag, p, type)))
 		soap_getindependent(soap);
 	return p;
 }
 
-SOAP_FMAC3 struct soap_AbsencePoints * SOAP_FMAC4 soap_in_om__AbsencePoints(struct soap *soap, const char *tag, struct soap_AbsencePoints *a, const char *type)
+SOAP_FMAC3 struct soap_AbsencePoints * SOAP_FMAC4 soap_in_omws__AbsencePoints(struct soap *soap, const char *tag, struct soap_AbsencePoints *a, const char *type)
 {
 	short soap_flag___ptrpoint = 1;
 	if (soap_element_begin_in(soap, tag, 0))
@@ -3394,10 +3255,10 @@ SOAP_FMAC3 struct soap_AbsencePoints * SOAP_FMAC4 soap_in_om__AbsencePoints(stru
 	{	soap->error = SOAP_TYPE;
 		return NULL;
 	}
-	a = (struct soap_AbsencePoints *)soap_id_enter(soap, soap->id, a, SOAP_TYPE_om__AbsencePoints, sizeof(struct soap_AbsencePoints), 0, NULL, NULL, NULL);
+	a = (struct soap_AbsencePoints *)soap_id_enter(soap, soap->id, a, SOAP_TYPE_omws__AbsencePoints, sizeof(struct soap_AbsencePoints), 0, NULL, NULL, NULL);
 	if (!a)
 		return NULL;
-	soap_default_om__AbsencePoints(soap, a);
+	soap_default_omws__AbsencePoints(soap, a);
 	if (soap->body && !*soap->href)
 	{
 		for (;;)
@@ -3407,9 +3268,9 @@ SOAP_FMAC3 struct soap_AbsencePoints * SOAP_FMAC4 soap_in_om__AbsencePoints(stru
 				soap_new_block(soap);
 				for (a->__size = 0; !soap_element_begin_in(soap, "point", 1); a->__size++)
 				{	p = (struct soap_Point *)soap_push_block(soap, sizeof(struct soap_Point));
-					soap_default_om__Point(soap, p);
+					soap_default_omws__Point(soap, p);
 					soap_revert(soap);
-					if (!soap_in_om__Point(soap, "point", p, "om:Point"))
+					if (!soap_in_omws__Point(soap, "point", p, "omws:Point"))
 						break;
 					soap_flag___ptrpoint = 0;
 				}
@@ -3428,7 +3289,7 @@ SOAP_FMAC3 struct soap_AbsencePoints * SOAP_FMAC4 soap_in_om__AbsencePoints(stru
 			return NULL;
 	}
 	else
-	{	a = (struct soap_AbsencePoints *)soap_id_forward(soap, soap->href, (void**)a, SOAP_TYPE_om__AbsencePoints, 0, sizeof(struct soap_AbsencePoints), 0, NULL);
+	{	a = (struct soap_AbsencePoints *)soap_id_forward(soap, soap->href, (void**)a, SOAP_TYPE_omws__AbsencePoints, 0, sizeof(struct soap_AbsencePoints), 0, NULL);
 		if (soap->body && soap_element_end_in(soap, tag))
 			return NULL;
 	}
@@ -3442,8 +3303,8 @@ SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_soap_AbsencePoints(struct soap *soap, 
 	{	int i;
 		for (i = 0; i < a->__size; i++)
 		{
-			soap_embedded(soap, a->__ptrpoint + i, SOAP_TYPE_om__Point);
-			soap_serialize_om__Point(soap, a->__ptrpoint + i);
+			soap_embedded(soap, a->__ptrpoint + i, SOAP_TYPE_omws__Point);
+			soap_serialize_omws__Point(soap, a->__ptrpoint + i);
 		}
 	}
 }
@@ -3469,7 +3330,7 @@ SOAP_FMAC3 int SOAP_FMAC4 soap_out_soap_AbsencePoints(struct soap *soap, const c
 	if (a->__ptrpoint)
 	{	int i;
 		for (i = 0; i < a->__size; i++)
-			soap_out_om__Point(soap, "point", -1, a->__ptrpoint + i, "");
+			soap_out_omws__Point(soap, "point", -1, a->__ptrpoint + i, "");
 	}
 	soap_element_end_out(soap, tag);
 	return SOAP_OK;
@@ -3504,9 +3365,9 @@ SOAP_FMAC3 struct soap_AbsencePoints * SOAP_FMAC4 soap_in_soap_AbsencePoints(str
 				soap_new_block(soap);
 				for (a->__size = 0; !soap_element_begin_in(soap, "point", 1); a->__size++)
 				{	p = (struct soap_Point *)soap_push_block(soap, sizeof(struct soap_Point));
-					soap_default_om__Point(soap, p);
+					soap_default_omws__Point(soap, p);
 					soap_revert(soap);
-					if (!soap_in_om__Point(soap, "point", p, "om:Point"))
+					if (!soap_in_omws__Point(soap, "point", p, "omws:Point"))
 						break;
 					soap_flag___ptrpoint = 0;
 				}
@@ -3532,42 +3393,42 @@ SOAP_FMAC3 struct soap_AbsencePoints * SOAP_FMAC4 soap_in_soap_AbsencePoints(str
 	return a;
 }
 
-SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_om__PresencePoints(struct soap *soap, struct soap_PresencePoints const*a)
+SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_omws__PresencePoints(struct soap *soap, struct soap_PresencePoints const*a)
 {	soap_serialize_soap_PresencePoints(soap, a);
 }
 
-SOAP_FMAC3 void SOAP_FMAC4 soap_default_om__PresencePoints(struct soap *soap, struct soap_PresencePoints *a)
+SOAP_FMAC3 void SOAP_FMAC4 soap_default_omws__PresencePoints(struct soap *soap, struct soap_PresencePoints *a)
 {	soap_default_soap_PresencePoints(soap, a);
 }
 
-SOAP_FMAC3 int SOAP_FMAC4 soap_put_om__PresencePoints(struct soap *soap, const struct soap_PresencePoints *a, const char *tag, const char *type)
+SOAP_FMAC3 int SOAP_FMAC4 soap_put_omws__PresencePoints(struct soap *soap, const struct soap_PresencePoints *a, const char *tag, const char *type)
 {
-	register int id = soap_embed(soap, (void*)a, NULL, 0, tag, SOAP_TYPE_om__PresencePoints);
-	if (soap_out_om__PresencePoints(soap, tag, id, a, type))
+	register int id = soap_embed(soap, (void*)a, NULL, 0, tag, SOAP_TYPE_omws__PresencePoints);
+	if (soap_out_omws__PresencePoints(soap, tag, id, a, type))
 		return soap->error;
 	return soap_putindependent(soap);
 }
 
-SOAP_FMAC3 int SOAP_FMAC4 soap_out_om__PresencePoints(struct soap *soap, const char *tag, int id, const struct soap_PresencePoints *a, const char *type)
+SOAP_FMAC3 int SOAP_FMAC4 soap_out_omws__PresencePoints(struct soap *soap, const char *tag, int id, const struct soap_PresencePoints *a, const char *type)
 {
-	soap_element_begin_out(soap, tag, soap_embedded_id(soap, id, a, SOAP_TYPE_om__PresencePoints), type);
+	soap_element_begin_out(soap, tag, soap_embedded_id(soap, id, a, SOAP_TYPE_omws__PresencePoints), type);
 	if (a->__ptrpoint)
 	{	int i;
 		for (i = 0; i < a->__size; i++)
-			soap_out_om__Point(soap, "point", -1, a->__ptrpoint + i, "");
+			soap_out_omws__Point(soap, "point", -1, a->__ptrpoint + i, "");
 	}
 	soap_element_end_out(soap, tag);
 	return SOAP_OK;
 }
 
-SOAP_FMAC3 struct soap_PresencePoints * SOAP_FMAC4 soap_get_om__PresencePoints(struct soap *soap, struct soap_PresencePoints *p, const char *tag, const char *type)
+SOAP_FMAC3 struct soap_PresencePoints * SOAP_FMAC4 soap_get_omws__PresencePoints(struct soap *soap, struct soap_PresencePoints *p, const char *tag, const char *type)
 {
-	if ((p = soap_in_om__PresencePoints(soap, tag, p, type)))
+	if ((p = soap_in_omws__PresencePoints(soap, tag, p, type)))
 		soap_getindependent(soap);
 	return p;
 }
 
-SOAP_FMAC3 struct soap_PresencePoints * SOAP_FMAC4 soap_in_om__PresencePoints(struct soap *soap, const char *tag, struct soap_PresencePoints *a, const char *type)
+SOAP_FMAC3 struct soap_PresencePoints * SOAP_FMAC4 soap_in_omws__PresencePoints(struct soap *soap, const char *tag, struct soap_PresencePoints *a, const char *type)
 {
 	short soap_flag___ptrpoint = 1;
 	if (soap_element_begin_in(soap, tag, 0))
@@ -3576,10 +3437,10 @@ SOAP_FMAC3 struct soap_PresencePoints * SOAP_FMAC4 soap_in_om__PresencePoints(st
 	{	soap->error = SOAP_TYPE;
 		return NULL;
 	}
-	a = (struct soap_PresencePoints *)soap_id_enter(soap, soap->id, a, SOAP_TYPE_om__PresencePoints, sizeof(struct soap_PresencePoints), 0, NULL, NULL, NULL);
+	a = (struct soap_PresencePoints *)soap_id_enter(soap, soap->id, a, SOAP_TYPE_omws__PresencePoints, sizeof(struct soap_PresencePoints), 0, NULL, NULL, NULL);
 	if (!a)
 		return NULL;
-	soap_default_om__PresencePoints(soap, a);
+	soap_default_omws__PresencePoints(soap, a);
 	if (soap->body && !*soap->href)
 	{
 		for (;;)
@@ -3589,9 +3450,9 @@ SOAP_FMAC3 struct soap_PresencePoints * SOAP_FMAC4 soap_in_om__PresencePoints(st
 				soap_new_block(soap);
 				for (a->__size = 0; !soap_element_begin_in(soap, "point", 1); a->__size++)
 				{	p = (struct soap_Point *)soap_push_block(soap, sizeof(struct soap_Point));
-					soap_default_om__Point(soap, p);
+					soap_default_omws__Point(soap, p);
 					soap_revert(soap);
-					if (!soap_in_om__Point(soap, "point", p, "om:Point"))
+					if (!soap_in_omws__Point(soap, "point", p, "omws:Point"))
 						break;
 					soap_flag___ptrpoint = 0;
 				}
@@ -3610,7 +3471,7 @@ SOAP_FMAC3 struct soap_PresencePoints * SOAP_FMAC4 soap_in_om__PresencePoints(st
 			return NULL;
 	}
 	else
-	{	a = (struct soap_PresencePoints *)soap_id_forward(soap, soap->href, (void**)a, SOAP_TYPE_om__PresencePoints, 0, sizeof(struct soap_PresencePoints), 0, NULL);
+	{	a = (struct soap_PresencePoints *)soap_id_forward(soap, soap->href, (void**)a, SOAP_TYPE_omws__PresencePoints, 0, sizeof(struct soap_PresencePoints), 0, NULL);
 		if (soap->body && soap_element_end_in(soap, tag))
 			return NULL;
 	}
@@ -3624,8 +3485,8 @@ SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_soap_PresencePoints(struct soap *soap,
 	{	int i;
 		for (i = 0; i < a->__size; i++)
 		{
-			soap_embedded(soap, a->__ptrpoint + i, SOAP_TYPE_om__Point);
-			soap_serialize_om__Point(soap, a->__ptrpoint + i);
+			soap_embedded(soap, a->__ptrpoint + i, SOAP_TYPE_omws__Point);
+			soap_serialize_omws__Point(soap, a->__ptrpoint + i);
 		}
 	}
 }
@@ -3651,7 +3512,7 @@ SOAP_FMAC3 int SOAP_FMAC4 soap_out_soap_PresencePoints(struct soap *soap, const 
 	if (a->__ptrpoint)
 	{	int i;
 		for (i = 0; i < a->__size; i++)
-			soap_out_om__Point(soap, "point", -1, a->__ptrpoint + i, "");
+			soap_out_omws__Point(soap, "point", -1, a->__ptrpoint + i, "");
 	}
 	soap_element_end_out(soap, tag);
 	return SOAP_OK;
@@ -3686,9 +3547,9 @@ SOAP_FMAC3 struct soap_PresencePoints * SOAP_FMAC4 soap_in_soap_PresencePoints(s
 				soap_new_block(soap);
 				for (a->__size = 0; !soap_element_begin_in(soap, "point", 1); a->__size++)
 				{	p = (struct soap_Point *)soap_push_block(soap, sizeof(struct soap_Point));
-					soap_default_om__Point(soap, p);
+					soap_default_omws__Point(soap, p);
 					soap_revert(soap);
-					if (!soap_in_om__Point(soap, "point", p, "om:Point"))
+					if (!soap_in_omws__Point(soap, "point", p, "omws:Point"))
 						break;
 					soap_flag___ptrpoint = 0;
 				}
@@ -3714,39 +3575,39 @@ SOAP_FMAC3 struct soap_PresencePoints * SOAP_FMAC4 soap_in_soap_PresencePoints(s
 	return a;
 }
 
-SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_om__Point(struct soap *soap, struct soap_Point const*a)
+SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_omws__Point(struct soap *soap, struct soap_Point const*a)
 {	soap_serialize_soap_Point(soap, a);
 }
 
-SOAP_FMAC3 void SOAP_FMAC4 soap_default_om__Point(struct soap *soap, struct soap_Point *a)
+SOAP_FMAC3 void SOAP_FMAC4 soap_default_omws__Point(struct soap *soap, struct soap_Point *a)
 {	soap_default_soap_Point(soap, a);
 }
 
-SOAP_FMAC3 int SOAP_FMAC4 soap_put_om__Point(struct soap *soap, const struct soap_Point *a, const char *tag, const char *type)
+SOAP_FMAC3 int SOAP_FMAC4 soap_put_omws__Point(struct soap *soap, const struct soap_Point *a, const char *tag, const char *type)
 {
-	register int id = soap_embed(soap, (void*)a, NULL, 0, tag, SOAP_TYPE_om__Point);
-	if (soap_out_om__Point(soap, tag, id, a, type))
+	register int id = soap_embed(soap, (void*)a, NULL, 0, tag, SOAP_TYPE_omws__Point);
+	if (soap_out_omws__Point(soap, tag, id, a, type))
 		return soap->error;
 	return soap_putindependent(soap);
 }
 
-SOAP_FMAC3 int SOAP_FMAC4 soap_out_om__Point(struct soap *soap, const char *tag, int id, const struct soap_Point *a, const char *type)
+SOAP_FMAC3 int SOAP_FMAC4 soap_out_omws__Point(struct soap *soap, const char *tag, int id, const struct soap_Point *a, const char *type)
 {
 	soap_set_attr(soap, "latitude", soap_double2s(soap, a->latitude));
 	soap_set_attr(soap, "longitude", soap_double2s(soap, a->longitude));
-	soap_element_begin_out(soap, tag, soap_embedded_id(soap, id, a, SOAP_TYPE_om__Point), type);
+	soap_element_begin_out(soap, tag, soap_embedded_id(soap, id, a, SOAP_TYPE_omws__Point), type);
 	soap_element_end_out(soap, tag);
 	return SOAP_OK;
 }
 
-SOAP_FMAC3 struct soap_Point * SOAP_FMAC4 soap_get_om__Point(struct soap *soap, struct soap_Point *p, const char *tag, const char *type)
+SOAP_FMAC3 struct soap_Point * SOAP_FMAC4 soap_get_omws__Point(struct soap *soap, struct soap_Point *p, const char *tag, const char *type)
 {
-	if ((p = soap_in_om__Point(soap, tag, p, type)))
+	if ((p = soap_in_omws__Point(soap, tag, p, type)))
 		soap_getindependent(soap);
 	return p;
 }
 
-SOAP_FMAC3 struct soap_Point * SOAP_FMAC4 soap_in_om__Point(struct soap *soap, const char *tag, struct soap_Point *a, const char *type)
+SOAP_FMAC3 struct soap_Point * SOAP_FMAC4 soap_in_omws__Point(struct soap *soap, const char *tag, struct soap_Point *a, const char *type)
 {;
 	if (soap_element_begin_in(soap, tag, 0))
 		return NULL;
@@ -3754,10 +3615,10 @@ SOAP_FMAC3 struct soap_Point * SOAP_FMAC4 soap_in_om__Point(struct soap *soap, c
 	{	soap->error = SOAP_TYPE;
 		return NULL;
 	}
-	a = (struct soap_Point *)soap_id_enter(soap, soap->id, a, SOAP_TYPE_om__Point, sizeof(struct soap_Point), 0, NULL, NULL, NULL);
+	a = (struct soap_Point *)soap_id_enter(soap, soap->id, a, SOAP_TYPE_omws__Point, sizeof(struct soap_Point), 0, NULL, NULL, NULL);
 	if (!a)
 		return NULL;
-	soap_default_om__Point(soap, a);
+	soap_default_omws__Point(soap, a);
 	if (soap_s2double(soap, soap_attr_value(soap, "latitude", 0), &a->latitude))
 		return NULL;
 	if (soap_s2double(soap, soap_attr_value(soap, "longitude", 0), &a->longitude))
@@ -3777,7 +3638,7 @@ SOAP_FMAC3 struct soap_Point * SOAP_FMAC4 soap_in_om__Point(struct soap *soap, c
 			return NULL;
 	}
 	else
-	{	a = (struct soap_Point *)soap_id_forward(soap, soap->href, (void**)a, SOAP_TYPE_om__Point, 0, sizeof(struct soap_Point), 0, NULL);
+	{	a = (struct soap_Point *)soap_id_forward(soap, soap->href, (void**)a, SOAP_TYPE_omws__Point, 0, sizeof(struct soap_Point), 0, NULL);
 		if (soap->body && soap_element_end_in(soap, tag))
 			return NULL;
 	}
@@ -3858,42 +3719,39 @@ SOAP_FMAC3 struct soap_Point * SOAP_FMAC4 soap_in_soap_Point(struct soap *soap, 
 	return a;
 }
 
-SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_om__getAlgorithms(struct soap *soap, const struct om__getAlgorithms *a)
+SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_omws__getAlgorithms(struct soap *soap, const struct omws__getAlgorithms *a)
 {
 	(void)soap; (void)a; /* appease -Wall -Werror */
-	/* transient _ skipped */
 }
 
-SOAP_FMAC3 void SOAP_FMAC4 soap_default_om__getAlgorithms(struct soap *soap, struct om__getAlgorithms *a)
+SOAP_FMAC3 void SOAP_FMAC4 soap_default_omws__getAlgorithms(struct soap *soap, struct omws__getAlgorithms *a)
 {
 	(void)soap; (void)a; /* appease -Wall -Werror */
-	/* transient _ skipped */
 }
 
-SOAP_FMAC3 int SOAP_FMAC4 soap_put_om__getAlgorithms(struct soap *soap, const struct om__getAlgorithms *a, const char *tag, const char *type)
+SOAP_FMAC3 int SOAP_FMAC4 soap_put_omws__getAlgorithms(struct soap *soap, const struct omws__getAlgorithms *a, const char *tag, const char *type)
 {
-	register int id = soap_embed(soap, (void*)a, NULL, 0, tag, SOAP_TYPE_om__getAlgorithms);
-	if (soap_out_om__getAlgorithms(soap, tag, id, a, type))
+	register int id = soap_embed(soap, (void*)a, NULL, 0, tag, SOAP_TYPE_omws__getAlgorithms);
+	if (soap_out_omws__getAlgorithms(soap, tag, id, a, type))
 		return soap->error;
 	return soap_putindependent(soap);
 }
 
-SOAP_FMAC3 int SOAP_FMAC4 soap_out_om__getAlgorithms(struct soap *soap, const char *tag, int id, const struct om__getAlgorithms *a, const char *type)
+SOAP_FMAC3 int SOAP_FMAC4 soap_out_omws__getAlgorithms(struct soap *soap, const char *tag, int id, const struct omws__getAlgorithms *a, const char *type)
 {
-	soap_element_begin_out(soap, tag, soap_embedded_id(soap, id, a, SOAP_TYPE_om__getAlgorithms), type);
-	/* transient _ skipped */
+	soap_element_begin_out(soap, tag, soap_embedded_id(soap, id, a, SOAP_TYPE_omws__getAlgorithms), type);
 	soap_element_end_out(soap, tag);
 	return SOAP_OK;
 }
 
-SOAP_FMAC3 struct om__getAlgorithms * SOAP_FMAC4 soap_get_om__getAlgorithms(struct soap *soap, struct om__getAlgorithms *p, const char *tag, const char *type)
+SOAP_FMAC3 struct omws__getAlgorithms * SOAP_FMAC4 soap_get_omws__getAlgorithms(struct soap *soap, struct omws__getAlgorithms *p, const char *tag, const char *type)
 {
-	if ((p = soap_in_om__getAlgorithms(soap, tag, p, type)))
+	if ((p = soap_in_omws__getAlgorithms(soap, tag, p, type)))
 		soap_getindependent(soap);
 	return p;
 }
 
-SOAP_FMAC3 struct om__getAlgorithms * SOAP_FMAC4 soap_in_om__getAlgorithms(struct soap *soap, const char *tag, struct om__getAlgorithms *a, const char *type)
+SOAP_FMAC3 struct omws__getAlgorithms * SOAP_FMAC4 soap_in_omws__getAlgorithms(struct soap *soap, const char *tag, struct omws__getAlgorithms *a, const char *type)
 {;
 	if (soap_element_begin_in(soap, tag, 0))
 		return NULL;
@@ -3901,15 +3759,14 @@ SOAP_FMAC3 struct om__getAlgorithms * SOAP_FMAC4 soap_in_om__getAlgorithms(struc
 	{	soap->error = SOAP_TYPE;
 		return NULL;
 	}
-	a = (struct om__getAlgorithms *)soap_id_enter(soap, soap->id, a, SOAP_TYPE_om__getAlgorithms, sizeof(struct om__getAlgorithms), 0, NULL, NULL, NULL);
+	a = (struct omws__getAlgorithms *)soap_id_enter(soap, soap->id, a, SOAP_TYPE_omws__getAlgorithms, sizeof(struct omws__getAlgorithms), 0, NULL, NULL, NULL);
 	if (!a)
 		return NULL;
-	soap_default_om__getAlgorithms(soap, a);
+	soap_default_omws__getAlgorithms(soap, a);
 	if (soap->body && !*soap->href)
 	{
 		for (;;)
 		{	soap->error = SOAP_TAG_MISMATCH;
-		/* transient _ skipped */
 			if (soap->error == SOAP_TAG_MISMATCH)
 				soap->error = soap_ignore_element(soap);
 			if (soap->error == SOAP_NO_TAG)
@@ -3921,1077 +3778,7 @@ SOAP_FMAC3 struct om__getAlgorithms * SOAP_FMAC4 soap_in_om__getAlgorithms(struc
 			return NULL;
 	}
 	else
-	{	a = (struct om__getAlgorithms *)soap_id_forward(soap, soap->href, (void**)a, SOAP_TYPE_om__getAlgorithms, 0, sizeof(struct om__getAlgorithms), 0, NULL);
-		if (soap->body && soap_element_end_in(soap, tag))
-			return NULL;
-	}
-	return a;
-}
-
-SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_om__getAlgorithmsResponse(struct soap *soap, const struct om__getAlgorithmsResponse *a)
-{
-	(void)soap; (void)a; /* appease -Wall -Werror */
-	soap_serialize_om__AvailableAlgorithms(soap, &a->_AvailableAlgorithms);
-}
-
-SOAP_FMAC3 void SOAP_FMAC4 soap_default_om__getAlgorithmsResponse(struct soap *soap, struct om__getAlgorithmsResponse *a)
-{
-	(void)soap; (void)a; /* appease -Wall -Werror */
-	soap_default_om__AvailableAlgorithms(soap, &a->_AvailableAlgorithms);
-}
-
-SOAP_FMAC3 int SOAP_FMAC4 soap_put_om__getAlgorithmsResponse(struct soap *soap, const struct om__getAlgorithmsResponse *a, const char *tag, const char *type)
-{
-	register int id = soap_embed(soap, (void*)a, NULL, 0, tag, SOAP_TYPE_om__getAlgorithmsResponse);
-	if (soap_out_om__getAlgorithmsResponse(soap, tag, id, a, type))
-		return soap->error;
-	return soap_putindependent(soap);
-}
-
-SOAP_FMAC3 int SOAP_FMAC4 soap_out_om__getAlgorithmsResponse(struct soap *soap, const char *tag, int id, const struct om__getAlgorithmsResponse *a, const char *type)
-{
-	soap_element_begin_out(soap, tag, soap_embedded_id(soap, id, a, SOAP_TYPE_om__getAlgorithmsResponse), type);
-	soap_element_result(soap, "AvailableAlgorithms");
-	soap_out_om__AvailableAlgorithms(soap, "AvailableAlgorithms", -1, &a->_AvailableAlgorithms, "");
-	soap_element_end_out(soap, tag);
-	return SOAP_OK;
-}
-
-SOAP_FMAC3 struct om__getAlgorithmsResponse * SOAP_FMAC4 soap_get_om__getAlgorithmsResponse(struct soap *soap, struct om__getAlgorithmsResponse *p, const char *tag, const char *type)
-{
-	if ((p = soap_in_om__getAlgorithmsResponse(soap, tag, p, type)))
-		soap_getindependent(soap);
-	return p;
-}
-
-SOAP_FMAC3 struct om__getAlgorithmsResponse * SOAP_FMAC4 soap_in_om__getAlgorithmsResponse(struct soap *soap, const char *tag, struct om__getAlgorithmsResponse *a, const char *type)
-{
-	short soap_flag__AvailableAlgorithms = 1;
-	if (soap_element_begin_in(soap, tag, 0))
-		return NULL;
-	if (*soap->type && soap_match_tag(soap, soap->type, type))
-	{	soap->error = SOAP_TYPE;
-		return NULL;
-	}
-	a = (struct om__getAlgorithmsResponse *)soap_id_enter(soap, soap->id, a, SOAP_TYPE_om__getAlgorithmsResponse, sizeof(struct om__getAlgorithmsResponse), 0, NULL, NULL, NULL);
-	if (!a)
-		return NULL;
-	soap_default_om__getAlgorithmsResponse(soap, a);
-	if (soap->body && !*soap->href)
-	{
-		for (;;)
-		{	soap->error = SOAP_TAG_MISMATCH;
-			if (soap_flag__AvailableAlgorithms && soap->error == SOAP_TAG_MISMATCH)
-				if (soap_in_om__AvailableAlgorithms(soap, NULL, &a->_AvailableAlgorithms, "om:AvailableAlgorithms"))
-				{	soap_flag__AvailableAlgorithms--;
-					continue;
-				}
-			if (soap->error == SOAP_TAG_MISMATCH)
-				soap->error = soap_ignore_element(soap);
-			if (soap->error == SOAP_NO_TAG)
-				break;
-			if (soap->error)
-				return NULL;
-		}
-		if ((soap->mode & SOAP_XML_STRICT) && (soap_flag__AvailableAlgorithms > 0))
-		{	soap->error = SOAP_OCCURS;
-			return NULL;
-		}
-		if (soap_element_end_in(soap, tag))
-			return NULL;
-	}
-	else
-	{	a = (struct om__getAlgorithmsResponse *)soap_id_forward(soap, soap->href, (void**)a, SOAP_TYPE_om__getAlgorithmsResponse, 0, sizeof(struct om__getAlgorithmsResponse), 0, NULL);
-		if (soap->body && soap_element_end_in(soap, tag))
-			return NULL;
-	}
-	return a;
-}
-
-SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_om__AvailableAlgorithms(struct soap *soap, struct soap_AvailableAlgorithms const*a)
-{	soap_serialize_soap_AvailableAlgorithms(soap, a);
-}
-
-SOAP_FMAC3 void SOAP_FMAC4 soap_default_om__AvailableAlgorithms(struct soap *soap, struct soap_AvailableAlgorithms *a)
-{	soap_default_soap_AvailableAlgorithms(soap, a);
-}
-
-SOAP_FMAC3 int SOAP_FMAC4 soap_put_om__AvailableAlgorithms(struct soap *soap, const struct soap_AvailableAlgorithms *a, const char *tag, const char *type)
-{
-	register int id = soap_embed(soap, (void*)a, NULL, 0, tag, SOAP_TYPE_om__AvailableAlgorithms);
-	if (soap_out_om__AvailableAlgorithms(soap, tag, id, a, type))
-		return soap->error;
-	return soap_putindependent(soap);
-}
-
-SOAP_FMAC3 int SOAP_FMAC4 soap_out_om__AvailableAlgorithms(struct soap *soap, const char *tag, int id, const struct soap_AvailableAlgorithms *a, const char *type)
-{
-	soap_element_begin_out(soap, tag, soap_embedded_id(soap, id, a, SOAP_TYPE_om__AvailableAlgorithms), type);
-	if (a->__ptrAlgorithm)
-	{	int i;
-		for (i = 0; i < a->__size; i++)
-			soap_out_om__AvailableAlgorithm(soap, "Algorithm", -1, a->__ptrAlgorithm + i, "");
-	}
-	soap_element_end_out(soap, tag);
-	return SOAP_OK;
-}
-
-SOAP_FMAC3 struct soap_AvailableAlgorithms * SOAP_FMAC4 soap_get_om__AvailableAlgorithms(struct soap *soap, struct soap_AvailableAlgorithms *p, const char *tag, const char *type)
-{
-	if ((p = soap_in_om__AvailableAlgorithms(soap, tag, p, type)))
-		soap_getindependent(soap);
-	return p;
-}
-
-SOAP_FMAC3 struct soap_AvailableAlgorithms * SOAP_FMAC4 soap_in_om__AvailableAlgorithms(struct soap *soap, const char *tag, struct soap_AvailableAlgorithms *a, const char *type)
-{
-	short soap_flag___ptrAlgorithm = 1;
-	if (soap_element_begin_in(soap, tag, 0))
-		return NULL;
-	if (*soap->type && soap_match_tag(soap, soap->type, type))
-	{	soap->error = SOAP_TYPE;
-		return NULL;
-	}
-	a = (struct soap_AvailableAlgorithms *)soap_id_enter(soap, soap->id, a, SOAP_TYPE_om__AvailableAlgorithms, sizeof(struct soap_AvailableAlgorithms), 0, NULL, NULL, NULL);
-	if (!a)
-		return NULL;
-	soap_default_om__AvailableAlgorithms(soap, a);
-	if (soap->body && !*soap->href)
-	{
-		for (;;)
-		{	soap->error = SOAP_TAG_MISMATCH;
-			if (soap_flag___ptrAlgorithm && soap->error == SOAP_TAG_MISMATCH)
-			{	struct soap_AvailableAlgorithm *p;
-				soap_new_block(soap);
-				for (a->__size = 0; !soap_element_begin_in(soap, "Algorithm", 1); a->__size++)
-				{	p = (struct soap_AvailableAlgorithm *)soap_push_block(soap, sizeof(struct soap_AvailableAlgorithm));
-					soap_default_om__AvailableAlgorithm(soap, p);
-					soap_revert(soap);
-					if (!soap_in_om__AvailableAlgorithm(soap, "Algorithm", p, "om:AvailableAlgorithm"))
-						break;
-					soap_flag___ptrAlgorithm = 0;
-				}
-				a->__ptrAlgorithm = (struct soap_AvailableAlgorithm *)soap_save_block(soap, NULL, 1);
-				if (!soap_flag___ptrAlgorithm && soap->error == SOAP_TAG_MISMATCH)
-					continue;
-			}
-			if (soap->error == SOAP_TAG_MISMATCH)
-				soap->error = soap_ignore_element(soap);
-			if (soap->error == SOAP_NO_TAG)
-				break;
-			if (soap->error)
-				return NULL;
-		}
-		if (soap_element_end_in(soap, tag))
-			return NULL;
-	}
-	else
-	{	a = (struct soap_AvailableAlgorithms *)soap_id_forward(soap, soap->href, (void**)a, SOAP_TYPE_om__AvailableAlgorithms, 0, sizeof(struct soap_AvailableAlgorithms), 0, NULL);
-		if (soap->body && soap_element_end_in(soap, tag))
-			return NULL;
-	}
-	return a;
-}
-
-SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_soap_AvailableAlgorithms(struct soap *soap, const struct soap_AvailableAlgorithms *a)
-{
-	(void)soap; (void)a; /* appease -Wall -Werror */
-	if (a->__ptrAlgorithm)
-	{	int i;
-		for (i = 0; i < a->__size; i++)
-		{
-			soap_embedded(soap, a->__ptrAlgorithm + i, SOAP_TYPE_om__AvailableAlgorithm);
-			soap_serialize_om__AvailableAlgorithm(soap, a->__ptrAlgorithm + i);
-		}
-	}
-}
-
-SOAP_FMAC3 void SOAP_FMAC4 soap_default_soap_AvailableAlgorithms(struct soap *soap, struct soap_AvailableAlgorithms *a)
-{
-	(void)soap; (void)a; /* appease -Wall -Werror */
-	a->__size = 0;
-	a->__ptrAlgorithm = NULL;
-}
-
-SOAP_FMAC3 int SOAP_FMAC4 soap_put_soap_AvailableAlgorithms(struct soap *soap, const struct soap_AvailableAlgorithms *a, const char *tag, const char *type)
-{
-	register int id = soap_embed(soap, (void*)a, NULL, 0, tag, SOAP_TYPE_soap_AvailableAlgorithms);
-	if (soap_out_soap_AvailableAlgorithms(soap, tag, id, a, type))
-		return soap->error;
-	return soap_putindependent(soap);
-}
-
-SOAP_FMAC3 int SOAP_FMAC4 soap_out_soap_AvailableAlgorithms(struct soap *soap, const char *tag, int id, const struct soap_AvailableAlgorithms *a, const char *type)
-{
-	soap_element_begin_out(soap, tag, soap_embedded_id(soap, id, a, SOAP_TYPE_soap_AvailableAlgorithms), type);
-	if (a->__ptrAlgorithm)
-	{	int i;
-		for (i = 0; i < a->__size; i++)
-			soap_out_om__AvailableAlgorithm(soap, "Algorithm", -1, a->__ptrAlgorithm + i, "");
-	}
-	soap_element_end_out(soap, tag);
-	return SOAP_OK;
-}
-
-SOAP_FMAC3 struct soap_AvailableAlgorithms * SOAP_FMAC4 soap_get_soap_AvailableAlgorithms(struct soap *soap, struct soap_AvailableAlgorithms *p, const char *tag, const char *type)
-{
-	if ((p = soap_in_soap_AvailableAlgorithms(soap, tag, p, type)))
-		soap_getindependent(soap);
-	return p;
-}
-
-SOAP_FMAC3 struct soap_AvailableAlgorithms * SOAP_FMAC4 soap_in_soap_AvailableAlgorithms(struct soap *soap, const char *tag, struct soap_AvailableAlgorithms *a, const char *type)
-{
-	short soap_flag___ptrAlgorithm = 1;
-	if (soap_element_begin_in(soap, tag, 0))
-		return NULL;
-	if (*soap->type && soap_match_tag(soap, soap->type, type))
-	{	soap->error = SOAP_TYPE;
-		return NULL;
-	}
-	a = (struct soap_AvailableAlgorithms *)soap_id_enter(soap, soap->id, a, SOAP_TYPE_soap_AvailableAlgorithms, sizeof(struct soap_AvailableAlgorithms), 0, NULL, NULL, NULL);
-	if (!a)
-		return NULL;
-	soap_default_soap_AvailableAlgorithms(soap, a);
-	if (soap->body && !*soap->href)
-	{
-		for (;;)
-		{	soap->error = SOAP_TAG_MISMATCH;
-			if (soap_flag___ptrAlgorithm && soap->error == SOAP_TAG_MISMATCH)
-			{	struct soap_AvailableAlgorithm *p;
-				soap_new_block(soap);
-				for (a->__size = 0; !soap_element_begin_in(soap, "Algorithm", 1); a->__size++)
-				{	p = (struct soap_AvailableAlgorithm *)soap_push_block(soap, sizeof(struct soap_AvailableAlgorithm));
-					soap_default_om__AvailableAlgorithm(soap, p);
-					soap_revert(soap);
-					if (!soap_in_om__AvailableAlgorithm(soap, "Algorithm", p, "om:AvailableAlgorithm"))
-						break;
-					soap_flag___ptrAlgorithm = 0;
-				}
-				a->__ptrAlgorithm = (struct soap_AvailableAlgorithm *)soap_save_block(soap, NULL, 1);
-				if (!soap_flag___ptrAlgorithm && soap->error == SOAP_TAG_MISMATCH)
-					continue;
-			}
-			if (soap->error == SOAP_TAG_MISMATCH)
-				soap->error = soap_ignore_element(soap);
-			if (soap->error == SOAP_NO_TAG)
-				break;
-			if (soap->error)
-				return NULL;
-		}
-		if (soap_element_end_in(soap, tag))
-			return NULL;
-	}
-	else
-	{	a = (struct soap_AvailableAlgorithms *)soap_id_forward(soap, soap->href, (void**)a, SOAP_TYPE_soap_AvailableAlgorithms, 0, sizeof(struct soap_AvailableAlgorithms), 0, NULL);
-		if (soap->body && soap_element_end_in(soap, tag))
-			return NULL;
-	}
-	return a;
-}
-
-SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_om__AvailableAlgorithm(struct soap *soap, struct soap_AvailableAlgorithm const*a)
-{	soap_serialize_soap_AvailableAlgorithm(soap, a);
-}
-
-SOAP_FMAC3 void SOAP_FMAC4 soap_default_om__AvailableAlgorithm(struct soap *soap, struct soap_AvailableAlgorithm *a)
-{	soap_default_soap_AvailableAlgorithm(soap, a);
-}
-
-SOAP_FMAC3 int SOAP_FMAC4 soap_put_om__AvailableAlgorithm(struct soap *soap, const struct soap_AvailableAlgorithm *a, const char *tag, const char *type)
-{
-	register int id = soap_embed(soap, (void*)a, NULL, 0, tag, SOAP_TYPE_om__AvailableAlgorithm);
-	if (soap_out_om__AvailableAlgorithm(soap, tag, id, a, type))
-		return soap->error;
-	return soap_putindependent(soap);
-}
-
-SOAP_FMAC3 int SOAP_FMAC4 soap_out_om__AvailableAlgorithm(struct soap *soap, const char *tag, int id, const struct soap_AvailableAlgorithm *a, const char *type)
-{
-	soap_element_begin_out(soap, tag, soap_embedded_id(soap, id, a, SOAP_TYPE_om__AvailableAlgorithm), type);
-	soap_out_PointerToom__AlgorithmMetadata(soap, "AlgorithmMetadata", -1, &a->__ptrAlgorithmMetadata, "");
-	soap_out_PointerToom__AlgorithmParameters(soap, "AlgorithmParameters", -1, &a->__ptrAlgorithmParameters, "");
-	soap_element_end_out(soap, tag);
-	return SOAP_OK;
-}
-
-SOAP_FMAC3 struct soap_AvailableAlgorithm * SOAP_FMAC4 soap_get_om__AvailableAlgorithm(struct soap *soap, struct soap_AvailableAlgorithm *p, const char *tag, const char *type)
-{
-	if ((p = soap_in_om__AvailableAlgorithm(soap, tag, p, type)))
-		soap_getindependent(soap);
-	return p;
-}
-
-SOAP_FMAC3 struct soap_AvailableAlgorithm * SOAP_FMAC4 soap_in_om__AvailableAlgorithm(struct soap *soap, const char *tag, struct soap_AvailableAlgorithm *a, const char *type)
-{
-	short soap_flag___ptrAlgorithmMetadata = 1, soap_flag___ptrAlgorithmParameters = 1;
-	if (soap_element_begin_in(soap, tag, 0))
-		return NULL;
-	if (*soap->type && soap_match_tag(soap, soap->type, type))
-	{	soap->error = SOAP_TYPE;
-		return NULL;
-	}
-	a = (struct soap_AvailableAlgorithm *)soap_id_enter(soap, soap->id, a, SOAP_TYPE_om__AvailableAlgorithm, sizeof(struct soap_AvailableAlgorithm), 0, NULL, NULL, NULL);
-	if (!a)
-		return NULL;
-	soap_default_om__AvailableAlgorithm(soap, a);
-	if (soap->body && !*soap->href)
-	{
-		for (;;)
-		{	soap->error = SOAP_TAG_MISMATCH;
-			if (soap_flag___ptrAlgorithmMetadata && soap->error == SOAP_TAG_MISMATCH)
-				if (soap_in_PointerToom__AlgorithmMetadata(soap, "AlgorithmMetadata", &a->__ptrAlgorithmMetadata, "om:AlgorithmMetadata"))
-				{	soap_flag___ptrAlgorithmMetadata--;
-					continue;
-				}
-			if (soap_flag___ptrAlgorithmParameters && soap->error == SOAP_TAG_MISMATCH)
-				if (soap_in_PointerToom__AlgorithmParameters(soap, "AlgorithmParameters", &a->__ptrAlgorithmParameters, "om:AlgorithmParameters"))
-				{	soap_flag___ptrAlgorithmParameters--;
-					continue;
-				}
-			if (soap->error == SOAP_TAG_MISMATCH)
-				soap->error = soap_ignore_element(soap);
-			if (soap->error == SOAP_NO_TAG)
-				break;
-			if (soap->error)
-				return NULL;
-		}
-		if (soap_element_end_in(soap, tag))
-			return NULL;
-	}
-	else
-	{	a = (struct soap_AvailableAlgorithm *)soap_id_forward(soap, soap->href, (void**)a, SOAP_TYPE_om__AvailableAlgorithm, 0, sizeof(struct soap_AvailableAlgorithm), 0, NULL);
-		if (soap->body && soap_element_end_in(soap, tag))
-			return NULL;
-	}
-	return a;
-}
-
-SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_soap_AvailableAlgorithm(struct soap *soap, const struct soap_AvailableAlgorithm *a)
-{
-	(void)soap; (void)a; /* appease -Wall -Werror */
-	soap_serialize_PointerToom__AlgorithmMetadata(soap, &a->__ptrAlgorithmMetadata);
-	soap_serialize_PointerToom__AlgorithmParameters(soap, &a->__ptrAlgorithmParameters);
-}
-
-SOAP_FMAC3 void SOAP_FMAC4 soap_default_soap_AvailableAlgorithm(struct soap *soap, struct soap_AvailableAlgorithm *a)
-{
-	(void)soap; (void)a; /* appease -Wall -Werror */
-	a->__ptrAlgorithmMetadata = NULL;
-	a->__ptrAlgorithmParameters = NULL;
-}
-
-SOAP_FMAC3 int SOAP_FMAC4 soap_put_soap_AvailableAlgorithm(struct soap *soap, const struct soap_AvailableAlgorithm *a, const char *tag, const char *type)
-{
-	register int id = soap_embed(soap, (void*)a, NULL, 0, tag, SOAP_TYPE_soap_AvailableAlgorithm);
-	if (soap_out_soap_AvailableAlgorithm(soap, tag, id, a, type))
-		return soap->error;
-	return soap_putindependent(soap);
-}
-
-SOAP_FMAC3 int SOAP_FMAC4 soap_out_soap_AvailableAlgorithm(struct soap *soap, const char *tag, int id, const struct soap_AvailableAlgorithm *a, const char *type)
-{
-	soap_element_begin_out(soap, tag, soap_embedded_id(soap, id, a, SOAP_TYPE_soap_AvailableAlgorithm), type);
-	soap_out_PointerToom__AlgorithmMetadata(soap, "AlgorithmMetadata", -1, &a->__ptrAlgorithmMetadata, "");
-	soap_out_PointerToom__AlgorithmParameters(soap, "AlgorithmParameters", -1, &a->__ptrAlgorithmParameters, "");
-	soap_element_end_out(soap, tag);
-	return SOAP_OK;
-}
-
-SOAP_FMAC3 struct soap_AvailableAlgorithm * SOAP_FMAC4 soap_get_soap_AvailableAlgorithm(struct soap *soap, struct soap_AvailableAlgorithm *p, const char *tag, const char *type)
-{
-	if ((p = soap_in_soap_AvailableAlgorithm(soap, tag, p, type)))
-		soap_getindependent(soap);
-	return p;
-}
-
-SOAP_FMAC3 struct soap_AvailableAlgorithm * SOAP_FMAC4 soap_in_soap_AvailableAlgorithm(struct soap *soap, const char *tag, struct soap_AvailableAlgorithm *a, const char *type)
-{
-	short soap_flag___ptrAlgorithmMetadata = 1, soap_flag___ptrAlgorithmParameters = 1;
-	if (soap_element_begin_in(soap, tag, 0))
-		return NULL;
-	if (*soap->type && soap_match_tag(soap, soap->type, type))
-	{	soap->error = SOAP_TYPE;
-		return NULL;
-	}
-	a = (struct soap_AvailableAlgorithm *)soap_id_enter(soap, soap->id, a, SOAP_TYPE_soap_AvailableAlgorithm, sizeof(struct soap_AvailableAlgorithm), 0, NULL, NULL, NULL);
-	if (!a)
-		return NULL;
-	soap_default_soap_AvailableAlgorithm(soap, a);
-	if (soap->body && !*soap->href)
-	{
-		for (;;)
-		{	soap->error = SOAP_TAG_MISMATCH;
-			if (soap_flag___ptrAlgorithmMetadata && soap->error == SOAP_TAG_MISMATCH)
-				if (soap_in_PointerToom__AlgorithmMetadata(soap, "AlgorithmMetadata", &a->__ptrAlgorithmMetadata, "om:AlgorithmMetadata"))
-				{	soap_flag___ptrAlgorithmMetadata--;
-					continue;
-				}
-			if (soap_flag___ptrAlgorithmParameters && soap->error == SOAP_TAG_MISMATCH)
-				if (soap_in_PointerToom__AlgorithmParameters(soap, "AlgorithmParameters", &a->__ptrAlgorithmParameters, "om:AlgorithmParameters"))
-				{	soap_flag___ptrAlgorithmParameters--;
-					continue;
-				}
-			if (soap->error == SOAP_TAG_MISMATCH)
-				soap->error = soap_ignore_element(soap);
-			if (soap->error == SOAP_NO_TAG)
-				break;
-			if (soap->error)
-				return NULL;
-		}
-		if (soap_element_end_in(soap, tag))
-			return NULL;
-	}
-	else
-	{	a = (struct soap_AvailableAlgorithm *)soap_id_forward(soap, soap->href, (void**)a, SOAP_TYPE_soap_AvailableAlgorithm, 0, sizeof(struct soap_AvailableAlgorithm), 0, NULL);
-		if (soap->body && soap_element_end_in(soap, tag))
-			return NULL;
-	}
-	return a;
-}
-
-SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_om__AlgorithmMetadata(struct soap *soap, struct soap_AlgorithmMetadata const*a)
-{	soap_serialize_soap_AlgorithmMetadata(soap, a);
-}
-
-SOAP_FMAC3 void SOAP_FMAC4 soap_default_om__AlgorithmMetadata(struct soap *soap, struct soap_AlgorithmMetadata *a)
-{	soap_default_soap_AlgorithmMetadata(soap, a);
-}
-
-SOAP_FMAC3 int SOAP_FMAC4 soap_put_om__AlgorithmMetadata(struct soap *soap, const struct soap_AlgorithmMetadata *a, const char *tag, const char *type)
-{
-	register int id = soap_embed(soap, (void*)a, NULL, 0, tag, SOAP_TYPE_om__AlgorithmMetadata);
-	if (soap_out_om__AlgorithmMetadata(soap, tag, id, a, type))
-		return soap->error;
-	return soap_putindependent(soap);
-}
-
-SOAP_FMAC3 int SOAP_FMAC4 soap_out_om__AlgorithmMetadata(struct soap *soap, const char *tag, int id, const struct soap_AlgorithmMetadata *a, const char *type)
-{
-	if (a->Id)
-		soap_set_attr(soap, "Id", a->Id);
-	if (a->Name)
-		soap_set_attr(soap, "Name", a->Name);
-	if (a->Version)
-		soap_set_attr(soap, "Version", a->Version);
-	if (a->Author)
-		soap_set_attr(soap, "Author", a->Author);
-	if (a->CodeAuthor)
-		soap_set_attr(soap, "CodeAuthor", a->CodeAuthor);
-	if (a->Contact)
-		soap_set_attr(soap, "Contact", a->Contact);
-	soap_set_attr(soap, "Categorical", soap_int2s(soap, a->Categorical));
-	soap_set_attr(soap, "Absence", soap_int2s(soap, a->Absence));
-	soap_element_begin_out(soap, tag, soap_embedded_id(soap, id, a, SOAP_TYPE_om__AlgorithmMetadata), type);
-	soap_out_xsd__string(soap, "Overview", -1, &a->Overview, "");
-	soap_out_xsd__string(soap, "Description", -1, &a->Description, "");
-	soap_out_xsd__string(soap, "Bibliography", -1, &a->Bibliography, "");
-	soap_element_end_out(soap, tag);
-	return SOAP_OK;
-}
-
-SOAP_FMAC3 struct soap_AlgorithmMetadata * SOAP_FMAC4 soap_get_om__AlgorithmMetadata(struct soap *soap, struct soap_AlgorithmMetadata *p, const char *tag, const char *type)
-{
-	if ((p = soap_in_om__AlgorithmMetadata(soap, tag, p, type)))
-		soap_getindependent(soap);
-	return p;
-}
-
-SOAP_FMAC3 struct soap_AlgorithmMetadata * SOAP_FMAC4 soap_in_om__AlgorithmMetadata(struct soap *soap, const char *tag, struct soap_AlgorithmMetadata *a, const char *type)
-{
-	short soap_flag_Overview = 1, soap_flag_Description = 1, soap_flag_Bibliography = 1;
-	if (soap_element_begin_in(soap, tag, 0))
-		return NULL;
-	if (*soap->type && soap_match_tag(soap, soap->type, type))
-	{	soap->error = SOAP_TYPE;
-		return NULL;
-	}
-	a = (struct soap_AlgorithmMetadata *)soap_id_enter(soap, soap->id, a, SOAP_TYPE_om__AlgorithmMetadata, sizeof(struct soap_AlgorithmMetadata), 0, NULL, NULL, NULL);
-	if (!a)
-		return NULL;
-	soap_default_om__AlgorithmMetadata(soap, a);
-	if (soap_s2string(soap, soap_attr_value(soap, "Id", 0), &a->Id))
-		return NULL;
-	if (soap_s2string(soap, soap_attr_value(soap, "Name", 0), &a->Name))
-		return NULL;
-	if (soap_s2string(soap, soap_attr_value(soap, "Version", 0), &a->Version))
-		return NULL;
-	if (soap_s2string(soap, soap_attr_value(soap, "Author", 0), &a->Author))
-		return NULL;
-	if (soap_s2string(soap, soap_attr_value(soap, "CodeAuthor", 0), &a->CodeAuthor))
-		return NULL;
-	if (soap_s2string(soap, soap_attr_value(soap, "Contact", 0), &a->Contact))
-		return NULL;
-	if (soap_s2int(soap, soap_attr_value(soap, "Categorical", 0), &a->Categorical))
-		return NULL;
-	if (soap_s2int(soap, soap_attr_value(soap, "Absence", 0), &a->Absence))
-		return NULL;
-	if (soap->body && !*soap->href)
-	{
-		for (;;)
-		{	soap->error = SOAP_TAG_MISMATCH;
-			if (soap_flag_Overview && (soap->error == SOAP_TAG_MISMATCH || soap->error == SOAP_NO_TAG))
-				if (soap_in_xsd__string(soap, "Overview", &a->Overview, "xsd:string"))
-				{	soap_flag_Overview--;
-					continue;
-				}
-			if (soap_flag_Description && (soap->error == SOAP_TAG_MISMATCH || soap->error == SOAP_NO_TAG))
-				if (soap_in_xsd__string(soap, "Description", &a->Description, "xsd:string"))
-				{	soap_flag_Description--;
-					continue;
-				}
-			if (soap_flag_Bibliography && (soap->error == SOAP_TAG_MISMATCH || soap->error == SOAP_NO_TAG))
-				if (soap_in_xsd__string(soap, "Bibliography", &a->Bibliography, "xsd:string"))
-				{	soap_flag_Bibliography--;
-					continue;
-				}
-			if (soap->error == SOAP_TAG_MISMATCH)
-				soap->error = soap_ignore_element(soap);
-			if (soap->error == SOAP_NO_TAG)
-				break;
-			if (soap->error)
-				return NULL;
-		}
-		if (soap_element_end_in(soap, tag))
-			return NULL;
-	}
-	else
-	{	a = (struct soap_AlgorithmMetadata *)soap_id_forward(soap, soap->href, (void**)a, SOAP_TYPE_om__AlgorithmMetadata, 0, sizeof(struct soap_AlgorithmMetadata), 0, NULL);
-		if (soap->body && soap_element_end_in(soap, tag))
-			return NULL;
-	}
-	return a;
-}
-
-SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_soap_AlgorithmMetadata(struct soap *soap, const struct soap_AlgorithmMetadata *a)
-{
-	(void)soap; (void)a; /* appease -Wall -Werror */
-	soap_serialize_xsd__string(soap, &a->Overview);
-	soap_serialize_xsd__string(soap, &a->Description);
-	soap_serialize_xsd__string(soap, &a->Bibliography);
-}
-
-SOAP_FMAC3 void SOAP_FMAC4 soap_default_soap_AlgorithmMetadata(struct soap *soap, struct soap_AlgorithmMetadata *a)
-{
-	(void)soap; (void)a; /* appease -Wall -Werror */
-	soap_default_xsd__string(soap, &a->Id);
-	soap_default_xsd__string(soap, &a->Name);
-	soap_default_xsd__string(soap, &a->Version);
-	soap_default_xsd__string(soap, &a->Overview);
-	soap_default_xsd__string(soap, &a->Description);
-	soap_default_xsd__string(soap, &a->Author);
-	soap_default_xsd__string(soap, &a->Bibliography);
-	soap_default_xsd__string(soap, &a->CodeAuthor);
-	soap_default_xsd__string(soap, &a->Contact);
-	soap_default_xsd__int(soap, &a->Categorical);
-	soap_default_xsd__int(soap, &a->Absence);
-}
-
-SOAP_FMAC3 int SOAP_FMAC4 soap_put_soap_AlgorithmMetadata(struct soap *soap, const struct soap_AlgorithmMetadata *a, const char *tag, const char *type)
-{
-	register int id = soap_embed(soap, (void*)a, NULL, 0, tag, SOAP_TYPE_soap_AlgorithmMetadata);
-	if (soap_out_soap_AlgorithmMetadata(soap, tag, id, a, type))
-		return soap->error;
-	return soap_putindependent(soap);
-}
-
-SOAP_FMAC3 int SOAP_FMAC4 soap_out_soap_AlgorithmMetadata(struct soap *soap, const char *tag, int id, const struct soap_AlgorithmMetadata *a, const char *type)
-{
-	if (a->Id)
-		soap_set_attr(soap, "Id", a->Id);
-	if (a->Name)
-		soap_set_attr(soap, "Name", a->Name);
-	if (a->Version)
-		soap_set_attr(soap, "Version", a->Version);
-	if (a->Author)
-		soap_set_attr(soap, "Author", a->Author);
-	if (a->CodeAuthor)
-		soap_set_attr(soap, "CodeAuthor", a->CodeAuthor);
-	if (a->Contact)
-		soap_set_attr(soap, "Contact", a->Contact);
-	soap_set_attr(soap, "Categorical", soap_int2s(soap, a->Categorical));
-	soap_set_attr(soap, "Absence", soap_int2s(soap, a->Absence));
-	soap_element_begin_out(soap, tag, soap_embedded_id(soap, id, a, SOAP_TYPE_soap_AlgorithmMetadata), type);
-	soap_out_xsd__string(soap, "Overview", -1, &a->Overview, "");
-	soap_out_xsd__string(soap, "Description", -1, &a->Description, "");
-	soap_out_xsd__string(soap, "Bibliography", -1, &a->Bibliography, "");
-	soap_element_end_out(soap, tag);
-	return SOAP_OK;
-}
-
-SOAP_FMAC3 struct soap_AlgorithmMetadata * SOAP_FMAC4 soap_get_soap_AlgorithmMetadata(struct soap *soap, struct soap_AlgorithmMetadata *p, const char *tag, const char *type)
-{
-	if ((p = soap_in_soap_AlgorithmMetadata(soap, tag, p, type)))
-		soap_getindependent(soap);
-	return p;
-}
-
-SOAP_FMAC3 struct soap_AlgorithmMetadata * SOAP_FMAC4 soap_in_soap_AlgorithmMetadata(struct soap *soap, const char *tag, struct soap_AlgorithmMetadata *a, const char *type)
-{
-	short soap_flag_Overview = 1, soap_flag_Description = 1, soap_flag_Bibliography = 1;
-	if (soap_element_begin_in(soap, tag, 0))
-		return NULL;
-	if (*soap->type && soap_match_tag(soap, soap->type, type))
-	{	soap->error = SOAP_TYPE;
-		return NULL;
-	}
-	a = (struct soap_AlgorithmMetadata *)soap_id_enter(soap, soap->id, a, SOAP_TYPE_soap_AlgorithmMetadata, sizeof(struct soap_AlgorithmMetadata), 0, NULL, NULL, NULL);
-	if (!a)
-		return NULL;
-	soap_default_soap_AlgorithmMetadata(soap, a);
-	if (soap_s2string(soap, soap_attr_value(soap, "Id", 0), &a->Id))
-		return NULL;
-	if (soap_s2string(soap, soap_attr_value(soap, "Name", 0), &a->Name))
-		return NULL;
-	if (soap_s2string(soap, soap_attr_value(soap, "Version", 0), &a->Version))
-		return NULL;
-	if (soap_s2string(soap, soap_attr_value(soap, "Author", 0), &a->Author))
-		return NULL;
-	if (soap_s2string(soap, soap_attr_value(soap, "CodeAuthor", 0), &a->CodeAuthor))
-		return NULL;
-	if (soap_s2string(soap, soap_attr_value(soap, "Contact", 0), &a->Contact))
-		return NULL;
-	if (soap_s2int(soap, soap_attr_value(soap, "Categorical", 0), &a->Categorical))
-		return NULL;
-	if (soap_s2int(soap, soap_attr_value(soap, "Absence", 0), &a->Absence))
-		return NULL;
-	if (soap->body && !*soap->href)
-	{
-		for (;;)
-		{	soap->error = SOAP_TAG_MISMATCH;
-			if (soap_flag_Overview && (soap->error == SOAP_TAG_MISMATCH || soap->error == SOAP_NO_TAG))
-				if (soap_in_xsd__string(soap, "Overview", &a->Overview, "xsd:string"))
-				{	soap_flag_Overview--;
-					continue;
-				}
-			if (soap_flag_Description && (soap->error == SOAP_TAG_MISMATCH || soap->error == SOAP_NO_TAG))
-				if (soap_in_xsd__string(soap, "Description", &a->Description, "xsd:string"))
-				{	soap_flag_Description--;
-					continue;
-				}
-			if (soap_flag_Bibliography && (soap->error == SOAP_TAG_MISMATCH || soap->error == SOAP_NO_TAG))
-				if (soap_in_xsd__string(soap, "Bibliography", &a->Bibliography, "xsd:string"))
-				{	soap_flag_Bibliography--;
-					continue;
-				}
-			if (soap->error == SOAP_TAG_MISMATCH)
-				soap->error = soap_ignore_element(soap);
-			if (soap->error == SOAP_NO_TAG)
-				break;
-			if (soap->error)
-				return NULL;
-		}
-		if (soap_element_end_in(soap, tag))
-			return NULL;
-	}
-	else
-	{	a = (struct soap_AlgorithmMetadata *)soap_id_forward(soap, soap->href, (void**)a, SOAP_TYPE_soap_AlgorithmMetadata, 0, sizeof(struct soap_AlgorithmMetadata), 0, NULL);
-		if (soap->body && soap_element_end_in(soap, tag))
-			return NULL;
-	}
-	return a;
-}
-
-SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_om__AlgorithmParameters(struct soap *soap, struct soap_AlgorithmParameters const*a)
-{	soap_serialize_soap_AlgorithmParameters(soap, a);
-}
-
-SOAP_FMAC3 void SOAP_FMAC4 soap_default_om__AlgorithmParameters(struct soap *soap, struct soap_AlgorithmParameters *a)
-{	soap_default_soap_AlgorithmParameters(soap, a);
-}
-
-SOAP_FMAC3 int SOAP_FMAC4 soap_put_om__AlgorithmParameters(struct soap *soap, const struct soap_AlgorithmParameters *a, const char *tag, const char *type)
-{
-	register int id = soap_embed(soap, (void*)a, NULL, 0, tag, SOAP_TYPE_om__AlgorithmParameters);
-	if (soap_out_om__AlgorithmParameters(soap, tag, id, a, type))
-		return soap->error;
-	return soap_putindependent(soap);
-}
-
-SOAP_FMAC3 int SOAP_FMAC4 soap_out_om__AlgorithmParameters(struct soap *soap, const char *tag, int id, const struct soap_AlgorithmParameters *a, const char *type)
-{
-	soap_element_begin_out(soap, tag, soap_embedded_id(soap, id, a, SOAP_TYPE_om__AlgorithmParameters), type);
-	if (a->__ptrParam)
-	{	int i;
-		for (i = 0; i < a->__size; i++)
-			soap_out_om__AlgorithmParameter(soap, "Param", -1, a->__ptrParam + i, "");
-	}
-	soap_element_end_out(soap, tag);
-	return SOAP_OK;
-}
-
-SOAP_FMAC3 struct soap_AlgorithmParameters * SOAP_FMAC4 soap_get_om__AlgorithmParameters(struct soap *soap, struct soap_AlgorithmParameters *p, const char *tag, const char *type)
-{
-	if ((p = soap_in_om__AlgorithmParameters(soap, tag, p, type)))
-		soap_getindependent(soap);
-	return p;
-}
-
-SOAP_FMAC3 struct soap_AlgorithmParameters * SOAP_FMAC4 soap_in_om__AlgorithmParameters(struct soap *soap, const char *tag, struct soap_AlgorithmParameters *a, const char *type)
-{
-	short soap_flag___ptrParam = 1;
-	if (soap_element_begin_in(soap, tag, 0))
-		return NULL;
-	if (*soap->type && soap_match_tag(soap, soap->type, type))
-	{	soap->error = SOAP_TYPE;
-		return NULL;
-	}
-	a = (struct soap_AlgorithmParameters *)soap_id_enter(soap, soap->id, a, SOAP_TYPE_om__AlgorithmParameters, sizeof(struct soap_AlgorithmParameters), 0, NULL, NULL, NULL);
-	if (!a)
-		return NULL;
-	soap_default_om__AlgorithmParameters(soap, a);
-	if (soap->body && !*soap->href)
-	{
-		for (;;)
-		{	soap->error = SOAP_TAG_MISMATCH;
-			if (soap_flag___ptrParam && soap->error == SOAP_TAG_MISMATCH)
-			{	struct soap_AlgorithmParameter *p;
-				soap_new_block(soap);
-				for (a->__size = 0; !soap_element_begin_in(soap, "Param", 1); a->__size++)
-				{	p = (struct soap_AlgorithmParameter *)soap_push_block(soap, sizeof(struct soap_AlgorithmParameter));
-					soap_default_om__AlgorithmParameter(soap, p);
-					soap_revert(soap);
-					if (!soap_in_om__AlgorithmParameter(soap, "Param", p, "om:AlgorithmParameter"))
-						break;
-					soap_flag___ptrParam = 0;
-				}
-				a->__ptrParam = (struct soap_AlgorithmParameter *)soap_save_block(soap, NULL, 1);
-				if (!soap_flag___ptrParam && soap->error == SOAP_TAG_MISMATCH)
-					continue;
-			}
-			if (soap->error == SOAP_TAG_MISMATCH)
-				soap->error = soap_ignore_element(soap);
-			if (soap->error == SOAP_NO_TAG)
-				break;
-			if (soap->error)
-				return NULL;
-		}
-		if (soap_element_end_in(soap, tag))
-			return NULL;
-	}
-	else
-	{	a = (struct soap_AlgorithmParameters *)soap_id_forward(soap, soap->href, (void**)a, SOAP_TYPE_om__AlgorithmParameters, 0, sizeof(struct soap_AlgorithmParameters), 0, NULL);
-		if (soap->body && soap_element_end_in(soap, tag))
-			return NULL;
-	}
-	return a;
-}
-
-SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_soap_AlgorithmParameters(struct soap *soap, const struct soap_AlgorithmParameters *a)
-{
-	(void)soap; (void)a; /* appease -Wall -Werror */
-	if (a->__ptrParam)
-	{	int i;
-		for (i = 0; i < a->__size; i++)
-		{
-			soap_embedded(soap, a->__ptrParam + i, SOAP_TYPE_om__AlgorithmParameter);
-			soap_serialize_om__AlgorithmParameter(soap, a->__ptrParam + i);
-		}
-	}
-}
-
-SOAP_FMAC3 void SOAP_FMAC4 soap_default_soap_AlgorithmParameters(struct soap *soap, struct soap_AlgorithmParameters *a)
-{
-	(void)soap; (void)a; /* appease -Wall -Werror */
-	a->__size = 0;
-	a->__ptrParam = NULL;
-}
-
-SOAP_FMAC3 int SOAP_FMAC4 soap_put_soap_AlgorithmParameters(struct soap *soap, const struct soap_AlgorithmParameters *a, const char *tag, const char *type)
-{
-	register int id = soap_embed(soap, (void*)a, NULL, 0, tag, SOAP_TYPE_soap_AlgorithmParameters);
-	if (soap_out_soap_AlgorithmParameters(soap, tag, id, a, type))
-		return soap->error;
-	return soap_putindependent(soap);
-}
-
-SOAP_FMAC3 int SOAP_FMAC4 soap_out_soap_AlgorithmParameters(struct soap *soap, const char *tag, int id, const struct soap_AlgorithmParameters *a, const char *type)
-{
-	soap_element_begin_out(soap, tag, soap_embedded_id(soap, id, a, SOAP_TYPE_soap_AlgorithmParameters), type);
-	if (a->__ptrParam)
-	{	int i;
-		for (i = 0; i < a->__size; i++)
-			soap_out_om__AlgorithmParameter(soap, "Param", -1, a->__ptrParam + i, "");
-	}
-	soap_element_end_out(soap, tag);
-	return SOAP_OK;
-}
-
-SOAP_FMAC3 struct soap_AlgorithmParameters * SOAP_FMAC4 soap_get_soap_AlgorithmParameters(struct soap *soap, struct soap_AlgorithmParameters *p, const char *tag, const char *type)
-{
-	if ((p = soap_in_soap_AlgorithmParameters(soap, tag, p, type)))
-		soap_getindependent(soap);
-	return p;
-}
-
-SOAP_FMAC3 struct soap_AlgorithmParameters * SOAP_FMAC4 soap_in_soap_AlgorithmParameters(struct soap *soap, const char *tag, struct soap_AlgorithmParameters *a, const char *type)
-{
-	short soap_flag___ptrParam = 1;
-	if (soap_element_begin_in(soap, tag, 0))
-		return NULL;
-	if (*soap->type && soap_match_tag(soap, soap->type, type))
-	{	soap->error = SOAP_TYPE;
-		return NULL;
-	}
-	a = (struct soap_AlgorithmParameters *)soap_id_enter(soap, soap->id, a, SOAP_TYPE_soap_AlgorithmParameters, sizeof(struct soap_AlgorithmParameters), 0, NULL, NULL, NULL);
-	if (!a)
-		return NULL;
-	soap_default_soap_AlgorithmParameters(soap, a);
-	if (soap->body && !*soap->href)
-	{
-		for (;;)
-		{	soap->error = SOAP_TAG_MISMATCH;
-			if (soap_flag___ptrParam && soap->error == SOAP_TAG_MISMATCH)
-			{	struct soap_AlgorithmParameter *p;
-				soap_new_block(soap);
-				for (a->__size = 0; !soap_element_begin_in(soap, "Param", 1); a->__size++)
-				{	p = (struct soap_AlgorithmParameter *)soap_push_block(soap, sizeof(struct soap_AlgorithmParameter));
-					soap_default_om__AlgorithmParameter(soap, p);
-					soap_revert(soap);
-					if (!soap_in_om__AlgorithmParameter(soap, "Param", p, "om:AlgorithmParameter"))
-						break;
-					soap_flag___ptrParam = 0;
-				}
-				a->__ptrParam = (struct soap_AlgorithmParameter *)soap_save_block(soap, NULL, 1);
-				if (!soap_flag___ptrParam && soap->error == SOAP_TAG_MISMATCH)
-					continue;
-			}
-			if (soap->error == SOAP_TAG_MISMATCH)
-				soap->error = soap_ignore_element(soap);
-			if (soap->error == SOAP_NO_TAG)
-				break;
-			if (soap->error)
-				return NULL;
-		}
-		if (soap_element_end_in(soap, tag))
-			return NULL;
-	}
-	else
-	{	a = (struct soap_AlgorithmParameters *)soap_id_forward(soap, soap->href, (void**)a, SOAP_TYPE_soap_AlgorithmParameters, 0, sizeof(struct soap_AlgorithmParameters), 0, NULL);
-		if (soap->body && soap_element_end_in(soap, tag))
-			return NULL;
-	}
-	return a;
-}
-
-SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_om__AlgorithmParameter(struct soap *soap, struct soap_AlgorithmParameter const*a)
-{	soap_serialize_soap_AlgorithmParameter(soap, a);
-}
-
-SOAP_FMAC3 void SOAP_FMAC4 soap_default_om__AlgorithmParameter(struct soap *soap, struct soap_AlgorithmParameter *a)
-{	soap_default_soap_AlgorithmParameter(soap, a);
-}
-
-SOAP_FMAC3 int SOAP_FMAC4 soap_put_om__AlgorithmParameter(struct soap *soap, const struct soap_AlgorithmParameter *a, const char *tag, const char *type)
-{
-	register int id = soap_embed(soap, (void*)a, NULL, 0, tag, SOAP_TYPE_om__AlgorithmParameter);
-	if (soap_out_om__AlgorithmParameter(soap, tag, id, a, type))
-		return soap->error;
-	return soap_putindependent(soap);
-}
-
-SOAP_FMAC3 int SOAP_FMAC4 soap_out_om__AlgorithmParameter(struct soap *soap, const char *tag, int id, const struct soap_AlgorithmParameter *a, const char *type)
-{
-	if (a->Id)
-		soap_set_attr(soap, "Id", a->Id);
-	if (a->Name)
-		soap_set_attr(soap, "Name", a->Name);
-	if (a->Type)
-		soap_set_attr(soap, "Type", a->Type);
-	soap_set_attr(soap, "HasMin", soap_int2s(soap, a->HasMin));
-	soap_set_attr(soap, "Min", soap_double2s(soap, a->Min));
-	soap_set_attr(soap, "HasMax", soap_int2s(soap, a->HasMax));
-	soap_set_attr(soap, "Max", soap_double2s(soap, a->Max));
-	if (a->Typical)
-		soap_set_attr(soap, "Typical", a->Typical);
-	soap_element_begin_out(soap, tag, soap_embedded_id(soap, id, a, SOAP_TYPE_om__AlgorithmParameter), type);
-	soap_out_xsd__string(soap, "Overview", -1, &a->Overview, "");
-	soap_out_xsd__string(soap, "Description", -1, &a->Description, "");
-	soap_element_end_out(soap, tag);
-	return SOAP_OK;
-}
-
-SOAP_FMAC3 struct soap_AlgorithmParameter * SOAP_FMAC4 soap_get_om__AlgorithmParameter(struct soap *soap, struct soap_AlgorithmParameter *p, const char *tag, const char *type)
-{
-	if ((p = soap_in_om__AlgorithmParameter(soap, tag, p, type)))
-		soap_getindependent(soap);
-	return p;
-}
-
-SOAP_FMAC3 struct soap_AlgorithmParameter * SOAP_FMAC4 soap_in_om__AlgorithmParameter(struct soap *soap, const char *tag, struct soap_AlgorithmParameter *a, const char *type)
-{
-	short soap_flag_Overview = 1, soap_flag_Description = 1;
-	if (soap_element_begin_in(soap, tag, 0))
-		return NULL;
-	if (*soap->type && soap_match_tag(soap, soap->type, type))
-	{	soap->error = SOAP_TYPE;
-		return NULL;
-	}
-	a = (struct soap_AlgorithmParameter *)soap_id_enter(soap, soap->id, a, SOAP_TYPE_om__AlgorithmParameter, sizeof(struct soap_AlgorithmParameter), 0, NULL, NULL, NULL);
-	if (!a)
-		return NULL;
-	soap_default_om__AlgorithmParameter(soap, a);
-	if (soap_s2string(soap, soap_attr_value(soap, "Id", 0), &a->Id))
-		return NULL;
-	if (soap_s2string(soap, soap_attr_value(soap, "Name", 0), &a->Name))
-		return NULL;
-	if (soap_s2string(soap, soap_attr_value(soap, "Type", 0), &a->Type))
-		return NULL;
-	if (soap_s2int(soap, soap_attr_value(soap, "HasMin", 0), &a->HasMin))
-		return NULL;
-	if (soap_s2double(soap, soap_attr_value(soap, "Min", 0), &a->Min))
-		return NULL;
-	if (soap_s2int(soap, soap_attr_value(soap, "HasMax", 0), &a->HasMax))
-		return NULL;
-	if (soap_s2double(soap, soap_attr_value(soap, "Max", 0), &a->Max))
-		return NULL;
-	if (soap_s2string(soap, soap_attr_value(soap, "Typical", 0), &a->Typical))
-		return NULL;
-	if (soap->body && !*soap->href)
-	{
-		for (;;)
-		{	soap->error = SOAP_TAG_MISMATCH;
-			if (soap_flag_Overview && (soap->error == SOAP_TAG_MISMATCH || soap->error == SOAP_NO_TAG))
-				if (soap_in_xsd__string(soap, "Overview", &a->Overview, "xsd:string"))
-				{	soap_flag_Overview--;
-					continue;
-				}
-			if (soap_flag_Description && (soap->error == SOAP_TAG_MISMATCH || soap->error == SOAP_NO_TAG))
-				if (soap_in_xsd__string(soap, "Description", &a->Description, "xsd:string"))
-				{	soap_flag_Description--;
-					continue;
-				}
-			if (soap->error == SOAP_TAG_MISMATCH)
-				soap->error = soap_ignore_element(soap);
-			if (soap->error == SOAP_NO_TAG)
-				break;
-			if (soap->error)
-				return NULL;
-		}
-		if (soap_element_end_in(soap, tag))
-			return NULL;
-	}
-	else
-	{	a = (struct soap_AlgorithmParameter *)soap_id_forward(soap, soap->href, (void**)a, SOAP_TYPE_om__AlgorithmParameter, 0, sizeof(struct soap_AlgorithmParameter), 0, NULL);
-		if (soap->body && soap_element_end_in(soap, tag))
-			return NULL;
-	}
-	return a;
-}
-
-SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_soap_AlgorithmParameter(struct soap *soap, const struct soap_AlgorithmParameter *a)
-{
-	(void)soap; (void)a; /* appease -Wall -Werror */
-	soap_serialize_xsd__string(soap, &a->Overview);
-	soap_serialize_xsd__string(soap, &a->Description);
-}
-
-SOAP_FMAC3 void SOAP_FMAC4 soap_default_soap_AlgorithmParameter(struct soap *soap, struct soap_AlgorithmParameter *a)
-{
-	(void)soap; (void)a; /* appease -Wall -Werror */
-	soap_default_xsd__string(soap, &a->Id);
-	soap_default_xsd__string(soap, &a->Name);
-	soap_default_xsd__string(soap, &a->Type);
-	soap_default_xsd__string(soap, &a->Overview);
-	soap_default_xsd__string(soap, &a->Description);
-	soap_default_xsd__int(soap, &a->HasMin);
-	soap_default_xsd__double(soap, &a->Min);
-	soap_default_xsd__int(soap, &a->HasMax);
-	soap_default_xsd__double(soap, &a->Max);
-	soap_default_xsd__string(soap, &a->Typical);
-}
-
-SOAP_FMAC3 int SOAP_FMAC4 soap_put_soap_AlgorithmParameter(struct soap *soap, const struct soap_AlgorithmParameter *a, const char *tag, const char *type)
-{
-	register int id = soap_embed(soap, (void*)a, NULL, 0, tag, SOAP_TYPE_soap_AlgorithmParameter);
-	if (soap_out_soap_AlgorithmParameter(soap, tag, id, a, type))
-		return soap->error;
-	return soap_putindependent(soap);
-}
-
-SOAP_FMAC3 int SOAP_FMAC4 soap_out_soap_AlgorithmParameter(struct soap *soap, const char *tag, int id, const struct soap_AlgorithmParameter *a, const char *type)
-{
-	if (a->Id)
-		soap_set_attr(soap, "Id", a->Id);
-	if (a->Name)
-		soap_set_attr(soap, "Name", a->Name);
-	if (a->Type)
-		soap_set_attr(soap, "Type", a->Type);
-	soap_set_attr(soap, "HasMin", soap_int2s(soap, a->HasMin));
-	soap_set_attr(soap, "Min", soap_double2s(soap, a->Min));
-	soap_set_attr(soap, "HasMax", soap_int2s(soap, a->HasMax));
-	soap_set_attr(soap, "Max", soap_double2s(soap, a->Max));
-	if (a->Typical)
-		soap_set_attr(soap, "Typical", a->Typical);
-	soap_element_begin_out(soap, tag, soap_embedded_id(soap, id, a, SOAP_TYPE_soap_AlgorithmParameter), type);
-	soap_out_xsd__string(soap, "Overview", -1, &a->Overview, "");
-	soap_out_xsd__string(soap, "Description", -1, &a->Description, "");
-	soap_element_end_out(soap, tag);
-	return SOAP_OK;
-}
-
-SOAP_FMAC3 struct soap_AlgorithmParameter * SOAP_FMAC4 soap_get_soap_AlgorithmParameter(struct soap *soap, struct soap_AlgorithmParameter *p, const char *tag, const char *type)
-{
-	if ((p = soap_in_soap_AlgorithmParameter(soap, tag, p, type)))
-		soap_getindependent(soap);
-	return p;
-}
-
-SOAP_FMAC3 struct soap_AlgorithmParameter * SOAP_FMAC4 soap_in_soap_AlgorithmParameter(struct soap *soap, const char *tag, struct soap_AlgorithmParameter *a, const char *type)
-{
-	short soap_flag_Overview = 1, soap_flag_Description = 1;
-	if (soap_element_begin_in(soap, tag, 0))
-		return NULL;
-	if (*soap->type && soap_match_tag(soap, soap->type, type))
-	{	soap->error = SOAP_TYPE;
-		return NULL;
-	}
-	a = (struct soap_AlgorithmParameter *)soap_id_enter(soap, soap->id, a, SOAP_TYPE_soap_AlgorithmParameter, sizeof(struct soap_AlgorithmParameter), 0, NULL, NULL, NULL);
-	if (!a)
-		return NULL;
-	soap_default_soap_AlgorithmParameter(soap, a);
-	if (soap_s2string(soap, soap_attr_value(soap, "Id", 0), &a->Id))
-		return NULL;
-	if (soap_s2string(soap, soap_attr_value(soap, "Name", 0), &a->Name))
-		return NULL;
-	if (soap_s2string(soap, soap_attr_value(soap, "Type", 0), &a->Type))
-		return NULL;
-	if (soap_s2int(soap, soap_attr_value(soap, "HasMin", 0), &a->HasMin))
-		return NULL;
-	if (soap_s2double(soap, soap_attr_value(soap, "Min", 0), &a->Min))
-		return NULL;
-	if (soap_s2int(soap, soap_attr_value(soap, "HasMax", 0), &a->HasMax))
-		return NULL;
-	if (soap_s2double(soap, soap_attr_value(soap, "Max", 0), &a->Max))
-		return NULL;
-	if (soap_s2string(soap, soap_attr_value(soap, "Typical", 0), &a->Typical))
-		return NULL;
-	if (soap->body && !*soap->href)
-	{
-		for (;;)
-		{	soap->error = SOAP_TAG_MISMATCH;
-			if (soap_flag_Overview && (soap->error == SOAP_TAG_MISMATCH || soap->error == SOAP_NO_TAG))
-				if (soap_in_xsd__string(soap, "Overview", &a->Overview, "xsd:string"))
-				{	soap_flag_Overview--;
-					continue;
-				}
-			if (soap_flag_Description && (soap->error == SOAP_TAG_MISMATCH || soap->error == SOAP_NO_TAG))
-				if (soap_in_xsd__string(soap, "Description", &a->Description, "xsd:string"))
-				{	soap_flag_Description--;
-					continue;
-				}
-			if (soap->error == SOAP_TAG_MISMATCH)
-				soap->error = soap_ignore_element(soap);
-			if (soap->error == SOAP_NO_TAG)
-				break;
-			if (soap->error)
-				return NULL;
-		}
-		if (soap_element_end_in(soap, tag))
-			return NULL;
-	}
-	else
-	{	a = (struct soap_AlgorithmParameter *)soap_id_forward(soap, soap->href, (void**)a, SOAP_TYPE_soap_AlgorithmParameter, 0, sizeof(struct soap_AlgorithmParameter), 0, NULL);
+	{	a = (struct omws__getAlgorithms *)soap_id_forward(soap, soap->href, (void**)a, SOAP_TYPE_omws__getAlgorithms, 0, sizeof(struct omws__getAlgorithms), 0, NULL);
 		if (soap->body && soap_element_end_in(soap, tag))
 			return NULL;
 	}
@@ -5003,13 +3790,13 @@ SOAP_FMAC3 struct soap_AlgorithmParameter * SOAP_FMAC4 soap_in_soap_AlgorithmPar
 SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_SOAP_ENV__Header(struct soap *soap, const struct SOAP_ENV__Header *a)
 {
 	(void)soap; (void)a; /* appease -Wall -Werror */
-	soap_serialize_xsd__string(soap, &a->om__version);
+	soap_serialize_xsd__string(soap, &a->omws__version);
 }
 
 SOAP_FMAC3 void SOAP_FMAC4 soap_default_SOAP_ENV__Header(struct soap *soap, struct SOAP_ENV__Header *a)
 {
 	(void)soap; (void)a; /* appease -Wall -Werror */
-	soap_default_xsd__string(soap, &a->om__version);
+	soap_default_xsd__string(soap, &a->omws__version);
 }
 
 SOAP_FMAC3 int SOAP_FMAC4 soap_put_SOAP_ENV__Header(struct soap *soap, const struct SOAP_ENV__Header *a, const char *tag, const char *type)
@@ -5023,7 +3810,7 @@ SOAP_FMAC3 int SOAP_FMAC4 soap_put_SOAP_ENV__Header(struct soap *soap, const str
 SOAP_FMAC3 int SOAP_FMAC4 soap_out_SOAP_ENV__Header(struct soap *soap, const char *tag, int id, const struct SOAP_ENV__Header *a, const char *type)
 {
 	soap_element_begin_out(soap, tag, soap_embedded_id(soap, id, a, SOAP_TYPE_SOAP_ENV__Header), type);
-	soap_out_xsd__string(soap, "om:version", -1, &a->om__version, "");
+	soap_out_xsd__string(soap, "omws:version", -1, &a->omws__version, "");
 	soap_element_end_out(soap, tag);
 	return SOAP_OK;
 }
@@ -5037,7 +3824,7 @@ SOAP_FMAC3 struct SOAP_ENV__Header * SOAP_FMAC4 soap_get_SOAP_ENV__Header(struct
 
 SOAP_FMAC3 struct SOAP_ENV__Header * SOAP_FMAC4 soap_in_SOAP_ENV__Header(struct soap *soap, const char *tag, struct SOAP_ENV__Header *a, const char *type)
 {
-	short soap_flag_om__version = 1;
+	short soap_flag_omws__version = 1;
 	if (soap_element_begin_in(soap, tag, 0))
 		return NULL;
 	if (*soap->type && soap_match_tag(soap, soap->type, type))
@@ -5052,9 +3839,9 @@ SOAP_FMAC3 struct SOAP_ENV__Header * SOAP_FMAC4 soap_in_SOAP_ENV__Header(struct 
 	{
 		for (;;)
 		{	soap->error = SOAP_TAG_MISMATCH;
-			if (soap_flag_om__version && (soap->error == SOAP_TAG_MISMATCH || soap->error == SOAP_NO_TAG))
-				if (soap_in_xsd__string(soap, "om:version", &a->om__version, "xsd:string"))
-				{	soap_flag_om__version--;
+			if (soap_flag_omws__version && (soap->error == SOAP_TAG_MISMATCH || soap->error == SOAP_NO_TAG))
+				if (soap_in_xsd__string(soap, "omws:version", &a->omws__version, "xsd:string"))
+				{	soap_flag_omws__version--;
 					continue;
 				}
 			if (soap->error == SOAP_TAG_MISMATCH)
@@ -5383,36 +4170,36 @@ SOAP_FMAC3 char *** SOAP_FMAC4 soap_in_PointerToxsd__string(struct soap *soap, c
 	return a;
 }
 
-SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_PointerToom__Output(struct soap *soap, struct soap_Output *const*a)
+SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_PointerToomws__Output(struct soap *soap, struct soap_Output *const*a)
 {
-	if (!soap_reference(soap, *a, SOAP_TYPE_om__Output))
-		soap_serialize_om__Output(soap, *a);
+	if (!soap_reference(soap, *a, SOAP_TYPE_omws__Output))
+		soap_serialize_omws__Output(soap, *a);
 }
 
-SOAP_FMAC3 int SOAP_FMAC4 soap_put_PointerToom__Output(struct soap *soap, struct soap_Output *const*a, const char *tag, const char *type)
+SOAP_FMAC3 int SOAP_FMAC4 soap_put_PointerToomws__Output(struct soap *soap, struct soap_Output *const*a, const char *tag, const char *type)
 {
-	register int id = soap_embed(soap, (void*)a, NULL, 0, tag, SOAP_TYPE_PointerToom__Output);
-	if (soap_out_PointerToom__Output(soap, tag, id, a, type))
+	register int id = soap_embed(soap, (void*)a, NULL, 0, tag, SOAP_TYPE_PointerToomws__Output);
+	if (soap_out_PointerToomws__Output(soap, tag, id, a, type))
 		return soap->error;
 	return soap_putindependent(soap);
 }
 
-SOAP_FMAC3 int SOAP_FMAC4 soap_out_PointerToom__Output(struct soap *soap, const char *tag, int id, struct soap_Output *const*a, const char *type)
+SOAP_FMAC3 int SOAP_FMAC4 soap_out_PointerToomws__Output(struct soap *soap, const char *tag, int id, struct soap_Output *const*a, const char *type)
 {
-	id = soap_element_id(soap, tag, id, *a, NULL, 0, type, SOAP_TYPE_om__Output);
+	id = soap_element_id(soap, tag, id, *a, NULL, 0, type, SOAP_TYPE_omws__Output);
 	if (id < 0)
 		return soap->error;
-	return soap_out_om__Output(soap, tag, id, *a, type);
+	return soap_out_omws__Output(soap, tag, id, *a, type);
 }
 
-SOAP_FMAC3 struct soap_Output ** SOAP_FMAC4 soap_get_PointerToom__Output(struct soap *soap, struct soap_Output **p, const char *tag, const char *type)
+SOAP_FMAC3 struct soap_Output ** SOAP_FMAC4 soap_get_PointerToomws__Output(struct soap *soap, struct soap_Output **p, const char *tag, const char *type)
 {
-	if ((p = soap_in_PointerToom__Output(soap, tag, p, type)))
+	if ((p = soap_in_PointerToomws__Output(soap, tag, p, type)))
 		soap_getindependent(soap);
 	return p;
 }
 
-SOAP_FMAC3 struct soap_Output ** SOAP_FMAC4 soap_in_PointerToom__Output(struct soap *soap, const char *tag, struct soap_Output **a, const char *type)
+SOAP_FMAC3 struct soap_Output ** SOAP_FMAC4 soap_in_PointerToomws__Output(struct soap *soap, const char *tag, struct soap_Output **a, const char *type)
 {
 	if (soap_element_begin_in(soap, tag, 1))
 		return NULL;
@@ -5422,47 +4209,47 @@ SOAP_FMAC3 struct soap_Output ** SOAP_FMAC4 soap_in_PointerToom__Output(struct s
 	*a = NULL;
 	if (!soap->null && *soap->href != '#')
 	{	soap_revert(soap);
-		if (!(*a = soap_in_om__Output(soap, tag, *a, type)))
+		if (!(*a = soap_in_omws__Output(soap, tag, *a, type)))
 			return NULL;
 	}
 	else
-	{	a = (struct soap_Output **)soap_id_lookup(soap, soap->href, (void**)a, SOAP_TYPE_om__Output, sizeof(struct soap_Output), 0);
+	{	a = (struct soap_Output **)soap_id_lookup(soap, soap->href, (void**)a, SOAP_TYPE_omws__Output, sizeof(struct soap_Output), 0);
 		if (soap->body && soap_element_end_in(soap, tag))
 			return NULL;
 	}
 	return a;
 }
 
-SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_PointerToom__Algorithm(struct soap *soap, struct soap_Algorithm *const*a)
+SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_PointerToomws__Algorithm(struct soap *soap, struct soap_Algorithm *const*a)
 {
-	if (!soap_reference(soap, *a, SOAP_TYPE_om__Algorithm))
-		soap_serialize_om__Algorithm(soap, *a);
+	if (!soap_reference(soap, *a, SOAP_TYPE_omws__Algorithm))
+		soap_serialize_omws__Algorithm(soap, *a);
 }
 
-SOAP_FMAC3 int SOAP_FMAC4 soap_put_PointerToom__Algorithm(struct soap *soap, struct soap_Algorithm *const*a, const char *tag, const char *type)
+SOAP_FMAC3 int SOAP_FMAC4 soap_put_PointerToomws__Algorithm(struct soap *soap, struct soap_Algorithm *const*a, const char *tag, const char *type)
 {
-	register int id = soap_embed(soap, (void*)a, NULL, 0, tag, SOAP_TYPE_PointerToom__Algorithm);
-	if (soap_out_PointerToom__Algorithm(soap, tag, id, a, type))
+	register int id = soap_embed(soap, (void*)a, NULL, 0, tag, SOAP_TYPE_PointerToomws__Algorithm);
+	if (soap_out_PointerToomws__Algorithm(soap, tag, id, a, type))
 		return soap->error;
 	return soap_putindependent(soap);
 }
 
-SOAP_FMAC3 int SOAP_FMAC4 soap_out_PointerToom__Algorithm(struct soap *soap, const char *tag, int id, struct soap_Algorithm *const*a, const char *type)
+SOAP_FMAC3 int SOAP_FMAC4 soap_out_PointerToomws__Algorithm(struct soap *soap, const char *tag, int id, struct soap_Algorithm *const*a, const char *type)
 {
-	id = soap_element_id(soap, tag, id, *a, NULL, 0, type, SOAP_TYPE_om__Algorithm);
+	id = soap_element_id(soap, tag, id, *a, NULL, 0, type, SOAP_TYPE_omws__Algorithm);
 	if (id < 0)
 		return soap->error;
-	return soap_out_om__Algorithm(soap, tag, id, *a, type);
+	return soap_out_omws__Algorithm(soap, tag, id, *a, type);
 }
 
-SOAP_FMAC3 struct soap_Algorithm ** SOAP_FMAC4 soap_get_PointerToom__Algorithm(struct soap *soap, struct soap_Algorithm **p, const char *tag, const char *type)
+SOAP_FMAC3 struct soap_Algorithm ** SOAP_FMAC4 soap_get_PointerToomws__Algorithm(struct soap *soap, struct soap_Algorithm **p, const char *tag, const char *type)
 {
-	if ((p = soap_in_PointerToom__Algorithm(soap, tag, p, type)))
+	if ((p = soap_in_PointerToomws__Algorithm(soap, tag, p, type)))
 		soap_getindependent(soap);
 	return p;
 }
 
-SOAP_FMAC3 struct soap_Algorithm ** SOAP_FMAC4 soap_in_PointerToom__Algorithm(struct soap *soap, const char *tag, struct soap_Algorithm **a, const char *type)
+SOAP_FMAC3 struct soap_Algorithm ** SOAP_FMAC4 soap_in_PointerToomws__Algorithm(struct soap *soap, const char *tag, struct soap_Algorithm **a, const char *type)
 {
 	if (soap_element_begin_in(soap, tag, 1))
 		return NULL;
@@ -5472,47 +4259,47 @@ SOAP_FMAC3 struct soap_Algorithm ** SOAP_FMAC4 soap_in_PointerToom__Algorithm(st
 	*a = NULL;
 	if (!soap->null && *soap->href != '#')
 	{	soap_revert(soap);
-		if (!(*a = soap_in_om__Algorithm(soap, tag, *a, type)))
+		if (!(*a = soap_in_omws__Algorithm(soap, tag, *a, type)))
 			return NULL;
 	}
 	else
-	{	a = (struct soap_Algorithm **)soap_id_lookup(soap, soap->href, (void**)a, SOAP_TYPE_om__Algorithm, sizeof(struct soap_Algorithm), 0);
+	{	a = (struct soap_Algorithm **)soap_id_lookup(soap, soap->href, (void**)a, SOAP_TYPE_omws__Algorithm, sizeof(struct soap_Algorithm), 0);
 		if (soap->body && soap_element_end_in(soap, tag))
 			return NULL;
 	}
 	return a;
 }
 
-SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_PointerToom__Mask(struct soap *soap, struct soap_Mask *const*a)
+SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_PointerToomws__Mask(struct soap *soap, struct soap_Mask *const*a)
 {
-	if (!soap_reference(soap, *a, SOAP_TYPE_om__Mask))
-		soap_serialize_om__Mask(soap, *a);
+	if (!soap_reference(soap, *a, SOAP_TYPE_omws__Mask))
+		soap_serialize_omws__Mask(soap, *a);
 }
 
-SOAP_FMAC3 int SOAP_FMAC4 soap_put_PointerToom__Mask(struct soap *soap, struct soap_Mask *const*a, const char *tag, const char *type)
+SOAP_FMAC3 int SOAP_FMAC4 soap_put_PointerToomws__Mask(struct soap *soap, struct soap_Mask *const*a, const char *tag, const char *type)
 {
-	register int id = soap_embed(soap, (void*)a, NULL, 0, tag, SOAP_TYPE_PointerToom__Mask);
-	if (soap_out_PointerToom__Mask(soap, tag, id, a, type))
+	register int id = soap_embed(soap, (void*)a, NULL, 0, tag, SOAP_TYPE_PointerToomws__Mask);
+	if (soap_out_PointerToomws__Mask(soap, tag, id, a, type))
 		return soap->error;
 	return soap_putindependent(soap);
 }
 
-SOAP_FMAC3 int SOAP_FMAC4 soap_out_PointerToom__Mask(struct soap *soap, const char *tag, int id, struct soap_Mask *const*a, const char *type)
+SOAP_FMAC3 int SOAP_FMAC4 soap_out_PointerToomws__Mask(struct soap *soap, const char *tag, int id, struct soap_Mask *const*a, const char *type)
 {
-	id = soap_element_id(soap, tag, id, *a, NULL, 0, type, SOAP_TYPE_om__Mask);
+	id = soap_element_id(soap, tag, id, *a, NULL, 0, type, SOAP_TYPE_omws__Mask);
 	if (id < 0)
 		return soap->error;
-	return soap_out_om__Mask(soap, tag, id, *a, type);
+	return soap_out_omws__Mask(soap, tag, id, *a, type);
 }
 
-SOAP_FMAC3 struct soap_Mask ** SOAP_FMAC4 soap_get_PointerToom__Mask(struct soap *soap, struct soap_Mask **p, const char *tag, const char *type)
+SOAP_FMAC3 struct soap_Mask ** SOAP_FMAC4 soap_get_PointerToomws__Mask(struct soap *soap, struct soap_Mask **p, const char *tag, const char *type)
 {
-	if ((p = soap_in_PointerToom__Mask(soap, tag, p, type)))
+	if ((p = soap_in_PointerToomws__Mask(soap, tag, p, type)))
 		soap_getindependent(soap);
 	return p;
 }
 
-SOAP_FMAC3 struct soap_Mask ** SOAP_FMAC4 soap_in_PointerToom__Mask(struct soap *soap, const char *tag, struct soap_Mask **a, const char *type)
+SOAP_FMAC3 struct soap_Mask ** SOAP_FMAC4 soap_in_PointerToomws__Mask(struct soap *soap, const char *tag, struct soap_Mask **a, const char *type)
 {
 	if (soap_element_begin_in(soap, tag, 1))
 		return NULL;
@@ -5522,47 +4309,47 @@ SOAP_FMAC3 struct soap_Mask ** SOAP_FMAC4 soap_in_PointerToom__Mask(struct soap 
 	*a = NULL;
 	if (!soap->null && *soap->href != '#')
 	{	soap_revert(soap);
-		if (!(*a = soap_in_om__Mask(soap, tag, *a, type)))
+		if (!(*a = soap_in_omws__Mask(soap, tag, *a, type)))
 			return NULL;
 	}
 	else
-	{	a = (struct soap_Mask **)soap_id_lookup(soap, soap->href, (void**)a, SOAP_TYPE_om__Mask, sizeof(struct soap_Mask), 0);
+	{	a = (struct soap_Mask **)soap_id_lookup(soap, soap->href, (void**)a, SOAP_TYPE_omws__Mask, sizeof(struct soap_Mask), 0);
 		if (soap->body && soap_element_end_in(soap, tag))
 			return NULL;
 	}
 	return a;
 }
 
-SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_PointerToom__Maps(struct soap *soap, struct soap_Maps *const*a)
+SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_PointerToomws__Maps(struct soap *soap, struct soap_Maps *const*a)
 {
-	if (!soap_reference(soap, *a, SOAP_TYPE_om__Maps))
-		soap_serialize_om__Maps(soap, *a);
+	if (!soap_reference(soap, *a, SOAP_TYPE_omws__Maps))
+		soap_serialize_omws__Maps(soap, *a);
 }
 
-SOAP_FMAC3 int SOAP_FMAC4 soap_put_PointerToom__Maps(struct soap *soap, struct soap_Maps *const*a, const char *tag, const char *type)
+SOAP_FMAC3 int SOAP_FMAC4 soap_put_PointerToomws__Maps(struct soap *soap, struct soap_Maps *const*a, const char *tag, const char *type)
 {
-	register int id = soap_embed(soap, (void*)a, NULL, 0, tag, SOAP_TYPE_PointerToom__Maps);
-	if (soap_out_PointerToom__Maps(soap, tag, id, a, type))
+	register int id = soap_embed(soap, (void*)a, NULL, 0, tag, SOAP_TYPE_PointerToomws__Maps);
+	if (soap_out_PointerToomws__Maps(soap, tag, id, a, type))
 		return soap->error;
 	return soap_putindependent(soap);
 }
 
-SOAP_FMAC3 int SOAP_FMAC4 soap_out_PointerToom__Maps(struct soap *soap, const char *tag, int id, struct soap_Maps *const*a, const char *type)
+SOAP_FMAC3 int SOAP_FMAC4 soap_out_PointerToomws__Maps(struct soap *soap, const char *tag, int id, struct soap_Maps *const*a, const char *type)
 {
-	id = soap_element_id(soap, tag, id, *a, NULL, 0, type, SOAP_TYPE_om__Maps);
+	id = soap_element_id(soap, tag, id, *a, NULL, 0, type, SOAP_TYPE_omws__Maps);
 	if (id < 0)
 		return soap->error;
-	return soap_out_om__Maps(soap, tag, id, *a, type);
+	return soap_out_omws__Maps(soap, tag, id, *a, type);
 }
 
-SOAP_FMAC3 struct soap_Maps ** SOAP_FMAC4 soap_get_PointerToom__Maps(struct soap *soap, struct soap_Maps **p, const char *tag, const char *type)
+SOAP_FMAC3 struct soap_Maps ** SOAP_FMAC4 soap_get_PointerToomws__Maps(struct soap *soap, struct soap_Maps **p, const char *tag, const char *type)
 {
-	if ((p = soap_in_PointerToom__Maps(soap, tag, p, type)))
+	if ((p = soap_in_PointerToomws__Maps(soap, tag, p, type)))
 		soap_getindependent(soap);
 	return p;
 }
 
-SOAP_FMAC3 struct soap_Maps ** SOAP_FMAC4 soap_in_PointerToom__Maps(struct soap *soap, const char *tag, struct soap_Maps **a, const char *type)
+SOAP_FMAC3 struct soap_Maps ** SOAP_FMAC4 soap_in_PointerToomws__Maps(struct soap *soap, const char *tag, struct soap_Maps **a, const char *type)
 {
 	if (soap_element_begin_in(soap, tag, 1))
 		return NULL;
@@ -5572,47 +4359,47 @@ SOAP_FMAC3 struct soap_Maps ** SOAP_FMAC4 soap_in_PointerToom__Maps(struct soap 
 	*a = NULL;
 	if (!soap->null && *soap->href != '#')
 	{	soap_revert(soap);
-		if (!(*a = soap_in_om__Maps(soap, tag, *a, type)))
+		if (!(*a = soap_in_omws__Maps(soap, tag, *a, type)))
 			return NULL;
 	}
 	else
-	{	a = (struct soap_Maps **)soap_id_lookup(soap, soap->href, (void**)a, SOAP_TYPE_om__Maps, sizeof(struct soap_Maps), 0);
+	{	a = (struct soap_Maps **)soap_id_lookup(soap, soap->href, (void**)a, SOAP_TYPE_omws__Maps, sizeof(struct soap_Maps), 0);
 		if (soap->body && soap_element_end_in(soap, tag))
 			return NULL;
 	}
 	return a;
 }
 
-SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_PointerToom__Points(struct soap *soap, struct soap_Points *const*a)
+SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_PointerToomws__Points(struct soap *soap, struct soap_Points *const*a)
 {
-	if (!soap_reference(soap, *a, SOAP_TYPE_om__Points))
-		soap_serialize_om__Points(soap, *a);
+	if (!soap_reference(soap, *a, SOAP_TYPE_omws__Points))
+		soap_serialize_omws__Points(soap, *a);
 }
 
-SOAP_FMAC3 int SOAP_FMAC4 soap_put_PointerToom__Points(struct soap *soap, struct soap_Points *const*a, const char *tag, const char *type)
+SOAP_FMAC3 int SOAP_FMAC4 soap_put_PointerToomws__Points(struct soap *soap, struct soap_Points *const*a, const char *tag, const char *type)
 {
-	register int id = soap_embed(soap, (void*)a, NULL, 0, tag, SOAP_TYPE_PointerToom__Points);
-	if (soap_out_PointerToom__Points(soap, tag, id, a, type))
+	register int id = soap_embed(soap, (void*)a, NULL, 0, tag, SOAP_TYPE_PointerToomws__Points);
+	if (soap_out_PointerToomws__Points(soap, tag, id, a, type))
 		return soap->error;
 	return soap_putindependent(soap);
 }
 
-SOAP_FMAC3 int SOAP_FMAC4 soap_out_PointerToom__Points(struct soap *soap, const char *tag, int id, struct soap_Points *const*a, const char *type)
+SOAP_FMAC3 int SOAP_FMAC4 soap_out_PointerToomws__Points(struct soap *soap, const char *tag, int id, struct soap_Points *const*a, const char *type)
 {
-	id = soap_element_id(soap, tag, id, *a, NULL, 0, type, SOAP_TYPE_om__Points);
+	id = soap_element_id(soap, tag, id, *a, NULL, 0, type, SOAP_TYPE_omws__Points);
 	if (id < 0)
 		return soap->error;
-	return soap_out_om__Points(soap, tag, id, *a, type);
+	return soap_out_omws__Points(soap, tag, id, *a, type);
 }
 
-SOAP_FMAC3 struct soap_Points ** SOAP_FMAC4 soap_get_PointerToom__Points(struct soap *soap, struct soap_Points **p, const char *tag, const char *type)
+SOAP_FMAC3 struct soap_Points ** SOAP_FMAC4 soap_get_PointerToomws__Points(struct soap *soap, struct soap_Points **p, const char *tag, const char *type)
 {
-	if ((p = soap_in_PointerToom__Points(soap, tag, p, type)))
+	if ((p = soap_in_PointerToomws__Points(soap, tag, p, type)))
 		soap_getindependent(soap);
 	return p;
 }
 
-SOAP_FMAC3 struct soap_Points ** SOAP_FMAC4 soap_in_PointerToom__Points(struct soap *soap, const char *tag, struct soap_Points **a, const char *type)
+SOAP_FMAC3 struct soap_Points ** SOAP_FMAC4 soap_in_PointerToomws__Points(struct soap *soap, const char *tag, struct soap_Points **a, const char *type)
 {
 	if (soap_element_begin_in(soap, tag, 1))
 		return NULL;
@@ -5622,47 +4409,47 @@ SOAP_FMAC3 struct soap_Points ** SOAP_FMAC4 soap_in_PointerToom__Points(struct s
 	*a = NULL;
 	if (!soap->null && *soap->href != '#')
 	{	soap_revert(soap);
-		if (!(*a = soap_in_om__Points(soap, tag, *a, type)))
+		if (!(*a = soap_in_omws__Points(soap, tag, *a, type)))
 			return NULL;
 	}
 	else
-	{	a = (struct soap_Points **)soap_id_lookup(soap, soap->href, (void**)a, SOAP_TYPE_om__Points, sizeof(struct soap_Points), 0);
+	{	a = (struct soap_Points **)soap_id_lookup(soap, soap->href, (void**)a, SOAP_TYPE_omws__Points, sizeof(struct soap_Points), 0);
 		if (soap->body && soap_element_end_in(soap, tag))
 			return NULL;
 	}
 	return a;
 }
 
-SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_PointerToom__Parameter(struct soap *soap, struct soap_Parameter *const*a)
+SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_PointerToomws__Parameter(struct soap *soap, struct soap_Parameter *const*a)
 {
-	if (!soap_reference(soap, *a, SOAP_TYPE_om__Parameter))
-		soap_serialize_om__Parameter(soap, *a);
+	if (!soap_reference(soap, *a, SOAP_TYPE_omws__Parameter))
+		soap_serialize_omws__Parameter(soap, *a);
 }
 
-SOAP_FMAC3 int SOAP_FMAC4 soap_put_PointerToom__Parameter(struct soap *soap, struct soap_Parameter *const*a, const char *tag, const char *type)
+SOAP_FMAC3 int SOAP_FMAC4 soap_put_PointerToomws__Parameter(struct soap *soap, struct soap_Parameter *const*a, const char *tag, const char *type)
 {
-	register int id = soap_embed(soap, (void*)a, NULL, 0, tag, SOAP_TYPE_PointerToom__Parameter);
-	if (soap_out_PointerToom__Parameter(soap, tag, id, a, type))
+	register int id = soap_embed(soap, (void*)a, NULL, 0, tag, SOAP_TYPE_PointerToomws__Parameter);
+	if (soap_out_PointerToomws__Parameter(soap, tag, id, a, type))
 		return soap->error;
 	return soap_putindependent(soap);
 }
 
-SOAP_FMAC3 int SOAP_FMAC4 soap_out_PointerToom__Parameter(struct soap *soap, const char *tag, int id, struct soap_Parameter *const*a, const char *type)
+SOAP_FMAC3 int SOAP_FMAC4 soap_out_PointerToomws__Parameter(struct soap *soap, const char *tag, int id, struct soap_Parameter *const*a, const char *type)
 {
-	id = soap_element_id(soap, tag, id, *a, NULL, 0, type, SOAP_TYPE_om__Parameter);
+	id = soap_element_id(soap, tag, id, *a, NULL, 0, type, SOAP_TYPE_omws__Parameter);
 	if (id < 0)
 		return soap->error;
-	return soap_out_om__Parameter(soap, tag, id, *a, type);
+	return soap_out_omws__Parameter(soap, tag, id, *a, type);
 }
 
-SOAP_FMAC3 struct soap_Parameter ** SOAP_FMAC4 soap_get_PointerToom__Parameter(struct soap *soap, struct soap_Parameter **p, const char *tag, const char *type)
+SOAP_FMAC3 struct soap_Parameter ** SOAP_FMAC4 soap_get_PointerToomws__Parameter(struct soap *soap, struct soap_Parameter **p, const char *tag, const char *type)
 {
-	if ((p = soap_in_PointerToom__Parameter(soap, tag, p, type)))
+	if ((p = soap_in_PointerToomws__Parameter(soap, tag, p, type)))
 		soap_getindependent(soap);
 	return p;
 }
 
-SOAP_FMAC3 struct soap_Parameter ** SOAP_FMAC4 soap_in_PointerToom__Parameter(struct soap *soap, const char *tag, struct soap_Parameter **a, const char *type)
+SOAP_FMAC3 struct soap_Parameter ** SOAP_FMAC4 soap_in_PointerToomws__Parameter(struct soap *soap, const char *tag, struct soap_Parameter **a, const char *type)
 {
 	if (soap_element_begin_in(soap, tag, 1))
 		return NULL;
@@ -5672,47 +4459,47 @@ SOAP_FMAC3 struct soap_Parameter ** SOAP_FMAC4 soap_in_PointerToom__Parameter(st
 	*a = NULL;
 	if (!soap->null && *soap->href != '#')
 	{	soap_revert(soap);
-		if (!(*a = soap_in_om__Parameter(soap, tag, *a, type)))
+		if (!(*a = soap_in_omws__Parameter(soap, tag, *a, type)))
 			return NULL;
 	}
 	else
-	{	a = (struct soap_Parameter **)soap_id_lookup(soap, soap->href, (void**)a, SOAP_TYPE_om__Parameter, sizeof(struct soap_Parameter), 0);
+	{	a = (struct soap_Parameter **)soap_id_lookup(soap, soap->href, (void**)a, SOAP_TYPE_omws__Parameter, sizeof(struct soap_Parameter), 0);
 		if (soap->body && soap_element_end_in(soap, tag))
 			return NULL;
 	}
 	return a;
 }
 
-SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_PointerToom__Map(struct soap *soap, struct soap_Map *const*a)
+SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_PointerToomws__Map(struct soap *soap, struct soap_Map *const*a)
 {
-	if (!soap_reference(soap, *a, SOAP_TYPE_om__Map))
-		soap_serialize_om__Map(soap, *a);
+	if (!soap_reference(soap, *a, SOAP_TYPE_omws__Map))
+		soap_serialize_omws__Map(soap, *a);
 }
 
-SOAP_FMAC3 int SOAP_FMAC4 soap_put_PointerToom__Map(struct soap *soap, struct soap_Map *const*a, const char *tag, const char *type)
+SOAP_FMAC3 int SOAP_FMAC4 soap_put_PointerToomws__Map(struct soap *soap, struct soap_Map *const*a, const char *tag, const char *type)
 {
-	register int id = soap_embed(soap, (void*)a, NULL, 0, tag, SOAP_TYPE_PointerToom__Map);
-	if (soap_out_PointerToom__Map(soap, tag, id, a, type))
+	register int id = soap_embed(soap, (void*)a, NULL, 0, tag, SOAP_TYPE_PointerToomws__Map);
+	if (soap_out_PointerToomws__Map(soap, tag, id, a, type))
 		return soap->error;
 	return soap_putindependent(soap);
 }
 
-SOAP_FMAC3 int SOAP_FMAC4 soap_out_PointerToom__Map(struct soap *soap, const char *tag, int id, struct soap_Map *const*a, const char *type)
+SOAP_FMAC3 int SOAP_FMAC4 soap_out_PointerToomws__Map(struct soap *soap, const char *tag, int id, struct soap_Map *const*a, const char *type)
 {
-	id = soap_element_id(soap, tag, id, *a, NULL, 0, type, SOAP_TYPE_om__Map);
+	id = soap_element_id(soap, tag, id, *a, NULL, 0, type, SOAP_TYPE_omws__Map);
 	if (id < 0)
 		return soap->error;
-	return soap_out_om__Map(soap, tag, id, *a, type);
+	return soap_out_omws__Map(soap, tag, id, *a, type);
 }
 
-SOAP_FMAC3 struct soap_Map ** SOAP_FMAC4 soap_get_PointerToom__Map(struct soap *soap, struct soap_Map **p, const char *tag, const char *type)
+SOAP_FMAC3 struct soap_Map ** SOAP_FMAC4 soap_get_PointerToomws__Map(struct soap *soap, struct soap_Map **p, const char *tag, const char *type)
 {
-	if ((p = soap_in_PointerToom__Map(soap, tag, p, type)))
+	if ((p = soap_in_PointerToomws__Map(soap, tag, p, type)))
 		soap_getindependent(soap);
 	return p;
 }
 
-SOAP_FMAC3 struct soap_Map ** SOAP_FMAC4 soap_in_PointerToom__Map(struct soap *soap, const char *tag, struct soap_Map **a, const char *type)
+SOAP_FMAC3 struct soap_Map ** SOAP_FMAC4 soap_in_PointerToomws__Map(struct soap *soap, const char *tag, struct soap_Map **a, const char *type)
 {
 	if (soap_element_begin_in(soap, tag, 1))
 		return NULL;
@@ -5722,47 +4509,47 @@ SOAP_FMAC3 struct soap_Map ** SOAP_FMAC4 soap_in_PointerToom__Map(struct soap *s
 	*a = NULL;
 	if (!soap->null && *soap->href != '#')
 	{	soap_revert(soap);
-		if (!(*a = soap_in_om__Map(soap, tag, *a, type)))
+		if (!(*a = soap_in_omws__Map(soap, tag, *a, type)))
 			return NULL;
 	}
 	else
-	{	a = (struct soap_Map **)soap_id_lookup(soap, soap->href, (void**)a, SOAP_TYPE_om__Map, sizeof(struct soap_Map), 0);
+	{	a = (struct soap_Map **)soap_id_lookup(soap, soap->href, (void**)a, SOAP_TYPE_omws__Map, sizeof(struct soap_Map), 0);
 		if (soap->body && soap_element_end_in(soap, tag))
 			return NULL;
 	}
 	return a;
 }
 
-SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_PointerToom__AbsencePoints(struct soap *soap, struct soap_AbsencePoints *const*a)
+SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_PointerToomws__AbsencePoints(struct soap *soap, struct soap_AbsencePoints *const*a)
 {
-	if (!soap_reference(soap, *a, SOAP_TYPE_om__AbsencePoints))
-		soap_serialize_om__AbsencePoints(soap, *a);
+	if (!soap_reference(soap, *a, SOAP_TYPE_omws__AbsencePoints))
+		soap_serialize_omws__AbsencePoints(soap, *a);
 }
 
-SOAP_FMAC3 int SOAP_FMAC4 soap_put_PointerToom__AbsencePoints(struct soap *soap, struct soap_AbsencePoints *const*a, const char *tag, const char *type)
+SOAP_FMAC3 int SOAP_FMAC4 soap_put_PointerToomws__AbsencePoints(struct soap *soap, struct soap_AbsencePoints *const*a, const char *tag, const char *type)
 {
-	register int id = soap_embed(soap, (void*)a, NULL, 0, tag, SOAP_TYPE_PointerToom__AbsencePoints);
-	if (soap_out_PointerToom__AbsencePoints(soap, tag, id, a, type))
+	register int id = soap_embed(soap, (void*)a, NULL, 0, tag, SOAP_TYPE_PointerToomws__AbsencePoints);
+	if (soap_out_PointerToomws__AbsencePoints(soap, tag, id, a, type))
 		return soap->error;
 	return soap_putindependent(soap);
 }
 
-SOAP_FMAC3 int SOAP_FMAC4 soap_out_PointerToom__AbsencePoints(struct soap *soap, const char *tag, int id, struct soap_AbsencePoints *const*a, const char *type)
+SOAP_FMAC3 int SOAP_FMAC4 soap_out_PointerToomws__AbsencePoints(struct soap *soap, const char *tag, int id, struct soap_AbsencePoints *const*a, const char *type)
 {
-	id = soap_element_id(soap, tag, id, *a, NULL, 0, type, SOAP_TYPE_om__AbsencePoints);
+	id = soap_element_id(soap, tag, id, *a, NULL, 0, type, SOAP_TYPE_omws__AbsencePoints);
 	if (id < 0)
 		return soap->error;
-	return soap_out_om__AbsencePoints(soap, tag, id, *a, type);
+	return soap_out_omws__AbsencePoints(soap, tag, id, *a, type);
 }
 
-SOAP_FMAC3 struct soap_AbsencePoints ** SOAP_FMAC4 soap_get_PointerToom__AbsencePoints(struct soap *soap, struct soap_AbsencePoints **p, const char *tag, const char *type)
+SOAP_FMAC3 struct soap_AbsencePoints ** SOAP_FMAC4 soap_get_PointerToomws__AbsencePoints(struct soap *soap, struct soap_AbsencePoints **p, const char *tag, const char *type)
 {
-	if ((p = soap_in_PointerToom__AbsencePoints(soap, tag, p, type)))
+	if ((p = soap_in_PointerToomws__AbsencePoints(soap, tag, p, type)))
 		soap_getindependent(soap);
 	return p;
 }
 
-SOAP_FMAC3 struct soap_AbsencePoints ** SOAP_FMAC4 soap_in_PointerToom__AbsencePoints(struct soap *soap, const char *tag, struct soap_AbsencePoints **a, const char *type)
+SOAP_FMAC3 struct soap_AbsencePoints ** SOAP_FMAC4 soap_in_PointerToomws__AbsencePoints(struct soap *soap, const char *tag, struct soap_AbsencePoints **a, const char *type)
 {
 	if (soap_element_begin_in(soap, tag, 1))
 		return NULL;
@@ -5772,47 +4559,47 @@ SOAP_FMAC3 struct soap_AbsencePoints ** SOAP_FMAC4 soap_in_PointerToom__AbsenceP
 	*a = NULL;
 	if (!soap->null && *soap->href != '#')
 	{	soap_revert(soap);
-		if (!(*a = soap_in_om__AbsencePoints(soap, tag, *a, type)))
+		if (!(*a = soap_in_omws__AbsencePoints(soap, tag, *a, type)))
 			return NULL;
 	}
 	else
-	{	a = (struct soap_AbsencePoints **)soap_id_lookup(soap, soap->href, (void**)a, SOAP_TYPE_om__AbsencePoints, sizeof(struct soap_AbsencePoints), 0);
+	{	a = (struct soap_AbsencePoints **)soap_id_lookup(soap, soap->href, (void**)a, SOAP_TYPE_omws__AbsencePoints, sizeof(struct soap_AbsencePoints), 0);
 		if (soap->body && soap_element_end_in(soap, tag))
 			return NULL;
 	}
 	return a;
 }
 
-SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_PointerToom__PresencePoints(struct soap *soap, struct soap_PresencePoints *const*a)
+SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_PointerToomws__PresencePoints(struct soap *soap, struct soap_PresencePoints *const*a)
 {
-	if (!soap_reference(soap, *a, SOAP_TYPE_om__PresencePoints))
-		soap_serialize_om__PresencePoints(soap, *a);
+	if (!soap_reference(soap, *a, SOAP_TYPE_omws__PresencePoints))
+		soap_serialize_omws__PresencePoints(soap, *a);
 }
 
-SOAP_FMAC3 int SOAP_FMAC4 soap_put_PointerToom__PresencePoints(struct soap *soap, struct soap_PresencePoints *const*a, const char *tag, const char *type)
+SOAP_FMAC3 int SOAP_FMAC4 soap_put_PointerToomws__PresencePoints(struct soap *soap, struct soap_PresencePoints *const*a, const char *tag, const char *type)
 {
-	register int id = soap_embed(soap, (void*)a, NULL, 0, tag, SOAP_TYPE_PointerToom__PresencePoints);
-	if (soap_out_PointerToom__PresencePoints(soap, tag, id, a, type))
+	register int id = soap_embed(soap, (void*)a, NULL, 0, tag, SOAP_TYPE_PointerToomws__PresencePoints);
+	if (soap_out_PointerToomws__PresencePoints(soap, tag, id, a, type))
 		return soap->error;
 	return soap_putindependent(soap);
 }
 
-SOAP_FMAC3 int SOAP_FMAC4 soap_out_PointerToom__PresencePoints(struct soap *soap, const char *tag, int id, struct soap_PresencePoints *const*a, const char *type)
+SOAP_FMAC3 int SOAP_FMAC4 soap_out_PointerToomws__PresencePoints(struct soap *soap, const char *tag, int id, struct soap_PresencePoints *const*a, const char *type)
 {
-	id = soap_element_id(soap, tag, id, *a, NULL, 0, type, SOAP_TYPE_om__PresencePoints);
+	id = soap_element_id(soap, tag, id, *a, NULL, 0, type, SOAP_TYPE_omws__PresencePoints);
 	if (id < 0)
 		return soap->error;
-	return soap_out_om__PresencePoints(soap, tag, id, *a, type);
+	return soap_out_omws__PresencePoints(soap, tag, id, *a, type);
 }
 
-SOAP_FMAC3 struct soap_PresencePoints ** SOAP_FMAC4 soap_get_PointerToom__PresencePoints(struct soap *soap, struct soap_PresencePoints **p, const char *tag, const char *type)
+SOAP_FMAC3 struct soap_PresencePoints ** SOAP_FMAC4 soap_get_PointerToomws__PresencePoints(struct soap *soap, struct soap_PresencePoints **p, const char *tag, const char *type)
 {
-	if ((p = soap_in_PointerToom__PresencePoints(soap, tag, p, type)))
+	if ((p = soap_in_PointerToomws__PresencePoints(soap, tag, p, type)))
 		soap_getindependent(soap);
 	return p;
 }
 
-SOAP_FMAC3 struct soap_PresencePoints ** SOAP_FMAC4 soap_in_PointerToom__PresencePoints(struct soap *soap, const char *tag, struct soap_PresencePoints **a, const char *type)
+SOAP_FMAC3 struct soap_PresencePoints ** SOAP_FMAC4 soap_in_PointerToomws__PresencePoints(struct soap *soap, const char *tag, struct soap_PresencePoints **a, const char *type)
 {
 	if (soap_element_begin_in(soap, tag, 1))
 		return NULL;
@@ -5822,47 +4609,47 @@ SOAP_FMAC3 struct soap_PresencePoints ** SOAP_FMAC4 soap_in_PointerToom__Presenc
 	*a = NULL;
 	if (!soap->null && *soap->href != '#')
 	{	soap_revert(soap);
-		if (!(*a = soap_in_om__PresencePoints(soap, tag, *a, type)))
+		if (!(*a = soap_in_omws__PresencePoints(soap, tag, *a, type)))
 			return NULL;
 	}
 	else
-	{	a = (struct soap_PresencePoints **)soap_id_lookup(soap, soap->href, (void**)a, SOAP_TYPE_om__PresencePoints, sizeof(struct soap_PresencePoints), 0);
+	{	a = (struct soap_PresencePoints **)soap_id_lookup(soap, soap->href, (void**)a, SOAP_TYPE_omws__PresencePoints, sizeof(struct soap_PresencePoints), 0);
 		if (soap->body && soap_element_end_in(soap, tag))
 			return NULL;
 	}
 	return a;
 }
 
-SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_PointerToom__Point(struct soap *soap, struct soap_Point *const*a)
+SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_PointerToomws__Point(struct soap *soap, struct soap_Point *const*a)
 {
-	if (!soap_reference(soap, *a, SOAP_TYPE_om__Point))
-		soap_serialize_om__Point(soap, *a);
+	if (!soap_reference(soap, *a, SOAP_TYPE_omws__Point))
+		soap_serialize_omws__Point(soap, *a);
 }
 
-SOAP_FMAC3 int SOAP_FMAC4 soap_put_PointerToom__Point(struct soap *soap, struct soap_Point *const*a, const char *tag, const char *type)
+SOAP_FMAC3 int SOAP_FMAC4 soap_put_PointerToomws__Point(struct soap *soap, struct soap_Point *const*a, const char *tag, const char *type)
 {
-	register int id = soap_embed(soap, (void*)a, NULL, 0, tag, SOAP_TYPE_PointerToom__Point);
-	if (soap_out_PointerToom__Point(soap, tag, id, a, type))
+	register int id = soap_embed(soap, (void*)a, NULL, 0, tag, SOAP_TYPE_PointerToomws__Point);
+	if (soap_out_PointerToomws__Point(soap, tag, id, a, type))
 		return soap->error;
 	return soap_putindependent(soap);
 }
 
-SOAP_FMAC3 int SOAP_FMAC4 soap_out_PointerToom__Point(struct soap *soap, const char *tag, int id, struct soap_Point *const*a, const char *type)
+SOAP_FMAC3 int SOAP_FMAC4 soap_out_PointerToomws__Point(struct soap *soap, const char *tag, int id, struct soap_Point *const*a, const char *type)
 {
-	id = soap_element_id(soap, tag, id, *a, NULL, 0, type, SOAP_TYPE_om__Point);
+	id = soap_element_id(soap, tag, id, *a, NULL, 0, type, SOAP_TYPE_omws__Point);
 	if (id < 0)
 		return soap->error;
-	return soap_out_om__Point(soap, tag, id, *a, type);
+	return soap_out_omws__Point(soap, tag, id, *a, type);
 }
 
-SOAP_FMAC3 struct soap_Point ** SOAP_FMAC4 soap_get_PointerToom__Point(struct soap *soap, struct soap_Point **p, const char *tag, const char *type)
+SOAP_FMAC3 struct soap_Point ** SOAP_FMAC4 soap_get_PointerToomws__Point(struct soap *soap, struct soap_Point **p, const char *tag, const char *type)
 {
-	if ((p = soap_in_PointerToom__Point(soap, tag, p, type)))
+	if ((p = soap_in_PointerToomws__Point(soap, tag, p, type)))
 		soap_getindependent(soap);
 	return p;
 }
 
-SOAP_FMAC3 struct soap_Point ** SOAP_FMAC4 soap_in_PointerToom__Point(struct soap *soap, const char *tag, struct soap_Point **a, const char *type)
+SOAP_FMAC3 struct soap_Point ** SOAP_FMAC4 soap_in_PointerToomws__Point(struct soap *soap, const char *tag, struct soap_Point **a, const char *type)
 {
 	if (soap_element_begin_in(soap, tag, 1))
 		return NULL;
@@ -5872,215 +4659,45 @@ SOAP_FMAC3 struct soap_Point ** SOAP_FMAC4 soap_in_PointerToom__Point(struct soa
 	*a = NULL;
 	if (!soap->null && *soap->href != '#')
 	{	soap_revert(soap);
-		if (!(*a = soap_in_om__Point(soap, tag, *a, type)))
+		if (!(*a = soap_in_omws__Point(soap, tag, *a, type)))
 			return NULL;
 	}
 	else
-	{	a = (struct soap_Point **)soap_id_lookup(soap, soap->href, (void**)a, SOAP_TYPE_om__Point, sizeof(struct soap_Point), 0);
+	{	a = (struct soap_Point **)soap_id_lookup(soap, soap->href, (void**)a, SOAP_TYPE_omws__Point, sizeof(struct soap_Point), 0);
 		if (soap->body && soap_element_end_in(soap, tag))
 			return NULL;
 	}
 	return a;
 }
 
-SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_PointerToom__AvailableAlgorithm(struct soap *soap, struct soap_AvailableAlgorithm *const*a)
+SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_wstring(struct soap *soap, wchar_t *const*a)
 {
-	if (!soap_reference(soap, *a, SOAP_TYPE_om__AvailableAlgorithm))
-		soap_serialize_om__AvailableAlgorithm(soap, *a);
+	soap_reference(soap, *a, SOAP_TYPE_wstring);
 }
 
-SOAP_FMAC3 int SOAP_FMAC4 soap_put_PointerToom__AvailableAlgorithm(struct soap *soap, struct soap_AvailableAlgorithm *const*a, const char *tag, const char *type)
+SOAP_FMAC3 int SOAP_FMAC4 soap_put_wstring(struct soap *soap, wchar_t *const*a, const char *tag, const char *type)
 {
-	register int id = soap_embed(soap, (void*)a, NULL, 0, tag, SOAP_TYPE_PointerToom__AvailableAlgorithm);
-	if (soap_out_PointerToom__AvailableAlgorithm(soap, tag, id, a, type))
+	register int id = soap_embed(soap, (void*)a, NULL, 0, tag, SOAP_TYPE_wstring);
+	if (soap_out_wstring(soap, tag, id, a, type))
 		return soap->error;
 	return soap_putindependent(soap);
 }
 
-SOAP_FMAC3 int SOAP_FMAC4 soap_out_PointerToom__AvailableAlgorithm(struct soap *soap, const char *tag, int id, struct soap_AvailableAlgorithm *const*a, const char *type)
+SOAP_FMAC3 int SOAP_FMAC4 soap_out_wstring(struct soap *soap, const char *tag, int id, wchar_t *const*a, const char *type)
 {
-	id = soap_element_id(soap, tag, id, *a, NULL, 0, type, SOAP_TYPE_om__AvailableAlgorithm);
-	if (id < 0)
-		return soap->error;
-	return soap_out_om__AvailableAlgorithm(soap, tag, id, *a, type);
+	return soap_outwstring(soap, tag, id, a, type, SOAP_TYPE_wstring);
 }
 
-SOAP_FMAC3 struct soap_AvailableAlgorithm ** SOAP_FMAC4 soap_get_PointerToom__AvailableAlgorithm(struct soap *soap, struct soap_AvailableAlgorithm **p, const char *tag, const char *type)
+SOAP_FMAC3 wchar_t ** SOAP_FMAC4 soap_get_wstring(struct soap *soap, wchar_t **p, const char *tag, const char *type)
 {
-	if ((p = soap_in_PointerToom__AvailableAlgorithm(soap, tag, p, type)))
+	if ((p = soap_in_wstring(soap, tag, p, type)))
 		soap_getindependent(soap);
 	return p;
 }
 
-SOAP_FMAC3 struct soap_AvailableAlgorithm ** SOAP_FMAC4 soap_in_PointerToom__AvailableAlgorithm(struct soap *soap, const char *tag, struct soap_AvailableAlgorithm **a, const char *type)
+SOAP_FMAC3 wchar_t * * SOAP_FMAC4 soap_in_wstring(struct soap *soap, const char *tag, wchar_t **a, const char *type)
 {
-	if (soap_element_begin_in(soap, tag, 1))
-		return NULL;
-	if (!a)
-		if (!(a = (struct soap_AvailableAlgorithm **)soap_malloc(soap, sizeof(struct soap_AvailableAlgorithm *))))
-			return NULL;
-	*a = NULL;
-	if (!soap->null && *soap->href != '#')
-	{	soap_revert(soap);
-		if (!(*a = soap_in_om__AvailableAlgorithm(soap, tag, *a, type)))
-			return NULL;
-	}
-	else
-	{	a = (struct soap_AvailableAlgorithm **)soap_id_lookup(soap, soap->href, (void**)a, SOAP_TYPE_om__AvailableAlgorithm, sizeof(struct soap_AvailableAlgorithm), 0);
-		if (soap->body && soap_element_end_in(soap, tag))
-			return NULL;
-	}
-	return a;
-}
-
-SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_PointerToom__AlgorithmParameters(struct soap *soap, struct soap_AlgorithmParameters *const*a)
-{
-	if (!soap_reference(soap, *a, SOAP_TYPE_om__AlgorithmParameters))
-		soap_serialize_om__AlgorithmParameters(soap, *a);
-}
-
-SOAP_FMAC3 int SOAP_FMAC4 soap_put_PointerToom__AlgorithmParameters(struct soap *soap, struct soap_AlgorithmParameters *const*a, const char *tag, const char *type)
-{
-	register int id = soap_embed(soap, (void*)a, NULL, 0, tag, SOAP_TYPE_PointerToom__AlgorithmParameters);
-	if (soap_out_PointerToom__AlgorithmParameters(soap, tag, id, a, type))
-		return soap->error;
-	return soap_putindependent(soap);
-}
-
-SOAP_FMAC3 int SOAP_FMAC4 soap_out_PointerToom__AlgorithmParameters(struct soap *soap, const char *tag, int id, struct soap_AlgorithmParameters *const*a, const char *type)
-{
-	id = soap_element_id(soap, tag, id, *a, NULL, 0, type, SOAP_TYPE_om__AlgorithmParameters);
-	if (id < 0)
-		return soap->error;
-	return soap_out_om__AlgorithmParameters(soap, tag, id, *a, type);
-}
-
-SOAP_FMAC3 struct soap_AlgorithmParameters ** SOAP_FMAC4 soap_get_PointerToom__AlgorithmParameters(struct soap *soap, struct soap_AlgorithmParameters **p, const char *tag, const char *type)
-{
-	if ((p = soap_in_PointerToom__AlgorithmParameters(soap, tag, p, type)))
-		soap_getindependent(soap);
-	return p;
-}
-
-SOAP_FMAC3 struct soap_AlgorithmParameters ** SOAP_FMAC4 soap_in_PointerToom__AlgorithmParameters(struct soap *soap, const char *tag, struct soap_AlgorithmParameters **a, const char *type)
-{
-	if (soap_element_begin_in(soap, tag, 1))
-		return NULL;
-	if (!a)
-		if (!(a = (struct soap_AlgorithmParameters **)soap_malloc(soap, sizeof(struct soap_AlgorithmParameters *))))
-			return NULL;
-	*a = NULL;
-	if (!soap->null && *soap->href != '#')
-	{	soap_revert(soap);
-		if (!(*a = soap_in_om__AlgorithmParameters(soap, tag, *a, type)))
-			return NULL;
-	}
-	else
-	{	a = (struct soap_AlgorithmParameters **)soap_id_lookup(soap, soap->href, (void**)a, SOAP_TYPE_om__AlgorithmParameters, sizeof(struct soap_AlgorithmParameters), 0);
-		if (soap->body && soap_element_end_in(soap, tag))
-			return NULL;
-	}
-	return a;
-}
-
-SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_PointerToom__AlgorithmMetadata(struct soap *soap, struct soap_AlgorithmMetadata *const*a)
-{
-	if (!soap_reference(soap, *a, SOAP_TYPE_om__AlgorithmMetadata))
-		soap_serialize_om__AlgorithmMetadata(soap, *a);
-}
-
-SOAP_FMAC3 int SOAP_FMAC4 soap_put_PointerToom__AlgorithmMetadata(struct soap *soap, struct soap_AlgorithmMetadata *const*a, const char *tag, const char *type)
-{
-	register int id = soap_embed(soap, (void*)a, NULL, 0, tag, SOAP_TYPE_PointerToom__AlgorithmMetadata);
-	if (soap_out_PointerToom__AlgorithmMetadata(soap, tag, id, a, type))
-		return soap->error;
-	return soap_putindependent(soap);
-}
-
-SOAP_FMAC3 int SOAP_FMAC4 soap_out_PointerToom__AlgorithmMetadata(struct soap *soap, const char *tag, int id, struct soap_AlgorithmMetadata *const*a, const char *type)
-{
-	id = soap_element_id(soap, tag, id, *a, NULL, 0, type, SOAP_TYPE_om__AlgorithmMetadata);
-	if (id < 0)
-		return soap->error;
-	return soap_out_om__AlgorithmMetadata(soap, tag, id, *a, type);
-}
-
-SOAP_FMAC3 struct soap_AlgorithmMetadata ** SOAP_FMAC4 soap_get_PointerToom__AlgorithmMetadata(struct soap *soap, struct soap_AlgorithmMetadata **p, const char *tag, const char *type)
-{
-	if ((p = soap_in_PointerToom__AlgorithmMetadata(soap, tag, p, type)))
-		soap_getindependent(soap);
-	return p;
-}
-
-SOAP_FMAC3 struct soap_AlgorithmMetadata ** SOAP_FMAC4 soap_in_PointerToom__AlgorithmMetadata(struct soap *soap, const char *tag, struct soap_AlgorithmMetadata **a, const char *type)
-{
-	if (soap_element_begin_in(soap, tag, 1))
-		return NULL;
-	if (!a)
-		if (!(a = (struct soap_AlgorithmMetadata **)soap_malloc(soap, sizeof(struct soap_AlgorithmMetadata *))))
-			return NULL;
-	*a = NULL;
-	if (!soap->null && *soap->href != '#')
-	{	soap_revert(soap);
-		if (!(*a = soap_in_om__AlgorithmMetadata(soap, tag, *a, type)))
-			return NULL;
-	}
-	else
-	{	a = (struct soap_AlgorithmMetadata **)soap_id_lookup(soap, soap->href, (void**)a, SOAP_TYPE_om__AlgorithmMetadata, sizeof(struct soap_AlgorithmMetadata), 0);
-		if (soap->body && soap_element_end_in(soap, tag))
-			return NULL;
-	}
-	return a;
-}
-
-SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_PointerToom__AlgorithmParameter(struct soap *soap, struct soap_AlgorithmParameter *const*a)
-{
-	if (!soap_reference(soap, *a, SOAP_TYPE_om__AlgorithmParameter))
-		soap_serialize_om__AlgorithmParameter(soap, *a);
-}
-
-SOAP_FMAC3 int SOAP_FMAC4 soap_put_PointerToom__AlgorithmParameter(struct soap *soap, struct soap_AlgorithmParameter *const*a, const char *tag, const char *type)
-{
-	register int id = soap_embed(soap, (void*)a, NULL, 0, tag, SOAP_TYPE_PointerToom__AlgorithmParameter);
-	if (soap_out_PointerToom__AlgorithmParameter(soap, tag, id, a, type))
-		return soap->error;
-	return soap_putindependent(soap);
-}
-
-SOAP_FMAC3 int SOAP_FMAC4 soap_out_PointerToom__AlgorithmParameter(struct soap *soap, const char *tag, int id, struct soap_AlgorithmParameter *const*a, const char *type)
-{
-	id = soap_element_id(soap, tag, id, *a, NULL, 0, type, SOAP_TYPE_om__AlgorithmParameter);
-	if (id < 0)
-		return soap->error;
-	return soap_out_om__AlgorithmParameter(soap, tag, id, *a, type);
-}
-
-SOAP_FMAC3 struct soap_AlgorithmParameter ** SOAP_FMAC4 soap_get_PointerToom__AlgorithmParameter(struct soap *soap, struct soap_AlgorithmParameter **p, const char *tag, const char *type)
-{
-	if ((p = soap_in_PointerToom__AlgorithmParameter(soap, tag, p, type)))
-		soap_getindependent(soap);
-	return p;
-}
-
-SOAP_FMAC3 struct soap_AlgorithmParameter ** SOAP_FMAC4 soap_in_PointerToom__AlgorithmParameter(struct soap *soap, const char *tag, struct soap_AlgorithmParameter **a, const char *type)
-{
-	if (soap_element_begin_in(soap, tag, 1))
-		return NULL;
-	if (!a)
-		if (!(a = (struct soap_AlgorithmParameter **)soap_malloc(soap, sizeof(struct soap_AlgorithmParameter *))))
-			return NULL;
-	*a = NULL;
-	if (!soap->null && *soap->href != '#')
-	{	soap_revert(soap);
-		if (!(*a = soap_in_om__AlgorithmParameter(soap, tag, *a, type)))
-			return NULL;
-	}
-	else
-	{	a = (struct soap_AlgorithmParameter **)soap_id_lookup(soap, soap->href, (void**)a, SOAP_TYPE_om__AlgorithmParameter, sizeof(struct soap_AlgorithmParameter), 0);
-		if (soap->body && soap_element_end_in(soap, tag))
-			return NULL;
-	}
-	return a;
+	return soap_inwstring(soap, tag, a, type, SOAP_TYPE_wstring, -1, -1);
 }
 
 SOAP_FMAC3 void SOAP_FMAC4 soap_default_xsd__string(struct soap *soap, char **a)
