@@ -64,9 +64,9 @@ public:
 
   // This is the output format constants.
   enum { FloatingTiff = 0,
-	 GreyTiff = 1,
-	 GreyBMP = 2,
-   FloatingHDF = 3, //erdas imagine format which ArcMap can read
+         GreyTiff = 1,
+         GreyBMP = 2,
+         FloatingHDF = 3, //erdas imagine format which ArcMap can read
   };
 
   void unsetFormat() { format = FloatingTiff; }
