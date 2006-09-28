@@ -1,32 +1,38 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xs:schema
+<xs:schema targetNamespace="http://openmodeller.cria.org.br/xml/1.0"
+ xmlns="http://openmodeller.cria.org.br/xml/1.0"
  xmlns:xs="http://www.w3.org/2001/XMLSchema"
- xmlns="http://brc.ku.edu/OpenModeller/3.0/types"
- targetNamespace="http://brc.ku.edu/OpenModeller/3.0/types"
- xmlns:tns="http://brc.ku.edu/OpenModeller/3.0/types">
+ elementFormDefault="qualified"
+ attributeFormDefault="unqualified"
+ version="1.0" xml:lang="EN">
+  <xs:annotation>
+    <xs:documentation xml:lang="en">
+        XML Schema with all basic element and type definitions used by openModeller.
+    </xs:documentation>		
+  </xs:annotation>
 
- <xs:element name="OpenModeller" type="tns:problem-defn"/>
+ <xs:element name="OpenModeller" type="problem-defn"/>
 
- <xs:element name="AvailableAlgorithms" type="tns:avail-algo-list-defn"/>
+ <xs:element name="AvailableAlgorithms" type="avail-algo-list-defn"/>
 
  <xs:complexType name="problem-defn">
   <xs:sequence>
    <xs:element name="Sampler">
     <xs:complexType>
      <xs:sequence>
-      <xs:element name="Environment" type="tns:environ-defn"/>
-      <xs:element name="Presence" type="tns:occurrence-list-defn"/>
-      <xs:element name="Absence" type="tns:occurrence-list-defn" minOccurs="0" />
+      <xs:element name="Environment" type="environ-defn"/>
+      <xs:element name="Presence" type="occurrence-list-defn"/>
+      <xs:element name="Absence" type="occurrence-list-defn" minOccurs="0" />
      </xs:sequence>
     </xs:complexType>
    </xs:element>
-   <xs:element name="Algorithm" type="tns:algo-defn"/>
+   <xs:element name="Algorithm" type="algo-defn"/>
   </xs:sequence>
  </xs:complexType>
 
  <xs:complexType name="avail-algo-list-defn">
   <xs:sequence>
-   <xs:element name="Algorithm" type="tns:avail-algo-defn" minOccurs="0" maxOccurs="unbounded"/>
+   <xs:element name="Algorithm" type="avail-algo-defn" minOccurs="0" maxOccurs="unbounded"/>
   </xs:sequence>
  </xs:complexType>
 
@@ -77,9 +83,9 @@
  <xs:complexType name="environ-defn">
   <xs:sequence>
    <xs:sequence>
-    <xs:element name="Map" maxOccurs="unbounded" type="tns:map-file-defn"/>
+    <xs:element name="Map" maxOccurs="unbounded" type="map-file-defn"/>
    </xs:sequence>
-   <xs:element name="Mask" type="tns:map-file-defn"/>
+   <xs:element name="Mask" type="map-file-defn"/>
   </xs:sequence>
   <xs:attribute name="Layers" type="xs:int" use="optional"/>
  </xs:complexType>
