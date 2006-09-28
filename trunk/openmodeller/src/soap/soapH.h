@@ -67,7 +67,7 @@ SOAP_FMAC3 double * SOAP_FMAC4 soap_get_double(struct soap*, double *, const cha
 SOAP_FMAC3 double * SOAP_FMAC4 soap_in_double(struct soap*, const char*, double *, const char*);
 
 #ifndef SOAP_TYPE_unsignedByte
-#define SOAP_TYPE_unsignedByte (67)
+#define SOAP_TYPE_unsignedByte (53)
 #endif
 SOAP_FMAC3 void SOAP_FMAC4 soap_default_unsignedByte(struct soap*, unsigned char *);
 SOAP_FMAC3 int SOAP_FMAC4 soap_put_unsignedByte(struct soap*, const unsigned char *, const char*, const char*);
@@ -76,7 +76,7 @@ SOAP_FMAC3 unsigned char * SOAP_FMAC4 soap_get_unsignedByte(struct soap*, unsign
 SOAP_FMAC3 unsigned char * SOAP_FMAC4 soap_in_unsignedByte(struct soap*, const char*, unsigned char *, const char*);
 
 #ifndef SOAP_TYPE_unsignedInt
-#define SOAP_TYPE_unsignedInt (66)
+#define SOAP_TYPE_unsignedInt (52)
 #endif
 SOAP_FMAC3 void SOAP_FMAC4 soap_default_unsignedInt(struct soap*, unsigned int *);
 SOAP_FMAC3 int SOAP_FMAC4 soap_put_unsignedInt(struct soap*, const unsigned int *, const char*, const char*);
@@ -85,7 +85,7 @@ SOAP_FMAC3 unsigned int * SOAP_FMAC4 soap_get_unsignedInt(struct soap*, unsigned
 SOAP_FMAC3 unsigned int * SOAP_FMAC4 soap_in_unsignedInt(struct soap*, const char*, unsigned int *, const char*);
 
 #ifndef SOAP_TYPE_xsd__base64Binary
-#define SOAP_TYPE_xsd__base64Binary (65)
+#define SOAP_TYPE_xsd__base64Binary (51)
 #endif
 SOAP_FMAC3 int SOAP_FMAC4 soap_out_xsd__base64Binary(struct soap*, const char*, int, const xsd__base64Binary *, const char*);
 SOAP_FMAC3 xsd__base64Binary * SOAP_FMAC4 soap_get_xsd__base64Binary(struct soap*, xsd__base64Binary *, const char*, const char*);
@@ -98,7 +98,7 @@ SOAP_FMAC5 void SOAP_FMAC6 soap_copy_xsd__base64Binary(struct soap*, int, int, v
 #ifndef WITH_NOGLOBAL
 
 #ifndef SOAP_TYPE_SOAP_ENV__Fault
-#define SOAP_TYPE_SOAP_ENV__Fault (85)
+#define SOAP_TYPE_SOAP_ENV__Fault (73)
 #endif
 SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_SOAP_ENV__Fault(struct soap*, const struct SOAP_ENV__Fault *);
 SOAP_FMAC3 void SOAP_FMAC4 soap_default_SOAP_ENV__Fault(struct soap*, struct SOAP_ENV__Fault *);
@@ -110,7 +110,7 @@ SOAP_FMAC3 struct SOAP_ENV__Fault * SOAP_FMAC4 soap_in_SOAP_ENV__Fault(struct so
 #endif
 
 #ifndef SOAP_TYPE_SOAP_ENV__Reason
-#define SOAP_TYPE_SOAP_ENV__Reason (84)
+#define SOAP_TYPE_SOAP_ENV__Reason (72)
 #endif
 SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_SOAP_ENV__Reason(struct soap*, const struct SOAP_ENV__Reason *);
 SOAP_FMAC3 void SOAP_FMAC4 soap_default_SOAP_ENV__Reason(struct soap*, struct SOAP_ENV__Reason *);
@@ -122,7 +122,7 @@ SOAP_FMAC3 struct SOAP_ENV__Reason * SOAP_FMAC4 soap_in_SOAP_ENV__Reason(struct 
 #ifndef WITH_NOGLOBAL
 
 #ifndef SOAP_TYPE_SOAP_ENV__Detail
-#define SOAP_TYPE_SOAP_ENV__Detail (83)
+#define SOAP_TYPE_SOAP_ENV__Detail (71)
 #endif
 SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_SOAP_ENV__Detail(struct soap*, const struct SOAP_ENV__Detail *);
 SOAP_FMAC3 void SOAP_FMAC4 soap_default_SOAP_ENV__Detail(struct soap*, struct SOAP_ENV__Detail *);
@@ -136,7 +136,7 @@ SOAP_FMAC3 struct SOAP_ENV__Detail * SOAP_FMAC4 soap_in_SOAP_ENV__Detail(struct 
 #ifndef WITH_NOGLOBAL
 
 #ifndef SOAP_TYPE_SOAP_ENV__Code
-#define SOAP_TYPE_SOAP_ENV__Code (81)
+#define SOAP_TYPE_SOAP_ENV__Code (69)
 #endif
 SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_SOAP_ENV__Code(struct soap*, const struct SOAP_ENV__Code *);
 SOAP_FMAC3 void SOAP_FMAC4 soap_default_SOAP_ENV__Code(struct soap*, struct SOAP_ENV__Code *);
@@ -147,82 +147,82 @@ SOAP_FMAC3 struct SOAP_ENV__Code * SOAP_FMAC4 soap_in_SOAP_ENV__Code(struct soap
 
 #endif
 
-#ifndef SOAP_TYPE_om__ping
-#define SOAP_TYPE_om__ping (80)
+#ifndef SOAP_TYPE_omws__ping
+#define SOAP_TYPE_omws__ping (68)
 #endif
-SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_om__ping(struct soap*, const struct om__ping *);
-SOAP_FMAC3 void SOAP_FMAC4 soap_default_om__ping(struct soap*, struct om__ping *);
-SOAP_FMAC3 int SOAP_FMAC4 soap_put_om__ping(struct soap*, const struct om__ping *, const char*, const char*);
-SOAP_FMAC3 int SOAP_FMAC4 soap_out_om__ping(struct soap*, const char*, int, const struct om__ping *, const char*);
-SOAP_FMAC3 struct om__ping * SOAP_FMAC4 soap_get_om__ping(struct soap*, struct om__ping *, const char*, const char*);
-SOAP_FMAC3 struct om__ping * SOAP_FMAC4 soap_in_om__ping(struct soap*, const char*, struct om__ping *, const char*);
+SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_omws__ping(struct soap*, const struct omws__ping *);
+SOAP_FMAC3 void SOAP_FMAC4 soap_default_omws__ping(struct soap*, struct omws__ping *);
+SOAP_FMAC3 int SOAP_FMAC4 soap_put_omws__ping(struct soap*, const struct omws__ping *, const char*, const char*);
+SOAP_FMAC3 int SOAP_FMAC4 soap_out_omws__ping(struct soap*, const char*, int, const struct omws__ping *, const char*);
+SOAP_FMAC3 struct omws__ping * SOAP_FMAC4 soap_get_omws__ping(struct soap*, struct omws__ping *, const char*, const char*);
+SOAP_FMAC3 struct omws__ping * SOAP_FMAC4 soap_in_omws__ping(struct soap*, const char*, struct omws__ping *, const char*);
 
-#ifndef SOAP_TYPE_om__pingResponse
-#define SOAP_TYPE_om__pingResponse (79)
+#ifndef SOAP_TYPE_omws__pingResponse
+#define SOAP_TYPE_omws__pingResponse (67)
 #endif
-SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_om__pingResponse(struct soap*, const struct om__pingResponse *);
-SOAP_FMAC3 void SOAP_FMAC4 soap_default_om__pingResponse(struct soap*, struct om__pingResponse *);
-SOAP_FMAC3 int SOAP_FMAC4 soap_put_om__pingResponse(struct soap*, const struct om__pingResponse *, const char*, const char*);
-SOAP_FMAC3 int SOAP_FMAC4 soap_out_om__pingResponse(struct soap*, const char*, int, const struct om__pingResponse *, const char*);
-SOAP_FMAC3 struct om__pingResponse * SOAP_FMAC4 soap_get_om__pingResponse(struct soap*, struct om__pingResponse *, const char*, const char*);
-SOAP_FMAC3 struct om__pingResponse * SOAP_FMAC4 soap_in_om__pingResponse(struct soap*, const char*, struct om__pingResponse *, const char*);
+SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_omws__pingResponse(struct soap*, const struct omws__pingResponse *);
+SOAP_FMAC3 void SOAP_FMAC4 soap_default_omws__pingResponse(struct soap*, struct omws__pingResponse *);
+SOAP_FMAC3 int SOAP_FMAC4 soap_put_omws__pingResponse(struct soap*, const struct omws__pingResponse *, const char*, const char*);
+SOAP_FMAC3 int SOAP_FMAC4 soap_out_omws__pingResponse(struct soap*, const char*, int, const struct omws__pingResponse *, const char*);
+SOAP_FMAC3 struct omws__pingResponse * SOAP_FMAC4 soap_get_omws__pingResponse(struct soap*, struct omws__pingResponse *, const char*, const char*);
+SOAP_FMAC3 struct omws__pingResponse * SOAP_FMAC4 soap_in_omws__pingResponse(struct soap*, const char*, struct omws__pingResponse *, const char*);
 
-#ifndef SOAP_TYPE_om__getDistributionMap
-#define SOAP_TYPE_om__getDistributionMap (76)
+#ifndef SOAP_TYPE_omws__getDistributionMap
+#define SOAP_TYPE_omws__getDistributionMap (63)
 #endif
-SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_om__getDistributionMap(struct soap*, const struct om__getDistributionMap *);
-SOAP_FMAC3 void SOAP_FMAC4 soap_default_om__getDistributionMap(struct soap*, struct om__getDistributionMap *);
-SOAP_FMAC3 int SOAP_FMAC4 soap_put_om__getDistributionMap(struct soap*, const struct om__getDistributionMap *, const char*, const char*);
-SOAP_FMAC3 int SOAP_FMAC4 soap_out_om__getDistributionMap(struct soap*, const char*, int, const struct om__getDistributionMap *, const char*);
-SOAP_FMAC3 struct om__getDistributionMap * SOAP_FMAC4 soap_get_om__getDistributionMap(struct soap*, struct om__getDistributionMap *, const char*, const char*);
-SOAP_FMAC3 struct om__getDistributionMap * SOAP_FMAC4 soap_in_om__getDistributionMap(struct soap*, const char*, struct om__getDistributionMap *, const char*);
+SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_omws__getDistributionMap(struct soap*, const struct omws__getDistributionMap *);
+SOAP_FMAC3 void SOAP_FMAC4 soap_default_omws__getDistributionMap(struct soap*, struct omws__getDistributionMap *);
+SOAP_FMAC3 int SOAP_FMAC4 soap_put_omws__getDistributionMap(struct soap*, const struct omws__getDistributionMap *, const char*, const char*);
+SOAP_FMAC3 int SOAP_FMAC4 soap_out_omws__getDistributionMap(struct soap*, const char*, int, const struct omws__getDistributionMap *, const char*);
+SOAP_FMAC3 struct omws__getDistributionMap * SOAP_FMAC4 soap_get_omws__getDistributionMap(struct soap*, struct omws__getDistributionMap *, const char*, const char*);
+SOAP_FMAC3 struct omws__getDistributionMap * SOAP_FMAC4 soap_in_omws__getDistributionMap(struct soap*, const char*, struct omws__getDistributionMap *, const char*);
 
-#ifndef SOAP_TYPE_om__getDistributionMapResponse
-#define SOAP_TYPE_om__getDistributionMapResponse (75)
+#ifndef SOAP_TYPE_omws__getDistributionMapResponse
+#define SOAP_TYPE_omws__getDistributionMapResponse (62)
 #endif
-SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_om__getDistributionMapResponse(struct soap*, const struct om__getDistributionMapResponse *);
-SOAP_FMAC3 void SOAP_FMAC4 soap_default_om__getDistributionMapResponse(struct soap*, struct om__getDistributionMapResponse *);
-SOAP_FMAC3 int SOAP_FMAC4 soap_put_om__getDistributionMapResponse(struct soap*, const struct om__getDistributionMapResponse *, const char*, const char*);
-SOAP_FMAC3 int SOAP_FMAC4 soap_out_om__getDistributionMapResponse(struct soap*, const char*, int, const struct om__getDistributionMapResponse *, const char*);
-SOAP_FMAC3 struct om__getDistributionMapResponse * SOAP_FMAC4 soap_get_om__getDistributionMapResponse(struct soap*, struct om__getDistributionMapResponse *, const char*, const char*);
-SOAP_FMAC3 struct om__getDistributionMapResponse * SOAP_FMAC4 soap_in_om__getDistributionMapResponse(struct soap*, const char*, struct om__getDistributionMapResponse *, const char*);
-SOAP_FMAC5 struct om__getDistributionMapResponse * SOAP_FMAC6 soap_new_om__getDistributionMapResponse(struct soap*, int);
-SOAP_FMAC5 void SOAP_FMAC6 soap_delete_om__getDistributionMapResponse(struct soap*, struct om__getDistributionMapResponse*);
-SOAP_FMAC5 struct om__getDistributionMapResponse * SOAP_FMAC6 soap_instantiate_om__getDistributionMapResponse(struct soap*, int, const char*, const char*, size_t*);
-SOAP_FMAC5 void SOAP_FMAC6 soap_copy_om__getDistributionMapResponse(struct soap*, int, int, void*, const void*, size_t);
+SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_omws__getDistributionMapResponse(struct soap*, const struct omws__getDistributionMapResponse *);
+SOAP_FMAC3 void SOAP_FMAC4 soap_default_omws__getDistributionMapResponse(struct soap*, struct omws__getDistributionMapResponse *);
+SOAP_FMAC3 int SOAP_FMAC4 soap_put_omws__getDistributionMapResponse(struct soap*, const struct omws__getDistributionMapResponse *, const char*, const char*);
+SOAP_FMAC3 int SOAP_FMAC4 soap_out_omws__getDistributionMapResponse(struct soap*, const char*, int, const struct omws__getDistributionMapResponse *, const char*);
+SOAP_FMAC3 struct omws__getDistributionMapResponse * SOAP_FMAC4 soap_get_omws__getDistributionMapResponse(struct soap*, struct omws__getDistributionMapResponse *, const char*, const char*);
+SOAP_FMAC3 struct omws__getDistributionMapResponse * SOAP_FMAC4 soap_in_omws__getDistributionMapResponse(struct soap*, const char*, struct omws__getDistributionMapResponse *, const char*);
+SOAP_FMAC5 struct omws__getDistributionMapResponse * SOAP_FMAC6 soap_new_omws__getDistributionMapResponse(struct soap*, int);
+SOAP_FMAC5 void SOAP_FMAC6 soap_delete_omws__getDistributionMapResponse(struct soap*, struct omws__getDistributionMapResponse*);
+SOAP_FMAC5 struct omws__getDistributionMapResponse * SOAP_FMAC6 soap_instantiate_omws__getDistributionMapResponse(struct soap*, int, const char*, const char*, size_t*);
+SOAP_FMAC5 void SOAP_FMAC6 soap_copy_omws__getDistributionMapResponse(struct soap*, int, int, void*, const void*, size_t);
 
-#ifndef SOAP_TYPE_om__createModel
-#define SOAP_TYPE_om__createModel (64)
+#ifndef SOAP_TYPE_omws__createModel
+#define SOAP_TYPE_omws__createModel (50)
 #endif
-SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_om__createModel(struct soap*, const struct om__createModel *);
-SOAP_FMAC3 void SOAP_FMAC4 soap_default_om__createModel(struct soap*, struct om__createModel *);
-SOAP_FMAC3 int SOAP_FMAC4 soap_put_om__createModel(struct soap*, const struct om__createModel *, const char*, const char*);
-SOAP_FMAC3 int SOAP_FMAC4 soap_out_om__createModel(struct soap*, const char*, int, const struct om__createModel *, const char*);
-SOAP_FMAC3 struct om__createModel * SOAP_FMAC4 soap_get_om__createModel(struct soap*, struct om__createModel *, const char*, const char*);
-SOAP_FMAC3 struct om__createModel * SOAP_FMAC4 soap_in_om__createModel(struct soap*, const char*, struct om__createModel *, const char*);
+SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_omws__createModel(struct soap*, const struct omws__createModel *);
+SOAP_FMAC3 void SOAP_FMAC4 soap_default_omws__createModel(struct soap*, struct omws__createModel *);
+SOAP_FMAC3 int SOAP_FMAC4 soap_put_omws__createModel(struct soap*, const struct omws__createModel *, const char*, const char*);
+SOAP_FMAC3 int SOAP_FMAC4 soap_out_omws__createModel(struct soap*, const char*, int, const struct omws__createModel *, const char*);
+SOAP_FMAC3 struct omws__createModel * SOAP_FMAC4 soap_get_omws__createModel(struct soap*, struct omws__createModel *, const char*, const char*);
+SOAP_FMAC3 struct omws__createModel * SOAP_FMAC4 soap_in_omws__createModel(struct soap*, const char*, struct omws__createModel *, const char*);
 
-#ifndef SOAP_TYPE_om__createModelResponse
-#define SOAP_TYPE_om__createModelResponse (63)
+#ifndef SOAP_TYPE_omws__createModelResponse
+#define SOAP_TYPE_omws__createModelResponse (49)
 #endif
-SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_om__createModelResponse(struct soap*, const struct om__createModelResponse *);
-SOAP_FMAC3 void SOAP_FMAC4 soap_default_om__createModelResponse(struct soap*, struct om__createModelResponse *);
-SOAP_FMAC3 int SOAP_FMAC4 soap_put_om__createModelResponse(struct soap*, const struct om__createModelResponse *, const char*, const char*);
-SOAP_FMAC3 int SOAP_FMAC4 soap_out_om__createModelResponse(struct soap*, const char*, int, const struct om__createModelResponse *, const char*);
-SOAP_FMAC3 struct om__createModelResponse * SOAP_FMAC4 soap_get_om__createModelResponse(struct soap*, struct om__createModelResponse *, const char*, const char*);
-SOAP_FMAC3 struct om__createModelResponse * SOAP_FMAC4 soap_in_om__createModelResponse(struct soap*, const char*, struct om__createModelResponse *, const char*);
+SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_omws__createModelResponse(struct soap*, const struct omws__createModelResponse *);
+SOAP_FMAC3 void SOAP_FMAC4 soap_default_omws__createModelResponse(struct soap*, struct omws__createModelResponse *);
+SOAP_FMAC3 int SOAP_FMAC4 soap_put_omws__createModelResponse(struct soap*, const struct omws__createModelResponse *, const char*, const char*);
+SOAP_FMAC3 int SOAP_FMAC4 soap_out_omws__createModelResponse(struct soap*, const char*, int, const struct omws__createModelResponse *, const char*);
+SOAP_FMAC3 struct omws__createModelResponse * SOAP_FMAC4 soap_get_omws__createModelResponse(struct soap*, struct omws__createModelResponse *, const char*, const char*);
+SOAP_FMAC3 struct omws__createModelResponse * SOAP_FMAC4 soap_in_omws__createModelResponse(struct soap*, const char*, struct omws__createModelResponse *, const char*);
 
-#ifndef SOAP_TYPE_om__Output
-#define SOAP_TYPE_om__Output (55)
+#ifndef SOAP_TYPE_omws__Output
+#define SOAP_TYPE_omws__Output (41)
 #endif
-SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_om__Output(struct soap*, struct soap_Output const*);
-SOAP_FMAC3 void SOAP_FMAC4 soap_default_om__Output(struct soap*, struct soap_Output *);
-SOAP_FMAC3 int SOAP_FMAC4 soap_put_om__Output(struct soap*, const struct soap_Output *, const char*, const char*);
-SOAP_FMAC3 int SOAP_FMAC4 soap_out_om__Output(struct soap*, const char*, int, const struct soap_Output *, const char*);
-SOAP_FMAC3 struct soap_Output * SOAP_FMAC4 soap_get_om__Output(struct soap*, struct soap_Output *, const char*, const char*);
-SOAP_FMAC3 struct soap_Output * SOAP_FMAC4 soap_in_om__Output(struct soap*, const char*, struct soap_Output *, const char*);
+SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_omws__Output(struct soap*, struct soap_Output const*);
+SOAP_FMAC3 void SOAP_FMAC4 soap_default_omws__Output(struct soap*, struct soap_Output *);
+SOAP_FMAC3 int SOAP_FMAC4 soap_put_omws__Output(struct soap*, const struct soap_Output *, const char*, const char*);
+SOAP_FMAC3 int SOAP_FMAC4 soap_out_omws__Output(struct soap*, const char*, int, const struct soap_Output *, const char*);
+SOAP_FMAC3 struct soap_Output * SOAP_FMAC4 soap_get_omws__Output(struct soap*, struct soap_Output *, const char*, const char*);
+SOAP_FMAC3 struct soap_Output * SOAP_FMAC4 soap_in_omws__Output(struct soap*, const char*, struct soap_Output *, const char*);
 
 #ifndef SOAP_TYPE_soap_Output
-#define SOAP_TYPE_soap_Output (54)
+#define SOAP_TYPE_soap_Output (40)
 #endif
 SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_soap_Output(struct soap*, const struct soap_Output *);
 SOAP_FMAC3 void SOAP_FMAC4 soap_default_soap_Output(struct soap*, struct soap_Output *);
@@ -231,18 +231,18 @@ SOAP_FMAC3 int SOAP_FMAC4 soap_out_soap_Output(struct soap*, const char*, int, c
 SOAP_FMAC3 struct soap_Output * SOAP_FMAC4 soap_get_soap_Output(struct soap*, struct soap_Output *, const char*, const char*);
 SOAP_FMAC3 struct soap_Output * SOAP_FMAC4 soap_in_soap_Output(struct soap*, const char*, struct soap_Output *, const char*);
 
-#ifndef SOAP_TYPE_om__Algorithm
-#define SOAP_TYPE_om__Algorithm (53)
+#ifndef SOAP_TYPE_omws__Algorithm
+#define SOAP_TYPE_omws__Algorithm (39)
 #endif
-SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_om__Algorithm(struct soap*, struct soap_Algorithm const*);
-SOAP_FMAC3 void SOAP_FMAC4 soap_default_om__Algorithm(struct soap*, struct soap_Algorithm *);
-SOAP_FMAC3 int SOAP_FMAC4 soap_put_om__Algorithm(struct soap*, const struct soap_Algorithm *, const char*, const char*);
-SOAP_FMAC3 int SOAP_FMAC4 soap_out_om__Algorithm(struct soap*, const char*, int, const struct soap_Algorithm *, const char*);
-SOAP_FMAC3 struct soap_Algorithm * SOAP_FMAC4 soap_get_om__Algorithm(struct soap*, struct soap_Algorithm *, const char*, const char*);
-SOAP_FMAC3 struct soap_Algorithm * SOAP_FMAC4 soap_in_om__Algorithm(struct soap*, const char*, struct soap_Algorithm *, const char*);
+SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_omws__Algorithm(struct soap*, struct soap_Algorithm const*);
+SOAP_FMAC3 void SOAP_FMAC4 soap_default_omws__Algorithm(struct soap*, struct soap_Algorithm *);
+SOAP_FMAC3 int SOAP_FMAC4 soap_put_omws__Algorithm(struct soap*, const struct soap_Algorithm *, const char*, const char*);
+SOAP_FMAC3 int SOAP_FMAC4 soap_out_omws__Algorithm(struct soap*, const char*, int, const struct soap_Algorithm *, const char*);
+SOAP_FMAC3 struct soap_Algorithm * SOAP_FMAC4 soap_get_omws__Algorithm(struct soap*, struct soap_Algorithm *, const char*, const char*);
+SOAP_FMAC3 struct soap_Algorithm * SOAP_FMAC4 soap_in_omws__Algorithm(struct soap*, const char*, struct soap_Algorithm *, const char*);
 
 #ifndef SOAP_TYPE_soap_Algorithm
-#define SOAP_TYPE_soap_Algorithm (51)
+#define SOAP_TYPE_soap_Algorithm (37)
 #endif
 SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_soap_Algorithm(struct soap*, const struct soap_Algorithm *);
 SOAP_FMAC3 void SOAP_FMAC4 soap_default_soap_Algorithm(struct soap*, struct soap_Algorithm *);
@@ -251,18 +251,18 @@ SOAP_FMAC3 int SOAP_FMAC4 soap_out_soap_Algorithm(struct soap*, const char*, int
 SOAP_FMAC3 struct soap_Algorithm * SOAP_FMAC4 soap_get_soap_Algorithm(struct soap*, struct soap_Algorithm *, const char*, const char*);
 SOAP_FMAC3 struct soap_Algorithm * SOAP_FMAC4 soap_in_soap_Algorithm(struct soap*, const char*, struct soap_Algorithm *, const char*);
 
-#ifndef SOAP_TYPE_om__Parameter
-#define SOAP_TYPE_om__Parameter (50)
+#ifndef SOAP_TYPE_omws__Parameter
+#define SOAP_TYPE_omws__Parameter (36)
 #endif
-SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_om__Parameter(struct soap*, struct soap_Parameter const*);
-SOAP_FMAC3 void SOAP_FMAC4 soap_default_om__Parameter(struct soap*, struct soap_Parameter *);
-SOAP_FMAC3 int SOAP_FMAC4 soap_put_om__Parameter(struct soap*, const struct soap_Parameter *, const char*, const char*);
-SOAP_FMAC3 int SOAP_FMAC4 soap_out_om__Parameter(struct soap*, const char*, int, const struct soap_Parameter *, const char*);
-SOAP_FMAC3 struct soap_Parameter * SOAP_FMAC4 soap_get_om__Parameter(struct soap*, struct soap_Parameter *, const char*, const char*);
-SOAP_FMAC3 struct soap_Parameter * SOAP_FMAC4 soap_in_om__Parameter(struct soap*, const char*, struct soap_Parameter *, const char*);
+SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_omws__Parameter(struct soap*, struct soap_Parameter const*);
+SOAP_FMAC3 void SOAP_FMAC4 soap_default_omws__Parameter(struct soap*, struct soap_Parameter *);
+SOAP_FMAC3 int SOAP_FMAC4 soap_put_omws__Parameter(struct soap*, const struct soap_Parameter *, const char*, const char*);
+SOAP_FMAC3 int SOAP_FMAC4 soap_out_omws__Parameter(struct soap*, const char*, int, const struct soap_Parameter *, const char*);
+SOAP_FMAC3 struct soap_Parameter * SOAP_FMAC4 soap_get_omws__Parameter(struct soap*, struct soap_Parameter *, const char*, const char*);
+SOAP_FMAC3 struct soap_Parameter * SOAP_FMAC4 soap_in_omws__Parameter(struct soap*, const char*, struct soap_Parameter *, const char*);
 
 #ifndef SOAP_TYPE_soap_Parameter
-#define SOAP_TYPE_soap_Parameter (49)
+#define SOAP_TYPE_soap_Parameter (35)
 #endif
 SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_soap_Parameter(struct soap*, const struct soap_Parameter *);
 SOAP_FMAC3 void SOAP_FMAC4 soap_default_soap_Parameter(struct soap*, struct soap_Parameter *);
@@ -271,18 +271,18 @@ SOAP_FMAC3 int SOAP_FMAC4 soap_out_soap_Parameter(struct soap*, const char*, int
 SOAP_FMAC3 struct soap_Parameter * SOAP_FMAC4 soap_get_soap_Parameter(struct soap*, struct soap_Parameter *, const char*, const char*);
 SOAP_FMAC3 struct soap_Parameter * SOAP_FMAC4 soap_in_soap_Parameter(struct soap*, const char*, struct soap_Parameter *, const char*);
 
-#ifndef SOAP_TYPE_om__Mask
-#define SOAP_TYPE_om__Mask (48)
+#ifndef SOAP_TYPE_omws__Mask
+#define SOAP_TYPE_omws__Mask (34)
 #endif
-SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_om__Mask(struct soap*, struct soap_Mask const*);
-SOAP_FMAC3 void SOAP_FMAC4 soap_default_om__Mask(struct soap*, struct soap_Mask *);
-SOAP_FMAC3 int SOAP_FMAC4 soap_put_om__Mask(struct soap*, const struct soap_Mask *, const char*, const char*);
-SOAP_FMAC3 int SOAP_FMAC4 soap_out_om__Mask(struct soap*, const char*, int, const struct soap_Mask *, const char*);
-SOAP_FMAC3 struct soap_Mask * SOAP_FMAC4 soap_get_om__Mask(struct soap*, struct soap_Mask *, const char*, const char*);
-SOAP_FMAC3 struct soap_Mask * SOAP_FMAC4 soap_in_om__Mask(struct soap*, const char*, struct soap_Mask *, const char*);
+SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_omws__Mask(struct soap*, struct soap_Mask const*);
+SOAP_FMAC3 void SOAP_FMAC4 soap_default_omws__Mask(struct soap*, struct soap_Mask *);
+SOAP_FMAC3 int SOAP_FMAC4 soap_put_omws__Mask(struct soap*, const struct soap_Mask *, const char*, const char*);
+SOAP_FMAC3 int SOAP_FMAC4 soap_out_omws__Mask(struct soap*, const char*, int, const struct soap_Mask *, const char*);
+SOAP_FMAC3 struct soap_Mask * SOAP_FMAC4 soap_get_omws__Mask(struct soap*, struct soap_Mask *, const char*, const char*);
+SOAP_FMAC3 struct soap_Mask * SOAP_FMAC4 soap_in_omws__Mask(struct soap*, const char*, struct soap_Mask *, const char*);
 
 #ifndef SOAP_TYPE_soap_Mask
-#define SOAP_TYPE_soap_Mask (47)
+#define SOAP_TYPE_soap_Mask (33)
 #endif
 SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_soap_Mask(struct soap*, const struct soap_Mask *);
 SOAP_FMAC3 void SOAP_FMAC4 soap_default_soap_Mask(struct soap*, struct soap_Mask *);
@@ -291,18 +291,18 @@ SOAP_FMAC3 int SOAP_FMAC4 soap_out_soap_Mask(struct soap*, const char*, int, con
 SOAP_FMAC3 struct soap_Mask * SOAP_FMAC4 soap_get_soap_Mask(struct soap*, struct soap_Mask *, const char*, const char*);
 SOAP_FMAC3 struct soap_Mask * SOAP_FMAC4 soap_in_soap_Mask(struct soap*, const char*, struct soap_Mask *, const char*);
 
-#ifndef SOAP_TYPE_om__Maps
-#define SOAP_TYPE_om__Maps (46)
+#ifndef SOAP_TYPE_omws__Maps
+#define SOAP_TYPE_omws__Maps (32)
 #endif
-SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_om__Maps(struct soap*, struct soap_Maps const*);
-SOAP_FMAC3 void SOAP_FMAC4 soap_default_om__Maps(struct soap*, struct soap_Maps *);
-SOAP_FMAC3 int SOAP_FMAC4 soap_put_om__Maps(struct soap*, const struct soap_Maps *, const char*, const char*);
-SOAP_FMAC3 int SOAP_FMAC4 soap_out_om__Maps(struct soap*, const char*, int, const struct soap_Maps *, const char*);
-SOAP_FMAC3 struct soap_Maps * SOAP_FMAC4 soap_get_om__Maps(struct soap*, struct soap_Maps *, const char*, const char*);
-SOAP_FMAC3 struct soap_Maps * SOAP_FMAC4 soap_in_om__Maps(struct soap*, const char*, struct soap_Maps *, const char*);
+SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_omws__Maps(struct soap*, struct soap_Maps const*);
+SOAP_FMAC3 void SOAP_FMAC4 soap_default_omws__Maps(struct soap*, struct soap_Maps *);
+SOAP_FMAC3 int SOAP_FMAC4 soap_put_omws__Maps(struct soap*, const struct soap_Maps *, const char*, const char*);
+SOAP_FMAC3 int SOAP_FMAC4 soap_out_omws__Maps(struct soap*, const char*, int, const struct soap_Maps *, const char*);
+SOAP_FMAC3 struct soap_Maps * SOAP_FMAC4 soap_get_omws__Maps(struct soap*, struct soap_Maps *, const char*, const char*);
+SOAP_FMAC3 struct soap_Maps * SOAP_FMAC4 soap_in_omws__Maps(struct soap*, const char*, struct soap_Maps *, const char*);
 
 #ifndef SOAP_TYPE_soap_Maps
-#define SOAP_TYPE_soap_Maps (44)
+#define SOAP_TYPE_soap_Maps (30)
 #endif
 SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_soap_Maps(struct soap*, const struct soap_Maps *);
 SOAP_FMAC3 void SOAP_FMAC4 soap_default_soap_Maps(struct soap*, struct soap_Maps *);
@@ -311,18 +311,18 @@ SOAP_FMAC3 int SOAP_FMAC4 soap_out_soap_Maps(struct soap*, const char*, int, con
 SOAP_FMAC3 struct soap_Maps * SOAP_FMAC4 soap_get_soap_Maps(struct soap*, struct soap_Maps *, const char*, const char*);
 SOAP_FMAC3 struct soap_Maps * SOAP_FMAC4 soap_in_soap_Maps(struct soap*, const char*, struct soap_Maps *, const char*);
 
-#ifndef SOAP_TYPE_om__Map
-#define SOAP_TYPE_om__Map (43)
+#ifndef SOAP_TYPE_omws__Map
+#define SOAP_TYPE_omws__Map (29)
 #endif
-SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_om__Map(struct soap*, struct soap_Map const*);
-SOAP_FMAC3 void SOAP_FMAC4 soap_default_om__Map(struct soap*, struct soap_Map *);
-SOAP_FMAC3 int SOAP_FMAC4 soap_put_om__Map(struct soap*, const struct soap_Map *, const char*, const char*);
-SOAP_FMAC3 int SOAP_FMAC4 soap_out_om__Map(struct soap*, const char*, int, const struct soap_Map *, const char*);
-SOAP_FMAC3 struct soap_Map * SOAP_FMAC4 soap_get_om__Map(struct soap*, struct soap_Map *, const char*, const char*);
-SOAP_FMAC3 struct soap_Map * SOAP_FMAC4 soap_in_om__Map(struct soap*, const char*, struct soap_Map *, const char*);
+SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_omws__Map(struct soap*, struct soap_Map const*);
+SOAP_FMAC3 void SOAP_FMAC4 soap_default_omws__Map(struct soap*, struct soap_Map *);
+SOAP_FMAC3 int SOAP_FMAC4 soap_put_omws__Map(struct soap*, const struct soap_Map *, const char*, const char*);
+SOAP_FMAC3 int SOAP_FMAC4 soap_out_omws__Map(struct soap*, const char*, int, const struct soap_Map *, const char*);
+SOAP_FMAC3 struct soap_Map * SOAP_FMAC4 soap_get_omws__Map(struct soap*, struct soap_Map *, const char*, const char*);
+SOAP_FMAC3 struct soap_Map * SOAP_FMAC4 soap_in_omws__Map(struct soap*, const char*, struct soap_Map *, const char*);
 
 #ifndef SOAP_TYPE_soap_Map
-#define SOAP_TYPE_soap_Map (42)
+#define SOAP_TYPE_soap_Map (28)
 #endif
 SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_soap_Map(struct soap*, const struct soap_Map *);
 SOAP_FMAC3 void SOAP_FMAC4 soap_default_soap_Map(struct soap*, struct soap_Map *);
@@ -331,18 +331,18 @@ SOAP_FMAC3 int SOAP_FMAC4 soap_out_soap_Map(struct soap*, const char*, int, cons
 SOAP_FMAC3 struct soap_Map * SOAP_FMAC4 soap_get_soap_Map(struct soap*, struct soap_Map *, const char*, const char*);
 SOAP_FMAC3 struct soap_Map * SOAP_FMAC4 soap_in_soap_Map(struct soap*, const char*, struct soap_Map *, const char*);
 
-#ifndef SOAP_TYPE_om__Points
-#define SOAP_TYPE_om__Points (41)
+#ifndef SOAP_TYPE_omws__Points
+#define SOAP_TYPE_omws__Points (27)
 #endif
-SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_om__Points(struct soap*, struct soap_Points const*);
-SOAP_FMAC3 void SOAP_FMAC4 soap_default_om__Points(struct soap*, struct soap_Points *);
-SOAP_FMAC3 int SOAP_FMAC4 soap_put_om__Points(struct soap*, const struct soap_Points *, const char*, const char*);
-SOAP_FMAC3 int SOAP_FMAC4 soap_out_om__Points(struct soap*, const char*, int, const struct soap_Points *, const char*);
-SOAP_FMAC3 struct soap_Points * SOAP_FMAC4 soap_get_om__Points(struct soap*, struct soap_Points *, const char*, const char*);
-SOAP_FMAC3 struct soap_Points * SOAP_FMAC4 soap_in_om__Points(struct soap*, const char*, struct soap_Points *, const char*);
+SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_omws__Points(struct soap*, struct soap_Points const*);
+SOAP_FMAC3 void SOAP_FMAC4 soap_default_omws__Points(struct soap*, struct soap_Points *);
+SOAP_FMAC3 int SOAP_FMAC4 soap_put_omws__Points(struct soap*, const struct soap_Points *, const char*, const char*);
+SOAP_FMAC3 int SOAP_FMAC4 soap_out_omws__Points(struct soap*, const char*, int, const struct soap_Points *, const char*);
+SOAP_FMAC3 struct soap_Points * SOAP_FMAC4 soap_get_omws__Points(struct soap*, struct soap_Points *, const char*, const char*);
+SOAP_FMAC3 struct soap_Points * SOAP_FMAC4 soap_in_omws__Points(struct soap*, const char*, struct soap_Points *, const char*);
 
 #ifndef SOAP_TYPE_soap_Points
-#define SOAP_TYPE_soap_Points (38)
+#define SOAP_TYPE_soap_Points (24)
 #endif
 SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_soap_Points(struct soap*, const struct soap_Points *);
 SOAP_FMAC3 void SOAP_FMAC4 soap_default_soap_Points(struct soap*, struct soap_Points *);
@@ -351,18 +351,18 @@ SOAP_FMAC3 int SOAP_FMAC4 soap_out_soap_Points(struct soap*, const char*, int, c
 SOAP_FMAC3 struct soap_Points * SOAP_FMAC4 soap_get_soap_Points(struct soap*, struct soap_Points *, const char*, const char*);
 SOAP_FMAC3 struct soap_Points * SOAP_FMAC4 soap_in_soap_Points(struct soap*, const char*, struct soap_Points *, const char*);
 
-#ifndef SOAP_TYPE_om__AbsencePoints
-#define SOAP_TYPE_om__AbsencePoints (37)
+#ifndef SOAP_TYPE_omws__AbsencePoints
+#define SOAP_TYPE_omws__AbsencePoints (23)
 #endif
-SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_om__AbsencePoints(struct soap*, struct soap_AbsencePoints const*);
-SOAP_FMAC3 void SOAP_FMAC4 soap_default_om__AbsencePoints(struct soap*, struct soap_AbsencePoints *);
-SOAP_FMAC3 int SOAP_FMAC4 soap_put_om__AbsencePoints(struct soap*, const struct soap_AbsencePoints *, const char*, const char*);
-SOAP_FMAC3 int SOAP_FMAC4 soap_out_om__AbsencePoints(struct soap*, const char*, int, const struct soap_AbsencePoints *, const char*);
-SOAP_FMAC3 struct soap_AbsencePoints * SOAP_FMAC4 soap_get_om__AbsencePoints(struct soap*, struct soap_AbsencePoints *, const char*, const char*);
-SOAP_FMAC3 struct soap_AbsencePoints * SOAP_FMAC4 soap_in_om__AbsencePoints(struct soap*, const char*, struct soap_AbsencePoints *, const char*);
+SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_omws__AbsencePoints(struct soap*, struct soap_AbsencePoints const*);
+SOAP_FMAC3 void SOAP_FMAC4 soap_default_omws__AbsencePoints(struct soap*, struct soap_AbsencePoints *);
+SOAP_FMAC3 int SOAP_FMAC4 soap_put_omws__AbsencePoints(struct soap*, const struct soap_AbsencePoints *, const char*, const char*);
+SOAP_FMAC3 int SOAP_FMAC4 soap_out_omws__AbsencePoints(struct soap*, const char*, int, const struct soap_AbsencePoints *, const char*);
+SOAP_FMAC3 struct soap_AbsencePoints * SOAP_FMAC4 soap_get_omws__AbsencePoints(struct soap*, struct soap_AbsencePoints *, const char*, const char*);
+SOAP_FMAC3 struct soap_AbsencePoints * SOAP_FMAC4 soap_in_omws__AbsencePoints(struct soap*, const char*, struct soap_AbsencePoints *, const char*);
 
 #ifndef SOAP_TYPE_soap_AbsencePoints
-#define SOAP_TYPE_soap_AbsencePoints (36)
+#define SOAP_TYPE_soap_AbsencePoints (22)
 #endif
 SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_soap_AbsencePoints(struct soap*, const struct soap_AbsencePoints *);
 SOAP_FMAC3 void SOAP_FMAC4 soap_default_soap_AbsencePoints(struct soap*, struct soap_AbsencePoints *);
@@ -371,18 +371,18 @@ SOAP_FMAC3 int SOAP_FMAC4 soap_out_soap_AbsencePoints(struct soap*, const char*,
 SOAP_FMAC3 struct soap_AbsencePoints * SOAP_FMAC4 soap_get_soap_AbsencePoints(struct soap*, struct soap_AbsencePoints *, const char*, const char*);
 SOAP_FMAC3 struct soap_AbsencePoints * SOAP_FMAC4 soap_in_soap_AbsencePoints(struct soap*, const char*, struct soap_AbsencePoints *, const char*);
 
-#ifndef SOAP_TYPE_om__PresencePoints
-#define SOAP_TYPE_om__PresencePoints (35)
+#ifndef SOAP_TYPE_omws__PresencePoints
+#define SOAP_TYPE_omws__PresencePoints (21)
 #endif
-SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_om__PresencePoints(struct soap*, struct soap_PresencePoints const*);
-SOAP_FMAC3 void SOAP_FMAC4 soap_default_om__PresencePoints(struct soap*, struct soap_PresencePoints *);
-SOAP_FMAC3 int SOAP_FMAC4 soap_put_om__PresencePoints(struct soap*, const struct soap_PresencePoints *, const char*, const char*);
-SOAP_FMAC3 int SOAP_FMAC4 soap_out_om__PresencePoints(struct soap*, const char*, int, const struct soap_PresencePoints *, const char*);
-SOAP_FMAC3 struct soap_PresencePoints * SOAP_FMAC4 soap_get_om__PresencePoints(struct soap*, struct soap_PresencePoints *, const char*, const char*);
-SOAP_FMAC3 struct soap_PresencePoints * SOAP_FMAC4 soap_in_om__PresencePoints(struct soap*, const char*, struct soap_PresencePoints *, const char*);
+SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_omws__PresencePoints(struct soap*, struct soap_PresencePoints const*);
+SOAP_FMAC3 void SOAP_FMAC4 soap_default_omws__PresencePoints(struct soap*, struct soap_PresencePoints *);
+SOAP_FMAC3 int SOAP_FMAC4 soap_put_omws__PresencePoints(struct soap*, const struct soap_PresencePoints *, const char*, const char*);
+SOAP_FMAC3 int SOAP_FMAC4 soap_out_omws__PresencePoints(struct soap*, const char*, int, const struct soap_PresencePoints *, const char*);
+SOAP_FMAC3 struct soap_PresencePoints * SOAP_FMAC4 soap_get_omws__PresencePoints(struct soap*, struct soap_PresencePoints *, const char*, const char*);
+SOAP_FMAC3 struct soap_PresencePoints * SOAP_FMAC4 soap_in_omws__PresencePoints(struct soap*, const char*, struct soap_PresencePoints *, const char*);
 
 #ifndef SOAP_TYPE_soap_PresencePoints
-#define SOAP_TYPE_soap_PresencePoints (33)
+#define SOAP_TYPE_soap_PresencePoints (19)
 #endif
 SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_soap_PresencePoints(struct soap*, const struct soap_PresencePoints *);
 SOAP_FMAC3 void SOAP_FMAC4 soap_default_soap_PresencePoints(struct soap*, struct soap_PresencePoints *);
@@ -391,18 +391,18 @@ SOAP_FMAC3 int SOAP_FMAC4 soap_out_soap_PresencePoints(struct soap*, const char*
 SOAP_FMAC3 struct soap_PresencePoints * SOAP_FMAC4 soap_get_soap_PresencePoints(struct soap*, struct soap_PresencePoints *, const char*, const char*);
 SOAP_FMAC3 struct soap_PresencePoints * SOAP_FMAC4 soap_in_soap_PresencePoints(struct soap*, const char*, struct soap_PresencePoints *, const char*);
 
-#ifndef SOAP_TYPE_om__Point
-#define SOAP_TYPE_om__Point (32)
+#ifndef SOAP_TYPE_omws__Point
+#define SOAP_TYPE_omws__Point (18)
 #endif
-SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_om__Point(struct soap*, struct soap_Point const*);
-SOAP_FMAC3 void SOAP_FMAC4 soap_default_om__Point(struct soap*, struct soap_Point *);
-SOAP_FMAC3 int SOAP_FMAC4 soap_put_om__Point(struct soap*, const struct soap_Point *, const char*, const char*);
-SOAP_FMAC3 int SOAP_FMAC4 soap_out_om__Point(struct soap*, const char*, int, const struct soap_Point *, const char*);
-SOAP_FMAC3 struct soap_Point * SOAP_FMAC4 soap_get_om__Point(struct soap*, struct soap_Point *, const char*, const char*);
-SOAP_FMAC3 struct soap_Point * SOAP_FMAC4 soap_in_om__Point(struct soap*, const char*, struct soap_Point *, const char*);
+SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_omws__Point(struct soap*, struct soap_Point const*);
+SOAP_FMAC3 void SOAP_FMAC4 soap_default_omws__Point(struct soap*, struct soap_Point *);
+SOAP_FMAC3 int SOAP_FMAC4 soap_put_omws__Point(struct soap*, const struct soap_Point *, const char*, const char*);
+SOAP_FMAC3 int SOAP_FMAC4 soap_out_omws__Point(struct soap*, const char*, int, const struct soap_Point *, const char*);
+SOAP_FMAC3 struct soap_Point * SOAP_FMAC4 soap_get_omws__Point(struct soap*, struct soap_Point *, const char*, const char*);
+SOAP_FMAC3 struct soap_Point * SOAP_FMAC4 soap_in_omws__Point(struct soap*, const char*, struct soap_Point *, const char*);
 
 #ifndef SOAP_TYPE_soap_Point
-#define SOAP_TYPE_soap_Point (31)
+#define SOAP_TYPE_soap_Point (17)
 #endif
 SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_soap_Point(struct soap*, const struct soap_Point *);
 SOAP_FMAC3 void SOAP_FMAC4 soap_default_soap_Point(struct soap*, struct soap_Point *);
@@ -411,130 +411,20 @@ SOAP_FMAC3 int SOAP_FMAC4 soap_out_soap_Point(struct soap*, const char*, int, co
 SOAP_FMAC3 struct soap_Point * SOAP_FMAC4 soap_get_soap_Point(struct soap*, struct soap_Point *, const char*, const char*);
 SOAP_FMAC3 struct soap_Point * SOAP_FMAC4 soap_in_soap_Point(struct soap*, const char*, struct soap_Point *, const char*);
 
-#ifndef SOAP_TYPE_om__getAlgorithms
-#define SOAP_TYPE_om__getAlgorithms (30)
+#ifndef SOAP_TYPE_omws__getAlgorithms
+#define SOAP_TYPE_omws__getAlgorithms (16)
 #endif
-SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_om__getAlgorithms(struct soap*, const struct om__getAlgorithms *);
-SOAP_FMAC3 void SOAP_FMAC4 soap_default_om__getAlgorithms(struct soap*, struct om__getAlgorithms *);
-SOAP_FMAC3 int SOAP_FMAC4 soap_put_om__getAlgorithms(struct soap*, const struct om__getAlgorithms *, const char*, const char*);
-SOAP_FMAC3 int SOAP_FMAC4 soap_out_om__getAlgorithms(struct soap*, const char*, int, const struct om__getAlgorithms *, const char*);
-SOAP_FMAC3 struct om__getAlgorithms * SOAP_FMAC4 soap_get_om__getAlgorithms(struct soap*, struct om__getAlgorithms *, const char*, const char*);
-SOAP_FMAC3 struct om__getAlgorithms * SOAP_FMAC4 soap_in_om__getAlgorithms(struct soap*, const char*, struct om__getAlgorithms *, const char*);
-
-#ifndef SOAP_TYPE_om__getAlgorithmsResponse
-#define SOAP_TYPE_om__getAlgorithmsResponse (25)
-#endif
-SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_om__getAlgorithmsResponse(struct soap*, const struct om__getAlgorithmsResponse *);
-SOAP_FMAC3 void SOAP_FMAC4 soap_default_om__getAlgorithmsResponse(struct soap*, struct om__getAlgorithmsResponse *);
-SOAP_FMAC3 int SOAP_FMAC4 soap_put_om__getAlgorithmsResponse(struct soap*, const struct om__getAlgorithmsResponse *, const char*, const char*);
-SOAP_FMAC3 int SOAP_FMAC4 soap_out_om__getAlgorithmsResponse(struct soap*, const char*, int, const struct om__getAlgorithmsResponse *, const char*);
-SOAP_FMAC3 struct om__getAlgorithmsResponse * SOAP_FMAC4 soap_get_om__getAlgorithmsResponse(struct soap*, struct om__getAlgorithmsResponse *, const char*, const char*);
-SOAP_FMAC3 struct om__getAlgorithmsResponse * SOAP_FMAC4 soap_in_om__getAlgorithmsResponse(struct soap*, const char*, struct om__getAlgorithmsResponse *, const char*);
-
-#ifndef SOAP_TYPE_om__AvailableAlgorithms
-#define SOAP_TYPE_om__AvailableAlgorithms (24)
-#endif
-SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_om__AvailableAlgorithms(struct soap*, struct soap_AvailableAlgorithms const*);
-SOAP_FMAC3 void SOAP_FMAC4 soap_default_om__AvailableAlgorithms(struct soap*, struct soap_AvailableAlgorithms *);
-SOAP_FMAC3 int SOAP_FMAC4 soap_put_om__AvailableAlgorithms(struct soap*, const struct soap_AvailableAlgorithms *, const char*, const char*);
-SOAP_FMAC3 int SOAP_FMAC4 soap_out_om__AvailableAlgorithms(struct soap*, const char*, int, const struct soap_AvailableAlgorithms *, const char*);
-SOAP_FMAC3 struct soap_AvailableAlgorithms * SOAP_FMAC4 soap_get_om__AvailableAlgorithms(struct soap*, struct soap_AvailableAlgorithms *, const char*, const char*);
-SOAP_FMAC3 struct soap_AvailableAlgorithms * SOAP_FMAC4 soap_in_om__AvailableAlgorithms(struct soap*, const char*, struct soap_AvailableAlgorithms *, const char*);
-
-#ifndef SOAP_TYPE_soap_AvailableAlgorithms
-#define SOAP_TYPE_soap_AvailableAlgorithms (22)
-#endif
-SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_soap_AvailableAlgorithms(struct soap*, const struct soap_AvailableAlgorithms *);
-SOAP_FMAC3 void SOAP_FMAC4 soap_default_soap_AvailableAlgorithms(struct soap*, struct soap_AvailableAlgorithms *);
-SOAP_FMAC3 int SOAP_FMAC4 soap_put_soap_AvailableAlgorithms(struct soap*, const struct soap_AvailableAlgorithms *, const char*, const char*);
-SOAP_FMAC3 int SOAP_FMAC4 soap_out_soap_AvailableAlgorithms(struct soap*, const char*, int, const struct soap_AvailableAlgorithms *, const char*);
-SOAP_FMAC3 struct soap_AvailableAlgorithms * SOAP_FMAC4 soap_get_soap_AvailableAlgorithms(struct soap*, struct soap_AvailableAlgorithms *, const char*, const char*);
-SOAP_FMAC3 struct soap_AvailableAlgorithms * SOAP_FMAC4 soap_in_soap_AvailableAlgorithms(struct soap*, const char*, struct soap_AvailableAlgorithms *, const char*);
-
-#ifndef SOAP_TYPE_om__AvailableAlgorithm
-#define SOAP_TYPE_om__AvailableAlgorithm (21)
-#endif
-SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_om__AvailableAlgorithm(struct soap*, struct soap_AvailableAlgorithm const*);
-SOAP_FMAC3 void SOAP_FMAC4 soap_default_om__AvailableAlgorithm(struct soap*, struct soap_AvailableAlgorithm *);
-SOAP_FMAC3 int SOAP_FMAC4 soap_put_om__AvailableAlgorithm(struct soap*, const struct soap_AvailableAlgorithm *, const char*, const char*);
-SOAP_FMAC3 int SOAP_FMAC4 soap_out_om__AvailableAlgorithm(struct soap*, const char*, int, const struct soap_AvailableAlgorithm *, const char*);
-SOAP_FMAC3 struct soap_AvailableAlgorithm * SOAP_FMAC4 soap_get_om__AvailableAlgorithm(struct soap*, struct soap_AvailableAlgorithm *, const char*, const char*);
-SOAP_FMAC3 struct soap_AvailableAlgorithm * SOAP_FMAC4 soap_in_om__AvailableAlgorithm(struct soap*, const char*, struct soap_AvailableAlgorithm *, const char*);
-
-#ifndef SOAP_TYPE_soap_AvailableAlgorithm
-#define SOAP_TYPE_soap_AvailableAlgorithm (18)
-#endif
-SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_soap_AvailableAlgorithm(struct soap*, const struct soap_AvailableAlgorithm *);
-SOAP_FMAC3 void SOAP_FMAC4 soap_default_soap_AvailableAlgorithm(struct soap*, struct soap_AvailableAlgorithm *);
-SOAP_FMAC3 int SOAP_FMAC4 soap_put_soap_AvailableAlgorithm(struct soap*, const struct soap_AvailableAlgorithm *, const char*, const char*);
-SOAP_FMAC3 int SOAP_FMAC4 soap_out_soap_AvailableAlgorithm(struct soap*, const char*, int, const struct soap_AvailableAlgorithm *, const char*);
-SOAP_FMAC3 struct soap_AvailableAlgorithm * SOAP_FMAC4 soap_get_soap_AvailableAlgorithm(struct soap*, struct soap_AvailableAlgorithm *, const char*, const char*);
-SOAP_FMAC3 struct soap_AvailableAlgorithm * SOAP_FMAC4 soap_in_soap_AvailableAlgorithm(struct soap*, const char*, struct soap_AvailableAlgorithm *, const char*);
-
-#ifndef SOAP_TYPE_om__AlgorithmMetadata
-#define SOAP_TYPE_om__AlgorithmMetadata (17)
-#endif
-SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_om__AlgorithmMetadata(struct soap*, struct soap_AlgorithmMetadata const*);
-SOAP_FMAC3 void SOAP_FMAC4 soap_default_om__AlgorithmMetadata(struct soap*, struct soap_AlgorithmMetadata *);
-SOAP_FMAC3 int SOAP_FMAC4 soap_put_om__AlgorithmMetadata(struct soap*, const struct soap_AlgorithmMetadata *, const char*, const char*);
-SOAP_FMAC3 int SOAP_FMAC4 soap_out_om__AlgorithmMetadata(struct soap*, const char*, int, const struct soap_AlgorithmMetadata *, const char*);
-SOAP_FMAC3 struct soap_AlgorithmMetadata * SOAP_FMAC4 soap_get_om__AlgorithmMetadata(struct soap*, struct soap_AlgorithmMetadata *, const char*, const char*);
-SOAP_FMAC3 struct soap_AlgorithmMetadata * SOAP_FMAC4 soap_in_om__AlgorithmMetadata(struct soap*, const char*, struct soap_AlgorithmMetadata *, const char*);
-
-#ifndef SOAP_TYPE_soap_AlgorithmMetadata
-#define SOAP_TYPE_soap_AlgorithmMetadata (16)
-#endif
-SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_soap_AlgorithmMetadata(struct soap*, const struct soap_AlgorithmMetadata *);
-SOAP_FMAC3 void SOAP_FMAC4 soap_default_soap_AlgorithmMetadata(struct soap*, struct soap_AlgorithmMetadata *);
-SOAP_FMAC3 int SOAP_FMAC4 soap_put_soap_AlgorithmMetadata(struct soap*, const struct soap_AlgorithmMetadata *, const char*, const char*);
-SOAP_FMAC3 int SOAP_FMAC4 soap_out_soap_AlgorithmMetadata(struct soap*, const char*, int, const struct soap_AlgorithmMetadata *, const char*);
-SOAP_FMAC3 struct soap_AlgorithmMetadata * SOAP_FMAC4 soap_get_soap_AlgorithmMetadata(struct soap*, struct soap_AlgorithmMetadata *, const char*, const char*);
-SOAP_FMAC3 struct soap_AlgorithmMetadata * SOAP_FMAC4 soap_in_soap_AlgorithmMetadata(struct soap*, const char*, struct soap_AlgorithmMetadata *, const char*);
-
-#ifndef SOAP_TYPE_om__AlgorithmParameters
-#define SOAP_TYPE_om__AlgorithmParameters (15)
-#endif
-SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_om__AlgorithmParameters(struct soap*, struct soap_AlgorithmParameters const*);
-SOAP_FMAC3 void SOAP_FMAC4 soap_default_om__AlgorithmParameters(struct soap*, struct soap_AlgorithmParameters *);
-SOAP_FMAC3 int SOAP_FMAC4 soap_put_om__AlgorithmParameters(struct soap*, const struct soap_AlgorithmParameters *, const char*, const char*);
-SOAP_FMAC3 int SOAP_FMAC4 soap_out_om__AlgorithmParameters(struct soap*, const char*, int, const struct soap_AlgorithmParameters *, const char*);
-SOAP_FMAC3 struct soap_AlgorithmParameters * SOAP_FMAC4 soap_get_om__AlgorithmParameters(struct soap*, struct soap_AlgorithmParameters *, const char*, const char*);
-SOAP_FMAC3 struct soap_AlgorithmParameters * SOAP_FMAC4 soap_in_om__AlgorithmParameters(struct soap*, const char*, struct soap_AlgorithmParameters *, const char*);
-
-#ifndef SOAP_TYPE_soap_AlgorithmParameters
-#define SOAP_TYPE_soap_AlgorithmParameters (13)
-#endif
-SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_soap_AlgorithmParameters(struct soap*, const struct soap_AlgorithmParameters *);
-SOAP_FMAC3 void SOAP_FMAC4 soap_default_soap_AlgorithmParameters(struct soap*, struct soap_AlgorithmParameters *);
-SOAP_FMAC3 int SOAP_FMAC4 soap_put_soap_AlgorithmParameters(struct soap*, const struct soap_AlgorithmParameters *, const char*, const char*);
-SOAP_FMAC3 int SOAP_FMAC4 soap_out_soap_AlgorithmParameters(struct soap*, const char*, int, const struct soap_AlgorithmParameters *, const char*);
-SOAP_FMAC3 struct soap_AlgorithmParameters * SOAP_FMAC4 soap_get_soap_AlgorithmParameters(struct soap*, struct soap_AlgorithmParameters *, const char*, const char*);
-SOAP_FMAC3 struct soap_AlgorithmParameters * SOAP_FMAC4 soap_in_soap_AlgorithmParameters(struct soap*, const char*, struct soap_AlgorithmParameters *, const char*);
-
-#ifndef SOAP_TYPE_om__AlgorithmParameter
-#define SOAP_TYPE_om__AlgorithmParameter (12)
-#endif
-SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_om__AlgorithmParameter(struct soap*, struct soap_AlgorithmParameter const*);
-SOAP_FMAC3 void SOAP_FMAC4 soap_default_om__AlgorithmParameter(struct soap*, struct soap_AlgorithmParameter *);
-SOAP_FMAC3 int SOAP_FMAC4 soap_put_om__AlgorithmParameter(struct soap*, const struct soap_AlgorithmParameter *, const char*, const char*);
-SOAP_FMAC3 int SOAP_FMAC4 soap_out_om__AlgorithmParameter(struct soap*, const char*, int, const struct soap_AlgorithmParameter *, const char*);
-SOAP_FMAC3 struct soap_AlgorithmParameter * SOAP_FMAC4 soap_get_om__AlgorithmParameter(struct soap*, struct soap_AlgorithmParameter *, const char*, const char*);
-SOAP_FMAC3 struct soap_AlgorithmParameter * SOAP_FMAC4 soap_in_om__AlgorithmParameter(struct soap*, const char*, struct soap_AlgorithmParameter *, const char*);
-
-#ifndef SOAP_TYPE_soap_AlgorithmParameter
-#define SOAP_TYPE_soap_AlgorithmParameter (11)
-#endif
-SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_soap_AlgorithmParameter(struct soap*, const struct soap_AlgorithmParameter *);
-SOAP_FMAC3 void SOAP_FMAC4 soap_default_soap_AlgorithmParameter(struct soap*, struct soap_AlgorithmParameter *);
-SOAP_FMAC3 int SOAP_FMAC4 soap_put_soap_AlgorithmParameter(struct soap*, const struct soap_AlgorithmParameter *, const char*, const char*);
-SOAP_FMAC3 int SOAP_FMAC4 soap_out_soap_AlgorithmParameter(struct soap*, const char*, int, const struct soap_AlgorithmParameter *, const char*);
-SOAP_FMAC3 struct soap_AlgorithmParameter * SOAP_FMAC4 soap_get_soap_AlgorithmParameter(struct soap*, struct soap_AlgorithmParameter *, const char*, const char*);
-SOAP_FMAC3 struct soap_AlgorithmParameter * SOAP_FMAC4 soap_in_soap_AlgorithmParameter(struct soap*, const char*, struct soap_AlgorithmParameter *, const char*);
+SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_omws__getAlgorithms(struct soap*, const struct omws__getAlgorithms *);
+SOAP_FMAC3 void SOAP_FMAC4 soap_default_omws__getAlgorithms(struct soap*, struct omws__getAlgorithms *);
+SOAP_FMAC3 int SOAP_FMAC4 soap_put_omws__getAlgorithms(struct soap*, const struct omws__getAlgorithms *, const char*, const char*);
+SOAP_FMAC3 int SOAP_FMAC4 soap_out_omws__getAlgorithms(struct soap*, const char*, int, const struct omws__getAlgorithms *, const char*);
+SOAP_FMAC3 struct omws__getAlgorithms * SOAP_FMAC4 soap_get_omws__getAlgorithms(struct soap*, struct omws__getAlgorithms *, const char*, const char*);
+SOAP_FMAC3 struct omws__getAlgorithms * SOAP_FMAC4 soap_in_omws__getAlgorithms(struct soap*, const char*, struct omws__getAlgorithms *, const char*);
 
 #ifndef WITH_NOGLOBAL
 
 #ifndef SOAP_TYPE_SOAP_ENV__Header
-#define SOAP_TYPE_SOAP_ENV__Header (10)
+#define SOAP_TYPE_SOAP_ENV__Header (13)
 #endif
 SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_SOAP_ENV__Header(struct soap*, const struct SOAP_ENV__Header *);
 SOAP_FMAC3 void SOAP_FMAC4 soap_default_SOAP_ENV__Header(struct soap*, struct SOAP_ENV__Header *);
@@ -546,7 +436,7 @@ SOAP_FMAC3 struct SOAP_ENV__Header * SOAP_FMAC4 soap_in_SOAP_ENV__Header(struct 
 #endif
 
 #ifndef SOAP_TYPE_PointerToSOAP_ENV__Reason
-#define SOAP_TYPE_PointerToSOAP_ENV__Reason (87)
+#define SOAP_TYPE_PointerToSOAP_ENV__Reason (75)
 #endif
 SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_PointerToSOAP_ENV__Reason(struct soap*, struct SOAP_ENV__Reason *const*);
 SOAP_FMAC3 int SOAP_FMAC4 soap_put_PointerToSOAP_ENV__Reason(struct soap*, struct SOAP_ENV__Reason *const*, const char*, const char*);
@@ -557,7 +447,7 @@ SOAP_FMAC3 struct SOAP_ENV__Reason ** SOAP_FMAC4 soap_in_PointerToSOAP_ENV__Reas
 #ifndef WITH_NOGLOBAL
 
 #ifndef SOAP_TYPE_PointerToSOAP_ENV__Detail
-#define SOAP_TYPE_PointerToSOAP_ENV__Detail (86)
+#define SOAP_TYPE_PointerToSOAP_ENV__Detail (74)
 #endif
 SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_PointerToSOAP_ENV__Detail(struct soap*, struct SOAP_ENV__Detail *const*);
 SOAP_FMAC3 int SOAP_FMAC4 soap_put_PointerToSOAP_ENV__Detail(struct soap*, struct SOAP_ENV__Detail *const*, const char*, const char*);
@@ -570,7 +460,7 @@ SOAP_FMAC3 struct SOAP_ENV__Detail ** SOAP_FMAC4 soap_in_PointerToSOAP_ENV__Deta
 #ifndef WITH_NOGLOBAL
 
 #ifndef SOAP_TYPE_PointerToSOAP_ENV__Code
-#define SOAP_TYPE_PointerToSOAP_ENV__Code (82)
+#define SOAP_TYPE_PointerToSOAP_ENV__Code (70)
 #endif
 SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_PointerToSOAP_ENV__Code(struct soap*, struct SOAP_ENV__Code *const*);
 SOAP_FMAC3 int SOAP_FMAC4 soap_put_PointerToSOAP_ENV__Code(struct soap*, struct SOAP_ENV__Code *const*, const char*, const char*);
@@ -581,7 +471,7 @@ SOAP_FMAC3 struct SOAP_ENV__Code ** SOAP_FMAC4 soap_in_PointerToSOAP_ENV__Code(s
 #endif
 
 #ifndef SOAP_TYPE_PointerToxsd__int
-#define SOAP_TYPE_PointerToxsd__int (77)
+#define SOAP_TYPE_PointerToxsd__int (65)
 #endif
 SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_PointerToxsd__int(struct soap*, int *const*);
 SOAP_FMAC3 int SOAP_FMAC4 soap_put_PointerToxsd__int(struct soap*, int *const*, const char*, const char*);
@@ -590,7 +480,7 @@ SOAP_FMAC3 int ** SOAP_FMAC4 soap_get_PointerToxsd__int(struct soap*, int **, co
 SOAP_FMAC3 int ** SOAP_FMAC4 soap_in_PointerToxsd__int(struct soap*, const char*, int **, const char*);
 
 #ifndef SOAP_TYPE_PointerTounsignedByte
-#define SOAP_TYPE_PointerTounsignedByte (68)
+#define SOAP_TYPE_PointerTounsignedByte (54)
 #endif
 SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_PointerTounsignedByte(struct soap*, unsigned char *const*);
 SOAP_FMAC3 int SOAP_FMAC4 soap_put_PointerTounsignedByte(struct soap*, unsigned char *const*, const char*, const char*);
@@ -599,7 +489,7 @@ SOAP_FMAC3 unsigned char ** SOAP_FMAC4 soap_get_PointerTounsignedByte(struct soa
 SOAP_FMAC3 unsigned char ** SOAP_FMAC4 soap_in_PointerTounsignedByte(struct soap*, const char*, unsigned char **, const char*);
 
 #ifndef SOAP_TYPE_PointerToxsd__string
-#define SOAP_TYPE_PointerToxsd__string (61)
+#define SOAP_TYPE_PointerToxsd__string (47)
 #endif
 SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_PointerToxsd__string(struct soap*, char **const*);
 SOAP_FMAC3 int SOAP_FMAC4 soap_put_PointerToxsd__string(struct soap*, char **const*, const char*, const char*);
@@ -607,131 +497,104 @@ SOAP_FMAC3 int SOAP_FMAC4 soap_out_PointerToxsd__string(struct soap*, const char
 SOAP_FMAC3 char *** SOAP_FMAC4 soap_get_PointerToxsd__string(struct soap*, char ***, const char*, const char*);
 SOAP_FMAC3 char *** SOAP_FMAC4 soap_in_PointerToxsd__string(struct soap*, const char*, char ***, const char*);
 
-#ifndef SOAP_TYPE_PointerToom__Output
-#define SOAP_TYPE_PointerToom__Output (60)
+#ifndef SOAP_TYPE_PointerToomws__Output
+#define SOAP_TYPE_PointerToomws__Output (46)
 #endif
-SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_PointerToom__Output(struct soap*, struct soap_Output *const*);
-SOAP_FMAC3 int SOAP_FMAC4 soap_put_PointerToom__Output(struct soap*, struct soap_Output *const*, const char*, const char*);
-SOAP_FMAC3 int SOAP_FMAC4 soap_out_PointerToom__Output(struct soap*, const char *, int, struct soap_Output *const*, const char *);
-SOAP_FMAC3 struct soap_Output ** SOAP_FMAC4 soap_get_PointerToom__Output(struct soap*, struct soap_Output **, const char*, const char*);
-SOAP_FMAC3 struct soap_Output ** SOAP_FMAC4 soap_in_PointerToom__Output(struct soap*, const char*, struct soap_Output **, const char*);
+SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_PointerToomws__Output(struct soap*, struct soap_Output *const*);
+SOAP_FMAC3 int SOAP_FMAC4 soap_put_PointerToomws__Output(struct soap*, struct soap_Output *const*, const char*, const char*);
+SOAP_FMAC3 int SOAP_FMAC4 soap_out_PointerToomws__Output(struct soap*, const char *, int, struct soap_Output *const*, const char *);
+SOAP_FMAC3 struct soap_Output ** SOAP_FMAC4 soap_get_PointerToomws__Output(struct soap*, struct soap_Output **, const char*, const char*);
+SOAP_FMAC3 struct soap_Output ** SOAP_FMAC4 soap_in_PointerToomws__Output(struct soap*, const char*, struct soap_Output **, const char*);
 
-#ifndef SOAP_TYPE_PointerToom__Algorithm
-#define SOAP_TYPE_PointerToom__Algorithm (59)
+#ifndef SOAP_TYPE_PointerToomws__Algorithm
+#define SOAP_TYPE_PointerToomws__Algorithm (45)
 #endif
-SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_PointerToom__Algorithm(struct soap*, struct soap_Algorithm *const*);
-SOAP_FMAC3 int SOAP_FMAC4 soap_put_PointerToom__Algorithm(struct soap*, struct soap_Algorithm *const*, const char*, const char*);
-SOAP_FMAC3 int SOAP_FMAC4 soap_out_PointerToom__Algorithm(struct soap*, const char *, int, struct soap_Algorithm *const*, const char *);
-SOAP_FMAC3 struct soap_Algorithm ** SOAP_FMAC4 soap_get_PointerToom__Algorithm(struct soap*, struct soap_Algorithm **, const char*, const char*);
-SOAP_FMAC3 struct soap_Algorithm ** SOAP_FMAC4 soap_in_PointerToom__Algorithm(struct soap*, const char*, struct soap_Algorithm **, const char*);
+SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_PointerToomws__Algorithm(struct soap*, struct soap_Algorithm *const*);
+SOAP_FMAC3 int SOAP_FMAC4 soap_put_PointerToomws__Algorithm(struct soap*, struct soap_Algorithm *const*, const char*, const char*);
+SOAP_FMAC3 int SOAP_FMAC4 soap_out_PointerToomws__Algorithm(struct soap*, const char *, int, struct soap_Algorithm *const*, const char *);
+SOAP_FMAC3 struct soap_Algorithm ** SOAP_FMAC4 soap_get_PointerToomws__Algorithm(struct soap*, struct soap_Algorithm **, const char*, const char*);
+SOAP_FMAC3 struct soap_Algorithm ** SOAP_FMAC4 soap_in_PointerToomws__Algorithm(struct soap*, const char*, struct soap_Algorithm **, const char*);
 
-#ifndef SOAP_TYPE_PointerToom__Mask
-#define SOAP_TYPE_PointerToom__Mask (58)
+#ifndef SOAP_TYPE_PointerToomws__Mask
+#define SOAP_TYPE_PointerToomws__Mask (44)
 #endif
-SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_PointerToom__Mask(struct soap*, struct soap_Mask *const*);
-SOAP_FMAC3 int SOAP_FMAC4 soap_put_PointerToom__Mask(struct soap*, struct soap_Mask *const*, const char*, const char*);
-SOAP_FMAC3 int SOAP_FMAC4 soap_out_PointerToom__Mask(struct soap*, const char *, int, struct soap_Mask *const*, const char *);
-SOAP_FMAC3 struct soap_Mask ** SOAP_FMAC4 soap_get_PointerToom__Mask(struct soap*, struct soap_Mask **, const char*, const char*);
-SOAP_FMAC3 struct soap_Mask ** SOAP_FMAC4 soap_in_PointerToom__Mask(struct soap*, const char*, struct soap_Mask **, const char*);
+SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_PointerToomws__Mask(struct soap*, struct soap_Mask *const*);
+SOAP_FMAC3 int SOAP_FMAC4 soap_put_PointerToomws__Mask(struct soap*, struct soap_Mask *const*, const char*, const char*);
+SOAP_FMAC3 int SOAP_FMAC4 soap_out_PointerToomws__Mask(struct soap*, const char *, int, struct soap_Mask *const*, const char *);
+SOAP_FMAC3 struct soap_Mask ** SOAP_FMAC4 soap_get_PointerToomws__Mask(struct soap*, struct soap_Mask **, const char*, const char*);
+SOAP_FMAC3 struct soap_Mask ** SOAP_FMAC4 soap_in_PointerToomws__Mask(struct soap*, const char*, struct soap_Mask **, const char*);
 
-#ifndef SOAP_TYPE_PointerToom__Maps
-#define SOAP_TYPE_PointerToom__Maps (57)
+#ifndef SOAP_TYPE_PointerToomws__Maps
+#define SOAP_TYPE_PointerToomws__Maps (43)
 #endif
-SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_PointerToom__Maps(struct soap*, struct soap_Maps *const*);
-SOAP_FMAC3 int SOAP_FMAC4 soap_put_PointerToom__Maps(struct soap*, struct soap_Maps *const*, const char*, const char*);
-SOAP_FMAC3 int SOAP_FMAC4 soap_out_PointerToom__Maps(struct soap*, const char *, int, struct soap_Maps *const*, const char *);
-SOAP_FMAC3 struct soap_Maps ** SOAP_FMAC4 soap_get_PointerToom__Maps(struct soap*, struct soap_Maps **, const char*, const char*);
-SOAP_FMAC3 struct soap_Maps ** SOAP_FMAC4 soap_in_PointerToom__Maps(struct soap*, const char*, struct soap_Maps **, const char*);
+SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_PointerToomws__Maps(struct soap*, struct soap_Maps *const*);
+SOAP_FMAC3 int SOAP_FMAC4 soap_put_PointerToomws__Maps(struct soap*, struct soap_Maps *const*, const char*, const char*);
+SOAP_FMAC3 int SOAP_FMAC4 soap_out_PointerToomws__Maps(struct soap*, const char *, int, struct soap_Maps *const*, const char *);
+SOAP_FMAC3 struct soap_Maps ** SOAP_FMAC4 soap_get_PointerToomws__Maps(struct soap*, struct soap_Maps **, const char*, const char*);
+SOAP_FMAC3 struct soap_Maps ** SOAP_FMAC4 soap_in_PointerToomws__Maps(struct soap*, const char*, struct soap_Maps **, const char*);
 
-#ifndef SOAP_TYPE_PointerToom__Points
-#define SOAP_TYPE_PointerToom__Points (56)
+#ifndef SOAP_TYPE_PointerToomws__Points
+#define SOAP_TYPE_PointerToomws__Points (42)
 #endif
-SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_PointerToom__Points(struct soap*, struct soap_Points *const*);
-SOAP_FMAC3 int SOAP_FMAC4 soap_put_PointerToom__Points(struct soap*, struct soap_Points *const*, const char*, const char*);
-SOAP_FMAC3 int SOAP_FMAC4 soap_out_PointerToom__Points(struct soap*, const char *, int, struct soap_Points *const*, const char *);
-SOAP_FMAC3 struct soap_Points ** SOAP_FMAC4 soap_get_PointerToom__Points(struct soap*, struct soap_Points **, const char*, const char*);
-SOAP_FMAC3 struct soap_Points ** SOAP_FMAC4 soap_in_PointerToom__Points(struct soap*, const char*, struct soap_Points **, const char*);
+SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_PointerToomws__Points(struct soap*, struct soap_Points *const*);
+SOAP_FMAC3 int SOAP_FMAC4 soap_put_PointerToomws__Points(struct soap*, struct soap_Points *const*, const char*, const char*);
+SOAP_FMAC3 int SOAP_FMAC4 soap_out_PointerToomws__Points(struct soap*, const char *, int, struct soap_Points *const*, const char *);
+SOAP_FMAC3 struct soap_Points ** SOAP_FMAC4 soap_get_PointerToomws__Points(struct soap*, struct soap_Points **, const char*, const char*);
+SOAP_FMAC3 struct soap_Points ** SOAP_FMAC4 soap_in_PointerToomws__Points(struct soap*, const char*, struct soap_Points **, const char*);
 
-#ifndef SOAP_TYPE_PointerToom__Parameter
-#define SOAP_TYPE_PointerToom__Parameter (52)
+#ifndef SOAP_TYPE_PointerToomws__Parameter
+#define SOAP_TYPE_PointerToomws__Parameter (38)
 #endif
-SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_PointerToom__Parameter(struct soap*, struct soap_Parameter *const*);
-SOAP_FMAC3 int SOAP_FMAC4 soap_put_PointerToom__Parameter(struct soap*, struct soap_Parameter *const*, const char*, const char*);
-SOAP_FMAC3 int SOAP_FMAC4 soap_out_PointerToom__Parameter(struct soap*, const char *, int, struct soap_Parameter *const*, const char *);
-SOAP_FMAC3 struct soap_Parameter ** SOAP_FMAC4 soap_get_PointerToom__Parameter(struct soap*, struct soap_Parameter **, const char*, const char*);
-SOAP_FMAC3 struct soap_Parameter ** SOAP_FMAC4 soap_in_PointerToom__Parameter(struct soap*, const char*, struct soap_Parameter **, const char*);
+SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_PointerToomws__Parameter(struct soap*, struct soap_Parameter *const*);
+SOAP_FMAC3 int SOAP_FMAC4 soap_put_PointerToomws__Parameter(struct soap*, struct soap_Parameter *const*, const char*, const char*);
+SOAP_FMAC3 int SOAP_FMAC4 soap_out_PointerToomws__Parameter(struct soap*, const char *, int, struct soap_Parameter *const*, const char *);
+SOAP_FMAC3 struct soap_Parameter ** SOAP_FMAC4 soap_get_PointerToomws__Parameter(struct soap*, struct soap_Parameter **, const char*, const char*);
+SOAP_FMAC3 struct soap_Parameter ** SOAP_FMAC4 soap_in_PointerToomws__Parameter(struct soap*, const char*, struct soap_Parameter **, const char*);
 
-#ifndef SOAP_TYPE_PointerToom__Map
-#define SOAP_TYPE_PointerToom__Map (45)
+#ifndef SOAP_TYPE_PointerToomws__Map
+#define SOAP_TYPE_PointerToomws__Map (31)
 #endif
-SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_PointerToom__Map(struct soap*, struct soap_Map *const*);
-SOAP_FMAC3 int SOAP_FMAC4 soap_put_PointerToom__Map(struct soap*, struct soap_Map *const*, const char*, const char*);
-SOAP_FMAC3 int SOAP_FMAC4 soap_out_PointerToom__Map(struct soap*, const char *, int, struct soap_Map *const*, const char *);
-SOAP_FMAC3 struct soap_Map ** SOAP_FMAC4 soap_get_PointerToom__Map(struct soap*, struct soap_Map **, const char*, const char*);
-SOAP_FMAC3 struct soap_Map ** SOAP_FMAC4 soap_in_PointerToom__Map(struct soap*, const char*, struct soap_Map **, const char*);
+SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_PointerToomws__Map(struct soap*, struct soap_Map *const*);
+SOAP_FMAC3 int SOAP_FMAC4 soap_put_PointerToomws__Map(struct soap*, struct soap_Map *const*, const char*, const char*);
+SOAP_FMAC3 int SOAP_FMAC4 soap_out_PointerToomws__Map(struct soap*, const char *, int, struct soap_Map *const*, const char *);
+SOAP_FMAC3 struct soap_Map ** SOAP_FMAC4 soap_get_PointerToomws__Map(struct soap*, struct soap_Map **, const char*, const char*);
+SOAP_FMAC3 struct soap_Map ** SOAP_FMAC4 soap_in_PointerToomws__Map(struct soap*, const char*, struct soap_Map **, const char*);
 
-#ifndef SOAP_TYPE_PointerToom__AbsencePoints
-#define SOAP_TYPE_PointerToom__AbsencePoints (40)
+#ifndef SOAP_TYPE_PointerToomws__AbsencePoints
+#define SOAP_TYPE_PointerToomws__AbsencePoints (26)
 #endif
-SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_PointerToom__AbsencePoints(struct soap*, struct soap_AbsencePoints *const*);
-SOAP_FMAC3 int SOAP_FMAC4 soap_put_PointerToom__AbsencePoints(struct soap*, struct soap_AbsencePoints *const*, const char*, const char*);
-SOAP_FMAC3 int SOAP_FMAC4 soap_out_PointerToom__AbsencePoints(struct soap*, const char *, int, struct soap_AbsencePoints *const*, const char *);
-SOAP_FMAC3 struct soap_AbsencePoints ** SOAP_FMAC4 soap_get_PointerToom__AbsencePoints(struct soap*, struct soap_AbsencePoints **, const char*, const char*);
-SOAP_FMAC3 struct soap_AbsencePoints ** SOAP_FMAC4 soap_in_PointerToom__AbsencePoints(struct soap*, const char*, struct soap_AbsencePoints **, const char*);
+SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_PointerToomws__AbsencePoints(struct soap*, struct soap_AbsencePoints *const*);
+SOAP_FMAC3 int SOAP_FMAC4 soap_put_PointerToomws__AbsencePoints(struct soap*, struct soap_AbsencePoints *const*, const char*, const char*);
+SOAP_FMAC3 int SOAP_FMAC4 soap_out_PointerToomws__AbsencePoints(struct soap*, const char *, int, struct soap_AbsencePoints *const*, const char *);
+SOAP_FMAC3 struct soap_AbsencePoints ** SOAP_FMAC4 soap_get_PointerToomws__AbsencePoints(struct soap*, struct soap_AbsencePoints **, const char*, const char*);
+SOAP_FMAC3 struct soap_AbsencePoints ** SOAP_FMAC4 soap_in_PointerToomws__AbsencePoints(struct soap*, const char*, struct soap_AbsencePoints **, const char*);
 
-#ifndef SOAP_TYPE_PointerToom__PresencePoints
-#define SOAP_TYPE_PointerToom__PresencePoints (39)
+#ifndef SOAP_TYPE_PointerToomws__PresencePoints
+#define SOAP_TYPE_PointerToomws__PresencePoints (25)
 #endif
-SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_PointerToom__PresencePoints(struct soap*, struct soap_PresencePoints *const*);
-SOAP_FMAC3 int SOAP_FMAC4 soap_put_PointerToom__PresencePoints(struct soap*, struct soap_PresencePoints *const*, const char*, const char*);
-SOAP_FMAC3 int SOAP_FMAC4 soap_out_PointerToom__PresencePoints(struct soap*, const char *, int, struct soap_PresencePoints *const*, const char *);
-SOAP_FMAC3 struct soap_PresencePoints ** SOAP_FMAC4 soap_get_PointerToom__PresencePoints(struct soap*, struct soap_PresencePoints **, const char*, const char*);
-SOAP_FMAC3 struct soap_PresencePoints ** SOAP_FMAC4 soap_in_PointerToom__PresencePoints(struct soap*, const char*, struct soap_PresencePoints **, const char*);
+SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_PointerToomws__PresencePoints(struct soap*, struct soap_PresencePoints *const*);
+SOAP_FMAC3 int SOAP_FMAC4 soap_put_PointerToomws__PresencePoints(struct soap*, struct soap_PresencePoints *const*, const char*, const char*);
+SOAP_FMAC3 int SOAP_FMAC4 soap_out_PointerToomws__PresencePoints(struct soap*, const char *, int, struct soap_PresencePoints *const*, const char *);
+SOAP_FMAC3 struct soap_PresencePoints ** SOAP_FMAC4 soap_get_PointerToomws__PresencePoints(struct soap*, struct soap_PresencePoints **, const char*, const char*);
+SOAP_FMAC3 struct soap_PresencePoints ** SOAP_FMAC4 soap_in_PointerToomws__PresencePoints(struct soap*, const char*, struct soap_PresencePoints **, const char*);
 
-#ifndef SOAP_TYPE_PointerToom__Point
-#define SOAP_TYPE_PointerToom__Point (34)
+#ifndef SOAP_TYPE_PointerToomws__Point
+#define SOAP_TYPE_PointerToomws__Point (20)
 #endif
-SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_PointerToom__Point(struct soap*, struct soap_Point *const*);
-SOAP_FMAC3 int SOAP_FMAC4 soap_put_PointerToom__Point(struct soap*, struct soap_Point *const*, const char*, const char*);
-SOAP_FMAC3 int SOAP_FMAC4 soap_out_PointerToom__Point(struct soap*, const char *, int, struct soap_Point *const*, const char *);
-SOAP_FMAC3 struct soap_Point ** SOAP_FMAC4 soap_get_PointerToom__Point(struct soap*, struct soap_Point **, const char*, const char*);
-SOAP_FMAC3 struct soap_Point ** SOAP_FMAC4 soap_in_PointerToom__Point(struct soap*, const char*, struct soap_Point **, const char*);
+SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_PointerToomws__Point(struct soap*, struct soap_Point *const*);
+SOAP_FMAC3 int SOAP_FMAC4 soap_put_PointerToomws__Point(struct soap*, struct soap_Point *const*, const char*, const char*);
+SOAP_FMAC3 int SOAP_FMAC4 soap_out_PointerToomws__Point(struct soap*, const char *, int, struct soap_Point *const*, const char *);
+SOAP_FMAC3 struct soap_Point ** SOAP_FMAC4 soap_get_PointerToomws__Point(struct soap*, struct soap_Point **, const char*, const char*);
+SOAP_FMAC3 struct soap_Point ** SOAP_FMAC4 soap_in_PointerToomws__Point(struct soap*, const char*, struct soap_Point **, const char*);
 
-#ifndef SOAP_TYPE_PointerToom__AvailableAlgorithm
-#define SOAP_TYPE_PointerToom__AvailableAlgorithm (23)
+#ifndef SOAP_TYPE_wstring
+#define SOAP_TYPE_wstring (11)
 #endif
-SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_PointerToom__AvailableAlgorithm(struct soap*, struct soap_AvailableAlgorithm *const*);
-SOAP_FMAC3 int SOAP_FMAC4 soap_put_PointerToom__AvailableAlgorithm(struct soap*, struct soap_AvailableAlgorithm *const*, const char*, const char*);
-SOAP_FMAC3 int SOAP_FMAC4 soap_out_PointerToom__AvailableAlgorithm(struct soap*, const char *, int, struct soap_AvailableAlgorithm *const*, const char *);
-SOAP_FMAC3 struct soap_AvailableAlgorithm ** SOAP_FMAC4 soap_get_PointerToom__AvailableAlgorithm(struct soap*, struct soap_AvailableAlgorithm **, const char*, const char*);
-SOAP_FMAC3 struct soap_AvailableAlgorithm ** SOAP_FMAC4 soap_in_PointerToom__AvailableAlgorithm(struct soap*, const char*, struct soap_AvailableAlgorithm **, const char*);
-
-#ifndef SOAP_TYPE_PointerToom__AlgorithmParameters
-#define SOAP_TYPE_PointerToom__AlgorithmParameters (20)
-#endif
-SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_PointerToom__AlgorithmParameters(struct soap*, struct soap_AlgorithmParameters *const*);
-SOAP_FMAC3 int SOAP_FMAC4 soap_put_PointerToom__AlgorithmParameters(struct soap*, struct soap_AlgorithmParameters *const*, const char*, const char*);
-SOAP_FMAC3 int SOAP_FMAC4 soap_out_PointerToom__AlgorithmParameters(struct soap*, const char *, int, struct soap_AlgorithmParameters *const*, const char *);
-SOAP_FMAC3 struct soap_AlgorithmParameters ** SOAP_FMAC4 soap_get_PointerToom__AlgorithmParameters(struct soap*, struct soap_AlgorithmParameters **, const char*, const char*);
-SOAP_FMAC3 struct soap_AlgorithmParameters ** SOAP_FMAC4 soap_in_PointerToom__AlgorithmParameters(struct soap*, const char*, struct soap_AlgorithmParameters **, const char*);
-
-#ifndef SOAP_TYPE_PointerToom__AlgorithmMetadata
-#define SOAP_TYPE_PointerToom__AlgorithmMetadata (19)
-#endif
-SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_PointerToom__AlgorithmMetadata(struct soap*, struct soap_AlgorithmMetadata *const*);
-SOAP_FMAC3 int SOAP_FMAC4 soap_put_PointerToom__AlgorithmMetadata(struct soap*, struct soap_AlgorithmMetadata *const*, const char*, const char*);
-SOAP_FMAC3 int SOAP_FMAC4 soap_out_PointerToom__AlgorithmMetadata(struct soap*, const char *, int, struct soap_AlgorithmMetadata *const*, const char *);
-SOAP_FMAC3 struct soap_AlgorithmMetadata ** SOAP_FMAC4 soap_get_PointerToom__AlgorithmMetadata(struct soap*, struct soap_AlgorithmMetadata **, const char*, const char*);
-SOAP_FMAC3 struct soap_AlgorithmMetadata ** SOAP_FMAC4 soap_in_PointerToom__AlgorithmMetadata(struct soap*, const char*, struct soap_AlgorithmMetadata **, const char*);
-
-#ifndef SOAP_TYPE_PointerToom__AlgorithmParameter
-#define SOAP_TYPE_PointerToom__AlgorithmParameter (14)
-#endif
-SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_PointerToom__AlgorithmParameter(struct soap*, struct soap_AlgorithmParameter *const*);
-SOAP_FMAC3 int SOAP_FMAC4 soap_put_PointerToom__AlgorithmParameter(struct soap*, struct soap_AlgorithmParameter *const*, const char*, const char*);
-SOAP_FMAC3 int SOAP_FMAC4 soap_out_PointerToom__AlgorithmParameter(struct soap*, const char *, int, struct soap_AlgorithmParameter *const*, const char *);
-SOAP_FMAC3 struct soap_AlgorithmParameter ** SOAP_FMAC4 soap_get_PointerToom__AlgorithmParameter(struct soap*, struct soap_AlgorithmParameter **, const char*, const char*);
-SOAP_FMAC3 struct soap_AlgorithmParameter ** SOAP_FMAC4 soap_in_PointerToom__AlgorithmParameter(struct soap*, const char*, struct soap_AlgorithmParameter **, const char*);
+SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_wstring(struct soap*, wchar_t *const*);
+SOAP_FMAC3 int SOAP_FMAC4 soap_put_wstring(struct soap*, wchar_t *const*, const char*, const char*);
+SOAP_FMAC3 int SOAP_FMAC4 soap_out_wstring(struct soap*, const char*, int, wchar_t*const*, const char*);
+SOAP_FMAC3 wchar_t ** SOAP_FMAC4 soap_get_wstring(struct soap*, wchar_t **, const char*, const char*);
+SOAP_FMAC3 wchar_t * * SOAP_FMAC4 soap_in_wstring(struct soap*, const char*, wchar_t **, const char*);
 
 #ifndef SOAP_TYPE_xsd__string
 #define SOAP_TYPE_xsd__string (6)

@@ -36,6 +36,9 @@
 #include <sys/types.h>
 #include <unistd.h>
 
+#include <sstream>
+using namespace std;
+
 #define BACKLOG (100) // Max. request backlog 
 #define TEMPLATE_FILE_NAME "dmapXXXXXX"
 #define min *60
@@ -44,8 +47,9 @@
 /*****************************/
 /***  Forward declarations ***/
 
-static void *process_request(void*);
-static int getData(struct soap*, const xsd__string, xsd__base64Binary&);
+static void *process_request( void* );
+static int getData( struct soap*, const xsd__string, xsd__base64Binary& );
+static wchar_t* convertToWideChar( const char* p );
 
 /********************/
 /***  Static data ***/
@@ -216,18 +220,17 @@ void *process_request(void *soap)
   return NULL;
 }
 
-
 /**********************/
 /*** get Algorithms ***/
 int 
-om__getAlgorithms( struct soap *soap, void *_, struct om__getAlgorithmsResponse &r )
+omws__getAlgorithms( struct soap *soap, XML &om__AvailableAlgorithms )
 {
   // Get controller object previously instantiated
   OpenModeller *om = (OpenModeller*)soap->user; 
 
   // alloc new header
   soap->header = (struct SOAP_ENV__Header*)soap_malloc( soap, sizeof(struct SOAP_ENV__Header) ); 
-  soap->header->om__version = om->getVersion();
+  soap->header->omws__version = om->getVersion();
 
   AlgMetadata const **algorithms = om->availableAlgorithms();
 
@@ -238,67 +241,11 @@ om__getAlgorithms( struct soap *soap, void *_, struct om__getAlgorithmsResponse 
     return soap_receiver_fault( soap, "No available algorithms", NULL );
   }
 
-  // Instantiate soap structure to be returned
-  soap_AvailableAlgorithm *soapAlgs = new soap_AvailableAlgorithm[nalg];
+  ConfigurationPtr cfg = AlgorithmFactory::getConfiguration();
+  ostringstream oss ;
+  Configuration::writeXml( cfg, oss );
 
-  // For each algorithm
-  int i = 0;
-  AlgMetadata const *metadata;
-  while ( metadata = *algorithms++ ) {
-
-    // Algorithm metadata
-    soap_AlgorithmMetadata *algMetadata = new soap_AlgorithmMetadata;
-
-    algMetadata->Id           = metadata->id;
-    algMetadata->Name         = metadata->name;
-    algMetadata->Version      = metadata->version;
-    algMetadata->Author       = metadata->author;
-    algMetadata->CodeAuthor   = metadata->code_author;
-    algMetadata->Contact      = metadata->contact;
-    algMetadata->Categorical  = metadata->categorical;
-    algMetadata->Absence      = metadata->absence;
-    algMetadata->Overview     = metadata->overview;
-    algMetadata->Description  = metadata->description;
-    algMetadata->Bibliography = metadata->biblio;
-
-    soapAlgs[i].__ptrAlgorithmMetadata = algMetadata;
-
-    // Algorithm parameters
-    int nparams = metadata->nparam;
-
-    soap_AlgorithmParameters *algParameters = new soap_AlgorithmParameters;
-
-    algParameters->__size = nparams;
-
-    // Instantiate soap parameter structure
-    soap_AlgorithmParameter *soapParam = new soap_AlgorithmParameter[nparams];
-
-    // For each parameter
-    AlgParamMetadata *param = metadata->param;
-
-    for ( int j=0 ; j < nparams; param++, j++ ) {
-
-      soapParam[j].Id          = param->id;
-      soapParam[j].Name        = param->name;
-      soapParam[j].Type        = param->type;
-      soapParam[j].HasMin      = param->has_min;
-      soapParam[j].Min         = param->min_val;
-      soapParam[j].HasMax      = param->has_max;
-      soapParam[j].Max         = param->max_val;
-      soapParam[j].Typical     = param->typical;
-      soapParam[j].Overview    = param->overview;
-      soapParam[j].Description = param->description;
-    }
-
-    algParameters->__ptrParam = soapParam;
-
-    soapAlgs[i].__ptrAlgorithmParameters = algParameters;
-                  
-    i++;
-  }
-
-  r._AvailableAlgorithms.__size = nalg;
-  r._AvailableAlgorithms.__ptrAlgorithm = soapAlgs;
+  om__AvailableAlgorithms = convertToWideChar( oss.str().c_str() ) ;
 
   return SOAP_OK;
 }
@@ -307,14 +254,14 @@ om__getAlgorithms( struct soap *soap, void *_, struct om__getAlgorithmsResponse 
 /**********************/
 /**** create Model ****/
 int 
-om__createModel( struct soap *soap, om__Points *points, om__Maps *maps, om__Mask *mask, om__Algorithm *algorithm, om__Output *output, xsd__string *ticket )
+omws__createModel( struct soap *soap, omws__Points *points, omws__Maps *maps, omws__Mask *mask, omws__Algorithm *algorithm, omws__Output *output, xsd__string *ticket )
 {
   // Will use a special instance to run the model
   OpenModeller myom;
 
   // alloc new header
   soap->header = (struct SOAP_ENV__Header*)soap_malloc( soap, sizeof(struct SOAP_ENV__Header) ); 
-  soap->header->om__version = myom.getVersion();
+  soap->header->omws__version = myom.getVersion();
 
   // Get algorithm metadata
   AlgMetadata const *alg_metadata = myom.algorithmMetadata( algorithm->Id );
@@ -462,7 +409,7 @@ om__createModel( struct soap *soap, om__Points *points, om__Maps *maps, om__Mask
 /******************************/
 /**** get distribution map ****/
 int 
-om__getDistributionMap( struct soap *soap, xsd__string ticket, xsd__base64Binary &file )
+omws__getDistributionMap( struct soap *soap, xsd__string ticket, xsd__base64Binary &file )
 { 
   if (!ticket)
     return soap_sender_fault(soap, "Ticket required", NULL);
@@ -479,14 +426,14 @@ om__getDistributionMap( struct soap *soap, xsd__string ticket, xsd__base64Binary
 /**************/
 /**** Ping ****/
 //int
-//om__ping( struct soap *soap, void *_, xsd__int *status )
+//omws__ping( struct soap *soap, void *_, xsd__int *status )
 //{
 //  *status = 1;
 //
 //  return SOAP_OK;
 //}
 int
-om__ping( struct soap *soap, void *_, xsd__int *status )
+omws__ping( struct soap *soap, void *_, xsd__int *status )
 {
   *status = 1;
 
@@ -544,6 +491,24 @@ getData( struct soap *soap, const xsd__string ticket, xsd__base64Binary &file )
   file.options = soap_dime_option(soap, 0, ticket);
 
   return SOAP_OK;
+}
+
+/***************************/
+/**** convertToWideChar ****/
+static 
+wchar_t* convertToWideChar( const char* p )
+{
+     wchar_t *r;
+
+     r = new wchar_t[strlen(p)+1];
+
+     const char *tempsource = p;
+
+     wchar_t *tempdest = r;
+
+     while ( *tempdest++ = *tempsource++ );
+
+     return r;
 }
 
 ///////////////////////

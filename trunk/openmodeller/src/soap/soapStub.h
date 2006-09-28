@@ -23,101 +23,24 @@
 
 
 #ifndef SOAP_TYPE_SOAP_ENV__Header
-#define SOAP_TYPE_SOAP_ENV__Header (10)
+#define SOAP_TYPE_SOAP_ENV__Header (13)
 /* SOAP Header: */
 struct SOAP_ENV__Header
 {
-	char *om__version;	/* optional element of type xsd:string */
+	char *omws__version;	/* optional element of type xsd:string */
 };
 #endif
 
-#ifndef SOAP_TYPE_soap_AlgorithmParameter
-#define SOAP_TYPE_soap_AlgorithmParameter (11)
-/* soap-AlgorithmParameter */
-struct soap_AlgorithmParameter
+#ifndef SOAP_TYPE_omws__getAlgorithms
+#define SOAP_TYPE_omws__getAlgorithms (16)
+/* omws:getAlgorithms */
+struct omws__getAlgorithms
 {
-	char *Id;	/* optional attribute of type xsd:string */
-	char *Name;	/* optional attribute of type xsd:string */
-	char *Type;	/* optional attribute of type xsd:string */
-	char *Overview;	/* optional element of type xsd:string */
-	char *Description;	/* optional element of type xsd:string */
-	int HasMin;	/* optional attribute of type xsd:int */
-	double Min;	/* optional attribute of type xsd:double */
-	int HasMax;	/* optional attribute of type xsd:int */
-	double Max;	/* optional attribute of type xsd:double */
-	char *Typical;	/* optional attribute of type xsd:string */
-};
-#endif
-
-#ifndef SOAP_TYPE_soap_AlgorithmParameters
-#define SOAP_TYPE_soap_AlgorithmParameters (13)
-/* soap-AlgorithmParameters */
-struct soap_AlgorithmParameters
-{
-	int __size;	/* sequence of elements <Param> */
-	struct soap_AlgorithmParameter *__ptrParam;
-};
-#endif
-
-#ifndef SOAP_TYPE_soap_AlgorithmMetadata
-#define SOAP_TYPE_soap_AlgorithmMetadata (16)
-/* soap-AlgorithmMetadata */
-struct soap_AlgorithmMetadata
-{
-	char *Id;	/* optional attribute of type xsd:string */
-	char *Name;	/* optional attribute of type xsd:string */
-	char *Version;	/* optional attribute of type xsd:string */
-	char *Overview;	/* optional element of type xsd:string */
-	char *Description;	/* optional element of type xsd:string */
-	char *Author;	/* optional attribute of type xsd:string */
-	char *Bibliography;	/* optional element of type xsd:string */
-	char *CodeAuthor;	/* optional attribute of type xsd:string */
-	char *Contact;	/* optional attribute of type xsd:string */
-	int Categorical;	/* optional attribute of type xsd:int */
-	int Absence;	/* optional attribute of type xsd:int */
-};
-#endif
-
-#ifndef SOAP_TYPE_soap_AvailableAlgorithm
-#define SOAP_TYPE_soap_AvailableAlgorithm (18)
-/* soap-AvailableAlgorithm */
-struct soap_AvailableAlgorithm
-{
-	struct soap_AlgorithmMetadata *__ptrAlgorithmMetadata;
-	struct soap_AlgorithmParameters *__ptrAlgorithmParameters;
-};
-#endif
-
-#ifndef SOAP_TYPE_soap_AvailableAlgorithms
-#define SOAP_TYPE_soap_AvailableAlgorithms (22)
-/* soap-AvailableAlgorithms */
-struct soap_AvailableAlgorithms
-{
-	int __size;	/* sequence of elements <Algorithm> */
-	struct soap_AvailableAlgorithm *__ptrAlgorithm;
-};
-#endif
-
-#ifndef SOAP_TYPE_om__getAlgorithmsResponse
-#define SOAP_TYPE_om__getAlgorithmsResponse (25)
-/* om:getAlgorithmsResponse */
-struct om__getAlgorithmsResponse
-{
-	struct soap_AvailableAlgorithms _AvailableAlgorithms;	/* RPC return element */	/* required element of type om:AvailableAlgorithms */
-};
-#endif
-
-#ifndef SOAP_TYPE_om__getAlgorithms
-#define SOAP_TYPE_om__getAlgorithms (30)
-/* om:getAlgorithms */
-struct om__getAlgorithms
-{
-	void *_;	/* transient */
 };
 #endif
 
 #ifndef SOAP_TYPE_soap_Point
-#define SOAP_TYPE_soap_Point (31)
+#define SOAP_TYPE_soap_Point (17)
 /* soap-Point */
 struct soap_Point
 {
@@ -127,7 +50,7 @@ struct soap_Point
 #endif
 
 #ifndef SOAP_TYPE_soap_PresencePoints
-#define SOAP_TYPE_soap_PresencePoints (33)
+#define SOAP_TYPE_soap_PresencePoints (19)
 /* soap-PresencePoints */
 struct soap_PresencePoints
 {
@@ -137,7 +60,7 @@ struct soap_PresencePoints
 #endif
 
 #ifndef SOAP_TYPE_soap_AbsencePoints
-#define SOAP_TYPE_soap_AbsencePoints (36)
+#define SOAP_TYPE_soap_AbsencePoints (22)
 /* soap-AbsencePoints */
 struct soap_AbsencePoints
 {
@@ -147,7 +70,7 @@ struct soap_AbsencePoints
 #endif
 
 #ifndef SOAP_TYPE_soap_Points
-#define SOAP_TYPE_soap_Points (38)
+#define SOAP_TYPE_soap_Points (24)
 /* soap-Points */
 struct soap_Points
 {
@@ -158,7 +81,7 @@ struct soap_Points
 #endif
 
 #ifndef SOAP_TYPE_soap_Map
-#define SOAP_TYPE_soap_Map (42)
+#define SOAP_TYPE_soap_Map (28)
 /* soap-Map */
 struct soap_Map
 {
@@ -168,7 +91,7 @@ struct soap_Map
 #endif
 
 #ifndef SOAP_TYPE_soap_Maps
-#define SOAP_TYPE_soap_Maps (44)
+#define SOAP_TYPE_soap_Maps (30)
 /* soap-Maps */
 struct soap_Maps
 {
@@ -178,7 +101,7 @@ struct soap_Maps
 #endif
 
 #ifndef SOAP_TYPE_soap_Mask
-#define SOAP_TYPE_soap_Mask (47)
+#define SOAP_TYPE_soap_Mask (33)
 /* soap-Mask */
 struct soap_Mask
 {
@@ -187,7 +110,7 @@ struct soap_Mask
 #endif
 
 #ifndef SOAP_TYPE_soap_Parameter
-#define SOAP_TYPE_soap_Parameter (49)
+#define SOAP_TYPE_soap_Parameter (35)
 /* soap-Parameter */
 struct soap_Parameter
 {
@@ -197,7 +120,7 @@ struct soap_Parameter
 #endif
 
 #ifndef SOAP_TYPE_soap_Algorithm
-#define SOAP_TYPE_soap_Algorithm (51)
+#define SOAP_TYPE_soap_Algorithm (37)
 /* soap-Algorithm */
 struct soap_Algorithm
 {
@@ -208,7 +131,7 @@ struct soap_Algorithm
 #endif
 
 #ifndef SOAP_TYPE_soap_Output
-#define SOAP_TYPE_soap_Output (54)
+#define SOAP_TYPE_soap_Output (40)
 /* soap-Output */
 struct soap_Output
 {
@@ -218,32 +141,32 @@ struct soap_Output
 };
 #endif
 
-#ifndef SOAP_TYPE_om__createModelResponse
-#define SOAP_TYPE_om__createModelResponse (63)
-/* om:createModelResponse */
-struct om__createModelResponse
+#ifndef SOAP_TYPE_omws__createModelResponse
+#define SOAP_TYPE_omws__createModelResponse (49)
+/* omws:createModelResponse */
+struct omws__createModelResponse
 {
 	char **ticket;	/* RPC return element */	/* optional element of type xsd:string */
 };
 #endif
 
-#ifndef SOAP_TYPE_om__createModel
-#define SOAP_TYPE_om__createModel (64)
-/* om:createModel */
-struct om__createModel
+#ifndef SOAP_TYPE_omws__createModel
+#define SOAP_TYPE_omws__createModel (50)
+/* omws:createModel */
+struct omws__createModel
 {
-	struct soap_Points *points;	/* optional element of type om:Points */
-	struct soap_Maps *maps;	/* optional element of type om:Maps */
-	struct soap_Mask *mask;	/* optional element of type om:Mask */
-	struct soap_Algorithm *algorithm;	/* optional element of type om:Algorithm */
-	struct soap_Output *output;	/* optional element of type om:Output */
+	struct soap_Points *points;	/* optional element of type omws:Points */
+	struct soap_Maps *maps;	/* optional element of type omws:Maps */
+	struct soap_Mask *mask;	/* optional element of type omws:Mask */
+	struct soap_Algorithm *algorithm;	/* optional element of type omws:Algorithm */
+	struct soap_Output *output;	/* optional element of type omws:Output */
 };
 #endif
 
 
 
 #ifndef SOAP_TYPE_xsd__base64Binary
-#define SOAP_TYPE_xsd__base64Binary (65)
+#define SOAP_TYPE_xsd__base64Binary (51)
 /* Base64 schema type: */
 class SOAP_CMAC xsd__base64Binary
 {
@@ -256,7 +179,7 @@ public:
 	xsd__base64Binary();	/* transient */
 	struct soap *soap;	/* transient */
 public:
-	virtual int soap_type() const { return 65; } /* = unique id SOAP_TYPE_xsd__base64Binary */
+	virtual int soap_type() const { return 51; } /* = unique id SOAP_TYPE_xsd__base64Binary */
 	virtual void soap_default(struct soap*);
 	virtual void soap_serialize(struct soap*) const;
 	virtual int soap_put(struct soap*, const char*, const char*) const;
@@ -267,44 +190,44 @@ public:
 };
 #endif
 
-#ifndef SOAP_TYPE_om__getDistributionMapResponse
-#define SOAP_TYPE_om__getDistributionMapResponse (75)
-/* om:getDistributionMapResponse */
-struct om__getDistributionMapResponse
+#ifndef SOAP_TYPE_omws__getDistributionMapResponse
+#define SOAP_TYPE_omws__getDistributionMapResponse (62)
+/* omws:getDistributionMapResponse */
+struct omws__getDistributionMapResponse
 {
 	xsd__base64Binary file;	/* RPC return element */	/* required element of type xsd:base64Binary */
 };
 #endif
 
-#ifndef SOAP_TYPE_om__getDistributionMap
-#define SOAP_TYPE_om__getDistributionMap (76)
-/* om:getDistributionMap */
-struct om__getDistributionMap
+#ifndef SOAP_TYPE_omws__getDistributionMap
+#define SOAP_TYPE_omws__getDistributionMap (63)
+/* omws:getDistributionMap */
+struct omws__getDistributionMap
 {
 	char *ticket;	/* optional element of type xsd:string */
 };
 #endif
 
-#ifndef SOAP_TYPE_om__pingResponse
-#define SOAP_TYPE_om__pingResponse (79)
-/* om:pingResponse */
-struct om__pingResponse
+#ifndef SOAP_TYPE_omws__pingResponse
+#define SOAP_TYPE_omws__pingResponse (67)
+/* omws:pingResponse */
+struct omws__pingResponse
 {
 	int *status;	/* RPC return element */	/* optional element of type xsd:int */
 };
 #endif
 
-#ifndef SOAP_TYPE_om__ping
-#define SOAP_TYPE_om__ping (80)
-/* om:ping */
-struct om__ping
+#ifndef SOAP_TYPE_omws__ping
+#define SOAP_TYPE_omws__ping (68)
+/* omws:ping */
+struct omws__ping
 {
 	void *_;	/* transient */
 };
 #endif
 
 #ifndef SOAP_TYPE_SOAP_ENV__Code
-#define SOAP_TYPE_SOAP_ENV__Code (81)
+#define SOAP_TYPE_SOAP_ENV__Code (69)
 /* SOAP Fault Code: */
 struct SOAP_ENV__Code
 {
@@ -314,7 +237,7 @@ struct SOAP_ENV__Code
 #endif
 
 #ifndef SOAP_TYPE_SOAP_ENV__Detail
-#define SOAP_TYPE_SOAP_ENV__Detail (83)
+#define SOAP_TYPE_SOAP_ENV__Detail (71)
 /* SOAP-ENV:Detail */
 struct SOAP_ENV__Detail
 {
@@ -325,7 +248,7 @@ struct SOAP_ENV__Detail
 #endif
 
 #ifndef SOAP_TYPE_SOAP_ENV__Reason
-#define SOAP_TYPE_SOAP_ENV__Reason (84)
+#define SOAP_TYPE_SOAP_ENV__Reason (72)
 /* SOAP-ENV:Reason */
 struct SOAP_ENV__Reason
 {
@@ -334,7 +257,7 @@ struct SOAP_ENV__Reason
 #endif
 
 #ifndef SOAP_TYPE_SOAP_ENV__Fault
-#define SOAP_TYPE_SOAP_ENV__Fault (85)
+#define SOAP_TYPE_SOAP_ENV__Fault (73)
 /* SOAP Fault: */
 struct SOAP_ENV__Fault
 {
@@ -388,79 +311,59 @@ typedef double xsd__double;
 typedef int xsd__int;
 #endif
 
-#ifndef SOAP_TYPE_om__AlgorithmParameter
-#define SOAP_TYPE_om__AlgorithmParameter (12)
-typedef struct soap_AlgorithmParameter om__AlgorithmParameter;
+#ifndef SOAP_TYPE_XML
+#define SOAP_TYPE_XML (12)
+typedef wchar_t *XML;
 #endif
 
-#ifndef SOAP_TYPE_om__AlgorithmParameters
-#define SOAP_TYPE_om__AlgorithmParameters (15)
-typedef struct soap_AlgorithmParameters om__AlgorithmParameters;
+#ifndef SOAP_TYPE_omws__Point
+#define SOAP_TYPE_omws__Point (18)
+typedef struct soap_Point omws__Point;
 #endif
 
-#ifndef SOAP_TYPE_om__AlgorithmMetadata
-#define SOAP_TYPE_om__AlgorithmMetadata (17)
-typedef struct soap_AlgorithmMetadata om__AlgorithmMetadata;
+#ifndef SOAP_TYPE_omws__PresencePoints
+#define SOAP_TYPE_omws__PresencePoints (21)
+typedef struct soap_PresencePoints omws__PresencePoints;
 #endif
 
-#ifndef SOAP_TYPE_om__AvailableAlgorithm
-#define SOAP_TYPE_om__AvailableAlgorithm (21)
-typedef struct soap_AvailableAlgorithm om__AvailableAlgorithm;
+#ifndef SOAP_TYPE_omws__AbsencePoints
+#define SOAP_TYPE_omws__AbsencePoints (23)
+typedef struct soap_AbsencePoints omws__AbsencePoints;
 #endif
 
-#ifndef SOAP_TYPE_om__AvailableAlgorithms
-#define SOAP_TYPE_om__AvailableAlgorithms (24)
-typedef struct soap_AvailableAlgorithms om__AvailableAlgorithms;
+#ifndef SOAP_TYPE_omws__Points
+#define SOAP_TYPE_omws__Points (27)
+typedef struct soap_Points omws__Points;
 #endif
 
-#ifndef SOAP_TYPE_om__Point
-#define SOAP_TYPE_om__Point (32)
-typedef struct soap_Point om__Point;
+#ifndef SOAP_TYPE_omws__Map
+#define SOAP_TYPE_omws__Map (29)
+typedef struct soap_Map omws__Map;
 #endif
 
-#ifndef SOAP_TYPE_om__PresencePoints
-#define SOAP_TYPE_om__PresencePoints (35)
-typedef struct soap_PresencePoints om__PresencePoints;
+#ifndef SOAP_TYPE_omws__Maps
+#define SOAP_TYPE_omws__Maps (32)
+typedef struct soap_Maps omws__Maps;
 #endif
 
-#ifndef SOAP_TYPE_om__AbsencePoints
-#define SOAP_TYPE_om__AbsencePoints (37)
-typedef struct soap_AbsencePoints om__AbsencePoints;
+#ifndef SOAP_TYPE_omws__Mask
+#define SOAP_TYPE_omws__Mask (34)
+typedef struct soap_Mask omws__Mask;
 #endif
 
-#ifndef SOAP_TYPE_om__Points
-#define SOAP_TYPE_om__Points (41)
-typedef struct soap_Points om__Points;
+#ifndef SOAP_TYPE_omws__Parameter
+#define SOAP_TYPE_omws__Parameter (36)
+typedef struct soap_Parameter omws__Parameter;
 #endif
 
-#ifndef SOAP_TYPE_om__Map
-#define SOAP_TYPE_om__Map (43)
-typedef struct soap_Map om__Map;
+#ifndef SOAP_TYPE_omws__Algorithm
+#define SOAP_TYPE_omws__Algorithm (39)
+typedef struct soap_Algorithm omws__Algorithm;
 #endif
 
-#ifndef SOAP_TYPE_om__Maps
-#define SOAP_TYPE_om__Maps (46)
-typedef struct soap_Maps om__Maps;
-#endif
-
-#ifndef SOAP_TYPE_om__Mask
-#define SOAP_TYPE_om__Mask (48)
-typedef struct soap_Mask om__Mask;
-#endif
-
-#ifndef SOAP_TYPE_om__Parameter
-#define SOAP_TYPE_om__Parameter (50)
-typedef struct soap_Parameter om__Parameter;
-#endif
-
-#ifndef SOAP_TYPE_om__Algorithm
-#define SOAP_TYPE_om__Algorithm (53)
-typedef struct soap_Algorithm om__Algorithm;
-#endif
-
-#ifndef SOAP_TYPE_om__Output
-#define SOAP_TYPE_om__Output (55)
-typedef struct soap_Output om__Output;
+#ifndef SOAP_TYPE_omws__Output
+#define SOAP_TYPE_omws__Output (41)
+typedef struct soap_Output omws__Output;
 #endif
 
 
@@ -485,13 +388,13 @@ typedef struct soap_Output om__Output;
 \******************************************************************************/
 
 
-SOAP_FMAC5 int SOAP_FMAC6 om__getAlgorithms(struct soap*, void *_, struct om__getAlgorithmsResponse &r);
+SOAP_FMAC5 int SOAP_FMAC6 omws__getAlgorithms(struct soap*, wchar_t *&om__AvailableAlgorithms);
 
-SOAP_FMAC5 int SOAP_FMAC6 om__createModel(struct soap*, struct soap_Points *points, struct soap_Maps *maps, struct soap_Mask *mask, struct soap_Algorithm *algorithm, struct soap_Output *output, char **ticket);
+SOAP_FMAC5 int SOAP_FMAC6 omws__createModel(struct soap*, struct soap_Points *points, struct soap_Maps *maps, struct soap_Mask *mask, struct soap_Algorithm *algorithm, struct soap_Output *output, char **ticket);
 
-SOAP_FMAC5 int SOAP_FMAC6 om__getDistributionMap(struct soap*, char *ticket, xsd__base64Binary &file);
+SOAP_FMAC5 int SOAP_FMAC6 omws__getDistributionMap(struct soap*, char *ticket, xsd__base64Binary &file);
 
-SOAP_FMAC5 int SOAP_FMAC6 om__ping(struct soap*, void *_, int *status);
+SOAP_FMAC5 int SOAP_FMAC6 omws__ping(struct soap*, void *_, int *status);
 
 /******************************************************************************\
  *                                                                            *
@@ -500,13 +403,13 @@ SOAP_FMAC5 int SOAP_FMAC6 om__ping(struct soap*, void *_, int *status);
 \******************************************************************************/
 
 
-SOAP_FMAC5 int SOAP_FMAC6 soap_call_om__getAlgorithms(struct soap *soap, const char *soap_endpoint, const char *soap_action, void *_, struct om__getAlgorithmsResponse &r);
+SOAP_FMAC5 int SOAP_FMAC6 soap_call_omws__getAlgorithms(struct soap *soap, const char *soap_endpoint, const char *soap_action, wchar_t *&om__AvailableAlgorithms);
 
-SOAP_FMAC5 int SOAP_FMAC6 soap_call_om__createModel(struct soap *soap, const char *soap_endpoint, const char *soap_action, struct soap_Points *points, struct soap_Maps *maps, struct soap_Mask *mask, struct soap_Algorithm *algorithm, struct soap_Output *output, char **ticket);
+SOAP_FMAC5 int SOAP_FMAC6 soap_call_omws__createModel(struct soap *soap, const char *soap_endpoint, const char *soap_action, struct soap_Points *points, struct soap_Maps *maps, struct soap_Mask *mask, struct soap_Algorithm *algorithm, struct soap_Output *output, char **ticket);
 
-SOAP_FMAC5 int SOAP_FMAC6 soap_call_om__getDistributionMap(struct soap *soap, const char *soap_endpoint, const char *soap_action, char *ticket, xsd__base64Binary &file);
+SOAP_FMAC5 int SOAP_FMAC6 soap_call_omws__getDistributionMap(struct soap *soap, const char *soap_endpoint, const char *soap_action, char *ticket, xsd__base64Binary &file);
 
-SOAP_FMAC5 int SOAP_FMAC6 soap_call_om__ping(struct soap *soap, const char *soap_endpoint, const char *soap_action, void *_, int *status);
+SOAP_FMAC5 int SOAP_FMAC6 soap_call_omws__ping(struct soap *soap, const char *soap_endpoint, const char *soap_action, void *_, int *status);
 
 /******************************************************************************\
  *                                                                            *
@@ -518,13 +421,13 @@ SOAP_FMAC5 int SOAP_FMAC6 soap_serve(struct soap*);
 
 SOAP_FMAC5 int SOAP_FMAC6 soap_serve_request(struct soap*);
 
-SOAP_FMAC5 int SOAP_FMAC6 soap_serve_om__getAlgorithms(struct soap*);
+SOAP_FMAC5 int SOAP_FMAC6 soap_serve_omws__getAlgorithms(struct soap*);
 
-SOAP_FMAC5 int SOAP_FMAC6 soap_serve_om__createModel(struct soap*);
+SOAP_FMAC5 int SOAP_FMAC6 soap_serve_omws__createModel(struct soap*);
 
-SOAP_FMAC5 int SOAP_FMAC6 soap_serve_om__getDistributionMap(struct soap*);
+SOAP_FMAC5 int SOAP_FMAC6 soap_serve_omws__getDistributionMap(struct soap*);
 
-SOAP_FMAC5 int SOAP_FMAC6 soap_serve_om__ping(struct soap*);
+SOAP_FMAC5 int SOAP_FMAC6 soap_serve_omws__ping(struct soap*);
 
 #endif
 

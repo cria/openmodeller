@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <definitions name="openModeller"
- targetNamespace="http://openmodeller.sf.net/ns/1.0"
- xmlns:tns="http://openmodeller.sf.net/ns/1.0"
+ targetNamespace="http://openmodeller.cria.org.br/ws/1.0"
+ xmlns:tns="http://openmodeller.cria.org.br/ws/1.0"
  xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/"
  xmlns:SOAP-ENC="http://schemas.xmlsoap.org/soap/encoding/"
  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
  xmlns:xsd="http://www.w3.org/2001/XMLSchema"
- xmlns:om="http://openmodeller.sf.net/ns/1.0"
+ xmlns:om="http://openmodeller.cria.org.br/xml/1.0"
+ xmlns:omws="http://openmodeller.cria.org.br/ws/1.0"
  xmlns:SOAP="http://schemas.xmlsoap.org/wsdl/soap/"
  xmlns:MIME="http://schemas.xmlsoap.org/wsdl/mime/"
  xmlns:DIME="http://schemas.xmlsoap.org/ws/2002/04/dime/wsdl/"
@@ -15,150 +16,77 @@
 
 <types>
 
- <schema targetNamespace="http://openmodeller.sf.net/ns/1.0"
+ <schema targetNamespace="http://openmodeller.cria.org.br/ws/1.0"
   xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/"
   xmlns:SOAP-ENC="http://schemas.xmlsoap.org/soap/encoding/"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xmlns:xsd="http://www.w3.org/2001/XMLSchema"
-  xmlns:om="http://openmodeller.sf.net/ns/1.0"
+  xmlns:om="http://openmodeller.cria.org.br/xml/1.0"
+  xmlns:omws="http://openmodeller.cria.org.br/ws/1.0"
   xmlns="http://www.w3.org/2001/XMLSchema"
   elementFormDefault="unqualified"
   attributeFormDefault="unqualified">
+  <import namespace="http://openmodeller.cria.org.br/xml/1.0"/>
   <import namespace="http://schemas.xmlsoap.org/soap/encoding/"/>
-  <complexType name="AlgorithmParameter">
-   <complexContent>
-    <restriction base="om:soap-AlgorithmParameter">
-    </restriction>
-   </complexContent>
-  </complexType>
-  <complexType name="AlgorithmParameters">
-   <complexContent>
-    <restriction base="om:soap-AlgorithmParameters">
-    </restriction>
-   </complexContent>
-  </complexType>
-  <complexType name="AlgorithmMetadata">
-   <complexContent>
-    <restriction base="om:soap-AlgorithmMetadata">
-    </restriction>
-   </complexContent>
-  </complexType>
-  <complexType name="AvailableAlgorithm">
-   <complexContent>
-    <restriction base="om:soap-AvailableAlgorithm">
-    </restriction>
-   </complexContent>
-  </complexType>
-  <complexType name="AvailableAlgorithms">
-   <complexContent>
-    <restriction base="om:soap-AvailableAlgorithms">
-    </restriction>
-   </complexContent>
-  </complexType>
   <complexType name="Point">
    <complexContent>
-    <restriction base="om:soap-Point">
+    <restriction base="omws:soap-Point">
     </restriction>
    </complexContent>
   </complexType>
   <complexType name="PresencePoints">
    <complexContent>
-    <restriction base="om:soap-PresencePoints">
+    <restriction base="omws:soap-PresencePoints">
     </restriction>
    </complexContent>
   </complexType>
   <complexType name="AbsencePoints">
    <complexContent>
-    <restriction base="om:soap-AbsencePoints">
+    <restriction base="omws:soap-AbsencePoints">
     </restriction>
    </complexContent>
   </complexType>
   <complexType name="Points">
    <complexContent>
-    <restriction base="om:soap-Points">
+    <restriction base="omws:soap-Points">
     </restriction>
    </complexContent>
   </complexType>
   <complexType name="Map">
    <complexContent>
-    <restriction base="om:soap-Map">
+    <restriction base="omws:soap-Map">
     </restriction>
    </complexContent>
   </complexType>
   <complexType name="Maps">
    <complexContent>
-    <restriction base="om:soap-Maps">
+    <restriction base="omws:soap-Maps">
     </restriction>
    </complexContent>
   </complexType>
   <complexType name="Mask">
    <complexContent>
-    <restriction base="om:soap-Mask">
+    <restriction base="omws:soap-Mask">
     </restriction>
    </complexContent>
   </complexType>
   <complexType name="Parameter">
    <complexContent>
-    <restriction base="om:soap-Parameter">
+    <restriction base="omws:soap-Parameter">
     </restriction>
    </complexContent>
   </complexType>
   <complexType name="Algorithm">
    <complexContent>
-    <restriction base="om:soap-Algorithm">
+    <restriction base="omws:soap-Algorithm">
     </restriction>
    </complexContent>
   </complexType>
   <complexType name="Output">
    <complexContent>
-    <restriction base="om:soap-Output">
+    <restriction base="omws:soap-Output">
     </restriction>
    </complexContent>
-  </complexType>
-  <complexType name="soap-AlgorithmParameter">
-   <sequence>
-     <element name="Overview" type="xsd:string" minOccurs="0" maxOccurs="1" nillable="true"/>
-     <element name="Description" type="xsd:string" minOccurs="0" maxOccurs="1" nillable="true"/>
-   </sequence>
-     <attribute name="Id" type="xsd:string" use="optional"/>
-     <attribute name="Name" type="xsd:string" use="optional"/>
-     <attribute name="Type" type="xsd:string" use="optional"/>
-     <attribute name="HasMin" type="xsd:int" use="required"/>
-     <attribute name="Min" type="xsd:double" use="required"/>
-     <attribute name="HasMax" type="xsd:int" use="required"/>
-     <attribute name="Max" type="xsd:double" use="required"/>
-     <attribute name="Typical" type="xsd:string" use="optional"/>
-  </complexType>
-  <complexType name="soap-AlgorithmParameters">
-   <sequence>
-     <element name="Param" type="om:AlgorithmParameter" minOccurs="0" maxOccurs="unbounded"/>
-   </sequence>
-  </complexType>
-  <complexType name="soap-AlgorithmMetadata">
-   <sequence>
-     <element name="Overview" type="xsd:string" minOccurs="0" maxOccurs="1" nillable="true"/>
-     <element name="Description" type="xsd:string" minOccurs="0" maxOccurs="1" nillable="true"/>
-     <element name="Bibliography" type="xsd:string" minOccurs="0" maxOccurs="1" nillable="true"/>
-   </sequence>
-     <attribute name="Id" type="xsd:string" use="optional"/>
-     <attribute name="Name" type="xsd:string" use="optional"/>
-     <attribute name="Version" type="xsd:string" use="optional"/>
-     <attribute name="Author" type="xsd:string" use="optional"/>
-     <attribute name="CodeAuthor" type="xsd:string" use="optional"/>
-     <attribute name="Contact" type="xsd:string" use="optional"/>
-     <attribute name="Categorical" type="xsd:int" use="required"/>
-     <attribute name="Absence" type="xsd:int" use="required"/>
-  </complexType>
-  <complexType name="soap-AvailableAlgorithm">
-   <sequence>
-     <element name="AlgorithmMetadata" type="om:AlgorithmMetadata" minOccurs="0" maxOccurs="1" nillable="true"/>
-     <element name="AlgorithmParameters" type="om:AlgorithmParameters" minOccurs="0" maxOccurs="1" nillable="true"/>
-   </sequence>
-  </complexType>
-  <complexType name="soap-AvailableAlgorithms">
-   <sequence>
-     <element name="Algorithm" type="om:AvailableAlgorithm" minOccurs="0" maxOccurs="unbounded"/>
-   </sequence>
   </complexType>
   <complexType name="soap-Point">
    <sequence>
@@ -168,19 +96,19 @@
   </complexType>
   <complexType name="soap-PresencePoints">
    <sequence>
-     <element name="point" type="om:Point" minOccurs="0" maxOccurs="unbounded"/>
+     <element name="point" type="omws:Point" minOccurs="0" maxOccurs="unbounded"/>
    </sequence>
   </complexType>
   <complexType name="soap-AbsencePoints">
    <sequence>
-     <element name="point" type="om:Point" minOccurs="0" maxOccurs="unbounded"/>
+     <element name="point" type="omws:Point" minOccurs="0" maxOccurs="unbounded"/>
    </sequence>
   </complexType>
   <complexType name="soap-Points">
    <sequence>
      <element name="coordsystem" type="xsd:string" minOccurs="0" maxOccurs="1" nillable="true"/>
-     <element name="presences" type="om:PresencePoints" minOccurs="0" maxOccurs="1" nillable="true"/>
-     <element name="absences" type="om:AbsencePoints" minOccurs="0" maxOccurs="1" nillable="true"/>
+     <element name="presences" type="omws:PresencePoints" minOccurs="0" maxOccurs="1" nillable="true"/>
+     <element name="absences" type="omws:AbsencePoints" minOccurs="0" maxOccurs="1" nillable="true"/>
    </sequence>
   </complexType>
   <complexType name="soap-Map">
@@ -191,7 +119,7 @@
   </complexType>
   <complexType name="soap-Maps">
    <sequence>
-     <element name="map" type="om:Map" minOccurs="0" maxOccurs="unbounded"/>
+     <element name="map" type="omws:Map" minOccurs="0" maxOccurs="unbounded"/>
    </sequence>
   </complexType>
   <complexType name="soap-Mask">
@@ -207,7 +135,7 @@
   </complexType>
   <complexType name="soap-Algorithm">
    <sequence>
-     <element name="parameter" type="om:Parameter" minOccurs="0" maxOccurs="unbounded"/>
+     <element name="parameter" type="omws:Parameter" minOccurs="0" maxOccurs="unbounded"/>
    </sequence>
      <attribute name="Id" type="xsd:string" use="optional"/>
   </complexType>
@@ -230,7 +158,7 @@
   <element name="getAlgorithmsResponse">
    <complexType>
     <sequence>
-     <element name="AvailableAlgorithms" type="om:AvailableAlgorithms" minOccurs="1" maxOccurs="1"/>
+     <element ref="om:AvailableAlgorithms" minOccurs="1" maxOccurs="1"/>
     </sequence>
    </complexType>
   </element>
@@ -238,11 +166,11 @@
   <element name="createModel">
    <complexType>
     <sequence>
-     <element name="points" type="om:Points" minOccurs="0" maxOccurs="1" nillable="true"/>
-     <element name="maps" type="om:Maps" minOccurs="0" maxOccurs="1" nillable="true"/>
-     <element name="mask" type="om:Mask" minOccurs="0" maxOccurs="1" nillable="true"/>
-     <element name="algorithm" type="om:Algorithm" minOccurs="0" maxOccurs="1" nillable="true"/>
-     <element name="output" type="om:Output" minOccurs="0" maxOccurs="1" nillable="true"/>
+     <element name="points" type="omws:Points" minOccurs="0" maxOccurs="1" nillable="true"/>
+     <element name="maps" type="omws:Maps" minOccurs="0" maxOccurs="1" nillable="true"/>
+     <element name="mask" type="omws:Mask" minOccurs="0" maxOccurs="1" nillable="true"/>
+     <element name="algorithm" type="omws:Algorithm" minOccurs="0" maxOccurs="1" nillable="true"/>
+     <element name="output" type="omws:Output" minOccurs="0" maxOccurs="1" nillable="true"/>
     </sequence>
    </complexType>
   </element>
@@ -290,59 +218,59 @@
 </types>
 
 <message name="getAlgorithms">
- <part name="parameters" element="om:getAlgorithms"/>
+ <part name="parameters" element="omws:getAlgorithms"/>
 </message>
 
 <message name="getAlgorithmsResponse">
- <part name="parameters" element="om:getAlgorithmsResponse"/>
+ <part name="parameters" element="omws:getAlgorithmsResponse"/>
 </message>
 
 <message name="createModelRequest">
- <part name="parameters" element="om:createModel"/>
+ <part name="parameters" element="omws:createModel"/>
 </message>
 
 <message name="createModelResponse">
- <part name="parameters" element="om:createModelResponse"/>
+ <part name="parameters" element="omws:createModelResponse"/>
 </message>
 
 <message name="getDistributionMapRequest">
- <part name="parameters" element="om:getDistributionMap"/>
+ <part name="parameters" element="omws:getDistributionMap"/>
 </message>
 
 <message name="getDistributionMapResponse">
- <part name="parameters" element="om:getDistributionMapResponse"/>
+ <part name="parameters" element="omws:getDistributionMapResponse"/>
 </message>
 
 <message name="pingRequest">
- <part name="parameters" element="om:ping"/>
+ <part name="parameters" element="omws:ping"/>
 </message>
 
 <message name="pingResponse">
- <part name="parameters" element="om:pingResponse"/>
+ <part name="parameters" element="omws:pingResponse"/>
 </message>
 
 <message name="openModellerHeader">
- <part name="version" element="om:version"/>
+ <part name="version" element="omws:version"/>
 </message>
 
 <portType name="openModellerPortType">
  <operation name="getAlgorithms">
-  <documentation>Service definition of function om__getAlgorithms</documentation>
+  <documentation>Service definition of function omws__getAlgorithms</documentation>
   <input message="tns:getAlgorithms"/>
   <output message="tns:getAlgorithmsResponse"/>
  </operation>
  <operation name="createModel">
-  <documentation>Service definition of function om__createModel</documentation>
+  <documentation>Service definition of function omws__createModel</documentation>
   <input message="tns:createModelRequest"/>
   <output message="tns:createModelResponse"/>
  </operation>
  <operation name="getDistributionMap">
-  <documentation>Service definition of function om__getDistributionMap</documentation>
+  <documentation>Service definition of function omws__getDistributionMap</documentation>
   <input message="tns:getDistributionMapRequest"/>
   <output message="tns:getDistributionMapResponse"/>
  </operation>
  <operation name="ping">
-  <documentation>Service definition of function om__ping</documentation>
+  <documentation>Service definition of function omws__ping</documentation>
   <input message="tns:pingRequest"/>
   <output message="tns:pingResponse"/>
  </operation>
@@ -389,7 +317,7 @@
 </binding>
 
 <service name="openModeller">
- <documentation>gSOAP 2.7.6d generated service definition</documentation>
+ <documentation>Web Services interface for remote invocation of openModeller</documentation>
  <port name="openModeller" binding="tns:openModeller">
   <SOAP:address location="http://localhost:8085"/>
  </port>
