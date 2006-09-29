@@ -429,7 +429,7 @@ AlgorithmFactory::getConfiguration()
       alg_developers_config->addSubsection( alg_developer_config );
       alg_meta_config->addSubsection( alg_developers_config );
 
-      ConfigurationPtr alg_categorical_config( new ConfigurationImpl( "AcceptsCategorialMaps" ) );
+      ConfigurationPtr alg_categorical_config( new ConfigurationImpl( "AcceptsCategoricalMaps" ) );
       char const *accepts_categorical = ( algMetadata->categorical ) ? "1" : "0";
       alg_categorical_config->setValue( accepts_categorical );
       alg_meta_config->addSubsection( alg_categorical_config );
