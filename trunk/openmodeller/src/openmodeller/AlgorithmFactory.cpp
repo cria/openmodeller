@@ -379,7 +379,7 @@ AlgorithmFactory::p_addDll( const string& file )
 ConfigurationPtr
 AlgorithmFactory::getConfiguration()
 {
-  ConfigurationPtr config( new ConfigurationImpl("AvailableAlgorithms") );
+  ConfigurationPtr config( new ConfigurationImpl("Algorithms") );
 
   AlgorithmFactory& af = getInstance();
 
@@ -393,20 +393,16 @@ AlgorithmFactory::getConfiguration()
 
     for ( ; dll != af._dlls.end(); ++dll ) {
 
-      ConfigurationPtr alg_config( new ConfigurationImpl( "Algorithm" ) );
-
       ConfigurationPtr alg_meta_config( new ConfigurationImpl( "AlgorithmMetadata" ) );
 
       AlgMetadata const *algMetadata = (*dll)->getMetadata();
 
       alg_meta_config->addNameValue( "Id", algMetadata->id );
-      alg_meta_config->addNameValue( "Name", algMetadata->name );
       alg_meta_config->addNameValue( "Version", algMetadata->version );
-      alg_meta_config->addNameValue( "Author", algMetadata->author );
-      alg_meta_config->addNameValue( "CodeAuthor", algMetadata->code_author );
-      alg_meta_config->addNameValue( "Contact", algMetadata->contact );
-      alg_meta_config->addNameValue( "Categorical", algMetadata->categorical );
-      alg_meta_config->addNameValue( "Absence", algMetadata->absence );
+
+      ConfigurationPtr alg_name_config( new ConfigurationImpl( "Name" ) );
+      alg_name_config->setValue( algMetadata->name );
+      alg_meta_config->addSubsection( alg_name_config );
 
       ConfigurationPtr alg_overview_config( new ConfigurationImpl( "Overview" ) );
       alg_overview_config->setValue( algMetadata->overview );
@@ -416,29 +412,51 @@ AlgorithmFactory::getConfiguration()
       alg_description_config->setValue( algMetadata->description );
       alg_meta_config->addSubsection( alg_description_config );
 
+      ConfigurationPtr alg_designers_config( new ConfigurationImpl( "Designers" ) );
+      ConfigurationPtr alg_designer_config( new ConfigurationImpl( "Designer" ) );
+      alg_designer_config->addNameValue( "Name", algMetadata->author );
+      alg_designers_config->addSubsection( alg_designer_config );
+      alg_meta_config->addSubsection( alg_designers_config );
+
       ConfigurationPtr alg_bibliography_config( new ConfigurationImpl( "Bibliography" ) );
       alg_bibliography_config->setValue( algMetadata->biblio );
       alg_meta_config->addSubsection( alg_bibliography_config );
 
-      alg_config->addSubsection( alg_meta_config );
+      ConfigurationPtr alg_developers_config( new ConfigurationImpl( "Developers" ) );
+      ConfigurationPtr alg_developer_config( new ConfigurationImpl( "Developer" ) );
+      alg_developer_config->addNameValue( "Name", algMetadata->code_author );
+      alg_developer_config->addNameValue( "Contact", algMetadata->contact );
+      alg_developers_config->addSubsection( alg_developer_config );
+      alg_meta_config->addSubsection( alg_developers_config );
 
-      ConfigurationPtr params_config( new ConfigurationImpl( "AlgorithmParameters" ) );
+      ConfigurationPtr alg_categorical_config( new ConfigurationImpl( "AcceptsCategorialMaps" ) );
+      char const *accepts_categorical = ( algMetadata->categorical ) ? "1" : "0";
+      alg_categorical_config->setValue( accepts_categorical );
+      alg_meta_config->addSubsection( alg_categorical_config );
+
+      ConfigurationPtr alg_absences_config( new ConfigurationImpl( "RequiresAbsencePoints" ) );
+      char const *requires_absences = ( algMetadata->absence ) ? "1" : "0";
+      alg_absences_config->setValue( requires_absences );
+      alg_meta_config->addSubsection( alg_absences_config );
+
+      ConfigurationPtr params_config( new ConfigurationImpl( "Parameters" ) );
 
       AlgParamMetadata *param = algMetadata->param;
 
       // Include parameters metadata
       for ( int i=0 ; i < algMetadata->nparam; param++, i++ ) {
 
-        ConfigurationPtr param_config( new ConfigurationImpl( "Param" ) );
+        ConfigurationPtr param_config( new ConfigurationImpl( "Parameter" ) );
 
         param_config->addNameValue( "Id", param->id );
-        param_config->addNameValue( "Name", param->name );
-        param_config->addNameValue( "Type", param->type );
-        param_config->addNameValue( "HasMin", param->has_min );
-        param_config->addNameValue( "Min", param->min_val );
-        param_config->addNameValue( "HasMax", param->has_max );
-        param_config->addNameValue( "Max", param->max_val );
-        param_config->addNameValue( "Typical", param->typical );
+
+        ConfigurationPtr param_name_config( new ConfigurationImpl( "Name" ) );
+        param_name_config->setValue( param->name );
+        param_config->addSubsection( param_name_config );
+
+        ConfigurationPtr param_type_config( new ConfigurationImpl( "Type" ) );
+        param_type_config->setValue( param->type );
+        param_config->addSubsection( param_type_config );
 
         ConfigurationPtr param_overview_config( new ConfigurationImpl( "Overview" ) );
         param_overview_config->setValue( param->overview );
@@ -448,12 +466,32 @@ AlgorithmFactory::getConfiguration()
         param_description_config->setValue( param->description );
         param_config->addSubsection( param_description_config );
 
+        if ( param->has_min || param->has_max ) {
+
+          ConfigurationPtr param_range_config( new ConfigurationImpl( "AcceptedRange" ) );
+
+          if ( param->has_min ) {
+
+            param_range_config->addNameValue( "Min", param->min_val );
+          }
+          if ( param->has_max ) {
+
+            param_range_config->addNameValue( "Max", param->max_val );
+          }
+
+          param_config->addSubsection( param_range_config );
+        }
+
+        ConfigurationPtr param_default_config( new ConfigurationImpl( "Default" ) );
+        param_default_config->setValue( param->typical );
+        param_config->addSubsection( param_default_config );
+
         params_config->addSubsection( param_config );
       }
 
-      alg_config->addSubsection( params_config );
+      alg_meta_config->addSubsection( params_config );
 
-      config->addSubsection( alg_config );
+      config->addSubsection( alg_meta_config );
     }
   }
 
