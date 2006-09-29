@@ -119,8 +119,8 @@ Bioclim's categorical output is mapped to probabilities\
  pp. 4-15. Australian Flora and Fauna Series Number 7. Australian\
  Government Publishing Service: Canberra.",
 
-  "Mauro Munoz",            // Code author.
-  "mauro [at] cria.org.br", // Code author's contact.
+  "Mauro Muñoz",             // Code author.
+  "mesmunoz [at] gmail.com", // Code author's contact.
 
   0,  // Does not accept categorical data.
   0,  // Does not need (pseudo)absence points.
