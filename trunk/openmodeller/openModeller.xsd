@@ -11,11 +11,96 @@
     </xs:documentation>		
   </xs:annotation>
 
+  <xs:element name="AvailableAlgorithms" type="AvailableAlgorithmsType"/>
+
+  <xs:complexType name="AvailableAlgorithmsType">
+    <xs:sequence>
+      <xs:element ref="Algorithms"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:element name="Algorithms" type="AlgorithmsMetadataType"/>
+
+  <xs:complexType name="AlgorithmsMetadataType">
+    <xs:sequence>
+      <xs:element name="AlgorithmMetadata" type="AlgorithmMetadataType" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="AlgorithmMetadataType">
+    <xs:sequence>
+      <xs:element name="Name" type="xs:string"/>
+      <xs:element name="Overview" type="xs:string"/>
+      <xs:element name="Description" type="xs:string"/>
+      <xs:element name="Designers">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="Designer" maxOccurs="unbounded">
+              <xs:complexType>
+                <xs:attribute name="Name" type="xs:string"/>
+                <xs:attribute name="Contact" type="xs:string" use="optional"/>
+              </xs:complexType>
+            </xs:element>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="Bibliography" type="xs:string" minOccurs="0"/>
+      <xs:element name="Developers">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="Developer" maxOccurs="unbounded">
+              <xs:complexType>
+                <xs:attribute name="Name" type="xs:string"/>
+                <xs:attribute name="Contact" type="xs:string" use="optional"/>
+              </xs:complexType>
+            </xs:element>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="AcceptsCategoricalMaps" type="xs:boolean"/>
+      <xs:element name="RequiresAbsencePoints" type="xs:boolean"/>
+      <xs:element name="Parameters">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="Parameter" minOccurs="0" maxOccurs="unbounded">
+              <xs:complexType>
+                <xs:sequence>
+                  <xs:element name="Name" type="xs:string"/>
+                  <xs:element name="Type" type="xs:string"/>
+                  <xs:element name="Overview" type="xs:string"/>
+                  <xs:element name="Description" type="xs:string"/>
+                  <xs:element name="AcceptedRange" minOccurs="0">
+                    <xs:complexType>
+                      <xs:attribute name="Min" type="xs:double" use="optional"/>
+                      <xs:attribute name="Max" type="xs:double" use="optional"/>
+                    </xs:complexType>
+                  </xs:element>
+                  <xs:element name="AcceptedValues" minOccurs="0">
+                    <xs:complexType>
+                      <xs:sequence>
+                        <xs:element name="Value" type="xs:string" maxOccurs="unbounded"/>
+                      </xs:sequence>
+                    </xs:complexType>
+                  </xs:element>
+                  <xs:element name="Default" type="xs:string" minOccurs="0"/>
+                </xs:sequence>
+                <xs:attribute name="Id" type="xs:string" use="required"/>
+              </xs:complexType>
+            </xs:element>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+    </xs:sequence>
+    <xs:attribute name="Id" type="xs:string" use="required"/>
+    <xs:attribute name="Version" type="xs:string" use="required"/>
+  </xs:complexType>
+
+
+
+
  <xs:element name="OpenModeller" type="problem-defn"/>
 
- <xs:element name="AvailableAlgorithms" type="avail-algo-list-defn"/>
-
- <xs:complexType name="problem-defn">
+  <xs:complexType name="problem-defn">
   <xs:sequence>
    <xs:element name="Sampler">
     <xs:complexType>
@@ -32,53 +117,9 @@
 
  <xs:complexType name="avail-algo-list-defn">
   <xs:sequence>
-   <xs:element name="Algorithm" type="avail-algo-defn" minOccurs="0" maxOccurs="unbounded"/>
+   <!-- xs:element name="Algorithm" type="avail-algo-defn" minOccurs="0" maxOccurs="unbounded"/ -->
   </xs:sequence>
  </xs:complexType>
-
- <xs:complexType name="avail-algo-defn">
-
-  <xs:sequence>
-   <xs:element name="AlgorithmMetadata">
-    <xs:complexType>
-     <xs:sequence>
-      <xs:element name="Id" type="xs:string" minOccurs="0" />
-      <xs:element name="Name" type="xs:string" minOccurs="0" />
-      <xs:element name="Overview" type="xs:string" minOccurs="0" />
-      <xs:element name="Description" type="xs:string" minOccurs="0" />
-      <xs:element name="Author" type="xs:string" minOccurs="0" />
-      <xs:element name="Biblio" type="xs:string" minOccurs="0" />
-      <xs:element name="CodeAuthor" type="xs:string" minOccurs="0" />
-      <xs:element name="Contact" type="xs:string" minOccurs="0" />
-      <xs:element name="Categorical" type="xs:integer" minOccurs="0" />
-      <xs:element name="Absence" type="xs:integer" minOccurs="0" />
-      <xs:element name="AlgorithmParameters">
-      <xs:complexType>
-        <xs:sequence>
-          <xs:element name="Param" minOccurs="0" maxOccurs="unbounded">
-          <xs:complexType>
-            <xs:sequence>
-              <xs:element name="Id" type="xs:string"  />
-              <xs:element name="Name" type="xs:string"  />
-              <xs:element name="Type" type="xs:string"  />
-              <xs:element name="Overview" type="xs:string"  />
-             <xs:element name="Description" type="xs:string"  />
-             <xs:element name="Min" type="xs:string" minOccurs="0" />
-             <xs:element name="Max" type="xs:string" minOccurs="0" />
-             <xs:element name="Typical" type="xs:string" minOccurs="0" />
-            </xs:sequence>
-          </xs:complexType>
-        </xs:element>
-     </xs:sequence>
-    </xs:complexType>
-   </xs:element>
-  </xs:sequence>
-    </xs:complexType>
-   </xs:element>
-  </xs:sequence>
-  <xs:attribute name="Id" type="xs:string" use="required"/>
- </xs:complexType>
- 
 
  <xs:complexType name="environ-defn">
   <xs:sequence>
