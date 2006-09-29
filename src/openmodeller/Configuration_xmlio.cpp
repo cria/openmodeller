@@ -60,7 +60,7 @@ writeXmlStartTag( const string &name, Configuration::attribute_list nvlist, bool
 static void
 writeXmlEndTag( const string &name, ostream &_stream ) {
 
-  _stream << endl << "</" << name << ">" << endl;
+  _stream << "</" << name << ">";
 
 }
 
