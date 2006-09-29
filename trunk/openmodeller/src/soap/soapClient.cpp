@@ -6,7 +6,7 @@
 */
 #include "soapH.h"
 
-SOAP_SOURCE_STAMP("@(#) soapClient.cpp ver 2.7.6d 2006-09-28 19:28:42 GMT")
+SOAP_SOURCE_STAMP("@(#) soapClient.cpp ver 2.7.6d 2006-09-29 17:25:50 GMT")
 
 
 SOAP_FMAC5 int SOAP_FMAC6 soap_call_omws__getAlgorithms(struct soap *soap, const char *soap_endpoint, const char *soap_action, wchar_t *&om__AvailableAlgorithms)

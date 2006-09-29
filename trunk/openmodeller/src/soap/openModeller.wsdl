@@ -26,7 +26,7 @@
   xmlns="http://www.w3.org/2001/XMLSchema"
   elementFormDefault="unqualified"
   attributeFormDefault="unqualified">
-  <import namespace="http://openmodeller.cria.org.br/xml/1.0"/>
+  <import namespace="http://openmodeller.cria.org.br/xml/1.0" schemaLocation="http://openmodeller.cria.org.br/xml/1.0/openModeller.xsd"/>
   <import namespace="http://schemas.xmlsoap.org/soap/encoding/"/>
   <complexType name="Point">
    <complexContent>

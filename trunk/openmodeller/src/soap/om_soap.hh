@@ -1,9 +1,10 @@
 //gsoap omws service name: openModeller
 //gsoap omws service port: http://localhost:8085
 //gsoap omws service namespace: http://openmodeller.cria.org.br/ws/1.0
-//gsoap om schema import: http://openmodeller.cria.org.br/xml/1.0
 //gsoap omws service documentation: Web Services interface for remote invocation of openModeller
 //gsoap omws service encoding: literal
+//gsoap om schema namespace: http://openmodeller.cria.org.br/xml/1.0
+//gsoap om schema import: http://openmodeller.cria.org.br/xml/1.0/openModeller.xsd
 
 /** gSOAP data type mappings */
 
