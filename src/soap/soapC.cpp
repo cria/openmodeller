@@ -7,7 +7,7 @@
 
 #include "soapH.h"
 
-SOAP_SOURCE_STAMP("@(#) soapC.cpp ver 2.7.6d 2006-09-28 19:28:42 GMT")
+SOAP_SOURCE_STAMP("@(#) soapC.cpp ver 2.7.6d 2006-09-29 17:25:50 GMT")
 
 
 #ifndef WITH_NOGLOBAL
