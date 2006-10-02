@@ -267,7 +267,7 @@ sub get_algorithms
     
     unless ($response->fault)
     { 
-	my @algorithms = $response->valueof('//Algorithm');
+	my @algorithms = $response->valueof('//AlgorithmMetadata');
 
 	my $num_algs = scalar(@algorithms);
 	
@@ -282,34 +282,33 @@ sub get_algorithms
 		print '-' x 25 . "\n" if $option == 2;
 
 		my $alg_path = "/Envelope/Body/[1]/[1]/[$i]";
-		my $alg_metadata_path = "$alg_path/AlgorithmMetadata";
-		my $alg_parameters_path = "$alg_path/AlgorithmParameters";
+		my $alg_designer_path = "$alg_path/Designers/Designer";
+		my $alg_developer_path = "$alg_path/Developers/Developer";
+		my $alg_parameters_path = "$alg_path/Parameters";
 		
 		my %algorithm = %{$alg};
 
-		$algorithm{'Id'} = $response->dataof($alg_metadata_path)->attr->{'Id'};
+		$algorithm{'Id'} = $response->dataof($alg_path)->attr->{'Id'};
+		$algorithm{'Version'} = $response->dataof($alg_path)->attr->{'Version'};
 
-		my $accepts_categorical_data = ($response->dataof($alg_metadata_path)->attr->{'Categorical'}) ? 'yes': 'no';
-		my $accepts_absence_data = ($response->dataof($alg_metadata_path)->attr->{'Absence'}) ? 'yes': 'no';
+		my $accepts_categorical_data = ($response->dataof($alg_path)->attr->{'AcceptsCategoricalMaps'}) ? 'yes': 'no';
+		my $accepts_absence_data = ($response->dataof($alg_path)->attr->{'RequiresAbsencePoints'}) ? 'yes': 'no';
 		
-		$algorithm{'Name'} = $response->dataof($alg_metadata_path)->attr->{'Name'};
-		my $alg_creator = $response->dataof($alg_metadata_path)->attr->{'Author'};
-		my $alg_developer = $response->dataof($alg_metadata_path)->attr->{'CodeAuthor'};
-		my $alg_developer_contact = $response->dataof($alg_metadata_path)->attr->{'Contact'};
+		my $alg_creator = $response->dataof($alg_designer_path)->attr->{'Name'};
+		my $alg_developer = $response->dataof($alg_developer_path)->attr->{'Name'};
+		my $alg_developer_contact = $response->dataof($alg_developer_path)->attr->{'Contact'};
 
 		print <<EOM if $option == 2;
   $algorithm{'Name'}
      * creator: $alg_creator
-     * bibliography: $algorithm{AlgorithmMetadata}{Bibliography}
+     * bibliography: $algorithm{'Bibliography'}
      * developer: $alg_developer - $alg_developer_contact
-     * overview: $algorithm{AlgorithmMetadata}{Overview}
+     * overview: $algorithm{'Overview'}
      * accepts categorical data: $accepts_categorical_data
      * accepts absence data: $accepts_absence_data
 EOM
 
-		$algorithm{parameters} = ();
-
-		my @params = $response->dataof("$alg_parameters_path/Param");
+		my @params = $response->dataof("$alg_parameters_path/Parameter");
 		
 		my $num_params = scalar(@params);
 
@@ -326,20 +325,24 @@ EOM
 			my %complete_par = %{$par};
 			my %parameter = %{$complete_par{'_value'}[0]};
 
-			$parameter{'Name'} = $response->dataof($param_path)->attr->{'Name'};
-			$parameter{'Type'} = $response->dataof($param_path)->attr->{'Type'};
-			$parameter{'Typical'} = $response->dataof($param_path)->attr->{'Typical'};
-			my $min = ($response->dataof($param_path)->attr->{'HasMin'}) ? '['.$response->dataof($param_path)->attr->{'Min'}: '(oo';
-			my $max = ($response->dataof($param_path)->attr->{'HasMax'}) ? $response->dataof($param_path)->attr->{'Max'}.']': 'oo)';
+			$parameter{'Id'} = $response->dataof($param_path)->attr->{'Id'};
+
+	                my $range_path = "$alg_parameters_path/[$j]/AcceptedRange";
+
+			my $min = (defined($response->dataof($range_path)->attr->{'Min'})) ? '['.$response->dataof($range_path)->attr->{'Min'}: '(oo';
+			my $max = (defined($response->dataof($range_path)->attr->{'Max'})) ? $response->dataof($range_path)->attr->{'Max'}.']': 'oo)';
 			my $domain = $min . ', ' . $max;
 
-			$algorithm{parameters}{$complete_par{'_attr'}{'Id'}} = \%parameter;
-		    
+			$parameter{'Min'} = $response->dataof($range_path)->attr->{'Min'};
+			$parameter{'Max'} = $response->dataof($range_path)->attr->{'Max'};
+
+			$algorithm{parameters}{$parameter{'Id'}} = \%parameter;
+
 			print <<EOM if $option == 2;
-        $parameter{'Name'} ($parameter{Overview})
+        $parameter{'Name'} ($parameter{'Overview'})
           - type: $parameter{'Type'}
           - domain: $domain
-          - typical value: $parameter{'Typical'}
+          - default value: $parameter{'Default'}
 EOM
 
                         ++$j;
@@ -395,21 +398,21 @@ sub get_algorithm_parameter
 {
     my ($param) = @_;
 
-    my $min = ($param->{'HasMin'}) ? '['.$param->{'Min'}: '(oo';
-    my $max = ($param->{'HasMax'}) ? $param->{'Max'}.']': 'oo)';
+    my $min = (defined($param->{'Min'})) ? '['.$param->{'Min'}: '(oo';
+    my $max = (defined($param->{'Max'})) ? $param->{'Max'}.']': 'oo)';
     my $domain = $min . ', ' . $max;
     
     print "\nParameter: $param->{Name}";
     print " ($param->{Description})" if $param->{Description};
     print "\n domain: $domain";
-    print "\n default: $param->{'Typical'}" if $param->{'Typical'};
+    print "\n default: $param->{'Default'}" if $param->{'Default'};
 
     print "\n value: ";
 
     my $val = <STDIN>;
     chomp($val);
 
-    $val = $param->{'Typical'} unless length($val);
+    $val = $param->{'Default'} unless length($val);
 
     return $val;
 }
