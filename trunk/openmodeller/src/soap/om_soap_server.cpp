@@ -36,13 +36,18 @@
 #include <sys/types.h>
 #include <unistd.h>
 
+#include <dirent.h>
+
 #include <sstream>
 using namespace std;
 
-#define BACKLOG (100) // Max. request backlog 
-#define TEMPLATE_FILE_NAME "dmapXXXXXX"
-#define min *60
-#define h *3600
+#include "gdal_priv.h"
+
+#define OMWS_BACKLOG (100) // Max. request backlog 
+#define OMWS_TEMPLATE_FILE_NAME "dmapXXXXXX"
+#define OMWS_LAYERS_DIRECTORY "/home/renato/projects/openmodeller/examples/layers/"
+#define OMWS_MIN *60
+#define OMWS_H *3600
 
 /*****************************/
 /***  Forward declarations ***/
@@ -50,6 +55,8 @@ using namespace std;
 static void *process_request( void* );
 static int getData( struct soap*, const xsd__string, xsd__base64Binary& );
 static wchar_t* convertToWideChar( const char* p );
+static bool readDirectory( const char* dir, ostream &xml, int depth );
+static bool isValidGdalFile( const char* fileName );
 
 /********************/
 /***  Static data ***/
@@ -93,8 +100,8 @@ int main(int argc, char **argv)
   soap.user = (void*)om;   
 
   soap.accept_timeout = 0;  // always listening
-  soap.send_timeout = 10 h;
-  soap.recv_timeout = 3 min;
+  soap.send_timeout = 10 OMWS_H;
+  soap.recv_timeout = 3 OMWS_MIN;
 
   if (argc < 2) // no args: assume this is a CGI application
     { 
@@ -108,7 +115,7 @@ int main(int argc, char **argv)
 
       int m, s, i; // master and slave sockets, and thread counter
 
-      m = soap_bind(&soap, NULL, port, BACKLOG);
+      m = soap_bind(&soap, NULL, port, OMWS_BACKLOG);
 
       if (m < 0)
 	{ 
@@ -220,10 +227,20 @@ void *process_request(void *soap)
   return NULL;
 }
 
+/**************/
+/**** Ping ****/
+int
+omws__ping( struct soap *soap, void *_, xsd__int *status )
+{
+  *status = 1;
+
+  return SOAP_OK;
+}
+
 /**********************/
 /*** get Algorithms ***/
 int 
-omws__getAlgorithms( struct soap *soap, XML &om__AvailableAlgorithms )
+omws__getAlgorithms( struct soap *soap, void *_, XML &om__AvailableAlgorithms )
 {
   // Get controller object previously instantiated
   OpenModeller *om = (OpenModeller*)soap->user; 
@@ -242,10 +259,35 @@ omws__getAlgorithms( struct soap *soap, XML &om__AvailableAlgorithms )
   }
 
   ConfigurationPtr cfg = AlgorithmFactory::getConfiguration();
-  ostringstream oss ;
+  ostringstream oss;
   Configuration::writeXml( cfg, oss );
 
   om__AvailableAlgorithms = convertToWideChar( oss.str().c_str() ) ;
+
+  return SOAP_OK;
+}
+
+/**********************/
+/*** get Layers ***/
+int 
+omws__getLayers( struct soap *soap, void *_, XML &om__AvailableLayers )
+{
+  // Get controller object previously instantiated
+  OpenModeller *om = (OpenModeller*)soap->user; 
+
+  // alloc new header
+  soap->header = (struct SOAP_ENV__Header*)soap_malloc( soap, sizeof(struct SOAP_ENV__Header) ); 
+  soap->header->omws__version = om->getVersion();
+
+  // Recurse on all sub directories searching for GDAL compatible layers
+  ostringstream oss;
+
+  if ( ! readDirectory( OMWS_LAYERS_DIRECTORY, oss, 0 ) ) {
+
+    return soap_receiver_fault( soap, "Could not read available layers", NULL );
+  }
+
+  om__AvailableLayers = convertToWideChar( oss.str().c_str() ) ;
 
   return SOAP_OK;
 }
@@ -330,10 +372,10 @@ omws__createModel( struct soap *soap, omws__Points *points, omws__Maps *maps, om
 
   // Output map  (FIX ME: use a portable and better solution for unique names)
   char *template_file_name = (char*)soap_malloc( soap, strlen(OM_SOAP_TMPDIR) + 
-                                                       strlen(TEMPLATE_FILE_NAME) +2 );
+                                                       strlen(OMWS_TEMPLATE_FILE_NAME) +2 );
   strcpy( template_file_name, OM_SOAP_TMPDIR );
   strcat( template_file_name, "/" );
-  strcat( template_file_name, TEMPLATE_FILE_NAME );
+  strcat( template_file_name, OMWS_TEMPLATE_FILE_NAME );
   mkstemp( template_file_name ); // generate file with unique name, and keep it
 
   char *projection_file_name = (char*)soap_malloc( soap, strlen(template_file_name) + 
@@ -341,7 +383,7 @@ omws__createModel( struct soap *soap, omws__Points *points, omws__Maps *maps, om
   strcpy( projection_file_name, template_file_name );
   strcat( projection_file_name, output->format ); // unique name + file format (should include dot)
 
-  *ticket = rindex( projection_file_name, '/' ) + 1; //ticket is actually the output map file name
+  *ticket = strrchr( projection_file_name, '/' ) + 1; //ticket is actually the output map file name
 
   pid_t pid = fork();
 
@@ -423,24 +465,6 @@ omws__getDistributionMap( struct soap *soap, xsd__string ticket, xsd__base64Bina
   return SOAP_OK;
 }
 
-/**************/
-/**** Ping ****/
-//int
-//omws__ping( struct soap *soap, void *_, xsd__int *status )
-//{
-//  *status = 1;
-//
-//  return SOAP_OK;
-//}
-int
-omws__ping( struct soap *soap, void *_, xsd__int *status )
-{
-  *status = 1;
-
-  return SOAP_OK;
-}
-
-
 
 //////////////////////////////
 //
@@ -498,18 +522,140 @@ getData( struct soap *soap, const xsd__string ticket, xsd__base64Binary &file )
 static 
 wchar_t* convertToWideChar( const char* p )
 {
-     wchar_t *r;
+  wchar_t *r;
 
-     r = new wchar_t[strlen(p)+1];
+  r = new wchar_t[strlen(p)+1];
 
-     const char *tempsource = p;
+  const char *tempsource = p;
 
-     wchar_t *tempdest = r;
+  wchar_t *tempdest = r;
 
-     while ( *tempdest++ = *tempsource++ );
+  while ( *tempdest++ = *tempsource++ );
 
-     return r;
+  return r;
 }
+
+/***********************/
+/**** readDirectory ****/
+static 
+bool readDirectory( const char* dir, ostream &xml, int depth )
+{
+  bool r = true;
+
+  ++depth;
+
+  // Maximum depth level to recurse on directories
+  if ( depth > 20 )
+  {
+    return false;
+  }
+
+  // Create copy of dir and add slash to the end if necessary
+  string myDir( dir );
+
+  if ( myDir.find_last_of( "/" ) != myDir.size() - 1 ) {
+
+    myDir.append( "/" );
+  }
+
+  // Open directory
+  DIR *pdir;
+  struct dirent *pent;
+  struct stat buf;
+
+  pdir = opendir( myDir.c_str() );
+
+  if ( ! pdir ) {
+
+    return false;
+  }
+
+  xml << "<LayersGroup Id=\"" << myDir << "\">";
+
+  string xmlFiles;
+
+  while ( ( pent = readdir( pdir ) ) != NULL ) {
+
+    // Skip "." and ".." directories
+    if ( strcmp( pent->d_name, "." ) == 0 || strcmp( pent->d_name, ".." ) == 0 ) {
+
+      continue;
+    }
+
+    // Need the full name to "stat"
+    string fullName( myDir );
+    fullName.append( pent->d_name );
+
+    // Get file attributes (skip on failure)
+    if ( stat( fullName.c_str(), &buf ) == -1 ) {
+
+      continue;
+    }
+
+    // Directories
+    if ( S_ISDIR( buf.st_mode ) ) {
+
+      if ( isValidGdalFile( fullName.c_str() ) ) {
+
+        xmlFiles.append( "<Layer IsCategorical=\"0\">" );
+        xmlFiles.append( fullName );
+        xmlFiles.append( "</Layer>" );
+      }
+      else {
+
+        readDirectory( fullName.c_str(), xml, depth );
+      }
+    }
+    // Regular files
+    else if ( S_ISREG( buf.st_mode ) ) {
+
+      if ( isValidGdalFile( fullName.c_str() ) ) {
+
+        xmlFiles.append( "<Layer IsCategorical=\"0\">" );
+        xmlFiles.append( fullName );
+        xmlFiles.append( "</Layer>" );
+      }
+    }
+    // Symbolic links
+    else if ( S_ISLNK( buf.st_mode ) ) {
+
+      readDirectory( fullName.c_str(), xml, depth );
+    }
+  }
+
+  closedir( pdir );
+
+  // openModeller.xsd mandates that files should always come after directories
+  xml << xmlFiles;
+
+  xml << "</LayersGroup>";
+
+  return r;
+}
+
+/*************************/
+/**** isValidGdalFile ****/
+static
+bool isValidGdalFile( const char* fileName )
+{
+  //test whether the file is GDAL compatible
+  GDALAllRegister();
+  GDALDataset * myTestFile = (GDALDataset *)GDALOpen( fileName, GA_ReadOnly );
+
+  if ( myTestFile == NULL ) {
+
+    // not GDAL compatible
+    GDALClose( myTestFile );
+    return false;
+  }
+  else {
+
+    // is GDAL compatible
+    GDALClose( myTestFile );
+    return true;  
+  }
+}
+
 
 ///////////////////////
 //

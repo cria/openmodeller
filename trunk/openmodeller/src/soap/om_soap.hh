@@ -20,18 +20,34 @@ struct SOAP_ENV__Header
   xsd__string omws__version; 
 }; 
 
-/** Get all available algorithms and return their metadata in a SOAP structure.
- * @note This method is implemented in om_soap.cpp, where it receives a soap structure as
- *       an additional parameter. The definition here is used only to generate the SOAP 
- *       stub/skeleton.
+/** Simple method just to monitor the service.
+ *
  * @param _ A void* input parameter so that some compilers (notably vc++) will not complain 
  *          about empty structs. This SOAP method should be called without any parameters.
- * @param r Reference to the SOAP structure that will be returned.
+ * @return status Integer value (1 - OK)
+ */
+//gsoap omws service method-documentation: ping Simple method to monitor service availability.
+int omws__ping(void *_, xsd__int *status); 
+
+/** Get all available algorithms and return their metadata.
+ *
+ * @param _ A void* input parameter so that some compilers (notably vc++) will not complain 
+ *          about empty structs. This SOAP method should be called without any parameters.
+ * @param om__AvailableAlgorithms Reference to the literal XML that will be returned.
  * @return standard gSOAP integer code
  */
-//gsoap om service method-action: getAlgorithms ""
-//gsoap om service method-documentation: getAlgorithms returns metadata about all available algorithms
-int omws__getAlgorithms(XML &om__AvailableAlgorithms);
+//gsoap omws service method-documentation: getAlgorithms Returns metadata about all available algorithms.
+int omws__getAlgorithms(void *_, XML &om__AvailableAlgorithms);
+
+/** Get all available layers on the server side.
+ *
+ * @param _ A void* input parameter so that some compilers (notably vc++) will not complain 
+ *          about empty structs. This SOAP method should be called without any parameters.
+ * @param om__AvailableLayers Reference to the literal XML that will be returned.
+ * @return standard gSOAP integer code
+ */
+//gsoap omws service method-documentation: getLayers Returns all available layers on the server side.
+int omws__getLayers(void *_, XML &om__AvailableLayers);
 
 
 
@@ -159,13 +175,3 @@ class xsd__base64Binary
 //gsoap om service method-documentation: Given a ticket, return the corresponding distribution map.
 int omws__getDistributionMap(xsd__string ticket, xsd__base64Binary &file);
 
-/** Simple method just to monitor the service.
- * @param _ A void* input parameter so that some compilers (notably vc++) will not complain 
- *          about empty structs. This SOAP method should be called without any parameters.
- * @return status Integer value (1 - OK)
- */
-//gsoap om service method-action: Return 1 to indicate availability of the service
-//gsoap om service method-documentation: Simple method that enables monitoring of service availability.
-//int omws__ping(void *_, xsd__int *status);
-
-int omws__ping(void *_, xsd__int *status); 
