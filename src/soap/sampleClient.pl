@@ -73,9 +73,10 @@ my $soap = 0; # future soap object
 
 my %options = ( 0 => 'Ping service', 
 		1 => 'Show available algorithms', 
-		2 => 'Create model', 
-		3 => 'Get distribution map', 
-		4 => 'Exit' );
+		2 => 'Show available layers', 
+		3 => 'Create model', 
+		4 => 'Get distribution map', 
+		5 => 'Exit' );
 
 my $option = -1;
 
@@ -93,11 +94,15 @@ while ($option != $exit_option or not exists($options{$option-1}))
     {
 	$option = (get_algorithms()) ? -1 : $exit_option;
     }
-    elsif ($option == 3)
+    if ($option == 3)
+    {
+	$option = (get_layers()) ? -1 : $exit_option;
+    }
+    elsif ($option == 4)
     {
 	$option = (create_model()) ? -1 : $exit_option;
     }
-    elsif ($option == 4)
+    elsif ($option == 5)
     {
 	$option = (get_distribution_map()) ? -1 : $exit_option;
     }
@@ -361,6 +366,43 @@ EOM
 	}
 
 	return $num_algs;
+    }
+    else
+    {
+	print "Ops, found some problems:\n";
+	print join ', ', $response->faultcode, $response->faultstring; 
+	print "\n";
+	return 0;
+    }
+}
+
+###########################
+#  Get layers from server # 
+###########################
+sub get_layers
+{
+    prepare_soap();
+
+    # reset layers hash
+#    if (scalar(keys %algorithms) > 0)
+#    {
+#	%algorithms = ();
+#    }
+
+    print "Requesting layers...\n" if $option == 2;
+    
+    my $method = SOAP::Data
+	-> name('getLayers')
+	-> prefix('omws')
+	-> uri($uri);
+
+    my $response = $soap->call($method);
+    
+    unless ($response->fault)
+    { 
+
+        # change this
+	return 1;
     }
     else
     {

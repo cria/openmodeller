@@ -6,7 +6,7 @@
 */
 #include "soapH.h"
 
-SOAP_SOURCE_STAMP("@(#) soapServer.cpp ver 2.7.6d 2006-09-29 17:25:50 GMT")
+SOAP_SOURCE_STAMP("@(#) soapServer.cpp ver 2.7.6d 2006-10-02 19:29:19 GMT")
 
 
 SOAP_FMAC5 int SOAP_FMAC6 soap_serve(struct soap *soap)
@@ -71,17 +71,63 @@ SOAP_FMAC5 int SOAP_FMAC6 soap_serve(struct soap *soap)
 SOAP_FMAC5 int SOAP_FMAC6 soap_serve_request(struct soap *soap)
 {
 	soap_peek_element(soap);
+	if (!soap_match_tag(soap, soap->tag, "omws:ping"))
+		return soap_serve_omws__ping(soap);
 	if (!soap_match_tag(soap, soap->tag, "omws:getAlgorithms"))
 		return soap_serve_omws__getAlgorithms(soap);
+	if (!soap_match_tag(soap, soap->tag, "omws:getLayers"))
+		return soap_serve_omws__getLayers(soap);
 	if (!soap_match_tag(soap, soap->tag, "omws:createModel"))
 		return soap_serve_omws__createModel(soap);
 	if (!soap_match_tag(soap, soap->tag, "omws:getDistributionMap"))
 		return soap_serve_omws__getDistributionMap(soap);
-	if (!soap_match_tag(soap, soap->tag, "omws:ping"))
-		return soap_serve_omws__ping(soap);
 	return soap->error = SOAP_NO_METHOD;
 }
 #endif
+
+SOAP_FMAC5 int SOAP_FMAC6 soap_serve_omws__ping(struct soap *soap)
+{	struct omws__ping soap_tmp_omws__ping;
+	struct omws__pingResponse soap_tmp_omws__pingResponse;
+	int soap_tmp_xsd__int;
+	soap_default_omws__pingResponse(soap, &soap_tmp_omws__pingResponse);
+	soap_default_xsd__int(soap, &soap_tmp_xsd__int);
+	soap_tmp_omws__pingResponse.status = &soap_tmp_xsd__int;
+	soap_default_omws__ping(soap, &soap_tmp_omws__ping);
+	soap->encodingStyle = NULL;
+	if (!soap_get_omws__ping(soap, &soap_tmp_omws__ping, "omws:ping", NULL))
+		return soap->error;
+	if (soap_body_end_in(soap)
+	 || soap_envelope_end_in(soap)
+	 || soap_end_recv(soap))
+		return soap->error;
+	soap->error = omws__ping(soap, soap_tmp_omws__ping._, &soap_tmp_xsd__int);
+	if (soap->error)
+		return soap->error;
+	soap_serializeheader(soap);
+	soap_serialize_omws__pingResponse(soap, &soap_tmp_omws__pingResponse);
+	if (soap_begin_count(soap))
+		return soap->error;
+	if (soap->mode & SOAP_IO_LENGTH)
+	{	if (soap_envelope_begin_out(soap)
+		 || soap_putheader(soap)
+		 || soap_body_begin_out(soap)
+		 || soap_put_omws__pingResponse(soap, &soap_tmp_omws__pingResponse, "omws:pingResponse", "")
+		 || soap_body_end_out(soap)
+		 || soap_envelope_end_out(soap))
+			 return soap->error;
+	};
+	if (soap_end_count(soap)
+	 || soap_response(soap, SOAP_OK)
+	 || soap_envelope_begin_out(soap)
+	 || soap_putheader(soap)
+	 || soap_body_begin_out(soap)
+	 || soap_put_omws__pingResponse(soap, &soap_tmp_omws__pingResponse, "omws:pingResponse", "")
+	 || soap_body_end_out(soap)
+	 || soap_envelope_end_out(soap)
+	 || soap_end_send(soap))
+		return soap->error;
+	return soap_closesock(soap);
+}
 
 SOAP_FMAC5 int SOAP_FMAC6 soap_serve_omws__getAlgorithms(struct soap *soap)
 {	struct omws__getAlgorithms soap_tmp_omws__getAlgorithms;
@@ -95,7 +141,7 @@ SOAP_FMAC5 int SOAP_FMAC6 soap_serve_omws__getAlgorithms(struct soap *soap)
 	 || soap_envelope_end_in(soap)
 	 || soap_end_recv(soap))
 		return soap->error;
-	soap->error = omws__getAlgorithms(soap, soap_tmp_XML);
+	soap->error = omws__getAlgorithms(soap, soap_tmp_omws__getAlgorithms._, soap_tmp_XML);
 	if (soap->error)
 		return soap->error;
 	soap_serializeheader(soap);
@@ -116,6 +162,46 @@ SOAP_FMAC5 int SOAP_FMAC6 soap_serve_omws__getAlgorithms(struct soap *soap)
 	 || soap_putheader(soap)
 	 || soap_body_begin_out(soap)
 	 || soap_outwliteral(soap, "om:AvailableAlgorithms", &soap_tmp_XML)
+	 || soap_body_end_out(soap)
+	 || soap_envelope_end_out(soap)
+	 || soap_end_send(soap))
+		return soap->error;
+	return soap_closesock(soap);
+}
+
+SOAP_FMAC5 int SOAP_FMAC6 soap_serve_omws__getLayers(struct soap *soap)
+{	struct omws__getLayers soap_tmp_omws__getLayers;
+	wchar_t * soap_tmp_XML;
+	soap_tmp_XML = NULL;
+	soap_default_omws__getLayers(soap, &soap_tmp_omws__getLayers);
+	soap->encodingStyle = NULL;
+	if (!soap_get_omws__getLayers(soap, &soap_tmp_omws__getLayers, "omws:getLayers", NULL))
+		return soap->error;
+	if (soap_body_end_in(soap)
+	 || soap_envelope_end_in(soap)
+	 || soap_end_recv(soap))
+		return soap->error;
+	soap->error = omws__getLayers(soap, soap_tmp_omws__getLayers._, soap_tmp_XML);
+	if (soap->error)
+		return soap->error;
+	soap_serializeheader(soap);
+	if (soap_begin_count(soap))
+		return soap->error;
+	if (soap->mode & SOAP_IO_LENGTH)
+	{	if (soap_envelope_begin_out(soap)
+		 || soap_putheader(soap)
+		 || soap_body_begin_out(soap)
+		 || soap_outwliteral(soap, "om:AvailableLayers", &soap_tmp_XML)
+		 || soap_body_end_out(soap)
+		 || soap_envelope_end_out(soap))
+			 return soap->error;
+	};
+	if (soap_end_count(soap)
+	 || soap_response(soap, SOAP_OK)
+	 || soap_envelope_begin_out(soap)
+	 || soap_putheader(soap)
+	 || soap_body_begin_out(soap)
+	 || soap_outwliteral(soap, "om:AvailableLayers", &soap_tmp_XML)
 	 || soap_body_end_out(soap)
 	 || soap_envelope_end_out(soap)
 	 || soap_end_send(soap))
@@ -201,50 +287,6 @@ SOAP_FMAC5 int SOAP_FMAC6 soap_serve_omws__getDistributionMap(struct soap *soap)
 	 || soap_putheader(soap)
 	 || soap_body_begin_out(soap)
 	 || soap_put_omws__getDistributionMapResponse(soap, &soap_tmp_omws__getDistributionMapResponse, "omws:getDistributionMapResponse", "")
-	 || soap_body_end_out(soap)
-	 || soap_envelope_end_out(soap)
-	 || soap_end_send(soap))
-		return soap->error;
-	return soap_closesock(soap);
-}
-
-SOAP_FMAC5 int SOAP_FMAC6 soap_serve_omws__ping(struct soap *soap)
-{	struct omws__ping soap_tmp_omws__ping;
-	struct omws__pingResponse soap_tmp_omws__pingResponse;
-	int soap_tmp_xsd__int;
-	soap_default_omws__pingResponse(soap, &soap_tmp_omws__pingResponse);
-	soap_default_xsd__int(soap, &soap_tmp_xsd__int);
-	soap_tmp_omws__pingResponse.status = &soap_tmp_xsd__int;
-	soap_default_omws__ping(soap, &soap_tmp_omws__ping);
-	soap->encodingStyle = NULL;
-	if (!soap_get_omws__ping(soap, &soap_tmp_omws__ping, "omws:ping", NULL))
-		return soap->error;
-	if (soap_body_end_in(soap)
-	 || soap_envelope_end_in(soap)
-	 || soap_end_recv(soap))
-		return soap->error;
-	soap->error = omws__ping(soap, soap_tmp_omws__ping._, &soap_tmp_xsd__int);
-	if (soap->error)
-		return soap->error;
-	soap_serializeheader(soap);
-	soap_serialize_omws__pingResponse(soap, &soap_tmp_omws__pingResponse);
-	if (soap_begin_count(soap))
-		return soap->error;
-	if (soap->mode & SOAP_IO_LENGTH)
-	{	if (soap_envelope_begin_out(soap)
-		 || soap_putheader(soap)
-		 || soap_body_begin_out(soap)
-		 || soap_put_omws__pingResponse(soap, &soap_tmp_omws__pingResponse, "omws:pingResponse", "")
-		 || soap_body_end_out(soap)
-		 || soap_envelope_end_out(soap))
-			 return soap->error;
-	};
-	if (soap_end_count(soap)
-	 || soap_response(soap, SOAP_OK)
-	 || soap_envelope_begin_out(soap)
-	 || soap_putheader(soap)
-	 || soap_body_begin_out(soap)
-	 || soap_put_omws__pingResponse(soap, &soap_tmp_omws__pingResponse, "omws:pingResponse", "")
 	 || soap_body_end_out(soap)
 	 || soap_envelope_end_out(soap)
 	 || soap_end_send(soap))

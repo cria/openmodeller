@@ -6,14 +6,68 @@
 */
 #include "soapH.h"
 
-SOAP_SOURCE_STAMP("@(#) soapClient.cpp ver 2.7.6d 2006-09-29 17:25:50 GMT")
+SOAP_SOURCE_STAMP("@(#) soapClient.cpp ver 2.7.6d 2006-10-02 19:29:19 GMT")
 
 
-SOAP_FMAC5 int SOAP_FMAC6 soap_call_omws__getAlgorithms(struct soap *soap, const char *soap_endpoint, const char *soap_action, wchar_t *&om__AvailableAlgorithms)
+SOAP_FMAC5 int SOAP_FMAC6 soap_call_omws__ping(struct soap *soap, const char *soap_endpoint, const char *soap_action, void *_, int *status)
+{	struct omws__ping soap_tmp_omws__ping;
+	struct omws__pingResponse *soap_tmp_omws__pingResponse;
+	if (!soap_endpoint)
+		soap_endpoint = "http://localhost:8085";
+	soap->encodingStyle = NULL;
+	soap_tmp_omws__ping._ = _;
+	soap_begin(soap);
+	soap_serializeheader(soap);
+	soap_serialize_omws__ping(soap, &soap_tmp_omws__ping);
+	if (soap_begin_count(soap))
+		return soap->error;
+	if (soap->mode & SOAP_IO_LENGTH)
+	{	if (soap_envelope_begin_out(soap)
+		 || soap_putheader(soap)
+		 || soap_body_begin_out(soap)
+		 || soap_put_omws__ping(soap, &soap_tmp_omws__ping, "omws:ping", "")
+		 || soap_body_end_out(soap)
+		 || soap_envelope_end_out(soap))
+			 return soap->error;
+	}
+	if (soap_end_count(soap))
+		return soap->error;
+	if (soap_connect(soap, soap_endpoint, soap_action)
+	 || soap_envelope_begin_out(soap)
+	 || soap_putheader(soap)
+	 || soap_body_begin_out(soap)
+	 || soap_put_omws__ping(soap, &soap_tmp_omws__ping, "omws:ping", "")
+	 || soap_body_end_out(soap)
+	 || soap_envelope_end_out(soap)
+	 || soap_end_send(soap))
+		return soap_closesock(soap);
+	soap_default_xsd__int(soap, status);
+	if (soap_begin_recv(soap)
+	 || soap_envelope_begin_in(soap)
+	 || soap_recv_header(soap)
+	 || soap_body_begin_in(soap))
+		return soap_closesock(soap);
+	soap_tmp_omws__pingResponse = soap_get_omws__pingResponse(soap, NULL, "omws:pingResponse", "");
+	if (soap->error)
+	{	if (soap->error == SOAP_TAG_MISMATCH && soap->level == 2)
+			return soap_recv_fault(soap);
+		return soap_closesock(soap);
+	}
+	if (soap_body_end_in(soap)
+	 || soap_envelope_end_in(soap)
+	 || soap_end_recv(soap))
+		return soap_closesock(soap);
+	if (status && soap_tmp_omws__pingResponse->status)
+		*status = *soap_tmp_omws__pingResponse->status;
+	return soap_closesock(soap);
+}
+
+SOAP_FMAC5 int SOAP_FMAC6 soap_call_omws__getAlgorithms(struct soap *soap, const char *soap_endpoint, const char *soap_action, void *_, wchar_t *&om__AvailableAlgorithms)
 {	struct omws__getAlgorithms soap_tmp_omws__getAlgorithms;
 	if (!soap_endpoint)
 		soap_endpoint = "http://localhost:8085";
 	soap->encodingStyle = NULL;
+	soap_tmp_omws__getAlgorithms._ = _;
 	soap_begin(soap);
 	soap_serializeheader(soap);
 	soap_serialize_omws__getAlgorithms(soap, &soap_tmp_omws__getAlgorithms);
@@ -46,6 +100,56 @@ SOAP_FMAC5 int SOAP_FMAC6 soap_call_omws__getAlgorithms(struct soap *soap, const
 	 || soap_body_begin_in(soap))
 		return soap_closesock(soap);
 	soap_inwliteral(soap, NULL, &om__AvailableAlgorithms);
+	if (soap->error)
+	{	if (soap->error == SOAP_TAG_MISMATCH && soap->level == 2)
+			return soap_recv_fault(soap);
+		return soap_closesock(soap);
+	}
+	if (soap_body_end_in(soap)
+	 || soap_envelope_end_in(soap)
+	 || soap_end_recv(soap))
+		return soap_closesock(soap);
+	return soap_closesock(soap);
+}
+
+SOAP_FMAC5 int SOAP_FMAC6 soap_call_omws__getLayers(struct soap *soap, const char *soap_endpoint, const char *soap_action, void *_, wchar_t *&om__AvailableLayers)
+{	struct omws__getLayers soap_tmp_omws__getLayers;
+	if (!soap_endpoint)
+		soap_endpoint = "http://localhost:8085";
+	soap->encodingStyle = NULL;
+	soap_tmp_omws__getLayers._ = _;
+	soap_begin(soap);
+	soap_serializeheader(soap);
+	soap_serialize_omws__getLayers(soap, &soap_tmp_omws__getLayers);
+	if (soap_begin_count(soap))
+		return soap->error;
+	if (soap->mode & SOAP_IO_LENGTH)
+	{	if (soap_envelope_begin_out(soap)
+		 || soap_putheader(soap)
+		 || soap_body_begin_out(soap)
+		 || soap_put_omws__getLayers(soap, &soap_tmp_omws__getLayers, "omws:getLayers", "")
+		 || soap_body_end_out(soap)
+		 || soap_envelope_end_out(soap))
+			 return soap->error;
+	}
+	if (soap_end_count(soap))
+		return soap->error;
+	if (soap_connect(soap, soap_endpoint, soap_action)
+	 || soap_envelope_begin_out(soap)
+	 || soap_putheader(soap)
+	 || soap_body_begin_out(soap)
+	 || soap_put_omws__getLayers(soap, &soap_tmp_omws__getLayers, "omws:getLayers", "")
+	 || soap_body_end_out(soap)
+	 || soap_envelope_end_out(soap)
+	 || soap_end_send(soap))
+		return soap_closesock(soap);
+	om__AvailableLayers = NULL;
+	if (soap_begin_recv(soap)
+	 || soap_envelope_begin_in(soap)
+	 || soap_recv_header(soap)
+	 || soap_body_begin_in(soap))
+		return soap_closesock(soap);
+	soap_inwliteral(soap, NULL, &om__AvailableLayers);
 	if (soap->error)
 	{	if (soap->error == SOAP_TAG_MISMATCH && soap->level == 2)
 			return soap_recv_fault(soap);
@@ -166,59 +270,6 @@ SOAP_FMAC5 int SOAP_FMAC6 soap_call_omws__getDistributionMap(struct soap *soap, 
 	 || soap_end_recv(soap))
 		return soap_closesock(soap);
 	file = soap_tmp_omws__getDistributionMapResponse->file;
-	return soap_closesock(soap);
-}
-
-SOAP_FMAC5 int SOAP_FMAC6 soap_call_omws__ping(struct soap *soap, const char *soap_endpoint, const char *soap_action, void *_, int *status)
-{	struct omws__ping soap_tmp_omws__ping;
-	struct omws__pingResponse *soap_tmp_omws__pingResponse;
-	if (!soap_endpoint)
-		soap_endpoint = "http://localhost:8085";
-	soap->encodingStyle = NULL;
-	soap_tmp_omws__ping._ = _;
-	soap_begin(soap);
-	soap_serializeheader(soap);
-	soap_serialize_omws__ping(soap, &soap_tmp_omws__ping);
-	if (soap_begin_count(soap))
-		return soap->error;
-	if (soap->mode & SOAP_IO_LENGTH)
-	{	if (soap_envelope_begin_out(soap)
-		 || soap_putheader(soap)
-		 || soap_body_begin_out(soap)
-		 || soap_put_omws__ping(soap, &soap_tmp_omws__ping, "omws:ping", "")
-		 || soap_body_end_out(soap)
-		 || soap_envelope_end_out(soap))
-			 return soap->error;
-	}
-	if (soap_end_count(soap))
-		return soap->error;
-	if (soap_connect(soap, soap_endpoint, soap_action)
-	 || soap_envelope_begin_out(soap)
-	 || soap_putheader(soap)
-	 || soap_body_begin_out(soap)
-	 || soap_put_omws__ping(soap, &soap_tmp_omws__ping, "omws:ping", "")
-	 || soap_body_end_out(soap)
-	 || soap_envelope_end_out(soap)
-	 || soap_end_send(soap))
-		return soap_closesock(soap);
-	soap_default_xsd__int(soap, status);
-	if (soap_begin_recv(soap)
-	 || soap_envelope_begin_in(soap)
-	 || soap_recv_header(soap)
-	 || soap_body_begin_in(soap))
-		return soap_closesock(soap);
-	soap_tmp_omws__pingResponse = soap_get_omws__pingResponse(soap, NULL, "omws:pingResponse", "");
-	if (soap->error)
-	{	if (soap->error == SOAP_TAG_MISMATCH && soap->level == 2)
-			return soap_recv_fault(soap);
-		return soap_closesock(soap);
-	}
-	if (soap_body_end_in(soap)
-	 || soap_envelope_end_in(soap)
-	 || soap_end_recv(soap))
-		return soap_closesock(soap);
-	if (status && soap_tmp_omws__pingResponse->status)
-		*status = *soap_tmp_omws__pingResponse->status;
 	return soap_closesock(soap);
 }
 
