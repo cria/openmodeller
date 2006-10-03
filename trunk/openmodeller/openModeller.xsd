@@ -95,6 +95,29 @@
     <xs:attribute name="Version" type="xs:string" use="required"/>
   </xs:complexType>
 
+  <xs:element name="AvailableLayers" type="AvailableLayersType"/>
+
+  <xs:complexType name="AvailableLayersType">
+    <xs:sequence>
+      <xs:element name="LayersGroup" type="LayersGroupType"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="LayersGroupType">
+    <xs:sequence>
+      <xs:element name="LayersGroup" type="LayersGroupType" minOccurs="0" maxOccurs="unbounded"/>
+      <xs:element name="Layer" type="LayerType" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+    <xs:attribute name="Id" type="xs:string" use="required"/>
+  </xs:complexType>
+
+  <xs:complexType name="LayerType">
+    <xs:simpleContent>
+      <xs:extension base="xs:string">
+        <xs:attribute name="IsCategorical" type="xs:boolean" use="required"/>
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
 
 
 
