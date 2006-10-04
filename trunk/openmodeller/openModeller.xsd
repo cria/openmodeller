@@ -105,6 +105,7 @@
 
   <xs:complexType name="LayersGroupType">
     <xs:sequence>
+      <xs:element name="Label" type="xs:string"/>
       <xs:element name="LayersGroup" type="LayersGroupType" minOccurs="0" maxOccurs="unbounded"/>
       <xs:element name="Layer" type="LayerType" minOccurs="0" maxOccurs="unbounded"/>
     </xs:sequence>
@@ -112,11 +113,11 @@
   </xs:complexType>
 
   <xs:complexType name="LayerType">
-    <xs:simpleContent>
-      <xs:extension base="xs:string">
-        <xs:attribute name="IsCategorical" type="xs:boolean" use="required"/>
-      </xs:extension>
-    </xs:simpleContent>
+    <xs:sequence>
+      <xs:element name="Label" type="xs:string"/>
+    </xs:sequence>
+    <xs:attribute name="Id" type="xs:string" use="required"/>
+    <xs:attribute name="IsCategorical" type="xs:boolean" use="required"/>
   </xs:complexType>
 
 
