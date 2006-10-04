@@ -117,7 +117,8 @@
       <xs:element name="Label" type="xs:string"/>
     </xs:sequence>
     <xs:attribute name="Id" type="xs:string" use="required"/>
-    <xs:attribute name="IsCategorical" type="xs:boolean" use="required"/>
+    <xs:attribute name="IsCategorical" type="xs:boolean" use="optional"/>
+    <xs:attribute name="HasProjection" type="xs:boolean" use="optional"/>
   </xs:complexType>
 
 

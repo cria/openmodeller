@@ -58,6 +58,7 @@ static int getData( struct soap*, const xsd__string, xsd__base64Binary& );
 static wchar_t* convertToWideChar( const char* p );
 static bool readDirectory( const char* dir, const char* label, ostream &xml, int depth );
 static bool isValidGdalFile( const char* fileName );
+static bool hasValidGdalProjection( const char* fileName );
 
 /********************/
 /***  Static data ***/
@@ -606,9 +607,13 @@ bool readDirectory( const char* dir, const char* label, ostream &xml, int depth 
 
       if ( isValidGdalFile( fullName.c_str() ) ) {
 
+        string hasProj = ( hasValidGdalProjection( fullName.c_str() ) ) ? "1" : "0";
+
         xmlFiles.append( "<Layer Id=\"" );
         xmlFiles.append( fullName );
-        xmlFiles.append( "\" IsCategorical=\"0\">" );
+        xmlFiles.append( "\" HasProjection=\"");
+        xmlFiles.append( hasProj );
+        xmlFiles.append( "\">" );
         xmlFiles.append( "<Label>" );
         xmlFiles.append( nameList[i]->d_name );
         xmlFiles.append( "</Label>" );
@@ -624,9 +629,13 @@ bool readDirectory( const char* dir, const char* label, ostream &xml, int depth 
 
       if ( isValidGdalFile( fullName.c_str() ) ) {
 
+        string hasProj = ( hasValidGdalProjection( fullName.c_str() ) ) ? "1" : "0";
+
         xmlFiles.append( "<Layer Id=\"" );
         xmlFiles.append( fullName );
-        xmlFiles.append( "\" IsCategorical=\"0\">" );
+        xmlFiles.append( "\" HasProjection=\"");
+        xmlFiles.append( hasProj );
+        xmlFiles.append( "\">" );
         xmlFiles.append( "<Label>" );
         xmlFiles.append( nameList[i]->d_name );
         xmlFiles.append( "</Label>" );
@@ -654,21 +663,46 @@ bool readDirectory( const char* dir, const char* label, ostream &xml, int depth 
 static
 bool isValidGdalFile( const char* fileName )
 {
-  //test whether the file is GDAL compatible
+  // test whether the file is GDAL compatible
   GDALAllRegister();
-  GDALDataset * myTestFile = (GDALDataset *)GDALOpen( fileName, GA_ReadOnly );
+  GDALDataset * testFile = (GDALDataset *)GDALOpen( fileName, GA_ReadOnly );
 
-  if ( myTestFile == NULL ) {
+  if ( testFile == NULL ) {
 
     // not GDAL compatible
-    GDALClose( myTestFile );
+    GDALClose( testFile );
     return false;
   }
   else {
 
     // is GDAL compatible
-    GDALClose( myTestFile );
+    GDALClose( testFile );
     return true;  
+  }
+}
+
+/********************************/
+/**** hasValidGdalProjection ****/
+static
+bool hasValidGdalProjection( const char* fileName )
+{
+  // test whether the file has GDAL projection info
+  GDALAllRegister();
+  GDALDataset * testFile = (GDALDataset *)GDALOpen( fileName, GA_ReadOnly );
+      
+  const char *projectionString = testFile->GetProjectionRef();
+      
+  if ( projectionString ) {
+
+    // does not have projection info
+    GDALClose( testFile );
+    return false;
+  }
+  else {
+
+    // does have projection info
+    GDALClose( testFile );
+    return true;
   }
 }
 
