@@ -152,7 +152,9 @@ main( int argc, char **argv )
     g_log( "Total number of cells: %d\n", stats->getTotalArea() );
     g_log( "\nDone.\n" );
 
+    delete stats;
     delete matrix;
+    
   }
   catch ( std::exception& e ) {
     g_log( "Exception occurred\n" );
