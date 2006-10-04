@@ -114,13 +114,24 @@
 
   <xs:complexType name="LayerType">
     <xs:sequence>
-      <xs:element name="Label" type="xs:string"/>
+      <xs:element name="Label" type="xs:string" minOccurs="0"/>
     </xs:sequence>
     <xs:attribute name="Id" type="xs:string" use="required"/>
     <xs:attribute name="IsCategorical" type="xs:boolean" use="optional"/>
     <xs:attribute name="HasProjection" type="xs:boolean" use="optional"/>
+    <xs:attribute name="Min" type="xs:double" use="optional"/>
+    <xs:attribute name="Max" type="xs:double" use="optional"/>
   </xs:complexType>
 
+  <xs:complexType name="EnvironmentType">
+   <xs:sequence>
+    <xs:sequence>
+     <xs:element name="Map" maxOccurs="unbounded" type="LayerType"/>
+    </xs:sequence>
+    <xs:element name="Mask" type="LayerType"/>
+   </xs:sequence>
+   <xs:attribute name="NumLayers" type="xs:int" use="optional"/>
+  </xs:complexType>
 
 
  <xs:element name="OpenModeller" type="problem-defn"/>
@@ -130,7 +141,7 @@
    <xs:element name="Sampler">
     <xs:complexType>
      <xs:sequence>
-      <xs:element name="Environment" type="environ-defn"/>
+      <xs:element name="Environment" type="EnvironmentType"/>
       <xs:element name="Presence" type="occurrence-list-defn"/>
       <xs:element name="Absence" type="occurrence-list-defn" minOccurs="0" />
      </xs:sequence>
@@ -144,21 +155,6 @@
   <xs:sequence>
    <!-- xs:element name="Algorithm" type="avail-algo-defn" minOccurs="0" maxOccurs="unbounded"/ -->
   </xs:sequence>
- </xs:complexType>
-
- <xs:complexType name="environ-defn">
-  <xs:sequence>
-   <xs:sequence>
-    <xs:element name="Map" maxOccurs="unbounded" type="map-file-defn"/>
-   </xs:sequence>
-   <xs:element name="Mask" type="map-file-defn"/>
-  </xs:sequence>
-  <xs:attribute name="Layers" type="xs:int" use="optional"/>
- </xs:complexType>
-
- <xs:complexType name="map-file-defn">
-  <xs:attribute name="Categorical" type="xs:boolean" use="optional" default="false"/>
-  <xs:attribute name="Filename" type="xs:string" use="required"/>
  </xs:complexType>
 
  <xs:complexType name="algo-defn">

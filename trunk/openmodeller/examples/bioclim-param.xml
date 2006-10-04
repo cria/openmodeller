@@ -1,13 +1,13 @@
 <OpenModeller>
     <Sampler>
-        <Environment Layers='1'>
+        <Environment NumLayers='1'>
             <Map
-                Filename='rain_coolest.tif'
-                Categorical='0'
+                Id='rain_coolest.tif'
+                IsCategorical='0'
                 />
             <Mask
-                Filename='rain_coolest.tif'
-                Categorical='0'
+                Id='rain_coolest.tif'
+                IsCategorical='0'
                 />
         </Environment>
         <Presence

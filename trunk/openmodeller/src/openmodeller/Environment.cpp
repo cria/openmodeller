@@ -87,8 +87,8 @@ ConfigurationPtr
 EnvironmentImpl::getLayerConfig( const layer& l ) {
   ConfigurationPtr cfg( new ConfigurationImpl() );
 
-  cfg->addNameValue("Filename", l.first );
-  cfg->addNameValue("Categorical", l.second->isCategorical());
+  cfg->addNameValue("Id", l.first );
+  cfg->addNameValue("IsCategorical", l.second->isCategorical());
 
   if ( l.second->hasMinMax() ) {
     Scalar min;
@@ -104,8 +104,8 @@ EnvironmentImpl::getLayerConfig( const layer& l ) {
 
 EnvironmentImpl::layer
 EnvironmentImpl::makeLayer( const ConstConfigurationPtr& config ) {
-  string filename = config->getAttribute( "Filename" );
-  int categ = config->getAttributeAsInt( "Categorical", 0 );
+  string filename = config->getAttribute( "Id" );
+  int categ = config->getAttributeAsInt( "IsCategorical", 0 );
 
   layer l = makeLayer( filename, categ );
   try {
@@ -217,10 +217,9 @@ EnvironmentImpl::clearMask() {
 ConfigurationPtr
 EnvironmentImpl::getConfiguration() const
 {
-
   ConfigurationPtr config( new ConfigurationImpl("Environment") );
 
-  config->addNameValue( "Layers", (int) _layers.size() );
+  config->addNameValue( "NumLayers", (int) _layers.size() );
 
   layers::const_iterator l = _layers.begin();
   layers::const_iterator end = _layers.end();
@@ -242,7 +241,6 @@ EnvironmentImpl::getConfiguration() const
 void
 EnvironmentImpl::setConfiguration( const ConstConfigurationPtr & config )
 {
-
   clearMask();
   clearLayers();
 
@@ -252,8 +250,8 @@ EnvironmentImpl::setConfiguration( const ConstConfigurationPtr & config )
   while( it != subs.end() ) {
 
     string subname = (*it)->getName();
-    string filename = (*it)->getAttribute( "Filename" );
-    int categ = (*it)->getAttributeAsInt( "Categorical", 0 );
+    string filename = (*it)->getAttribute( "Id" );
+    int categ = (*it)->getAttributeAsInt( "IsCategorical", 0 );
     
     layer l = makeLayer( filename, categ );
 
@@ -268,7 +266,6 @@ EnvironmentImpl::setConfiguration( const ConstConfigurationPtr & config )
   }
 
   calcRegion();
-
 }
 
 /*********************/
