@@ -46,6 +46,7 @@ using namespace std;
 #define OMWS_BACKLOG (100) // Max. request backlog 
 #define OMWS_TEMPLATE_FILE_NAME "dmapXXXXXX"
 #define OMWS_LAYERS_DIRECTORY "/home/renato/projects/openmodeller/examples/layers/"
+#define OMWS_LAYERS_LABEL "Remote layers"
 #define OMWS_MIN *60
 #define OMWS_H *3600
 
@@ -55,7 +56,7 @@ using namespace std;
 static void *process_request( void* );
 static int getData( struct soap*, const xsd__string, xsd__base64Binary& );
 static wchar_t* convertToWideChar( const char* p );
-static bool readDirectory( const char* dir, ostream &xml, int depth );
+static bool readDirectory( const char* dir, const char* label, ostream &xml, int depth );
 static bool isValidGdalFile( const char* fileName );
 
 /********************/
@@ -282,7 +283,7 @@ omws__getLayers( struct soap *soap, void *_, XML &om__AvailableLayers )
   // Recurse on all sub directories searching for GDAL compatible layers
   ostringstream oss;
 
-  if ( ! readDirectory( OMWS_LAYERS_DIRECTORY, oss, 0 ) ) {
+  if ( ! readDirectory( OMWS_LAYERS_DIRECTORY, OMWS_LAYERS_LABEL, oss, 0 ) ) {
 
     return soap_receiver_fault( soap, "Could not read available layers", NULL );
   }
@@ -538,7 +539,7 @@ wchar_t* convertToWideChar( const char* p )
 /***********************/
 /**** readDirectory ****/
 static 
-bool readDirectory( const char* dir, ostream &xml, int depth )
+bool readDirectory( const char* dir, const char* label, ostream &xml, int depth )
 {
   bool r = true;
 
@@ -559,32 +560,40 @@ bool readDirectory( const char* dir, ostream &xml, int depth )
   }
 
   // Open directory
-  DIR *pdir;
-  struct dirent *pent;
+  struct dirent **nameList;
+  int n;
   struct stat buf;
 
-  pdir = opendir( myDir.c_str() );
+  n = scandir( myDir.c_str(), &nameList, 0, alphasort );
 
-  if ( ! pdir ) {
+  if ( n < 0 ) {
 
-    return false;
+      // Problems opening directory
+      return false;
+  }
+  else if ( n == 0 ) {
+  
+      // Empty directories are useless
+      return true;
   }
 
   xml << "<LayersGroup Id=\"" << myDir << "\">";
 
+  xml << "<Label>" << label << "</Label>";
+
   string xmlFiles;
 
-  while ( ( pent = readdir( pdir ) ) != NULL ) {
+  for ( int i = 0; i < n; i++ ) {
 
     // Skip "." and ".." directories
-    if ( strcmp( pent->d_name, "." ) == 0 || strcmp( pent->d_name, ".." ) == 0 ) {
+    if ( strcmp( nameList[i]->d_name, "." ) == 0 || strcmp( nameList[i]->d_name, ".." ) == 0 ) {
 
       continue;
     }
 
     // Need the full name to "stat"
     string fullName( myDir );
-    fullName.append( pent->d_name );
+    fullName.append( nameList[i]->d_name );
 
     // Get file attributes (skip on failure)
     if ( stat( fullName.c_str(), &buf ) == -1 ) {
@@ -592,38 +601,45 @@ bool readDirectory( const char* dir, ostream &xml, int depth )
       continue;
     }
 
-    // Directories
+    // Directory
     if ( S_ISDIR( buf.st_mode ) ) {
 
       if ( isValidGdalFile( fullName.c_str() ) ) {
 
-        xmlFiles.append( "<Layer IsCategorical=\"0\">" );
+        xmlFiles.append( "<Layer Id=\"" );
         xmlFiles.append( fullName );
+        xmlFiles.append( "\" IsCategorical=\"0\">" );
+        xmlFiles.append( "<Label>" );
+        xmlFiles.append( nameList[i]->d_name );
+        xmlFiles.append( "</Label>" );
         xmlFiles.append( "</Layer>" );
       }
       else {
 
-        readDirectory( fullName.c_str(), xml, depth );
+        r = readDirectory( fullName.c_str(), nameList[i]->d_name, xml, depth );
       }
     }
-    // Regular files
+    // Regular file
     else if ( S_ISREG( buf.st_mode ) ) {
 
       if ( isValidGdalFile( fullName.c_str() ) ) {
 
-        xmlFiles.append( "<Layer IsCategorical=\"0\">" );
+        xmlFiles.append( "<Layer Id=\"" );
         xmlFiles.append( fullName );
+        xmlFiles.append( "\" IsCategorical=\"0\">" );
+        xmlFiles.append( "<Label>" );
+        xmlFiles.append( nameList[i]->d_name );
+        xmlFiles.append( "</Label>" );
         xmlFiles.append( "</Layer>" );
       }
     }
-    // Symbolic links
+    // Symbolic link
     else if ( S_ISLNK( buf.st_mode ) ) {
 
-      readDirectory( fullName.c_str(), xml, depth );
+      // What should we do with symlinks?
+      //readDirectory( fullName.c_str(), nameList[i]->d_name, xml, depth );
     }
   }
-
-  closedir( pdir );
 
   // openModeller.xsd mandates that files should always come after directories
   xml << xmlFiles;
@@ -655,7 +671,6 @@ bool isValidGdalFile( const char* fileName )
     return true;  
   }
 }
-
 
 ///////////////////////
 //
