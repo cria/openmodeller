@@ -123,6 +123,7 @@
     <xs:attribute name="Max" type="xs:double" use="optional"/>
   </xs:complexType>
 
+
   <xs:complexType name="EnvironmentType">
    <xs:sequence>
     <xs:sequence>
@@ -133,6 +134,21 @@
    <xs:attribute name="NumLayers" type="xs:int" use="optional"/>
   </xs:complexType>
 
+  <xs:complexType name="OccurrencesType">
+   <xs:sequence>
+    <xs:element name="CoordinateSystem" type="xs:string" minOccurs="0"/>
+    <xs:element name="Point" maxOccurs="unbounded">
+     <xs:complexType>
+      <xs:attribute name="Y" type="xs:string" use="required"/>
+      <xs:attribute name="X" type="xs:string" use="required"/>
+     </xs:complexType>
+    </xs:element>
+   </xs:sequence>
+   <xs:attribute name="Count" type="xs:int" use="optional"/>
+   <xs:attribute name="Label" type="xs:string" use="optional"/>
+  </xs:complexType>
+
+
 
  <xs:element name="OpenModeller" type="problem-defn"/>
 
@@ -142,18 +158,12 @@
     <xs:complexType>
      <xs:sequence>
       <xs:element name="Environment" type="EnvironmentType"/>
-      <xs:element name="Presence" type="occurrence-list-defn"/>
-      <xs:element name="Absence" type="occurrence-list-defn" minOccurs="0" />
+      <xs:element name="Presence" type="OccurrencesType"/>
+      <xs:element name="Absence" type="OccurrencesType" minOccurs="0" />
      </xs:sequence>
     </xs:complexType>
    </xs:element>
    <xs:element name="Algorithm" type="algo-defn"/>
-  </xs:sequence>
- </xs:complexType>
-
- <xs:complexType name="avail-algo-list-defn">
-  <xs:sequence>
-   <!-- xs:element name="Algorithm" type="avail-algo-defn" minOccurs="0" maxOccurs="unbounded"/ -->
   </xs:sequence>
  </xs:complexType>
 
@@ -179,18 +189,4 @@
   </xs:sequence>
  </xs:complexType>
 
- <xs:complexType name="occurrence-list-defn">
-  <xs:sequence>
-   <xs:element name="CoordinateSystem" type="xs:string" minOccurs="0"/>
-   <xs:element name="Point" maxOccurs="unbounded">
-    <xs:complexType>
-     <xs:attribute name="Y" type="xs:string" use="required"/>
-     <xs:attribute name="X" type="xs:string" use="required"/>
-    </xs:complexType>
-   </xs:element>
-  </xs:sequence>
-  <xs:attribute name="Count" type="xs:int" use="optional"/>
-  <xs:attribute name="SpeciesName" type="xs:string" use="optional"/>
- </xs:complexType>
- 
 </xs:schema>

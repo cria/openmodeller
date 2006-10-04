@@ -76,7 +76,7 @@ OccurrencesImpl::getConfiguration() const
 {
   ConfigurationPtr config( new ConfigurationImpl("Occurrences") );
 
-  config->addNameValue( "SpeciesName", name() );
+  config->addNameValue( "Label", name() );
 
   ConfigurationPtr cs( new ConfigurationImpl( "CoordinateSystem" ) );
   cs->setValue( coordSystem() );
@@ -108,7 +108,7 @@ OccurrencesImpl::getConfiguration() const
 void
 OccurrencesImpl::setConfiguration( const ConstConfigurationPtr& config )
 {
-  name_ = config->getAttribute("SpeciesName");
+  name_ = config->getAttribute("Label");
   
   ConstConfigurationPtr cs_config = config->getSubsection( "CoordinateSystem", false );
   
