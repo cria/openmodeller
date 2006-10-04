@@ -11,7 +11,7 @@
                 />
         </Environment>
         <Presence
-            SpeciesName='furcata boliviana'
+            Label='furcata boliviana'
             Count='65'
             >
             <CoordinateSystem>
