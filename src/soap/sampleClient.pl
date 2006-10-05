@@ -42,7 +42,7 @@ my $uri = 'http://openmodeller.cria.org.br/ws/1.0';
 
 use vars qw($opt_help, $opt_debug, $opt_server);
 
-&Getopt::Long::GetOptions('help', 'debug', 'server=s', 'layers_dir=s');
+&Getopt::Long::GetOptions( 'help', 'debug', 'server=s' );
 
 print_help() if $opt_help;
 
@@ -53,8 +53,7 @@ print<<EOM;
 Please notice that this interface is just a simple prototype
 and mostly an example of how to build a SOAP client
 to access an openModeller server. Many variables
-(occurrences/absences points and environmental layers)
-are still hardcoded...
+(occurrences/absences points) are still hardcoded...
 EOM
 
 print "\nNote: this machine has SOAP::Lite version $SOAP::Lite::VERSION\n";
@@ -63,9 +62,9 @@ print "\nNote: this machine has SOAP::Lite version $SOAP::Lite::VERSION\n";
 
 my $url = $opt_server || '';
 
-my $base_dir = $opt_layers_dir if (defined($opt_layers_dir));
-
 my %algorithms;
+
+my %layers;
 
 my $soap = 0; # future soap object
 
@@ -80,33 +79,33 @@ my %options = ( 0 => 'Ping service',
 
 my $option = -1;
 
-my $exit_option = scalar(keys %options);
+my $exit_option = scalar( keys %options );
 
-while ($option != $exit_option or not exists($options{$option-1}))
+while ( $option != $exit_option or not exists( $options{$option-1} ) )
 {
     $option = get_option();
 
-    if ($option == 1)
+    if ( $option == 1 )
     {
-	$option = (ping()) ? -1 : $exit_option;
+	$option = ( ping() ) ? -1 : $exit_option;
     }
     if ($option == 2)
     {
-	$option = (get_algorithms()) ? -1 : $exit_option;
+	$option = ( get_algorithms() ) ? -1 : $exit_option;
     }
     if ($option == 3)
     {
-	$option = (get_layers()) ? -1 : $exit_option;
+	$option = ( get_layers() ) ? -1 : $exit_option;
     }
     elsif ($option == 4)
     {
-	$option = (create_model()) ? -1 : $exit_option;
+	$option = ( create_model() ) ? -1 : $exit_option;
     }
     elsif ($option == 5)
     {
-	$option = (get_distribution_map()) ? -1 : $exit_option;
+	$option = ( get_distribution_map() ) ? -1 : $exit_option;
     }
-    elsif (!$option)
+    elsif ( ! $option )
     {
 	$option = $exit_option;
     }
@@ -139,7 +138,7 @@ sub get_option
 {
     print "\nPlease select from one the options:\n\n";
 
-    foreach my $key (sort(keys %options))
+    foreach my $key ( sort( keys %options ) )
     {
 	my $val = $key+1;
 	print "  [$val] $options{$key}\n";
@@ -148,9 +147,9 @@ sub get_option
     print "\nYour choice: ";
 
     my $choice = <STDIN>;
-    chomp($choice);
+    chomp( $choice );
 
-    return int($choice);
+    return int( $choice );
 }
 
 
@@ -159,13 +158,13 @@ sub get_option
 ########################
 sub get_url
 {
-    while (!$url)
+    while ( ! $url )
     {
 	print "\nWhere is the SOAP server located? (url address): ";
 	
 	$url = <STDIN>;
 
-	chomp($url);
+	chomp( $url );
     }
 
     return $url;
@@ -176,11 +175,11 @@ sub get_url
 ###############################
 sub prepare_soap
 {
-    unless($soap)
+    unless( $soap )
     {
         my $server = get_url();
 
-        if ($opt_debug)
+        if ( $opt_debug )
 	{
 
             use SOAP::Lite +trace => [ transport => \&debug_soap ];
@@ -188,9 +187,9 @@ sub prepare_soap
 
         $soap = SOAP::Lite
                           #-> service('http://openmodeller.sf.net/ns/1.0/openmodeller.wsdl')
-		           -> uri($uri)
-		           -> proxy($server)
-		           -> encoding('iso-8859-1');
+		           -> uri( $uri )
+		           -> proxy( $server )
+		           -> encoding( 'iso-8859-1' );
     }
 }
 
@@ -199,17 +198,17 @@ sub prepare_soap
 #################################################
 sub debug_soap
 {
-    my ($in) = @_;
+    my ( $in ) = @_;
 
-    if (ref($in) eq 'HTTP::Request' || ref($in) eq 'HTTP::Response') 
+    if ( ref( $in ) eq 'HTTP::Request' || ref( $in ) eq 'HTTP::Response' )
     {
-        print "\n" . ref($in) . "\n\n";
+        print "\n" . ref( $in ) . "\n\n";
         print $in->content . "\n\n";
 
-        open(OUT, ">>client.debug");
+        open( OUT, ">>client.debug" );
         print OUT $in->content;
         print OUT "\n";
-        close(OUT);
+        close( OUT );
     } 
 }
 
@@ -226,13 +225,13 @@ sub ping
     my $ini = time();
 
     my $method = SOAP::Data
-	-> name('ping')
-	-> prefix('omws')
-	-> uri($uri);
+	-> name( 'ping' )
+	-> prefix( 'omws' )
+	-> uri( $uri );
 
-    my $response = $soap->call($method);
+    my $response = $soap->call( $method );
     
-    unless ($response->fault or !$response->result)
+    unless ( $response->fault or ! $response->result )
     { 
 	my $interval = time() - $ini;
 
@@ -256,7 +255,7 @@ sub get_algorithms
     prepare_soap();
 
     # reset algorithms hash
-    if (scalar(keys %algorithms) > 0)
+    if ( scalar( keys %algorithms ) > 0 )
     {
 	%algorithms = ();
     }
@@ -264,25 +263,25 @@ sub get_algorithms
     print "Requesting algorithms...\n" if $option == 2;
     
     my $method = SOAP::Data
-	-> name('getAlgorithms')
-	-> prefix('omws')
-	-> uri($uri);
+	-> name( 'getAlgorithms' )
+	-> prefix( 'omws' )
+	-> uri( $uri );
 
-    my $response = $soap->call($method);
+    my $response = $soap->call( $method );
     
-    unless ($response->fault)
+    unless ( $response->fault )
     { 
-	my @algorithms = $response->valueof('//AlgorithmMetadata');
+	my @algorithms = $response->valueof( '//AlgorithmMetadata' );
 
-	my $num_algs = scalar(@algorithms);
+	my $num_algs = scalar( @algorithms );
 	
-	if ($num_algs > 0)
+	if ( $num_algs > 0 )
 	{
 	    print "Available algorithms ($num_algs):\n" if $option == 2;
 	    
 	    my $i = 1;
 	    
-	    foreach my $alg (@algorithms)
+	    foreach my $alg ( @algorithms )
 	    {
 		print '-' x 25 . "\n" if $option == 2;
 
@@ -313,17 +312,17 @@ sub get_algorithms
      * accepts absence data: $accepts_absence_data
 EOM
 
-		my @params = $response->dataof("$alg_parameters_path/Parameter");
+		my @params = $response->dataof( "$alg_parameters_path/Parameter" );
 		
-		my $num_params = scalar(@params);
+		my $num_params = scalar( @params );
 
-                if ($num_params > 0)
+                if ( $num_params > 0 )
                 {
 		    print "     * parameters ($num_params):\n" if $option == 2;
 
                     my $j = 1;
 
-		    foreach my $par (@params)
+		    foreach my $par ( @params )
 		    {
 	                my $param_path = "$alg_parameters_path/[$j]";
 
@@ -384,22 +383,33 @@ sub get_layers
     prepare_soap();
 
     # reset layers hash
-#    if (scalar(keys %algorithms) > 0)
-#    {
-#	%algorithms = ();
-#    }
+    if ( scalar( keys %layers ) > 0)
+    {
+	%layers = ();
+    }
 
-    print "Requesting layers...\n" if $option == 2;
+    print "Requesting layers...\n" if $option == 3;
     
     my $method = SOAP::Data
-	-> name('getLayers')
-	-> prefix('omws')
-	-> uri($uri);
+	-> name( 'getLayers' )
+	-> prefix( 'omws' )
+	-> uri( $uri );
 
-    my $response = $soap->call($method);
+    my $response = $soap->call( $method );
     
-    unless ($response->fault)
+    unless ( $response->fault )
     { 
+        my $i = 1;
+
+        # just get the layers - ignore groups
+        foreach my $layer ( $response->dataof('//Layer') ) 
+        {
+            print "[$i] " . $layer->attr->{'Id'} . "\n" if $option == 3;
+
+            $layers{$i} = $layer->attr->{'Id'};
+
+            ++$i;
+        }
 
         # change this
 	return 1;
@@ -413,52 +423,6 @@ sub get_layers
     }
 }
 
-#########################################
-#  Get algorithm from console interface # 
-#########################################
-sub get_algorithm
-{
-    print "\nChoose an algorithm:\n\n";
-
-    foreach my $key (sort(keys %algorithms))
-    {
-	print "  [$key] $algorithms{$key}{Name}\n";
-    }
-
-    print "\nYour choice: ";
-
-    my $choice = <STDIN>;
-    chomp($choice);
-
-    return int($choice);
-}
-
-###################################################
-#  Get algorithm parameter from console interface # 
-###################################################
-sub get_algorithm_parameter
-{
-    my ($param) = @_;
-
-    my $min = (defined($param->{'Min'})) ? '['.$param->{'Min'}: '(oo';
-    my $max = (defined($param->{'Max'})) ? $param->{'Max'}.']': 'oo)';
-    my $domain = $min . ', ' . $max;
-    
-    print "\nParameter: $param->{Name}";
-    print " ($param->{Description})" if $param->{Description};
-    print "\n domain: $domain";
-    print "\n default: $param->{'Default'}" if $param->{'Default'};
-
-    print "\n value: ";
-
-    my $val = <STDIN>;
-    chomp($val);
-
-    $val = $param->{'Default'} unless length($val);
-
-    return $val;
-}
-
 #####################################
 #  Request model creation to server # 
 #####################################
@@ -466,7 +430,7 @@ sub create_model
 {
     prepare_soap();
 
-    if (scalar(keys %algorithms) == 0 and not get_algorithms())
+    if ( scalar( keys %algorithms ) == 0 and not get_algorithms() )
     {
 	return 0;
     }
@@ -478,9 +442,9 @@ sub create_model
 
     ### Algorithm
 
-    my $alg_code = get_algorithm();
+    my $alg_code = get_algorithm_from_user();
 
-    if (!$alg_code or not exists($algorithms{$alg_code}))
+    if ( ! $alg_code or not exists( $algorithms{$alg_code} ) )
     {
 	return 0;
     }
@@ -497,21 +461,37 @@ sub create_model
 
 	foreach my $param (keys(%{$algorithms{$alg_code}{parameters}}))
 	{
-	    my $value = get_algorithm_parameter(\%{$algorithms{$alg_code}{parameters}{$param}});
+	    my $value = get_algorithm_parameter_from_user( \%{$algorithms{$alg_code}{parameters}{$param}} );
 
-	    push(@parameters, {'Id'=> $param, 'Value'=> $value});
+	    push( @parameters, {'Id'=> $param, 'Value'=> $value} );
 	}
 
-	my @alg_tags =  map(SOAP::Data->type('struct')->name('parameter')->attr(\%{$_}), @parameters);
+	my @alg_tags =  map( SOAP::Data->type('struct')->name('parameter')->attr(\%{$_}), @parameters );
 
-	$algorithm->set_value(\@alg_tags);
+	$algorithm->set_value( \@alg_tags );
     }
 
     ### Maps
 
-    my @maps = ( {'location'=> $base_dir.'rain_coolest', 'categorical' => 0},
-		 {'location'=> $base_dir.'rain_tot'    , 'categorical' => 0},
-		 {'location'=> $base_dir.'temp_dryest' , 'categorical' => 0} );
+    if ( scalar( keys %layers ) == 0 and not get_layers() )
+    {
+	return 0;
+    }
+
+    my @layer_codes = get_layers_from_user();
+
+
+    if ( scalar( @layer_codes ) == 0 )
+    {
+	return 0;
+    }
+
+    my @maps = ();
+
+    foreach my $code ( @layer_codes )
+    {
+        push( @maps, {'Id'=> $layers{$code}, 'IsCategorical'=> 0} );
+    }
 
     @maps = map(SOAP::Data->name('map')->attr(\%{$_}), @maps);
 
@@ -527,7 +507,7 @@ sub create_model
     my $mask = SOAP::Data
 	->name('mask')
 	->type('struct')
-	->attr({'location'=>$base_dir.'rain_coolest'});
+	->attr({'location'=>'rain_coolest'});
 
     ### Points
 
@@ -579,7 +559,7 @@ sub create_model
     my $header = SOAP::Data
 	-> name('header')
 	-> type('string')
-	-> value($base_dir.'rain_coolest');
+	-> value('rain_coolest');
 
     my $scale = SOAP::Data
 	-> name('scale')
@@ -618,6 +598,73 @@ sub create_model
     return 1;
 }
 
+#########################################
+#  Get algorithm from console interface # 
+#########################################
+sub get_algorithm_from_user
+{
+    print "\nChoose an algorithm:\n\n";
+
+    foreach my $key (sort(keys %algorithms))
+    {
+	print "  [$key] $algorithms{$key}{Name}\n";
+    }
+
+    print "\nYour choice: ";
+
+    my $choice = <STDIN>;
+    chomp($choice);
+
+    return int($choice);
+}
+
+###################################################
+#  Get algorithm parameter from console interface # 
+###################################################
+sub get_algorithm_parameter_from_user
+{
+    my ($param) = @_;
+
+    my $min = (defined($param->{'Min'})) ? '['.$param->{'Min'}: '(oo';
+    my $max = (defined($param->{'Max'})) ? $param->{'Max'}.']': 'oo)';
+    my $domain = $min . ', ' . $max;
+    
+    print "\nParameter: $param->{Name}";
+    print " ($param->{Description})" if $param->{Description};
+    print "\n domain: $domain";
+    print "\n default: $param->{'Default'}" if $param->{'Default'};
+
+    print "\n value: ";
+
+    my $val = <STDIN>;
+    chomp($val);
+
+    $val = $param->{'Default'} unless length($val);
+
+    return $val;
+}
+
+######################################
+#  Get layers from console interface # 
+######################################
+sub get_layers_from_user
+{
+    print "\nChoose the layers you want to use for model creation:\n\n";
+
+    foreach my $i ( sort { $a <=> $b } ( keys %layers ) )
+    {
+	print "  [$i] $layers{$i}\n";
+    }
+
+    print "\nYour choice (comma separated list of values): ";
+
+    my $choice = <STDIN>;
+    chomp( $choice );
+
+    @layers = split( /\s*,\s*/, $choice );
+
+    return @layers;
+}
 
 #########################
 #  Get distribution map # 
