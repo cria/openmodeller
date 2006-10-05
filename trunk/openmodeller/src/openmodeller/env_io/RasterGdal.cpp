@@ -73,8 +73,8 @@ GDAL_Format Formats[4] =
 	{ "BMP",
 	GDT_Byte,
 	false },
-	// Floating HDF (Erdas Imagine Format which ArcMap can read directly)
-	{ "HDF",
+	// Floating HFA (Erdas Imagine Format which ArcMap can read directly)
+	{ "HFA",
 	(sizeof(Scalar) == 4) ? GDT_Float32 : GDT_Float64,
 	true }
 };
@@ -129,7 +129,7 @@ RasterGdal::RasterGdal( const string& file, const MapFormat& format):
             f_scalefactor = 1.0;
 			nv = -1.0;
 			break;
-		case MapFormat::FloatingHDF:
+		case MapFormat::FloatingHFA:
             f_scalefactor = 1.0;
 			nv = -1.0;
 			break;

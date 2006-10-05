@@ -36,8 +36,7 @@
 
 using std::string;
 
-//#define DEFAULT_FORMAT FloatingHDF
-#define DEFAULT_FORMAT FloatingTiff
+#define DEFAULT_FORMAT FloatingHFA
 
 MapFormat::MapFormat( ) :
   format( DEFAULT_FORMAT ),
