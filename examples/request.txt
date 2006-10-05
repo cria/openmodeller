@@ -58,7 +58,7 @@ Output file = furcata.tif
 # GreyTiff = grey scale GeoTiff (0 <= cell value <= 255). Default. (*.tif)
 # FloatingTiff = floating point GeoTiff (cell value = probability of presence) (*.tif)
 # GreyBMP = grey scale BMP (*.bmp)
-# FloatingHDF = Erdas Imagine Floating Point (cell value = probability of presence)
+# FloatingHFA = Erdas Imagine Floating Point (cell value = probability of presence)
 #               NoData will be written as -1. This format is directly 
 #               readable by ArcMap. (*.img) 
 #
