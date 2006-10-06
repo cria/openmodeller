@@ -26,11 +26,11 @@
 
 static AlgParamMetadata parameters[NUM_PARAM] = { // Parameters
    { // First parameter
-      PARDIST,        // Id
-      "Distance",     // Name
-      "Real",         // Type
-      "Max distance", // Overview
-      "Distance used as limit in the algorithm (maximum)", // Description
+      PARDIST,            // Id
+      "Maximum distance", // Name
+      "Real",             // Type
+      "Maximum distance to the reference in the environmental space (the reference is determined by \"nearest n points\" parameter.", // Overview
+      "Maximum distance to the reference in the environmental space (the reference is determined by \"nearest n points\" parameter. 1 corresponds to the biggest possible distance between any two points in the environment space. When the distance between a point and the reference point is grater than this parameter, then the probability will be zero. Otherwise it will be a linear decay.", // Description
       1,          // Not zero if the parameter has lower limit
       PARDISTMIN, // Parameter's lower limit
       1,          // Not zero if the parameter has upper limit
@@ -38,9 +38,9 @@ static AlgParamMetadata parameters[NUM_PARAM] = { // Parameters
       "0.1"       // Parameter's typical (default) value
    },
    { // 2nd parameter
-      PARDISTTYPE,     // Id
-      "Distance type", // Name
-      "Integer",       // Type
+      PARDISTTYPE, // Id
+      "Metric",    // Name
+      "Integer",   // Type
       "Metric used to calculate distances: 1=Euclidean, 2=Mahalanobis, 3=Gower.", // Overview
       "Metric used to calculate distances: 1=Euclidean, 2=Mahalanobis, 3=Gower.", // Description
       1,          // Not zero if the parameter has lower limit
@@ -51,10 +51,10 @@ static AlgParamMetadata parameters[NUM_PARAM] = { // Parameters
    },
    { // 3rd parameter
       PARPOINTQNT,      // Id
-      "Nearest points quantity to get a mean", // Name
+      "Nearest \"n\" points", // Name
       "Integer",        // Type
-      "Nearest points quantity to get a mean", // Overview
-      "Amount of points used to get a mean: the distance is between a point and this mean.", // Description
+      "Nearest \"n\" points whose mean value will be the reference when calculating distances.", // Overview
+      "Nearest \"n\" points whose mean value will be the reference when calculating distances.", // Description
       1,          // Not zero if the parameter has lower limit
       0,          // Parameter's lower limit
       0,          // Not zero if the parameter has upper limit
@@ -64,15 +64,15 @@ static AlgParamMetadata parameters[NUM_PARAM] = { // Parameters
 };
 
 static AlgMetadata metadata = { // General metadata
-  "EnvironmentalDistance",                             // Id
-  "Environmental Distance",                            // Name
-  "0.1",                                               // Version
-  "Use generic distances.",                            // Overview
-  "Generic algorithm based on distances.",             // Description
-  "",                                                  // Algorithm author
-  "",                                                  // Bibliography
-  "Danilo J. S. Bellini",                              // Code author
-  "danilo.estagio@gmail.com",                          // Code author's contact
+  "EnvironmentalDistance",      // Id
+  "Environmental Distance",     // Name
+  "0.1",                        // Version
+  "Generic algorithm based on environmental dissimilarity metrics.", // Overview
+  "Generic algorithm based on environmental dissimilarity metrics.", // Description
+  "Mauro E. S. Munoz, Renato De Giovanni",    // Algorithm author
+  "",                                         // Bibliography
+  "Danilo J. S. Bellini",                     // Code author
+  "danilo.estagio [at] gmail.com",            // Code author's contact
   0,                    // Does not accept categorical data
   0,                    // Does not need (pseudo)absence points
   NUM_PARAM, parameters // Algorithm's parameters
