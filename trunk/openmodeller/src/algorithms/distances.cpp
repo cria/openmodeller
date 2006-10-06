@@ -392,7 +392,7 @@ void EnvironmentalDistances::InitDistanceType(){
          //   For a n-dimensional world, we have the maximum dist equals
          // L*sqrt(n), because sqrt((L*sqrt(n-1))^2 + L^2) = L*sqrt(n)
          // (indution using Pythagoras).
-         distMax = sqrt(layerCount) * (DATA_MAX - DATA_MIN);
+         distMax = sqrt((double)layerCount) * (DATA_MAX - DATA_MIN);
    }
 
    // Normalize ParDist for its limits
