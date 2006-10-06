@@ -9,7 +9,9 @@
 TEMPLATE=subdirs
 SUBDIRS=bioclim.pro \
         distance_to_average.pro \
-        minimum_distance.pro
+        minimum_distance.pro \
+        environmental_distance.pro
+
 SUBDIRS+=aquamaps.pro
 #bioclim_distance.pro 
 SUBDIRS+=csm.pro
