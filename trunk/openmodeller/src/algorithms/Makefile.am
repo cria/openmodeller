@@ -89,3 +89,12 @@ libomaquamaps_la_LDFLAGS = -no-undefined
 libomaquamaps_la_LIBADD = $(SQLITE3_LIB) $(OMLIB)
 libomaquamaps_la_CPPFLAGS = $(OMDATAPATH) $(SQLITE3_INC) -I$(OMSRCDIR)
 endif
+
+#
+# Build EnvironmentalDistances
+#
+plugin_LTLIBRARIES += libomenvdistances.la
+libomenvdistances_la_SOURCES = distances.cpp distances.h matrix.h
+libomenvdistances_la_LDFLAGS = -no-undefined
+libomenvdistances_la_LIBADD = $(OMLIB)
+libomenvdistances_la_CPPFLAGS = -I$(OMSRCDIR)

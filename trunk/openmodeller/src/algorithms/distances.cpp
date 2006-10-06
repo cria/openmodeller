@@ -1,0 +1,401 @@
+//
+// Generic environmental distances algorithm
+//
+// Description: Generic algorithm based on distances.
+//
+// Author:      Danilo J. S. Bellini <danilo.estagio@gmail.com>
+// Copyright:   See COPYING file that comes with this distribution
+// Date:        2006-09-18
+//
+
+#include "distances.h"
+
+
+//
+// METADATA
+//
+#define DATA_MIN 0.0
+#define DATA_MAX 1.0
+#define NUM_PARAM 3
+
+#define PARDIST    "Distance"
+#define PARDISTMIN 0.0
+#define PARDISTMAX 1.0
+#define PARDISTTYPE "Distance Type"
+#define PARPOINTQNT "Nearest points quantity to get a mean"
+
+static AlgParamMetadata parameters[NUM_PARAM] = { // Parameters
+   { // First parameter
+      PARDIST,        // Id
+      "Distance",     // Name
+      "Real",         // Type
+      "Max distance", // Overview
+      "Distance used as limit in the algorithm (maximum)", // Description
+      1,          // Not zero if the parameter has lower limit
+      PARDISTMIN, // Parameter's lower limit
+      1,          // Not zero if the parameter has upper limit
+      PARDISTMAX, // Parameter's upper limit
+      "0.1"       // Parameter's typical (default) value
+   },
+   { // 2nd parameter
+      PARDISTTYPE,     // Id
+      "Distance type", // Name
+      "Integer",       // Type
+      "Distance type", // Overview
+      "Select the formula used to calc distances", // Description
+      0,          // Not zero if the parameter has lower limit
+      0,          // Parameter's lower limit
+      0,          // Not zero if the parameter has upper limit
+      0,          // Parameter's upper limit
+      "1"         // Parameter's typical (default) value
+   },
+   { // 3rd parameter
+      PARPOINTQNT,      // Id
+      "Nearest points quantity to get a mean", // Name
+      "Integer",        // Type
+      "Nearest points quantity to get a mean", // Overview
+      "Amount of points used to get a mean: the distance is between a point and this mean.", // Description
+      0,          // Not zero if the parameter has lower limit
+      0,          // Parameter's lower limit
+      0,          // Not zero if the parameter has upper limit
+      0,          // Parameter's upper limit
+      "1"         // Parameter's typical (default) value
+   },
+};
+
+static AlgMetadata metadata = { // General metadata
+  "EnvironmentalDistances",                            // Id
+  "EnvironmentalDistances",                            // Name
+  "0.1",                                               // Version
+  "Use generic distances.",                            // Overview
+  "Generic algorithm based on distances.",             // Description
+  "",                                                  // Algorithm author
+  "None",                                              // Bibliography
+  "Danilo J. S. Bellini",                              // Code author
+  "danilo.estagio@gmail.com",                          // Code author's contact
+  0,                    // Does not accept categorical data
+  0,                    // Does not need (pseudo)absence points
+  NUM_PARAM, parameters // Algorithm's parameters
+};
+
+
+//
+// LINK TO OM
+//
+
+// Needed code to link this algorithm to oM
+OM_ALG_DLL_EXPORT
+AlgorithmImpl *algorithmFactory(){
+   return new EnvironmentalDistances(); // Create an instance of the algorithm's class
+}
+OM_ALG_DLL_EXPORT
+AlgMetadata const *algorithmMetadata(){
+   return &metadata;
+}
+
+
+//
+// ALGORITHM CONSTRUCTOR/DESTRUCTOR
+//
+
+// Constructor for the algorithm class
+EnvironmentalDistances::EnvironmentalDistances() : AlgorithmImpl(&metadata){
+   _initialized = false;
+   covMatrix = covMatrixInv = NULL;
+}
+
+// Destructor for the algorithm class
+EnvironmentalDistances::~EnvironmentalDistances()
+{
+   if(_initialized){
+      switch(ParDistType){
+         case MahalanobisDistance:
+            if(covMatrix!=NULL){
+               delete covMatrix;
+               delete covMatrixInv;
+            }
+            break;
+         //case GowerDistance:
+         //case EuclideanDistance:
+         //default:
+      }
+   }
+}
+
+
+//
+// ALGORITHM GENERIC METHODS (virtual AlgorithmImpl methods)
+//
+
+// Initialize the algorithm
+int EnvironmentalDistances::initialize(){
+
+   // Test the parameters' data types
+   if(!getParameter(PARDIST,&ParDist)){
+      g_log.error(1, "Parameter '" PARDIST "' wasn't set properly.\n");
+      return 0;
+   }
+   if(!getParameter(PARDISTTYPE,&ParDistType)){
+      g_log.error(1, "Parameter '" PARDISTTYPE "' wasn't set properly.\n");
+      return 0;
+   }
+   if(!getParameter(PARPOINTQNT,&ParPointQnt)){
+      g_log.error(1, "Parameter '" PARPOINTQNT "' wasn't set properly.\n");
+      return 0;
+   }
+
+   // Impose limits to the parameters, if somehow the user don't obey
+   if     (ParDist>PARDISTMAX) ParDist = PARDISTMAX;
+   else if(ParDist<PARDISTMIN) ParDist = PARDISTMIN;
+
+   // Initialize some common-use attributes
+   layerCount    = _samp->numIndependent();
+   presenceCount = _samp->numPresence();
+
+   // Load all environmental data of presence points
+   if(presenceCount == 0){
+      g_log.error(1, "There is no presence point.\n");
+      return 0;
+   }
+   OccurrencesPtr presences = _samp->getPresences();
+   for(int i = 0 ; i < presenceCount ; i++)
+      presencePoints.push_back((*presences)[i]->environment());
+
+   // Calcs the mean of all presence points
+   averagePoint = presencePoints[0]; // There is at least one presence point
+   for(int i = 1 ; i < layerCount ; i++)
+      averagePoint += presencePoints[i];
+   averagePoint /= layerCount;
+
+   InitDistanceType(); // Allow using "Distance" method and normalize ParDist
+   _done = true;       // Needed for not-iterative algorithms
+   _initialized = true;
+   return 1; // There was no problem in initialization
+}
+
+// Normalize all environmental data to [DATA_MIN,DATA_MAX]
+int EnvironmentalDistances::needNormalization(Scalar *min, Scalar *max) const{
+  *min = DATA_MIN;
+  *max = DATA_MAX;
+  return 1;
+}
+
+// Returns the occurrence probability
+Scalar EnvironmentalDistances::getValue(const Sample& x) const{
+   Scalar dist;
+
+   //
+   // Distance to average
+   //
+   if((ParPointQnt >= presenceCount) || (ParPointQnt <= 0))
+      dist = Distance(x, averagePoint);
+
+   //
+   // Minimum distance (not really needed)
+   //
+   else if(ParPointQnt == 1){
+      Scalar distIterator;
+      dist = -1;
+      for(int i = 0 ; i < presenceCount ; i++){ // Iterate for each presence point
+         distIterator = Distance(x, presencePoints[i]);
+         if((distIterator < dist || dist < 0))
+            dist = distIterator;
+      }
+
+   //
+   // Mean of ParPointQnt nearest points
+   //
+   }else{
+      std::vector<Sample> nearestPoints;
+      std::vector<Scalar> nPdist;
+      Scalar distIterator, distTmp;
+      Sample pointIterator, pointTmp, nearMean;
+      for(int i = 0 ; i < ParPointQnt ; i++){ // We know that ParPointQnt < presenceCount
+         nPdist.push_back(Distance(x, presencePoints[i]));
+         nearestPoints.push_back(presencePoints[i]);
+      }
+
+      for(int i = ParPointQnt ; i < presenceCount ; i++){ // This loop finds the nearest points
+         distIterator = Distance(x, presencePoints[i]);
+         pointIterator = presencePoints[i];
+         for(int j = 0 ; j < ParPointQnt ; j++){ // Trade pointIterator with the first smaller point
+            if(nPdist[j] > distIterator){
+               distTmp = distIterator;
+               pointTmp = pointIterator;
+               distIterator = nPdist[j];
+               pointIterator = nearestPoints[j];
+               nPdist[j] = distTmp;
+               nearestPoints[j] = pointTmp;
+               j = -1; // Re-start the for loop for the new value
+            }
+         }
+      }
+
+      // Now we have the nearest points. Let's get its mean:
+      nearMean = nearestPoints[0]; // There is at least one point
+      for(int i = 0 ; i < ParPointQnt ; i++)
+         nearMean += nearestPoints[i];
+      nearMean /= ParPointQnt;
+
+      dist = Distance(x, nearMean);
+   }
+
+   // Now finishes the algorithm calculating the probability
+   if(dist < 0) // There isn't any occurrence
+      return 0.0;
+   else
+      return 1.0 - (dist / ParDist);
+}
+
+// Initialize covMatrix and covMatrixInv
+void EnvironmentalDistances::CalcCovarianceMatrix(){
+   if(covMatrix!=NULL){ // Garbage collector
+      delete covMatrix;
+      delete covMatrixInv;
+   }
+   covMatrix = new Matrix(layerCount,layerCount); // Alloc memory for new matrices
+   covMatrixInv = new Matrix(layerCount,layerCount);
+
+   // Calcs the cross-covariance for each place in the matrix
+   for(int i = 0 ; i < layerCount ; i++)
+      for(int j = i ; j < layerCount ; j++){
+         (*covMatrix)(i,j) = 0;
+         for(int k = 0 ; k < presenceCount ; k++)
+            (*covMatrix)(i,j) += (presencePoints[k][i]-averagePoint[i]) *
+                                 (presencePoints[k][j]-averagePoint[j]);
+         (*covMatrix)(i,j) /= presenceCount;
+         (*covMatrix)(j,i) = (*covMatrix)(i,j);
+      }
+   (*covMatrixInv) = !(*covMatrix); // All covariance matrices are positive
+                                    // definite, so they always have an inverse
+   //std::cout << (*covMatrixInv); // Debug
+}
+
+// Calcs the distance between x and y using ParDistType
+inline Scalar EnvironmentalDistances::Distance(const Sample& x, const Sample& y) const{
+   Scalar dist;
+   switch(ParDistType){
+
+      //
+      // Mahalanobis Distance
+      //
+      case MahalanobisDistance:{
+         Matrix lineMatrix(1,layerCount);
+         // Make lineMatrix = x - y
+         for(int i=0; i<layerCount; i++)
+            lineMatrix(0,i) = x[i] - y[i];
+         // Definition of Mahalanobis distance
+         dist = sqrt(
+            (lineMatrix * (*covMatrixInv) * (~lineMatrix))(0,0) // Operator () of a 1x1 matrix
+         );
+         //g_log("\nDISTANCE: %g\n",dist); // Debug
+      }break;
+
+      //
+      // Gower Distance
+      //
+      case GowerDistance:{
+         Scalar tmp;
+         for(int k=0;k<layerCount;k++){
+            tmp = x[k] - y[k];
+            // We don't need this because we did that in ParDist normalization:
+            // tmp /= DATA_MAX - DATA_MIN; // range(k)
+            if(tmp < 0)
+               dist -= tmp;
+            else
+               dist += tmp;
+         }
+         dist /= layerCount;
+      }break;
+
+      //
+      // Euclidean Distance
+      //
+      case EuclideanDistance:
+      default:{
+         Sample delta = x;
+         delta -= y;
+         dist = delta.norm(); // The usual norm of the "delta" vector have
+      }break;                 // Euclidean distance for a n-dimensional space
+   }
+
+   return dist;
+}
+
+// Initialize the data structures of a distance type and normalize ParDist
+void EnvironmentalDistances::InitDistanceType(){
+   Scalar distMax;
+
+   // Calcs the maximum distance (distMax)
+   switch(ParDistType){
+
+      case MahalanobisDistance:{
+         // Distance between oposite edges (vertex) of the hypercube
+         Scalar distIterator;
+         Sample x,y;
+         x.resize(layerCount);
+         y.resize(layerCount);
+         CalcCovarianceMatrix(); // Initialize covMatrixInv
+         distMax = 0.0;
+         for(int i=0; i<(1<<(layerCount-1)); i++){ // for(i FROM 0 TO 2 "power" (layerCount - 1))
+            for(int k=0; k<layerCount; k++) // This is the same loop used to create
+               if(i & (1<<k) != 0){         // binary numbers, but with "max" and
+                  x[k] = DATA_MAX;          // "min" instead of "1" and "0"
+                  y[k] = DATA_MIN; // y is the oposite of x
+               }else{
+                  x[k] = DATA_MIN;
+                  y[k] = DATA_MAX;
+               }
+            distIterator = Distance(x,y);
+            if(distIterator > distMax)
+               distMax = distIterator;
+         }
+/*
+         // Distance between all edges (vertex) of the hypercube
+         Scalar distIterator;
+         Sample x,y;
+         x.resize(layerCount);
+         y.resize(layerCount);
+         CalcCovarianceMatrix(); // Initialize covMatrixInv
+         distMax = 0.0;
+         for(int i=0; i<(1<<layerCount)-1; i++){ // for(i FROM 0 TO (2 "power" layerCount) - 2)
+            for(int k=0; k<layerCount; k++)         // This is the same loop used to create
+               if(i & (1<<k) != 0) x[k] = DATA_MAX; // binary numbers, but with "max" and
+               else                x[k] = DATA_MIN; // "min" instead of "1" and "0"
+            // g_log("Maximum distance: %.8g ; i = %d / %d\r", distMax, i, (1<<layerCount)-1); // Debug
+            for(int j=i+1; j<(1<<layerCount); j++){ // Almost the same above
+               for(int k=0; k<layerCount; k++)
+                  if(j & (1<<k) != 0) y[k] = DATA_MAX;
+                  else                y[k] = DATA_MIN;
+
+               distIterator = Distance(x,y); // Calcs the distance between all edges (vertex) of the hypercube
+               if(distIterator > distMax)
+                  distMax = distIterator;
+            }
+         }
+*/
+         //g_log("\nMaximum distance: %.8g\n",distMax); // Debug
+      }break;
+
+      case GowerDistance:
+         // Gower maximum value is always DATA_MAX - DATA_MIN, even for n
+         // dimensions, so there's no real initialization for Gower
+         distMax = DATA_MAX - DATA_MIN;
+         break;
+
+      case EuclideanDistance:
+      default:
+         //   For a 1 dimensional world, we impose a size limit of L
+         //   For a 2D world, we have a square, with size limit of L*sqrt(2)
+         // since each side is a 1 dimensional world with max = 1
+         //   In a 3D world, size limit is L*sqrt(3) because we have a cube
+         //   For a n-dimensional world, we have the maximum dist equals
+         // L*sqrt(n), because sqrt((L*sqrt(n-1))^2 + L^2) = L*sqrt(n)
+         // (indution using Pythagoras).
+         distMax = sqrt(layerCount) * (DATA_MAX - DATA_MIN);
+   }
+
+   // Normalize ParDist for its limits
+   ParDist = (ParDist - PARDISTMIN)/(PARDISTMAX - PARDISTMIN); // Now ParDist is in [0,1]
+   ParDist *= distMax; // Now ParDist is in [0,distMax]
+}
