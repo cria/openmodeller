@@ -233,7 +233,7 @@ Scalar EnvironmentalDistances::getValue(const Sample& x) const{
 
       // Now we have the nearest points. Let's get its mean:
       nearMean = nearestPoints[0]; // There is at least one point
-      for(int i = 0 ; i < ParPointQnt ; i++)
+      for(int i = 1 ; i < ParPointQnt ; i++)
          nearMean += nearestPoints[i];
       nearMean /= ParPointQnt;
 
