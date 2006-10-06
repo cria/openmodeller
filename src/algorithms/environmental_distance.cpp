@@ -8,7 +8,7 @@
 // Date:        2006-09-18
 //
 
-#include "distances.h"
+#include "environmental_distance.hh"
 
 
 //
@@ -41,12 +41,12 @@ static AlgParamMetadata parameters[NUM_PARAM] = { // Parameters
       PARDISTTYPE,     // Id
       "Distance type", // Name
       "Integer",       // Type
-      "Distance type", // Overview
-      "Select the formula used to calc distances", // Description
-      0,          // Not zero if the parameter has lower limit
-      0,          // Parameter's lower limit
-      0,          // Not zero if the parameter has upper limit
-      0,          // Parameter's upper limit
+      "Metric used to calculate distances: 1=Euclidean, 2=Mahalanobis, 3=Gower.", // Overview
+      "Metric used to calculate distances: 1=Euclidean, 2=Mahalanobis, 3=Gower.", // Description
+      1,          // Not zero if the parameter has lower limit
+      1,          // Parameter's lower limit
+      1,          // Not zero if the parameter has upper limit
+      3,          // Parameter's upper limit
       "1"         // Parameter's typical (default) value
    },
    { // 3rd parameter
@@ -55,7 +55,7 @@ static AlgParamMetadata parameters[NUM_PARAM] = { // Parameters
       "Integer",        // Type
       "Nearest points quantity to get a mean", // Overview
       "Amount of points used to get a mean: the distance is between a point and this mean.", // Description
-      0,          // Not zero if the parameter has lower limit
+      1,          // Not zero if the parameter has lower limit
       0,          // Parameter's lower limit
       0,          // Not zero if the parameter has upper limit
       0,          // Parameter's upper limit
@@ -64,13 +64,13 @@ static AlgParamMetadata parameters[NUM_PARAM] = { // Parameters
 };
 
 static AlgMetadata metadata = { // General metadata
-  "EnvironmentalDistances",                            // Id
-  "EnvironmentalDistances",                            // Name
+  "EnvironmentalDistance",                             // Id
+  "Environmental Distance",                            // Name
   "0.1",                                               // Version
   "Use generic distances.",                            // Overview
   "Generic algorithm based on distances.",             // Description
   "",                                                  // Algorithm author
-  "None",                                              // Bibliography
+  "",                                                  // Bibliography
   "Danilo J. S. Bellini",                              // Code author
   "danilo.estagio@gmail.com",                          // Code author's contact
   0,                    // Does not accept categorical data
