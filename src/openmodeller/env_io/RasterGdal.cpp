@@ -75,7 +75,7 @@ GDAL_Format Formats[4] =
 	false },
 	// Floating HFA (Erdas Imagine Format which ArcMap can read directly)
 	{ "HFA",
-	(sizeof(Scalar) == 4) ? GDT_Float32 : GDT_Float64,
+	  GDT_Float32,
 	true }
 };
 
@@ -325,11 +325,31 @@ RasterGdal::create(int format)
 	f_hdr.nband = 1;
 
 	// Create the file.
-	f_ds = poDriver->Create( f_file.c_str(),
-	f_hdr.xdim, f_hdr.ydim,
-	f_hdr.nband,
-	/* data type */ Formats[format].dataType,
-	/* opt parameters */ NULL );
+  if (format==MapFormat::FloatingHFA)
+  {
+    // HFA (erdas imagine) format does not support nodata
+    // so we need to set the background value instead
+    // also for this format we want to enable comressions to 
+    // reduce the file size
+
+    //see http://www.gdal.org/gdal_tutorial.html for options examples
+    char **papszOptions = NULL;
+    papszOptions = CSLSetNameValue( papszOptions, "BACKGROUND", "-1" );
+    papszOptions = CSLSetNameValue( papszOptions, "COMPRESS", "YES" );
+    f_ds = poDriver->Create( f_file.c_str(),
+        f_hdr.xdim, f_hdr.ydim,
+        f_hdr.nband,
+        /* data type */ Formats[format].dataType,
+        /* opt parameters */ papszOptions );
+  }
+  else
+  {
+    f_ds = poDriver->Create( f_file.c_str(),
+        f_hdr.xdim, f_hdr.ydim,
+        f_hdr.nband,
+        /* data type */ Formats[format].dataType,
+        /* opt parameters */ NULL );
+  }
 	if ( ! f_ds )
 	{
 		g_log.warn( "Unable to create file %s.\n",f_file.c_str() );

@@ -4,7 +4,7 @@
 // Description:
 //
 //
-// Author: CRIA <t.sutton@reading.ac.uk>, (C) 2004
+// Author: CRIA <tim@linfiniti.com>, (C) 2004
 //
 // Copyright: See COPYING file that comes with this distribution
 //
