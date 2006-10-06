@@ -14,7 +14,7 @@
 #include <openmodeller/om.hh>
 
 // Matrix burocracy
-#include "matrix.h"
+#include "matrix.hh"
 #ifndef _NO_NAMESPACE
 using namespace std;
 using namespace math;
