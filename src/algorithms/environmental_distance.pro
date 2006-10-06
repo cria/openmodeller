@@ -8,7 +8,7 @@
 
 # include global settings from the top level dir
 include (../../settings.pro)
-TARGET = environmentaldistance
+TARGET = environmental_distance
 LIBS += $${OMLIBADD}
 TEMPLATE = lib
 DESTDIR=$${DESTDIR}/$${ALGDIR}
