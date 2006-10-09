@@ -1315,7 +1315,7 @@ GarpAlgorithm::_getConfiguration( ConfigurationPtr& config ) const
   // To accomodate other's const-incorrectness.
   RuleSet* rs = const_cast<RuleSet*>( & objBest );
 
-  ConfigurationPtr model_config ( new ConfigurationImpl("GarpModel") );
+  ConfigurationPtr model_config ( new ConfigurationImpl("Garp") );
   config->addSubsection( model_config );
 
   const int rule_count = rs->size();
@@ -1349,7 +1349,7 @@ void
 GarpAlgorithm::_setConfiguration( const ConstConfigurationPtr& config )
 {
 
-  ConstConfigurationPtr model_config = config->getSubsection( "GarpModel", false );
+  ConstConfigurationPtr model_config = config->getSubsection( "Garp", false );
 
   if (!model_config)
     return;

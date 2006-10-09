@@ -431,7 +431,7 @@ Garp::_getConfiguration( ConfigurationPtr& config ) const
   if ( !done() )
     return;
 
-  ConfigurationPtr model_config ( new ConfigurationImpl("GarpModel") );
+  ConfigurationPtr model_config ( new ConfigurationImpl("Garp") );
   config->addSubsection( model_config );
 
   model_config->addNameValue( "Generations", _gen );
@@ -471,7 +471,7 @@ Garp::_getConfiguration( ConfigurationPtr& config ) const
 void
 Garp::_setConfiguration( const ConstConfigurationPtr& config )
 {
-  ConstConfigurationPtr model_config = config->getSubsection( "GarpModel", false );
+  ConstConfigurationPtr model_config = config->getSubsection( "Garp", false );
 
   if (!model_config)
     return;

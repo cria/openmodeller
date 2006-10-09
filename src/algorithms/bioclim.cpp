@@ -357,7 +357,7 @@ Bioclim::_getConfiguration( ConfigurationPtr& config ) const
   if ( !_done )
     return;
 
-  ConfigurationPtr model_config( new ConfigurationImpl("BioclimModel") );
+  ConfigurationPtr model_config( new ConfigurationImpl("Bioclim") );
   config->addSubsection( model_config );
 
   model_config->addNameValue( "Mean", _mean );
@@ -370,7 +370,7 @@ Bioclim::_getConfiguration( ConfigurationPtr& config ) const
 void
 Bioclim::_setConfiguration( const ConstConfigurationPtr& config )
 {
-  ConstConfigurationPtr model_config = config->getSubsection("BioclimModel",false );
+  ConstConfigurationPtr model_config = config->getSubsection("Bioclim",false );
 
   if (!model_config)
     return;

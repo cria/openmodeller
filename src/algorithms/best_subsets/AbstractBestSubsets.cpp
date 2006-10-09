@@ -113,7 +113,7 @@ AbstractBestSubsets::_getConfiguration( ConfigurationPtr& config ) const
   if ( !_done )
     return;
 
-  ConfigurationPtr model_config( new ConfigurationImpl("BestSubsetsModel") );
+  ConfigurationPtr model_config( new ConfigurationImpl("BestSubsets") );
   config->addSubsection( model_config );
 
   model_config->addNameValue("Count", _numBestRuns);
@@ -135,7 +135,7 @@ void
 AbstractBestSubsets::_setConfiguration( const ConstConfigurationPtr& config )
 {
 
-  ConstConfigurationPtr model_config = config->getSubsection("BestSubsetsModel",false);
+  ConstConfigurationPtr model_config = config->getSubsection("BestSubsets",false);
   if (!model_config)
     return;
 
