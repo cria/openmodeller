@@ -161,10 +161,6 @@ int EnvironmentalDistance::initialize(){
    for(int i = 0 ; i < presenceCount ; i++)
       presencePoints.push_back((*presences)[i]->environment());
 
-   // Set "n" closest points to the total number of presence points if parameter is 0
-   // and also force "n" closest points to be always less than the total number of points
-   if(ParPointQnt==0 || ParPointQnt>presenceCount) ParPointQnt = presenceCount;
-
    // Calcs the mean of all presence points
    averagePoint = presencePoints[0]; // There is at least one presence point
    for(int i = 1 ; i < layerCount ; i++)
@@ -405,60 +401,49 @@ void EnvironmentalDistance::InitDistanceType(){
 }
 
 // Alg serializer
-void EnvironmentalDistance::_getConfiguration(ConfigurationPtr& config) const
-{
+void EnvironmentalDistance::_getConfiguration(ConfigurationPtr& config) const {
    if (!_done ) return;
 
    ConfigurationPtr model_config( new ConfigurationImpl("EnvironmentalDistance") );
    config->addSubsection(model_config);
-
    model_config->addNameValue("Metric",ParDistType);
    model_config->addNameValue("ClosestPoints",ParPointQnt);
    model_config->addNameValue("MaxDistance",ParDist);
-
    ConfigurationPtr envpoints_config(new ConfigurationImpl("EnvironmentalReferences"));
    model_config->addSubsection(envpoints_config);
-
    for(int i=0; i<presencePoints.size(); i++) {
-
       ConfigurationPtr point_config(new ConfigurationImpl("Reference"));
       envpoints_config->addSubsection(point_config);
-
       point_config->addNameValue("Value", presencePoints[i]);
    }
+   model_config->addNameValue("Average",averagePoint);
 }
 
 // Alg deserializer
-void EnvironmentalDistance::_setConfiguration(const ConstConfigurationPtr& config)
-{
+void EnvironmentalDistance::_setConfiguration(const ConstConfigurationPtr& config) {
    ConstConfigurationPtr model_config = config->getSubsection("EnvironmentalDistance",false);
 
    if (!model_config) return;
 
    // Metric
    ParDistType = model_config->getAttributeAsInt("Metric", 1);
-
    // "n" closest points
    ParPointQnt = model_config->getAttributeAsInt("ClosestPoints", 1);
-
    // Maximum distance
    ParDist = model_config->getAttributeAsDouble("MaxDistance", 0.0);
-
    // Environmental points
    ConstConfigurationPtr envpoints_config = model_config->getSubsection("EnvironmentalReferences",false);
-
    Configuration::subsection_list subs = envpoints_config->getAllSubsections();
-
    Configuration::subsection_list::iterator begin = subs.begin();
    Configuration::subsection_list::iterator end = subs.end();
    for (; begin != end; ++begin) {
-
       if ((*begin)->getName() != "Reference") continue;
-
       Sample point = (*begin)->getAttributeAsSample("Value");
-
       presencePoints.push_back(point);
    }
+   // Average
+   averagePoint = model_config->getAttributeAsSample("Average");
+   layerCount = (int)averagePoint.size();
 
    _done = true;
 }
