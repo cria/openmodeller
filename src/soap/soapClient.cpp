@@ -6,7 +6,7 @@
 */
 #include "soapH.h"
 
-SOAP_SOURCE_STAMP("@(#) soapClient.cpp ver 2.7.6d 2006-10-02 19:29:19 GMT")
+SOAP_SOURCE_STAMP("@(#) soapClient.cpp ver 2.7.6d 2006-10-09 22:13:06 GMT")
 
 
 SOAP_FMAC5 int SOAP_FMAC6 soap_call_omws__ping(struct soap *soap, const char *soap_endpoint, const char *soap_action, void *_, int *status)
@@ -162,17 +162,13 @@ SOAP_FMAC5 int SOAP_FMAC6 soap_call_omws__getLayers(struct soap *soap, const cha
 	return soap_closesock(soap);
 }
 
-SOAP_FMAC5 int SOAP_FMAC6 soap_call_omws__createModel(struct soap *soap, const char *soap_endpoint, const char *soap_action, struct soap_Points *points, struct soap_Maps *maps, struct soap_Mask *mask, struct soap_Algorithm *algorithm, struct soap_Output *output, char **ticket)
+SOAP_FMAC5 int SOAP_FMAC6 soap_call_omws__createModel(struct soap *soap, const char *soap_endpoint, const char *soap_action, wchar_t *om__ModelParameters, char **ticket)
 {	struct omws__createModel soap_tmp_omws__createModel;
 	struct omws__createModelResponse *soap_tmp_omws__createModelResponse;
 	if (!soap_endpoint)
 		soap_endpoint = "http://localhost:8085";
 	soap->encodingStyle = NULL;
-	soap_tmp_omws__createModel.points = points;
-	soap_tmp_omws__createModel.maps = maps;
-	soap_tmp_omws__createModel.mask = mask;
-	soap_tmp_omws__createModel.algorithm = algorithm;
-	soap_tmp_omws__createModel.output = output;
+	soap_tmp_omws__createModel.om__ModelParameters = om__ModelParameters;
 	soap_begin(soap);
 	soap_serializeheader(soap);
 	soap_serialize_omws__createModel(soap, &soap_tmp_omws__createModel);

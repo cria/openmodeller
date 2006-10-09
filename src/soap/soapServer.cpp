@@ -6,7 +6,7 @@
 */
 #include "soapH.h"
 
-SOAP_SOURCE_STAMP("@(#) soapServer.cpp ver 2.7.6d 2006-10-02 19:29:19 GMT")
+SOAP_SOURCE_STAMP("@(#) soapServer.cpp ver 2.7.6d 2006-10-09 22:13:06 GMT")
 
 
 SOAP_FMAC5 int SOAP_FMAC6 soap_serve(struct soap *soap)
@@ -224,7 +224,7 @@ SOAP_FMAC5 int SOAP_FMAC6 soap_serve_omws__createModel(struct soap *soap)
 	 || soap_envelope_end_in(soap)
 	 || soap_end_recv(soap))
 		return soap->error;
-	soap->error = omws__createModel(soap, soap_tmp_omws__createModel.points, soap_tmp_omws__createModel.maps, soap_tmp_omws__createModel.mask, soap_tmp_omws__createModel.algorithm, soap_tmp_omws__createModel.output, &soap_tmp_xsd__string);
+	soap->error = omws__createModel(soap, soap_tmp_omws__createModel.om__ModelParameters, &soap_tmp_xsd__string);
 	if (soap->error)
 		return soap->error;
 	soap_serializeheader(soap);

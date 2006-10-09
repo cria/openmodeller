@@ -49,111 +49,15 @@ int omws__getAlgorithms(void *_, XML &om__AvailableAlgorithms);
 //gsoap omws service method-documentation: getLayers Returns all available layers on the server side.
 int omws__getLayers(void *_, XML &om__AvailableLayers);
 
-
-
-/** SOAP struct to store data about a point (presence or absence).
- */
-typedef struct soap_Point
-{
-  @xsd__double latitude;
-  @xsd__double longitude;
-
-} omws__Point;
-
-/** SOAP struct to store a collection of presence points  */
-typedef struct soap_PresencePoints
-{
-  int __size;
-  omws__Point *__ptrpoint;
-
-} omws__PresencePoints;
-
-/** SOAP struct to store a collection of absence points  */
-typedef struct soap_AbsencePoints
-{
-  int __size;
-  omws__Point *__ptrpoint;
-
-} omws__AbsencePoints;
-
-/** SOAP struct to store points data */
-typedef struct soap_Points
-{
-  xsd__string         coordsystem;
-  omws__PresencePoints *__ptrpresences;
-  omws__AbsencePoints  *__ptrabsences;
-
-} omws__Points;
-
-/** SOAP struct to store data about a map (environmental layer).
- */
-typedef struct soap_Map
-{
-  @xsd__string location;
-  @xsd__int    categorical;
-
-} omws__Map;
-
-/** SOAP struct to store a collection of maps (environmental layers)  */
-typedef struct soap_Maps
-{
-  int __size;
-  omws__Map *__ptrmap;
-
-} omws__Maps;
-
-/** SOAP struct to store data about a mask (region of interest).
- */
-typedef struct soap_Mask
-{
-  @xsd__string  location;
-
-} omws__Mask;
-
-/** SOAP struct to store a real algorithm parameter in a createModel request.
- */
-typedef struct soap_Parameter
-{
-  @xsd__string Id;
-  @xsd__string Value;
-
-} omws__Parameter;
-
-/** SOAP struct to store algorithm data in createModel requests.
- */
-typedef struct soap_Algorithm
-{
-  @xsd__string Id;
-
-  int __size;
-  omws__Parameter *__ptrparameter;
-
-} omws__Algorithm;
-
-/** SOAP struct to store specification of the distribution map.
- */
-typedef struct soap_Output
-{
-  xsd__string header;
-  xsd__int    scale;
-  xsd__string format;
-
-} omws__Output;
-
-/** Create a distribution model using all input parameters.
- * @note This method is implemented in om_soap.cpp, where it receives a soap structure as
- *       an additional parameter. The definition here is used only to generate the SOAP 
- *       stub/skeleton.
- * @param points Pointer to a structure with presence points, absence points and coordinate system 
- * @param maps Pointer to a structure with the environmental layers 
- * @param algorithm Pointer to an algorithm data structure 
- * @param absences Pointer to a structure with the output specification
+/** Create a distribution model (not a map!) using all input parameters.
+ *
+ * @param omws__createModel XML with model creation parameters 
  * @param ticket Job identification.
  * @return standard gSOAP integer code
  */
-//gsoap om service method-action: Create a spatial distribution model
-//gsoap om service method-documentation: Create a spatial distribution model
-int omws__createModel(omws__Points *points, omws__Maps *maps, omws__Mask *mask, omws__Algorithm *algorithm, omws__Output *output, xsd__string *ticket); 
+//gsoap om service method-documentation: createModel Requests the creation of a spatial distribution model
+int omws__createModel(XML om__ModelParameters, xsd__string *ticket); 
+
 
 class xsd__base64Binary 
 { 

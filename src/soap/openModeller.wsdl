@@ -28,122 +28,9 @@
   attributeFormDefault="unqualified">
   <import namespace="http://openmodeller.cria.org.br/xml/1.0" schemaLocation="http://openmodeller.cria.org.br/xml/1.0/openModeller.xsd"/>
   <import namespace="http://schemas.xmlsoap.org/soap/encoding/"/>
-  <complexType name="Point">
-   <complexContent>
-    <restriction base="omws:soap-Point">
-    </restriction>
-   </complexContent>
-  </complexType>
-  <complexType name="PresencePoints">
-   <complexContent>
-    <restriction base="omws:soap-PresencePoints">
-    </restriction>
-   </complexContent>
-  </complexType>
-  <complexType name="AbsencePoints">
-   <complexContent>
-    <restriction base="omws:soap-AbsencePoints">
-    </restriction>
-   </complexContent>
-  </complexType>
-  <complexType name="Points">
-   <complexContent>
-    <restriction base="omws:soap-Points">
-    </restriction>
-   </complexContent>
-  </complexType>
-  <complexType name="Map">
-   <complexContent>
-    <restriction base="omws:soap-Map">
-    </restriction>
-   </complexContent>
-  </complexType>
-  <complexType name="Maps">
-   <complexContent>
-    <restriction base="omws:soap-Maps">
-    </restriction>
-   </complexContent>
-  </complexType>
-  <complexType name="Mask">
-   <complexContent>
-    <restriction base="omws:soap-Mask">
-    </restriction>
-   </complexContent>
-  </complexType>
-  <complexType name="Parameter">
-   <complexContent>
-    <restriction base="omws:soap-Parameter">
-    </restriction>
-   </complexContent>
-  </complexType>
-  <complexType name="Algorithm">
-   <complexContent>
-    <restriction base="omws:soap-Algorithm">
-    </restriction>
-   </complexContent>
-  </complexType>
-  <complexType name="Output">
-   <complexContent>
-    <restriction base="omws:soap-Output">
-    </restriction>
-   </complexContent>
-  </complexType>
-  <complexType name="soap-Point">
+  <complexType name="createModel">
    <sequence>
-   </sequence>
-     <attribute name="latitude" type="xsd:double" use="required"/>
-     <attribute name="longitude" type="xsd:double" use="required"/>
-  </complexType>
-  <complexType name="soap-PresencePoints">
-   <sequence>
-     <element name="point" type="omws:Point" minOccurs="0" maxOccurs="unbounded"/>
-   </sequence>
-  </complexType>
-  <complexType name="soap-AbsencePoints">
-   <sequence>
-     <element name="point" type="omws:Point" minOccurs="0" maxOccurs="unbounded"/>
-   </sequence>
-  </complexType>
-  <complexType name="soap-Points">
-   <sequence>
-     <element name="coordsystem" type="xsd:string" minOccurs="0" maxOccurs="1" nillable="true"/>
-     <element name="presences" type="omws:PresencePoints" minOccurs="0" maxOccurs="1" nillable="true"/>
-     <element name="absences" type="omws:AbsencePoints" minOccurs="0" maxOccurs="1" nillable="true"/>
-   </sequence>
-  </complexType>
-  <complexType name="soap-Map">
-   <sequence>
-   </sequence>
-     <attribute name="location" type="xsd:string" use="optional"/>
-     <attribute name="categorical" type="xsd:int" use="required"/>
-  </complexType>
-  <complexType name="soap-Maps">
-   <sequence>
-     <element name="map" type="omws:Map" minOccurs="0" maxOccurs="unbounded"/>
-   </sequence>
-  </complexType>
-  <complexType name="soap-Mask">
-   <sequence>
-   </sequence>
-     <attribute name="location" type="xsd:string" use="optional"/>
-  </complexType>
-  <complexType name="soap-Parameter">
-   <sequence>
-   </sequence>
-     <attribute name="Id" type="xsd:string" use="optional"/>
-     <attribute name="Value" type="xsd:string" use="optional"/>
-  </complexType>
-  <complexType name="soap-Algorithm">
-   <sequence>
-     <element name="parameter" type="omws:Parameter" minOccurs="0" maxOccurs="unbounded"/>
-   </sequence>
-     <attribute name="Id" type="xsd:string" use="optional"/>
-  </complexType>
-  <complexType name="soap-Output">
-   <sequence>
-     <element name="header" type="xsd:string" minOccurs="0" maxOccurs="1" nillable="true"/>
-     <element name="scale" type="xsd:int" minOccurs="1" maxOccurs="1"/>
-     <element name="format" type="xsd:string" minOccurs="0" maxOccurs="1" nillable="true"/>
+     <element ref="om:ModelParameters" minOccurs="0" maxOccurs="1" nillable="true"/>
    </sequence>
   </complexType>
   <element name="version" type="xsd:string"/>
@@ -196,11 +83,7 @@
   <element name="createModel">
    <complexType>
     <sequence>
-     <element name="points" type="omws:Points" minOccurs="0" maxOccurs="1" nillable="true"/>
-     <element name="maps" type="omws:Maps" minOccurs="0" maxOccurs="1" nillable="true"/>
-     <element name="mask" type="omws:Mask" minOccurs="0" maxOccurs="1" nillable="true"/>
-     <element name="algorithm" type="omws:Algorithm" minOccurs="0" maxOccurs="1" nillable="true"/>
-     <element name="output" type="omws:Output" minOccurs="0" maxOccurs="1" nillable="true"/>
+     <element ref="om:ModelParameters" minOccurs="0" maxOccurs="1" nillable="true"/>
     </sequence>
    </complexType>
   </element>

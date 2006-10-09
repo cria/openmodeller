@@ -36,7 +36,8 @@ use Data::Dumper;
 ### Settings
 
 # namespace to be used
-my $uri = 'http://openmodeller.cria.org.br/ws/1.0';
+my $omws_uri = 'http://openmodeller.cria.org.br/ws/1.0';
+my $om_uri = 'http://openmodeller.cria.org.br/xml/1.0';
 
 ### Possible command line parameters
 
@@ -187,7 +188,7 @@ sub prepare_soap
 
         $soap = SOAP::Lite
                           #-> service('http://openmodeller.sf.net/ns/1.0/openmodeller.wsdl')
-		           -> uri( $uri )
+		           -> uri( $omws_uri )
 		           -> proxy( $server )
 		           -> encoding( 'iso-8859-1' );
     }
@@ -227,7 +228,7 @@ sub ping
     my $method = SOAP::Data
 	-> name( 'ping' )
 	-> prefix( 'omws' )
-	-> uri( $uri );
+        -> uri( $omws_uri );
 
     my $response = $soap->call( $method );
     
@@ -265,7 +266,7 @@ sub get_algorithms
     my $method = SOAP::Data
 	-> name( 'getAlgorithms' )
 	-> prefix( 'omws' )
-	-> uri( $uri );
+        -> uri( $omws_uri );
 
     my $response = $soap->call( $method );
     
@@ -393,7 +394,7 @@ sub get_layers
     my $method = SOAP::Data
 	-> name( 'getLayers' )
 	-> prefix( 'omws' )
-	-> uri( $uri );
+        -> uri( $omws_uri );
 
     my $response = $soap->call( $method );
     
@@ -436,9 +437,10 @@ sub create_model
     }
 
     my $method = SOAP::Data
-	-> name('createModel')
-	-> prefix('omws')
-	-> uri($uri);
+	-> name( 'createModel' )
+        -> encodingStyle( 'http://xml.apache.org/xml-soap/literalxml' )
+	-> prefix( 'omws' )
+        -> uri( $omws_uri );
 
     ### Algorithm
 
@@ -449,27 +451,28 @@ sub create_model
 	return 0;
     }
 
-    my $algorithm = SOAP::Data
-	-> name('algorithm')
-	-> prefix('omws')
-	-> type('om:Algorithm')
-	-> attr({'Id'=>$algorithms{$alg_code}{'Id'}});
+    my @alg_parameters = ();
 
-    if (scalar(keys(%{$algorithms{$alg_code}{parameters}})))
+    if ( scalar( keys( %{$algorithms{$alg_code}{parameters}} ) ) )
     {
-	my @parameters = ();
-
 	foreach my $param (keys(%{$algorithms{$alg_code}{parameters}}))
 	{
 	    my $value = get_algorithm_parameter_from_user( \%{$algorithms{$alg_code}{parameters}{$param}} );
 
-	    push( @parameters, {'Id'=> $param, 'Value'=> $value} );
+	    push( @alg_parameters, {'Id'=> $param, 'Value'=> $value} );
 	}
 
-	my @alg_tags =  map( SOAP::Data->type('struct')->name('parameter')->attr(\%{$_}), @parameters );
-
-	$algorithm->set_value( \@alg_tags );
+	@alg_parameters = map( SOAP::Data->name('Parameter')->attr(\%{$_}), @alg_parameters );
     }
+
+    my $parameters = SOAP::Data
+	-> name( 'Parameters' )
+        -> value( \SOAP::Data->value( @alg_parameters ) );
+
+    my $algorithm = SOAP::Data
+	-> name( 'Algorithm' )
+	-> attr( {'Id'=>$algorithms{$alg_code}{'Id'}, 'Version'=>$algorithms{$alg_code}{'Version'}} )
+        -> value( \SOAP::Data->value( $parameters ) );
 
     ### Maps
 
@@ -479,7 +482,6 @@ sub create_model
     }
 
     my @layer_codes = get_layers_from_user();
-
 
     if ( scalar( @layer_codes ) == 0 )
     {
@@ -493,97 +495,82 @@ sub create_model
         push( @maps, {'Id'=> $layers{$code}, 'IsCategorical'=> 0} );
     }
 
-    @maps = map(SOAP::Data->name('map')->attr(\%{$_}), @maps);
-
-    my $maps = SOAP::Data
-	-> name('maps')
-	-> prefix('omws')
-	-> type('om:Maps');
-    
-    $maps->set_value(\@maps);
+    @maps = map( SOAP::Data->name('Map')->attr(\%{$_}), @maps );
 
     ### Mask
 
+    my $mask_code = get_mask_from_user();
+
+    if ( not exists( $layers{$mask_code} ) )
+    {
+	return 0;
+    }
+
     my $mask = SOAP::Data
-	->name('mask')
-	->type('struct')
-	->attr({'location'=>'rain_coolest'});
+	->name( 'Mask' )
+	->type( 'struct' )
+	->attr( {'Id'=>$layers{$mask_code}, 'IsCategorical'=>'0'} );
+
+    ## Environment
+
+    my $env = SOAP::Data
+	-> name( 'Environment' )
+        -> value( \SOAP::Data->value( @maps, $mask ) );
 
     ### Points
 
     my $wkt = "GEOGCS['1924 ellipsoid',DATUM['Not_specified',SPHEROID['International 1924',6378388,297,AUTHORITY['EPSG','7022']],AUTHORITY['EPSG','6022']],PRIMEM['Greenwich',0,AUTHORITY['EPSG','8901']],UNIT['degree',0.0174532925199433,AUTHORITY['EPSG','9108']],AUTHORITY['EPSG','4022']]";
     
     my $coordsystem = SOAP::Data
-	-> name('coordsystem')
-	-> type('string')
-	-> value($wkt);
+	-> name( 'CoordinateSystem' )
+	-> value( \SOAP::Data->value( $wkt ) );
 
-    my @presencePoints = ( {'latitude' => -11.15, 'longitude' => -68.85},
-			   {'latitude' => -14.32, 'longitude' => -67.38},
-			   {'latitude' => -15.52, 'longitude' => -67.15},
-			   {'latitude' => -16.73, 'longitude' => -65.12},
-			   {'latitude' => -17.80, 'longitude' => -63.17} );
+    my @presencePoints = ( {'Y' => -11.15, 'X' => -68.85},
+			   {'Y' => -14.32, 'X' => -67.38},
+			   {'Y' => -15.52, 'X' => -67.15},
+			   {'Y' => -16.73, 'X' => -65.12},
+			   {'Y' => -17.80, 'X' => -63.17} );
 
-    @presencePoints = map(SOAP::Data->type('struct')->name('point')->attr(\%{$_}), @presencePoints);
+    @presencePoints = map( SOAP::Data->name('Point')->attr(\%{$_}), @presencePoints );
+
+#    my $presences = SOAP::Data
+#	-> name('Presence')
+#        -> value( \SOAP::Data->value( $coordsystem, @presencePoints ) );
 
     my $presences = SOAP::Data
-	-> name('presences')
-	-> prefix('omws')
-	-> type('om:PresencePoints');
+	-> name('Presence')
+        -> value( \SOAP::Data->value( @presencePoints ) );
     
-    $presences->set_value(\@presencePoints);
-    
-    my @absencePoints = ( {'latitude' => -47.07, 'longitude' => -22.82},
-			  {'latitude' => -49.75, 'longitude' => -12.70},
-			  {'latitude' => -50.37, 'longitude' => -3.52},
-			  {'latitude' => -45.44, 'longitude' => -14.23},
-			  {'latitude' => -51.07, 'longitude' => -6.88} );
+    my @absencePoints = ( {'Y' => -47.07, 'X' => -22.82},
+			  {'Y' => -49.75, 'X' => -12.70},
+			  {'Y' => -50.37, 'X' => -3.52},
+			  {'Y' => -45.44, 'X' => -14.23},
+			  {'Y' => -51.07, 'X' => -6.88} );
 
-    @absencePoints = map(SOAP::Data->type('struct')->name('point')->attr(\%{$_}), @absencePoints);
+    @absencePoints = map( SOAP::Data->name('Point')->attr(\%{$_}), @absencePoints );
     
     my $absences = SOAP::Data
-	-> name('absences')
-	-> prefix('omws')
-	-> type('om:AbsencePoints');
+	-> name('Absence')
+        -> value( \SOAP::Data->value( $coordsystem, @absencePoints ) );
 
-    $absences->set_value(\@absencePoints);
+#    my $sampler = SOAP::Data
+#	-> name( 'Sampler' )
+#        -> value( \SOAP::Data->value( $env, $presences, $absences ) );
 
-    my $points = SOAP::Data
-	-> name('points')
-	-> prefix('omws')
-	-> type('om:Points')
-	-> value(\SOAP::Data->value($coordsystem, $presences, $absences));
+    my $sampler = SOAP::Data
+	-> name( 'Sampler' )
+        -> value( \SOAP::Data->value( $env, $presences ) );
 
-    ### Output specification
+    my $model_parameters = SOAP::Data
+	-> name( 'ModelParameters' )
+	-> attr( {'xmlns'=>$om_uri} )
+        -> value( \SOAP::Data->value( $sampler, $algorithm ) );
 
-    my $header = SOAP::Data
-	-> name('header')
-	-> type('string')
-	-> value('rain_coolest');
-
-    my $scale = SOAP::Data
-	-> name('scale')
-	-> type('int')
-	-> value(240);
-
-    my $format = SOAP::Data
-	-> name('format')
-	-> type('string')
-	-> value('.tif');
-
-    my $output = SOAP::Data
-	-> name('output')
-	-> prefix('omws')
-	-> type('om:Output')
-	-> value(\SOAP::Data->value($header, $scale, $format));
+    print "Requesting model creation... ";
     
-    my @params = ($points, $maps, $mask, $algorithm, $output);
+    my $response = $soap->call( $method => $model_parameters );
 
-    print "Requesting model... ";
-    
-    my $response = $soap->call($method => @params);
-
-    unless ($response->fault)
+    unless ( $response->fault )
     { 
 	print "Your ticket is: ".$response->result ."\n";
     }
@@ -666,6 +653,19 @@ sub get_layers_from_user
     return @layers;
 }
 
+##########################################
+#  Get input mask from console interface # 
+##########################################
+sub get_mask_from_user
+{
+    print "\nChoose an input mask from the layers above: ";
+
+    my $choice = <STDIN>;
+    chomp( $choice );
+
+    return $choice;
+}
+
 #########################
 #  Get distribution map # 
 #########################
@@ -679,9 +679,9 @@ sub get_distribution_map
     print "Requesting map...\n";
     
     my $method = SOAP::Data
-	-> name('getDistributionMap')
-	-> prefix('omws')
-	-> uri($uri);
+	-> name( 'getDistributionMap' )
+	-> prefix( 'omws' )
+	-> uri( $omws_uri );
 
     my $ticket = SOAP::Data
 	-> name('ticket')
