@@ -163,9 +163,9 @@ int EnvironmentalDistance::initialize(){
 
    // Calcs the mean of all presence points
    averagePoint = presencePoints[0]; // There is at least one presence point
-   for(int i = 1 ; i < layerCount ; i++)
+   for(int i = 1 ; i < presenceCount ; i++)
       averagePoint += presencePoints[i];
-   averagePoint /= layerCount;
+   averagePoint /= presenceCount;
 
    InitDistanceType(); // Allow using "Distance" method and normalize ParDist
    _done = true;       // Needed for not-iterative algorithms
