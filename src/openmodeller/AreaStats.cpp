@@ -34,6 +34,13 @@ AreaStats::AreaStats(Scalar predictionThreshold)
   reset(predictionThreshold);
 }
 
+AreaStats::AreaStats(const AreaStats *areaStats) :
+  _areaTotal( areaStats->getTotalArea() ),
+  _areaPredPresent( areaStats->getAreaPredictedPresent() ),
+  _areaPredAbsent( areaStats->getAreaPredictedAbsent() ),
+  _areaNotPredicted( areaStats->getAreaNotPredicted() ),
+  _predictionThreshold( areaStats->getPredictionThreshold() )
+{ }
 
 AreaStats::~AreaStats()
 {

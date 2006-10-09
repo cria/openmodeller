@@ -34,12 +34,19 @@
 class dllexp AreaStats
 {
 public:
+
   /** 
    * Default constructor.
    * @param predictionThreshold Threshold for prediction values, above
    *        which a prediction value means a predicted presence.
    */
   AreaStats(Scalar predictionThreshold = 0.5);
+
+  /** 
+   * Copy constructor.
+   * @param areaStats Pointer to an AreaStats object to be copied.
+   */
+  AreaStats(const AreaStats *areaStats);
 
   /** 
    * Destructor.
@@ -68,22 +75,27 @@ public:
   /** 
    * Returns total number of cells counted.
    */
-  int getTotalArea()              { return _areaTotal; }
+  int getTotalArea() const              { return _areaTotal; }
 
   /** 
    * Returns total number of cell predicted present.
    */
-  int getAreaPredictedPresent()   { return _areaPredPresent; }
+  int getAreaPredictedPresent() const   { return _areaPredPresent; }
 
   /** 
    * Returns total number of cell predicted absent.
    */
-  int getAreaPredictedAbsent()    { return _areaPredAbsent; }
+  int getAreaPredictedAbsent() const    { return _areaPredAbsent; }
 
   /** 
    * Returns total number of cells where prediction doesn't apply.
    */
-  int getAreaNotPredicted()       { return _areaNotPredicted; }
+  int getAreaNotPredicted() const       { return _areaNotPredicted; }
+
+  /** 
+   * Returns the prediction threshold.
+   */
+  Scalar getPredictionThreshold() const { return _predictionThreshold; }
 
 private:
   int _areaTotal;
