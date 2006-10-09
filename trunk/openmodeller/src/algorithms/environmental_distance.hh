@@ -1,5 +1,5 @@
 //
-// Generic environmental distances algorithm
+// Generic environmental distance algorithm
 //
 // Description: Generic algorithm based on distances.
 //
@@ -32,16 +32,20 @@ using namespace math;
 #endif
 typedef matrix<Scalar> Matrix; // Now we have the matrix free for use
 
-class EnvironmentalDistances : public AlgorithmImpl{
+class EnvironmentalDistance : public AlgorithmImpl{
 
    public: // All methods here are inherited from AlgorithmImpl
-      EnvironmentalDistances();  // Constructor, don't have init algorithm routines
-      ~EnvironmentalDistances(); // Destructor
+      EnvironmentalDistance();  // Constructor, don't have init algorithm routines
+      ~EnvironmentalDistance(); // Destructor
 
       int initialize();  // Called by oM to initialize the algorithm
       int done() const { return _done; } // Tell oM when the algorithm finished its work
       int needNormalization(Scalar *min, Scalar *max) const; // Normalize all data to [min,max]
       Scalar getValue(const Sample& x) const; // Returns the occurence probability
+
+   protected:
+      virtual void _getConfiguration(ConfigurationPtr&) const;
+      virtual void _setConfiguration(const ConstConfigurationPtr&);
 
    private:
 
