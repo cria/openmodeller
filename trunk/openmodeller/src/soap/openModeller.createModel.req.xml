@@ -10,32 +10,7 @@
  </SOAP-ENV:Header>
  <SOAP-ENV:Body>
   <omws:createModel>
-   <points>
-    <coordsystem></coordsystem>
-    <presences>
-     <point latitude="0.0" longitude="0.0">
-     </point>
-    </presences>
-    <absences>
-     <point latitude="0.0" longitude="0.0">
-     </point>
-    </absences>
-   </points>
-   <maps>
-    <map location="" categorical="0">
-    </map>
-   </maps>
-   <mask location="">
-   </mask>
-   <algorithm Id="">
-    <parameter Id="" Value="">
-    </parameter>
-   </algorithm>
-   <output>
-    <header></header>
-    <scale>0</scale>
-    <format></format>
-   </output>
+   <om:ModelParameters>   </om:ModelParameters>
   </omws:createModel>
  </SOAP-ENV:Body>
 </SOAP-ENV:Envelope>
