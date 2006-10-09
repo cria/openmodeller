@@ -1,5 +1,5 @@
 //
-// Generic environmental distances algorithm
+// Generic environmental distance algorithm
 //
 // Description: Generic algorithm based on distances.
 //
@@ -86,7 +86,7 @@ static AlgMetadata metadata = { // General metadata
 // Needed code to link this algorithm to oM
 OM_ALG_DLL_EXPORT
 AlgorithmImpl *algorithmFactory(){
-   return new EnvironmentalDistances(); // Create an instance of the algorithm's class
+   return new EnvironmentalDistance(); // Create an instance of the algorithm's class
 }
 OM_ALG_DLL_EXPORT
 AlgMetadata const *algorithmMetadata(){
@@ -99,13 +99,13 @@ AlgMetadata const *algorithmMetadata(){
 //
 
 // Constructor for the algorithm class
-EnvironmentalDistances::EnvironmentalDistances() : AlgorithmImpl(&metadata){
+EnvironmentalDistance::EnvironmentalDistance() : AlgorithmImpl(&metadata){
    _initialized = false;
    covMatrix = covMatrixInv = NULL;
 }
 
 // Destructor for the algorithm class
-EnvironmentalDistances::~EnvironmentalDistances()
+EnvironmentalDistance::~EnvironmentalDistance()
 {
    if(_initialized){
       switch(ParDistType){
@@ -128,7 +128,7 @@ EnvironmentalDistances::~EnvironmentalDistances()
 //
 
 // Initialize the algorithm
-int EnvironmentalDistances::initialize(){
+int EnvironmentalDistance::initialize(){
 
    // Test the parameters' data types
    if(!getParameter(PARDIST,&ParDist)){
@@ -178,14 +178,14 @@ int EnvironmentalDistances::initialize(){
 }
 
 // Normalize all environmental data to [DATA_MIN,DATA_MAX]
-int EnvironmentalDistances::needNormalization(Scalar *min, Scalar *max) const{
+int EnvironmentalDistance::needNormalization(Scalar *min, Scalar *max) const{
   *min = DATA_MIN;
   *max = DATA_MAX;
   return 1;
 }
 
 // Returns the occurrence probability
-Scalar EnvironmentalDistances::getValue(const Sample& x) const{
+Scalar EnvironmentalDistance::getValue(const Sample& x) const{
    Scalar dist;
 
    //
@@ -252,7 +252,7 @@ Scalar EnvironmentalDistances::getValue(const Sample& x) const{
 }
 
 // Initialize covMatrix and covMatrixInv
-void EnvironmentalDistances::CalcCovarianceMatrix(){
+void EnvironmentalDistance::CalcCovarianceMatrix(){
    if(covMatrix!=NULL){ // Garbage collector
       delete covMatrix;
       delete covMatrixInv;
@@ -276,7 +276,7 @@ void EnvironmentalDistances::CalcCovarianceMatrix(){
 }
 
 // Calcs the distance between x and y using ParDistType
-inline Scalar EnvironmentalDistances::Distance(const Sample& x, const Sample& y) const{
+inline Scalar EnvironmentalDistance::Distance(const Sample& x, const Sample& y) const{
    Scalar dist;
    switch(ParDistType){
 
@@ -327,7 +327,7 @@ inline Scalar EnvironmentalDistances::Distance(const Sample& x, const Sample& y)
 }
 
 // Initialize the data structures of a distance type and normalize ParDist
-void EnvironmentalDistances::InitDistanceType(){
+void EnvironmentalDistance::InitDistanceType(){
    Scalar distMax;
 
    // Calcs the maximum distance (distMax)
@@ -402,4 +402,63 @@ void EnvironmentalDistances::InitDistanceType(){
    // Normalize ParDist for its limits
    ParDist = (ParDist - PARDISTMIN)/(PARDISTMAX - PARDISTMIN); // Now ParDist is in [0,1]
    ParDist *= distMax; // Now ParDist is in [0,distMax]
+}
+
+// Alg serializer
+void EnvironmentalDistance::_getConfiguration(ConfigurationPtr& config) const
+{
+   if (!_done ) return;
+
+   ConfigurationPtr model_config( new ConfigurationImpl("EnvironmentalDistance") );
+   config->addSubsection(model_config);
+
+   model_config->addNameValue("Metric",ParDistType);
+   model_config->addNameValue("ClosestPoints",ParPointQnt);
+   model_config->addNameValue("MaxDistance",ParDist);
+
+   ConfigurationPtr envpoints_config(new ConfigurationImpl("EnvironmentalReferences"));
+   model_config->addSubsection(envpoints_config);
+
+   for(int i=0; i<presencePoints.size(); i++) {
+
+      ConfigurationPtr point_config(new ConfigurationImpl("Reference"));
+      envpoints_config->addSubsection(point_config);
+
+      point_config->addNameValue("Value", presencePoints[i]);
+   }
+}
+
+// Alg deserializer
+void EnvironmentalDistance::_setConfiguration(const ConstConfigurationPtr& config)
+{
+   ConstConfigurationPtr model_config = config->getSubsection("EnvironmentalDistance",false);
+
+   if (!model_config) return;
+
+   // Metric
+   ParDistType = model_config->getAttributeAsInt("Metric", 1);
+
+   // "n" closest points
+   ParPointQnt = model_config->getAttributeAsInt("ClosestPoints", 1);
+
+   // Maximum distance
+   ParDist = model_config->getAttributeAsDouble("MaxDistance", 0.0);
+
+   // Environmental points
+   ConstConfigurationPtr envpoints_config = model_config->getSubsection("EnvironmentalReferences",false);
+
+   Configuration::subsection_list subs = envpoints_config->getAllSubsections();
+
+   Configuration::subsection_list::iterator begin = subs.begin();
+   Configuration::subsection_list::iterator end = subs.end();
+   for (; begin != end; ++begin) {
+
+      if ((*begin)->getName() != "Reference") continue;
+
+      Sample point = (*begin)->getAttributeAsSample("Value");
+
+      presencePoints.push_back(point);
+   }
+
+   _done = true;
 }
