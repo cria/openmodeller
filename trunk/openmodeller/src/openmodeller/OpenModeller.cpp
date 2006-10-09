@@ -388,7 +388,6 @@ OpenModeller::getValue(const ConstEnvironmentPtr& env, Coord x, Coord y)
   if ( val > 1.0 ) val = 1.0;
 
   return val;
-
 }
 
 
@@ -407,7 +406,7 @@ OpenModeller::getValue( Scalar const *environment_values )
 AreaStats *
 OpenModeller::getActualAreaStats()
 {
-  return _actualAreaStats;
+  return new AreaStats( _actualAreaStats );
 }
 
 
@@ -415,7 +414,7 @@ OpenModeller::getActualAreaStats()
 /******* getActualAreaStats *******/
 AreaStats * OpenModeller::getEstimatedAreaStats(double proportionAreaToSample)
 {
-  return getEstimatedAreaStats(_env, proportionAreaToSample);
+  return getEstimatedAreaStats( _env, proportionAreaToSample );
 }
 
 AreaStats * OpenModeller::getEstimatedAreaStats(const ConstEnvironmentPtr& env,
