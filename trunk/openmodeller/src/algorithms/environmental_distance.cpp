@@ -161,6 +161,10 @@ int EnvironmentalDistances::initialize(){
    for(int i = 0 ; i < presenceCount ; i++)
       presencePoints.push_back((*presences)[i]->environment());
 
+   // Set "n" closest points to the total number of presence points if parameter is 0
+   // and also force "n" closest points to be always less than the total number of points
+   if(ParPointQnt==0 || ParPointQnt>presenceCount) ParPointQnt = presenceCount;
+
    // Calcs the mean of all presence points
    averagePoint = presencePoints[0]; // There is at least one presence point
    for(int i = 1 ; i < layerCount ; i++)
