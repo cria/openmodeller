@@ -300,7 +300,7 @@ MinimumDistance::_getConfiguration( ConfigurationPtr& config ) const
   if (!_done )
     return;
 
-  ConfigurationPtr model_config( new ConfigurationImpl("MinimumDistanceModel") );
+  ConfigurationPtr model_config( new ConfigurationImpl("MinimumDistance") );
   config->addSubsection( model_config );
 
   model_config->addNameValue( "IsCategoricalLayer", _isCategorical );
@@ -321,7 +321,7 @@ MinimumDistance::_getConfiguration( ConfigurationPtr& config ) const
 void
 MinimumDistance::_setConfiguration( const ConstConfigurationPtr& config )
 {
-  ConstConfigurationPtr model_config = config->getSubsection( "MinimumDistanceModel",false );
+  ConstConfigurationPtr model_config = config->getSubsection( "MinimumDistance",false );
 
   if (!model_config)
     return;

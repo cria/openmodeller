@@ -285,7 +285,7 @@ DistanceToAverage::_getConfiguration( ConfigurationPtr& config ) const
   if (!_done )
     return;
 
-  ConfigurationPtr model_config( new ConfigurationImpl("DistanceToAverageModel") );
+  ConfigurationPtr model_config( new ConfigurationImpl("DistanceToAverage") );
   config->addSubsection( model_config );
 
   model_config->addNameValue( "Distance", _dist );
@@ -295,7 +295,7 @@ DistanceToAverage::_getConfiguration( ConfigurationPtr& config ) const
 void
 DistanceToAverage::_setConfiguration( const ConstConfigurationPtr& config )
 {
-  ConstConfigurationPtr model_config = config->getSubsection( "DistanceToAverageModel",false );
+  ConstConfigurationPtr model_config = config->getSubsection( "DistanceToAverage",false );
 
   if (!model_config)
     return;

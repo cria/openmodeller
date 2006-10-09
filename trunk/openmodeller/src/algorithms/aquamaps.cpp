@@ -662,7 +662,7 @@ AquaMaps::_getConfiguration( ConfigurationPtr& config ) const
     return;
   }
 
-  ConfigurationPtr model_config( new ConfigurationImpl( "AquaMapsModel" ) );
+  ConfigurationPtr model_config( new ConfigurationImpl( "AquaMaps" ) );
   config->addSubsection( model_config );
 
   model_config->addNameValue( "Pelagic", _pelagic );
@@ -676,7 +676,7 @@ AquaMaps::_getConfiguration( ConfigurationPtr& config ) const
 void
 AquaMaps::_setConfiguration( const ConstConfigurationPtr& config )
 {
-  ConstConfigurationPtr model_config = config->getSubsection( "AquaMapsModel", false );
+  ConstConfigurationPtr model_config = config->getSubsection( "AquaMaps", false );
 
   if ( ! model_config ) {
 

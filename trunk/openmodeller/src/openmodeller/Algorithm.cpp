@@ -73,7 +73,6 @@ AlgorithmImpl::~AlgorithmImpl()
 ConfigurationPtr
 AlgorithmImpl::getConfiguration() const
 {
-
   ConfigurationPtr config( new ConfigurationImpl("Algorithm") );
 
   ConfigurationPtr meta_config( new ConfigurationImpl("AlgorithmMetadata") );
@@ -95,6 +94,7 @@ AlgorithmImpl::getConfiguration() const
   ConfigurationPtr param_config( new ConfigurationImpl("AlgorithmParameters") );
   ParamSetType::const_iterator p = _param.begin();
   for( ; p != _param.end() ; ++p ) {
+
     ConfigurationPtr cfg( new ConfigurationImpl("Param") );
     param_config->addSubsection( cfg );
     cfg->addNameValue( "Id", p->first );
@@ -104,6 +104,7 @@ AlgorithmImpl::getConfiguration() const
   config->addSubsection( param_config );
 
   if ( _has_norm_params ) {
+
     ConfigurationPtr norm_config( new ConfigurationImpl("NormalizationParameters") );
   
     norm_config->addNameValue( "Offsets", _norm_offsets );
@@ -112,10 +113,14 @@ AlgorithmImpl::getConfiguration() const
     config->addSubsection( norm_config );
   }
 
-  _getConfiguration( config );
+  // Wrapper model element
+  ConfigurationPtr model_config( new ConfigurationImpl("Model") );
+
+  _getConfiguration( model_config );
+
+  config->addSubsection( model_config );
 
   return config;
-  
 }
 
 void
@@ -128,7 +133,9 @@ AlgorithmImpl::setConfiguration( const ConstConfigurationPtr &config )
   _param.clear();
 
   Configuration::subsection_list::const_iterator nv;
+
   for ( nv = params.begin(); nv != params.end(); ) {
+
     string id = (*nv)->getAttribute( "Id" );
     string value = (*nv)->getAttribute( "Value" );
     _param.insert( ParamSetValueType( id, value ) );
@@ -136,6 +143,7 @@ AlgorithmImpl::setConfiguration( const ConstConfigurationPtr &config )
   }
 
   try { 
+
     ConstConfigurationPtr norm_config = config->getSubsection( "NormalizationParameters" );
 
     _has_norm_params = true;
@@ -144,11 +152,22 @@ AlgorithmImpl::setConfiguration( const ConstConfigurationPtr &config )
     
   }
   catch( SubsectionNotFound& e ) {
+
     _has_norm_params = false;
   }
 
-  _setConfiguration( config );
+  // Get wrapper model element
+  try { 
 
+    ConstConfigurationPtr model_config = config->getSubsection( "Model", false );
+
+    _setConfiguration( model_config );
+  }
+  catch( SubsectionNotFound& e ) {
+
+    // Try getting directly from config object (backwards compatibility)
+    _setConfiguration( config );
+  }
 }
 
 /*******************/
@@ -157,7 +176,6 @@ void
 AlgorithmImpl::setSampler( const SamplerPtr& samp )
 {
   _samp = samp;
-
 }
 
 /**********************/
@@ -165,7 +183,6 @@ AlgorithmImpl::setSampler( const SamplerPtr& samp )
 void
 AlgorithmImpl::setParameters( int nparam, AlgParameter const *param )
 {
-
   _param.clear();
 
   // Copy 'param' to '_alg_param'.
@@ -174,7 +191,6 @@ AlgorithmImpl::setParameters( int nparam, AlgParameter const *param )
     _param.insert( ParamSetValueType( param->id(), param->value() ) );
     ++param;
   }
-
 }
 
 void
@@ -189,7 +205,6 @@ AlgorithmImpl::setParameters( const ParamSetType &params )
 int
 AlgorithmImpl::getParameter( string const &id, string *value )
 {
-
   ParamSetType::const_iterator pos = _param.find( id );
 
   if ( pos == _param.end() ) {

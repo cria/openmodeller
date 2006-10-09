@@ -708,7 +708,7 @@ Csm::_getConfiguration( ConfigurationPtr& config ) const
   if (!_done )
     return;
 
-  ConfigurationPtr model_config( new ConfigurationImpl("CsmModel") );
+  ConfigurationPtr model_config( new ConfigurationImpl("Csm") );
   config->addSubsection( model_config );
 
   // _gsl_avg_vector
@@ -752,7 +752,7 @@ Csm::_getConfiguration( ConfigurationPtr& config ) const
 void
 Csm::_setConfiguration( const ConstConfigurationPtr& config )
 {
-  ConstConfigurationPtr model_config = config->getSubsection( "CsmModel",false );
+  ConstConfigurationPtr model_config = config->getSubsection( "Csm",false );
 
   if (!model_config)
     return;
