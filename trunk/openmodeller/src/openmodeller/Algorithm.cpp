@@ -159,7 +159,7 @@ AlgorithmImpl::setConfiguration( const ConstConfigurationPtr &config )
   // Get wrapper model element
   try { 
 
-    ConstConfigurationPtr model_config = config->getSubsection( "Model", false );
+    ConstConfigurationPtr model_config = config->getSubsection( "Model" );
 
     _setConfiguration( model_config );
   }
