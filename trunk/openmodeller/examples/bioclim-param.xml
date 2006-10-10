@@ -279,15 +279,11 @@
                 />
         </Presence>
     </Sampler>
-    <Algorithm>
-        <AlgorithmMetadata
-            Id='Bioclim'
-            Name='Bioclim'>
-        </AlgorithmMetadata>
-        <AlgorithmParameters>
-            <Param
+    <Algorithm Id='Bioclim' Version='0.2'>
+        <Parameters>
+            <Parameter
                 Id='StandardDeviationCutoff'
                 Value='0.05'/>
-        </AlgorithmParameters>
+        </Parameters>
     </Algorithm>
 </OpenModeller>
