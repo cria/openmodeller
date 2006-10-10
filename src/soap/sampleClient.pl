@@ -519,11 +519,11 @@ sub create_model
 
     ### Points
 
-    my $wkt = "GEOGCS['1924 ellipsoid',DATUM['Not_specified',SPHEROID['International 1924',6378388,297,AUTHORITY['EPSG','7022']],AUTHORITY['EPSG','6022']],PRIMEM['Greenwich',0,AUTHORITY['EPSG','8901']],UNIT['degree',0.0174532925199433,AUTHORITY['EPSG','9108']],AUTHORITY['EPSG','4022']]";
-    
+    my $wkt = "<CoordinateSystem>GEOGCS['1924 ellipsoid',DATUM['Not_specified',SPHEROID['International 1924',6378388,297,AUTHORITY['EPSG','7022']],AUTHORITY['EPSG','6022']],PRIMEM['Greenwich',0,AUTHORITY['EPSG','8901']],UNIT['degree',0.0174532925199433,AUTHORITY['EPSG','9108']],AUTHORITY['EPSG','4022']]</CoordinateSystem>";
+
+    # Encode coord system directly in XML to avoid automatic xsi:types for the content
     my $coordsystem = SOAP::Data
-	-> name( 'CoordinateSystem' )
-	-> value( \SOAP::Data->value( $wkt ) );
+	-> type( 'xml' => $wkt );
 
     my @presencePoints = ( {'Y' => -11.15, 'X' => -68.85},
 			   {'Y' => -14.32, 'X' => -67.38},
@@ -533,13 +533,11 @@ sub create_model
 
     @presencePoints = map( SOAP::Data->name('Point')->attr(\%{$_}), @presencePoints );
 
-#    my $presences = SOAP::Data
-#	-> name('Presence')
-#        -> value( \SOAP::Data->value( $coordsystem, @presencePoints ) );
-
     my $presences = SOAP::Data
 	-> name('Presence')
-        -> value( \SOAP::Data->value( @presencePoints ) );
+	-> attr( {'Label'=>'Test species'} )
+        -> value( \SOAP::Data->value( $coordsystem, 
+                                      @presencePoints ) );
     
     my @absencePoints = ( {'Y' => -47.07, 'X' => -22.82},
 			  {'Y' => -49.75, 'X' => -12.70},
@@ -551,7 +549,9 @@ sub create_model
     
     my $absences = SOAP::Data
 	-> name('Absence')
-        -> value( \SOAP::Data->value( $coordsystem, @absencePoints ) );
+	-> attr( {'Label'=>'Test species'} )
+        -> value( \SOAP::Data->value( $coordsystem, 
+                                      @absencePoints ) );
 
 #    my $sampler = SOAP::Data
 #	-> name( 'Sampler' )
