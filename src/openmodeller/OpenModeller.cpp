@@ -462,7 +462,7 @@ ConfigurationPtr
 OpenModeller::getConfiguration() const
 {
 
-  ConfigurationPtr config( new ConfigurationImpl("OpenModeller"));
+  ConfigurationPtr config( new ConfigurationImpl("ModelResult"));
 
   ConfigurationPtr sampler_config( _samp->getConfiguration() );
 
