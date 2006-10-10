@@ -4,6 +4,8 @@ Release 0.4 (to be defined)
         * Integration with TerraLib.
         * Included new algorithm called AquaMaps for marine species.
 	* Removed "didactic algorithm" bioclim distance.
+	* Included new Environmental Distance algorithm accepting different metrics.
+	* Changed the default output map file type to ERDAS Imagine ".img".
 
 Release 0.3.4 (2005-12-14)
 --------------------------
