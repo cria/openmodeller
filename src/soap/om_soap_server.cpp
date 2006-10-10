@@ -44,7 +44,7 @@ using namespace std;
 #include "gdal_priv.h"
 
 #define OMWS_BACKLOG (100) // Max. request backlog 
-#define OMWS_TEMPLATE_FILE_NAME "XXXXXX"
+#define OMWS_MODEL_REQUEST_TEMPLATE_FILE_NAME "model_req.XXXXXX"
 #define OMWS_LAYERS_DIRECTORY "/home/renato/projects/openmodeller/examples/layers/"
 #define OMWS_LAYERS_LABEL "Remote layers"
 #define OMWS_MIN *60
@@ -308,7 +308,7 @@ omws__createModel( struct soap *soap, XML om__ModelParameters, xsd__string *tick
     fileName.append( "/" );
   }
 
-  fileName.append( OMWS_TEMPLATE_FILE_NAME );
+  fileName.append( OMWS_MODEL_REQUEST_TEMPLATE_FILE_NAME );
 
   char *tempFileName = (char*)soap_malloc( soap, fileName.length() +1 );
 
@@ -339,14 +339,9 @@ omws__createModel( struct soap *soap, XML om__ModelParameters, xsd__string *tick
   }
 
   // Put content of model request there
-  size_t xmlLen = wcslen( om__ModelParameters );
+  if ( fputws( om__ModelParameters, file ) < 0 ) {
 
-  for ( int i = 0; i < xmlLen; i++ ) {
-
-    if ( fputws( om__ModelParameters, file ) < 0 ) {
-
-      return soap_receiver_fault( soap, "Could not process request", NULL );
-    }
+    return soap_receiver_fault( soap, "Could not process request", NULL );
   }
 
   // Close wrapper element
@@ -360,7 +355,7 @@ omws__createModel( struct soap *soap, XML om__ModelParameters, xsd__string *tick
   fclose( file );
 
   // Get the ticket value
-  *ticket = strrchr( tempFileName, '/' ) + 1;
+  *ticket = strrchr( tempFileName, '.' ) + 1;
 
   return SOAP_OK;
 }
