@@ -75,8 +75,10 @@ my %options = ( 0 => 'Ping service',
 		1 => 'Show available algorithms', 
 		2 => 'Show available layers', 
 		3 => 'Create model', 
-		4 => 'Get distribution map', 
-		5 => 'Exit' );
+		4 => 'Get model progress', 
+		5 => 'Get model', 
+		6 => 'Get distribution map', 
+		7 => 'Exit' );
 
 my $option = -1;
 
@@ -103,6 +105,14 @@ while ( $option != $exit_option or not exists( $options{$option-1} ) )
 	$option = ( create_model() ) ? -1 : $exit_option;
     }
     elsif ($option == 5)
+    {
+	$option = ( get_model_progress() ) ? -1 : $exit_option;
+    }
+    elsif ($option == 6)
+    {
+	$option = ( get_model() ) ? -1 : $exit_option;
+    }
+    elsif ($option == 7)
     {
 	$option = ( get_distribution_map() ) ? -1 : $exit_option;
     }
@@ -188,7 +198,7 @@ sub prepare_soap
 
         $soap = SOAP::Lite
                           #-> service('http://openmodeller.sf.net/ns/1.0/openmodeller.wsdl')
-		           -> uri( $omws_uri )
+		           -> ns( $omws_uri )
 		           -> proxy( $server )
 		           -> encoding( 'iso-8859-1' );
     }
@@ -585,6 +595,98 @@ sub create_model
     return 1;
 }
 
+#######################
+#  Get model progress # 
+#######################
+sub get_model_progress
+{
+    prepare_soap();
+
+    my $method = SOAP::Data
+	-> name( 'getModelProgress' )
+        -> encodingStyle( 'http://xml.apache.org/xml-soap/literalxml' )
+	-> prefix( 'omws' )
+        -> uri( $omws_uri );
+
+    ### Get ticket
+
+    my $ticket = get_ticket_from_user();
+
+    if ( ! $ticket )
+    {
+	return 0;
+    }
+
+    print "Requesting model progress... ";
+
+    my $soap_ticket = SOAP::Data
+	-> name( 'ticket' )
+	-> type( 'string' )
+	-> value( $ticket );
+    
+    my $response = $soap->call( $method => $soap_ticket );
+
+    unless ( $response->fault )
+    { 
+	print "Progress: ".$response->result ."%\n";
+    }
+    else
+    {
+	print "Ops, found some problems:\n";
+	print join ', ', $response->faultcode, $response->faultstring; 
+	print "\n";
+	return 0;
+    }
+
+    return 1;
+}
+
+##############
+#  Get model # 
+##############
+sub get_model
+{
+    prepare_soap();
+
+    my $method = SOAP::Data
+	-> name( 'getModel' )
+        -> encodingStyle( 'http://xml.apache.org/xml-soap/literalxml' )
+	-> prefix( 'omws' )
+        -> uri( $omws_uri );
+
+    ### Get ticket
+
+    my $ticket = get_ticket_from_user();
+
+    if ( ! $ticket )
+    {
+	return 0;
+    }
+
+    print "Requesting model... ";
+
+    my $soap_ticket = SOAP::Data
+	-> name( 'ticket' )
+	-> type( 'string' )
+	-> value( $ticket );
+    
+    my $response = $soap->call( $method => $soap_ticket );
+
+    unless ( $response->fault )
+    { 
+	print "Progress: ".$response->result ."%\n";
+    }
+    else
+    {
+	print "Ops, found some problems:\n";
+	print join ', ', $response->faultcode, $response->faultstring; 
+	print "\n";
+	return 0;
+    }
+
+    return 1;
+}
+
 #########################################
 #  Get algorithm from console interface # 
 #########################################
@@ -664,6 +766,19 @@ sub get_mask_from_user
     chomp( $choice );
 
     return $choice;
+}
+
+######################################
+#  Get ticket from console interface # 
+######################################
+sub get_ticket_from_user
+{
+    print "\nTicket number: ";
+
+    my $value = <STDIN>;
+    chomp($value);
+
+    return $value;
 }
 
 #########################

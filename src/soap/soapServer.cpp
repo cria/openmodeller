@@ -6,7 +6,7 @@
 */
 #include "soapH.h"
 
-SOAP_SOURCE_STAMP("@(#) soapServer.cpp ver 2.7.6d 2006-10-09 22:13:06 GMT")
+SOAP_SOURCE_STAMP("@(#) soapServer.cpp ver 2.7.6d 2006-10-10 23:02:11 GMT")
 
 
 SOAP_FMAC5 int SOAP_FMAC6 soap_serve(struct soap *soap)
@@ -79,6 +79,10 @@ SOAP_FMAC5 int SOAP_FMAC6 soap_serve_request(struct soap *soap)
 		return soap_serve_omws__getLayers(soap);
 	if (!soap_match_tag(soap, soap->tag, "omws:createModel"))
 		return soap_serve_omws__createModel(soap);
+	if (!soap_match_tag(soap, soap->tag, "omws:getModelProgress"))
+		return soap_serve_omws__getModelProgress(soap);
+	if (!soap_match_tag(soap, soap->tag, "omws:getModel"))
+		return soap_serve_omws__getModel(soap);
 	if (!soap_match_tag(soap, soap->tag, "omws:getDistributionMap"))
 		return soap_serve_omws__getDistributionMap(soap);
 	return soap->error = SOAP_NO_METHOD;
@@ -246,6 +250,87 @@ SOAP_FMAC5 int SOAP_FMAC6 soap_serve_omws__createModel(struct soap *soap)
 	 || soap_putheader(soap)
 	 || soap_body_begin_out(soap)
 	 || soap_put_omws__createModelResponse(soap, &soap_tmp_omws__createModelResponse, "omws:createModelResponse", "")
+	 || soap_body_end_out(soap)
+	 || soap_envelope_end_out(soap)
+	 || soap_end_send(soap))
+		return soap->error;
+	return soap_closesock(soap);
+}
+
+SOAP_FMAC5 int SOAP_FMAC6 soap_serve_omws__getModelProgress(struct soap *soap)
+{	struct omws__getModelProgress soap_tmp_omws__getModelProgress;
+	struct omws__getModelProgressResponse soap_tmp_omws__getModelProgressResponse;
+	soap_default_omws__getModelProgressResponse(soap, &soap_tmp_omws__getModelProgressResponse);
+	soap_default_omws__getModelProgress(soap, &soap_tmp_omws__getModelProgress);
+	soap->encodingStyle = NULL;
+	if (!soap_get_omws__getModelProgress(soap, &soap_tmp_omws__getModelProgress, "omws:getModelProgress", NULL))
+		return soap->error;
+	if (soap_body_end_in(soap)
+	 || soap_envelope_end_in(soap)
+	 || soap_end_recv(soap))
+		return soap->error;
+	soap->error = omws__getModelProgress(soap, soap_tmp_omws__getModelProgress.ticket, soap_tmp_omws__getModelProgressResponse.progress);
+	if (soap->error)
+		return soap->error;
+	soap_serializeheader(soap);
+	soap_serialize_omws__getModelProgressResponse(soap, &soap_tmp_omws__getModelProgressResponse);
+	if (soap_begin_count(soap))
+		return soap->error;
+	if (soap->mode & SOAP_IO_LENGTH)
+	{	if (soap_envelope_begin_out(soap)
+		 || soap_putheader(soap)
+		 || soap_body_begin_out(soap)
+		 || soap_put_omws__getModelProgressResponse(soap, &soap_tmp_omws__getModelProgressResponse, "omws:getModelProgressResponse", "")
+		 || soap_body_end_out(soap)
+		 || soap_envelope_end_out(soap))
+			 return soap->error;
+	};
+	if (soap_end_count(soap)
+	 || soap_response(soap, SOAP_OK)
+	 || soap_envelope_begin_out(soap)
+	 || soap_putheader(soap)
+	 || soap_body_begin_out(soap)
+	 || soap_put_omws__getModelProgressResponse(soap, &soap_tmp_omws__getModelProgressResponse, "omws:getModelProgressResponse", "")
+	 || soap_body_end_out(soap)
+	 || soap_envelope_end_out(soap)
+	 || soap_end_send(soap))
+		return soap->error;
+	return soap_closesock(soap);
+}
+
+SOAP_FMAC5 int SOAP_FMAC6 soap_serve_omws__getModel(struct soap *soap)
+{	struct omws__getModel soap_tmp_omws__getModel;
+	wchar_t * soap_tmp_XML;
+	soap_tmp_XML = NULL;
+	soap_default_omws__getModel(soap, &soap_tmp_omws__getModel);
+	soap->encodingStyle = NULL;
+	if (!soap_get_omws__getModel(soap, &soap_tmp_omws__getModel, "omws:getModel", NULL))
+		return soap->error;
+	if (soap_body_end_in(soap)
+	 || soap_envelope_end_in(soap)
+	 || soap_end_recv(soap))
+		return soap->error;
+	soap->error = omws__getModel(soap, soap_tmp_omws__getModel.ticket, soap_tmp_XML);
+	if (soap->error)
+		return soap->error;
+	soap_serializeheader(soap);
+	if (soap_begin_count(soap))
+		return soap->error;
+	if (soap->mode & SOAP_IO_LENGTH)
+	{	if (soap_envelope_begin_out(soap)
+		 || soap_putheader(soap)
+		 || soap_body_begin_out(soap)
+		 || soap_outwliteral(soap, "om:ModelResult", &soap_tmp_XML)
+		 || soap_body_end_out(soap)
+		 || soap_envelope_end_out(soap))
+			 return soap->error;
+	};
+	if (soap_end_count(soap)
+	 || soap_response(soap, SOAP_OK)
+	 || soap_envelope_begin_out(soap)
+	 || soap_putheader(soap)
+	 || soap_body_begin_out(soap)
+	 || soap_outwliteral(soap, "om:ModelResult", &soap_tmp_XML)
 	 || soap_body_end_out(soap)
 	 || soap_envelope_end_out(soap)
 	 || soap_end_send(soap))

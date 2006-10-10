@@ -58,6 +58,20 @@ int omws__getLayers(void *_, XML &om__AvailableLayers);
 //gsoap om service method-documentation: createModel Requests the creation of a spatial distribution model
 int omws__createModel(XML om__ModelParameters, xsd__string *ticket); 
 
+/** Return the progress of a model creation job given a ticket.
+ * @param ticket Job identification.
+ * @return standard gSOAP integer code
+ */
+//gsoap om service method-documentation: getModel Retrieves a serialized model given a ticket.
+int omws__getModelProgress(xsd__string ticket, xsd__int &progress);
+
+/** Return a serialized model given a ticket.
+ * @param ticket Job identification.
+ * @return standard gSOAP integer code
+ */
+//gsoap om service method-documentation: getModel Retrieves a serialized model given a ticket.
+int omws__getModel(xsd__string ticket, XML &om__ModelEnvelope);
+
 
 class xsd__base64Binary 
 { 
@@ -75,7 +89,6 @@ class xsd__base64Binary
  * @param ticket Job identification.
  * @return standard gSOAP integer code
  */
-//gsoap om service method-action: Return the distribution map as an attachment
 //gsoap om service method-documentation: Given a ticket, return the corresponding distribution map.
 int omws__getDistributionMap(xsd__string ticket, xsd__base64Binary &file);
 

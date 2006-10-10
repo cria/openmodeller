@@ -6,7 +6,7 @@
 */
 #include "soapH.h"
 
-SOAP_SOURCE_STAMP("@(#) soapClient.cpp ver 2.7.6d 2006-10-09 22:13:06 GMT")
+SOAP_SOURCE_STAMP("@(#) soapClient.cpp ver 2.7.6d 2006-10-10 23:02:11 GMT")
 
 
 SOAP_FMAC5 int SOAP_FMAC6 soap_call_omws__ping(struct soap *soap, const char *soap_endpoint, const char *soap_action, void *_, int *status)
@@ -212,6 +212,108 @@ SOAP_FMAC5 int SOAP_FMAC6 soap_call_omws__createModel(struct soap *soap, const c
 		return soap_closesock(soap);
 	if (ticket && soap_tmp_omws__createModelResponse->ticket)
 		*ticket = *soap_tmp_omws__createModelResponse->ticket;
+	return soap_closesock(soap);
+}
+
+SOAP_FMAC5 int SOAP_FMAC6 soap_call_omws__getModelProgress(struct soap *soap, const char *soap_endpoint, const char *soap_action, char *ticket, int &progress)
+{	struct omws__getModelProgress soap_tmp_omws__getModelProgress;
+	struct omws__getModelProgressResponse *soap_tmp_omws__getModelProgressResponse;
+	if (!soap_endpoint)
+		soap_endpoint = "http://localhost:8085";
+	soap->encodingStyle = NULL;
+	soap_tmp_omws__getModelProgress.ticket = ticket;
+	soap_begin(soap);
+	soap_serializeheader(soap);
+	soap_serialize_omws__getModelProgress(soap, &soap_tmp_omws__getModelProgress);
+	if (soap_begin_count(soap))
+		return soap->error;
+	if (soap->mode & SOAP_IO_LENGTH)
+	{	if (soap_envelope_begin_out(soap)
+		 || soap_putheader(soap)
+		 || soap_body_begin_out(soap)
+		 || soap_put_omws__getModelProgress(soap, &soap_tmp_omws__getModelProgress, "omws:getModelProgress", "")
+		 || soap_body_end_out(soap)
+		 || soap_envelope_end_out(soap))
+			 return soap->error;
+	}
+	if (soap_end_count(soap))
+		return soap->error;
+	if (soap_connect(soap, soap_endpoint, soap_action)
+	 || soap_envelope_begin_out(soap)
+	 || soap_putheader(soap)
+	 || soap_body_begin_out(soap)
+	 || soap_put_omws__getModelProgress(soap, &soap_tmp_omws__getModelProgress, "omws:getModelProgress", "")
+	 || soap_body_end_out(soap)
+	 || soap_envelope_end_out(soap)
+	 || soap_end_send(soap))
+		return soap_closesock(soap);
+	soap_default_xsd__int(soap, &progress);
+	if (soap_begin_recv(soap)
+	 || soap_envelope_begin_in(soap)
+	 || soap_recv_header(soap)
+	 || soap_body_begin_in(soap))
+		return soap_closesock(soap);
+	soap_tmp_omws__getModelProgressResponse = soap_get_omws__getModelProgressResponse(soap, NULL, "omws:getModelProgressResponse", "");
+	if (soap->error)
+	{	if (soap->error == SOAP_TAG_MISMATCH && soap->level == 2)
+			return soap_recv_fault(soap);
+		return soap_closesock(soap);
+	}
+	if (soap_body_end_in(soap)
+	 || soap_envelope_end_in(soap)
+	 || soap_end_recv(soap))
+		return soap_closesock(soap);
+	progress = soap_tmp_omws__getModelProgressResponse->progress;
+	return soap_closesock(soap);
+}
+
+SOAP_FMAC5 int SOAP_FMAC6 soap_call_omws__getModel(struct soap *soap, const char *soap_endpoint, const char *soap_action, char *ticket, wchar_t *&om__ModelResult)
+{	struct omws__getModel soap_tmp_omws__getModel;
+	if (!soap_endpoint)
+		soap_endpoint = "http://localhost:8085";
+	soap->encodingStyle = NULL;
+	soap_tmp_omws__getModel.ticket = ticket;
+	soap_begin(soap);
+	soap_serializeheader(soap);
+	soap_serialize_omws__getModel(soap, &soap_tmp_omws__getModel);
+	if (soap_begin_count(soap))
+		return soap->error;
+	if (soap->mode & SOAP_IO_LENGTH)
+	{	if (soap_envelope_begin_out(soap)
+		 || soap_putheader(soap)
+		 || soap_body_begin_out(soap)
+		 || soap_put_omws__getModel(soap, &soap_tmp_omws__getModel, "omws:getModel", "")
+		 || soap_body_end_out(soap)
+		 || soap_envelope_end_out(soap))
+			 return soap->error;
+	}
+	if (soap_end_count(soap))
+		return soap->error;
+	if (soap_connect(soap, soap_endpoint, soap_action)
+	 || soap_envelope_begin_out(soap)
+	 || soap_putheader(soap)
+	 || soap_body_begin_out(soap)
+	 || soap_put_omws__getModel(soap, &soap_tmp_omws__getModel, "omws:getModel", "")
+	 || soap_body_end_out(soap)
+	 || soap_envelope_end_out(soap)
+	 || soap_end_send(soap))
+		return soap_closesock(soap);
+	om__ModelResult = NULL;
+	if (soap_begin_recv(soap)
+	 || soap_envelope_begin_in(soap)
+	 || soap_recv_header(soap)
+	 || soap_body_begin_in(soap))
+		return soap_closesock(soap);
+	soap_inwliteral(soap, NULL, &om__ModelResult);
+	if (soap->error)
+	{	if (soap->error == SOAP_TAG_MISMATCH && soap->level == 2)
+			return soap_recv_fault(soap);
+		return soap_closesock(soap);
+	}
+	if (soap_body_end_in(soap)
+	 || soap_envelope_end_in(soap)
+	 || soap_end_recv(soap))
+		return soap_closesock(soap);
 	return soap_closesock(soap);
 }
 

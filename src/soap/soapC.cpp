@@ -7,7 +7,7 @@
 
 #include "soapH.h"
 
-SOAP_SOURCE_STAMP("@(#) soapC.cpp ver 2.7.6d 2006-10-09 22:13:06 GMT")
+SOAP_SOURCE_STAMP("@(#) soapC.cpp ver 2.7.6d 2006-10-10 23:02:11 GMT")
 
 
 #ifndef WITH_NOGLOBAL
@@ -163,6 +163,12 @@ SOAP_FMAC3 void * SOAP_FMAC4 soap_getelement(struct soap *soap, int *type)
 		return soap_in_omws__getDistributionMap(soap, NULL, NULL, "omws:getDistributionMap");
 	case SOAP_TYPE_omws__getDistributionMapResponse:
 		return soap_in_omws__getDistributionMapResponse(soap, NULL, NULL, "omws:getDistributionMapResponse");
+	case SOAP_TYPE_omws__getModel:
+		return soap_in_omws__getModel(soap, NULL, NULL, "omws:getModel");
+	case SOAP_TYPE_omws__getModelProgress:
+		return soap_in_omws__getModelProgress(soap, NULL, NULL, "omws:getModelProgress");
+	case SOAP_TYPE_omws__getModelProgressResponse:
+		return soap_in_omws__getModelProgressResponse(soap, NULL, NULL, "omws:getModelProgressResponse");
 	case SOAP_TYPE_omws__createModel:
 		return soap_in_omws__createModel(soap, NULL, NULL, "omws:createModel");
 	case SOAP_TYPE_omws__createModelResponse:
@@ -250,6 +256,18 @@ SOAP_FMAC3 void * SOAP_FMAC4 soap_getelement(struct soap *soap, int *type)
 		if (!soap_match_tag(soap, t, "omws:getDistributionMapResponse"))
 		{	*type = SOAP_TYPE_omws__getDistributionMapResponse;
 			return soap_in_omws__getDistributionMapResponse(soap, NULL, NULL, NULL);
+		}
+		if (!soap_match_tag(soap, t, "omws:getModel"))
+		{	*type = SOAP_TYPE_omws__getModel;
+			return soap_in_omws__getModel(soap, NULL, NULL, NULL);
+		}
+		if (!soap_match_tag(soap, t, "omws:getModelProgress"))
+		{	*type = SOAP_TYPE_omws__getModelProgress;
+			return soap_in_omws__getModelProgress(soap, NULL, NULL, NULL);
+		}
+		if (!soap_match_tag(soap, t, "omws:getModelProgressResponse"))
+		{	*type = SOAP_TYPE_omws__getModelProgressResponse;
+			return soap_in_omws__getModelProgressResponse(soap, NULL, NULL, NULL);
 		}
 		if (!soap_match_tag(soap, t, "omws:createModel"))
 		{	*type = SOAP_TYPE_omws__createModel;
@@ -370,6 +388,12 @@ SOAP_FMAC3 int SOAP_FMAC4 soap_putelement(struct soap *soap, const void *ptr, co
 		return soap_out_omws__getDistributionMap(soap, tag, id, (const struct omws__getDistributionMap *)ptr, "omws:getDistributionMap");
 	case SOAP_TYPE_omws__getDistributionMapResponse:
 		return soap_out_omws__getDistributionMapResponse(soap, tag, id, (const struct omws__getDistributionMapResponse *)ptr, "omws:getDistributionMapResponse");
+	case SOAP_TYPE_omws__getModel:
+		return soap_out_omws__getModel(soap, tag, id, (const struct omws__getModel *)ptr, "omws:getModel");
+	case SOAP_TYPE_omws__getModelProgress:
+		return soap_out_omws__getModelProgress(soap, tag, id, (const struct omws__getModelProgress *)ptr, "omws:getModelProgress");
+	case SOAP_TYPE_omws__getModelProgressResponse:
+		return soap_out_omws__getModelProgressResponse(soap, tag, id, (const struct omws__getModelProgressResponse *)ptr, "omws:getModelProgressResponse");
 	case SOAP_TYPE_omws__createModel:
 		return soap_out_omws__createModel(soap, tag, id, (const struct omws__createModel *)ptr, "omws:createModel");
 	case SOAP_TYPE_omws__createModelResponse:
@@ -420,6 +444,15 @@ SOAP_FMAC3 void SOAP_FMAC4 soap_markelement(struct soap *soap, const void *ptr, 
 		break;
 	case SOAP_TYPE_omws__getDistributionMapResponse:
 		soap_serialize_omws__getDistributionMapResponse(soap, (const struct omws__getDistributionMapResponse *)ptr);
+		break;
+	case SOAP_TYPE_omws__getModel:
+		soap_serialize_omws__getModel(soap, (const struct omws__getModel *)ptr);
+		break;
+	case SOAP_TYPE_omws__getModelProgress:
+		soap_serialize_omws__getModelProgress(soap, (const struct omws__getModelProgress *)ptr);
+		break;
+	case SOAP_TYPE_omws__getModelProgressResponse:
+		soap_serialize_omws__getModelProgressResponse(soap, (const struct omws__getModelProgressResponse *)ptr);
 		break;
 	case SOAP_TYPE_omws__createModel:
 		soap_serialize_omws__createModel(soap, (const struct omws__createModel *)ptr);
@@ -1437,6 +1470,236 @@ SOAP_FMAC5 void SOAP_FMAC6 soap_copy_omws__getDistributionMapResponse(struct soa
 {
 	DBGLOG(TEST, SOAP_MESSAGE(fdebug, "Copying struct omws__getDistributionMapResponse %p -> %p\n", q, p));
 	*(struct omws__getDistributionMapResponse*)p = *(struct omws__getDistributionMapResponse*)q;
+}
+
+SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_omws__getModel(struct soap *soap, const struct omws__getModel *a)
+{
+	(void)soap; (void)a; /* appease -Wall -Werror */
+	soap_serialize_xsd__string(soap, &a->ticket);
+}
+
+SOAP_FMAC3 void SOAP_FMAC4 soap_default_omws__getModel(struct soap *soap, struct omws__getModel *a)
+{
+	(void)soap; (void)a; /* appease -Wall -Werror */
+	soap_default_xsd__string(soap, &a->ticket);
+}
+
+SOAP_FMAC3 int SOAP_FMAC4 soap_put_omws__getModel(struct soap *soap, const struct omws__getModel *a, const char *tag, const char *type)
+{
+	register int id = soap_embed(soap, (void*)a, NULL, 0, tag, SOAP_TYPE_omws__getModel);
+	if (soap_out_omws__getModel(soap, tag, id, a, type))
+		return soap->error;
+	return soap_putindependent(soap);
+}
+
+SOAP_FMAC3 int SOAP_FMAC4 soap_out_omws__getModel(struct soap *soap, const char *tag, int id, const struct omws__getModel *a, const char *type)
+{
+	soap_element_begin_out(soap, tag, soap_embedded_id(soap, id, a, SOAP_TYPE_omws__getModel), type);
+	soap_out_xsd__string(soap, "ticket", -1, &a->ticket, "");
+	soap_element_end_out(soap, tag);
+	return SOAP_OK;
+}
+
+SOAP_FMAC3 struct omws__getModel * SOAP_FMAC4 soap_get_omws__getModel(struct soap *soap, struct omws__getModel *p, const char *tag, const char *type)
+{
+	if ((p = soap_in_omws__getModel(soap, tag, p, type)))
+		soap_getindependent(soap);
+	return p;
+}
+
+SOAP_FMAC3 struct omws__getModel * SOAP_FMAC4 soap_in_omws__getModel(struct soap *soap, const char *tag, struct omws__getModel *a, const char *type)
+{
+	short soap_flag_ticket = 1;
+	if (soap_element_begin_in(soap, tag, 0))
+		return NULL;
+	if (*soap->type && soap_match_tag(soap, soap->type, type))
+	{	soap->error = SOAP_TYPE;
+		return NULL;
+	}
+	a = (struct omws__getModel *)soap_id_enter(soap, soap->id, a, SOAP_TYPE_omws__getModel, sizeof(struct omws__getModel), 0, NULL, NULL, NULL);
+	if (!a)
+		return NULL;
+	soap_default_omws__getModel(soap, a);
+	if (soap->body && !*soap->href)
+	{
+		for (;;)
+		{	soap->error = SOAP_TAG_MISMATCH;
+			if (soap_flag_ticket && (soap->error == SOAP_TAG_MISMATCH || soap->error == SOAP_NO_TAG))
+				if (soap_in_xsd__string(soap, "ticket", &a->ticket, "xsd:string"))
+				{	soap_flag_ticket--;
+					continue;
+				}
+			if (soap->error == SOAP_TAG_MISMATCH)
+				soap->error = soap_ignore_element(soap);
+			if (soap->error == SOAP_NO_TAG)
+				break;
+			if (soap->error)
+				return NULL;
+		}
+		if (soap_element_end_in(soap, tag))
+			return NULL;
+	}
+	else
+	{	a = (struct omws__getModel *)soap_id_forward(soap, soap->href, (void**)a, SOAP_TYPE_omws__getModel, 0, sizeof(struct omws__getModel), 0, NULL);
+		if (soap->body && soap_element_end_in(soap, tag))
+			return NULL;
+	}
+	return a;
+}
+
+SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_omws__getModelProgress(struct soap *soap, const struct omws__getModelProgress *a)
+{
+	(void)soap; (void)a; /* appease -Wall -Werror */
+	soap_serialize_xsd__string(soap, &a->ticket);
+}
+
+SOAP_FMAC3 void SOAP_FMAC4 soap_default_omws__getModelProgress(struct soap *soap, struct omws__getModelProgress *a)
+{
+	(void)soap; (void)a; /* appease -Wall -Werror */
+	soap_default_xsd__string(soap, &a->ticket);
+}
+
+SOAP_FMAC3 int SOAP_FMAC4 soap_put_omws__getModelProgress(struct soap *soap, const struct omws__getModelProgress *a, const char *tag, const char *type)
+{
+	register int id = soap_embed(soap, (void*)a, NULL, 0, tag, SOAP_TYPE_omws__getModelProgress);
+	if (soap_out_omws__getModelProgress(soap, tag, id, a, type))
+		return soap->error;
+	return soap_putindependent(soap);
+}
+
+SOAP_FMAC3 int SOAP_FMAC4 soap_out_omws__getModelProgress(struct soap *soap, const char *tag, int id, const struct omws__getModelProgress *a, const char *type)
+{
+	soap_element_begin_out(soap, tag, soap_embedded_id(soap, id, a, SOAP_TYPE_omws__getModelProgress), type);
+	soap_out_xsd__string(soap, "ticket", -1, &a->ticket, "");
+	soap_element_end_out(soap, tag);
+	return SOAP_OK;
+}
+
+SOAP_FMAC3 struct omws__getModelProgress * SOAP_FMAC4 soap_get_omws__getModelProgress(struct soap *soap, struct omws__getModelProgress *p, const char *tag, const char *type)
+{
+	if ((p = soap_in_omws__getModelProgress(soap, tag, p, type)))
+		soap_getindependent(soap);
+	return p;
+}
+
+SOAP_FMAC3 struct omws__getModelProgress * SOAP_FMAC4 soap_in_omws__getModelProgress(struct soap *soap, const char *tag, struct omws__getModelProgress *a, const char *type)
+{
+	short soap_flag_ticket = 1;
+	if (soap_element_begin_in(soap, tag, 0))
+		return NULL;
+	if (*soap->type && soap_match_tag(soap, soap->type, type))
+	{	soap->error = SOAP_TYPE;
+		return NULL;
+	}
+	a = (struct omws__getModelProgress *)soap_id_enter(soap, soap->id, a, SOAP_TYPE_omws__getModelProgress, sizeof(struct omws__getModelProgress), 0, NULL, NULL, NULL);
+	if (!a)
+		return NULL;
+	soap_default_omws__getModelProgress(soap, a);
+	if (soap->body && !*soap->href)
+	{
+		for (;;)
+		{	soap->error = SOAP_TAG_MISMATCH;
+			if (soap_flag_ticket && (soap->error == SOAP_TAG_MISMATCH || soap->error == SOAP_NO_TAG))
+				if (soap_in_xsd__string(soap, "ticket", &a->ticket, "xsd:string"))
+				{	soap_flag_ticket--;
+					continue;
+				}
+			if (soap->error == SOAP_TAG_MISMATCH)
+				soap->error = soap_ignore_element(soap);
+			if (soap->error == SOAP_NO_TAG)
+				break;
+			if (soap->error)
+				return NULL;
+		}
+		if (soap_element_end_in(soap, tag))
+			return NULL;
+	}
+	else
+	{	a = (struct omws__getModelProgress *)soap_id_forward(soap, soap->href, (void**)a, SOAP_TYPE_omws__getModelProgress, 0, sizeof(struct omws__getModelProgress), 0, NULL);
+		if (soap->body && soap_element_end_in(soap, tag))
+			return NULL;
+	}
+	return a;
+}
+
+SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_omws__getModelProgressResponse(struct soap *soap, const struct omws__getModelProgressResponse *a)
+{
+	(void)soap; (void)a; /* appease -Wall -Werror */
+	soap_embedded(soap, &a->progress, SOAP_TYPE_xsd__int);
+}
+
+SOAP_FMAC3 void SOAP_FMAC4 soap_default_omws__getModelProgressResponse(struct soap *soap, struct omws__getModelProgressResponse *a)
+{
+	(void)soap; (void)a; /* appease -Wall -Werror */
+	soap_default_xsd__int(soap, &a->progress);
+}
+
+SOAP_FMAC3 int SOAP_FMAC4 soap_put_omws__getModelProgressResponse(struct soap *soap, const struct omws__getModelProgressResponse *a, const char *tag, const char *type)
+{
+	register int id = soap_embed(soap, (void*)a, NULL, 0, tag, SOAP_TYPE_omws__getModelProgressResponse);
+	if (soap_out_omws__getModelProgressResponse(soap, tag, id, a, type))
+		return soap->error;
+	return soap_putindependent(soap);
+}
+
+SOAP_FMAC3 int SOAP_FMAC4 soap_out_omws__getModelProgressResponse(struct soap *soap, const char *tag, int id, const struct omws__getModelProgressResponse *a, const char *type)
+{
+	soap_element_begin_out(soap, tag, soap_embedded_id(soap, id, a, SOAP_TYPE_omws__getModelProgressResponse), type);
+	soap_element_result(soap, "progress");
+	soap_out_xsd__int(soap, "progress", -1, &a->progress, "");
+	soap_element_end_out(soap, tag);
+	return SOAP_OK;
+}
+
+SOAP_FMAC3 struct omws__getModelProgressResponse * SOAP_FMAC4 soap_get_omws__getModelProgressResponse(struct soap *soap, struct omws__getModelProgressResponse *p, const char *tag, const char *type)
+{
+	if ((p = soap_in_omws__getModelProgressResponse(soap, tag, p, type)))
+		soap_getindependent(soap);
+	return p;
+}
+
+SOAP_FMAC3 struct omws__getModelProgressResponse * SOAP_FMAC4 soap_in_omws__getModelProgressResponse(struct soap *soap, const char *tag, struct omws__getModelProgressResponse *a, const char *type)
+{
+	short soap_flag_progress = 1;
+	if (soap_element_begin_in(soap, tag, 0))
+		return NULL;
+	if (*soap->type && soap_match_tag(soap, soap->type, type))
+	{	soap->error = SOAP_TYPE;
+		return NULL;
+	}
+	a = (struct omws__getModelProgressResponse *)soap_id_enter(soap, soap->id, a, SOAP_TYPE_omws__getModelProgressResponse, sizeof(struct omws__getModelProgressResponse), 0, NULL, NULL, NULL);
+	if (!a)
+		return NULL;
+	soap_default_omws__getModelProgressResponse(soap, a);
+	if (soap->body && !*soap->href)
+	{
+		for (;;)
+		{	soap->error = SOAP_TAG_MISMATCH;
+			if (soap_flag_progress && soap->error == SOAP_TAG_MISMATCH)
+				if (soap_in_xsd__int(soap, "progress", &a->progress, "xsd:int"))
+				{	soap_flag_progress--;
+					continue;
+				}
+			if (soap->error == SOAP_TAG_MISMATCH)
+				soap->error = soap_ignore_element(soap);
+			if (soap->error == SOAP_NO_TAG)
+				break;
+			if (soap->error)
+				return NULL;
+		}
+		if ((soap->mode & SOAP_XML_STRICT) && (soap_flag_progress > 0))
+		{	soap->error = SOAP_OCCURS;
+			return NULL;
+		}
+		if (soap_element_end_in(soap, tag))
+			return NULL;
+	}
+	else
+	{	a = (struct omws__getModelProgressResponse *)soap_id_forward(soap, soap->href, (void**)a, SOAP_TYPE_omws__getModelProgressResponse, 0, sizeof(struct omws__getModelProgressResponse), 0, NULL);
+		if (soap->body && soap_element_end_in(soap, tag))
+			return NULL;
+	}
+	return a;
 }
 
 SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_omws__createModel(struct soap *soap, const struct omws__createModel *a)

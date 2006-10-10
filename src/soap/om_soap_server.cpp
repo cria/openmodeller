@@ -39,6 +39,7 @@
 #include <dirent.h>
 
 #include <sstream>
+#include <fstream>
 using namespace std;
 
 #include "gdal_priv.h"
@@ -360,160 +361,92 @@ omws__createModel( struct soap *soap, XML om__ModelParameters, xsd__string *tick
   return SOAP_OK;
 }
 
+/*****************************/
+/**** get model progress ****/
+int 
+omws__getModelProgress( struct soap *soap, xsd__string ticket, xsd__int &progress )
+{ 
+  if ( ! ticket ) {
 
-// /**********************/
-// /**** create Model ****/
-// int 
-// omws__createModel( struct soap *soap, omws__Points *points, omws__Maps *maps, omws__Mask *mask, omws__Algorithm *algorithm, omws__Output *output, xsd__string *ticket )
-// {
-//   // Will use a special instance to run the model
-//   OpenModeller myom;
+    return soap_sender_fault( soap, "Missing ticket in request", NULL );
+  }
 
-//   // alloc new header
-//   soap->header = (struct SOAP_ENV__Header*)soap_malloc( soap, sizeof(struct SOAP_ENV__Header) ); 
-//   soap->header->omws__version = myom.getVersion();
+  string fileName( OM_SOAP_TMPDIR );
 
-//   // Get algorithm metadata
-//   AlgMetadata const *alg_metadata = myom.algorithmMetadata( algorithm->Id );
+  // Append slash if necessary
+  if ( fileName.find_last_of( "/" ) != fileName.size() - 1 ) {
 
-//   if ( ! alg_metadata )
-//     {
-//       return soap_receiver_fault( soap, "Could not retrieve algorithm metadata", NULL );
-//     }
+    fileName.append( "/" );
+  }
 
-//   // Points
-//   OccurrencesPtr presences = new OccurrencesImpl( "presences", points->coordsystem );
-//   OccurrencesPtr absences  = new OccurrencesImpl( "absences" , points->coordsystem );
+  fileName.append( "model_resp." );
+  fileName.append( ticket );
 
-//   soap_Point *point = points->__ptrpresences->__ptrpoint;
+  fstream fin;
+  fin.open( fileName.c_str(), ios::in );
 
-//   for ( int i = 0; i < points->__ptrpresences->__size; i++, point++)
-//     {
-//       presences->createOccurrence( (Coord)point->longitude, (Coord)point->latitude, 
-//                                    (Scalar)-1.0, (Scalar)1.0 );
-//     }
+  if ( fin.is_open() ) {
 
-//   if ( points->__ptrabsences && alg_metadata->absence )
-//     {
-//       point = points->__ptrabsences->__ptrpoint;
+    progress = 100;
 
-//       for ( int i = 0; i < points->__ptrabsences->__size; i++, point++)
-// 	{
-//           absences->createOccurrence( (Coord)point->longitude, (Coord)point->latitude, 
-//                                       (Scalar)-1.0, (Scalar)0.0 );
-// 	}
-      
-//       myom.setOccurrences( presences, absences );
-//     }
-//   else
-//     {
-//       myom.setOccurrences( presences );
-//     }
+    fin.close();
+  }
+  else {
+
+    progress = 0;
+  }
+
+  return SOAP_OK;
+}
+
+/*******************/
+/**** get model ****/
+int 
+omws__getModel( struct soap *soap, xsd__string ticket, XML &om__ModelEnvelope )
+{ 
+  if ( ! ticket ) {
+
+    return soap_sender_fault( soap, "Missing ticket in request", NULL );
+  }
+
+  string fileName( OM_SOAP_TMPDIR );
+
+  // Append slash if necessary
+  if ( fileName.find_last_of( "/" ) != fileName.size() - 1 ) {
+
+    fileName.append( "/" );
+  }
+
+  fileName.append( "model_resp." );
+  fileName.append( ticket );
+
+  ostringstream oss;
+  string line;
+
+  fstream fin;
+  fin.open( fileName.c_str(), ios::in );
+
+  if ( fin.is_open() ) {
+
+    while ( ! fin.eof() )
+    {
+      getline( fin, line );
+      oss << line << endl;
+    }
+
+   om__ModelEnvelope = convertToWideChar( oss.str().c_str() ) ;
+
+   fin.close();
+  }
+  else {
+
+   return soap_receiver_fault( soap, "Model unavailable", NULL );
+  }
+
+  return SOAP_OK;
+}
 
 
-//   // Environmental layers
-//   std::vector<std::string> categorical_layers;
-//   std::vector<std::string> continuous_layers;
-
-//   soap_Map *map = maps->__ptrmap;
-//   for ( int i = 0; i < maps->__size; i++, map++) {
-
-//     if ( map->categorical && alg_metadata->categorical ) {
-
-//       categorical_layers.push_back( map->location );
-//     }
-//     else {
-
-//       continuous_layers.push_back( map->location );
-//     }
-//   }
-
-//   myom.setEnvironment( categorical_layers, continuous_layers, mask->location );
-
-//   // Set the algorithm to be used
-//   if ( ! myom.setAlgorithm( algorithm->Id, algorithm->__size, 
-//                           (AlgParameter *)algorithm->__ptrparameter ) )
-//   {
-//       return soap_receiver_fault( soap, "Could not load the requested algorithm", NULL );
-//   }
-
-
-//   // Output map  (FIX ME: use a portable and better solution for unique names)
-//   char *template_file_name = (char*)soap_malloc( soap, strlen(OM_SOAP_TMPDIR) + 
-//                                                        strlen(OMWS_TEMPLATE_FILE_NAME) +2 );
-//   strcpy( template_file_name, OM_SOAP_TMPDIR );
-//   strcat( template_file_name, "/" );
-//   strcat( template_file_name, OMWS_TEMPLATE_FILE_NAME );
-//   mkstemp( template_file_name ); // generate file with unique name, and keep it
-
-//   char *projection_file_name = (char*)soap_malloc( soap, strlen(template_file_name) + 
-//                                             strlen(output->format) + 1 );
-//   strcpy( projection_file_name, template_file_name );
-//   strcat( projection_file_name, output->format ); // unique name + file format (should include dot)
-
-//   *ticket = strrchr( projection_file_name, '/' ) + 1; //ticket is actually the output map file name
-
-//   pid_t pid = fork();
-
-//   // The idea is to immediately return the ticket in one of the processes
-//   // and to generate the model in the other (which exits in the end).
-//   // If the parent overtake the model creation and exit, the child process
-//   // will always persist, and the PIDs will be changing over the time.
-//   // If the child overtake the model creation and exit, its process 
-//   // becomes "defunct" (?).
-//   if (pid > 0) // parent process
-//     {
-//       if ( ! myom.createModel() )
-//         {
-// 	  g_log( myom.error() );
-//           return soap_receiver_fault( soap, "Could not create model", NULL );
-//         }
-
-//       // Serialize model
-//       char *model_file_name = (char*)soap_malloc( soap, strlen(template_file_name) + 5 );
-//       strcpy( model_file_name, template_file_name );
-//       strcat( model_file_name, ".xml" );
-
-//       ConfigurationPtr cfg = myom.getConfiguration();
-//       Configuration::writeXml( cfg, model_file_name );
-
-//       // Output map format
-
-//       //      myom.setOutputMap( (xsd__double)output->scale, projection_file_name, mask->location, output->header );
-//       //
-//       // TODO: confirm if "scale" parameter should be removed.
-//       MapFormat map_format = MapFormat( output->header );
-
-//       // hard coded for now: 8-bit grey tiffs
-//       map_format.setFormat( MapFormat::GreyTiff );
-
-//       // Make projection
-
-//       //      if ( ! myom.createMap( projection_file_name ) )
-//       //        {
-//       //	  g_log( myom.error() );
-//       //          return soap_receiver_fault( soap, "Could not create map", NULL );
-//       //        }
-//       myom.createMap( projection_file_name, map_format );
-
-//       // do we need this here?
-//       soap_destroy((struct soap*)soap);
-//       soap_end((struct soap*)soap);
-//       soap_done((struct soap*)soap);
-//       free(soap);
-
-//       exit(0); // kill process
-//     }
-//   else if (pid == 0) // child process
-//     {
-//       // return ticket and keep listening 
-//       return SOAP_OK;
-//     }
-//   else
-//     {
-//       return soap_receiver_fault(soap, "Server fork error", NULL);
-//     }
-// }
 
 
 /******************************/

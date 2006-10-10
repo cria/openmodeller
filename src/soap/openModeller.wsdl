@@ -96,6 +96,38 @@
    </complexType>
   </element>
   <!-- operation request element -->
+  <element name="getModelProgress">
+   <complexType>
+    <sequence>
+     <element name="ticket" type="xsd:string" minOccurs="0" maxOccurs="1" nillable="true"/>
+    </sequence>
+   </complexType>
+  </element>
+  <!-- operation response element -->
+  <element name="getModelProgressResponse">
+   <complexType>
+    <sequence>
+     <element name="progress" type="xsd:int" minOccurs="1" maxOccurs="1"/>
+    </sequence>
+   </complexType>
+  </element>
+  <!-- operation request element -->
+  <element name="getModel">
+   <complexType>
+    <sequence>
+     <element name="ticket" type="xsd:string" minOccurs="0" maxOccurs="1" nillable="true"/>
+    </sequence>
+   </complexType>
+  </element>
+  <!-- operation response element -->
+  <element name="getModelResponse">
+   <complexType>
+    <sequence>
+     <element ref="om:ModelResult" minOccurs="1" maxOccurs="1"/>
+    </sequence>
+   </complexType>
+  </element>
+  <!-- operation request element -->
   <element name="getDistributionMap">
    <complexType>
     <sequence>
@@ -147,6 +179,22 @@
  <part name="parameters" element="omws:createModelResponse"/>
 </message>
 
+<message name="getModelProgressRequest">
+ <part name="parameters" element="omws:getModelProgress"/>
+</message>
+
+<message name="getModelProgressResponse">
+ <part name="parameters" element="omws:getModelProgressResponse"/>
+</message>
+
+<message name="getModel">
+ <part name="parameters" element="omws:getModel"/>
+</message>
+
+<message name="getModelResponse">
+ <part name="parameters" element="omws:getModelResponse"/>
+</message>
+
 <message name="getDistributionMapRequest">
  <part name="parameters" element="omws:getDistributionMap"/>
 </message>
@@ -179,6 +227,16 @@
   <documentation>Service definition of function omws__createModel</documentation>
   <input message="tns:createModelRequest"/>
   <output message="tns:createModelResponse"/>
+ </operation>
+ <operation name="getModelProgress">
+  <documentation>Service definition of function omws__getModelProgress</documentation>
+  <input message="tns:getModelProgressRequest"/>
+  <output message="tns:getModelProgressResponse"/>
+ </operation>
+ <operation name="getModel">
+  <documentation>Service definition of function omws__getModel</documentation>
+  <input message="tns:getModel"/>
+  <output message="tns:getModelResponse"/>
  </operation>
  <operation name="getDistributionMap">
   <documentation>Service definition of function omws__getDistributionMap</documentation>
@@ -217,6 +275,24 @@
   </output>
  </operation>
  <operation name="createModel">
+  <SOAP:operation soapAction=""/>
+  <input>
+     <SOAP:body parts="parameters" use="literal"/>
+  </input>
+  <output>
+     <SOAP:body parts="parameters" use="literal"/>
+  </output>
+ </operation>
+ <operation name="getModelProgress">
+  <SOAP:operation soapAction=""/>
+  <input>
+     <SOAP:body parts="parameters" use="literal"/>
+  </input>
+  <output>
+     <SOAP:body parts="parameters" use="literal"/>
+  </output>
+ </operation>
+ <operation name="getModel">
   <SOAP:operation soapAction=""/>
   <input>
      <SOAP:body parts="parameters" use="literal"/>

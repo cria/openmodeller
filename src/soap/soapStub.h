@@ -85,10 +85,37 @@ struct omws__createModel
 };
 #endif
 
+#ifndef SOAP_TYPE_omws__getModelProgressResponse
+#define SOAP_TYPE_omws__getModelProgressResponse (31)
+/* omws:getModelProgressResponse */
+struct omws__getModelProgressResponse
+{
+	int progress;	/* RPC return element */	/* required element of type xsd:int */
+};
+#endif
+
+#ifndef SOAP_TYPE_omws__getModelProgress
+#define SOAP_TYPE_omws__getModelProgress (32)
+/* omws:getModelProgress */
+struct omws__getModelProgress
+{
+	char *ticket;	/* optional element of type xsd:string */
+};
+#endif
+
+#ifndef SOAP_TYPE_omws__getModel
+#define SOAP_TYPE_omws__getModel (34)
+/* omws:getModel */
+struct omws__getModel
+{
+	char *ticket;	/* optional element of type xsd:string */
+};
+#endif
+
 
 
 #ifndef SOAP_TYPE_xsd__base64Binary
-#define SOAP_TYPE_xsd__base64Binary (29)
+#define SOAP_TYPE_xsd__base64Binary (35)
 /* Base64 schema type: */
 class SOAP_CMAC xsd__base64Binary
 {
@@ -101,7 +128,7 @@ public:
 	xsd__base64Binary();	/* transient */
 	struct soap *soap;	/* transient */
 public:
-	virtual int soap_type() const { return 29; } /* = unique id SOAP_TYPE_xsd__base64Binary */
+	virtual int soap_type() const { return 35; } /* = unique id SOAP_TYPE_xsd__base64Binary */
 	virtual void soap_default(struct soap*);
 	virtual void soap_serialize(struct soap*) const;
 	virtual int soap_put(struct soap*, const char*, const char*) const;
@@ -113,7 +140,7 @@ public:
 #endif
 
 #ifndef SOAP_TYPE_omws__getDistributionMapResponse
-#define SOAP_TYPE_omws__getDistributionMapResponse (39)
+#define SOAP_TYPE_omws__getDistributionMapResponse (45)
 /* omws:getDistributionMapResponse */
 struct omws__getDistributionMapResponse
 {
@@ -122,7 +149,7 @@ struct omws__getDistributionMapResponse
 #endif
 
 #ifndef SOAP_TYPE_omws__getDistributionMap
-#define SOAP_TYPE_omws__getDistributionMap (40)
+#define SOAP_TYPE_omws__getDistributionMap (46)
 /* omws:getDistributionMap */
 struct omws__getDistributionMap
 {
@@ -131,7 +158,7 @@ struct omws__getDistributionMap
 #endif
 
 #ifndef SOAP_TYPE_SOAP_ENV__Code
-#define SOAP_TYPE_SOAP_ENV__Code (41)
+#define SOAP_TYPE_SOAP_ENV__Code (47)
 /* SOAP Fault Code: */
 struct SOAP_ENV__Code
 {
@@ -141,7 +168,7 @@ struct SOAP_ENV__Code
 #endif
 
 #ifndef SOAP_TYPE_SOAP_ENV__Detail
-#define SOAP_TYPE_SOAP_ENV__Detail (43)
+#define SOAP_TYPE_SOAP_ENV__Detail (49)
 /* SOAP-ENV:Detail */
 struct SOAP_ENV__Detail
 {
@@ -152,7 +179,7 @@ struct SOAP_ENV__Detail
 #endif
 
 #ifndef SOAP_TYPE_SOAP_ENV__Reason
-#define SOAP_TYPE_SOAP_ENV__Reason (44)
+#define SOAP_TYPE_SOAP_ENV__Reason (50)
 /* SOAP-ENV:Reason */
 struct SOAP_ENV__Reason
 {
@@ -161,7 +188,7 @@ struct SOAP_ENV__Reason
 #endif
 
 #ifndef SOAP_TYPE_SOAP_ENV__Fault
-#define SOAP_TYPE_SOAP_ENV__Fault (45)
+#define SOAP_TYPE_SOAP_ENV__Fault (51)
 /* SOAP Fault: */
 struct SOAP_ENV__Fault
 {
@@ -250,6 +277,10 @@ SOAP_FMAC5 int SOAP_FMAC6 omws__getLayers(struct soap*, void *_, wchar_t *&om__A
 
 SOAP_FMAC5 int SOAP_FMAC6 omws__createModel(struct soap*, wchar_t *om__ModelParameters, char **ticket);
 
+SOAP_FMAC5 int SOAP_FMAC6 omws__getModelProgress(struct soap*, char *ticket, int &progress);
+
+SOAP_FMAC5 int SOAP_FMAC6 omws__getModel(struct soap*, char *ticket, wchar_t *&om__ModelResult);
+
 SOAP_FMAC5 int SOAP_FMAC6 omws__getDistributionMap(struct soap*, char *ticket, xsd__base64Binary &file);
 
 /******************************************************************************\
@@ -266,6 +297,10 @@ SOAP_FMAC5 int SOAP_FMAC6 soap_call_omws__getAlgorithms(struct soap *soap, const
 SOAP_FMAC5 int SOAP_FMAC6 soap_call_omws__getLayers(struct soap *soap, const char *soap_endpoint, const char *soap_action, void *_, wchar_t *&om__AvailableLayers);
 
 SOAP_FMAC5 int SOAP_FMAC6 soap_call_omws__createModel(struct soap *soap, const char *soap_endpoint, const char *soap_action, wchar_t *om__ModelParameters, char **ticket);
+
+SOAP_FMAC5 int SOAP_FMAC6 soap_call_omws__getModelProgress(struct soap *soap, const char *soap_endpoint, const char *soap_action, char *ticket, int &progress);
+
+SOAP_FMAC5 int SOAP_FMAC6 soap_call_omws__getModel(struct soap *soap, const char *soap_endpoint, const char *soap_action, char *ticket, wchar_t *&om__ModelResult);
 
 SOAP_FMAC5 int SOAP_FMAC6 soap_call_omws__getDistributionMap(struct soap *soap, const char *soap_endpoint, const char *soap_action, char *ticket, xsd__base64Binary &file);
 
@@ -286,6 +321,10 @@ SOAP_FMAC5 int SOAP_FMAC6 soap_serve_omws__getAlgorithms(struct soap*);
 SOAP_FMAC5 int SOAP_FMAC6 soap_serve_omws__getLayers(struct soap*);
 
 SOAP_FMAC5 int SOAP_FMAC6 soap_serve_omws__createModel(struct soap*);
+
+SOAP_FMAC5 int SOAP_FMAC6 soap_serve_omws__getModelProgress(struct soap*);
+
+SOAP_FMAC5 int SOAP_FMAC6 soap_serve_omws__getModel(struct soap*);
 
 SOAP_FMAC5 int SOAP_FMAC6 soap_serve_omws__getDistributionMap(struct soap*);
 
