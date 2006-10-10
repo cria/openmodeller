@@ -91,11 +91,11 @@ AlgorithmImpl::getConfiguration() const
 
   config->addSubsection( meta_config );
 
-  ConfigurationPtr param_config( new ConfigurationImpl("AlgorithmParameters") );
+  ConfigurationPtr param_config( new ConfigurationImpl("Parameters") );
   ParamSetType::const_iterator p = _param.begin();
   for( ; p != _param.end() ; ++p ) {
 
-    ConfigurationPtr cfg( new ConfigurationImpl("Param") );
+    ConfigurationPtr cfg( new ConfigurationImpl("Parameter") );
     param_config->addSubsection( cfg );
     cfg->addNameValue( "Id", p->first );
     cfg->addNameValue( "Value", p->second );
@@ -126,7 +126,7 @@ AlgorithmImpl::getConfiguration() const
 void
 AlgorithmImpl::setConfiguration( const ConstConfigurationPtr &config )
 {
-  ConstConfigurationPtr param_config = config->getSubsection( "AlgorithmParameters" );
+  ConstConfigurationPtr param_config = config->getSubsection( "Parameters" );
   
   Configuration::subsection_list params = param_config->getAllSubsections();
 

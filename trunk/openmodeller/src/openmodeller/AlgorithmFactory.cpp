@@ -281,9 +281,7 @@ AlgorithmFactory::newAlgorithm( char const *id )
 AlgorithmPtr
 AlgorithmFactory::newAlgorithm( const ConstConfigurationPtr & config ) {
 
-  ConstConfigurationPtr meta_config = config->getSubsection( "AlgorithmMetadata" );
-
-  string id = meta_config->getAttribute( "Id" );
+  string id = config->getAttribute( "Id" );
 
   AlgorithmPtr alg( newAlgorithm( id.c_str() ) );
 
@@ -300,7 +298,6 @@ AlgorithmFactory::newAlgorithm( const ConstConfigurationPtr & config ) {
 int
 AlgorithmFactory::searchDefaultDirs( )
 {
-
   vector<string> entries = initialPluginPath();
 
   vector<string>::iterator it = entries.begin();

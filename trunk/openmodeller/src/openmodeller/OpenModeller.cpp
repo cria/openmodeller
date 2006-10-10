@@ -478,11 +478,9 @@ OpenModeller::getConfiguration() const
 void
 OpenModeller::setConfiguration( const ConstConfigurationPtr & config )
 {
-
   _samp = createSampler( config->getSubsection( "Sampler" ) );
   _env = _samp->getEnvironment();
 
   _alg = AlgorithmFactory::newAlgorithm( config->getSubsection( "Algorithm" ) );
   _alg->setSampler( _samp );
-
 }
