@@ -32,6 +32,9 @@ using namespace math;
 #endif
 typedef matrix<Scalar> Matrix; // Now we have the matrix free for use
 
+#define FIRST_DISTANCE_TYPE   1
+#define AMOUNT_DISTANCE_TYPES 3
+
 class EnvironmentalDistance : public AlgorithmImpl{
 
    public: // All methods here are inherited from AlgorithmImpl
@@ -43,12 +46,7 @@ class EnvironmentalDistance : public AlgorithmImpl{
       int needNormalization(Scalar *min, Scalar *max) const; // Normalize all data to [min,max]
       Scalar getValue(const Sample& x) const; // Returns the occurence probability
 
-   protected:
-      virtual void _getConfiguration(ConfigurationPtr&) const;
-      virtual void _setConfiguration(const ConstConfigurationPtr&);
-
    private:
-
       // Common-use attributes
       bool _initialized;  // Flag to indicate that the algorithm was initialized.
       bool _done;         // Flag to indicate when the work is finished;
@@ -71,10 +69,14 @@ class EnvironmentalDistance : public AlgorithmImpl{
 
       // Alias for the distance types
       typedef enum{
-         EuclideanDistance = 1,
-         MahalanobisDistance = 2,
-         GowerDistance = 3
+         EuclideanDistance = FIRST_DISTANCE_TYPE,
+         MahalanobisDistance,
+         GowerDistance
       };
+
+   protected:
+      virtual void _getConfiguration(ConfigurationPtr&) const;
+      virtual void _setConfiguration(const ConstConfigurationPtr&);
 };
 
 #endif

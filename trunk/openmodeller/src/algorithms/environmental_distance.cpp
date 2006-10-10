@@ -29,12 +29,18 @@ static AlgParamMetadata parameters[NUM_PARAM] = { // Parameters
       PARDISTTYPE, // Id
       "Metric",    // Name
       "Integer",   // Type
-      "Metric used to calculate distances: 1=Euclidean, 2=Mahalanobis, 3=Gower.", // Overview
-      "Metric used to calculate distances: 1=Euclidean, 2=Mahalanobis, 3=Gower.", // Description
-      1,          // Not zero if the parameter has lower limit
-      1,          // Parameter's lower limit
-      1,          // Not zero if the parameter has upper limit
-      3,          // Parameter's upper limit
+      "Metric used to calculate distances: " // Overview
+         "1=Euclidean, "
+         "2=Mahalanobis, "
+         "3=Gower.",
+      "Metric used to calculate distances: " // Description
+         "1=Euclidean, "
+         "2=Mahalanobis, "
+         "3=Gower.",
+      1,                                               // Not zero if the parameter has lower limit
+      FIRST_DISTANCE_TYPE,                             // Parameter's lower limit
+      1,                                               // Not zero if the parameter has upper limit
+      FIRST_DISTANCE_TYPE + AMOUNT_DISTANCE_TYPES - 1, // Parameter's upper limit
       "1"         // Parameter's typical (default) value
    },
    { // 2nd parameter
@@ -148,6 +154,8 @@ int EnvironmentalDistance::initialize(){
    if     (ParDist>PARDISTMAX) ParDist = PARDISTMAX;
    else if(ParDist<PARDISTMIN) ParDist = PARDISTMIN;
 
+   //_samp->environmentallyUnique(); // Debug
+
    // Initialize some common-use attributes
    layerCount    = _samp->numIndependent();
    presenceCount = _samp->numPresence();
@@ -160,7 +168,6 @@ int EnvironmentalDistance::initialize(){
    OccurrencesPtr presences = _samp->getPresences();
    for(int i = 0 ; i < presenceCount ; i++)
       presencePoints.push_back((*presences)[i]->environment());
-
    // Calcs the mean of all presence points
    averagePoint = presencePoints[0]; // There is at least one presence point
    for(int i = 1 ; i < presenceCount ; i++)
@@ -206,38 +213,46 @@ Scalar EnvironmentalDistance::getValue(const Sample& x) const{
    // Mean of ParPointQnt nearest points
    //
    }else{
-      std::vector<Sample> nearestPoints;
-      std::vector<Scalar> nPdist;
       Scalar distIterator, distTmp;
-      Sample pointIterator, pointTmp, nearMean;
+      int indexIterator, indexTmp;
+      Sample nearMean;
+      std::vector<int> nearestIndex(ParPointQnt);
+      std::vector<Scalar> nPdist(ParPointQnt);
+      //g_log("\nStarting with distances:\n"); // Debug
       for(int i = 0 ; i < ParPointQnt ; i++){ // We know that ParPointQnt < presenceCount
-         nPdist.push_back(Distance(x, presencePoints[i]));
-         nearestPoints.push_back(presencePoints[i]);
+         nPdist[i] = Distance(x, presencePoints[i]);
+         nearestIndex[i] = i;
+      //g_log("   dist[%d]=%.8g\n", nearestIndex[i], nPdist[i]); // Debug
       }
 
+      //g_log("\nNewer values:\n"); // Debug
       for(int i = ParPointQnt ; i < presenceCount ; i++){ // This loop finds the nearest points
          distIterator = Distance(x, presencePoints[i]);
-         pointIterator = presencePoints[i];
+         indexIterator = i;
+         //g_log("dist[%d] = %.8g:\n", indexIterator, distIterator); // Debug
          for(int j = 0 ; j < ParPointQnt ; j++){ // Trade pointIterator with the first smaller point
             if(nPdist[j] > distIterator){
                distTmp = distIterator;
-               pointTmp = pointIterator;
+               indexTmp = indexIterator;
                distIterator = nPdist[j];
-               pointIterator = nearestPoints[j];
+               indexIterator = nearestIndex[j];
                nPdist[j] = distTmp;
-               nearestPoints[j] = pointTmp;
+               nearestIndex[j] = indexTmp;
                j = -1; // Re-start the for loop for the new value
             }
          }
+         //for(int j = 0 ; j < ParPointQnt ; j++) // Debug
+            //g_log("   dist[%d]=%.8g\n", nearestIndex[j], nPdist[j]);
       }
 
       // Now we have the nearest points. Let's get its mean:
-      nearMean = nearestPoints[0]; // There is at least one point
+      nearMean = presencePoints[nearestIndex[0]]; // There is at least one point
       for(int i = 1 ; i < ParPointQnt ; i++)
-         nearMean += nearestPoints[i];
+         nearMean += presencePoints[nearestIndex[i]];
       nearMean /= ParPointQnt;
 
       dist = Distance(x, nearMean);
+      //g_log("\ndistance=%.8g\n\n", dist); // Debug
    }
 
    // Now finishes the algorithm calculating the probability
