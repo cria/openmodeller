@@ -11,15 +11,47 @@
     </xs:documentation>		
   </xs:annotation>
 
+<!--
+
+TODO:
+
+* See how ModelOutputType could use Algorithm Metadata with parameter values 
+  (define groups?)
+  (define SerializedAlgorithmType?)
+
+* Change Model serialization!
+
+* Define ProjectionInputType
+
+* Include Abundance in Point
+
+* Merge Presence with Absence (?)
+
+ -->
+
+  <!-- GLOBAL ELEMENTS -->
+
   <xs:element name="AvailableAlgorithms" type="AvailableAlgorithmsType"/>
+
+  <xs:element name="Algorithms" type="AlgorithmsMetadataType"/>
+
+  <xs:element name="AvailableLayers" type="AvailableLayersType"/>
+
+  <xs:element name="ModelParameters" type="ModelParametersType"/>
+
+  <xs:element name="ModelEnvelope" type="ModelEnvelopeType"/>
+
+  <xs:element name="ModelResult" type="ModelResultType"/>
+
+  <xs:element name="ProjectModel" type="ProjectionInputType"/>
+
+  <!-- TYPE DEFINITIIONS -->
 
   <xs:complexType name="AvailableAlgorithmsType">
     <xs:sequence>
       <xs:element ref="Algorithms"/>
     </xs:sequence>
   </xs:complexType>
-
-  <xs:element name="Algorithms" type="AlgorithmsMetadataType"/>
 
   <xs:complexType name="AlgorithmsMetadataType">
     <xs:sequence>
@@ -95,7 +127,78 @@
     <xs:attribute name="Version" type="xs:string" use="required"/>
   </xs:complexType>
 
-  <xs:element name="AvailableLayers" type="AvailableLayersType"/>
+  <xs:complexType name="BasicAlgorithmDefinitionType">
+    <xs:sequence>
+      <xs:element name="Parameters">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="Parameter" minOccurs="0" maxOccurs="unbounded">
+              <xs:complexType>
+                <xs:attribute name="Id" type="xs:string" use="required"/>
+                <xs:attribute name="Value" type="xs:string" use="required"/>
+              </xs:complexType>
+            </xs:element>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+    </xs:sequence>
+    <xs:attribute name="Id" type="xs:string" use="required"/>
+    <xs:attribute name="Version" type="xs:string" use="required"/>
+  </xs:complexType>
+
+  <xs:complexType name="SerializedAlgorithmType">
+    <xs:sequence>
+      <xs:element name="Name" type="xs:string"/>
+      <xs:element name="Overview" type="xs:string"/>
+      <xs:element name="Designers">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="Designer" maxOccurs="unbounded">
+              <xs:complexType>
+                <xs:attribute name="Name" type="xs:string"/>
+                <xs:attribute name="Contact" type="xs:string" use="optional"/>
+              </xs:complexType>
+            </xs:element>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="Bibliography" type="xs:string" minOccurs="0"/>
+      <xs:element name="Developers">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="Developer" maxOccurs="unbounded">
+              <xs:complexType>
+                <xs:attribute name="Name" type="xs:string"/>
+                <xs:attribute name="Contact" type="xs:string" use="optional"/>
+              </xs:complexType>
+            </xs:element>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="Parameters">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="Parameter" minOccurs="0" maxOccurs="unbounded">
+              <xs:complexType>
+                <xs:attribute name="Id" type="xs:string" use="required"/>
+                <xs:attribute name="Value" type="xs:string" use="required"/>
+              </xs:complexType>
+            </xs:element>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="Normalization" type="NormalizationType" minOccurs="0"/>
+      <xs:element name="Model">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:any processContents="lax"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+    </xs:sequence>
+    <xs:attribute name="Id" type="xs:string" use="required"/>
+    <xs:attribute name="Version" type="xs:string" use="required"/>
+  </xs:complexType>
 
   <xs:complexType name="AvailableLayersType">
     <xs:sequence>
@@ -123,15 +226,12 @@
     <xs:attribute name="Max" type="xs:double" use="optional"/>
   </xs:complexType>
 
-
   <xs:complexType name="EnvironmentType">
-   <xs:sequence>
     <xs:sequence>
-     <xs:element name="Map" maxOccurs="unbounded" type="LayerType"/>
+      <xs:element name="Map" maxOccurs="unbounded" type="LayerType"/>
+      <xs:element name="Mask" type="LayerType"/>
     </xs:sequence>
-    <xs:element name="Mask" type="LayerType"/>
-   </xs:sequence>
-   <xs:attribute name="NumLayers" type="xs:int" use="optional"/>
+    <xs:attribute name="NumLayers" type="xs:int" use="optional"/>
   </xs:complexType>
 
   <xs:complexType name="OccurrencesType">
@@ -139,8 +239,9 @@
     <xs:element name="CoordinateSystem" type="xs:string" minOccurs="0"/>
     <xs:element name="Point" maxOccurs="unbounded">
      <xs:complexType>
-      <xs:attribute name="Y" type="xs:string" use="required"/>
       <xs:attribute name="X" type="xs:string" use="required"/>
+      <xs:attribute name="Y" type="xs:string" use="required"/>
+      <xs:attribute name="Sample" type="xs:string" use="optional"/>
      </xs:complexType>
     </xs:element>
    </xs:sequence>
@@ -148,45 +249,40 @@
    <xs:attribute name="Label" type="xs:string" use="optional"/>
   </xs:complexType>
 
-
-
- <xs:element name="OpenModeller" type="problem-defn"/>
-
-  <xs:complexType name="problem-defn">
-  <xs:sequence>
-   <xs:element name="Sampler">
-    <xs:complexType>
-     <xs:sequence>
+  <xs:complexType name="SamplerType">
+    <xs:sequence>
       <xs:element name="Environment" type="EnvironmentType"/>
       <xs:element name="Presence" type="OccurrencesType"/>
-      <xs:element name="Absence" type="OccurrencesType" minOccurs="0" />
-     </xs:sequence>
-    </xs:complexType>
-   </xs:element>
-   <xs:element name="Algorithm" type="algo-defn"/>
-  </xs:sequence>
- </xs:complexType>
+      <xs:element name="Absence" type="OccurrencesType" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
 
- <xs:complexType name="algo-defn">
-  <xs:sequence>
-   <xs:element name="AlgorithmMetadata">
-    <xs:complexType>
-     <xs:attribute name="Id" type="xs:string" use="required"/>
-    </xs:complexType>
-   </xs:element>
-   <xs:element name="AlgorithmParameters">
-    <xs:complexType>
-     <xs:sequence>
-      <xs:element name="Param" minOccurs="0" maxOccurs="unbounded">
-       <xs:complexType>
-        <xs:attribute name="Value" type="xs:string" use="required"/>
-        <xs:attribute name="Id" type="xs:string" use="required"/>
-       </xs:complexType>
-      </xs:element>
-     </xs:sequence>
-    </xs:complexType>
-   </xs:element>
-  </xs:sequence>
- </xs:complexType>
+  <xs:complexType name="NormalizationType">
+    <xs:attribute name="Offsets" type="xs:string" use="required"/>
+    <xs:attribute name="Scales" type="xs:string" use="required"/>
+  </xs:complexType>
+
+  <xs:complexType name="ModelParametersType">
+    <xs:sequence>
+      <xs:element name="Sampler" type="SamplerType"/>
+      <xs:element name="Algorithm" type="BasicAlgorithmDefinitionType"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="ModelEnvelopeType">
+    <xs:sequence>
+      <xs:element ref="ModelResult"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="ModelResultType">
+    <xs:sequence>
+      <xs:element name="Sampler" type="SamplerType"/>
+      <xs:element name="Algorithm" type="SerializedAlgorithmType"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="ProjectionInputType">
+  </xs:complexType>
 
 </xs:schema>

@@ -75,21 +75,33 @@ AlgorithmImpl::getConfiguration() const
 {
   ConfigurationPtr config( new ConfigurationImpl("Algorithm") );
 
-  ConfigurationPtr meta_config( new ConfigurationImpl("AlgorithmMetadata") );
+  config->addNameValue( "Id", _metadata->id );
+  config->addNameValue( "Version", _metadata->version );
 
-  meta_config->addNameValue( "Id", _metadata->id );
-  meta_config->addNameValue( "Name", _metadata->name );
-  meta_config->addNameValue( "Version", _metadata->version );
+  ConfigurationPtr alg_name_config( new ConfigurationImpl( "Name" ) );
+  alg_name_config->setValue( _metadata->name );
+  config->addSubsection( alg_name_config );
 
-  ConfigurationPtr overview( new ConfigurationImpl("Overview" ) );
-  overview->setValue( _metadata->overview );
-  meta_config->addSubsection( overview );
+  ConfigurationPtr alg_overview_config( new ConfigurationImpl( "Overview" ) );
+  alg_overview_config->setValue( _metadata->overview );
+  config->addSubsection( alg_overview_config );
 
-  meta_config->addNameValue( "Author", _metadata->author );
-  meta_config->addNameValue( "CodeAuthor", _metadata->code_author );
-  meta_config->addNameValue( "Contact", _metadata->contact );
+  ConfigurationPtr alg_designers_config( new ConfigurationImpl( "Designers" ) );
+  ConfigurationPtr alg_designer_config( new ConfigurationImpl( "Designer" ) );
+  alg_designer_config->addNameValue( "Name", _metadata->author );
+  alg_designers_config->addSubsection( alg_designer_config );
+  config->addSubsection( alg_designers_config );
 
-  config->addSubsection( meta_config );
+  ConfigurationPtr alg_bibliography_config( new ConfigurationImpl( "Bibliography" ) );
+  alg_bibliography_config->setValue( _metadata->biblio );
+  config->addSubsection( alg_bibliography_config );
+
+  ConfigurationPtr alg_developers_config( new ConfigurationImpl( "Developers" ) );
+  ConfigurationPtr alg_developer_config( new ConfigurationImpl( "Developer" ) );
+  alg_developer_config->addNameValue( "Name", _metadata->code_author );
+  alg_developer_config->addNameValue( "Contact", _metadata->contact );
+  alg_developers_config->addSubsection( alg_developer_config );
+  config->addSubsection( alg_developers_config );
 
   ConfigurationPtr param_config( new ConfigurationImpl("Parameters") );
   ParamSetType::const_iterator p = _param.begin();
@@ -105,7 +117,7 @@ AlgorithmImpl::getConfiguration() const
 
   if ( _has_norm_params ) {
 
-    ConfigurationPtr norm_config( new ConfigurationImpl("NormalizationParameters") );
+    ConfigurationPtr norm_config( new ConfigurationImpl("Normalization") );
   
     norm_config->addNameValue( "Offsets", _norm_offsets );
     norm_config->addNameValue( "Scales", _norm_scales );
@@ -144,7 +156,7 @@ AlgorithmImpl::setConfiguration( const ConstConfigurationPtr &config )
 
   try { 
 
-    ConstConfigurationPtr norm_config = config->getSubsection( "NormalizationParameters" );
+    ConstConfigurationPtr norm_config = config->getSubsection( "Normalization" );
 
     _has_norm_params = true;
     _norm_offsets = norm_config->getAttributeAsSample( "Offsets" );
