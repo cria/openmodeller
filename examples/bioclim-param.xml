@@ -7,7 +7,6 @@
                 />
             <Mask
                 Id='rain_coolest.tif'
-                IsCategorical='0'
                 />
         </Environment>
         <Presence
