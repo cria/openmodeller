@@ -161,47 +161,61 @@
     </xs:sequence>
   </xs:complexType>
 
+  <xs:complexType name="BasicLayerType">
+    <xs:attribute name="Id" type="xs:string" use="required"/>
+  </xs:complexType>
+
+  <xs:complexType name="ModellingLayerType">
+    <xs:complexContent>
+      <xs:extension base="BasicLayerType">
+        <xs:attribute name="IsCategorical" type="xs:boolean" use="optional"/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="LayerMetadataType">
+    <xs:complexContent>
+      <xs:extension base="ModellingLayerType">
+        <xs:sequence>
+          <xs:element name="Label" type="xs:string" minOccurs="0"/>
+        </xs:sequence>
+        <xs:attribute name="HasProjection" type="xs:boolean" use="optional"/>
+        <xs:attribute name="Min" type="xs:double" use="optional"/>
+        <xs:attribute name="Max" type="xs:double" use="optional"/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
   <xs:complexType name="LayersGroupType">
     <xs:sequence>
       <xs:element name="Label" type="xs:string"/>
       <xs:element name="LayersGroup" type="LayersGroupType" minOccurs="0" maxOccurs="unbounded"/>
-      <xs:element name="Layer" type="LayerType" minOccurs="0" maxOccurs="unbounded"/>
+      <xs:element name="Layer" type="LayerMetadataType" minOccurs="0" maxOccurs="unbounded"/>
     </xs:sequence>
     <xs:attribute name="Id" type="xs:string" use="required"/>
-  </xs:complexType>
-
-  <xs:complexType name="LayerType">
-    <xs:sequence>
-      <xs:element name="Label" type="xs:string" minOccurs="0"/>
-    </xs:sequence>
-    <xs:attribute name="Id" type="xs:string" use="required"/>
-    <xs:attribute name="IsCategorical" type="xs:boolean" use="optional"/>
-    <xs:attribute name="HasProjection" type="xs:boolean" use="optional"/>
-    <xs:attribute name="Min" type="xs:double" use="optional"/>
-    <xs:attribute name="Max" type="xs:double" use="optional"/>
   </xs:complexType>
 
   <xs:complexType name="EnvironmentType">
     <xs:sequence>
-      <xs:element name="Map" maxOccurs="unbounded" type="LayerType"/>
-      <xs:element name="Mask" type="LayerType"/>
+      <xs:element name="Map" maxOccurs="unbounded" type="ModellingLayerType"/>
+      <xs:element name="Mask" type="BasicLayerType"/>
     </xs:sequence>
     <xs:attribute name="NumLayers" type="xs:int" use="optional"/>
   </xs:complexType>
 
   <xs:complexType name="OccurrencesType">
-   <xs:sequence>
-    <xs:element name="CoordinateSystem" type="xs:string" minOccurs="0"/>
-    <xs:element name="Point" maxOccurs="unbounded">
-     <xs:complexType>
-      <xs:attribute name="X" type="xs:string" use="required"/>
-      <xs:attribute name="Y" type="xs:string" use="required"/>
-      <xs:attribute name="Sample" type="xs:string" use="optional"/>
-     </xs:complexType>
-    </xs:element>
-   </xs:sequence>
-   <xs:attribute name="Count" type="xs:int" use="optional"/>
-   <xs:attribute name="Label" type="xs:string" use="optional"/>
+    <xs:sequence>
+      <xs:element name="CoordinateSystem" type="xs:string" minOccurs="0"/>
+      <xs:element name="Point" maxOccurs="unbounded">
+        <xs:complexType>
+          <xs:attribute name="X" type="xs:string" use="required"/>
+          <xs:attribute name="Y" type="xs:string" use="required"/>
+          <xs:attribute name="Sample" type="xs:string" use="optional"/>
+        </xs:complexType>
+      </xs:element>
+    </xs:sequence>
+    <xs:attribute name="Count" type="xs:int" use="optional"/>
+    <xs:attribute name="Label" type="xs:string" use="optional"/>
   </xs:complexType>
 
   <xs:complexType name="SamplerType">
@@ -219,7 +233,8 @@
 
   <xs:complexType name="OutputParametersType">
     <xs:sequence>
-      <xs:element name="Format" type="xs:string" minOccurs="0"/>
+      <xs:element name="TemplateLayer" type="BasicLayerType"/>
+      <xs:element name="Mask" type="BasicLayerType"/>
     </xs:sequence>
     <xs:attribute name="FileType" type="xs:string" use="optional"/>
   </xs:complexType>
@@ -246,8 +261,9 @@
 
   <xs:complexType name="ProjectionParametersType">
     <xs:sequence>
-      <xs:element ref="SerializedModel"/>
+      <xs:element name="Algorithm" type="SerializedAlgorithmType"/>
       <xs:element name="Environment" type="EnvironmentType"/>
+      <xs:element name="OutputParameters" type="OutputParametersType" minOccurs="0"/>
     </xs:sequence>
   </xs:complexType>
 
