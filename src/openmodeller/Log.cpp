@@ -53,8 +53,15 @@ public:
   StdFileLogCallback( FILE* file ) :
     file( file )
   {}
+  ~StdFileLogCallback() {
+    if ( file != NULL ) {
+      fclose(file);
+    }
+  }
   void operator()( Log::Level level, const std::string& msg ) {
-    fprintf( file, msg.c_str() );
+    if ( file != NULL ) {
+      fprintf( file, "%s", msg.c_str() );
+    }
   }
   FILE *file;
 };
