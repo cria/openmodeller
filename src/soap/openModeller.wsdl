@@ -33,6 +33,11 @@
      <element ref="om:ModelParameters" minOccurs="0" maxOccurs="1" nillable="true"/>
    </sequence>
   </complexType>
+  <complexType name="projectModel">
+   <sequence>
+     <element ref="om:ProjectionParameters" minOccurs="0" maxOccurs="1" nillable="true"/>
+   </sequence>
+  </complexType>
   <element name="version" type="xsd:string"/>
   <!-- operation request element -->
   <element name="ping">
@@ -96,22 +101,6 @@
    </complexType>
   </element>
   <!-- operation request element -->
-  <element name="getModelProgress">
-   <complexType>
-    <sequence>
-     <element name="ticket" type="xsd:string" minOccurs="0" maxOccurs="1" nillable="true"/>
-    </sequence>
-   </complexType>
-  </element>
-  <!-- operation response element -->
-  <element name="getModelProgressResponse">
-   <complexType>
-    <sequence>
-     <element name="progress" type="xsd:int" minOccurs="1" maxOccurs="1"/>
-    </sequence>
-   </complexType>
-  </element>
-  <!-- operation request element -->
   <element name="getModel">
    <complexType>
     <sequence>
@@ -123,12 +112,28 @@
   <element name="getModelResponse">
    <complexType>
     <sequence>
-     <element ref="om:ModelResult" minOccurs="1" maxOccurs="1"/>
+     <element ref="om:ModelEnvelope" minOccurs="1" maxOccurs="1"/>
     </sequence>
    </complexType>
   </element>
   <!-- operation request element -->
-  <element name="getDistributionMap">
+  <element name="projectModel">
+   <complexType>
+    <sequence>
+     <element ref="om:ProjectionParameters" minOccurs="0" maxOccurs="1" nillable="true"/>
+    </sequence>
+   </complexType>
+  </element>
+  <!-- operation response element -->
+  <element name="projectModelResponse">
+   <complexType>
+    <sequence>
+     <element name="ticket" type="xsd:string" minOccurs="0" maxOccurs="1" nillable="true"/>
+    </sequence>
+   </complexType>
+  </element>
+  <!-- operation request element -->
+  <element name="getProgress">
    <complexType>
     <sequence>
      <element name="ticket" type="xsd:string" minOccurs="0" maxOccurs="1" nillable="true"/>
@@ -136,10 +141,58 @@
    </complexType>
   </element>
   <!-- operation response element -->
-  <element name="getDistributionMapResponse">
+  <element name="getProgressResponse">
+   <complexType>
+    <sequence>
+     <element name="progress" type="xsd:int" minOccurs="1" maxOccurs="1"/>
+    </sequence>
+   </complexType>
+  </element>
+  <!-- operation request element -->
+  <element name="getLog">
+   <complexType>
+    <sequence>
+     <element name="ticket" type="xsd:string" minOccurs="0" maxOccurs="1" nillable="true"/>
+    </sequence>
+   </complexType>
+  </element>
+  <!-- operation response element -->
+  <element name="getLogResponse">
+   <complexType>
+    <sequence>
+     <element name="log" type="xsd:string" minOccurs="1" maxOccurs="1"/>
+    </sequence>
+   </complexType>
+  </element>
+  <!-- operation request element -->
+  <element name="getMapAsAttachment">
+   <complexType>
+    <sequence>
+     <element name="ticket" type="xsd:string" minOccurs="0" maxOccurs="1" nillable="true"/>
+    </sequence>
+   </complexType>
+  </element>
+  <!-- operation response element -->
+  <element name="getMapAsAttachmentResponse">
    <complexType>
     <sequence>
      <element name="file" type="xsd:base64Binary" minOccurs="1" maxOccurs="1"/>
+    </sequence>
+   </complexType>
+  </element>
+  <!-- operation request element -->
+  <element name="getMapAsUrl">
+   <complexType>
+    <sequence>
+     <element name="ticket" type="xsd:string" minOccurs="0" maxOccurs="1" nillable="true"/>
+    </sequence>
+   </complexType>
+  </element>
+  <!-- operation response element -->
+  <element name="getMapAsUrlResponse">
+   <complexType>
+    <sequence>
+     <element name="url" type="xsd:string" minOccurs="1" maxOccurs="1"/>
     </sequence>
    </complexType>
   </element>
@@ -179,14 +232,6 @@
  <part name="parameters" element="omws:createModelResponse"/>
 </message>
 
-<message name="getModelProgressRequest">
- <part name="parameters" element="omws:getModelProgress"/>
-</message>
-
-<message name="getModelProgressResponse">
- <part name="parameters" element="omws:getModelProgressResponse"/>
-</message>
-
 <message name="getModel">
  <part name="parameters" element="omws:getModel"/>
 </message>
@@ -195,12 +240,44 @@
  <part name="parameters" element="omws:getModelResponse"/>
 </message>
 
-<message name="getDistributionMapRequest">
- <part name="parameters" element="omws:getDistributionMap"/>
+<message name="projectModelRequest">
+ <part name="parameters" element="omws:projectModel"/>
 </message>
 
-<message name="getDistributionMapResponse">
- <part name="parameters" element="omws:getDistributionMapResponse"/>
+<message name="projectModelResponse">
+ <part name="parameters" element="omws:projectModelResponse"/>
+</message>
+
+<message name="getProgressRequest">
+ <part name="parameters" element="omws:getProgress"/>
+</message>
+
+<message name="getProgressResponse">
+ <part name="parameters" element="omws:getProgressResponse"/>
+</message>
+
+<message name="getLogRequest">
+ <part name="parameters" element="omws:getLog"/>
+</message>
+
+<message name="getLogResponse">
+ <part name="parameters" element="omws:getLogResponse"/>
+</message>
+
+<message name="getMapAsAttachmentRequest">
+ <part name="parameters" element="omws:getMapAsAttachment"/>
+</message>
+
+<message name="getMapAsAttachmentResponse">
+ <part name="parameters" element="omws:getMapAsAttachmentResponse"/>
+</message>
+
+<message name="getMapAsUrlRequest">
+ <part name="parameters" element="omws:getMapAsUrl"/>
+</message>
+
+<message name="getMapAsUrlResponse">
+ <part name="parameters" element="omws:getMapAsUrlResponse"/>
 </message>
 
 <message name="openModellerHeader">
@@ -228,20 +305,35 @@
   <input message="tns:createModelRequest"/>
   <output message="tns:createModelResponse"/>
  </operation>
- <operation name="getModelProgress">
-  <documentation>Service definition of function omws__getModelProgress</documentation>
-  <input message="tns:getModelProgressRequest"/>
-  <output message="tns:getModelProgressResponse"/>
- </operation>
  <operation name="getModel">
   <documentation>Service definition of function omws__getModel</documentation>
   <input message="tns:getModel"/>
   <output message="tns:getModelResponse"/>
  </operation>
- <operation name="getDistributionMap">
-  <documentation>Service definition of function omws__getDistributionMap</documentation>
-  <input message="tns:getDistributionMapRequest"/>
-  <output message="tns:getDistributionMapResponse"/>
+ <operation name="projectModel">
+  <documentation>Service definition of function omws__projectModel</documentation>
+  <input message="tns:projectModelRequest"/>
+  <output message="tns:projectModelResponse"/>
+ </operation>
+ <operation name="getProgress">
+  <documentation>Service definition of function omws__getProgress</documentation>
+  <input message="tns:getProgressRequest"/>
+  <output message="tns:getProgressResponse"/>
+ </operation>
+ <operation name="getLog">
+  <documentation>Service definition of function omws__getLog</documentation>
+  <input message="tns:getLogRequest"/>
+  <output message="tns:getLogResponse"/>
+ </operation>
+ <operation name="getMapAsAttachment">
+  <documentation>Service definition of function omws__getMapAsAttachment</documentation>
+  <input message="tns:getMapAsAttachmentRequest"/>
+  <output message="tns:getMapAsAttachmentResponse"/>
+ </operation>
+ <operation name="getMapAsUrl">
+  <documentation>Service definition of function omws__getMapAsUrl</documentation>
+  <input message="tns:getMapAsUrlRequest"/>
+  <output message="tns:getMapAsUrlResponse"/>
  </operation>
 </portType>
 
@@ -283,15 +375,6 @@
      <SOAP:body parts="parameters" use="literal"/>
   </output>
  </operation>
- <operation name="getModelProgress">
-  <SOAP:operation soapAction=""/>
-  <input>
-     <SOAP:body parts="parameters" use="literal"/>
-  </input>
-  <output>
-     <SOAP:body parts="parameters" use="literal"/>
-  </output>
- </operation>
  <operation name="getModel">
   <SOAP:operation soapAction=""/>
   <input>
@@ -301,7 +384,43 @@
      <SOAP:body parts="parameters" use="literal"/>
   </output>
  </operation>
- <operation name="getDistributionMap">
+ <operation name="projectModel">
+  <SOAP:operation soapAction=""/>
+  <input>
+     <SOAP:body parts="parameters" use="literal"/>
+  </input>
+  <output>
+     <SOAP:body parts="parameters" use="literal"/>
+  </output>
+ </operation>
+ <operation name="getProgress">
+  <SOAP:operation soapAction=""/>
+  <input>
+     <SOAP:body parts="parameters" use="literal"/>
+  </input>
+  <output>
+     <SOAP:body parts="parameters" use="literal"/>
+  </output>
+ </operation>
+ <operation name="getLog">
+  <SOAP:operation soapAction=""/>
+  <input>
+     <SOAP:body parts="parameters" use="literal"/>
+  </input>
+  <output>
+     <SOAP:body parts="parameters" use="literal"/>
+  </output>
+ </operation>
+ <operation name="getMapAsAttachment">
+  <SOAP:operation soapAction=""/>
+  <input>
+     <SOAP:body parts="parameters" use="literal"/>
+  </input>
+  <output>
+     <SOAP:body parts="parameters" use="literal"/>
+  </output>
+ </operation>
+ <operation name="getMapAsUrl">
   <SOAP:operation soapAction=""/>
   <input>
      <SOAP:body parts="parameters" use="literal"/>

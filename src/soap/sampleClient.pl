@@ -106,7 +106,7 @@ while ( $option != $exit_option or not exists( $options{$option-1} ) )
     }
     elsif ($option == 5)
     {
-	$option = ( get_model_progress() ) ? -1 : $exit_option;
+	$option = ( get_progress() ) ? -1 : $exit_option;
     }
     elsif ($option == 6)
     {
@@ -519,7 +519,7 @@ sub create_model
     my $mask = SOAP::Data
 	->name( 'Mask' )
 	->type( 'struct' )
-	->attr( {'Id'=>$layers{$mask_code}, 'IsCategorical'=>'0'} );
+	->attr( {'Id'=>$layers{$mask_code}} );
 
     ## Environment
 
@@ -595,15 +595,15 @@ sub create_model
     return 1;
 }
 
-#######################
-#  Get model progress # 
-#######################
-sub get_model_progress
+#################
+#  Get progress # 
+#################
+sub get_progress
 {
     prepare_soap();
 
     my $method = SOAP::Data
-	-> name( 'getModelProgress' )
+	-> name( 'getProgress' )
         -> encodingStyle( 'http://xml.apache.org/xml-soap/literalxml' )
 	-> prefix( 'omws' )
         -> uri( $omws_uri );
@@ -617,7 +617,7 @@ sub get_model_progress
 	return 0;
     }
 
-    print "Requesting model progress... ";
+    print "Requesting job progress... ";
 
     my $soap_ticket = SOAP::Data
 	-> name( 'ticket' )
