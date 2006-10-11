@@ -71,14 +71,17 @@ my $soap = 0; # future soap object
 
 ### Interact with user
 
-my %options = ( 0 => 'Ping service', 
-		1 => 'Show available algorithms', 
-		2 => 'Show available layers', 
-		3 => 'Create model', 
-		4 => 'Get job progress', 
-		5 => 'Get model', 
-		6 => 'Get distribution map', 
-		7 => 'Exit' );
+my %options = ( 0  => 'Ping service', 
+		1  => 'Show available algorithms', 
+		2  => 'Show available layers', 
+		3  => 'Create model', 
+		4  => 'Get job progress', 
+		5  => 'Get model', 
+		6  => 'Get log', 
+		7  => 'Project model', 
+		8  => 'Get map as attachment', 
+		9  => 'Get map as URL', 
+		10 => 'Exit' );
 
 my $option = -1;
 
@@ -114,7 +117,19 @@ while ( $option != $exit_option or not exists( $options{$option-1} ) )
     }
     elsif ($option == 7)
     {
-	$option = ( get_distribution_map() ) ? -1 : $exit_option;
+	$option = ( get_log() ) ? -1 : $exit_option;
+    }
+    elsif ($option == 8)
+    {
+	$option = ( project_model() ) ? -1 : $exit_option;
+    }
+    elsif ($option == 9)
+    {
+	$option = ( get_map_as_attachment() ) ? -1 : $exit_option;
+    }
+    elsif ($option == 10)
+    {
+	$option = ( get_map_as_url() ) ? -1 : $exit_option;
     }
     elsif ( ! $option )
     {
@@ -641,6 +656,52 @@ sub get_progress
     return 1;
 }
 
+############
+#  Get log # 
+############
+sub get_log
+{
+    prepare_soap();
+
+    my $method = SOAP::Data
+	-> name( 'getLog' )
+        -> encodingStyle( 'http://xml.apache.org/xml-soap/literalxml' )
+	-> prefix( 'omws' )
+        -> uri( $omws_uri );
+
+    ### Get ticket
+
+    my $ticket = get_ticket_from_user();
+
+    if ( ! $ticket )
+    {
+	return 0;
+    }
+
+    print "Requesting log... ";
+
+    my $soap_ticket = SOAP::Data
+	-> name( 'ticket' )
+	-> type( 'string' )
+	-> value( $ticket );
+    
+    my $response = $soap->call( $method => $soap_ticket );
+
+    unless ( $response->fault )
+    { 
+	print "Log: \n\n".$response->result ."%\n";
+    }
+    else
+    {
+	print "Ops, found some problems:\n";
+	print join ', ', $response->faultcode, $response->faultstring; 
+	print "\n";
+	return 0;
+    }
+
+    return 1;
+}
+
 ##############
 #  Get model # 
 ##############
@@ -674,7 +735,137 @@ sub get_model
 
     unless ( $response->fault )
     { 
-	print "OK (".$response->result .")\n";
+	print "OK\n";
+    }
+    else
+    {
+	print "Ops, found some problems:\n";
+	print join ', ', $response->faultcode, $response->faultstring; 
+	print "\n";
+	return 0;
+    }
+
+    return 1;
+}
+
+##################
+#  Project model # 
+##################
+sub project_model
+{
+    prepare_soap();
+
+    my $method = SOAP::Data
+	-> name( 'projectModel' )
+        -> encodingStyle( 'http://xml.apache.org/xml-soap/literalxml' )
+	-> prefix( 'omws' )
+        -> uri( $omws_uri );
+
+    my $xml = "";
+
+
+    my $model_parameters = SOAP::Data
+	-> name( 'ProjectionParameters' )
+	-> attr( {'xmlns'=>$om_uri} )
+        -> value( \SOAP::Data->value( $xml ) );
+
+    print "Requesting model projection... ";
+    
+    my $response = $soap->call( $method => $model_parameters );
+
+    unless ( $response->fault )
+    { 
+	print "Your ticket is: ".$response->result ."\n";
+    }
+    else
+    {
+	print "Ops, found some problems:\n";
+	print join ', ', $response->faultcode, $response->faultstring; 
+	print "\n";
+	return 0;
+    }
+
+    return 1;
+}
+
+##########################
+#  Get map as attachment # 
+##########################
+sub get_map_as_attachment
+{
+    prepare_soap();
+
+    my $method = SOAP::Data
+	-> name( 'getMapAsAttachment' )
+        -> encodingStyle( 'http://xml.apache.org/xml-soap/literalxml' )
+	-> prefix( 'omws' )
+	-> uri( $omws_uri );
+
+    ### Get ticket
+
+    my $ticket = get_ticket_from_user();
+
+    if ( ! $ticket )
+    {
+	return 0;
+    }
+
+    print "Requesting map...\n";
+
+    my $soap_ticket = SOAP::Data
+	-> name( 'ticket' )
+	-> type( 'string' )
+	-> value( $ticket );
+    
+    my $response = $soap->call( $method => $soap_ticket );
+    
+    unless ( $response->fault or ! $response->result )
+    { 
+	print "OK\n";
+    }
+    else
+    {
+	print "Ops, found some problems:\n";
+	print join ', ', $response->faultcode, $response->faultstring; 
+	print "\n";
+	return 0;
+    }
+}
+
+############
+#  Get log # 
+############
+sub get_map_as_url
+{
+    prepare_soap();
+
+    my $method = SOAP::Data
+	-> name( 'getMapAsUrl' )
+        -> encodingStyle( 'http://xml.apache.org/xml-soap/literalxml' )
+	-> prefix( 'omws' )
+        -> uri( $omws_uri );
+
+    ### Get ticket
+
+    my $ticket = get_ticket_from_user();
+
+    if ( ! $ticket )
+    {
+	return 0;
+    }
+
+    print "Requesting map URL... ";
+
+    my $soap_ticket = SOAP::Data
+	-> name( 'ticket' )
+	-> type( 'string' )
+	-> value( $ticket );
+    
+    my $response = $soap->call( $method => $soap_ticket );
+
+    unless ( $response->fault )
+    { 
+	print "URL: ".$response->result ."\n";
     }
     else
     {
@@ -781,41 +972,5 @@ sub get_ticket_from_user
     return $value;
 }
 
-#########################
-#  Get distribution map # 
-#########################
-sub get_distribution_map
-{
-    print "Sorry! At the moment SOAP::Lite doesn't know how to handle DIME attachments.\n";
-    return 1;
-
-    prepare_soap();
-
-    print "Requesting map...\n";
-    
-    my $method = SOAP::Data
-	-> name( 'getDistributionMap' )
-	-> prefix( 'omws' )
-	-> uri( $omws_uri );
-
-    my $ticket = SOAP::Data
-	-> name('ticket')
-	-> type('string')
-	-> value('image.jpg');
-
-    my $response = $soap->call($method => $ticket);
-    
-    unless ($response->fault or !$response->result)
-    { 
-	print "Result: ".$response->result ."\n";
-    }
-    else
-    {
-	print "Ops, found some problems:\n";
-	print join ', ', $response->faultcode, $response->faultstring; 
-	print "\n";
-	return 0;
-    }
-}
 
 

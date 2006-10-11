@@ -22,11 +22,19 @@ EXTRA_DIST = \
 	openModeller.createModel.res.xml \
 	openModeller.getAlgorithms.req.xml \
 	openModeller.getAlgorithms.res.xml \
-	openModeller.getDistributionMap.req.xml \
-	openModeller.getDistributionMap.res.xml \
-	openModeller.nsmap \
+	openModeller.projectModel.req.xml \
+	openModeller.projectModel.res.xml \
+	openModeller.getProgress.req.xml \
+	openModeller.getProgress.res.xml \
+	openModeller.getLog.req.xml \
+	openModeller.getLog.res.xml \
+	openModeller.getMapAsAttachment.req.xml \
+	openModeller.getMapAsAttachment.res.xml \
+	openModeller.getMapAsUrl.req.xml \
+	openModeller.getMapAsUrl.res.xml \
 	openModeller.ping.req.xml \
 	openModeller.ping.res.xml \
+	openModeller.nsmap \
 	openModeller.wsdl \
 	sampleClient.pl
 
