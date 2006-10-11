@@ -533,7 +533,7 @@ omws__getLog( struct soap *soap, xsd__string ticket, xsd__string &log )
   fileName.append( ticket );
 
   fstream fin;
-  fin.open( fileName.c_str(), ios::out );
+  fin.open( fileName.c_str(), ios::in );
 
   if ( fin.is_open() ) {
 
@@ -581,7 +581,7 @@ omws__getModel( struct soap *soap, xsd__string ticket, XML &om__ModelEnvelope )
   fileName.append( ticket );
 
   fstream fin;
-  fin.open( fileName.c_str(), ios::out );
+  fin.open( fileName.c_str(), ios::in );
 
   if ( fin.is_open() ) {
 
