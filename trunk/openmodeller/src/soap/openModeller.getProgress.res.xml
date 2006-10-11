@@ -9,8 +9,8 @@
  <SOAP-ENV:Header>
  </SOAP-ENV:Header>
  <SOAP-ENV:Body>
-  <omws:getDistributionMap>
-   <ticket></ticket>
-  </omws:getDistributionMap>
+  <omws:getProgressResponse>
+   <progress>0</progress>
+  </omws:getProgressResponse>
  </SOAP-ENV:Body>
 </SOAP-ENV:Envelope>
