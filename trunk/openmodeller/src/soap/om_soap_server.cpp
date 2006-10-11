@@ -480,7 +480,7 @@ omws__getProgress( struct soap *soap, xsd__string ticket, xsd__int &progress )
 
   file = fopen( modelReqFile.c_str(), "r" );
 
-  if ( file == NULL ) {
+  if ( file != NULL ) {
 
     // If file exists, then just report 100%
     progress = 100;
@@ -497,7 +497,7 @@ omws__getProgress( struct soap *soap, xsd__string ticket, xsd__int &progress )
 
   file = fopen( projReqFile.c_str(), "r" );
 
-  if ( file == NULL ) {
+  if ( file != NULL ) {
 
     progress = 100;
 
