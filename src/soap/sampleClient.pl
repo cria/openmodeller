@@ -282,7 +282,7 @@ sub get_algorithms
     
     unless ( $response->fault )
     { 
-	my @algorithms = $response->valueof( '//AlgorithmMetadata' );
+	my @algorithms = $response->valueof( '//Algorithm' );
 
 	my $num_algs = scalar( @algorithms );
 	

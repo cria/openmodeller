@@ -390,7 +390,7 @@ AlgorithmFactory::getConfiguration()
 
     for ( ; dll != af._dlls.end(); ++dll ) {
 
-      ConfigurationPtr alg_meta_config( new ConfigurationImpl( "AlgorithmMetadata" ) );
+      ConfigurationPtr alg_meta_config( new ConfigurationImpl( "Algorithm" ) );
 
       AlgMetadata const *algMetadata = (*dll)->getMetadata();
 
