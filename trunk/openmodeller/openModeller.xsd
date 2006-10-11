@@ -11,24 +11,6 @@
     </xs:documentation>		
   </xs:annotation>
 
-<!--
-
-TODO:
-
-* See how ModelOutputType could use Algorithm Metadata with parameter values 
-  (define groups?)
-  (define SerializedAlgorithmType?)
-
-* Change Model serialization!
-
-* Define ProjectionInputType
-
-* Include Abundance in Point
-
-* Merge Presence with Absence (?)
-
- -->
-
   <!-- GLOBAL ELEMENTS -->
 
   <xs:element name="AvailableAlgorithms" type="AvailableAlgorithmsType"/>
@@ -41,9 +23,9 @@ TODO:
 
   <xs:element name="ModelEnvelope" type="ModelEnvelopeType"/>
 
-  <xs:element name="ModelResult" type="ModelResultType"/>
+  <xs:element name="SerializedModel" type="SerializedModelType"/>
 
-  <xs:element name="ProjectModel" type="ProjectionInputType"/>
+  <xs:element name="ProjectionParameters" type="ProjectionParametersType"/>
 
   <!-- TYPE DEFINITIIONS -->
 
@@ -148,33 +130,6 @@ TODO:
 
   <xs:complexType name="SerializedAlgorithmType">
     <xs:sequence>
-      <xs:element name="Name" type="xs:string"/>
-      <xs:element name="Overview" type="xs:string"/>
-      <xs:element name="Designers">
-        <xs:complexType>
-          <xs:sequence>
-            <xs:element name="Designer" maxOccurs="unbounded">
-              <xs:complexType>
-                <xs:attribute name="Name" type="xs:string"/>
-                <xs:attribute name="Contact" type="xs:string" use="optional"/>
-              </xs:complexType>
-            </xs:element>
-          </xs:sequence>
-        </xs:complexType>
-      </xs:element>
-      <xs:element name="Bibliography" type="xs:string" minOccurs="0"/>
-      <xs:element name="Developers">
-        <xs:complexType>
-          <xs:sequence>
-            <xs:element name="Developer" maxOccurs="unbounded">
-              <xs:complexType>
-                <xs:attribute name="Name" type="xs:string"/>
-                <xs:attribute name="Contact" type="xs:string" use="optional"/>
-              </xs:complexType>
-            </xs:element>
-          </xs:sequence>
-        </xs:complexType>
-      </xs:element>
       <xs:element name="Parameters">
         <xs:complexType>
           <xs:sequence>
@@ -262,6 +217,13 @@ TODO:
     <xs:attribute name="Scales" type="xs:string" use="required"/>
   </xs:complexType>
 
+  <xs:complexType name="OutputParametersType">
+    <xs:sequence>
+      <xs:element name="Format" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+    <xs:attribute name="FileType" type="xs:string" use="optional"/>
+  </xs:complexType>
+
   <xs:complexType name="ModelParametersType">
     <xs:sequence>
       <xs:element name="Sampler" type="SamplerType"/>
@@ -271,18 +233,22 @@ TODO:
 
   <xs:complexType name="ModelEnvelopeType">
     <xs:sequence>
-      <xs:element ref="ModelResult"/>
+      <xs:element ref="SerializedModel"/>
     </xs:sequence>
   </xs:complexType>
 
-  <xs:complexType name="ModelResultType">
+  <xs:complexType name="SerializedModelType">
     <xs:sequence>
       <xs:element name="Sampler" type="SamplerType"/>
       <xs:element name="Algorithm" type="SerializedAlgorithmType"/>
     </xs:sequence>
   </xs:complexType>
 
-  <xs:complexType name="ProjectionInputType">
+  <xs:complexType name="ProjectionParametersType">
+    <xs:sequence>
+      <xs:element ref="SerializedModel"/>
+      <xs:element name="Environment" type="EnvironmentType"/>
+    </xs:sequence>
   </xs:complexType>
 
 </xs:schema>
