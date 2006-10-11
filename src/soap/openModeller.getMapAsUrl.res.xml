@@ -9,8 +9,8 @@
  <SOAP-ENV:Header>
  </SOAP-ENV:Header>
  <SOAP-ENV:Body>
-  <omws:getDistributionMapResponse>
-   <file></file>
-  </omws:getDistributionMapResponse>
+  <omws:getMapAsUrlResponse>
+   <url></url>
+  </omws:getMapAsUrlResponse>
  </SOAP-ENV:Body>
 </SOAP-ENV:Envelope>
