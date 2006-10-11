@@ -58,13 +58,6 @@ int omws__getLayers(void *_, XML &om__AvailableLayers);
 //gsoap om service method-documentation: createModel Requests the creation of a spatial distribution model
 int omws__createModel(XML om__ModelParameters, xsd__string *ticket); 
 
-/** Return the progress of a model creation job given a ticket.
- * @param ticket Job identification.
- * @return standard gSOAP integer code
- */
-//gsoap om service method-documentation: getModel Retrieves a serialized model given a ticket.
-int omws__getModelProgress(xsd__string ticket, xsd__int &progress);
-
 /** Return a serialized model given a ticket.
  * @param ticket Job identification.
  * @return standard gSOAP integer code
@@ -72,6 +65,28 @@ int omws__getModelProgress(xsd__string ticket, xsd__int &progress);
 //gsoap om service method-documentation: getModel Retrieves a serialized model given a ticket.
 int omws__getModel(xsd__string ticket, XML &om__ModelEnvelope);
 
+/** Project a distribution model (creating a map) using all input parameters.
+ *
+ * @param omws__projectModel XML with model projection parameters 
+ * @param ticket Job identification.
+ * @return standard gSOAP integer code
+ */
+//gsoap om service method-documentation: projectModel Requests the projection of a spatial distribution model
+int omws__projectModel(XML om__ProjectionParameters, xsd__string *ticket); 
+
+/** Return the progress of a job given a ticket.
+ * @param ticket Job identification.
+ * @return standard gSOAP integer code
+ */
+//gsoap om service method-documentation: getProgress Returns the progress of a job.
+int omws__getProgress(xsd__string ticket, xsd__int &progress);
+
+/** Return the log of a finished job given a ticket.
+ * @param ticket Job identification.
+ * @return standard gSOAP integer code
+ */
+//gsoap om service method-documentation: getLog Returns the log of a job.
+int omws__getLog(xsd__string ticket, xsd__string &log);
 
 class xsd__base64Binary 
 { 
@@ -82,13 +97,19 @@ class xsd__base64Binary
    xsd__string options; 
    xsd__base64Binary();
    struct soap *soap;	/* soap context that created this instance */
-
 }; 
 
 /** Return the distribution map as an attachment.
  * @param ticket Job identification.
  * @return standard gSOAP integer code
  */
-//gsoap om service method-documentation: Given a ticket, return the corresponding distribution map.
-int omws__getDistributionMap(xsd__string ticket, xsd__base64Binary &file);
+//gsoap om service method-documentation: getMapAsAttachment Returns the corresponding distribution map as a DIME attachment.
+int omws__getMapAsAttachment(xsd__string ticket, xsd__base64Binary &file);
+
+/** Return the distribution map as an URL.
+ * @param ticket Job identification.
+ * @return standard gSOAP integer code
+ */
+//gsoap om service method-documentation: getMapAsUrl Returns the corresponding distribution map URL.
+int omws__getMapAsUrl(xsd__string ticket, xsd__string &url);
 

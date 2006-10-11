@@ -85,28 +85,64 @@ struct omws__createModel
 };
 #endif
 
-#ifndef SOAP_TYPE_omws__getModelProgressResponse
-#define SOAP_TYPE_omws__getModelProgressResponse (31)
-/* omws:getModelProgressResponse */
-struct omws__getModelProgressResponse
-{
-	int progress;	/* RPC return element */	/* required element of type xsd:int */
-};
-#endif
-
-#ifndef SOAP_TYPE_omws__getModelProgress
-#define SOAP_TYPE_omws__getModelProgress (32)
-/* omws:getModelProgress */
-struct omws__getModelProgress
+#ifndef SOAP_TYPE_omws__getModel
+#define SOAP_TYPE_omws__getModel (30)
+/* omws:getModel */
+struct omws__getModel
 {
 	char *ticket;	/* optional element of type xsd:string */
 };
 #endif
 
-#ifndef SOAP_TYPE_omws__getModel
-#define SOAP_TYPE_omws__getModel (34)
-/* omws:getModel */
-struct omws__getModel
+#ifndef SOAP_TYPE_omws__projectModelResponse
+#define SOAP_TYPE_omws__projectModelResponse (32)
+/* omws:projectModelResponse */
+struct omws__projectModelResponse
+{
+	char **ticket;	/* RPC return element */	/* optional element of type xsd:string */
+};
+#endif
+
+#ifndef SOAP_TYPE_omws__projectModel
+#define SOAP_TYPE_omws__projectModel (33)
+/* omws:projectModel */
+struct omws__projectModel
+{
+	wchar_t *om__ProjectionParameters;	/* optional element of type xsd:anyType */
+};
+#endif
+
+#ifndef SOAP_TYPE_omws__getProgressResponse
+#define SOAP_TYPE_omws__getProgressResponse (36)
+/* omws:getProgressResponse */
+struct omws__getProgressResponse
+{
+	int progress;	/* RPC return element */	/* required element of type xsd:int */
+};
+#endif
+
+#ifndef SOAP_TYPE_omws__getProgress
+#define SOAP_TYPE_omws__getProgress (37)
+/* omws:getProgress */
+struct omws__getProgress
+{
+	char *ticket;	/* optional element of type xsd:string */
+};
+#endif
+
+#ifndef SOAP_TYPE_omws__getLogResponse
+#define SOAP_TYPE_omws__getLogResponse (40)
+/* omws:getLogResponse */
+struct omws__getLogResponse
+{
+	char *log;	/* RPC return element */	/* required element of type xsd:string */
+};
+#endif
+
+#ifndef SOAP_TYPE_omws__getLog
+#define SOAP_TYPE_omws__getLog (41)
+/* omws:getLog */
+struct omws__getLog
 {
 	char *ticket;	/* optional element of type xsd:string */
 };
@@ -115,7 +151,7 @@ struct omws__getModel
 
 
 #ifndef SOAP_TYPE_xsd__base64Binary
-#define SOAP_TYPE_xsd__base64Binary (35)
+#define SOAP_TYPE_xsd__base64Binary (42)
 /* Base64 schema type: */
 class SOAP_CMAC xsd__base64Binary
 {
@@ -128,7 +164,7 @@ public:
 	xsd__base64Binary();	/* transient */
 	struct soap *soap;	/* transient */
 public:
-	virtual int soap_type() const { return 35; } /* = unique id SOAP_TYPE_xsd__base64Binary */
+	virtual int soap_type() const { return 42; } /* = unique id SOAP_TYPE_xsd__base64Binary */
 	virtual void soap_default(struct soap*);
 	virtual void soap_serialize(struct soap*) const;
 	virtual int soap_put(struct soap*, const char*, const char*) const;
@@ -139,26 +175,44 @@ public:
 };
 #endif
 
-#ifndef SOAP_TYPE_omws__getDistributionMapResponse
-#define SOAP_TYPE_omws__getDistributionMapResponse (45)
-/* omws:getDistributionMapResponse */
-struct omws__getDistributionMapResponse
+#ifndef SOAP_TYPE_omws__getMapAsAttachmentResponse
+#define SOAP_TYPE_omws__getMapAsAttachmentResponse (52)
+/* omws:getMapAsAttachmentResponse */
+struct omws__getMapAsAttachmentResponse
 {
 	xsd__base64Binary file;	/* RPC return element */	/* required element of type xsd:base64Binary */
 };
 #endif
 
-#ifndef SOAP_TYPE_omws__getDistributionMap
-#define SOAP_TYPE_omws__getDistributionMap (46)
-/* omws:getDistributionMap */
-struct omws__getDistributionMap
+#ifndef SOAP_TYPE_omws__getMapAsAttachment
+#define SOAP_TYPE_omws__getMapAsAttachment (53)
+/* omws:getMapAsAttachment */
+struct omws__getMapAsAttachment
+{
+	char *ticket;	/* optional element of type xsd:string */
+};
+#endif
+
+#ifndef SOAP_TYPE_omws__getMapAsUrlResponse
+#define SOAP_TYPE_omws__getMapAsUrlResponse (55)
+/* omws:getMapAsUrlResponse */
+struct omws__getMapAsUrlResponse
+{
+	char *url;	/* RPC return element */	/* required element of type xsd:string */
+};
+#endif
+
+#ifndef SOAP_TYPE_omws__getMapAsUrl
+#define SOAP_TYPE_omws__getMapAsUrl (56)
+/* omws:getMapAsUrl */
+struct omws__getMapAsUrl
 {
 	char *ticket;	/* optional element of type xsd:string */
 };
 #endif
 
 #ifndef SOAP_TYPE_SOAP_ENV__Code
-#define SOAP_TYPE_SOAP_ENV__Code (47)
+#define SOAP_TYPE_SOAP_ENV__Code (57)
 /* SOAP Fault Code: */
 struct SOAP_ENV__Code
 {
@@ -168,7 +222,7 @@ struct SOAP_ENV__Code
 #endif
 
 #ifndef SOAP_TYPE_SOAP_ENV__Detail
-#define SOAP_TYPE_SOAP_ENV__Detail (49)
+#define SOAP_TYPE_SOAP_ENV__Detail (59)
 /* SOAP-ENV:Detail */
 struct SOAP_ENV__Detail
 {
@@ -179,7 +233,7 @@ struct SOAP_ENV__Detail
 #endif
 
 #ifndef SOAP_TYPE_SOAP_ENV__Reason
-#define SOAP_TYPE_SOAP_ENV__Reason (50)
+#define SOAP_TYPE_SOAP_ENV__Reason (60)
 /* SOAP-ENV:Reason */
 struct SOAP_ENV__Reason
 {
@@ -188,7 +242,7 @@ struct SOAP_ENV__Reason
 #endif
 
 #ifndef SOAP_TYPE_SOAP_ENV__Fault
-#define SOAP_TYPE_SOAP_ENV__Fault (51)
+#define SOAP_TYPE_SOAP_ENV__Fault (61)
 /* SOAP Fault: */
 struct SOAP_ENV__Fault
 {
@@ -277,11 +331,17 @@ SOAP_FMAC5 int SOAP_FMAC6 omws__getLayers(struct soap*, void *_, wchar_t *&om__A
 
 SOAP_FMAC5 int SOAP_FMAC6 omws__createModel(struct soap*, wchar_t *om__ModelParameters, char **ticket);
 
-SOAP_FMAC5 int SOAP_FMAC6 omws__getModelProgress(struct soap*, char *ticket, int &progress);
+SOAP_FMAC5 int SOAP_FMAC6 omws__getModel(struct soap*, char *ticket, wchar_t *&om__ModelEnvelope);
 
-SOAP_FMAC5 int SOAP_FMAC6 omws__getModel(struct soap*, char *ticket, wchar_t *&om__ModelResult);
+SOAP_FMAC5 int SOAP_FMAC6 omws__projectModel(struct soap*, wchar_t *om__ProjectionParameters, char **ticket);
 
-SOAP_FMAC5 int SOAP_FMAC6 omws__getDistributionMap(struct soap*, char *ticket, xsd__base64Binary &file);
+SOAP_FMAC5 int SOAP_FMAC6 omws__getProgress(struct soap*, char *ticket, int &progress);
+
+SOAP_FMAC5 int SOAP_FMAC6 omws__getLog(struct soap*, char *ticket, char *&log);
+
+SOAP_FMAC5 int SOAP_FMAC6 omws__getMapAsAttachment(struct soap*, char *ticket, xsd__base64Binary &file);
+
+SOAP_FMAC5 int SOAP_FMAC6 omws__getMapAsUrl(struct soap*, char *ticket, char *&url);
 
 /******************************************************************************\
  *                                                                            *
@@ -298,11 +358,17 @@ SOAP_FMAC5 int SOAP_FMAC6 soap_call_omws__getLayers(struct soap *soap, const cha
 
 SOAP_FMAC5 int SOAP_FMAC6 soap_call_omws__createModel(struct soap *soap, const char *soap_endpoint, const char *soap_action, wchar_t *om__ModelParameters, char **ticket);
 
-SOAP_FMAC5 int SOAP_FMAC6 soap_call_omws__getModelProgress(struct soap *soap, const char *soap_endpoint, const char *soap_action, char *ticket, int &progress);
+SOAP_FMAC5 int SOAP_FMAC6 soap_call_omws__getModel(struct soap *soap, const char *soap_endpoint, const char *soap_action, char *ticket, wchar_t *&om__ModelEnvelope);
 
-SOAP_FMAC5 int SOAP_FMAC6 soap_call_omws__getModel(struct soap *soap, const char *soap_endpoint, const char *soap_action, char *ticket, wchar_t *&om__ModelResult);
+SOAP_FMAC5 int SOAP_FMAC6 soap_call_omws__projectModel(struct soap *soap, const char *soap_endpoint, const char *soap_action, wchar_t *om__ProjectionParameters, char **ticket);
 
-SOAP_FMAC5 int SOAP_FMAC6 soap_call_omws__getDistributionMap(struct soap *soap, const char *soap_endpoint, const char *soap_action, char *ticket, xsd__base64Binary &file);
+SOAP_FMAC5 int SOAP_FMAC6 soap_call_omws__getProgress(struct soap *soap, const char *soap_endpoint, const char *soap_action, char *ticket, int &progress);
+
+SOAP_FMAC5 int SOAP_FMAC6 soap_call_omws__getLog(struct soap *soap, const char *soap_endpoint, const char *soap_action, char *ticket, char *&log);
+
+SOAP_FMAC5 int SOAP_FMAC6 soap_call_omws__getMapAsAttachment(struct soap *soap, const char *soap_endpoint, const char *soap_action, char *ticket, xsd__base64Binary &file);
+
+SOAP_FMAC5 int SOAP_FMAC6 soap_call_omws__getMapAsUrl(struct soap *soap, const char *soap_endpoint, const char *soap_action, char *ticket, char *&url);
 
 /******************************************************************************\
  *                                                                            *
@@ -322,11 +388,17 @@ SOAP_FMAC5 int SOAP_FMAC6 soap_serve_omws__getLayers(struct soap*);
 
 SOAP_FMAC5 int SOAP_FMAC6 soap_serve_omws__createModel(struct soap*);
 
-SOAP_FMAC5 int SOAP_FMAC6 soap_serve_omws__getModelProgress(struct soap*);
-
 SOAP_FMAC5 int SOAP_FMAC6 soap_serve_omws__getModel(struct soap*);
 
-SOAP_FMAC5 int SOAP_FMAC6 soap_serve_omws__getDistributionMap(struct soap*);
+SOAP_FMAC5 int SOAP_FMAC6 soap_serve_omws__projectModel(struct soap*);
+
+SOAP_FMAC5 int SOAP_FMAC6 soap_serve_omws__getProgress(struct soap*);
+
+SOAP_FMAC5 int SOAP_FMAC6 soap_serve_omws__getLog(struct soap*);
+
+SOAP_FMAC5 int SOAP_FMAC6 soap_serve_omws__getMapAsAttachment(struct soap*);
+
+SOAP_FMAC5 int SOAP_FMAC6 soap_serve_omws__getMapAsUrl(struct soap*);
 
 #endif
 
