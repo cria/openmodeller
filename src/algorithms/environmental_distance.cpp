@@ -45,10 +45,10 @@ static AlgParamMetadata parameters[NUM_PARAM] = { // Parameters
    },
    { // 2nd parameter
       PARPOINTQNT,      // Id
-      "Nearest \"n\" points", // Name
+      "Nearest \'n\' points", // Name
       "Integer",        // Type
-      "Nearest \"n\" points whose mean value will be the reference when calculating environmental distances.", // Overview
-      "Nearest \"n\" points whose mean value will be the reference when calculating environmental distances. When set to 1, distances will be measured to the closest point, which is the same behavior of the minimum distance algorithm. When set to 0, distances will be measured to the average of all presence points, which is the same behavior of the distance to average algorithm. Intermediate values between 1 and the total number of presence points are now accepted.", // Description
+      "Nearest \'n\' points whose mean value will be the reference when calculating environmental distances.", // Overview
+      "Nearest \'n\' points whose mean value will be the reference when calculating environmental distances. When set to 1, distances will be measured to the closest point, which is the same behavior of the minimum distance algorithm. When set to 0, distances will be measured to the average of all presence points, which is the same behavior of the distance to average algorithm. Intermediate values between 1 and the total number of presence points are now accepted.", // Description
       1,          // Not zero if the parameter has lower limit
       0,          // Parameter's lower limit
       0,          // Not zero if the parameter has upper limit
