@@ -78,31 +78,6 @@ AlgorithmImpl::getConfiguration() const
   config->addNameValue( "Id", _metadata->id );
   config->addNameValue( "Version", _metadata->version );
 
-  ConfigurationPtr alg_name_config( new ConfigurationImpl( "Name" ) );
-  alg_name_config->setValue( _metadata->name );
-  config->addSubsection( alg_name_config );
-
-  ConfigurationPtr alg_overview_config( new ConfigurationImpl( "Overview" ) );
-  alg_overview_config->setValue( _metadata->overview );
-  config->addSubsection( alg_overview_config );
-
-  ConfigurationPtr alg_designers_config( new ConfigurationImpl( "Designers" ) );
-  ConfigurationPtr alg_designer_config( new ConfigurationImpl( "Designer" ) );
-  alg_designer_config->addNameValue( "Name", _metadata->author );
-  alg_designers_config->addSubsection( alg_designer_config );
-  config->addSubsection( alg_designers_config );
-
-  ConfigurationPtr alg_bibliography_config( new ConfigurationImpl( "Bibliography" ) );
-  alg_bibliography_config->setValue( _metadata->biblio );
-  config->addSubsection( alg_bibliography_config );
-
-  ConfigurationPtr alg_developers_config( new ConfigurationImpl( "Developers" ) );
-  ConfigurationPtr alg_developer_config( new ConfigurationImpl( "Developer" ) );
-  alg_developer_config->addNameValue( "Name", _metadata->code_author );
-  alg_developer_config->addNameValue( "Contact", _metadata->contact );
-  alg_developers_config->addSubsection( alg_developer_config );
-  config->addSubsection( alg_developers_config );
-
   ConfigurationPtr param_config( new ConfigurationImpl("Parameters") );
   ParamSetType::const_iterator p = _param.begin();
   for( ; p != _param.end() ; ++p ) {

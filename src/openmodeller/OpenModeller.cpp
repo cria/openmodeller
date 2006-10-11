@@ -461,8 +461,7 @@ ConfusionMatrix * OpenModeller::getConfusionMatrix()
 ConfigurationPtr
 OpenModeller::getConfiguration() const
 {
-
-  ConfigurationPtr config( new ConfigurationImpl("ModelResult"));
+  ConfigurationPtr config( new ConfigurationImpl("SerializedModel"));
 
   ConfigurationPtr sampler_config( _samp->getConfiguration() );
 
