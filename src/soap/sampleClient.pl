@@ -75,7 +75,7 @@ my %options = ( 0 => 'Ping service',
 		1 => 'Show available algorithms', 
 		2 => 'Show available layers', 
 		3 => 'Create model', 
-		4 => 'Get model progress', 
+		4 => 'Get job progress', 
 		5 => 'Get model', 
 		6 => 'Get distribution map', 
 		7 => 'Exit' );
@@ -674,7 +674,7 @@ sub get_model
 
     unless ( $response->fault )
     { 
-	print "Progress: ".$response->result ."%\n";
+	print "OK (".$response->result .")\n";
     }
     else
     {
