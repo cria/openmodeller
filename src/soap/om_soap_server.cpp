@@ -49,7 +49,6 @@ using namespace std;
 #define OMWS_MODEL_CREATION_REQUEST_PREFIX "model_req."
 #define OMWS_MODEL_CREATION_RESPONSE_PREFIX "model_resp."
 #define OMWS_MODEL_PROJECTION_REQUEST_PREFIX "proj_req."
-#define OMWS_MODEL_PROJECTION_RESPONSE_PREFIX "proj_resp."
 #define OMWS_LAYERS_DIRECTORY "/home/renato/projects/openmodeller/examples/layers/"
 #define OMWS_LAYERS_LABEL "Remote layers"
 #define OMWS_BASE_URL "http://www.cria.org.br/~renato/om/"
@@ -60,11 +59,12 @@ using namespace std;
 /***  Forward declarations ***/
 
 static void *process_request( void* );
-static int getData( struct soap*, const xsd__string, xsd__base64Binary& );
+static bool fileExists( const char* fileName );
 static wchar_t* convertToWideChar( const char* p );
 static bool readDirectory( const char* dir, const char* label, ostream &xml, int depth );
 static bool isValidGdalFile( const char* fileName );
 static bool hasValidGdalProjection( const char* fileName );
+static int getData( struct soap*, const xsd__string, xsd__base64Binary& );
 
 /********************/
 /***  Static data ***/
@@ -473,42 +473,57 @@ omws__getProgress( struct soap *soap, xsd__string ticket, xsd__int &progress )
   }
 
   // First try searching on model creation jobs
-  string modelReqFile( fileName );
+  string modelRespFile( fileName );
 
-  modelReqFile.append( OMWS_MODEL_CREATION_RESPONSE_PREFIX );
-  modelReqFile.append( ticket );
+  modelRespFile.append( OMWS_MODEL_CREATION_RESPONSE_PREFIX );
+  modelRespFile.append( ticket );
 
-  FILE *file;
-
-  file = fopen( modelReqFile.c_str(), "r" );
-
-  if ( file != NULL ) {
+  if ( fileExists( modelRespFile.c_str() ) ) {
 
     // If file exists, then just report 100%
     progress = 100;
-
-    fclose( file );
     return SOAP_OK;
   }
 
-  // Now try searching on model projection jobs
-  string projReqFile( fileName );
+  // Now try searching on model projection jobs, for each possible file extension
 
-  projReqFile.append( OMWS_MODEL_PROJECTION_RESPONSE_PREFIX );
-  projReqFile.append( ticket );
+  // TIF
+  string projTifFile( fileName );
 
-  file = fopen( projReqFile.c_str(), "r" );
+  projTifFile.append( ticket );
+  projTifFile.append( ".tif" );
 
-  if ( file != NULL ) {
+  if ( fileExists( projTifFile.c_str() ) ) {
 
     progress = 100;
-
-    fclose( file );
+    return SOAP_OK;
   }
-  else {
 
-    progress = 0;
+  // IMG
+  string projImgFile( fileName );
+
+  projImgFile.append( ticket );
+  projImgFile.append( ".img" );
+
+  if ( fileExists( projImgFile.c_str() ) ) {
+
+    progress = 100;
+    return SOAP_OK;
   }
+
+  // BMP
+  string projBmpFile( fileName );
+
+  projBmpFile.append( ticket );
+  projBmpFile.append( ".bmp" );
+
+  if ( fileExists( projBmpFile.c_str() ) ) {
+
+    progress = 100;
+    return SOAP_OK;
+  }
+
+  progress = 0;
 
   return SOAP_OK;
 }
@@ -679,57 +694,23 @@ omws__getMapAsUrl( struct soap *soap, xsd__string ticket, xsd__string &url )
 //
 /////////////////////////////
 
-/******************/
-/**** getData ****/
-static int 
-getData( struct soap *soap, const xsd__string ticket, xsd__base64Binary &file )
+/********************/
+/**** fileExists ****/
+static bool 
+fileExists( const char* fileName )
 { 
-  struct stat sb;
+  bool exists = false;
 
-  FILE *fd = NULL;
+  FILE * file = fopen( fileName, "r" );
 
-  if ( ! strchr( ticket, '/' ) && ! strchr( ticket, '\\' ) && ! strchr( ticket, ':') )
-  { 
-    char *s = (char*)soap_malloc( soap, strlen(OM_SOAP_TMPDIR) + strlen(ticket) + 2 );
-    strcpy( s, OM_SOAP_TMPDIR );
-    strcat( s, "/" );
-    strcat( s, ticket );
-    fd = fopen( s, "rb" );
-  }
-  if ( ! fd ) {
+  if ( file != NULL ) {
 
-    return SOAP_EOF;
+    exists = true;
+
+    fclose( file );
   }
 
-  if ( ( ! fstat( fileno(fd), &sb ) && sb.st_size > 0 ) ) { 
-
-    // don't use HTTP chunking - buffer the content
-    int i;
-    file.__size = sb.st_size;
-    file.__ptr = (unsigned char*)soap_malloc( soap, sb.st_size );
-    for ( i = 0; i < sb.st_size; i++ ) {
-
-      int c;
-
-      if ( ( c = fgetc( fd ) ) == EOF ) {
-
-        break;
-      }
-
-      file.__ptr[i] = c;
-    }
-
-    fclose( fd );
-  }
-  else { 
-
-    return SOAP_EOF;
-  }
-
-  file.type = ""; // specify non-NULL id or type to enable DIME
-  file.options = soap_dime_option( soap, 0, ticket );
-
-  return SOAP_OK;
+  return exists;
 }
 
 /***************************/
@@ -917,6 +898,59 @@ bool hasValidGdalProjection( const char* fileName )
     GDALClose( testFile );
     return true;
   }
+}
+
+/******************/
+/**** getData ****/
+static int 
+getData( struct soap *soap, const xsd__string ticket, xsd__base64Binary &file )
+{ 
+  struct stat sb;
+
+  FILE *fd = NULL;
+
+  if ( ! strchr( ticket, '/' ) && ! strchr( ticket, '\\' ) && ! strchr( ticket, ':') )
+  { 
+    char *s = (char*)soap_malloc( soap, strlen(OM_SOAP_TMPDIR) + strlen(ticket) + 2 );
+    strcpy( s, OM_SOAP_TMPDIR );
+    strcat( s, "/" );
+    strcat( s, ticket );
+    fd = fopen( s, "rb" );
+  }
+  if ( ! fd ) {
+
+    return SOAP_EOF;
+  }
+
+  if ( ( ! fstat( fileno(fd), &sb ) && sb.st_size > 0 ) ) { 
+
+    // don't use HTTP chunking - buffer the content
+    int i;
+    file.__size = sb.st_size;
+    file.__ptr = (unsigned char*)soap_malloc( soap, sb.st_size );
+    for ( i = 0; i < sb.st_size; i++ ) {
+
+      int c;
+
+      if ( ( c = fgetc( fd ) ) == EOF ) {
+
+        break;
+      }
+
+      file.__ptr[i] = c;
+    }
+
+    fclose( fd );
+  }
+  else { 
+
+    return SOAP_EOF;
+  }
+
+  file.type = ""; // specify non-NULL id or type to enable DIME
+  file.options = soap_dime_option( soap, 0, ticket );
+
+  return SOAP_OK;
 }
 
 ///////////////////////
