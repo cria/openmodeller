@@ -689,7 +689,7 @@ sub get_log
 
     unless ( $response->fault )
     { 
-	print "Log: \n\n".$response->result ."%\n";
+	print "Log: \n\n".$response->result ."\n";
     }
     else
     {
@@ -761,17 +761,29 @@ sub project_model
 	-> prefix( 'omws' )
         -> uri( $omws_uri );
 
-    my $xml = "";
+    # Hard coded for now
+    my $xml = '<ProjectionParameters xmlns="http://openmodeller.cria.org.br/xml/1.0">
+<Algorithm Id="Bioclim" Version="0.2">
+<Parameters>
+<Parameter Id="StandardDeviationCutoff" Value="0.7"/></Parameters>
+<Model>
+<Bioclim Mean="221.6 2375.984008789062" StdDev="93.9951700886806 184.4701277015361" Minimum="90 1911.670043945312" Maximum="413 2565.010009765625"/></Model></Algorithm>
+<Environment NumLayers="2">
+<Map Id="/home/renato/projects/openmodeller/examples/layers/rain_coolest" IsCategorical="0" Min="0" Max="2137"/>
+<Map Id="/home/renato/projects/openmodeller/examples/layers/temp_avg" IsCategorical="0" Min="-545.4199829101562" Max="3342.52001953125"/>
+<Mask Id="/home/renato/projects/openmodeller/examples/layers/rain_coolest"/></Environment>
+<OutputParameters FileType="FloatingTiff">
+<TemplateLayer Id="/home/renato/projects/openmodeller/examples/layers/rain_coolest"/>
+</OutputParameters>
+</ProjectionParameters>';
 
-
-    my $model_parameters = SOAP::Data
-	-> name( 'ProjectionParameters' )
-	-> attr( {'xmlns'=>$om_uri} )
-        -> value( \SOAP::Data->value( $xml ) );
+    # Encode coord system directly in XML to avoid automatic xsi:types for the content
+    my $xml_parameters = SOAP::Data
+	-> type( 'xml' => $xml );
 
     print "Requesting model projection... ";
     
-    my $response = $soap->call( $method => $model_parameters );
+    my $response = $soap->call( $method => $xml_parameters );
 
     unless ( $response->fault )
     { 
