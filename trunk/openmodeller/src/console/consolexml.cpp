@@ -73,7 +73,7 @@ std::string ConsoleXml::createModel(const std::string myConfigFile, bool ignoreL
   }
 }
 
-bool ConsoleXml::projectModel(const std::string theModel, const  std::string theEnvironment, const std::string theOutput)
+bool ConsoleXml::projectModel(const std::string theModel, const std::string theEnvironment, const std::string theOutput)
 {  
   try {
 
@@ -102,6 +102,38 @@ bool ConsoleXml::projectModel(const std::string theModel, const  std::string the
     cout << "Projecting to file " << theOutput << endl;
 
     om.createMap( e, theOutput.c_str() );
+
+    return true;
+  }
+  catch( exception& e ) {
+    cerr << "Exception Caught" << endl;
+    cerr << e.what() << endl;
+    return false;
+  }
+}
+
+bool ConsoleXml::projectModel(const std::string projectionXmlFile, const std::string mapFile, bool ignoreLog)
+{  
+  try {
+
+    if (!ignoreLog)
+    {
+      g_log.setLevel( Log::Debug );
+      g_log.setCallback( new MyLog() );
+    }
+
+    AlgorithmFactory::searchDefaultDirs();
+
+    OpenModeller om;
+    cout << "Loading XML Input file " << projectionXmlFile << endl;
+
+    ConfigurationPtr c = Configuration::readXml( projectionXmlFile.c_str() );
+
+    om.setProjectionConfiguration(c);
+
+    cout << "Projecting to file " << mapFile << endl;
+
+    om.createMap( mapFile.c_str() );
 
     return true;
   }

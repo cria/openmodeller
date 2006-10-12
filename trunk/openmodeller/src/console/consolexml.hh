@@ -36,7 +36,10 @@ class ConsoleXml
         std::string createModel(const std::string myConfigFile, bool ignoreLog=false);
         /** Project a model into a set of environment layers
          * and put the output image into theOutput */
-        bool projectModel(const std::string theModel, const  std::string theEnvironment, const std::string theOutput);
+        bool projectModel(const std::string theModel, const std::string theEnvironment, const std::string theOutput);
+        /** Project a model given a single projection XML file as input 
+         * and put the output image into mapFile */
+        bool projectModel(const std::string projectionXmlFile, const std::string mapFile, bool ignoreLog);
         /** Get a string containing xml metadata for all algorithms
          */
         std::string getAllAlgorithmMetadataXml();
