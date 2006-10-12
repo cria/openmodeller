@@ -84,18 +84,23 @@ EnvironmentPtr createEnvironment( )
 /******************* static utility functions *******************/
 
 ConfigurationPtr
-EnvironmentImpl::getLayerConfig( const layer& l ) {
+EnvironmentImpl::getLayerConfig( const layer& l, bool basicConfig ) {
   ConfigurationPtr cfg( new ConfigurationImpl() );
 
-  cfg->addNameValue("Id", l.first );
-  cfg->addNameValue("IsCategorical", l.second->isCategorical());
+  cfg->addNameValue( "Id", l.first );
 
-  if ( l.second->hasMinMax() ) {
-    Scalar min;
-    Scalar max;
-    l.second->getMinMax( &min, &max );
-    cfg->addNameValue( "Min", min );
-    cfg->addNameValue( "Max", max );
+  if ( ! basicConfig ) {
+
+    cfg->addNameValue( "IsCategorical", l.second->isCategorical() );
+
+    if ( l.second->hasMinMax() ) {
+
+      Scalar min;
+      Scalar max;
+      l.second->getMinMax( &min, &max );
+      cfg->addNameValue( "Min", min );
+      cfg->addNameValue( "Max", max );
+    }
   }
 
   return cfg;
@@ -223,14 +228,18 @@ EnvironmentImpl::getConfiguration() const
 
   layers::const_iterator l = _layers.begin();
   layers::const_iterator end = _layers.end();
+
   for( ; l != end; ++l ) {
+
     ConfigurationPtr cfg( getLayerConfig( *l ) );
     cfg->setName("Map");
     config->addSubsection( cfg );
   }
 
   if ( _mask.second ) {
-    ConfigurationPtr maskcfg( getLayerConfig( _mask ) );
+
+    bool onlyBasicConfig = true;
+    ConfigurationPtr maskcfg( getLayerConfig( _mask, onlyBasicConfig ) );
     maskcfg->setName( "Mask" );
     config->addSubsection( maskcfg );
   }

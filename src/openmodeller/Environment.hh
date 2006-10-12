@@ -188,7 +188,7 @@ private:
      Does not properly set the Configuration name.
      Is a member function so it can access the private typedefs. */
   static ConfigurationPtr
-  getLayerConfig( const layer& l );
+  getLayerConfig( const layer& l, bool basicConfig=false );
 
   /* utility to construct a layer pair object.
      It is declared a member so it has access to the private typedef for layer */
