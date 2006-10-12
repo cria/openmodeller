@@ -16,27 +16,49 @@
  ***************************************************************************/
 
 #include "consolexml.hh"
-#include <fstream>   // file I/O
+#include <fstream>   // file I/O for XML
+#include <stdio.h>   // file I/O for log
 
 using namespace std;
 
 int main( int argc, char **argv ) {
-    if (argc != 3) {
+    if (argc < 3) {
       cout << "Usage: "
           << argv[0]
-          << " <configfile-xml> a openmodeller xml request file "
-          << " <outputfilename> a file in which the xml outputs will be stored"
+          << " xmlinputfile"
+          << " xmloutputfile"
+          << " [logfile]"
           << endl;
       return -1;
     }
   
     std::string myRequest(argv[1]);
     std::string myFileName(argv[2]);
+
+    bool dontLog = false;
+
+    // Write log to file, if requested
+    FILE *flog = NULL;
+    if (argc == 4) {
+      std::string myLog(argv[3]);
+      flog = fopen(myLog.c_str(), "w");
+
+      if (flog == NULL) {
+        fprintf(stderr, "Could not open log file!\n");
+      }
+      else {
+        dontLog = true;
+        g_log.set(Log::Info, flog, "");
+      }
+    }
+
     ConsoleXml myConsoleXml;
-    std::string myOutput=myConsoleXml.createModel(myRequest);
+    std::string myOutput=myConsoleXml.createModel(myRequest, dontLog);
     //write output to file
-    ofstream file( myFileName.c_str());
+    ofstream file(myFileName.c_str());
     file << myOutput;
     file.close();
-  
+
+    // No need to close the log file!
+    // openModeller takes care of that...
 }

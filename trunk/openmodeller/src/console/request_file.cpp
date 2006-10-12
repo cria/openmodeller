@@ -450,7 +450,7 @@ RequestFile::makeModel( OpenModeller *om )
 
     ConfigurationPtr conf = Configuration::readXml( file_name );
       
-    om->setConfiguration( conf );
+    om->setModelConfiguration( conf );
 
     delete[] file_name;
 
@@ -468,7 +468,7 @@ RequestFile::makeModel( OpenModeller *om )
     char* file_name = new char [_outputModelFile.size() + 1];
     strcpy( file_name, _outputModelFile.c_str() );
 
-    ConfigurationPtr cfg = om->getConfiguration();
+    ConfigurationPtr cfg = om->getModelConfiguration();
     Configuration::writeXml( cfg, file_name );
 
     delete[] file_name;

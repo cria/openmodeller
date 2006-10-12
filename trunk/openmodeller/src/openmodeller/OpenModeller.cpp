@@ -459,7 +459,7 @@ ConfusionMatrix * OpenModeller::getConfusionMatrix()
 }
 
 ConfigurationPtr
-OpenModeller::getConfiguration() const
+OpenModeller::getModelConfiguration() const
 {
   ConfigurationPtr config( new ConfigurationImpl("SerializedModel"));
 
@@ -475,7 +475,7 @@ OpenModeller::getConfiguration() const
 }
 
 void
-OpenModeller::setConfiguration( const ConstConfigurationPtr & config )
+OpenModeller::setModelConfiguration( const ConstConfigurationPtr & config )
 {
   _samp = createSampler( config->getSubsection( "Sampler" ) );
   _env = _samp->getEnvironment();

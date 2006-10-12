@@ -33,7 +33,7 @@ class ConsoleXml
          * so that we can pass the result cleanly to third part apps
          * using this lib, such as the JNI interface. 
          * */
-        std::string createModel(const std::string myConfigFile);
+        std::string createModel(const std::string myConfigFile, bool ignoreLog=false);
         /** Project a model into a set of environment layers
          * and put the output image into theOutput */
         bool projectModel(const std::string theModel, const  std::string theEnvironment, const std::string theOutput);
