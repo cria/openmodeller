@@ -47,7 +47,9 @@ using namespace std;
 #define OMWS_BACKLOG (100) // Max. request backlog 
 #define OMWS_TICKET_TEMPLATE "XXXXXX"
 #define OMWS_MODEL_CREATION_REQUEST_PREFIX "model_req."
+#define OMWS_MODEL_CREATION_RESPONSE_PREFIX "model_resp."
 #define OMWS_MODEL_PROJECTION_REQUEST_PREFIX "proj_req."
+#define OMWS_MODEL_PROJECTION_RESPONSE_PREFIX "proj_resp."
 #define OMWS_LAYERS_DIRECTORY "/home/renato/projects/openmodeller/examples/layers/"
 #define OMWS_LAYERS_LABEL "Remote layers"
 #define OMWS_BASE_URL "http://www.cria.org.br/~renato/om/"
@@ -473,7 +475,7 @@ omws__getProgress( struct soap *soap, xsd__string ticket, xsd__int &progress )
   // First try searching on model creation jobs
   string modelReqFile( fileName );
 
-  modelReqFile.append( OMWS_MODEL_CREATION_REQUEST_PREFIX );
+  modelReqFile.append( OMWS_MODEL_CREATION_RESPONSE_PREFIX );
   modelReqFile.append( ticket );
 
   FILE *file;
@@ -492,7 +494,7 @@ omws__getProgress( struct soap *soap, xsd__string ticket, xsd__int &progress )
   // Now try searching on model projection jobs
   string projReqFile( fileName );
 
-  projReqFile.append( OMWS_MODEL_PROJECTION_REQUEST_PREFIX );
+  projReqFile.append( OMWS_MODEL_PROJECTION_RESPONSE_PREFIX );
   projReqFile.append( ticket );
 
   file = fopen( projReqFile.c_str(), "r" );
