@@ -49,6 +49,8 @@
 #include <openmodeller/Configuration.hh>
 #include <openmodeller/Model.hh>
 
+#include <openmodeller/Exceptions.hh>
+
 #include <string>
 using std::string;
 
@@ -278,7 +280,7 @@ OpenModeller::setAlgorithm( char const *id, int nparam,
 int
 OpenModeller::createModel()
 {
-  g_log( "Creating the model\n" );
+  g_log( "Creating model\n" );
 
   char *error = parameterModelCheck();
   if ( error )
@@ -289,7 +291,7 @@ OpenModeller::createModel()
 
   _alg->createModel( _samp, _model_command );
 
-  g_log( "\nFinished Creating Model\n" );
+  g_log( "\nFinished creating model\n" );
 
   return 1;
 }
@@ -314,58 +316,100 @@ OpenModeller::parameterModelCheck()
 
 /******************/
 /*** create Map ***/
-void
+int
 OpenModeller::createMap( const EnvironmentPtr & env, char const *output_file, MapFormat& output_format )
 {
-  Model m( _alg->getModel() );
+  g_log( "Projecting model\n" );
 
-  Map *mask = env->getMask();
+  if ( ! env ) {
 
-  // If mask is undefined, use first layer as a mask
-  if (!mask)
-    mask = env->getLayer(0);
-
-  // copy mask settings to the output format ONLY when they are undefined 
-  output_format.copyDefaults( *mask );
-
-  // try to infer the output file format (default is 64 bit floating tiff).
-  string fname(output_file);
-  int pos = fname.length() - 4;
-  if (pos >0 && fname.compare( pos, 4, ".bmp" ) == 0 ) {
-    output_format.setFormat( MapFormat::GreyBMP );
+    g_log( "Projection environment not specified.\n" );
+    return 0;
   }
 
-  // Create map on disc.
-  Map map( RasterFactory::instance().create( output_file, output_format ) );
+  _projEnv = env;
 
-  Projector::createMap( m, env,
-			&map,
-			_actualAreaStats,
-			_map_command );
+  g_log.debug( "getModel\n" );
+
+  Model model( _alg->getModel() );
+
+  g_log.debug( "getMask\n" );
+
+  Map *mask = _projEnv->getMask();
+
+  // If mask is undefined, use first layer as a mask
+  if ( ! mask ) {
+
+    mask = _projEnv->getLayer(0);
+  }
+
+  g_log.debug( "format\n" );
+
+  // Store output format in property 
+  _format = output_format;
+
+  // copy mask settings to the output format ONLY when they are undefined 
+  _format.copyDefaults( *mask );
+
+  // try to infer the output file format (default is 64 bit floating tiff).
+  string fname( output_file );
+
+  int pos = fname.length() - 4;
+
+  if ( pos > 0 ) {
+
+    if ( fname.compare( pos, 4, ".bmp" ) == 0 ) {
+
+      _format.setFormat( MapFormat::GreyBMP );
+    }
+    else if ( fname.compare( pos, 4, ".img" ) == 0 ) {
+
+      _format.setFormat( MapFormat::FloatingHFA );
+    }
+  }
+
+  g_log.debug( "map\n" );
+
+  // Create map on disc.
+  Map map( RasterFactory::instance().create( output_file, _format ) );
+
+  Projector::createMap( model, _projEnv, &map, _actualAreaStats, _map_command );
+
+  g_log( "\nFinished projecting model\n" );
+
+  return 1;
 }
 
-void
+int
 OpenModeller::createMap( const EnvironmentPtr & env, char const *output_file )
 {
-  MapFormat mf;
-  return createMap( env, output_file, mf );
+  return createMap( env, output_file, _format );
 }
 
 /******************/
 /*** create Map ***/
-void
+int
 OpenModeller::createMap( char const *output_file )
 {
-  MapFormat mf;
-  return createMap( _env, output_file, mf );
+  if ( ! _projEnv ) {
+
+    _projEnv = _env;
+  }
+
+  return createMap( _projEnv, output_file, _format );
 }
 
 /******************/
 /*** create Map ***/
-void
+int
 OpenModeller::createMap( char const *output_file, MapFormat& output_format )
 {
-  return createMap( _env, output_file, output_format );
+  if ( ! _projEnv ) {
+
+    _projEnv = _env;
+  }
+
+  return createMap( _projEnv, output_file, output_format );
 }
 
 /**********************************/
@@ -373,13 +417,16 @@ OpenModeller::createMap( char const *output_file, MapFormat& output_format )
 Scalar
 OpenModeller::getValue(const ConstEnvironmentPtr& env, Coord x, Coord y)
 {
-  if ( !_env ) {
+  if ( ! _env ) {
+
     return -1.0;
   }
 
   // FIXME: enable geotransformation
   const Sample& sample = env->get( x, y );
+
   if ( sample.size() == 0 )  {
+
     return -1.0;
   }
 
@@ -482,4 +529,63 @@ OpenModeller::setModelConfiguration( const ConstConfigurationPtr & config )
 
   _alg = AlgorithmFactory::newAlgorithm( config->getSubsection( "Algorithm" ) );
   _alg->setSampler( _samp );
+}
+
+void
+OpenModeller::setProjectionConfiguration( const ConstConfigurationPtr & config )
+{
+  // Can only set the algorithm - other parameters need to be extracted outside
+  _alg = AlgorithmFactory::newAlgorithm( config->getSubsection( "Algorithm" ) );
+
+  _projEnv = createEnvironment( config->getSubsection( "Environment" ) );
+
+  try { 
+
+    ConstConfigurationPtr output_param_config = config->getSubsection( "OutputParameters" );
+
+    ConstConfigurationPtr template_layer_config = output_param_config->getSubsection( "TemplateLayer" );
+
+    string formatId = template_layer_config->getAttribute( "Id" );
+
+    _format = MapFormat( formatId.c_str() );
+
+    string fileType;
+
+    fileType = output_param_config->getAttribute( "FileType" );
+
+    // Default is 8-bit tiff
+    int type = MapFormat::GreyTiff;
+
+    if ( ! fileType.empty() ) {
+
+      if ( fileType == "GreyTiff" ) {
+
+        // nothing to do - it's already the default
+      }
+      else if ( fileType == "FloatingTiff" ) {
+
+        type = MapFormat::FloatingTiff;
+      }
+      else if ( fileType == "GreyBMP" ) {
+
+        type = MapFormat::GreyBMP;
+      }
+      else if ( fileType == "FloatingHFA" ) {
+
+        type = MapFormat::FloatingHFA;
+      }
+      else {
+
+        g_log( "Wrong value for 'Output file type' (%s). It should be GreyTiff, FloatingTiff, GreyBMP or FloatingHFA. Using default...\n", fileType.c_str() );
+      }
+    }
+
+    _format.setFormat( type );
+  }
+  catch( SubsectionNotFound& e ) { 
+
+  }
+  catch ( AttributeNotFound& e ) { 
+
+  }
 }

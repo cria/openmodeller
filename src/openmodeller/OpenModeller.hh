@@ -46,6 +46,8 @@ class AlgParameter;
 
 #include <openmodeller/Algorithm.hh>
 
+#include <openmodeller/MapFormat.hh>
+
 class MapFormat;
 class ConfusionMatrix;
 class AreaStats;
@@ -240,7 +242,7 @@ public:
    *  cell size, extent, WKT projection, no data value, and file 
    *  type for the output map.
    */
-  void createMap( const EnvironmentPtr & env, char const *output_file, MapFormat& format );
+  int createMap( const EnvironmentPtr & env, char const *output_file, MapFormat& format );
 
   /** Create and save distribution map to disk using the specified
    * projection environment. Output format defaults to the
@@ -249,7 +251,7 @@ public:
    *  to project the model onto.
    * @param output_file Output file name.
    */
-  void createMap( const EnvironmentPtr & env, char const *output_file );
+  int createMap( const EnvironmentPtr & env, char const *output_file );
   
   /** Create and save distribution map to disk using the specified
    * output format. Projection environment defaults to the same 
@@ -260,7 +262,7 @@ public:
    *  cell size, extent, WKT projection, no data value, and file 
    *  type for the output map.
    */
-  void createMap( char const *output_file, MapFormat& format );
+  int createMap( char const *output_file, MapFormat& format );
 
   /** Create and save distribution map to disk. Projection 
    * environment defaults to the same environment used during 
@@ -269,7 +271,7 @@ public:
    * output mask format.
    * @param output_file Output file name.
    */
-  void createMap( char const *output_file );
+  int createMap( char const *output_file );
 
   /*****************************************************************************
    *
@@ -361,6 +363,8 @@ public:
 
   void setModelConfiguration( const ConstConfigurationPtr & );
 
+  void setProjectionConfiguration( const ConstConfigurationPtr & );
+
 private:
 
   /** Check if all necessary parameters to create the model
@@ -382,6 +386,11 @@ private:
 
   // Command functions and user parameters.
   Algorithm::ModelCommand *_model_command;
+
+  // Output format
+  MapFormat _format;
+
+  EnvironmentPtr _projEnv;   ///< Environmental layers for projection
 
   // model statistics: helper objects
   AreaStats * _actualAreaStats;
