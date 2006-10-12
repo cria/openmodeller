@@ -39,12 +39,15 @@ class MyLog : public Log::LogCallback
  * so that we can pass the result cleanly to third part apps
  * using this lib, such as the JNI interface. 
  * */
-std::string ConsoleXml::createModel(const std::string myConfigFile)
+std::string ConsoleXml::createModel(const std::string myConfigFile, bool ignoreLog)
 {
   try 
   {
-    g_log.setLevel( Log::Debug );
-    g_log.setCallback( new MyLog() );
+    if (!ignoreLog)
+    {
+      g_log.setLevel( Log::Debug );
+      g_log.setCallback( new MyLog() );
+    }
 
     ostringstream myOutputStream ;
 
@@ -54,11 +57,11 @@ std::string ConsoleXml::createModel(const std::string myConfigFile)
     {
       cout << "Loading Test file " << myConfigFile << endl;
       ConfigurationPtr c = Configuration::readXml( myConfigFile.c_str() );
-      om.setConfiguration(c);
+      om.setModelConfiguration(c);
     }
     om.createModel();
     {
-      ConfigurationPtr c = om.getConfiguration();
+      ConfigurationPtr c = om.getModelConfiguration();
       Configuration::writeXml( c, myOutputStream);
     }
     return myOutputStream.str();
@@ -84,7 +87,7 @@ bool ConsoleXml::projectModel(const std::string theModel, const  std::string the
 
     ConfigurationPtr c = Configuration::readXml( theModel.c_str() );
 
-    om.setConfiguration(c);
+    om.setModelConfiguration(c);
 
 
     cout << "Create Model" << endl;

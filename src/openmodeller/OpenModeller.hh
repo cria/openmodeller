@@ -62,7 +62,7 @@ class AreaStats;
  * generator.
  * 
  */
-class dllexp OpenModeller : public Configurable
+class dllexp OpenModeller
 {
 public:
 
@@ -357,9 +357,9 @@ public:
    *
    ****************************************************************************/
 
-  ConfigurationPtr getConfiguration() const;
+  ConfigurationPtr getModelConfiguration() const;
 
-  void setConfiguration( const ConstConfigurationPtr & );
+  void setModelConfiguration( const ConstConfigurationPtr & );
 
 private:
 
