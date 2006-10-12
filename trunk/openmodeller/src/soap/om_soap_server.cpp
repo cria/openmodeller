@@ -29,6 +29,7 @@
 #include "openModeller.nsmap"
 #include <openmodeller/om.hh>
 
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <pthread.h> 
@@ -50,6 +51,7 @@ using namespace std;
 #define OMWS_MODEL_CREATION_RESPONSE_PREFIX "model_resp."
 #define OMWS_MODEL_PROJECTION_REQUEST_PREFIX "proj_req."
 #define OMWS_LAYERS_DIRECTORY "/home/renato/projects/openmodeller/examples/layers/"
+#define OMWS_DISTRIBUTION_MAP_DIRECTORY "/home/renato/public_html/om/"
 #define OMWS_LAYERS_LABEL "Remote layers"
 #define OMWS_BASE_URL "http://www.cria.org.br/~renato/om/"
 #define OMWS_MIN *60
@@ -60,6 +62,7 @@ using namespace std;
 
 static void *process_request( void* );
 static bool fileExists( const char* fileName );
+static string getMapFile( const char* ticket );
 static wchar_t* convertToWideChar( const char* p );
 static bool readDirectory( const char* dir, const char* label, ostream &xml, int depth );
 static bool isValidGdalFile( const char* fileName );
@@ -90,7 +93,7 @@ int main(int argc, char **argv)
 
   FILE *flog = fopen( log_file, "w" );
 
-  if ( ! flog ) {
+  if ( flog == NULL ) {
 
       fprintf( stderr, "Could not open log file\n" );
   }
@@ -487,43 +490,16 @@ omws__getProgress( struct soap *soap, xsd__string ticket, xsd__int &progress )
 
   // Now try searching on model projection jobs, for each possible file extension
 
-  // TIF
-  string projTifFile( fileName );
+  fileName = getMapFile( ticket );
 
-  projTifFile.append( ticket );
-  projTifFile.append( ".tif" );
-
-  if ( fileExists( projTifFile.c_str() ) ) {
+  if ( ! fileName.empty() ) {
 
     progress = 100;
-    return SOAP_OK;
   }
+  else {
 
-  // IMG
-  string projImgFile( fileName );
-
-  projImgFile.append( ticket );
-  projImgFile.append( ".img" );
-
-  if ( fileExists( projImgFile.c_str() ) ) {
-
-    progress = 100;
-    return SOAP_OK;
+    progress = 0;
   }
-
-  // BMP
-  string projBmpFile( fileName );
-
-  projBmpFile.append( ticket );
-  projBmpFile.append( ".bmp" );
-
-  if ( fileExists( projBmpFile.c_str() ) ) {
-
-    progress = 100;
-    return SOAP_OK;
-  }
-
-  progress = 0;
 
   return SOAP_OK;
 }
@@ -630,16 +606,13 @@ omws__getMapAsAttachment( struct soap *soap, xsd__string ticket, xsd__base64Bina
 { 
   if ( ! ticket ) {
 
-    return soap_sender_fault(soap, "Ticket required", NULL);
+    return soap_sender_fault( soap, "Ticket required", NULL );
   }
 
   if ( getData( soap, ticket, file ) ) {
 
-    return soap_sender_fault(soap, "Access denied", NULL);
+    return soap_sender_fault( soap, "Map unavailable", NULL );
   }
-
-  file.type = "image/tif";
-  file.options = soap_dime_option(soap, 0, "Distribution map");
 
   return SOAP_OK;
 }
@@ -654,21 +627,11 @@ omws__getMapAsUrl( struct soap *soap, xsd__string ticket, xsd__string &url )
     return soap_sender_fault(soap, "Ticket required", NULL);
   }
 
-  string projFileName( OM_SOAP_TMPDIR );
+  string fileName = getMapFile( ticket );
 
-  // Append slash if necessary
-  if ( projFileName.find_last_of( "/" ) != projFileName.size() - 1 ) {
+  if ( fileName.empty() ) {
 
-    projFileName.append( "/" );
-  }
-
-  projFileName.append( ticket );
-
-  FILE *file = fopen( projFileName.c_str(), "r" );
-
-  if ( file == NULL ) {
-
-     return soap_receiver_fault( soap, "Map unavailable", NULL );
+    return soap_receiver_fault( soap, "Map unavailable", NULL );
   }
 
   string urlString( OMWS_BASE_URL );
@@ -678,11 +641,9 @@ omws__getMapAsUrl( struct soap *soap, xsd__string ticket, xsd__string &url )
     urlString.append( "/" );
   }
 
-  urlString.append( ticket );
+  urlString.append( fileName );
   
   url = (char*)urlString.c_str();
-
-  fclose( file );
 
   return SOAP_OK;
 }
@@ -711,6 +672,57 @@ fileExists( const char* fileName )
   }
 
   return exists;
+}
+
+/********************/
+/**** getMapFile ****/
+static string 
+getMapFile( const char* ticket )
+{ 
+  string fileName( OMWS_DISTRIBUTION_MAP_DIRECTORY );
+
+  // Append slash if necessary
+  if ( fileName.find_last_of( "/" ) != fileName.size() - 1 ) {
+
+    fileName.append( "/" );
+  }
+
+  // TIF
+  string projTifFile( fileName );
+
+  projTifFile.append( ticket );
+  projTifFile.append( ".tif" );
+
+  if ( fileExists( projTifFile.c_str() ) ) {
+
+    return projTifFile.substr( projTifFile.find_last_of("/") + 1 );
+  }
+
+  // IMG
+  string projImgFile( fileName );
+
+  projImgFile.append( ticket );
+  projImgFile.append( ".img" );
+
+  if ( fileExists( projImgFile.c_str() ) ) {
+
+    return projImgFile.substr( projImgFile.find_last_of("/") + 1 );
+  }
+
+  // BMP
+  string projBmpFile( fileName );
+
+  projBmpFile.append( ticket );
+  projBmpFile.append( ".bmp" );
+
+  if ( fileExists( projBmpFile.c_str() ) ) {
+
+    return projBmpFile.substr( projBmpFile.find_last_of("/") + 1 );
+  }
+
+  string emptyString("");
+
+  return emptyString;
 }
 
 /***************************/
@@ -907,17 +919,26 @@ getData( struct soap *soap, const xsd__string ticket, xsd__base64Binary &file )
 { 
   struct stat sb;
 
-  FILE *fd = NULL;
+  string fileName = getMapFile( ticket );
 
-  if ( ! strchr( ticket, '/' ) && ! strchr( ticket, '\\' ) && ! strchr( ticket, ':') )
-  { 
-    char *s = (char*)soap_malloc( soap, strlen(OM_SOAP_TMPDIR) + strlen(ticket) + 2 );
-    strcpy( s, OM_SOAP_TMPDIR );
-    strcat( s, "/" );
-    strcat( s, ticket );
-    fd = fopen( s, "rb" );
+  if ( fileName.empty() ) {
+
+    return SOAP_EOF;
   }
-  if ( ! fd ) {
+
+  string completeFileName( OMWS_DISTRIBUTION_MAP_DIRECTORY );
+
+  // Append slash if necessary
+  if ( completeFileName.find_last_of( "/" ) != completeFileName.size() - 1 ) {
+
+    completeFileName.append( "/" );
+  }
+
+  completeFileName.append( fileName );
+
+  FILE *fd = fopen( completeFileName.c_str(), "rb" );
+
+  if ( fd == NULL ) {
 
     return SOAP_EOF;
   }
@@ -947,8 +968,12 @@ getData( struct soap *soap, const xsd__string ticket, xsd__base64Binary &file )
     return SOAP_EOF;
   }
 
-  file.type = ""; // specify non-NULL id or type to enable DIME
-  file.options = soap_dime_option( soap, 0, ticket );
+  string fileType( "image/" );
+
+  fileType.append( fileName.substr( fileName.length() - 3 ) );
+
+  file.type = (char*)fileType.c_str(); // specify non-NULL id or type to enable DIME
+  file.options = soap_dime_option( soap, 0, "Distribution map" );
 
   return SOAP_OK;
 }
