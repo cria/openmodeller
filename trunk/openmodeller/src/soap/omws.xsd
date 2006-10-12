@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="UTF-8"?>
+ <schema targetNamespace="http://openmodeller.cria.org.br/ws/1.0"
+  xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/"
+  xmlns:SOAP-ENC="http://schemas.xmlsoap.org/soap/encoding/"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+  xmlns:om="http://openmodeller.cria.org.br/xml/1.0"
+  xmlns:omws="http://openmodeller.cria.org.br/ws/1.0"
+  xmlns="http://www.w3.org/2001/XMLSchema"
+  elementFormDefault="unqualified"
+  attributeFormDefault="unqualified">
+  <import namespace="http://openmodeller.cria.org.br/xml/1.0" schemaLocation="http://openmodeller.cria.org.br/xml/1.0/openModeller.xsd"/>
+  <import namespace="http://schemas.xmlsoap.org/soap/encoding/"/>
+  <complexType name="createModel">
+   <sequence>
+     <element ref="om:ModelParameters" minOccurs="0" maxOccurs="1" nillable="true"/>
+   </sequence>
+  </complexType>
+  <complexType name="projectModel">
+   <sequence>
+     <element ref="om:ProjectionParameters" minOccurs="0" maxOccurs="1" nillable="true"/>
+   </sequence>
+  </complexType>
+  <element name="version" type="xsd:string"/>
+  <!-- operation request element -->
+  <element name="ping">
+   <complexType>
+    <sequence>
+    </sequence>
+   </complexType>
+  </element>
+  <!-- operation response element -->
+  <element name="pingResponse">
+   <complexType>
+    <sequence>
+     <element name="status" type="xsd:int" minOccurs="0" maxOccurs="1" nillable="true"/>
+    </sequence>
+   </complexType>
+  </element>
+  <!-- operation request element -->
+  <element name="getAlgorithms">
+   <complexType>
+    <sequence>
+    </sequence>
+   </complexType>
+  </element>
+  <!-- operation response element -->
+  <element name="getAlgorithmsResponse">
+   <complexType>
+    <sequence>
+     <element ref="om:AvailableAlgorithms" minOccurs="1" maxOccurs="1"/>
+    </sequence>
+   </complexType>
+  </element>
+  <!-- operation request element -->
+  <element name="getLayers">
+   <complexType>
+    <sequence>
+    </sequence>
+   </complexType>
+  </element>
+  <!-- operation response element -->
+  <element name="getLayersResponse">
+   <complexType>
+    <sequence>
+     <element ref="om:AvailableLayers" minOccurs="1" maxOccurs="1"/>
+    </sequence>
+   </complexType>
+  </element>
+  <!-- operation request element -->
+  <element name="createModel">
+   <complexType>
+    <sequence>
+     <element ref="om:ModelParameters" minOccurs="0" maxOccurs="1" nillable="true"/>
+    </sequence>
+   </complexType>
+  </element>
+  <!-- operation response element -->
+  <element name="createModelResponse">
+   <complexType>
+    <sequence>
+     <element name="ticket" type="xsd:string" minOccurs="0" maxOccurs="1" nillable="true"/>
+    </sequence>
+   </complexType>
+  </element>
+  <!-- operation request element -->
+  <element name="getModel">
+   <complexType>
+    <sequence>
+     <element name="ticket" type="xsd:string" minOccurs="0" maxOccurs="1" nillable="true"/>
+    </sequence>
+   </complexType>
+  </element>
+  <!-- operation response element -->
+  <element name="getModelResponse">
+   <complexType>
+    <sequence>
+     <element ref="om:ModelEnvelope" minOccurs="1" maxOccurs="1"/>
+    </sequence>
+   </complexType>
+  </element>
+  <!-- operation request element -->
+  <element name="projectModel">
+   <complexType>
+    <sequence>
+     <element ref="om:ProjectionParameters" minOccurs="0" maxOccurs="1" nillable="true"/>
+    </sequence>
+   </complexType>
+  </element>
+  <!-- operation response element -->
+  <element name="projectModelResponse">
+   <complexType>
+    <sequence>
+     <element name="ticket" type="xsd:string" minOccurs="0" maxOccurs="1" nillable="true"/>
+    </sequence>
+   </complexType>
+  </element>
+  <!-- operation request element -->
+  <element name="getProgress">
+   <complexType>
+    <sequence>
+     <element name="ticket" type="xsd:string" minOccurs="0" maxOccurs="1" nillable="true"/>
+    </sequence>
+   </complexType>
+  </element>
+  <!-- operation response element -->
+  <element name="getProgressResponse">
+   <complexType>
+    <sequence>
+     <element name="progress" type="xsd:int" minOccurs="1" maxOccurs="1"/>
+    </sequence>
+   </complexType>
+  </element>
+  <!-- operation request element -->
+  <element name="getLog">
+   <complexType>
+    <sequence>
+     <element name="ticket" type="xsd:string" minOccurs="0" maxOccurs="1" nillable="true"/>
+    </sequence>
+   </complexType>
+  </element>
+  <!-- operation response element -->
+  <element name="getLogResponse">
+   <complexType>
+    <sequence>
+     <element name="log" type="xsd:string" minOccurs="1" maxOccurs="1"/>
+    </sequence>
+   </complexType>
+  </element>
+  <!-- operation request element -->
+  <element name="getMapAsAttachment">
+   <complexType>
+    <sequence>
+     <element name="ticket" type="xsd:string" minOccurs="0" maxOccurs="1" nillable="true"/>
+    </sequence>
+   </complexType>
+  </element>
+  <!-- operation response element -->
+  <element name="getMapAsAttachmentResponse">
+   <complexType>
+    <sequence>
+     <element name="file" type="xsd:base64Binary" minOccurs="1" maxOccurs="1"/>
+    </sequence>
+   </complexType>
+  </element>
+  <!-- operation request element -->
+  <element name="getMapAsUrl">
+   <complexType>
+    <sequence>
+     <element name="ticket" type="xsd:string" minOccurs="0" maxOccurs="1" nillable="true"/>
+    </sequence>
+   </complexType>
+  </element>
+  <!-- operation response element -->
+  <element name="getMapAsUrlResponse">
+   <complexType>
+    <sequence>
+     <element name="url" type="xsd:string" minOccurs="1" maxOccurs="1"/>
+    </sequence>
+   </complexType>
+  </element>
+ </schema>
+
