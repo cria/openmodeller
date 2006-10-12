@@ -234,7 +234,6 @@
   <xs:complexType name="OutputParametersType">
     <xs:sequence>
       <xs:element name="TemplateLayer" type="BasicLayerType"/>
-      <xs:element name="Mask" type="BasicLayerType"/>
     </xs:sequence>
     <xs:attribute name="FileType" type="xs:string" use="optional"/>
   </xs:complexType>
