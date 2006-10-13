@@ -19,6 +19,7 @@ log=$ticket_repository"/"$ticket
 mv "$req" "$moved"
 # execute om_create
 om_create "$moved" "$resp" "$log"
+exit 1
 done
 
 # projection requests
@@ -31,4 +32,5 @@ log=$ticket_repository"/"$ticket
 mv "$req" "$moved"
 # execute om_create
 om_project "$moved" "$map" "$log"
+exit 1
 done
