@@ -164,7 +164,7 @@ sub get_option
 {
     print "\nPlease select from one the options:\n\n";
 
-    foreach my $key ( sort( keys %options ) )
+    foreach my $key ( sort { $a <=> $b } ( keys %options ) )
     {
 	my $val = $key+1;
 	print "  [$val] $options{$key}\n";
@@ -897,7 +897,7 @@ sub get_algorithm_from_user
 {
     print "\nChoose an algorithm:\n\n";
 
-    foreach my $key (sort(keys %algorithms))
+    foreach my $key (sort { $a <=> $b } (keys %algorithms))
     {
 	print "  [$key] $algorithms{$key}{Name}\n";
     }
