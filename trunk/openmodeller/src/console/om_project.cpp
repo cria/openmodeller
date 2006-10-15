@@ -69,7 +69,14 @@ int main( int argc, char **argv ) {
       }
     }
 
-    ConsoleXml myConsoleXml;
+    { // Fake scope to destroy object in the end (to catch all logs)
+      ConsoleXml myConsoleXml;
 
-    myConsoleXml.projectModel(myProjectionXmlFile,myMapFile,dontLog);
+      myConsoleXml.projectModel(myProjectionXmlFile,myMapFile,dontLog);
+    }
+    
+    // Close log file
+    if (flog != NULL) {
+      fclose(flog);
+    }
 }
