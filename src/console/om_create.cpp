@@ -52,13 +52,17 @@ int main( int argc, char **argv ) {
       }
     }
 
-    ConsoleXml myConsoleXml;
-    std::string myOutput=myConsoleXml.createModel(myRequest, dontLog);
-    //write output to file
-    ofstream file(myFileName.c_str());
-    file << myOutput;
-    file.close();
-
-    // No need to close the log file!
-    // openModeller takes care of that...
+    { // Fake scope to force obj destruction in the end (to catch logs)
+      ConsoleXml myConsoleXml;
+      std::string myOutput=myConsoleXml.createModel(myRequest, dontLog);
+      //write output to file
+      ofstream file(myFileName.c_str());
+      file << myOutput;
+      file.close();
+    }
+    
+    // Close log file
+    if (flog != NULL) {
+      fclose(flog);
+    }
 }
