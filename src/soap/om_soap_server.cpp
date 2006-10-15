@@ -47,6 +47,7 @@ using namespace std;
 
 #define OMWS_BACKLOG (100) // Max. request backlog 
 #define OMWS_TICKET_TEMPLATE "XXXXXX"
+#define OMWS_TICKET_DIRECTORY "/home/renato/tmp/om"
 #define OMWS_MODEL_CREATION_REQUEST_PREFIX "model_req."
 #define OMWS_MODEL_CREATION_RESPONSE_PREFIX "model_resp."
 #define OMWS_MODEL_PROJECTION_REQUEST_PREFIX "proj_req."
@@ -69,37 +70,12 @@ static bool isValidGdalFile( const char* fileName );
 static bool hasValidGdalProjection( const char* fileName );
 static int getData( struct soap*, const xsd__string, xsd__base64Binary& );
 
-/********************/
-/***  Static data ***/
-
-static char *OM_SOAP_TMPDIR = ".";
-
 
 /***********************/
 /*** main gSOAP code ***/
 
 int main(int argc, char **argv)
 { 
-  char *s = getenv("OM_SOAP_TMPDIR");
-
-  if (s)
-    {
-      OM_SOAP_TMPDIR = s;
-    }
-
-  char log_file[256];
-  strcpy( log_file, OM_SOAP_TMPDIR );
-  strcat( log_file, "/om.log" );
-
-  FILE *flog = fopen( log_file, "w" );
-
-  if ( flog == NULL ) {
-
-      fprintf( stderr, "Could not open log file\n" );
-  }
-
-  g_log.set( Log::Debug, flog );
-
   struct soap soap;
   soap_init(&soap);
   soap.encodingStyle = NULL;
@@ -221,8 +197,6 @@ int main(int argc, char **argv)
 	}
     }
 
-  fclose(flog);
-  
   return 0;
 }
 
@@ -310,7 +284,7 @@ omws__getLayers( struct soap *soap, void *_, XML &om__AvailableLayers )
 int 
 omws__createModel( struct soap *soap, XML om__ModelParameters, xsd__string *ticket )
 {
-  string ticketFileName( OM_SOAP_TMPDIR );
+  string ticketFileName( OMWS_TICKET_DIRECTORY );
 
   // Append slash if necessary
   if ( ticketFileName.find_last_of( "/" ) != ticketFileName.size() - 1 ) {
@@ -386,7 +360,7 @@ omws__createModel( struct soap *soap, XML om__ModelParameters, xsd__string *tick
 int 
 omws__projectModel( struct soap *soap, XML om__ProjectionParameters, xsd__string *ticket )
 {
-  string ticketFileName( OM_SOAP_TMPDIR );
+  string ticketFileName( OMWS_TICKET_DIRECTORY );
 
   // Append slash if necessary
   if ( ticketFileName.find_last_of( "/" ) != ticketFileName.size() - 1 ) {
@@ -467,7 +441,7 @@ omws__getProgress( struct soap *soap, xsd__string ticket, xsd__int &progress )
     return soap_sender_fault( soap, "Missing ticket in request", NULL );
   }
 
-  string fileName( OM_SOAP_TMPDIR );
+  string fileName( OMWS_TICKET_DIRECTORY );
 
   // Append slash if necessary
   if ( fileName.find_last_of( "/" ) != fileName.size() - 1 ) {
@@ -514,7 +488,7 @@ omws__getLog( struct soap *soap, xsd__string ticket, xsd__string &log )
     return soap_sender_fault( soap, "Missing ticket in request", NULL );
   }
 
-  string fileName( OM_SOAP_TMPDIR );
+  string fileName( OMWS_TICKET_DIRECTORY );
 
   // Append slash if necessary
   if ( fileName.find_last_of( "/" ) != fileName.size() - 1 ) {
@@ -562,7 +536,7 @@ omws__getModel( struct soap *soap, xsd__string ticket, XML &om__ModelEnvelope )
     return soap_sender_fault( soap, "Missing ticket in request", NULL );
   }
 
-  string fileName( OM_SOAP_TMPDIR );
+  string fileName( OMWS_TICKET_DIRECTORY );
 
   // Append slash if necessary
   if ( fileName.find_last_of( "/" ) != fileName.size() - 1 ) {
