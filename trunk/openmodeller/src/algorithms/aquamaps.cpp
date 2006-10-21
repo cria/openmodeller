@@ -82,9 +82,9 @@ overall probability is calculated by multiplying all individual probabilities.\n
 This algorithm differs from other traditional ones since it requires a specific \
 set of layers to work, which should also be in this order: maximum depth in meters, \
 minimum depth in meters, mean annual sea ice concentration, mean annual distance to \
-land in Kilometers, mean annual primary production (chlorophyll A), mean annual \
-salinity in psu, mean annual sea surface temperature in Celsius. These layers can \
-be downloaded from here: \n\
+land in kilometers, mean annual primary production (chlorophyll A, measured in \
+mgC per square meter per day), mean annual salinity in psu, mean annual sea surface \
+temperature in celsius. These layers can be downloaded from: \n\
 http://openmodeller.cria.org.br/download/marine.zip \n\
 AquaMaps also makes use of expert information for the lower and upper limits of \
 each variable. Depth ranges are taken from a database provided by FishBase. To find \
