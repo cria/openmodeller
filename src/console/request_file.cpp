@@ -290,6 +290,8 @@ RequestFile::setProjection( OpenModeller *om, FileParser &fp )
   _outputFormat.setXMax( h.xmax );
   _outputFormat.setYMax( h.ymax );
 
+  delete mask;
+
   return 1;
 }
 
