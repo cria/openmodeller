@@ -362,7 +362,7 @@ AC_ARG_WITH(sqlite3,
           AC_CHECK_HEADERS(sqlite3.h,
                 [SQLITE3_INC="-I$with_sqlite3/include"],
                 [
-                AC_MSG_ERROR([*** Sqlite3 headers not found.])
+                AC_MSG_ERROR([SQLite3 headers not found.])
                 ])
           AC_CHECK_LIB(sqlite3,sqlite3_open,
                 [
@@ -370,16 +370,16 @@ AC_ARG_WITH(sqlite3,
                 SQLITE3_LIB="-L$with_sqlite3/lib -lsqlite3"
                 ],
                 [
-                AC_MSG_ERROR([*** Sqlite3 library not found.])
+                AC_MSG_ERROR([SQLite3 library not found.])
                 ])
                 else
-                AC_MSG_ERROR([*** directory $with_sqlite3 does not exist.])
+                AC_MSG_ERROR([Directory $with_sqlite3 does not exist.])
         fi
     ],
     [
     AC_CHECK_HEADERS(sqlite3.h,[SQLITE3_INC=""],
         [
-        AC_MSG_ERROR([*** Sqlite3 headers not found.])
+        AC_MSG_WARN([SQLite3 headers not found.])
         ])
     AC_CHECK_LIB(sqlite3,sqlite3_open,
         [
@@ -387,7 +387,7 @@ AC_ARG_WITH(sqlite3,
         SQLITE3_LIB="-lsqlite3"
         ],
         [
-        AC_MSG_ERROR([*** Sqlite3 library not found.])
+        AC_MSG_WARN([SQLite3 library not found.])
         ])
     ]
     )
