@@ -27,7 +27,7 @@ struct SOAP_ENV__Header
  * @return status Integer value (1 - OK)
  */
 //gsoap omws service method-documentation: ping Simple method to monitor service availability.
-int omws__ping(void *_, xsd__int *status); 
+int omws__ping(void *_, xsd__int &status); 
 
 /** Get all available algorithms and return their metadata.
  *
@@ -55,9 +55,8 @@ int omws__getLayers(void *_, XML &om__AvailableLayers);
  * @param ticket Job identification.
  * @return standard gSOAP integer code
  */
-//gsoap om service method-encoding: createModel http://xml.apache.org/xml-soap/literalxml
 //gsoap om service method-documentation: createModel Requests the creation of a spatial distribution model
-int omws__createModel(XML om__ModelParameters, xsd__string *ticket); 
+int omws__createModel(XML om__ModelParameters, xsd__string &ticket); 
 
 /** Return a serialized model given a ticket.
  * @param ticket Job identification.
@@ -73,7 +72,7 @@ int omws__getModel(xsd__string ticket, XML &om__ModelEnvelope);
  * @return standard gSOAP integer code
  */
 //gsoap om service method-documentation: projectModel Requests the projection of a spatial distribution model
-int omws__projectModel(XML om__ProjectionParameters, xsd__string *ticket); 
+int omws__projectModel(XML om__ProjectionParameters, xsd__string &ticket); 
 
 /** Return the progress of a job given a ticket.
  * @param ticket Job identification.

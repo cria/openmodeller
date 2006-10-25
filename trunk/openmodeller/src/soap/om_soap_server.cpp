@@ -217,9 +217,9 @@ void *process_request(void *soap)
 /**************/
 /**** Ping ****/
 int
-omws__ping( struct soap *soap, void *_, xsd__int *status )
+omws__ping( struct soap *soap, void *_, xsd__int &status )
 {
-  *status = 1;
+  status = 1;
 
   return SOAP_OK;
 }
@@ -282,7 +282,7 @@ omws__getLayers( struct soap *soap, void *_, XML &om__AvailableLayers )
 /**********************/
 /**** create Model ****/
 int 
-omws__createModel( struct soap *soap, XML om__ModelParameters, xsd__string *ticket )
+omws__createModel( struct soap *soap, XML om__ModelParameters, xsd__string &ticket )
 {
   string ticketFileName( OMWS_TICKET_DIRECTORY );
 
@@ -312,13 +312,13 @@ omws__createModel( struct soap *soap, XML om__ModelParameters, xsd__string *tick
   }
 
   // Get ticket value
-  *ticket = strrchr( tempFileName, '/' ) + 1;
+  ticket = strrchr( tempFileName, '/' ) + 1;
 
   // Append prefix to request file
   requestFileName.append( OMWS_MODEL_CREATION_REQUEST_PREFIX );
 
   // Append ticket to request file
-  requestFileName.append( *ticket );
+  requestFileName.append( ticket );
 
   // Create and open request file - at this point there should be no file with the same name!
   FILE *file = fopen( requestFileName.c_str(), "w" );
@@ -358,7 +358,7 @@ omws__createModel( struct soap *soap, XML om__ModelParameters, xsd__string *tick
 /***********************/
 /**** project Model ****/
 int 
-omws__projectModel( struct soap *soap, XML om__ProjectionParameters, xsd__string *ticket )
+omws__projectModel( struct soap *soap, XML om__ProjectionParameters, xsd__string &ticket )
 {
   string ticketFileName( OMWS_TICKET_DIRECTORY );
 
@@ -388,13 +388,13 @@ omws__projectModel( struct soap *soap, XML om__ProjectionParameters, xsd__string
   }
 
   // Get ticket value
-  *ticket = strrchr( tempFileName, '/' ) + 1;
+  ticket = strrchr( tempFileName, '/' ) + 1;
 
   // Append prefix to request file
   requestFileName.append( OMWS_MODEL_PROJECTION_REQUEST_PREFIX );
 
   // Append ticket to request file
-  requestFileName.append( *ticket );
+  requestFileName.append( ticket );
 
   // Create and open request file - at this point there should be no file with the same name!
   FILE *file = fopen( requestFileName.c_str(), "w" );
