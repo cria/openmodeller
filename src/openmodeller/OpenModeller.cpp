@@ -329,11 +329,7 @@ OpenModeller::createMap( const EnvironmentPtr & env, char const *output_file, Ma
 
   _projEnv = env;
 
-  g_log.debug( "getModel\n" );
-
   Model model( _alg->getModel() );
-
-  g_log.debug( "getMask\n" );
 
   Map *mask = _projEnv->getMask();
 
@@ -342,8 +338,6 @@ OpenModeller::createMap( const EnvironmentPtr & env, char const *output_file, Ma
 
     mask = _projEnv->getLayer(0);
   }
-
-  g_log.debug( "format\n" );
 
   // Store output format in property 
   _format = output_format;
@@ -367,8 +361,6 @@ OpenModeller::createMap( const EnvironmentPtr & env, char const *output_file, Ma
       _format.setFormat( MapFormat::FloatingHFA );
     }
   }
-
-  g_log.debug( "map\n" );
 
   // Create map on disc.
   Map map( RasterFactory::instance().create( output_file, _format ) );
