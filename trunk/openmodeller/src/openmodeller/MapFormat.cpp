@@ -95,6 +95,8 @@ MapFormat::MapFormat( char const *filenameWithFormat ) :
   setYMax( h.ymax );
   setNoDataValue( h.noval );
   setProjection( h.proj );
+
+  delete r;
 }
 
 void MapFormat::copyDefaults( const Map& map ) {
