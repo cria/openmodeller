@@ -50,7 +50,7 @@
   <element name="pingResponse">
    <complexType>
     <sequence>
-     <element name="status" type="xsd:int" minOccurs="0" maxOccurs="1" nillable="true"/>
+     <element name="status" type="xsd:int" minOccurs="1" maxOccurs="1"/>
     </sequence>
    </complexType>
   </element>
@@ -96,7 +96,7 @@
   <element name="createModelResponse">
    <complexType>
     <sequence>
-     <element name="ticket" type="xsd:string" minOccurs="0" maxOccurs="1" nillable="true"/>
+     <element name="ticket" type="xsd:string" minOccurs="1" maxOccurs="1"/>
     </sequence>
    </complexType>
   </element>
@@ -128,7 +128,7 @@
   <element name="projectModelResponse">
    <complexType>
     <sequence>
-     <element name="ticket" type="xsd:string" minOccurs="0" maxOccurs="1" nillable="true"/>
+     <element name="ticket" type="xsd:string" minOccurs="1" maxOccurs="1"/>
     </sequence>
    </complexType>
   </element>

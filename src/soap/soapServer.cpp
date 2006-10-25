@@ -6,7 +6,7 @@
 */
 #include "soapH.h"
 
-SOAP_SOURCE_STAMP("@(#) soapServer.cpp ver 2.7.6d 2006-10-25 18:44:30 GMT")
+SOAP_SOURCE_STAMP("@(#) soapServer.cpp ver 2.7.6d 2006-10-25 19:46:26 GMT")
 
 
 SOAP_FMAC5 int SOAP_FMAC6 soap_serve(struct soap *soap)
@@ -98,10 +98,7 @@ SOAP_FMAC5 int SOAP_FMAC6 soap_serve_request(struct soap *soap)
 SOAP_FMAC5 int SOAP_FMAC6 soap_serve_omws__ping(struct soap *soap)
 {	struct omws__ping soap_tmp_omws__ping;
 	struct omws__pingResponse soap_tmp_omws__pingResponse;
-	int soap_tmp_xsd__int;
 	soap_default_omws__pingResponse(soap, &soap_tmp_omws__pingResponse);
-	soap_default_xsd__int(soap, &soap_tmp_xsd__int);
-	soap_tmp_omws__pingResponse.status = &soap_tmp_xsd__int;
 	soap_default_omws__ping(soap, &soap_tmp_omws__ping);
 	soap->encodingStyle = NULL;
 	if (!soap_get_omws__ping(soap, &soap_tmp_omws__ping, "omws:ping", NULL))
@@ -110,7 +107,7 @@ SOAP_FMAC5 int SOAP_FMAC6 soap_serve_omws__ping(struct soap *soap)
 	 || soap_envelope_end_in(soap)
 	 || soap_end_recv(soap))
 		return soap->error;
-	soap->error = omws__ping(soap, soap_tmp_omws__ping._, &soap_tmp_xsd__int);
+	soap->error = omws__ping(soap, soap_tmp_omws__ping._, soap_tmp_omws__pingResponse.status);
 	if (soap->error)
 		return soap->error;
 	soap_serializeheader(soap);
@@ -222,10 +219,7 @@ SOAP_FMAC5 int SOAP_FMAC6 soap_serve_omws__getLayers(struct soap *soap)
 SOAP_FMAC5 int SOAP_FMAC6 soap_serve_omws__createModel(struct soap *soap)
 {	struct omws__createModel soap_tmp_omws__createModel;
 	struct omws__createModelResponse soap_tmp_omws__createModelResponse;
-	char * soap_tmp_xsd__string;
 	soap_default_omws__createModelResponse(soap, &soap_tmp_omws__createModelResponse);
-	soap_tmp_xsd__string = NULL;
-	soap_tmp_omws__createModelResponse.ticket = &soap_tmp_xsd__string;
 	soap_default_omws__createModel(soap, &soap_tmp_omws__createModel);
 	soap->encodingStyle = NULL;
 	if (!soap_get_omws__createModel(soap, &soap_tmp_omws__createModel, "omws:createModel", NULL))
@@ -234,7 +228,7 @@ SOAP_FMAC5 int SOAP_FMAC6 soap_serve_omws__createModel(struct soap *soap)
 	 || soap_envelope_end_in(soap)
 	 || soap_end_recv(soap))
 		return soap->error;
-	soap->error = omws__createModel(soap, soap_tmp_omws__createModel.om__ModelParameters, &soap_tmp_xsd__string);
+	soap->error = omws__createModel(soap, soap_tmp_omws__createModel.om__ModelParameters, soap_tmp_omws__createModelResponse.ticket);
 	if (soap->error)
 		return soap->error;
 	soap_serializeheader(soap);
@@ -306,10 +300,7 @@ SOAP_FMAC5 int SOAP_FMAC6 soap_serve_omws__getModel(struct soap *soap)
 SOAP_FMAC5 int SOAP_FMAC6 soap_serve_omws__projectModel(struct soap *soap)
 {	struct omws__projectModel soap_tmp_omws__projectModel;
 	struct omws__projectModelResponse soap_tmp_omws__projectModelResponse;
-	char * soap_tmp_xsd__string;
 	soap_default_omws__projectModelResponse(soap, &soap_tmp_omws__projectModelResponse);
-	soap_tmp_xsd__string = NULL;
-	soap_tmp_omws__projectModelResponse.ticket = &soap_tmp_xsd__string;
 	soap_default_omws__projectModel(soap, &soap_tmp_omws__projectModel);
 	soap->encodingStyle = NULL;
 	if (!soap_get_omws__projectModel(soap, &soap_tmp_omws__projectModel, "omws:projectModel", NULL))
@@ -318,7 +309,7 @@ SOAP_FMAC5 int SOAP_FMAC6 soap_serve_omws__projectModel(struct soap *soap)
 	 || soap_envelope_end_in(soap)
 	 || soap_end_recv(soap))
 		return soap->error;
-	soap->error = omws__projectModel(soap, soap_tmp_omws__projectModel.om__ProjectionParameters, &soap_tmp_xsd__string);
+	soap->error = omws__projectModel(soap, soap_tmp_omws__projectModel.om__ProjectionParameters, soap_tmp_omws__projectModelResponse.ticket);
 	if (soap->error)
 		return soap->error;
 	soap_serializeheader(soap);

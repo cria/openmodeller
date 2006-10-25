@@ -6,10 +6,10 @@
 */
 #include "soapH.h"
 
-SOAP_SOURCE_STAMP("@(#) soapClient.cpp ver 2.7.6d 2006-10-25 18:44:30 GMT")
+SOAP_SOURCE_STAMP("@(#) soapClient.cpp ver 2.7.6d 2006-10-25 19:46:26 GMT")
 
 
-SOAP_FMAC5 int SOAP_FMAC6 soap_call_omws__ping(struct soap *soap, const char *soap_endpoint, const char *soap_action, void *_, int *status)
+SOAP_FMAC5 int SOAP_FMAC6 soap_call_omws__ping(struct soap *soap, const char *soap_endpoint, const char *soap_action, void *_, int &status)
 {	struct omws__ping soap_tmp_omws__ping;
 	struct omws__pingResponse *soap_tmp_omws__pingResponse;
 	if (!soap_endpoint)
@@ -41,7 +41,7 @@ SOAP_FMAC5 int SOAP_FMAC6 soap_call_omws__ping(struct soap *soap, const char *so
 	 || soap_envelope_end_out(soap)
 	 || soap_end_send(soap))
 		return soap_closesock(soap);
-	soap_default_xsd__int(soap, status);
+	soap_default_xsd__int(soap, &status);
 	if (soap_begin_recv(soap)
 	 || soap_envelope_begin_in(soap)
 	 || soap_recv_header(soap)
@@ -57,8 +57,7 @@ SOAP_FMAC5 int SOAP_FMAC6 soap_call_omws__ping(struct soap *soap, const char *so
 	 || soap_envelope_end_in(soap)
 	 || soap_end_recv(soap))
 		return soap_closesock(soap);
-	if (status && soap_tmp_omws__pingResponse->status)
-		*status = *soap_tmp_omws__pingResponse->status;
+	status = soap_tmp_omws__pingResponse->status;
 	return soap_closesock(soap);
 }
 
@@ -162,7 +161,7 @@ SOAP_FMAC5 int SOAP_FMAC6 soap_call_omws__getLayers(struct soap *soap, const cha
 	return soap_closesock(soap);
 }
 
-SOAP_FMAC5 int SOAP_FMAC6 soap_call_omws__createModel(struct soap *soap, const char *soap_endpoint, const char *soap_action, wchar_t *om__ModelParameters, char **ticket)
+SOAP_FMAC5 int SOAP_FMAC6 soap_call_omws__createModel(struct soap *soap, const char *soap_endpoint, const char *soap_action, wchar_t *om__ModelParameters, char *&ticket)
 {	struct omws__createModel soap_tmp_omws__createModel;
 	struct omws__createModelResponse *soap_tmp_omws__createModelResponse;
 	if (!soap_endpoint)
@@ -194,7 +193,7 @@ SOAP_FMAC5 int SOAP_FMAC6 soap_call_omws__createModel(struct soap *soap, const c
 	 || soap_envelope_end_out(soap)
 	 || soap_end_send(soap))
 		return soap_closesock(soap);
-	*ticket = NULL;
+	ticket = NULL;
 	if (soap_begin_recv(soap)
 	 || soap_envelope_begin_in(soap)
 	 || soap_recv_header(soap)
@@ -210,8 +209,7 @@ SOAP_FMAC5 int SOAP_FMAC6 soap_call_omws__createModel(struct soap *soap, const c
 	 || soap_envelope_end_in(soap)
 	 || soap_end_recv(soap))
 		return soap_closesock(soap);
-	if (ticket && soap_tmp_omws__createModelResponse->ticket)
-		*ticket = *soap_tmp_omws__createModelResponse->ticket;
+	ticket = soap_tmp_omws__createModelResponse->ticket;
 	return soap_closesock(soap);
 }
 
@@ -265,7 +263,7 @@ SOAP_FMAC5 int SOAP_FMAC6 soap_call_omws__getModel(struct soap *soap, const char
 	return soap_closesock(soap);
 }
 
-SOAP_FMAC5 int SOAP_FMAC6 soap_call_omws__projectModel(struct soap *soap, const char *soap_endpoint, const char *soap_action, wchar_t *om__ProjectionParameters, char **ticket)
+SOAP_FMAC5 int SOAP_FMAC6 soap_call_omws__projectModel(struct soap *soap, const char *soap_endpoint, const char *soap_action, wchar_t *om__ProjectionParameters, char *&ticket)
 {	struct omws__projectModel soap_tmp_omws__projectModel;
 	struct omws__projectModelResponse *soap_tmp_omws__projectModelResponse;
 	if (!soap_endpoint)
@@ -297,7 +295,7 @@ SOAP_FMAC5 int SOAP_FMAC6 soap_call_omws__projectModel(struct soap *soap, const 
 	 || soap_envelope_end_out(soap)
 	 || soap_end_send(soap))
 		return soap_closesock(soap);
-	*ticket = NULL;
+	ticket = NULL;
 	if (soap_begin_recv(soap)
 	 || soap_envelope_begin_in(soap)
 	 || soap_recv_header(soap)
@@ -313,8 +311,7 @@ SOAP_FMAC5 int SOAP_FMAC6 soap_call_omws__projectModel(struct soap *soap, const 
 	 || soap_envelope_end_in(soap)
 	 || soap_end_recv(soap))
 		return soap_closesock(soap);
-	if (ticket && soap_tmp_omws__projectModelResponse->ticket)
-		*ticket = *soap_tmp_omws__projectModelResponse->ticket;
+	ticket = soap_tmp_omws__projectModelResponse->ticket;
 	return soap_closesock(soap);
 }
 
