@@ -55,6 +55,7 @@ int omws__getLayers(void *_, XML &om__AvailableLayers);
  * @param ticket Job identification.
  * @return standard gSOAP integer code
  */
+//gsoap om service method-encoding: createModel http://xml.apache.org/xml-soap/literalxml
 //gsoap om service method-documentation: createModel Requests the creation of a spatial distribution model
 int omws__createModel(XML om__ModelParameters, xsd__string *ticket); 
 
