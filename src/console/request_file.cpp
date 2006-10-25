@@ -361,13 +361,15 @@ RequestFile::setAlgorithm( OpenModeller *om, FileParser &fp )
 /************************/
 /*** read Occurrences ***/
 OccurrencesPtr
-RequestFile::readOccurrences( std::string file, std::string name,
-                              std::string coord_system )
+RequestFile::readOccurrences( std::string file, std::string name, std::string coord_system )
 {
-  OccurrencesReader* oc_file =
-		OccurrencesFactory::instance().create( file.c_str(), coord_system.c_str() );
+  OccurrencesReader* oc_reader = OccurrencesFactory::instance().create( file.c_str(), coord_system.c_str() );
 
-  return oc_file->get( name.c_str() );
+  OccurrencesPtr occ = oc_reader->get( name.c_str() );
+
+  delete oc_reader;
+
+  return occ;
 }
 
 
