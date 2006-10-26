@@ -45,31 +45,36 @@ using namespace std;
 
 #include "gdal_priv.h"
 
+#include "file_parser.hh"
+
 #define OMWS_BACKLOG (100) // Max. request backlog 
+#define OMWS_MIN *60
+#define OMWS_H *3600
 #define OMWS_TICKET_TEMPLATE "XXXXXX"
-#define OMWS_TICKET_DIRECTORY "/home/renato/tmp/om"
 #define OMWS_MODEL_CREATION_REQUEST_PREFIX "model_req."
 #define OMWS_MODEL_CREATION_RESPONSE_PREFIX "model_resp."
 #define OMWS_MODEL_PROJECTION_REQUEST_PREFIX "proj_req."
-#define OMWS_LAYERS_DIRECTORY "/home/renato/projects/openmodeller/examples/layers/"
+#define OMWS_CONFIG_FILE "../config/server.conf"
+
 #define OMWS_DISTRIBUTION_MAP_DIRECTORY "/home/renato/public_html/om/"
-#define OMWS_LAYERS_LABEL "Remote layers"
-#define OMWS_BASE_URL "http://www.cria.org.br/~renato/om/"
-#define OMWS_MIN *60
-#define OMWS_H *3600
 
 /*****************************/
 /***  Forward declarations ***/
 
-static void *process_request( void* );
-static bool fileExists( const char* fileName );
-static string getMapFile( const char* ticket );
+static void*    process_request( void* );
+static bool     fileExists( const char* fileName );
+static string   getMapFile( const char* ticket );
 static wchar_t* convertToWideChar( const char* p );
-static bool readDirectory( const char* dir, const char* label, ostream &xml, int depth );
-static bool isValidGdalFile( const char* fileName );
-static bool hasValidGdalProjection( const char* fileName );
-static int getData( struct soap*, const xsd__string, xsd__base64Binary& );
+static bool     readDirectory( const char* dir, const char* label, ostream &xml, int depth );
+static bool     isValidGdalFile( const char* fileName );
+static bool     hasValidGdalProjection( const char* fileName );
+static int      getData( struct soap*, const xsd__string, xsd__base64Binary& );
 
+
+/****************/
+/***  Globals ***/
+
+FileParser gFileParser( OMWS_CONFIG_FILE ); // Config file parser
 
 /***********************/
 /*** main gSOAP code ***/
@@ -92,125 +97,137 @@ int main(int argc, char **argv)
   soap.send_timeout = 10 OMWS_H;
   soap.recv_timeout = 3 OMWS_MIN;
 
-  if (argc < 2) // no args: assume this is a CGI application
-    { 
-      soap_serve(&soap);
-      soap_destroy(&soap);
-      soap_end(&soap);
+  // no args: assume this is a CGI application
+  if ( argc < 2 ) { 
+
+    soap_serve( &soap );
+    soap_destroy( &soap );
+    soap_end( &soap );
+  }
+  else { 
+
+    int port = atoi( argv[1] ); // first command-line arg is port 
+
+    int m, s, i; // master and slave sockets, and thread counter
+
+    m = soap_bind( &soap, NULL, port, OMWS_BACKLOG );
+
+    if ( m < 0 ) {
+
+      soap_print_fault( &soap, stderr );
+      exit(-1);
     }
-  else
-    { 
-      int port = atoi(argv[1]); // first command-line arg is port 
 
-      int m, s, i; // master and slave sockets, and thread counter
+    fprintf( stderr, "Socket connection successful: master socket = %d\n", m );
 
-      m = soap_bind(&soap, NULL, port, OMWS_BACKLOG);
+    int max_thr = 8; // max. number of threads to serve requests (default value)
 
-      if (m < 0)
-	{ 
-	  soap_print_fault(&soap, stderr);
-	  exit(-1);
-	}
+    if ( argc > 2 ) {
 
-      fprintf(stderr, "Socket connection successful: master socket = %d\n", m);
-
-      int max_thr = 8; // max. number of threads to serve requests (default value)
-
-      if (argc > 2)
-	{
-	  max_thr = atoi(argv[2]); // second command-line arg is max. number of threads
-	}
-
-      if (max_thr == 1) // stand alone non-multi-threaded service
-	{
-	  for ( ; ; )
-	    {
-	      s = soap_accept(&soap);
-	      fprintf(stderr, "Socket connection successful: slave socket = %d\n", s);
-
-	      if (s < 0)
-		{ 
-		  soap_print_fault(&soap, stderr);
-		  exit(-1);
-		} 
-
-	      soap_serve(&soap);
-	      soap_destroy(&soap);
-	      soap_end(&soap);
-	    }
-	}
-      else // stand alone multi-threaded service (pool of threads)
-	{
-	  struct soap *soap_thr[max_thr]; // each thread needs a runtime environment 
-	  pthread_t tid[max_thr]; 
-	  
-	  for (i = 0; i < max_thr; i++) 
-	    soap_thr[i] = NULL; 
-	  
-	  for ( ; ; )
-	    { 
-	      for (i = 0; i < max_thr; i++) 
-		{ 
-		  // Unix SIGPIPE, this is OS dependent:
-		  //soap.accept_flags = SO_NOSIGPIPE;    // some systems like this
-		  //soap.socket_flags = MSG_NOSIGNAL;    // others need this
-		  //signal(SIGPIPE, sigpipe_handle);     // or a sigpipe handler (portable)
-		  
-		  s = soap_accept(&soap); 
-		  
-		  if (s < 0)
-		    {
-		      if (soap.errnum) 
-			{
-			  soap_print_fault(&soap, stderr);
-			}
-		      else
-			{
-			  fprintf(stderr, "Server timed out\n"); // Assume timeout is long enough for threads to complete serving requests 
-			}
-		      
-		      break; 
-		    }
-		  
-		  fprintf(stderr, "Thread %d accepts socket %d connection from IP %d.%d.%d.%d\n", i, s, (soap.ip >> 24)&0xFF, (soap.ip >> 16)&0xFF, (soap.ip >> 8)&0xFF, soap.ip&0xFF);
-		  
-		  if (!soap_thr[i]) // first time around 
-		    { 
-		      soap_thr[i] = soap_copy(&soap); 
-		      
-		      if (!soap_thr[i]) 
-			exit(1); // could not allocate 
-		    } 
-		  else // recycle soap environment 
-		    { 
-		      pthread_join(tid[i], NULL); 
-		      fprintf(stderr, "Thread %d completed\n", i); 
-		      soap_destroy(soap_thr[i]); // deallocate C++ data of old thread 
-		      soap_end(soap_thr[i]); // deallocate data of old thread 
-		    }
-		  
-		  soap_thr[i]->socket = s; // new socket fd 
-		  //pthread_create(&tid[i], NULL, (void*(*)(void*))soap_serve, (void*)soap_thr[i]); 
-		  pthread_create(&tid[i], NULL, (void*(*)(void*))process_request, (void*)soap_thr[i]); 
-		} 
-	    }
-	}
+      max_thr = atoi( argv[2] ); // second command-line arg is max. number of threads
     }
+
+    // stand alone non-multi-threaded service
+    if ( max_thr == 1 )	{
+
+      for ( ; ; ) {
+
+        s = soap_accept( &soap );
+        fprintf( stderr, "Socket connection successful: slave socket = %d\n", s );
+
+        if ( s < 0 ) { 
+
+          soap_print_fault( &soap, stderr );
+          exit(-1);
+        } 
+
+        soap_serve( &soap );
+        soap_destroy( &soap );
+        soap_end( &soap );
+      }
+    }
+    // stand alone multi-threaded service (pool of threads)
+    else {
+
+      struct soap *soap_thr[max_thr]; // each thread needs a runtime environment 
+      pthread_t tid[max_thr]; 
+	  
+      for ( i = 0; i < max_thr; i++ ) {
+
+        soap_thr[i] = NULL;
+      }
+	  
+      for ( ; ; ) { 
+
+        for ( i = 0; i < max_thr; i++ ) { 
+
+          // Unix SIGPIPE, this is OS dependent:
+          //soap.accept_flags = SO_NOSIGPIPE;    // some systems like this
+          //soap.socket_flags = MSG_NOSIGNAL;    // others need this
+          //signal(SIGPIPE, sigpipe_handle);     // or a sigpipe handler (portable)
+		  
+          s = soap_accept( &soap ); 
+		  
+          if ( s < 0 ) {
+
+            if ( soap.errnum ) {
+
+              soap_print_fault( &soap, stderr );
+            }
+            else {
+
+              // Assume timeout is long enough for threads to complete serving requests 
+              fprintf( stderr, "Server timed out\n" );
+            }
+		      
+            break; 
+          }
+		  
+          fprintf( stderr, "Thread %d accepts socket %d connection from IP %d.%d.%d.%d\n", i, s, (soap.ip >> 24)&0xFF, (soap.ip >> 16)&0xFF, (soap.ip >> 8)&0xFF, soap.ip&0xFF );
+		  
+          // first time around
+          if ( !soap_thr[i] ) { 
+
+            soap_thr[i] = soap_copy( &soap );
+		      
+            if ( ! soap_thr[i] ) {
+
+              exit(1); // could not allocate 
+            }
+          }
+          // recycle soap environment 
+          else { 
+
+            pthread_join( tid[i], NULL );
+            fprintf( stderr, "Thread %d completed\n", i );
+            soap_destroy( soap_thr[i] ); // deallocate C++ data of old thread 
+            soap_end( soap_thr[i] ); // deallocate data of old thread 
+          }
+		  
+          soap_thr[i]->socket = s; // new socket fd 
+          //pthread_create(&tid[i], NULL, (void*(*)(void*))soap_serve, (void*)soap_thr[i]); 
+          pthread_create( &tid[i], NULL, (void*(*)(void*))process_request, (void*)soap_thr[i] ); 
+        } 
+      }
+    }
+  }
 
   return 0;
 }
 
-
-void *process_request(void *soap)
+/*************************/
+/**** Process request ****/
+void *process_request( void *soap )
 {
-  pthread_detach(pthread_self());
+  pthread_detach( pthread_self() );
   ((struct soap*)soap)->recv_timeout = 300; // Timeout after 5 minutes stall on recv
   ((struct soap*)soap)->send_timeout = 60; // Timeout after 1 minute stall on send
-  soap_serve((struct soap*)soap);
-  soap_destroy((struct soap*)soap);
-  soap_end((struct soap*)soap);
-  soap_done((struct soap*)soap);
-  free(soap);
+  soap_serve( (struct soap*)soap );
+  soap_destroy( (struct soap*)soap );
+  soap_end( (struct soap*)soap );
+  soap_done( (struct soap*)soap );
+  free( soap );
+
   return NULL;
 }
 
@@ -269,7 +286,8 @@ omws__getLayers( struct soap *soap, void *_, XML &om__AvailableLayers )
   // Recurse on all sub directories searching for GDAL compatible layers
   ostringstream oss;
 
-  if ( ! readDirectory( OMWS_LAYERS_DIRECTORY, OMWS_LAYERS_LABEL, oss, 0 ) ) {
+  if ( ! readDirectory( gFileParser.get( "LAYERS_DIRECTORY" ).c_str(), 
+                        gFileParser.get( "LAYERS_LABEL" ).c_str(), oss, 0 ) ) {
 
     return soap_receiver_fault( soap, "Could not read available layers", NULL );
   }
@@ -284,7 +302,7 @@ omws__getLayers( struct soap *soap, void *_, XML &om__AvailableLayers )
 int 
 omws__createModel( struct soap *soap, XML om__ModelParameters, xsd__string &ticket )
 {
-  string ticketFileName( OMWS_TICKET_DIRECTORY );
+  string ticketFileName( gFileParser.get( "TICKET_DIRECTORY" ) );
 
   // Append slash if necessary
   if ( ticketFileName.find_last_of( "/" ) != ticketFileName.size() - 1 ) {
@@ -360,7 +378,7 @@ omws__createModel( struct soap *soap, XML om__ModelParameters, xsd__string &tick
 int 
 omws__projectModel( struct soap *soap, XML om__ProjectionParameters, xsd__string &ticket )
 {
-  string ticketFileName( OMWS_TICKET_DIRECTORY );
+  string ticketFileName( gFileParser.get( "TICKET_DIRECTORY" ) );
 
   // Append slash if necessary
   if ( ticketFileName.find_last_of( "/" ) != ticketFileName.size() - 1 ) {
@@ -441,7 +459,7 @@ omws__getProgress( struct soap *soap, xsd__string ticket, xsd__int &progress )
     return soap_sender_fault( soap, "Missing ticket in request", NULL );
   }
 
-  string fileName( OMWS_TICKET_DIRECTORY );
+  string fileName( gFileParser.get( "TICKET_DIRECTORY" ) );
 
   // Append slash if necessary
   if ( fileName.find_last_of( "/" ) != fileName.size() - 1 ) {
@@ -488,7 +506,7 @@ omws__getLog( struct soap *soap, xsd__string ticket, xsd__string &log )
     return soap_sender_fault( soap, "Missing ticket in request", NULL );
   }
 
-  string fileName( OMWS_TICKET_DIRECTORY );
+  string fileName( gFileParser.get( "TICKET_DIRECTORY" ) );
 
   // Append slash if necessary
   if ( fileName.find_last_of( "/" ) != fileName.size() - 1 ) {
@@ -536,7 +554,7 @@ omws__getModel( struct soap *soap, xsd__string ticket, XML &om__ModelEnvelope )
     return soap_sender_fault( soap, "Missing ticket in request", NULL );
   }
 
-  string fileName( OMWS_TICKET_DIRECTORY );
+  string fileName( gFileParser.get( "TICKET_DIRECTORY" ) );
 
   // Append slash if necessary
   if ( fileName.find_last_of( "/" ) != fileName.size() - 1 ) {
@@ -544,7 +562,7 @@ omws__getModel( struct soap *soap, xsd__string ticket, XML &om__ModelEnvelope )
     fileName.append( "/" );
   }
 
-  fileName.append( "model_resp." );
+  fileName.append( OMWS_MODEL_CREATION_RESPONSE_PREFIX );
   fileName.append( ticket );
 
   fstream fin;
@@ -608,7 +626,7 @@ omws__getMapAsUrl( struct soap *soap, xsd__string ticket, xsd__string &url )
     return soap_receiver_fault( soap, "Map unavailable", NULL );
   }
 
-  string urlString( OMWS_BASE_URL );
+  string urlString( gFileParser.get( "BASE_URL" ) );
 
   if ( urlString.find_last_of( "/" ) != urlString.size() - 1 ) {
 
@@ -653,7 +671,7 @@ fileExists( const char* fileName )
 static string 
 getMapFile( const char* ticket )
 { 
-  string fileName( OMWS_DISTRIBUTION_MAP_DIRECTORY );
+  string fileName( gFileParser.get( "DISTRIBUTION_MAP_DIRECTORY" ) );
 
   // Append slash if necessary
   if ( fileName.find_last_of( "/" ) != fileName.size() - 1 ) {
