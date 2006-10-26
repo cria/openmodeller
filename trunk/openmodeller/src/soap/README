@@ -2,17 +2,17 @@ OVERVIEW:
 ---------
 The available SOAP interface is an initial effort to provide 
 modelling services across the web. The current implementation 
-is only a prototype, therefore results are still far from a 
-production release.
+is still a prototype, but has enough functionality to be used  
+in production environment.
 
 The implementation is completely based on gSOAP v2.7
 (http://gsoap2.sourceforge.net) and has only been tested with 
-Linux. gSOAP seems to be compliant with "Windows, Unix, 
-Linux, Pocket PC, Mac OS X, TRU64, VxWorks, etc". However,
+Linux. The gSOAP library seems to be compliant with "Windows, 
+Unix, Linux, Pocket PC, Mac OS X, TRU64, VxWorks, etc". However,
 parts of the openModeller SOAP server code are not prepared
 to run in other platforms - these parts include sigpipe 
-handling (if multi-threading is enabled), unique temporary 
-file name generator (mkstemp function), and process forking.
+handling (if multi-threading is enabled) and unique temporary 
+file name generator (mkstemp function).
 
 Note: although the SOAP server is already prepared to run as a
 multi-threaded daemon server, openModeller is not!!
@@ -24,16 +24,25 @@ CURRENT FUNCTIONALITY:
   or multi-threaded server.
 - Server can handle getAlgorithms requests (returning metadata 
   about all available algorithms).
-- Server can handle createModel requests (which is now actually
-  generating distribution maps).
-- Server can handle getDistributionMap requests (returning maps
+- Server can handle getLayers requests (returning all available 
+  layers).
+- Server can handle createModel requests.
+- Server can handle getModel requests.
+- Server can handle projectModel requests.
+- Server can handle getProgress requests (althugh only using 0% and 
+  100%).
+- Server can handle getLog requests.
+- Server can handle getMapAsUrl requests.
+- Server can handle getMapAsAttachment requests (returning maps
   as DIME attachments).
 - A simple command line perl client is available (depends on 
-  SOAP::Lite version >= 0.67)
+  SOAP::Lite version >= 0.67). It can invoke all methods, but
+  occurrence points are still hard coded and projectModel parameters 
+  are also hard coded.
 
 
-COMPILING:
----------
+COMPILING THE SERVER:
+---------------------
 
 By default the SOAP server is not compiled. To enable it:
 
@@ -43,18 +52,9 @@ By default the SOAP server is not compiled. To enable it:
 Note: gSOAP doesn't need to be installed to run openModeller's 
 SOAP server - all necessary files are included in the distribution.
 
+
 USE INSTRUCTIONS:
 ----------------
-
-- First you will need to set an environment variable called 
-  OM_SOAP_TMPDIR indicating where the distribution maps, 
-  tickets, and log file should be generated. For instance:
-  
-  Using bash:
-  export OM_SOAP_TMPDIR=/tmp/om
-
-  Using tcsh:
-  setenv OM_SOAP_TMPDIR /tmp/om
 
 - To run the server as a CGI application, just put it inside an 
   accessible cgi-bin directory:
@@ -73,7 +73,19 @@ USE INSTRUCTIONS:
 
   ./om_soap_server 8085 10 &
 
-- Run the client to test your server (you'll need perl and the 
+- To configure the server copy the "server.conf" file provided to a 
+  into directory called "config" (paralell to the directory where the 
+  server is going to run). Edit the file and make all necessary changes. 
+  You'll probably need to create a directory that will store all job 
+  tickets and another one to store all distribution maps. Bear in mind 
+  that these directories will need to be writtable by the user running 
+  the server (eg. apache, or www-data if running as a CGI under apache).
+
+- Add a cron job to run scheduler.sh every minute (or more frequently)
+  passing as parameters to the script the ticket directory and the 
+  distribution map directory.
+
+- Run the client to test your server (you'll need Perl and the 
   SOAP::Lite module):
 
   perl sampleClient.pl --server=http://localhost:8085/
@@ -82,21 +94,23 @@ USE INSTRUCTIONS:
 
   perl sampleClient.pl --help
 
+
 TODO-LIST:
 ----------
 
-- Use the ticket file as a log file.
-- Move distribution map creation to a new method createMap.
-- Implement getModel.
-- Synchronize request/response XML structures with format used
-  in model serialization.
-- Get available layers from a layer server.
-- Accept input layers from remote machines.
-- Implement getFileFormats (need changes in openModeller).
+- Find a way to track progress of model and map generation in a more 
+  refined way on the server side.
+- Include option to generate Condor job requests.
+- Include option to read maps from TerraLib databases on the server side.
+- Improve Perl client to read occurrences from species files.
+- Improve Perl client to store models in the current directory
+  and use them as parameters in projectModel requests.
+- Improve client to specify projection environment and output parameters
+  in projectModel requests.
+- Store maps in current directory after calling getMap requests.
 - Implement garbage collecttion for distribution maps.
 - Implement sigpipe handler.
 - Find portable and better solution to unique temporary files.
-- Find a way to track progress of model generation.
 
 
 MAINTENANCE:
