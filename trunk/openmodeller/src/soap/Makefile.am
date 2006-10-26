@@ -41,6 +41,14 @@ EXTRA_DIST = \
 
 SOAPHEADER = om_soap.hh
 
-om_soap_server_SOURCES = om_soap_server.cpp $(SOAPHEADER) stdsoap2.cpp soapServer.cpp soapC.cpp
+om_soap_server_SOURCES = \
+	om_soap_server.cpp \
+	$(SOAPHEADER) \
+	stdsoap2.cpp \
+	soapServer.cpp \
+	soapC.cpp \
+	file_parser.cpp
+
 om_soap_server_CPPFLAGS = -I$(OMSRCDIR)
+
 om_soap_server_LDADD = $(GDAL_LIB) $(OMLIB) -lpthread
