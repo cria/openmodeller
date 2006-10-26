@@ -81,6 +81,20 @@ USE INSTRUCTIONS:
   that these directories will need to be writtable by the user running 
   the server (eg. apache, or www-data if running as a CGI under apache).
 
+  For instance, if running as a CGI:
+
+  # Create config dir
+  mkdir /var/www/config
+
+  # Ensure that web server user has read permissions
+  chown root.apache /var/www/config
+
+  # Copy sample conf file
+  cp server.conf /var/www/config
+
+  # Edit file
+  vim /var/www/config/server.conf
+
 - Add a cron job to run scheduler.sh every minute (or more frequently)
   passing as parameters to the script the ticket directory and the 
   distribution map directory.
