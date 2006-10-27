@@ -25,7 +25,7 @@ win32{
   DEFINES += WIN32
   message(Installing for windows!)
   DEFINES += MINGW_QT
-  LIBS+=-L"C:\Mingw\lib"
+  LIBS+=-L"C:\msys\local\lib"
   INCLUDEPATH += . 
   INCLUDEPATH +="c:\mingw\include" #hard coded for now! 
   INCLUDEPATH +="c:\dev\cpp\om\src" #hard coded for now!
