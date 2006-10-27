@@ -772,7 +772,7 @@ sub project_model
 <Map Id="/home/renato/projects/openmodeller/examples/layers/rain_coolest" IsCategorical="0" Min="0" Max="2137"/>
 <Map Id="/home/renato/projects/openmodeller/examples/layers/temp_avg" IsCategorical="0" Min="-545.4199829101562" Max="3342.52001953125"/>
 <Mask Id="/home/renato/projects/openmodeller/examples/layers/rain_coolest"/></Environment>
-<OutputParameters FileType="FloatingTiff">
+<OutputParameters FileType="FloatingHFA">
 <TemplateLayer Id="/home/renato/projects/openmodeller/examples/layers/rain_coolest"/>
 </OutputParameters>
 </ProjectionParameters>';

@@ -26,7 +26,7 @@ done
 for req in `find $ticket_repository/proj_req.* -type f`; do
 ticket="${req##*.}"
 moved=$ticket_repository"/proj_proc."$ticket
-map=$map_repository"/"$ticket".tif"
+map=$map_repository"/"$ticket".img"
 log=$ticket_repository"/"$ticket
 # rename file
 mv "$req" "$moved"
