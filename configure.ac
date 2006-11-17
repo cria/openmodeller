@@ -97,8 +97,6 @@ fi
 dnl ---------------------------------------------------------------------------
 dnl Expat - XML parser
 dnl ---------------------------------------------------------------------------
-dnl Stuff to find Expat
-
 AC_ARG_WITH([expat],AC_HELP_STRING([--with-expat],[where to find Expat]),[with_expat=$withval],[with_expat=/usr])
 if test x$with_expat = xno; then
 	AC_MSG_ERROR("we require Expat.")
@@ -166,6 +164,60 @@ dnl Proj4
 dnl ---------------------------------------------------------------------------
 dnl AC_CHECK_LIB(proj, pj_init, [], [AC_MSG_ERROR("Cannot find Proj4 library")])
 
+AC_ARG_WITH(proj,
+    AC_HELP_STRING([--with-proj=DIR],
+      [ Proj4 installation directory, e.g. '--with-proj=/usr/local']),
+    [
+      if test x"$with_proj" = "x" ; then
+        AC_MSG_CHECKING([for Proj4 library in $with_proj/lib])
+        PROJ_LIB="-L$with_proj/lib -lproj"
+        if test -d "$with_proj/lib" ; then
+          projlibdir="$with_proj/lib"
+        fi
+      else
+        AC_MSG_CHECKING([for Proj4 library in $with_projlib])
+        PROJ_LIB="-L$with_projlib -lproj"
+        if test -d "$with_projlib" ; then
+          projlibdir="$with_projlib"
+        fi
+      fi
+
+      if test x"$projlibdir" = "x" ; then
+         AC_MSG_ERROR([*** directory $projlibdir does not exist.])
+      else
+        LDFLAGS="$LDFLAGS $PROJ_LIB"
+        CPPFLAGS="$CPPFLAGS -I$with_proj/include"
+        AC_MSG_RESULT(["$with_proj exists"])
+
+        AC_CHECK_HEADERS(proj_api.h,
+          [PROJ_INC="-I$with_proj/include"], 
+           [AC_MSG_ERROR([*** Proj4 headers not found.])])
+
+        AC_CHECK_LIB(proj,pj_is_latlong, 
+            [have_proj_lib=yes],
+            [AC_MSG_ERROR([*** Proj4 library not found.])])
+      fi
+    ],
+  
+    [
+     AC_CHECK_HEADERS(proj_api.h,[PROJ_INC=""],
+       [AC_MSG_ERROR([*** Proj4 headers not found.])])
+    ]
+    AC_CHECK_LIB(proj,pj_is_latlong,
+    [
+     have_proj_lib=yes
+     PROJ_LIB="-lproj"
+    ],
+    [
+     AC_MSG_ERROR([Proj4 is required and was not found.])
+    ])
+ )
+
+AC_ARG_WITH(projlib,AC_HELP_STRING([--with-projlib=DIR],
+    [ Proj4 library directory, optional, use when library is in a different directory to that derived by appending /lib to --with-projdir ]),[],[])
+
+AC_SUBST(PROJ_INC)
+AC_SUBST(PROJ_LIB)
 
 dnl ---------------------------------------------------------------------------
 dnl gsl
@@ -174,7 +226,7 @@ AC_ARG_WITH(gsl,
   AC_HELP_STRING([--with-gsl=path],
                  [Full path to 'gsl-config' script, e.g. '--with-gsl=/usr/local/bin/gsl-config']))
                  
-AC_MSG_CHECKING([for gsl])
+AC_MSG_CHECKING([for GSL])
 GSL_CONFIG=`which gsl-config 2>/dev/null`
 if test x"$with_gsl" = "xno" ; then
   ac_gsl=no
