@@ -21,10 +21,15 @@ Installation notes for GNU/Linux
 2. Install the GDAL library: http://www.remotesensing.org/gdal/
    (known to work with version 1.2.5)
 
-3. Install GSL - GNU Scientific Library: http://www.gnu.org/software/gsl/
-   (known to work with version 1.4)
+3. Optionally install GSL - GNU Scientific Library: http://www.gnu.org/software/gsl/
+   (known to work with version 1.4) 
+   This is only needed if you want to use the CSM algorithm.
 
-4. Install TerraLib - http://www.dpi.inpe.br/terralib/
+4. Optionally install SQLite3: http://www.sqlite.org/
+   (known to work with version 3.3.7) 
+   This is only needed if you want to use the AquaMaps algorithm.
+
+5. Install TerraLib - http://www.dpi.inpe.br/terralib/
    (This step is optional, known to work with version 3.1.3)
 
    Set the following environment variables:
@@ -36,7 +41,7 @@ Installation notes for GNU/Linux
    or
    $ ./autogen.sh -enable-terralib
 
-5. Download the latest openModeller package from the sourceforge site
+6. Download the latest openModeller package from the sourceforge site
    (http://www.sf.net/projects/openmodeller), uncompress it, get into the
    "modeller" directory and then:
 
