@@ -113,7 +113,6 @@ main( int argc, char **argv )
         for ( int i = 0; i < _nmap; i++ )
           {
             // Generate a raster using map "i".
-            //_maps[i] = new Map( new Raster( mapfile[i] ) );
             _maps[i] = new Map( RasterFactory::instance().create( mapfile[i] ) );
             //_maps[i]->normalize( 0.0, 255.0 );
           }
@@ -129,9 +128,7 @@ main( int argc, char **argv )
         if ( result.empty() )
           g_log.error( 1, "'Output file' was not specified!\n" );
 
-        //_maps[0] = new Map( new Raster( result ) );
 	_maps[0] = new Map( RasterFactory::instance().create( result ) );
-
         //_maps[0]->normalize( 0.0, 255.0 );
       }
 
