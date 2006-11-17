@@ -34,7 +34,7 @@ EXTRA_DIST = \
 #	garp.hh ruleset.hh \
 #	bioclim_histogram.hh regression.hh \
 #	rules_base.hh rules_range.hh rules_negrange.hh rules_logit.hh
-
-libomgarp_la_LDFLAGS = -no-undefined
-libomgarp_la_LIBADD = $(OMLIB)
+#
+#libomgarp_la_LDFLAGS = -no-undefined
+#libomgarp_la_LIBADD = $(OMLIB)
 libomgarp_la_CPPFLAGS = -I$(OMSRCDIR)
