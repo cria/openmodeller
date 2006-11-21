@@ -2,7 +2,7 @@
  * Declaration of Genetic Algorithm for Rule-Set Production (GARP)
  * 
  * @file   garp.cpp
- * @author Ricardo Scachetti Pereira (rpereira@ku.edu)
+ * @author Ricardo Scachetti Pereira (ricardo [at] tdwg . org)
  * @date   2004-04-01
  * $Id$
  * 
@@ -99,7 +99,7 @@ AlgParamMetadata parameters[NUM_PARAM] =
     "Integer",               // Type.
 
     "Maximum number of rules to be kept in solution.", // Overview.
-    "", // Description
+    "Maximum number of rules to be kept in solution.", // Description
 
     1,     // Not zero if the parameter has lower limit.
     1,   // Parameter's lower limit.
@@ -117,7 +117,7 @@ AlgParamMetadata parameters[NUM_PARAM] =
     "Number of points sampled (with replacement) used to test rules.",
 
     // Description.
-    "",
+    "Number of points sampled (with replacement) used to test rules.",
 
     1,     // Not zero if the parameter has lower limit.
     1,   // Parameter's lower limit.
@@ -133,9 +133,9 @@ AlgParamMetadata parameters[NUM_PARAM] =
 
 AlgMetadata metadata = {
   
-  "GARP",                                            // Id.
-  "GARP - oM implementation", // Name.
-  "3.1 beta",                                        // Version.
+  "GARP",                                                // Id.
+  "GARP (single run) - new openModeller implementation", // Name.
+  "3.1 beta",                                            // Version.
 
   // Overview.
   "GARP is a genetic algorithm that creates ecological niche \
@@ -175,7 +175,7 @@ A robust and informative method of analysis. Mathematics and \
 Computers in Simulation 33:385-390.",
 
   "Ricardo Scachetti Pereira",  // Code author.
-  "rpereira [at] ku.edu",       // Code author's contact.
+  "ricardo [at] tdwg . org",      // Code author's contact.
 
   0,  // Does not accept categorical data.
   1,  // Does not need (pseudo)absence points.
