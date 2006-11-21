@@ -1,12 +1,12 @@
-CRIA - Centro de Referencia em Informacao Ambiental:
+CRIA - Centro de Referência em Informação Ambiental:
 
-  * Mauro E. S. Munoz <mauro [at] cria.org.br>
+  * Mauro E. S. Muñoz <mesmunoz [at] gmail . com>
 
      Main developer and system architecture designer.
      Implemented the distance algorithms.
      Implemented the command-line interface.
 
-  * Renato De Giovanni <renato [at] cria.org.br>
+  * Renato De Giovanni <renato [at] cria . org . br>
 
      Implemented the SOAP interface.
      Helped in other specific parts of the code.
@@ -14,7 +14,7 @@ CRIA - Centro de Referencia em Informacao Ambiental:
 
 The University of Kansas:
 
- * Ricardo Scachetti Pereira <rpereira [at] ku.edu>
+ * Ricardo Scachetti Pereira <ricardo [at] tdwg . org>
 
      Participated in the design of the system.
      Implemented the Bioclim and GARP algorithm.
@@ -29,19 +29,19 @@ The University of Kansas:
 
 The University of Reading:
 
- * Tim Sutton <t.sutton [at] reading.ac.uk>
+ * Tim Sutton <tim [at] linfiniti . com>
 
      Implemented the CSM algorithm.
      Developed the GUI, both standand alone and Quantum GIS plug-in.
 
- * Peter Brewer <p.w.brewer [at] reading.ac.uk>
+ * Peter Brewer <p . w . brewer [at] reading . ac . uk>
 
      Designed the logo and the website.
      Participated in the development of the GUI.
 
 Quantum GIS development team:
 
- * Jens Oberender <j.obi [at] troja.net>
+ * Jens Oberender <j . obi [at] troja . net>
 
      Migrated the build process to automake/autoconf.
      Created the RPM package specification.
@@ -52,6 +52,12 @@ Quantum GIS development team:
 
 INPE - Instituto Nacional de Pesquisas Espaciais
 
- * Alexandre Copertino Jardim <alexcj [at] dpi.inpe.br>
+ * Alexandre Copertino Jardim <alexcj [at] dpi . inpe . br>
 
      Integrated openModeller with TerraLib.
+
+Poli - Escola Politécninca da Universidade de São Paulo:
+
+ * Danilo J. S. Bellini <danilo . estagio [at] gmail . com>
+
+     Developed the Environmental Distance Algorithm.
