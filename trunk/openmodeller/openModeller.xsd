@@ -231,6 +231,18 @@
     <xs:attribute name="Scales" type="xs:string" use="required"/>
   </xs:complexType>
 
+  <xs:complexType name="StatisticsType">
+    <xs:sequence>
+      <xs:element name="ConfusionMatrix" minOccurs="0">
+        <xs:complexType>
+          <xs:attribute name="Accuracy" type="xs:double" use="required"/>
+          <xs:attribute name="OmissionError" type="xs:double" use="required"/>
+          <xs:attribute name="CommissionError" type="xs:double" use="required"/>
+        </xs:complexType>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+
   <xs:complexType name="OutputParametersType">
     <xs:sequence>
       <xs:element name="TemplateLayer" type="BasicLayerType"/>
@@ -255,6 +267,7 @@
     <xs:sequence>
       <xs:element name="Sampler" type="SamplerType"/>
       <xs:element name="Algorithm" type="SerializedAlgorithmType"/>
+      <xs:element name="Statistics" type="StatisticsType" minOccurs="0"/>
     </xs:sequence>
   </xs:complexType>
 

@@ -160,7 +160,7 @@ public:
    * Returns model created by the algorithm.
    * @return Model object.
    */
-  Model getModel() { return _alg->getModel(); }
+  Model getModel() const { return _alg->getModel(); }
 
   /**
    * Returns current sampler setting.
@@ -351,7 +351,7 @@ public:
   AreaStats * getEstimatedAreaStats(const ConstEnvironmentPtr& env, 
 				    double proportionAreaToSample = 0.01);
 
-  ConfusionMatrix *getConfusionMatrix();
+  ConfusionMatrix *getConfusionMatrix() const;
 
   /*****************************************************************************
    *

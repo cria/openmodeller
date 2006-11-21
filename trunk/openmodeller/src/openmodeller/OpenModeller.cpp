@@ -488,7 +488,7 @@ AreaStats * OpenModeller::getEstimatedAreaStats(const ConstEnvironmentPtr& env,
 
 /**********************************/
 /******* getConfusionMatrix *******/
-ConfusionMatrix * OpenModeller::getConfusionMatrix()
+ConfusionMatrix * OpenModeller::getConfusionMatrix() const
 {
   ConfusionMatrix *cm = new ConfusionMatrix();
 
@@ -509,6 +509,20 @@ OpenModeller::getModelConfiguration() const
   ConfigurationPtr alg_config( _alg->getConfiguration() );
 
   config->addSubsection( alg_config );
+
+  ConfusionMatrix * cm = getConfusionMatrix();
+
+  ConfigurationPtr stats_config( new ConfigurationImpl("Statistics") );
+
+  ConfigurationPtr cm_config( new ConfigurationImpl("ConfusionMatrix") );
+
+  cm_config->addNameValue( "Accuracy", cm->getAccuracy() * 100 );
+  cm_config->addNameValue( "OmissionError", cm->getOmissionError() * 100 );
+  cm_config->addNameValue( "CommissionError", cm->getCommissionError() * 100 );
+
+  stats_config->addSubsection( cm_config );
+
+  config->addSubsection( stats_config );
 
   return config;
 }
