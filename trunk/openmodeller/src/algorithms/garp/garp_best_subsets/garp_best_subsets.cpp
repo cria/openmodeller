@@ -2,7 +2,7 @@
  * Declaration of GARP with Best Subsets Procedure
  * 
  * @file   garp_best_subsets.cpp
- * @author Ricardo Scachetti Pereira (rpereira@ku.edu)
+ * @author Ricardo Scachetti Pereira (ricardo [at] tdwg . org)
  * @date   2004-08-25
  * $Id$
  * 
@@ -57,14 +57,14 @@ AlgParamMetadata parameters_bs[NUM_PARAM] =
   // Best Subsets Parameters
   {
     "TrainingProportion",          // Id.
-    "Training Proportion",          // Name.
+    "Training Proportion",         // Name.
     "Double",                      // Type.
 
     // Overview.
     "Proportion of the occurrence data to be used to train the models.",
 
     // Description.
-    "",
+    "Proportion of the occurrence data to be used to train the models.",
 
     1,      // Not zero if the parameter has lower limit.
     0,      // Parameter's lower limit.
@@ -82,7 +82,7 @@ AlgParamMetadata parameters_bs[NUM_PARAM] =
     "Maximum number of GARP runs to be performed.",
 
     // Description.
-    "",
+    "Maximum number of GARP runs to be performed.",
 
     1,      // Not zero if the parameter has lower limit.
     0,      // Parameter's lower limit.
@@ -97,10 +97,10 @@ AlgParamMetadata parameters_bs[NUM_PARAM] =
     "Double",                         // Type.
 
     // Overview.
-    "Maximum acceptable omission error. Set to 100% to use only soft omission",
+    "Maximum acceptable omission error. Set to 100% to use only soft omission.",
 
     // Description.
-    "",
+    "Maximum acceptable omission error. Set to 100% to use only soft omission.",
 
     1,      // Not zero if the parameter has lower limit.
     0,      // Parameter's lower limit.
@@ -118,7 +118,7 @@ AlgParamMetadata parameters_bs[NUM_PARAM] =
     "Minimum number of models below omission threshold.",
 
     // Description.
-    "",
+    "Minimum number of models below omission threshold.",
 
     1,      // Not zero if the parameter has lower limit.
     0,      // Parameter's lower limit.
@@ -136,7 +136,7 @@ AlgParamMetadata parameters_bs[NUM_PARAM] =
     "Percentage of distribution of models to be taken regarding commission error.",
 
     // Description.
-    "",
+    "Percentage of distribution of models to be taken regarding commission error.",
 
     1,      // Not zero if the parameter has lower limit.
     0,      // Parameter's lower limit.
@@ -154,7 +154,7 @@ AlgParamMetadata parameters_bs[NUM_PARAM] =
     "Number of samples used to calculate commission error.",
 
     // Description.
-    "",
+    "Number of samples used to calculate commission error.",
 
     1,        // Not zero if the parameter has lower limit.
     1,        // Parameter's lower limit.
@@ -172,7 +172,7 @@ AlgParamMetadata parameters_bs[NUM_PARAM] =
     "Maximum number of threads of executions to run simultaneously.",
 
     // Description.
-    "",
+    "Maximum number of threads of executions to run simultaneously.",
 
     1,        // Not zero if the parameter has lower limit.
     1,        // Parameter's lower limit.
@@ -211,7 +211,8 @@ AlgParamMetadata parameters_bs[NUM_PARAM] =
  (before reaching MaxGenerations).",
 
     // Description.
-    "",
+    "Defines the convergence value that makes the algorithm stop\
+ (before reaching MaxGenerations).",
 
     1,     // Not zero if the parameter has lower limit.
     0.0,   // Parameter's lower limit.
@@ -226,7 +227,7 @@ AlgParamMetadata parameters_bs[NUM_PARAM] =
     "Integer",               // Type.
 
     "Maximum number of rules to be kept in solution.", // Overview.
-    "", // Description
+    "Maximum number of rules to be kept in solution.", // Description
 
     1,     // Not zero if the parameter has lower limit.
     1,   // Parameter's lower limit.
@@ -244,7 +245,7 @@ AlgParamMetadata parameters_bs[NUM_PARAM] =
     "Number of points sampled (with replacement) used to test rules.",
 
     // Description.
-    "",
+    "Number of points sampled (with replacement) used to test rules.",
 
     1,     // Not zero if the parameter has lower limit.
     1,   // Parameter's lower limit.
@@ -259,9 +260,9 @@ AlgParamMetadata parameters_bs[NUM_PARAM] =
 
 AlgMetadata metadata_bs = {
   
-  "GARP_BS",                           // Id.
-  "GARP with best subsets - oM implementation",  // Name.
-  "3.0.1 alpha",                       // Version.
+  "GARP_BS",                                                  // Id.
+  "GARP with best subsets - new openModeller implementation", // Name.
+  "3.0.1 alpha",                                              // Version.
 
   // Overview.
   "GARP is a genetic algorithm that creates ecological niche \
@@ -290,7 +291,7 @@ Evaluating predictive models of species' distributions: criteria \
 for selecting optimal models.Ecological Modelling, v. 162, p. 211 232.",
 
   "Ricardo Scachetti Pereira",  // Code author.
-  "rpereira [at] ku.edu",       // Code author's contact.
+  "ricardo [at] tdwg . org",    // Code author's contact.
 
   0,  // Does not accept categorical data.
   1,  // Does not need (pseudo)absence points.
