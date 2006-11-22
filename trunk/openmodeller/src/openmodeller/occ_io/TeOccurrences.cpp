@@ -179,7 +179,7 @@ TeOccurrences::loadOccurrences( const char *url )
 
 		Coord lg = Coord( portal->getDouble(0) );
 		Coord lt = Coord( portal->getDouble(1) );
-		insertOcurrence( sp.c_str(), lg, lt, error, abundance, num_attributes, attributes );
+		addOccurrence( sp.c_str(), lg, lt, error, abundance, num_attributes, attributes );
 	}
 
 	delete portal;

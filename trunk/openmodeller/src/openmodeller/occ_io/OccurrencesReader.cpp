@@ -102,13 +102,12 @@ OccurrencesReader::printOccurrences( char *msg )
 	}
 }
 
-/************************/
-/*** insert Ocurrence ***/
+/**********************/
+/*** add Occurrence ***/
 int
-OccurrencesReader::insertOcurrence( const char *groupId, Coord lg, Coord lt,
-				  Scalar error, Scalar abundance,
-				  int num_attributes,
-				  Scalar *attributes )
+OccurrencesReader::addOccurrence( const char *groupId, Coord lg, Coord lt,
+                                  Scalar error, Scalar abundance,
+                                  int num_attributes, Scalar *attributes )
 {
 	// If an occurrences group with the same name already exists, 
 	// just add another occurrence to it.

@@ -117,8 +117,8 @@ OccurrencesFile::loadOccurrences( const char *file_name )
 			Coord lg = Coord( x );
 			Coord lt = Coord( y );
 
-			insertOcurrence( sp1, lg, lt, error, abundance,
-					num_attributes, attributes );
+			addOccurrence( sp1, lg, lt, error, abundance,
+                                       num_attributes, attributes );
 		}
 	}
 	fclose( file );

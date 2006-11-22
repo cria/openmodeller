@@ -72,7 +72,7 @@ public:
 protected:
 
     /**
-     * Insert a new occurrence. Each occurrence belongs to a group (usually
+     * Add a new occurrence. Each occurrence belongs to a group (usually
      * a species name).
      * @param groupId Group identifier (usually a species name).
      * @param lg Longitude.
@@ -83,8 +83,8 @@ protected:
      * @param attributes Extra attributes.
      * @return 0 if occurrence was added to an existing group, 1 if group was created.
      */
-    int insertOcurrence( const char *groupId, Coord lg, Coord lt, Scalar error,
-                         Scalar abundance, int num_attributes, Scalar *attributes );
+    int addOccurrence( const char *groupId, Coord lg, Coord lt, Scalar error,
+                       Scalar abundance, int num_attributes, Scalar *attributes );
 	
     typedef std::vector<OccurrencesPtr> LstOccurrences;
 
