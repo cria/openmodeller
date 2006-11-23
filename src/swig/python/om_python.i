@@ -32,6 +32,8 @@
 #include "openmodeller/Sampler.hh"
 #include "openmodeller/refcount.hh"
 #include "openmodeller/env_io/RasterFactory.hh"
+#include "openmodeller/occ_io/OccurrencesFactory.hh"
+#include "openmodeller/occ_io/OccurrencesReader.hh"
 %}
 
 %include "std_string.i"
@@ -292,7 +294,7 @@ RCP_WRAP( SamplerPtr, SamplerImpl );
 //******************************************************************************
 RCP_WRAP( OccurrencesPtr, OccurrencesImpl );
 RCP_CONST_TYPEMAP( ConstOccurrencesPtr, OccurrencesPtr );
-%ignore OccurrencesPtr;
+//%ignore OccurrencesPtr;
 %ignore ConstOccurrencesPtr;
 
 %ignore OccurrencesImpl;
@@ -301,8 +303,13 @@ RCP_CONST_TYPEMAP( ConstOccurrencesPtr, OccurrencesPtr );
 %include "openmodeller/Occurrences.hh"
 
 %inline %{
-  ReferenceCountedPointer<OccurrencesImpl> makeOccurrences( char *species_name, char *cs ) {
+  ReferenceCountedPointer<OccurrencesImpl> createOccurrences( char *species_name, char *cs ) {
     return ReferenceCountedPointer<OccurrencesImpl>( new OccurrencesImpl( species_name, cs ) );
+  }
+
+  OccurrencesPtr readOccurrences( char const *source, char const *coord_sys, char *sp_name ) {
+    OccurrencesReader * occ = OccurrencesFactory::instance().create( source, coord_sys );
+    return occ->get( sp_name );
   }
 %}
 
@@ -343,7 +350,7 @@ RCP_WRAP( AverageModelPtr, AverageModelImpl );
 
 //*****************************************************************************
 //
-// projector.hh
+// Projector.hh
 //
 //
 //******************************************************************************
@@ -367,7 +374,7 @@ private:
 
 //*****************************************************************************
 //
-// om_algorithm_metadata.hh typemaps and supporting delcs.
+// AlgMetadata.hh typemaps and supporting delcs.
 //
 // Defines the AlgMetadata and AlgParamMetadata structs
 //
@@ -392,7 +399,7 @@ private:
 
 //*****************************************************************************
 //
-// environment.hh typemaps and supporting delcs.
+// Environment.hh typemaps and supporting delcs.
 //
 // Defines the Environment object
 //
@@ -423,7 +430,7 @@ RCP_CONST_TYPEMAP( ConstEnvironmentPtr, EnvironmentPtr );
 
 //*****************************************************************************
 //
-// om_control.hh typemaps and supporting delcs.
+// OpenModeller.hh typemaps and supporting delcs.
 //
 // Defines the OpenModeller object
 //
@@ -512,7 +519,7 @@ class PyMapCommand : public Projector::MapCommand {
   $1 = new PyMapCommand( $input );
 }
 
-// This tells SWIG to treat AlgParameter * as a special case
+//// This tells SWIG to treat AlgParameter * as a special case
 %typemap(in,numargs=1) (int nparam, AlgParameter *param) 
 {
   // %typemap(in,numargs=1) (int nparam, AlgParameter *param) 
@@ -591,21 +598,25 @@ class PyMapCommand : public Projector::MapCommand {
     delete[] $1;
 }
 
-%typemap(out) AlgMetadata *
-{
-  // %typemap(out) AlgMetadata *
-  int i;
-  PyObject * paramMetadata;
-  PyObject * list = PyList_New(0);
-  for (i = 0; i < $1->nparam; i++)
-  {
-    paramMetadata = SWIG_NewPointerObj((void *) &($1->param[i]), 
-                                      SWIGTYPE_p_AlgParamMetadata, 1);
-    PyList_Append(list, paramMetadata);
-  }
-
-  $result = list;
-}
+// Note: I don't know why someone included this typemap, since it maps an alg
+// metadata to its list of parameters! This code will remain commented out unless
+// we find a specific reason for the behaviour below. (Renato)
+//
+//%typemap(out) AlgMetadata *
+//{
+//  // %typemap(out) AlgMetadata *
+//  int i;
+//  PyObject * paramMetadata;
+//  PyObject * list = PyList_New(0);
+//  for (i = 0; i < $1->nparam; i++)
+//  {
+//    paramMetadata = SWIG_NewPointerObj((void *) &($1->param[i]), 
+//                                      SWIGTYPE_p_AlgParamMetadata, 1);
+//    PyList_Append(list, paramMetadata);
+//  }
+//
+//  $result = list;
+//}
 
 %typemap(out) int 
 {
@@ -652,7 +663,7 @@ class PyMapCommand : public Projector::MapCommand {
 
 //*****************************************************************************
 //
-// om_algorithm.hh
+// Algorithm.hh
 //
 //
 //******************************************************************************
