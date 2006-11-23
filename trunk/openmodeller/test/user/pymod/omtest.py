@@ -29,6 +29,9 @@
 ###############################################################################
 # 
 # $Log$
+# Revision 1.6  2006/11/23 19:33:58  rdg
+# Renamed makeOccurrences to createOccurrences.
+#
 # Revision 1.5  2005/06/09 02:14:44  scachett
 # Merged branch-sampler-matrix-input2 to CVS HEAD.
 # This set of changes allow OM to take Occurrences objects already
@@ -395,8 +398,8 @@ def get_occurrences(filename, sppName, coordSys, sppNameColumn,
     # get point data from open file
     line = file.readline()
 
-    presence = om.makeOccurrences(sppName, coordSys)
-    absence = om.makeOccurrences(sppName, coordSys)
+    presence = om.createOccurrences(sppName, coordSys)
+    absence = om.createOccurrences(sppName, coordSys)
 
     while line:
 
