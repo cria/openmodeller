@@ -1,50 +1,87 @@
-import om;
+import om
 
-mod = om.OpenModeller();
-print "Welcome to openModeller Python Binding test.\n";
-print "Using openModeller version:     ", mod.getVersion();
-print "Loading algorithms from:        ", mod.getPluginPath();
-print "Algorithms loaded:              ", mod.loadAlgorithms();
-print "Number of available algorithms: ", mod.numAvailableAlgorithms();
+# You'll need this instance for sure...
+mod = om.OpenModeller()
 
-#md = mod.algorithmMetadata("MinimumDistance");
-md = mod.algorithmMetadata("GARP");
-#md = mod.algorithmMetadata("CSM");
+# Some basic information
+print "\nWelcome to the openModeller Python Binding test\n"
+print "openModeller version", mod.getVersion()
 
-print "Algorithm info: ";
-print "Id:             ", md.id;
-print "Name:           ", md.name;
-print "Version:        ", md.version;
-print "Author:         ", md.author;
-print "Contact:        ", md.contact;
+# Loop over algorithms to collect their names
+algList = mod.availableAlgorithms();
 
-maps = ["aspect", "dem", "slope", "dtr", "prec", "temp", "wet"];
+strAlgList = ""
+
+for i in range(0, len(algList)):
+    alg = algList[i]
+    if i > 0:
+        strAlgList += ", "
+    strAlgList += alg.name
+
+print "\n", mod.numAvailableAlgorithms(), "algorithm(s) available: ", strAlgList
+
+# Display all metadata for a particular algorithm
+
+algId = 'GARP'
+print "\nMetadata of a particular algorithm:\n"
+
+alg = mod.algorithmMetadata(algId)
+
+print "Id:", alg.id
+print "Name:", alg.name
+print "Version:", alg.version
+print "Author:", alg.author
+print "Contact:", alg.contact
+
+strParamList = ""
+
+paramList = alg.getParameterList()
+for j in range(0, len(paramList)):
+    param = paramList[j]
+    if j > 0:
+        strParamList += ", "
+    strParamList += param.name
+
+print "Parameters:", strParamList
+
+print "\nSample experiment:"
+
+print "\nSetting occurrences..."
+
+wktsys = "GEOGCS[\"WGS84\", DATUM[\"WGS84\", SPHEROID[\"WGS84\", 6378137.0, 298.257223563]], PRIMEM[\"Greenwich\", 0.0], UNIT[\"degree\", 0.017453292519943295], AXIS[\"Longitude\",EAST], AXIS[\"Latitude\",NORTH]]"
+spfile = "../../../examples/furcata_boliviana.txt"
+spname = "Furcata boliviana"
+
+# Old interface
+#ocfile = om.OccurrencesFile(spfile, wktsys)
+#ocfile.tail()
+#occurr = ocfile.get(spname)
+
+occurr = om.readOccurrences(spfile, wktsys, spname)
+mod.setOccurrences(occurr)
+
+print "Setting Environment..."
+
+maps = ["../../../examples/rain_coolest.tif", "../../../examples/temp_avg.tif"]
+
+inputMask = "../../../examples/rain_coolest.tif"
+
+mod.setEnvironment([], maps, inputMask)
+
+print "Setting Algorithm..."
 
 params = [["MaxGenerations",   "25"], 
           ["ConvergenceLimit", "0.0"],
           ["PopulationSize",   "50"],
-          ["Resamples",        "2500"],
-          ["MutationRate",     "0.25"],
-          ["CrossoverRate",    "0.25"]];
+          ["Resamples",        "2500"]]
 
-wktsys = "GEOGCS[\"WGS84\", DATUM[\"WGS84\", SPHEROID[\"WGS84\", 6378137.0, 298.257223563]], PRIMEM[\"Greenwich\", 0.0], UNIT[\"degree\", 0.017453292519943295], AXIS[\"Longitude\",EAST], AXIS[\"Latitude\",NORTH]]";
-spfile = "Strix_varia.txt";
-spname = "Strix varia";
+mod.setAlgorithm(alg.id, params)
 
-ocfile = om.OccurrencesFile(spfile, wktsys);
-ocfile.tail();
-occurr = ocfile.get(spname);
+# Create Model
+mod.createModel()
 
-print "\nInitializing algorithm.";
-print "Reading occurrences.        ", mod.setOccurrences(occurr);
-print "Setting Environment object. ", mod.setEnvironment(0, [], 7, maps, "mask");
-print "Setting algorithm params.   ", mod.setAlgorithm(md.id, 6, params);
-print "Running algorithm.          ", mod.run();
-print "Setting output format       ", mod.setOutputMapByFile(255, "map.tif", "mask", "mask");      
-print "Creating output map.        ", mod.createMap(mod.getEnvironment(), "map.tif", "mask");
+# Project Map
+mod.createMap(mod.getEnvironment(), "map.img")
 
-print "Finalizing algorithm";
-
-print "\nThanks for using openModeller.";
-print "Good bye!\n";
+print "Done!\n"
 
