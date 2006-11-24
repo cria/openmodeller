@@ -8,7 +8,7 @@ print "\nWelcome to the openModeller Python Binding test\n"
 print "openModeller version", mod.getVersion()
 
 # Loop over algorithms to collect their names
-algList = mod.availableAlgorithms();
+algList = mod.availableAlgorithms()
 
 strAlgList = ""
 
@@ -27,22 +27,52 @@ print "\nMetadata of a particular algorithm:\n"
 
 alg = mod.algorithmMetadata(algId)
 
+acceptsCategoricalMaps = "no"
+
+if (alg.categorical):
+    acceptsCategoricalMaps = "yes"
+
+needsAbsencePoints = "no"
+
+if (alg.absence):
+    needsAbsencePoints = "yes"
+
 print "Id:", alg.id
 print "Name:", alg.name
 print "Version:", alg.version
-print "Author:", alg.author
-print "Contact:", alg.contact
+print "Algorithm designer(s):", alg.author
+print "Developer(s):", alg.code_author
+print "Developer(s) contact:", alg.contact
+print "Bibliography:", alg.biblio
+print "Overview:", alg.overview
+print "Description:", alg.description
+print "Accepts categorical maps:", acceptsCategoricalMaps
+print "Needs absence points:", needsAbsencePoints
 
-strParamList = ""
+print "\nParameters:"
 
 paramList = alg.getParameterList()
 for j in range(0, len(paramList)):
     param = paramList[j]
-    if j > 0:
-        strParamList += ", "
-    strParamList += param.name
+    
+    if (param.has_min):
+        min = param.min_val
+    else:
+        min = "unbounded"
 
-print "Parameters:", strParamList
+    if (param.has_max):
+        max = param.max_val
+    else:
+        max = "unbounded"
+
+    print "\nParameter Id:", param.id
+    print "Name:", param.name
+    print "Overview:", param.overview
+    print "Description:", param.description
+    print "Type:", param.type
+    print "Min:", min
+    print "Max:", max
+    print "Default:", param.typical
 
 print "\nSample experiment:"
 
@@ -51,11 +81,6 @@ print "\nSetting occurrences..."
 wktsys = "GEOGCS[\"WGS84\", DATUM[\"WGS84\", SPHEROID[\"WGS84\", 6378137.0, 298.257223563]], PRIMEM[\"Greenwich\", 0.0], UNIT[\"degree\", 0.017453292519943295], AXIS[\"Longitude\",EAST], AXIS[\"Latitude\",NORTH]]"
 spfile = "../../../examples/furcata_boliviana.txt"
 spname = "Furcata boliviana"
-
-# Old interface
-#ocfile = om.OccurrencesFile(spfile, wktsys)
-#ocfile.tail()
-#occurr = ocfile.get(spname)
 
 occurr = om.readOccurrences(spfile, wktsys, spname)
 mod.setOccurrences(occurr)
