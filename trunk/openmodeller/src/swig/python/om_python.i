@@ -315,6 +315,12 @@ RCP_CONST_TYPEMAP( ConstOccurrencesPtr, OccurrencesPtr );
 %include "openmodeller/ConfusionMatrix.hh"
 %include "openmodeller/MapFormat.hh"
 
+%inline %{
+  MapFormat * createMapFormat( char *type ) {
+    return new MapFormat( type );
+  }
+%}
+
 //*****************************************************************************
 //
 // Model.hh and AverageModel.hh
@@ -355,7 +361,7 @@ public:
     if (!mask)
       mask = env->getLayer(0);
     mf.copyDefaults( *mask );
-		Map map( RasterFactory::instance().create( filename, mf ) );
+    Map map( RasterFactory::instance().create( filename, mf ) );
     Projector::createMap( Model(model), env, &map, 0, mc );
   }
 } // %extend
