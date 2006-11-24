@@ -59,15 +59,6 @@ int print_args(char **argv) {
     return i;
 }
 
-int print_alg_params(int n, AlgParameter *param) 
-{
-    int i;
-    for (i = 0; i < n; i++) 
-      printf("Param[%d] = (%s, %s)\n", i, param[i].id(), param[i].value());
-
-    return n;
-}
-
 %}
 
 //*****************************************************************************
