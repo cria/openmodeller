@@ -121,10 +121,24 @@ mod.createMap("map.img")
 # use the following commands instead:
 
 #outputFormat = om.createMapFormat(layers_dir+"temp_avg.tif")
-#outputFormat.setFormat(1) # FloatingTiff = 0, GreyTiff = 1, GreyBMP = 2, FloatingHFA = 3
+#outputFormat.setFormat(0) # FloatingTiff = 0, GreyTiff = 1, GreyBMP = 2, FloatingHFA = 3
 #mod.createMap("map.tif", outputFormat)
 
+# If you want to specify a different projection scenario (same input variables, in the same order
+# but related to a different geographic region or to a different period) use the following
+# commands instead:
 
+# note: Here you can also specify a different output mask
+
+#outputFormat = om.createMapFormat(layers_dir+"temp_avg.tif")
+#outputFormat.setFormat(1) # FloatingTiff = 0, GreyTiff = 1, GreyBMP = 2, FloatingHFA = 3
+#projMaps = [layers_dir+"rain_coolest.tif", layers_dir+"temp_avg.tif"] # You should change this
+#outputMask = layers_dir+"temp_avg.tif"
+#projEnv = om.makeEnvironment([], projMaps, outputMask)
+#mod.createMap(projEnv, "map.tif", outputFormat)
+
+# Another projection option without specifying output format
+#mod.createMap(projEnv, "map.tif")
 
 print "Done!\n"
 
