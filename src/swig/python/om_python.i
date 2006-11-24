@@ -405,9 +405,15 @@ private:
 RCP_WRAP( EnvironmentPtr, EnvironmentImpl );
 RCP_CONST_TYPEMAP( ConstEnvironmentPtr, EnvironmentPtr );
 
-%rename (makeEnvironment) createEnvironment( std::vector<std::string>, std::vector<std::string>, std::string );
 %rename (makeEnvironmentFromConfig) createEnvironment( const ConstConfigurationPtr& );
 %ignore createEnvironment;
+
+%inline %{
+  EnvironmentPtr makeEnvironment( std::vector<std::string> cat_maps, std::vector<std::string> cont_maps, std::string mask )
+  {
+    return createEnvironment( cat_maps, cont_maps, mask );
+  }
+%}
 
 // This is a hack.
 // Since we're using typemaps to change the number of arguments
