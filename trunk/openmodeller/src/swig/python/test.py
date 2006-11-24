@@ -87,9 +87,11 @@ mod.setOccurrences(occurr)
 
 print "Setting Environment..."
 
-maps = ["../../../examples/rain_coolest.tif", "../../../examples/temp_avg.tif"]
+layers_dir = "../../../examples/"
 
-inputMask = "../../../examples/rain_coolest.tif"
+maps = [layers_dir+"rain_coolest.tif", layers_dir+"temp_avg.tif"]
+
+inputMask = layers_dir+"rain_coolest.tif"
 
 mod.setEnvironment([], maps, inputMask)
 
@@ -106,7 +108,23 @@ mod.setAlgorithm(alg.id, params)
 mod.createModel()
 
 # Project Map
-mod.createMap(mod.getEnvironment(), "map.img")
+
+# note1: native projection - automatically get same layers of model creation)
+# note2: no mask specified - automatically takes first map as a mask)
+# note3: no output format specified (automatically takes mask format - cell size & projection)
+# note4: no output file type specified (automatically creates ERDAS imagine map)
+
+mod.createMap("map.img")
+
+# If you want to specify an output format (a map file used as a template from where
+# cell size and projection will be taken, and that can also specify the output file type),
+# use the following commands instead:
+
+#outputFormat = om.createMapFormat(layers_dir+"temp_avg.tif")
+#outputFormat.setFormat(1) # FloatingTiff = 0, GreyTiff = 1, GreyBMP = 2, FloatingHFA = 3
+#mod.createMap("map.tif", outputFormat)
+
+
 
 print "Done!\n"
 
