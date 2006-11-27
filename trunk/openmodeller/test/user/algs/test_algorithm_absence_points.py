@@ -26,6 +26,9 @@
 ###############################################################################
 # 
 #  $Log$
+#  Revision 1.3  2006/11/27 13:27:20  rdg
+#  Updated serialization method names.
+#
 #  Revision 1.2  2005/06/09 12:33:50  scachett
 #  Made test with absence points run with all algorithms, regardless of whether
 #  they use absence data or not.
@@ -125,7 +128,7 @@ def algorithm_absences(args, options):
     mod.setAlgorithm(alg_id, alg_params)
     mod.run()
 
-    cfg = mod.getConfiguration();
+    cfg = mod.getModelConfiguration();
     om.Configuration.writeXml( cfg, xml_filename )
 
     mf = om.MapFormat()

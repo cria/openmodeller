@@ -26,6 +26,9 @@
 ###############################################################################
 # 
 #  $Log$
+#  Revision 1.8  2006/11/27 13:27:20  rdg
+#  Updated serialization method names.
+#
 #  Revision 1.7  2005/06/09 02:14:43  scachett
 #  Merged branch-sampler-matrix-input2 to CVS HEAD.
 #  This set of changes allow OM to take Occurrences objects already
@@ -125,7 +128,7 @@ def algorithm_serialization(args, options):
     mod.setAlgorithm(alg_id, alg_params)
     mod.run()
 
-    cfg = mod.getConfiguration();
+    cfg = mod.getModelConfiguration();
     om.Configuration.writeXml( cfg, xml_filename )
 
     # write native projection (to be used as expected map)
@@ -136,7 +139,7 @@ def algorithm_serialization(args, options):
     # now load it all from xml and try to project again
     mod2 = om.OpenModeller()
     cfg2 = om.Configuration.readXml(xml_filename)
-    mod2.setConfiguration(cfg2)
+    mod2.setModelConfiguration(cfg2)
     mf2 = om.MapFormat()
     mf2.setFormat( om.MapFormat.GreyBMP )
     mod2.projectNativeRange(bmp_filename, mf2)

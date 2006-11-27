@@ -26,6 +26,9 @@
 ###############################################################################
 # 
 #  $Log$
+#  Revision 1.8  2006/11/27 13:27:20  rdg
+#  Updated serialization method names.
+#
 #  Revision 1.7  2005/06/09 02:14:43  scachett
 #  Merged branch-sampler-matrix-input2 to CVS HEAD.
 #  This set of changes allow OM to take Occurrences objects already
@@ -84,7 +87,7 @@ def algorithm_run(args, options):
     mod.setAlgorithm(alg_id, alg_params)
     mod.run()
 
-    cfg = mod.getConfiguration();
+    cfg = mod.getModelConfiguration();
     om.Configuration.writeXml( cfg, xml_filename )
 
     mf = om.MapFormat()
