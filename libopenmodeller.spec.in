@@ -72,6 +72,7 @@ rm -rf $RPM_BUILD_ROOT
 %files
 %defattr(-,root,root)
 %{_libdir}/libopenmodeller.so.*
+%{_libdir}/libopenmodellerxml.so.*
 %dir %{_libdir}/openmodeller
 %{_libdir}/openmodeller/*so*
 %doc AUTHORS COPYING ChangeLog README INSTALL NEWS
@@ -79,7 +80,9 @@ rm -rf $RPM_BUILD_ROOT
 %files devel
 %defattr(-,root,root)
 %{_libdir}/libopenmodeller.*a
+%{_libdir}/libopenmodellerxml.*a
 %{_libdir}/libopenmodeller.so
+%{_libdir}/libopenmodellerxml.so
 %{_libdir}/openmodeller/*a
 %dir %{prefix}/include/openmodeller
 %{prefix}/include/openmodeller
@@ -89,6 +92,8 @@ rm -rf $RPM_BUILD_ROOT
 /usr/bin/*
 
 %changelog -n libopenmodeller
+* Mon Nov 27 2006 - Renato De Giovanni <renato [at] cria . org . br>
+- included missing libopenmodellerxml files
 * Thu Jul 21 2005 - Jens Oberender <j.obi@troja.net>
 - renamed to libopenmodeller
 - splitted up openmodeller for the tools
