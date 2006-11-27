@@ -6,6 +6,7 @@ Release 0.4 (to be defined)
 	* Changed the default output map file type to ERDAS Imagine ".img".
 	* Refactored SOAP interface which now covers all modelling functionality.
 	* Re-enabled the new version of GARP (v3).
+	* Several fixes in the SWIG-Python binding.
 
 Release 0.3.4 (2005-12-14)
 --------------------------
