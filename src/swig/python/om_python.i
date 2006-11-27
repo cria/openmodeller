@@ -315,12 +315,6 @@ RCP_CONST_TYPEMAP( ConstOccurrencesPtr, OccurrencesPtr );
 %include "openmodeller/ConfusionMatrix.hh"
 %include "openmodeller/MapFormat.hh"
 
-%inline %{
-  MapFormat * createMapFormat( char *type ) {
-    return new MapFormat( type );
-  }
-%}
-
 //*****************************************************************************
 //
 // Model.hh and AverageModel.hh

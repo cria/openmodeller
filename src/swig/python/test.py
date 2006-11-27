@@ -114,15 +114,15 @@ mod.createModel()
 # note3: no output format specified (automatically takes mask format - cell size & projection)
 # note4: no output file type specified (automatically creates ERDAS imagine map)
 
-mod.createMap("map.img")
+#mod.createMap("map.img")
 
 # If you want to specify an output format (a map file used as a template from where
 # cell size and projection will be taken, and that can also specify the output file type),
 # use the following commands instead:
 
-#outputFormat = om.createMapFormat(layers_dir+"temp_avg.tif")
-#outputFormat.setFormat(0) # FloatingTiff = 0, GreyTiff = 1, GreyBMP = 2, FloatingHFA = 3
-#mod.createMap("map.tif", outputFormat)
+outputFormat = om.MapFormat(layers_dir+"temp_avg.tif")
+outputFormat.setFormat(0) # FloatingTiff = 0, GreyTiff = 1, GreyBMP = 2, FloatingHFA = 3
+mod.createMap("map.tif", outputFormat)
 
 # If you want to specify a different projection scenario (same input variables, in the same order
 # but related to a different geographic region or to a different period) use the following
@@ -130,7 +130,7 @@ mod.createMap("map.img")
 
 # note: Here you can also specify a different output mask
 
-#outputFormat = om.createMapFormat(layers_dir+"temp_avg.tif")
+#outputFormat = om.MapFormat(layers_dir+"temp_avg.tif")
 #outputFormat.setFormat(1) # FloatingTiff = 0, GreyTiff = 1, GreyBMP = 2, FloatingHFA = 3
 #projMaps = [layers_dir+"rain_coolest.tif", layers_dir+"temp_avg.tif"] # You should change this
 #outputMask = layers_dir+"temp_avg.tif"
