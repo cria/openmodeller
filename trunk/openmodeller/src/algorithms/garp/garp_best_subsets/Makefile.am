@@ -27,7 +27,7 @@ plugin_LTLIBRARIES = libomgarp_bs.la
 
 libomgarp_bs_la_SOURCES = \
 	best_subsets.cpp garp_best_subsets.cpp garp_run.cpp \
-	best_subsets.hh garp_best_subsets.hh  garp_run.hh \
+	best_subsets.hh bs_algorithm_factory.hh garp_best_subsets.hh garp_run.hh \
 	garp_run_thread.hh \
 	../garp.cpp ../ruleset.cpp \
 	../bioclim_histogram.cpp ../regression.cpp \
