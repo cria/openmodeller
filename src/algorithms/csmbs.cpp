@@ -188,23 +188,23 @@ int CsmBS::initialize()
   //set up parameters
   if ( ! getParameter( "Randomisations", &numberOfRandomisationsInt ) )
   {
-    g_log.warn( "Parameter Randomisations not set properly.\n");
+    g_log.warn( "Parameter Randomisations not set.\n");
     return 0;
   }
   if ( ! getParameter( "StandardDeviations", &numberOfStdDevsFloat) )
   {
-    g_log.warn( "Parameter StandardDeviations not set properly.\n");
+    g_log.warn( "Parameter StandardDeviations not set.\n");
     return 0;
   }
   if ( ! getParameter( "MinComponents", &minComponentsInt) )
   {
-    g_log.warn( "Parameter MinComponents not set properly.\n");
+    g_log.warn( "Parameter MinComponents not set.\n");
     return 0;
   }
   int myTempInt=0;
   if ( ! getParameter( "VerboseDebugging", &myTempInt) )
   {
-    g_log.warn( "Verbose debugging parameter not set properly.\n");
+    g_log.warn( "Verbose debugging parameter not set.\n");
     return 0;
   }
   
@@ -212,9 +212,9 @@ int CsmBS::initialize()
   g_log.debug( "StandardDeviations parameter set to: %.4f\n", numberOfStdDevsFloat );
   g_log.debug( "MinComponents parameter set to: %d\n", minComponentsInt );
 
-  if ( myTempInt != 0 || myTempInt != 1 )
+  if ( ! ( myTempInt == 0 || myTempInt == 1 ) )
   {
-    g_log.warn( "CSM - Broken Stick - Verbose debugging parameter out of range: %f\n",
+    g_log.warn( "CSM - Broken Stick - Verbose debugging parameter out of range: %d\n",
                  myTempInt);
     return 0;
   }
