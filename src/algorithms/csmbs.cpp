@@ -211,6 +211,14 @@ int CsmBS::initialize()
   g_log.debug( "Randomisations parameter set to: %d\n", numberOfRandomisationsInt );
   g_log.debug( "StandardDeviations parameter set to: %.4f\n", numberOfStdDevsFloat );
   g_log.debug( "MinComponents parameter set to: %d\n", minComponentsInt );
+
+  if ( myTempInt != 0 || myTempInt != 1 )
+  {
+    g_log.warn( "CSM - Broken Stick - Verbose debugging parameter out of range: %f\n",
+                 myTempInt);
+    return 0;
+  }
+
   if (myTempInt!=0)
   {
     verboseDebuggingBool=true;
@@ -238,12 +246,6 @@ int CsmBS::initialize()
   {
     g_log.warn( "CSM - Broken Stick - MinComponents parameter out of range: %f\n",
                 minComponentsInt);
-    return 0;
-  }
-  if ( verboseDebuggingBool< 0 || verboseDebuggingBool> 1 )
-  {
-    g_log.warn( "CSM - Broken Stick - Verbose debugging parameter out of range: %f\n",
-                verboseDebuggingBool);
     return 0;
   }
 
