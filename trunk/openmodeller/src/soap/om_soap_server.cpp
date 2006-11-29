@@ -56,8 +56,6 @@ using namespace std;
 #define OMWS_MODEL_PROJECTION_REQUEST_PREFIX "proj_req."
 #define OMWS_CONFIG_FILE "../config/server.conf"
 
-#define OMWS_DISTRIBUTION_MAP_DIRECTORY "/home/renato/public_html/om/"
-
 /*****************************/
 /***  Forward declarations ***/
 
@@ -918,7 +916,7 @@ getData( struct soap *soap, const xsd__string ticket, xsd__base64Binary &file )
     return SOAP_EOF;
   }
 
-  string completeFileName( OMWS_DISTRIBUTION_MAP_DIRECTORY );
+  string completeFileName( gFileParser.get( "DISTRIBUTION_MAP_DIRECTORY" ) );
 
   // Append slash if necessary
   if ( completeFileName.find_last_of( "/" ) != completeFileName.size() - 1 ) {
