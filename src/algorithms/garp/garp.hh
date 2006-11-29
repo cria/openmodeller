@@ -134,7 +134,7 @@ protected:
 
 private:
 
-  void Garp::cacheSamples(const SamplerPtr&, OccurrencesPtr&, int resamples);
+  void cacheSamples(const SamplerPtr&, OccurrencesPtr&, int resamples);
 
 /** Fill a rule set with newly generated rules
   * @param GarpRuleSet * ruleset: rule set where rules will be added to
