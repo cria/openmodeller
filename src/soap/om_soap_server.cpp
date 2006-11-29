@@ -66,7 +66,7 @@ static wchar_t* convertToWideChar( const char* p );
 static bool     readDirectory( const char* dir, const char* label, ostream &xml, int depth );
 static bool     isValidGdalFile( const char* fileName );
 static bool     hasValidGdalProjection( const char* fileName );
-static int      getData( struct soap*, const xsd__string, xsd__base64Binary& );
+static bool     getData( struct soap*, const xsd__string, xsd__base64Binary& );
 
 
 /****************/
@@ -599,7 +599,7 @@ omws__getMapAsAttachment( struct soap *soap, xsd__string ticket, xsd__base64Bina
     return soap_sender_fault( soap, "Ticket required", NULL );
   }
 
-  if ( getData( soap, ticket, file ) ) {
+  if ( ! getData( soap, ticket, file ) ) {
 
     return soap_sender_fault( soap, "Map unavailable", NULL );
   }
@@ -904,7 +904,7 @@ bool hasValidGdalProjection( const char* fileName )
 
 /******************/
 /**** getData ****/
-static int 
+static bool 
 getData( struct soap *soap, const xsd__string ticket, xsd__base64Binary &file )
 { 
   struct stat sb;
@@ -913,7 +913,7 @@ getData( struct soap *soap, const xsd__string ticket, xsd__base64Binary &file )
 
   if ( fileName.empty() ) {
 
-    return SOAP_EOF;
+    return false;
   }
 
   string completeFileName( gFileParser.get( "DISTRIBUTION_MAP_DIRECTORY" ) );
@@ -930,10 +930,10 @@ getData( struct soap *soap, const xsd__string ticket, xsd__base64Binary &file )
 
   if ( fd == NULL ) {
 
-    return SOAP_EOF;
+    return false;
   }
 
-  if ( ( ! fstat( fileno(fd), &sb ) && sb.st_size > 0 ) ) { 
+  if ( ( ! fstat( fileno( fd ), &sb ) && sb.st_size > 0 ) ) { 
 
     // don't use HTTP chunking - buffer the content
     int i;
@@ -955,7 +955,7 @@ getData( struct soap *soap, const xsd__string ticket, xsd__base64Binary &file )
   }
   else { 
 
-    return SOAP_EOF;
+    return false;
   }
 
   string fileType( "image/" );
@@ -965,7 +965,7 @@ getData( struct soap *soap, const xsd__string ticket, xsd__base64Binary &file )
   file.type = (char*)fileType.c_str(); // specify non-NULL id or type to enable DIME
   file.options = soap_dime_option( soap, 0, "Distribution map" );
 
-  return SOAP_OK;
+  return true;
 }
 
 ///////////////////////
