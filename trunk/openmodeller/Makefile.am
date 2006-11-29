@@ -15,12 +15,14 @@ EXTRA_DIST = \
 	NEWS \
 	ChangeLog \
 	COPYING \
-	doc/classes.dia \
-	doc/classes.png \
 	doc/openModeller.doxygen \
-	doc/overview.dia \
 	examples/furcata_boliviana.txt \
+	examples/rain_coolest.tif \
+	examples/temp_avg.tif \
 	examples/request.txt \
+	examples/request_te.txt \
+	examples/model_request.xml \
+	examples/projection_request.xml \
 	libopenmodeller.spec
 
 SUBDIRS = test src data
