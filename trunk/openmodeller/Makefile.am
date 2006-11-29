@@ -26,7 +26,8 @@ EXTRA_DIST = \
 	examples/projection_request.xml \
 	libopenmodeller.spec
 
-SUBDIRS = test src data
+#SUBDIRS = test src data
+SUBDIRS = test src
 
 release: distdir
 	-chmod -R a+r $(distdir)
