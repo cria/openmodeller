@@ -16,6 +16,7 @@ EXTRA_DIST = \
 	ChangeLog \
 	COPYING \
 	doc/openModeller.doxygen \
+	doc/openModeller.xsd \
 	examples/furcata_boliviana.txt \
 	examples/rain_coolest.tif \
 	examples/temp_avg.tif \
