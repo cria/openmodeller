@@ -43,7 +43,7 @@ using std::string;
 #endif
 
 // A default logger object.
-Log g_log( Log::Info );
+Log g_log( Log::Default );
 
 /* This callback class is a simple interface to the old FILE*
  * mechanism from standard C.
