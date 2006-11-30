@@ -25,7 +25,7 @@ TERRALIB_LIB = $(TERRALIB_HOME)/terralibx/terralib/libterralib.so \
 	$(TERRALIB_HOME)/terralibx/PostgreSQL/libpq.a \
 	$(TERRALIB_HOME)/terralibx/Oracle/libclntsh.so \
 	$(TERRALIB_HOME)/terralibx/Oracle/libnnz10.so
-	
+
 TERRALIB_FLAGS = -DBUILD_TERRALIB
 endif
 
@@ -48,6 +48,8 @@ libopenmodellerxml_la_LDFLAGS = -no-undefined
 libopenmodellerxml_la_CPPFLAGS = -I$(OMSRCDIR) $(TERRALIB_FLAGS)
 libopenmodellerxml_la_LIBADD = $(GDAL_LIB) $(EXPAT_LDFLAGS) $(EXPAT_LIBS) $(OMLIB)
 
+OM_XML_LIB = $(OMSRCDIR)/console/libopenmodellerxml.la
+
 om_console_SOURCES = om_console.cpp request_file.cpp file_parser.cpp
 om_console_CPPFLAGS = -DCORE_DLL_IMPORT -I$(OMSRCDIR) $(TERRALIB_FLAGS)
 om_console_LDADD = $(GDAL_LIB) $(OMLIB) $(EXPAT_LIBS) $(TERRALIB_LIB)
@@ -62,15 +64,15 @@ om_sampledump_LDADD = $(GDAL_LIB) $(OMLIB) $(EXPAT_LIBS) $(TERRALIB_LIB)
 
 om_project_SOURCES = om_project.cpp  
 om_project_CPPFLAGS = -DCORE_DLL_IMPORT -I$(OMSRCDIR) $(TERRALIB_FLAGS)
-om_project_LDADD = $(GDAL_LIB) $(OMLIB) $(EXPAT_LIBS) -lopenmodellerxml $(TERRALIB_LIB)
+om_project_LDADD = $(GDAL_LIB) $(OMLIB) $(EXPAT_LIBS) $(OM_XML_LIB) $(TERRALIB_LIB)
 
 om_create_SOURCES = om_create.cpp 
 om_create_CPPFLAGS = -DCORE_DLL_IMPORT -I$(OMSRCDIR) $(TERRALIB_FLAGS)
-om_create_LDADD = $(GDAL_LIB) $(OMLIB) $(EXPAT_LIBS) -lopenmodellerxml $(TERRALIB_LIB)
+om_create_LDADD = $(GDAL_LIB) $(OMLIB) $(EXPAT_LIBS) $(OM_XML_LIB) $(TERRALIB_LIB)
 
 om_metadump_SOURCES = om_metadump.cpp 
 om_metadump_CPPFLAGS = -DCORE_DLL_IMPORT -I$(OMSRCDIR) $(TERRALIB_FLAGS)
-om_metadump_LDADD = $(GDAL_LIB) $(OMLIB) $(EXPAT_LIBS) -lopenmodellerxml $(TERRALIB_LIB)
+om_metadump_LDADD = $(GDAL_LIB) $(OMLIB) $(EXPAT_LIBS) $(OM_XML_LIB) $(TERRALIB_LIB)
 
 #om_test_SOURCES = om_test.cpp 
 #om_test_CPPFLAGS = -I../inc $(TERRALIB_FLAGS)
