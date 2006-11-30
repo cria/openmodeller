@@ -33,6 +33,7 @@
 #include <openmodeller/Algorithm.hh>
 #include <openmodeller/Occurrences.hh>
 #include <openmodeller/Environment.hh>
+#include <openmodeller/Configuration.hh>
 
 #include <string.h>
 
@@ -139,7 +140,7 @@ int ConfusionMatrix::getValue(Scalar predictionValue,
 }
 
 
-double ConfusionMatrix::getAccuracy()
+double ConfusionMatrix::getAccuracy() const
 {
   Scalar total = 
     _confMatrix[0][0] + _confMatrix[0][1] + 
@@ -152,7 +153,7 @@ double ConfusionMatrix::getAccuracy()
 }
 
 
-double ConfusionMatrix::getCommissionError()
+double ConfusionMatrix::getCommissionError() const
 {
   Scalar total = _confMatrix[1][0] + _confMatrix[0][0];
   if (_ready && total)
@@ -162,7 +163,7 @@ double ConfusionMatrix::getCommissionError()
 }
 
 
-double ConfusionMatrix::getOmissionError()
+double ConfusionMatrix::getOmissionError() const
 {
   Scalar total = _confMatrix[0][1] + _confMatrix[1][1];
   if (_ready && total)
@@ -171,3 +172,14 @@ double ConfusionMatrix::getOmissionError()
     return -1.0;
 }
 
+ConfigurationPtr 
+ConfusionMatrix::getConfiguration() const
+{
+  ConfigurationPtr config( new ConfigurationImpl("ConfusionMatrix") );
+
+  config->addNameValue( "Accuracy", getAccuracy() * 100 );
+  config->addNameValue( "OmissionError", getOmissionError() * 100 );
+  config->addNameValue( "CommissionError", getCommissionError() * 100 );
+
+  return config;
+}

@@ -4,7 +4,7 @@
  xmlns:xs="http://www.w3.org/2001/XMLSchema"
  elementFormDefault="qualified"
  attributeFormDefault="unqualified"
- version="1.0.2" xml:lang="EN">
+ version="1.0.3" xml:lang="EN">
   <xs:annotation>
     <xs:documentation xml:lang="en">
         XML Schema with all basic element and type definitions used by openModeller.
@@ -231,13 +231,25 @@
     <xs:attribute name="Scales" type="xs:string" use="required"/>
   </xs:complexType>
 
-  <xs:complexType name="StatisticsType">
+  <xs:complexType name="ModelStatisticsType">
     <xs:sequence>
       <xs:element name="ConfusionMatrix" minOccurs="0">
         <xs:complexType>
           <xs:attribute name="Accuracy" type="xs:double" use="required"/>
           <xs:attribute name="OmissionError" type="xs:double" use="required"/>
           <xs:attribute name="CommissionError" type="xs:double" use="required"/>
+        </xs:complexType>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="ProjectionStatisticsType">
+    <xs:sequence>
+      <xs:element name="AreaStatistics" minOccurs="0">
+        <xs:complexType>
+          <xs:attribute name="TotalCells" type="xs:int" use="required"/>
+          <xs:attribute name="CellsPredicted" type="xs:int" use="required"/>
+          <xs:attribute name="PredictionThreshold" type="xs:double" use="required"/>
         </xs:complexType>
       </xs:element>
     </xs:sequence>
@@ -267,7 +279,7 @@
     <xs:sequence>
       <xs:element name="Sampler" type="SamplerType"/>
       <xs:element name="Algorithm" type="SerializedAlgorithmType"/>
-      <xs:element name="Statistics" type="StatisticsType" minOccurs="0"/>
+      <xs:element name="Statistics" type="ModelStatisticsType" minOccurs="0"/>
     </xs:sequence>
   </xs:complexType>
 

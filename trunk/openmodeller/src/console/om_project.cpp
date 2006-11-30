@@ -44,7 +44,7 @@ int main( int argc, char **argv ) {
           << argv[0]
           << " xmlinputfile"
           << " mapfile"
-          << " [logfile]"
+          << " (logfile | statisticsfile logfile)"
           << endl;
       return -1;
     }
@@ -54,10 +54,23 @@ int main( int argc, char **argv ) {
 
     bool dontLog = false;
 
+    g_log.setLevel(Log::Info);
+    g_log.setPrefix("");
+
     // Write log to file, if requested
     FILE *flog = NULL;
-    if (argc == 4) {
-      std::string myLog(argv[3]);
+    if (argc >= 4) {
+      std::string myLog("");
+      if (argc == 4) {
+        // to keep backwards compatibility, if 3 arguments are passed then 
+        // the last one will be considered the log!
+        myLog.append(argv[3]);
+      }
+      else {
+        // if more than 3 arguments are passed, log is the fourth one (last)
+        myLog.append(argv[4]);
+      }
+
       flog = fopen(myLog.c_str(), "w");
 
       if (flog == NULL) {
@@ -72,11 +85,17 @@ int main( int argc, char **argv ) {
     { // Fake scope to destroy object in the end (to catch all logs)
       ConsoleXml myConsoleXml;
 
-      myConsoleXml.projectModel(myProjectionXmlFile,myMapFile,dontLog);
+      if (argc == 4) {
+        myConsoleXml.projectModel(myProjectionXmlFile,myMapFile,dontLog);
+      }
+      else {
+        std::string myStatsFile(argv[3]);
+        myConsoleXml.projectModel(myProjectionXmlFile,myMapFile,myStatsFile,dontLog);
+      }
     }
     
     // Close log file
     if (flog != NULL) {
-      fclose(flog);
+     fclose(flog);
     }
 }

@@ -144,6 +144,48 @@ bool ConsoleXml::projectModel(const std::string projectionXmlFile, const std::st
   }
 }
 
+bool ConsoleXml::projectModel(const std::string projectionXmlFile, const std::string mapFile, const std::string statisticsXmlFile, bool ignoreLog)
+{  
+  try {
+
+    if (!ignoreLog)
+    {
+      g_log.setLevel( Log::Debug );
+      g_log.setCallback( new MyLog() );
+    }
+
+    AlgorithmFactory::searchDefaultDirs();
+
+    OpenModeller om;
+    cout << "Loading XML Input file " << projectionXmlFile << endl;
+
+    ConfigurationPtr c = Configuration::readXml( projectionXmlFile.c_str() );
+
+    om.setProjectionConfiguration(c);
+
+    cout << "Projecting to file " << mapFile << endl;
+
+    om.createMap( mapFile.c_str() );
+
+    cout << "Saving statistics into " << statisticsXmlFile << endl;
+
+    AreaStats * stats = om.getActualAreaStats();
+
+    ConfigurationPtr areaStatsCfg = stats->getConfiguration();
+
+    Configuration::writeXml( areaStatsCfg, statisticsXmlFile.c_str() );
+
+    delete stats;
+
+    return true;
+  }
+  catch( exception& e ) {
+    cerr << "Exception Caught" << endl;
+    cerr << e.what() << endl;
+    return false;
+  }
+}
+
 std::string ConsoleXml::getAllAlgorithmMetadataXml()
 {
   try {
