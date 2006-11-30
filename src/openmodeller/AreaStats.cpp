@@ -28,6 +28,7 @@
 
 
 #include <openmodeller/AreaStats.hh>
+#include <openmodeller/Configuration.hh>
 
 AreaStats::AreaStats(Scalar predictionThreshold)
 {
@@ -69,4 +70,16 @@ void AreaStats::addNonPrediction()
   _areaNotPredicted++;
 }
 
+
+ConfigurationPtr 
+AreaStats::getConfiguration() const
+{
+  ConfigurationPtr config( new ConfigurationImpl("AreaStatistics") );
+
+  config->addNameValue( "TotalCells", _areaTotal );
+  config->addNameValue( "CellsPredicted", _areaPredPresent );
+  config->addNameValue( "PredictionThreshold", _predictionThreshold );
+
+  return config;
+}
 

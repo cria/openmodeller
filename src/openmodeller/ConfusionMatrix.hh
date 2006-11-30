@@ -27,6 +27,7 @@
  */
 
 #include <openmodeller/om_defs.hh>
+#include <openmodeller/Configuration.hh>
 
 #include <openmodeller/Model.hh>
 
@@ -110,7 +111,7 @@ public:
    *  sum of successes (points predicted correctly) divided by
    *  all available points. I.e., accuracy = (a + d) / (a + b + c + d)
    */
-  double getAccuracy();
+  double getAccuracy() const;
 
   /** 
    * Returns the omission error of the model, which corresponds to the
@@ -118,7 +119,7 @@ public:
    *  all available presence points. 
    *  I.e., omission = c / (a + c)
    */
-  double getOmissionError();
+  double getOmissionError() const;
 
   /** 
    * Returns the commission error of the model, which corresponds 
@@ -126,12 +127,17 @@ public:
    *  all available absence points. 
    *  I.e., omission = b / (b + d)
    */
-  double getCommissionError();
+  double getCommissionError() const;
 
   /** 
    * Check whether the confusion matrix has been calculated already
    */
   bool ready() { return _ready; }
+
+  /** 
+   * Serialize the confusion matrix
+   */
+  ConfigurationPtr getConfiguration() const;
 
 private:
   /* 

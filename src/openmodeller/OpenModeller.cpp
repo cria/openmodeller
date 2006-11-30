@@ -116,7 +116,7 @@ void OpenModeller::setMapCommand( Projector::MapCommand *func ) {
 
 OpenModeller::OpenModeller()
 {
-  setLogLevel(Log::Debug);
+  //setLogLevel(Log::Debug);
 
   _map_command = 0;
   _model_command = 0;
@@ -510,19 +510,17 @@ OpenModeller::getModelConfiguration() const
 
   config->addSubsection( alg_config );
 
-  ConfusionMatrix * cm = getConfusionMatrix();
-
   ConfigurationPtr stats_config( new ConfigurationImpl("Statistics") );
 
-  ConfigurationPtr cm_config( new ConfigurationImpl("ConfusionMatrix") );
+  ConfusionMatrix * cm = getConfusionMatrix();
 
-  cm_config->addNameValue( "Accuracy", cm->getAccuracy() * 100 );
-  cm_config->addNameValue( "OmissionError", cm->getOmissionError() * 100 );
-  cm_config->addNameValue( "CommissionError", cm->getCommissionError() * 100 );
+  ConfigurationPtr cm_config( cm->getConfiguration() );
 
   stats_config->addSubsection( cm_config );
 
   config->addSubsection( stats_config );
+
+  delete cm;
 
   return config;
 }

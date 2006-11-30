@@ -27,6 +27,7 @@
  */
 
 #include <openmodeller/om_defs.hh>
+#include <openmodeller/Configuration.hh>
 
 /* Class AreaStats counts several cell statistics collected during
  * output map generation.
@@ -96,6 +97,11 @@ public:
    * Returns the prediction threshold.
    */
   Scalar getPredictionThreshold() const { return _predictionThreshold; }
+
+  /** 
+   * Serialize the area stats
+   */
+  ConfigurationPtr getConfiguration() const;
 
 private:
   int _areaTotal;

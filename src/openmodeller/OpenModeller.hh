@@ -30,8 +30,8 @@
 
 #include <openmodeller/om_defs.hh>
 #include <openmodeller/Log.hh>
+#include <openmodeller/Configuration.hh>
 #include <openmodeller/AlgMetadata.hh>
-#include <openmodeller/Configurable.hh>
 #include <openmodeller/Sampler.hh>
 #include <openmodeller/Algorithm.hh>
 
