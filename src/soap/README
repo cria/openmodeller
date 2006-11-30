@@ -114,15 +114,18 @@ TODO-LIST:
 
 - Find a way to track progress of model and map generation in a more 
   refined way on the server side.
+- Find a way to check if a job finished correctly or not.
+- Create new "cancelJob" request (need to change the library first).
 - Include option to generate Condor job requests.
 - Include option to read maps from TerraLib databases on the server side.
 - Improve Perl client to read occurrences from species files.
 - Improve Perl client to store models in the current directory
   and use them as parameters in projectModel requests.
-- Improve client to specify projection environment and output parameters
+- Improve Perl client to specify projection environment and output parameters
   in projectModel requests.
-- Store maps in current directory after calling getMap requests.
-- Implement garbage collecttion for distribution maps.
+- Improve Perl client to store maps in current directory after calling getMap 
+  requests (but first SOAP::lite needs to support dime attachments).
+- Implement garbage collecttion for distribution maps on the server side.
 - Implement sigpipe handler.
 - Find portable and better solution to unique temporary files.
 
