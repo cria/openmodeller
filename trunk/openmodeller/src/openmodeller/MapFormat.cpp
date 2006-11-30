@@ -145,7 +145,7 @@ MapFormat::~MapFormat()
 
 void MapFormat::setFormat( int f ) {
   format = f;
-  if ( format < 0 || format > GreyBMP ) 
+  if ( format < 0 || format > FloatingHFA ) 
     format = FloatingTiff;
 }
 
