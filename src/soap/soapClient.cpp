@@ -6,7 +6,7 @@
 */
 #include "soapH.h"
 
-SOAP_SOURCE_STAMP("@(#) soapClient.cpp ver 2.7.6d 2006-10-25 19:46:26 GMT")
+SOAP_SOURCE_STAMP("@(#) soapClient.cpp ver 2.7.6d 2006-12-01 17:40:09 GMT")
 
 
 SOAP_FMAC5 int SOAP_FMAC6 soap_call_omws__ping(struct soap *soap, const char *soap_endpoint, const char *soap_action, void *_, int &status)
@@ -522,6 +522,56 @@ SOAP_FMAC5 int SOAP_FMAC6 soap_call_omws__getMapAsUrl(struct soap *soap, const c
 	 || soap_end_recv(soap))
 		return soap_closesock(soap);
 	url = soap_tmp_omws__getMapAsUrlResponse->url;
+	return soap_closesock(soap);
+}
+
+SOAP_FMAC5 int SOAP_FMAC6 soap_call_omws__getProjectionData(struct soap *soap, const char *soap_endpoint, const char *soap_action, char *ticket, struct omws__ProjectionData *out)
+{	struct omws__getProjectionData soap_tmp_omws__getProjectionData;
+	if (!soap_endpoint)
+		soap_endpoint = "http://localhost:8085";
+	soap->encodingStyle = NULL;
+	soap_tmp_omws__getProjectionData.ticket = ticket;
+	soap_begin(soap);
+	soap_serializeheader(soap);
+	soap_serialize_omws__getProjectionData(soap, &soap_tmp_omws__getProjectionData);
+	if (soap_begin_count(soap))
+		return soap->error;
+	if (soap->mode & SOAP_IO_LENGTH)
+	{	if (soap_envelope_begin_out(soap)
+		 || soap_putheader(soap)
+		 || soap_body_begin_out(soap)
+		 || soap_put_omws__getProjectionData(soap, &soap_tmp_omws__getProjectionData, "omws:getProjectionData", "")
+		 || soap_body_end_out(soap)
+		 || soap_envelope_end_out(soap))
+			 return soap->error;
+	}
+	if (soap_end_count(soap))
+		return soap->error;
+	if (soap_connect(soap, soap_endpoint, soap_action)
+	 || soap_envelope_begin_out(soap)
+	 || soap_putheader(soap)
+	 || soap_body_begin_out(soap)
+	 || soap_put_omws__getProjectionData(soap, &soap_tmp_omws__getProjectionData, "omws:getProjectionData", "")
+	 || soap_body_end_out(soap)
+	 || soap_envelope_end_out(soap)
+	 || soap_end_send(soap))
+		return soap_closesock(soap);
+	soap_default_omws__ProjectionData(soap, out);
+	if (soap_begin_recv(soap)
+	 || soap_envelope_begin_in(soap)
+	 || soap_recv_header(soap)
+	 || soap_body_begin_in(soap))
+		return soap_closesock(soap);
+	soap_get_omws__ProjectionData(soap, out, "omws:ProjectionData", "");
+	if (soap->error)
+	{	if (soap->error == SOAP_TAG_MISMATCH && soap->level == 2)
+			return soap_recv_fault(soap);
+		return soap_closesock(soap);
+	}
+	if (soap_body_end_in(soap)
+	 || soap_envelope_end_in(soap)
+	 || soap_end_recv(soap))
+		return soap_closesock(soap);
 	return soap_closesock(soap);
 }
 

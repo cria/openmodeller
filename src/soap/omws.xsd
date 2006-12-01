@@ -179,5 +179,22 @@
     </sequence>
    </complexType>
   </element>
+  <!-- operation request element -->
+  <element name="getProjectionData">
+   <complexType>
+    <sequence>
+     <element name="ticket" type="xsd:string" minOccurs="0" maxOccurs="1" nillable="true"/>
+    </sequence>
+   </complexType>
+  </element>
+  <!-- operation response element -->
+  <element name="ProjectionData">
+   <complexType>
+    <sequence>
+     <element ref="om:AreaStatistics" minOccurs="0" maxOccurs="1" nillable="true"/>
+    </sequence>
+     <attribute name="fileSize" type="xsd:int" use="required"/>
+   </complexType>
+  </element>
  </schema>
 

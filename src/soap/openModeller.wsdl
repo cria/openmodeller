@@ -196,6 +196,23 @@
     </sequence>
    </complexType>
   </element>
+  <!-- operation request element -->
+  <element name="getProjectionData">
+   <complexType>
+    <sequence>
+     <element name="ticket" type="xsd:string" minOccurs="0" maxOccurs="1" nillable="true"/>
+    </sequence>
+   </complexType>
+  </element>
+  <!-- operation response element -->
+  <element name="ProjectionData">
+   <complexType>
+    <sequence>
+     <element ref="om:AreaStatistics" minOccurs="0" maxOccurs="1" nillable="true"/>
+    </sequence>
+     <attribute name="fileSize" type="xsd:int" use="required"/>
+   </complexType>
+  </element>
  </schema>
 
 </types>
@@ -280,6 +297,14 @@
  <part name="parameters" element="omws:getMapAsUrlResponse"/>
 </message>
 
+<message name="getProjectionData">
+ <part name="parameters" element="omws:getProjectionData"/>
+</message>
+
+<message name="ProjectionData">
+ <part name="parameters" element="omws:ProjectionData"/>
+</message>
+
 <message name="openModellerHeader">
  <part name="version" element="omws:version"/>
 </message>
@@ -334,6 +359,11 @@
   <documentation>Service definition of function omws__getMapAsUrl</documentation>
   <input message="tns:getMapAsUrlRequest"/>
   <output message="tns:getMapAsUrlResponse"/>
+ </operation>
+ <operation name="getProjectionData">
+  <documentation>Service definition of function omws__getProjectionData</documentation>
+  <input message="tns:getProjectionData"/>
+  <output message="tns:ProjectionData"/>
  </operation>
 </portType>
 
@@ -421,6 +451,15 @@
   </output>
  </operation>
  <operation name="getMapAsUrl">
+  <SOAP:operation soapAction=""/>
+  <input>
+     <SOAP:body parts="parameters" use="literal"/>
+  </input>
+  <output>
+     <SOAP:body parts="parameters" use="literal"/>
+  </output>
+ </operation>
+ <operation name="getProjectionData">
   <SOAP:operation soapAction=""/>
   <input>
      <SOAP:body parts="parameters" use="literal"/>
