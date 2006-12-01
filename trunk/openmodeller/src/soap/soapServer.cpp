@@ -6,7 +6,7 @@
 */
 #include "soapH.h"
 
-SOAP_SOURCE_STAMP("@(#) soapServer.cpp ver 2.7.6d 2006-10-25 19:46:26 GMT")
+SOAP_SOURCE_STAMP("@(#) soapServer.cpp ver 2.7.6d 2006-12-01 17:40:09 GMT")
 
 
 SOAP_FMAC5 int SOAP_FMAC6 soap_serve(struct soap *soap)
@@ -91,6 +91,8 @@ SOAP_FMAC5 int SOAP_FMAC6 soap_serve_request(struct soap *soap)
 		return soap_serve_omws__getMapAsAttachment(soap);
 	if (!soap_match_tag(soap, soap->tag, "omws:getMapAsUrl"))
 		return soap_serve_omws__getMapAsUrl(soap);
+	if (!soap_match_tag(soap, soap->tag, "omws:getProjectionData"))
+		return soap_serve_omws__getProjectionData(soap);
 	return soap->error = SOAP_NO_METHOD;
 }
 #endif
@@ -495,6 +497,47 @@ SOAP_FMAC5 int SOAP_FMAC6 soap_serve_omws__getMapAsUrl(struct soap *soap)
 	 || soap_putheader(soap)
 	 || soap_body_begin_out(soap)
 	 || soap_put_omws__getMapAsUrlResponse(soap, &soap_tmp_omws__getMapAsUrlResponse, "omws:getMapAsUrlResponse", "")
+	 || soap_body_end_out(soap)
+	 || soap_envelope_end_out(soap)
+	 || soap_end_send(soap))
+		return soap->error;
+	return soap_closesock(soap);
+}
+
+SOAP_FMAC5 int SOAP_FMAC6 soap_serve_omws__getProjectionData(struct soap *soap)
+{	struct omws__getProjectionData soap_tmp_omws__getProjectionData;
+	struct omws__ProjectionData out;
+	soap_default_omws__ProjectionData(soap, &out);
+	soap_default_omws__getProjectionData(soap, &soap_tmp_omws__getProjectionData);
+	soap->encodingStyle = NULL;
+	if (!soap_get_omws__getProjectionData(soap, &soap_tmp_omws__getProjectionData, "omws:getProjectionData", NULL))
+		return soap->error;
+	if (soap_body_end_in(soap)
+	 || soap_envelope_end_in(soap)
+	 || soap_end_recv(soap))
+		return soap->error;
+	soap->error = omws__getProjectionData(soap, soap_tmp_omws__getProjectionData.ticket, &out);
+	if (soap->error)
+		return soap->error;
+	soap_serializeheader(soap);
+	soap_serialize_omws__ProjectionData(soap, &out);
+	if (soap_begin_count(soap))
+		return soap->error;
+	if (soap->mode & SOAP_IO_LENGTH)
+	{	if (soap_envelope_begin_out(soap)
+		 || soap_putheader(soap)
+		 || soap_body_begin_out(soap)
+		 || soap_put_omws__ProjectionData(soap, &out, "omws:ProjectionData", "")
+		 || soap_body_end_out(soap)
+		 || soap_envelope_end_out(soap))
+			 return soap->error;
+	};
+	if (soap_end_count(soap)
+	 || soap_response(soap, SOAP_OK)
+	 || soap_envelope_begin_out(soap)
+	 || soap_putheader(soap)
+	 || soap_body_begin_out(soap)
+	 || soap_put_omws__ProjectionData(soap, &out, "omws:ProjectionData", "")
 	 || soap_body_end_out(soap)
 	 || soap_envelope_end_out(soap)
 	 || soap_end_send(soap))

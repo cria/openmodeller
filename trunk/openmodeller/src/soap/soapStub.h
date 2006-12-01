@@ -211,8 +211,27 @@ struct omws__getMapAsUrl
 };
 #endif
 
+#ifndef SOAP_TYPE_omws__ProjectionData
+#define SOAP_TYPE_omws__ProjectionData (55)
+/* omws:ProjectionData */
+struct omws__ProjectionData
+{
+	int fileSize;	/* RPC return element */	/* optional attribute of type xsd:int */
+	wchar_t *om__AreaStatistics;	/* optional element of type xsd:anyType */
+};
+#endif
+
+#ifndef SOAP_TYPE_omws__getProjectionData
+#define SOAP_TYPE_omws__getProjectionData (58)
+/* omws:getProjectionData */
+struct omws__getProjectionData
+{
+	char *ticket;	/* optional element of type xsd:string */
+};
+#endif
+
 #ifndef SOAP_TYPE_SOAP_ENV__Code
-#define SOAP_TYPE_SOAP_ENV__Code (55)
+#define SOAP_TYPE_SOAP_ENV__Code (59)
 /* SOAP Fault Code: */
 struct SOAP_ENV__Code
 {
@@ -222,7 +241,7 @@ struct SOAP_ENV__Code
 #endif
 
 #ifndef SOAP_TYPE_SOAP_ENV__Detail
-#define SOAP_TYPE_SOAP_ENV__Detail (57)
+#define SOAP_TYPE_SOAP_ENV__Detail (61)
 /* SOAP-ENV:Detail */
 struct SOAP_ENV__Detail
 {
@@ -233,7 +252,7 @@ struct SOAP_ENV__Detail
 #endif
 
 #ifndef SOAP_TYPE_SOAP_ENV__Reason
-#define SOAP_TYPE_SOAP_ENV__Reason (58)
+#define SOAP_TYPE_SOAP_ENV__Reason (62)
 /* SOAP-ENV:Reason */
 struct SOAP_ENV__Reason
 {
@@ -242,7 +261,7 @@ struct SOAP_ENV__Reason
 #endif
 
 #ifndef SOAP_TYPE_SOAP_ENV__Fault
-#define SOAP_TYPE_SOAP_ENV__Fault (59)
+#define SOAP_TYPE_SOAP_ENV__Fault (63)
 /* SOAP Fault: */
 struct SOAP_ENV__Fault
 {
@@ -343,6 +362,8 @@ SOAP_FMAC5 int SOAP_FMAC6 omws__getMapAsAttachment(struct soap*, char *ticket, x
 
 SOAP_FMAC5 int SOAP_FMAC6 omws__getMapAsUrl(struct soap*, char *ticket, char *&url);
 
+SOAP_FMAC5 int SOAP_FMAC6 omws__getProjectionData(struct soap*, char *ticket, struct omws__ProjectionData *out);
+
 /******************************************************************************\
  *                                                                            *
  * Stubs                                                                      *
@@ -369,6 +390,8 @@ SOAP_FMAC5 int SOAP_FMAC6 soap_call_omws__getLog(struct soap *soap, const char *
 SOAP_FMAC5 int SOAP_FMAC6 soap_call_omws__getMapAsAttachment(struct soap *soap, const char *soap_endpoint, const char *soap_action, char *ticket, xsd__base64Binary &file);
 
 SOAP_FMAC5 int SOAP_FMAC6 soap_call_omws__getMapAsUrl(struct soap *soap, const char *soap_endpoint, const char *soap_action, char *ticket, char *&url);
+
+SOAP_FMAC5 int SOAP_FMAC6 soap_call_omws__getProjectionData(struct soap *soap, const char *soap_endpoint, const char *soap_action, char *ticket, struct omws__ProjectionData *out);
 
 /******************************************************************************\
  *                                                                            *
@@ -399,6 +422,8 @@ SOAP_FMAC5 int SOAP_FMAC6 soap_serve_omws__getLog(struct soap*);
 SOAP_FMAC5 int SOAP_FMAC6 soap_serve_omws__getMapAsAttachment(struct soap*);
 
 SOAP_FMAC5 int SOAP_FMAC6 soap_serve_omws__getMapAsUrl(struct soap*);
+
+SOAP_FMAC5 int SOAP_FMAC6 soap_serve_omws__getProjectionData(struct soap*);
 
 #endif
 

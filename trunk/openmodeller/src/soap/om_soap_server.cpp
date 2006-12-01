@@ -54,6 +54,7 @@ using namespace std;
 #define OMWS_MODEL_CREATION_REQUEST_PREFIX "model_req."
 #define OMWS_MODEL_CREATION_RESPONSE_PREFIX "model_resp."
 #define OMWS_MODEL_PROJECTION_REQUEST_PREFIX "proj_req."
+#define OMWS_PROJECTION_STATISTICS_PREFIX "stats."
 #define OMWS_CONFIG_FILE "../config/server.conf"
 
 /*****************************/
@@ -66,6 +67,7 @@ static wchar_t* convertToWideChar( const char* p );
 static bool     readDirectory( const char* dir, const char* label, ostream &xml, int depth );
 static bool     isValidGdalFile( const char* fileName );
 static bool     hasValidGdalProjection( const char* fileName );
+static int      getSize( FILE *fd );
 static bool     getData( struct soap*, const xsd__string, xsd__base64Binary& );
 
 
@@ -638,6 +640,82 @@ omws__getMapAsUrl( struct soap *soap, xsd__string ticket, xsd__string &url )
   return SOAP_OK;
 }
 
+/*****************************/
+/**** get projection data ****/
+int 
+omws__getProjectionData( struct soap *soap, xsd__string ticket, struct omws__ProjectionData *out )
+{ 
+  if ( ! ticket ) {
+
+    return soap_sender_fault( soap, "Missing ticket in request", NULL );
+  }
+
+  // Get map size
+  string mapFileName = getMapFile( ticket );
+
+  if ( mapFileName.empty() ) {
+
+    return soap_receiver_fault( soap, "Distribution map unavailable", NULL );
+  }
+
+  string completeFileName( gFileParser.get( "DISTRIBUTION_MAP_DIRECTORY" ) );
+
+  if ( completeFileName.find_last_of( "/" ) != completeFileName.size() - 1 ) {
+
+    // Append slash if necessary
+    completeFileName.append( "/" );
+  }
+
+  completeFileName.append( mapFileName );
+
+  FILE *fd = fopen( completeFileName.c_str(), "rb" );
+
+  if ( fd == NULL ) {
+
+    return soap_receiver_fault( soap, "Could not read distribution map", NULL );
+  }
+
+  int size = getSize( fd );
+
+  // Get statistics
+  string statsFileName( gFileParser.get( "TICKET_DIRECTORY" ) );
+
+  // Append slash if necessary
+  if ( statsFileName.find_last_of( "/" ) != statsFileName.size() - 1 ) {
+
+    statsFileName.append( "/" );
+  }
+
+  statsFileName.append( OMWS_PROJECTION_STATISTICS_PREFIX );
+  statsFileName.append( ticket );
+
+  fstream fin;
+  fin.open( statsFileName.c_str(), ios::in );
+
+  if ( fin.is_open() ) {
+
+    ostringstream oss;
+    string line;
+
+    while ( ! fin.eof() )
+    {
+      getline( fin, line );
+      oss << line << endl;
+    }
+
+    out->fileSize = size;
+    out->om__AreaStatistics = convertToWideChar( oss.str().c_str() );
+
+    fin.close();
+  }
+  else {
+
+    return soap_receiver_fault( soap, "Projection data unavailable", NULL );
+  }
+
+  return SOAP_OK;
+}
+
 
 //////////////////////////////
 //
@@ -903,12 +981,27 @@ bool hasValidGdalProjection( const char* fileName )
 }
 
 /******************/
+/**** getSize ****/
+static int 
+getSize( FILE *fd )
+{ 
+  struct stat sb;
+
+  if ( ! fstat( fileno( fd ), &sb ) ) { 
+
+    return sb.st_size;
+  }
+  else { 
+
+    return -1;
+  }
+}
+
+/******************/
 /**** getData ****/
 static bool 
 getData( struct soap *soap, const xsd__string ticket, xsd__base64Binary &file )
 { 
-  struct stat sb;
-
   string fileName = getMapFile( ticket );
 
   if ( fileName.empty() ) {
@@ -933,30 +1026,32 @@ getData( struct soap *soap, const xsd__string ticket, xsd__base64Binary &file )
     return false;
   }
 
-  if ( ( ! fstat( fileno( fd ), &sb ) && sb.st_size > 0 ) ) { 
+  int size = getSize( fd );
 
-    // don't use HTTP chunking - buffer the content
-    int i;
-    file.__size = sb.st_size;
-    file.__ptr = (unsigned char*)soap_malloc( soap, sb.st_size );
-    for ( i = 0; i < sb.st_size; i++ ) {
-
-      int c;
-
-      if ( ( c = fgetc( fd ) ) == EOF ) {
-
-        break;
-      }
-
-      file.__ptr[i] = c;
-    }
+  if ( size <= 0 ) {
 
     fclose( fd );
-  }
-  else { 
-
     return false;
   }
+
+  // don't use HTTP chunking - buffer the content
+  int i;
+  file.__size = size;
+  file.__ptr = (unsigned char*)soap_malloc( soap, size );
+
+  for ( i = 0; i < size; i++ ) {
+
+    int c;
+
+    if ( ( c = fgetc( fd ) ) == EOF ) {
+
+      break;
+    }
+
+    file.__ptr[i] = c;
+  }
+
+  fclose( fd );
 
   string fileType( "image/" );
 

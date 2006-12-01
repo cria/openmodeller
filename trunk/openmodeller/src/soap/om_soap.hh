@@ -113,3 +113,16 @@ int omws__getMapAsAttachment(xsd__string ticket, xsd__base64Binary &file);
 //gsoap om service method-documentation: getMapAsUrl Returns the corresponding distribution map URL.
 int omws__getMapAsUrl(xsd__string ticket, xsd__string &url);
 
+/** Return type of getProjectionData */
+struct omws__ProjectionData
+{ 
+   @xsd__int fileSize; 
+   XML om__AreaStatistics;
+}; 
+
+/** Return additional data about the projection.
+ * @param ticket Job identification.
+ * @return standard gSOAP integer code
+ */
+//gsoap om service method-documentation: getProjectionData Retrieves additional data about the projection (area statistics and file size) given a ticket.
+int omws__getProjectionData(xsd__string ticket, struct omws__ProjectionData *out);

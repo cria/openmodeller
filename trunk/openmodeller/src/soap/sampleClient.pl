@@ -79,9 +79,10 @@ my %options = ( 0  => 'Ping service',
 		5  => 'Get model', 
 		6  => 'Get log', 
 		7  => 'Project model', 
-		8  => 'Get map as attachment', 
-		9  => 'Get map as URL', 
-		10 => 'Exit' );
+		8  => 'Get projection data', 
+		9  => 'Get map as attachment', 
+		10 => 'Get map as URL', 
+		11 => 'Exit' );
 
 my $option = -1;
 
@@ -125,9 +126,13 @@ while ( $option != $exit_option or not exists( $options{$option-1} ) )
     }
     elsif ($option == 9)
     {
-	$option = ( get_map_as_attachment() ) ? -1 : $exit_option;
+	$option = ( get_projection_data() ) ? -1 : $exit_option;
     }
     elsif ($option == 10)
+    {
+	$option = ( get_map_as_attachment() ) ? -1 : $exit_option;
+    }
+    elsif ($option == 11)
     {
 	$option = ( get_map_as_url() ) ? -1 : $exit_option;
     }
@@ -788,6 +793,52 @@ sub project_model
     unless ( $response->fault )
     { 
 	print "Your ticket is: ".$response->result ."\n";
+    }
+    else
+    {
+	print "Ops, found some problems:\n";
+	print join ', ', $response->faultcode, $response->faultstring; 
+	print "\n";
+	return 0;
+    }
+
+    return 1;
+}
+
+########################
+#  Get projection data # 
+########################
+sub get_projection_data
+{
+    prepare_soap();
+
+    my $method = SOAP::Data
+	-> name( 'getProjectionData' )
+        -> encodingStyle( 'http://xml.apache.org/xml-soap/literalxml' )
+	-> prefix( 'omws' )
+        -> uri( $omws_uri );
+
+    ### Get ticket
+
+    my $ticket = get_ticket_from_user();
+
+    if ( ! $ticket )
+    {
+	return 0;
+    }
+
+    print "Requesting projection data... ";
+
+    my $soap_ticket = SOAP::Data
+	-> name( 'ticket' )
+	-> type( 'string' )
+	-> value( $ticket );
+    
+    my $response = $soap->call( $method => $soap_ticket );
+
+    unless ( $response->fault )
+    { 
+	print "OK\n";
     }
     else
     {
