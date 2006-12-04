@@ -32,9 +32,9 @@ CURRENT FUNCTIONALITY:
 - Server can handle getProgress requests (althugh only using 0% and 
   100%).
 - Server can handle getLog requests.
-- Server can handle getMapAsUrl requests.
-- Server can handle getMapAsAttachment requests (returning maps
-  as DIME attachments).
+- Server can handle getLayerAsUrl requests for distribution maps.
+- Server can handle getLayerAsAttachment requests for distribution
+  maps (returning maps as DIME attachments).
 - Server can handle getProjectionMetadata requests.
 - A simple command line perl client is available (depends on 
   SOAP::Lite version >= 0.67). It can invoke all methods, but
@@ -126,6 +126,8 @@ TODO-LIST:
   in projectModel requests.
 - Improve Perl client to store maps in current directory after calling getMap 
   requests (but first SOAP::lite needs to support dime attachments).
+- Improve server to also return environmental layers in getLayerAsUrl and
+  getLayerAsAttachment.
 - Implement garbage collecttion for distribution maps on the server side.
 - Implement sigpipe handler.
 - Find portable and better solution to unique temporary files.
