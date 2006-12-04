@@ -202,39 +202,39 @@ public:
 };
 #endif
 
-#ifndef SOAP_TYPE_omws__getMapAsAttachmentResponse
-#define SOAP_TYPE_omws__getMapAsAttachmentResponse (55)
-/* omws:getMapAsAttachmentResponse */
-struct omws__getMapAsAttachmentResponse
+#ifndef SOAP_TYPE_omws__getLayerAsAttachmentResponse
+#define SOAP_TYPE_omws__getLayerAsAttachmentResponse (55)
+/* omws:getLayerAsAttachmentResponse */
+struct omws__getLayerAsAttachmentResponse
 {
 	xsd__base64Binary file;	/* RPC return element */	/* required element of type xsd:base64Binary */
 };
 #endif
 
-#ifndef SOAP_TYPE_omws__getMapAsAttachment
-#define SOAP_TYPE_omws__getMapAsAttachment (56)
-/* omws:getMapAsAttachment */
-struct omws__getMapAsAttachment
+#ifndef SOAP_TYPE_omws__getLayerAsAttachment
+#define SOAP_TYPE_omws__getLayerAsAttachment (56)
+/* omws:getLayerAsAttachment */
+struct omws__getLayerAsAttachment
 {
-	char *ticket;	/* optional element of type xsd:string */
+	char *id;	/* optional element of type xsd:string */
 };
 #endif
 
-#ifndef SOAP_TYPE_omws__getMapAsUrlResponse
-#define SOAP_TYPE_omws__getMapAsUrlResponse (58)
-/* omws:getMapAsUrlResponse */
-struct omws__getMapAsUrlResponse
+#ifndef SOAP_TYPE_omws__getLayerAsUrlResponse
+#define SOAP_TYPE_omws__getLayerAsUrlResponse (58)
+/* omws:getLayerAsUrlResponse */
+struct omws__getLayerAsUrlResponse
 {
 	char *url;	/* RPC return element */	/* required element of type xsd:string */
 };
 #endif
 
-#ifndef SOAP_TYPE_omws__getMapAsUrl
-#define SOAP_TYPE_omws__getMapAsUrl (59)
-/* omws:getMapAsUrl */
-struct omws__getMapAsUrl
+#ifndef SOAP_TYPE_omws__getLayerAsUrl
+#define SOAP_TYPE_omws__getLayerAsUrl (59)
+/* omws:getLayerAsUrl */
+struct omws__getLayerAsUrl
 {
-	char *ticket;	/* optional element of type xsd:string */
+	char *id;	/* optional element of type xsd:string */
 };
 #endif
 
@@ -385,9 +385,9 @@ SOAP_FMAC5 int SOAP_FMAC6 omws__getProgress(struct soap*, char *ticket, int &pro
 
 SOAP_FMAC5 int SOAP_FMAC6 omws__getLog(struct soap*, char *ticket, char *&log);
 
-SOAP_FMAC5 int SOAP_FMAC6 omws__getMapAsAttachment(struct soap*, char *ticket, xsd__base64Binary &file);
+SOAP_FMAC5 int SOAP_FMAC6 omws__getLayerAsAttachment(struct soap*, char *id, xsd__base64Binary &file);
 
-SOAP_FMAC5 int SOAP_FMAC6 omws__getMapAsUrl(struct soap*, char *ticket, char *&url);
+SOAP_FMAC5 int SOAP_FMAC6 omws__getLayerAsUrl(struct soap*, char *id, char *&url);
 
 SOAP_FMAC5 int SOAP_FMAC6 omws__getProjectionMetadata(struct soap*, char *ticket, struct omws__getProjectionMetadataResponse *out);
 
@@ -414,9 +414,9 @@ SOAP_FMAC5 int SOAP_FMAC6 soap_call_omws__getProgress(struct soap *soap, const c
 
 SOAP_FMAC5 int SOAP_FMAC6 soap_call_omws__getLog(struct soap *soap, const char *soap_endpoint, const char *soap_action, char *ticket, char *&log);
 
-SOAP_FMAC5 int SOAP_FMAC6 soap_call_omws__getMapAsAttachment(struct soap *soap, const char *soap_endpoint, const char *soap_action, char *ticket, xsd__base64Binary &file);
+SOAP_FMAC5 int SOAP_FMAC6 soap_call_omws__getLayerAsAttachment(struct soap *soap, const char *soap_endpoint, const char *soap_action, char *id, xsd__base64Binary &file);
 
-SOAP_FMAC5 int SOAP_FMAC6 soap_call_omws__getMapAsUrl(struct soap *soap, const char *soap_endpoint, const char *soap_action, char *ticket, char *&url);
+SOAP_FMAC5 int SOAP_FMAC6 soap_call_omws__getLayerAsUrl(struct soap *soap, const char *soap_endpoint, const char *soap_action, char *id, char *&url);
 
 SOAP_FMAC5 int SOAP_FMAC6 soap_call_omws__getProjectionMetadata(struct soap *soap, const char *soap_endpoint, const char *soap_action, char *ticket, struct omws__getProjectionMetadataResponse *out);
 
@@ -446,9 +446,9 @@ SOAP_FMAC5 int SOAP_FMAC6 soap_serve_omws__getProgress(struct soap*);
 
 SOAP_FMAC5 int SOAP_FMAC6 soap_serve_omws__getLog(struct soap*);
 
-SOAP_FMAC5 int SOAP_FMAC6 soap_serve_omws__getMapAsAttachment(struct soap*);
+SOAP_FMAC5 int SOAP_FMAC6 soap_serve_omws__getLayerAsAttachment(struct soap*);
 
-SOAP_FMAC5 int SOAP_FMAC6 soap_serve_omws__getMapAsUrl(struct soap*);
+SOAP_FMAC5 int SOAP_FMAC6 soap_serve_omws__getLayerAsUrl(struct soap*);
 
 SOAP_FMAC5 int SOAP_FMAC6 soap_serve_omws__getProjectionMetadata(struct soap*);
 

@@ -130,11 +130,11 @@ while ( $option != $exit_option or not exists( $options{$option-1} ) )
     }
     elsif ($option == 10)
     {
-	$option = ( get_map_as_attachment() ) ? -1 : $exit_option;
+	$option = ( get_layer_as_attachment() ) ? -1 : $exit_option;
     }
     elsif ($option == 11)
     {
-	$option = ( get_map_as_url() ) ? -1 : $exit_option;
+	$option = ( get_layer_as_url() ) ? -1 : $exit_option;
     }
     elsif ( ! $option )
     {
@@ -854,12 +854,12 @@ sub get_projection_metadata
 ##########################
 #  Get map as attachment # 
 ##########################
-sub get_map_as_attachment
+sub get_layer_as_attachment
 {
     prepare_soap();
 
     my $method = SOAP::Data
-	-> name( 'getMapAsAttachment' )
+	-> name( 'getLayerAsAttachment' )
         -> encodingStyle( 'http://xml.apache.org/xml-soap/literalxml' )
 	-> prefix( 'omws' )
 	-> uri( $omws_uri );
@@ -876,7 +876,7 @@ sub get_map_as_attachment
     print "Requesting map...\n";
 
     my $soap_ticket = SOAP::Data
-	-> name( 'ticket' )
+	-> name( 'id' )
 	-> type( 'string' )
 	-> value( $ticket );
     
@@ -898,12 +898,12 @@ sub get_map_as_attachment
 ############
 #  Get log # 
 ############
-sub get_map_as_url
+sub get_layer_as_url
 {
     prepare_soap();
 
     my $method = SOAP::Data
-	-> name( 'getMapAsUrl' )
+	-> name( 'getLayerAsUrl' )
         -> encodingStyle( 'http://xml.apache.org/xml-soap/literalxml' )
 	-> prefix( 'omws' )
         -> uri( $omws_uri );
@@ -920,7 +920,7 @@ sub get_map_as_url
     print "Requesting map URL... ";
 
     my $soap_ticket = SOAP::Data
-	-> name( 'ticket' )
+	-> name( 'id' )
 	-> type( 'string' )
 	-> value( $ticket );
     

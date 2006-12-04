@@ -6,7 +6,7 @@
 */
 #include "soapH.h"
 
-SOAP_SOURCE_STAMP("@(#) soapClient.cpp ver 2.7.6d 2006-12-04 13:26:42 GMT")
+SOAP_SOURCE_STAMP("@(#) soapClient.cpp ver 2.7.6d 2006-12-04 16:12:15 GMT")
 
 
 SOAP_FMAC5 int SOAP_FMAC6 soap_call_omws__ping(struct soap *soap, const char *soap_endpoint, const char *soap_action, void *_, int &status)
@@ -419,23 +419,23 @@ SOAP_FMAC5 int SOAP_FMAC6 soap_call_omws__getLog(struct soap *soap, const char *
 	return soap_closesock(soap);
 }
 
-SOAP_FMAC5 int SOAP_FMAC6 soap_call_omws__getMapAsAttachment(struct soap *soap, const char *soap_endpoint, const char *soap_action, char *ticket, xsd__base64Binary &file)
-{	struct omws__getMapAsAttachment soap_tmp_omws__getMapAsAttachment;
-	struct omws__getMapAsAttachmentResponse *soap_tmp_omws__getMapAsAttachmentResponse;
+SOAP_FMAC5 int SOAP_FMAC6 soap_call_omws__getLayerAsAttachment(struct soap *soap, const char *soap_endpoint, const char *soap_action, char *id, xsd__base64Binary &file)
+{	struct omws__getLayerAsAttachment soap_tmp_omws__getLayerAsAttachment;
+	struct omws__getLayerAsAttachmentResponse *soap_tmp_omws__getLayerAsAttachmentResponse;
 	if (!soap_endpoint)
 		soap_endpoint = "http://localhost:8085";
 	soap->encodingStyle = NULL;
-	soap_tmp_omws__getMapAsAttachment.ticket = ticket;
+	soap_tmp_omws__getLayerAsAttachment.id = id;
 	soap_begin(soap);
 	soap_serializeheader(soap);
-	soap_serialize_omws__getMapAsAttachment(soap, &soap_tmp_omws__getMapAsAttachment);
+	soap_serialize_omws__getLayerAsAttachment(soap, &soap_tmp_omws__getLayerAsAttachment);
 	if (soap_begin_count(soap))
 		return soap->error;
 	if (soap->mode & SOAP_IO_LENGTH)
 	{	if (soap_envelope_begin_out(soap)
 		 || soap_putheader(soap)
 		 || soap_body_begin_out(soap)
-		 || soap_put_omws__getMapAsAttachment(soap, &soap_tmp_omws__getMapAsAttachment, "omws:getMapAsAttachment", "")
+		 || soap_put_omws__getLayerAsAttachment(soap, &soap_tmp_omws__getLayerAsAttachment, "omws:getLayerAsAttachment", "")
 		 || soap_body_end_out(soap)
 		 || soap_envelope_end_out(soap))
 			 return soap->error;
@@ -446,7 +446,7 @@ SOAP_FMAC5 int SOAP_FMAC6 soap_call_omws__getMapAsAttachment(struct soap *soap, 
 	 || soap_envelope_begin_out(soap)
 	 || soap_putheader(soap)
 	 || soap_body_begin_out(soap)
-	 || soap_put_omws__getMapAsAttachment(soap, &soap_tmp_omws__getMapAsAttachment, "omws:getMapAsAttachment", "")
+	 || soap_put_omws__getLayerAsAttachment(soap, &soap_tmp_omws__getLayerAsAttachment, "omws:getLayerAsAttachment", "")
 	 || soap_body_end_out(soap)
 	 || soap_envelope_end_out(soap)
 	 || soap_end_send(soap))
@@ -459,7 +459,7 @@ SOAP_FMAC5 int SOAP_FMAC6 soap_call_omws__getMapAsAttachment(struct soap *soap, 
 	 || soap_recv_header(soap)
 	 || soap_body_begin_in(soap))
 		return soap_closesock(soap);
-	soap_tmp_omws__getMapAsAttachmentResponse = soap_get_omws__getMapAsAttachmentResponse(soap, NULL, "omws:getMapAsAttachmentResponse", "");
+	soap_tmp_omws__getLayerAsAttachmentResponse = soap_get_omws__getLayerAsAttachmentResponse(soap, NULL, "omws:getLayerAsAttachmentResponse", "");
 	if (soap->error)
 	{	if (soap->error == SOAP_TAG_MISMATCH && soap->level == 2)
 			return soap_recv_fault(soap);
@@ -469,27 +469,27 @@ SOAP_FMAC5 int SOAP_FMAC6 soap_call_omws__getMapAsAttachment(struct soap *soap, 
 	 || soap_envelope_end_in(soap)
 	 || soap_end_recv(soap))
 		return soap_closesock(soap);
-	file = soap_tmp_omws__getMapAsAttachmentResponse->file;
+	file = soap_tmp_omws__getLayerAsAttachmentResponse->file;
 	return soap_closesock(soap);
 }
 
-SOAP_FMAC5 int SOAP_FMAC6 soap_call_omws__getMapAsUrl(struct soap *soap, const char *soap_endpoint, const char *soap_action, char *ticket, char *&url)
-{	struct omws__getMapAsUrl soap_tmp_omws__getMapAsUrl;
-	struct omws__getMapAsUrlResponse *soap_tmp_omws__getMapAsUrlResponse;
+SOAP_FMAC5 int SOAP_FMAC6 soap_call_omws__getLayerAsUrl(struct soap *soap, const char *soap_endpoint, const char *soap_action, char *id, char *&url)
+{	struct omws__getLayerAsUrl soap_tmp_omws__getLayerAsUrl;
+	struct omws__getLayerAsUrlResponse *soap_tmp_omws__getLayerAsUrlResponse;
 	if (!soap_endpoint)
 		soap_endpoint = "http://localhost:8085";
 	soap->encodingStyle = NULL;
-	soap_tmp_omws__getMapAsUrl.ticket = ticket;
+	soap_tmp_omws__getLayerAsUrl.id = id;
 	soap_begin(soap);
 	soap_serializeheader(soap);
-	soap_serialize_omws__getMapAsUrl(soap, &soap_tmp_omws__getMapAsUrl);
+	soap_serialize_omws__getLayerAsUrl(soap, &soap_tmp_omws__getLayerAsUrl);
 	if (soap_begin_count(soap))
 		return soap->error;
 	if (soap->mode & SOAP_IO_LENGTH)
 	{	if (soap_envelope_begin_out(soap)
 		 || soap_putheader(soap)
 		 || soap_body_begin_out(soap)
-		 || soap_put_omws__getMapAsUrl(soap, &soap_tmp_omws__getMapAsUrl, "omws:getMapAsUrl", "")
+		 || soap_put_omws__getLayerAsUrl(soap, &soap_tmp_omws__getLayerAsUrl, "omws:getLayerAsUrl", "")
 		 || soap_body_end_out(soap)
 		 || soap_envelope_end_out(soap))
 			 return soap->error;
@@ -500,7 +500,7 @@ SOAP_FMAC5 int SOAP_FMAC6 soap_call_omws__getMapAsUrl(struct soap *soap, const c
 	 || soap_envelope_begin_out(soap)
 	 || soap_putheader(soap)
 	 || soap_body_begin_out(soap)
-	 || soap_put_omws__getMapAsUrl(soap, &soap_tmp_omws__getMapAsUrl, "omws:getMapAsUrl", "")
+	 || soap_put_omws__getLayerAsUrl(soap, &soap_tmp_omws__getLayerAsUrl, "omws:getLayerAsUrl", "")
 	 || soap_body_end_out(soap)
 	 || soap_envelope_end_out(soap)
 	 || soap_end_send(soap))
@@ -511,7 +511,7 @@ SOAP_FMAC5 int SOAP_FMAC6 soap_call_omws__getMapAsUrl(struct soap *soap, const c
 	 || soap_recv_header(soap)
 	 || soap_body_begin_in(soap))
 		return soap_closesock(soap);
-	soap_tmp_omws__getMapAsUrlResponse = soap_get_omws__getMapAsUrlResponse(soap, NULL, "omws:getMapAsUrlResponse", "");
+	soap_tmp_omws__getLayerAsUrlResponse = soap_get_omws__getLayerAsUrlResponse(soap, NULL, "omws:getLayerAsUrlResponse", "");
 	if (soap->error)
 	{	if (soap->error == SOAP_TAG_MISMATCH && soap->level == 2)
 			return soap_recv_fault(soap);
@@ -521,7 +521,7 @@ SOAP_FMAC5 int SOAP_FMAC6 soap_call_omws__getMapAsUrl(struct soap *soap, const c
 	 || soap_envelope_end_in(soap)
 	 || soap_end_recv(soap))
 		return soap_closesock(soap);
-	url = soap_tmp_omws__getMapAsUrlResponse->url;
+	url = soap_tmp_omws__getLayerAsUrlResponse->url;
 	return soap_closesock(soap);
 }
 
