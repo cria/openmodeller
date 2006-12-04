@@ -77,50 +77,50 @@ OccurrencesFile::~OccurrencesFile()
 int
 OccurrencesFile::loadOccurrences( const char *file_name )
 {
-	// Opens the input file.
-	FILE *file = fopen( file_name, "r" );
-	if ( ! file )
-	{
-		g_log.warn( "Can't open file %s.\n", file_name );
-		return 0;
-	}
+  // Opens the input file.
+  FILE *file = fopen( file_name, "r" );
+  if ( ! file )
+  {
+    g_log.warn( "Can't open file %s.\n", file_name );
+    return 0;
+  }
 
-	// Fixme: read this from file.
-	Scalar error     	= -1.0;
-	Scalar abundance 	= 1.0;
-	int    num_attributes = 0;
-	Scalar *attributes    = 0;
+  // Fixme: read this from file.
+  Scalar error     	= -1.0;
+  Scalar abundance 	= 1.0;
+  int    num_attributes = 0;
+  Scalar *attributes    = 0;
 
-	// Columns to be read.
-	char  sp1[256];
-	char  sp2[256];
-	double x, y;
+  // Columns to be read.
+  char  sp1[256];
+  char  sp2[256];
+  double x, y;
 
-	// Read all occurrences line by line inserting into the
-	// appropriate object.
-	char line[256];
-	char *pos;
-	while ( fgets( line, 256, file ) )
-	{
-		// Remove \r that DOS loves to use.
-		if ( pos = strchr( line, '\r' ) )
-		*pos = '\0';
+  // Read all occurrences line by line inserting into the
+  // appropriate object.
+  char line[256];
+  char *pos;
+  while ( fgets( line, 256, file ) )
+  {
+    // Remove \r that DOS loves to use.
+    if ( pos = strchr( line, '\r' ) )
+      *pos = '\0';
 
-		if ( *line != '#' &&
-		sscanf( line,"%s%s%lf%lf",sp1,sp2,&x,&y ) == 4 )
-		{
-			// Build the occurrences list name using the first two
-			// columns. (originally genus + species)
-			strcat( sp1, " " );
-			strcat( sp1, sp2 );
+    if ( *line != '#' &&
+        sscanf( line,"%s%s%lf%lf",sp1,sp2,&x,&y ) == 4 )
+    {
+      // Build the occurrences list name using the first two
+      // columns. (originally genus + species)
+      strcat( sp1, " " );
+      strcat( sp1, sp2 );
 
-			Coord lg = Coord( x );
-			Coord lt = Coord( y );
+      Coord lg = Coord( x );
+      Coord lt = Coord( y );
 
-			addOccurrence( sp1, lg, lt, error, abundance,
-                                       num_attributes, attributes );
-		}
-	}
-	fclose( file );
-	return 0;
+      addOccurrence( sp1, lg, lt, error, abundance,
+          num_attributes, attributes );
+    }
+  }
+  fclose( file );
+  return 0;
 }
