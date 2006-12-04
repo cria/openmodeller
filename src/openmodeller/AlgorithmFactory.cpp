@@ -325,7 +325,7 @@ AlgorithmFactory::p_addDir( const string& dir )
   vector<string> entries = scanDirectory( dir );
 
   if ( entries.empty() ) {
-    g_log.error( 0, "No algoritm found in directory %s\n", dir.c_str() );
+    g_log.warn( "No algorithm found in directory %s\n", dir.c_str() );
     return 0;
   }
 
