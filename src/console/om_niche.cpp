@@ -88,7 +88,7 @@ main( int argc, char **argv )
 
   // Reconfigure the global logger.
   g_log.setLevel( Log::Error );
-  g_log.setPrefix( "[Niche]" );
+  g_log.setPrefix( "" );
 
   if ( argc < 2 )
       g_log.error( 1, "\n%s <request>\n\n", argv[0] );
@@ -145,7 +145,7 @@ main( int argc, char **argv )
   }
   catch ( std::exception& e ) {
     g_log( "Exception occurred\n" );
-    g_log( "Message is %s\n", e.what() );
+    //g_log( "Message is %s\n", e.what() );
   }
   catch ( ... ) {
     g_log( "Unknown Error occurred\n" );
