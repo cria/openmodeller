@@ -24,10 +24,7 @@
   <element name="version" type="xsd:string"/>
   <!-- operation request element -->
   <element name="ping">
-   <complexType>
-    <sequence>
-    </sequence>
-   </complexType>
+   <complexType/>
   </element>
   <!-- operation response element -->
   <element name="pingResponse">
@@ -39,10 +36,7 @@
   </element>
   <!-- operation request element -->
   <element name="getAlgorithms">
-   <complexType>
-    <sequence>
-    </sequence>
-   </complexType>
+   <complexType/>
   </element>
   <!-- operation response element -->
   <element name="getAlgorithmsResponse">
@@ -54,10 +48,7 @@
   </element>
   <!-- operation request element -->
   <element name="getLayers">
-   <complexType>
-    <sequence>
-    </sequence>
-   </complexType>
+   <complexType/>
   </element>
   <!-- operation response element -->
   <element name="getLayersResponse">
