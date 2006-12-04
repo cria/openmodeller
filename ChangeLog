@@ -1,4 +1,4 @@
-Release 0.4 (to be defined)
+Release 0.4 (2006-12-04)
 ---------------------------
 
         * Integration with TerraLib.
@@ -7,7 +7,7 @@ Release 0.4 (to be defined)
 	* Refactored SOAP interface which now covers all modelling functionality.
 	* Re-enabled the new version of GARP (v3).
 	* Several fixes in the SWIG-Python binding.
-	* Fixed installation issue with RPM packages.
+	* Fixed installation issue with the RPM packages.
 
 Release 0.3.4 (2005-12-14)
 --------------------------
