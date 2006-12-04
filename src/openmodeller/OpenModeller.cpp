@@ -116,7 +116,7 @@ void OpenModeller::setMapCommand( Projector::MapCommand *func ) {
 
 OpenModeller::OpenModeller()
 {
-  //setLogLevel(Log::Debug);
+  setLogLevel(Log::Default);
 
   _map_command = 0;
   _model_command = 0;
