@@ -121,14 +121,14 @@ class xsd__base64Binary
  * @param id Layer identification.
  * @return standard gSOAP integer code
  */
-//gsoap om service method-documentation: getMapAsAttachment Returns the corresponding distribution map as a DIME attachment.
+//gsoap om service method-documentation: getLayerAsAttachment Returns the corresponding distribution map as a DIME attachment.
 int omws__getLayerAsAttachment(xsd__string id, xsd__base64Binary &file);
 
 /** Return a layer as an URL.
  * @param id Layer identification.
  * @return standard gSOAP integer code
  */
-//gsoap om service method-documentation: getMapAsUrl Returns the corresponding distribution map URL.
+//gsoap om service method-documentation: getLayerAsUrl Returns the corresponding distribution map URL.
 int omws__getLayerAsUrl(xsd__string id, xsd__string &url);
 
 /** Return type of getProjectionMetadata */
