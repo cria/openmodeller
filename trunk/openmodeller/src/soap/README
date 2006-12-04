@@ -35,6 +35,7 @@ CURRENT FUNCTIONALITY:
 - Server can handle getMapAsUrl requests.
 - Server can handle getMapAsAttachment requests (returning maps
   as DIME attachments).
+- Server can handle getProjectionMetadata requests.
 - A simple command line perl client is available (depends on 
   SOAP::Lite version >= 0.67). It can invoke all methods, but
   occurrence points are still hard coded and projectModel parameters 
