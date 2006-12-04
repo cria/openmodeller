@@ -6,7 +6,7 @@
 */
 #include "soapH.h"
 
-SOAP_SOURCE_STAMP("@(#) soapClient.cpp ver 2.7.6d 2006-12-01 17:40:09 GMT")
+SOAP_SOURCE_STAMP("@(#) soapClient.cpp ver 2.7.6d 2006-12-04 12:52:54 GMT")
 
 
 SOAP_FMAC5 int SOAP_FMAC6 soap_call_omws__ping(struct soap *soap, const char *soap_endpoint, const char *soap_action, void *_, int &status)
@@ -61,7 +61,7 @@ SOAP_FMAC5 int SOAP_FMAC6 soap_call_omws__ping(struct soap *soap, const char *so
 	return soap_closesock(soap);
 }
 
-SOAP_FMAC5 int SOAP_FMAC6 soap_call_omws__getAlgorithms(struct soap *soap, const char *soap_endpoint, const char *soap_action, void *_, wchar_t *&om__AvailableAlgorithms)
+SOAP_FMAC5 int SOAP_FMAC6 soap_call_omws__getAlgorithms(struct soap *soap, const char *soap_endpoint, const char *soap_action, void *_, struct omws__getAlgorithmsResponse *out)
 {	struct omws__getAlgorithms soap_tmp_omws__getAlgorithms;
 	if (!soap_endpoint)
 		soap_endpoint = "http://localhost:8085";
@@ -92,13 +92,13 @@ SOAP_FMAC5 int SOAP_FMAC6 soap_call_omws__getAlgorithms(struct soap *soap, const
 	 || soap_envelope_end_out(soap)
 	 || soap_end_send(soap))
 		return soap_closesock(soap);
-	om__AvailableAlgorithms = NULL;
+	soap_default_omws__getAlgorithmsResponse(soap, out);
 	if (soap_begin_recv(soap)
 	 || soap_envelope_begin_in(soap)
 	 || soap_recv_header(soap)
 	 || soap_body_begin_in(soap))
 		return soap_closesock(soap);
-	soap_inwliteral(soap, NULL, &om__AvailableAlgorithms);
+	soap_get_omws__getAlgorithmsResponse(soap, out, "omws:getAlgorithmsResponse", "");
 	if (soap->error)
 	{	if (soap->error == SOAP_TAG_MISMATCH && soap->level == 2)
 			return soap_recv_fault(soap);
@@ -111,7 +111,7 @@ SOAP_FMAC5 int SOAP_FMAC6 soap_call_omws__getAlgorithms(struct soap *soap, const
 	return soap_closesock(soap);
 }
 
-SOAP_FMAC5 int SOAP_FMAC6 soap_call_omws__getLayers(struct soap *soap, const char *soap_endpoint, const char *soap_action, void *_, wchar_t *&om__AvailableLayers)
+SOAP_FMAC5 int SOAP_FMAC6 soap_call_omws__getLayers(struct soap *soap, const char *soap_endpoint, const char *soap_action, void *_, struct omws__getLayersResponse *out)
 {	struct omws__getLayers soap_tmp_omws__getLayers;
 	if (!soap_endpoint)
 		soap_endpoint = "http://localhost:8085";
@@ -142,13 +142,13 @@ SOAP_FMAC5 int SOAP_FMAC6 soap_call_omws__getLayers(struct soap *soap, const cha
 	 || soap_envelope_end_out(soap)
 	 || soap_end_send(soap))
 		return soap_closesock(soap);
-	om__AvailableLayers = NULL;
+	soap_default_omws__getLayersResponse(soap, out);
 	if (soap_begin_recv(soap)
 	 || soap_envelope_begin_in(soap)
 	 || soap_recv_header(soap)
 	 || soap_body_begin_in(soap))
 		return soap_closesock(soap);
-	soap_inwliteral(soap, NULL, &om__AvailableLayers);
+	soap_get_omws__getLayersResponse(soap, out, "omws:getLayersResponse", "");
 	if (soap->error)
 	{	if (soap->error == SOAP_TAG_MISMATCH && soap->level == 2)
 			return soap_recv_fault(soap);
@@ -213,7 +213,7 @@ SOAP_FMAC5 int SOAP_FMAC6 soap_call_omws__createModel(struct soap *soap, const c
 	return soap_closesock(soap);
 }
 
-SOAP_FMAC5 int SOAP_FMAC6 soap_call_omws__getModel(struct soap *soap, const char *soap_endpoint, const char *soap_action, char *ticket, wchar_t *&om__ModelEnvelope)
+SOAP_FMAC5 int SOAP_FMAC6 soap_call_omws__getModel(struct soap *soap, const char *soap_endpoint, const char *soap_action, char *ticket, struct omws__getModelResponse *out)
 {	struct omws__getModel soap_tmp_omws__getModel;
 	if (!soap_endpoint)
 		soap_endpoint = "http://localhost:8085";
@@ -244,13 +244,13 @@ SOAP_FMAC5 int SOAP_FMAC6 soap_call_omws__getModel(struct soap *soap, const char
 	 || soap_envelope_end_out(soap)
 	 || soap_end_send(soap))
 		return soap_closesock(soap);
-	om__ModelEnvelope = NULL;
+	soap_default_omws__getModelResponse(soap, out);
 	if (soap_begin_recv(soap)
 	 || soap_envelope_begin_in(soap)
 	 || soap_recv_header(soap)
 	 || soap_body_begin_in(soap))
 		return soap_closesock(soap);
-	soap_inwliteral(soap, NULL, &om__ModelEnvelope);
+	soap_get_omws__getModelResponse(soap, out, "omws:getModelResponse", "");
 	if (soap->error)
 	{	if (soap->error == SOAP_TAG_MISMATCH && soap->level == 2)
 			return soap_recv_fault(soap);
@@ -525,22 +525,22 @@ SOAP_FMAC5 int SOAP_FMAC6 soap_call_omws__getMapAsUrl(struct soap *soap, const c
 	return soap_closesock(soap);
 }
 
-SOAP_FMAC5 int SOAP_FMAC6 soap_call_omws__getProjectionData(struct soap *soap, const char *soap_endpoint, const char *soap_action, char *ticket, struct omws__ProjectionData *out)
-{	struct omws__getProjectionData soap_tmp_omws__getProjectionData;
+SOAP_FMAC5 int SOAP_FMAC6 soap_call_omws__getProjectionMetadata(struct soap *soap, const char *soap_endpoint, const char *soap_action, char *ticket, struct omws__getProjectionMetadataResponse *out)
+{	struct omws__getProjectionMetadata soap_tmp_omws__getProjectionMetadata;
 	if (!soap_endpoint)
 		soap_endpoint = "http://localhost:8085";
 	soap->encodingStyle = NULL;
-	soap_tmp_omws__getProjectionData.ticket = ticket;
+	soap_tmp_omws__getProjectionMetadata.ticket = ticket;
 	soap_begin(soap);
 	soap_serializeheader(soap);
-	soap_serialize_omws__getProjectionData(soap, &soap_tmp_omws__getProjectionData);
+	soap_serialize_omws__getProjectionMetadata(soap, &soap_tmp_omws__getProjectionMetadata);
 	if (soap_begin_count(soap))
 		return soap->error;
 	if (soap->mode & SOAP_IO_LENGTH)
 	{	if (soap_envelope_begin_out(soap)
 		 || soap_putheader(soap)
 		 || soap_body_begin_out(soap)
-		 || soap_put_omws__getProjectionData(soap, &soap_tmp_omws__getProjectionData, "omws:getProjectionData", "")
+		 || soap_put_omws__getProjectionMetadata(soap, &soap_tmp_omws__getProjectionMetadata, "omws:getProjectionMetadata", "")
 		 || soap_body_end_out(soap)
 		 || soap_envelope_end_out(soap))
 			 return soap->error;
@@ -551,18 +551,18 @@ SOAP_FMAC5 int SOAP_FMAC6 soap_call_omws__getProjectionData(struct soap *soap, c
 	 || soap_envelope_begin_out(soap)
 	 || soap_putheader(soap)
 	 || soap_body_begin_out(soap)
-	 || soap_put_omws__getProjectionData(soap, &soap_tmp_omws__getProjectionData, "omws:getProjectionData", "")
+	 || soap_put_omws__getProjectionMetadata(soap, &soap_tmp_omws__getProjectionMetadata, "omws:getProjectionMetadata", "")
 	 || soap_body_end_out(soap)
 	 || soap_envelope_end_out(soap)
 	 || soap_end_send(soap))
 		return soap_closesock(soap);
-	soap_default_omws__ProjectionData(soap, out);
+	soap_default_omws__getProjectionMetadataResponse(soap, out);
 	if (soap_begin_recv(soap)
 	 || soap_envelope_begin_in(soap)
 	 || soap_recv_header(soap)
 	 || soap_body_begin_in(soap))
 		return soap_closesock(soap);
-	soap_get_omws__ProjectionData(soap, out, "omws:ProjectionData", "");
+	soap_get_omws__getProjectionMetadataResponse(soap, out, "omws:getProjectionMetadataResponse", "");
 	if (soap->error)
 	{	if (soap->error == SOAP_TAG_MISMATCH && soap->level == 2)
 			return soap_recv_fault(soap);

@@ -244,7 +244,7 @@ omws__ping( struct soap *soap, void *_, xsd__int &status )
 /**********************/
 /*** get Algorithms ***/
 int 
-omws__getAlgorithms( struct soap *soap, void *_, XML &om__AvailableAlgorithms )
+omws__getAlgorithms( struct soap *soap, void *_, struct omws__getAlgorithmsResponse *out )
 {
   // Get controller object previously instantiated
   OpenModeller *om = (OpenModeller*)soap->user; 
@@ -266,7 +266,7 @@ omws__getAlgorithms( struct soap *soap, void *_, XML &om__AvailableAlgorithms )
   ostringstream oss;
   Configuration::writeXml( cfg, oss );
 
-  om__AvailableAlgorithms = convertToWideChar( oss.str().c_str() ) ;
+  out->om__AvailableAlgorithms = convertToWideChar( oss.str().c_str() ) ;
 
   return SOAP_OK;
 }
@@ -274,7 +274,7 @@ omws__getAlgorithms( struct soap *soap, void *_, XML &om__AvailableAlgorithms )
 /**********************/
 /*** get Layers ***/
 int 
-omws__getLayers( struct soap *soap, void *_, XML &om__AvailableLayers )
+omws__getLayers( struct soap *soap, void *_, struct omws__getLayersResponse *out )
 {
   // Get controller object previously instantiated
   OpenModeller *om = (OpenModeller*)soap->user; 
@@ -292,7 +292,7 @@ omws__getLayers( struct soap *soap, void *_, XML &om__AvailableLayers )
     return soap_receiver_fault( soap, "Could not read available layers", NULL );
   }
 
-  om__AvailableLayers = convertToWideChar( oss.str().c_str() ) ;
+  out->om__AvailableLayers = convertToWideChar( oss.str().c_str() ) ;
 
   return SOAP_OK;
 }
@@ -547,7 +547,7 @@ omws__getLog( struct soap *soap, xsd__string ticket, xsd__string &log )
 /*******************/
 /**** get model ****/
 int 
-omws__getModel( struct soap *soap, xsd__string ticket, XML &om__ModelEnvelope )
+omws__getModel( struct soap *soap, xsd__string ticket, struct omws__getModelResponse *out )
 { 
   if ( ! ticket ) {
 
@@ -579,7 +579,7 @@ omws__getModel( struct soap *soap, xsd__string ticket, XML &om__ModelEnvelope )
       oss << line << endl;
     }
 
-    om__ModelEnvelope = convertToWideChar( oss.str().c_str() );
+    out->om__ModelEnvelope = convertToWideChar( oss.str().c_str() );
 
     fin.close();
   }
@@ -643,7 +643,7 @@ omws__getMapAsUrl( struct soap *soap, xsd__string ticket, xsd__string &url )
 /*****************************/
 /**** get projection data ****/
 int 
-omws__getProjectionData( struct soap *soap, xsd__string ticket, struct omws__ProjectionData *out )
+omws__getProjectionMetadata( struct soap *soap, xsd__string ticket, struct omws__getProjectionMetadataResponse *out )
 { 
   if ( ! ticket ) {
 
@@ -703,7 +703,7 @@ omws__getProjectionData( struct soap *soap, xsd__string ticket, struct omws__Pro
       oss << line << endl;
     }
 
-    out->fileSize = size;
+    out->FileSize = size;
     out->om__AreaStatistics = convertToWideChar( oss.str().c_str() );
 
     fin.close();

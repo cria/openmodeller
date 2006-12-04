@@ -10,6 +10,7 @@
  </SOAP-ENV:Header>
  <SOAP-ENV:Body>
   <omws:getModelResponse>
+   <om:ModelEnvelope>   </om:ModelEnvelope>
   </omws:getModelResponse>
  </SOAP-ENV:Body>
 </SOAP-ENV:Envelope>

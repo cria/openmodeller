@@ -79,7 +79,7 @@ my %options = ( 0  => 'Ping service',
 		5  => 'Get model', 
 		6  => 'Get log', 
 		7  => 'Project model', 
-		8  => 'Get projection data', 
+		8  => 'Get projection metadata', 
 		9  => 'Get map as attachment', 
 		10 => 'Get map as URL', 
 		11 => 'Exit' );
@@ -126,7 +126,7 @@ while ( $option != $exit_option or not exists( $options{$option-1} ) )
     }
     elsif ($option == 9)
     {
-	$option = ( get_projection_data() ) ? -1 : $exit_option;
+	$option = ( get_projection_metadata() ) ? -1 : $exit_option;
     }
     elsif ($option == 10)
     {
@@ -316,7 +316,7 @@ sub get_algorithms
 	    {
 		print '-' x 25 . "\n" if $option == 2;
 
-		my $alg_path = "/Envelope/Body/[1]/[1]/[$i]";
+		my $alg_path = "/Envelope/Body/[1]/[1]/[1]/[$i]";
 		my $alg_designer_path = "$alg_path/Designers/Designer";
 		my $alg_developer_path = "$alg_path/Developers/Developer";
 		my $alg_parameters_path = "$alg_path/Parameters";
@@ -805,15 +805,15 @@ sub project_model
     return 1;
 }
 
-########################
-#  Get projection data # 
-########################
-sub get_projection_data
+############################
+#  Get projection metadata # 
+############################
+sub get_projection_metadata
 {
     prepare_soap();
 
     my $method = SOAP::Data
-	-> name( 'getProjectionData' )
+	-> name( 'getProjectionMetadata' )
         -> encodingStyle( 'http://xml.apache.org/xml-soap/literalxml' )
 	-> prefix( 'omws' )
         -> uri( $omws_uri );

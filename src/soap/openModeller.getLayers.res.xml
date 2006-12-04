@@ -10,6 +10,7 @@
  </SOAP-ENV:Header>
  <SOAP-ENV:Body>
   <omws:getLayersResponse>
+   <om:AvailableLayers>   </om:AvailableLayers>
   </omws:getLayersResponse>
  </SOAP-ENV:Body>
 </SOAP-ENV:Envelope>
