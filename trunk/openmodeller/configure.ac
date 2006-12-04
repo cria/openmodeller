@@ -452,12 +452,13 @@ AM_CONDITIONAL([HAVE_SQLITE3], [test x$have_sqlite3_lib = xyes])
 
 dnl ---------------------------------------------------------------------------
 
+dnl 	data/Makefile
+
 AC_CONFIG_FILES([
 	Makefile
 	test/Makefile
 	test/CppUnitLite/Makefile
 	test/library/Makefile
-	data/Makefile
 	src/Makefile
 	src/openmodeller/Makefile
 	src/console/Makefile
