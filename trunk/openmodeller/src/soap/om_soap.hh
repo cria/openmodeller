@@ -16,7 +16,7 @@ typedef wchar_t *XML;
 /** SOAP header structure.
  */
 struct SOAP_ENV__Header 
-{ 
+{
   xsd__string omws__version; 
 }; 
 
@@ -29,6 +29,12 @@ struct SOAP_ENV__Header
 //gsoap omws service method-documentation: ping Simple method to monitor service availability.
 int omws__ping(void *_, xsd__int &status); 
 
+/** Return type of getAlgorithms */
+struct omws__getAlgorithmsResponse
+{
+   XML om__AvailableAlgorithms;
+}; 
+
 /** Get all available algorithms and return their metadata.
  *
  * @param _ A void* input parameter so that some compilers (notably vc++) will not complain 
@@ -37,7 +43,13 @@ int omws__ping(void *_, xsd__int &status);
  * @return standard gSOAP integer code
  */
 //gsoap omws service method-documentation: getAlgorithms Returns metadata about all available algorithms.
-int omws__getAlgorithms(void *_, XML &om__AvailableAlgorithms);
+int omws__getAlgorithms(void *_, struct omws__getAlgorithmsResponse *out);
+
+/** Return type of getLayers */
+struct omws__getLayersResponse
+{
+   XML om__AvailableLayers;
+}; 
 
 /** Get all available layers on the server side.
  *
@@ -47,7 +59,7 @@ int omws__getAlgorithms(void *_, XML &om__AvailableAlgorithms);
  * @return standard gSOAP integer code
  */
 //gsoap omws service method-documentation: getLayers Returns all available layers on the server side.
-int omws__getLayers(void *_, XML &om__AvailableLayers);
+int omws__getLayers(void *_, struct omws__getLayersResponse *out);
 
 /** Create a distribution model (not a map!) using all input parameters.
  *
@@ -58,12 +70,18 @@ int omws__getLayers(void *_, XML &om__AvailableLayers);
 //gsoap om service method-documentation: createModel Requests the creation of a spatial distribution model
 int omws__createModel(XML om__ModelParameters, xsd__string &ticket); 
 
+/** Return type of getModel */
+struct omws__getModelResponse
+{
+   XML om__ModelEnvelope;
+}; 
+
 /** Return a serialized model given a ticket.
  * @param ticket Job identification.
  * @return standard gSOAP integer code
  */
 //gsoap om service method-documentation: getModel Retrieves a serialized model given a ticket.
-int omws__getModel(xsd__string ticket, XML &om__ModelEnvelope);
+int omws__getModel(xsd__string ticket, struct omws__getModelResponse *out);
 
 /** Project a distribution model (creating a map) using all input parameters.
  *
@@ -89,7 +107,7 @@ int omws__getProgress(xsd__string ticket, xsd__int &progress);
 int omws__getLog(xsd__string ticket, xsd__string &log);
 
 class xsd__base64Binary 
-{ 
+{
    unsigned char *__ptr; 
    xsd__int __size; 
    xsd__string id; 
@@ -113,10 +131,10 @@ int omws__getMapAsAttachment(xsd__string ticket, xsd__base64Binary &file);
 //gsoap om service method-documentation: getMapAsUrl Returns the corresponding distribution map URL.
 int omws__getMapAsUrl(xsd__string ticket, xsd__string &url);
 
-/** Return type of getProjectionData */
-struct omws__ProjectionData
-{ 
-   @xsd__int fileSize; 
+/** Return type of getProjectionMetadata */
+struct omws__getProjectionMetadataResponse
+{
+   @xsd__int FileSize; 
    XML om__AreaStatistics;
 }; 
 
@@ -124,5 +142,5 @@ struct omws__ProjectionData
  * @param ticket Job identification.
  * @return standard gSOAP integer code
  */
-//gsoap om service method-documentation: getProjectionData Retrieves additional data about the projection (area statistics and file size) given a ticket.
-int omws__getProjectionData(xsd__string ticket, struct omws__ProjectionData *out);
+//gsoap om service method-documentation: getProjectionMetadata Retrieves additional data about the projection (area statistics and file size) given a ticket.
+int omws__getProjectionMetadata(xsd__string ticket, struct omws__getProjectionMetadataResponse *out);

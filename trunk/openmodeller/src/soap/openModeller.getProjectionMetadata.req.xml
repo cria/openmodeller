@@ -9,8 +9,8 @@
  <SOAP-ENV:Header>
  </SOAP-ENV:Header>
  <SOAP-ENV:Body>
-  <omws:getProjectionData>
+  <omws:getProjectionMetadata>
    <ticket></ticket>
-  </omws:getProjectionData>
+  </omws:getProjectionMetadata>
  </SOAP-ENV:Body>
 </SOAP-ENV:Envelope>

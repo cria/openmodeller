@@ -9,8 +9,8 @@
  <SOAP-ENV:Header>
  </SOAP-ENV:Header>
  <SOAP-ENV:Body>
-  <omws:ProjectionData fileSize="0">
+  <omws:getProjectionMetadataResponse fileSize="0">
    <om:AreaStatistics>   </om:AreaStatistics>
-  </omws:ProjectionData>
+  </omws:getProjectionMetadataResponse>
  </SOAP-ENV:Body>
 </SOAP-ENV:Envelope>

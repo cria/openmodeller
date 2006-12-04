@@ -48,7 +48,7 @@
   <element name="getAlgorithmsResponse">
    <complexType>
     <sequence>
-     <element ref="om:AvailableAlgorithms" minOccurs="1" maxOccurs="1"/>
+     <element ref="om:AvailableAlgorithms" minOccurs="0" maxOccurs="1" nillable="true"/>
     </sequence>
    </complexType>
   </element>
@@ -63,7 +63,7 @@
   <element name="getLayersResponse">
    <complexType>
     <sequence>
-     <element ref="om:AvailableLayers" minOccurs="1" maxOccurs="1"/>
+     <element ref="om:AvailableLayers" minOccurs="0" maxOccurs="1" nillable="true"/>
     </sequence>
    </complexType>
   </element>
@@ -95,7 +95,7 @@
   <element name="getModelResponse">
    <complexType>
     <sequence>
-     <element ref="om:ModelEnvelope" minOccurs="1" maxOccurs="1"/>
+     <element ref="om:ModelEnvelope" minOccurs="0" maxOccurs="1" nillable="true"/>
     </sequence>
    </complexType>
   </element>
@@ -180,7 +180,7 @@
    </complexType>
   </element>
   <!-- operation request element -->
-  <element name="getProjectionData">
+  <element name="getProjectionMetadata">
    <complexType>
     <sequence>
      <element name="ticket" type="xsd:string" minOccurs="0" maxOccurs="1" nillable="true"/>
@@ -188,7 +188,7 @@
    </complexType>
   </element>
   <!-- operation response element -->
-  <element name="ProjectionData">
+  <element name="getProjectionMetadataResponse">
    <complexType>
     <sequence>
      <element ref="om:AreaStatistics" minOccurs="0" maxOccurs="1" nillable="true"/>

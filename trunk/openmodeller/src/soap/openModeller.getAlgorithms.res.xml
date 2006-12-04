@@ -10,6 +10,7 @@
  </SOAP-ENV:Header>
  <SOAP-ENV:Body>
   <omws:getAlgorithmsResponse>
+   <om:AvailableAlgorithms>   </om:AvailableAlgorithms>
   </omws:getAlgorithmsResponse>
  </SOAP-ENV:Body>
 </SOAP-ENV:Envelope>
