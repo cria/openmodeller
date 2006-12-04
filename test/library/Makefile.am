@@ -17,7 +17,7 @@ check_PROGRAMS = $(LIB_UNIT_TESTS)
 
 LDADD = ../CppUnitLite/libcppunitlite.la $(OMLIB)
 
-CPPFLAGS = -I.. -I$(OMSRCDIR)
+AM_CPPFLAGS = -I.. -I$(OMSRCDIR)
 
 test_configuration_SOURCES = test_configuration.cpp
 
