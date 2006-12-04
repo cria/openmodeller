@@ -210,7 +210,7 @@
     <sequence>
      <element ref="om:AreaStatistics" minOccurs="0" maxOccurs="1" nillable="true"/>
     </sequence>
-     <attribute name="fileSize" type="xsd:int" use="required"/>
+     <attribute name="FileSize" type="xsd:int" use="required"/>
    </complexType>
   </element>
  </schema>

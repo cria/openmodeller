@@ -7,7 +7,7 @@
 
 #include "soapH.h"
 
-SOAP_SOURCE_STAMP("@(#) soapC.cpp ver 2.7.6d 2006-12-04 12:52:54 GMT")
+SOAP_SOURCE_STAMP("@(#) soapC.cpp ver 2.7.6d 2006-12-04 13:26:42 GMT")
 
 
 #ifndef WITH_NOGLOBAL
@@ -1501,7 +1501,7 @@ SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_omws__getProjectionMetadataResponse(st
 SOAP_FMAC3 void SOAP_FMAC4 soap_default_omws__getProjectionMetadataResponse(struct soap *soap, struct omws__getProjectionMetadataResponse *a)
 {
 	(void)soap; (void)a; /* appease -Wall -Werror */
-	soap_default_xsd__int(soap, &a->fileSize);
+	soap_default_xsd__int(soap, &a->FileSize);
 	a->om__AreaStatistics = NULL;
 }
 
@@ -1515,9 +1515,9 @@ SOAP_FMAC3 int SOAP_FMAC4 soap_put_omws__getProjectionMetadataResponse(struct so
 
 SOAP_FMAC3 int SOAP_FMAC4 soap_out_omws__getProjectionMetadataResponse(struct soap *soap, const char *tag, int id, const struct omws__getProjectionMetadataResponse *a, const char *type)
 {
-	soap_set_attr(soap, "fileSize", soap_int2s(soap, a->fileSize));
+	soap_set_attr(soap, "FileSize", soap_int2s(soap, a->FileSize));
 	soap_element_begin_out(soap, tag, soap_embedded_id(soap, id, a, SOAP_TYPE_omws__getProjectionMetadataResponse), type);
-	soap_element_result(soap, "fileSize");
+	soap_element_result(soap, "FileSize");
 	soap_outwliteral(soap, "om:AreaStatistics", &a->om__AreaStatistics);
 	soap_element_end_out(soap, tag);
 	return SOAP_OK;
@@ -1543,7 +1543,7 @@ SOAP_FMAC3 struct omws__getProjectionMetadataResponse * SOAP_FMAC4 soap_in_omws_
 	if (!a)
 		return NULL;
 	soap_default_omws__getProjectionMetadataResponse(soap, a);
-	if (soap_s2int(soap, soap_attr_value(soap, "fileSize", 0), &a->fileSize))
+	if (soap_s2int(soap, soap_attr_value(soap, "FileSize", 0), &a->FileSize))
 		return NULL;
 	if (soap->body && !*soap->href)
 	{

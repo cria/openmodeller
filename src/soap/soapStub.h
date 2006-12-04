@@ -243,7 +243,7 @@ struct omws__getMapAsUrl
 /* omws:getProjectionMetadataResponse */
 struct omws__getProjectionMetadataResponse
 {
-	int fileSize;	/* RPC return element */	/* optional attribute of type xsd:int */
+	int FileSize;	/* RPC return element */	/* optional attribute of type xsd:int */
 	wchar_t *om__AreaStatistics;	/* optional element of type xsd:anyType */
 };
 #endif
