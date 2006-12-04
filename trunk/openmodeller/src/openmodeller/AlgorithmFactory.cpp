@@ -325,7 +325,7 @@ AlgorithmFactory::p_addDir( const string& dir )
   vector<string> entries = scanDirectory( dir );
 
   if ( entries.empty() ) {
-    g_log( "No algoritm found in directory %s\n", dir.c_str() );
+    g_log.error( 0, "No algoritm found in directory %s\n", dir.c_str() );
     return 0;
   }
 
@@ -365,7 +365,7 @@ AlgorithmFactory::p_addDll( const string& file )
     return false;
   }
   
-  g_log( "- Successfully Loaded %s\n", file.c_str() );
+  g_log.debug( "- Successfully Loaded %s\n", file.c_str() );
   _dlls.push_back( dll );
   return true;
 
