@@ -236,10 +236,10 @@ sub debug_soap
         print "\n" . ref( $in ) . "\n\n";
         print $in->content . "\n\n";
 
-        open( OUT, ">>client.debug" );
-        print OUT $in->content;
-        print OUT "\n";
-        close( OUT );
+        #open( OUT, ">>client.debug" );
+        #print OUT $in->content;
+        #print OUT "\n";
+        #close( OUT );
     } 
 }
 
