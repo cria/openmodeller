@@ -591,39 +591,42 @@ omws__getModel( struct soap *soap, xsd__string ticket, struct omws__getModelResp
   return SOAP_OK;
 }
 
-/*******************************/
-/**** get map as attachment ****/
+/**********************************/
+/**** get layer as attachment ****/
 int 
-omws__getMapAsAttachment( struct soap *soap, xsd__string ticket, xsd__base64Binary &file )
+omws__getLayerAsAttachment( struct soap *soap, xsd__string id, xsd__base64Binary &file )
 { 
-  if ( ! ticket ) {
+  if ( ! id ) {
 
-    return soap_sender_fault( soap, "Ticket required", NULL );
+    return soap_sender_fault( soap, "Layer id required", NULL );
   }
 
-  if ( ! getData( soap, ticket, file ) ) {
+  if ( ! getData( soap, id, file ) ) {
 
-    return soap_sender_fault( soap, "Map unavailable", NULL );
+    return soap_sender_fault( soap, "Layer unavailable", NULL );
   }
 
   return SOAP_OK;
 }
 
-/************************/
-/**** get map as URL ****/
+/**************************/
+/**** get layer as URL ****/
 int 
-omws__getMapAsUrl( struct soap *soap, xsd__string ticket, xsd__string &url )
+omws__getLayerAsUrl( struct soap *soap, xsd__string id, xsd__string &url )
 { 
-  if ( ! ticket ) {
 
-    return soap_sender_fault(soap, "Ticket required", NULL);
+  // This method is now working only for distribution maps!
+
+  if ( ! id ) {
+
+    return soap_sender_fault(soap, "Layer id required", NULL);
   }
 
-  string fileName = getMapFile( ticket );
+  string fileName = getMapFile( id );
 
   if ( fileName.empty() ) {
 
-    return soap_receiver_fault( soap, "Map unavailable", NULL );
+    return soap_receiver_fault( soap, "Layer unavailable", NULL );
   }
 
   string urlString( gFileParser.get( "BASE_URL" ) );

@@ -165,15 +165,15 @@
    </complexType>
   </element>
   <!-- operation request element -->
-  <element name="getMapAsAttachment">
+  <element name="getLayerAsAttachment">
    <complexType>
     <sequence>
-     <element name="ticket" type="xsd:string" minOccurs="0" maxOccurs="1" nillable="true"/>
+     <element name="id" type="xsd:string" minOccurs="0" maxOccurs="1" nillable="true"/>
     </sequence>
    </complexType>
   </element>
   <!-- operation response element -->
-  <element name="getMapAsAttachmentResponse">
+  <element name="getLayerAsAttachmentResponse">
    <complexType>
     <sequence>
      <element name="file" type="xsd:base64Binary" minOccurs="1" maxOccurs="1"/>
@@ -181,15 +181,15 @@
    </complexType>
   </element>
   <!-- operation request element -->
-  <element name="getMapAsUrl">
+  <element name="getLayerAsUrl">
    <complexType>
     <sequence>
-     <element name="ticket" type="xsd:string" minOccurs="0" maxOccurs="1" nillable="true"/>
+     <element name="id" type="xsd:string" minOccurs="0" maxOccurs="1" nillable="true"/>
     </sequence>
    </complexType>
   </element>
   <!-- operation response element -->
-  <element name="getMapAsUrlResponse">
+  <element name="getLayerAsUrlResponse">
    <complexType>
     <sequence>
      <element name="url" type="xsd:string" minOccurs="1" maxOccurs="1"/>
@@ -281,20 +281,20 @@
  <part name="parameters" element="omws:getLogResponse"/>
 </message>
 
-<message name="getMapAsAttachmentRequest">
- <part name="parameters" element="omws:getMapAsAttachment"/>
+<message name="getLayerAsAttachmentRequest">
+ <part name="parameters" element="omws:getLayerAsAttachment"/>
 </message>
 
-<message name="getMapAsAttachmentResponse">
- <part name="parameters" element="omws:getMapAsAttachmentResponse"/>
+<message name="getLayerAsAttachmentResponse">
+ <part name="parameters" element="omws:getLayerAsAttachmentResponse"/>
 </message>
 
-<message name="getMapAsUrlRequest">
- <part name="parameters" element="omws:getMapAsUrl"/>
+<message name="getLayerAsUrlRequest">
+ <part name="parameters" element="omws:getLayerAsUrl"/>
 </message>
 
-<message name="getMapAsUrlResponse">
- <part name="parameters" element="omws:getMapAsUrlResponse"/>
+<message name="getLayerAsUrlResponse">
+ <part name="parameters" element="omws:getLayerAsUrlResponse"/>
 </message>
 
 <message name="getProjectionMetadata">
@@ -350,15 +350,15 @@
   <input message="tns:getLogRequest"/>
   <output message="tns:getLogResponse"/>
  </operation>
- <operation name="getMapAsAttachment">
-  <documentation>Service definition of function omws__getMapAsAttachment</documentation>
-  <input message="tns:getMapAsAttachmentRequest"/>
-  <output message="tns:getMapAsAttachmentResponse"/>
+ <operation name="getLayerAsAttachment">
+  <documentation>Service definition of function omws__getLayerAsAttachment</documentation>
+  <input message="tns:getLayerAsAttachmentRequest"/>
+  <output message="tns:getLayerAsAttachmentResponse"/>
  </operation>
- <operation name="getMapAsUrl">
-  <documentation>Service definition of function omws__getMapAsUrl</documentation>
-  <input message="tns:getMapAsUrlRequest"/>
-  <output message="tns:getMapAsUrlResponse"/>
+ <operation name="getLayerAsUrl">
+  <documentation>Service definition of function omws__getLayerAsUrl</documentation>
+  <input message="tns:getLayerAsUrlRequest"/>
+  <output message="tns:getLayerAsUrlResponse"/>
  </operation>
  <operation name="getProjectionMetadata">
   <documentation>Service definition of function omws__getProjectionMetadata</documentation>
@@ -441,7 +441,7 @@
      <SOAP:body parts="parameters" use="literal"/>
   </output>
  </operation>
- <operation name="getMapAsAttachment">
+ <operation name="getLayerAsAttachment">
   <SOAP:operation soapAction=""/>
   <input>
      <SOAP:body parts="parameters" use="literal"/>
@@ -450,7 +450,7 @@
      <SOAP:body parts="parameters" use="literal"/>
   </output>
  </operation>
- <operation name="getMapAsUrl">
+ <operation name="getLayerAsUrl">
   <SOAP:operation soapAction=""/>
   <input>
      <SOAP:body parts="parameters" use="literal"/>

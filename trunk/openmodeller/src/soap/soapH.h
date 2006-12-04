@@ -167,49 +167,49 @@ SOAP_FMAC3 int SOAP_FMAC4 soap_out_omws__getProjectionMetadataResponse(struct so
 SOAP_FMAC3 struct omws__getProjectionMetadataResponse * SOAP_FMAC4 soap_get_omws__getProjectionMetadataResponse(struct soap*, struct omws__getProjectionMetadataResponse *, const char*, const char*);
 SOAP_FMAC3 struct omws__getProjectionMetadataResponse * SOAP_FMAC4 soap_in_omws__getProjectionMetadataResponse(struct soap*, const char*, struct omws__getProjectionMetadataResponse *, const char*);
 
-#ifndef SOAP_TYPE_omws__getMapAsUrl
-#define SOAP_TYPE_omws__getMapAsUrl (59)
+#ifndef SOAP_TYPE_omws__getLayerAsUrl
+#define SOAP_TYPE_omws__getLayerAsUrl (59)
 #endif
-SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_omws__getMapAsUrl(struct soap*, const struct omws__getMapAsUrl *);
-SOAP_FMAC3 void SOAP_FMAC4 soap_default_omws__getMapAsUrl(struct soap*, struct omws__getMapAsUrl *);
-SOAP_FMAC3 int SOAP_FMAC4 soap_put_omws__getMapAsUrl(struct soap*, const struct omws__getMapAsUrl *, const char*, const char*);
-SOAP_FMAC3 int SOAP_FMAC4 soap_out_omws__getMapAsUrl(struct soap*, const char*, int, const struct omws__getMapAsUrl *, const char*);
-SOAP_FMAC3 struct omws__getMapAsUrl * SOAP_FMAC4 soap_get_omws__getMapAsUrl(struct soap*, struct omws__getMapAsUrl *, const char*, const char*);
-SOAP_FMAC3 struct omws__getMapAsUrl * SOAP_FMAC4 soap_in_omws__getMapAsUrl(struct soap*, const char*, struct omws__getMapAsUrl *, const char*);
+SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_omws__getLayerAsUrl(struct soap*, const struct omws__getLayerAsUrl *);
+SOAP_FMAC3 void SOAP_FMAC4 soap_default_omws__getLayerAsUrl(struct soap*, struct omws__getLayerAsUrl *);
+SOAP_FMAC3 int SOAP_FMAC4 soap_put_omws__getLayerAsUrl(struct soap*, const struct omws__getLayerAsUrl *, const char*, const char*);
+SOAP_FMAC3 int SOAP_FMAC4 soap_out_omws__getLayerAsUrl(struct soap*, const char*, int, const struct omws__getLayerAsUrl *, const char*);
+SOAP_FMAC3 struct omws__getLayerAsUrl * SOAP_FMAC4 soap_get_omws__getLayerAsUrl(struct soap*, struct omws__getLayerAsUrl *, const char*, const char*);
+SOAP_FMAC3 struct omws__getLayerAsUrl * SOAP_FMAC4 soap_in_omws__getLayerAsUrl(struct soap*, const char*, struct omws__getLayerAsUrl *, const char*);
 
-#ifndef SOAP_TYPE_omws__getMapAsUrlResponse
-#define SOAP_TYPE_omws__getMapAsUrlResponse (58)
+#ifndef SOAP_TYPE_omws__getLayerAsUrlResponse
+#define SOAP_TYPE_omws__getLayerAsUrlResponse (58)
 #endif
-SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_omws__getMapAsUrlResponse(struct soap*, const struct omws__getMapAsUrlResponse *);
-SOAP_FMAC3 void SOAP_FMAC4 soap_default_omws__getMapAsUrlResponse(struct soap*, struct omws__getMapAsUrlResponse *);
-SOAP_FMAC3 int SOAP_FMAC4 soap_put_omws__getMapAsUrlResponse(struct soap*, const struct omws__getMapAsUrlResponse *, const char*, const char*);
-SOAP_FMAC3 int SOAP_FMAC4 soap_out_omws__getMapAsUrlResponse(struct soap*, const char*, int, const struct omws__getMapAsUrlResponse *, const char*);
-SOAP_FMAC3 struct omws__getMapAsUrlResponse * SOAP_FMAC4 soap_get_omws__getMapAsUrlResponse(struct soap*, struct omws__getMapAsUrlResponse *, const char*, const char*);
-SOAP_FMAC3 struct omws__getMapAsUrlResponse * SOAP_FMAC4 soap_in_omws__getMapAsUrlResponse(struct soap*, const char*, struct omws__getMapAsUrlResponse *, const char*);
+SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_omws__getLayerAsUrlResponse(struct soap*, const struct omws__getLayerAsUrlResponse *);
+SOAP_FMAC3 void SOAP_FMAC4 soap_default_omws__getLayerAsUrlResponse(struct soap*, struct omws__getLayerAsUrlResponse *);
+SOAP_FMAC3 int SOAP_FMAC4 soap_put_omws__getLayerAsUrlResponse(struct soap*, const struct omws__getLayerAsUrlResponse *, const char*, const char*);
+SOAP_FMAC3 int SOAP_FMAC4 soap_out_omws__getLayerAsUrlResponse(struct soap*, const char*, int, const struct omws__getLayerAsUrlResponse *, const char*);
+SOAP_FMAC3 struct omws__getLayerAsUrlResponse * SOAP_FMAC4 soap_get_omws__getLayerAsUrlResponse(struct soap*, struct omws__getLayerAsUrlResponse *, const char*, const char*);
+SOAP_FMAC3 struct omws__getLayerAsUrlResponse * SOAP_FMAC4 soap_in_omws__getLayerAsUrlResponse(struct soap*, const char*, struct omws__getLayerAsUrlResponse *, const char*);
 
-#ifndef SOAP_TYPE_omws__getMapAsAttachment
-#define SOAP_TYPE_omws__getMapAsAttachment (56)
+#ifndef SOAP_TYPE_omws__getLayerAsAttachment
+#define SOAP_TYPE_omws__getLayerAsAttachment (56)
 #endif
-SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_omws__getMapAsAttachment(struct soap*, const struct omws__getMapAsAttachment *);
-SOAP_FMAC3 void SOAP_FMAC4 soap_default_omws__getMapAsAttachment(struct soap*, struct omws__getMapAsAttachment *);
-SOAP_FMAC3 int SOAP_FMAC4 soap_put_omws__getMapAsAttachment(struct soap*, const struct omws__getMapAsAttachment *, const char*, const char*);
-SOAP_FMAC3 int SOAP_FMAC4 soap_out_omws__getMapAsAttachment(struct soap*, const char*, int, const struct omws__getMapAsAttachment *, const char*);
-SOAP_FMAC3 struct omws__getMapAsAttachment * SOAP_FMAC4 soap_get_omws__getMapAsAttachment(struct soap*, struct omws__getMapAsAttachment *, const char*, const char*);
-SOAP_FMAC3 struct omws__getMapAsAttachment * SOAP_FMAC4 soap_in_omws__getMapAsAttachment(struct soap*, const char*, struct omws__getMapAsAttachment *, const char*);
+SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_omws__getLayerAsAttachment(struct soap*, const struct omws__getLayerAsAttachment *);
+SOAP_FMAC3 void SOAP_FMAC4 soap_default_omws__getLayerAsAttachment(struct soap*, struct omws__getLayerAsAttachment *);
+SOAP_FMAC3 int SOAP_FMAC4 soap_put_omws__getLayerAsAttachment(struct soap*, const struct omws__getLayerAsAttachment *, const char*, const char*);
+SOAP_FMAC3 int SOAP_FMAC4 soap_out_omws__getLayerAsAttachment(struct soap*, const char*, int, const struct omws__getLayerAsAttachment *, const char*);
+SOAP_FMAC3 struct omws__getLayerAsAttachment * SOAP_FMAC4 soap_get_omws__getLayerAsAttachment(struct soap*, struct omws__getLayerAsAttachment *, const char*, const char*);
+SOAP_FMAC3 struct omws__getLayerAsAttachment * SOAP_FMAC4 soap_in_omws__getLayerAsAttachment(struct soap*, const char*, struct omws__getLayerAsAttachment *, const char*);
 
-#ifndef SOAP_TYPE_omws__getMapAsAttachmentResponse
-#define SOAP_TYPE_omws__getMapAsAttachmentResponse (55)
+#ifndef SOAP_TYPE_omws__getLayerAsAttachmentResponse
+#define SOAP_TYPE_omws__getLayerAsAttachmentResponse (55)
 #endif
-SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_omws__getMapAsAttachmentResponse(struct soap*, const struct omws__getMapAsAttachmentResponse *);
-SOAP_FMAC3 void SOAP_FMAC4 soap_default_omws__getMapAsAttachmentResponse(struct soap*, struct omws__getMapAsAttachmentResponse *);
-SOAP_FMAC3 int SOAP_FMAC4 soap_put_omws__getMapAsAttachmentResponse(struct soap*, const struct omws__getMapAsAttachmentResponse *, const char*, const char*);
-SOAP_FMAC3 int SOAP_FMAC4 soap_out_omws__getMapAsAttachmentResponse(struct soap*, const char*, int, const struct omws__getMapAsAttachmentResponse *, const char*);
-SOAP_FMAC3 struct omws__getMapAsAttachmentResponse * SOAP_FMAC4 soap_get_omws__getMapAsAttachmentResponse(struct soap*, struct omws__getMapAsAttachmentResponse *, const char*, const char*);
-SOAP_FMAC3 struct omws__getMapAsAttachmentResponse * SOAP_FMAC4 soap_in_omws__getMapAsAttachmentResponse(struct soap*, const char*, struct omws__getMapAsAttachmentResponse *, const char*);
-SOAP_FMAC5 struct omws__getMapAsAttachmentResponse * SOAP_FMAC6 soap_new_omws__getMapAsAttachmentResponse(struct soap*, int);
-SOAP_FMAC5 void SOAP_FMAC6 soap_delete_omws__getMapAsAttachmentResponse(struct soap*, struct omws__getMapAsAttachmentResponse*);
-SOAP_FMAC5 struct omws__getMapAsAttachmentResponse * SOAP_FMAC6 soap_instantiate_omws__getMapAsAttachmentResponse(struct soap*, int, const char*, const char*, size_t*);
-SOAP_FMAC5 void SOAP_FMAC6 soap_copy_omws__getMapAsAttachmentResponse(struct soap*, int, int, void*, const void*, size_t);
+SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_omws__getLayerAsAttachmentResponse(struct soap*, const struct omws__getLayerAsAttachmentResponse *);
+SOAP_FMAC3 void SOAP_FMAC4 soap_default_omws__getLayerAsAttachmentResponse(struct soap*, struct omws__getLayerAsAttachmentResponse *);
+SOAP_FMAC3 int SOAP_FMAC4 soap_put_omws__getLayerAsAttachmentResponse(struct soap*, const struct omws__getLayerAsAttachmentResponse *, const char*, const char*);
+SOAP_FMAC3 int SOAP_FMAC4 soap_out_omws__getLayerAsAttachmentResponse(struct soap*, const char*, int, const struct omws__getLayerAsAttachmentResponse *, const char*);
+SOAP_FMAC3 struct omws__getLayerAsAttachmentResponse * SOAP_FMAC4 soap_get_omws__getLayerAsAttachmentResponse(struct soap*, struct omws__getLayerAsAttachmentResponse *, const char*, const char*);
+SOAP_FMAC3 struct omws__getLayerAsAttachmentResponse * SOAP_FMAC4 soap_in_omws__getLayerAsAttachmentResponse(struct soap*, const char*, struct omws__getLayerAsAttachmentResponse *, const char*);
+SOAP_FMAC5 struct omws__getLayerAsAttachmentResponse * SOAP_FMAC6 soap_new_omws__getLayerAsAttachmentResponse(struct soap*, int);
+SOAP_FMAC5 void SOAP_FMAC6 soap_delete_omws__getLayerAsAttachmentResponse(struct soap*, struct omws__getLayerAsAttachmentResponse*);
+SOAP_FMAC5 struct omws__getLayerAsAttachmentResponse * SOAP_FMAC6 soap_instantiate_omws__getLayerAsAttachmentResponse(struct soap*, int, const char*, const char*, size_t*);
+SOAP_FMAC5 void SOAP_FMAC6 soap_copy_omws__getLayerAsAttachmentResponse(struct soap*, int, int, void*, const void*, size_t);
 
 #ifndef SOAP_TYPE_omws__getLog
 #define SOAP_TYPE_omws__getLog (44)

@@ -117,19 +117,19 @@ class xsd__base64Binary
    struct soap *soap;	/* soap context that created this instance */
 }; 
 
-/** Return the distribution map as an attachment.
- * @param ticket Job identification.
+/** Return a layer as an attachment.
+ * @param id Layer identification.
  * @return standard gSOAP integer code
  */
 //gsoap om service method-documentation: getMapAsAttachment Returns the corresponding distribution map as a DIME attachment.
-int omws__getMapAsAttachment(xsd__string ticket, xsd__base64Binary &file);
+int omws__getLayerAsAttachment(xsd__string id, xsd__base64Binary &file);
 
-/** Return the distribution map as an URL.
- * @param ticket Job identification.
+/** Return a layer as an URL.
+ * @param id Layer identification.
  * @return standard gSOAP integer code
  */
 //gsoap om service method-documentation: getMapAsUrl Returns the corresponding distribution map URL.
-int omws__getMapAsUrl(xsd__string ticket, xsd__string &url);
+int omws__getLayerAsUrl(xsd__string id, xsd__string &url);
 
 /** Return type of getProjectionMetadata */
 struct omws__getProjectionMetadataResponse

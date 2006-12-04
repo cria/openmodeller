@@ -139,15 +139,15 @@
    </complexType>
   </element>
   <!-- operation request element -->
-  <element name="getMapAsAttachment">
+  <element name="getLayerAsAttachment">
    <complexType>
     <sequence>
-     <element name="ticket" type="xsd:string" minOccurs="0" maxOccurs="1" nillable="true"/>
+     <element name="id" type="xsd:string" minOccurs="0" maxOccurs="1" nillable="true"/>
     </sequence>
    </complexType>
   </element>
   <!-- operation response element -->
-  <element name="getMapAsAttachmentResponse">
+  <element name="getLayerAsAttachmentResponse">
    <complexType>
     <sequence>
      <element name="file" type="xsd:base64Binary" minOccurs="1" maxOccurs="1"/>
@@ -155,15 +155,15 @@
    </complexType>
   </element>
   <!-- operation request element -->
-  <element name="getMapAsUrl">
+  <element name="getLayerAsUrl">
    <complexType>
     <sequence>
-     <element name="ticket" type="xsd:string" minOccurs="0" maxOccurs="1" nillable="true"/>
+     <element name="id" type="xsd:string" minOccurs="0" maxOccurs="1" nillable="true"/>
     </sequence>
    </complexType>
   </element>
   <!-- operation response element -->
-  <element name="getMapAsUrlResponse">
+  <element name="getLayerAsUrlResponse">
    <complexType>
     <sequence>
      <element name="url" type="xsd:string" minOccurs="1" maxOccurs="1"/>
