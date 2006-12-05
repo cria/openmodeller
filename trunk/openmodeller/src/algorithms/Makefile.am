@@ -93,8 +93,8 @@ endif
 #
 # Build Environmental Distance
 #
-#plugin_LTLIBRARIES += libomenvironmental_distance.la
-#libomenvironmental_distance_la_SOURCES = environmental_distance.cpp environmental_distance.hh matrix.hh
-#libomenvironmental_distance_la_LDFLAGS = -no-undefined
-#libomenvironmental_distance_la_LIBADD = $(OMLIB)
-#libomenvironmental_distance_la_CPPFLAGS = -I$(OMSRCDIR)
+plugin_LTLIBRARIES += libomenvironmental_distance.la
+libomenvironmental_distance_la_SOURCES = environmental_distance.cpp environmental_distance.hh matrix.hh
+libomenvironmental_distance_la_LDFLAGS = -no-undefined
+libomenvironmental_distance_la_LIBADD = $(OMLIB)
+libomenvironmental_distance_la_CPPFLAGS = -I$(OMSRCDIR)
