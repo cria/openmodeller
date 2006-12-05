@@ -17,6 +17,7 @@ EXTRA_DIST = \
 	soapH.h \
 	soapStub.h \
 	stdsoap2.h \
+	file_parser.hh \
 	omws.xsd \
 	openModeller.nsmap \
 	openModeller.wsdl \
