@@ -9,7 +9,7 @@
 # include global settings from the top level dir
 include (../../../settings.pro)
 
-TARGET = garp_bs
+TARGET = dg_garp_bs
 LIBS += $${OMLIBADD}
 TEMPLATE = lib
 DESTDIR=$${DESTDIR}/$${ALGDIR}

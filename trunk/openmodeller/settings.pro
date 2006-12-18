@@ -86,6 +86,7 @@ CONFIG(debug, debug|release){
 }
 unix:LIBS += -L$${DESTDIR}/lib/
 win32:LIBS += -L$${DESTDIR}
+win32:LIBS += -L$${DESTDIR}/algs
 SQLITELIBADD = -lsqlite3
 message(Install prefix set to $$PREFIX)
 message(The compiled binaries will be installed in $$DESTDIR)
