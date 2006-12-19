@@ -66,7 +66,8 @@ public:
   enum { FloatingTiff = 0,
          GreyTiff = 1,
          GreyBMP = 2,
-         FloatingHFA = 3, //erdas imagine format which ArcMap can read
+         FloatingHFA = 3, //erdas imagine  floating point format which ArcMap can read
+         ByteHFA = 4 //erdas imagine single byte format which ArcMap can read (scaled 0-100)
   };
 
   void unsetFormat() { format = FloatingTiff; }

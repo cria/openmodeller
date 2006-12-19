@@ -355,10 +355,7 @@ OpenModeller::createMap( const EnvironmentPtr & env, char const *output_file, Ma
     if ( fname.compare( pos, 4, ".bmp" ) == 0 ) {
 
       _format.setFormat( MapFormat::GreyBMP );
-    }
-    else if ( fname.compare( pos, 4, ".img" ) == 0 ) {
-
-      _format.setFormat( MapFormat::FloatingHFA );
+      g_log.warn ( "Using greyscale bmp as output format based on extension");
     }
   }
 
@@ -560,6 +557,7 @@ OpenModeller::setProjectionConfiguration( const ConstConfigurationPtr & config )
     // Default is 8-bit tiff
     int type = MapFormat::GreyTiff;
 
+    g_log( "Setting Output file type to : %s\n", fileType.c_str() );
     if ( ! fileType.empty() ) {
 
       if ( fileType == "GreyTiff" ) {
@@ -578,9 +576,13 @@ OpenModeller::setProjectionConfiguration( const ConstConfigurationPtr & config )
 
         type = MapFormat::FloatingHFA;
       }
+      else if ( fileType == "ByteHFA" ) {
+
+        type = MapFormat::ByteHFA;
+      }
       else {
 
-        g_log( "Wrong value for 'Output file type' (%s). It should be GreyTiff, FloatingTiff, GreyBMP or FloatingHFA. Using default...\n", fileType.c_str() );
+        g_log( "Wrong value for 'Output file type' (%s). It should be GreyTiff, FloatingTiff, GreyBMP, FloatingHFA or ByteHFA. Using default...\n", fileType.c_str() );
       }
     }
 
