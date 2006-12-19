@@ -348,7 +348,7 @@ RasterGdal::create(int format)
     //see http://www.gdal.org/gdal_tutorial.html for options examples
     char **papszOptions = NULL;
     papszOptions = CSLSetNameValue( papszOptions, "BACKGROUND", "-1" );
-    papszOptions = CSLSetNameValue( papszOptions, "COMPRESS", "NO" );
+    papszOptions = CSLSetNameValue( papszOptions, "COMPRESS", "YES" );
     f_ds = poDriver->Create( f_file.c_str(),
         f_hdr.xdim, f_hdr.ydim,
         f_hdr.nband,
