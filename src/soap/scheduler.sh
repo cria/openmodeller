@@ -26,14 +26,20 @@ done
 for req in `find $ticket_repository/proj_req.* -type f`; do
 ticket="${req##*.}"
 moved=$ticket_repository"/proj_proc."$ticket
-map=$map_repository"/proc_"$ticket".img"
+map_base=$map_repository"/proc_"$ticket
+map_img=$map_base".img"
+map_ige=$map_base".ige"
 stats=$ticket_repository"/stats."$ticket
 log=$ticket_repository"/"$ticket
 # rename file
 mv "$req" "$moved"
 # execute om_create
-om_project "$moved" "$map" "$stats" "$log"
-finalmap=$map_repository"/"$ticket".img"
-mv "$map" "$finalmap" 
+om_project "$moved" "$map_img" "$stats" "$log"
+finalmap_img=$map_repository"/"$ticket".img"
+finalmap_ige=$map_repository"/"$ticket".ige"
+mv "$map_img" "$finalmap_img"
+if [ -e $map_ige ]; then
+mv "$map_ige" "$finalmap_ige"
+fi
 exit 1
 done
