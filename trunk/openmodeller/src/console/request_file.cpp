@@ -270,7 +270,7 @@ RequestFile::setProjection( OpenModeller *om, FileParser &fp )
     }
     else {
 
-      g_log.error( 0, "Wrong value for 'Output file type' (%s). It should be GreyTiff, FloatingTiff, GreyBMP or FloatingHFA.\n", fileType.c_str() );
+      g_log.error( 0, "Wrong value for 'Output file type' (%s). It should be GreyTiff, FloatingTiff, GreyBMP, FloatingHFA or ByteHFA.\n", fileType.c_str() );
       return 0;
     }
   }

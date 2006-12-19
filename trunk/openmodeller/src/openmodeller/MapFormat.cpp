@@ -36,7 +36,7 @@
 
 using std::string;
 
-#define DEFAULT_FORMAT FloatingHFA
+#define DEFAULT_FORMAT ByteHFA
 
 MapFormat::MapFormat( ) :
   format( DEFAULT_FORMAT ),
@@ -145,7 +145,7 @@ MapFormat::~MapFormat()
 
 void MapFormat::setFormat( int f ) {
   format = f;
-  if ( format < 0 || format > FloatingHFA ) 
+  if ( format < 0 || format > ByteHFA ) 
     format = FloatingTiff;
 }
 
