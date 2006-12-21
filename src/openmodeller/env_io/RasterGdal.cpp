@@ -349,6 +349,8 @@ RasterGdal::create(int format)
     char **papszOptions = NULL;
     papszOptions = CSLSetNameValue( papszOptions, "BACKGROUND", "-1" );
     papszOptions = CSLSetNameValue( papszOptions, "COMPRESS", "YES" );
+    g_log.info( "Erdas .img format does not support nodata value assignment\n");
+    g_log.info( "You can ignore warnings associated with nodata below...\n");
     f_ds = poDriver->Create( f_file.c_str(),
         f_hdr.xdim, f_hdr.ydim,
         f_hdr.nband,
