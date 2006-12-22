@@ -264,6 +264,10 @@ RequestFile::setProjection( OpenModeller *om, FileParser &fp )
 
       type = MapFormat::GreyBMP;
     }
+    else if ( fileType == "ByteHFA" ) {
+
+      type = MapFormat::ByteHFA;
+    }
     else if ( fileType == "FloatingHFA" ) {
 
       type = MapFormat::FloatingHFA;
