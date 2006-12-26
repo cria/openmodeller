@@ -9,7 +9,7 @@
 #it will create an omgui1-debug and an omgui1-release dir
 #under this location and build the debug and release versions 
 #into there
-PREFIX=c:\temp
+PREFIX=c:\dev\cpp\omgui1
 
 #################################################################
 # Normally you should not need to change anything from here on
