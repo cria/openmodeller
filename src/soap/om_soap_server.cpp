@@ -305,9 +305,14 @@ omws__getLayers( struct soap *soap, void *_, struct omws__getLayersResponse *out
 
       size_t bufSize = 1024;
 
-      wchar_t *buf = (wchar_t*)soap_malloc( soap, bufSize * sizeof( wchar_t ) );
+      // Note: working with wide charcters was causing problems (wchar_t* cast), 
+      //       so all code was disabled.
 
-      wstring cachedXml( L"" );
+      //wchar_t *buf = (wchar_t*)soap_malloc( soap, bufSize * sizeof( wchar_t ) );
+      char *buf = (char*)soap_malloc( soap, bufSize * sizeof( char ) );
+
+      //wstring cachedXml( L"" );
+      string cachedXml( "" );
 
       // There's something cached, so return its content
       FILE *file = fopen( layersFile.c_str(), "r" );
@@ -317,7 +322,8 @@ omws__getLayers( struct soap *soap, void *_, struct omws__getLayersResponse *out
         return soap_receiver_fault( soap, "Could not open cache", NULL );
       }
 
-      while ( fgetws( buf, bufSize, file ) != (wchar_t *)NULL ) {
+      //while ( fgetws( buf, bufSize, file ) != (wchar_t *)NULL ) {
+      while ( fgets( buf, bufSize, file ) != (char *)NULL ) {
 
         cachedXml.append( buf );
       }
@@ -327,7 +333,8 @@ omws__getLayers( struct soap *soap, void *_, struct omws__getLayersResponse *out
         return soap_receiver_fault( soap, "Cache reading error", NULL );
       }
 
-      out->om__AvailableLayers = (wchar_t*)cachedXml.c_str();
+      //out->om__AvailableLayers = (wchar_t*)cachedXml.c_str();
+      out->om__AvailableLayers = convertToWideChar( cachedXml.c_str() );
 
       fclose( file );
 
@@ -357,7 +364,8 @@ omws__getLayers( struct soap *soap, void *_, struct omws__getLayersResponse *out
       return soap_receiver_fault( soap, "Could not open cache", NULL );
     }
 
-    if ( fputws( out->om__AvailableLayers, file ) < 0 ) {
+    //if ( fputws( out->om__AvailableLayers, file ) < 0 ) {
+    if ( fputs( oss.str().c_str(), file ) < 0 ) {
 
       return soap_receiver_fault( soap, "Could not write to cache", NULL );
     }
