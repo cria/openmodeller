@@ -56,6 +56,7 @@ using namespace std;
 #define OMWS_MODEL_PROJECTION_REQUEST_PREFIX "proj_req."
 #define OMWS_PROJECTION_STATISTICS_PREFIX "stats."
 #define OMWS_CONFIG_FILE "../config/server.conf"
+#define OMWS_LAYERS_CACHE_FILE "layers.xml"
 
 /*****************************/
 /***  Forward declarations ***/
@@ -283,6 +284,57 @@ omws__getLayers( struct soap *soap, void *_, struct omws__getLayersResponse *out
   soap->header = (struct SOAP_ENV__Header*)soap_malloc( soap, sizeof(struct SOAP_ENV__Header) ); 
   soap->header->omws__version = om->getVersion();
 
+  string cacheDir( gFileParser.get( "CACHE_DIRECTORY" ) );
+
+  string layersFile( "" );
+
+  // If cache directory is configured
+  if ( ! cacheDir.empty() ) {
+
+    // Append slash if necessary
+    if ( cacheDir.find_last_of( "/" ) != cacheDir.size() - 1 ) {
+
+      cacheDir.append( "/" );
+    }
+
+    // Cache file name with path
+    layersFile.append( cacheDir );
+    layersFile.append( OMWS_LAYERS_CACHE_FILE );
+
+    if ( fileExists( layersFile.c_str() ) ) {
+
+      size_t bufSize = 1024;
+
+      wchar_t *buf = (wchar_t*)soap_malloc( soap, bufSize * sizeof( wchar_t ) );
+
+      wstring cachedXml( L"" );
+
+      // There's something cached, so return its content
+      FILE *file = fopen( layersFile.c_str(), "r" );
+
+      if ( file == NULL ) {
+
+        return soap_receiver_fault( soap, "Could not open cache", NULL );
+      }
+
+      while ( fgetws( buf, bufSize, file ) != (wchar_t *)NULL ) {
+
+        cachedXml.append( buf );
+      }
+
+      if ( ! feof( file ) ) {
+
+        return soap_receiver_fault( soap, "Cache reading error", NULL );
+      }
+
+      out->om__AvailableLayers = (wchar_t*)cachedXml.c_str();
+
+      fclose( file );
+
+      return SOAP_OK;
+    }
+  }
+
   // Recurse on all sub directories searching for GDAL compatible layers
   ostringstream oss;
 
@@ -293,6 +345,25 @@ omws__getLayers( struct soap *soap, void *_, struct omws__getLayersResponse *out
   }
 
   out->om__AvailableLayers = convertToWideChar( oss.str().c_str() ) ;
+
+  // If cache is configured
+  if ( ! cacheDir.empty() ) {
+
+    // Cache result for the next requests
+    FILE *file = fopen( layersFile.c_str(), "w" );
+
+    if ( file == NULL ) {
+
+      return soap_receiver_fault( soap, "Could not open cache", NULL );
+    }
+
+    if ( fputws( out->om__AvailableLayers, file ) < 0 ) {
+
+      return soap_receiver_fault( soap, "Could not write to cache", NULL );
+    }
+
+    fclose( file );
+  }
 
   return SOAP_OK;
 }
