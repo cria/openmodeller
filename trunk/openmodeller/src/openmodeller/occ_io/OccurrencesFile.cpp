@@ -60,8 +60,8 @@ using std::vector;
 OccurrencesFile::OccurrencesFile( const char *file_name,
 				  const char *coord_system )
 {
-	_coord_system = (char *) coord_system;
-	loadOccurrences( file_name );
+  _coord_system = (char *) coord_system;
+  loadOccurrences( file_name );
 }
 
 
@@ -79,6 +79,7 @@ OccurrencesFile::loadOccurrences( const char *file_name )
 {
   // Opens the input file.
   FILE *file = fopen( file_name, "r" );
+
   if ( ! file )
   {
     g_log.warn( "Can't open file %s.\n", file_name );
@@ -87,40 +88,46 @@ OccurrencesFile::loadOccurrences( const char *file_name )
 
   // Fixme: read this from file.
   Scalar error     	= -1.0;
-  Scalar abundance 	= 1.0;
   int    num_attributes = 0;
   Scalar *attributes    = 0;
 
   // Columns to be read.
-  char  sp1[256];
-  char  sp2[256];
+  char label[256];
   double x, y;
+  int abundance;
 
   // Read all occurrences line by line inserting into the
   // appropriate object.
   char line[256];
   char *pos;
+
   while ( fgets( line, 256, file ) )
   {
     // Remove \r that DOS loves to use.
     if ( pos = strchr( line, '\r' ) )
-      *pos = '\0';
-
-    if ( *line != '#' &&
-        sscanf( line,"%s%s%lf%lf",sp1,sp2,&x,&y ) == 4 )
     {
-      // Build the occurrences list name using the first two
-      // columns. (originally genus + species)
-      strcat( sp1, " " );
-      strcat( sp1, sp2 );
+      *pos = '\0';
+    }
+
+    if ( *line != '#' && sscanf( line, "%[^\t]%lf%lf%u", label, &x, &y, &abundance ) == 4 )
+    {
+      Coord lg = Coord( x );
+      Coord lt = Coord( y );
+
+      addOccurrence( label, lg, lt, error, (Scalar)abundance, num_attributes, attributes );
+    }
+    else if ( *line != '#' && sscanf( line, "%[^\t]%lf%lf", label, &x, &y ) == 3 )
+    {
+      // When no abundance is provided, assume 1 (single presence)
 
       Coord lg = Coord( x );
       Coord lt = Coord( y );
 
-      addOccurrence( sp1, lg, lt, error, abundance,
-          num_attributes, attributes );
+      addOccurrence( label, lg, lt, error, 1.0, num_attributes, attributes );
     }
   }
+
   fclose( file );
+
   return 0;
 }
