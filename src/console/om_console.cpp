@@ -122,14 +122,21 @@ main( int argc, char **argv )
 
     request.makeModel( &om );
 
-    // Run projection
-    om.setMapCallback( mapCallback );
+    if ( request.requestedProjection() ) {
 
-    try
-	{
-	   request.makeProjection( &om );
-	}
-	catch ( ... ) {}
+      // Run projection
+      om.setMapCallback( mapCallback );
+
+      try {
+
+        request.makeProjection( &om );
+      }
+      catch ( ... ) {}
+    }
+    else {
+
+      g_log.warn( "Skipping projection\n" );
+    }
 
     //ConfusionMatrix matrix;
     ConfusionMatrix * matrix = om.getConfusionMatrix();
@@ -140,14 +147,18 @@ main( int argc, char **argv )
     g_log( "Accuracy:          %7.2f\%\n", matrix->getAccuracy() * 100 );
     g_log( "Omission error:    %7.2f\%\n", matrix->getOmissionError() * 100 );
     //g_log( "Commission error:  %7.2f\%\n", matrix.getCommissionError() * 100 );
-    g_log( "Percentage of cells predicted present: %7.2f\%\n", 
-           stats->getAreaPredictedPresent() / (double) stats->getTotalArea() * 100 );
-    g_log( "Total number of cells: %d\n", stats->getTotalArea() );
-    g_log( "\nDone.\n" );
 
-    delete stats;
     delete matrix;
-    
+
+    if ( request.requestedProjection() ) {
+
+      g_log( "Percentage of cells predicted present: %7.2f\%\n", 
+             stats->getAreaPredictedPresent() / (double) stats->getTotalArea() * 100 );
+      g_log( "Total number of cells: %d\n", stats->getTotalArea() );
+      g_log( "\nDone.\n" );
+
+      delete stats;
+    }
   }
   catch ( std::exception& e ) {
     g_log( "Exception occurred\n" );

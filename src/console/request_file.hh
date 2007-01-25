@@ -68,6 +68,8 @@ public:
 
   OccurrencesPtr getOccurrences();
 
+  bool requestedProjection();
+
   void makeModel( OpenModeller *om );
   void makeProjection( OpenModeller *om );
 

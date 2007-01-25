@@ -185,13 +185,12 @@ RequestFile::setEnvironment( OpenModeller *om, FileParser &fp )
 int
 RequestFile::setProjection( OpenModeller *om, FileParser &fp )
 {
-
   _projectionFile = fp.get( "Output file" );
 
   if ( _projectionFile.empty() ) {
 
-    g_log.error( 0, "'Output file' was not specified!\n" );
-    return 0;
+    g_log.warn( "'Output file' was not specified.\n" );
+    return 1;
   }
 
   // Categorical environmental maps and the number of these maps.
@@ -444,6 +443,13 @@ RequestFile::extractParameter( std::string const name,
   return "";
 }
 
+/****************************/
+/*** requested Projection ***/
+bool
+RequestFile::requestedProjection( )
+{
+  return ! _projectionFile.empty();
+}
 
 /******************/
 /*** make Model ***/
@@ -452,6 +458,8 @@ RequestFile::makeModel( OpenModeller *om )
 {
   // If user provided a serialized model, just load it
   if ( ! _inputModelFile.empty() ) {
+
+    g_log.info( "Loading serialized model\n" );
 
     char* file_name = new char [_inputModelFile.size() + 1];
     strcpy( file_name, _inputModelFile.c_str() );
@@ -467,6 +475,7 @@ RequestFile::makeModel( OpenModeller *om )
 
   // Build model
   if ( ! om->createModel() ) {
+
     g_log.error( 1, "Error during model creation: %s\n", om->error() );
   }
 
