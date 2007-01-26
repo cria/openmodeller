@@ -1,7 +1,6 @@
 /**
  * Definition of Log class.
  * 
- * @file
  * @author Mauro E S Muñoz <mauro@cria.org.br>
  * @date   2003-03-28
  * $Id$
@@ -118,6 +117,7 @@ Log::Log( Log::Level level, const char *pref ) :
   _level( level )
 {
   setPrefix( pref );
+  _deleteCallback = true;
 }
 
 
@@ -126,8 +126,10 @@ Log::Log( Log::Level level, const char *pref ) :
 
 Log::~Log()
 {
-  if (callback)
+  if ( callback && _deleteCallback ) {
+
     delete callback;
+  }
 }
 
 /******************/
@@ -138,6 +140,7 @@ Log::set( Log::Level level, FILE* out, char const *pref )
   setLevel( level );
   setCallback( new StdFileLogCallback( out ) );
   setPrefix( pref );
+  _deleteCallback = true;
 }
 
 /******************/
@@ -145,8 +148,12 @@ Log::set( Log::Level level, FILE* out, char const *pref )
 void
 Log::setCallback( LogCallback *lc )
 {
-  if (callback)
+  if ( callback && _deleteCallback ) {
+
     delete callback;
+    _deleteCallback = false;
+  }
+
   callback = lc;
 }
 

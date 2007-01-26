@@ -1,7 +1,6 @@
 /**
  * Declaration of Log class.
  * 
- * @file
  * @author Mauro E S Muñoz <mauro@cria.org.br>
  * @date   2003-03-28
  * $Id$
@@ -123,6 +122,7 @@ private:
 
   Level  _level;
   std::string _pref;
+  bool _deleteCallback; // flag indicating if the callback should be deleted by Log
 };
 
 
