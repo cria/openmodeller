@@ -5,15 +5,15 @@
 #
 WKT Coord System = GEOGCS["WGS84", DATUM["WGS84", SPHEROID["WGS84", 6378137.0, 298.257223563]], PRIMEM["Greenwich", 0.0], UNIT["degree", 0.017453292519943295], AXIS["Longitude",EAST], AXIS["Latitude",NORTH]]
 
-# File with a list of species occurrence. Each line is a record
-# with: <genus> <ephitet> <longitude> <latitude>
+# TAB-delimited file with a list of occurrences. Each line is a record
+# with: <id> <label> <longitude> <latitude> <abundance>
 #
-Species file = furcata_boliviana.txt
+Occurrences source = furcata_boliviana.txt
 
-# Only the occurrences of this species will be used.
-# Defaults to the first species found.
+# Only occurrences with this label (group id) will be used.
+# Defaults to the last label found.
 #
-Species = furcata boliviana
+Occurrences group = furcata boliviana
 
 # Maps to be used as environmental variables to generate the model
 # note: You can find the map below in this address:
@@ -53,7 +53,7 @@ Output model = furcata.xml
 # Make sure to use the correct extension as shown in the Output file type
 # documentation shown below!
 #
-Output file = furcata.tif
+Output file = furcata.img
 
 # Output file type. Options:
 #
@@ -63,8 +63,11 @@ Output file = furcata.tif
 # FloatingHFA = Erdas Imagine Floating Point (cell value = probability of presence)
 #               NoData will be written as -1. This format is directly 
 #               readable by ArcMap. (*.img) 
+# ByteHFA = Erdas Imagine Byte representation (0 <= cell value <= 100)
+#           NoData will be written as -1. This format is directly 
+#           readable by ArcMap. (*.img) 
 #
-Output file type = GreyTiff
+Output file type = ByteHFA
 
 
 #########################
@@ -89,7 +92,6 @@ Output file type = GreyTiff
 #Parameter = StandardDeviations 2
 #Parameter = MinComponents 1
 #Parameter = VerboseDebugging 1
-
 
 
 ########
