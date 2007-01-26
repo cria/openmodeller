@@ -116,7 +116,7 @@ OccurrencesImpl::setConfiguration( const ConstConfigurationPtr& config )
   
   if ( ! cs_config ) {
 
-    g_log.warn( "Occurrences has no Coordinate System.  Assuming WSG84\n" );
+    g_log.warn( "Occurrences has no Coordinate System. Assuming WSG84\n" );
     cs_ = GeoTransform::cs_default;
   }
   else {
@@ -164,8 +164,8 @@ OccurrencesImpl::setEnvironment( const EnvironmentPtr& env, const char *type )
 
     if ( sample.size() == 0 ) {
 
-      g_log( "%s Point at (%f,%f) has no environment. It will be discarded.\n", 
-             type, (*oc)->x(), (*oc)->y() );
+      g_log( "%s Point \"%s\" at (%f,%f) has no environment. It will be discarded.\n", 
+             type, ((*oc)->id()).c_str(), (*oc)->x(), (*oc)->y() );
 
       oc = occur_.erase( oc );
       fin = occur_.end();
