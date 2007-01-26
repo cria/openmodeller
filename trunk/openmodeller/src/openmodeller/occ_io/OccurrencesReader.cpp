@@ -44,9 +44,9 @@ using std::vector;
 
   // Default coordinate system for occurrence points.
   //
-  #define open	_open
-  #define close	_close
-  #define fdopen  _fdopen
+  #define open   _open
+  #define close  _close
+  #define fdopen _fdopen
 
   #define strcasecmp _stricmp
 
@@ -56,33 +56,63 @@ using std::vector;
 #endif
 
 
-/***********/
-/*** get ***/
+/*********************/
+/*** get Presences ***/
 OccurrencesPtr
-OccurrencesReader::get( const char *groupId )
+OccurrencesReader::getPresences( const char *groupId )
 {
-	// If group was not specified,
-	// get the last entry and return it.
-	if ( ! groupId || *groupId == '\0' )
-	{
-		OccurrencesPtr last = f_sp.back();
-		f_sp.pop_back();
-		return last;
-	}
+    // If group was not specified,
+    // get the last entry and return it.
+    if ( ! groupId || *groupId == '\0' )
+    {
+        OccurrencesPtr last = _presences.back();
+        _presences.pop_back();
+        return last;
+    }
 
-	LstOccurrences::iterator ocs = f_sp.begin();
-	LstOccurrences::iterator end = f_sp.end();
-	while ( ocs != end )
-	{
-		OccurrencesPtr oc = *ocs;
-		if ( ! strcasecmp( groupId, oc->name() ) )
-		{
-			f_sp.erase( ocs );
-			return oc;
-		}
-		++ocs;
-	}
-	return OccurrencesPtr(); 
+    LstOccurrences::iterator ocs = _presences.begin();
+    LstOccurrences::iterator end = _presences.end();
+    while ( ocs != end )
+    {
+        OccurrencesPtr oc = *ocs;
+        if ( ! strcasecmp( groupId, oc->name() ) )
+        {
+            _presences.erase( ocs );
+            return oc;
+        }
+        ++ocs;
+    }
+    return OccurrencesPtr(); 
+}
+
+
+/********************/
+/*** get Absences ***/
+OccurrencesPtr
+OccurrencesReader::getAbsences( const char *groupId )
+{
+    // If group was not specified,
+    // get the last entry and return it.
+    if ( ! groupId || *groupId == '\0' )
+    {
+        OccurrencesPtr last = _absences.back();
+        _absences.pop_back();
+        return last;
+    }
+
+    LstOccurrences::iterator ocs = _absences.begin();
+    LstOccurrences::iterator end = _absences.end();
+    while ( ocs != end )
+    {
+        OccurrencesPtr oc = *ocs;
+        if ( ! strcasecmp( groupId, oc->name() ) )
+        {
+            _absences.erase( ocs );
+            return oc;
+        }
+        ++ocs;
+    }
+    return OccurrencesPtr(); 
 }
 
 
@@ -91,47 +121,110 @@ OccurrencesReader::get( const char *groupId )
 void
 OccurrencesReader::printOccurrences( char *msg )
 {
-	printf( "%s", msg );
+    printf( "%s", msg );
 
-	LstOccurrences::const_iterator ocs = f_sp.begin();
-	LstOccurrences::const_iterator end = f_sp.end();
-	while ( ocs != end )
-	{
-		(*ocs)->print( "\n****************" );
-		++ocs;
-	}
+    printf( "\nPresences" );
+
+    LstOccurrences::const_iterator ocs = _presences.begin();
+    LstOccurrences::const_iterator end = _presences.end();
+    while ( ocs != end )
+    {
+        (*ocs)->print( "\n****************" );
+        ++ocs;
+    }
+
+    printf( "\nAbsences" );
+
+    ocs = _absences.begin();
+    end = _absences.end();
+    while ( ocs != end )
+    {
+        (*ocs)->print( "\n****************" );
+        ++ocs;
+    }
 }
 
 /**********************/
 /*** add Occurrence ***/
 int
-OccurrencesReader::addOccurrence( const char *groupId, Coord lg, Coord lt,
+OccurrencesReader::addOccurrence( const char *id, const char *groupId, Coord lg, Coord lt,
                                   Scalar error, Scalar abundance,
                                   int num_attributes, Scalar *attributes )
 {
-	// If an occurrences group with the same name already exists, 
-	// just add another occurrence to it.
+    if ( abundance > 0 ) {
 
-	// We search backwards because new Occurrences are pushed
-	// onto the back, so most likely, the Occurrences we are looking
-	// for is at the back.
-	LstOccurrences::const_reverse_iterator ocs = f_sp.rbegin();
-	LstOccurrences::const_reverse_iterator end = f_sp.rend();
-	while ( ocs != end )
-	{
-		OccurrencesPtr const & sp = *ocs;
-		if ( ! strcasecmp( sp->name(), groupId ) )
-		{
-			sp->createOccurrence( lg, lt, error, abundance, num_attributes, attributes );
-			return 0;
-		}
-		++ocs;
-	}
+	_addPresence( id, groupId, lg, lt, error, abundance, num_attributes, attributes );
+    }
+    else {
 
-	// If the occurrences group does not exist, create it.
-	OccurrencesImpl *spi = new OccurrencesImpl( groupId, _coord_system );
-	spi->createOccurrence( lg, lt, error, abundance, num_attributes, attributes );
-	f_sp.push_back( spi );
-
-	return 1;
+	_addAbsence( id, groupId, lg, lt, error, num_attributes, attributes );
+    }
 }
+
+/********************/
+/*** add Presence ***/
+int
+OccurrencesReader::_addPresence( const char *id, const char *groupId, Coord lg, Coord lt,
+                                 Scalar error, Scalar abundance,
+                                 int num_attributes, Scalar *attributes )
+{
+    // If a presence group with the same name already exists, 
+    // just add another occurrence to it.
+
+    // We search backwards because new Occurrences are pushed
+    // onto the back, so most likely, the Occurrences we are looking
+    // for is at the back.
+    LstOccurrences::const_reverse_iterator ocs = _presences.rbegin();
+    LstOccurrences::const_reverse_iterator end = _presences.rend();
+    while ( ocs != end )
+    {
+        OccurrencesPtr const & group = *ocs;
+        if ( ! strcasecmp( group->name(), groupId ) )
+        {
+            group->createOccurrence( id, lg, lt, error, abundance, num_attributes, attributes );
+            return 0;
+        }
+        ++ocs;
+    }
+
+    // If the occurrences group does not exist, create it.
+    OccurrencesImpl *newgroup = new OccurrencesImpl( groupId, _coord_system );
+    newgroup->createOccurrence( id, lg, lt, error, abundance, num_attributes, attributes );
+    _presences.push_back( newgroup );
+
+    return 1;
+}
+
+/*******************/
+/*** add Absence ***/
+int
+OccurrencesReader::_addAbsence( const char *id, const char *groupId, Coord lg, Coord lt,
+                                Scalar error, int num_attributes, Scalar *attributes )
+{
+    // If an absence group with the same name already exists, 
+    // just add another occurrence to it.
+
+    // We search backwards because new Occurrences are pushed
+    // onto the back, so most likely, the Occurrences we are looking
+    // for is at the back.
+    LstOccurrences::const_reverse_iterator ocs = _absences.rbegin();
+    LstOccurrences::const_reverse_iterator end = _absences.rend();
+    while ( ocs != end )
+    {
+        OccurrencesPtr const & group = *ocs;
+        if ( ! strcasecmp( group->name(), groupId ) )
+        {
+            group->createOccurrence( id, lg, lt, error, 0.0, num_attributes, attributes );
+            return 0;
+        }
+        ++ocs;
+    }
+
+    // If the occurrences group does not exist, create it.
+    OccurrencesImpl *newgroup = new OccurrencesImpl( groupId, _coord_system );
+    newgroup->createOccurrence( id, lg, lt, error, 0.0, num_attributes, attributes );
+    _absences.push_back( newgroup );
+
+    return 1;
+}
+

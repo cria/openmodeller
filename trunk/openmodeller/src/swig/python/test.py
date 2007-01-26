@@ -82,7 +82,7 @@ wktsys = "GEOGCS[\"WGS84\", DATUM[\"WGS84\", SPHEROID[\"WGS84\", 6378137.0, 298.
 spfile = "../../../examples/furcata_boliviana.txt"
 spname = "Furcata boliviana"
 
-occurr = om.readOccurrences(spfile, wktsys, spname)
+occurr = om.readPresences(spfile, wktsys, spname)
 mod.setOccurrences(occurr)
 
 print "Setting Environment..."

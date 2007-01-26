@@ -35,6 +35,8 @@
 
 #include <openmodeller/refcount.hh>
 
+#include <string>
+
 /****************************************************************/
 /************************** Occurrence **************************/
 
@@ -57,6 +59,7 @@ public:
   /** Occurrence default constructor
    */
   OccurrenceImpl( ) :
+    id_( ),
     x_( 0.0 ),
     y_( 0.0 ),
     error_( 0.0 ),
@@ -68,6 +71,7 @@ public:
 
   /** Occurrence constructor with uncertanty.
    * 
+   * @param id Unique id.
    * @param x Longitude of the occurrence (decimal degrees).
    * @param y Latitude of the occurrence (decimal degrees).
    * @param error (x,y) uncertanty (meters).
@@ -75,12 +79,14 @@ public:
    *  attributes. - abundance must be first attribute
    * @param attributes Vector with possible modelling attributes.
    */
-  OccurrenceImpl( Coord x, Coord y, Scalar error,
+  OccurrenceImpl( const std::string& id, 
+                  Coord x, Coord y, Scalar error,
 		  Scalar abundance,
 		  int num_attributes=0,
 		  Scalar *attributes=0,
 		  int num_env=0,
 		  Scalar *env=0) :
+    id_( id ),
     x_( x ),
     y_( y ),
     error_( error ),
@@ -92,10 +98,12 @@ public:
 
   /** Occurrence constructor with uncertanty, using std::vector
    */
-  OccurrenceImpl( Coord x, Coord y, Scalar error,
+  OccurrenceImpl( const std::string& id, 
+                  Coord x, Coord y, Scalar error,
 		  Scalar abundance,
 		  std::vector<Scalar> attributes,
 		  std::vector<Scalar> env) :
+    id_( id ),
     x_( x ),
     y_( y ),
     error_( error ),
@@ -107,6 +115,7 @@ public:
 
   /** Occurrence constructor with uncertanty.
    * 
+   * @param id Unique id.
    * @param x Longitude of the occurrence (decimal degrees).
    * @param y Latitude of the occurrence (decimal degrees).
    * @param error (x,y) uncertanty (meters).
@@ -114,10 +123,12 @@ public:
    *  attributes. - abundance must be first attribute
    * @param attributes Vector with possible modelling attributes.
    */
-  OccurrenceImpl( Coord x, Coord y, Scalar error,
+  OccurrenceImpl( const std::string& id, 
+                  Coord x, Coord y, Scalar error,
 		  Scalar abundance,
 		  const Sample& attributes,
 		  const Sample& env) :
+    id_( id ),
     x_( x ),
     y_( y ),
     error_( error ),
@@ -129,6 +140,7 @@ public:
 
   /** Occurrence constructor without uncertanty.
    * 
+   * @param id Unique id.
    * @param x Longitude of the occurrence (decimal degrees).
    * @param y Latitude of the occurrence (decimal degrees).
    * @param error (x,y) uncertanty (meters).
@@ -136,10 +148,12 @@ public:
    *  attributes. - abundance must be first attribute
    * @param attributes Vector with possible modelling attributes.
    */
-  OccurrenceImpl( Coord x, Coord y,
-		  Scalar abundance,
-		  int num_attributes=0,
-		  Scalar *attributes=0 ) :
+  OccurrenceImpl( const std::string& id, 
+                  Coord x, Coord y,
+                  Scalar abundance,
+                  int num_attributes=0,
+                  Scalar *attributes=0 ) :
+    id_( id ),
     x_( x ),
     y_( y ),
     error_( -1.0 ),
@@ -152,6 +166,7 @@ public:
   ~OccurrenceImpl();
 
   OccurrenceImpl( const OccurrenceImpl& rhs ) :
+    id_( rhs.id_ ),
     x_( rhs.x_ ),
     y_( rhs.y_ ),
     error_( rhs.error_ ),
@@ -164,6 +179,7 @@ public:
   OccurrenceImpl& operator=(const OccurrenceImpl & );
 
   // Access to the locality information.
+  std::string id() const   { return id_; }
   Coord  x() const         { return x_; }
   Coord  y() const         { return y_; }
   Scalar error() const     { return error_; }
@@ -184,6 +200,8 @@ public:
   void setAbundance( Scalar value );
 
 private:
+
+  std::string id_; ///< Unique identifier.
   Coord  x_;
   Coord  y_;
   Scalar error_;  ///< (x,y) uncertanty in meters.

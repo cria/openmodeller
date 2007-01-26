@@ -125,6 +125,7 @@ public:
 
   /** Create an occurrence.
    * 
+   * @param id Unique id
    * @param longitude Longitude in native coordinates
    * @param latitude Latitude in native coordinates
    * @param error (longitude, latitude) uncertanty in meters.
@@ -136,7 +137,8 @@ public:
    * 
    * deprecated by STL vector version.
    */
-  void createOccurrence( Coord longitude, Coord latitude,
+  void createOccurrence( const std::string& id, 
+                         Coord longitude, Coord latitude,
 			 Scalar error, Scalar abundance,
 			 int num_attributes = 0, Scalar *attributes = 0,
 			 int num_env = 0, Scalar *env = 0 );
@@ -144,7 +146,8 @@ public:
   /** Create an occurrence using STL vectors to input attributes and
    *  environment data
    */
-  void createOccurrence( Coord longitude, Coord latitude,
+  void createOccurrence( const std::string& id, 
+                         Coord longitude, Coord latitude,
 			 Scalar error, Scalar abundance,
 			 std::vector<double> attributes,
 			 std::vector<double> env);
@@ -214,7 +217,7 @@ private:
 
   double default_abundance_;
 
-  std::string name_; ///< List of occurrences' name (e.g. species name).
+  std::string name_; ///< Name for the list of occurrences (e.g. species name).
   std::string cs_;   ///< Coordinate system name
 
   /** Object to transform between different coordinate systems. */

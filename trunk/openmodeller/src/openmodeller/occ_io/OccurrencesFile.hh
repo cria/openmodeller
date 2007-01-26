@@ -47,10 +47,10 @@
  *
  * Lines beginning with '#' are ignored!
  *
- * The file must have 5 columns separated by a
- * space (characters: ' ' or '\\t').
+ * The file must have 5 columns separated by TAB.
  *
- * - Columns 1,2: Strings that make up a group identifier.
+ * - Column  1  : Unique identifier for the occurrence.
+ * - Columns 2  : Label (a group identifier, usually the scientific name).
  * - Column  3  : longitude (-180.0 <= lat  <= 180.0).
  * - Column  4  : latitude: (-90.0 <= long <= 90.0).
  * - Column  5  : Abundance (integer).

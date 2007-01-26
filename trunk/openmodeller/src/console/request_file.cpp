@@ -43,7 +43,8 @@ RequestFile::RequestFile() :
   _occurrencesSet(0),
   _environmentSet(0),
   _projectionSet(0),
-  _occurrences(),
+  _presences(),
+  _absences(),
   _nonNativeProjection( false ),
   _projectionCategoricalMap(),
   _projectionMap(),
@@ -69,10 +70,10 @@ RequestFile::configure( OpenModeller *om, char *request_file )
 
   _inputModelFile = fp.get( "Input model" );
 
-  _occurrencesSet = setOccurrences( om, fp );
-  _environmentSet = setEnvironment( om, fp );
-  _projectionSet  = setProjection ( om, fp );
-  _algorithmSet   = setAlgorithm  ( om, fp );
+  _occurrencesSet = _setOccurrences( om, fp );
+  _environmentSet = _setEnvironment( om, fp );
+  _projectionSet  = _setProjection ( om, fp );
+  _algorithmSet   = _setAlgorithm  ( om, fp );
 
   _outputModelFile = fp.get( "Output model" );
 
@@ -85,17 +86,27 @@ RequestFile::configure( OpenModeller *om, char *request_file )
 /***********************/
 /*** set Occurrences ***/
 int
-RequestFile::setOccurrences( OpenModeller *om, FileParser &fp )
+RequestFile::_setOccurrences( OpenModeller *om, FileParser &fp )
 {
   // Obtain the Well Known Text string for the localities
   // coordinate system.
   std::string oc_cs = fp.get( "WKT coord system" );
 
   // Get the name of the file containing localities
-  std::string oc_file = fp.get( "Species file" );
+  std::string oc_file = fp.get( "Occurrences source" );
+
+  if ( oc_file.empty() ) {
+
+    oc_file = fp.get( "Species file" ); // backwards compatibility
+  }
 
   // Get the name of the taxon being modelled!
-  std::string oc_name = fp.get( "Species" );
+  std::string oc_name = fp.get( "Occurrences group" );
+
+  if ( oc_name.empty() ) {
+
+    oc_name = fp.get( "Species" ); // backwards compatibility
+  }
 
   // If user provided a serialized model
   if ( ! _inputModelFile.empty() ) {
@@ -105,10 +116,10 @@ RequestFile::setOccurrences( OpenModeller *om, FileParser &fp )
       g_log.warn( "'WKT coord system' will be ignored since 'Input model' has been specified...\n" );
 
     if ( ! oc_file.empty() )
-      g_log.warn( "'Species file' will be ignored since 'Input model' has been specified...\n" );
+      g_log.warn( "'Occurrences source'/'Species file' will be ignored since 'Input model' has been specified...\n" );
 
     if ( ! oc_name.empty() )
-      g_log.warn( "'Species' will be ignored since 'Input model' has been specified...\n" );
+      g_log.warn( "'Occurrences group'/'Species' will be ignored since 'Input model' has been specified...\n" );
 
     return 1;
   }
@@ -116,26 +127,46 @@ RequestFile::setOccurrences( OpenModeller *om, FileParser &fp )
   // When a model needs to be created, 'WKT coord system' and 
   // 'Species file' are mandatory parameters
   if ( oc_cs.empty() ) {
-    g_log.error( 0, "'WKT coord system' was not specified!\n" );
+    g_log.error( 0, "'WKT coord system' keyword was not specified in the request file!\n" );
     return 0;
   }
 
   if ( oc_file.empty() ) {
-    g_log.error( 0, "'Species file' was not specified!\n" );
+
+    g_log.error( 0, "'Occurrences source' keyword was not specified in the request file!\n" );
     return 0;
   }
 
-  _occurrences = readOccurrences( oc_file, oc_name, oc_cs );
-
   // Populate the occurences list from the localities file
-  return om->setOccurrences( _occurrences );
+  OccurrencesReader* oc_reader = OccurrencesFactory::instance().create( oc_file.c_str(), oc_cs.c_str() );
+
+  _presences = oc_reader->getPresences( oc_name.c_str() );
+
+  _absences = oc_reader->getAbsences( oc_name.c_str() );
+
+  delete oc_reader;
+
+  if ( _presences && _absences )
+  {
+    return om->setOccurrences( _presences, _absences );
+  }
+  else if ( _presences ) {
+
+    return om->setOccurrences( _presences );
+  }
+  else {
+
+    g_log.error( 0, "Could not read any occurrences!\n" );
+
+    return 0;
+  }
 }
 
 
 /***********************/
 /*** set Environment ***/
 int
-RequestFile::setEnvironment( OpenModeller *om, FileParser &fp )
+RequestFile::_setEnvironment( OpenModeller *om, FileParser &fp )
 {
   // Mask to select the desired species occurrence points
   _inputMask = fp.get( "Mask" );
@@ -183,7 +214,7 @@ RequestFile::setEnvironment( OpenModeller *om, FileParser &fp )
 /**********************/
 /*** set Projection ***/
 int
-RequestFile::setProjection( OpenModeller *om, FileParser &fp )
+RequestFile::_setProjection( OpenModeller *om, FileParser &fp )
 {
   _projectionFile = fp.get( "Output file" );
 
@@ -302,7 +333,7 @@ RequestFile::setProjection( OpenModeller *om, FileParser &fp )
 /***********************/
 /*** set Algorithm ***/
 int
-RequestFile::setAlgorithm( OpenModeller *om, FileParser &fp )
+RequestFile::_setAlgorithm( OpenModeller *om, FileParser &fp )
 {
   // Find out which model algorithm is to be used.
   AlgMetadata const *metadata;
@@ -347,7 +378,7 @@ RequestFile::setAlgorithm( OpenModeller *om, FileParser &fp )
   // Read from console the parameters not set by request
   // file. Fills 'param' with all 'metadata->nparam' parameters
   // set.
-  readParameters( param, metadata, req_param );
+  _readParameters( param, metadata, req_param );
 
   // Set the model algorithm to be used by the controller
   int resp = om->setAlgorithm( metadata->id, nparam, param );
@@ -360,40 +391,34 @@ RequestFile::setAlgorithm( OpenModeller *om, FileParser &fp )
   return resp;
 }
 
-
-/************************/
-/*** read Occurrences ***/
+/*********************/
+/*** get Presences ***/
 OccurrencesPtr
-RequestFile::readOccurrences( std::string file, std::string name, std::string coord_system )
+RequestFile::getPresences( )
 {
-  OccurrencesReader* oc_reader = OccurrencesFactory::instance().create( file.c_str(), coord_system.c_str() );
+  if ( ! _presences ) {
 
-  OccurrencesPtr occ = oc_reader->get( name.c_str() );
-
-  delete oc_reader;
-
-  return occ;
-}
-
-
-/************************/
-/*** get Occurrences ***/
-OccurrencesPtr
-RequestFile::getOccurrences( )
-{
-  if ( ! _occurrences )
     g_log.error( 0, "Could not read occurrences from request file. Make sure 'Species file' has been specified.\n" );
+  }
 
-  return _occurrences;
+  return _presences;
 }
 
+
+/*********************/
+/*** get Absences ***/
+OccurrencesPtr
+RequestFile::getAbsences( )
+{
+  return _absences;
+}
 
 /***********************/
 /*** read Parameters ***/
 int
-RequestFile::readParameters( AlgParameter *result,
-                             AlgMetadata const *metadata,
-                             std::vector<std::string> str_param )
+RequestFile::_readParameters( AlgParameter *result,
+                              AlgMetadata const *metadata,
+                              std::vector<std::string> str_param )
 {
   AlgParamMetadata *param = metadata->param;
   AlgParamMetadata *end   = param + metadata->nparam;

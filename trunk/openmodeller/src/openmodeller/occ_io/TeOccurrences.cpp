@@ -171,15 +171,17 @@ TeOccurrences::loadOccurrences( const char *url )
 	int num_attributes  = 0;
 	Scalar *attributes  = 0;
 	string sp;
+	int sequence = 0;
 
 	// Get the occurrences.
 	while (portal->fetchRow())
 	{
+		++sequence;
 		sp = portal->getData(2);
 
 		Coord lg = Coord( portal->getDouble(0) );
 		Coord lt = Coord( portal->getDouble(1) );
-		addOccurrence( sp.c_str(), lg, lt, error, abundance, num_attributes, attributes );
+		addOccurrence( sprintf("%s", sequence), sp.c_str(), lg, lt, error, abundance, num_attributes, attributes );
 	}
 
 	delete portal;

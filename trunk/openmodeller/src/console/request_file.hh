@@ -66,7 +66,8 @@ public:
   int projectionSet()  { return _projectionSet; }
   int algorithmSet()   { return _algorithmSet; }
 
-  OccurrencesPtr getOccurrences();
+  OccurrencesPtr getPresences();
+  OccurrencesPtr getAbsences();
 
   bool requestedProjection();
 
@@ -75,16 +76,13 @@ public:
 
 private:
 
-  int setOccurrences( OpenModeller *om, FileParser &fp );
-  int setEnvironment( OpenModeller *om, FileParser &fp );
-  int setProjection ( OpenModeller *om, FileParser &fp );
-  int setAlgorithm  ( OpenModeller *om, FileParser &fp );
+  int _setOccurrences( OpenModeller *om, FileParser &fp );
+  int _setEnvironment( OpenModeller *om, FileParser &fp );
+  int _setProjection ( OpenModeller *om, FileParser &fp );
+  int _setAlgorithm  ( OpenModeller *om, FileParser &fp );
 
-  OccurrencesPtr readOccurrences( std::string file, std::string name,
-                                std::string coord_system );
-
-  int readParameters( AlgParameter *result, AlgMetadata const *metadata,
-		      std::vector<std::string> str_param );
+  int _readParameters( AlgParameter *result, AlgMetadata const *metadata,
+                       std::vector<std::string> str_param );
 
   /** Search for 'name' in the 'nvet' elements of the vector 'vet'.
    * If the string 'name' is in the beginning of some string vet[i]
@@ -104,7 +102,8 @@ private:
   int _projectionSet;
   int _algorithmSet;
 
-  OccurrencesPtr _occurrences;
+  OccurrencesPtr _presences;
+  OccurrencesPtr _absences;
 
   bool _nonNativeProjection;
   std::vector<std::string> _projectionCategoricalMap;

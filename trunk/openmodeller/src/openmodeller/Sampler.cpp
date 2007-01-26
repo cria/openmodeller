@@ -1,7 +1,6 @@
 /**
  * Definition of Sampler and Samples classes.
  * 
- * @file
  * @author Mauro E S Muñoz (mauro@cria.org.br)
  * @date   2003-05-27
  * $Id$
@@ -327,7 +326,7 @@ SamplerImpl::getPseudoAbsence() const
 
   Sample env( _env->getRandom( &x, &y ) );
 
-  ConstOccurrencePtr oc = new OccurrenceImpl( x, y, 0.0, 0.0, absenceSample, env );
+  ConstOccurrencePtr oc = new OccurrenceImpl( "?", x, y, 0.0, 0.0, absenceSample, env );
 
   return oc;
 }
