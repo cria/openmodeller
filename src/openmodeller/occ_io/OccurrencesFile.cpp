@@ -92,6 +92,7 @@ OccurrencesFile::loadOccurrences( const char *file_name )
   Scalar *attributes    = 0;
 
   // Columns to be read.
+  char id[50];
   char label[256];
   double x, y;
   int abundance;
@@ -109,21 +110,25 @@ OccurrencesFile::loadOccurrences( const char *file_name )
       *pos = '\0';
     }
 
-    if ( *line != '#' && sscanf( line, "%[^\t]%lf%lf%u", label, &x, &y, &abundance ) == 4 )
+    if ( *line != '#' && sscanf( line, "%[^\t] %[^\t] %lf %lf %u", id, label, &x, &y, &abundance ) == 5 )
     {
       Coord lg = Coord( x );
       Coord lt = Coord( y );
 
-      addOccurrence( label, lg, lt, error, (Scalar)abundance, num_attributes, attributes );
+      addOccurrence( id, label, lg, lt, error, (Scalar)abundance, num_attributes, attributes );
     }
-    else if ( *line != '#' && sscanf( line, "%[^\t]%lf%lf", label, &x, &y ) == 3 )
+    else if ( *line != '#' && sscanf( line, "%[^\t] %[^\t] %lf %lf", id, label, &x, &y ) == 4 )
     {
       // When no abundance is provided, assume 1 (single presence)
 
       Coord lg = Coord( x );
       Coord lt = Coord( y );
 
-      addOccurrence( label, lg, lt, error, 1.0, num_attributes, attributes );
+      addOccurrence( id, label, lg, lt, error, 1.0, num_attributes, attributes );
+    }
+    else
+    {
+	g_log.debug( "Skipping line: %s\n", line );
     }
   }
 

@@ -91,9 +91,11 @@ OccurrencesImpl::getConfiguration() const
   while ( oc != end ) {
 
     ConfigurationPtr cfg( new ConfigurationImpl("Point") );
+    std::string id = (*oc)->id();
     Scalar x = (*oc)->x();
     Scalar y = (*oc)->y();
     gt_->transfIn( &x, &y );
+    cfg->addNameValue( "Id", id );
     cfg->addNameValue( "X", x );
     cfg->addNameValue( "Y", y );
     cfg->addNameValue( "Sample", (*oc)->environment() );
@@ -136,11 +138,12 @@ OccurrencesImpl::setConfiguration( const ConstConfigurationPtr& config )
       continue;
     }
 
+    std::string id = (*begin)->getAttribute("Id");
     Scalar x = (*begin)->getAttributeAsDouble( "X", 0.0 );
     Scalar y = (*begin)->getAttributeAsDouble( "Y", 0.0 );
     Scalar abundance = (*begin)->getAttributeAsDouble( "Abundance", default_abundance_ );
 
-    createOccurrence( x, y, 0, abundance, 0, 0, 0, 0 );
+    createOccurrence( id, x, y, 0, abundance, 0, 0, 0, 0 );
   }
 }
 
@@ -225,32 +228,34 @@ OccurrencesImpl::getMinMax(Sample * min, Sample * max ) const
 /**************/
 /*** insert ***/
 void
-OccurrencesImpl::createOccurrence( Coord longitude, Coord latitude,
-				   Scalar error, Scalar abundance,
-				   int num_attributes, Scalar *attributes,
-				   int num_env, Scalar *env )
+OccurrencesImpl::createOccurrence( const std::string& id, 
+                                   Coord longitude, Coord latitude,
+                                   Scalar error, Scalar abundance,
+                                   int num_attributes, Scalar *attributes,
+                                   int num_env, Scalar *env )
 {
   // Transforms the given coordinates in the common openModeller
   // coordinate system.
   gt_->transfOut( &longitude, &latitude );
   
-  insert( new OccurrenceImpl( longitude, latitude, error, abundance,
+  insert( new OccurrenceImpl( id, longitude, latitude, error, abundance,
 			      num_attributes, attributes,
 			      num_env, env ) );
   
 }
 
 void 
-OccurrencesImpl::createOccurrence( Coord longitude, Coord latitude,
-				   Scalar error, Scalar abundance,
-				   std::vector<double> attributes,
-				   std::vector<double> env)
+OccurrencesImpl::createOccurrence( const std::string& id, 
+                                   Coord longitude, Coord latitude,
+                                   Scalar error, Scalar abundance,
+                                   std::vector<double> attributes,
+                                   std::vector<double> env)
 {
   // Transforms the given coordinates in the common openModeller
   // coordinate system.
   gt_->transfOut( &longitude, &latitude );
   
-  insert( new OccurrenceImpl( longitude, latitude, error, abundance,
+  insert( new OccurrenceImpl( id, longitude, latitude, error, abundance,
 			      attributes, env ) );
   
 }

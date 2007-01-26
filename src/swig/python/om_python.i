@@ -298,9 +298,14 @@ RCP_CONST_TYPEMAP( ConstOccurrencesPtr, OccurrencesPtr );
     return ReferenceCountedPointer<OccurrencesImpl>( new OccurrencesImpl( species_name, cs ) );
   }
 
-  OccurrencesPtr readOccurrences( char const *source, char const *coord_sys, char *sp_name ) {
+  OccurrencesPtr readPresences( char const *source, char const *coord_sys, char *sp_name ) {
     OccurrencesReader * occ = OccurrencesFactory::instance().create( source, coord_sys );
-    return occ->get( sp_name );
+    return occ->getPresences( sp_name );
+  }
+
+  OccurrencesPtr readAbsences( char const *source, char const *coord_sys, char *sp_name ) {
+    OccurrencesReader * occ = OccurrencesFactory::instance().create( source, coord_sys );
+    return occ->getAbsences( sp_name );
   }
 %}
 

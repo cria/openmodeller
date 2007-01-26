@@ -54,15 +54,33 @@ public:
     /** Return the number of available occurrences.
      * @return total number of occurrences.
      */
-    int numOccurrences() { return f_sp.size(); }
+    int numOccurrences() { return numPresences() + numAbsences(); }
 
-    /** Return the occurrences from a specific group.
+    /** Return the number of available presences.
+     * @return total number of presences.
+     */
+    int numPresences() { return _presences.size(); }
+
+    /** Return the number of available absences.
+     * @return total number of absences.
+     */
+    int numAbsences() { return _absences.size(); }
+
+    /** Return the presences (abundance > 0) from a specific group.
      * @param groupId Identifier for a group of occurrences (usually a species name).
      * @return Pointer to occurrences of the specified group, or to the last 
      * added group of available occurrences (if no group was specified), or 0 if 
      * the group was not found.
      */
-    OccurrencesPtr get( const char *groupId );
+    OccurrencesPtr getPresences( const char *groupId );
+
+    /** Return the absences (abundance == 0) from a specific group.
+     * @param groupId Identifier for a group of occurrences (usually a species name).
+     * @return Pointer to occurrences of the specified group, or to the last 
+     * added group of available occurrences (if no group was specified), or 0 if 
+     * the group was not found.
+     */
+    OccurrencesPtr getAbsences( const char *groupId );
 
     /** Print the occurrences to cout.
      * @param msg Optional string to be printed before the occurrences.
@@ -72,8 +90,8 @@ public:
 protected:
 
     /**
-     * Add a new occurrence. Each occurrence belongs to a group (usually
-     * a species name).
+     * Add a new occurrence. Each occurrence belongs to a group (usually a species name).
+     * @param id Occurrence unique identifier.
      * @param groupId Group identifier (usually a species name).
      * @param lg Longitude.
      * @param lt Latitude.
@@ -83,19 +101,53 @@ protected:
      * @param attributes Extra attributes.
      * @return 0 if occurrence was added to an existing group, 1 if group was created.
      */
-    int addOccurrence( const char *groupId, Coord lg, Coord lt, Scalar error,
+    int addOccurrence( const char *id, const char *groupId, Coord lg, Coord lt, Scalar error,
                        Scalar abundance, int num_attributes, Scalar *attributes );
-	
+
     typedef std::vector<OccurrencesPtr> LstOccurrences;
 
-    // List of occurrences.
-    LstOccurrences f_sp;
+    // List of presences by group name.
+    LstOccurrences _presences;
+
+    // List of absences by group name.
+    LstOccurrences _absences;
 	
     // Coordinate System
     char *_coord_system;
 	
     // Protected Constructor because it is a abstract class (interface).
     OccurrencesReader() {};
+
+private:
+
+    /**
+     * Add a new presence. Each presence belongs to a group (usually a species name).
+     * @param id Occurrence unique identifier.
+     * @param groupId Group identifier (usually a species name).
+     * @param lg Longitude.
+     * @param lt Latitude.
+     * @param error Associated error.
+     * @param abundance Number of "individuals".
+     * @param num_attributes Number of extra attributes.
+     * @param attributes Extra attributes.
+     * @return 0 if presence was added to an existing group, 1 if group was created.
+     */
+    int _addPresence( const char *id, const char *groupId, Coord lg, Coord lt, Scalar error, 
+                      Scalar abundance, int num_attributes, Scalar *attributes );
+
+    /**
+     * Add a new absence. Each absence belongs to a group (usually a species name).
+     * @param id Occurrence unique identifier.
+     * @param groupId Group identifier (usually a species name).
+     * @param lg Longitude.
+     * @param lt Latitude.
+     * @param error Associated error.
+     * @param num_attributes Number of extra attributes.
+     * @param attributes Extra attributes.
+     * @return 0 if absence was added to an existing group, 1 if group was created.
+     */
+    int _addAbsence( const char *id, const char *groupId, Coord lg, Coord lt, Scalar error, 
+                     int num_attributes, Scalar *attributes );
 };
 
 #endif
