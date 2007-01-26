@@ -30,6 +30,9 @@ int main( int argc, char **argv ) {
       cout << "Usage " << argv[0] << " <request file> <output filename>" << endl;
       return -1;
     }
+
+    char *format = "occ_input"; // html_table or occ_input
+
     OpenModeller om;
     // Configure the OpenModeller object from data read from the
     // request file.
@@ -55,12 +58,110 @@ int main( int argc, char **argv ) {
     ofstream fp_out;
     fp_out.open(argv[2], ios::out);
 
-    while ( it != fin ) {
-      cout << (*it)->x() << " " << (*it)->y() << " " << (*it)->environment() << endl;
-      fp_out<<(*it)->environment()<<endl;
-      it++;
+    int dim = p->dimension();
 
+    if ( ! strcasecmp( format, "html_table" ) ) {
+
+      fp_out << "<table>\n<tr><th>id</th>";
+
+      for ( int i = 0; i < dim; ++i )
+      {
+        fp_out << "<th>attr" << i+1 << "</th>";
+      }
+
+      fp_out << "<th>abundance</th></tr>";
     }
+    else if ( ! strcasecmp( format, "occ_input" ) ) {
+
+      fp_out << "#id\tlabel\tlongitude\tlatitude\tabundance";
+
+      for ( int i = 0; i < dim; ++i )
+      {
+        fp_out << "\tattr" << i+1;
+      }
+    }
+
+    while ( it != fin ) {
+
+      cout << ((*it)->id()).c_str() << " (" << (*it)->x() << "," << (*it)->y() << ") " << (*it)->environment() << endl;
+
+      if ( ! strcasecmp( format, "html_table" ) ) {
+
+        fp_out << "\n<tr><td>" << ((*it)->id()).c_str() << "</td>";
+
+        Sample s = (*it)->environment();
+
+        for ( int i = 0; i < dim; ++i ) {
+
+          fp_out << "<td>" << s[i] << "</td>";
+        }
+
+        fp_out << "<td>" << (*it)->abundance() << "</td></tr>";
+      }
+      else if ( ! strcasecmp( format, "occ_input" ) ) {
+
+        fp_out << "\n" << ((*it)->id()).c_str() << "\t" << p->name() << "\t" << (*it)->x() << "\t" << (*it)->y() << "\t" << (*it)->abundance();
+
+        Sample s = (*it)->environment();
+
+        for ( int i = 0; i < dim; ++i ) {
+
+          fp_out << "\t" << s[i];
+        }
+      }
+      else {
+
+        fp_out<<(*it)->environment()<<endl;
+      }
+      it++;
+    }
+
+    ConstOccurrencesPtr a = s->getAbsences();
+
+    it = a->begin();
+    fin = a->end();
+
+    while ( it != fin ) {
+
+      cout << ((*it)->id()).c_str() << " (" << (*it)->x() << "," << (*it)->y() << ") " << (*it)->environment() << endl;
+
+      if ( ! strcasecmp( format, "html_table" ) ) {
+
+        fp_out << "\n<tr><td>" << ((*it)->id()).c_str() << "</td>";
+
+        Sample s = (*it)->environment();
+
+        for ( int i = 0; i < dim; ++i ) {
+
+          fp_out << "<td>" << s[i] << "</td>";
+        }
+
+        fp_out << "<td>" << (*it)->abundance() << "</td></tr>";
+      }
+      else if ( ! strcasecmp( format, "occ_input" ) ) {
+
+        fp_out << "\n" << ((*it)->id()).c_str() << "\t" << p->name() << "\t" << (*it)->x() << "\t" << (*it)->y() << "\t" << (*it)->abundance();
+
+        Sample s = (*it)->environment();
+
+        for ( int i = 0; i < dim; ++i ) {
+
+          fp_out << "\t" << s[i];
+        }
+      }
+      else {
+
+        fp_out<<(*it)->environment()<<endl;
+      }
+
+      it++;
+    }
+
+    if ( ! strcasecmp( format, "html_table" ) ) {
+
+      fp_out << "\n</table>";
+    }
+
     fp_out.close();
     return 0;
   }
