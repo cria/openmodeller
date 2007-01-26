@@ -146,7 +146,11 @@ main( int argc, char **argv )
     g_log( "\nModel statistics\n" );
     g_log( "Accuracy:          %7.2f\%\n", matrix->getAccuracy() * 100 );
     g_log( "Omission error:    %7.2f\%\n", matrix->getOmissionError() * 100 );
-    //g_log( "Commission error:  %7.2f\%\n", matrix.getCommissionError() * 100 );
+
+    if ( request.getAbsences() ) {
+
+      g_log( "Commission error:  %7.2f\%\n", matrix->getCommissionError() * 100 );
+    }
 
     delete matrix;
 
