@@ -2,6 +2,8 @@ Release 0.4.1 (to be defined)
 -----------------------------
 
 	* New algorithm "Environmental Distance".
+	* Changed OccurrencesReader to handle presence and absence points separately.
+	* Changed occurrences file format (now TAB-delimited with each point having a unique identifier).
 
 Release 0.4 (2006-12-04)
 ------------------------
