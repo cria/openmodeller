@@ -116,8 +116,20 @@ main( int argc, char **argv )
 
     // Occurrences file (used to draw, not to create the model).
     string oc_cs   = fp.get( "WKT Coord System" );
-    string oc_file = fp.get( "Species file" );
-    string oc_name = fp.get( "Species" );
+    string oc_file = fp.get( "Occurrences source" );
+
+    if ( oc_file.empty() ) {
+
+      string oc_file = fp.get( "Species file" );
+    }
+
+    string oc_name = fp.get( "Occurrences group" );
+
+    if ( oc_name.empty() ) {
+
+      string oc_name = fp.get( "Species" );
+    }
+
     _occurs = readOccurrences( oc_file.c_str(), oc_name.c_str(), oc_cs.c_str() );
 
     // Instantiate graphical window.
@@ -426,5 +438,5 @@ readOccurrences( char const *file, char const *name, char const *coord_system )
 {
   OccurrencesReader* oc_file = OccurrencesFactory::instance().create( file, coord_system );
 
-  return oc_file->get( name );
+  return oc_file->getPresences( name );
 }
