@@ -121,6 +121,8 @@ AbstractBestSubsets::_getConfiguration( ConfigurationPtr& config ) const
   for( int i=0; i<_numBestRuns; i++ ) {
     ConfigurationPtr child_config( new ConfigurationImpl("Run" ) );
     child_config->addNameValue( "Id", i );
+    child_config->addNameValue( "OmissionError", _bestRun[i]->getOmission() * 100 );
+    child_config->addNameValue( "CommissionError", _bestRun[i]->getCommission() * 100 );
     
     ConfigurationPtr alg_config = _bestRun[i]->getAlgorithm()->getConfiguration();
     child_config->addSubsection( alg_config );
