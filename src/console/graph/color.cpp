@@ -1,7 +1,6 @@
 /**
  * Definition of GColor class.
  * 
- * @file
  * @author Mauro E S Muñoz <mauro@cria.org.br>
  * @date 2003-10-25
  * $Id$
@@ -116,7 +115,7 @@ GColor::setDepth( int depth )
 
 /*************/
 /*** scale ***/
-GColor &
+void
 GColor::scale( double esc )
 {
   double e = esc++;
