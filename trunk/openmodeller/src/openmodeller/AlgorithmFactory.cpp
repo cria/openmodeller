@@ -237,9 +237,6 @@ AlgorithmFactory::algorithmMetadata( char const *id )
 
   AlgorithmFactory& af = getInstance();
 
-  // Metadata to be returned.
-  AlgMetadata *metadata = 0;
-
   testDLLId test( id );
   ListDLL::iterator dll = find_if( af._dlls.begin(),
 				   af._dlls.end(),
