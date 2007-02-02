@@ -54,7 +54,6 @@ int main( int argc, char **argv )
 
 
   RequestFile myRequestFile;
-  argv[0];
   cout << "Reading from request file " << argv[1] << std::endl;
   int myResult = myRequestFile.configure( &om, strdup(argv[0]));
 
