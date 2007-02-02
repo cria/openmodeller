@@ -557,8 +557,8 @@ RasterGdal::calcMinMax( int band )
   Scalar *bands;
   bands = new Scalar[ f_hdr.nband ];
   Scalar *val = bands + band;
-  Scalar min;
-  Scalar max;
+  Scalar min=0;
+  Scalar max=0;
 
   bool initialized = false;
 
