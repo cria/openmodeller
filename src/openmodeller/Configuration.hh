@@ -114,6 +114,12 @@ public:
   void addNameValue( const std::string & name, double const *values, int count );
   void addNameValue( const std::string & name, unsigned char const *values, int count );
   
+  // Method to get int from string
+  static int getInt( const std::string& str, int defaultValue );
+  // Method to get double from string
+  static double getDouble( const std::string& str, double defaultValue );
+  // Method to get Sample from string
+  static Sample getSample( const std::string& str ); 
 private:
   std::string name;
   std::string value;
