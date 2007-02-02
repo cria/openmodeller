@@ -429,7 +429,7 @@ char * GarpAlgorithm::getParameter2(char * strParamName)
 	else if (strcmp(strParamName, "LogitRuleFlag"      ) == 0) sprintf(strResult, "%d", LogitRuleFlag);
 
 	// int parameters
-	else if (strcmp(strParamName, "Version"            ) == 0) sprintf(strResult, "%d", lVersion);
+	else if (strcmp(strParamName, "Version"            ) == 0) sprintf(strResult, "%d", static_cast<int>(lVersion));
 	else if (strcmp(strParamName, "CPUTime"            ) == 0) sprintf(strResult, "%d", iCPUTime);
 	else if (strcmp(strParamName, "Resamples"          ) == 0) sprintf(strResult, "%d", Resamples);
 	else if (strcmp(strParamName, "Totalgens"          ) == 0) sprintf(strResult, "%d", Totalgens);
@@ -479,7 +479,7 @@ char * GarpAlgorithm::getParameter2(char * strParamName)
 		delete strAux;
 	}
 
-	if (strlen(strResult) > iStringLen)
+	if (strlen(strResult) > static_cast<unsigned int>(iStringLen))
 		throw GarpException(82, "String size exceeded in getParameter::parametersToXML()");
 
 	return strResult;
@@ -561,7 +561,7 @@ char * GarpAlgorithm::getSelectedLayersAsString()
 		strcat(strSelectedLayers, strNextGene);
 	}
 
-	if (strlen(strSelectedLayers) > iStringSize)
+	if (strlen(strSelectedLayers) > static_cast<unsigned int>(iStringSize))
 		throw GarpException(82, "String size exceeded in getParameter::parametersToXML()");
 
 	strResult = new char[strlen(strSelectedLayers) + 2];
@@ -821,7 +821,7 @@ void GarpAlgorithm::updateHeuOpPerformance(char chrType)
 void GarpAlgorithm::colonize(RuleSet * objRules, EnvCellSet * objTrainSet, int intNewRules)
 {
 	int i, p, t;
-	Rule * newRule;
+	Rule * newRule=0;
 
 	// number of available rule types
 	int iRuleIndex[4];
@@ -872,7 +872,7 @@ void GarpAlgorithm::colonize(RuleSet * objRules, EnvCellSet * objTrainSet, int i
 void GarpAlgorithm::evaluate(RuleSet * objRules, EnvCellSet * objTrainSet)
 {
 	Rule * pRule;
-	register double performance;
+	register double performance=0.0;
 	register int i, n;
 
 	Conv = 0;
@@ -1379,7 +1379,7 @@ GarpAlgorithm::_setConfiguration( const ConstConfigurationPtr& config )
     unsigned char *p_genes;
     c->getAttributeAsByteArray( "Genes", &p_genes, &n_genes );
 
-    Rule * newRule;
+    Rule * newRule=0;
     switch( type [0] ) {
 
     case 'a':
