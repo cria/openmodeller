@@ -245,7 +245,7 @@ Bioclim::getValue( const Sample& x ) const
   Sample dif = x;
   dif -= _mean;
 
-  for( int i=0; i<x.size(); i++) {
+  for( unsigned int i=0; i<x.size(); i++) {
 
     if ( x[i] < _minimum[i] || x[i] > _maximum[i] ) {
       return 0.0;
@@ -255,8 +255,6 @@ Bioclim::getValue( const Sample& x ) const
 
       Scalar cutoff = _std_dev[i];
 
-      Scalar diffi = dif[i];
-    
       // If some x[i] is out of its bioclimatic envelope, predicts
       // no occurrence.
       if ( dif[i] > cutoff || dif[i] < -cutoff ) {
@@ -392,7 +390,7 @@ Bioclim::logEnvelope()
 {
   g_log( "Envelope with %d dimensions (variables).\n\n", _mean.size() );
 
-  for ( int i = 0; i < _mean.size(); i++ )
+  for ( unsigned int i = 0; i < _mean.size(); i++ )
     {
       g_log( "Variable %02d:", i );
       g_log( " Mean     : %f\n", _mean[i] );
