@@ -90,7 +90,7 @@ int main(int argc, char **argv)
   AlgorithmFactory::searchDefaultDirs();
 
   // Instantiate a shared openModeller controller
-  OpenModeller *om;
+  OpenModeller *om = 0;
 
   soap.user = (void*)om;   
 
@@ -184,7 +184,7 @@ int main(int argc, char **argv)
             break; 
           }
 		  
-          fprintf( stderr, "Thread %d accepts socket %d connection from IP %d.%d.%d.%d\n", i, s, (soap.ip >> 24)&0xFF, (soap.ip >> 16)&0xFF, (soap.ip >> 8)&0xFF, soap.ip&0xFF );
+          fprintf( stderr, "Thread %d accepts socket %d connection from IP %ld.%ld.%ld.%ld\n", i, s, (soap.ip >> 24)&0xFF, (soap.ip >> 16)&0xFF, (soap.ip >> 8)&0xFF, soap.ip&0xFF );
 		  
           // first time around
           if ( !soap_thr[i] ) { 
@@ -255,8 +255,6 @@ omws__getAlgorithms( struct soap *soap, void *_, struct omws__getAlgorithmsRespo
   soap->header->omws__version = om->getVersion();
 
   AlgMetadata const **algorithms = om->availableAlgorithms();
-
-  int nalg = om->numAvailableAlgorithms();
 
   if ( ! *algorithms ) {
 
@@ -888,7 +886,7 @@ wchar_t* convertToWideChar( const char* p )
 
   wchar_t *tempdest = r;
 
-  while ( *tempdest++ = *tempsource++ );
+  while (( *tempdest++ = *tempsource++ ));
 
   return r;
 }
