@@ -240,7 +240,7 @@ MinimumDistance::getValue( const Sample& x ) const
   // points.
   Scalar min = -1;
 
-  for( int i=0; i<_envPoints.size(); i++) {
+  for( unsigned int i=0; i<_envPoints.size(); i++) {
 
     Scalar dist = findDist( x, _envPoints[i] );
 
@@ -272,21 +272,20 @@ MinimumDistance::getConvergence( Scalar *val )
 Scalar
 MinimumDistance::findDist( const Sample& x, const Sample& pnt ) const
 {
-  int layer = 0;
 
   if ( _hasCategorical ) {
     for( int i=0; i< _numLayers ; ++i ) {
       if ( _isCategorical[i] ) {
-	if ( x[i] != pnt[i] ) {
-	  return -1.0;
-	}
+        if ( x[i] != pnt[i] ) {
+          return -1.0;
+        }
       }
     }
   }
-  
+
   Sample dif = x;
   dif -= pnt;
-  
+
   return dif.norm();
 
 }
@@ -309,7 +308,7 @@ MinimumDistance::_getConfiguration( ConfigurationPtr& config ) const
   ConfigurationPtr envpoints_config( new ConfigurationImpl("EnvironmentalReferences") );
   model_config->addSubsection( envpoints_config );
 
-  for( int i=0; i<_envPoints.size(); i++) {
+  for( unsigned int i=0; i<_envPoints.size(); i++) {
 
     ConfigurationPtr point_config( new ConfigurationImpl("Reference") );
     envpoints_config->addSubsection( point_config );
