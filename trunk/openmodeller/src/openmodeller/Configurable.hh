@@ -35,6 +35,7 @@
 class Configurable {
 
 public:
+  virtual ~Configurable() {};
   virtual ConfigurationPtr getConfiguration() const = 0;
 
   virtual void setConfiguration( const ConstConfigurationPtr & ) = 0;
