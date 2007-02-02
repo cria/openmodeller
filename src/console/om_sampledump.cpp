@@ -38,7 +38,7 @@ int main( int argc, char **argv ) {
     // request file.
     RequestFile request;
     char *request_file = argv[1];
-    int resp = request.configure( &om, request_file);
+    request.configure( &om, request_file);
 
     //cout << "Reading configuration from: " << argv[1] << endl;    
     //ConfigurationPtr c = Configuration::readXml( argv[1] );
@@ -54,7 +54,6 @@ int main( int argc, char **argv ) {
     OccurrencesImpl::const_iterator it = p->begin();
     OccurrencesImpl::const_iterator fin = p->end();
 
-    FILE * pFile;
     ofstream fp_out;
     fp_out.open(argv[2], ios::out);
 
