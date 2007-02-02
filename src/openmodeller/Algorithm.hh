@@ -152,7 +152,7 @@ public:
   virtual int done() const { return 1; }
   
   /** Returns the algorithm's convergence value at the moment */
-  virtual int getConvergence( Scalar const *val ) const { return 0; }
+  virtual int getConvergence( Scalar * const val ) const { return 0; }
   
   /** Returns progress so far (between 0.0 and 1.0) */
   virtual float getProgress() const { return (float) done(); }
