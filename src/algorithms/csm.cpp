@@ -57,6 +57,10 @@ Csm::Csm(AlgMetadata const * metadata) :
 {
   _initialized = 0;
   verboseDebuggingBool=false;
+  if (parameters != 0)
+  {
+    std::cout << "Error __LINE__, __FILE__ : this is an abstract class it should have no params" << std::endl;
+  }
 }
 
 
@@ -264,7 +268,6 @@ int Csm::done() const
   * @param Scalar *x a pointer to a vector of openModeller Scalar type (currently double). The vector should contain values looked up on the environmental variable layers into which the mode is being projected. */
 Scalar Csm::getValue( const Sample& x ) const
 {
-  int i;
 
   float myFloat;
   bool myAllAreZeroFlag=true;
@@ -272,7 +275,7 @@ Scalar Csm::getValue( const Sample& x ) const
   //with only one row so we can do matrix multplication with it
   gsl_matrix * tmp_gsl_matrix = gsl_matrix_alloc (1,_layer_count);
   gsl_matrix * tmp_raw_gsl_matrix = gsl_matrix_alloc (1,_layer_count);
-  for (i=0;i<_layer_count;++i)
+  for (signed int i = 0;i<_layer_count;++i)
   {
     myFloat = static_cast<float>(x[i]);
     gsl_matrix_set (tmp_raw_gsl_matrix,0,i,myFloat);
@@ -328,14 +331,14 @@ Scalar Csm::getValue( const Sample& x ) const
   // we do this by dividing each element in z by the square root of its associated element in
   // the eigenvalues vector
 
-  for (i=0;i<z->size2;i++)
+  for (unsigned int i=0;i<z->size2;i++)
   {
     gsl_matrix_set(z,0,i,gsl_matrix_get (z,0,i)/sqrt(gsl_vector_get(_gsl_eigenvalue_vector,i)));
   }
   displayMatrix(z,"Standardised : Each value in z / sqrt of associated element in the eigenvalues vector");
   // now we square each element and sum them
   float mySumOfSquares=0;
-  for (i=0;i<z->size2;i++)
+  for (unsigned int i=0;i<z->size2;i++)
   {
     float myValue=gsl_matrix_get (z,0,i);
     if (!isnan(myValue))
@@ -409,7 +412,7 @@ void Csm::displayVector(const gsl_vector * v, const char * name, const bool roun
 
     char sep1[] = ", ";
 
-    for (int i=0;i<v->size;++i)
+    for (unsigned int i=0;i<v->size;++i)
     {
       if (i == v->size -1)
         strcpy(sep1, " ]");
@@ -443,12 +446,12 @@ void Csm::displayMatrix(const gsl_matrix * m, const char * name, const bool roun
     {
       fprintf( stderr, "\nDisplaying Matrix rounded to 4 decimal places '%s' (%u / %u): \n----------------------------------------------\n[\n", name, m->size1, m->size2 );
     }
-    for (int i=0;i<m->size1;++i)
+    for (unsigned int i=0;i<m->size1;++i)
     {
       char sep1[] = ",";
       char sep2[] = ";";
 
-      for (int j=0;j<m->size2;j++)
+      for (unsigned int j=0;j<m->size2;j++)
       {
         double myDouble = gsl_matrix_get (m,i,j);
 
@@ -477,7 +480,7 @@ gsl_matrix * Csm::transpose (gsl_matrix * m)
 {
   gsl_matrix * t = gsl_matrix_alloc (m->size2, m->size1);
 
-  for (int i = 0; i < m->size1; i++)
+  for (unsigned int i = 0; i < m->size1; i++)
   {
     gsl_vector * v = gsl_vector_alloc(m->size2);
     gsl_matrix_get_row (v, m, i);
@@ -496,7 +499,7 @@ double Csm::product (gsl_vector * va, gsl_vector * vb) const
 
   double res = 0.0;
 
-  for (int i = 0; i < va->size; i++)
+  for (unsigned int i = 0; i < va->size; i++)
   {
     res += gsl_vector_get(va, i)*gsl_vector_get(vb, i);
   }
@@ -512,13 +515,13 @@ gsl_matrix * Csm::product (gsl_matrix * a, gsl_matrix * b) const
 
   gsl_matrix * p = gsl_matrix_alloc (a->size1, b->size2);
 
-  for (int i = 0; i < a->size1; i++)
+  for (unsigned int i = 0; i < a->size1; i++)
   {
     gsl_vector * va = gsl_vector_alloc(a->size2);
 
     gsl_matrix_get_row (va, a, i);
 
-    for (int j = 0; j < b->size2; j++)
+    for (unsigned int j = 0; j < b->size2; j++)
     {
       gsl_vector * vb = gsl_vector_alloc(a->size2);
 
@@ -683,7 +686,6 @@ bool Csm::csm1()
   g_log.debug( "CSM Model Generation Completed\n" );
 
   //After the model is generated, we can discard unwanted components!
-  int myNumberOfAttempts=0;
   if (discardComponents())
   {
     g_log.debug( "Unwanted components discarded\n" );
