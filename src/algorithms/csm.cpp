@@ -383,7 +383,7 @@ Scalar Csm::getValue( const Sample& x ) const
   * @return 
   * @param Scalar *val 
 */
-int Csm::getConvergence( Scalar *val )
+int Csm::getConvergence( Scalar * const val ) const
 {
   return 0;
 }
