@@ -428,7 +428,7 @@ Scalar BestSubsets::getValue( const Sample& x ) const
 /****************************************************************/
 /****************** getConvergence ******************************/
 
-int BestSubsets::getConvergence( Scalar *val )
+int BestSubsets::getConvergence( Scalar * const val ) const
 {
   *val = 0;
   return 0;
