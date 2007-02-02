@@ -194,8 +194,6 @@ OccurrencesImpl::normalize(bool useNormalization,
   OccurrencesImpl::const_iterator occ = occur_.begin();
   OccurrencesImpl::const_iterator end = occur_.end();
   
-  int dim = (*occ)->environment().size();
-
   // set the normalized values 
   while ( occ != end ) {
 
@@ -356,7 +354,7 @@ OccurrencesImpl::getEnvironmentMatrix()
   std::vector<ScalarVector> matrix( dimension() );
 
   // Initialize matrix
-  for ( int i = 0; i < matrix.size(); i++ ) {
+  for ( unsigned int i = 0; i < matrix.size(); i++ ) {
 
     matrix[i] = ScalarVector( numOccurrences() );
   }
@@ -372,7 +370,7 @@ OccurrencesImpl::getEnvironmentMatrix()
     Sample const& sample = (*c)->environment();
 
     // For each layer
-    for ( int i = 0; i < matrix.size(); i++ ) {
+    for ( unsigned int i = 0; i < matrix.size(); i++ ) {
 
       // Feed new matrix
       matrix[i][j] = sample[i];
