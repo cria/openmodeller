@@ -288,7 +288,7 @@ void EnvironmentalDistance::CalcCovarianceMatrix(){
 
 // Calcs the distance between x and y using ParDistType
 inline Scalar EnvironmentalDistance::Distance(const Sample& x, const Sample& y) const{
-   Scalar dist;
+   Scalar dist=0;
    switch(ParDistType){
 
       //
