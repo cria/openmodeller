@@ -258,9 +258,9 @@ gsl_matrix * CsmBS::createRandomMatrix(int size1, int size2)
 
   //populate the matrix with random nos
   gsl_matrix * m = gsl_matrix_alloc (size1, size2);
-  for (int j=0; j < m->size2; j++)
+  for (unsigned int j=0; j < m->size2; j++)
   {
-    for (int k=0; k < m->size1; k++)
+    for (unsigned int k=0; k < m->size1; k++)
     {
       double myNo = gsl_rng_uniform_pos(_randomNumberGenerator);
       gsl_matrix_set(m,k,j,myNo);
@@ -277,7 +277,7 @@ gsl_matrix * CsmBS::randomiseColumns(gsl_matrix * original_matrix)
   gsl_matrix * myOuputMatrix = gsl_matrix_alloc (original_matrix->size1, original_matrix->size2);
   gsl_matrix * m = createRandomMatrix (original_matrix->size1, original_matrix->size2);
   //loop through the matrix columns
-  for (int j=0; j < m->size2; j++)
+  for (unsigned int j=0; j < m->size2; j++)
   {
     //get the column of random numbers
     gsl_vector * myRandomColumnVector = gsl_vector_alloc (m->size1);
@@ -289,7 +289,7 @@ gsl_matrix * CsmBS::randomiseColumns(gsl_matrix * original_matrix)
     gsl_sort_vector_index(myPermutation,myRandomColumnVector);
     //assign values in the output array based on their index relative to the sorted
     //randomised matrix
-    for (int k=0; k < m->size1; k++)
+    for (unsigned int k=0; k < m->size1; k++)
     {
       double myDouble = gsl_vector_get(myOriginalColumnVector,myPermutation->data[k]);
       //for debugging only
@@ -374,7 +374,7 @@ int CsmBS::discardComponents()
   displayVector (myMeanVector,"Mean of randomised Eigen Vectors");
   //  in a new vector save the mean plus (numberOfStdDeviationsFloat * stddev)
   gsl_vector * myMeanPlusStdDevsVector = gsl_vector_alloc(myMeanVector->size);
-  for (int i=0; i<myMeanVector->size; ++i)
+  for (unsigned int i=0; i<myMeanVector->size; ++i)
   {
     double myMean = gsl_vector_get (myMeanVector,i);
     double myStdDev = gsl_vector_get (myStdDevVector,i);
@@ -394,7 +394,7 @@ int CsmBS::discardComponents()
   
   float sumOfEigenValues = 0;//sum should total number of layers
   _retained_components_count=0;
-  for (int i=0; i<myMeanPlusStdDevsVector->size; ++i)
+  for (unsigned int i=0; i<myMeanPlusStdDevsVector->size; ++i)
   {
     float myFloat = gsl_vector_get(myMeanPlusStdDevsVector,i);
     sumOfEigenValues += gsl_vector_get(_gsl_eigenvalue_vector,i);

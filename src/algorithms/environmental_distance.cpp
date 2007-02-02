@@ -426,7 +426,7 @@ void EnvironmentalDistance::_getConfiguration(ConfigurationPtr& config) const {
    model_config->addNameValue("MaxDistance",ParDist);
    ConfigurationPtr envpoints_config(new ConfigurationImpl("EnvironmentalReferences"));
    model_config->addSubsection(envpoints_config);
-   for(int i=0; i<presencePoints.size(); i++) {
+   for(unsigned int i=0; i<presencePoints.size(); i++) {
       ConfigurationPtr point_config(new ConfigurationImpl("Reference"));
       envpoints_config->addSubsection(point_config);
       point_config->addNameValue("Value", presencePoints[i]);
