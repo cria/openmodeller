@@ -1,7 +1,6 @@
 /**
  * Declaration of GColor class.
  * 
- * @file
  * @author Mauro E S Muñoz <mauro@cria.org.br>
  * @date 2003-10-25
  * $Id$
@@ -75,9 +74,9 @@ public:
   static void setDepth( int depth );
 
   /** Scale by 'esc' and crop to fit the range. */
-  GColor &scale( double esc );
+  void scale( double esc );
 
-  // Get normalized cores in [0,1].
+  // Get normalized colors in [0,1].
   double red()     { return double(r) / MAX_COLOR; }
   double green()   { return double(g) / MAX_COLOR; }
   double blue()    { return double(b) / MAX_COLOR; }
