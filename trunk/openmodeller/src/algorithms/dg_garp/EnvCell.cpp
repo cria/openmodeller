@@ -127,7 +127,7 @@ char * EnvCell::toXML()
 
 	strcat(strXML, "</EnvCell>\n");
 
-	if (strlen(strXML) > iStringSize)
+	if (strlen(strXML) > static_cast<int> (iStringSize))
 		throw GarpException(82, "String size exceeded in EnvCell::toXML()");
 
 	return strXML;
