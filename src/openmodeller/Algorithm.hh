@@ -246,14 +246,19 @@ protected:
    **/
   int getParameter( std::string const &name, int *value );
   
+
 protected:
   
   SamplerPtr _samp;
+
+private:
+  AlgMetadata const *_metadata;
+
+protected:
   ParamSetType  _param;
   
   
 private:
-  AlgMetadata const *_metadata;
   
   typedef ParamSetType::value_type ParamSetValueType;
 
