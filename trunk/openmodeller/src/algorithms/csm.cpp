@@ -359,7 +359,7 @@ Scalar Csm::getValue( const Sample& x ) const
   if (verboseDebuggingBool)
   {
     printf("\n-------------------------------\n");
-    printf("Component count : %d\n",z->size2);
+    printf("Component count : %u\n",z->size2);
     printf("Component count / 2: %f\n",myHalfComponentCountDouble);
     printf("Sum of squares : %f\n",mySumOfSquares);
     printf("Sum of squares / 2: %f\n",myHalfSumOfSquaresDouble);
@@ -400,11 +400,11 @@ void Csm::displayVector(const gsl_vector * v, const char * name, const bool roun
     if (roundFlag)
     {
 
-      fprintf( stderr, "\nDisplaying Vector rounded to 4 decimal places '%s' (%i): \n----------------------------------------------\n[  ", name, v->size );
+      fprintf( stderr, "\nDisplaying Vector rounded to 4 decimal places '%s' (%u): \n----------------------------------------------\n[  ", name, v->size );
     }
     else
     {
-      fprintf( stderr, "\nDisplaying Vector '%s' (%i): \n----------------------------------------------\n[  ", name, v->size );
+      fprintf( stderr, "\nDisplaying Vector '%s' (%u): \n----------------------------------------------\n[  ", name, v->size );
     }
 
     char sep1[] = ", ";
@@ -437,11 +437,11 @@ void Csm::displayMatrix(const gsl_matrix * m, const char * name, const bool roun
   {
     if (!roundFlag)
     {
-      fprintf( stderr, "\nDisplaying Matrix '%s' (%i / %i): \n----------------------------------------------\n[\n", name, m->size1, m->size2 );
+      fprintf( stderr, "\nDisplaying Matrix '%s' (%u / %u): \n----------------------------------------------\n[\n", name, m->size1, m->size2 );
     }
     else
     {
-      fprintf( stderr, "\nDisplaying Matrix rounded to 4 decimal places '%s' (%i / %i): \n----------------------------------------------\n[\n", name, m->size1, m->size2 );
+      fprintf( stderr, "\nDisplaying Matrix rounded to 4 decimal places '%s' (%u / %u): \n----------------------------------------------\n[\n", name, m->size1, m->size2 );
     }
     for (int i=0;i<m->size1;++i)
     {
