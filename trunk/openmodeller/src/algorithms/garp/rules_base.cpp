@@ -82,11 +82,11 @@ int membership(double value1, double value2, double value)
 /****************** GarpRule Constructor ************************/
 
 GarpRule::GarpRule() :
-  _numGenes(0),
-  _prediction(0),
-  _needsEvaluation(true),
   _chrom1(), 
-  _chrom2()
+  _chrom2(),
+  _prediction(0),
+  _numGenes(0),
+  _needsEvaluation(true)
 {
   _origin = type();
   for (int i = 0; i < 10; i++)
@@ -94,11 +94,11 @@ GarpRule::GarpRule() :
 }
 
 GarpRule::GarpRule(int numGenes) :
-  _numGenes(numGenes),
-  _prediction(0),
-  _needsEvaluation(true),
   _chrom1(numGenes, -1.0), 
-  _chrom2(numGenes, +1.0)
+  _chrom2(numGenes, +1.0),
+  _prediction(0),
+  _numGenes(numGenes),
+  _needsEvaluation(true)
 {
   _origin = type();
 
@@ -110,11 +110,11 @@ GarpRule::GarpRule(int numGenes) :
 GarpRule::GarpRule(Scalar prediction, int numGenes, 
 				   const Sample& chrom1, const Sample& chrom2, 
 				   const double * performances) :
-  _numGenes(numGenes),
-  _prediction(prediction),
-  _needsEvaluation(true),
   _chrom1(chrom1), 
   _chrom2(chrom2),
+  _prediction(prediction),
+  _numGenes(numGenes),
+  _needsEvaluation(true),
   _origin(OriginColonization)
   
 {
@@ -297,12 +297,14 @@ double GarpRule::evaluate(const OccurrencesPtr& occs)
 
   double utility[10];
 
-  int dimension = (*occs)[0]->environment().size();
+  //next line commented out since its not used
+  //int dimension = (*occs)[0]->environment().size();
 
   int n = occs->numOccurrences();
 
   // value of dependent variable from the current sample point
-  Scalar pointValue = 0.0;
+  //next line commented out since its not used
+  //Scalar pointValue = 0.0;
 
   // 1 if rule applies to sample point, i.e., values satisfies rule precondition
   // 0 otherwise
