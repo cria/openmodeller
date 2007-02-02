@@ -58,21 +58,21 @@ static void trim( string& str, char const* delims = "\t\r\n ") {
 }
 
 // Method to get integer from string
-static int getInt( const string& str, int defaultValue ) {
+int ConfigurationImpl::getInt( const string& str, int defaultValue ) {
   int returnValue = defaultValue;
   sscanf( str.c_str(), "%d", &returnValue);
   return returnValue;
 }
 
 // Method to get double from string
-static double getDouble( const string& str, double defaultValue ) {
+double ConfigurationImpl::getDouble( const string& str, double defaultValue ) {
   double returnValue = defaultValue;
   sscanf( str.c_str(), "%lf", &returnValue );
   return returnValue;
 }
 
 // Method to get Sample from string
-static Sample getSample( const string& str ) {
+Sample ConfigurationImpl::getSample( const string& str ) {
   stringstream ss( str, ios::in );
   Sample s;
   ss >> s;
