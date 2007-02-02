@@ -41,7 +41,7 @@ int TestResult::testsEnded ()
 {
 	if (failureCount > 0)
 	  {
-	    fprintf (stdout, "There were %ld failures\n", failureCount);
+	    fprintf (stdout, "There were %u failures\n", failureCount);
 	    return 1;
 	  }
 	else
