@@ -105,7 +105,8 @@ OccurrencesFile::loadOccurrences( const char *file_name )
   while ( fgets( line, 256, file ) )
   {
     // Remove \r that DOS loves to use.
-    if ( pos = strchr( line, '\r' ) )
+    pos = strchr( line, '\r' );
+    if ( pos )
     {
       *pos = '\0';
     }
