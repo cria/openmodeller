@@ -3,7 +3,6 @@
  *
  * This is an interface to held different graphic libraries.
  * 
- * @file
  * @author Mauro E S Muñoz <mauro@cria.org.br>
  * @date 2003-10-25
  * $Id$

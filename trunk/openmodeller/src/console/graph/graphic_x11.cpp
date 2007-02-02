@@ -4,7 +4,6 @@
  *
  * This is an interface to held different graphic libraries.
  * 
- * @file
  * @author Mauro E S Muñoz <mauro@cria.org.br>
  * @date 2003-10-25
  * $Id$
@@ -342,6 +341,17 @@ GXDrawble::fElipse( int x, int y, int rx, int ry, GColor c )
   y -= ry;
   foreground( c );
   XFillArc( f_dpy, f_draw, f_gc, x, y, 2*rx, 2*ry, 0, 360*64 );
+}
+
+
+/***********/
+/*** put ***/
+void
+GXDrawble::put( GGraph *graph )
+{
+  GXDrawble *src = (GXDrawble*)graph->getImage();
+  XCopyArea( f_dpy, src->f_draw, f_draw, f_gc, 0, 0,
+	     dimX(), dimY(), 0, 0 );
 }
 
 

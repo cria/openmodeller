@@ -91,6 +91,7 @@ public:
   void fElipse( int x, int y, int rx, int ry, GColor c );
 
   // Draw from GImage.
+  void put( GGraph *graph );
   void put( GImage *pixmap );
   void put( int x0, int y0, GImage *pixmap );
   void put( int x, int y, int x0, int y0, int dimx, int dimy, GImage *pixmap );
