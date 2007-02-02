@@ -1250,7 +1250,7 @@ GXFrame::print( Colormap cm )
 
   XColor *c = cor;
   for ( int i = 0; i < 256; i++, c++ )
-    printf( "%04d - [%04x, %04x, %04x]\n", c->pixel, c->red,
+    printf( "%04ld - [%04hu, %04hu, %04hu]\n", c->pixel, c->red,
 	    c->green, c->blue );
   printf( "\n" );
 }

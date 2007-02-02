@@ -358,11 +358,11 @@ public:
 
   // Press/release
   void button( int x, int y, char *lab, GFrame::FuncExec f,
-               GColor c=GColor(30) );
+               GColor c=GColor((int)30) );
 
   // Press/stay
   void buttonA ( int x, int y, char *lab, GFrame::FuncExec f,
-                 GColor c=GColor(30) );
+                 GColor c=GColor((int)30) );
 
   // Mult press/release
   void buttonMA( int x, int y, char *lab, GFrame::FuncNotif f,
