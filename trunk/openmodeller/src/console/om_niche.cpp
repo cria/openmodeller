@@ -356,7 +356,7 @@ extractParameter( char *id, int nvet, char **vet )
 void
 modelCallback( float progress, void *extra_param )
 {
-  g_log( "Model creation: %07.4f\% \r", 100 * progress );
+  g_log( "Model creation: %07.4f%% \r", 100 * progress );
 }
 
 
