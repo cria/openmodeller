@@ -33,6 +33,10 @@
 
 #include <om.hh>
 
+/** XXX Note by Tim: This class doesnt make any sense - this file just
+ * has a mirror of the heading. Do we need this class or can it be
+ * deleted?
+ */
 class BSAlgorithmFactory
 {
 public:
