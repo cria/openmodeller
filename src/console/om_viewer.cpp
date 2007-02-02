@@ -98,39 +98,37 @@ main( int argc, char **argv )
     FileParser fp( request );
 
     Raster **rst;
-    if ( show_map )
-      {
-        // Maps to be shown.
-        _nmap = fp.count( "Map" );
+    if ( show_map ) {
 
-        if ( ! _nmap )
-          g_log.error( 1, "No map to be shown!?!\n" );
+      // Maps to be shown.
+      _nmap = fp.count( "Map" );
 
-        _maps = new Map * [_nmap];
+      if ( ! _nmap )
+        g_log.error( 1, "No map to be shown!?!\n" );
 
-        vector<string> mapfile = fp.getAll( "Map" );
+      _maps = new Map * [_nmap];
+
+      vector<string> mapfile = fp.getAll( "Map" );
       
-        for ( int i = 0; i < _nmap; i++ )
-          {
-            // Generate a raster using map "i".
-            _maps[i] = new Map( RasterFactory::instance().create( mapfile[i] ) );
-            //_maps[i]->normalize( 0.0, 255.0 );
-          }
+      for ( int i = 0; i < _nmap; i++ ) {
+         // Generate a raster using map "i".
+         _maps[i] = new Map( RasterFactory::instance().create( mapfile[i] ) );
+         //_maps[i]->normalize( 0.0, 255.0 );
       }
-
+    }
     // Visualize result.
-    else
-      {
-        _nmap = 1;
-        _maps = new Map * [_nmap];
-        string result = fp.get( "Output file" );
+    else {
 
-        if ( result.empty() )
-          g_log.error( 1, "'Output file' was not specified!\n" );
+      _nmap = 1;
+      _maps = new Map * [_nmap];
+      string result = fp.get( "Output file" );
 
-	_maps[0] = new Map( RasterFactory::instance().create( result ) );
-        //_maps[0]->normalize( 0.0, 255.0 );
-      }
+      if ( result.empty() )
+        g_log.error( 1, "'Output file' was not specified!\n" );
+
+      _maps[0] = new Map( RasterFactory::instance().create( result ) );
+      //_maps[0]->normalize( 0.0, 255.0 );
+    }
 
     // Region to be visualized. Must include all maps.
     Coord xmin, ymin, xmax, ymax;
@@ -139,31 +137,43 @@ main( int argc, char **argv )
     // Image dimensions.
     int dimx = 1024;
     int dimy = int( dimx * (ymax - ymin) / (xmax - xmin) );
-    if ( dimy > 700 )
-      {
-        dimy = 700;
-        dimx = int( dimy * (xmax - xmin) / (ymax - ymin) );
-      }
+    if ( dimy > 700 ) {
+
+      dimy = 700;
+      dimx = int( dimy * (xmax - xmin) / (ymax - ymin) );
+    }
+
     g_log( "Dimensions: %d x %d\n", dimx, dimy );
 
 
     // Occurrences file.
     string oc_cs   = fp.get( "WKT Coord System" );
-    string oc_file = fp.get( "Species file" );
-    string oc_name = fp.get( "Species" );
+    string oc_file = fp.get( "Occurrences source" );
 
-    if ( ! oc_cs.empty() && ! oc_file.empty() )
-      {
-        _occurs = readOccurrences( oc_file.c_str(), oc_name.c_str(), oc_cs.c_str() );
-      }
-    else
-      {
-        if ( oc_file.empty() )
-          g_log.warn( "'Species file' was not specified!\n" );
+    if ( oc_file.empty() ) {
 
-        if ( oc_cs.empty() )
-          g_log.warn( "'WKT coord system' was not specified!\n" );
-      }
+      string oc_file = fp.get( "Species file" );
+    }
+
+    string oc_name = fp.get( "Occurrences group" );
+
+    if ( oc_name.empty() ) {
+
+      string oc_name = fp.get( "Species" );
+    }
+
+    if ( ! oc_cs.empty() && ! oc_file.empty() ) {
+
+      _occurs = readOccurrences( oc_file.c_str(), oc_name.c_str(), oc_cs.c_str() );
+    }
+    else {
+
+      if ( oc_file.empty() )
+        g_log.warn( "'Occurrences source' was not specified!\n" );
+
+      if ( oc_cs.empty() )
+        g_log.warn( "'WKT coord system' was not specified!\n" );
+    }
 
     // Instantiate graphical window.
     GFrame *frame = createFrame( "openModeller Viewer", 1, dimx, dimy );
