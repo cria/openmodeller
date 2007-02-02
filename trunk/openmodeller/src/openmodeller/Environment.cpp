@@ -289,12 +289,12 @@ EnvironmentImpl::changeLayers( const std::vector<std::string>& categs,
   clearLayers();
 
   // Categorical maps.
-  for( int i = 0; i< categs.size(); i++ ) {
+  for( unsigned int i = 0; i< categs.size(); i++ ) {
     _layers.push_back( makeLayer( categs[i], 1 ) );
   }
 
   // Copy continuos maps.
-  for( int i = 0; i< maps.size(); i++ ) {
+  for( unsigned int i = 0; i< maps.size(); i++ ) {
     _layers.push_back( makeLayer( maps[i], 0 ) );
   }
 
@@ -341,8 +341,6 @@ EnvironmentImpl::isCategorical( int i )
 void 
 EnvironmentImpl::getMinMax( Sample * min, Sample * max ) const
 {
-  int nlayers = _layers.size();
-
   int i = 0;
 
   layers::const_iterator lay = _layers.begin();
