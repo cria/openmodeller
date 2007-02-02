@@ -496,7 +496,8 @@ Garp::_setConfiguration( const ConstConfigurationPtr& config )
 
   ConstConfigurationPtr rules_config = model_config->getSubsection( "FittestRules" );
 
-  int nrules = rules_config->getAttributeAsInt( "Count", 0 );
+  //next line commented out since the var is not used after being declared
+  //int nrules = rules_config->getAttributeAsInt( "Count", 0 );
 
   Configuration::subsection_list::const_iterator ss;
   for( ss = rules_config->getAllSubsections().begin();
@@ -633,7 +634,7 @@ void Garp::evaluate(GarpRuleSet * ruleset)
 void Garp::colonize(GarpRuleSet * ruleset, int numRules)
 {
   int i, p, dim;
-  GarpRule * rule;
+  GarpRule * rule = 0;
   Random rnd;
   
   dim = _samp->numIndependent();
