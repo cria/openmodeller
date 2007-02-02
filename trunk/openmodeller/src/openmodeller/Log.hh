@@ -120,7 +120,7 @@ private:
 
   LogCallback* callback;
 
-  Level  _level;
+  Level _level;
   std::string _pref;
   bool _deleteCallback; // flag indicating if the callback should be deleted by Log
 };
