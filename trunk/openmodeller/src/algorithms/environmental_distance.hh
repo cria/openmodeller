@@ -72,7 +72,7 @@ class EnvironmentalDistance : public AlgorithmImpl{
          EuclideanDistance = FIRST_DISTANCE_TYPE,
          MahalanobisDistance,
          GowerDistance
-      };
+      } DistanceType;
 
    protected:
       virtual void _getConfiguration(ConfigurationPtr&) const;
