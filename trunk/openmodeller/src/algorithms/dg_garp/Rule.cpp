@@ -532,7 +532,9 @@ void RangeRule::initialize(EnvCellSet * objEnvCellSet, const RuleSet * objRuleSe
 void RangeRule::bioclimRange(EnvCellSet * objEnvCellSet, BYTE pred, double level, int var)
 {
 	BioclimHistogram * histogram;
-	int sum, n, UL, LL;
+	int sum, n;
+  int UL = 0;
+  int LL = 0;
     
 	histogram = objEnvCellSet->getBioclimHistogram();
 
