@@ -65,8 +65,8 @@ public:
     error_( 0.0 ),
     abundance_( 0.0 ),
     attr_(),
-    normEnv_(),
-    unnormEnv_()
+    unnormEnv_(),
+    normEnv_()
   {}
 
   /** Occurrence constructor with uncertanty.
