@@ -113,7 +113,7 @@ public:
 
   /*
    */
-
+  void printListOfRuns(char * msg, AlgorithmRun ** runs, int numOfRuns);
 protected:
   int _nparam;
   AlgParameter * _alg_params;
