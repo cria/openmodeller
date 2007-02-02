@@ -68,11 +68,11 @@ public:
    *
    */
   inline OccurrencesImpl( double default_abundance ) :
+    default_abundance_( default_abundance ),
     name_( ),
     cs_( GeoTransform::cs_default ),
     gt_( 0 ),
-    occur_( ),
-    default_abundance_( default_abundance )
+    occur_( )
   {
     initGeoTransform();
   };
@@ -84,11 +84,11 @@ public:
    */
   inline OccurrencesImpl( const std::string& name, 
 			  const std::string& coord_system=GeoTransform::cs_default ) :
+    default_abundance_( 0.0 ),
     name_( name ),
     cs_( coord_system ),
     gt_( 0 ),
-    occur_(),
-    default_abundance_( 0.0 )
+    occur_()
   {
     initGeoTransform();
   };
