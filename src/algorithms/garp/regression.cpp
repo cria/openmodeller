@@ -49,10 +49,11 @@ Regression::Regression() :
 
 void Regression::calculateParameters(const OccurrencesPtr& occs)
 {
-  Scalar y;         // outcome (dependent) variable for sample
+  //next two lines commented out since the vars arent used
+  //Scalar y;         // outcome (dependent) variable for sample
+  //Scalar xx;        // temp storage for x^2
   Sample x;         // predictor (independent) variable for current sample
   Scalar s_y;      // sum of y for all samples
-  Scalar xx;        // temp storage for x^2
   Sample s_x;      // sum of x for all samples
   Sample s_xy;    // sum of x*y for all samples
   Sample s_xx;     // sum of x^2 for all samples
