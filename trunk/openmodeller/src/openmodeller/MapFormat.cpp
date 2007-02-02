@@ -200,9 +200,6 @@ int MapFormat::getWidth() const {
 }
 
 int MapFormat::getHeight() const {
-  Coord Ymin = getYMin();
-  Coord Ymax = getYMax();
-  Coord Ycel = getYCel();
 
   int height = static_cast<int>(  (ymax-ymin) / ycel +0.5);
 
