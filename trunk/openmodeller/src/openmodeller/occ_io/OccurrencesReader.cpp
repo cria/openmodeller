@@ -159,6 +159,7 @@ OccurrencesReader::addOccurrence( const char *id, const char *groupId, Coord lg,
 
 	_addAbsence( id, groupId, lg, lt, error, num_attributes, attributes );
     }
+    return 1;
 }
 
 /********************/
