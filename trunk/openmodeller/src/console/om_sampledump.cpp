@@ -7,10 +7,10 @@
 #include <istream>
 
 #include <stdlib.h>
-#include <string.h>
+#include <string>
 #include <stdio.h>
-#include <iostream.h>  // I/O 
-#include <fstream.h>   // file I/O
+#include <iostream>  // I/O 
+#include <fstream>   // file I/O
 
 #include <stdexcept>
  
