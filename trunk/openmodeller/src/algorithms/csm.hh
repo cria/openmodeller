@@ -322,7 +322,7 @@ class Csm : public AlgorithmImpl
          * @return 
          * @param Scalar *val 
          */
-        int getConvergence( Scalar *val );
+        int getConvergence( Scalar * const val ) const;
 
 
 
