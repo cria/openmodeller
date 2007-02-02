@@ -339,7 +339,7 @@ void GarpRuleSet::log()
 // gather rule set statistics
 void GarpRuleSet::gatherRuleSetStats(int gen)
 {
-  char type;
+  char type='0'; //initialise to some invalid value
 
   printf("%4d]", gen);
 
