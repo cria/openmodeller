@@ -144,21 +144,21 @@ main( int argc, char **argv )
     AreaStats * stats = om.getActualAreaStats();
 
     g_log( "\nModel statistics\n" );
-    g_log( "Accuracy:          %7.2f\%\n", matrix->getAccuracy() * 100 );
-    g_log( "Omission error:    %7.2f\%\n", matrix->getOmissionError() * 100 );
+    g_log( "Accuracy:          %7.2f%%\n", matrix->getAccuracy() * 100 );
+    g_log( "Omission error:    %7.2f%%\n", matrix->getOmissionError() * 100 );
 
     double commissionError = matrix->getCommissionError();
 
     if ( commissionError >= 0.0 ) {
 
-      g_log( "Commission error:  %7.2f\%\n", commissionError * 100 );
+      g_log( "Commission error:  %7.2f%%\n", commissionError * 100 );
     }
 
     delete matrix;
 
     if ( request.requestedProjection() ) {
 
-      g_log( "Percentage of cells predicted present: %7.2f\%\n", 
+      g_log( "Percentage of cells predicted present: %7.2f%%\n", 
              stats->getAreaPredictedPresent() / (double) stats->getTotalArea() * 100 );
       g_log( "Total number of cells: %d\n", stats->getTotalArea() );
       g_log( "\nDone.\n" );
@@ -309,7 +309,7 @@ extractParameter( char *id, int nvet, char **vet )
 void
 modelCallback( float progress, void *extra_param )
 {
-  g_log( "Model creation: %07.4f\% \r", 100 * progress );
+  g_log( "Model creation: %07.4f%% \r", 100 * progress );
 }
 
 
@@ -321,5 +321,5 @@ modelCallback( float progress, void *extra_param )
 void
 mapCallback( float progress, void *extra_param )
 {
-  g_log( "Map creation: %07.4f\% \r", 100 * progress );
+  g_log( "Map creation: %07.4f%% \r", 100 * progress );
 }
