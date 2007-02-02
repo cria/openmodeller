@@ -87,7 +87,7 @@ LevelLabels[5] =
   };
 
 static void
-FormatAndWrite( Log::LogCallback& lc, Log::Level level, std::string _pref, const char* format, va_list ap ) {
+FormatAndWrite( Log::LogCallback& lc, Log::Level level, std::string pref, const char* format, va_list ap ) {
 
   const int buf_size = 1024;
   char buf[buf_size];
@@ -95,7 +95,7 @@ FormatAndWrite( Log::LogCallback& lc, Log::Level level, std::string _pref, const
   // Print in 'buf'.
   //
   // Header.
-  snprintf( buf, buf_size, "%s%s", LevelLabels[level], _pref.c_str() );
+  snprintf( buf, buf_size, "%s%s", LevelLabels[level], pref.c_str() );
 
   // Print message after header.
   int len = strlen( buf );
@@ -163,11 +163,13 @@ Log::setCallback( LogCallback *lc )
 void
 Log::setPrefix( const char *pref )
 {
-  _pref = pref;
-  // If the prefix is non-empty, we need a trailing
-  // space
-  if ( _pref.size() > 0 ) 
-    _pref += " ";
+  _pref.assign( pref );
+
+  // If prefix is non-empty, we need a trailing space
+  if ( _pref.size() > 0 ) {
+
+    _pref.append(" ");
+  }
 }
 
 
