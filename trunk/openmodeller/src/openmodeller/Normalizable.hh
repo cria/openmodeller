@@ -35,6 +35,8 @@
 class Normalizable {
 
 public:
+  virtual ~Normalizable(){};
+
   virtual void getMinMax( Sample * min, Sample * max ) const = 0;
 
   virtual void normalize( bool useNormalization, 
