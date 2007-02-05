@@ -28,8 +28,8 @@ SET (LIBGARP_HDRS
 ########################################################
 # Build
 
-ADD_LIBRARY (dg_garp SHARED ${LIBGARP_SRCS})
-TARGET_LINK_LIBRARIES(dg_garp openmodeller)
+ADD_LIBRARY (garp SHARED ${LIBGARP_SRCS})
+TARGET_LINK_LIBRARIES(garp openmodeller)
 
 INCLUDE_DIRECTORIES(
      ${CMAKE_CURRENT_SOURCE_DIR}
@@ -39,4 +39,4 @@ INCLUDE_DIRECTORIES(
 ########################################################
 # Install
 
-INSTALL(TARGETS dg_garp RUNTIME DESTINATION ${OM_ALG_DIR} LIBRARY DESTINATION algs)
+INSTALL(TARGETS garp RUNTIME DESTINATION ${OM_ALG_DIR} LIBRARY DESTINATION algs)

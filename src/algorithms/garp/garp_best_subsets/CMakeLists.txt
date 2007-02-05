@@ -38,8 +38,8 @@ SET (LIBGARPBS_HDRS
 ADD_DEFINITIONS(-DDONT_EXPORT_GARP_FACTORY=1)
 
 
-ADD_LIBRARY (destop_garp_best_subsets SHARED ${LIBGARPBS_SRCS})
-TARGET_LINK_LIBRARIES(destop_garp_best_subsets openmodeller)
+ADD_LIBRARY (garp_best_subsets SHARED ${LIBGARPBS_SRCS})
+TARGET_LINK_LIBRARIES(garp_best_subsets openmodeller)
 
 INCLUDE_DIRECTORIES(
      ${CMAKE_CURRENT_SOURCE_DIR}
@@ -50,4 +50,4 @@ INCLUDE_DIRECTORIES(
 ########################################################
 # Install
 
-INSTALL(TARGETS destop_garp_best_subsets RUNTIME DESTINATION ${OM_ALG_DIR} LIBRARY DESTINATION algs)
+INSTALL(TARGETS garp_best_subsets RUNTIME DESTINATION ${OM_ALG_DIR} LIBRARY DESTINATION algs)
