@@ -88,13 +88,19 @@ TARGET_LINK_LIBRARIES(om_dump openmodeller)
 ADD_EXECUTABLE (om_sampledump ${OMSAMPLEDUMP_SRCS})
 TARGET_LINK_LIBRARIES(om_sampledump openmodeller)
 
-if (NOT X11_FOUND)
+if (X11_FOUND)
+  MESSAGE ("Building with X11 includes at ${X11_INCLUDE_DIR}...")
+  INCLUDE_DIRECTORIES(
+    ${INCLUDE_DIRECTORIES}
+    ${CMAKE_CURRENT_SOURCE_DIR}/graph
+    ${X11_INCLUDE_DIR}
+  )
   ADD_EXECUTABLE (om_viewer ${OMVIEWER_SRCS})
-  TARGET_LINK_LIBRARIES(om_viewer openmodeller)
+  TARGET_LINK_LIBRARIES(om_viewer ${X11_LIBRARIES} openmodeller)
 
   ADD_EXECUTABLE (om_niche ${OMNICHE_SRCS})
-  TARGET_LINK_LIBRARIES(om_niche openmodeller)
-ENDIF(NOT X11_FOUND)
+  TARGET_LINK_LIBRARIES(om_niche ${X11_LIBRARIES} openmodeller)
+ENDIF(X11_FOUND)
 ########################################################
 # Install
 
