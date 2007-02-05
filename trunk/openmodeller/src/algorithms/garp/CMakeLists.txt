@@ -1,3 +1,4 @@
+SUBDIRS(garp_best_subsets)
 ########################################################
 # Files
 
@@ -11,6 +12,8 @@ SET (LIBGARP_SRCS
   rules_negrange.cpp
   rules_logit.cpp
 )
+#these are not needed to build but I specified them in 
+#case we want to install the headers
 SET (LIBGARP_HDRS
   garp.hh 
   ruleset.hh
