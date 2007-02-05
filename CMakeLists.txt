@@ -24,7 +24,7 @@ FIND_PACKAGE(Expat)
 
 # optional
 FIND_PACKAGE(GSL)      # Georeferencer
-
+FIND_PACKAGE(X11)
 # python support:
 #INCLUDE (Python) # file cmake/Python.cmake
 
@@ -34,7 +34,7 @@ IF (NOT PROJ_FOUND OR NOT SQLITE3_FOUND OR NOT GDAL_FOUND)
 ENDIF (NOT PROJ_FOUND OR NOT SQLITE3_FOUND OR NOT GDAL_FOUND)
 
 #############################################################
-# enable warnings
+# enable warnings and set compile time defines
 
 ADD_DEFINITIONS( -Wall )
 ADD_DEFINITIONS(-DVERSION=\\"0.4\\")
