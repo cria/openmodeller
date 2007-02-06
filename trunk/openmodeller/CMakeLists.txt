@@ -58,17 +58,18 @@ ELSE (WIN32)
   IF (APPLE)
     # for Mac OS X, everything is put inside an application bundle
     SET (CMAKE_INSTALL_PREFIX ${CMAKE_INSTALL_PREFIX}/${PROJECT_NAME}.app/Contents/MacOS)
+    SET (OM_BIN_DIR    ${CMAKE_INSTALL_PREFIX})
     # path for library references
     SET (CMAKE_INSTALL_NAME_DIR @executable_path/lib)
   ENDIF (APPLE)
 
   # common for MAC and UNIX
-  SET (OM_BIN_DIR    ${CMAKE_INSTALL_PREFIX}/bin)
   SET (OM_DATA_DIR   ${CMAKE_INSTALL_PREFIX}/share/qgis)
   SET (OM_PLUGIN_DIR ${CMAKE_INSTALL_PREFIX}/lib/qgis)
   SET(OM_INCLUDE_DIR "${CMAKE_INSTALL_PREFIX}/include/openmodeller")
 
   IF (UNIX AND NOT APPLE)
+    SET (OM_BIN_DIR    ${CMAKE_INSTALL_PREFIX}/bin)
     ADD_DEFINITIONS(-DPREFIX=\\"${CMAKE_INSTALL_PREFIX}\\")
     ADD_DEFINITIONS(-DALGPATH=\\"${OM_ALG_DIR}\\")
     ADD_DEFINITIONS(-DPKGDATAPATH=\\"${OM_DATA_DIR}\\")
