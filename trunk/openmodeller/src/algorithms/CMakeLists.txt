@@ -1,4 +1,4 @@
-SUBDIRS(garp dg_garp best_subsets)
+SUBDIRS(best_subsets garp dg_garp)
 
 ########################################################
 # Files
