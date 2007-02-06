@@ -66,7 +66,7 @@ set (EXTRA_DIST
 ########################################################
 # Build
 
-ADD_LIBRARY (openmodellerxml SHARED ${LIBOPENMODELLERXML_SRCS} ${LIBOPENMODELLERXML_HDRS})
+ADD_LIBRARY (openmodellerxml SHARED ${LIBOPENMODELLERXML_SRCS})
 TARGET_LINK_LIBRARIES(openmodellerxml openmodeller )
 
 INCLUDE_DIRECTORIES(

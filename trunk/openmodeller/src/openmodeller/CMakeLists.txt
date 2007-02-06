@@ -16,7 +16,6 @@ SET(OM_CORE_SRCS
   Occurrence.cpp 
   Occurrences.cpp 
   OpenModeller.cpp 
-  os_specific.cpp
   Projector.cpp 
   Random.cpp 
   Sample.cpp 
@@ -35,6 +34,17 @@ SET(OM_CORE_SRCS
   occ_io/OccurrencesFile.cpp 
   occ_io/OccurrencesReader.cpp 
 )
+  IF (WIN32)
+    SET(OM_CORE_SRCS
+      ${OM_CORE_SRCS}
+      os_specific_win.cpp
+    )
+  ELSE (WIN32)
+    SET(OM_CORE_SRCS
+      ${OM_CORE_SRCS}
+      os_specific.cpp
+    )
+  ENDIF (WIN32)
 
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR} 
   env_io 
