@@ -96,8 +96,6 @@ main( int argc, char **argv )
   try {
 
     FileParser fp( request );
-
-    Raster **rst;
     if ( show_map ) {
 
       // Maps to be shown.
