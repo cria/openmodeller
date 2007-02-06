@@ -243,7 +243,7 @@ showAlgorithms( AlgMetadata const **availables )
 
   int count = 0;
   AlgMetadata const *metadata;
-  while ( metadata = *availables++ )
+  while (( metadata = *availables++ ))
     printf( " [%d] %s\n", count++, metadata->name );
 
   printf( " [%d] Quit\n", count );

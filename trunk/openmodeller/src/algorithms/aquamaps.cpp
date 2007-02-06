@@ -279,7 +279,7 @@ AquaMaps::calculateEnvelopes( const OccurrencesPtr& occs )
   // default values for the prefered min/max
   ScalarVector::iterator lStart, lEnd;
 
-  for ( int j = 2; j < matrix.size(); j++ ) {
+  for ( unsigned int j = 2; j < matrix.size(); j++ ) {
 
     g_log.debug("--------------------------------\n", j);
     g_log.debug("Calculating envelope for layer %d\n", j);
@@ -701,7 +701,7 @@ AquaMaps::logEnvelope()
 {
   g_log( "Envelope with %d dimensions (variables).\n\n", _minimum.size() );
 
-  for ( int i = 0; i < _minimum.size(); i++ )
+  for ( unsigned  int i = 0; i < _minimum.size(); i++ )
     {
       g_log( "Variable %02d:", i );
       g_log( " Minimum         : %f\n", _minimum[i] );

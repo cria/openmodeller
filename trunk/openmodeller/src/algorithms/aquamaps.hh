@@ -180,14 +180,14 @@ private:
   /** Minimum value for each variable. */
   Sample _minimum;
 
+  /** Maximum value for each variable. */
+  Sample _maximum;
+
   /** Prefered minimum for each variable. */
   Sample _pref_minimum;
 
   /** Prefered maximum for each variable. */
   Sample _pref_maximum;
-
-  /** Maximum value for each variable. */
-  Sample _maximum;
 
   /** Indicates if the species is pelagic or not (-1 indicates no data).
    *  Note: pelagic means "belonging to the upper layers of the open sea" (poetic, huh?).
