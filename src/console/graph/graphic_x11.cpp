@@ -994,15 +994,15 @@ GXFrame::GXFrame( char *titulo, int crt_height, int dimx, int dimy )
 GXFrame::~GXFrame()
 {
   GXButton *b;
-  for ( f_lbot.head(); b = f_lbot.get(); f_lbot.next() )
+  for ( f_lbot.head(); (b = f_lbot.get()); f_lbot.next() )
     delete( b );
 
   GXPixmap *p;
-  for ( f_lpix.head(); p = f_lpix.get(); f_lpix.next() )
+  for ( f_lpix.head(); (p = f_lpix.get()); f_lpix.next() )
     delete( p );
 
   GXCanvas *c;
-  for ( f_lcnv.head(); c = f_lcnv.get(); f_lcnv.next() )
+  for ( f_lcnv.head(); (c = f_lcnv.get()); f_lcnv.next() )
     delete( c );
 }
 
@@ -1058,7 +1058,6 @@ GXFrame::exec()
 {
   static char inicio = 1;
   XEvent report;
-  Window win_alvo;
 
   XMapWindow( dpy, win );
   XMapWindow( dpy, crt );
@@ -1092,7 +1091,7 @@ GXFrame::exec()
 		  {
 		    GXButton *bot;
 		    f_lbot.head();
-		    for ( ; bot = f_lbot.get(); f_lbot.next() )
+		    for ( ; (bot = f_lbot.get()); f_lbot.next() )
 		      bot->draw();
 		    f_btsaida->draw();
 		  }
@@ -1192,7 +1191,7 @@ GXFrame::distributeButton( Window win, XEvent &e )
 
   // Eventos das janelas graficas (mouse).
   GXCanvas *canv;
-  for ( f_lcnv.head(); canv = f_lcnv.get(); f_lcnv.next() )
+  for ( f_lcnv.head(); (canv = f_lcnv.get()); f_lcnv.next() )
     if ( canv->win == win )
       {
 	int x = e.xbutton.x;
@@ -1220,7 +1219,7 @@ GXFrame::distributeButton( Window win, XEvent &e )
   
   // Verifica se um botao do controle foi pressionado
   GXButton *bot;
-  for ( f_lbot.head(); bot = f_lbot.get(); f_lbot.next() )
+  for ( f_lbot.head(); (bot = f_lbot.get()); f_lbot.next() )
     if ( bot->win == crt )
       {
 	if ( e.type == ButtonPress )
@@ -1262,8 +1261,6 @@ void
 GXFrame::setColormap()
 {
   // A colormap with homogeneos distributed colors.
-  Visual *visual = XDefaultVisual( dpy, scr );
-
   Colormap cm = DefaultColormap( dpy, scr );
   // cm = XCreateColormap( dpy, win, visual, AllocAll );
   XColor cores[256];
