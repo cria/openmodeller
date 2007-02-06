@@ -31,19 +31,19 @@ SET (LIBENVIRONMENTALDISTANCE_SRCS
 ########################################################
 # Build
 
-ADD_LIBRARY (bioclim SHARED ${LIBBIOCLIM_SRCS})
+ADD_LIBRARY (bioclim MODULE ${LIBBIOCLIM_SRCS})
 TARGET_LINK_LIBRARIES(bioclim openmodeller)
 
-ADD_LIBRARY (distance_to_average SHARED ${LIBDISTANCETOAVERAGE_SRCS})
+ADD_LIBRARY (distance_to_average MODULE ${LIBDISTANCETOAVERAGE_SRCS})
 TARGET_LINK_LIBRARIES(distance_to_average openmodeller)
 
-ADD_LIBRARY (minimum_distance SHARED ${LIBMINIMUMDISTANCE_SRCS})
+ADD_LIBRARY (minimum_distance MODULE ${LIBMINIMUMDISTANCE_SRCS})
 TARGET_LINK_LIBRARIES(minimum_distance openmodeller)
 
-ADD_LIBRARY (aquamaps SHARED ${LIBAQUAMAPS_SRCS})
+ADD_LIBRARY (aquamaps MODULE ${LIBAQUAMAPS_SRCS})
 TARGET_LINK_LIBRARIES(aquamaps openmodeller)
 
-ADD_LIBRARY (environmental_distance SHARED ${LIBENVIRONMENTALDISTANCE_SRCS})
+ADD_LIBRARY (environmental_distance MODULE ${LIBENVIRONMENTALDISTANCE_SRCS})
 TARGET_LINK_LIBRARIES(environmental_distance openmodeller)
 
 
@@ -59,7 +59,7 @@ if (GSL_FOUND)
     ${INCLUDE_DIRECTORIES}
     ${GSL_INCLUDE_DIR}
   )
-  ADD_LIBRARY (csm_bs SHARED ${LIBCSMBS_SRCS})
+  ADD_LIBRARY (csm_bs MODULE ${LIBCSMBS_SRCS})
   TARGET_LINK_LIBRARIES(csm_bs gsl gslcblas openmodeller)
 ENDIF(GSL_FOUND)
 ########################################################
