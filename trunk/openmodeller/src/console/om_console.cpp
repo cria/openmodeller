@@ -197,11 +197,10 @@ showAlgorithms( AlgMetadata const **availables )
   printf( "\nChoose an algorithm between:\n" );
 
   int count = 0;
-  AlgMetadata const *metadata =  *availables;
-  while ( metadata )
+  AlgMetadata const *metadata;
+  while ( ( metadata = *availables++ ) )
   {
     printf( " [%d] %s\n", count++, metadata->name );
-    metadata = *availables++ ;
   }
   printf( " [%d] Quit\n", count );
   printf( "\n" );
