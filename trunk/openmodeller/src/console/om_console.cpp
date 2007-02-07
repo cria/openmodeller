@@ -221,25 +221,36 @@ readAlgorithm( AlgMetadata const **availables )
 {
   char buf[128];
 
-  while ( 1 )
-    {
-      int quit_option = showAlgorithms( availables );
-      if ( ! quit_option )
-	return 0;
+  while ( 1 ) {
 
-      int option = -1;
-
-      printf( "\nOption: " );
-      fgets( buf, 128, stdin );
-      option = atoi( buf );
-
-      if ( option == quit_option )
-        return 0;
-
-      // An algorithm was choosed.
-      else if ( option >= 0 && option < quit_option )
-        return availables[option];
+    int quit_option = showAlgorithms( availables );
+    if ( ! quit_option ) {
+      return 0;
     }
+
+    int option = -1;
+
+    printf( "\nOption: " );
+    fgets( buf, 128, stdin );
+
+    int first_char_ascii = (int)buf[0];
+
+    // Also quit if input is "q" or "Q"
+    if ( first_char_ascii == 113 || first_char_ascii == 81 ) {
+      return 0;
+    }
+
+    option = atoi( buf );
+
+    if ( option == quit_option ) {
+      return 0;
+    }
+
+    // An algorithm was choosed.
+    else if ( option >= 0 && option < quit_option ) {
+      return availables[option];
+    }
+  }
 }
 
 
