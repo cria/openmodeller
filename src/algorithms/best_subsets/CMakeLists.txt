@@ -27,7 +27,7 @@ SET (LIBDGARPBESTSUBSETS_HDRS
 ########################################################
 # Build
 
-ADD_LIBRARY (desktop_garp_bs SHARED ${LIBDGARPBESTSUBSETS_SRCS})
+ADD_LIBRARY (desktop_garp_bs MODULE ${LIBDGARPBESTSUBSETS_SRCS})
 TARGET_LINK_LIBRARIES(desktop_garp_bs openmodeller)
 
 INCLUDE_DIRECTORIES(

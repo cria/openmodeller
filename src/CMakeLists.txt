@@ -1,7 +1,7 @@
 #############################################################
 # process subdirs
 
-SUBDIRS(openmodeller console algorithms)
+SUBDIRS(openmodeller algorithms console )
 
 IF (HAVE_PYTHON)
   SUBDIRS (swig)

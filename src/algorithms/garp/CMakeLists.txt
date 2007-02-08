@@ -28,7 +28,7 @@ SET (LIBGARP_HDRS
 ########################################################
 # Build
 
-ADD_LIBRARY (garp SHARED ${LIBGARP_SRCS})
+ADD_LIBRARY (garp MODULE ${LIBGARP_SRCS})
 TARGET_LINK_LIBRARIES(garp openmodeller)
 
 INCLUDE_DIRECTORIES(
