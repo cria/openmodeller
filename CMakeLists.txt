@@ -54,6 +54,7 @@ IF (WIN32)
   SET (OM_DATA_DIR   ${CMAKE_INSTALL_PREFIX})
   SET (OM_ALG_DIR ${CMAKE_INSTALL_PREFIX}/algs)
   SET (OM_INCLUDE_DIR ${CMAKE_INSTALL_PREFIX}/include)
+  SET (OM_EXAMPLES_DIR ${CMAKE_INSTALL_PREFIX}/examples)
 ELSE (WIN32)
   IF (APPLE)
     # for Mac OS X, everything is put inside an application bundle
@@ -67,6 +68,7 @@ ELSE (WIN32)
   SET (OM_DATA_DIR   ${CMAKE_INSTALL_PREFIX}/share/qgis)
   SET (OM_PLUGIN_DIR ${CMAKE_INSTALL_PREFIX}/lib/qgis)
   SET(OM_INCLUDE_DIR "${CMAKE_INSTALL_PREFIX}/include/openmodeller")
+  SET(OM_EXAMPLES_DIR "${CMAKE_INSTALL_PREFIX}/share/openmodeller/examples")
 
   IF (UNIX AND NOT APPLE)
     SET (OM_BIN_DIR    ${CMAKE_INSTALL_PREFIX}/bin)
@@ -91,7 +93,7 @@ ENDIF (WIN32)
 #############################################################
 # process subdirs
 
-SUBDIRS(src)
+SUBDIRS(src examples)
 
 #############################################################
 # install stuff
