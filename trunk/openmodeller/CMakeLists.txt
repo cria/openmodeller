@@ -83,16 +83,9 @@ IF (WIN32)
   # Note: MSVC doesn't like when the macros are quotes
   # and MSYS doesn't like them unqouted (bacause of braces)
   IF (MSVC)
-    ADD_DEFINITIONS("-DCORE_EXPORT=__declspec(dllimport)")
-    ADD_DEFINITIONS("-DGUI_EXPORT=__declspec(dllimport)")
+    ADD_DEFINITIONS(-DUSE_PRAGMA)
+    ADD_DEFINITIONS(-DDLL_CORE_IMPORT)
   ELSE (MSVC)
-    ADD_DEFINITIONS("\"-DCORE_EXPORT=__declspec(dllimport)\"")
-    ADD_DEFINITIONS("\"-DGUI_EXPORT=__declspec(dllimport)\"")
-  ENDIF (MSVC)
-ELSE (WIN32)
-  # other compilers don't use that MSVC construct
-  ADD_DEFINITIONS(-DCORE_EXPORT=)
-  ADD_DEFINITIONS(-DGUI_EXPORT=)
 ENDIF (WIN32)
 
 #############################################################
