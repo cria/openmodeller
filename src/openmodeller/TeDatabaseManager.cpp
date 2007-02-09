@@ -65,3 +65,19 @@ TeDatabaseManager::create( const TeDatabaseFactoryParams& params )
 		return tedb;
 	}
 }
+
+//! Descturctor.
+/**
+* Delete all opened databases.
+*/
+TeDatabaseManager::~TeDatabaseManager()
+{
+	MapManager::const_iterator i = mapManager_.begin();
+	MapManager::const_iterator end = mapManager_.end();
+	
+	for(; i != end; ++i)
+	{
+		i->second->close();
+		delete (i->second);
+	}
+}

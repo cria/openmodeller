@@ -78,7 +78,7 @@ private:
 	//! No copy allowed.
 	TeDatabaseManager& operator=(const TeDatabaseManager&);
 	//! No destruct allowed.
-	~TeDatabaseManager() {};
+	~TeDatabaseManager();
 };
 
 #endif
