@@ -236,11 +236,8 @@ TeOMRaster::~TeOMRaster()
 	if( layer_ )
 	{
 		layer_->addRasterGeometry( raster_ );
-		delete layer_;
 	}
 
-	delete raster_;
-	delete params_;
 	delete te_url_parser_;
 }
 
