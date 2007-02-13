@@ -1,4 +1,4 @@
-PROJECT(openmodeller)
+PROJECT(openModeller)
 
 #############################################################
 # CMake settings
