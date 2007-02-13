@@ -120,5 +120,25 @@ SET(OM_CORE_HDRS
   Sampler.hh 
 )
 
+SET (OM_OCCIO_HDRS
+occ_io/OccurrencesFactory.hh
+occ_io/OccurrencesFile.hh
+occ_io/OccurrencesReader.hh
+occ_io/TeOccurrences.hh
+)
+
+SET (OM_ENVIO_HDRS
+env_io/GeoTransform.hh
+env_io/Header.hh
+env_io/Map.hh
+env_io/MapIterator.hh
+env_io/Raster.hh
+env_io/RasterFactory.hh
+env_io/RasterGdal.hh
+env_io/TeOMRaster.hh
+)
+
 INSTALL(CODE "MESSAGE(\"Installing CORE headers...\")")
 INSTALL(FILES ${OM_CORE_HDRS} DESTINATION ${OM_INCLUDE_DIR})
+INSTALL(FILES ${OM_OCCIO_HDRS} DESTINATION ${OM_INCLUDE_DIR}/occ_io)
+INSTALL(FILES ${OM_ENVIO_HDRS} DESTINATION ${OM_INCLUDE_DIR}/env_io)
