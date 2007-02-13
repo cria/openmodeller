@@ -13,6 +13,9 @@ SET(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake ${CMAKE_MODULE_PATH})
 # try to configure and build python bindings by default
 SET (WITH_BINDINGS TRUE CACHE BOOL "Determines whether python bindings should be built")
 
+# set if the log level the build binaries should be set to Debug
+SET (OM_DEBUG_LOGLEVEL FALSE CACHE BOOL "Force log level to Debug - should leave this off for releases!")
+
 #############################################################
 # search for dependencies
 
@@ -41,6 +44,9 @@ ADD_DEFINITIONS(-DVERSION=\\"0.4\\")
 ADD_DEFINITIONS(-DCONFIG_FILE=\\"om.cfg\\")
 ADD_DEFINITIONS(-DPLUGINPATH=\\"algs\\")
 ADD_DEFINITIONS(-DOMDATAPATH=\\"share/openmodeller\\")
+IF (OM_LOGLEVEL_DEBUG)
+  ADD_DEFINITIONS(-DLOGLEVELISDEBUG=1)
+ENDIF (OM_LOGLEVEL_DEBUG)
 
 IF (CMAKE_BUILD_TYPE MATCHES Debug)
   ADD_DEFINITIONS(-DOMDEBUG=1)
@@ -104,3 +110,13 @@ SUBDIRS(src examples)
 # manual page... install also on windows?
 #INSTALL (FILES qgis.man
  #        DESTINATION ${CMAKE_INSTALL_PREFIX}/man/man1)
+
+#############################################################
+# Uninstall stuff see: http://www.vtk.org/Wiki/CMake_FAQ
+CONFIGURE_FILE(
+  "${CMAKE_CURRENT_SOURCE_DIR}/cmake_uninstall.cmake.in"
+  "${CMAKE_CURRENT_BINARY_DIR}/cmake_uninstall.cmake"
+  IMMEDIATE @ONLY)
+
+ADD_CUSTOM_TARGET(uninstall
+  "${CMAKE_COMMAND}" -P "${CMAKE_CURRENT_BINARY_DIR}/cmake_uninstall.cmake")
