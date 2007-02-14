@@ -11,10 +11,6 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "om_bioclim", "om_bioclim\om
 	ProjectSection(ProjectDependencies) = postProject
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "om_bioclim_distance", "om_bioclim_distance\om_bioclim_distance.vcproj", "{0067E378-5AEB-4A71-A083-BA7160F305B9}"
-	ProjectSection(ProjectDependencies) = postProject
-	EndProjectSection
-EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "om_create", "om_create\om_create.vcproj", "{3868CFCA-7A02-43B6-B876-E5F60C42AAB6}"
 	ProjectSection(ProjectDependencies) = postProject
 	EndProjectSection
@@ -61,6 +57,8 @@ Global
 		Debug = Debug
 		Release = Release
 	EndGlobalSection
+	GlobalSection(ProjectDependencies) = postSolution
+	EndGlobalSection
 	GlobalSection(ProjectConfiguration) = postSolution
 		{524F2298-7DCD-4C7D-B837-3B13F072C059}.Debug.ActiveCfg = Debug|Win32
 		{524F2298-7DCD-4C7D-B837-3B13F072C059}.Debug.Build.0 = Debug|Win32
@@ -74,10 +72,6 @@ Global
 		{70482A69-CBB5-4151-B963-A119B8C12730}.Debug.Build.0 = Debug|Win32
 		{70482A69-CBB5-4151-B963-A119B8C12730}.Release.ActiveCfg = Release|Win32
 		{70482A69-CBB5-4151-B963-A119B8C12730}.Release.Build.0 = Release|Win32
-		{0067E378-5AEB-4A71-A083-BA7160F305B9}.Debug.ActiveCfg = Debug|Win32
-		{0067E378-5AEB-4A71-A083-BA7160F305B9}.Debug.Build.0 = Debug|Win32
-		{0067E378-5AEB-4A71-A083-BA7160F305B9}.Release.ActiveCfg = Release|Win32
-		{0067E378-5AEB-4A71-A083-BA7160F305B9}.Release.Build.0 = Release|Win32
 		{3868CFCA-7A02-43B6-B876-E5F60C42AAB6}.Debug.ActiveCfg = Debug|Win32
 		{3868CFCA-7A02-43B6-B876-E5F60C42AAB6}.Debug.Build.0 = Debug|Win32
 		{3868CFCA-7A02-43B6-B876-E5F60C42AAB6}.Release.ActiveCfg = Release|Win32
