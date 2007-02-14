@@ -36,6 +36,7 @@
 #include <openmodeller/Log.hh>
 
 #include <TeDatabase.h>
+#include <TeUtils.h>
 
 #include <vector>
 using std::vector;
@@ -181,7 +182,7 @@ TeOccurrences::loadOccurrences( const char *url )
 
 		Coord lg = Coord( portal->getDouble(0) );
 		Coord lt = Coord( portal->getDouble(1) );
-		addOccurrence( sprintf("%s", sequence), sp.c_str(), lg, lt, error, abundance, num_attributes, attributes );
+		addOccurrence( Te2String(sequence).c_str(), sp.c_str(), lg, lt, error, abundance, num_attributes, attributes );
 	}
 
 	delete portal;
