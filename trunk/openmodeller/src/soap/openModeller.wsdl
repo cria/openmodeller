@@ -473,7 +473,7 @@
 <service name="openModeller">
  <documentation>Web Services interface for remote invocation of openModeller</documentation>
  <port name="openModeller" binding="tns:openModeller">
-  <SOAP:address location="http://localhost:8085"/>
+  <SOAP:address location="http://modeller.cria.org.br:80/cgi-bin/om_soap_server.cgi"/>
  </port>
 </service>
 
