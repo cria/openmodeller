@@ -218,7 +218,7 @@ sub prepare_soap
 
         $soap = SOAP::Lite
                           #-> service('http://openmodeller.sf.net/ns/1.0/openmodeller.wsdl')
-		           -> ns( $omws_uri )
+		           -> uri( $omws_uri )
 		           -> proxy( $server )
 		           -> encoding( 'iso-8859-1' );
     }
