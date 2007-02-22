@@ -6,14 +6,14 @@
 */
 #include "soapH.h"
 
-SOAP_SOURCE_STAMP("@(#) soapClient.cpp ver 2.7.6d 2006-12-04 16:47:03 GMT")
+SOAP_SOURCE_STAMP("@(#) soapClient.cpp ver 2.7.6d 2007-02-22 16:17:56 GMT")
 
 
 SOAP_FMAC5 int SOAP_FMAC6 soap_call_omws__ping(struct soap *soap, const char *soap_endpoint, const char *soap_action, void *_, int &status)
 {	struct omws__ping soap_tmp_omws__ping;
 	struct omws__pingResponse *soap_tmp_omws__pingResponse;
 	if (!soap_endpoint)
-		soap_endpoint = "http://localhost:8085";
+		soap_endpoint = "http://modeller.cria.org.br:80/cgi-bin/om_soap_server.cgi";
 	soap->encodingStyle = NULL;
 	soap_tmp_omws__ping._ = _;
 	soap_begin(soap);
@@ -64,7 +64,7 @@ SOAP_FMAC5 int SOAP_FMAC6 soap_call_omws__ping(struct soap *soap, const char *so
 SOAP_FMAC5 int SOAP_FMAC6 soap_call_omws__getAlgorithms(struct soap *soap, const char *soap_endpoint, const char *soap_action, void *_, struct omws__getAlgorithmsResponse *out)
 {	struct omws__getAlgorithms soap_tmp_omws__getAlgorithms;
 	if (!soap_endpoint)
-		soap_endpoint = "http://localhost:8085";
+		soap_endpoint = "http://modeller.cria.org.br:80/cgi-bin/om_soap_server.cgi";
 	soap->encodingStyle = NULL;
 	soap_tmp_omws__getAlgorithms._ = _;
 	soap_begin(soap);
@@ -114,7 +114,7 @@ SOAP_FMAC5 int SOAP_FMAC6 soap_call_omws__getAlgorithms(struct soap *soap, const
 SOAP_FMAC5 int SOAP_FMAC6 soap_call_omws__getLayers(struct soap *soap, const char *soap_endpoint, const char *soap_action, void *_, struct omws__getLayersResponse *out)
 {	struct omws__getLayers soap_tmp_omws__getLayers;
 	if (!soap_endpoint)
-		soap_endpoint = "http://localhost:8085";
+		soap_endpoint = "http://modeller.cria.org.br:80/cgi-bin/om_soap_server.cgi";
 	soap->encodingStyle = NULL;
 	soap_tmp_omws__getLayers._ = _;
 	soap_begin(soap);
@@ -165,7 +165,7 @@ SOAP_FMAC5 int SOAP_FMAC6 soap_call_omws__createModel(struct soap *soap, const c
 {	struct omws__createModel soap_tmp_omws__createModel;
 	struct omws__createModelResponse *soap_tmp_omws__createModelResponse;
 	if (!soap_endpoint)
-		soap_endpoint = "http://localhost:8085";
+		soap_endpoint = "http://modeller.cria.org.br:80/cgi-bin/om_soap_server.cgi";
 	soap->encodingStyle = NULL;
 	soap_tmp_omws__createModel.om__ModelParameters = om__ModelParameters;
 	soap_begin(soap);
@@ -216,7 +216,7 @@ SOAP_FMAC5 int SOAP_FMAC6 soap_call_omws__createModel(struct soap *soap, const c
 SOAP_FMAC5 int SOAP_FMAC6 soap_call_omws__getModel(struct soap *soap, const char *soap_endpoint, const char *soap_action, char *ticket, struct omws__getModelResponse *out)
 {	struct omws__getModel soap_tmp_omws__getModel;
 	if (!soap_endpoint)
-		soap_endpoint = "http://localhost:8085";
+		soap_endpoint = "http://modeller.cria.org.br:80/cgi-bin/om_soap_server.cgi";
 	soap->encodingStyle = NULL;
 	soap_tmp_omws__getModel.ticket = ticket;
 	soap_begin(soap);
@@ -267,7 +267,7 @@ SOAP_FMAC5 int SOAP_FMAC6 soap_call_omws__projectModel(struct soap *soap, const 
 {	struct omws__projectModel soap_tmp_omws__projectModel;
 	struct omws__projectModelResponse *soap_tmp_omws__projectModelResponse;
 	if (!soap_endpoint)
-		soap_endpoint = "http://localhost:8085";
+		soap_endpoint = "http://modeller.cria.org.br:80/cgi-bin/om_soap_server.cgi";
 	soap->encodingStyle = NULL;
 	soap_tmp_omws__projectModel.om__ProjectionParameters = om__ProjectionParameters;
 	soap_begin(soap);
@@ -319,7 +319,7 @@ SOAP_FMAC5 int SOAP_FMAC6 soap_call_omws__getProgress(struct soap *soap, const c
 {	struct omws__getProgress soap_tmp_omws__getProgress;
 	struct omws__getProgressResponse *soap_tmp_omws__getProgressResponse;
 	if (!soap_endpoint)
-		soap_endpoint = "http://localhost:8085";
+		soap_endpoint = "http://modeller.cria.org.br:80/cgi-bin/om_soap_server.cgi";
 	soap->encodingStyle = NULL;
 	soap_tmp_omws__getProgress.ticket = ticket;
 	soap_begin(soap);
@@ -371,7 +371,7 @@ SOAP_FMAC5 int SOAP_FMAC6 soap_call_omws__getLog(struct soap *soap, const char *
 {	struct omws__getLog soap_tmp_omws__getLog;
 	struct omws__getLogResponse *soap_tmp_omws__getLogResponse;
 	if (!soap_endpoint)
-		soap_endpoint = "http://localhost:8085";
+		soap_endpoint = "http://modeller.cria.org.br:80/cgi-bin/om_soap_server.cgi";
 	soap->encodingStyle = NULL;
 	soap_tmp_omws__getLog.ticket = ticket;
 	soap_begin(soap);
@@ -423,7 +423,7 @@ SOAP_FMAC5 int SOAP_FMAC6 soap_call_omws__getLayerAsAttachment(struct soap *soap
 {	struct omws__getLayerAsAttachment soap_tmp_omws__getLayerAsAttachment;
 	struct omws__getLayerAsAttachmentResponse *soap_tmp_omws__getLayerAsAttachmentResponse;
 	if (!soap_endpoint)
-		soap_endpoint = "http://localhost:8085";
+		soap_endpoint = "http://modeller.cria.org.br:80/cgi-bin/om_soap_server.cgi";
 	soap->encodingStyle = NULL;
 	soap_tmp_omws__getLayerAsAttachment.id = id;
 	soap_begin(soap);
@@ -477,7 +477,7 @@ SOAP_FMAC5 int SOAP_FMAC6 soap_call_omws__getLayerAsUrl(struct soap *soap, const
 {	struct omws__getLayerAsUrl soap_tmp_omws__getLayerAsUrl;
 	struct omws__getLayerAsUrlResponse *soap_tmp_omws__getLayerAsUrlResponse;
 	if (!soap_endpoint)
-		soap_endpoint = "http://localhost:8085";
+		soap_endpoint = "http://modeller.cria.org.br:80/cgi-bin/om_soap_server.cgi";
 	soap->encodingStyle = NULL;
 	soap_tmp_omws__getLayerAsUrl.id = id;
 	soap_begin(soap);
@@ -528,7 +528,7 @@ SOAP_FMAC5 int SOAP_FMAC6 soap_call_omws__getLayerAsUrl(struct soap *soap, const
 SOAP_FMAC5 int SOAP_FMAC6 soap_call_omws__getProjectionMetadata(struct soap *soap, const char *soap_endpoint, const char *soap_action, char *ticket, struct omws__getProjectionMetadataResponse *out)
 {	struct omws__getProjectionMetadata soap_tmp_omws__getProjectionMetadata;
 	if (!soap_endpoint)
-		soap_endpoint = "http://localhost:8085";
+		soap_endpoint = "http://modeller.cria.org.br:80/cgi-bin/om_soap_server.cgi";
 	soap->encodingStyle = NULL;
 	soap_tmp_omws__getProjectionMetadata.ticket = ticket;
 	soap_begin(soap);
