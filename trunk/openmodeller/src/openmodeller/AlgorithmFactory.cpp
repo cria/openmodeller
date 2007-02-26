@@ -297,9 +297,11 @@ AlgorithmFactory::searchDefaultDirs( )
 {
   vector<string> entries = initialPluginPath();
   vector<string>::iterator it = entries.begin();
+
   while( it != entries.end() ) {
+
     AlgorithmFactory::addDir( (*it).c_str() );
-    std::cout << "Checking for alg in : " << (*it).c_str() << std::endl; 
+    //std::cout << "Checking for alg in : " << (*it).c_str() << std::endl; 
     ++it;
   }
 
