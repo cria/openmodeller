@@ -184,6 +184,9 @@ SamplerImpl::setConfiguration( const ConstConfigurationPtr& config )
     absence->setConfiguration( absence_config );
   }
 
+  g_log.debug( "Loaded %u presence(s)\n", presence->numOccurrences() );
+  g_log.debug( "Loaded %u absence(s)\n", absence->numOccurrences() );
+
   _env = env;
   _presence = presence;
   _absence  = absence;
