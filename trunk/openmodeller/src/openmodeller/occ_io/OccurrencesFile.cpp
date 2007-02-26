@@ -99,10 +99,11 @@ OccurrencesFile::loadOccurrences( const char *file_name )
 
   // Read all occurrences line by line inserting into the
   // appropriate object.
-  char line[256];
+  const int line_len = 600;
+  char line[line_len];
   char *pos;
 
-  while ( fgets( line, 256, file ) )
+  while ( fgets( line, line_len, file ) )
   {
     // Remove \r that DOS loves to use.
     pos = strchr( line, '\r' );
