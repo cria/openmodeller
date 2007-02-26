@@ -34,6 +34,7 @@
 #include <openmodeller/Occurrences.hh>
 #include <openmodeller/Environment.hh>
 #include <openmodeller/Configuration.hh>
+#include <openmodeller/Log.hh>
 
 #include <string.h>
 
@@ -68,6 +69,8 @@ void ConfusionMatrix::calculate(const EnvironmentPtr & env,
 				const OccurrencesPtr& presences, 
 				const OccurrencesPtr& absences)
 {
+  g_log.debug( "Calculating confusion Matrix\n" );
+
   int i;
   int predictionIndex, actualIndex;
   Scalar predictionValue;
@@ -79,43 +82,80 @@ void ConfusionMatrix::calculate(const EnvironmentPtr & env,
 
   model->setNormalization(env);
 
-  i =0;
-  while( it != fin ) {
-    Sample sample; 
-    if (env)
-      sample = env->get( (*it)->x(), (*it)->y() );
-    else
-      sample = (*it)->environment();
+  g_log.debug( "Testing presences\n" );
 
-    if ( sample.size() >0 ) {
+  i = 0;
+  while( it != fin ) {
+
+    Sample sample; 
+
+    if ( env ) {
+
+      sample = env->get( (*it)->x(), (*it)->y() );
+    }
+    else {
+
+      sample = (*it)->environment();
+    }
+
+    if ( sample.size() > 0 ) {
+
+      ++i;
+
       predictionValue = model->getValue( sample );
       predictionIndex = (predictionValue >= _predictionThreshold);
 
       actualIndex = 1; //data.isPresence(i);
       _confMatrix[predictionIndex][actualIndex]++;
+
+      g_log.debug( "Probability for point %s (%f,%f): %f\n", 
+                   ((*it)->id()).c_str(), (*it)->x(), (*it)->y(), predictionValue );
     }
+
     ++it;
   }
 
+  g_log.debug( "Tested %u presence point(s)\n", i );
+
+  g_log.debug( "Testing absences\n" );
+
+  i = 0;
+
   if ( absences && ! absences->isEmpty() ) {
+
     it = absences->begin();
     fin = absences->end();
 
     while( it != fin ) {
-      Sample sample;
-      if (env)
-	sample = env->get( (*it)->x(), (*it)->y() );
-      else
-	sample = (*it)->environment();
 
-      if ( sample.size() >0 ) {
+      Sample sample;
+
+      if ( env ) {
+
+	sample = env->get( (*it)->x(), (*it)->y() );
+      }
+      else {
+
+	sample = (*it)->environment();
+      }
+
+      if ( sample.size() > 0 ) {
+
+        ++i;
+
 	predictionValue = model->getValue( sample );
 	predictionIndex = (predictionValue >= _predictionThreshold);
 	actualIndex = 0; //data.isAbsence(i);
 	_confMatrix[predictionIndex][actualIndex]++;
+
+        g_log.debug( "Probability for point %s (%f,%f): %f\n", 
+                     ((*it)->id()).c_str(), (*it)->x(), (*it)->y(), predictionValue );
       }
+
       ++it;
     }
+
+    g_log.debug( "Tested %u absence point(s)\n", i );
   }
 
   _ready = true;
