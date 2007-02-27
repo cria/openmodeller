@@ -75,6 +75,35 @@ INCLUDE_DIRECTORIES(
      ${CMAKE_CURRENT_SOURCE_DIR}/../
 )
 
+########################################################
+# Build openmodellerxml lib
+
+IF (WIN32)
+  IF (MSVC)
+    ADD_DEFINITIONS("-DCORE_EXPORT=__declspec(dllexport)")
+  ELSE (MSVC)
+    ADD_DEFINITIONS("-UCORE_EXPORT \"-DCORE_EXPORT=__declspec(dllexport)\"")
+  ENDIF (MSVC)
+ENDIF (WIN32)
+
+ADD_LIBRARY (openmodellerxml SHARED ${LIBOPENMODELLERXML_SRCS})
+
+TARGET_LINK_LIBRARIES(openmodellerxml openmodeller )
+
+INSTALL(TARGETS openmodellerxml RUNTIME DESTINATION ${OM_BIN_DIR} LIBRARY DESTINATION lib)
+
+
+
+########################################################
+# Build the varios command line apps
+IF (WIN32)
+  IF (MSVC)
+    ADD_DEFINITIONS("-DCORE_EXPORT=__declspec(dllimport)")
+  ELSE (MSVC)
+    ADD_DEFINITIONS("-UCORE_EXPORT \"-DCORE_EXPORT=__declspec(dllimport)\"")
+  ENDIF (MSVC)
+ENDIF (WIN32)
+
 ADD_EXECUTABLE (om_console ${OMCONSOLE_SRCS})
 TARGET_LINK_LIBRARIES(om_console openmodeller )
 
