@@ -153,7 +153,9 @@ scanDirectory( string dir )
 
   // check for empty string
   if (!dir.length())
+  {
 	  return entries;
+  }
 
   // check for slashes at the end of directory name
   if ( (filepattern.find_last_of("/")  != filepattern.length() - 1) && 
@@ -171,8 +173,8 @@ scanDirectory( string dir )
   while (!_findnext(dirhandle, &fileinfo))
   { nent++; }
 
-  // Directory path size
-  int dir_size = dir.size();
+  // Directory path size - not used so remove this!
+  //int dir_size = dir.size();
 
   // Windows findfirst and findnext calls.
   dirhandle = _findfirst(filepattern.c_str(), &fileinfo); 

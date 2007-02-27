@@ -26,7 +26,7 @@
 #include <gsl/gsl_cdf.h>
 #include <math.h>
 
-#ifdef WIN32
+#ifdef MSVC
 #define isnan _isnan
 #endif
 
