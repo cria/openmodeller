@@ -39,7 +39,7 @@ ENDIF (NOT PROJ_FOUND OR NOT SQLITE3_FOUND OR NOT GDAL_FOUND)
 #############################################################
 # enable warnings and set compile time defines
 
-ADD_DEFINITIONS( -Wall -Werror)
+ADD_DEFINITIONS( -Wall )
 ADD_DEFINITIONS(-DVERSION=\\"0.4\\")
 ADD_DEFINITIONS(-DCONFIG_FILE=\\"om.cfg\\")
 ADD_DEFINITIONS(-DPLUGINPATH=\\"algs\\")
