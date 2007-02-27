@@ -299,9 +299,8 @@ AlgorithmFactory::searchDefaultDirs( )
   vector<string>::iterator it = entries.begin();
 
   while( it != entries.end() ) {
-
+    g_log.debug( "Checking for algs in : %s \n" , (*it).c_str());
     AlgorithmFactory::addDir( (*it).c_str() );
-    //std::cout << "Checking for alg in : " << (*it).c_str() << std::endl; 
     ++it;
   }
 
