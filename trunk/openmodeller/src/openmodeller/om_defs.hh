@@ -68,11 +68,12 @@ typedef double Scalar;   ///< Type of map values.
 # endif
 
 // disable warnings about lack of DLL export in inner class members
+#ifdef MSVC
 #pragma warning( disable : 4251)
 #pragma warning( disable : 4275)
 // disable warning on deprecation of standard C functions and others
 #pragma warning( disable : 4996)
-
+#endif
 #else
 
 # define OM_ALG_DLL_EXPORT

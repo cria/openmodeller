@@ -39,7 +39,7 @@ ENDIF (NOT PROJ_FOUND OR NOT SQLITE3_FOUND OR NOT GDAL_FOUND)
 #############################################################
 # enable warnings and set compile time defines
 
-ADD_DEFINITIONS( -Wall )
+ADD_DEFINITIONS( -Wall -Werror)
 ADD_DEFINITIONS(-DVERSION=\\"0.4\\")
 ADD_DEFINITIONS(-DCONFIG_FILE=\\"om.cfg\\")
 ADD_DEFINITIONS(-DPLUGINPATH=\\"algs\\")
@@ -61,6 +61,9 @@ IF (WIN32)
   SET (OM_ALG_DIR ${CMAKE_INSTALL_PREFIX}/algs)
   SET (OM_INCLUDE_DIR ${CMAKE_INSTALL_PREFIX}/include)
   SET (OM_EXAMPLES_DIR ${CMAKE_INSTALL_PREFIX}/examples)
+
+  SET (CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -Wl,--enable-runtime-pseudo-reloc")
+  SET (CMAKE_MODULE_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -Wl,--enable-runtime-pseudo-reloc")
 ELSE (WIN32)
   IF (APPLE)
     # for Mac OS X, everything is put inside an application bundle
@@ -73,8 +76,8 @@ ELSE (WIN32)
   # common for MAC and UNIX
   SET (OM_DATA_DIR   ${CMAKE_INSTALL_PREFIX}/share/qgis)
   SET (OM_PLUGIN_DIR ${CMAKE_INSTALL_PREFIX}/lib/qgis)
-  SET(OM_INCLUDE_DIR "${CMAKE_INSTALL_PREFIX}/include/openmodeller")
-  SET(OM_EXAMPLES_DIR "${CMAKE_INSTALL_PREFIX}/share/openmodeller/examples")
+  SET (OM_INCLUDE_DIR "${CMAKE_INSTALL_PREFIX}/include/openmodeller")
+  SET (OM_EXAMPLES_DIR "${CMAKE_INSTALL_PREFIX}/share/openmodeller/examples")
 
   IF (UNIX AND NOT APPLE)
     SET (OM_BIN_DIR    ${CMAKE_INSTALL_PREFIX}/bin)
@@ -93,6 +96,7 @@ IF (WIN32)
   IF (MSVC)
     ADD_DEFINITIONS(-DUSE_PRAGMA)
     ADD_DEFINITIONS(-DDLL_CORE_IMPORT)
+    ADD_DEFINITIONS(-DMSVC)
   ELSE (MSVC)
 ENDIF (WIN32)
 
