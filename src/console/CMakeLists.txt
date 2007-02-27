@@ -66,8 +66,8 @@ set (EXTRA_DIST
 ########################################################
 # Build
 
-ADD_LIBRARY (openmodellerxml SHARED ${LIBOPENMODELLERXML_SRCS})
-TARGET_LINK_LIBRARIES(openmodellerxml openmodeller )
+#ADD_LIBRARY (openmodellerxml SHARED ${LIBOPENMODELLERXML_SRCS})
+#TARGET_LINK_LIBRARIES(openmodellerxml openmodeller )
 
 INCLUDE_DIRECTORIES(
      ${CMAKE_CURRENT_SOURCE_DIR}
@@ -78,17 +78,17 @@ INCLUDE_DIRECTORIES(
 ADD_EXECUTABLE (om_console ${OMCONSOLE_SRCS})
 TARGET_LINK_LIBRARIES(om_console openmodeller )
 
-ADD_EXECUTABLE (om_create ${OMCREATE_SRCS})
-TARGET_LINK_LIBRARIES(om_create openmodeller openmodellerxml)
+#ADD_EXECUTABLE (om_create ${OMCREATE_SRCS})
+#TARGET_LINK_LIBRARIES(om_create openmodeller openmodellerxml)
 
-ADD_EXECUTABLE (om_project ${OMPROJECT_SRCS})
-TARGET_LINK_LIBRARIES(om_project openmodeller openmodellerxml)
+#ADD_EXECUTABLE (om_project ${OMPROJECT_SRCS})
+#TARGET_LINK_LIBRARIES(om_project openmodeller openmodellerxml)
 
-ADD_EXECUTABLE (om_dump ${OMDUMP_SRCS})
-TARGET_LINK_LIBRARIES(om_dump openmodeller)
+#ADD_EXECUTABLE (om_dump ${OMDUMP_SRCS})
+#TARGET_LINK_LIBRARIES(om_dump openmodeller)
 
-ADD_EXECUTABLE (om_sampledump ${OMSAMPLEDUMP_SRCS})
-TARGET_LINK_LIBRARIES(om_sampledump openmodeller)
+#ADD_EXECUTABLE (om_sampledump ${OMSAMPLEDUMP_SRCS})
+#TARGET_LINK_LIBRARIES(om_sampledump openmodeller)
 
 if (X11_FOUND)
   MESSAGE ("Building with X11 includes at ${X11_INCLUDE_DIR}...")
@@ -106,12 +106,12 @@ ENDIF(X11_FOUND)
 ########################################################
 # Install
 
-INSTALL(TARGETS openmodellerxml RUNTIME DESTINATION ${OM_BIN_DIR} LIBRARY DESTINATION lib)
+#INSTALL(TARGETS openmodellerxml RUNTIME DESTINATION ${OM_BIN_DIR} LIBRARY DESTINATION lib)
 INSTALL(TARGETS om_console RUNTIME DESTINATION ${OM_BIN_DIR})
-INSTALL(TARGETS om_create RUNTIME DESTINATION ${OM_BIN_DIR})
-INSTALL(TARGETS om_project RUNTIME DESTINATION ${OM_BIN_DIR})
-INSTALL(TARGETS om_dump RUNTIME DESTINATION ${OM_BIN_DIR})
-INSTALL(TARGETS om_sampledump RUNTIME DESTINATION ${OM_BIN_DIR})
+#INSTALL(TARGETS om_create RUNTIME DESTINATION ${OM_BIN_DIR})
+#INSTALL(TARGETS om_project RUNTIME DESTINATION ${OM_BIN_DIR})
+#INSTALL(TARGETS om_dump RUNTIME DESTINATION ${OM_BIN_DIR})
+#INSTALL(TARGETS om_sampledump RUNTIME DESTINATION ${OM_BIN_DIR})
 if (X11_FOUND)
   INSTALL(TARGETS om_viewer RUNTIME DESTINATION ${OM_BIN_DIR})
   INSTALL(TARGETS om_niche RUNTIME DESTINATION ${OM_BIN_DIR})
