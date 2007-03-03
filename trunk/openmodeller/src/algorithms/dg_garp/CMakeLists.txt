@@ -36,4 +36,4 @@ INCLUDE_DIRECTORIES(
 ########################################################
 # Install
 
-INSTALL(TARGETS desktop_garp RUNTIME DESTINATION ${OM_ALG_DIR} LIBRARY DESTINATION algs)
+INSTALL(TARGETS desktop_garp RUNTIME DESTINATION ${OM_ALG_DIR} LIBRARY DESTINATION ${OM_ALG_DIR})

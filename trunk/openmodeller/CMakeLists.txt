@@ -72,16 +72,17 @@ ELSE (WIN32)
     SET (OM_BIN_DIR    ${CMAKE_INSTALL_PREFIX})
     # path for library references
     SET (CMAKE_INSTALL_NAME_DIR @executable_path/lib)
+    SET (OM_ALG_DIR ${CMAKE_INSTALL_PREFIX}/algs)
   ENDIF (APPLE)
 
   # common for MAC and UNIX
   SET (OM_DATA_DIR   ${CMAKE_INSTALL_PREFIX}/share/qgis)
-  SET (OM_ALG_DIR ${CMAKE_INSTALL_PREFIX}/lib/openmodeller)
   SET (OM_INCLUDE_DIR "${CMAKE_INSTALL_PREFIX}/include/openmodeller")
   SET (OM_EXAMPLES_DIR "${CMAKE_INSTALL_PREFIX}/share/openmodeller/examples")
 
   IF (UNIX AND NOT APPLE)
     SET (OM_BIN_DIR    ${CMAKE_INSTALL_PREFIX}/bin)
+    SET (OM_ALG_DIR ${CMAKE_INSTALL_PREFIX}/lib/openmodeller)
     ADD_DEFINITIONS(-DPREFIX=\\"${CMAKE_INSTALL_PREFIX}\\")
     ADD_DEFINITIONS(-DPLUGINPATH=\\"${OM_ALG_DIR}\\")
     ADD_DEFINITIONS(-DPKGDATAPATH=\\"${OM_DATA_DIR}\\")
