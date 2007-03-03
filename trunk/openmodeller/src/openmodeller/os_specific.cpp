@@ -211,7 +211,8 @@ filter( const TDirent *dir )
   // constant version number should not be in filter but
   // symlinks ending in .0.dylib and .dylib also exist
   // and each library should be found only once
-  char *ext = ".0.0.0.dylib";
+  char *ext = ".so";
+  //char *ext = ".0.0.0.dylib";
 #elif defined(__CYGWIN__)
   // under cygwin, libraries can be loaded using dlopen
   // but their extension is .dll
