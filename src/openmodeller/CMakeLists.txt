@@ -81,7 +81,13 @@ TARGET_LINK_LIBRARIES(openmodeller
   ${GDAL_LIBRARY}
   ${PLATFORM_LIBRARIES}
 )
-
+IF (APPLE)
+ TARGET_LINK_LIBRARIES(openmodeller
+   "-framework CoreFoundation"
+   "-framework Cocoa"
+  )
+ENDIF (APPLE)
+  
 INSTALL(TARGETS openmodeller
   RUNTIME DESTINATION ${OM_BIN_DIR}
   LIBRARY DESTINATION lib)

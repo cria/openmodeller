@@ -34,6 +34,8 @@ using std::vector;
 using std::string;
 #if defined(__APPLE__)
 //for getting app bundle path
+    
+#include <CoreFoundation/CoreFoundation.h>
 #include <ApplicationServices/ApplicationServices.h>
 #endif
 
@@ -94,7 +96,7 @@ initialPluginPath()
   // 1) environment variable: OM_LIB_PATH
   // 2) read from CONFIG_FILE
   // 3) PLUGINPATH compiled constant.
-  // 4) on mac <application bundle>.app/Contents/Frameworks/openmodeller
+  // 4) on mac <application bundle>.app/Contents/MacOS/algs
 
   char *env = getenv( "OM_LIB_PATH" );
 
@@ -166,23 +168,14 @@ initialPluginPath()
   }
 
 #if defined(__APPLE__)
-  // hard coded by Tim for Mac build
-  entries.push_back( "./algs/" );
-  entries.push_back( "../Frameworks/openmodeller/" );
-  entries.push_back( "/Applications/omgui1.app/Contents/Frameworks/openmodeller/" );
-  entries.push_back( "Contents/Frameworks/openmodeller/" );
-  entries.push_back( "/Users/timsutton/dev/cpp/omgui1/bin/omgui1.app/Contents/Frameworks/openmodeller/" );
-
-	/*
 	CFURLRef myPluginRef = CFBundleCopyBundleURL(CFBundleGetMainBundle());
 	CFStringRef myMacPath = CFURLCopyFileSystemPath(myPluginRef, kCFURLPOSIXPathStyle);
 	const char *mypPathPtr = CFStringGetCStringPtr(myMacPath,CFStringGetSystemEncoding());
 	CFRelease(myPluginRef);
 	CFRelease(myMacPath);
 	std::string myFullPath(mypPathPtr);
-	myFullPath += "/Contents/Frameworks/openmodeller";
+	myFullPath += "/Contents/MacOS/algs";
   entries.push_back(myFullPath.c_str());
-	*/
 #else
   entries.push_back( PLUGINPATH );
 #endif
