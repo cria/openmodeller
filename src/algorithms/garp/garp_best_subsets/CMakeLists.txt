@@ -50,4 +50,4 @@ INCLUDE_DIRECTORIES(
 ########################################################
 # Install
 
-INSTALL(TARGETS garp_best_subsets RUNTIME DESTINATION ${OM_ALG_DIR} LIBRARY DESTINATION algs)
+INSTALL(TARGETS garp_best_subsets RUNTIME DESTINATION ${OM_ALG_DIR} LIBRARY DESTINATION ${OM_ALG_DIR})
