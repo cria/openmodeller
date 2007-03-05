@@ -20,7 +20,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="../../../src;../../../src/openmodeller;&quot;$(GDAL_HOME)/include&quot;;&quot;$(EXPAT_HOME)/Source/lib&quot;;&quot;$(JAVA_HOME)/include&quot;;&quot;$(JAVA_HOME)/bin&quot;;&quot;$(TERRALIB_HOME)\src\terralib\kernel&quot;;&quot;$(TERRALIB_HOME)\src\terralib\application&quot;;&quot;$(TERRALIB_HOME)\terralibw\ado&quot;;&quot;$(TERRALIB_HOME)\src\terralib\drivers\MySQL&quot;;&quot;$(TERRALIB_HOME)\src\terralib\drivers\MySQL\include&quot;;&quot;$(TERRALIB_HOME)\src\terralib\drivers\PostgreSQL&quot;;&quot;$(TERRALIB_HOME)\src\terralib\drivers\PostgreSQL\includepg&quot;;&quot;$(TERRALIB_HOME)\src\terralib\drivers\OracleSpatial&quot;;&quot;$(TERRALIB_HOME)\src\terralib\drivers\OracleSpatial\OCI\include&quot;"
+				AdditionalIncludeDirectories="../../../src;../../../src/openmodeller;&quot;$(GDAL_HOME)/include&quot;;&quot;$(EXPAT_HOME)/Source/lib&quot;;&quot;$(JAVA_HOME)/include&quot;;&quot;$(JAVA_HOME)/bin&quot;;&quot;$(TERRALIB_HOME)\src\terralib\kernel&quot;;&quot;$(TERRALIB_HOME)\src\terralib\application&quot;;&quot;$(TERRALIB_HOME)\terralibw\ado&quot;;&quot;$(TERRALIB_HOME)\src\terralib\drivers\MySQL&quot;;&quot;$(TERRALIB_HOME)\src\terralib\drivers\MySQL\include&quot;;&quot;$(TERRALIB_HOME)\src\terralib\drivers\PostgreSQL&quot;;&quot;$(TERRALIB_HOME)\src\terralib\drivers\PostgreSQL\includepg&quot;;&quot;$(TERRALIB_HOME)\src\terralib\drivers\Oracle&quot;;&quot;$(TERRALIB_HOME)\src\terralib\drivers\Oracle\OCI\include&quot;"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;LIBOPENMODELLER_DLL_EXPORTS;VERSION=\&quot;0.4\&quot;;PLUGINPATH=\&quot;.\&quot;;CONFIG_FILE=\&quot;om_config.txt\&quot;;BUILD_TERRALIB"
 				MinimalRebuild="TRUE"
 				BasicRuntimeChecks="3"
@@ -38,9 +38,9 @@
 			<Tool
 				Name="VCLinkerTool"
 				IgnoreImportLibrary="TRUE"
-				AdditionalOptions="/FORCE:MULTIPLE
+				AdditionalOptions="
 "
-				AdditionalDependencies="libexpat.lib gdal_i.lib $(TERRALIB_HOME)\terralibw\terralib\Debug\terralib.lib $(TERRALIB_HOME)\terralibw\tiff\Debug\tiff.lib $(TERRALIB_HOME)\terralibw\libjpeg\Debug\libjpeg.lib $(TERRALIB_HOME)\terralibw\zlib\zlibdll.lib $(TERRALIB_HOME)\terralibw\MySQL\libmysql.lib $(TERRALIB_HOME)\terralibw\PostgreSQL\libpq.lib $(TERRALIB_HOME)\terralibw\OracleSpatial\Oci\Oci.lib wsock32.lib"
+				AdditionalDependencies="libexpat.lib gdal_i.lib $(TERRALIB_HOME)\terralibw\terralib\Debug\terralib.lib $(TERRALIB_HOME)\terralibw\tiff\Debug\tiff.lib $(TERRALIB_HOME)\terralibw\libjpeg\Debug\libjpeg.lib $(TERRALIB_HOME)\terralibw\zlib\zlibdll.lib $(TERRALIB_HOME)\terralibw\MySQL\libmysql.lib $(TERRALIB_HOME)\terralibw\PostgreSQL\libpq.lib $(TERRALIB_HOME)\terralibw\Oracle\Oci\Oci.lib wsock32.lib"
 				OutputFile="Debug/libopenmodeller_debug.dll"
 				LinkIncremental="2"
 				SuppressStartupBanner="TRUE"
@@ -455,19 +455,19 @@
 				RelativePath="$(TERRALIB_HOME)\src\terralib\drivers\MySQL\TeMySQL.cpp">
 			</File>
 			<File
-				RelativePath="$(TERRALIB_HOME)\src\terralib\drivers\OracleSpatial\TeOCIConnect.cpp">
+				RelativePath="$(TERRALIB_HOME)\src\terralib\drivers\Oracle\TeOCIConnect.cpp">
 			</File>
 			<File
-				RelativePath="$(TERRALIB_HOME)\src\terralib\drivers\OracleSpatial\TeOCICursor.cpp">
+				RelativePath="$(TERRALIB_HOME)\src\terralib\drivers\Oracle\TeOCICursor.cpp">
 			</File>
 			<File
-				RelativePath="$(TERRALIB_HOME)\src\terralib\drivers\OracleSpatial\TeOCIOracle.cpp">
+				RelativePath="$(TERRALIB_HOME)\src\terralib\drivers\Oracle\TeOCIOracle.cpp">
 			</File>
 			<File
-				RelativePath="$(TERRALIB_HOME)\src\terralib\drivers\OracleSpatial\TeOCISDO.cpp">
+				RelativePath="$(TERRALIB_HOME)\src\terralib\drivers\Oracle\TeOCISDO.cpp">
 			</File>
 			<File
-				RelativePath="$(TERRALIB_HOME)\src\terralib\drivers\OracleSpatial\TeOracleSpatial.cpp">
+				RelativePath="$(TERRALIB_HOME)\src\terralib\drivers\Oracle\TeOracleSpatial.cpp">
 			</File>
 			<File
 				RelativePath="$(TERRALIB_HOME)\src\terralib\drivers\PostgreSQL\TePGInterface.cpp">
