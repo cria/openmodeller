@@ -98,7 +98,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="2"
 				InlineFunctionExpansion="1"
-				AdditionalIncludeDirectories="../../../src;../../../src/openmodeller;&quot;$(GDAL_HOME)/include&quot;;&quot;$(EXPAT_HOME)/Source/lib&quot;;&quot;$(JAVA_HOME)/include&quot;;&quot;$(JAVA_HOME)/bin&quot;;&quot;$(TERRALIB_HOME)\src\terralib\kernel&quot;;&quot;$(TERRALIB_HOME)\src\terralib\application&quot;;&quot;$(TERRALIB_HOME)\terralibw\ado&quot;;&quot;$(TERRALIB_HOME)\src\terralib\drivers\MySQL&quot;;&quot;$(TERRALIB_HOME)\src\terralib\drivers\MySQL\include&quot;;&quot;$(TERRALIB_HOME)\src\terralib\drivers\PostgreSQL&quot;;&quot;$(TERRALIB_HOME)\src\terralib\drivers\PostgreSQL\includepg&quot;;&quot;$(TERRALIB_HOME)\src\terralib\drivers\OracleSpatial&quot;;&quot;$(TERRALIB_HOME)\src\terralib\drivers\OracleSpatial\OCI\include&quot;"
+				AdditionalIncludeDirectories="../../../src;../../../src/openmodeller;&quot;$(GDAL_HOME)/include&quot;;&quot;$(EXPAT_HOME)/Source/lib&quot;;&quot;$(JAVA_HOME)/include&quot;;&quot;$(JAVA_HOME)/bin&quot;;&quot;$(TERRALIB_HOME)\src\terralib\kernel&quot;;&quot;$(TERRALIB_HOME)\src\terralib\application&quot;;&quot;$(TERRALIB_HOME)\terralibw\ado&quot;;&quot;$(TERRALIB_HOME)\src\terralib\drivers\MySQL&quot;;&quot;$(TERRALIB_HOME)\src\terralib\drivers\MySQL\include&quot;;&quot;$(TERRALIB_HOME)\src\terralib\drivers\PostgreSQL&quot;;&quot;$(TERRALIB_HOME)\src\terralib\drivers\PostgreSQL\includepg&quot;;&quot;$(TERRALIB_HOME)\src\terralib\drivers\Oracle&quot;;&quot;$(TERRALIB_HOME)\src\terralib\drivers\Oracle\OCI\include&quot;"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;LIBOPENMODELLER_DLL_EXPORTS;VERSION=\&quot;0.4\&quot;;PLUGINPATH=\&quot;.\&quot;;CONFIG_FILE=\&quot;om_config.txt\&quot;;BUILD_TERRALIB"
 				StringPooling="TRUE"
 				RuntimeLibrary="2"
@@ -115,7 +115,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions="/FORCE:MULTIPLE"
-				AdditionalDependencies="libexpat.lib gdal_i.lib $(TERRALIB_HOME)\terralibw\terralib\Release\terralib.lib $(TERRALIB_HOME)\terralibw\tiff\Release\tiff.lib $(TERRALIB_HOME)\terralibw\libjpeg\Release\libjpeg.lib $(TERRALIB_HOME)\terralibw\zlib\zlibdll.lib $(TERRALIB_HOME)\terralibw\MySQL\libmysql.lib $(TERRALIB_HOME)\terralibw\PostgreSQL\libpq.lib $(TERRALIB_HOME)\terralibw\OracleSpatial\Oci\Oci.lib wsock32.lib"
+				AdditionalDependencies="libexpat.lib gdal_i.lib $(TERRALIB_HOME)\terralibw\terralib\Release\terralib.lib $(TERRALIB_HOME)\terralibw\tiff\Release\tiff.lib $(TERRALIB_HOME)\terralibw\libjpeg\Release\libjpeg.lib $(TERRALIB_HOME)\terralibw\zlib\zlibdll.lib $(TERRALIB_HOME)\terralibw\MySQL\libmysql.lib $(TERRALIB_HOME)\terralibw\PostgreSQL\libpq.lib $(TERRALIB_HOME)\terralibw\Oracle\Oci\Oci.lib wsock32.lib"
 				OutputFile="Release/libopenmodeller.dll"
 				LinkIncremental="1"
 				SuppressStartupBanner="TRUE"
