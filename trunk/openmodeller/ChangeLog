@@ -4,6 +4,7 @@ Release 0.4.1 (2007-03-12)
 	* New algorithm "Environmental Distance".
 	* Changed OccurrencesReader to handle presence and absence points separately.
 	* Changed occurrences file format (now TAB-delimited with each point having a unique identifier).
+	* Initial support to cmake (should work on GNU/Linux and Mac OSX).
 
 Release 0.4 (2006-12-04)
 ------------------------
