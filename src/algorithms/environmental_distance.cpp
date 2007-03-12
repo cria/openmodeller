@@ -9,7 +9,7 @@
 //
 
 #include "environmental_distance.hh"
-
+#include <openmodeller/Exceptions.hh>
 
 //
 // METADATA
@@ -281,8 +281,16 @@ void EnvironmentalDistance::CalcCovarianceMatrix(){
          (*covMatrix)(i,j) /= presenceCount;
          (*covMatrix)(j,i) = (*covMatrix)(i,j);
       }
-   (*covMatrixInv) = !(*covMatrix); // All covariance matrices are positive
-                                    // definite, so they always have an inverse
+
+   try{
+      (*covMatrixInv) = !(*covMatrix); // All covariance matrices are positive
+                                       // definite, so they always have an inverse
+   }
+   catch ( std::exception& e ) {
+      string msg = e.what();
+      msg.append( "\nThis experiment has no solution using Mahalanobis distance" );
+      throw AlgorithmException( msg.c_str() );
+   }
    //std::cout << (*covMatrixInv); // Debug
 }
 
