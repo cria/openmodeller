@@ -184,6 +184,11 @@ SamplerImpl::setConfiguration( const ConstConfigurationPtr& config )
     absence->setConfiguration( absence_config );
   }
 
+  if ( ! presence->numOccurrences() ) { 
+
+    throw SamplerException( "No presence points available." );
+  }
+
   g_log.debug( "Loaded %u presence(s)\n", presence->numOccurrences() );
 
   int num_absences = 0;
