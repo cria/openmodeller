@@ -190,13 +190,13 @@ int AbstractBestSubsets::needNormalization( Scalar *min, Scalar *max ) const
   AbstractBestSubsets *non_const = const_cast<AbstractBestSubsets*>(this);
   if ( _subAlgorithm.empty() ) {
     if ( !non_const->getParameter("SubAlgorithm", & _subAlgorithm ) ) {
-      g_log.error(1, "Parameter SubAlgorithm not set properly." );
+      Log::instance()->error(1, "Parameter SubAlgorithm not set properly." );
     }
   }
   AlgorithmPtr alg = AlgorithmFactory::newAlgorithm( _subAlgorithm.c_str() );
   int rc = alg->needNormalization( min, max );
 
-  g_log("Computing normalization: %f %f\n",*min,*max);
+  Log::instance()->info("Computing normalization: %f %f\n",*min,*max);
 
   return rc;
 
@@ -210,29 +210,29 @@ int AbstractBestSubsets::initialize()
   // BS parameters
 #if 0
   if (!getParameter("SubAlgorithm", &_subAlgorithm))
-    g_log.error(1, "Parameter SubAlgorithm not set properly.\n");
+    Log::instance()->error(1, "Parameter SubAlgorithm not set properly.\n");
 #endif
 
   if (!getParameter("TrainingProportion", &_trainProp))
-    g_log.error(1, "Parameter TrainingProportion not set properly.\n");
+    Log::instance()->error(1, "Parameter TrainingProportion not set properly.\n");
 
   if (!getParameter("TotalRuns", &_totalRuns))        
-    g_log.error(1, "Parameter TotalRuns not set properly.\n");
+    Log::instance()->error(1, "Parameter TotalRuns not set properly.\n");
 
   if (!getParameter("HardOmissionThreshold", &_omissionThreshold))        
-    g_log.error(1, "Parameter HardOmissionThreshold not set properly.\n");
+    Log::instance()->error(1, "Parameter HardOmissionThreshold not set properly.\n");
 
   if (!getParameter("ModelsUnderOmissionThreshold", &_modelsUnderOmission))        
-    g_log.error(1, "Parameter ModelsUnderOmissionThreshold not set properly.\n");
+    Log::instance()->error(1, "Parameter ModelsUnderOmissionThreshold not set properly.\n");
 
   if (!getParameter("CommissionThreshold", &_commissionThreshold))        
-    g_log.error(1, "Parameter CommissionThreshold not set properly.\n");
+    Log::instance()->error(1, "Parameter CommissionThreshold not set properly.\n");
 
   if (!getParameter("CommissionSampleSize", &_commissionSampleSize))        
-    g_log.error(1, "Parameter CommissionSampleSize not set properly.\n");
+    Log::instance()->error(1, "Parameter CommissionSampleSize not set properly.\n");
 
   if (!getParameter("MaxThreads", &_maxThreads))        
-    g_log.error(1, "Parameter MaxThreads not set properly.\n");
+    Log::instance()->error(1, "Parameter MaxThreads not set properly.\n");
 
   // convert percentages (100%) to proportions (1.0) for external parameters 
   _commissionThreshold /= 100.0;
@@ -241,7 +241,7 @@ int AbstractBestSubsets::initialize()
   _softOmissionThreshold = (_omissionThreshold >= 1.0);
   if (_modelsUnderOmission > _totalRuns)
   {
-    g_log.warn("ModelsUnderOmission (%d) is greater than the number of runs (%d)\n",
+    Log::instance()->warn("ModelsUnderOmission (%d) is greater than the number of runs (%d)\n",
         _modelsUnderOmission, _totalRuns);
     _modelsUnderOmission = _totalRuns;
   }
@@ -275,13 +275,13 @@ int AbstractBestSubsets::iterate()
     // wait for a slot for a new thread
     if ((active = numActiveThreads()) >= _maxThreads)
     {
-      //g_log("%5d] Waiting for a slot to run next thread (%d out of %d)\n", iterations, active, _maxThreads);
+      //Log::instance()->info("%5d] Waiting for a slot to run next thread (%d out of %d)\n", iterations, active, _maxThreads);
       SLEEP(2); 
     }
 
     else
     {
-      //g_log("%5d] There is an empty slot to run next thread (%d out of %d) - %d\n", iterations, active, _maxThreads, runId);
+      //Log::instance()->info("%5d] There is an empty slot to run next thread (%d out of %d) - %d\n", iterations, active, _maxThreads, runId);
 
       // start new Algorithm
       SamplerPtr train, test;
@@ -308,14 +308,14 @@ int AbstractBestSubsets::iterate()
     if (active)
     {
       // there are still threads running
-      //  g_log("%5d] Waiting for %d active thread(s) to finish.\n", iterations, active);
+      //  Log::instance()->info("%5d] Waiting for %d active thread(s) to finish.\n", iterations, active);
       SLEEP(2); 
     }
     else
     {
       // all running threads terminated
       // calculate best subset and exit
-      //g_log("%5d] Calculating best and terminating algorithm.\n", iterations);
+      //Log::instance()->info("%5d] Calculating best and terminating algorithm.\n", iterations);
       calculateBestSubset();
       _done = true;
     }
@@ -337,7 +337,7 @@ int AbstractBestSubsets::numActiveThreads()
 
     if (!run->running())
     {
-      //g_log("Thread %d has just finished.\n", run->getId());
+      //Log::instance()->info("Thread %d has just finished.\n", run->getId());
 
       // run finished its work
       // move it to finished runs
@@ -372,7 +372,7 @@ int AbstractBestSubsets::calculateBestSubset()
 {
   int i;
 
-  g_log("Calculating best subset of models.\n");
+  Log::instance()->info("Calculating best subset of models.\n");
 
   // make a copy of finished runs to play with
   AlgorithmRun ** runList = new AlgorithmRun*[_numFinishedRuns];
@@ -410,7 +410,7 @@ int AbstractBestSubsets::calculateBestSubset()
 
   delete[] runList;
 
-  g_log("Selected best %d models out of %d.\n", _numBestRuns, _totalRuns);
+  Log::instance()->info("Selected best %d models out of %d.\n", _numBestRuns, _totalRuns);
 
   return 1;
 }
@@ -422,7 +422,7 @@ void AbstractBestSubsets::sortRuns(AlgorithmRun ** runList,
   int i, j;
   AlgorithmRun * runJ0, * runJ1;
 
-  //g_log("Sorting list %x of %d elements by index %d.\n", runList, nelements, errorType);
+  //Log::instance()->info("Sorting list %x of %d elements by index %d.\n", runList, nelements, errorType);
 
   // bubble sort
   // TODO: change to quicksort if this becomes a bottleneck

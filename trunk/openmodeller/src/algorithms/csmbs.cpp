@@ -184,37 +184,37 @@ CsmBS::~CsmBS()
 
 int CsmBS::initialize()
 {
-  g_log.debug( "Starting CSM - Broken Stick\n" );
+  Log::instance()->debug( "Starting CSM - Broken Stick\n" );
   //set up parameters
   if ( ! getParameter( "Randomisations", &numberOfRandomisationsInt ) )
   {
-    g_log.warn( "Parameter Randomisations not set.\n");
+    Log::instance()->warn( "Parameter Randomisations not set.\n");
     return 0;
   }
   if ( ! getParameter( "StandardDeviations", &numberOfStdDevsFloat) )
   {
-    g_log.warn( "Parameter StandardDeviations not set.\n");
+    Log::instance()->warn( "Parameter StandardDeviations not set.\n");
     return 0;
   }
   if ( ! getParameter( "MinComponents", &minComponentsInt) )
   {
-    g_log.warn( "Parameter MinComponents not set.\n");
+    Log::instance()->warn( "Parameter MinComponents not set.\n");
     return 0;
   }
   int myTempInt=0;
   if ( ! getParameter( "VerboseDebugging", &myTempInt) )
   {
-    g_log.warn( "Verbose debugging parameter not set.\n");
+    Log::instance()->warn( "Verbose debugging parameter not set.\n");
     return 0;
   }
   
-  g_log.debug( "Randomisations parameter set to: %d\n", numberOfRandomisationsInt );
-  g_log.debug( "StandardDeviations parameter set to: %.4f\n", numberOfStdDevsFloat );
-  g_log.debug( "MinComponents parameter set to: %d\n", minComponentsInt );
+  Log::instance()->debug( "Randomisations parameter set to: %d\n", numberOfRandomisationsInt );
+  Log::instance()->debug( "StandardDeviations parameter set to: %.4f\n", numberOfStdDevsFloat );
+  Log::instance()->debug( "MinComponents parameter set to: %d\n", minComponentsInt );
 
   if ( ! ( myTempInt == 0 || myTempInt == 1 ) )
   {
-    g_log.warn( "CSM - Broken Stick - Verbose debugging parameter out of range: %d\n",
+    Log::instance()->warn( "CSM - Broken Stick - Verbose debugging parameter out of range: %d\n",
                  myTempInt);
     return 0;
   }
@@ -222,29 +222,29 @@ int CsmBS::initialize()
   if (myTempInt!=0)
   {
     verboseDebuggingBool=true;
-    g_log.debug( "VerboseDebugging parameter set to: TRUE\n" );
+    Log::instance()->debug( "VerboseDebugging parameter set to: TRUE\n" );
   }
   else
   {
     verboseDebuggingBool=false;
-    g_log.debug( "VerboseDebugging parameter set to: FALSE \n" );
+    Log::instance()->debug( "VerboseDebugging parameter set to: FALSE \n" );
   }
 
   if ( numberOfRandomisationsInt <= 0 || numberOfRandomisationsInt > 1000 )
   {
-    g_log.warn( "CSM - Broken Stick - Randomisations parameter out of range: %f\n",
+    Log::instance()->warn( "CSM - Broken Stick - Randomisations parameter out of range: %f\n",
                 numberOfRandomisationsInt );
     return 0;
   }
   if ( numberOfStdDevsFloat<= -10 || numberOfStdDevsFloat> 10 )
   {
-    g_log.warn( "CSM - Broken Stick - StandardDeviations parameter out of range: %f\n",
+    Log::instance()->warn( "CSM - Broken Stick - StandardDeviations parameter out of range: %f\n",
                 numberOfRandomisationsInt );
     return 0;
   }
   if (minComponentsInt < 1 ||minComponentsInt > 20 )
   {
-    g_log.warn( "CSM - Broken Stick - MinComponents parameter out of range: %f\n",
+    Log::instance()->warn( "CSM - Broken Stick - MinComponents parameter out of range: %f\n",
                 minComponentsInt);
     return 0;
   }
@@ -312,16 +312,16 @@ gsl_matrix * CsmBS::randomiseColumns(gsl_matrix * original_matrix)
 
 int CsmBS::discardComponents()
 {
-  g_log.debug( "Discarding components\n" );
+  Log::instance()->debug( "Discarding components\n" );
 
   //create a matrix that will store the eigenvalue vector of each of the
   //the randomised environment variables we create
   gsl_matrix * myMatrixOfEigenValueVectors =
     gsl_matrix_alloc (numberOfRandomisationsInt,_gsl_environment_matrix->size2);
-  g_log.debug( "Calculating %i randomised matrices...\n", numberOfRandomisationsInt );
+  Log::instance()->debug( "Calculating %i randomised matrices...\n", numberOfRandomisationsInt );
   for (int i=0; i<numberOfRandomisationsInt;i++)
   {
-    g_log.debug( "Calculating randomised matrix: %i\n", i );
+    Log::instance()->debug( "Calculating randomised matrix: %i\n", i );
 
     //
     //retreive centered and standardised environmental matrix & clone it
@@ -422,7 +422,7 @@ int CsmBS::discardComponents()
   std::cerr << "Difference between sum of eigenvalues and layer count = number of invariant layers" << std::endl;
   if (_retained_components_count < minComponentsInt)
   {
-    g_log.debug( "Only %i component(s) retained. %i required. \nAborting discard components routine\n",_retained_components_count, minComponentsInt );
+    Log::instance()->debug( "Only %i component(s) retained. %i required. \nAborting discard components routine\n",_retained_components_count, minComponentsInt );
     gsl_vector_free (myMeanVector);
     gsl_vector_free (myStdDevVector);
     gsl_vector_free (myMeanPlusStdDevsVector);
@@ -483,7 +483,7 @@ int CsmBS::discardComponents()
   displayVector( _gsl_eigenvalue_vector, "Vector of retained eigen values:");
   displayMatrix( _gsl_eigenvector_matrix,"Matrix of retained eigen vector:");
 
-  g_log.debug( "Completed CSM - Broken Stick\n" );
-  g_log.debug( "%i out of %i components retained \n", _retained_components_count, _layer_count );
+  Log::instance()->debug( "Completed CSM - Broken Stick\n" );
+  Log::instance()->debug( "%i out of %i components retained \n", _retained_components_count, _layer_count );
   return 1;
 }

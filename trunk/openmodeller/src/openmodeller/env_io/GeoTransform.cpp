@@ -79,7 +79,7 @@ char const *GeoTransform::cs_default = OM_COORDINATE_SYSTEM;
 void
 errorHandler( CPLErr eErrClass, int err_no, const char *msg )
 {
-  g_log( "Error: %s\n", msg );
+  Log::instance()->info( "Error: %s\n", msg );
 }
 
 
@@ -154,7 +154,7 @@ GeoTransform::change( const string& dst_desc, const string& src_desc )
   if ( src.importFromWkt( &src_desc_noconst ) != OGRERR_NONE ||
        dst.importFromWkt( &dst_desc_noconst ) != OGRERR_NONE )
     {
-      g_log.error( 1, "GeoTransform - invalid projection:\n src: (%s)\n dst: (%s)\n",
+      Log::instance()->error( 1, "GeoTransform - invalid projection:\n src: (%s)\n dst: (%s)\n",
 		   src_desc.c_str(), dst_desc.c_str() );
     }
 
@@ -162,7 +162,7 @@ GeoTransform::change( const string& dst_desc, const string& src_desc )
 
   if ( ! f_ctin )
     {
-      g_log.error( 1, "GeoTransform - invalid projection:\n src: (%s)\n dst: (%s)\n",
+      Log::instance()->error( 1, "GeoTransform - invalid projection:\n src: (%s)\n dst: (%s)\n",
 		   src_desc.c_str(), dst_desc.c_str() );
     }
 
@@ -170,7 +170,7 @@ GeoTransform::change( const string& dst_desc, const string& src_desc )
 
   if ( ! f_ctout )
     {
-      g_log.error( 1, "GeoTransform - invalid projection:\n src: (%s)\n dst: (%s)\n",
+      Log::instance()->error( 1, "GeoTransform - invalid projection:\n src: (%s)\n dst: (%s)\n",
 		   src_desc.c_str(), dst_desc.c_str() );
     }
 

@@ -147,7 +147,7 @@ OpenModeller::~OpenModeller()
 void
 OpenModeller::setLogLevel( Log::Level level )
 {
-  g_log.setLevel( level );
+  Log::instance()->setLevel( level );
 }
 
 
@@ -217,7 +217,7 @@ OpenModeller::setEnvironment( std::vector<std::string> categ_map,
 {
   _env = createEnvironment( categ_map, continuous_map, mask);
 
-  //g_log( "Environment initialized.\n" );
+  //Log::instance()->info( "Environment initialized.\n" );
 }
 
 /*******************/
@@ -236,7 +236,7 @@ OpenModeller::setAlgorithm( char const *id, int nparam,
 {
   if ( nparam && ! param ) {
 
-    g_log.error( 1, "Incoherent number of parameters and parameters pointer\n" );
+    Log::instance()->error( 1, "Incoherent number of parameters and parameters pointer\n" );
   }
 
   if ( ! _samp ) {
@@ -244,12 +244,12 @@ OpenModeller::setAlgorithm( char const *id, int nparam,
     //  Create a default sampler if none was previously provided
     if ( ! hasEnvironment() ) {
 
-      g_log( "Sampler could not be initialized. Environment not set.\n" );
+      Log::instance()->info( "Sampler could not be initialized. Environment not set.\n" );
       return 0;
     }
     else if ( ! _presence ) {
 
-      g_log( "Sampler could not be initialized. Occurrences not set.\n" );
+      Log::instance()->info( "Sampler could not be initialized. Occurrences not set.\n" );
       return 0;
     }
     else {
@@ -278,7 +278,7 @@ OpenModeller::setAlgorithm( char const *id, int nparam,
 int
 OpenModeller::createModel()
 {
-  g_log( "Creating model\n" );
+  Log::instance()->info( "Creating model\n" );
 
   char *error = parameterModelCheck();
   if ( error )
@@ -289,7 +289,7 @@ OpenModeller::createModel()
 
   _alg->createModel( _samp, _model_command );
 
-  g_log( "\nFinished creating model\n" );
+  Log::instance()->info( "\nFinished creating model\n" );
 
   return 1;
 }
@@ -317,11 +317,11 @@ OpenModeller::parameterModelCheck()
 int
 OpenModeller::createMap( const EnvironmentPtr & env, char const *output_file, MapFormat& output_format )
 {
-  g_log( "Projecting model\n" );
+  Log::instance()->info( "Projecting model\n" );
 
   if ( ! env ) {
 
-    g_log( "Projection environment not specified.\n" );
+    Log::instance()->info( "Projection environment not specified.\n" );
     return 0;
   }
 
@@ -353,7 +353,7 @@ OpenModeller::createMap( const EnvironmentPtr & env, char const *output_file, Ma
     if ( fname.compare( pos, 4, ".bmp" ) == 0 ) {
 
       _format.setFormat( MapFormat::GreyBMP );
-      g_log.warn ( "Using greyscale bmp as output format based on extension");
+      Log::instance()->warn ( "Using greyscale bmp as output format based on extension");
     }
   }
 
@@ -362,7 +362,7 @@ OpenModeller::createMap( const EnvironmentPtr & env, char const *output_file, Ma
 
   Projector::createMap( model, _projEnv, &map, _actualAreaStats, _map_command );
 
-  g_log( "\nFinished projecting model\n" );
+  Log::instance()->info( "\nFinished projecting model\n" );
 
   return 1;
 }
@@ -555,7 +555,7 @@ OpenModeller::setProjectionConfiguration( const ConstConfigurationPtr & config )
     // Default is 8-bit tiff
     int type = MapFormat::GreyTiff;
 
-    g_log( "Setting Output file type to : %s\n", fileType.c_str() );
+    Log::instance()->info( "Setting Output file type to : %s\n", fileType.c_str() );
     if ( ! fileType.empty() ) {
 
       if ( fileType == "GreyTiff" ) {
@@ -580,7 +580,7 @@ OpenModeller::setProjectionConfiguration( const ConstConfigurationPtr & config )
       }
       else {
 
-        g_log( "Wrong value for 'Output file type' (%s). It should be GreyTiff, FloatingTiff, GreyBMP, FloatingHFA or ByteHFA. Using default...\n", fileType.c_str() );
+        Log::instance()->info( "Wrong value for 'Output file type' (%s). It should be GreyTiff, FloatingTiff, GreyBMP, FloatingHFA or ByteHFA. Using default...\n", fileType.c_str() );
       }
     }
 

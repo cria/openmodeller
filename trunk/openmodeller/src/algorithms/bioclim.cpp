@@ -181,27 +181,27 @@ Bioclim::initialize()
   Scalar cutoff = 0.0;
   // Read and check the standard deviation cutoff parameter.
   if ( ! getParameter( CUTOFF_ID, &cutoff ) ) {
-    g_log.error(1, "Parameter " CUTOFF_ID " not set properly.\n");
+    Log::instance()->error(1, "Parameter " CUTOFF_ID " not set properly.\n");
     return 0;
   }
 
   if ( cutoff <= 0 ) {
-    g_log.warn( "Bioclim - parameter out of range: %f\n", cutoff );
+    Log::instance()->warn( "Bioclim - parameter out of range: %f\n", cutoff );
     return 0;
   }
   
   // Number of independent variables.
   int dim = _samp->numIndependent();
-  g_log.info( "Reading %d-dimensional occurrence points.\n", dim );
+  Log::instance()->info( "Reading %d-dimensional occurrence points.\n", dim );
 
   // Check the number of sampled points.
   int npnt = _samp->numPresence();
   if (  npnt < 2 ) {
-    g_log.error( 1, "Bioclim needs at least 2 points inside the mask!\n" ); 
-    // g_log.error() does a ::exit(rc).
+    Log::instance()->error( 1, "Bioclim needs at least 2 points inside the mask!\n" ); 
+    // Log::instance()->error() does a ::exit(rc).
   }
 
-  g_log.info( "Using %d points to find the bioclimatic envelope.\n", npnt );
+  Log::instance()->info( "Using %d points to find the bioclimatic envelope.\n", npnt );
 
   computeStats( _samp->getPresences() );
 
@@ -388,15 +388,15 @@ Bioclim::_setConfiguration( const ConstConfigurationPtr& config )
 void
 Bioclim::logEnvelope()
 {
-  g_log( "Envelope with %d dimensions (variables).\n\n", _mean.size() );
+  Log::instance()->info( "Envelope with %d dimensions (variables).\n\n", _mean.size() );
 
   for ( unsigned int i = 0; i < _mean.size(); i++ )
     {
-      g_log( "Variable %02d:", i );
-      g_log( " Mean     : %f\n", _mean[i] );
-      g_log( " Deviation: %f\n", _std_dev[i] );
-      g_log( " Minimum  : %f\n", _minimum[i] );
-      g_log( " Maximum  : %f\n", _maximum[i] );
-      g_log( "\n" );
+      Log::instance()->info( "Variable %02d:", i );
+      Log::instance()->info( " Mean     : %f\n", _mean[i] );
+      Log::instance()->info( " Deviation: %f\n", _std_dev[i] );
+      Log::instance()->info( " Minimum  : %f\n", _minimum[i] );
+      Log::instance()->info( " Maximum  : %f\n", _maximum[i] );
+      Log::instance()->info( "\n" );
     }
 }

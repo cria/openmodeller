@@ -116,7 +116,7 @@ int RangeRule::getStrength(const Sample& sample) const
 // ==========================================================================
 void RangeRule::log()
 {
-  g_log( "Range: " );
+  Log::instance()->info( "Range: " );
   GarpRule::log();
 }
 

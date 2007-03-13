@@ -69,7 +69,7 @@ void ConfusionMatrix::calculate(const EnvironmentPtr & env,
 				const OccurrencesPtr& presences, 
 				const OccurrencesPtr& absences)
 {
-  g_log.debug( "Calculating confusion Matrix\n" );
+  Log::instance()->debug( "Calculating confusion Matrix\n" );
 
   int i;
   int predictionIndex, actualIndex;
@@ -82,7 +82,7 @@ void ConfusionMatrix::calculate(const EnvironmentPtr & env,
 
   model->setNormalization(env);
 
-  g_log.debug( "Testing presences\n" );
+  Log::instance()->debug( "Testing presences\n" );
 
   i = 0;
   while( it != fin ) {
@@ -108,16 +108,16 @@ void ConfusionMatrix::calculate(const EnvironmentPtr & env,
       actualIndex = 1; //data.isPresence(i);
       _confMatrix[predictionIndex][actualIndex]++;
 
-      g_log.debug( "Probability for point %s (%f,%f): %f\n", 
+      Log::instance()->debug( "Probability for point %s (%f,%f): %f\n", 
                    ((*it)->id()).c_str(), (*it)->x(), (*it)->y(), predictionValue );
     }
 
     ++it;
   }
 
-  g_log.debug( "Tested %u presence point(s)\n", i );
+  Log::instance()->debug( "Tested %u presence point(s)\n", i );
 
-  g_log.debug( "Testing absences\n" );
+  Log::instance()->debug( "Testing absences\n" );
 
   i = 0;
 
@@ -148,14 +148,14 @@ void ConfusionMatrix::calculate(const EnvironmentPtr & env,
 	actualIndex = 0; //data.isAbsence(i);
 	_confMatrix[predictionIndex][actualIndex]++;
 
-        g_log.debug( "Probability for point %s (%f,%f): %f\n", 
+        Log::instance()->debug( "Probability for point %s (%f,%f): %f\n", 
                      ((*it)->id()).c_str(), (*it)->x(), (*it)->y(), predictionValue );
       }
 
       ++it;
     }
 
-    g_log.debug( "Tested %u absence point(s)\n", i );
+    Log::instance()->debug( "Tested %u absence point(s)\n", i );
   }
 
   _ready = true;

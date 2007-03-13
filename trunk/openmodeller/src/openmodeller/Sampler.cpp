@@ -75,7 +75,7 @@ SamplerImpl::SamplerImpl() :
   _env()
 {
 #ifdef DEBUG_MEMORY
-  g_log.debug("SamplerImpl::SamplerImpl() at %x\n",this);
+  Log::instance()->debug("SamplerImpl::SamplerImpl() at %x\n",this);
 #endif
 }
 
@@ -88,7 +88,7 @@ SamplerImpl::SamplerImpl( const EnvironmentPtr& env,
   _env( env )
 {
 #ifdef DEBUG_MEMORY
-  g_log.debug("SamplerImpl::SamplerImpl( args ) at %x\n",this);
+  Log::instance()->debug("SamplerImpl::SamplerImpl( args ) at %x\n",this);
 #endif
   setEnvironmentInOccurrences();
 }
@@ -99,7 +99,7 @@ SamplerImpl::SamplerImpl( const EnvironmentPtr& env,
 SamplerImpl::~SamplerImpl()
 {
 #ifdef DEBUG_MEMORY
-  g_log.debug("SamplerImpl::~SamplerImpl() at %x\n",this);
+  Log::instance()->debug("SamplerImpl::~SamplerImpl() at %x\n",this);
 #endif
 }
 
@@ -171,11 +171,11 @@ SamplerImpl::setConfiguration( const ConstConfigurationPtr& config )
   // abundance values.
   //
 
-  g_log.debug( "Getting presence\n");
+  Log::instance()->debug( "Getting presence\n");
   OccurrencesPtr presence( new OccurrencesImpl(1.0) );
   presence->setConfiguration( config->getSubsection( "Presence" ) );
 
-  g_log.debug( "Getting absence\n");
+  Log::instance()->debug( "Getting absence\n");
   OccurrencesPtr absence;
 
   if ( ConstConfigurationPtr absence_config = config->getSubsection( "Absence", false ) ) {
@@ -189,7 +189,7 @@ SamplerImpl::setConfiguration( const ConstConfigurationPtr& config )
     throw SamplerException( "No presence points available." );
   }
 
-  g_log.debug( "Loaded %u presence(s)\n", presence->numOccurrences() );
+  Log::instance()->debug( "Loaded %u presence(s)\n", presence->numOccurrences() );
 
   int num_absences = 0;
 
@@ -198,7 +198,7 @@ SamplerImpl::setConfiguration( const ConstConfigurationPtr& config )
     num_absences = absence->numOccurrences();
   }
 
-  g_log.debug( "Loaded %u absence(s)\n", num_absences );
+  Log::instance()->debug( "Loaded %u absence(s)\n", num_absences );
 
   _env = env;
   _presence = presence;
@@ -404,7 +404,7 @@ SamplerImpl::environmentallyUnique( OccurrencesPtr& occurrencesPtr, const char *
 
       if ( sample.equals( nextSample ) ) {
 
-        g_log( "%s Point at (%f,%f) has no unique environment. It will be discarded.\n", 
+        Log::instance()->info ( "%s Point at (%f,%f) has no unique environment. It will be discarded.\n", 
                type, (*next)->x(), (*next)->y() );
 
         // Remove duplicates
@@ -478,7 +478,7 @@ SamplerImpl::spatiallyUnique( OccurrencesPtr& occurrencesPtr, const char *type )
 
       if ( row == nextRow && col == nextCol ) {
 
-        g_log( "%s Point at (%f,%f) has no unique geography. It will be discarded.\n", 
+        Log::instance()->info("%s Point at (%f,%f) has no unique geography. It will be discarded.\n", 
                type, (*next)->x(), (*next)->y() );
 
         // Remove duplicates

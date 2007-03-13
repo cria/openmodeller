@@ -62,19 +62,19 @@ main( int argc, char **argv )
 
   // Reconfigure the global logger.
   //g_log.setLevel( Log::Error );
-  g_log.setLevel( Log::Debug);
-  g_log.setPrefix( "" );
+  Log::instance()->setLevel( Log::Debug);
+  Log::instance()->setPrefix( "" );
 
   try {
 
     if ( argc < 2 )
-      g_log.error( 1, "\n%s <request>\n\n", argv[0] );
+      Log::instance()->error( 1, "\n%s <request>\n\n", argv[0] );
 
     char *request_file = argv[1];
 
     AlgorithmFactory::searchDefaultDirs();
     OpenModeller om;
-    g_log( "\nopenModeller version %s\n", om.getVersion() );
+    Log::instance()->info( "\nopenModeller version %s\n", om.getVersion() );
 
     delete[] path;
 
@@ -84,7 +84,7 @@ main( int argc, char **argv )
     int resp = request.configure( &om, request_file );
 
     if ( resp < 0 )
-      g_log.error( 1, "Can't read request file %s", request_file );
+      Log::instance()->error( 1, "Can't read request file %s", request_file );
 
     // If something was not set...
     if ( resp )
@@ -98,8 +98,8 @@ main( int argc, char **argv )
             if ( ! (metadata = readAlgorithm( availables )) )
               return 1;
 
-            g_log( "\n> Algorithm used: %s\n\n", metadata->name );
-            g_log( " %s\n\n", metadata->description );
+            Log::instance()->info( "\n> Algorithm used: %s\n\n", metadata->name );
+            Log::instance()->info( " %s\n\n", metadata->description );
 
             // For resulting parameters storage.
             int nparam = metadata->nparam;
@@ -136,7 +136,7 @@ main( int argc, char **argv )
     }
     else {
 
-      g_log.warn( "Skipping projection\n" );
+      Log::instance()->warn( "Skipping projection\n" );
     }
 
     //ConfusionMatrix matrix;
@@ -144,35 +144,35 @@ main( int argc, char **argv )
 
     AreaStats * stats = om.getActualAreaStats();
 
-    g_log( "\nModel statistics\n" );
-    g_log( "Accuracy:          %7.2f%%\n", matrix->getAccuracy() * 100 );
-    g_log( "Omission error:    %7.2f%%\n", matrix->getOmissionError() * 100 );
+    Log::instance()->info( "\nModel statistics\n" );
+    Log::instance()->info( "Accuracy:          %7.2f%%\n", matrix->getAccuracy() * 100 );
+    Log::instance()->info( "Omission error:    %7.2f%%\n", matrix->getOmissionError() * 100 );
 
     double commissionError = matrix->getCommissionError();
 
     if ( commissionError >= 0.0 ) {
 
-      g_log( "Commission error:  %7.2f%%\n", commissionError * 100 );
+      Log::instance()->info( "Commission error:  %7.2f%%\n", commissionError * 100 );
     }
 
     delete matrix;
 
     if ( request.requestedProjection() ) {
 
-      g_log( "Percentage of cells predicted present: %7.2f%%\n", 
+      Log::instance()->info( "Percentage of cells predicted present: %7.2f%%\n", 
              stats->getAreaPredictedPresent() / (double) stats->getTotalArea() * 100 );
-      g_log( "Total number of cells: %d\n", stats->getTotalArea() );
-      g_log( "\nDone.\n" );
+      Log::instance()->info( "Total number of cells: %d\n", stats->getTotalArea() );
+      Log::instance()->info( "\nDone.\n" );
 
       delete stats;
     }
   }
   catch ( std::exception& e ) {
-    g_log( "%s\n", e.what() );
-    g_log( "Exception occurred\n" );
+    Log::instance()->info( "%s\n", e.what() );
+    Log::instance()->info( "Exception occurred\n" );
   }
   catch ( ... ) {
-    g_log( "Unknown error occurred\n" );
+    Log::instance()->info( "Unknown error occurred\n" );
   }
 
   return 0;
@@ -322,7 +322,7 @@ extractParameter( char *id, int nvet, char **vet )
 void
 modelCallback( float progress, void *extra_param )
 {
-  g_log( "Model creation: %07.4f%% \r", 100 * progress );
+  Log::instance()->info( "Model creation: %07.4f%% \r", 100 * progress );
 }
 
 
@@ -334,5 +334,5 @@ modelCallback( float progress, void *extra_param )
 void
 mapCallback( float progress, void *extra_param )
 {
-  g_log( "Map creation: %07.4f%% \r", 100 * progress );
+  Log::instance()->info( "Map creation: %07.4f%% \r", 100 * progress );
 }

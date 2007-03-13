@@ -157,7 +157,7 @@ ReferenceCountedPointer<T>::ReferenceCountedPointer() :
   _p( 0 )
 {
 # if defined(DEBUG_MEMORY)
-  g_log.debug( "ReferenceCountedPointer<T>::ReferenceCountedPointer()\n");
+  Log::instance()->debug( "ReferenceCountedPointer<T>::ReferenceCountedPointer()\n");
 # endif
 }
 
@@ -165,7 +165,7 @@ template< class T >
 ReferenceCountedPointer<T>::ReferenceCountedPointer( const ReferenceCountedPointer & rhs )
 {
 # if defined(DEBUG_MEMORY)
-  g_log.debug( "ReferenceCountedPointer<T>::ReferenceCountedPointer( const ReferenceCountedPointer & rhs )\n" );
+  Log::instance()->debug( "ReferenceCountedPointer<T>::ReferenceCountedPointer( const ReferenceCountedPointer & rhs )\n" );
 # endif
   takePointer( rhs._p );
 }
@@ -175,7 +175,7 @@ template< class S >
 ReferenceCountedPointer<T>::ReferenceCountedPointer( const ReferenceCountedPointer<S> & rhs )
 {
 # if defined(DEBUG_MEMORY)
-  g_log.debug( "ReferenceCountedPointer<T>::ReferenceCountedPointer( const ReferenceCountedPointer<S> & rhs )\n" );
+  Log::instance()->debug( "ReferenceCountedPointer<T>::ReferenceCountedPointer( const ReferenceCountedPointer<S> & rhs )\n" );
 # endif
   takePointer( rhs._p );
 }
@@ -184,7 +184,7 @@ template< class T >
 ReferenceCountedPointer<T>::ReferenceCountedPointer( PointerType rhs )
 {
 # if defined(DEBUG_MEMORY)
-  g_log.debug( "ReferenceCountedPointer<T>::ReferenceCountedPointer( T* rhs )\n" );
+  Log::instance()->debug( "ReferenceCountedPointer<T>::ReferenceCountedPointer( T* rhs )\n" );
 # endif
   takePointer( rhs );
 }
@@ -194,7 +194,7 @@ template< class S >
 ReferenceCountedPointer<T>::ReferenceCountedPointer( S* rhs )
 {
 # if defined(DEBUG_MEMORY)
-  g_log.debug( "ReferenceCountedPointer<T>::ReferenceCountedPointer( S* rhs )\n" );
+  Log::instance()->debug( "ReferenceCountedPointer<T>::ReferenceCountedPointer( S* rhs )\n" );
 # endif
   takePointer( rhs );
 }
@@ -203,7 +203,7 @@ template< class T >
 ReferenceCountedPointer<T>::~ReferenceCountedPointer()
 {
 # if defined(DEBUG_MEMORY)
-  g_log.debug( "ReferenceCountedPointer<T>::~ReferenceCountedPointer()\n" );
+  Log::instance()->debug( "ReferenceCountedPointer<T>::~ReferenceCountedPointer()\n" );
 # endif
   releasePointer();
 }
@@ -213,7 +213,7 @@ ReferenceCountedPointer<T>&
 ReferenceCountedPointer<T>::operator=( const ReferenceCountedPointer& rhs )
 {
 # if defined(DEBUG_MEMORY)
-  g_log.debug( "ReferenceCountedPointer<T>::operator=( const ReferenceCountedPointer<T>& rhs )\n" );
+  Log::instance()->debug( "ReferenceCountedPointer<T>::operator=( const ReferenceCountedPointer<T>& rhs )\n" );
 # endif
   if ( this == &rhs )
     return *this;
@@ -232,7 +232,7 @@ ReferenceCountedPointer<T>&
 ReferenceCountedPointer<T>::operator=( const ReferenceCountedPointer<S>& rhs )
 {
 # if defined(DEBUG_MEMORY)
-  g_log.debug( "ReferenceCountedPointer<T>::operator=( const ReferenceCountedPointer<S>& rhs )\n" );
+  Log::instance()->debug( "ReferenceCountedPointer<T>::operator=( const ReferenceCountedPointer<S>& rhs )\n" );
 # endif
   if ( this == &rhs )
     return *this;
@@ -250,7 +250,7 @@ ReferenceCountedPointer<T>&
 ReferenceCountedPointer<T>::operator=( PointerType& rhs )
 {
 # if defined(DEBUG_MEMORY)
-  g_log.debug( "ReferenceCountedPointer<T>::operator=( T*& rhs )\n" );
+  Log::instance()->debug( "ReferenceCountedPointer<T>::operator=( T*& rhs )\n" );
 # endif
   if ( this->_p == rhs )
     return *this;
@@ -266,7 +266,7 @@ ReferenceCountedPointer<T>&
 ReferenceCountedPointer<T>::operator=( S*& rhs )
 {
 # if defined(DEBUG_MEMORY)
-  g_log.debug( "ReferenceCountedPointer<T>::operator=( S*& rhs )\n" );
+  Log::instance()->debug( "ReferenceCountedPointer<T>::operator=( S*& rhs )\n" );
 # endif
   if ( this->_p == rhs )
     return *this;
@@ -322,7 +322,7 @@ void
 ReferenceCountedPointer<T>::takePointer( PlainPointerType ptr )
 {
 # if defined(DEBUG_MEMORY)
-  g_log.debug( "Taking Pointer: %x\n", ptr );
+  Log::instance()->debug( "Taking Pointer: %x\n", ptr );
 # endif
   _p = ptr;
   if ( _p != 0 ) {
@@ -330,7 +330,7 @@ ReferenceCountedPointer<T>::takePointer( PlainPointerType ptr )
     ++_p->_ref_count;
 
 #   if defined(DEBUG_MEMORY)
-    g_log.debug( "Recount is: %d\n",_p->_ref_count);
+    Log::instance()->debug( "Recount is: %d\n",_p->_ref_count);
 #   endif
 
   }

@@ -88,8 +88,8 @@ TeOMRaster::createRaster( const string& url, int categ )
 
 		if (params_->status_ != TeRasterParams::TeReadyToRead)
 		{
-			g_log("TeOMRaster::createRaster - Raster cannot be opened." );
-			g_log.error( 1, raster_->errorMessage().c_str() );
+			Log::instance()->info("TeOMRaster::createRaster - Raster cannot be opened." );
+			Log::instance()->error( 1, raster_->errorMessage().c_str() );
 		}		
 		else
 		{
@@ -101,7 +101,7 @@ TeOMRaster::createRaster( const string& url, int categ )
 			f_hdr.setProj( TeGetWKTFromTeProjection( raster_->projection() ) );
     		if ( ! f_hdr.hasProj() )
 			{/**/
-				g_log.warn( "The raster %s is not georeferenced.  Assuming WGS84\n", f_file.c_str() );
+				Log::instance()->warn( "The raster %s is not georeferenced.  Assuming WGS84\n", f_file.c_str() );
 				f_hdr.setProj( GeoTransform::cs_default );
 			}/**/
 
@@ -255,7 +255,7 @@ TeOMRaster::get( Coord px, Coord py, Scalar *val )
 	// If the point is out of range, returns 0.
 	if ( x < 0 || x >= f_hdr.xdim || y < 0 || y >= f_hdr.ydim )
 	{
-		//g_log.debug( "Raster::get() Pixel (%d,%d) is not in extent\n",x,y);
+		//Log::instance()->debug( "Raster::get() Pixel (%d,%d) is not in extent\n",x,y);
 		return 0;
 	}
 
@@ -319,8 +319,8 @@ TeOMRaster::openTeRaster()
         
 		if ( !db_->isConnected() )
 		{
-			g_log("TeOMRaster::openTeRaster - Cannot connect to the database." );
-			g_log.error( 1, db_->errorMessage().c_str() );
+			Log::instance()->info("TeOMRaster::openTeRaster - Cannot connect to the database." );
+			Log::instance()->error( 1, db_->errorMessage().c_str() );
 			//delete db_;
 		}
 		else
@@ -351,8 +351,8 @@ TeOMRaster::createTeRaster()
 
 		if ( !db_->isConnected() )
 		{
-			g_log("TeOMRaster::createTeRaster - Cannot connect to the database." );
-			g_log.error( 1, db_->errorMessage().c_str() );
+			Log::instance()->info("TeOMRaster::createTeRaster - Cannot connect to the database." );
+			Log::instance()->error( 1, db_->errorMessage().c_str() );
 			//delete db_;
 		}
 		else

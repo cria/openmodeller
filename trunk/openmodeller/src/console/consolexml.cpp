@@ -45,8 +45,8 @@ std::string ConsoleXml::createModel(const std::string myConfigFile, bool ignoreL
   {
     if (!ignoreLog)
     {
-      g_log.setLevel( Log::Debug );
-      g_log.setCallback( new MyLog() );
+      Log::instance()->setLevel( Log::Debug );
+      Log::instance()->setCallback( new MyLog() );
     }
 
     ostringstream myOutputStream ;
@@ -77,8 +77,8 @@ bool ConsoleXml::projectModel(const std::string theModel, const std::string theE
 {  
   try {
 
-    g_log.setLevel( Log::Debug );
-    g_log.setCallback( new MyLog() );
+    Log::instance()->setLevel( Log::Debug );
+    Log::instance()->setCallback( new MyLog() );
 
     AlgorithmFactory::searchDefaultDirs();
 
@@ -118,8 +118,8 @@ bool ConsoleXml::projectModel(const std::string projectionXmlFile, const std::st
 
     if (!ignoreLog)
     {
-      g_log.setLevel( Log::Debug );
-      g_log.setCallback( new MyLog() );
+      Log::instance()->setLevel( Log::Debug );
+      Log::instance()->setCallback( new MyLog() );
     }
 
     AlgorithmFactory::searchDefaultDirs();
@@ -150,8 +150,8 @@ bool ConsoleXml::projectModel(const std::string projectionXmlFile, const std::st
 
     if (!ignoreLog)
     {
-      g_log.setLevel( Log::Debug );
-      g_log.setCallback( new MyLog() );
+      Log::instance()->setLevel( Log::Debug );
+      Log::instance()->setCallback( new MyLog() );
     }
 
     AlgorithmFactory::searchDefaultDirs();
@@ -190,8 +190,8 @@ std::string ConsoleXml::getAllAlgorithmMetadataXml()
 {
   try {
 
-    g_log.setLevel( Log::Debug );
-    g_log.setCallback( new MyLog() );
+    Log::instance()->setLevel( Log::Debug );
+    Log::instance()->setCallback( new MyLog() );
 
     AlgorithmFactory::searchDefaultDirs();
     ostringstream myOutputStream ;

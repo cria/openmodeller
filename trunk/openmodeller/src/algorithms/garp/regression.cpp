@@ -149,8 +149,8 @@ void Regression::calculateParameters(const OccurrencesPtr& occs)
     }
   
   /*
-  g_log("logit: a=%+8.4f b=%+8.4f c=%+8.4f n=%d\n", a, b, c, n);
-  g_log("aux: xi=%+8.4f yi=%+8.4f xiyi=%+8.4f xxi=%+8.4f xxiyi=%+8.4f xi4=%+8.4f\n", 
+  Log::instance()->info("logit: a=%+8.4f b=%+8.4f c=%+8.4f n=%d\n", a, b, c, n);
+  Log::instance()->info("aux: xi=%+8.4f yi=%+8.4f xiyi=%+8.4f xxi=%+8.4f xxiyi=%+8.4f xi4=%+8.4f\n", 
 	s_xi, s_yi, s_xiyi, s_xxi, s_xxiyi, s_xi4);
   */
 }

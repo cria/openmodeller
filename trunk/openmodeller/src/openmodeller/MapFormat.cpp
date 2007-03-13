@@ -104,37 +104,37 @@ void MapFormat::copyDefaults( const Map& map ) {
   Header h = map.getHeader();
 
   if (!xcelIsSet) {
-    g_log.debug( "Copying cell width = %d\n", h.xcel );
+    Log::instance()->debug( "Copying cell width = %d\n", h.xcel );
     setXCel( h.xcel );
   }
 
   if (!ycelIsSet) {
-    g_log.debug( "Copying cell height = %d\n", h.ycel );
+    Log::instance()->debug( "Copying cell height = %d\n", h.ycel );
     setYCel( h.ycel );
   }
 
   if (!xminIsSet) {
-    g_log.debug( "Copying xmin = %f\n", h.xmin );
+    Log::instance()->debug( "Copying xmin = %f\n", h.xmin );
     setXMin( h.xmin );
   }
 
   if (!yminIsSet) {
-    g_log.debug( "Copying ymin = %f\n", h.ymin );
+    Log::instance()->debug( "Copying ymin = %f\n", h.ymin );
     setYMin( h.ymin );
   }
 
   if (!xmaxIsSet) {
-    g_log.debug( "Copying xmax = %f\n", h.xmax );
+    Log::instance()->debug( "Copying xmax = %f\n", h.xmax );
     setXMax( h.xmax );
   }
 
   if (!ymaxIsSet) {
-    g_log.debug( "Copying ymax = %f\n", h.ymax );
+    Log::instance()->debug( "Copying ymax = %f\n", h.ymax );
     setYMax( h.ymax );
   }
 
   if (!projIsSet ) {
-    g_log.debug( "Copying projection\n" );
+    Log::instance()->debug( "Copying projection\n" );
     setProjection( h.proj );
   }
 

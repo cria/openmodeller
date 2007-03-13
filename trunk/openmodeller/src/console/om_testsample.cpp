@@ -41,16 +41,16 @@ int main( int argc, char **argv ) {
 
     OpenModeller om;
 
-    g_log.setLevel( Log::Debug );
+    Log::instance()->setLevel( Log::Debug );
 
-    g_log.info( "Loading serialized model %s\n", argv[1] );
+    Log::instance()->info( "Loading serialized model %s\n", argv[1] );
 
     // This will load the previous model (including points that were used!!!)
     char* model = argv[1];
     ConfigurationPtr conf = Configuration::readXml( model );
     om.setModelConfiguration( conf );
 
-    g_log.info( "Loading points\n" );
+    Log::instance()->info( "Loading points\n" );
 
     // This will re-load environment, algorithm and points related to test!
     char *request_file = argv[2];
@@ -60,13 +60,13 @@ int main( int argc, char **argv ) {
     std::string oc_file = fp.get( "Occurrences source" );
     std::string oc_name = fp.get( "Occurrences group" );
 
-    g_log.info( "WKT = %s\n", oc_cs.c_str() );
-    g_log.info( "localities file = %s\n", oc_file.c_str() );
-    g_log.info( "localities label = %s\n", oc_name.c_str() );
+    Log::instance()->info( "WKT = %s\n", oc_cs.c_str() );
+    Log::instance()->info( "localities file = %s\n", oc_file.c_str() );
+    Log::instance()->info( "localities label = %s\n", oc_name.c_str() );
 
     if ( oc_file.empty() ) {
 
-      g_log.error( 0, "'Occurrences source' keyword was not specified in the request file!\n" );
+      Log::instance()->error( 0, "'Occurrences source' keyword was not specified in the request file!\n" );
       return 0;
     }
 
@@ -78,8 +78,8 @@ int main( int argc, char **argv ) {
 
     delete oc_reader;
 
-    g_log.info( "Loaded %u presence(s)\n", presences->numOccurrences() );
-    g_log.info( "Loaded %u absence(s)\n", absences->numOccurrences() );
+    Log::instance()->info( "Loaded %u presence(s)\n", presences->numOccurrences() );
+    Log::instance()->info( "Loaded %u absence(s)\n", absences->numOccurrences() );
 
     EnvironmentPtr env = om.getEnvironment();
 
@@ -91,10 +91,10 @@ int main( int argc, char **argv ) {
 
     matrix->calculate( om.getModel(), sampler );
 
-    g_log( "\nModel statistics\n" );
-    g_log( "Accuracy:          %7.2f%%\n", matrix->getAccuracy() * 100 );
-    g_log( "Omission error:    %7.2f%%\n", matrix->getOmissionError() * 100 );
-    g_log( "Commission error:  %7.2f%%\n", matrix->getCommissionError() * 100 );
+    Log::instance()->info( "\nModel statistics\n" );
+    Log::instance()->info( "Accuracy:          %7.2f%%\n", matrix->getAccuracy() * 100 );
+    Log::instance()->info( "Omission error:    %7.2f%%\n", matrix->getOmissionError() * 100 );
+    Log::instance()->info( "Commission error:  %7.2f%%\n", matrix->getCommissionError() * 100 );
 
     return 0;
   }

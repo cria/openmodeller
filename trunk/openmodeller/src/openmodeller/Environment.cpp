@@ -139,7 +139,7 @@ EnvironmentImpl::makeLayer( const string& filename, int categ ) {
   layer l;
   Map *map = new Map( RasterFactory::instance().create( filename, categ ) );
   if ( !map ) {
-    g_log.warn( "Cannot read environment file: '%s'\n", filename.c_str() );
+    Log::instance()->warn( "Cannot read environment file: '%s'\n", filename.c_str() );
   }
   else {
     l.first = filename;
@@ -374,7 +374,7 @@ EnvironmentImpl::getUnnormalizedInternal( Sample *sample, Coord x, Coord y ) con
   // layers and the mask, if possible.
   if ( ! check( x, y ) ) {
 #if defined(DEBUG_GET)
-    g_log.debug( "EnvironmentImpl::get() Coordinate (%f,%f) is not in common region\n",x,y);
+    Log::instance()->debug( "EnvironmentImpl::get() Coordinate (%f,%f) is not in common region\n",x,y);
 #endif
     return;
   }
@@ -390,7 +390,7 @@ EnvironmentImpl::getUnnormalizedInternal( Sample *sample, Coord x, Coord y ) con
   while ( lay != end ) {
     if ( ! lay->second->get( x, y, s ) ) {
 #if defined(DEBUG_GET)
-      g_log.debug( "EnvironmentImpl::get() Coordinate (%f,%f) does not have data in layer %s\n",x,y,lay->first.c_str());
+      Log::instance()->debug( "EnvironmentImpl::get() Coordinate (%f,%f) does not have data in layer %s\n",x,y,lay->first.c_str());
 #endif
       sample->resize(0);
       return;
@@ -468,7 +468,7 @@ EnvironmentImpl::check( Coord x, Coord y ) const
   // it falls in a common region among all layers.
   if ( x < _xmin || x > _xmax || y < _ymin || y > _ymax ) {
 #if defined(DEBUG_GET)
-    g_log.debug( "EnvironmentImpl::check() Coordinate (%f,%f) not in extent of all regions\n",x,y);
+    Log::instance()->debug( "EnvironmentImpl::check() Coordinate (%f,%f) not in extent of all regions\n",x,y);
 #endif
     return 0;
   }
@@ -483,13 +483,13 @@ EnvironmentImpl::check( Coord x, Coord y ) const
 
   if (!hasmaskevalue) {
 #if defined(DEBUG_GET)
-    g_log.debug( "EnvironmentImpl::check() Coordinate (%f,%f) has no mask value\n",x,y);
+    Log::instance()->debug( "EnvironmentImpl::check() Coordinate (%f,%f) has no mask value\n",x,y);
 #endif
   }
 
   if ( !val ) {
 #if defined(DEBUG_GET)
-    g_log.debug( "EnvironmentImpl::check() Coordinate (%f,%f) has mask value of Zero\n",x,y);
+    Log::instance()->debug( "EnvironmentImpl::check() Coordinate (%f,%f) has mask value of Zero\n",x,y);
 #endif
   }
 
@@ -574,7 +574,7 @@ EnvironmentImpl::calcRegion()
   }
 
   if ( (_xmin >= _xmax)  || ( _ymin >= _ymax ) ) {
-    g_log.warn( "Maps intersection is empty!!!\n" );
+    Log::instance()->warn( "Maps intersection is empty!!!\n" );
   }
 
 }

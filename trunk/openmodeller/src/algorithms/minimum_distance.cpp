@@ -162,7 +162,7 @@ int
 MinimumDistance::initialize()
 {
   if ( ! getParameter( MAXDIST_ID, &_dist ) ) {
-    g_log.error(1, "Parameter '" MAXDIST_ID "' not set properly.\n");
+    Log::instance()->error(1, "Parameter '" MAXDIST_ID "' not set properly.\n");
     return 0;
   }
 
@@ -175,7 +175,7 @@ MinimumDistance::initialize()
   _dist *= sqrt( (double) dim );
 
   if ( _samp->numPresence() == 0 ) {
-    g_log.warn( "MinDistance: No occurrences inside the mask!\n" );
+    Log::instance()->warn( "MinDistance: No occurrences inside the mask!\n" );
     return 0;
   }
 

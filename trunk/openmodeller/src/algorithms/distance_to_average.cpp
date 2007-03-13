@@ -142,8 +142,8 @@ DistanceToAverage::DistanceToAverage() :
 
 DistanceToAverage::~DistanceToAverage()
 {
-  g_log( "\nMinimum distance found: %f", _min );
-  g_log( "\nMaximum distance found: %f\n\n", _max );
+  Log::instance()->info( "\nMinimum distance found: %f", _min );
+  Log::instance()->info( "\nMaximum distance found: %f\n\n", _max );
 }
 
 
@@ -166,7 +166,7 @@ DistanceToAverage::initialize()
   if ( ! getParameter( PARAM_MAXDIST, &_dist ) )
     return 0;
 
-  g_log( "Parameter %s: %f\n", PARAM_MAXDIST, _dist );
+  Log::instance()->info( "Parameter %s: %f\n", PARAM_MAXDIST, _dist );
 
   // Distance should range from 0 to 1
   if ( _dist > 1.0 )  _dist = 1.0;
@@ -178,18 +178,18 @@ DistanceToAverage::initialize()
   // of layers.
   _dist *= sqrt( (double) dim );
 
-  g_log( "\nEnvironmental layers: %d\n", dim );
-  g_log( "Parameter normalized: %f\n\n", _dist );
+  Log::instance()->info( "\nEnvironmental layers: %d\n", dim );
+  Log::instance()->info( "Parameter normalized: %f\n\n", _dist );
 
   //
   // Generate model from the average of given points.
   //
 
-  g_log( "Reading %d-dimensional occurrence points.\n", dim );
+  Log::instance()->info( "Reading %d-dimensional occurrence points.\n", dim );
 
   int npnt = _samp->numPresence();
   if ( npnt == 0 ) {
-    g_log( "All occurrences are outside the mask!\n" );
+    Log::instance()->info( "All occurrences are outside the mask!\n" );
     return 0;
   }
 
@@ -198,7 +198,7 @@ DistanceToAverage::initialize()
   OccurrencesImpl::const_iterator pres = presences->begin();
   OccurrencesImpl::const_iterator fin = presences->end();
 
-  g_log( "Finding average from %d occurrences.\n", npnt );
+  Log::instance()->info( "Finding average from %d occurrences.\n", npnt );
 
   // Redimension _avg.
   _avg.resize( dim );
@@ -210,10 +210,10 @@ DistanceToAverage::initialize()
 
   _avg /= npnt;
 
-  g_log( "Average related to occurrences: " );
+  Log::instance()->info( "Average related to occurrences: " );
   for ( int d = 0; d < dim; d++ )
-    g_log( "%f ", _avg[d] );
-  g_log( "\n\n" );
+    Log::instance()->info( "%f ", _avg[d] );
+  Log::instance()->info( "\n\n" );
 
   _done = true;
 

@@ -52,7 +52,7 @@ AlgorithmImpl::AlgorithmImpl( AlgMetadata const *metadata ) :
   _has_norm_params( false )
 {
 #if defined(DEBUG_MEMORY)
-  g_log.debug( "AlgorithmImpl::AlgorithmImpl() at %x\n", this );
+  Log::instance()->debug( "AlgorithmImpl::AlgorithmImpl() at %x\n", this );
 #endif
 }
 
@@ -63,7 +63,7 @@ AlgorithmImpl::AlgorithmImpl( AlgMetadata const *metadata ) :
 AlgorithmImpl::~AlgorithmImpl()
 {
 #if defined(DEBUG_MEMORY)
-  g_log.debug("AlgorithmImpl::~AlgorithmImpl() at %x\n",this);
+  Log::instance()->debug("AlgorithmImpl::~AlgorithmImpl() at %x\n",this);
 #endif
 }
 
@@ -311,7 +311,7 @@ AlgorithmImpl::createModel( const SamplerPtr& samp, Algorithm::ModelCommand *mod
       catch ( char * message ) {
 	string error( "Exception: " );
 	error += message;
-	g_log( error.c_str() );
+  Log::instance()->error(1, error.c_str() );
 	return 0;
       }
       catch (...) {}
@@ -331,7 +331,7 @@ AlgorithmImpl::createModel( const SamplerPtr& samp, Algorithm::ModelCommand *mod
     catch ( char * message ) {
       string error( "Exception: " );
       error += message;
-      g_log( error.c_str() );
+      Log::instance()->error(1, error.c_str() );
       return 0;
     }
     catch (...) {}

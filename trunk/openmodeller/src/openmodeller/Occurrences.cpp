@@ -116,7 +116,7 @@ OccurrencesImpl::setConfiguration( const ConstConfigurationPtr& config )
   
   if ( ! cs_config ) {
 
-    g_log.warn( "Occurrences has no Coordinate System. Assuming WSG84\n" );
+    Log::instance()->warn( "Occurrences has no Coordinate System. Assuming WSG84\n" );
     cs_ = GeoTransform::cs_default;
   }
   else {
@@ -164,7 +164,7 @@ OccurrencesImpl::setEnvironment( const EnvironmentPtr& env, const char *type )
 
     if ( sample.size() == 0 ) {
 
-      g_log( "%s Point \"%s\" at (%f,%f) has no environment. It will be discarded.\n", 
+      Log::instance()->info( "%s Point \"%s\" at (%f,%f) has no environment. It will be discarded.\n", 
              type, ((*oc)->id()).c_str(), (*oc)->x(), (*oc)->y() );
 
       oc = occur_.erase( oc );
@@ -389,31 +389,31 @@ OccurrencesImpl::getEnvironmentMatrix()
 void
 OccurrencesImpl::print( char *msg ) const
 {
-  g_log( "%s\n", msg );
+  Log::instance()->info( "%s\n", msg );
 
   // Occurrences general data.
-  g_log( "Name: %s\n", name_.c_str() );
-  g_log( "\nOccurrences: %d\n\n", numOccurrences() );
+  Log::instance()->info( "Name: %s\n", name_.c_str() );
+  Log::instance()->info( "\nOccurrences: %d\n\n", numOccurrences() );
 
   const_iterator c = occur_.begin();
   const_iterator end = occur_.end();
 
   while ( c != end ) {
 
-    g_log( "(%+8.4f, %+8.4f)", (*c)->x(), (*c)->y() );
-    g_log( " - %6.2", (*c)->error() );
+    Log::instance()->info( "(%+8.4f, %+8.4f)", (*c)->x(), (*c)->y() );
+    Log::instance()->info( " - %6.2", (*c)->error() );
     
     // Print the attributes.
     Sample::const_iterator attr = (*c)->attributes().begin();
     Sample::const_iterator end = (*c)->attributes().end();
-    g_log(" [" );
+    Log::instance()->info(" [" );
 
     while ( attr != end ) {
 
-      g_log( "%+8.4f, ", *attr++ );
+      Log::instance()->info( "%+8.4f, ", *attr++ );
     }
 
-    g_log( "]\n" );
+    Log::instance()->info( "]\n" );
     c++;
   }
 }

@@ -92,7 +92,7 @@ int NegatedRangeRule::getStrength(const Sample& sample) const
 // ==========================================================================
 void NegatedRangeRule::log()
 {
-  g_log( "Negated: " );
+  Log::instance()->info( "Negated: " );
   GarpRule::log();
 }
 

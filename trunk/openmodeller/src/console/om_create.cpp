@@ -48,7 +48,7 @@ int main( int argc, char **argv ) {
       }
       else {
         dontLog = true;
-        g_log.set(Log::Info, flog, "");
+        Log::instance()->set(Log::Info, flog, "");
       }
     }
 

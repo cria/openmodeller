@@ -81,14 +81,14 @@ main( int argc, char **argv )
 #endif
 
   // Reconfigure the global logger.
-  g_log.set( Log::Error, stdout, "[Viewer]" );
+  Log::instance()->set( Log::Error, stdout, "[Viewer]" );
 
   if ( argc < 2 )
     {
-      g_log( "\n%s [-r] <request>\n\n", argv[0] );
+      Log::instance()->info( "\n%s [-r] <request>\n\n", argv[0] );
       exit( 1 );
     }
-  g_log( "\nopenModeller Viewer - CRIA\n" );
+  Log::instance()->info( "\nopenModeller Viewer - CRIA\n" );
 
   int show_map  = strcmp( argv[1], "-r" );
   char *request = (show_map ? argv[1] : argv[2]);
@@ -102,7 +102,7 @@ main( int argc, char **argv )
       _nmap = fp.count( "Map" );
 
       if ( ! _nmap )
-        g_log.error( 1, "No map to be shown!?!\n" );
+        Log::instance()->error( 1, "No map to be shown!?!\n" );
 
       _maps = new Map * [_nmap];
 
@@ -122,7 +122,7 @@ main( int argc, char **argv )
       string result = fp.get( "Output file" );
 
       if ( result.empty() )
-        g_log.error( 1, "'Output file' was not specified!\n" );
+        Log::instance()->error( 1, "'Output file' was not specified!\n" );
 
       _maps[0] = new Map( RasterFactory::instance().create( result ) );
       //_maps[0]->normalize( 0.0, 255.0 );
@@ -141,7 +141,7 @@ main( int argc, char **argv )
       dimx = int( dimy * (xmax - xmin) / (ymax - ymin) );
     }
 
-    g_log( "Dimensions: %d x %d\n", dimx, dimy );
+    Log::instance()->info( "Dimensions: %d x %d\n", dimx, dimy );
 
 
     // Occurrences file.
@@ -167,10 +167,10 @@ main( int argc, char **argv )
     else {
 
       if ( oc_file.empty() )
-        g_log.warn( "'Occurrences source' was not specified!\n" );
+        Log::instance()->warn( "'Occurrences source' was not specified!\n" );
 
       if ( oc_cs.empty() )
-        g_log.warn( "'WKT coord system' was not specified!\n" );
+        Log::instance()->warn( "'WKT coord system' was not specified!\n" );
     }
 
     // Instantiate graphical window.
@@ -200,11 +200,11 @@ main( int argc, char **argv )
     delete[] _maps;
   }
   catch ( std::exception& e ) {
-    g_log( "Exception occurred\n" );
-    g_log( "Message is %s\n", e.what() );
+    Log::instance()->info( "Exception occurred\n" );
+    Log::instance()->info( "Message is %s\n", e.what() );
   }
   catch ( ... ) {
-    g_log( "Unknown Error occurred\n" );
+    Log::instance()->info( "Unknown Error occurred\n" );
   }
 }
 
