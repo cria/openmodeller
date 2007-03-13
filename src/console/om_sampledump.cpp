@@ -23,7 +23,7 @@ int main( int argc, char **argv ) {
 
   try {
     //Debug, Info, Warn, Error
-    g_log.setLevel( Log::Error );
+    Log::instance()->setLevel( Log::Error );
     AlgorithmFactory::searchDefaultDirs();
 
     if (argc != 3) {

@@ -113,13 +113,13 @@ RequestFile::_setOccurrences( OpenModeller *om, FileParser &fp )
 
     // Warn if unnecessary parameters were specified 
     if ( ! oc_cs.empty() )
-      g_log.warn( "'WKT coord system' will be ignored since 'Input model' has been specified...\n" );
+      Log::instance()->warn( "'WKT coord system' will be ignored since 'Input model' has been specified...\n" );
 
     if ( ! oc_file.empty() )
-      g_log.warn( "'Occurrences source'/'Species file' will be ignored since 'Input model' has been specified...\n" );
+      Log::instance()->warn( "'Occurrences source'/'Species file' will be ignored since 'Input model' has been specified...\n" );
 
     if ( ! oc_name.empty() )
-      g_log.warn( "'Occurrences group'/'Species' will be ignored since 'Input model' has been specified...\n" );
+      Log::instance()->warn( "'Occurrences group'/'Species' will be ignored since 'Input model' has been specified...\n" );
 
     return 1;
   }
@@ -127,13 +127,13 @@ RequestFile::_setOccurrences( OpenModeller *om, FileParser &fp )
   // When a model needs to be created, 'WKT coord system' and 
   // 'Species file' are mandatory parameters
   if ( oc_cs.empty() ) {
-    g_log.error( 0, "'WKT coord system' keyword was not specified in the request file!\n" );
+    Log::instance()->error( 0, "'WKT coord system' keyword was not specified in the request file!\n" );
     return 0;
   }
 
   if ( oc_file.empty() ) {
 
-    g_log.error( 0, "'Occurrences source' keyword was not specified in the request file!\n" );
+    Log::instance()->error( 0, "'Occurrences source' keyword was not specified in the request file!\n" );
     return 0;
   }
 
@@ -156,7 +156,7 @@ RequestFile::_setOccurrences( OpenModeller *om, FileParser &fp )
   }
   else {
 
-    g_log.error( 0, "Could not read any occurrences!\n" );
+    Log::instance()->error( 0, "Could not read any occurrences!\n" );
 
     return 0;
   }
@@ -180,13 +180,13 @@ RequestFile::_setEnvironment( OpenModeller *om, FileParser &fp )
 
     // Warn if unnecessary parameters were specified 
     if ( ! _inputMask.empty() )
-      g_log.warn( "'Mask' will be ignored since 'Input model' has been specified...\n" );
+      Log::instance()->warn( "'Mask' will be ignored since 'Input model' has been specified...\n" );
 
     if ( cat.size() > 0 )
-      g_log.warn( "'Categorical map' will be ignored since 'Input model' has been specified...\n" );
+      Log::instance()->warn( "'Categorical map' will be ignored since 'Input model' has been specified...\n" );
 
     if ( map.size() > 0 )
-      g_log.warn( "'Map' will be ignored since 'Input model' has been specified...\n" );
+      Log::instance()->warn( "'Map' will be ignored since 'Input model' has been specified...\n" );
 
     return 1;
   }
@@ -194,13 +194,13 @@ RequestFile::_setEnvironment( OpenModeller *om, FileParser &fp )
   // When a model needs to be created, there should be at least one input map
   if ( ! (cat.size() + map.size()) ) {
 
-    g_log.error( 0, "At least one 'Map' or 'Categorical map' needs to be specified!\n" );
+    Log::instance()->error( 0, "At least one 'Map' or 'Categorical map' needs to be specified!\n" );
     return 0;
   }
 
   // Mask is also mandatory
   if ( _inputMask.empty() ) {
-    g_log.error( 0, "'Mask' was not specified!\n" );
+    Log::instance()->error( 0, "'Mask' was not specified!\n" );
     return 0;
   }
 
@@ -220,7 +220,7 @@ RequestFile::_setProjection( OpenModeller *om, FileParser &fp )
 
   if ( _projectionFile.empty() ) {
 
-    g_log.warn( "'Output file' was not specified.\n" );
+    Log::instance()->warn( "'Output file' was not specified.\n" );
     return 1;
   }
 
@@ -239,7 +239,7 @@ RequestFile::_setProjection( OpenModeller *om, FileParser &fp )
     // So, assume that in this case projection maps are mandatory.
     if ( ! (_projectionCategoricalMap.size() + _projectionMap.size()) ) {
 
-      g_log.error( 0, "At least one 'Output map' or 'Categorical output map' needs to be specified!\n" );
+      Log::instance()->error( 0, "At least one 'Output map' or 'Categorical output map' needs to be specified!\n" );
       return 0;
     }
   }
@@ -248,7 +248,7 @@ RequestFile::_setProjection( OpenModeller *om, FileParser &fp )
     // It is ok to not set the projection.
     if ( ! (_projectionCategoricalMap.size() + _projectionMap.size()) ) {
 
-      g_log("Projection not set: using training Environment for projection\n");
+      Log::instance()->info("Projection not set: using training Environment for projection\n");
       _nonNativeProjection = false;
     }
     else {
@@ -262,7 +262,7 @@ RequestFile::_setProjection( OpenModeller *om, FileParser &fp )
 
   if ( _nonNativeProjection && _outputMask.empty() ) {
 
-    g_log.error( 0, "'Output mask' was not specified!\n" );
+    Log::instance()->error( 0, "'Output mask' was not specified!\n" );
     return 0;
   }
 
@@ -304,7 +304,7 @@ RequestFile::_setProjection( OpenModeller *om, FileParser &fp )
     }
     else {
 
-      g_log.error( 0, "Wrong value for 'Output file type' (%s). It should be GreyTiff, FloatingTiff, GreyBMP, FloatingHFA or ByteHFA.\n", fileType.c_str() );
+      Log::instance()->error( 0, "Wrong value for 'Output file type' (%s). It should be GreyTiff, FloatingTiff, GreyBMP, FloatingHFA or ByteHFA.\n", fileType.c_str() );
       return 0;
     }
   }
@@ -343,7 +343,7 @@ RequestFile::_setAlgorithm( OpenModeller *om, FileParser &fp )
   if ( ! _inputModelFile.empty() ) {
     // Warn if unnecessary parameters were specified 
     if ( ! alg_id.empty() )
-      g_log.warn( "'Algorithm' will be ignored since 'Input model' has been specified...\n" );
+      Log::instance()->warn( "'Algorithm' will be ignored since 'Input model' has been specified...\n" );
 
     return 1;
   }
@@ -362,7 +362,7 @@ RequestFile::_setAlgorithm( OpenModeller *om, FileParser &fp )
   }
   catch (...) {
 
-    g_log.error( 0, "Algorithm '%s' specified in the request file was not found\n", 
+    Log::instance()->error( 0, "Algorithm '%s' specified in the request file was not found\n", 
                  alg_id.c_str() );
     return 0;
   }
@@ -384,7 +384,7 @@ RequestFile::_setAlgorithm( OpenModeller *om, FileParser &fp )
   int resp = om->setAlgorithm( metadata->id, nparam, param );
 
   if ( resp == 0 )
-    g_log.error( 0, "Could not set the algorithm to be used\n" );
+    Log::instance()->error( 0, "Could not set the algorithm to be used\n" );
 
   delete[] param;
 
@@ -398,7 +398,7 @@ RequestFile::getPresences( )
 {
   if ( ! _presences ) {
 
-    g_log.error( 0, "Could not read occurrences from request file. Make sure 'Species file' has been specified.\n" );
+    Log::instance()->error( 0, "Could not read occurrences from request file. Make sure 'Species file' has been specified.\n" );
   }
 
   return _presences;
@@ -484,7 +484,7 @@ RequestFile::makeModel( OpenModeller *om )
   // If user provided a serialized model, just load it
   if ( ! _inputModelFile.empty() ) {
 
-    g_log.info( "Loading serialized model\n" );
+    Log::instance()->info( "Loading serialized model\n" );
 
     char* file_name = new char [_inputModelFile.size() + 1];
     strcpy( file_name, _inputModelFile.c_str() );
@@ -501,7 +501,7 @@ RequestFile::makeModel( OpenModeller *om )
   // Build model
   if ( ! om->createModel() ) {
 
-    g_log.error( 1, "Error during model creation: %s\n", om->error() );
+    Log::instance()->error( 1, "Error during model creation: %s\n", om->error() );
   }
 
   // Serialize model, if requested
@@ -524,7 +524,7 @@ void
 RequestFile::makeProjection( OpenModeller *om )
 {
   if ( _projectionSet == 0 )
-    g_log.error( 1, "Error during projection: Request not properly initialized\n" );
+    Log::instance()->error( 1, "Error during projection: Request not properly initialized\n" );
 
   if ( !_nonNativeProjection ) {
 

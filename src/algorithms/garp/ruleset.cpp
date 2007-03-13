@@ -329,7 +329,7 @@ void GarpRuleSet::log()
 {
   for ( int i = 0; i < _numRules; i++ )
     {
-      g_log( "%2d] ", i );
+      Log::instance()->info( "%2d] ", i );
       _rules[i]->log();
     }
 }

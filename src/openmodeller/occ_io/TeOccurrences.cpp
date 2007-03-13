@@ -98,7 +98,7 @@ TeOccurrences::loadOccurrences( const char *url )
 	// Parser the Url.
 	if( !te_url_parser_->parser() )
 	{
-		g_log.error( 1, "TeOccurrences::addOccurrences - Invalid database url" );
+		Log::instance()->error( 1, "TeOccurrences::addOccurrences - Invalid database url" );
 		return 1;
 	}
 
@@ -107,8 +107,8 @@ TeOccurrences::loadOccurrences( const char *url )
 
 	if ( !db_->isConnected() )
 	{
-		g_log("TeOccurrences::addOccurrences - Cannot connect to the database." );
-		g_log.error( 1, db_->errorMessage().c_str() );
+		Log::instance()->info("TeOccurrences::addOccurrences - Cannot connect to the database." );
+		Log::instance()->error( 1, db_->errorMessage().c_str() );
 		//delete db_;
 		return 1;
 	}
@@ -116,7 +116,7 @@ TeOccurrences::loadOccurrences( const char *url )
 	// Get the layer
 	if (!db_->layerExist( te_url_parser_->layerName_ ))
 	{
-		g_log.error( 1, "TeOccurrences::addOccurrences - Cannot open the layer." );
+		Log::instance()->error( 1, "TeOccurrences::addOccurrences - Cannot open the layer." );
 		//delete db_;
 		return 1;
 	}
@@ -136,7 +136,7 @@ TeOccurrences::loadOccurrences( const char *url )
 		// Get species table by name.
 		if (!layer->getAttrTablesByName(te_url_parser_->tableName_, speciesTable))
 		{
-			g_log.error( 1, "TeOccurrences::addOccurrences - Cannot open the species table." );
+			Log::instance()->error( 1, "TeOccurrences::addOccurrences - Cannot open the species table." );
 			//delete db_;
 			return 1;
 		}
@@ -160,7 +160,7 @@ TeOccurrences::loadOccurrences( const char *url )
 	TeDatabasePortal* portal = db_->getPortal();
 	if (!portal || !portal->query(sql))
 	{
-		g_log.error( 1, "TeOccurrences::addOccurrences - Cannot execut the select statement." );
+		Log::instance()->error( 1, "TeOccurrences::addOccurrences - Cannot execut the select statement." );
 		delete portal;
 		portal = 0;
 		return 1;

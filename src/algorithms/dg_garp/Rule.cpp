@@ -905,7 +905,7 @@ void Rule::log()
   for (int i = 0; i < intGenes * 2; i += 2)
     {
       //if (fabs(Genes[i] - Gene[i + 1]) >= 2.0)
-      //g_log( "******** ******** ");
+      //Log::instance()->info( "******** ******** ");
       //else
       printf( "%3d %3d ", Gene[i], Gene[i + 1] );
     }

@@ -153,17 +153,17 @@ bool LogitRule::similar(const GarpRule * rule) const
 // ==========================================================================
 void LogitRule::log()
 {
-  g_log( "Logit: " );
+  Log::instance()->info( "Logit: " );
 
   for (int i = 0; i < _numGenes; ++i)
     {
       if (fabs(_chrom1[i]) + fabs(_chrom2[i]) <= coeficientThreshold)
-	g_log( "****** ****** ");
+	Log::instance()->info( "****** ****** ");
       else
-	      g_log( "%+6.2f %+6.2f ", _chrom1[i], _chrom2[i] );
+	      Log::instance()->info( "%+6.2f %+6.2f ", _chrom1[i], _chrom2[i] );
     }
 
-  g_log( "- (%.2f) : %f\n", _prediction, getPerformance(PerfSig));
+  Log::instance()->info( "- (%.2f) : %f\n", _prediction, getPerformance(PerfSig));
 }
 
 // ==========================================================================

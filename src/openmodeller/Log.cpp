@@ -34,15 +34,26 @@
 using std::ostream;
 using std::endl;
 using std::string;
+//
+// Static calls to enforce singleton behaviour
+//
+Log *Log::mpInstance = 0;
+Log *Log::instance()
+{
+  if (mpInstance == 0)
+  {
+    mpInstance = new Log();
+  }
+  return mpInstance;
+}
 
+//
 // WIN32 function defines
+//
 #ifdef WIN32
 #define snprintf		_snprintf
 #define vsnprintf		_vsnprintf
 #endif
-
-// A default logger object.
-Log g_log( Log::Default );
 
 /* This callback class is a simple interface to the old FILE*
  * mechanism from standard C.
@@ -112,11 +123,11 @@ FormatAndWrite( Log::LogCallback& lc, Log::Level level, std::string pref, const 
 /*******************/
 /*** constructor ***/
 
-Log::Log( Log::Level level, const char *pref ) :
-  callback( new Log::OstreamCallback( std::cerr ) ),
-  _level( level )
+Log::Log( ) :
+  callback( new Log::OstreamCallback( std::cerr ) )
 {
-  setPrefix( pref );
+  _level = Log::Debug ; 
+   setPrefix( "" );
   _deleteCallback = true;
 }
 

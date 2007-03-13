@@ -39,94 +39,94 @@
 /****************************** Log *****************************/
 
 /** 
- * Class that allows sending of log messages to "stream" devices.
+ * A Singleton Class that allows sending of log messages to "stream" devices.
  * A system interface class with more advanced logging 
  * mechanisms (libraries).
  */
 class dllexp Log
 {
-public:
-  typedef enum {
-    Debug   =0,
-    Default =1,
-    Info    =2,
-    Warn    =3,
-    Error   =4
-  } Level;
+  public:
+    //! Returns the instance pointer, creating the object on the first call
+    static Log * instance();
+
+    typedef enum {
+      Debug   =0,
+      Default =1,
+      Info    =2,
+      Warn    =3,
+      Error   =4
+    } Level;
 
 #ifndef SWIG
-  class LogCallback {
-  public:
-    virtual ~LogCallback(){};
-    virtual void operator()( Level level, const std::string& msg ) = 0;
-  };
+    class LogCallback {
+      public:
+        virtual ~LogCallback(){};
+        virtual void operator()( Level level, const std::string& msg ) = 0;
+    };
 
-  class OstreamCallback : public LogCallback {
-  public:
-    OstreamCallback( std::ostream& os );
-    void operator()( Level level, const std::string& msg );
-  private:
-    std::ostream& os;
-  };
+    class OstreamCallback : public LogCallback {
+      public:
+        OstreamCallback( std::ostream& os );
+        void operator()( Level level, const std::string& msg );
+      private:
+        std::ostream& os;
+    };
 #endif
 
-public:
+  protected:
+    /**
+     * Protected constructor
+     */
+    Log( );
 
-  /**
-   * @param level Log level.
-   * @param out Where to output logs. Will not be closed in
-   *  destructor.
-   * @param pref Prefix to be shown on every message.
-   */
-  Log( Level level=Default, const char *pref="" );
 
-  ~Log();
+  public:
 
-  /** Configure the logger.
-   * 
-   * @param level Log level.
-   * @param out Where to output logs. Will not be closed in
-   *  destructor.
-   * @param pref Prefix to be shown on every message.
-   */
-  void set( Level level, FILE *out, char const *pref="" );
+    ~Log();
 
-  /** Change the call back mechanism
-   *  The Log object takes ownership of the object
-   *  and will delete it when the Log is destroyed
-   *  or when setCallback is called again
-   */
-  void setCallback( LogCallback *lc );
+    /** Configure the logger.
+     * 
+     * @param level Log level.
+     * @param out Where to output logs. Will not be closed in
+     *  destructor.
+     * @param pref Prefix to be shown on every message.
+     */
+    void set( Level level, FILE *out, char const *pref="" );
 
-  /** Change log level.*/
-  void setLevel( Level level )  { _level = level; }
+    /** Change the call back mechanism
+     *  The Log object takes ownership of the object
+     *  and will delete it when the Log is destroyed
+     *  or when setCallback is called again
+     */
+    void setCallback( LogCallback *lc );
 
-  /** Change prefix to be shown befeore any message.*/
-  void setPrefix( const char *pref );
+    /** Change log level.*/
+    void setLevel( Level level )  { _level = level; }
 
-  // Not necessarily printed (depend on current log level).
-  //
-  void debug( const char *format, ... );  ///< 'Debug' level.
-  void info ( const char *format, ... );  ///< 'Info' level.
+    /** Change prefix to be shown befeore any message.*/
+    void setPrefix( const char *pref );
 
-  /** 'Default' level. */
-  void operator()( const char *format, ... );
+    // Not necessarily printed (depend on current log level).
+    //
+    void debug( const char *format, ... );  ///< 'Debug' level.
+    void info ( const char *format, ... );  ///< 'Info' level.
 
-  // Are necessarily printed in log.
-  void warn ( const char *format, ... );  ///< stderr and continue.
-  void error( int exit_code, const char *format, ... ); ///< stderr and exit.
+    /** 'Default' level. */
+    void operator()( const char *format, ... );
 
-private:
+    // Are necessarily printed in log.
+    void warn ( const char *format, ... );  ///< stderr and continue.
+    void error( int exit_code, const char *format, ... ); ///< stderr and exit.
 
-  LogCallback* callback;
+  private:
 
-  Level _level;
-  std::string _pref;
-  bool _deleteCallback; // flag indicating if the callback should be deleted by Log
+    static Log * mpInstance;
+    LogCallback* callback;
+
+    Level _level;
+    std::string _pref;
+    bool _deleteCallback; // flag indicating if the callback should be deleted by Log
 };
-
-
-extern dllexp Log g_log;
 
 
 #endif

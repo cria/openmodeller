@@ -255,7 +255,7 @@ Garp::~Garp()
   // debug
   if ( _fittest )
     {
-      //g_log.debug( "Resulting rules:\n");
+      //Log::instance()->debug( "Resulting rules:\n");
       //_fittest->log();
     }
 
@@ -283,21 +283,21 @@ int Garp::needNormalization( Scalar *min, Scalar *max ) const
 int Garp::initialize()
 {
   if (!getParameter("MaxGenerations",   &_max_gen))        
-      g_log.error(1, "Parameter MaxGenerations not set properly.");
+      Log::instance()->error(1, "Parameter MaxGenerations not set properly.");
 
   if (!getParameter("ConvergenceLimit", &_conv_limit))     
-      g_log.error(1, "Parameter ConvergenceLimit not set properly.");
+      Log::instance()->error(1, "Parameter ConvergenceLimit not set properly.");
 
   if (!getParameter("PopulationSize",   &_popsize))        
-      g_log.error(1, "Parameter PopulationSize not set properly.");
+      Log::instance()->error(1, "Parameter PopulationSize not set properly.");
 
   if (!getParameter("Resamples",        &_resamples))      
-      g_log.error(1, "Parameter Resamples not set properly.");
+      Log::instance()->error(1, "Parameter Resamples not set properly.");
 
-  //g_log.debug("MaxGenerations set to:   %d\n", _max_gen);
-  //g_log.debug("ConvergenceLimit set to: %.4f\n", _conv_limit);
-  //g_log.debug("PopulationSize set to:   %d\n", _popsize);
-  //g_log.debug("Resamples set to:        %d\n", _resamples);
+  //Log::instance()->debug("MaxGenerations set to:   %d\n", _max_gen);
+  //Log::instance()->debug("ConvergenceLimit set to: %.4f\n", _conv_limit);
+  //Log::instance()->debug("PopulationSize set to:   %d\n", _popsize);
+  //Log::instance()->debug("Resamples set to:        %d\n", _resamples);
 
   _offspring  = new GarpRuleSet(2 * _popsize);
   _fittest    = new GarpRuleSet(2 * _popsize);
@@ -354,8 +354,8 @@ int Garp::iterate()
 			       &perfBest, &perfWorst, &perfAvg);
   /*  
   // log info about current iteration
-  g_log.debug( "%4d] ", _gen );
-  g_log.debug( "[%2d] conv=%+7.4f | perfs=%+8.3f, %+8.3f, %+8.3f\n", _fittest->numRules(), 
+  Log::instance()->debug( "%4d] ", _gen );
+  Log::instance()->debug( "[%2d] conv=%+7.4f | perfs=%+8.3f, %+8.3f, %+8.3f\n", _fittest->numRules(), 
 	 _convergence, perfBest, perfWorst, perfAvg );
   */
 
@@ -567,7 +567,7 @@ void Garp::keepFittest(GarpRuleSet * source, GarpRuleSet * target,
       candidateRule = source->get(i);
       similarIndex = target->findSimilar(candidateRule);
       //if ((similarIndex < -1) || (similarIndex >= target->numRules()))
-      //  g_log.error(1, "Index out of bounds (#8). Limits are (-1, %d), index is %d\n", target->numRules(), similarIndex);
+      //  Log::instance()->error(1, "Index out of bounds (#8). Limits are (-1, %d), index is %d\n", target->numRules(), similarIndex);
 
       if (similarIndex >= 0)
         {
@@ -666,7 +666,7 @@ void Garp::colonize(GarpRuleSet * ruleset, int numRules)
         break;
 	}
 
-      //g_log.debug("[%c] ", rule->type());
+      //Log::instance()->debug("[%c] ", rule->type());
       ruleset->add(rule);
     }
 }
@@ -687,7 +687,7 @@ void Garp::select(GarpRuleSet * source, GarpRuleSet * target,
   
   source->performanceSummary(defaultPerfIndex, &perfBest, &perfWorst, &perfAvg);
 
-  //g_log.debug( "Performances: %f %f %f.\n", perfBest, perfWorst, perfAvg );
+  //Log::instance()->debug( "Performances: %f %f %f.\n", perfBest, perfWorst, perfAvg );
 
   // normalizer for proportional selection probabilities
   if (perfAvg - perfWorst) 
@@ -711,7 +711,7 @@ void Garp::select(GarpRuleSet * source, GarpRuleSet * target,
       for (sum += expected; (sum > ptr) && (k <= _popsize); ptr++)	
         {
           if ((k < 0) || (k > _popsize))
-            g_log.error(1, "Index out of bounds (#6). Limits are (0, %d), index is %d\n", 
+            Log::instance()->error(1, "Index out of bounds (#6). Limits are (0, %d), index is %d\n", 
                         _popsize, k);
 
           sample[k++] = i;
@@ -746,7 +746,7 @@ void Garp::select(GarpRuleSet * source, GarpRuleSet * target,
       pRuleBeingInserted->forceEvaluation();
       if (!target->add(pRuleBeingInserted))
         // target rs is full
-        g_log.error(1, "Garp::reproduce(): Target rule set is full");
+        Log::instance()->error(1, "Garp::reproduce(): Target rule set is full");
     }
   delete[] sample;
 }

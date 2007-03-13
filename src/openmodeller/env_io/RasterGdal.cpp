@@ -124,27 +124,27 @@ RasterGdal::RasterGdal( const string& file, const MapFormat& format):
     case MapFormat::GreyBMP:
       f_scalefactor = 255.0;
       nv = 0.0;
-      g_log.debug( "Raster:: format set to MapFormat::GreyBMP:\n");
+      Log::instance()->debug( "Raster:: format set to MapFormat::GreyBMP:\n");
       break;
     case MapFormat::GreyTiff:
       f_scalefactor = 254.0;
       nv = 255.0;
-      g_log.debug( "Raster:: format set to MapFormat::GreyTiff:\n");
+      Log::instance()->debug( "Raster:: format set to MapFormat::GreyTiff:\n");
       break;
     case MapFormat::FloatingTiff:
       f_scalefactor = 1.0;
       nv = -1.0;
-      g_log.debug( "Raster:: format set to MapFormat::FloatingTiff:\n");
+      Log::instance()->debug( "Raster:: format set to MapFormat::FloatingTiff:\n");
       break;
     case MapFormat::FloatingHFA:
       f_scalefactor = 1.0;
       nv = -1.0;
-      g_log.debug( "Raster:: format set to MapFormat::FloatingHFA:\n");
+      Log::instance()->debug( "Raster:: format set to MapFormat::FloatingHFA:\n");
       break;
     case MapFormat::ByteHFA:
       f_scalefactor = 100;
       nv = 0;
-      g_log.debug( "Raster:: format set to MapFormat::ByteHFA:\n");
+      Log::instance()->debug( "Raster:: format set to MapFormat::ByteHFA:\n");
       break;
     default:
       throw GraphicsDriverException( "Unsupported output format" );
@@ -226,7 +226,7 @@ RasterGdal::write( Scalar *buf, int frow, int nrow )
 
     if ( ret == CE_Failure )
     {
-      g_log.warn( "Unable to write to file %s\n", f_file.c_str());
+      Log::instance()->warn( "Unable to write to file %s\n", f_file.c_str());
       throw FileIOException( "Unable to write to file " + f_file, f_file );
     }
   }
@@ -245,7 +245,7 @@ RasterGdal::open( char mode )
   f_ds = (GDALDataset *)GDALOpen( f_file.c_str(), gmod );
   if ( ! f_ds )
   {
-    g_log.warn( "Unable to open file %s\n", f_file.c_str());
+    Log::instance()->warn( "Unable to open file %s\n", f_file.c_str());
     throw FileIOException( "Unable to open file " + f_file, f_file );
   }
 
@@ -256,7 +256,7 @@ RasterGdal::open( char mode )
   f_hdr.setProj( (char *) f_ds->GetProjectionRef() );
   if ( ! f_hdr.hasProj() )
   {
-    g_log.warn( "The raster %s is not georeferenced.  Assuming WGS84\n", f_file.c_str() );
+    Log::instance()->warn( "The raster %s is not georeferenced.  Assuming WGS84\n", f_file.c_str() );
     f_hdr.setProj( GeoTransform::cs_default );
   }
 
@@ -323,7 +323,7 @@ RasterGdal::create(int format)
   papszMetadata = poDriver->GetMetadata();
   if( ! CSLFetchBoolean( papszMetadata, GDAL_DCAP_CREATE, FALSE ) )
   {
-    g_log.warn( "Driver %s, format %s  DOES NOT support Create() method.\n", 
+    Log::instance()->warn( "Driver %s, format %s  DOES NOT support Create() method.\n", 
         poDriver->GetDescription(),
         fmt);
 
@@ -349,8 +349,8 @@ RasterGdal::create(int format)
     char **papszOptions = NULL;
     papszOptions = CSLSetNameValue( papszOptions, "BACKGROUND", "-1" );
     papszOptions = CSLSetNameValue( papszOptions, "COMPRESS", "YES" );
-    g_log.info( "Erdas .img format does not support nodata value assignment\n");
-    g_log.info( "You can ignore warnings associated with nodata below...\n");
+    Log::instance()->info( "Erdas .img format does not support nodata value assignment\n");
+    Log::instance()->info( "You can ignore warnings associated with nodata below...\n");
     f_ds = poDriver->Create( f_file.c_str(),
         f_hdr.xdim, f_hdr.ydim,
         f_hdr.nband,
@@ -367,7 +367,7 @@ RasterGdal::create(int format)
   }
   if ( ! f_ds )
   {
-    g_log.warn( "Unable to create file %s.\n",f_file.c_str() );
+    Log::instance()->warn( "Unable to create file %s.\n",f_file.c_str() );
     throw FileIOException( "Unable to create file " + f_file, f_file );
   }
 
@@ -489,7 +489,7 @@ RasterGdal::get( Coord px, Coord py, Scalar *val )
   // If the point is out of range, returns 0.
   if ( x < 0 || x >= f_hdr.xdim || y < 0 || y >= f_hdr.ydim )
   {
-    //g_log.debug( "Raster::get() Pixel (%d,%d) is not in extent\n",x,y);
+    //Log::instance()->debug( "Raster::get() Pixel (%d,%d) is not in extent\n",x,y);
     return 0;
   }
 

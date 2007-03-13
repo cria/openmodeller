@@ -354,16 +354,16 @@ int DgGarpBestSubsets::transferParametersToAlgorithm()
 {
   // GARP parameters
   if (!getParameter("MaxGenerations",   &_max_gen))        
-      g_log.error(1, "Parameter MaxGenerations not set properly.\n");
+      Log::instance()->error(1, "Parameter MaxGenerations not set properly.\n");
 
   if (!getParameter("ConvergenceLimit", &_conv_limit))     
-      g_log.error(1, "Parameter ConvergenceLimit not set properly.\n");
+      Log::instance()->error(1, "Parameter ConvergenceLimit not set properly.\n");
 
   if (!getParameter("PopulationSize",   &_popsize))        
-      g_log.error(1, "Parameter PopulationSize not set properly.\n");
+      Log::instance()->error(1, "Parameter PopulationSize not set properly.\n");
 
   if (!getParameter("Resamples",        &_resamples))      
-      g_log.error(1, "Parameter Resamples not set properly.\n");
+      Log::instance()->error(1, "Parameter Resamples not set properly.\n");
 
   if (_alg_params)
     delete[] _alg_params;

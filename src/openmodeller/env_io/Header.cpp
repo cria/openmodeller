@@ -170,32 +170,32 @@ Header::convertLonLat2XY( Coord lon, Coord lat ) const
 void
 Header::printHeader( char *msg ) const
 {
-  g_log( "%s\n", msg );
+  Log::instance()->info( "%s\n", msg );
 
-  g_log( "xdim: %d\n", xdim );
-  g_log( "ydim: %d\n", ydim );
-  g_log( "xmin: %.4f\n", xmin );
-  g_log( "ymin: %.4f\n", ymin );
-  g_log( "xmax: %.4f\n", xmax );
-  g_log( "ymax: %.4f\n", ymax );
-  g_log( "xcel: %.4f\n", xcel );
-  g_log( "ycel: %.4f\n", ycel );
-  g_log( "noval: %.4f\n", noval );
-  g_log( "band: %d\n", nband );
-  g_log( "grid: %d\n", grid );
-  g_log( "var : %s\n", categ ? "categórica" : "ordenável" );
+  Log::instance()->info( "xdim: %d\n", xdim );
+  Log::instance()->info( "ydim: %d\n", ydim );
+  Log::instance()->info( "xmin: %.4f\n", xmin );
+  Log::instance()->info( "ymin: %.4f\n", ymin );
+  Log::instance()->info( "xmax: %.4f\n", xmax );
+  Log::instance()->info( "ymax: %.4f\n", ymax );
+  Log::instance()->info( "xcel: %.4f\n", xcel );
+  Log::instance()->info( "ycel: %.4f\n", ycel );
+  Log::instance()->info( "noval: %.4f\n", noval );
+  Log::instance()->info( "band: %d\n", nband );
+  Log::instance()->info( "grid: %d\n", grid );
+  Log::instance()->info( "var : %s\n", categ ? "categórica" : "ordenável" );
 
   if ( minmax )
     {
-      g_log( "min: %f\n", min  );
-      g_log( "max: %f\n", max  );
+      Log::instance()->info( "min: %f\n", min  );
+      Log::instance()->info( "max: %f\n", max  );
     }
   else
-    g_log( "No minimum or maximum available.\n" );
+    Log::instance()->info( "No minimum or maximum available.\n" );
 
   for( int i=0;i<6; i++ ) {
-    g_log( "GT[%d] = %f\n",i,gt[i] );
+    Log::instance()->info( "GT[%d] = %f\n",i,gt[i] );
   }
   
-  g_log( "proj: %s\n", proj.c_str() );
+  Log::instance()->info( "proj: %s\n", proj.c_str() );
 }

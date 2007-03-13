@@ -54,8 +54,8 @@ int main( int argc, char **argv ) {
 
     bool dontLog = false;
 
-    g_log.setLevel(Log::Info);
-    g_log.setPrefix("");
+    Log::instance()->setLevel(Log::Info);
+    Log::instance()->setPrefix("");
 
     // Write log to file, if requested
     FILE *flog = NULL;
@@ -78,7 +78,7 @@ int main( int argc, char **argv ) {
       }
       else {
         dontLog = true;
-        g_log.set(Log::Info, flog, "");
+        Log::instance()->set(Log::Info, flog, "");
       }
     }
 

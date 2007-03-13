@@ -197,7 +197,7 @@ GarpAlgorithm::GarpAlgorithm()
 
 	// data points used for training
 	objTrainSet = NULL;
-	//g_log("GarpAlgorithm::GarpAlgorithm() at %x\n", this );
+	//Log::instance()->info("GarpAlgorithm::GarpAlgorithm() at %x\n", this );
 }
 
 // ==========================================================================
@@ -208,7 +208,7 @@ GarpAlgorithm::~GarpAlgorithm()
   if (objTrainSet)
     delete objTrainSet;
 
-  //g_log("GarpAlgorithm::~GarpAlgorithm() at %x\n", this );
+  //Log::instance()->info("GarpAlgorithm::~GarpAlgorithm() at %x\n", this );
 }
 
 
@@ -227,21 +227,21 @@ int GarpAlgorithm::needNormalization( Scalar *min, Scalar *max ) const
 int GarpAlgorithm::initialize()
 {
   if (!getParameter("MaxGenerations",   &Totalgens))        
-      g_log.error(1, "Parameter MaxGenerations not set properly.");
+      Log::instance()->error(1, "Parameter MaxGenerations not set properly.");
 
   if (!getParameter("ConvergenceLimit", &Conv_limit))     
-      g_log.error(1, "Parameter ConvergenceLimit not set properly.");
+      Log::instance()->error(1, "Parameter ConvergenceLimit not set properly.");
 
   if (!getParameter("PopulationSize",   &Popsize))        
-      g_log.error(1, "Parameter PopulationSize not set properly.");
+      Log::instance()->error(1, "Parameter PopulationSize not set properly.");
 
   if (!getParameter("Resamples",        &Resamples))      
-      g_log.error(1, "Parameter Resamples not set properly.");
+      Log::instance()->error(1, "Parameter Resamples not set properly.");
 
-  //g_log.debug("MaxGenerations set to:   %d\n", _max_gen);
-  //g_log.debug("ConvergenceLimit set to: %.4f\n", _conv_limit);
-  //g_log.debug("PopulationSize set to:   %d\n", _popsize);
-  //g_log.debug("Resamples set to:        %d\n", _resamples);
+  //Log::instance()->debug("MaxGenerations set to:   %d\n", _max_gen);
+  //Log::instance()->debug("ConvergenceLimit set to: %.4f\n", _conv_limit);
+  //Log::instance()->debug("PopulationSize set to:   %d\n", _popsize);
+  //Log::instance()->debug("Resamples set to:        %d\n", _resamples);
 
   int dim = _samp->numIndependent();
   iActiveGenes = dim + 1;
@@ -1325,7 +1325,7 @@ GarpAlgorithm::_getConfiguration( ConfigurationPtr& config ) const
   
   for ( int i=0; i<rule_count; i++ ) {
 
-    //g_log.debug( "Gettting Rule %d\n",i );
+    //Log::instance()->debug( "Gettting Rule %d\n",i );
 
     Rule *rule = rs->get(i);
 

@@ -82,7 +82,7 @@ AlgorithmFactory::DLL::DLL( const string& file ) :
   if ( ! _handle )
     {
       char *error = dllError( _handle );
-      g_log.warn( "Error loading %s: %s\n", file.c_str(), error );
+      Log::instance()->warn( "Error loading %s: %s\n", file.c_str(), error );
       goto error;
     }
 
@@ -91,8 +91,8 @@ AlgorithmFactory::DLL::DLL( const string& file ) :
   if ( ! _factory )
     {
       char *error = dllError( _handle );
-      g_log.warn( "Algorithm %s is not openModeller compatible! (TAlgFactory mismatch)\n", file.c_str() );
-      g_log.warn( "Error: %s\n", error );
+      Log::instance()->warn( "Algorithm %s is not openModeller compatible! (TAlgFactory mismatch)\n", file.c_str() );
+      Log::instance()->warn( "Error: %s\n", error );
       goto error;
     }
 
@@ -101,8 +101,8 @@ AlgorithmFactory::DLL::DLL( const string& file ) :
   if ( ! _metadata )
     {
       char *error = dllError( _handle );
-      g_log.warn( "Algorithm %s is not openModeller compatible! (TAlgMetadata mismatch)\n", file.c_str() );
-      g_log.warn( "Error: %s\n", error );
+      Log::instance()->warn( "Algorithm %s is not openModeller compatible! (TAlgMetadata mismatch)\n", file.c_str() );
+      Log::instance()->warn( "Error: %s\n", error );
       goto error;
     }
 
@@ -121,7 +121,7 @@ AlgorithmFactory::DLL::DLL( const string& file ) :
 AlgorithmFactory::DLL::~DLL()
 {
   if ( _handle ) {
-    g_log.debug( "- Unloading: %s ...currently, dlls are not closed.\n", _file.c_str() );
+    Log::instance()->debug( "- Unloading: %s ...currently, dlls are not closed.\n", _file.c_str() );
     dllClose( _handle );
   }
 }
@@ -299,7 +299,7 @@ AlgorithmFactory::searchDefaultDirs( )
   vector<string>::iterator it = entries.begin();
 
   while( it != entries.end() ) {
-    g_log.debug( "Checking for algs in : %s \n" , (*it).c_str());
+    Log::instance()->debug( "Checking for algs in : %s \n" , (*it).c_str());
     AlgorithmFactory::addDir( (*it).c_str() );
     ++it;
   }
@@ -323,7 +323,7 @@ AlgorithmFactory::p_addDir( const string& dir )
   vector<string> entries = scanDirectory( dir );
 
   if ( entries.empty() ) {
-    g_log.warn( "No algorithm found in directory %s\n", dir.c_str() );
+    Log::instance()->warn( "No algorithm found in directory %s\n", dir.c_str() );
     return 0;
   }
 
@@ -353,7 +353,7 @@ AlgorithmFactory::addDll( const string& file )
 bool
 AlgorithmFactory::p_addDll( const string& file )
 {
-  g_log.debug( "- Loading: %s ...\n", file.c_str() );
+  Log::instance()->debug( "- Loading: %s ...\n", file.c_str() );
     
   // Create a new DLL for each directory entry found.
   DLLPtr dll( new DLL( file.c_str() ) );
@@ -363,7 +363,7 @@ AlgorithmFactory::p_addDll( const string& file )
     return false;
   }
   
-  g_log.debug( "- Successfully Loaded %s\n", file.c_str() );
+  Log::instance()->debug( "- Successfully Loaded %s\n", file.c_str() );
   _dlls.push_back( dll );
   return true;
 

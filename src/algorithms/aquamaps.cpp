@@ -163,13 +163,13 @@ AquaMaps::initialize()
 {
   // Number of independent variables.
   int dim = _samp->numIndependent();
-  g_log.info( "Reading %d-dimensional occurrence points.\n", dim );
+  Log::instance()->info( "Reading %d-dimensional occurrence points.\n", dim );
 
   // Check the number of layers.
   if ( dim != 7 ) {
   
-    g_log.error( 1, "AquaMaps needs precisely 7 layers to work, and they should be in this order: maximum depth in meters, minimum depth in meters, mean annual sea ice concentration, mean annual distance to land in Kilometers, mean annual primary production (chlorophyll A), mean annual salinity in psu, mean annual sea surface temperature in Celsius.\n" ); 
-    // g_log.error() does a ::exit(rc).
+    Log::instance()->error( 1, "AquaMaps needs precisely 7 layers to work, and they should be in this order: maximum depth in meters, minimum depth in meters, mean annual sea ice concentration, mean annual distance to land in Kilometers, mean annual primary production (chlorophyll A), mean annual salinity in psu, mean annual sea surface temperature in Celsius.\n" ); 
+    // Log::instance()->error() does a ::exit(rc).
   }
 
   // Remove duplicates accross geography
@@ -180,11 +180,11 @@ AquaMaps::initialize()
 
   if (  npnt < 5 ) {
 
-    g_log.error( 1, "AquaMaps needs at least 5 points inside the mask!\n" ); 
-    // g_log.error() does a ::exit(rc).
+    Log::instance()->error( 1, "AquaMaps needs at least 5 points inside the mask!\n" ); 
+    // Log::instance()->error() does a ::exit(rc).
   }
 
-  g_log.info( "Using %d points to find AquaMaps envelopes.\n", npnt );
+  Log::instance()->info( "Using %d points to find AquaMaps envelopes.\n", npnt );
 
   calculateEnvelopes( _samp->getPresences() );
 
@@ -229,15 +229,15 @@ void
 AquaMaps::calculateEnvelopes( const OccurrencesPtr& occs )
 {
 
-  g_log.debug("Species is: %s\n", occs->name());
-  g_log.debug("Layers are:\n");
-  g_log.debug("0 = Maximum depth\n");
-  g_log.debug("1 = Minimum depth\n");
-  g_log.debug("2 = Ice concentration\n");
-  g_log.debug("3 = Distance to land\n");
-  g_log.debug("4 = Primary production (chlorophyll A)\n");
-  g_log.debug("5 = Salinity\n");
-  g_log.debug("6 = Surface temperature\n");
+  Log::instance()->debug("Species is: %s\n", occs->name());
+  Log::instance()->debug("Layers are:\n");
+  Log::instance()->debug("0 = Maximum depth\n");
+  Log::instance()->debug("1 = Minimum depth\n");
+  Log::instance()->debug("2 = Ice concentration\n");
+  Log::instance()->debug("3 = Distance to land\n");
+  Log::instance()->debug("4 = Primary production (chlorophyll A)\n");
+  Log::instance()->debug("5 = Salinity\n");
+  Log::instance()->debug("6 = Surface temperature\n");
 
   // Compute min, pref_min, pref_max and max
   OccurrencesImpl::const_iterator oc = occs->begin();
@@ -281,9 +281,9 @@ AquaMaps::calculateEnvelopes( const OccurrencesPtr& occs )
 
   for ( unsigned int j = 2; j < matrix.size(); j++ ) {
 
-    g_log.debug("--------------------------------\n", j);
-    g_log.debug("Calculating envelope for layer %d\n", j);
-    g_log.debug("--------------------------------\n", j);
+    Log::instance()->debug("--------------------------------\n", j);
+    Log::instance()->debug("Calculating envelope for layer %d\n", j);
+    Log::instance()->debug("--------------------------------\n", j);
 
     // 0 = Maximum depth
     // 1 = Minimum depth
@@ -307,7 +307,7 @@ AquaMaps::calculateEnvelopes( const OccurrencesPtr& occs )
 	debug << " [" << j << "," << w << "]=" << matrix[j][w];
     }
     debug << "\n";
-    g_log.debug( debug.str().c_str() );
+    Log::instance()->debug( debug.str().c_str() );
 
     // Calculate percentiles
     Scalar v10, v25, v75, v90;
@@ -317,29 +317,29 @@ AquaMaps::calculateEnvelopes( const OccurrencesPtr& occs )
     percentile( &v75, numOccurrences, 0.75, &matrix, j );
     percentile( &v90, numOccurrences, 0.90, &matrix, j );
 
-    g_log.debug("10th percentile: %f\n", v10);
-    g_log.debug("25th percentile: %f\n", v25);
-    g_log.debug("75th percentile: %f\n", v75);
-    g_log.debug("90th percentile: %f\n", v90);
+    Log::instance()->debug("10th percentile: %f\n", v10);
+    Log::instance()->debug("25th percentile: %f\n", v25);
+    Log::instance()->debug("75th percentile: %f\n", v75);
+    Log::instance()->debug("90th percentile: %f\n", v90);
 
     Scalar interquartile = fabs( v25 - v75 );
 
-    g_log.debug("Interquartile: %f\n", interquartile);
+    Log::instance()->debug("Interquartile: %f\n", interquartile);
 
     Scalar adjmin = v25 - ( 1.5 * interquartile );
     Scalar adjmax = v75 + ( 1.5 * interquartile );
 
-    g_log.debug("Adjmin: %f\n", adjmin);
-    g_log.debug("Adjmax: %f\n", adjmax);
+    Log::instance()->debug("Adjmin: %f\n", adjmin);
+    Log::instance()->debug("Adjmax: %f\n", adjmax);
 
     _pref_minimum[j] = v10;
     _pref_maximum[j] = v90;
 
-    g_log.debug("_Before adjustments_\n");
-    g_log.debug("min: %f\n", _minimum[j]);
-    g_log.debug("prefmin: %f\n", _pref_minimum[j]);
-    g_log.debug("prefmax: %f\n", _pref_maximum[j]);
-    g_log.debug("max: %f\n", _maximum[j]);
+    Log::instance()->debug("_Before adjustments_\n");
+    Log::instance()->debug("min: %f\n", _minimum[j]);
+    Log::instance()->debug("prefmin: %f\n", _pref_minimum[j]);
+    Log::instance()->debug("prefmax: %f\n", _pref_maximum[j]);
+    Log::instance()->debug("max: %f\n", _maximum[j]);
 
     // Make the interquartile adjusting and ensure the envelope sizes
     // for all variables except ice concentration
@@ -349,11 +349,11 @@ AquaMaps::calculateEnvelopes( const OccurrencesPtr& occs )
       ensureEnvelopeSize( j );
     }
 
-    g_log.debug("_After adjustments_\n");
-    g_log.debug("min: %f\n", _minimum[j]);
-    g_log.debug("prefmin: %f\n", _pref_minimum[j]);
-    g_log.debug("prefmax: %f\n", _pref_maximum[j]);
-    g_log.debug("max: %f\n", _maximum[j]);
+    Log::instance()->debug("_After adjustments_\n");
+    Log::instance()->debug("min: %f\n", _minimum[j]);
+    Log::instance()->debug("prefmin: %f\n", _pref_minimum[j]);
+    Log::instance()->debug("prefmax: %f\n", _pref_maximum[j]);
+    Log::instance()->debug("max: %f\n", _maximum[j]);
   }
 }
 
@@ -409,7 +409,7 @@ AquaMaps::readDepthData( const char *species )
 
     // This will likely never happen since on open, sqlite creates the
     // database if it does not exist.
-    g_log.warn( "Could not open database with depth range data: %s\n", sqlite3_errmsg( db ) );
+    Log::instance()->warn( "Could not open database with depth range data: %s\n", sqlite3_errmsg( db ) );
     sqlite3_close(db);
     return;
   }
@@ -446,22 +446,22 @@ AquaMaps::readDepthData( const char *species )
       _maximum[0]      = max;
       _maximum[1]      = max;
 
-      g_log.debug("Depth values from database:\n");
-      g_log.debug("pelagic: %i\n", pelagic);
-      g_log.debug("min: %f\n", min);
-      g_log.debug("prefmin: %f\n", prefmin);
-      g_log.debug("prefmax: %f\n", prefmax);
-      g_log.debug("max: %f\n", max);
+      Log::instance()->debug("Depth values from database:\n");
+      Log::instance()->debug("pelagic: %i\n", pelagic);
+      Log::instance()->debug("min: %f\n", min);
+      Log::instance()->debug("prefmin: %f\n", prefmin);
+      Log::instance()->debug("prefmax: %f\n", prefmax);
+      Log::instance()->debug("max: %f\n", max);
     }
     else {
 
-      g_log.warn( "Could not fetch data from depth range database: %s\n", 
+      Log::instance()->warn( "Could not fetch data from depth range database: %s\n", 
                   sqlite3_errmsg( db ) );
     }
   }
   else {
 
-    g_log.warn( "Could not prepare SQL statement to query depth range database: %s\n", 
+    Log::instance()->warn( "Could not prepare SQL statement to query depth range database: %s\n", 
                 sqlite3_errmsg( db ) );
   }
 
@@ -699,15 +699,15 @@ AquaMaps::_setConfiguration( const ConstConfigurationPtr& config )
 void
 AquaMaps::logEnvelope()
 {
-  g_log( "Envelope with %d dimensions (variables).\n\n", _minimum.size() );
+  Log::instance()->info( "Envelope with %d dimensions (variables).\n\n", _minimum.size() );
 
   for ( unsigned  int i = 0; i < _minimum.size(); i++ )
     {
-      g_log( "Variable %02d:", i );
-      g_log( " Minimum         : %f\n", _minimum[i] );
-      g_log( " Prefered Minimum: %f\n", _pref_minimum[i] );
-      g_log( " Prefered Maximum: %f\n", _pref_maximum[i] );
-      g_log( " Maximum         : %f\n", _maximum[i] );
-      g_log( "\n" );
+      Log::instance()->info( "Variable %02d:", i );
+      Log::instance()->info( " Minimum         : %f\n", _minimum[i] );
+      Log::instance()->info( " Prefered Minimum: %f\n", _pref_minimum[i] );
+      Log::instance()->info( " Prefered Maximum: %f\n", _pref_maximum[i] );
+      Log::instance()->info( " Maximum         : %f\n", _maximum[i] );
+      Log::instance()->info( "\n" );
     }
 }

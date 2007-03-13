@@ -138,15 +138,15 @@ int EnvironmentalDistance::initialize(){
 
    // Test the parameters' data types
    if(!getParameter(PARDIST,&ParDist)){
-      g_log.error(1, "Parameter '" PARDIST "' wasn't set properly.\n");
+      Log::instance()->error(1, "Parameter '" PARDIST "' wasn't set properly.\n");
       return 0;
    }
    if(!getParameter(PARDISTTYPE,&ParDistType)){
-      g_log.error(1, "Parameter '" PARDISTTYPE "' wasn't set properly.\n");
+      Log::instance()->error(1, "Parameter '" PARDISTTYPE "' wasn't set properly.\n");
       return 0;
    }
    if(!getParameter(PARPOINTQNT,&ParPointQnt)){
-      g_log.error(1, "Parameter '" PARPOINTQNT "' wasn't set properly.\n");
+      Log::instance()->error(1, "Parameter '" PARPOINTQNT "' wasn't set properly.\n");
       return 0;
    }
 
@@ -162,7 +162,7 @@ int EnvironmentalDistance::initialize(){
 
    // Load all environmental data of presence points
    if(presenceCount == 0){
-      g_log.error(1, "There is no presence point.\n");
+      Log::instance()->error(1, "There is no presence point.\n");
       return 0;
    }
    OccurrencesPtr presences = _samp->getPresences();
@@ -218,18 +218,18 @@ Scalar EnvironmentalDistance::getValue(const Sample& x) const{
       Sample nearMean;
       std::vector<int> nearestIndex(ParPointQnt);
       std::vector<Scalar> nPdist(ParPointQnt);
-      //g_log("\nStarting with distances:\n"); // Debug
+      //Log::instance()->info("\nStarting with distances:\n"); // Debug
       for(int i = 0 ; i < ParPointQnt ; i++){ // We know that ParPointQnt < presenceCount
          nPdist[i] = Distance(x, presencePoints[i]);
          nearestIndex[i] = i;
-      //g_log("   dist[%d]=%.8g\n", nearestIndex[i], nPdist[i]); // Debug
+      //Log::instance()->info("   dist[%d]=%.8g\n", nearestIndex[i], nPdist[i]); // Debug
       }
 
-      //g_log("\nNewer values:\n"); // Debug
+      //Log::instance()->info("\nNewer values:\n"); // Debug
       for(int i = ParPointQnt ; i < presenceCount ; i++){ // This loop finds the nearest points
          distIterator = Distance(x, presencePoints[i]);
          indexIterator = i;
-         //g_log("dist[%d] = %.8g:\n", indexIterator, distIterator); // Debug
+         //Log::instance()->info("dist[%d] = %.8g:\n", indexIterator, distIterator); // Debug
          for(int j = 0 ; j < ParPointQnt ; j++){ // Trade pointIterator with the first smaller point
             if(nPdist[j] > distIterator){
                distTmp = distIterator;
@@ -242,7 +242,7 @@ Scalar EnvironmentalDistance::getValue(const Sample& x) const{
             }
          }
          //for(int j = 0 ; j < ParPointQnt ; j++) // Debug
-            //g_log("   dist[%d]=%.8g\n", nearestIndex[j], nPdist[j]);
+            //Log::instance()->info("   dist[%d]=%.8g\n", nearestIndex[j], nPdist[j]);
       }
 
       // Now we have the nearest points. Let's get its mean:
@@ -252,7 +252,7 @@ Scalar EnvironmentalDistance::getValue(const Sample& x) const{
       nearMean /= ParPointQnt;
 
       dist = Distance(x, nearMean);
-      //g_log("\ndistance=%.8g\n\n", dist); // Debug
+      //Log::instance()->info("\ndistance=%.8g\n\n", dist); // Debug
    }
 
    // Now finishes the algorithm calculating the probability
@@ -311,7 +311,7 @@ inline Scalar EnvironmentalDistance::Distance(const Sample& x, const Sample& y) 
          dist = sqrt(
             (lineMatrix * (*covMatrixInv) * (~lineMatrix))(0,0) // Operator () of a 1x1 matrix
          );
-         //g_log("\nDISTANCE: %g\n",dist); // Debug
+         //Log::instance()->info("\nDISTANCE: %g\n",dist); // Debug
       }break;
 
       //
@@ -385,7 +385,7 @@ void EnvironmentalDistance::InitDistanceType(){
             for(int k=0; k<layerCount; k++)         // This is the same loop used to create
                if(i & (1<<k) != 0) x[k] = DATA_MAX; // binary numbers, but with "max" and
                else                x[k] = DATA_MIN; // "min" instead of "1" and "0"
-            // g_log("Maximum distance: %.8g ; i = %d / %d\r", distMax, i, (1<<layerCount)-1); // Debug
+            // Log::instance()->info("Maximum distance: %.8g ; i = %d / %d\r", distMax, i, (1<<layerCount)-1); // Debug
             for(int j=i+1; j<(1<<layerCount); j++){ // Almost the same above
                for(int k=0; k<layerCount; k++)
                   if(j & (1<<k) != 0) y[k] = DATA_MAX;
@@ -397,7 +397,7 @@ void EnvironmentalDistance::InitDistanceType(){
             }
          }
 */
-         //g_log("\nMaximum distance: %.8g\n",distMax); // Debug
+         //Log::instance()->info("\nMaximum distance: %.8g\n",distMax); // Debug
       }break;
 
       case GowerDistance:

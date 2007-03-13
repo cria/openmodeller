@@ -82,7 +82,7 @@ OccurrencesFile::loadOccurrences( const char *file_name )
 
   if ( ! file )
   {
-    g_log.warn( "Can't open file %s.\n", file_name );
+    Log::instance()->warn( "Can't open file %s.\n", file_name );
     return 0;
   }
 
@@ -130,7 +130,7 @@ OccurrencesFile::loadOccurrences( const char *file_name )
     }
     else
     {
-	g_log.debug( "Skipping line: %s\n", line );
+	Log::instance()->debug( "Skipping line: %s\n", line );
     }
   }
 

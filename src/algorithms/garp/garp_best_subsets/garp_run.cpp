@@ -44,7 +44,7 @@ THREAD_PROC_RETURN_TYPE AlgorithmRunThreadProc(void * threadData)
 {
   AlgorithmRun * algRun = (AlgorithmRun *) threadData;
 
-  //g_log.debug("Starting new thread (%d).\n", algRun->getId());
+  //Log::instance()->debug("Starting new thread (%d).\n", algRun->getId());
 
   while (!algRun->done())
     algRun->iterate();
@@ -53,7 +53,7 @@ THREAD_PROC_RETURN_TYPE AlgorithmRunThreadProc(void * threadData)
   algRun->calculateOmission();
   algRun->finalize();
   
-  //g_log.debug("Finishing thread (%d).\n", algRun->getId());
+  //Log::instance()->debug("Finishing thread (%d).\n", algRun->getId());
 
   THREAD_PROC_RETURN_STATEMENT;
 }
@@ -72,13 +72,13 @@ AlgorithmRun::AlgorithmRun() :
   _train_sampler(),
   _test_sampler()
 {
-  //g_log("Creating an AlgorithmRun at: %x\n",this);
+  //Log::instance()->info("Creating an AlgorithmRun at: %x\n",this);
 }
 
 /****************************************************************/
 AlgorithmRun::~AlgorithmRun() 
 {
-  //g_log("Deleting an AlgorithmRun at: %x\n",this);
+  //Log::instance()->info("Deleting an AlgorithmRun at: %x\n",this);
 }
 
 /****************************************************************/
@@ -88,7 +88,7 @@ int AlgorithmRun::initialize(int id, int comm_samples,
 			     int nparam, AlgParameter * param,
 			     BSAlgorithmFactory * factory)
 {
-  //g_log.debug("Initializing garp run (%d)\n", id);
+  //Log::instance()->debug("Initializing garp run (%d)\n", id);
 
   _id = id;
   _commission_samples = comm_samples;
@@ -107,7 +107,7 @@ int AlgorithmRun::initialize(int id, int comm_samples,
 /****************************************************************/
 int AlgorithmRun::run()
 {
-  //g_log.debug("Starting new garp run (%d).\n", _id);
+  //Log::instance()->debug("Starting new garp run (%d).\n", _id);
   _running = true;
   THREAD_START(AlgorithmRunThreadProc, this); 
   return 1;  
@@ -120,7 +120,7 @@ bool AlgorithmRun::running() const
 /****************************************************************/
 int AlgorithmRun::iterate()
 {
-  //g_log.debug("Iteration %6d on run %d.\n", _alg->getGeneration(), _id);
+  //Log::instance()->debug("Iteration %6d on run %d.\n", _alg->getGeneration(), _id);
   return _alg->iterate();
 }
 
@@ -135,7 +135,7 @@ float AlgorithmRun::getProgress() const
 /****************************************************************/
 int AlgorithmRun::finalize()           
 {
-  //g_log.debug("Finishing up garp run.(%d)\n", _id);
+  //Log::instance()->debug("Finishing up garp run.(%d)\n", _id);
   _running = false;
   //_alg->deleteTempDataMembers(); // this is not in Algorithm interface
   THREAD_END();
@@ -150,7 +150,7 @@ int AlgorithmRun::calculateCommission()
 
   // TODO: check how to use absences in computing commission
 
-  //g_log.debug("Calculating commission error (%d).\n", _id);
+  //Log::instance()->debug("Calculating commission error (%d).\n", _id);
 
   // get random points from the background to estimate 
   // area predicted present
@@ -179,7 +179,7 @@ int AlgorithmRun::calculateOmission()
 {
   // TODO: check how to use absences in computing omission
 
-  //g_log.debug("Calculating omission error (%d).\n", _id);
+  //Log::instance()->debug("Calculating omission error (%d).\n", _id);
 
   // test which kind of test (intrinsic or extrinsic) should be performed
   SamplerPtr sampler;

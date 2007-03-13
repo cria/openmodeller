@@ -63,7 +63,7 @@ bool equalEps(double v1, double v2)
 
 bool between(double value, double min, double max)
 {
-  //g_log("Between: %f <= %f <= %f? %d\n", min, value, max, ((value >= min) && (value <= max)));
+  //Log::instance()->info("Between: %f <= %f <= %f? %d\n", min, value, max, ((value >= min) && (value <= max)));
   return ((value >= min) && (value <= max));
 }
 
@@ -387,7 +387,7 @@ double GarpRule::evaluate(const OccurrencesPtr& occs)
     }
 
   if (no != pXs)
-    { g_log.error(1, "Assertion failed (no != pXs): %d != %d", no, pXs); }
+    { Log::instance()->error(1, "Assertion failed (no != pXs): %d != %d", no, pXs); }
   
   // Priors
   utility[1] = pXs  / (double) n;		// proportion 
@@ -445,7 +445,7 @@ double GarpRule::evaluate(const OccurrencesPtr& occs)
       fprintf(flog, "- (%.2f) : %f\n", _prediction, getPerformance(PerfSig) );
 
       fclose(flog);
-      g_log.error(1, "Check rule statistics"); //DEBUG
+      Log::instance()->error(1, "Check rule statistics"); //DEBUG
     }
   fclose(flog);
   */
@@ -465,12 +465,12 @@ void GarpRule::log()
   for (int i = 0; i < _numGenes * 2; i += 2)
     {
       if (fabs(_chrom1[i] - _chrom2[i]) >= 2.0)
-	g_log( "****** ****** ");
+	Log::instance()->info( "****** ****** ");
       else
-	      g_log( "%+6.2f %+6.2f ", _chrom1[i], _chrom2[i] );
+	      Log::instance()->info( "%+6.2f %+6.2f ", _chrom1[i], _chrom2[i] );
     }
 
-  g_log( "- (%.2f) : %f\n", _prediction, getPerformance(PerfSig));
+  Log::instance()->info( "- (%.2f) : %f\n", _prediction, getPerformance(PerfSig));
 }
 
 // ==========================================================================
