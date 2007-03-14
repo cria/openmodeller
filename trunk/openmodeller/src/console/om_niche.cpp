@@ -1,7 +1,7 @@
 /**
  * Simple species niche visualizer.
  * 
- * @author Mauro E S Muñoz (mauro@cria.org.br)
+ * @author Mauro E S Muï¿½z (mauro@cria.org.br)
  * @date   2003-10-09
  * $Id$
  * 
@@ -87,15 +87,15 @@ main( int argc, char **argv )
 #endif
 
   // Reconfigure the global logger.
-  g_log.setLevel( Log::Error );
-  g_log.setPrefix( "" );
+  Log::instance()->setLevel( Log::Error );
+  Log::instance()->setPrefix( "" );
 
   if ( argc < 2 )
-      g_log.error( 1, "\n%s <request>\n\n", argv[0] );
+      Log::instance()->error( 1, "\n%s <request>\n\n", argv[0] );
 
   char *request_file = argv[1];
 
-  g_log( "\nopenModeller Two-dimensional Niche Viewer - CRIA\n" );
+  Log::instance()->info( "\nopenModeller Two-dimensional Niche Viewer - CRIA\n" );
 
   try {
 
@@ -110,9 +110,9 @@ main( int argc, char **argv )
     env->getExtremes( &min, &max );
 
     if ( nmap < 2 )
-      g_log.error( 2, "Need more than one environmental variable!\n" );
+      Log::instance()->error( 2, "Need more than one environmental variable!\n" );
     else if ( nmap > 2 )
-      g_log.error( 3, "Maximum number of environmental variables (2) exceeded!\n" );
+      Log::instance()->error( 3, "Maximum number of environmental variables (2) exceeded!\n" );
 
     // Occurrences file (used to draw, not to create the model).
     string oc_cs   = fp.get( "WKT Coord System" );
@@ -156,11 +156,11 @@ main( int argc, char **argv )
     delete _om;
   }
   catch ( std::exception& e ) {
-    g_log( "Exception occurred\n" );
-    //g_log( "Message is %s\n", e.what() );
+    Log::instance()->info( "Exception occurred\n" );
+    //Log::instance()->info( "Message is %s\n", e.what() );
   }
   catch ( ... ) {
-    g_log( "Unknown Error occurred\n" );
+    Log::instance()->info( "Unknown Error occurred\n" );
   }
 
   return 0;
@@ -181,7 +181,7 @@ createModel( char *request_file )
   int resp = request.configure( om, request_file );
 
   if ( resp < 0 )
-    g_log.error( 1, "Can't read request file %s", request_file );
+    Log::instance()->error( 1, "Can't read request file %s", request_file );
 
   // If something was not set...
   if ( resp )
@@ -195,8 +195,8 @@ createModel( char *request_file )
           if ( ! (metadata = readAlgorithm( availables )) )
             return 0;
 
-          g_log( "\n> Algorithm used: %s\n\n", metadata->name );
-          g_log( " %s\n\n", metadata->description );
+          Log::instance()->info( "\n> Algorithm used: %s\n\n", metadata->name );
+          Log::instance()->info( " %s\n\n", metadata->description );
 
           // For resulting parameters storage.
           int nparam = metadata->nparam;
@@ -219,7 +219,7 @@ createModel( char *request_file )
   om->setModelCallback( modelCallback );
 
   if ( ! om->createModel() )
-    g_log.error( 1, "Error: %s\n", om->error() );
+    Log::instance()->error( 1, "Error: %s\n", om->error() );
 
   return om;
 }
@@ -356,7 +356,7 @@ extractParameter( char *id, int nvet, char **vet )
 void
 modelCallback( float progress, void *extra_param )
 {
-  g_log( "Model creation: %07.4f%% \r", 100 * progress );
+  Log::instance()->info( "Model creation: %07.4f%% \r", 100 * progress );
 }
 
 
