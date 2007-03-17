@@ -110,6 +110,7 @@ int Csm::initialize()
   if (!SamplerToMatrix())
   {
     Log::instance()->warn( "All occurences are outside the masked area!\n" );
+    _initialized = 0;
     return 0;
   }
   //show what we have calculated so far....
@@ -131,6 +132,10 @@ int Csm::initialize()
   */
 int Csm::SamplerToMatrix()
 {
+  if (_localityCount < 1)
+  {
+    return 0;
+  }
 
   OccurrencesImpl::const_iterator pit = _samp->getPresences()->begin();
   OccurrencesImpl::const_iterator fin = _samp->getPresences()->end();
