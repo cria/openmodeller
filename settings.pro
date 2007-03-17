@@ -9,7 +9,7 @@
 #it will create an omgui1-debug and an omgui1-release dir
 #under this location and build the debug and release versions 
 #into there
-PREFIX=c:\dev\cpp\omgui1
+PREFIX="c:/Progra~1/"
 
 #################################################################
 # Normally you should not need to change anything from here on
@@ -76,12 +76,12 @@ DESTDIR = $${PREFIX}
 ALGDIR=algs
 CONFIG(debug, debug|release){
   message("Building with debugging support")
-  DESTDIR=$${PREFIX}/omgui1-debug
+  DESTDIR=$${PREFIX}/openmodeller-debug
   OMLIBADD=-lopenmodeller-debug
   CONFIG+=console
 }else{
   message("Debugging support disabled")
-  DESTDIR=$${PREFIX}/omgui1-release
+  DESTDIR=$${PREFIX}/openmodeller
   OMLIBADD=-lopenmodeller
 }
 unix:LIBS += -L$${DESTDIR}/lib/
