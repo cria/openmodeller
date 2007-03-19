@@ -1,6 +1,6 @@
 #################################################################
 #
-#         QMAKE Project File for openModeller Gui
+#         QMAKE Project File for openModeller 
 # 
 #                      Tim Sutton 2005
 #
@@ -8,5 +8,7 @@
 
 TEMPLATE=subdirs
 
-SUBDIRS=src
+SUBDIRS=openmodeller \
+ 	algorithms \
+	console
 
