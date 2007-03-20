@@ -111,7 +111,7 @@ static AlgMetadata metadata = {
 
     "CSMBS",               // Id.
     "Climate Space Model", // Name.
-    "0.3",                 // Version.
+    "0.4",                 // Version.
 
     "Climate Space Model [CSM] is a principle components based \
 algorithm developed by Dr. Neil Caithness", //Overview
