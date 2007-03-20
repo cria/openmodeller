@@ -104,6 +104,13 @@ int Csm::initialize()
   _layer_count = _samp->numIndependent();
   //set the class member that holds the number of occurences
   _localityCount = _samp->numPresence();
+  Log::instance()->debug( "Checking more than 1 samples exist\n" );
+  if (_localityCount<2)
+  {
+    Log::instance()->warn( "CSM needs at least two occurrence points..aborting...\n" );
+    _initialized = 0;
+    return 0;
+  }
 
   //convert the sampler to a matrix and store in the local gsl_matrix
   Log::instance()->debug( "Converting samples to GSL_Matrix\n" );
