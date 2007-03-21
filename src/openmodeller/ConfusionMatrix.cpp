@@ -69,7 +69,7 @@ void ConfusionMatrix::calculate(const EnvironmentPtr & env,
 				const OccurrencesPtr& presences, 
 				const OccurrencesPtr& absences)
 {
-  Log::instance()->debug( "Calculating confusion Matrix\n" );
+  Log::instance()->debug( "Calculating confusion matrix\n" );
 
   int i;
   int predictionIndex, actualIndex;
