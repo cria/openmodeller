@@ -281,13 +281,20 @@ OpenModeller::createModel()
   Log::instance()->info( "Creating model\n" );
 
   char *error = parameterModelCheck();
-  if ( error )
-    {
-      strcpy( _error, error );
-      return 0;
-    }
+  if ( error ) {
 
-  _alg->createModel( _samp, _model_command );
+    strcpy( _error, error );
+    return 0;
+  }
+
+  try {
+
+    _alg->createModel( _samp, _model_command );
+  }
+  catch ( std::exception& e ) {
+
+    Log::instance()->error( 1, "%s\n", e.what() );
+  }
 
   Log::instance()->info( "\nFinished creating model\n" );
 
