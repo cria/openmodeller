@@ -10,5 +10,5 @@
 # Set software group
 # The package maintainer (.deb)
 
-checkinstall --default --exclude ~/.ccache/stats --pkgname=libopenmodeller --pkgversion=0.4.1 --pkggroup=GIS --maintainer=tim@linfiniti.com        
+checkinstall --default --exclude ~/.ccache/stats --pkgname=libopenmodeller --pkgversion=0.4.2 --pkggroup=GIS --maintainer=tim@linfiniti.com        
 
