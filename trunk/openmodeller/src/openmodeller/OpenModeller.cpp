@@ -487,6 +487,8 @@ ConfusionMatrix * OpenModeller::getConfusionMatrix() const
 {
   ConfusionMatrix *cm = new ConfusionMatrix();
 
+  Log::instance()->debug( "Validating model using training dataset\n" );
+
   cm->calculate( getModel(), getSampler() );
 
   return cm;
