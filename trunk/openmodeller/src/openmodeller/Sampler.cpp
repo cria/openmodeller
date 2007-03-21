@@ -193,7 +193,7 @@ SamplerImpl::setConfiguration( const ConstConfigurationPtr& config )
 
   int num_absences = 0;
 
-  if ( _absence ) {
+  if ( absence ) {
 
     num_absences = absence->numOccurrences();
   }
