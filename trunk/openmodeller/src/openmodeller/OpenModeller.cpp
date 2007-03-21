@@ -287,14 +287,7 @@ OpenModeller::createModel()
     return 0;
   }
 
-  try {
-
-    _alg->createModel( _samp, _model_command );
-  }
-  catch ( std::exception& e ) {
-
-    Log::instance()->error( 1, "%s\n", e.what() );
-  }
+  _alg->createModel( _samp, _model_command );
 
   Log::instance()->info( "\nFinished creating model\n" );
 
