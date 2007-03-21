@@ -292,6 +292,9 @@ AlgorithmImpl::createModel( const SamplerPtr& samp, Algorithm::ModelCommand *mod
   if ( !samp )
     throw AlgorithmException( "Sampler not specified." );
 
+  if ( (!samp->numPresence()) && !samp->numAbsence() )
+    throw AlgorithmException( "Cannot create model without any presence or absence point." );
+
   setSampler( samp );
 
   computeNormalization( _samp );
