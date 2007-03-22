@@ -281,7 +281,7 @@ int AbstractBestSubsets::iterate()
 
     else
     {
-      //Log::instance()->info("%5d] There is an empty slot to run next thread (%d out of %d) - %d\n", iterations, active, _maxThreads, runId);
+      //Log::instance()->debug("%5d] There is an empty slot to run next thread (%d out of %d) - %d\n", iterations, active, _maxThreads, runId);
 
       // start new Algorithm
       SamplerPtr train, test;
@@ -292,6 +292,8 @@ int AbstractBestSubsets::iterate()
 
       AlgorithmPtr algo = AlgorithmFactory::newAlgorithm( _subAlgorithm.c_str() );
       algo->setParameters( _param );
+      algo->setSampler(train);
+      algo->initialize();
       algRun = new AlgorithmRun(algo);
       algRun->initialize(runId++,
           _commissionSampleSize, train, test ); 
