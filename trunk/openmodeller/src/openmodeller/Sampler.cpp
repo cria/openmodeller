@@ -305,9 +305,9 @@ SamplerImpl::getOneSample( ) const
 {
   Random rnd;
 
-  if ( !_presence->numOccurrences() ) { 
+  if ( ! _presence->numOccurrences() ) { 
 
-    throw SamplerException("No presence points available."); 
+    throw SamplerException( "No presence points available for sampling." );
   }
 
   // Probability of 0.5 of get a presence point.
