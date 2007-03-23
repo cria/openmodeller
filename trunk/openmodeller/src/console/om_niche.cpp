@@ -120,14 +120,14 @@ main( int argc, char **argv )
 
     if ( oc_file.empty() ) {
 
-      string oc_file = fp.get( "Species file" );
+      oc_file = fp.get( "Species file" );
     }
 
     string oc_name = fp.get( "Occurrences group" );
 
     if ( oc_name.empty() ) {
 
-      string oc_name = fp.get( "Species" );
+      oc_name = fp.get( "Species" );
     }
 
     _occurs = readOccurrences( oc_file.c_str(), oc_name.c_str(), oc_cs.c_str() );
