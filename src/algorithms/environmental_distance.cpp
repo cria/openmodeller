@@ -32,11 +32,13 @@ static AlgParamMetadata parameters[NUM_PARAM] = { // Parameters
       "Metric used to calculate distances: " // Overview
          "1=Euclidean, "
          "2=Mahalanobis, "
-         "3=Gower.",
+         "3=Manhattan, "
+         "4=Chebyshev.",
       "Metric used to calculate distances: " // Description
          "1=Euclidean, "
          "2=Mahalanobis, "
-         "3=Gower.",
+         "3=Manhattan, "
+         "4=Chebyshev.",
       1,                                               // Not zero if the parameter has lower limit
       FIRST_DISTANCE_TYPE,                             // Parameter's lower limit
       1,                                               // Not zero if the parameter has upper limit
@@ -75,7 +77,7 @@ static AlgMetadata metadata = { // General metadata
   "0.1",                        // Version
   "Generic algorithm based on environmental dissimilarity metrics.", // Overview
   "Generic algorithm based on environmental dissimilarity metrics.", // Description
-  "Mauro E. S. Munoz, Renato De Giovanni",    // Algorithm author
+  "Danilo J. S. Bellini, Mauro E. S. Munoz, Renato De Giovanni",    // Algorithm author
   "",                                         // Bibliography
   "Danilo J. S. Bellini",                     // Code author
   "danilo.estagio [at] gmail.com",            // Code author's contact
@@ -121,7 +123,8 @@ EnvironmentalDistance::~EnvironmentalDistance()
                delete covMatrixInv;
             }
             break;
-         //case GowerDistance:
+         //case ManhattanDistance:
+         //case ChebyshevDistance:
          //case EuclideanDistance:
          //default:
       }
@@ -283,8 +286,7 @@ void EnvironmentalDistance::CalcCovarianceMatrix(){
       }
 
    try{
-      (*covMatrixInv) = !(*covMatrix); // All covariance matrices are positive
-                                       // definite, so they always have an inverse
+      (*covMatrixInv) = !(*covMatrix);
    }
    catch ( std::exception& e ) {
       string msg = e.what();
@@ -315,9 +317,9 @@ inline Scalar EnvironmentalDistance::Distance(const Sample& x, const Sample& y) 
       }break;
 
       //
-      // Gower Distance
+      // Manhattan Distance
       //
-      case GowerDistance:{
+      case ManhattanDistance:{
          Scalar tmp;
          for(int k=0;k<layerCount;k++){
             tmp = x[k] - y[k];
@@ -329,6 +331,21 @@ inline Scalar EnvironmentalDistance::Distance(const Sample& x, const Sample& y) 
                dist += tmp;
          }
          dist /= layerCount;
+      }break;
+
+      //
+      // ChebyshevDistance
+      //
+      case ChebyshevDistance:
+      {
+         Scalar tmp;
+         for(int i=0; i<layerCount; i++){
+            tmp = x[i] - y[i];
+            if(tmp < 0)
+              tmp = -tmp;
+            if(tmp > dist)
+              dist = tmp;
+         }
       }break;
 
       //
@@ -373,36 +390,14 @@ void EnvironmentalDistance::InitDistanceType(){
             if(distIterator > distMax)
                distMax = distIterator;
          }
-/*
-         // Distance between all edges (vertex) of the hypercube
-         Scalar distIterator;
-         Sample x,y;
-         x.resize(layerCount);
-         y.resize(layerCount);
-         CalcCovarianceMatrix(); // Initialize covMatrixInv
-         distMax = 0.0;
-         for(int i=0; i<(1<<layerCount)-1; i++){ // for(i FROM 0 TO (2 "power" layerCount) - 2)
-            for(int k=0; k<layerCount; k++)         // This is the same loop used to create
-               if(i & (1<<k) != 0) x[k] = DATA_MAX; // binary numbers, but with "max" and
-               else                x[k] = DATA_MIN; // "min" instead of "1" and "0"
-            // Log::instance()->info("Maximum distance: %.8g ; i = %d / %d\r", distMax, i, (1<<layerCount)-1); // Debug
-            for(int j=i+1; j<(1<<layerCount); j++){ // Almost the same above
-               for(int k=0; k<layerCount; k++)
-                  if(j & (1<<k) != 0) y[k] = DATA_MAX;
-                  else                y[k] = DATA_MIN;
-
-               distIterator = Distance(x,y); // Calcs the distance between all edges (vertex) of the hypercube
-               if(distIterator > distMax)
-                  distMax = distIterator;
-            }
-         }
-*/
          //Log::instance()->info("\nMaximum distance: %.8g\n",distMax); // Debug
       }break;
 
-      case GowerDistance:
-         // Gower maximum value is always DATA_MAX - DATA_MIN, even for n
-         // dimensions, so there's no real initialization for Gower
+      case ManhattanDistance:
+         // Manhattan maximum value is always DATA_MAX - DATA_MIN, even for n
+         // dimensions, so there's no real initialization for Manhattan
+      case ChebyshevDistance:
+         // Chebyshev and Manhattan distances has the same maximum value
          distMax = DATA_MAX - DATA_MIN;
          break;
 

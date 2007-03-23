@@ -33,7 +33,7 @@ using namespace math;
 typedef matrix<Scalar> Matrix; // Now we have the matrix free for use
 
 #define FIRST_DISTANCE_TYPE   1
-#define AMOUNT_DISTANCE_TYPES 3
+#define AMOUNT_DISTANCE_TYPES 4
 
 class EnvironmentalDistance : public AlgorithmImpl{
 
@@ -71,7 +71,8 @@ class EnvironmentalDistance : public AlgorithmImpl{
       typedef enum{
          EuclideanDistance = FIRST_DISTANCE_TYPE,
          MahalanobisDistance,
-         GowerDistance
+         ManhattanDistance,
+         ChebyshevDistance,
       } DistanceType;
 
    protected:
