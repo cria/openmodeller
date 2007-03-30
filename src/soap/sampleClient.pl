@@ -555,11 +555,11 @@ sub create_model
     my $coordsystem = SOAP::Data
 	-> type( 'xml' => $wkt );
 
-    my @presencePoints = ( {'Y' => -11.15, 'X' => -68.85},
-			   {'Y' => -14.32, 'X' => -67.38},
-			   {'Y' => -15.52, 'X' => -67.15},
-			   {'Y' => -16.73, 'X' => -65.12},
-			   {'Y' => -17.80, 'X' => -63.17} );
+    my @presencePoints = ( {'Id' => '1', 'Y' => -11.15, 'X' => -68.85},
+			   {'Id' => '2', 'Y' => -14.32, 'X' => -67.38},
+			   {'Id' => '3', 'Y' => -15.52, 'X' => -67.15},
+			   {'Id' => '4', 'Y' => -16.73, 'X' => -65.12},
+			   {'Id' => '5', 'Y' => -17.80, 'X' => -63.17} );
 
     @presencePoints = map( SOAP::Data->name('Point')->attr(\%{$_}), @presencePoints );
 
@@ -569,11 +569,11 @@ sub create_model
         -> value( \SOAP::Data->value( $coordsystem, 
                                       @presencePoints ) );
     
-    my @absencePoints = ( {'Y' => -47.07, 'X' => -22.82},
-			  {'Y' => -49.75, 'X' => -12.70},
-			  {'Y' => -50.37, 'X' => -3.52},
-			  {'Y' => -45.44, 'X' => -14.23},
-			  {'Y' => -51.07, 'X' => -6.88} );
+    my @absencePoints = ( {'Id' => '6' , 'Y' => -47.07, 'X' => -22.82},
+			  {'Id' => '7' , 'Y' => -49.75, 'X' => -12.70},
+			  {'Id' => '8' , 'Y' => -50.37, 'X' => -3.52},
+			  {'Id' => '9' , 'Y' => -45.44, 'X' => -14.23},
+			  {'Id' => '10', 'Y' => -51.07, 'X' => -6.88} );
 
     @absencePoints = map( SOAP::Data->name('Point')->attr(\%{$_}), @absencePoints );
     
