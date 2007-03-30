@@ -15,9 +15,9 @@ REQUEST FILE DESCRIPTION
   e.g.   WKT Coord System = GEOGCS["WGS 84",DATUM ["WGS_1984", SPHEROID ["WGS84",6378137,298.257223563, AUTHORITY ["EPSG","7030"]], TOWGS84  [0,0,0,0,0,0,0],AUTHORITY["EPSG","6326"]], PRIMEM["Greenwich",0, AUTHORITY [  "EPSG","8901"]], UNIT["degree",0.0174532925199433, AUTHORITY["EPSG","9108"]], AXIS["Lat",NORTH], AXIS["Long", EAST], AUTHORITY["EPSG","4326"]].
 
 
-  Species file - Full path and file name of the file containing localities data. e.g.  Species file = /home/user/sapointsclipped.txt
+  Occurrences source - Full path and file name of the file containing localities data. e.g.  Species file = /home/user/sapointsclipped.txt
 
-  Species - The taxon in the localities file to be modelled, defaults to the first 
+  Occurrences group - The taxon in the localities file to be modelled, defaults to the first 
   taxon found. e.g. Species = M spinosa
 
   Map - One or more Independent Variable Layers (map layers). Specify 
@@ -69,5 +69,5 @@ SEE ALSO
        om_niche(1), omgui(1)
 
 AUTHORS
-       Mauro E. S. MuÃ±oz, Ricardo Scachetti Pereira, 
+       Mauro E. S. Muñoz, Ricardo Scachetti Pereira, 
        Renato De Giovanni, Kevin Ruland

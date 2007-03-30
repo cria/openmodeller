@@ -22,10 +22,10 @@ WKT Coord System = GEOGCS["WGS 84",DATUM ["WGS_1984", SPHEROID ["WGS84",6378137,
 .RS
 .TP
 .B
-Species file - Full path and file name of the file containing localities data. e.g.
-Species file = /home/user/sapointsclipped.txt
+Occurrences source - Full path and file name of the file containing localities data. e.g.
+Occurrences source = /home/user/sapointsclipped.txt
 .PP
-Species - The taxon in the localities file to be modelled, defaults to the first 
+Occurrences group - The taxon in the localities file to be modelled, defaults to the first 
 taxon found. e.g. Species = M spinosa
 .PP
 Map - One or more Independent Variable Layers (map layers). Specify 
