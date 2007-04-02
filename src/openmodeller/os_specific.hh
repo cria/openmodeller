@@ -43,10 +43,10 @@ typedef HMODULE DLLHandle;
 typedef void *DLLHandle;
 #endif
 
-extern DLLHandle dllOpen    ( char const *dll_file_name );
-extern void     *dllFunction( DLLHandle, char const *function_name );
-extern int       dllClose   ( DLLHandle );
-extern char     *dllError   ( DLLHandle );
+extern DLLHandle   dllOpen    ( char const *dll_file_name );
+extern void       *dllFunction( DLLHandle, char const *function_name );
+extern int         dllClose   ( DLLHandle );
+extern const char *dllError   ( DLLHandle );
 
 /****************************************************************/
 /*************** Retrieve initial library path ******************/
