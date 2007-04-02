@@ -43,7 +43,8 @@ EXTRA_DIST = \
 	openModeller.getLayerAsAttachment.res.xml \
 	openModeller.getLayerAsUrl.req.xml \
 	openModeller.getLayerAsUrl.res.xml \
-	sampleClient.pl
+	sampleClient.pl \
+	scheduler.sh
 
 
 SOAPHEADER = om_soap.hh
