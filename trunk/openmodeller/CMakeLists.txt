@@ -80,7 +80,7 @@ ELSE (WIN32)
   ENDIF (APPLE)
 
   # common for MAC and UNIX
-  SET (OM_DATA_DIR   ${CMAKE_INSTALL_PREFIX}/share/qgis)
+  SET (OM_DATA_DIR   ${CMAKE_INSTALL_PREFIX}/share/openmodeller)
   SET (OM_INCLUDE_DIR "${CMAKE_INSTALL_PREFIX}/include")
   SET (OM_EXAMPLES_DIR "${CMAKE_INSTALL_PREFIX}/share/openmodeller/examples")
 
