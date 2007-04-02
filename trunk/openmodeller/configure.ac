@@ -47,11 +47,19 @@ dnl ---------------------------------------------------------------------------
 dnl X11
 dnl ---------------------------------------------------------------------------
 AC_PATH_X
+AC_MSG_CHECKING([for X11 headers])
 if test "$x_includes" != "" -a "$x_includes" != "NONE"; then
   X11_CFLAGS="-I$x_includes"
+  AC_MSG_RESULT([yes])
+else
+  AC_MSG_RESULT([no])
 fi
+AC_MSG_CHECKING([for X11 libraries])
 if test "$x_libraries" != "" -a "$x_libraries" != "NONE"; then
   X11_LIB="-L$x_libraries -lX11"
+  AC_MSG_RESULT([yes])
+else
+  AC_MSG_RESULT([no])
 fi
 AC_SUBST(X11_LIB)
 AC_SUBST(X11_CFLAGS)
