@@ -15,6 +15,10 @@ SET (OMSOAP_SRCS
 SET (OMSOAP_HDRS
 )
 
+SET (OMSOAP_DATA
+  server.conf
+  )
+
 ########################################################
 # Build
 
@@ -42,3 +46,6 @@ TARGET_LINK_LIBRARIES(om_soap_server openmodeller )
 # Install
 
 INSTALL(TARGETS om_soap_server RUNTIME DESTINATION ${OM_BIN_DIR})
+
+INSTALL(CODE "MESSAGE(\"Installing share data...\")")
+INSTALL(FILES ${OMSOAP_DATA} DESTINATION ${OM_DATA_DIR})
