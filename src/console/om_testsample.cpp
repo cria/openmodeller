@@ -1,6 +1,5 @@
 #include <openmodeller/om.hh>
-#include <openmodeller/Log.hh>
-#include <openmodeller/Sampler.hh>
+#include <openmodeller/RocCurve.hh>
 #include "request_file.hh"
 #include "file_parser.hh"
 
@@ -91,10 +90,16 @@ int main( int argc, char **argv ) {
 
     matrix->calculate( om.getModel(), sampler );
 
+    RocCurve* roc_curve = new RocCurve();
+
+    roc_curve->calculate( om.getModel(), sampler );
+
     Log::instance()->info( "\nModel statistics\n" );
     Log::instance()->info( "Accuracy:          %7.2f%%\n", matrix->getAccuracy() * 100 );
     Log::instance()->info( "Omission error:    %7.2f%%\n", matrix->getOmissionError() * 100 );
     Log::instance()->info( "Commission error:  %7.2f%%\n", matrix->getCommissionError() * 100 );
+
+    Log::instance()->info( "AUC:               %7.2f\n", roc_curve->getArea() );
 
     return 0;
   }

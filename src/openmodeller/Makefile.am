@@ -38,7 +38,7 @@ TERRALIB_CPP = TeUrlParser.cpp \
 	TeDatabaseManager.cpp \
 	env_io/TeOMRaster.cpp \
 	occ_io/TeOccurrences.cpp
-	
+
 TERRALIB_HH = TeUrlParser.hh \
 	TeDatabaseManager.hh \
 	env_io/TeOMRaster.hh \
@@ -53,7 +53,7 @@ TERRALIB_FLAGS = -I$(TERRALIB_HOME)/src/terralib/kernel \
 	-I$(TERRALIB_HOME)/src/terralib/drivers/OracleSpatial \
 	-I$(TERRALIB_HOME)/src/terralib/drivers/OracleSpatial/OCI/include \
 	-DBUILD_TERRALIB
-	
+
 TERRALIB_LIB = $(TERRALIB_HOME)/terralibx/terralib/libterralib.so \
 	$(TERRALIB_HOME)/terralibx/tiff/libtiff.so \
 	/usr/lib/libmysqlclient.so \
@@ -80,6 +80,7 @@ libopenmodeller_la_SOURCES = \
 	$(SOURCEOS) \
 	Projector.cpp \
 	Random.cpp \
+	RocCurve.cpp \
 	Sample.cpp \
 	Sampler.cpp \
 	env_io/GeoTransform.cpp \
@@ -136,6 +137,7 @@ ominclude_HEADERS = \
 	Projector.hh \
 	Random.hh\
 	refcount.hh \
+	RocCurve.hh \
 	SampleExpr.hh \
 	SampleExprVar.hh \
 	Sample.hh \
