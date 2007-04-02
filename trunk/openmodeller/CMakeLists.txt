@@ -21,26 +21,30 @@ SET (OM_DEBUG_LOGLEVEL FALSE CACHE BOOL "Force log level to Debug - should leave
 
 # required
 FIND_PACKAGE(Proj)
-FIND_PACKAGE(Sqlite3)
 FIND_PACKAGE(GDAL)
 FIND_PACKAGE(Expat)
 
 # optional
 FIND_PACKAGE(GSL)      # Georeferencer
 FIND_PACKAGE(X11)
+FIND_PACKAGE(Sqlite3)
 # python support:
 #INCLUDE (Python) # file cmake/Python.cmake
 
 
-IF (NOT PROJ_FOUND OR NOT SQLITE3_FOUND OR NOT GDAL_FOUND)
-  MESSAGE (SEND_ERROR "Some dependencies were not found!")
-ENDIF (NOT PROJ_FOUND OR NOT SQLITE3_FOUND OR NOT GDAL_FOUND)
+IF (NOT PROJ_FOUND)
+  MESSAGE (SEND_ERROR "PROJ4 library was not found!")
+ENDIF (NOT PROJ_FOUND)
+
+IF (NOT GDAL_FOUND)
+  MESSAGE (SEND_ERROR "GDAL library was not found!")
+ENDIF (NOT GDAL_FOUND)
 
 #############################################################
 # enable warnings and set compile time defines
 
 ADD_DEFINITIONS( -Wall )
-ADD_DEFINITIONS(-DVERSION=\\"0.4\\")
+ADD_DEFINITIONS(-DVERSION=\\"0.4.2\\")
 ADD_DEFINITIONS(-DCONFIG_FILE=\\"om.cfg\\")
 ADD_DEFINITIONS(-DOMDATAPATH=\\"share/openmodeller\\")
 IF (OM_LOGLEVEL_DEBUG)
