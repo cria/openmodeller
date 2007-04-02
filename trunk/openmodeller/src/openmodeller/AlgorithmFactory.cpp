@@ -81,7 +81,7 @@ AlgorithmFactory::DLL::DLL( const string& file ) :
   // Opens the DLL file.
   if ( ! _handle )
     {
-      char *error = dllError( _handle );
+      const char *error = dllError( _handle );
       Log::instance()->warn( "Error loading %s: %s\n", file.c_str(), error );
       goto error;
     }
@@ -90,7 +90,7 @@ AlgorithmFactory::DLL::DLL( const string& file ) :
 
   if ( ! _factory )
     {
-      char *error = dllError( _handle );
+      const char *error = dllError( _handle );
       Log::instance()->warn( "Algorithm %s is not openModeller compatible! (TAlgFactory mismatch)\n", file.c_str() );
       Log::instance()->warn( "Error: %s\n", error );
       goto error;
@@ -100,7 +100,7 @@ AlgorithmFactory::DLL::DLL( const string& file ) :
   
   if ( ! _metadata )
     {
-      char *error = dllError( _handle );
+      const char *error = dllError( _handle );
       Log::instance()->warn( "Algorithm %s is not openModeller compatible! (TAlgMetadata mismatch)\n", file.c_str() );
       Log::instance()->warn( "Error: %s\n", error );
       goto error;

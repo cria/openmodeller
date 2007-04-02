@@ -76,7 +76,7 @@ dllClose( DLLHandle handle )
 
 /*****************/
 /*** dll Error ***/
-char *
+const char *
 dllError( DLLHandle )
 {
   return dlerror();
