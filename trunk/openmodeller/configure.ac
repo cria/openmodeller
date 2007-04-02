@@ -45,8 +45,25 @@ dnl CPPFLAGS="$CPPFLAGS -Wall -Werror"
 
 dnl ---------------------------------------------------------------------------
 dnl X11
+dnl 
+dnl Macro: AC_PATH_X
+dnl      Try to locate the X Window System include files and libraries.  If
+dnl      the user gave the command line options `--x-includes=DIR' and
+dnl      `--x-libraries=DIR', use those directories.  If either or both
+dnl      were not given, get the missing values by running `xmkmf' on a
+dnl      trivial `Imakefile' and examining the `Makefile' that it produces.
+dnl      If that fails (such as if `xmkmf' is not present), look for the
+dnl      files in several directories where they often reside.  If either
+dnl      method is successful, set the shell variables `x_includes' and
+dnl      `x_libraries' to their locations, unless they are in directories
+dnl      the compiler searches by default.
+dnl 
+dnl      If both methods fail, or the user gave the command line option
+dnl      `--without-x', set the shell variable `no_x' to `yes'; otherwise
+dnl      set it to the empty string.
+dnl 
 dnl ---------------------------------------------------------------------------
-AC_PATH_X
+AC_PATH_X([X11], [X11/Xlib.h], [XOpenDisplay(NULL)])
 AC_MSG_CHECKING([for X11 headers])
 if test "$x_includes" != "" -a "$x_includes" != "NONE"; then
   X11_CFLAGS="-I$x_includes"
