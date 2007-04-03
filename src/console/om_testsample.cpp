@@ -1,5 +1,4 @@
 #include <openmodeller/om.hh>
-#include <openmodeller/RocCurve.hh>
 #include "request_file.hh"
 #include "file_parser.hh"
 

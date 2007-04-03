@@ -45,6 +45,7 @@
 #include <openmodeller/AlgParameter.hh>
 #include <openmodeller/AreaStats.hh>
 #include <openmodeller/ConfusionMatrix.hh>
+#include <openmodeller/RocCurve.hh>
 #include <openmodeller/Log.hh>
 
 // openModeller algorithms specific includes
