@@ -158,8 +158,6 @@ main( int argc, char **argv )
     // ROC curve
     Log::instance()->info( "AUC:               %7.2f\n", roc_curve->getArea() );
 
-    delete roc_curve;
-
     // Projection statistics
     if ( request.requestedProjection() ) {
 

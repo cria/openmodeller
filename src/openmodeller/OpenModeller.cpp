@@ -126,6 +126,8 @@ OpenModeller::OpenModeller()
   _estimatedAreaStats = new AreaStats();
 
   _confusion_matrix = new ConfusionMatrix();
+
+  _roc_curve = new RocCurve();
 }
 
 
@@ -141,6 +143,8 @@ OpenModeller::~OpenModeller()
   if ( _estimatedAreaStats ) delete _estimatedAreaStats;
 
   if ( _confusion_matrix ) delete _confusion_matrix;
+
+  if ( _roc_curve ) delete _roc_curve;
 
   delete _actualAreaStats;
 }
@@ -515,7 +519,10 @@ ConfusionMatrix * OpenModeller::getConfusionMatrix()
 /******* getRocCurve *******/
 RocCurve * OpenModeller::getRocCurve()
 {
-  RocCurve * rc = new RocCurve();
+  if ( _roc_curve->ready() ) {
+
+    return _roc_curve;
+  }
 
   Log::instance()->debug( "Calculating ROC curve using training dataset\n" );
 
@@ -550,9 +557,9 @@ RocCurve * OpenModeller::getRocCurve()
     sampler = getSampler();
   }
 
-  rc->calculate( getModel(), sampler );
+  _roc_curve->calculate( getModel(), sampler );
 
-  return rc;
+  return _roc_curve;
 }
 
 
@@ -578,6 +585,13 @@ OpenModeller::getModelConfiguration() const
     ConfigurationPtr cm_config( _confusion_matrix->getConfiguration() );
 
     stats_config->addSubsection( cm_config );
+  }
+
+  if ( _roc_curve->ready() ) {
+
+    ConfigurationPtr roc_config( _roc_curve->getConfiguration() );
+
+    stats_config->addSubsection( roc_config );
   }
 
   config->addSubsection( stats_config );

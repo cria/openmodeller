@@ -402,6 +402,9 @@ private:
   // Confusion matrix
   ConfusionMatrix * _confusion_matrix;
 
+  // ROC Curve
+  RocCurve * _roc_curve;
+
   char _error[256];
 };
 
