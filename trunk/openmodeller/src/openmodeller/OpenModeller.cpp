@@ -42,6 +42,7 @@
 #include <openmodeller/AreaStats.hh>
 #include <openmodeller/Occurrence.hh>
 #include <openmodeller/ConfusionMatrix.hh>
+#include <openmodeller/RocCurve.hh>
 #include <openmodeller/MapFormat.hh>
 
 #include <openmodeller/AlgorithmFactory.hh>
@@ -456,14 +457,20 @@ AreaStats * OpenModeller::getEstimatedAreaStats(const ConstEnvironmentPtr& env,
 {
   int i, sampleSize, numCells, xdim, ydim;
 
-  if ( !env)
+  if ( !env ) {
+
     // this method does not work without _env properly set
     return NULL;
+  }
 
-  if ( !_estimatedAreaStats )
-    { _estimatedAreaStats = new AreaStats; }
-  else
-    { _estimatedAreaStats->reset(); }
+  if ( !_estimatedAreaStats ) { 
+
+    _estimatedAreaStats = new AreaStats; 
+  }
+  else { 
+
+    _estimatedAreaStats->reset(); 
+  }
 
   // get number of cells to sample
   // note that the total area does not take the mask into account
@@ -472,14 +479,17 @@ AreaStats * OpenModeller::getEstimatedAreaStats(const ConstEnvironmentPtr& env,
   numCells = xdim * ydim; 
 
   sampleSize = (int) (numCells * proportionAreaToSample);
-  for (i = 0; i < sampleSize; i++)
-    { 
-      const Sample& sample = env->getRandom();
-      _estimatedAreaStats->addPrediction(_alg->getValue(sample)); 
-    }
+
+  for (i = 0; i < sampleSize; i++) { 
+
+    const Sample& sample = env->getRandom();
+
+    _estimatedAreaStats->addPrediction(_alg->getValue(sample)); 
+  }
 
   return _estimatedAreaStats;
 }
+
 
 /**********************************/
 /******* getConfusionMatrix *******/
@@ -487,13 +497,61 @@ ConfusionMatrix * OpenModeller::getConfusionMatrix() const
 {
   ConfusionMatrix *cm = new ConfusionMatrix();
 
-  Log::instance()->debug( "Validating model using training dataset\n" );
+  Log::instance()->debug( "Calculating confusion matrix using training dataset\n" );
 
   cm->calculate( getModel(), getSampler() );
 
   return cm;
 }
 
+
+/***************************/
+/******* getRocCurve *******/
+RocCurve * OpenModeller::getRocCurve()
+{
+  RocCurve * rc = new RocCurve();
+
+  Log::instance()->debug( "Calculating ROC curve using training dataset\n" );
+
+  int num_presences = _samp->numPresence();
+
+  int num_absence = _samp->numAbsence();
+
+  SamplerPtr sampler;
+
+  if ( ! num_absence ) {
+
+    // If there are no absences, generate pseudo-absences (same number of presences)
+
+    Log::instance()->debug( "Sampling pseudo-absences\n" );
+
+    OccurrencesImpl * pseudo_absences = new OccurrencesImpl( 0.0 );
+
+    for ( int i = 0; i < num_presences; ++i ) {
+
+      OccurrencePtr oc = _samp->getPseudoAbsence();
+      pseudo_absences->insert( oc );
+
+      Log::instance()->debug( "(%f,%f)\n", oc->x(), oc->y() );
+    }
+
+    sampler = createSampler( _env, _samp->getPresences(), pseudo_absences );
+  }
+  else {
+
+   // If there are absences, use the same sampler
+
+    sampler = getSampler();
+  }
+
+  rc->calculate( getModel(), sampler );
+
+  return rc;
+}
+
+
+/*************************************/
+/******* getModelConfiguration *******/
 ConfigurationPtr
 OpenModeller::getModelConfiguration() const
 {
@@ -522,6 +580,9 @@ OpenModeller::getModelConfiguration() const
   return config;
 }
 
+
+/*************************************/
+/******* setModelConfiguration *******/
 void
 OpenModeller::setModelConfiguration( const ConstConfigurationPtr & config )
 {
@@ -532,6 +593,9 @@ OpenModeller::setModelConfiguration( const ConstConfigurationPtr & config )
   _alg->setSampler( _samp );
 }
 
+
+/******************************************/
+/******* setProjectionConfiguration *******/
 void
 OpenModeller::setProjectionConfiguration( const ConstConfigurationPtr & config )
 {

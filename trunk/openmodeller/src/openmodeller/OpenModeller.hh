@@ -50,6 +50,7 @@ class AlgParameter;
 
 class MapFormat;
 class ConfusionMatrix;
+class RocCurve;
 class AreaStats;
 
 #include <string>
@@ -352,6 +353,8 @@ public:
 				    double proportionAreaToSample = 0.01);
 
   ConfusionMatrix *getConfusionMatrix() const;
+
+  RocCurve *getRocCurve();
 
   /*****************************************************************************
    *
