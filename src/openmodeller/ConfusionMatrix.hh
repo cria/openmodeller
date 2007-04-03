@@ -25,6 +25,9 @@
  * http://www.gnu.org/copyleft/gpl.html
  */
 
+#ifndef _CONFUSIONMATRIXHH_
+#define _CONFUSIONMATRIXHH_
+
 #include <openmodeller/om_defs.hh>
 #include <openmodeller/Configuration.hh>
 
@@ -159,3 +162,5 @@ private:
 
   bool _ready;
 };
+
+#endif
