@@ -38,7 +38,7 @@ static AlgParamMetadata parameters[NUM_PARAM] = { // Parameters
          "1=Euclidean, "
          "2=Mahalanobis, "
          "3=Manhattan, "
-         "4=Chebyshev.",
+         "4=Chebyshev",
       1,                                               // Not zero if the parameter has lower limit
       FIRST_DISTANCE_TYPE,                             // Parameter's lower limit
       1,                                               // Not zero if the parameter has upper limit
@@ -74,10 +74,10 @@ static AlgParamMetadata parameters[NUM_PARAM] = { // Parameters
 static AlgMetadata metadata = { // General metadata
   "EnvironmentalDistance",      // Id
   "Environmental Distance",     // Name
-  "0.1",                        // Version
+  "0.2",                        // Version
   "Generic algorithm based on environmental dissimilarity metrics.", // Overview
   "Generic algorithm based on environmental dissimilarity metrics.", // Description
-  "Danilo J. S. Bellini, Mauro E. S. Munoz, Renato De Giovanni",    // Algorithm author
+  "Mauro E. S. Munoz, Renato De Giovanni, Danilo J. S. Bellini",    // Algorithm author
   "",                                         // Bibliography
   "Danilo J. S. Bellini",                     // Code author
   "danilo.estagio [at] gmail.com",            // Code author's contact
