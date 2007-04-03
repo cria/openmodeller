@@ -1,8 +1,10 @@
 Release 0.4.2 (?)
 -----------------------------
 
+	* Included ROC curve as part of model statistics.
 	* Added metric Chebyshev in the Environmental Distance algorithm.
 	* Log object is now a singleton.
+	* Minor bugfixes.
 
 Release 0.4.1 (2007-03-12)
 -----------------------------
