@@ -73,8 +73,6 @@ void RocCurve::reset( int resolution )
 /*** calculate ***/
 void RocCurve::calculate( const Model& model, const SamplerPtr& sampler )
 {
-  Log::instance()->debug( "Calculating ROC curve\n" );
-
   reset( _resolution );
 
   _loadPredictions( sampler->getEnvironment(), model, 
