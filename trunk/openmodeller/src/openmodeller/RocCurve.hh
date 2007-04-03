@@ -94,6 +94,11 @@ public:
   double getArea() const { return _auc; }
 
   /** 
+   * Check whether the ROC curve has been calculated already
+   */
+  bool ready() const { return _ready; }
+
+  /** 
    * Serialize the ROC curve
    */
   ConfigurationPtr getConfiguration() const;
@@ -151,6 +156,7 @@ private:
 
   double _auc; // Area under the curve
 
+  bool _ready;
 };
 
 #endif

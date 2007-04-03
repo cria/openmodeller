@@ -59,6 +59,7 @@ RocCurve::~RocCurve()
 /*** reset ***/
 void RocCurve::reset( int resolution )
 {
+  _ready = false;
   _resolution = resolution;
   _category.erase( _category.begin(), _category.end() );
   _prediction.erase( _prediction.begin(), _prediction.end() );
@@ -81,6 +82,8 @@ void RocCurve::calculate( const Model& model, const SamplerPtr& sampler )
   _calculateGraphPoints();
 
   bool calculated = _calculateArea();
+
+  _ready = true;
 }
 
 
@@ -201,7 +204,6 @@ void RocCurve::_calculateGraphPoints()
 
         num_fn++;
       }
-
     }
 
     // Define counter sums
@@ -314,7 +316,28 @@ bool RocCurve::_calculateArea()
 ConfigurationPtr 
 RocCurve::getConfiguration() const
 {
-  ConfigurationPtr config( new ConfigurationImpl("Roc") );
+  ConfigurationPtr config( new ConfigurationImpl("RocCurve") );
+
+  config->addNameValue( "Auc", getArea() );
+
+  int num_points = numPoints();
+
+  double *tmp_points = new double[num_points*2];
+
+  int cnt = 0;
+
+  for ( int i = 0; i < num_points; ++i, ++cnt ) {
+
+    tmp_points[cnt] = 1 - getSpecificity( i );
+
+    ++cnt;
+
+    tmp_points[cnt] = getSensitivity( i );
+  }
+
+  config->addNameValue( "Points", tmp_points, num_points*2 );
+
+  delete[] tmp_points;
 
   return config;
 }
