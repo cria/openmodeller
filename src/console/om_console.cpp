@@ -139,11 +139,11 @@ main( int argc, char **argv )
       Log::instance()->warn( "Skipping projection\n" );
     }
 
-    //ConfusionMatrix matrix;
+    // Instantiate objects for model statistics
     ConfusionMatrix * matrix = om.getConfusionMatrix();
+    RocCurve * roc_curve = om.getRocCurve();
 
-    AreaStats * stats = om.getActualAreaStats();
-
+    // Confusion Matrix
     Log::instance()->info( "\nModel statistics\n" );
     Log::instance()->info( "Accuracy:          %7.2f%%\n", matrix->getAccuracy() * 100 );
     Log::instance()->info( "Omission error:    %7.2f%%\n", matrix->getOmissionError() * 100 );
@@ -157,7 +157,15 @@ main( int argc, char **argv )
 
     delete matrix;
 
+    // ROC curve
+    Log::instance()->info( "AUC:               %7.2f\n", roc_curve->getArea() );
+
+    delete roc_curve;
+
+    // Projection statistics
     if ( request.requestedProjection() ) {
+
+      AreaStats * stats = om.getActualAreaStats();
 
       Log::instance()->info( "Percentage of cells predicted present: %7.2f%%\n", 
              stats->getAreaPredictedPresent() / (double) stats->getTotalArea() * 100 );
