@@ -155,8 +155,6 @@ main( int argc, char **argv )
       Log::instance()->info( "Commission error:  %7.2f%%\n", commissionError * 100 );
     }
 
-    delete matrix;
-
     // ROC curve
     Log::instance()->info( "AUC:               %7.2f\n", roc_curve->getArea() );
 

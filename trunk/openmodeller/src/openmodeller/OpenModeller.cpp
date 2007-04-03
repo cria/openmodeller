@@ -125,6 +125,7 @@ OpenModeller::OpenModeller()
   _actualAreaStats = new AreaStats();
   _estimatedAreaStats = new AreaStats();
 
+  _confusion_matrix = new ConfusionMatrix();
 }
 
 
@@ -138,6 +139,8 @@ OpenModeller::~OpenModeller()
   if ( _model_command ) delete _model_command;
 
   if ( _estimatedAreaStats ) delete _estimatedAreaStats;
+
+  if ( _confusion_matrix ) delete _confusion_matrix;
 
   delete _actualAreaStats;
 }
@@ -493,15 +496,18 @@ AreaStats * OpenModeller::getEstimatedAreaStats(const ConstEnvironmentPtr& env,
 
 /**********************************/
 /******* getConfusionMatrix *******/
-ConfusionMatrix * OpenModeller::getConfusionMatrix() const
+ConfusionMatrix * OpenModeller::getConfusionMatrix()
 {
-  ConfusionMatrix *cm = new ConfusionMatrix();
+  if ( _confusion_matrix->ready() ) {
+
+    return _confusion_matrix;
+  }
 
   Log::instance()->debug( "Calculating confusion matrix using training dataset\n" );
 
-  cm->calculate( getModel(), getSampler() );
+  _confusion_matrix->calculate( getModel(), getSampler() );
 
-  return cm;
+  return _confusion_matrix;
 }
 
 
@@ -567,15 +573,14 @@ OpenModeller::getModelConfiguration() const
 
   ConfigurationPtr stats_config( new ConfigurationImpl("Statistics") );
 
-  ConfusionMatrix * cm = getConfusionMatrix();
+  if ( _confusion_matrix->ready() ) {
 
-  ConfigurationPtr cm_config( cm->getConfiguration() );
+    ConfigurationPtr cm_config( _confusion_matrix->getConfiguration() );
 
-  stats_config->addSubsection( cm_config );
+    stats_config->addSubsection( cm_config );
+  }
 
   config->addSubsection( stats_config );
-
-  delete cm;
 
   return config;
 }

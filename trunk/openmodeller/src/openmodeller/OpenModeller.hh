@@ -352,9 +352,9 @@ public:
   AreaStats * getEstimatedAreaStats(const ConstEnvironmentPtr& env, 
 				    double proportionAreaToSample = 0.01);
 
-  ConfusionMatrix *getConfusionMatrix() const;
+  ConfusionMatrix * getConfusionMatrix();
 
-  RocCurve *getRocCurve();
+  RocCurve * getRocCurve();
 
   /*****************************************************************************
    *
@@ -398,6 +398,9 @@ private:
   // model statistics: helper objects
   AreaStats * _actualAreaStats;
   AreaStats * _estimatedAreaStats;
+
+  // Confusion matrix
+  ConfusionMatrix * _confusion_matrix;
 
   char _error[256];
 };
