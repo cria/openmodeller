@@ -152,9 +152,9 @@ void ConfusionMatrix::calculate(const EnvironmentPtr & env,
 
       ++it;
     }
-
-    Log::instance()->debug( "Tested %u absence point(s)\n", i );
   }
+
+  Log::instance()->debug( "Tested %u absence point(s)\n", i );
 
   _ready = true;
 }
