@@ -504,6 +504,9 @@ RequestFile::makeModel( OpenModeller *om )
     Log::instance()->error( 1, "Error during model creation: %s\n", om->error() );
   }
 
+  // Calculate confusion matrix to store in the serialized model
+  ConfusionMatrix * cm = om->getConfusionMatrix();
+
   // Serialize model, if requested
   if ( _inputModelFile.empty() && ! _outputModelFile.empty() ) {
 

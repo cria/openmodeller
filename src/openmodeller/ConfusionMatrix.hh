@@ -136,7 +136,7 @@ public:
   /** 
    * Check whether the confusion matrix has been calculated already
    */
-  bool ready() { return _ready; }
+  bool ready() const { return _ready; }
 
   /** 
    * Serialize the confusion matrix
