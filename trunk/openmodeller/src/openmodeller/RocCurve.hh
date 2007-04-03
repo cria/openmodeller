@@ -23,6 +23,9 @@
  * http://www.gnu.org/copyleft/gpl.html
  */
 
+#ifndef _ROCCURVEHH_
+#define _ROCCURVEHH_
+
 #include <openmodeller/om_defs.hh>
 #include <openmodeller/Configuration.hh>
 
@@ -149,3 +152,5 @@ private:
   double _auc; // Area under the curve
 
 };
+
+#endif
