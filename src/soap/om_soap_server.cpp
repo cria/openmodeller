@@ -64,6 +64,7 @@ using namespace std;
 static void*    process_request( void* );
 static bool     fileExists( const char* fileName );
 static string   getMapFile( const char* ticket );
+static string   getMapServerFile( const char* ticket );
 static wchar_t* convertToWideChar( const char* p );
 static bool     readDirectory( const char* dir, const char* label, ostream &xml, int depth );
 static bool     isValidGdalFile( const char* fileName );
@@ -720,6 +721,45 @@ omws__getLayerAsUrl( struct soap *soap, xsd__string id, xsd__string &url )
   return SOAP_OK;
 }
 
+/********************************/
+/**** get layer as a WCS URL ****/
+int 
+omws__getLayerAsWcs( struct soap *soap, xsd__string id, xsd__string &url )
+{ 
+
+  // This method is now working only for distribution maps!
+
+  if ( ! id ) {
+
+    return soap_sender_fault(soap, "Layer id required", NULL);
+  }
+
+  string urlString( gFileParser.get( "BASE_WCS_URL" ) );
+
+  if ( urlString.empty() ) {
+
+    return soap_receiver_fault( soap, "Web Coverage Service not available", NULL );
+  }
+
+  string fileName = getMapServerFile( id );
+
+  if ( fileName.empty() ) {
+
+    return soap_receiver_fault( soap, "Layer unavailable as WCS", NULL );
+  }
+
+  if ( urlString.find_last_of( "/" ) != urlString.size() - 1 ) {
+
+    urlString.append( "/" );
+  }
+
+  urlString.append( fileName );
+  
+  url = (char*)urlString.c_str();
+
+  return SOAP_OK;
+}
+
 /*****************************/
 /**** get projection data ****/
 int 
@@ -866,6 +906,34 @@ getMapFile( const char* ticket )
   if ( fileExists( projBmpFile.c_str() ) ) {
 
     return projBmpFile.substr( projBmpFile.find_last_of("/") + 1 );
+  }
+
+  string emptyString("");
+
+  return emptyString;
+}
+
+/**************************/
+/**** getMapServerFile ****/
+static string 
+getMapServerFile( const char* ticket )
+{ 
+  string fileName( gFileParser.get( "DISTRIBUTION_MAP_DIRECTORY" ) );
+
+  // Append slash if necessary
+  if ( fileName.find_last_of( "/" ) != fileName.size() - 1 ) {
+
+    fileName.append( "/" );
+  }
+
+  string mapFile( fileName );
+
+  mapFile.append( ticket );
+  mapFile.append( ".map" );
+
+  if ( fileExists( mapFile.c_str() ) ) {
+
+    return mapFile.substr( mapFile.find_last_of("/") + 1 );
   }
 
   string emptyString("");

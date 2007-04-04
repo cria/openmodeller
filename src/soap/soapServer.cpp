@@ -6,7 +6,7 @@
 */
 #include "soapH.h"
 
-SOAP_SOURCE_STAMP("@(#) soapServer.cpp ver 2.7.6d 2007-02-22 16:17:56 GMT")
+SOAP_SOURCE_STAMP("@(#) soapServer.cpp ver 2.7.6d 2007-04-04 21:53:59 GMT")
 
 
 SOAP_FMAC5 int SOAP_FMAC6 soap_serve(struct soap *soap)
@@ -91,6 +91,8 @@ SOAP_FMAC5 int SOAP_FMAC6 soap_serve_request(struct soap *soap)
 		return soap_serve_omws__getLayerAsAttachment(soap);
 	if (!soap_match_tag(soap, soap->tag, "omws:getLayerAsUrl"))
 		return soap_serve_omws__getLayerAsUrl(soap);
+	if (!soap_match_tag(soap, soap->tag, "omws:getLayerAsWcs"))
+		return soap_serve_omws__getLayerAsWcs(soap);
 	if (!soap_match_tag(soap, soap->tag, "omws:getProjectionMetadata"))
 		return soap_serve_omws__getProjectionMetadata(soap);
 	return soap->error = SOAP_NO_METHOD;
@@ -500,6 +502,47 @@ SOAP_FMAC5 int SOAP_FMAC6 soap_serve_omws__getLayerAsUrl(struct soap *soap)
 	 || soap_putheader(soap)
 	 || soap_body_begin_out(soap)
 	 || soap_put_omws__getLayerAsUrlResponse(soap, &soap_tmp_omws__getLayerAsUrlResponse, "omws:getLayerAsUrlResponse", "")
+	 || soap_body_end_out(soap)
+	 || soap_envelope_end_out(soap)
+	 || soap_end_send(soap))
+		return soap->error;
+	return soap_closesock(soap);
+}
+
+SOAP_FMAC5 int SOAP_FMAC6 soap_serve_omws__getLayerAsWcs(struct soap *soap)
+{	struct omws__getLayerAsWcs soap_tmp_omws__getLayerAsWcs;
+	struct omws__getLayerAsWcsResponse soap_tmp_omws__getLayerAsWcsResponse;
+	soap_default_omws__getLayerAsWcsResponse(soap, &soap_tmp_omws__getLayerAsWcsResponse);
+	soap_default_omws__getLayerAsWcs(soap, &soap_tmp_omws__getLayerAsWcs);
+	soap->encodingStyle = NULL;
+	if (!soap_get_omws__getLayerAsWcs(soap, &soap_tmp_omws__getLayerAsWcs, "omws:getLayerAsWcs", NULL))
+		return soap->error;
+	if (soap_body_end_in(soap)
+	 || soap_envelope_end_in(soap)
+	 || soap_end_recv(soap))
+		return soap->error;
+	soap->error = omws__getLayerAsWcs(soap, soap_tmp_omws__getLayerAsWcs.id, soap_tmp_omws__getLayerAsWcsResponse.url);
+	if (soap->error)
+		return soap->error;
+	soap_serializeheader(soap);
+	soap_serialize_omws__getLayerAsWcsResponse(soap, &soap_tmp_omws__getLayerAsWcsResponse);
+	if (soap_begin_count(soap))
+		return soap->error;
+	if (soap->mode & SOAP_IO_LENGTH)
+	{	if (soap_envelope_begin_out(soap)
+		 || soap_putheader(soap)
+		 || soap_body_begin_out(soap)
+		 || soap_put_omws__getLayerAsWcsResponse(soap, &soap_tmp_omws__getLayerAsWcsResponse, "omws:getLayerAsWcsResponse", "")
+		 || soap_body_end_out(soap)
+		 || soap_envelope_end_out(soap))
+			 return soap->error;
+	};
+	if (soap_end_count(soap)
+	 || soap_response(soap, SOAP_OK)
+	 || soap_envelope_begin_out(soap)
+	 || soap_putheader(soap)
+	 || soap_body_begin_out(soap)
+	 || soap_put_omws__getLayerAsWcsResponse(soap, &soap_tmp_omws__getLayerAsWcsResponse, "omws:getLayerAsWcsResponse", "")
 	 || soap_body_end_out(soap)
 	 || soap_envelope_end_out(soap)
 	 || soap_end_send(soap))

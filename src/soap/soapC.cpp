@@ -7,7 +7,7 @@
 
 #include "soapH.h"
 
-SOAP_SOURCE_STAMP("@(#) soapC.cpp ver 2.7.6d 2007-02-22 16:17:56 GMT")
+SOAP_SOURCE_STAMP("@(#) soapC.cpp ver 2.7.6d 2007-04-04 21:53:59 GMT")
 
 
 #ifndef WITH_NOGLOBAL
@@ -163,6 +163,10 @@ SOAP_FMAC3 void * SOAP_FMAC4 soap_getelement(struct soap *soap, int *type)
 		return soap_in_omws__getProjectionMetadata(soap, NULL, NULL, "omws:getProjectionMetadata");
 	case SOAP_TYPE_omws__getProjectionMetadataResponse:
 		return soap_in_omws__getProjectionMetadataResponse(soap, NULL, NULL, "omws:getProjectionMetadataResponse");
+	case SOAP_TYPE_omws__getLayerAsWcs:
+		return soap_in_omws__getLayerAsWcs(soap, NULL, NULL, "omws:getLayerAsWcs");
+	case SOAP_TYPE_omws__getLayerAsWcsResponse:
+		return soap_in_omws__getLayerAsWcsResponse(soap, NULL, NULL, "omws:getLayerAsWcsResponse");
 	case SOAP_TYPE_omws__getLayerAsUrl:
 		return soap_in_omws__getLayerAsUrl(soap, NULL, NULL, "omws:getLayerAsUrl");
 	case SOAP_TYPE_omws__getLayerAsUrlResponse:
@@ -282,6 +286,14 @@ SOAP_FMAC3 void * SOAP_FMAC4 soap_getelement(struct soap *soap, int *type)
 		if (!soap_match_tag(soap, t, "omws:getProjectionMetadataResponse"))
 		{	*type = SOAP_TYPE_omws__getProjectionMetadataResponse;
 			return soap_in_omws__getProjectionMetadataResponse(soap, NULL, NULL, NULL);
+		}
+		if (!soap_match_tag(soap, t, "omws:getLayerAsWcs"))
+		{	*type = SOAP_TYPE_omws__getLayerAsWcs;
+			return soap_in_omws__getLayerAsWcs(soap, NULL, NULL, NULL);
+		}
+		if (!soap_match_tag(soap, t, "omws:getLayerAsWcsResponse"))
+		{	*type = SOAP_TYPE_omws__getLayerAsWcsResponse;
+			return soap_in_omws__getLayerAsWcsResponse(soap, NULL, NULL, NULL);
 		}
 		if (!soap_match_tag(soap, t, "omws:getLayerAsUrl"))
 		{	*type = SOAP_TYPE_omws__getLayerAsUrl;
@@ -458,6 +470,10 @@ SOAP_FMAC3 int SOAP_FMAC4 soap_putelement(struct soap *soap, const void *ptr, co
 		return soap_out_omws__getProjectionMetadata(soap, tag, id, (const struct omws__getProjectionMetadata *)ptr, "omws:getProjectionMetadata");
 	case SOAP_TYPE_omws__getProjectionMetadataResponse:
 		return soap_out_omws__getProjectionMetadataResponse(soap, tag, id, (const struct omws__getProjectionMetadataResponse *)ptr, "omws:getProjectionMetadataResponse");
+	case SOAP_TYPE_omws__getLayerAsWcs:
+		return soap_out_omws__getLayerAsWcs(soap, tag, id, (const struct omws__getLayerAsWcs *)ptr, "omws:getLayerAsWcs");
+	case SOAP_TYPE_omws__getLayerAsWcsResponse:
+		return soap_out_omws__getLayerAsWcsResponse(soap, tag, id, (const struct omws__getLayerAsWcsResponse *)ptr, "omws:getLayerAsWcsResponse");
 	case SOAP_TYPE_omws__getLayerAsUrl:
 		return soap_out_omws__getLayerAsUrl(soap, tag, id, (const struct omws__getLayerAsUrl *)ptr, "omws:getLayerAsUrl");
 	case SOAP_TYPE_omws__getLayerAsUrlResponse:
@@ -540,6 +556,12 @@ SOAP_FMAC3 void SOAP_FMAC4 soap_markelement(struct soap *soap, const void *ptr, 
 		break;
 	case SOAP_TYPE_omws__getProjectionMetadataResponse:
 		soap_serialize_omws__getProjectionMetadataResponse(soap, (const struct omws__getProjectionMetadataResponse *)ptr);
+		break;
+	case SOAP_TYPE_omws__getLayerAsWcs:
+		soap_serialize_omws__getLayerAsWcs(soap, (const struct omws__getLayerAsWcs *)ptr);
+		break;
+	case SOAP_TYPE_omws__getLayerAsWcsResponse:
+		soap_serialize_omws__getLayerAsWcsResponse(soap, (const struct omws__getLayerAsWcsResponse *)ptr);
 		break;
 	case SOAP_TYPE_omws__getLayerAsUrl:
 		soap_serialize_omws__getLayerAsUrl(soap, (const struct omws__getLayerAsUrl *)ptr);
@@ -1566,6 +1588,162 @@ SOAP_FMAC3 struct omws__getProjectionMetadataResponse * SOAP_FMAC4 soap_in_omws_
 	}
 	else
 	{	a = (struct omws__getProjectionMetadataResponse *)soap_id_forward(soap, soap->href, (void**)a, SOAP_TYPE_omws__getProjectionMetadataResponse, 0, sizeof(struct omws__getProjectionMetadataResponse), 0, NULL);
+		if (soap->body && soap_element_end_in(soap, tag))
+			return NULL;
+	}
+	return a;
+}
+
+SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_omws__getLayerAsWcs(struct soap *soap, const struct omws__getLayerAsWcs *a)
+{
+	(void)soap; (void)a; /* appease -Wall -Werror */
+	soap_serialize_xsd__string(soap, &a->id);
+}
+
+SOAP_FMAC3 void SOAP_FMAC4 soap_default_omws__getLayerAsWcs(struct soap *soap, struct omws__getLayerAsWcs *a)
+{
+	(void)soap; (void)a; /* appease -Wall -Werror */
+	soap_default_xsd__string(soap, &a->id);
+}
+
+SOAP_FMAC3 int SOAP_FMAC4 soap_put_omws__getLayerAsWcs(struct soap *soap, const struct omws__getLayerAsWcs *a, const char *tag, const char *type)
+{
+	register int id = soap_embed(soap, (void*)a, NULL, 0, tag, SOAP_TYPE_omws__getLayerAsWcs);
+	if (soap_out_omws__getLayerAsWcs(soap, tag, id, a, type))
+		return soap->error;
+	return soap_putindependent(soap);
+}
+
+SOAP_FMAC3 int SOAP_FMAC4 soap_out_omws__getLayerAsWcs(struct soap *soap, const char *tag, int id, const struct omws__getLayerAsWcs *a, const char *type)
+{
+	soap_element_begin_out(soap, tag, soap_embedded_id(soap, id, a, SOAP_TYPE_omws__getLayerAsWcs), type);
+	soap_out_xsd__string(soap, "id", -1, &a->id, "");
+	soap_element_end_out(soap, tag);
+	return SOAP_OK;
+}
+
+SOAP_FMAC3 struct omws__getLayerAsWcs * SOAP_FMAC4 soap_get_omws__getLayerAsWcs(struct soap *soap, struct omws__getLayerAsWcs *p, const char *tag, const char *type)
+{
+	if ((p = soap_in_omws__getLayerAsWcs(soap, tag, p, type)))
+		soap_getindependent(soap);
+	return p;
+}
+
+SOAP_FMAC3 struct omws__getLayerAsWcs * SOAP_FMAC4 soap_in_omws__getLayerAsWcs(struct soap *soap, const char *tag, struct omws__getLayerAsWcs *a, const char *type)
+{
+	short soap_flag_id = 1;
+	if (soap_element_begin_in(soap, tag, 0))
+		return NULL;
+	if (*soap->type && soap_match_tag(soap, soap->type, type))
+	{	soap->error = SOAP_TYPE;
+		return NULL;
+	}
+	a = (struct omws__getLayerAsWcs *)soap_id_enter(soap, soap->id, a, SOAP_TYPE_omws__getLayerAsWcs, sizeof(struct omws__getLayerAsWcs), 0, NULL, NULL, NULL);
+	if (!a)
+		return NULL;
+	soap_default_omws__getLayerAsWcs(soap, a);
+	if (soap->body && !*soap->href)
+	{
+		for (;;)
+		{	soap->error = SOAP_TAG_MISMATCH;
+			if (soap_flag_id && (soap->error == SOAP_TAG_MISMATCH || soap->error == SOAP_NO_TAG))
+				if (soap_in_xsd__string(soap, "id", &a->id, "xsd:string"))
+				{	soap_flag_id--;
+					continue;
+				}
+			if (soap->error == SOAP_TAG_MISMATCH)
+				soap->error = soap_ignore_element(soap);
+			if (soap->error == SOAP_NO_TAG)
+				break;
+			if (soap->error)
+				return NULL;
+		}
+		if (soap_element_end_in(soap, tag))
+			return NULL;
+	}
+	else
+	{	a = (struct omws__getLayerAsWcs *)soap_id_forward(soap, soap->href, (void**)a, SOAP_TYPE_omws__getLayerAsWcs, 0, sizeof(struct omws__getLayerAsWcs), 0, NULL);
+		if (soap->body && soap_element_end_in(soap, tag))
+			return NULL;
+	}
+	return a;
+}
+
+SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_omws__getLayerAsWcsResponse(struct soap *soap, const struct omws__getLayerAsWcsResponse *a)
+{
+	(void)soap; (void)a; /* appease -Wall -Werror */
+	soap_serialize_xsd__string(soap, &a->url);
+}
+
+SOAP_FMAC3 void SOAP_FMAC4 soap_default_omws__getLayerAsWcsResponse(struct soap *soap, struct omws__getLayerAsWcsResponse *a)
+{
+	(void)soap; (void)a; /* appease -Wall -Werror */
+	soap_default_xsd__string(soap, &a->url);
+}
+
+SOAP_FMAC3 int SOAP_FMAC4 soap_put_omws__getLayerAsWcsResponse(struct soap *soap, const struct omws__getLayerAsWcsResponse *a, const char *tag, const char *type)
+{
+	register int id = soap_embed(soap, (void*)a, NULL, 0, tag, SOAP_TYPE_omws__getLayerAsWcsResponse);
+	if (soap_out_omws__getLayerAsWcsResponse(soap, tag, id, a, type))
+		return soap->error;
+	return soap_putindependent(soap);
+}
+
+SOAP_FMAC3 int SOAP_FMAC4 soap_out_omws__getLayerAsWcsResponse(struct soap *soap, const char *tag, int id, const struct omws__getLayerAsWcsResponse *a, const char *type)
+{
+	soap_element_begin_out(soap, tag, soap_embedded_id(soap, id, a, SOAP_TYPE_omws__getLayerAsWcsResponse), type);
+	if (a->url)
+		soap_element_result(soap, "url");
+	soap_out_xsd__string(soap, "url", -1, &a->url, "");
+	soap_element_end_out(soap, tag);
+	return SOAP_OK;
+}
+
+SOAP_FMAC3 struct omws__getLayerAsWcsResponse * SOAP_FMAC4 soap_get_omws__getLayerAsWcsResponse(struct soap *soap, struct omws__getLayerAsWcsResponse *p, const char *tag, const char *type)
+{
+	if ((p = soap_in_omws__getLayerAsWcsResponse(soap, tag, p, type)))
+		soap_getindependent(soap);
+	return p;
+}
+
+SOAP_FMAC3 struct omws__getLayerAsWcsResponse * SOAP_FMAC4 soap_in_omws__getLayerAsWcsResponse(struct soap *soap, const char *tag, struct omws__getLayerAsWcsResponse *a, const char *type)
+{
+	short soap_flag_url = 1;
+	if (soap_element_begin_in(soap, tag, 0))
+		return NULL;
+	if (*soap->type && soap_match_tag(soap, soap->type, type))
+	{	soap->error = SOAP_TYPE;
+		return NULL;
+	}
+	a = (struct omws__getLayerAsWcsResponse *)soap_id_enter(soap, soap->id, a, SOAP_TYPE_omws__getLayerAsWcsResponse, sizeof(struct omws__getLayerAsWcsResponse), 0, NULL, NULL, NULL);
+	if (!a)
+		return NULL;
+	soap_default_omws__getLayerAsWcsResponse(soap, a);
+	if (soap->body && !*soap->href)
+	{
+		for (;;)
+		{	soap->error = SOAP_TAG_MISMATCH;
+			if (soap_flag_url && (soap->error == SOAP_TAG_MISMATCH || soap->error == SOAP_NO_TAG))
+				if (soap_in_xsd__string(soap, "url", &a->url, "xsd:string"))
+				{	soap_flag_url--;
+					continue;
+				}
+			if (soap->error == SOAP_TAG_MISMATCH)
+				soap->error = soap_ignore_element(soap);
+			if (soap->error == SOAP_NO_TAG)
+				break;
+			if (soap->error)
+				return NULL;
+		}
+		if ((soap->mode & SOAP_XML_STRICT) && (soap_flag_url > 0))
+		{	soap->error = SOAP_OCCURS;
+			return NULL;
+		}
+		if (soap_element_end_in(soap, tag))
+			return NULL;
+	}
+	else
+	{	a = (struct omws__getLayerAsWcsResponse *)soap_id_forward(soap, soap->href, (void**)a, SOAP_TYPE_omws__getLayerAsWcsResponse, 0, sizeof(struct omws__getLayerAsWcsResponse), 0, NULL);
 		if (soap->body && soap_element_end_in(soap, tag))
 			return NULL;
 	}

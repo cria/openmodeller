@@ -238,8 +238,26 @@ struct omws__getLayerAsUrl
 };
 #endif
 
+#ifndef SOAP_TYPE_omws__getLayerAsWcsResponse
+#define SOAP_TYPE_omws__getLayerAsWcsResponse (61)
+/* omws:getLayerAsWcsResponse */
+struct omws__getLayerAsWcsResponse
+{
+	char *url;	/* RPC return element */	/* required element of type xsd:string */
+};
+#endif
+
+#ifndef SOAP_TYPE_omws__getLayerAsWcs
+#define SOAP_TYPE_omws__getLayerAsWcs (62)
+/* omws:getLayerAsWcs */
+struct omws__getLayerAsWcs
+{
+	char *id;	/* optional element of type xsd:string */
+};
+#endif
+
 #ifndef SOAP_TYPE_omws__getProjectionMetadataResponse
-#define SOAP_TYPE_omws__getProjectionMetadataResponse (60)
+#define SOAP_TYPE_omws__getProjectionMetadataResponse (63)
 /* omws:getProjectionMetadataResponse */
 struct omws__getProjectionMetadataResponse
 {
@@ -249,7 +267,7 @@ struct omws__getProjectionMetadataResponse
 #endif
 
 #ifndef SOAP_TYPE_omws__getProjectionMetadata
-#define SOAP_TYPE_omws__getProjectionMetadata (63)
+#define SOAP_TYPE_omws__getProjectionMetadata (66)
 /* omws:getProjectionMetadata */
 struct omws__getProjectionMetadata
 {
@@ -258,7 +276,7 @@ struct omws__getProjectionMetadata
 #endif
 
 #ifndef SOAP_TYPE_SOAP_ENV__Code
-#define SOAP_TYPE_SOAP_ENV__Code (64)
+#define SOAP_TYPE_SOAP_ENV__Code (67)
 /* SOAP Fault Code: */
 struct SOAP_ENV__Code
 {
@@ -268,7 +286,7 @@ struct SOAP_ENV__Code
 #endif
 
 #ifndef SOAP_TYPE_SOAP_ENV__Detail
-#define SOAP_TYPE_SOAP_ENV__Detail (66)
+#define SOAP_TYPE_SOAP_ENV__Detail (69)
 /* SOAP-ENV:Detail */
 struct SOAP_ENV__Detail
 {
@@ -279,7 +297,7 @@ struct SOAP_ENV__Detail
 #endif
 
 #ifndef SOAP_TYPE_SOAP_ENV__Reason
-#define SOAP_TYPE_SOAP_ENV__Reason (67)
+#define SOAP_TYPE_SOAP_ENV__Reason (70)
 /* SOAP-ENV:Reason */
 struct SOAP_ENV__Reason
 {
@@ -288,7 +306,7 @@ struct SOAP_ENV__Reason
 #endif
 
 #ifndef SOAP_TYPE_SOAP_ENV__Fault
-#define SOAP_TYPE_SOAP_ENV__Fault (68)
+#define SOAP_TYPE_SOAP_ENV__Fault (71)
 /* SOAP Fault: */
 struct SOAP_ENV__Fault
 {
@@ -389,6 +407,8 @@ SOAP_FMAC5 int SOAP_FMAC6 omws__getLayerAsAttachment(struct soap*, char *id, xsd
 
 SOAP_FMAC5 int SOAP_FMAC6 omws__getLayerAsUrl(struct soap*, char *id, char *&url);
 
+SOAP_FMAC5 int SOAP_FMAC6 omws__getLayerAsWcs(struct soap*, char *id, char *&url);
+
 SOAP_FMAC5 int SOAP_FMAC6 omws__getProjectionMetadata(struct soap*, char *ticket, struct omws__getProjectionMetadataResponse *out);
 
 /******************************************************************************\
@@ -417,6 +437,8 @@ SOAP_FMAC5 int SOAP_FMAC6 soap_call_omws__getLog(struct soap *soap, const char *
 SOAP_FMAC5 int SOAP_FMAC6 soap_call_omws__getLayerAsAttachment(struct soap *soap, const char *soap_endpoint, const char *soap_action, char *id, xsd__base64Binary &file);
 
 SOAP_FMAC5 int SOAP_FMAC6 soap_call_omws__getLayerAsUrl(struct soap *soap, const char *soap_endpoint, const char *soap_action, char *id, char *&url);
+
+SOAP_FMAC5 int SOAP_FMAC6 soap_call_omws__getLayerAsWcs(struct soap *soap, const char *soap_endpoint, const char *soap_action, char *id, char *&url);
 
 SOAP_FMAC5 int SOAP_FMAC6 soap_call_omws__getProjectionMetadata(struct soap *soap, const char *soap_endpoint, const char *soap_action, char *ticket, struct omws__getProjectionMetadataResponse *out);
 
@@ -449,6 +471,8 @@ SOAP_FMAC5 int SOAP_FMAC6 soap_serve_omws__getLog(struct soap*);
 SOAP_FMAC5 int SOAP_FMAC6 soap_serve_omws__getLayerAsAttachment(struct soap*);
 
 SOAP_FMAC5 int SOAP_FMAC6 soap_serve_omws__getLayerAsUrl(struct soap*);
+
+SOAP_FMAC5 int SOAP_FMAC6 soap_serve_omws__getLayerAsWcs(struct soap*);
 
 SOAP_FMAC5 int SOAP_FMAC6 soap_serve_omws__getProjectionMetadata(struct soap*);
 
