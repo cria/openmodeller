@@ -197,6 +197,22 @@
    </complexType>
   </element>
   <!-- operation request element -->
+  <element name="getLayerAsWcs">
+   <complexType>
+    <sequence>
+     <element name="id" type="xsd:string" minOccurs="0" maxOccurs="1" nillable="true"/>
+    </sequence>
+   </complexType>
+  </element>
+  <!-- operation response element -->
+  <element name="getLayerAsWcsResponse">
+   <complexType>
+    <sequence>
+     <element name="url" type="xsd:string" minOccurs="1" maxOccurs="1"/>
+    </sequence>
+   </complexType>
+  </element>
+  <!-- operation request element -->
   <element name="getProjectionMetadata">
    <complexType>
     <sequence>
@@ -297,6 +313,14 @@
  <part name="parameters" element="omws:getLayerAsUrlResponse"/>
 </message>
 
+<message name="getLayerAsWcsRequest">
+ <part name="parameters" element="omws:getLayerAsWcs"/>
+</message>
+
+<message name="getLayerAsWcsResponse">
+ <part name="parameters" element="omws:getLayerAsWcsResponse"/>
+</message>
+
 <message name="getProjectionMetadata">
  <part name="parameters" element="omws:getProjectionMetadata"/>
 </message>
@@ -359,6 +383,11 @@
   <documentation>Service definition of function omws__getLayerAsUrl</documentation>
   <input message="tns:getLayerAsUrlRequest"/>
   <output message="tns:getLayerAsUrlResponse"/>
+ </operation>
+ <operation name="getLayerAsWcs">
+  <documentation>Service definition of function omws__getLayerAsWcs</documentation>
+  <input message="tns:getLayerAsWcsRequest"/>
+  <output message="tns:getLayerAsWcsResponse"/>
  </operation>
  <operation name="getProjectionMetadata">
   <documentation>Service definition of function omws__getProjectionMetadata</documentation>
@@ -451,6 +480,15 @@
   </output>
  </operation>
  <operation name="getLayerAsUrl">
+  <SOAP:operation soapAction=""/>
+  <input>
+     <SOAP:body parts="parameters" use="literal"/>
+  </input>
+  <output>
+     <SOAP:body parts="parameters" use="literal"/>
+  </output>
+ </operation>
+ <operation name="getLayerAsWcs">
   <SOAP:operation soapAction=""/>
   <input>
      <SOAP:body parts="parameters" use="literal"/>

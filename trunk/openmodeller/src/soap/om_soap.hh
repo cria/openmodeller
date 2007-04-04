@@ -131,6 +131,13 @@ int omws__getLayerAsAttachment(xsd__string id, xsd__base64Binary &file);
 //gsoap om service method-documentation: getLayerAsUrl Returns the corresponding distribution map URL.
 int omws__getLayerAsUrl(xsd__string id, xsd__string &url);
 
+/** Return a WCS (OCG Web Coverage Service) URL for a layer.
+ * @param id Layer identification.
+ * @return standard gSOAP integer code
+ */
+//gsoap om service method-documentation: getLayerAsWcs Returns a WCS URL for the corresponding distribution map.
+int omws__getLayerAsWcs(xsd__string id, xsd__string &url);
+
 /** Return type of getProjectionMetadata */
 struct omws__getProjectionMetadataResponse
 {

@@ -98,7 +98,7 @@ SOAP_FMAC5 void SOAP_FMAC6 soap_copy_xsd__base64Binary(struct soap*, int, int, v
 #ifndef WITH_NOGLOBAL
 
 #ifndef SOAP_TYPE_SOAP_ENV__Fault
-#define SOAP_TYPE_SOAP_ENV__Fault (68)
+#define SOAP_TYPE_SOAP_ENV__Fault (71)
 #endif
 SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_SOAP_ENV__Fault(struct soap*, const struct SOAP_ENV__Fault *);
 SOAP_FMAC3 void SOAP_FMAC4 soap_default_SOAP_ENV__Fault(struct soap*, struct SOAP_ENV__Fault *);
@@ -110,7 +110,7 @@ SOAP_FMAC3 struct SOAP_ENV__Fault * SOAP_FMAC4 soap_in_SOAP_ENV__Fault(struct so
 #endif
 
 #ifndef SOAP_TYPE_SOAP_ENV__Reason
-#define SOAP_TYPE_SOAP_ENV__Reason (67)
+#define SOAP_TYPE_SOAP_ENV__Reason (70)
 #endif
 SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_SOAP_ENV__Reason(struct soap*, const struct SOAP_ENV__Reason *);
 SOAP_FMAC3 void SOAP_FMAC4 soap_default_SOAP_ENV__Reason(struct soap*, struct SOAP_ENV__Reason *);
@@ -122,7 +122,7 @@ SOAP_FMAC3 struct SOAP_ENV__Reason * SOAP_FMAC4 soap_in_SOAP_ENV__Reason(struct 
 #ifndef WITH_NOGLOBAL
 
 #ifndef SOAP_TYPE_SOAP_ENV__Detail
-#define SOAP_TYPE_SOAP_ENV__Detail (66)
+#define SOAP_TYPE_SOAP_ENV__Detail (69)
 #endif
 SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_SOAP_ENV__Detail(struct soap*, const struct SOAP_ENV__Detail *);
 SOAP_FMAC3 void SOAP_FMAC4 soap_default_SOAP_ENV__Detail(struct soap*, struct SOAP_ENV__Detail *);
@@ -136,7 +136,7 @@ SOAP_FMAC3 struct SOAP_ENV__Detail * SOAP_FMAC4 soap_in_SOAP_ENV__Detail(struct 
 #ifndef WITH_NOGLOBAL
 
 #ifndef SOAP_TYPE_SOAP_ENV__Code
-#define SOAP_TYPE_SOAP_ENV__Code (64)
+#define SOAP_TYPE_SOAP_ENV__Code (67)
 #endif
 SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_SOAP_ENV__Code(struct soap*, const struct SOAP_ENV__Code *);
 SOAP_FMAC3 void SOAP_FMAC4 soap_default_SOAP_ENV__Code(struct soap*, struct SOAP_ENV__Code *);
@@ -148,7 +148,7 @@ SOAP_FMAC3 struct SOAP_ENV__Code * SOAP_FMAC4 soap_in_SOAP_ENV__Code(struct soap
 #endif
 
 #ifndef SOAP_TYPE_omws__getProjectionMetadata
-#define SOAP_TYPE_omws__getProjectionMetadata (63)
+#define SOAP_TYPE_omws__getProjectionMetadata (66)
 #endif
 SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_omws__getProjectionMetadata(struct soap*, const struct omws__getProjectionMetadata *);
 SOAP_FMAC3 void SOAP_FMAC4 soap_default_omws__getProjectionMetadata(struct soap*, struct omws__getProjectionMetadata *);
@@ -158,7 +158,7 @@ SOAP_FMAC3 struct omws__getProjectionMetadata * SOAP_FMAC4 soap_get_omws__getPro
 SOAP_FMAC3 struct omws__getProjectionMetadata * SOAP_FMAC4 soap_in_omws__getProjectionMetadata(struct soap*, const char*, struct omws__getProjectionMetadata *, const char*);
 
 #ifndef SOAP_TYPE_omws__getProjectionMetadataResponse
-#define SOAP_TYPE_omws__getProjectionMetadataResponse (60)
+#define SOAP_TYPE_omws__getProjectionMetadataResponse (63)
 #endif
 SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_omws__getProjectionMetadataResponse(struct soap*, const struct omws__getProjectionMetadataResponse *);
 SOAP_FMAC3 void SOAP_FMAC4 soap_default_omws__getProjectionMetadataResponse(struct soap*, struct omws__getProjectionMetadataResponse *);
@@ -166,6 +166,26 @@ SOAP_FMAC3 int SOAP_FMAC4 soap_put_omws__getProjectionMetadataResponse(struct so
 SOAP_FMAC3 int SOAP_FMAC4 soap_out_omws__getProjectionMetadataResponse(struct soap*, const char*, int, const struct omws__getProjectionMetadataResponse *, const char*);
 SOAP_FMAC3 struct omws__getProjectionMetadataResponse * SOAP_FMAC4 soap_get_omws__getProjectionMetadataResponse(struct soap*, struct omws__getProjectionMetadataResponse *, const char*, const char*);
 SOAP_FMAC3 struct omws__getProjectionMetadataResponse * SOAP_FMAC4 soap_in_omws__getProjectionMetadataResponse(struct soap*, const char*, struct omws__getProjectionMetadataResponse *, const char*);
+
+#ifndef SOAP_TYPE_omws__getLayerAsWcs
+#define SOAP_TYPE_omws__getLayerAsWcs (62)
+#endif
+SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_omws__getLayerAsWcs(struct soap*, const struct omws__getLayerAsWcs *);
+SOAP_FMAC3 void SOAP_FMAC4 soap_default_omws__getLayerAsWcs(struct soap*, struct omws__getLayerAsWcs *);
+SOAP_FMAC3 int SOAP_FMAC4 soap_put_omws__getLayerAsWcs(struct soap*, const struct omws__getLayerAsWcs *, const char*, const char*);
+SOAP_FMAC3 int SOAP_FMAC4 soap_out_omws__getLayerAsWcs(struct soap*, const char*, int, const struct omws__getLayerAsWcs *, const char*);
+SOAP_FMAC3 struct omws__getLayerAsWcs * SOAP_FMAC4 soap_get_omws__getLayerAsWcs(struct soap*, struct omws__getLayerAsWcs *, const char*, const char*);
+SOAP_FMAC3 struct omws__getLayerAsWcs * SOAP_FMAC4 soap_in_omws__getLayerAsWcs(struct soap*, const char*, struct omws__getLayerAsWcs *, const char*);
+
+#ifndef SOAP_TYPE_omws__getLayerAsWcsResponse
+#define SOAP_TYPE_omws__getLayerAsWcsResponse (61)
+#endif
+SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_omws__getLayerAsWcsResponse(struct soap*, const struct omws__getLayerAsWcsResponse *);
+SOAP_FMAC3 void SOAP_FMAC4 soap_default_omws__getLayerAsWcsResponse(struct soap*, struct omws__getLayerAsWcsResponse *);
+SOAP_FMAC3 int SOAP_FMAC4 soap_put_omws__getLayerAsWcsResponse(struct soap*, const struct omws__getLayerAsWcsResponse *, const char*, const char*);
+SOAP_FMAC3 int SOAP_FMAC4 soap_out_omws__getLayerAsWcsResponse(struct soap*, const char*, int, const struct omws__getLayerAsWcsResponse *, const char*);
+SOAP_FMAC3 struct omws__getLayerAsWcsResponse * SOAP_FMAC4 soap_get_omws__getLayerAsWcsResponse(struct soap*, struct omws__getLayerAsWcsResponse *, const char*, const char*);
+SOAP_FMAC3 struct omws__getLayerAsWcsResponse * SOAP_FMAC4 soap_in_omws__getLayerAsWcsResponse(struct soap*, const char*, struct omws__getLayerAsWcsResponse *, const char*);
 
 #ifndef SOAP_TYPE_omws__getLayerAsUrl
 #define SOAP_TYPE_omws__getLayerAsUrl (59)
@@ -386,7 +406,7 @@ SOAP_FMAC3 struct SOAP_ENV__Header * SOAP_FMAC4 soap_in_SOAP_ENV__Header(struct 
 #endif
 
 #ifndef SOAP_TYPE_PointerToSOAP_ENV__Reason
-#define SOAP_TYPE_PointerToSOAP_ENV__Reason (70)
+#define SOAP_TYPE_PointerToSOAP_ENV__Reason (73)
 #endif
 SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_PointerToSOAP_ENV__Reason(struct soap*, struct SOAP_ENV__Reason *const*);
 SOAP_FMAC3 int SOAP_FMAC4 soap_put_PointerToSOAP_ENV__Reason(struct soap*, struct SOAP_ENV__Reason *const*, const char*, const char*);
@@ -397,7 +417,7 @@ SOAP_FMAC3 struct SOAP_ENV__Reason ** SOAP_FMAC4 soap_in_PointerToSOAP_ENV__Reas
 #ifndef WITH_NOGLOBAL
 
 #ifndef SOAP_TYPE_PointerToSOAP_ENV__Detail
-#define SOAP_TYPE_PointerToSOAP_ENV__Detail (69)
+#define SOAP_TYPE_PointerToSOAP_ENV__Detail (72)
 #endif
 SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_PointerToSOAP_ENV__Detail(struct soap*, struct SOAP_ENV__Detail *const*);
 SOAP_FMAC3 int SOAP_FMAC4 soap_put_PointerToSOAP_ENV__Detail(struct soap*, struct SOAP_ENV__Detail *const*, const char*, const char*);
@@ -410,7 +430,7 @@ SOAP_FMAC3 struct SOAP_ENV__Detail ** SOAP_FMAC4 soap_in_PointerToSOAP_ENV__Deta
 #ifndef WITH_NOGLOBAL
 
 #ifndef SOAP_TYPE_PointerToSOAP_ENV__Code
-#define SOAP_TYPE_PointerToSOAP_ENV__Code (65)
+#define SOAP_TYPE_PointerToSOAP_ENV__Code (68)
 #endif
 SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_PointerToSOAP_ENV__Code(struct soap*, struct SOAP_ENV__Code *const*);
 SOAP_FMAC3 int SOAP_FMAC4 soap_put_PointerToSOAP_ENV__Code(struct soap*, struct SOAP_ENV__Code *const*, const char*, const char*);
@@ -421,7 +441,7 @@ SOAP_FMAC3 struct SOAP_ENV__Code ** SOAP_FMAC4 soap_in_PointerToSOAP_ENV__Code(s
 #endif
 
 #ifndef SOAP_TYPE_PointerToomws__getProjectionMetadataResponse
-#define SOAP_TYPE_PointerToomws__getProjectionMetadataResponse (61)
+#define SOAP_TYPE_PointerToomws__getProjectionMetadataResponse (64)
 #endif
 SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_PointerToomws__getProjectionMetadataResponse(struct soap*, struct omws__getProjectionMetadataResponse *const*);
 SOAP_FMAC3 int SOAP_FMAC4 soap_put_PointerToomws__getProjectionMetadataResponse(struct soap*, struct omws__getProjectionMetadataResponse *const*, const char*, const char*);
