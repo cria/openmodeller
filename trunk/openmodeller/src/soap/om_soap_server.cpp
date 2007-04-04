@@ -753,7 +753,7 @@ omws__getLayerAsWcs( struct soap *soap, xsd__string id, xsd__string &url )
     urlString.append( "/" );
   }
 
-  urlString.append( fileName );
+  urlString.append( id );
   
   url = (char*)urlString.c_str();
 
@@ -976,6 +976,14 @@ bool readDirectory( const char* dir, const char* label, ostream &xml, int depth 
 
   // Create copy of dir and add slash to the end if necessary
   string myDir( dir );
+  
+  //skip hidden dirs
+  if ( myDir.find( "." ) == 1 ) {
+    return false;
+  }
+  if ( myDir.find_first_of( ".",0 ) == 1 ) {
+    return false;
+  }
 
   if ( myDir.find_last_of( "/" ) != myDir.size() - 1 ) {
 
