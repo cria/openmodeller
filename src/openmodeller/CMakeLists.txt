@@ -18,6 +18,7 @@ SET(OM_CORE_SRCS
   OpenModeller.cpp 
   Projector.cpp 
   Random.cpp 
+  RocCurve.cpp
   Sample.cpp 
   Sampler.cpp 
   env_io/GeoTransform.cpp 
