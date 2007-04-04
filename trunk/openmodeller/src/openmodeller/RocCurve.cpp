@@ -81,7 +81,7 @@ void RocCurve::calculate( const Model& model, const SamplerPtr& sampler )
 
   _calculateGraphPoints();
 
-  bool calculated = _calculateArea();
+  _calculateArea();
 
   _ready = true;
 }

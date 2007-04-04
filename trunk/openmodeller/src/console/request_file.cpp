@@ -505,10 +505,10 @@ RequestFile::makeModel( OpenModeller *om )
   }
 
   // Calculate confusion matrix to store in the serialized model
-  ConfusionMatrix * cm = om->getConfusionMatrix();
+  om->getConfusionMatrix();
 
   // Calculate ROC curve to store in the serialized model
-  RocCurve * roc = om->getRocCurve();
+  om->getRocCurve();
 
   // Serialize model, if requested
   if ( _inputModelFile.empty() && ! _outputModelFile.empty() ) {
