@@ -121,6 +121,7 @@ SET(OM_CORE_HDRS
   os_specific.hh   
   Projector.hh 
   Random.hh
+  RocCurve.hh
   refcount.hh 
   SampleExpr.hh 
   SampleExprVar.hh 
