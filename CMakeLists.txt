@@ -103,7 +103,7 @@ IF (WIN32)
     ADD_DEFINITIONS(-DUSE_PRAGMA)
     ADD_DEFINITIONS(-DDLL_CORE_IMPORT)
     ADD_DEFINITIONS(-DMSVC)
-  ELSE (MSVC)
+  ENDIF (MSVC)
 ENDIF (WIN32)
 
 #############################################################
