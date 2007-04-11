@@ -604,6 +604,9 @@ OpenModeller::getModelConfiguration() const
 void
 OpenModeller::setModelConfiguration( const ConstConfigurationPtr & config )
 {
+  _confusion_matrix->reset();
+  _roc_curve->reset();
+
   _samp = createSampler( config->getSubsection( "Sampler" ) );
   _env = _samp->getEnvironment();
 
