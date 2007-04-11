@@ -41,6 +41,8 @@
 
 #include <string.h>
 
+using namespace std;
+
 /*******************/
 /*** constructor ***/
 RocCurve::RocCurve( int resolution )
