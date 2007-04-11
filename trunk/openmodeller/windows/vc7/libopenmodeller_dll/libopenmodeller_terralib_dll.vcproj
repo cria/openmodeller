@@ -217,6 +217,9 @@
 					RelativePath="..\..\..\src\openmodeller\Random.cpp">
 				</File>
 				<File
+					RelativePath="..\..\..\src\openmodeller\RocCurve.cpp">
+				</File>
+				<File
 					RelativePath="..\..\..\src\openmodeller\Sample.cpp">
 				</File>
 				<File
@@ -362,6 +365,9 @@
 				</File>
 				<File
 					RelativePath="..\..\..\src\openmodeller\refcount.hh">
+				</File>
+				<File
+					RelativePath="..\..\..\src\openmodeller\RocCurve.hh">
 				</File>
 				<File
 					RelativePath="..\..\..\src\openmodeller\Sample.hh">
