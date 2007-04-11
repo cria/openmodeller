@@ -27,6 +27,7 @@
 #include <math.h>
 
 #ifdef MSVC
+#include <float.h>
 #define isnan _isnan
 #endif
 
