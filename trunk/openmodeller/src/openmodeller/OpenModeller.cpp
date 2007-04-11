@@ -1,7 +1,6 @@
 /**
  * Definition of OpenModeller class (former ControlInterface class).
  * 
- * @file
  * @author Mauro E S Muñoz <mauro@cria.org.br>
  * @date 2003-09-25
  * $Id$
@@ -140,13 +139,10 @@ OpenModeller::~OpenModeller()
 
   if ( _model_command ) delete _model_command;
 
-  if ( _estimatedAreaStats ) delete _estimatedAreaStats;
-
-  if ( _confusion_matrix ) delete _confusion_matrix;
-
-  if ( _roc_curve ) delete _roc_curve;
-
   delete _actualAreaStats;
+  delete _estimatedAreaStats;
+  delete _confusion_matrix;
+  delete _roc_curve;
 }
 
 
@@ -286,6 +282,9 @@ OpenModeller::setAlgorithm( char const *id, int nparam,
 int
 OpenModeller::createModel()
 {
+  _confusion_matrix->reset();
+  _roc_curve->reset();
+
   Log::instance()->info( "Creating model\n" );
 
   char *error = parameterModelCheck();
