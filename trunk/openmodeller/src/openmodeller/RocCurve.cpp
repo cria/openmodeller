@@ -40,6 +40,7 @@
 #include <openmodeller/Log.hh>
 
 #include <string.h>
+#include <algorithm>
 
 using namespace std;
 
