@@ -86,6 +86,8 @@ OccurrencesFile::loadOccurrences( const char *file_name )
     return 0;
   }
 
+  Log::instance()->debug( "Reading occurrences from file %s.\n", file_name );
+
   // Fixme: read this from file.
   Scalar error     	= -1.0;
   int    num_attributes = 0;
