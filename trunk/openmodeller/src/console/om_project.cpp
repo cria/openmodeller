@@ -22,80 +22,80 @@
 
 int main( int argc, char **argv ) {
 
-//  Original code:
-//
-//     if (argc != 4) {
-//       cout << "Usage: "
-//           << argv[0]
-//           << " <configfile-xml> as produced by openmodeller serialised model output "
-//           << " <projection-xml> as in environment.xml"
-//           << " <outputfilename>"
-//           << endl;
-//       return -1;
-//     }
-//     std::string myModel(argv[1]);
-//     std::string myEnvironment(argv[2]);
-//     std::string myOutput(argv[3]);
-//     ConsoleXml myConsoleXml;
-//     myConsoleXml.projectModel(myModel,myEnvironment,myOutput);
+  //  Original code:
+  //
+  //     if (argc != 4) {
+  //       cout << "Usage: "
+  //           << argv[0]
+  //           << " <configfile-xml> as produced by openmodeller serialised model output "
+  //           << " <projection-xml> as in environment.xml"
+  //           << " <outputfilename>"
+  //           << endl;
+  //       return -1;
+  //     }
+  //     std::string myModel(argv[1]);
+  //     std::string myEnvironment(argv[2]);
+  //     std::string myOutput(argv[3]);
+  //     ConsoleXml myConsoleXml;
+  //     myConsoleXml.projectModel(myModel,myEnvironment,myOutput);
 
-    if (argc < 3 ) {
-      cout << "Usage: "
-          << argv[0]
-          << " xmlinputfile"
-          << " mapfile"
-          << " (logfile | statisticsfile logfile)"
-          << endl;
-      return -1;
+  if (argc < 3 ) {
+    cout << "Usage: "
+      << argv[0]
+      << " xmlinputfile"
+      << " mapfile"
+      << " (logfile | statisticsfile logfile)"
+      << endl;
+    return -1;
+  }
+
+  std::string myProjectionXmlFile(argv[1]);
+  std::string myMapFile(argv[2]);
+
+  bool dontLog = false;
+
+  Log::instance()->setLevel(Log::Info);
+  Log::instance()->setPrefix("");
+
+  // Write log to file, if requested
+  FILE *flog = NULL;
+  if (argc >= 4) {
+    std::string myLog("");
+    if (argc == 4) {
+      // to keep backwards compatibility, if 3 arguments are passed then 
+      // the last one will be considered the log!
+      myLog.append(argv[3]);
+    }
+    else {
+      // if more than 3 arguments are passed, log is the fourth one (last)
+      myLog.append(argv[4]);
     }
 
-    std::string myProjectionXmlFile(argv[1]);
-    std::string myMapFile(argv[2]);
+    flog = fopen(myLog.c_str(), "w");
 
-    bool dontLog = false;
-
-    Log::instance()->setLevel(Log::Info);
-    Log::instance()->setPrefix("");
-
-    // Write log to file, if requested
-    FILE *flog = NULL;
-    if (argc >= 4) {
-      std::string myLog("");
-      if (argc == 4) {
-        // to keep backwards compatibility, if 3 arguments are passed then 
-        // the last one will be considered the log!
-        myLog.append(argv[3]);
-      }
-      else {
-        // if more than 3 arguments are passed, log is the fourth one (last)
-        myLog.append(argv[4]);
-      }
-
-      flog = fopen(myLog.c_str(), "w");
-
-      if (flog == NULL) {
-        fprintf(stderr, "Could not open log file!\n");
-      }
-      else {
-        dontLog = true;
-        Log::instance()->set(Log::Info, flog, "");
-      }
+    if (flog == NULL) {
+      fprintf(stderr, "Could not open log file!\n");
     }
-
-    { // Fake scope to destroy object in the end (to catch all logs)
-      ConsoleXml myConsoleXml;
-
-      if (argc == 4) {
-        myConsoleXml.projectModel(myProjectionXmlFile,myMapFile,dontLog);
-      }
-      else {
-        std::string myStatsFile(argv[3]);
-        myConsoleXml.projectModel(myProjectionXmlFile,myMapFile,myStatsFile,dontLog);
-      }
+    else {
+      dontLog = true;
+      Log::instance()->set(Log::Info, flog, "");
     }
-    
-    // Close log file
-    if (flog != NULL) {
-     fclose(flog);
+  }
+
+  { // Fake scope to destroy object in the end (to catch all logs)
+    ConsoleXml myConsoleXml;
+
+    if (argc == 4) {
+      myConsoleXml.projectModel(myProjectionXmlFile,myMapFile,dontLog);
     }
+    else {
+      std::string myStatsFile(argv[3]);
+      myConsoleXml.projectModel(myProjectionXmlFile,myMapFile,myStatsFile,dontLog);
+    }
+  }
+
+  // Close log file
+  if (flog != NULL) {
+    fclose(flog);
+  }
 }
