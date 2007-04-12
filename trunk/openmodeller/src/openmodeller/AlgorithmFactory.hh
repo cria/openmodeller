@@ -1,9 +1,7 @@
 /**
  * Declaration of AlgorithmFactory class.
  * 
- * @file
  * @author Mauro E S Muñoz (mauro@cria.org.br)
- * @date   2004-03-19
  * $Id$
  * 
  * LICENSE INFORMATION 
@@ -88,8 +86,12 @@ public:
    * To do so, use the method newAlgorithm().
    * 
    * The pointer to the array must be deallocated by the caller
-   * using delete [].  However, the individual AlgMetadata*'s
-   * in the array must not be deallocated.
+   * using delete []. However, the individual AlgMetadata*'s
+   * in the array must not be deallocated. For instance:
+   *
+   * AlgMetadata const **algorithms = om->availableAlgorithms();
+   * // do something
+   * delete [] algorithms;
    *
    * @return a null terminated list of available algorithms.
    */

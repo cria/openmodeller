@@ -1,9 +1,7 @@
 /**
  * openModeller SOAP interface.
  * 
- * @file
  * @author Renato De Giovanni (renato [at] cria [dot] org [dot] br)
- * @date   2004-04-06
  * $Id$
  * 
  * LICENSE INFORMATION 
@@ -267,6 +265,8 @@ omws__getAlgorithms( struct soap *soap, void *_, struct omws__getAlgorithmsRespo
   Configuration::writeXml( cfg, oss );
 
   out->om__AvailableAlgorithms = convertToWideChar( oss.str().c_str() ) ;
+
+  delete[] algorithms;
 
   return SOAP_OK;
 }
