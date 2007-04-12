@@ -39,7 +39,7 @@ int main( int argc, char **argv ) {
   //     ConsoleXml myConsoleXml;
   //     myConsoleXml.projectModel(myModel,myEnvironment,myOutput);
 
-  if (argc < 3 ) {
+  if (argc < 4 ) {
     cout << "Usage: "
       << argv[0]
       << " xmlinputfile"
