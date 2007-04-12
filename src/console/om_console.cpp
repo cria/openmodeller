@@ -2,7 +2,6 @@
  * openModeller console interface.
  * 
  * @author Mauro E S Muñoz (mauro@cria.org.br)
- * @date   2003-09-16
  * $Id$
  * 
  * LICENSE INFORMATION 
@@ -61,7 +60,7 @@ main( int argc, char **argv )
   char * path = 0;
 
   // Reconfigure the global logger.
-  //g_log.setLevel( Log::Error );
+  //g_log.setLevel( Log::Info );
   Log::instance()->setLevel( Log::Debug);
   Log::instance()->setPrefix( "" );
 
@@ -114,7 +113,7 @@ main( int argc, char **argv )
             om.setAlgorithm( metadata->id, nparam, param );
 
             delete[] param;
-            delete availables;
+            delete[] availables;
           }
       }
 

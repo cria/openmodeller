@@ -1,8 +1,7 @@
 /**
  * Simple species niche visualizer.
  * 
- * @author Mauro E S Mu�z (mauro@cria.org.br)
- * @date   2003-10-09
+ * @author Mauro E S Muñoz (mauro@cria.org.br)
  * $Id$
  * 
  * LICENSE INFORMATION 
@@ -211,7 +210,7 @@ createModel( char *request_file )
           om->setAlgorithm( metadata->id, nparam, param );
 
           delete[] param;
-          delete availables;
+          delete[] availables;
         }
     }
 
