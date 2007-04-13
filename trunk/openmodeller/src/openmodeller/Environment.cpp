@@ -199,6 +199,9 @@ EnvironmentImpl::~EnvironmentImpl()
 
 void
 EnvironmentImpl::clearLayers() {
+  if (_layers.size() < 1) {
+    return;
+  }
   layers::iterator first = _layers.begin();
   layers::iterator end = _layers.end();
   for ( ; first != end; ++ first ) {
