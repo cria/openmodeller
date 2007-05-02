@@ -25,6 +25,7 @@
 #include "openmodeller/AlgMetadata.hh"
 #include "openmodeller/AreaStats.hh"
 #include "openmodeller/ConfusionMatrix.hh"
+#include "openmodeller/RocCurve.hh"
 #include "openmodeller/OpenModeller.hh"
 #include "openmodeller/om_defs.hh"
 #include "openmodeller/Occurrences.hh"
@@ -318,6 +319,7 @@ RCP_CONST_TYPEMAP( ConstOccurrencesPtr, OccurrencesPtr );
 %include "openmodeller/AlgParameter.hh"
 %include "openmodeller/AreaStats.hh"
 %include "openmodeller/ConfusionMatrix.hh"
+%include "openmodeller/RocCurve.hh"
 %include "openmodeller/MapFormat.hh"
 
 //*****************************************************************************
@@ -660,6 +662,8 @@ class PyMapCommand : public Projector::MapCommand {
 }
 
 %newobject OpenModeller::getConfusionMatrix;
+
+%newobject OpenModeller::getRocCurve;
 
 %include "openmodeller/OpenModeller.hh"
 
