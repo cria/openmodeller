@@ -28,6 +28,7 @@
 #include "openmodeller/RocCurve.hh"
 #include "openmodeller/OpenModeller.hh"
 #include "openmodeller/om_defs.hh"
+#include "openmodeller/Occurrence.hh"
 #include "openmodeller/Occurrences.hh"
 #include "openmodeller/Projector.hh"
 #include "openmodeller/Sampler.hh"
@@ -284,13 +285,26 @@ RCP_WRAP( SamplerPtr, SamplerImpl );
 // Occurrences.
 //
 //******************************************************************************
+RCP_WRAP( OccurrencePtr, OccurrenceImpl );
+RCP_CONST_TYPEMAP( ConstOccurrencePtr, OccurrencePtr );
+
+%ignore ConstOccurrencePtr;
+
+%ignore OccurrenceImpl;
+%ignore OccurrenceImpl::operator=;
+
+%include "openmodeller/Occurrence.hh"
+
 RCP_WRAP( OccurrencesPtr, OccurrencesImpl );
 RCP_CONST_TYPEMAP( ConstOccurrencesPtr, OccurrencesPtr );
-//%ignore OccurrencesPtr;
+
 %ignore ConstOccurrencesPtr;
 
 %ignore OccurrencesImpl;
 %ignore OccurrencesImpl::print;
+%ignore OccurrencesImpl::begin;
+%ignore OccurrencesImpl::end;
+%rename ( getOccurrence ) operator[];
 
 %include "openmodeller/Occurrences.hh"
 
@@ -308,6 +322,7 @@ RCP_CONST_TYPEMAP( ConstOccurrencesPtr, OccurrencesPtr );
     OccurrencesReader * occ = OccurrencesFactory::instance().create( source, coord_sys );
     return occ->getAbsences( sp_name );
   }
+
 %}
 
 //*****************************************************************************
@@ -315,6 +330,8 @@ RCP_CONST_TYPEMAP( ConstOccurrencesPtr, OccurrencesPtr );
 // Other things...?
 //
 //******************************************************************************
+
+%ignore AlgParameter::operator=;
 
 %include "openmodeller/AlgParameter.hh"
 %include "openmodeller/AreaStats.hh"
