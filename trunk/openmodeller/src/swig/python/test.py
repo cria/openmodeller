@@ -107,6 +107,22 @@ mod.setAlgorithm(alg.id, params)
 # Create Model
 mod.createModel()
 
+# Display some statistics about the model
+matrix = mod.getConfusionMatrix();
+
+roc = mod.getRocCurve();
+
+print "\nModel statistics"
+print "Accuracy:          ", matrix.getAccuracy() * 100, "%"
+print "Omission error:    ", matrix.getOmissionError() * 100, "%"
+
+commission = matrix.getCommissionError()
+
+if ( commission != -1 ):
+    print "Commission error:  ", commission * 100, "%"
+    
+print "AUC:               ", roc.getArea()
+
 # Project Map
 
 # note1: native projection - automatically get same layers of model creation)
