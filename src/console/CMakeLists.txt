@@ -27,6 +27,11 @@ SET (OMSAMPLEDUMP_SRCS
     request_file.cpp 
     file_parser.cpp
     )
+SET (OMTESTMODEL_SRCS
+    om_testmodel.cpp 
+    request_file.cpp 
+    file_parser.cpp
+    )
 SET (OMPROJECT_SRCS 
      om_project.cpp  
      )
@@ -119,6 +124,9 @@ TARGET_LINK_LIBRARIES(om_dump openmodeller)
 ADD_EXECUTABLE (om_sampledump ${OMSAMPLEDUMP_SRCS})
 TARGET_LINK_LIBRARIES(om_sampledump openmodeller)
 
+ADD_EXECUTABLE (om_testmodel ${OMTESTMODEL_SRCS})
+TARGET_LINK_LIBRARIES(om_testmodel openmodeller)
+
 if (X11_FOUND)
   MESSAGE ("Building with X11 includes at ${X11_INCLUDE_DIR}...")
   INCLUDE_DIRECTORIES(
@@ -141,6 +149,7 @@ INSTALL(TARGETS om_create RUNTIME DESTINATION ${OM_BIN_DIR})
 INSTALL(TARGETS om_project RUNTIME DESTINATION ${OM_BIN_DIR})
 INSTALL(TARGETS om_dump RUNTIME DESTINATION ${OM_BIN_DIR})
 INSTALL(TARGETS om_sampledump RUNTIME DESTINATION ${OM_BIN_DIR})
+INSTALL(TARGETS om_testmodel RUNTIME DESTINATION ${OM_BIN_DIR})
 if (X11_FOUND)
   INSTALL(TARGETS om_viewer RUNTIME DESTINATION ${OM_BIN_DIR})
   INSTALL(TARGETS om_niche RUNTIME DESTINATION ${OM_BIN_DIR})
