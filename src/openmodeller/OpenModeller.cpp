@@ -442,8 +442,8 @@ OpenModeller::getValue( Scalar const *environment_values )
 }
 
 
-/**********************************/
-/******* getActualAreaStats *******/
+/************************************/
+/******* get Actual AreaStats *******/
 AreaStats *
 OpenModeller::getActualAreaStats()
 {
@@ -451,13 +451,16 @@ OpenModeller::getActualAreaStats()
 }
 
 
-/**********************************/
-/******* getActualAreaStats *******/
+/***************************************/
+/******* get Estimated AreaStats *******/
 AreaStats * OpenModeller::getEstimatedAreaStats(double proportionAreaToSample)
 {
   return getEstimatedAreaStats( _env, proportionAreaToSample );
 }
 
+
+/***************************************/
+/******* get Estimated AreaStats *******/
 AreaStats * OpenModeller::getEstimatedAreaStats(const ConstEnvironmentPtr& env,
 						double proportionAreaToSample)
 {
@@ -497,8 +500,8 @@ AreaStats * OpenModeller::getEstimatedAreaStats(const ConstEnvironmentPtr& env,
 }
 
 
-/**********************************/
-/******* getConfusionMatrix *******/
+/************************************/
+/******* get Confusion Matrix *******/
 const ConfusionMatrix * const OpenModeller::getConfusionMatrix()
 {
   if ( _confusion_matrix->ready() ) {
@@ -514,9 +517,9 @@ const ConfusionMatrix * const OpenModeller::getConfusionMatrix()
 }
 
 
-/***************************/
-/******* getRocCurve *******/
-const RocCurve * const  OpenModeller::getRocCurve()
+/*****************************/
+/******* get Roc Curve *******/
+const RocCurve * const OpenModeller::getRocCurve()
 {
   if ( _roc_curve->ready() ) {
 
@@ -562,8 +565,8 @@ const RocCurve * const  OpenModeller::getRocCurve()
 }
 
 
-/*************************************/
-/******* getModelConfiguration *******/
+/***************************************/
+/******* get Model Configuration *******/
 ConfigurationPtr
 OpenModeller::getModelConfiguration() const
 {
@@ -599,8 +602,8 @@ OpenModeller::getModelConfiguration() const
 }
 
 
-/*************************************/
-/******* setModelConfiguration *******/
+/***************************************/
+/******* set Model Configuration *******/
 void
 OpenModeller::setModelConfiguration( const ConstConfigurationPtr & config )
 {
@@ -615,8 +618,8 @@ OpenModeller::setModelConfiguration( const ConstConfigurationPtr & config )
 }
 
 
-/******************************************/
-/******* setProjectionConfiguration *******/
+/********************************************/
+/******* set Projection Configuration *******/
 void
 OpenModeller::setProjectionConfiguration( const ConstConfigurationPtr & config )
 {
