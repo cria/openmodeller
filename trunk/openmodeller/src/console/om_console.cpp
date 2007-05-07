@@ -139,8 +139,8 @@ main( int argc, char **argv )
     }
 
     // Instantiate objects for model statistics
-    ConfusionMatrix * matrix = om.getConfusionMatrix();
-    RocCurve * roc_curve = om.getRocCurve();
+    const ConfusionMatrix * const matrix = om.getConfusionMatrix();
+    const RocCurve * const roc_curve = om.getRocCurve();
 
     // Confusion Matrix
     Log::instance()->info( "\nModel statistics\n" );

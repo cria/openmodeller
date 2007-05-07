@@ -499,7 +499,7 @@ AreaStats * OpenModeller::getEstimatedAreaStats(const ConstEnvironmentPtr& env,
 
 /**********************************/
 /******* getConfusionMatrix *******/
-ConfusionMatrix * OpenModeller::getConfusionMatrix()
+const ConfusionMatrix * const OpenModeller::getConfusionMatrix()
 {
   if ( _confusion_matrix->ready() ) {
 
@@ -516,7 +516,7 @@ ConfusionMatrix * OpenModeller::getConfusionMatrix()
 
 /***************************/
 /******* getRocCurve *******/
-RocCurve * OpenModeller::getRocCurve()
+const RocCurve * const  OpenModeller::getRocCurve()
 {
   if ( _roc_curve->ready() ) {
 
