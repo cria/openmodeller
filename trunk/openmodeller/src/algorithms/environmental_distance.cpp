@@ -18,11 +18,11 @@
 #define DATA_MAX 1.0
 #define NUM_PARAM 3
 
-#define PARDIST    "Distance"
+#define PARDISTTYPE "DistanceType"
+#define PARPOINTQNT "NearestPoints"
+#define PARDIST     "MaxDistance"
 #define PARDISTMIN 0.0
 #define PARDISTMAX 1.0
-#define PARDISTTYPE "Distance Type"
-#define PARPOINTQNT "Nearest points quantity to get a mean"
 
 static AlgParamMetadata parameters[NUM_PARAM] = { // Parameters
    { // 1st parameter
@@ -141,21 +141,40 @@ int EnvironmentalDistance::initialize(){
 
    // Test the parameters' data types
    if(!getParameter(PARDIST,&ParDist)){
-      Log::instance()->error(1, "Parameter '" PARDIST "' wasn't set properly.\n");
+      Log::instance()->error(1, "Parameter '" PARDIST "' was not passed.\n");
       return 0;
    }
    if(!getParameter(PARDISTTYPE,&ParDistType)){
-      Log::instance()->error(1, "Parameter '" PARDISTTYPE "' wasn't set properly.\n");
+      Log::instance()->error(1, "Parameter '" PARDISTTYPE "' was not passed.\n");
       return 0;
    }
    if(!getParameter(PARPOINTQNT,&ParPointQnt)){
-      Log::instance()->error(1, "Parameter '" PARPOINTQNT "' wasn't set properly.\n");
+      Log::instance()->error(1, "Parameter '" PARPOINTQNT "' was not passed.\n");
       return 0;
    }
 
    // Impose limits to the parameters, if somehow the user don't obey
    if     (ParDist>PARDISTMAX) ParDist = PARDISTMAX;
    else if(ParDist<PARDISTMIN) ParDist = PARDISTMIN;
+
+   // Check distance type
+   switch(ParDistType){
+      case EuclideanDistance:
+         Log::instance()->debug("Using Euclidean distance\n");
+         break;
+      case MahalanobisDistance:
+         Log::instance()->debug("Using Mahalanobis distance\n");
+         break;
+      case ManhattanDistance:
+         Log::instance()->debug("Using Manhattan distance\n");
+         break;
+      case ChebyshevDistance:
+         Log::instance()->debug("Using Chebyshev distance\n");
+         break;
+      default:
+         Log::instance()->error(1, "Parameter '" PARDISTTYPE "' wasn't set properly. It should be an integer between 1 and 4.\n");
+         return 0;
+   }
 
    //_samp->environmentallyUnique(); // Debug
 
@@ -168,6 +187,12 @@ int EnvironmentalDistance::initialize(){
       Log::instance()->error(1, "There is no presence point.\n");
       return 0;
    }
+
+   // Check number of nearest points parameter
+   if     (ParPointQnt>presenceCount)
+      Log::instance()->warn("Parameter '" PARPOINTQNT "' is greater than the number of presence points\n");
+   else if(ParPointQnt<0) ParPointQnt = 0;
+
    OccurrencesPtr presences = _samp->getPresences();
    for(int i = 0 ; i < presenceCount ; i++)
       presencePoints.push_back((*presences)[i]->environment());
