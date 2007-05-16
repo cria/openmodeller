@@ -137,3 +137,13 @@ Output file type = ByteHFA
 #
 #Algorithm = MinimumDistance
 #Parameter = MaximumDistance 0.1
+
+########
+# Environmental distance
+#
+#Algorithm = EnvironmentalDistance
+# Valid values for the parameter DistanceType:
+# 1=Euclidean, 2=Mahalanobis, 3=Manhattan, 4=Chebyshev
+#Parameter = DistanceType 1
+#Parameter = NearestPoints 1
+#Parameter = Distance 0.1
