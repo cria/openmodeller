@@ -12,6 +12,10 @@ SET (OM_LOAD_ALGS_SRCS
 SET (OM_TEST_LOG_SRCS
      om_test_log.cpp
      )
+SET (OM_TEST_AREASTATS_SRCS
+     om_test_areastats.cpp
+     )
+
 
 ########################################################
 # Build
@@ -39,6 +43,9 @@ TARGET_LINK_LIBRARIES(om_load_algs openmodeller)
 
 ADD_EXECUTABLE (om_test_log ${OM_TEST_LOG_SRCS})
 TARGET_LINK_LIBRARIES(om_test_log openmodeller)
+
+ADD_EXECUTABLE (om_test_areastats ${OM_TEST_AREASTATS_SRCS})
+TARGET_LINK_LIBRARIES(om_test_areastats openmodeller)
 ########################################################
 
 #
@@ -62,3 +69,4 @@ TARGET_LINK_LIBRARIES(om_test_log openmodeller)
 
 ADD_TEST(om_load_algs ${EXECUTABLE_OUTPUT_PATH}/om_load_algs)
 ADD_TEST(om_test_log ${EXECUTABLE_OUTPUT_PATH}/om_test_log)
+ADD_TEST(om_test_areastats ${EXECUTABLE_OUTPUT_PATH}/om_test_areastats)
