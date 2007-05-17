@@ -44,7 +44,7 @@ IF (WIN32)
 ENDIF (WIN32)
 
 ADD_EXECUTABLE (om_soap_server ${OMSOAP_SRCS})
-TARGET_LINK_LIBRARIES(om_soap_server openmodeller )
+TARGET_LINK_LIBRARIES(om_soap_server openmodeller -lpthread)
 
 ########################################################
 # Install
