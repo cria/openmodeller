@@ -16,6 +16,16 @@ SET (WITH_BINDINGS TRUE CACHE BOOL "Determines whether python bindings should be
 # set if the log level the build binaries should be set to Debug
 SET (OM_DEBUG_LOGLEVEL FALSE CACHE BOOL "Force log level to Debug - should leave this off for releases!")
 
+SET (OM_CTEST TRUE CACHE BOOL "Run unit tests after compiling")
+
+#############################################################
+IF (OM_CTEST)
+  #enable unit testing
+  ENABLE_TESTING()
+  #enable posting test results to dart
+  INCLUDE(CTest) 
+ENDIF (OM_CTEST)
+
 #############################################################
 # search for dependencies
 
@@ -109,7 +119,7 @@ ENDIF (WIN32)
 #############################################################
 # process subdirs
 
-SUBDIRS(src examples)
+SUBDIRS(src examples ctest)
 
 #############################################################
 # install stuff
