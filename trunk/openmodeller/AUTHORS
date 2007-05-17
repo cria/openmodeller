@@ -48,7 +48,7 @@ Quantum GIS development team:
 
  * Tom Elwertowski
 
-     Achieved build compatibility under MAC OS X.
+     Added support for MAC OS X.
 
 INPE - Instituto Nacional de Pesquisas Espaciais
 
@@ -61,3 +61,9 @@ Poli - Escola Politécninca da Universidade de São Paulo:
  * Danilo J. S. Bellini <danilo . estagio [at] gmail . com>
 
      Developed the Environmental Distance Algorithm.
+
+Other individual collaborators
+
+ * Lin, Cheng-Tao <b89605222 [at] ntu . edu . tw>
+
+     Added support for FreeBSD.
