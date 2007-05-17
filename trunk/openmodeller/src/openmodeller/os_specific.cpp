@@ -203,6 +203,8 @@ typedef struct dirent TDirent;
 int
 #ifdef __APPLE__
 filter( TDirent *dir )
+#elif __FreeBSD__
+filter( TDirent *dir )
 #else
 filter( const TDirent *dir )
 #endif
