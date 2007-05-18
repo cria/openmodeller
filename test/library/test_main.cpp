@@ -36,7 +36,7 @@ class MyLog : public Log::LogCallback
 {
   void operator()( Log::Level l, const std::string& msg ) 
   {
-    cout << msg;
+    std::cout << msg;
   }
 };
 
