@@ -17,21 +17,21 @@ Sample b;
 
 TEST( DefaultCon, Sample )
 {
-  g_log("Sample Default Constructor:\n");
+  Log::instance()->info("Sample Default Constructor:\n");
   //CHECK( a.getRawVector() == 0 );
   CHECK( a.size() == 0 );
 }
 
 TEST( Resize, Sample )
 {
-  g_log("Sample Resize:\n");
+  Log::instance()->info("Sample Resize:\n");
   a.resize(10);
   CHECK( a.size() == 10 );
 }
 
 TEST( SingleValueCon, Sample )
 {
-  g_log("Sample Constructor initialized with single Scalar\n" );
+  Log::instance()->info("Sample Constructor initialized with single Scalar\n" );
   Sample x(10, -0.1);
 
   for( int i=0; i<x.size(); ++i ) {
@@ -41,7 +41,7 @@ TEST( SingleValueCon, Sample )
 
 TEST( ArrayOp, Sample )
 {
-  g_log("Sample assign through operator[]\n" );
+  Log::instance()->info("Sample assign through operator[]\n" );
   for( int i=0; i<a.size(); ++i )
     a[i] = i;
 
@@ -53,7 +53,7 @@ TEST( ArrayOp, Sample )
 
 TEST( Equals, Sample )
 {
-  g_log("Sample equals( const Sample& ) and operator==()\n");
+  Log::instance()->info("Sample equals( const Sample& ) and operator==()\n");
 
   Sample c( 3 );
   CHECK( ! c.equals(a) );
@@ -78,7 +78,7 @@ TEST( Equals, Sample )
 
 TEST( CopyCon, Sample )
 {
-  g_log("Sample Copy Constructor\n" );
+  Log::instance()->info("Sample Copy Constructor\n" );
   Sample c(a);
 
   //CHECK( a.getRawVector() != c.getRawVector() );
@@ -88,14 +88,14 @@ TEST( CopyCon, Sample )
 
 TEST( CopyAssign, Sample )
 {
-  g_log("Sample operator=( const Sample & )\n");
+  Log::instance()->info("Sample operator=( const Sample & )\n");
   b = a;
   CHECK( b == a );
 }
 
 TEST( Stream, Sample )
 {
-  g_log("Sample operator>> and operator<<\n" );
+  Log::instance()->info("Sample operator>> and operator<<\n" );
 
   cerr << "A = " << a << endl;
   stringstream ss( ios::in | ios::out );
@@ -109,7 +109,7 @@ TEST( Stream, Sample )
 TEST( StreamDouble, Sample )
 {
 
-  g_log( "Sample operator>> and operator<< precision\n" );
+  Log::instance()->info( "Sample operator>> and operator<< precision\n" );
 
   //
   // These values will actually result in doubles with a lot
@@ -132,7 +132,7 @@ TEST( StreamDouble, Sample )
 
 TEST( AddSample, Sample )
 {
-  g_log("Sample operator+=(Sample)\n");
+  Log::instance()->info("Sample operator+=(Sample)\n");
   Sample c(a);
 
   c += a;
@@ -144,7 +144,7 @@ TEST( AddSample, Sample )
 
 TEST( AddScalar, Sample )
 {
-  g_log("Sample operator+=(Scalar)\n");
+  Log::instance()->info("Sample operator+=(Scalar)\n");
   Sample c(a);
 
   c += 35;
@@ -156,7 +156,7 @@ TEST( AddScalar, Sample )
 
 TEST( SubSample, Sample )
 {
-  g_log("Sample operator-=(Sample)\n");
+  Log::instance()->info("Sample operator-=(Sample)\n");
   Sample c(a);
 
   c -= a;
@@ -169,7 +169,7 @@ TEST( SubSample, Sample )
 
 TEST( SubScalar, Sample )
 {
-  g_log("Sample operator-=(Scalar)\n");
+  Log::instance()->info("Sample operator-=(Scalar)\n");
   Sample c(a);
 
   c -= 35;
@@ -181,7 +181,7 @@ TEST( SubScalar, Sample )
 
 TEST( MultSample, Sample )
 {
-  g_log("Sample operator*=(Sample)\n");
+  Log::instance()->info("Sample operator*=(Sample)\n");
   Sample c(a);
 
   c *= a;
@@ -194,7 +194,7 @@ TEST( MultSample, Sample )
 
 TEST( MultScalar, Sample )
 {
-  g_log("Sample operator*=(Scalar)\n");
+  Log::instance()->info("Sample operator*=(Scalar)\n");
   Sample c(a);
 
   c *= 35;
@@ -206,7 +206,7 @@ TEST( MultScalar, Sample )
 
 TEST( DivSample, Sample )
 {
-  g_log("Sample operator/=(Sample)\n");
+  Log::instance()->info("Sample operator/=(Sample)\n");
   Sample c(a);
   Sample d(a);
 
@@ -222,7 +222,7 @@ TEST( DivSample, Sample )
 
 TEST( DivScalar, Sample )
 {
-  g_log("Sample operator/=(Scalar)\n");
+  Log::instance()->info("Sample operator/=(Scalar)\n");
   Sample c(a);
 
   c /= 35;
@@ -234,7 +234,7 @@ TEST( DivScalar, Sample )
 
 TEST( MinSample, Sample )
 {
-  g_log("Sample operator&=(Scalar)\n");
+  Log::instance()->info("Sample operator&=(Scalar)\n");
   Sample b(a);
 
   for( int i=0;i<b.size(); ++i ) {
@@ -252,7 +252,7 @@ TEST( MinSample, Sample )
 
 TEST( MaxSample, Sample )
 {
-  g_log("Sample operator|=(Scalar)\n");
+  Log::instance()->info("Sample operator|=(Scalar)\n");
   Sample b(a);
 
   for( int i=0;i<b.size(); ++i ) {
@@ -270,7 +270,7 @@ TEST( MaxSample, Sample )
 
 TEST( Sqr, Sample )
 {
-  g_log( "Sample sqr()\n");
+  Log::instance()->info( "Sample sqr()\n");
   Sample c(3);
   c[0] = -5;
   c[1] = 0;
@@ -285,7 +285,7 @@ TEST( Sqr, Sample )
 
 TEST( Sqrt, Sample )
 {
-  g_log( "Sample sqr()\n");
+  Log::instance()->info( "Sample sqr()\n");
   Sample c(3);
   c[0] = 0;
   c[1] = 25;
@@ -300,7 +300,7 @@ TEST( Sqrt, Sample )
 
 TEST( Norm, Sample )
 {
-  g_log( "Sample norm()\n");
+  Log::instance()->info( "Sample norm()\n");
   Sample c(3);
   c[0] = 0;
   c[1] = 3;
@@ -312,7 +312,7 @@ TEST( Norm, Sample )
 
 TEST( DotProd, Sample )
 {
-  g_log( "Sample dotProduct()\n");
+  Log::instance()->info( "Sample dotProduct()\n");
   Sample b(3);
   Sample c(3);
 
