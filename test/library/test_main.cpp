@@ -32,14 +32,19 @@
 
 #include <openmodeller/Log.hh>
 #include <string.h>
-
-extern Log g_log;
+class MyLog : public Log::LogCallback 
+{
+  void operator()( Log::Level l, const std::string& msg ) 
+  {
+    cout << msg;
+  }
+};
 
 int main(int argc, char **argv)
 {
   // Reconfigure the global logger.
-  g_log.set( Log::Debug, stdout, "Tests" );
-
+  Log::instance()->setLevel( Log::Debug );
+  Log::instance()->setCallback( new MyLog() );
   TestResult tr;
   return TestRegistry::runAllTests(tr);
 }
