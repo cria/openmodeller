@@ -27,6 +27,37 @@ IF (OM_CTEST)
 ENDIF (OM_CTEST)
 
 #############################################################
+# Enable packaging
+
+INCLUDE(InstallRequiredSystemLibraries)
+
+SET(CPACK_PACKAGE_DESCRIPTION_SUMMARY "openModeller")
+SET(CPACK_PACKAGE_VENDOR "Tim Sutton")
+SET(CPACK_PACKAGE_DESCRIPTION_FILE "${CMAKE_CURRENT_SOURCE_DIR}/README.txt")
+SET(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_CURRENT_SOURCE_DIR}/COPYING.txt")
+SET(CPACK_PACKAGE_VERSION_MAJOR "0")
+SET(CPACK_PACKAGE_VERSION_MINOR "4")
+SET(CPACK_PACKAGE_VERSION_PATCH "4")
+SET(CPACK_PACKAGE_INSTALL_DIRECTORY "CMake ${CMake_VERSION_MAJOR}.${CMake_VERSION_MINOR}")
+IF(WIN32 AND NOT UNIX)
+  # There is a bug in NSI that does not handle full unix paths properly. Make
+  # sure there is at least one set of four (4) backlasshes.
+  SET(CPACK_PACKAGE_ICON "${CMake_SOURCE_DIR}/Utilities/Release\\\\InstallIcon.bmp")
+  SET(CPACK_NSIS_INSTALLED_ICON_NAME "bin\\\\MyExecutable.exe")
+  SET(CPACK_NSIS_DISPLAY_NAME "${CPACK_PACKAGE_INSTALL_DIRECTORY} openModeller Desktop")
+  SET(CPACK_NSIS_HELP_LINK "http:\\\\\\\\openmodeller.sf.net")
+  SET(CPACK_NSIS_URL_INFO_ABOUT "http:\\\\\\\\openmodeller.sf.net")
+  SET(CPACK_NSIS_CONTACT "tim@linfiniti.com")
+  SET(CPACK_NSIS_MODIFY_PATH ON)
+ELSE(WIN32 AND NOT UNIX)
+  #SET(CPACK_STRIP_FILES "openModellerDesktop")
+  #SET(CPACK_SOURCE_STRIP_FILES "")
+ENDIF(WIN32 AND NOT UNIX)
+SET(CPACK_PACKAGE_EXECUTABLES "om_console" "om_console")
+INCLUDE(CPack)
+
+
+#############################################################
 # search for dependencies
 
 # required

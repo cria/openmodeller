@@ -10,11 +10,11 @@
 
 EXTRA_DIST = \
 	AUTHORS \
-	README \
+	README.txt \
 	INSTALL \
 	NEWS \
 	ChangeLog \
-	COPYING \
+	COPYING.txt \
 	doc/openModeller.doxygen \
 	doc/openModeller.xsd \
 	examples/furcata_boliviana.txt \
