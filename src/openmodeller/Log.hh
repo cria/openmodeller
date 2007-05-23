@@ -120,6 +120,8 @@ class dllexp Log
 
   private:
 
+    //write log out to callback
+   void FormatAndWrite( Log::LogCallback& lc, Log::Level level, std::string pref, const char* format, va_list ap );
     static Log * mpInstance;
     LogCallback* callback;
 
