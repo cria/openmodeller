@@ -292,9 +292,13 @@ AlgorithmImpl::createModel( const SamplerPtr& samp, Algorithm::ModelCommand *mod
   if ( !samp )
     throw AlgorithmException( "Sampler not specified." );
 
-  if ( (!samp->numPresence()) && !samp->numAbsence() )
+  if (!samp->numPresence() && !samp->numAbsence())
+  {
+    //std::cout << "Presence count: " << samp->numPresence() << std::endl;
+    //std::cout << "Absence  count: " << samp->numAbsence() << std::endl;
     throw AlgorithmException( "Cannot create model without any presence or absence point." );
-
+    return 0;
+  }
   setSampler( samp );
 
   computeNormalization( _samp );
@@ -305,17 +309,34 @@ AlgorithmImpl::createModel( const SamplerPtr& samp, Algorithm::ModelCommand *mod
 
   // Generate model.
   int ncycle = 0;
-  while ( iterate() && ! done () ) {
+  int resultFlag = 1;
+  int doneFlag   = 0;
+  while ( resultFlag && !doneFlag )
+  {
+    // I moved thee two calls out of the while() 
+    // above and into seperate calls because
+    // when run in a thread we need to catch 
+    // exceptions properly TS
+    try {
+      resultFlag = iterate();
+      doneFlag   = done();
+    }
+    catch ( char * message ) {
+      string error( "Exception: " );
+      error += message;
+      Log::instance()->error(1, error.c_str() );
+      return 0;
+    }
     ncycle++;
     if ( model_command ) {
       try {
-	(*model_command)(getProgress() );
+        (*model_command)(getProgress() );
       }
       catch ( char * message ) {
-	string error( "Exception: " );
-	error += message;
-  Log::instance()->error(1, error.c_str() );
-	return 0;
+        string error( "Exception: " );
+        error += message;
+        Log::instance()->error(1, error.c_str() );
+        return 0;
       }
       catch (...) {}
     }
