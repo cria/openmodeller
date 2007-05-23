@@ -97,8 +97,8 @@ LevelLabels[5] =
     "[Error] "
   };
 
-static void
-FormatAndWrite( Log::LogCallback& lc, Log::Level level, std::string pref, const char* format, va_list ap ) {
+void
+Log::FormatAndWrite( Log::LogCallback& lc, Log::Level level, std::string pref, const char* format, va_list ap ) {
 
   const int buf_size = 1024;
   char buf[buf_size];
