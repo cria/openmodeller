@@ -75,7 +75,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/libopenmodellerxml.so.*
 %dir %{_libdir}/openmodeller
 %{_libdir}/openmodeller/*so*
-%doc AUTHORS COPYING ChangeLog README INSTALL NEWS
+%doc AUTHORS COPYING.txt ChangeLog README.txt INSTALL NEWS
 
 %files devel
 %defattr(-,root,root)
