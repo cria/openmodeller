@@ -294,11 +294,9 @@ AlgorithmImpl::createModel( const SamplerPtr& samp, Algorithm::ModelCommand *mod
 
   if (!samp->numPresence() && !samp->numAbsence())
   {
-    //std::cout << "Presence count: " << samp->numPresence() << std::endl;
-    //std::cout << "Absence  count: " << samp->numAbsence() << std::endl;
     throw AlgorithmException( "Cannot create model without any presence or absence point." );
-    return 0;
   }
+
   setSampler( samp );
 
   computeNormalization( _samp );
