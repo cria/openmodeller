@@ -28,6 +28,7 @@
 
 #include <os_specific.hh>
 
+#include <iostream>
 #include <stdlib.h>
 
 using std::vector;
@@ -147,13 +148,7 @@ initialPluginPath()
 
   }
 
-#if defined(__APPLE__)
-  // hard coded by Tim for Mac build
-  //TODO Work out how to not need to do this 
-  std::ifstream conf_file( "Contents/MacOS/pluginpath.cfg", std::ios::in );
-#else
   std::ifstream conf_file( CONFIG_FILE, std::ios::in );
-#endif
   
   if ( conf_file ) {
 
@@ -175,8 +170,13 @@ initialPluginPath()
 	CFRelease(myMacPath);
 	std::string myFullPath(mypPathPtr);
   std::string myUnitTestPath = myFullPath + "/../src/algorithms/";
+#if defined(OM_BUNDLE)
 	myFullPath += "/Contents/MacOS/algs";
   entries.push_back(myFullPath.c_str());
+#else
+  //otherwise use the normal search path
+  entries.push_back( PLUGINPATH );
+#endif
   //add a path for when doing unit tests on mac
   entries.push_back(myUnitTestPath.c_str());
 #else

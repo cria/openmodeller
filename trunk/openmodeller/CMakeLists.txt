@@ -115,6 +115,7 @@ IF (WIN32)
   ADD_DEFINITIONS(-DPLUGINPATH=\\"algs\\")
 ELSE (WIN32)
   IF (OM_BUNDLE)
+    ADD_DEFINITIONS(-DOM_BUNDLE=\\"TRUE\\")
     # for Mac OS X, everything is put inside an application bundle
     SET (CMAKE_INSTALL_PREFIX ${CMAKE_INSTALL_PREFIX}/${PROJECT_NAME}.app/Contents/MacOS)
     SET (OM_BIN_DIR    ${CMAKE_INSTALL_PREFIX})
