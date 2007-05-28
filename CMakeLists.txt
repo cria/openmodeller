@@ -16,8 +16,11 @@ SET (WITH_BINDINGS TRUE CACHE BOOL "Determines whether python bindings should be
 # set if the log level the build binaries should be set to Debug
 SET (OM_DEBUG_LOGLEVEL FALSE CACHE BOOL "Force log level to Debug - should leave this off for releases!")
 
-SET (OM_CTEST TRUE CACHE BOOL "Run unit tests after compiling")
+SET (OM_CTEST TRUE CACHE BOOL "Build unit tests")
 
+IF (APPLE)
+  SET (OM_BUNDLE FALSE CACHE BOOL "Build as bundle")
+ENDIF (APPLE)
 #############################################################
 IF (OM_CTEST)
   #enable unit testing
@@ -111,27 +114,27 @@ IF (WIN32)
 
   ADD_DEFINITIONS(-DPLUGINPATH=\\"algs\\")
 ELSE (WIN32)
-  IF (APPLE)
+  IF (OM_BUNDLE)
     # for Mac OS X, everything is put inside an application bundle
     SET (CMAKE_INSTALL_PREFIX ${CMAKE_INSTALL_PREFIX}/${PROJECT_NAME}.app/Contents/MacOS)
     SET (OM_BIN_DIR    ${CMAKE_INSTALL_PREFIX})
     # path for library references
     SET (CMAKE_INSTALL_NAME_DIR @executable_path/lib)
     SET (OM_ALG_DIR ${CMAKE_INSTALL_PREFIX}/algs)
-  ENDIF (APPLE)
+  ENDIF (OM_BUNDLE)
 
   # common for MAC and UNIX
   SET (OM_DATA_DIR   ${CMAKE_INSTALL_PREFIX}/share/openmodeller)
   SET (OM_INCLUDE_DIR "${CMAKE_INSTALL_PREFIX}/include")
   SET (OM_EXAMPLES_DIR "${CMAKE_INSTALL_PREFIX}/share/openmodeller/examples")
 
-  IF (UNIX AND NOT APPLE)
+  IF (UNIX AND NOT OM_BUNDLE)
     SET (OM_BIN_DIR    ${CMAKE_INSTALL_PREFIX}/bin)
     SET (OM_ALG_DIR ${CMAKE_INSTALL_PREFIX}/lib/openmodeller)
     ADD_DEFINITIONS(-DPREFIX=\\"${CMAKE_INSTALL_PREFIX}\\")
     ADD_DEFINITIONS(-DPLUGINPATH=\\"${OM_ALG_DIR}\\")
     ADD_DEFINITIONS(-DPKGDATAPATH=\\"${OM_DATA_DIR}\\")
-  ENDIF (UNIX AND NOT APPLE)
+  ENDIF (UNIX AND NOT OM_BUNDLE)
 
 ENDIF (WIN32)
 
@@ -150,7 +153,7 @@ ENDIF (WIN32)
 #############################################################
 # process subdirs
 
-SUBDIRS(src examples ctest)
+SUBDIRS(src examples ctest test)
 
 #############################################################
 # install stuff
