@@ -19,6 +19,9 @@ SET (OM_DEBUG_LOGLEVEL FALSE CACHE BOOL "Force log level to Debug - should leave
 SET (OM_CTEST TRUE CACHE BOOL "Build unit tests")
 
 IF (APPLE)
+  # be sure to use the bundle option ON if you are going to be using this 
+  # libin openmodeller desktop, otherwsie the bundle wont be searched for
+  # plugins!
   SET (OM_BUNDLE FALSE CACHE BOOL "Build as bundle")
 ENDIF (APPLE)
 #############################################################
