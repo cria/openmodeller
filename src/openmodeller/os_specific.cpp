@@ -174,7 +174,7 @@ initialPluginPath()
   string::size_type loc = myFullPath.find( ".app", 0 );
   if( loc != string::npos ) //found so we are in a mac application bundle
   {
-    myFullPath += "/Contents/MacOS/algs";
+    myFullPath += "/Contents/MacOS/lib/openmodeller";
     entries.push_back(myFullPath.c_str());
   } 
   else //not in a bundle! 
