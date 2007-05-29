@@ -401,25 +401,16 @@ int CsmBS::discardComponents()
     if (myFloat < gsl_vector_get(_gsl_eigenvalue_vector,i))
     {
       ++_retained_components_count;
-      std::cerr << gsl_vector_get(_gsl_eigenvalue_vector,i)
-      << " > "
-      << myFloat
-      << ": Component "
-      << i
-      << " is greater than randomised component... retaining it."
-      << std::endl;
+      //std::cerr << gsl_vector_get(_gsl_eigenvalue_vector,i) << " > " << myFloat << ": Component "
+      //  << i << " is greater than randomised component... retaining it." << std::endl;
     }
     else
     {
       break;
     }
   }
-  std::cerr << "Sum of eigenvalues is "
-  << sumOfEigenValues
-  << " (layer count is "
-  << _layer_count
-  << ")\n";
-  std::cerr << "Difference between sum of eigenvalues and layer count = number of invariant layers" << std::endl;
+  //std::cerr << "Sum of eigenvalues is " << sumOfEigenValues << " (layer count is " << _layer_count  << ")\n";
+  //std::cerr << "Difference between sum of eigenvalues and layer count = number of invariant layers" << std::endl;
   if (_retained_components_count < minComponentsInt)
   {
     Log::instance()->debug( "Only %i component(s) retained. %i required. \nAborting discard components routine\n",_retained_components_count, minComponentsInt );
