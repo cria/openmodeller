@@ -26,8 +26,11 @@ done
 #copy over a few extra needed libs
 mkdir -p Library/Frameworks
 cp -r /Library/Frameworks/GDAL.framework Library/Frameworks
+cp -r /Library/Frameworks/UnixImageIO.framework Library/Frameworks
+cp -r /Library/Frameworks/Xerces.framework Library/Frameworks
 cp -r /Library/Frameworks/GEOS.framework Library/Frameworks
 cp -r /Library/Frameworks/PROJ.framework Library/Frameworks
+cp -r /Library/Frameworks/SQLite3.framework Library/Frameworks
 #using -d to preserve symlinks etc AAArgh...not supported on mac!
 cp -p /usr/local/lib/libexpat* usr/local/lib/
 cp -p /usr/local/lib/libgsl* usr/local/lib/
