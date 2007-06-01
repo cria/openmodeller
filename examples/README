@@ -62,24 +62,25 @@ stand the actual data being used to build the model.
 
 e.g.
 
-om_sampledump request.txt
+om_sampledump request.txt outputfile.txt
 
 ---
 
 5) om_create
 
-This program uses the newer xml format for describing how a model
-should be built. The output is another xml file which contains
+This program uses the newer XML format for describing how a model
+should be built. The output is another XML file which contains
 the serialised model. No projection (mapping) of the model is 
 carried out (see om_project below). This is useful if you wish
 to create a model and project it into numerous climate scenarios.
 om_console can produce a simlar result using the 'Output model'
-instruction in the request file. om_create is a wholly xml 
-approach to this.
+instruction in the request file. om_create is a wholly XML 
+approach to this. The log output can be optionally stored in a 
+file if a second parameter is specified.
 
-e.g. (furcata-model.xml is the output file)
+e.g. (furcata-model.xml is the output model file)
 
-om_create bioclim-param.xml furcata-model.xml 
+om_create model_request.xml furcata-model.xml [ logfile.txt ]
 
 ---
 
@@ -89,9 +90,10 @@ This program is used to project a serialised model into an
 environment scenario. The output will be an image showing 
 a probability surface.
 
-The environment.xml is provided in the examples dir. Note
-that there must be a match between each layer used to originally
-build the model and each layer in the projection environment:
+The first parameter points to an XML file that describes how the
+projection should be built. Note that there must be a match 
+between each layer used to originally build the model and each 
+layer in the projection environment:
 
  Create Model           Project Model
  ------------------------------------
@@ -99,10 +101,15 @@ build the model and each layer in the projection environment:
  rainfall         |     rainfall
  etc              |     etc
 
+The second parameter specifies the name of the distribution map 
+that will be generated. Optional statistics file and log file
+can be saved as well.
+
 e.g.
 
-om_project furcata-model.xml environment.xml furcata.tif
+om_project projection_request.xml furcata.img [ logfile.txt | statisticsfile.txt logfile.txt ]
 
+---
 
 7) om_metadump
 
