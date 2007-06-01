@@ -503,7 +503,6 @@ AC_CONFIG_FILES([
 	src/algorithms/garp/test/Makefile
 	src/algorithms/garp/garp_best_subsets/Makefile
 	src/algorithms/dg_garp/Makefile
-	src/algorithms/svm/Makefile
 	libopenmodeller.spec
 ])
 
