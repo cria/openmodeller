@@ -24,7 +24,26 @@ EXTRA_DIST = \
 	examples/request_te.txt \
 	examples/model_request.xml \
 	examples/projection_request.xml \
-	libopenmodeller.spec
+	libopenmodeller.spec \
+	CMakeLists.txt \
+	src/CMakeLists.txt \
+	src/algorithms/CMakeLists.txt \
+	src/algorithms/best_subsets/CMakeLists.txt \
+	src/algorithms/dg_garp/CMakeLists.txt \
+	src/algorithms/garp/CMakeLists.txt \
+	src/algorithms/garp/garp_best_subsets/CMakeLists.txt \
+	src/console/CMakeLists.txt \
+	src/openmodeller/CMakeLists.txt \
+	src/soap/CMakeLists.txt \
+	test/CMakeLists.txt \
+	test/CppUnitLite/CMakeLists.txt \
+	test/library/CMakeLists.txt \
+	cmake/FindExpat.cmake \
+	cmake/FindGDAL.cmake \
+	cmake/FindGSL.cmake \
+	cmake/FindProj.cmake \
+	cmake/FindSqlite3.cmake \
+	cmake/Python.cmake
 
 #SUBDIRS = test src data
 SUBDIRS = test src
