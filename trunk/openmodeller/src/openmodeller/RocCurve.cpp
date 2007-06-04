@@ -105,6 +105,8 @@ void RocCurve::_loadPredictions( const EnvironmentPtr & env,
   OccurrencesImpl::const_iterator it = presences->begin();
   OccurrencesImpl::const_iterator fin = presences->end();
 
+  Scalar predictionValue;
+
   model->setNormalization( env );
 
   int i = 0;
@@ -125,8 +127,13 @@ void RocCurve::_loadPredictions( const EnvironmentPtr & env,
 
       ++i;
 
+      predictionValue = model->getValue( sample );
+
       _category.push_back( 1 );
-      _prediction.push_back( model->getValue( sample ) );
+      _prediction.push_back( predictionValue );
+
+      Log::instance()->debug( "Probability for presence point %s (%f,%f): %f\n", 
+                   ((*it)->id()).c_str(), (*it)->x(), (*it)->y(), predictionValue );
     }
 
     ++it;
@@ -155,8 +162,13 @@ void RocCurve::_loadPredictions( const EnvironmentPtr & env,
 
         ++i;
 
+        predictionValue = model->getValue( sample );
+
 	_category.push_back( 0 );
-	_prediction.push_back( model->getValue( sample ) );
+	_prediction.push_back( predictionValue );
+
+        Log::instance()->debug( "Probability for absence point %s (%f,%f): %f\n", 
+                     ((*it)->id()).c_str(), (*it)->x(), (*it)->y(), predictionValue );
       }
 
       ++it;
