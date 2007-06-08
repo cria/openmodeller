@@ -92,6 +92,7 @@ HEADERS +=  AlgMetadata.hh \
             OpenModeller.hh \
             Projector.hh \
             Random.hh \
+            RocCurve.hh \
             Sample.hh \
             SampleExpr.hh \
             SampleExprVar.hh \
@@ -119,6 +120,7 @@ SOURCES +=  AlgParameter.cpp \
             ignorecase_traits.cpp \
             Projector.cpp \
             Random.cpp \
+            RocCurve.cpp \
             Sample.cpp \
             Sampler.cpp 
 
