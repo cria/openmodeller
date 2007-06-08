@@ -27,7 +27,9 @@ win32{
   DEFINES += MINGW_QT
   LIBS+=-L"C:\msys\local\lib"
   INCLUDEPATH += . 
-  INCLUDEPATH +="c:\mingw\include" #hard coded for now! 
+  INCLUDEPATH +="c:\msys\include" #hard coded for now! 
+  INCLUDEPATH +="c:\msys\local\include" #hard coded for now! 
+  INCLUDEPATH +="c:\msys\mingw\include" #hard coded for now! 
   INCLUDEPATH +="c:\dev\cpp\openmodeller\src" #hard coded for now!
   INCLUDEPATH +="c:\dev\cpp\openmodeller\src\openmodeller" #hard coded for now!
   INCLUDEPATH +="c:\dev\cpp\openmodeller\src\openmodeller\env_io" #hard coded for now!
