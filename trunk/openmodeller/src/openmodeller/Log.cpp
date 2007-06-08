@@ -27,7 +27,6 @@
 
 #include <openmodeller/Log.hh>
 
-#include <stdarg.h>
 
 #include <openmodeller/Exceptions.hh>
 
