@@ -32,6 +32,7 @@
 
 #include <iostream>
 #include <string>
+#include <stdarg.h>
 
 #include <stdio.h>
 
