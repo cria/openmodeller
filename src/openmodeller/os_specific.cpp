@@ -169,8 +169,6 @@ initialPluginPath()
 	CFRelease(myPluginRef);
 	CFRelease(myMacPath);
 	std::string myFullPath(mypPathPtr);
-  std::string myUnitTestPath = myFullPath + "/../src/algorithms/";
-
   string::size_type loc = myFullPath.find( ".app", 0 );
   if( loc != string::npos ) //found so we are in a mac application bundle
   {
@@ -182,8 +180,6 @@ initialPluginPath()
     //otherwise use the normal search path
     entries.push_back( PLUGINPATH );
   }
-  //add a path for when doing unit tests on mac
-  entries.push_back(myUnitTestPath.c_str());
 #else
   entries.push_back( PLUGINPATH );
 #endif
