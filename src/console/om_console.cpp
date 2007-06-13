@@ -98,7 +98,7 @@ main( int argc, char **argv )
               return 1;
 
             Log::instance()->info( "\n> Algorithm used: %s\n\n", metadata->name );
-            Log::instance()->info( " %s\n\n", metadata->description );
+            Log::instance()->info( " %s\n\n", metadata->overview );
 
             // For resulting parameters storage.
             int nparam = metadata->nparam;
@@ -274,7 +274,7 @@ readParameters( AlgParameter *result, AlgMetadata const *metadata )
 
       // Informs the parameter's metadata to the user.
       printf( "\n* Parameter: %s\n\n", param->name );
-      printf( " %s:\n", param->overview );
+      printf( " %s\n", param->overview );
       if ( param->has_min )
         printf( " %s >= %f\n", param->name, param->min_val );
       if ( param->has_max )
