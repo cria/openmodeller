@@ -98,6 +98,7 @@ public:
   int getAttributeAsInt( const std::string & name, int defaultValue ) const;
   double getAttributeAsDouble( const std::string & name, double defaultValue ) const;
   std::vector<double> getAttributeAsVecDouble( const std::string & name ) const;
+  std::vector<int> getAttributeAsVecInt( const std::string & name ) const;
   void getAttributeAsDoubleArray( const std::string & name, double **, int * ) const;
   Sample getAttributeAsSample( const std::string & name ) const;
   void getAttributeAsByteArray( const std::string & name, unsigned char **, int * ) const;
@@ -112,6 +113,7 @@ public:
   void addNameValue( const std::string & name, double value );
   void addNameValue( const std::string & name, const Sample& value );
   void addNameValue( const std::string & name, double const *values, int count );
+  void addNameValue( const std::string & name, int const *values, int count );
   void addNameValue( const std::string & name, unsigned char const *values, int count );
   
   // Method to get int from string

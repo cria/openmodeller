@@ -309,6 +309,27 @@ ConfigurationImpl::getAttributeAsVecDouble( const string & name ) const {
 
 }
 
+vector<int>
+ConfigurationImpl::getAttributeAsVecInt( const string & name ) const {
+
+  string val = getAttribute( name );
+  
+  stringstream ss( val, ios::in );
+
+  vector<int> v;
+
+  istream_iterator<int> end;
+  for ( istream_iterator<int> is_it(ss);
+	is_it != end;
+	is_it ++ ) {
+
+    v.push_back( *is_it );
+  }
+
+  return v;
+
+}
+
 template<typename T>
 vector<T>
 ConfigurationImpl::getAttributeAsVec( const string & name ) const {
@@ -442,6 +463,19 @@ ConfigurationImpl::addNameValue( const string & name, double const *values, int 
   stringstream ss(ios::out);
 
   ss.precision(25);
+  for( int i=0; i<count; i++ ) {
+    ss << *values++ << " ";
+  }
+
+  addNameValue( name, ss.str() );
+
+}
+
+void
+ConfigurationImpl::addNameValue( const string & name, int const *values, int count ) {
+
+  stringstream ss(ios::out);
+
   for( int i=0; i<count; i++ ) {
     ss << *values++ << " ";
   }
