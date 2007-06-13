@@ -262,6 +262,28 @@ ConfigurationImpl::getAttribute( const string & name, const string& defaultValue
 
 }
 
+template<typename T>
+vector<T>
+ConfigurationImpl::getAttributeAsVec( const string & name ) const {
+
+  string val = getAttribute( name );
+  
+  stringstream ss( val, ios::in );
+
+  vector<T> v;
+
+  istream_iterator<T> end;
+  for ( istream_iterator<T> is_it(ss);
+	is_it != end;
+	is_it ++ ) {
+
+    v.push_back( *is_it );
+  }
+
+  return v;
+
+}
+
 int
 ConfigurationImpl::getAttributeAsInt( const string & name, int defaultvalue ) const {
 
@@ -309,6 +331,27 @@ ConfigurationImpl::getAttributeAsVecDouble( const string & name ) const {
 
 }
 
+void
+ConfigurationImpl::getAttributeAsDoubleArray( const string & name, double **arry, int *dim ) const {
+
+  vector<double> vec = getAttributeAsVecDouble( name );
+
+  if ( dim ) {
+    *dim = vec.size();
+  }
+
+  if ( arry ) {
+    int end = vec.size();
+
+    *arry = new double[ end ];
+
+    for (int i=0; i< end; i++ ) {
+      (*arry)[i] = vec[i];
+    }
+  }
+
+}
+
 vector<int>
 ConfigurationImpl::getAttributeAsVecInt( const string & name ) const {
 
@@ -330,32 +373,10 @@ ConfigurationImpl::getAttributeAsVecInt( const string & name ) const {
 
 }
 
-template<typename T>
-vector<T>
-ConfigurationImpl::getAttributeAsVec( const string & name ) const {
-
-  string val = getAttribute( name );
-  
-  stringstream ss( val, ios::in );
-
-  vector<T> v;
-
-  istream_iterator<T> end;
-  for ( istream_iterator<T> is_it(ss);
-	is_it != end;
-	is_it ++ ) {
-
-    v.push_back( *is_it );
-  }
-
-  return v;
-
-}
-
 void
-ConfigurationImpl::getAttributeAsDoubleArray( const string & name, double **arry, int *dim ) const {
+ConfigurationImpl::getAttributeAsIntArray( const string & name, int **arry, int *dim ) const {
 
-  vector<double> vec = getAttributeAsVecDouble( name );
+  vector<int> vec = getAttributeAsVecInt( name );
 
   if ( dim ) {
     *dim = vec.size();
@@ -364,7 +385,7 @@ ConfigurationImpl::getAttributeAsDoubleArray( const string & name, double **arry
   if ( arry ) {
     int end = vec.size();
 
-    *arry = new double[ end ];
+    *arry = new int[ end ];
 
     for (int i=0; i< end; i++ ) {
       (*arry)[i] = vec[i];

@@ -98,8 +98,9 @@ public:
   int getAttributeAsInt( const std::string & name, int defaultValue ) const;
   double getAttributeAsDouble( const std::string & name, double defaultValue ) const;
   std::vector<double> getAttributeAsVecDouble( const std::string & name ) const;
-  std::vector<int> getAttributeAsVecInt( const std::string & name ) const;
   void getAttributeAsDoubleArray( const std::string & name, double **, int * ) const;
+  std::vector<int> getAttributeAsVecInt( const std::string & name ) const;
+  void getAttributeAsIntArray( const std::string & name, int **, int * ) const;
   Sample getAttributeAsSample( const std::string & name ) const;
   void getAttributeAsByteArray( const std::string & name, unsigned char **, int * ) const;
   
