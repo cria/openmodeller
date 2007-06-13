@@ -1,8 +1,7 @@
 /**
  * Declaration of Configuration class
  * 
- * @file configuration.hh
- * @author Kevin Ruland kruland@ku.edu
+ * @author Kevin Ruland
  * @date 2004-11-14
  * $Id$
  *
