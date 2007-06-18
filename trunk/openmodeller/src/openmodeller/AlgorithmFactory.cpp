@@ -140,6 +140,7 @@ AlgorithmPtr
 AlgorithmFactory::DLL::newAlgorithm()
 {
   AlgorithmImpl *ai = (*_factory)();
+
   return AlgorithmPtr(ai);
 }
 
@@ -257,32 +258,37 @@ AlgorithmFactory::algorithmMetadata( char const *id )
 AlgorithmPtr
 AlgorithmFactory::newAlgorithm( char const *id )
 {
-
   AlgorithmFactory& af = getInstance();
 
   int dll_count = af._dlls.size();
 
   if ( dll_count == 0 )
-    throw InvalidParameterException( "No algorithms loaded");
+    throw InvalidParameterException( "No algorithms loaded" );
 
   testDLLId test( id );
+
   ListDLL::iterator dll = find_if( af._dlls.begin(), af._dlls.end(), test );
 
   if ( dll != af._dlls.end() ) {
+
     return (*dll)->newAlgorithm();
   }
 
-  throw InvalidParameterException( "Algorithm not found");
+  throw InvalidParameterException( "Algorithm not found" );
 }
 
 AlgorithmPtr
 AlgorithmFactory::newAlgorithm( const ConstConfigurationPtr & config ) {
 
+  Log::instance()->debug( "Instantiating serialized algorithm\n" );
+
   string id = config->getAttribute( "Id" );
+
+  Log::instance()->debug( "Algorithm id: %s \n" , id.c_str() );
 
   AlgorithmPtr alg( newAlgorithm( id.c_str() ) );
 
-  if ( !alg )
+  if ( ! alg )
     return alg;
 
   alg->setConfiguration( config );
