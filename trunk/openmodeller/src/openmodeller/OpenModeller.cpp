@@ -623,12 +623,13 @@ OpenModeller::setModelConfiguration( const ConstConfigurationPtr & config )
 void
 OpenModeller::setProjectionConfiguration( const ConstConfigurationPtr & config )
 {
-  // Can only set the algorithm - other parameters need to be extracted outside
-  _alg = AlgorithmFactory::newAlgorithm( config->getSubsection( "Algorithm" ) );
-
-  _projEnv = createEnvironment( config->getSubsection( "Environment" ) );
+  Log::instance()->debug( "Setting projection configuration\n" );
 
   try { 
+
+    _alg = AlgorithmFactory::newAlgorithm( config->getSubsection( "Algorithm" ) );
+
+    _projEnv = createEnvironment( config->getSubsection( "Environment" ) );
 
     ConstConfigurationPtr output_param_config = config->getSubsection( "OutputParameters" );
 
@@ -678,6 +679,9 @@ OpenModeller::setProjectionConfiguration( const ConstConfigurationPtr & config )
   }
   catch( SubsectionNotFound& e ) { 
 
+      std::string section = e.getName();
+
+      Log::instance()->error( 1, "XML subsection not found: %s\n", section.c_str() );
   }
   catch ( AttributeNotFound& e ) { 
 
