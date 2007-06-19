@@ -619,6 +619,7 @@ SvmAlgorithm::_getConfiguration( ConfigurationPtr& config ) const
   ConfigurationPtr model_config( new ConfigurationImpl("Svm") );
   config->addSubsection( model_config );
 
+  model_config->addNameValue( "NumLayers", _num_layers );
   model_config->addNameValue( "Type", _svm_parameter.svm_type );
   model_config->addNameValue( "KernelType", _svm_parameter.kernel_type );
   model_config->addNameValue( "Probabilistic", _svm_parameter.probability );
@@ -680,6 +681,7 @@ SvmAlgorithm::_setConfiguration( const ConstConfigurationPtr& config )
   _svm_model->label = NULL;
   _svm_model->nSV   = NULL;
 
+  _num_layers = model_config->getAttributeAsInt( "NumLayers", 0 );
   _svm_parameter.svm_type = model_config->getAttributeAsInt( "Type", 0 );
   _svm_parameter.kernel_type = model_config->getAttributeAsInt( "KernelType", 2 );
   _svm_parameter.probability = model_config->getAttributeAsInt( "Probabilistic", 1 );
@@ -738,14 +740,12 @@ SvmAlgorithm::_setConfiguration( const ConstConfigurationPtr& config )
 
     _svm_model->sv_coef[0][i] = (*vec)->getAttributeAsDouble( "Coef", 0.0 );
 
-    _svm_model->SV[i] = new svm_node[_svm_model->nr_class + 1];
+    _svm_model->SV[i] = new svm_node[_num_layers + 1];
 
     Configuration::subsection_list nodes = (*vec)->getAllSubsections();
 
     Configuration::subsection_list::iterator node = nodes.begin();
     Configuration::subsection_list::iterator last_node = nodes.end();
-
-    _num_layers = 0;
 
     int j = 0;
 
@@ -760,8 +760,6 @@ SvmAlgorithm::_setConfiguration( const ConstConfigurationPtr& config )
       _svm_model->SV[i][j].value = (*node)->getAttributeAsDouble( "Value", 0.0 );
 
       ++j;
-
-      _num_layers++;
     }
 
     _svm_model->SV[i][j].index = -1;
