@@ -151,7 +151,7 @@ static AlgParamMetadata parameters[NUM_PARAM] = {
   {
     PROB_ID,                 // Id.
     "Probabilistic output",  // Name.
-    "Boolean",               // Type.
+    "Integer",               // Type.
     "Indicates if the output should be a probability instead of a binary response (only available for C-SVC and Nu-SVC).", // Overview
     "Indicates if the output should be a probability instead of a binary response (only available for C-SVC and Nu-SVC).", // Description.
     1,         // Not zero if the parameter has lower limit.
