@@ -632,6 +632,9 @@ SvmAlgorithm::_getConfiguration( ConfigurationPtr& config ) const
 
       model_config->addNameValue( "ProbA", _svm_model->probA[0] );
       model_config->addNameValue( "ProbB", _svm_model->probB[0] );
+  }
+
+  if ( _svm_parameter.svm_type != 2 ) {
 
       model_config->addNameValue( "NrSv", _svm_model->nSV, 2 );
   }
@@ -710,6 +713,9 @@ SvmAlgorithm::_setConfiguration( const ConstConfigurationPtr& config )
 
       _svm_model->probA[0] = model_config->getAttributeAsDouble( "ProbA", 0.0 );
       _svm_model->probB[0] = model_config->getAttributeAsDouble( "ProbB", 0.0 );
+  }
+
+  if ( _svm_parameter.svm_type != 2 ) {
 
       int size;
       model_config->getAttributeAsIntArray( "NrSv", &_svm_model->nSV, &size );
