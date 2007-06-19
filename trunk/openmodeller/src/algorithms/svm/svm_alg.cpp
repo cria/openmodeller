@@ -241,8 +241,8 @@ algorithmMetadata()
 
 SvmAlgorithm::SvmAlgorithm() :
   AlgorithmImpl( &metadata ),
-  _num_layers( 0 ),
-  _done( false )
+  _done( false ),
+  _num_layers( 0 )
 {
 }
 
@@ -558,7 +558,7 @@ SvmAlgorithm::getValue( const Sample& x ) const
 
     double * estimates = new double[2];
 
-    double class_predicted = svm_predict_probability( _svm_model, node, estimates );
+    svm_predict_probability( _svm_model, node, estimates );
 
     // Probability of presence is associated with label "1" which will always
     // correspond to the first element (if you doubt you can test using svm_get_labels)
