@@ -745,6 +745,8 @@ SvmAlgorithm::_setConfiguration( const ConstConfigurationPtr& config )
     Configuration::subsection_list::iterator node = nodes.begin();
     Configuration::subsection_list::iterator last_node = nodes.end();
 
+    _num_layers = 0;
+
     int j = 0;
 
     for ( ; node != last_node; ++node ) {
@@ -758,6 +760,8 @@ SvmAlgorithm::_setConfiguration( const ConstConfigurationPtr& config )
       _svm_model->SV[i][j].value = (*node)->getAttributeAsDouble( "Value", 0.0 );
 
       ++j;
+
+      _num_layers++;
     }
 
     _svm_model->SV[i][j].index = -1;
