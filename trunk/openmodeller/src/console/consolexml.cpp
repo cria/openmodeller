@@ -89,8 +89,8 @@ bool ConsoleXml::projectModel(const std::string theModel, const std::string theE
 
     om.setModelConfiguration(c);
 
-
     cout << "Create Model" << endl;
+
     om.createModel();
 
     cout << "Loading Projection Environment " << theEnvironment << endl;
@@ -129,6 +129,8 @@ bool ConsoleXml::projectModel(const std::string projectionXmlFile, const std::st
 
     ConfigurationPtr c = Configuration::readXml( projectionXmlFile.c_str() );
 
+    cout << "XML loaded" << endl;
+
     om.setProjectionConfiguration(c);
 
     cout << "Projecting to file " << mapFile << endl;
@@ -160,6 +162,8 @@ bool ConsoleXml::projectModel(const std::string projectionXmlFile, const std::st
     cout << "Loading XML Input file " << projectionXmlFile << endl;
 
     ConfigurationPtr c = Configuration::readXml( projectionXmlFile.c_str() );
+
+    cout << "XML loaded" << endl;
 
     om.setProjectionConfiguration(c);
 
