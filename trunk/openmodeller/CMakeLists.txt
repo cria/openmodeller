@@ -20,6 +20,7 @@ SET (OM_CTEST TRUE CACHE BOOL "Build unit tests")
 
 #############################################################
 IF (OM_CTEST)
+  FIND_PACKAGE(CXXTEST)
   #enable unit testing
   ENABLE_TESTING()
   #enable posting test results to dart
