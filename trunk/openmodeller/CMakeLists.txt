@@ -151,7 +151,7 @@ ENDIF (WIN32)
 #############################################################
 # process subdirs
 
-SUBDIRS(src examples ctest test)
+SUBDIRS(src examples ctest )
 
 #############################################################
 # install stuff
