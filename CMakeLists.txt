@@ -23,7 +23,7 @@ IF (OM_CTEST)
   #enable unit testing
   ENABLE_TESTING()
   #enable posting test results to dart
-  INCLUDE(CTest) 
+  #INCLUDE(CTest) 
 ENDIF (OM_CTEST)
 
 #############################################################
@@ -151,7 +151,7 @@ ENDIF (WIN32)
 #############################################################
 # process subdirs
 
-SUBDIRS(src examples ctest )
+SUBDIRS(src examples ctest)
 
 #############################################################
 # install stuff
