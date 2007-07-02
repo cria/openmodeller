@@ -1,0 +1,25 @@
+     Building Unit Tests for libopenmodeller
+    Tim Sutton and Albert Massayuki Kuniyoshi
+                   July 2007
+   -------------------------------------------
+
+Getting cxxtest:
+
+Download from http://cxxtest.sourceforge.net/ see below
+for installation notes.
+
+Compiling:
+
+Building with unit tests requires you to build with cmake.
+When configuring cmake using ccmake or cmakesetup, be sure
+to turn the OM_TESTS option on.
+You need to have the cxxtest headers on your system. For
+mac and linux users cmake will automatically find them if
+they exist under /usr/local/include/cxxtest or 
+/usr/include/cxxtest. Under windows cmake will look for 
+them under c:\msys\include
+
+Running:
+
+With OM_TESTS option on tests will compile automatically
+and you can run them using 'make test'
