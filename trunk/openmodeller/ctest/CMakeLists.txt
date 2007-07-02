@@ -1,23 +1,10 @@
-
 ########################################################
-# Files
-
-#SET (OM_HELLO_WORLD_SRCS
-#     om_hello_world.cpp
-#     )
-
-SET (OM_LOAD_ALGS_SRCS
-     om_load_algs.cpp
-     )
-SET (OM_TEST_LOG_SRCS
-     om_test_log.cpp
-     )
-SET (OM_TEST_AREASTATS_SRCS
-     om_test_areastats.cpp
-     )
-
-
+# Do not need to edit anything in this part - go
+# to bottom of this file and copy one of the blocks there
+# if you want to add a new test.
 ########################################################
+
+#######################################################
 # Build
 
 INCLUDE_DIRECTORIES(
@@ -36,37 +23,24 @@ IF (WIN32)
   ENDIF (MSVC)
 ENDIF (WIN32)
 
-#ADD_EXECUTABLE (om_hello_world ${OM_HELLO_WORLD_SRCS})
-
-ADD_EXECUTABLE (om_load_algs ${OM_LOAD_ALGS_SRCS})
-TARGET_LINK_LIBRARIES(om_load_algs openmodeller)
-
-ADD_EXECUTABLE (om_test_log ${OM_TEST_LOG_SRCS})
-TARGET_LINK_LIBRARIES(om_test_log openmodeller)
-
-ADD_EXECUTABLE (om_test_areastats ${OM_TEST_AREASTATS_SRCS})
-TARGET_LINK_LIBRARIES(om_test_areastats openmodeller)
+########################################################
+# Add you new tests in here...
 ########################################################
 
-#
-# Run the hello world test - with custom pass / fail conditions
-# The program is passed 'Hello' as a command line parameter
-#
-# this should pass
-#ADD_TEST(om_hello_world_pass ${EXECUTABLE_OUTPUT_PATH}/om_hello_world Hello)
-#SET_TESTS_PROPERTIES(om_hello_world_pass PROPERTIES FAIL_REGULAR_EXPRESSION "ERROR;FAIL;Test failed;Hellojjj")
-#SET_TESTS_PROPERTIES(om_hello_world_pass PROPERTIES PASS_REGULAR_EXPRESSION "Test passed;Hello")
-
-# this should fail
-#ADD_TEST(om_hello_world_fail ${EXECUTABLE_OUTPUT_PATH}/om_hello_world Hellojjj)
-#SET_TESTS_PROPERTIES(om_hello_world_fail PROPERTIES FAIL_REGULAR_EXPRESSION "ERROR;FAIL;Test failed;Hellojjj")
-#SET_TESTS_PROPERTIES(om_hello_world_fail PROPERTIES PASS_REGULAR_EXPRESSION "Test passed;Hello")
-
-#
-# Run the load algs test with default pass / fail conditions
-# where int main return is : 1 = fail and 0 = pass
-#
-
+#Load algs tests
+SET (OM_LOAD_ALGS_SRCS om_load_algs.cpp )
+ADD_EXECUTABLE (om_load_algs ${OM_LOAD_ALGS_SRCS})
+TARGET_LINK_LIBRARIES(om_load_algs openmodeller)
 ADD_TEST(om_load_algs ${EXECUTABLE_OUTPUT_PATH}/om_load_algs)
+
+#Log Tests
+SET (OM_TEST_LOG_SRCS  om_test_log.cpp )
+ADD_EXECUTABLE (om_test_log ${OM_TEST_LOG_SRCS})
+TARGET_LINK_LIBRARIES(om_test_log openmodeller)
 ADD_TEST(om_test_log ${EXECUTABLE_OUTPUT_PATH}/om_test_log)
+
+#Area Stats
+SET (OM_TEST_AREASTATS_SRCS om_test_areastats.cpp)
+ADD_EXECUTABLE (om_test_areastats ${OM_TEST_AREASTATS_SRCS})
+TARGET_LINK_LIBRARIES(om_test_areastats openmodeller)
 ADD_TEST(om_test_areastats ${EXECUTABLE_OUTPUT_PATH}/om_test_areastats)
