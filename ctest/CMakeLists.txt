@@ -44,3 +44,9 @@ SET (OM_TEST_AREASTATS_SRCS om_test_areastats.cpp)
 ADD_EXECUTABLE (om_test_areastats ${OM_TEST_AREASTATS_SRCS})
 TARGET_LINK_LIBRARIES(om_test_areastats openmodeller)
 ADD_TEST(om_test_areastats ${EXECUTABLE_OUTPUT_PATH}/om_test_areastats)
+
+#Sample Tests
+SET (OM_TEST_SAMPLE_SRCS om_test_sample.cpp)
+ADD_EXECUTABLE (om_test_sample ${OM_TEST_SAMPLE_SRCS})
+TARGET_LINK_LIBRARIES(om_test_sample openmodeller)
+ADD_TEST(om_test_sample ${EXECUTABLE_OUTPUT_PATH}/om_test_sample)
