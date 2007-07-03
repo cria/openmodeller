@@ -117,8 +117,18 @@ class FixtureSuite : public CxxTest :: TestSuite
 				}
 
 		void test8 (){
-				//Sample operator>> and operator<<
-
+				std::cout << std::endl;
+				std::cout << "Testing Sample operator>> and operator<<..." << std::endl;
+				*a = Sample(10);
+				for(unsigned int i=0;i<a->size();++i){
+				(*a)[i]=i;
+				}
+				std::cerr << "A= " << *a << std::endl;
+				std::stringstream ss( std::ios::in | std::ios::out );
+				ss << *a;
+				ss >> *b;
+				std::cerr << "B= " << *b << std::endl;
+				TS_ASSERT(*a==*b);
 				}
 
 		void test9 (){
