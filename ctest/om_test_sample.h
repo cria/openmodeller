@@ -132,8 +132,22 @@ class FixtureSuite : public CxxTest :: TestSuite
 				}
 
 		void test9 (){
-				//Sample operator>> and operator<< precision
+				std::cout << std::endl;
+				std::cout << "Testing Sample operator>> and operator<< precision..." << std::endl;
+				std::string testString="1.0 1.01 1.001 1.0001 1.00001 1.000001 1.0000001 1.00000001 1.000000001";
+				std::stringstream ss(testString, std::ios::in);
 
+				*b = Sample();
+				ss >> *b;
+				std::cerr << "B= " << *b << std::endl;
+
+				std::stringstream s2(std::ios::in | std::ios::out);
+				s2 << *b;
+
+				*c = Sample();
+				s2 >> *c;
+
+				TS_ASSERT(*b==*c);
 				}
 
 		void test10 (){
