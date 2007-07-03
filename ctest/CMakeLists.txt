@@ -53,8 +53,8 @@ TARGET_LINK_LIBRARIES(om_test_sample openmodeller)
 ADD_TEST(om_test_sample ${EXECUTABLE_OUTPUT_PATH}/om_test_sample)
 
 #ignorecase_traits Tests
-SET (OM_TEST_IGNORECASE_TRAITS_SRCS om_test_ignorecase_traits.cpp)
-ADD_EXECUTABLE (om_test_ignorecase_traits ${OM_TEST_IGNORECASE_TRAITS_SRCS})
-TARGET_LINK_LIBRARIES(om_test_ignorecase_traits openmodeller)
-ADD_TEST(om_test_ignorecase_traits ${EXECUTABLE_OUTPUT_PATH}/om_test_ignorecase_traits)
+SET (OM_TEST_ICSTRING_SRCS om_test_icstring.cpp)
+ADD_EXECUTABLE (om_test_icstring ${OM_TEST_ICSTRING_SRCS})
+TARGET_LINK_LIBRARIES(om_test_icstring openmodeller)
+ADD_TEST(om_test_icstring ${EXECUTABLE_OUTPUT_PATH}/om_test_icstring)
 
