@@ -115,7 +115,7 @@ class test_Sample : public CxxTest :: TestSuite
 				for(unsigned int i=0; i<a->size(); ++i){
 				TS_ASSERT((*a)[i]==i);}
 
-				//TS_ASSERT(d.equals(a));
+				//CHECK(d.equals(a));
 				TS_ASSERT(*d==*a);
 				TS_ASSERT(!(*d!=*a));
 
@@ -316,7 +316,6 @@ class test_Sample : public CxxTest :: TestSuite
 				}
 
 		void test18 (){
-				//Sample operator&=(Scalar)
 				std::cout << std::endl;
 				std::cout << "Testing Sample operator&=(Scalar)..." << std::endl;
 

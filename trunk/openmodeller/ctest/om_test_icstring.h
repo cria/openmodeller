@@ -1,7 +1,7 @@
 /**
  * Test class for icstring
  * 
- * @author Albert Massayuki Kuniyoshi
+ * @authors Ricardo Scachetti Pereira and Albert Massayuki Kuniyoshi
  * @date 2007-07-03
  * $Id: OpenModeller.cpp 3201 2007-06-18 21:08:16Z rdg $
  *
@@ -88,20 +88,10 @@ class test_icstring : public CxxTest :: TestSuite
 
 		void test6 (){
 				std::cout << std::endl;
-				std::cout << "Testing ..." << std::endl;
+				std::cout << "Testing Compare 6..." << std::endl;
 				*a = icstring("a");
 				*b = icstring("b");
 				TS_ASSERT(!(*a==*b));
-				}
-
-		void test7 (){
-				std::cout << std::endl;
-				std::cout << "Testing ..." << std::endl;				
-				}
-
-		void test8 (){
-				std::cout << std::endl;
-				std::cout << "Testing ..." << std::endl;
 				}
 
 	private:

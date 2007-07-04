@@ -57,16 +57,4 @@ public:
  void runTest() { suite_test_icstring.test6(); }
 } testDescription_test_icstring_test6;
 
-static class TestDescription_test_icstring_test7 : public CxxTest::RealTestDescription {
-public:
- TestDescription_test_icstring_test7() : CxxTest::RealTestDescription( Tests_test_icstring, suiteDescription_test_icstring, 97, "test7" ) {}
- void runTest() { suite_test_icstring.test7(); }
-} testDescription_test_icstring_test7;
-
-static class TestDescription_test_icstring_test8 : public CxxTest::RealTestDescription {
-public:
- TestDescription_test_icstring_test8() : CxxTest::RealTestDescription( Tests_test_icstring, suiteDescription_test_icstring, 102, "test8" ) {}
- void runTest() { suite_test_icstring.test8(); }
-} testDescription_test_icstring_test8;
-
 #include <cxxtest/Root.cpp>
