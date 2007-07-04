@@ -58,3 +58,9 @@ ADD_EXECUTABLE (om_test_icstring ${OM_TEST_ICSTRING_SRCS})
 TARGET_LINK_LIBRARIES(om_test_icstring openmodeller)
 ADD_TEST(om_test_icstring ${EXECUTABLE_OUTPUT_PATH}/om_test_icstring)
 
+#SampleExpr Tests
+SET (OM_TEST_SAMPLEEXPR_SRCS om_test_sampleexpr.cpp)
+ADD_EXECUTABLE (om_test_sampleexpr ${OM_TEST_SAMPLEEXPR_SRCS})
+TARGET_LINK_LIBRARIES(om_test_sampleexpr openmodeller)
+ADD_TEST(om_test_sampleexpr ${EXECUTABLE_OUTPUT_PATH}/om_test_sampleexpr)
+
