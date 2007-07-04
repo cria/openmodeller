@@ -83,6 +83,86 @@ class test_sampleexpr : public CxxTest :: TestSuite
 				TS_ASSERT_DELTA((*c)[i],std::sqrt((*a)[i]),1e-15);}
 				}
 
+		void test4 (){
+				std::cout << std::endl;
+				std::cout << "Testing SampleExpr Nested Unary Test 1 ..." << std::endl;
+				*c = - - *a;
+				for( unsigned int i=0; i<a->size(); ++i){
+				TS_ASSERT((*c)[i]==(*a)[i]);}
+				}
+
+		void test5 (){
+				std::cout << std::endl;
+				std::cout << "Testing SampleExpr Nested Unary Test 2 ..." << std::endl;
+				*c = sqr(sqrt(*a));
+				for( unsigned int i=0; i<a->size(); ++i){
+				TS_ASSERT_DELTA((*c)[i],std::sqrt((*a)[i])*std::sqrt((*a)[i]),1e-15);}
+				}
+
+		void test6 (){
+				std::cout << std::endl;
+				std::cout << "Testing SampleExpr Nested Unary Test 3 ..." << std::endl;
+				*c = sqrt(sqr(*a));
+				for( unsigned int i=0; i<a->size(); ++i){
+				TS_ASSERT_DELTA((*c)[i],std::sqrt((*a)[i]*(*a)[i]),1e-15);}
+				}
+
+		void test7 (){
+				std::cout << std::endl;
+				std::cout << "Testing SampleExpr Nested Unary Test 4 ..." << std::endl;
+				*c = sqr( - sqrt(*a) );
+				for( unsigned int i=0; i<a->size(); ++i){
+				TS_ASSERT_DELTA((*c)[i],std::sqrt((*a)[i])*std::sqrt((*a)[i]),1e-15);}
+				}
+
+		void test8 (){
+				std::cout << std::endl;
+				std::cout << "Testing SampleExpr Sample+Sample ..." << std::endl;
+				*c = *a + *b;
+				for( unsigned int i=0; i<a->size(); ++i){
+				TS_ASSERT((*c)[i]==(*a)[i]+(*b)[i]);}
+				}
+
+		void test9 (){
+				std::cout << std::endl;
+				std::cout << "Testing SampleExpr Sample-Sample ..." << std::endl;
+				*c = *a - *b;
+				for( unsigned int i=0; i<a->size(); ++i){
+				TS_ASSERT((*c)[i]==(*a)[i]-(*b)[i]);}
+				}
+
+		void test10 (){
+				std::cout << std::endl;
+				std::cout << "Testing SampleExpr Sample*Sample ..." << std::endl;
+				*c = (*a) * (*b);
+				for( unsigned int i=0; i<a->size(); ++i){
+				TS_ASSERT((*c)[i]==(*a)[i]*(*b)[i]);}
+				}
+
+		void test11 (){
+				std::cout << std::endl;
+				std::cout << "Testing SampleExpr Sample/Sample ..." << std::endl;
+				//*c = (*a)/(*b);
+				//for( unsigned int i=0; i<a->size(); ++i){
+				//TS_ASSERT((*c)[i]==((*a)[i]/(*b)[i]));}
+				}
+
+		void test12 (){
+				std::cout << std::endl;
+				std::cout << "Testing SampleExpr min(Sample,Sample) ..." << std::endl;
+				*c = min(*a,*b);
+				for( unsigned int i=0; i<a->size(); ++i){
+				TS_ASSERT((*c)[i]==std::min((*a)[i],(*b)[i]));}
+				}
+
+		void test13 (){
+				std::cout << std::endl;
+				std::cout << "Testing SampleExpr max(Sample,Sample) ..." << std::endl;
+				*c = max(*a,*b);
+				for( unsigned int i=0; i<a->size(); ++i){
+				TS_ASSERT((*c)[i]==std::max((*a)[i],(*b)[i]));}
+				}
+
 	private:
 				Sample *a;
 				Sample *b;
