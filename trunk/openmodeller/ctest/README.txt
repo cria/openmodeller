@@ -23,3 +23,16 @@ Running:
 
 With OM_TESTS option on tests will compile automatically
 and you can run them using 'make test'
+
+Writing tests:
+
+If you want to write your own tests for openModeller, take
+om_test_template.h as a template. When you finish it, run
+the following command:
+
+$./cxxtestgen.pl --error-printer -o om_test_yourtest.cpp om_test_yourtest.h
+
+
+
+
+
