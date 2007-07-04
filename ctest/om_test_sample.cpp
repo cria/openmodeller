@@ -131,31 +131,31 @@ public:
 
 static class TestDescription_test_Sample_test19 : public CxxTest::RealTestDescription {
 public:
- TestDescription_test_Sample_test19() : CxxTest::RealTestDescription( Tests_test_Sample, suiteDescription_test_Sample, 340, "test19" ) {}
+ TestDescription_test_Sample_test19() : CxxTest::RealTestDescription( Tests_test_Sample, suiteDescription_test_Sample, 339, "test19" ) {}
  void runTest() { suite_test_Sample.test19(); }
 } testDescription_test_Sample_test19;
 
 static class TestDescription_test_Sample_test20 : public CxxTest::RealTestDescription {
 public:
- TestDescription_test_Sample_test20() : CxxTest::RealTestDescription( Tests_test_Sample, suiteDescription_test_Sample, 359, "test20" ) {}
+ TestDescription_test_Sample_test20() : CxxTest::RealTestDescription( Tests_test_Sample, suiteDescription_test_Sample, 358, "test20" ) {}
  void runTest() { suite_test_Sample.test20(); }
 } testDescription_test_Sample_test20;
 
 static class TestDescription_test_Sample_test21 : public CxxTest::RealTestDescription {
 public:
- TestDescription_test_Sample_test21() : CxxTest::RealTestDescription( Tests_test_Sample, suiteDescription_test_Sample, 376, "test21" ) {}
+ TestDescription_test_Sample_test21() : CxxTest::RealTestDescription( Tests_test_Sample, suiteDescription_test_Sample, 375, "test21" ) {}
  void runTest() { suite_test_Sample.test21(); }
 } testDescription_test_Sample_test21;
 
 static class TestDescription_test_Sample_test22 : public CxxTest::RealTestDescription {
 public:
- TestDescription_test_Sample_test22() : CxxTest::RealTestDescription( Tests_test_Sample, suiteDescription_test_Sample, 393, "test22" ) {}
+ TestDescription_test_Sample_test22() : CxxTest::RealTestDescription( Tests_test_Sample, suiteDescription_test_Sample, 392, "test22" ) {}
  void runTest() { suite_test_Sample.test22(); }
 } testDescription_test_Sample_test22;
 
 static class TestDescription_test_Sample_test23 : public CxxTest::RealTestDescription {
 public:
- TestDescription_test_Sample_test23() : CxxTest::RealTestDescription( Tests_test_Sample, suiteDescription_test_Sample, 406, "test23" ) {}
+ TestDescription_test_Sample_test23() : CxxTest::RealTestDescription( Tests_test_Sample, suiteDescription_test_Sample, 405, "test23" ) {}
  void runTest() { suite_test_Sample.test23(); }
 } testDescription_test_Sample_test23;
 
