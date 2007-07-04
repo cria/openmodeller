@@ -16,7 +16,7 @@ SET (WITH_BINDINGS TRUE CACHE BOOL "Determines whether python bindings should be
 # set if the log level the build binaries should be set to Debug
 SET (OM_DEBUG_LOGLEVEL FALSE CACHE BOOL "Force log level to Debug - should leave this off for releases!")
 
-SET (OM_CTEST TRUE CACHE BOOL "Build unit tests")
+SET (OM_CTEST FALSE CACHE BOOL "Build unit tests")
 
 #############################################################
 IF (OM_CTEST)
