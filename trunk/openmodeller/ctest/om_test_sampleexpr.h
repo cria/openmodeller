@@ -142,9 +142,9 @@ class test_sampleexpr : public CxxTest :: TestSuite
 		void test11 (){
 				std::cout << std::endl;
 				std::cout << "Testing SampleExpr Sample/Sample ..." << std::endl;
-				//*c = (*a)/(*b);
-				//for( unsigned int i=0; i<a->size(); ++i){
-				//TS_ASSERT((*c)[i]==((*a)[i]/(*b)[i]));}
+				*c = (*a)/(*b);
+				for( unsigned int i=0; i<a->size(); ++i){
+				TS_ASSERT_DELTA((*c)[i],(*a)[i]/(*b)[i],1e-15);}
 				}
 
 		void test12 (){
@@ -195,11 +195,155 @@ class test_sampleexpr : public CxxTest :: TestSuite
 				TS_ASSERT_DELTA((*c)[i],(*a)[i]*(*a)[i]/(*b)[i],1e-10);}
 				}
 
+		void test18 (){
+				std::cout << std::endl;
+				std::cout << "Testing SampleExpr Nest Binary Test 5 ( min(sqr(a),b) ) ..." << std::endl;
+				*c = min(sqr(*a),*b);
+				for( unsigned int i=0; i<a->size(); ++i){
+				TS_ASSERT((*c)[i]==std::min((*a)[i]*(*a)[i],(*b)[i]));}
+				}
+
+		void test19 (){
+				std::cout << std::endl;
+				std::cout << "Testing SampleExpr Nest Binary Test 6 ( max(sqr(a),b) ) ..." << std::endl;
+				*c = max(sqr(*a),*b);
+				for( unsigned int i=0; i<a->size(); ++i){
+				TS_ASSERT((*c)[i]==std::max((*a)[i]*(*a)[i],(*b)[i]));}
+				}
+
+		void test20 (){
+				std::cout << std::endl;
+				std::cout << "Testing SampleExpr Nest Binary Test 7 ( a + -b) ..." << std::endl;
+				*c = *a + -*b;
+				for( unsigned int i=0; i<a->size(); ++i){
+				TS_ASSERT((*c)[i] == (*a)[i] + -(*b)[i]);}
+				}
+
+		void test21 (){
+				std::cout << std::endl;
+				std::cout << "Testing SampleExpr Nest Binary Test 8 ( a - sqrt(b)) ..." << std::endl;
+				*c = *a - sqrt(*b);
+				for( unsigned int i=0; i<a->size(); ++i){
+				TS_ASSERT_DELTA((*c)[i],(*a)[i]-std::sqrt((*b)[i]),1e-15);}
+				}
+
+		void test22 (){
+				std::cout << std::endl;
+				std::cout << "Testing SampleExpr Nest Binary Test 9 ( a * -b) ..." << std::endl;
+				*c = *a * - *b;
+				for( unsigned int i=0; i<a->size(); ++i){
+				TS_ASSERT((*c)[i]==-(*a)[i]*(*b)[i]);}
+				}
+
+		void test23 (){
+				std::cout << std::endl;
+				std::cout << "Testing SampleExpr Nest Binary Test 10 ( a / -b ) ..." << std::endl;
+				*c = *a/-*b;
+				for( unsigned int i=0; i<a->size(); ++i){
+				TS_ASSERT_DELTA((*c)[i],-(*a)[i]/(*b)[i],1e-15);}
+				}
+
+		void test24 (){
+				std::cout << std::endl;
+				std::cout << "Testing SampleExpr Nest Binary Test 11 ( min(a,sqr(b)) ) ..." << std::endl;
+				*c = min(*a,sqr(*b));
+				for( unsigned int i=0; i<a->size(); ++i){
+				TS_ASSERT((*c)[i]==std::min((*a)[i],(*b)[i]*(*b)[i]));}
+				}
+
+		void test25 (){
+				std::cout << std::endl;
+				std::cout << "Testing SampleExpr Nest Binary Test 12 ( max(a,sqr(b)) ) ..." << std::endl;
+				*c = max(*a,sqr(*b));
+				for( unsigned int i=0; i<a->size(); ++i){
+				TS_ASSERT((*c)[i]==std::max((*a)[i],(*b)[i]*(*b)[i]));}
+				}
+
+		void test26 (){
+				std::cout << std::endl;
+				std::cout << "Testing SampleExpr Nest Binary Test 13 ( -a + -b) ..." << std::endl;
+				*c = - *a + - *b;
+				for( unsigned int i=0; i<a->size(); ++i){
+				TS_ASSERT((*c)[i]== -((*a)[i]+(*b)[i]));}
+				}
+
+		void test27 (){
+				std::cout << std::endl;
+				std::cout << "Testing SampleExpr Nest Binary Test 14 ( -a - -b) ..." << std::endl;
+				*c = - *a - - *b;
+				for( unsigned int i=0; i<a->size(); ++i){
+				TS_ASSERT((*c)[i]== - (*a)[i]+(*b)[i]);}
+				}
+
+		void test28 (){
+				std::cout << std::endl;
+				std::cout << "Testing SampleExpr Nest Binary Test 15 ( sqr(a) * sqr(b)) ..." << std::endl;
+				*c = sqr(*a) * sqr(*b);
+				for( unsigned int i=0; i<a->size(); ++i){
+				TS_ASSERT((*c)[i]==(*a)[i]*(*a)[i]*(*b)[i]*(*b)[i]);}
+				}
+
+		void test29 (){
+				std::cout << std::endl;
+				std::cout << "Testing SampleExpr Nest Binary Test 16 ( sqr(a) / -b ) ..." << std::endl;
+				*c = sqr(*a)/-*b;
+				for( unsigned int i=0; i<a->size(); ++i){
+				TS_ASSERT_DELTA((*c)[i],(*a)[i]*(*a)[i]/-(*b)[i],1e-10);}
+				}
+
+		void test30 (){
+				std::cout << std::endl;
+				std::cout << "Testing SampleExpr Scalar Add (a+1) ..." << std::endl;
+				*c = *a + 1;
+				for( unsigned int i=0; i<a->size(); ++i){
+				TS_ASSERT((*c)[i] == (*a)[i]+1);}
+				}
+
+		void test31 (){
+				std::cout << std::endl;
+				std::cout << "Testing SampleExpr Scalar Add (a+2.0) ..." << std::endl;
+				*c = *a + 2.0;
+				for( unsigned int i=0; i<a->size(); ++i){
+				TS_ASSERT((*c)[i] == (*a)[i]+2.0);}
+				}
+
+		void test32 (){
+				std::cout << std::endl;
+				std::cout << "Testing SampleExpr Scalar Add (5+a+1) ..." << std::endl;
+				*c = 5 + *a + 1;
+				for( unsigned int i=0; i<a->size(); ++i){
+				TS_ASSERT((*c)[i] == (*a)[i] + 6);}
+				}
+
+		void test33 (){
+				std::cout << std::endl;
+				std::cout << "Testing SampleExpr Scalar Add (30.7+a-2.0) ..." << std::endl;
+				*c = 30.7 + *a - 2.0;
+				for( unsigned int i=0; i<a->size(); ++i){
+				TS_ASSERT_DELTA((*c)[i],(*a)[i]+28.7,1e-10);}
+				}
+
+		void test34 (){
+				std::cout << std::endl;
+				std::cout << "Testing SampleExpr Scalar Mult (a*3) ..." << std::endl;
+				*c = *a * 3;
+				for( unsigned int i=0; i<a->size(); ++i){
+				TS_ASSERT((*c)[i] == (*a)[i]*3);}
+				}
+
+		void test35 (){
+				std::cout << std::endl;
+				std::cout << "Testing SampleExpr Scalar Mult (6.0*a) ..." << std::endl;
+				*c = 6.0*(*a); 
+				for( unsigned int i=0; i<a->size(); ++i){
+				TS_ASSERT((*c)[i] == (*a)[i]*6.0);}
+				}
+
+
 	private:
 				Sample *a;
 				Sample *b;
 				Sample *c;
-				Sample *d;
 
 };
 
