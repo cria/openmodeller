@@ -99,4 +99,28 @@ public:
  void runTest() { suite_test_sampleexpr.test13(); }
 } testDescription_test_sampleexpr_test13;
 
+static class TestDescription_test_sampleexpr_test14 : public CxxTest::RealTestDescription {
+public:
+ TestDescription_test_sampleexpr_test14() : CxxTest::RealTestDescription( Tests_test_sampleexpr, suiteDescription_test_sampleexpr, 166, "test14" ) {}
+ void runTest() { suite_test_sampleexpr.test14(); }
+} testDescription_test_sampleexpr_test14;
+
+static class TestDescription_test_sampleexpr_test15 : public CxxTest::RealTestDescription {
+public:
+ TestDescription_test_sampleexpr_test15() : CxxTest::RealTestDescription( Tests_test_sampleexpr, suiteDescription_test_sampleexpr, 174, "test15" ) {}
+ void runTest() { suite_test_sampleexpr.test15(); }
+} testDescription_test_sampleexpr_test15;
+
+static class TestDescription_test_sampleexpr_test16 : public CxxTest::RealTestDescription {
+public:
+ TestDescription_test_sampleexpr_test16() : CxxTest::RealTestDescription( Tests_test_sampleexpr, suiteDescription_test_sampleexpr, 182, "test16" ) {}
+ void runTest() { suite_test_sampleexpr.test16(); }
+} testDescription_test_sampleexpr_test16;
+
+static class TestDescription_test_sampleexpr_test17 : public CxxTest::RealTestDescription {
+public:
+ TestDescription_test_sampleexpr_test17() : CxxTest::RealTestDescription( Tests_test_sampleexpr, suiteDescription_test_sampleexpr, 190, "test17" ) {}
+ void runTest() { suite_test_sampleexpr.test17(); }
+} testDescription_test_sampleexpr_test17;
+
 #include <cxxtest/Root.cpp>
