@@ -64,3 +64,9 @@ ADD_EXECUTABLE (om_test_sampleexpr ${OM_TEST_SAMPLEEXPR_SRCS})
 TARGET_LINK_LIBRARIES(om_test_sampleexpr openmodeller)
 ADD_TEST(om_test_sampleexpr ${EXECUTABLE_OUTPUT_PATH}/om_test_sampleexpr)
 
+#Random Tests
+SET (OM_TEST_RANDOM_SRCS om_test_random.cpp)
+ADD_EXECUTABLE (om_test_random ${OM_TEST_RANDOM_SRCS})
+TARGET_LINK_LIBRARIES(om_test_random openmodeller)
+ADD_TEST(om_test_random ${EXECUTABLE_OUTPUT_PATH}/om_test_random)
+
