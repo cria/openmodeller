@@ -152,8 +152,10 @@ ENDIF (WIN32)
 #############################################################
 # process subdirs
 
-SUBDIRS(src examples ctest)
-
+SUBDIRS(src examples)
+IF (OM_CTEST)
+  SUBDIRS(ctest)
+ENDIF (OM_CTEST)
 #############################################################
 # install stuff
 
