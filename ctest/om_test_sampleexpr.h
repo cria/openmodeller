@@ -163,6 +163,38 @@ class test_sampleexpr : public CxxTest :: TestSuite
 				TS_ASSERT((*c)[i]==std::max((*a)[i],(*b)[i]));}
 				}
 
+		void test14 (){
+				std::cout << std::endl;
+				std::cout << "Testing SampleExpr Nest Binary Test 1 (sqr(a) + b) ..." << std::endl;
+				*c = sqr(*a)+*b;
+				for( unsigned int i=0; i<a->size(); ++i){
+				TS_ASSERT((*c)[i]==(*a)[i]*(*a)[i]+(*b)[i]);}
+				}
+
+		void test15 (){
+				std::cout << std::endl;
+				std::cout << "Testing SampleExpr Nest Binary Test 2 ( -a - b)..." << std::endl;
+				*c = - *a - *b;
+				for( unsigned int i=0; i<a->size(); ++i){
+				TS_ASSERT((*c)[i]== - (*a)[i] - (*b)[i]);}
+				}
+
+		void test16 (){
+				std::cout << std::endl;
+				std::cout << "Testing SampleExpr Nest Binary Test 3 ( -a * b) ..." << std::endl;
+				*c = - (*a)*(*b);
+				for( unsigned int i=0; i<a->size(); ++i){
+				TS_ASSERT((*c)[i]== - (*a)[i]*(*b)[i]);}
+				}
+
+		void test17 (){
+				std::cout << std::endl;
+				std::cout << "Testing SampleExpr Nest Binary Test 4 ( sqr(a) / b ) ..." << std::endl;
+				*c = sqr(*a)/(*b);
+				for( unsigned int i=0; i<a->size(); ++i){
+				TS_ASSERT_DELTA((*c)[i],(*a)[i]*(*a)[i]/(*b)[i],1e-10);}
+				}
+
 	private:
 				Sample *a;
 				Sample *b;
