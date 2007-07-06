@@ -54,9 +54,18 @@ class test_Random : public CxxTest :: TestSuite
 
 		void test1 (){
 				std::cout << std::endl;
-				std::cout << "Testing get (double)..." << std::endl;
+				std::cout << "Testing get( double min, double max )..." << std::endl;
 				std::srand(0);
-				TS_ASSERT_EQUALS((101.55-1.55)*(*num)+1.55,a->get( 1.55 , 101.55 ));	
+				TS_ASSERT_EQUALS((101.55-1.55)*(*num)+1.55,a->get( 1.55 , 101.55 ));
+				TS_ASSERT(a->get(1.55,101.55)>=1.55&&a->get(1.55,101.55)<101.55);	
+				}
+
+		void test2 (){
+				std::cout << std::endl;
+				std::cout << "Testing get( double max )..." << std::endl;
+				std::srand(0);
+				TS_ASSERT_EQUALS(155.6432*(*num),a->get(155.6432));
+				TS_ASSERT(a->get(155.6432)>=0&&a->get(155.6432)<155.6432);
 				}
 
 	private:
