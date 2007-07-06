@@ -27,4 +27,10 @@ public:
  void runTest() { suite_test_Random.test1(); }
 } testDescription_test_Random_test1;
 
+static class TestDescription_test_Random_test2 : public CxxTest::RealTestDescription {
+public:
+ TestDescription_test_Random_test2() : CxxTest::RealTestDescription( Tests_test_Random, suiteDescription_test_Random, 63, "test2" ) {}
+ void runTest() { suite_test_Random.test2(); }
+} testDescription_test_Random_test2;
+
 #include <cxxtest/Root.cpp>
