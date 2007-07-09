@@ -28,6 +28,7 @@ escapeXml( const char *data, ostream &_stream )
       case '<': _stream << "&lt;"; break;
       case '>': _stream << "&gt;"; break;
       case '&': _stream << "&amp;"; break;
+      case '"': _stream << "&quot;"; break;
       default: _stream << *data; break;
     }
     data += 1;
