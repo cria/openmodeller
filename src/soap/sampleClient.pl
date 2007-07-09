@@ -364,12 +364,19 @@ EOM
 
 	                my $range_path = "$alg_parameters_path/[$j]/AcceptedRange";
 
-			my $min = (defined($response->dataof($range_path)->attr->{'Min'})) ? '['.$response->dataof($range_path)->attr->{'Min'}: '(oo';
-			my $max = (defined($response->dataof($range_path)->attr->{'Max'})) ? $response->dataof($range_path)->attr->{'Max'}.']': 'oo)';
-			my $domain = $min . ', ' . $max;
+			my $min = '(oo';
+			my $max = 'oo)';
 
-			$parameter{'Min'} = $response->dataof($range_path)->attr->{'Min'};
-			$parameter{'Max'} = $response->dataof($range_path)->attr->{'Max'};
+			if ( defined( $response->dataof( $range_path ) ) )
+			{
+			    $min = '['.$response->dataof($range_path)->attr->{'Min'} if defined( $response->dataof($range_path)->attr->{'Min'} );
+			    $max = $response->dataof($range_path)->attr->{'Max'}.']' if defined( $response->dataof($range_path)->attr->{'Max'} );
+
+			    $parameter{'Min'} = $response->dataof($range_path)->attr->{'Min'};
+			    $parameter{'Max'} = $response->dataof($range_path)->attr->{'Max'};
+			}
+
+			my $domain = $min . ', ' . $max;
 
 			$algorithm{parameters}{$parameter{'Id'}} = \%parameter;
 
