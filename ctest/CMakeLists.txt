@@ -70,3 +70,9 @@ ADD_EXECUTABLE (om_test_random ${OM_TEST_RANDOM_SRCS})
 TARGET_LINK_LIBRARIES(om_test_random openmodeller)
 ADD_TEST(om_test_random ${EXECUTABLE_OUTPUT_PATH}/om_test_random)
 
+#Exceptions Tests
+SET (OM_TEST_EXCEPTIONS_SRCS om_test_exceptions.cpp)
+ADD_EXECUTABLE (om_test_exceptions ${OM_TEST_EXCEPTIONS_SRCS})
+TARGET_LINK_LIBRARIES(om_test_exceptions openmodeller)
+ADD_TEST(om_test_exceptions ${EXECUTABLE_OUTPUT_PATH}/om_test_exceptions)
+
