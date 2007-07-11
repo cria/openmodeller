@@ -19,11 +19,11 @@ int main() {
 static test_Random suite_test_Random;
 
 static CxxTest::List Tests_test_Random = { 0, 0 };
-CxxTest::StaticSuiteDescription suiteDescription_test_Random( "om_test_exceptions.h", 40, "test_Random", suite_test_Random, Tests_test_Random );
+CxxTest::StaticSuiteDescription suiteDescription_test_Random( "om_test_exceptions.h", 42, "test_Random", suite_test_Random, Tests_test_Random );
 
 static class TestDescription_test_Random_test1 : public CxxTest::RealTestDescription {
 public:
- TestDescription_test_Random_test1() : CxxTest::RealTestDescription( Tests_test_Random, suiteDescription_test_Random, 55, "test1" ) {}
+ TestDescription_test_Random_test1() : CxxTest::RealTestDescription( Tests_test_Random, suiteDescription_test_Random, 54, "test1" ) {}
  void runTest() { suite_test_Random.test1(); }
 } testDescription_test_Random_test1;
 
