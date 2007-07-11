@@ -1,8 +1,8 @@
 /**
- * Test class for Excepetions
+ * Test class for Exceptions
  * 
  * @author Albert Massayuki Kuniyoshi
- * @date 2007-07-06
+ * @date 2007-07-10
  * $Id: OpenModeller.cpp 3201 2007-06-18 21:08:16Z rdg $
  *
  * LICENSE INFORMATION
@@ -34,6 +34,8 @@
 
 #include "cxxtest/TestSuite.h"
 #include "Exceptions.hh"
+// Microsoft VC8 requires <string> before <stdexcept> in order for
+// this code to compile.
 #include <string>
 #include <stdexcept>
 
@@ -42,25 +44,21 @@ class test_Random : public CxxTest :: TestSuite
 
 	public:
 		void setUp (){
-				b = new std::string;
-				*b = "Testando...";
-				a = new OmException(*b);
+
 				}
 
 		void tearDown (){
-				delete a;
-				delete b;
+
 				}
 
 		void test1 (){
 				std::cout << std::endl;
 				std::cout << "Testing OmException( const std::string& msg ) ..." << std::endl;
-				TS_ASSERT_EQUALS(1,1);	
+				TS_ASSERT_EQUALS(0,0);
 				}
 
 	private:
-			OmException *a;
-			std::string *b;
+
 
 };
 
