@@ -279,6 +279,8 @@ RasterGdal::open( char mode )
   f_hdr.ymax = (Scalar) cf[3];
   f_hdr.ymin = (Scalar) (cf[3] + xd * cf[4] + yd * cf[5]);
 
+  Log::instance()->debug( "Raster boundaries: xmin=%f, xmax=%f, ymin=%f, ymax=%f \n", f_hdr.xmin, f_hdr.xmax, f_hdr.ymin, f_hdr.ymax );
+
   f_hdr.calculateCell();
 
   for( int i=0; i<6; ++i ) 

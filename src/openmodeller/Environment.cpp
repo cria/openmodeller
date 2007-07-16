@@ -577,7 +577,7 @@ EnvironmentImpl::calcRegion()
   }
 
   if ( (_xmin >= _xmax)  || ( _ymin >= _ymax ) ) {
-    Log::instance()->warn( "Maps intersection is empty!!!\n" );
+    Log::instance()->warn( "Maps intersection is empty (boundaries: xmin=%f, xmax=%f, ymin=%f, ymax=%f)\n", _xmin, _xmax, _ymin, _ymax );
   }
 
 }
