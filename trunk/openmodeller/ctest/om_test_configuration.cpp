@@ -5,6 +5,7 @@
 #endif
 
 #define _CXXTEST_HAVE_STD
+#define _CXXTEST_HAVE_EH
 #include <cxxtest/TestListener.h>
 #include <cxxtest/TestTracker.h>
 #include <cxxtest/TestRunner.h>
@@ -23,20 +24,44 @@ CxxTest::StaticSuiteDescription suiteDescription_test_Configuration( "om_test_co
 
 static class TestDescription_test_Configuration_test1 : public CxxTest::RealTestDescription {
 public:
- TestDescription_test_Configuration_test1() : CxxTest::RealTestDescription( Tests_test_Configuration, suiteDescription_test_Configuration, 56, "test1" ) {}
+ TestDescription_test_Configuration_test1() : CxxTest::RealTestDescription( Tests_test_Configuration, suiteDescription_test_Configuration, 61, "test1" ) {}
  void runTest() { suite_test_Configuration.test1(); }
 } testDescription_test_Configuration_test1;
 
 static class TestDescription_test_Configuration_test2 : public CxxTest::RealTestDescription {
 public:
- TestDescription_test_Configuration_test2() : CxxTest::RealTestDescription( Tests_test_Configuration, suiteDescription_test_Configuration, 67, "test2" ) {}
+ TestDescription_test_Configuration_test2() : CxxTest::RealTestDescription( Tests_test_Configuration, suiteDescription_test_Configuration, 72, "test2" ) {}
  void runTest() { suite_test_Configuration.test2(); }
 } testDescription_test_Configuration_test2;
 
 static class TestDescription_test_Configuration_test3 : public CxxTest::RealTestDescription {
 public:
- TestDescription_test_Configuration_test3() : CxxTest::RealTestDescription( Tests_test_Configuration, suiteDescription_test_Configuration, 75, "test3" ) {}
+ TestDescription_test_Configuration_test3() : CxxTest::RealTestDescription( Tests_test_Configuration, suiteDescription_test_Configuration, 80, "test3" ) {}
  void runTest() { suite_test_Configuration.test3(); }
 } testDescription_test_Configuration_test3;
+
+static class TestDescription_test_Configuration_test4 : public CxxTest::RealTestDescription {
+public:
+ TestDescription_test_Configuration_test4() : CxxTest::RealTestDescription( Tests_test_Configuration, suiteDescription_test_Configuration, 88, "test4" ) {}
+ void runTest() { suite_test_Configuration.test4(); }
+} testDescription_test_Configuration_test4;
+
+static class TestDescription_test_Configuration_test5 : public CxxTest::RealTestDescription {
+public:
+ TestDescription_test_Configuration_test5() : CxxTest::RealTestDescription( Tests_test_Configuration, suiteDescription_test_Configuration, 97, "test5" ) {}
+ void runTest() { suite_test_Configuration.test5(); }
+} testDescription_test_Configuration_test5;
+
+static class TestDescription_test_Configuration_test6 : public CxxTest::RealTestDescription {
+public:
+ TestDescription_test_Configuration_test6() : CxxTest::RealTestDescription( Tests_test_Configuration, suiteDescription_test_Configuration, 104, "test6" ) {}
+ void runTest() { suite_test_Configuration.test6(); }
+} testDescription_test_Configuration_test6;
+
+static class TestDescription_test_Configuration_test7 : public CxxTest::RealTestDescription {
+public:
+ TestDescription_test_Configuration_test7() : CxxTest::RealTestDescription( Tests_test_Configuration, suiteDescription_test_Configuration, 120, "test7" ) {}
+ void runTest() { suite_test_Configuration.test7(); }
+} testDescription_test_Configuration_test7;
 
 #include <cxxtest/Root.cpp>
