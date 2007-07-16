@@ -1,8 +1,8 @@
 /**
- * Test class for Exceptions
+ * Test class for Configuration
  * 
  * @author Albert Massayuki Kuniyoshi
- * @date 2007-07-10
+ * @date 2007-07-11
  * $Id: OpenModeller.cpp 3201 2007-06-18 21:08:16Z rdg $
  *
  * LICENSE INFORMATION
@@ -29,22 +29,18 @@
 * \brief A short description of this test goes here
 */
 
-#ifndef TEST_EXCEPTIONS_HH
-#define TEST_EXCEPTIONS_HH
+#ifndef TEST_CONFIGURATION_HH
+#define TEST_CONFIGURATION_HH
 
 #include "cxxtest/TestSuite.h"
-#include "Exceptions.hh"
-// Microsoft VC8 requires <string> before <stdexcept> in order for
-// this code to compile.
+#include "Configuration.hh"
 #include <string>
-#include <stdexcept>
 
-class test_Exceptions : public CxxTest :: TestSuite 
+class test_Configuration : public CxxTest :: TestSuite 
 {
-
 	public:
 		void setUp (){
-
+				a = new ConfigurationImpl();
 				}
 
 		void tearDown (){
@@ -53,12 +49,12 @@ class test_Exceptions : public CxxTest :: TestSuite
 
 		void test1 (){
 				std::cout << std::endl;
-				std::cout << "Testing OmException( const std::string& msg ) ..." << std::endl;
-				TS_ASSERT_EQUALS(0,0);
+				std::cout << "Testing Default Constructor..." << std::endl;
+				TS_ASSERT(a->getName().empty());
+				TS_ASSERT(a->getValue().empty());
 				}
-
 	private:
-
+			ConfigurationImpl *a;
 
 };
 
