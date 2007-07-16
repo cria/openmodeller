@@ -76,3 +76,10 @@ ADD_EXECUTABLE (om_test_exceptions ${OM_TEST_EXCEPTIONS_SRCS})
 TARGET_LINK_LIBRARIES(om_test_exceptions openmodeller)
 ADD_TEST(om_test_exceptions ${EXECUTABLE_OUTPUT_PATH}/om_test_exceptions)
 
+#Configuration Tests
+SET (OM_TEST_CONFIGURATION_SRCS om_test_configuration.cpp)
+ADD_EXECUTABLE (om_test_configuration ${OM_TEST_CONFIGURATION_SRCS})
+TARGET_LINK_LIBRARIES(om_test_configuration openmodeller)
+ADD_TEST(om_test_configuration ${EXECUTABLE_OUTPUT_PATH}/om_test_configuration)
+
+
