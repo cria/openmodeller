@@ -9,6 +9,10 @@ ticket_repository=$1
 # Second parameter is the map repository directory
 map_repository=$2
 
+# Third parameter is sleep interval so we can be running several
+# schedulers at different intervals
+sleep $3
+
 # model requests
 for req in `find $ticket_repository/model_req.* -type f`; do
 ticket="${req##*.}"
