@@ -96,9 +96,30 @@ USE INSTRUCTIONS:
   # Edit file
   vim /var/www/config/server.conf
 
-- Add a cron job to run scheduler.sh every minute (or more frequently)
-  passing as parameters to the script the ticket directory and the 
-  distribution map directory.
+- Add a cron job to run scheduler.sh every minute passing as 
+  parameters:
+
+  1- The ticket directory.
+  2- The distribution map directory.
+  3- An optional number of seconds for the script to sleep.
+  (this way it is possible to include many cron jobs with 
+  different sleep intervals which in practice will reduce the 
+  limit of one minute for cron jobs).
+
+  So in the end you could have something like this in crontab, which
+  will make the service react to any new modelling tasks every 10 seconds:
+  0-59/1 * * * * /usr/local/bin/scheduler.sh /tmp/om/tickets /tmp/om/models
+  0-59/1 * * * * /usr/local/bin/scheduler.sh /tmp/om/tickets /tmp/om/models 10
+  0-59/1 * * * * /usr/local/bin/scheduler.sh /tmp/om/tickets /tmp/om/models 20
+  0-59/1 * * * * /usr/local/bin/scheduler.sh /tmp/om/tickets /tmp/om/models 30
+  0-59/1 * * * * /usr/local/bin/scheduler.sh /tmp/om/tickets /tmp/om/models 40
+  0-59/1 * * * * /usr/local/bin/scheduler.sh /tmp/om/tickets /tmp/om/models 50
+
+  IMPORTANT: if you look at scheduler.sh you will notice that 
+  it makes use of om_create and om_project without specifying 
+  their paths. So you need to be sure that these binaries are 
+  on the path of the user who will run crontab, or you need to 
+  edit scheduler.sh and hard-code the paths there.
 
 - Run the client to test your server (you'll need Perl and the 
   SOAP::Lite module):
