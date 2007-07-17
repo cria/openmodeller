@@ -44,6 +44,7 @@ class test_Configuration : public CxxTest :: TestSuite
 	public:
 		void setUp (){
 				A = new ConfigurationImpl();
+				B = new ConfigurationImpl("name");
 				subs = new Configuration::subsection_list;
 				attrs = new Configuration::attribute_list;
 				a = new std::string;
@@ -60,7 +61,7 @@ class test_Configuration : public CxxTest :: TestSuite
 
 		void test1 (){
 				std::cout << std::endl;
-				std::cout << "Testing Default Constructor..." << std::endl;
+				std::cout << "Testing ConfigurationImpl() ..." << std::endl;
 				TS_ASSERT(A->getName().empty());
 				TS_ASSERT(A->getValue().empty());
 				*subs = A->getAllSubsections();
@@ -71,37 +72,46 @@ class test_Configuration : public CxxTest :: TestSuite
 
 		void test2 (){
 				std::cout << std::endl;
-				std::cout << "Testing SetName..." << std::endl;
-				*a = "openModeller";
-				A->setName(*a);
-				TS_ASSERT(A->getName() == *a);
+				std::cout << "Testing ConfigurationImpl( char const * name ) ..." << std::endl;
+				TS_ASSERT(B->getName()=="name");
+				TS_ASSERT(B->getValue().empty());
+				*subs = B->getAllSubsections();
+				TS_ASSERT(subs->empty());
+				*attrs = B->getAllAttributes();
+				TS_ASSERT(attrs->empty());
 				}
 
 		void test3 (){
 				std::cout << std::endl;
-				std::cout << "Testing SetValue with no whitespace..." << std::endl;
-				*a = "openModeller";
-				A->setValue(*a);
-				TS_ASSERT(A->getValue() == *a);
+				std::cout << "Testing SetName..." << std::endl;
+				A->setName(std::string("name"));
+				TS_ASSERT(A->getName()==std::string("name"));
 				}
 
 		void test4 (){
 				std::cout << std::endl;
-				std::cout << "Testing SetValue with whitespace..." << std::endl;
-				*a = "openModeller";
-				*b = " \t" + *a + "\n\r   \t";
-				A->setValue(*b);
-				TS_ASSERT(A->getValue() == *a);
+				std::cout << "Testing SetValue with no whitespace..." << std::endl;
+				A->setValue(std::string("value"));
+				TS_ASSERT(A->getValue() == std::string("value"));
 				}
 
 		void test5 (){
 				std::cout << std::endl;
-				std::cout << "Testing GetAttribute with default value..." << std::endl;
+				std::cout << "Testing SetValue with whitespace..." << std::endl;
+				*a = "value";
+				*b = " \t" + *a + "\n\r   \t";
+				A->setValue(*b);
+				TS_ASSERT(A->getValue() == *a);
+				}
+//--------------------------------------------------------------------------------------------------------------------------------------------------------//
+		void test6 (){
+				std::cout << std::endl;
+				std::cout << "Testing GetAttribute that have to return defaultvalue..." << std::endl;
 				*a = "defaultvalue";
 				TS_ASSERT(A->getAttribute("BadAttr",*a) == *a);
 				}
 
-		void test6 (){
+		void test7 (){
 				std::cout << std::endl;
 				std::cout << "Testing GetAttribute throw if not found (empty attr list)..." << std::endl;
 				*a = "BadAttr";
@@ -117,7 +127,7 @@ class test_Configuration : public CxxTest :: TestSuite
 				}
 				}
 
-		void test7 (){
+		void test8 (){
 				std::cout << std::endl;
 				std::cout << "Testing AddAttribute string..." << std::endl;
 				*a = "String Value";
@@ -125,8 +135,27 @@ class test_Configuration : public CxxTest :: TestSuite
 				TS_ASSERT(A->getAttribute("StringAttr") == *a);
 				}
 
+		void test9 (){
+				std::cout << std::endl;
+				std::cout << "Testing GetAttribute throw if not found (1 attrin list)..." << std::endl;
+				*a = "String Value";
+				A->addNameValue("StringAttr",*a);
+				*a = "BadAttr";
+				try{
+					*b = A->getAttribute(*a);
+					TS_FAIL("No Exception Thrown");
+				}
+				catch(AttributeNotFound& e){
+				TS_ASSERT(*a == e.getName());
+				}
+				catch(...){
+				TS_FAIL("Incorrect Exception Thrown");
+				}
+				}
+
 		private:
 			ConfigurationImpl *A;
+			ConfigurationImpl *B;
 			Configuration::subsection_list *subs;
 			Configuration::attribute_list *attrs;
 			std::string *a;
