@@ -82,4 +82,10 @@ public:
  void runTest() { suite_test_Configuration.test10(); }
 } testDescription_test_Configuration_test10;
 
+static class TestDescription_test_Configuration_test11 : public CxxTest::RealTestDescription {
+public:
+ TestDescription_test_Configuration_test11() : CxxTest::RealTestDescription( Tests_test_Configuration, suiteDescription_test_Configuration, 169, "test11" ) {}
+ void runTest() { suite_test_Configuration.test11(); }
+} testDescription_test_Configuration_test11;
+
 #include <cxxtest/Root.cpp>
