@@ -49,6 +49,8 @@ class test_Configuration : public CxxTest :: TestSuite
 				attrs = new Configuration::attribute_list;
 				a = new std::string;
 				b = new std::string;
+				c = new int;
+				d = new int;
 				}
 
 		void tearDown (){
@@ -57,6 +59,8 @@ class test_Configuration : public CxxTest :: TestSuite
 				delete attrs;
 				delete a;
 				delete b;
+				delete c;
+				delete d;
 				}
 
 		void test1 (){
@@ -153,6 +157,15 @@ class test_Configuration : public CxxTest :: TestSuite
 				}
 				}
 
+		void test10 (){
+				std::cout << std::endl;
+				std::cout << "Testing AddAttribute int..." << std::endl;
+				*c = 42;
+				A->addNameValue("IntAttr",*c);
+				*d = A->getAttributeAsInt("IntAttr" , 0);
+				TS_ASSERT(*d == *c);
+				}
+
 		private:
 			ConfigurationImpl *A;
 			ConfigurationImpl *B;
@@ -160,6 +173,8 @@ class test_Configuration : public CxxTest :: TestSuite
 			Configuration::attribute_list *attrs;
 			std::string *a;
 			std::string *b;
+			int *c;
+			int *d;
 };
 
 #endif
