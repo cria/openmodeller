@@ -51,6 +51,9 @@ class test_Configuration : public CxxTest :: TestSuite
 				b = new std::string;
 				c = new int;
 				d = new int;
+				e = new double;
+				f = new double;
+				g = new Sample(5);
 				}
 
 		void tearDown (){
@@ -61,6 +64,9 @@ class test_Configuration : public CxxTest :: TestSuite
 				delete b;
 				delete c;
 				delete d;
+				delete e;
+				delete f;
+				delete g;
 				}
 
 		void test1 (){
@@ -107,7 +113,7 @@ class test_Configuration : public CxxTest :: TestSuite
 				A->setValue(*b);
 				TS_ASSERT(A->getValue() == *a);
 				}
-//--------------------------------------------------------------------------------------------------------------------------------------------------------//
+
 		void test6 (){
 				std::cout << std::endl;
 				std::cout << "Testing GetAttribute that have to return defaultvalue..." << std::endl;
@@ -165,7 +171,7 @@ class test_Configuration : public CxxTest :: TestSuite
 				*d = A->getAttributeAsInt("IntAttr" , 0);
 				TS_ASSERT(*d == *c);
 				}
-//Test completely modified from test_configuration.cpp
+//Test11 completely modified from test_configuration.cpp
 		void test11 (){
 				std::cout << std::endl;
 				std::cout << "Testing GetAttribute throw if not found (2 attrin list)..." << std::endl;
@@ -181,6 +187,25 @@ class test_Configuration : public CxxTest :: TestSuite
 				}
 				}
 
+		void test12 (){
+				std::cout << std::endl;
+				std::cout << "Testing AddAttribute double..." << std::endl;
+				*e = 3.1415;
+				A->addNameValue("DoubleAttr",*e);
+				*f = A->getAttributeAsDouble("DoubleAttr" , -1.0);
+				TS_ASSERT(*e == *f);
+				}
+
+		void test13 (){
+				std::cout << std::endl;
+				std::cout << "Testing AddAttribute Sample..." << std::endl;
+				for(int i=0; i<g->size(); i++){
+				(*g)[i] = -2 +i;
+				}
+				A->addNameValue("SampleAttr",*g);
+				TS_ASSERT(*g == A->getAttributeAsSample("SampleAttr"));
+				}
+
 		private:
 			ConfigurationImpl *A;
 			ConfigurationImpl *B;
@@ -190,6 +215,9 @@ class test_Configuration : public CxxTest :: TestSuite
 			std::string *b;
 			int *c;
 			int *d;
+			double *e;
+			double *f;
+			Sample *g;
 };
 
 #endif
