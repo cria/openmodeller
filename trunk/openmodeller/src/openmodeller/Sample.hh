@@ -85,6 +85,9 @@ public:
   // define an equality check
   bool equals( const Sample& ) const;
 
+  // dump values
+  void dump() const;
+
   // define some mutating operators for convience
   
   // pointwise addition

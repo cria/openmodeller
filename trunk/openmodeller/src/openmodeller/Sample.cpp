@@ -204,6 +204,20 @@ Sample::equals( const Sample& rhs ) const
   return true;
 }
 
+void
+Sample::dump() const
+{
+  cout << "[";
+  Scalar *vl = value_;
+  size_t count = size_;
+  for( size_t i = 0; i<count; ++i ) {
+    cout << *vl++;
+    if ( i < count-1 )
+      cout << ", ";
+  }
+  cout << "]";
+}
+
 Sample&
 Sample::operator+=( const Sample& rhs )
 {
