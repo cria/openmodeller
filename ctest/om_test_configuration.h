@@ -165,6 +165,21 @@ class test_Configuration : public CxxTest :: TestSuite
 				*d = A->getAttributeAsInt("IntAttr" , 0);
 				TS_ASSERT(*d == *c);
 				}
+//Test completely modified from test_configuration.cpp
+		void test11 (){
+				std::cout << std::endl;
+				std::cout << "Testing GetAttribute throw if not found (2 attrin list)..." << std::endl;
+				*a = "BadAttr";
+				try{
+					throw A->getAttribute(*a,"Default Value");
+				}
+				catch(std::string & e){
+				TS_ASSERT("Default Value" == e);
+				}
+				catch(...){
+				TS_FAIL("Incorrect Exception Thrown");
+				}
+				}
 
 		private:
 			ConfigurationImpl *A;
