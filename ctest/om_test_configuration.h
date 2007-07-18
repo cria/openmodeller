@@ -45,6 +45,7 @@ class test_Configuration : public CxxTest :: TestSuite
 		void setUp (){
 				A = new ConfigurationImpl();
 				B = new ConfigurationImpl("name");
+				C = new ConfigurationPtr();
 				subs = new Configuration::subsection_list;
 				attrs = new Configuration::attribute_list;
 				a = new std::string;
@@ -58,6 +59,7 @@ class test_Configuration : public CxxTest :: TestSuite
 
 		void tearDown (){
 				//There is no call for ConfigurationImpl's destructor because it is private.
+				delete C;				
 				delete subs;
 				delete attrs;
 				delete a;
@@ -94,21 +96,21 @@ class test_Configuration : public CxxTest :: TestSuite
 		void test3 (){
 				std::cout << std::endl;
 				std::cout << "Testing SetName..." << std::endl;
-				A->setName(std::string("name"));
-				TS_ASSERT(A->getName()==std::string("name"));
+				A->setName(std::string("Freddy_the_Freeloader"));
+				TS_ASSERT(A->getName()==std::string("Freddy_the_Freeloader"));
 				}
 
 		void test4 (){
 				std::cout << std::endl;
 				std::cout << "Testing SetValue with no whitespace..." << std::endl;
-				A->setValue(std::string("value"));
-				TS_ASSERT(A->getValue() == std::string("value"));
+				A->setValue(std::string("The Value"));
+				TS_ASSERT(A->getValue() == std::string("The Value"));
 				}
 
 		void test5 (){
 				std::cout << std::endl;
 				std::cout << "Testing SetValue with whitespace..." << std::endl;
-				*a = "value";
+				*a = "The Value";
 				*b = " \t" + *a + "\n\r   \t";
 				A->setValue(*b);
 				TS_ASSERT(A->getValue() == *a);
@@ -199,16 +201,98 @@ class test_Configuration : public CxxTest :: TestSuite
 		void test13 (){
 				std::cout << std::endl;
 				std::cout << "Testing AddAttribute Sample..." << std::endl;
-				for(int i=0; i<g->size(); i++){
+				for(unsigned i=0; i<g->size(); i++){
 				(*g)[i] = -2 +i;
 				}
 				A->addNameValue("SampleAttr",*g);
 				TS_ASSERT(*g == A->getAttributeAsSample("SampleAttr"));
 				}
 
+		void test14 (){
+				std::cout << std::endl;
+				std::cout << "Testing Simple Xml Serialization check..." << std::endl;
+				//Still under development
+				/*A->setName(std::string("Freddy_the_Freeloader"));
+				A->setValue(std::string("The Value"));
+				*a = "The Value";
+				*b = " \t" + *a + "\n\r   \t";
+				A->setValue(*b);
+				*a = "String Value";
+				A->addNameValue("StringAttr",*a);
+				*c = 42;
+				A->addNameValue("IntAttr",*c);
+				*e = 3.1415;
+				A->addNameValue("DoubleAttr",*e);
+				for(unsigned i=0; i<g->size(); i++){
+									(*g)[i] = -2 +i;
+									}
+				A->addNameValue("SampleAttr",*g);
+
+				std::stringstream sscheck(std::ios::out);
+				Configuration::writeXml(A,sscheck);
+				*a = "<Freddy_the_Freeloader\n StringAttr='String Value'\n IntAttr='42'\n DoubleAttr='3.1415000000000002'\n SampleAttr='-2 -1 0 1 2'\n>\nThe Value\n</Freddy_the_Freel
+oader>\n";
+				std::cout << sscheck.str();
+				TS_ASSERT(*a == sscheck.str());
+				}*/
+				}
+
+		void test15 (){
+				std::cout << std::endl;
+				std::cout << "Testing getSubsection throw if not found (empty subsection list)..." << std::endl;
+				*a = "NoSubsection";
+				try {
+					*C = A->getSubsection(*a);
+					TS_FAIL("No Exception Thrown");
+				}
+				catch(SubsectionNotFound& e){
+				TS_ASSERT(*a == e.getName());				
+				}
+				catch(...){
+				TS_FAIL("Incorrect Exception Thrown");
+				}
+				}
+
+		void test16 (){
+				/*
+				std::cout << std::endl;
+				std::cout << "Testing AddAttribute Sample..." << std::endl;
+				for(unsigned i=0; i<g->size(); i++){
+				(*g)[i] = -2 +i;
+				}
+				A->addNameValue("SampleAttr",*g);
+				TS_ASSERT(*g == A->getAttributeAsSample("SampleAttr"));
+				*/				
+				}
+
+		void test17 (){
+				/*
+				std::cout << std::endl;
+				std::cout << "Testing AddAttribute Sample..." << std::endl;
+				for(unsigned i=0; i<g->size(); i++){
+				(*g)[i] = -2 +i;
+				}
+				A->addNameValue("SampleAttr",*g);
+				TS_ASSERT(*g == A->getAttributeAsSample("SampleAttr"));
+				*/				
+				}
+
+		void test18 (){
+				/*
+				std::cout << std::endl;
+				std::cout << "Testing AddAttribute Sample..." << std::endl;
+				for(unsigned i=0; i<g->size(); i++){
+				(*g)[i] = -2 +i;
+				}
+				A->addNameValue("SampleAttr",*g);
+				TS_ASSERT(*g == A->getAttributeAsSample("SampleAttr"));
+				*/
+				}
+
 		private:
 			ConfigurationImpl *A;
 			ConfigurationImpl *B;
+			ConfigurationPtr *C;
 			Configuration::subsection_list *subs;
 			Configuration::attribute_list *attrs;
 			std::string *a;
