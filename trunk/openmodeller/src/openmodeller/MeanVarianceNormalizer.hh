@@ -1,14 +1,12 @@
 /**
- * Declaration of Normalizable Interface
+ * Declaration of MeanVarianceNormalizer class
  * 
- * @file Normalizable.hh
- * @author Ricardo Scachetti Pereira
- * @date 2005-05-06
+ * @author Renato De Giovanni
  * $Id$
  *
  * LICENSE INFORMATION
  * 
- * Copyright(c) 2003 by CRIA -
+ * Copyright(c) 2007 by CRIA -
  * Centro de Referencia em Informacao Ambiental
  *
  * http://www.cria.org.br
@@ -26,22 +24,32 @@
  * http://www.gnu.org/copyleft/gpl.html
  */
 
+#ifndef _MEANVARIANCENORMALIZER_HH
+#define _MEANVARIANCENORMALIZER_HH
 
-#ifndef _NORMALIZABLE_HH
-#define _NORMALIZABLE_HH
-
-#include <openmodeller/Sample.hh>
 #include <openmodeller/Normalizer.hh>
 
-class Normalizable {
+class MeanVarianceNormalizer : public Normalizer {
 
 public:
 
-  virtual ~Normalizable(){};
+  // Used only during deserialization
+  MeanVarianceNormalizer();
 
-  virtual void getMinMax( Sample * min, Sample * max ) const = 0;
+  ~MeanVarianceNormalizer();
 
-  virtual void normalize( Normalizer * normalizerPtr ) = 0;
+  void computeNormalization( const ReferenceCountedPointer<const SamplerImpl>& samplerPtr );
+
+  void normalize( Sample * samplePtr );
+
+  ConfigurationPtr getConfiguration() const;
+  
+  void setConfiguration( const ConstConfigurationPtr & );
+
+private:
+  
+  Sample _mean;
+  Sample _stddev;
 
 };
 

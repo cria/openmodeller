@@ -4,13 +4,14 @@
 #define _SCALEDMODEL_HH
 
 #include <Model.hh>
+#include <openmodeller/Normalizer.hh>
 
 class ScaledModelImpl : public ModelImpl
 {
   
 public:
   
-  ScaledModelImpl( bool has_params, const Sample& offsets, const Sample& scales );
+  ScaledModelImpl( Normalizer * normalizerPtr );
   
   virtual ~ScaledModelImpl();
   
@@ -30,9 +31,7 @@ public:
   virtual Scalar getValue( const Sample& x ) const = 0;
   
 protected:
-  Sample _norm_offsets;
-  Sample _norm_scales;
-  bool _has_norm_params;
+  Normalizer * _normalizerPtr;
   
 private:
   ScaledModelImpl();

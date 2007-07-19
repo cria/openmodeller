@@ -1,7 +1,6 @@
 /**
  * Declaration of Genetic Algorithm for Rule-Set Production (GARP)
  * 
- * @file   garp.cpp
  * @author Ricardo Scachetti Pereira (ricardo [at] tdwg . org)
  * @date   2004-04-01
  * $Id$
@@ -43,6 +42,7 @@
 #include <openmodeller/Configuration.hh>
 #include <openmodeller/Random.hh>
 #include <openmodeller/Exceptions.hh>
+#include <openmodeller/ScaleNormalizer.hh>
 
 #include <string>
 using std::string;
@@ -246,6 +246,8 @@ Garp::Garp()
       _curr_heur_count[i] = 0;
       _prev_heur_count[i] = 0;
     }
+
+  _normalizerPtr = new ScaleNormalizer( -1.0, +1.0, true );
 }
 
 /****************************************************************/
@@ -266,17 +268,7 @@ Garp::~Garp()
     delete _fittest;
 }
 
-// ****************************************************************
-// ************* needNormalization ********************************
-
-int Garp::needNormalization( Scalar *min, Scalar *max ) const
-{
-  *min = -1.0;
-  *max = +1.0;
-
-  return 1;
-}
-  
+ 
 // ****************************************************************
 // ************* initialize ***************************************
 

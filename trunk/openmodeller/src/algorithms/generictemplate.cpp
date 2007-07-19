@@ -11,17 +11,18 @@
 //
 #include "generictemplate.hh"
 
+// This include is only necessary if you want to work with normalized values
+// ScaleNormalizer is one of the available normalizers. Choose the one you need.
+#include <openmodeller/ScaleNormalizer.hh>
 
 /** Constructor for GenericTemplate
    * 
    * @param Sampler is class that will fetch environment variable values at each occurrence / locality
    */
-GenericTemplate::GenericTemplate( Sampler *samp )
+GenericTemplate::GenericTemplate()
 {
-  //set the class member that holds the number of environmental variables
-  f_dim = samp->dim();
-  //set the class member that holds the number of occurences
-  f_localityCount = samp->numOccurrences();
+  // Instantiate a normalizer object when it's necessary to work with normalized values
+  _normalizerPtr = new ScaleNormalizer( 0.0, 1.0, true );
 }
 
 /** This is the descructor for the GenericTemplate class */
@@ -46,18 +47,6 @@ char * GenericTemplate::name()
     return "GenericTemplate";
 } //replace this name!
 
-/** This method is used when you want to ensure that all variables in all
-  * environmental layers are scaled to the same value range. 
-  * @note This method is inherited from the Algorithm class
-  * @param Scalar pointer min that the post normalised will be fitted to
-  * @param Scalar pointer max that the post normalised will be fitted to
-  * @return 0 if no normalisation is needed
-  */
-int GenericTemplate::needNormalization( Scalar *min, Scalar *max ) const
-{
-
-}
-
 
 /** Initialise the model specifying a threshold / cutoff point.
   * This is optional (model dependent).
@@ -67,7 +56,10 @@ int GenericTemplate::needNormalization( Scalar *min, Scalar *max ) const
   */
 int GenericTemplate::initialize( int ncycle )
 {
-
+  //set the class member that holds the number of environmental variables
+  f_dim = samp->dim();
+  //set the class member that holds the number of occurences
+  f_localityCount = samp->numOccurrences();
 }
 
 

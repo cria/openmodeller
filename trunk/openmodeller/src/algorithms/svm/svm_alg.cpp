@@ -26,6 +26,7 @@
 
 #include "svm_alg.hh"
 #include "svm.h"
+#include <openmodeller/MeanVarianceNormalizer.hh>
 
 #include <string.h>
 #include <stdio.h>
@@ -244,6 +245,7 @@ SvmAlgorithm::SvmAlgorithm() :
   _done( false ),
   _num_layers( 0 )
 {
+  _normalizerPtr = new MeanVarianceNormalizer();
 }
 
 
@@ -262,17 +264,23 @@ SvmAlgorithm::~SvmAlgorithm()
   }
 }
 
-
 /**************************/
 /*** need Normalization ***/
-int
-SvmAlgorithm::needNormalization( Scalar *min, Scalar *max ) const
+int SvmAlgorithm::needNormalization()
 {
-  *min = 0.0;
-  *max = 1.0;
+  int svm_type;
+
+  if ( getParameter( SVMTYPE_ID, &svm_type ) && svm_type != 2 && _samp->numAbsence() == 0 ) {
+
+    // It will be necessary to generate pseudo absences, so do not waste
+    // time normalizing things because normalization should ideally consider
+    // all trainning points (including pseudo-absences). In this specific case, 
+    // normalization will take place in initialize().
+    return 0;
+  }
+
   return 1;
 }
-
 
 /******************/
 /*** initialize ***/
@@ -414,28 +422,15 @@ SvmAlgorithm::initialize()
 
   _svm_problem.y = new double[num_points];
   _svm_problem.x = new svm_node*[num_points];
-  
-  // Load SVM problem with samples
 
-  // Presences
+  // Load SVM problem with samples
 
   OccurrencesPtr presences = _samp->getPresences();
 
-  OccurrencesImpl::const_iterator p_iterator = presences->begin();
-  OccurrencesImpl::const_iterator p_end = presences->end();
+  OccurrencesImpl::const_iterator p_iterator;
+  OccurrencesImpl::const_iterator p_end;
 
-  int i = 0;
-  while ( p_iterator != p_end ) {
-
-    Sample point = (*p_iterator)->environment();
-
-    _svm_problem.y[i] = +1; // presence
-
-    _svm_problem.x[i] = _getNode( point );
-    
-    ++p_iterator;
-    ++i;
-  }
+  int i = 0; // shared counter
 
   // Absences
 
@@ -456,9 +451,19 @@ SvmAlgorithm::initialize()
         OccurrencePtr oc = _samp->getOneSample();
         absences->insert( oc ); 
       }
+
+      // Compute normalization with all points
+      SamplerPtr mySamplerPtr = createSampler( _samp->getEnvironment(), presences, absences );
+
+      _normalizerPtr->computeNormalization( mySamplerPtr );
+
+      setNormalization( _samp );
+
+      absences->normalize( _normalizerPtr );
     }
     else {
 
+      // should be normalized already
       absences = _samp->getAbsences();
     }
 
@@ -476,6 +481,23 @@ SvmAlgorithm::initialize()
       ++p_iterator;
       ++i;
     }
+  }
+
+  // Presences (should be normalized already, in one way or another)
+
+  p_iterator = presences->begin();
+  p_end = presences->end();
+
+  while ( p_iterator != p_end ) {
+
+    Sample point = (*p_iterator)->environment();
+
+    _svm_problem.y[i] = +1; // presence
+
+    _svm_problem.x[i] = _getNode( point );
+    
+    ++p_iterator;
+    ++i;
   }
 
   _svm_problem.l = num_points;

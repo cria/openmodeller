@@ -1,7 +1,6 @@
 /**
  * Definition of Minimum Distance algorithm.
  * 
- * @file
  * @author Mauro E S Muñoz (mauro@cria.org.br)
  * @date   2003-09-30
  * $Id$
@@ -32,6 +31,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
+
+#include <openmodeller/ScaleNormalizer.hh>
 
 //debug
 #include <iostream>
@@ -134,6 +135,7 @@ MinimumDistance::MinimumDistance() :
   _hasCategorical( false ),
   _numLayers( 0 )
 {
+  _normalizerPtr = new ScaleNormalizer( 0.0, 1.0, true );
 }
 
 
@@ -142,17 +144,6 @@ MinimumDistance::MinimumDistance() :
 
 MinimumDistance::~MinimumDistance()
 {
-}
-
-
-/**************************/
-/*** need Normalization ***/
-int
-MinimumDistance::needNormalization( Scalar *min, Scalar *max ) const
-{
-  *min = 0.0;
-  *max = 1.0;
-  return 1;
 }
 
 

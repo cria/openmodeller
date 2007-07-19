@@ -4,7 +4,7 @@
  xmlns:xs="http://www.w3.org/2001/XMLSchema"
  elementFormDefault="qualified"
  attributeFormDefault="unqualified"
- version="1.0.6" xml:lang="EN">
+ version="1.0.7" xml:lang="EN">
   <xs:annotation>
     <xs:documentation xml:lang="en">
         XML Schema with all basic element and type definitions used by openModeller.
@@ -171,6 +171,8 @@
     <xs:complexContent>
       <xs:extension base="BasicLayerType">
         <xs:attribute name="IsCategorical" type="xs:boolean" use="optional"/>
+        <xs:attribute name="Min" type="xs:double" use="optional"/>
+        <xs:attribute name="Max" type="xs:double" use="optional"/>
       </xs:extension>
     </xs:complexContent>
   </xs:complexType>
@@ -229,9 +231,26 @@
     </xs:sequence>
   </xs:complexType>
 
+  <xs:attributeGroup name="ScaleNormalizerAttributes">
+    <xs:attribute name="UseLayerAsRef" type="xs:int" use="optional"/>
+    <xs:attribute name="Min" type="xs:double" use="optional"/>
+    <xs:attribute name="Max" type="xs:double" use="optional"/>
+    <xs:attribute name="Scales" type="xs:string" use="optional"/>
+    <xs:attribute name="Offsets" type="xs:string" use="optional"/>
+  </xs:attributeGroup>
+
+  <xs:attributeGroup name="MeanVarianceNormalizerAttributes">
+    <xs:attribute name="Mean" type="xs:string" use="optional"/>
+    <xs:attribute name="StdDev" type="xs:string" use="optional"/>
+  </xs:attributeGroup>
+
   <xs:complexType name="NormalizationType">
-    <xs:attribute name="Offsets" type="xs:string" use="required"/>
-    <xs:attribute name="Scales" type="xs:string" use="required"/>
+    <!-- Class attribute is optional just to keep old XML compatible with this schema -->
+    <xs:attribute name="Class" type="xs:string" use="optional"/>
+    <!-- Using super flexible attribute groups is the best we can do to validate different normalizer data structures -->
+    <!-- (unless each normalizer had its own element name, but we want to be backwards compatible) -->
+    <xs:attributeGroup ref="ScaleNormalizerAttributes"/>
+    <xs:attributeGroup ref="MeanVarianceNormalizerAttributes"/>
   </xs:complexType>
 
   <xs:complexType name="ModelStatisticsType">

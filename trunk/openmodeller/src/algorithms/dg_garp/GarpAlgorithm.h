@@ -45,7 +45,6 @@ private:
 
 public:
 	// OM Algorithm virtual methods
-	int needNormalization( Scalar *min, Scalar *max ) const;
 	int initialize();
 	int iterate();
 	int done() const;

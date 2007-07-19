@@ -1,7 +1,6 @@
 /**
  * Declaration of Minimum Distance algorithm.
  * 
- * @file
  * @author Mauro E S Muñoz (mauro@cria.org.br)
  * @date   2003-09-20
  * $Id$
@@ -46,9 +45,6 @@ public:
    *  the same one. */
   MinimumDistance();
   virtual ~MinimumDistance();
-
-  // Inherited from Algorithm class.
-  int needNormalization( Scalar *min, Scalar *max ) const;
 
   int initialize();
   int iterate();

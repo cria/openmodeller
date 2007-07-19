@@ -1,7 +1,6 @@
 /**
  * Declaration of GARP with Best Subsets Procedure
  * 
- * @file   garp_best_subsets.cpp
  * @author Ricardo Scachetti Pereira (ricardo [at] tdwg . org)
  * @date   2004-08-25
  * $Id$
@@ -34,6 +33,7 @@
 #include <openmodeller/om.hh>
 #include <openmodeller/Random.hh>
 #include <openmodeller/Sampler.hh>
+#include <openmodeller/ScaleNormalizer.hh>
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -324,6 +324,7 @@ algorithmMetadata()
 GarpBestSubsets::GarpBestSubsets()
   : BestSubsets(& metadata_bs)
 {
+  _normalizerPtr = new ScaleNormalizer( -1.0, +1.0, true );
 }
 
 // ****************************************************************
@@ -337,17 +338,6 @@ AlgorithmImpl * GarpBestSubsets::getBSAlgorithm()
   return new Garp();
 }
 
-// ****************************************************************
-// ************* needNormalization ********************************
-
-int GarpBestSubsets::needNormalization( Scalar *min, Scalar *max ) const
-{
-  *min = -1.0;
-  *max = +1.0;
-
-  return 1;
-}
-  
 // ****************************************************************
 // ************* initialize ***************************************
 

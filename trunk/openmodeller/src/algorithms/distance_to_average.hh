@@ -1,7 +1,6 @@
 /**
  * Declaration of cartesian DistanceToAverage algorithm.
  * 
- * @file
  * @author Mauro E S Muñoz (mauro@cria.org.br)
  * @date   2003-09-12
  * $Id$
@@ -44,14 +43,8 @@ class DistanceToAverage : public AlgorithmImpl
 {
 public:
 
-  // dist: Os pontos que estiver até esta distância são
-  //       considerados iguais.
-  //
   DistanceToAverage();
   virtual ~DistanceToAverage();
-
-  // Inherited from Algorithm class.
-  int needNormalization( Scalar *min, Scalar *max ) const;
 
   int initialize();
   int iterate();

@@ -207,50 +207,40 @@ SamplerImpl::setConfiguration( const ConstConfigurationPtr& config )
   setEnvironmentInOccurrences();
 }
 
-/*****************/
-/*** normalize ***/
+/******************/
+/*** get MinMax ***/
 void SamplerImpl::getMinMax( Sample * min, Sample * max ) const
 {
-  // if Sampler has both Environment object and a sampled Occurrences, then
-  // favor Environment when doing normalization
-  if ( _env ) { 
+  // normalize samples in occs objects
+  // first get all occurrence objects in the same container
+  OccurrencesPtr allOccs( new OccurrencesImpl( _presence->name(),
+                                               _presence->coordSystem() ) );
+  allOccs->appendFrom( _presence );
+  allOccs->appendFrom( _absence );
 
-    _env->getMinMax( min, max );
-  }
-  else {
-
-    // no environment object exists, so normalize samples in occs objects
-    // first get all occurrence objects in the same container
-    OccurrencesPtr allOccs( new OccurrencesImpl( _presence->name(),
-                                                 _presence->coordSystem() ) );
-    allOccs->appendFrom( _presence );
-    allOccs->appendFrom( _absence );
-
-    // now compute normalization parameters
-    allOccs->getMinMax(min, max);
-  }
+  // now compute normalization parameters
+  allOccs->getMinMax(min, max);
 }
-
-/** Set specific normalization parameters
- */
-void SamplerImpl::normalize( bool use_norm, const Sample& offsets, const Sample& scales )
+/*****************/
+/*** normalize ***/
+void SamplerImpl::normalize( Normalizer * normalizerPtr )
 {
-  if (_env) {
+  if ( _env ) {
 
       // set env in all occurrences before normalizing env so that
       // occurrences get the unnormalized values
       setEnvironmentInOccurrences();
-      _env->normalize( use_norm, offsets, scales );
+      _env->normalize( normalizerPtr );
   }
 
   // need to normalize presences and absences even if _env is present
   // because environment in occurrences was set with unnormalized values
   // if _env doesn't exist, then normalize occurrences anyway
-  _presence->normalize( use_norm, offsets, scales );
+  _presence->normalize( normalizerPtr );
 
   if ( _absence && _absence->numOccurrences() ) {
 
-    _absence->normalize( use_norm, offsets, scales );
+    _absence->normalize( normalizerPtr );
   }
 }
 

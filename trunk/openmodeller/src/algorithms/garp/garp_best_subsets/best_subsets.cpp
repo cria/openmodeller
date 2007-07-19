@@ -1,7 +1,6 @@
 /**
  * Declaration of Best Subsets Procedure template class
  * 
- * @file   best_subsets.cpp
  * @author Ricardo Scachetti Pereira (rpereira@ku.edu)
  * @date   2004-12-10
  * $Id$
@@ -110,17 +109,6 @@ BestSubsets::~BestSubsets()
 
   if (_alg_params)
     delete[] _alg_params;
-}
-
-// ****************************************************************
-// ************* needNormalization ********************************
-
-int BestSubsets::needNormalization( Scalar *min, Scalar *max ) const
-{
-  *min = -1.0;
-  *max = +1.0;
-
-  return 1;
 }
 
 // ****************************************************************

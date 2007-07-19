@@ -1,7 +1,6 @@
 /**
  * Definition of Occurrences class.
  * 
- * @file
  * @author Mauro E S Muñoz (mauro@cria.org.br)
  * @date   2003-02-25
  * $Id$
@@ -68,7 +67,7 @@ OccurrencesImpl::initGeoTransform()
   gt_ = new GeoTransform( cs_, GeoTransform::cs_default );
 }
 
-/******************/
+/*********************/
 /*** configuration ***/
 
 ConfigurationPtr
@@ -183,13 +182,14 @@ OccurrencesImpl::setEnvironment( const EnvironmentPtr& env, const char *type )
 /*****************/
 /*** normalize ***/
 void 
-OccurrencesImpl::normalize(bool useNormalization,
-			   const Sample& offsets, const Sample& scales)
+OccurrencesImpl::normalize( Normalizer * normalizerPtr )
 {
-  if ( ! useNormalization ) {
+  if ( ! normalizerPtr ) {
 
     return;
   }
+
+  Log::instance()->debug( "Normalizing Occurrences\n" );
 
   OccurrencesImpl::const_iterator occ = occur_.begin();
   OccurrencesImpl::const_iterator end = occur_.end();
@@ -197,14 +197,14 @@ OccurrencesImpl::normalize(bool useNormalization,
   // set the normalized values 
   while ( occ != end ) {
 
-    (*occ)->normalize( offsets, scales );
+    (*occ)->normalize( normalizerPtr );
     ++occ;
   }
 }
 
 
 void
-OccurrencesImpl::getMinMax(Sample * min, Sample * max ) const
+OccurrencesImpl::getMinMax( Sample * min, Sample * max ) const
 {
   OccurrencesImpl::const_iterator occ = occur_.begin();
   OccurrencesImpl::const_iterator end = occur_.end();
@@ -333,12 +333,17 @@ OccurrencesImpl::erase( const iterator& it )
 
 
 void 
-OccurrencesImpl::appendFrom(const OccurrencesPtr& source)
+OccurrencesImpl::appendFrom( const OccurrencesPtr& source )
 {
+  if ( ! source ) {
+
+    return;
+  }
+
   const_iterator it = source->begin();
   const_iterator end = source->end();
 
-  while ( it != end) {
+  while ( it != end ) {
 
       insert(*it);
       ++it;

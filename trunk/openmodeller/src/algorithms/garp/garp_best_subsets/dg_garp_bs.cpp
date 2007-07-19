@@ -1,7 +1,6 @@
 /**
  * Declaration of GARP with Best Subsets Procedure
  * 
- * @file   garp_best_subsets.cpp
  * @author Ricardo Scachetti Pereira (rpereira@ku.edu)
  * @date   2004-08-25
  * $Id$
@@ -323,6 +322,7 @@ algorithmMetadata()
 DgGarpBestSubsets::DgGarpBestSubsets()
   : BestSubsets(& metadata_bs)
 {
+  _normalizerPtr = new ScaleNormalizer( 1.0, 253.0, true );
 }
 
 // ****************************************************************
@@ -330,17 +330,6 @@ DgGarpBestSubsets::~DgGarpBestSubsets()
 {
 }
 
-// ****************************************************************
-// ************* needNormalization ********************************
-
-int DgGarpBestSubsets::needNormalization( Scalar *min, Scalar *max ) const
-{
-  *min = 1.0;
-  *max = 253.0;
-
-  return 1;
-}
-  
 // ****************************************************************
 AlgorithmImpl * DgGarpBestSubsets::getBSAlgorithm()
 {

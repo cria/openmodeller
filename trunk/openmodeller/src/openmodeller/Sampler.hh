@@ -35,9 +35,9 @@
 #include <openmodeller/Environment.hh>
 #include <openmodeller/Configurable.hh>
 #include <openmodeller/Normalizable.hh>
+#include <openmodeller/Normalizer.hh>
 
 #include <openmodeller/refcount.hh>
-
 
 /****************************************************************/
 /*************************** Sampler ****************************/
@@ -98,11 +98,10 @@ public:
    *  be normalized according to the interval [min, max].
    *  Returns through offsets, scales the normalization parameters.
    */
-  void getMinMax(Sample * min, Sample * max ) const;
+  void getMinMax( Sample * min, Sample * max ) const;
 
-  /** Set specific normalization parameters
-   */
-  void normalize( bool use_norm, const Sample& offsets, const Sample& scales );
+  /** Normalize sampler data */
+  void normalize( Normalizer * normalizerPtr );
 
   /** Number of independent variables (environmental variables). */
   int numIndependent() const;

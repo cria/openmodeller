@@ -1,7 +1,6 @@
 /**
  * Declaration of Genetic Algorithm for Rule-Set Production (GARP)
  * 
- * @file   garp.hh
  * @author Ricardo Scachetti Pereira (rpereira@ku.edu)
  * @date   2004-04-01
  * $Id$
@@ -61,17 +60,6 @@ public:
   Garp();
   virtual ~Garp();
 
-  /** This method is used when you want to ensure that all variables in all
-    * environmental layers are scaled to the same value range. 
-    * GARP requires values to be normalized between -1.0 and 1.0.
-    * @param Scalar pointer min that the post normalised will be fitted to
-	*        Always set to -1.0 in GARP
-    * @param Scalar pointer max that the post normalised will be fitted to
-	*        Always set to +1.0 in GARP
-    * @return Always return 1 for GARP.
-   */
-  int needNormalization( Scalar *min, Scalar *max ) const;
-  
   /** Initialize model by colonizing it with new rules.
     * @note This method is inherited from the Algorithm class
     * @return 0 on error
