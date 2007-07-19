@@ -73,8 +73,11 @@ Output file type = ByteHFA
 #########################
 ### Algorithm section ###
 
-# Name of the algorithm to construct the model
-# and algorithm specific parameters.
+# Id of the algorithm to construct the model
+# and algorithm specific parameters. Only one
+# algorithm can be run at a time. Uncommenting
+# one of the algorithms will make om_console run
+# without asking for additional input.
 
 
 ########
@@ -82,7 +85,6 @@ Output file type = ByteHFA
 #
 #Algorithm = Bioclim
 #Parameter = StandardDeviationCutoff 0.674
-
 
 ########
 # Climate Space Model - Broken-Stick
@@ -93,13 +95,11 @@ Output file type = ByteHFA
 #Parameter = MinComponents 1
 #Parameter = VerboseDebugging 1
 
-
 ########
 # Distance to average
 #
 #Algorithm = DistanceToAverage
 #Parameter = MaxDist 0.1
-
 
 ########
 # GARP: Genetic Algorithm for Rule Set Production
@@ -111,7 +111,6 @@ Output file type = ByteHFA
 #Parameter = Resamples 2500
 #Parameter = MutationRate 0.25
 #Parameter = CrossoverRate 0.25
-
 
 ########
 # GARP with Best Subsets Procedure
@@ -131,7 +130,6 @@ Output file type = ByteHFA
 #Parameter = MutationRate 0.25
 #Parameter = CrossoverRate 0.25
 
-
 ########
 # Minimum distance
 #
@@ -147,3 +145,16 @@ Output file type = ByteHFA
 #Parameter = DistanceType 1
 #Parameter = NearestPoints 1
 #Parameter = MaxDistance 0.1
+
+########
+# SVM
+#
+#Algorithm = SVM
+#Parameter = SvmType 0
+#Parameter = KernelType 2
+#Parameter = Degree 3
+#Parameter = Gamma 0
+#Parameter = C 1
+#Parameter = Coef0 0
+#Parameter = Nu 0.5
+#Parameter = ProbabilisticOutput 0
