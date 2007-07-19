@@ -24,6 +24,7 @@
 
 #include <openmodeller/om.hh>
 #include <openmodeller/Random.hh>
+#include <openmodeller/ScaleNormalizer.hh>
 
 #include <time.h>
 
@@ -188,7 +189,9 @@ algorithmMetadata()
 // ==========================================================================
 GarpAlgorithm::GarpAlgorithm()
   : AlgorithmImpl(& metadata)
-{ 
+{
+        _normalizerPtr = new ScaleNormalizer( 1.0, 253.0, true );
+       
 	GarpUtil::randomize(0);
 	srand((unsigned)time(NULL));
 
@@ -212,17 +215,6 @@ GarpAlgorithm::~GarpAlgorithm()
 }
 
 
-// ****************************************************************
-// ************* needNormalization ********************************
-
-int GarpAlgorithm::needNormalization( Scalar *min, Scalar *max ) const
-{
-  *min = 1.0;
-  *max = 253.0;
-
-  return 1;
-}
-  
 // ==========================================================================
 int GarpAlgorithm::initialize()
 {

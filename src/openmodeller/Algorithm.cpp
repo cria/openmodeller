@@ -1,7 +1,6 @@
 /**
  * Definition of Algorithm class.
  * 
- * @file
  * @author Mauro E S Muñoz (mauro@cria.org.br)
  * @date   2003-10-05
  * $Id$
@@ -35,6 +34,11 @@
 
 #include <openmodeller/models/AlgoAdapterModel.hh>
 
+// AlgorithmImpl works as a Normalizer factory during deserialization, so 
+// all possible Normalizer implementation headers must be included here
+#include <openmodeller/ScaleNormalizer.hh>
+#include <openmodeller/MeanVarianceNormalizer.hh>
+
 using std::string;
 
 #undef DEBUG_MEMORY
@@ -47,9 +51,7 @@ AlgorithmImpl::AlgorithmImpl( AlgMetadata const *metadata ) :
   _samp(),
   _metadata( metadata ),
   _param(),
-  _norm_offsets(),
-  _norm_scales(),
-  _has_norm_params( false )
+  _normalizerPtr(0)
 {
 #if defined(DEBUG_MEMORY)
   Log::instance()->debug( "AlgorithmImpl::AlgorithmImpl() at %x\n", this );
@@ -65,9 +67,14 @@ AlgorithmImpl::~AlgorithmImpl()
 #if defined(DEBUG_MEMORY)
   Log::instance()->debug("AlgorithmImpl::~AlgorithmImpl() at %x\n",this);
 #endif
+
+  if ( _normalizerPtr ) {
+
+    delete _normalizerPtr;
+  }
 }
 
-/******************/
+/*********************/
 /*** configuration ***/
 
 ConfigurationPtr
@@ -90,14 +97,9 @@ AlgorithmImpl::getConfiguration() const
 
   config->addSubsection( param_config );
 
-  if ( _has_norm_params ) {
+  if ( _normalizerPtr ) {
 
-    ConfigurationPtr norm_config( new ConfigurationImpl("Normalization") );
-  
-    norm_config->addNameValue( "Offsets", _norm_offsets );
-    norm_config->addNameValue( "Scales", _norm_scales );
-
-    config->addSubsection( norm_config );
+    config->addSubsection( _normalizerPtr->getConfiguration() );
   }
 
   // Wrapper model element
@@ -129,18 +131,50 @@ AlgorithmImpl::setConfiguration( const ConstConfigurationPtr &config )
     ++nv;
   }
 
+  ConstConfigurationPtr norm_config;
+
+  bool found_normalization_section = false;
+
   try { 
 
-    ConstConfigurationPtr norm_config = config->getSubsection( "Normalization" );
+    norm_config = config->getSubsection( "Normalization" );
 
-    _has_norm_params = true;
-    _norm_offsets = norm_config->getAttributeAsSample( "Offsets" );
-    _norm_scales = norm_config->getAttributeAsSample( "Scales" );
-    
+    found_normalization_section = true;
   }
   catch( SubsectionNotFound& e ) {
 
-    _has_norm_params = false;
+    _normalizerPtr = 0;
+  }
+
+  if ( found_normalization_section ) {
+
+    try { 
+
+      std::string norm_class = norm_config->getAttribute( "Class" );
+
+      if ( norm_class == "ScaleNormalizer" ) {
+
+        _normalizerPtr = new ScaleNormalizer();
+      }
+      else if ( norm_class == "MeanVarianceNormalizer" ) {
+
+        _normalizerPtr = new MeanVarianceNormalizer();
+      }
+      else {
+
+        string msg( "Unknown normalizer class: " );
+        msg.append( norm_class );
+
+        throw AlgorithmException( msg.c_str() );
+      }
+    }
+    catch( AttributeNotFound& e ) {
+
+      // Backwards compatibility
+      _normalizerPtr = new ScaleNormalizer();
+    }
+
+    _normalizerPtr->setConfiguration( norm_config );
   }
 
   // Get wrapper model element
@@ -248,42 +282,16 @@ AlgorithmImpl::getParameter( string const &id, float *value )
   return 1;
 }
 
-/*********************/
-/*** get Parameter ***/
-void
-AlgorithmImpl::computeNormalization( const ConstSamplerPtr& samp )
-{
-
-  Scalar lbound, ubound;
-  if ( needNormalization( &lbound, &ubound ) ) {
-
-    _has_norm_params = true;
-
-    int dim = samp->numIndependent();
-    Sample min(dim), max(dim);
-    samp->getMinMax(&min, &max);
-
-    _norm_scales.resize(dim);
-    _norm_offsets.resize(dim);
-
-    for (int i = 0; i < dim; ++i)
-      {
-	_norm_scales[i] = (ubound - lbound) / (max[i] - min[i]);
-	_norm_offsets[i] = lbound - _norm_scales[i] * min[i];
-      }
-  }
-}
-
 void
 AlgorithmImpl::setNormalization( const SamplerPtr& samp) const
 {
-  samp->normalize( _has_norm_params, _norm_offsets, _norm_scales );
+    samp->normalize( _normalizerPtr );
 }
 
 void
 AlgorithmImpl::setNormalization( const EnvironmentPtr& env) const
 {
-  env->normalize( _has_norm_params, _norm_offsets, _norm_scales );
+    env->normalize( _normalizerPtr );
 }
 
 Model
@@ -292,15 +300,21 @@ AlgorithmImpl::createModel( const SamplerPtr& samp, Algorithm::ModelCommand *mod
   if ( !samp )
     throw AlgorithmException( "Sampler not specified." );
 
-  if (!samp->numPresence() && !samp->numAbsence())
-  {
+  if ( !samp->numPresence() && !samp->numAbsence() ) {
+
     throw AlgorithmException( "Cannot create model without any presence or absence point." );
   }
 
   setSampler( samp );
 
-  computeNormalization( _samp );
-  setNormalization( _samp );
+  if ( needNormalization() ) {
+
+    Log::instance()->info( "Computing normalization\n");
+
+    _normalizerPtr->computeNormalization( _samp );
+
+    setNormalization( _samp );
+  }
 
   if ( !initialize() )
     throw AlgorithmException( "Algorithm could not be initialized." );
@@ -309,8 +323,9 @@ AlgorithmImpl::createModel( const SamplerPtr& samp, Algorithm::ModelCommand *mod
   int ncycle = 0;
   int resultFlag = 1;
   int doneFlag   = 0;
-  while ( resultFlag && !doneFlag )
-  {
+
+  while ( resultFlag && !doneFlag ) {
+
     // I moved thee two calls out of the while() 
     // above and into seperate calls because
     // when run in a thread we need to catch 

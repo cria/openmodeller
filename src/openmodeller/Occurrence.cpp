@@ -1,7 +1,6 @@
 /**
  * Declaration of OccurrenceImpl class.
  * 
- * @file
  * @author Mauro E S Muñoz (mauro@cria.org.br)
  * @date   2003-25-02
  * $Id$
@@ -76,16 +75,15 @@ Sample const & OccurrenceImpl::environment() const
 }
 
 void
-OccurrenceImpl::normalize( const Sample& offsets, const Sample& scales )
+OccurrenceImpl::normalize( Normalizer * normalizerPtr )
 {
   normEnv_ = unnormEnv_;
 
-  int dim = normEnv_.size();
+  if ( normalizerPtr ) {
 
-  for( int i = 0; i<dim; i++ ) {
+    int dim = normEnv_.size();
 
-    normEnv_[i] *= scales[i];
-    normEnv_[i] += offsets[i];
+    normalizerPtr->normalize( &normEnv_ );
   }
 }
 

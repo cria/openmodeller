@@ -12,16 +12,12 @@
 
 ScaledModelImpl::ScaledModelImpl() :
   ModelImpl(),
-  _norm_offsets(),
-  _norm_scales(),
-  _has_norm_params(false)
+  _normalizerPtr(0)
 {}
 
-ScaledModelImpl::ScaledModelImpl(  bool has_params, const Sample& offsets, const Sample& scales ) : 
+ScaledModelImpl::ScaledModelImpl( Normalizer * normalizerPtr ) : 
   ModelImpl(),
-  _norm_offsets( offsets ),
-  _norm_scales( scales ),
-  _has_norm_params( has_params )
+  _normalizerPtr( normalizerPtr )
 { }
 
 ScaledModelImpl::~ScaledModelImpl()
@@ -30,12 +26,12 @@ ScaledModelImpl::~ScaledModelImpl()
 void
 ScaledModelImpl::setNormalization( const SamplerPtr& sampl ) const 
 {
-  sampl->normalize( _has_norm_params, _norm_offsets, _norm_scales );
+  sampl->normalize( _normalizerPtr );
 }
 
 void
 ScaledModelImpl::setNormalization( const EnvironmentPtr& env) const
 {
-    env->normalize( _has_norm_params, _norm_offsets, _norm_scales );
+  env->normalize( _normalizerPtr );
 }
 

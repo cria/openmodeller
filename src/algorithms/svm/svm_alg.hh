@@ -43,11 +43,9 @@ public:
 
   SvmAlgorithm();
 
-  virtual ~SvmAlgorithm();
+  ~SvmAlgorithm();
 
-  // Inherited from Algorithm class.
-  int needNormalization( Scalar *min, Scalar *max ) const;
-
+  int needNormalization();
   int initialize();
   int iterate();
   int done() const;

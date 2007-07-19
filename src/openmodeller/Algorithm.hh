@@ -1,7 +1,6 @@
 /**
  * Declaration of Algorithm class.
  * 
- * @file
  * @author Mauro E S Muñoz (mauro@cria.org.br)
  * @date   2003-05-26
  * $Id$
@@ -44,6 +43,8 @@
 #include <openmodeller/refcount.hh>
 
 #include <openmodeller/Model.hh>
+
+#include <openmodeller/Normalizer.hh>
 
 class AlgParameter;
 
@@ -129,11 +130,6 @@ public:
    */
   void setSampler( const SamplerPtr& samp );
   
-  /** Compute normalization values based on environment sample.
-   * @param samp Sampler from which to compute normalization paramters.
-   */
-  void computeNormalization( const ConstSamplerPtr& samp );
-  
   /** Initiate a new training.
    */
   virtual int initialize() = 0;
@@ -157,7 +153,6 @@ public:
   /** Returns progress so far (between 0.0 and 1.0) */
   virtual float getProgress() const { return (float) done(); }
   
-  
   /*
    * Model Implementation.
    */
@@ -165,8 +160,8 @@ public:
    /** The algorithm should return != 0 if it needs normalization
    *  of environmental variables (non categorical ones).
    */
-  virtual int needNormalization( Scalar *min, Scalar *max ) const
-  { return 0; }
+  virtual int needNormalization()
+  { return ( _normalizerPtr == 0 ) ? 0 : 1; }
 
   /** Normalize the given environment.
    * @param samp Sampler to normalize.
@@ -251,6 +246,8 @@ protected:
   
   SamplerPtr _samp;
 
+  Normalizer * _normalizerPtr;
+
 private:
   AlgMetadata const *_metadata;
 
@@ -262,15 +259,6 @@ private:
   
   typedef ParamSetType::value_type ParamSetValueType;
 
-  
-  /* Defines normalization parameters
-   * This might be moved in the near future to
-   * Model class.
-   */
-  Sample _norm_offsets;
-  Sample _norm_scales;
-  bool _has_norm_params;
-  
 };
 
 #endif

@@ -1,7 +1,6 @@
 /**
  * Definition of cartesian DistanceToAverageModel algorithm.
  * 
- * @file
  * @author Mauro E S Muñoz (mauro@cria.org.br)
  * @date   2003-09-12
  * $Id$
@@ -30,6 +29,7 @@
 
 #include <openmodeller/Configuration.hh>
 #include <openmodeller/Exceptions.hh>
+#include <openmodeller/ScaleNormalizer.hh>
 
 #include <stdio.h>
 #include <math.h>
@@ -129,11 +129,12 @@ algorithmMetadata()
 DistanceToAverage::DistanceToAverage() :
   AlgorithmImpl( &metadata ),
   _done( false ),
-  _dist(0.0),
-  _min(0.0),
-  _max(0.0),
+  _dist( 0.0 ),
+  _min( 0.0 ),
+  _max( 0.0 ),
   _avg()
 {
+  _normalizerPtr = new ScaleNormalizer( 0.0, 1.0, true );
 }
 
 
@@ -144,17 +145,6 @@ DistanceToAverage::~DistanceToAverage()
 {
   Log::instance()->info( "\nMinimum distance found: %f", _min );
   Log::instance()->info( "\nMaximum distance found: %f\n\n", _max );
-}
-
-
-/**************************/
-/*** need Normalization ***/
-int
-DistanceToAverage::needNormalization( Scalar *min, Scalar *max ) const
-{
-  *min = 0.0;
-  *max = 1.0;
-  return 1;
 }
 
 

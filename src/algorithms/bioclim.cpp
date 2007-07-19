@@ -1,7 +1,6 @@
 /**
  * Declaration of Bioclimatic Envelope Algorithm - Nix, 1986.
  * 
- * @file
  * @author Mauro Muñoz <mauro@cria.org.br>
  * @date 2004-05-05
  * $Id$

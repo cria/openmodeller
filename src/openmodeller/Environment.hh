@@ -1,7 +1,6 @@
 /**
  * Declaration of Environment class.
  * 
- * @file
  * @author Mauro E S Muñoz (mauro@cria.org.br)
  * @date   2003-03-13
  * $Id$
@@ -34,6 +33,7 @@
 #include <openmodeller/refcount.hh>
 #include <openmodeller/Configurable.hh>
 #include <openmodeller/Normalizable.hh>
+#include <openmodeller/Normalizer.hh>
 #include <openmodeller/Sample.hh>
 
 #include <vector>
@@ -114,7 +114,7 @@ public:
 
   /** Set specific normalization parameters
    */
-  void normalize( bool use_norm, const Sample& offsets, const Sample& scales );
+  void normalize( Normalizer * _normalizerPtr );
 
   /** Read for vector 'sample' all values of environmental variables
    *  of coordinate (x,y).
@@ -212,9 +212,7 @@ private:
   Coord _xmax; ///< Intersection of all layers.
   Coord _ymax; ///< Intersection of all layers.
 
-  bool _normalize; ///< Normalize the environment
-  Sample _scales; ///< Scaling factors
-  Sample _offsets; ///< Offset
+  Normalizer * _normalizerPtr; ///< Normalize the environment
 };
 
 

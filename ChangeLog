@@ -2,6 +2,7 @@ Release 0.4.3 (?)
 -----------------------------
 
 	* New algorithm "Support Vector Machines" (C-SVC, nu-SVC and one-class SVM).
+	* Added support to multiple normalization techniques.
 
 Release 0.4.2 (2007-05-08)
 -----------------------------

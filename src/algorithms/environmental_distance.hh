@@ -43,7 +43,6 @@ class EnvironmentalDistance : public AlgorithmImpl{
 
       int initialize();  // Called by oM to initialize the algorithm
       int done() const { return _done; } // Tell oM when the algorithm finished its work
-      int needNormalization(Scalar *min, Scalar *max) const; // Normalize all data to [min,max]
       Scalar getValue(const Sample& x) const; // Returns the occurence probability
 
    private:

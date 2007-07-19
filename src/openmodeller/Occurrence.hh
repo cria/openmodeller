@@ -1,7 +1,6 @@
 /**
  * Declaration of Occurrence class.
  * 
- * @file
  * @author Mauro E S Muñoz (mauro@cria.org.br)
  * @date   2003-25-02
  * $Id$
@@ -32,6 +31,7 @@
 
 #include <openmodeller/om_defs.hh>
 #include <openmodeller/Sample.hh>
+#include <openmodeller/Normalizer.hh>
 
 #include <openmodeller/refcount.hh>
 
@@ -189,7 +189,7 @@ public:
 
   Sample const & environment() const; 
 
-  void normalize( const Sample& offsets, const Sample& scales );
+  void normalize( Normalizer * normalizerPtr );
 
   void setNormalizedEnvironment( const Sample& );
 

@@ -74,6 +74,7 @@ libopenmodeller_la_SOURCES = \
 	ignorecase_traits.cpp \
 	Log.cpp \
 	MapFormat.cpp \
+	MeanVarianceNormalizer.cpp \
 	Occurrence.cpp \
 	Occurrences.cpp \
 	OpenModeller.cpp \
@@ -83,6 +84,7 @@ libopenmodeller_la_SOURCES = \
 	RocCurve.cpp \
 	Sample.cpp \
 	Sampler.cpp \
+	ScaleNormalizer.cpp \
 	env_io/GeoTransform.cpp \
 	env_io/Header.cpp \
 	env_io/Map.cpp \
@@ -126,8 +128,10 @@ ominclude_HEADERS = \
 	ignorecase_traits.hh  \
 	Log.hh		   \
 	MapFormat.hh	   \
+	MeanVarianceNormalizer.hh \
 	Model.hh \
 	Normalizable.hh \
+	Normalizer.hh \
 	Occurrence.hh    \
 	Occurrences.hh   \
 	om.hh \
@@ -142,6 +146,7 @@ ominclude_HEADERS = \
 	SampleExprVar.hh \
 	Sample.hh \
 	Sampler.hh \
+	ScaleNormalizer.hh \
 	$(TERRALIB_HH)
 
 envioincludedir = $(omincludedir)/env_io

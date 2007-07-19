@@ -10,6 +10,7 @@
 
 #include "environmental_distance.hh"
 #include <openmodeller/Exceptions.hh>
+#include <openmodeller/ScaleNormalizer.hh>
 
 //
 // METADATA
@@ -110,6 +111,7 @@ AlgMetadata const *algorithmMetadata(){
 EnvironmentalDistance::EnvironmentalDistance() : AlgorithmImpl(&metadata){
    _initialized = false;
    covMatrix = covMatrixInv = NULL;
+   _normalizerPtr = new ScaleNormalizer( DATA_MIN, DATA_MAX, true );
 }
 
 // Destructor for the algorithm class
@@ -206,13 +208,6 @@ int EnvironmentalDistance::initialize(){
    _done = true;       // Needed for not-iterative algorithms
    _initialized = true;
    return 1; // There was no problem in initialization
-}
-
-// Normalize all environmental data to [DATA_MIN,DATA_MAX]
-int EnvironmentalDistance::needNormalization(Scalar *min, Scalar *max) const{
-  *min = DATA_MIN;
-  *max = DATA_MAX;
-  return 1;
 }
 
 // Returns the occurrence probability

@@ -1,7 +1,6 @@
 /**
  * Definition of Environment class.
  * 
- * @file
  * @author Mauro E S Muñoz (mauro@cria.org.br)
  * @date   2003-03-13
  * $Id$
@@ -162,9 +161,7 @@ EnvironmentImpl::EnvironmentImpl() :
   _ymin(0),
   _xmax(0),
   _ymax(0),
-  _normalize( false ),
-  _scales(),
-  _offsets()
+  _normalizerPtr(0)
 {
 }
 
@@ -180,7 +177,7 @@ EnvironmentImpl::initialize( const std::vector<std::string>& categs,
 			     const std::vector<std::string>& maps, 
 			     const std::string& mask )
 {
-  _normalize = false;
+  _normalizerPtr = 0;
 
   // Initialize mask and read its region.
   changeMask( mask );
@@ -339,8 +336,8 @@ EnvironmentImpl::isCategorical( int i )
 }
 
 
-/*****************/
-/*** normalize ***/
+/******************/
+/*** get MinMax ***/
 void 
 EnvironmentImpl::getMinMax( Sample * min, Sample * max ) const
 {
@@ -353,6 +350,7 @@ EnvironmentImpl::getMinMax( Sample * min, Sample * max ) const
     Map *map = lay->second;
 
     if ( !map->isCategorical() ) {
+
       Scalar mapMin, mapMax;
       map->getMinMax( &mapMin, &mapMax );
       (*min)[i] = mapMin;
@@ -365,10 +363,9 @@ EnvironmentImpl::getMinMax( Sample * min, Sample * max ) const
 }
 
 void
-EnvironmentImpl::normalize( bool use_norm, const Sample& offsets, const Sample& scales ) {
-  _normalize = use_norm;
-  _offsets = offsets;
-  _scales = scales;
+EnvironmentImpl::normalize( Normalizer * normalizerPtr ) {
+
+  _normalizerPtr = normalizerPtr;
 }
 
 void
@@ -391,6 +388,7 @@ EnvironmentImpl::getUnnormalizedInternal( Sample *sample, Coord x, Coord y ) con
   Sample::iterator s = sample->begin();
 
   while ( lay != end ) {
+
     if ( ! lay->second->get( x, y, s ) ) {
 #if defined(DEBUG_GET)
       Log::instance()->debug( "EnvironmentImpl::get() Coordinate (%f,%f) does not have data in layer %s\n",x,y,lay->first.c_str());
@@ -416,9 +414,10 @@ EnvironmentImpl::getNormalized( Coord x, Coord y ) const
 {
   Sample sample;
   getUnnormalizedInternal( &sample, x, y);
-  if ( sample.size() != 0 && _normalize ) {
-    sample *= _scales;
-    sample += _offsets;
+
+  if ( _normalizerPtr ) {
+
+    _normalizerPtr->normalize( &sample );
   }
 
   return sample;
@@ -427,10 +426,12 @@ EnvironmentImpl::getNormalized( Coord x, Coord y ) const
 Sample
 EnvironmentImpl::get( Coord x, Coord y ) const
 {
-  if ( _normalize ) {
+  if ( _normalizerPtr ) {
+
     return getNormalized(x,y);
   }
   else {
+
     return getUnnormalized(x,y);
   }
 }
@@ -531,11 +532,10 @@ EnvironmentImpl::getExtremes( Sample* min, Sample* max ) const
     ++map;
   }
 
-  if ( _normalize ) {
-    *min *= _scales;
-    *min += _offsets;
-    *max *= _scales;
-    *max += _offsets;
+  if ( _normalizerPtr ) {
+
+    _normalizerPtr->normalize( min );
+    _normalizerPtr->normalize( max );
   }
 
   return 1;

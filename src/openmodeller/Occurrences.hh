@@ -1,7 +1,6 @@
 /**
  * Declaration of Occurrences class.
  * 
- * @file
  * @author Mauro E S Muñoz (mauro@cria.org.br)
  * @date   2003-02-25
  * $Id$
@@ -35,6 +34,7 @@
 #include <openmodeller/Configurable.hh>
 #include <openmodeller/Environment.hh>
 #include <openmodeller/Normalizable.hh>
+#include <openmodeller/Normalizer.hh>
 #include <openmodeller/refcount.hh>
 #include <openmodeller/env_io/GeoTransform.hh>
 
@@ -187,8 +187,7 @@ public:
   /** normalizable interface */
   void getMinMax( Sample * min, Sample * max ) const;
 
-  void normalize( bool useNormalization, 
-		  const Sample& offsets, const Sample& scales );
+  void normalize( Normalizer * normalizerPtr );
 
   /** Sets environment object in each occurrence object
    */

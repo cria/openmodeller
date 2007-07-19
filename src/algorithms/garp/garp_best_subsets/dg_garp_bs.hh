@@ -1,7 +1,6 @@
 /**
  * Declaration of DG GARP with Best Subsets Procedure
  * 
- * @file   dg_garp_bs.hh
  * @author Ricardo Scachetti Pereira (rpereira@ku.edu)
  * @date   2004-12-10
  * $Id$
@@ -56,18 +55,6 @@ class DgGarpBestSubsets : public BestSubsets
 public:
   DgGarpBestSubsets();
   virtual ~DgGarpBestSubsets();
-
-  /** This method is used when you want to ensure that all variables in all
-    * environmental layers are scaled to the same value range. 
-    * GARP requires values to be normalized between -1.0 and 1.0.
-    * @param Scalar pointer min that the post normalised will be fitted to
-	*        Always set to -1.0 in GARP_BS
-    * @param Scalar pointer max that the post normalised will be fitted to
-	*        Always set to +1.0 in GARP_BS
-    * @return Always return 1 for GARP_BS.
-   */
-  int needNormalization( Scalar *min, Scalar *max ) const;
-
 
 private:
   AlgorithmImpl * getBSAlgorithm();

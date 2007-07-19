@@ -1,7 +1,6 @@
 /**
  * Declaration of Best Subsets Procedure template class
  * 
- * @file   best_subsets.cpp
  * @author Ricardo Scachetti Pereira (rpereira@ku.edu)
  * @date   2004-12-10
  * $Id$
@@ -184,7 +183,7 @@ AbstractBestSubsets::_setConfiguration( const ConstConfigurationPtr& config )
 // ****************************************************************
 // ************* needNormalization ********************************
 
-int AbstractBestSubsets::needNormalization( Scalar *min, Scalar *max ) const
+int AbstractBestSubsets::needNormalization()
 {
   // This is a hack.  needNormalization is called before initialize.
   AbstractBestSubsets *non_const = const_cast<AbstractBestSubsets*>(this);
@@ -194,12 +193,8 @@ int AbstractBestSubsets::needNormalization( Scalar *min, Scalar *max ) const
     }
   }
   AlgorithmPtr alg = AlgorithmFactory::newAlgorithm( _subAlgorithm.c_str() );
-  int rc = alg->needNormalization( min, max );
-
-  Log::instance()->info("Computing normalization: %f %f\n",*min,*max);
-
-  return rc;
-
+  
+  return alg->needNormalization();
 }
 
 // ****************************************************************

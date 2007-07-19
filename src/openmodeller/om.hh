@@ -1,7 +1,6 @@
 /**
  * All headers necessary to use openModeller.
  * 
- * @file
  * @author Mauro E S Muñoz (mauro@cria.org.br)
  * @date   2003-09-16
  * $Id$
