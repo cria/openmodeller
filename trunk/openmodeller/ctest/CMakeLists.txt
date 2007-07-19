@@ -82,4 +82,10 @@ ADD_EXECUTABLE (om_test_configuration ${OM_TEST_CONFIGURATION_SRCS})
 TARGET_LINK_LIBRARIES(om_test_configuration openmodeller)
 ADD_TEST(om_test_configuration ${EXECUTABLE_OUTPUT_PATH}/om_test_configuration)
 
+#redcount Tests
+SET (OM_TEST_REFCOUNT_SRCS om_test_refcount.cpp)
+ADD_EXECUTABLE (om_test_refcount ${OM_TEST_REFCOUNT_SRCS})
+TARGET_LINK_LIBRARIES(om_test_refcount openmodeller)
+ADD_TEST(om_test_refcount ${EXECUTABLE_OUTPUT_PATH}/om_test_refcount)
+
 
