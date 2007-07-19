@@ -212,7 +212,8 @@ class test_Configuration : public CxxTest :: TestSuite
 				std::cout << std::endl;
 				std::cout << "Testing Simple Xml Serialization check..." << std::endl;
 				//Still under development
-				/*A->setName(std::string("Freddy_the_Freeloader"));
+				/*
+				A->setName(std::string("Freddy_the_Freeloader"));
 				A->setValue(std::string("The Value"));
 				*a = "The Value";
 				*b = " \t" + *a + "\n\r   \t";
@@ -234,7 +235,8 @@ class test_Configuration : public CxxTest :: TestSuite
 oader>\n";
 				std::cout << sscheck.str();
 				TS_ASSERT(*a == sscheck.str());
-				}*/
+				}
+				*/
 				}
 
 		void test15 (){
@@ -254,40 +256,71 @@ oader>\n";
 				}
 
 		void test16 (){
-				/*
 				std::cout << std::endl;
-				std::cout << "Testing AddAttribute Sample..." << std::endl;
-				for(unsigned i=0; i<g->size(); i++){
-				(*g)[i] = -2 +i;
+				std::cout << "Testing getSubsection nothrow if not found (empty subsection list)..." << std::endl;
+				*a = "NoSubsection";				
+				try {
+				*C = A->getSubsection(*a,false);
+				TS_ASSERT(!*C);
 				}
-				A->addNameValue("SampleAttr",*g);
-				TS_ASSERT(*g == A->getAttributeAsSample("SampleAttr"));
-				*/				
+				catch(...){
+				TS_FAIL("Exception Thrown");			
+				}
 				}
 
 		void test17 (){
-				/*
 				std::cout << std::endl;
-				std::cout << "Testing AddAttribute Sample..." << std::endl;
-				for(unsigned i=0; i<g->size(); i++){
-				(*g)[i] = -2 +i;
-				}
-				A->addNameValue("SampleAttr",*g);
-				TS_ASSERT(*g == A->getAttributeAsSample("SampleAttr"));
-				*/				
+				std::cout << "Testing Add subsection..." << std::endl;
+				/*
+				*C = ConfigurationPtr(new ConfigurationImpl(std::string("Point")));
+				C->addNameValue("X",1);
+				C->addNameValue("Y",2);
+				A->addSubsection(*C);
+				TS_ASSERT(A->getAllSubsections().size() == 1);
+				*/
 				}
 
 		void test18 (){
-				/*
 				std::cout << std::endl;
-				std::cout << "Testing AddAttribute Sample..." << std::endl;
-				for(unsigned i=0; i<g->size(); i++){
-				(*g)[i] = -2 +i;
+				std::cout << "Testing getSubsection throw if not found (1 subsection in list)..." << std::endl;
+				*a = "NoSubsection";
+				try{
+				*C = A->getSubsection(*a);
+				TS_FAIL("No Exception Thrown");
 				}
-				A->addNameValue("SampleAttr",*g);
-				TS_ASSERT(*g == A->getAttributeAsSample("SampleAttr"));
-				*/
+				catch(SubsectionNotFound& e){
+				TS_ASSERT(*a == e.getName());
 				}
+				catch(...){
+				TS_FAIL("Incorrect Exception Thrown");
+				}
+				}
+
+		void test19 (){
+				std::cout << std::endl;
+				std::cout << "Testing getSubsection nothrow if not found (1 subsection in list)..." << std::endl;
+				*a = "NoSubsection";
+				try{
+				*C = A->getSubsection(*a,false);
+				TS_ASSERT(!*C);
+				}
+				catch(...){
+				TS_FAIL("Exception Thrown");
+				}
+				}
+
+		void test20 (){
+				std::cout << std::endl;
+				std::cout << "Testing Second Xml Serialization check..." << std::endl;
+				//Still under development
+				}
+
+		void test21 (){
+				std::cout << std::endl;
+				std::cout << "Testing Third Xml Serialization check..." << std::endl;
+				//Still under development
+				}
+
 
 		private:
 			ConfigurationImpl *A;
