@@ -42,17 +42,33 @@ class test_refcount : public CxxTest :: TestSuite
   public:
     void setUp (){
 			a = new ConfigurationPtr();
-			b = new ConfigurationPtr();
+			b = new ConfigurationPtr(*a);
     }
 
     void tearDown (){
 			delete a;
 			delete b;
     }
+
     void test1 (){
 			std::cout << "Testing operator->()..." << std::endl;
 			TS_ASSERT(a->operator->() == 0);
+			TS_ASSERT(a->operator->() == b->operator->());
     }
+
+    void test2 (){
+			std::cout << "Testing operator!()..." << std::endl;
+			TS_ASSERT(a->operator!());
+			TS_ASSERT(b->operator!());
+    }
+
+    void test3 (){
+			std::cout << "Testing operator bool()..." << std::endl;
+			TS_ASSERT(!a->operator bool());
+			TS_ASSERT(!b->operator bool());
+    }
+
+
 
   private:
 			ConfigurationPtr *a;
