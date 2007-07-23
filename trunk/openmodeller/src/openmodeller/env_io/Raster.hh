@@ -138,6 +138,11 @@ public:
      */
     void setMinMax( Scalar min, Scalar max );
 
+    /** Method to delete a raster.
+     * @return 1 if the raster was successfully deleted, 0 otherwise.
+     */
+    virtual int deleteRaster()= 0;
+
 protected:
 
     Scalar f_scalefactor;  // used in projection put.

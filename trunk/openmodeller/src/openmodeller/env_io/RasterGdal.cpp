@@ -1,7 +1,6 @@
 /**
  * Definition of RasterGdal class.
  * 
- * @file
  * @author Mauro E S Muñoz <mauro@cria.org.br>
  * @date 2003-08-22
  * @author Alexandre Copertino Jardim <alexcj@dpi.inpe.br>
@@ -626,4 +625,24 @@ RasterGdal::saveRow()
   write( f_data, f_currentRow, 1 );
 
   f_changed = 0;
+}
+
+
+/*********************/
+/*** delete Raster ***/
+  int
+RasterGdal::deleteRaster()
+{
+  GDALDriver * driver = f_ds->GetDriver();
+
+  int ret = driver->Delete( f_file.c_str() );
+
+  if ( ret == CE_Failure ) {
+
+    return 0;
+  }
+
+  f_ds = 0;
+
+  return 1;
 }

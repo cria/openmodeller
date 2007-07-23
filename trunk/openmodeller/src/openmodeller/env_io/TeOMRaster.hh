@@ -108,11 +108,16 @@ public:
 	int put( Coord x, Coord y );
 
 	/** Finds the minimum and maximum values in the first band. 
-     * @param min Pointer to minimum value
-     * @param max Pointer to maximum value
-     * @return 1 if values are present, 0 otherwise
-     */
-    int getMinMax( Scalar *min, Scalar *max );
+	* @param min Pointer to minimum value
+	* @param max Pointer to maximum value
+	* @return 1 if values are present, 0 otherwise
+	*/
+	int getMinMax( Scalar *min, Scalar *max );
+
+	/** Deletes the associated raster. 
+	* @return 1 if the raster was successfully deleted, 0 otherwise
+	*/
+	int deleteRaster();
 	
 private:
 	/**

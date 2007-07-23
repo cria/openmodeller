@@ -395,3 +395,14 @@ TeOMRaster::getMinMax( Scalar *min, Scalar *max )
 
 	return 1;
 }
+
+
+/*********************/
+/*** delete Raster ***/
+int
+TeOMRaster::deleteRaster()
+{
+	// To be implemented
+
+	return 0;
+}

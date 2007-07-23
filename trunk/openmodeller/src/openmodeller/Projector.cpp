@@ -90,6 +90,12 @@ Projector::createMap( const Model& model,
           if ( abort ) {
 
             Log::instance()->info( "Projection aborted." );
+
+            if ( ! map->deleteRaster() ) {
+
+              Log::instance()->warn( "Could not delete map file." );
+            }
+
             return false;
           }
       }
