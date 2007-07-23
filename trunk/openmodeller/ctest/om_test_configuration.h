@@ -46,8 +46,6 @@ class test_Configuration : public CxxTest :: TestSuite
 				A = new ConfigurationImpl();
 				B = new ConfigurationImpl("name");
 				C = new ConfigurationPtr();
-				subs = new Configuration::subsection_list;
-				attrs = new Configuration::attribute_list;
 				a = new std::string;
 				b = new std::string;
 				c = new int;
@@ -60,8 +58,6 @@ class test_Configuration : public CxxTest :: TestSuite
 		void tearDown (){
 				//There is no call for ConfigurationImpl's destructor because it is private.
 				delete C;				
-				delete subs;
-				delete attrs;
 				delete a;
 				delete b;
 				delete c;
@@ -76,10 +72,8 @@ class test_Configuration : public CxxTest :: TestSuite
 				std::cout << "Testing ConfigurationImpl() ..." << std::endl;
 				TS_ASSERT(A->getName().empty());
 				TS_ASSERT(A->getValue().empty());
-				*subs = A->getAllSubsections();
-				TS_ASSERT(subs->empty());
-				*attrs = A->getAllAttributes();
-				TS_ASSERT(attrs->empty());
+				TS_ASSERT((A->getAllSubsections()).empty());
+				TS_ASSERT((A->getAllAttributes()).empty());
 				}
 
 		void test2 (){
@@ -87,10 +81,8 @@ class test_Configuration : public CxxTest :: TestSuite
 				std::cout << "Testing ConfigurationImpl( char const * name ) ..." << std::endl;
 				TS_ASSERT(B->getName()=="name");
 				TS_ASSERT(B->getValue().empty());
-				*subs = B->getAllSubsections();
-				TS_ASSERT(subs->empty());
-				*attrs = B->getAllAttributes();
-				TS_ASSERT(attrs->empty());
+				TS_ASSERT((B->getAllSubsections()).empty());
+				TS_ASSERT((B->getAllAttributes()).empty());
 				}
 
 		void test3 (){
@@ -326,8 +318,6 @@ oader>\n";
 			ConfigurationImpl *A;
 			ConfigurationImpl *B;
 			ConfigurationPtr *C;
-			Configuration::subsection_list *subs;
-			Configuration::attribute_list *attrs;
 			std::string *a;
 			std::string *b;
 			int *c;
