@@ -336,6 +336,7 @@ AlgorithmImpl::createModel( const SamplerPtr& samp, Algorithm::ModelCommand *mod
 
         if ( abort ) {
 
+          Log::instance()->info( "Model creation aborted." );
           break;
         }
       }

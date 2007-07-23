@@ -400,7 +400,12 @@ OpenModeller::createMap( const EnvironmentPtr & env, char const *output_file, Ma
   // Create map on disc.
   Map map( RasterFactory::instance().create( output_file, _format ) );
 
-  Projector::createMap( model, _projEnv, &map, _actualAreaStats, _map_command );
+  bool finished = Projector::createMap( model, _projEnv, &map, _actualAreaStats, _map_command, _abortion_command );
+
+  if ( ! finished ) {
+
+    return 0;
+  }
 
   Log::instance()->info( "\nFinished projecting model\n" );
 

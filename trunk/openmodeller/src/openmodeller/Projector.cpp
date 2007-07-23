@@ -25,6 +25,7 @@
  * http://www.gnu.org/copyleft/gpl.html
  */
 
+#include <openmodeller/AbortionCommand.hh>
 #include <openmodeller/Projector.hh>
 #include <openmodeller/Log.hh>
 #include <openmodeller/Environment.hh>
@@ -42,12 +43,13 @@ using std::pair;
 
 /******************/
 /*** create Map ***/
-void
+bool
 Projector::createMap( const Model& model,
 		      const EnvironmentPtr& env,
 		      Map *map,
 		      AreaStats *areaStats,
-		      MapCommand *mapcommand )
+		      MapCommand *mapcommand,
+		      AbortionCommand *abortcommand )
 {
 
   // Retrieve possible adjustments and/or additions made
@@ -74,7 +76,25 @@ Projector::createMap( const Model& model,
   int pixels = 0;
   int pixelcount = hdr.ydim * hdr.xdim;
   int pixelstep = pixelcount/20;
+  bool abort = false;
+
   while( it != fin ) {
+
+    // Call the abort callback function if it is set.
+    if ( abortcommand && pixels%pixelstep == 0 ) {
+
+      try {
+
+	  abort = (*abortcommand)();
+
+          if ( abort ) {
+
+            Log::instance()->info( "Projection aborted." );
+            return false;
+          }
+      }
+      catch( ... ) {}
+    }
     
     pair<Coord,Coord> lonlat = *it;
 
@@ -92,10 +112,14 @@ Projector::createMap( const Model& model,
       map->put( lg, lt );
     }
     else {
+
       Scalar val = model->getValue( amb );
+
       if ( val < 0.0 ) val = 0.0;
       else if ( val > 1.0 ) val = 1.0;
+
       if ( areaStats ) {
+
 	areaStats->addPrediction( val ); 
       }
       // Write value on map.
@@ -104,14 +128,16 @@ Projector::createMap( const Model& model,
 
     
     // Call the callback function if it is set.
-    if ( mapcommand && pixels%pixelstep==0) {
+    if ( mapcommand && pixels%pixelstep == 0 ) {
+
       float progress = pixels/(float)pixelcount;
       if ( progress > 1.0 )
 	progress = 1.0;
-      try 
-	{
+
+      try {
+
 	  (*mapcommand)( progress );
-	}
+      }
       catch( ... ) {}
     }
     
@@ -126,5 +152,6 @@ Projector::createMap( const Model& model,
     catch( ... ) {}
     }
 
+  return true;
 }
 

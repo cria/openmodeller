@@ -30,6 +30,7 @@
 #define _PROJECTOR_HH_
 
 #include <openmodeller/om_defs.hh>
+#include <openmodeller/AbortionCommand.hh>
 #include <openmodeller/Environment.hh>
 #include <openmodeller/Model.hh>
 #include <openmodeller/env_io/Header.hh>
@@ -56,11 +57,12 @@ public:
 
   /** Create and save distribution map to disk.
    */
-  static void createMap( const Model& model,
+  static bool createMap( const Model& model,
 			 const EnvironmentPtr& env,
 			 Map *map,
 			 AreaStats *areaStats = 0,
-			 MapCommand *mapcommand = 0 );
+			 MapCommand *mapcommand = 0,
+			 AbortionCommand *abortcommand = 0 );
 
 private:
 		   // Don't allow construction.
