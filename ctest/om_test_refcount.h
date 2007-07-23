@@ -43,36 +43,48 @@ class test_refcount : public CxxTest :: TestSuite
     void setUp (){
 			a = new ConfigurationPtr();
 			b = new ConfigurationPtr(*a);
+			c = new ConstConfigurationPtr();
+			d = new ConstConfigurationPtr(*c);
     }
 
     void tearDown (){
 			delete a;
 			delete b;
+			delete c;
+			delete d;
     }
 
     void test1 (){
 			std::cout << "Testing operator->()..." << std::endl;
 			TS_ASSERT(a->operator->() == 0);
 			TS_ASSERT(a->operator->() == b->operator->());
+			TS_ASSERT(c->operator->() == 0);
+			TS_ASSERT(c->operator->() == d->operator->());
     }
 
     void test2 (){
 			std::cout << "Testing operator!()..." << std::endl;
 			TS_ASSERT(a->operator!());
 			TS_ASSERT(b->operator!());
+			TS_ASSERT(c->operator!());
+			TS_ASSERT(d->operator!());
     }
 
     void test3 (){
 			std::cout << "Testing operator bool()..." << std::endl;
 			TS_ASSERT(!a->operator bool());
 			TS_ASSERT(!b->operator bool());
+			TS_ASSERT(!c->operator bool());
+			TS_ASSERT(!d->operator bool());
     }
 
-
+//Assignment operators were not tested.
 
   private:
 			ConfigurationPtr *a;
 			ConfigurationPtr *b;
+			ConstConfigurationPtr *c;
+			ConstConfigurationPtr *d;
 };
 
 
