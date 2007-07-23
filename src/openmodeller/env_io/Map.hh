@@ -1,7 +1,6 @@
 /**
  * Declaration of Map class.
  * 
- * @file
  * @author Mauro E S Muñoz <mauro@cria.org.br>
  * @date 2003-09-05
  * $Id$
@@ -134,6 +133,12 @@ public:
   * @return Return zero if (x,y) is not defined in the map.
   */
   int getRowColumn( Coord x, Coord y, int *row, int *col );
+
+  /** 
+  * Deletes the associated raster.
+  * @return 1 if the associated raster was deleted, 0 otherwise.
+  */
+  int deleteRaster();
 
 private:
 

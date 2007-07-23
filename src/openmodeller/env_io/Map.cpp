@@ -1,7 +1,6 @@
 /**
  * Definition of Map class.
  * 
- * @file
  * @author Mauro E S Muñoz <mauro@cria.org.br>
  * @date 2003-09-05
  * @author Alexandre Copertino Jardim <alexcj@dpi.inpe.br>
@@ -139,4 +138,21 @@ Map::getRowColumn( Coord x, Coord y, int *row, int *col )
   *row = (int) floor ( (ymax - y) / yres );
 
   return result;
+}
+
+/*********************/
+/*** delete Raster ***/
+int 
+Map::deleteRaster()
+{
+  if ( _rst ) {
+
+    int retVal = _rst->deleteRaster();
+
+    _rst = 0;
+
+    return retVal;
+  }
+
+  return 1;
 }
