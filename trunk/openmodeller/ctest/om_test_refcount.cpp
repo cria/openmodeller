@@ -23,19 +23,19 @@ CxxTest::StaticSuiteDescription suiteDescription_test_refcount( "om_test_refcoun
 
 static class TestDescription_test_refcount_test1 : public CxxTest::RealTestDescription {
 public:
- TestDescription_test_refcount_test1() : CxxTest::RealTestDescription( Tests_test_refcount, suiteDescription_test_refcount, 53, "test1" ) {}
+ TestDescription_test_refcount_test1() : CxxTest::RealTestDescription( Tests_test_refcount, suiteDescription_test_refcount, 57, "test1" ) {}
  void runTest() { suite_test_refcount.test1(); }
 } testDescription_test_refcount_test1;
 
 static class TestDescription_test_refcount_test2 : public CxxTest::RealTestDescription {
 public:
- TestDescription_test_refcount_test2() : CxxTest::RealTestDescription( Tests_test_refcount, suiteDescription_test_refcount, 59, "test2" ) {}
+ TestDescription_test_refcount_test2() : CxxTest::RealTestDescription( Tests_test_refcount, suiteDescription_test_refcount, 65, "test2" ) {}
  void runTest() { suite_test_refcount.test2(); }
 } testDescription_test_refcount_test2;
 
 static class TestDescription_test_refcount_test3 : public CxxTest::RealTestDescription {
 public:
- TestDescription_test_refcount_test3() : CxxTest::RealTestDescription( Tests_test_refcount, suiteDescription_test_refcount, 65, "test3" ) {}
+ TestDescription_test_refcount_test3() : CxxTest::RealTestDescription( Tests_test_refcount, suiteDescription_test_refcount, 73, "test3" ) {}
  void runTest() { suite_test_refcount.test3(); }
 } testDescription_test_refcount_test3;
 
