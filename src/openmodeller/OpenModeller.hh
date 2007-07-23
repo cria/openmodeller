@@ -29,6 +29,7 @@
 #define _OM_CONTROLHH_
 
 #include <openmodeller/om_defs.hh>
+#include <openmodeller/AbortionCommand.hh>
 #include <openmodeller/Log.hh>
 #include <openmodeller/Configuration.hh>
 #include <openmodeller/AlgMetadata.hh>
@@ -87,6 +88,12 @@ public:
    *  setMapCallback() is called.
    */
   typedef void (*MapCallback)( float progress, void *extra_param );
+
+  /** Abortion callback function.
+   * @param extra_param A parameter set by user when setAbortionCallback() is called.
+   * @return Indicates if the current job must be aborted.
+   */
+  typedef bool (*AbortionCallback)( void *extra_param );
 
 
 public:
@@ -213,6 +220,20 @@ public:
    * @param sampler Sampler object to be used for modeling
    */
   void setSampler(const SamplerPtr& sampler);
+
+  /** Sets a callback function to be called during model creation and
+   * map projection to check if the job should be aborted.
+   * @param func Pointer to the callback function.
+   * @param param User parameter to be passed to the callback function.
+   */
+  void setAbortionCallback( AbortionCallback func, void *param=0 );
+
+
+  /** Sets a callback function to be called during model creation or map projection
+   * jobs and which will indicate if the job should be cancelled or not.
+   * @param func Pointer to the callback function.
+   */
+  void setAbortionCommand( AbortionCommand *func );
 
   /*****************************************************************************
    *
@@ -398,10 +419,14 @@ private:
 
   EnvironmentPtr _env;   ///< Original environmental layers
 
-  Projector::MapCommand *_map_command;    ///< map call back pointer.
+  // Projection callback pointer
+  Projector::MapCommand *_map_command;
 
-  // Command functions and user parameters.
+  // Model creation callback pointer
   Algorithm::ModelCommand *_model_command;
+
+  // Job abortion callback pointer
+  AbortionCommand *_abortion_command;
 
   // Output format
   MapFormat _format;

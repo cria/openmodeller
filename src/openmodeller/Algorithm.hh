@@ -33,6 +33,7 @@
 #include <string>
 
 #include <openmodeller/om_defs.hh>
+#include <openmodeller/AbortionCommand.hh>
 #include <openmodeller/Sampler.hh>
 #include <openmodeller/AlgMetadata.hh>
 #include <openmodeller/ignorecase_traits.hh>
@@ -124,7 +125,8 @@ public:
    * Training Methods
    */
 
-  Model createModel( const SamplerPtr& samp, Algorithm::ModelCommand *func = 0 );
+  Model createModel( const SamplerPtr& samp, Algorithm::ModelCommand *func = 0, AbortionCommand *abortFunc = 0 );
+
   /** Set the sampler object. Need to be called before start
    *  the algorithm initialization or iteration.
    */
