@@ -46,6 +46,7 @@
 #include <openmodeller/ConfusionMatrix.hh>
 #include <openmodeller/RocCurve.hh>
 #include <openmodeller/Log.hh>
+#include <openmodeller/AbortionCommand.hh>
 
 // openModeller algorithms specific includes
 //

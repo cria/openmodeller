@@ -1,7 +1,6 @@
 /**
  * Definition of OpenModeller class (former ControlInterface class).
  * 
- * @file
  * @author Mauro E S Mu�z <mauro@cria.org.br>
  * @date 2003-09-25
  * $Id$

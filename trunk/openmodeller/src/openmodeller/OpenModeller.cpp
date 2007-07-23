@@ -33,6 +33,7 @@
 #include <openmodeller/env_io/RasterFactory.hh>
 
 #include <openmodeller/om_defs.hh>
+#include <openmodeller/AbortionCommand.hh>
 #include <openmodeller/Log.hh>
 #include <openmodeller/Algorithm.hh>
 #include <openmodeller/AlgParameter.hh>
@@ -90,6 +91,27 @@ private:
 
 };
 
+/*** Helper class for callback to abort jobs (model creation or model projection) ***/
+
+class AbortionCallbackHelper : public AbortionCommand
+{
+
+public:
+  AbortionCallbackHelper( OpenModeller::AbortionCallback func, void *param ) :
+    arg( param ),
+    func( func ) {};
+  bool operator()() {
+    return func( arg );
+  }
+
+private:
+  void *arg;
+  OpenModeller::AbortionCallback func;
+
+};
+
+/*** Callback "setters" ***/
+
 void OpenModeller::setModelCallback( ModelCallback func, void *param ) {
   setModelCommand( new ModelCallbackHelper( func, param ) );
 }
@@ -108,6 +130,14 @@ void OpenModeller::setMapCommand( Projector::MapCommand *func ) {
   _map_command = func;
 }
 
+void OpenModeller::setAbortionCallback( AbortionCallback func, void *param ) {
+  setAbortionCommand( new AbortionCallbackHelper( func, param ) );
+}
+
+void OpenModeller::setAbortionCommand( AbortionCommand *func ) {
+  _abortion_command = func;
+}
+
 /****************************************************************/
 /************************* Open Modeller ************************/
 
@@ -118,6 +148,7 @@ OpenModeller::OpenModeller()
 {
   _map_command = 0;
   _model_command = 0;
+  _abortion_command = 0;
 
   _error[0] = '\0';
 
@@ -138,6 +169,8 @@ OpenModeller::~OpenModeller()
   if ( _map_command ) delete _map_command;
 
   if ( _model_command ) delete _model_command;
+
+  if ( _abortion_command ) delete _abortion_command;
 
   delete _actualAreaStats;
   delete _estimatedAreaStats;
@@ -294,7 +327,7 @@ OpenModeller::createModel()
     return 0;
   }
 
-  _alg->createModel( _samp, _model_command );
+  _alg->createModel( _samp, _model_command, _abortion_command );
 
   Log::instance()->info( "\nFinished creating model\n" );
 

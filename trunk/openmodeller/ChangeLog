@@ -2,7 +2,8 @@ Release 0.4.3 (?)
 -----------------------------
 
 	* New algorithm "Support Vector Machines" (C-SVC, nu-SVC and one-class SVM).
-	* Added support to multiple normalization techniques.
+	* Added support to multiple normalization techniques (two implementations are available: ScaleNormalizer and MeanVarianceNormalizer).
+	* New method to cancel jobs (model creation or model projection).
 
 Release 0.4.2 (2007-05-08)
 -----------------------------

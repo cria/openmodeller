@@ -1,7 +1,6 @@
 /**
  * Definition of types and macros of general use.
  * 
- * @file
  * @author Mauro E S Munoz
  * @date   2003-01-24
  * $Id$
@@ -33,7 +32,7 @@
 //
 #ifdef MINGW_QT
 //changed by Tim for wn build! (Temporary hack!)
-#define OM_VERSION "0.4"
+#define OM_VERSION "0.4.3"
 #else
 #define OM_VERSION VERSION
 #endif

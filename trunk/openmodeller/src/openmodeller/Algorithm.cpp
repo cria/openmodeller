@@ -25,6 +25,7 @@
  * http://www.gnu.org/copyleft/gpl.html
  */
 
+#include <openmodeller/AbortionCommand.hh>
 #include <openmodeller/Algorithm.hh>
 #include <openmodeller/AlgParameter.hh>
 #include <openmodeller/Log.hh>
@@ -295,7 +296,7 @@ AlgorithmImpl::setNormalization( const EnvironmentPtr& env) const
 }
 
 Model
-AlgorithmImpl::createModel( const SamplerPtr& samp, Algorithm::ModelCommand *model_command ) {
+AlgorithmImpl::createModel( const SamplerPtr& samp, Algorithm::ModelCommand *model_command, AbortionCommand *abort_command ) {
 
   if ( !samp )
     throw AlgorithmException( "Sampler not specified." );
@@ -322,12 +323,33 @@ AlgorithmImpl::createModel( const SamplerPtr& samp, Algorithm::ModelCommand *mod
   // Generate model.
   int ncycle = 0;
   int resultFlag = 1;
-  int doneFlag   = 0;
+  int doneFlag = 0;
+  bool abort = false;
 
   while ( resultFlag && !doneFlag ) {
 
+    if ( abort_command ) {
+
+      try {
+
+        abort = (*abort_command)();
+
+        if ( abort ) {
+
+          break;
+        }
+      }
+      catch ( char * message ) {
+        string error( "Exception: " );
+        error += message;
+        Log::instance()->error( 1, error.c_str() );
+        return 0;
+      }
+      catch (...) {}
+    }
+
     // I moved thee two calls out of the while() 
-    // above and into seperate calls because
+    // above and into separate calls because
     // when run in a thread we need to catch 
     // exceptions properly TS
     try {
@@ -337,26 +359,29 @@ AlgorithmImpl::createModel( const SamplerPtr& samp, Algorithm::ModelCommand *mod
     catch ( char * message ) {
       string error( "Exception: " );
       error += message;
-      Log::instance()->error(1, error.c_str() );
+      Log::instance()->error( 1, error.c_str() );
       return 0;
     }
     ncycle++;
     if ( model_command ) {
       try {
-        (*model_command)(getProgress() );
+        (*model_command)( getProgress() );
       }
       catch ( char * message ) {
         string error( "Exception: " );
         error += message;
-        Log::instance()->error(1, error.c_str() );
+        Log::instance()->error( 1, error.c_str() );
         return 0;
       }
       catch (...) {}
     }
   }
 
+  if ( abort )
+    throw AlgorithmException( "Model creation aborted.");
+
   if ( !done() )
-    throw AlgorithmException( "Algorithm error in done().") ;
+    throw AlgorithmException( "Algorithm error in done().");
 
   if ( ! finalize() )
     throw AlgorithmException( "Algorithm error in finalize." );
@@ -368,14 +393,13 @@ AlgorithmImpl::createModel( const SamplerPtr& samp, Algorithm::ModelCommand *mod
     catch ( char * message ) {
       string error( "Exception: " );
       error += message;
-      Log::instance()->error(1, error.c_str() );
+      Log::instance()->error( 1, error.c_str() );
       return 0;
     }
     catch (...) {}
   }
   
   return getModel();
-
 }
 
 Model
