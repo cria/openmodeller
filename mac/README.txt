@@ -1,8 +1,20 @@
 
-NOTE: This is a test version of openModeller library and command line tools. Use entirely at your own risk!
+NOTE: This is a test version of openModeller library and command line tools.
+Use entirely at your own risk!
 
 
-This is an openModeller Mac application installer based on the code in Subversion Head (i.e. a non stable version of the code). Despite the aforementioned disclaimer, we keep the library in a fairly stable state always and it should be fine for some basic testing. It would be great if you could test the installer and let me know how it works for you. The installer is rather large since it contains frameworks for GDAL, GEOS, UnixImageIO, PROJ etc. If I (and others) are happy with the quality of the package I will include it as part of the next release of the openModeller library. Note the package only contains openModeller library and the openModeller console tools (om_console, etc). If you want the Graphical User Interface based openModeller Desktop, there is a Max OSX application bundle already available for release 1.0.5 of the user interface.
+This is an openModeller Mac application installer based on the code in Subversion 
+Head (i.e. a non stable version of the code). Despite the aforementioned
+disclaimer, we keep the library in a fairly stable state always and it should
+be fine for some basic testing. It would be great if you could test the
+installer and let me know how it works for you. The installer is rather large
+since it contains frameworks for GDAL, GEOS, UnixImageIO, PROJ etc. If I (and
+others) are happy with the quality of the package I will include it as part of
+the next release of the openModeller library. Note the package only contains
+openModeller library and the openModeller console tools (om_console, etc). If
+you want the Graphical User Interface based openModeller Desktop, there is a
+Max OSX application bundle already available for release 1.0.5 of the user
+interface.
 
 You can download the test installer here
 
