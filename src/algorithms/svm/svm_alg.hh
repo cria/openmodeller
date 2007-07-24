@@ -70,6 +70,10 @@ protected:
   svm_problem _svm_problem;
 
   svm_model * _svm_model;
+
+  // Index of presence class in SVM arrays. No need to serialize it since it is
+  // detected at run time. -1 means "to be determined".
+  int _presence_index;
 };
 
 

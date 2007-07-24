@@ -243,7 +243,8 @@ algorithmMetadata()
 SvmAlgorithm::SvmAlgorithm() :
   AlgorithmImpl( &metadata ),
   _done( false ),
-  _num_layers( 0 )
+  _num_layers( 0 ),
+  _presence_index( -1 )
 {
   _normalizerPtr = new MeanVarianceNormalizer();
 }
@@ -548,6 +549,12 @@ SvmAlgorithm::iterate()
     return 0;
   }
 
+  int * labels = new int[2];
+
+  svm_get_labels( _svm_model, labels );
+
+  _presence_index = ( labels[0] == +1 ) ? 0 : 1;
+
   _done = true;
 
   // debug
@@ -582,9 +589,7 @@ SvmAlgorithm::getValue( const Sample& x ) const
 
     svm_predict_probability( _svm_model, node, estimates );
 
-    // Probability of presence is associated with label "1" which will always
-    // correspond to the first element (if you doubt you can test using svm_get_labels)
-    prob = estimates[0];
+    prob = estimates[_presence_index];
 
     delete estimates;
   }
@@ -666,6 +671,14 @@ SvmAlgorithm::_getConfiguration( ConfigurationPtr& config ) const
 
   vectors_config->addNameValue( "Total", _svm_model->l );
 
+  // Labels
+  int * labels = new int[2];
+
+  svm_get_labels( _svm_model, labels );
+
+  model_config->addNameValue( "Labels", labels, 2 );
+
+  // Vectors
   const double * const *sv_coef = _svm_model->sv_coef;
   const svm_node * const *SV = _svm_model->SV;
 
@@ -796,10 +809,11 @@ SvmAlgorithm::_setConfiguration( const ConstConfigurationPtr& config )
     ++i;
   }
 
-  // Always the same
-  _svm_model->label = new int[2];
-  _svm_model->label[0] = 1;
-  _svm_model->label[1] = -1;
+  // Labels
+  int size;
+  model_config->getAttributeAsIntArray( "Labels", &_svm_model->label, &size );
+
+  _presence_index = ( _svm_model->label[0] == +1 ) ? 0 : 1;
 
   _svm_model->param = _svm_parameter;
 
