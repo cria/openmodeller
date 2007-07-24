@@ -100,6 +100,7 @@ INSTALL(TARGETS openmodeller
 # Added by Tim to install headers
 
 SET(OM_CORE_HDRS
+  AbortionCommand.hh
   AlgMetadata.hh 
   AlgorithmFactory.hh  
   Algorithm.hh     
