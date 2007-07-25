@@ -177,8 +177,6 @@ EnvironmentImpl::initialize( const std::vector<std::string>& categs,
 			     const std::vector<std::string>& maps, 
 			     const std::string& mask )
 {
-  _normalizerPtr = 0;
-
   // Initialize mask and read its region.
   changeMask( mask );
   changeLayers( categs, maps );
@@ -192,6 +190,7 @@ EnvironmentImpl::~EnvironmentImpl()
 {
   clearLayers();
   clearMask();
+  _normalizerPtr = 0;
 }
 
 void
