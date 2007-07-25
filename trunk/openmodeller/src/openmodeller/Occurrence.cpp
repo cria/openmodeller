@@ -81,8 +81,6 @@ OccurrenceImpl::normalize( Normalizer * normalizerPtr )
 
   if ( normalizerPtr ) {
 
-    int dim = normEnv_.size();
-
     normalizerPtr->normalize( &normEnv_ );
   }
 }
