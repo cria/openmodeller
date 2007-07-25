@@ -250,13 +250,12 @@ protected:
 
   Normalizer * _normalizerPtr;
 
+  ParamSetType _param;
+
 private:
+
   AlgMetadata const *_metadata;
 
-protected:
-  ParamSetType  _param;
-  
-  
 private:
   
   typedef ParamSetType::value_type ParamSetValueType;
