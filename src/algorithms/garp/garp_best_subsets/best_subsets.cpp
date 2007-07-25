@@ -138,6 +138,15 @@ int BestSubsets::initialize()
   if (!getParameter("MaxThreads", &_maxThreads))        
     Log::instance()->error(1, "Parameter MaxThreads not set properly.\n");
 
+  if ( _maxThreads != 1 )
+  {
+    // When maxThreads is greater than 1, if the machine has only one processor then 
+    // om crashes, and if the machine has more than one processor GDAL outputs lots
+    // of IO errors, so meanwhile it seems better just to force MaxThreads to be 1.
+    Log::instance()->warn("Multithreading is temporarily disabled. Parameter MaxThreads (%d) will be set to one.\n", _maxThreads);
+    _maxThreads = 1;
+  }
+
   // convert percentages (100%) to proportions (1.0) for external parameters 
   _commissionThreshold /= 100.0;
   _omissionThreshold /= 100.0;

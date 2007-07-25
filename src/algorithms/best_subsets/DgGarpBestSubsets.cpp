@@ -1,7 +1,6 @@
 /**
  * Declaration of GARP with Best Subsets Procedure
  * 
- * @file   garp_best_subsets.cpp
  * @author Ricardo Scachetti Pereira (rpereira@ku.edu)
  * @date   2004-08-25
  * $Id$
@@ -47,7 +46,7 @@ AlgParamMetadata parameters_bs[NUM_PARAM] =
   // Best Subsets Parameters
   {
     "TrainingProportion",          // Id.
-    "Training Proportion",          // Name.
+    "Training Proportion",         // Name.
     "Double",                      // Type.
 
     // Overview.
