@@ -51,8 +51,8 @@ AlgorithmImpl::AlgorithmImpl( AlgMetadata const *metadata ) :
   ReferenceCountedObject(),
   _samp(),
   _metadata( metadata ),
-  _param(),
-  _normalizerPtr(0)
+  _normalizerPtr(0),
+  _param()
 {
 #if defined(DEBUG_MEMORY)
   Log::instance()->debug( "AlgorithmImpl::AlgorithmImpl() at %x\n", this );
@@ -116,6 +116,12 @@ AlgorithmImpl::getConfiguration() const
 void
 AlgorithmImpl::setConfiguration( const ConstConfigurationPtr &config )
 {
+  // Important: this code runs in two different situations:
+  // 1- Loading a fully serialized algorithm, i.e. an algorithm that was just
+  //    run and has all its properties filled with content.
+  // 2- Loading a createModel request which contains only the algorithm id
+  //    and its parameters.
+
   ConstConfigurationPtr param_config = config->getSubsection( "Parameters" );
   
   Configuration::subsection_list params = param_config->getAllSubsections();
@@ -144,7 +150,9 @@ AlgorithmImpl::setConfiguration( const ConstConfigurationPtr &config )
   }
   catch( SubsectionNotFound& e ) {
 
-    _normalizerPtr = 0;
+    // No need to set _normalizerPtr to null, because alg already initializes
+    // a default normalizer. Setting it to null will in fact make algorithms
+    // crash if you run them with om_create (deserializing from an XML request).
   }
 
   if ( found_normalization_section ) {
