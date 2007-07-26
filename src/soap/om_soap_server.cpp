@@ -1022,6 +1022,12 @@ bool readDirectory( const char* dir, const char* label, ostream &xml, int depth 
       continue;
     }
 
+    // Skip ".aux" files
+    if ( strstr( nameList[i]->d_name, ".aux" ) != 0 ) {
+
+      continue;
+    }
+
     // Need the full name to "stat"
     string fullName( myDir );
     fullName.append( nameList[i]->d_name );
