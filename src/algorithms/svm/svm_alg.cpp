@@ -513,24 +513,24 @@ SvmAlgorithm::initialize()
     return 0;
   }
 
-  // debug
-
-  cout << "\nSVM type: " << _svm_parameter.svm_type; 
-
-  cout << "\nKernel type: " << _svm_parameter.kernel_type; 
-
-  cout << "\nInput for svm-train:"; 
-
-  for ( int z = 0; z < num_points; ++z ) {
-
-    cout << "\n" << _svm_problem.y[z]; 
-
-    for ( int n = 0; n < _num_layers; ++n ) {
-
-      cout << " " << _svm_problem.x[z][n].index << ":";
-      cout << _svm_problem.x[z][n].value;
-    }
-  }
+  // Debug
+  //
+  //  cout << "\nSVM type: " << _svm_parameter.svm_type; 
+  //
+  //  cout << "\nKernel type: " << _svm_parameter.kernel_type; 
+  //
+  //  cout << "\nInput for svm-train:"; 
+  //
+  //  for ( int z = 0; z < num_points; ++z ) {
+  //
+  //    cout << "\n" << _svm_problem.y[z]; 
+  //
+  //    for ( int n = 0; n < _num_layers; ++n ) {
+  //
+  //      cout << " " << _svm_problem.x[z][n].index << ":";
+  //      cout << _svm_problem.x[z][n].value;
+  //    }
+  //  }
 
   return 1;
 }
