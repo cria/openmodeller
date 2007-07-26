@@ -74,6 +74,11 @@ Sample const & OccurrenceImpl::environment() const
   }
 }
 
+Sample const & OccurrenceImpl::originalEnvironment() const
+{
+  return unnormEnv_;
+}
+
 void
 OccurrenceImpl::normalize( Normalizer * normalizerPtr )
 {

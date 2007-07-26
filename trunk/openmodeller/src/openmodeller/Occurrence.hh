@@ -189,6 +189,8 @@ public:
 
   Sample const & environment() const; 
 
+  Sample const & originalEnvironment() const; 
+
   void normalize( Normalizer * normalizerPtr );
 
   void setNormalizedEnvironment( const Sample& );
