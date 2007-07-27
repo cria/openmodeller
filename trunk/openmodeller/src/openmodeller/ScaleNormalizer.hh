@@ -29,7 +29,7 @@
 
 #include <openmodeller/Normalizer.hh>
 
-class ScaleNormalizer : public Normalizer {
+class dllexp ScaleNormalizer : public Normalizer {
 
 public:
 

@@ -29,7 +29,7 @@
 
 #include <openmodeller/Normalizer.hh>
 
-class MeanVarianceNormalizer : public Normalizer {
+class dllexp MeanVarianceNormalizer : public Normalizer {
 
 public:
 

@@ -27,6 +27,7 @@
 #include "svm_alg.hh"
 #include "svm.h"
 #include <openmodeller/MeanVarianceNormalizer.hh>
+#include <openmodeller/Sampler.hh>
 
 #include <string.h>
 #include <stdio.h>
