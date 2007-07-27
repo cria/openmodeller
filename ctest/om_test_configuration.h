@@ -57,7 +57,7 @@ class test_Configuration : public CxxTest :: TestSuite
 
 		void tearDown (){
 				//There is no call for ConfigurationImpl's destructor because it is private.
-				delete C;				
+				delete C;
 				delete a;
 				delete b;
 				delete c;
@@ -133,13 +133,22 @@ class test_Configuration : public CxxTest :: TestSuite
 
 		void test8 (){
 				std::cout << std::endl;
-				std::cout << "Testing AddAttribute string..." << std::endl;
+				std::cout << "Testing AddAttribute string with no whitespace..." << std::endl;
 				*a = "String Value";
 				A->addNameValue("StringAttr",*a);
 				TS_ASSERT(A->getAttribute("StringAttr") == *a);
 				}
 
 		void test9 (){
+				std::cout << std::endl;
+				std::cout << "Testing AddAttribute string with whitespace..." << std::endl;
+				*a = "String Value";
+				*b = " \t" + *a + "\n\r   \t";
+				A->addNameValue("StringAttr",*b);
+				TS_ASSERT(A->getAttribute("StringAttr") == *a);
+				}
+
+		void test10 (){
 				std::cout << std::endl;
 				std::cout << "Testing GetAttribute throw if not found (1 attrin list)..." << std::endl;
 				*a = "String Value";
@@ -157,7 +166,7 @@ class test_Configuration : public CxxTest :: TestSuite
 				}
 				}
 
-		void test10 (){
+		void test11 (){
 				std::cout << std::endl;
 				std::cout << "Testing AddAttribute int..." << std::endl;
 				*c = 42;
@@ -166,7 +175,7 @@ class test_Configuration : public CxxTest :: TestSuite
 				TS_ASSERT(*d == *c);
 				}
 //Test11 completely modified from test_configuration.cpp
-		void test11 (){
+		void test12 (){
 				std::cout << std::endl;
 				std::cout << "Testing GetAttribute throw if not found (2 attrin list)..." << std::endl;
 				*a = "BadAttr";
@@ -181,7 +190,7 @@ class test_Configuration : public CxxTest :: TestSuite
 				}
 				}
 
-		void test12 (){
+		void test13 (){
 				std::cout << std::endl;
 				std::cout << "Testing AddAttribute double..." << std::endl;
 				*e = 3.1415;
@@ -190,7 +199,7 @@ class test_Configuration : public CxxTest :: TestSuite
 				TS_ASSERT(*e == *f);
 				}
 
-		void test13 (){
+		void test14 (){
 				std::cout << std::endl;
 				std::cout << "Testing AddAttribute Sample..." << std::endl;
 				for(unsigned i=0; i<g->size(); i++){
@@ -200,7 +209,7 @@ class test_Configuration : public CxxTest :: TestSuite
 				TS_ASSERT(*g == A->getAttributeAsSample("SampleAttr"));
 				}
 
-		void test14 (){
+		void test15 (){
 				std::cout << std::endl;
 				std::cout << "Testing Simple Xml Serialization check..." << std::endl;
 				//Still under development
@@ -231,7 +240,7 @@ oader>\n";
 				*/
 				}
 
-		void test15 (){
+		void test16 (){
 				std::cout << std::endl;
 				std::cout << "Testing getSubsection throw if not found (empty subsection list)..." << std::endl;
 				*a = "NoSubsection";
@@ -247,7 +256,7 @@ oader>\n";
 				}
 				}
 
-		void test16 (){
+		void test17 (){
 				std::cout << std::endl;
 				std::cout << "Testing getSubsection nothrow if not found (empty subsection list)..." << std::endl;
 				*a = "NoSubsection";				
@@ -260,7 +269,7 @@ oader>\n";
 				}
 				}
 
-		void test17 (){
+		void test18 (){
 				std::cout << std::endl;
 				std::cout << "Testing Add subsection..." << std::endl;
 				/*
@@ -272,7 +281,7 @@ oader>\n";
 				*/
 				}
 
-		void test18 (){
+		void test19 (){
 				std::cout << std::endl;
 				std::cout << "Testing getSubsection throw if not found (1 subsection in list)..." << std::endl;
 				*a = "NoSubsection";
@@ -288,7 +297,7 @@ oader>\n";
 				}
 				}
 
-		void test19 (){
+		void test20 (){
 				std::cout << std::endl;
 				std::cout << "Testing getSubsection nothrow if not found (1 subsection in list)..." << std::endl;
 				*a = "NoSubsection";
@@ -301,13 +310,13 @@ oader>\n";
 				}
 				}
 
-		void test20 (){
+		void test21 (){
 				std::cout << std::endl;
 				std::cout << "Testing Second Xml Serialization check..." << std::endl;
 				//Still under development
 				}
 
-		void test21 (){
+		void test22 (){
 				std::cout << std::endl;
 				std::cout << "Testing Third Xml Serialization check..." << std::endl;
 				//Still under development
