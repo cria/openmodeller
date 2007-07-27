@@ -85,8 +85,10 @@ HEADERS +=  AlgMetadata.hh \
             Exceptions.hh \
             Log.hh \
             MapFormat.hh \
+            MeanVarianceNormalizer.hh \
             Model.hh \
             Normalizable.hh \
+            Normalizer.hh \
             Occurrence.hh \
             Occurrences.hh \
             OpenModeller.hh \
@@ -97,6 +99,7 @@ HEADERS +=  AlgMetadata.hh \
             SampleExpr.hh \
             SampleExprVar.hh \
             Sampler.hh \
+            ScaleNormalizer.hh \
             ignorecase_traits.hh \
             om.hh \
             om_defs.hh \
@@ -116,11 +119,13 @@ SOURCES +=  AlgParameter.cpp \
             Occurrences.cpp \
             OpenModeller.cpp \
             MapFormat.cpp \
+            MeanVarianceNormalizer.cpp \
             #Model.cpp \
             ignorecase_traits.cpp \
             Projector.cpp \
             Random.cpp \
             RocCurve.cpp \
             Sample.cpp \
-            Sampler.cpp 
+            Sampler.cpp \
+            ScaleNormalizer.cpp
 

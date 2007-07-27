@@ -18,4 +18,4 @@ SUBDIRS+=csm.pro
 SUBDIRS+=dg_garp
 SUBDIRS+=best_subsets
 SUBDIRS+=garp
-SUBDIRS+=svm
+#SUBDIRS+=svm
