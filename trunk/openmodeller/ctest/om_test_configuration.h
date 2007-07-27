@@ -168,16 +168,11 @@ class test_Configuration : public CxxTest :: TestSuite
 
 		void test11 (){
 				std::cout << std::endl;
-				std::cout << "Testing AddAttribute int..." << std::endl;
-				*c = 42;
-				A->addNameValue("IntAttr",*c);
-				*d = A->getAttributeAsInt("IntAttr" , 0);
-				TS_ASSERT(*d == *c);
-				}
-//Test11 completely modified from test_configuration.cpp
-		void test12 (){
-				std::cout << std::endl;
 				std::cout << "Testing GetAttribute throw if not found (2 attrin list)..." << std::endl;
+				*a = "String Value1";
+				A->addNameValue("StringAttr1",*a);
+				*a = "String Value2";
+				A->addNameValue("StringAttr2",*a);
 				*a = "BadAttr";
 				try{
 					throw A->getAttribute(*a,"Default Value");
@@ -189,6 +184,16 @@ class test_Configuration : public CxxTest :: TestSuite
 				TS_FAIL("Incorrect Exception Thrown");
 				}
 				}
+
+		void test12 (){
+				std::cout << std::endl;
+				std::cout << "Testing AddAttribute int..." << std::endl;
+				*c = 42;
+				A->addNameValue("IntAttr",*c);
+				*d = A->getAttributeAsInt("IntAttr" , 0);
+				TS_ASSERT(*d == *c);
+				}
+//Test11 completely modified from test_configuration.cpp
 
 		void test13 (){
 				std::cout << std::endl;
