@@ -27,11 +27,32 @@ and you can run them using 'make test'
 Writing tests:
 
 If you want to write your own tests for openModeller, take
-om_test_template.h as a template. When you finish it, run
-the following command:
+om_test_template.h as a template. When you finish it, open 
+CMakeLists.txt and type it:
 
+#yourtest Tests
+SET (OM_TEST_YOURTEST_SRCS om_test_yourtest.cpp)
+ADD_EXECUTABLE (om_test_yourtest ${OM_TEST_YOURTEST_SRCS})
+TARGET_LINK_LIBRARIES(om_test_yourtest openmodeller)
+ADD_TEST(om_test_yourtest ${EXECUTABLE_OUTPUT_PATH}/om_test_yourtest)
+
+Now you need to type the following commands:
+
+$cd ~
+$cd dev/cpp/openmodeller/ctest
 $./cxxtestgen.pl --error-printer -o om_test_yourtest.cpp om_test_yourtest.h
 
+Build with the following commands:
+
+$cd ~
+$cd dev/cpp/openmodeller/build
+$cmake ..
+$make
+$sudo make install
+
+Run tests:
+
+$make test
 
 
 
