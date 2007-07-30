@@ -46,6 +46,7 @@ class test_Configuration : public CxxTest :: TestSuite
 				A = new ConfigurationImpl();
 				B = new ConfigurationImpl("name");
 				C = new ConfigurationPtr();
+				D = new ConstConfigurationPtr();
 				a = new std::string;
 				b = new std::string;
 				c = new int;
@@ -58,6 +59,7 @@ class test_Configuration : public CxxTest :: TestSuite
 		void tearDown (){
 				//There is no call for ConfigurationImpl's destructor because it is private.
 				delete C;
+				delete D;
 				delete a;
 				delete b;
 				delete c;
@@ -193,7 +195,6 @@ class test_Configuration : public CxxTest :: TestSuite
 				*d = A->getAttributeAsInt("IntAttr" , 0);
 				TS_ASSERT(*d == *c);
 				}
-//Test11 completely modified from test_configuration.cpp
 
 		void test13 (){
 				std::cout << std::endl;
@@ -221,27 +222,21 @@ class test_Configuration : public CxxTest :: TestSuite
 				/*
 				A->setName(std::string("Freddy_the_Freeloader"));
 				A->setValue(std::string("The Value"));
-				*a = "The Value";
-				*b = " \t" + *a + "\n\r   \t";
-				A->setValue(*b);
-				*a = "String Value";
-				A->addNameValue("StringAttr",*a);
-				*c = 42;
-				A->addNameValue("IntAttr",*c);
-				*e = 3.1415;
-				A->addNameValue("DoubleAttr",*e);
 				for(unsigned i=0; i<g->size(); i++){
 									(*g)[i] = -2 +i;
 									}
 				A->addNameValue("SampleAttr",*g);
-
+				*e = 3.1415;
+				A->addNameValue("DoubleAttr",*e);
+				*c = 42;
+				A->addNameValue("IntAttr",*c);
+				*a = "String Value";
+				A->addNameValue("StringAttr",*a);
 				std::stringstream sscheck(std::ios::out);
 				Configuration::writeXml(A,sscheck);
-				*a = "<Freddy_the_Freeloader\n StringAttr='String Value'\n IntAttr='42'\n DoubleAttr='3.1415000000000002'\n SampleAttr='-2 -1 0 1 2'\n>\nThe Value\n</Freddy_the_Freel
-oader>\n";
+				*a = "<StringAttr='String Value'\n IntAttr='42'\n DoubleAttr='3.1415000000000002'\n SampleAttr='-2 -1 0 1 2'\n>\nThe Value\n</Freddy_the_Freeloader>\n";
 				std::cout << sscheck.str();
 				TS_ASSERT(*a == sscheck.str());
-				}
 				*/
 				}
 
@@ -250,7 +245,7 @@ oader>\n";
 				std::cout << "Testing getSubsection throw if not found (empty subsection list)..." << std::endl;
 				*a = "NoSubsection";
 				try {
-					*C = A->getSubsection(*a);
+					*C = A->getSubsection(*a,true);
 					TS_FAIL("No Exception Thrown");
 				}
 				catch(SubsectionNotFound& e){
@@ -275,6 +270,16 @@ oader>\n";
 				}
 
 		void test18 (){
+				/*
+				std::cout << std::endl;
+				std::cout << "Testing Add subsection..." << std::endl;
+				A->addSubsection(*C);
+				*C=A->getSubsection();
+				TS_ASSERT();
+				*/
+				}
+
+		void test19 (){
 				std::cout << std::endl;
 				std::cout << "Testing Add subsection..." << std::endl;
 				/*
@@ -286,7 +291,7 @@ oader>\n";
 				*/
 				}
 
-		void test19 (){
+		void test20 (){
 				std::cout << std::endl;
 				std::cout << "Testing getSubsection throw if not found (1 subsection in list)..." << std::endl;
 				*a = "NoSubsection";
@@ -302,7 +307,7 @@ oader>\n";
 				}
 				}
 
-		void test20 (){
+		void test21 (){
 				std::cout << std::endl;
 				std::cout << "Testing getSubsection nothrow if not found (1 subsection in list)..." << std::endl;
 				*a = "NoSubsection";
@@ -315,13 +320,13 @@ oader>\n";
 				}
 				}
 
-		void test21 (){
+		void test22 (){
 				std::cout << std::endl;
 				std::cout << "Testing Second Xml Serialization check..." << std::endl;
 				//Still under development
 				}
 
-		void test22 (){
+		void test23 (){
 				std::cout << std::endl;
 				std::cout << "Testing Third Xml Serialization check..." << std::endl;
 				//Still under development
@@ -332,6 +337,7 @@ oader>\n";
 			ConfigurationImpl *A;
 			ConfigurationImpl *B;
 			ConfigurationPtr *C;
+			ConstConfigurationPtr *D;
 			std::string *a;
 			std::string *b;
 			int *c;
