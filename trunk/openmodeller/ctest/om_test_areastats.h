@@ -34,7 +34,9 @@
 
 #include "cxxtest/TestSuite.h"
 #include "AreaStats.hh"
+#include "Configuration.hh"
 #include <float.h>
+#include <string>
 
 class test_AreaStats : public CxxTest :: TestSuite 
 {
@@ -42,11 +44,13 @@ class test_AreaStats : public CxxTest :: TestSuite
 		void setUp (){
 				A = new AreaStats(Scalar(1.00));
 				B = new AreaStats(*A);
+				C = new ConfigurationPtr();
 				}
 
 		void tearDown (){
 				delete A;
 				delete B;
+				delete C;
 				}
 
 		void test1 (){
@@ -123,8 +127,19 @@ class test_AreaStats : public CxxTest :: TestSuite
 				TS_ASSERT(A->getAreaNotPredicted()==1);
 				TS_ASSERT(A->getPredictionThreshold()==Scalar(1.00));
 				}
+
+		void test8 (){
+				std::cout << std::endl;
+				std::cout << "Testing getConfiguration() const..." << std::endl;
+				/*Under development
+				//*C=A->getConfiguration();
+				//TS_ASSERT(C->getAttributeAsInt("TotalCells",-1)==0);
+				//TS_ASSERT(C->getAttributeAsInt("CellsPredicted",-1)==0);
+				TS_ASSERT(C->getAttributeAsInt("PredictionThreshold",-1)==1.00);
+				*/}
 		private:
 			AreaStats *A;
 			AreaStats *B;
+			ConfigurationPtr *C;
 };
 #endif
