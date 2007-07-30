@@ -357,6 +357,7 @@ RasterGdal::create(int format)
         f_hdr.nband,
         /* data type */ Formats[format].dataType,
         /* opt parameters */ papszOptions );
+    CSLDestroy( papszOptions );
   }
   else
   {
