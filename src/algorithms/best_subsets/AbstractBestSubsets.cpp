@@ -245,8 +245,7 @@ int AbstractBestSubsets::initialize()
   _softOmissionThreshold = (_omissionThreshold >= 1.0);
   if (_modelsUnderOmission > _totalRuns)
   {
-    Log::instance()->warn("ModelsUnderOmission (%d) is greater than the number of runs (%d)\n",
-        _modelsUnderOmission, _totalRuns);
+    Log::instance()->warn("ModelsUnderOmission (%d) is greater than the number of runs (%d). ModelsUnderOmission will be reduced to (%d)\n", _modelsUnderOmission, _totalRuns, _totalRuns);
     _modelsUnderOmission = _totalRuns;
   }
 
