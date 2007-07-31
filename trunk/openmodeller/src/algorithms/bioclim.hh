@@ -70,8 +70,8 @@ private:
 
   Sample _minimum; ///> Mininum value for each variable.
   Sample _maximum; ///> Maximum value for each variable.
-  Sample _mean;        ///> Mean of sampled points.
-  Sample _std_dev;   ///> Standard deviations for each variable.
+  Sample _mean;    ///> Mean of sampled points.
+  Sample _std_dev; ///> Standard deviations for each variable.
 
 };
 
