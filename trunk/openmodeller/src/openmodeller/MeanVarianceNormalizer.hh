@@ -42,6 +42,8 @@ public:
 
   void normalize( Sample * samplePtr );
 
+  Normalizer * getCopy();
+  
   ConfigurationPtr getConfiguration() const;
   
   void setConfiguration( const ConstConfigurationPtr & );

@@ -41,6 +41,13 @@ MeanVarianceNormalizer::MeanVarianceNormalizer() :
 /*** destructor ***/
 MeanVarianceNormalizer::~MeanVarianceNormalizer() {}
 
+/****************/
+/*** get Copy ***/
+Normalizer * MeanVarianceNormalizer::getCopy() {
+
+  return new MeanVarianceNormalizer( *this );
+}
+
 /*****************************/
 /*** compute Normalization ***/
 void MeanVarianceNormalizer::computeNormalization( const ReferenceCountedPointer<const SamplerImpl>& samplerPtr ) {

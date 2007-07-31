@@ -204,7 +204,7 @@ public:
   std::vector<ScalarVector> getEnvironmentMatrix();
 
   /** Print occurrence data and its points. */
-  void print( char *msg="" ) const;
+  void dump( char *msg="" ) const;
 
   virtual ConfigurationPtr getConfiguration() const;
 

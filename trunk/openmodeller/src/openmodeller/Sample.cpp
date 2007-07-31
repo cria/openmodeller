@@ -8,6 +8,9 @@
 // cmath is included for std::sqrt
 #include <cmath>
 
+// String stream is included for the dump method
+#include <sstream>
+
 // Algorithm is included for std::min and std::max.
 #include <algorithm>
 
@@ -19,6 +22,10 @@
 
 // FIXME - SampleExpr.hh needs to be included after <vector>
 #include <SampleExpr.hh>
+
+// Log is included for the dump method
+#include <openmodeller/Log.hh>
+
 
 using namespace std;
 
@@ -207,15 +214,17 @@ Sample::equals( const Sample& rhs ) const
 void
 Sample::dump() const
 {
-  cout << "[";
+  ostringstream ss;
+  ss << "[";
   Scalar *vl = value_;
   size_t count = size_;
   for( size_t i = 0; i<count; ++i ) {
-    cout << *vl++;
+    ss << *vl++;
     if ( i < count-1 )
-      cout << ", ";
+      ss << ", ";
   }
-  cout << "]";
+  ss << "]";
+  Log::instance()->info( "Sample %s\n", ss.str().c_str() );
 }
 
 Sample&

@@ -159,11 +159,19 @@ public:
    * Model Implementation.
    */
   
-   /** The algorithm should return != 0 if it needs normalization
+  /** The algorithm should return != 0 if it needs normalization
    *  of environmental variables (non categorical ones).
    */
   virtual int needNormalization()
   { return ( _normalizerPtr == 0 ) ? 0 : 1; }
+
+  /** Returns the normalizer used by the algorithm. This method was 
+   *  created for super algorithms like "best subsets", so that the
+   *  super algorithm can retrieve and use the same normalizer needed
+   *  by the sub algorithm.
+   */
+  Normalizer * getNormalizer() 
+  { return _normalizerPtr; }
 
   /** Normalize the given environment.
    * @param samp Sampler to normalize.

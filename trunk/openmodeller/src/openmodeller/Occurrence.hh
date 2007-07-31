@@ -201,6 +201,8 @@ public:
 
   void setAbundance( Scalar value );
 
+  void dump() const;
+
 private:
 
   std::string id_; ///< Unique identifier.

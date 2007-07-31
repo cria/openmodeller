@@ -72,7 +72,8 @@ SamplerImpl::SamplerImpl() :
   ReferenceCountedObject(),
   _presence(),
   _absence(),
-  _env()
+  _env(),
+  _normalized( false )
 {
 #ifdef DEBUG_MEMORY
   Log::instance()->debug("SamplerImpl::SamplerImpl() at %x\n",this);
@@ -81,11 +82,13 @@ SamplerImpl::SamplerImpl() :
 
 SamplerImpl::SamplerImpl( const EnvironmentPtr& env, 
 			  const OccurrencesPtr& presence,
-			  const OccurrencesPtr& absence ) :
+			  const OccurrencesPtr& absence,
+			  bool  isNormalized ) :
   ReferenceCountedObject(),
   _presence( presence ),
   _absence( absence ),
-  _env( env )
+  _env( env ),
+  _normalized( isNormalized )
 {
 #ifdef DEBUG_MEMORY
   Log::instance()->debug("SamplerImpl::SamplerImpl( args ) at %x\n",this);
@@ -221,6 +224,7 @@ void SamplerImpl::getMinMax( Sample * min, Sample * max ) const
   // now compute normalization parameters
   allOccs->getMinMax(min, max);
 }
+
 /*****************/
 /*** normalize ***/
 void SamplerImpl::normalize( Normalizer * normalizerPtr )
@@ -242,6 +246,8 @@ void SamplerImpl::normalize( Normalizer * normalizerPtr )
 
     _absence->normalize( normalizerPtr );
   }
+
+  _normalized = true;
 }
 
 /***********************/
@@ -507,6 +513,22 @@ SamplerImpl::getRandomOccurrence( const OccurrencesPtr& occur ) const
 }
 
 
+/************/
+/*** dump ***/
+void
+SamplerImpl::dump() const
+{
+  if ( _presence ) {
+
+    _presence->dump( "Presences" );
+  }
+  if ( _absence ) {
+
+    _absence->dump( "Absences" );
+  }
+}
+
+
 /**************************/
 /**** splitOccurrences ****/
 static void splitOccurrences(OccurrencesPtr& occurrences, 
@@ -593,8 +615,10 @@ void splitSampler(const SamplerPtr& orig,
   }
 
   *train = new SamplerImpl( orig->getEnvironment(), 
-                            train_presence, train_absence );
+                            train_presence, train_absence, 
+                            orig->isNormalized() );
 
   *test = new SamplerImpl( orig->getEnvironment(),
-                           test_presence, test_absence );
+                           test_presence, test_absence,
+                           orig->isNormalized() );
 }

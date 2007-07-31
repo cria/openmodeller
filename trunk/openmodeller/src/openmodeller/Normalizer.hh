@@ -45,6 +45,8 @@ public:
 
   virtual void normalize( Sample * samplePtr ) = 0;
 
+  // Should return a pointer to copy of the object
+  virtual Normalizer * getCopy() = 0;
 };
 
 #endif

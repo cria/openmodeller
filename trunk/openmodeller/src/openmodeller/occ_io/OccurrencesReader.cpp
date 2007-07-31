@@ -129,7 +129,7 @@ OccurrencesReader::printOccurrences( char *msg )
     LstOccurrences::const_iterator end = _presences.end();
     while ( ocs != end )
     {
-        (*ocs)->print( "\n****************" );
+        (*ocs)->dump( "\n****************" );
         ++ocs;
     }
 
@@ -139,7 +139,7 @@ OccurrencesReader::printOccurrences( char *msg )
     end = _absences.end();
     while ( ocs != end )
     {
-        (*ocs)->print( "\n****************" );
+        (*ocs)->dump( "\n****************" );
         ++ocs;
     }
 }
