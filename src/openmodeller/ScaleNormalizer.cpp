@@ -54,9 +54,16 @@ ScaleNormalizer::ScaleNormalizer() :
 {
 }
 
-/*******************/
+/******************/
 /*** destructor ***/
 ScaleNormalizer::~ScaleNormalizer() {}
+
+/****************/
+/*** get Copy ***/
+Normalizer * ScaleNormalizer::getCopy() {
+
+  return new ScaleNormalizer( *this );
+}
 
 /*****************************/
 /*** compute Normalization ***/

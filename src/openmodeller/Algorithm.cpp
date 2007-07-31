@@ -50,9 +50,9 @@ using std::string;
 AlgorithmImpl::AlgorithmImpl( AlgMetadata const *metadata ) :
   ReferenceCountedObject(),
   _samp(),
-  _metadata( metadata ),
   _normalizerPtr(0),
-  _param()
+  _param(),
+  _metadata( metadata )
 {
 #if defined(DEBUG_MEMORY)
   Log::instance()->debug( "AlgorithmImpl::AlgorithmImpl() at %x\n", this );
@@ -316,7 +316,7 @@ AlgorithmImpl::createModel( const SamplerPtr& samp, Algorithm::ModelCommand *mod
 
   setSampler( samp );
 
-  if ( needNormalization() ) {
+  if ( needNormalization() and ! _samp->isNormalized() ) {
 
     Log::instance()->info( "Computing normalization\n");
 

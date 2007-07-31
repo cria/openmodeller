@@ -192,9 +192,29 @@ int AbstractBestSubsets::needNormalization()
       Log::instance()->error(1, "Parameter SubAlgorithm not set properly." );
     }
   }
+
   AlgorithmPtr alg = AlgorithmFactory::newAlgorithm( _subAlgorithm.c_str() );
-  
-  return alg->needNormalization();
+
+  if ( alg->needNormalization() ) {
+
+    Log::instance()->info( "Computing normalization in best subsets\n");
+
+    // Compute normalization here to avoid computing it again in each GARP run
+    Normalizer * normalizerPtr = alg->getNormalizer();
+
+    if ( normalizerPtr ) {
+
+      // Copy the normalizer (needed for projection!)
+      _normalizerPtr = normalizerPtr->getCopy();
+      
+      _normalizerPtr->computeNormalization( _samp );
+
+      setNormalization( _samp );
+    }
+  }
+ 
+  // No need to normalize again 
+  return 0;
 }
 
 // ****************************************************************

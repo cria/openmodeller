@@ -82,7 +82,8 @@ public:
   SamplerImpl();
   SamplerImpl( const EnvironmentPtr& env,
 	       const OccurrencesPtr& presences,
-	       const OccurrencesPtr& absence);
+	       const OccurrencesPtr& absence,
+	       bool  isNormalized=false);
   ~SamplerImpl();
 
   EnvironmentPtr getEnvironment() { return _env; }
@@ -102,6 +103,10 @@ public:
 
   /** Normalize sampler data */
   void normalize( Normalizer * normalizerPtr );
+
+  /** Returns true if "normalized()" was called, false otherwise.
+   */
+  bool isNormalized() const { return _normalized; }
 
   /** Number of independent variables (environmental variables). */
   int numIndependent() const;
@@ -171,6 +176,8 @@ public:
 
   void setConfiguration ( const ConstConfigurationPtr& );
 
+  void dump() const;
+
 private:
 
   ConstOccurrencePtr getRandomOccurrence( const OccurrencesPtr& occur ) const;
@@ -189,6 +196,7 @@ private:
   OccurrencesPtr _presence;
   OccurrencesPtr _absence;
   EnvironmentPtr _env;
+  bool _normalized;
 };
 
 

@@ -37,6 +37,9 @@
 #include <string>
 using std::string;
 
+// String stream is included for the dump method
+#include <sstream>
+using std::ostringstream;
 
 /****************************************************************/
 /************************ Occurrences ***************************/
@@ -188,8 +191,6 @@ OccurrencesImpl::normalize( Normalizer * normalizerPtr )
 
     return;
   }
-
-  Log::instance()->debug( "Normalizing Occurrences\n" );
 
   OccurrencesImpl::const_iterator occ = occur_.begin();
   OccurrencesImpl::const_iterator end = occur_.end();
@@ -392,7 +393,7 @@ OccurrencesImpl::getEnvironmentMatrix()
 /*************/
 /*** print ***/
 void
-OccurrencesImpl::print( char *msg ) const
+OccurrencesImpl::dump( char *msg ) const
 {
   Log::instance()->info( "%s\n", msg );
 
@@ -405,22 +406,27 @@ OccurrencesImpl::print( char *msg ) const
 
   while ( c != end ) {
 
-    Log::instance()->info( "(%+8.4f, %+8.4f)", (*c)->x(), (*c)->y() );
-    Log::instance()->info( " - %6.2", (*c)->error() );
+    // Get attributes
+
+    ostringstream ss;
     
-    // Print the attributes.
     Sample::const_iterator attr = (*c)->attributes().begin();
     Sample::const_iterator end = (*c)->attributes().end();
-    Log::instance()->info(" [" );
+    ss << "( ";
 
     while ( attr != end ) {
 
-      Log::instance()->info( "%+8.4f, ", *attr++ );
+      ss << *attr << " ";
+      attr++;
     }
 
-    Log::instance()->info( "]\n" );
+    ss << ")\n";
+
+    Log::instance()->info( "(%+8.4f, %+8.4f)\n", (*c)->x(), (*c)->y() );
+    
+    (*c)->dump();
+    
     c++;
   }
 }
-
 

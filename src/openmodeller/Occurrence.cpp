@@ -113,3 +113,13 @@ OccurrenceImpl::setAbundance( Scalar value )
 {
   abundance_ = value;
 }
+
+void
+OccurrenceImpl::dump() const
+{
+  Log::instance()->info( "Occurrence\n" );
+  Log::instance()->info( "Unnormalized environment:\n" );
+  unnormEnv_.dump();
+  Log::instance()->info( "Normalized environment:\n" );
+  normEnv_.dump();
+}
