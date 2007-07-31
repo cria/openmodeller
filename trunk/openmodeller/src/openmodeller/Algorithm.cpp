@@ -320,9 +320,16 @@ AlgorithmImpl::createModel( const SamplerPtr& samp, Algorithm::ModelCommand *mod
 
     Log::instance()->info( "Computing normalization\n");
 
-    _normalizerPtr->computeNormalization( _samp );
+    if ( _normalizerPtr ) {
 
-    setNormalization( _samp );
+      _normalizerPtr->computeNormalization( _samp );
+
+      setNormalization( _samp );
+    }
+    else {
+
+      throw AlgorithmException( "Normalizer not specified." );
+    }
   }
 
   if ( !initialize() )
