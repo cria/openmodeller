@@ -263,6 +263,8 @@ class test_MapFormat: public CxxTest :: TestSuite
 		void test4 (){
 				std::cout << std::endl;
 				std::cout << "Testing setYCel(Coord v) ..." << std::endl;
+				std::cout << std::endl;
+				std::cout << "Testing setYCel(Coord v) ..." << std::endl;
 				A->setYCel(0.02);
 				*b=0.02;
 				try{
@@ -278,6 +280,8 @@ class test_MapFormat: public CxxTest :: TestSuite
 				}
 
 		void test5 (){
+				std::cout << std::endl;
+				std::cout << "Testing setXMin(Coord v) ..." << std::endl;
 				A->setXMin(0.03);
 				*b=0.03;
 				try{
@@ -293,6 +297,8 @@ class test_MapFormat: public CxxTest :: TestSuite
 				}
 
 		void test6 (){
+				std::cout << std::endl;
+				std::cout << "Testing setYMin(Coord v) ..." << std::endl;
 				A->setYMin(0.04);
 				*b=0.04;
 				try{
@@ -308,6 +314,8 @@ class test_MapFormat: public CxxTest :: TestSuite
 				}
 
 		void test7 (){
+				std::cout << std::endl;
+				std::cout << "Testing setXMax(Coord v) ..." << std::endl;
 				A->setXMax(0.05);
 				*b=0.05;
 				try{
@@ -323,6 +331,8 @@ class test_MapFormat: public CxxTest :: TestSuite
 				}
 
 		void test8 (){
+				std::cout << std::endl;
+				std::cout << "Testing setYMax(Coord v) ..." << std::endl;
 				A->setYMax(0.06);
 				*b=0.06;
 				try{
@@ -338,6 +348,8 @@ class test_MapFormat: public CxxTest :: TestSuite
 				}
 
 		void test9 (){
+				std::cout << std::endl;
+				std::cout << "Testing setNoDataValue(Scalar v) ..." << std::endl;
 				A->setNoDataValue(0.07);
 				*b=0.07;
 				try{
@@ -353,6 +365,8 @@ class test_MapFormat: public CxxTest :: TestSuite
 				}
 
 		void test10 (){
+				std::cout << std::endl;
+				std::cout << "Testing setProjection(const string& v) ..." << std::endl;
 				A->setProjection("name");
 				*a="name";
 				try{
@@ -361,6 +375,134 @@ class test_MapFormat: public CxxTest :: TestSuite
 				}
 				catch(InvalidParameterException& e){
 				TS_FAIL("Projection not set");
+				}
+				catch(...){
+				TS_FAIL("Invalid Exception Thrown");
+				}
+				}
+
+		void test11 (){
+				std::cout << std::endl;
+				std::cout << "Testing unsetXCel() ..." << std::endl;
+				A->unsetXCel();
+				try{
+				A->getXCel();
+				TS_FAIL("Cell width set");
+				}
+				catch(InvalidParameterException& e){
+				TS_ASSERT(true);
+				}
+				catch(...){
+				TS_FAIL("Invalid Exception Thrown");
+				}
+				}
+
+		void test12 (){
+				std::cout << std::endl;
+				std::cout << "Testing unsetYCel() ..." << std::endl;
+				A->unsetYCel();
+				try{
+				A->getYCel();
+				TS_FAIL("Cell height set");
+				}
+				catch(InvalidParameterException& e){
+				TS_ASSERT(true);
+				}
+				catch(...){
+				TS_FAIL("Invalid Exception Thrown");
+				}
+				}
+
+		void test13 (){
+				std::cout << std::endl;
+				std::cout << "Testing unsetXMin() ..." << std::endl;
+				A->unsetXMin();
+				try{
+				A->getXMin();
+				TS_FAIL("XMin set");
+				}
+				catch(InvalidParameterException& e){
+				TS_ASSERT(true);
+				}
+				catch(...){
+				TS_FAIL("Invalid Exception Thrown");
+				}
+				}
+
+		void test14 (){
+				std::cout << std::endl;
+				std::cout << "Testing unsetYMin() ..." << std::endl;
+				A->unsetYMin();
+				try{
+				A->getYMin();
+				TS_FAIL("YMin set");
+				}
+				catch(InvalidParameterException& e){
+				TS_ASSERT(true);
+				}
+				catch(...){
+				TS_FAIL("Invalid Exception Thrown");
+				}
+				}
+
+		void test15 (){
+				std::cout << std::endl;
+				std::cout << "Testing unsetXMax() ..." << std::endl;
+				A->unsetXMax();
+				try{
+				A->getXMax();
+				TS_FAIL("XMax set");
+				}
+				catch(InvalidParameterException& e){
+				TS_ASSERT(true);
+				}
+				catch(...){
+				TS_FAIL("Invalid Exception Thrown");
+				}
+				}
+
+		void test16 (){
+				std::cout << std::endl;
+				std::cout << "Testing unsetYMax() ..." << std::endl;
+				A->unsetYMax();
+				try{
+				A->getYMax();
+				TS_FAIL("YMax set");
+				}
+				catch(InvalidParameterException& e){
+				TS_ASSERT(true);
+				}
+				catch(...){
+				TS_FAIL("Invalid Exception Thrown");
+				}
+				}
+
+		void test17 (){
+				std::cout << std::endl;
+				std::cout << "Testing unsetNoDataValue() ..." << std::endl;
+				A->unsetNoDataValue();
+				try{
+				A->getNoDataValue();
+				TS_FAIL("NoDataValue set");
+				}
+				catch(InvalidParameterException& e){
+				TS_ASSERT(true);
+				}
+				catch(...){
+				TS_FAIL("Invalid Exception Thrown");
+				}
+				}
+
+		void test18 (){
+				std::cout << std::endl;
+				std::cout << "Testing unsetProjection() ..." << std::endl;
+				A->unsetProjection();
+				try{
+				A->getProjection();
+				TS_FAIL("Projection set");
+				}
+				catch(InvalidParameterException& e){
+				TS_ASSERT(true);
 				}
 				catch(...){
 				TS_FAIL("Invalid Exception Thrown");
