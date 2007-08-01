@@ -42,18 +42,23 @@ class test_MapFormat: public CxxTest :: TestSuite
 {
 	public:
 		void setUp (){
-				A = new MapFormat();
 				a = new std::string;
+				b = new double;
+				A = new MapFormat();
+				B = new MapFormat(0.01,0.02,0.03,0.04,0.05,0.06,0.07,"name");
 				}
 
 		void tearDown (){
-				delete A;
 				delete a;
+				delete b;
+				delete A;
+				delete B;
 				}
 
 		void test1 (){
 				std::cout << std::endl;
 				std::cout << "Testing MapFormat() ..." << std::endl;
+				//Need to test format
 				*a="Cell width not set";
 				try{
 				A->getXCel();
@@ -131,10 +136,117 @@ class test_MapFormat: public CxxTest :: TestSuite
 				catch(...){
 				TS_FAIL("Incorrect Exception Thrown");
 				}
+				*a="Projection not set";
+				try{
+				A->getProjection();
+				TS_FAIL("No Exception Thrown");
+				}
+				catch(InvalidParameterException& e){
+				TS_ASSERT(*a==e.what());
+				}
+				catch(...){
+				TS_FAIL("Incorrect Exception Thrown");
+				}
 				}
 
+		void test2 (){
+				std::cout << std::endl;
+				std::cout << "Testing MapFormat::MapFormat( Coord xcel, Coord ycel, Coord xmin, Coord ymin, Coord xmax, Coord ymax, Scalar noval, char const * proj ) ..." << std::endl;
+				//Need to test format
+				*b=0.01;
+				try{
+				B->getXCel();
+				TS_ASSERT(*b==B->getXCel());
+				}
+				catch(InvalidParameterException& e){
+				TS_FAIL("Cell width not set");
+				}
+				catch(...){
+				TS_FAIL("Invalid Exception Thrown");
+				}
+				*b=0.02;
+				try{
+				B->getYCel();
+				TS_ASSERT(*b==B->getYCel());
+				}
+				catch(InvalidParameterException& e){
+				TS_FAIL("Cell height not set");
+				}
+				catch(...){
+				TS_FAIL("Invalid Exception Thrown");
+				}
+				*b=0.03;
+				try{
+				B->getXMin();
+				TS_ASSERT(*b==B->getXMin());
+				}
+				catch(InvalidParameterException& e){
+				TS_FAIL("XMin not set");
+				}
+				catch(...){
+				TS_FAIL("Invalid Exception Thrown");
+				}
+				*b=0.04;
+				try{
+				B->getYMin();
+				TS_ASSERT(*b==B->getYMin());
+				}
+				catch(InvalidParameterException& e){
+				TS_FAIL("YMin not set");
+				}
+				catch(...){
+				TS_FAIL("Invalid Exception Thrown");
+				}
+				*b=0.05;
+				try{
+				B->getXMax();
+				TS_ASSERT(*b==B->getXMax());
+				}
+				catch(InvalidParameterException& e){
+				TS_FAIL("XMax not set");
+				}
+				catch(...){
+				TS_FAIL("Invalid Exception Thrown");
+				}
+				*b=0.06;
+				try{
+				B->getYMax();
+				TS_ASSERT(*b==B->getYMax());
+				}
+				catch(InvalidParameterException& e){
+				TS_FAIL("YMax not set");
+				}
+				catch(...){
+				TS_FAIL("Invalid Exception Thrown");
+				}
+				*b=0.07;
+				try{
+				B->getNoDataValue();
+				TS_ASSERT(*b==B->getNoDataValue());
+				}
+				catch(InvalidParameterException& e){
+				TS_FAIL("NoDataValue not set");
+				}
+				catch(...){
+				TS_FAIL("Invalid Exception Thrown");
+				}
+				*a="name";
+				try{
+				B->getProjection();
+				TS_ASSERT(*a==B->getProjection());
+				}
+				catch(InvalidParameterException& e){
+				TS_FAIL("Projection not set");
+				}
+				catch(...){
+				TS_FAIL("Invalid Exception Thrown");
+				}
+
+				}
 		private:
-				MapFormat *A;
 				std::string *a;
+				double *b;
+				MapFormat *A;
+				MapFormat *B;
 };
 #endif
