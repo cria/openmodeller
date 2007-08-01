@@ -44,6 +44,7 @@ class test_MapFormat: public CxxTest :: TestSuite
 		void setUp (){
 				a = new std::string;
 				b = new double;
+				c = new int;
 				A = new MapFormat();
 				B = new MapFormat(0.01,0.02,0.03,0.04,0.05,0.06,0.07,"name");
 				}
@@ -51,6 +52,7 @@ class test_MapFormat: public CxxTest :: TestSuite
 		void tearDown (){
 				delete a;
 				delete b;
+				delete c;
 				delete A;
 				delete B;
 				}
@@ -58,7 +60,7 @@ class test_MapFormat: public CxxTest :: TestSuite
 		void test1 (){
 				std::cout << std::endl;
 				std::cout << "Testing MapFormat() ..." << std::endl;
-				//Need to test format
+				//Need to test format value
 				*a="Cell width not set";
 				try{
 				A->getXCel();
@@ -152,7 +154,7 @@ class test_MapFormat: public CxxTest :: TestSuite
 		void test2 (){
 				std::cout << std::endl;
 				std::cout << "Testing MapFormat::MapFormat( Coord xcel, Coord ycel, Coord xmin, Coord ymin, Coord xmax, Coord ymax, Scalar noval, char const * proj ) ..." << std::endl;
-				//Need to test format
+				//Need to test format value
 				*b=0.01;
 				try{
 				B->getXCel();
@@ -242,6 +244,7 @@ class test_MapFormat: public CxxTest :: TestSuite
 				TS_FAIL("Invalid Exception Thrown");
 				}
 				}
+//Need to test MapFormat(char const *filenameWithFormat) (after testing RasterFactory)
 //Need to test setFormat
 		void test3 (){
 				std::cout << std::endl;
@@ -380,7 +383,7 @@ class test_MapFormat: public CxxTest :: TestSuite
 				TS_FAIL("Invalid Exception Thrown");
 				}
 				}
-
+//Need to test unsetFormat()
 		void test11 (){
 				std::cout << std::endl;
 				std::cout << "Testing unsetXCel() ..." << std::endl;
@@ -509,9 +512,24 @@ class test_MapFormat: public CxxTest :: TestSuite
 				}
 				}
 
+		void test19 (){
+				std::cout << std::endl;
+				std::cout << "Testing getWidth() ..." << std::endl;
+				*c = static_cast<int>((B->getXMax()-B->getXMin())/B->getXCel()+0.5);
+				TS_ASSERT(*c==B->getWidth());
+				}
+
+		void test20 (){
+				std::cout << std::endl;
+				std::cout << "Testing getHeight() ..." << std::endl;
+				*c = static_cast<int>((B->getYMax()-B->getYMin())/B->getYCel()+0.5);
+				TS_ASSERT(*c==B->getHeight());
+				}
+
 		private:
 				std::string *a;
 				double *b;
+				int *c;
 				MapFormat *A;
 				MapFormat *B;
 };
