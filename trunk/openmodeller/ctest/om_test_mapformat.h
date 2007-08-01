@@ -33,26 +33,108 @@
 #define TEST_MAPFORMAT_HH
 
 #include "cxxtest/TestSuite.h"
-#include "MapFormat.hh"
+
+#include <openmodeller/MapFormat.hh>
+#include <openmodeller/Exceptions.hh>
+
 
 class test_MapFormat: public CxxTest :: TestSuite 
 {
 	public:
 		void setUp (){
-
+				A = new MapFormat();
+				a = new std::string;
 				}
 
 		void tearDown (){
-
+				delete A;
+				delete a;
 				}
 
 		void test1 (){
 				std::cout << std::endl;
-				std::cout << "Testing ..." << std::endl;
-
+				std::cout << "Testing MapFormat() ..." << std::endl;
+				*a="Cell width not set";
+				try{
+				A->getXCel();
+				TS_FAIL("No Exception Thrown");
+				}
+				catch(InvalidParameterException& e){
+				TS_ASSERT(*a==e.what());
+				}
+				catch(...){
+				TS_FAIL("Incorrect Exception Thrown");
+				}
+				*a="Cell height not set";
+				try{
+				A->getYCel();
+				TS_FAIL("No Exception Thrown");
+				}
+				catch(InvalidParameterException& e){
+				TS_ASSERT(*a==e.what());
+				}
+				catch(...){
+				TS_FAIL("Incorrect Exception Thrown");
+				}
+				*a="XMin not set";
+				try{
+				A->getXMin();
+				TS_FAIL("No Exception Thrown");
+				}
+				catch(InvalidParameterException& e){
+				TS_ASSERT(*a==e.what());
+				}
+				catch(...){
+				TS_FAIL("Incorrect Exception Thrown");
+				}
+				*a="Ymin not set";
+				try{
+				A->getYMin();
+				TS_FAIL("No Exception Thrown");
+				}
+				catch(InvalidParameterException& e){
+				TS_ASSERT(*a==e.what());
+				}
+				catch(...){
+				TS_FAIL("Incorrect Exception Thrown");
+				}
+				*a="Xmax not set";
+				try{
+				A->getXMax();
+				TS_FAIL("No Exception Thrown");
+				}
+				catch(InvalidParameterException& e){
+				TS_ASSERT(*a==e.what());
+				}
+				catch(...){
+				TS_FAIL("Incorrect Exception Thrown");
+				}
+				*a="Ymax not set";
+				try{
+				A->getYMax();
+				TS_FAIL("No Exception Thrown");
+				}
+				catch(InvalidParameterException& e){
+				TS_ASSERT(*a==e.what());
+				}
+				catch(...){
+				TS_FAIL("Incorrect Exception Thrown");
+				}
+				*a="NoDataValue not set";
+				try{
+				A->getNoDataValue();
+				TS_FAIL("No Exception Thrown");
+				}
+				catch(InvalidParameterException& e){
+				TS_ASSERT(*a==e.what());
+				}
+				catch(...){
+				TS_FAIL("Incorrect Exception Thrown");
+				}
 				}
 
 		private:
-
+				MapFormat *A;
+				std::string *a;
 };
 #endif
