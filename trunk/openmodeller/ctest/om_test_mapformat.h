@@ -241,8 +241,132 @@ class test_MapFormat: public CxxTest :: TestSuite
 				catch(...){
 				TS_FAIL("Invalid Exception Thrown");
 				}
-
 				}
+//Need to test setFormat
+		void test3 (){
+				std::cout << std::endl;
+				std::cout << "Testing setXCel(Coord v) ..." << std::endl;
+				A->setXCel(0.01);
+				*b=0.01;
+				try{
+				A->getXCel();
+				TS_ASSERT(*b==A->getXCel());
+				}
+				catch(InvalidParameterException& e){
+				TS_FAIL("Cell width not set");
+				}
+				catch(...){
+				TS_FAIL("Invalid Exception Thrown");
+				}
+				}
+
+		void test4 (){
+				std::cout << std::endl;
+				std::cout << "Testing setYCel(Coord v) ..." << std::endl;
+				A->setYCel(0.02);
+				*b=0.02;
+				try{
+				A->getYCel();
+				TS_ASSERT(*b==A->getYCel());
+				}
+				catch(InvalidParameterException& e){
+				TS_FAIL("Cell height not set");
+				}
+				catch(...){
+				TS_FAIL("Invalid Exception Thrown");
+				}
+				}
+
+		void test5 (){
+				A->setXMin(0.03);
+				*b=0.03;
+				try{
+				A->getXMin();
+				TS_ASSERT(*b==A->getXMin());
+				}
+				catch(InvalidParameterException& e){
+				TS_FAIL("XMin not set");
+				}
+				catch(...){
+				TS_FAIL("Invalid Exception Thrown");
+				}
+				}
+
+		void test6 (){
+				A->setYMin(0.04);
+				*b=0.04;
+				try{
+				A->getYMin();
+				TS_ASSERT(*b==A->getYMin());
+				}
+				catch(InvalidParameterException& e){
+				TS_FAIL("YMin not set");
+				}
+				catch(...){
+				TS_FAIL("Invalid Exception Thrown");
+				}
+				}
+
+		void test7 (){
+				A->setXMax(0.05);
+				*b=0.05;
+				try{
+				A->getXMax();
+				TS_ASSERT(*b==A->getXMax());
+				}
+				catch(InvalidParameterException& e){
+				TS_FAIL("XMax not set");
+				}
+				catch(...){
+				TS_FAIL("Invalid Exception Thrown");
+				}
+				}
+
+		void test8 (){
+				A->setYMax(0.06);
+				*b=0.06;
+				try{
+				A->getYMax();
+				TS_ASSERT(*b==A->getYMax());
+				}
+				catch(InvalidParameterException& e){
+				TS_FAIL("YMax not set");
+				}
+				catch(...){
+				TS_FAIL("Invalid Exception Thrown");
+				}
+				}
+
+		void test9 (){
+				A->setNoDataValue(0.07);
+				*b=0.07;
+				try{
+				A->getNoDataValue();
+				TS_ASSERT(*b==A->getNoDataValue());
+				}
+				catch(InvalidParameterException& e){
+				TS_FAIL("NoDataValue not set");
+				}
+				catch(...){
+				TS_FAIL("Invalid Exception Thrown");
+				}
+				}
+
+		void test10 (){
+				A->setProjection("name");
+				*a="name";
+				try{
+				A->getProjection();
+				TS_ASSERT(*a==A->getProjection());
+				}
+				catch(InvalidParameterException& e){
+				TS_FAIL("Projection not set");
+				}
+				catch(...){
+				TS_FAIL("Invalid Exception Thrown");
+				}
+				}
+
 		private:
 				std::string *a;
 				double *b;
