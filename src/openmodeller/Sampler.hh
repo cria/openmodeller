@@ -58,11 +58,11 @@ dllexp void splitSampler(const SamplerPtr& orig, SamplerPtr *train, SamplerPtr *
  * Factory method that creates a Sampler based on Environment
  * and Occurrences objects
  */
-SamplerPtr createSampler(const EnvironmentPtr& env,
+dllexp SamplerPtr createSampler(const EnvironmentPtr& env,
 			 const OccurrencesPtr& presence,
 			 const OccurrencesPtr& absence = OccurrencesPtr() );
 
-SamplerPtr createSampler( const ConstConfigurationPtr& config );
+dllexp SamplerPtr createSampler( const ConstConfigurationPtr& config );
 
 /** 
  * Base class to create samplers of environmental variables and

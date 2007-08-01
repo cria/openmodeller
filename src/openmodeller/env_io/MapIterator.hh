@@ -37,10 +37,10 @@
 #include <openmodeller/env_io/Header.hh>
 class GeoTransform;
 
-class MapIterator {
+class dllexp MapIterator {
 
-  friend bool operator == ( const MapIterator&, const MapIterator& );
-  friend bool operator != ( const MapIterator&, const MapIterator& );
+  friend dllexp bool operator == ( const MapIterator&, const MapIterator& );
+  friend dllexp bool operator != ( const MapIterator&, const MapIterator& );
 
 public:
   // Default constructor create a Terminal object which can be used in

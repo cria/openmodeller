@@ -1,5 +1,12 @@
 #############################################################
 # sources
+SET (LIBOPENMODELLERXML_SRCS
+  ../console/consolexml.cpp
+)
+
+SET (LIBOPENMODELLERXML_HDRS
+  ../console/consolexml.hh
+)
 
 SET(OM_CORE_SRCS
   Algorithm.cpp 
@@ -53,6 +60,7 @@ INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}
   env_io 
   occ_io
   ${CMAKE_CURRENT_SOURCE_DIR}/../
+  ${CMAKE_CURRENT_SOURCE_DIR}/../console
   ${PROJ_INCLUDE_DIR}
   ${SQLITE3_INCLUDE_DIR}
   ${GEOS_INCLUDE_DIR}
@@ -61,9 +69,9 @@ INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}
 
 IF (WIN32)
   IF (MSVC)
-    ADD_DEFINITIONS("-DCORE_EXPORT=__declspec(dllexport)")
+    ADD_DEFINITIONS("-Ddllexp=__declspec(dllexport)")
   ELSE (MSVC)
-    ADD_DEFINITIONS("-DCORE_EXPORT \"-DCORE_EXPORT=__declspec(dllexport)\"")
+    ADD_DEFINITIONS("-Ddllexp \"-DCORE_EXPORT=__declspec(dllexport)\"")
     ADD_DEFINITIONS( -Wl,--enable-auto-export )
   ENDIF (MSVC)
 ENDIF (WIN32)
@@ -153,7 +161,18 @@ env_io/RasterGdal.hh
 env_io/TeOMRaster.hh
 )
 
+
+########################################################
+# Build openmodellerxml lib
+ADD_LIBRARY (openmodellerxml SHARED ${LIBOPENMODELLERXML_SRCS})
+TARGET_LINK_LIBRARIES(openmodellerxml openmodeller )
+INSTALL(TARGETS openmodellerxml RUNTIME DESTINATION ${OM_BIN_DIR} LIBRARY DESTINATION lib)
+
+
+########################################################
+# Install headers
 INSTALL(CODE "MESSAGE(\"Installing CORE headers...\")")
+INSTALL(FILES ${LIBOPENMODELLERXML_HDRS} DESTINATION ${OM_INCLUDE_DIR}/openmodeller)
 INSTALL(FILES ${OM_CORE_HDRS} DESTINATION ${OM_INCLUDE_DIR}/openmodeller)
 INSTALL(FILES ${OM_OCCIO_HDRS} DESTINATION ${OM_INCLUDE_DIR}/openmodeller/occ_io)
 INSTALL(FILES ${OM_ENVIO_HDRS} DESTINATION ${OM_INCLUDE_DIR}/openmodeller/env_io)

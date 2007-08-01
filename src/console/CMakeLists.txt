@@ -2,13 +2,6 @@
 ########################################################
 # Files
 
-SET (LIBOPENMODELLERXML_SRCS
-  consolexml.cpp
-)
-
-SET (LIBOPENMODELLERXML_HDRS
-  consolexml.hh
-)
 
 SET (OMCONSOLE_SRCS
     om_console.cpp
@@ -71,44 +64,16 @@ set (EXTRA_DIST
 ########################################################
 # Build
 
-#ADD_LIBRARY (openmodellerxml SHARED ${LIBOPENMODELLERXML_SRCS})
-#TARGET_LINK_LIBRARIES(openmodellerxml openmodeller )
 
 INCLUDE_DIRECTORIES(
      ${CMAKE_CURRENT_SOURCE_DIR}
      ${CMAKE_CURRENT_SOURCE_DIR}/../openmodeller
+     ${CMAKE_CURRENT_SOURCE_DIR}/../console
      ${CMAKE_CURRENT_SOURCE_DIR}/../
 )
 
 ########################################################
-# Build openmodellerxml lib
-
-IF (WIN32)
-  IF (MSVC)
-    ADD_DEFINITIONS("-DCORE_EXPORT=__declspec(dllexport)")
-  ELSE (MSVC)
-    ADD_DEFINITIONS("-UCORE_EXPORT \"-DCORE_EXPORT=__declspec(dllexport)\"")
-  ENDIF (MSVC)
-ENDIF (WIN32)
-
-ADD_LIBRARY (openmodellerxml SHARED ${LIBOPENMODELLERXML_SRCS})
-
-TARGET_LINK_LIBRARIES(openmodellerxml openmodeller )
-
-INSTALL(TARGETS openmodellerxml RUNTIME DESTINATION ${OM_BIN_DIR} LIBRARY DESTINATION lib)
-
-
-
-########################################################
 # Build the varios command line apps
-IF (WIN32)
-  IF (MSVC)
-    ADD_DEFINITIONS("-DCORE_EXPORT=__declspec(dllimport)")
-  ELSE (MSVC)
-    ADD_DEFINITIONS("-UCORE_EXPORT \"-DCORE_EXPORT=__declspec(dllimport)\"")
-  ENDIF (MSVC)
-ENDIF (WIN32)
-
 ADD_EXECUTABLE (om_console ${OMCONSOLE_SRCS})
 TARGET_LINK_LIBRARIES(om_console openmodeller )
 
@@ -143,7 +108,6 @@ ENDIF(X11_FOUND)
 ########################################################
 # Install
 
-INSTALL(TARGETS openmodellerxml RUNTIME DESTINATION ${OM_BIN_DIR} LIBRARY DESTINATION lib)
 INSTALL(TARGETS om_console RUNTIME DESTINATION ${OM_BIN_DIR})
 INSTALL(TARGETS om_create RUNTIME DESTINATION ${OM_BIN_DIR})
 INSTALL(TARGETS om_project RUNTIME DESTINATION ${OM_BIN_DIR})
