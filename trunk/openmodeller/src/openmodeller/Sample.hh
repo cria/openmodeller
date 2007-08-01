@@ -139,21 +139,21 @@ private:
 //
 // IO operator decls
 //
-std::ostream&
+dllexp std::ostream&
 operator<<(std::ostream&,const Sample&);
 
-std::istream&
+dllexp std::istream&
 operator>>(std::istream&, Sample&);
 
 
 // Definitions of inlined functions
-bool inline
+dllexp bool inline
 operator==( const Sample& lhs, const Sample& rhs )
 {
   return lhs.equals( rhs );
 }
 
-bool inline
+dllexp bool inline
 operator!=( const Sample& lhs, const Sample& rhs )
 {
   return !lhs.equals( rhs );
