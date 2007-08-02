@@ -28,8 +28,6 @@
 #include <openmodeller/Sampler.hh>
 #include <openmodeller/Log.hh>
 
-#include <iostream>
-
 using namespace std;
 
 /*******************/
