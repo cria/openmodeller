@@ -104,4 +104,9 @@ ADD_EXECUTABLE (om_test_mapformat ${OM_TEST_MAPFORMAT_SRCS})
 TARGET_LINK_LIBRARIES(om_test_mapformat openmodeller)
 ADD_TEST(om_test_mapformat ${EXECUTABLE_OUTPUT_PATH}/om_test_mapformat)
 
+#ScaleNormalizer Tests
+SET (OM_TEST_SCALENORMALIZER_SRCS om_test_scalenormalizer.cpp)
+ADD_EXECUTABLE (om_test_scalenormalizer ${OM_TEST_SCALENORMALIZER_SRCS})
+TARGET_LINK_LIBRARIES(om_test_scalenormalizer openmodeller)
+ADD_TEST(om_test_scalenormalizer ${EXECUTABLE_OUTPUT_PATH}/om_test_scalenormalizer)
 

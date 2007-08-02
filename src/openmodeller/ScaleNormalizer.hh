@@ -33,6 +33,8 @@ class dllexp ScaleNormalizer : public Normalizer {
 
 public:
 
+  friend class test_ScaleNormalizer;
+
   // Used only during deserialization
   ScaleNormalizer();
 
