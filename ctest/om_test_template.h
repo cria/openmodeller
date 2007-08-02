@@ -3,7 +3,7 @@
  * 
  * @author <Your Name>
  * @date 2007-08-02
- * $Id: OpenModeller.cpp 3201 2007-06-18 21:08:16Z rdg $
+ * $Id$
  *
  * LICENSE INFORMATION
  * 

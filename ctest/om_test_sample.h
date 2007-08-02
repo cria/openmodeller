@@ -3,7 +3,7 @@
  * 
  * @authors Ricardo Scachetti Pereira and Albert Massayuki Kuniyoshi
  * @date 2007-07-03
- * $Id: OpenModeller.cpp 3201 2007-06-18 21:08:16Z rdg $
+ * $Id$
  *
  * LICENSE INFORMATION
  * 
