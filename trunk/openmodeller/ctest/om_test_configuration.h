@@ -337,34 +337,64 @@ class test_Configuration : public CxxTest :: TestSuite
       //Still under development
       try 
       {
+        //Note that EXAMPLE_DIR and TEST_DATA_DIR is a compiler define 
+        //created by CMakeLists.txt
+        std::string myConfigFile(TEST_DATA_DIR);
+        myConfigFile.append("/model_request.xml");
+        std::cout << "Loading Test file : " << myConfigFile << std::endl;
+        //read in the file, replace all instances of token [EXAMPLE_DIR]
+        //and [TEST_DATA_DIR] with those provided by the compiler defines
+        //then save the file to the /tmp dir and use that as the model 
+        //configuration file.
+        std::string myExamplesToken("[EXAMPLE_DIR]");
+        std::string myTestDataToken("[TEST_DATA_DIR]");
+        std::string myExamplesValue(EXAMPLE_DIR);
+        myExamplesValue.append("/");
+        std::string myTestDataValue(TEST_DATA_DIR);
+        myTestDataValue.append("/");
+        std::ifstream myInFile (myConfigFile.c_str(), std::ios_base::in);
+        std::string myInFileName("/tmp/configuration_test22_in.xml");
+        std::ofstream myOutFile(myInFileName.c_str());
+        std::string myLine;
+        while (getline(myInFile,myLine,'\n'))
         {
-          Log::instance()->setLevel( Log::Debug );
-          Log::instance()->setCallback( new MyLog() );
+          std::string::size_type myPos=0;
+          while ( (myPos = myLine.find(myExamplesToken,myPos)) != std::string::npos)
+          {
+            std::cout << "Replacing examples token at : " << myPos << "\n";
+            myLine.replace( myPos, myExamplesToken.length(), myExamplesValue );
+          }
+          myPos=0;
+          while ( (myPos = myLine.find(myTestDataToken,myPos)) != std::string::npos)
+          {
+            std::cout << "Replacing test data token at : " << myPos << "\n";
+            myLine.replace( myPos, myTestDataToken.length(), myTestDataValue );
+          }
+          myOutFile << myLine.c_str();;
         }
+        myInFile.close();
+        myOutFile.close();
+        
+        //
+        // Go on to do the test now...
+        //
+
+        Log::instance()->setLevel( Log::Debug );
+        Log::instance()->setCallback( new MyLog() );
 
         std::ostringstream myOutputStream ;
-
         AlgorithmFactory::searchDefaultDirs();
-
         OpenModeller om;
-        {
-          //Note that TEST_DATA_DIR is a compiler define created by CMakeLists.txt
 
-          std::string myConfigFile(TEST_DATA_DIR);
-          myConfigFile.append("/model_request.xml");
-          std::cout << "Loading Test file : " << myConfigFile << std::endl;
-          ConfigurationPtr c = Configuration::readXml( myConfigFile.c_str() );
-          om.setModelConfiguration(c);
-        }
+        ConfigurationPtr c1 = Configuration::readXml( myInFileName.c_str() );
+        om.setModelConfiguration(c1);
         om.createModel();
-        {
-          ConfigurationPtr c = om.getModelConfiguration();
-          Configuration::writeXml( c, myOutputStream);
-          std::string myFileName("/tmp/configuration_test22_out.xml");
-          std::ofstream file(myFileName.c_str());
-          file << myOutputStream.str();;
-          file.close();
-        }
+        ConfigurationPtr c2 = om.getModelConfiguration();
+        Configuration::writeXml( c2, myOutputStream);
+        std::string myOutFileName("/tmp/configuration_test22_out.xml");
+        std::ofstream myOutFile2(myOutFileName.c_str());
+        myOutFile2 << myOutputStream.str();;
+        myOutFile2.close();
         return ;
       }
       catch( std::exception& e ) {
@@ -380,13 +410,51 @@ class test_Configuration : public CxxTest :: TestSuite
       std::cout << std::endl;
       std::cout << "Testing Third Xml Serialization check..." << std::endl;
       std::cout << "(Testing model project xml)" << std::endl;
-      //Still under development
+      //Note that EXAMPLE_DIR and TEST_DATA_DIR is a compiler define 
+      //created by CMakeLists.txt
+      std::string myConfigFile(TEST_DATA_DIR);
+      myConfigFile.append("/projection_request.xml");
+      std::cout << "Loading Test file : " << myConfigFile << std::endl;
+      //read in the file, replace all instances of token [EXAMPLE_DIR]
+      //and [TEST_DATA_DIR] with those provided by the compiler defines
+      //then save the file to the /tmp dir and use that as the model 
+      //configuration file.
+      std::string myExamplesToken("[EXAMPLE_DIR]");
+      std::string myTestDataToken("[TEST_DATA_DIR]");
+      std::string myExamplesValue(EXAMPLE_DIR);
+      myExamplesValue.append("/");
+      std::string myTestDataValue(TEST_DATA_DIR);
+      myTestDataValue.append("/");
+      std::ifstream myInFile (myConfigFile.c_str(), std::ios_base::in);
+      std::string myInFileName("/tmp/configuration_test23_in.xml");
+      std::ofstream myOutFile(myInFileName.c_str());
+      std::string myLine;
+      while (getline(myInFile,myLine,'\n'))
+      {
+        std::string::size_type myPos=0;
+        while ( (myPos = myLine.find(myExamplesToken,myPos)) != std::string::npos)
+        {
+          std::cout << "Replacing examples token at : " << myPos << "\n";
+          myLine.replace( myPos, myExamplesToken.length(), myExamplesValue );
+        }
+        myPos=0;
+        while ( (myPos = myLine.find(myTestDataToken,myPos)) != std::string::npos)
+        {
+          std::cout << "Replacing test data token at : " << myPos << "\n";
+          myLine.replace( myPos, myTestDataToken.length(), myTestDataValue );
+        }
+        myOutFile << myLine.c_str();;
+      }
+      myInFile.close();
+      myOutFile.close();
+
+      //
+      // Go on to do the test now...
+      //
       try 
       {
-        {
-          Log::instance()->setLevel( Log::Debug );
-          Log::instance()->setCallback( new MyLog() );
-        }
+        Log::instance()->setLevel( Log::Debug );
+        Log::instance()->setCallback( new MyLog() );
 
         std::ostringstream myOutputStream ;
 
@@ -394,16 +462,12 @@ class test_Configuration : public CxxTest :: TestSuite
 
         OpenModeller om;
         {
-          //Note that TEST_DATA_DIR is a compiler define created by CMakeLists.txt
-          std::string projectionXmlFile(TEST_DATA_DIR);
-          projectionXmlFile.append("/projection_request.xml");
-          std::cout << "Loading Test file : " << projectionXmlFile << std::endl;
-          ConfigurationPtr c = Configuration::readXml( projectionXmlFile.c_str() );
+          ConfigurationPtr c = Configuration::readXml( myInFileName.c_str() );
           std::cout << "XML loaded" << std::endl;
           om.setProjectionConfiguration(c);
-          std::string myFileName("/tmp/configuration_test23_out.tif");
-          std::cout << "Projecting to file " << myFileName << std::endl;
-          om.createMap( myFileName.c_str() );
+          std::string myOutFileName("/tmp/configuration_test23_out.tif");
+          std::cout << "Projecting to file " << myOutFileName << std::endl;
+          om.createMap( myOutFileName.c_str() );
 
           return ;
         }

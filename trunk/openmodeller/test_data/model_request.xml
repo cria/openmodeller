@@ -1,9 +1,9 @@
 <ModelParameters>
   <Sampler>
     <Environment NumLayers="2">
-      <Map Id="../../examples/rain_coolest.tif" IsCategorical="0"/>
-      <Map Id="../../examples/temp_avg.tif" IsCategorical="0"/>
-      <Mask Id="../../examples/rain_coolest.tif"/>
+      <Map Id="[EXAMPLE_DIR]/rain_coolest.tif" IsCategorical="0"/>
+      <Map Id="[EXAMPLE_DIR]/temp_avg.tif" IsCategorical="0"/>
+      <Mask Id="[EXAMPLE_DIR]/rain_coolest.tif"/>
     </Environment>
     <Presence Label="Acacia aculeatissima">
       <CoordinateSystem>
