@@ -200,13 +200,11 @@ int AbstractBestSubsets::needNormalization()
     Log::instance()->info( "Computing normalization in best subsets\n");
 
     // Compute normalization here to avoid computing it again in each GARP run
-    Normalizer * normalizerPtr = alg->getNormalizer();
+    // note: getNormalizer will return a copy
+    _normalizerPtr = alg->getNormalizer();
 
-    if ( normalizerPtr ) {
+    if ( _normalizerPtr ) {
 
-      // Copy the normalizer (needed for projection!)
-      _normalizerPtr = normalizerPtr->getCopy();
-      
       _normalizerPtr->computeNormalization( _samp );
 
       setNormalization( _samp );

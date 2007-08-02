@@ -291,6 +291,21 @@ AlgorithmImpl::getParameter( string const &id, float *value )
   return 1;
 }
 
+
+/**********************/
+/*** get Normalizer ***/
+Normalizer * 
+AlgorithmImpl::getNormalizer() const
+{
+  if ( _normalizerPtr ) {
+
+    return _normalizerPtr->getCopy();
+  }
+
+  return 0;
+}
+
+
 void
 AlgorithmImpl::setNormalization( const SamplerPtr& samp) const
 {

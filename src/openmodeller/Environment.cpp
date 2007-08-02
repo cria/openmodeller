@@ -364,7 +364,10 @@ EnvironmentImpl::getMinMax( Sample * min, Sample * max ) const
 void
 EnvironmentImpl::normalize( Normalizer * normalizerPtr ) {
 
-  _normalizerPtr = normalizerPtr;
+  if ( normalizerPtr ) {
+
+    _normalizerPtr = normalizerPtr->getCopy();
+  }
 }
 
 void
