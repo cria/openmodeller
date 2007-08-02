@@ -203,7 +203,8 @@ OccurrencesImpl::normalize( Normalizer * normalizerPtr )
   }
 }
 
-
+/******************/
+/*** get MinMax ***/
 void
 OccurrencesImpl::getMinMax( Sample * min, Sample * max ) const
 {
