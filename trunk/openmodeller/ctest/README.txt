@@ -21,14 +21,14 @@ them under c:\msys\include
 
 Running:
 
-With OM_TESTS option on tests will compile automatically
-and you can run them using 'make test'
+With OM_TESTS option on, tests will compile automatically
+and you can run them using 'make test'.
 
 Writing tests:
 
 If you want to write your own tests for openModeller, take
 om_test_template.h as a template. When you finish it, open 
-CMakeLists.txt and type it:
+CMakeLists.txt and type:
 
 #yourtest Tests
 SET (OM_TEST_YOURTEST_SRCS om_test_yourtest.cpp)
@@ -38,14 +38,12 @@ ADD_TEST(om_test_yourtest ${EXECUTABLE_OUTPUT_PATH}/om_test_yourtest)
 
 Now you need to type the following commands:
 
-$cd ~
-$cd dev/cpp/openmodeller/ctest
+$cd your_path_to_openmodeller/ctest
 $./cxxtestgen.pl --error-printer -o om_test_yourtest.cpp om_test_yourtest.h
 
 Build with the following commands:
 
-$cd ~
-$cd dev/cpp/openmodeller/build
+$cd your_path_to_openmodeller/build
 $cmake ..
 $make
 $sudo make install
