@@ -131,12 +131,12 @@ class test_AreaStats : public CxxTest :: TestSuite
 		void test8 (){
 				std::cout << std::endl;
 				std::cout << "Testing getConfiguration() const..." << std::endl;
-				/*Under development
+				//Under development
 				//*C=A->getConfiguration();
 				//TS_ASSERT(C->getAttributeAsInt("TotalCells",-1)==0);
 				//TS_ASSERT(C->getAttributeAsInt("CellsPredicted",-1)==0);
-				TS_ASSERT(C->getAttributeAsInt("PredictionThreshold",-1)==1.00);
-				*/}
+				//TS_ASSERT(C->getAttributeAsInt("PredictionThreshold",-1)==1.00);
+				}
 		private:
 			AreaStats *A;
 			AreaStats *B;
