@@ -24,6 +24,15 @@ IF (WIN32)
   ENDIF (MSVC)
 ENDIF (WIN32)
 
+
+########################################################
+# Add a compiler define that specifies where test data
+# lives in the file system. The cmake variable ${TEST_DATA_DIR}
+# is defined in the top level CMakeLists.txt.
+
+#MESSAGE("Test Data Dir: ${TEST_DATA_DIR}")
+ADD_DEFINITIONS(-DTEST_DATA_DIR="\\"${TEST_DATA_DIR}\\"")
+
 ########################################################
 # Add you new tests in here...
 ########################################################
