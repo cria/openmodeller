@@ -25,6 +25,7 @@ IF (OM_CTEST)
   ENABLE_TESTING()
   #enable posting test results to dart
   #INCLUDE(CTest) 
+  SET (TEST_DATA_DIR "${CMAKE_CURRENT_SOURCE_DIR}/test_data")
 ENDIF (OM_CTEST)
 
 #############################################################
