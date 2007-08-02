@@ -170,8 +170,7 @@ public:
    *  super algorithm can retrieve and use the same normalizer needed
    *  by the sub algorithm.
    */
-  Normalizer * getNormalizer() 
-  { return _normalizerPtr; }
+  Normalizer * getNormalizer() const; 
 
   /** Normalize the given environment.
    * @param samp Sampler to normalize.
