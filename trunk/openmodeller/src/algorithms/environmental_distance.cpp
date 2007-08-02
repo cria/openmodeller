@@ -481,7 +481,9 @@ void EnvironmentalDistance::_setConfiguration(const ConstConfigurationPtr& confi
    }
    // Average
    averagePoint = model_config->getAttributeAsSample("Average");
+
    layerCount = (int)averagePoint.size();
+   presenceCount = (int)presencePoints.size();
 
    _done = true;
 }
