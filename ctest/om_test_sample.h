@@ -60,7 +60,6 @@ class test_Sample : public CxxTest :: TestSuite
 		void test1 (){
 				std::cout << std::endl;
 				std::cout << "Testing Default Constructor..." << std::endl;
-
 				TS_ASSERT(a->size()==0);
 				}
 
@@ -99,13 +98,13 @@ class test_Sample : public CxxTest :: TestSuite
 				for(unsigned int i=0;i<a->size();++i){
 				(*a)[i]=i;}
 				*c = Sample (3);
-
-				//CHECK( ! c.equals(a) );
+				
+				TS_ASSERT(!c->equals(*a));
 				TS_ASSERT(!((*c)==(*a)));
 				TS_ASSERT((*c)!=(*a));
 
 				*d = Sample(a->size());	
-				//CHECK( ! d.equals(a) );
+				TS_ASSERT(!d->equals(*a));
 				TS_ASSERT(!((*d)==(*a)));
 				TS_ASSERT(((*d)!=(*a)));
 
@@ -115,7 +114,7 @@ class test_Sample : public CxxTest :: TestSuite
 				for(unsigned int i=0; i<a->size(); ++i){
 				TS_ASSERT((*a)[i]==i);}
 
-				//CHECK(d.equals(a));
+				TS_ASSERT(d->equals(*a));
 				TS_ASSERT(*d==*a);
 				TS_ASSERT(!(*d!=*a));
 

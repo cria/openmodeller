@@ -29,133 +29,133 @@ public:
 
 static class TestDescription_test_Sample_test2 : public CxxTest::RealTestDescription {
 public:
- TestDescription_test_Sample_test2() : CxxTest::RealTestDescription( Tests_test_Sample, suiteDescription_test_Sample, 67, "test2" ) {}
+ TestDescription_test_Sample_test2() : CxxTest::RealTestDescription( Tests_test_Sample, suiteDescription_test_Sample, 66, "test2" ) {}
  void runTest() { suite_test_Sample.test2(); }
 } testDescription_test_Sample_test2;
 
 static class TestDescription_test_Sample_test3 : public CxxTest::RealTestDescription {
 public:
- TestDescription_test_Sample_test3() : CxxTest::RealTestDescription( Tests_test_Sample, suiteDescription_test_Sample, 74, "test3" ) {}
+ TestDescription_test_Sample_test3() : CxxTest::RealTestDescription( Tests_test_Sample, suiteDescription_test_Sample, 73, "test3" ) {}
  void runTest() { suite_test_Sample.test3(); }
 } testDescription_test_Sample_test3;
 
 static class TestDescription_test_Sample_test4 : public CxxTest::RealTestDescription {
 public:
- TestDescription_test_Sample_test4() : CxxTest::RealTestDescription( Tests_test_Sample, suiteDescription_test_Sample, 82, "test4" ) {}
+ TestDescription_test_Sample_test4() : CxxTest::RealTestDescription( Tests_test_Sample, suiteDescription_test_Sample, 81, "test4" ) {}
  void runTest() { suite_test_Sample.test4(); }
 } testDescription_test_Sample_test4;
 
 static class TestDescription_test_Sample_test5 : public CxxTest::RealTestDescription {
 public:
- TestDescription_test_Sample_test5() : CxxTest::RealTestDescription( Tests_test_Sample, suiteDescription_test_Sample, 94, "test5" ) {}
+ TestDescription_test_Sample_test5() : CxxTest::RealTestDescription( Tests_test_Sample, suiteDescription_test_Sample, 93, "test5" ) {}
  void runTest() { suite_test_Sample.test5(); }
 } testDescription_test_Sample_test5;
 
 static class TestDescription_test_Sample_test6 : public CxxTest::RealTestDescription {
 public:
- TestDescription_test_Sample_test6() : CxxTest::RealTestDescription( Tests_test_Sample, suiteDescription_test_Sample, 124, "test6" ) {}
+ TestDescription_test_Sample_test6() : CxxTest::RealTestDescription( Tests_test_Sample, suiteDescription_test_Sample, 123, "test6" ) {}
  void runTest() { suite_test_Sample.test6(); }
 } testDescription_test_Sample_test6;
 
 static class TestDescription_test_Sample_test7 : public CxxTest::RealTestDescription {
 public:
- TestDescription_test_Sample_test7() : CxxTest::RealTestDescription( Tests_test_Sample, suiteDescription_test_Sample, 137, "test7" ) {}
+ TestDescription_test_Sample_test7() : CxxTest::RealTestDescription( Tests_test_Sample, suiteDescription_test_Sample, 136, "test7" ) {}
  void runTest() { suite_test_Sample.test7(); }
 } testDescription_test_Sample_test7;
 
 static class TestDescription_test_Sample_test8 : public CxxTest::RealTestDescription {
 public:
- TestDescription_test_Sample_test8() : CxxTest::RealTestDescription( Tests_test_Sample, suiteDescription_test_Sample, 150, "test8" ) {}
+ TestDescription_test_Sample_test8() : CxxTest::RealTestDescription( Tests_test_Sample, suiteDescription_test_Sample, 149, "test8" ) {}
  void runTest() { suite_test_Sample.test8(); }
 } testDescription_test_Sample_test8;
 
 static class TestDescription_test_Sample_test9 : public CxxTest::RealTestDescription {
 public:
- TestDescription_test_Sample_test9() : CxxTest::RealTestDescription( Tests_test_Sample, suiteDescription_test_Sample, 165, "test9" ) {}
+ TestDescription_test_Sample_test9() : CxxTest::RealTestDescription( Tests_test_Sample, suiteDescription_test_Sample, 164, "test9" ) {}
  void runTest() { suite_test_Sample.test9(); }
 } testDescription_test_Sample_test9;
 
 static class TestDescription_test_Sample_test10 : public CxxTest::RealTestDescription {
 public:
- TestDescription_test_Sample_test10() : CxxTest::RealTestDescription( Tests_test_Sample, suiteDescription_test_Sample, 184, "test10" ) {}
+ TestDescription_test_Sample_test10() : CxxTest::RealTestDescription( Tests_test_Sample, suiteDescription_test_Sample, 183, "test10" ) {}
  void runTest() { suite_test_Sample.test10(); }
 } testDescription_test_Sample_test10;
 
 static class TestDescription_test_Sample_test11 : public CxxTest::RealTestDescription {
 public:
- TestDescription_test_Sample_test11() : CxxTest::RealTestDescription( Tests_test_Sample, suiteDescription_test_Sample, 202, "test11" ) {}
+ TestDescription_test_Sample_test11() : CxxTest::RealTestDescription( Tests_test_Sample, suiteDescription_test_Sample, 201, "test11" ) {}
  void runTest() { suite_test_Sample.test11(); }
 } testDescription_test_Sample_test11;
 
 static class TestDescription_test_Sample_test12 : public CxxTest::RealTestDescription {
 public:
- TestDescription_test_Sample_test12() : CxxTest::RealTestDescription( Tests_test_Sample, suiteDescription_test_Sample, 218, "test12" ) {}
+ TestDescription_test_Sample_test12() : CxxTest::RealTestDescription( Tests_test_Sample, suiteDescription_test_Sample, 217, "test12" ) {}
  void runTest() { suite_test_Sample.test12(); }
 } testDescription_test_Sample_test12;
 
 static class TestDescription_test_Sample_test13 : public CxxTest::RealTestDescription {
 public:
- TestDescription_test_Sample_test13() : CxxTest::RealTestDescription( Tests_test_Sample, suiteDescription_test_Sample, 234, "test13" ) {}
+ TestDescription_test_Sample_test13() : CxxTest::RealTestDescription( Tests_test_Sample, suiteDescription_test_Sample, 233, "test13" ) {}
  void runTest() { suite_test_Sample.test13(); }
 } testDescription_test_Sample_test13;
 
 static class TestDescription_test_Sample_test14 : public CxxTest::RealTestDescription {
 public:
- TestDescription_test_Sample_test14() : CxxTest::RealTestDescription( Tests_test_Sample, suiteDescription_test_Sample, 250, "test14" ) {}
+ TestDescription_test_Sample_test14() : CxxTest::RealTestDescription( Tests_test_Sample, suiteDescription_test_Sample, 249, "test14" ) {}
  void runTest() { suite_test_Sample.test14(); }
 } testDescription_test_Sample_test14;
 
 static class TestDescription_test_Sample_test15 : public CxxTest::RealTestDescription {
 public:
- TestDescription_test_Sample_test15() : CxxTest::RealTestDescription( Tests_test_Sample, suiteDescription_test_Sample, 266, "test15" ) {}
+ TestDescription_test_Sample_test15() : CxxTest::RealTestDescription( Tests_test_Sample, suiteDescription_test_Sample, 265, "test15" ) {}
  void runTest() { suite_test_Sample.test15(); }
 } testDescription_test_Sample_test15;
 
 static class TestDescription_test_Sample_test16 : public CxxTest::RealTestDescription {
 public:
- TestDescription_test_Sample_test16() : CxxTest::RealTestDescription( Tests_test_Sample, suiteDescription_test_Sample, 282, "test16" ) {}
+ TestDescription_test_Sample_test16() : CxxTest::RealTestDescription( Tests_test_Sample, suiteDescription_test_Sample, 281, "test16" ) {}
  void runTest() { suite_test_Sample.test16(); }
 } testDescription_test_Sample_test16;
 
 static class TestDescription_test_Sample_test17 : public CxxTest::RealTestDescription {
 public:
- TestDescription_test_Sample_test17() : CxxTest::RealTestDescription( Tests_test_Sample, suiteDescription_test_Sample, 302, "test17" ) {}
+ TestDescription_test_Sample_test17() : CxxTest::RealTestDescription( Tests_test_Sample, suiteDescription_test_Sample, 301, "test17" ) {}
  void runTest() { suite_test_Sample.test17(); }
 } testDescription_test_Sample_test17;
 
 static class TestDescription_test_Sample_test18 : public CxxTest::RealTestDescription {
 public:
- TestDescription_test_Sample_test18() : CxxTest::RealTestDescription( Tests_test_Sample, suiteDescription_test_Sample, 318, "test18" ) {}
+ TestDescription_test_Sample_test18() : CxxTest::RealTestDescription( Tests_test_Sample, suiteDescription_test_Sample, 317, "test18" ) {}
  void runTest() { suite_test_Sample.test18(); }
 } testDescription_test_Sample_test18;
 
 static class TestDescription_test_Sample_test19 : public CxxTest::RealTestDescription {
 public:
- TestDescription_test_Sample_test19() : CxxTest::RealTestDescription( Tests_test_Sample, suiteDescription_test_Sample, 339, "test19" ) {}
+ TestDescription_test_Sample_test19() : CxxTest::RealTestDescription( Tests_test_Sample, suiteDescription_test_Sample, 338, "test19" ) {}
  void runTest() { suite_test_Sample.test19(); }
 } testDescription_test_Sample_test19;
 
 static class TestDescription_test_Sample_test20 : public CxxTest::RealTestDescription {
 public:
- TestDescription_test_Sample_test20() : CxxTest::RealTestDescription( Tests_test_Sample, suiteDescription_test_Sample, 358, "test20" ) {}
+ TestDescription_test_Sample_test20() : CxxTest::RealTestDescription( Tests_test_Sample, suiteDescription_test_Sample, 357, "test20" ) {}
  void runTest() { suite_test_Sample.test20(); }
 } testDescription_test_Sample_test20;
 
 static class TestDescription_test_Sample_test21 : public CxxTest::RealTestDescription {
 public:
- TestDescription_test_Sample_test21() : CxxTest::RealTestDescription( Tests_test_Sample, suiteDescription_test_Sample, 375, "test21" ) {}
+ TestDescription_test_Sample_test21() : CxxTest::RealTestDescription( Tests_test_Sample, suiteDescription_test_Sample, 374, "test21" ) {}
  void runTest() { suite_test_Sample.test21(); }
 } testDescription_test_Sample_test21;
 
 static class TestDescription_test_Sample_test22 : public CxxTest::RealTestDescription {
 public:
- TestDescription_test_Sample_test22() : CxxTest::RealTestDescription( Tests_test_Sample, suiteDescription_test_Sample, 392, "test22" ) {}
+ TestDescription_test_Sample_test22() : CxxTest::RealTestDescription( Tests_test_Sample, suiteDescription_test_Sample, 391, "test22" ) {}
  void runTest() { suite_test_Sample.test22(); }
 } testDescription_test_Sample_test22;
 
 static class TestDescription_test_Sample_test23 : public CxxTest::RealTestDescription {
 public:
- TestDescription_test_Sample_test23() : CxxTest::RealTestDescription( Tests_test_Sample, suiteDescription_test_Sample, 405, "test23" ) {}
+ TestDescription_test_Sample_test23() : CxxTest::RealTestDescription( Tests_test_Sample, suiteDescription_test_Sample, 404, "test23" ) {}
  void runTest() { suite_test_Sample.test23(); }
 } testDescription_test_Sample_test23;
 
