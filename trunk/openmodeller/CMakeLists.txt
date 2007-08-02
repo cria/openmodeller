@@ -26,7 +26,7 @@ IF (OM_CTEST)
   #enable posting test results to dart
   #INCLUDE(CTest) 
   SET (EXAMPLE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/examples")
-  SET (TEST_DATA_DIR "${CMAKE_CURRENT_SOURCE_DIR}/test_data")
+  SET (TEST_DATA_DIR "${CMAKE_CURRENT_SOURCE_DIR}/ctest/test_data")
 ENDIF (OM_CTEST)
 
 #############################################################
