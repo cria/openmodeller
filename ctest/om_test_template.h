@@ -2,12 +2,12 @@
  * Test class for <Insert Class Name Here> 
  * 
  * @author <Your Name>
- * @date 2003-09-25
+ * @date 2007-08-02
  * $Id: OpenModeller.cpp 3201 2007-06-18 21:08:16Z rdg $
  *
  * LICENSE INFORMATION
  * 
- * Copyright(c) 2003 by CRIA -
+ * Copyright(c) 2007 by CRIA -
  * Centro de Referencia em Informacao Ambiental
  *
  * http://www.cria.org.br
