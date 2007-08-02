@@ -255,17 +255,17 @@ void SamplerImpl::normalize( Normalizer * normalizerPtr )
 int
 SamplerImpl::numIndependent() const
 {
-  if (_env)
+  if ( _env ) {
     // get number of dimensions from environment object if it exists
     return _env->numLayers();
-
-  else if (_presence->hasEnvironment())
+  }
+  else if ( _presence->hasEnvironment() ) {
     // otherwise tries to get it from occurrences
     return _presence->dimension();
+  }
 
-  else
-    // neither object has dimensions defined
-    return 0;
+  // neither object has dimensions defined
+  return 0;
 }
 
 
