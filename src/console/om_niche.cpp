@@ -395,7 +395,6 @@ draw_niche( GGraph *graph )
   Scalar amb[2];
   Scalar *x = amb;
   Scalar *y = amb + 1;
-  GColor color;
   for ( *y = ymin; *y < ymax; *y += ystep )
     {
       for ( *x = xmin; *x < xmax; *x += xstep )
