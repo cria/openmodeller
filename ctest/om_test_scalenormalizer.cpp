@@ -25,8 +25,14 @@ CxxTest::StaticSuiteDescription suiteDescription_test_ScaleNormalizer( "om_test_
 
 static class TestDescription_test_ScaleNormalizer_test1 : public CxxTest::RealTestDescription {
 public:
- TestDescription_test_ScaleNormalizer_test1() : CxxTest::RealTestDescription( Tests_test_ScaleNormalizer, suiteDescription_test_ScaleNormalizer, 113, "test1" ) {}
+ TestDescription_test_ScaleNormalizer_test1() : CxxTest::RealTestDescription( Tests_test_ScaleNormalizer, suiteDescription_test_ScaleNormalizer, 128, "test1" ) {}
  void runTest() { suite_test_ScaleNormalizer.test1(); }
 } testDescription_test_ScaleNormalizer_test1;
+
+static class TestDescription_test_ScaleNormalizer_test2 : public CxxTest::RealTestDescription {
+public:
+ TestDescription_test_ScaleNormalizer_test2() : CxxTest::RealTestDescription( Tests_test_ScaleNormalizer, suiteDescription_test_ScaleNormalizer, 169, "test2" ) {}
+ void runTest() { suite_test_ScaleNormalizer.test2(); }
+} testDescription_test_ScaleNormalizer_test2;
 
 #include <cxxtest/Root.cpp>
