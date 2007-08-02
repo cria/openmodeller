@@ -1,0 +1,18 @@
+<ProjectionParameters>
+  <Algorithm Id="Bioclim" Version="0.2">
+    <Parameters>
+      <Parameter Id="StandardDeviationCutoff" Value="0.9"/>
+    </Parameters>
+    <Model>
+      <Bioclim Mean="208.8333333333333 2446.728352864583" StdDev="93.20701153883221 95.8400666007785" Minimum="90 2285.860107421875" Maximum="305 2565.010009765625"/>
+    </Model>
+  </Algorithm>
+  <Environment NumLayers="2">
+    <Map Id="../../examples/rain_coolest.tif" IsCategorical="0" />
+    <Map Id="../../examples/temp_avg.tif" IsCategorical="0" />
+    <Mask Id="../../examples/rain_coolest.tif" />
+  </Environment>
+  <OutputParameters FileType="FloatingHFA">
+    <TemplateLayer Id="../../examples/rain_coolest.tif"/>
+  </OutputParameters>
+</ProjectionParameters>
