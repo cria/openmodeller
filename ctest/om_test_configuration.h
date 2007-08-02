@@ -39,6 +39,7 @@
 #include <openmodeller/om.hh>
 #include <iostream>
 #include <sstream>
+#include <fstream>
 #include <string>
 
 class MyLog : public Log::LogCallback 
@@ -332,6 +333,7 @@ class test_Configuration : public CxxTest :: TestSuite
     void test22 (){
       std::cout << std::endl;
       std::cout << "Testing Second Xml Serialization check..." << std::endl;
+      std::cout << "(Testing model creation xml)" << std::endl;
       //Still under development
       try 
       {
@@ -346,17 +348,11 @@ class test_Configuration : public CxxTest :: TestSuite
 
         OpenModeller om;
         {
-          //we need to replace [PREFIX] in the file paths in the 
-          //model we just loaded so our test can actually find the model 
-          //data. To do that I temporarily get the xml for the model
-          //search and replace the xml and then reinstate the model
-          //from the updated xml...
-          //
           //Note that TEST_DATA_DIR is a compiler define created by CMakeLists.txt
 
           std::string myConfigFile(TEST_DATA_DIR);
           myConfigFile.append("/model_request.xml");
-          std::cout << "Loading Test file " << myConfigFile << std::endl;
+          std::cout << "Loading Test file : " << myConfigFile << std::endl;
           ConfigurationPtr c = Configuration::readXml( myConfigFile.c_str() );
           om.setModelConfiguration(c);
         }
@@ -364,6 +360,10 @@ class test_Configuration : public CxxTest :: TestSuite
         {
           ConfigurationPtr c = om.getModelConfiguration();
           Configuration::writeXml( c, myOutputStream);
+          std::string myFileName("/tmp/configuration_test22_out.xml");
+          std::ofstream file(myFileName.c_str());
+          file << myOutputStream.str();;
+          file.close();
         }
         return ;
       }
@@ -379,7 +379,42 @@ class test_Configuration : public CxxTest :: TestSuite
     void test23 (){
       std::cout << std::endl;
       std::cout << "Testing Third Xml Serialization check..." << std::endl;
+      std::cout << "(Testing model project xml)" << std::endl;
       //Still under development
+      try 
+      {
+        {
+          Log::instance()->setLevel( Log::Debug );
+          Log::instance()->setCallback( new MyLog() );
+        }
+
+        std::ostringstream myOutputStream ;
+
+        AlgorithmFactory::searchDefaultDirs();
+
+        OpenModeller om;
+        {
+          //Note that TEST_DATA_DIR is a compiler define created by CMakeLists.txt
+          std::string projectionXmlFile(TEST_DATA_DIR);
+          projectionXmlFile.append("/projection_request.xml");
+          std::cout << "Loading Test file : " << projectionXmlFile << std::endl;
+          ConfigurationPtr c = Configuration::readXml( projectionXmlFile.c_str() );
+          std::cout << "XML loaded" << std::endl;
+          om.setProjectionConfiguration(c);
+          std::string myFileName("/tmp/configuration_test23_out.tif");
+          std::cout << "Projecting to file " << myFileName << std::endl;
+          om.createMap( myFileName.c_str() );
+
+          return ;
+        }
+      }
+      catch( std::exception& e ) {
+        std::string myError("Exception caught!\n");
+        std::cout << "Exception caught!" << std::endl;
+        std::cout << e.what() << std::endl;
+        myError.insert(myError.length(),e.what());
+        return;
+      }
     }
 
 
