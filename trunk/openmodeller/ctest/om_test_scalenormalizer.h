@@ -47,26 +47,46 @@ class test_ScaleNormalizer : public CxxTest :: TestSuite
 
   public:
 
-    void setUp (){
+    void setUp () {
+
+    }
+
+    void tearDown () {
+
+      delete _scaleNormalizer;
+    }
+
+    void instantiateNormalizerWithoutUsingLayerAsRef () {
 
       // Instantiate normalizer that will be tested
       _scaleNormalizer = new ScaleNormalizer( 0, 1, false );
+
+    }
+
+    void instantiateNormalizerUsingLayerAsRef () {
+
+      // Instantiate normalizer that will be tested
+      _scaleNormalizer = new ScaleNormalizer( 0, 100, true );
+
+    }
+
+    void setupSampler () {
 
       // Prepare input to create a sampler
 
       // First occurrence
       OccurrencePtr occ1 = new OccurrenceImpl();
 
-      Scalar values1[3] = {10.0, 30.0};
-      Sample sample1( 3, values1 );
+      Scalar values1[2] = {10.0, 30.0};
+      Sample sample1( 2, values1 );
 
       occ1->setUnnormalizedEnvironment( sample1 );
 
       // Second occurrence
       OccurrencePtr occ2 = new OccurrenceImpl();
 
-      Scalar values2[3] = {60.0, 40.0};
-      Sample sample2( 3, values2 );
+      Scalar values2[2] = {60.0, 40.0};
+      Sample sample2( 2, values2 );
 
       occ2->setUnnormalizedEnvironment( sample2 );
 
@@ -105,12 +125,10 @@ class test_ScaleNormalizer : public CxxTest :: TestSuite
       _samplerPtr = new SamplerImpl( env, presences, absences, is_normalized );
     }
 
-    void tearDown (){
+    void test1 () {
 
-      delete _scaleNormalizer;
-    }
-
-    void test1 (){
+      setupSampler();
+      instantiateNormalizerWithoutUsingLayerAsRef();
 
       std::cout << "Testing scale normalizer with interval [0,1] using minimum and maximum values from input samples..." << std::endl;
 
@@ -118,14 +136,79 @@ class test_ScaleNormalizer : public CxxTest :: TestSuite
 
       _scaleNormalizer->computeNormalization( _samplerPtr );
 
-      TS_ASSERT( _scaleNormalizer->_offsets.size() == 2 );
-
       // Manual calculations:
-      // dimension 1: min=10 max=60 scale=1/(60-10)=0.02   offset=0-(0.02  *10)=-0.2
-      // dimension 2: min=30 max=40 scale=1/(40-30)=0.1    offset=0-(0.1   *30)=-3.0
+      // dimension 1: min=10 max=60 scale=1/(60-10)=0.02 offset=0-(0.02*10)=-0.2
+      // dimension 2: min=30 max=40 scale=1/(40-30)=0.1  offset=0-(0.1 *30)=-3.0
+
+      // Scales:
+      TS_ASSERT( _scaleNormalizer->_scales.size() == 2 );
+
+      TS_ASSERT( _scaleNormalizer->_scales[0] == 0.02 );
+      TS_ASSERT( _scaleNormalizer->_scales[1] == 0.1 );
+
+      // Offsets:
+      TS_ASSERT( _scaleNormalizer->_offsets.size() == 2 );
 
       TS_ASSERT( _scaleNormalizer->_offsets[0] == -0.2 );
       TS_ASSERT( _scaleNormalizer->_offsets[1] == -3.0 );
+
+      // Sample to be normalized
+      Scalar values[2] = {50.0, 35.0};
+      Sample sample( 2, values );
+
+      _scaleNormalizer->normalize( &sample );
+
+      // Manual calculations:
+      // dimension 1: (50*0.02)-0.2=0.8
+      // dimension 2: (35*0.1)-3.0=0.5
+
+      TS_ASSERT( sample[0] == 0.8 );
+      TS_ASSERT( sample[1] == 0.5 );
+    }
+
+    void test2 () {
+
+      setupSampler();
+      instantiateNormalizerUsingLayerAsRef();
+
+      std::cout << "Testing scale normalizer with interval [0,1] using minimum and maximum values from layers..." << std::endl;
+
+      CxxTest::setAbortTestOnFail( true );
+
+      _scaleNormalizer->computeNormalization( _samplerPtr );
+
+      // Manual calculations:
+      // dimension 1: min=0.000    max=2137.000 
+      //              scale=100/(2137-0)=0.04679 
+      //              offset=0-(0.04679*0)=0.0
+      // dimension 2: min=-545.420 max=3342.520 
+      //              scale=100/(3342.520+545.420)=100/3887.940=0.02572
+      //              offset=0-(0.02572*-545.420)=14.030
+
+      // Scales:
+      TS_ASSERT( _scaleNormalizer->_scales.size() == 2 );
+
+      TS_ASSERT_DELTA( _scaleNormalizer->_scales[0], 0.04679, 0.00001 );
+      TS_ASSERT_DELTA( _scaleNormalizer->_scales[1], 0.02572, 0.00001 );
+
+      // Offsets:
+      TS_ASSERT( _scaleNormalizer->_offsets.size() == 2 );
+
+      TS_ASSERT( _scaleNormalizer->_offsets[0] == 0.0 );
+      TS_ASSERT_DELTA( _scaleNormalizer->_offsets[1], 14.030, 0.002 );
+
+      // Sample to be normalized
+      Scalar values[2] = {1200.0, 2000.0};
+      Sample sample( 2, values );
+
+      _scaleNormalizer->normalize( &sample );
+
+      // Manual calculations:
+      // dimension 1: (1200.0*0.04679)-0.0   =56.148
+      // dimension 2: (2000.0*0.02572)+14.030=65.470
+
+      TS_ASSERT_DELTA( sample[0], 56.148, 0.01 );
+      TS_ASSERT_DELTA( sample[1], 65.470, 0.01 );
     }
 
   private:
