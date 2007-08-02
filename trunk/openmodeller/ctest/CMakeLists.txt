@@ -31,6 +31,7 @@ ENDIF (WIN32)
 # is defined in the top level CMakeLists.txt.
 
 #MESSAGE("Test Data Dir: ${TEST_DATA_DIR}")
+ADD_DEFINITIONS(-DEXAMPLE_DIR="\\"${EXAMPLE_DIR}\\"")
 ADD_DEFINITIONS(-DTEST_DATA_DIR="\\"${TEST_DATA_DIR}\\"")
 
 ########################################################
