@@ -22,7 +22,7 @@ maps. Available algorithms include Bioclim, GARP (with best subset
 procedure), CSM (Climate Space Model), and cartesian distance algorithms. 
 New algorithms can easily be added. The library uses GDAL to read 
 different raster formats and proj4 to convert between different 
-coordinate systems and projections. A cosole interface is distributed 
+coordinate systems and projections. A console interface is distributed 
 with the library, as well as a SWIG wrapper for the Python language and 
 a SOAP server prototype. The tool was originally developed by CRIA as 
 part of the speciesLink project (funded by Fapesp, the State of Sao 
