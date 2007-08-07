@@ -8,9 +8,20 @@ CRIA - Centro de Referência em Informação Ambiental:
 
   * Renato De Giovanni <renato [at] cria . org . br>
 
+     Library maintainer
+     Developer SVM and Aquamaps algorithms
      Implemented the SOAP interface.
      Helped in other specific parts of the code.
      Helped in documentation and also making releases.
+
+ * Tim Sutton <tim [at] linfiniti . com>
+
+     Implemented the CSM algorithm.
+     Implemented CMake build system
+     Implemented some command line tools
+     Created new website
+     Created OSX, windows and debian packages
+     Some library maintenance
 
 The University of Kansas:
 
@@ -27,30 +38,12 @@ The University of Kansas:
      Performed general code review, making lots of improvements everywhere.
      Finished the SWIG Python interface.
 
-The University of Reading:
-
- * Tim Sutton <tim [at] linfiniti . com>
-
-     Implemented the CSM algorithm.
-     Developed the GUI, both standand alone and Quantum GIS plug-in.
 
  * Peter Brewer <p . w . brewer [at] reading . ac . uk>
 
-     Designed the logo and the website.
-     Participated in the development of the GUI.
+     Designed the logo and the original website.
 
-Quantum GIS development team:
-
- * Jens Oberender <j . obi [at] troja . net>
-
-     Migrated the build process to automake/autoconf.
-     Created the RPM package specification.
-
- * Tom Elwertowski
-
-     Added support for MAC OS X.
-
-INPE - Instituto Nacional de Pesquisas Espaciais
+INPE - Instituto Nacional de Pesquisas Espaciais:
 
  * Alexandre Copertino Jardim <alexcj [at] dpi . inpe . br>
 
@@ -67,3 +60,12 @@ Other individual collaborators
  * Lin, Cheng-Tao <b89605222 [at] ntu . edu . tw>
 
      Added support for FreeBSD.
+
+ * Jens Oberender <j . obi [at] troja . net>
+
+     Migrated the build process to automake/autoconf.
+     Created the RPM package specification.
+
+ * Tom Elwertowski
+
+     Added support for MAC OS X.
