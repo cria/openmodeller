@@ -88,7 +88,7 @@ ENDIF (NOT GDAL_FOUND)
 # enable warnings and set compile time defines
 
 ADD_DEFINITIONS( -Wall )
-ADD_DEFINITIONS(-DVERSION=\\"0.4.3\\")
+ADD_DEFINITIONS(-DVERSION=\\"0.5\\")
 ADD_DEFINITIONS(-DCONFIG_FILE=\\"om.cfg\\")
 ADD_DEFINITIONS(-DOMDATAPATH=\\"share/openmodeller\\")
 IF (OM_LOGLEVEL_DEBUG)
