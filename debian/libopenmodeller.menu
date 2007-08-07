@@ -1,0 +1,8 @@
+?package(openModeller):needs="" \
+  section="Apps/Education" \
+  hints="" \
+  title="openModeller" \
+  longtitle="Ecological Niche Modelling Software" \
+  command="/usr/bin/om_console" \
+  icon="/usr/share/pixmaps/globe.xpm"
+

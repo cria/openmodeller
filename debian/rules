@@ -1,0 +1,37 @@
+#!/usr/bin/make -f
+# -*- makefile -*-
+
+#include /usr/share/cdbs/1/rules/debhelper.mk
+#include /usr/share/cdbs/1/rules/simple-patchsys.mk
+
+CMAKE = cmake -DCMAKE_INSTALL_PREFIX=$(CURDIR)/debian/libopenmodeller-data .
+
+MAKE = make 
+
+DATA_FILES = examples
+
+common-configure-arch::
+	$(CMAKE)
+
+build:
+	$(MAKE)
+
+clean::
+	-make distclean
+	-rm -rf src/CMakeFiles/libopenmodeller.dir
+	-rm -rf src/.objunx
+	-rm -rf src/libopenmodeller
+	-rm -f CMakeCache.txt
+
+common-install-prehook-indep::
+	for i in $(DATA_FILES) ; do cp -r $$i $(CURDIR)/debian/libopenmodeller-data/usr/share/libopenmodeller/data ; done
+	rm -f $(CURDIR)/debian/libopenmodeller-data/usr/share/libopenmodeller/data/flags/downloadflags.py
+	rm -f $(CURDIR)/debian/libopenmodeller-data/usr/share/libopenmodeller/data/flags/svgcleaner.sh
+	rm -f $(CURDIR)/debian/libopenmodeller-data/usr/share/libopenmodeller/data/mwdbii/PISLAND.PNT.orig
+	rm -f $(CURDIR)/debian/libopenmodeller-data/usr/share/libopenmodeller/data/mwdbii/PLAKE.PNT.orig
+	rm -f $(CURDIR)/debian/libopenmodeller-data/usr/share/libopenmodeller/data/mwdbii/GOODEIHS.BAS
+
+common-install-prehook-arch::
+	install -m 755 $(CURDIR)/src/libopenmodeller $(CURDIR)/debian/libopenmodeller/usr/bin/libopenmodeller
+	install -m 644 $(CURDIR)/src/libopenmodeller.desktop $(CURDIR)/debian/libopenmodeller/usr/share/applications/kde/libopenmodeller.desktop
+	install -m 644 $(CURDIR)/debian/globe.xpm $(CURDIR)/debian/libopenmodeller/usr/share/pixmaps/globe.xpm

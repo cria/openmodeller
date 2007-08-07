@@ -1,0 +1,12 @@
+libopenmodeller (0.5.0pre1+svn20010807) experimental; urgency=low
+
+  * Test debian package
+
+ -- Tim Sutton <tim@linfiniti.com>  Tue,  7 Aug 2001 08:15:20 -0300
+
+libopenmodeller (0.4.2) experimental; urgency=low
+
+  * New version number. This version includes the following changes:
+       bugfixes
+
+ -- Tim Sutton <tim@linfiniti.com>  Fri, 23 Mar 2007 09:50:00 +0100
