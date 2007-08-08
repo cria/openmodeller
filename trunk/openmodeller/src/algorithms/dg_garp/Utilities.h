@@ -75,12 +75,26 @@ typedef unsigned short      WORD;
 
 #define MAX_BYTE  255
 
+//under mingw these defines are already defined in windef.h..
+#ifndef MAKEWORD
 #define MAKEWORD(a, b)      ((WORD)(((BYTE)(a)) | ((WORD)((BYTE)(b))) << 8))
+#endif
+#ifndef MAKELONG
 #define MAKELONG(a, b)      ((LONG)(((WORD)(a)) | ((DWORD)((WORD)(b))) << 16))
+#endif
+#ifndef LOWORD
 #define LOWORD(l)           ((WORD)(l))
+#endif
+#ifndef HIWORD
 #define HIWORD(l)           ((WORD)(((DWORD)(l) >> 16) & 0xFFFF))
+#endif
+#ifndef LOBYTE
 #define LOBYTE(w)           ((BYTE)(w))
+#endif
+#ifndef HIBYTE
 #define HIBYTE(w)           ((BYTE)(((WORD)(w) >> 8) & 0xFF))
+#endif
+
 #define MAX(a, b)           ( (a > b)? a : b )
 #define MIN(a, b)           ( (a < b)? a : b )
 
