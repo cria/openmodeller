@@ -46,7 +46,9 @@
 #define MIN_SIG_NO 10
 
 #ifdef WIN32
+#ifndef INFINITY //in mingw this is already defined in math.h
 #define INFINITY 1000000000
+#endif
 #endif
 
 #ifndef WIN32
