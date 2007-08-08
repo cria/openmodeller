@@ -101,22 +101,12 @@ initialPluginPath()
 
   vector<string> entries;
 
-#ifdef MINGW_QT
-  //added by Tim for when building with qmake TODO softcode!
-  std::ifstream conf_file( "pluginpath.cfg", std::ios::in );
-#else
   std::ifstream conf_file( CONFIG_FILE, std::ios::in );
-#endif
 
   if ( !conf_file ) {
 
     entries.reserve(1);
-#ifdef MINGW_QT
-  //added by Tim for when building with qmake TODO softcode!
-    entries.push_back( "./algs/" );
-#else
     entries.push_back( PLUGINPATH );
-#endif
     return entries;
 
   }
