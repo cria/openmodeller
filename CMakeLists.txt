@@ -13,6 +13,9 @@ SET(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake ${CMAKE_MODULE_PATH})
 # try to configure and build python bindings by default
 SET (WITH_BINDINGS TRUE CACHE BOOL "Determines whether python bindings should be built")
 
+# treat all warnings as errors
+SET (PEDANTIC TRUE CACHE BOOL "Treat all compiler warnings as errors")
+
 # set if the log level the build binaries should be set to Debug
 SET (OM_DEBUG_LOGLEVEL FALSE CACHE BOOL "Force log level to Debug - should leave this off for releases!")
 
@@ -87,7 +90,10 @@ ENDIF (NOT GDAL_FOUND)
 #############################################################
 # enable warnings and set compile time defines
 
-ADD_DEFINITIONS( -Wall )
+IF (PEDANTIC)
+ADD_DEFINITIONS( -Wall -Werror )
+ENDIF (PEDANTIC)
+
 ADD_DEFINITIONS(-DVERSION=\\"0.5\\")
 ADD_DEFINITIONS(-DCONFIG_FILE=\\"om.cfg\\")
 ADD_DEFINITIONS(-DOMDATAPATH=\\"share/openmodeller\\")
@@ -139,19 +145,20 @@ ELSE (WIN32)
 
 ENDIF (WIN32)
 
+IF (APPLE)
+  #  SET( CMAKE_OSX_ARCHITECTURES ppc;i386 ) #Comment out if not universal binary
+ENDIF (APPLE)
 
 IF (WIN32)
   # expect that classes are being imported
   # Note: MSVC doesn't like when the macros are quotes
   # and MSYS doesn't like them unqouted (bacause of braces)
   IF (MSVC)
-    #ADD_DEFINITIONS(-DUSE_PRAGMA)
-    #ADD_DEFINITIONS(-DDLL_CORE_IMPORT)
-    #ADD_DEFINITIONS(-DMSVC)
     ADD_DEFINITIONS("-Ddllexp=__declspec(dllimport)")
+    ADD_DEFINITIONS("-DOM_ALG_DLL_EXPORT=__declspec(dllexport)")
   ELSE (MSVC)
-    ADD_DEFINITIONS("-Ddllexp\"-DCORE_EXPORT=__declspec(dllimport)\"")
-    #ADD_DEFINITIONS( -Wl,--enable-auto-export )
+    ADD_DEFINITIONS("-Ddllexp\"=__declspec(dllimport)\"")
+    ADD_DEFINITIONS("-DOM_ALG_DLL_EXPORT\"=__declspec(dllexport)\"")
   ENDIF (MSVC)
 ENDIF (WIN32)
 
