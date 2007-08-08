@@ -28,14 +28,7 @@
 #ifndef _DEFSHH_
 #define _DEFSHH_
 
-// openModeller version number.
-//
-#ifdef MINGW_QT
-//changed by Tim for wn build! (Temporary hack!)
-#define OM_VERSION "0.4.3"
-#else
 #define OM_VERSION VERSION
-#endif
 
 // Math types.
 //
@@ -54,34 +47,19 @@ typedef double Scalar;   ///< Type of map values.
 #    define strcasecmp _stricmp
 //#  endif
 
-// used to export symbols out of OM algorithm dlls
-# define OM_ALG_DLL_EXPORT __declspec(dllexport)
-
-// used to import or export classes and objects from OM main library
-// clients importing objects will declare symbol CORE_DLL_IMPORT
-// main library (openmodeller_dll project) won't declare it
-# ifdef CORE_DLL_IMPORT
-#  define dllexp __declspec(dllimport)
-# else
-#  define dllexp __declspec(dllexport)
-# endif
-
 // disable warnings about lack of DLL export in inner class members
 #ifdef MSVC
 #pragma warning( disable : 4251)
 #pragma warning( disable : 4275)
 // disable warning on deprecation of standard C functions and others
 #pragma warning( disable : 4996)
-#endif
-#else
-
-# define OM_ALG_DLL_EXPORT
-# define dllexp
-
-#endif
+#endif //MSVC
 
 
-#endif
+#endif //WIN32
+
+
+#endif //_DEFSHH_
 
 
 
