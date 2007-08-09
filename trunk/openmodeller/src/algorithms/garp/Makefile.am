@@ -37,4 +37,4 @@ libomgarp_la_SOURCES = \
 
 libomgarp_la_LDFLAGS = -no-undefined
 libomgarp_la_LIBADD = $(OMLIB)
-libomgarp_la_CPPFLAGS = -I$(OMSRCDIR)
+libomgarp_la_CPPFLAGS = -I$(OMSRCDIR) -Ddllexp= -DOM_ALG_DLL_EXPORT=

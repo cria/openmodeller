@@ -25,4 +25,4 @@ libomoldgarp_la_SOURCES = \
 
 libomoldgarp_la_LDFLAGS  = -no-undefined
 libomoldgarp_la_LIBADD   = $(OMLIB)
-libomoldgarp_la_CPPFLAGS = -I$(OMSRCDIR)
+libomoldgarp_la_CPPFLAGS = -I$(OMSRCDIR) -Ddllexp= -DOM_ALG_DLL_EXPORT=

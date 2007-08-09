@@ -57,6 +57,6 @@ om_soap_server_SOURCES = \
 	soapC.cpp \
 	file_parser.cpp
 
-om_soap_server_CPPFLAGS = -I$(OMSRCDIR)
+om_soap_server_CPPFLAGS = -I$(OMSRCDIR) -Ddllexp=
 
 om_soap_server_LDADD = $(GDAL_LIB) $(OMLIB) -lpthread
