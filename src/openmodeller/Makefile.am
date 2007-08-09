@@ -109,7 +109,7 @@ APPLE_LDFLAGS=-F/System/Library/Frameworks/ -framework CoreFoundation -framework
 endif
 
 libopenmodeller_la_LDFLAGS = -no-undefined $(APPLE_LDFLAGS)
-libopenmodeller_la_CPPFLAGS = -I@top_srcdir@/src $(DPLUGIN_PATH) $(DCONFIG_FILE) $(EXPAT_CFLAGS) $(TERRALIB_FLAGS)
+libopenmodeller_la_CPPFLAGS = -I@top_srcdir@/src $(DPLUGIN_PATH) $(DCONFIG_FILE) $(EXPAT_CFLAGS) $(TERRALIB_FLAGS) -Ddllexp=
 libopenmodeller_la_LIBADD = $(GDAL_LIB) $(EXPAT_LDFLAGS) $(EXPAT_LIBS) $(TERRALIB_LIB) 
 
 omincludedir = $(includedir)/openmodeller

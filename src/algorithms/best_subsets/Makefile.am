@@ -38,7 +38,7 @@ libomdg_bs_la_SOURCES = \
 
 libomdg_bs_la_LDFLAGS = -no-undefined
 libomdg_bs_la_LIBADD = $(OMLIB) $(LIB_PTHREAD)
-libomdg_bs_la_CPPFLAGS = -I.. -I$(OMSRCDIR) -I../dg_garp
+libomdg_bs_la_CPPFLAGS = -I.. -I$(OMSRCDIR) -I../dg_garp -Ddllexp= -DOM_ALG_DLL_EXPORT=
 
 #libombs_la_SOURCES = \
 #	AlgorithmRun.cpp \
@@ -47,4 +47,4 @@ libomdg_bs_la_CPPFLAGS = -I.. -I$(OMSRCDIR) -I../dg_garp
 #
 #libombs_la_LDFLAGS = -no-undefined
 #libombs_la_LIBADD = $(OMLIB) $(LIB_PTHREAD)
-#libombs_la_CPPFLAGS = -I.. -I$(OMSRCDIR) -I../dg_garp
+#libombs_la_CPPFLAGS = -I.. -I$(OMSRCDIR) -I../dg_garp -Ddllexp= -DOM_ALG_DLL_EXPORT=

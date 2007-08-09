@@ -34,15 +34,15 @@ libomminimum_distance_la_SOURCES = \
 
 libomdistance_to_average_la_LDFLAGS = -no-undefined
 libomdistance_to_average_la_LIBADD = $(OMLIB)
-libomdistance_to_average_la_CPPFLAGS = -I$(OMSRCDIR)
+libomdistance_to_average_la_CPPFLAGS = -I$(OMSRCDIR) -Ddllexp= -DOM_ALG_DLL_EXPORT=
 
 libombioclim_la_LDFLAGS = -no-undefined
 libombioclim_la_LIBADD = $(OMLIB)
-libombioclim_la_CPPFLAGS = -I$(OMSRCDIR)
+libombioclim_la_CPPFLAGS = -I$(OMSRCDIR) -Ddllexp= -DOM_ALG_DLL_EXPORT=
 
 libomminimum_distance_la_LDFLAGS = -no-undefined
 libomminimum_distance_la_LIBADD = $(OMLIB)
-libomminimum_distance_la_CPPFLAGS = -I$(OMSRCDIR)
+libomminimum_distance_la_CPPFLAGS = -I$(OMSRCDIR) -Ddllexp= -DOM_ALG_DLL_EXPORT=
 
 #
 # Build csm - kaiser-gutman only when gsl is available
@@ -56,7 +56,7 @@ libomminimum_distance_la_CPPFLAGS = -I$(OMSRCDIR)
 #	csmkg.hh
 #libomcsmkg_la_LDFLAGS = -no-undefined
 #libomcsmkg_la_LIBADD = $(GSL_LIBS) $(OMLIB)
-#libomcsmkg_la_CPPFLAGS = $(GSL_CFLAGS) -I../src/inc -I../src/inc/serialization
+#libomcsmkg_la_CPPFLAGS = $(GSL_CFLAGS) -I../src/inc -I../src/inc/serialization -Ddllexp= -DOM_ALG_DLL_EXPORT=
 #endif
 
 #
@@ -71,7 +71,7 @@ libomcsmbs_la_SOURCES = \
 	csmbs.hh
 libomcsmbs_la_LDFLAGS = -no-undefined
 libomcsmbs_la_LIBADD = $(GSL_LIBS) $(OMLIB)
-libomcsmbs_la_CPPFLAGS = $(GSL_CFLAGS) -I$(OMSRCDIR)
+libomcsmbs_la_CPPFLAGS = $(GSL_CFLAGS) -I$(OMSRCDIR) -Ddllexp= -DOM_ALG_DLL_EXPORT=
 endif
 
 #
@@ -87,7 +87,7 @@ endif
 #	aquamaps.hh
 #libomaquamaps_la_LDFLAGS = -no-undefined
 #libomaquamaps_la_LIBADD = $(SQLITE3_LIB) $(OMLIB)
-#libomaquamaps_la_CPPFLAGS = $(OMDATAPATH) $(SQLITE3_INC) -I$(OMSRCDIR)
+#libomaquamaps_la_CPPFLAGS = $(OMDATAPATH) $(SQLITE3_INC) -I$(OMSRCDIR) -Ddllexp= -DOM_ALG_DLL_EXPORT=
 #endif
 
 #
@@ -97,4 +97,4 @@ plugin_LTLIBRARIES += libomenvironmental_distance.la
 libomenvironmental_distance_la_SOURCES = environmental_distance.cpp environmental_distance.hh matrix.hh
 libomenvironmental_distance_la_LDFLAGS = -no-undefined
 libomenvironmental_distance_la_LIBADD = $(OMLIB)
-libomenvironmental_distance_la_CPPFLAGS = -I$(OMSRCDIR)
+libomenvironmental_distance_la_CPPFLAGS = -I$(OMSRCDIR) -Ddllexp= -DOM_ALG_DLL_EXPORT=

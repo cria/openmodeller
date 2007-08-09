@@ -17,7 +17,7 @@ pythonSitePackages_SCRIPTS = om.py
 
 _om_la_SOURCES = om_wrap.cxx
 _om_la_LDFLAGS = -module -no-undefined
-_om_la_CPPFLAGS = -I$(OMSRCDIR) $(PYTHON_INCLUDES)
+_om_la_CPPFLAGS = -I$(OMSRCDIR) $(PYTHON_INCLUDES) -Ddllexp=
 _om_la_LIBADD = $(GDAL_LIB) $(OMLIB)
 
 EXTRA_DIST = om_python.i om.py

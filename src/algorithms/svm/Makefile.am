@@ -25,5 +25,5 @@ libomsvm_la_SOURCES = \
 
 libomsvm_la_LDFLAGS = -no-undefined
 libomsvm_la_LIBADD = $(OMLIB)
-libomsvm_la_CPPFLAGS = -I$(OMSRCDIR)
+libomsvm_la_CPPFLAGS = -I$(OMSRCDIR) -Ddllexp= -DOM_ALG_DLL_EXPORT=
 

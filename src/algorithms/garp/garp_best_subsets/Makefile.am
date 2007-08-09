@@ -40,7 +40,7 @@ libomgarp_bs_la_SOURCES = \
 
 libomgarp_bs_la_LDFLAGS = -no-undefined
 libomgarp_bs_la_LIBADD = $(OMLIB) $(LIB_PTHREAD)
-libomgarp_bs_la_CPPFLAGS = -I.. -I$(OMSRCDIR) -DDONT_EXPORT_GARP_FACTORY
+libomgarp_bs_la_CPPFLAGS = -I.. -I$(OMSRCDIR) -DDONT_EXPORT_GARP_FACTORY -Ddllexp= -DOM_ALG_DLL_EXPORT=
 
 #libomdg_garp_bs_la_SOURCES = \
 #	best_subsets.cpp dg_garp_bs.cpp garp_run.cpp \
@@ -63,5 +63,5 @@ libomgarp_bs_la_CPPFLAGS = -I.. -I$(OMSRCDIR) -DDONT_EXPORT_GARP_FACTORY
 #libomdg_garp_bs_la_LDFLAGS  = -no-undefined
 #libomdg_garp_bs_la_LIBADD   = $(OMLIB) $(LIB_PTHREAD)
 #libomdg_garp_bs_la_CPPFLAGS = -I.. -I$(OMSRCDIR) -I../../dg_garp \
-#                              -DDONT_EXPORT_GARP_FACTORY
+#                              -DDONT_EXPORT_GARP_FACTORY -Ddllexp= -DOM_ALG_DLL_EXPORT=
 
