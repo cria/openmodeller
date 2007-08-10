@@ -160,6 +160,9 @@ IF (WIN32)
     ADD_DEFINITIONS("-Ddllexp\"=__declspec(dllimport)\"")
     ADD_DEFINITIONS("-DOM_ALG_DLL_EXPORT\"=__declspec(dllexport)\"")
   ENDIF (MSVC)
+ELSE (WIN32)
+    ADD_DEFINITIONS("-Ddllexp=")
+    ADD_DEFINITIONS("-DOM_ALG_DLL_EXPORT=")
 ENDIF (WIN32)
 
 #############################################################
