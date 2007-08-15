@@ -229,7 +229,7 @@ class test_Configuration : public CxxTest :: TestSuite
       std::cout << std::endl;
       std::cout << "Testing Simple Xml Serialization check..." << std::endl;
       //Still under development
-      /*
+
          A->setName(std::string("Freddy_the_Freeloader"));
          A->setValue(std::string("The Value"));
          for(unsigned i=0; i<g->size(); i++){
@@ -244,10 +244,10 @@ class test_Configuration : public CxxTest :: TestSuite
        A->addNameValue("StringAttr",*a);
        std::stringstream sscheck(std::ios::out);
        Configuration::writeXml(A,sscheck);
-       *a = "<StringAttr='String Value'\n IntAttr='42'\n DoubleAttr='3.1415000000000002'\n SampleAttr='-2 -1 0 1 2'\n>\nThe Value\n</Freddy_the_Freeloader>\n";
+       *a = "\n<Freddy_the_Freeloader SampleAttr=\"4294967294 4294967295 0 1 2\" DoubleAttr=\"3.141500000000000181188398\" IntAttr=\"42\" StringAttr=\"String Value\">The Value</Freddy_the_Freeloader>";
        std::cout << sscheck.str();
        TS_ASSERT(*a == sscheck.str());
-       */
+
     }
 
     void test16 (){
@@ -280,13 +280,12 @@ class test_Configuration : public CxxTest :: TestSuite
     }
 
     void test18 (){
-      /*
-         std::cout << std::endl;
-         std::cout << "Testing Add subsection..." << std::endl;
-         A->addSubsection(*C);
-       *C=A->getSubsection();
-       TS_ASSERT();
-       */
+/*
+       std::cout << std::endl;
+       std::cout << "Testing Add subsection..." << std::endl;
+       A->addSubsection(*C);
+       TS_ASSERT(*C==A->getSubsection("blabla",true));
+*/
     }
 
     void test19 (){

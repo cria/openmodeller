@@ -146,7 +146,7 @@ TEST( AddAttrSample, ConfigurationImpl )
 TEST( XmlCheck1, ConfigurationImpl )
 {
   g_log("Simple Xml Serialization check\n");
-  
+
   stringstream sscheck( ios::out );
   Configuration::writeXml( A, sscheck );
 
