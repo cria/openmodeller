@@ -43,7 +43,36 @@ EXTRA_DIST = \
 	cmake/FindGSL.cmake \
 	cmake/FindProj.cmake \
 	cmake/FindSqlite3.cmake \
-	cmake/Python.cmake
+	cmake/Python.cmake \
+	ctest/CMakeLists.txt \
+	ctest/cxxtestgen.pl \
+	ctest/om_hello_world.cpp \
+	ctest/om_load_algs.cpp \
+	ctest/om_test_areastats.cpp \
+	ctest/om_test_areastats.h \
+	ctest/om_test_configuration.cpp \
+	ctest/om_test_configuration.h \
+	ctest/om_test_exceptions.cpp \
+	ctest/om_test_exceptions.h \
+	ctest/om_test_icstring.cpp \
+	ctest/om_test_icstring.h \
+	ctest/om_test_log.cpp \
+	ctest/om_test_mapformat.cpp \
+	ctest/om_test_mapformat.h \
+	ctest/om_test_random.cpp \
+	ctest/om_test_random.h \
+	ctest/om_test_refcount.cpp \
+	ctest/om_test_refcount.h \
+	ctest/om_test_sample.cpp \
+	ctest/om_test_sampleexpr.cpp \
+	ctest/om_test_sampleexpr.h \
+	ctest/om_test_sample.h \
+	ctest/om_test_scalenormalizer.cpp \
+	ctest/om_test_scalenormalizer.h \
+	ctest/om_test_template.h \
+	ctest/README.txt \
+	ctest/test_data/model_request.xml \
+	ctest/test_data/projection_request.xml
 
 #SUBDIRS = test src data
 SUBDIRS = test src
