@@ -36,11 +36,15 @@
 #include "cxxtest/TestSuite.h"
 
 #include <openmodeller/ScaleNormalizer.hh>
+#include <openmodeller/Configuration.hh>
 #include <openmodeller/Sample.hh>
 #include <openmodeller/Occurrence.hh>
 #include <openmodeller/Occurrences.hh>
 #include <openmodeller/Environment.hh>
 #include <openmodeller/Sampler.hh>
+
+#include <sstream>
+using namespace std;
 
 class test_ScaleNormalizer : public CxxTest :: TestSuite 
 {
@@ -58,16 +62,25 @@ class test_ScaleNormalizer : public CxxTest :: TestSuite
 
     void instantiateNormalizerWithoutUsingLayerAsRef () {
 
-      // Instantiate normalizer that will be tested
       _scaleNormalizer = new ScaleNormalizer( 0, 1, false );
-
     }
 
     void instantiateNormalizerUsingLayerAsRef () {
 
-      // Instantiate normalizer that will be tested
       _scaleNormalizer = new ScaleNormalizer( 0, 100, true );
+    }
 
+    void loadNormalizerFromConfig () {
+
+      _scaleNormalizer = new ScaleNormalizer();
+
+      std::string xml = "<Normalization Class=\"ScaleNormalizer\" UseLayerAsRef=\"1\" Min=\"0\" Max=\"1\" Offsets=\"0 0.1402850822203181\" Scales=\"0.0004679457182966776 0.000257205615151483\"/>";
+
+      stringstream ss( xml, ios::in );
+
+      ConfigurationPtr config = Configuration::readXml( ss );
+
+      _scaleNormalizer->setConfiguration( config );
     }
 
     void setupSampler () {
@@ -127,10 +140,10 @@ class test_ScaleNormalizer : public CxxTest :: TestSuite
 
     void test1 () {
 
+      std::cout << "Testing scale normalizer with interval [0,1] using minimum and maximum values from input samples..." << std::endl;
+
       setupSampler();
       instantiateNormalizerWithoutUsingLayerAsRef();
-
-      std::cout << "Testing scale normalizer with interval [0,1] using minimum and maximum values from input samples..." << std::endl;
 
       CxxTest::setAbortTestOnFail( true );
 
@@ -168,10 +181,10 @@ class test_ScaleNormalizer : public CxxTest :: TestSuite
 
     void test2 () {
 
+      std::cout << "Testing scale normalizer with interval [0,1] using minimum and maximum values from layers..." << std::endl;
+
       setupSampler();
       instantiateNormalizerUsingLayerAsRef();
-
-      std::cout << "Testing scale normalizer with interval [0,1] using minimum and maximum values from layers..." << std::endl;
 
       CxxTest::setAbortTestOnFail( true );
 
@@ -209,6 +222,40 @@ class test_ScaleNormalizer : public CxxTest :: TestSuite
 
       TS_ASSERT_DELTA( sample[0], 56.148, 0.01 );
       TS_ASSERT_DELTA( sample[1], 65.470, 0.01 );
+    }
+
+    void test3 () {
+
+      std::cout << "Testing deserialization of scale normalizer..." << std::endl;
+
+      CxxTest::setAbortTestOnFail( true );
+
+      loadNormalizerFromConfig();
+
+      // Minimum value
+      TS_ASSERT( _scaleNormalizer->_min == 0.0 );
+
+      // Maximum value
+      TS_ASSERT( _scaleNormalizer->_max == 1.0 );
+
+      // Use Layer as Reference
+      TS_ASSERT( _scaleNormalizer->_use_layer_as_ref == true );
+
+      // Offsets
+      Scalar myoffsets[2] = {0, 0.1402850822203181};
+      Sample offsets( 2, myoffsets );
+
+      TS_ASSERT( _scaleNormalizer->_offsets.size() == 2 );
+
+      TS_ASSERT( _scaleNormalizer->_offsets.equals( offsets ) );
+
+      // Scales
+      Scalar myscales[2] = {0.0004679457182966776, 0.000257205615151483};
+      Sample scales( 2, myscales );
+
+      TS_ASSERT( _scaleNormalizer->_scales.size() == 2 );
+
+      TS_ASSERT( _scaleNormalizer->_scales.equals( scales ) );
     }
 
   private:
