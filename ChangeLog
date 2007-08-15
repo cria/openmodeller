@@ -1,13 +1,15 @@
-Release 0.5 (?)
------------------------------
+Release 0.5 (2007-08-15)
+------------------------
+SVN revision: 3527
 
 	* New algorithm "Support Vector Machines" (C-SVC, nu-SVC and one-class SVM).
-	* Added support to multiple normalization techniques (two implementations are available: ScaleNormalizer and MeanVarianceNormalizer).
+	* Added support for multiple normalization techniques (two implementations are available: ScaleNormalizer and MeanVarianceNormalizer).
 	* New method to cancel jobs (model creation or model projection).
 	* Sample serialization is now based on the original (unnormalized) environment values.
+	* New infrastructure for unit tests using cxxtest.
 
 Release 0.4.2 (2007-05-08)
------------------------------
+--------------------------
 
 	* Included ROC curve as part of model statistics.
 	* Added metric Chebyshev in the Environmental Distance algorithm.
@@ -15,7 +17,7 @@ Release 0.4.2 (2007-05-08)
 	* Minor bugfixes.
 
 Release 0.4.1 (2007-03-12)
------------------------------
+--------------------------
 
 	* New algorithm "Environmental Distance".
 	* Changed OccurrencesReader to handle presence and absence points separately.
