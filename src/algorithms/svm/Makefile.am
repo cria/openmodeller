@@ -19,7 +19,7 @@ plugin_LTLIBRARIES = libomsvm.la
 
 libomsvm_la_SOURCES = \
 	svm.cpp \
-	svm.hh \
+	svm.h \
 	svm_alg.cpp \
 	svm_alg.hh
 
