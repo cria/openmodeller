@@ -74,7 +74,7 @@ void ScaleNormalizer::computeNormalization( const ReferenceCountedPointer<const 
 
   if ( _use_layer_as_ref ) {
 
-    Log::instance()->debug( "Using layer as reference for normalization.\n");
+    Log::instance()->debug( "Using min/max from layer as reference for normalization.\n");
 
     EnvironmentPtr envPtr = samplerPtr->getEnvironment();
 
@@ -88,6 +88,10 @@ void ScaleNormalizer::computeNormalization( const ReferenceCountedPointer<const 
 
       Log::instance()->warn( "Sampler has no environment. ScaleNormalizaer will get min/max directly from samples instead.\n");
     }
+  }
+  else {
+
+    Log::instance()->debug( "Using min/max from input samples as reference for normalization.\n");
   }
 
   if ( get_minmax_from_sampler ) {
