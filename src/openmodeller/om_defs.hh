@@ -43,9 +43,9 @@ typedef double Scalar;   ///< Type of map values.
 
 // Strangely enough, cygwin/mingw windows libs have strcasecmp() function
 // while native VC++7 lib doesn't. Go figure... 
-//#  ifdef _VCPP
+#  ifdef MSVC
 #    define strcasecmp _stricmp
-//#  endif
+#  endif
 
 // disable warnings about lack of DLL export in inner class members
 #ifdef MSVC
