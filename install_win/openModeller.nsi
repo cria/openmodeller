@@ -49,7 +49,7 @@ var ICONS_GROUP
 ; Instfiles page
 !insertmacro MUI_PAGE_INSTFILES
 ; Finish page
-!define MUI_FINISHPAGE_RUN "$INSTDIR\om_console.exe"
+;!define MUI_FINISHPAGE_RUN "$INSTDIR\om_console.exe"
 !insertmacro MUI_PAGE_FINISH
 
 ; Uninstaller pages
@@ -166,7 +166,7 @@ Section "Application" SEC01
   !insertmacro MUI_STARTMENU_WRITE_BEGIN Application
   CreateDirectory "$SMPROGRAMS\$ICONS_GROUP"
   CreateShortCut "$SMPROGRAMS\$ICONS_GROUP\openModeller .lnk" "$INSTDIR\openModeller.exe"
-  CreateShortCut "$DESKTOP\openModeller .lnk" "$INSTDIR\om_console.exe"
+  ;CreateShortCut "$DESKTOP\openModeller .lnk" "$INSTDIR\om_console.exe"
   !insertmacro MUI_STARTMENU_WRITE_END
 ; Added by Tim to set the PROJ_LIB env var so teh nad dir can be located by Proj
   Push PROJ_LIB
