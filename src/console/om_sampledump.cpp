@@ -1,4 +1,5 @@
 #include <openmodeller/om.hh>
+#include <openmodeller/om_defs.hh>
 #include <openmodeller/Log.hh>
 #include "request_file.hh"
 #include "request_file.hh"
@@ -15,7 +16,7 @@
 #include <stdexcept>
  
 using namespace std;
- 
+
 int main( int argc, char **argv ) {
 #ifdef BUILD_TERRALIB
   USE_TERRALIB_IO
