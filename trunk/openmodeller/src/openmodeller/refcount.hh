@@ -46,7 +46,7 @@ public:
 // to derive from this class, and it's space and runtime overhead
 // is minimal.
 //
-class ReferenceCountedObject
+class dllexp ReferenceCountedObject
 {
 
   /* I'd like to get friendship to work here */
