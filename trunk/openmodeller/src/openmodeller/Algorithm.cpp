@@ -331,7 +331,7 @@ AlgorithmImpl::createModel( const SamplerPtr& samp, Algorithm::ModelCommand *mod
 
   setSampler( samp );
 
-  if ( needNormalization() and ! _samp->isNormalized() ) {
+  if ( needNormalization() && !_samp->isNormalized() ) {
 
     Log::instance()->info( "Computing normalization\n");
 
