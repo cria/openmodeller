@@ -69,11 +69,13 @@ INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}
 
 IF (WIN32)
   IF (MSVC)
-    ADD_DEFINITIONS("-Ddllexp=__declspec(dllexport)")
+    ADD_DEFINITIONS("-Ddllexp=__declspec(dllimport)")
+    ADD_DEFINITIONS("-DOM_XML_DLL_EXPORT=__declspec(dllexport)")
   ELSE (MSVC)
     ADD_DEFINITIONS("-Udllexp \"-Ddllexp=__declspec(dllexport)\"")
+    ADD_DEFINITIONS("-DOM_XML_DLL_EXPORT\"=__declspec(dllexport)\"")
   ENDIF (MSVC)
-ENDIF (WIN32)
+ENDIF (WIN32)  
 
 #############################################################
 # openmodeller_core library
