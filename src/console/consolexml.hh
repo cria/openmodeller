@@ -23,7 +23,7 @@
 #include <openmodeller/MapFormat.hh>
 #include <string>
 using namespace std;
-class dllexp ConsoleXml
+class OM_XML_DLL_EXPORT ConsoleXml
 {
     public:
         ConsoleXml(){} ;
