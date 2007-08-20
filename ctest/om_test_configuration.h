@@ -227,15 +227,13 @@ class test_Configuration : public CxxTest :: TestSuite
 
     void test15 (){
       std::cout << std::endl;
-      std::cout << "Testing Simple Xml Serialization check..." << std::endl;
-      //Still under development
-
-         A->setName(std::string("Freddy_the_Freeloader"));
-         A->setValue(std::string("The Value"));
-         for(unsigned i=0; i<g->size(); i++){
-         (*g)[i] = -2 +i;
-         }
-         A->addNameValue("SampleAttr",*g);
+      std::cout << "Testing Simple Xml Serialization check (no subsection)..." << std::endl;
+      A->setName(std::string("Freddy_the_Freeloader"));
+      A->setValue(std::string("The Value"));
+      for(unsigned i=0; i<g->size(); i++){
+      (*g)[i] = -2 +i;
+      }
+      A->addNameValue("SampleAttr",*g);
        *e = 3.1415;
        A->addNameValue("DoubleAttr",*e);
        *c = 42;
@@ -247,7 +245,6 @@ class test_Configuration : public CxxTest :: TestSuite
        *a = "\n<Freddy_the_Freeloader SampleAttr=\"4294967294 4294967295 0 1 2\" DoubleAttr=\"3.141500000000000181188398\" IntAttr=\"42\" StringAttr=\"String Value\">The Value</Freddy_the_Freeloader>";
        std::cout << sscheck.str();
        TS_ASSERT(*a == sscheck.str());
-
     }
 
     void test16 (){
@@ -269,38 +266,28 @@ class test_Configuration : public CxxTest :: TestSuite
     void test17 (){
       std::cout << std::endl;
       std::cout << "Testing getSubsection nothrow if not found (empty subsection list)..." << std::endl;
-      *a = "NoSubsection";				
+      *a = "NoSubsection";
       try {
         *C = A->getSubsection(*a,false);
         TS_ASSERT(!*C);
       }
       catch(...){
-        TS_FAIL("Exception Thrown");			
+        TS_FAIL("Exception Thrown");
       }
     }
 
     void test18 (){
-/*
        std::cout << std::endl;
        std::cout << "Testing Add subsection..." << std::endl;
-       A->addSubsection(*C);
-       TS_ASSERT(*C==A->getSubsection("blabla",true));
-*/
-    }
-
-    void test19 (){
-      std::cout << std::endl;
-      std::cout << "Testing Add subsection..." << std::endl;
-      /*
-       *C = ConfigurationPtr(new ConfigurationImpl(std::string("Point")));
+/*
        C->addNameValue("X",1);
        C->addNameValue("Y",2);
        A->addSubsection(*C);
        TS_ASSERT(A->getAllSubsections().size() == 1);
-       */
+*/
     }
 
-    void test20 (){
+    void test19 (){
       std::cout << std::endl;
       std::cout << "Testing getSubsection throw if not found (1 subsection in list)..." << std::endl;
       *a = "NoSubsection";
@@ -316,7 +303,7 @@ class test_Configuration : public CxxTest :: TestSuite
       }
     }
 
-    void test21 (){
+    void test20 (){
       std::cout << std::endl;
       std::cout << "Testing getSubsection nothrow if not found (1 subsection in list)..." << std::endl;
       *a = "NoSubsection";
@@ -329,11 +316,10 @@ class test_Configuration : public CxxTest :: TestSuite
       }
     }
 
-    void test22 (){
+    void test21 (){
       std::cout << std::endl;
       std::cout << "Testing Second Xml Serialization check..." << std::endl;
       std::cout << "(Testing model creation xml)" << std::endl;
-      //Still under development
       try 
       {
         //Note that EXAMPLE_DIR and TEST_DATA_DIR is a compiler define 
@@ -405,7 +391,7 @@ class test_Configuration : public CxxTest :: TestSuite
       }
     }
 
-    void test23 (){
+    void test22 (){
       std::cout << std::endl;
       std::cout << "Testing Third Xml Serialization check..." << std::endl;
       std::cout << "(Testing model project xml)" << std::endl;
@@ -479,6 +465,53 @@ class test_Configuration : public CxxTest :: TestSuite
         return;
       }
     }
+
+    void test23 (){
+      std::cout << std::endl;
+      std::cout << "Testing Parse Xml check ..." << std::endl;
+      std::string testVal="\n<Freddy_the_Freeloader SampleAttr=\"4294967294 4294967295 0 1 2\" DoubleAttr=\"3.141500000000000181188398\" IntAttr=\"42\" StringAttr=\"String Value\">The Value</Freddy_the_Freeloader>";
+      std::stringstream ss( testVal, std::ios::in );
+      *C = Configuration::readXml(ss);
+      std::stringstream sscheck( std::ios::out );
+      Configuration::writeXml( *C, sscheck );
+      TS_ASSERT( testVal == sscheck.str() );
+    }
+
+    void test24 (){
+      std::cout << std::endl;
+      std::cout << "Testing Parse Xml exception check 1 ..." << std::endl;
+      std::string badxml = "blablabla";
+      std::stringstream ss( badxml, std::ios::in );
+      try {
+      *C = Configuration::readXml( ss );
+      TS_FAIL( "No Exception Thrown" );
+      }
+      catch( XmlParseException& e ) {
+      TS_ASSERT(true);
+      }
+      catch( ... ) {
+      TS_FAIL( "Wrong Exception Thrown" );
+      }
+    }
+
+    void test25 (){
+      std::cout << std::endl;
+      std::cout << "Testing Parse Xml exception check 2 ..." << std::endl;
+      std::string badxml = "<Starttag></EndTag>";
+      std::stringstream ss( badxml, std::ios::in );
+      try {
+      *C = Configuration::readXml( ss );
+      TS_FAIL( "No Exception Thrown" );
+      }
+      catch( XmlParseException& e ) {
+      TS_ASSERT(true);
+      }
+      catch( ... ) {
+      TS_FAIL( "Wrong Exception Thrown" );
+      }
+    }
+
+
 
 
   private:
