@@ -74,7 +74,7 @@ IF (WIN32)
     ADD_DEFINITIONS("-DOM_XML_DLL_EXPORT=__declspec(dllexport)")
   ELSE (MSVC)
     ADD_DEFINITIONS("-Udllexp \"-Ddllexp=__declspec(dllexport)\"")
-    ADD_DEFINITIONS("-DOM_XML_DLL_EXPORT\"=__declspec(dllexport)\"")
+    ADD_DEFINITIONS("-UOM_XML_DLL_EXPORT \"-DOM_XML_DLL_EXPORT=__declspec(dllexport)\"")
   ENDIF (MSVC)
 ENDIF (WIN32)  
 
