@@ -420,7 +420,13 @@ SvmAlgorithm::initialize()
     generate_pseudo_absences = true;
   }
 
-  int num_points = num_presences + num_absences;
+  int num_points = num_presences;
+
+  // Sum absence points if not dealing with one-class SVM
+  if ( _svm_parameter.svm_type != 2 ) {
+
+    num_points += num_absences;
+  }
 
   _svm_problem.y = new double[num_points];
   _svm_problem.x = new svm_node*[num_points];
