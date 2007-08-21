@@ -60,8 +60,8 @@ main( int argc, char **argv )
   char * path = 0;
 
   // Reconfigure the global logger.
-  //g_log.setLevel( Log::Info );
-  Log::instance()->setLevel( Log::Debug);
+  Log::instance()->setLevel( Log::Info );
+  //Log::instance()->setLevel( Log::Debug);
   Log::instance()->setPrefix( "" );
 
   try {
