@@ -72,7 +72,7 @@ Map::getRegion( Coord *xmin, Coord *ymin, Coord *xmax,
   _gt->transfOut( xmin, ymin ) &&
   _gt->transfOut( xmax, ymax );
 
-  Log::instance()->debug( "Raster boundaries after geotransform: xmin=%f, xmax=%f, ymin=%f, ymax=%f\n", *xmin, *xmax, *ymin, *ymax );
+  //Log::instance()->debug( "Raster boundaries after geotransform: xmin=%f, xmax=%f, ymin=%f, ymax=%f\n", *xmin, *xmax, *ymin, *ymax );
 
   if (*xmin > *xmax)
   {
