@@ -53,6 +53,7 @@
 class BestSubsets : public AlgorithmImpl, public BSAlgorithmFactory
 {
 public:
+
   BestSubsets(AlgMetadata * metadata);
   virtual ~BestSubsets();
 
@@ -102,12 +103,17 @@ public:
   /*
    */
   void printListOfRuns(char * msg, AlgorithmRun ** runs, int numOfRuns);
+
 protected:
+
+  void _getConfiguration( ConfigurationPtr& ) const;
+  void _setConfiguration( const ConstConfigurationPtr & );
+
   int _nparam;
   AlgParameter * _alg_params;
 
-
 private:
+
   virtual AlgorithmImpl * getBSAlgorithm() = 0;
   virtual int transferParametersToAlgorithm() = 0;
 

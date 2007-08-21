@@ -49,6 +49,7 @@ class AlgorithmRun
 {
 public:
   AlgorithmRun();
+  AlgorithmRun( const AlgorithmPtr& alg );
   virtual ~AlgorithmRun();
 
   int initialize(int id, int comm_samples,
@@ -67,7 +68,8 @@ public:
   double getOmission() const;
   double getCommission() const;
   double getError(int type) const;
-  Scalar getValue(const Sample& x) const; 
+  Scalar getValue(const Sample& x) const;
+  AlgorithmPtr getAlgorithm() const { return _alg; }
 
   int calculateOmission();
   int calculateCommission();
