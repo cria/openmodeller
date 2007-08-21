@@ -5,6 +5,7 @@ SVN revision:
 	* Fixed MSVC compilation problems.
 	* Fixed bug in deserialization of the new GARP algorithm (OM GARP).
 	* Fixed crash in one-class SVM when input points contained absences.
+	* Fixed bug in deserialization of environmental distance algorithm with Mahalanobis distance.
 
 Release 0.5 (2007-08-15)
 ------------------------

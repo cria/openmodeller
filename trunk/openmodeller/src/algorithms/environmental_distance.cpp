@@ -205,6 +205,7 @@ int EnvironmentalDistance::initialize(){
    averagePoint /= presenceCount;
 
    InitDistanceType(); // Allow using "Distance" method and normalize ParDist
+
    _done = true;       // Needed for not-iterative algorithms
    _initialized = true;
    return 1; // There was no problem in initialization
@@ -444,8 +445,6 @@ void EnvironmentalDistance::_getConfiguration(ConfigurationPtr& config) const {
 
    ConfigurationPtr model_config( new ConfigurationImpl("EnvironmentalDistance") );
    config->addSubsection(model_config);
-   model_config->addNameValue("Metric",ParDistType);
-   model_config->addNameValue("ClosestPoints",ParPointQnt);
    model_config->addNameValue("MaxDistance",ParDist);
    ConfigurationPtr envpoints_config(new ConfigurationImpl("EnvironmentalReferences"));
    model_config->addSubsection(envpoints_config);
@@ -464,9 +463,13 @@ void EnvironmentalDistance::_setConfiguration(const ConstConfigurationPtr& confi
    if (!model_config) return;
 
    // Metric
-   ParDistType = model_config->getAttributeAsInt("Metric", 1);
+   if(!getParameter(PARDISTTYPE,&ParDistType)){
+      Log::instance()->error(1, "Parameter '" PARDISTTYPE "' was not found in serialized model.\n");
+   }
    // "n" closest points
-   ParPointQnt = model_config->getAttributeAsInt("ClosestPoints", 1);
+   if(!getParameter(PARPOINTQNT,&ParPointQnt)){
+      Log::instance()->error(1, "Parameter '" PARPOINTQNT "' was not found in serialized model.\n");
+   }
    // Maximum distance
    ParDist = model_config->getAttributeAsDouble("MaxDistance", 0.0);
    // Environmental points
@@ -484,6 +487,11 @@ void EnvironmentalDistance::_setConfiguration(const ConstConfigurationPtr& confi
 
    layerCount = (int)averagePoint.size();
    presenceCount = (int)presencePoints.size();
+
+   if ( ParDistType == MahalanobisDistance ) {
+     CalcCovarianceMatrix(); // Initialize covMatrixInv
+   }
+
 
    _done = true;
 }
