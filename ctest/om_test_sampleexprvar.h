@@ -31,28 +31,69 @@
 
 #ifndef TEST_SAMPLEEXPRVAR_HH
 #define TEST_SAMPLEEXPRVAR_HH
-
+#define SAMPLESIZE 10
 #include "cxxtest/TestSuite.h"
 #include <openmodeller/SampleExprVar.hh>
-
+#include <cmath>
+#include <algorithm>
+SExprType< SQR< TIMES< _2<Sample>, NEG< SQRT < PLUS< _1<Sample>, _3<Sample> > > > > > >::type expr;
 class test_SampleExprVar : public CxxTest :: TestSuite 
 {
 
   public:
     void setUp (){
+		a = new Sample(SAMPLESIZE);
+		b = new Sample(SAMPLESIZE);
+		c = new Sample(SAMPLESIZE);
+  		for( unsigned int i=0; i<SAMPLESIZE; ++i ){
+		(*a)[i] = i+1;
+		(*b)[i] = SAMPLESIZE-i;
+		(*c)[i] = SAMPLESIZE - 2*i;
+		}
     }
 
     void tearDown (){
+		delete a;
+		delete b;
+		delete c;
     }
 
     void test1 (){
-      std::cout << "Testing ..." << std::endl;
+      std::cout << "Testing SampleExprVar 1 ..." << std::endl;
+      Sample d = expr(*a)(*b)(*c);
+      for( unsigned int i=0; i<a->size(); ++i ) {
+      Scalar val = (*b)[i] * std::sqrt( (*a)[i] + (*c)[i] );
+      val *= val;
+      TS_ASSERT_DELTA( d[i], val, 1e-10 );
+      }
+    }
 
-      TS_ASSERT(true);
+    void test2 (){
+      std::cout << "Testing SampleExprVar 2 ..." << std::endl;
+      Sample d = expr(*b)(*c)(*a);
+      for( unsigned int i=0; i<a->size(); ++i ) {
+      Scalar val = (*c)[i] * std::sqrt( (*b)[i] + (*a)[i] );
+      val *= val;
+      TS_ASSERT_DELTA( d[i], val, 1e-10 );
+      }
+    }
+
+    void test3 (){
+      std::cout << "Testing SampleExprVar 3 ..." << std::endl;
+      Sample d = expr(*a)(*b)(*c);
+      Sample e = expr(*a)(*b)(*c);
+      for( unsigned int i=0; i<a->size(); ++i ) {
+      Scalar val = (*b)[i] * std::sqrt( (*a)[i] + (*c)[i] );
+      val *= val;
+      TS_ASSERT_DELTA( d[i], val, 1e-10 );
+      TS_ASSERT_DELTA( e[i], val, 1e-10 );
+  }
     }
 
   private:
-
+     Sample *a;
+     Sample *b;
+     Sample *c;
 };
 
 
