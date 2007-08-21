@@ -262,7 +262,7 @@ AlgMetadata metadata_bs = {
   
   "GARP_BS",                                                  // Id.
   "GARP with best subsets - new openModeller implementation", // Name.
-  "3.0.1 alpha",                                              // Version.
+  "3.0.2 alpha",                                              // Version.
 
   // Overview.
   "GARP is a genetic algorithm that creates ecological niche \

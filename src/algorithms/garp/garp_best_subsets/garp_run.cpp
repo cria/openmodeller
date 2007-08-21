@@ -75,6 +75,19 @@ AlgorithmRun::AlgorithmRun() :
   //Log::instance()->info("Creating an AlgorithmRun at: %x\n",this);
 }
 
+AlgorithmRun::AlgorithmRun( const AlgorithmPtr& alg ) :
+  _id(-1),
+  _running( false ),
+  _omission( -1.0 ),
+  _commission( -1.0 ),
+  _commission_samples( 0 ),
+  _alg( alg ),
+  _train_sampler(),
+  _test_sampler()
+{
+  //Log::instance()->info("Creating an AlgorithmRun at: %x\n",this);
+}
+
 /****************************************************************/
 AlgorithmRun::~AlgorithmRun() 
 {
