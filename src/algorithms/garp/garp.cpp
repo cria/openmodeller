@@ -135,7 +135,7 @@ AlgMetadata metadata = {
   
   "GARP",                                                // Id.
   "GARP (single run) - new openModeller implementation", // Name.
-  "3.1 beta",                                            // Version.
+  "3.2 beta",                                            // Version.
 
   // Overview.
   "GARP is a genetic algorithm that creates ecological niche \
@@ -435,6 +435,7 @@ Garp::_getConfiguration( ConfigurationPtr& config ) const
   model_config->addNameValue( "FinalGapSize", _gapsize );
 
   if ( _fittest ) {
+
     int nrules = _fittest->numRules();
  
     ConfigurationPtr rules_config( new ConfigurationImpl("FittestRules") );
@@ -443,6 +444,7 @@ Garp::_getConfiguration( ConfigurationPtr& config ) const
     rules_config->addNameValue( "Count", nrules );
 
     for( int i=0; i<nrules; i++ ) {
+
       GarpRule *rule = _fittest->get(i);
       char type[16];
       sprintf(type, "%c", rule->type() );
@@ -476,6 +478,12 @@ Garp::_setConfiguration( const ConstConfigurationPtr& config )
   _mutation_rate = model_config->getAttributeAsDouble( "FinalMutationRate", 0.0 );
   _gapsize = model_config->getAttributeAsDouble( "FinalGapSize", 0.0 );
 
+  // Need to read at least this parameter
+  if ( ! getParameter("PopulationSize", &_popsize) ) {
+
+      Log::instance()->error(1, "Could not read parameter PopulationSize from serialized model.");
+  }
+
   _offspring = new GarpRuleSet( 2 * _popsize );
   _fittest = new GarpRuleSet( 2 * _popsize );
 
@@ -484,7 +492,7 @@ Garp::_setConfiguration( const ConstConfigurationPtr& config )
    * to get the algorithm primed with its custom sampler after
    * it's deserialized.
    */
-  //_bioclimHistogram.initialize( _samp, _resamples );
+  //_bioclimHistogram.initialize( _cachedOccs );
 
   ConstConfigurationPtr rules_config = model_config->getSubsection( "FittestRules" );
 

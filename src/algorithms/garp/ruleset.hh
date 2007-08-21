@@ -176,7 +176,7 @@ public:
 
 
   void gatherRuleSetStats(int gen);
-  void log();
+  void log() const;
   
 
 private:
