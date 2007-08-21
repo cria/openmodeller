@@ -245,20 +245,22 @@ int GarpRuleSet::remove(int index)
 
 int GarpRuleSet::add(GarpRule * rule)
 {
-  if (rule)
-    {
-      if (_numRules < _size)
-	{
-	  _rules[_numRules++] = rule;
-	  return _numRules;
-	}
-      else
-	// "Cannot add rule. Ruleset is full"
-	return 0;
+  if ( rule ) {
+
+    if ( _numRules < _size ) {
+
+      _rules[_numRules++] = rule;
+      return _numRules;
     }
-  else
+    else {
+      // "Cannot add rule. Ruleset is full"
+      return 0;
+    }
+  }
+  else {
     // Cannot add null rule
     return 0;
+  }
 }
 
 /****************************************************************/
@@ -267,11 +269,13 @@ int GarpRuleSet::add(GarpRule * rule)
 int GarpRuleSet::findSimilar(GarpRule * rule)
 {
   int i;
-  for (i = 0; i < _numRules; i++)
-    {
-      if (_rules[i]->similar(rule))
-	{ return i; }
+  for ( i = 0; i < _numRules; i++ ) {
+
+    if ( _rules[i]->similar(rule) ) { 
+
+      return i; 
     }
+  }
 
   return -1;
 }
@@ -284,11 +288,13 @@ Scalar GarpRuleSet::getValue(const Sample& x) const
 {
   int i;
 
-  for (i = 0; i < _numRules; i++)
-  {
-    if (_rules[i]->applies(x))
+  for ( i = 0; i < _numRules; i++ ) {
+
+    if (_rules[i]->applies(x)) {
+
       //return i / (double) _numRules;
       return _rules[i]->getPrediction();
+    }
   }
 
   return 0.0;
@@ -325,7 +331,7 @@ void GarpRuleSet::performanceSummary(PerfIndex perfIndex,
 /****************************************************************/
 /****************** log *****************************************/
 
-void GarpRuleSet::log()
+void GarpRuleSet::log() const
 {
   for ( int i = 0; i < _numRules; i++ )
     {
