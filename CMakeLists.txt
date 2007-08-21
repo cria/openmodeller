@@ -169,6 +169,7 @@ IF (WIN32)
 ELSE (WIN32)
     ADD_DEFINITIONS("-Ddllexp=")
     ADD_DEFINITIONS("-DOM_ALG_DLL_EXPORT=")
+    ADD_DEFINITIONS("-DOM_XML_DLL_EXPORT=")
 ENDIF (WIN32)
 
 #############################################################
