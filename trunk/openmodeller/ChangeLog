@@ -1,6 +1,6 @@
 Release 0.5.1 (2007-08-21)
 --------------------------
-SVN revision: 
+SVN revision: 3589
 
 	* Fixed MSVC compilation problems.
 	* Fixed bug in deserialization of the new GARP algorithm (OM GARP).
