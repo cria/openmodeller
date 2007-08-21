@@ -110,3 +110,9 @@ ADD_EXECUTABLE (om_test_scalenormalizer ${OM_TEST_SCALENORMALIZER_SRCS})
 TARGET_LINK_LIBRARIES(om_test_scalenormalizer openmodeller)
 ADD_TEST(om_test_scalenormalizer ${EXECUTABLE_OUTPUT_PATH}/om_test_scalenormalizer)
 
+#SampleExprVar Tests
+SET (OM_TEST_SAMPLEEXPRVAR_SRCS om_test_sampleexprvar.cpp)
+ADD_EXECUTABLE (om_test_sampleexprvar ${OM_TEST_SAMPLEEXPRVAR_SRCS})
+TARGET_LINK_LIBRARIES(om_test_sampleexprvar openmodeller)
+ADD_TEST(om_test_sampleexprvar ${EXECUTABLE_OUTPUT_PATH}/om_test_sampleexprvar)
+
