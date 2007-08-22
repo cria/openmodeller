@@ -3,7 +3,7 @@
 int main( int argc, char **argv ) 
 {
   AlgorithmFactory::searchDefaultDirs();
-  OpenModeller * mypOpenModeller;
+  OpenModeller * mypOpenModeller = new OpenModeller();
   const AlgMetadata **mypAlgorithmMetadataArray = mypOpenModeller->availableAlgorithms();
   const AlgMetadata *mypAlgorithmMetadata = *mypAlgorithmMetadataArray;
 
