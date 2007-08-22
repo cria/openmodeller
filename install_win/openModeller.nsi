@@ -1,6 +1,6 @@
 ; defines added by tim to streamline / softcode install process
 ; Make sure the the following two vars are correct for your system
-!define PRODUCT_VERSION "0.5.0"
+!define PRODUCT_VERSION "0.5.1"
 !define BUILD_DIR "c:\Program Files\openModeller${PRODUCT_VERSION}"
 
 ; HM NIS Edit Wizard helper defines
