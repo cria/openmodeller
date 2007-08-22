@@ -28,7 +28,7 @@ int main( int argc, char **argv ) {
     AlgorithmFactory::searchDefaultDirs();
 
     if (argc != 3) {
-      cout << "Usage " << argv[0] << " <request file> <output filename>" << endl;
+      cout << "Usagex " << argv[0] << " <request file> <output filename>" << endl;
       return -1;
     }
 
@@ -50,8 +50,15 @@ int main( int argc, char **argv ) {
     //om->createMap( argv[1], _outputFormat );
 
     SamplerPtr s = om.getSampler();
-    ConstOccurrencesPtr p = s->getPresences();
 
+    if ( ! s ) {
+
+      cout << "Could not load sampler" << endl;
+      return -1;
+    }
+   
+    ConstOccurrencesPtr p = s->getPresences();
+    
     OccurrencesImpl::const_iterator it = p->begin();
     OccurrencesImpl::const_iterator fin = p->end();
 
