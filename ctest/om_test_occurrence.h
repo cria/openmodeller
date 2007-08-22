@@ -57,6 +57,8 @@ class test_Occurrence : public CxxTest :: TestSuite
       B = new OccurrenceImpl(*name,Coord(1.0),Coord(2.0),Scalar(3.0),Scalar(4.0));
       C = new OccurrenceImpl(*name,Coord(1.0),Coord(2.0),Scalar(3.0),Scalar(4.0),*attr,*env);
       D = new OccurrenceImpl(*name,Coord(1.0),Coord(2.0),Scalar(3.0),Scalar(4.0),Sample(1),Sample(2));
+      E = new OccurrenceImpl(*name,Coord(1.0),Coord(2.0),Scalar(3.0));
+      F = new OccurrenceImpl(*C);
     }
 
     void tearDown (){
@@ -67,6 +69,8 @@ class test_Occurrence : public CxxTest :: TestSuite
       delete B;
       delete C;
       delete D;
+      delete E;
+      delete F;
     }
 
     void test1 (){
@@ -119,12 +123,80 @@ class test_Occurrence : public CxxTest :: TestSuite
 
     void test5 (){
       std::cout << "Testing Occurrence constructor without uncertanty..." << std::endl;
-      TS_ASSERT(true);
+      TS_ASSERT(E->id()==*name);
+      TS_ASSERT(E->x()==Coord(1.0));
+      TS_ASSERT(E->y()==Coord(2.0));
+      TS_ASSERT(E->error()==Scalar(-1.0));
+      TS_ASSERT(E->abundance()==Scalar(3.0));
+      TS_ASSERT(E->attributes()==Sample(0));
+      TS_ASSERT(E->environment()==Sample(0));
+      TS_ASSERT(E->originalEnvironment()==Sample(0));
     }
 
     void test6 (){
       std::cout << "Testing Occurrence constructor by OccurrenceImpl reference ..." << std::endl;
-      TS_ASSERT(true);
+      TS_ASSERT(F->id()==*name);
+      TS_ASSERT(F->x()==Coord(1.0));
+      TS_ASSERT(F->y()==Coord(2.0));
+      TS_ASSERT(F->error()==Scalar(3.0));
+      TS_ASSERT(F->abundance()==Scalar(4.0));
+      TS_ASSERT(F->attributes()==*attr);
+      TS_ASSERT(F->environment()==C->originalEnvironment());
+      TS_ASSERT(F->originalEnvironment()==*env);
+    }
+
+    void test7 (){
+      std::cout << "Testing normalize( Normalizer * normalizerPtr) ..." << std::endl;
+      TS_WARN("Need to check Normalizer first before testing normalize");
+    }
+
+    void test8 (){
+      std::cout << "Testing setNormalizedEnvironment(const Sample& s) ..." << std::endl;
+      A->setNormalizedEnvironment(Sample(5));
+      TS_ASSERT((A->id()).empty());
+      TS_ASSERT(A->x()==Coord(0.0));
+      TS_ASSERT(A->y()==Coord(0.0));
+      TS_ASSERT(A->error()==Scalar(0.0));
+      TS_ASSERT(A->abundance()==Scalar(0.0));
+      TS_ASSERT(A->attributes()==Sample());
+      TS_ASSERT(A->environment()==Sample(5));
+      TS_ASSERT(A->originalEnvironment()==Sample());
+    }
+
+    void test9 (){
+      std::cout << "Testing setUnnormalizedEnvironment(const Sample& s) ..." << std::endl;
+      A->setUnnormalizedEnvironment(Sample(5));
+      TS_ASSERT((A->id()).empty());
+      TS_ASSERT(A->x()==Coord(0.0));
+      TS_ASSERT(A->y()==Coord(0.0));
+      TS_ASSERT(A->error()==Scalar(0.0));
+      TS_ASSERT(A->abundance()==Scalar(0.0));
+      TS_ASSERT(A->attributes()==Sample());
+      TS_ASSERT(A->environment()==A->originalEnvironment());
+      TS_ASSERT(A->originalEnvironment()==Sample(5));
+    }
+
+    void test10 (){
+      std::cout << "Testing hasEnvironment() ..." << std::endl;
+      TS_ASSERT(!A->hasEnvironment());
+      TS_ASSERT(!B->hasEnvironment());
+      TS_ASSERT(C->hasEnvironment());//size:10
+      TS_ASSERT(D->hasEnvironment());
+      TS_ASSERT(!E->hasEnvironment());
+      TS_ASSERT(F->hasEnvironment());
+    }
+
+    void test11 (){
+      std::cout << "Testing setAbundance(Scalar value) ..." << std::endl;
+      A->setAbundance(Scalar(5.0));
+      TS_ASSERT((A->id()).empty());
+      TS_ASSERT(A->x()==Coord(0.0));
+      TS_ASSERT(A->y()==Coord(0.0));
+      TS_ASSERT(A->error()==Scalar(0.0));
+      TS_ASSERT(A->abundance()==Scalar(5.0));
+      TS_ASSERT(A->attributes()==Sample());
+      TS_ASSERT(A->environment()==A->originalEnvironment());
+      TS_ASSERT(A->originalEnvironment()==Sample());
     }
 
   private:
@@ -135,6 +207,8 @@ class test_Occurrence : public CxxTest :: TestSuite
       OccurrenceImpl *B;
       OccurrenceImpl *C;
       OccurrenceImpl *D;
+      OccurrenceImpl *E;
+      OccurrenceImpl *F;
 };
 
 #endif
