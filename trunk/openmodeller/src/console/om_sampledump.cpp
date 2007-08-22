@@ -53,7 +53,7 @@ int main( int argc, char **argv ) {
 
     if ( ! s ) {
 
-      cout << "Could not load sampler" << endl;
+      cout << "Could not load sampler (is there an algorithm in your request file?)" << endl;
       return -1;
     }
    
@@ -125,6 +125,12 @@ int main( int argc, char **argv ) {
 
     ConstOccurrencesPtr a = s->getAbsences();
 
+    if ( ! a ) {
+
+      // No absences. Just quit.
+      return 0;
+    }
+    
     it = a->begin();
     fin = a->end();
 
