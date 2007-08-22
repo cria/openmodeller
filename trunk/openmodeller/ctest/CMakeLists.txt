@@ -121,3 +121,9 @@ SET (OM_TEST_OCCURRENCE_SRCS om_test_occurrence.cpp)
 ADD_EXECUTABLE (om_test_occurrence ${OM_TEST_OCCURRENCE_SRCS})
 TARGET_LINK_LIBRARIES(om_test_occurrence openmodeller)
 ADD_TEST(om_test_occurrence ${EXECUTABLE_OUTPUT_PATH}/om_test_occurrence)
+
+#AlgParameter Tests
+SET (OM_TEST_ALGPARAMETER_SRCS om_test_algparameter.cpp)
+ADD_EXECUTABLE (om_test_algparameter ${OM_TEST_ALGPARAMETER_SRCS})
+TARGET_LINK_LIBRARIES(om_test_algparameter openmodeller)
+ADD_TEST(om_test_algparameter ${EXECUTABLE_OUTPUT_PATH}/om_test_algparameter)
