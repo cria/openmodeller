@@ -1,0 +1,79 @@
+/**
+ * Declaration of Bioclim_oratic Envelope Algorithm - Nix, 1986.
+ * 
+ * @author Mauro Muñoz <mauro@cria.org.br>
+ * @author Bioclim_or_or implemantation by Tim Sutton and Chris Yesson
+ * @date 2007-08-22
+ * $Id$
+ *
+ * LICENSE INFORMATION
+ * 
+ * Copyright(c) 2004 by CRIA -
+ * Centro de Referência em Informação Ambiental
+ *
+ * http://www.cria.org.br
+ * 
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details:
+ * 
+ * http://www.gnu.org/copyleft/gpl.html
+ */
+
+#ifndef _BIOCLIM_ORHH_
+#define _BIOCLIM_ORHH_
+
+#include <openmodeller/om.hh>
+
+/****************************************************************/
+/*********************** Bioclim_or Distance ***********************/
+
+/** 
+ * Bioclimatic Envelope Algorithm with occurrence probability
+ * based on the number variables within the min/max  range
+ *
+ */
+class Bioclim_or : public AlgorithmImpl
+{
+public:
+
+  Bioclim_or();
+  ~Bioclim_or();
+
+  // Inherited from Algorithm class.
+  int initialize();
+  int iterate();
+  int done() const;
+
+  Scalar getValue( const Sample& x ) const;
+  int    getConvergence( Scalar *val );
+
+protected:
+  virtual void _getConfiguration( ConfigurationPtr& ) const;
+  virtual void _setConfiguration( const ConstConfigurationPtr & );
+
+private:
+
+  /** compute the statistic member variables based on
+      the data in the OccurrencesPtr */
+  void computeStats( const OccurrencesPtr& );
+
+  /** Log the bioclimatic envelopes information. */
+  void logEnvelope();
+
+  bool _done;  ///> is true if the algorithm is finished.
+
+  Sample _minimum; ///> Mininum value for each variable.
+  Sample _maximum; ///> Maximum value for each variable.
+
+};
+
+
+#endif //BIOCLIM_ORHH
+
