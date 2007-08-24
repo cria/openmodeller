@@ -111,23 +111,32 @@ class test_AlgParameter : public CxxTest :: TestSuite
 
     void test5 (){
       std::cout << "Testing setId(char const *id) ..." << std::endl;
-                //(*a)[2] = '_';
-                //A->setId(*a);
-                //TS_ASSERT(strcmp(A->id(),*a)==0);
-                //TS_ASSERT(strcmp(A->value(),*b)==0);
+                (*a)[2] = '_';
+                A->setId(*a);
+                TS_ASSERT(strcmp(A->id(),*a)==0);
+                TS_ASSERT(A->value()==0);
     }
 
     void test6 (){
       std::cout << "Testing setValue(char const *val) ..." << std::endl;
-                //(*b)[5] = '_';
-                //A->setValue(*b);
-                //TS_ASSERT(strcmp(A->id(),*a)==0);
-                //TS_ASSERT(strcmp(A->value(),*b)==0);
+                (*b)[5] = '_';
+                A->setValue(*b);
+                TS_ASSERT(A->id()==0);
+                TS_ASSERT(strcmp(A->value(),*b)==0);
     }
 
     void test7 (){
       std::cout << "Testing setValue(double val) ..." << std::endl;
+                char buf[32];
+                sprintf(buf,"%-32.8f",2.0);
+                A->setValue(2.0);
+                TS_ASSERT(strcmp(A->value(),buf)==0);
+    }
 
+    void test8 (){
+      std::cout << "Testing valueReal() ..." << std::endl;
+                TS_ASSERT(atof(B->value())==B->valueReal());
+                TS_ASSERT(A->valueReal()==0.0);
     }
 
   private:

@@ -63,4 +63,10 @@ public:
  void runTest() { suite_test_AlgParameter.test7(); }
 } testDescription_test_AlgParameter_test7;
 
+static class TestDescription_test_AlgParameter_test8 : public CxxTest::RealTestDescription {
+public:
+ TestDescription_test_AlgParameter_test8() : CxxTest::RealTestDescription( Tests_test_AlgParameter, suiteDescription_test_AlgParameter, 136, "test8" ) {}
+ void runTest() { suite_test_AlgParameter.test8(); }
+} testDescription_test_AlgParameter_test8;
+
 #include <cxxtest/Root.cpp>
