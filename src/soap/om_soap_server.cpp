@@ -53,6 +53,7 @@ using namespace std;
 #define OMWS_MODEL_CREATION_RESPONSE_PREFIX "model_resp."
 #define OMWS_MODEL_PROJECTION_REQUEST_PREFIX "proj_req."
 #define OMWS_PROJECTION_STATISTICS_PREFIX "stats."
+#define OMWS_JOB_PROGRESS_PREFIX "prog."
 #define OMWS_CONFIG_FILE "../config/server.conf"
 #define OMWS_LAYERS_CACHE_FILE "layers.xml"
 
@@ -545,31 +546,44 @@ omws__getProgress( struct soap *soap, xsd__string ticket, xsd__int &progress )
     fileName.append( "/" );
   }
 
-  // First try searching on model creation jobs
-  string modelRespFile( fileName );
+  string jobProgressFile( fileName );
 
-  modelRespFile.append( OMWS_MODEL_CREATION_RESPONSE_PREFIX );
-  modelRespFile.append( ticket );
+  jobProgressFile.append( OMWS_JOB_PROGRESS_PREFIX );
+  jobProgressFile.append( ticket );
 
-  if ( fileExists( modelRespFile.c_str() ) ) {
+  if ( fileExists( jobProgressFile.c_str() ) ) {
 
-    // If file exists, then just report 100%
-    progress = 100;
+    // If file exists, get its content
+    fstream fin;
+    fin.open( jobProgressFile.c_str(), ios::in );
+
+    if ( fin.is_open() ) {
+
+      ostringstream oss;
+      string line;
+
+      // If file was opened, read the content and return it
+      while ( ! fin.eof() )
+      {
+        getline( fin, line );
+        oss << line << endl;
+      }
+
+      progress = atoi( oss.str().c_str() );
+
+      // TODO: should we also check if the resulting files exist? (model or map)
+
+      fin.close();
+    }
+    else {
+
+      return soap_receiver_fault( soap, "Could not open progress file", NULL );
+    }
+
     return SOAP_OK;
   }
 
-  // Now try searching on model projection jobs, for each possible file extension
-
-  fileName = getMapFile( ticket );
-
-  if ( ! fileName.empty() ) {
-
-    progress = 100;
-  }
-  else {
-
-    progress = 0;
-  }
+  progress = 0;
 
   return SOAP_OK;
 }
