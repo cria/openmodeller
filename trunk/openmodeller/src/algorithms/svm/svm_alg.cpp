@@ -245,6 +245,7 @@ SvmAlgorithm::SvmAlgorithm() :
   AlgorithmImpl( &metadata ),
   _done( false ),
   _num_layers( 0 ),
+  _svm_model( 0 ),
   _presence_index( -1 )
 {
   _normalizerPtr = new MeanVarianceNormalizer();
@@ -256,8 +257,12 @@ SvmAlgorithm::SvmAlgorithm() :
 
 SvmAlgorithm::~SvmAlgorithm()
 {
-  svm_destroy_model( _svm_model );
   svm_destroy_param( &_svm_parameter );
+
+  if ( _svm_model ) {
+
+    svm_destroy_model( _svm_model );
+  }
 
   if ( _svm_problem.l > 0 ) {
 
