@@ -33,7 +33,7 @@ class OM_XML_DLL_EXPORT ConsoleXml
          * so that we can pass the result cleanly to third part apps
          * using this lib, such as the JNI interface. 
          * */
-        std::string createModel(const std::string myConfigFile, bool ignoreLog=false);
+        std::string createModel(const std::string myConfigFile, bool ignoreLog=false, ModelCallback modelCallback=0, void *extraCallbackParam=0);
         /** Project a model into a set of environment layers
          * and put the output image into theOutput */
         bool projectModel(const std::string theModel, const std::string theEnvironment, const std::string theOutput);

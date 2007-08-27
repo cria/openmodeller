@@ -39,13 +39,13 @@ class MyLog : public Log::LogCallback
  * so that we can pass the result cleanly to third part apps
  * using this lib, such as the JNI interface. 
  * */
-std::string ConsoleXml::createModel(const std::string myConfigFile, bool ignoreLog)
+std::string ConsoleXml::createModel(const std::string myConfigFile, bool ignoreLog, ModelCallback modelCallback, void *extraCallbackParam)
 {
   try 
   {
     if (!ignoreLog)
     {
-      Log::instance()->setLevel( Log::Debug );
+      Log::instance()->setLevel( Log::Info );
       Log::instance()->setCallback( new MyLog() );
     }
 
@@ -59,6 +59,12 @@ std::string ConsoleXml::createModel(const std::string myConfigFile, bool ignoreL
       ConfigurationPtr c = Configuration::readXml( myConfigFile.c_str() );
       om.setModelConfiguration(c);
     }
+
+    if ( modelCallback )
+    {
+      om.setModelCallback( modelCallback, extraCallbackParam );
+    }
+
     om.createModel();
     {
       ConfigurationPtr c = om.getModelConfiguration();
@@ -77,7 +83,7 @@ bool ConsoleXml::projectModel(const std::string theModel, const std::string theE
 {  
   try {
 
-    Log::instance()->setLevel( Log::Debug );
+    Log::instance()->setLevel( Log::Info );
     Log::instance()->setCallback( new MyLog() );
 
     AlgorithmFactory::searchDefaultDirs();
@@ -118,7 +124,7 @@ bool ConsoleXml::projectModel(const std::string projectionXmlFile, const std::st
 
     if (!ignoreLog)
     {
-      Log::instance()->setLevel( Log::Debug );
+      Log::instance()->setLevel( Log::Info );
       Log::instance()->setCallback( new MyLog() );
     }
 
@@ -152,7 +158,7 @@ bool ConsoleXml::projectModel(const std::string projectionXmlFile, const std::st
 
     if (!ignoreLog)
     {
-      Log::instance()->setLevel( Log::Debug );
+      Log::instance()->setLevel( Log::Info );
       Log::instance()->setCallback( new MyLog() );
     }
 
@@ -194,7 +200,7 @@ std::string ConsoleXml::getAllAlgorithmMetadataXml()
 {
   try {
 
-    Log::instance()->setLevel( Log::Debug );
+    Log::instance()->setLevel( Log::Info );
     Log::instance()->setCallback( new MyLog() );
 
     AlgorithmFactory::searchDefaultDirs();
@@ -209,3 +215,4 @@ std::string ConsoleXml::getAllAlgorithmMetadataXml()
     return false;
   }
 }
+
