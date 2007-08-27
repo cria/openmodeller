@@ -61,7 +61,7 @@ class ModelCallbackHelper : public Algorithm::ModelCommand
 {
 
 public:
-  ModelCallbackHelper( OpenModeller::ModelCallback func, void *param ) :
+  ModelCallbackHelper( ModelCallback func, void *param ) :
     arg( param ),
     func( func ) {};
   void operator()( float d ) {
@@ -70,7 +70,7 @@ public:
 
 private:
   void *arg;
-  OpenModeller::ModelCallback func;
+  ModelCallback func;
 
 };
 
@@ -78,7 +78,7 @@ class MapCallbackHelper : public Projector::MapCommand
 {
 
 public:
-  MapCallbackHelper( OpenModeller::MapCallback func, void *param ) :
+  MapCallbackHelper( MapCallback func, void *param ) :
     arg( param ),
     func( func ) {};
   void operator()( float d ) {
@@ -87,7 +87,7 @@ public:
 
 private:
   void *arg;
-  OpenModeller::MapCallback func;
+  MapCallback func;
 
 };
 
@@ -97,7 +97,7 @@ class AbortionCallbackHelper : public AbortionCommand
 {
 
 public:
-  AbortionCallbackHelper( OpenModeller::AbortionCallback func, void *param ) :
+  AbortionCallbackHelper( AbortionCallback func, void *param ) :
     arg( param ),
     func( func ) {};
   bool operator()() {
@@ -106,7 +106,7 @@ public:
 
 private:
   void *arg;
-  OpenModeller::AbortionCallback func;
+  AbortionCallback func;
 
 };
 
@@ -690,6 +690,9 @@ OpenModeller::setProjectionConfiguration( const ConstConfigurationPtr & config )
       if ( fileType == "GreyTiff" ) {
 
         // nothing to do - it's already the default
+      }
+      else if ( fileType == "GreyTiff100" ) {
+        type = MapFormat::GreyTiff100;
       }
       else if ( fileType == "FloatingTiff" ) {
 
