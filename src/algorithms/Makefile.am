@@ -98,3 +98,12 @@ libomenvironmental_distance_la_SOURCES = environmental_distance.cpp environmenta
 libomenvironmental_distance_la_LDFLAGS = -no-undefined
 libomenvironmental_distance_la_LIBADD = $(OMLIB)
 libomenvironmental_distance_la_CPPFLAGS = -I$(OMSRCDIR) -Ddllexp= -DOM_ALG_DLL_EXPORT=
+
+#
+# Build Envelope score
+#
+plugin_LTLIBRARIES += libomenvelope_score.la
+libomenvelope_score_la_SOURCES = envelope_score.cpp envelope_score.hh
+libomenvelope_score_la_LDFLAGS = -no-undefined
+libomenvelope_score_la_LIBADD = $(OMLIB)
+libomenvelope_score_la_CPPFLAGS = -I$(OMSRCDIR) -Ddllexp= -DOM_ALG_DLL_EXPORT=
