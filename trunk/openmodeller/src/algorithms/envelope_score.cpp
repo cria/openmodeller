@@ -1,17 +1,19 @@
 /**
- * Declaration of Bioclimatic Envelope Algorithm - Nix, 1986.
+ * Declaration of Envelope Score Algorithm - Yesson & Sutton 2007.
  * 
- * @author Mauro Muñoz <mauro@cria.org.br>
- * @author Bioclim_or implemantation by Tim Sutton and Chris Yesson
+ * @author EnvelopeScore implemantation by Tim Sutton and Chris Yesson
  * @date 2007-08-22
  * $Id$
  *
  * LICENSE INFORMATION
  * 
+ * Based on Bioclim alg 
  * Copyright(c) 2004 by CRIA -
  * Centro de Referência em Informação Ambiental
  *
  * http://www.cria.org.br
+ * 
+ * Envelope Score implementation (c) 2007 Chris Yesson and Tim Sutton 
  * 
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -26,7 +28,7 @@
  * http://www.gnu.org/copyleft/gpl.html
  */
 
-#include "bioclim_or.hh"
+#include "envelope_score.hh"
 
 #include <openmodeller/Configuration.hh>
 
@@ -53,8 +55,8 @@ static AlgParamMetadata parameters[NUM_PARAM] = {};
 
 static AlgMetadata metadata = {
 
-  "Bioclim_or",   // Id.
-  "Bioclim_or",   // Name.
+  "EnvelopeScore",   // Id.
+  "Envelope Score",   // Name.
   "0.1",       // Version.
 
   // Overview
@@ -74,7 +76,7 @@ static AlgMetadata metadata = {
  Thus choosing a threshold of p=1 gives you the same model\
  output as the original Bioclim model taking both the\
  Suitable & Marginal classes as predicted presences.\
- The Bioclim_or algorithm is equivalent to the\
+ The Envelope Score algorithm is equivalent to the\
  inclusive 'OR' implementation of Bioclim described\
  in Pineiro et al (2007).",
 
@@ -109,7 +111,7 @@ OM_ALG_DLL_EXPORT
 AlgorithmImpl *
 algorithmFactory()
 {
-  return new Bioclim_or();
+  return new EnvelopeScore();
 }
 
 OM_ALG_DLL_EXPORT
@@ -121,12 +123,12 @@ algorithmMetadata()
 
 
 /****************************************************************/
-/**************************** Bioclim_or ***************************/
+/**************************** EnvelopeScore ***************************/
 
 /*******************/
 /*** constructor ***/
 
-Bioclim_or::Bioclim_or() :
+EnvelopeScore::EnvelopeScore() :
   AlgorithmImpl( &metadata ),
   _done( false ),
   _minimum(),
@@ -137,7 +139,7 @@ Bioclim_or::Bioclim_or() :
 /******************/
 /*** destructor ***/
 
-Bioclim_or::~Bioclim_or()
+EnvelopeScore::~EnvelopeScore()
 {
 }
 
@@ -145,7 +147,7 @@ Bioclim_or::~Bioclim_or()
 /******************/
 /*** initialize ***/
 int
-Bioclim_or::initialize()
+EnvelopeScore::initialize()
 {
   
   // Number of independent variables.
@@ -155,7 +157,7 @@ Bioclim_or::initialize()
   // Check the number of sampled points.
   int npnt = _samp->numPresence();
   if (  npnt < 1 ) {
-    Log::instance()->error( 1, "Bioclim_or needs at least 1 point inside the mask!\n" ); 
+    Log::instance()->error( 1, "EnvelopeScore needs at least 1 point inside the mask!\n" ); 
     // Log::instance()->error() does a ::exit(rc).
   }
 
@@ -172,7 +174,7 @@ Bioclim_or::initialize()
 /***************/
 /*** iterate ***/
 int
-Bioclim_or::iterate()
+EnvelopeScore::iterate()
 {
   return 1;
 }
@@ -181,7 +183,7 @@ Bioclim_or::iterate()
 /************/
 /*** done ***/
 int
-Bioclim_or::done() const
+EnvelopeScore::done() const
 {
   // This is not an iterative algorithm.
   return _done;
@@ -191,7 +193,7 @@ Bioclim_or::done() const
 /*****************/
 /*** get Value ***/
 Scalar
-Bioclim_or::getValue( const Sample& x ) const
+EnvelopeScore::getValue( const Sample& x ) const
 {
 
   unsigned int myMatchCount=0;
@@ -215,7 +217,7 @@ Bioclim_or::getValue( const Sample& x ) const
 /***********************/
 /*** get Convergence ***/
 int
-Bioclim_or::getConvergence( Scalar *val )
+EnvelopeScore::getConvergence( Scalar *val )
 {
   *val = 1.0;
   return 1;
@@ -225,7 +227,7 @@ Bioclim_or::getConvergence( Scalar *val )
 /*******************/
 /*** get Minimum ***/
 void
-Bioclim_or::computeStats( const OccurrencesPtr& occs )
+EnvelopeScore::computeStats( const OccurrencesPtr& occs )
 {
 
   // Compute min, max, and mean
@@ -262,12 +264,12 @@ Bioclim_or::computeStats( const OccurrencesPtr& occs )
 /****************************************************************/
 /****************** configuration *******************************/
 void
-Bioclim_or::_getConfiguration( ConfigurationPtr& config ) const
+EnvelopeScore::_getConfiguration( ConfigurationPtr& config ) const
 {
   if ( !_done )
     return;
 
-  ConfigurationPtr model_config( new ConfigurationImpl("Bioclim_or") );
+  ConfigurationPtr model_config( new ConfigurationImpl("EnvelopeScore") );
   config->addSubsection( model_config );
 
   model_config->addNameValue( "Minimum", _minimum );
@@ -276,9 +278,9 @@ Bioclim_or::_getConfiguration( ConfigurationPtr& config ) const
 }
 
 void
-Bioclim_or::_setConfiguration( const ConstConfigurationPtr& config )
+EnvelopeScore::_setConfiguration( const ConstConfigurationPtr& config )
 {
-  ConstConfigurationPtr model_config = config->getSubsection("Bioclim_or",false );
+  ConstConfigurationPtr model_config = config->getSubsection("EnvelopeScore",false );
 
   if (!model_config)
     return;
@@ -294,7 +296,7 @@ Bioclim_or::_setConfiguration( const ConstConfigurationPtr& config )
 /********************/
 /*** log Envelope ***/
 void
-Bioclim_or::logEnvelope()
+EnvelopeScore::logEnvelope()
 {
   Log::instance()->info( "Envelope with %d dimensions (variables).\n\n", _minimum.size() );
 
