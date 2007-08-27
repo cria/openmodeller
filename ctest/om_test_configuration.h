@@ -7,7 +7,7 @@
  *
  * LICENSE INFORMATION
  * 
- * Copyright(c) 2003 by CRIA -
+ * Copyright(c) 2007 by CRIA -
  * Centro de Referencia em Informacao Ambiental
  *
  * http://www.cria.org.br

@@ -127,3 +127,9 @@ SET (OM_TEST_ALGPARAMETER_SRCS om_test_algparameter.cpp)
 ADD_EXECUTABLE (om_test_algparameter ${OM_TEST_ALGPARAMETER_SRCS})
 TARGET_LINK_LIBRARIES(om_test_algparameter openmodeller)
 ADD_TEST(om_test_algparameter ${EXECUTABLE_OUTPUT_PATH}/om_test_algparameter)
+
+#AlgorithmFactory Tests
+SET (OM_TEST_ALGORITHMFACTORY_SRCS om_test_algorithmfactory.cpp)
+ADD_EXECUTABLE (om_test_algorithmfactory ${OM_TEST_ALGORITHMFACTORY_SRCS})
+TARGET_LINK_LIBRARIES(om_test_algorithmfactory openmodeller)
+ADD_TEST(om_test_algorithmfactory ${EXECUTABLE_OUTPUT_PATH}/om_test_algorithmfactory)
