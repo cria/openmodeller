@@ -26,7 +26,7 @@
  */
 
 /** \ingroup test
-* \brief A short description of this test goes here
+* \brief Test for Exceptions Class
 */
 
 #ifndef TEST_EXCEPTIONS_HH
@@ -42,99 +42,101 @@
 class test_Exceptions : public CxxTest :: TestSuite 
 {
 
-	public:
-		void setUp (){
+  public:
+    void setUp (){
 
-				}
+    }
 
-		void tearDown (){
+    void tearDown (){
 
-				}
+    }
 
-		void test1 (){
-				std::cout << std::endl;
-				std::cout << "Testing OmException( const std::string& msg ) ..." << std::endl;
-				std::string msg = "Testing Exception";
-				TS_ASSERT_EQUALS(OmException("Testing Exception").what(),msg);
-				}
+    void test1 (){
+      std::cout << std::endl;
+      std::cout << "Testing OmException( const std::string& msg ) ..." << std::endl;
+      std::string msg = "Testing Exception";
+      TS_ASSERT_EQUALS(OmException("Testing Exception").what(),msg);
+    }
 
-		void test2 (){
-				std::cout << std::endl;
-				std::cout << "Testing ConfigurationException( const std::string& msg ) ..." << std::endl;
-				std::string msg = "Testing Exception";
-				TS_ASSERT_EQUALS(ConfigurationException("Testing Exception").what(),msg);
-				}
+    void test2 (){
+      std::cout << std::endl;
+      std::cout << "Testing ConfigurationException( const std::string& msg ) ..." << std::endl;
+      std::string msg = "Testing Exception";
+      TS_ASSERT_EQUALS(ConfigurationException("Testing Exception").what(),msg);
+    }
 
-		void test3 (){
-				std::cout << std::endl;
-				std::cout << "Testing AttributeNotFound( const std::string& attrName ) ..." << std::endl;
-				std::string attr = "SomeAttribute";
-				std::string msg = "Attribute " + attr + " not found";
-				TS_ASSERT_EQUALS(AttributeNotFound(attr).what(),msg);
-				TS_ASSERT_EQUALS(AttributeNotFound(attr).getName(),attr);
-				}
+    void test3 (){
+      std::cout << std::endl;
+      std::cout << "Testing AttributeNotFound( const std::string& attrName ) ..." << std::endl;
+      std::string attr = "SomeAttribute";
+      std::string msg = "Attribute " + attr + " not found";
+      TS_ASSERT_EQUALS(AttributeNotFound(attr).what(),msg);
+      TS_ASSERT_EQUALS(AttributeNotFound(attr).getName(),attr);
+    }
 
-		void test4 (){
-				std::cout << std::endl;
-				std::cout << "Testing SubsectionNotFound( const std::string& attrName ) ..." << std::endl;
-				std::string subs = "SomeSubsection";
-				std::string msg = "Subsection " + subs + " not found";
-				TS_ASSERT_EQUALS(SubsectionNotFound(subs).what(),msg);
-				TS_ASSERT_EQUALS(SubsectionNotFound(subs).getName(),subs);
-				}
+    void test4 (){
+      std::cout << std::endl;
+      std::cout << "Testing SubsectionNotFound( const std::string& attrName ) ..." << std::endl;
+      std::string subs = "SomeSubsection";
+      std::string msg = "Subsection " + subs + " not found";
+      TS_ASSERT_EQUALS(SubsectionNotFound(subs).what(),msg);
+      TS_ASSERT_EQUALS(SubsectionNotFound(subs).getName(),subs);
+    }
 
-		void test5 (){
-				std::cout << std::endl;
-				std::cout << "Testing InvalidType( const std::string& msg ) ..." << std::endl;
-				std::string msg = "Testing Exception";
-				TS_ASSERT_EQUALS(InvalidType("Testing Exception").what(),msg);
-				}
+    void test5 (){
+      std::cout << std::endl;
+      std::cout << "Testing InvalidType( const std::string& msg ) ..." << std::endl;
+      std::string msg = "Testing Exception";
+      TS_ASSERT_EQUALS(InvalidType("Testing Exception").what(),msg);
+    }
 
-		void test6 (){
-				std::cout << std::endl;
-				std::cout << "Testing XmlParseException( const std::string& msg ) ..." << std::endl;
-				std::string msg = "Testing Exception";
-				TS_ASSERT_EQUALS(XmlParseException("Testing Exception").what(),msg);
-				}
+    void test6 (){
+      std::cout << std::endl;
+      std::cout << "Testing XmlParseException( const std::string& msg ) ..." << std::endl;
+      std::string msg = "Testing Exception";
+      TS_ASSERT_EQUALS(XmlParseException("Testing Exception").what(),msg);
+    }
 
-		void test7 (){
-				std::cout << std::endl;
-				std::cout << "Testing FileIOException( const std::string& msg, const std::string& filename ) ..." << std::endl;
-				std::string fileName = "FileName";
-				std::string msg = "Testing Exception";
-				TS_ASSERT_EQUALS(FileIOException(msg,fileName).what(),msg);
-				TS_ASSERT_EQUALS(FileIOException(msg,fileName).getFilename(),fileName);
-				}
+    void test7 (){
+      std::cout << std::endl;
+      std::cout << "Testing FileIOException( const std::string& msg, const std::string& filename ) ..." << std::endl;
+      std::string fileName = "FileName";
+      std::string msg = "Testing Exception";
+      TS_ASSERT_EQUALS(FileIOException(msg,fileName).what(),msg);
+      TS_ASSERT_EQUALS(FileIOException(msg,fileName).getFilename(),fileName);
+    }
 
-		void test8 (){
-				std::cout << std::endl;
-				std::cout << "Testing GraphicsDriverException( const std::string& msg ) ..." << std::endl;
-				std::string msg = "Testing Exception";
-				TS_ASSERT_EQUALS(GraphicsDriverException("Testing Exception").what(),msg);
-				}
+    void test8 (){
+      std::cout << std::endl;
+      std::cout << "Testing GraphicsDriverException( const std::string& msg ) ..." << std::endl;
+      std::string msg = "Testing Exception";
+      TS_ASSERT_EQUALS(GraphicsDriverException("Testing Exception").what(),msg);
+    }
 
-		void test9 (){
-				std::cout << std::endl;
-				std::cout << "Testing InvalidParameterException( const std::string& msg ) ..." << std::endl;
-				std::string msg = "Testing Exception";
-				TS_ASSERT_EQUALS(InvalidParameterException("Testing Exception").what(),msg);
-				}
+    void test9 (){
+      std::cout << std::endl;
+      std::cout << "Testing InvalidParameterException( const std::string& msg ) ..." << std::endl;
+      std::string msg = "Testing Exception";
+      TS_ASSERT_EQUALS(InvalidParameterException("Testing Exception").what(),msg);
+    }
 
-		void test10 (){
-				std::cout << std::endl;
-				std::cout << "Testing SamplerException( const std::string& msg ) ..." << std::endl;
-				std::string msg = "Testing Exception";
-				TS_ASSERT_EQUALS(SamplerException("Testing Exception").what(),msg);
-				}
+    void test10 (){
+      std::cout << std::endl;
+      std::cout << "Testing SamplerException( const std::string& msg ) ..." << std::endl;
+      std::string msg = "Testing Exception";
+      TS_ASSERT_EQUALS(SamplerException("Testing Exception").what(),msg);
+    }
 
-		void test11 (){
-				std::cout << std::endl;
-				std::cout << "Testing AlgorithmException( const std::string& msg ) ..." << std::endl;
-				std::string msg = "Testing Exception";
-				TS_ASSERT_EQUALS(AlgorithmException("Testing Exception").what(),msg);
-				}
+    void test11 (){
+      std::cout << std::endl;
+      std::cout << "Testing AlgorithmException( const std::string& msg ) ..." << std::endl;
+      std::string msg = "Testing Exception";
+      TS_ASSERT_EQUALS(AlgorithmException("Testing Exception").what(),msg);
+    }
 
-	private:
+  private:
+
 };
 
 #endif
+

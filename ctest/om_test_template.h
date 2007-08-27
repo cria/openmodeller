@@ -46,14 +46,12 @@ class <YourClassName> : public CxxTest :: TestSuite
 
     void test1 (){
       std::cout << "" << std::endl;
-
       TS_ASSERT(<yourcriteria> == <yourothercriteria>);
     }
 
   private:
     <test vars here>
 };
-
 
 #endif
 

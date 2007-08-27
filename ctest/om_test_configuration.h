@@ -26,7 +26,7 @@
  */
 
 /** \ingroup test
- * \brief A short description of this test goes here
+ * \brief Test for Configuration Class
  */
 
 #ifndef TEST_CONFIGURATION_HH
@@ -49,6 +49,7 @@ class MyLog : public Log::LogCallback
     std::cout << msg;
   }
 };
+
 class test_Configuration : public CxxTest :: TestSuite 
 {
   public:
@@ -511,9 +512,6 @@ class test_Configuration : public CxxTest :: TestSuite
       }
     }
 
-
-
-
   private:
     ConfigurationImpl *A;
     ConfigurationImpl *B;
@@ -529,3 +527,4 @@ class test_Configuration : public CxxTest :: TestSuite
 };
 
 #endif
+

@@ -25,8 +25,8 @@
  * http://www.gnu.org/copyleft/gpl.html
  */
 
-/** \ingroup test_AreaStats
-* \brief Test for AreaStats
+/** \ingroup test
+* \brief Test for AreaStats Class
 */
 
 #ifndef TEST_AREASTATS_HH
@@ -40,106 +40,109 @@
 
 class test_AreaStats : public CxxTest :: TestSuite 
 {
-	public:
-		void setUp (){
-				A = new AreaStats(Scalar(1.00));
-				B = new AreaStats(*A);
-				C = new ConfigurationPtr();
-				}
+  public:
+    void setUp (){
+      A = new AreaStats(Scalar(1.00));
+      B = new AreaStats(*A);
+      C = new ConfigurationPtr();
+    }
 
-		void tearDown (){
-				delete A;
-				delete B;
-				delete C;
-				}
+    void tearDown (){
+      delete A;
+      delete B;
+      delete C;
+    }
 
-		void test1 (){
-				std::cout << std::endl;
-				std::cout << "Testing AreaStats(Scalar predictionThreshold) ..." << std::endl;
-				TS_ASSERT(A->getTotalArea()==0);
-				TS_ASSERT(A->getAreaPredictedPresent()==0);
-				TS_ASSERT(A->getAreaPredictedAbsent()==0);
-				TS_ASSERT(A->getAreaNotPredicted()==0);
-				TS_ASSERT(A->getPredictionThreshold()==Scalar(1.00));
-				}
+    void test1 (){
+      std::cout << std::endl;
+      std::cout << "Testing AreaStats(Scalar predictionThreshold) ..." << std::endl;
+      TS_ASSERT(A->getTotalArea()==0);
+      TS_ASSERT(A->getAreaPredictedPresent()==0);
+      TS_ASSERT(A->getAreaPredictedAbsent()==0);
+      TS_ASSERT(A->getAreaNotPredicted()==0);
+      TS_ASSERT(A->getPredictionThreshold()==Scalar(1.00));
+    }
 
-		void test2 (){
-				std::cout << std::endl;
-				std::cout << "Testing (const AreaStats *areaStats) ..." << std::endl;
-				TS_ASSERT(B->getTotalArea()==0);
-				TS_ASSERT(B->getAreaPredictedPresent()==0);
-				TS_ASSERT(B->getAreaPredictedAbsent()==0);
-				TS_ASSERT(B->getAreaNotPredicted()==0);
-				TS_ASSERT(B->getPredictionThreshold()==Scalar(1.00));
-				}
+    void test2 (){
+      std::cout << std::endl;
+      std::cout << "Testing (const AreaStats *areaStats) ..." << std::endl;
+      TS_ASSERT(B->getTotalArea()==0);
+      TS_ASSERT(B->getAreaPredictedPresent()==0);
+      TS_ASSERT(B->getAreaPredictedAbsent()==0);
+      TS_ASSERT(B->getAreaNotPredicted()==0);
+      TS_ASSERT(B->getPredictionThreshold()==Scalar(1.00));
+    }
 
-		void test3 (){
-				std::cout << std::endl;
-				std::cout << "Testing reset(Scalar predictiontThreshold) ..." << std::endl;
-				A->reset(2.00);
-				TS_ASSERT(A->getTotalArea()==0);
-				TS_ASSERT(A->getAreaPredictedPresent()==0);
-				TS_ASSERT(A->getAreaPredictedAbsent()==0);
-				TS_ASSERT(A->getAreaNotPredicted()==0);
-				TS_ASSERT(A->getPredictionThreshold()==Scalar(2.00));
-				}
+    void test3 (){
+      std::cout << std::endl;
+      std::cout << "Testing reset(Scalar predictiontThreshold) ..." << std::endl;
+      A->reset(2.00);
+      TS_ASSERT(A->getTotalArea()==0);
+      TS_ASSERT(A->getAreaPredictedPresent()==0);
+      TS_ASSERT(A->getAreaPredictedAbsent()==0);
+      TS_ASSERT(A->getAreaNotPredicted()==0);
+      TS_ASSERT(A->getPredictionThreshold()==Scalar(2.00));
+    }
 
-		void test4 (){
-				std::cout << std::endl;
-				std::cout << "Testing addPrediction(Scalar value) ..." << std::endl;
-				A->addPrediction(Scalar(1.00));
-				TS_ASSERT(A->getTotalArea()==1);
-				TS_ASSERT(A->getAreaPredictedPresent()==1);
-				TS_ASSERT(A->getAreaPredictedAbsent()==0);
-				TS_ASSERT(A->getAreaNotPredicted()==0);
-				TS_ASSERT(A->getPredictionThreshold()==Scalar(1.00));
-				}
+    void test4 (){
+      std::cout << std::endl;
+      std::cout << "Testing addPrediction(Scalar value) ..." << std::endl;
+      A->addPrediction(Scalar(1.00));
+      TS_ASSERT(A->getTotalArea()==1);
+      TS_ASSERT(A->getAreaPredictedPresent()==1);
+      TS_ASSERT(A->getAreaPredictedAbsent()==0);
+      TS_ASSERT(A->getAreaNotPredicted()==0);
+      TS_ASSERT(A->getPredictionThreshold()==Scalar(1.00));
+    }
 
-		void test5 (){
-				std::cout << std::endl;
-				std::cout << "Testing addPrediction(Scalar value) ..." << std::endl;
-				A->addPrediction(Scalar(1+DBL_EPSILON));
-				TS_ASSERT(A->getTotalArea()==1);
-				TS_ASSERT(A->getAreaPredictedPresent()==1);
-				TS_ASSERT(A->getAreaPredictedAbsent()==0);
-				TS_ASSERT(A->getAreaNotPredicted()==0);
-				TS_ASSERT(A->getPredictionThreshold()==Scalar(1.00));
-				}
+    void test5 (){
+      std::cout << std::endl;
+      std::cout << "Testing addPrediction(Scalar value) ..." << std::endl;
+      A->addPrediction(Scalar(1+DBL_EPSILON));
+      TS_ASSERT(A->getTotalArea()==1);
+      TS_ASSERT(A->getAreaPredictedPresent()==1);
+      TS_ASSERT(A->getAreaPredictedAbsent()==0);
+      TS_ASSERT(A->getAreaNotPredicted()==0);
+      TS_ASSERT(A->getPredictionThreshold()==Scalar(1.00));
+    }
 
-		void test6 (){
-				std::cout << std::endl;
-				std::cout << "Testing addPrediction(Scalar value) ..." << std::endl;
-				A->addPrediction(Scalar(1-DBL_EPSILON));
-				TS_ASSERT(A->getTotalArea()==1);
-				TS_ASSERT(A->getAreaPredictedPresent()==0);
-				TS_ASSERT(A->getAreaPredictedAbsent()==1);
-				TS_ASSERT(A->getAreaNotPredicted()==0);
-				TS_ASSERT(A->getPredictionThreshold()==Scalar(1.00));
-				}
+    void test6 (){
+      std::cout << std::endl;
+      std::cout << "Testing addPrediction(Scalar value) ..." << std::endl;
+      A->addPrediction(Scalar(1-DBL_EPSILON));
+      TS_ASSERT(A->getTotalArea()==1);
+      TS_ASSERT(A->getAreaPredictedPresent()==0);
+      TS_ASSERT(A->getAreaPredictedAbsent()==1);
+      TS_ASSERT(A->getAreaNotPredicted()==0);
+      TS_ASSERT(A->getPredictionThreshold()==Scalar(1.00));
+    }
 
-		void test7 (){
-				std::cout << std::endl;
-				std::cout << "Testing addNonPrediction() ..." << std::endl;
-				A->addNonPrediction();
-				TS_ASSERT(A->getTotalArea()==1);
-				TS_ASSERT(A->getAreaPredictedPresent()==0);
-				TS_ASSERT(A->getAreaPredictedAbsent()==0);
-				TS_ASSERT(A->getAreaNotPredicted()==1);
-				TS_ASSERT(A->getPredictionThreshold()==Scalar(1.00));
-				}
+    void test7 (){
+      std::cout << std::endl;
+      std::cout << "Testing addNonPrediction() ..." << std::endl;
+      A->addNonPrediction();
+      TS_ASSERT(A->getTotalArea()==1);
+      TS_ASSERT(A->getAreaPredictedPresent()==0);
+      TS_ASSERT(A->getAreaPredictedAbsent()==0);
+      TS_ASSERT(A->getAreaNotPredicted()==1);
+      TS_ASSERT(A->getPredictionThreshold()==Scalar(1.00));
+    }
 
-		void test8 (){
-				std::cout << std::endl;
-				std::cout << "Testing getConfiguration() const..." << std::endl;
-				//Under development
-				//*C=A->getConfiguration();
-				//TS_ASSERT(C->getAttributeAsInt("TotalCells",-1)==0);
-				//TS_ASSERT(C->getAttributeAsInt("CellsPredicted",-1)==0);
-				//TS_ASSERT(C->getAttributeAsInt("PredictionThreshold",-1)==1.00);
-				}
-		private:
-			AreaStats *A;
-			AreaStats *B;
-			ConfigurationPtr *C;
+    void test8 (){
+      std::cout << std::endl;
+      std::cout << "Testing getConfiguration() const..." << std::endl;
+      //Under development
+      //*C=A->getConfiguration();
+      //TS_ASSERT(C->getAttributeAsInt("TotalCells",-1)==0);
+      //TS_ASSERT(C->getAttributeAsInt("CellsPredicted",-1)==0);
+      //TS_ASSERT(C->getAttributeAsInt("PredictionThreshold",-1)==1.00);
+    }
+
+  private:
+    AreaStats *A;
+    AreaStats *B;
+    ConfigurationPtr *C;
 };
+
 #endif
+
