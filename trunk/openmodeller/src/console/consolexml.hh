@@ -44,7 +44,7 @@ class OM_XML_DLL_EXPORT ConsoleXml
          /** Project a model given a single projection XML file as input 
          * and put, the output image into mapFile and a file to store projection 
          * statistics. Fourth argument indicates if log should be ignored */
-        bool projectModel(const std::string projectionXmlFile, const std::string mapFile, const std::string statisticsXmlFile, bool ignoreLog);
+        bool projectModel(const std::string projectionXmlFile, const std::string mapFile, const std::string statisticsXmlFile, bool ignoreLog, MapCallback mapCallback=0, void *extraCallbackParam=0);
        /** Get a string containing xml metadata for all algorithms
          */
         std::string getAllAlgorithmMetadataXml();

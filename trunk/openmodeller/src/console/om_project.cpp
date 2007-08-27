@@ -19,6 +19,17 @@
 
 #include "consolexml.hh"
 
+#include <time.h>    // used to limit the number of times that the progress is written to a file
+
+/// Constants
+#define MIN_INTERVAL 2.0   // in seconds
+
+/// Forward declarations
+void mapCallback( float progress, void * theFileName );
+
+/// Globals
+time_t gLastTime;
+double gLastProgress = -1;
 
 int main( int argc, char **argv ) {
 
@@ -44,7 +55,7 @@ int main( int argc, char **argv ) {
       << argv[0]
       << " xmlinputfile"
       << " mapfile"
-      << " (logfile | statisticsfile logfile)"
+      << " (logfile | statisticsfile logfile (progressfile) )"
       << endl;
     return -1;
   }
@@ -88,9 +99,16 @@ int main( int argc, char **argv ) {
     if (argc == 4) {
       myConsoleXml.projectModel(myProjectionXmlFile,myMapFile,dontLog);
     }
-    else {
+    else if (argc == 5) {
       std::string myStatsFile(argv[3]);
       myConsoleXml.projectModel(myProjectionXmlFile,myMapFile,myStatsFile,dontLog);
+    }
+    else {
+      std::string myStatsFile(argv[3]);
+      std::string * myProgFile = new std::string(argv[5]);
+      time(&gLastTime);
+      myConsoleXml.projectModel(myProjectionXmlFile,myMapFile,myStatsFile,dontLog,mapCallback,myProgFile);
+      delete myProgFile;
     }
   }
 
@@ -98,4 +116,40 @@ int main( int argc, char **argv ) {
   if (flog != NULL) {
     fclose(flog);
   }
+}
+
+
+void mapCallback( float progress, void *theFileName )
+{
+    if ( ! theFileName ) {
+      return;
+    }
+
+    time_t currentTime;
+    time(&currentTime);
+
+    int roundedProgress = static_cast<int>(100*progress);
+
+    if ( roundedProgress == 0 || roundedProgress == 100 ||
+         ( progress != gLastProgress && 
+           difftime( currentTime, gLastTime ) > MIN_INTERVAL ) ) {
+    
+      std::string * fileName = (std::string *)theFileName;
+
+      FILE *pFile = NULL;
+      pFile = fopen(fileName->c_str(), "w");
+
+      if (pFile == NULL) {
+        // Could not open file...
+      }
+      else {
+        char buffer[3];
+        int ret;
+        ret = sprintf(buffer, "%u", roundedProgress);
+        fputs(buffer,pFile);
+        fclose(pFile);
+        gLastProgress = progress;
+        gLastTime = currentTime;
+      }
+    }
 }

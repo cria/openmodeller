@@ -22,7 +22,7 @@
 #include <stdio.h>
 #include <iostream>  // I/O 
 #include <fstream>   // file I/O
-#include <sstream>     // treat string as a stream
+#include <sstream>   // treat string as a stream
 
 #include <stdexcept>
 
@@ -152,7 +152,7 @@ bool ConsoleXml::projectModel(const std::string projectionXmlFile, const std::st
   }
 }
 
-bool ConsoleXml::projectModel(const std::string projectionXmlFile, const std::string mapFile, const std::string statisticsXmlFile, bool ignoreLog)
+bool ConsoleXml::projectModel(const std::string projectionXmlFile, const std::string mapFile, const std::string statisticsXmlFile, bool ignoreLog, MapCallback mapCallback, void *extraCallbackParam)
 {  
   try {
 
@@ -174,6 +174,11 @@ bool ConsoleXml::projectModel(const std::string projectionXmlFile, const std::st
     om.setProjectionConfiguration(c);
 
     cout << "Projecting to file " << mapFile << endl;
+
+    if ( mapCallback )
+    {
+      om.setMapCallback( mapCallback, extraCallbackParam );
+    }
 
     om.createMap( mapFile.c_str() );
 
