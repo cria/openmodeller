@@ -19,10 +19,11 @@ ticket="${req##*.}"
 moved=$ticket_repository"/model_proc."$ticket
 resp=$ticket_repository"/model_resp."$ticket
 log=$ticket_repository"/"$ticket
+model_prog=$ticket_repository"/prog."$ticket
 # rename file
 mv "$req" "$moved"
 # execute om_create
-om_create "$moved" "$resp" "$log"
+om_create "$moved" "$resp" "$log" "$model_prog"
 exit 1
 done
 
@@ -35,10 +36,11 @@ map_img=$map_base".img"
 map_ige=$map_base".ige"
 stats=$ticket_repository"/stats."$ticket
 log=$ticket_repository"/"$ticket
+proj_prog=$ticket_repository"/prog."$ticket
 # rename file
 mv "$req" "$moved"
 # execute om_create
-om_project "$moved" "$map_img" "$stats" "$log"
+om_project "$moved" "$map_img" "$stats" "$log" "$proj_prog"
 finalmap_img=$map_repository"/"$ticket".img"
 finalmap_ige=$map_repository"/"$ticket".ige"
 mv "$map_img" "$finalmap_img"
