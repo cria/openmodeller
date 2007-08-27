@@ -42,20 +42,20 @@ class test_SampleExprVar : public CxxTest :: TestSuite
 
   public:
     void setUp (){
-		a = new Sample(SAMPLESIZE);
-		b = new Sample(SAMPLESIZE);
-		c = new Sample(SAMPLESIZE);
-  		for( unsigned int i=0; i<SAMPLESIZE; ++i ){
-		(*a)[i] = i+1;
-		(*b)[i] = SAMPLESIZE-i;
-		(*c)[i] = SAMPLESIZE - 2*i;
-		}
+      a = new Sample(SAMPLESIZE);
+      b = new Sample(SAMPLESIZE);
+      c = new Sample(SAMPLESIZE);
+      for( unsigned int i=0; i<SAMPLESIZE; ++i ){
+      (*a)[i] = i+1;
+      (*b)[i] = SAMPLESIZE-i;
+      (*c)[i] = SAMPLESIZE - 2*i;
+      }
     }
 
     void tearDown (){
-		delete a;
-		delete b;
-		delete c;
+      delete a;
+      delete b;
+      delete c;
     }
 
     void test1 (){
@@ -87,15 +87,14 @@ class test_SampleExprVar : public CxxTest :: TestSuite
       val *= val;
       TS_ASSERT_DELTA( d[i], val, 1e-10 );
       TS_ASSERT_DELTA( e[i], val, 1e-10 );
-  }
+      }
     }
 
   private:
-     Sample *a;
-     Sample *b;
-     Sample *c;
+    Sample *a;
+    Sample *b;
+    Sample *c;
 };
-
 
 #endif
 
