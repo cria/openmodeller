@@ -3,8 +3,8 @@ SUBDIRS(best_subsets garp dg_garp svm)
 ########################################################
 # Files
 
-SET (LIBBIOCLIM_OR_SRCS
-     bioclim_or.cpp
+SET (LIBENVELOPE_SCORE_SRCS
+     envelope_score.cpp
 )
 
 SET (LIBBIOCLIM_SRCS
@@ -35,8 +35,8 @@ SET (LIBENVIRONMENTALDISTANCE_SRCS
 ########################################################
 # Build
 
-ADD_LIBRARY (bioclim_or MODULE ${LIBBIOCLIM_OR_SRCS})
-TARGET_LINK_LIBRARIES(bioclim_or openmodeller)
+ADD_LIBRARY (envelope_score MODULE ${LIBENVELOPE_SCORE_SRCS})
+TARGET_LINK_LIBRARIES(envelope_score openmodeller)
 
 ADD_LIBRARY (bioclim MODULE ${LIBBIOCLIM_SRCS})
 TARGET_LINK_LIBRARIES(bioclim openmodeller)
@@ -81,7 +81,7 @@ ENDIF(GSL_FOUND)
 
 INSTALL(TARGETS bioclim RUNTIME DESTINATION ${OM_ALG_DIR} LIBRARY DESTINATION ${OM_ALG_DIR})
 
-INSTALL(TARGETS bioclim_or RUNTIME DESTINATION ${OM_ALG_DIR} LIBRARY DESTINATION ${OM_ALG_DIR})
+INSTALL(TARGETS envelope_score RUNTIME DESTINATION ${OM_ALG_DIR} LIBRARY DESTINATION ${OM_ALG_DIR})
 
 INSTALL(TARGETS distance_to_average RUNTIME DESTINATION ${OM_ALG_DIR} LIBRARY DESTINATION ${OM_ALG_DIR})
 

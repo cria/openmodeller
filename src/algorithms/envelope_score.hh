@@ -1,17 +1,20 @@
 /**
- * Declaration of Bioclim_oratic Envelope Algorithm - Nix, 1986.
+ * Declaration of EnvelopeScoreatic Envelope Algorithm - Nix, 1986.
  * 
  * @author Mauro Muñoz <mauro@cria.org.br>
- * @author Bioclim_or_or implemantation by Tim Sutton and Chris Yesson
+ * @author EnvelopeScore_or implemantation by Tim Sutton and Chris Yesson
  * @date 2007-08-22
  * $Id$
  *
  * LICENSE INFORMATION
  * 
+ * Based on Bioclim alg 
  * Copyright(c) 2004 by CRIA -
  * Centro de Referência em Informação Ambiental
  *
  * http://www.cria.org.br
+ * 
+ * Envelope Score implementation (c) 2007 Chris Yesson and Tim Sutton 
  * 
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -26,25 +29,25 @@
  * http://www.gnu.org/copyleft/gpl.html
  */
 
-#ifndef _BIOCLIM_ORHH_
-#define _BIOCLIM_ORHH_
+#ifndef _ENVELOPESCOREHH_
+#define _ENVELOPESCOREHH_
 
 #include <openmodeller/om.hh>
 
 /****************************************************************/
-/*********************** Bioclim_or Distance ***********************/
+/*********************** EnvelopeScore ***********************/
 
 /** 
  * Bioclimatic Envelope Algorithm with occurrence probability
  * based on the number variables within the min/max  range
  *
  */
-class Bioclim_or : public AlgorithmImpl
+class EnvelopeScore : public AlgorithmImpl
 {
 public:
 
-  Bioclim_or();
-  ~Bioclim_or();
+  EnvelopeScore();
+  ~EnvelopeScore();
 
   // Inherited from Algorithm class.
   int initialize();
@@ -75,5 +78,5 @@ private:
 };
 
 
-#endif //BIOCLIM_ORHH
+#endif //ENVELOPESCOREHH
 
