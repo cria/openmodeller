@@ -17,9 +17,20 @@
 
 #include "consolexml.hh"
 #include <fstream>   // file I/O for XML
-#include <stdio.h>   // file I/O for log
+#include <stdio.h>   // file I/O for log and progress
+#include <time.h>    // used to limit the number of times that the progress is written to a file
 
 using namespace std;
+
+/// Constants
+#define MIN_INTERVAL 3.0   // in seconds
+
+/// Forward declarations
+void modelCallback( float progress, void * theFileName );
+
+/// Globals
+time_t gLastTime;
+double gLastProgress = -1;
 
 int main( int argc, char **argv ) {
     if (argc < 3) {
@@ -28,6 +39,7 @@ int main( int argc, char **argv ) {
           << " xmlinputfile"
           << " xmloutputfile"
           << " [logfile]"
+          << " [callbackfile]"
           << endl;
       return -1;
     }
@@ -54,8 +66,17 @@ int main( int argc, char **argv ) {
 
     { // Fake scope to force obj destruction in the end (to catch logs)
       ConsoleXml myConsoleXml;
-      std::string myOutput=myConsoleXml.createModel(myRequest, dontLog);
-      //write output to file
+      std::string myOutput;
+      if (argc == 5 ) { 
+        std::string * myProgFile = new std::string(argv[4]);
+        time(&gLastTime);
+        myOutput=myConsoleXml.createModel(myRequest, dontLog, modelCallback, myProgFile);
+        delete myProgFile;
+      }
+      else {
+        myOutput=myConsoleXml.createModel(myRequest, dontLog);
+      }
+     //write output to file
       ofstream file(myFileName.c_str());
       file << myOutput;
       file.close();
@@ -64,5 +85,41 @@ int main( int argc, char **argv ) {
     // Close log file
     if (flog != NULL) {
       fclose(flog);
+    }
+}
+
+
+void modelCallback( float progress, void *theFileName )
+{
+    if ( ! theFileName ) {
+      return;
+    }
+
+    time_t currentTime;
+    time(&currentTime);
+
+    int roundedProgress = static_cast<int>(100*progress);
+
+    if ( roundedProgress == 0 || roundedProgress == 100 ||
+         ( progress != gLastProgress && 
+           difftime( currentTime, gLastTime ) > MIN_INTERVAL ) ) {
+    
+      std::string * fileName = (std::string *)theFileName;
+
+      FILE *pFile = NULL;
+      pFile = fopen(fileName->c_str(), "w");
+
+      if (pFile == NULL) {
+        // Could not open file...
+      }
+      else {
+        char buffer[3];
+        int ret;
+        ret = sprintf(buffer, "%u", roundedProgress);
+        fputs(buffer,pFile);
+        fclose(pFile);
+        gLastProgress = progress;
+        gLastTime = currentTime;
+      }
     }
 }
