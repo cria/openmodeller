@@ -1,9 +1,9 @@
 /**
- * Test class for <Insert Class Name Here> 
+ * Test class for AlgorithmFactory 
  * 
  * @author <Your Name>
- * @date 2007-08-02
- * $Id$
+ * @date 2007-08-27
+ * $Id: om_test_template.h 3609 2007-08-27 14:22:51Z albertmk $
  *
  * LICENSE INFORMATION
  * 
@@ -29,12 +29,13 @@
 * \brief A short description of this test goes here
 */
 
-#ifndef <REPLACE_ME>_HH
-#define <REPLACE_ME>_HH
+#ifndef ALGORITHMFACTORY_HH
+#define ALGORITHMFACTORY_HH
 
 #include "cxxtest/TestSuite.h"
+#include <openmodeller/AlgorithmFactory.hh>
 
-class <YourClassName> : public CxxTest :: TestSuite 
+class test_AlgorithmFactory : public CxxTest :: TestSuite 
 {
 
   public:
@@ -45,12 +46,12 @@ class <YourClassName> : public CxxTest :: TestSuite
     }
 
     void test1 (){
-      std::cout << "" << std::endl;
-      TS_ASSERT(<yourcriteria> == <yourothercriteria>);
+      std::cout << "Testing ..." << std::endl;
+      TS_ASSERT(true);
     }
 
   private:
-    <test vars here>
+    
 };
 
 #endif
