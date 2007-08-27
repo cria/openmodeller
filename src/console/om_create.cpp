@@ -17,13 +17,13 @@
 
 #include "consolexml.hh"
 #include <fstream>   // file I/O for XML
-#include <stdio.h>   // file I/O for log and progress
+#include <stdio.h>   // file I/O for log
 #include <time.h>    // used to limit the number of times that the progress is written to a file
 
 using namespace std;
 
 /// Constants
-#define MIN_INTERVAL 3.0   // in seconds
+#define MIN_INTERVAL 2.0   // in seconds
 
 /// Forward declarations
 void modelCallback( float progress, void * theFileName );
