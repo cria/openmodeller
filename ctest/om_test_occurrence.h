@@ -212,3 +212,4 @@ class test_Occurrence : public CxxTest :: TestSuite
 };
 
 #endif
+
