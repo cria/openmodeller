@@ -286,6 +286,10 @@ RequestFile::_setProjection( OpenModeller *om, FileParser &fp )
 
       // nothing to do - already the default
     }
+    else if ( fileType == "GreyTiff100" ) {
+
+      type = MapFormat::GreyTiff100;
+    }
     else if ( fileType == "FloatingTiff" ) {
 
       type = MapFormat::FloatingTiff;

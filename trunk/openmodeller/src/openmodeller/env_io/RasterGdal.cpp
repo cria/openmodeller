@@ -58,13 +58,17 @@ struct GDAL_Format
   bool hasMeta;
 };
 
-GDAL_Format Formats[5] =
+GDAL_Format Formats[6] =
 {
   // Floating GeoTiff
   { "GTiff",
     (sizeof(Scalar) == 4) ? GDT_Float32 : GDT_Float64,
     true },
-  // Greyscale GeoTiff
+  // Greyscale GeoTiff scaled 0-254
+  { "GTiff",
+    GDT_Byte,
+    true },
+  // Greyscale GeoTiff scaled 0-100 
   { "GTiff",
     GDT_Byte,
     true },
@@ -129,6 +133,11 @@ RasterGdal::RasterGdal( const string& file, const MapFormat& format):
       f_scalefactor = 254.0;
       nv = 255.0;
       Log::instance()->debug( "Raster:: format set to MapFormat::GreyTiff:\n");
+      break;
+    case MapFormat::GreyTiff100:
+      f_scalefactor = 100.0;
+      nv = 127.0; //represented as 7bit so cant use 254
+      Log::instance()->debug( "Raster:: format set to MapFormat::GreyTiff100:\n");
       break;
     case MapFormat::FloatingTiff:
       f_scalefactor = 1.0;
@@ -359,7 +368,24 @@ RasterGdal::create(int format)
         /* opt parameters */ papszOptions );
     CSLDestroy( papszOptions );
   }
-  else
+  /* //ArcMap needs a LZW compression license to read files compressed 
+   * //like this so its commented out for now - though enabling
+   * //compression offers significant size reduction in images
+  else if (format==MapFormat::GreyTiff100)
+  {
+    //lzw compression and represent each pixel with 7bits only
+    char **papszOptions = NULL;
+    papszOptions = CSLSetNameValue( papszOptions, "NBITS", "7" );
+    papszOptions = CSLSetNameValue( papszOptions, "COMPRESS", "LZW" );
+    f_ds = poDriver->Create( f_file.c_str(),
+        f_hdr.xdim, f_hdr.ydim,
+        f_hdr.nband,
+        Formats[format].dataType, //data type
+        papszOptions ); //opt parameters
+    CSLDestroy( papszOptions );
+  }
+  */
+  else //uncompressed
   {
     f_ds = poDriver->Create( f_file.c_str(),
         f_hdr.xdim, f_hdr.ydim,
