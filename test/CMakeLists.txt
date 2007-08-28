@@ -1,4 +1,4 @@
 #############################################################
 # process subdirs
 
-SUBDIRS(CppUnitLite library)
+#SUBDIRS(CppUnitLite library)
