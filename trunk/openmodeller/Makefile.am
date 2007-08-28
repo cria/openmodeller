@@ -36,46 +36,50 @@ EXTRA_DIST = \
 	src/openmodeller/CMakeLists.txt \
 	src/soap/CMakeLists.txt \
 	test/CMakeLists.txt \
-	test/CppUnitLite/CMakeLists.txt \
-	test/library/CMakeLists.txt \
 	cmake/FindExpat.cmake \
 	cmake/FindGDAL.cmake \
 	cmake/FindGSL.cmake \
 	cmake/FindProj.cmake \
 	cmake/FindSqlite3.cmake \
 	cmake/Python.cmake \
-	ctest/CMakeLists.txt \
-	ctest/cxxtestgen.pl \
-	ctest/om_hello_world.cpp \
-	ctest/om_load_algs.cpp \
-	ctest/om_test_areastats.cpp \
-	ctest/om_test_areastats.h \
-	ctest/om_test_configuration.cpp \
-	ctest/om_test_configuration.h \
-	ctest/om_test_exceptions.cpp \
-	ctest/om_test_exceptions.h \
-	ctest/om_test_icstring.cpp \
-	ctest/om_test_icstring.h \
-	ctest/om_test_log.cpp \
-	ctest/om_test_mapformat.cpp \
-	ctest/om_test_mapformat.h \
-	ctest/om_test_random.cpp \
-	ctest/om_test_random.h \
-	ctest/om_test_refcount.cpp \
-	ctest/om_test_refcount.h \
-	ctest/om_test_sample.cpp \
-	ctest/om_test_sampleexpr.cpp \
-	ctest/om_test_sampleexpr.h \
-	ctest/om_test_sample.h \
-	ctest/om_test_scalenormalizer.cpp \
-	ctest/om_test_scalenormalizer.h \
-	ctest/om_test_template.h \
-	ctest/README.txt \
-	ctest/test_data/model_request.xml \
-	ctest/test_data/projection_request.xml
+	test/ctest/CMakeLists.txt \
+	test/ctest/cxxtestgen.pl \
+	test/ctest/om_hello_world.cpp \
+	test/ctest/om_load_algs.cpp \
+	test/ctest/om_test_algorithmfactory.cpp \
+	test/ctest/om_test_algorithmfactory.h \
+	test/ctest/om_test_algparameter.cpp \
+	test/ctest/om_test_algparameter.h \
+	test/ctest/om_test_areastats.cpp \
+	test/ctest/om_test_areastats.h \
+	test/ctest/om_test_configuration.cpp \
+	test/ctest/om_test_configuration.h \
+	test/ctest/om_test_exceptions.cpp \
+	test/ctest/om_test_exceptions.h \
+	test/ctest/om_test_icstring.cpp \
+	test/ctest/om_test_icstring.h \
+	test/ctest/om_test_log.cpp \
+	test/ctest/om_test_mapformat.cpp \
+	test/ctest/om_test_mapformat.h \
+	test/ctest/om_test_occurrence.cpp \
+	test/ctest/om_test_occurrence.h \
+	test/ctest/om_test_random.cpp \
+	test/ctest/om_test_random.h \
+	test/ctest/om_test_refcount.cpp \
+	test/ctest/om_test_refcount.h \
+	test/ctest/om_test_sample.cpp \
+	test/ctest/om_test_sampleexpr.cpp \
+	test/ctest/om_test_sampleexpr.h \
+	test/ctest/om_test_sample.h \
+	test/ctest/om_test_scalenormalizer.cpp \
+	test/ctest/om_test_scalenormalizer.h \
+	test/ctest/om_test_template.h \
+	test/ctest/README.txt \
+	test/ctest/test_data/model_request.xml \
+	test/ctest/test_data/projection_request.xml
 
 #SUBDIRS = test src data
-SUBDIRS = test src
+SUBDIRS = src
 
 release: distdir
 	-chmod -R a+r $(distdir)
