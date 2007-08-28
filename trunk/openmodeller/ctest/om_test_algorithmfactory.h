@@ -1,7 +1,7 @@
 /**
  * Test class for AlgorithmFactory 
  * 
- * @author <Your Name>
+ * @author Albert Massayuki Kuniyoshi
  * @date 2007-08-27
  * $Id: om_test_template.h 3609 2007-08-27 14:22:51Z albertmk $
  *
@@ -26,7 +26,7 @@
  */
 
 /** \ingroup test
-* \brief A short description of this test goes here
+* \brief Test for AlgorithmFactory Class 
 */
 
 #ifndef ALGORITHMFACTORY_HH
