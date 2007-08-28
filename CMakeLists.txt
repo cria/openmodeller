@@ -27,10 +27,16 @@ IF (OM_CTEST)
   #enable unit testing
   ENABLE_TESTING()
   #enable posting test results to dart
-  #INCLUDE(CTest) 
+  INCLUDE(CTest)
+  INCLUDE(Dart)
   SET (EXAMPLE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/examples")
   SET (TEST_DATA_DIR "${CMAKE_CURRENT_SOURCE_DIR}/ctest/test_data")
+  # Enable Dart
+  # Include the standard Dart testing module
+  #MESSAGE("Dart path: ${CMAKE_ROOT}/Modules/Dart.cmake")
+  INCLUDE (${CMAKE_ROOT}/Modules/Dart.cmake)
 ENDIF (OM_CTEST)
+
 
 #############################################################
 # Enable packaging
