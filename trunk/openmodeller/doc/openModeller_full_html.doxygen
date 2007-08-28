@@ -112,7 +112,7 @@ FILE_PATTERNS          = *.c \
 RECURSIVE              = YES
 EXCLUDE                = .svn/*
 EXCLUDE_SYMLINKS       = NO
-EXCLUDE_PATTERNS       = */test/* \
+EXCLUDE_PATTERNS       = */test/pytest* \
                          *soap* \
                          *swig*
 EXAMPLE_PATH           = 
