@@ -183,7 +183,7 @@ ENDIF (WIN32)
 
 SUBDIRS(src examples)
 IF (OM_CTEST)
-  SUBDIRS(ctest)
+  SUBDIRS(test)
 ENDIF (OM_CTEST)
 #############################################################
 # install stuff

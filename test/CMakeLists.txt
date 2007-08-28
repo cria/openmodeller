@@ -1,4 +1,6 @@
 #############################################################
 # process subdirs
 
-#SUBDIRS(CppUnitLite library)
+IF (OM_CTEST)
+  SUBDIRS(ctest)
+ENDIF (OM_CTEST)
