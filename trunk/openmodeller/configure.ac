@@ -487,9 +487,6 @@ dnl 	data/Makefile
 
 AC_CONFIG_FILES([
 	Makefile
-	test/Makefile
-	test/CppUnitLite/Makefile
-	test/library/Makefile
 	src/Makefile
 	src/openmodeller/Makefile
 	src/console/Makefile
