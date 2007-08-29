@@ -61,7 +61,7 @@ class EnvironmentalDistance : public AlgorithmImpl{
       // Algorithm-specific methods and attributes
       void CalcCovarianceMatrix();
       inline Scalar Distance(const Sample& x, const Sample& y) const;
-      void InitDistanceType();
+      bool InitDistanceType();
       Matrix * covMatrix;    // Covariance matrix
       Matrix * covMatrixInv; // Inverse of covariance matrix
       Sample averagePoint; // Average of all presence points

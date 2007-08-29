@@ -204,7 +204,11 @@ int EnvironmentalDistance::initialize(){
       averagePoint += presencePoints[i];
    averagePoint /= presenceCount;
 
-   InitDistanceType(); // Allow using "Distance" method and normalize ParDist
+   // Allow using "Distance" method and normalize ParDist
+   if(!InitDistanceType()){
+      Log::instance()->error(1, "Could not determine a maximum distance in the environmental space in this case.\n");
+      return 0;
+   }
 
    _done = true;       // Needed for not-iterative algorithms
    _initialized = true;
@@ -384,7 +388,7 @@ inline Scalar EnvironmentalDistance::Distance(const Sample& x, const Sample& y) 
 }
 
 // Initialize the data structures of a distance type and normalize ParDist
-void EnvironmentalDistance::InitDistanceType(){
+bool EnvironmentalDistance::InitDistanceType(){
    Scalar distMax;
 
    // Calcs the maximum distance (distMax)
@@ -398,6 +402,7 @@ void EnvironmentalDistance::InitDistanceType(){
          y.resize(layerCount);
          CalcCovarianceMatrix(); // Initialize covMatrixInv
          distMax = 0.0;
+         bool foundDist = false;
          for(int i=0; i<(1<<(layerCount-1)); i++){ // for(i FROM 0 TO 2 "power" (layerCount - 1))
             for(int k=0; k<layerCount; k++) // This is the same loop used to create
                if(i & (1<<k) != 0){         // binary numbers, but with "max" and
@@ -408,9 +413,13 @@ void EnvironmentalDistance::InitDistanceType(){
                   y[k] = DATA_MAX;
                }
             distIterator = Distance(x,y);
-            if(distIterator > distMax)
+            if(distIterator > distMax){
                distMax = distIterator;
+               foundDist = true;
+            }
          }
+         if(!foundDist)
+            return false;
          //Log::instance()->info("\nMaximum distance: %.8g\n",distMax); // Debug
       }break;
 
@@ -437,6 +446,7 @@ void EnvironmentalDistance::InitDistanceType(){
    // Normalize ParDist for its limits
    ParDist = (ParDist - PARDISTMIN)/(PARDISTMAX - PARDISTMIN); // Now ParDist is in [0,1]
    ParDist *= distMax; // Now ParDist is in [0,distMax]
+   return true;
 }
 
 // Alg serializer
