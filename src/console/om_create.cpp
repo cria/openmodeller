@@ -30,7 +30,7 @@ void modelCallback( float progress, void * theFileName );
 
 /// Globals
 time_t gLastTime;
-double gLastProgress = -1;
+double gLastProgress = -3;
 
 int main( int argc, char **argv ) {
     if (argc < 3) {
@@ -67,10 +67,17 @@ int main( int argc, char **argv ) {
     { // Fake scope to force obj destruction in the end (to catch logs)
       ConsoleXml myConsoleXml;
       std::string myOutput;
-      if (argc == 5 ) { 
+      if (argc == 5) { 
         std::string * myProgFile = new std::string(argv[4]);
         time(&gLastTime);
+        // Always create initial file with status "queued" (-1)
+        modelCallback( -1, myProgFile );
         myOutput=myConsoleXml.createModel(myRequest, dontLog, modelCallback, myProgFile);
+        // Check if job was completed
+        if ( gLastProgress != 1 ) {
+          // -2 means aborted
+          modelCallback( -2, myProgFile );
+        }
         delete myProgFile;
       }
       else {
@@ -98,9 +105,10 @@ void modelCallback( float progress, void *theFileName )
     time_t currentTime;
     time(&currentTime);
 
-    int roundedProgress = static_cast<int>(100*progress);
+    int roundedProgress = ( progress >= 0.0 ) ? static_cast<int>(100*progress) : progress;
 
-    if ( roundedProgress == 0 || roundedProgress == 100 ||
+    if ( roundedProgress == -1 || roundedProgress == -2 || 
+         roundedProgress == 0 || roundedProgress == 100 ||
          ( progress != gLastProgress && 
            difftime( currentTime, gLastTime ) > MIN_INTERVAL ) ) {
     
