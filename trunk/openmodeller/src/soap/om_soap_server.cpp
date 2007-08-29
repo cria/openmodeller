@@ -583,7 +583,7 @@ omws__getProgress( struct soap *soap, xsd__string ticket, xsd__int &progress )
     return SOAP_OK;
   }
 
-  progress = 0;
+  progress = -1; // return "queued" if file does not exist yet
 
   return SOAP_OK;
 }
