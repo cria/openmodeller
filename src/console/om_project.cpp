@@ -29,7 +29,7 @@ void mapCallback( float progress, void * theFileName );
 
 /// Globals
 time_t gLastTime;
-double gLastProgress = -3;
+double gLastProgress = -3.0;
 
 int main( int argc, char **argv ) {
 
@@ -108,12 +108,12 @@ int main( int argc, char **argv ) {
       std::string * myProgFile = new std::string(argv[5]);
       time(&gLastTime);
       // Always create initial file with status "queued" (-1)
-      mapCallback( -1, myProgFile );
+      mapCallback( -1.0, myProgFile );
       myConsoleXml.projectModel(myProjectionXmlFile,myMapFile,myStatsFile,dontLog,mapCallback,myProgFile);
       // Check if job was completed
       if ( gLastProgress != 1 ) {
         // -2 means aborted
-        mapCallback( -2, myProgFile );
+        mapCallback( -2.0, myProgFile );
       }
       delete myProgFile;
     }
@@ -135,10 +135,15 @@ void mapCallback( float progress, void *theFileName )
     time_t currentTime;
     time(&currentTime);
 
-    int roundedProgress = ( progress >= 0.0 ) ? static_cast<int>(100*progress) : progress;
+    int myProgress = static_cast<int>(progress);
 
-    if ( roundedProgress == -1 || roundedProgress == -2 || 
-         roundedProgress == 0 || roundedProgress == 100 ||
+    if ( myProgress >= 0 ) {
+   
+      myProgress *= 100;
+    }
+
+    if ( myProgress == -1 || myProgress == -2 || 
+         myProgress == 0 || myProgress == 100 ||
          ( progress != gLastProgress && 
            difftime( currentTime, gLastTime ) > MIN_INTERVAL ) ) {
     
@@ -153,7 +158,7 @@ void mapCallback( float progress, void *theFileName )
       else {
         char buffer[3];
         int ret;
-        ret = sprintf(buffer, "%u", roundedProgress);
+        ret = sprintf(buffer, "%d", myProgress);
         fputs(buffer,pFile);
         fclose(pFile);
         gLastProgress = progress;
