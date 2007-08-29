@@ -135,11 +135,11 @@ void mapCallback( float progress, void *theFileName )
     time_t currentTime;
     time(&currentTime);
 
-    int myProgress = static_cast<int>(progress);
+    int myProgress = static_cast<int>(100*progress);
 
-    if ( myProgress >= 0 ) {
+    if ( myProgress < 0 ) {
    
-      myProgress *= 100;
+      myProgress /= 100;
     }
 
     if ( myProgress == -1 || myProgress == -2 || 
