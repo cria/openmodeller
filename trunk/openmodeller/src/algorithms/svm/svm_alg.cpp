@@ -453,7 +453,7 @@ SvmAlgorithm::initialize()
 
     if ( generate_pseudo_absences ) {
 
-      Log::instance()->warn( "SvmAlgorithm: Generating pseudo-absences.\n" );
+      Log::instance()->info( "SvmAlgorithm: Generating pseudo-absences.\n" );
 
       OccurrencesImpl * occs = new OccurrencesImpl( "", GeoTransform::cs_default );
 
