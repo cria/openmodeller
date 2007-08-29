@@ -55,7 +55,7 @@ std::string ConsoleXml::createModel(const std::string myConfigFile, bool ignoreL
 
     OpenModeller om;
     {
-      cout << "Loading Test file " << myConfigFile << endl;
+      cout << "Loading XML Input file " << myConfigFile << endl;
       ConfigurationPtr c = Configuration::readXml( myConfigFile.c_str() );
       om.setModelConfiguration(c);
     }
