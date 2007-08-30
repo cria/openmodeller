@@ -461,7 +461,7 @@ SvmAlgorithm::initialize()
 
       for ( int i = 0; i < num_absences; ++i ) {
 
-        OccurrencePtr oc = _samp->getOneSample();
+        OccurrencePtr oc = _samp->getPseudoAbsence();
         absences->insert( oc ); 
       }
 
