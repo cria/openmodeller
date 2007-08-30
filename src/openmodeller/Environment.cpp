@@ -441,15 +441,15 @@ EnvironmentImpl::get( Coord x, Coord y ) const
 Sample
 EnvironmentImpl::getRandom( Coord *xout, Coord *yout) const
 {
-  Random rand;
+  Random myrand;
   Coord x, y;
 
   Sample s;
 
   do
     {
-      x = rand( _xmin, _xmax );
-      y = rand( _ymin, _ymax );
+      x = myrand( _xmin, _xmax );
+      y = myrand( _ymin, _ymax );
 
       s = get(x,y);
 
