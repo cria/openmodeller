@@ -24,6 +24,13 @@ SET (OMSOAP_SCHED
 )
 ########################################################
 # Build
+IF (PEDANTIC)
+  MESSAGE("src/soap : -Werror removed for soap for now - please get rid of any compiler warnings!")
+  # The warnings are caused by generated soap sources
+  # I dont know if it can be fixed really
+  FILE (GLOB files *.cpp)
+  SET_SOURCE_FILES_PROPERTIES(${files} PROPERTIES COMPILE_FLAGS -Wno-error )
+ENDIF (PEDANTIC)
 
 INCLUDE_DIRECTORIES(
      ${CMAKE_CURRENT_SOURCE_DIR}
