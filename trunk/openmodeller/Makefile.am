@@ -26,6 +26,7 @@ EXTRA_DIST = \
 	examples/projection_request.xml \
 	libopenmodeller.spec \
 	CMakeLists.txt \
+	DartConfig.cmake \
 	src/CMakeLists.txt \
 	src/algorithms/CMakeLists.txt \
 	src/algorithms/best_subsets/CMakeLists.txt \
