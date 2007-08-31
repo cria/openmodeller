@@ -54,13 +54,21 @@ class test_refcount : public CxxTest :: TestSuite
       delete d;
     }
 
+/**
+ *Test for operator->().
+ */
+
     void test1 (){
       std::cout << "Testing operator->()..." << std::endl;
-      TS_ASSERT(a->operator->() == 0);
-      TS_ASSERT(a->operator->() == b->operator->());
-      TS_ASSERT(c->operator->() == 0);
-      TS_ASSERT(c->operator->() == d->operator->());
+      TS_ASSERT(a->operator->()==0);
+      TS_ASSERT_EQUALS(a->operator->(),b->operator->());
+      TS_ASSERT(c->operator->()==0);
+      TS_ASSERT_EQUALS(c->operator->(),d->operator->());
     }
+
+/**
+ *Test for operator!().
+ */
 
     void test2 (){
       std::cout << "Testing operator!()..." << std::endl;
@@ -70,6 +78,10 @@ class test_refcount : public CxxTest :: TestSuite
       TS_ASSERT(d->operator!());
     }
 
+/**
+ *Test for operator bool().
+ */
+
     void test3 (){
       std::cout << "Testing operator bool()..." << std::endl;
       TS_ASSERT(!a->operator bool());
@@ -78,7 +90,7 @@ class test_refcount : public CxxTest :: TestSuite
       TS_ASSERT(!d->operator bool());
     }
 
-//Assignment operators were not tested.
+//Obs:Assignment operators were not tested.
 
   private:
     ConfigurationPtr *a;
