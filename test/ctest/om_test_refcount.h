@@ -58,7 +58,7 @@ class test_refcount : public CxxTest :: TestSuite
  *Test for operator->().
  */
 
-    void test1 (){
+    void testOperator_1 (){
       std::cout << "Testing operator->()..." << std::endl;
       TS_ASSERT(a->operator->()==0);
       TS_ASSERT_EQUALS(a->operator->(),b->operator->());
@@ -70,7 +70,7 @@ class test_refcount : public CxxTest :: TestSuite
  *Test for operator!().
  */
 
-    void test2 (){
+    void testOperator_2 (){
       std::cout << "Testing operator!()..." << std::endl;
       TS_ASSERT(a->operator!());
       TS_ASSERT(b->operator!());
@@ -82,7 +82,7 @@ class test_refcount : public CxxTest :: TestSuite
  *Test for operator bool().
  */
 
-    void test3 (){
+    void testBoolFunction (){
       std::cout << "Testing operator bool()..." << std::endl;
       TS_ASSERT(!a->operator bool());
       TS_ASSERT(!b->operator bool());
