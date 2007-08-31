@@ -28,7 +28,7 @@ int main( int argc, char **argv ) {
     AlgorithmFactory::searchDefaultDirs();
 
     if (argc != 3) {
-      cout << "Usagex " << argv[0] << " <request file> <output filename>" << endl;
+      cout << "Usage " << argv[0] << " <request file> <output filename>" << endl;
       return -1;
     }
 
