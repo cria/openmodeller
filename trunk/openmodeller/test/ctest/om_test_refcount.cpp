@@ -21,22 +21,22 @@ static test_refcount suite_test_refcount;
 static CxxTest::List Tests_test_refcount = { 0, 0 };
 CxxTest::StaticSuiteDescription suiteDescription_test_refcount( "om_test_refcount.h", 39, "test_refcount", suite_test_refcount, Tests_test_refcount );
 
-static class TestDescription_test_refcount_test1 : public CxxTest::RealTestDescription {
+static class TestDescription_test_refcount_testOperator_1 : public CxxTest::RealTestDescription {
 public:
- TestDescription_test_refcount_test1() : CxxTest::RealTestDescription( Tests_test_refcount, suiteDescription_test_refcount, 61, "test1" ) {}
- void runTest() { suite_test_refcount.test1(); }
-} testDescription_test_refcount_test1;
+ TestDescription_test_refcount_testOperator_1() : CxxTest::RealTestDescription( Tests_test_refcount, suiteDescription_test_refcount, 61, "testOperator_1" ) {}
+ void runTest() { suite_test_refcount.testOperator_1(); }
+} testDescription_test_refcount_testOperator_1;
 
-static class TestDescription_test_refcount_test2 : public CxxTest::RealTestDescription {
+static class TestDescription_test_refcount_testOperator_2 : public CxxTest::RealTestDescription {
 public:
- TestDescription_test_refcount_test2() : CxxTest::RealTestDescription( Tests_test_refcount, suiteDescription_test_refcount, 73, "test2" ) {}
- void runTest() { suite_test_refcount.test2(); }
-} testDescription_test_refcount_test2;
+ TestDescription_test_refcount_testOperator_2() : CxxTest::RealTestDescription( Tests_test_refcount, suiteDescription_test_refcount, 73, "testOperator_2" ) {}
+ void runTest() { suite_test_refcount.testOperator_2(); }
+} testDescription_test_refcount_testOperator_2;
 
-static class TestDescription_test_refcount_test3 : public CxxTest::RealTestDescription {
+static class TestDescription_test_refcount_testBoolFunction : public CxxTest::RealTestDescription {
 public:
- TestDescription_test_refcount_test3() : CxxTest::RealTestDescription( Tests_test_refcount, suiteDescription_test_refcount, 85, "test3" ) {}
- void runTest() { suite_test_refcount.test3(); }
-} testDescription_test_refcount_test3;
+ TestDescription_test_refcount_testBoolFunction() : CxxTest::RealTestDescription( Tests_test_refcount, suiteDescription_test_refcount, 85, "testBoolFunction" ) {}
+ void runTest() { suite_test_refcount.testBoolFunction(); }
+} testDescription_test_refcount_testBoolFunction;
 
 #include <cxxtest/Root.cpp>
