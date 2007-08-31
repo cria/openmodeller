@@ -55,16 +55,22 @@ class test_Random : public CxxTest :: TestSuite
       delete r;
       delete dim;
     }
-
-    void test1 (){
+/**
+ *This test checks if the value returned is between [min,max).
+ */
+    void testGetReturnsDoubleI(){
       std::cout << std::endl;
       std::cout << "Testing get( double min, double max ) ..." << std::endl;
       std::srand(0);
       TS_ASSERT_EQUALS((101.55-1.55)*(*num)+1.55,a->get( 1.55 , 101.55 ));
-      TS_ASSERT(a->get(1.55,101.55)>=1.55&&a->get(1.55,101.55)<101.55);	
+      TS_ASSERT(a->get(1.55,101.55)>=1.55&&a->get(1.55,101.55)<101.55);
     }
 
-    void test2 (){
+/**
+ *This test checks if the value returned is between [0,max).
+ */
+
+    void testGetReturnsDoubleII  (){
       std::cout << std::endl;
       std::cout << "Testing get( double max ) ..." << std::endl;
       std::srand(0);
@@ -72,14 +78,23 @@ class test_Random : public CxxTest :: TestSuite
       TS_ASSERT(a->get(155.6432)>=0&&a->get(155.6432)<155.6432);
     }
 
-    void test3 (){
+/**
+ *This test checks if the value returned is between [0,1).
+ */
+
+    void testGetReturnsDoubleIII (){
       std::cout << std::endl;
       std::cout << "Testing get() ..." << std::endl;
       std::srand(0);
       TS_ASSERT_EQUALS(*num,a->get());
+      TS_ASSERT(a->get()>=0&&a->get()<1);
     }
 
-    void test4 (){
+/**
+ *This test checks if the value returned is between [min,max).
+ */
+
+    void testOperatorReturnsDoubleI (){
       std::cout << std::endl;
       std::cout << "Testing operator()( double min, double max ) ..." << std::endl;
       std::srand(0);
@@ -87,7 +102,11 @@ class test_Random : public CxxTest :: TestSuite
       TS_ASSERT(a->operator()(1.55,101.55)>=1.55&&a->operator()(1.55,101.55)<101.55);
     }
 
-    void test5 (){
+/**
+ *This test checks if the value returned is between [0,max).
+ */
+
+    void testOperatorReturnsDoubleII (){
       std::cout << std::endl;
       std::cout << "Testing operator()( double max ) ..." << std::endl;
       std::srand(0);
@@ -95,13 +114,34 @@ class test_Random : public CxxTest :: TestSuite
       TS_ASSERT(a->operator()(155.6432)>=0&&a->operator()(155.6432)<155.6432);
     }
 
-    void test7 (){
+/**
+ *This test checks if the value returned is between [0,1).
+ */
+
+    void testOperatorReturnsDoubleIII (){
+      std::cout << std::endl;
+      std::cout << "Testing operator()() ..." << std::endl;
+      std::srand(0);
+      TS_ASSERT_EQUALS(*num,a->get());
+      TS_ASSERT(a->get()>=0&&a->get()<1);
+    }
+
+
+/**
+ *This test checks if the value returned is between [min,max).
+ */
+
+    void testGetReturnsIntegerI (){
       std::cout << std::endl;
       std::cout << "Testing get( int min, int max )..." << std::endl;
       std::srand(0);
       TS_ASSERT_EQUALS(int((101-1)*(*num)+1),a->get( 1 , 101 ));
       TS_ASSERT(a->get(1,101)>=1&&a->get(1,101)<101);
     }
+
+/**
+ *This test checks if the value returned is between [0,max).
+ */
 
     void test8 (){
       std::cout << std::endl;
@@ -111,6 +151,10 @@ class test_Random : public CxxTest :: TestSuite
       TS_ASSERT(a->get(155)>=0&&a->get(155)<155);
     }
 
+/**
+ *This test checks if the value returned is between [min,max).
+ */
+
     void test9 (){
       std::cout << std::endl;
       std::cout << "Testing operator()( int min, int max ) ..." << std::endl;
@@ -118,6 +162,10 @@ class test_Random : public CxxTest :: TestSuite
       TS_ASSERT_EQUALS(int((101-1)*(*num)+1),a->operator()( 1 , 101 ));
       TS_ASSERT(a->operator()(1,101)>=1&&a->operator()(1,101)<101);
     }
+
+/**
+ *This test checks if the value returned is between [0,max).
+ */
 
     void test10 (){
       std::cout << std::endl;
@@ -127,6 +175,10 @@ class test_Random : public CxxTest :: TestSuite
       TS_ASSERT(a->operator()(155)>=0&&a->operator()(155)<155);
     }
 
+/**
+ *This test check is the value returned is between [min,max).
+ */
+
     void test11 (){
       std::cout << std::endl;
       std::cout << "Testing get( long min, long max )..." << std::endl;
@@ -134,6 +186,10 @@ class test_Random : public CxxTest :: TestSuite
       TS_ASSERT_EQUALS(long((101-1)*(*num)+1),a->get(long(1) ,long(101) ));
       TS_ASSERT(a->get(long(1),long(101))>=long(1)&&a->get(long(1),long(101))<long(101));
     }
+
+/**
+ *This test checks if the value returned is between [0,max).
+ */
 
     void test12 (){
       std::cout << std::endl;
@@ -143,6 +199,10 @@ class test_Random : public CxxTest :: TestSuite
       TS_ASSERT(a->get(long(155))>=long(0)&&a->get(long(155))<long(155));
     }
 
+/**
+ * This test checks if the value returned is between [min.max).
+ */
+
     void test13 (){
       std::cout << std::endl;
       std::cout << "Testing operator()( long min, long max ) ..." << std::endl;
@@ -151,6 +211,10 @@ class test_Random : public CxxTest :: TestSuite
       TS_ASSERT(a->operator()(long(1),long(101))>=long(1)&&a->operator()(long(1),long(101))<long(101));
     }
 
+/**
+ *This test checks if the value returned is between [0,max).
+ */
+
     void test14 (){
       std::cout << std::endl;
       std::cout << "Testing operator()( long max ) ..." << std::endl;
@@ -158,6 +222,10 @@ class test_Random : public CxxTest :: TestSuite
       TS_ASSERT_EQUALS(long(155*(*num)),a->operator()(long(155)));
       TS_ASSERT(a->operator()(long(155))>=long(0)&&a->operator()(long(155))<long(155));
     }
+
+/**
+ *This test checks if the value returned by discrete function is correct.
+ */
 
     void test15 (){
       std::cout << std::endl;
