@@ -40,7 +40,7 @@ EXTRA_DIST = \
 	graph/view_model.hh
 
 
-bin_PROGRAMS = om_console $(OM_VIEWER) $(OM_NICHE) om_dump om_sampledump om_project om_create om_metadump om_testmodel
+bin_PROGRAMS = om_console $(OM_VIEWER) $(OM_NICHE) om_dump om_sampledump om_pseudo om_project om_create om_metadump om_testmodel
 lib_LTLIBRARIES = libopenmodellerxml.la
 
 libopenmodellerxml_la_SOURCES = consolexml.cpp consolexml.hh
@@ -61,6 +61,10 @@ om_dump_LDADD = $(GDAL_LIB) $(OMLIB) $(EXPAT_LIBS) $(TERRALIB_LIB)
 om_sampledump_SOURCES = om_sampledump.cpp request_file.cpp file_parser.cpp
 om_sampledump_CPPFLAGS = -DCORE_DLL_IMPORT -I$(OMSRCDIR) $(TERRALIB_FLAGS) -Ddllexp=
 om_sampledump_LDADD = $(GDAL_LIB) $(OMLIB) $(EXPAT_LIBS) $(TERRALIB_LIB)
+
+om_pseudo_SOURCES = om_pseudo.cpp
+om_pseudo_CPPFLAGS = -DCORE_DLL_IMPORT -I$(OMSRCDIR) $(TERRALIB_FLAGS) -Ddllexp=
+om_pseudo_LDADD = $(GDAL_LIB) $(OMLIB) $(EXPAT_LIBS) $(TERRALIB_LIB)
 
 om_project_SOURCES = om_project.cpp  
 om_project_CPPFLAGS = -DCORE_DLL_IMPORT -I$(OMSRCDIR) $(TERRALIB_FLAGS) -Ddllexp= -DOM_XML_DLL_EXPORT=
