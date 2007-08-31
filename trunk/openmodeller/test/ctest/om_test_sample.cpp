@@ -21,142 +21,142 @@ static test_Sample suite_test_Sample;
 static CxxTest::List Tests_test_Sample = { 0, 0 };
 CxxTest::StaticSuiteDescription suiteDescription_test_Sample( "om_test_sample.h", 42, "test_Sample", suite_test_Sample, Tests_test_Sample );
 
-static class TestDescription_test_Sample_test1 : public CxxTest::RealTestDescription {
+static class TestDescription_test_Sample_testDefaultConstructor : public CxxTest::RealTestDescription {
 public:
- TestDescription_test_Sample_test1() : CxxTest::RealTestDescription( Tests_test_Sample, suiteDescription_test_Sample, 60, "test1" ) {}
- void runTest() { suite_test_Sample.test1(); }
-} testDescription_test_Sample_test1;
+ TestDescription_test_Sample_testDefaultConstructor() : CxxTest::RealTestDescription( Tests_test_Sample, suiteDescription_test_Sample, 64, "testDefaultConstructor" ) {}
+ void runTest() { suite_test_Sample.testDefaultConstructor(); }
+} testDescription_test_Sample_testDefaultConstructor;
 
-static class TestDescription_test_Sample_test2 : public CxxTest::RealTestDescription {
+static class TestDescription_test_Sample_testResizeFunction : public CxxTest::RealTestDescription {
 public:
- TestDescription_test_Sample_test2() : CxxTest::RealTestDescription( Tests_test_Sample, suiteDescription_test_Sample, 66, "test2" ) {}
- void runTest() { suite_test_Sample.test2(); }
-} testDescription_test_Sample_test2;
+ TestDescription_test_Sample_testResizeFunction() : CxxTest::RealTestDescription( Tests_test_Sample, suiteDescription_test_Sample, 74, "testResizeFunction" ) {}
+ void runTest() { suite_test_Sample.testResizeFunction(); }
+} testDescription_test_Sample_testResizeFunction;
 
-static class TestDescription_test_Sample_test3 : public CxxTest::RealTestDescription {
+static class TestDescription_test_Sample_testConstructorWithSingleScalar : public CxxTest::RealTestDescription {
 public:
- TestDescription_test_Sample_test3() : CxxTest::RealTestDescription( Tests_test_Sample, suiteDescription_test_Sample, 73, "test3" ) {}
- void runTest() { suite_test_Sample.test3(); }
-} testDescription_test_Sample_test3;
+ TestDescription_test_Sample_testConstructorWithSingleScalar() : CxxTest::RealTestDescription( Tests_test_Sample, suiteDescription_test_Sample, 85, "testConstructorWithSingleScalar" ) {}
+ void runTest() { suite_test_Sample.testConstructorWithSingleScalar(); }
+} testDescription_test_Sample_testConstructorWithSingleScalar;
 
-static class TestDescription_test_Sample_test4 : public CxxTest::RealTestDescription {
+static class TestDescription_test_Sample_testDirectAssignmentOperator_1 : public CxxTest::RealTestDescription {
 public:
- TestDescription_test_Sample_test4() : CxxTest::RealTestDescription( Tests_test_Sample, suiteDescription_test_Sample, 81, "test4" ) {}
- void runTest() { suite_test_Sample.test4(); }
-} testDescription_test_Sample_test4;
+ TestDescription_test_Sample_testDirectAssignmentOperator_1() : CxxTest::RealTestDescription( Tests_test_Sample, suiteDescription_test_Sample, 97, "testDirectAssignmentOperator_1" ) {}
+ void runTest() { suite_test_Sample.testDirectAssignmentOperator_1(); }
+} testDescription_test_Sample_testDirectAssignmentOperator_1;
 
-static class TestDescription_test_Sample_test5 : public CxxTest::RealTestDescription {
+static class TestDescription_test_Sample_testEqualsFunctionAndEqualToOperator : public CxxTest::RealTestDescription {
 public:
- TestDescription_test_Sample_test5() : CxxTest::RealTestDescription( Tests_test_Sample, suiteDescription_test_Sample, 93, "test5" ) {}
- void runTest() { suite_test_Sample.test5(); }
-} testDescription_test_Sample_test5;
+ TestDescription_test_Sample_testEqualsFunctionAndEqualToOperator() : CxxTest::RealTestDescription( Tests_test_Sample, suiteDescription_test_Sample, 113, "testEqualsFunctionAndEqualToOperator" ) {}
+ void runTest() { suite_test_Sample.testEqualsFunctionAndEqualToOperator(); }
+} testDescription_test_Sample_testEqualsFunctionAndEqualToOperator;
 
-static class TestDescription_test_Sample_test6 : public CxxTest::RealTestDescription {
+static class TestDescription_test_Sample_testCopyConstructor : public CxxTest::RealTestDescription {
 public:
- TestDescription_test_Sample_test6() : CxxTest::RealTestDescription( Tests_test_Sample, suiteDescription_test_Sample, 119, "test6" ) {}
- void runTest() { suite_test_Sample.test6(); }
-} testDescription_test_Sample_test6;
+ TestDescription_test_Sample_testCopyConstructor() : CxxTest::RealTestDescription( Tests_test_Sample, suiteDescription_test_Sample, 143, "testCopyConstructor" ) {}
+ void runTest() { suite_test_Sample.testCopyConstructor(); }
+} testDescription_test_Sample_testCopyConstructor;
 
-static class TestDescription_test_Sample_test7 : public CxxTest::RealTestDescription {
+static class TestDescription_test_Sample_testDirectAssignmentOperator_2 : public CxxTest::RealTestDescription {
 public:
- TestDescription_test_Sample_test7() : CxxTest::RealTestDescription( Tests_test_Sample, suiteDescription_test_Sample, 130, "test7" ) {}
- void runTest() { suite_test_Sample.test7(); }
-} testDescription_test_Sample_test7;
+ TestDescription_test_Sample_testDirectAssignmentOperator_2() : CxxTest::RealTestDescription( Tests_test_Sample, suiteDescription_test_Sample, 158, "testDirectAssignmentOperator_2" ) {}
+ void runTest() { suite_test_Sample.testDirectAssignmentOperator_2(); }
+} testDescription_test_Sample_testDirectAssignmentOperator_2;
 
-static class TestDescription_test_Sample_test8 : public CxxTest::RealTestDescription {
+static class TestDescription_test_Sample_testBitwiseOperators : public CxxTest::RealTestDescription {
 public:
- TestDescription_test_Sample_test8() : CxxTest::RealTestDescription( Tests_test_Sample, suiteDescription_test_Sample, 141, "test8" ) {}
- void runTest() { suite_test_Sample.test8(); }
-} testDescription_test_Sample_test8;
+ TestDescription_test_Sample_testBitwiseOperators() : CxxTest::RealTestDescription( Tests_test_Sample, suiteDescription_test_Sample, 173, "testBitwiseOperators" ) {}
+ void runTest() { suite_test_Sample.testBitwiseOperators(); }
+} testDescription_test_Sample_testBitwiseOperators;
 
-static class TestDescription_test_Sample_test9 : public CxxTest::RealTestDescription {
+static class TestDescription_test_Sample_testBitwiseOperatorsPrecision : public CxxTest::RealTestDescription {
 public:
- TestDescription_test_Sample_test9() : CxxTest::RealTestDescription( Tests_test_Sample, suiteDescription_test_Sample, 156, "test9" ) {}
- void runTest() { suite_test_Sample.test9(); }
-} testDescription_test_Sample_test9;
+ TestDescription_test_Sample_testBitwiseOperatorsPrecision() : CxxTest::RealTestDescription( Tests_test_Sample, suiteDescription_test_Sample, 192, "testBitwiseOperatorsPrecision" ) {}
+ void runTest() { suite_test_Sample.testBitwiseOperatorsPrecision(); }
+} testDescription_test_Sample_testBitwiseOperatorsPrecision;
 
-static class TestDescription_test_Sample_test10 : public CxxTest::RealTestDescription {
+static class TestDescription_test_Sample_testOperatorAssignmentBySum_1 : public CxxTest::RealTestDescription {
 public:
- TestDescription_test_Sample_test10() : CxxTest::RealTestDescription( Tests_test_Sample, suiteDescription_test_Sample, 171, "test10" ) {}
- void runTest() { suite_test_Sample.test10(); }
-} testDescription_test_Sample_test10;
+ TestDescription_test_Sample_testOperatorAssignmentBySum_1() : CxxTest::RealTestDescription( Tests_test_Sample, suiteDescription_test_Sample, 211, "testOperatorAssignmentBySum_1" ) {}
+ void runTest() { suite_test_Sample.testOperatorAssignmentBySum_1(); }
+} testDescription_test_Sample_testOperatorAssignmentBySum_1;
 
-static class TestDescription_test_Sample_test11 : public CxxTest::RealTestDescription {
+static class TestDescription_test_Sample_testOperatorAssignmentBySum_2 : public CxxTest::RealTestDescription {
 public:
- TestDescription_test_Sample_test11() : CxxTest::RealTestDescription( Tests_test_Sample, suiteDescription_test_Sample, 185, "test11" ) {}
- void runTest() { suite_test_Sample.test11(); }
-} testDescription_test_Sample_test11;
+ TestDescription_test_Sample_testOperatorAssignmentBySum_2() : CxxTest::RealTestDescription( Tests_test_Sample, suiteDescription_test_Sample, 229, "testOperatorAssignmentBySum_2" ) {}
+ void runTest() { suite_test_Sample.testOperatorAssignmentBySum_2(); }
+} testDescription_test_Sample_testOperatorAssignmentBySum_2;
 
-static class TestDescription_test_Sample_test12 : public CxxTest::RealTestDescription {
+static class TestDescription_test_Sample_testOperatorAssignmentByDifference_1 : public CxxTest::RealTestDescription {
 public:
- TestDescription_test_Sample_test12() : CxxTest::RealTestDescription( Tests_test_Sample, suiteDescription_test_Sample, 199, "test12" ) {}
- void runTest() { suite_test_Sample.test12(); }
-} testDescription_test_Sample_test12;
+ TestDescription_test_Sample_testOperatorAssignmentByDifference_1() : CxxTest::RealTestDescription( Tests_test_Sample, suiteDescription_test_Sample, 247, "testOperatorAssignmentByDifference_1" ) {}
+ void runTest() { suite_test_Sample.testOperatorAssignmentByDifference_1(); }
+} testDescription_test_Sample_testOperatorAssignmentByDifference_1;
 
-static class TestDescription_test_Sample_test13 : public CxxTest::RealTestDescription {
+static class TestDescription_test_Sample_testOperatorAssignmentByDifference_2 : public CxxTest::RealTestDescription {
 public:
- TestDescription_test_Sample_test13() : CxxTest::RealTestDescription( Tests_test_Sample, suiteDescription_test_Sample, 213, "test13" ) {}
- void runTest() { suite_test_Sample.test13(); }
-} testDescription_test_Sample_test13;
+ TestDescription_test_Sample_testOperatorAssignmentByDifference_2() : CxxTest::RealTestDescription( Tests_test_Sample, suiteDescription_test_Sample, 265, "testOperatorAssignmentByDifference_2" ) {}
+ void runTest() { suite_test_Sample.testOperatorAssignmentByDifference_2(); }
+} testDescription_test_Sample_testOperatorAssignmentByDifference_2;
 
-static class TestDescription_test_Sample_test14 : public CxxTest::RealTestDescription {
+static class TestDescription_test_Sample_testOperatorAssignmentByProduct_1 : public CxxTest::RealTestDescription {
 public:
- TestDescription_test_Sample_test14() : CxxTest::RealTestDescription( Tests_test_Sample, suiteDescription_test_Sample, 227, "test14" ) {}
- void runTest() { suite_test_Sample.test14(); }
-} testDescription_test_Sample_test14;
+ TestDescription_test_Sample_testOperatorAssignmentByProduct_1() : CxxTest::RealTestDescription( Tests_test_Sample, suiteDescription_test_Sample, 283, "testOperatorAssignmentByProduct_1" ) {}
+ void runTest() { suite_test_Sample.testOperatorAssignmentByProduct_1(); }
+} testDescription_test_Sample_testOperatorAssignmentByProduct_1;
 
-static class TestDescription_test_Sample_test15 : public CxxTest::RealTestDescription {
+static class TestDescription_test_Sample_testOperatorAssignmentByProduct_2 : public CxxTest::RealTestDescription {
 public:
- TestDescription_test_Sample_test15() : CxxTest::RealTestDescription( Tests_test_Sample, suiteDescription_test_Sample, 241, "test15" ) {}
- void runTest() { suite_test_Sample.test15(); }
-} testDescription_test_Sample_test15;
+ TestDescription_test_Sample_testOperatorAssignmentByProduct_2() : CxxTest::RealTestDescription( Tests_test_Sample, suiteDescription_test_Sample, 301, "testOperatorAssignmentByProduct_2" ) {}
+ void runTest() { suite_test_Sample.testOperatorAssignmentByProduct_2(); }
+} testDescription_test_Sample_testOperatorAssignmentByProduct_2;
 
-static class TestDescription_test_Sample_test16 : public CxxTest::RealTestDescription {
+static class TestDescription_test_Sample_testOperatorAssignmentByDividend_1 : public CxxTest::RealTestDescription {
 public:
- TestDescription_test_Sample_test16() : CxxTest::RealTestDescription( Tests_test_Sample, suiteDescription_test_Sample, 255, "test16" ) {}
- void runTest() { suite_test_Sample.test16(); }
-} testDescription_test_Sample_test16;
+ TestDescription_test_Sample_testOperatorAssignmentByDividend_1() : CxxTest::RealTestDescription( Tests_test_Sample, suiteDescription_test_Sample, 319, "testOperatorAssignmentByDividend_1" ) {}
+ void runTest() { suite_test_Sample.testOperatorAssignmentByDividend_1(); }
+} testDescription_test_Sample_testOperatorAssignmentByDividend_1;
 
-static class TestDescription_test_Sample_test17 : public CxxTest::RealTestDescription {
+static class TestDescription_test_Sample_testOperatorAssignmentByDividend_2 : public CxxTest::RealTestDescription {
 public:
- TestDescription_test_Sample_test17() : CxxTest::RealTestDescription( Tests_test_Sample, suiteDescription_test_Sample, 271, "test17" ) {}
- void runTest() { suite_test_Sample.test17(); }
-} testDescription_test_Sample_test17;
+ TestDescription_test_Sample_testOperatorAssignmentByDividend_2() : CxxTest::RealTestDescription( Tests_test_Sample, suiteDescription_test_Sample, 339, "testOperatorAssignmentByDividend_2" ) {}
+ void runTest() { suite_test_Sample.testOperatorAssignmentByDividend_2(); }
+} testDescription_test_Sample_testOperatorAssignmentByDividend_2;
 
-static class TestDescription_test_Sample_test18 : public CxxTest::RealTestDescription {
+static class TestDescription_test_Sample_testOperatorAssignmentByBitwiseAND : public CxxTest::RealTestDescription {
 public:
- TestDescription_test_Sample_test18() : CxxTest::RealTestDescription( Tests_test_Sample, suiteDescription_test_Sample, 284, "test18" ) {}
- void runTest() { suite_test_Sample.test18(); }
-} testDescription_test_Sample_test18;
+ TestDescription_test_Sample_testOperatorAssignmentByBitwiseAND() : CxxTest::RealTestDescription( Tests_test_Sample, suiteDescription_test_Sample, 356, "testOperatorAssignmentByBitwiseAND" ) {}
+ void runTest() { suite_test_Sample.testOperatorAssignmentByBitwiseAND(); }
+} testDescription_test_Sample_testOperatorAssignmentByBitwiseAND;
 
-static class TestDescription_test_Sample_test19 : public CxxTest::RealTestDescription {
+static class TestDescription_test_Sample_testOperatorAssignmentByBitwiseOR : public CxxTest::RealTestDescription {
 public:
- TestDescription_test_Sample_test19() : CxxTest::RealTestDescription( Tests_test_Sample, suiteDescription_test_Sample, 302, "test19" ) {}
- void runTest() { suite_test_Sample.test19(); }
-} testDescription_test_Sample_test19;
+ TestDescription_test_Sample_testOperatorAssignmentByBitwiseOR() : CxxTest::RealTestDescription( Tests_test_Sample, suiteDescription_test_Sample, 378, "testOperatorAssignmentByBitwiseOR" ) {}
+ void runTest() { suite_test_Sample.testOperatorAssignmentByBitwiseOR(); }
+} testDescription_test_Sample_testOperatorAssignmentByBitwiseOR;
 
-static class TestDescription_test_Sample_test20 : public CxxTest::RealTestDescription {
+static class TestDescription_test_Sample_testSqrFunction : public CxxTest::RealTestDescription {
 public:
- TestDescription_test_Sample_test20() : CxxTest::RealTestDescription( Tests_test_Sample, suiteDescription_test_Sample, 319, "test20" ) {}
- void runTest() { suite_test_Sample.test20(); }
-} testDescription_test_Sample_test20;
+ TestDescription_test_Sample_testSqrFunction() : CxxTest::RealTestDescription( Tests_test_Sample, suiteDescription_test_Sample, 399, "testSqrFunction" ) {}
+ void runTest() { suite_test_Sample.testSqrFunction(); }
+} testDescription_test_Sample_testSqrFunction;
 
-static class TestDescription_test_Sample_test21 : public CxxTest::RealTestDescription {
+static class TestDescription_test_Sample_testSqrtFunction : public CxxTest::RealTestDescription {
 public:
- TestDescription_test_Sample_test21() : CxxTest::RealTestDescription( Tests_test_Sample, suiteDescription_test_Sample, 332, "test21" ) {}
- void runTest() { suite_test_Sample.test21(); }
-} testDescription_test_Sample_test21;
+ TestDescription_test_Sample_testSqrtFunction() : CxxTest::RealTestDescription( Tests_test_Sample, suiteDescription_test_Sample, 416, "testSqrtFunction" ) {}
+ void runTest() { suite_test_Sample.testSqrtFunction(); }
+} testDescription_test_Sample_testSqrtFunction;
 
-static class TestDescription_test_Sample_test22 : public CxxTest::RealTestDescription {
+static class TestDescription_test_Sample_testNormFunction : public CxxTest::RealTestDescription {
 public:
- TestDescription_test_Sample_test22() : CxxTest::RealTestDescription( Tests_test_Sample, suiteDescription_test_Sample, 345, "test22" ) {}
- void runTest() { suite_test_Sample.test22(); }
-} testDescription_test_Sample_test22;
+ TestDescription_test_Sample_testNormFunction() : CxxTest::RealTestDescription( Tests_test_Sample, suiteDescription_test_Sample, 433, "testNormFunction" ) {}
+ void runTest() { suite_test_Sample.testNormFunction(); }
+} testDescription_test_Sample_testNormFunction;
 
-static class TestDescription_test_Sample_test23 : public CxxTest::RealTestDescription {
+static class TestDescription_test_Sample_testdotProductFunction : public CxxTest::RealTestDescription {
 public:
- TestDescription_test_Sample_test23() : CxxTest::RealTestDescription( Tests_test_Sample, suiteDescription_test_Sample, 355, "test23" ) {}
- void runTest() { suite_test_Sample.test23(); }
-} testDescription_test_Sample_test23;
+ TestDescription_test_Sample_testdotProductFunction() : CxxTest::RealTestDescription( Tests_test_Sample, suiteDescription_test_Sample, 447, "testdotProductFunction" ) {}
+ void runTest() { suite_test_Sample.testdotProductFunction(); }
+} testDescription_test_Sample_testdotProductFunction;
 
 #include <cxxtest/Root.cpp>
