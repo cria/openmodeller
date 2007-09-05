@@ -684,7 +684,8 @@ OpenModeller::setProjectionConfiguration( const ConstConfigurationPtr & config )
     // Default is 8-bit tiff
     int type = MapFormat::GreyTiff;
 
-    Log::instance()->info( "Setting Output file type to : %s\n", fileType.c_str() );
+    Log::instance()->info( "Setting Output file type to: %s\n", fileType.c_str() );
+
     if ( ! fileType.empty() ) {
 
       if ( fileType == "GreyTiff" ) {
@@ -692,6 +693,7 @@ OpenModeller::setProjectionConfiguration( const ConstConfigurationPtr & config )
         // nothing to do - it's already the default
       }
       else if ( fileType == "GreyTiff100" ) {
+
         type = MapFormat::GreyTiff100;
       }
       else if ( fileType == "FloatingTiff" ) {
