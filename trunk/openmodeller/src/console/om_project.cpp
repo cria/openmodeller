@@ -154,9 +154,10 @@ void mapCallback( float progress, void *theFileName )
 
       if (pFile == NULL) {
         // Could not open file...
+        cout << "Could not open progress file" << endl;
       }
       else {
-        char buffer[3];
+        char buffer[4];
         int ret;
         ret = sprintf(buffer, "%d", myProgress);
         fputs(buffer,pFile);
