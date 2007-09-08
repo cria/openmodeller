@@ -56,7 +56,11 @@ class test_MapFormat: public CxxTest :: TestSuite
       delete B;
     }
 
-    void test1 (){
+/**
+ *Test for MapFormat Default Constructor.
+ */
+
+    void testDefaultConstructor (){
       std::cout << std::endl;
       std::cout << "Testing MapFormat() ..." << std::endl;
       *c=A->getFormat();
@@ -151,7 +155,11 @@ class test_MapFormat: public CxxTest :: TestSuite
       }
     }
 
-    void test2 (){
+/**
+ *Test for MapFormat Constructor.
+ */
+
+    void testConstructor (){
       std::cout << std::endl;
       std::cout << "Testing MapFormat::MapFormat( Coord xcel, Coord ycel, Coord xmin, Coord ymin, Coord xmax, Coord ymax, Scalar noval, char const * proj ) ..." << std::endl;
       *c=B->getFormat();
@@ -245,8 +253,14 @@ class test_MapFormat: public CxxTest :: TestSuite
       TS_FAIL("Invalid Exception Thrown");
       }
     }
+
 //Need to test MapFormat(char const *filenameWithFormat) (after testing RasterFactory)
-    void test3 (){
+
+/**
+ *Test for setFormat(int f).
+ */
+
+    void testSetFormat (){
       std::cout << std::endl;
       std::cout << "Testing setFormat(int f) ..." << std::endl;
       A->setFormat(0);
@@ -259,7 +273,11 @@ class test_MapFormat: public CxxTest :: TestSuite
       TS_ASSERT(A->getFormat()==MapFormat::FloatingTiff);
     }
 
-    void test4 (){
+/**
+ *Test for setXCel(Coord v).
+ */
+
+    void testSetXCel (){
       std::cout << std::endl;
       std::cout << "Testing setXCel(Coord v) ..." << std::endl;
       A->setXCel(0.01);
@@ -276,7 +294,11 @@ class test_MapFormat: public CxxTest :: TestSuite
       }
     }
 
-    void test5 (){
+/**
+ *Test for setYCel(Coord v).
+ */
+
+    void testSetYCel (){
       std::cout << std::endl;
       std::cout << "Testing setYCel(Coord v) ..." << std::endl;
       A->setYCel(0.02);
@@ -293,7 +315,11 @@ class test_MapFormat: public CxxTest :: TestSuite
       }
     }
 
-    void test6 (){
+/**
+ *Test for setXMin(Coord v).
+ */
+
+    void testSetXMin (){
       std::cout << std::endl;
       std::cout << "Testing setXMin(Coord v) ..." << std::endl;
       A->setXMin(0.03);
@@ -310,7 +336,11 @@ class test_MapFormat: public CxxTest :: TestSuite
       }
     }
 
-    void test7 (){
+/**
+ *Test for setYMin(Coord v).
+ */
+
+    void testSetYMin (){
       std::cout << std::endl;
       std::cout << "Testing setYMin(Coord v) ..." << std::endl;
       A->setYMin(0.04);
@@ -327,7 +357,11 @@ class test_MapFormat: public CxxTest :: TestSuite
       }
     }
 
-    void test8 (){
+/**
+ *Test for setXMax(Coord v).
+ */
+
+    void testSetXMax (){
       std::cout << std::endl;
       std::cout << "Testing setXMax(Coord v) ..." << std::endl;
       A->setXMax(0.05);
@@ -344,7 +378,11 @@ class test_MapFormat: public CxxTest :: TestSuite
       }
     }
 
-    void test9 (){
+/**
+ *Test for setYMax(Coord v)
+ */
+
+    void testSetYMax (){
       std::cout << std::endl;
       std::cout << "Testing setYMax(Coord v) ..." << std::endl;
       A->setYMax(0.06);
@@ -361,8 +399,13 @@ class test_MapFormat: public CxxTest :: TestSuite
       }
     }
 
-      void test10 (){
-      std::cout << std::endl;       std::cout << "Testing setNoDataValue(Scalar v) ..." << std::endl;
+/**
+ *Test for setNoDataValue(Scalar v).
+ */
+
+      void testSetNoDataValue (){
+      std::cout << std::endl;
+      std::cout << "Testing setNoDataValue(Scalar v) ..." << std::endl;
       A->setNoDataValue(0.07);
       *b=0.07;
       try{
@@ -377,7 +420,11 @@ class test_MapFormat: public CxxTest :: TestSuite
       }
     }
 
-    void test11 (){
+/**
+ *Test for setProjection(const string& v).
+ */
+
+    void testSetProjection (){
       std::cout << std::endl;
       std::cout << "Testing setProjection(const string& v) ..." << std::endl;
       A->setProjection("name");
@@ -394,14 +441,22 @@ class test_MapFormat: public CxxTest :: TestSuite
       }
     }
 
-    void test12 (){
+/**
+ *Test for unsetFormat().
+ */
+
+    void testUnSetFormat (){
       std::cout << std::endl;
-      std::cout << "Testing unsetXCel() ..." << std::endl;
+      std::cout << "Testing unsetFormat() ..." << std::endl;
       A->unsetFormat();
       TS_ASSERT(A->getFormat()==MapFormat::FloatingTiff);
       }
 
-    void test13 (){
+/**
+ *Test for unsetXCel().
+ */
+
+    void testUnSetXCel (){
       std::cout << std::endl;
       std::cout << "Testing unsetXCel() ..." << std::endl;
       A->unsetXCel();
@@ -417,7 +472,11 @@ class test_MapFormat: public CxxTest :: TestSuite
       }
     }
 
-    void test14 (){
+/**
+ *Test for unsetYCel().
+ */
+
+    void testUnSetYCel (){
       std::cout << std::endl;
       std::cout << "Testing unsetYCel() ..." << std::endl;
       A->unsetYCel();
@@ -433,7 +492,11 @@ class test_MapFormat: public CxxTest :: TestSuite
       }
       }
 
-    void test15 (){
+/**
+ *Test for unsetXMin().
+ */
+
+    void testUnSetXMin (){
       std::cout << std::endl;
       std::cout << "Testing unsetXMin() ..." << std::endl;
       A->unsetXMin();
@@ -449,7 +512,11 @@ class test_MapFormat: public CxxTest :: TestSuite
       }
     }
 
-    void test16 (){
+/**
+ *Test for unsetYMin().
+ */
+
+    void testUnSetYMin (){
       std::cout << std::endl;
       std::cout << "Testing unsetYMin() ..." << std::endl;
       A->unsetYMin();
@@ -465,7 +532,11 @@ class test_MapFormat: public CxxTest :: TestSuite
       }
     }
 
-    void test17 (){
+/**
+ *Test for unsetXMax().
+ */
+
+    void testUnSetXMax (){
       std::cout << std::endl;
       std::cout << "Testing unsetXMax() ..." << std::endl;
       A->unsetXMax();
@@ -481,7 +552,11 @@ class test_MapFormat: public CxxTest :: TestSuite
       }
     }
 
-    void test18 (){
+/**
+ *Test for unsetYMax().
+ */
+
+    void testUnSetYMax (){
       std::cout << std::endl;
       std::cout << "Testing unsetYMax() ..." << std::endl;
       A->unsetYMax();
@@ -497,7 +572,11 @@ class test_MapFormat: public CxxTest :: TestSuite
       }
     }
 
-    void test19 (){
+/**
+ *Test for unsetNoDataValue().
+ */
+
+    void testUnSetNoDataValue (){
       std::cout << std::endl;
       std::cout << "Testing unsetNoDataValue() ..." << std::endl;
       A->unsetNoDataValue();
@@ -513,7 +592,11 @@ class test_MapFormat: public CxxTest :: TestSuite
       }
     }
 
-    void test20 (){
+/**
+ *Test for unsetProjection().
+ */
+
+    void testUnSetProjection (){
       std::cout << std::endl;
       std::cout << "Testing unsetProjection() ..." << std::endl;
       A->unsetProjection();
@@ -529,14 +612,22 @@ class test_MapFormat: public CxxTest :: TestSuite
       }
     }
 
-    void test21 (){
+/**
+ *Test for getWidth().
+ */
+
+    void testGetWidth (){
       std::cout << std::endl;
       std::cout << "Testing getWidth() ..." << std::endl;
       *c = static_cast<int>((B->getXMax()-B->getXMin())/B->getXCel()+0.5);
       TS_ASSERT(*c==B->getWidth());
     }
 
-    void test22 (){
+/**
+ *Test for getHeight().
+ */
+
+    void testGetHeight (){
       std::cout << std::endl;
       std::cout << "Testing getHeight() ..." << std::endl;
       *c = static_cast<int>((B->getYMax()-B->getYMin())/B->getYCel()+0.5);
