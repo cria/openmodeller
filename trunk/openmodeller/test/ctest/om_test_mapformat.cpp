@@ -22,136 +22,136 @@ static test_MapFormat suite_test_MapFormat;
 static CxxTest::List Tests_test_MapFormat = { 0, 0 };
 CxxTest::StaticSuiteDescription suiteDescription_test_MapFormat( "om_test_mapformat.h", 40, "test_MapFormat", suite_test_MapFormat, Tests_test_MapFormat );
 
-static class TestDescription_test_MapFormat_test1 : public CxxTest::RealTestDescription {
+static class TestDescription_test_MapFormat_testDefaultConstructor : public CxxTest::RealTestDescription {
 public:
- TestDescription_test_MapFormat_test1() : CxxTest::RealTestDescription( Tests_test_MapFormat, suiteDescription_test_MapFormat, 59, "test1" ) {}
- void runTest() { suite_test_MapFormat.test1(); }
-} testDescription_test_MapFormat_test1;
+ TestDescription_test_MapFormat_testDefaultConstructor() : CxxTest::RealTestDescription( Tests_test_MapFormat, suiteDescription_test_MapFormat, 63, "testDefaultConstructor" ) {}
+ void runTest() { suite_test_MapFormat.testDefaultConstructor(); }
+} testDescription_test_MapFormat_testDefaultConstructor;
 
-static class TestDescription_test_MapFormat_test2 : public CxxTest::RealTestDescription {
+static class TestDescription_test_MapFormat_testConstructor : public CxxTest::RealTestDescription {
 public:
- TestDescription_test_MapFormat_test2() : CxxTest::RealTestDescription( Tests_test_MapFormat, suiteDescription_test_MapFormat, 154, "test2" ) {}
- void runTest() { suite_test_MapFormat.test2(); }
-} testDescription_test_MapFormat_test2;
+ TestDescription_test_MapFormat_testConstructor() : CxxTest::RealTestDescription( Tests_test_MapFormat, suiteDescription_test_MapFormat, 162, "testConstructor" ) {}
+ void runTest() { suite_test_MapFormat.testConstructor(); }
+} testDescription_test_MapFormat_testConstructor;
 
-static class TestDescription_test_MapFormat_test3 : public CxxTest::RealTestDescription {
+static class TestDescription_test_MapFormat_testSetFormat : public CxxTest::RealTestDescription {
 public:
- TestDescription_test_MapFormat_test3() : CxxTest::RealTestDescription( Tests_test_MapFormat, suiteDescription_test_MapFormat, 249, "test3" ) {}
- void runTest() { suite_test_MapFormat.test3(); }
-} testDescription_test_MapFormat_test3;
+ TestDescription_test_MapFormat_testSetFormat() : CxxTest::RealTestDescription( Tests_test_MapFormat, suiteDescription_test_MapFormat, 263, "testSetFormat" ) {}
+ void runTest() { suite_test_MapFormat.testSetFormat(); }
+} testDescription_test_MapFormat_testSetFormat;
 
-static class TestDescription_test_MapFormat_test4 : public CxxTest::RealTestDescription {
+static class TestDescription_test_MapFormat_testSetXCel : public CxxTest::RealTestDescription {
 public:
- TestDescription_test_MapFormat_test4() : CxxTest::RealTestDescription( Tests_test_MapFormat, suiteDescription_test_MapFormat, 262, "test4" ) {}
- void runTest() { suite_test_MapFormat.test4(); }
-} testDescription_test_MapFormat_test4;
+ TestDescription_test_MapFormat_testSetXCel() : CxxTest::RealTestDescription( Tests_test_MapFormat, suiteDescription_test_MapFormat, 280, "testSetXCel" ) {}
+ void runTest() { suite_test_MapFormat.testSetXCel(); }
+} testDescription_test_MapFormat_testSetXCel;
 
-static class TestDescription_test_MapFormat_test5 : public CxxTest::RealTestDescription {
+static class TestDescription_test_MapFormat_testSetYCel : public CxxTest::RealTestDescription {
 public:
- TestDescription_test_MapFormat_test5() : CxxTest::RealTestDescription( Tests_test_MapFormat, suiteDescription_test_MapFormat, 279, "test5" ) {}
- void runTest() { suite_test_MapFormat.test5(); }
-} testDescription_test_MapFormat_test5;
+ TestDescription_test_MapFormat_testSetYCel() : CxxTest::RealTestDescription( Tests_test_MapFormat, suiteDescription_test_MapFormat, 301, "testSetYCel" ) {}
+ void runTest() { suite_test_MapFormat.testSetYCel(); }
+} testDescription_test_MapFormat_testSetYCel;
 
-static class TestDescription_test_MapFormat_test6 : public CxxTest::RealTestDescription {
+static class TestDescription_test_MapFormat_testSetXMin : public CxxTest::RealTestDescription {
 public:
- TestDescription_test_MapFormat_test6() : CxxTest::RealTestDescription( Tests_test_MapFormat, suiteDescription_test_MapFormat, 296, "test6" ) {}
- void runTest() { suite_test_MapFormat.test6(); }
-} testDescription_test_MapFormat_test6;
+ TestDescription_test_MapFormat_testSetXMin() : CxxTest::RealTestDescription( Tests_test_MapFormat, suiteDescription_test_MapFormat, 322, "testSetXMin" ) {}
+ void runTest() { suite_test_MapFormat.testSetXMin(); }
+} testDescription_test_MapFormat_testSetXMin;
 
-static class TestDescription_test_MapFormat_test7 : public CxxTest::RealTestDescription {
+static class TestDescription_test_MapFormat_testSetYMin : public CxxTest::RealTestDescription {
 public:
- TestDescription_test_MapFormat_test7() : CxxTest::RealTestDescription( Tests_test_MapFormat, suiteDescription_test_MapFormat, 313, "test7" ) {}
- void runTest() { suite_test_MapFormat.test7(); }
-} testDescription_test_MapFormat_test7;
+ TestDescription_test_MapFormat_testSetYMin() : CxxTest::RealTestDescription( Tests_test_MapFormat, suiteDescription_test_MapFormat, 343, "testSetYMin" ) {}
+ void runTest() { suite_test_MapFormat.testSetYMin(); }
+} testDescription_test_MapFormat_testSetYMin;
 
-static class TestDescription_test_MapFormat_test8 : public CxxTest::RealTestDescription {
+static class TestDescription_test_MapFormat_testSetXMax : public CxxTest::RealTestDescription {
 public:
- TestDescription_test_MapFormat_test8() : CxxTest::RealTestDescription( Tests_test_MapFormat, suiteDescription_test_MapFormat, 330, "test8" ) {}
- void runTest() { suite_test_MapFormat.test8(); }
-} testDescription_test_MapFormat_test8;
+ TestDescription_test_MapFormat_testSetXMax() : CxxTest::RealTestDescription( Tests_test_MapFormat, suiteDescription_test_MapFormat, 364, "testSetXMax" ) {}
+ void runTest() { suite_test_MapFormat.testSetXMax(); }
+} testDescription_test_MapFormat_testSetXMax;
 
-static class TestDescription_test_MapFormat_test9 : public CxxTest::RealTestDescription {
+static class TestDescription_test_MapFormat_testSetYMax : public CxxTest::RealTestDescription {
 public:
- TestDescription_test_MapFormat_test9() : CxxTest::RealTestDescription( Tests_test_MapFormat, suiteDescription_test_MapFormat, 347, "test9" ) {}
- void runTest() { suite_test_MapFormat.test9(); }
-} testDescription_test_MapFormat_test9;
+ TestDescription_test_MapFormat_testSetYMax() : CxxTest::RealTestDescription( Tests_test_MapFormat, suiteDescription_test_MapFormat, 385, "testSetYMax" ) {}
+ void runTest() { suite_test_MapFormat.testSetYMax(); }
+} testDescription_test_MapFormat_testSetYMax;
 
-static class TestDescription_test_MapFormat_test10 : public CxxTest::RealTestDescription {
+static class TestDescription_test_MapFormat_testSetNoDataValue : public CxxTest::RealTestDescription {
 public:
- TestDescription_test_MapFormat_test10() : CxxTest::RealTestDescription( Tests_test_MapFormat, suiteDescription_test_MapFormat, 364, "test10" ) {}
- void runTest() { suite_test_MapFormat.test10(); }
-} testDescription_test_MapFormat_test10;
+ TestDescription_test_MapFormat_testSetNoDataValue() : CxxTest::RealTestDescription( Tests_test_MapFormat, suiteDescription_test_MapFormat, 406, "testSetNoDataValue" ) {}
+ void runTest() { suite_test_MapFormat.testSetNoDataValue(); }
+} testDescription_test_MapFormat_testSetNoDataValue;
 
-static class TestDescription_test_MapFormat_test11 : public CxxTest::RealTestDescription {
+static class TestDescription_test_MapFormat_testSetProjection : public CxxTest::RealTestDescription {
 public:
- TestDescription_test_MapFormat_test11() : CxxTest::RealTestDescription( Tests_test_MapFormat, suiteDescription_test_MapFormat, 380, "test11" ) {}
- void runTest() { suite_test_MapFormat.test11(); }
-} testDescription_test_MapFormat_test11;
+ TestDescription_test_MapFormat_testSetProjection() : CxxTest::RealTestDescription( Tests_test_MapFormat, suiteDescription_test_MapFormat, 427, "testSetProjection" ) {}
+ void runTest() { suite_test_MapFormat.testSetProjection(); }
+} testDescription_test_MapFormat_testSetProjection;
 
-static class TestDescription_test_MapFormat_test12 : public CxxTest::RealTestDescription {
+static class TestDescription_test_MapFormat_testUnSetFormat : public CxxTest::RealTestDescription {
 public:
- TestDescription_test_MapFormat_test12() : CxxTest::RealTestDescription( Tests_test_MapFormat, suiteDescription_test_MapFormat, 397, "test12" ) {}
- void runTest() { suite_test_MapFormat.test12(); }
-} testDescription_test_MapFormat_test12;
+ TestDescription_test_MapFormat_testUnSetFormat() : CxxTest::RealTestDescription( Tests_test_MapFormat, suiteDescription_test_MapFormat, 448, "testUnSetFormat" ) {}
+ void runTest() { suite_test_MapFormat.testUnSetFormat(); }
+} testDescription_test_MapFormat_testUnSetFormat;
 
-static class TestDescription_test_MapFormat_test13 : public CxxTest::RealTestDescription {
+static class TestDescription_test_MapFormat_testUnSetXCel : public CxxTest::RealTestDescription {
 public:
- TestDescription_test_MapFormat_test13() : CxxTest::RealTestDescription( Tests_test_MapFormat, suiteDescription_test_MapFormat, 404, "test13" ) {}
- void runTest() { suite_test_MapFormat.test13(); }
-} testDescription_test_MapFormat_test13;
+ TestDescription_test_MapFormat_testUnSetXCel() : CxxTest::RealTestDescription( Tests_test_MapFormat, suiteDescription_test_MapFormat, 459, "testUnSetXCel" ) {}
+ void runTest() { suite_test_MapFormat.testUnSetXCel(); }
+} testDescription_test_MapFormat_testUnSetXCel;
 
-static class TestDescription_test_MapFormat_test14 : public CxxTest::RealTestDescription {
+static class TestDescription_test_MapFormat_testUnSetYCel : public CxxTest::RealTestDescription {
 public:
- TestDescription_test_MapFormat_test14() : CxxTest::RealTestDescription( Tests_test_MapFormat, suiteDescription_test_MapFormat, 420, "test14" ) {}
- void runTest() { suite_test_MapFormat.test14(); }
-} testDescription_test_MapFormat_test14;
+ TestDescription_test_MapFormat_testUnSetYCel() : CxxTest::RealTestDescription( Tests_test_MapFormat, suiteDescription_test_MapFormat, 479, "testUnSetYCel" ) {}
+ void runTest() { suite_test_MapFormat.testUnSetYCel(); }
+} testDescription_test_MapFormat_testUnSetYCel;
 
-static class TestDescription_test_MapFormat_test15 : public CxxTest::RealTestDescription {
+static class TestDescription_test_MapFormat_testUnSetXMin : public CxxTest::RealTestDescription {
 public:
- TestDescription_test_MapFormat_test15() : CxxTest::RealTestDescription( Tests_test_MapFormat, suiteDescription_test_MapFormat, 436, "test15" ) {}
- void runTest() { suite_test_MapFormat.test15(); }
-} testDescription_test_MapFormat_test15;
+ TestDescription_test_MapFormat_testUnSetXMin() : CxxTest::RealTestDescription( Tests_test_MapFormat, suiteDescription_test_MapFormat, 499, "testUnSetXMin" ) {}
+ void runTest() { suite_test_MapFormat.testUnSetXMin(); }
+} testDescription_test_MapFormat_testUnSetXMin;
 
-static class TestDescription_test_MapFormat_test16 : public CxxTest::RealTestDescription {
+static class TestDescription_test_MapFormat_testUnSetYMin : public CxxTest::RealTestDescription {
 public:
- TestDescription_test_MapFormat_test16() : CxxTest::RealTestDescription( Tests_test_MapFormat, suiteDescription_test_MapFormat, 452, "test16" ) {}
- void runTest() { suite_test_MapFormat.test16(); }
-} testDescription_test_MapFormat_test16;
+ TestDescription_test_MapFormat_testUnSetYMin() : CxxTest::RealTestDescription( Tests_test_MapFormat, suiteDescription_test_MapFormat, 519, "testUnSetYMin" ) {}
+ void runTest() { suite_test_MapFormat.testUnSetYMin(); }
+} testDescription_test_MapFormat_testUnSetYMin;
 
-static class TestDescription_test_MapFormat_test17 : public CxxTest::RealTestDescription {
+static class TestDescription_test_MapFormat_testUnSetXMax : public CxxTest::RealTestDescription {
 public:
- TestDescription_test_MapFormat_test17() : CxxTest::RealTestDescription( Tests_test_MapFormat, suiteDescription_test_MapFormat, 468, "test17" ) {}
- void runTest() { suite_test_MapFormat.test17(); }
-} testDescription_test_MapFormat_test17;
+ TestDescription_test_MapFormat_testUnSetXMax() : CxxTest::RealTestDescription( Tests_test_MapFormat, suiteDescription_test_MapFormat, 539, "testUnSetXMax" ) {}
+ void runTest() { suite_test_MapFormat.testUnSetXMax(); }
+} testDescription_test_MapFormat_testUnSetXMax;
 
-static class TestDescription_test_MapFormat_test18 : public CxxTest::RealTestDescription {
+static class TestDescription_test_MapFormat_testUnSetYMax : public CxxTest::RealTestDescription {
 public:
- TestDescription_test_MapFormat_test18() : CxxTest::RealTestDescription( Tests_test_MapFormat, suiteDescription_test_MapFormat, 484, "test18" ) {}
- void runTest() { suite_test_MapFormat.test18(); }
-} testDescription_test_MapFormat_test18;
+ TestDescription_test_MapFormat_testUnSetYMax() : CxxTest::RealTestDescription( Tests_test_MapFormat, suiteDescription_test_MapFormat, 559, "testUnSetYMax" ) {}
+ void runTest() { suite_test_MapFormat.testUnSetYMax(); }
+} testDescription_test_MapFormat_testUnSetYMax;
 
-static class TestDescription_test_MapFormat_test19 : public CxxTest::RealTestDescription {
+static class TestDescription_test_MapFormat_testUnSetNoDataValue : public CxxTest::RealTestDescription {
 public:
- TestDescription_test_MapFormat_test19() : CxxTest::RealTestDescription( Tests_test_MapFormat, suiteDescription_test_MapFormat, 500, "test19" ) {}
- void runTest() { suite_test_MapFormat.test19(); }
-} testDescription_test_MapFormat_test19;
+ TestDescription_test_MapFormat_testUnSetNoDataValue() : CxxTest::RealTestDescription( Tests_test_MapFormat, suiteDescription_test_MapFormat, 579, "testUnSetNoDataValue" ) {}
+ void runTest() { suite_test_MapFormat.testUnSetNoDataValue(); }
+} testDescription_test_MapFormat_testUnSetNoDataValue;
 
-static class TestDescription_test_MapFormat_test20 : public CxxTest::RealTestDescription {
+static class TestDescription_test_MapFormat_testUnSetProjection : public CxxTest::RealTestDescription {
 public:
- TestDescription_test_MapFormat_test20() : CxxTest::RealTestDescription( Tests_test_MapFormat, suiteDescription_test_MapFormat, 516, "test20" ) {}
- void runTest() { suite_test_MapFormat.test20(); }
-} testDescription_test_MapFormat_test20;
+ TestDescription_test_MapFormat_testUnSetProjection() : CxxTest::RealTestDescription( Tests_test_MapFormat, suiteDescription_test_MapFormat, 599, "testUnSetProjection" ) {}
+ void runTest() { suite_test_MapFormat.testUnSetProjection(); }
+} testDescription_test_MapFormat_testUnSetProjection;
 
-static class TestDescription_test_MapFormat_test21 : public CxxTest::RealTestDescription {
+static class TestDescription_test_MapFormat_testGetWidth : public CxxTest::RealTestDescription {
 public:
- TestDescription_test_MapFormat_test21() : CxxTest::RealTestDescription( Tests_test_MapFormat, suiteDescription_test_MapFormat, 532, "test21" ) {}
- void runTest() { suite_test_MapFormat.test21(); }
-} testDescription_test_MapFormat_test21;
+ TestDescription_test_MapFormat_testGetWidth() : CxxTest::RealTestDescription( Tests_test_MapFormat, suiteDescription_test_MapFormat, 619, "testGetWidth" ) {}
+ void runTest() { suite_test_MapFormat.testGetWidth(); }
+} testDescription_test_MapFormat_testGetWidth;
 
-static class TestDescription_test_MapFormat_test22 : public CxxTest::RealTestDescription {
+static class TestDescription_test_MapFormat_testGetHeight : public CxxTest::RealTestDescription {
 public:
- TestDescription_test_MapFormat_test22() : CxxTest::RealTestDescription( Tests_test_MapFormat, suiteDescription_test_MapFormat, 539, "test22" ) {}
- void runTest() { suite_test_MapFormat.test22(); }
-} testDescription_test_MapFormat_test22;
+ TestDescription_test_MapFormat_testGetHeight() : CxxTest::RealTestDescription( Tests_test_MapFormat, suiteDescription_test_MapFormat, 630, "testGetHeight" ) {}
+ void runTest() { suite_test_MapFormat.testGetHeight(); }
+} testDescription_test_MapFormat_testGetHeight;
 
 #include <cxxtest/Root.cpp>
