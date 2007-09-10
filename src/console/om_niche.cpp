@@ -49,7 +49,8 @@ GColor _bg( 0, 140, 150 );
 int   _nmap;
 Map **_maps;
 
-OccurrencesPtr _occurs;
+OccurrencesPtr _presences;
+OccurrencesPtr _absences;
 
 OpenModeller *_om;
 GImage  *_cnv;
@@ -61,7 +62,7 @@ OpenModeller *createModel( char *request_file );
 int showAlgorithms ( AlgMetadata const **availables );
 char *readParameters ( AlgMetadata *metadata );
 AlgMetadata const *readAlgorithm( AlgMetadata const **availables );
-OccurrencesPtr readOccurrences( char const *file, char const *name,
+void readOccurrences( char const *file, char const *name,
 			      char const *coord_system );
 int readParameters( AlgParameter *result, AlgMetadata const *metadata );
 char *extractParameter( char *name, int nvet, char **vet );
@@ -71,7 +72,7 @@ void modelCallback( float progress, void *extra_param );
 
 void draw();
 void draw_niche( GGraph *graph );
-void draw_occur( GGraph *graph, const OccurrencesPtr& oc );
+void draw_occur( GGraph *graph, const OccurrencesPtr& oc, GColor color );
 
 
 
@@ -129,7 +130,7 @@ main( int argc, char **argv )
       oc_name = fp.get( "Species" );
     }
 
-    _occurs = readOccurrences( oc_file.c_str(), oc_name.c_str(), oc_cs.c_str() );
+    readOccurrences( oc_file.c_str(), oc_name.c_str(), oc_cs.c_str() );
 
     // Instantiate graphical window.
     int dimx = 256;
@@ -369,7 +370,8 @@ draw()
   if ( _redraw )
     {
       draw_niche( _graph );
-      draw_occur( _graph, _occurs );
+      draw_occur( _graph, _presences, GColor::Green );
+      draw_occur( _graph, _absences, GColor::Red );
 
       _redraw = 0;
     }
@@ -414,27 +416,35 @@ draw_niche( GGraph *graph )
 /******************/
 /*** draw occur ***/
 void
-draw_occur( GGraph *graph, const OccurrencesPtr& occurs )
+draw_occur( GGraph *graph, const OccurrencesPtr& occurs, GColor color )
 {
-  GColor color = GColor::Red;
+  if ( occurs && occurs->numOccurrences() ) {
 
-  // Draw each set of occurrences.
-  EnvironmentPtr env = _om->getEnvironment();
-  Sample amb;
-  OccurrencesImpl::const_iterator oc = occurs->begin();
-  for( ; oc != occurs->end(); ++oc ) {
-    amb = env->get( (*oc)->x(), (*oc)->y() );
-    if ( amb.size() >= 2 ) 
-      graph->markAxe( amb[0], amb[1], 1, color);
+    // Draw each set of occurrences.
+    EnvironmentPtr env = _om->getEnvironment();
+    Sample amb;
+    OccurrencesImpl::const_iterator oc = occurs->begin();
+
+    for( ; oc != occurs->end(); ++oc ) {
+
+      amb = env->get( (*oc)->x(), (*oc)->y() );
+
+      if ( amb.size() >= 2 ) {
+
+        graph->markAxe( amb[0], amb[1], 1, color);
+      }
+    }
   }
 }
 
 /************************/
 /*** read Occurrences ***/
-OccurrencesPtr 
+void 
 readOccurrences( char const *file, char const *name, char const *coord_system )
 {
   OccurrencesReader* oc_file = OccurrencesFactory::instance().create( file, coord_system );
 
-  return oc_file->getPresences( name );
+  _presences = oc_file->getPresences( name );
+
+  _absences = oc_file->getAbsences( name );
 }
