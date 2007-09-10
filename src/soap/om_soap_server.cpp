@@ -237,6 +237,13 @@ void *process_request( void *soap )
 int
 omws__ping( struct soap *soap, void *_, xsd__int &status )
 {
+  // Get controller object previously instantiated
+  OpenModeller *om = (OpenModeller*)soap->user; 
+
+  // alloc new header
+  soap->header = (struct SOAP_ENV__Header*)soap_malloc( soap, sizeof(struct SOAP_ENV__Header) ); 
+  soap->header->omws__version = om->getVersion();
+
   status = 1;
 
   return SOAP_OK;
