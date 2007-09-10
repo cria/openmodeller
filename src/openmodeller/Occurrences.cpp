@@ -152,6 +152,7 @@ OccurrencesImpl::setConfiguration( const ConstConfigurationPtr& config )
 void 
 OccurrencesImpl::setEnvironment( const EnvironmentPtr& env, const char *type )
 {
+  Log::instance()->debug( "OccurrencesImpl::setEnvironment - starting.\n"); 
   if ( isEmpty() ) {
 
     return;
@@ -174,12 +175,15 @@ OccurrencesImpl::setEnvironment( const EnvironmentPtr& env, const char *type )
     } 
     else {
 
+      Log::instance()->debug( "Setting unnormalised env.\n"); 
       (*oc)->setUnnormalizedEnvironment( sample );
+      Log::instance()->debug( "Setting normalised env.\n"); 
       (*oc)->setNormalizedEnvironment( Sample() );
 
       ++oc;
     }
   }
+  Log::instance()->debug( "OccurrencesImpl::setEnvironment - done.\n"); 
 }
 
 /*****************/
@@ -329,7 +333,6 @@ OccurrencesImpl::erase( const iterator& it )
 {
   swap( occur_.back(), (*it) );
   occur_.pop_back();
-
   return it;
 }
 
