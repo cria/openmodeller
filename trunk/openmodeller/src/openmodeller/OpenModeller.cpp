@@ -645,13 +645,20 @@ OpenModeller::getModelConfiguration() const
 void
 OpenModeller::setModelConfiguration( const ConstConfigurationPtr & config )
 {
+  Log::instance()->debug( "Setting model configuration\n" );
+  Log::instance()->debug( "Resetting confusion matrix\n" );
   _confusion_matrix->reset();
+  Log::instance()->debug( "Resetting roc curve\n" );
   _roc_curve->reset();
 
+  Log::instance()->debug( "Creating sampler\n" );
   _samp = createSampler( config->getSubsection( "Sampler" ) );
+  Log::instance()->debug( "Getting sampler environment\n" );
   _env = _samp->getEnvironment();
 
+  Log::instance()->debug( "Getting algorithm from algorithm factory\n" );
   _alg = AlgorithmFactory::newAlgorithm( config->getSubsection( "Algorithm" ) );
+  Log::instance()->debug( "Assigning sampler to algorithm\n" );
   _alg->setSampler( _samp );
 }
 

@@ -1,6 +1,7 @@
 
 #include <openmodeller/Configuration.hh>
 #include <openmodeller/Exceptions.hh>
+#include <openmodeller/Log.hh>
 
 #include <iostream>
 #include <fstream>
@@ -358,6 +359,7 @@ Configuration::readXml( istream &file ) {
   const int BUFF_SIZE = 1024;
 
   // expat's parse loop.
+  Log::instance()->debug( "XML Parser at start of document\n" );
   for (;;) {
     int bytes_read =0;
     char *buf = (char *)XML_GetBuffer( parser, BUFF_SIZE );
@@ -380,6 +382,7 @@ Configuration::readXml( istream &file ) {
     //    }
 
     if ( !XML_ParseBuffer( parser, bytes_read, bytes_read == 0 ) ) {
+      Log::instance()->error( 1,"XML Parser - fatal error parsing document\n" );
       XML_Error x =  XML_GetErrorCode( parser );
       stringstream errormsg( ios::out );
       errormsg << XML_ErrorString(x)
@@ -392,6 +395,7 @@ Configuration::readXml( istream &file ) {
     }
 
     if ( bytes_read == 0 ) {
+      Log::instance()->debug( "XML Parser reached end of document\n" );
       break;
     }
 
