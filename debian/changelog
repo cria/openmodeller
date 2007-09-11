@@ -1,3 +1,9 @@
+libopenmodeller (0.5.1) feisty; urgency=low
+
+  * First debian package for openModeller library
+
+ -- Tim Sutton <tim@linfiniti.com>  Tue, 11 Sep 2007 13:32:30 -0300
+
 libopenmodeller (0.5.0pre1+svn20010807) experimental; urgency=low
 
   * Test debian package
