@@ -39,7 +39,9 @@
 
 OccurrenceImpl::~OccurrenceImpl()
 {
-// g_log( "OccurrenceImpl::~OccurrenceImpl() at %x\n", this );
+
+  Log::instance()->debug( "Destroying occurrence\n");
+  dump();
 }
 
 OccurrenceImpl&
