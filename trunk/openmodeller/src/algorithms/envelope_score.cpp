@@ -47,7 +47,7 @@
 /*************************************/
 /*** Algorithm parameters metadata ***/
 
-static AlgParamMetadata parameters[NUM_PARAM] = {};
+//static AlgParamMetadata parameters[NUM_PARAM] = {};
 
 
 /************************************/
@@ -98,8 +98,8 @@ static AlgMetadata metadata = {
   0,  // Does not accept categorical data.
   0,  // Does not need (pseudo)absence points.
 
-  NUM_PARAM,   // Algorithm's parameters.
-  parameters
+  NUM_PARAM   // Algorithm's parameters.
+
 };
 
 
