@@ -155,9 +155,9 @@ typedef int bool;
 #endif
 
 #if ( defined(__BORLANDC__) || _MSC_VER ) && !defined( __GNUG__ ) 
-inline float abs (float v) { return (float)fabs( v); } 
-inline double abs (double v) { return fabs( v); } 
-inline long double abs (long double v) { return fabsl( v); }
+//inline float abs (float v) { return (float)fabs( v); } 
+//inline double abs (double v) { return fabs( v); } 
+//inline long double abs (long double v) { return fabsl( v); }
 #endif
 
 #if defined(__GNUG__) || defined(__MWERKS__) || (defined(__BORLANDC__) && (__BORLANDC__ >= 0x540))

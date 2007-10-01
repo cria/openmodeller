@@ -43,7 +43,7 @@
 Map::Map( Raster *rst ) 
 {
   _rst = rst;
-  _gt  = new GeoTransform( rst->header().proj, GeoTransform::cs_default );
+  _gt  = new GeoTransform( rst->header().proj, GeoTransform::getDefaultCS() );
 }
 
 

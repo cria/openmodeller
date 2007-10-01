@@ -70,7 +70,7 @@ public:
   inline OccurrencesImpl( double default_abundance ) :
     default_abundance_( default_abundance ),
     name_( ),
-    cs_( GeoTransform::cs_default ),
+    cs_( GeoTransform::getDefaultCS() ),
     gt_( 0 ),
     occur_( )
   {
@@ -83,7 +83,7 @@ public:
    *   points to be inserted in this collection (in WKT format).
    */
   inline OccurrencesImpl( const std::string& name, 
-			  const std::string& coord_system=GeoTransform::cs_default ) :
+			  const std::string& coord_system=GeoTransform::getDefaultCS() ) :
     default_abundance_( 0.0 ),
     name_( name ),
     cs_( coord_system ),
