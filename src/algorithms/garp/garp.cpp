@@ -310,7 +310,7 @@ void Garp::cacheSamples(const SamplerPtr& sampler,
 			int resamples)
 {
   OccurrencesImpl * occs = new OccurrencesImpl( "", 
-						GeoTransform::cs_default );
+						GeoTransform::getDefaultCS() );
   occs->reserve( resamples );
   cachedOccs = ReferenceCountedPointer<OccurrencesImpl>( occs );
   

@@ -455,7 +455,7 @@ SvmAlgorithm::initialize()
 
       Log::instance()->info( "SvmAlgorithm: Generating pseudo-absences.\n" );
 
-      OccurrencesImpl * occs = new OccurrencesImpl( "", GeoTransform::cs_default );
+      OccurrencesImpl * occs = new OccurrencesImpl( "", GeoTransform::getDefaultCS() );
 
       absences = ReferenceCountedPointer<OccurrencesImpl>( occs );
 

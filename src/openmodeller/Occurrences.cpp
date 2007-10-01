@@ -67,7 +67,7 @@ OccurrencesImpl::initGeoTransform()
     delete gt_;
   }
 
-  gt_ = new GeoTransform( cs_, GeoTransform::cs_default );
+  gt_ = new GeoTransform( cs_, GeoTransform::getDefaultCS() );
 }
 
 /*********************/
@@ -119,7 +119,7 @@ OccurrencesImpl::setConfiguration( const ConstConfigurationPtr& config )
   if ( ! cs_config ) {
 
     Log::instance()->warn( "Occurrences has no Coordinate System. Assuming WSG84\n" );
-    cs_ = GeoTransform::cs_default;
+    cs_ = GeoTransform::getDefaultCS();
   }
   else {
 

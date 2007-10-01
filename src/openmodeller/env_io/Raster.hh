@@ -130,7 +130,7 @@ public:
     virtual int getMinMax( Scalar *min, Scalar *max ) = 0;
 
     /** Tells if the min and max have already been computed */
-    bool hasMinMax() { return f_hdr.minmax; }
+    bool hasMinMax() { return f_hdr.minmax > 0 ? true : false ; }
 
     /** Support external specification of min/max.
      * @param min Minimum value

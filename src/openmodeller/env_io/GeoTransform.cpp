@@ -71,10 +71,9 @@ static bool compareCoordSystemStrings(char const * s1, char const * s2)
   UNIT[\"degree\",0.017453292519943295], \
   AXIS[\"Longitude\",EAST], AXIS[\"Latitude\",NORTH]]"
 
-// Common Coordinate System for openModeller.
-#define OM_COORDINATE_SYSTEM OM_WGS84
 
-char const *GeoTransform::cs_default = OM_COORDINATE_SYSTEM; 
+
+ 
 
 void
 errorHandler( CPLErr eErrClass, int err_no, const char *msg )
@@ -203,8 +202,8 @@ GeoTransform::transfIn( float *x, float *y ) const
     return 1;
 #ifndef GEO_TRANSFORMATIONS_OFF
 
-  float px = *x;
-  float py = *y;
+  double px = *x;
+  double py = *y;
 
   if ( ! f_ctin->Transform( 1, &px, &py ) )
     return 0;
@@ -382,3 +381,7 @@ GeoTransform::transfOut( double *x, double *y,
 #endif
 }
 
+const char * GeoTransform::getDefaultCS()
+{
+  return OM_WGS84;
+}

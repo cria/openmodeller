@@ -82,7 +82,7 @@ public:
   int transfOut( double *x, double *y, double x0, double y0 ) const;
 
   // Default coordinate system.
-  static char const *cs_default;
+  static char const * GeoTransform::getDefaultCS();
 
 private:
 

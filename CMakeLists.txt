@@ -96,9 +96,9 @@ ENDIF (NOT GDAL_FOUND)
 #############################################################
 # enable warnings and set compile time defines
 
-IF (PEDANTIC)
+IF (PEDANTIC AND NOT MSVC)
 ADD_DEFINITIONS( -Wall -Werror )
-ENDIF (PEDANTIC)
+ENDIF (PEDANTIC AND NOT MSVC)
 
 ADD_DEFINITIONS(-DVERSION=\\"0.5.2\\")
 ADD_DEFINITIONS(-DCONFIG_FILE=\\"om.cfg\\")

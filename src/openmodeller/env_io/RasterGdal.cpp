@@ -265,7 +265,7 @@ RasterGdal::open( char mode )
   if ( ! f_hdr.hasProj() )
   {
     Log::instance()->warn( "The raster %s is not georeferenced.  Assuming WGS84\n", f_file.c_str() );
-    f_hdr.setProj( GeoTransform::cs_default );
+    f_hdr.setProj( GeoTransform::getDefaultCS() );
   }
 
   // Assumes that all bands have the same georeference
