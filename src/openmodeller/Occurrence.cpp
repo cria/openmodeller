@@ -40,7 +40,6 @@
 OccurrenceImpl::~OccurrenceImpl()
 {
 
-  Log::instance()->debug( "Destroying occurrence\n");
   dump();
 }
 

@@ -111,13 +111,9 @@ Sample::Sample( const Sample & rhs ) :
 
 Sample::~Sample()
 {
-  Log::instance()->debug( "Destructing sample begin\n" );
   if ( value_ ) {
-    Log::instance()->debug( "Freeing value_\n" );
     free( value_ );
-    Log::instance()->debug( "Value_ freed\n" );
   }
-  Log::instance()->debug( "Destructing sample end\n" );
 }
 
 Sample&
