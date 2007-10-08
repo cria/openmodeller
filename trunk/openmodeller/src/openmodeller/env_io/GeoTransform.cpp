@@ -385,3 +385,4 @@ const char * GeoTransform::getDefaultCS()
 {
   return OM_WGS84;
 }
+
