@@ -33,7 +33,7 @@ IF(WIN32)
     ${GSL_MSVC_PREFIX}/lib
     )
   #MSVC version of the lib is just called 'cblas'
-  FIND_LIBRARY(GSLCBLAS_LIB gslcblas cblas PATHS 
+  FIND_LIBRARY(GSLCBLAS_LIB NAMES gslcblas cblas PATHS 
     ${GSL_PREFIX}/lib 
     ${GSL_MSVC_PREFIX}/lib
     )
