@@ -57,13 +57,17 @@ INCLUDE_DIRECTORIES(
 )
 
 if (GSL_FOUND)
-  MESSAGE ("Building with GSL includes at ${GSL_INCLUDE_DIR}...")
+  #MESSAGE ("Building with GSL includes at ${GSL_INCLUDE_DIR}...")
   INCLUDE_DIRECTORIES(
     ${INCLUDE_DIRECTORIES}
     ${GSL_INCLUDE_DIR}
   )
   ADD_LIBRARY (csm_bs MODULE ${LIBCSMBS_SRCS})
-  TARGET_LINK_LIBRARIES(csm_bs gsl gslcblas openmodeller)
+  IF (MSVC)
+    TARGET_LINK_LIBRARIES(csm_bs gsl cblas openmodeller)
+  ELSE (MSVC)
+    TARGET_LINK_LIBRARIES(csm_bs gsl gslcblas openmodeller)
+  ENDIF (MSVC)
 ENDIF(GSL_FOUND)
 
 #if (SQLITE3_FOUND)
