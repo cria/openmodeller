@@ -40,7 +40,7 @@
 OccurrenceImpl::~OccurrenceImpl()
 {
 
-  dump();
+  //dump();
 }
 
 OccurrenceImpl&
