@@ -26,19 +26,18 @@
 IF(WIN32)
 
   SET(GSL_MINGW_PREFIX "c:/msys/local" )
-  SET(GSL_MSVC_PREFIX "C:/dev/cpp/gsl" )
-
+  SET(GSL_MSVC_PREFIX "$ENV{LIB_DIR}")
   FIND_LIBRARY(GSL_LIB gsl PATHS 
     ${GSL_MINGW_PREFIX}/lib 
     ${GSL_MSVC_PREFIX}/lib
     )
   #MSVC version of the lib is just called 'cblas'
-  FIND_LIBRARY(GSLCBLAS_LIB NAMES gslcblas cblas PATHS 
+  FIND_LIBRARY(GSLCBLAS_LIB gslcblas cblas PATHS 
     ${GSL_PREFIX}/lib 
     ${GSL_MSVC_PREFIX}/lib
     )
 
-  FIND_PATH(GSL_INCLUDE_DIR gsl/gsl_version.h 
+  FIND_PATH(GSL_INCLUDE_DIR gsl/gsl_blas.h 
     ${GSL_PREFIX}/include 
     ${GSL_MSVC_PREFIX}/include
     )
@@ -117,7 +116,7 @@ IF(GSL_LIBRARIES)
 
     SET(GSL_FOUND 1)
     
-    #MESSAGE(STATUS "Using GSL from ${GSL_PREFIX}")
+    MESSAGE(STATUS "Using GSL from ${GSL_PREFIX}")
 
   ENDIF(GSL_INCLUDE_DIR OR GSL_CXX_FLAGS)
 ENDIF(GSL_LIBRARIES)
