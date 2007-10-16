@@ -115,6 +115,7 @@ libopenmodeller_la_LIBADD = $(GDAL_LIB) $(EXPAT_LDFLAGS) $(EXPAT_LIBS) $(TERRALI
 omincludedir = $(includedir)/openmodeller
 
 ominclude_HEADERS = \
+	AbortionCommand.hh \
 	AlgMetadata.hh \
 	AlgorithmFactory.hh  \
 	Algorithm.hh	     \
