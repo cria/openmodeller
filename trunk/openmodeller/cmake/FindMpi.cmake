@@ -7,9 +7,20 @@
 #    MPI_LIBRARY
 
 
-FIND_PATH(MPI_INCLUDE_DIR mpi.h /usr/local/include /usr/include c:/msys/local/include)
+FIND_PATH(MPI_INCLUDE_DIR mpi.h 
+        /usr/local/include 
+        /usr/include 
+        c:/msys/local/include 
+        /opt/lam-7.1.3/include
+)
 
-FIND_LIBRARY(MPI_LIBRARY NAMES mpi PATHS /usr/local/lib /usr/lib c:/msys/local/lib)
+FIND_LIBRARY(MPI_LIBRARY NAMES mpi PATHS 
+       /usr/local/lib 
+       /usr/lib 
+       c:/msys/local/lib
+       /opt/lam-7.1.3/lib
+)
+
 
 IF (MPI_INCLUDE_DIR AND MPI_LIBRARY)
    SET(MPI_FOUND TRUE)
