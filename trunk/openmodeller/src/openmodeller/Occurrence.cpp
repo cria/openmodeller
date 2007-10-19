@@ -39,8 +39,6 @@
 
 OccurrenceImpl::~OccurrenceImpl()
 {
-
-  //dump();
 }
 
 OccurrenceImpl&
