@@ -14,7 +14,7 @@ map_repository=$2
 sleep $3
 
 # model requests
-for req in `find $ticket_repository/model_req.* -type f`; do
+for req in `find $ticket_repository/model_req.* -type f 2> /dev/null`; do
 ticket="${req##*.}"
 moved=$ticket_repository"/model_proc."$ticket
 resp=$ticket_repository"/model_resp."$ticket
@@ -28,7 +28,7 @@ exit 1
 done
 
 # projection requests
-for req in `find $ticket_repository/proj_req.* -type f`; do
+for req in `find $ticket_repository/proj_req.* -type f 2> /dev/null`; do
 ticket="${req##*.}"
 moved=$ticket_repository"/proj_proc."$ticket
 map_base=$map_repository"/proc_"$ticket
