@@ -48,14 +48,12 @@ clean-patched:
 	dh_testdir
 	dh_testroot
 	rm -f build-stamp 
-	rm -f i18n/*.qm
 	rm -rf debian/tmp
 
 	# Add here commands to clean up after the build process.
 	-$(MAKE) clean
 
 	rm -f CMakeCache.txt
-	rm -f $(CURDIR)/src/plugins/georeferencer/pencil.png
 
 	dh_clean 
 
@@ -80,8 +78,7 @@ binary-arch: build install
 	dh_installdocs
 	dh_installexamples
 	dh_install --sourcedir=debian/tmp
-	dh_installmenu
-#	dh_installman -plibqgis1-dev debian/qgis-config.1
+	dh_installman -plibopenmodeller debian/libopenModeller.1
 	dh_link
 	dh_strip
 	dh_compress --exclude=pdf
