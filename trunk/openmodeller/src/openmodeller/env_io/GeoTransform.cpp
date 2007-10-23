@@ -195,68 +195,6 @@ GeoTransform::~GeoTransform()
 /*****************/
 /*** transf In ***/
 int
-GeoTransform::transfIn( float *x, float *y ) const
-{
-
-  if ( identity )
-    return 1;
-#ifndef GEO_TRANSFORMATIONS_OFF
-
-  double px = *x;
-  double py = *y;
-
-  if ( ! f_ctin->Transform( 1, &px, &py ) )
-    return 0;
-
-  *x = px;
-  *y = py;
-  return 1;
-
-#else
-
-// if GeoTransformations are turned off, just leave the values alone
-  return 1;
-
-#endif
-}
-
-
-/*****************/
-/*** transf In ***/
-int
-GeoTransform::transfIn( float *x, float *y,
-			double x0, double y0 ) const
-{
-  *x = x0;
-  *y = y0;
-
-  if ( identity )
-    return 1;
-
-#ifndef GEO_TRANSFORMATIONS_OFF
-
-  double px = x0;
-  double py = y0;
-
-  if ( ! f_ctin->Transform( 1, &px, &py ) )
-    return 0;
-
-  *x = px;
-  *y = py;
-  return 1;
-
-#else
-
-  // if GeoTransformations are turned off, just copy the values over
-  return 1;
-
-#endif
-}
-
-
-/*****************/
-/*** transf In ***/
-int
 GeoTransform::transfIn( double *x, double *y ) const
 {
   if ( identity )
@@ -284,66 +222,6 @@ GeoTransform::transfIn( double *x, double *y,
   return f_ctin->Transform( 1, x, y );
 #else
   return 1;
-#endif
-}
-
-
-/******************/
-/*** transf Out ***/
-int
-GeoTransform::transfOut( float *x, float *y ) const
-{
-
-  if ( identity )
-    return 1;
-
-#ifndef GEO_TRANSFORMATIONS_OFF
-
-  double px = *x;
-  double py = *y;
-
-  if ( ! f_ctout->Transform( 1, &px, &py ) )
-    return 0;
-
-  *x = px;
-  *y = py;
-  return 1;
-
-#else
-
-// if GeoTransformations are turned off, just leave the values alone
-  return 1;
-
-#endif
-}
-
-
-/******************/
-/*** transf Out ***/
-int
-GeoTransform::transfOut( float *x, float *y,
-			double x0, double y0 ) const
-{
-  *x = x0;
-  *y = y0;
-  if ( identity )
-    return 1;
-#ifndef GEO_TRANSFORMATIONS_OFF
-
-  double px = x0;
-  double py = y0;
-
-  if ( ! f_ctout->Transform( 1, &px, &py ) )
-    return 0;
-
-  *x = px;
-  *y = py;
-  return 1;
-
-#else
-
-  return 1;
-
 #endif
 }
 

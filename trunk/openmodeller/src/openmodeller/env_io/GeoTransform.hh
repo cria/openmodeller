@@ -70,14 +70,10 @@ public:
   void change();
 
   // From 'out' to 'in'.
-  int transfIn( float *x, float *y ) const;
-  int transfIn( float *x,  float *y,  double x0, double y0 ) const;
   int transfIn( double *x, double *y ) const;
   int transfIn( double *x, double *y, double x0, double y0 ) const;
 
   // From 'in' to 'out'.
-  int transfOut( float *x, float *y ) const;
-  int transfOut( float *x,  float *y,  double x0, double y0 ) const;
   int transfOut( double *x, double *y ) const;
   int transfOut( double *x, double *y, double x0, double y0 ) const;
 
