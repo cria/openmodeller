@@ -120,7 +120,7 @@ int
 Map::getRowColumn( Coord x, Coord y, int *row, int *col )
 {
   // Transform the given coordinates into the raster coordinate system & projection
-  bool result = _gt->transfIn( &x, &y );
+  int result = _gt->transfIn( &x, &y );
 
   Coord xmin = _rst->xMin();
   Coord ymin = _rst->yMin();
