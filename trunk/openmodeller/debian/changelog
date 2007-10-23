@@ -1,3 +1,9 @@
+libopenmodeller (0.5.2) feisty; urgency=low
+
+  * Support for MSVC compiler added. Support for building debian packages. 
+
+ -- Tim Sutton <timlinux@debian.cria.org.br>  Tue, 23 Oct 2007 12:28:43 -0300
+
 libopenmodeller (0.5.1) feisty; urgency=low
 
   * First debian package for openModeller library
