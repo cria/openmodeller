@@ -267,15 +267,19 @@ draw_map( GGraph *graph, Map *map )
 void
 draw_occur( GGraph *graph, Map *map, const OccurrencesPtr& occurs )
 {
-  GColor color = GColor::Red;
+  GColor color;
 
   // Draw each set of occurrences.
   float x, y;
+  int abundance;
   OccurrencesImpl::const_iterator oc = occurs->begin();
   for( ; oc != occurs->end(); ++oc ) {
     //	  gt->transfIn( &x, &y, occur->x, occur->y );
     x = float( (*oc)->x() );
     y = float( (*oc)->y() );
+    abundance = int( (*oc)->abundance() );
+
+    color = ( abundance == 1 ) ? GColor::Green : GColor::Red;
     
     graph->markAxe( x, y, 1, color);
   }
@@ -300,5 +304,12 @@ readOccurrences( char const *file, char const *name, char const *coord_system )
   OccurrencesReader* oc_file =
   OccurrencesFactory::instance().create( file, coord_system );
 
-  return oc_file->getPresences( name );
+  OccurrencesPtr occurrences = oc_file->getPresences( name );
+
+  if ( oc_file->numAbsences() ) {
+
+    occurrences->appendFrom( oc_file->getAbsences( name ) );
+  }
+
+  return occurrences;
 }
