@@ -1,8 +1,11 @@
-Release 0.5.2 (?)
+Release 0.5.2 (2007-10-24)
 --------------------------
-SVN revision: ?
+SVN revision: 3806
 
+	* Fixed compilation issues under Windows.
 	* Included new command line program to generate pseudo occurrences.
+	* Minor improvements in console tools (absences are now displayed in om_viewer and om_niche).
+	* Code clean up.
 
 Release 0.5.1 (2007-08-30)
 --------------------------
