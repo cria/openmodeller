@@ -55,6 +55,15 @@
 #include <string>
 using std::string;
 
+// REMOVE ME
+#include <istream>
+#include <stdlib.h>
+#include <stdio.h>
+#include <iostream>  // I/O 
+#include <fstream>   // file I/O
+#include <sstream>   // treat string as a stream
+
+
 /*** backward compatible callback helper classes ***/
 
 class ModelCallbackHelper : public Algorithm::ModelCommand
@@ -736,4 +745,102 @@ OpenModeller::setProjectionConfiguration( const ConstConfigurationPtr & config )
   catch ( AttributeNotFound& e ) { 
 
   }
+}
+
+
+/*************************/
+/******* Jackknife *******/
+void
+OpenModeller::jackknife()
+{
+  Log::instance()->debug( "Running jackknife\n" );
+
+  if ( ! _alg ) {
+
+    Log::instance()->error( 1, "No algorithm specified for jackknife" );
+    return;
+  }
+
+  if ( ! _env ) {
+
+    Log::instance()->error( 1, "No environment specified for jackknife" );
+    return;
+  }
+
+  int num_layers = _env->numLayers();
+
+  if ( num_layers < 2 ) {
+
+    Log::instance()->error( 1, "Jackknife needs at least 2 layers" );
+    return;
+  }
+
+  // Calculate reference parameter using all layers
+  createModel();   
+
+  _confusion_matrix->calculate( getModel(), getSampler() );
+
+  double param = _confusion_matrix->getAccuracy();
+
+  Log::instance()->debug( "Param = %f\n", param );
+
+  // Calculate reference parameter for each layer by excluding it from the layer set
+
+  std::vector<double> params;   // <------ output 1
+
+  EnvironmentPtr env_orig = _env;
+
+  double mean = 0.0;            // <------ output 2
+  double variance = 0.0;        // <------ output 3
+
+  for ( int i = 0; i < num_layers; ++i ) {
+
+    _env = env_orig; 
+
+    _env->removeLayer( i );
+
+    //SamplerPtr newsampler = createSampler( _env, _presence, _absence );
+
+    //setSampler( newsampler );
+
+    createModel();
+
+    _confusion_matrix->calculate( getModel(), getSampler() );
+
+    //std::ostringstream myOutputStream;
+    //ConfigurationPtr c = getModelConfiguration();
+    //Configuration::writeXml( c, myOutputStream);
+    //Log::instance()->debug( myOutputStream.str().c_str() );
+
+    double myaccuracy = _confusion_matrix->getAccuracy();
+
+    Log::instance()->debug( "tmp = %f\n", myaccuracy );
+
+    mean += myaccuracy;
+    variance += myaccuracy*myaccuracy;
+
+    params.push_back( myaccuracy );
+  }
+
+  std::vector<double>::iterator it = params.begin();
+  std::vector<double>::iterator end = params.end();
+  unsigned int cnt = 0;
+  for ( ; it != end; ++it,++cnt ) {
+
+    Log::instance()->debug( "Param[%u] = %f\n", cnt, params[cnt] );
+  }
+
+  mean /= num_layers;
+
+  Log::instance()->debug( "Mean = %f\n", mean );
+
+  variance /= num_layers;
+  variance -= mean*mean;
+  variance *= (num_layers - 1);
+
+  Log::instance()->debug( "Variance = %f\n", variance );
+
+  double jackknife_estimate = (num_layers - 1)*(mean - param);  // <---------- output 4
+
+  Log::instance()->debug( "Jackknife estimate = %f\n", jackknife_estimate );
 }
