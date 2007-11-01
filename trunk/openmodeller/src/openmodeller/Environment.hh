@@ -162,6 +162,8 @@ public:
 
   const std::string& getMaskFilename() const { return _mask.first; }
 
+  void removeLayer(unsigned int index);
+
   virtual ConfigurationPtr getConfiguration() const;
 
   virtual void setConfiguration( const ConstConfigurationPtr & );

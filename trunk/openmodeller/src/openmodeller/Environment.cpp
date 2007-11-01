@@ -583,5 +583,28 @@ EnvironmentImpl::calcRegion()
   if ( (_xmin >= _xmax)  || ( _ymin >= _ymax ) ) {
     Log::instance()->warn( "Maps intersection is empty (boundaries: xmin=%f, xmax=%f, ymin=%f, ymax=%f)\n", _xmin, _xmax, _ymin, _ymax );
   }
+}
 
+
+/********************/
+/*** remove Layer ***/
+void
+EnvironmentImpl::removeLayer(unsigned int index)
+{
+  if ( index >= numLayers() ) {
+
+    return;
+  }
+
+  layers::iterator it = _layers.begin();
+
+  unsigned int tmp = 0;
+
+  while ( tmp < index ) {
+
+    ++tmp;
+    ++it;
+  }
+
+  _layers.erase( it );
 }
