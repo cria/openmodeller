@@ -374,6 +374,14 @@ public:
 
   void setProjectionConfiguration( const ConstConfigurationPtr & );
 
+  /*****************************************************************************
+   *
+   * Layer Selection routines
+   *
+   ****************************************************************************/
+  
+   void jackknife();
+  
 private:
 
   /** Check if all necessary parameters to create the model
