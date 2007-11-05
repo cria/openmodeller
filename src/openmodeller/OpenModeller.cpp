@@ -244,8 +244,10 @@ int
 OpenModeller::setOccurrences( const OccurrencesPtr& presence,
                               const OccurrencesPtr& absence )
 {
-  if ( !presence || presence->numOccurrences() == 0 ) {
-    sprintf(_error,"Presences must not be empty");
+  if ( ( ! presence || presence->numOccurrences() == 0 ) &&
+       ( ! absence  || absence->numOccurrences() == 0 ) ) {
+
+    Log::instance()->error( 1, "Occurrences must not be empty\n" );
     return 0;
   }
   _presence = presence;
@@ -262,8 +264,6 @@ OpenModeller::setEnvironment( std::vector<std::string> categ_map,
 			      const std::string& mask )
 {
   _env = createEnvironment( categ_map, continuous_map, mask);
-
-  //Log::instance()->info( "Environment initialized.\n" );
 }
 
 /*******************/
