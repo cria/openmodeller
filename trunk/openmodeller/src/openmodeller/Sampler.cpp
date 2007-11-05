@@ -110,19 +110,23 @@ void
 SamplerImpl::setEnvironmentInOccurrences()
 {
   Log::instance()->debug( "SamplerImpl::setEnvirontmentInOccurrences\n");
-  // renamed former method ::initialize()
 
-  if ( !_presence->hasEnvironment() )
-    {
-      // Copy data from environment into the presence and absence points.
-      Log::instance()->debug( "Setting presence environment\n");
-      _presence->setEnvironment( _env, "Presence" );
+  // Copy data from environment into the presence and absence points.
 
-      if ( _absence && _absence->numOccurrences() ) {
-        Log::instance()->debug( "Setting absence environment\n");
-        _absence->setEnvironment( _env, "Absence" );
-      }
-    }
+  if ( _presence && ! _presence->hasEnvironment() ) {
+
+    Log::instance()->debug( "Setting presence environment\n");
+
+    _presence->setEnvironment( _env, "Presence" );
+  }
+
+  if ( _absence && ! _absence->hasEnvironment() ) {
+
+    Log::instance()->debug( "Setting absence environment\n");
+
+    _absence->setEnvironment( _env, "Absence" );
+  }
+
   Log::instance()->debug( "setEnvirontmentInOccurrences done\n");
 }
 
