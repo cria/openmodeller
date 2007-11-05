@@ -146,7 +146,7 @@ RequestFile::_setOccurrences( OpenModeller *om, FileParser &fp )
 
   delete oc_reader;
 
-  if ( _presences && _absences )
+  if ( _absences )
   {
     return om->setOccurrences( _presences, _absences );
   }
