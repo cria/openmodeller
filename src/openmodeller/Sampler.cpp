@@ -130,7 +130,7 @@ SamplerImpl::setEnvironmentInOccurrences()
   Log::instance()->debug( "setEnvirontmentInOccurrences done\n");
 }
 
-/******************/
+/*********************/
 /*** configuration ***/
 
 ConfigurationPtr
@@ -151,7 +151,7 @@ SamplerImpl::getConfiguration( ) const
     config->addSubsection( cfg );
   }
 
-  if (_absence ) {
+  if ( _absence ) {
 
     ConfigurationPtr cfg( _absence->getConfiguration() );
     cfg->setName( "Absence" );
@@ -223,13 +223,22 @@ void SamplerImpl::getMinMax( Sample * min, Sample * max ) const
 {
   // normalize samples in occs objects
   // first get all occurrence objects in the same container
-  OccurrencesPtr allOccs( new OccurrencesImpl( _presence->name(),
-                                               _presence->coordSystem() ) );
+  OccurrencesPtr allOccs;
+
+  if ( _presence ) {
+
+    allOccs = new OccurrencesImpl( _presence->name(), _presence->coordSystem() );
+  }
+  else {
+
+    allOccs = new OccurrencesImpl( _absence->name(), _absence->coordSystem() );
+  }
+
   allOccs->appendFrom( _presence );
   allOccs->appendFrom( _absence );
 
   // now compute normalization parameters
-  allOccs->getMinMax(min, max);
+  allOccs->getMinMax( min, max );
 }
 
 /*****************/
@@ -247,7 +256,10 @@ void SamplerImpl::normalize( Normalizer * normalizerPtr )
   // need to normalize presences and absences even if _env is present
   // because environment in occurrences was set with unnormalized values
   // if _env doesn't exist, then normalize occurrences anyway
-  _presence->normalize( normalizerPtr );
+  if ( _presence && _presence->numOccurrences() ) {
+
+    _presence->normalize( normalizerPtr );
+  }
 
   if ( _absence && _absence->numOccurrences() ) {
 
@@ -266,9 +278,13 @@ SamplerImpl::numIndependent() const
     // get number of dimensions from environment object if it exists
     return _env->numLayers();
   }
-  else if ( _presence->hasEnvironment() ) {
-    // otherwise tries to get it from occurrences
+  else if ( _presence && _presence->hasEnvironment() ) {
+    // otherwise try to get it from presences
     return _presence->dimension();
+  }
+  else if ( _absence && _absence->hasEnvironment() ) {
+    // otherwise try to get it from absences
+    return _absence->dimension();
   }
 
   // neither object has dimensions defined
@@ -281,7 +297,7 @@ SamplerImpl::numIndependent() const
 int
 SamplerImpl::numDependent() const
 {
-  return _presence->numAttributes();
+  return _presence ? _presence->numAttributes() : _absence->numAttributes();
 }
 
 
@@ -290,7 +306,7 @@ SamplerImpl::numDependent() const
 int
 SamplerImpl::numPresence() const
 {
-  return _presence->numOccurrences();
+  return _presence ? _presence->numOccurrences() : 0;
 }
 
 
@@ -308,7 +324,7 @@ SamplerImpl::getOneSample( ) const
 {
   Random rnd;
 
-  if ( ! _presence->numOccurrences() ) { 
+  if ( ( ! _presence ) || ! _presence->numOccurrences() ) { 
 
     throw SamplerException( "No presence points available for sampling." );
   }
@@ -332,7 +348,7 @@ SamplerImpl::getOneSample( ) const
 ConstOccurrencePtr
 SamplerImpl::getPseudoAbsence() const 
 {
-  if ( !_env ) {
+  if ( ! _env ) {
 
     throw SamplerException("Trying to get a pseudo absence point without setting up an Environment object");
   }
