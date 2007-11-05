@@ -293,14 +293,14 @@ OpenModeller::setAlgorithm( char const *id, int nparam,
       Log::instance()->info( "Sampler could not be initialized. Environment not set.\n" );
       return 0;
     }
-    else if ( ! _presence ) {
+    else if ( ( ! _presence ) && ( ! _absence ) ) {
 
       Log::instance()->info( "Sampler could not be initialized. Occurrences not set.\n" );
       return 0;
     }
     else {
 
-      // _env and _presence are both set
+      // _env and (_presence or _absence) are set
       setSampler( createSampler( _env, _presence, _absence ) );
     }
   }
