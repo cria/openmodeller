@@ -4,7 +4,7 @@
  xmlns:xs="http://www.w3.org/2001/XMLSchema"
  elementFormDefault="qualified"
  attributeFormDefault="unqualified"
- version="1.0.7" xml:lang="EN">
+ version="1.0.8" xml:lang="EN">
   <xs:annotation>
     <xs:documentation xml:lang="en">
         XML Schema with all basic element and type definitions used by openModeller.
@@ -288,6 +288,14 @@
     <xs:sequence>
       <xs:element name="Sampler" type="SamplerType"/>
       <xs:element name="Algorithm" type="BasicAlgorithmDefinitionType"/>
+      <xs:element name="Options" type="ModelOptionsType" use="optional"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="ModelOptionsType">
+    <xs:sequence>
+      <xs:element name="SpatiallyUnique" type="xs:boolean" use="optional"/>
+      <xs:element name="EnvironmentallyUnique" type="xs:boolean" use="optional"/>
     </xs:sequence>
   </xs:complexType>
 
