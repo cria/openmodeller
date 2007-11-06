@@ -672,25 +672,20 @@ OpenModeller::setModelConfiguration( const ConstConfigurationPtr & config )
   // Model creation options
   if ( ConstConfigurationPtr options_config = config->getSubsection( "Options", false ) ) {
 
-    ConstConfigurationPtr su_config = config->getSubsection( "SpatiallyUnique", false );
+    ConstConfigurationPtr occ_filter_config = options_config->getSubsection( "OccurrencesFilter", false );
 
-    if ( su_config ) {
+    if ( occ_filter_config ) {
 
-      std::string setting = su_config->getValue();
+      ConstConfigurationPtr su_config = occ_filter_config->getSubsection( "SpatiallyUnique", false );
 
-      if ( setting == "1" || setting == "true" || setting == "TRUE" ) {
+      if ( su_config ) {
 
         _samp->spatiallyUnique();
       }
-    }
 
-    ConstConfigurationPtr eu_config = config->getSubsection( "EnvironmentallyUnique", false );
+      ConstConfigurationPtr eu_config = occ_filter_config->getSubsection( "EnvironmentallyUnique", false );
 
-    if ( eu_config ) {
-
-      std::string setting = eu_config->getValue();
-
-      if ( setting == "1" || setting == "true" || setting == "TRUE" ) {
+      if ( eu_config ) {
 
         _samp->environmentallyUnique();
       }
