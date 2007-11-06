@@ -184,8 +184,6 @@
           <xs:element name="Label" type="xs:string" minOccurs="0"/>
         </xs:sequence>
         <xs:attribute name="HasProjection" type="xs:boolean" use="optional"/>
-        <xs:attribute name="Min" type="xs:double" use="optional"/>
-        <xs:attribute name="Max" type="xs:double" use="optional"/>
       </xs:extension>
     </xs:complexContent>
   </xs:complexType>
@@ -288,14 +286,24 @@
     <xs:sequence>
       <xs:element name="Sampler" type="SamplerType"/>
       <xs:element name="Algorithm" type="BasicAlgorithmDefinitionType"/>
-      <xs:element name="Options" type="ModelOptionsType" use="optional"/>
+      <xs:element name="Options" type="ModelOptionsType" minOccurs="0"/>
     </xs:sequence>
   </xs:complexType>
 
   <xs:complexType name="ModelOptionsType">
     <xs:sequence>
-      <xs:element name="SpatiallyUnique" type="xs:boolean" use="optional"/>
-      <xs:element name="EnvironmentallyUnique" type="xs:boolean" use="optional"/>
+      <xs:element name="OccurrencesFilter" minOccurs="0">
+        <xs:complexType>
+          <xs:choice>
+            <xs:element name="SpatiallyUnique">
+              <xs:complexType/>
+            </xs:element>
+            <xs:element name="EnvironmentallyUnique">
+              <xs:complexType/>
+            </xs:element>
+          </xs:choice>
+        </xs:complexType>
+      </xs:element>
     </xs:sequence>
   </xs:complexType>
 
