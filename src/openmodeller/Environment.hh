@@ -101,7 +101,7 @@ public:
 
   ~EnvironmentImpl();
 
-  int numLayers() const  { return _layers.size(); }
+  unsigned int numLayers() const  { return _layers.size(); }
 
   /** Returns 1 if the i-th variable is categorical.
    * else returns 0.
