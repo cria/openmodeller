@@ -662,11 +662,41 @@ OpenModeller::setModelConfiguration( const ConstConfigurationPtr & config )
 
   Log::instance()->debug( "Creating sampler\n" );
   _samp = createSampler( config->getSubsection( "Sampler" ) );
+
   Log::instance()->debug( "Getting sampler environment\n" );
   _env = _samp->getEnvironment();
 
   Log::instance()->debug( "Getting algorithm from algorithm factory\n" );
   _alg = AlgorithmFactory::newAlgorithm( config->getSubsection( "Algorithm" ) );
+
+  // Model creation options
+  if ( ConstConfigurationPtr options_config = config->getSubsection( "Options", false ) ) {
+
+    ConstConfigurationPtr su_config = config->getSubsection( "SpatiallyUnique", false );
+
+    if ( su_config ) {
+
+      std::string setting = su_config->getValue();
+
+      if ( setting == "1" || setting == "true" || setting == "TRUE" ) {
+
+        _samp->spatiallyUnique();
+      }
+    }
+
+    ConstConfigurationPtr eu_config = config->getSubsection( "EnvironmentallyUnique", false );
+
+    if ( eu_config ) {
+
+      std::string setting = eu_config->getValue();
+
+      if ( setting == "1" || setting == "true" || setting == "TRUE" ) {
+
+        _samp->environmentallyUnique();
+      }
+    }
+  }
+
   Log::instance()->debug( "Assigning sampler to algorithm\n" );
   _alg->setSampler( _samp );
 }
