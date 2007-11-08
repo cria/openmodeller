@@ -127,32 +127,32 @@ RasterGdal::RasterGdal( const string& file, const MapFormat& format):
     case MapFormat::GreyBMP:
       f_scalefactor = 255.0;
       nv = 0.0;
-      Log::instance()->debug( "Raster:: format set to MapFormat::GreyBMP:\n");
+      Log::instance()->debug( "RasterGdal format set to MapFormat::GreyBMP:\n");
       break;
     case MapFormat::GreyTiff:
       f_scalefactor = 254.0;
       nv = 255.0;
-      Log::instance()->debug( "Raster:: format set to MapFormat::GreyTiff:\n");
+      Log::instance()->debug( "RasterGdal format set to MapFormat::GreyTiff:\n");
       break;
     case MapFormat::GreyTiff100:
       f_scalefactor = 100.0;
       nv = 127.0; //represented as 7bit so cant use 254
-      Log::instance()->debug( "Raster:: format set to MapFormat::GreyTiff100:\n");
+      Log::instance()->debug( "RasterGdal format set to MapFormat::GreyTiff100:\n");
       break;
     case MapFormat::FloatingTiff:
       f_scalefactor = 1.0;
       nv = -1.0;
-      Log::instance()->debug( "Raster:: format set to MapFormat::FloatingTiff:\n");
+      Log::instance()->debug( "RasterGdal format set to MapFormat::FloatingTiff:\n");
       break;
     case MapFormat::FloatingHFA:
       f_scalefactor = 1.0;
       nv = -1.0;
-      Log::instance()->debug( "Raster:: format set to MapFormat::FloatingHFA:\n");
+      Log::instance()->debug( "RasterGdal format set to MapFormat::FloatingHFA:\n");
       break;
     case MapFormat::ByteHFA:
       f_scalefactor = 100;
       nv = 0;
-      Log::instance()->debug( "Raster:: format set to MapFormat::ByteHFA:\n");
+      Log::instance()->debug( "RasterGdal format set to MapFormat::ByteHFA:\n");
       break;
     default:
       throw GraphicsDriverException( "Unsupported output format" );
@@ -182,8 +182,10 @@ RasterGdal::~RasterGdal()
   // Save the last line read, if needed.
   saveRow();
 
-  if ( f_data )
+  if ( f_data ) {
+
     delete [] f_data;
+  }
 
   GDALClose( f_ds );
 }
@@ -191,30 +193,37 @@ RasterGdal::~RasterGdal()
 
 /************/
 /*** read ***/
-  void
+void
 RasterGdal::read( Scalar *buf, int frow, int nrow )
 {
-  // Header's data.
+  // Header's data
   int nband = f_hdr.nband;
   int size  = f_size * nrow;
 
   // Read each band
-  for ( int i = 1; i <= nband; i++, buf += size )
-  {
+  for ( int i = 1; i <= nband; i++, buf += size ) {
+
     // Gets the i-th band.
     GDALRasterBand *band = f_ds->GetRasterBand( i );
 
-    // Fills 'buf' with new data.
-    band->RasterIO( GF_Read, 0, frow, f_size, nrow,
-        buf, f_size, nrow,
-        f_type, 0, 0 );
+    // Fill 'buf' with new data
+    int ret = band->RasterIO( GF_Read, 0, frow, f_size, nrow, buf, f_size, nrow, f_type, 0, 0 );
+
+    if ( ret == CE_Failure ) {
+
+      // Fill 'buf' with nodata
+      for ( int j = 0 ; j < f_size; j++ ) {
+
+        buf[j] = f_hdr.noval;
+      }
+    }
   }
 }
 
 
 /*************/
 /*** write ***/
-  void
+void
 RasterGdal::write( Scalar *buf, int frow, int nrow )
 {
   // Header's data.
@@ -222,15 +231,13 @@ RasterGdal::write( Scalar *buf, int frow, int nrow )
   int size  = f_size * nrow;
 
   // Write each band in the file.
-  for ( int i = 1; i <= nband; i++, buf += size )
-  {
+  for ( int i = 1; i <= nband; i++, buf += size ) {
+
     // Gets the i-th band.
     GDALRasterBand *band = f_ds->GetRasterBand( i );
 
     // Write the buffer's data in the file.
-    int ret = band->RasterIO( GF_Write, 0, frow, f_size, nrow,
-        buf, f_size, nrow,
-        f_type, 0, 0 );
+    int ret = band->RasterIO( GF_Write, 0, frow, f_size, nrow, buf, f_size, nrow, f_type, 0, 0 );
 
     if ( ret == CE_Failure )
     {
@@ -243,7 +250,7 @@ RasterGdal::write( Scalar *buf, int frow, int nrow )
 
 /************/
 /*** open ***/
-  void
+void
 RasterGdal::open( char mode )
 {
   // Mode: write or read.
@@ -251,8 +258,9 @@ RasterGdal::open( char mode )
 
   // Opens the file.
   f_ds = (GDALDataset *)GDALOpen( f_file.c_str(), gmod );
-  if ( ! f_ds )
-  {
+
+  if ( ! f_ds ) {
+
     Log::instance()->warn( "Unable to open file %s\n", f_file.c_str());
     throw FileIOException( "Unable to open file " + f_file, f_file );
   }
@@ -262,8 +270,9 @@ RasterGdal::open( char mode )
 
   // Projection.
   f_hdr.setProj( (char *) f_ds->GetProjectionRef() );
-  if ( ! f_hdr.hasProj() )
-  {
+
+  if ( ! f_hdr.hasProj() ) {
+
     Log::instance()->warn( "The raster %s is not georeferenced.  Assuming WGS84\n", f_file.c_str() );
     f_hdr.setProj( GeoTransform::getDefaultCS() );
   }
@@ -291,15 +300,18 @@ RasterGdal::open( char mode )
 
   f_hdr.calculateCell();
 
-  for( int i=0; i<6; ++i ) 
-  {
+  for ( int i=0; i<6; ++i ) {
+
     f_hdr.gt[i] = cf[i];
   }
 
   // Minimum and maximum values.
   f_hdr.min = band->GetMinimum( &f_hdr.minmax );
-  if ( f_hdr.minmax )
+
+  if ( f_hdr.minmax ) {
+
     f_hdr.max = band->GetMaximum();
+  }
 
   // Assumes grid (in place of 'pixel').
   // todo: how can I read this with GDAL?
@@ -312,10 +324,9 @@ RasterGdal::open( char mode )
 
 /**************/
 /*** create ***/
-  void
-RasterGdal::create(int format)
+void
+RasterGdal::create( int format )
 {
-  //
   GDALDriver *poDriver;
   char **papszMetadata; 
   GDALAllRegister();
@@ -325,20 +336,20 @@ RasterGdal::create(int format)
   // Added by Tim to see if the chosen format supports the gdal create method
   poDriver = GetGDALDriverManager()->GetDriverByName(fmt);
 
-  if( poDriver == NULL )
-  {
+  if ( poDriver == NULL ) {
+
     throw FileIOException( "Unable to load graphics driver " + string(fmt), f_file );
   }
 
   papszMetadata = poDriver->GetMetadata();
-  if( ! CSLFetchBoolean( papszMetadata, GDAL_DCAP_CREATE, FALSE ) )
-  {
+
+  if ( ! CSLFetchBoolean( papszMetadata, GDAL_DCAP_CREATE, FALSE ) ) {
+
     Log::instance()->warn( "Driver %s, format %s  DOES NOT support Create() method.\n", 
         poDriver->GetDescription(),
         fmt);
 
-    throw FileIOException( "Driver " + string(fmt)
-        + " does not support Create() method", f_file );
+    throw FileIOException( "Driver " + string(fmt) + " does not support Create() method", f_file );
   }
 
   // 
@@ -348,8 +359,8 @@ RasterGdal::create(int format)
   f_hdr.nband = 1;
 
   // Create the file.
-  if (format==MapFormat::FloatingHFA || format==MapFormat::ByteHFA)
-  {
+  if ( format == MapFormat::FloatingHFA || format == MapFormat::ByteHFA ) {
+
     // HFA (erdas imagine) format does not support nodata
     // so we need to set the background value instead
     // also for this format we want to enable comressions to 
@@ -385,23 +396,24 @@ RasterGdal::create(int format)
     CSLDestroy( papszOptions );
   }
   */
-  else //uncompressed
-  {
+  else {
+
+    //uncompressed
     f_ds = poDriver->Create( f_file.c_str(),
         f_hdr.xdim, f_hdr.ydim,
         f_hdr.nband,
         /* data type */ Formats[format].dataType,
         /* opt parameters */ NULL );
   }
-  if ( ! f_ds )
-  {
+
+  if ( ! f_ds ) {
+
     Log::instance()->warn( "Unable to create file %s.\n",f_file.c_str() );
     throw FileIOException( "Unable to create file " + f_file, f_file );
   }
 
+  if ( Formats[format].hasMeta ) {
 
-  if ( Formats[format].hasMeta )
-  {
     /*** Metadata ***/
 
     // Limits (without rotations).
@@ -414,19 +426,20 @@ RasterGdal::create(int format)
     f_ds->GetRasterBand(1)->SetNoDataValue( f_hdr.noval );
   }
 
-  // Here we fill the raster with novals.  So we don't need to worry about
+  // Here we fill the raster with novals. So we don't need to worry about
   // having the projector actually cover every pixel.
   Scalar * buffer;
   buffer = new Scalar[f_hdr.xdim];
-  for( int x=0;x<f_hdr.xdim;x++ )
+  for ( int x = 0 ; x < f_hdr.xdim; x++ ) {
+
     buffer[x] = f_hdr.noval;
+  }
 
   GDALRasterBand *band = f_ds->GetRasterBand(1);
-  for( int y=0;y<f_hdr.ydim;y++ )
-  {
-    band->RasterIO( GF_Write, 0, y, f_hdr.xdim, 1,
-        buffer, f_hdr.xdim, 1,
-        f_type, 0, 0 );
+
+  for ( int y = 0; y < f_hdr.ydim; y++ ) {
+
+    band->RasterIO( GF_Write, 0, y, f_hdr.xdim, 1, buffer, f_hdr.xdim, 1, f_type, 0, 0 );
   }
 
   // Initialize the Buffer
@@ -435,16 +448,19 @@ RasterGdal::create(int format)
   delete[] buffer;
 }
 
-  void
+/*******************/
+/*** init Buffer ***/
+void
 RasterGdal::initBuffer()
 {
-  //
   // Initialize the buffer.
   f_size = f_hdr.xdim;
-  if ( f_data )
-  {
+
+  if ( f_data ) {
+
     delete [] f_data;
   }
+
   f_data = new Scalar[ f_size * f_hdr.nband ];
 
   f_changed = 0;
@@ -453,13 +469,13 @@ RasterGdal::initBuffer()
 
 /*****************/
 /*** init Gdal ***/
-  void
+void
 RasterGdal::initGdal()
 {
   static int first = 1;
 
-  if ( first )
-  {
+  if ( first ) {
+
     first = 0;
     GDALAllRegister();
   }
@@ -468,7 +484,7 @@ RasterGdal::initGdal()
 
 /************/
 /*** iput ***/
-  int
+int
 RasterGdal::iput( int x, int y, Scalar val )
 {
   // Be sure that 'y' line is in the buffer 'f_data'.
@@ -485,7 +501,7 @@ RasterGdal::iput( int x, int y, Scalar val )
 
 /************/
 /*** iget ***/
-  int
+int
 RasterGdal::iget( int x, int y, Scalar *val )
 {
   // Be sure that 'y' line is in the buffer 'f_data'.
@@ -494,29 +510,35 @@ RasterGdal::iget( int x, int y, Scalar *val )
   // Get all band's values.
   Scalar *pv = val;
   int nband = f_hdr.nband;
-  for ( int i = 0; i < nband; i++, x += f_size )
-    if ( (*pv++ = f_data[x]) == f_hdr.noval )
+  for ( int i = 0; i < nband; i++, x += f_size ) {
+
+    if ( (*pv++ = f_data[x]) == f_hdr.noval ) {
+
       return 0;
+    }
+  }
 
   return 1;
 }
 
 /***********/
 /*** get ***/
-  int
+int
 RasterGdal::get( Coord px, Coord py, Scalar *val )
 {
   Scalar *pv = val;
-  for ( int i = 0; i < f_hdr.nband; i++ )
+  for ( int i = 0; i < f_hdr.nband; i++ ) {
+
     *pv++ = f_hdr.noval;
+  }
 
   pair<int,int> xy = f_hdr.convertLonLat2XY( px, py );
   int x = xy.first;
   int y = xy.second;
 
   // If the point is out of range, returns 0.
-  if ( x < 0 || x >= f_hdr.xdim || y < 0 || y >= f_hdr.ydim )
-  {
+  if ( x < 0 || x >= f_hdr.xdim || y < 0 || y >= f_hdr.ydim ) {
+
     //Log::instance()->debug( "Raster::get() Pixel (%d,%d) is not in extent\n",x,y);
     return 0;
   }
@@ -528,22 +550,24 @@ RasterGdal::get( Coord px, Coord py, Scalar *val )
 
 /***********/
 /*** put ***/
-  int
+int
 RasterGdal::put( Coord px, Coord py, Scalar val )
 {
   pair<int,int> xy = f_hdr.convertLonLat2XY( px, py );
   int x = xy.first;
   int y = xy.second;
 
-  if ( x < 0 || x >= f_hdr.xdim || y < 0 || y >= f_hdr.ydim )
+  if ( x < 0 || x >= f_hdr.xdim || y < 0 || y >= f_hdr.ydim ) {
+
     return 0;
+  }
 
   return iput( x, y, f_scalefactor*val );
 }
 
 /***********/
 /*** put ***/
-  int
+int
 RasterGdal::put( Coord px, Coord py  )
 {
   pair<int,int> xy = f_hdr.convertLonLat2XY( px, py );
@@ -552,19 +576,23 @@ RasterGdal::put( Coord px, Coord py  )
 
   Scalar val = f_hdr.noval;
 
-  if ( x < 0 || x >= f_hdr.xdim || y < 0 || y >= f_hdr.ydim )
+  if ( x < 0 || x >= f_hdr.xdim || y < 0 || y >= f_hdr.ydim ) {
+
     return 0;
+  }
 
   return iput( x, y, val );
 }
 
 /*******************/
 /*** get Min Max ***/
-  int
+int
 RasterGdal::getMinMax( Scalar *min, Scalar *max )
 {
-  if ( ! calcMinMax() )
+  if ( ! calcMinMax() ) {
+
     return 0;
+  }
 
   *min = f_hdr.min;
 
@@ -575,13 +603,14 @@ RasterGdal::getMinMax( Scalar *min, Scalar *max )
 
 /********************/
 /*** calc Min Max ***/
-  int
+int
 RasterGdal::calcMinMax( int band )
 {
-  if ( f_hdr.minmax )
-  {
+  if ( f_hdr.minmax ) {
+
     return 1;
   }
+
   Scalar *bands;
   bands = new Scalar[ f_hdr.nband ];
   Scalar *val = bands + band;
@@ -591,29 +620,38 @@ RasterGdal::calcMinMax( int band )
   bool initialized = false;
 
   // Scan all map values.
-  for ( int y = 0; y < f_hdr.ydim; y++ )
-    for ( int x = 0; x < f_hdr.xdim; x++ )
-      if ( iget( x, y, bands ) )
-      {
-        if ( !initialized )
-        {
+  for ( int y = 0; y < f_hdr.ydim; y++ ) {
+
+    for ( int x = 0; x < f_hdr.xdim; x++ ) {
+
+      if ( iget( x, y, bands ) ) {
+
+        if ( !initialized ) {
+
           initialized = true;
           min = max = *val;
         }
-        if ( min > *val )
+
+        if ( min > *val ) {
+
           min = *val;
-        else if ( max < *val )
+        }
+        else if ( max < *val ) {
+
           max = *val;
+        }
       }
+    }
+  }
 
   delete [] bands;
 
-  if (!initialized)
-    return 0;
+  if ( ! initialized ) {
 
-  /*
-     This is only logically const.  Here we cast away const to cache the min/max
-     */
+    return 0;
+  }
+
+  // This is only logically const. Here we cast away const to cache the min/max
   Header *f_hdrNoConst = const_cast<Header*>(&f_hdr);
 
   f_hdrNoConst->minmax = 1;
@@ -625,12 +663,14 @@ RasterGdal::calcMinMax( int band )
 
 /****************/
 /*** load Row ***/
-  void
+void
 RasterGdal::loadRow( int row )
 {
   // If the line is already read, return.
-  if ( row == f_currentRow )
+  if ( row == f_currentRow ) {
+
     return;
+  }
 
   saveRow();
 
@@ -643,11 +683,13 @@ RasterGdal::loadRow( int row )
 
 /****************/
 /*** save Row ***/
-  void
+void
 RasterGdal::saveRow()
 {
-  if ( ! f_changed || f_currentRow < 0)
+  if ( ! f_changed || f_currentRow < 0 ) {
+
     return;
+  }
 
   write( f_data, f_currentRow, 1 );
 
@@ -657,7 +699,7 @@ RasterGdal::saveRow()
 
 /*********************/
 /*** delete Raster ***/
-  int
+int
 RasterGdal::deleteRaster()
 {
   GDALDriver * driver = f_ds->GetDriver();
