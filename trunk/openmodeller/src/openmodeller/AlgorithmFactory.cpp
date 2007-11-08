@@ -305,7 +305,7 @@ AlgorithmFactory::searchDefaultDirs( )
   vector<string>::iterator it = entries.begin();
 
   while( it != entries.end() ) {
-    Log::instance()->debug( "Checking for algs in : %s \n" , (*it).c_str());
+    Log::instance()->debug( "Checking for algs in: [%s]\n" , (*it).c_str() );
     AlgorithmFactory::addDir( (*it).c_str() );
     ++it;
   }
@@ -326,19 +326,24 @@ AlgorithmFactory::addDir( const string& dir )
 int
 AlgorithmFactory::p_addDir( const string& dir )
 {
-  vector<string> entries = scanDirectory( dir );
+  if ( dir.length() ) {
 
-  if ( entries.empty() ) {
-    Log::instance()->warn( "No algorithm found in directory %s\n", dir.c_str() );
-    return 0;
-  }
+    vector<string> entries = scanDirectory( dir );
 
-  vector<string>::const_iterator it = entries.begin();
-  while( it != entries.end() ) {
+    if ( entries.empty() ) {
 
-    p_addDll( *it );
+      Log::instance()->warn( "No algorithm found in directory [%s]\n", dir.c_str() );
+      return 0;
+    }
 
-    ++it;
+    vector<string>::const_iterator it = entries.begin();
+
+    while( it != entries.end() ) {
+
+      p_addDll( *it );
+
+      ++it;
+    }
   }
 
   return _dlls.size();
