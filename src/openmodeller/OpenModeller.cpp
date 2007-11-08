@@ -655,9 +655,8 @@ void
 OpenModeller::setModelConfiguration( const ConstConfigurationPtr & config )
 {
   Log::instance()->debug( "Setting model configuration\n" );
-  Log::instance()->debug( "Resetting confusion matrix\n" );
+
   _confusion_matrix->reset();
-  Log::instance()->debug( "Resetting roc curve\n" );
   _roc_curve->reset();
 
   Log::instance()->debug( "Creating sampler\n" );
