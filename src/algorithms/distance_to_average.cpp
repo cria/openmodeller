@@ -143,8 +143,11 @@ DistanceToAverage::DistanceToAverage() :
 
 DistanceToAverage::~DistanceToAverage()
 {
-  Log::instance()->info( "\nMinimum distance found: %f", _min );
-  Log::instance()->info( "\nMaximum distance found: %f\n\n", _max );
+  if ( _done ) {
+
+    Log::instance()->info( "\nMinimum distance found: %f\n", _min );
+    Log::instance()->info( "\nMaximum distance found: %f\n\n", _max );
+  }
 }
 
 
