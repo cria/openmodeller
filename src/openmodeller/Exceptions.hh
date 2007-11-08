@@ -90,6 +90,15 @@ private:
 };
 
 //
+// General memory exception
+class MemoryException : public OmException {
+public:
+  MemoryException( const std::string& msg ) :
+    OmException( msg )
+  {}
+};
+
+//
 // Graphics Driver Exceptions -- thrown for non file io graphic problems.
 //
 class GraphicsDriverException : public OmException {
