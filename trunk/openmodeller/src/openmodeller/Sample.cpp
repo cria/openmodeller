@@ -26,6 +26,9 @@
 // Log is included for the dump method
 #include <openmodeller/Log.hh>
 
+// To throw an out of memory exception
+#include <openmodeller/Exceptions.hh>
+
 
 using namespace std;
 
@@ -174,7 +177,12 @@ void
 Sample::alloc( size_t size )
 {
   this->size_ = size;
-  value_ = (Scalar*)malloc( size * sizeof(Scalar ) );
+  value_ = (Scalar*)malloc( size * sizeof( Scalar ) );
+
+  if ( ! value_ ) {
+
+    throw MemoryException( "Out of memory" );
+  }
 }
 
 void
