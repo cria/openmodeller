@@ -17,7 +17,7 @@ int main( int argc, char **argv ) {
   try {
 
     //Debug, Info, Warn, Error
-    Log::instance()->setLevel( Log::Error );
+    Log::instance()->setLevel( Log::Info );
 
     if (argc != 5) {
       cout << "Usage " << argv[0] << " <label> <mask file> <num points> <sequence start>" << endl;

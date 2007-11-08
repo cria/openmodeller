@@ -24,7 +24,7 @@ int main( int argc, char **argv ) {
 
   try {
     //Debug, Info, Warn, Error
-    Log::instance()->setLevel( Log::Error );
+    Log::instance()->setLevel( Log::Info );
     AlgorithmFactory::searchDefaultDirs();
 
     if (argc != 3) {

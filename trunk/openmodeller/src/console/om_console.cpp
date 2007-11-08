@@ -61,7 +61,6 @@ main( int argc, char **argv )
 
   // Reconfigure the global logger.
   Log::instance()->setLevel( Log::Info );
-  //Log::instance()->setLevel( Log::Debug);
   Log::instance()->setPrefix( "" );
 
   try {
