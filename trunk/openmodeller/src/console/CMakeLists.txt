@@ -2,14 +2,11 @@
 ########################################################
 # Files
 
-
 SET (OMCONSOLE_SRCS
     om_console.cpp
     request_file.cpp
     file_parser.cpp
 )
-
-
 SET (OMDUMP_SRCS
      om_dump.cpp 
      request_file.cpp 
@@ -50,6 +47,10 @@ SET (OMNICHE_SRCS
      graph/graphic.cpp 
      graph/graphic_x11.cpp
      )
+SET (OMPSEUDO_SRCS
+     om_pseudo.cpp 
+     getopts/getopts.c 
+     )
 set (EXTRA_DIST
   file_parser.hh
   request_file.hh
@@ -59,6 +60,11 @@ set (EXTRA_DIST
   graph/list.cpp
   graph/list.hh
   graph/view_model.hh
+  getopts/getopts.c
+  getopts/getopts.h
+  getopts/LICENSE
+  getopts/README
+  getopts/main.c
   )
 
 ########################################################
@@ -105,6 +111,10 @@ if (X11_FOUND)
   ADD_EXECUTABLE (om_niche ${OMNICHE_SRCS})
   TARGET_LINK_LIBRARIES(om_niche ${X11_LIBRARIES} openmodeller)
 ENDIF(X11_FOUND)
+
+ADD_EXECUTABLE (om_pseudo ${OMPSEUDO_SRCS})
+TARGET_LINK_LIBRARIES(om_pseudo openmodeller)
+
 ########################################################
 # Install
 
@@ -118,3 +128,4 @@ if (X11_FOUND)
   INSTALL(TARGETS om_viewer RUNTIME DESTINATION ${OM_BIN_DIR})
   INSTALL(TARGETS om_niche RUNTIME DESTINATION ${OM_BIN_DIR})
 ENDIF(X11_FOUND)
+INSTALL(TARGETS om_pseudo RUNTIME DESTINATION ${OM_BIN_DIR})

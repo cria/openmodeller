@@ -2,6 +2,8 @@
 #include <openmodeller/om_defs.hh>
 #include <openmodeller/Log.hh>
 
+#include "getopts/getopts.h"
+
 #include <string>
 #include <iostream>  // I/O 
 
@@ -10,42 +12,161 @@
 using namespace std;
 
 int main( int argc, char **argv ) {
+
 #ifdef BUILD_TERRALIB
   USE_TERRALIB_IO
 #endif
 
-  try {
+  char *args;
+  int option;
 
-    //Debug, Info, Warn, Error
-    Log::instance()->setLevel( Log::Info );
+  struct options opts[] = 
+  {
+    { 1, "log-level", "Set the log level (debug, warn, info, error)", NULL, 1 },
+    { 2, "version",   "Display the version info",                      "v", 0 },
+    { 3, "num-points","Number of points to be generated",              "p", 1 },
+    { 4, "label",     "Label for the points",                          "l", 1 },
+    { 5, "seq-start", "Sequence start for points id",                  "s", 1 },
+    { 6, "mask",      "Mask file",                                     "m", 1 },
+    { 0, NULL,        NULL,                                           NULL, 0 }
+  };
 
-    if (argc != 5) {
-      cout << "Usage " << argv[0] << " <label> <mask file> <num points> <sequence start>" << endl;
-      return -1;
+  bool passed_params = false;
+
+  std::string log_level("info");
+  std::string num_points_string;
+  std::string label("label");
+  std::string sequence_start_string;
+  std::string mask_file;
+
+  while ( ( option = getopts( argc, argv, opts, &args ) ) != 0 ) {
+
+    passed_params = true;
+
+    switch ( option ) {
+
+      // Special Case: Recognize options that we didn't set above.
+      case -2: 
+        printf( "Unknown option: %s\n", args );
+        break;
+      // Special Case: getopts() can't allocate memory.
+      case -1:
+        printf( "Unabled to allocate memory from getopts().\n" );
+        exit(-1);
+        break;
+      case 1:
+        log_level = args;
+        break;
+      case 2:
+        printf("om_pseudo 0.2.0\n");
+        exit(0);
+        break;
+      case 3:
+        num_points_string = args;
+        break;
+      case 4:
+        label = args;
+        break;
+      case 5:
+        sequence_start_string = args;
+        break;
+      case 6:
+        mask_file = args;
+        break;
+      default:
+        break;
     }
 
-    std::string label( argv[1] );
+    // This free() is required since getopts() automagically allocates space 
+    // for "args" everytime it's called. */
+    free( args );
+  }
 
-    std::string mask_file( argv[2] );
+  if ( ! passed_params ) {
 
-    std::string num_points_string( argv[3] );
+    // Display usage
+    getopts_usage( "om_pseudo", opts );
+    exit(0);
+  }
 
-    int num_points = atoi( num_points_string.c_str() );
+  // Check parameters
 
-    std::string sequence_start_string( argv[4] );
+  if ( num_points_string.empty() ) {
 
-    int sequence_start = atoi( sequence_start_string.c_str() );
+    printf( "Please specify the number of points to be generated\n");
+    exit(-1);
+  }
+
+  int num_points = atoi( num_points_string.c_str() );
+
+  if ( num_points <= 0 ) {
+
+    printf( "Please specify a valid (> 0) number of points to be generated\n");
+    exit(-1);
+  }
+
+  if ( mask_file.empty() ) {
+
+    printf( "Please specify a mask file\n");
+    exit(-1);
+  }
+  else {
+
+    FILE * fh = fopen( mask_file.c_str(), "r" );
+
+    if ( fh == NULL ) {
+
+      printf( "Could not open the specified mask file (check parameter and permissions)\n");
+      exit(-1);
+    }
+
+    fclose( fh );
+  }
+
+  int sequence_start = 1; // default
+  
+  if ( ! sequence_start_string.empty() ) {
+
+    sequence_start = atoi( sequence_start_string.c_str() );
+  }
+
+  // Real work
+
+  try {
+
+    // Log level
+    if ( log_level == "debug" ) {
+
+      Log::instance()->setLevel( Log::Debug );
+    }
+    else if ( log_level == "info" ) {
+
+      Log::instance()->setLevel( Log::Info );
+    }
+    else if ( log_level == "warn" ) {
+
+      Log::instance()->setLevel( Log::Warn );
+    }
+    else if ( log_level == "error" ) {
+
+      Log::instance()->setLevel( Log::Error );
+    }
+    else {
+
+      printf( "Unrecognized log level (%s). Using \"info\" instead.\n", log_level.c_str() );
+      Log::instance()->setLevel( Log::Info );
+    }
 
     std::vector<std::string> categorical_layers, continuous_layers;
 
     continuous_layers.push_back( mask_file ); // need to add at least one layer
 
-    EnvironmentPtr env = createEnvironment( categorical_layers, continuous_layers, mask_file);
+    EnvironmentPtr env = createEnvironment( categorical_layers, continuous_layers, mask_file );
 
     if ( ! env ) {
 
-      cout << "Could not create environment object" << endl;
-      return -1;
+      printf( "Could not create environment object" );
+      exit(-1);
     }
 
     OccurrencesPtr presences( new OccurrencesImpl( label ) );
@@ -55,9 +176,12 @@ int main( int argc, char **argv ) {
 
     if ( ! samp ) {
 
-      cout << "Could not create sampler object" << endl;
-      return -1;
+      printf( "Could not create sampler object" );
+      exit(-1);
     }
+
+    // Header
+    cout << "#id\t" << "label\t" << "long\t" << "lat\t" << "abundance" << endl;
 
     for ( int i = 0; i < num_points; ++i ) {
 
@@ -68,6 +192,9 @@ int main( int argc, char **argv ) {
   }
   catch ( runtime_error e ) {
 
-    cout<<"Exception: " << e.what() << endl;
+    printf( "Exception: %s\n", e.what() );
+    exit(-1);
   }
+
+  return 0;
 }
