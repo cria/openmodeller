@@ -21,6 +21,8 @@ SET (OM_DEBUG_LOGLEVEL FALSE CACHE BOOL "Force log level to Debug - should leave
 
 SET (OM_CTEST FALSE CACHE BOOL "Build unit tests")
 
+SET (WITH_PROFILING FALSE CACHE BOOL "Add profiling symbols to build products (-pg)")
+
 #############################################################
 IF (OM_CTEST)
   FIND_PACKAGE(CXXTEST)
@@ -92,6 +94,13 @@ ENDIF (NOT PROJ_FOUND)
 IF (NOT GDAL_FOUND)
   MESSAGE (SEND_ERROR "GDAL library was not found!")
 ENDIF (NOT GDAL_FOUND)
+
+
+#############################################################
+# Add g++ directive to create profiling symbols
+IF (WITH_PROFILING)
+  ADD_DEFINITIONS( -pg )
+ENDIF (WITH_PROFILING)
 
 #############################################################
 # enable warnings and set compile time defines
