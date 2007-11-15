@@ -39,13 +39,31 @@ log=$ticket_repository"/"$ticket
 proj_prog=$ticket_repository"/prog."$ticket
 # rename file
 mv "$req" "$moved"
-# execute om_create
+# execute om_project
 om_project "$moved" "$map_img" "$stats" "$log" "$proj_prog"
 finalmap_img=$map_repository"/"$ticket".img"
 finalmap_ige=$map_repository"/"$ticket".ige"
-mv "$map_img" "$finalmap_img"
 if [ -e $map_ige ]; then
 mv "$map_ige" "$finalmap_ige"
 fi
+
+# Create a JPEG file with pseudocolor
+#if [ -e $map_img ]; then
+#finalmap_jpg=$map_repository"/"$ticket".jpg"
+#tempmap_jpg=$map_repository"/"$ticket".jpg.tmp"
+#palete=$map_repository"/REPLACE_WITH_PALETE_FILE_NAME"
+# This requires GDAL command-line tools:
+#/usr/bin/gdal_translate "$map_img" -ot Byte -of JPEG "$tempmap_jpg"
+#/usr/bin/pct2rgb.py -of JPEG "$tempmap_jpg" "$tempmap_jpg"
+# This requires Imagemagick >= 6.3.5:
+#/usr/bin/convert -equalize -colorspace RGB "$tempmap_jpg" "$tempmap_jpg"
+#/usr/bin/convert "$tempmap_jpg" "$palete" -clut "$tempmap_jpg"
+#mv "$tempmap_jpg" "$finalmap_jpg"
+#fi
+
+# This must be the last step, since getProgress will only return 100% if
+# the final map exists
+mv "$map_img" "$finalmap_img"
+
 exit 1
 done
