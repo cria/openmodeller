@@ -52,6 +52,7 @@ using namespace std;
 #define OMWS_MODEL_CREATION_REQUEST_PREFIX "model_req."
 #define OMWS_MODEL_CREATION_RESPONSE_PREFIX "model_resp."
 #define OMWS_MODEL_PROJECTION_REQUEST_PREFIX "proj_req."
+#define OMWS_MODEL_PROJECTION_PROCESSING_PREFIX "proj_proc."
 #define OMWS_PROJECTION_STATISTICS_PREFIX "stats."
 #define OMWS_JOB_PROGRESS_PREFIX "prog."
 #define OMWS_CONFIG_FILE "../config/server.conf"
@@ -578,7 +579,27 @@ omws__getProgress( struct soap *soap, xsd__string ticket, xsd__int &progress )
 
       progress = atoi( oss.str().c_str() );
 
-      // TODO: should we also check if the resulting files exist? (model or map)
+      // Make sure that everything is really done before returning 100%
+      if ( progress == 100 ) {
+
+        string projectionFootprint( fileName );
+        projectionFootprint.append( OMWS_MODEL_PROJECTION_PROCESSING_PREFIX );
+        projectionFootprint.append( ticket );
+
+        // For projection jobs
+        if ( fileExists( projectionFootprint.c_str() ) ) {
+ 
+          string mapFile = getMapFile( ticket );
+
+          // If the final map was not created yet, replace progress with 99%
+          // to indicate that we are almost there. (this may happen if there is 
+          // any post-processing step after the projection).
+          if ( mapFile.empty() ) {
+
+            progress = 99;
+          }
+        }
+      }
 
       fin.close();
     }
