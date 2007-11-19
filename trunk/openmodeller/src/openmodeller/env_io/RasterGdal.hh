@@ -149,7 +149,9 @@ private:
   RasterGdal( const RasterGdal& );
   RasterGdal& operator=( const RasterGdal& );
 
-  // Only because RasterFactory.
+  // No need to implement because RasterGdal is the default driver, so RasterFactory
+  // will always instantiate it through "new". However, these methods need to be
+  // declared.
   void createRaster( const std::string& file, int categ = 0 ) {};
   void createRaster( const std::string& file, const MapFormat& format ) {};
 };
