@@ -56,6 +56,7 @@ fi
 #/usr/bin/gdal_translate "$map_img" -ot Byte -of JPEG "$tempmap_jpg"
 #/usr/bin/pct2rgb.py -of JPEG "$tempmap_jpg" "$tempmap_jpg"
 # This requires Imagemagick >= 6.3.5:
+#/usr/bin/convert -opaque "#F00" -fill "#FFF" "$tempmap_jpg" "$tempmap_jpg"
 #/usr/bin/convert -equalize -colorspace RGB "$tempmap_jpg" "$tempmap_jpg"
 #/usr/bin/convert "$tempmap_jpg" "$palete" -clut "$tempmap_jpg"
 #mv "$tempmap_jpg" "$finalmap_jpg"
