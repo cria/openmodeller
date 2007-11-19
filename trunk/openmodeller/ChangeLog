@@ -5,6 +5,7 @@ SVN revision: ?
 	* Fixed bug when GDAL failed to read a raster row (in which case the row used to have zero values). Now the row is filled with nodata values.
 	* XML request for model creation now supports additional options to filter occurrences (using spatiallyUnique or environmentallyUnique sampler functions).
 	* New prototype function to perform jackknife with the environmental layers.
+	* Changed nodata value of the default raster type (ByteHFA) to 101.
 
 Release 0.5.2 (2007-10-24)
 --------------------------
