@@ -152,7 +152,6 @@ OccurrencesImpl::setConfiguration( const ConstConfigurationPtr& config )
 void 
 OccurrencesImpl::setEnvironment( const EnvironmentPtr& env, const char *type )
 {
-  Log::instance()->debug( "OccurrencesImpl::setEnvironment - starting.\n"); 
   if ( isEmpty() ) {
 
     return;
@@ -169,22 +168,17 @@ OccurrencesImpl::setEnvironment( const EnvironmentPtr& env, const char *type )
 
       Log::instance()->info( "%s Point \"%s\" at (%f,%f) has no environment. It will be discarded.\n", 
              type, ((*oc)->id()).c_str(), (*oc)->x(), (*oc)->y() );
-      Log::instance()->info( "occur_ has  %d elements before discarding.\n",occur_.size()); 
       oc = occur_.erase( oc );
-      Log::instance()->debug( "Setting new end to occur_.\n"); 
       fin = occur_.end();
     } 
     else {
 
-      Log::instance()->debug( "Setting unnormalised env.\n"); 
       (*oc)->setUnnormalizedEnvironment( sample );
-      Log::instance()->debug( "Setting normalised env.\n"); 
       (*oc)->setNormalizedEnvironment( Sample() );
 
       ++oc;
     }
   }
-  Log::instance()->debug( "OccurrencesImpl::setEnvironment - done.\n"); 
 }
 
 /*****************/
