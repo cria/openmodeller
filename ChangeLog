@@ -6,6 +6,7 @@ SVN revision: ?
 	* XML request for model creation now supports additional options to filter occurrences (using spatiallyUnique or environmentallyUnique sampler functions).
 	* New prototype function to perform jackknife with the environmental layers.
 	* Changed nodata value of the default raster type (ByteHFA) to 101.
+	* Masks must now use nodata to indicate masked areas (zeros will not work anymore). 
 
 Release 0.5.2 (2007-10-24)
 --------------------------
