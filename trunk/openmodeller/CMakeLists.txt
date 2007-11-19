@@ -1,4 +1,4 @@
-PROJECT(openModeller0.5.2)
+PROJECT(openModeller0.5.3)
 
 #############################################################
 # CMake settings
@@ -109,7 +109,7 @@ IF (PEDANTIC AND NOT MSVC)
 ADD_DEFINITIONS( -Wall -Werror )
 ENDIF (PEDANTIC AND NOT MSVC)
 
-ADD_DEFINITIONS(-DVERSION=\\"0.5.2\\")
+ADD_DEFINITIONS(-DVERSION=\\"0.5.3\\")
 ADD_DEFINITIONS(-DCONFIG_FILE=\\"om.cfg\\")
 ADD_DEFINITIONS(-DOMDATAPATH=\\"share/openmodeller\\")
 IF (OM_LOGLEVEL_DEBUG)
