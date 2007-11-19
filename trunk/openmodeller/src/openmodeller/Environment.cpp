@@ -478,30 +478,27 @@ EnvironmentImpl::check( Coord x, Coord y ) const
 #if defined(DEBUG_GET)
     Log::instance()->debug( "EnvironmentImpl::check() Coordinate (%f,%f) not in extent of all regions\n",x,y);
 #endif
+
     return 0;
   }
 
   // If there's no mask, accept the point.
-  if ( ! _mask.second )
+  if ( ! _mask.second ) {
+
     return 1;
+  }
 
   Scalar val;
 
-  bool hasmaskevalue = _mask.second->get(x,y,&val);
+  bool hasmaskevalue = _mask.second->get( x, y, &val );
 
-  if (!hasmaskevalue) {
+  if ( ! hasmaskevalue ) {
 #if defined(DEBUG_GET)
     Log::instance()->debug( "EnvironmentImpl::check() Coordinate (%f,%f) has no mask value\n",x,y);
 #endif
   }
 
-  if ( !val ) {
-#if defined(DEBUG_GET)
-    Log::instance()->debug( "EnvironmentImpl::check() Coordinate (%f,%f) has mask value of Zero\n",x,y);
-#endif
-  }
-
-  return hasmaskevalue && val;
+  return hasmaskevalue;
 }
 
 
