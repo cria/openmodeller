@@ -71,9 +71,6 @@ public:
   */
   ~RasterGdal();
 
-  /** Returns the file's header **/
-  Header& header() { return f_hdr; }
-
   int iget( int x, int y, Scalar *val );
   int iput( int x, int y, Scalar val );
 
