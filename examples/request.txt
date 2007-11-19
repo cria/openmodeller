@@ -65,7 +65,7 @@ Output file = furcata.img
 #               NoData will be written as -1. This format is directly 
 #               readable by ArcMap. (*.img) 
 # ByteHFA = Erdas Imagine Byte representation (0 <= cell value <= 100)
-#           NoData will be written as -1. This format is directly 
+#           NoData will be written as 101. This format is directly 
 #           readable by ArcMap. (*.img) 
 #
 Output file type = ByteHFA

@@ -127,46 +127,46 @@ RasterGdal::RasterGdal( const string& file, const MapFormat& format):
     case MapFormat::GreyBMP:
       f_scalefactor = 255.0;
       nv = 0.0;
-      Log::instance()->debug( "RasterGdal format set to MapFormat::GreyBMP:\n");
+      Log::instance()->debug( "RasterGdal format set to MapFormat::GreyBMP:\n" );
       break;
     case MapFormat::GreyTiff:
       f_scalefactor = 254.0;
       nv = 255.0;
-      Log::instance()->debug( "RasterGdal format set to MapFormat::GreyTiff:\n");
+      Log::instance()->debug( "RasterGdal format set to MapFormat::GreyTiff:\n" );
       break;
     case MapFormat::GreyTiff100:
       f_scalefactor = 100.0;
       nv = 127.0; //represented as 7bit so cant use 254
-      Log::instance()->debug( "RasterGdal format set to MapFormat::GreyTiff100:\n");
+      Log::instance()->debug( "RasterGdal format set to MapFormat::GreyTiff100:\n" );
       break;
     case MapFormat::FloatingTiff:
       f_scalefactor = 1.0;
       nv = -1.0;
-      Log::instance()->debug( "RasterGdal format set to MapFormat::FloatingTiff:\n");
+      Log::instance()->debug( "RasterGdal format set to MapFormat::FloatingTiff:\n" );
       break;
     case MapFormat::FloatingHFA:
       f_scalefactor = 1.0;
       nv = -1.0;
-      Log::instance()->debug( "RasterGdal format set to MapFormat::FloatingHFA:\n");
+      Log::instance()->debug( "RasterGdal format set to MapFormat::FloatingHFA:\n" );
       break;
     case MapFormat::ByteHFA:
       f_scalefactor = 100;
-      nv = 0;
-      Log::instance()->debug( "RasterGdal format set to MapFormat::ByteHFA:\n");
+      nv = 101;
+      Log::instance()->debug( "RasterGdal format set to MapFormat::ByteHFA:\n" );
       break;
     default:
       throw GraphicsDriverException( "Unsupported output format" );
   }
 
   f_hdr = Header( format.getWidth(),
-      format.getHeight(),
-      format.getXMin(),
-      format.getYMin(),
-      format.getXMax(),
-      format.getYMax(),
-      nv,
-      1,
-      0 );
+                  format.getHeight(),
+                  format.getXMin(),
+                  format.getYMin(),
+                  format.getXMax(),
+                  format.getYMax(),
+                  nv,
+                  1,
+                  0 );
 
   f_hdr.setProj( format.getProjection() );
 
@@ -273,7 +273,7 @@ RasterGdal::open( char mode )
 
   if ( ! f_hdr.hasProj() ) {
 
-    Log::instance()->warn( "The raster %s is not georeferenced.  Assuming WGS84\n", f_file.c_str() );
+    Log::instance()->warn( "The raster %s is not georeferenced. Assuming WGS84\n", f_file.c_str() );
     f_hdr.setProj( GeoTransform::getDefaultCS() );
   }
 
@@ -368,10 +368,9 @@ RasterGdal::create( int format )
 
     //see http://www.gdal.org/gdal_tutorial.html for options examples
     char **papszOptions = NULL;
-    papszOptions = CSLSetNameValue( papszOptions, "BACKGROUND", "-1" );
+    // Should we use another metadata element to indicate nodata??
+    //papszOptions = CSLSetNameValue( papszOptions, "BACKGROUND", "-1" );
     papszOptions = CSLSetNameValue( papszOptions, "COMPRESS", "YES" );
-    Log::instance()->info( "Erdas .img format does not support nodata value assignment\n");
-    Log::instance()->info( "You can ignore warnings associated with nodata below...\n");
     f_ds = poDriver->Create( f_file.c_str(),
         f_hdr.xdim, f_hdr.ydim,
         f_hdr.nband,
@@ -423,7 +422,12 @@ RasterGdal::create( int format )
     f_ds->SetProjection( f_hdr.proj.c_str() );
 
     // Sets the "nodata" value in all bands.
-    f_ds->GetRasterBand(1)->SetNoDataValue( f_hdr.noval );
+    int ret = f_ds->GetRasterBand(1)->SetNoDataValue( f_hdr.noval );
+
+    if ( ret == CE_Failure ) {
+
+      Log::instance()->warn( "Raster %s (%s) does not support nodata value assignment. Nodata values will correspond to %f anyway, but this will not be stored as part of the raster metadata.\n", f_file.c_str(), fmt, f_hdr.noval );
+    }
   }
 
   // Here we fill the raster with novals. So we don't need to worry about
