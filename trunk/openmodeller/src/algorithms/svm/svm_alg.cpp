@@ -141,8 +141,8 @@ static AlgParamMetadata parameters[NUM_PARAM] = {
     NU_ID,         // Id.
     "Nu",          // Name.
     "Double",      // Type.
-    "Nu (only for Nu-SVC).", // Overview
-    "Nu (only for Nu-SVC).", // Description.
+    "Nu (only for Nu-SVC and one-class SVM).", // Overview
+    "Nu (only for Nu-SVC and one-class SVM).", // Description.
     1,         // Not zero if the parameter has lower limit.
     0.001,     // Parameter's lower limit.
     1,         // Not zero if the parameter has upper limit.
