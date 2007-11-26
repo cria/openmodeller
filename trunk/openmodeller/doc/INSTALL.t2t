@@ -1,0 +1,1004 @@
+openModeller
+
+Compilation guide for openModeller
+%! target       : html
+%! style        : w3c_main.css
+%! style        : w3c_examples.css
+%! Options      : --toc --toc-level 3 --enum-title --css-sugar
+%! PostProc(html): '(?i)(<pre>)' '<div class="exampleInner">\1'
+%! PostProc(html): '(?i)(</pre>)' '\1</div class="exampleInner">'
+%! encoding: iso-8859-1
+
+
+
+% These are comments and will not be generated in any output
+% -------------------
+
+%This document is in text2tags format. You can generate html, plain text and
+%moinmoin formatted documentation by running txt2tags on this document. See the
+%txt2tags home page for more details.  Please insert manual line breaks in this
+%document as it makes diffing for changes much easier. To do this in vim 
+%automatically, select a section then issue (gq) command. Please dont
+%apply vim formatting to the whole document as it screws up some formatting
+%rather apply it selectively to paragraphs where needed.
+
+% To generate teh text version of this document:
+% txt2tags -t txt --toc --enum-title -o INSTALL  INSTALL.t2t
+% To generate the moinmoin version of this document
+% txt2tags -t moin --toc --enum-title -o INSTALL.moin  INSTALL.t2t
+
+% End of comments
+% -------------------
+
+
+= Introduction =
+
+This document is the original installation guide of the described software 
+openModeller. The software and hardware descriptions named in this 
+document are in most cases registered trademarks and are therefore subject 
+to the legal requirements. openModeller is subject to the GNU General Public 
+License. Find more information on the openModeller Homepage:
+http://www.openmodeller.org
+
+The details, that are given in this document have been written and verified 
+to the best of knowledge and responsibility of the editors. Nevertheless, 
+mistakes concerning the content are possible. Therefore, all data are not 
+liable to any duties or guarantees. The editors and publishers do not take 
+any responsibility or liability for failures and their consequences. You are 
+always welcome for indicating possible mistakes.
+
+% You can download this document as part of the openModeller 'User and 
+% Installation Guide' in HTML and PDF format via http://www.openmodeller.org. A current 
+% version is also available at the wiki, see:
+% http://wiki.openmodeller.org/openmodellerwiki/BuildingFromSource 
+
+% Translations of this document can also be downloaded at the documentation area 
+% of the openModeller project at http://www.openmodeller.org. More information is 
+%available via http://wiki.openmodeller.org/openmodellerwiki/DocumentationWritersCorner. 
+
+Please visit http://openmodeller.sf.net for information on joining our mailing lists 
+and getting involved in the project further.
+
+/!\ *****Note:***** This is a 'cut and paste' tutorial - in most cases you can
+simply copy the commands listed in codeblocks that look like this:
+
+```
+somecommand to be pasted 
+```
+
+% -----------------------------------------------------------------------------
+% ----Please leave this break marker here for clarity - it wont be rendered ---
+% -----------------------------------------------------------------------------
+
+= General Build Notes = 
+
+At version 0.5.2 openModeller no longer uses the autotools for building. openModeller, like a
+number of major projects (eg. KDE 4.0), now uses cmake for building from
+source. The configure script in this directory simply checks for the existence
+of cmake and provides some clues to build openModeller.
+
+== An overview of the dependencies required for building ==
+
+**Required build deps:**
+
+ - CMake >= 2.4.3
+
+**Required runtime deps:**
+ 
+ - Proj >= ? (known to work with 4.4.x)
+ - Sqlite3 >= ? (probably 3.0.0)
+ - GDAL/OGR >= ? (1.2.x should work)
+
+**Optional dependencies:**
+ 
+ - for CSM algorithm - GSL >= ? (works with 1.8)
+ - for terralib support - terralib >= ??
+
+
+
+
+
+
+% -----------------------------------------------------------------------------
+% ----Please leave this break marker here for clarity - it wont be rendered ---
+% -----------------------------------------------------------------------------
+
+= Building on Mac OSX using frameworks and cmake =
+
+
+In this approach I will try to avoid as much as possible building dependencies
+from source and rather use frameworks wherever possible.
+
+== Install XCODE ==
+
+I recommend to get the latest xcode dmg from the Apple XDC Web site. Install
+XCODE after the ~941mb download is complete.
+
+
+== Install development frameworks for openModeller dependencies ==
+
+Download William Kyngesburye's excellent all in one framework that includes
+proj, gdal, sqlite3 etc
+
+``` 
+http://www.kyngchaos.com/files/software/unixport/AllFrameworks.dmg 
+```
+
+Once downloaded, open and install the frameworks.
+
+William provides an additional installer package for Postgresql/PostGIS. Its
+available here:
+
+``` 
+http://www.kyngchaos.com/software/unixport/postgres 
+```
+
+There are some additional dependencies that at the time of writing are not
+provided as frameworks so we will need to build these from source.
+
+=== Additional Dependencies : GSL ===
+
+Retrieve the Gnu Scientific Library from
+
+``` 
+curl -O ftp://ftp.gnu.org/gnu/gsl/gsl-1.8.tar.gz 
+```
+
+Then extract it and build it to a prefix of /usr/local:
+
+``` 
+tar xvfz gsl-1.8.tar.gz 
+cd gsl-1.8 
+./configure --prefix=/usr/local 
+make
+sudo make install
+cd ..  
+```
+
+=== Additional Dependencies : Expat ===
+
+Get the expat sources:
+
+``` 
+http://sourceforge.net/project/showfiles.php?group_id=10127 
+```
+
+```
+tar xvfz expat-2.0.0.tar.gz 
+cd expat-2.0.0 
+./configure --prefix=/usr/local
+make 
+sudo make install 
+cd ..  
+```
+
+== Install CMAKE for OSX ==
+
+Get the latest release from here:
+
+``` 
+http://www.cmake.org/HTML/Download.html 
+```
+
+At the time of writing the file I grabbed was:
+
+``` 
+curl -O http://www.cmake.org/files/v2.4/cmake-2.4.6-Darwin-universal.dmg
+```
+
+Once downloaded open the dmg and run the installer
+
+== Install subversion for OSX ==
+
+The [http://sourceforge.net/projects/macsvn/ MacSVN] project has a downloadable
+build of svn. If you are a GUI inclined person you may want to grab their gui
+client too. Get the command line client here:
+
+``` 
+curl -O http://ufpr.dl.sourceforge.net/sourceforge/macsvn/Subversion_1.4.2.zip 
+```
+
+
+Once downloaded open the zip file and run the installer.
+
+You also need to install BerkleyDB available from the same
+[http://sourceforge.net/projects/macsvn/ website]. At the time of writing the
+file was here:
+
+``` 
+curl -O http://ufpr.dl.sourceforge.net/sourceforge/macsvn/Berkeley_DB_4.5.20.zip 
+```
+
+Once again unzip this and run the installer therein.
+
+Lastly we need to ensure that the svn commandline executeable is in the path.
+Add the following line to the end of /etc/bashrc using sudo:
+
+``` 
+sudo vim /etc/bashrc 
+```
+
+And add this line to the bottom before saving and quiting:
+
+``` 
+export PATH=/usr/local/bin:$PATH:/usr/local/pgsql/bin 
+```
+
+/usr/local/bin needs to be first in the path so that the newer bison (that will
+be built from source further down) is found before the bison (which is very
+old) that is installed by MacOSX
+
+
+Now close and reopen your shell to get the updated vars.
+
+== Check out openModeller from SVN ==
+
+Now we are going to check out the sources for openModeller. First we will create a
+directory for working in:
+
+``` 
+mkdir -p ~/dev/cpp 
+cd ~/dev/cpp 
+```
+
+Now we check out the sources:
+
+Trunk:
+``` 
+svn co https://openmodeller.svn.sourceforge.net/svnroot/openmodeller/trunk/openmodeller
+```
+
+The first time you check out openModeller sources you will probably get a message like
+this:
+
+``` 
+ Error validating server certificate for 'https://svn.openmodeller.org:443':
+ - The certificate is not issued by a trusted authority. Use the fingerprint to
+   validate the certificate manually!  Certificate information:
+ - Hostname: svn.openmodeller.org
+ - Valid: from Apr  1 00:30:47 2006 GMT until Mar 21 00:30:47 2008 GMT
+ - Issuer: Developer Team, openModeller, Anchorage, Alaska, US
+ - Fingerprint: 2f:cd:f1:5a:c7:64:da:2b:d1:34:a5:20:c6:15:67:28:33:ea:7a:9b
+   (R)eject, accept (t)emporarily or accept (p)ermanently?  
+```
+
+I suggest you press 'p' to accept the key permanently.
+
+== Configure the build ==
+
+CMake supports out of source build so we will create a 'build' dir for the
+build process. By convention I build the software into /usr/local
+in my home directory. 
+
+``` 
+cd openmodeller 
+mkdir build 
+cd build 
+cmake -D CMAKE_BUILD_TYPE=Release ..
+```
+
+Now compile ...
+
+``` 
+make 
+```
+
+If all built without errors you can then install it:
+
+``` 
+sudo make install 
+```
+
+Ensure that /usr/local/bin is in your path and then you can use the 
+openModeller command line tools as per normal.
+
+% -----------------------------------------------------------------------------
+% ----Please leave this break marker here for clarity - it wont be rendered ---
+% -----------------------------------------------------------------------------
+
+= Building on GNU/Linux (apt based distro) =
+
+***Requires:*** Ubuntu Edgy / Debian derived distro
+
+These notes are for if you want to build openModeller from source. One of the major
+aims here is to show how this can be done using binary packages for ***all***
+dependencies - building only the core openModeller stuff from source. I prefer this
+approach because it means we can leave the business of managing system packages
+to apt and only concern ourselves with coding openModeller! 
+
+This document assumes you have made a fresh install and have a 'clean' system.
+These instructions should work fine if this is a system that has already been
+in use for a while, you may need to just skip those steps which are irrelevant
+to you.
+
+
+
+== Prepare apt ==
+
+The packages openmodeller depends on to build are available in the "universe" component
+of Ubuntu. This is not activated by default, so you need to activate it:
+
+ + Edit your /etc/apt/sources.list file.  
+ + Uncomment the all the lines starting with "deb"
+
+Also you will need to be running (K)Ubuntu 'edgy' or higher in order for 
+all dependencies to be met.
+
+Now update your local sources database:
+
+``` 
+sudo apt-get update 
+```
+
+
+== Install software dependencies required by openModeller ==
+
+``` 
+sudo apt-get install gdal-bin libgdal1-dev proj \
+libgdal-doc libhdf4g-dev libhdf4g-run \
+libgsl0-dev g++ libjasper-1.701-dev libtiff4-dev subversion \
+libsqlite3-dev sqlite3 ccache make cmake txt2tags 
+```
+
+/!\ Debian users should use libgdal-dev above rather
+
+== Setup ccache (Optional) ==
+
+You should also setup ccache to speed up compile times:
+
+``` 
+cd /usr/local/bin 
+sudo ln -s /usr/bin/ccache gcc 
+sudo ln -s /usr/bin/ccache g++ 
+```
+
+== Prepare your development environment ==
+
+As a convention I do all my development work in $HOME/dev/<language>, so in
+this case we will create a work environment for C++ development work like
+this:
+
+``` 
+mkdir -p ${HOME}/dev/cpp 
+cd ${HOME}/dev/cpp 
+```
+
+This directory path will be assumed for all instructions that follow.
+
+
+== Check out the openModeller Source Code ==
+
+
+``` 
+cd ${HOME}/dev/cpp 
+svn co https://openmodeller.svn.sourceforge.net/svnroot/openmodeller/trunk/openmodeller
+```
+
+The first time you check out the source you will be prompted to accept the
+openmodeller.org certificate. Press 'p' to accept it permanently:
+
+``` 
+Error validating server certificate for 'https://svn.openmodeller.org:443':
+   - The certificate is not issued by a trusted authority. Use the
+     fingerprint to validate the certificate manually!  Certificate
+     information:
+   - Hostname: svn.openmodeller.org
+   - Valid: from Apr  1 00:30:47 2006 GMT until Mar 21 00:30:47 2008 GMT
+   - Issuer: Developer Team, openModeller, Anchorage, Alaska, US
+   - Fingerprint:
+     2f:cd:f1:5a:c7:64:da:2b:d1:34:a5:20:c6:15:67:28:33:ea:7a:9b (R)eject,
+     accept (t)emporarily or accept (p)ermanently?  
+```
+
+== Starting the compile ==
+
+I compile my development version of openModeller into the default /usrl/local directory to avoid
+conflicts with Ubuntu packages that may be under /usr. 
+
+
+Now we create a build directory and run ccmake:
+
+```
+cd openmodeller
+mkdir build
+cd build
+ccmake ..
+```
+
+When you run ccmake (note the .. is required!), a menu will appear where 
+you can configure various aspects of the build. If you do not have root
+access or do not want to overwrite existing openModeller installs (by your
+packagemanager for example), set the CMAKE_BUILD_PREFIX to somewhere you
+have write access to (I usually use /home/timlinux/apps). Now press
+'c' to configure, 'e' to dismiss any error messages that may appear.
+and 'g' to generate the make files. Note that sometimes 'c' needs to 
+be pressed several times before the 'g' option becomes available.
+After the 'g' generation is complete, press 'q' to exit the ccmake 
+interactive dialog.
+
+Now on with the build:
+
+```
+make
+make install
+```
+
+It may take a little while to build depending on your platform.
+
+== Running openModeller ==
+
+Now you can try to run openModeller:
+
+``` 
+om_console
+```
+
+If all has worked properly the openModeller application should start with a 
+message giving useage instructions.
+
+% -----------------------------------------------------------------------------
+% ----Please leave this break marker here for clarity - it wont be rendered ---
+% -----------------------------------------------------------------------------
+
+= Building under windows using msys =
+
+== MSYS: ==
+
+MSYS provides a unix style build environment under windows. We have created a
+zip archive that contains just about all dependencies.
+
+Get this: 
+
+http://openmodeller.org/uploadfiles/msys/msys.zip
+
+and unpack to c:\msys
+
+/!\ **Note:** If you wish to build the dependencies yourself, detailed notes 
+are available in the QGIS source tree INSTALL document.
+
+== Subversion: ==
+
+In order to check out openModeller sources from the repository, you need Subversion
+client. This installer should work fine:
+
+http://subversion.tigris.org/files/documents/15/36797/svn-1.4.3-setup.exe
+
+/!\ **Note:** You **must** use a command line svn client because its used by cmake during 
+the build process.
+
+== CMake: ==
+
+CMake is build system used by openModeller. Download it from here:
+
+http://www.cmake.org/files/v2.4/cmake-2.4.6-win32-x86.exe
+
+/!\ **Note:** Get the most recent version.
+
+== openModeller: ==
+
+Start a cmd.exe window ( Start -> Run -> cmd.exe ) Create development 
+directory and move into it
+
+``` 
+md c:\dev\cpp 
+cd c:\dev\cpp 
+```
+   
+Check out sources from SVN trunk:
+
+``` 
+svn co https://openmodeller.svn.sourceforge.net/svnroot/openmodeller/trunk/openmodeller
+
+```
+
+
+== Compiling: ==
+
+
+Start a cmd.exe window ( Start -> Run -> cmd.exe ) if you don't have one
+already.  Add paths to compiler and our MSYS environment:
+  
+``` 
+cd c:\dev\cpp\openmodeller 
+md build 
+cd build 
+```
+
+== Configuration ==
+
+```
+cmakesetup ..  
+```
+
+/!\ NOTE: You must include the '..' above.
+
+Click 'Configure' button.  When asked, you should choose 'MinGW Makefiles'
+as generator.
+
+There's a problem with MinGW Makefiles on Win2K. If you're compiling on this
+platform, use 'MSYS Makefiles' generator instead.
+
+All dependencies should be picked up automatically, if you have set up the
+Paths correctly. The only thing you need to change is the installation
+destination (CMAKE_INSTALL_PREFIX) and/or set 'Debug'.
+
+For compatibility with NSIS packaging cripts I recommend to leave the
+install prefix to its default.
+
+When configuration is done, click 'OK' to exit the setup utility.
+
+== Compilation and installation ==
+ 
+ 
+``` 
+ make
+ make install 
+```
+
+== Run openmodeller.exe from the directory where it's installed (CMAKE_INSTALL_PREFIX) ==
+
+Make sure to copy all .dll:s needed to the same directory as the openmodeller.exe
+binary is installed to, if not already done so, otherwise openModeller will complain
+about missing libraries when started.
+
+The best way to do this is to download both the openModeller current release installer
+package from http://openmodeller.sf.net and install it (make sure to get the mingw build). Now copy
+the installation dir from C:\Program Files\openModeller into c:\Program
+Files\openmodeller-0.5.2 (or whatever the current version is. The name should strictly
+match the version no.) After making this copy you can uninstall the release
+version of openModeller from your c:\Program Files directory using the provided
+uninstaller. Double check that the openModeller dir is completely gone under
+program files afterwards.
+   
+Another possibility is to run openmodeller.exe when your path contains
+c:\msys\local\bin and c:\msys\local\lib directories, so the DLLs will be
+used from that place.
+
+
+== Create the installation package: (optional) ==
+
+Downlad and install NSIS from (http://nsis.sourceforge.net/Main_Page)
+
+
+Now using windows explorer, enter the win_build directory in your openModeller source
+tree. Read the README file there and follow the instructions. Next right click
+on openmodeller.nsi and choose the option 'Compile NSIS Script'. 
+
+
+
+% -----------------------------------------------------------------------------
+% ----Please leave this break marker here for clarity - it wont be rendered ---
+% -----------------------------------------------------------------------------
+
+
+= Building under Windows using MSVC Express =
+
+Tim Sutton, 2007
+
+== System preparation ==
+
+I started with a clean XP install with Service Pack 2 and all patches applied.
+I have already compiled all the dependencies you need for gdal, expat etc,
+so this tutorial wont cover compiling those from source too. Since compiling 
+these dependencies was a somewhat painful task I hope my precompiled libs 
+will be adequate. If not I suggest you consult the individual projects for
+specific build documentation and support. Lets go over the process in a nutshell 
+before we begin:
+
+ - Install XP (I used a Parallels virtual machine)
+ - Install the premade libraries archive I have made for you
+ - Install Visual Studio Express 2005 sp1
+ - Install the Microsoft Platform SDK
+ - Install command line subversion client
+ - Install library dependencies bundle
+ - Check out openModeller sources
+ - Compile openModeller
+ - Create setup.exe installer for openModeller
+
+
+== Install the libraries archive ==
+
+Half of the point of this section of the MSVC setup procedure is to make 
+things as simple as possible for you. To that end I have prepared an
+archive that includes all dependencies needed to build openModeller. Fetch 
+the archive from:
+
+```
+http://openmodeller.org/uploadfiles/msvc/openmodeller_msvc_deps_except_qt4.zip
+```
+
+/!\ **Note:** If you wish to build the dependencies yourself, detailed notes 
+are available in the QGIS source tree INSTALL document.
+
+Create the following directory structure:
+
+```
+c:\dev\cpp\
+```
+
+And then extract the libraries archive into a subdirectory of the above
+directory so that you end up with:
+
+```
+c:\dev\cpp\openmodellerlibs-release
+```
+
+/!\ Note that you are not obliged to use this directory layout, but you 
+should adjust any instructions that follow if you plan to do things 
+differently.
+
+== Install Visual Studio Express 2005 ==
+
+First thing we need to get is MSVC Express from here:
+
+http://msdn2.microsoft.com/en-us/express/aa975050.aspx
+
+The page is really confusing so dont feel bad if you cant actually find the 
+download at first! There are six coloured blocks on the page for the various  
+studio family members (vb / c# / j# etc). Simply choose your language under 
+the 'select your language' combo under the yellow C++ block, and your download 
+will begin. Under internet explorer I had to disable popup blocking for the 
+download to be able to commence.
+
+Once the setup commences you will be prompted with various options. Here is what 
+I chose :
+
+ - Send useage information to Microsoft   (No)
+ - Install options:
+   - Graphical IDE                        (Yes)
+   - Microsoft MSDN Express Edition       (No)
+   - Microsoft SQL Server Express Edition (No)
+ - Install to folder: C:\Program Files\Microsoft Visual Studio 8\   (default)
+ 
+It will need to download around 90mb of installation files and reports 
+that the install will consume 554mb of disk space.
+
+
+== Install Microsoft Platform SDK2 ==
+
+Go to this page:
+
+http://msdn2.microsoft.com/en-us/express/aa700755.aspx
+
+Start by using the link provided on the above page to download and install the
+platform SDK2.
+
+The actual SDK download page is once again a bit confusing since the links for 
+downloading are hidden amongst a bunch of other links. Basically look for these 
+three links with their associated 'Download' buttons and choose the correct 
+link for your platform:
+
+```
+PSDK-amd64.exe  1.2 MB  Download 
+PSDK-ia64.exe   1.3 MB  Download 
+PSDK-x86.exe    1.2 MB  Download
+```
+
+
+When you install make sure to choose 'custom install'. These instructions 
+assume you are installing into the default path of:
+
+```
+C:\Program Files\Microsoft Platform SDK for Windows Server 2003 R2\
+```
+
+We will go for the minimal install that will give us a working environment, 
+so on the custom installation screen I made the following choices:
+
+
+```
+Configuration Options
+  + Register Environmental Variables            (Yes)
+Microsoft Windows Core SDK
+  + Tools                                       (Yes)
+    + Tools (AMD 64 Bit)                        (No unless this applies)
+    + Tools (Intel 64 Bit)                      (No unless this applies)
+  + Build Environment
+    + Build Environment (AMD 64 Bit)            (No unless this applies)
+    + Build Environment (Intel 64 Bit)          (No unless this applies)
+    + Build Environment (x86 32 Bit)            (Yes)
+  + Documentation                               (No)
+  + Redistributable Components                  (Yes)
+  + Sample Code                                 (No)
+  + Source Code                                 (No)
+    + AMD 64 Source                             (No)
+    + Intel 64 Source                           (No)
+Microsoft Web Workshop                          (Yes) (needed for shlwapi.h)
+  + Build Environment                           (Yes)
+  + Documentation                               (No)
+  + Sample Code                                 (No)
+  + Tools                                       (No)
+Microsoft Internet Information Server (IIS) SDK (No)
+Microsoft Data Access Services (MDAC) SDK       (Yes) (needed by GDAL for odbc)
+  + Tools
+    + Tools (AMD 64 Bit)                        (No)
+    + Tools (AMD 64 Bit)                        (No)
+    + Tools (x86 32 Bit)                        (Yes)
+  + Build Environment
+    + Tools (AMD 64 Bit)                        (No)
+    + Tools (AMD 64 Bit)                        (No)
+    + Tools (x86 32 Bit)                        (Yes)
+  + Documentation                               (No)
+  + Sample Code                                 (No)
+Microsodt Installer SDK                         (No)
+Microsoft Table PC SDK                          (No)
+Microsoft Windows Management Instrumentation    (No)
+Microsoft DirectShow SDK                        (No)
+Microsoft Media Services SDK                    (No)
+Debuggin Tools for Windows                      (Yes)
+```
+
+/!\ Note that you can always come back later to add extra bits if you like.
+
+/!\ Note that installing the SDK requires validation with the 
+Microsoft Genuine Advantage application. Some people have a philosophical 
+objection to installing this software on their computers. If you are one 
+of them you should probably consider using the MINGW build instructions 
+described elsewhere in this document.
+
+
+The SDK installs a directory called
+
+```
+C:\Office10
+```
+
+Which you can safely remove.
+
+After the SDK is installed, follow the remaining notes on the page link 
+above to get your MSVC Express environment configured correctly. For your 
+convenience, these are summarised again below, and I have added a couple 
+more paths that I discovered were needed:
+
+1) open Visual Studio Express IDE
+
+2) Tools -> Options -> Projects and Solutions -> VC++ Directories
+
+3) Add:
+```
+Executable files: 
+  C:\Program Files\Microsoft Platform SDK for Windows Server 2003 R2\Bin
+
+Include files: 
+  C:\Program Files\Microsoft Platform SDK for Windows Server 2003 R2\Include
+  C:\Program Files\Microsoft Platform SDK for Windows Server 2003 R2\Include\atl
+  C:\Program Files\Microsoft Platform SDK for Windows Server 2003 R2\Include\mfc
+Library files: C:\Program Files\Microsoft Platform SDK for Windows Server 2003 R2\Lib
+```
+
+4) Close MSVC Express IDE
+
+5) Open the following file with notepad:
+
+```
+C:\Program Files\Microsoft Visual Studio 8\VC\VCProjectDefaults\corewin_express.vsprops
+```
+
+and change the property:
+
+```
+AdditionalDependencies="kernel32.lib"
+```
+
+To read:
+
+```
+AdditionalDependencies="kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib 
+                        advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib"
+```
+
+The notes go on to show how to build a mswin32 application which you can try if you like - 
+I'm not going to recover that here.
+
+== Edit your vsvars ==
+
+Backup your vsvars32.bat file in 
+
+```
+C:\Program Files\Microsoft Visual Studio 8\Common7\Tools
+```
+
+and replace it with this one:
+
+```
+@SET VSINSTALLDIR=C:\Program Files\Microsoft Visual Studio 8
+@SET VCINSTALLDIR=C:\Program Files\Microsoft Visual Studio 8\VC
+@SET FrameworkDir=C:\WINDOWS\Microsoft.NET\Framework
+@SET FrameworkVersion=v2.0.50727
+@SET FrameworkSDKDir=C:\Program Files\Microsoft Visual Studio 8\SDK\v2.0
+@if "%VSINSTALLDIR%"=="" goto error_no_VSINSTALLDIR
+@if "%VCINSTALLDIR%"=="" goto error_no_VCINSTALLDIR
+
+@echo Setting environment for using Microsoft Visual Studio 2005 x86 tools.
+
+@rem
+@rem Root of Visual Studio IDE installed files.
+@rem
+@set DevEnvDir=C:\Program Files\Microsoft Visual Studio 8\Common7\IDE
+
+@set PATH=C:\Program Files\Microsoft Visual Studio 8\Common7\IDE;C:\Program Files\Microsoft Visual Studio 8\VC\BIN;C:\Program Files\Microsoft Visual Studio 8\Common7\Tools;C:\Program Files\Microsoft Visual Studio 8\SDK\v2.0\bin;C:\WINDOWS\Microsoft.NET\Framework\v2.0.50727;C:\Program Files\Microsoft Visual Studio 8\VC\VCPackages;%PATH%
+@rem added by Tim
+@set PATH=C:\Program Files\Microsoft Platform SDK for Windows Server 2003 R2\Bin;%PATH%
+@set INCLUDE=C:\Program Files\Microsoft Visual Studio 8\VC\INCLUDE;%INCLUDE%
+@rem added by Tim
+@set INCLUDE=C:\Program Files\Microsoft Platform SDK for Windows Server 2003 R2\Include;%INCLUDE%
+@set INCLUDE=C:\Program Files\Microsoft Platform SDK for Windows Server 2003 R2\Include\mfc;%INCLUDE%
+@set INCLUDE=%INCLUDE%;C:\dev\cpp\openmodellerlibs-release\include\postgresql
+@set LIB=C:\Program Files\Microsoft Visual Studio 8\VC\LIB;C:\Program Files\Microsoft Visual Studio 8\SDK\v2.0\lib;%LIB%
+@rem added by Tim
+@set LIB=C:\Program Files\Microsoft Platform SDK for Windows Server 2003 R2\Lib;%LIB%
+@set LIB=%LIB%;C:\dev\cpp\openmodellerlibs-release\lib
+@set LIBPATH=C:\WINDOWS\Microsoft.NET\Framework\v2.0.50727
+
+@goto end
+
+:error_no_VSINSTALLDIR
+@echo ERROR: VSINSTALLDIR variable is not set. 
+@goto end
+
+:error_no_VCINSTALLDIR
+@echo ERROR: VCINSTALLDIR variable is not set. 
+@goto end
+
+:end
+
+```
+
+== Environment Variables ==
+
+Right click on 'My computer' then select the 'Advanced' tab. Click environment variables and 
+create or augment the following **System** variables (if they dont already exist):
+
+```
+Variable Name:     Value:
+--------------------------------------------------------------------------
+EDITOR             vim
+INCLUDE            C:\Program Files\Microsoft Platform SDK for Windows Server 2003 R2\Include\.
+LIB                C:\Program Files\Microsoft Platform SDK for Windows Server 2003 R2\Lib\.
+LIB_DIR            C:\dev\cpp\qgislibs-release
+PATH               C:\Program Files\CMake 2.4\bin;
+                   %SystemRoot%\system32;
+                   %SystemRoot%;
+                   %SystemRoot%\System32\Wbem;
+                   C:\Program Files\Microsoft Platform SDK for Windows Server 2003 R2\Bin\.;
+                   C:\Program Files\Microsoft Platform SDK for Windows Server 2003 R2\Bin\WinNT\;
+                   C:\Program Files\svn\bin;C:\Program Files\Microsoft Visual Studio 8\VC\bin;
+                   C:\Program Files\Microsoft Visual Studio 8\Common7\IDE;
+                   "c:\Program Files\Microsoft Visual Studio 8\Common7\Tools";
+                   "C:\Program Files\PuTTY"
+SVN_SSH            "C:\\Program Files\\PuTTY\\plink.exe"
+                   (Note the double slashes above are not a mistake!)
+```
+
+== Install CMake ==
+
+Download and install cmake 2.4.7 or better, making sure to enable the 
+option
+
+```
+Update path for all users
+```
+
+== Install Subversion ==
+
+You **must** install the command line version if you want the CMake svn scripts to work.
+Its a bit tricky to find the correct version on the subversion download site as they have 
+som misleadingly named similar downloads. Easiest is to just get this file:
+
+http://subversion.tigris.org/downloads/1.4.5-win32/apache-2.2/svn-win32-1.4.5.zip
+
+Extract the zip file to
+
+```
+C:\Program Files\svn
+```
+
+And then add
+
+```
+C:\Program Files\svn\bin
+```
+
+To your path.
+
+
+== Initial SVN Check out ==
+
+Open a cmd.exe window and do:
+
+
+```
+cd \
+cd dev
+cd cpp
+svn co https://openmodeller.svn.sourceforge.net/svnroot/openmodeller/trunk/openmodeller
+```
+
+At this point you will probably get a message like this:
+
+```
+C:\dev\cpp>svn co https://svn.openmodeller.org/repos/openmodeller/trunk/openmodeller
+Error validating server certificate for 'https://svn.openmodeller.org:443':
+ - The certificate is not issued by a trusted authority. Use the
+   fingerprint to validate the certificate manually!
+Certificate information:
+ - Hostname: svn.openmodeller.org
+ - Valid: from Sat, 01 Apr 2006 03:30:47 GMT until Fri, 21 Mar 2008 03:30:47 GMT
+ - Issuer: Developer Team, openModeller, Anchorage, Alaska, US
+ - Fingerprint: 2f:cd:f1:5a:c7:64:da:2b:d1:34:a5:20:c6:15:67:28:33:ea:7a:9b
+(R)eject, accept (t)emporarily or accept (p)ermanently?
+```
+
+Press 'p' to accept and the svn checkout will commence.
+
+== Create Makefiles using cmakesetup.exe ==
+
+I wont be giving a detailed description of the build process, because 
+the process is explained in the first section (where you manually build 
+all dependencies) of the windows build notes in this document. Just skip 
+past the parts where you need to build GDAL etc, since this simplified 
+install process does all the dependency provisioning for you.
+
+```
+cd openmodeller
+mkdir build
+cd build
+cmakesetup ..
+```
+
+Cmakesetup should find all dependencies for you automatically (it uses the 
+LIB_DIR environment to find them all in c:\dev\cpp\qgislibs-release). 
+Press configure again after the cmakesetup gui appears and when all the red 
+fields are gone, and you have made any personalisations to the setup, press 
+ok to close the cmake gui.
+
+Now open Visual Studio Express and do:
+
+File -> Open -> Project / Solution
+
+Now open the cmake generated openModeller solution which should be in :
+
+```
+c:\dev\cpp\openmodeller\build\openmodellerX.X.X.sln
+```
+
+Where X.X.X represents the current version number of openModeller. Currently I 
+have only made release built dependencies for openModeller (debug versions will follow 
+in future), so you need to be sure to select 'Release' from the solution 
+configurations toolbar.
+
+Next right click on ALL_BUILD in the solution browser, and then choose build.
+
+Once the build completes right click on INSTALL in the solution browser and 
+choose build. This will by default install openmodeller into c:\program files\openmodellerX.X.X.
+
+== Running and packaging ==
+
+To run openModeller you need to at the minimum copy the dlls from c:\dev\cpp\openmodellerlibs-release\bin 
+into the c:\program files\openmodellerX.X.X directory.
+
+= Authors and Acknowledgments =
+
+ Tim Sutton 2007. Parts of this document were adapted from QGIS build notes 
+ I and others wrote I acknowledge the follow people who contributed to that original document:
+
+
+- Windows MINGW Section
+ - Tim Sutton, Godofredo Contreras 2006
+ - CMake additions Magnus Homann 2007
+ - Python additions Martin Dobias 2007
+ - With thanks to Tisham Dhar for preparing the initial msys environment
+
+- Windows MSVC Section 
+ - Tim Sutton 2007
+ - David Willis 2007
+ - MSVC install additions Tim Sutton 2007
+ - Juergen Fischer 2007
+
+- OSX Section
+ - Tim Sutton, 2007
+ - With special thanks to Tom Elwertowski and William Kyngesburye
+
+- GNU/Linux Section
+ - Tim Sutton 2006
+
