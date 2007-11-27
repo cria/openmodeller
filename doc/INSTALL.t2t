@@ -6,7 +6,7 @@ Compilation guide for openModeller
 %! style        : w3c_examples.css
 %! Options      : --toc --toc-level 3 --enum-title --css-sugar
 %! PostProc(html): '(?i)(<pre>)' '<div class="exampleInner">\1'
-%! PostProc(html): '(?i)(</pre>)' '\1</div class="exampleInner">'
+%! PostProc(html): '(?i)(</pre>)' '\1</div>'
 %! encoding: iso-8859-1
 
 
