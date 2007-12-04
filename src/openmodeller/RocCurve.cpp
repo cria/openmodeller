@@ -97,6 +97,28 @@ void RocCurve::_loadPredictions( const EnvironmentPtr & env,
                                  const OccurrencesPtr& presences, 
                                  const OccurrencesPtr& absences )
 {
+  // Check parameters
+
+  if ( ! env ) {
+
+    Log::instance()->error( 1, "No environment specified for the ROC curve\n" );
+    return;
+  }
+
+  if ( ! presences ) {
+
+    Log::instance()->error( 1, "No presence points specified for the ROC curve\n" );
+    return;
+  }
+
+  if ( ! absences ) {
+
+    Log::instance()->error( 1, "No absence points specified for the ROC curve\n" );
+    return;
+  }
+
+  // Load predictions
+
   int size = presences->numOccurrences() + absences->numOccurrences();
 
   _category.reserve( size );
