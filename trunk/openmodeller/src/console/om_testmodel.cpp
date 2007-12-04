@@ -32,7 +32,7 @@ int main( int argc, char **argv ) {
 
     if ( argc != 3 ) {
 
-      cout << "Usage " << argv[0] << "<serialized model> <request file with test points>" << endl;
+      cout << "Usage " << argv[0] << " <serialized model> <request file with test points>" << endl;
 
       return -1;
     }
@@ -74,10 +74,17 @@ int main( int argc, char **argv ) {
 
     OccurrencesPtr absences = oc_reader->getAbsences( oc_name.c_str() );
 
+    int num_absences = 0;
+
+    if ( absences ) {
+
+      num_absences = absences->numOccurrences();
+    }
+
     delete oc_reader;
 
     Log::instance()->info( "Loaded %u presence(s)\n", presences->numOccurrences() );
-    Log::instance()->info( "Loaded %u absence(s)\n", absences->numOccurrences() );
+    Log::instance()->info( "Loaded %u absence(s)\n", num_absences );
 
     EnvironmentPtr env = om.getEnvironment();
 
