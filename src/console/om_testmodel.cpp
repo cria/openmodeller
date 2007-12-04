@@ -72,19 +72,36 @@ int main( int argc, char **argv ) {
 
     OccurrencesPtr presences = oc_reader->getPresences( oc_name.c_str() );
 
-    OccurrencesPtr absences = oc_reader->getAbsences( oc_name.c_str() );
+    int num_presences = presences->numOccurrences();
 
-    int num_absences = 0;
+    Log::instance()->info( "Loaded %u presence(s)\n", num_presences );
+
+    OccurrencesPtr absences = oc_reader->getAbsences( oc_name.c_str() );
 
     if ( absences ) {
 
-      num_absences = absences->numOccurrences();
+      Log::instance()->info( "Loaded %u absence(s)\n", absences->numOccurrences() );
+    }
+    else {
+
+      Log::instance()->debug( "Sampling pseudo-absences\n" );
+
+      absences = new OccurrencesImpl( 0.0 );
+
+      SamplerPtr original_sampler = om.getSampler();
+
+      for ( int i = 0; i < num_presences; ++i ) {
+
+        OccurrencePtr oc = original_sampler->getPseudoAbsence();
+        absences->insert( oc );
+
+        Log::instance()->debug( "(%f,%f)\n", oc->x(), oc->y() );
+      }
+
+      Log::instance()->info( "Created %u pseudo-absence(s)\n", num_presences );
     }
 
     delete oc_reader;
-
-    Log::instance()->info( "Loaded %u presence(s)\n", presences->numOccurrences() );
-    Log::instance()->info( "Loaded %u absence(s)\n", num_absences );
 
     EnvironmentPtr env = om.getEnvironment();
 
