@@ -167,7 +167,7 @@ void ConfusionMatrix::calculate(const Model& model, const SamplerPtr& sampler)
 
 
 int ConfusionMatrix::getValue(Scalar predictionValue, 
-			      Scalar actualValue)
+			      Scalar actualValue) const
 {
   int predictedIndex, actualIndex;
 

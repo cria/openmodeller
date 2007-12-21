@@ -108,7 +108,7 @@ public:
    * @param actualValue Actual value corresponding to the 
    *  column selected in the matrix
    */
-  int getValue(Scalar predictionValue, Scalar actualValue);
+  int getValue(Scalar predictionValue, Scalar actualValue) const;
 
   /** 
    * Returns the accuracy of the model, which corresponds to the

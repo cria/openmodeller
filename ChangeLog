@@ -8,6 +8,7 @@ SVN revision: ?
 	* Changed nodata value of the default raster type (ByteHFA) to 101.
 	* Masks must now use nodata to indicate masked areas (zeros will not work anymore).
 	* om_testmodel now generates pseudo-absence points when there are no absences to be tested.
+	* Display confusion matrix cell values in om_console and om_testmodel.
 
 Release 0.5.2 (2007-10-24)
 --------------------------
