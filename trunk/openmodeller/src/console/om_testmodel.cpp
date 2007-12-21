@@ -119,8 +119,16 @@ int main( int argc, char **argv ) {
 
     Log::instance()->info( "\nModel statistics\n" );
     Log::instance()->info( "Accuracy:          %7.2f%%\n", matrix->getAccuracy() * 100 );
-    Log::instance()->info( "Omission error:    %7.2f%%\n", matrix->getOmissionError() * 100 );
-    Log::instance()->info( "Commission error:  %7.2f%%\n", matrix->getCommissionError() * 100 );
+
+    int omissions = matrix->getValue(0.0, 1.0);
+    int total     = omissions + matrix->getValue(1.0, 1.0);
+
+    Log::instance()->info( "Omission error:    %7.2f%% (%d/%d)\n", matrix->getOmissionError() * 100, omissions, total );
+
+    int commissions = matrix->getValue(1.0, 0.0);
+    total           = commissions + matrix->getValue(0.0, 0.0);
+
+    Log::instance()->info( "Commission error:  %7.2f%% (%d/%d)\n", matrix->getCommissionError() * 100, commissions, total );
 
     Log::instance()->info( "AUC:               %7.2f\n", roc_curve->getArea() );
 
