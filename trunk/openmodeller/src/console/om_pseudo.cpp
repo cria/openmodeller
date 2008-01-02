@@ -1,6 +1,7 @@
 #include <openmodeller/om.hh>
 #include <openmodeller/om_defs.hh>
 #include <openmodeller/Log.hh>
+#include <openmodeller/Random.hh>
 
 #include "getopts/getopts.h"
 
@@ -28,6 +29,7 @@ int main( int argc, char **argv ) {
     { 4, "label",     "Label for the points",                          "l", 1 },
     { 5, "seq-start", "Sequence start for points id",                  "s", 1 },
     { 6, "mask",      "Mask file",                                     "m", 1 },
+    { 7, "proportion","Proportion of absence points (in %)",           "a", 1 },
     { 0, NULL,        NULL,                                           NULL, 0 }
   };
 
@@ -38,6 +40,7 @@ int main( int argc, char **argv ) {
   std::string label("label");
   std::string sequence_start_string;
   std::string mask_file;
+  std::string proportion_string("100");
 
   while ( ( option = getopts( argc, argv, opts, &args ) ) != 0 ) {
 
@@ -72,6 +75,9 @@ int main( int argc, char **argv ) {
         break;
       case 6:
         mask_file = args;
+        break;
+      case 7:
+        proportion_string = args;
         break;
       default:
         break;
@@ -130,6 +136,26 @@ int main( int argc, char **argv ) {
     sequence_start = atoi( sequence_start_string.c_str() );
   }
 
+  if ( proportion_string.empty() ) {
+
+    proportion_string = "100";
+  }
+
+  double proportion = atof( proportion_string.c_str() );
+
+  if ( proportion > 100 ) {
+
+    proportion = 100;
+  }
+  else if ( proportion < 0 ) {
+
+    proportion = 0;
+  }
+
+  proportion /= 100;
+
+  int num_absences_to_be_generated = (int)(num_points * proportion);
+
   // Real work
 
   try {
@@ -183,11 +209,37 @@ int main( int argc, char **argv ) {
     // Header
     cout << "#id\t" << "label\t" << "long\t" << "lat\t" << "abundance" << endl;
 
+    string abundance;
+
+    int num_generated_absences = 0;
+
     for ( int i = 0; i < num_points; ++i ) {
 
       OccurrencePtr point = samp->getPseudoAbsence();
 
-      cout << sequence_start + i << "\t" << label.c_str() << "\t" << point->x() << "\t" << point->y() << "\t" << "0" << endl;
+      Random rnd;
+
+      if ( num_generated_absences == num_absences_to_be_generated ) {
+
+        // If we already have all absence points, generate a presence point
+        abundance = "1";
+      }
+      else {
+
+        // If we can still generate both categories (presence/absence), use rand
+        if ( rnd() <= proportion ) {
+
+          abundance = "0";
+
+          ++num_generated_absences;
+        }
+        else {
+
+          abundance = "1";
+        }
+      }
+
+      cout << sequence_start + i << "\t" << label.c_str() << "\t" << point->x() << "\t" << point->y() << "\t" << abundance.c_str() << endl;
     }
   }
   catch ( runtime_error e ) {
