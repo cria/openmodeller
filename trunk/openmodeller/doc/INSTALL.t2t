@@ -5,6 +5,7 @@ Compilation guide for openModeller
 %! style        : w3c_main.css
 %! style        : w3c_examples.css
 %! Options      : --toc --toc-level 3 --enum-title --css-sugar
+%! preproc      : OM_URL   http://openmodeller.sf.net/
 %! PostProc(html): '(?i)(<pre>)' '<div class="exampleInner">\1'
 %! PostProc(html): '(?i)(</pre>)' '\1</div>'
 %! encoding: iso-8859-1
@@ -38,7 +39,7 @@ openModeller. The software and hardware descriptions named in this
 document are in most cases registered trademarks and are therefore subject 
 to the legal requirements. openModeller is subject to the GNU General Public 
 License. Find more information on the openModeller Homepage:
-http://www.openmodeller.org
+OM_URL
 
 The details, that are given in this document have been written and verified 
 to the best of knowledge and responsibility of the editors. Nevertheless, 
@@ -48,12 +49,12 @@ any responsibility or liability for failures and their consequences. You are
 always welcome for indicating possible mistakes.
 
 % You can download this document as part of the openModeller 'User and 
-% Installation Guide' in HTML and PDF format via http://www.openmodeller.org. A current 
+% Installation Guide' in HTML and PDF format via OM_URL. A current 
 % version is also available at the wiki, see:
 % http://wiki.openmodeller.org/openmodellerwiki/BuildingFromSource 
 
 % Translations of this document can also be downloaded at the documentation area 
-% of the openModeller project at http://www.openmodeller.org. More information is 
+% of the openModeller project at OM_URL. More information is 
 %available via http://wiki.openmodeller.org/openmodellerwiki/DocumentationWritersCorner. 
 
 Please visit http://openmodeller.sf.net for information on joining our mailing lists 
@@ -252,10 +253,10 @@ The first time you check out openModeller sources you will probably get a messag
 this:
 
 ``` 
- Error validating server certificate for 'https://svn.openmodeller.org:443':
+ Error validating server certificate for 'https://openmodeller.svn.sourceforge.net:443':
  - The certificate is not issued by a trusted authority. Use the fingerprint to
    validate the certificate manually!  Certificate information:
- - Hostname: svn.openmodeller.org
+ - Hostname: openmodeller.svn.sourceforge.net
  - Valid: from Apr  1 00:30:47 2006 GMT until Mar 21 00:30:47 2008 GMT
  - Issuer: Developer Team, openModeller, Anchorage, Alaska, US
  - Fingerprint: 2f:cd:f1:5a:c7:64:da:2b:d1:34:a5:20:c6:15:67:28:33:ea:7a:9b
@@ -375,14 +376,14 @@ svn co https://openmodeller.svn.sourceforge.net/svnroot/openmodeller/trunk/openm
 ```
 
 The first time you check out the source you will be prompted to accept the
-openmodeller.org certificate. Press 'p' to accept it permanently:
+openmodeller.svn.sourceforge.net certificate. Press 'p' to accept it permanently:
 
 ``` 
-Error validating server certificate for 'https://svn.openmodeller.org:443':
+Error validating server certificate for 'https://openmodeller.svn.sourceforge.net:443':
    - The certificate is not issued by a trusted authority. Use the
      fingerprint to validate the certificate manually!  Certificate
      information:
-   - Hostname: svn.openmodeller.org
+   - Hostname: openmodeller.svn.sourceforge.net
    - Valid: from Apr  1 00:30:47 2006 GMT until Mar 21 00:30:47 2008 GMT
    - Issuer: Developer Team, openModeller, Anchorage, Alaska, US
    - Fingerprint:
@@ -449,7 +450,7 @@ zip archive that contains just about all dependencies.
 
 Get this: 
 
-http://openmodeller.org/uploadfiles/msys/msys.zip
+http://openmodeller.cria.org.br/uploadfiles/msys/msys.zip
 
 and unpack to c:\msys
 
@@ -604,7 +605,7 @@ archive that includes all dependencies needed to build openModeller. Fetch
 the archive from:
 
 ```
-http://openmodeller.org/uploadfiles/msvc/openmodeller_msvc_deps_except_qt4.zip
+http://openmodeller.cria.org.br/uploadfiles/msvc/openmodeller_msvc_deps_except_qt4.zip
 ```
 
 /!\ **Note:** If you wish to build the dependencies yourself, detailed notes 
@@ -917,12 +918,12 @@ svn co https://openmodeller.svn.sourceforge.net/svnroot/openmodeller/trunk/openm
 At this point you will probably get a message like this:
 
 ```
-C:\dev\cpp>svn co https://svn.openmodeller.org/repos/openmodeller/trunk/openmodeller
-Error validating server certificate for 'https://svn.openmodeller.org:443':
+C:\dev\cpp>svn co https://openmodeller.svn.sourceforge.net/repos/openmodeller/trunk/openmodeller
+Error validating server certificate for 'https://openmodeller.svn.sourceforge.net:443':
  - The certificate is not issued by a trusted authority. Use the
    fingerprint to validate the certificate manually!
 Certificate information:
- - Hostname: svn.openmodeller.org
+ - Hostname: openmodeller.svn.sourceforge.net
  - Valid: from Sat, 01 Apr 2006 03:30:47 GMT until Fri, 21 Mar 2008 03:30:47 GMT
  - Issuer: Developer Team, openModeller, Anchorage, Alaska, US
  - Fingerprint: 2f:cd:f1:5a:c7:64:da:2b:d1:34:a5:20:c6:15:67:28:33:ea:7a:9b
