@@ -52,6 +52,20 @@ Run tests:
 
 $make test
 
+or
+
+$ctest
+
+or
+
+$ctest -R om_test_occurrence
+
+or
+
+$ctest -R om_test_alg*
+
+Add -V to increase verbosity
+
 
 
 
