@@ -12,16 +12,16 @@ openModeller - Open Source Spatial Distribution Modeller
   FAPESP - Fundacao de Amparo a Pesquisa do Estado de SP
   http://www.fapesp.br/
 
-* Project page: 
+* Website: 
 
-  http://www.sf.net/projects/openmodeller
+  http://openmodeller.sf.net/
 
 
 OVERVIEW
 --------
 
 The original motivation of openModeller was to automate the tedious and
-complex tasks involved in biological distribution modelling regarding 
+complex tasks involved in species' potential distribution modelling regarding 
 map file formats, georeferencing issues, resamples, map interpolations, etc.
 Some consequences arise from this automation:
 
@@ -34,19 +34,19 @@ b) Different tasks can be performed by independent components in distributed
    the GBIF portal) and for environmental data. These data are hard to find
    (with high quality) and some times are enormous.
 
-c) Powerfull computers could be used to run heavy algorithms (like GARP) 
+c) Powerfull computers can be used to run heavy algorithms (like GARP) 
    and that could also be done in parallel (clustering).
 
 
 CURRENT STATUS
 --------------
 
-- Core modelling interface implemented in c++ (control interface).
-- Algorithms dinamically loaded as separate c++ libraries (algorithm
+- Core modelling interface implemented in ANSI C++ (control interface).
+- Algorithms dinamically loaded as separate C++ libraries (algorithm
   interface).
 - Simple command-line (console) interface.
-- SOAP interface prototype.
-- Desktop interface available as a plug-in to Quantum GIS.
+- SOAP interface.
+- Desktop interface (available in a separate package).
 
 
 LICENSE
@@ -74,10 +74,10 @@ REQUIREMENTS
 * GDAL (Geospatial Data Abstraction Library) version >= 1.1.9
   http://www.remotesensing.org/gdal
 
-* to run the simple map viewer (om_viewer) libX11 is needed
+* To run the simple map viewer (om_viewer), libX11 is needed
   (tested with version 6.2)
 
-* to run the CSM (Climate Space Model) algorithm the GSL (GNU
+* To run the CSM (Climate Space Model) algorithm, the GSL (GNU
   Scientific Library) version >= 1.4 is needed
   http://www.gnu.org/software/gsl
 
