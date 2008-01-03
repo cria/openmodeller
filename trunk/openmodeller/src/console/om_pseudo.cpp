@@ -25,11 +25,11 @@ int main( int argc, char **argv ) {
   {
     { 1, "log-level", "Set the log level (debug, warn, info, error)", NULL, 1 },
     { 2, "version",   "Display the version info",                      "v", 0 },
-    { 3, "num-points","Number of points to be generated",              "p", 1 },
+    { 3, "num-points","Number of points to be generated",              "n", 1 },
     { 4, "label",     "Label for the points",                          "l", 1 },
     { 5, "seq-start", "Sequence start for points id",                  "s", 1 },
     { 6, "mask",      "Mask file",                                     "m", 1 },
-    { 7, "proportion","Proportion of absence points (in %)",           "a", 1 },
+    { 7, "proportion","Proportion of absence points (in %)",           "p", 1 },
     { 0, NULL,        NULL,                                           NULL, 0 }
   };
 
@@ -61,7 +61,7 @@ int main( int argc, char **argv ) {
         log_level = args;
         break;
       case 2:
-        printf("om_pseudo 0.2.0\n");
+        printf("om_pseudo 0.3.0\n");
         exit(0);
         break;
       case 3:
