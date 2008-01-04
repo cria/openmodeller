@@ -193,9 +193,9 @@ public:
 
   void normalize( Normalizer * normalizerPtr );
 
-  void setNormalizedEnvironment( const Sample& );
+  void setNormalizedEnvironment( const Sample& s );
 
-  void setUnnormalizedEnvironment( const Sample& );
+  void setUnnormalizedEnvironment( const Sample& s );
 
   bool hasEnvironment() const;
 
