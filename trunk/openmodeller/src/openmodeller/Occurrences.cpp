@@ -166,8 +166,8 @@ OccurrencesImpl::setEnvironment( const EnvironmentPtr& env, const char *type )
 
     if ( sample.size() == 0 ) {
 
-      Log::instance()->info( "%s Point \"%s\" at (%f,%f) has no environment. It will be discarded.\n", 
-             type, ((*oc)->id()).c_str(), (*oc)->x(), (*oc)->y() );
+      Log::instance()->info( "%s Point \"%s\" at (%f,%f) has no environment. It will be discarded.\n", type, ((*oc)->id()).c_str(), (*oc)->x(), (*oc)->y() );
+
       oc = occur_.erase( oc );
       fin = occur_.end();
     } 

@@ -195,6 +195,43 @@ EnvironmentImpl::~EnvironmentImpl()
   _normalizerPtr = 0;
 }
 
+
+/*****************/
+/*** deep copy ***/
+
+EnvironmentImpl*
+EnvironmentImpl::clone() const
+{
+  std::vector<std::string> categs;
+  std::vector<std::string> maps;
+
+  layers::const_iterator lay = _layers.begin();
+  layers::const_iterator end = _layers.end();
+
+  while ( lay != end ) {
+
+    if ( lay->second->isCategorical() ) {
+
+      categs.push_back( lay->first );
+    }
+    else {
+
+      maps.push_back( lay->first );
+    }
+
+    ++lay;
+  }
+
+  EnvironmentImpl* clone = new EnvironmentImpl( categs, maps, _mask.first );
+
+  if ( _normalizerPtr ) {
+
+    clone->normalize( _normalizerPtr );
+  }
+
+  return clone;
+}
+
 void
 EnvironmentImpl::clearLayers() {
   if (_layers.size() < 1) {
@@ -217,7 +254,7 @@ EnvironmentImpl::clearMask() {
   _mask.second = 0;
 }
 
-/******************/
+/*********************/
 /*** configuration ***/
 
 ConfigurationPtr
@@ -604,4 +641,6 @@ EnvironmentImpl::removeLayer(unsigned int index)
   }
 
   _layers.erase( it );
+
+  calcRegion();
 }

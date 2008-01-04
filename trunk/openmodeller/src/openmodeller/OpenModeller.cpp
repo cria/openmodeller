@@ -338,7 +338,7 @@ OpenModeller::createModel()
 
   _alg->createModel( _samp, _model_command, _abortion_command );
 
-  Log::instance()->info( "\nFinished creating model\n" );
+  Log::instance()->info( "Finished creating model\n" );
 
   return 1;
 }
@@ -660,12 +660,19 @@ OpenModeller::setModelConfiguration( const ConstConfigurationPtr & config )
   _roc_curve->reset();
 
   Log::instance()->debug( "Creating sampler\n" );
+
   _samp = createSampler( config->getSubsection( "Sampler" ) );
 
-  Log::instance()->debug( "Getting sampler environment\n" );
+  Log::instance()->debug( "Getting sampler attributes\n" );
+
   _env = _samp->getEnvironment();
 
+  _presence = _samp->getPresences();
+
+  _absence = _samp->getAbsences();
+
   Log::instance()->debug( "Getting algorithm from algorithm factory\n" );
+
   _alg = AlgorithmFactory::newAlgorithm( config->getSubsection( "Algorithm" ) );
 
   // Model creation options
@@ -692,6 +699,7 @@ OpenModeller::setModelConfiguration( const ConstConfigurationPtr & config )
   }
 
   Log::instance()->debug( "Assigning sampler to algorithm\n" );
+
   _alg->setSampler( _samp );
 }
 
@@ -785,13 +793,13 @@ OpenModeller::jackknife()
     return;
   }
 
-  if ( ! _env ) {
+  if ( ! _samp ) {
 
-    Log::instance()->error( 1, "No environment specified for jackknife" );
+    Log::instance()->error( 1, "No sampler specified for jackknife" );
     return;
   }
 
-  int num_layers = _env->numLayers();
+  int num_layers = _samp->numIndependent();
 
   if ( num_layers < 2 ) {
 
@@ -800,51 +808,79 @@ OpenModeller::jackknife()
   }
 
   // Calculate reference parameter using all layers
-  createModel();   
+  createModel();
 
   _confusion_matrix->calculate( getModel(), getSampler() );
 
   double param = _confusion_matrix->getAccuracy();
 
-  Log::instance()->debug( "Param = %f\n", param );
-
   // Calculate reference parameter for each layer by excluding it from the layer set
 
   std::vector<double> params;   // <------ output 1
 
-  EnvironmentPtr env_orig = _env;
-
   double mean = 0.0;            // <------ output 2
   double variance = 0.0;        // <------ output 3
 
-  for ( int i = 0; i < num_layers; ++i ) {
+  // Keep a reference to the original sampler
+  SamplerPtr original_sampler = _samp;
 
-    _env = env_orig; 
+  // Work with clones of the occurrences 
+  OccurrencesPtr presences;
+  OccurrencesPtr absences;
 
-    _env->removeLayer( i );
+  if ( original_sampler->numPresence() ) {
 
-    //SamplerPtr newsampler = createSampler( _env, _presence, _absence );
+    presences = original_sampler->getPresences()->clone();
+  }
 
-    //setSampler( newsampler );
+  if ( original_sampler->numAbsence() ) {
+
+    absences = original_sampler->getAbsences()->clone();
+  }
+
+  for ( unsigned int i = 0; i < num_layers; ++i ) {
+
+    Log::instance()->debug( "Removing layer with index %u\n", i );
+
+    // Copy the original environment
+    EnvironmentPtr env = original_sampler->getEnvironment()->clone();
+
+    // Remove one of the layers
+    env->removeLayer( i );
+
+    // Read environment data from the new set of layers
+    if ( presences ) {
+
+      presences->setEnvironment( env );
+    }
+
+    if ( absences ) {
+
+      absences->setEnvironment( env );
+    }
+
+    // Create the new sampler
+    SamplerPtr new_sampler = createSampler( env, presences, absences );
+
+    // Overwrite _samp property since createModel only works with the current properties
+    setSampler( new_sampler );
 
     createModel();
 
     _confusion_matrix->calculate( getModel(), getSampler() );
 
-    //std::ostringstream myOutputStream;
-    //ConfigurationPtr c = getModelConfiguration();
-    //Configuration::writeXml( c, myOutputStream);
-    //Log::instance()->debug( myOutputStream.str().c_str() );
-
     double myaccuracy = _confusion_matrix->getAccuracy();
-
-    Log::instance()->debug( "tmp = %f\n", myaccuracy );
 
     mean += myaccuracy;
     variance += myaccuracy*myaccuracy;
 
     params.push_back( myaccuracy );
   }
+
+  // Switch back to the original sampler
+  setSampler( original_sampler );
+
+  Log::instance()->debug( "Param = %f\n", param );
 
   std::vector<double>::iterator it = params.begin();
   std::vector<double>::iterator end = params.end();

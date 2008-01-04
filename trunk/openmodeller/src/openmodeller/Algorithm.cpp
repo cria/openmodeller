@@ -321,8 +321,10 @@ AlgorithmImpl::setNormalization( const EnvironmentPtr& env) const
 Model
 AlgorithmImpl::createModel( const SamplerPtr& samp, Algorithm::ModelCommand *model_command, AbortionCommand *abort_command ) {
 
-  if ( !samp )
+  if ( !samp ) {
+
     throw AlgorithmException( "Sampler not specified." );
+  }
 
   if ( !samp->numPresence() && !samp->numAbsence() ) {
 

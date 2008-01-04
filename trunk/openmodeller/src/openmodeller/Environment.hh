@@ -101,6 +101,9 @@ public:
 
   ~EnvironmentImpl();
 
+  /** Deep copy of this. */
+  EnvironmentImpl* clone() const;
+
   unsigned int numLayers() const  { return _layers.size(); }
 
   /** Returns 1 if the i-th variable is categorical.
@@ -109,7 +112,8 @@ public:
   int isCategorical( int i );
 
   /** Indicate that all non categorical variable layers must
-   *  be normalized according to the interval [min, max]. */
+   *  be normalized according to the interval [min, max].
+   */
   void getMinMax( Sample * min, Sample * max ) const;
 
   /** Set specific normalization parameters

@@ -173,11 +173,11 @@ SamplerImpl::setConfiguration( const ConstConfigurationPtr& config )
   // abundance values.
   //
 
-  Log::instance()->debug( "Getting presence\n");
+  Log::instance()->debug( "Getting presence\n" );
   OccurrencesPtr presence( new OccurrencesImpl(1.0) );
   presence->setConfiguration( config->getSubsection( "Presence" ) );
 
-  Log::instance()->debug( "Getting absence\n");
+  Log::instance()->debug( "Getting absence\n" );
   OccurrencesPtr absence;
 
   if ( ConstConfigurationPtr absence_config = config->getSubsection( "Absence", false ) ) {
@@ -415,8 +415,7 @@ SamplerImpl::environmentallyUnique( OccurrencesPtr& occurrencesPtr, const char *
 
       if ( sample.equals( nextSample ) ) {
 
-        Log::instance()->info ( "%s Point at (%f,%f) has no unique environment. It will be discarded.\n", 
-               type, (*next)->x(), (*next)->y() );
+        Log::instance()->info( "%s Point at (%f,%f) has no unique environment. It will be discarded.\n", type, (*next)->x(), (*next)->y() );
 
         // Remove duplicates
         next = occurrencesPtr->erase( next );
@@ -489,8 +488,7 @@ SamplerImpl::spatiallyUnique( OccurrencesPtr& occurrencesPtr, const char *type )
 
       if ( row == nextRow && col == nextCol ) {
 
-        Log::instance()->info("%s Point at (%f,%f) has no unique geography. It will be discarded.\n", 
-               type, (*next)->x(), (*next)->y() );
+        Log::instance()->info( "%s Point at (%f,%f) has no unique geography. It will be discarded.\n", type, (*next)->x(), (*next)->y() );
 
         // Remove duplicates
         next = occurrencesPtr->erase( next );
