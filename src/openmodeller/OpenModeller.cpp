@@ -783,7 +783,7 @@ OpenModeller::setProjectionConfiguration( const ConstConfigurationPtr & config )
 /*************************/
 /******* Jackknife *******/
 void
-OpenModeller::jackknife()
+OpenModeller::jackknife( double propTrain )
 {
   Log::instance()->debug( "Running jackknife\n" );
 
@@ -807,10 +807,20 @@ OpenModeller::jackknife()
     return;
   }
 
+  // Keep a reference to the original sampler
+  SamplerPtr original_sampler = _samp;
+
+  SamplerPtr train;
+  SamplerPtr test;
+
+  splitSampler( _samp, &train, &test, propTrain );
+
+  setSampler( train );
+
   // Calculate reference parameter using all layers
   createModel();
 
-  _confusion_matrix->calculate( getModel(), getSampler() );
+  _confusion_matrix->calculate( getModel(), test );
 
   double param = _confusion_matrix->getAccuracy();
 
@@ -821,21 +831,18 @@ OpenModeller::jackknife()
   double mean = 0.0;            // <------ output 2
   double variance = 0.0;        // <------ output 3
 
-  // Keep a reference to the original sampler
-  SamplerPtr original_sampler = _samp;
-
   // Work with clones of the occurrences 
   OccurrencesPtr presences;
   OccurrencesPtr absences;
 
-  if ( original_sampler->numPresence() ) {
+  if ( train->numPresence() ) {
 
-    presences = original_sampler->getPresences()->clone();
+    presences = train->getPresences()->clone();
   }
 
-  if ( original_sampler->numAbsence() ) {
+  if ( train->numAbsence() ) {
 
-    absences = original_sampler->getAbsences()->clone();
+    absences = train->getAbsences()->clone();
   }
 
   for ( unsigned int i = 0; i < num_layers; ++i ) {
@@ -867,7 +874,7 @@ OpenModeller::jackknife()
 
     createModel();
 
-    _confusion_matrix->calculate( getModel(), getSampler() );
+    _confusion_matrix->calculate( getModel(), test );
 
     double myaccuracy = _confusion_matrix->getAccuracy();
 
@@ -882,12 +889,16 @@ OpenModeller::jackknife()
 
   Log::instance()->debug( "Param = %f\n", param );
 
+  EnvironmentPtr env = _samp->getEnvironment();
+
+  std::sort( params.begin(), params.end() );
+
   std::vector<double>::iterator it = params.begin();
   std::vector<double>::iterator end = params.end();
   unsigned int cnt = 0;
   for ( ; it != end; ++it,++cnt ) {
 
-    Log::instance()->debug( "Param[%u] = %f\n", cnt, params[cnt] );
+    Log::instance()->debug( "Param[%u] = %f -> %s\n", cnt, params[cnt], (env->getLayerPath( cnt )).c_str() );
   }
 
   mean /= num_layers;

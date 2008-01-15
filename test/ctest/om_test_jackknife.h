@@ -81,7 +81,7 @@ class test_Jackknife : public CxxTest :: TestSuite
         std::string myInFileName("/tmp/model_request.xml");
         ConfigurationPtr c1 = Configuration::readXml( myInFileName.c_str() );
         om.setModelConfiguration(c1);
-        om.jackknife();
+        om.jackknife( 0.90 );
         return ;
       }
       catch( std::exception& e ) {
