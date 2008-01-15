@@ -556,25 +556,26 @@ static void splitOccurrences(OccurrencesPtr& occurrences,
   std::vector<int> goToTrainSet(n);
 
   // first k are set to go to train set
-  for (i = 0; i < k; i++) {
+  for ( i = 0; i < k; i++ ) {
 
     goToTrainSet[i] = 1;
   }
 
   // all others are set to go to test set
-  for (; i < n; i++) {
+  for ( ; i < n; i++ ) {
 
     goToTrainSet[i] = 0;
   }
 
   // shuffle elements well
-  std::random_shuffle(goToTrainSet.begin(), goToTrainSet.end());
+  std::random_shuffle( goToTrainSet.begin(), goToTrainSet.end() );
 
   // traverse occurrences copying them to the right sampler
   OccurrencesImpl::const_iterator it = occurrences->begin();
   OccurrencesImpl::const_iterator fin = occurrences->end();
 
   i = 0;
+
   while( it != fin ) {
 
     if ( goToTrainSet[i] ) {
@@ -587,11 +588,11 @@ static void splitOccurrences(OccurrencesPtr& occurrences,
       testOccurrences->insert( new OccurrenceImpl( *(*it) ) );
       //printf("-");
     }
+
     ++i; ++it;
   }
 
   //printf("\n");
-
 }
 
 
@@ -604,15 +605,21 @@ void splitSampler(const SamplerPtr& orig,
 {
   // split presences
   OccurrencesPtr presence = orig->getPresences();
-  OccurrencesPtr test_presence( new OccurrencesImpl( presence->name(),  
-                                                     presence->coordSystem() ) );
 
-  OccurrencesPtr train_presence( new OccurrencesImpl( presence->name(),
-                                                      presence->coordSystem() ) );
+  OccurrencesPtr test_presence;
 
-  splitOccurrences( presence, train_presence, test_presence, propTrain );
+  OccurrencesPtr train_presence;
 
-  // split absences if there are any
+  if ( presence ) {
+
+    test_presence = new OccurrencesImpl( presence->name(), presence->coordSystem() );
+
+    train_presence = new OccurrencesImpl( presence->name(), presence->coordSystem() );
+
+    splitOccurrences( presence, train_presence, test_presence, propTrain );
+  }
+
+  // split absences
   OccurrencesPtr train_absence;
   OccurrencesPtr test_absence;
 
@@ -620,11 +627,11 @@ void splitSampler(const SamplerPtr& orig,
 
   if ( absence ) { 
 
-    test_absence = new OccurrencesImpl( absence->name(), absence->coordSystem());
+    test_absence = new OccurrencesImpl( absence->name(), absence->coordSystem() );
 
-    train_absence = new OccurrencesImpl( absence->name(), absence->coordSystem());
+    train_absence = new OccurrencesImpl( absence->name(), absence->coordSystem() );
 
-    splitOccurrences(absence, train_absence, test_absence, propTrain);
+    splitOccurrences( absence, train_absence, test_absence, propTrain );
   }
 
   *train = new SamplerImpl( orig->getEnvironment(), 
