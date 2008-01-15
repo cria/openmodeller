@@ -162,9 +162,9 @@ public:
 
   Map * getMask() const { return _mask.second; }
 
-  const std::string& getLayerFilename(int index) const { return _layers[index].first; }
+  const std::string& getLayerPath(int index) const { return _layers[index].first; }
 
-  const std::string& getMaskFilename() const { return _mask.first; }
+  const std::string& getMaskPath() const { return _mask.first; }
 
   void removeLayer(unsigned int index);
 
