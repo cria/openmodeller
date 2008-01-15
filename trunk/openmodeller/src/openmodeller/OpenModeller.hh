@@ -380,7 +380,7 @@ public:
    *
    ****************************************************************************/
   
-   void jackknife();
+   void jackknife( double propTrain );
   
 private:
 
