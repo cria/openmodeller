@@ -378,9 +378,10 @@ RasterGdal::create( int format )
         /* opt parameters */ papszOptions );
     CSLDestroy( papszOptions );
   }
-  /* //ArcMap needs a LZW compression license to read files compressed 
-   * //like this so its commented out for now - though enabling
-   * //compression offers significant size reduction in images
+  //ArcMap needs a LZW compression license to read files compressed 
+  //like this so you may need to comment out this code if you want
+  //to open the generated maps without having the license. Compression 
+  //is enabled for now because it offers significant size reduction.
   else if (format==MapFormat::GreyTiff100)
   {
     //lzw compression and represent each pixel with 7bits only
@@ -394,7 +395,6 @@ RasterGdal::create( int format )
         papszOptions ); //opt parameters
     CSLDestroy( papszOptions );
   }
-  */
   else {
 
     //uncompressed
