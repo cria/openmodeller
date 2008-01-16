@@ -845,7 +845,7 @@ OpenModeller::jackknife( double propTrain )
     absences = train->getAbsences()->clone();
   }
 
-  for ( unsigned int i = 0; i < num_layers; ++i ) {
+  for ( int i = 0; i < num_layers; ++i ) {
 
     Log::instance()->debug( "Removing layer with index %u\n", i );
 
