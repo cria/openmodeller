@@ -54,7 +54,7 @@ int main( int argc, char **argv ) {
         break;
       // Special Case: getopts() can't allocate memory.
       case -1:
-        printf( "Unabled to allocate memory from getopts().\n" );
+        printf( "Unable to allocate memory from getopts().\n" );
         exit(-1);
         break;
       case 1:
@@ -244,7 +244,7 @@ int main( int argc, char **argv ) {
   }
   catch ( runtime_error e ) {
 
-    printf( "Exception: %s\n", e.what() );
+    printf( "om_pseudo: %s\n", e.what() );
     exit(-1);
   }
 
