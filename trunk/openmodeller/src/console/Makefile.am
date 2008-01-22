@@ -72,13 +72,13 @@ om_pseudo_SOURCES = om_pseudo.cpp getopts/getopts.c
 om_pseudo_CPPFLAGS = -DCORE_DLL_IMPORT -I$(OMSRCDIR) -I getopts $(TERRALIB_FLAGS) -Ddllexp=
 om_pseudo_LDADD = $(GDAL_LIB) $(OMLIB) $(EXPAT_LIBS) $(TERRALIB_LIB)
 
-om_project_SOURCES = om_project.cpp  
-om_project_CPPFLAGS = -DCORE_DLL_IMPORT -I$(OMSRCDIR) $(TERRALIB_FLAGS) -Ddllexp= -DOM_XML_DLL_EXPORT=
-om_project_LDADD = $(GDAL_LIB) $(OMLIB) $(EXPAT_LIBS) $(OM_XML_LIB) $(TERRALIB_LIB)
+om_create_SOURCES = om_create.cpp om_cmd_utils.cpp getopts/getopts.c
+om_create_CPPFLAGS = -DCORE_DLL_IMPORT -I$(OMSRCDIR) -I getopts $(TERRALIB_FLAGS) -Ddllexp=
+om_create_LDADD = $(GDAL_LIB) $(OMLIB) $(EXPAT_LIBS) $(TERRALIB_LIB)
 
-om_create_SOURCES = om_create.cpp 
-om_create_CPPFLAGS = -DCORE_DLL_IMPORT -I$(OMSRCDIR) $(TERRALIB_FLAGS) -Ddllexp= -DOM_XML_DLL_EXPORT=
-om_create_LDADD = $(GDAL_LIB) $(OMLIB) $(EXPAT_LIBS) $(OM_XML_LIB) $(TERRALIB_LIB)
+om_project_SOURCES = om_project.cpp om_cmd_utils.cpp getopts/getopts.c
+om_project_CPPFLAGS = -DCORE_DLL_IMPORT -I$(OMSRCDIR) -I getopts $(TERRALIB_FLAGS) -Ddllexp=
+om_project_LDADD = $(GDAL_LIB) $(OMLIB) $(EXPAT_LIBS) $(OM_XML_LIB) $(TERRALIB_LIB)
 
 om_metadump_SOURCES = om_metadump.cpp 
 om_metadump_CPPFLAGS = -DCORE_DLL_IMPORT -I$(OMSRCDIR) $(TERRALIB_FLAGS) -Ddllexp= -DOM_XML_DLL_EXPORT=

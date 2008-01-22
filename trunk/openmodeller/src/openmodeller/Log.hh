@@ -31,6 +31,7 @@
 #include <openmodeller/om_defs.hh>
 
 #include <iostream>
+#include <fstream>
 #include <string>
 #include <stdarg.h>
 
@@ -80,7 +81,6 @@ class dllexp Log
      */
     Log( );
 
-
   public:
 
     ~Log();
@@ -88,11 +88,10 @@ class dllexp Log
     /** Configure the logger.
      * 
      * @param level Log level.
-     * @param out Where to output logs. Will not be closed in
-     *  destructor.
+     * @param fileName Log file name.
      * @param pref Prefix to be shown on every message.
      */
-    void set( Level level, FILE *out, char const *pref="" );
+    void set( Level level, std::string fileName, char const *pref="" );
 
     /** Change the call back mechanism
      *  The Log object takes ownership of the object
@@ -123,14 +122,17 @@ class dllexp Log
 
     //write log out to callback
    void FormatAndWrite( Log::LogCallback& lc, Log::Level level, std::string pref, const char* format, va_list ap );
+
     static Log * mpInstance;
+
     LogCallback* callback;
 
     Level _level;
+
     std::string _pref;
+
     bool _deleteCallback; // flag indicating if the callback should be deleted by Log
 };
-
 
 #endif
 

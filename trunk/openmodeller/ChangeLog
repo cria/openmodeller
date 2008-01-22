@@ -10,6 +10,9 @@ SVN revision: ?
 	* om_testmodel now generates pseudo-absence points when there are no absences to be tested.
 	* Display confusion matrix cell values in om_console and om_testmodel.
 	* Renamed getLayerFilename to getLayerPath and getMaskFilename to getMaskPath in EnvironmentPtr class.
+	* Refactored om_pseudo, om_create and om_project to use the getopts command line library.
+	* Created man pages for om_pseudo, om_create and om_project.
+	* New parameter in om_pseudo to speficy the proportion of absence points to be generated.
 
 Release 0.5.2 (2007-10-24)
 --------------------------
