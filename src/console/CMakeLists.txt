@@ -22,11 +22,15 @@ SET (OMTESTMODEL_SRCS
     request_file.cpp 
     file_parser.cpp
     )
-SET (OMPROJECT_SRCS 
-     om_project.cpp  
-     )
 SET (OMCREATE_SRCS
      om_create.cpp
+     getopts/getopts.c 
+     om_cmd_utils.cpp 
+     )
+SET (OMPROJECT_SRCS 
+     om_project.cpp  
+     getopts/getopts.c 
+     om_cmd_utils.cpp 
      )
 SET (OMMETADUMP_SRCS
      om_metadump.cpp
@@ -84,10 +88,10 @@ ADD_EXECUTABLE (om_console ${OMCONSOLE_SRCS})
 TARGET_LINK_LIBRARIES(om_console openmodeller )
 
 ADD_EXECUTABLE (om_create ${OMCREATE_SRCS})
-TARGET_LINK_LIBRARIES(om_create openmodeller openmodellerxml)
+TARGET_LINK_LIBRARIES(om_create openmodeller)
 
 ADD_EXECUTABLE (om_project ${OMPROJECT_SRCS})
-TARGET_LINK_LIBRARIES(om_project openmodeller openmodellerxml)
+TARGET_LINK_LIBRARIES(om_project openmodeller)
 
 ADD_EXECUTABLE (om_dump ${OMDUMP_SRCS})
 TARGET_LINK_LIBRARIES(om_dump openmodeller)

@@ -31,6 +31,8 @@
 #include <openmodeller/Exceptions.hh>
 
 using std::ostream;
+using std::ios_base;
+using std::fstream;
 using std::endl;
 using std::string;
 //
@@ -54,22 +56,37 @@ Log *Log::instance()
 #define vsnprintf		_vsnprintf
 #endif
 
-/* This callback class is a simple interface to the old FILE*
- * mechanism from standard C.
- */
+/****************************************************************/
+/******************** StdFileLogCallback ************************/
+
 class StdFileLogCallback : public Log::LogCallback {
 public:
-  StdFileLogCallback( FILE* file ) :
-    file( file )
-  {}
+
+  StdFileLogCallback( std::string fileName ) {
+
+    file.open( fileName.c_str(), ios_base::out );
+
+    if ( file.fail() ) {
+
+      fprintf( stderr, "Could not open log file!\n" );
+    }
+  }
+
   ~StdFileLogCallback() {
+
+    file.close();
   }
+
   void operator()( Log::Level level, const std::string& msg ) {
-   if ( file != NULL ) {
-     fprintf( file, "%s", msg.c_str() );
-   }
+
+    if ( file.is_open() ) {
+
+      file << msg.c_str();
+      file.flush();
+    }
   }
-  FILE *file;
+
+  std::fstream file;
 };
 
 /****************************************************************/
@@ -113,7 +130,6 @@ Log::FormatAndWrite( Log::LogCallback& lc, Log::Level level, std::string pref, c
   vsnprintf( end, buf_size - len, format, ap );
 
   lc( level, buf );
-
 }
 
 /****************************************************************/
@@ -142,18 +158,20 @@ Log::~Log()
   }
 }
 
-/******************/
+/**************************/
 /*** set all parameters ***/
+//void
+//Log::set( Log::Level level, FILE* out, char const *pref )
 void
-Log::set( Log::Level level, FILE* out, char const *pref )
+Log::set( Log::Level level, std::string fileName, char const *pref )
 {
   setLevel( level );
-  setCallback( new StdFileLogCallback( out ) );
+  setCallback( new StdFileLogCallback( fileName ) );
   setPrefix( pref );
   _deleteCallback = true;
 }
 
-/******************/
+/********************/
 /*** set Callback ***/
 void
 Log::setCallback( LogCallback *lc )
@@ -188,8 +206,10 @@ Log::setPrefix( const char *pref )
 void
 Log::debug( const char *format, ... )
 {
-  if ( _level > Debug || !callback )
+  if ( _level > Debug || ! callback ) {
+
     return;
+  }
 
   va_list ap;
   va_start( ap, format );
