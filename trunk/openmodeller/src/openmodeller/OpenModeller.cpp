@@ -370,7 +370,7 @@ OpenModeller::createMap( const EnvironmentPtr & env, char const *output_file, Ma
 
   if ( ! env ) {
 
-    Log::instance()->info( "Projection environment not specified.\n" );
+    Log::instance()->info( "Projection environment not specified\n" );
     return 0;
   }
 
@@ -402,7 +402,7 @@ OpenModeller::createMap( const EnvironmentPtr & env, char const *output_file, Ma
     if ( fname.compare( pos, 4, ".bmp" ) == 0 ) {
 
       _format.setFormat( MapFormat::GreyBMP );
-      Log::instance()->warn ( "Using greyscale bmp as output format based on extension");
+      Log::instance()->warn ( "Using greyscale bmp as output format based on extension\n" );
     }
   }
 
@@ -416,7 +416,7 @@ OpenModeller::createMap( const EnvironmentPtr & env, char const *output_file, Ma
     return 0;
   }
 
-  Log::instance()->info( "\nFinished projecting model\n" );
+  Log::instance()->info( "Finished projecting model\n" );
 
   return 1;
 }
