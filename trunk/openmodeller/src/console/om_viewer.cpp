@@ -81,7 +81,8 @@ main( int argc, char **argv )
 #endif
 
   // Reconfigure the global logger.
-  Log::instance()->set( Log::Error, stdout, "[Viewer]" );
+  Log::instance()->setLevel( Log::Error );
+  Log::instance()->setPrefix( "" );
 
   if ( argc < 2 )
     {
