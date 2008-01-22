@@ -54,6 +54,7 @@ SET (OMNICHE_SRCS
 SET (OMPSEUDO_SRCS
      om_pseudo.cpp 
      getopts/getopts.c 
+     om_cmd_utils.cpp 
      )
 set (EXTRA_DIST
   file_parser.hh

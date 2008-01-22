@@ -5,6 +5,8 @@
 
 #include "getopts/getopts.h"
 
+#include "om_cmd_utils.hh"
+
 #include <string>
 #include <iostream>  // I/O 
 
@@ -156,32 +158,15 @@ int main( int argc, char **argv ) {
 
   int num_absences_to_be_generated = (int)(num_points * proportion);
 
+  // Log stuff
+
+  Log::Level level_code = getLogLevel( log_level );
+
+  Log::instance()->setLevel( level_code );
+
   // Real work
 
   try {
-
-    // Log level
-    if ( log_level == "debug" ) {
-
-      Log::instance()->setLevel( Log::Debug );
-    }
-    else if ( log_level == "info" ) {
-
-      Log::instance()->setLevel( Log::Info );
-    }
-    else if ( log_level == "warn" ) {
-
-      Log::instance()->setLevel( Log::Warn );
-    }
-    else if ( log_level == "error" ) {
-
-      Log::instance()->setLevel( Log::Error );
-    }
-    else {
-
-      printf( "Unrecognized log level (%s). Using \"info\" instead.\n", log_level.c_str() );
-      Log::instance()->setLevel( Log::Info );
-    }
 
     std::vector<std::string> categorical_layers, continuous_layers;
 
@@ -206,8 +191,10 @@ int main( int argc, char **argv ) {
       exit(-1);
     }
 
+    std::cerr << flush;
+
     // Header
-    cout << "#id\t" << "label\t" << "long\t" << "lat\t" << "abundance" << endl;
+    cout << "#id\t" << "label\t" << "long\t" << "lat\t" << "abundance" << endl << flush;
 
     string abundance;
 
@@ -239,7 +226,9 @@ int main( int argc, char **argv ) {
         }
       }
 
-      cout << sequence_start + i << "\t" << label.c_str() << "\t" << point->x() << "\t" << point->y() << "\t" << abundance.c_str() << endl;
+      std::cerr << flush;
+
+      cout << sequence_start + i << "\t" << label.c_str() << "\t" << point->x() << "\t" << point->y() << "\t" << abundance.c_str() << endl << flush;
     }
   }
   catch ( runtime_error e ) {
