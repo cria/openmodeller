@@ -23,7 +23,7 @@ model_prog=$ticket_repository"/prog."$ticket
 # rename file
 mv "$req" "$moved"
 # execute om_create
-om_create "$moved" "$resp" "$log" "$model_prog"
+om_create --xml-req "$moved" --model-file "$resp" --log-file "$log" --prog-file "$model_prog"
 exit 1
 done
 
@@ -40,7 +40,7 @@ proj_prog=$ticket_repository"/prog."$ticket
 # rename file
 mv "$req" "$moved"
 # execute om_project
-om_project "$moved" "$map_img" "$stats" "$log" "$proj_prog"
+om_project --xml-req "$moved" --dist-map "$map_img" --stat-file "$stats" --log-file "$log" --prog-file "$proj_prog"
 finalmap_img=$map_repository"/"$ticket".img"
 finalmap_ige=$map_repository"/"$ticket".ige"
 if [ -e $map_ige ]; then
