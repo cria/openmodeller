@@ -1,7 +1,6 @@
 /**
- * Declaration of AquaMaps Algorithm.
+ * Definition of AquaMaps Algorithm.
  * 
- * @file
  * @author Renato De Giovanni <renato [at] cria dot org dot br>
  * @date 2006-08-07
  * $Id$
@@ -62,7 +61,7 @@ static AlgMetadata metadata = {
 
   "AquaMaps",  // Id.
   "AquaMaps",  // Name.
-  "0.1",       // Version.
+  "0.2",       // Version.
 
   // Overview
   "Environmental envelope modelling algorithm for marine organisms. \
@@ -83,17 +82,18 @@ This algorithm differs from other traditional ones since it requires a specific 
 set of layers to work, which should also be in this order: maximum depth in meters, \
 minimum depth in meters, mean annual sea ice concentration, mean annual distance to \
 land in kilometers, mean annual primary production (chlorophyll A, measured in \
-mgC per square meter per day), mean annual salinity in psu, mean annual sea surface \
-temperature in celsius. These layers can be downloaded from: \n\
-http://openmodeller.cria.org.br/download/marine.zip \n\
+mgC per square meter per day), mean annual bottom salinity in psu, mean annual \
+surface salinity in psu, mean annual bottom temperature in celsius, mean annual \
+surface temperature in celsius. These layers can be downloaded from: \n\
+http://openmodeller.cria.org.br/download/marine2.zip \n\
 AquaMaps also makes use of expert information for the lower and upper limits of \
 each variable. Depth ranges are taken from a database provided by FishBase. To find \
 this information in the database, occurrences must be identified by the scientific \
-name (only genus and species). The database contains depth ranges for about 30k \
+name (only genus and species). The database contains depth ranges for about 9k \
 different marine species. \n\
 For the other variables, preferred ranges are initially calculated based on \
-percentiles 10th and 90th. They are further adjusted using interquartile values and \
-ensuring a minimum envelope size function.",
+percentiles 10th and 90th. They are further adjusted using interquartile values but \
+also ensuring a minimum envelope size based on pre-defined values.",
   
   "K. Kaschner, J. Ready, S. Kullander, R. Froese",  // Authors
 
@@ -266,8 +266,8 @@ AquaMaps::calculateEnvelopes( const OccurrencesPtr& occs )
   }
 
   // Default values for depth ranges
-  _minimum[0] = _minimum[1] = _pref_minimum[0] = _pref_minimum[1] = 0;
-  _maximum[0] = _maximum[1] = _pref_maximum[0] = _pref_maximum[1] = 9999;
+  _minimum[MAXDEPTH] = _minimum[MINDEPTH] = _pref_minimum[MAXDEPTH] = _pref_minimum[MINDEPTH] = 0;
+  _maximum[MAXDEPTH] = _maximum[MINDEPTH] = _pref_maximum[MAXDEPTH] = _pref_maximum[MINDEPTH] = 9999;
 
   // Try to get expert information about depth range from database
   readDepthData( occs->name() );
@@ -419,7 +419,7 @@ AquaMaps::readDepthData( const char *species )
 
   sqlite3_stmt *ppStmt;
 
-  char* sql = sqlite3_mprintf( "select pelagic, min, prefmin, prefmax, max from depthinfo where species = '%q'", species );
+  char* sql = sqlite3_mprintf( "select pelagic, min, prefmin, prefmax, max from spinfo where species = '%q'", species );
 
   rc = sqlite3_prepare( db, sql, strlen( sql ), &ppStmt, &pzTail );
 
@@ -434,17 +434,17 @@ AquaMaps::readDepthData( const char *species )
       double prefmax = sqlite3_column_double( ppStmt, 3 );
       double max     = sqlite3_column_double( ppStmt, 4 );
 
-      _pelagic         = pelagic;
+      _pelagic = pelagic;
 
       // Repeat the information for both min and max depth for symmetry
-      _minimum[0]      = min;
-      _minimum[1]      = min;
-      _pref_minimum[0] = prefmin;
-      _pref_minimum[1] = prefmin;
-      _pref_maximum[0] = prefmax;
-      _pref_maximum[1] = prefmax;
-      _maximum[0]      = max;
-      _maximum[1]      = max;
+      _minimum[MAXDEPTH]      = min;
+      _minimum[MINDEPTH]      = min;
+      _pref_minimum[MAXDEPTH] = prefmin;
+      _pref_minimum[MINDEPTH] = prefmin;
+      _pref_maximum[MAXDEPTH] = prefmax;
+      _pref_maximum[MINDEPTH] = prefmax;
+      _maximum[MAXDEPTH]      = max;
+      _maximum[MINDEPTH]      = max;
 
       Log::instance()->debug("Depth values from database:\n");
       Log::instance()->debug("pelagic: %i\n", pelagic);
@@ -564,44 +564,44 @@ AquaMaps::getValue( const Sample& x ) const
 
   // Depth probability
 
-  if ( _maximum[0] != 9999 ) {  // If there is a depth range
+  if ( _maximum[MAXDEPTH] != 9999 ) {  // If there is a depth range
 
     // Probability of occurrence is zero if depth at this point is less
     // than the minimum depth for the species.
     // note: using maximum depth layer here
-    if ( x[0] < _minimum[0] ) {
+    if ( x[MAXDEPTH] < _minimum[MAXDEPTH] ) {
 
         return 0.0;
     }
 
     // Point is sufficiently deep, but still not enough for the prefered range
     // note: using maximum depth layer here
-    if (  x[0] >= _minimum[0] && x[0] < _pref_minimum[0] ) {
+    if ( x[MAXDEPTH] >= _minimum[MAXDEPTH] && x[MAXDEPTH] < _pref_minimum[MAXDEPTH] ) {
 
       // Linear decay
-      prob *= (x[0] - _minimum[0]) / (_pref_minimum[0] - _minimum[0]);
+      prob *= (x[MAXDEPTH] - _minimum[MAXDEPTH]) / (_pref_minimum[MAXDEPTH] - _minimum[MAXDEPTH]);
     }
     // Point is sufficiently deep for the prefered range
     // Note: pelagic means "belonging to the upper layers of the open sea". Or in other 
     //       words, no need to feed at the bottom of the sea.
-    else if (  _pelagic == 1 ) {
+    else if ( _pelagic == 1 ) {
 
       // Just keep prob as 1
     }
     // Species needs to feed at the bottom of the sea (or there's no data about this) 
     // and point is within the prefered range
     // note: the inner envelope logic makes use of both minimum and maximum depth layers.
-    else if (  x[0] >= _pref_minimum[0] && x[1] <= _pref_maximum[1] ) {
+    else if ( x[MAXDEPTH] >= _pref_minimum[MAXDEPTH] && x[MINDEPTH] <= _pref_maximum[MINDEPTH] ) {
 
       // Just keep prob as 1
     }
     // Species needs to feed at the bottom of the sea (or there's no data about this) and 
     // point is deeper than the prefered maximum depth but not so deep as the maximum
     // note: using minimum depth layer here
-    else if (  x[1] >= _pref_maximum[1] && x[1] < _maximum[1] ) {
+    else if ( x[MINDEPTH] >= _pref_maximum[MINDEPTH] && x[MINDEPTH] < _maximum[MINDEPTH] ) {
 
       // Linear decay
-      prob *= (_maximum[1] - x[1]) / (_maximum[1] - _pref_maximum[1]);
+      prob *= (_maximum[MINDEPTH] - x[MINDEPTH]) / (_maximum[MINDEPTH] - _pref_maximum[MINDEPTH]);
     }
     // Species needs to feed at the bottom of the sea (or there's no data about this) 
     // but depth at the point is greater then the maximum accepted depth
