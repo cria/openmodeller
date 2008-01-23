@@ -1,7 +1,6 @@
 /**
  * Declaration of AquaMaps Algorithm.
  * 
- * @file
  * @author Renato De Giovanni <renato [at] cria dot org dot br>
  * @date 2006-08-07
  * $Id$
@@ -56,9 +55,10 @@
  * To create and import data to a SQLite database, use:
  *
  * sqlite3 aquamaps.db
- * sqlite> CREATE TABLE depthinfo (species TEXT, min REAL, prefmin REAL, prefmax REAL, max REAL, pelagic INTEGER);
+ * sqlite> CREATE TABLE spinfo (species TEXT, min REAL, prefmin REAL, prefmax REAL, max REAL, pelagic INTEGER);
  * sqlite> .separator \t
- * sqlite> .import location_of_csv_file depthinfo
+ * sqlite> .import location_of_csv_file spinfo
+ * sqlite> CREATE INDEX idx_species ON spinfo(species);
  * sqlite> .q
  * 
  */
@@ -117,6 +117,16 @@ const Scalar INNER_SIZE [7] = { MINIMUM_ENVELOPE_SIZE_FOR_MAXDEPTH,
                                 MINIMUM_ENVELOPE_SIZE_FOR_PRIMARY_PRODUCTION,
                                 MINIMUM_ENVELOPE_SIZE_FOR_SALINITY,
                                 MINIMUM_ENVELOPE_SIZE_FOR_SURFACE_TEMPERATURE };
+
+// Variable position in sample or arrays
+
+const int MAXDEPTH = 0;
+const int MINDEPTH = 1;
+const int ICE_CONCENTRATION = 2;
+const int DISTANCE_TO_LAND = 3;
+const int PRIMARY_PRODUCTION = 4;
+const int SALINITY = 5;
+const int SURFACE_TEMPERATURE = 6;
 
 /** 
  * AquaMaps Algorithm

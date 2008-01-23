@@ -13,24 +13,25 @@ SET (LIBBIOCLIM_SRCS
 
 SET (LIBDISTANCETOAVERAGE_SRCS
      distance_to_average.cpp
-  )
+)
 
 SET (LIBMINIMUMDISTANCE_SRCS
      minimum_distance.cpp
-     )
+)
+
 SET (LIBCSMBS_SRCS
      csm.cpp
      csmbs.cpp
-  )
+)
 
-#SET (LIBAQUAMAPS_SRCS
-#     aquamaps.cpp
-#     )
+SET (LIBAQUAMAPS_SRCS
+     aquamaps.cpp
+)
 
 SET (LIBENVIRONMENTALDISTANCE_SRCS
      environmental_distance.cpp 
      matrix.hh
-    )
+)
 
 ########################################################
 # Build
@@ -70,15 +71,15 @@ if (GSL_FOUND)
   ENDIF (MSVC)
 ENDIF(GSL_FOUND)
 
-#if (SQLITE3_FOUND)
-#  MESSAGE ("Building with SQLite3 includes at ${SQLITE3_INCLUDE_DIR}...")
-#  INCLUDE_DIRECTORIES(
-#    ${INCLUDE_DIRECTORIES}
-#    ${SQLITE3_INCLUDE_DIR}
-#  )
-#  ADD_LIBRARY (aquamaps MODULE ${LIBAQUAMAPS_SRCS})
-#  TARGET_LINK_LIBRARIES(aquamaps sqlite3 openmodeller)
-#ENDIF(SQLITE3_FOUND)
+if (SQLITE3_FOUND)
+  MESSAGE ("Building with SQLite3 includes at ${SQLITE3_INCLUDE_DIR}...")
+  INCLUDE_DIRECTORIES(
+    ${INCLUDE_DIRECTORIES}
+    ${SQLITE3_INCLUDE_DIR}
+  )
+  ADD_LIBRARY (aquamaps MODULE ${LIBAQUAMAPS_SRCS})
+  TARGET_LINK_LIBRARIES(aquamaps sqlite3 openmodeller)
+ENDIF(SQLITE3_FOUND)
 
 ########################################################
 # Install
@@ -91,9 +92,9 @@ INSTALL(TARGETS distance_to_average RUNTIME DESTINATION ${OM_ALG_DIR} LIBRARY DE
 
 INSTALL(TARGETS minimum_distance RUNTIME DESTINATION ${OM_ALG_DIR} LIBRARY DESTINATION ${OM_ALG_DIR})
 
-#if (SQLITE3_FOUND)
-#  INSTALL(TARGETS aquamaps RUNTIME DESTINATION ${OM_ALG_DIR} LIBRARY DESTINATION ${OM_ALG_DIR})
-#ENDIF(SQLITE3_FOUND)
+if (SQLITE3_FOUND)
+  INSTALL(TARGETS aquamaps RUNTIME DESTINATION ${OM_ALG_DIR} LIBRARY DESTINATION ${OM_ALG_DIR})
+ENDIF(SQLITE3_FOUND)
 
 INSTALL(TARGETS environmental_distance RUNTIME DESTINATION ${OM_ALG_DIR} LIBRARY DESTINATION ${OM_ALG_DIR})
 
