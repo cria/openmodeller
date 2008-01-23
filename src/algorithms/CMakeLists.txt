@@ -11,13 +11,15 @@ SET (LIBBIOCLIM_SRCS
      bioclim.cpp
 )
 
-SET (LIBDISTANCETOAVERAGE_SRCS
-     distance_to_average.cpp
-)
+# Replaced by EnvironmentalDistance
+#SET (LIBDISTANCETOAVERAGE_SRCS
+#     distance_to_average.cpp
+#)
 
-SET (LIBMINIMUMDISTANCE_SRCS
-     minimum_distance.cpp
-)
+# Replaced by EnvironmentalDistance
+#SET (LIBMINIMUMDISTANCE_SRCS
+#     minimum_distance.cpp
+#)
 
 SET (LIBCSMBS_SRCS
      csm.cpp
@@ -42,11 +44,11 @@ TARGET_LINK_LIBRARIES(envelope_score openmodeller)
 ADD_LIBRARY (bioclim MODULE ${LIBBIOCLIM_SRCS})
 TARGET_LINK_LIBRARIES(bioclim openmodeller)
 
-ADD_LIBRARY (distance_to_average MODULE ${LIBDISTANCETOAVERAGE_SRCS})
-TARGET_LINK_LIBRARIES(distance_to_average openmodeller)
+#ADD_LIBRARY (distance_to_average MODULE ${LIBDISTANCETOAVERAGE_SRCS})
+#TARGET_LINK_LIBRARIES(distance_to_average openmodeller)
 
-ADD_LIBRARY (minimum_distance MODULE ${LIBMINIMUMDISTANCE_SRCS})
-TARGET_LINK_LIBRARIES(minimum_distance openmodeller)
+#ADD_LIBRARY (minimum_distance MODULE ${LIBMINIMUMDISTANCE_SRCS})
+#TARGET_LINK_LIBRARIES(minimum_distance openmodeller)
 
 ADD_LIBRARY (environmental_distance MODULE ${LIBENVIRONMENTALDISTANCE_SRCS})
 TARGET_LINK_LIBRARIES(environmental_distance openmodeller)
@@ -88,9 +90,9 @@ INSTALL(TARGETS bioclim RUNTIME DESTINATION ${OM_ALG_DIR} LIBRARY DESTINATION ${
 
 INSTALL(TARGETS envelope_score RUNTIME DESTINATION ${OM_ALG_DIR} LIBRARY DESTINATION ${OM_ALG_DIR})
 
-INSTALL(TARGETS distance_to_average RUNTIME DESTINATION ${OM_ALG_DIR} LIBRARY DESTINATION ${OM_ALG_DIR})
+#INSTALL(TARGETS distance_to_average RUNTIME DESTINATION ${OM_ALG_DIR} LIBRARY DESTINATION ${OM_ALG_DIR})
 
-INSTALL(TARGETS minimum_distance RUNTIME DESTINATION ${OM_ALG_DIR} LIBRARY DESTINATION ${OM_ALG_DIR})
+#INSTALL(TARGETS minimum_distance RUNTIME DESTINATION ${OM_ALG_DIR} LIBRARY DESTINATION ${OM_ALG_DIR})
 
 if (SQLITE3_FOUND)
   INSTALL(TARGETS aquamaps RUNTIME DESTINATION ${OM_ALG_DIR} LIBRARY DESTINATION ${OM_ALG_DIR})

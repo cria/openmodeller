@@ -41,6 +41,7 @@ om_create
 om_dump
 om_niche
 om_project
+om_pseudo
 om_sampledump
 om_soap_server
 om_testmodel
@@ -76,15 +77,14 @@ libopenmodeller.dylib
 libopenmodellerxml.dylib
 
 usr/local/lib/openmodeller:
+libaquamaps.so
 libbioclim.so
 libcsm_bs.so
 libdesktop_garp.so
 libdesktop_garp_bs.so
-libdistance_to_average.so
 libenvironmental_distance.so
 libgarp.so
 libgarp_best_subsets.so
-libminimum_distance.so
 
 usr/local/share/openmodeller/examples:
 README

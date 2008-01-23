@@ -46,10 +46,9 @@
 /usr/include/openmodeller/env_io/RasterFactory.hh
 /usr/include/openmodeller/env_io/RasterGdal.hh
 /usr/include/openmodeller/env_io/TeOMRaster.hh
+/usr/lib/openmodeller/libaquamaps.so
 /usr/lib/openmodeller/libbioclim.so
 /usr/lib/openmodeller/libenvelope_score.so
-/usr/lib/openmodeller/libdistance_to_average.so
-/usr/lib/openmodeller/libminimum_distance.so
 /usr/lib/openmodeller/libenvironmental_distance.so
 /usr/lib/openmodeller/libcsm_bs.so
 /usr/lib/openmodeller/libdesktop_garp_bs.so
@@ -60,6 +59,7 @@
 /usr/bin/om_console
 /usr/bin/om_create
 /usr/bin/om_project
+/usr/bin/om_pseudo
 /usr/bin/om_dump
 /usr/bin/om_sampledump
 /usr/bin/om_testmodel
@@ -76,3 +76,4 @@
 /usr/share/openmodeller/examples/request.txt
 /usr/share/openmodeller/examples/request_te.txt
 /usr/share/openmodeller/examples/temp_avg.tif
+/usr/share/openmodeller/data/aquamaps.db
