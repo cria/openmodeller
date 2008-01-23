@@ -14,6 +14,7 @@ SVN revision: ?
 	* Created man pages for om_pseudo, om_create and om_project.
 	* New parameter in om_pseudo to speficy the proportion of absence points to be generated.
 	* New algorithm AquaMaps (for marine organisms).
+	* Removed algorithms minimum distance and distance to average since EnvironmentalDistance provides the same functionality.
 
 Release 0.5.2 (2007-10-24)
 --------------------------

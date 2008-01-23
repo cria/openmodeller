@@ -24,6 +24,6 @@ export DEBEMAIL=tim@linfiniti.com
 # the manifest before building the package
 cp install_manifest.txt debian/libopenmodeller.txt
 #dch -v 0.5.+svn`date +%Y%m%d`
-dch -v 0.5.2
+dch -v 0.5.3
 fakeroot dpkg-buildpackage
 
