@@ -46,12 +46,92 @@ using namespace std;
 /****************************************************************/
 /********************** Algorithm's Metadata ********************/
 
-#define NUM_PARAM 0
+#define NUM_PARAM 6
 
 /*************************************/
 /*** Algorithm parameters metadata ***/
 
-static AlgParamMetadata parameters[NUM_PARAM];
+#define PARAM_USE_DEPTH_RANGE        "UseDepthRange"
+#define PARAM_USE_ICE_CONCENTRATION  "UseIceConcentration"
+#define PARAM_USE_DISTANCE_TO_LAND   "UseDistanceToLand"
+#define PARAM_USE_PRIMARY_PRODUCTION "UsePrimaryProduction"
+#define PARAM_USE_SALINITY           "UseSalinity"
+#define PARAM_USE_TEMPERATURE        "UseTemperature"
+
+static AlgParamMetadata parameters[NUM_PARAM] = { // Parameters
+   {
+      PARAM_USE_DEPTH_RANGE,        // Id
+      "Use depth range",            // Name
+      "Integer",                    // Type
+      "Use depth range when calculating probabilities", // Overview
+      "Use depth range provided by experts (if available) when calculating probabilities", // Description
+      1,    // Not zero if the parameter has lower limit
+      0,    // Parameter's lower limit
+      1,    // Not zero if the parameter has upper limit
+      1,    // Parameter's upper limit
+      "1"   // Parameter's typical (default) value
+   },
+   {
+      PARAM_USE_ICE_CONCENTRATION,  // Id
+      "Use ice concentration",      // Name
+      "Integer",                    // Type
+      "Use ice concentration envelope when calculating probabilities", // Overview
+      "Use ice concentration when calculating probabilities", // Description
+      1,    // Not zero if the parameter has lower limit
+      0,    // Parameter's lower limit
+      1,    // Not zero if the parameter has upper limit
+      1,    // Parameter's upper limit
+      "1"   // Parameter's typical (default) value
+   },
+   {
+      PARAM_USE_DISTANCE_TO_LAND,   // Id
+      "Use distance to land",       // Name
+      "Integer",                    // Type
+      "Use distance to land envelope when calculating probabilities", // Overview
+      "Use distance to land envelope when calculating probabilities", // Description
+      1,    // Not zero if the parameter has lower limit
+      0,    // Parameter's lower limit
+      1,    // Not zero if the parameter has upper limit
+      1,    // Parameter's upper limit
+      "0"   // Parameter's typical (default) value
+   },
+   {
+      PARAM_USE_PRIMARY_PRODUCTION, // Id
+      "Use primary production",     // Name
+      "Integer",                    // Type
+      "Use primary production envelope when calculating probabilities", // Overview
+      "Use primary production envelope when calculating probabilities", // Description
+      1,    // Not zero if the parameter has lower limit
+      0,    // Parameter's lower limit
+      1,    // Not zero if the parameter has upper limit
+      1,    // Parameter's upper limit
+      "1"   // Parameter's typical (default) value
+   },
+   {
+      PARAM_USE_SALINITY,           // Id
+      "Use salinity",               // Name
+      "Integer",                    // Type
+      "Use salinity envelope when calculating probabilities", // Overview
+      "Use salinity envelope when calculating probabilities", // Description
+      1,    // Not zero if the parameter has lower limit
+      0,    // Parameter's lower limit
+      1,    // Not zero if the parameter has upper limit
+      1,    // Parameter's upper limit
+      "1"   // Parameter's typical (default) value
+   },
+   {
+      PARAM_USE_TEMPERATURE,        // Id
+      "Use temperature",            // Name
+      "Integer",                    // Type
+      "Use temperature envelope when calculating probabilities", // Overview
+      "Use temperature envelope when calculating probabilities", // Description
+      1,    // Not zero if the parameter has lower limit
+      0,    // Parameter's lower limit
+      1,    // Not zero if the parameter has upper limit
+      1,    // Parameter's upper limit
+      "1"   // Parameter's typical (default) value
+   },
+};
 
 
 /************************************/
@@ -139,6 +219,7 @@ algorithmMetadata()
 AquaMaps::AquaMaps() :
   AlgorithmImpl( &metadata ),
   _done( false ),
+  _use_layer( NULL ),
   _lower_limit( 7, LOWER_LIMIT ),
   _upper_limit( 7, UPPER_LIMIT ),
   _inner_size( 7, INNER_SIZE ),
@@ -154,6 +235,7 @@ AquaMaps::AquaMaps() :
 
 AquaMaps::~AquaMaps()
 {
+  delete _use_layer;
 }
 
 /******************/
@@ -161,6 +243,48 @@ AquaMaps::~AquaMaps()
 int
 AquaMaps::initialize()
 {
+  _use_layer = new int[7];
+
+  // Parameter UseDepthRange
+  if ( ! getAndCheckParameter( PARAM_USE_DEPTH_RANGE, &_use_layer[MAXDEPTH] ) ) {
+
+    return 0;
+  }
+  else {
+
+    _use_layer[MINDEPTH] = _use_layer[MAXDEPTH]; // just repeat the value
+  }
+
+  // Parameter UseIceConcentration
+  if ( ! getAndCheckParameter( PARAM_USE_ICE_CONCENTRATION, &_use_layer[ICE_CONCENTRATION] ) ) {
+
+    return 0;
+  }
+
+  // Parameter UseDistanceToLand
+  if ( ! getAndCheckParameter( PARAM_USE_DISTANCE_TO_LAND, &_use_layer[DISTANCE_TO_LAND] ) ) {
+
+    return 0;
+  }
+
+  // Parameter UsePrimaryProduction
+  if ( ! getAndCheckParameter( PARAM_USE_PRIMARY_PRODUCTION, &_use_layer[PRIMARY_PRODUCTION] ) ) {
+
+    return 0;
+  }
+
+  // Parameter UseSalinity
+  if ( ! getAndCheckParameter( PARAM_USE_SALINITY, &_use_layer[SALINITY] ) ) {
+
+    return 0;
+  }
+
+  // Parameter UseTemperature
+  if ( ! getAndCheckParameter( PARAM_USE_TEMPERATURE, &_use_layer[TEMPERATURE] ) ) {
+
+    return 0;
+  }
+
   // Number of independent variables.
   int dim = _samp->numIndependent();
   Log::instance()->info( "Reading %d-dimensional occurrence points.\n", dim );
@@ -220,6 +344,28 @@ AquaMaps::done() const
 {
   // This is not an iterative algorithm.
   return _done;
+}
+
+
+/*******************************/
+/*** get and check parameter ***/
+int 
+AquaMaps::getAndCheckParameter( std::string const &name, int * value )
+{
+  // Parameter UseSalinity
+  if ( ! getParameter( name, value ) ) {
+
+    Log::instance()->error( 1, "Parameter '%s' not passed.\n", name.c_str() );
+    return 0;
+  }
+  // Check if value is 0 or 1
+  if ( *value != 0 && *value != 1 ) {
+
+    Log::instance()->error( 1, "Parameter '%s' not set properly. It must be 0 or 1.\n", name.c_str() );
+    return 0;
+  }
+
+  return 1;
 }
 
 
@@ -564,53 +710,60 @@ AquaMaps::getValue( const Sample& x ) const
 
   // Depth probability
 
-  if ( _maximum[MAXDEPTH] != 9999 ) {  // If there is a depth range
+  if ( _use_layer[MAXDEPTH] ) {
 
-    // Probability of occurrence is zero if depth at this point is less
-    // than the minimum depth for the species.
-    // note: using maximum depth layer here
-    if ( x[MAXDEPTH] < _minimum[MAXDEPTH] ) {
+    if ( _maximum[MAXDEPTH] != 9999 ) {  // If there is a depth range
+
+      // Probability of occurrence is zero if depth at this point is less
+      // than the minimum depth for the species.
+      // note: using maximum depth layer here
+      if ( x[MAXDEPTH] < _minimum[MAXDEPTH] ) {
+
+          return 0.0;
+      }
+
+      // Point is sufficiently deep, but still not enough for the prefered range
+      // note: using maximum depth layer here
+      if ( x[MAXDEPTH] >= _minimum[MAXDEPTH] && x[MAXDEPTH] < _pref_minimum[MAXDEPTH] ) {
+
+        // Linear decay
+        prob *= (x[MAXDEPTH] - _minimum[MAXDEPTH]) / (_pref_minimum[MAXDEPTH] - _minimum[MAXDEPTH]);
+      }
+      // Point is sufficiently deep for the prefered range
+      // Note: pelagic means "belonging to the upper layers of the open sea". Or in other 
+      //       words, no need to feed at the bottom of the sea.
+      else if ( _pelagic == 1 ) {
+
+        // Just keep prob as 1
+      }
+      // Species needs to feed at the bottom of the sea (or there's no data about this) 
+      // and point is within the prefered range
+      // note: the inner envelope logic makes use of both minimum and maximum depth layers.
+      else if ( x[MAXDEPTH] >= _pref_minimum[MAXDEPTH] && x[MINDEPTH] <= _pref_maximum[MINDEPTH] ) {
+
+        // Just keep prob as 1
+      }
+      // Species needs to feed at the bottom of the sea (or there's no data about this) and 
+      // point is deeper than the prefered maximum depth but not so deep as the maximum
+      // note: using minimum depth layer here
+      else if ( x[MINDEPTH] >= _pref_maximum[MINDEPTH] && x[MINDEPTH] < _maximum[MINDEPTH] ) {
+
+        // Linear decay
+        prob *= (_maximum[MINDEPTH] - x[MINDEPTH]) / (_maximum[MINDEPTH] - _pref_maximum[MINDEPTH]);
+      }
+      // Species needs to feed at the bottom of the sea (or there's no data about this) 
+      // but depth at the point is greater then the maximum accepted depth
+      else {
 
         return 0.0;
+      }
     }
-
-    // Point is sufficiently deep, but still not enough for the prefered range
-    // note: using maximum depth layer here
-    if ( x[MAXDEPTH] >= _minimum[MAXDEPTH] && x[MAXDEPTH] < _pref_minimum[MAXDEPTH] ) {
-
-      // Linear decay
-      prob *= (x[MAXDEPTH] - _minimum[MAXDEPTH]) / (_pref_minimum[MAXDEPTH] - _minimum[MAXDEPTH]);
-    }
-    // Point is sufficiently deep for the prefered range
-    // Note: pelagic means "belonging to the upper layers of the open sea". Or in other 
-    //       words, no need to feed at the bottom of the sea.
-    else if ( _pelagic == 1 ) {
+    else { // If there is no depth range
 
       // Just keep prob as 1
-    }
-    // Species needs to feed at the bottom of the sea (or there's no data about this) 
-    // and point is within the prefered range
-    // note: the inner envelope logic makes use of both minimum and maximum depth layers.
-    else if ( x[MAXDEPTH] >= _pref_minimum[MAXDEPTH] && x[MINDEPTH] <= _pref_maximum[MINDEPTH] ) {
-
-      // Just keep prob as 1
-    }
-    // Species needs to feed at the bottom of the sea (or there's no data about this) and 
-    // point is deeper than the prefered maximum depth but not so deep as the maximum
-    // note: using minimum depth layer here
-    else if ( x[MINDEPTH] >= _pref_maximum[MINDEPTH] && x[MINDEPTH] < _maximum[MINDEPTH] ) {
-
-      // Linear decay
-      prob *= (_maximum[MINDEPTH] - x[MINDEPTH]) / (_maximum[MINDEPTH] - _pref_maximum[MINDEPTH]);
-    }
-    // Species needs to feed at the bottom of the sea (or there's no data about this) 
-    // but depth at the point is greater then the maximum accepted depth
-    else {
-
-      return 0.0;
     }
   }
-  else { // If there is no depth range
+  else { // If user doesn't want to use depth ranges
 
     // Just keep prob as 1
   }
@@ -620,6 +773,12 @@ AquaMaps::getValue( const Sample& x ) const
   int numLayers = x.size();
 
   for ( int i = 2; i < numLayers; i++ ) {
+
+    if ( ! _use_layer[i] ) {
+
+      // Ignore layer if user doesn't want to use it
+      continue;
+    }
 
     // Probability zero for points outside the envelope
     if ( x[i] < _minimum[i] || x[i] > _maximum[i] ) {
@@ -665,6 +824,7 @@ AquaMaps::_getConfiguration( ConfigurationPtr& config ) const
   ConfigurationPtr model_config( new ConfigurationImpl( "AquaMaps" ) );
   config->addSubsection( model_config );
 
+  model_config->addNameValue( "UseLayer", _use_layer, 7 );
   model_config->addNameValue( "Pelagic", _pelagic );
   model_config->addNameValue( "Minimum", _minimum );
   model_config->addNameValue( "PreferedMinimum", _pref_minimum );
@@ -682,13 +842,27 @@ AquaMaps::_setConfiguration( const ConstConfigurationPtr& config )
 
     return;
   }
-  _done = true;
+
+  try {
+
+    int size;
+
+    model_config->getAttributeAsIntArray( "UseLayer", &_use_layer, &size );
+  }
+  catch ( AttributeNotFound exception ) {
+
+    Log::instance()->error( 1, "Could not find UseLayer attribute in serialized model. You may be trying to load a model that was generated by an older version (< 0.2) of this algorithm.\n" );
+
+    return;
+  }
 
   _pelagic      = model_config->getAttributeAsInt( "Pelagic", -1 );
   _minimum      = model_config->getAttributeAsSample( "Minimum" );
   _pref_minimum = model_config->getAttributeAsSample( "PreferedMinimum" );
   _pref_maximum = model_config->getAttributeAsSample( "PreferedMaximum" );
   _maximum      = model_config->getAttributeAsSample( "Maximum" );
+
+  _done = true;
 
   return;
 }
