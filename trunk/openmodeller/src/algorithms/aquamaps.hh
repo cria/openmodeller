@@ -126,7 +126,7 @@ const int ICE_CONCENTRATION = 2;
 const int DISTANCE_TO_LAND = 3;
 const int PRIMARY_PRODUCTION = 4;
 const int SALINITY = 5;
-const int SURFACE_TEMPERATURE = 6;
+const int TEMPERATURE = 6;
 
 /** 
  * AquaMaps Algorithm
@@ -157,6 +157,15 @@ protected:
 
 private:
 
+  /** Get a Boolean parameter and check its value.
+   *   
+   *  @param name Parameter name.
+   *  @param value Parameter value.
+   *  @return Zero if the parameter does not exists or the
+   *   parameters were not set yet.
+   **/
+  int getAndCheckParameter( std::string const &name, int * value );
+
   /** Calculate the envelopes */
   void calculateEnvelopes( const OccurrencesPtr& );
 
@@ -177,6 +186,9 @@ private:
 
   /** Indicates if the algorithm is finished. */
   bool _done;
+
+  /** Indicates if the respective layer should be used or not when calculating probabilities */
+  int * _use_layer;
 
   /** Lower limit for each variable */
   Sample _lower_limit;
