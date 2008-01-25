@@ -826,7 +826,7 @@ OpenModeller::jackknife( double propTrain )
 
   // Calculate reference parameter for each layer by excluding it from the layer set
 
-  std::vector<double> params;   // <------ output 1
+  std::multimap<double, int> params;   // <------ output 1
 
   double mean = 0.0;            // <------ output 2
   double variance = 0.0;        // <------ output 3
@@ -881,24 +881,21 @@ OpenModeller::jackknife( double propTrain )
     mean += myaccuracy;
     variance += myaccuracy*myaccuracy;
 
-    params.push_back( myaccuracy );
+    params.insert( std::pair<double, int>( myaccuracy, i ) );
   }
 
   // Switch back to the original sampler
   setSampler( original_sampler );
 
-  Log::instance()->debug( "Param = %f\n", param );
+  Log::instance()->debug( "With all layers: %f\n", param );
 
   EnvironmentPtr env = _samp->getEnvironment();
 
-  std::sort( params.begin(), params.end() );
+  std::map<double, int>::const_iterator it = params.begin();
+  std::map<double, int>::const_iterator end = params.end();
+  for ( ; it != end; ++it ) {
 
-  std::vector<double>::iterator it = params.begin();
-  std::vector<double>::iterator end = params.end();
-  unsigned int cnt = 0;
-  for ( ; it != end; ++it,++cnt ) {
-
-    Log::instance()->debug( "Param[%u] = %f -> %s\n", cnt, params[cnt], (env->getLayerPath( cnt )).c_str() );
+    Log::instance()->debug( "Without layer %d: %f (%s)\n", (*it).second, (*it).first, (env->getLayerPath( (*it).second )).c_str() );
   }
 
   mean /= num_layers;
