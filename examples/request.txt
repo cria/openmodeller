@@ -103,12 +103,6 @@ Output file type = ByteHFA
 #Parameter = VerboseDebugging 1
 
 ########
-# Distance to average
-#
-#Algorithm = DistanceToAverage
-#Parameter = MaxDist 0.1
-
-########
 # GARP: Genetic Algorithm for Rule Set Production
 #
 #Algorithm = DG_GARP
@@ -136,12 +130,6 @@ Output file type = ByteHFA
 #Parameter = Resamples 2500
 #Parameter = MutationRate 0.25
 #Parameter = CrossoverRate 0.25
-
-########
-# Minimum distance
-#
-#Algorithm = MinimumDistance
-#Parameter = MaximumDistance 0.1
 
 ########
 # Environmental distance
