@@ -758,7 +758,7 @@ omws__getLayerAsUrl( struct soap *soap, xsd__string id, xsd__string &url )
 
   urlString.append( fileName );
   
-  url = (char*)urlString.c_str();
+  url = const_cast<char *>( urlString.c_str() );
 
   return SOAP_OK;
 }
