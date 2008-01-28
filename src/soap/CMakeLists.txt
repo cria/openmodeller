@@ -9,7 +9,6 @@ SET (OMSOAP_SRCS
   soapServer.cpp 
   soapC.cpp 
   file_parser.cpp
-  ../console/consolexml.cpp
 )
 
 SET (OMSOAP_HDRS
