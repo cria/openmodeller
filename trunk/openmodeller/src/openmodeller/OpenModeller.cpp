@@ -329,10 +329,19 @@ OpenModeller::createModel()
 
   Log::instance()->info( "Creating model\n" );
 
-  char *error = parameterModelCheck();
-  if ( error ) {
+  // Sampler
+  if ( ! _samp ) {
 
-    strcpy( _error, error );
+    Log::instance()->error( 1, "Sampler not specified for model creation.\n" );
+
+    return 0;
+  }
+
+  // Algorithm.
+  if ( ! _alg ) {
+
+    Log::instance()->error( 1, "Algorithm not specified for model creation.\n" );
+
     return 0;
   }
 
@@ -341,23 +350,6 @@ OpenModeller::createModel()
   Log::instance()->info( "Finished creating model\n" );
 
   return 1;
-}
-
-
-/*****************************/
-/*** parameter Model Check ***/
-char *
-OpenModeller::parameterModelCheck()
-{
-  // Sampler
-  if ( ! _samp )
-    return "Sampler not specified.";
-
-  // Algorithm.
-  if ( ! _alg )
-    return "Modeling algorithm not specified.";
-
-  return 0;
 }
 
 
