@@ -384,11 +384,6 @@ public:
   
 private:
 
-  /** Check if all necessary parameters to create the model
-   *  have been defined. If not, an error message is returned.
-   */
-  char *parameterModelCheck();
-
   bool hasEnvironment();
 
   SamplerPtr _samp;           ///< Sampler object
