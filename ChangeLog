@@ -15,6 +15,7 @@ SVN revision: ?
 	* New parameter in om_pseudo to speficy the proportion of absence points to be generated.
 	* New algorithm AquaMaps (for marine organisms).
 	* Removed algorithms minimum distance and distance to average since EnvironmentalDistance provides the same functionality.
+	* "type" property of AlgParamMetadata changed from char * to a new enumeration called AlgParamDatatype. Values can be Integer, Real and String.
 
 Release 0.5.2 (2007-10-24)
 --------------------------
