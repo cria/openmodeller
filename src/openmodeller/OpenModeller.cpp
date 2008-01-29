@@ -799,6 +799,9 @@ OpenModeller::jackknife( double propTrain )
     return;
   }
 
+  // Keep a reference to the original algorithm
+  AlgorithmPtr original_algorithm = _alg;
+
   // Keep a reference to the original sampler
   SamplerPtr original_sampler = _samp;
 
@@ -864,6 +867,10 @@ OpenModeller::jackknife( double propTrain )
     // Overwrite _samp property since createModel only works with the current properties
     setSampler( new_sampler );
 
+    AlgorithmPtr new_algorithm( original_algorithm );
+
+    _alg = new_algorithm;
+
     createModel();
 
     _confusion_matrix->calculate( getModel(), test );
@@ -876,8 +883,10 @@ OpenModeller::jackknife( double propTrain )
     params.insert( std::pair<double, int>( myaccuracy, i ) );
   }
 
-  // Switch back to the original sampler
+  // Switch back to the original sampler and algorithm
   setSampler( original_sampler );
+
+  _alg = original_algorithm;
 
   Log::instance()->debug( "With all layers: %f\n", param );
 
