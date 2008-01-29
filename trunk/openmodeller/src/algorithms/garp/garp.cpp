@@ -58,7 +58,7 @@ AlgParamMetadata parameters[NUM_PARAM] =
   {
     "MaxGenerations",              // Id.
     "Max generations",             // Name.
-    "Integer",                     // Type.
+    Integer,                       // Type.
 
     // Overview.
     "Maximum number of iterations run by the Genetic Algorithm.",
@@ -77,7 +77,7 @@ AlgParamMetadata parameters[NUM_PARAM] =
   {
     "ConvergenceLimit",        // Id.
     "Convergence limit",       // Name.
-    "Real",                    // Type.
+    Real,                      // Type.
 
     // Overview.
     "Defines the convergence value that makes the algorithm stop\
@@ -96,7 +96,7 @@ AlgParamMetadata parameters[NUM_PARAM] =
   {
     "PopulationSize",        // Id.
     "Population size",       // Name.
-    "Integer",               // Type.
+    Integer,                 // Type.
 
     "Maximum number of rules to be kept in solution.", // Overview.
     "Maximum number of rules to be kept in solution.", // Description
@@ -111,7 +111,7 @@ AlgParamMetadata parameters[NUM_PARAM] =
   {
     "Resamples",      // Id.
     "Resamples",      // Name.
-    "Integer",        // Type.
+    Integer,          // Type.
 
     // Overview.
     "Number of points sampled (with replacement) used to test rules.",

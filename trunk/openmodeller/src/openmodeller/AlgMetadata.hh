@@ -33,6 +33,13 @@
 #include <openmodeller/om_defs.hh>
 
 
+typedef enum {
+
+  Integer = 0,
+  Real    = 1,
+  String  = 2
+
+} AlgParamDatatype;
 
 
 /****************************************************************/
@@ -44,17 +51,18 @@
  **/
 typedef struct 
 {
-  char *id;          ///< Identifier to be used by programmers.
-  char *name;        ///< Name to be shown to end users.
-  char *type;        ///< Real, Integer, String.
-  char *overview;    ///< Short description.
-  char *description; ///< Detailed description.
+  char *id;              ///< Identifier to be used by programmers.
+  char *name;            ///< Name to be shown to end users.
+  AlgParamDatatype type; ///< Real, Integer, String.
+  char *overview;        ///< Short description.
+  char *description;     ///< Detailed description.
 
   int    has_min;    ///< Zero if the parameter has no lower limit.
   Scalar min_val;    ///< Minimum parameter value.
   int    has_max;    ///< Zero if the parameter has no upper limit.
   Scalar max_val;    ///< Maximum parameter value.
   char  *typical;    ///< Typical parameter value.
+
 } AlgParamMetadata;
 
 

@@ -62,7 +62,7 @@ static AlgParamMetadata parameters[NUM_PARAM] = {
   {
     SVMTYPE_ID,      // Id.
     "SVM type",      // Name.
-    "Integer",       // Type.
+    Integer,         // Type.
     "Type of SVM: 0 = C-SVC, 1 = Nu-SVC, 2 = one-class SVM",   // Overview
     "Type of SVM: 0 = C-SVC, 1 = Nu-SVC, 2 = one-class SVM", // Description.
     1,         // Not zero if the parameter has lower limit.
@@ -75,7 +75,7 @@ static AlgParamMetadata parameters[NUM_PARAM] = {
   {
     KERNELTYPE_ID,     // Id.
     "Kernel type",     // Name.
-    "Integer",         // Type.
+    Integer,           // Type.
     "Type of kernel function: 0 = linear: u'*v , 1 = polynomial: (gamma*u'*v + coef0)^degree , 2 = radial basis function: exp(-gamma*|u-v|^2)", // Overview
     "Type of kernel function: 0 = linear: u'*v , 1 = polynomial: (gamma*u'*v + coef0)^degree , 2 = radial basis function: exp(-gamma*|u-v|^2)", // Description.
     1,         // Not zero if the parameter has lower limit.
@@ -88,7 +88,7 @@ static AlgParamMetadata parameters[NUM_PARAM] = {
   {
     DEGREE_ID,         // Id.
     "Degree",          // Name.
-    "Integer",         // Type.
+    Integer,           // Type.
     "Degree in kernel function (only for polynomial kernels).", // Overview
     "Degree in kernel function (only for polynomial kernels).", // Description.
     1,         // Not zero if the parameter has lower limit.
@@ -101,7 +101,7 @@ static AlgParamMetadata parameters[NUM_PARAM] = {
   {
     GAMMA_ID,         // Id.
     "Gamma",          // Name.
-    "Double",         // Type.
+    Real,             // Type.
     "Gamma in kernel function (only for polynomial and radial basis kernels). When set to zero, the default value will actually be 1/k, where k is the number of layers.", // Overview
     "Gamma in kernel function (only for polynomial and radial basis kernels). When set to zero, the default value will actually be 1/k, where k is the number of layers.", // Description.
     0,         // Not zero if the parameter has lower limit.
@@ -114,7 +114,7 @@ static AlgParamMetadata parameters[NUM_PARAM] = {
   {
     COEF0_ID,         // Id.
     "Coef0",          // Name.
-    "Double",         // Type.
+    Real,             // Type.
     "Coef0 in kernel function (only for polynomial kernels).", // Overview
     "Coef0 in kernel function (only for polynomial kernels).", // Description.
     0,         // Not zero if the parameter has lower limit.
@@ -127,7 +127,7 @@ static AlgParamMetadata parameters[NUM_PARAM] = {
   {
     C_ID,         // Id.
     "Cost",       // Name.
-    "Double",     // Type.
+    Real,         // Type.
     "Cost (only for C-SVC types).", // Overview
     "Cost (only for C-SVC types).", // Description.
     1,         // Not zero if the parameter has lower limit.
@@ -140,7 +140,7 @@ static AlgParamMetadata parameters[NUM_PARAM] = {
   {
     NU_ID,         // Id.
     "Nu",          // Name.
-    "Double",      // Type.
+    Real,          // Type.
     "Nu (only for Nu-SVC and one-class SVM).", // Overview
     "Nu (only for Nu-SVC and one-class SVM).", // Description.
     1,         // Not zero if the parameter has lower limit.
@@ -153,7 +153,7 @@ static AlgParamMetadata parameters[NUM_PARAM] = {
   {
     PROB_ID,                 // Id.
     "Probabilistic output",  // Name.
-    "Integer",               // Type.
+    Integer,                 // Type.
     "Indicates if the output should be a probability instead of a binary response (only available for C-SVC and Nu-SVC).", // Overview
     "Indicates if the output should be a probability instead of a binary response (only available for C-SVC and Nu-SVC).", // Description.
     1,         // Not zero if the parameter has lower limit.

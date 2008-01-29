@@ -62,7 +62,7 @@ static AlgParamMetadata parameters[NUM_PARAM] = { // Parameters
    {
       PARAM_USE_DEPTH_RANGE,        // Id
       "Use depth range",            // Name
-      "Integer",                    // Type
+      Integer,                      // Type
       "Use depth range when calculating probabilities", // Overview
       "Use depth range provided by experts (if available) when calculating probabilities", // Description
       1,    // Not zero if the parameter has lower limit
@@ -74,7 +74,7 @@ static AlgParamMetadata parameters[NUM_PARAM] = { // Parameters
    {
       PARAM_USE_ICE_CONCENTRATION,  // Id
       "Use ice concentration",      // Name
-      "Integer",                    // Type
+      Integer,                      // Type
       "Use ice concentration envelope when calculating probabilities", // Overview
       "Use ice concentration when calculating probabilities", // Description
       1,    // Not zero if the parameter has lower limit
@@ -86,7 +86,7 @@ static AlgParamMetadata parameters[NUM_PARAM] = { // Parameters
    {
       PARAM_USE_DISTANCE_TO_LAND,   // Id
       "Use distance to land",       // Name
-      "Integer",                    // Type
+      Integer,                      // Type
       "Use distance to land envelope when calculating probabilities", // Overview
       "Use distance to land envelope when calculating probabilities", // Description
       1,    // Not zero if the parameter has lower limit
@@ -98,7 +98,7 @@ static AlgParamMetadata parameters[NUM_PARAM] = { // Parameters
    {
       PARAM_USE_PRIMARY_PRODUCTION, // Id
       "Use primary production",     // Name
-      "Integer",                    // Type
+      Integer,                      // Type
       "Use primary production envelope when calculating probabilities", // Overview
       "Use primary production envelope when calculating probabilities", // Description
       1,    // Not zero if the parameter has lower limit
@@ -110,7 +110,7 @@ static AlgParamMetadata parameters[NUM_PARAM] = { // Parameters
    {
       PARAM_USE_SALINITY,           // Id
       "Use salinity",               // Name
-      "Integer",                    // Type
+      Integer,                      // Type
       "Use salinity envelope when calculating probabilities", // Overview
       "Use salinity envelope when calculating probabilities", // Description
       1,    // Not zero if the parameter has lower limit
@@ -122,7 +122,7 @@ static AlgParamMetadata parameters[NUM_PARAM] = { // Parameters
    {
       PARAM_USE_TEMPERATURE,        // Id
       "Use temperature",            // Name
-      "Integer",                    // Type
+      Integer,                      // Type
       "Use temperature envelope when calculating probabilities", // Overview
       "Use temperature envelope when calculating probabilities", // Description
       1,    // Not zero if the parameter has lower limit

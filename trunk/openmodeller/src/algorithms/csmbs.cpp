@@ -42,64 +42,64 @@ static AlgParamMetadata parameters[NUM_PARAM] = {
 
       // Metadata of the first parameter.
       {
-        "Randomisations",          // Id.
-        "Number of random eigenvalues",        // Name.
-        "Integer",        // Type.
+        "Randomisations", // Id.
+        "Number of random eigenvalues", // Name.
+        Integer, // Type.
         "The number of eigenvalues to generate from randomly 'shuffled' environment data.", //overview
         "The Broken Stick method of selecting the number of components to keep \
 is carried out by randomising the row order of each column in the environmental \
 matrix and then obtaining the eigen value for the randomised matrix. \
 This is repeatedly carried out for the amount of times specified by the user here.", // Description.
 
-        1,     // Not zero if the parameter has lower limit.
-        1,   // Parameter's lower limit.
-        1,     // Not zero if the parameter has upper limit.
-        1000,   // Parameter's upper limit.
-        "8"  // Parameter's typical (default) value.
+        1, // Not zero if the parameter has lower limit.
+        1, // Parameter's lower limit.
+        1, // Not zero if the parameter has upper limit.
+        1000, // Parameter's upper limit.
+        "8" // Parameter's typical (default) value.
       }
       ,
       {
-        "StandardDeviations",          // Id.
-        "Number of standard deviations",        // Name.
-        "Real",        // Type.
+        "StandardDeviations", // Id.
+        "Number of standard deviations", // Name.
+        Real, // Type.
         "The number of standard deviations added to the randomised eigen value.", //overview
         "When all the eigen values for the 'shuffled' environmental matrix have been summed \
 this number of standard deviations is added to the mean of the eigen values. \
 Any components whose eigen values are above this threshold are retained.", // Description.
 
-        1,     // Not zero if the parameter has lower limit.
-        -10,   // Parameter's lower limit.
-        1,     // Not zero if the parameter has upper limit.
-        10,   // Parameter's upper limit.
-        "2.0"  // Parameter's typical (default) value.
+        1, // Not zero if the parameter has lower limit.
+        -10, // Parameter's lower limit.
+        1, // Not zero if the parameter has upper limit.
+        10, // Parameter's upper limit.
+        "2.0" // Parameter's typical (default) value.
       }
       ,
       {
-        "MinComponents",          // Id.
-        "Minimum number of components in model",        // Name.
-        "Integer",        // Type.
+        "MinComponents", // Id.
+        "Minimum number of components in model", // Name.
+        Integer, // Type.
         "The minimum number of components that the model must have.", //overview
         "If not enough components are selected, the model produced will be erroneous or fail. \
 Usually three or more components are acceptable", // Description.
-        1,     // Not zero if the parameter has lower limit.
-        1,   // Parameter's lower limit.
-        1,     // Not zero if the parameter has upper limit.
-        20,   // Parameter's upper limit.
-        "1"  // Parameter's typical (default) value.
+        1, // Not zero if the parameter has lower limit.
+        1, // Parameter's lower limit.
+        1, // Not zero if the parameter has upper limit.
+        20, // Parameter's upper limit.
+        "1" // Parameter's typical (default) value.
       }
       ,
       {
-        "VerboseDebugging",          // Id.
-        "Show very detailed debugging info",        // Name.
-        "Integer",        // Type.
+        "VerboseDebugging", // Id.
+        "Show very detailed debugging info", // Name.
+        Integer, // Type.
         "Warning this will cause a large amount of information to be printed ", //overview
         "Set this to 1 to show extremely verbose diagnostics. \
 Set this to 0 to disable verbose diagnostics (this is default behaviour).", // Description.
-        1,     // Not zero if the parameter has lower limit.
-        0,   // Parameter's lower limit.
-        1,     // Not zero if the parameter has upper limit.
-        1,   // Parameter's upper limit.
-        "0"  // Parameter's typical (default) value.
+        1, // Not zero if the parameter has lower limit.
+        0, // Parameter's lower limit.
+        1, // Not zero if the parameter has upper limit.
+        1, // Parameter's upper limit.
+        "0" // Parameter's typical (default) value.
       }
     };
 

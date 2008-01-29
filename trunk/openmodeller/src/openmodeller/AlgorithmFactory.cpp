@@ -460,8 +460,23 @@ AlgorithmFactory::getConfiguration()
         param_name_config->setValue( param->name );
         param_config->addSubsection( param_name_config );
 
+        string datatype("?");
+
+        if ( param->type == Integer ) {
+
+          datatype = "Integer";
+        }
+        else if ( param->type == Real ) {
+
+          datatype = "Real";
+        }
+        else if ( param->type == String ) {
+
+          datatype = "String";
+        }
+
         ConfigurationPtr param_type_config( new ConfigurationImpl( "Type" ) );
-        param_type_config->setValue( param->type );
+        param_type_config->setValue( datatype.c_str() );
         param_config->addSubsection( param_type_config );
 
         ConfigurationPtr param_overview_config( new ConfigurationImpl( "Overview" ) );
