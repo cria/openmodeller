@@ -871,6 +871,8 @@ OpenModeller::jackknife( double propTrain )
 
     _alg = new_algorithm;
 
+    _alg->setSampler( new_sampler );
+
     createModel();
 
     _confusion_matrix->calculate( getModel(), test );
