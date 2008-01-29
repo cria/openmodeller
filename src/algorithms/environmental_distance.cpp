@@ -29,7 +29,7 @@ static AlgParamMetadata parameters[NUM_PARAM] = { // Parameters
    { // 1st parameter
       PARDISTTYPE, // Id
       "Metric",    // Name
-      "Integer",   // Type
+      Integer,     // Type
       "Metric used to calculate distances: " // Overview
          "1=Euclidean, "
          "2=Mahalanobis, "
@@ -47,9 +47,9 @@ static AlgParamMetadata parameters[NUM_PARAM] = { // Parameters
       "1"         // Parameter's typical (default) value
    },
    { // 2nd parameter
-      PARPOINTQNT,      // Id
+      PARPOINTQNT,            // Id
       "Nearest \'n\' points", // Name
-      "Integer",        // Type
+      Integer,                // Type
       "Nearest \'n\' points whose mean value will be the reference when calculating environmental distances.", // Overview
       "Nearest \'n\' points whose mean value will be the reference when calculating environmental distances. When set to 1, distances will be measured to the closest point, which is the same behavior of the previously existing minimum distance algorithm. When set to 0, distances will be measured to the average of all presence points, which is the same behavior of the previously existing distance to average algorithm. Intermediate values between 1 and the total number of presence points are now accepted.", // Description
       1,          // Not zero if the parameter has lower limit
@@ -61,7 +61,7 @@ static AlgParamMetadata parameters[NUM_PARAM] = { // Parameters
    { // 3rd parameter
       PARDIST,            // Id
       "Maximum distance", // Name
-      "Real",             // Type
+      Real,               // Type
       "Maximum distance to the reference in the environmental space.", // Overview
       "Maximum distance to the reference in the environmental space, above which the conditions will be considered unsuitable for presence. Since 1 corresponds to the biggest possible distance between any two points in the environment space, setting the maximum distance to this value means that all points in the environmental space will have an associated probability. The probability of presence for points that fall within the range of the maximum distance is inversely proportional to the distance to the reference point (linear decay).", // Description
       1,          // Not zero if the parameter has lower limit

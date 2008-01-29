@@ -50,9 +50,9 @@ static AlgParamMetadata parameters[NUM_PARAM] = {
 
   // Metadata of the first parameter.
   {
-    CUTOFF_ID,                 // Id
+    CUTOFF_ID,                   // Id
     "Standard deviation cutoff", // Name.
-    "Real",                      // Type.
+    Real,                        // Type.
 
     // Overview
     "The envelope is determined by multiplying this parameter and the\

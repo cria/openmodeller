@@ -58,7 +58,7 @@ AlgParamMetadata parameters_bs[NUM_PARAM] =
   {
     "TrainingProportion",          // Id.
     "Training Proportion",         // Name.
-    "Double",                      // Type.
+    Real,                          // Type.
 
     // Overview.
     "Proportion of the occurrence data to be used to train the models.",
@@ -76,7 +76,7 @@ AlgParamMetadata parameters_bs[NUM_PARAM] =
   {
     "TotalRuns",            // Id.
     "Total Runs",           // Name.
-    "Integer",              // Type.
+    Integer,                // Type.
 
     // Overview.
     "Maximum number of GARP runs to be performed.",
@@ -94,7 +94,7 @@ AlgParamMetadata parameters_bs[NUM_PARAM] =
   {
     "HardOmissionThreshold",          // Id.
     "Hard Omission Threshold",        // Name.
-    "Double",                         // Type.
+    Real,                             // Type.
 
     // Overview.
     "Maximum acceptable omission error. Set to 100% to use only soft omission.",
@@ -112,7 +112,7 @@ AlgParamMetadata parameters_bs[NUM_PARAM] =
   {
     "ModelsUnderOmissionThreshold",                   // Id.
     "Models Under Omission Threshold",                // Name.
-    "Integer",                                        // Type.
+    Integer,                                          // Type.
 
     // Overview.
     "Minimum number of models below omission threshold.",
@@ -130,7 +130,7 @@ AlgParamMetadata parameters_bs[NUM_PARAM] =
   {
     "CommissionThreshold",          // Id.
     "Commission Threshold",         // Name.
-    "Double",                       // Type.
+    Real,                           // Type.
 
     // Overview.
     "Percentage of distribution of models to be taken regarding commission error.",
@@ -148,7 +148,7 @@ AlgParamMetadata parameters_bs[NUM_PARAM] =
   {
     "CommissionSampleSize",          // Id.
     "Commission Sample Size",        // Name.
-    "Integer",                       // Type.
+    Integer,                         // Type.
 
     // Overview.
     "Number of samples used to calculate commission error.",
@@ -166,7 +166,7 @@ AlgParamMetadata parameters_bs[NUM_PARAM] =
   {
     "MaxThreads",                       // Id.
     "Maximum Number of Threads",        // Name.
-    "Integer",                          // Type.
+    Integer,                            // Type.
 
     // Overview.
     "Maximum number of threads of executions to run simultaneously.",
@@ -185,7 +185,7 @@ AlgParamMetadata parameters_bs[NUM_PARAM] =
   {
     "MaxGenerations",              // Id.
     "Max generations",             // Name.
-    "Integer",                     // Type.
+    Integer,                       // Type.
 
     // Overview.
     "Maximum number of iterations run by the Genetic Algorithm.",
@@ -204,7 +204,7 @@ AlgParamMetadata parameters_bs[NUM_PARAM] =
   {
     "ConvergenceLimit",        // Id.
     "Convergence limit",       // Name.
-    "Real",                    // Type.
+    Real,                      // Type.
 
     // Overview.
     "Defines the convergence value that makes the algorithm stop\
@@ -224,7 +224,7 @@ AlgParamMetadata parameters_bs[NUM_PARAM] =
   {
     "PopulationSize",        // Id.
     "Population size",       // Name.
-    "Integer",               // Type.
+    Integer,                 // Type.
 
     "Maximum number of rules to be kept in solution.", // Overview.
     "Maximum number of rules to be kept in solution.", // Description
@@ -239,7 +239,7 @@ AlgParamMetadata parameters_bs[NUM_PARAM] =
   {
     "Resamples",      // Id.
     "Resamples",      // Name.
-    "Integer",        // Type.
+    Integer,          // Type.
 
     // Overview.
     "Number of points sampled (with replacement) used to test rules.",

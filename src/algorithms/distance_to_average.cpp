@@ -50,7 +50,7 @@ static AlgParamMetadata parameters[NUM_PARAM] = {
   {
     PARAM_MAXDIST,      // Id
     "Maximum distance", // Name
-    "Real",             // Type.
+    Real,               // Type.
     "Maximum cartesian distance to be considered", // Overview
     "Maximum cartesian distance to be considered", // Description
 
