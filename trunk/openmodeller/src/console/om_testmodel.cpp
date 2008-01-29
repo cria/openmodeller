@@ -70,11 +70,16 @@ int main( int argc, char **argv ) {
 
     OccurrencesReader* oc_reader = OccurrencesFactory::instance().create( oc_file.c_str(), oc_cs.c_str() );
 
+    int num_presences = 0;
+
     OccurrencesPtr presences = oc_reader->getPresences( oc_name.c_str() );
 
-    int num_presences = presences->numOccurrences();
+    if ( presences ) {
 
-    Log::instance()->info( "Loaded %u presence(s)\n", num_presences );
+      num_presences = presences->numOccurrences();
+
+      Log::instance()->info( "Loaded %u presence(s)\n", num_presences );
+    }
 
     OccurrencesPtr absences = oc_reader->getAbsences( oc_name.c_str() );
 
@@ -109,28 +114,34 @@ int main( int argc, char **argv ) {
 
     om.setSampler( sampler );
 
-    ConfusionMatrix* matrix = new ConfusionMatrix();
+    ConfusionMatrix matrix;
 
-    matrix->calculate( om.getModel(), sampler );
+    matrix.calculate( om.getModel(), sampler );
 
-    RocCurve* roc_curve = new RocCurve();
+    RocCurve roc_curve;
 
-    roc_curve->calculate( om.getModel(), sampler );
+    roc_curve.calculate( om.getModel(), sampler );
 
     Log::instance()->info( "\nModel statistics\n" );
-    Log::instance()->info( "Accuracy:          %7.2f%%\n", matrix->getAccuracy() * 100 );
+    Log::instance()->info( "Accuracy:          %7.2f%%\n", matrix.getAccuracy() * 100 );
 
-    int omissions = matrix->getValue(0.0, 1.0);
-    int total     = omissions + matrix->getValue(1.0, 1.0);
+    if ( presences ) {
 
-    Log::instance()->info( "Omission error:    %7.2f%% (%d/%d)\n", matrix->getOmissionError() * 100, omissions, total );
+      int omissions = matrix.getValue(0.0, 1.0);
+      int total     = omissions + matrix.getValue(1.0, 1.0);
 
-    int commissions = matrix->getValue(1.0, 0.0);
-    total           = commissions + matrix->getValue(0.0, 0.0);
+      Log::instance()->info( "Omission error:    %7.2f%% (%d/%d)\n", matrix.getOmissionError() * 100, omissions, total );
+    }
 
-    Log::instance()->info( "Commission error:  %7.2f%% (%d/%d)\n", matrix->getCommissionError() * 100, commissions, total );
+    if ( absences ) {
 
-    Log::instance()->info( "AUC:               %7.2f\n", roc_curve->getArea() );
+      int commissions = matrix.getValue(1.0, 0.0);
+      int total       = commissions + matrix.getValue(0.0, 0.0);
+
+      Log::instance()->info( "Commission error:  %7.2f%% (%d/%d)\n", matrix.getCommissionError() * 100, commissions, total );
+
+      Log::instance()->info( "AUC:               %7.2f\n", roc_curve.getArea() );
+    }
 
     return 0;
   }
