@@ -68,7 +68,7 @@ om_sampledump_SOURCES = om_sampledump.cpp request_file.cpp file_parser.cpp
 om_sampledump_CPPFLAGS = -DCORE_DLL_IMPORT -I$(OMSRCDIR) $(TERRALIB_FLAGS) -Ddllexp=
 om_sampledump_LDADD = $(GDAL_LIB) $(OMLIB) $(EXPAT_LIBS) $(TERRALIB_LIB)
 
-om_pseudo_SOURCES = om_pseudo.cpp getopts/getopts.c
+om_pseudo_SOURCES = om_pseudo.cpp om_cmd_utils.cpp getopts/getopts.c
 om_pseudo_CPPFLAGS = -DCORE_DLL_IMPORT -I$(OMSRCDIR) -I getopts $(TERRALIB_FLAGS) -Ddllexp=
 om_pseudo_LDADD = $(GDAL_LIB) $(OMLIB) $(EXPAT_LIBS) $(TERRALIB_LIB)
 
