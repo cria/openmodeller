@@ -16,6 +16,7 @@ SVN revision: ?
 	* New algorithm AquaMaps (for marine organisms).
 	* Removed algorithms minimum distance and distance to average since EnvironmentalDistance provides the same functionality.
 	* "type" property of AlgParamMetadata changed from char * to a new enumeration called AlgParamDatatype. Values can be Integer, Real and String.
+	* Fixed bug in the environmental distance algorithm: probabilities were negative for points whose distance to the nearest point was beyond the maximum allowed distance. 
 
 Release 0.5.2 (2007-10-24)
 --------------------------
