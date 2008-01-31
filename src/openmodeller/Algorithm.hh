@@ -113,6 +113,11 @@ public:
   char const *getID() const { return _metadata ? _metadata->id : 0; }
   
   AlgMetadata const *getMetadata() const { return _metadata; }
+
+  /** Returns a copy of this algorithm in the same state as it was
+   *  before being initialized (ie., no model, same parameters). 
+   */
+  AlgorithmPtr getFreshCopy();
   
   /** If algorithm returns 0 then it does not support projection
    *  of models to other environmental data layers. By default
