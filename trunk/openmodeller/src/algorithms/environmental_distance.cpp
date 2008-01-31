@@ -246,18 +246,20 @@ Scalar EnvironmentalDistance::getValue(const Sample& x) const{
       Sample nearMean;
       std::vector<int> nearestIndex(ParPointQnt);
       std::vector<Scalar> nPdist(ParPointQnt);
-      //Log::instance()->info("\nStarting with distances:\n"); // Debug
+      //Log::instance()->debug("\nStarting with distances:\n"); // Debug
       for(int i = 0 ; i < ParPointQnt ; i++){ // We know that ParPointQnt < presenceCount
          nPdist[i] = Distance(x, presencePoints[i]);
+         //x.dump(); // debug
+         //presencePoints[i].dump(); // debug
          nearestIndex[i] = i;
-      //Log::instance()->info("   dist[%d]=%.8g\n", nearestIndex[i], nPdist[i]); // Debug
+         //Log::instance()->debug("   dist[%d]=%.8g\n", nearestIndex[i], nPdist[i]); // Debug
       }
 
-      //Log::instance()->info("\nNewer values:\n"); // Debug
+      //Log::instance()->debug("\nNearest points:\n"); // Debug
       for(int i = ParPointQnt ; i < presenceCount ; i++){ // This loop finds the nearest points
          distIterator = Distance(x, presencePoints[i]);
          indexIterator = i;
-         //Log::instance()->info("dist[%d] = %.8g:\n", indexIterator, distIterator); // Debug
+         //Log::instance()->debug("dist[%d] = %.8g:\n", indexIterator, distIterator); // Debug
          for(int j = 0 ; j < ParPointQnt ; j++){ // Trade pointIterator with the first smaller point
             if(nPdist[j] > distIterator){
                distTmp = distIterator;
@@ -270,7 +272,7 @@ Scalar EnvironmentalDistance::getValue(const Sample& x) const{
             }
          }
          //for(int j = 0 ; j < ParPointQnt ; j++) // Debug
-            //Log::instance()->info("   dist[%d]=%.8g\n", nearestIndex[j], nPdist[j]);
+         //   Log::instance()->debug("   dist[%d]=%.8g\n", nearestIndex[j], nPdist[j]);
       }
 
       // Now we have the nearest points. Let's get its mean:
@@ -280,7 +282,7 @@ Scalar EnvironmentalDistance::getValue(const Sample& x) const{
       nearMean /= ParPointQnt;
 
       dist = Distance(x, nearMean);
-      //Log::instance()->info("\ndistance=%.8g\n\n", dist); // Debug
+      //Log::instance()->debug("\ndistance=%.8g\n\n", dist); // Debug
    }
 
    // Now finishes the algorithm calculating the probability
