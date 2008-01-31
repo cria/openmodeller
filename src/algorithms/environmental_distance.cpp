@@ -233,8 +233,9 @@ Scalar EnvironmentalDistance::getValue(const Sample& x) const{
       dist = -1;
       for(int i = 0 ; i < presenceCount ; i++){ // Iterate for each presence point
          distIterator = Distance(x, presencePoints[i]);
-         if((distIterator < dist || dist < 0))
+         if((distIterator < dist || dist < 0)){
             dist = distIterator;
+         }
       }
 
    //
@@ -246,7 +247,7 @@ Scalar EnvironmentalDistance::getValue(const Sample& x) const{
       Sample nearMean;
       std::vector<int> nearestIndex(ParPointQnt);
       std::vector<Scalar> nPdist(ParPointQnt);
-      //Log::instance()->debug("\nStarting with distances:\n"); // Debug
+      //Log::instance()->debug("Starting with distances:\n"); // Debug
       for(int i = 0 ; i < ParPointQnt ; i++){ // We know that ParPointQnt < presenceCount
          nPdist[i] = Distance(x, presencePoints[i]);
          //x.dump(); // debug
@@ -255,7 +256,7 @@ Scalar EnvironmentalDistance::getValue(const Sample& x) const{
          //Log::instance()->debug("   dist[%d]=%.8g\n", nearestIndex[i], nPdist[i]); // Debug
       }
 
-      //Log::instance()->debug("\nNearest points:\n"); // Debug
+      //Log::instance()->debug("Nearest points:\n"); // Debug
       for(int i = ParPointQnt ; i < presenceCount ; i++){ // This loop finds the nearest points
          distIterator = Distance(x, presencePoints[i]);
          indexIterator = i;
@@ -282,11 +283,15 @@ Scalar EnvironmentalDistance::getValue(const Sample& x) const{
       nearMean /= ParPointQnt;
 
       dist = Distance(x, nearMean);
-      //Log::instance()->debug("\ndistance=%.8g\n\n", dist); // Debug
    }
+
+   //Log::instance()->debug("distance=%.8g\n\n", dist); // Debug
+   //Log::instance()->debug("max dist=%.8g\n\n", ParDist); // Debug
 
    // Now finishes the algorithm calculating the probability
    if(dist < 0) // There isn't any occurrence
+      return 0.0;
+   else if(dist > ParDist) // Point is too farway from nearest point
       return 0.0;
    else
       return 1.0 - (dist / ParDist);
