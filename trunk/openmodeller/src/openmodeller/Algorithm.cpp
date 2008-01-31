@@ -28,6 +28,7 @@
 #include <openmodeller/AbortionCommand.hh>
 #include <openmodeller/Algorithm.hh>
 #include <openmodeller/AlgParameter.hh>
+#include <openmodeller/AlgorithmFactory.hh>
 #include <openmodeller/Log.hh>
 #include <openmodeller/Configuration.hh>
 #include <openmodeller/Environment.hh>
@@ -228,6 +229,23 @@ AlgorithmImpl::setParameters( const ParamSetType &params )
 {
   _param.clear();
   _param = params;
+}
+
+/**********************/
+/*** get fresh copy ***/
+AlgorithmPtr 
+AlgorithmImpl::getFreshCopy()
+{
+  if ( ! _metadata ) {
+
+    throw AlgorithmException( "Cannot produce copies of an algorithm without metadata." );
+  }
+
+  AlgorithmPtr copy = AlgorithmFactory::newAlgorithm( _metadata->id );
+
+  copy->setParameters( _param );
+
+  return copy;
 }
 
 /*********************/
