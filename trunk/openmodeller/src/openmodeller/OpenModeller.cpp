@@ -799,17 +799,16 @@ OpenModeller::jackknife( double propTrain )
     return;
   }
 
-  // Keep a reference to the original algorithm
-  AlgorithmPtr original_algorithm = _alg;
-
   // Keep a reference to the original sampler
   SamplerPtr original_sampler = _samp;
 
+  // Split sampler into test and trainning
   SamplerPtr train;
   SamplerPtr test;
 
   splitSampler( _samp, &train, &test, propTrain );
 
+  // We will use the controller class in this part
   setSampler( train );
 
   // Calculate reference parameter using all layers
@@ -819,6 +818,9 @@ OpenModeller::jackknife( double propTrain )
 
   double param = _confusion_matrix->getAccuracy();
 
+  // Back to original sampler
+  setSampler( original_sampler );
+
   // Calculate reference parameter for each layer by excluding it from the layer set
 
   std::multimap<double, int> params;   // <------ output 1
@@ -827,17 +829,29 @@ OpenModeller::jackknife( double propTrain )
   double variance = 0.0;        // <------ output 3
 
   // Work with clones of the occurrences 
-  OccurrencesPtr presences;
-  OccurrencesPtr absences;
+  OccurrencesPtr train_presences;
+  OccurrencesPtr train_absences;
+  OccurrencesPtr test_presences;
+  OccurrencesPtr test_absences;
 
   if ( train->numPresence() ) {
 
-    presences = train->getPresences()->clone();
+    train_presences = train->getPresences()->clone();
   }
 
   if ( train->numAbsence() ) {
 
-    absences = train->getAbsences()->clone();
+    train_absences = train->getAbsences()->clone();
+  }
+
+  if ( test->numPresence() ) {
+
+    test_presences = test->getPresences()->clone();
+  }
+
+  if ( test->numAbsence() ) {
+
+    test_absences = test->getAbsences()->clone();
   }
 
   for ( int i = 0; i < num_layers; ++i ) {
@@ -851,44 +865,90 @@ OpenModeller::jackknife( double propTrain )
     env->removeLayer( i );
 
     // Read environment data from the new set of layers
-    if ( presences ) {
+    if ( train_presences ) {
 
-      presences->setEnvironment( env );
+      train_presences->setEnvironment( env );
     }
 
-    if ( absences ) {
+    if ( train_absences ) {
 
-      absences->setEnvironment( env );
+      train_absences->setEnvironment( env );
     }
 
-    // Create the new sampler
-    SamplerPtr new_sampler = createSampler( env, presences, absences );
+    if ( test_presences ) {
 
-    // Overwrite _samp property since createModel only works with the current properties
-    setSampler( new_sampler );
+      test_presences->setEnvironment( env );
+    }
 
-    AlgorithmPtr new_algorithm( original_algorithm );
+    if ( test_absences ) {
 
-    _alg = new_algorithm;
+      test_absences->setEnvironment( env );
+    }
 
-    _alg->setSampler( new_sampler );
+    // Create a new sampler for trainning points
+    SamplerPtr train_sampler = createSampler( env, train_presences, train_absences );
 
-    createModel();
+    // Create a new algorithm
+    AlgorithmPtr new_algorithm = _alg->getFreshCopy();
 
-    _confusion_matrix->calculate( getModel(), test );
+    new_algorithm->createModel( train_sampler );
 
-    double myaccuracy = _confusion_matrix->getAccuracy();
+    ConfusionMatrix conf_matrix;
+
+    // Create a new sampler for testing points
+    SamplerPtr test_sampler = createSampler( env, test_presences, test_absences );
+
+    // Normalize test samples if necessary
+    if ( new_algorithm->needNormalization() && ! test_sampler->isNormalized() ) {
+
+    Log::instance()->info( "Computing normalization for test points\n");
+
+    Normalizer * normalizer = new_algorithm->getNormalizer();
+
+      if ( normalizer ) {
+
+        // Note: normalization parameters should have been already computed during model creation
+        test_sampler->normalize( normalizer );
+      }
+      else {
+
+        Log::instance()->error( 1, "Jackknife algorithm requires normalization but did not specify any normalizer\n");
+        return;
+      }
+    }
+
+    // Calculate parameters
+    conf_matrix.calculate( new_algorithm->getModel(), test_sampler );
+
+    double myaccuracy = conf_matrix.getAccuracy();
 
     mean += myaccuracy;
     variance += myaccuracy*myaccuracy;
 
     params.insert( std::pair<double, int>( myaccuracy, i ) );
+
+// Code for debugging:
+
+//     string file_name = "model_";
+//     char num[4];
+//     sprintf( num, "%d", i);
+//     file_name.append( num );
+
+//     ConfigurationPtr config( new ConfigurationImpl("SerializedModel"));
+//     ConfigurationPtr sampler_config( new_sampler->getConfiguration() );
+//     config->addSubsection( sampler_config );
+//     ConfigurationPtr alg_config( new_algorithm->getConfiguration() );
+//     config->addSubsection( alg_config );
+
+//     std::ostringstream model_output;
+//     Configuration::writeXml( config, model_output );
+
+//     std::ofstream file( file_name.c_str() );
+//     file << model_output.str();
+//     file.close();
+
+//     break;
   }
-
-  // Switch back to the original sampler and algorithm
-  setSampler( original_sampler );
-
-  _alg = original_algorithm;
 
   Log::instance()->debug( "With all layers: %f\n", param );
 
