@@ -380,7 +380,7 @@ public:
    *
    ****************************************************************************/
   
-   void jackknife( double propTrain );
+   void jackknife( SamplerPtr sampler, AlgorithmPtr alg, double propTrain );
   
 private:
 
