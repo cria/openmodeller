@@ -775,23 +775,17 @@ OpenModeller::setProjectionConfiguration( const ConstConfigurationPtr & config )
 /*************************/
 /******* Jackknife *******/
 void
-OpenModeller::jackknife( double propTrain )
+OpenModeller::jackknife( SamplerPtr samplerPtr, AlgorithmPtr algorithmPtr, double propTrain )
 {
   Log::instance()->debug( "Running jackknife\n" );
 
-  if ( ! _alg ) {
+  if ( ! samplerPtr->getEnvironment() ) {
 
-    Log::instance()->error( 1, "No algorithm specified for jackknife" );
+    Log::instance()->error( 1, "Sampler has no environment" );
     return;
   }
 
-  if ( ! _samp ) {
-
-    Log::instance()->error( 1, "No sampler specified for jackknife" );
-    return;
-  }
-
-  int num_layers = _samp->numIndependent();
+  int num_layers = samplerPtr->numIndependent();
 
   if ( num_layers < 2 ) {
 
@@ -799,27 +793,22 @@ OpenModeller::jackknife( double propTrain )
     return;
   }
 
-  // Keep a reference to the original sampler
-  SamplerPtr original_sampler = _samp;
-
   // Split sampler into test and trainning
-  SamplerPtr train;
-  SamplerPtr test;
+  SamplerPtr training_sampler;
+  SamplerPtr testing_sampler;
 
-  splitSampler( _samp, &train, &test, propTrain );
-
-  // We will use the controller class in this part
-  setSampler( train );
+  splitSampler( samplerPtr, &training_sampler, &testing_sampler, propTrain );
 
   // Calculate reference parameter using all layers
-  createModel();
+  AlgorithmPtr algorithm_ptr = algorithmPtr->getFreshCopy();
+  
+  algorithm_ptr->createModel( training_sampler );
 
-  _confusion_matrix->calculate( getModel(), test );
+  ConfusionMatrix conf_matrix;
 
-  double param = _confusion_matrix->getAccuracy();
+  conf_matrix.calculate( algorithm_ptr->getModel(), testing_sampler );
 
-  // Back to original sampler
-  setSampler( original_sampler );
+  double param = conf_matrix.getAccuracy();
 
   // Calculate reference parameter for each layer by excluding it from the layer set
 
@@ -829,29 +818,29 @@ OpenModeller::jackknife( double propTrain )
   double variance = 0.0;        // <------ output 3
 
   // Work with clones of the occurrences 
-  OccurrencesPtr train_presences;
-  OccurrencesPtr train_absences;
-  OccurrencesPtr test_presences;
-  OccurrencesPtr test_absences;
+  OccurrencesPtr training_presences;
+  OccurrencesPtr training_absences;
+  OccurrencesPtr testing_presences;
+  OccurrencesPtr testing_absences;
 
-  if ( train->numPresence() ) {
+  if ( training_sampler->numPresence() ) {
 
-    train_presences = train->getPresences()->clone();
+    training_presences = training_sampler->getPresences()->clone();
   }
 
-  if ( train->numAbsence() ) {
+  if ( training_sampler->numAbsence() ) {
 
-    train_absences = train->getAbsences()->clone();
+    training_absences = training_sampler->getAbsences()->clone();
   }
 
-  if ( test->numPresence() ) {
+  if ( testing_sampler->numPresence() ) {
 
-    test_presences = test->getPresences()->clone();
+    testing_presences = testing_sampler->getPresences()->clone();
   }
 
-  if ( test->numAbsence() ) {
+  if ( testing_sampler->numAbsence() ) {
 
-    test_absences = test->getAbsences()->clone();
+    testing_absences = testing_sampler->getAbsences()->clone();
   }
 
   for ( int i = 0; i < num_layers; ++i ) {
@@ -859,47 +848,47 @@ OpenModeller::jackknife( double propTrain )
     Log::instance()->debug( "Removing layer with index %u\n", i );
 
     // Copy the original environment
-    EnvironmentPtr env = original_sampler->getEnvironment()->clone();
+    EnvironmentPtr new_environment = samplerPtr->getEnvironment()->clone();
 
     // Remove one of the layers
-    env->removeLayer( i );
+    new_environment->removeLayer( i );
 
     // Read environment data from the new set of layers
-    if ( train_presences ) {
+    if ( training_presences ) {
 
-      train_presences->setEnvironment( env );
+      training_presences->setEnvironment( new_environment );
     }
 
-    if ( train_absences ) {
+    if ( training_absences ) {
 
-      train_absences->setEnvironment( env );
+      training_absences->setEnvironment( new_environment );
     }
 
-    if ( test_presences ) {
+    if ( testing_presences ) {
 
-      test_presences->setEnvironment( env );
+      testing_presences->setEnvironment( new_environment );
     }
 
-    if ( test_absences ) {
+    if ( testing_absences ) {
 
-      test_absences->setEnvironment( env );
+      testing_absences->setEnvironment( new_environment );
     }
 
     // Create a new sampler for trainning points
-    SamplerPtr train_sampler = createSampler( env, train_presences, train_absences );
+    SamplerPtr new_training_sampler = createSampler( new_environment, training_presences, training_absences );
 
     // Create a new algorithm
-    AlgorithmPtr new_algorithm = _alg->getFreshCopy();
+    AlgorithmPtr new_algorithm = algorithmPtr->getFreshCopy();
 
-    new_algorithm->createModel( train_sampler );
+    new_algorithm->createModel( new_training_sampler );
 
-    ConfusionMatrix conf_matrix;
+    conf_matrix.reset();
 
     // Create a new sampler for testing points
-    SamplerPtr test_sampler = createSampler( env, test_presences, test_absences );
+    SamplerPtr new_testing_sampler = createSampler( new_environment, testing_presences, testing_absences );
 
     // Normalize test samples if necessary
-    if ( new_algorithm->needNormalization() && ! test_sampler->isNormalized() ) {
+    if ( new_algorithm->needNormalization() && ! new_testing_sampler->isNormalized() ) {
 
     Log::instance()->info( "Computing normalization for test points\n");
 
@@ -908,7 +897,7 @@ OpenModeller::jackknife( double propTrain )
       if ( normalizer ) {
 
         // Note: normalization parameters should have been already computed during model creation
-        test_sampler->normalize( normalizer );
+        new_testing_sampler->normalize( normalizer );
       }
       else {
 
@@ -918,7 +907,8 @@ OpenModeller::jackknife( double propTrain )
     }
 
     // Calculate parameters
-    conf_matrix.calculate( new_algorithm->getModel(), test_sampler );
+    conf_matrix.reset(); // reuse object
+    conf_matrix.calculate( new_algorithm->getModel(), new_testing_sampler );
 
     double myaccuracy = conf_matrix.getAccuracy();
 
@@ -952,13 +942,13 @@ OpenModeller::jackknife( double propTrain )
 
   Log::instance()->debug( "With all layers: %f\n", param );
 
-  EnvironmentPtr env = _samp->getEnvironment();
+  EnvironmentPtr environment_ptr = samplerPtr->getEnvironment();
 
   std::map<double, int>::const_iterator it = params.begin();
   std::map<double, int>::const_iterator end = params.end();
   for ( ; it != end; ++it ) {
 
-    Log::instance()->debug( "Without layer %d: %f (%s)\n", (*it).second, (*it).first, (env->getLayerPath( (*it).second )).c_str() );
+    Log::instance()->debug( "Without layer %d: %f (%s)\n", (*it).second, (*it).first, (environment_ptr->getLayerPath( (*it).second )).c_str() );
   }
 
   mean /= num_layers;
