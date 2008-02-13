@@ -188,6 +188,9 @@ ENDIF (WIN32)
 # process subdirs
 
 SUBDIRS(src examples)
+if (SQLITE3_FOUND)
+  SUBDIRS(data)
+ENDIF(SQLITE3_FOUND)
 IF (OM_CTEST)
   SUBDIRS(test)
 ENDIF (OM_CTEST)
