@@ -1,3 +1,15 @@
+libopenmodeller (0.5.3-test1) gutsy; urgency=low
+
+  * Package name needs a digit 
+
+ -- Tim Sutton <tim@linfiniti.com>  Wed, 13 Feb 2008 13:55:35 -0200
+
+libopenmodeller (0.5.3-test) gutsy; urgency=low
+
+  * Testing creating separate packages for the various parts 
+
+ -- Tim Sutton <tim@linfiniti.com>  Wed, 13 Feb 2008 13:16:13 -0200
+
 libopenmodeller (0.5.2) feisty; urgency=low
 
   * Support for MSVC compiler added. Support for building debian packages. 

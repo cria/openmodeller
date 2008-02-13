@@ -29,9 +29,10 @@ CMakeCache.txt: CMakeLists.txt
 	dh_testdir
 	# Add here commands to configure the package.
 	cmake -D CMAKE_INSTALL_PREFIX=/usr \
-		    -D GDAL_INCLUDE_DIR=/usr/include/gdal \
-				-D GDAL_LIBRARY=/usr/lib/libgdal1.3.2.so \
 	      .
+		    #Needed in < ubuntu 7.10 only due to bug
+	      #-D GDAL_INCLUDE_DIR=/usr/include/gdal \
+				#-D GDAL_LIBRARY=/usr/lib/libgdal1.3.2.so \
 
 build: patch build-stamp
 
