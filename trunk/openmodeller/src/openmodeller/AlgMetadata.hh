@@ -33,13 +33,13 @@
 #include <openmodeller/om_defs.hh>
 
 
-typedef enum {
+typedef enum AlgParamDatatype {
 
   Integer = 0,
   Real    = 1,
   String  = 2
 
-} AlgParamDatatype;
+} ;
 
 
 /****************************************************************/
@@ -49,7 +49,7 @@ typedef enum {
  * Algorithms' parameter metadata structure.
  * 
  **/
-typedef struct 
+typedef struct AlgParamMetadata
 {
   char *id;              ///< Identifier to be used by programmers.
   char *name;            ///< Name to be shown to end users.
@@ -63,7 +63,7 @@ typedef struct
   Scalar max_val;    ///< Maximum parameter value.
   char  *typical;    ///< Typical parameter value.
 
-} AlgParamMetadata;
+} ;
 
 
 /****************************************************************/
@@ -73,7 +73,7 @@ typedef struct
  * Algorithms' metadata structure.
  * 
  */
-typedef struct 
+typedef struct AlgMetadata
 {
   char *id;          ///< Identifier to be used by programmers.
   char *name;        ///< Name to be shown to end users.
@@ -92,7 +92,7 @@ typedef struct
   int  nparam;       ///< Number of parameters.
   AlgParamMetadata *param;
 
-} AlgMetadata;
+} ;
 
 
 
