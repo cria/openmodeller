@@ -8,7 +8,7 @@ WKT Coord System = GEOGCS["WGS84", DATUM["WGS84", SPHEROID["WGS84", 6378137.0, 2
 # TAB-delimited file with a list of occurrences. Each line is a record
 # with: <id> <label> <longitude> <latitude> <abundance>
 #
-Occurrences source = furcata_boliviana.txt
+Occurrences source = /home/fabricio/dev/cpp/openmodeller/examples/furcata_boliviana.txt
 
 # Only occurrences with this label (group id) will be used.
 # Defaults to the last label found.
@@ -19,8 +19,8 @@ Occurrences group = furcata boliviana
 # note: You can find the map below in this address:
 #       http://openmodeller.cria.org.br/download/rain_coolest.tgz
 #
-Map = rain_coolest.tif
-Map = temp_avg.tif
+Map = /home/fabricio/dev/cpp/openmodeller/examples/rain_coolest.tif
+Map = /home/fabricio/dev/cpp/openmodeller/examples/temp_avg.tif
 
 # Mask to delimit the region to be used to generate the model (filter
 # the species ocurrencies/absences points).
@@ -28,7 +28,7 @@ Map = temp_avg.tif
 # areas will be those with nodata (areas with zero as data will not 
 # be masked at all).
 #
-Mask = rain_coolest.tif
+Mask = /home/fabricio/dev/cpp/openmodeller/examples/rain_coolest.tif
 
 
 ######################
@@ -36,30 +36,30 @@ Mask = rain_coolest.tif
 
 # File to be used as the output format.
 #
-Output format = rain_coolest.tif
+Output format = /home/fabricio/dev/cpp/openmodeller/examples/rain_coolest.tif
 
 # Maps to be used as environmental variables to project the model
 # to create the output distribution map.
 #
-Output map = rain_coolest.tif
-Output map = temp_avg.tif
+Output map = /home/fabricio/dev/cpp/openmodeller/examples/rain_coolest.tif
+Output map = /home/fabricio/dev/cpp/openmodeller/examples/temp_avg.tif
 
 # Mask to delimit the region to project the model onto.
 # Note: Mask layers need to support nodata value assignment. Masked
 # areas will be those with nodata (areas with zero as data will not 
 # be masked at all).
 #
-Output mask = rain_coolest.tif
+Output mask = /home/fabricio/dev/cpp/openmodeller/examples/rain_coolest.tif
 
 # Output model name (serialized model).
 #
-Output model = furcata.xml
+Output model = /home/fabricio/dev/cpp/openmodeller/examples/furcata.xml
 
 # Output file name (projected map).
 # Make sure to use the correct extension as shown in the Output file type
 # documentation shown below!
 #
-Output file = furcata.img
+Output file = /home/fabricio/dev/cpp/openmodeller/examples/furcata.img
 
 # Output file type. Options:
 #
@@ -103,15 +103,15 @@ Output file type = ByteHFA
 #Parameter = VerboseDebugging 1
 
 ########
-# GARP: Genetic Algorithm for Rule Set Production
-#
-#Algorithm = DG_GARP
-#Parameter = MaxGenerations 100
-#Parameter = ConvergenceLimit 0.05
-#Parameter = PopulationSize 50
-#Parameter = Resamples 2500
-#Parameter = MutationRate 0.25
-#Parameter = CrossoverRate 0.25
+GARP: Genetic Algorithm for Rule Set Production
+
+Algorithm = DG_GARP
+Parameter = MaxGenerations 100
+Parameter = ConvergenceLimit 0.05
+Parameter = PopulationSize 50
+Parameter = Resamples 2500
+Parameter = MutationRate 0.25
+Parameter = CrossoverRate 0.25
 
 ########
 # GARP with Best Subsets Procedure

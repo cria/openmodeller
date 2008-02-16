@@ -62,7 +62,7 @@ using std::string;
 #include <iostream>  // I/O 
 #include <fstream>   // file I/O
 #include <sstream>   // treat string as a stream
-
+#include <math.h>
 
 /*** backward compatible callback helper classes ***/
 
@@ -913,7 +913,7 @@ OpenModeller::jackknife( SamplerPtr samplerPtr, AlgorithmPtr algorithmPtr, doubl
     double myaccuracy = conf_matrix.getAccuracy();
 
     mean += myaccuracy;
-    variance += myaccuracy*myaccuracy;
+    //variance += myaccuracy*myaccuracy;
 
     params.insert( std::pair<double, int>( myaccuracy, i ) );
 
@@ -943,25 +943,36 @@ OpenModeller::jackknife( SamplerPtr samplerPtr, AlgorithmPtr algorithmPtr, doubl
   Log::instance()->debug( "With all layers: %f\n", param );
 
   EnvironmentPtr environment_ptr = samplerPtr->getEnvironment();
-
+  
+  mean /= num_layers;//Included
+  
   std::map<double, int>::const_iterator it = params.begin();
   std::map<double, int>::const_iterator end = params.end();
   for ( ; it != end; ++it ) {
 
     Log::instance()->debug( "Without layer %d: %f (%s)\n", (*it).second, (*it).first, (environment_ptr->getLayerPath( (*it).second )).c_str() );
+    variance += ((*it).first - mean)*((*it).first - mean);
   }
 
-  mean /= num_layers;
+  //mean /= num_layers;
 
   Log::instance()->debug( "Mean = %f\n", mean );
 
   variance /= num_layers;
-  variance -= mean*mean;
+  //variance -= mean*mean;
   variance *= (num_layers - 1);
+
+  double standard_deviation = sqrt(variance);
 
   Log::instance()->debug( "Variance = %f\n", variance );
 
   double jackknife_estimate = (num_layers - 1)*(mean - param);  // <---------- output 4
 
-  Log::instance()->debug( "Jackknife estimate = %f\n", jackknife_estimate );
+  param = param - jackknife_estimate;
+
+  Log::instance()->debug( "Jackknife estimate (BIAS) = %f\n", jackknife_estimate );
+  
+  Log::instance()->debug( "Jackknife estimate (ACCURACY) = %f\n", param );
+
+  Log::instance()->debug( "Standard deviation = %f\n", standard_deviation );
 }
