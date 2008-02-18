@@ -808,14 +808,17 @@ OpenModeller::jackknife( SamplerPtr samplerPtr, AlgorithmPtr algorithmPtr, doubl
 
   conf_matrix.calculate( algorithm_ptr->getModel(), testing_sampler );
 
-  double param = conf_matrix.getAccuracy();
+  double param = conf_matrix.getAccuracy(); // <------ output 1
 
   // Calculate reference parameter for each layer by excluding it from the layer set
 
-  std::multimap<double, int> params;   // <------ output 1
+  std::multimap<double, int> params; // <------ output 2
 
-  double mean = 0.0;            // <------ output 2
-  double variance = 0.0;        // <------ output 3
+  double mean = 0.0;                 // <------ output 3
+  double variance = 0.0;             // <------ output 4
+  double std_deviation = 0.0;        // <------ output 5
+  double jackknife_estimate = 0.0;   // <------ output 6
+  double jackknife_bias = 0.0;       // <------ output 7
 
   // Work with clones of the occurrences 
   OccurrencesPtr training_presences;
@@ -913,7 +916,6 @@ OpenModeller::jackknife( SamplerPtr samplerPtr, AlgorithmPtr algorithmPtr, doubl
     double myaccuracy = conf_matrix.getAccuracy();
 
     mean += myaccuracy;
-    //variance += myaccuracy*myaccuracy;
 
     params.insert( std::pair<double, int>( myaccuracy, i ) );
 
@@ -944,7 +946,7 @@ OpenModeller::jackknife( SamplerPtr samplerPtr, AlgorithmPtr algorithmPtr, doubl
 
   EnvironmentPtr environment_ptr = samplerPtr->getEnvironment();
   
-  mean /= num_layers;//Included
+  mean /= num_layers;
   
   std::map<double, int>::const_iterator it = params.begin();
   std::map<double, int>::const_iterator end = params.end();
@@ -954,25 +956,23 @@ OpenModeller::jackknife( SamplerPtr samplerPtr, AlgorithmPtr algorithmPtr, doubl
     variance += ((*it).first - mean)*((*it).first - mean);
   }
 
-  //mean /= num_layers;
-
   Log::instance()->debug( "Mean = %f\n", mean );
 
   variance /= num_layers;
-  //variance -= mean*mean;
-  variance *= (num_layers - 1);
 
-  double standard_deviation = sqrt(variance);
+  variance *= (num_layers - 1);
 
   Log::instance()->debug( "Variance = %f\n", variance );
 
-  double jackknife_estimate = (num_layers - 1)*(mean - param);  // <---------- output 4
+  std_deviation = sqrt(variance);
 
-  param = param - jackknife_estimate;
+  Log::instance()->debug( "Standard deviation = %f\n", std_deviation );
 
-  Log::instance()->debug( "Jackknife estimate (BIAS) = %f\n", jackknife_estimate );
-  
-  Log::instance()->debug( "Jackknife estimate (ACCURACY) = %f\n", param );
+  jackknife_bias = (num_layers - 1)*(mean - param);
 
-  Log::instance()->debug( "Standard deviation = %f\n", standard_deviation );
+  jackknife_estimate = param - jackknife_bias;
+
+  Log::instance()->debug( "Jackknife estimate = %f\n", jackknife_estimate );
+
+  Log::instance()->debug( "Jackknife bias = %f\n", jackknife_bias );
 }
