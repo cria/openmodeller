@@ -47,19 +47,29 @@ if [ -e $map_ige ]; then
 mv "$map_ige" "$finalmap_ige"
 fi
 
-# Create a JPEG file with pseudocolor
+# Create a PNG with pseudocolor (requires GDAL command-line tools)
 #if [ -e $map_img ]; then
-#finalmap_jpg=$map_repository"/"$ticket".jpg"
-#tempmap_jpg=$map_repository"/"$ticket".jpg.tmp"
-#palete=$map_repository"/REPLACE_WITH_PALETE_FILE_NAME"
-# This requires GDAL command-line tools:
-#/usr/bin/gdal_translate "$map_img" -ot Byte -of JPEG "$tempmap_jpg"
-#/usr/bin/pct2rgb.py -of JPEG "$tempmap_jpg" "$tempmap_jpg"
-# This requires Imagemagick >= 6.3.5:
-#/usr/bin/convert -opaque "#F00" -fill "#FFF" "$tempmap_jpg" "$tempmap_jpg"
-#/usr/bin/convert -equalize -colorspace RGB "$tempmap_jpg" "$tempmap_jpg"
-#/usr/bin/convert "$tempmap_jpg" "$palete" -clut "$tempmap_jpg"
-#mv "$tempmap_jpg" "$finalmap_jpg"
+#finalmap_png=$map_repository"/"$ticket".png"
+#tempmap_png=$map_repository"/"$ticket".png.tmp"
+# Create a virtual raster from an existing template
+#vrt_template=REPLACE_WITH_VRT_TEMPLATE_FILE_PATH"
+#vrt_file=$map_repository"/"$ticket".vrt"
+# Get x and y dimensions from raster using gdal_info
+#info=`gdalinfo $map_img`
+#match=`echo $info | sed -n -e 's#.*Size\sis\s\([0-9\.]*\),\s\([0-9\.]*\).*$#\1 \2#p'`
+#match_len=${#match}
+#x_size=0
+#y_size=0
+#if [ $match_len -gt 0 ]; then
+#  x_size=`echo $match | awk '{print $1}'`
+#  y_size=`echo $match | awk '{print $2}'`
+#fi
+# Replace values in the virtual raster file
+#sed 's/\$x/'$x_size'/' "$vrt_template | sed 's/\$y/'$y_size'/' | sed 's/\$file_name/'$map_img'/' > "$vrt_file"
+# Convert the virtual raster to PNG
+#/usr/bin/gdal_translate "$vrt_file" -ot Byte -of PNG "$tempmap_png"
+#mv "$tempmap_png" "$finalmap_png"
+#rm -f "$vrt_file"
 #fi
 
 # This must be the last step, since getProgress will only return 100% if
