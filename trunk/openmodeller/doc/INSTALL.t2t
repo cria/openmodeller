@@ -450,7 +450,7 @@ zip archive that contains just about all dependencies.
 
 Get this: 
 
-http://openmodeller.cria.org.br/uploadfiles/msys/msys.zip
+http://qgis.org/uploadfiles/msys/msys.zip
 
 and unpack to c:\msys
 
@@ -605,7 +605,7 @@ archive that includes all dependencies needed to build openModeller. Fetch
 the archive from:
 
 ```
-http://openmodeller.cria.org.br/uploadfiles/msvc/openmodeller_msvc_deps_except_qt4.zip
+http://qgis.org/uploadfiles/msvc/openmodeller_msvc_deps_except_qt4.zip
 ```
 
 /!\ **Note:** If you wish to build the dependencies yourself, detailed notes 
