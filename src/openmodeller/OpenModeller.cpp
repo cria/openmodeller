@@ -54,8 +54,8 @@
 
 #include <string>
 using std::string;
-
 #include <map>
+using std::map;
 
 #include <math.h>
 
@@ -953,8 +953,8 @@ OpenModeller::jackknife( SamplerPtr samplerPtr, AlgorithmPtr algorithmPtr, doubl
   
   mean /= num_layers;
   
-  std::map<double, int>::iterator it = params.begin();
-  std::map<double, int>::iterator end = params.end();
+  std::multimap<double, int>::const_iterator it = params.begin();
+  std::multimap<double, int>::const_iterator end = params.end();
   for ( ; it != end; ++it ) {
 
     Log::instance()->debug( "Without layer %d: %f (%s)\n", (*it).second, (*it).first, (environment_ptr->getLayerPath( (*it).second )).c_str() );
