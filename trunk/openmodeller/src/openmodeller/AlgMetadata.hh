@@ -49,7 +49,7 @@ typedef enum AlgParamDatatype {
  * Algorithms' parameter metadata structure.
  * 
  **/
-typedef struct AlgParamMetadata
+struct AlgParamMetadata
 {
   char *id;              ///< Identifier to be used by programmers.
   char *name;            ///< Name to be shown to end users.
@@ -73,7 +73,7 @@ typedef struct AlgParamMetadata
  * Algorithms' metadata structure.
  * 
  */
-typedef struct AlgMetadata
+struct AlgMetadata
 {
   char *id;          ///< Identifier to be used by programmers.
   char *name;        ///< Name to be shown to end users.
