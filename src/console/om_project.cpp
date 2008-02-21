@@ -75,7 +75,7 @@ int main( int argc, char **argv ) {
         exit(-1);
         break;
       case 1:
-        printf("om_project 0.2.0\n");
+        printf("om_project 0.2.1\n");
         exit(0);
         break;
       case 2:
@@ -217,6 +217,13 @@ int main( int argc, char **argv ) {
     }
   }
   catch ( runtime_error e ) {
+
+    // If user is tracking progress
+    if ( ! progress_file.empty() ) { 
+
+      // -2 means aborted
+      progressCallback( -2.0, &prog_data );
+    }
 
     printf( "om_project: %s\n", e.what() );
   }
