@@ -25,7 +25,7 @@
  */
 
 #include <om_cmd_utils.hh>
-
+#include <time.h> 
 // get Log Level
 Log::Level getLogLevel( std::string level ) {
 
