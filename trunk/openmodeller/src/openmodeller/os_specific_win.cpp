@@ -210,3 +210,4 @@ initRandom()
   srand( seed );
   return 1;
 }
+

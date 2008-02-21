@@ -64,6 +64,8 @@ using std::string;
 #include <sstream>   // treat string as a stream
 #include <math.h>
 
+
+
 /*** backward compatible callback helper classes ***/
 
 class ModelCallbackHelper : public Algorithm::ModelCommand
@@ -767,6 +769,7 @@ OpenModeller::setProjectionConfiguration( const ConstConfigurationPtr & config )
       Log::instance()->error( 1, "XML subsection not found: %s\n", section.c_str() );
   }
   catch ( AttributeNotFound& e ) { 
+    UNUSED(e);
 
   }
 }

@@ -150,7 +150,7 @@ AlgorithmImpl::setConfiguration( const ConstConfigurationPtr &config )
     found_normalization_section = true;
   }
   catch( SubsectionNotFound& e ) {
-
+    UNUSED(e);
     // No need to set _normalizerPtr to null, because alg already initializes
     // a default normalizer. Setting it to null will in fact make algorithms
     // crash if you run them with om_create (deserializing from an XML request).
@@ -179,7 +179,7 @@ AlgorithmImpl::setConfiguration( const ConstConfigurationPtr &config )
       }
     }
     catch( AttributeNotFound& e ) {
-
+      UNUSED (e);
       // Backwards compatibility
       _normalizerPtr = new ScaleNormalizer();
     }
@@ -195,7 +195,7 @@ AlgorithmImpl::setConfiguration( const ConstConfigurationPtr &config )
     _setConfiguration( model_config );
   }
   catch( SubsectionNotFound& e ) {
-
+    UNUSED (e);
     // Try getting directly from config object (backwards compatibility)
     _setConfiguration( config );
   }

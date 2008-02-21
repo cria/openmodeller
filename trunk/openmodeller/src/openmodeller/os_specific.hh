@@ -33,6 +33,17 @@
 #include <vector>
 #include <string>
 
+
+/****************************************************************/
+/****** DEFINE MACRO TO NEATLY HANDLE UNUSED VARS ***************/
+#ifdef _MSC_VER
+  // fake use to make unused variable warnings go away in Visual C++
+  #define UNUSED(symbol) symbol
+#else
+  #  define UNUSED(symbol)
+#endif
+
+
 /****************************************************************/
 /********************* Dynamic Linking Loader *******************/
 
