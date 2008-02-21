@@ -208,6 +208,13 @@ int main( int argc, char **argv ) {
 
     printf( "om_create: %s\n", e.what() );
 
-    exit(-1);
+    try {
+
+      Log::instance()->error( 1, "%s\n", e.what() );
+    }
+    catch ( runtime_error e ) {
+
+      UNUSED(e);
+    }
   }
 }
