@@ -55,6 +55,10 @@
 #include <string>
 using std::string;
 
+#include <map>
+
+#include <math.h>
+
 // REMOVE ME
 #include <istream>
 #include <stdlib.h>
@@ -62,8 +66,6 @@ using std::string;
 #include <iostream>  // I/O 
 #include <fstream>   // file I/O
 #include <sstream>   // treat string as a stream
-#include <math.h>
-
 
 
 /*** backward compatible callback helper classes ***/
