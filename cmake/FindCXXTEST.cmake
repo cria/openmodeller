@@ -10,6 +10,7 @@ FIND_PATH(CXXTEST_INCLUDE_DIR cxxtest/TestSuite.h
         /usr/local/include 
         /usr/include 
         c:/msys/local/include
+        c:/dev/cpp/cxxtest
         )
 
 
