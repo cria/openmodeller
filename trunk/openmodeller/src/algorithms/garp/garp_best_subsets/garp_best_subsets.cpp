@@ -344,17 +344,25 @@ AlgorithmImpl * GarpBestSubsets::getBSAlgorithm()
 int GarpBestSubsets::transferParametersToAlgorithm()
 {
   // GARP parameters
-  if (!getParameter("MaxGenerations",   &_max_gen))        
-      Log::instance()->error(1, "Parameter MaxGenerations not set properly.\n");
+  if (!getParameter("MaxGenerations",   &_max_gen)) {
+    Log::instance()->error("Parameter MaxGenerations not set properly.\n");
+    return 0;
+  }
 
-  if (!getParameter("ConvergenceLimit", &_conv_limit))     
-      Log::instance()->error(1, "Parameter ConvergenceLimit not set properly.\n");
+  if (!getParameter("ConvergenceLimit", &_conv_limit)) {
+    Log::instance()->error("Parameter ConvergenceLimit not set properly.\n");
+    return 0;
+  }
 
-  if (!getParameter("PopulationSize",   &_popsize))        
-      Log::instance()->error(1, "Parameter PopulationSize not set properly.\n");
+  if (!getParameter("PopulationSize",   &_popsize)) {
+    Log::instance()->error("Parameter PopulationSize not set properly.\n");
+    return 0;
+  }
 
-  if (!getParameter("Resamples",        &_resamples))      
-      Log::instance()->error(1, "Parameter Resamples not set properly.\n");
+  if (!getParameter("Resamples",        &_resamples)) {
+    Log::instance()->error("Parameter Resamples not set properly.\n");
+    return 0;
+  }
 
   if (_alg_params)
     delete[] _alg_params;

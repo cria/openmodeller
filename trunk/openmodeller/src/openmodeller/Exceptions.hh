@@ -33,7 +33,7 @@ public:
 class AttributeNotFound : public ConfigurationException {
 public:
   AttributeNotFound( const std::string& attrName ) :
-    ConfigurationException( "Attribute " + attrName + " not found"),
+    ConfigurationException( "XML attribute " + attrName + " not found"),
     attrName( attrName )
   {}
   ~AttributeNotFound() throw() {}
@@ -47,7 +47,7 @@ private:
 class SubsectionNotFound : public ConfigurationException {
 public:
   SubsectionNotFound( const std::string& sectionName ) :
-    ConfigurationException( "Subsection " + sectionName + " not found"),
+    ConfigurationException( "XML subsection " + sectionName + " not found"),
     sectionName( sectionName )
   {}
   ~SubsectionNotFound() throw() {}
@@ -99,16 +99,6 @@ public:
 };
 
 //
-// Graphics Driver Exceptions -- thrown for non file io graphic problems.
-//
-class GraphicsDriverException : public OmException {
-public:
-  GraphicsDriverException( const std::string& msg ) :
-    OmException( msg )
-  {}
-};
-
-//
 // Invalid Parameter Exception -- thrown in the library when an
 // a parameter value is invalid
 //
@@ -137,6 +127,18 @@ public:
 class AlgorithmException : public OmException {
 public:
   AlgorithmException( const std::string& msg ) :
+    OmException( msg )
+  {}
+};
+
+
+//
+// RasterException -- thrown in the library when 
+// there is an issue with a raster.
+//
+class RasterException : public OmException {
+public:
+  RasterException( const std::string& msg ) :
     OmException( msg )
   {}
 };

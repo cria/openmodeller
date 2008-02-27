@@ -188,7 +188,11 @@ SamplerImpl::setConfiguration( const ConstConfigurationPtr& config )
 
   if ( ! presence->numOccurrences() ) { 
 
-    throw SamplerException( "No presence points available." );
+    std::string msg = "No presence points available.\n";
+
+    Log::instance()->error( msg.c_str() );
+
+    throw SamplerException( msg );
   }
 
   Log::instance()->debug( "Loaded %u presence(s)\n", presence->numOccurrences() );
@@ -318,7 +322,11 @@ SamplerImpl::getOneSample( ) const
 
   if ( ( ! _presence ) || ! _presence->numOccurrences() ) { 
 
-    throw SamplerException( "No presence points available for sampling." );
+    std::string msg = "No presence points available for sampling.\n";
+
+    Log::instance()->error( msg.c_str() );
+
+    throw SamplerException( msg );
   }
 
   // Probability of 0.5 of get a presence point.
@@ -342,7 +350,11 @@ SamplerImpl::getPseudoAbsence() const
 {
   if ( ! _env ) {
 
-    throw SamplerException("Trying to get a pseudo absence point without setting up an Environment object");
+    std::string msg = "Cannot get a pseudo absence points without setting Environment object.\n";
+
+    Log::instance()->error( msg.c_str() );
+
+    throw SamplerException( msg );
   }
 
   //

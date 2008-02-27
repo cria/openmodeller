@@ -237,23 +237,6 @@ Log::info( const char *format, ... )
 }
 
 
-/*******************/
-/*** operator () ***/
-void
-Log::operator()( const char *format, ... )
-{
-  if ( _level > Default || !callback )
-    return;
-
-  va_list ap;
-  va_start( ap, format );
-  FormatAndWrite( *callback, Default, _pref, format, ap );
-  va_end( ap );
-
-  return;
-}
-
-
 /************/
 /*** warn ***/
 void
@@ -274,7 +257,7 @@ Log::warn( const char *format, ... )
 /*************/
 /*** error ***/
 void
-Log::error( int exit_code, const char *format, ... )
+Log::error( const char *format, ... )
 {
   if ( _level > Error || !callback )
     return;
@@ -284,15 +267,22 @@ Log::error( int exit_code, const char *format, ... )
   FormatAndWrite( *callback, Error, _pref, format, ap );
   va_end( ap );
 
-  const int buf_size = 1024;
-  char buf[buf_size];
-
-  // Print in 'buf'.
-  //
-  va_start( ap, format );
-  vsnprintf( buf, buf_size, format, ap );
-  va_end( ap );
-
-  throw OmException( buf );
+  return;
 }
 
+
+/*******************/
+/*** operator () ***/
+void
+Log::operator()( const char *format, ... )
+{
+  if ( _level > Default || !callback )
+    return;
+
+  va_list ap;
+  va_start( ap, format );
+  FormatAndWrite( *callback, Default, _pref, format, ap );
+  va_end( ap );
+
+  return;
+}

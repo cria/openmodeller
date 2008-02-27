@@ -82,7 +82,7 @@ OccurrencesFile::loadOccurrences( const char *file_name )
 
   if ( ! file )
   {
-    Log::instance()->warn( "Can't open file %s.\n", file_name );
+    Log::instance()->error( "Can't open file %s.\n", file_name );
     return 0;
   }
 
@@ -138,5 +138,5 @@ OccurrencesFile::loadOccurrences( const char *file_name )
 
   fclose( file );
 
-  return 0;
+  return 1;
 }

@@ -57,10 +57,10 @@ Projector::createMap( const Model& model,
   Header hdr = map->getHeader();
 
 #ifndef GEO_TRANSFORMATIONS_OFF
-  if ( ! hdr.hasProj() )
-    {
-      throw;
-    }
+  if ( ! hdr.hasProj() ) {
+
+    throw;
+  }
 #endif
 
   // Normalize the environment.

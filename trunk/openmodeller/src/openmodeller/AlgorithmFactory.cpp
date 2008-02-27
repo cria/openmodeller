@@ -1,7 +1,6 @@
 /**
  * Definition of AlgorithmFactory class.
  * 
- * @file
  * @author Mauro E S Muñoz (mauro@cria.org.br)
  * @date   2004-03-19
  * $Id$
@@ -233,23 +232,31 @@ AlgorithmFactory::numAvailableAlgorithms()
 AlgMetadata const *
 AlgorithmFactory::algorithmMetadata( char const *id )
 {
-  if ( ! id )
-    throw InvalidParameterException( "Algorithm id not specified" );
+  if ( ! id ) {
+
+    std::string msg = "Algorithm id not specified.\n";
+
+    Log::instance()->error( msg.c_str() );
+
+    throw InvalidParameterException( msg );
+  }
 
   AlgorithmFactory& af = getInstance();
 
   testDLLId test( id );
-  ListDLL::iterator dll = find_if( af._dlls.begin(),
-				   af._dlls.end(),
-				   test );
+  ListDLL::iterator dll = find_if( af._dlls.begin(), af._dlls.end(), test );
 
   if ( dll != af._dlls.end() ) {
+
     return (*dll)->getMetadata();
   }
 
   string msg("Algorithm ");
   msg += id;
   msg += " not found";
+
+  Log::instance()->error( msg.c_str() );
+
   throw InvalidParameterException( msg );
 }
 
@@ -262,8 +269,14 @@ AlgorithmFactory::newAlgorithm( char const *id )
 
   int dll_count = af._dlls.size();
 
-  if ( dll_count == 0 )
-    throw InvalidParameterException( "No algorithms loaded" );
+  if ( dll_count == 0 ) {
+
+    std::string msg = "No algorithms loaded.\n";
+
+    Log::instance()->error( msg.c_str() );
+
+    throw AlgorithmException( msg );
+  }
 
   testDLLId test( id );
 
@@ -274,7 +287,13 @@ AlgorithmFactory::newAlgorithm( char const *id )
     return (*dll)->newAlgorithm();
   }
 
-  throw InvalidParameterException( "Algorithm not found" );
+  string msg("Algorithm ");
+  msg += id;
+  msg += " not found";
+
+  Log::instance()->error( msg.c_str() );
+
+  throw InvalidParameterException( msg );
 }
 
 AlgorithmPtr
@@ -288,8 +307,10 @@ AlgorithmFactory::newAlgorithm( const ConstConfigurationPtr & config ) {
 
   AlgorithmPtr alg( newAlgorithm( id.c_str() ) );
 
-  if ( ! alg )
+  if ( ! alg ) {
+
     return alg;
+  }
 
   alg->setConfiguration( config );
 
@@ -517,6 +538,5 @@ AlgorithmFactory::getConfiguration()
   }
 
   return config;
-  
 }
 

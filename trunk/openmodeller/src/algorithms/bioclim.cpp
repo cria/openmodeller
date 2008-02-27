@@ -180,7 +180,7 @@ Bioclim::initialize()
   Scalar cutoff = 0.0;
   // Read and check the standard deviation cutoff parameter.
   if ( ! getParameter( CUTOFF_ID, &cutoff ) ) {
-    Log::instance()->error(1, "Parameter " CUTOFF_ID " not set properly.\n");
+    Log::instance()->error( "Parameter " CUTOFF_ID " not set properly.\n" );
     return 0;
   }
 
@@ -196,8 +196,8 @@ Bioclim::initialize()
   // Check the number of sampled points.
   int npnt = _samp->numPresence();
   if (  npnt < 2 ) {
-    Log::instance()->error( 1, "Bioclim needs at least 2 points inside the mask!\n" ); 
-    // Log::instance()->error() does a ::exit(rc).
+    Log::instance()->error( "Bioclim needs at least 2 points inside the mask!\n" );
+    return 0;
   }
 
   Log::instance()->info( "Using %d points to find the bioclimatic envelope.\n", npnt );

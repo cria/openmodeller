@@ -297,7 +297,7 @@ SvmAlgorithm::initialize()
   // SVM type
   if ( ! getParameter( SVMTYPE_ID, &_svm_parameter.svm_type ) ) {
 
-    Log::instance()->error( 1, "Parameter '" SVMTYPE_ID "' not passed.\n" );
+    Log::instance()->error( "Parameter '" SVMTYPE_ID "' not passed.\n" );
     return 0;
   }
 
@@ -306,14 +306,14 @@ SvmAlgorithm::initialize()
        _svm_parameter.svm_type != 1 && 
        _svm_parameter.svm_type != 2  ) {
 
-    Log::instance()->error( 1, "Parameter '" SVMTYPE_ID "' not set properly. It must be 0, 1 or 2.\n" );
+    Log::instance()->error( "Parameter '" SVMTYPE_ID "' not set properly. It must be 0, 1 or 2.\n" );
     return 0;
   }
 
   // Kernel type
   if ( ! getParameter( KERNELTYPE_ID, &_svm_parameter.kernel_type ) ) {
 
-    Log::instance()->error( 1, "Parameter '" KERNELTYPE_ID "' not passed.\n" );
+    Log::instance()->error( "Parameter '" KERNELTYPE_ID "' not passed.\n" );
     return 0;
   }
 
@@ -322,21 +322,21 @@ SvmAlgorithm::initialize()
        _svm_parameter.kernel_type != 1 && 
        _svm_parameter.kernel_type != 2  ) {
 
-    Log::instance()->error( 1, "Parameter '" KERNELTYPE_ID "' not set properly. It must be 0, 1 or 2.\n" );
+    Log::instance()->error( "Parameter '" KERNELTYPE_ID "' not set properly. It must be 0, 1 or 2.\n" );
     return 0;
   }
 
   // Degree
   if ( ! getParameter( DEGREE_ID, &_svm_parameter.degree ) ) {
 
-    Log::instance()->error( 1, "Parameter '" DEGREE_ID "' not passed.\n" );
+    Log::instance()->error( "Parameter '" DEGREE_ID "' not passed.\n" );
     return 0;
   }
 
   // Gamma
   if ( ! getParameter( GAMMA_ID, &_svm_parameter.gamma ) ) {
 
-    Log::instance()->error( 1, "Parameter '" GAMMA_ID "' not passed.\n" );
+    Log::instance()->error( "Parameter '" GAMMA_ID "' not passed.\n" );
     return 0;
   }
 
@@ -350,28 +350,28 @@ SvmAlgorithm::initialize()
   // Coef0
   if ( ! getParameter( COEF0_ID, &_svm_parameter.coef0 ) ) {
 
-    Log::instance()->error( 1, "Parameter '" COEF0_ID "' not passed.\n" );
+    Log::instance()->error( "Parameter '" COEF0_ID "' not passed.\n" );
     return 0;
   }
 
   // C
   if ( ! getParameter( C_ID, &_svm_parameter.C ) ) {
 
-    Log::instance()->error( 1, "Parameter '" C_ID "' not passed.\n" );
+    Log::instance()->error( "Parameter '" C_ID "' not passed.\n" );
     return 0;
   }
 
   // Nu
   if ( ! getParameter( NU_ID, &_svm_parameter.nu ) ) {
 
-    Log::instance()->error( 1, "Parameter '" NU_ID "' not passed.\n" );
+    Log::instance()->error( "Parameter '" NU_ID "' not passed.\n" );
     return 0;
   }
 
   // Probabilistic output
   if ( ! getParameter( PROB_ID, &_svm_parameter.probability ) ) {
 
-    Log::instance()->error( 1, "Parameter '" PROB_ID "' not passed.\n" );
+    Log::instance()->error( "Parameter '" PROB_ID "' not passed.\n" );
     return 0;
   }
 
@@ -379,7 +379,7 @@ SvmAlgorithm::initialize()
   if ( _svm_parameter.probability != 0 && 
        _svm_parameter.probability != 1 ) {
 
-    Log::instance()->error( 1, "Parameter '" PROB_ID "' not set properly. It must be 0 or 1.\n" );
+    Log::instance()->error( "Parameter '" PROB_ID "' not set properly. It must be 0 or 1.\n" );
     return 0;
   }
 
@@ -521,7 +521,7 @@ SvmAlgorithm::initialize()
 
   if ( error_msg ) {
 
-    Log::instance()->error(1, error_msg);
+    Log::instance()->error( error_msg );
     return 0;
   }
 
@@ -557,7 +557,7 @@ SvmAlgorithm::iterate()
 
   if ( _svm_parameter.probability == 1 && svm_check_probability_model( _svm_model ) == 0 ){
 
-    Log::instance()->error( 1, "SvmAlgorithm: Generated model cannot return probability estimates.\n" );
+    Log::instance()->error( "SvmAlgorithm: Generated model cannot return probability estimates.\n" );
     return 0;
   }
 

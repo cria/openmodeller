@@ -189,7 +189,9 @@ int AbstractBestSubsets::needNormalization()
   AbstractBestSubsets *non_const = const_cast<AbstractBestSubsets*>(this);
   if ( _subAlgorithm.empty() ) {
     if ( !non_const->getParameter("SubAlgorithm", & _subAlgorithm ) ) {
-      Log::instance()->error(1, "Parameter SubAlgorithm not set properly." );
+      std::string error = "Parameter SubAlgorithm not set properly.";
+      Log::instance()->error( error.c_str() );
+      throw AlgorithmException( error );
     }
   }
 
@@ -222,30 +224,46 @@ int AbstractBestSubsets::initialize()
 {
   // BS parameters
 #if 0
-  if (!getParameter("SubAlgorithm", &_subAlgorithm))
-    Log::instance()->error(1, "Parameter SubAlgorithm not set properly.\n");
+  if (!getParameter("SubAlgorithm", &_subAlgorithm)) {
+    Log::instance()->error("Parameter SubAlgorithm not set properly.\n");
+    return 0;
+  }
 #endif
 
-  if (!getParameter("TrainingProportion", &_trainProp))
-    Log::instance()->error(1, "Parameter TrainingProportion not set properly.\n");
+  if (!getParameter("TrainingProportion", &_trainProp)) {
+    Log::instance()->error("Parameter TrainingProportion not set properly.\n");
+    return 0;
+  }
 
-  if (!getParameter("TotalRuns", &_totalRuns))        
-    Log::instance()->error(1, "Parameter TotalRuns not set properly.\n");
+  if (!getParameter("TotalRuns", &_totalRuns)) {
+    Log::instance()->error("Parameter TotalRuns not set properly.\n");
+    return 0;
+  }
 
-  if (!getParameter("HardOmissionThreshold", &_omissionThreshold))        
-    Log::instance()->error(1, "Parameter HardOmissionThreshold not set properly.\n");
+  if (!getParameter("HardOmissionThreshold", &_omissionThreshold)) {
+    Log::instance()->error("Parameter HardOmissionThreshold not set properly.\n");
+    return 0;
+  }
 
-  if (!getParameter("ModelsUnderOmissionThreshold", &_modelsUnderOmission))        
-    Log::instance()->error(1, "Parameter ModelsUnderOmissionThreshold not set properly.\n");
+  if (!getParameter("ModelsUnderOmissionThreshold", &_modelsUnderOmission)) {
+    Log::instance()->error("Parameter ModelsUnderOmissionThreshold not set properly.\n");
+    return 0;
+  }
 
-  if (!getParameter("CommissionThreshold", &_commissionThreshold))        
-    Log::instance()->error(1, "Parameter CommissionThreshold not set properly.\n");
+  if (!getParameter("CommissionThreshold", &_commissionThreshold)) {
+    Log::instance()->error("Parameter CommissionThreshold not set properly.\n");
+    return 0;
+  }
 
-  if (!getParameter("CommissionSampleSize", &_commissionSampleSize))        
-    Log::instance()->error(1, "Parameter CommissionSampleSize not set properly.\n");
+  if (!getParameter("CommissionSampleSize", &_commissionSampleSize)) {
+    Log::instance()->error("Parameter CommissionSampleSize not set properly.\n");
+    return 0;
+  }
 
-  if (!getParameter("MaxThreads", &_maxThreads))        
-    Log::instance()->error(1, "Parameter MaxThreads not set properly.\n");
+  if (!getParameter("MaxThreads", &_maxThreads)) {
+    Log::instance()->error("Parameter MaxThreads not set properly.\n");
+    return 0;
+  }
 
   if ( _maxThreads != 1 )
   {

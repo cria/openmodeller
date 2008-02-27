@@ -218,17 +218,25 @@ GarpAlgorithm::~GarpAlgorithm()
 // ==========================================================================
 int GarpAlgorithm::initialize()
 {
-  if (!getParameter("MaxGenerations",   &Totalgens))        
-      Log::instance()->error(1, "Parameter MaxGenerations not set properly.");
+  if (!getParameter("MaxGenerations",   &Totalgens)) {
+    Log::instance()->error("Parameter MaxGenerations not set properly.");
+    return 0;
+  }
 
-  if (!getParameter("ConvergenceLimit", &Conv_limit))     
-      Log::instance()->error(1, "Parameter ConvergenceLimit not set properly.");
+  if (!getParameter("ConvergenceLimit", &Conv_limit)) {
+    Log::instance()->error("Parameter ConvergenceLimit not set properly.");
+    return 0;
+  }
 
-  if (!getParameter("PopulationSize",   &Popsize))        
-      Log::instance()->error(1, "Parameter PopulationSize not set properly.");
+  if (!getParameter("PopulationSize",   &Popsize)) {
+    Log::instance()->error("Parameter PopulationSize not set properly.");
+    return 0;
+  }
 
-  if (!getParameter("Resamples",        &Resamples))      
-      Log::instance()->error(1, "Parameter Resamples not set properly.");
+  if (!getParameter("Resamples",        &Resamples)) {
+    Log::instance()->error("Parameter Resamples not set properly.");
+    return 0;
+  }
 
   //Log::instance()->debug("MaxGenerations set to:   %d\n", _max_gen);
   //Log::instance()->debug("ConvergenceLimit set to: %.4f\n", _conv_limit);

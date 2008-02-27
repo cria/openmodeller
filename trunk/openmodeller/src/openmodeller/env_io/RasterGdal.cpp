@@ -155,7 +155,8 @@ RasterGdal::RasterGdal( const string& file, const MapFormat& format):
       Log::instance()->debug( "RasterGdal format set to MapFormat::ByteHFA:\n" );
       break;
     default:
-      throw GraphicsDriverException( "Unsupported output format" );
+      Log::instance()->error( "Unsupported output format.\n" );
+      throw InvalidParameterException( "Unsupported output format" );
   }
 
   f_hdr = Header( format.getWidth(),
@@ -241,7 +242,7 @@ RasterGdal::write( Scalar *buf, int frow, int nrow )
 
     if ( ret == CE_Failure )
     {
-      Log::instance()->warn( "Unable to write to file %s\n", f_file.c_str());
+      Log::instance()->error( "Unable to write to file %s\n", f_file.c_str());
       throw FileIOException( "Unable to write to file " + f_file, f_file );
     }
   }
@@ -261,7 +262,7 @@ RasterGdal::open( char mode )
 
   if ( ! f_ds ) {
 
-    Log::instance()->warn( "Unable to open file %s\n", f_file.c_str());
+    Log::instance()->error( "Unable to open file %s\n", f_file.c_str());
     throw FileIOException( "Unable to open file " + f_file, f_file );
   }
 
@@ -338,16 +339,20 @@ RasterGdal::create( int format )
 
   if ( poDriver == NULL ) {
 
-    throw FileIOException( "Unable to load graphics driver " + string(fmt), f_file );
+    std::string msg = "Unable to load GDAL driver " + string(fmt) + " for file " + f_file;
+
+    Log::instance()->error( msg.c_str() );
+
+    throw FileIOException( "Unable to load GDAL driver " + string(fmt), f_file );
   }
 
   papszMetadata = poDriver->GetMetadata();
 
   if ( ! CSLFetchBoolean( papszMetadata, GDAL_DCAP_CREATE, FALSE ) ) {
 
-    Log::instance()->warn( "Driver %s, format %s  DOES NOT support Create() method.\n", 
-        poDriver->GetDescription(),
-        fmt);
+    Log::instance()->error( "Driver %s, format %s does not support Create() method.\n", 
+                            poDriver->GetDescription(),
+                            fmt );
 
     throw FileIOException( "Driver " + string(fmt) + " does not support Create() method", f_file );
   }

@@ -1,7 +1,6 @@
 /**
  * Declaration of GarpRule used by GARP
  * 
- * @file   rules_base.cpp
  * @author Ricardo Scachetti Pereira (rpereira@ku.edu)
  * @date   2004-04-02
  * $Id$
@@ -40,6 +39,8 @@
 #include <openmodeller/Log.hh>
 #include <openmodeller/Sample.hh>
 #include <openmodeller/Occurrence.hh>
+
+#include <openmodeller/Exceptions.hh>
 
 #include "rules_base.hh"
 
@@ -389,7 +390,10 @@ double GarpRule::evaluate(const OccurrencesPtr& occs)
     }
 
   if (no != pXs)
-    { Log::instance()->error(1, "Assertion failed (no != pXs): %d != %d", no, pXs); }
+    {
+      Log::instance()->error("Assertion failed (no != pXs): %d != %d", no, pXs);
+      throw AlgorithmException("Assertion failed");
+    }
   
   // Priors
   utility[1] = pXs  / (double) n;		// proportion 

@@ -39,6 +39,8 @@
 #include <openmodeller/Configuration.hh>
 #include <openmodeller/Log.hh>
 
+#include <openmodeller/Exceptions.hh>
+
 #include <string.h>
 #include <algorithm>
 
@@ -101,20 +103,29 @@ void RocCurve::_loadPredictions( const EnvironmentPtr & env,
 
   if ( ! env ) {
 
-    Log::instance()->error( 1, "No environment specified for the ROC curve\n" );
-    return;
+    std::string msg = "No environment specified for the ROC curve\n";
+
+    Log::instance()->error( msg.c_str() );
+
+    throw InvalidParameterException( msg );
   }
 
   if ( ! presences ) {
 
-    Log::instance()->error( 1, "No presence points specified for the ROC curve\n" );
-    return;
+    std::string msg = "No presence points specified for the ROC curve\n";
+
+    Log::instance()->error( msg.c_str() );
+
+    throw InvalidParameterException( msg );
   }
 
   if ( ! absences ) {
 
-    Log::instance()->error( 1, "No absence points specified for the ROC curve\n" );
-    return;
+    std::string msg = "No absence points specified for the ROC curve\n";
+
+    Log::instance()->error( msg.c_str() );
+
+    throw InvalidParameterException( msg );
   }
 
   // Load predictions

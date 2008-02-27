@@ -251,7 +251,7 @@ OpenModeller::setOccurrences( const OccurrencesPtr& presence,
   if ( ( ! presence || presence->numOccurrences() == 0 ) &&
        ( ! absence  || absence->numOccurrences() == 0 ) ) {
 
-    Log::instance()->error( 1, "Occurrences must not be empty\n" );
+    Log::instance()->error( "Occurrences must not be empty\n" );
     return 0;
   }
   _presence = presence;
@@ -286,7 +286,8 @@ OpenModeller::setAlgorithm( char const *id, int nparam,
 {
   if ( nparam && ! param ) {
 
-    Log::instance()->error( 1, "Incoherent number of parameters and parameters pointer\n" );
+    Log::instance()->error( "Wrong parameters when setting algorithm\n" );
+    return 0;
   }
 
   if ( ! _samp ) {
@@ -294,12 +295,12 @@ OpenModeller::setAlgorithm( char const *id, int nparam,
     //  Create a default sampler if none was previously provided
     if ( ! hasEnvironment() ) {
 
-      Log::instance()->info( "Sampler could not be initialized. Environment not set.\n" );
+      Log::instance()->warn( "Sampler could not be initialized. Environment not set.\n" );
       return 0;
     }
     else if ( ( ! _presence ) && ( ! _absence ) ) {
 
-      Log::instance()->info( "Sampler could not be initialized. Occurrences not set.\n" );
+      Log::instance()->warn( "Sampler could not be initialized. Occurrences not set.\n" );
       return 0;
     }
     else {
@@ -313,7 +314,7 @@ OpenModeller::setAlgorithm( char const *id, int nparam,
 
   if ( ! _alg ) {
 
-    sprintf( _error, "Could not find (%s) algorithm.", id );
+    Log::instance()->error( _error, "Could not find (%s) algorithm.", id );
     return 0;
   }
 
@@ -336,16 +337,14 @@ OpenModeller::createModel()
   // Sampler
   if ( ! _samp ) {
 
-    Log::instance()->error( 1, "Sampler not specified for model creation.\n" );
-
+    Log::instance()->error( "Sampler not specified for model creation.\n" );
     return 0;
   }
 
   // Algorithm.
   if ( ! _alg ) {
 
-    Log::instance()->error( 1, "Algorithm not specified for model creation.\n" );
-
+    Log::instance()->error( "Algorithm not specified for model creation.\n" );
     return 0;
   }
 
@@ -366,7 +365,7 @@ OpenModeller::createMap( const EnvironmentPtr & env, char const *output_file, Ma
 
   if ( ! env ) {
 
-    Log::instance()->info( "Projection environment not specified\n" );
+    Log::instance()->error( "Projection environment not specified\n" );
     return 0;
   }
 
@@ -409,6 +408,7 @@ OpenModeller::createMap( const EnvironmentPtr & env, char const *output_file, Ma
 
   if ( ! finished ) {
 
+    Log::instance()->info( "Error during model projection\n" );
     return 0;
   }
 
@@ -721,58 +721,62 @@ OpenModeller::setProjectionConfiguration( const ConstConfigurationPtr & config )
 
     _format = MapFormat( formatId.c_str() );
 
-    string fileType;
+    try {
 
-    fileType = output_param_config->getAttribute( "FileType" );
+      string fileType;
 
-    // Default is 8-bit tiff
-    int type = MapFormat::GreyTiff;
+      fileType = output_param_config->getAttribute( "FileType" );
 
-    Log::instance()->info( "Setting Output file type to: %s\n", fileType.c_str() );
+      // Default is 8-bit tiff
+      int type = MapFormat::GreyTiff;
 
-    if ( ! fileType.empty() ) {
+      Log::instance()->info( "Setting Output file type to: %s\n", fileType.c_str() );
 
-      if ( fileType == "GreyTiff" ) {
+      if ( ! fileType.empty() ) {
 
-        // nothing to do - it's already the default
+        if ( fileType == "GreyTiff" ) {
+
+          // nothing to do - it's already the default
+        }
+        else if ( fileType == "GreyTiff100" ) {
+
+          type = MapFormat::GreyTiff100;
+        }
+        else if ( fileType == "FloatingTiff" ) {
+
+          type = MapFormat::FloatingTiff;
+        }
+        else if ( fileType == "GreyBMP" ) {
+
+          type = MapFormat::GreyBMP;
+        }
+        else if ( fileType == "FloatingHFA" ) {
+
+          type = MapFormat::FloatingHFA;
+        }
+        else if ( fileType == "ByteHFA" ) {
+
+          type = MapFormat::ByteHFA;
+        }
+        else {
+
+          Log::instance()->warn( "Wrong value for 'Output file type' (%s). It should be GreyTiff, FloatingTiff, GreyBMP, FloatingHFA or ByteHFA. Using default.\n", fileType.c_str() );
+        }
       }
-      else if ( fileType == "GreyTiff100" ) {
 
-        type = MapFormat::GreyTiff100;
-      }
-      else if ( fileType == "FloatingTiff" ) {
-
-        type = MapFormat::FloatingTiff;
-      }
-      else if ( fileType == "GreyBMP" ) {
-
-        type = MapFormat::GreyBMP;
-      }
-      else if ( fileType == "FloatingHFA" ) {
-
-        type = MapFormat::FloatingHFA;
-      }
-      else if ( fileType == "ByteHFA" ) {
-
-        type = MapFormat::ByteHFA;
-      }
-      else {
-
-        Log::instance()->info( "Wrong value for 'Output file type' (%s). It should be GreyTiff, FloatingTiff, GreyBMP, FloatingHFA or ByteHFA. Using default...\n", fileType.c_str() );
-      }
+      _format.setFormat( type );
     }
+    catch ( AttributeNotFound& e ) { 
 
-    _format.setFormat( type );
+      // FileType attribute is optional
+      UNUSED(e);
+    }
   }
-  catch( SubsectionNotFound& e ) { 
+  catch( ConfigurationException& e ) { 
 
-      std::string section = e.getName();
+    Log::instance()->error( "Projection deserialization exception: %s\n", e.what() );
 
-      Log::instance()->error( 1, "XML subsection not found: %s\n", section.c_str() );
-  }
-  catch ( AttributeNotFound& e ) { 
-    UNUSED(e);
-
+    throw e;
   }
 }
 
@@ -786,16 +790,22 @@ OpenModeller::jackknife( SamplerPtr samplerPtr, AlgorithmPtr algorithmPtr, doubl
 
   if ( ! samplerPtr->getEnvironment() ) {
 
-    Log::instance()->error( 1, "Sampler has no environment" );
-    return;
+    std::string msg = "Sampler has no environment.\n";
+
+    Log::instance()->error( msg.c_str() );
+
+    throw InvalidParameterException( msg );
   }
 
   int num_layers = samplerPtr->numIndependent();
 
   if ( num_layers < 2 ) {
 
-    Log::instance()->error( 1, "Jackknife needs at least 2 layers" );
-    return;
+    std::string msg = "Jackknife needs at least 2 layers.\n";
+
+    Log::instance()->error( msg.c_str() );
+
+    throw InvalidParameterException( msg );
   }
 
   // Split sampler into test and trainning
@@ -909,7 +919,7 @@ OpenModeller::jackknife( SamplerPtr samplerPtr, AlgorithmPtr algorithmPtr, doubl
       }
       else {
 
-        Log::instance()->error( 1, "Jackknife algorithm requires normalization but did not specify any normalizer\n");
+        Log::instance()->error( "Jackknife algorithm requires normalization but did not specify any normalizer\n");
         return;
       }
     }

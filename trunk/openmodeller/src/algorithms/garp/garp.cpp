@@ -274,25 +274,33 @@ Garp::~Garp()
 
 int Garp::initialize()
 {
-  if (!getParameter("MaxGenerations",   &_max_gen))        
-      Log::instance()->error(1, "Parameter MaxGenerations not set properly.");
+  if (!getParameter("MaxGenerations",   &_max_gen)) {
+    Log::instance()->error("Parameter MaxGenerations not set properly.");
+    return 0;
+  }
 
-  if (!getParameter("ConvergenceLimit", &_conv_limit))     
-      Log::instance()->error(1, "Parameter ConvergenceLimit not set properly.");
+  if (!getParameter("ConvergenceLimit", &_conv_limit)) {
+    Log::instance()->error("Parameter ConvergenceLimit not set properly.");
+    return 0;
+  }
 
-  if (!getParameter("PopulationSize",   &_popsize))        
-      Log::instance()->error(1, "Parameter PopulationSize not set properly.");
+  if (!getParameter("PopulationSize",   &_popsize)) {
+    Log::instance()->error("Parameter PopulationSize not set properly.");
+    return 0;
+  }
 
-  if (!getParameter("Resamples",        &_resamples))      
-      Log::instance()->error(1, "Parameter Resamples not set properly.");
+  if (!getParameter("Resamples",        &_resamples)) {
+    Log::instance()->error("Parameter Resamples not set properly.");
+    return 0;
+  }
 
   //Log::instance()->debug("MaxGenerations set to:   %d\n", _max_gen);
   //Log::instance()->debug("ConvergenceLimit set to: %.4f\n", _conv_limit);
   //Log::instance()->debug("PopulationSize set to:   %d\n", _popsize);
   //Log::instance()->debug("Resamples set to:        %d\n", _resamples);
 
-  _offspring  = new GarpRuleSet(2 * _popsize);
-  _fittest    = new GarpRuleSet(2 * _popsize);
+  _offspring = new GarpRuleSet(2 * _popsize);
+  _fittest   = new GarpRuleSet(2 * _popsize);
 
   cacheSamples(_samp, _cachedOccs, _resamples);
   _bioclimHistogram.initialize(_cachedOccs);
@@ -467,8 +475,10 @@ Garp::_setConfiguration( const ConstConfigurationPtr& config )
 {
   ConstConfigurationPtr model_config = config->getSubsection( "Garp", false );
 
-  if (!model_config)
+  if (!model_config) {
+
     return;
+  }
 
   _gen = model_config->getAttributeAsInt( "Generations", 0 );
   _acc_limit = model_config->getAttributeAsDouble( "AccuracyLimit", 0.0 );
@@ -481,7 +491,8 @@ Garp::_setConfiguration( const ConstConfigurationPtr& config )
   // Need to read at least this parameter
   if ( ! getParameter("PopulationSize", &_popsize) ) {
 
-      Log::instance()->error(1, "Could not read parameter PopulationSize from serialized model.");
+    Log::instance()->error("Could not read parameter PopulationSize from serialized model.");
+    return;
   }
 
   _offspring = new GarpRuleSet( 2 * _popsize );
@@ -567,7 +578,7 @@ void Garp::keepFittest(GarpRuleSet * source, GarpRuleSet * target,
       candidateRule = source->get(i);
       similarIndex = target->findSimilar(candidateRule);
       //if ((similarIndex < -1) || (similarIndex >= target->numRules()))
-      //  Log::instance()->error(1, "Index out of bounds (#8). Limits are (-1, %d), index is %d\n", target->numRules(), similarIndex);
+      //  Log::instance()->error("Index out of bounds (#8). Limits are (-1, %d), index is %d\n", target->numRules(), similarIndex);
 
       if (similarIndex >= 0)
         {
@@ -704,19 +715,17 @@ void Garp::select(GarpRuleSet * source, GarpRuleSet * target,
 
   ptr = rnd.get(1.0);
   sum = 0.0;
-  for (i = 0; i < n; i++)
-    {
-      rulePerf = source->get(i)->getPerformance(defaultPerfIndex);
-      expected = (rulePerf - perfWorst) * factor;
-      for (sum += expected; (sum > ptr) && (k <= _popsize); ptr++)	
-        {
-          if ((k < 0) || (k > _popsize))
-            Log::instance()->error(1, "Index out of bounds (#6). Limits are (0, %d), index is %d\n", 
-                        _popsize, k);
-
-          sample[k++] = i;
-        }
+  for (i = 0; i < n; i++) {
+    rulePerf = source->get(i)->getPerformance(defaultPerfIndex);
+    expected = (rulePerf - perfWorst) * factor;
+    for (sum += expected; (sum > ptr) && (k <= _popsize); ptr++) {
+      if ((k < 0) || (k > _popsize)) {
+        Log::instance()->error("Index out of bounds (#6). Limits are (0, %d), index is %d\n", _popsize, k);
+        throw AlgorithmException("Index out of bounds");
+      }
+      sample[k++] = i;
     }
+  }
 
   /*
   FILE * f = stdout;
@@ -744,9 +753,12 @@ void Garp::select(GarpRuleSet * source, GarpRuleSet * target,
     {
       pRuleBeingInserted = source->get(sample[i])->clone();
       pRuleBeingInserted->forceEvaluation();
-      if (!target->add(pRuleBeingInserted))
+      if (!target->add(pRuleBeingInserted)) {
         // target rs is full
-        Log::instance()->error(1, "Garp::reproduce(): Target rule set is full");
+        std::string error = "Garp::reproduce(): Target rule set is full";
+        Log::instance()->error(error.c_str());
+        throw AlgorithmException(error.c_str());
+      }
     }
   delete[] sample;
 }

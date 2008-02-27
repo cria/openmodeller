@@ -88,8 +88,10 @@ TeOMRaster::createRaster( const string& url, int categ )
 
 		if (params_->status_ != TeRasterParams::TeReadyToRead)
 		{
-			Log::instance()->info("TeOMRaster::createRaster - Raster cannot be opened." );
-			Log::instance()->error( 1, raster_->errorMessage().c_str() );
+			std::string msg = "TeOMRaster::createRaster - Raster cannot be opened: ";
+                        msg += raster_->errorMessage().c_str()
+			Log::instance()->error( msg.c_str() );
+			throw RasterException( msg );
 		}		
 		else
 		{
@@ -101,7 +103,7 @@ TeOMRaster::createRaster( const string& url, int categ )
 			f_hdr.setProj( TeGetWKTFromTeProjection( raster_->projection() ) );
     		if ( ! f_hdr.hasProj() )
 			{/**/
-				Log::instance()->warn( "The raster %s is not georeferenced.  Assuming WGS84\n", f_file.c_str() );
+				Log::instance()->warn( "Raster %s is not georeferenced.  Assuming WGS84\n", f_file.c_str() );
 				f_hdr.setProj( GeoTransform::cs_default );
 			}/**/
 
@@ -177,7 +179,8 @@ TeOMRaster::createRaster( const std::string& url, const MapFormat& format )
 			rtype = TeFLOAT;
 			break;
 		default:
-			throw GraphicsDriverException( "Unsupported output format" );
+			Log::instance()->error( "Unsupported output format.\n" );
+			throw InvalidParameterException( "Unsupported output format" );
 	}
 
 	f_hdr = Header( format.getWidth(),
@@ -223,7 +226,7 @@ TeOMRaster::createRaster( const std::string& url, const MapFormat& format )
 
 		if (params_->status_ != TeRasterParams::TeReadyToWrite)
 		{
-			cout << "terraLib: " << raster_->errorMessage() << endl;
+			Log::instance()->warn( "TerraLib raster not ready: %s.\n", raster_->errorMessage() );
 		}
 	}
 }
@@ -319,9 +322,11 @@ TeOMRaster::openTeRaster()
         
 		if ( !db_->isConnected() )
 		{
-			Log::instance()->info("TeOMRaster::openTeRaster - Cannot connect to the database." );
-			Log::instance()->error( 1, db_->errorMessage().c_str() );
 			//delete db_;
+			std::string msg = "TeOMRaster::openTeRaster - Cannot connect to database: ";
+                        msg += db_->errorMessage().c_str()
+			Log::instance()->error( msg.c_str() );
+			throw RasterException( msg );
 		}
 		else
 		{
@@ -351,9 +356,11 @@ TeOMRaster::createTeRaster()
 
 		if ( !db_->isConnected() )
 		{
-			Log::instance()->info("TeOMRaster::createTeRaster - Cannot connect to the database." );
-			Log::instance()->error( 1, db_->errorMessage().c_str() );
 			//delete db_;
+			std::string msg = "TeOMRaster::createTeRaster - Cannot connect to database: ";
+                        msg += db_->errorMessage().c_str()
+			Log::instance()->error( msg.c_str() );
+			throw RasterException( msg );
 		}
 		else
 		{
