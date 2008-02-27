@@ -46,6 +46,7 @@ Compilation guide for openModeller
     6.9. Initial SVN Check out
     6.10. Create Makefiles using cmakesetup.exe
     6.11. Running and packaging
+    6.12. Debugging
   7. Authors and Acknowledgments
 
 
@@ -1025,6 +1026,16 @@ To run openModeller you need to at the minimum copy the dlls from c:\dev\cpp\ope
 into the c:\program files\openmodellerX.X.X directory.
 
 
+	6.12. Debugging
+	===============
+
+To Debug on Windows:
+
+ 1. Set om_console as startup project: right click on "om_console" project, then click on "Set as StartUp Project"
+
+ 2. Set the working directory and command argument: right click on "om_console" project, click on "Properties -> Configure Properties \ Debugging". Now set "Working Directory" as C:\dev\cpp\openmodeller\examples and set "Command Arguments" as request_w.txt
+
+
   7. Authors and Acknowledgments
   ==============================
 
@@ -1042,6 +1053,7 @@ into the c:\program files\openmodellerX.X.X directory.
  - David Willis 2007
  - MSVC install additions Tim Sutton 2007
  - Juergen Fischer 2007
+ - Alexandre Jardim 2008
 
 - OSX Section
  - Tim Sutton, 2007
