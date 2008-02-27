@@ -1,4 +1,4 @@
-To Debug on windows:
+To Debug on Windows:
 
 1- Set the om_consolse as sartup project
    Rigth click on "om_console" project
@@ -9,7 +9,7 @@ To Debug on windows:
    Click on "Properties"
       On "Configure Properties \ Debugging"
          set "Working Directory" as C:\dev\cpp\openmodeller\examples
-         set "Command Arguments" as requestw.txt
+         set "Command Arguments" as request_w.txt
 
 
 
