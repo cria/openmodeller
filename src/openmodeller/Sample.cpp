@@ -181,7 +181,7 @@ Sample::alloc( size_t size )
 
   if ( ! value_ ) {
 
-    throw MemoryException( "Out of memory" );
+    throw MemoryException( "Out of memory during Sample alloc" );
   }
 }
 

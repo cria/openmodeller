@@ -102,8 +102,11 @@ main( int argc, char **argv )
       // Maps to be shown.
       _nmap = fp.count( "Map" );
 
-      if ( ! _nmap )
-        Log::instance()->error( 1, "No map to be shown!?!\n" );
+      if ( ! _nmap ) {
+
+        Log::instance()->error( "No map to be shown!?!\n" );
+        exit(1);
+      }
 
       _maps = new Map * [_nmap];
 
@@ -122,8 +125,11 @@ main( int argc, char **argv )
       _maps = new Map * [_nmap];
       string result = fp.get( "Output file" );
 
-      if ( result.empty() )
-        Log::instance()->error( 1, "'Output file' was not specified!\n" );
+      if ( result.empty() ) {
+
+        Log::instance()->error( "'Output file' was not specified!\n" );
+        exit(1);
+      }
 
       _maps[0] = new Map( RasterFactory::instance().create( result ) );
       //_maps[0]->normalize( 0.0, 255.0 );

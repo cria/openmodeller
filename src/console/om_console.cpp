@@ -65,8 +65,11 @@ main( int argc, char **argv )
 
   try {
 
-    if ( argc < 2 )
-      Log::instance()->error( 1, "\n%s <request>\n\n", argv[0] );
+    if ( argc < 2 ) {
+
+      Log::instance()->error( "\n%s <request>\n\n", argv[0] );
+      exit(1);
+    }
 
     char *request_file = argv[1];
 
@@ -81,8 +84,11 @@ main( int argc, char **argv )
     RequestFile request;
     int resp = request.configure( &om, request_file );
 
-    if ( resp < 0 )
-      Log::instance()->error( 1, "Can't read request file %s", request_file );
+    if ( resp < 0 ) {
+
+      Log::instance()->error( "Can't read request file %s", request_file );
+      exit(1);
+    }
 
     // If something was not set...
     if ( resp )

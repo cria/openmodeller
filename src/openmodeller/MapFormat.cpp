@@ -1,7 +1,6 @@
 /**
  * Declaration of MapFormat class.
  * 
- * @file
  * @author Ricardo Scachetti Pereira <rpereira@ku.edu>
  * @date 2003-09-25
  * $Id$
@@ -103,50 +102,60 @@ void MapFormat::copyDefaults( const Map& map ) {
 
   Header h = map.getHeader();
 
-  if (!xcelIsSet) {
+  if ( ! xcelIsSet ) {
+
     Log::instance()->debug( "Copying cell width = %d\n", h.xcel );
     setXCel( h.xcel );
   }
 
-  if (!ycelIsSet) {
+  if ( ! ycelIsSet ) {
+
     Log::instance()->debug( "Copying cell height = %d\n", h.ycel );
     setYCel( h.ycel );
   }
 
-  if (!xminIsSet) {
+  if ( ! xminIsSet ) {
+
     Log::instance()->debug( "Copying xmin = %f\n", h.xmin );
     setXMin( h.xmin );
   }
 
-  if (!yminIsSet) {
+  if ( ! yminIsSet ) {
+
     Log::instance()->debug( "Copying ymin = %f\n", h.ymin );
     setYMin( h.ymin );
   }
 
-  if (!xmaxIsSet) {
+  if ( ! xmaxIsSet ) {
+
     Log::instance()->debug( "Copying xmax = %f\n", h.xmax );
     setXMax( h.xmax );
   }
 
-  if (!ymaxIsSet) {
+  if ( ! ymaxIsSet ) {
+
     Log::instance()->debug( "Copying ymax = %f\n", h.ymax );
     setYMax( h.ymax );
   }
 
-  if (!projIsSet ) {
+  if ( ! projIsSet ) {
+
     Log::instance()->debug( "Copying projection\n" );
     setProjection( h.proj );
   }
-
 }
 
 MapFormat::~MapFormat()
 {}
 
 void MapFormat::setFormat( int f ) {
+
   format = f;
-  if ( format < 0 || format > ByteHFA ) 
+
+  if ( format < 0 || format > ByteHFA ) {
+
     format = FloatingTiff;
+  }
 }
 
 void MapFormat::setXCel( Coord v ) {
@@ -190,6 +199,7 @@ void MapFormat::setProjection( const string& v ) {
 }
 
 int MapFormat::getWidth() const {
+
   Coord xmin = getXMin();
   Coord xmax = getXMax();
   Coord xcel = getXCel();
@@ -207,66 +217,114 @@ int MapFormat::getHeight() const {
 }
 
 Coord MapFormat::getXCel() const {
-  if ( !xcelIsSet )
-    throw InvalidParameterException( "Cell width not set" );
+
+  if ( ! xcelIsSet ) {
+
+    std::string msg = "Cell width not set.\n";
+
+    Log::instance()->error( msg.c_str() );
+
+    throw OmException( msg );
+  }
 
   return xcel;
-
 }
 
 Coord MapFormat::getYCel() const {
-  if ( !ycelIsSet )
-    throw InvalidParameterException( "Cell height not set" );
+
+  if ( ! ycelIsSet ) {
+
+    std::string msg = "Cell height not set.\n";
+
+    Log::instance()->error( msg.c_str() );
+
+    throw OmException( msg );
+  }
 
   return ycel;
-
 }
 
 Coord MapFormat::getXMin() const {
-  if ( !xminIsSet )
-    throw InvalidParameterException( "XMin not set" );
+
+  if ( ! xminIsSet ) {
+
+    std::string msg = "XMin not set.\n";
+
+    Log::instance()->error( msg.c_str() );
+
+    throw OmException( msg );
+  }
 
   return xmin;
-
 }
 
 Coord MapFormat::getYMin() const {
-  if ( !yminIsSet )
-    throw InvalidParameterException( "Ymin not set" );
+
+  if ( !yminIsSet ) {
+
+    std::string msg = "Ymin not set.\n";
+
+    Log::instance()->error( msg.c_str() );
+
+    throw OmException( msg );
+  }
 
   return ymin;
-
 }
 
 Coord MapFormat::getXMax() const {
-  if ( !xmaxIsSet )
-    throw InvalidParameterException( "Xmax not set" );
+
+  if ( ! xmaxIsSet ) {
+
+    std::string msg = "Xmax not set.\n";
+
+    Log::instance()->error( msg.c_str() );
+
+    throw OmException( msg );
+  }
 
   return xmax;
-
 }
 
 Coord MapFormat::getYMax() const {
-  if ( !ymaxIsSet )
-    throw InvalidParameterException( "Ymax not set" );
+
+  if ( ! ymaxIsSet ) {
+
+    std::string msg = "Ymax not set.\n";
+
+    Log::instance()->error( msg.c_str() );
+
+    throw OmException( msg );
+  }
 
   return ymax;
-
 }
 
 Scalar MapFormat::getNoDataValue() const {
-  if ( !novalIsSet )
-    throw InvalidParameterException( "NoDataValue not set" );
+
+  if ( ! novalIsSet ) {
+
+    std::string msg = "NoDataValue not set.\n";
+
+    Log::instance()->error( msg.c_str() );
+
+    throw OmException( msg );
+  }
 
   return noval;
-
 }
 
 string MapFormat::getProjection() const {
-  if ( !projIsSet )
-    throw InvalidParameterException( "Projection not set" );
+
+  if ( ! projIsSet ) {
+
+    std::string msg = "Projection not set.\n";
+
+    Log::instance()->error( msg.c_str() );
+
+    throw OmException( msg );
+  }
 
   return proj;
-
 }
 

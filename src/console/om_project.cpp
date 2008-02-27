@@ -225,15 +225,6 @@ int main( int argc, char **argv ) {
       progressCallback( -2.0, &prog_data );
     }
 
-    printf( "om_project: %s\n", e.what() );
-
-    try {
-
-      Log::instance()->error( 1, "%s\n", e.what() );
-    }
-    catch ( runtime_error e ) {
-
-      UNUSED(e);
-    }
+    printf( "om_project aborted: %s\n", e.what() );
   }
 }

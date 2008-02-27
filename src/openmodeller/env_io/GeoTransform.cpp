@@ -1,7 +1,6 @@
 /**
  * Definition of GeoTransform class.
  * 
- * @file
  * @author Mauro E S Muñoz <mauro@cria.org.br>
  * @date 2003-08-22
  * $Id$
@@ -29,6 +28,8 @@
 #include <openmodeller/env_io/GeoTransform.hh>
 #include <openmodeller/om_defs.hh>
 #include <openmodeller/Log.hh>
+
+#include <openmodeller/Exceptions.hh>
 
 #include <ogr_api.h>
 #include <ogr_spatialref.h>
@@ -155,24 +156,39 @@ GeoTransform::change( const string& dst_desc, const string& src_desc )
   if ( src.importFromWkt( &src_desc_noconst ) != OGRERR_NONE ||
        dst.importFromWkt( &dst_desc_noconst ) != OGRERR_NONE )
     {
-      Log::instance()->error( 1, "GeoTransform - invalid projection:\n src: (%s)\n dst: (%s)\n",
-		   src_desc.c_str(), dst_desc.c_str() );
+      std::string msg = "Invalid GeoTransform projection:\n src (";
+      msg += src_desc.c_str();
+      msg += ")\n dst (";
+      msg += dst_desc.c_str();
+      msg += ")\n.";
+      Log::instance()->error( msg.c_str() );
+      throw InvalidParameterException( msg );
     }
 
   f_ctin = OGRCreateCoordinateTransformation( &src, &dst );
 
   if ( ! f_ctin )
     {
-      Log::instance()->error( 1, "GeoTransform - invalid projection:\n src: (%s)\n dst: (%s)\n",
-		   src_desc.c_str(), dst_desc.c_str() );
+      std::string msg = "Invalid GeoTransform projection:\n src (";
+      msg += src_desc.c_str();
+      msg += ")\n dst (";
+      msg += dst_desc.c_str();
+      msg += ")\n.";
+      Log::instance()->error( msg.c_str() );
+      throw InvalidParameterException( msg );
     }
 
   f_ctout = OGRCreateCoordinateTransformation( &dst, &src );
 
   if ( ! f_ctout )
     {
-      Log::instance()->error( 1, "GeoTransform - invalid projection:\n src: (%s)\n dst: (%s)\n",
-		   src_desc.c_str(), dst_desc.c_str() );
+      std::string msg = "Invalid GeoTransform projection:\n src (";
+      msg += src_desc.c_str();
+      msg += ")\n dst (";
+      msg += dst_desc.c_str();
+      msg += ")\n.";
+      Log::instance()->error( msg.c_str() );
+      throw InvalidParameterException( msg );
     }
 
   // Deactivate GDAL error messages.

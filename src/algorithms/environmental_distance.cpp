@@ -143,15 +143,15 @@ int EnvironmentalDistance::initialize(){
 
    // Test the parameters' data types
    if(!getParameter(PARDIST,&ParDist)){
-      Log::instance()->error(1, "Parameter '" PARDIST "' was not passed.\n");
+      Log::instance()->error("Parameter '" PARDIST "' was not passed.\n");
       return 0;
    }
    if(!getParameter(PARDISTTYPE,&ParDistType)){
-      Log::instance()->error(1, "Parameter '" PARDISTTYPE "' was not passed.\n");
+      Log::instance()->error("Parameter '" PARDISTTYPE "' was not passed.\n");
       return 0;
    }
    if(!getParameter(PARPOINTQNT,&ParPointQnt)){
-      Log::instance()->error(1, "Parameter '" PARPOINTQNT "' was not passed.\n");
+      Log::instance()->error("Parameter '" PARPOINTQNT "' was not passed.\n");
       return 0;
    }
 
@@ -174,7 +174,7 @@ int EnvironmentalDistance::initialize(){
          Log::instance()->debug("Using Chebyshev distance\n");
          break;
       default:
-         Log::instance()->error(1, "Parameter '" PARDISTTYPE "' wasn't set properly. It should be an integer between 1 and 4.\n");
+         Log::instance()->error("Parameter '" PARDISTTYPE "' wasn't set properly. It should be an integer between 1 and 4.\n");
          return 0;
    }
 
@@ -186,7 +186,7 @@ int EnvironmentalDistance::initialize(){
 
    // Load all environmental data of presence points
    if(presenceCount == 0){
-      Log::instance()->error(1, "There is no presence point.\n");
+      Log::instance()->error("There is no presence point.\n");
       return 0;
    }
 
@@ -206,7 +206,7 @@ int EnvironmentalDistance::initialize(){
 
    // Allow using "Distance" method and normalize ParDist
    if(!InitDistanceType()){
-      Log::instance()->error(1, "Could not determine a maximum distance in the environmental space in this case.\n");
+      Log::instance()->error("Could not determine a maximum distance in the environmental space in this case.\n");
       return 0;
    }
 
@@ -481,11 +481,13 @@ void EnvironmentalDistance::_setConfiguration(const ConstConfigurationPtr& confi
 
    // Metric
    if(!getParameter(PARDISTTYPE,&ParDistType)){
-      Log::instance()->error(1, "Parameter '" PARDISTTYPE "' was not found in serialized model.\n");
+      Log::instance()->error("Parameter '" PARDISTTYPE "' was not found in serialized model.\n");
+      return;
    }
    // "n" closest points
    if(!getParameter(PARPOINTQNT,&ParPointQnt)){
-      Log::instance()->error(1, "Parameter '" PARPOINTQNT "' was not found in serialized model.\n");
+      Log::instance()->error("Parameter '" PARPOINTQNT "' was not found in serialized model.\n");
+      return;
    }
    // Maximum distance
    ParDist = model_config->getAttributeAsDouble("MaxDistance", 0.0);

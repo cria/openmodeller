@@ -98,8 +98,8 @@ TeOccurrences::loadOccurrences( const char *url )
 	// Parser the Url.
 	if( !te_url_parser_->parser() )
 	{
-		Log::instance()->error( 1, "TeOccurrences::addOccurrences - Invalid database url" );
-		return 1;
+		Log::instance()->error( "TeOccurrences::addOccurrences - Invalid database url" );
+		return 0;
 	}
 
 	// Connect to the database
@@ -107,16 +107,15 @@ TeOccurrences::loadOccurrences( const char *url )
 
 	if ( !db_->isConnected() )
 	{
-		Log::instance()->info("TeOccurrences::addOccurrences - Cannot connect to the database." );
-		Log::instance()->error( 1, db_->errorMessage().c_str() );
+		Log::instance()->error( "TeOccurrences::addOccurrences - Cannot connect to database: %s.", db_->errorMessage().c_str() );
 		//delete db_;
-		return 1;
+		return 0;
 	}
 
 	// Get the layer
 	if (!db_->layerExist( te_url_parser_->layerName_ ))
 	{
-		Log::instance()->error( 1, "TeOccurrences::addOccurrences - Cannot open the layer." );
+		Log::instance()->error( "TeOccurrences::addOccurrences - Cannot open layer." );
 		//delete db_;
 		return 1;
 	}
@@ -136,9 +135,9 @@ TeOccurrences::loadOccurrences( const char *url )
 		// Get species table by name.
 		if (!layer->getAttrTablesByName(te_url_parser_->tableName_, speciesTable))
 		{
-			Log::instance()->error( 1, "TeOccurrences::addOccurrences - Cannot open the species table." );
+			Log::instance()->error( "TeOccurrences::addOccurrences - Cannot open species table." );
 			//delete db_;
-			return 1;
+			return 0;
 		}
 	}
 
@@ -160,10 +159,10 @@ TeOccurrences::loadOccurrences( const char *url )
 	TeDatabasePortal* portal = db_->getPortal();
 	if (!portal || !portal->query(sql))
 	{
-		Log::instance()->error( 1, "TeOccurrences::addOccurrences - Cannot execut the select statement." );
+		Log::instance()->error( "TeOccurrences::addOccurrences - Cannot execute SQL statement." );
 		delete portal;
 		portal = 0;
-		return 1;
+		return 0;
 	}
 
 	// Fixme: read this from file.
@@ -189,5 +188,5 @@ TeOccurrences::loadOccurrences( const char *url )
 	portal = 0;
 	delete te_url_parser_;
 	
-	return 0;
+	return 1;
 }

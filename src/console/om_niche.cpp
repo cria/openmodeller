@@ -1,7 +1,7 @@
 /**
  * Simple species niche visualizer.
  * 
- * @author Mauro E S MuÃ±oz (mauro@cria.org.br)
+ * @author Mauro E S Muñoz (mauro@cria.org.br)
  * $Id$
  * 
  * LICENSE INFORMATION 
@@ -90,8 +90,11 @@ main( int argc, char **argv )
   Log::instance()->setLevel( Log::Error );
   Log::instance()->setPrefix( "" );
 
-  if ( argc < 2 )
-      Log::instance()->error( 1, "\n%s <request>\n\n", argv[0] );
+  if ( argc < 2 ) {
+
+    Log::instance()->error( "\n%s <request>\n\n", argv[0] );
+    exit(1);
+  }
 
   char *request_file = argv[1];
 
@@ -109,10 +112,16 @@ main( int argc, char **argv )
     Sample max;
     env->getExtremes( &min, &max );
 
-    if ( nmap < 2 )
-      Log::instance()->error( 2, "Need more than one environmental variable!\n" );
-    else if ( nmap > 2 )
-      Log::instance()->error( 3, "Maximum number of environmental variables (2) exceeded!\n" );
+    if ( nmap < 2 ) {
+
+      Log::instance()->error( "Need more than one environmental variable!\n" );
+      exit(2);
+    }
+    else if ( nmap > 2 ) {
+
+      Log::instance()->error( "Maximum number of environmental variables (2) exceeded!\n" );
+      exit(3);
+    }
 
     // Occurrences file (used to draw, not to create the model).
     string oc_cs   = fp.get( "WKT Coord System" );
@@ -180,8 +189,11 @@ createModel( char *request_file )
   RequestFile request;
   int resp = request.configure( om, request_file );
 
-  if ( resp < 0 )
-    Log::instance()->error( 1, "Can't read request file %s", request_file );
+  if ( resp < 0 ) {
+
+    Log::instance()->error( "Can't read request file %s", request_file );
+    exit(1);
+  }
 
   // If something was not set...
   if ( resp )
@@ -218,8 +230,11 @@ createModel( char *request_file )
   /*** Run the model ***/
   om->setModelCallback( modelCallback );
 
-  if ( ! om->createModel() )
-    Log::instance()->error( 1, "Error: %s\n", om->error() );
+  if ( ! om->createModel() ) {
+
+    Log::instance()->error( "Error: %s\n", om->error() );
+    exit(1);
+  }
 
   return om;
 }

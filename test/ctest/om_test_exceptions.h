@@ -108,9 +108,9 @@ class test_Exceptions : public CxxTest :: TestSuite
 
     void test8 (){
       std::cout << std::endl;
-      std::cout << "Testing GraphicsDriverException( const std::string& msg ) ..." << std::endl;
+      std::cout << "Testing RasterException( const std::string& msg ) ..." << std::endl;
       std::string msg = "Testing Exception";
-      TS_ASSERT_EQUALS(GraphicsDriverException("Testing Exception").what(),msg);
+      TS_ASSERT_EQUALS(RasterException("Testing Exception").what(),msg);
     }
 
     void test9 (){

@@ -365,7 +365,9 @@ Configuration::readXml( istream &file ) {
     char *buf = (char *)XML_GetBuffer( parser, BUFF_SIZE );
     if ( buf == NULL ) {
       //      cout << " - no buf" << endl;
-      throw XmlParseException( "Unable to allocate Buffer" );
+      std::string msg = "Unable to allocate buffer during XML read";
+      Log::instance()->error( msg.c_str() );
+      throw XmlParseException( msg.c_str() );
     }
 
     // iostream::read will read up to the specified number of characters
@@ -382,7 +384,7 @@ Configuration::readXml( istream &file ) {
     //    }
 
     if ( !XML_ParseBuffer( parser, bytes_read, bytes_read == 0 ) ) {
-      Log::instance()->error( 1,"XML Parser - fatal error parsing document\n" );
+
       XML_Error x =  XML_GetErrorCode( parser );
       stringstream errormsg( ios::out );
       errormsg << XML_ErrorString(x)
@@ -391,6 +393,9 @@ Configuration::readXml( istream &file ) {
 	       << " column "
 	       << XML_GetCurrentColumnNumber( parser )
 	       << ends;
+
+      Log::instance()->error( "XML Parser fatal error: %s\n", errormsg.str().c_str() );
+
       throw XmlParseException( errormsg.str() );
     }
 

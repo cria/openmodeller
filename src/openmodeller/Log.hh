@@ -106,17 +106,13 @@ class dllexp Log
     /** Change prefix to be shown befeore any message.*/
     void setPrefix( const char *pref );
 
-    // Not necessarily printed (depend on current log level).
-    //
     void debug( const char *format, ... );  ///< 'Debug' level.
     void info ( const char *format, ... );  ///< 'Info' level.
+    void warn ( const char *format, ... );  ///< 'Warn' level.
+    void error( const char *format, ... );  ///< 'Error' level.
 
     /** 'Default' level. */
     void operator()( const char *format, ... );
-
-    // Are necessarily printed in log.
-    void warn ( const char *format, ... );  ///< stderr and continue.
-    void error( int exit_code, const char *format, ... ); ///< stderr and exit.
 
   private:
 

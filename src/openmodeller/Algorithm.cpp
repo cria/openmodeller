@@ -175,11 +175,15 @@ AlgorithmImpl::setConfiguration( const ConstConfigurationPtr &config )
         string msg( "Unknown normalizer class: " );
         msg.append( norm_class );
 
+        Log::instance()->error( msg.c_str() );
+
         throw AlgorithmException( msg.c_str() );
       }
     }
     catch( AttributeNotFound& e ) {
+
       UNUSED (e);
+
       // Backwards compatibility
       _normalizerPtr = new ScaleNormalizer();
     }
@@ -218,8 +222,11 @@ AlgorithmImpl::setParameters( int nparam, AlgParameter const *param )
 
   // Copy 'param' to '_alg_param'.
   AlgParameter const *end = param + nparam;
+
   while ( param < end ) {
+
     _param.insert( ParamSetValueType( param->id(), param->value() ) );
+
     ++param;
   }
 }
@@ -238,7 +245,11 @@ AlgorithmImpl::getFreshCopy()
 {
   if ( ! _metadata ) {
 
-    throw AlgorithmException( "Cannot produce copies of an algorithm without metadata." );
+    std::string msg = "Cannot produce copies of an algorithm without metadata.";
+
+    Log::instance()->error( msg.c_str() );
+
+    throw AlgorithmException( msg.c_str() );
   }
 
   AlgorithmPtr copy = AlgorithmFactory::newAlgorithm( _metadata->id );
@@ -256,6 +267,7 @@ AlgorithmImpl::getParameter( string const &id, string *value )
   ParamSetType::const_iterator pos = _param.find( id );
 
   if ( pos == _param.end() ) {
+
     return 0;
   }
    
@@ -341,19 +353,27 @@ AlgorithmImpl::createModel( const SamplerPtr& samp, Algorithm::ModelCommand *mod
 
   if ( !samp ) {
 
-    throw AlgorithmException( "Sampler not specified." );
+    std::string msg = "Sampler not specified.";
+
+    Log::instance()->error( msg.c_str() );
+
+    throw AlgorithmException( msg.c_str() );
   }
 
   if ( !samp->numPresence() && !samp->numAbsence() ) {
 
-    throw AlgorithmException( "Cannot create model without any presence or absence point." );
+    std::string msg = "Cannot create model without any presence or absence point.";
+
+    Log::instance()->error( msg.c_str() );
+
+    throw AlgorithmException( msg.c_str() );
   }
 
   setSampler( samp );
 
   if ( needNormalization() && !_samp->isNormalized() ) {
 
-    Log::instance()->info( "Computing normalization\n");
+    Log::instance()->info( "Computing normalization\n" );
 
     if ( _normalizerPtr ) {
 
@@ -363,12 +383,22 @@ AlgorithmImpl::createModel( const SamplerPtr& samp, Algorithm::ModelCommand *mod
     }
     else {
 
-      throw AlgorithmException( "Normalizer not specified." );
+      std::string msg = "Normalizer not specified.";
+
+      Log::instance()->error( msg.c_str() );
+
+      throw AlgorithmException( msg.c_str() );
     }
   }
 
-  if ( !initialize() )
-    throw AlgorithmException( "Algorithm could not be initialized." );
+  if ( ! initialize() ) {
+
+    std::string msg = "Algorithm could not be initialized.";
+
+    Log::instance()->error( msg.c_str() );
+
+    throw AlgorithmException( msg.c_str() );
+  }
 
   // Generate model.
   int ncycle = 0;
@@ -376,7 +406,7 @@ AlgorithmImpl::createModel( const SamplerPtr& samp, Algorithm::ModelCommand *mod
   int doneFlag = 0;
   bool abort = false;
 
-  while ( resultFlag && !doneFlag ) {
+  while ( resultFlag && ! doneFlag ) {
 
     if ( abort_command ) {
 
@@ -386,15 +416,16 @@ AlgorithmImpl::createModel( const SamplerPtr& samp, Algorithm::ModelCommand *mod
 
         if ( abort ) {
 
-          Log::instance()->info( "Model creation aborted." );
+          Log::instance()->error( "Model creation aborted." );
           break;
         }
       }
       catch ( char * message ) {
-        string error( "Exception: " );
+
+        string error( "Exception in abort callback: " );
         error += message;
-        Log::instance()->error( 1, error.c_str() );
-        return 0;
+        Log::instance()->error( error.c_str() );
+        throw AlgorithmException( error.c_str() );
       }
       catch (...) {}
     }
@@ -404,48 +435,76 @@ AlgorithmImpl::createModel( const SamplerPtr& samp, Algorithm::ModelCommand *mod
     // when run in a thread we need to catch 
     // exceptions properly TS
     try {
+
       resultFlag = iterate();
       doneFlag   = done();
     }
     catch ( char * message ) {
-      string error( "Exception: " );
+
+      string error( "Exception in model iteration: " );
       error += message;
-      Log::instance()->error( 1, error.c_str() );
-      return 0;
+      Log::instance()->error( error.c_str() );
+      throw AlgorithmException( error.c_str() );
     }
+
     ncycle++;
+
     if ( model_command ) {
+
       try {
+
         (*model_command)( getProgress() );
       }
       catch ( char * message ) {
-        string error( "Exception: " );
+
+        string error( "Exception in get progress: " );
         error += message;
-        Log::instance()->error( 1, error.c_str() );
-        return 0;
+        Log::instance()->error( error.c_str() );
+        throw AlgorithmException( error.c_str() );
       }
       catch (...) {}
     }
   }
 
-  if ( abort )
-    throw AlgorithmException( "Model creation aborted.");
+  if ( abort ) {
 
-  if ( !done() )
-    throw AlgorithmException( "Algorithm error in done().");
+    std::string msg = "Model creation aborted.";
 
-  if ( ! finalize() )
-    throw AlgorithmException( "Algorithm error in finalize." );
+    Log::instance()->error( msg.c_str() );
+
+    throw AlgorithmException( msg.c_str() );
+  }
+
+  if ( ! done() ) {
+
+    std::string msg = "Algorithm not done.";
+
+    Log::instance()->error( msg.c_str() );
+
+    throw AlgorithmException( msg.c_str() );
+  }
+
+  if ( ! finalize() ) {
+
+    std::string msg = "Algorithm not finalized.";
+
+    Log::instance()->error( msg.c_str() );
+
+    throw AlgorithmException( msg.c_str() );
+  }
 
   if ( model_command ) {
+
     try {
+
       (*model_command)( 1.0 );
     }
     catch ( char * message ) {
-      string error( "Exception: " );
+
+      string error( "Exception when finalizing progress: " );
       error += message;
-      Log::instance()->error( 1, error.c_str() );
-      return 0;
+      Log::instance()->error( error.c_str() );
+      throw AlgorithmException( error.c_str() );
     }
     catch (...) {}
   }

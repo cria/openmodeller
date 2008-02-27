@@ -157,8 +157,8 @@ EnvelopeScore::initialize()
   // Check the number of sampled points.
   int npnt = _samp->numPresence();
   if (  npnt < 1 ) {
-    Log::instance()->error( 1, "EnvelopeScore needs at least 1 point inside the mask!\n" ); 
-    // Log::instance()->error() does a ::exit(rc).
+    Log::instance()->error( "EnvelopeScore needs at least 1 point inside the mask!\n" );
+    return 0;
   }
 
   Log::instance()->info( "Using %d points to find the bioclimatic envelope.\n", npnt );
