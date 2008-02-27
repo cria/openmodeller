@@ -153,7 +153,7 @@ int
 MinimumDistance::initialize()
 {
   if ( ! getParameter( MAXDIST_ID, &_dist ) ) {
-    Log::instance()->error(1, "Parameter '" MAXDIST_ID "' not set properly.\n");
+    Log::instance()->error("Parameter '" MAXDIST_ID "' not set properly.\n");
     return 0;
   }
 
