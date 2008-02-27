@@ -1,5 +1,14 @@
 SUBDIRS(best_subsets garp dg_garp svm)
 
+#######################################################
+#  MSVC DEFINITIONS
+IF (WIN32)
+	IF (MSVC)
+		SET(EXECUTABLE_OUTPUT_PATH ${OUTPUT_DIR}/algs)
+		SET(LIBRARY_OUTPUT_PATH ${OUTPUT_DIR}/algs)
+	ENDIF (MSVC)
+ENDIF(WIN32)
+
 ########################################################
 # Files
 
