@@ -55,9 +55,9 @@ pair<Coord,Coord> MapIterator::operator*() const
 
 MapIterator& MapIterator::operator++()
 {
-  xcur++;
+  ++xcur;
   if (xcur >= h.xdim ) {
-    ycur++;
+    ++ycur;
     xcur = 0;
   }
   return *this;
@@ -65,9 +65,9 @@ MapIterator& MapIterator::operator++()
 
 MapIterator& MapIterator::operator--()
 {
-  xcur--;
+  --xcur;
   if (xcur < 0 ) {
-    ycur--;
+    --ycur;
     xcur = h.xdim-1;
   }
   return *this;
