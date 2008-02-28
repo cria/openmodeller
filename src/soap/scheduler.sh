@@ -67,7 +67,7 @@ fi
 # Replace values in the virtual raster file
 #sed 's/\$x/'$x_size'/' "$vrt_template" | sed 's/\$y/'$y_size'/' | sed 's#\$file_name#'$map_img'#' > "$vrt_file"
 # Convert the virtual raster to PNG
-#/usr/bin/gdal_translate "$vrt_file" -ot Byte -of PNG "$tempmap_png"
+#gdal_translate "$vrt_file" -ot Byte -of PNG "$tempmap_png"
 #mv "$tempmap_png" "$finalmap_png"
 #rm -f "$vrt_file"
 #fi
