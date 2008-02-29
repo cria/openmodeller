@@ -115,7 +115,7 @@ private:
   void open( char mode );
 
   /** Create a new raster file based on 'hdr'. **/
-  void create(int format);
+  void create( int format );
 
   void initBuffer();
 
@@ -134,8 +134,9 @@ private:
   */
   void write( Scalar *buf, int first_row, int num_rows );
 
-  void loadRow( int row );
-  void saveRow();           // Save the current row.
+  void loadRow( int row, bool writeOperation=false );
+
+  void saveRow(); // Save the current row.
 
   GDALDataset *f_ds;
   

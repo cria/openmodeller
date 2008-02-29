@@ -1,7 +1,7 @@
 /**
  * Definition of OpenModeller class (former ControlInterface class).
  * 
- * @author Mauro E S Mu�z <mauro@cria.org.br>
+ * @author Mauro E S Muñoz <mauro@cria.org.br>
  * @date 2003-09-25
  * $Id$
  *
@@ -38,6 +38,8 @@
 
 #include <openmodeller/AreaStats.hh>
 
+#include <openmodeller/Exceptions.hh>
+
 #include <utility>
 using std::pair;
 
@@ -51,7 +53,6 @@ Projector::createMap( const Model& model,
 		      MapCommand *mapcommand,
 		      AbortionCommand *abortcommand )
 {
-
   // Retrieve possible adjustments and/or additions made
   // on the effective header.
   Header hdr = map->getHeader();
@@ -67,6 +68,7 @@ Projector::createMap( const Model& model,
   model->setNormalization( env );
  
   if ( areaStats ) {
+
     areaStats->reset();
   }
 
@@ -78,26 +80,31 @@ Projector::createMap( const Model& model,
   int pixelstep = pixelcount/20;
   bool abort = false;
 
-  while( it != fin ) {
+  Coord lg;
+  Coord lt;
+  Scalar val;
+  int ret_put;
+
+  while ( it != fin ) {
 
     // Call the abort callback function if it is set.
     if ( abortcommand && pixels%pixelstep == 0 ) {
 
       try {
 
-	  abort = (*abortcommand)();
+        abort = (*abortcommand)();
 
-          if ( abort ) {
+        if ( abort ) {
 
-            Log::instance()->info( "Projection aborted." );
+          Log::instance()->info( "Projection aborted." );
 
-            if ( ! map->deleteRaster() ) {
+          if ( ! map->deleteRaster() ) {
 
-              Log::instance()->warn( "Could not delete map file." );
-            }
-
-            return false;
+            Log::instance()->warn( "Could not delete map file." );
           }
+
+          return false;
+        }
       }
       catch( ... ) {}
     }
@@ -107,56 +114,65 @@ Projector::createMap( const Model& model,
     pixels++;
     ++it;
 
-    Coord lg = lonlat.first;
-    Coord lt = lonlat.second;
+    lg = lonlat.first;
+    lt = lonlat.second;
 
     Sample const &amb = env->get( lg, lt );
-    // TODO: use mask to check if pixel should contain prediction
+
     // Read environmental values and find the output value.
     if ( amb.size() == 0 ) {
+
       // Write noval on the map.
-      map->put( lg, lt );
+      ret_put = map->put( lg, lt );
+
+      val = -1; // could be used in a log
     }
     else {
 
-      Scalar val = model->getValue( amb );
+      val = model->getValue( amb );
 
-      if ( val < 0.0 ) val = 0.0;
-      else if ( val > 1.0 ) val = 1.0;
+      if ( val < 0.0 || val > 1.0 ) {
+
+        std::string msg = Log::format( "Probability for point (%f, %f) is outside the valid range: %f", lg, lt, val );
+        throw AlgorithmException( msg.c_str() );
+      }
 
       if ( areaStats ) {
 
 	areaStats->addPrediction( val ); 
       }
+
       // Write value on map.
-      map->put( lg, lt, val );
+      ret_put = map->put( lg, lt, val );
     }
 
-    
     // Call the callback function if it is set.
     if ( mapcommand && pixels%pixelstep == 0 ) {
 
       float progress = pixels/(float)pixelcount;
-      if ( progress > 1.0 )
+
+      if ( progress > 1.0 ) {
+
 	progress = 1.0;
+      }
 
       try {
 
-	  (*mapcommand)( progress );
+        (*mapcommand)( progress );
       }
       catch( ... ) {}
     }
-    
   }
   
   // Call the callback function if it is set.
   if ( mapcommand ) {
-    try 
-      {
-	(*mapcommand)( 1.0 );
-      }
-    catch( ... ) {}
+
+    try  {
+
+      (*mapcommand)( 1.0 );
     }
+    catch ( ... ) {}
+  }
 
   return true;
 }

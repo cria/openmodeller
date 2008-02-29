@@ -135,6 +135,33 @@ Log::FormatAndWrite( Log::LogCallback& lc, Log::Level level, std::string pref, c
 /****************************************************************/
 /****************************** Log *****************************/
 
+std::string
+Log::format( const char *fmt, ... )
+{
+   std::string ret_str("");
+
+   if ( NULL != fmt ) {
+
+      va_list marker = NULL;
+
+      // initalize variable arguments
+      va_start( marker, fmt );
+
+      const int buf_size = 1024;
+      char buf[buf_size];
+      char *end = buf;
+
+      vsnprintf( end, buf_size, fmt, marker );
+
+      // reset variable arguments
+      va_end( marker );
+
+      ret_str = buf;
+   }
+
+   return ret_str;
+}
+
 /*******************/
 /*** constructor ***/
 
