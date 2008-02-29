@@ -34,7 +34,6 @@
 #include <fstream>
 #include <string>
 #include <stdarg.h>
-
 #include <stdio.h>
 
 /****************************************************************/
@@ -82,6 +81,9 @@ class dllexp Log
     Log( );
 
   public:
+
+    /** General function that can be used to generate formatted strings */
+    static std::string format( const char *fmt, ... );
 
     ~Log();
 

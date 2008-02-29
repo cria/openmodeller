@@ -246,7 +246,6 @@ RasterGdal::write( Scalar *buf, int frow, int nrow )
       throw FileIOException( "Unable to write to file " + f_file, f_file );
     }
   }
-
 }
 
 /************/
@@ -280,7 +279,6 @@ RasterGdal::open( char mode )
 
   // Assumes that all bands have the same georeference
   // characteristics, ie, the same header.
-  //
 
   GDALRasterBand *band = f_ds->GetRasterBand( 1 );
 
@@ -435,26 +433,8 @@ RasterGdal::create( int format )
     }
   }
 
-  // Here we fill the raster with novals. So we don't need to worry about
-  // having the projector actually cover every pixel.
-  Scalar * buffer;
-  buffer = new Scalar[f_hdr.xdim];
-  for ( int x = 0 ; x < f_hdr.xdim; x++ ) {
-
-    buffer[x] = f_hdr.noval;
-  }
-
-  GDALRasterBand *band = f_ds->GetRasterBand(1);
-
-  for ( int y = 0; y < f_hdr.ydim; y++ ) {
-
-    band->RasterIO( GF_Write, 0, y, f_hdr.xdim, 1, buffer, f_hdr.xdim, 1, f_type, 0, 0 );
-  }
-
   // Initialize the Buffer
   initBuffer();
-
-  delete[] buffer;
 }
 
 /*******************/
@@ -497,12 +477,12 @@ int
 RasterGdal::iput( int x, int y, Scalar val )
 {
   // Be sure that 'y' line is in the buffer 'f_data'.
-  loadRow( y );
+  loadRow( y, true );
 
   // Put values in the first band of (x,y) position.
   f_data[x] = val;
 
-  // Indicates the line 'f_last' has changed.
+  // Indicates the line 'f_currentRow' has changed.
   f_changed = 1;
 
   return 1;
@@ -568,6 +548,7 @@ RasterGdal::put( Coord px, Coord py, Scalar val )
 
   if ( x < 0 || x >= f_hdr.xdim || y < 0 || y >= f_hdr.ydim ) {
 
+    Log::instance()->warn( "Coordinate (%f, %f) corresponds to a cell (%d, %d) outside the raster boundaries. It will be ignored.\n", px, py, x, y ); 
     return 0;
   }
 
@@ -577,7 +558,7 @@ RasterGdal::put( Coord px, Coord py, Scalar val )
 /***********/
 /*** put ***/
 int
-RasterGdal::put( Coord px, Coord py  )
+RasterGdal::put( Coord px, Coord py )
 {
   pair<int,int> xy = f_hdr.convertLonLat2XY( px, py );
   int x = xy.first;
@@ -587,6 +568,7 @@ RasterGdal::put( Coord px, Coord py  )
 
   if ( x < 0 || x >= f_hdr.xdim || y < 0 || y >= f_hdr.ydim ) {
 
+    Log::instance()->warn( "Coordinate (%f, %f) corresponds to a cell (%d, %d) outside the raster boundaries. It will be ignored.\n", px, py, x, y ); 
     return 0;
   }
 
@@ -673,7 +655,7 @@ RasterGdal::calcMinMax( int band )
 /****************/
 /*** load Row ***/
 void
-RasterGdal::loadRow( int row )
+RasterGdal::loadRow( int row, bool writeOperation )
 {
   // If the line is already read, return.
   if ( row == f_currentRow ) {
@@ -683,7 +665,20 @@ RasterGdal::loadRow( int row )
 
   saveRow();
 
-  read( f_data, row, 1 );
+  // Update f_data
+  if ( writeOperation ) {
+
+    // Just reset f_data with nodata
+    for ( int i = 0 ; i < f_size; i++ ) {
+
+      f_data[i] = f_hdr.noval;
+    }
+  }
+  else {
+
+    // Read from file
+    read( f_data, row, 1 );
+  }
 
   f_currentRow = row;
   f_changed = 0;
