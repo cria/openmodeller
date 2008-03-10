@@ -78,10 +78,12 @@ class test_Jackknife : public CxxTest :: TestSuite
         OpenModeller om;
 
         //createModelRequest();
-        std::string myInFileName("/tmp/model_request.xml");
+        //std::string myInFileName("/tmp/model_request.xml");
+        std::string myInFileName("/tmp/model_request_chi.xml");
         ConfigurationPtr c1 = Configuration::readXml( myInFileName.c_str() );
         om.setModelConfiguration(c1);
-        om.jackknife( om.getSampler(), om.getAlgorithm(), 0.90 );
+        //om.jackknife( om.getSampler(), om.getAlgorithm(), 0.90 );
+        om.mychisquare( om.getSampler() );
         return ;
       }
       catch( std::exception& e ) {

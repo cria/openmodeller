@@ -26,6 +26,9 @@
  * http://www.gnu.org/copyleft/gpl.html
  */
 
+#ifndef _AREASTATS_
+#define _AREASTATS_
+
 #include <openmodeller/om_defs.hh>
 #include <openmodeller/Configuration.hh>
 
@@ -111,3 +114,4 @@ private:
 
   Scalar _predictionThreshold;
 };
+#endif

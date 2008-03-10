@@ -381,6 +381,7 @@ public:
    ****************************************************************************/
   
    void jackknife( SamplerPtr sampler, AlgorithmPtr alg, double propTrain );
+   void mychisquare( SamplerPtr sampler );
   
 private:
 
