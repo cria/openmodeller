@@ -44,6 +44,7 @@
 #include <openmodeller/ConfusionMatrix.hh>
 #include <openmodeller/RocCurve.hh>
 #include <openmodeller/MapFormat.hh>
+#include <openmodeller/chisquare.hh>
 
 #include <openmodeller/AlgorithmFactory.hh>
 #include <openmodeller/Environment.hh>
@@ -51,6 +52,7 @@
 #include <openmodeller/Model.hh>
 
 #include <openmodeller/Exceptions.hh>
+
 
 #include <string>
 using std::string;
@@ -780,7 +782,6 @@ OpenModeller::setProjectionConfiguration( const ConstConfigurationPtr & config )
   }
 }
 
-
 /*************************/
 /******* Jackknife *******/
 void
@@ -990,4 +991,59 @@ OpenModeller::jackknife( SamplerPtr samplerPtr, AlgorithmPtr algorithmPtr, doubl
   Log::instance()->debug( "Jackknife estimate = %f\n", jackknife_estimate );
 
   Log::instance()->debug( "Jackknife bias = %f\n", jackknife_bias );
+} 
+
+/*************************/
+/******* chisquare *******/
+void
+OpenModeller::mychisquare( SamplerPtr samplerPtr )
+{
+  Log::instance()->debug( "Running chisquare\n" );
+
+  ChiSquare chi(samplerPtr);
+  chi.chiMain();
+  chi.showResult();
+  
+
+  /*if ( ! samplerPtr->getEnvironment() ) 
+  {
+
+    std::string msg = "Sampler has no environment.\n";
+
+    Log::instance()->error( msg.c_str() );
+
+    throw InvalidParameterException( msg );
+  }
+
+  int num_layers = samplerPtr->numIndependent();
+
+  if ( num_layers < 2 ) 
+  {
+
+    std::string msg = "Jackknife needs at least 2 layers.\n";
+
+    Log::instance()->error( msg.c_str() );
+
+    throw InvalidParameterException( msg );
+  }
+
+  OccurrencesPtr my_presences = samplerPtr->getPresences();
+
+  OccurrencesImpl::iterator it = my_presences->begin(); 
+  OccurrencesImpl::iterator last = my_presences->end();
+
+  Sample sample = (*it)->environment();
+  Sample min = sample;
+  ++it;
+  while ( it != last ) 
+  {     
+      Sample const& sample = (*it)->environment();
+      
+      min &= sample;
+	  min.dump();
+      ++it;
+   }
+   min.dump();	
+
+   int npts = my_presences->numOccurrences();*/
 }
