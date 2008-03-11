@@ -11,44 +11,43 @@
 
 ChiSquare::ChiSquare(SamplerPtr samplerPtr) //constructor
 {
-	init(samplerPtr);
-	if (nclass > classLimit)
-	{
-		Log::instance()->error( "measured, expected, chicell: number of class > %d\n", classLimit );
-		exit(0);	
-	}
+  init(samplerPtr);
+  if (nclass > classLimit)
+  {
+    Log::instance()->error( "measured, expected, chicell: number of class > %d\n", classLimit );
+    exit(0);	
+  }
 
-	statistic1 = new size_t[num_points];
-	if( statistic1 == NULL ) 
-	{
-		Log::instance()->error( "statistic1: memory allocation problem\n" );
-		exit(0);	
-	}
+  statistic1 = new size_t[num_points];
+  if( statistic1 == NULL ) 
+  {
+    Log::instance()->error( "statistic1: memory allocation problem\n" );
+    exit(0);	
+  }
 
-	statistic2 = new size_t[num_points];
-	if( statistic2 == NULL ) 
-	{
-		Log::instance()->error( "statistic2: memory allocation problem\n" );
-		exit(0);	
-	}
+  statistic2 = new size_t[num_points];
+  if( statistic2 == NULL ) 
+  {
+    Log::instance()->error( "statistic2: memory allocation problem\n" );
+    exit(0);	
+  }
 }
 
 ChiSquare::~ChiSquare() //destructor
 {
-	if (statistic1 != NULL)
-	{
-		delete [] statistic1; 
-		statistic1=NULL;
-	}
-	if (statistic2 != NULL)
-	{
-		delete [] statistic2; 
-		statistic2=NULL;
-	}
+  if (statistic1 != NULL)
+  {
+    delete [] statistic1; 
+    statistic1=NULL;
+  }
+  if (statistic2 != NULL)
+  {
+    delete [] statistic2; 
+    statistic2=NULL;
+  }
 }
 
-void 
-ChiSquare::init(SamplerPtr samplerPtr)
+void ChiSquare::init(SamplerPtr samplerPtr)
 {
   if ( ! samplerPtr->getEnvironment() ) 
   {
@@ -70,25 +69,25 @@ ChiSquare::init(SamplerPtr samplerPtr)
   setDelta();
 }
 
-size_t
+  size_t
 ChiSquare::getNpoints()
 {
-	return num_points;
+  return num_points;
 }
 
-void 
+  void 
 ChiSquare::setNpoints()
 {
-	num_points = my_presences->numOccurrences();
+  num_points = my_presences->numOccurrences();
 }
 
-size_t 
+  size_t 
 ChiSquare::getNlayers()
 {
-	return num_layers;
+  return num_layers;
 }
 
-void 
+  void 
 ChiSquare::setNlayers(SamplerPtr samplerPtr)
 {
   num_layers = samplerPtr->numIndependent();
@@ -104,19 +103,19 @@ ChiSquare::setNlayers(SamplerPtr samplerPtr)
   }
 }
 
-size_t 
+  size_t 
 ChiSquare::getNclass()
 {
-	return nclass;
+  return nclass;
 }
 
-void 
+  void 
 ChiSquare::setNclass()
 {
-	nclass = (size_t)floor(sqrt((double)(num_points)));
+  nclass = (size_t)floor(sqrt((double)(num_points)));
 }
 
-void 
+  void 
 ChiSquare::setMinimum()
 {
   OccurrencesImpl::iterator it = my_presences->begin(); 
@@ -127,19 +126,19 @@ ChiSquare::setMinimum()
   ++it;
   while ( it != last ) 
   {     
-      Sample const& sample = (*it)->environment();
-      minimum &= sample;
-      ++it;
-   }
+    Sample const& sample = (*it)->environment();
+    minimum &= sample;
+    ++it;
+  }
 }
 
-Sample 
+  Sample 
 ChiSquare::getMinimum()
 {
-	return minimum;
+  return minimum;
 }
 
-void 
+  void 
 ChiSquare::setDelta()
 {
   OccurrencesImpl::iterator it = my_presences->begin(); 
@@ -150,22 +149,22 @@ ChiSquare::setDelta()
   ++it;
   while ( it != last ) 
   {     
-      Sample const& sample = (*it)->environment();
-      delta |= sample;
-      ++it;
-   }
+    Sample const& sample = (*it)->environment();
+    delta |= sample;
+    ++it;
+  }
 
-   delta -= minimum;
-   delta /= (Scalar)nclass;
+  delta -= minimum;
+  delta /= (Scalar)nclass;
 }
 
-Sample 
+  Sample 
 ChiSquare::getDelta()
 {
-	return delta;
+  return delta;
 }
 
-void 
+  void 
 ChiSquare::setMeasured(size_t layer1, size_t layer2)
 {
   OccurrencesImpl::iterator it = my_presences->begin(); 
@@ -175,24 +174,24 @@ ChiSquare::setMeasured(size_t layer1, size_t layer2)
 
   for (size_t i = 0; i < classLimit; i++)
     for (size_t j = 0; j < classLimit; j++)
-	  measured[i][j] = 0.0;
+      measured[i][j] = 0.0;
 
   while ( it != last ) 
   {     
-      Sample const& sample = (*it)->environment();
+    Sample const& sample = (*it)->environment();
 
-	  row = (size_t)floor( ( sample[layer1] - minimum[layer1] ) / delta[layer1] );
-      if (row == nclass)
-		  row--;
-	  col = (size_t)floor( ( sample[layer2] - minimum[layer2] ) / delta[layer2] );
-	  if (col == nclass)
-		  col--;
-	  measured[row][col] += 1.0;
+    row = (size_t)floor( ( sample[layer1] - minimum[layer1] ) / delta[layer1] );
+    if (row == nclass)
+      row--;
+    col = (size_t)floor( ( sample[layer2] - minimum[layer2] ) / delta[layer2] );
+    if (col == nclass)
+      col--;
+    measured[row][col] += 1.0;
 
-      ++it;
-   }
+    ++it;
+  }
 }
-void 
+  void 
 ChiSquare::setExpected()
 {
   size_t i, j;
@@ -200,44 +199,44 @@ ChiSquare::setExpected()
 
   for (i = 0; i < nclass; i++)
   {
-     col_sum[i] = measured[i][0];
-     for ( j = 1; j < nclass; j++)
-	    col_sum[i] += measured[i][j];
+    col_sum[i] = measured[i][0];
+    for ( j = 1; j < nclass; j++)
+      col_sum[i] += measured[i][j];
   }
-	
+
   for (j = 0; j < nclass; j++)
   {
-   	row_sum[j] = measured[0][j];
-	for ( i = 1; i < nclass; i++)
-		row_sum[j] += measured[i][j];
+    row_sum[j] = measured[0][j];
+    for ( i = 1; i < nclass; i++)
+      row_sum[j] += measured[i][j];
   }
-	        
+
   sum = col_sum[0];
   for (i = 1; i < nclass; i++)
-	sum += col_sum[i];
-	        
+    sum += col_sum[i];
+
   for (i = 0; i < nclass; i++)
-	for (j = 0; j < nclass; j++)
-		expected[i][j] = col_sum[i] * row_sum[j] / sum;
+    for (j = 0; j < nclass; j++)
+      expected[i][j] = col_sum[i] * row_sum[j] / sum;
 }
-void 
+  void 
 ChiSquare::setChicell()
 {
   size_t i, j;
   Scalar aux;
 
   for (i = 0; i < nclass; i++)
-	for (j = 0; j < nclass; j++)
-	  if (expected[i][j] == 0.0)
-	     chicell[i][j] = 0.0;
-	  else
-	  {
-	     aux = expected[i][j] - measured[i][j];
-		 chicell[i][j] = (aux * aux) / expected[i][j]; 
-	   }
+    for (j = 0; j < nclass; j++)
+      if (expected[i][j] == 0.0)
+        chicell[i][j] = 0.0;
+      else
+      {
+        aux = expected[i][j] - measured[i][j];
+        chicell[i][j] = (aux * aux) / expected[i][j]; 
+      }
 }
 
-void 
+  void 
 ChiSquare::setStatistic(size_t layer1, size_t layer2)
 {
   size_t i, j;
@@ -245,17 +244,17 @@ ChiSquare::setStatistic(size_t layer1, size_t layer2)
   Scalar delimita[classLimit] = {0, 3.8415, 5.9915, 7.8147, 9.4877, 11.0705, 12.5916, 14.0671, 15.5073, 16.9190, 18.3070, 19.6751, 21.0261, 22.3620, 23.6848, 24.9958 };
 
   for (i = 0; i < nclass; i++)
-	for (j = 0; j < nclass; j++)
-		chi += chicell[i][j];
-	    
+    for (j = 0; j < nclass; j++)
+      chi += chicell[i][j];
+
   if (chi < delimita[nclass - 1])
   {
-	statistic1[layer1] += 1;
-	statistic2[layer2] += 1;
+    statistic1[layer1] += 1;
+    statistic2[layer2] += 1;
   }
 }
 
-void
+  void
 ChiSquare::chiMain()
 {
   size_t layer1, layer2;
@@ -263,20 +262,20 @@ ChiSquare::chiMain()
   for( layer1 = 0; layer1 < num_layers; layer1++ ) 
   {
     statistic1[layer1] = 0;
-	statistic2[layer1] = 0;
+    statistic2[layer1] = 0;
   }
 
   for( layer1 = 0; layer1 < num_layers; layer1++ ) 
     for(layer2 = layer1+1; layer2 < num_layers; layer2++)
-	{
-       setMeasured(layer1, layer2);
-       setExpected();
-	   setChicell();
-	   setStatistic(layer1, layer2);
-	}
+    {
+      setMeasured(layer1, layer2);
+      setExpected();
+      setChicell();
+      setStatistic(layer1, layer2);
+    }
 }
 
-void 
+  void 
 ChiSquare::showResult()
 {
   size_t i;
@@ -285,7 +284,7 @@ ChiSquare::showResult()
   for (i = 0; i < num_layers; i++)
   {
     statistic1[i] += statistic2[i];
-	Log::instance()->debug( "%d ", statistic1[i] );
+    Log::instance()->debug( "%d ", statistic1[i] );
   }
 }
 
