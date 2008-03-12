@@ -1,23 +1,39 @@
-//************************************** Chi-square **************************************
-// 
-// Chi Square algorithm described at Li, L., et al. (2006). "An Integrated
-// Bayesian Modelling Approach for Predicting Mosquito Larval Habitats". The
-// authors tested the independence between all pairs of layers. They crossed
-// two layers by using a contingence matrix to detect the dependence between
-// them conditioning on the presence of habitat. The rows of the contingence
-// matrix are values of one layer, and the columns of the matrix are values of
-// the other variable.  Each cell of the matrix records the number of
-// occurrence of specie , that is calculated by considering the class of the
-// two layers. Given the significance level of 0.05, the Chi-square test is
-// then applied to evaluate the independence between two crossed layers.
-//
-// input: SamplerPtr output: shows for each variable the amount of layers that
-// maintain correlation at the significance level of 0.05
-//
-//**************************************************************************************
+/**
+ * Declaration of ChiSquare class 
+ * Chi Square algorithm described at Li, L., et al. (2006). "An Integrated
+ * Bayesian Modelling Approach for Predicting Mosquito Larval Habitats". The
+ * authors tested the independence between all pairs of layers. They crossed
+ * two layers by using a contingence matrix to detect the dependence between
+ * them conditioning on the presence of habitat. The rows of the contingence
+ * matrix are values of one layer, and the columns of the matrix are values of
+ * the other variable.  Each cell of the matrix records the number of
+ * occurrence of specie , that is calculated by considering the class of the
+ * two layers. Given the significance level of 0.05, the Chi-square test is
+ * then applied to evaluate the independence between two crossed layers.
+ *
+ * input: SamplerPtr output: shows for each variable the amount of layers that
+ * maintain correlation at the significance level of 0.05
+ * 
+ * @author Missae (missae at dpi . inpe . br)
+ * $Id$
+ *
+ * LICENSE INFORMATION
+ * 
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details:
+ * 
+ * http://www.gnu.org/copyleft/gpl.html
+ */
 
-#ifndef _CHISQUARE_
-#define _CHISQUARE_
+#ifndef _OM_CHISQUARE_
+#define _OM_CHISQUARE_
 
 #include <openmodeller/om.hh>
 #include <openmodeller/Exceptions.hh>
@@ -92,10 +108,10 @@ class ChiSquare
     void setStatistic(size_t layer1, size_t layer2);
 
     //control layers crossing.
-    void chiMain(){};
+    void run();
 
     //calculate final layers dependency.
-    void showResult(){};
+    void showResult();
 
     //set zero to all elements of the matrix "measured".
     void setMeasuredZero();

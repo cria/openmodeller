@@ -4,7 +4,6 @@ SVN revision: ?
 
 	* Fixed bug when GDAL failed to read a raster row (in which case the row used to have zero values). Now the row is filled with nodata values.
 	* XML request for model creation now supports additional options to filter occurrences (using spatiallyUnique or environmentallyUnique sampler functions).
-	* New prototype function to perform jackknifing in the environmental layers.
 	* Changed nodata value of the default raster type (ByteHFA) to 101.
 	* Masks must now use nodata to indicate masked areas (zeros will not work anymore).
 	* om_testmodel now generates pseudo-absence points when there are no absences to be tested.
@@ -17,6 +16,7 @@ SVN revision: ?
 	* Removed algorithms minimum distance and distance to average since EnvironmentalDistance provides the same functionality.
 	* "type" property of AlgParamMetadata changed from char * to a new enumeration called AlgParamDatatype. Values can be Integer, Real and String.
 	* Fixed bug in the environmental distance algorithm: probabilities were negative for points whose distance to the nearest point was beyond the maximum allowed distance. 
+	* New classes to perform jackknife and chi-square in the environmental layers.
 
 Release 0.5.2 (2007-10-24)
 --------------------------

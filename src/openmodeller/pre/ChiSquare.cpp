@@ -1,10 +1,28 @@
+/**
+ * Definition of ChiSquare class 
+ * 
+ * @author Missae (missae at dpi . inpe . br)
+ * $Id$
+ *
+ * LICENSE INFORMATION
+ * 
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details:
+ * 
+ * http://www.gnu.org/copyleft/gpl.html
+ */
 
-#include "chisquare.hh"
-
-#include <openmodeller/Configuration.hh>
-
-#include <openmodeller/Exceptions.hh>
+#include <openmodeller/pre/ChiSquare.hh>
 #include <openmodeller/Sampler.hh>
+#include <openmodeller/Log.hh>
+#include <openmodeller/Exceptions.hh>
 
 #include <stdio.h>
 #include <math.h>
@@ -14,21 +32,21 @@ ChiSquare::ChiSquare(SamplerPtr samplerPtr) //constructor
   init(samplerPtr);
   if (nclass > classLimit)
   {
-    Log::instance()->error( "measured, expected, chicell: number of class > %d\n", classLimit );
+    Log::instance()->error( "ChiSquare: measured, expected, chicell: number of class > %d\n", classLimit );
     exit(0);	
   }
 
   statistic1 = new size_t[num_points];
   if( statistic1 == NULL ) 
   {
-    Log::instance()->error( "statistic1: memory allocation problem\n" );
+    Log::instance()->error( "ChiSquare: statistic1: memory allocation problem\n" );
     exit(0);	
   }
 
   statistic2 = new size_t[num_points];
   if( statistic2 == NULL ) 
   {
-    Log::instance()->error( "statistic2: memory allocation problem\n" );
+    Log::instance()->error( "ChiSquare: statistic2: memory allocation problem\n" );
     exit(0);	
   }
 }
@@ -51,7 +69,6 @@ void ChiSquare::init(SamplerPtr samplerPtr)
 {
   if ( ! samplerPtr->getEnvironment() ) 
   {
-
     std::string msg = "Sampler has no environment.\n";
 
     Log::instance()->error( msg.c_str() );
@@ -94,7 +111,6 @@ ChiSquare::setNlayers(SamplerPtr samplerPtr)
 
   if ( num_layers < 2 ) 
   {
-
     std::string msg = "chisquare needs at least 2 layers.\n";
 
     Log::instance()->error( msg.c_str() );
@@ -255,7 +271,7 @@ ChiSquare::setStatistic(size_t layer1, size_t layer2)
 }
 
   void
-ChiSquare::chiMain()
+ChiSquare::run()
 {
   size_t layer1, layer2;
 

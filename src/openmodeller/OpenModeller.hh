@@ -374,15 +374,6 @@ public:
 
   void setProjectionConfiguration( const ConstConfigurationPtr & );
 
-  /*****************************************************************************
-   *
-   * Layer Selection routines
-   *
-   ****************************************************************************/
-  
-   void jackknife( SamplerPtr sampler, AlgorithmPtr alg, double propTrain );
-   void mychisquare( SamplerPtr sampler );
-  
 private:
 
   bool hasEnvironment();

@@ -98,6 +98,8 @@ libopenmodeller_la_SOURCES = \
 	occ_io/OccurrencesFactory.cpp \
 	occ_io/OccurrencesFile.cpp \
 	occ_io/OccurrencesReader.cpp \
+	pre/Jackknife.cpp \
+	pre/ChiSquare.cpp \
 	$(TERRALIB_CPP) 
 
 if BUILD_TERRALIB
@@ -174,3 +176,9 @@ occioinclude_HEADERS = \
         occ_io/OccurrencesFactory.hh \
         occ_io/OccurrencesFile.hh \
         occ_io/OccurrencesReader.hh
+
+preincludedir = $(omincludedir)/pre
+
+preinclude_HEADERS = \
+        pre/Jackknife.hh \
+        pre/ChiSquare.hh
