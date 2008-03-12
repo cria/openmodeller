@@ -72,12 +72,13 @@ TeDatabaseManager::create( const TeDatabaseFactoryParams& params )
 */
 TeDatabaseManager::~TeDatabaseManager()
 {
-	MapManager::const_iterator i = mapManager_.begin();
+	// TODO - Test with other database (not Ado)
+	/*MapManager::const_iterator i = mapManager_.begin();
 	MapManager::const_iterator end = mapManager_.end();
 	
 	for(; i != end; ++i)
 	{
 		i->second->close();
 		delete (i->second);
-	}
+	}*/
 }
