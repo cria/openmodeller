@@ -30,7 +30,8 @@
 #include <openmodeller/TeUrlParser.hh>
 
 // Registering TeDatabases in DatabaseFactory.
-#ifdef WIN32
+// Xande.
+/*#ifdef WIN32
 	#include <TeAdoDB.h>
     #include <TeAdoSqlServer.h>
     #include <TeAdoOracle.h>
@@ -40,7 +41,7 @@
 #include <TePostgreSQL.h>
 #include <TePostGIS.h>
 #include <TeOracleSpatial.h>
-#include <TeOCIOracle.h>
+#include <TeOCIOracle.h>*/
 
 //! Parser a url.
 /**
