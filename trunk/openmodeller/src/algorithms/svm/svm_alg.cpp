@@ -568,6 +568,8 @@ SvmAlgorithm::iterate()
 
   _presence_index = ( labels[0] == +1 ) ? 0 : 1;
 
+  delete labels;
+
   _done = true;
 
   // debug
