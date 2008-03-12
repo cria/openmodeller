@@ -19,6 +19,8 @@ SET (PEDANTIC TRUE CACHE BOOL "Treat all compiler warnings as errors")
 # set if the log level the build binaries should be set to Debug
 SET (OM_DEBUG_LOGLEVEL FALSE CACHE BOOL "Force log level to Debug - should leave this off for releases!")
 
+SET (OM_DEBUG_MEMORY FALSE CACHE BOOL "Output log messages to help debugging memory management")
+
 SET (OM_CTEST FALSE CACHE BOOL "Build unit tests")
 
 SET (WITH_PROFILING FALSE CACHE BOOL "Add profiling symbols to build products (-pg)")
@@ -134,6 +136,10 @@ ADD_DEFINITIONS(-DOMDATAPATH=\\"share/openmodeller\\")
 IF (OM_LOGLEVEL_DEBUG)
   ADD_DEFINITIONS(-DLOGLEVELISDEBUG=1)
 ENDIF (OM_LOGLEVEL_DEBUG)
+
+IF (OM_DEBUG_MEMORY)
+  ADD_DEFINITIONS(-DDEBUG_MEMORY=1)
+ENDIF (OM_DEBUG_MEMORY)
 
 IF (CMAKE_BUILD_TYPE MATCHES Debug)
   ADD_DEFINITIONS(-DOMDEBUG=1)
