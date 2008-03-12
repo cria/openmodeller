@@ -53,7 +53,7 @@ void modelCallback( float progress, void * extra_param );
 int
 main( int argc, char **argv )
 {
-#ifdef BUILD_TERRALIB
+#ifdef TERRALIB_FOUND
   USE_TERRALIB_IO
 #endif
 
