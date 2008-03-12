@@ -249,6 +249,9 @@ SvmAlgorithm::SvmAlgorithm() :
   _presence_index( -1 )
 {
   _normalizerPtr = new MeanVarianceNormalizer();
+
+  // Needs to be initialized (see destructor)
+  _svm_problem.l = 0;
 }
 
 
@@ -257,8 +260,6 @@ SvmAlgorithm::SvmAlgorithm() :
 
 SvmAlgorithm::~SvmAlgorithm()
 {
-  svm_destroy_param( &_svm_parameter );
-
   if ( _svm_model ) {
 
     svm_destroy_model( _svm_model );
@@ -433,6 +434,8 @@ SvmAlgorithm::initialize()
     num_points += num_absences;
   }
 
+  _svm_problem.l = num_points;
+
   _svm_problem.y = new double[num_points];
   _svm_problem.x = new svm_node*[num_points];
 
@@ -512,8 +515,6 @@ SvmAlgorithm::initialize()
     ++p_iterator;
     ++i;
   }
-
-  _svm_problem.l = num_points;
 
   // Check parameters using svm library logic
   const char *error_msg;
@@ -830,9 +831,6 @@ SvmAlgorithm::_setConfiguration( const ConstConfigurationPtr& config )
   _svm_model->param = _svm_parameter;
 
   _svm_model->free_sv = 1;
-
-  // This will also indicate that the model was loaded from XML (see destructor)
-  _svm_problem.l = 0;
 
   _done = true;
 }
