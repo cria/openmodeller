@@ -192,7 +192,11 @@ EnvironmentImpl::~EnvironmentImpl()
 {
   clearLayers();
   clearMask();
-  _normalizerPtr = 0;
+
+  if ( _normalizerPtr ) {
+
+    delete _normalizerPtr;
+  }
 }
 
 
