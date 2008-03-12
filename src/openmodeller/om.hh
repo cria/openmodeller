@@ -63,7 +63,7 @@
 #include <openmodeller/env_io/RasterFactory.hh>
 #include <openmodeller/occ_io/OccurrencesFactory.hh>
 
-#ifdef BUILD_TERRALIB
+#ifdef TERRALIB_FOUND
 #include <openmodeller/occ_io/TeOccurrences.hh>
 #include <openmodeller/env_io/TeOMRaster.hh>
 
