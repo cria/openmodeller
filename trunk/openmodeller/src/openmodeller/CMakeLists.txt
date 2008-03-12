@@ -57,6 +57,17 @@ SET(OM_CORE_SRCS
       os_specific.cpp
     )
   ENDIF (WIN32)
+  
+IF (TERRALIB_FOUND)
+	SET(OM_CORE_SRCS
+      ${OM_CORE_SRCS}
+      TeDatabaseManager.cpp
+	  TeUrlParser.cpp
+	  env_io/TeOMRaster.cpp
+	  occ_io/TeOccurrences.cpp
+	  ${TERRALIB_INCLUDE_DIR}/TeAdoDB.cpp
+    )
+ENDIF (TERRALIB_FOUND)
 
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR} 
   env_io 
@@ -68,6 +79,7 @@ INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}
   ${GEOS_INCLUDE_DIR}
   ${GDAL_INCLUDE_DIR}
   ${EXPAT_INCLUDE_DIR}
+  ${TERRALIB_INCLUDE_DIR}
 )
 
 IF (WIN32)
@@ -95,6 +107,7 @@ TARGET_LINK_LIBRARIES(openmodeller
   ${PROJ_LIBRARY}
   ${GDAL_LIBRARY}
   ${PLATFORM_LIBRARIES}
+  ${TERRALIB_LIBRARY}
 )
 IF (APPLE)
  TARGET_LINK_LIBRARIES(openmodeller
@@ -145,6 +158,13 @@ SET(OM_CORE_HDRS
   Sampler.hh 
   ScaleNormalizer.hh
 )
+IF (TERRALIB_FOUND)
+	SET(OM_CORE_HDRS
+      ${OM_CORE_HDRS}
+      TeDatabaseManager.hh
+	  TeUrlParser.hh
+    )
+ENDIF (TERRALIB_FOUND)
 
 SET (OM_OCCIO_HDRS
 occ_io/OccurrencesFactory.hh
@@ -152,6 +172,12 @@ occ_io/OccurrencesFile.hh
 occ_io/OccurrencesReader.hh
 occ_io/TeOccurrences.hh
 )
+IF (TERRALIB_FOUND)
+	SET(OM_OCCIO_HDRS
+      ${OM_OCCIO_HDRS}
+	  occ_io/TeOccurrences.cpp
+    )
+ENDIF (TERRALIB_FOUND)
 
 SET (OM_ENVIO_HDRS
 env_io/GeoTransform.hh
@@ -163,6 +189,12 @@ env_io/RasterFactory.hh
 env_io/RasterGdal.hh
 env_io/TeOMRaster.hh
 )
+IF (TERRALIB_FOUND)
+	SET(OM_ENVIO_HDRS
+      ${OM_ENVIO_HDRS}
+	  env_io/TeOMRaster.hh
+    )
+ENDIF (TERRALIB_FOUND)
 
 SET (OM_PRE_HDRS
 pre/Jackknife.hh
