@@ -104,6 +104,7 @@ FIND_PACKAGE(Expat)
 FIND_PACKAGE(GSL)      # Georeferencer
 FIND_PACKAGE(X11)
 FIND_PACKAGE(Sqlite3)
+FIND_PACKAGE(TerraLib)
 # python support:
 #INCLUDE (Python) # file cmake/Python.cmake
 
