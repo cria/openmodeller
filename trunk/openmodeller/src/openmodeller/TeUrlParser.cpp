@@ -29,20 +29,6 @@
 
 #include <openmodeller/TeUrlParser.hh>
 
-// Registering TeDatabases in DatabaseFactory.
-// Xande.
-/*#ifdef WIN32
-	#include <TeAdoDB.h>
-    #include <TeAdoSqlServer.h>
-    #include <TeAdoOracle.h>
-#endif
-
-#include <TeMySQL.h>
-#include <TePostgreSQL.h>
-#include <TePostGIS.h>
-#include <TeOracleSpatial.h>
-#include <TeOCIOracle.h>*/
-
 //! Parser a url.
 /**
 * Complete url is like that:
