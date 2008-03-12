@@ -19,7 +19,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\..\..\..\src;&quot;$(GDAL_HOME)\include&quot;;&quot;$(EXPAT_HOME)\Source\lib&quot;;&quot;$(TERRALIB_HOME)\src\terralib\kernel&quot;;&quot;$(TERRALIB_HOME)\terralibw\ado&quot;"
+				AdditionalIncludeDirectories="..\..\..\..\src;..\..\..\..\src\openmodeller;&quot;$(GDAL_HOME)\include&quot;;&quot;$(EXPAT_HOME)\Source\lib&quot;;&quot;$(TERRALIB_HOME)\src\terralib\kernel&quot;;&quot;$(TERRALIB_HOME)\terralibw\ado&quot;"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;MSVC;OPENMODELLER_EXPORTS;dllexp=__declspec(dllexport);VERSION=\&quot;0.5.2\&quot;;PLUGINPATH=\&quot;.\&quot;;CONFIG_FILE=\&quot;om_config.txt\&quot;"
 				MinimalRebuild="TRUE"
 				BasicRuntimeChecks="3"
@@ -153,9 +153,6 @@
 			</File>
 			<File
 				RelativePath="..\..\..\..\src\openmodeller\MeanVarianceNormalizer.cpp">
-			</File>
-			<File
-				RelativePath="..\..\..\..\src\openmodeller\Model.cpp">
 			</File>
 			<File
 				RelativePath="..\..\..\..\src\openmodeller\Occurrence.cpp">
