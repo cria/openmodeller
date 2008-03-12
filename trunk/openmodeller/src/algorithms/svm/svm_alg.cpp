@@ -458,9 +458,7 @@ SvmAlgorithm::initialize()
 
       Log::instance()->info( "SvmAlgorithm: Generating pseudo-absences.\n" );
 
-      OccurrencesImpl * occs = new OccurrencesImpl( "", GeoTransform::getDefaultCS() );
-
-      absences = ReferenceCountedPointer<OccurrencesImpl>( occs );
+      absences = new OccurrencesImpl( presences->name(), presences->coordSystem() );
 
       for ( int i = 0; i < num_absences; ++i ) {
 
@@ -692,6 +690,8 @@ SvmAlgorithm::_getConfiguration( ConfigurationPtr& config ) const
   svm_get_labels( _svm_model, labels );
 
   model_config->addNameValue( "Labels", labels, 2 );
+
+  delete labels;
 
   // Vectors
   const double * const *sv_coef = _svm_model->sv_coef;
