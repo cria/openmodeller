@@ -55,7 +55,6 @@ using std::string;
 #include <map>
 using std::map;
 
-#include <math.h>
 
 // REMOVE ME
 #include <istream>
