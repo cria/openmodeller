@@ -43,6 +43,8 @@ SET(OM_CORE_SRCS
   occ_io/OccurrencesFactory.cpp 
   occ_io/OccurrencesFile.cpp 
   occ_io/OccurrencesReader.cpp 
+  pre/Jackknife.cpp
+  pre/ChiSquare.cpp
 )
   IF (WIN32)
     SET(OM_CORE_SRCS
@@ -59,6 +61,7 @@ SET(OM_CORE_SRCS
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR} 
   env_io 
   occ_io
+  pre
   ${CMAKE_CURRENT_SOURCE_DIR}/../
   ${CMAKE_CURRENT_SOURCE_DIR}/../console
   ${PROJ_INCLUDE_DIR}
@@ -161,6 +164,10 @@ env_io/RasterGdal.hh
 env_io/TeOMRaster.hh
 )
 
+SET (OM_PRE_HDRS
+pre/Jackknife.hh
+pre/ChiSquare.hh
+)
 
 ########################################################
 # Build openmodellerxml lib
@@ -176,3 +183,4 @@ INSTALL(FILES ${LIBOPENMODELLERXML_HDRS} DESTINATION ${OM_INCLUDE_DIR}/openmodel
 INSTALL(FILES ${OM_CORE_HDRS} DESTINATION ${OM_INCLUDE_DIR}/openmodeller)
 INSTALL(FILES ${OM_OCCIO_HDRS} DESTINATION ${OM_INCLUDE_DIR}/openmodeller/occ_io)
 INSTALL(FILES ${OM_ENVIO_HDRS} DESTINATION ${OM_INCLUDE_DIR}/openmodeller/env_io)
+INSTALL(FILES ${OM_PRE_HDRS} DESTINATION ${OM_INCLUDE_DIR}/openmodeller/pre)

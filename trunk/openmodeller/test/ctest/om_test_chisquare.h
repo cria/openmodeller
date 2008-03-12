@@ -1,8 +1,7 @@
 /**
- * Test class for Jackknife
+ * Test class for ChiSquare
  * 
  * @authors Renato De Giovanni and Albert Massayuki Kuniyoshi
- * @date 2007-07-16
  * $Id$
  *
  * LICENSE INFORMATION
@@ -29,15 +28,15 @@
  * \brief Test for Configuration Class
  */
 
-#ifndef TEST_JACKKNIFE_HH
-#define TEST_JACKKNIFE_HH
+#ifndef TEST_CHISQUARE_HH
+#define TEST_CHISQUARE_HH
 
 #include "cxxtest/TestSuite.h"
 #include <openmodeller/Configuration.hh>
 #include <openmodeller/Exceptions.hh>
 #include <openmodeller/Sample.hh>
 #include <openmodeller/om.hh>
-#include <openmodeller/pre/Jackknife.hh>
+#include <openmodeller/pre/ChiSquare.hh>
 #include <om_test_utils.h>
 #include <iostream>
 #include <sstream>
@@ -63,7 +62,7 @@ class test_Jackknife : public CxxTest :: TestSuite
 
     void test1 (){
       std::cout << std::endl;
-      std::cout << "Testing jackknife..." << std::endl;
+      std::cout << "Testing chi-square..." << std::endl;
       try 
       {
         
@@ -83,8 +82,9 @@ class test_Jackknife : public CxxTest :: TestSuite
         ConfigurationPtr c1 = Configuration::readXml( myInFileName.c_str() );
         om.setModelConfiguration(c1);
 
-        Jackknife jackknife;
-        jackknife.run( om.getSampler(), om.getAlgorithm(), 0.90 );
+        ChiSquare chi( om.getSampler() );
+        chi.run();
+        chi.showResult();
 
         return ;
       }
