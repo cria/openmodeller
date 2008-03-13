@@ -13,7 +13,7 @@ FIND_PATH(TERRALIB_INCLUDE_DIR TeRaster.h
   c:/msys/local/include
   )
   
-  FIND_LIBRARY(TERRALIB_LIBRARY NAMES terralib PATHS 
+FIND_LIBRARY(TERRALIB_LIBRARY NAMES terralib PATHS 
   /usr/local/lib 
   /usr/lib 
   "$ENV{LIB_DIR}/lib"
@@ -35,6 +35,10 @@ ELSE (TERRALIB_FOUND)
 
    IF (TERRALIB_FIND_REQUIRED)
       MESSAGE(FATAL_ERROR "Could not find TERRALIB")
+   ELSE (TERRALIB_FIND_REQUIRED)
+      # Avoid cmake complaints if terralib is not found
+      SET(TERRALIB_INCLUDE_DIR "")
+      SET(TERRALIB_LIBRARY "")
    ENDIF (TERRALIB_FIND_REQUIRED)
 
 ENDIF (TERRALIB_FOUND)
