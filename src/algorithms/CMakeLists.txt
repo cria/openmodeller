@@ -1,4 +1,4 @@
-SUBDIRS(best_subsets garp dg_garp svm)
+SUBDIRS(best_subsets garp dg_garp svm maxent)
 
 #######################################################
 #  MSVC DEFINITIONS

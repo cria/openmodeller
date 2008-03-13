@@ -8,7 +8,7 @@
 # WITHOUT ANY WARRANTY, to the extent permitted by law; without even the
 # implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
-SUBDIRS = garp dg_garp best_subsets svm
+SUBDIRS = garp dg_garp best_subsets svm maxent
 
 OMSRCDIR = @top_srcdir@/src
 OMLIB = $(OMSRCDIR)/openmodeller/libopenmodeller.la
@@ -87,3 +87,4 @@ libomenvelope_score_la_SOURCES = envelope_score.cpp envelope_score.hh
 libomenvelope_score_la_LDFLAGS = -no-undefined
 libomenvelope_score_la_LIBADD = $(OMLIB)
 libomenvelope_score_la_CPPFLAGS = -I$(OMSRCDIR) -Ddllexp= -DOM_ALG_DLL_EXPORT=
+
