@@ -42,7 +42,7 @@
 
 #define classLimit 16
 
-class ChiSquare 
+class dllexp ChiSquare 
 {
   private:
     size_t	num_points;		  // number of points.
