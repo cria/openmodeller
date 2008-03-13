@@ -39,6 +39,10 @@ ELSE (SQLITE3_FOUND)
 
    IF (SQLITE3_FIND_REQUIRED)
       MESSAGE(FATAL_ERROR "Could not find Sqlite3")
+   ELSE (SQLITE3_FIND_REQUIRED)
+      # Avoid cmake complaints if sqlite3 is not found
+      SET(SQLITE3_INCLUDE_DIR "")
+      SET(SQLITE3_LIBRARY "")
    ENDIF (SQLITE3_FIND_REQUIRED)
 
 ENDIF (SQLITE3_FOUND)

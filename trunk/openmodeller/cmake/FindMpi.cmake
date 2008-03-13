@@ -37,6 +37,10 @@ ELSE (MPI_FOUND)
 
    IF (MPI_FIND_REQUIRED)
       MESSAGE(FATAL_ERROR "Could not find Mpi")
+   ELSE (MPI_FIND_REQUIRED)
+      # Avoid cmake complaints if mpi is not found
+      SET(MPI_INCLUDE_DIR "")
+      SET(MPI_LIBRARY "")
    ENDIF (MPI_FIND_REQUIRED)
 
 ENDIF (MPI_FOUND)
