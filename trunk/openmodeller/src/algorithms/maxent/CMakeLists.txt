@@ -1,16 +1,23 @@
 ########################################################
 # Files
 
-SET (LIBMAXIMUMENTROPY_SRCS
-  maximum_entropy.cpp
-  maxent.cpp
-  blmvm.cpp
+SET (LIBMAXENT_SRCS
+    maximum_entropy.cpp 
+    maxent.cpp 
+    blmvm.cpp 
+)
+#these are not needed to build but I specified them in 
+#case we want to install the headers
+SET (LIBMAXENT_HDRS
+    maximum_entropy.hh 
+    maxent.h 
+    blmvm.h
 )
 
 ########################################################
 # Build
 
-ADD_LIBRARY (maximum_entropy MODULE ${LIBMAXIMUMENTROPY_SRCS})
+ADD_LIBRARY (maximum_entropy MODULE ${LIBMAXENT_SRCS})
 TARGET_LINK_LIBRARIES(maximum_entropy openmodeller)
 
 INCLUDE_DIRECTORIES(
