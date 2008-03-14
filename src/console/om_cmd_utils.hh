@@ -2,7 +2,7 @@
  * Declaration of command-line utility functions.
  * 
  * @author Renato De Giovanni (renato at cria . org . br)
- * $Id: $
+ * $Id$
  * 
  * LICENSE INFORMATION 
  * 
@@ -49,7 +49,10 @@ struct progress_data {
 // (debug, warn, info, error)
 Log::Level getLogLevel( std::string level );
 
+// Custom callback to display job progress on the screen
+void progressDisplayCallback( float progress, void *extraParam );
+
 // Custom callback to track job progress by writing it into a file
-void progressCallback( float progress, void *progressFile );
+void progressFileCallback( float progress, void *progressFile );
 
 #endif

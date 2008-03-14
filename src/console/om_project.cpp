@@ -138,7 +138,7 @@ int main( int argc, char **argv ) {
     prog_data.progress = -3.0;
 
     // Always create initial file with status "queued" (-1)
-    progressCallback( -1.0, &prog_data );
+    progressFileCallback( -1.0, &prog_data );
   }
 
   // Log stuff
@@ -168,7 +168,13 @@ int main( int argc, char **argv ) {
     if ( ! progress_file.empty() ) { 
 
       // Set callback to write to a file
-      om.setMapCallback( progressCallback, &prog_data );
+      om.setMapCallback( progressFileCallback, &prog_data );
+    }
+    else if ( ! statistics_file.empty() ) {
+
+      // Default callback will display progress on screen when a statistics file was specified
+      // (which means statistics won't be sent to stdout)
+      om.setMapCallback( progressDisplayCallback );
     }
 
     std::ostringstream model_output;
@@ -212,7 +218,7 @@ int main( int argc, char **argv ) {
       if ( prog_data.progress != 1 ) {
 
         // -2 means aborted
-        progressCallback( -2.0, &prog_data );
+        progressFileCallback( -2.0, &prog_data );
       }
     }
   }
@@ -222,7 +228,7 @@ int main( int argc, char **argv ) {
     if ( ! progress_file.empty() ) { 
 
       // -2 means aborted
-      progressCallback( -2.0, &prog_data );
+      progressFileCallback( -2.0, &prog_data );
     }
 
     printf( "om_project aborted: %s\n", e.what() );

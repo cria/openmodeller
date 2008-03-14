@@ -2,7 +2,7 @@
  * Definition of command-line utility functions.
  * 
  * @author Renato De Giovanni (renato at cria . org . br)
- * $Id: $
+ * $Id$
  * 
  * LICENSE INFORMATION 
  * 
@@ -26,6 +26,9 @@
 
 #include <om_cmd_utils.hh>
 #include <time.h> 
+
+using std::ios_base;
+
 // get Log Level
 Log::Level getLogLevel( std::string level ) {
 
@@ -52,9 +55,18 @@ Log::Level getLogLevel( std::string level ) {
     }
 }
 
+// Display progress on screen
+void progressDisplayCallback( float progress, void *extraParam )
+{
+    char buffer[9];
+
+    sprintf( buffer, "%07.4f", 100 * progress );
+
+    std::cout << "Progress: " << buffer << "% \r" << flush;
+}
 
 // Progress callback
-void progressCallback( float progress, void *progressData )
+void progressFileCallback( float progress, void *progressData )
 {
     if ( ! progressData ) {
 
