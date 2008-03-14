@@ -41,7 +41,7 @@ using namespace std;
 /****************************************************************/
 /********************** Algorithm's Metadata ********************/
 
-#define NUM_PARAM 8
+#define NUM_PARAM 9
 
 #define SVMTYPE_ID    "SvmType"
 #define KERNELTYPE_ID "KernelType"
@@ -51,7 +51,9 @@ using namespace std;
 #define C_ID          "C"
 #define NU_ID         "Nu"
 #define PROB_ID       "ProbabilisticOutput"
+#define PSEUDO_ID     "NumberOfPseudoAbsences"
 
+#define SVM_LOG_PREFIX "SvmAlgorithm: "
 
 /******************************/
 /*** Algorithm's parameters ***/
@@ -94,7 +96,7 @@ static AlgParamMetadata parameters[NUM_PARAM] = {
     1,         // Not zero if the parameter has lower limit.
     0,         // Parameter's lower limit.
     0,         // Not zero if the parameter has upper limit.
-    1000,      // Parameter's upper limit.
+    0,         // Parameter's upper limit.
     "3"        // Parameter's typical (default) value.
   },
   // Gamma
@@ -162,6 +164,19 @@ static AlgParamMetadata parameters[NUM_PARAM] = {
     1,         // Parameter's upper limit.
     "1"        // Parameter's typical (default) value.
   },
+  // Number of pseudo absences to be generated
+  {
+    PSEUDO_ID,                   // Id.
+    "Number of pseudo-absences", // Name.
+    Integer,                     // Type.
+    "Number of pseudo-absences to be generated (only for C-SVC and Nu-SVC when no absences have been provided).", // Overview
+    "Number of pseudo-absences to be generated (only for C-SVC and Nu-SVC when no absences have been provided.", // Description.
+    1,         // Not zero if the parameter has lower limit.
+    1,         // Parameter's lower limit.
+    0,         // Not zero if the parameter has upper limit.
+    0,         // Parameter's upper limit.
+    "500"      // Parameter's typical (default) value.
+  },
 };
 
 /************************************/
@@ -171,13 +186,13 @@ static AlgMetadata metadata = {
 
   "SVM", 	                   // Id.
   "SVM (Support Vector Machines)", // Name.
-  "0.1",       	                   // Version.
+  "0.2",       	                   // Version.
 
   // Overview
   "Support vector machines (SVMs) are a set of related supervised learning methods that belong to a family of generalized linear classifiers. They can also be considered a special case of Tikhonov regularization. A special property of SVMs is that they simultaneously minimize the empirical classification error and maximize the geometric margin; hence they are also known as maximum margin classifiers. Content retrieved from Wikipedia on the 13th of June, 2007: http://en.wikipedia.org/w/index.php?title=Support_vector_machine&oldid=136646498.",
 
   // Description.
-  "Support vector machines map input vectors to a higher dimensional space where a maximal separating hyperplane is constructed. Two parallel hyperplanes are constructed on each side of the hyperplane that separates the data. The separating hyperplane is the hyperplane that maximises the distance between the two parallel hyperplanes. An assumption is made that the larger the margin or distance between these parallel hyperplanes the better the generalisation error of the classifier will be. The model produced by support vector classification only depends on a subset of the training data, because the cost function for building the model does not care about training points that lie beyond the margin. Content retrieved from Wikipedia on the 13th of June, 2007: http://en.wikipedia.org/w/index.php?title=Support_vector_machine&oldid=136646498. The openModeller implementation of SVMs makes use of the libsvm library version 2.85: Chih-Chung Chang and Chih-Jen Lin, LIBSVM: a library for support vector machines, 2001. Software available at http://www.csie.ntu.edu.tw/~cjlin/libsvm.",
+  "Support vector machines map input vectors to a higher dimensional space where a maximal separating hyperplane is constructed. Two parallel hyperplanes are constructed on each side of the hyperplane that separates the data. The separating hyperplane is the hyperplane that maximises the distance between the two parallel hyperplanes. An assumption is made that the larger the margin or distance between these parallel hyperplanes the better the generalisation error of the classifier will be. The model produced by support vector classification only depends on a subset of the training data, because the cost function for building the model does not care about training points that lie beyond the margin. Content retrieved from Wikipedia on the 13th of June, 2007: http://en.wikipedia.org/w/index.php?title=Support_vector_machine&oldid=136646498. The openModeller implementation of SVMs makes use of the libsvm library version 2.85: Chih-Chung Chang and Chih-Jen Lin, LIBSVM: a library for support vector machines, 2001. Software available at http://www.csie.ntu.edu.tw/~cjlin/libsvm.\n\nRelease history:\n version 0.1: initial release\n version 0.2: New parameter to specify the number of pseudo-absences to be generated; upgraded to libsvm 2.85; fixed memory leaks",
 
   "Vladimir N. Vapnik", // Algorithm author.
   "1) Vapnik, V. (1995) The Nature of Statistical Learning Theory. SpringerVerlag. 2) Schölkopf, B., Smola, A., Williamson, R. and Bartlett, P.L.(2000). New support vector algorithms. Neural Computation, 12, 1207-1245. 3) Schölkopf, B., Platt, J.C., Shawe-Taylor, J., Smola A.J. and Williamson, R.C. (2001). Estimating the support of a high-dimensional distribution. Neural Computation, 13, 1443-1471. 4) Cristianini, N. & Shawe-Taylor, J. (2000). An Introduction to Support Vector Machines and other kernel-based learning methods. Cambridge University Press.", // Bibliography.
@@ -251,6 +266,8 @@ SvmAlgorithm::SvmAlgorithm() :
   _normalizerPtr = new MeanVarianceNormalizer();
 
   // Needs to be initialized (see destructor)
+  _svm_model = 0;
+
   _svm_problem.l = 0;
 }
 
@@ -268,6 +285,12 @@ SvmAlgorithm::~SvmAlgorithm()
   if ( _svm_problem.l > 0 ) {
 
     delete[] _svm_problem.y;
+
+    for ( int i = 0; i < _svm_problem.l; ++i ) {
+
+      delete _svm_problem.x[i];
+    }
+
     delete[] _svm_problem.x;
   }
 }
@@ -298,7 +321,7 @@ SvmAlgorithm::initialize()
   // SVM type
   if ( ! getParameter( SVMTYPE_ID, &_svm_parameter.svm_type ) ) {
 
-    Log::instance()->error( "Parameter '" SVMTYPE_ID "' not passed.\n" );
+    Log::instance()->error( SVM_LOG_PREFIX "Parameter '" SVMTYPE_ID "' not passed.\n" );
     return 0;
   }
 
@@ -307,14 +330,14 @@ SvmAlgorithm::initialize()
        _svm_parameter.svm_type != 1 && 
        _svm_parameter.svm_type != 2  ) {
 
-    Log::instance()->error( "Parameter '" SVMTYPE_ID "' not set properly. It must be 0, 1 or 2.\n" );
+    Log::instance()->error( SVM_LOG_PREFIX "Parameter '" SVMTYPE_ID "' not set properly. It must be 0, 1 or 2.\n" );
     return 0;
   }
 
   // Kernel type
   if ( ! getParameter( KERNELTYPE_ID, &_svm_parameter.kernel_type ) ) {
 
-    Log::instance()->error( "Parameter '" KERNELTYPE_ID "' not passed.\n" );
+    Log::instance()->error( SVM_LOG_PREFIX "Parameter '" KERNELTYPE_ID "' not passed.\n" );
     return 0;
   }
 
@@ -323,21 +346,21 @@ SvmAlgorithm::initialize()
        _svm_parameter.kernel_type != 1 && 
        _svm_parameter.kernel_type != 2  ) {
 
-    Log::instance()->error( "Parameter '" KERNELTYPE_ID "' not set properly. It must be 0, 1 or 2.\n" );
+    Log::instance()->error( SVM_LOG_PREFIX "Parameter '" KERNELTYPE_ID "' not set properly. It must be 0, 1 or 2.\n" );
     return 0;
   }
 
   // Degree
   if ( ! getParameter( DEGREE_ID, &_svm_parameter.degree ) ) {
 
-    Log::instance()->error( "Parameter '" DEGREE_ID "' not passed.\n" );
+    Log::instance()->error( SVM_LOG_PREFIX "Parameter '" DEGREE_ID "' not passed.\n" );
     return 0;
   }
 
   // Gamma
   if ( ! getParameter( GAMMA_ID, &_svm_parameter.gamma ) ) {
 
-    Log::instance()->error( "Parameter '" GAMMA_ID "' not passed.\n" );
+    Log::instance()->error( SVM_LOG_PREFIX "Parameter '" GAMMA_ID "' not passed.\n" );
     return 0;
   }
 
@@ -351,28 +374,28 @@ SvmAlgorithm::initialize()
   // Coef0
   if ( ! getParameter( COEF0_ID, &_svm_parameter.coef0 ) ) {
 
-    Log::instance()->error( "Parameter '" COEF0_ID "' not passed.\n" );
+    Log::instance()->error( SVM_LOG_PREFIX "Parameter '" COEF0_ID "' not passed.\n" );
     return 0;
   }
 
   // C
   if ( ! getParameter( C_ID, &_svm_parameter.C ) ) {
 
-    Log::instance()->error( "Parameter '" C_ID "' not passed.\n" );
+    Log::instance()->error( SVM_LOG_PREFIX "Parameter '" C_ID "' not passed.\n" );
     return 0;
   }
 
   // Nu
   if ( ! getParameter( NU_ID, &_svm_parameter.nu ) ) {
 
-    Log::instance()->error( "Parameter '" NU_ID "' not passed.\n" );
+    Log::instance()->error( SVM_LOG_PREFIX "Parameter '" NU_ID "' not passed.\n" );
     return 0;
   }
 
   // Probabilistic output
   if ( ! getParameter( PROB_ID, &_svm_parameter.probability ) ) {
 
-    Log::instance()->error( "Parameter '" PROB_ID "' not passed.\n" );
+    Log::instance()->error( SVM_LOG_PREFIX "Parameter '" PROB_ID "' not passed.\n" );
     return 0;
   }
 
@@ -380,13 +403,14 @@ SvmAlgorithm::initialize()
   if ( _svm_parameter.probability != 0 && 
        _svm_parameter.probability != 1 ) {
 
-    Log::instance()->error( "Parameter '" PROB_ID "' not set properly. It must be 0 or 1.\n" );
+    Log::instance()->error( SVM_LOG_PREFIX "Parameter '" PROB_ID "' not set properly. It must be 0 or 1.\n" );
     return 0;
   }
 
-  // Probablity estimates are not available for one-class SVM
+  // Probability estimates are not available for one-class SVM
   if ( _svm_parameter.svm_type == 2  ) {
 
+    Log::instance()->warn( SVM_LOG_PREFIX "Probability estimates are not available for one-class SVM. Ignoring parameter.\n" );
     _svm_parameter.probability = 0;
   }
 
@@ -407,7 +431,7 @@ SvmAlgorithm::initialize()
 
   if ( num_presences == 0 ) {
 
-    Log::instance()->warn( "SvmAlgorithm: No presence points inside the mask!\n" );
+    Log::instance()->warn( SVM_LOG_PREFIX "No presence points inside the mask!\n" );
     return 0;
   }
 
@@ -418,10 +442,20 @@ SvmAlgorithm::initialize()
   // All types of SVM will need absences, except one-class SVM
   if ( num_absences == 0 && _svm_parameter.svm_type != 2 ) {
 
-    Log::instance()->warn( "SvmAlgorithm: No absence points inside the mask.\n" );
+    Log::instance()->warn( SVM_LOG_PREFIX "No absence points inside the mask.\n" );
 
     // Pseudo-absences will be generated later
-    num_absences = num_presences;
+    if ( ! getParameter( PSEUDO_ID, &num_absences ) ) {
+
+      Log::instance()->warn( SVM_LOG_PREFIX "Number of pseudo absences unspecified. Default will be 500.\n" );
+
+      num_absences = 500;
+    }
+    else if ( num_absences <= 0 ) {
+
+      Log::instance()->warn( SVM_LOG_PREFIX "Number of pseudo absences must be greater than zero.\n" );
+      return 0;
+    }
 
     generate_pseudo_absences = true;
   }
@@ -456,7 +490,7 @@ SvmAlgorithm::initialize()
 
     if ( generate_pseudo_absences ) {
 
-      Log::instance()->info( "SvmAlgorithm: Generating pseudo-absences.\n" );
+      Log::instance()->info( SVM_LOG_PREFIX "Generating pseudo-absences.\n" );
 
       absences = new OccurrencesImpl( presences->name(), presences->coordSystem() );
 
@@ -556,7 +590,7 @@ SvmAlgorithm::iterate()
 
   if ( _svm_parameter.probability == 1 && svm_check_probability_model( _svm_model ) == 0 ){
 
-    Log::instance()->error( "SvmAlgorithm: Generated model cannot return probability estimates.\n" );
+    Log::instance()->error( SVM_LOG_PREFIX "Generated model cannot return probability estimates.\n" );
     return 0;
   }
 
