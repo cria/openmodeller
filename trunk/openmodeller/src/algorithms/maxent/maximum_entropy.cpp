@@ -200,7 +200,7 @@ MaximumEntropy::add_samples(ME_Model & model)
     ME_Sample s("0");
 
     for (int i = 0; i < num_layers; ++i)
-      s.add_feature("0", point[i]);
+      s.add_feature("i", point[i]);
 
     //Debug
     //cout << "Absence point " << j << " " << point << endl;
@@ -223,7 +223,7 @@ MaximumEntropy::add_samples(ME_Model & model)
     ME_Sample s("1");    
     
     for (int i = 0; i < num_layers; ++i)
-      s.add_feature("1", point[0]);
+      s.add_feature("i", point[i]);
 
     //Debug
     //cout << "Presence point " << j << " " << point << endl;
