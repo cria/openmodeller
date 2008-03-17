@@ -358,7 +358,7 @@ ME_Model::add_training_sample(const ME_Sample & mes)
   //    cout << *j << " ";
   //  }
   //  cout << endl;
-  
+
   _vs.push_back(s);
 }
 
