@@ -151,7 +151,7 @@ int
 MaximumEntropy::iterate()
 {
   
-  add_samples(model);
+  add_samples();
 
   Log::instance()->info("Added samples.\n");
 
@@ -182,7 +182,7 @@ MaximumEntropy::done() const
 /*** Train the Model ***/
 
 void 
-MaximumEntropy::add_samples(ME_Model & model)
+MaximumEntropy::add_samples()
 {
   // Number of layers.
   num_layers = _samp->numIndependent();
