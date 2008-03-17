@@ -244,8 +244,17 @@ MaximumEntropy::add_samples()
 Scalar
 MaximumEntropy::getValue(const Sample& x) const
 {
-  //vector<double> vp = model.classify(x);
-  return 1.0;
+  ME_Sample s;    
+
+  for (int i = 0; i < num_layers; ++i){
+    stringstream out;
+    out << i;
+    s.add_feature(out.str(), x[i]);
+  }
+
+  model.classify(s);
+
+  return (s.label == "1") ? 1.0 : 0.0;
 }
 
 /***********************/
