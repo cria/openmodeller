@@ -49,7 +49,7 @@ public:
   int iterate();
   int done() const;
 
-  void add_samples(ME_Model & model);
+  void add_samples();
 
   Scalar getValue( const Sample& x ) const;
 
