@@ -228,7 +228,7 @@ ME_Model::make_feature_bag(const int cutoff)
       const ME_Feature feature(i->label, j->first);
       //      if (cutoff > 0 && count[feature.body()] < cutoff) continue;
       if (cutoff > 0 && count[feature.body()] <= cutoff) continue;
-      //      int id = _fb.Put(feature);
+      _fb.Put(feature);
     }
   }
   count.clear();
