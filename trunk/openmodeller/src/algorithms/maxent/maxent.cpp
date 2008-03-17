@@ -433,7 +433,7 @@ ME_Model::train(const int cutoff,
   cerr << "preparing for estimation...";
   if (!_fb.Size()) {
     make_feature_bag(cutoff);
-    _vs.clear();
+    //_vs.clear();
   }
   cerr << "done" << endl;
   cerr << "number of samples = " << _vs.size() << endl;
