@@ -153,7 +153,11 @@ MaximumEntropy::iterate()
   
   add_samples(model);
 
+  Log::instance()->info("Added samples.\n");
+
   model.train();
+
+  Log::instance()->info("Trained model.\n");
 
   //Debug
   cout << "Saving the model... " << endl;
@@ -180,9 +184,6 @@ MaximumEntropy::done() const
 void 
 MaximumEntropy::add_samples(ME_Model & model)
 {
-  string st;
-  stringstream out;
-
   // Number of layers.
   num_layers = _samp->numIndependent();
 
@@ -204,9 +205,9 @@ MaximumEntropy::add_samples(ME_Model & model)
     ME_Sample s("0");
 
     for (int i = 0; i < num_layers; ++i){
+      stringstream out;
       out << i;
-      st = out.str();
-      s.add_feature(st, point[i]);
+      s.add_feature(out.str(), point[i]);
     }
     //Debug
     //cout << "Absence point " << j << " " << point << endl;
@@ -229,9 +230,9 @@ MaximumEntropy::add_samples(ME_Model & model)
     ME_Sample s("1");    
     
     for (int i = 0; i < num_layers; ++i){
+      stringstream out;
       out << i;
-      st = out.str();
-      s.add_feature(st, point[i]);
+      s.add_feature(out.str(), point[i]);
     }
     //Debug
     //cout << "Presence point " << j << " " << point << endl;
