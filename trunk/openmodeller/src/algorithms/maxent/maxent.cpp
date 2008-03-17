@@ -431,8 +431,10 @@ ME_Model::train(const int cutoff,
   if (widthfactor > 0)
     cerr << "widthfactor = " << widthfactor << endl;
   cerr << "preparing for estimation...";
-  //  int C = make_feature_bag(cutoff);
-  //  _vs.clear();
+  if (!_fb.Size()) {
+    make_feature_bag(cutoff);
+    _vs.clear();
+  }
   cerr << "done" << endl;
   cerr << "number of samples = " << _vs.size() << endl;
   cerr << "number of features = " << _fb.Size() << endl;
