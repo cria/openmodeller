@@ -132,11 +132,11 @@ MaximumEntropy::initialize()
     // Compute normalization with all points
     SamplerPtr mySamplerPtr = createSampler(_samp->getEnvironment(), presences, absences);
 
-      _normalizerPtr->computeNormalization(mySamplerPtr);
+    _normalizerPtr->computeNormalization(mySamplerPtr);
 
-      setNormalization(_samp);
+    setNormalization(_samp);
 
-      absences->normalize(_normalizerPtr);
+    absences->normalize(_normalizerPtr);
   }
   else{
     absences = _samp->getAbsences();
