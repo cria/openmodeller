@@ -17,6 +17,7 @@ SVN revision: ?
 	* "type" property of AlgParamMetadata changed from char * to a new enumeration called AlgParamDatatype. Values can be Integer, Real and String.
 	* Fixed bug in the environmental distance algorithm: probabilities were negative for points whose distance to the nearest point was beyond the maximum allowed distance. 
 	* New classes to perform jackknife and chi-square in the environmental layers.
+	* Updated TerraLib drivers for compatibility with TerraLib version 3.2.0.
 
 Release 0.5.2 (2007-10-24)
 --------------------------
