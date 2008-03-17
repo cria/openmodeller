@@ -153,3 +153,8 @@ Output file type = ByteHFA
 #Parameter = Coef0 0
 #Parameter = Nu 0.5
 #Parameter = ProbabilisticOutput 0
+
+########
+# Maximum Entropy
+#
+Algorithm = MaximumEntropy
