@@ -153,14 +153,7 @@ MaximumEntropy::iterate()
   
   add_samples();
 
-  Log::instance()->info("Added samples.\n");
-
   model.train();
-
-  Log::instance()->info("Trained model.\n");
-
-  //Debug
-  cout << "Saving the model... " << endl;
 
   //model.save_to_file("model"); //save the model into a file
   
