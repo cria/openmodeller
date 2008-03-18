@@ -156,7 +156,8 @@ ME_Model::conditional_probability(const Sample & s,
 {
   //  int num_classes = membp.size();
   double sum = 0;//, maxpow = 0;
-  int max_label = -1;
+  //int max_label = -1;
+  int max_label = 0;
   //  double maxp = 0;
 
   vector<double> powv(_num_classes, 0.0);
