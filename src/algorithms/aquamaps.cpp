@@ -303,9 +303,9 @@ AquaMaps::initialize()
   Log::instance()->info( "Reading %d-dimensional occurrence points.\n", dim );
 
   // Check the number of layers.
-  if ( dim != 7 ) {
+  if ( dim != 9 ) {
   
-    Log::instance()->error( "AquaMaps needs precisely 7 layers to work, and they should be in this order: maximum depth in meters, minimum depth in meters, mean annual sea ice concentration, mean annual distance to land in Kilometers, mean annual primary production (chlorophyll A), mean annual salinity in psu, mean annual sea surface temperature in Celsius.\n" ); 
+    Log::instance()->error( "AquaMaps needs precisely 9 layers to work, and they should be in this order: maximum depth in meters, minimum depth in meters, mean annual sea ice concentration, mean annual distance to land in Kilometers, mean annual primary production (chlorophyll A), mean annual sea bottom salinity in psu,, mean annual sea surface salinity in psu, mean annual sea bottom temperature in Celsius, mean annual sea surface temperature in Celsius.\n" ); 
     return 0;
   }
 
