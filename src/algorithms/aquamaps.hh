@@ -66,6 +66,8 @@
 /****************************************/
 /*********** Expert's values ************/
 
+const Scalar DEPTH_LIMIT = 200.0; // used to choose between surface or bottom layers (temp/sal)
+
 const Scalar MINIMUM_MAXDEPTH = 0.0;
 const Scalar MAXIMUM_MAXDEPTH = 9999.0;
 const Scalar MINIMUM_ENVELOPE_SIZE_FOR_MAXDEPTH = 0.0; // not used, just defined
@@ -75,40 +77,64 @@ const Scalar MAXIMUM_MINDEPTH = 9999.0;
 const Scalar MINIMUM_ENVELOPE_SIZE_FOR_MINDEPTH = 0.0; // not used, just defined
 
 const Scalar MINIMUM_ICE_CONCENTRATION = 0.0;
-const Scalar MAXIMUM_ICE_CONCENTRATION = 8000.0;
-const Scalar MINIMUM_ENVELOPE_SIZE_FOR_ICE_CONCENTRATION = 2.0;
+const Scalar MAXIMUM_ICE_CONCENTRATION = 1.5;
+const Scalar MINIMUM_ENVELOPE_SIZE_FOR_ICE_CONCENTRATION = 0.0; // not used, just defined
 
 const Scalar MINIMUM_DISTANCE_TO_LAND = 0.0;
 const Scalar MAXIMUM_DISTANCE_TO_LAND = 4200.0;
 const Scalar MINIMUM_ENVELOPE_SIZE_FOR_DISTANCE_TO_LAND = 2.0;
 
-const Scalar MINIMUM_PRIMARY_PRODUCTION = 2.5765575E-09;
-const Scalar MAXIMUM_PRIMARY_PRODUCTION = 3.9697;
-const Scalar MINIMUM_ENVELOPE_SIZE_FOR_PRIMARY_PRODUCTION = 0.2;
+const Scalar MINIMUM_PRIMARY_PRODUCTION = 0.0;
+const Scalar MAXIMUM_PRIMARY_PRODUCTION = 6000.0;
+const Scalar MINIMUM_ENVELOPE_SIZE_FOR_PRIMARY_PRODUCTION = 2.0;
 
-const Scalar MINIMUM_SALINITY = 3.56;
-const Scalar MAXIMUM_SALINITY = 40.2;
+const Scalar MINIMUM_SURFACE_SALINITY = 3.56;
+const Scalar MAXIMUM_SURFACE_SALINITY = 40.2;
+
+const Scalar MINIMUM_BOTTOM_SALINITY = 3.5;
+const Scalar MAXIMUM_BOTTOM_SALINITY = 40.9;
+
 const Scalar MINIMUM_ENVELOPE_SIZE_FOR_SALINITY = 1.0;
 
 const Scalar MINIMUM_SURFACE_TEMPERATURE = -2.0;
 const Scalar MAXIMUM_SURFACE_TEMPERATURE = 30.0;
-const Scalar MINIMUM_ENVELOPE_SIZE_FOR_SURFACE_TEMPERATURE = 1.0;
 
-const Scalar LOWER_LIMIT [7] = { MINIMUM_MAXDEPTH,
-                                 MINIMUM_MINDEPTH,
-                                 MINIMUM_ICE_CONCENTRATION,
-                                 MINIMUM_DISTANCE_TO_LAND,
-                                 MINIMUM_PRIMARY_PRODUCTION,
-                                 MINIMUM_SALINITY,
-                                 MINIMUM_SURFACE_TEMPERATURE };
+const Scalar MINIMUM_BOTTOM_TEMPERATURE = -2.0;
+const Scalar MAXIMUM_BOTTOM_TEMPERATURE = 30.0;
 
-const Scalar UPPER_LIMIT [7] = { MAXIMUM_MAXDEPTH,
-                                 MAXIMUM_MINDEPTH,
-                                 MAXIMUM_ICE_CONCENTRATION,
-                                 MAXIMUM_DISTANCE_TO_LAND,
-                                 MAXIMUM_PRIMARY_PRODUCTION,
-                                 MAXIMUM_SALINITY,
-                                 MAXIMUM_SURFACE_TEMPERATURE };
+const Scalar MINIMUM_ENVELOPE_SIZE_FOR_TEMPERATURE = 1.0;
+
+const Scalar SURFACE_LOWER_LIMIT [7] = { MINIMUM_MAXDEPTH,
+                                         MINIMUM_MINDEPTH,
+                                         MINIMUM_ICE_CONCENTRATION,
+                                         MINIMUM_DISTANCE_TO_LAND,
+                                         MINIMUM_PRIMARY_PRODUCTION,
+                                         MINIMUM_SURFACE_SALINITY,
+                                         MINIMUM_SURFACE_TEMPERATURE };
+
+const Scalar BOTTOM_LOWER_LIMIT [7] = { MINIMUM_MAXDEPTH,
+                                        MINIMUM_MINDEPTH,
+                                        MINIMUM_ICE_CONCENTRATION,
+                                        MINIMUM_DISTANCE_TO_LAND,
+                                        MINIMUM_PRIMARY_PRODUCTION,
+                                        MINIMUM_BOTTOM_SALINITY,
+                                        MINIMUM_BOTTOM_TEMPERATURE };
+
+const Scalar SURFACE_UPPER_LIMIT [7] = { MAXIMUM_MAXDEPTH,
+                                         MAXIMUM_MINDEPTH,
+                                         MAXIMUM_ICE_CONCENTRATION,
+                                         MAXIMUM_DISTANCE_TO_LAND,
+                                         MAXIMUM_PRIMARY_PRODUCTION,
+                                         MAXIMUM_SURFACE_SALINITY,
+                                         MAXIMUM_SURFACE_TEMPERATURE };
+
+const Scalar BOTTOM_UPPER_LIMIT [7] = { MAXIMUM_MAXDEPTH,
+                                        MAXIMUM_MINDEPTH,
+                                        MAXIMUM_ICE_CONCENTRATION,
+                                        MAXIMUM_DISTANCE_TO_LAND,
+                                        MAXIMUM_PRIMARY_PRODUCTION,
+                                        MAXIMUM_BOTTOM_SALINITY,
+                                        MAXIMUM_BOTTOM_TEMPERATURE };
 
 const Scalar INNER_SIZE [7] = { MINIMUM_ENVELOPE_SIZE_FOR_MAXDEPTH,
                                 MINIMUM_ENVELOPE_SIZE_FOR_MINDEPTH,
@@ -116,7 +142,7 @@ const Scalar INNER_SIZE [7] = { MINIMUM_ENVELOPE_SIZE_FOR_MAXDEPTH,
                                 MINIMUM_ENVELOPE_SIZE_FOR_DISTANCE_TO_LAND,
                                 MINIMUM_ENVELOPE_SIZE_FOR_PRIMARY_PRODUCTION,
                                 MINIMUM_ENVELOPE_SIZE_FOR_SALINITY,
-                                MINIMUM_ENVELOPE_SIZE_FOR_SURFACE_TEMPERATURE };
+                                MINIMUM_ENVELOPE_SIZE_FOR_TEMPERATURE };
 
 // Variable position in sample or arrays
 
@@ -215,6 +241,11 @@ private:
    *  Note: pelagic means "belonging to the upper layers of the open sea" (poetic, huh?).
    */
   int _pelagic;
+
+  /** Indicates if surface layers should be used for temperature and salinity (-1 means that
+   *  aquamaps should try to find out by using depth ranges specified in its internal database).
+   */
+  int _use_surface_layers;
 };
 
 
