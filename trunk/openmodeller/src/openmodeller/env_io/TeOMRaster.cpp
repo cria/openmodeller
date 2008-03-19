@@ -409,7 +409,57 @@ TeOMRaster::getMinMax( Scalar *min, Scalar *max )
 int
 TeOMRaster::deleteRaster()
 {
-	// To be implemented
+	db_ = TeDatabaseManager::instance().create( *te_url_parser_ );
+    
+	if ( !db_->isConnected() )
+	{
+		//delete db_;
+		std::string msg = "TeOMRaster::openTeRaster - Cannot connect to database: ";
+                    msg += db_->errorMessage().c_str();
+		Log::instance()->error( msg.c_str() );
+		throw RasterException( msg );
+		return 0;
+	}
+	else
+	{
+		if ( db_->layerExist( layer_->name() ) )
+		{
+			db_->deleteLayer( layer_->id() );
+		}
 
-	return 0;
+		if( raster_ )
+		{
+			delete raster_;
+		}
+
+		if( params_ )
+		{
+			delete params_;
+		}
+
+		if( te_url_parser_ )
+		{
+			delete te_url_parser_;
+		}
+
+		return 1;
+	}
+
+	// If raster is a file disk.
+	if( raster_ )
+	{
+		delete raster_;
+	}
+
+	if( params_ )
+	{
+		delete params_;
+	}
+
+	if( te_url_parser_ )
+	{
+		delete te_url_parser_;
+	}
+
+	return 1;
 }
