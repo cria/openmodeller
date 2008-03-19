@@ -62,7 +62,7 @@ public:
 	/**
 	* RasterFactory need a empty constructor.
 	*/
-	TeOMRaster(): db_(), raster_(),	layer_() {};
+	TeOMRaster(): db_(0), raster_(0),	layer_(0), params_(0), te_url_parser_(0) {};
 
 	//! Open an existing raster file or a raster in a TerraLib database (read only).
 	/** 
