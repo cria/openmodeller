@@ -435,7 +435,7 @@ AquaMaps::calculateEnvelopes( const OccurrencesPtr& occs )
   // Try to get expert information about depth range from database
   readDepthData( occs->name() );
 
-  if ( _use_surface_layers == 0 || ( _use_surface_layers == -1 && _minimum[MINDEPTH] <= 200.0 ) ) {
+  if ( _use_surface_layers == 0 || ( _use_surface_layers == -1 && _minimum[MINDEPTH] <= DEPTH_LIMIT ) ) {
 
     Log::instance()->info("Using bottom layers.\n");
 
