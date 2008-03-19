@@ -46,11 +46,12 @@ using namespace std;
 /****************************************************************/
 /********************** Algorithm's Metadata ********************/
 
-#define NUM_PARAM 6
+#define NUM_PARAM 7
 
 /*************************************/
 /*** Algorithm parameters metadata ***/
 
+#define PARAM_USE_SURFACE_LAYERS     "UseSurfaceLayers"
 #define PARAM_USE_DEPTH_RANGE        "UseDepthRange"
 #define PARAM_USE_ICE_CONCENTRATION  "UseIceConcentration"
 #define PARAM_USE_DISTANCE_TO_LAND   "UseDistanceToLand"
@@ -59,6 +60,18 @@ using namespace std;
 #define PARAM_USE_TEMPERATURE        "UseTemperature"
 
 static AlgParamMetadata parameters[NUM_PARAM] = { // Parameters
+   {
+      PARAM_USE_SURFACE_LAYERS,       // Id
+      "Use surface layers (only for temperature and salinity)", // Name
+      Integer,                      // Type
+      "Use surface layers (1=yes, 0=no, -1=let the algorithm decide)", // Overview
+      "Use surface layers (1=yes, 0=no, -1=let the algorithm decide). By default (-1), aquamaps will try to find the species' depth range in its internal database. If the minimum depth is equals or less than 200m, then aquamaps will use sea surface layers for temperature and salinity. Otherwise it will use bottom layers. This parameter can be used to force aquamaps to use surface or bottom layers.", // Description
+      1,    // Not zero if the parameter has lower limit
+      -1,   // Parameter's lower limit
+      1,    // Not zero if the parameter has upper limit
+      1,    // Parameter's upper limit
+      "-1"  // Parameter's typical (default) value
+   },
    {
       PARAM_USE_DEPTH_RANGE,        // Id
       "Use depth range",            // Name
@@ -220,8 +233,8 @@ AquaMaps::AquaMaps() :
   AlgorithmImpl( &metadata ),
   _done( false ),
   _use_layer( NULL ),
-  _lower_limit( 7, LOWER_LIMIT ),
-  _upper_limit( 7, UPPER_LIMIT ),
+  _lower_limit( 7, SURFACE_LOWER_LIMIT ),
+  _upper_limit( 7, SURFACE_UPPER_LIMIT ),
   _inner_size( 7, INNER_SIZE ),
   _minimum(),
   _maximum(),
@@ -308,12 +321,6 @@ AquaMaps::initialize()
     return 0;
   }
 
-  Log::instance()->info( "Using %d points to find AquaMaps envelopes.\n", npnt );
-
-  calculateEnvelopes( _samp->getPresences() );
-
-  _done = true;
-
   return 1;
 }
 
@@ -323,6 +330,12 @@ AquaMaps::initialize()
 int
 AquaMaps::iterate()
 {
+  Log::instance()->info( "Using %d points to find AquaMaps envelopes.\n", _samp->numPresence() );
+
+  calculateEnvelopes( _samp->getPresences() );
+
+  _done = true;
+
   return 1;
 }
 
@@ -374,7 +387,6 @@ AquaMaps::getAndCheckParameter( std::string const &name, int * value )
 void
 AquaMaps::calculateEnvelopes( const OccurrencesPtr& occs )
 {
-
   Log::instance()->debug("Species is: %s\n", occs->name());
   Log::instance()->debug("Layers are:\n");
   Log::instance()->debug("0 = Maximum depth\n");
@@ -383,7 +395,7 @@ AquaMaps::calculateEnvelopes( const OccurrencesPtr& occs )
   Log::instance()->debug("3 = Distance to land\n");
   Log::instance()->debug("4 = Primary production (chlorophyll A)\n");
   Log::instance()->debug("5 = Salinity\n");
-  Log::instance()->debug("6 = Surface temperature\n");
+  Log::instance()->debug("6 = Temperature\n");
 
   // Compute min, pref_min, pref_max and max
   OccurrencesImpl::const_iterator oc = occs->begin();
@@ -397,6 +409,7 @@ AquaMaps::calculateEnvelopes( const OccurrencesPtr& occs )
   _pref_minimum = sample;
   _pref_maximum = sample;
   _maximum = sample;
+  Sample mean = sample;
   ++oc;
 
   // Load default min/max
@@ -408,15 +421,34 @@ AquaMaps::calculateEnvelopes( const OccurrencesPtr& occs )
     _minimum &= sample;
     _maximum |= sample;
 
+    mean += sample;
+
     ++oc;
   }
 
+  mean /= occs->numOccurrences();
+
   // Default values for depth ranges
-  _minimum[MAXDEPTH] = _minimum[MINDEPTH] = _pref_minimum[MAXDEPTH] = _pref_minimum[MINDEPTH] = 0;
-  _maximum[MAXDEPTH] = _maximum[MINDEPTH] = _pref_maximum[MAXDEPTH] = _pref_maximum[MINDEPTH] = 9999;
+  _minimum[MAXDEPTH] = _minimum[MINDEPTH] = _pref_minimum[MAXDEPTH] = _pref_minimum[MINDEPTH] = 0.0;
+  _maximum[MAXDEPTH] = _maximum[MINDEPTH] = _pref_maximum[MAXDEPTH] = _pref_maximum[MINDEPTH] = 9999.0;
 
   // Try to get expert information about depth range from database
   readDepthData( occs->name() );
+
+  if ( _use_surface_layers == 0 || ( _use_surface_layers == -1 && _minimum[MINDEPTH] <= 200.0 ) ) {
+
+    Log::instance()->info("Using bottom layers.\n");
+
+    for ( int i = 0; i < 7; ++i ) {
+
+      _lower_limit[i] = BOTTOM_LOWER_LIMIT[i];
+      _upper_limit[i] = BOTTOM_UPPER_LIMIT[i];
+    }
+  }
+  else {
+
+    Log::instance()->info("Using surface layers.\n");
+  }
 
   // Get matrix data structure so that we can sort values for each layer
   std::vector<ScalarVector> matrix = occs->getEnvironmentMatrix();
@@ -437,7 +469,7 @@ AquaMaps::calculateEnvelopes( const OccurrencesPtr& occs )
     // 3 = Distance to land
     // 4 = Primary production (chlorophyll A)
     // 5 = Salinity
-    // 6 = Surface temperature
+    // 6 = Temperature
 
     lStart = matrix[j].begin();
     lEnd = matrix[j].end();
@@ -489,10 +521,17 @@ AquaMaps::calculateEnvelopes( const OccurrencesPtr& occs )
 
     // Make the interquartile adjusting and ensure the envelope sizes
     // for all variables except ice concentration
-    if ( j > 1 ) {
+    if ( j > 2 ) {
 
       adjustInterquartile( j, adjmin, adjmax );
       ensureEnvelopeSize( j );
+    }
+    else {
+
+      if ( _minimum[j] == 0.0) {
+
+        _minimum[j] = mean[j] - 1.0; // black magic copied from original vb code
+      }
     }
 
     Log::instance()->debug("_After adjustments_\n");
@@ -708,9 +747,13 @@ AquaMaps::getValue( const Sample& x ) const
   // individual probabilities
   Scalar prob = 1.0;
 
+  int numVariablesUsed = 0;
+
   // Depth probability
 
   if ( _use_layer[MAXDEPTH] ) {
+
+    ++numVariablesUsed;
 
     if ( _maximum[MAXDEPTH] != 9999 ) {  // If there is a depth range
 
@@ -780,6 +823,8 @@ AquaMaps::getValue( const Sample& x ) const
       continue;
     }
 
+    ++numVariablesUsed;
+
     // Probability zero for points outside the envelope
     if ( x[i] < _minimum[i] || x[i] > _maximum[i] ) {
 
@@ -804,7 +849,7 @@ AquaMaps::getValue( const Sample& x ) const
   }
 
   // There used to be an option to use the geometric mean
-  //return pow( prob, (Scalar)1/numLayers );
+  //return pow( prob, (Scalar)1/numVariablesUsed );
 
   // Return probability product
   return prob;
