@@ -30,6 +30,9 @@
 
 #include <openmodeller/om.hh>
 
+#include <string.h>
+#include <sqlite3.h>
+
 /********************************************************/
 /*********************** AquaMaps ***********************/
 
@@ -45,22 +48,33 @@
  * To export data to the SQLite database it is necessary to create a query in the Access
  * database using this SQL statement:
  * 
- * SELECT s.genus + ' ' + s.species AS name, 
- *        h.depthmin, h.depthprefmin, h.depthprefmax, h.depthmax, h.pelagic
- * FROM hspen AS h, speciesoccursum AS s
- * WHERE h.speciesid=s.speciesid And h.depthmin Is Not Null;
+ * SELECT HSPEN.SpeciesID, SpeciesOccursum.genus+' '+SpeciesOccursum.species AS name, hspen.pelagic, Speciesaddinfo.Provider, hspen.depthmin, hspen.depthprefmin, hspen.depthprefmax, hspen.depthmax, IIF(hspen.sstmin Is Null,hspen.sbtmin,hspen.sstmin) AS sstmin, IIF(hspen.sstmax Is Null,hspen.sbtmax,hspen.sstmax) AS sstmax, IIF(hspen.sstprefmin Is Null,hspen.sbtprefmin,hspen.sstprefmin) AS sstprefmin, IIF(hspen.sstprefmax Is Null,hspen.sbtprefmax,hspen.sstprefmax) AS sstprefmax, IIF(hspen.salinitymin Is Null,hspen.salinitybmin,hspen.salinitymin) AS salinitymin, IIF(hspen.salinitymax Is Null,hspen.salinitybmax,hspen.salinitymax) AS salinitymax, IIF(hspen.salinityprefmin Is Null,hspen.salinitybprefmin,hspen.salinityprefmin) AS salinityprefmin, IIF(hspen.salinityprefmax Is Null,hspen.salinitybprefmax,hspen.salinityprefmax) AS salinityprefmax, hspen.primprodmin, hspen.primprodmax, hspen.primprodprefmin, hspen.primprodprefmax,  hspen.iceconmin, hspen.iceconmax, hspen.iceconprefmin, hspen.iceconprefmax, hspen.landdistmin, hspen.landdistmax, hspen.landdistprefmin, hspen.landdistprefmax
+FROM (hspen INNER JOIN SpeciesOccursum ON HSPEN.SpeciesID=SpeciesOccursum.SPECIESID) LEFT JOIN Speciesaddinfo ON HSPEN.SpeciesID=Speciesaddinfo.SpeciesID
+WHERE hspen.depthmin Is Not Null
+And Speciesaddinfo.Provider = "MM"
+UNION SELECT HSPEN.SpeciesID, SpeciesOccursum.genus+' '+SpeciesOccursum.species AS name, hspen.pelagic, Speciesaddinfo.Provider, hspen.depthmin, hspen.depthprefmin, hspen.depthprefmax, hspen.depthmax, Null AS sstmin, Null AS sstmax, Null AS sstprefmin, Null AS sstprefmax, Null AS salinitymin, Null AS salinitymax, Null AS salinityprefmin, Null AS salinityprefmax, Null AS primprodmin,  Null AS primprodmax, Null AS primprodprefmin,  Null AS primprodprefmax,  Null AS iceconmin,  Null AS iceconmax,  Null AS iceconprefmin,  Null AS iceconprefmax,  Null AS landdistmin,  Null AS landdistmax,  Null AS landdistprefmin,  Null AS landdistprefmax
+FROM (hspen INNER JOIN SpeciesOccursum ON HSPEN.SpeciesID=SpeciesOccursum.SPECIESID) LEFT JOIN Speciesaddinfo ON HSPEN.SpeciesID=Speciesaddinfo.SpeciesID
+WHERE hspen.depthmin Is Not Null
+And Speciesaddinfo.Provider <> "MM";
  *
- * The result of this query must be exported to a csv file without header and separated by TABs.
+ * The result of this query must be exported to a csv file in US-ASCII, without header, 
+ * separated by TABs, without text qualifier and using "." as the decimal separator.
  *
  * To create and import data to a SQLite database, use:
  *
  * sqlite3 aquamaps.db
- * sqlite> CREATE TABLE spinfo (species TEXT, min REAL, prefmin REAL, prefmax REAL, max REAL, pelagic INTEGER);
+ * sqlite> CREATE TABLE spinfo (id TEXT, species TEXT, pelagic INTEGER, provider TEXT, depthmin REAL, depthprefmin REAL, depthprefmax REAL, depthmax REAL, tempmin REAL, tempmax REAL, tempprefmin REAL, tempprefmax REAL, salinitymin REAL, salinitymax REAL, salinityprefmin REAL, salinityprefmax REAL, primprodmin REAL, primprodmax REAL, primprodprefmin REAL, primprodprefmax REAL, iceconmin REAL, iceconmax REAL, iceconprefmin REAL, iceconprefmax REAL, landdistmin REAL, landdistmax REAL, landdistprefmin REAL, landdistprefmax REAL);
  * sqlite> .separator \t
  * sqlite> .import location_of_csv_file spinfo
  * sqlite> CREATE INDEX idx_species ON spinfo(species);
  * sqlite> .q
  * 
+ *
+ * In case you are wondering why this algorithm requires all 9 layers to be specified
+ * (instead of letting the user specify a smaller set only with bottom layers or 
+ * surface layers) the reason is that users may not know whether to choose bottom or
+ * surface layers. In this case, if the species has depth ranges in the local database,
+ * then the algorithm will be able to decide what subset of layers to use.
  */
 
 /****************************************/
@@ -144,6 +158,14 @@ const Scalar INNER_SIZE [7] = { MINIMUM_ENVELOPE_SIZE_FOR_MAXDEPTH,
                                 MINIMUM_ENVELOPE_SIZE_FOR_SALINITY,
                                 MINIMUM_ENVELOPE_SIZE_FOR_TEMPERATURE };
 
+const std::string NAME [7] = { "maximum depth",
+                               "minimum depth",
+                               "ice concentration",
+                               "distance to land",
+                               "primary production",
+                               "salinity",
+                               "temperature" };
+
 // Variable position in sample or arrays
 
 const int MAXDEPTH = 0;
@@ -170,6 +192,7 @@ public:
   int initialize();
   int iterate();
   int getConvergence( Scalar *val );
+  float getProgress();
   int done() const;
   Scalar getValue( const Sample& x ) const;
 
@@ -190,28 +213,28 @@ private:
    *  @return Zero if the parameter does not exists or the
    *   parameters were not set yet.
    **/
-  int getAndCheckParameter( std::string const &name, int * value );
+  int _getAndCheckParameter( std::string const &name, int * value );
 
   /** Calculate the envelopes */
-  void calculateEnvelopes( const OccurrencesPtr& );
+  void _calculateEnvelopes( const OccurrencesPtr& );
 
   /** Calculate a percentile */
-  void percentile( Scalar *result, int n, double percent, std::vector<ScalarVector> *matrix, int layerIndex );
+  void _percentile( Scalar *result, int n, double percent, std::vector<ScalarVector> *matrix, int layerIndex );
 
-  /** Read depth data from expert database */
-  void readDepthData( const char *species );
+  /** Read species data from expert database */
+  void _readSpeciesData( const char *species );
+
+  /** Fetch expert range data for a specific variable */
+  bool _hasExpertRange( sqlite3_stmt * stmt, int varIndex );
 
   /** Make the interquartile adjusting */
-  void adjustInterquartile( int layerIndex, Scalar adjmin, Scalar adjmax );
+  void _adjustInterquartile( int layerIndex, Scalar adjmin, Scalar adjmax );
 
   /** Ensure that the envelope has a minimum size */
-  void ensureEnvelopeSize( int layerIndex );
+  void _ensureEnvelopeSize( int layerIndex );
 
   /** Log the bioclimatic envelopes information. */
-  void logEnvelope();
-
-  /** Indicates if the algorithm is finished. */
-  bool _done;
+  void _logEnvelope();
 
   /** Indicates if the respective layer should be used or not when calculating probabilities */
   int * _use_layer;
@@ -246,6 +269,12 @@ private:
    *  aquamaps should try to find out by using depth ranges specified in its internal database).
    */
   int _use_surface_layers;
+
+  /** Indicates if the variable has an expert range in the local database. */
+  bool * _has_expert_range;
+
+  /** Indication of progress during model creation. */
+  float _progress;
 };
 
 

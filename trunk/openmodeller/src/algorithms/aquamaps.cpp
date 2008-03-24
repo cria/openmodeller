@@ -231,7 +231,6 @@ algorithmMetadata()
 
 AquaMaps::AquaMaps() :
   AlgorithmImpl( &metadata ),
-  _done( false ),
   _use_layer( NULL ),
   _lower_limit( 7, SURFACE_LOWER_LIMIT ),
   _upper_limit( 7, SURFACE_UPPER_LIMIT ),
@@ -240,15 +239,27 @@ AquaMaps::AquaMaps() :
   _maximum(),
   _pref_minimum(),
   _pref_maximum(),
-  _pelagic(-1)
-{ }
+  _pelagic(-1),
+  _use_surface_layers(-1),
+  _has_expert_range( NULL ),
+  _progress( 0.0 )
+{
+}
 
 /******************/
 /*** destructor ***/
 
 AquaMaps::~AquaMaps()
 {
-  delete _use_layer;
+  if ( _use_layer ) {
+
+    delete[] _use_layer;
+  }
+
+  if ( _has_expert_range ) {
+
+    delete[] _has_expert_range;
+  }
 }
 
 /******************/
@@ -256,10 +267,24 @@ AquaMaps::~AquaMaps()
 int
 AquaMaps::initialize()
 {
+  _has_expert_range = new bool[7];
+
+  // Initialize array
+  for ( int i = 0; i < 7; ++i ) {
+
+    _has_expert_range[i] = false;
+  }
+
+  // Parameter UseSurfaceLayers
+  if ( ! getParameter( PARAM_USE_SURFACE_LAYERS, &_use_surface_layers ) ) {
+
+    _use_surface_layers = -1;
+  }
+
   _use_layer = new int[7];
 
   // Parameter UseDepthRange
-  if ( ! getAndCheckParameter( PARAM_USE_DEPTH_RANGE, &_use_layer[MAXDEPTH] ) ) {
+  if ( ! _getAndCheckParameter( PARAM_USE_DEPTH_RANGE, &_use_layer[MAXDEPTH] ) ) {
 
     return 0;
   }
@@ -269,31 +294,31 @@ AquaMaps::initialize()
   }
 
   // Parameter UseIceConcentration
-  if ( ! getAndCheckParameter( PARAM_USE_ICE_CONCENTRATION, &_use_layer[ICE_CONCENTRATION] ) ) {
+  if ( ! _getAndCheckParameter( PARAM_USE_ICE_CONCENTRATION, &_use_layer[ICE_CONCENTRATION] ) ) {
 
     return 0;
   }
 
   // Parameter UseDistanceToLand
-  if ( ! getAndCheckParameter( PARAM_USE_DISTANCE_TO_LAND, &_use_layer[DISTANCE_TO_LAND] ) ) {
+  if ( ! _getAndCheckParameter( PARAM_USE_DISTANCE_TO_LAND, &_use_layer[DISTANCE_TO_LAND] ) ) {
 
     return 0;
   }
 
   // Parameter UsePrimaryProduction
-  if ( ! getAndCheckParameter( PARAM_USE_PRIMARY_PRODUCTION, &_use_layer[PRIMARY_PRODUCTION] ) ) {
+  if ( ! _getAndCheckParameter( PARAM_USE_PRIMARY_PRODUCTION, &_use_layer[PRIMARY_PRODUCTION] ) ) {
 
     return 0;
   }
 
   // Parameter UseSalinity
-  if ( ! getAndCheckParameter( PARAM_USE_SALINITY, &_use_layer[SALINITY] ) ) {
+  if ( ! _getAndCheckParameter( PARAM_USE_SALINITY, &_use_layer[SALINITY] ) ) {
 
     return 0;
   }
 
   // Parameter UseTemperature
-  if ( ! getAndCheckParameter( PARAM_USE_TEMPERATURE, &_use_layer[TEMPERATURE] ) ) {
+  if ( ! _getAndCheckParameter( PARAM_USE_TEMPERATURE, &_use_layer[TEMPERATURE] ) ) {
 
     return 0;
   }
@@ -332,9 +357,7 @@ AquaMaps::iterate()
 {
   Log::instance()->info( "Using %d points to find AquaMaps envelopes.\n", _samp->numPresence() );
 
-  calculateEnvelopes( _samp->getPresences() );
-
-  _done = true;
+  _calculateEnvelopes( _samp->getPresences() );
 
   return 1;
 }
@@ -350,20 +373,29 @@ AquaMaps::getConvergence( Scalar *val )
 }
 
 
+/********************/
+/*** get Progress ***/
+float
+AquaMaps::getProgress( )
+{
+  return _progress;
+}
+
+
 /************/
 /*** done ***/
 int
 AquaMaps::done() const
 {
   // This is not an iterative algorithm.
-  return _done;
+  return ( _progress > 0.99 ) ? 1 : 0;
 }
 
 
 /*******************************/
 /*** get and check parameter ***/
 int 
-AquaMaps::getAndCheckParameter( std::string const &name, int * value )
+AquaMaps::_getAndCheckParameter( std::string const &name, int * value )
 {
   // Parameter UseSalinity
   if ( ! getParameter( name, value ) ) {
@@ -385,7 +417,7 @@ AquaMaps::getAndCheckParameter( std::string const &name, int * value )
 /***************************/
 /*** calculate envelopes ***/
 void
-AquaMaps::calculateEnvelopes( const OccurrencesPtr& occs )
+AquaMaps::_calculateEnvelopes( const OccurrencesPtr& occs )
 {
   Log::instance()->debug("Species is: %s\n", occs->name());
   Log::instance()->debug("Layers are:\n");
@@ -394,9 +426,11 @@ AquaMaps::calculateEnvelopes( const OccurrencesPtr& occs )
   Log::instance()->debug("2 = Ice concentration\n");
   Log::instance()->debug("3 = Distance to land\n");
   Log::instance()->debug("4 = Primary production (chlorophyll A)\n");
-  Log::instance()->debug("5 = Salinity\n");
-  Log::instance()->debug("6 = Temperature\n");
-
+  Log::instance()->debug("5 = Salinity bottom\n");
+  Log::instance()->debug("6 = Salinity surface\n");
+  Log::instance()->debug("7 = Temperature bottom\n");
+  Log::instance()->debug("8 = Temperature surface\n");
+  
   // Compute min, pref_min, pref_max and max
   OccurrencesImpl::const_iterator oc = occs->begin();
   OccurrencesImpl::const_iterator ocEnd = occs->end();
@@ -428,14 +462,23 @@ AquaMaps::calculateEnvelopes( const OccurrencesPtr& occs )
 
   mean /= occs->numOccurrences();
 
+  int num_layers = _minimum.size();
+
+  _progress = 1/num_layers; // this is arbitrary
+
   // Default values for depth ranges
   _minimum[MAXDEPTH] = _minimum[MINDEPTH] = _pref_minimum[MAXDEPTH] = _pref_minimum[MINDEPTH] = 0.0;
   _maximum[MAXDEPTH] = _maximum[MINDEPTH] = _pref_maximum[MAXDEPTH] = _pref_maximum[MINDEPTH] = 9999.0;
 
   // Try to get expert information about depth range from database
-  readDepthData( occs->name() );
+  _readSpeciesData( occs->name() );
 
-  if ( _use_surface_layers == 0 || ( _use_surface_layers == -1 && _minimum[MINDEPTH] <= DEPTH_LIMIT ) ) {
+  if ( _use_surface_layers == -1 ) {
+
+    _use_surface_layers = ( _minimum[MINDEPTH] <= DEPTH_LIMIT ) ? 0 : 1;
+  }
+
+  if ( ! _use_surface_layers ) {
 
     Log::instance()->info("Using bottom layers.\n");
 
@@ -450,14 +493,57 @@ AquaMaps::calculateEnvelopes( const OccurrencesPtr& occs )
     Log::instance()->info("Using surface layers.\n");
   }
 
+  _progress = 2/num_layers; // this is arbitrary
+
   // Get matrix data structure so that we can sort values for each layer
   std::vector<ScalarVector> matrix = occs->getEnvironmentMatrix();
 
+  Scalar nodata = -1.0;
+  
   // For each layer (except min/max depth), calculate the percentiles and set 
   // default values for the prefered min/max
   ScalarVector::iterator lStart, lEnd;
 
-  for ( unsigned int j = 2; j < matrix.size(); j++ ) {
+  for ( unsigned int j = 2; j < num_layers; j++ ) {
+
+    if ( _use_surface_layers ) {
+
+      // Ignore bottom layers
+      if ( j == 5 || j == 7 ) {
+
+        _progress = (j+1)/num_layers;
+
+        _minimum[j] = _minimum[j] = _pref_minimum[j] = _pref_minimum[j] = nodata;
+      
+        continue;
+      }
+    }
+    else {
+
+      // Ignore surface layers
+      if ( j == 6 || j == 8 ) {
+
+        _progress = (j+1)/num_layers;
+
+        _minimum[j] = _minimum[j] = _pref_minimum[j] = _pref_minimum[j] = nodata;
+      
+        continue;
+      }
+    }
+
+    if ( ( j == 5 || j == 6 ) && _has_expert_range[SALINITY] ) {
+
+      _progress = (j+1)/num_layers;
+
+      continue;
+    }
+
+    if ( ( j == 7 || j == 8 ) && _has_expert_range[TEMPERATURE] ) {
+
+      _progress = (j+1)/num_layers;
+
+      continue;
+    }
 
     Log::instance()->debug("--------------------------------\n", j);
     Log::instance()->debug("Calculating envelope for layer %d\n", j);
@@ -468,8 +554,10 @@ AquaMaps::calculateEnvelopes( const OccurrencesPtr& occs )
     // 2 = Ice concentration
     // 3 = Distance to land
     // 4 = Primary production (chlorophyll A)
-    // 5 = Salinity
-    // 6 = Temperature
+    // 5 = Salinity bottom
+    // 6 = Salinity surface
+    // 7 = Temperature bottom
+    // 8 = Temperature surface
 
     lStart = matrix[j].begin();
     lEnd = matrix[j].end();
@@ -490,10 +578,10 @@ AquaMaps::calculateEnvelopes( const OccurrencesPtr& occs )
     // Calculate percentiles
     Scalar v10, v25, v75, v90;
 
-    percentile( &v10, numOccurrences, 0.10, &matrix, j );
-    percentile( &v25, numOccurrences, 0.25, &matrix, j );
-    percentile( &v75, numOccurrences, 0.75, &matrix, j );
-    percentile( &v90, numOccurrences, 0.90, &matrix, j );
+    _percentile( &v10, numOccurrences, 0.10, &matrix, j );
+    _percentile( &v25, numOccurrences, 0.25, &matrix, j );
+    _percentile( &v75, numOccurrences, 0.75, &matrix, j );
+    _percentile( &v90, numOccurrences, 0.90, &matrix, j );
 
     Log::instance()->debug("10th percentile: %f\n", v10);
     Log::instance()->debug("25th percentile: %f\n", v25);
@@ -523,8 +611,8 @@ AquaMaps::calculateEnvelopes( const OccurrencesPtr& occs )
     // for all variables except ice concentration
     if ( j > 2 ) {
 
-      adjustInterquartile( j, adjmin, adjmax );
-      ensureEnvelopeSize( j );
+      _adjustInterquartile( j, adjmin, adjmax );
+      _ensureEnvelopeSize( j );
     }
     else {
 
@@ -539,6 +627,8 @@ AquaMaps::calculateEnvelopes( const OccurrencesPtr& occs )
     Log::instance()->debug("prefmin: %f\n", _pref_minimum[j]);
     Log::instance()->debug("prefmax: %f\n", _pref_maximum[j]);
     Log::instance()->debug("max: %f\n", _maximum[j]);
+
+    _progress = (j+1)/num_layers;
   }
 }
 
@@ -546,7 +636,7 @@ AquaMaps::calculateEnvelopes( const OccurrencesPtr& occs )
 /******************/
 /*** percentile ***/
 void 
-AquaMaps::percentile( Scalar *result, int n, double percent, std::vector<ScalarVector> *matrix, int layerIndex )
+AquaMaps::_percentile( Scalar *result, int n, double percent, std::vector<ScalarVector> *matrix, int layerIndex )
 {
   int iPrev, iNext;
 
@@ -575,18 +665,16 @@ AquaMaps::percentile( Scalar *result, int n, double percent, std::vector<ScalarV
 /***********************/
 /*** read depth data ***/
 void 
-AquaMaps::readDepthData( const char *species )
+AquaMaps::_readSpeciesData( const char *species )
 {
   sqlite3 *db;
 
+  string dbname( PKGDATAPATH );
+
 #ifndef WIN32
-  string dbname( OMDATAPATH ); 
-  dbname.append( "/" );
-  dbname.append( "data" );
-  dbname.append( "/" );
-  dbname.append( "aquamaps.db" );
+  dbname.append( "/data/aquamaps.db" );
 #else
-  string dbname("data\\aquamaps.db");
+  dbname.append( "\\data\\aquamaps.db" );
 #endif
   int rc = sqlite3_open( dbname.c_str(), &db);
 
@@ -594,8 +682,8 @@ AquaMaps::readDepthData( const char *species )
 
     // This will likely never happen since on open, sqlite creates the
     // database if it does not exist.
-    Log::instance()->warn( "Could not open database with depth range data: %s\n", sqlite3_errmsg( db ) );
-    sqlite3_close(db);
+    Log::instance()->warn( "Could not open database with species data: %s\n", sqlite3_errmsg( db ) );
+    sqlite3_close( db );
     return;
   }
 
@@ -604,67 +692,176 @@ AquaMaps::readDepthData( const char *species )
 
   sqlite3_stmt *ppStmt;
 
-  char* sql = sqlite3_mprintf( "select pelagic, min, prefmin, prefmax, max from spinfo where species = '%q'", species );
+  char* sql = sqlite3_mprintf( "select pelagic, provider, depthmin, depthmax, depthprefmin, depthprefmax, iceconmin, iceconmax, iceconprefmin, iceconprefmax, landdistmin, landdistmax, landdistprefmin, landdistprefmax, primprodmin, primprodmax, primprodprefmin, primprodprefmax, salinitymin, salinitymax, salinityprefmin, salinityprefmax, tempmin, tempmax, tempprefmin, tempprefmax from spinfo where species = '%q'", species );
 
   rc = sqlite3_prepare( db, sql, strlen( sql ), &ppStmt, &pzTail );
 
   if ( rc == SQLITE_OK ) {
 
     // Fecth data
-    if ( sqlite3_step( ppStmt ) == SQLITE_ROW ) {
+    int result_code = sqlite3_step( ppStmt );
 
-      int    pelagic = sqlite3_column_int( ppStmt, 0 );
-      double min     = sqlite3_column_double( ppStmt, 1 );
-      double prefmin = sqlite3_column_double( ppStmt, 2 );
-      double prefmax = sqlite3_column_double( ppStmt, 3 );
-      double max     = sqlite3_column_double( ppStmt, 4 );
+    if ( result_code == SQLITE_ROW ) {
+
+      int pelagic           = sqlite3_column_int( ppStmt, 0 );
+      const char * provider = (char *)sqlite3_column_text( ppStmt, 1 );
+      double depthmin       = sqlite3_column_double( ppStmt, 2 );
+      double depthmax       = sqlite3_column_double( ppStmt, 3 );
+      double depthprefmin   = sqlite3_column_double( ppStmt, 4 );
+      double depthprefmax   = sqlite3_column_double( ppStmt, 5 );
 
       _pelagic = pelagic;
 
       // Repeat the information for both min and max depth for symmetry
-      _minimum[MAXDEPTH]      = min;
-      _minimum[MINDEPTH]      = min;
-      _pref_minimum[MAXDEPTH] = prefmin;
-      _pref_minimum[MINDEPTH] = prefmin;
-      _pref_maximum[MAXDEPTH] = prefmax;
-      _pref_maximum[MINDEPTH] = prefmax;
-      _maximum[MAXDEPTH]      = max;
-      _maximum[MINDEPTH]      = max;
+      _minimum[MAXDEPTH]      = depthmin;
+      _minimum[MINDEPTH]      = depthmin;
+      _maximum[MAXDEPTH]      = depthmax;
+      _maximum[MINDEPTH]      = depthmax;
+      _pref_minimum[MAXDEPTH] = depthprefmin;
+      _pref_minimum[MINDEPTH] = depthprefmin;
+      _pref_maximum[MAXDEPTH] = depthprefmax;
+      _pref_maximum[MINDEPTH] = depthprefmax;
 
-      Log::instance()->debug("Depth values from database:\n");
-      Log::instance()->debug("pelagic: %i\n", pelagic);
-      Log::instance()->debug("min: %f\n", min);
-      Log::instance()->debug("prefmin: %f\n", prefmin);
-      Log::instance()->debug("prefmax: %f\n", prefmax);
-      Log::instance()->debug("max: %f\n", max);
+      Log::instance()->info("Values from expert database:\n");
+      Log::instance()->info("provider: %s\n", provider);
+      Log::instance()->info("pelagic: %i\n", pelagic);
+      Log::instance()->info("depthmin: %f\n", depthmin);
+      Log::instance()->info("depthmax: %f\n", depthmax);
+      Log::instance()->info("depthprefmin: %f\n", depthprefmin);
+      Log::instance()->info("depthprefmax: %f\n", depthprefmax);
+
+      if ( sqlite3_column_bytes( ppStmt, 1 ) ) {
+
+        string prov_code( provider );
+
+        if ( prov_code == "MM" ) {
+
+          Log::instance()->info( "Looks like a mammal\n" );
+
+          for ( int i = ICE_CONCENTRATION; i < TEMPERATURE + 1; ++i ) {
+
+            _has_expert_range[i] = _hasExpertRange( ppStmt, i );
+
+            if ( _has_expert_range[i] ) {
+
+               Log::instance()->info( "Found expert range for variable %s\n", NAME[i].c_str() );
+
+               Log::instance()->info("min: %f\n", _minimum[i]);
+               Log::instance()->info("max: %f\n", _maximum[i]);
+               Log::instance()->info("prefmin: %f\n", _pref_minimum[i]);
+               Log::instance()->info("prefmax: %f\n", _pref_maximum[i]);
+            }
+          }
+	}
+      }
+    }
+    else if ( result_code == SQLITE_DONE ) {
+
+      Log::instance()->warn( "'%s' not found in species database\n", species );
     }
     else {
 
-      Log::instance()->warn( "Could not fetch data from depth range database: %s\n", 
-                  sqlite3_errmsg( db ) );
+      Log::instance()->warn( "Could not fetch data from species database: %s\n", sqlite3_errmsg( db ) );
     }
   }
   else {
 
-    Log::instance()->warn( "Could not prepare SQL statement to query depth range database: %s\n", 
-                sqlite3_errmsg( db ) );
+    Log::instance()->warn( "Could not prepare SQL statement to query species database: %s\n", sqlite3_errmsg( db ) );
   }
 
   // free memory
   sqlite3_free( sql );
 
   // close the statement
-  sqlite3_finalize(ppStmt);
+  sqlite3_finalize( ppStmt );
 
   // close the database
-  sqlite3_close(db);
+  sqlite3_close( db );
+}
+
+
+/****************************/
+/*** ensure envelope size ***/
+bool
+AquaMaps::_hasExpertRange( sqlite3_stmt * stmt, int varIndex )
+{
+  int index;
+
+  if ( varIndex == ICE_CONCENTRATION ) {
+
+    index = 6;
+  }
+  else if ( varIndex == DISTANCE_TO_LAND ) {
+
+    index = 10;
+  }
+  else if ( varIndex == PRIMARY_PRODUCTION ) {
+
+    index = 14;
+  }
+  else if ( varIndex == SALINITY ) {
+
+    index = 18;
+  }
+  else if ( varIndex == TEMPERATURE ) {
+
+    index = 22;
+  }
+  else {
+
+    return false;
+  }
+
+  if ( ! sqlite3_column_bytes( stmt, index ) ) {
+
+    return false;
+  }
+
+  double value = sqlite3_column_double( stmt, index );
+
+  _minimum[varIndex] = value;
+
+  ++index;
+
+  if ( ! sqlite3_column_bytes( stmt, index ) ) {
+
+    return false;
+  }
+
+  value = sqlite3_column_double( stmt, index );
+
+  _maximum[varIndex] = value;
+
+  ++index;
+
+  if ( ! sqlite3_column_bytes( stmt, index ) ) {
+
+    return false;
+  }
+
+  value = sqlite3_column_double( stmt, index );
+
+  _pref_minimum[varIndex] = value;
+
+  ++index;
+
+  if ( ! sqlite3_column_bytes( stmt, index ) ) {
+
+    return false;
+  }
+
+  value = sqlite3_column_double( stmt, index );
+
+  _pref_maximum[varIndex] = value;
+
+  return true;
 }
 
 
 /****************************/
 /*** ensure envelope size ***/
 void
-AquaMaps::adjustInterquartile( int layerIndex, Scalar adjmin, Scalar adjmax )
+AquaMaps::_adjustInterquartile( int layerIndex, Scalar adjmin, Scalar adjmax )
 {
   if ( adjmin > _lower_limit[layerIndex] && adjmin < _minimum[layerIndex] ) {
 
@@ -681,7 +878,7 @@ AquaMaps::adjustInterquartile( int layerIndex, Scalar adjmin, Scalar adjmax )
 /****************************/
 /*** ensure envelope size ***/
 void
-AquaMaps::ensureEnvelopeSize( int layerIndex )
+AquaMaps::_ensureEnvelopeSize( int layerIndex )
 {
   Scalar halfSize = _inner_size[layerIndex]/2;
 
@@ -817,10 +1014,44 @@ AquaMaps::getValue( const Sample& x ) const
 
   for ( int i = 2; i < numLayers; i++ ) {
 
-    if ( ! _use_layer[i] ) {
+    // Ignore layer if user doesn't want to use it
+    if ( i < 5 ) {
 
-      // Ignore layer if user doesn't want to use it
-      continue;
+      if ( ! _use_layer[i] ) {
+
+        continue;
+      }
+    }
+    else if ( i < 7 ) {
+
+      if ( ! _use_layer[SALINITY] ) {
+
+        continue;
+      }
+    }
+    else {
+
+      if ( ! _use_layer[TEMPERATURE] ) {
+
+        continue;
+      }
+    }
+    
+    if ( _use_surface_layers ) {
+
+      // Ignore bottom layers
+      if ( i == 5 || i == 7 ) {
+
+        continue;
+      }
+    }
+    else 
+    {
+      // Ignore surface layers
+      if ( i == 6 || i == 8 ) {
+
+        continue;
+      }
     }
 
     ++numVariablesUsed;
@@ -861,7 +1092,7 @@ AquaMaps::getValue( const Sample& x ) const
 void
 AquaMaps::_getConfiguration( ConfigurationPtr& config ) const
 {
-  if ( ! _done ) {
+  if ( ! done() ) {
 
     return;
   }
@@ -870,6 +1101,7 @@ AquaMaps::_getConfiguration( ConfigurationPtr& config ) const
   config->addSubsection( model_config );
 
   model_config->addNameValue( "UseLayer", _use_layer, 7 );
+  model_config->addNameValue( "UseSurfaceLayers", _use_surface_layers );
   model_config->addNameValue( "Pelagic", _pelagic );
   model_config->addNameValue( "Minimum", _minimum );
   model_config->addNameValue( "PreferedMinimum", _pref_minimum );
@@ -893,10 +1125,12 @@ AquaMaps::_setConfiguration( const ConstConfigurationPtr& config )
     int size;
 
     model_config->getAttributeAsIntArray( "UseLayer", &_use_layer, &size );
+
+    _use_surface_layers = model_config->getAttributeAsInt( "UseSurfaceLayers", -1 );
   }
   catch ( AttributeNotFound& exception ) {
 
-    Log::instance()->error( "Could not find UseLayer attribute in serialized model. You may be trying to load a model that was generated by an older version (< 0.2) of this algorithm.\n" );
+    Log::instance()->error( "Could not find attribute '%s' in serialized model. You may be trying to load a model that was generated with an older version (< 0.2) of this algorithm.\n", exception.getName().c_str() );
 
     return;
   }
@@ -907,7 +1141,7 @@ AquaMaps::_setConfiguration( const ConstConfigurationPtr& config )
   _pref_maximum = model_config->getAttributeAsSample( "PreferedMaximum" );
   _maximum      = model_config->getAttributeAsSample( "Maximum" );
 
-  _done = true;
+  _progress = 1.0;
 
   return;
 }
@@ -916,17 +1150,17 @@ AquaMaps::_setConfiguration( const ConstConfigurationPtr& config )
 /********************/
 /*** log Envelope ***/
 void
-AquaMaps::logEnvelope()
+AquaMaps::_logEnvelope()
 {
   Log::instance()->info( "Envelope with %d dimensions (variables).\n\n", _minimum.size() );
 
-  for ( unsigned  int i = 0; i < _minimum.size(); i++ )
-    {
-      Log::instance()->info( "Variable %02d:", i );
-      Log::instance()->info( " Minimum         : %f\n", _minimum[i] );
-      Log::instance()->info( " Prefered Minimum: %f\n", _pref_minimum[i] );
-      Log::instance()->info( " Prefered Maximum: %f\n", _pref_maximum[i] );
-      Log::instance()->info( " Maximum         : %f\n", _maximum[i] );
-      Log::instance()->info( "\n" );
-    }
+  for ( unsigned  int i = 0; i < _minimum.size(); i++ ) {
+
+    Log::instance()->info( "Variable %02d:", i );
+    Log::instance()->info( " Minimum         : %f\n", _minimum[i] );
+    Log::instance()->info( " Prefered Minimum: %f\n", _pref_minimum[i] );
+    Log::instance()->info( " Prefered Maximum: %f\n", _pref_maximum[i] );
+    Log::instance()->info( " Maximum         : %f\n", _maximum[i] );
+    Log::instance()->info( "\n" );
+  }
 }
