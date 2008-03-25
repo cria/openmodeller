@@ -1,4 +1,4 @@
-#/usr/lib/openmodeller/libaquamaps.so
+/usr/lib/openmodeller/libaquamaps.so
 /usr/lib/openmodeller/libbioclim.so
 /usr/lib/openmodeller/libenvelope_score.so
 /usr/lib/openmodeller/libenvironmental_distance.so
@@ -8,5 +8,5 @@
 /usr/lib/openmodeller/libgarp_best_subsets.so
 /usr/lib/openmodeller/libdesktop_garp.so
 /usr/lib/openmodeller/libomsvm.so
-#/usr/share/openmodeller/data/aquamaps.db
+/usr/share/openmodeller/data/aquamaps.db
 
