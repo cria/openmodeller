@@ -32,6 +32,7 @@ endif
 EXTRA_DIST = \
 	file_parser.hh \
 	request_file.hh \
+	om_cmd_utils.hh \
 	graph/color.hh \
 	graph/graphic.hh \
 	graph/graphic_x11.hh \
