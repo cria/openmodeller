@@ -152,13 +152,13 @@ static AlgParamMetadata parameters[NUM_PARAM] = { // Parameters
 
 static AlgMetadata metadata = {
 
-  "AquaMaps",  // Id.
-  "AquaMaps",  // Name.
-  "0.2",       // Version.
+  "AquaMaps", // Id.
+  "AquaMaps (beta version)", // Name.
+  "0.2", // Version.
 
   // Overview
   "Environmental envelope modelling algorithm for marine organisms. \
-Needs 7 predefined layers (see detailed description) to calculate the \
+Needs 9 predefined layers (see detailed description) to calculate the \
 preferred and accepted envelopes, and also needs a scientific name (genus \
 plus species) labeling each occurrence group." ,
 
@@ -722,13 +722,13 @@ AquaMaps::_readSpeciesData( const char *species )
       _pref_maximum[MAXDEPTH] = depthprefmax;
       _pref_maximum[MINDEPTH] = depthprefmax;
 
-      Log::instance()->info("Values from expert database:\n");
-      Log::instance()->info("provider: %s\n", provider);
-      Log::instance()->info("pelagic: %i\n", pelagic);
-      Log::instance()->info("depthmin: %f\n", depthmin);
-      Log::instance()->info("depthmax: %f\n", depthmax);
-      Log::instance()->info("depthprefmin: %f\n", depthprefmin);
-      Log::instance()->info("depthprefmax: %f\n", depthprefmax);
+      Log::instance()->debug("Values from expert database:\n");
+      Log::instance()->debug("provider: %s\n", provider);
+      Log::instance()->debug("pelagic: %i\n", pelagic);
+      Log::instance()->debug("depthmin: %f\n", depthmin);
+      Log::instance()->debug("depthmax: %f\n", depthmax);
+      Log::instance()->debug("depthprefmin: %f\n", depthprefmin);
+      Log::instance()->debug("depthprefmax: %f\n", depthprefmax);
 
       if ( sqlite3_column_bytes( ppStmt, 1 ) ) {
 
@@ -746,10 +746,10 @@ AquaMaps::_readSpeciesData( const char *species )
 
                Log::instance()->info( "Found expert range for variable %s\n", NAME[i].c_str() );
 
-               Log::instance()->info("min: %f\n", _minimum[i]);
-               Log::instance()->info("max: %f\n", _maximum[i]);
-               Log::instance()->info("prefmin: %f\n", _pref_minimum[i]);
-               Log::instance()->info("prefmax: %f\n", _pref_maximum[i]);
+               Log::instance()->debug("min: %f\n", _minimum[i]);
+               Log::instance()->debug("max: %f\n", _maximum[i]);
+               Log::instance()->debug("prefmin: %f\n", _pref_minimum[i]);
+               Log::instance()->debug("prefmax: %f\n", _pref_maximum[i]);
             }
           }
 	}
