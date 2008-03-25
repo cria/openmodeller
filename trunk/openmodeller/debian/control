@@ -11,7 +11,7 @@ Standards-Version: 3.7.2
 Package: libopenmodeller
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}
-Suggests: libopenmodeller-plugins, openModellerDesktop 
+Suggests: libopenmodeller-algorithms, openModellerDesktop 
 Description:  openModeller is an open source C++ spatial 
  distribution modelling library which is mainly being used to 
  predict species distribution (fundamental niche). 
@@ -43,12 +43,12 @@ Description: openModeller - development files
  predict species distribution (fundamental niche). 
  .
  This package contains the headers and libraries
- needed to develop plugins and third party applications 
+ needed to develop algorithms and third party applications 
  based on openModeller.
  .
   Home page: http://openmodeller.sf.net/
 
-Package: libopenmodeller-plugins
+Package: libopenmodeller-algorithms
 Architecture: any
 Depends: libopenmodeller (= ${Source-Version})
 Description: Algorithm plugins for openModeller
@@ -56,14 +56,14 @@ Description: Algorithm plugins for openModeller
  distribution modelling library which is mainly being used to 
  predict species distribution (fundamental niche). 
  These plugins implement various probability distribution modelling 
- techniques. These algorithms include Bioclim, GARP (with best subset 
- procedure), CSM (Climate Space Model), and cartesian distance algorithms.
+ techniques such as Bioclim, GARP (with Best Subsets procedure), 
+ CSM (Climate Space Model) and cartesian distance algorithms.
  .
   Home page: http://openmodeller.sf.net/
 
 Package: openmodeller-console
 Architecture: any
-Depends: libopenmodeller (= ${Source-Version}), libopenmodeller-plugins (= ${Source-Version})
+Depends: libopenmodeller (= ${Source-Version}), libopenmodeller-algorithms (= ${Source-Version})
 Description: Console applications for openModeller
  openModeller is an open source C++ spatial 
  distribution modelling library which is mainly being used to 
@@ -75,7 +75,7 @@ Description: Console applications for openModeller
 
 Package: openmodeller-examples
 Architecture: any
-Depends: libopenmodeller (= ${Source-Version}), libopenmodeller-plugins (= ${Source-Version}), openmodeller-console (= ${Source-Version})
+Depends: libopenmodeller (= ${Source-Version}), libopenmodeller-algorithms (= ${Source-Version}), openmodeller-console (= ${Source-Version})
 Description: Sample data and example configuration files for the
  openModeller probability distribution modelling library.
  .
@@ -83,7 +83,7 @@ Description: Sample data and example configuration files for the
 
 Package: openmodeller-server
 Architecture: any
-Depends: libopenmodeller (= ${Source-Version}), libopenmodeller-plugins (= ${Source-Version})
+Depends: libopenmodeller (= ${Source-Version}), libopenmodeller-algorithms (= ${Source-Version})
 Description: Soap server for openModeller
  openModeller is an open source C++ spatial 
  distribution modelling library which is mainly being used to 
