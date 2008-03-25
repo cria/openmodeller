@@ -113,6 +113,14 @@ RECURSIVE              = YES
 EXCLUDE                = .svn/*
 EXCLUDE_SYMLINKS       = NO
 EXCLUDE_PATTERNS       = */test/pytest* \
+                         */ctest* \
+                         */src/console/graph* \
+                         */src/console/getopts* \
+                         */src/console/consolexml.* \
+                         */src/algorithms/matrix.hh \
+                         */src/algorithms/maxent* \
+                         */src/algorithms/svm/svm.* \
+                         */src/openmodeller/SampleExpr* \
                          *soap* \
                          *swig*
 EXAMPLE_PATH           = 
