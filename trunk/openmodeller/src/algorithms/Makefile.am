@@ -61,7 +61,7 @@ endif
 #
 if HAVE_SQLITE3
 
-OMDATAPATH=-DOMDATAPATH=\"$(pkgdatadir)\"
+OMDATAPATH=-DPKGDATAPATH=\"$(pkgdatadir)\"
 
 plugin_LTLIBRARIES += libomaquamaps.la
 libomaquamaps_la_SOURCES = aquamaps.cpp aquamaps.hh
