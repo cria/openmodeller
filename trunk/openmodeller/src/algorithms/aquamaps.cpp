@@ -504,7 +504,7 @@ AquaMaps::_calculateEnvelopes( const OccurrencesPtr& occs )
   // default values for the prefered min/max
   ScalarVector::iterator lStart, lEnd;
 
-  for ( unsigned int j = 2; j < num_layers; j++ ) {
+  for ( int j = 2; j < num_layers; j++ ) {
 
     if ( _use_surface_layers ) {
 
