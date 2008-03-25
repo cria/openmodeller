@@ -41,8 +41,8 @@ int main( int argc, char **argv ) {
   struct options opts[] = 
   {
     { 1, "version",    "Display version info",                          "v", 0 },
-    { 2, "xml-req",    "Projection request file in XML",                "p", 1 },
-    { 3, "dist-map",   "File to store the generated model",             "d", 1 },
+    { 2, "xml-req",    "Projection request file in XML",                "r", 1 },
+    { 3, "dist-map",   "File to store the generated model",             "m", 1 },
     { 4, "log-level",  "Set the log level (debug, warn, info, error)", NULL, 1 },
     { 5, "log-file",   "Log file",                                     NULL, 1 },
     { 6, "prog-file",  "File to store projection progress",            NULL, 1 },
