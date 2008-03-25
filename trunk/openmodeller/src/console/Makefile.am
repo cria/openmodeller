@@ -47,7 +47,7 @@ EXTRA_DIST = \
 bin_PROGRAMS = om_console $(OM_VIEWER) $(OM_NICHE) om_dump om_sampledump om_pseudo om_project om_create om_metadump om_testmodel
 lib_LTLIBRARIES = libopenmodellerxml.la
 
-dist_man_MANS = man/om_console.1 man/om_create.1 man/om_pseudo.1
+dist_man_MANS = man/om_console.1 man/om_create.1 man/om_project.1 man/om_pseudo.1
 
 libopenmodellerxml_la_SOURCES = consolexml.cpp consolexml.hh
 libopenmodellerxml_la_LDFLAGS = -no-undefined
