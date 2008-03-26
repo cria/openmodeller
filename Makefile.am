@@ -55,12 +55,16 @@ EXTRA_DIST = \
 	test/ctest/om_test_algparameter.h \
 	test/ctest/om_test_areastats.cpp \
 	test/ctest/om_test_areastats.h \
+	test/ctest/om_test_chisquare.cpp \
+	test/ctest/om_test_chisquare.h \
 	test/ctest/om_test_configuration.cpp \
 	test/ctest/om_test_configuration.h \
 	test/ctest/om_test_exceptions.cpp \
 	test/ctest/om_test_exceptions.h \
 	test/ctest/om_test_icstring.cpp \
 	test/ctest/om_test_icstring.h \
+	test/ctest/om_test_jackknife.cpp \
+	test/ctest/om_test_jackknife.h \
 	test/ctest/om_test_log.cpp \
 	test/ctest/om_test_mapformat.cpp \
 	test/ctest/om_test_mapformat.h \
@@ -79,10 +83,12 @@ EXTRA_DIST = \
 	test/ctest/om_test_template.h \
 	test/ctest/README.txt \
 	test/ctest/test_data/model_request.xml \
-	test/ctest/test_data/projection_request.xml
+	test/ctest/test_data/projection_request.xml \
+	data/aquamaps.db \
+	data/CMakeLists.txt
 
 #SUBDIRS = test src data
-SUBDIRS = src data
+SUBDIRS = src
 
 release: distdir
 	-chmod -R a+r $(distdir)
