@@ -605,7 +605,7 @@ archive that includes all dependencies needed to build openModeller. Fetch
 the archive from:
 
 ```
-http://qgis.org/uploadfiles/msvc/openmodeller_msvc_deps_except_qt4.zip
+http://qgis.org/uploadfiles/msvc/qgis_msvc_deps_except_qt4.zip
 ```
 
 /!\ **Note:** If you wish to build the dependencies yourself, detailed notes 
