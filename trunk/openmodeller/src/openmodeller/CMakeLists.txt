@@ -201,6 +201,14 @@ pre/Jackknife.hh
 pre/ChiSquare.hh
 )
 
+
+########################################################
+# Make headers appear in MSVC nicely
+IF (MSVC)
+  SOURCE_GROUP( "Header Files" FILES ${OM_CORE_HEADERS} ${OM_OCCIO_HDRS} ${OM_ENVIO_HDRS})
+ENDIF (MSVC)
+
+
 ########################################################
 # Build openmodellerxml lib
 ADD_LIBRARY (openmodellerxml SHARED ${LIBOPENMODELLERXML_SRCS})
