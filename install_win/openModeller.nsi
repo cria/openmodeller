@@ -1,10 +1,6 @@
-; defines added by tim to streamline / softcode install process
-; Make sure the the following two vars are correct for your system
-!define PRODUCT_VERSION "0.5.3"
-!define BUILD_DIR "c:\Program Files\openModeller${PRODUCT_VERSION}"
 
 ; HM NIS Edit Wizard helper defines
-!define PRODUCT_NAME "openModeller "
+!define PRODUCT_NAME "openModeller"
 !define PRODUCT_PUBLISHER "openModeller.sf.net"
 !define PRODUCT_WEB_SITE "http://openModeller.sf.net"
 !define PRODUCT_DIR_REGKEY "Software\Microsoft\Windows\CurrentVersion\App Paths\openModeller.exe"
@@ -12,6 +8,21 @@
 !define PRODUCT_UNINST_ROOT_KEY "HKLM"
 !define PRODUCT_STARTMENU_REGVAL "NSIS:StartMenuDir"
 
+; Defines added by Tim to streamline / softcode install process
+!define PRODUCT_VERSION "0.5.3"
+; This is where cmake builds and installs to - no space separating name and version
+!define BUILD_DIR "c:\Program Files\${PRODUCT_NAME}${PRODUCT_VERSION}"
+; This is where the nsis installer will install to. Having the space lets you
+; keep dev and inst versions side by side on teh same machine
+!define INSTALL_DIR "c:\Program Files\${PRODUCT_NAME} ${PRODUCT_VERSION}"
+
+Name "${PRODUCT_NAME} ${PRODUCT_VERSION}"
+InstallDir "${INSTALL_DIR}"
+OutFile "openModellerSetup${PRODUCT_VERSION}.exe"
+# If this next lineis uncommented the installer will try to install to
+# the same dir as any prefvious install of omdesktop
+# With it commented it will try to used INSTALL_DIR as defined above
+#InstallDirRegKey HKLM "${PRODUCT_DIR_REGKEY}" ""
 
 SetCompressor zlib
 ; Added by Tim for setting env vars (see this file on disk)
@@ -83,10 +94,6 @@ FunctionEnd
 
 ; MUI end ------
 
-Name "${PRODUCT_NAME} ${PRODUCT_VERSION}"
-OutFile "openModellerSetup${PRODUCT_VERSION}.exe"
-InstallDir "$PROGRAMFILES\openModeller "
-InstallDirRegKey HKLM "${PRODUCT_DIR_REGKEY}" ""
 ShowInstDetails show
 ShowUnInstDetails show
 
@@ -116,7 +123,6 @@ Section "Application" SEC01
   File "${BUILD_DIR}\epsg.wkt"
   File "${BUILD_DIR}\esri_extra.wkt"
   File "${BUILD_DIR}\gcs.csv"
-  File "${BUILD_DIR}\gdalicon.png"
   File "${BUILD_DIR}\gdal_datum.csv"
   File "${BUILD_DIR}\pcs.csv"
   File "${BUILD_DIR}\prime_meridian.csv"
@@ -161,7 +167,7 @@ Section "Application" SEC01
   SetOutPath "$INSTDIR\algs"
   File "${BUILD_DIR}\algs\*.dll"
   SetOutPath "$INSTDIR\data"
-  ;File "${BUILD_DIR}\data\aquamaps.db"
+  File "${BUILD_DIR}\data\aquamaps.db"
 ; Shortcuts
 ; Next line is important - added by Tim
 ; if its not there the application working dir will be the last used
@@ -206,6 +212,13 @@ Section /o "Small examples data" SEC05
   File "${BUILD_DIR}\examples\*"
 SectionEnd
 
+; /o means unchecked by default
+Section /o "Sample Data - Aquamaps" SEC06
+ SetOutPath "$INSTDIR\SampleData\"
+ NSISdl::download http://openmodeller.cria.org.br/download/marine2.zip marine2.zip
+ !insertmacro ZIPDLL_EXTRACT "$INSTDIR\SampleData\marine2.zip" "$INSTDIR\SampleData\EnvironmentLayers\" "<ALL>"
+SectionEnd
+
 Section -AdditionalIcons
   SetOutPath $INSTDIR
   !insertmacro MUI_STARTMENU_WRITE_BEGIN Application
@@ -235,8 +248,8 @@ SectionEnd
   !insertmacro MUI_DESCRIPTION_TEXT ${SEC02} "Sample environment data. Global coverage derived from CRU CL2 present day scenario. About 41mb data will be downloaded from the internet."
   !insertmacro MUI_DESCRIPTION_TEXT ${SEC03} "Sample environment data. Global coverage derived from Hadley 2050 A1f scenario. About 4mb data will be downloaded from the internet."
   !insertmacro MUI_DESCRIPTION_TEXT ${SEC04} "Sample environment data. South America. About 1mb data will be downloaded from the internet."
-  ;!insertmacro MUI_DESCRIPTION_TEXT ${SEC06} "Sample environment data. Aquamaps. About 1.4mb data will be downloaded from the internet."
   !insertmacro MUI_DESCRIPTION_TEXT ${SEC05} "Basic examples (not required if you have your own data already)"
+  !insertmacro MUI_DESCRIPTION_TEXT ${SEC06} "Sample environment data. Aquamaps. About 1.4mb data will be downloaded from the internet."
 !insertmacro MUI_FUNCTION_DESCRIPTION_END
 
 
@@ -296,7 +309,6 @@ Section Uninstall
   Delete "$INSTDIR\nad\stlrnc.lla"
   Delete "$INSTDIR\nad\stpaul.lla"
   Delete "$INSTDIR\nad\world"
-  Delete "$INSTDIR\gdalicon.png"
   Delete "$INSTDIR\gcs.csv"
   Delete "$INSTDIR\esri_extra.wkt"
   Delete "$INSTDIR\epsg.wkt"
