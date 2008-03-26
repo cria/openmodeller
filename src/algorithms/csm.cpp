@@ -157,7 +157,7 @@ int Csm::SamplerToMatrix()
     for (int j=0;j<_layer_count;j++)
     {
       //we add one to j in order to omit the specimen count column
-      float myCellValue = (*pit)->environment()[j];
+      float myCellValue = (float)(*pit)->environment()[j];
       gsl_matrix_set (_gsl_environment_matrix,i,j,myCellValue);
     }
   }
@@ -225,8 +225,8 @@ int Csm::center()
   for (int j=0;j<_layer_count;j++)
   {
     //get the stddev and mean for this column
-    float myAverage = gsl_vector_get (_gsl_avg_vector,j);
-    float myStdDev = gsl_vector_get (_gsl_stddev_vector,j);
+    double myAverage = gsl_vector_get (_gsl_avg_vector,j);
+    double myStdDev = gsl_vector_get (_gsl_stddev_vector,j);
 
     for (int i=0;i<_localityCount;++i)
     {
@@ -300,8 +300,8 @@ Scalar Csm::getValue( const Sample& x ) const
     }
     //Log::instance()->debug( "myFloat = %f\n", myFloat );
     //get the stddev and mean for this column
-    float myAverage = gsl_vector_get (_gsl_avg_vector,i);
-    float myStdDev = gsl_vector_get (_gsl_stddev_vector,i);
+    float myAverage = (float)gsl_vector_get (_gsl_avg_vector,i);
+    float myStdDev = (float)gsl_vector_get (_gsl_stddev_vector,i);
     //subtract the mean from the value then divide by the standard deviation
     if (myStdDev > 0)
     {
@@ -351,10 +351,10 @@ Scalar Csm::getValue( const Sample& x ) const
   }
   displayMatrix(z,"Standardised : Each value in z / sqrt of associated element in the eigenvalues vector");
   // now we square each element and sum them
-  float mySumOfSquares=0;
+  double mySumOfSquares=0;
   for (unsigned int i=0;i<z->size2;i++)
   {
-    float myValue=gsl_matrix_get (z,0,i);
+    double myValue=gsl_matrix_get (z,0,i);
     if (!isnan(myValue))
     {
       mySumOfSquares+= pow(gsl_matrix_get (z,0,i), 2);
@@ -372,7 +372,7 @@ Scalar Csm::getValue( const Sample& x ) const
   //
   //float myProbability=1-gsl_sf_gamma_inc_Q (myHalfSumOfSquaresDouble,myHalfComponentCountDouble);
   //float myProbability=1-gsl_ran_chisq_pdf(mySumOfSquares,z->size2);
-  float myProbability=gsl_cdf_chisq_Q(mySumOfSquares,z->size2);
+  double myProbability=gsl_cdf_chisq_Q(mySumOfSquares,z->size2);
   if (verboseDebuggingBool)
   {
     printf("\n-------------------------------\n");
