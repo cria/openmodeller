@@ -45,6 +45,7 @@ EXTRA_DIST = \
 	cmake/FindSqlite3.cmake \
 	cmake/FindTerraLib.cmake \
 	cmake/Python.cmake \
+	cmake_templates/cmake_uninstall.cmake.in \
 	test/ctest/CMakeLists.txt \
 	test/ctest/cxxtestgen.pl \
 	test/ctest/om_hello_world.cpp \
