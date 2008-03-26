@@ -1,6 +1,6 @@
 Release 0.5.3 (2008-03-26)
 --------------------------
-SVN revision: ?
+SVN revision: 4209
 
 	* Fixed bug when GDAL failed to read a raster row (in which case the row used to have zero values). Now the row is filled with nodata values.
 	* XML request for model creation now supports additional options to filter occurrences (using spatiallyUnique or environmentallyUnique sampler functions).
