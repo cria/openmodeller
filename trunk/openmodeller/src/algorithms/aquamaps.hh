@@ -191,7 +191,7 @@ public:
 
   int initialize();
   int iterate();
-  int getConvergence( Scalar *val );
+  int getConvergence( Scalar * const val ) const;
   float getProgress();
   int done() const;
   Scalar getValue( const Sample& x ) const;
