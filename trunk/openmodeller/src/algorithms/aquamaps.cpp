@@ -493,7 +493,7 @@ AquaMaps::_calculateEnvelopes( const OccurrencesPtr& occs )
     Log::instance()->info("Using surface layers.\n");
   }
 
-  _progress = 2/num_layers; // this is arbitrary
+  _progress = 2.0/num_layers; // this is arbitrary
 
   // Get matrix data structure so that we can sort values for each layer
   std::vector<ScalarVector> matrix = occs->getEnvironmentMatrix();
