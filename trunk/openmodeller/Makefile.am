@@ -37,11 +37,13 @@ EXTRA_DIST = \
 	src/openmodeller/CMakeLists.txt \
 	src/soap/CMakeLists.txt \
 	test/CMakeLists.txt \
+	cmake/FindCXXTEST.cmake \
 	cmake/FindExpat.cmake \
 	cmake/FindGDAL.cmake \
 	cmake/FindGSL.cmake \
 	cmake/FindProj.cmake \
 	cmake/FindSqlite3.cmake \
+	cmake/FindTerraLib.cmake \
 	cmake/Python.cmake \
 	test/ctest/CMakeLists.txt \
 	test/ctest/cxxtestgen.pl \
