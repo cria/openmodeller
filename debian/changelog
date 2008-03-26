@@ -1,4 +1,66 @@
- -- Tim Sutton <tim@linfiniti.com>  Wed, 13 Feb 2008 13:16:13 -0200
+libopenmodeller (0.5.3) feisty; urgency=low
+
+  * Fixed bug when GDAL failed to read a raster row (in which case the row used to have zero values). Now the row is filled with nodata values.
+  * XML request for model creation now supports additional options to filter occurrences (using spatiallyUnique or environmentallyUnique sampler functions).
+  * Changed nodata value of the default raster type (ByteHFA) to 101.
+  * Masks must now use nodata to indicate masked areas (zeros will not work anymore).
+  * om_testmodel now generates pseudo-absence points when there are no absences to be tested.
+  * Display confusion matrix cell values in om_console and om_testmodel.
+  * Renamed getLayerFilename to getLayerPath and getMaskFilename to getMaskPath in EnvironmentPtr class.
+  * Refactored om_pseudo, om_create and om_project to use the getopts command line library.
+  * Created man pages for om_pseudo, om_create and om_project.
+  * New parameter in om_pseudo to speficy the proportion of absence points to be generated.
+  * New algorithm AquaMaps (for marine organisms).
+  * Removed algorithms minimum distance and distance to average since EnvironmentalDistance provides the same functionality.
+  * "type" property of AlgParamMetadata changed from char * to a new enumeration called AlgParamDatatype. Values can be Integer, Real and String.
+  * Fixed bug in the environmental distance algorithm: probabilities were negative for points whose distance to the nearest point was beyond the maximum allowed distance. 
+  * New classes to perform jackknife and chi-square in the environmental layers.
+  * Updated TerraLib drivers for compatibility with TerraLib version 3.2.0.
+
+
+ -- Tim Sutton <timlinux@timlinux-desktop>  Wed, 26 Mar 2008 09:19:49 -0300
+
+libopenmodeller (0.5.3-pre7) feisty; urgency=low
+
+  *  Preview build 7 - fix missing X11-dev build-dep 
+
+ -- Tim Sutton <timx@linfiniti.com>  Wed, 26 Mar 2008 08:26:47 -0300
+
+libopenmodeller (0.5.3-pre6) feisty; urgency=low
+
+  * Preview 6 for the upcoming 0.5.3 release
+
+ -- Tim Sutton <tim@linfiniti.com>  Tue, 25 Mar 2008 13:58:23 -0300
+
+libopenmodeller (0.5.3-pre5) feisty; urgency=low
+
+  * Fixed build errors caused by pedantic flag being on
+
+ -- Tim Sutton <tim@linfiniti.com>  Tue, 25 Mar 2008 13:32:42 -0300
+
+libopenmodeller (0.5.3-pre4) feisty; urgency=low
+
+  * Fixed debian email and full name when uploading package
+
+ -- Tim Sutton <tim@linfiniti.com>  Tue, 25 Mar 2008 13:11:01 -0300
+
+libopenmodeller (0.5.3-pre3) feisty; urgency=low
+
+  * Beta build one of upcoming 0.5.3 release 
+
+ -- Tim Sutton <tim@linfiniti.com>  Tue, 25 Mar 2008 12:48:03 -0300
+
+libopenmodeller (0.5.3-pre2) feisty; urgency=low
+
+  * Alpha build 2 of 0.5.3 which removes aquamaps from the package 
+
+ -- Tim Sutton <timlinux@timlinux-desktop>  Sat, 15 Mar 2008 13:07:34 -0300
+
+libopenmodeller (0.5.3-pre1) feisty; urgency=low
+
+  * Alpha build of 0.5.3 
+
+ -- Tim Sutton <timlinux@timlinux-desktop>  Fri, 14 Mar 2008 15:06:10 -0300
 
 libopenmodeller (0.5.2) feisty; urgency=low
 
