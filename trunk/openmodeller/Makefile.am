@@ -82,7 +82,7 @@ EXTRA_DIST = \
 	test/ctest/test_data/projection_request.xml
 
 #SUBDIRS = test src data
-SUBDIRS = src
+SUBDIRS = src data
 
 release: distdir
 	-chmod -R a+r $(distdir)
