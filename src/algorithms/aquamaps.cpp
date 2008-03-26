@@ -366,7 +366,7 @@ AquaMaps::iterate()
 /***********************/
 /*** get Convergence ***/
 int
-AquaMaps::getConvergence( Scalar *val )
+AquaMaps::getConvergence( Scalar * const val ) const
 {
   *val = 1.0;
   return 1;
@@ -464,7 +464,7 @@ AquaMaps::_calculateEnvelopes( const OccurrencesPtr& occs )
 
   int num_layers = _minimum.size();
 
-  _progress = 1/num_layers; // this is arbitrary
+  _progress = 1.0f/num_layers; // this is arbitrary
 
   // Default values for depth ranges
   _minimum[MAXDEPTH] = _minimum[MINDEPTH] = _pref_minimum[MAXDEPTH] = _pref_minimum[MINDEPTH] = 0.0;
@@ -493,7 +493,7 @@ AquaMaps::_calculateEnvelopes( const OccurrencesPtr& occs )
     Log::instance()->info("Using surface layers.\n");
   }
 
-  _progress = 2.0/num_layers; // this is arbitrary
+  _progress = 2.0f/num_layers; // this is arbitrary
 
   // Get matrix data structure so that we can sort values for each layer
   std::vector<ScalarVector> matrix = occs->getEnvironmentMatrix();
@@ -511,7 +511,7 @@ AquaMaps::_calculateEnvelopes( const OccurrencesPtr& occs )
       // Ignore bottom layers
       if ( j == 5 || j == 7 ) {
 
-        _progress = (j+1)/num_layers;
+        _progress = (float)(j+1)/num_layers;
 
         _minimum[j] = _minimum[j] = _pref_minimum[j] = _pref_minimum[j] = nodata;
       
@@ -523,7 +523,7 @@ AquaMaps::_calculateEnvelopes( const OccurrencesPtr& occs )
       // Ignore surface layers
       if ( j == 6 || j == 8 ) {
 
-        _progress = (j+1)/num_layers;
+        _progress = (float)(j+1)/num_layers;
 
         _minimum[j] = _minimum[j] = _pref_minimum[j] = _pref_minimum[j] = nodata;
       
@@ -533,14 +533,14 @@ AquaMaps::_calculateEnvelopes( const OccurrencesPtr& occs )
 
     if ( ( j == 5 || j == 6 ) && _has_expert_range[SALINITY] ) {
 
-      _progress = (j+1)/num_layers;
+      _progress = (float)(j+1)/num_layers;
 
       continue;
     }
 
     if ( ( j == 7 || j == 8 ) && _has_expert_range[TEMPERATURE] ) {
 
-      _progress = (j+1)/num_layers;
+      _progress = (float)(j+1)/num_layers;
 
       continue;
     }
@@ -628,7 +628,7 @@ AquaMaps::_calculateEnvelopes( const OccurrencesPtr& occs )
     Log::instance()->debug("prefmax: %f\n", _pref_maximum[j]);
     Log::instance()->debug("max: %f\n", _maximum[j]);
 
-    _progress = (j+1)/num_layers;
+    _progress = (float)(j+1)/num_layers;
   }
 }
 
