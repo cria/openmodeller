@@ -678,6 +678,8 @@ AquaMaps::_readSpeciesData( const char *species )
 #endif
   int rc = sqlite3_open( dbname.c_str(), &db);
 
+  Log::instance()->debug( "Internal database: %s\n", dbname.c_str() );
+
   if ( rc ) {
 
     // This will likely never happen since on open, sqlite creates the
