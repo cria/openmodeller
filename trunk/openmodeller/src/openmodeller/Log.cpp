@@ -142,7 +142,7 @@ Log::format( const char *fmt, ... )
 
    if ( NULL != fmt ) {
 
-      va_list marker = NULL;
+      va_list marker;
 
       // initalize variable arguments
       va_start( marker, fmt );
