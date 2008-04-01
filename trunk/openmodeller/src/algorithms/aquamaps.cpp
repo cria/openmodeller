@@ -566,14 +566,14 @@ AquaMaps::_calculateEnvelopes( const OccurrencesPtr& occs )
     int numOccurrences = occs->numOccurrences();
 
     // Just for debugging
-    ostringstream debug;
-    debug << "row -->";
-    for ( int w = 0; w < numOccurrences; w++ ) {
+    //ostringstream debug;
+    //debug << "row -->";
+    //for ( int w = 0; w < numOccurrences; w++ ) {
 
-	debug << " [" << j << "," << w << "]=" << matrix[j][w];
-    }
-    debug << "\n";
-    Log::instance()->debug( debug.str().c_str() );
+    //debug << " [" << j << "," << w << "]=" << matrix[j][w];
+    //}
+    //debug << "\n";
+    //Log::instance()->debug( debug.str().c_str() );
 
     // Calculate percentiles
     Scalar v10, v25, v75, v90;
