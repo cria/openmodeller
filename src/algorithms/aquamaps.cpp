@@ -182,8 +182,8 @@ http://openmodeller.cria.org.br/download/marine2.zip \n\
 AquaMaps also makes use of expert information for the lower and upper limits of \
 each variable. Depth ranges are taken from a database provided by FishBase. To find \
 this information in the database, occurrences must be identified by the scientific \
-name (only genus and species). The database contains depth ranges for about 9k \
-different marine species. \n\
+name (only genus and species). The database contains depth ranges for more then 7000 \
+marine species. \n\
 For the other variables, preferred ranges are initially calculated based on \
 percentiles 10th and 90th. They are further adjusted using interquartile values but \
 also ensuring a minimum envelope size based on pre-defined values.",
