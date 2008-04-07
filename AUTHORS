@@ -49,11 +49,19 @@ INPE - Instituto Nacional de Pesquisas Espaciais:
 
      Integrated openModeller with TerraLib.
 
+ * Missae Yamamoto <missae [at] dpi . inpe . br>
+
+     Implemented the chi-square pre-analysis.
+
 Poli - Escola Politécninca da Universidade de São Paulo:
 
  * Danilo J. S. Bellini <danilo . estagio [at] gmail . com>
 
-     Developed the Environmental Distance Algorithm.
+     Developed the Environmental Distance algorithm.
+
+ * Fabrício Rodrigues <fabricio . poliusp [at] gmail . com>
+
+     Helped implementing the jackknife pre-analysis.
 
 Other individual collaborators
 
