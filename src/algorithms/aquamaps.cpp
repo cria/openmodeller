@@ -188,10 +188,10 @@ For the other variables, preferred ranges are initially calculated based on \
 percentiles 10th and 90th. They are further adjusted using interquartile values but \
 also ensuring a minimum envelope size based on pre-defined values.",
   
-  "K. Kaschner, J. Ready, S. Kullander, R. Froese",  // Authors
+  "Kaschner, K., J. S. Ready, E. Agbayani, J. Rius, K. Kesner-Reyes, P. D. Eastwood, A. B. South, S. O. Kullander, T. Rees, C. H. Close, R. Watson, D. Pauly, and R. Froese",  // Authors
 
   // Bibliography.
-  "",
+  "Kaschner, K., J. S. Ready, E. Agbayani, J. Rius, K. Kesner-Reyes, P. D. Eastwood, A. B. South, S. O. Kullander, T. Rees, C. H. Close, R. Watson, D. Pauly, and R. Froese. 2007 AquaMaps: Predicted range maps for aquatic species. World wide web electronic publication, www.aquamaps.org, Version 12/2007.",
 
   "Renato De Giovanni",              // Code author.
   "renato [at] cria dot org dot br", // Code author's contact.
@@ -946,15 +946,15 @@ AquaMaps::getValue( const Sample& x ) const
   // individual probabilities
   Scalar prob = 1.0;
 
-  int numVariablesUsed = 0;
+  int num_variables_used = 0;
 
   // Depth probability
 
-  if ( _use_layer[MAXDEPTH] ) {
+  if ( _use_layer[MAXDEPTH] ) { // If user wants to use depth range
 
-    ++numVariablesUsed;
+    ++num_variables_used;
 
-    if ( _maximum[MAXDEPTH] != 9999 ) {  // If there is a depth range
+    if ( _maximum[MAXDEPTH] != 9999 ) {  // If there is a depth range in the internal database
 
       // Probability of occurrence is zero if depth at this point is less
       // than the minimum depth for the species.
@@ -1056,7 +1056,7 @@ AquaMaps::getValue( const Sample& x ) const
       }
     }
 
-    ++numVariablesUsed;
+    ++num_variables_used;
 
     // Probability zero for points outside the envelope
     if ( x[i] < _minimum[i] || x[i] > _maximum[i] ) {
@@ -1082,7 +1082,7 @@ AquaMaps::getValue( const Sample& x ) const
   }
 
   // There used to be an option to use the geometric mean
-  //return pow( prob, (Scalar)1/numVariablesUsed );
+  //return pow( prob, (Scalar)1/num_variables_used );
 
   // Return probability product
   return prob;
