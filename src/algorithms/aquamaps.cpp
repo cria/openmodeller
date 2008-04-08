@@ -179,14 +179,16 @@ mgC per square meter per day), mean annual bottom salinity in psu, mean annual \
 surface salinity in psu, mean annual bottom temperature in celsius, mean annual \
 surface temperature in celsius. These layers can be downloaded from: \n\
 http://openmodeller.cria.org.br/download/marine2.zip \n\
-AquaMaps also makes use of expert information for the lower and upper limits of \
-each variable. Depth ranges are taken from a database provided by FishBase. To find \
-this information in the database, occurrences must be identified by the scientific \
-name (only genus and species). The database contains depth ranges for more then 7000 \
-marine species. \n\
-For the other variables, preferred ranges are initially calculated based on \
-percentiles 10th and 90th. They are further adjusted using interquartile values but \
-also ensuring a minimum envelope size based on pre-defined values.",
+Preferred ranges are usually calculated based on percentiles 10th and 90th. \
+They are further adjusted using interquartile values but also ensuring a minimum \
+envelope size based on pre-defined values. Under certain circumstances, AquaMaps can \
+make use of expert information to define the envelopes. This can happen for mammals \
+(any envelope) or for fishes (depth range envelope). Expert information comes from \
+FishBase and is stored in a local SQLite database (aquamaps.db) accessed by the \
+algorithm. To find information in the database, all occurrences provided to \
+openModeller must be labeled with the scientific name (only genus and species). \
+Matches are exact, using case-sensitive equals operation. In this version, the \
+internal database contains information for more then 7000 marine species.",
   
   "Kaschner, K., J. S. Ready, E. Agbayani, J. Rius, K. Kesner-Reyes, P. D. Eastwood, A. B. South, S. O. Kullander, T. Rees, C. H. Close, R. Watson, D. Pauly, and R. Froese",  // Authors
 
