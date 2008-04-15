@@ -184,6 +184,7 @@ IF (WIN32)
 
   ADD_DEFINITIONS(-DPLUGINPATH=\\"./algs\\")
   ADD_DEFINITIONS(-DPKGDATAPATH=\\"./data\\")
+
   IF (MSVC)
     ADD_DEFINITIONS(-DMSVC)
     SET(OUTPUT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/bin)
@@ -192,18 +193,9 @@ IF (WIN32)
     #INSTALL(FILES $ENV{LIB_DIR}/bin/gdal15.dll DESTINATION ${OUTPUT_DIR}/debug)
     EXEC_PROGRAM(${CMAKE_CURRENT_SOURCE_DIR}/install_win/CopyDebugDll.bat)
   ENDIF (MSVC)
-<<<<<<< .mine
-=======
-  
-  SET (OM_BIN_DIR    ${CMAKE_INSTALL_PREFIX})
-  SET (OM_DATA_DIR   ${CMAKE_INSTALL_PREFIX})
-  SET (OM_ALG_DIR ${CMAKE_INSTALL_PREFIX}/algs)
-  SET (OM_INCLUDE_DIR ${CMAKE_INSTALL_PREFIX}/include)
-  SET (OM_EXAMPLES_DIR ${CMAKE_INSTALL_PREFIX}/examples)
 
-  ADD_DEFINITIONS(-DPLUGINPATH=\\"./algs\\")
-  ADD_DEFINITIONS(-DPKGDATAPATH=\\".\\")
 ELSE (WIN32)
+
   IF (OM_BUNDLE)
     ADD_DEFINITIONS(-DOM_BUNDLE=\\"TRUE\\")
     # for Mac OS X, everything is put inside an application bundle
@@ -230,9 +222,8 @@ ELSE (WIN32)
 ENDIF (WIN32)
 
 
-
 IF (WIN32)
->>>>>>> .r4237
+
   # expect that classes are being imported
   # Note: MSVC doesn't like when the macros are quotes
   # and MSYS doesn't like them unqouted (bacause of braces)
