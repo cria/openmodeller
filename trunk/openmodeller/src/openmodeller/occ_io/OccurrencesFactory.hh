@@ -1,7 +1,6 @@
 /**
  * Definition of OccurrencesFactory class.
  * 
- * @file
  * @author Alexandre Copertino Jardim <alexcj@dpi.inpe.br>
  * @date 2006-03-21
  * $Id$ 
@@ -30,8 +29,16 @@
 #ifndef _OCCURRENCES_FACTORY_HH_
 #define _OCCURRENCES_FACTORY_HH_
 
-#include <openmodeller/occ_io/OccurrencesFile.hh>
 #include <openmodeller/occ_io/OccurrencesReader.hh>
+#include <openmodeller/occ_io/OccurrencesFile.hh>
+
+#ifdef TERRALIB_FOUND
+#include <openmodeller/occ_io/TeOccurrences.hh>
+#endif
+
+#ifdef CURL_FOUND
+#include <openmodeller/occ_io/TapirOccurrences.hh>
+#endif
 
 #include <string>
 using std::string;
@@ -39,60 +46,65 @@ using std::string;
 #include <map>
 using std::map;
 
-//! Return a OccurrencesReader.
 /**
-* Based on the entrance url it returns a OccurrencesReader.
+* OccurrencesReader factory.
 */
 class dllexp OccurrencesFactory
 {
-	private:
-	//! Function pointer to builder function.
-	typedef OccurrencesReader* (*CreateOccurrencesReaderCallback)(const char *url, 
-								const char *coord_system );
-	//! Map of OccurrencesReader and identifiers.
-	typedef map<string, CreateOccurrencesReaderCallback> CreatorMap;
-
-
-public:
-	//! Singleton pattern
-	/**
-	* Returns the unique instance of OccurrencesFactory.
-	*/
-	static OccurrencesFactory& instance();
-	
-	//! Register a OccurrencesReader.
-	/**
-	* \param decId OccurrencesReader Identifier.
-	* \param creator Function pointer to builder function.
-	*/
-	bool registerOccurrencesReader(const string& decId, CreateOccurrencesReaderCallback creator);
-	
-	//! Unregister a OccurrencesReader.
-	bool unregisterOccurrencesReader(const string& decId);
-
-	//! Returns a OccurencesReader
-	/**
-    * \param url used to locate the occurrences.
-	* \param coord_system coord system.
-	*/
-	OccurrencesReader* create( const char *url, const char *coord_system );
 
 private:
-	//! Map of OccurrencesReader and identifiers.
-	CreatorMap mapOccurrencesReader_;
-	
-	//! No build allowed.
-	/**
-	* Singleton pattern doesn't allows a public constuctor.
-	*/
-	OccurrencesFactory(){};
-	//! No copy allowed.
-	OccurrencesFactory(const OccurrencesFactory&);
-	//! No copy allowed.
-	OccurrencesFactory& operator=(const OccurrencesFactory&);
-	//! No destruct allowed.
-	~OccurrencesFactory(){};
+
+  // Function pointer to builder function.
+  typedef OccurrencesReader * (*CreateOccurrencesReaderCallback)( const char * source, const char * coordSystem );
+
+  // Map of OccurrencesReader and identifiers.
+  typedef map<string, CreateOccurrencesReaderCallback> DriversMap;
+
+public:
+
+  /** Returns the unique instance of OccurrencesFactory (singleton pattern).
+  */
+  static OccurrencesFactory& instance();
+  
+  /** Register an OccurrencesReader driver.
+   * 
+   * @param driverId Driver identifier.
+   * @param creator Function pointer to builder function.
+   */
+  bool registerDriver( const string& driverId, CreateOccurrencesReaderCallback builder );
+  
+  /** Unregister an OccurrencesReader driver.
+   * 
+   * @param driverId Driver identifier.
+   */
+  bool unregisterDriver( const string& driverId );
+
+  /** Return an OccurrencesReader given a source string.
+   *
+   * @param source URL used to locate the occurrences.
+   * @param coordSystem coord system.
+   */
+  OccurrencesReader * create( const char * source, const char * coordSystem );
+
+private:
+
+  // Indicates if the factory was initiated (i.e., drivers were registered).
+  static bool _initiated;
+
+  // Map of OccurrencesReader and identifiers.
+  DriversMap _drivers;
+  
+  // No constructor allowed (singleton pattern).
+  OccurrencesFactory(){};
+
+  // No copy allowed.
+  OccurrencesFactory( const OccurrencesFactory& );
+
+  // No copy allowed.
+  OccurrencesFactory& operator=( const OccurrencesFactory& );
+
+  // No destructor allowed.
+  ~OccurrencesFactory(){};
 };
 
 #endif
-

@@ -63,13 +63,6 @@
 #include <openmodeller/env_io/RasterFactory.hh>
 #include <openmodeller/occ_io/OccurrencesFactory.hh>
 
-#ifdef TERRALIB_FOUND
-#include <openmodeller/occ_io/TeOccurrences.hh>
-#include <openmodeller/env_io/TeOMRaster.hh>
-
-#define USE_TERRALIB_IO RasterFactory::instance().registerRaster("terralib", &TeOMRaster::CreateRasterCallback );OccurrencesFactory::instance().registerOccurrencesReader("terralib", &TeOccurrences::CreateOccurrencesReaderCallback );
-#endif
-
 #endif
 
 

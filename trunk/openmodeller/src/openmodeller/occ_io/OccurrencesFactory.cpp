@@ -1,7 +1,6 @@
 /**
  * Definition of OccurrencesFactory class.
  * 
- * @file
  * @author Alexandre Copertino Jardim <alexcj@dpi.inpe.br>
  * @date 2006-03-21
  * $Id$ 
@@ -30,54 +29,92 @@
 
 #include <openmodeller/occ_io/OccurrencesFactory.hh>
 
-//! Returns a OccurencesReader
-/**
-* \param url used to locate occurrences in a database or file disk.
-* \param coord_system coord system.
-*/
-OccurrencesReader*
-OccurrencesFactory::create( const char *url, const char *coord_system )
-{
-	// Another OccurrencesReader
-	string name = url;
-	int i = name.find( ">" );
-	if( i != -1)
-	{
-		string libName = name.substr( 0, i );
-		CreatorMap::const_iterator i = mapOccurrencesReader_.find( libName );
-		if ( i != mapOccurrencesReader_.end())
-		{
-			return (i->second)(url, coord_system );
-		}
-	}
-	// Default: OccurrencesFile
-	return new OccurrencesFile( url, coord_system );
-}
+#include <openmodeller/Log.hh>
 
-/**
-* Singleton pattern
-*/
+bool OccurrencesFactory::_initiated;
+
+/****************/
+/*** instance ***/
 OccurrencesFactory& 
 OccurrencesFactory::instance()
 {
-	static OccurrencesFactory unique_;
-	return unique_;
+  static OccurrencesFactory _instance;
+
+  if ( ! _initiated ) {
+
+#ifdef TERRALIB_FOUND
+  _instance.registerDriver( "terralib", &TeOccurrences::CreateOccurrencesReaderCallback );
+#endif
+
+#ifdef CURL_FOUND
+  _instance.registerDriver( "tapir", &TapirOccurrences::CreateOccurrencesReaderCallback );
+#endif
+
+    _initiated = true;
+  }
+
+  return _instance;
 }
 
-/**
-* Register a OccurrencesReader.
-*/
+/***********************/
+/*** register driver ***/
 bool 
-OccurrencesFactory::registerOccurrencesReader(const string& decId, CreateOccurrencesReaderCallback creator)
+OccurrencesFactory::registerDriver( const string& driverId, CreateOccurrencesReaderCallback builder )
 {
-	return mapOccurrencesReader_.insert(CreatorMap::value_type(decId, creator)).second;
+  return _drivers.insert( DriversMap::value_type( driverId, builder ) ).second;
 }
 
-/**
-* Unregister a OccurrencesReader.
-*/
+/*************************/
+/*** unregister driver ***/
 bool 
-OccurrencesFactory::unregisterOccurrencesReader(const string& decId)
+OccurrencesFactory::unregisterDriver( const string& driverId )
 {
-	return mapOccurrencesReader_.erase(decId) != 0;
+  return _drivers.erase( driverId ) != 0;
+}
+
+/**************/
+/*** create ***/
+OccurrencesReader*
+OccurrencesFactory::create( const char * source, const char * coordSystem )
+{
+  string source_str( source );
+
+  int i = source_str.find( "terralib>" );
+
+  if ( i != -1 ) {
+
+    DriversMap::const_iterator i = _drivers.find( "terralib" );
+
+    if ( i != _drivers.end() ) {
+
+      OccurrencesReader * te_driver = (i->second)( source, coordSystem );
+      te_driver->load();
+
+      return te_driver;
+    }
+  }
+
+  i = source_str.find( "http://" );
+
+  if ( i == 0 ) {
+
+    DriversMap::const_iterator i = _drivers.find( "tapir" );
+
+    if ( i != _drivers.end() ) {
+
+      OccurrencesReader * tapir_driver = (i->second)( source, coordSystem );
+
+      if ( tapir_driver->load() ) {
+
+        return tapir_driver;
+      }
+    }
+  }
+
+  // Default driver
+  OccurrencesFile * file_driver = new OccurrencesFile( source, coordSystem );
+
+  file_driver->load();
+
+  return file_driver;
 }

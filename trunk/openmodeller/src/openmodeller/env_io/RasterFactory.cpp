@@ -1,7 +1,6 @@
 /**
  * Definition of RasterFactory class.
  * 
- * @file
  * @author Alexandre Copertino Jardim <alexcj@dpi.inpe.br>
  * @date 2006-03-21
  * $Id$
@@ -34,76 +33,91 @@
 #include <string>
 using std::string;
 
-/**
-* Singleton pattern
-*/
+bool RasterFactory::_initiated;
+
+/****************/
+/*** instance ***/
 RasterFactory& 
 RasterFactory::instance()
 {
-	static RasterFactory unique_;
-	return unique_;
+  static RasterFactory _instance;
+
+  if ( ! _initiated ) {
+
+#ifdef TERRALIB_FOUND
+_instance.registerDriver( "terralib", &TeOMRaster::CreateRasterCallback )
+#endif
+
+    _initiated = true;
+  }
+
+  return _instance;
 }
 
-/**
-* Register a Raster Lib.
-*/
+/***********************/
+/*** register driver ***/
 bool 
-RasterFactory::registerRaster(const string& decId, CreateRasterCallback creator)
+RasterFactory::registerDriver( const string& driverId, CreateRasterCallback builder )
 {
-	return mapRasters_.insert(CreatorMap::value_type(decId,creator)).second;
+  return _drivers.insert( DriversMap::value_type( driverId, builder ) ).second;
 }
 
-/**
-* Unregister a Raster Lib.
-*/
+/*************************/
+/*** unregister driver ***/
 bool 
-RasterFactory::unregisterRaster(const string& decId)
+RasterFactory::unregisterDriver( const string& driverId )
 {
-	return mapRasters_.erase(decId) != 0;
+  return _drivers.erase( driverId ) != 0;
 }
 
-
-/**
-* Build GDAL, TerraLib or another Raster lib.
-*/
+/**************/
+/*** create ***/
 Raster*
-RasterFactory::create( const string& url, int categ )
+RasterFactory::create( const string& source, int categ )
 {
-	// Another Raster Lib
-	int i = url.find( ">" );
-	if( i != -1)
-	{
-		string libName = url.substr( 0, i );
-		CreatorMap::const_iterator i = mapRasters_.find( libName );
-		if ( i != mapRasters_.end())
-		{
-			Raster* r = (i->second)();
-			r->createRaster( url, categ );
-			return r;
-		}
-	}
-	
-	// Default: GDAL Raster Lib
-	return new RasterGdal( url, categ );
+  // Another Raster Lib
+  int i = source.find( ">" );
+
+  if ( i != -1 ) {
+
+    string driver_id = source.substr( 0, i );
+
+    DriversMap::const_iterator i = _drivers.find( driver_id );
+
+    if ( i != _drivers.end() ) {
+
+      Raster* r = (i->second)();
+      r->createRaster( source, categ );
+      return r;
+    }
+  }
+  
+  // Default: GDAL Raster Lib
+  return new RasterGdal( source, categ );
 }
 
+/**************/
+/*** create ***/
 Raster* 
-RasterFactory::create( const string& url, const MapFormat& format )
+RasterFactory::create( const string& source, const MapFormat& format )
 {
-	// Another Raster Lib
-	int i = url.find( ">" );
-	if( i != -1)
-	{
-		string libName = url.substr( 0, i );
-		CreatorMap::const_iterator i = mapRasters_.find( libName );
-		if ( i != mapRasters_.end())
-		{
-			Raster* r = (i->second)();
-			r->createRaster( url, format );
-			return r;
-		}
-	}
-	
-	// Default: GDAL Raster Lib
-	return new RasterGdal( url, format );
+  // Another Raster Lib
+  int i = source.find( ">" );
+
+  if ( i != -1 ) {
+
+    string driver_id = source.substr( 0, i );
+
+    DriversMap::const_iterator i = _drivers.find( driver_id );
+
+    if ( i != _drivers.end() ) {
+
+      Raster* r = (i->second)();
+      r->createRaster( source, format );
+      return r;
+    }
+  }
+  
+  // Default: GDAL Raster Lib
+  return new RasterGdal( source, format );
 }
