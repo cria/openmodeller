@@ -1083,11 +1083,11 @@ AquaMaps::getValue( const Sample& x ) const
     }
   }
 
-  // There used to be an option to use the geometric mean
-  //return pow( prob, (Scalar)1/num_variables_used );
-
   // Return probability product
-  return prob;
+  //return prob;
+
+  // Return geometric mean
+  return pow( prob, (Scalar)1/num_variables_used );
 }
 
 
