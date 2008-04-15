@@ -75,6 +75,8 @@ TeOccurrences::TeOccurrences( const char * source, const char * coordSystem ):
   _source = (char *) source; // Terralib string
 
   _coord_system = (char *) coordSystem;
+
+  _loaded = false;
 }
 
 /******************/
