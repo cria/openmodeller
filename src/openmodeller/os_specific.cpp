@@ -2,7 +2,7 @@
  * Definitions of operating system's specific functions.
  * 
  * @file
- * @author Mauro E S Muñoz (mauro@cria.org.br)
+ * @author Mauro E S MuÃ’oz (mauro@cria.org.br)
  * @date   2004-03-19
  * $Id$
  * 

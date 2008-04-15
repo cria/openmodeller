@@ -1,7 +1,7 @@
 /**
  * Definition of OpenModeller class (former ControlInterface class).
  * 
- * @author Mauro E S Muñoz <mauro@cria.org.br>
+ * @author Mauro E S MuÃ’oz <mauro@cria.org.br>
  * @date 2003-09-25
  * $Id$
  *
@@ -204,7 +204,9 @@ char *
 OpenModeller::getVersion()
 {
   // Defined in "om_defs.hh".
-  return OM_VERSION; 
+  std::string myString;
+  myString.append(OM_VERSION);
+  return const_cast<char *>(myString.c_str()); 
 }
 
 /****************************/
