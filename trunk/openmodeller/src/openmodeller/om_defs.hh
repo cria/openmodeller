@@ -28,7 +28,9 @@
 #ifndef _DEFSHH_
 #define _DEFSHH_
 
-#define OM_VERSION VERSION
+//preprocessor trick to convert anything to a quoted string
+//e.g. myString.append(WRITESTRING(OM_MAJOR_VERSION))
+#define WRITESTRING(x) #x
 
 // Math types.
 //
