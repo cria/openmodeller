@@ -64,10 +64,8 @@ GGraph *_graph;
 void draw();
 void draw_map( GGraph *graph, Map *map );
 void draw_occur( GGraph *graph, Map *map, const OccurrencesPtr& );
-void findRegion( int nmap, Map **map, Coord *xmin, Coord *ymin,
-		 Coord *xmax, Coord *ymax );
-OccurrencesPtr readOccurrences( char const *file, char const *name,
-			      char const *coord_system );
+void findRegion( int nmap, Map **map, Coord *xmin, Coord *ymin, Coord *xmax, Coord *ymax );
+OccurrencesPtr readOccurrences( char const *source, char const *name, char const *coord_system );
 
 
 /**************************************************************/
@@ -76,10 +74,6 @@ OccurrencesPtr readOccurrences( char const *file, char const *name,
 int
 main( int argc, char **argv )
 {
-#ifdef BUILD_TERRALIB
-  USE_TERRALIB_IO
-#endif
-
   // Reconfigure the global logger.
   Log::instance()->setLevel( Log::Error );
   Log::instance()->setPrefix( "" );
@@ -296,8 +290,7 @@ draw_occur( GGraph *graph, Map *map, const OccurrencesPtr& occurs )
 /*******************/
 /*** find Region ***/
 void
-findRegion( int nmap, Map **map, Coord *xmin, Coord *ymin,
-            Coord *xmax, Coord *ymax )
+findRegion( int nmap, Map **map, Coord *xmin, Coord *ymin, Coord *xmax, Coord *ymax )
 {
   map[0]->getRegion( xmin, ymin, xmax, ymax );
 }
@@ -306,16 +299,17 @@ findRegion( int nmap, Map **map, Coord *xmin, Coord *ymin,
 /************************/
 /*** read Occurrences ***/
 OccurrencesPtr
-readOccurrences( char const *file, char const *name, char const *coord_system )
+readOccurrences( char const *source, char const *name, char const *coord_system )
 {
-  OccurrencesReader* oc_file =
-  OccurrencesFactory::instance().create( file, coord_system );
+  OccurrencesReader* oc_reader = OccurrencesFactory::instance().create( source, coord_system );
 
-  OccurrencesPtr occurrences = oc_file->getPresences( name );
+  OccurrencesPtr occurrences = oc_reader->getPresences( name );
 
-  if ( oc_file->numAbsences() ) {
+  OccurrencesPtr absences = oc_reader->getAbsences( name );
 
-    occurrences->appendFrom( oc_file->getAbsences( name ) );
+  if ( absences->numOccurrences() ) {
+
+    occurrences->appendFrom( absences );
   }
 
   return occurrences;

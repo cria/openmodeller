@@ -59,19 +59,25 @@ class dllexp OccurrencesFile : public OccurrencesReader
 {
 public:
 
-    /**
-     * Read the occurences from the specified file.
-     * @param file_name File name.
-     * @\param coord_system Coordinate system.
-     */
-    OccurrencesFile( const char *file_name, const char *coord_system );
-    ~OccurrencesFile();
+  /** Constructor.
+   * @param source Source of occurrences (such as a file name, Terralib path or TAPIR URL).
+   * @param coordSystem Default coordinate system in WKT.
+   */
+  OccurrencesFile( const char *source, const char * coordSystem );
 
-    /**
-     * Read occurrences from a file.
-     * @param file_name File name.
-     */
-    int loadOccurrences( const char *file_name );
+  /** Destructor.
+   */
+  ~OccurrencesFile();
+
+  /**
+   * Read occurrences from a file.
+   */
+  bool load();
+
+private:
+
+  // Indicates if occurrences were already loaded.
+  bool _loaded;
 };
 
 #endif

@@ -1,7 +1,6 @@
 /**
  * Definition of RasterFactory class.
  * 
- * @file
  * @author Alexandre Copertino Jardim <alexcj@dpi.inpe.br>
  * @date 2006-03-21
  * $Id$ 
@@ -30,8 +29,12 @@
 #ifndef _RASTER_FACTORYHH_
 #define _RASTER_FACTORYHH_
 
-#include <openmodeller/env_io/RasterGdal.hh>
 #include <openmodeller/env_io/Raster.hh>
+#include <openmodeller/env_io/RasterGdal.hh>
+
+#ifdef TERRALIB_FOUND
+#include <openmodeller/env_io/TeOMRaster.hh>
+#endif
 
 #include <string>
 using std::string;
@@ -50,56 +53,60 @@ class MapFormat;
 */
 class dllexp RasterFactory
 {
+
 private:
-	//! Function pointer to builder function.
-	typedef Raster* (*CreateRasterCallback)();
-	//! Map of Rasters and identifiers.
-	typedef std::map<string, CreateRasterCallback> CreatorMap;
+
+  // Function pointer to builder function.
+  typedef Raster* (*CreateRasterCallback)();
+
+  // Map of Rasters and identifiers.
+  typedef std::map<string, CreateRasterCallback> DriversMap;
 
 public:
-	//! Singleton pattern
-	/**
-	* Returns the unique instance of RasterFactory.
-	*/
-	static RasterFactory& instance();
-	
-	//! Register a Raster.
-	/**
-	* \param decId Raster Identifier.
-	* \param creator Function pointer to builder function.
-	*/
-	bool registerRaster(const string& decId, CreateRasterCallback creator);
-	
-	//! Unregister a Raster.
-	bool unregisterRaster(const string& decId);
 
-	//! Build a Raster.
-	/**
-	* Open an existing raster (read only).
-	*/
-	Raster* create(const string& url, int categ = 0 );
-	
-	//! Build a Raster
-	/**
-	* Create a new file for projections.
-	*/
-	Raster* create(const string& url, const MapFormat& format );
+  /**
+  * Returns the unique instance of RasterFactory.
+  */
+  static RasterFactory& instance();
+  
+  /** Register a Raster.
+  * \param driverId Raster Identifier.
+  * \param builder Function pointer to builder function.
+  */
+  bool registerDriver( const string& driverId, CreateRasterCallback builder );
+  
+  //! Unregister a Raster.
+  bool unregisterDriver( const string& driverId );
+
+  /**
+  * Open an existing raster (read only).
+  */
+  Raster* create( const string& source, int categ = 0 );
+  
+  /**
+  * Create a new file for projections.
+  */
+  Raster* create( const string& source, const MapFormat& format );
 
 private:
-	//! Map of Rasters and identifiers.
-	CreatorMap mapRasters_;
-	
-	//! No build allowed.
-	/**
-	* Singleton pattern doesn't allows a public constuctor.
-	*/
-	RasterFactory(){};
-	//! No copy allowed.
-	RasterFactory(const RasterFactory&);
-	//! No copy allowed.
-	RasterFactory& operator=(const RasterFactory&);
-	//! No destruct allowed.
-	~RasterFactory(){};
+
+  // Indicates if the factory was initiated (i.e., drivers were registered).
+  static bool _initiated;
+
+  //! Map of Rasters and identifiers.
+  DriversMap _drivers;
+  
+  // No constructor allowed (singleton pattern).
+  RasterFactory(){};
+
+  //! No copy allowed.
+  RasterFactory( const RasterFactory& );
+
+  //! No copy allowed.
+  RasterFactory& operator=( const RasterFactory& );
+
+  //! No destructor allowed.
+  ~RasterFactory(){};
 };
 
 #endif

@@ -61,35 +61,37 @@ using std::string;
 class dllexp TeOccurrences : public OccurrencesReader
 {
 public:
-	//! Return a new instance of TeOccurrences.
-	/**
-	* OccurrencesFactory calls this function to build a new OccurrencesReader.
-	*/
-	static OccurrencesReader* CreateOccurrencesReaderCallback(const char *url, const char *coord_system );
 
-	//! Read the occurences.
-	/**
-    * \param url Database url.
-	* \param coord_system coord system.
-	*/
-	TeOccurrences( const char *url, const char *coord_system );
-	
-	/**
-	* Close connection, if its open.
-	*/
-	~TeOccurrences();
+  /** Return a new instance of TeOccurrences.
+   * OccurrencesFactory calls this function to build a new OccurrencesReader.
+   */
+  static OccurrencesReader* CreateOccurrencesReaderCallback( const char * source, const char * coordSystem );
 
-	/** Load occurrences from a TerraLib Database.
-     * @param url Url of occurrences.
-     */
-    int loadOccurrences( const char *url );
-	
+  /** Constructor.
+   * @param source Source string from where to load occurrences.
+   * @param coordSystem Default coordinate system in WKT.
+   */
+  TeOccurrences( const char * source, const char * coordSystem );
+  
+  /**
+  * Destructor.
+  */
+  ~TeOccurrences();
+
+  /** Load occurrences from a TerraLib Database.
+   */
+  bool load();
+  
 private:
-	//! Pointer to database connection.
-	TeDatabase *db_;
 
-	//! TerraLib DataBase Url paser.
-	TeUrlParser *te_url_parser_;
+  // Indicates if occurrences were already loaded.
+  bool _loaded;
+
+  // Pointer to database connection.
+  TeDatabase * _db;
+
+  // TerraLib DataBase Url paser.
+  TeUrlParser * _te_url_parser;
 };
 
 #endif

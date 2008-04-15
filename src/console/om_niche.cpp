@@ -82,10 +82,6 @@ void draw_occur( GGraph *graph, const OccurrencesPtr& oc, GColor color );
 int
 main( int argc, char **argv )
 {
-#ifdef BUILD_TERRALIB
-  USE_TERRALIB_IO
-#endif
-
   // Reconfigure the global logger.
   Log::instance()->setLevel( Log::Error );
   Log::instance()->setPrefix( "" );

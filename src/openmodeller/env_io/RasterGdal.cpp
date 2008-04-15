@@ -364,15 +364,11 @@ RasterGdal::create( int format )
   // Create the file.
   if ( format == MapFormat::FloatingHFA || format == MapFormat::ByteHFA ) {
 
-    // HFA (erdas imagine) format does not support nodata
-    // so we need to set the background value instead
-    // also for this format we want to enable comressions to 
-    // reduce the file size
+    // Note: HFA (erdas imagine) format does not support nodata before GDAL 1.5
 
     //see http://www.gdal.org/gdal_tutorial.html for options examples
     char **papszOptions = NULL;
-    // Should we use another metadata element to indicate nodata??
-    //papszOptions = CSLSetNameValue( papszOptions, "BACKGROUND", "-1" );
+
     papszOptions = CSLSetNameValue( papszOptions, "COMPRESS", "YES" );
     f_ds = poDriver->Create( f_file.c_str(),
         f_hdr.xdim, f_hdr.ydim,

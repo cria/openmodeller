@@ -58,135 +58,146 @@ using std::string;
 #endif
 
 
-//! Return a new instance of TeOccurrences.
-/**
+/** Return a new instance of TeOccurrences.
 * OccurrencesFactory calls this function to build a new OccurrencesReader.
 */
 OccurrencesReader* 
-TeOccurrences::CreateOccurrencesReaderCallback(const char *url, const char *coord_system)
+TeOccurrences::CreateOccurrencesReaderCallback( const char * source, const char * coordSystem )
 {
-	return new TeOccurrences( url, coord_system );
+  return new TeOccurrences( source, coordSystem );
 }
 
 /*******************/
 /*** Constructor ***/
-TeOccurrences::TeOccurrences( const char *url, const char *coord_system ): 
-	db_()
+TeOccurrences::TeOccurrences( const char * source, const char * coordSystem ): 
+  _db()
 {
-	_coord_system = (char *) coord_system;
-	loadOccurrences( url );
+  _source = (char *) source; // Terralib string
+
+  _coord_system = (char *) coordSystem;
 }
 
 /******************/
 /*** Destructor ***/
 TeOccurrences::~TeOccurrences()
 {
-	/*if( db_ )
-	{
-		db_->close();
-		delete db_;
-	}*/
+  /*if( _db )
+  {
+    _db->close();
+    delete _db;
+  }*/
 }
 
 /**********************/
 /*** add Ocurrences ***/
-int
-TeOccurrences::loadOccurrences( const char *url )
+bool
+TeOccurrences::load()
 {
-	te_url_parser_ = new TeUrlParser();
-	te_url_parser_->url_ = url;
-	// Parser the Url.
-	if( !te_url_parser_->parser() )
-	{
-		Log::instance()->error( "TeOccurrences::addOccurrences - Invalid database url" );
-		return 0;
-	}
+  if ( _loaded ) {
 
-	// Connect to the database
-	db_ = TeDatabaseManager::instance().create( *te_url_parser_ );
+    return true;
+  }
 
-	if ( !db_->isConnected() )
-	{
-		Log::instance()->error( "TeOccurrences::addOccurrences - Cannot connect to database: %s.", db_->errorMessage().c_str() );
-		//delete db_;
-		return 0;
-	}
+  _te_url_parser = new TeUrlParser();
+  _te_url_parser->url_ = _source;
 
-	// Get the layer
-	if (!db_->layerExist( te_url_parser_->layerName_ ))
-	{
-		Log::instance()->error( "TeOccurrences::addOccurrences - Cannot open layer." );
-		//delete db_;
-		return 1;
-	}
-	TeLayer* layer = new TeLayer(te_url_parser_->layerName_, db_);
+  // Parser the Url.
+  if ( !_te_url_parser->parser() ) {
 
-	// Check Species Table
-	TeTable speciesTable;
-	// Get the first table in layer, if species table is not specified.
-	if(te_url_parser_->tableName_.length() == 0)
-	{
-		TeAttrTableVector attr;
-		layer->getAttrTables(attr);
-		speciesTable = attr[0];
-	}
-	else
-	{
-		// Get species table by name.
-		if (!layer->getAttrTablesByName(te_url_parser_->tableName_, speciesTable))
-		{
-			Log::instance()->error( "TeOccurrences::addOccurrences - Cannot open species table." );
-			//delete db_;
-			return 0;
-		}
-	}
+    Log::instance()->error( "TeOccurrences::load - Invalid database url" );
+    return false;
+  }
 
-	// Get TablePoints
-	string tablePoints = layer->tableName(TePOINTS);
+  // Connect to the database
+  _db = TeDatabaseManager::instance().create( *_te_url_parser );
 
-	// If column name is not specified, default column name is "Species".
-	if( te_url_parser_->columnName_.length() == 0 )
-		te_url_parser_->columnName_ = "Species";
+  if ( !_db->isConnected() ) {
 
-	// Building the sql statement
-	string object_id = speciesTable.linkName();
+    Log::instance()->error( "TeOccurrences::load - Cannot connect to database: %s.", _db->errorMessage().c_str() );
+    //delete _db;
+    return false;
+  }
 
-	string sql = "select " + tablePoints + ".x, " + tablePoints + ".y, " + te_url_parser_->tableName_ + "." + te_url_parser_->columnName_ ;
-	sql += " from " + te_url_parser_->tableName_ + " inner join " + tablePoints + " on " + te_url_parser_->tableName_ + "." + object_id;
-	sql+= " = " + tablePoints +".object_id";
+  // Get the layer
+  if ( !_db->layerExist( _te_url_parser->layerName_ ) ) {
 
-	// Executing the select statement
-	TeDatabasePortal* portal = db_->getPortal();
-	if (!portal || !portal->query(sql))
-	{
-		Log::instance()->error( "TeOccurrences::addOccurrences - Cannot execute SQL statement." );
-		delete portal;
-		portal = 0;
-		return 0;
-	}
+    Log::instance()->error( "TeOccurrences::load - Cannot open layer." );
+    //delete _db;
+    return false;
+  }
+  TeLayer* layer = new TeLayer(_te_url_parser->layerName_, _db);
 
-	// Fixme: read this from file.
-	Scalar error     	= -1.0;
-	Scalar abundance 	= 1.0;
-	int num_attributes  = 0;
-	Scalar *attributes  = 0;
-	string sp;
-	int sequence = 0;
+  // Check Species Table
+  TeTable speciesTable;
+  // Get the first table in layer, if species table is not specified.
+  if ( _te_url_parser->tableName_.length() == 0 ) {
 
-	// Get the occurrences.
-	while (portal->fetchRow())
-	{
-		++sequence;
-		sp = portal->getData(2);
+    TeAttrTableVector attr;
+    layer->getAttrTables(attr);
+    speciesTable = attr[0];
+  }
+  else {
 
-		Coord lg = Coord( portal->getDouble(0) );
-		Coord lt = Coord( portal->getDouble(1) );
-		addOccurrence( Te2String(sequence).c_str(), sp.c_str(), lg, lt, error, abundance, num_attributes, attributes );
-	}
+    // Get species table by name.
+    if ( !layer->getAttrTablesByName(_te_url_parser->tableName_, speciesTable) ) {
 
-	delete portal;
-	portal = 0;
-	delete te_url_parser_;
-	
-	return 1;
+      Log::instance()->error( "TeOccurrences::load - Cannot open species table." );
+      //delete _db;
+      return false;
+    }
+  }
+
+  // Get TablePoints
+  string tablePoints = layer->tableName(TePOINTS);
+
+  // If column name is not specified, default column name is "Species".
+  if ( _te_url_parser->columnName_.length() == 0 ) {
+
+    _te_url_parser->columnName_ = "Species";
+  }
+
+  // Building the sql statement
+  string object_id = speciesTable.linkName();
+
+  string sql = "select " + tablePoints + ".x, " + tablePoints + ".y, " + _te_url_parser->tableName_ + "." + _te_url_parser->columnName_ ;
+  sql += " from " + _te_url_parser->tableName_ + " inner join " + tablePoints + " on " + _te_url_parser->tableName_ + "." + object_id;
+  sql+= " = " + tablePoints +".object_id";
+
+  // Executing the select statement
+  TeDatabasePortal* portal = _db->getPortal();
+  if ( !portal || !portal->query(sql) ) {
+
+    Log::instance()->error( "TeOccurrences::load - Cannot execute SQL statement." );
+    delete portal;
+    portal = 0;
+    return false;
+  }
+
+  // Fixme: read this from file.
+  Scalar error       = -1.0;
+  Scalar abundance   = 1.0;
+  int num_attributes = 0;
+  Scalar *attributes = 0;
+  string sp;
+  int sequence = 0;
+
+  // Get the occurrences.
+  while ( portal->fetchRow() ) {
+
+    ++sequence;
+    sp = portal->getData(2);
+
+    Coord lg = Coord( portal->getDouble(0) );
+    Coord lt = Coord( portal->getDouble(1) );
+
+    _addOccurrence( Te2String(sequence).c_str(), sp.c_str(), lg, lt, error, abundance, num_attributes, attributes );
+  }
+
+  delete portal;
+  portal = 0;
+  delete _te_url_parser;
+
+  _loaded = true;
+
+  return true;
 }

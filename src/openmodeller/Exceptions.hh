@@ -131,7 +131,6 @@ public:
   {}
 };
 
-
 //
 // RasterException -- thrown in the library when 
 // there is an issue with a raster.
@@ -139,6 +138,17 @@ public:
 class RasterException : public OmException {
 public:
   RasterException( const std::string& msg ) :
+    OmException( msg )
+  {}
+};
+
+//
+// OccurrencesReaderException -- thrown in the library when 
+// there is an issue when reading occurrences data.
+//
+class OccurrencesReaderException : public OmException {
+public:
+  OccurrencesReaderException( const std::string& msg ) :
     OmException( msg )
   {}
 };

@@ -105,6 +105,7 @@ FIND_PACKAGE(GSL)
 FIND_PACKAGE(X11)
 FIND_PACKAGE(Sqlite3)
 FIND_PACKAGE(TerraLib)
+FIND_PACKAGE(CURL)      # note: minimum version is 7.15.4
 
 # python support:
 #INCLUDE (Python) # file cmake/Python.cmake
@@ -150,6 +151,10 @@ ENDIF (CMAKE_BUILD_TYPE MATCHES Debug)
 IF (TERRALIB_FOUND)
   ADD_DEFINITIONS(-DTERRALIB_FOUND=\\"TRUE\\")
 ENDIF (TERRALIB_FOUND)
+
+IF (CURL_FOUND)
+  ADD_DEFINITIONS(-DCURL_FOUND=\\"TRUE\\")
+ENDIF (CURL_FOUND)
 
 #############################################################
 # platform specific stuff

@@ -53,10 +53,6 @@ void modelCallback( float progress, void * extra_param );
 int
 main( int argc, char **argv )
 {
-#ifdef TERRALIB_FOUND
-  USE_TERRALIB_IO
-#endif
-
   char * path = 0;
 
   // Reconfigure the global logger.

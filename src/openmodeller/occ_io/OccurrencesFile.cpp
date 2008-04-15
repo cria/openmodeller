@@ -44,8 +44,6 @@ using std::vector;
 #include <io.h>
 #define strcasecmp _stricmp
 
-// Default coordinate system for occurrence points.
-//
 #define open	_open
 #define close	_close
 #define fdopen  _fdopen
@@ -57,11 +55,11 @@ using std::vector;
 
 /*******************/
 /*** Constructor ***/
-OccurrencesFile::OccurrencesFile( const char *file_name,
-				  const char *coord_system )
+OccurrencesFile::OccurrencesFile( const char *source, const char *coordSystem )
 {
-  _coord_system = (char *) coord_system;
-  loadOccurrences( file_name );
+  _source = (char *) source; // should be a file name
+
+  _coord_system = (char *) coordSystem;
 }
 
 
@@ -74,19 +72,24 @@ OccurrencesFile::~OccurrencesFile()
 
 /***********************/
 /*** load Ocurrences ***/
-int
-OccurrencesFile::loadOccurrences( const char *file_name )
+bool
+OccurrencesFile::load()
 {
-  // Opens the input file.
-  FILE *file = fopen( file_name, "r" );
+  if ( _loaded ) {
 
-  if ( ! file )
-  {
-    Log::instance()->error( "Can't open file %s.\n", file_name );
-    return 0;
+    return true;
   }
 
-  Log::instance()->debug( "Reading occurrences from file %s.\n", file_name );
+  // Opens the input file.
+  FILE *file = fopen( _source, "r" );
+
+  if ( ! file ) {
+
+    Log::instance()->error( "Can't open file %s.\n", _source );
+    return false;
+  }
+
+  Log::instance()->debug( "Reading occurrences from file %s.\n", _source );
 
   // Fixme: read this from file.
   Scalar error     	= -1.0;
@@ -105,38 +108,41 @@ OccurrencesFile::loadOccurrences( const char *file_name )
   char line[line_len];
   char *pos;
 
-  while ( fgets( line, line_len, file ) )
-  {
+  while ( fgets( line, line_len, file ) ) {
+
     // Remove \r that DOS loves to use.
     pos = strchr( line, '\r' );
-    if ( pos )
-    {
+
+    if ( pos ) {
+
       *pos = '\0';
     }
 
-    if ( *line != '#' && sscanf( line, "%[^\t] %[^\t] %lf %lf %u", id, label, &x, &y, &abundance ) == 5 )
-    {
+    if ( *line != '#' && sscanf( line, "%[^\t] %[^\t] %lf %lf %u", id, label, &x, &y, &abundance ) == 5 ) {
+
       Coord lg = Coord( x );
       Coord lt = Coord( y );
 
-      addOccurrence( id, label, lg, lt, error, (Scalar)abundance, num_attributes, attributes );
+      _addOccurrence( id, label, lg, lt, error, (Scalar)abundance, num_attributes, attributes );
     }
-    else if ( *line != '#' && sscanf( line, "%[^\t] %[^\t] %lf %lf", id, label, &x, &y ) == 4 )
-    {
+    else if ( *line != '#' && sscanf( line, "%[^\t] %[^\t] %lf %lf", id, label, &x, &y ) == 4 ) {
+
       // When no abundance is provided, assume 1 (single presence)
 
       Coord lg = Coord( x );
       Coord lt = Coord( y );
 
-      addOccurrence( id, label, lg, lt, error, 1.0, num_attributes, attributes );
+      _addOccurrence( id, label, lg, lt, error, 1.0, num_attributes, attributes );
     }
-    else
-    {
-	Log::instance()->debug( "Skipping line: %s\n", line );
+    else {
+
+      Log::instance()->debug( "Skipping line: %s\n", line );
     }
   }
 
   fclose( file );
 
-  return 1;
+  _loaded = true;
+
+  return true;
 }

@@ -1,5 +1,5 @@
 /**
- * Se an OpenModeller object reading parameters from a request file.
+ * Class to read model creation/projection parameters from a request file and run om.
  * 
  * @author Mauro E S Muñoz (mauro@cria.org.br)
  * @date   2004-06-22
