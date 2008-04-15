@@ -60,6 +60,8 @@ OccurrencesFile::OccurrencesFile( const char *source, const char *coordSystem )
   _source = (char *) source; // should be a file name
 
   _coord_system = (char *) coordSystem;
+
+  _loaded = false;
 }
 
 

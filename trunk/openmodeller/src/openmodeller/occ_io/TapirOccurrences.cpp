@@ -95,6 +95,8 @@ TapirOccurrences::TapirOccurrences( const char *source, const char *coordSystem 
     throw OccurrencesReaderException( "Could not initialize libcurl" );
   }
 
+  _loaded = false;
+
   _source = (char *) source; // TAPIR endpoint
 
   _coord_system = (char *) coordSystem;
@@ -413,7 +415,7 @@ TapirOccurrences::getPresences( const char *groupId )
   // If group was not specified, return empty set
   if ( ! groupId ) {
 
-    return OccurrencesPtr(); 
+    return new OccurrencesImpl( 1 );
   }
 
   LstOccurrences::iterator ocs = _presences.begin();

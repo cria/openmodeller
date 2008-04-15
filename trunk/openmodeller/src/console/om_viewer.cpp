@@ -75,14 +75,15 @@ int
 main( int argc, char **argv )
 {
   // Reconfigure the global logger.
-  Log::instance()->setLevel( Log::Error );
+  Log::instance()->setLevel( Log::Info );
   Log::instance()->setPrefix( "" );
 
-  if ( argc < 2 )
-    {
+  if ( argc < 2 ) {
+
       Log::instance()->info( "\n%s [-r] <request>\n\n", argv[0] );
       exit( 1 );
-    }
+  }
+
   Log::instance()->info( "\nopenModeller Viewer - CRIA\n" );
 
   int show_map  = strcmp( argv[1], "-r" );
@@ -91,6 +92,7 @@ main( int argc, char **argv )
   try {
 
     FileParser fp( request );
+
     if ( show_map ) {
 
       // Maps to be shown.
@@ -107,6 +109,7 @@ main( int argc, char **argv )
       vector<string> mapfile = fp.getAll( "Map" );
       
       for ( int i = 0; i < _nmap; i++ ) {
+
          // Generate a raster using map "i".
          _maps[i] = new Map( RasterFactory::instance().create( mapfile[i] ) );
          //_maps[i]->normalize( 0.0, 255.0 );
@@ -117,6 +120,7 @@ main( int argc, char **argv )
 
       _nmap = 1;
       _maps = new Map * [_nmap];
+
       string result = fp.get( "Output file" );
 
       if ( result.empty() ) {
@@ -143,7 +147,6 @@ main( int argc, char **argv )
     }
 
     Log::instance()->info( "Dimensions: %d x %d\n", dimx, dimy );
-
 
     // Occurrences file.
     string oc_cs   = fp.get( "WKT Coord System" );

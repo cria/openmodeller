@@ -102,7 +102,7 @@ public:
    * @return Pointer to occurrences of the specified group. If the group was not found
    *         or not specified, an empty OccurrencesPtr is returned.
    */
-  OccurrencesPtr getAbsences( const char *groupId ) { return OccurrencesPtr(); }
+  OccurrencesPtr getAbsences( const char *groupId ) { return new OccurrencesImpl( 0 ); }
 
 private:
 
