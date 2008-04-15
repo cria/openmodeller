@@ -13,7 +13,7 @@ rm -rf fakeroot
 mkdir fakeroot
 cd fakeroot
 #get the name of every installed file as listed in the manifest
-for FILE in `cat ../../build/install_manifest.txt`; do 
+for FILE in `cat ../../build_universal/install_manifest.txt`; do 
   # get just the dir part of the name
   DIR=`dirname $FILE`
   # strip off the leading slash

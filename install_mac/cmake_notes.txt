@@ -1,6 +1,10 @@
 For building with universal libs
 
-export LIB_DIR=/usr/local/qgis_universal_deps; ccmake -DCMAKE_INSTALL_PREFIX=/usr/local -DCMAKE_OSX_ARCHITECTURES="i386;ppc" -DQT_QMAKE_EXECUTEABLE=${LIB_DIR}/bin/qmake -DGDAL_CONFIG=${LIB_DIR}/bin/gdal-config -DGDAL_CONFIG_PREFER_PATH=${LIB_DIR}/bin/ -DGDAL_INCLUDE_DIR=${LIB_DIR}/include -DGDAL_LIBRARY=${LIB_DIR}/lib/libgdal.dylib -DGSL_CONFIG=${LIB_DIR}/bin/gsl-config -DGSL_CONFIG_PREFER_PATH=${LIB_DIR}/bin  ..
+export LIB_DIR=/usr/local/qgis_universal_deps; ccmake -DCMAKE_INSTALL_PREFIX=/usr/local/openmodeller -DCMAKE_OSX_ARCHITECTURES="i386;ppc" ..
+
+Or as above but to generate an xcode project:
+
+export LIB_DIR=/usr/local/qgis_universal_deps; ccmake -DCMAKE_INSTALL_PREFIX=/usr/local/openmodeller -DCMAKE_OSX_ARCHITECTURES="i386;ppc" -G Xcode  ..
 
 For some reason libexpat is linked using a relative path so you should change this
 
