@@ -40,6 +40,7 @@ ELSE(WIN32)
     SET(GDAL_CONFIG_PREFER_PATH "$ENV{GDAL_HOME}/bin" CACHE STRING "preferred path to GDAL (gdal-config)")
     SET(GDAL_CONFIG_PREFER_FWTOOLS_PATH "$ENV{FWTOOLS_HOME}/bin_safe" CACHE STRING "preferred path to GDAL (gdal-config) from FWTools")
     FIND_PROGRAM(GDAL_CONFIG gdal-config
+      $ENV{LIB_DIR}/bin
       ${GDAL_CONFIG_PREFER_PATH}
       ${GDAL_CONFIG_PREFER_FWTOOLS_PATH}
       ${GDAL_MAC_PATH}

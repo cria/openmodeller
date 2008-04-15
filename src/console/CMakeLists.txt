@@ -105,7 +105,7 @@ ADD_EXECUTABLE (om_testmodel ${OMTESTMODEL_SRCS})
 TARGET_LINK_LIBRARIES(om_testmodel openmodeller)
 
 if (X11_FOUND)
-  MESSAGE ("Building with X11 includes at ${X11_INCLUDE_DIR}...")
+  #MESSAGE ("Building with X11 includes at ${X11_INCLUDE_DIR}...")
   INCLUDE_DIRECTORIES(
     ${INCLUDE_DIRECTORIES}
     ${CMAKE_CURRENT_SOURCE_DIR}/graph
