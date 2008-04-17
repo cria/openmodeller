@@ -71,13 +71,13 @@ IF (TERRALIB_FOUND)
     )
 ENDIF (TERRALIB_FOUND)
 
-IF (CURL_FOUND)
+IF (CURL_FOUND AND WITH_TAPIR_CLIENT)
 
   SET(OM_CORE_SRCS
       ${OM_CORE_SRCS}
       occ_io/TapirOccurrences.cpp
     )
-ENDIF (CURL_FOUND)
+ENDIF (CURL_FOUND AND WITH_TAPIR_CLIENT) 
 
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR} 
   env_io 
@@ -177,12 +177,12 @@ occ_io/OccurrencesFile.hh
 occ_io/OccurrencesReader.hh
 )
 
-IF (CURL_FOUND)
+IF (CURL_FOUND AND WITH_TAPIR_CLIENT)
   SET(OM_OCCIO_HDRS
       ${OM_OCCIO_HDRS}
       occ_io/TapirOccurrences.hh
      )
-ENDIF (CURL_FOUND)
+ENDIF (CURL_FOUND AND WITH_TAPIR_CLIENT)
 
 SET (OM_ENVIO_HDRS
 env_io/GeoTransform.hh
