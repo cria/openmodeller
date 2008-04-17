@@ -1,7 +1,7 @@
 PROJECT(openModeller)
 SET(OM_MAJOR_VERSION "0")
-SET(OM_MINOR_VERSION "5")
-SET(OM_PATCH_VERSION "3")
+SET(OM_MINOR_VERSION "6")
+SET(OM_PATCH_VERSION "0")
 
 
 #############################################################
@@ -28,6 +28,8 @@ SET (OM_DEBUG_MEMORY FALSE CACHE BOOL "Output log messages to help debugging mem
 SET (OM_CTEST FALSE CACHE BOOL "Build unit tests")
 
 SET (WITH_PROFILING FALSE CACHE BOOL "Add profiling symbols to build products (-pg)")
+
+SET (WITH_TAPIR_CLIENT TRUE CACHE BOOL "Build the Tapir occ_io provider (requires curl version >= xxx")
 
 #############################################################
 IF (OM_CTEST)
