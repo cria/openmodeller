@@ -35,6 +35,8 @@
 #ifndef _OM_CHISQUARE_
 #define _OM_CHISQUARE_
 
+#include "PreAlgorithm.hh"
+
 #include <openmodeller/om.hh>
 #include <openmodeller/Exceptions.hh>
 #include <openmodeller/Sample.hh>
@@ -42,7 +44,7 @@
 
 #define classLimit 16
 
-class dllexp ChiSquare 
+class dllexp ChiSquare : public PreAlgorithm 
 {
   private:
     size_t	num_points;		  // number of points.
@@ -59,11 +61,23 @@ class dllexp ChiSquare
 
   public:
 
-    ChiSquare(SamplerPtr samplerPtr); //constructor
+    ChiSquare(); //constructor
     ~ChiSquare(); //destructor
 
+    //Checks if the supplied parameters fits the requirements of PRE algorithm implementation.
+    //return true if the parameters are OK. false if not.
+	bool CheckParameters( const PreParameters& parameters ) const;
+
+    //Runs the current algorithm implementation.
+    //return true if OK. false on error.
+    bool RunImplementation();
+
+    //Reset the internal state to the initial state.
+  ////  void ResetState( const TePreParameters& params );
+    void ResetState( PreParameters& params );
+
     //initialize attributes: num_points, num_layers, nclass, minimum, delta, my_presences.
-    void init(SamplerPtr samplerPtr);
+    void Init();
 
     //get number of points.
     size_t getNpoints();

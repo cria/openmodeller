@@ -52,6 +52,48 @@ Jackknife::~Jackknife()
 {
 }
 
+bool 
+Jackknife::CheckParameters( const PreParameters& parameters ) const
+{
+  SamplerPtr samplerPtr;
+  if( ! parameters.retrive( "Sampler", samplerPtr ) ) 
+  {
+     Log::instance()->error( "Missing parameter: Sampler. \n" );
+     return false;
+  }
+
+  AlgorithmPtr algorithmPtr;
+  if( !parameters.retrive( "Algorithm", algorithmPtr ) )
+  {
+     Log::instance()->error( "Missing parameter: Algorithm. \n" );
+     return false;
+  }
+  return true;
+}
+
+bool 
+Jackknife::RunImplementation()
+{
+  SamplerPtr samplerPtr;
+  params_.retrive( "Sampler", samplerPtr );
+
+  AlgorithmPtr algorithmPtr;
+  params_.retrive( "Algorithm", algorithmPtr );
+
+  double mean=0.0;
+
+  run( samplerPtr, algorithmPtr, 0.90 );
+
+  return true;
+}
+
+void
+Jackknife::ResetState( PreParameters& params )
+{
+	params.clear();
+    params = params_;
+}
+
 /***********/
 /*** run ***/
 void Jackknife::run( SamplerPtr samplerPtr, AlgorithmPtr algorithmPtr, double propTrain )
@@ -93,11 +135,11 @@ void Jackknife::run( SamplerPtr samplerPtr, AlgorithmPtr algorithmPtr, double pr
 
   conf_matrix.calculate( algorithm_ptr->getModel(), testing_sampler );
 
-  double param = conf_matrix.getAccuracy(); // <------ output 1
+  double out_param = conf_matrix.getAccuracy(); // <------ output 1
 
   // Calculate reference parameter for each layer by excluding it from the layer set
 
-  std::multimap<double, int> params; // <------ output 2
+  std::multimap<double, int> out_params; // <------ output 2
 
   double mean = 0.0;                 // <------ output 3
   double variance = 0.0;             // <------ output 4
@@ -202,7 +244,7 @@ void Jackknife::run( SamplerPtr samplerPtr, AlgorithmPtr algorithmPtr, double pr
 
     mean += myaccuracy;
 
-    params.insert( std::pair<double, int>( myaccuracy, i ) );
+    out_params.insert( std::pair<double, int>( myaccuracy, i ) );
 
 // Code for debugging:
 
@@ -227,14 +269,14 @@ void Jackknife::run( SamplerPtr samplerPtr, AlgorithmPtr algorithmPtr, double pr
 //     break;
   }
 
-  Log::instance()->debug( "With all layers: %f\n", param );
+  Log::instance()->debug( "With all layers: %f\n", out_param );
 
   EnvironmentPtr environment_ptr = samplerPtr->getEnvironment();
   
   mean /= num_layers;
   
-  std::multimap<double, int>::const_iterator it = params.begin();
-  std::multimap<double, int>::const_iterator end = params.end();
+  std::multimap<double, int>::const_iterator it = out_params.begin();
+  std::multimap<double, int>::const_iterator end = out_params.end();
   for ( ; it != end; ++it ) {
 
     Log::instance()->debug( "Without layer %d: %f (%s)\n", (*it).second, (*it).first, (environment_ptr->getLayerPath( (*it).second )).c_str() );
@@ -253,11 +295,19 @@ void Jackknife::run( SamplerPtr samplerPtr, AlgorithmPtr algorithmPtr, double pr
 
   Log::instance()->debug( "Standard deviation = %f\n", std_deviation );
 
-  jackknife_bias = (num_layers - 1)*(mean - param);
+  jackknife_bias = (num_layers - 1)*(mean - out_param);
 
-  jackknife_estimate = param - jackknife_bias;
+  jackknife_estimate = out_param - jackknife_bias;
 
   Log::instance()->debug( "Jackknife estimate = %f\n", jackknife_estimate );
 
   Log::instance()->debug( "Jackknife bias = %f\n", jackknife_bias );
+
+  params_.store( "out_param", out_param );
+  params_.store( "out_params", out_params );
+  params_.store( "out_Mean", mean );
+  params_.store( "out_Variance", variance );
+  params_.store( "out_Deviation", std_deviation );
+  params_.store( "out_Estimate", jackknife_estimate ); 
+  params_.store( "out_Bias", jackknife_bias ); 
 }

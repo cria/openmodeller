@@ -27,13 +27,15 @@
 #ifndef _OM_JACKKNIFE_
 #define _OM_JACKKNIFE_
 
+#include "PreAlgorithm.hh"
+
 #include <openmodeller/Sampler.hh>
 #include <openmodeller/Algorithm.hh>
 
 /**
  * Jackknife class
  */
-class dllexp Jackknife
+class dllexp Jackknife : public PreAlgorithm 
 {
 public:
   /** 
@@ -46,13 +48,24 @@ public:
    */
   ~Jackknife();
 
+   //Checks if the supplied parameters fits the requirements of PRE algorithm implementation.
+   //return true if the parameters are OK. false if not.
+   bool CheckParameters( const PreParameters& parameters ) const;
+
+   //Runs the current algorithm implementation.
+   //return true if OK. false on error.
+   bool RunImplementation();
+
+   //Reset the params state to the params_ state.
+   void ResetState( PreParameters& params );
+
   /** 
    * Run jackknife.
    * @param samplerPtr Sampler with environment and points.
    * @param algorithmPtr Algorithm to be used.
    * @param propTrain Training/test proportion for the points.
    */
-  void run( SamplerPtr samplerPtr, AlgorithmPtr algorithmPtr, double propTrain );
+   void run( SamplerPtr samplerPtr, AlgorithmPtr algorithmPtr, double propTrain );
 
 };
 

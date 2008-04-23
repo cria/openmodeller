@@ -27,9 +27,90 @@
 #include <stdio.h>
 #include <math.h>
 
-ChiSquare::ChiSquare(SamplerPtr samplerPtr) //constructor
+ChiSquare::ChiSquare() //constructor
 {
-  init(samplerPtr);
+}
+
+ChiSquare::~ChiSquare() //destructor
+{
+  if (statistic1 != NULL)
+  {
+    delete [] statistic1; 
+    statistic1=NULL;
+  }
+  if (statistic2 != NULL)
+  {
+    delete [] statistic2; 
+    statistic2=NULL;
+  }
+}
+
+bool 
+ChiSquare::CheckParameters( const PreParameters& parameters ) const
+{
+  SamplerPtr samplerPtr;
+  if( ! parameters.retrive( "Sampler", samplerPtr ) ) 
+  {
+     Log::instance()->error( "Missing parameter: Sampler. \n" );
+     return false;
+   }
+
+   if ( ! samplerPtr->getEnvironment() ) 
+   {
+     std::string msg = "Sampler has no environment.\n";
+
+     Log::instance()->error( msg.c_str() );
+
+     throw InvalidParameterException( msg );
+   }
+   return true;
+}
+
+bool 
+ChiSquare::RunImplementation()
+{
+  size_t layer1, layer2;
+
+  Init();
+
+  for( layer1 = 0; layer1 < num_layers; layer1++ ) 
+  {
+    statistic1[layer1] = 0;
+    statistic2[layer1] = 0;
+  }
+
+  for( layer1 = 0; layer1 < num_layers; layer1++ ) 
+    for(layer2 = layer1+1; layer2 < num_layers; layer2++)
+    {
+      setMeasured(layer1, layer2);
+      setExpected();
+      setChicell();
+      setStatistic(layer1, layer2);
+    }
+  return true;
+}
+
+void
+ChiSquare::ResetState( PreParameters& params )
+{
+
+}
+
+void 
+ChiSquare::Init()
+{
+  SamplerPtr samplerPtr;
+  params_.retrive( "Sampler", samplerPtr );
+
+  setNlayers(samplerPtr);
+
+  my_presences = samplerPtr->getPresences();
+
+  setNpoints();
+  setNclass();
+  setMinimum();
+  setDelta();
+
   if (nclass > classLimit)
   {
     Log::instance()->error( "ChiSquare: measured, expected, chicell: number of class > %d\n", classLimit );
@@ -51,60 +132,25 @@ ChiSquare::ChiSquare(SamplerPtr samplerPtr) //constructor
   }
 }
 
-ChiSquare::~ChiSquare() //destructor
-{
-  if (statistic1 != NULL)
-  {
-    delete [] statistic1; 
-    statistic1=NULL;
-  }
-  if (statistic2 != NULL)
-  {
-    delete [] statistic2; 
-    statistic2=NULL;
-  }
-}
-
-void ChiSquare::init(SamplerPtr samplerPtr)
-{
-  if ( ! samplerPtr->getEnvironment() ) 
-  {
-    std::string msg = "Sampler has no environment.\n";
-
-    Log::instance()->error( msg.c_str() );
-
-    throw InvalidParameterException( msg );
-  }
-
-  setNlayers(samplerPtr);
-
-  my_presences = samplerPtr->getPresences();
-
-  setNpoints();
-  setNclass();
-  setMinimum();
-  setDelta();
-}
-
-  size_t
+size_t
 ChiSquare::getNpoints()
 {
   return num_points;
 }
 
-  void 
+void 
 ChiSquare::setNpoints()
 {
   num_points = my_presences->numOccurrences();
 }
 
-  size_t 
+size_t 
 ChiSquare::getNlayers()
 {
   return num_layers;
 }
 
-  void 
+void 
 ChiSquare::setNlayers(SamplerPtr samplerPtr)
 {
   num_layers = samplerPtr->numIndependent();
@@ -119,19 +165,19 @@ ChiSquare::setNlayers(SamplerPtr samplerPtr)
   }
 }
 
-  size_t 
+size_t 
 ChiSquare::getNclass()
 {
   return nclass;
 }
 
-  void 
+void 
 ChiSquare::setNclass()
 {
   nclass = (size_t)floor(sqrt((double)(num_points)));
 }
 
-  void 
+void 
 ChiSquare::setMinimum()
 {
   OccurrencesImpl::iterator it = my_presences->begin(); 
@@ -148,13 +194,13 @@ ChiSquare::setMinimum()
   }
 }
 
-  Sample 
+Sample 
 ChiSquare::getMinimum()
 {
   return minimum;
 }
 
-  void 
+void 
 ChiSquare::setDelta()
 {
   OccurrencesImpl::iterator it = my_presences->begin(); 
@@ -174,13 +220,13 @@ ChiSquare::setDelta()
   delta /= (Scalar)nclass;
 }
 
-  Sample 
+Sample 
 ChiSquare::getDelta()
 {
   return delta;
 }
 
-  void 
+void 
 ChiSquare::setMeasured(size_t layer1, size_t layer2)
 {
   OccurrencesImpl::iterator it = my_presences->begin(); 
@@ -207,7 +253,7 @@ ChiSquare::setMeasured(size_t layer1, size_t layer2)
     ++it;
   }
 }
-  void 
+void 
 ChiSquare::setExpected()
 {
   size_t i, j;
@@ -235,7 +281,7 @@ ChiSquare::setExpected()
     for (j = 0; j < nclass; j++)
       expected[i][j] = col_sum[i] * row_sum[j] / sum;
 }
-  void 
+void 
 ChiSquare::setChicell()
 {
   size_t i, j;
@@ -252,7 +298,7 @@ ChiSquare::setChicell()
       }
 }
 
-  void 
+void 
 ChiSquare::setStatistic(size_t layer1, size_t layer2)
 {
   size_t i, j;
@@ -270,28 +316,7 @@ ChiSquare::setStatistic(size_t layer1, size_t layer2)
   }
 }
 
-  void
-ChiSquare::run()
-{
-  size_t layer1, layer2;
-
-  for( layer1 = 0; layer1 < num_layers; layer1++ ) 
-  {
-    statistic1[layer1] = 0;
-    statistic2[layer1] = 0;
-  }
-
-  for( layer1 = 0; layer1 < num_layers; layer1++ ) 
-    for(layer2 = layer1+1; layer2 < num_layers; layer2++)
-    {
-      setMeasured(layer1, layer2);
-      setExpected();
-      setChicell();
-      setStatistic(layer1, layer2);
-    }
-}
-
-  void 
+void 
 ChiSquare::showResult()
 {
   size_t i;
