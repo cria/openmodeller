@@ -154,7 +154,7 @@ static AlgMetadata metadata = {
 
   "AquaMaps", // Id.
   "AquaMaps (beta version)", // Name.
-  "0.2", // Version.
+  "0.3", // Version.
 
   // Overview
   "Environmental envelope modelling algorithm for marine organisms. \
