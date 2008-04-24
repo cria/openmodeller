@@ -5,7 +5,7 @@
 /*! \mainpage openModeller
 
 \section index_intro Introduction
-\htmlonly<img src="om_icon_small.png" alt="openModeller"><a href="http://openmodeller.sf.net">openModeller</a>\endhtmlonly\latexonly openModeller \endlatexonly is a generic framework for carrying out fundamental niche modelling experiments - typically used to predict species distribution given a set of environmental raster layers and a set of known occurrence points. 
+\htmlonly<img src="http://openmodeller.cria.org.br/images/om_icon_small.png" alt="openModeller"><a href="http://openmodeller.sf.net">openModeller</a>\endhtmlonly\latexonly openModeller \endlatexonly is a generic framework for carrying out fundamental niche modelling experiments - typically used to predict species distribution given a set of environmental raster layers and a set of known occurrence points. 
 
 \section index_maillist Mailing Lists
 <ul>
