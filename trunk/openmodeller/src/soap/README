@@ -45,7 +45,8 @@ CURRENT FUNCTIONALITY:
 COMPILING THE SERVER:
 ---------------------
 
-By default the SOAP server is not compiled. To enable it:
+By using cmake, the SOAP server is automatically compiled, but
+if you're using automake, you need to enable its compilation with:
 
  ./configure --enable-soap
  make
@@ -74,15 +75,15 @@ USE INSTRUCTIONS:
 
   ./om_soap_server 8085 10 &
 
-- To configure the server copy the "server.conf" file provided to a 
-  into directory called "config" (paralell to the directory where the 
+- To configure the server copy the "server.conf" sample file into a 
+  directory called "config" (paralell to the directory where the 
   server is going to run). Edit the file and make all necessary changes. 
   You'll probably need to create a directory that will store all job 
   tickets and another one to store all distribution maps. Bear in mind 
   that these directories will need to be writtable by the user running 
   the server (eg. apache, or www-data if running as a CGI under apache).
 
-  For instance, if running as a CGI:
+  For instance, if running as a CGI in /var/www/cgi-bin/:
 
   # Create config dir
   mkdir /var/www/config
@@ -121,8 +122,8 @@ USE INSTRUCTIONS:
   on the path of the user who will run crontab, or you need to 
   edit scheduler.sh and hard-code the paths there.
 
-- Run the client to test your server (you'll need Perl and the 
-  SOAP::Lite module):
+- To test your server you can run a command-line client which is also 
+  included (you'll need Perl and the SOAP::Lite module):
 
   perl sampleClient.pl --server=http://localhost:8085/
 
@@ -134,10 +135,8 @@ USE INSTRUCTIONS:
 TODO-LIST:
 ----------
 
-- Find a way to track progress of model and map generation in a more 
-  refined way on the server side.
 - Find a way to check if a job finished correctly or not.
-- Create new "cancelJob" request (need to change the library first).
+- Create new "cancelJob" request.
 - Include option to generate Condor job requests.
 - Include option to read maps from TerraLib databases on the server side.
 - Improve Perl client to read occurrences from species files.
