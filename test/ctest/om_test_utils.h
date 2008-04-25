@@ -37,55 +37,96 @@
 #include <sstream>
 #include <fstream>
 #include <string>
+#include <stdexcept>
 
-bool createModelRequest(){
-	try 
-	{
-		//Note that EXAMPLE_DIR and TEST_DATA_DIR is a compiler define 
-		//created by CMakeLists.txt
-		std::string myConfigFile(TEST_DATA_DIR);
-		myConfigFile.append("/model_request.xml");
-		//read in the file, replace all instances of token [EXAMPLE_DIR]
-		//and [TEST_DATA_DIR] with those provided by the compiler defines
-		//then save the file to the /tmp dir and use that as the model 
-		//configuration file.
-		std::string myExamplesToken("[EXAMPLE_DIR]");
-		std::string myTestDataToken("[TEST_DATA_DIR]");
-		std::string myExamplesValue(EXAMPLE_DIR);
-		myExamplesValue.append("/");
-		std::string myTestDataValue(TEST_DATA_DIR);
-		myTestDataValue.append("/");
-		std::ifstream myInFile (myConfigFile.c_str(), std::ios_base::in);
-		std::string myInFileName("/tmp/model_request.xml");
-		std::ofstream myOutFile(myInFileName.c_str());
-		std::string myLine;
-		while (getline(myInFile,myLine,'\n'))
-		{
-			std::string::size_type myPos=0;
-			while ( (myPos = myLine.find(myExamplesToken,myPos)) != std::string::npos)
-			{
-				std::cout << "Replacing examples token at : " << myPos << "\n";
-				myLine.replace( myPos, myExamplesToken.length(), myExamplesValue );
-			}
-			myPos=0;
-			while ( (myPos = myLine.find(myTestDataToken,myPos)) != std::string::npos)
-			{
-				std::cout << "Replacing test data token at : " << myPos << "\n";
-				myLine.replace( myPos, myTestDataToken.length(), myTestDataValue );
-			}
-			myOutFile << myLine.c_str();;
-		}
-		myInFile.close();
-		myOutFile.close();
-                return true;
-	}
-	catch( std::exception& e ) {
-		std::string myError("Exception caught!\n");
-		std::cout << "Exception caught!" << std::endl;
-		std::cout << e.what() << std::endl;
-		myError.insert(myError.length(),e.what());
-		return false;
-	}
+std::string prepareTempFile( std::string templateFileName ) {
+
+  try 
+  {
+    std::string myInFileName(TEST_DATA_DIR);
+    myInFileName.append( "/" );
+    myInFileName.append( templateFileName );
+
+    //read in the file, replace all instances of token [EXAMPLE_DIR]
+    //and [TEST_DATA_DIR] with those provided by the compiler defines
+    //then save the file to the /tmp dir and use that as the model 
+    //configuration file.
+    std::ifstream myInFile( myInFileName.c_str(), std::ios_base::in );
+
+    if ( myInFile.fail() ) {
+
+      std::string msg( "Could not open template file: " );
+      msg.append( myInFileName );
+      throw std::runtime_error( msg.c_str() );
+    }
+
+    std::string myOutFileName( "/tmp/" );
+    myOutFileName.append( templateFileName );
+
+    // Check if temporary file already exists
+    std::fstream myOutFileTempHandle;
+    myOutFileTempHandle.open( myOutFileName.c_str(), std::ios_base::in );
+
+    if ( myOutFileTempHandle.is_open() ) {
+
+      // Do nothing is temp file exists
+      myOutFileTempHandle.close();
+      return myOutFileName;
+    }
+
+    myOutFileTempHandle.close();
+
+    // Create temporary file
+    std::ofstream myOutFile( myOutFileName.c_str() );
+
+    if ( myOutFile.fail() ) {
+
+      myInFile.close();
+      std::string msg( "Could not open temporary file: " );
+      msg.append( myOutFileName );
+      throw std::runtime_error( msg.c_str() );
+    }
+
+    // Tokens
+    std::string myExamplesToken("[EXAMPLE_DIR]");
+    std::string myTestDataToken("[TEST_DATA_DIR]");
+    std::string myExamplesValue( EXAMPLE_DIR );
+    std::string myTestDataValue( TEST_DATA_DIR );
+
+    std::string myLine;
+
+    while ( getline( myInFile, myLine ) ) {
+
+      std::string::size_type myPos = 0;
+
+      while ( ( myPos = myLine.find( myExamplesToken,myPos ) ) != std::string::npos ) {
+
+        myLine.replace( myPos, myExamplesToken.length(), myExamplesValue );
+      }
+
+      myPos=0;
+
+      while ( ( myPos = myLine.find( myTestDataToken,myPos ) ) != std::string::npos ) {
+
+        myLine.replace( myPos, myTestDataToken.length(), myTestDataValue );
+      }
+
+      myOutFile << myLine.c_str() << std::endl;
+    }
+
+    myInFile.close();
+    myOutFile.close();
+
+    return myOutFileName;
+  }
+  catch( std::exception& e ) {
+
+    std::string myError("Exception caught!\n");
+    std::cout << "Exception caught!" << std::endl;
+    std::cout << e.what() << std::endl;
+    myError.insert(myError.length(),e.what());
+    return false;
+  }
 }
 
 #endif //TEST_UTILS_HH
