@@ -56,18 +56,21 @@ bool
 Jackknife::CheckParameters( const PreParameters& parameters ) const
 {
   SamplerPtr samplerPtr;
-  if( ! parameters.retrive( "Sampler", samplerPtr ) ) 
-  {
-     Log::instance()->error( "Missing parameter: Sampler. \n" );
-     return false;
+
+  if ( ! parameters.retrive( "Sampler", samplerPtr ) ) {
+
+    Log::instance()->error( "Missing parameter: Sampler. \n" );
+    return false;
   }
 
   AlgorithmPtr algorithmPtr;
-  if( !parameters.retrive( "Algorithm", algorithmPtr ) )
-  {
-     Log::instance()->error( "Missing parameter: Algorithm. \n" );
-     return false;
+
+  if ( ! parameters.retrive( "Algorithm", algorithmPtr ) ) {
+
+    Log::instance()->error( "Missing parameter: Algorithm. \n" );
+    return false;
   }
+
   return true;
 }
 
@@ -80,7 +83,7 @@ Jackknife::RunImplementation()
   AlgorithmPtr algorithmPtr;
   params_.retrive( "Algorithm", algorithmPtr );
 
-  double mean=0.0;
+  // TODO: get threshold parameter
 
   run( samplerPtr, algorithmPtr, 0.90 );
 
@@ -90,8 +93,8 @@ Jackknife::RunImplementation()
 void
 Jackknife::ResetState( PreParameters& params )
 {
-	params.clear();
-    params = params_;
+  params.clear();
+  params = params_;
 }
 
 /***********/
