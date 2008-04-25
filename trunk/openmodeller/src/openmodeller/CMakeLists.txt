@@ -43,6 +43,8 @@ SET(OM_CORE_SRCS
   occ_io/OccurrencesFactory.cpp 
   occ_io/OccurrencesFile.cpp 
   occ_io/OccurrencesReader.cpp 
+  pre/PreParameters.cpp
+  pre/PreAlgorithm.cpp
   pre/Jackknife.cpp
   pre/ChiSquare.cpp
 )
@@ -214,6 +216,9 @@ IF (TERRALIB_FOUND)
 ENDIF (TERRALIB_FOUND)
 
 SET (OM_PRE_HDRS
+pre/PreMultiContainer.hh
+pre/PreParameters.hh
+pre/PreAlgorithm.hh
 pre/Jackknife.hh
 pre/ChiSquare.hh
 )
