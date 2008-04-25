@@ -141,7 +141,7 @@ TARGET_LINK_LIBRARIES(pre_test_jackknife openmodeller)
 ADD_TEST(pre_test_jackknife ${EXECUTABLE_OUTPUT_PATH}/pre_test_jackknife)
 
 #ChiSquare Tests
-SET (OM_TEST_CHISQUARE_SRCS om_test_chisquare.cpp)
-ADD_EXECUTABLE (om_test_chisquare ${OM_TEST_CHISQUARE_SRCS})
-TARGET_LINK_LIBRARIES(om_test_chisquare openmodeller)
-ADD_TEST(om_test_chisquare ${EXECUTABLE_OUTPUT_PATH}/om_test_chisquare)
+SET (PRE_TEST_CHISQUARE_SRCS pre_test_chisquare.cpp)
+ADD_EXECUTABLE (pre_test_chisquare ${PRE_TEST_CHISQUARE_SRCS})
+TARGET_LINK_LIBRARIES(pre_test_chisquare openmodeller)
+ADD_TEST(pre_test_chisquare ${EXECUTABLE_OUTPUT_PATH}/pre_test_chisquare)
