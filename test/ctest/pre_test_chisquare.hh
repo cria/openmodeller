@@ -1,9 +1,7 @@
 /**
  * Test class for ChiSquare
  *
- * adapted from om_test_chisquare (Missae - DPI/INPE - 2008/April)
- * 
- * @authors Renato De Giovanni and Albert Massayuki Kuniyoshi 
+ * @authors Renato De Giovanni, Albert Massayuki Kuniyoshi and Missae
  * $Id: om_test_chisquare.h 4118 2008-03-12 17:18:58Z rdg $
  *
  * LICENSE INFORMATION
@@ -31,8 +29,21 @@
  */
 
 
-#ifndef TEST_CHISQUARE_HH
-#define TEST_CHISQUARE_HH
+#ifndef TEST_PRE_CHISQUARE_HH
+#define TEST_PRE_CHISQUARE_HH
+
+#include "cxxtest/TestSuite.h"
+#include <openmodeller/Configuration.hh>
+#include <openmodeller/Exceptions.hh>
+#include <openmodeller/Sample.hh>
+#include <openmodeller/om.hh>
+#include <openmodeller/pre/PreParameters.hh>
+#include <openmodeller/pre/ChiSquare.hh>
+#include <om_test_utils.h>
+#include <iostream>
+#include <sstream>
+#include <fstream>
+#include <string>
 
 class MyLog : public Log::LogCallback 
 {
@@ -40,6 +51,62 @@ class MyLog : public Log::LogCallback
   {
     std::cout << msg;
   }
+};
+
+class test_ChiSquare : public CxxTest :: TestSuite 
+{
+  public:
+
+    void setUp (){
+    }
+
+    void tearDown (){
+    }
+
+    void test1 (){
+
+      std::cout << std::endl;
+      std::cout << "Testing chi-square..." << std::endl;
+
+      try {
+        
+        //
+        // Go on to do the test now...
+        //
+
+        Log::instance()->setLevel( Log::Debug );
+        Log::instance()->setCallback( new MyLog() );
+
+        std::ostringstream myOutputStream ;
+        AlgorithmFactory::searchDefaultDirs();
+        OpenModeller om;
+
+        //createModelRequest();
+        std::string myInFileName("/tmp/model_request.xml");
+        ConfigurationPtr c1 = Configuration::readXml( myInFileName.c_str() );
+        om.setModelConfiguration(c1);
+
+        PreParameters params;
+        params.store( "Sampler", om.getSampler() );
+
+        ChiSquare chi;
+
+        TS_ASSERT( chi.Reset( params ) );
+
+        TS_ASSERT( chi.Apply() );
+
+        chi.showResult();
+
+        return ;
+      }
+      catch( std::exception& e ) {
+        std::string myError("Exception caught!\n");
+        std::cout << "Exception caught!" << std::endl;
+        std::cout << e.what() << std::endl;
+        myError.insert(myError.length(),e.what());
+        return ;
+      }
+    }
 };
 
 #endif

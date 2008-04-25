@@ -1,60 +1,31 @@
+/* Generated file, do not edit */
 
-#include <openmodeller/pre/ChiSquare.hh>
-#include <openmodeller/pre/PreParameters.hh>
-#include <openmodeller/Log.hh>
-#include <openmodeller/Exceptions.hh>
+#ifndef CXXTEST_RUNNING
+#define CXXTEST_RUNNING
+#endif
 
-#include <pre_test_chisquare.hh>
-#include <openmodeller/Configuration.hh>
-#include <openmodeller/Sample.hh>
-#include <openmodeller/om.hh>
-#include <sstream>
+#define _CXXTEST_HAVE_STD
+#define _CXXTEST_HAVE_EH
+#include <cxxtest/TestListener.h>
+#include <cxxtest/TestTracker.h>
+#include <cxxtest/TestRunner.h>
+#include <cxxtest/RealDescriptions.h>
+#include <cxxtest/ErrorPrinter.h>
 
-void main ()
-{
-	std::cout << std::endl;
-	std::cout << "Testing chi-square..." << std::endl;
-	try 
-	{
-		Log::instance()->setLevel( Log::Debug );
-		Log::instance()->setCallback( new MyLog() );
-
-		std::ostringstream myOutputStream ;
-		AlgorithmFactory::searchDefaultDirs();
-		OpenModeller om;
-
-		std::string myInFileName("/tmp/model_request.xml");
-		ConfigurationPtr c1 = Configuration::readXml( myInFileName.c_str() );
-		om.setModelConfiguration(c1);
-
-		PreParameters params;
-		params.store( "Sampler", om.getSampler() );
-
-		ChiSquare chi;
-		if ( !chi.Reset( params ) )
-		{
-		   std::string msg = "chi.Reset: Invalid Parameters.\n";
-           Log::instance()->error( msg.c_str() );
-		   throw InvalidParameterException( msg );
-		}
-		if ( !chi.Apply() )
-		{
-		   std::string msg = "chi.Apply: Apply error.\n";
-           Log::instance()->error( msg.c_str() );
-		   throw InvalidParameterException( msg );
-		}
-		chi.showResult();
-
-		return ;
-	}
-	catch( std::exception& e ) 
-	{
-		std::string myError("Exception caught!\n");
-		std::cout << "Exception caught!" << std::endl;
-		std::cout << e.what() << std::endl;
-		myError.insert(myError.length(),e.what());
-		return ;
-	}
+int main() {
+ return CxxTest::ErrorPrinter().run();
 }
+#include "pre_test_chisquare.hh"
 
+static test_ChiSquare suite_test_ChiSquare;
 
+static CxxTest::List Tests_test_ChiSquare = { 0, 0 };
+CxxTest::StaticSuiteDescription suiteDescription_test_ChiSquare( "pre_test_chisquare.hh", 56, "test_ChiSquare", suite_test_ChiSquare, Tests_test_ChiSquare );
+
+static class TestDescription_test_ChiSquare_test1 : public CxxTest::RealTestDescription {
+public:
+ TestDescription_test_ChiSquare_test1() : CxxTest::RealTestDescription( Tests_test_ChiSquare, suiteDescription_test_ChiSquare, 66, "test1" ) {}
+ void runTest() { suite_test_ChiSquare.test1(); }
+} testDescription_test_ChiSquare_test1;
+
+#include <cxxtest/Root.cpp>
