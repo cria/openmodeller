@@ -22,8 +22,8 @@ for direct, indirect, special, incidental, or consequential damages arising
 out of the use of this library and its documentation.
 */
 
-#ifndef PREALGORITHM_HPP
-  #define PREALGORITHM_HPP
+#ifndef PREALGORITHM_HH
+  #define PREALGORITHM_HH
 
   #include <openmodeller/om.hh>
   #include "PreParameters.hh"
