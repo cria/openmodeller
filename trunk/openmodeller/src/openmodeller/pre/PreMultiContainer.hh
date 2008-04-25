@@ -21,14 +21,16 @@ indirect, special, incidental, or consequential damages arising out of the use
 of this library and its documentation.
 *************************************************************************************/
 
-/*   file TePreMultiContainer.h
- *   A container class to store multiple types os object copies.
- *   adapted from PDI (Digital Image Processing) to OM Pre-analysis (Missae & Emiliano - DPI/INPE - 2008/April)
-*/
+/*   A container class to store multiple types of object copies.
+ *   adapted from PDI (Digital Image Processing) to OM Pre-analysis 
+ *   (Missae & Emiliano - DPI/INPE - 2008/April)
+ */
 
 
 #ifndef PREMULTICONTAINER_HH
   #define PREMULTICONTAINER_HH
+
+  #include <openmodeller/Exceptions.hh>
   
   #include <time.h>
   
@@ -525,7 +527,7 @@ void PreMultiContainer< PreMultiContainerKeyT >::multiRetrive(
       
       temp_pair.first = container_it->first;
       temp_pair.second = 
-        ( *( ( ( TeMCNode< ObjectT, PreMultiContainerKeyT >* )
+        ( *( ( ( MCNode< ObjectT, PreMultiContainerKeyT >* )
         container_it->second )->getObjPtr() ) );
     
       objs_vector.push_back( temp_pair );      
