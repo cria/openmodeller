@@ -40,9 +40,6 @@
 #include <openmodeller/pre/PreParameters.hh>
 #include <openmodeller/pre/ChiSquare.hh>
 #include <om_test_utils.h>
-#include <iostream>
-#include <sstream>
-#include <fstream>
 #include <string>
 
 class MyLog : public Log::LogCallback 
@@ -77,14 +74,12 @@ class test_ChiSquare : public CxxTest :: TestSuite
         Log::instance()->setLevel( Log::Debug );
         Log::instance()->setCallback( new MyLog() );
 
-        std::ostringstream myOutputStream ;
         AlgorithmFactory::searchDefaultDirs();
         OpenModeller om;
 
-        //createModelRequest();
-        std::string myInFileName("/tmp/model_request.xml");
+        std::string myInFileName = prepareTempFile( "model_request.xml" );
         ConfigurationPtr c1 = Configuration::readXml( myInFileName.c_str() );
-        om.setModelConfiguration(c1);
+        om.setModelConfiguration( c1 );
 
         PreParameters params;
         params.store( "Sampler", om.getSampler() );
