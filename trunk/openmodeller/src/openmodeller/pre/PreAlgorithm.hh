@@ -67,8 +67,7 @@ out of the use of this library and its documentation.
        * @param parameters The parameters to be checked.
        * @return true if the parameters are OK. false if not.
        */
-      virtual bool CheckParameters( 
-        const PreParameters& parameters ) const = 0;
+      virtual bool CheckParameters( const PreParameters& parameters ) const = 0;
 
       /**
        * @brief Returns a reference to the current internal parameters.
@@ -127,8 +126,7 @@ out of the use of this library and its documentation.
        * @param external External algorithm reference.
        * @return A const Algorithm reference.
        */
-      const PreAlgorithm& operator=( 
-      const PreAlgorithm& external );
+      const PreAlgorithm& operator=( const PreAlgorithm& external );
   };
 
 #endif //PREALGORITHM_HPP
