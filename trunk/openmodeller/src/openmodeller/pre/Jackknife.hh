@@ -59,14 +59,6 @@ public:
    //Reset the params state to the params_ state.
    void ResetState( PreParameters& params );
 
-  /** 
-   * Run jackknife.
-   * @param samplerPtr Sampler with environment and points.
-   * @param algorithmPtr Algorithm to be used.
-   * @param propTrain Training/test proportion for the points.
-   */
-   void run( SamplerPtr samplerPtr, AlgorithmPtr algorithmPtr, double propTrain );
-
 };
 
 #endif
