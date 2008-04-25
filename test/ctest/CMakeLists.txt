@@ -135,10 +135,10 @@ TARGET_LINK_LIBRARIES(om_test_algorithmfactory openmodeller)
 ADD_TEST(om_test_algorithmfactory ${EXECUTABLE_OUTPUT_PATH}/om_test_algorithmfactory)
 
 #Jackknife Tests
-SET (OM_TEST_JACKKNIFE_SRCS om_test_jackknife.cpp)
-ADD_EXECUTABLE (om_test_jackknife ${OM_TEST_JACKKNIFE_SRCS})
-TARGET_LINK_LIBRARIES(om_test_jackknife openmodeller)
-ADD_TEST(om_test_jackknife ${EXECUTABLE_OUTPUT_PATH}/om_test_jackknife)
+SET (PRE_TEST_JACKKNIFE_SRCS pre_test_jackknife.cpp)
+ADD_EXECUTABLE (pre_test_jackknife ${PRE_TEST_JACKKNIFE_SRCS})
+TARGET_LINK_LIBRARIES(pre_test_jackknife openmodeller)
+ADD_TEST(pre_test_jackknife ${EXECUTABLE_OUTPUT_PATH}/pre_test_jackknife)
 
 #ChiSquare Tests
 SET (OM_TEST_CHISQUARE_SRCS om_test_chisquare.cpp)
