@@ -74,22 +74,6 @@ Jackknife::CheckParameters( const PreParameters& parameters ) const
   return true;
 }
 
-bool 
-Jackknife::RunImplementation()
-{
-  SamplerPtr samplerPtr;
-  params_.retrive( "Sampler", samplerPtr );
-
-  AlgorithmPtr algorithmPtr;
-  params_.retrive( "Algorithm", algorithmPtr );
-
-  // TODO: get threshold parameter
-
-  run( samplerPtr, algorithmPtr, 0.90 );
-
-  return true;
-}
-
 void
 Jackknife::ResetState( PreParameters& params )
 {
@@ -97,11 +81,23 @@ Jackknife::ResetState( PreParameters& params )
   params = params_;
 }
 
-/***********/
-/*** run ***/
-void Jackknife::run( SamplerPtr samplerPtr, AlgorithmPtr algorithmPtr, double propTrain )
+bool Jackknife::RunImplementation()
 {
   Log::instance()->debug( "Running jackknife\n" );
+
+  SamplerPtr samplerPtr;
+  params_.retrive( "Sampler", samplerPtr );
+
+  AlgorithmPtr algorithmPtr;
+  params_.retrive( "Algorithm", algorithmPtr );
+
+  double propTrain;
+
+  if ( ! params_.retrive( "PropTrain", propTrain ) ) {
+
+    // default
+    propTrain = 0.9;
+  }
 
   if ( ! samplerPtr->getEnvironment() ) {
 
@@ -235,7 +231,7 @@ void Jackknife::run( SamplerPtr samplerPtr, AlgorithmPtr algorithmPtr, double pr
       else {
 
         Log::instance()->error( "Jackknife algorithm requires normalization but did not specify any normalizer\n");
-        return;
+        return false;
       }
     }
 
@@ -311,6 +307,8 @@ void Jackknife::run( SamplerPtr samplerPtr, AlgorithmPtr algorithmPtr, double pr
   params_.store( "out_Mean", mean );
   params_.store( "out_Variance", variance );
   params_.store( "out_Deviation", std_deviation );
-  params_.store( "out_Estimate", jackknife_estimate ); 
-  params_.store( "out_Bias", jackknife_bias ); 
+  params_.store( "out_Estimate", jackknife_estimate );
+  params_.store( "out_Bias", jackknife_bias );
+
+  return true;
 }

@@ -81,8 +81,7 @@ class test_Jackknife : public CxxTest :: TestSuite
         PreParameters params;
         params.store( "Sampler", om.getSampler() );
         params.store( "Algorithm", om.getAlgorithm() );
-
-        // TODO: pass threshold parameter
+        params.store( "PropTrain", 0.9 );
 
         Jackknife jackknife;
 
