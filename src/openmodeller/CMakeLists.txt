@@ -78,6 +78,7 @@ IF (CURL_FOUND AND WITH_TAPIR_CLIENT)
   SET(OM_CORE_SRCS
       ${OM_CORE_SRCS}
       occ_io/TapirOccurrences.cpp
+      occ_io/GbifOccurrences.cpp
     )
 ENDIF (CURL_FOUND AND WITH_TAPIR_CLIENT) 
 
@@ -183,6 +184,7 @@ IF (CURL_FOUND AND WITH_TAPIR_CLIENT)
   SET(OM_OCCIO_HDRS
       ${OM_OCCIO_HDRS}
       occ_io/TapirOccurrences.hh
+      occ_io/GbifOccurrences.hh
      )
 ENDIF (CURL_FOUND AND WITH_TAPIR_CLIENT)
 

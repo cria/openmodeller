@@ -38,6 +38,7 @@
 
 #ifdef CURL_FOUND
 #include <openmodeller/occ_io/TapirOccurrences.hh>
+#include <openmodeller/occ_io/GbifOccurrences.hh>
 #endif
 
 #include <string>

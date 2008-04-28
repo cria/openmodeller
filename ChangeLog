@@ -3,6 +3,8 @@ Release 0.6 (2008-?-?)
 SVN revision: ?
 
 	* New driver to read point data from TAPIR/DarwinCore providers.
+	* New driver to read point data from GBIF.
+	* New generic API for pre-analysis.
 	
 
 Release 0.5.3 (2008-03-26)
