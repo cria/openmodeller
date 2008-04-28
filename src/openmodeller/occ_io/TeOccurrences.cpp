@@ -30,7 +30,7 @@
 #include <openmodeller/occ_io/TeOccurrences.hh>
 
 #include <openmodeller/TeDatabaseManager.hh>
-#include <openmodeller/TeUrlParser.hh>
+#include <openmodeller/TeStringParser.hh>
 
 #include <openmodeller/Occurrences.hh>  // List of occurrences.
 #include <openmodeller/Log.hh>
@@ -100,18 +100,18 @@ TeOccurrences::load()
     return true;
   }
 
-  _te_url_parser = new TeUrlParser();
-  _te_url_parser->url_ = _source;
+  _te_str_parser = new TeStringParser();
+  _te_str_parser->str_ = _source;
 
-  // Parser the Url.
-  if ( !_te_url_parser->parser() ) {
+  // Parser the string.
+  if ( !_te_str_parser->parse() ) {
 
-    Log::instance()->error( "TeOccurrences::load - Invalid database url" );
+    Log::instance()->error( "TeOccurrences::load - Invalid TerraLib string" );
     return false;
   }
 
   // Connect to the database
-  _db = TeDatabaseManager::instance().create( *_te_url_parser );
+  _db = TeDatabaseManager::instance().create( *_te_str_parser );
 
   if ( !_db->isConnected() ) {
 
@@ -121,18 +121,18 @@ TeOccurrences::load()
   }
 
   // Get the layer
-  if ( !_db->layerExist( _te_url_parser->layerName_ ) ) {
+  if ( !_db->layerExist( _te_str_parser->layerName_ ) ) {
 
     Log::instance()->error( "TeOccurrences::load - Cannot open layer." );
     //delete _db;
     return false;
   }
-  TeLayer* layer = new TeLayer(_te_url_parser->layerName_, _db);
+  TeLayer* layer = new TeLayer(_te_str_parser->layerName_, _db);
 
   // Check Species Table
   TeTable speciesTable;
   // Get the first table in layer, if species table is not specified.
-  if ( _te_url_parser->tableName_.length() == 0 ) {
+  if ( _te_str_parser->tableName_.length() == 0 ) {
 
     TeAttrTableVector attr;
     layer->getAttrTables(attr);
@@ -141,7 +141,7 @@ TeOccurrences::load()
   else {
 
     // Get species table by name.
-    if ( !layer->getAttrTablesByName(_te_url_parser->tableName_, speciesTable) ) {
+    if ( !layer->getAttrTablesByName(_te_str_parser->tableName_, speciesTable) ) {
 
       Log::instance()->error( "TeOccurrences::load - Cannot open species table." );
       //delete _db;
@@ -153,16 +153,16 @@ TeOccurrences::load()
   string tablePoints = layer->tableName(TePOINTS);
 
   // If column name is not specified, default column name is "Species".
-  if ( _te_url_parser->columnName_.length() == 0 ) {
+  if ( _te_str_parser->columnName_.length() == 0 ) {
 
-    _te_url_parser->columnName_ = "Species";
+    _te_str_parser->columnName_ = "Species";
   }
 
   // Building the sql statement
   string object_id = speciesTable.linkName();
 
-  string sql = "select " + tablePoints + ".x, " + tablePoints + ".y, " + _te_url_parser->tableName_ + "." + _te_url_parser->columnName_ ;
-  sql += " from " + _te_url_parser->tableName_ + " inner join " + tablePoints + " on " + _te_url_parser->tableName_ + "." + object_id;
+  string sql = "select " + tablePoints + ".x, " + tablePoints + ".y, " + _te_str_parser->tableName_ + "." + _te_str_parser->columnName_ ;
+  sql += " from " + _te_str_parser->tableName_ + " inner join " + tablePoints + " on " + _te_str_parser->tableName_ + "." + object_id;
   sql+= " = " + tablePoints +".object_id";
 
   // Executing the select statement
@@ -197,7 +197,7 @@ TeOccurrences::load()
 
   delete portal;
   portal = 0;
-  delete _te_url_parser;
+  delete _te_str_parser;
 
   _loaded = true;
 

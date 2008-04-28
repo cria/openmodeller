@@ -32,13 +32,13 @@
 #define _TE_OM_RASTERHH_
 
 #include <openmodeller/env_io/Raster.hh>
-//#include <openmodeller/TeUrlParser.hh>
+//#include <openmodeller/TeStringParser.hh>
 
 class TeRaster;
 class TeDatabase;
 class TeLayer;
 class TeRasterParams;
-class TeUrlParser;
+class TeStringParser;
 
 #include <string>
 using std::string;
@@ -62,25 +62,25 @@ public:
 	/**
 	* RasterFactory need a empty constructor.
 	*/
-	TeOMRaster(): db_(0), raster_(0),	layer_(0), params_(0), te_url_parser_(0) {};
+	TeOMRaster(): db_(0), raster_(0),	layer_(0), params_(0), te_str_parser_(0) {};
 
 	//! Open an existing raster file or a raster in a TerraLib database (read only).
 	/** 
-	* \param url URL of the raster data.
+	* \param str TerraLib string pointing to the raster.
 	* \param categ if != 0 this is a categorical map (ie it can't be interpolated). Othewise this is a continuos map.
 	*
 	* Needed by RasterFactory..
 	*/
-	void createRaster( const std::string& url, int categ = 0 );
+	void createRaster( const std::string& str, int categ = 0 );
 
 	//! Create a new file for projections.
 	/**
-	* \param url Url of the output.
+	* \param str TerraLib string pointing to the raster.
 	* \param format It is the output format specification.
 	*
 	* Needed by RasterFactory.
 	*/
-	void createRaster( const std::string& url, const MapFormat& format );
+	void createRaster( const std::string& str, const MapFormat& format );
 
 	/**
 	* Destructor
@@ -129,8 +129,8 @@ private:
 	TeRasterParams* params_; 
 	TeLayer *layer_;
 
-	//! TerraLib DataBase Url parser.
-	TeUrlParser *te_url_parser_;
+	//! TerraLib DataBase string parser.
+	TeUrlParser *te_str_parser_;
 
 	//! Open an existing TeRaster in a database or file disk.
 	void openTeRaster();

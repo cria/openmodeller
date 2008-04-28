@@ -1,5 +1,5 @@
 /**
- * Definition of TeUrlParser class.
+ * Definition of TeStringParser class.
  * 
  * @author Alexandre Copertino Jardim <alexcj@dpi.inpe.br>
  * @date 2006-03-21
@@ -27,17 +27,12 @@
  * http://www.gnu.org/copyleft/gpl.html
  */
 
-#include <openmodeller/TeUrlParser.hh>
+#include <openmodeller/TeStringParser.hh>
 
-//! Parser a url.
-/**
-* Complete url is like that:
-* terralib>user>password\@DatabaseName>host>DatabaseFile>port>layerName>tableName>columnName
-*/
 bool
-TeUrlParser::parser()
+TeStringParser::parse()
 {
-	string input = url_;
+	string input = str_;
 	int i;
 
 	// Throw out "terralib:" ************************************************************
@@ -46,24 +41,24 @@ TeUrlParser::parser()
 		return false;
 	input = input.substr(9, input.length());
 	
-	// This is not a Url, problabe it's a disk file name.
+	// Not a valid string, maybe a disk file name.
 	i = input.find( "@" );
 	if( i == -1)
 	{		
-		url_ = input;
+		str_ = input;
 		return false;
 	}
 
 	// Get user_ ************************************************************************
 	i = input.find( ">" );
-	// This is not a valid Url. 
+	// Not a valid String. 
 	if( i == -1)
 		return false;
 	user_ = input.substr(0, i);
 	input = input.substr(user_.length()+1, input.length());
 	// Get password_ ************************************************************************
 	i = input.find( "@" );
-	// This is not a valid Url. 
+	// Not a valid string. 
 	if( i == -1)
 		return false;
 	password_ = input.substr(0, i);

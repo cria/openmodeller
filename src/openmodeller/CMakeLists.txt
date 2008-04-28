@@ -66,7 +66,7 @@ IF (TERRALIB_FOUND)
   SET(OM_CORE_SRCS
       ${OM_CORE_SRCS}
       TeDatabaseManager.cpp
-      TeUrlParser.cpp
+      TeStringParser.cpp
       env_io/TeOMRaster.cpp
       occ_io/TeOccurrences.cpp
       ${TERRALIB_INCLUDE_DIR}/TeAdoDB.cpp
@@ -201,7 +201,7 @@ IF (TERRALIB_FOUND)
   SET(OM_CORE_HDRS
       ${OM_CORE_HDRS}
       TeDatabaseManager.hh
-      TeUrlParser.hh
+      TeStringParser.hh
      )
 
   SET(OM_OCCIO_HDRS

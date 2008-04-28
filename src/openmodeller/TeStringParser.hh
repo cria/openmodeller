@@ -1,5 +1,5 @@
 /**
- * Definition of TeUrlParser class.
+ * Definition of TeStringParser class.
  * 
  * @author Alexandre Copertino Jardim <alexcj@dpi.inpe.br>
  * @date 2006-03-21
@@ -27,37 +27,38 @@
  * http://www.gnu.org/copyleft/gpl.html
  */
 
-#ifndef  __TE_URL_PASRSER_H
-#define  __TE_URL_PASRSER_H
+#ifndef  __TE_STRING_PASRSER_H
+#define  __TE_STRING_PASRSER_H
 
 #include <TeDatabaseFactoryParams.h>
 
 #include <string>
 using std::string;
 
-//! Parser an url.
-/**
-* Complete url is like that:
-* terralib>user>password\@DatabaseName>host>DatabaseFile>port>layerName>tableName>columnName
-*/
-class TeUrlParser : public TeDatabaseFactoryParams
+/** Terralib string parser.
+ *  A parser for a special string that indicates either a layer in a Terralib db:
+ *  terralib>user>password\@DatabaseName>host>DatabaseFile>port>layerName
+ *  or a column in a Terralib db (to read point data):
+ *  terralib>user>password\@DatabaseName>host>DatabaseFile>port>layerName>tableName>columnName
+ */
+class TeStringParser : public TeDatabaseFactoryParams
 {
 public:
-	TeUrlParser() {}
+	TeStringParser() {}
 
-	TeUrlParser( const string& url ) : url_(url)
+	TeStringParser( const string& str ) : str_(str)
 	{
-		isUrl_ = parser();
+		isValid_ = parse();
 	}
 
 	//! Parser the url.
-	bool parser();
+	bool parse();
 		
-	//! If true is an url, else is a disk file name.
-	bool isUrl() { return isUrl_; }
+	//! If true if the string is valid, false otherwise.
+	bool isValid() { return isValid_; }
 
-	//! Database url.
-	string url_;
+	//! Terralib string.
+	string str_;
 	//! Layer in Database.
 	string layerName_;
 	//! Table Name (Species)
@@ -66,7 +67,7 @@ public:
 	string columnName_;
 
 private:
-    bool isUrl_;
+    bool isValid_;
 };
 
 #endif
