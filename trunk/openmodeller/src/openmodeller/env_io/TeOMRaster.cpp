@@ -30,7 +30,7 @@
 #include <openmodeller/env_io/TeOMRaster.hh>
 
 #include <openmodeller/TeDatabaseManager.hh>
-#include <openmodeller/TeUrlParser.hh>
+#include <openmodeller/TeStringParser.hh>
 #include <TeRaster.h>
 #include <TeDatabase.h>
 #include <TeLayer.h>
@@ -70,10 +70,10 @@ TeOMRaster::CreateRasterCallback()
 */
 // Open an existing file -- read only.
 void
-TeOMRaster::createRaster( const string& url, int categ )
+TeOMRaster::createRaster( const string& str, int categ )
 {
-	te_url_parser_ = new TeUrlParser();
-	te_url_parser_->url_ = url;
+	te_str_parser_ = new TeUrlParser();
+	te_str_parser_->str_ = str;
 	f_scalefactor = 1.0;
 	f_hdr.minmax = 0;
 
@@ -153,10 +153,10 @@ TeOMRaster::createRaster( const string& url, int categ )
 * @param format is the output format specification.
 */
 void
-TeOMRaster::createRaster( const std::string& url, const MapFormat& format )
+TeOMRaster::createRaster( const std::string& str, const MapFormat& format )
 {
-	te_url_parser_ = new TeUrlParser();
-	te_url_parser_->url_ = url;
+	te_str_parser_ = new TeUrlParser();
+	te_str_parser_->str_ = str;
 
 	Scalar nv; 
 
@@ -241,7 +241,7 @@ TeOMRaster::~TeOMRaster()
 		layer_->addRasterGeometry( raster_ );
 	}
 
-	delete te_url_parser_;
+	delete te_str_parser_;
 }
 
 /**
@@ -316,9 +316,9 @@ TeOMRaster::put( Coord px, Coord py )
 void
 TeOMRaster::openTeRaster()
 {
-	if( te_url_parser_->parser() )
+	if( te_str_parser_->parse() )
 	{
-		db_ = TeDatabaseManager::instance().create( *te_url_parser_ );
+		db_ = TeDatabaseManager::instance().create( *te_str_parser_ );
         
 		if ( !db_->isConnected() )
 		{
@@ -330,9 +330,9 @@ TeOMRaster::openTeRaster()
 		}
 		else
 		{
-			if (db_->layerExist( te_url_parser_->layerName_ ))
+			if (db_->layerExist( te_str_parser_->layerName_ ))
 			{
-				layer_ = new TeLayer(te_url_parser_->layerName_, db_);
+				layer_ = new TeLayer(te_str_parser_->layerName_, db_);
                 raster_ = layer_->raster();
 			}
 		}
@@ -340,7 +340,7 @@ TeOMRaster::openTeRaster()
 	else
 	{
 		// Disk file.
-		raster_ = new TeRaster( te_url_parser_->url_, 'r');
+		raster_ = new TeRaster( te_str_parser_->str_, 'r');
 	}
 }
 
@@ -350,9 +350,9 @@ TeOMRaster::openTeRaster()
 void
 TeOMRaster::createTeRaster()
 {
-	if( te_url_parser_->parser() )
+	if( te_str_parser_->parse() )
 	{
-		db_ = TeDatabaseManager::instance().create( *te_url_parser_ );
+		db_ = TeDatabaseManager::instance().create( *te_str_parser_ );
 
 		if ( !db_->isConnected() )
 		{
@@ -366,11 +366,11 @@ TeOMRaster::createTeRaster()
 		{
 			TeProjection* proj = TeGetTeProjectionFromWKT( f_hdr.proj );
 			
-			layer_ = new TeLayer(te_url_parser_->layerName_, db_, proj);
+			layer_ = new TeLayer(te_str_parser_->layerName_, db_, proj);
 			
 			// create a raster geometry in a TerraLib database
 			TeRasterParams params;
-			params.fileName_ = te_url_parser_->layerName_;
+			params.fileName_ = te_str_parser_->layerName_;
 			params.mode_ = 'c';
 			// parameters specific of the database decoder
 			params.decoderIdentifier_ = "DB";			// a database decoder 
@@ -387,7 +387,7 @@ TeOMRaster::createTeRaster()
 	else
 	{
 		// Disk file.
-		raster_ = new TeRaster( te_url_parser_->url_, 'c');
+		raster_ = new TeRaster( te_str_parser_->str_, 'c');
 	}
 }
 
@@ -409,7 +409,7 @@ TeOMRaster::getMinMax( Scalar *min, Scalar *max )
 int
 TeOMRaster::deleteRaster()
 {
-	db_ = TeDatabaseManager::instance().create( *te_url_parser_ );
+	db_ = TeDatabaseManager::instance().create( *te_str_parser_ );
     
 	if ( !db_->isConnected() )
 	{
@@ -437,9 +437,9 @@ TeOMRaster::deleteRaster()
 			delete params_;
 		}
 
-		if( te_url_parser_ )
+		if( te_str_parser_ )
 		{
-			delete te_url_parser_;
+			delete te_str_parser_;
 		}
 
 		return 1;
@@ -456,9 +456,9 @@ TeOMRaster::deleteRaster()
 		delete params_;
 	}
 
-	if( te_url_parser_ )
+	if( te_str_parser_ )
 	{
-		delete te_url_parser_;
+		delete te_str_parser_;
 	}
 
 	return 1;

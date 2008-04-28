@@ -35,7 +35,7 @@
 #include <openmodeller/occ_io/OccurrencesReader.hh>
 #include <openmodeller/Occurrences.hh>
 
-class TeUrlParser;
+class TeStringParser;
 class TeDatabase;
 
 #include <vector>
@@ -90,8 +90,8 @@ private:
   // Pointer to database connection.
   TeDatabase * _db;
 
-  // TerraLib DataBase Url paser.
-  TeUrlParser * _te_url_parser;
+  // TerraLib string parser.
+  TeStringParser * _te_str_parser;
 };
 
 #endif
