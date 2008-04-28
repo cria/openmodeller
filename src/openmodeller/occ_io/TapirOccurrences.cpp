@@ -197,7 +197,7 @@ TapirOccurrences::load()
 
   if ( curl_code != CURLE_OK )
   {
-    Log::instance()->error( "TapirOccurrences::load - Could not get capabilities from the specified TAPIR endpoint (CURL code error: %d)\n", curl_code );
+    Log::instance()->error( "TapirOccurrences::load - Could not get service capabilities from the specified endpoint (CURL code error: %d)\n", curl_code );
     curl_easy_cleanup( curl_handle );
     return false;
   }
@@ -207,11 +207,8 @@ TapirOccurrences::load()
   // Check content type returned
   if ( header.find( "Content-Type: text/xml" ) == string::npos )
   {
-    Log::instance()->error( "TapirOccurrences::load - URL does not seem to be a TAPIR endpoint (HTTP Content-Type header is not text/xml)\n" );
+    Log::instance()->warn( "TapirOccurrences::load - URL does not seem to be a TAPIR endpoint (HTTP Content-Type header is not text/xml)\n" );
 
-Log::instance()->info( "HEADER: %s\n", header.c_str() );
-
-    curl_easy_cleanup( curl_handle );
     return false;
   }
 
@@ -221,45 +218,38 @@ Log::instance()->info( "HEADER: %s\n", header.c_str() );
   // Parse capabilities response
   if ( ! _parseCapabilities( &capabilities_response, &info ) ) {
 
-    curl_easy_cleanup( curl_handle );
     return false;
   }
 
   // Check capabilitites response
   if ( ! info._is_tapir ) {
 
-    Log::instance()->error( "TapirOccurrences::load - URL does not seem to be a TAPIR endpoint (no TAPIR response element detected)\n" );
-    curl_easy_cleanup( curl_handle );
+    Log::instance()->warn( "TapirOccurrences::load - URL does not seem to be a TAPIR endpoint (no TAPIR response element detected)\n" );
     return false;
   }
   if ( ! info._has_guid ) {
 
     Log::instance()->error( "TapirOccurrences::load - Provider did not map the DarwinCore GlobalUniqueIdentifier concept\n" );
-    curl_easy_cleanup( curl_handle );
     return false;
   }
   if ( ! info._has_name ) {
 
     Log::instance()->error( "TapirOccurrences::load - Provider did not map the DarwinCore ScientificName concept\n" );
-    curl_easy_cleanup( curl_handle );
     return false;
   }
   if ( ! info._has_long ) {
 
     Log::instance()->error( "TapirOccurrences::load - Provider did not map the DarwinCore DecimalLongitude concept from the geospatial extension\n" );
-    curl_easy_cleanup( curl_handle );
     return false;
   }
   if ( ! info._has_lat ) {
 
     Log::instance()->error( "TapirOccurrences::load - Provider did not map the DarwinCore DecimalLatitude concept from the geospatial extension\n" );
-    curl_easy_cleanup( curl_handle );
     return false;
   }
   if ( ( ! info._accepts_any_model ) && ! info._accepts_om_model ) {
 
     Log::instance()->error( "TapirOccurrences::load - Provider must accept searches with any output model or searches with the openModeller output model\n" );
-    curl_easy_cleanup( curl_handle );
     return false;
   }
 
@@ -439,7 +429,7 @@ TapirOccurrences::getPresences( const char *groupId )
 
   OccurrencesPtr occurrences( new OccurrencesImpl( groupId, _coord_system ) );
 
-  SearchData search_data;
+  TapirRecordData search_data;
 
   search_data._occurrences = occurrences;
   search_data._next = 0;
@@ -470,7 +460,7 @@ TapirOccurrences::getPresences( const char *groupId )
 /************************/
 /*** retrieve Records ***/
 bool
-TapirOccurrences::_retrieveRecords( SearchData *data, int limit )
+TapirOccurrences::_retrieveRecords( TapirRecordData *data, int limit )
 {
   // Prepare CURL handle
   CURL * curl_handle = curl_easy_init(); 
@@ -613,7 +603,7 @@ TapirOccurrences::_retrieveRecords( SearchData *data, int limit )
 void 
 TapirOccurrences::_startSearchElement( void *data, const char *el, const char **attr )
 {
-  SearchData& search_data = *( reinterpret_cast<SearchData*>( data ) );
+  TapirRecordData& search_data = *( reinterpret_cast<TapirRecordData*>( data ) );
 
   // occ element
   if ( strlen( el ) == 49 && 
