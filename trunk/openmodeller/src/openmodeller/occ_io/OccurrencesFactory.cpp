@@ -48,6 +48,7 @@ OccurrencesFactory::instance()
 
 #ifdef CURL_FOUND
   _instance.registerDriver( "tapir", &TapirOccurrences::CreateOccurrencesReaderCallback );
+  _instance.registerDriver( "gbif" , &GbifOccurrences::CreateOccurrencesReaderCallback );
 #endif
 
     _initiated = true;
@@ -98,6 +99,7 @@ OccurrencesFactory::create( const char * source, const char * coordSystem )
 
   if ( i == 0 ) {
 
+    // Try TAPIR driver first
     DriversMap::const_iterator i = _drivers.find( "tapir" );
 
     if ( i != _drivers.end() ) {
@@ -107,6 +109,19 @@ OccurrencesFactory::create( const char * source, const char * coordSystem )
       if ( tapir_driver->load() ) {
 
         return tapir_driver;
+      }
+    }
+
+    // Then try GBIF
+    DriversMap::const_iterator j = _drivers.find( "gbif" );
+
+    if ( j != _drivers.end() ) {
+
+      OccurrencesReader * gbif_driver = (j->second)( source, coordSystem );
+
+      if ( gbif_driver->load() ) {
+
+        return gbif_driver;
       }
     }
   }
