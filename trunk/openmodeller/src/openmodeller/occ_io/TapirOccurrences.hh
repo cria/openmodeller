@@ -54,7 +54,7 @@ struct CapabilitiesInfo {
 };
 
 // Data structure to be used by the expat handlers during searches
-struct SearchData {
+struct TapirRecordData {
 
   OccurrencesPtr _occurrences;
   int _next; // index of next record to be retrieved
@@ -134,7 +134,7 @@ private:
   static void _endCapabilitiesElement( void *data, const char *el );
 
   // Retrieve records
-  bool _retrieveRecords( SearchData *data, int limit );
+  bool _retrieveRecords( TapirRecordData *data, int limit );
 
   // Start element handler for search parser
   static void _startSearchElement( void *data, const char *el, const char **attr );
