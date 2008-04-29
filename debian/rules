@@ -28,9 +28,11 @@ endif
 CMakeCache.txt: CMakeLists.txt
 	dh_testdir
 	# Add here commands to configure the package.
+	# For Ubuntu Feisty, add the following lines to
+	# the cmake command:
+        #-D GDAL_INCLUDE_DIR=/usr/include/gdal \
+        #-D GDAL_LIBRARY=/usr/lib/libgdal1.3.2.so \
 	cmake -D CMAKE_INSTALL_PREFIX=/usr \
-	-D GDAL_INCLUDE_DIR=/usr/include/gdal \
-	-D GDAL_LIBRARY=/usr/lib/libgdal1.3.2.so \
         -DPEDANTIC=OFF \
 	.
 
