@@ -43,7 +43,7 @@ OccurrencesFactory::instance()
 
   if ( ! _initiated ) {
 
-  _instance.registerDriver( "TXT", &OccurrencesFile::CreateOccurrencesReaderCallback );
+  _instance.registerDriver( "TXT", &DelimitedTextOccurrences::CreateOccurrencesReaderCallback );
   _instance.registerDriver( "XML", &SerializedXmlOccurrences::CreateOccurrencesReaderCallback );
 
 #ifdef TERRALIB_FOUND
@@ -148,7 +148,7 @@ OccurrencesFactory::create( const char * source, const char * coordSystem )
   }
 
   // Default driver
-  OccurrencesReader * file_driver = new OccurrencesFile( source, coordSystem );
+  OccurrencesReader * file_driver = new DelimitedTextOccurrences( source, coordSystem );
 
   file_driver->load();
 

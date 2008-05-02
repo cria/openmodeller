@@ -33,9 +33,12 @@
 /usr/include/openmodeller/Sampler.hh
 /usr/include/openmodeller/ScaleNormalizer.hh
 /usr/include/openmodeller/occ_io/OccurrencesFactory.hh
-/usr/include/openmodeller/occ_io/OccurrencesFile.hh
 /usr/include/openmodeller/occ_io/OccurrencesReader.hh
+/usr/include/openmodeller/occ_io/DelimitedTextOccurrences.hh
+/usr/include/openmodeller/occ_io/SerializedXmlOccurrences.hh
 /usr/include/openmodeller/occ_io/TeOccurrences.hh
+/usr/include/openmodeller/occ_io/TapirOccurrences.hh
+/usr/include/openmodeller/occ_io/GbifOccurrences.hh
 /usr/include/openmodeller/env_io/GeoTransform.hh
 /usr/include/openmodeller/env_io/Header.hh
 /usr/include/openmodeller/env_io/Map.hh

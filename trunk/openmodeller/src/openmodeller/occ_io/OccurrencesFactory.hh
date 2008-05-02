@@ -30,7 +30,7 @@
 #define _OCCURRENCES_FACTORY_HH_
 
 #include <openmodeller/occ_io/OccurrencesReader.hh>
-#include <openmodeller/occ_io/OccurrencesFile.hh>
+#include <openmodeller/occ_io/DelimitedTextOccurrences.hh>
 #include <openmodeller/occ_io/SerializedXmlOccurrences.hh>
 
 #ifdef TERRALIB_FOUND

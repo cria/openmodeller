@@ -1,5 +1,5 @@
 /**
- * Definition of OccurrencesFile class.
+ * Definition of DelimitedTextOccurrences class.
  * 
  * @author Mauro E S Muñoz (mauro@cria.org.br)
  * @date   2003-02-25
@@ -27,7 +27,7 @@
  * http://www.gnu.org/copyleft/gpl.html
  */
 
-#include <openmodeller/occ_io/OccurrencesFile.hh>
+#include <openmodeller/occ_io/DelimitedTextOccurrences.hh>
 
 #include <openmodeller/Occurrences.hh>  // List of occurrences.
 
@@ -56,15 +56,15 @@ using std::vector;
 /*****************************************/
 /*** create OccurrencesReader callback ***/
 OccurrencesReader * 
-OccurrencesFile::CreateOccurrencesReaderCallback( const char *source, const char *coordSystem )
+DelimitedTextOccurrences::CreateOccurrencesReaderCallback( const char *source, const char *coordSystem )
 {
-  return new OccurrencesFile( source, coordSystem );
+  return new DelimitedTextOccurrences( source, coordSystem );
 }
 
 
 /*******************/
 /*** Constructor ***/
-OccurrencesFile::OccurrencesFile( const char *source, const char *coordSystem )
+DelimitedTextOccurrences::DelimitedTextOccurrences( const char *source, const char *coordSystem )
 {
   _source = (char *) source; // should be a file name
 
@@ -76,7 +76,7 @@ OccurrencesFile::OccurrencesFile( const char *source, const char *coordSystem )
 
 /******************/
 /*** Destructor ***/
-OccurrencesFile::~OccurrencesFile()
+DelimitedTextOccurrences::~DelimitedTextOccurrences()
 {
 }
 
@@ -84,7 +84,7 @@ OccurrencesFile::~OccurrencesFile()
 /***********************/
 /*** load Ocurrences ***/
 bool
-OccurrencesFile::load()
+DelimitedTextOccurrences::load()
 {
   if ( _loaded ) {
 
