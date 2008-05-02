@@ -31,6 +31,7 @@
 
 #include <openmodeller/occ_io/OccurrencesReader.hh>
 #include <openmodeller/occ_io/OccurrencesFile.hh>
+#include <openmodeller/occ_io/SerializedXmlOccurrences.hh>
 
 #ifdef TERRALIB_FOUND
 #include <openmodeller/occ_io/TeOccurrences.hh>

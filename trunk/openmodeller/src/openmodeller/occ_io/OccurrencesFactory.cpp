@@ -30,6 +30,7 @@
 #include <openmodeller/occ_io/OccurrencesFactory.hh>
 
 #include <openmodeller/Log.hh>
+#include <openmodeller/Exceptions.hh>
 
 bool OccurrencesFactory::_initiated;
 
@@ -42,13 +43,16 @@ OccurrencesFactory::instance()
 
   if ( ! _initiated ) {
 
+  _instance.registerDriver( "TXT", &OccurrencesFile::CreateOccurrencesReaderCallback );
+  _instance.registerDriver( "XML", &SerializedXmlOccurrences::CreateOccurrencesReaderCallback );
+
 #ifdef TERRALIB_FOUND
-  _instance.registerDriver( "terralib", &TeOccurrences::CreateOccurrencesReaderCallback );
+  _instance.registerDriver( "TerraLib", &TeOccurrences::CreateOccurrencesReaderCallback );
 #endif
 
 #ifdef CURL_FOUND
-  _instance.registerDriver( "tapir", &TapirOccurrences::CreateOccurrencesReaderCallback );
-  _instance.registerDriver( "gbif" , &GbifOccurrences::CreateOccurrencesReaderCallback );
+  _instance.registerDriver( "TAPIR", &TapirOccurrences::CreateOccurrencesReaderCallback );
+  _instance.registerDriver( "GBIF" , &GbifOccurrences::CreateOccurrencesReaderCallback );
 #endif
 
     _initiated = true;
@@ -82,13 +86,15 @@ OccurrencesFactory::create( const char * source, const char * coordSystem )
 
   int i = source_str.find( "terralib>" );
 
+  DriversMap::const_iterator di;
+
   if ( i != -1 ) {
 
-    DriversMap::const_iterator i = _drivers.find( "terralib" );
+    di = _drivers.find( "TerraLib" );
 
-    if ( i != _drivers.end() ) {
+    if ( di != _drivers.end() ) {
 
-      OccurrencesReader * te_driver = (i->second)( source, coordSystem );
+      OccurrencesReader * te_driver = (di->second)( source, coordSystem );
       te_driver->load();
 
       return te_driver;
@@ -100,11 +106,11 @@ OccurrencesFactory::create( const char * source, const char * coordSystem )
   if ( i == 0 ) {
 
     // Try TAPIR driver first
-    DriversMap::const_iterator i = _drivers.find( "tapir" );
+    di = _drivers.find( "TAPIR" );
 
-    if ( i != _drivers.end() ) {
+    if ( di != _drivers.end() ) {
 
-      OccurrencesReader * tapir_driver = (i->second)( source, coordSystem );
+      OccurrencesReader * tapir_driver = (di->second)( source, coordSystem );
 
       if ( tapir_driver->load() ) {
 
@@ -113,11 +119,11 @@ OccurrencesFactory::create( const char * source, const char * coordSystem )
     }
 
     // Then try GBIF
-    DriversMap::const_iterator j = _drivers.find( "gbif" );
+    di = _drivers.find( "GBIF" );
 
-    if ( j != _drivers.end() ) {
+    if ( di != _drivers.end() ) {
 
-      OccurrencesReader * gbif_driver = (j->second)( source, coordSystem );
+      OccurrencesReader * gbif_driver = (di->second)( source, coordSystem );
 
       if ( gbif_driver->load() ) {
 
@@ -126,8 +132,23 @@ OccurrencesFactory::create( const char * source, const char * coordSystem )
     }
   }
 
+  // Try to open as XML file
+  try {
+
+    OccurrencesReader * xml_driver = new SerializedXmlOccurrences( source, coordSystem );
+
+    if ( xml_driver->load() ) {
+
+      return xml_driver;
+    }
+  }
+  catch ( OmException& e ) {
+
+    Log::instance()->debug( "XML occurrences reader exception: %s\n", e.what() );
+  }
+
   // Default driver
-  OccurrencesFile * file_driver = new OccurrencesFile( source, coordSystem );
+  OccurrencesReader * file_driver = new OccurrencesFile( source, coordSystem );
 
   file_driver->load();
 
