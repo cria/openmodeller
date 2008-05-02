@@ -4,6 +4,7 @@ SVN revision: ?
 
 	* New driver to read point data from TAPIR/DarwinCore providers.
 	* New driver to read point data from GBIF.
+	* New driver to read point data from serialized openModeller objects (XML).
 	* New generic API for pre-analysis.
 	
 

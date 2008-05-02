@@ -1,5 +1,5 @@
 /**
- * Declaration of OccurrencesFile class.
+ * Declaration of DelimitedTextOccurrences class.
  * 
  * @author Mauro E S Muñoz (mauro@cria.org.br)
  * @date   2003-02-25
@@ -55,7 +55,7 @@
  * - Column  4  : latitude: (-90.0 <= long <= 90.0).
  * - Column  5  : Abundance (integer).
  */
-class dllexp OccurrencesFile : public OccurrencesReader
+class dllexp DelimitedTextOccurrences : public OccurrencesReader
 {
 public:
 
@@ -68,11 +68,11 @@ public:
    * @param source Source of occurrences (such as a file name, Terralib path or TAPIR URL).
    * @param coordSystem Default coordinate system in WKT.
    */
-  OccurrencesFile( const char *source, const char * coordSystem );
+  DelimitedTextOccurrences( const char *source, const char * coordSystem );
 
   /** Destructor.
    */
-  ~OccurrencesFile();
+  ~DelimitedTextOccurrences();
 
   /**
    * Read occurrences from a file.

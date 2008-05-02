@@ -96,7 +96,8 @@ libopenmodeller_la_SOURCES = \
 	models/AverageModel.cpp \
 	models/ScaledModel.cpp \
 	occ_io/OccurrencesFactory.cpp \
-	occ_io/OccurrencesFile.cpp \
+	occ_io/DelimitedTextOccurrences.cpp \
+	occ_io/SerializedXmlOccurrences.cpp \
 	occ_io/OccurrencesReader.cpp \
 	pre/Jackknife.cpp \
 	pre/ChiSquare.cpp \
@@ -174,8 +175,9 @@ occioincludedir = $(omincludedir)/occ_io
 
 occioinclude_HEADERS = \
         occ_io/OccurrencesFactory.hh \
-        occ_io/OccurrencesFile.hh \
-        occ_io/OccurrencesReader.hh
+        occ_io/OccurrencesReader.hh \
+        occ_io/DelimitedTextOccurrences.hh \
+        occ_io/SerializedXmlOccurrences.hh
 
 preincludedir = $(omincludedir)/pre
 
