@@ -53,6 +53,15 @@ using std::vector;
 #include <unistd.h>
 #endif
 
+/*****************************************/
+/*** create OccurrencesReader callback ***/
+OccurrencesReader * 
+OccurrencesFile::CreateOccurrencesReaderCallback( const char *source, const char *coordSystem )
+{
+  return new OccurrencesFile( source, coordSystem );
+}
+
+
 /*******************/
 /*** Constructor ***/
 OccurrencesFile::OccurrencesFile( const char *source, const char *coordSystem )

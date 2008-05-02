@@ -1,15 +1,12 @@
 /**
- * Declaration of OccurrencesFile class.
+ * Declaration of SerializedXmlOccurrences class.
  * 
- * @author Mauro E S Muñoz (mauro@cria.org.br)
- * @date   2003-02-25
- * @author Alexandre Copertino Jardim <alexcj@dpi.inpe.br>
- * @date 2006-03-21
+ * @author Renato De Giovanni (renato [at] cria . org . br)
  * $Id$
  * 
  * LICENSE INFORMATION 
  * 
- * Copyright(c) 2003 by CRIA -
+ * Copyright(c) 2008 by CRIA -
  * Centro de Referencia em Informacao Ambiental
  *
  * http://www.cria.org.br
@@ -27,35 +24,19 @@
  * http://www.gnu.org/copyleft/gpl.html
  */
 
-#ifndef _OCCURRENCES_FILEHH_
-#define _OCCURRENCES_FILEHH_
+#ifndef _SERIALIZED_XML_OCCURRENCES_HH_
+#define _SERIALIZED_XML_OCCURRENCES_HH_
 
 #include <openmodeller/occ_io/OccurrencesReader.hh>
 
 #include <openmodeller/om_defs.hh>
 #include <openmodeller/Occurrences.hh>
 
-#include <vector>
-
 /**  
- * Read occurrences data of one or more group from an 
- * ASCII file. The file is read and stored as a linked list
- * of objects from the Occurrences class. Allows navigation 
- * through the list.
- *
- * Format:
- *
- * Lines beginning with '#' are ignored!
- *
- * The file must have 5 columns separated by TAB.
- *
- * - Column  1  : Unique identifier for the occurrence.
- * - Columns 2  : Label (a group identifier, usually the scientific name).
- * - Column  3  : longitude (-180.0 <= lat  <= 180.0).
- * - Column  4  : latitude: (-90.0 <= long <= 90.0).
- * - Column  5  : Abundance (integer).
+ * Read occurrences data from an XML file containing openModeller 
+ * serialized occurrences.
  */
-class dllexp OccurrencesFile : public OccurrencesReader
+class dllexp SerializedXmlOccurrences : public OccurrencesReader
 {
 public:
 
@@ -65,17 +46,17 @@ public:
   static OccurrencesReader * CreateOccurrencesReaderCallback( const char * source, const char * coordSystem );
 
   /** Constructor.
-   * @param source Source of occurrences (such as a file name, Terralib path or TAPIR URL).
+   * @param source Path to file containing openModeller serialized XML.
    * @param coordSystem Default coordinate system in WKT.
    */
-  OccurrencesFile( const char *source, const char * coordSystem );
+  SerializedXmlOccurrences( const char *source, const char * coordSystem );
 
   /** Destructor.
    */
-  ~OccurrencesFile();
+  ~SerializedXmlOccurrences();
 
   /**
-   * Read occurrences from a file.
+   * Read occurrences from the XML file.
    */
   bool load();
 

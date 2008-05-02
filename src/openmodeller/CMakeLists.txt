@@ -41,8 +41,9 @@ SET(OM_CORE_SRCS
   models/AverageModel.cpp 
   models/ScaledModel.cpp 
   occ_io/OccurrencesFactory.cpp 
-  occ_io/OccurrencesFile.cpp 
   occ_io/OccurrencesReader.cpp 
+  occ_io/OccurrencesFile.cpp 
+  occ_io/SerializedXmlOccurrences.cpp 
   pre/PreParameters.cpp
   pre/PreAlgorithm.cpp
   pre/Jackknife.cpp
@@ -176,8 +177,9 @@ SET(OM_CORE_HDRS
 
 SET (OM_OCCIO_HDRS
 occ_io/OccurrencesFactory.hh
-occ_io/OccurrencesFile.hh
 occ_io/OccurrencesReader.hh
+occ_io/OccurrencesFile.hh
+occ_io/SerializedXmlOccurrences.hh
 )
 
 IF (CURL_FOUND AND WITH_TAPIR_CLIENT)
