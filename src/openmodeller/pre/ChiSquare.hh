@@ -66,18 +66,18 @@ class dllexp ChiSquare : public PreAlgorithm
 
     //Checks if the supplied parameters fits the requirements of PRE algorithm implementation.
     //return true if the parameters are OK. false if not.
-	bool CheckParameters( const PreParameters& parameters ) const;
+	bool checkParameters( const PreParameters& parameters ) const;
 
     //Runs the current algorithm implementation.
     //return true if OK. false on error.
-    bool RunImplementation();
+    bool runImplementation();
 
     //Reset the internal state to the initial state.
   ////  void ResetState( const TePreParameters& params );
-    void ResetState( PreParameters& params );
+    void resetState( PreParameters& params );
 
     //initialize attributes: num_points, num_layers, nclass, minimum, delta, my_presences.
-    void Init();
+    void init();
 
     //get number of points.
     size_t getNpoints();

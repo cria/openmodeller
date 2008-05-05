@@ -85,11 +85,11 @@ class test_Jackknife : public CxxTest :: TestSuite
 
         Jackknife jackknife;
 
-        TS_ASSERT( jackknife.Reset( params ) );
+        TS_ASSERT( jackknife.reset( params ) );
 
-        TS_ASSERT( jackknife.Apply() );
+        TS_ASSERT( jackknife.apply() );
 
-        jackknife.ResetState( params);
+        jackknife.resetState( params);
 
         double out_param = 0;                  // <------ output 1
         std::multimap<double, int> out_params; // <------ output 2

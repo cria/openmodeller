@@ -53,7 +53,7 @@ Jackknife::~Jackknife()
 }
 
 bool 
-Jackknife::CheckParameters( const PreParameters& parameters ) const
+Jackknife::checkParameters( const PreParameters& parameters ) const
 {
   SamplerPtr samplerPtr;
 
@@ -75,13 +75,13 @@ Jackknife::CheckParameters( const PreParameters& parameters ) const
 }
 
 void
-Jackknife::ResetState( PreParameters& params )
+Jackknife::resetState( PreParameters& params )
 {
   params.clear();
   params = params_;
 }
 
-bool Jackknife::RunImplementation()
+bool Jackknife::runImplementation()
 {
   Log::instance()->debug( "Running jackknife\n" );
 

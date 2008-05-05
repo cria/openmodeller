@@ -86,9 +86,9 @@ class test_ChiSquare : public CxxTest :: TestSuite
 
         ChiSquare chi;
 
-        TS_ASSERT( chi.Reset( params ) );
+        TS_ASSERT( chi.reset( params ) );
 
-        TS_ASSERT( chi.Apply() );
+        TS_ASSERT( chi.apply() );
 
         chi.showResult();
 

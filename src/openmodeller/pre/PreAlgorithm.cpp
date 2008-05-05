@@ -17,9 +17,9 @@ PreAlgorithm::~PreAlgorithm()
 }
 
 
-bool PreAlgorithm::Reset( const PreParameters& params )
+bool PreAlgorithm::reset( const PreParameters& params )
 {
-  if( CheckParameters( params ) ) {
+  if( checkParameters( params ) ) {
 
     params_.clear();
     params_ = params;
@@ -35,16 +35,16 @@ bool PreAlgorithm::Reset( const PreParameters& params )
 }
 
 
-bool PreAlgorithm::Apply()
+bool PreAlgorithm::apply()
 {
   bool return_value = false;
   
-  if( CheckInternalParameters() ) {
-    return_value = RunImplementation();
+  if( checkInternalParameters() ) {
+    return_value = runImplementation();
   } 
   else 
   {
-	 std::string msg = "TePreAlgorithm::Apply: Invalid supplied parameters.\n";
+	 std::string msg = "TePreAlgorithm::apply: Invalid supplied parameters.\n";
      Log::instance()->error( msg.c_str() );
 	 throw InvalidParameterException( msg );
   }
@@ -53,15 +53,15 @@ bool PreAlgorithm::Apply()
 }
 
 
-const PreParameters& PreAlgorithm::GetParameters() const
+const PreParameters& PreAlgorithm::getParameters() const
 {
   return params_;
 }
 
 
-bool PreAlgorithm::CheckInternalParameters() const
+bool PreAlgorithm::checkInternalParameters() const
 {
-  return CheckParameters( params_ );
+  return checkParameters( params_ );
 }
 
 

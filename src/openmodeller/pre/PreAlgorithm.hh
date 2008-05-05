@@ -48,7 +48,7 @@ out of the use of this library and its documentation.
        *
        * @return true if OK. false on error.
        */
-      bool Apply();
+      bool apply();
 
       /**
        * @brief Reset the internal state with new supplied parameters.
@@ -56,7 +56,7 @@ out of the use of this library and its documentation.
        * @param params The new supplied parameters.
        * @return true if parameters OK, false on error.
        */
-      bool Reset( const PreParameters& params );
+      bool reset( const PreParameters& params );
 
       /**
        * @brief Checks if the supplied parameters fits the requirements of each
@@ -67,14 +67,14 @@ out of the use of this library and its documentation.
        * @param parameters The parameters to be checked.
        * @return true if the parameters are OK. false if not.
        */
-      virtual bool CheckParameters( const PreParameters& parameters ) const = 0;
+      virtual bool checkParameters( const PreParameters& parameters ) const = 0;
 
       /**
        * @brief Returns a reference to the current internal parameters.
        *
        * @return A reference to the current internal parameters.
        */
-      const PreParameters& GetParameters() const;
+      const PreParameters& getParameters() const;
       
     protected :
       /**
@@ -92,12 +92,12 @@ out of the use of this library and its documentation.
        *
        * @return true if OK. false on error.
        */
-      virtual bool RunImplementation() = 0;
+      virtual bool runImplementation() = 0;
 
       /**
        * @brief Reset params state to the params_ state.
        */
-      virtual void ResetState( PreParameters& params ) = 0;
+      virtual void resetState( PreParameters& params ) = 0;
      
       /**
        * @brief Checks if current internal parameters fits the requirements of each
@@ -107,7 +107,7 @@ out of the use of this library and its documentation.
        *
        * @return true if the internal parameters are OK. false if not.
        */
-      bool CheckInternalParameters() const;
+      bool checkInternalParameters() const;
       
     private :
     
