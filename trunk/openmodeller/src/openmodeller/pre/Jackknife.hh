@@ -50,14 +50,14 @@ public:
 
    //Checks if the supplied parameters fits the requirements of PRE algorithm implementation.
    //return true if the parameters are OK. false if not.
-   bool CheckParameters( const PreParameters& parameters ) const;
+   bool checkParameters( const PreParameters& parameters ) const;
 
    //Runs the current algorithm implementation.
    //return true if OK. false on error.
-   bool RunImplementation();
+   bool runImplementation();
 
    //Reset the params state to the params_ state.
-   void ResetState( PreParameters& params );
+   void resetState( PreParameters& params );
 
 };
 

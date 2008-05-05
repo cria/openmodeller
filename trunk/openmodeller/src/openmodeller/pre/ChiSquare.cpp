@@ -46,7 +46,7 @@ ChiSquare::~ChiSquare() //destructor
 }
 
 bool 
-ChiSquare::CheckParameters( const PreParameters& parameters ) const
+ChiSquare::checkParameters( const PreParameters& parameters ) const
 {
   SamplerPtr samplerPtr;
   if( ! parameters.retrive( "Sampler", samplerPtr ) ) 
@@ -67,11 +67,11 @@ ChiSquare::CheckParameters( const PreParameters& parameters ) const
 }
 
 bool 
-ChiSquare::RunImplementation()
+ChiSquare::runImplementation()
 {
   size_t layer1, layer2;
 
-  Init();
+  init();
 
   for( layer1 = 0; layer1 < num_layers; layer1++ ) 
   {
@@ -91,13 +91,13 @@ ChiSquare::RunImplementation()
 }
 
 void
-ChiSquare::ResetState( PreParameters& params )
+ChiSquare::resetState( PreParameters& params )
 {
 
 }
 
 void 
-ChiSquare::Init()
+ChiSquare::init()
 {
   SamplerPtr samplerPtr;
   params_.retrive( "Sampler", samplerPtr );
