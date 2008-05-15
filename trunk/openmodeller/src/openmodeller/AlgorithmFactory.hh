@@ -135,6 +135,16 @@ public:
    */
   static ConfigurationPtr getConfiguration();
 
+
+  /** Returns the current algorithm id in case it matches one of the previous
+   * ids of an algorithm. This method was created to allow changes in algorithm
+   * ids without breaking compatibility with serialized data.
+   * @param algorithm_id Identifier of an algorithm.
+   * @return Current algorithm identifier when the parameter matches a known 
+   * previous identifier, otherwise it returns the parameter.
+   */
+  static char const * getCurrentId( char const *algorithm_id );
+
 private:
 
   AlgorithmFactory();
