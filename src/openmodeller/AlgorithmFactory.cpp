@@ -243,7 +243,9 @@ AlgorithmFactory::algorithmMetadata( char const *id )
 
   AlgorithmFactory& af = getInstance();
 
-  testDLLId test( id );
+  char const * current_id = getCurrentId( id );
+
+  testDLLId test( current_id );
   ListDLL::iterator dll = find_if( af._dlls.begin(), af._dlls.end(), test );
 
   if ( dll != af._dlls.end() ) {
@@ -278,7 +280,9 @@ AlgorithmFactory::newAlgorithm( char const *id )
     throw AlgorithmException( msg );
   }
 
-  testDLLId test( id );
+  char const * current_id = getCurrentId( id );
+
+  testDLLId test( current_id );
 
   ListDLL::iterator dll = find_if( af._dlls.begin(), af._dlls.end(), test );
 
@@ -540,3 +544,28 @@ AlgorithmFactory::getConfiguration()
   return config;
 }
 
+
+/**********************/
+/*** get current id ***/
+char const * 
+AlgorithmFactory::getCurrentId( char const *algorithm_id )
+{
+  if ( algorithm_id == "EnvironmentalDistance" ) {
+
+    return "ENVDIST";
+  }
+  else if ( algorithm_id == "Bioclim") {
+
+    return "BIOCLIM";
+  }
+  else if ( algorithm_id == "EnvelopeScore" ) {
+
+    return "ENVSCORE";
+  }
+  else if ( algorithm_id == "AquaMaps" ) {
+
+    return "AQUAMAPS";
+  }
+
+  return algorithm_id;
+}
