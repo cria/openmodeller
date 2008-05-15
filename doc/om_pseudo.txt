@@ -2,10 +2,10 @@ NAME
      om_pseudo - generate random points (longitude and latitude pairs)
 
 SYNOPSIS
-       om_pseudo [-] v --version | n --num-points=NUM_POINTS m --mask=FILE [ -l, --label ] [ -s, --seq-start ] [ -p, --proportion ] [ --log-level=LEVEL ]
+       om_pseudo [-] v --version | n --num-points NUM_POINTS m --mask FILE [ -l, --label ] [ -s, --seq-start ] [ -p, --proportion ] [ --log-level LEVEL ]
 
 DESCRIPTION
-       om_pseudo is a command line tool for generating random coordinates in a specified geographic region (mask). The output will be a series of lines, one for each longitude/latitude pair, with TAB-delimited content compatible with openModeller. Coordinates will always be generated in the WGS84 datum.
+       om_pseudo is a command line tool to generate random coordinates in a specified geographic region (mask). The output will be a series of lines, one for each longitude/latitude pair, with TAB-delimited content compatible with openModeller. Coordinates will always be generated in the WGS84 datum.
 
 OPTIONS
        -v, --version     Display version info.

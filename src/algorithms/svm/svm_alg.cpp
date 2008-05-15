@@ -1,5 +1,5 @@
 /**
- * Definition of the base (abstract) class for SVM algorithms.
+ * Definition of SVM algorithm class.
  * 
  * @author Renato De Giovanni (renato [at] cria org br)
  * $Id$
