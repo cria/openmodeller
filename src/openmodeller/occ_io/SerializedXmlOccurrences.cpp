@@ -87,7 +87,7 @@ SerializedXmlOccurrences::load()
 
   while ( not_found && getline( fs, line ) ) {
 
-    for ( int i = 0; i < line.size(); ++i ) {    
+    for ( unsigned int i = 0; i < line.size(); ++i ) {    
 
       // Skip carriage returns, line feeds and spaces
       if ( line[i] == '\r' || line[i] == '\n' || line[i] == ' ' ) {
