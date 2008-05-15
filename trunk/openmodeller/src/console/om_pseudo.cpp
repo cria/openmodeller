@@ -16,10 +16,6 @@ using namespace std;
 
 int main( int argc, char **argv ) {
 
-#ifdef BUILD_TERRALIB
-  USE_TERRALIB_IO
-#endif
-
   char *args;
   int option;
 
