@@ -73,7 +73,7 @@ static AlgParamMetadata parameters[NUM_PARAM] = { // Parameters
 };
 
 static AlgMetadata metadata = { // General metadata
-  "EnvironmentalDistance",      // Id
+  "ENVDIST",                    // Id
   "Environmental Distance",     // Name
   "0.3",                        // Version
   "Generic algorithm based on environmental dissimilarity metrics.", // Overview

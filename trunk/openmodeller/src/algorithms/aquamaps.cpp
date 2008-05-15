@@ -152,7 +152,7 @@ static AlgParamMetadata parameters[NUM_PARAM] = { // Parameters
 
 static AlgMetadata metadata = {
 
-  "AquaMaps", // Id.
+  "AQUAMAPS", // Id.
   "AquaMaps (beta version)", // Name.
   "0.3", // Version.
 

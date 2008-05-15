@@ -90,7 +90,7 @@ Output file type = ByteHFA
 ########
 # Bioclim
 #
-#Algorithm = Bioclim
+#Algorithm = BIOCLIM
 #Parameter = StandardDeviationCutoff 0.674
 
 ########
@@ -134,7 +134,7 @@ Output file type = ByteHFA
 ########
 # Environmental distance
 #
-#Algorithm = EnvironmentalDistance
+#Algorithm = ENVDIST
 # Valid values for the parameter DistanceType:
 # 1=Euclidean, 2=Mahalanobis, 3=Manhattan, 4=Chebyshev
 #Parameter = DistanceType 1

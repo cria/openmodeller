@@ -55,7 +55,7 @@
 
 static AlgMetadata metadata = {
 
-  "EnvelopeScore",   // Id.
+  "ENVSCORE",   // Id.
   "Envelope Score",   // Name.
   "0.1",       // Version.
 
