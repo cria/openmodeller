@@ -45,21 +45,22 @@ EXTRA_DIST = \
 	getopts/README \
 	getopts/main.c
 
-bin_PROGRAMS = om_console $(OM_VIEWER) $(OM_NICHE) om_dump om_sampledump om_pseudo om_project om_create om_metadump om_testmodel
+bin_PROGRAMS = om_console om_algorithm om_pseudo $(OM_VIEWER) $(OM_NICHE) om_dump om_sampledump om_project om_create om_testmodel
 lib_LTLIBRARIES = libopenmodellerxml.la
 
 dist_man_MANS = man/om_console.1 man/om_create.1 man/om_project.1 man/om_pseudo.1
 
-libopenmodellerxml_la_SOURCES = consolexml.cpp consolexml.hh
-libopenmodellerxml_la_LDFLAGS = -no-undefined
-libopenmodellerxml_la_CPPFLAGS = -I$(OMSRCDIR) $(TERRALIB_FLAGS) -Ddllexp= -DOM_XML_DLL_EXPORT=
-libopenmodellerxml_la_LIBADD = $(GDAL_LIB) $(EXPAT_LDFLAGS) $(EXPAT_LIBS) $(OMLIB)
-
-OM_XML_LIB = $(OMSRCDIR)/console/libopenmodellerxml.la
-
 om_console_SOURCES = om_console.cpp request_file.cpp file_parser.cpp
 om_console_CPPFLAGS = -DCORE_DLL_IMPORT -I$(OMSRCDIR) $(TERRALIB_FLAGS) -Ddllexp=
 om_console_LDADD = $(GDAL_LIB) $(OMLIB) $(EXPAT_LIBS) $(TERRALIB_LIB)
+
+om_pseudo_SOURCES = om_pseudo.cpp om_cmd_utils.cpp getopts/getopts.c
+om_pseudo_CPPFLAGS = -DCORE_DLL_IMPORT -I$(OMSRCDIR) -I getopts $(TERRALIB_FLAGS) -Ddllexp=
+om_pseudo_LDADD = $(GDAL_LIB) $(OMLIB) $(EXPAT_LIBS) $(TERRALIB_LIB)
+
+om_algorithm_SOURCES = om_algorithm.cpp om_cmd_utils.cpp getopts/getopts.c
+om_algorithm_CPPFLAGS = -DCORE_DLL_IMPORT -I$(OMSRCDIR) -I getopts -Ddllexp=
+om_algorithm_LDADD = $(OMLIB) $(EXPAT_LIBS)
 
 om_dump_SOURCES = om_dump.cpp request_file.cpp file_parser.cpp
 om_dump_CPPFLAGS = -DCORE_DLL_IMPORT -I$(OMSRCDIR) $(TERRALIB_FLAGS) -Ddllexp=
@@ -69,21 +70,13 @@ om_sampledump_SOURCES = om_sampledump.cpp request_file.cpp file_parser.cpp
 om_sampledump_CPPFLAGS = -DCORE_DLL_IMPORT -I$(OMSRCDIR) $(TERRALIB_FLAGS) -Ddllexp=
 om_sampledump_LDADD = $(GDAL_LIB) $(OMLIB) $(EXPAT_LIBS) $(TERRALIB_LIB)
 
-om_pseudo_SOURCES = om_pseudo.cpp om_cmd_utils.cpp getopts/getopts.c
-om_pseudo_CPPFLAGS = -DCORE_DLL_IMPORT -I$(OMSRCDIR) -I getopts $(TERRALIB_FLAGS) -Ddllexp=
-om_pseudo_LDADD = $(GDAL_LIB) $(OMLIB) $(EXPAT_LIBS) $(TERRALIB_LIB)
-
 om_create_SOURCES = om_create.cpp om_cmd_utils.cpp getopts/getopts.c
 om_create_CPPFLAGS = -DCORE_DLL_IMPORT -I$(OMSRCDIR) -I getopts $(TERRALIB_FLAGS) -Ddllexp=
 om_create_LDADD = $(GDAL_LIB) $(OMLIB) $(EXPAT_LIBS) $(TERRALIB_LIB)
 
 om_project_SOURCES = om_project.cpp om_cmd_utils.cpp getopts/getopts.c
 om_project_CPPFLAGS = -DCORE_DLL_IMPORT -I$(OMSRCDIR) -I getopts $(TERRALIB_FLAGS) -Ddllexp=
-om_project_LDADD = $(GDAL_LIB) $(OMLIB) $(EXPAT_LIBS) $(OM_XML_LIB) $(TERRALIB_LIB)
-
-om_metadump_SOURCES = om_metadump.cpp 
-om_metadump_CPPFLAGS = -DCORE_DLL_IMPORT -I$(OMSRCDIR) $(TERRALIB_FLAGS) -Ddllexp= -DOM_XML_DLL_EXPORT=
-om_metadump_LDADD = $(GDAL_LIB) $(OMLIB) $(EXPAT_LIBS) $(OM_XML_LIB) $(TERRALIB_LIB)
+om_project_LDADD = $(GDAL_LIB) $(OMLIB) $(EXPAT_LIBS) $(TERRALIB_LIB)
 
 om_testmodel_SOURCES = om_testmodel.cpp request_file.cpp file_parser.cpp
 om_testmodel_CPPFLAGS = -DCORE_DLL_IMPORT -I$(OMSRCDIR) -Ddllexp=

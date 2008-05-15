@@ -32,9 +32,6 @@ SET (OMPROJECT_SRCS
      getopts/getopts.c 
      om_cmd_utils.cpp 
      )
-SET (OMMETADUMP_SRCS
-     om_metadump.cpp
-     )
 SET (OMVIEWER_SRCS
      om_viewer.cpp 
      file_parser.cpp 
@@ -53,6 +50,11 @@ SET (OMNICHE_SRCS
      )
 SET (OMPSEUDO_SRCS
      om_pseudo.cpp 
+     getopts/getopts.c 
+     om_cmd_utils.cpp 
+     )
+SET (OMALGORITHM_SRCS
+     om_algorithm.cpp 
      getopts/getopts.c 
      om_cmd_utils.cpp 
      )
@@ -121,10 +123,15 @@ ENDIF(X11_FOUND)
 ADD_EXECUTABLE (om_pseudo ${OMPSEUDO_SRCS})
 TARGET_LINK_LIBRARIES(om_pseudo openmodeller)
 
+ADD_EXECUTABLE (om_algorithm ${OMALGORITHM_SRCS})
+TARGET_LINK_LIBRARIES(om_algorithm openmodeller)
+
 ########################################################
 # Install
 
 INSTALL(TARGETS om_console RUNTIME DESTINATION ${OM_BIN_DIR})
+INSTALL(TARGETS om_algorithm RUNTIME DESTINATION ${OM_BIN_DIR})
+INSTALL(TARGETS om_pseudo RUNTIME DESTINATION ${OM_BIN_DIR})
 INSTALL(TARGETS om_create RUNTIME DESTINATION ${OM_BIN_DIR})
 INSTALL(TARGETS om_project RUNTIME DESTINATION ${OM_BIN_DIR})
 INSTALL(TARGETS om_dump RUNTIME DESTINATION ${OM_BIN_DIR})
@@ -134,7 +141,6 @@ if (X11_FOUND)
   INSTALL(TARGETS om_viewer RUNTIME DESTINATION ${OM_BIN_DIR})
   INSTALL(TARGETS om_niche RUNTIME DESTINATION ${OM_BIN_DIR})
 ENDIF(X11_FOUND)
-INSTALL(TARGETS om_pseudo RUNTIME DESTINATION ${OM_BIN_DIR})
 
 IF (UNIX AND NOT OM_BUNDLE)
   INSTALL (FILES ${CMAKE_CURRENT_SOURCE_DIR}/man/om_console.1
