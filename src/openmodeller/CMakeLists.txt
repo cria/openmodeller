@@ -1,12 +1,5 @@
 #############################################################
 # sources
-SET (LIBOPENMODELLERXML_SRCS
-  ../console/consolexml.cpp
-)
-
-SET (LIBOPENMODELLERXML_HDRS
-  ../console/consolexml.hh
-)
 
 SET(OM_CORE_SRCS
   Algorithm.cpp 
@@ -233,13 +226,6 @@ pre/ChiSquare.hh
 IF (MSVC)
   SOURCE_GROUP( "Header Files" FILES ${OM_CORE_HEADERS} ${OM_OCCIO_HDRS} ${OM_ENVIO_HDRS})
 ENDIF (MSVC)
-
-
-########################################################
-# Build openmodellerxml lib
-ADD_LIBRARY (openmodellerxml SHARED ${LIBOPENMODELLERXML_SRCS})
-TARGET_LINK_LIBRARIES(openmodellerxml openmodeller )
-INSTALL(TARGETS openmodellerxml RUNTIME DESTINATION ${OM_BIN_DIR} LIBRARY DESTINATION lib)
 
 
 ########################################################

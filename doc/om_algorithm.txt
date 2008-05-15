@@ -1,0 +1,22 @@
+NAME
+     om_algorithm - return information about the available algorithms in openModeller
+
+SYNOPSIS
+       om_algorithm [-] v --version | l --list | d --dump-xml | i --id ALGORITHM_ID [ --log-level LEVEL ]
+
+DESCRIPTION
+       om_algorithm is a command line tool to display information about the available algorithms in openModeller.
+
+OPTIONS
+       -v, --version     Display version info.
+
+       -l, --list        List all available algorithms (id and name).
+
+       -d, --dump-xml    Dump complete metadata for all available algorithms.
+
+       -i, --id          Algorithm id. Display complete metadata for the specified algorithm.
+
+       --log-level       openModeller log level: debug, warn, info or error. Defaults to "info".
+
+AUTHORS
+       Renato De Giovanni <renato at cria dot org dot br>
