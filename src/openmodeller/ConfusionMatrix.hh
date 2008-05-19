@@ -103,10 +103,8 @@ public:
   
   /**
    * Returns a value from the confusion matrix.
-   * @param predictionValue Prediction value corresponding to the 
-   *  row selected in the matrix
-   * @param actualValue Actual value corresponding to the 
-   *  column selected in the matrix
+   * @param predictionValue Prediction value (probability returned by the model)
+   * @param actualValue Actual value (0 for real absence, 1 for real presence)
    */
   int getValue(Scalar predictionValue, Scalar actualValue) const;
 
