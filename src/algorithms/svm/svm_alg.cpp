@@ -213,23 +213,23 @@ static AlgMetadata metadata = {
 // definition from svm.cpp to svm.h
 struct svm_model
 {
-	svm_parameter param;	// parameter
-	int nr_class;		// number of classes, = 2 in regression/one class svm
-	int l;			// total #SV
-	svm_node **SV;		// SVs (SV[l])
-	double **sv_coef;	// coefficients for SVs in decision functions (sv_coef[k-1][l])
-	double *rho;		// constants in decision functions (rho[k*(k-1)/2])
-	double *probA;          // pariwise probability information
-	double *probB;
+  svm_parameter param;// parameter
+  int nr_class;       // number of classes, = 2 in regression/one class svm
+  int l;              // total #SV
+  svm_node **SV;      // SVs (SV[l])
+  double **sv_coef;   // coefficients for SVs in decision functions (sv_coef[k-1][l])
+  double *rho;        // constants in decision functions (rho[k*(k-1)/2])
+  double *probA;      // pariwise probability information
+  double *probB;
 
-	// for classification only
+  // for classification only
 
-	int *label;		// label of each class (label[k])
-	int *nSV;		// number of SVs for each class (nSV[k])
-				// nSV[0] + nSV[1] + ... + nSV[k-1] = l
-	// XXX
-	int free_sv;		// 1 if svm_model is created by svm_load_model
-				// 0 if svm_model is created by svm_train
+  int *label; // label of each class (label[k])
+  int *nSV;   // number of SVs for each class (nSV[k])
+              // nSV[0] + nSV[1] + ... + nSV[k-1] = l
+  // XXX
+  int free_sv; // 1 if svm_model is created by svm_load_model
+               // 0 if svm_model is created by svm_train
 };
 
 /****************************************************************/
@@ -557,25 +557,6 @@ SvmAlgorithm::initialize()
     Log::instance()->error( error_msg );
     return 0;
   }
-
-  // Debug
-  //
-  //  cout << "\nSVM type: " << _svm_parameter.svm_type; 
-  //
-  //  cout << "\nKernel type: " << _svm_parameter.kernel_type; 
-  //
-  //  cout << "\nInput for svm-train:"; 
-  //
-  //  for ( int z = 0; z < num_points; ++z ) {
-  //
-  //    cout << "\n" << _svm_problem.y[z]; 
-  //
-  //    for ( int n = 0; n < _num_layers; ++n ) {
-  //
-  //      cout << " " << _svm_problem.x[z][n].index << ":";
-  //      cout << _svm_problem.x[z][n].value;
-  //    }
-  //  }
 
   return 1;
 }
