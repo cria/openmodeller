@@ -42,7 +42,7 @@ INCLUDE_DIRECTORIES(
      ${CMAKE_CURRENT_SOURCE_DIR}
      ${CMAKE_CURRENT_SOURCE_DIR}/../../openmodeller
      ${CMAKE_CURRENT_SOURCE_DIR}/toolkit/src
-     ${Boost_INICLUDE_DIR}
+     ${Boost_INCLUDE_DIR}
 )
 
 ########################################################
