@@ -1,5 +1,5 @@
 <ProjectionParameters>
-  <Algorithm Id="Bioclim" Version="0.2">
+  <Algorithm Id="BIOCLIM" Version="0.2">
     <Parameters>
       <Parameter Id="StandardDeviationCutoff" Value="0.9"/>
     </Parameters>
