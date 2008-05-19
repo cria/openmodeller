@@ -41,10 +41,11 @@ c) Powerfull computers can be used to run heavy algorithms (like GARP)
 CURRENT STATUS
 --------------
 
-- Core modelling interface implemented in ANSI C++ (control interface).
-- Algorithms dinamically loaded as separate C++ libraries (algorithm
-  interface).
-- Simple command-line (console) interface.
+- Core modelling API implemented in ANSI C++.
+- Algorithms dinamically loaded as plugins.
+- Generic API to read & write raster data.
+- Generic API to load occurrence data.
+- Simple command-line/console interface.
 - SOAP interface.
 - Desktop interface (available in a separate package).
 
@@ -74,12 +75,21 @@ REQUIREMENTS
 * GDAL (Geospatial Data Abstraction Library) version >= 1.1.9
   http://www.remotesensing.org/gdal
 
-* To run the simple map viewer (om_viewer), libX11 is needed
-  (tested with version 6.2)
+* TerraLib (>= 3.2.0) is needed to enable the TerraLib occurrence and raster drivers.
+  http://www.terralib.org/
 
-* To run the CSM (Climate Space Model) algorithm, the GSL (GNU
-  Scientific Library) version >= 1.4 is needed
+* libX11 is needed to run the command line viewer (om_viewer).
+  http://x.org/
+
+* GSL (GNU Scientific Library) version >= 1.4 is needed to run 
+  the CSM (Climate Space Model) algorithm.
   http://www.gnu.org/software/gsl
+
+* Boost (>= 1.31) is needed to run the Maximum Entropy algorithm.
+  http://www.boost.org/
+
+* libcurl (>= 7.15.4) is needed to enable to TAPIR and GBIF occurrence drivers.
+  http://curl.haxx.se/libcurl/
 
 
 DOCUMENTATION

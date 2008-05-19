@@ -56,7 +56,7 @@ public:
   char const *id() const { return _id; }
 
   /** Set parameter's id. */
-  char *setId( char const *id )  { return newCopy(&_id, id); }
+  char *setId( char const *id )  { return newCopy( &_id, id ); }
 
   /** Returns the parameter's value. */
   char const *value() const { return _value; }
@@ -65,7 +65,7 @@ public:
   double valueReal();
 
   /** Set parameter's value. */
-  char *setValue( char  const *val )  { return newCopy(&_value,val); }
+  char *setValue( char  const *val )  { return newCopy( &_value, val ); }
   char *setValue( double val );
 
 

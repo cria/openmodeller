@@ -1,5 +1,10 @@
 SUBDIRS(best_subsets garp dg_garp svm)
 
+if (Boost_FOUND)
+  SUBDIRS(maxent)
+ENDIF(Boost_FOUND)
+
+
 #######################################################
 #  MSVC DEFINITIONS
 IF (WIN32)

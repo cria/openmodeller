@@ -316,10 +316,25 @@ readParameters( AlgParameter *result, AlgMetadata const *metadata )
       // if the user does not enter a new value.
       char value[64];
       *value = 0;
-      if ( fgets( value, 64, stdin ) && (*value >= ' ') )
+      if ( fgets( value, 64, stdin ) && ( *value >= ' ' ) ) {
+
+        // Remove line feed to avoid problems with string parameters 
+        if ( param->type == String ) {
+
+          char * pos = strchr( value, '\n' );
+
+          if ( pos ) {
+
+            *pos = '\0';
+          }
+	}
+
         result->setValue( value );
-      else
+      }
+      else {
+
         result->setValue( param->typical );
+      }
     }
 
   return metadata->nparam;

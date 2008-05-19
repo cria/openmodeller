@@ -1,7 +1,7 @@
 #############################################################
 # process subdirs
 
-SUBDIRS(openmodeller algorithms console )
+SUBDIRS(openmodeller algorithms console)
 
 IF (NOT WIN32)
   SUBDIRS (soap)

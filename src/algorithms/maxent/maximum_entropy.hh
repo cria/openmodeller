@@ -1,15 +1,16 @@
 /**
  * Declaration of Maximum Entropy algorithm class.
  * 
- * @author Elisangela S. da C. Rodrigues (elisangela.rodrigues [at] poli.usp.br)
- * @date   2008-02-24
- * $Id: maximum_entropy.hh $//////////////////////////COMPLETAR////////////////
+ * @author Elisangela S. da C. Rodrigues (elisangela . rodrigues [at] poli . usp . br)
+ * @author Renato De Giovanni (renato [at] cria . org . br)
+ * $Id$
  * 
  * LICENSE INFORMATION 
  * 
- * Copyright(c) ///////////////////////COMPLETAR///////////////////////
+ * Copyright(c) 2007 by CRIA -
+ * Centro de Referencia em Informacao Ambiental
  *
- * http://www.poli.usp.br ////////////////////VER///////////////////
+ * http://www.cria.org.br
  * 
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -29,7 +30,9 @@
 
 #include <openmodeller/om.hh>
 
-#include "maxent.h"
+#include "maxentmodel.hpp"
+
+using namespace maxent;
 
 /*********************************************************/
 /******************** Maximum Entropy ********************/
@@ -53,7 +56,7 @@ public:
 
   Scalar getValue( const Sample& x ) const;
 
-  //int getConvergence( Scalar *val );
+  int getConvergence( Scalar *val );
 
 protected:
 
@@ -63,12 +66,17 @@ protected:
 
   bool _done;
 
-  int num_layers;
+  OccurrencesPtr _presences;
+  OccurrencesPtr _absences;
 
-  ME_Model model;
+  int _num_layers;
 
-  OccurrencesPtr absences;
-  OccurrencesPtr presences;
+  MaxentModel _model;
+
+  int _num_iterations;
+  std::string _method;
+  double _gaussian_coef;
+  double _tolerance;
 };
 
 #endif
