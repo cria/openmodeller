@@ -1,3 +1,6 @@
+ADD_DEFINITIONS(-DBOOST_DISABLE_THREADS) # no need to link pthread lib
+ADD_DEFINITIONS(-fPIC) # avoid issues in 64bit platform
+
 ########################################################
 # Files
 
