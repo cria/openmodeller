@@ -7,6 +7,7 @@ SVN revision: ?
 	* New driver to read point data from serialized openModeller objects (XML).
 	* New generic API for pre-analysis.
 	* New console application om_algorithm replaces om_metadump.
+	* New Maximum Entropy algorithm.
 	
 
 Release 0.5.3 (2008-03-26)

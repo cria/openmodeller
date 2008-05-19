@@ -117,8 +117,10 @@ AlgParameter::newCopy( char const *src )
 char *
 AlgParameter::newCopy( char **dst, char const *src )
 {
-  if ( *dst )
+  if ( *dst ) {
+
     delete [] *dst;
+  }
 
   return *dst = newCopy( src );
 }
