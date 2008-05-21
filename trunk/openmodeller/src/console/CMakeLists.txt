@@ -144,6 +144,7 @@ ENDIF(X11_FOUND)
 
 IF (UNIX AND NOT OM_BUNDLE)
   INSTALL (FILES ${CMAKE_CURRENT_SOURCE_DIR}/man/om_console.1
+                 ${CMAKE_CURRENT_SOURCE_DIR}/man/om_algorithm.1 
                  ${CMAKE_CURRENT_SOURCE_DIR}/man/om_create.1 
                  ${CMAKE_CURRENT_SOURCE_DIR}/man/om_project.1 
                  ${CMAKE_CURRENT_SOURCE_DIR}/man/om_pseudo.1 
