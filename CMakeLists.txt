@@ -9,6 +9,9 @@ SET(OM_PATCH_VERSION "0")
 
 CMAKE_MINIMUM_REQUIRED(VERSION 2.4.3)
 
+# avoid cmake 2.6 warnings
+#CMAKE_POLICY(SET CMP0005 OLD)
+
 SET(CMAKE_COLOR_MAKEFILE ON)
 
 # set path to additional CMake modules
@@ -54,7 +57,7 @@ ENDIF (OM_CTEST)
 #
 
 # use, i.e. don't skip the full RPATH for the build tree
-SET(CMAKE_SKIP_BUILD_RPATH  FALSE)
+SET(CMAKE_SKIP_BUILD_RPATH FALSE)
 
 # when building, don't use the install RPATH already
 # (but later on when installing)
