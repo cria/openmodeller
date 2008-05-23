@@ -1,5 +1,5 @@
 /**
- * Definition of the base (abstract) class for SVM algorithms.
+ * Definition of the base (abstract) class for MaxEnt algorithms.
  * 
  * @author Elisangela S. da C. Rodrigues (elisangela . rodrigues [at] poli . usp . br)
  * @author Renato De Giovanni (renato [at] cria . org . br)
