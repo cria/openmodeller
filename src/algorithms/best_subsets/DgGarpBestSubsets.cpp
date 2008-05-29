@@ -50,16 +50,16 @@ AlgParamMetadata parameters_bs[NUM_PARAM] =
     Real,                          // Type.
 
     // Overview.
-    "Proportion of the occurrence data to be used to train the models.",
+    "Percentage of occurrence data to be used to train models.",
 
     // Description.
-    "Proportion of the occurrence data to be used to train the models.",
+    "Percentage of occurrence data to be used to train models.",
 
     1,      // Not zero if the parameter has lower limit.
     0,      // Parameter's lower limit.
     1,      // Not zero if the parameter has upper limit.
-    1,      // Parameter's upper limit.
-    "0.5"   // Parameter's typical (default) value.
+    100,    // Parameter's upper limit.
+    "50"    // Parameter's typical (default) value.
   },
 
   {
@@ -246,9 +246,9 @@ AlgParamMetadata parameters_bs[NUM_PARAM] =
 
 AlgMetadata metadata_bs = {
   
-  "DG_GARP_BS",                        // Id.
-  "GARP with best subsets - DesktopGARP implementation",  // Name.
-  "3.0.1 alpha",                       // Version.
+  "DG_GARP_BS", // Id.
+  "GARP with best subsets - DesktopGARP implementation", // Name.
+  "3.0.2", // Version.
 
   // Overview.
   "GARP is a genetic algorithm that creates ecological niche \
