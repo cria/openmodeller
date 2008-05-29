@@ -275,6 +275,7 @@ int AbstractBestSubsets::initialize()
   }
 
   // convert percentages (100%) to proportions (1.0) for external parameters 
+  _trainProp /= 100.0;
   _commissionThreshold /= 100.0;
   _omissionThreshold /= 100.0;
 
