@@ -261,7 +261,7 @@ AlgParamMetadata parameters_bs[NUM_PARAM] =
 AlgMetadata metadata_bs = {
   
   "GARP_BS",                                                  // Id.
-  "GARP with best subsets - new openModeller implementation", // Name.
+  "GARP with Best Subsets - new openModeller implementation", // Name.
   "3.0.3",                                                    // Version.
 
   // Overview.
@@ -271,7 +271,11 @@ under which the species should be able to maintain populations. \
 For input, GARP uses a set of point localities where the species \
 is known to occur and a set of geographic layers representing \
 the environmental parameters that might limit the species' \
-capabilities to survive.",
+capabilities to survive. This algorithm applies the Best Subsets \
+procedure using the new openModeller implementation in each GARP \
+run. Please refer to the GARP algorithm description to know the \
+differences between the DesktopGarp and the new openModeller GARP \
+implementations.",
 
   // Description.
   "GARP is a genetic algorithm that creates ecological niche \
@@ -280,7 +284,11 @@ under which the species should be able to maintain populations. \
 For input, GARP uses a set of point localities where the species \
 is known to occur and a set of geographic layers representing \
 the environmental parameters that might limit the species' \
-capabilities to survive.",
+capabilities to survive. This algorithm applies the Best Subsets \
+procedure using the new openModeller implementation in each GARP \
+run. Please refer to the GARP algorithm description to know the \
+differences between the DesktopGarp and the new openModeller GARP \
+implementations.",
 
   // Author
   "Anderson, R. P., D. Lew, D. and A. T. Peterson.",  

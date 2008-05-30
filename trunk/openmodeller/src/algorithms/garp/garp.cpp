@@ -153,7 +153,20 @@ under which the species should be able to maintain populations. \
 For input, GARP uses a set of point localities where the species \
 is known to occur and a set of geographic layers representing \
 the environmental parameters that might limit the species' \
-capabilities to survive.",
+capabilities to survive. This implementation is a complete rewrite \
+of the DesktopGarp code, and it also contains the following \
+changes/improvements: (1) Gene values changed from integers (between 1 \
+and 253) to floating point numbers (between -1.0 and 1.0). This avoids \
+precision problems in environment values during projection (for example, \
+if an environment variable has the value 2.56 in some raster cell and 
+2.76 in another one, DesktopGarp rounds them off to 3). (2) Atomic rules \
+were removed since they seem to have little significance compared to the \
+other rules. (3) Heuristic operator parameters (percentage of mutation \
+and crossover per iteration) are now static since they used to converge \
+to fixed values during the very first iterations. This implementation \
+simply keeps the converged values. (4) A bug was fixed in the procedure \
+responsible for ordering the rules. When a rule was only replacing \
+another, it was being included in the wrong position.",
 
   // Author
   "Stockwell, D. R. B., modified by Ricardo Scachetti Pereira",  

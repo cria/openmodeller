@@ -435,8 +435,7 @@ int AbstractBestSubsets::calculateBestSubset()
 
   printListOfRuns("Best Omission Runs by Commission:", runList, _numFinishedRuns);
 
-  _numBestRuns = (int)(_commissionThreshold * 
-      (double) _modelsUnderOmission +0.5);
+  _numBestRuns = (int)(_commissionThreshold * (double) _modelsUnderOmission + 0.5);
   int medianRun = _modelsUnderOmission / 2;
   int firstRun = (int) ceil((double) medianRun - (double) _numBestRuns / 2.0);
 
