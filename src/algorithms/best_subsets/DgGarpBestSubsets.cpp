@@ -95,7 +95,7 @@ AlgParamMetadata parameters_bs[NUM_PARAM] =
     0,      // Parameter's lower limit.
     1,      // Not zero if the parameter has upper limit.
     100,    // Parameter's upper limit.
-    "100"    // Parameter's typical (default) value.
+    "100"   // Parameter's typical (default) value.
   },
 
   {
