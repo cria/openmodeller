@@ -145,6 +145,22 @@ DelimitedTextOccurrences::load()
 
       _addOccurrence( id, label, lg, lt, error, 1.0, num_attributes, attributes );
     }
+    else if ( *line != '#' && sscanf( line, "%[^,],%[^,],%lf,%lf,%u", id, label, &x, &y, &abundance ) == 5 ) {
+
+      Coord lg = Coord( x );
+      Coord lt = Coord( y );
+
+      _addOccurrence( id, label, lg, lt, error, (Scalar)abundance, num_attributes, attributes );
+    }
+    else if ( *line != '#' && sscanf( line, "%[^,],%[^,],%lf,%lf", id, label, &x, &y ) == 4 ) {
+
+      // When no abundance is provided, assume 1 (single presence)
+
+      Coord lg = Coord( x );
+      Coord lt = Coord( y );
+
+      _addOccurrence( id, label, lg, lt, error, 1.0, num_attributes, attributes );
+    }
     else {
 
       Log::instance()->debug( "Skipping line: %s\n", line );
