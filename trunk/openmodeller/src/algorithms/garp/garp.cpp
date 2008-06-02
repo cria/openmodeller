@@ -158,7 +158,7 @@ of the DesktopGarp code, and it also contains the following \
 changes/improvements: (1) Gene values changed from integers (between 1 \
 and 253) to floating point numbers (between -1.0 and 1.0). This avoids \
 precision problems in environment values during projection (for example, \
-if an environment variable has the value 2.56 in some raster cell and 
+if an environment variable has the value 2.56 in some raster cell and \
 2.76 in another one, DesktopGarp rounds them off to 3). (2) Atomic rules \
 were removed since they seem to have little significance compared to the \
 other rules. (3) Heuristic operator parameters (percentage of mutation \
