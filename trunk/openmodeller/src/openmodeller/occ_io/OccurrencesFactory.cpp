@@ -77,6 +77,26 @@ OccurrencesFactory::unregisterDriver( const string& driverId )
   return _drivers.erase( driverId ) != 0;
 }
 
+/******************************/
+/*** get registered drivers ***/
+vector<string>
+OccurrencesFactory::getRegisteredDrivers()
+{
+  vector<string> driver_ids;
+
+  DriversMap::const_iterator d = _drivers.begin();
+  DriversMap::const_iterator end = _drivers.end();
+
+  while ( d != end ) {
+
+    driver_ids.push_back( d->first );
+
+    ++d;
+  }
+
+  return driver_ids;
+}
+
 /**************/
 /*** create ***/
 OccurrencesReader*

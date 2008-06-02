@@ -48,6 +48,9 @@ using std::string;
 #include <map>
 using std::map;
 
+#include <vector>
+using std::vector;
+
 /**
 * OccurrencesReader factory.
 */
@@ -80,6 +83,11 @@ public:
    * @param driverId Driver identifier.
    */
   bool unregisterDriver( const string& driverId );
+  
+  /** Return registered drivers (vector of driver ids).
+   * 
+   */
+  vector<string> getRegisteredDrivers();
 
   /** Return an OccurrencesReader given a source string.
    *
