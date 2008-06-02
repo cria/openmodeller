@@ -27,7 +27,7 @@ int main( int argc, char **argv ) {
     { 3, "list",       "List available formats",                       "l" , 0 },
     { 4, "source",     "Source where points are located",              "s" , 1 },
     { 5, "name",       "Name (label) to filter points",                "n" , 1 },
-    { 6, "ref",        "Spatial reference",                            "r" , 1 },
+    { 6, "wkt",        "Spatial reference in WKT",                     "w" , 1 },
     { 7, "type",       "Output type",                                  "o" , 1 },
     { 0, NULL,         NULL,                                           NULL, 0 }
   };
@@ -38,7 +38,6 @@ int main( int argc, char **argv ) {
   bool        list_formats = false;
   std::string source("");
   std::string label("");
-  std::string ref("");
   std::string wkt("GEOGCS[\"WGS84\",DATUM[\"WGS84\",SPHEROID[\"WGS84\",6378137.0,298.257223563]],PRIMEM[\"Greenwich\",0.0],UNIT[\"degree\",0.017453292519943295],AXIS[\"Longitude\",EAST],AXIS[\"Latitude\",NORTH]]");
   std::string format("TXT");
 
@@ -76,7 +75,7 @@ int main( int argc, char **argv ) {
         label = args;
         break;
       case 6:
-        ref = args;
+        wkt = args;
         break;
       case 7:
         format = args;
