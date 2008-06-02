@@ -82,41 +82,48 @@ main( int argc, char **argv )
 
     if ( resp < 0 ) {
 
-      Log::instance()->error( "Can't read request file %s", request_file );
+      Log::instance()->error( "Could not read request file %s", request_file );
       exit(1);
     }
 
     // If something was not set...
-    if ( resp )
-      {
-        if ( ! request.algorithmSet() )
-          {
-            // Find out which model algorithm is to be used.
-            AlgMetadata const **availables = om.availableAlgorithms();
-            AlgMetadata const *metadata;
+    if ( resp ) {
 
-            if ( ! (metadata = readAlgorithm( availables )) )
-              return 1;
+      if ( ! request.occurrencesSet() ) {
 
-            Log::instance()->info( "\n> Algorithm used: %s\n\n", metadata->name );
-            Log::instance()->info( " %s\n\n", metadata->overview );
-
-            // For resulting parameters storage.
-            int nparam = metadata->nparam;
-            AlgParameter *param = new AlgParameter[nparam];
-
-            // Read from console the parameters not set by request
-            // file. Fills 'param' with all 'metadata->nparam'
-            // parameters set.
-            readParameters( param, metadata );
-
-            // Set the model algorithm to be used by the controller
-            om.setAlgorithm( metadata->id, nparam, param );
-
-            delete[] param;
-            delete[] availables;
-          }
+          exit(1);
       }
+
+      if ( ! request.algorithmSet() ) {
+
+        // Find out which model algorithm is to be used.
+        AlgMetadata const **availables = om.availableAlgorithms();
+        AlgMetadata const *metadata;
+
+        if ( ! (metadata = readAlgorithm( availables )) ) {
+
+          return 1;
+        }
+
+        Log::instance()->info( "\n> Algorithm used: %s\n\n", metadata->name );
+        Log::instance()->info( " %s\n\n", metadata->overview );
+
+        // For resulting parameters storage.
+        int nparam = metadata->nparam;
+        AlgParameter *param = new AlgParameter[nparam];
+
+        // Read from console the parameters not set by request
+        // file. Fills 'param' with all 'metadata->nparam'
+        // parameters set.
+        readParameters( param, metadata );
+
+        // Set the model algorithm to be used by the controller
+        om.setAlgorithm( metadata->id, nparam, param );
+
+        delete[] param;
+        delete[] availables;
+      }
+    }
 
     // Run model
     om.setModelCallback( modelCallback );
