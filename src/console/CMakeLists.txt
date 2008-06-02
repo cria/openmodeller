@@ -58,6 +58,11 @@ SET (OMALGORITHM_SRCS
      getopts/getopts.c 
      om_cmd_utils.cpp 
      )
+SET (OMPOINTS_SRCS
+     om_points.cpp 
+     getopts/getopts.c 
+     om_cmd_utils.cpp 
+     )
 set (EXTRA_DIST
   file_parser.hh
   request_file.hh
@@ -126,11 +131,15 @@ TARGET_LINK_LIBRARIES(om_pseudo openmodeller)
 ADD_EXECUTABLE (om_algorithm ${OMALGORITHM_SRCS})
 TARGET_LINK_LIBRARIES(om_algorithm openmodeller)
 
+ADD_EXECUTABLE (om_points ${OMPOINTS_SRCS})
+TARGET_LINK_LIBRARIES(om_points openmodeller)
+
 ########################################################
 # Install
 
 INSTALL(TARGETS om_console RUNTIME DESTINATION ${OM_BIN_DIR})
 INSTALL(TARGETS om_algorithm RUNTIME DESTINATION ${OM_BIN_DIR})
+INSTALL(TARGETS om_points RUNTIME DESTINATION ${OM_BIN_DIR})
 INSTALL(TARGETS om_pseudo RUNTIME DESTINATION ${OM_BIN_DIR})
 INSTALL(TARGETS om_create RUNTIME DESTINATION ${OM_BIN_DIR})
 INSTALL(TARGETS om_project RUNTIME DESTINATION ${OM_BIN_DIR})
