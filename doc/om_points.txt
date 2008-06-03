@@ -1,0 +1,38 @@
+NAME
+     om_points - retrieve locality data from a specified source
+
+SYNOPSIS
+       om_points [-] v --version | l --list | s --source PATH/URL n --name POINT_LABEL [ w --wkt SPATIAL_REF_WKT ] [ o --type OUTPUT_TYPE ] [ --log-level LEVEL ]
+
+DESCRIPTION
+       om_points is a command line tool to retrieve locality data (occurrence points) from a specified source through one of the available drivers in openModeller. Locality data is one of the required inputs to create distribution models.
+
+       The following drivers are currently implemented in openModeller:
+
+       TXT: Delimited text file. This driver can read points from a TAB or comma separated text file located in the file system. The following columns must be present: point id, point label, longitude, latitude, abundance (this one is optional). This driver is always be available, and the same format can be used to display points retrieved in another format.
+
+       XML: openModeller serialized XML for occurrences. This driver is always be available, and the same format can be used to display points retrieved in another format. The XML produced can be used to specify points in an openModeller sampler. Two tags can be returned: <presence> and/or <absence>. Both should follow the OccurrencesType defined in http://openmodeller.cria.org.br/xml/1.0/openModeller.xsd
+
+       GBIF: GBIF Web Service for occurrence points. This driver is only available if openModeller was compiled with libcurl. Currently, this is the access point that should be specified in the source: http://data.gbif.org/ws/rest/occurrence/list
+
+       TerraLib: Points stored in a TerraLib database. This driver is only available if openModeller was compiled with TerraLib. Sources must follow the pattern: terralib>dbUsername>dbPassword@dbType>dbHost>dbName>dbPort>layerName>tableName>columnName. Where dbType can be PostgreSQL (default port 5432).
+
+       TAPIR: TAPIR Web Service using DarwinCore 1.4 and the geospatial extension. This driver is only available if openModeller was compiled with libcurl. The source must be a TAPIR access point.
+
+OPTIONS
+       -v, --version     Display version info.
+
+       -l, --list        List all available drivers to load point data (driver id: description (input/output)).
+
+       -s, --source      Source of locality data. It can be a path in the file system (for TXT and XML drivers) or a URL (for GBIF or TAPIR drivers) or a special string (for the TerraLib driver).
+
+       -n, --name        Name (label) to filter points. Each point in a source has a label. You must specify a label to be used for filtering the desired points.
+
+       -w, --wkt         Spatial reference of the points. Optional. Defaults to lat/long datum WGS84. This is only useful if the output will be in XML, when the coordinateSystem tag is displayed. Please note that most drivers (GBIF, TAPIR and TerraLib) already assume that the points are in lat/long datum WGS84. When specified, the value must be in Well-Known Text format, with all double quotes escaped.
+
+       -o, --type        Output type (can be TXT or XML). Optional. Defaults to TXT.
+
+       --log-level       openModeller log level: debug, warn, info or error. Defaults to "info".
+
+AUTHORS
+       Renato De Giovanni <renato at cria dot org dot br>
