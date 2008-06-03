@@ -55,6 +55,8 @@ int main( int argc, char **argv ) {
         break;
       case 2:
         printf("om_algorithm 0.1.0\n");
+        printf("This is free software; see the source for copying conditions. There is NO\n");
+        printf("warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n");
         exit(0);
         break;
       case 3:
