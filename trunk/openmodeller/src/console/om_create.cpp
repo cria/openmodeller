@@ -72,6 +72,8 @@ int main( int argc, char **argv ) {
         break;
       case 1:
         printf("om_create 0.2.1\n");
+        printf("This is free software; see the source for copying conditions. There is NO\n");
+        printf("warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n");
         exit(0);
         break;
       case 2:
