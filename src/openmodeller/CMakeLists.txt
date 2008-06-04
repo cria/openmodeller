@@ -129,9 +129,6 @@ INSTALL(TARGETS openmodeller
   RUNTIME DESTINATION ${OM_BIN_DIR}
   LIBRARY DESTINATION lib)
 
-
-# Added by Tim to install headers
-
 SET(OM_CORE_HDRS
   AbortionCommand.hh
   AlgMetadata.hh 
