@@ -12,7 +12,6 @@ IF (CMAKE_Fortran_COMPILER_WORKS)
   FIND_PACKAGE(FortranLibs REQUIRED)
 
   ADD_DEFINITIONS(-DHAVE_FORTRAN)
-  #ADD_LIBRARY (lbfgs SHARED toolkit/src/lbfgs.f)
 ENDIF (CMAKE_Fortran_COMPILER_WORKS)
 
 ########################################################
