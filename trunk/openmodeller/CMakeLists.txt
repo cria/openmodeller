@@ -118,7 +118,7 @@ FIND_PACKAGE(CURL)      # note: minimum version is 7.15.4
 FIND_PACKAGE(Boost)     # For maximum entropy algorithm (version must be >= 1.31)
 
 # python support:
-#INCLUDE (Python) # file cmake/Python.cmake
+FIND_PACKAGE(PythonLibs)
 
 IF (NOT PROJ_FOUND)
   MESSAGE (SEND_ERROR "PROJ4 library was not found!")
