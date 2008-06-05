@@ -17,8 +17,8 @@ SET(CMAKE_COLOR_MAKEFILE ON)
 # set path to additional CMake modules
 SET(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake ${CMAKE_MODULE_PATH})
 
-# try to configure and build python bindings by default
-SET (WITH_BINDINGS TRUE CACHE BOOL "Determines whether python bindings should be built")
+# bindings are disabled by default
+SET (WITH_BINDINGS FALSE CACHE BOOL "Indicates whether python bindings should be built")
 
 # treat all warnings as errors
 SET (PEDANTIC TRUE CACHE BOOL "Treat all compiler warnings as errors")
