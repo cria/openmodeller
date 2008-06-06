@@ -435,9 +435,6 @@ private:
 RCP_WRAP( EnvironmentPtr, EnvironmentImpl );
 RCP_CONST_TYPEMAP( ConstEnvironmentPtr, EnvironmentPtr );
 
-%rename (makeEnvironmentFromConfig) createEnvironment( const ConstConfigurationPtr& );
-%ignore createEnvironment;
-
 %inline %{
   EnvironmentPtr makeEnvironment( std::vector<std::string> cat_maps, std::vector<std::string> cont_maps, std::string mask )
   {
@@ -445,16 +442,6 @@ RCP_CONST_TYPEMAP( ConstEnvironmentPtr, EnvironmentPtr );
   }
 %}
 
-// This is a hack.
-// Since we're using typemaps to change the number of arguments
-// the overloading & wrapping mechanism for SWIG is confused.
-// Since I like the typemaps, I think it's best to just
-// ignore the currently unneeded constructors.
-%ignore EnvironmentImpl::EnvironmentImpl();
-%ignore EnvironmentImpl::EnvironmentImpl( char *, int, char **, int, char **, char * );
-
-
-//
 // Ignore Environment because it is a smart pointer class
 %ignore EnvironmentPtr;
 %ignore EnvironmentImpl;
