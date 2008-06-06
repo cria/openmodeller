@@ -243,6 +243,9 @@ private:
 //
 //******************************************************************************
 
+%include "openmodeller/Configurable.hh"
+%include "openmodeller/Normalizable.hh"
+
 RCP_WRAP( ConfigurationPtr, ConfigurationImpl );
 RCP_CONST_TYPEMAP( ConstConfigurationPtr, ConfigurationPtr );
 %ignore ConfigurationPtr;
