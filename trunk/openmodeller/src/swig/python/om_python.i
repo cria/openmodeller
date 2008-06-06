@@ -286,6 +286,9 @@ RCP_CONST_TYPEMAP( ConstConfigurationPtr, ConfigurationPtr );
 //
 //******************************************************************************
 RCP_WRAP( SamplerPtr, SamplerImpl );
+
+%ignore createSampler( const ConstConfigurationPtr& );
+
 %ignore SamplerPtr;
 
 %ignore SamplerImpl;
