@@ -243,13 +243,13 @@ private:
 //
 //******************************************************************************
 
-%include "openmodeller/Configurable.hh"
-%include "openmodeller/Normalizable.hh"
-
 RCP_WRAP( ConfigurationPtr, ConfigurationImpl );
 RCP_CONST_TYPEMAP( ConstConfigurationPtr, ConfigurationPtr );
 %ignore ConfigurationPtr;
 %ignore ConfigurationImpl;
+
+// avoid warning about ambiguous overloaded functions
+%ignore addNameValue(std::string const &,std::string const &);
 
 %extend Configuration {
   static ConfigurationPtr readXmlFromString( const std::string & in ) {
@@ -270,6 +270,15 @@ RCP_CONST_TYPEMAP( ConstConfigurationPtr, ConfigurationPtr );
 %}
 
 %include "openmodeller/Configuration.hh"
+
+//*****************************************************************************
+//
+// General interfaces that are implemented by many classes
+//
+//******************************************************************************
+
+%include "openmodeller/Configurable.hh"
+%include "openmodeller/Normalizable.hh"
 
 //*****************************************************************************
 //
