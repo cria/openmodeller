@@ -307,45 +307,44 @@ int BestSubsets::calculateBestSubset()
 {
   int i;
 
-  //Log::instance()->info("Calculating best subset of models.\n");
+  Log::instance()->info("Calculating best subset of models.\n");
 
   // make a copy of finished runs to play with
   AlgorithmRun ** runList = new AlgorithmRun*[_numFinishedRuns];
   for (i = 0; i < _numFinishedRuns; i++)
   { runList[i] = _finishedRun[i]; }
 
-  //printListOfRuns("Finished Runs:", runList, _numFinishedRuns);
+  printListOfRuns("Finished Runs:", runList, _numFinishedRuns);
 
   // get list of models that pass omission test
   // sort runs by omission
   // first <_modelsUnderOmission> runs are the selected ones
   sortRuns(runList, _numFinishedRuns, 0);
 
-  //printListOfRuns("Finished Runs by Omission:", runList, _numFinishedRuns);
+  printListOfRuns("Finished Runs by Omission:", runList, _numFinishedRuns);
 
   // get list of models that pass commission test
   sortRuns(runList, _modelsUnderOmission, 1);
 
-  //printListOfRuns("Best Omission Runs by Commission:", runList, _numFinishedRuns);
+  printListOfRuns("Best Omission Runs by Commission:", runList, _numFinishedRuns);
 
-  _numBestRuns = (int)(_commissionThreshold * 
-      (double) _modelsUnderOmission);
+  _numBestRuns = (int)( _commissionThreshold * (double)_modelsUnderOmission + 0.5 );
   int medianRun = _modelsUnderOmission / 2;
-  int firstRun = (int) ceil((double) medianRun - (double) _numBestRuns / 2.0);
+  int firstRun = (int)ceil( (double)medianRun - (double)_numBestRuns / 2.0 );
 
   _bestRun = new AlgorithmRun*[_numBestRuns];
 
   for (i = 0; i < _numBestRuns; i++)
   { _bestRun[i] = runList[i + firstRun]; }
 
-  //printListOfRuns("Best Runs:", _bestRun, _numBestRuns);
+  printListOfRuns("Best Runs:", _bestRun, _numBestRuns);
 
-  //printf("Median: %d First: %d\n", medianRun, firstRun);
+  printf("Median: %d First: %d\n", medianRun, firstRun);
 
 
   delete[] runList;
 
-  //Log::instance()->info("Selected best %d models out of %d.\n", _numBestRuns, _totalRuns);
+  Log::instance()->info("Selected best %d models out of %d.\n", _numBestRuns, _totalRuns);
 
   return 1;
 }
@@ -357,7 +356,7 @@ void BestSubsets::sortRuns(AlgorithmRun ** runList,
   int i, j;
   AlgorithmRun * runJ0, * runJ1;
 
-  //Log::instance()->info("Sorting list %d of %d elements by index %d.\n", runList, nelements, errorType);
+  Log::instance()->info("Sorting list %d of %d elements by index %d.\n", runList, nelements, errorType);
 
   // bubble sort
   // TODO: change to quicksort if this becomes a bottleneck
