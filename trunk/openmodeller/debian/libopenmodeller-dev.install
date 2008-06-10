@@ -1,9 +1,9 @@
-/usr/include/openmodeller/AbortionCommand.hh
 /usr/include/openmodeller/AlgMetadata.hh
 /usr/include/openmodeller/AlgorithmFactory.hh
 /usr/include/openmodeller/Algorithm.hh
 /usr/include/openmodeller/AlgParameter.hh
 /usr/include/openmodeller/AreaStats.hh
+/usr/include/openmodeller/CallbackWrapper.hh
 /usr/include/openmodeller/Configurable.hh
 /usr/include/openmodeller/Configuration.hh
 /usr/include/openmodeller/ConfusionMatrix.hh

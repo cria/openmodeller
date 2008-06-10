@@ -42,7 +42,7 @@
 #include <openmodeller/Environment.hh>
 #include <openmodeller/Configuration.hh>
 #include <openmodeller/Model.hh>
-#include <openmodeller/AbortionCommand.hh>
+#include <openmodeller/CallbackWrapper.hh>
 
 #include <openmodeller/env_io/Map.hh>
 #include <openmodeller/env_io/RasterFactory.hh>
@@ -65,79 +65,21 @@ using std::map;
 #include <sstream>   // treat string as a stream
 
 
-/*** backward compatible callback helper classes ***/
-
-class ModelCallbackHelper : public Algorithm::ModelCommand
-{
-
-public:
-  ModelCallbackHelper( ModelCallback func, void *param ) :
-    arg( param ),
-    func( func ) {};
-  void operator()( float d ) {
-    func(d, arg );
-  }
-
-private:
-  void *arg;
-  ModelCallback func;
-
-};
-
-class MapCallbackHelper : public Projector::MapCommand
-{
-
-public:
-  MapCallbackHelper( MapCallback func, void *param ) :
-    arg( param ),
-    func( func ) {};
-  void operator()( float d ) {
-    func(d, arg );
-  }
-
-private:
-  void *arg;
-  MapCallback func;
-
-};
-
-/*** Helper class for callback to abort jobs (model creation or model projection) ***/
-
-class AbortionCallbackHelper : public AbortionCommand
-{
-
-public:
-  AbortionCallbackHelper( AbortionCallback func, void *param ) :
-    arg( param ),
-    func( func ) {};
-  bool operator()() {
-    return func( arg );
-  }
-
-private:
-  void *arg;
-  AbortionCallback func;
-
-};
-
 /*** Callback "setters" ***/
 
-void OpenModeller::setModelCallback( ModelCallback func, void *param ) {
-  if (_model_command) 
-    delete _model_command;
-  _model_command = new ModelCallbackHelper( func, param );
+void OpenModeller::setModelCallback( ModelCreationCallback func, void *param ) {
+
+  _callback_wrapper.setModelCreationCallback( func, param );
 }
 
-void OpenModeller::setMapCallback( MapCallback func, void *param ) {
-  if (_map_command) 
-    delete _map_command;
-  _map_command = new MapCallbackHelper( func, param );
+void OpenModeller::setMapCallback( ModelProjectionCallback func, void *param ) {
+
+  _callback_wrapper.setModelProjectionCallback( func, param );
 }
 
 void OpenModeller::setAbortionCallback( AbortionCallback func, void *param ) {
-  if (_abortion_command) 
-    delete _abortion_command;
-  _abortion_command = new AbortionCallbackHelper( func, param );
+
+  _callback_wrapper.setAbortionCallback( func, param );
 }
 
 /****************************************************************/
@@ -148,10 +90,6 @@ void OpenModeller::setAbortionCallback( AbortionCallback func, void *param ) {
 
 OpenModeller::OpenModeller()
 {
-  _map_command = 0;
-  _model_command = 0;
-  _abortion_command = 0;
-
   _error[0] = '\0';
 
   _actualAreaStats = new AreaStats();
@@ -168,12 +106,6 @@ OpenModeller::OpenModeller()
 
 OpenModeller::~OpenModeller()
 {
-  if ( _map_command ) delete _map_command;
-
-  if ( _model_command ) delete _model_command;
-
-  if ( _abortion_command ) delete _abortion_command;
-
   delete _actualAreaStats;
   delete _estimatedAreaStats;
   delete _confusion_matrix;
@@ -195,10 +127,9 @@ OpenModeller::setLogLevel( Log::Level level )
 char *
 OpenModeller::getVersion()
 {
-  // Defined in "om_defs.hh".
-  std::string myString;
-  myString.append(OM_VERSION);
-  return const_cast<char *>(myString.c_str()); 
+  std::string version( OM_VERSION );
+
+  return const_cast<char *>( version.c_str() );
 }
 
 /****************************/
@@ -339,7 +270,7 @@ OpenModeller::createModel()
     return 0;
   }
 
-  _alg->createModel( _samp, _model_command, _abortion_command );
+  _alg->createModel( _samp, &_callback_wrapper );
 
   Log::instance()->info( "Finished creating model\n" );
 
@@ -395,7 +326,7 @@ OpenModeller::createMap( const EnvironmentPtr & env, char const *output_file, Ma
   // Create map on disc.
   Map map( RasterFactory::instance().create( output_file, _format ) );
 
-  bool finished = Projector::createMap( model, _projEnv, &map, _actualAreaStats, _map_command, _abortion_command );
+  bool finished = Projector::createMap( model, _projEnv, &map, _actualAreaStats, &_callback_wrapper );
 
   if ( ! finished ) {
 

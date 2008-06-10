@@ -29,7 +29,7 @@
 #define _OM_CONTROLHH_
 
 #include <openmodeller/om_defs.hh>
-#include <openmodeller/AbortionCommand.hh>
+#include <openmodeller/CallbackWrapper.hh>
 #include <openmodeller/Log.hh>
 #include <openmodeller/Configuration.hh>
 #include <openmodeller/AlgMetadata.hh>
@@ -212,7 +212,7 @@ public:
    * @param param User parameter to be passed to the callback
    *  function.
    */
-  void setMapCallback( MapCallback func, void *param=0 );
+  void setMapCallback( ModelProjectionCallback func, void *param=0 );
 
   /** Create and save distribution map to disk using the specified
    * projection environment and output format.
@@ -266,7 +266,7 @@ public:
    * @param param User parameter to be passed to the callback
    *  function.
    */
-  void setModelCallback( ModelCallback func, void *param=0 );
+  void setModelCallback( ModelCreationCallback func, void *param=0 );
 
   //
   // Model and distribution map related methods.
@@ -359,29 +359,31 @@ private:
 
   bool hasEnvironment();
 
-  SamplerPtr _samp;           ///< Sampler object
-  AlgorithmPtr _alg;          ///< Algorithm object
+  // Sampler object
+  SamplerPtr _samp;
 
-  OccurrencesPtr _presence; ///< Presence occurrences points.
-  OccurrencesPtr _absence;  ///< Absence occurrences points.
+  // Algorithm object
+  AlgorithmPtr _alg;
 
-  EnvironmentPtr _env;   ///< Original environmental layers
+  // Presence occurrences points
+  OccurrencesPtr _presence;
 
-  // Projection callback pointer
-  Projector::MapCommand *_map_command;
+  // Absence occurrences points
+  OccurrencesPtr _absence;
 
-  // Model creation callback pointer
-  Algorithm::ModelCommand *_model_command;
+  // Original environmental layers
+  EnvironmentPtr _env;
 
-  // Job abortion callback pointer
-  AbortionCommand *_abortion_command;
+  // Wrapper object for callbacks
+  CallbackWrapper _callback_wrapper;
 
   // Output format
   MapFormat _format;
 
-  EnvironmentPtr _projEnv;   ///< Environmental layers for projection
+  // Environmental layers for projection
+  EnvironmentPtr _projEnv;
 
-  // model statistics: helper objects
+  // Model statistics: helper objects
   AreaStats * _actualAreaStats;
   AreaStats * _estimatedAreaStats;
 

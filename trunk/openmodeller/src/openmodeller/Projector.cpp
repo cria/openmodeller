@@ -25,7 +25,7 @@
  * http://www.gnu.org/copyleft/gpl.html
  */
 
-#include <openmodeller/AbortionCommand.hh>
+#include <openmodeller/CallbackWrapper.hh>
 #include <openmodeller/Projector.hh>
 #include <openmodeller/Log.hh>
 #include <openmodeller/Environment.hh>
@@ -50,8 +50,7 @@ Projector::createMap( const Model& model,
 		      const EnvironmentPtr& env,
 		      Map *map,
 		      AreaStats *areaStats,
-		      MapCommand *mapcommand,
-		      AbortionCommand *abortcommand )
+		      CallbackWrapper *callbackWrapper )
 {
   // Retrieve possible adjustments and/or additions made
   // on the effective header.
@@ -88,11 +87,11 @@ Projector::createMap( const Model& model,
   while ( it != fin ) {
 
     // Call the abort callback function if it is set.
-    if ( abortcommand && pixels%pixelstep == 0 ) {
+    if ( callbackWrapper && pixels%pixelstep == 0 ) {
 
       try {
 
-        abort = (*abortcommand)();
+        abort = callbackWrapper->abortionRequested();
 
         if ( abort ) {
 
@@ -147,7 +146,7 @@ Projector::createMap( const Model& model,
     }
 
     // Call the callback function if it is set.
-    if ( mapcommand && pixels%pixelstep == 0 ) {
+    if ( callbackWrapper && pixels%pixelstep == 0 ) {
 
       float progress = pixels/(float)pixelcount;
 
@@ -158,18 +157,18 @@ Projector::createMap( const Model& model,
 
       try {
 
-        (*mapcommand)( progress );
+        callbackWrapper->notifyModelProjectionProgress( progress );
       }
       catch( ... ) {}
     }
   }
   
   // Call the callback function if it is set.
-  if ( mapcommand ) {
+  if ( callbackWrapper ) {
 
     try  {
 
-      (*mapcommand)( 1.0 );
+      callbackWrapper->notifyModelProjectionProgress( 1.0 );
     }
     catch ( ... ) {}
   }
