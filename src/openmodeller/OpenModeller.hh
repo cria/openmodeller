@@ -200,13 +200,6 @@ public:
    */
   void setAbortionCallback( AbortionCallback func, void *param=0 );
 
-
-  /** Sets a callback function to be called during model creation or map projection
-   * jobs and which will indicate if the job should be cancelled or not.
-   * @param func Pointer to the callback function.
-   */
-  void setAbortionCommand( AbortionCommand *func );
-
   /*****************************************************************************
    *
    * Projection / Map Generation Methods
@@ -220,12 +213,6 @@ public:
    *  function.
    */
   void setMapCallback( MapCallback func, void *param=0 );
-
-  /** Sets a callback function to be called after each map
-   * distribution line generation.
-   * @param func Pointer to the callback function.
-   */
-  void setMapCommand( Projector::MapCommand *func );
 
   /** Create and save distribution map to disk using the specified
    * projection environment and output format.
@@ -280,12 +267,6 @@ public:
    *  function.
    */
   void setModelCallback( ModelCallback func, void *param=0 );
-
-  /** Sets a callback function to be called after each iteration
-   * of the model creation.
-   * @param func Pointer to the callback function.
-   */
-  void setModelCommand( Algorithm::ModelCommand *func );
 
   //
   // Model and distribution map related methods.

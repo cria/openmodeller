@@ -123,29 +123,21 @@ private:
 /*** Callback "setters" ***/
 
 void OpenModeller::setModelCallback( ModelCallback func, void *param ) {
-  setModelCommand( new ModelCallbackHelper( func, param ) );
-}
-
-void OpenModeller::setModelCommand( Algorithm::ModelCommand *func ) {
   if (_model_command) 
     delete _model_command;
-  _model_command = func;
+  _model_command = new ModelCallbackHelper( func, param );
 }
 
 void OpenModeller::setMapCallback( MapCallback func, void *param ) {
-  setMapCommand( new MapCallbackHelper( func, param ) );
-}
-
-void OpenModeller::setMapCommand( Projector::MapCommand *func ) {
-  _map_command = func;
+  if (_map_command) 
+    delete _map_command;
+  _map_command = new MapCallbackHelper( func, param );
 }
 
 void OpenModeller::setAbortionCallback( AbortionCallback func, void *param ) {
-  setAbortionCommand( new AbortionCallbackHelper( func, param ) );
-}
-
-void OpenModeller::setAbortionCommand( AbortionCommand *func ) {
-  _abortion_command = func;
+  if (_abortion_command) 
+    delete _abortion_command;
+  _abortion_command = new AbortionCallbackHelper( func, param );
 }
 
 /****************************************************************/
