@@ -38,7 +38,7 @@
 typedef double Coord;    ///< Type of map coordinates.
 typedef double Scalar;   ///< Type of map values.
 
-/** Model callback function.
+/** Model creation callback function.
  * @param progress A number between 0.0 and 1.0 reflecting the
  *  avance of the map creating task. 0.0 is the begin and
  *  1.0 is finished. Note that in model generation it is not 
@@ -46,16 +46,16 @@ typedef double Scalar;   ///< Type of map values.
  * @param extra_param A parameter set by user when setModelCallback() 
  *  is called in the controller class.
  */
-typedef void (*ModelCallback)( float progress, void *extra_param );
+typedef void (*ModelCreationCallback)( float progress, void *extra_param );
 
-/** Map callback function.
+/** Model projection callback function.
  * @param progress A number between 0.0 and 1.0 reflecting the
  *  avance of the map creating task. 0.0 is the begin and
  *  1.0 is finished.
  * @param extra_param A parameter set by user when setMapCallback() 
  *  is called in the controller class.
  */
-typedef void (*MapCallback)( float progress, void *extra_param );
+typedef void (*ModelProjectionCallback)( float progress, void *extra_param );
 
 /** Abortion callback function.
  * @param extra_param A parameter set by user when setAbortionCallback() is called.

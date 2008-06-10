@@ -14,6 +14,7 @@
 #include <string>
 #include <stdexcept>
 #include "openmodeller/AlgorithmFactory.hh"
+#include "openmodeller/CallbackWrapper.hh"
 #include "openmodeller/Configuration.hh"
 #include "openmodeller/env_io/Map.hh"
 #include "openmodeller/Environment.hh"
@@ -387,7 +388,7 @@ RCP_WRAP( AverageModelPtr, AverageModelImpl );
 class Projector {
 public:
 %extend {
-  static void createMap( const ReferenceCountedPointer<AverageModelImpl>& model, const EnvironmentPtr& env, char *filename, Projector::MapCommand *mc = 0 )
+  static void createMap( const ReferenceCountedPointer<AverageModelImpl>& model, const EnvironmentPtr& env, char *filename, CallbackWrapper *callbackWrapper = 0 )
   {
     MapFormat mf;
     Map *mask = env->getMask();
@@ -395,7 +396,7 @@ public:
       mask = env->getLayer(0);
     mf.copyDefaults( *mask );
     Map map( RasterFactory::instance().create( filename, mf ) );
-    Projector::createMap( Model(model), env, &map, 0, mc );
+    Projector::createMap( Model(model), env, &map, 0, callbackWrapper );
   }
 } // %extend
 private:
@@ -458,89 +459,6 @@ RCP_CONST_TYPEMAP( ConstEnvironmentPtr, EnvironmentPtr );
 // Defines the OpenModeller object
 //
 //*****************************************************************************
-
-%{
-/*
- * The following define is a HACK
- * SWIG does not support nested classes at all.  It will not generate wrappers for them
- * (which we don't need in python) and more importantly, does not properly declare its
- * local variables (which is a problem).  Luckily, we have a way around this.
- * When SWIG hits our typemaps below for the ModelCommand* type,
- * it declares local vars as type "ModelCommand*".  With a simple
- * #define to the proper nested typename, everything is cool.
- *
- * Interestingly enough, Swig does not have this problem with Projector::MapCommand.
- */
-
-class PyModelCommand : public Algorithm::ModelCommand {
-  public:
-    PyModelCommand( PyObject *func ) {
-      Py_INCREF( func );
-      my_func = func;
-    }
-    ~PyModelCommand() {
-      Py_DECREF( my_func );
-    }
-    void operator()( float progress ) {
-      PyObject *arg = Py_BuildValue( "(f)", progress );
-      PyObject *result = PyEval_CallObject( my_func, arg );
-      // If an error occurred in the Callback
-      if ( PyErr_Occurred() ) {
-        // Print it out, clear the error
-        PyErr_Print();
-      }
-      Py_DECREF( arg );
-      // If the callback raises an expcetion, the result is a null pointer.
-      // we use Py_XDECREF here since it tests for null
-      Py_XDECREF( result );
-    }
-
-    PyObject *my_func;
-};
-
-class PyMapCommand : public Projector::MapCommand {
-  public:
-    PyMapCommand( PyObject *func ) {
-      Py_INCREF( func );
-      my_func = func;
-    }
-    ~PyMapCommand() {
-      Py_DECREF( my_func );
-    }
-    void operator()( float progress ) {
-      PyObject *arg = Py_BuildValue( "(f)", progress );
-      PyObject *result = PyEval_CallObject( my_func, arg );
-      // If an error occurred in the Callback
-      if ( PyErr_Occurred() ) {
-        // Print it out, clear the error
-        PyErr_Print();
-      }
-      Py_DECREF( arg );
-      // If the callback raises an expcetion, the result is a null pointer.
-      // we use Py_XDECREF here since it tests for null
-      Py_XDECREF( result );
-    }
-
-    PyObject *my_func;
-};
-
-%}
-
-%typemap( in ) ModelCommand*  {
-  // %typemap( in ) ModelCommand* 
-  if ( $input == NULL || $input == Py_None ) {
-    $1 = NULL;
-    Py_XDECREF( $input );
-  } else {
-    $1 = new PyModelCommand( $input );
-
-  }
-}
-
-%typemap( in ) Projector::MapCommand* {
-  // %typemap( in ) Projector::MapCommand* 
-  $1 = new PyMapCommand( $input );
-}
 
 //// This tells SWIG to treat AlgParameter * as a special case
 %typemap(in,numargs=1) (int nparam, AlgParameter *param) 

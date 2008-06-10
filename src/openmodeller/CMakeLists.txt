@@ -6,6 +6,7 @@ SET(OM_CORE_SRCS
   AlgorithmFactory.cpp 
   AlgParameter.cpp 
   AreaStats.cpp 
+  CallbackWrapper.cpp
   Configuration.cpp 
   Configuration_xmlio.cpp 
   ConfusionMatrix.cpp 
@@ -130,12 +131,12 @@ INSTALL(TARGETS openmodeller
   LIBRARY DESTINATION lib)
 
 SET(OM_CORE_HDRS
-  AbortionCommand.hh
   AlgMetadata.hh 
   AlgorithmFactory.hh  
   Algorithm.hh     
   AlgParameter.hh      
   AreaStats.hh     
+  CallbackWrapper.hh
   Configurable.hh      
   Configuration.hh     
   ConfusionMatrix.hh 

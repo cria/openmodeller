@@ -30,7 +30,7 @@
 #define _PROJECTOR_HH_
 
 #include <openmodeller/om_defs.hh>
-#include <openmodeller/AbortionCommand.hh>
+#include <openmodeller/CallbackWrapper.hh>
 #include <openmodeller/Environment.hh>
 #include <openmodeller/Model.hh>
 #include <openmodeller/env_io/Header.hh>
@@ -44,25 +44,13 @@ class dllexp Projector {
 
 public:
 
-  /** Map callback function.
-   * @param progress A number between 0.0 and 1.0 reflecting the
-   *  avance of the map creating task. 0.0 is the begin and
-   *  1.0 is finished.
-   */
-  class MapCommand {
-  public: 
-    virtual ~MapCommand() {};
-    virtual void operator()( float ) = 0;
-  };
-
   /** Create and save distribution map to disk.
    */
   static bool createMap( const Model& model,
 			 const EnvironmentPtr& env,
 			 Map *map,
 			 AreaStats *areaStats = 0,
-			 MapCommand *mapcommand = 0,
-			 AbortionCommand *abortcommand = 0 );
+			 CallbackWrapper *callbackWrapper = 0 );
 
 private:
 		   // Don't allow construction.

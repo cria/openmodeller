@@ -33,7 +33,7 @@
 #include <string>
 
 #include <openmodeller/om_defs.hh>
-#include <openmodeller/AbortionCommand.hh>
+#include <openmodeller/CallbackWrapper.hh>
 #include <openmodeller/Sampler.hh>
 #include <openmodeller/AlgMetadata.hh>
 #include <openmodeller/ignorecase_traits.hh>
@@ -67,19 +67,6 @@ extern "C"
 dllexp AlgorithmImpl *algorithmFactory();
 dllexp AlgMetadata const *algorithmMetadata();
 }
-
-class dllexp Algorithm {
-public:
-
-  /** Model command object.
-   */
-  class ModelCommand {
-  public: 
-    virtual ~ModelCommand() {};
-    virtual void operator()( float ) = 0;
-  };
-
-};
 
 /** 
  * Base class for all distribution modeling algorithms. Provide 
@@ -129,8 +116,7 @@ public:
   /*
    * Training Methods
    */
-
-  Model createModel( const SamplerPtr& samp, Algorithm::ModelCommand *func = 0, AbortionCommand *abortFunc = 0 );
+  Model createModel( const SamplerPtr& samp, CallbackWrapper *func = 0 );
 
   /** Set the sampler object. Need to be called before start
    *  the algorithm initialization or iteration.

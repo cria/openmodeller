@@ -25,7 +25,7 @@
  * http://www.gnu.org/copyleft/gpl.html
  */
 
-#include <openmodeller/AbortionCommand.hh>
+#include <openmodeller/CallbackWrapper.hh>
 #include <openmodeller/Algorithm.hh>
 #include <openmodeller/AlgParameter.hh>
 #include <openmodeller/AlgorithmFactory.hh>
@@ -349,7 +349,7 @@ AlgorithmImpl::setNormalization( const EnvironmentPtr& env) const
 }
 
 Model
-AlgorithmImpl::createModel( const SamplerPtr& samp, Algorithm::ModelCommand *model_command, AbortionCommand *abort_command ) {
+AlgorithmImpl::createModel( const SamplerPtr& samp, CallbackWrapper *callbackWrapper ) {
 
   if ( !samp ) {
 
@@ -408,11 +408,11 @@ AlgorithmImpl::createModel( const SamplerPtr& samp, Algorithm::ModelCommand *mod
 
   while ( resultFlag && ! doneFlag ) {
 
-    if ( abort_command ) {
+    if ( callbackWrapper ) {
 
       try {
 
-        abort = (*abort_command)();
+        abort = callbackWrapper->abortionRequested();
 
         if ( abort ) {
 
@@ -449,11 +449,11 @@ AlgorithmImpl::createModel( const SamplerPtr& samp, Algorithm::ModelCommand *mod
 
     ncycle++;
 
-    if ( model_command ) {
+    if ( callbackWrapper ) {
 
       try {
 
-        (*model_command)( getProgress() );
+        callbackWrapper->notifyModelCreationProgress( getProgress() );
       }
       catch ( char * message ) {
 
@@ -493,11 +493,11 @@ AlgorithmImpl::createModel( const SamplerPtr& samp, Algorithm::ModelCommand *mod
     throw AlgorithmException( msg.c_str() );
   }
 
-  if ( model_command ) {
+  if ( callbackWrapper ) {
 
     try {
 
-      (*model_command)( 1.0 );
+      callbackWrapper->notifyModelCreationProgress( 1.0 );
     }
     catch ( char * message ) {
 
