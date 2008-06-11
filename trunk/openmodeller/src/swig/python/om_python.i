@@ -101,6 +101,7 @@ int print_args(char **argv) {
 // refcount.hh.
 // It is enough to get swig to work correctly.
 //%include "openmodeller/refcount.hh"
+
 template< class U > struct UnConst
 {	
     typedef U* PointerType;
@@ -108,6 +109,7 @@ template< class U > struct UnConst
     typedef U& ReferenceType;
     typedef U& PlainReferenceType;
 };
+
 template< class U > struct UnConst<const U>
 {
     typedef U const * PointerType;
@@ -115,6 +117,7 @@ template< class U > struct UnConst<const U>
     typedef const U & ReferenceType;
     typedef U& PlainReferenceType;
 };
+
 template< class T >
 class ReferenceCountedPointer {
 public:
@@ -124,6 +127,24 @@ public:
   inline PointerType operator->() const;
 private:
   PlainPointerType _p;
+};
+
+class dllexp ReferenceCountedObject
+{
+  template< typename T >
+  friend class ReferenceCountedPointer;
+
+protected:
+  ReferenceCountedObject() :
+    _ref_count(0)
+  {}
+
+  virtual inline ~ReferenceCountedObject() = 0;
+
+private:
+
+  int _ref_count;
+
 };
 
 //*****************************************************************************
