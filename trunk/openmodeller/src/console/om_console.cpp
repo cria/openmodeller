@@ -71,7 +71,7 @@ main( int argc, char **argv )
 
     AlgorithmFactory::searchDefaultDirs();
     OpenModeller om;
-    Log::instance()->info( "\nopenModeller version %s\n", om.getVersion() );
+    Log::instance()->info( "\nopenModeller version %s\n", om.getVersion().c_str() );
 
     delete[] path;
 
