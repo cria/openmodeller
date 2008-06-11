@@ -392,9 +392,9 @@ OccurrencesImpl::getEnvironmentMatrix()
 /*************/
 /*** print ***/
 void
-OccurrencesImpl::dump( char *msg ) const
+OccurrencesImpl::dump( std::string msg ) const
 {
-  Log::instance()->info( "%s\n", msg );
+  Log::instance()->info( "%s\n", msg.c_str() );
 
   // Occurrences general data.
   Log::instance()->info( "Name: %s\n", name_.c_str() );

@@ -1,7 +1,6 @@
 /**
  * Declaration of AlgParameter class.
  * 
- * @file
  * @author Mauro E S Muñoz (mauro@cria.org.br)
  * @date   2004-04-16
  * $Id$
@@ -31,6 +30,7 @@
 #define _ALG_PARAMETERHH_
 
 #include <openmodeller/om_defs.hh>
+#include <string>
 
 
 /*************************************************************/
@@ -45,38 +45,32 @@ class dllexp AlgParameter
 public:
 
   AlgParameter();
-  AlgParameter( char const *id, char const *value=0 );
+  AlgParameter( std::string const id, std::string const value=0 );
   AlgParameter( const AlgParameter & );
   ~AlgParameter();
 
   AlgParameter &operator=( const AlgParameter & );
 
-
   /** Returns the parameter's id. */
-  char const *id() const { return _id; }
+  std::string const id() const { return _id; }
 
   /** Set parameter's id. */
-  char *setId( char const *id )  { return newCopy( &_id, id ); }
+  void setId( std::string const id )  { _id = id; }
 
   /** Returns the parameter's value. */
-  char const *value() const { return _value; }
+  std::string const value() const { return _value; }
 
   /** Returns the parameter's value converted to double. */
   double valueReal();
 
   /** Set parameter's value. */
-  char *setValue( char  const *val )  { return newCopy( &_value, val ); }
-  char *setValue( double val );
-
+  void setValue( std::string const val ) { _value = val; }
+  void setValue( double val );
 
 private:
 
-  static char *newCopy( char const *src );
-  static char *newCopy( char **dst, char const *src );
-
-  char *_id;
-  char *_value;
-
+  std::string _id;
+  std::string _value;
 };
 
 

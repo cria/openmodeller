@@ -635,7 +635,7 @@ RCP_WRAP( Algorithm, AlgorithmImpl );
 RCP_CONST_TYPEMAP( ConstAlgorithmPtr, AlgorithmPtr );
 
 %inline %{
-AlgorithmPtr makeAlgorithm( char const *id ) {
+AlgorithmPtr makeAlgorithm( std::string const id ) {
   return AlgorithmFactory::newAlgorithm( id );
 }
 

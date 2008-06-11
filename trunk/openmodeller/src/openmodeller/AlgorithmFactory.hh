@@ -110,7 +110,7 @@ public:
    * @return Algorithm's metadata or zero if there algorithm
    *  was not found.
    */
-  static AlgMetadata const *algorithmMetadata( char const *algorithm_id );
+  static AlgMetadata const *algorithmMetadata( std::string const algorithm_id );
 
   /** Instantiate a new algorithm object.
    *
@@ -119,7 +119,7 @@ public:
    * @return A pointer to the new instantiated algorithm or
    *  null if an algorithm with id was not found.
    */
-  static AlgorithmPtr newAlgorithm( char const *id );
+  static AlgorithmPtr newAlgorithm( std::string const id );
 
   static AlgorithmPtr newAlgorithm( const ConstConfigurationPtr& );
 
@@ -143,7 +143,7 @@ public:
    * @return Current algorithm identifier when the parameter matches a known 
    * previous identifier, otherwise it returns the parameter.
    */
-  static char const * getCurrentId( char const *algorithm_id );
+  static std::string const getCurrentId( std::string const algorithm_id );
 
 private:
 

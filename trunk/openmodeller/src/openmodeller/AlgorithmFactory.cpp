@@ -41,14 +41,14 @@ using namespace std;
 
 class testDLLId {
 public:
-  testDLLId( char const *id ) :
+  testDLLId( string const id ) :
     id(id)
   {}
   inline bool operator()( const AlgorithmFactory::DLLPtr& dll ) {
-    return !strcmp( id, dll->getMetadata()->id );
+    return !strcmp( id.c_str(), dll->getMetadata()->id.c_str() );
   }
 private:
-  char const *id;
+  string const id;
 };
 
 /**************************************************************************
@@ -230,11 +230,11 @@ AlgorithmFactory::numAvailableAlgorithms()
 /***************************/
 /***  algorithm Metadata ***/
 AlgMetadata const *
-AlgorithmFactory::algorithmMetadata( char const *id )
+AlgorithmFactory::algorithmMetadata( string const id )
 {
-  if ( ! id ) {
+  if ( 0 == id.size() ) {
 
-    std::string msg = "Algorithm id not specified.\n";
+    string msg = "Algorithm id not specified.\n";
 
     Log::instance()->error( msg.c_str() );
 
@@ -243,7 +243,7 @@ AlgorithmFactory::algorithmMetadata( char const *id )
 
   AlgorithmFactory& af = getInstance();
 
-  char const * current_id = getCurrentId( id );
+  string const current_id = getCurrentId( id );
 
   testDLLId test( current_id );
   ListDLL::iterator dll = find_if( af._dlls.begin(), af._dlls.end(), test );
@@ -265,7 +265,7 @@ AlgorithmFactory::algorithmMetadata( char const *id )
 /*********************/
 /*** new Algorithm ***/
 AlgorithmPtr
-AlgorithmFactory::newAlgorithm( char const *id )
+AlgorithmFactory::newAlgorithm( string const id )
 {
   AlgorithmFactory& af = getInstance();
 
@@ -273,14 +273,14 @@ AlgorithmFactory::newAlgorithm( char const *id )
 
   if ( dll_count == 0 ) {
 
-    std::string msg = "No algorithms loaded.\n";
+    string msg = "No algorithms loaded.\n";
 
     Log::instance()->error( msg.c_str() );
 
     throw AlgorithmException( msg );
   }
 
-  char const * current_id = getCurrentId( id );
+  string const current_id = getCurrentId( id );
 
   testDLLId test( current_id );
 
@@ -309,7 +309,7 @@ AlgorithmFactory::newAlgorithm( const ConstConfigurationPtr & config ) {
 
   Log::instance()->debug( "Algorithm id: %s \n" , id.c_str() );
 
-  AlgorithmPtr alg( newAlgorithm( id.c_str() ) );
+  AlgorithmPtr alg( newAlgorithm( id ) );
 
   if ( ! alg ) {
 
@@ -547,24 +547,24 @@ AlgorithmFactory::getConfiguration()
 
 /**********************/
 /*** get current id ***/
-char const * 
-AlgorithmFactory::getCurrentId( char const *algorithm_id )
+string const  
+AlgorithmFactory::getCurrentId( string const algorithm_id )
 {
   if ( algorithm_id == "EnvironmentalDistance" ) {
 
-    return "ENVDIST";
+    return string( "ENVDIST" );
   }
   else if ( algorithm_id == "Bioclim") {
 
-    return "BIOCLIM";
+    return string( "BIOCLIM" );
   }
   else if ( algorithm_id == "EnvelopeScore" ) {
 
-    return "ENVSCORE";
+    return string( "ENVSCORE" );
   }
   else if ( algorithm_id == "AquaMaps" ) {
 
-    return "AQUAMAPS";
+    return string( "AQUAMAPS" );
   }
 
   return algorithm_id;

@@ -102,7 +102,9 @@ params = [["MaxGenerations",   "25"],
           ["PopulationSize",   "50"],
           ["Resamples",        "2500"]]
 
-mod.setAlgorithm(alg.id, params)
+mod.setAlgorithm( "GARP", params)
+
+print "Creating model..."
 
 # Create Model
 mod.createModel()
@@ -122,6 +124,8 @@ if ( commission != -1 ):
     print "Commission error:  ", commission * 100, "%"
     
 print "AUC:               ", roc.getArea()
+
+print "Projecting model..."
 
 # Project Map
 

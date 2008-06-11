@@ -35,28 +35,26 @@
 /****************************************************************/
 /*********************** Om Alg Parameter ***********************/
 
-/*******************/
-/*** constructor ***/
+/********************/
+/*** constructors ***/
 
-AlgParameter::AlgParameter()
+AlgParameter::AlgParameter():
+  _id(""),
+  _value("")
 {
-  _id = _value = 0;
+
 }
 
-AlgParameter::AlgParameter( char const *id, char const *value )
+AlgParameter::AlgParameter( std::string const id, std::string const value )
 {
-  _id = _value = 0;
-
-  newCopy( &_id, id );
-  newCopy( &_value, value );
+  _id = id;
+  _value = value;
 }
 
 AlgParameter::AlgParameter( const AlgParameter &param )
 {
-  _id = _value = 0;
-
-  newCopy( &_id, param._id );
-  newCopy( &_value, param._value );
+  _id = param._id;
+  _value = param._value;
 }
 
 
@@ -65,8 +63,7 @@ AlgParameter::AlgParameter( const AlgParameter &param )
 
 AlgParameter::~AlgParameter()
 {
-  if ( _id  )   delete [] _id;
-  if ( _value ) delete [] _value;
+
 }
 
 
@@ -75,11 +72,13 @@ AlgParameter::~AlgParameter()
 AlgParameter &
 AlgParameter::operator=( const AlgParameter &param )
 {
-  if ( this == &param )
-    return *this;
+  if ( this == &param ) {
 
-  newCopy( &_id, param._id );
-  newCopy( &_value, param._value );
+    return *this;
+  }
+
+  _id = param._id;
+  _value = param._value;
 
   return *this;
 }
@@ -90,39 +89,19 @@ AlgParameter::operator=( const AlgParameter &param )
 double
 AlgParameter::valueReal()
 {
-  return _value ? atof( _value ) : 0.0;
+  return _value.c_str() ? atof( _value.c_str() ) : 0.0;
 }
 
 
 /*****************/
 /*** set Value ***/
-char *
+void
 AlgParameter::setValue( double value )
 {
   char buf[32];
   sprintf( buf, "%-32.8f", value );
 
-  return newCopy( &_value, buf );
-}
-
-
-/****************/
-/*** new Copy ***/
-char *
-AlgParameter::newCopy( char const *src )
-{
-  return src ? strcpy( new char[strlen(src)+1], src ) : 0;
-}
-
-char *
-AlgParameter::newCopy( char **dst, char const *src )
-{
-  if ( *dst ) {
-
-    delete [] *dst;
-  }
-
-  return *dst = newCopy( src );
+  _value = std::string(buf);
 }
 
 

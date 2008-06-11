@@ -195,7 +195,7 @@ int AbstractBestSubsets::needNormalization()
     }
   }
 
-  AlgorithmPtr alg = AlgorithmFactory::newAlgorithm( _subAlgorithm.c_str() );
+  AlgorithmPtr alg = AlgorithmFactory::newAlgorithm( _subAlgorithm );
 
   if ( alg->needNormalization() ) {
 
@@ -330,7 +330,7 @@ int AbstractBestSubsets::iterate()
       //printf("Presences: Orig=%d, train=%d, test=%d\n", _samp->numPresence(), train->numPresence(), test->numPresence());
       //printf("Absences:  Orig=%d, train=%d, test=%d\n", _samp->numAbsence(), train->numAbsence(), test->numAbsence());
 
-      AlgorithmPtr algo = AlgorithmFactory::newAlgorithm( _subAlgorithm.c_str() );
+      AlgorithmPtr algo = AlgorithmFactory::newAlgorithm( _subAlgorithm );
       algo->setParameters( _param );
       algo->setSampler(train);
       algo->initialize();

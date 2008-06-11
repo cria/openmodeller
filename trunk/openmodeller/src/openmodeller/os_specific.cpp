@@ -1,8 +1,7 @@
 /**
  * Definitions of operating system's specific functions.
  * 
- * @file
- * @author Mauro E S MuÒoz (mauro@cria.org.br)
+ * @author Mauro E S Muñoz (mauro@cria.org.br)
  * @date   2004-03-19
  * $Id$
  * 
@@ -217,19 +216,19 @@ filter( const TDirent *dir )
   // constant version number should not be in filter but
   // symlinks ending in .0.dylib and .dylib also exist
   // and each library should be found only once
-  char *ext = ".so";
-  //char *ext = ".0.0.0.dylib";
+  std::string ext = ".so";
+  //std::string ext = ".0.0.0.dylib";
 #elif defined(__CYGWIN__)
   // under cygwin, libraries can be loaded using dlopen
   // but their extension is .dll
-  char *ext = ".dll";
+  std::string ext = ".dll";
 #else
-  char *ext = ".so";
+  std::string ext = ".so";
 #endif
 
-  char *found = strstr( dir->d_name, ext );
+  char *found = strstr( dir->d_name, (const char *)ext.c_str() );
 
-  return found ? ! strcmp( found, ext ) : 0;
+  return found ? ! strcmp( found, ext.c_str() ) : 0;
 }
 
 
