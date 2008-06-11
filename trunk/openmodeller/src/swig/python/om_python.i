@@ -493,12 +493,11 @@ RCP_CONST_TYPEMAP( ConstEnvironmentPtr, EnvironmentPtr );
   }
 
   int size = PyList_Size($input);
-  int algsize = size*sizeof(AlgParameter);
-  int i = 0;
+
   $1 = size;
-  $2 = (AlgParameter *) malloc(algsize);
-  memset($2, 0, algsize);
-  for (i = 0; i < size; i++) 
+  $2 = new AlgParameter[size];
+
+  for ( int i = 0; i < size; i++) 
   {
     PyObject *o = PyList_GetItem($input, i);
     // this should also be a list with 2 elements: a pair (name, value) for each param
@@ -508,6 +507,7 @@ RCP_CONST_TYPEMAP( ConstEnvironmentPtr, EnvironmentPtr );
       PyErr_SetString(PyExc_TypeError,"list must contain 2 element lists (param name, param value pairs)");
       SWIG_fail;
     }
+
     int innerListSize = PySequence_Size(o);
 
     if (innerListSize != 2)
@@ -526,26 +526,22 @@ RCP_CONST_TYPEMAP( ConstEnvironmentPtr, EnvironmentPtr );
       SWIG_fail;
     }
 
-    char * name = PyString_AsString( a );
-    char * value = PyString_AsString( b );
-    $2[i].setId(name);
-    $2[i].setValue(value);
+    $2[i].setId( static_cast<std::string>( PyString_AsString( a ) ) );
+    $2[i].setValue( static_cast<std::string>( PyString_AsString( b ) ) );
   }
-
 }
 
-// This cleans up the char ** array we malloc'd before the function call
+// This cleans up the AlgParameter * we malloc'd before the function call
 %typemap(freearg) (int nparam, AlgParameter *param) 
 {
-  // %typemap(freearg) (int nparam, AlgParameter *param) 
   if ( $2 ) {
-    free((char *) $2);
+    // this is segfaulting...
+    //delete[] $2;
   }
 }
 
 %typemap(out) AlgMetadata ** 
 {
-  // %typemap(out) AlgMetadata ** 
     // get size of metadata 
     int i = 0;
     PyObject * list = PyList_New(0);
@@ -566,7 +562,6 @@ RCP_CONST_TYPEMAP( ConstEnvironmentPtr, EnvironmentPtr );
 //
 //%typemap(out) AlgMetadata *
 //{
-//  // %typemap(out) AlgMetadata *
 //  int i;
 //  PyObject * paramMetadata;
 //  PyObject * list = PyList_New(0);
@@ -582,7 +577,6 @@ RCP_CONST_TYPEMAP( ConstEnvironmentPtr, EnvironmentPtr );
 
 %typemap(out) int 
 {
-  // %typemap(out) int
   if ( $1 == 0 ) {
     PyErr_SetString(PyExc_RuntimeError,"Exception in method: $symname" );
     SWIG_fail;
