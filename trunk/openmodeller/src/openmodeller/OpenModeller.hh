@@ -84,7 +84,7 @@ public:
   /** Returns the openModeller client interface version in the
    * format "n.m"
    */
-  char *getVersion();
+  std::string getVersion();
 
   /*****************************************************************************
    *

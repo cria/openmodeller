@@ -124,12 +124,10 @@ OpenModeller::setLogLevel( Log::Level level )
 
 /*******************/
 /*** get Version ***/
-char *
+std::string
 OpenModeller::getVersion()
 {
-  std::string version( OM_VERSION );
-
-  return const_cast<char *>( version.c_str() );
+  return std::string( OM_VERSION );
 }
 
 /****************************/
