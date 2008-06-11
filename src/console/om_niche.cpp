@@ -203,8 +203,8 @@ createModel( char *request_file )
           if ( ! (metadata = readAlgorithm( availables )) )
             return 0;
 
-          Log::instance()->info( "\n> Algorithm used: %s\n\n", metadata->name );
-          Log::instance()->info( " %s\n\n", metadata->description );
+          Log::instance()->info( "\n> Algorithm used: %s\n\n", metadata->name.c_str() );
+          Log::instance()->info( " %s\n\n", metadata->description.c_str() );
 
           // For resulting parameters storage.
           int nparam = metadata->nparam;
@@ -255,7 +255,7 @@ showAlgorithms( AlgMetadata const **availables )
   int count = 0;
   AlgMetadata const *metadata;
   while (( metadata = *availables++ ))
-    printf( " [%d] %s\n", count++, metadata->name );
+    printf( " [%d] %s\n", count++, metadata->name.c_str() );
 
   printf( " [%d] Quit\n", count );
   printf( "\n" );
@@ -314,23 +314,61 @@ readParameters( AlgParameter *result, AlgMetadata const *metadata )
       // metadata.
       result->setId( param->id );
 
-      // Informs the parameter's metadata to the user.
-      printf( "\n* Parameter: %s\n\n", param->name );
-      printf( " %s:\n", param->overview );
-      if ( param->has_min )
-        printf( " %s >= %f\n", param->name, param->min_val );
-      if ( param->has_max )
-        printf( " %s <= %f\n\n", param->name, param->max_val );
-      printf( "Enter with value [%s]: ", param->typical );
+      // Inform parameter metadata to the user.
+      printf( "\n* Parameter: %s\n\n", param->name.c_str() );
+      printf( " %s:\n", param->overview.c_str() );
+
+      if ( param->type != String ) {
+
+        if ( param->has_min ) {
+
+          if ( param->type == Integer ) {
+
+            printf( "%s >= %d\n", param->name.c_str(), int( param->min_val ) );
+          }
+          else {
+
+            printf( " %s >= %f\n", param->name.c_str(), param->min_val );
+          }
+        }
+        if ( param->has_max ) {
+
+          if ( param->type == Integer ) {
+
+            printf( "%s <= %d\n\n", param->name.c_str(), int( param->max_val ) );
+          }
+          else {
+
+            printf( " %s <= %f\n\n", param->name.c_str(), param->max_val );
+          }
+        }
+      }
+
+      printf( "Enter with value [%s]: ", param->typical.c_str() );
 
       // Read parameter's value or use the "typical" value
       // if the user does not enter a new value.
       char value[64];
       *value = 0;
-      if ( fgets( value, 64, stdin ) && (*value >= ' ') )
+      if ( fgets( value, 64, stdin ) && (*value >= ' ') ) {
+
+        // Remove line feed to avoid problems with string parameters 
+        if ( param->type == String ) {
+
+          char * pos = strchr( value, '\n' );
+
+          if ( pos ) {
+
+            *pos = '\0';
+          }
+	}
+
         result->setValue( value );
-      else
+      }
+      else {
+
         result->setValue( param->typical );
+      }
     }
 
   return metadata->nparam;

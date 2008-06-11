@@ -1,7 +1,6 @@
 /**
  * Declaration of AlgorithmMetadata structure.
  * 
- * @file
  * @author Mauro E S Muñoz (mauro@cria.org.br)
  * @date   2004-03-18
  * $Id$
@@ -31,7 +30,7 @@
 #define _OM_ALGORITHM_METADATAHH_
 
 #include <openmodeller/om_defs.hh>
-
+#include <string>
 
 typedef enum AlgParamDatatype {
 
@@ -40,7 +39,6 @@ typedef enum AlgParamDatatype {
   String  = 2
 
 } ;
-
 
 /****************************************************************/
 /***************** Algorithm Parameter Metadata *****************/
@@ -51,18 +49,17 @@ typedef enum AlgParamDatatype {
  **/
 struct AlgParamMetadata
 {
-  char *id;              ///< Identifier to be used by programmers.
-  char *name;            ///< Name to be shown to end users.
-  AlgParamDatatype type; ///< Real, Integer, String.
-  char *overview;        ///< Short description.
-  char *description;     ///< Detailed description.
+  std::string id;          ///< Identifier to be used by programmers.
+  std::string name;        ///< Name to be shown to end users.
+  AlgParamDatatype type;   ///< Real, Integer, String.
+  std::string overview;    ///< Short description.
+  std::string description; ///< Detailed description.
 
-  int    has_min;    ///< Zero if the parameter has no lower limit.
-  Scalar min_val;    ///< Minimum parameter value.
-  int    has_max;    ///< Zero if the parameter has no upper limit.
-  Scalar max_val;    ///< Maximum parameter value.
-  char  *typical;    ///< Typical parameter value.
-
+  int    has_min;      ///< Zero if the parameter has no lower limit.
+  Scalar min_val;      ///< Minimum parameter value.
+  int    has_max;      ///< Zero if the parameter has no upper limit.
+  Scalar max_val;      ///< Maximum parameter value.
+  std::string typical; ///< Typical parameter value.
 } ;
 
 
@@ -75,23 +72,23 @@ struct AlgParamMetadata
  */
 struct AlgMetadata
 {
-  char *id;          ///< Identifier to be used by programmers.
-  char *name;        ///< Name to be shown to end users.
-  char *version;     ///< Built version.
-  char *overview;    ///< Short description.
-  char *description; ///< Detailed description.
+  std::string id;          ///< Identifier to be used by programmers.
+  std::string name;        ///< Name to be shown to end users.
+  std::string version;     ///< Built version.
+  std::string overview;    ///< Short description.
+  std::string description; ///< Detailed description.
 
-  char *author;      ///< Algorithm's author.
-  char *biblio;      ///< Bibliography reference.
+  std::string author;      ///< Algorithm's author.
+  std::string biblio;      ///< Bibliography reference.
 
-  char *code_author; ///< Who implemented.
-  char *contact;     ///< code_author contact (eg e-mail).
+  std::string code_author; ///< Who implemented.
+  std::string contact;     ///< code_author contact (eg e-mail).
 
   int  categorical;  ///< If not zero accept categorical maps.
   int  absence;      ///< Needs absence points to run.
   int  nparam;       ///< Number of parameters.
-  AlgParamMetadata *param;
 
+  AlgParamMetadata * param;
 } ;
 
 

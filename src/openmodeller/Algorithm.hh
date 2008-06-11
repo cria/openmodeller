@@ -97,7 +97,7 @@ public:
   void setParameters( int nparam, AlgParameter const *param );
   void setParameters( const ParamSetType& );
   
-  char const *getID() const { return _metadata ? _metadata->id : 0; }
+  std::string const getID() const { return _metadata ? _metadata->id : 0; }
   
   AlgMetadata const *getMetadata() const { return _metadata; }
 

@@ -203,7 +203,7 @@ OpenModeller::setSampler( const SamplerPtr& sampler )
 /*********************/
 /*** set Algorithm ***/
 int
-OpenModeller::setAlgorithm( char const *id, int nparam,
+OpenModeller::setAlgorithm( std::string const id, int nparam,
                             AlgParameter const *param )
 {
   if ( nparam && ! param ) {
@@ -236,7 +236,7 @@ OpenModeller::setAlgorithm( char const *id, int nparam,
 
   if ( ! _alg ) {
 
-    Log::instance()->error( _error, "Could not find (%s) algorithm.", id );
+    Log::instance()->error( _error, "Could not find (%s) algorithm.", id.c_str() );
     return 0;
   }
 

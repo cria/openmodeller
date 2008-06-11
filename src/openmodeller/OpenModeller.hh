@@ -174,7 +174,7 @@ public:
    * @return zero if something goes wrong like the algorithm ID
    *  does not exist, use different number of parameters, etc.
    */
-  int setAlgorithm( char const *id, int nparam, AlgParameter const *param );
+  int setAlgorithm( std::string const id, int nparam, AlgParameter const *param );
 
   /** Defines environmental layers and the mask using STL arguments.
    * Also creates the Environment object used for native range projection.

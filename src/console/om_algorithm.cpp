@@ -130,7 +130,7 @@ int main( int argc, char **argv ) {
 
       while ( ( metadata = *availables++ ) ) {
 
-        printf( "  %s: %s\n", metadata->id, metadata->name );
+        printf( "  %s: %s\n", metadata->id.c_str(), metadata->name.c_str() );
       }
 
       return 0;
@@ -141,27 +141,27 @@ int main( int argc, char **argv ) {
       AlgMetadata const *alg_metadata = AlgorithmFactory::algorithmMetadata( alg_id.c_str() );
 
       printf( "Algorithm metadata:\n" );
-      printf( "  Name: %s\n", alg_metadata->name );
-      printf( "  Version: %s\n", alg_metadata->version );
-      printf( "  Overview:\n\n%s\n\n", alg_metadata->overview );
-      printf( "  Description:\n\n%s\n\n", alg_metadata->description );
-      printf( "  Author(s): %s\n", alg_metadata->author );
-      printf( "  Bibliography:\n\n%s\n\n", alg_metadata->biblio );
-      printf( "  Developer(s): %s (%s)\n", alg_metadata->code_author, alg_metadata->contact );
+      printf( "  Name: %s\n", alg_metadata->name.c_str() );
+      printf( "  Version: %s\n", alg_metadata->version.c_str() );
+      printf( "  Overview:\n\n%s\n\n", alg_metadata->overview.c_str() );
+      printf( "  Description:\n\n%s\n\n", alg_metadata->description.c_str() );
+      printf( "  Author(s): %s\n", alg_metadata->author.c_str() );
+      printf( "  Bibliography:\n\n%s\n\n", alg_metadata->biblio.c_str() );
+      printf( "  Developer(s): %s (%s)\n", alg_metadata->code_author.c_str(), alg_metadata->contact.c_str() );
 
-      char const *accepts_categorical = ( alg_metadata->categorical ) ? "yes" : "no";
-      printf( "  Accepts categorical data: %s\n", accepts_categorical );
+      std::string const accepts_categorical = ( alg_metadata->categorical ) ? "yes" : "no";
+      printf( "  Accepts categorical data: %s\n", accepts_categorical.c_str() );
 
-      char const *requires_absences = ( alg_metadata->absence ) ? "yes" : "no";
-      printf( "  Requires absence points: %s\n", requires_absences );
+      std::string const requires_absences = ( alg_metadata->absence ) ? "yes" : "no";
+      printf( "  Requires absence points: %s\n", requires_absences.c_str() );
 
       AlgParamMetadata *param = alg_metadata->param;
 
       // Include parameters metadata
       for ( int i = 0 ; i < alg_metadata->nparam; param++, i++ ) {
 
-        printf( "\n  Parameter: %s\n", param->id );
-        printf( "  Name: %s\n", param->name );
+        printf( "\n  Parameter: %s\n", param->id.c_str() );
+        printf( "  Name: %s\n", param->name.c_str() );
 
         string datatype("?");
 
@@ -180,9 +180,9 @@ int main( int argc, char **argv ) {
 
         printf( "  Datatype: %s\n", datatype.c_str() );
 
-        printf( "  Overview: %s\n", param->overview );
+        printf( "  Overview: %s\n", param->overview.c_str() );
 
-        printf( "  Description: %s\n", param->description );
+        printf( "  Description: %s\n", param->description.c_str() );
 
         if ( param->has_min || param->has_max ) {
 
@@ -196,7 +196,7 @@ int main( int argc, char **argv ) {
           }
         }
 
-        printf( "  Typical value: %s\n", param->typical );
+        printf( "  Typical value: %s\n", param->typical.c_str() );
       }
     }
   }
