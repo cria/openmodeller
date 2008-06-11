@@ -320,7 +320,7 @@ RCP_CONST_TYPEMAP( ConstOccurrencesPtr, OccurrencesPtr );
 %ignore OccurrencesImpl::print;
 %ignore OccurrencesImpl::begin;
 %ignore OccurrencesImpl::end;
-%rename ( getOccurrence ) operator[];
+%rename ( getOccurrence ) OccurrencesImpl::operator[];
 
 %include "openmodeller/Occurrences.hh"
 
