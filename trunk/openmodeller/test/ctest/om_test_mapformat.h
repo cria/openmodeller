@@ -65,89 +65,89 @@ class test_MapFormat: public CxxTest :: TestSuite
       std::cout << "Testing MapFormat() ..." << std::endl;
       *c=A->getFormat();
       TS_ASSERT(*c==MapFormat::ByteHFA);
-      *a="Cell width not set";
+      *a="Cell width not set.\n";
       try{
         A->getXCel();
         TS_FAIL("No Exception Thrown");
       }
-      catch(InvalidParameterException& e){
+      catch(OmException& e){
         TS_ASSERT(*a==e.what());
       }
       catch(...){
       TS_FAIL("Incorrect Exception Thrown");
       }
-      *a="Cell height not set";
+      *a="Cell height not set.\n";
       try{
       A->getYCel();
       TS_FAIL("No Exception Thrown");
       }
-      catch(InvalidParameterException& e){
+      catch(OmException& e){
       TS_ASSERT(*a==e.what());
       }
       catch(...){
       TS_FAIL("Incorrect Exception Thrown");
       }
-      *a="XMin not set";
+      *a="XMin not set.\n";
       try{
       A->getXMin();
       TS_FAIL("No Exception Thrown");
       }
-      catch(InvalidParameterException& e){
+      catch(OmException& e){
       TS_ASSERT(*a==e.what());
       }
       catch(...){
       TS_FAIL("Incorrect Exception Thrown");
       }
-      *a="Ymin not set";
+      *a="Ymin not set.\n";
       try{
       A->getYMin();
       TS_FAIL("No Exception Thrown");
       }
-      catch(InvalidParameterException& e){
+      catch(OmException& e){
       TS_ASSERT(*a==e.what());
       }
       catch(...){
       TS_FAIL("Incorrect Exception Thrown");
       }
-      *a="Xmax not set";
+      *a="Xmax not set.\n";
       try{
       A->getXMax();
       TS_FAIL("No Exception Thrown");
       }
-      catch(InvalidParameterException& e){
+      catch(OmException& e){
       TS_ASSERT(*a==e.what());
       }
       catch(...){
       TS_FAIL("Incorrect Exception Thrown");
       }
-      *a="Ymax not set";
+      *a="Ymax not set.\n";
       try{
       A->getYMax();
       TS_FAIL("No Exception Thrown");
       }
-      catch(InvalidParameterException& e){
+      catch(OmException& e){
       TS_ASSERT(*a==e.what());
       }
       catch(...){
       TS_FAIL("Incorrect Exception Thrown");
       }
-      *a="NoDataValue not set";
+      *a="NoDataValue not set.\n";
       try{
       A->getNoDataValue();
       TS_FAIL("No Exception Thrown");
       }
-      catch(InvalidParameterException& e){
+      catch(OmException& e){
       TS_ASSERT(*a==e.what());
       }
       catch(...){
       TS_FAIL("Incorrect Exception Thrown");
       }
-      *a="Projection not set";
+      *a="Projection not set.\n";
       try{
       A->getProjection();
       TS_FAIL("No Exception Thrown");
       }
-      catch(InvalidParameterException& e){
+      catch(OmException& e){
       TS_ASSERT(*a==e.what());
       }
       catch(...){
@@ -462,9 +462,9 @@ class test_MapFormat: public CxxTest :: TestSuite
       A->unsetXCel();
       try{
       A->getXCel();
-      TS_FAIL("Cell width set");
+      TS_FAIL("Cell width set.\n");
       }
-      catch(InvalidParameterException& e){
+      catch(OmException& e){
       TS_ASSERT(true);
       }
       catch(...){
@@ -484,7 +484,7 @@ class test_MapFormat: public CxxTest :: TestSuite
       A->getYCel();
       TS_FAIL("Cell height set");
       }
-      catch(InvalidParameterException& e){
+      catch(OmException& e){
       TS_ASSERT(true);
       }
       catch(...){
@@ -504,7 +504,7 @@ class test_MapFormat: public CxxTest :: TestSuite
       A->getXMin();
       TS_FAIL("XMin set");
       }
-      catch(InvalidParameterException& e){
+      catch(OmException& e){
       TS_ASSERT(true);
       }
       catch(...){
@@ -524,7 +524,7 @@ class test_MapFormat: public CxxTest :: TestSuite
       A->getYMin();
       TS_FAIL("YMin set");
       }
-      catch(InvalidParameterException& e){
+      catch(OmException& e){
       TS_ASSERT(true);
       }
       catch(...){
@@ -544,7 +544,7 @@ class test_MapFormat: public CxxTest :: TestSuite
       A->getXMax();
       TS_FAIL("XMax set");
       }
-      catch(InvalidParameterException& e){
+      catch(OmException& e){
       TS_ASSERT(true);
       }
       catch(...){
@@ -564,7 +564,7 @@ class test_MapFormat: public CxxTest :: TestSuite
       A->getYMax();
       TS_FAIL("YMax set");
       }
-      catch(InvalidParameterException& e){
+      catch(OmException& e){
       TS_ASSERT(true);
       }
       catch(...){
@@ -584,7 +584,7 @@ class test_MapFormat: public CxxTest :: TestSuite
       A->getNoDataValue();
       TS_FAIL("NoDataValue set");
       }
-      catch(InvalidParameterException& e){
+      catch(OmException& e){
       TS_ASSERT(true);
       }
       catch(...){
@@ -604,7 +604,7 @@ class test_MapFormat: public CxxTest :: TestSuite
       A->getProjection();
       TS_FAIL("Projection set");
       }
-      catch(InvalidParameterException& e){
+      catch(OmException& e){
       TS_ASSERT(true);
       }
       catch(...){
