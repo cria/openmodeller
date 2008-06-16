@@ -69,7 +69,7 @@ class test_Exceptions : public CxxTest :: TestSuite
       std::cout << std::endl;
       std::cout << "Testing AttributeNotFound( const std::string& attrName ) ..." << std::endl;
       std::string attr = "SomeAttribute";
-      std::string msg = "Attribute " + attr + " not found";
+      std::string msg = "XML attribute " + attr + " not found";
       TS_ASSERT_EQUALS(AttributeNotFound(attr).what(),msg);
       TS_ASSERT_EQUALS(AttributeNotFound(attr).getName(),attr);
     }
@@ -78,7 +78,7 @@ class test_Exceptions : public CxxTest :: TestSuite
       std::cout << std::endl;
       std::cout << "Testing SubsectionNotFound( const std::string& attrName ) ..." << std::endl;
       std::string subs = "SomeSubsection";
-      std::string msg = "Subsection " + subs + " not found";
+      std::string msg = "XML subsection " + subs + " not found";
       TS_ASSERT_EQUALS(SubsectionNotFound(subs).what(),msg);
       TS_ASSERT_EQUALS(SubsectionNotFound(subs).getName(),subs);
     }
