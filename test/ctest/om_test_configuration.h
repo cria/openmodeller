@@ -243,8 +243,9 @@ class test_Configuration : public CxxTest :: TestSuite
        A->addNameValue("StringAttr",*a);
        std::stringstream sscheck(std::ios::out);
        Configuration::writeXml(A,sscheck);
-       *a = "\n<Freddy_the_Freeloader SampleAttr=\"4294967294 4294967295 0 1 2\" DoubleAttr=\"3.141500000000000181188398\" IntAttr=\"42\" StringAttr=\"String Value\">The Value</Freddy_the_Freeloader>";
-       std::cout << sscheck.str();
+       *a = "\n<Freddy_the_Freeloader SampleAttr=\"4294967294 4294967295 0 1 2\" DoubleAttr=\"3.1415\" IntAttr=\"42\" StringAttr=\"String Value\">The Value</Freddy_the_Freeloader>";
+       std::cout << "Expected:" << std::endl << *a;
+       std::cout << std::endl << "Found:" << std::endl << sscheck.str();
        TS_ASSERT(*a == sscheck.str());
     }
 
