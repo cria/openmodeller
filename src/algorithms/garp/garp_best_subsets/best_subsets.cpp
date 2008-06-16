@@ -153,13 +153,16 @@ int BestSubsets::initialize()
     return 0;
   }
 
-  if ( _maxThreads != 1 )
+  if ( _maxThreads < 1 )
   {
-    // When maxThreads is greater than 1, if the machine has only one processor then 
-    // om crashes, and if the machine has more than one processor GDAL outputs lots
-    // of IO errors, so meanwhile it seems better just to force MaxThreads to be 1.
-    Log::instance()->warn("Multithreading is temporarily disabled. Parameter MaxThreads (%d) will be set to one.\n", _maxThreads);
     _maxThreads = 1;
+  }
+  else if ( _maxThreads > 1 )
+  {
+    // When maxThreads is greater than 1, if the machine has only one processor om
+    // can crash. If the machine has more than one processor GDAL can output lots
+    // of IO errors (current GDAL version does not seem to be thread safe).
+    Log::instance()->warn("Multithreading is still experimental. When max threads is greater than 1, depending on software and hardware configuration this application may crash or you may see lots of raster IO warnings. In these cases, we recommend you to set this parameter to 1.\n");
   }
 
   // convert percentages (100%) to proportions (1.0) for external parameters 
