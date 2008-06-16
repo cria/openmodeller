@@ -3,7 +3,7 @@
  * 
  * @author Albert Massayuki Kuniyoshi
  * @date 2007-08-27
- * $Id: om_test_template.h 3609 2007-08-27 14:22:51Z albertmk $
+ * $Id$
  *
  * LICENSE INFORMATION
  * 

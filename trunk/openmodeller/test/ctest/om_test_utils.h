@@ -2,7 +2,7 @@
  * Test class for creating test request files
  * 
  * @authors Tim Sutton and Albert Massayuki Kuniyoshi
- * $Id: om_test_configuration.h 3614 2007-08-27 18:21:00Z albertmk $
+ * $Id$
  *
  * LICENSE INFORMATION
  * 
