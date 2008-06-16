@@ -40,42 +40,16 @@ class test_AlgParameter : public CxxTest :: TestSuite
 
   public:
     void setUp (){
-      a[0] = new char;
-      a[1] = new char;
-      a[2] = new char;
 
-      b[0] = new char;
-      b[1] = new char;
-      b[2] = new char;
-      b[3] = new char;
-      b[4] = new char;
-      b[5] = new char;
-
-      (*a)[0] = 'i';
-      (*a)[1] = 'd';
-
-      (*b)[0] = 'v';
-      (*b)[1] = 'a';
-      (*b)[2] = 'l';
-      (*b)[3] = 'u';
-      (*b)[4] = 'e';
+      a = "id";
+      b = "value";
 
       A = new AlgParameter();
-      B = new AlgParameter(*a,*b);
+      B = new AlgParameter(a,b);
       C = new AlgParameter(*A);
     }
 
     void tearDown (){
-      delete a[0];
-      delete a[1];
-      delete a[2];
-
-      delete b[0];
-      delete b[1];
-      delete b[2];
-      delete b[3];
-      delete b[4];
-      delete b[5];
 
       delete A;
       delete B;
@@ -83,46 +57,44 @@ class test_AlgParameter : public CxxTest :: TestSuite
     }
 
     void test1 (){
-      std::cout << "Testing AlgParameter default constructor ..." << std::endl;
-      TS_ASSERT(A->id()==0);
-      TS_ASSERT(A->value()==0);
+      std::cout << "Testing AlgParameter default constructor..." << std::endl;
+      TS_ASSERT(A->id()=="");
+      TS_ASSERT(A->value()=="");
     }
 
     void test2 (){
-      std::cout << "Testing AlgParameter constructor ..." << std::endl;
-      TS_ASSERT(strcmp(B->id(),*a)==0);
-      TS_ASSERT(strcmp(B->value(),*b)==0);
+      std::cout << "Testing AlgParameter constructor with id/value parameters..." << std::endl;
+      TS_ASSERT(B->id()==a);
+      TS_ASSERT(B->value()==b);
     }
 
     void test3 (){
-      std::cout << "Testing AlgParameter constructor ..." << std::endl;
-      TS_ASSERT(C->id()==0);
-      TS_ASSERT(C->value()==0);
+      std::cout << "Testing AlgParameter constructor with AlgParameter parameter..." << std::endl;
+      TS_ASSERT(C->id()=="");
+      TS_ASSERT(C->value()=="");
     }
 
     void test4 (){
-      std::cout << "Testing Algparameter operator=(const AlgParameter &) ..." << std::endl;
+      std::cout << "Testing Algparameter operator=(const AlgParameter &)..." << std::endl;
       B->operator=(*A);
-      TS_ASSERT(A->id()==0);
-      TS_ASSERT(A->value()==0);
-      TS_ASSERT(B->id()==0);
-      TS_ASSERT(B->value()==0);
+      TS_ASSERT(A->id()==B->id());
+      TS_ASSERT(A->value()==B->value());
     }
 
     void test5 (){
-      std::cout << "Testing setId(char const *id) ..." << std::endl;
-      (*a)[2] = '_';
-      A->setId(*a);
-      TS_ASSERT(strcmp(A->id(),*a)==0);
-      TS_ASSERT(A->value()==0);
+      std::cout << "Testing setId(std::string const id)..." << std::endl;
+      a = "_id_";
+      A->setId(a);
+      TS_ASSERT(A->id()==a);
+      TS_ASSERT(A->value()=="");
     }
 
     void test6 (){
-      std::cout << "Testing setValue(char const *val) ..." << std::endl;
-      (*b)[5] = '_';
-      A->setValue(*b);
-      TS_ASSERT(A->id()==0);
-      TS_ASSERT(strcmp(A->value(),*b)==0);
+      std::cout << "Testing setValue(std::string const val)..." << std::endl;
+      b = "test";
+      A->setValue(b);
+      TS_ASSERT(A->id()=="");
+      TS_ASSERT(A->value()==b);
     }
 
     void test7 (){
@@ -130,18 +102,18 @@ class test_AlgParameter : public CxxTest :: TestSuite
       char buf[32];
       sprintf(buf,"%-32.8f",2.0);
       A->setValue(2.0);
-      TS_ASSERT(strcmp(A->value(),buf)==0);
+      TS_ASSERT(A->value()==buf);
     }
 
     void test8 (){
       std::cout << "Testing valueReal() ..." << std::endl;
-      TS_ASSERT(atof(B->value())==B->valueReal());
+      TS_ASSERT(atof(B->value().c_str())==B->valueReal());
       TS_ASSERT(A->valueReal()==0.0);
     }
 
   private:
-    char *a[10];
-    char *b[10];
+    std::string a;
+    std::string b;
     AlgParameter *A;
     AlgParameter *B;
     AlgParameter *C;
