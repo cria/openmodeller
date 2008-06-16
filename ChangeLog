@@ -9,6 +9,7 @@ SVN revision: ?
 	* New console application om_algorithm replaces om_metadump.
 	* New Maximum Entropy algorithm.
 	* Changed input range of the GARP Best Subsets TrainingProportion parameter from 0-1 to 0-100 (percentage) and included explanation about differences between old and new GARP implementations in the algorithm description.
+	* Re-enabled max threads parameter in GARP Best Subsets.
 	
 
 Release 0.5.3 (2008-03-26)
