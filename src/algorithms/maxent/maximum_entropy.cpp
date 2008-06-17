@@ -104,7 +104,7 @@ static AlgParamMetadata parameters[NUM_PARAM] = {
     0,         // Parameter's lower limit.
     0,         // Not zero if the parameter has upper limit.
     0,         // Parameter's upper limit.
-    "lbfgs"    // Parameter's typical (default) value.
+    "gis"      // Parameter's typical (default) value.
   },
   // Gaussian Prior Smoothing Coeficient
   {
