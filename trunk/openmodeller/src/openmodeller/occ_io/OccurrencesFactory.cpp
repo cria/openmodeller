@@ -104,11 +104,12 @@ OccurrencesFactory::create( const char * source, const char * coordSystem )
 {
   string source_str( source );
 
+  // It must be TerraLib point data if source starts with "terralib>"
   int i = source_str.find( "terralib>" );
 
   DriversMap::const_iterator di;
 
-  if ( i != -1 ) {
+  if ( i == 0 ) {
 
     di = _drivers.find( "TerraLib" );
 
@@ -118,6 +119,28 @@ OccurrencesFactory::create( const char * source, const char * coordSystem )
       te_driver->load();
 
       return te_driver;
+    }
+    else {
+
+	throw OccurrencesReaderException( "TerraLib driver not found" );
+    }
+  }
+
+  // It must be GBIF REST if source is the GBIF REST URL for occurrences
+  if ( source_str == "http://data.gbif.org/ws/rest/occurrence/list" ) {
+
+    di = _drivers.find( "GBIF" );
+
+    if ( di != _drivers.end() ) {
+
+      OccurrencesReader * gbif_driver = (di->second)( source, coordSystem );
+      gbif_driver->load();
+
+      return gbif_driver;
+    }
+    else {
+
+	throw OccurrencesReaderException( "GBIF driver not found" );
     }
   }
 
@@ -138,7 +161,8 @@ OccurrencesFactory::create( const char * source, const char * coordSystem )
       }
     }
 
-    // Then try GBIF
+    // Then try GBIF (in case they changed the URL or if someone else decided to 
+    // implement a service using the GBIF REST protocol)
     di = _drivers.find( "GBIF" );
 
     if ( di != _drivers.end() ) {
@@ -167,7 +191,7 @@ OccurrencesFactory::create( const char * source, const char * coordSystem )
     Log::instance()->debug( "XML occurrences reader exception: %s\n", e.what() );
   }
 
-  // Default driver
+  // Default driver for delimited text
   OccurrencesReader * file_driver = new DelimitedTextOccurrences( source, coordSystem );
 
   file_driver->load();
