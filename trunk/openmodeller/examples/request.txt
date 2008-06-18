@@ -5,9 +5,19 @@
 #
 WKT Coord System = GEOGCS["WGS84", DATUM["WGS84", SPHEROID["WGS84", 6378137.0, 298.257223563]], PRIMEM["Greenwich", 0.0], UNIT["degree", 0.017453292519943295], AXIS["Longitude",EAST], AXIS["Latitude",NORTH]]
 
-# TAB-delimited file with a list of occurrences. Each line is a record
-# with: <id> <label> <longitude> <latitude> <abundance>
+# Here you can specify:
 #
+# 1) The location (in your file system) of a TAB-delimited file with a 
+#    list of occurrences. Each line is a record
+#    with: <id> <label> <longitude> <latitude> <abundance>
+# 2) The location (in your file system) of an XML file containing 
+#    occurrence data following the openModeller serialization format.
+# 3) The GBIF Web Service address to search for occurrence data:
+#    http://data.gbif.org/ws/rest/occurrence/list
+# 4) A TAPIR Web Service address that mapped DarwinCore 1.4, such as the
+#    speciesLink TAPIR service:
+#    http://tapir.cria.org.br/tapirlink/tapir.php/specieslink
+# 
 Occurrences source = furcata_boliviana.txt
 
 # Only occurrences with this label (group id) will be used.
