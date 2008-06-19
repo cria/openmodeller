@@ -35,22 +35,17 @@ using namespace std;
 
 int main( int argc, char **argv ) {
 
-  char *args;
+  Options opts;
   int option;
 
-  struct options opts[] = 
-  {
-    { 1, "version",    "Display version info",                          "v", 0 },
-    { 2, "xml-req",    "Projection request file in XML",                "r", 1 },
-    { 3, "dist-map",   "File to store the generated model",             "m", 1 },
-    { 4, "log-level",  "Set the log level (debug, warn, info, error)", NULL, 1 },
-    { 5, "log-file",   "Log file",                                     NULL, 1 },
-    { 6, "prog-file",  "File to store projection progress",            NULL, 1 },
-    { 7, "stat-file",  "File to store projection statistics",          NULL, 1 },
-    { 0, NULL,         NULL,                                           NULL, 0 }
-  };
-
-  bool passed_params = false;
+  // command-line parameters (short name, long name, description, take args)
+  opts.addOption( "v", "version"  , "Display version info"                        , false );
+  opts.addOption( "r", "xml-req"  , "Projection request file in XML"              , true );
+  opts.addOption( "m", "dist-map" , "File to store the generated model"           , true );
+  opts.addOption( "" , "log-level", "Set the log level (debug, warn, info, error)", true );
+  opts.addOption( "" , "log-file" , "Log file"                                    , true );
+  opts.addOption( "" , "prog-file", "File to store projection progress"           , true );
+  opts.addOption( "" , "stat-file", "File to store projection statistics"         , true );
 
   std::string log_level("info");
   std::string request_file;
@@ -59,59 +54,43 @@ int main( int argc, char **argv ) {
   std::string progress_file;
   std::string statistics_file;
 
-  while ( ( option = getopts( argc, argv, opts, &args ) ) != 0 ) {
+  if ( ! opts.parse( argc, argv ) ) {
 
-    passed_params = true;
+    opts.showHelp( argv[0] ); 
+    exit(0);
+  }
+
+  while ( ( option = opts.cycle() ) >= 0 ) {
 
     switch ( option ) {
 
-      // Special Case: Recognize options that we didn't set above.
-      case -2: 
-        printf( "Unknown option: %s\n", args );
-        break;
-      // Special Case: getopts() can't allocate memory.
-      case -1:
-        printf( "Unable to allocate memory from getopts().\n" );
-        exit(-1);
-        break;
-      case 1:
-        printf("om_project 0.2.1\n");
+      case 0:
+        printf("om_project 0.2.2\n");
         printf("This is free software; see the source for copying conditions. There is NO\n");
         printf("warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n");
         exit(0);
         break;
+      case 1:
+        request_file = opts.getArgs( option );
+        break;
       case 2:
-        request_file = args;
+        map_file = opts.getArgs( option );
         break;
       case 3:
-        map_file = args;
+        log_level = opts.getArgs( option );
         break;
       case 4:
-        log_level = args;
+        log_file = opts.getArgs( option );
         break;
       case 5:
-        log_file = args;
+        progress_file = opts.getArgs( option );
         break;
-      case 6:
-        progress_file = args;
-        break;
-      case 7:
-        statistics_file = args;
+      case 8:
+        statistics_file = opts.getArgs( option );
         break;
       default:
         break;
     }
-
-    // This free() is required since getopts() automagically allocates space 
-    // for "args" everytime it's called. */
-    free( args );
-  }
-
-  if ( ! passed_params ) {
-
-    // Display usage
-    getopts_usage( "om_project", opts );
-    exit(0);
   }
 
   // Check parameters

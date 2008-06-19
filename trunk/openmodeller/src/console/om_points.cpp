@@ -17,22 +17,17 @@ using namespace std;
 
 int main( int argc, char **argv ) {
 
-  char *args;
+  Options opts;
   int option;
 
-  struct options opts[] = 
-  {
-    { 1, "log-level",  "Set the log level (debug, warn, info, error)", NULL, 1 },
-    { 2, "version",    "Display version info",                         "v" , 0 },
-    { 3, "list",       "List available formats",                       "l" , 0 },
-    { 4, "source",     "Source where points are located",              "s" , 1 },
-    { 5, "name",       "Name (label) to filter points",                "n" , 1 },
-    { 6, "wkt",        "Spatial reference in WKT",                     "w" , 1 },
-    { 7, "type",       "Output type",                                  "o" , 1 },
-    { 0, NULL,         NULL,                                           NULL, 0 }
-  };
-
-  bool passed_params = false;
+  // command-line parameters (short name, long name, description, take args)
+  opts.addOption( "" , "log-level", "Set the log level (debug, warn, info, error)", true );
+  opts.addOption( "v", "version"  , "Display version info"                        , false );
+  opts.addOption( "l", "list"     , "List available formats"                      , false );
+  opts.addOption( "s", "source"   , "Source where points are located"             , true );
+  opts.addOption( "n", "name"     , "Name (label) to filter points"               , true );
+  opts.addOption( "w", "wkt"      , "Spatial reference in WKT"                    , true );
+  opts.addOption( "o", "type"     , "Output type"                                 , true );
 
   std::string log_level("info");
   bool        list_formats = false;
@@ -41,59 +36,43 @@ int main( int argc, char **argv ) {
   std::string wkt("GEOGCS[\"WGS84\",DATUM[\"WGS84\",SPHEROID[\"WGS84\",6378137.0,298.257223563]],PRIMEM[\"Greenwich\",0.0],UNIT[\"degree\",0.017453292519943295],AXIS[\"Longitude\",EAST],AXIS[\"Latitude\",NORTH]]");
   std::string format("TXT");
 
-  while ( ( option = getopts( argc, argv, opts, &args ) ) != 0 ) {
+  if ( ! opts.parse( argc, argv ) ) {
 
-    passed_params = true;
+    opts.showHelp( argv[0] ); 
+    exit(0);
+  }
+
+  while ( ( option = opts.cycle() ) >= 0 ) {
 
     switch ( option ) {
 
-      // Special Case: Recognize options that we didn't set above.
-      case -2: 
-        printf( "Unknown option: %s\n", args );
-        break;
-      // Special Case: getopts() can't allocate memory.
-      case -1:
-        printf( "Unable to allocate memory from getopts().\n" );
-        exit(-1);
+      case 0:
+        log_level = opts.getArgs( option );
         break;
       case 1:
-        log_level = args;
-        break;
-      case 2:
-        printf("om_points 0.1.0\n");
+        printf("om_points 0.1.1\n");
         printf("This is free software; see the source for copying conditions. There is NO\n");
         printf("warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n");
         exit(0);
         break;
-      case 3:
+      case 2:
         list_formats = true;
         break;
+      case 3:
+        source = opts.getArgs( option );
+        break;
       case 4:
-        source = args;
+        label = opts.getArgs( option );
         break;
       case 5:
-        label = args;
+        wkt = opts.getArgs( option );
         break;
       case 6:
-        wkt = args;
-        break;
-      case 7:
-        format = args;
+        format = opts.getArgs( option );
         break;
       default:
         break;
     }
-
-    // This free() is required since getopts() automagically allocates space 
-    // for "args" everytime it's called. */
-    free( args );
-  }
-
-  if ( ! passed_params ) {
-
-    // Display usage
-    getopts_usage( "om_points", opts );
-    exit(0);
   }
 
   // Log stuff

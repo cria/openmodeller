@@ -1,5 +1,11 @@
+/* getopts.h -
+ *
+ * Whom: Steve Mertz <steve@dragon-ware.com>
+ * Date: 20010610
+ * Why:  Where else would put this stuff?
+*/
 /*
- * Copyright (c) 2001 to 2004 Steve Mertz <steve@dragon-ware.com>
+ * Copyright (c) 2001-2004 Steve Mertz <steve@dragon-ware.com>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without 
@@ -12,9 +18,9 @@
  * this list of conditions and the following disclaimer in the documentation 
  * and/or other materials provided with the distribution.
  * 
- * Neither the name of Dragon Ware nor the names of its contributors may be 
- * used to endorse or promote products derived from this software without 
- * specific prior written permission. 
+ * Neither the name of Dragon Ware Computer Services nor the names of its 
+ * contributors may be used to endorse or promote products derived from 
+ * this software without specific prior written permission. 
  * 
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS 
  * ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT 
@@ -29,30 +35,44 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. 
  *
 */
-#ifndef __GET_OPT_H__
-#define __GET_OPT_H__
 
-#ifdef __cplusplus
-extern "C"
+#ifndef __GETOPTS__H__
+#define __GETOPTS__H__
+
+
+#include <string>
+#include <map>
+
+class Options
 {
-#endif
+		struct option
+			{
+				std::string shortName;
+				std::string longName;
+				std::string description;
+				std::string optionArgs;
+				bool isUsed;
+				bool takesArg;
+			};
+ 	 int lastNumberUsed;
 
-extern int option_index;
+  public:
+		std::map<int, struct option> optionList;
 
-struct options
-{
-  int number;		/* Number, which is returned from getopt() */
-  char *name;		/* Long name */
-  char *description;	/* Description */
-  char *shortName;	/* Short name */
-  int args;		/* Does the option take an argument? */
+ 		Options();
+
+		void addOption(std::string shortName, std::string longName, std::string description, bool takeArg=false);
+
+		bool parse(int argc, char **argv);
+
+		bool beingUsed(int number);
+
+		int cycle();
+
+		std::string getArgs(int number);
+			
+		void showHelp(char *progName);
+
 };
 
-int getopts(int argc, char **argv, struct options opts[], char **args);
-int getopts_usage(char *progName, struct options opts[]);
-
-#ifdef __cplusplus
-}
-#endif
-
-#endif 		/* __GET_OPT_H__ */
+#endif		// __GETOPTS__H__

@@ -15,73 +15,52 @@ using namespace std;
 
 int main( int argc, char **argv ) {
 
-  char *args;
+  Options opts;
   int option;
 
-  struct options opts[] = 
-  {
-    { 1, "log-level", "Set the log level (debug, warn, info, error)", NULL, 1 },
-    { 2, "version",   "Display version info",                          "v", 0 },
-    { 3, "list",      "List available algorithms (id and name)",       "l", 0 },
-    { 4, "dump-xml",  "Dump algorithms' metadata in XML",              "d", 0 },
-    { 5, "id",        "Algorithm id",                                  "i", 1 },
-    { 0, NULL,        NULL,                                           NULL, 0 }
-  };
-
-  bool passed_params = false;
+  // command-line parameters (short name, long name, description, take args)
+  opts.addOption( "" , "log-level", "Set the log level (debug, warn, info, error)", true );
+  opts.addOption( "v", "version"  , "Display version info", false );
+  opts.addOption( "l", "list"     , "List available algorithms (id and name)", false );
+  opts.addOption( "d", "dump-xml" , "Dump algorithms' metadata in XML", false );
+  opts.addOption( "i", "id"       , "Algorithm id", true );
 
   std::string log_level("info");
   bool        list_algs = false;
   bool        dump_algs = false;
   std::string alg_id;
 
-  while ( ( option = getopts( argc, argv, opts, &args ) ) != 0 ) {
+  if ( ! opts.parse( argc, argv ) ) {
 
-    passed_params = true;
+    opts.showHelp( argv[0] ); 
+    exit(0);
+  }
+
+  while ( ( option = opts.cycle() ) >= 0 ) {
 
     switch ( option ) {
 
-      // Special Case: Recognize options that we didn't set above.
-      case -2: 
-        printf( "Unknown option: %s\n", args );
-        break;
-      // Special Case: getopts() can't allocate memory.
-      case -1:
-        printf( "Unable to allocate memory from getopts().\n" );
-        exit(-1);
+      case 0:
+        log_level = opts.getArgs( option );
         break;
       case 1:
-        log_level = args;
-        break;
-      case 2:
-        printf("om_algorithm 0.1.0\n");
+        printf("om_algorithm 0.1.1\n");
         printf("This is free software; see the source for copying conditions. There is NO\n");
         printf("warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n");
         exit(0);
         break;
-      case 3:
+      case 2:
         list_algs = true;
         break;
-      case 4:
+      case 3:
         dump_algs = true;
         break;
-      case 5:
-        alg_id = args;
+      case 4:
+        alg_id = opts.getArgs( option );
         break;
       default:
         break;
     }
-
-    // This free() is required since getopts() automagically allocates space 
-    // for "args" everytime it's called. */
-    free( args );
-  }
-
-  if ( ! passed_params ) {
-
-    // Display usage
-    getopts_usage( "om_algorithm", opts );
-    exit(0);
   }
 
   // Check parameters
