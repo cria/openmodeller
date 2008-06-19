@@ -409,7 +409,12 @@ GbifOccurrences::_retrieveRecords( GbifRecordData *data, int limit )
 
   search_url << "&maxresults=" << limit;
 
+// curl_easy_escape was included in libcurl version 7.15.4
+#if LIBCURL_VERSION_NUM >= 0x070f04
   search_url << "&scientificname=" << curl_easy_escape( curl_handle, data->_occurrences->name(), 0 );
+#else
+  search_url << "&scientificname=" << curl_escape( data->_occurrences->name(), 0 );
+#endif
 
   search_url << "&format=brief&coordinatestatus=true&coordinateissues=false";
 
