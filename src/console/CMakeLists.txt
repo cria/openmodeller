@@ -24,12 +24,12 @@ SET (OMTESTMODEL_SRCS
     )
 SET (OMCREATE_SRCS
      om_create.cpp
-     getopts/getopts.c 
+     getopts/getopts.C 
      om_cmd_utils.cpp 
      )
 SET (OMPROJECT_SRCS 
      om_project.cpp  
-     getopts/getopts.c 
+     getopts/getopts.C 
      om_cmd_utils.cpp 
      )
 SET (OMVIEWER_SRCS
@@ -50,17 +50,17 @@ SET (OMNICHE_SRCS
      )
 SET (OMPSEUDO_SRCS
      om_pseudo.cpp 
-     getopts/getopts.c 
+     getopts/getopts.C 
      om_cmd_utils.cpp 
      )
 SET (OMALGORITHM_SRCS
      om_algorithm.cpp 
-     getopts/getopts.c 
+     getopts/getopts.C 
      om_cmd_utils.cpp 
      )
 SET (OMPOINTS_SRCS
      om_points.cpp 
-     getopts/getopts.c 
+     getopts/getopts.C 
      om_cmd_utils.cpp 
      )
 set (EXTRA_DIST
@@ -73,11 +73,10 @@ set (EXTRA_DIST
   graph/list.cpp
   graph/list.hh
   graph/view_model.hh
-  getopts/getopts.c
+  getopts/getopts.C
   getopts/getopts.h
   getopts/LICENSE
   getopts/README
-  getopts/main.c
   )
 
 ########################################################

@@ -1,129 +1,31 @@
-getopts v0.4.1 {http://www.dragon-ware.com/~steve/projects/getopts}
+OO Command Line Parser -- v0.2.0 (http://www.dragon-ware.com/~steve/getopts)
 Written by: Steve Mertz <steve@dragon-ware.com>
-License: BSD Style
-Development Environment: Slackware 7.1, gcc 2.95.2
-Development Environment: Slackware 8.1, gcc 2.95.3
-Development Environment: Slackware 9.1, gcc 3.2.3, 3.3.3
-Development Environment: FreeBSD 5.0-CURRENT (20020210)
-Known to work on: OpenBSD, Windows, FreeBSD, Linux
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+License: BSD
+Development Environment: Slackware 9.1, gcc 3.2.3
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-GetOpts is a command line parser.  It was built because the author couldn't
-find a command line parser that he liked.
+OO Command Line Parser is a little project that I did to redo
+my getopts replacement, but to use C++ and do it in an object
+oriented fashion.  
 
-Easy to use.  
+To see how it works,
 
-In the file that contains your main()...
+g++ -c getopts.C sample/main.C
+g++ -o getopts *.o
 
-/* See included main.c */
+Now that it's compiled you can run it.
+./getopts -h  will show the help (or use --help)
 
-#include <stdlib.h>
-#include <stdio.h>
-#include "getopts.h"
+sample/main.C should be pretty straight forward for your own projects that
+I shouldn't need to write more here.  So I won't.
 
-int main(int argc, char **argv)
-{
-  char *args;
-  int c;
-
-  struct options opts[] = 
-  {
-    { 1, "debug",   "Set the debugging level", "d", 1 },
-    { 2, "version", "Display the version info", "V", 0 },
-    { 3, NULL,      "Set the config file",      "f", 1 },
-    { 4, "test",    "Test getopts_usage",       "t", 0 },
-    { 0, NULL,      NULL,                      NULL, 0 }
-  };
-
-  while ((c = getopts(argc, argv, opts, &args)) != 0)
-    {
-      switch(c)
-        {
-/* Special Case: Recognize options that we didn't set above. */
-          case -2: 
-            printf("Unknown Option: %s\n", args);
-            break;
-/* Special Case: getopts() can't allocate memory.  
-   Should probably exit() here */
-          case -1:
-            printf("Unabled to allocate memory from getopts().\n");
-            break;
-          case 1:
-            printf("Setting debug level to: %s\n", args);
-/*            setDebugLevel(args); */
-            break;
-          case 2:
-            printf("ProgName 0.4.0\n");
-            printf("Written by: Steve Mertz\n");
-            exit(0);
-            break;
-          case 3:
-            printf("Setting config file to: %s\n", args);
-/*            readConfig(args); */
-            break;
-          case 4:
-            /* This is just to test.  "argv[0]" is the program name */
-            getopts_usage(argv[0], opts);
-            break;
-          default:
-            break;
-        }
-/* This free() is required since getopts() automagically allocates space
-   for "args" everytime it's called. */
-      free(args);
-    }
-  return 0;
-} 
-
-
-This example program.  Please note there is no -h or --help, as these are
-built in to the getopts() function, which is why in the array that is declared,
-you enter a description.  It should format everything correctly in the help if
-things aren't too long.
-
-Looking at the options struct.  
-
-{ 1, "debug",   "Set the debugging level", "d", 1 },
-
-This first entry here is '1', this is the number that getopts() will return
-if it matches any of the command line arguments.  The next entry "debug" is
-the long name of the command line argument.  It will be used like "--debug".
-The third entry is the description.  This is what will be shown in the event
-of using "-h" or "--help".  Or should the arguements not be there and it 
-decides to dump out the usage. The fourth entry is the short name or "-d" as
-it would be seen on the command line.  The last (fifth) entry '1' is going to
-be either a one or a zero.  And it tells if there are any arguments for this 
-option.  like "--debug 3" could be used here for setting debug level to '3'.
-
-Either the fullname (entry 2) or the short name (entry 4) can have NULL for
-its entry, signifying it should only use one or the other.  But you need 
-atleast 1 of them.  
-
--------------------------------------------------------------------------------
-
-NEW:
-~~~~
-20040417 -- Minor code cleanup.
-20040416 -- Added a case statement (getopts() return -1) for recognizing
-            unknown options.
-20040412 -- Added 'extern "C"' to getopts.h file as per Michael Brown, so 
-            that it works better with C++.
-20020822 -- Added a new function: getopts_usage()  This is so you can call 
-            getopts_usage() from within your own program to get the usage
-            should you want to.  Thanks to Tim Tassonis for this idea.
+-- Steve
 
 TODO:
-~~~~~
-o Use proper formatting techniques rather than just tab spacing.
-o Write better documentation.
+o Better documentation
+o Proper output of showHelp()
 
+BUGS:
+o 20040315 -- Wouldn't compile under GCC3 -- Jason Li
+o 20010610 -- None that I know of (SAM)
 
-BUGS (fixed):
-~~~~~~~~~~~~~
-20040412 -- Addition of 'extern "C"' for C++ programs. -- Michael Brown
-20020822 -- A seg fault would occur if you didn't use arguments for the options. -- Tim Tassonis
-20020719 -- Static buffers for option arguments  -- Tim Tassonis
-         -- Memory Leaks (found thanks to Tim!)
-         -- Wasted Cycles (took out code that didn't actually do anything.)
-20011218 -- Could not use '-' in arguments for options. -- Dirk Eddelbuettel
-20010113 -- None as of today that I know of.  -- Steve Mertz
