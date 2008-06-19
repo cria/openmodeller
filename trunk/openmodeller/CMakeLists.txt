@@ -32,8 +32,6 @@ SET (OM_CTEST FALSE CACHE BOOL "Build unit tests")
 
 SET (WITH_PROFILING FALSE CACHE BOOL "Add profiling symbols to build products (-pg)")
 
-SET (WITH_TAPIR_CLIENT TRUE CACHE BOOL "Build the Tapir occ_io provider (requires curl version >= xxx")
-
 #############################################################
 IF (OM_CTEST)
   FIND_PACKAGE(CXXTEST)
