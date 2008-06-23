@@ -34,37 +34,33 @@ active developers.
 %package devel
 Requires:     %{name} = %{version}
 Group:        Development/Libraries/C and C++
-Summary:      Static Spatial Distribution Modelling Tool - Development Files
+Summary:      Potential Distribution Modelling Library - Development Files
 
 %description devel
 Include files and libraries to link programs against openModeller
-or develope own algorithms. 
+or develop new algorithms. 
 
-%package -n openmodeller
+%package -n openmodeller-tools
 Requires:     %{name} = %{version}
 Group:        Applications/Research
-Summary:      Static Spatial Distribution Modelling Tool - Tools
+Summary:      Potential Distribution Modelling Library - Console Tools
 
-%description -n openmodeller
-Tools for using openModeller 
+%description -n openmodeller-tools
+Console and command-line tools for using openModeller.
 
 %prep
 %setup
 autoreconf --force --install
 
 %build
-CFLAGS="$RPM_OPT_FLAGS -fPIC" \
-./configure \
-                --mandir=%{_mandir} \
-                --prefix=%{prefix} \
-                --infodir=%{_infodir} \
-                --sysconfdir=%{_sysconfdir} \
-		--libdir=%{_libdir}
+mkdir build
+cd build
+cmake -DCMAKE_INSTALL_PREFIX=%{prefix} ../
 make
 
 %install
 rm -rf $RPM_BUILD_ROOT
-make DESTDIR=$RPM_BUILD_ROOT install
+make install
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -84,11 +80,14 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{prefix}/include/openmodeller
 %{prefix}/include/openmodeller
 
-%files -n openmodeller
+%files -n openmodeller-tools
 %defattr(-,root,root)
 /usr/bin/*
 
 %changelog -n libopenmodeller
+* Mon Jun 23 2008 - Renato De Giovanni <renato [at] cria . org . br>
+- renamed openmodeller package to openmodeller-tools
+- replaced automake commands by cmake ones
 * Mon May 13 2008 - Renato De Giovanni <renato [at] cria . org . br>
 - removed libopenmodellerxml files
 * Mon Nov 27 2006 - Renato De Giovanni <renato [at] cria . org . br>
