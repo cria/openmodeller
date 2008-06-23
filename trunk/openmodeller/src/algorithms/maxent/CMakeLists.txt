@@ -6,6 +6,7 @@ ADD_DEFINITIONS(-fPIC) # avoid issues in 64bit platform
 ENABLE_LANGUAGE(Fortran)
 
 MESSAGE(STATUS "CMAKE_Fortran_FLAGS: ${CMAKE_Fortran_FLAGS}")
+MESSAGE(STATUS "CMAKE_Fortran_COMPILER: ${CMAKE_Fortran_COMPLER}")
 
 IF (CMAKE_Fortran_COMPILER_WORKS)
 
