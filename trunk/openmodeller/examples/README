@@ -54,7 +54,7 @@ om_niche request.txt
 
 4) om_sampledump
 
-When openmodeller creates a model, it fetches the voxel (3d pixel)
+When openmodeller creates a model, it fetches the values
 through each of the climate layers. This is known as a sample. The
 sample at each presence (or absence) point can be obtained using 
 the om_sampledump application. This is useful if you want to under-
@@ -75,12 +75,14 @@ carried out (see om_project below). This is useful if you wish
 to create a model and project it into numerous climate scenarios.
 om_console can produce a simlar result using the 'Output model'
 instruction in the request file. om_create is a wholly XML 
-approach to this. The log output can be optionally stored in a 
-file if a second parameter is specified.
+approach to this.
 
 e.g. (furcata-model.xml is the output model file)
 
-om_create model_request.xml furcata-model.xml [ logfile.txt ]
+om_create --xml-req model_request.xml --model-file furcata-model.xml
+
+Additional parameters and detailed documentation can be found in the
+corresponding man page, or just by typing om_create without parameters.
 
 ---
 
@@ -107,16 +109,49 @@ can be saved as well.
 
 e.g.
 
-om_project projection_request.xml furcata.img [ logfile.txt | statisticsfile.txt logfile.txt ]
+om_project --xml-req projection_request.xml --disp-map furcata.img
+
+Additional parameters and detailed documentation can be found in the
+corresponding man page, or just by typing om_project without parameters.
 
 ---
 
-7) om_metadump
+7) om_algorithm
 
-This program requires no input files. Simply specify an output 
-file name and it will create and xml document describing all 
-the Algorithms and their associated metadata.
+This program can be used to get more information about the available 
+algorithms.
 
 e.g.
 
-om_metadump /tmp/algmetadata.xml
+om_algorithm --list
+
+Additional parameters and detailed documentation can be found in the
+corresponding man page, or just by typing om_algorithm without parameters.
+
+---
+
+8) om_points
+
+This program can be used to read occurrence data from a specified source
+and return it as tab-delimited or XML content. 
+
+e.g.
+
+om_points --source http://data.gbif.org/ws/rest/occurrence/list --name "Physalis peruviana"
+
+Additional parameters and detailed documentation can be found in the
+corresponding man page, or just by typing om_points without parameters.
+
+---
+
+9) om_pseudo
+
+This program can be used to generate pseudo occurrences.
+
+e.g.
+
+om_pseudo --num-points 20 --mask rain_coolest.tif
+
+Additional parameters and detailed documentation can be found in the
+corresponding man page, or just by typing om_pseudo without parameters.
+
