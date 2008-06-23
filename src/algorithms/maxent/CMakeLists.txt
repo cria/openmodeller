@@ -5,14 +5,14 @@ ADD_DEFINITIONS(-fPIC) # avoid issues in 64bit platform
 # Fortran library
 ENABLE_LANGUAGE(Fortran)
 
-MESSAGE(STATUS "CMAKE_Fortran_FLAGS: ${CMAKE_Fortran_FLAGS}")
-MESSAGE(STATUS "CMAKE_Fortran_COMPILER: ${CMAKE_Fortran_COMPLER}")
-
 IF (CMAKE_Fortran_COMPILER_WORKS)
 
-  FIND_PACKAGE(FortranLibs REQUIRED)
+  FIND_PACKAGE(FortranLibs)
 
-  ADD_DEFINITIONS(-DHAVE_FORTRAN)
+  IF (FORTRANLIBS_FOUND)
+    ADD_DEFINITIONS(-DHAVE_FORTRAN)
+  ENDIF (FORTRANLIBS_FOUND)
+
 ENDIF (CMAKE_Fortran_COMPILER_WORKS)
 
 ########################################################
@@ -29,14 +29,14 @@ SET (LIBMAXENT_SRCS
     toolkit/src/trainer.cpp
 )
 
-IF (CMAKE_Fortran_COMPILER_WORKS)
+IF (CMAKE_Fortran_COMPILER_WORKS AND FORTRANLIBS_FOUND)
   SET(LIBMAXENT_SRCS
     ${LIBMAXENT_SRCS}
     toolkit/src/lbfgstrainer.cpp
     toolkit/src/lbfgs_wrapper.c
     toolkit/src/lbfgs.f
   )
-ENDIF (CMAKE_Fortran_COMPILER_WORKS)
+ENDIF (CMAKE_Fortran_COMPILER_WORKS AND FORTRANLIBS_FOUND)
 
 #these are not needed to build but I specified them in 
 #case we want to install the headers
@@ -56,25 +56,25 @@ SET (LIBMAXENT_HDRS
     toolkit/src/trainer.hpp
 )
 
-IF (CMAKE_Fortran_COMPILER_WORKS)
+IF (CMAKE_Fortran_COMPILER_WORKS AND FORTRANLIBS_FOUND)
   SET(LIBMAXENT_HDRS
     ${LIBMAXENT_HDRS}
     toolkit/src/lbfgs.h
     toolkit/src/lbfgstrainer.hpp
   )
-ENDIF (CMAKE_Fortran_COMPILER_WORKS)
+ENDIF (CMAKE_Fortran_COMPILER_WORKS AND FORTRANLIBS_FOUND)
 
 ########################################################
 # Build
 
 ADD_LIBRARY (maximum_entropy MODULE ${LIBMAXENT_SRCS})
 
-IF (CMAKE_Fortran_COMPILER_WORKS)
+IF (CMAKE_Fortran_COMPILER_WORKS AND FORTRANLIBS_FOUND)
   SET_TARGET_PROPERTIES(maximum_entropy PROPERTIES LINKER_LANGUAGE CXX)
   TARGET_LINK_LIBRARIES(maximum_entropy ${Boost_LIBRARY_DIRS} openmodeller ${FORTRAN_LIBRARY})
-ELSE (CMAKE_Fortran_COMPILER_WORKS)
+ELSE (CMAKE_Fortran_COMPILER_WORKS AND FORTRANLIBS_FOUND)
   TARGET_LINK_LIBRARIES(maximum_entropy ${Boost_LIBRARY_DIRS} openmodeller)
-ENDIF (CMAKE_Fortran_COMPILER_WORKS)
+ENDIF (CMAKE_Fortran_COMPILER_WORKS AND FORTRANLIBS_FOUND)
 
 INCLUDE_DIRECTORIES(
      ${CMAKE_CURRENT_SOURCE_DIR}
