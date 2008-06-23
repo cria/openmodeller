@@ -105,7 +105,14 @@ ELSE(WIN32)
       )
       
     ELSE(GSL_CONFIG)
-      MESSAGE("FindGSL.cmake: gsl-config not found. Please set it manually. GSL_CONFIG=${GSL_CONFIG}")
+
+      IF (GSL_FIND_REQUIRED)
+         MESSAGE(FATAL_ERROR "Could not find gsl-config. Please set it manually. GSL_CONFIG=${GSL_CONFIG}")
+      ELSE (GSL_FIND_REQUIRED)
+         MESSAGE(STATUS "Could not find GSL")
+         # TODO: Avoid cmake complaints if GSL is not found
+      ENDIF (GSL_FIND_REQUIRED)
+
     ENDIF(GSL_CONFIG)
 
   ENDIF(UNIX)
