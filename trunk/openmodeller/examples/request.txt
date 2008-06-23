@@ -26,8 +26,8 @@ Occurrences source = furcata_boliviana.txt
 Occurrences group = furcata boliviana
 
 # Maps to be used as environmental variables to generate the model
-# note: You can find the map below in this address:
-#       http://openmodeller.cria.org.br/download/rain_coolest.tgz
+# For TerraLib rasters, use the following pattern:
+# terralib>yourusername>yourpassword@PostgreSQL>localhost>terralib>5432>rain_coolest
 #
 Map = rain_coolest.tif
 Map = temp_avg.tif
