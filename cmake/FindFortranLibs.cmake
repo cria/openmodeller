@@ -46,6 +46,9 @@ ELSE (FORTRANLIBS_FOUND)
    ELSE (FORTRANLIBS_FIND_REQUIRED)
      IF (NOT FORTRANLIBS_FIND_QUIETLY)
         MESSAGE(STATUS "Could not find Fortran libs")
+        # Avoid cmake complaints if Fortran libs are not found
+        SET(FORTRAN_INCLUDE_DIR "")
+        SET(FORTRAN_LIBRARY "")
      ENDIF (NOT FORTRANLIBS_FIND_QUIETLY)
    ENDIF (FORTRANLIBS_FIND_REQUIRED)
 
