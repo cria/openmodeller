@@ -34,8 +34,9 @@ IF (TERRALIB_FOUND)
 ELSE (TERRALIB_FOUND)
 
    IF (TERRALIB_FIND_REQUIRED)
-      MESSAGE(FATAL_ERROR "Could not find TERRALIB")
+      MESSAGE(FATAL_ERROR "Could not find TerraLib")
    ELSE (TERRALIB_FIND_REQUIRED)
+      MESSAGE(STATUS "Could not find TerraLib")
       # Avoid cmake complaints if terralib is not found
       SET(TERRALIB_INCLUDE_DIR "")
       SET(TERRALIB_LIBRARY "")
