@@ -20,60 +20,57 @@ openModeller - Open Source Spatial Distribution Modeller
 OVERVIEW
 --------
 
-The original motivation of openModeller was to automate the tedious and
+The original motivation of openModeller was to help automating the tedious and
 complex tasks involved in species' potential distribution modelling regarding 
-map file formats, georeferencing issues, resamples, map interpolations, etc.
-Some consequences arise from this automation:
+georeferencing issues, resampling, existence of several raster formats and
+algorithms, etc. This way:
 
 a) One can spend time developing algorithms, testing, tunning or comparing
-   results. To compare two or more different algorithms we need the same 
-   input data, the same sample methodology, etc.
+   results, instead of clipping rasters, converting between different raster formats 
+   or using different programs to run different algorithms. The same input data, 
+   sampling methodology and ideally the same computing environment should be used
+   in a fair comparison between different algorithms.
 
-b) Different tasks can be performed by independent components in distributed
-   frameworks. A framework could look for species data (in sources like 
-   the GBIF portal) and for environmental data. These data are hard to find
-   (with high quality) and some times are enormous.
+b) Specialized components can help integrating data from distributed sources. For 
+   example, one could look for species data in sources like the GBIF portal and for 
+   environmental data in some remote source through WCS (OGC's Web Coverage Service). 
+   Retrieving and integrating data from different sources using different protocols 
+   and tools can be very complicated without using a single framework.
 
-c) Powerfull computers can be used to run heavy algorithms (like GARP) 
-   and that could also be done in parallel (clustering).
+c) Different interfaces can be developed on top of the same modelling library.
+
+d) Powerfull computers can be used to run heavy algorithms (like GARP) 
+   in parallel (Cluster computing).
 
 
 CURRENT STATUS
 --------------
 
-- Core modelling API implemented in ANSI C++.
+- Core modelling API implemented in ANSI C++ (compiles in GNU/Linux, Mac OSX and Windows).
 - Algorithms dinamically loaded as plugins.
-- Generic API to read & write raster data.
-- Generic API to load occurrence data.
+- Generic API to read & write raster data (GDAL and TerraLib drivers available).
+- Generic API to load occurrence data (drivers available for tab-delimited text 
+  files, serialized XML files, GBIF REST service and TAPIR/DarwinCore providers).
 - Simple command-line/console interface.
-- SOAP interface.
-- Desktop interface (available in a separate package).
-
-
-LICENSE
--------
-
-This program is free software; you can redistribute it and/or
-modify it under the terms of the GNU General Public License
-as published by the Free Software Foundation; either version 2
-of the License, or (at your option) any later version.
- 
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-GNU General Public License for more details:
- 
-http://www.gnu.org/copyleft/gpl.html
+- SOAP interface for remote modelling (server implementation available).
+- Python binding.
 
 
 REQUIREMENTS
 ------------
+
+* cmake (>= 2.4) if you need to compile the library.
+
+* Expat XML parser
+  http://expat.sourceforge.net/
 
 * Proj.4 (Cartographic Projections Library)
   http://remotesensing.org/proj/
 
 * GDAL (Geospatial Data Abstraction Library) version >= 1.1.9
   http://www.remotesensing.org/gdal
+
+Optional libraries:
 
 * TerraLib (>= 3.2.0) is needed to enable the TerraLib occurrence and raster drivers.
   http://www.terralib.org/
@@ -95,14 +92,9 @@ REQUIREMENTS
 DOCUMENTATION
 -------------
 
-For now only Doxygen documentation is available.
+For installation instructions, please read INSTALL.
 
-Download Doxygen from: http://www.doxygen.org
-
-In the main directory, run: make doc
-
-Then have a look at the "html" or "latex" directories that
-will be created.
+For code documentation, see: http://openmodeller.cria.org.br/doxygen/
 
 ------------ x -----------
 
