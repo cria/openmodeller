@@ -463,8 +463,19 @@ RequestFile::extractParameter( std::string const name,
 
   while ( it != end ) {
 
-    if ( name == (*it).substr(0, length) ) {
-      return (*it).substr( length );
+    if ( name == (*it).substr( 0, length ) ) {
+
+      std::string value = (*it).substr( length );
+
+      // Left trim the value 
+      std::string::size_type pos = value.find_first_not_of(' ');
+
+      if ( pos != std::string::npos ) {
+
+        value.erase( 0, pos );
+      }
+
+      return value;
     }
 
     ++it;

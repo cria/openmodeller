@@ -42,12 +42,11 @@ static char error[256];
 /******************/
 /*** constructor ***/
 
-FileParser::FileParser( char const *file )
+FileParser::FileParser( std::string const file )
 {
   if ( ! load( file ) )
     {
-      sprintf( error, "File '%s' was not found.\n",
-               file );
+      sprintf( error, "File '%s' was not found.\n", file.c_str() );
       fprintf( stderr, "%s", error );
       throw error;
     }
@@ -64,9 +63,9 @@ FileParser::~FileParser()
 /************/
 /*** load ***/
 int
-FileParser::load( char const *file )
+FileParser::load( std::string const file )
 {
-  FILE *fd = fopen( file, "r" );
+  FILE *fd = fopen( file.c_str(), "r" );
   if ( ! fd )
     return 0;
 
@@ -106,7 +105,7 @@ FileParser::load( char const *file )
       // Find the start of the value.
       char *start_val = sep+1;
       // Left trim the whitespace.
-      while( isspace( *start_val ) && ( *start_val != '\0' ) ) {
+      while ( isspace( *start_val ) && ( *start_val != '\0' ) ) {
 	start_val++;
       }
       // No value?  loop.
@@ -120,10 +119,10 @@ FileParser::load( char const *file )
 	*sep-- = '\0';
 
       // Right trim the value.
-      sep = start_val + strlen(start_val)-1;
+      sep = start_val + strlen( start_val ) - 1;
       // Remember the \0 we substitued for the '='?
       // use that to terminate the loop.
-      while( isspace( *sep) && (*sep != '\0') )
+      while ( isspace( *sep ) && ( *sep != '\0' ) )
 	*sep-- = '\0';
       
       if ( *sep == '\0' )
@@ -141,13 +140,17 @@ FileParser::load( char const *file )
 /***********/
 /*** get ***/
 std::string
-FileParser::get( char const *key ) const
+FileParser::get( std::string const key ) const
 {
   ItemList::const_iterator it = f_lst.begin();
+
   while ( it != f_lst.end() ) {
-    if (  (*it).first == key ) {
+
+    if ( (*it).first == key.c_str() ) {
+
       return it->second;
     }
+
     ++it;
   }
   return "";
@@ -157,13 +160,16 @@ FileParser::get( char const *key ) const
 /*************/
 /*** count ***/
 int
-FileParser::count( char const *key ) const
+FileParser::count( std::string const key ) const
 {
   int n = 0;
 
   ItemList::const_iterator it = f_lst.begin();
+
   while ( it != f_lst.end() ) {
-    if (  it->first == key ) {
+
+    if (  it->first == key.c_str() ) {
+
       ++n;
     }
     ++it;
@@ -174,16 +180,19 @@ FileParser::count( char const *key ) const
 /***************/
 /*** get All ***/
 std::vector<std::string>
-FileParser::getAll( char const *key ) const
+FileParser::getAll( std::string const key ) const
 {
   std::vector<std::string> values;
   ItemList::const_iterator it = f_lst.begin();
+
   while ( it != f_lst.end() ) {
-    if (  it->first == key ) {
-      values.push_back(it->second);
+
+    if ( it->first == key.c_str() ) {
+
+      values.push_back( it->second );
     }
+
     ++it;
   }
   return values;
 }
-
