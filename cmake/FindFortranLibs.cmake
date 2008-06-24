@@ -16,6 +16,7 @@ FIND_PATH(FORTRAN_INCLUDE_DIR g2c.h
   "$ENV{LIB_DIR}/include/"
   /usr/local/include 
   /usr/include 
+  /usr/lib/gcc-lib/i386-redhat-linux/3.2/include 
   c:/msys/local/include
   NO_DEFAULT_PATH
   )
@@ -24,6 +25,7 @@ FIND_LIBRARY(FORTRAN_LIBRARY NAMES g2c PATHS
   "$ENV{LIB_DIR}/lib"
   /usr/local/lib 
   /usr/lib 
+  /usr/lib/gcc-lib/i386-redhat-linux/3.2
   c:/msys/local/lib
   NO_DEFAULT_PATH
   )
