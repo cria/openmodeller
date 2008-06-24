@@ -168,7 +168,7 @@ Output file type = ByteHFA
 ########
 # Maximum Entropy
 #
-#Algorithm = MaximumEntropy
+#Algorithm = MAXENT
 #Parameter = NumberOfPseudoAbsences 500
 #Parameter = NumberOfIterations 15
 #Parameter = TrainingMethod gis
