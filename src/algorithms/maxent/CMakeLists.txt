@@ -7,6 +7,8 @@ ENABLE_LANGUAGE(Fortran)
 
 IF (CMAKE_Fortran_COMPILER_WORKS)
 
+  MESSAGE(STATUS "Fortran compiler: ${CMAKE_Fortran_COMPILER}")
+
   FIND_PACKAGE(FortranLibs)
 
   IF (FORTRANLIBS_FOUND)
