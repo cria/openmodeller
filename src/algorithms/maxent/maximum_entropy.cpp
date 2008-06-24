@@ -244,7 +244,7 @@ MaximumEntropy::initialize()
 
   if ( _method != "gis" && _method != "lbfgs" ) {
 
-    Log::instance()->error( MAXENT_LOG_PREFIX "Parameter '" METHOD_ID "' must be either gis or lbfgs.\n" );
+    Log::instance()->error( MAXENT_LOG_PREFIX "Parameter '" METHOD_ID "' must be either gis or lbfgs. Found [%s].\n", _method.c_str() );
     return 0;
   }
 
