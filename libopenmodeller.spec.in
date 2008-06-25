@@ -4,9 +4,9 @@ Name:         libopenmodeller
 License:      GPL
 Group:        Libraries/Research
 Autoreqprov:  on
-Version:      @VERSION@
+Version:      0.6.0
 Release:      0
-Source:       %{name}-%{version}.tar.gz
+Source:       %{name}-src-%{version}.tar.gz
 Url:          http://openmodeller.sf.net
 Summary:      Static Spatial Distribution Modelling Tool - Library
 BuildRoot:    %{_tmppath}/%{name}-%{version}-build
