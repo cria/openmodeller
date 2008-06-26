@@ -43,9 +43,9 @@ using std::string;
 #endif
 
 /****************************************************************/
-static void printListOfRuns(char * msg, AlgorithmRun ** runs, int numOfRuns)
+static void printListOfRuns(string msg, AlgorithmRun ** runs, int numOfRuns)
 {
-  printf("%s\n", msg);
+  printf("%s\n", msg.c_str());
   for (int i = 0; i < numOfRuns; i++)
     printf("%4d] om=%5.3f comm=%5.3f (id=%d)\n", i, 
         runs[i]->getOmission(), 
