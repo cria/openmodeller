@@ -574,13 +574,13 @@ GXButton::clear( int xpos, int width, GColor bg )
 /*******************/
 /*** constructor ***/
 
-TBtUnico::TBtUnico( GXFrame &xframe, int posx, int posy, char *label,
+TBtUnico::TBtUnico( GXFrame &xframe, int posx, int posy, string label,
                     GFrame::FuncExec func, GColor c )
-  : GXButton( xframe, posx, posy, 8 * strlen(label) )
+  : GXButton( xframe, posx, posy, 8 * label.size() )
 {
   f_func = func;
   f_cor  = c;
-  strcpy( f_label, label );
+  f_label = label;
 }
 
 
@@ -613,8 +613,8 @@ TBtUnico::label()
   clear( 0, f_dimx );
 
   int y = (f_dimy+9) / 2;
-  int dim = strlen( f_label );
-  XDrawString( f_frm->dpy, win, f_frm->gc, 1, y, f_label, dim );
+  int dim = f_label.size();
+  XDrawString( f_frm->dpy, win, f_frm->gc, 1, y, f_label.c_str(), dim );
   XFlush( f_frm->dpy );
 }
 
@@ -627,8 +627,8 @@ TBtUnico::label( GColor c )
   clear( 0, f_dimx, c );
 
   int y = (f_dimy+9) / 2;
-  int dim = strlen( f_label );
-  XDrawString( f_frm->dpy, win, f_frm->gc, 1, y, f_label, dim );
+  int dim = f_label.size();
+  XDrawString( f_frm->dpy, win, f_frm->gc, 1, y, f_label.c_str(), dim );
   XFlush( f_frm->dpy );
 }
 
@@ -640,7 +640,7 @@ TBtUnico::label( GColor c )
 /*** constructor ***/
 
 TBtUAperta::TBtUAperta( GXFrame &frame, int posx, int posy,
-                        char *label, GFrame::FuncExec func, GColor c )
+                        string label, GFrame::FuncExec func, GColor c )
   : TBtUnico( frame, posx, posy, label, func, c )
 {
   f_estado = 0;
@@ -925,8 +925,11 @@ GXFrame::GXFrame( char *titulo, int crt_height, int dimx, int dimy )
   wm_hints.initial_state = NormalState;
 
   // Class
-  class_hints.res_name  = "openModeller";
-  class_hints.res_class = "Cria";
+  string res_name("openModeller");
+  string res_class("CRIA");
+
+  class_hints.res_name  = (char *)res_name.c_str();
+  class_hints.res_class = (char *)res_class.c_str();
 
   char **argv = 0;
   char   argc = 0;
@@ -934,24 +937,12 @@ GXFrame::GXFrame( char *titulo, int crt_height, int dimx, int dimy )
 		    &size_hints, &wm_hints, &class_hints );
 
   // Font load.
-  char *font_name = "8x13";
+  string font_name("8x13");
   Font font;
 
-  /*
-  // Não é legal, pois não há instâncias para cada usuário.
-  // Ou seja, todo o sistema compartilha estas configurações!
-  char *dirs[5];
-  dirs[0] = "/usr/X11R6/lib/X11/fonts/misc/";
-  dirs[1] = "/usr/X11R6/lib/X11/fonts/Type1/";
-  dirs[2] = "/usr/X11R6/lib/X11/fonts/Speedo/";
-  dirs[3] = "/usr/X11R6/lib/X11/fonts/75dpi/";
-  dirs[4] = "/usr/X11R6/lib/X11/fonts/100dpi/";
-  XSetFontPath( dpy, dirs, 5 );
-  */
-
-  if ( (font = XLoadFont( dpy, font_name )) == BadName )
+  if ( (font = XLoadFont( dpy, (char *)font_name.c_str() )) == BadName )
     {
-      printf( "Can't find font: %s.\n", font_name );
+      printf( "Could not find font: %s.\n", font_name.c_str() );
       exit( -1 );
     }
 
@@ -978,8 +969,7 @@ GXFrame::GXFrame( char *titulo, int crt_height, int dimx, int dimy )
 
   // Exit button.
   long mask3 = ExposureMask | ButtonPressMask | ButtonReleaseMask;
-  f_btsaida = new TBtUnico( *this, f_winx - 16, 4, "X", 0,
-                            GColor::Black );
+  f_btsaida = new TBtUnico( *this, f_winx - 16, 4, "X", 0, GColor::Black );
   XSelectInput( dpy, f_btsaida->win, mask3 );
 
   f_falways = 0;
