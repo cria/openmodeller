@@ -152,10 +152,12 @@ IF(NOT Boost_FOUND)
   ELSE(NOT Boost_FIND_QUIETLY)
     IF(Boost_FIND_REQUIRED)
       MESSAGE(FATAL_ERROR "Boost was not found. ${BOOST_DIR_MESSAGE}")
+    ELSE(Boost_FIND_REQUIRED)
+      MESSAGE(STATUS "Could not find Boost.")
+      # Avoid cmake complaints if Boost is not found
+      SET(Boost_INCLUDE_DIR "")
+      SET(Boost_LIBRARY_DIR "")
     ENDIF(Boost_FIND_REQUIRED)
-    # Avoid cmake complaints if Boost is not found
-    SET(Boost_INCLUDE_DIR "")
-    SET(Boost_LIBRARY_DIR "")
   ENDIF(NOT Boost_FIND_QUIETLY)
 ENDIF(NOT Boost_FOUND)
 
