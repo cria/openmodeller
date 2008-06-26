@@ -32,22 +32,13 @@ int main( int argc, char **argv ) {
       return -1;
     }
 
-    char *format = "occ_input"; // html_table or occ_input
+    unsigned int format = 1; // 0 = HTML table, 1 = TAB delimited
 
     OpenModeller om;
-    // Configure the OpenModeller object from data read from the
-    // request file.
+    // Configure the OpenModeller object from data read from a request file.
     RequestFile request;
     char *request_file = argv[1];
     request.configure( &om, request_file);
-
-    //cout << "Reading configuration from: " << argv[1] << endl;    
-    //ConfigurationPtr c = Configuration::readXml( argv[1] );
-    //om.setConfiguration(c);
-    //OutputFormat myOutputFormat = MapFormat( format.c_str() );
-    // hard coded for now: 8-bit grey tiffs
-    //myOutputFormat.setFormat( MapFormat::GreyTiff );
-    //om->createMap( argv[1], _outputFormat );
 
     SamplerPtr s = om.getSampler();
 
@@ -62,7 +53,7 @@ int main( int argc, char **argv ) {
 
     int dim = s->numIndependent();
    
-    if ( ! strcasecmp( format, "html_table" ) ) {
+    if ( format == 0 ) {
 
       fp_out << "<table>\n<tr><th>id</th>";
 
@@ -73,7 +64,7 @@ int main( int argc, char **argv ) {
 
       fp_out << "<th>abundance</th></tr>";
     }
-    else if ( ! strcasecmp( format, "occ_input" ) ) {
+    else if ( format == 1 ) {
 
       fp_out << "#id\tlabel\tlongitude\tlatitude\tabundance";
 
@@ -94,7 +85,7 @@ int main( int argc, char **argv ) {
 
         cout << ((*it)->id()).c_str() << " (" << (*it)->x() << "," << (*it)->y() << ") " << (*it)->environment() << endl;
 
-        if ( ! strcasecmp( format, "html_table" ) ) {
+        if ( format == 0 ) {
 
           fp_out << "\n<tr><td>" << ((*it)->id()).c_str() << "</td>";
 
@@ -107,7 +98,7 @@ int main( int argc, char **argv ) {
 
           fp_out << "<td>" << (*it)->abundance() << "</td></tr>";
         }
-        else if ( ! strcasecmp( format, "occ_input" ) ) {
+        else if ( format == 1 ) {
 
           fp_out << "\n" << ((*it)->id()).c_str() << "\t" << p->name() << "\t" << (*it)->x() << "\t" << (*it)->y() << "\t" << (*it)->abundance();
 
@@ -137,7 +128,7 @@ int main( int argc, char **argv ) {
 
         cout << ((*it)->id()).c_str() << " (" << (*it)->x() << "," << (*it)->y() << ") " << (*it)->environment() << endl;
 
-        if ( ! strcasecmp( format, "html_table" ) ) {
+        if ( format == 0 ) {
 
           fp_out << "\n<tr><td>" << ((*it)->id()).c_str() << "</td>";
 
@@ -150,7 +141,7 @@ int main( int argc, char **argv ) {
 
           fp_out << "<td>" << (*it)->abundance() << "</td></tr>";
         }
-        else if ( ! strcasecmp( format, "occ_input" ) ) {
+        else if ( format == 1 ) {
 
           fp_out << "\n" << ((*it)->id()).c_str() << "\t" << a->name() << "\t" << (*it)->x() << "\t" << (*it)->y() << "\t" << (*it)->abundance();
 
@@ -170,7 +161,7 @@ int main( int argc, char **argv ) {
       }
     }
 
-    if ( ! strcasecmp( format, "html_table" ) ) {
+    if ( format == 0 ) {
 
       fp_out << "\n</table>";
     }
