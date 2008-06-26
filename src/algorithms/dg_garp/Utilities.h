@@ -26,7 +26,8 @@
 #include <time.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
+#include <string>
+using std::string;
 
 #ifndef __GARPWIN
 typedef unsigned char BYTE;
@@ -107,18 +108,18 @@ class GarpException
 {
 public:
 	int intCode;
-	char strMessage[256];
+	string strMessage;
 
-	GarpException(int code, char message[])
+	GarpException(int code, string message)
 	{
 		intCode = code;
-		strcpy(strMessage, message);
+		strMessage = message;
 	}
 
-	void getError(int& code, char message[])
+	void getError(int& code, string& message)
 	{
 		code = intCode;
-		strcpy(message, strMessage);
+		message = strMessage;
 	}
 };
 
