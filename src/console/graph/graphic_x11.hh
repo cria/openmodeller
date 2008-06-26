@@ -215,7 +215,7 @@ class TBtUnico : public GXButton
 public:
 
   // Apenas um botao.
-  TBtUnico( GXFrame &xframe, int posx, int posy, char *label,
+  TBtUnico( GXFrame &xframe, int posx, int posy, string label,
 	    GFrame::FuncExec func, GColor c );
   virtual ~TBtUnico();
 
@@ -230,7 +230,7 @@ protected:
 
 
   GColor   f_cor;
-  char     f_label[32];
+  string   f_label;
 
   GFrame::FuncExec f_func;
 };
@@ -243,7 +243,7 @@ public:
 
   // Just one button.
   TBtUAperta( GXFrame &xframe, int posx, int posy,
-              char *label, GFrame::FuncExec func, GColor c );
+              string label, GFrame::FuncExec func, GColor c );
   virtual ~TBtUAperta();
 
   void set( int x, int y );
