@@ -41,6 +41,8 @@ Requires:   gdal >= 1.4.2
 Requires:   libcurl >= 7.15.4
 Requires:   sqlite >= 3.3.6
 Requires:   gsl >= 1.4
+Requires:   boost >= 1.31
+Requires:   gcc-g77
 
 %description devel
 Include files and libraries to link programs against openModeller
