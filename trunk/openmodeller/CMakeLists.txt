@@ -281,15 +281,6 @@ ENDIF(SQLITE3_FOUND)
 IF (OM_CTEST)
   SUBDIRS(test)
 ENDIF (OM_CTEST)
-#############################################################
-# install stuff
-
-#INSTALL (FILES AUTHORS SPONSORS
- #        DESTINATION ${QGIS_DATA_DIR}/doc)
-
-# manual page... install also on windows?
-#INSTALL (FILES qgis.man
- #        DESTINATION ${CMAKE_INSTALL_PREFIX}/man/man1)
 
 #############################################################
 # Uninstall stuff see: http://www.vtk.org/Wiki/CMake_FAQ
