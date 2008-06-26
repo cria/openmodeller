@@ -430,7 +430,7 @@ Scalar Garp::getValue( const Sample& x ) const
 /****************************************************************/
 /****************** getConvergence ******************************/
 
-int Garp::getConvergence( Scalar *val )
+int Garp::getConvergence( Scalar * const val ) const
 {
   *val = _convergence;
   return 0;

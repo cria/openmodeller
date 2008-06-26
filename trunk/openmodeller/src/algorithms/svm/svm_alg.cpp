@@ -638,7 +638,7 @@ SvmAlgorithm::getValue( const Sample& x ) const
 /***********************/
 /*** get Convergence ***/
 int
-SvmAlgorithm::getConvergence( Scalar *val )
+SvmAlgorithm::getConvergence( Scalar * const val ) const
 {
   *val = 1.0;
   return 1;

@@ -51,7 +51,7 @@ public:
   int done() const;
 
   Scalar getValue( const Sample& x ) const;
-  int    getConvergence( Scalar *val );
+  int    getConvergence( Scalar * const val ) const;
 
 protected:
   virtual void _getConfiguration( ConfigurationPtr& ) const;
