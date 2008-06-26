@@ -35,6 +35,8 @@
 #include "bs_algorithm_factory.hh"
 #include "garp_run.hh"
 
+#include <string>
+using std::string;
 
 /****************************************************************/
 /************************* GARP Algorithm ***********************/
@@ -102,7 +104,7 @@ public:
 
   /*
    */
-  void printListOfRuns(char * msg, AlgorithmRun ** runs, int numOfRuns);
+  void printListOfRuns(string msg, AlgorithmRun ** runs, int numOfRuns);
 
 protected:
 
