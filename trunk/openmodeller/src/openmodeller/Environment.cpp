@@ -28,6 +28,7 @@
 
 #include <openmodeller/Environment.hh>
 
+#include <openmodeller/os_specific.hh>
 #include <openmodeller/Log.hh>
 #include <openmodeller/env_io/Map.hh>
 #include <openmodeller/env_io/RasterFactory.hh>
@@ -127,6 +128,7 @@ EnvironmentImpl::makeLayer( const ConstConfigurationPtr& config ) {
 
   }
   catch (AttributeNotFound& e) {
+    UNUSED(e);
   }
 
   return l;
@@ -531,7 +533,7 @@ EnvironmentImpl::check( Coord x, Coord y ) const
 
   Scalar val;
 
-  bool hasmaskevalue = _mask.second->get( x, y, &val );
+  bool hasmaskevalue = (bool)_mask.second->get( x, y, &val );
 
   if ( ! hasmaskevalue ) {
 #if defined(DEBUG_GET)
