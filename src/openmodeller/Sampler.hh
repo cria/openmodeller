@@ -75,7 +75,6 @@ class dllexp SamplerImpl : public Configurable, public Normalizable, private Ref
 {
   friend class ReferenceCountedPointer<SamplerImpl>;
   friend class ReferenceCountedPointer<const SamplerImpl>;
-  friend SamplerPtr createSampler( const ConstConfigurationPtr & );
 
 public:
 
