@@ -273,7 +273,7 @@ Bioclim::getValue( const Sample& x ) const
 /***********************/
 /*** get Convergence ***/
 int
-Bioclim::getConvergence( Scalar *val )
+Bioclim::getConvergence( Scalar * const val ) const
 {
   *val = 1.0;
   return 1;

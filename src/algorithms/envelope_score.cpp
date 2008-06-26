@@ -217,7 +217,7 @@ EnvelopeScore::getValue( const Sample& x ) const
 /***********************/
 /*** get Convergence ***/
 int
-EnvelopeScore::getConvergence( Scalar *val )
+EnvelopeScore::getConvergence( Scalar * const val ) const
 {
   *val = 1.0;
   return 1;
