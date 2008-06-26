@@ -56,7 +56,7 @@ Console and command-line tools for using openModeller.
 %build
 mkdir build
 cd build
-cmake -DCMAKE_INSTALL_PREFIX=%{prefix} -DPEDANTIC=OFF../
+cmake -DCMAKE_INSTALL_PREFIX=%{prefix} -DPEDANTIC=OFF ../
 make
 
 %install
