@@ -533,7 +533,7 @@ EnvironmentImpl::check( Coord x, Coord y ) const
 
   Scalar val;
 
-  bool hasmaskevalue = (bool)_mask.second->get( x, y, &val );
+  bool hasmaskevalue = ( _mask.second->get( x, y, &val ) > 0 );
 
   if ( ! hasmaskevalue ) {
 #if defined(DEBUG_GET)
