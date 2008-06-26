@@ -39,6 +39,7 @@
 #include <unistd.h>
 #include <stdio.h>
 #include <string.h>
+using std::string;
 
 
 #define Abs(a)  ((a) > 0 ? (a) : -(a))
@@ -52,9 +53,9 @@ static GColor g_button_bg( 0xe0 );
 /**********************************************************************/
 /*************************** Frame Creation ***************************/
 
-GFrame *createFrame( char *title, int ctr_height, int dimx, int dimy )
+GFrame *createFrame( string title, int ctr_height, int dimx, int dimy )
 {
-  return( new GXFrame( title, ctr_height, dimx, dimy ) );
+  return( new GXFrame( (char *)title.c_str(), ctr_height, dimx, dimy ) );
 }
 
 
