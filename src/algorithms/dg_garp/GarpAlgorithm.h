@@ -57,8 +57,6 @@ public:
 	GarpAlgorithm();
 	virtual ~GarpAlgorithm();
 
-	virtual char * type() { return "GarpAlgorithm"; }
-
 	RuleSet * getBestSet() { return &objBest; }
 	void getInitialModel(int intSize, EnvCellSet * objTrainSet);
 	void updateRuleUsage();
