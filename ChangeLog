@@ -1,5 +1,5 @@
-Release 0.6 (2008-?-?)
-----------------------
+Release 0.6.0 (2008-?-?)
+------------------------
 SVN revision: ?
 
 	* New driver to read point data from TAPIR/DarwinCore providers.
