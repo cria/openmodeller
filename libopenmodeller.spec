@@ -10,7 +10,6 @@ Source:        %{name}-src-%{version}.tar.gz
 Url:           http://openmodeller.sf.net
 Summary:       Library for Potential Distribution Modelling
 BuildRoot:     %{_tmppath}/%{name}-%{version}-build
-BuildRequires: cmake
 
 %description
 openModeller is an open source C++ library to determine potential 
