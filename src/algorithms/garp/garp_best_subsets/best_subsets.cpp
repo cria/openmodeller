@@ -37,6 +37,8 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <math.h>
+#include <string>
+using std::string;
 
 #ifdef WIN32
 #include <windows.h>
@@ -48,9 +50,9 @@
 
 
 /****************************************************************/
-void BestSubsets::printListOfRuns(char * msg, AlgorithmRun ** runs, int numOfRuns)
+void BestSubsets::printListOfRuns(string msg, AlgorithmRun ** runs, int numOfRuns)
 {
-  printf("%s\n", msg);
+  printf("%s\n", msg.c_str());
   for (int i = 0; i < numOfRuns; i++)
     printf("%4d] om=%5.3f comm=%5.3f (id=%d)\n", i, 
         runs[i]->getOmission(), 
