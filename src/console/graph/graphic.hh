@@ -32,6 +32,8 @@
 
 #include "color.hh"
 
+#include <string>
+using std::string;
 
 
 /**********************************************************************/
@@ -39,7 +41,7 @@
 
 class GFrame;
 
-GFrame *createFrame( char *title, int control_height,
+GFrame *createFrame( string title, int control_height,
                      int dimx, int dimy );
 
 
