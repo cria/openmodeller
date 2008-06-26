@@ -1,15 +1,16 @@
 %define prefix /usr
 
-Name:         libopenmodeller
-License:      GPL
-Group:        Libraries/Research
-Autoreqprov:  on
-Version:      0.6.0
-Release:      0
-Source:       %{name}-src-%{version}.tar.gz
-Url:          http://openmodeller.sf.net
-Summary:      Static Spatial Distribution Modelling Tool - Library
-BuildRoot:    %{_tmppath}/%{name}-%{version}-build
+Name:          libopenmodeller
+License:       GPL
+Group:         Libraries/Research
+Autoreqprov:   on
+Version:       0.6.0
+Release:       0
+Source:        %{name}-src-%{version}.tar.gz
+Url:           http://openmodeller.sf.net
+Summary:       Library for Potential Distribution Modelling
+BuildRoot:     %{_tmppath}/%{name}-%{version}-build
+BuildRequires: cmake
 
 %description
 openModeller is an open source C++ static spatial distribution modelling 
@@ -32,25 +33,32 @@ Kansas, and other individual participants joined the effort and became
 active developers.
 
 %package devel
-Requires:     %{name} = %{version}
-Group:        Development/Libraries/C and C++
-Summary:      Potential Distribution Modelling Library - Development Files
+Group:      Development/Libraries/C and C++
+Summary:    Potential Distribution Modelling Library - Development Files
+Requires:   expat
+Requires:   proj >= 4.5.0
+Requires:   gdal >= 1.4.2
+Requires:   libcurl >= 7.15.4
+Requires:   sqlite >= 3.3.6
+Requires:   gsl >= 1.4
 
 %description devel
 Include files and libraries to link programs against openModeller
 or develop new algorithms. 
 
 %package -n openmodeller-tools
-Requires:     %{name} = %{version}
-Group:        Applications/Research
-Summary:      Potential Distribution Modelling Library - Console Tools
+Group:      Applications/Research
+Summary:    Potential Distribution Modelling Library - Console Tools
+Requires:   %{name} >= %{version}
+Requires:   X11-libs
 
 %description -n openmodeller-tools
 Console and command-line tools for using openModeller.
 
+%define srcdirname %{name}-src-%{version}
+
 %prep
-%setup
-autoreconf --force --install
+%setup -q -n %{srcdirname}
 
 %build
 mkdir build
