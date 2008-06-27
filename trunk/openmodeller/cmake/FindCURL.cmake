@@ -6,11 +6,26 @@
 #  CURL_FOUND        - True if curl found.
 
 # Look for the header file.
-FIND_PATH(CURL_INCLUDE_DIR NAMES curl/curl.h)
+FIND_PATH(CURL_INCLUDE_DIR NAMES curl/curl.h
+  "$ENV{LIB_DIR}/include"
+  /usr/local/include
+  /usr/include
+  #mingw
+  c:/msys/local/include
+  NO_DEFAULT_PATH
+  )
+
 MARK_AS_ADVANCED(CURL_INCLUDE_DIR)
 
 # Look for the library.
-FIND_LIBRARY(CURL_LIBRARY NAMES curl)
+FIND_LIBRARY(CURL_LIBRARY NAMES curl PATHS
+  "$ENV{LIB_DIR}/lib"
+  /usr/local/lib
+  /usr/lib
+  c:/msys/local/lib
+  NO_DEFAULT_PATH
+  )
+
 MARK_AS_ADVANCED(CURL_LIBRARY)
 
 # Copy the results to the output variables.
