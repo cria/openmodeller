@@ -63,7 +63,7 @@ using namespace std;
 
 static void*    process_request( void* );
 static bool     fileExists( const char* fileName );
-static string   getMapFile( const char* ticket );
+static string   getMapFile( string ticket );
 static string   getMapServerFile( const char* ticket );
 static wchar_t* convertToWideChar( const char* p );
 static bool     readDirectory( const char* dir, const char* label, ostream &xml, int depth );
@@ -757,8 +757,10 @@ omws__getLayerAsUrl( struct soap *soap, xsd__string id, xsd__string &url )
   }
 
   urlString.append( fileName );
-  
-  url = const_cast<char *>( urlString.c_str() );
+
+  url = (char*)soap_malloc( soap, urlString.length() + 1 ); 
+
+  strcpy( url, urlString.c_str() );
 
   return SOAP_OK;
 }
@@ -906,53 +908,54 @@ fileExists( const char* fileName )
 
 /********************/
 /**** getMapFile ****/
-static string 
-getMapFile( const char* ticket )
+static string
+getMapFile( string ticket )
 { 
-  string fileName( gFileParser.get( "DISTRIBUTION_MAP_DIRECTORY" ) );
+  string path( gFileParser.get( "DISTRIBUTION_MAP_DIRECTORY" ) );
 
   // Append slash if necessary
-  if ( fileName.find_last_of( "/" ) != fileName.size() - 1 ) {
+  if ( path.find_last_of( "/" ) != path.size() - 1 ) {
 
-    fileName.append( "/" );
+    path.append( "/" );
   }
 
   // TIF
-  string projTifFile( fileName );
+  string fileName( ticket );
+  fileName.append( ".tif" );
 
-  projTifFile.append( ticket );
-  projTifFile.append( ".tif" );
+  string filePath( path );
+  filePath.append( fileName );
 
-  if ( fileExists( projTifFile.c_str() ) ) {
+  if ( fileExists( filePath.c_str() ) ) {
 
-    return projTifFile.substr( projTifFile.find_last_of("/") + 1 );
+    return fileName;
   }
 
   // IMG
-  string projImgFile( fileName );
+  fileName = ticket;
+  fileName.append( ".img" );
 
-  projImgFile.append( ticket );
-  projImgFile.append( ".img" );
+  filePath = path;
+  filePath.append( fileName );
 
-  if ( fileExists( projImgFile.c_str() ) ) {
+  if ( fileExists( filePath.c_str() ) ) {
 
-    return projImgFile.substr( projImgFile.find_last_of("/") + 1 );
+    return fileName;
   }
 
   // BMP
-  string projBmpFile( fileName );
+  fileName = ticket;
+  fileName.append( ".bmp" );
 
-  projBmpFile.append( ticket );
-  projBmpFile.append( ".bmp" );
+  filePath = path;
+  filePath.append( fileName );
 
-  if ( fileExists( projBmpFile.c_str() ) ) {
+  if ( fileExists( filePath.c_str() ) ) {
 
-    return projBmpFile.substr( projBmpFile.find_last_of("/") + 1 );
+    return fileName;
   }
 
-  string emptyString("");
-
-  return emptyString;
+  return "";
 }
 
 /**************************/
