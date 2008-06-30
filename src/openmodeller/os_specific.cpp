@@ -93,12 +93,12 @@ initialPluginPath()
   //
   // Order of initialization:
   //
-  // 1) environment variable: OM_LIB_PATH
-  // 2) read from CONFIG_FILE
+  // 1) environment variable: OM_ALG_PATH
+  // 2) read from CONFIG_FILE compiled constant.
   // 3) PLUGINPATH compiled constant.
   // 4) on mac <application bundle>.app/Contents/MacOS/algs
 
-  char *env = getenv( "OM_LIB_PATH" );
+  char *env = getenv( "OM_ALG_PATH" );
 
   //
   // Check if the environment variable is set
@@ -112,7 +112,7 @@ initialPluginPath()
       return entries;
     }
 
-    // Parse the OM_LIB_PATH with colon (':') delimiters just like all other 
+    // Parse the OM_ALG_PATH with colon (':') delimiters just like all other 
     // unix path structures.
 
     // string::size_type start marks the beginning of the substring.
