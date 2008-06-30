@@ -392,16 +392,16 @@ int CsmBS::discardComponents()
   // which is not desired.
   //
   
-  float sumOfEigenValues = 0;//sum should total number of layers
+  double sumOfEigenValues = 0;//sum should total number of layers
   _retained_components_count=0;
   for (unsigned int i=0; i<myMeanPlusStdDevsVector->size; ++i)
   {
-    float myFloat = gsl_vector_get(myMeanPlusStdDevsVector,i);
+    double cmpValue = gsl_vector_get(myMeanPlusStdDevsVector,i);
     sumOfEigenValues += gsl_vector_get(_gsl_eigenvalue_vector,i);
-    if (myFloat < gsl_vector_get(_gsl_eigenvalue_vector,i))
+    if (cmpValue < gsl_vector_get(_gsl_eigenvalue_vector,i))
     {
       ++_retained_components_count;
-      //std::cerr << gsl_vector_get(_gsl_eigenvalue_vector,i) << " > " << myFloat << ": Component "
+      //std::cerr << gsl_vector_get(_gsl_eigenvalue_vector,i) << " > " << cmpValue << ": Component "
       //  << i << " is greater than randomised component... retaining it." << std::endl;
     }
     else
@@ -446,12 +446,12 @@ int CsmBS::discardComponents()
   int myCurrentColInt=0;
   for (int j=0;j<_retained_components_count;j++)
   {
-    float myFloat = gsl_vector_get (tmp_gsl_eigenvalue_vector,j);
-    if (myFloat > gsl_vector_get (myMeanPlusStdDevsVector,j))
+    double cmpValue = gsl_vector_get (tmp_gsl_eigenvalue_vector,j);
+    if (cmpValue > gsl_vector_get (myMeanPlusStdDevsVector,j))
     {
       //Good this is a component we want to keep
       //...first copy over the vector value we are retaining
-      gsl_vector_set (_gsl_eigenvalue_vector,myCurrentColInt,myFloat);
+      gsl_vector_set (_gsl_eigenvalue_vector,myCurrentColInt,cmpValue);
       //...next copy over the associated matrix column for the component we are retaining
       gsl_vector * tmp_gsl_vector = gsl_vector_alloc (_layer_count);
       gsl_matrix_get_col (tmp_gsl_vector, tmp_gsl_eigenvector_matrix, j);
