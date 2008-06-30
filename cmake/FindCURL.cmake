@@ -6,7 +6,7 @@
 #  CURL_FOUND        - True if curl found.
 
 # Look for the header file.
-FIND_PATH(CURL_INCLUDE_DIR NAMES curl/curl.h
+FIND_PATH(CURL_INCLUDE_DIR curl/curl.h
   "$ENV{LIB_DIR}/include"
   /usr/local/include
   /usr/include
