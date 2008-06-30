@@ -77,6 +77,7 @@ ENDIF(BOOST_DIR_SEARCH)
 
 IF(WIN32)
   SET(BOOST_DIR_SEARCH
+    $ENV{LIB_DIR}/include
     ${BOOST_DIR_SEARCH}
     C:/boost/include
     D:/boost/include
@@ -95,7 +96,7 @@ SET(SUFFIX_FOR_PATH
 #
 # Look for an installation.
 #
-FIND_PATH(Boost_INCLUDE_DIR NAMES boost/config.hpp PATH_SUFFIXES ${SUFFIX_FOR_PATH} PATHS
+FIND_PATH(Boost_INCLUDE_DIR boost/config.hpp PATH_SUFFIXES ${SUFFIX_FOR_PATH} PATHS
 
   # Look in other places.
   ${BOOST_DIR_SEARCH}
