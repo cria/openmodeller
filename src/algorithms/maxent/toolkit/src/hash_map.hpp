@@ -97,8 +97,14 @@
                 return size_t(__h);
             }
         }
-        using std::hash_map; // _MSC_EXTENSIONS, though DEPRECATED
-        using std::hash_set;
+        #if _MSC_VER >= 1310
+            // after Visual C++ 2003 these things are under a different namespace
+            using stdext::hash_map;
+            using stdext::hash_set;
+        #else
+            using std::hash_map; // _MSC_EXTENSIONS, though DEPRECATED
+            using std::hash_set;
+        #endif // end _MSC_VER >= 1310
     #else
         #error unknown compiler
     #endif //GCC or MSVC7+
