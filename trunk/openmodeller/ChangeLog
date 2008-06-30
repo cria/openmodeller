@@ -11,6 +11,7 @@ SVN revision: ?
 	* Changed input range of the GARP Best Subsets TrainingProportion parameter from 0-1 to 0-100 (percentage) and included explanation about differences between old and new GARP implementations in the algorithm description.
 	* Re-enabled max threads parameter in GARP Best Subsets.
 	* Removed automake files (now completely replaced by cmake).
+	* Renamed compiled constant that can be used to indicate the location of algorithms from OM_LIB_PATH to OM_ALG_PATH.
 	
 
 Release 0.5.3 (2008-03-26)
