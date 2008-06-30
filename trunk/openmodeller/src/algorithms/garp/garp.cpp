@@ -403,7 +403,7 @@ float Garp::getProgress() const
   else
     { 
       float byIterations  = ( _gen / (float) _max_gen );
-      float byConvergence = ( _conv_limit / _convergence );
+      float byConvergence = (float)( _conv_limit / _convergence );
       float progress = (byIterations > byConvergence) ? byIterations : byConvergence; 
       if (progress > _maxProgress)
 	{ _maxProgress = progress; }
