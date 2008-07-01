@@ -88,7 +88,10 @@ INCLUDE_DIRECTORIES(
      ${CMAKE_CURRENT_SOURCE_DIR}/../openmodeller
      ${CMAKE_CURRENT_SOURCE_DIR}/../console
      ${CMAKE_CURRENT_SOURCE_DIR}/../
-)
+     ${EXPAT_INCLUDE_DIR}
+     ${TERRALIB_INCLUDE_DIR}
+     ${CURL_INCLUDE_DIR}
+  )
 
 ########################################################
 # Build the varios command line apps
