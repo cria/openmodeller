@@ -2,13 +2,27 @@
                   Tim Sutton 2005
 -----------------------------------------------------
 
-This directory contains some simple examples that demonstrate 
-how various of the om_* command line tools are used. They use
-the simplest case scenario of a bioclim model with a single
+This directory contains examples to demonstrate how the 
+various om_* command line tools can be used. They use the 
+simplest case scenario of a bioclim model with a single
 environmental layer - subsequently the models produced 
 themselves are not particularly robust or interesting. Rather
 the idea is that you examine the configuration files provided
-in order to see how to prepare your own models.
+and available parameters to decide how to prepare your own 
+models.
+
+Note 1: If you are using these tools on Windows, you may first
+want to add the openModeller installation directory in your
+"Path" environment variable so that you can run them from 
+anywhere. In this case, you should also set another 
+environment variable called "OM_ALG_PATH" pointing to the 
+absolute path of the "alg" subdirectory, otherwise 
+openModeller will fail to load the algorithms.
+
+Note 2: Since the configuration files provided (request.txt, 
+model_request.xml and projection_request.xml) have references 
+to other files, when using them you should run the 
+command-line tools from inside the "examples" directory.
 
 ---
 
