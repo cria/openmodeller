@@ -28,7 +28,7 @@ Summary:    Potential Distribution Modelling Library - Development Files
 Requires:   expat
 Requires:   proj >= 4.5.0
 Requires:   gdal >= 1.4.2
-Requires:   libcurl >= 7.15.4
+Requires:   libcurl >= 7.18.1
 Requires:   sqlite >= 3.3.6
 Requires:   gsl >= 1.4
 Requires:   boost >= 1.31
