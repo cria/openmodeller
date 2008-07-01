@@ -26,6 +26,7 @@
  */
 
 #include <os_specific.hh>
+#include <openmodeller/Log.hh>
 
 #include <iostream>
 #include <stdlib.h>
@@ -87,6 +88,7 @@ dllError( DLLHandle )
 vector<string>
 initialPluginPath()
 {
+  Log::instance()->debug( "Determining algorithm paths\n" );
 
   vector<string> entries;
 
@@ -106,9 +108,12 @@ initialPluginPath()
 
     string envpath( (char const *)env );
 
+    Log::instance()->debug( "Found environment variable OM_ALG_PATH: %s\n", envpath.c_str() );
+
     // If it's set to "" then we return.  Don't know what this means since the
     // path is emtpy.  Maybe we need to have this drop to using CONFIG_FILE
-    if( envpath.empty() ) {
+    if ( envpath.empty() ) {
+
       return entries;
     }
 
@@ -117,7 +122,7 @@ initialPluginPath()
 
     // string::size_type start marks the beginning of the substring.
     // initial value is beginning of string, iterate value is one past the ':'
-    for( string::size_type start = 0; start < envpath.length() ; ) {
+    for ( string::size_type start = 0; start < envpath.length() ; ) {
       
       // Find the next ':' after start
       string::size_type it = envpath.find( ':', start );
@@ -125,41 +130,41 @@ initialPluginPath()
       // If no ':' is found..
       if ( it == string::npos ) {
 
-	// the substring is (start, end-of-string)
-	entries.push_back( envpath.substr( start ) );
-	break;
-	
+        // the substring is (start, end-of-string)
+        entries.push_back( envpath.substr( start ) );
+        break;
       }
       // Else, test that the substring is non empty.
       else if ( it > start ) {
-
-	string::size_type len = it - start;
-	entries.push_back( envpath.substr( start, len ) );
-
+        
+        string::size_type len = it - start;
+        entries.push_back( envpath.substr( start, len ) );
       }
 
       // move the start of the next substring to one after the ':'
       start = it+1;
-
     }
 
     return entries;
-
   }
 
   std::ifstream conf_file( CONFIG_FILE, std::ios::in );
   
   if ( conf_file ) {
 
-    while( conf_file ) {
+    Log::instance()->debug( "Found CONFIG_FILE constant: " CONFIG_FILE "\n" );
+
+    while ( conf_file ) {
+
       string line;
       getline( conf_file, line );
       entries.push_back( line );
     }
 
     return entries;
-
   }
+
+  Log::instance()->debug( "Checking PLUGINPATH constant\n" );
 
 #if defined(__APPLE__)
 	CFURLRef myPluginRef = CFBundleCopyBundleURL(CFBundleGetMainBundle());
@@ -184,7 +189,6 @@ initialPluginPath()
 #endif
 
   return entries;
-
 }
 
 /****************************************************************/
