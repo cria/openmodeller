@@ -29,6 +29,7 @@
  */
 
 #include <os_specific.hh>
+#include <openmodeller/Log.hh>
 
 
 /****************************************************************/
@@ -98,27 +99,78 @@ dllError( DLLHandle )
 vector<string>
 initialPluginPath()
 {
+  Log::instance()->debug( "Determining algorithm paths\n" );
 
   vector<string> entries;
 
+  char *env = getenv( "OM_ALG_PATH" );
+
+  // Check if the environment variable is set
+  if ( env != 0 ) {
+
+    string envpath( (char const *)env );
+
+    Log::instance()->debug( "Found environment variable OM_ALG_PATH: %s\n", envpath.c_str() );
+
+    // If it's set to "" then we return.  Don't know what this means since the
+    // path is emtpy.  Maybe we need to have this drop to using CONFIG_FILE
+    if ( envpath.empty() ) {
+
+      return entries;
+    }
+
+    // Parse the OM_ALG_PATH with semi-colon (';') delimiters just like all other 
+    // Windows path structures.
+
+    // string::size_type start marks the beginning of the substring.
+    // initial value is beginning of string, iterate value is one past the ';'
+    for ( string::size_type start = 0; start < envpath.length() ; ) {
+      
+      // Find the next ';' after start
+      string::size_type it = envpath.find( ';', start );
+
+      // If no ';' is found..
+      if ( it == string::npos ) {
+
+        // the substring is (start, end-of-string)
+        entries.push_back( envpath.substr( start ) );
+        break;
+      }
+      // Else, test that the substring is non empty.
+      else if ( it > start ) {
+        
+        string::size_type len = it - start;
+        entries.push_back( envpath.substr( start, len ) );
+      }
+
+      // move the start of the next substring to one after the ':'
+      start = it+1;
+    }
+
+    return entries;
+  }
+
   std::ifstream conf_file( CONFIG_FILE, std::ios::in );
 
-  if ( !conf_file ) {
+  if ( ! conf_file ) {
+
+    Log::instance()->debug( "Using PLUGINPATH constant: " PLUGINPATH "\n" );
 
     entries.reserve(1);
     entries.push_back( PLUGINPATH );
     return entries;
-
   }
 
-  while( conf_file ) {
+  while ( conf_file ) {
+
+    Log::instance()->debug( "Found CONFIG_FILE constant: " CONFIG_FILE "\n" );
+
     string line;
     getline( conf_file, line );
     entries.push_back( line );
   }
 
   return entries;
-
 }
 
 /****************************************************************/
