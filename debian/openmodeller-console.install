@@ -1,6 +1,7 @@
 /usr/bin/om_console
 /usr/bin/om_algorithm
 /usr/bin/om_pseudo
+/usr/bin/om_points
 /usr/bin/om_create
 /usr/bin/om_project
 /usr/bin/om_dump

@@ -1,4 +1,4 @@
 /usr/bin/om_soap_server
-/usr/share/openmodeller/server.conf
-/usr/bin/scheduler.sh
+/etc/openmodeller/server.conf
+/etc/openmodeller/scheduler.sh
 
