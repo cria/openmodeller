@@ -13,14 +13,14 @@ Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}
 Suggests: libopenmodeller-algorithms, openModellerDesktop 
 Description: openModeller is an open source C++ library to determine potential 
-distribution in environment and geographic space. Models are generated 
-by algorithms that receive as input a set of occurrence points 
-(latitude/longitude/abundance) and a set of raster files with environment
-data. Models can then be projected to generate distribution maps. 
-Available algorithms include Bioclim, GARP Best Subsets, Support Vector 
-Machines, Climate Space Model, Environmental Distance, AquaMaps and
-Maximum Entropy. The library uses GDAL to read different raster formats 
-and proj4 to convert between different coordinate systems and projections.
+ distribution in environment and geographic space. Models are generated 
+ by algorithms that receive as input a set of occurrence points 
+ (latitude/longitude/abundance) and a set of raster files with environment
+ data. Models can then be projected to generate distribution maps. 
+ Available algorithms include Bioclim, GARP Best Subsets, Support Vector 
+ Machines, Climate Space Model, Environmental Distance, AquaMaps and
+ Maximum Entropy. The library uses GDAL to read different raster formats 
+ and proj4 to convert between different coordinate systems and projections.
 
 Package: libopenmodeller-dev
 Architecture: any
