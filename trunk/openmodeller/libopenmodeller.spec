@@ -4,6 +4,14 @@ Name:          libopenmodeller
 License:       GPL
 Group:         Libraries/Research
 Autoreqprov:   on
+#Requires:   expat
+#Requires:   proj >= 4.5.0
+#Requires:   gdal >= 1.4.2
+#Requires:   libcurl >= 7.18.1
+#Requires:   sqlite >= 3.3.6
+#Requires:   gsl >= 1.4
+#Requires:   boost >= 1.31
+#Requires:   gcc-g77
 Version:       0.6.0
 Release:       0
 Source:        %{name}-src-%{version}.tar.gz
@@ -25,26 +33,19 @@ and proj4 to convert between different coordinate systems and projections.
 %package devel
 Group:      Development/Libraries/C and C++
 Summary:    Potential Distribution Modelling Library - Development Files
-Requires:   expat
-Requires:   proj >= 4.5.0
-Requires:   gdal >= 1.4.2
-Requires:   libcurl >= 7.18.1
-Requires:   sqlite >= 3.3.6
-Requires:   gsl >= 1.4
-Requires:   boost >= 1.31
-Requires:   gcc-g77
+Requires:   %{name} >= %{version}
 
 %description devel
 Include files and libraries to link programs against openModeller
 or develop new algorithms. 
 
-%package -n openmodeller-tools
+%package -n openmodeller
 Group:      Applications/Research
 Summary:    Potential Distribution Modelling Library - Console Tools
 Requires:   %{name} >= %{version}
-Requires:   X11-libs
+#Requires:   X11-libs
 
-%description -n openmodeller-tools
+%description -n openmodeller
 Console and command-line tools for using openModeller.
 
 %define srcdirname %{name}-src-%{version}
@@ -59,7 +60,7 @@ cmake -DCMAKE_INSTALL_PREFIX=%{prefix} -DPEDANTIC=OFF ../
 make
 
 %install
-rm -rf $RPM_BUILD_ROOT
+cd build
 make DESTDIR=$RPM_BUILD_ROOT install
 
 %clean
@@ -67,27 +68,29 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(-,root,root)
-%{_libdir}/libopenmodeller.so.*
-%dir %{_libdir}/openmodeller
-%{_libdir}/openmodeller/*so*
+%{_libdir}/libopenmodeller.so*
+%{_libdir}/openmodeller
 %doc AUTHORS COPYING.txt ChangeLog README.txt INSTALL NEWS
+%{prefix}/share/openmodeller/data
 
 %files devel
 %defattr(-,root,root)
-%{_libdir}/libopenmodeller.*a
-%{_libdir}/libopenmodeller.so
-%{_libdir}/openmodeller/*a
-%dir %{prefix}/include/openmodeller
 %{prefix}/include/openmodeller
 
-%files -n openmodeller-tools
+%files -n openmodeller
 %defattr(-,root,root)
-/usr/bin/*
+%{_bindir}/om_*
+%{prefix}/man/man1/*
+%{prefix}/share/openmodeller/examples
+%{prefix}/etc/openmodeller/scheduler.sh
+%{prefix}/etc/openmodeller/server.conf
 
 %changelog -n libopenmodeller
 * Mon Jun 23 2008 - Renato De Giovanni <renato [at] cria . org . br>
-- renamed openmodeller package to openmodeller-tools
 - replaced automake commands by cmake ones
+- included data dir in libopenmodeller package
+- included man pages and examples dir in openmodeller package
+- fixed devel package
 * Mon May 13 2008 - Renato De Giovanni <renato [at] cria . org . br>
 - removed libopenmodellerxml files
 * Mon Nov 27 2006 - Renato De Giovanni <renato [at] cria . org . br>
