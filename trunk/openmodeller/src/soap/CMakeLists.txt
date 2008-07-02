@@ -14,13 +14,6 @@ SET (OMSOAP_SRCS
 SET (OMSOAP_HDRS
 )
 
-SET (OMSOAP_DATA
-  server.conf
-  )
-
-SET (OMSOAP_SCHED
-  scheduler.sh
-)
 ########################################################
 # Build
 IF (PEDANTIC)
@@ -58,5 +51,5 @@ TARGET_LINK_LIBRARIES(om_soap_server openmodeller -lpthread)
 INSTALL(TARGETS om_soap_server RUNTIME DESTINATION ${OM_BIN_DIR})
 
 INSTALL(CODE "MESSAGE(\"Installing share data...\")")
-INSTALL(FILES ${OMSOAP_DATA} DESTINATION ${OM_DATA_DIR})
-INSTALL(FILES ${OMSOAP_SCHED} DESTINATION ${OM_BIN_DIR})
+INSTALL(FILES server.conf DESTINATION ${OM_CONFIG_DIR})
+INSTALL(FILES scheduler.sh DESTINATION ${OM_CONFIG_DIR})
