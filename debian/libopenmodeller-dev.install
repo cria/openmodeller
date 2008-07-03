@@ -31,15 +31,12 @@
 /usr/include/openmodeller/Sample.hh
 /usr/include/openmodeller/Sampler.hh
 /usr/include/openmodeller/ScaleNormalizer.hh
-/usr/include/openmodeller/TeDatabaseManager.hh
-/usr/include/openmodeller/TeStringParser.hh
 /usr/include/openmodeller/occ_io/DelimitedTextOccurrences.hh
 /usr/include/openmodeller/occ_io/GbifOccurrences.hh
 /usr/include/openmodeller/occ_io/OccurrencesFactory.hh
 /usr/include/openmodeller/occ_io/OccurrencesReader.hh
 /usr/include/openmodeller/occ_io/SerializedXmlOccurrences.hh
 /usr/include/openmodeller/occ_io/TapirOccurrences.hh
-/usr/include/openmodeller/occ_io/TeOccurrences.hh
 /usr/include/openmodeller/env_io/GeoTransform.hh
 /usr/include/openmodeller/env_io/Header.hh
 /usr/include/openmodeller/env_io/Map.hh
@@ -47,7 +44,6 @@
 /usr/include/openmodeller/env_io/RasterFactory.hh
 /usr/include/openmodeller/env_io/RasterGdal.hh
 /usr/include/openmodeller/env_io/Raster.hh
-/usr/include/openmodeller/env_io/TeOMRaster.hh
 /usr/include/openmodeller/pre/ChiSquare.hh
 /usr/include/openmodeller/pre/Jackknife.hh
 /usr/include/openmodeller/pre/PreAlgorithm.hh
