@@ -168,9 +168,9 @@ Output file type = ByteHFA
 ########
 # Maximum Entropy
 #
-Algorithm = MAXENT
-Parameter = NumberOfPseudoAbsences 500
-Parameter = NumberOfIterations 15
-Parameter = TrainingMethod lbfgs
-Parameter = GaussianPriorSmoothingCoeficient 0.0
-Parameter = TerminateTolerance 0.00001
+#Algorithm = MAXENT
+#Parameter = NumberOfPseudoAbsences 500
+#Parameter = NumberOfIterations 15
+#Parameter = TrainingMethod gis
+#Parameter = GaussianPriorSmoothingCoeficient 0.0
+#Parameter = TerminateTolerance 0.00001
