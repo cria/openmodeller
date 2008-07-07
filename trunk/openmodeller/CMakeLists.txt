@@ -32,6 +32,8 @@ SET (OM_CTEST FALSE CACHE BOOL "Build unit tests")
 
 SET (WITH_PROFILING FALSE CACHE BOOL "Add profiling symbols to build products (-pg)")
 
+SET (WITH_FORTRAN TRUE CACHE BOOL "Turn off this option to avoid the build system check if there is a Fortran compiler available (used to enable the LBFGS training method in the Maximum Entropy algorithm)")
+
 #############################################################
 IF (OM_CTEST)
   FIND_PACKAGE(CXXTEST)

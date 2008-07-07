@@ -4,11 +4,11 @@ ADD_DEFINITIONS(-fPIC) # avoid issues in 64bit platform
 ########################################################
 # Fortran library
 
-# In UNIX it was only tested with g77
-IF (UNIX)
+IF (WITH_FORTRAN)
+  # Only tested with g77
   SET(CMAKE_GENERATOR_FC "g77")
   ENABLE_LANGUAGE(Fortran)
-ENDIF (UNIX)
+ENDIF (WITH_FORTRAN)
 
 IF (CMAKE_Fortran_COMPILER_WORKS)
 
