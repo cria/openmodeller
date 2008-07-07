@@ -996,10 +996,10 @@ If you are unsure about which DLL and configuration files should be copied, then
 download the last installation package for Windows, install it and then inspect
 the installation directory to check which files are needed.
 
-Downlad and install NSIS from (http://nsis.sourceforge.net/Main_Page)
+Download and install NSIS from (http://nsis.sourceforge.net/Main_Page)
 
 Now using windows explorer, enter the win_build directory in your openModeller source
-tree. Read the README file there and follow the instructions. Next right click
+tree. Read the README file there and follow the instructions. Next, right click
 on openmodeller.nsi and choose the option 'Compile NSIS Script'. 
 
 == Testing ==
