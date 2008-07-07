@@ -175,4 +175,6 @@ Output file type = ByteHFA
 #Parameter = GaussianPriorSmoothingCoeficient 0.0
 #Parameter = TerminateTolerance 0.00001
 #Parameter = LinearFeature 1
-#Parameter = ProductFeature 0
+#Parameter = QuadraticFeature 0
+#Parameter = ThresholdFeature 0
+#Parameter = HingeFeature 0
