@@ -82,8 +82,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_bindir}/om_*
 %{prefix}/man/man1/*
 %{prefix}/share/openmodeller/examples
-%{prefix}/etc/openmodeller/scheduler.sh
-%{prefix}/etc/openmodeller/server.conf
+/etc/openmodeller/scheduler.sh
+/etc/openmodeller/server.conf
 
 %changelog -n libopenmodeller
 * Mon Jun 23 2008 - Renato De Giovanni <renato [at] cria . org . br>
