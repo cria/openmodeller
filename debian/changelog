@@ -1,3 +1,19 @@
+libopenmodeller (0.6.0) hardy; urgency=low
+
+  * New driver to read point data from TAPIR/DarwinCore providers.
+  * New driver to read point data from GBIF.
+  * New driver to read point data from serialized openModeller objects (XML).
+  * New generic API for pre-analysis.
+  * New console application om_algorithm replaces om_metadump.
+  * New Maximum Entropy algorithm.
+  * Changed input range of the GARP Best Subsets TrainingProportion parameter from 0-1 to 0-100 (percentage) and included explanation about differences between old and new GARP implementations in the algorithm description.
+  * Re-enabled max threads parameter in GARP Best Subsets.
+  * Removed automake files (now completely replaced by cmake).
+  * Renamed compiled constant that can be used to indicate the location of algorithms from OM_LIB_PATH to OM_ALG_PATH.
+
+
+ -- Renato De Giovanni <renato@vm-cria>  Mon,  7 Jul 2008 13:40:00 -0300
+
 libopenmodeller (0.5.3) feisty; urgency=low
 
   * Fixed bug when GDAL failed to read a raster row (in which case the row used to have zero values). Now the row is filled with nodata values.
