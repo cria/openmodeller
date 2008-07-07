@@ -79,6 +79,7 @@ protected:
   double _tolerance;
   int _linear_feat;
   int _quadratic_feat;
+  int _threshold_feat;
 };
 
 #endif

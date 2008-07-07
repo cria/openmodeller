@@ -52,9 +52,9 @@ typedef MaxentModel::outcome_type me_outcome_type;
 /****************************************************************/
 /********************** Algorithm's Metadata ********************/
 #ifdef HAVE_FORTRAN
-#define NUM_PARAM 7
+#define NUM_PARAM 8
 #else
-#define NUM_PARAM 6
+#define NUM_PARAM 7
 #endif
 
 #define PSEUDO_ID          "NumberOfPseudoAbsences"
@@ -64,6 +64,7 @@ typedef MaxentModel::outcome_type me_outcome_type;
 #define TOLERANCE_ID       "TerminateTolerance"
 #define LINEAR_FEAT_ID     "LinearFeature"
 #define QUADRATIC_FEAT_ID  "QuadraticFeature"
+#define THRESHOLD_FEAT_ID  "ThresholdFeature"
 
 #define MAXENT_LOG_PREFIX "Maxent: "
 
@@ -159,6 +160,18 @@ static AlgParamMetadata parameters[NUM_PARAM] = {
     Integer, // Type.
     "Square of continuous environmental variables.", // Overview
     "1 - Set the training algorithm to use the square of continuous environmental variables, 0 - otherwise.", // Description.
+    1,  // Not zero if the parameter has lower limit.
+    0,  // Parameter's lower limit.
+    1,  // Not zero if the parameter has upper limit.
+    1,  // Parameter's upper limit.
+    "0" // Parameter's typical (default) value.
+  },
+  {
+    THRESHOLD_FEAT_ID, // Id.
+    "Threshold Feature", // Name.
+    Integer, // Type.
+    "Binary feature. Depends on convergence threshold.", // Overview
+    "1 - Set the training algorithm to use the threshold feature, 0 - otherwise. This binary feature is derived from continuous environmental variables. It is 1 when the variable has value greater than the convergence threshold and is 0 otherwise.", // Description.
     1,  // Not zero if the parameter has lower limit.
     0,  // Parameter's lower limit.
     1,  // Not zero if the parameter has upper limit.
@@ -332,7 +345,20 @@ _method = "gis";
     _quadratic_feat = 0;
   }
 
-  if ( _linear_feat == 0 && _quadratic_feat == 0 ) {
+  // Threshold Feature
+  if ( ! getParameter( THRESHOLD_FEAT_ID, &_threshold_feat ) ) {
+
+    Log::instance()->warn( MAXENT_LOG_PREFIX "Parameter '" THRESHOLD_FEAT_ID "' not passed. Threshold feature will be turned off.\n" );
+    _threshold_feat = 0;
+  }
+
+  if ( _threshold_feat != 0 && _threshold_feat != 1 ) {
+    
+    Log::instance()->warn( MAXENT_LOG_PREFIX "Parameter '" THRESHOLD_FEAT_ID "' must be zero or one. Using default value.\n" );
+    _threshold_feat = 0;
+  }
+
+  if ( _linear_feat == 0 && _quadratic_feat == 0 && _threshold_feat ==0 ) {
     
     Log::instance()->warn( MAXENT_LOG_PREFIX "At least one feature must be 1. Using default values.\n" );
     _linear_feat = 1;
@@ -432,6 +458,25 @@ MaximumEntropy::iterate()
 	stringstream out;
 	out << i;
 	context.push_back( make_pair( out.str(), ((float)sample[i] * (float)sample[i])) );
+
+      }
+      _model.add_event( context, outcome, 1 );
+    }     
+
+    if (_threshold_feat == 1 ) {
+
+      me_context_type context;
+      me_outcome_type outcome("p"); // p = presence
+
+      for ( int i = 0; i < _num_layers; ++i ) {
+	
+	stringstream out;
+	out << i;
+
+	if ( (float)sample[i] > _tolerance )
+	  context.push_back( make_pair( out.str(), 1 ) );
+	else
+	  context.push_back( make_pair( out.str(), 0 ) );
 
       }
       _model.add_event( context, outcome, 1 );
