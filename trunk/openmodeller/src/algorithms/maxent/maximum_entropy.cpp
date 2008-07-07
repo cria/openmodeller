@@ -52,16 +52,18 @@ typedef MaxentModel::outcome_type me_outcome_type;
 /****************************************************************/
 /********************** Algorithm's Metadata ********************/
 #ifdef HAVE_FORTRAN
-#define NUM_PARAM 5
-#else HAVE_FORTRAN
-#define NUM_PARAM 4
-#endif HAVE FORTRAN
+#define NUM_PARAM 7
+#else
+#define NUM_PARAM 6
+#endif
 
 #define PSEUDO_ID        "NumberOfPseudoAbsences"
 #define ITERATIONS_ID    "NumberOfIterations"
 #define METHOD_ID        "TrainingMethod"
 #define GAUSSIAN_COEF_ID "GaussianPriorSmoothingCoeficient"
 #define TOLERANCE_ID     "TerminateTolerance"
+#define LINEAR_FEAT_ID   "LinearFeature"
+#define PRODUCT_FEAT_ID  "ProductFeature"
 
 #define MAXENT_LOG_PREFIX "Maxent: "
 
@@ -76,7 +78,7 @@ static AlgParamMetadata parameters[NUM_PARAM] = {
     "Number of pseudo-absences", // Name.
     Integer,                     // Type.
     "Number of pseudo-absences to be generated (when no absences have been provided).", // Overview
-    "Number of pseudo-absences to be generated (when no absences have been provided.", // Description.
+    "Number of pseudo-absences to be generated (when no absences have been provided).", // Description.
     1,         // Not zero if the parameter has lower limit.
     1,         // Parameter's lower limit.
     0,         // Not zero if the parameter has upper limit.
@@ -94,13 +96,13 @@ static AlgParamMetadata parameters[NUM_PARAM] = {
     1,         // Parameter's lower limit.
     0,         // Not zero if the parameter has upper limit.
     0,         // Parameter's upper limit.
-    "15"     // Parameter's typical (default) value.
+    "15"       // Parameter's typical (default) value.
   },
 #ifdef HAVE_FORTRAN
   // Training method
   {
     METHOD_ID,                         // Id.
-    "Training method (gis or lbfgs)", // Name.
+    "Training method (gis or lbfgs)",  // Name.
     String,                            // Type.
     "Training method (gis or lbfgs) used to estimate the maximum entropy parameters.", // Overview
     "Training method (gis or lbfgs) used to estimate the maximum entropy parameters. Possible values are: gis (Generalized Iterative Scaling) or lbfgs (Limited-Memory Variable Metric).", // Description.
@@ -110,7 +112,7 @@ static AlgParamMetadata parameters[NUM_PARAM] = {
     0,         // Parameter's upper limit.
     "gis"      // Parameter's typical (default) value.
   },
-#endif HAVE_FORTRAN
+#endif
   // Gaussian Prior Smoothing Coeficient
   {
     GAUSSIAN_COEF_ID, // Id.
@@ -137,8 +139,33 @@ static AlgParamMetadata parameters[NUM_PARAM] = {
     0,  // Parameter's upper limit.
     "0.00001" // Parameter's typical (default) value.
   },
+  // Features to be used
+  // Linear Feature
+  {
+    LINEAR_FEAT_ID, // Id.
+    "Linear Feature", // Name.
+    Integer, // Type.
+    "Continuous environmental variables values.", // Overview
+    "1 - Set the training algorithm to use the environmental variables values, 0 - otherwise.", // Description.
+    1,  // Not zero if the parameter has lower limit.
+    0,  // Parameter's lower limit.
+    1,  // Not zero if the parameter has upper limit.
+    1,  // Parameter's upper limit.
+    "1" // Parameter's typical (default) value.
+  },
+  {
+    PRODUCT_FEAT_ID, // Id.
+    "Product Feature", // Name.
+    Integer, // Type.
+    "Product of two continuous environmental variables.", // Overview
+    "1 - Set the training algorithm to use the product of pairs of continuous environmental variables, 0 - otherwise.", // Description.
+    1,  // Not zero if the parameter has lower limit.
+    0,  // Parameter's lower limit.
+    1,  // Not zero if the parameter has upper limit.
+    1,  // Parameter's upper limit.
+    "0" // Parameter's typical (default) value.
+  },
 };
-
 
 
 /************************************/
@@ -253,9 +280,9 @@ MaximumEntropy::initialize()
     Log::instance()->error( MAXENT_LOG_PREFIX "Parameter '" METHOD_ID "' must be either gis or lbfgs. Found [%s].\n", _method.c_str() );
     return 0;
   }
-#else HAVE_FORTRAN
+#else
 _method = "gis";
-#endif HAVE_FORTRAN
+#endif
 
   // Gaussian prior smoothing
   if ( ! getParameter( GAUSSIAN_COEF_ID, &_gaussian_coef ) ) {
@@ -277,6 +304,38 @@ _method = "gis";
       Log::instance()->error( MAXENT_LOG_PREFIX "Parameter '" TOLERANCE_ID "' must be greater than zero\n" );
       return 0;
     }
+  }
+
+  // Linear Feature
+  if ( ! getParameter( LINEAR_FEAT_ID, &_linear_feat ) ) {
+
+    Log::instance()->warn( MAXENT_LOG_PREFIX "Parameter '" LINEAR_FEAT_ID "' not passed. Using default value (1).\n" );
+    _linear_feat = 1;
+  }
+
+  if ( _linear_feat != 0 && _linear_feat != 1 ) {
+    
+    Log::instance()->warn( MAXENT_LOG_PREFIX "Parameter '" LINEAR_FEAT_ID "' must be zero or one. Using default value.\n" );
+    _linear_feat = 1;
+  }
+
+  // Product Feature
+  if ( ! getParameter( PRODUCT_FEAT_ID, &_product_feat ) ) {
+
+    Log::instance()->warn( MAXENT_LOG_PREFIX "Parameter '" PRODUCT_FEAT_ID "' not passed. Product feature will be turned off.\n" );
+    _product_feat = 0;
+  }
+
+  if ( _product_feat != 0 && _product_feat != 1 ) {
+    
+    Log::instance()->warn( MAXENT_LOG_PREFIX "Parameter '" PRODUCT_FEAT_ID "' must be zero or one. Using default value.\n" );
+    _product_feat = 0;
+  }
+
+  if ( _linear_feat == 0 && _product_feat == 0 ) {
+    
+    Log::instance()->warn( MAXENT_LOG_PREFIX "At least one feature must be 1. Using default values.\n" );
+    _linear_feat = 1;
   }
 
   // Check the number of absences.
@@ -336,7 +395,7 @@ MaximumEntropy::iterate()
 
   // Notes:  
   // outcome = class (presence / absence)
-  // feature = env layer
+  // feature = linear; product
   // context = sample
 
   // Presences
@@ -348,18 +407,36 @@ MaximumEntropy::iterate()
 
     Sample sample = (*p_iterator)->environment();
 
-    me_context_type context;
-    me_outcome_type outcome("p"); // p = presence
+    if (_linear_feat == 1 ) {
 
-    for ( int i = 0; i < _num_layers; ++i ) {
+      me_context_type context;
+      me_outcome_type outcome("p"); // p = presence
+            
+      for ( int i = 0; i < _num_layers; ++i ) {
+	
+	stringstream out;
+	out << i;
+	context.push_back( make_pair( out.str(), (float)sample[i] ) );
 
-      stringstream out;
-      out << i;
-      context.push_back( make_pair( out.str(), (float)sample[i] ) );
-    }
+      }
+      _model.add_event( context, outcome, 1 );
+    }     
 
-    _model.add_event( context, outcome, 1 );
-     
+    if (_product_feat == 1 ) {
+
+      me_context_type context;
+      me_outcome_type outcome("p"); // p = presence
+
+      for ( int i = 0; i < _num_layers; ++i ) {
+	
+	stringstream out;
+	out << i;
+	context.push_back( make_pair( out.str(), ((float)sample[i] * (float)sample[i])) );
+
+      }
+      _model.add_event( context, outcome, 1 );
+    }     
+
     ++p_iterator;
   }
 
@@ -374,18 +451,36 @@ MaximumEntropy::iterate()
 
     Sample sample = (*p_iterator)->environment();
 
-    me_context_type context;
-    me_outcome_type outcome("a"); // a = absence
+    if (_linear_feat == 1 ) {
 
-    for ( int i = 0; i < _num_layers; ++i ) {
-
-      stringstream out;
-      out << i;
-      context.push_back( make_pair( out.str(), (float)sample[i] ) );
+      me_context_type context;
+      me_outcome_type outcome("a"); // a = absence
+      
+      for ( int i = 0; i < _num_layers; ++i ) {
+	
+	stringstream out;
+	out << i;
+	context.push_back( make_pair( out.str(), (float)sample[i] ) );
+	
+      }
+      _model.add_event( context, outcome, 1 );
     }
 
-    _model.add_event( context, outcome, 1 );
-     
+    if (_product_feat == 1 ) {
+      
+      me_context_type context;
+      me_outcome_type outcome("p"); // p = presence
+
+      for ( int i = 0; i < _num_layers; ++i ) {
+	
+	stringstream out;
+	out << i;
+	context.push_back( make_pair( out.str(), ((float)sample[i] * (float)sample[i])) );
+
+      }
+      _model.add_event( context, outcome, 1 );
+    } 
+    
     ++p_iterator;
   }
 
