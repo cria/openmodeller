@@ -174,3 +174,5 @@ Output file type = ByteHFA
 #Parameter = TrainingMethod gis
 #Parameter = GaussianPriorSmoothingCoeficient 0.0
 #Parameter = TerminateTolerance 0.00001
+#Parameter = LinearFeature 1
+#Parameter = ProductFeature 0

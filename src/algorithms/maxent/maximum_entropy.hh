@@ -77,6 +77,8 @@ protected:
   std::string _method;
   double _gaussian_coef;
   double _tolerance;
+  int _linear_feat;
+  int _product_feat;
 };
 
 #endif
