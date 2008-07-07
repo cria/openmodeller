@@ -78,7 +78,7 @@ protected:
   double _gaussian_coef;
   double _tolerance;
   int _linear_feat;
-  int _product_feat;
+  int _quadratic_feat;
 };
 
 #endif
