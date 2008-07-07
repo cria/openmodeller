@@ -81,6 +81,7 @@ protected:
   int _quadratic_feat;
   int _threshold_feat;
   int _hinge_feat;
+  int _product_feat;
 };
 
 #endif
