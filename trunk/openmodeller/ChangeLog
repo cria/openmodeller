@@ -1,6 +1,6 @@
-Release 0.6.0 (2008-?-?)
-------------------------
-SVN revision: ?
+Release 0.6.0 (2008-07-07)
+--------------------------
+SVN revision: 4452
 
 	* New driver to read point data from TAPIR/DarwinCore providers.
 	* New driver to read point data from GBIF.
