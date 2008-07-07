@@ -45,8 +45,9 @@ Compilation guide for openModeller
     6.8. Install Subversion
     6.9. Initial SVN Check out
     6.10. Create Makefiles using cmakesetup.exe
-    6.11. Running and packaging
-    6.12. Debugging
+    6.11. Packaging
+    6.12. Testing
+    6.13. Debugging
   7. Authors and Acknowledgments
 
 
@@ -556,7 +557,7 @@ All dependencies should be picked up automatically, if you have set up the
 Paths correctly. The only thing you need to change is the installation
 destination (CMAKE_INSTALL_PREFIX) and/or set 'Debug'.
 
-For compatibility with NSIS packaging cripts I recommend to leave the
+For compatibility with NSIS packaging scripts I recommend to leave the
 install prefix to its default.
 
 When configuration is done, click 'OK' to exit the setup utility.
@@ -639,7 +640,7 @@ archive that includes all dependencies needed to build openModeller. Fetch
 the archive from:
 
 
-  http://qgis.org/uploadfiles/msvc/openmodeller_msvc_deps_except_qt4.zip
+  http://openmodeller.cria.org.br/download/extlibs/msvc/omlibs-release.zip
 
 
 /!\ Note: If you wish to build the dependencies yourself, detailed notes 
@@ -655,7 +656,7 @@ And then extract the libraries archive into a subdirectory of the above
 directory so that you end up with:
 
 
-  c:\dev\cpp\openmodellerlibs-release
+  c:\dev\cpp\omlibs-release
 
 
 /!\ Note that you are not obliged to use this directory layout, but you 
@@ -861,11 +862,11 @@ and replace it with this one:
   @rem added by Tim
   @set INCLUDE=C:\Program Files\Microsoft Platform SDK for Windows Server 2003 R2\Include;%INCLUDE%
   @set INCLUDE=C:\Program Files\Microsoft Platform SDK for Windows Server 2003 R2\Include\mfc;%INCLUDE%
-  @set INCLUDE=%INCLUDE%;C:\dev\cpp\openmodellerlibs-release\include\postgresql
+  @set INCLUDE=%INCLUDE%;C:\dev\cpp\omlibs-release\include\postgresql
   @set LIB=C:\Program Files\Microsoft Visual Studio 8\VC\LIB;C:\Program Files\Microsoft Visual Studio 8\SDK\v2.0\lib;%LIB%
   @rem added by Tim
   @set LIB=C:\Program Files\Microsoft Platform SDK for Windows Server 2003 R2\Lib;%LIB%
-  @set LIB=%LIB%;C:\dev\cpp\openmodellerlibs-release\lib
+  @set LIB=%LIB%;C:\dev\cpp\omlibs-release\lib
   @set LIBPATH=C:\WINDOWS\Microsoft.NET\Framework\v2.0.50727
   
   @goto end
@@ -895,7 +896,7 @@ create or augment the following System variables (if they dont already exist):
   EDITOR             vim
   INCLUDE            C:\Program Files\Microsoft Platform SDK for Windows Server 2003 R2\Include\.
   LIB                C:\Program Files\Microsoft Platform SDK for Windows Server 2003 R2\Lib\.
-  LIB_DIR            C:\dev\cpp\qgislibs-release
+  LIB_DIR            C:\dev\cpp\omlibs-release
   PATH               C:\Program Files\CMake 2.4\bin;
                      %SystemRoot%\system32;
                      %SystemRoot%;
@@ -992,11 +993,25 @@ install process does all the dependency provisioning for you.
   cmakesetup ..
 
 
-Cmakesetup should find all dependencies for you automatically (it uses the 
-LIB_DIR environment to find them all in c:\dev\cpp\qgislibs-release). 
-Press configure again after the cmakesetup gui appears and when all the red 
-fields are gone, and you have made any personalisations to the setup, press 
-ok to close the cmake gui.
+Press "Configure" after the cmakesetup gui appears. Cmakesetup should 
+find all dependencies for you automatically (it uses the LIB_DIR environment 
+to find them all in c:\dev\cpp\omlibs-release). If you get an error saying 
+that g77 (Fortran compiler) was not found, turn off the option "WITH_FORTRAN"
+in the end of the settings list. This will disable the L-BFGS training method 
+in the Maximum Entropy algorithm, which requires a Fortran compiler. 
+You should also find the CMAKE_INSTALL_PREFIX option in the beginning of the 
+settings list to make sure that it contains the openModeller version (X.X.X) as
+part of the last directory name. If not, then manually append the version so 
+that it becomes:
+
+
+  c:\Program Files\openModellerX.X.X
+
+
+This is necessary for compatibility with the NSIS packaging script.
+
+Press "Configure" again and when all the red fields are gone, and you have made 
+any additional personalisations to the setup, press "OK" to close the cmake gui.
 
 Now open Visual Studio Express and do:
 
@@ -1005,28 +1020,59 @@ File -> Open -> Project / Solution
 Now open the cmake generated openModeller solution which should be in :
 
 
-  c:\dev\cpp\openmodeller\build\openmodellerX.X.X.sln
+  c:\dev\cpp\openmodeller\build\openmodeller.sln
 
 
-Where X.X.X represents the current version number of openModeller. Currently I 
-have only made release built dependencies for openModeller (debug versions will follow 
-in future), so you need to be sure to select 'Release' from the solution 
-configurations toolbar.
+Currently I have only made release built dependencies for openModeller 
+(debug versions will follow in future), so you need to be sure to select 
+'Release' from the solution configurations toolbar.
 
-Next right click on ALL_BUILD in the solution browser, and then choose build.
+Next, right click on ALL_BUILD in the solution browser, and then choose build.
 
 Once the build completes right click on INSTALL in the solution browser and 
-choose build. This will by default install openmodeller into c:\program files\openmodellerX.X.X.
+choose build. This will by default install openmodeller into 
+c:\Program Files\openModellerX.X.X which will be used to create the installation
+package.
 
 
-	6.11. Running and packaging
-	===========================
+	6.11. Packaging
+	===============
 
-To run openModeller you need to at the minimum copy the dlls from c:\dev\cpp\openmodellerlibs-release\bin 
-into the c:\program files\openmodellerX.X.X directory.
+To run openModeller you need to at the minimum copy the DLLs from 
+c:\dev\cpp\omlibs-release\bin into the c:\program files\openmodellerX.X.X directory. 
+If you are unsure about which DLL and configuration files should be copied, then
+download the last installation package for Windows, install it and then inspect
+the installation directory to check which files are needed.
+
+Downlad and install NSIS from (http://nsis.sourceforge.net/Main_Page)
+
+Now using windows explorer, enter the win_build directory in your openModeller source
+tree. Read the README file there and follow the instructions. Next right click
+on openmodeller.nsi and choose the option 'Compile NSIS Script'. 
 
 
-	6.12. Debugging
+	6.12. Testing
+	=============
+
+After creating the package, press "Test installer" to install a copy on your machine.
+Create a new environment variable called OM_ALG_PATH pointing to the "algs" 
+subdirectory of the installation directory:
+
+
+  c:\Program Files\openModeller X.X.X\algs
+
+
+Edit the environment variable "Path" to add the openModeller installation directory.
+
+Then open the cmd window, go to the "examples" subdirectory inside the installation
+directory and type:
+
+
+  om_console request.txt
+
+
+
+	6.13. Debugging
 	===============
 
 To Debug on Windows:
