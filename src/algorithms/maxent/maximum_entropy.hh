@@ -80,6 +80,7 @@ protected:
   int _linear_feat;
   int _quadratic_feat;
   int _threshold_feat;
+  int _hinge_feat;
 };
 
 #endif
