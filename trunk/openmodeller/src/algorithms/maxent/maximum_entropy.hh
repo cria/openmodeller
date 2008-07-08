@@ -82,6 +82,7 @@ protected:
   int _threshold_feat;
   int _hinge_feat;
   int _product_feat;
+  int _auto_feat;
 };
 
 #endif
