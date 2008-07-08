@@ -1,9 +1,9 @@
 
 /**
-* Declaration of class PreParameters
+* Declaration of class PreChiSquareFactory
 *
 * @author Missae Yamamoto (missae at dpi . inpe . br)
-* $Id$
+* $Id: $
 *
 * LICENSE INFORMATION
 * 
@@ -23,22 +23,30 @@
 * GNU General Public License for more details:
 * 
 * http://www.gnu.org/copyleft/gpl.html
-*/
+*/ 
+#include "PreChiSquareFactory.hh"
+#include "PreChiSquare.hh"
 
-#include "PreParameters.hh"
-
-PreParameters::PreParameters()
+PreChiSquareFactory::PreChiSquareFactory()
+: PreAlgorithmFactory( std::string( "PreChiSquare" ) )
 {
+};      
+
+PreChiSquareFactory::~PreChiSquareFactory()
+{
+};
+
+
+PreAlgorithm* PreChiSquareFactory::build ( const PreParameters& arg )
+{
+  PreAlgorithm* instance_ptr = new PreChiSquare();
+
+  if(!instance_ptr->reset( arg ))
+  {
+     std::string msg = "PreChiSquareFactory::build: Invalid parameters.\n";
+     Log::instance()->error( msg.c_str() );
+	 throw InvalidParameterException( msg );
+  }
+  return instance_ptr;
 }
 
-PreParameters::~PreParameters()
-{
-}
-std::string PreParameters::decName() const
-{
-  std::string return_string;
-  
-  throw;
-  
-  return return_string;
-}

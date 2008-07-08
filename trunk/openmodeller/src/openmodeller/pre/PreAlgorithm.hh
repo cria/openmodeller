@@ -1,130 +1,136 @@
-/*
-TerraLib - a library for developing GIS applications.
-Copyright  2001, 2002, 2003 INPE and Tecgraf/PUC-Rio.
 
-This code is part of the TerraLib library.
-This library is free software; you can redistribute it and/or
-modify it under the terms of the GNU Lesser General Public
-License as published by the Free Software Foundation; either
-version 2.1 of the License, or (at your option) any later version.
-
-You should have received a copy of the GNU Lesser General Public
-License along with this library.
-
-The authors reassure the license terms regarding the warranties.
-They specifically disclaim any warranties, including, but not limited to,
-the implied warranties of merchantability and fitness for a particular
-purpose. The library provided hereunder is on an "as is" basis, and the
-authors have no obligation to provide maintenance, support, updates,
-enhancements, or modifications.
-In no event shall INPE be held liable to any party
-for direct, indirect, special, incidental, or consequential damages arising
-out of the use of this library and its documentation.
+/**
+* Declaration of class PreAlgorithm
+*
+* @author Missae Yamamoto (missae at dpi . inpe . br)
+* $Id$
+*
+* LICENSE INFORMATION
+* 
+* Copyright(c) 2008 by INPE -
+* Instituto Nacional de Pesquisas Espaciais
+*
+* http://www.inpe.br
+* 
+* This program is free software; you can redistribute it and/or
+* modify it under the terms of the GNU General Public License
+* as published by the Free Software Foundation; either version 2
+* of the License, or (at your option) any later version.
+* 
+* This program is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+* GNU General Public License for more details:
+* 
+* http://www.gnu.org/copyleft/gpl.html
 */
 
-#ifndef PREALGORITHM_HH
-  #define PREALGORITHM_HH
+#ifndef PRE_ALGORITHM_HH
+  #define PRE_ALGORITHM_HH
 
   #include <openmodeller/om.hh>
   #include "PreParameters.hh"
+  #include <map>
 
-/**
- * @brief This is the base class for digital image processing algorithms.
- * @author Emiliano F. Castejon <castejon@dpi.inpe.br>
- * adapted from PDI (Digital Image Processing) to OM Pre-analysis (Missae & Emiliano - DPI/INPE - 2008/April)
- */
+ // adapted from Terralib PDI (Digital Image Processing) to OM Pre-analysis (Missae & Emiliano - DPI/INPE)
   class dllexp PreAlgorithm
   {
     public :
 
-      /**
-       * @brief Default Destructor
-       */
+      //Default Destructor
       virtual ~PreAlgorithm();
 
+      //return a default object.
+      static PreAlgorithm* DefaultObject( const PreParameters& params )
+	  {throw;};
+
       /**
-       * @brief Applies the algorithm following the current state and
+       * Applies the algorithm following the current state and
        * internal stored parameters.
        *
-       * @return true if OK. false on error.
+       * return true if OK. false on error.
        */
       bool apply();
 
       /**
-       * @brief Reset the internal state with new supplied parameters.
+       * Reset the internal state with new supplied parameters.
        *
-       * @param params The new supplied parameters.
-       * @return true if parameters OK, false on error.
+       * params: The new supplied parameters.
+       * return true if parameters OK, false on error.
        */
       bool reset( const PreParameters& params );
 
       /**
-       * @brief Checks if the supplied parameters fits the requirements of each
-       * PDI algorithm implementation.
+       * Reset the supplied parameters with internal state.
        *
-       * @note Error log messages must be generated. No exceptions generated.
+       * params: The supplied parameters. 
+	   */
+	  void resetState( PreParameters& params );
+ 
+      /**
+       * Checks if the supplied parameters fits the requirements of each
+       * PRE algorithm implementation.
        *
-       * @param parameters The parameters to be checked.
-       * @return true if the parameters are OK. false if not.
+       * note: Error log messages must be generated. No exceptions generated.
+       *
+       * parameters: The parameters to be checked.
+       * return true if the parameters are OK. false if not.
        */
       virtual bool checkParameters( const PreParameters& parameters ) const = 0;
 
-      /**
-       * @brief Returns a reference to the current internal parameters.
-       *
-       * @return A reference to the current internal parameters.
-       */
+      //Returns a reference to the current internal parameters.
       const PreParameters& getParameters() const;
+
+	  //get input information
+  	  typedef std::map<string, string> stringMap;
+	  virtual void getAcceptedParameters( stringMap& info) = 0;
+
+	  //get output information
+	  virtual void getLayersetResultSpec ( stringMap& info) = 0;
+     
+	  //get output information for each layer
+	  virtual void getLayerResultSpec ( stringMap& info) = 0;
       
     protected :
-      /**
-       * @brief Internal parameters reference
-       */
+      //Internal parameters reference
       mutable PreParameters params_;
         
-      /**
-       * @brief Default Constructor
-       */
+      //Default Constructor
       PreAlgorithm();
 
       /**
-       * @brief Runs the current algorithm implementation.
+       * Runs the current algorithm implementation.
        *
-       * @return true if OK. false on error.
+       * return true if OK. false on error.
        */
       virtual bool runImplementation() = 0;
 
       /**
-       * @brief Reset params state to the params_ state.
-       */
-      virtual void resetState( PreParameters& params ) = 0;
-     
-      /**
-       * @brief Checks if current internal parameters fits the requirements of each
-       * PDI algorithm implementation.
+       * Checks if current internal parameters fits the requirements of each
+       * PRE algorithm implementation.
        *
-       * @note Error log messages must be generated. No exceptions generated.
+       * note: Error log messages must be generated. No exceptions generated.
        *
-       * @return true if the internal parameters are OK. false if not.
+       * return true if the internal parameters are OK. false if not.
        */
       bool checkInternalParameters() const;
       
     private :
     
       /**
-       * @brief Alternative constructor.
+       * Alternative constructor.
        *
-       * @note Algorithms cannot be copied.
+       * note: Algorithms cannot be copied.
        */    
       PreAlgorithm( const PreAlgorithm& );
     
       /**
-       * @brief Operator = overload.
+       * Operator = overload.
        *
-       * @note Algorithms cannot be copied.
+       * note: Algorithms cannot be copied.
        *
-       * @param external External algorithm reference.
-       * @return A const Algorithm reference.
+       * external: External algorithm reference.
+       * return: A const Algorithm reference.
        */
       const PreAlgorithm& operator=( const PreAlgorithm& external );
   };

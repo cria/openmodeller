@@ -35,7 +35,8 @@
 #include <openmodeller/Exceptions.hh>
 #include <openmodeller/Sample.hh>
 #include <openmodeller/pre/PreParameters.hh>
-#include <openmodeller/pre/Jackknife.hh>
+#include <openmodeller/pre/PreJackknife.hh>
+#include <openmodeller/pre/PreAlgorithmFactory.hh>
 #include <om_test_utils.h>
 #include <string>
 
@@ -83,13 +84,13 @@ class test_Jackknife : public CxxTest :: TestSuite
         params.store( "Algorithm", om.getAlgorithm() );
         params.store( "PropTrain", 0.9 );
 
-        Jackknife jackknife;
+		PreAlgorithm* preAlgPtr = PreAlgorithmFactory::make("PreJackknife", params);
 
-        TS_ASSERT( jackknife.reset( params ) );
+		TS_ASSERT(preAlgPtr != 0);
 
-        TS_ASSERT( jackknife.apply() );
+		TS_ASSERT( preAlgPtr->apply());
 
-        jackknife.resetState( params);
+	    preAlgPtr->resetState(params);
 
         double out_param = 0;                  // <------ output 1
         std::multimap<double, int> out_params; // <------ output 2
@@ -107,7 +108,43 @@ class test_Jackknife : public CxxTest :: TestSuite
         TS_ASSERT( params.retrive( "out_Estimate" , jackknife_estimate ) );
         TS_ASSERT( params.retrive( "out_Bias"     , jackknife_bias     ) );
 
-        // TODO: add assertions for each returned value
+		//input informations
+		typedef std::map<string, string> stringMap;
+		stringMap infoIn;
+		preAlgPtr->getAcceptedParameters(infoIn);
+    	std::map<string, string>::const_iterator pos;
+        std::cout << std::endl;
+		std::cout << "input information "  << std::endl;
+        std::cout << std::endl;
+		for (pos = infoIn.begin(); pos != infoIn.end(); ++pos)
+		{
+			std::cout << pos->first << "   ";
+		    std::cout << pos->second << std::endl;
+		}
+
+		//output set informations
+		stringMap infoSetOut;
+ 		preAlgPtr->getLayersetResultSpec(infoSetOut);
+        std::cout << std::endl;
+		std::cout << "output set information "  << std::endl;
+        std::cout << std::endl;
+		for (pos = infoSetOut.begin(); pos != infoSetOut.end(); ++pos)
+		{
+			std::cout << pos->first << "   ";
+		    std::cout << pos->second << std::endl;
+		}
+
+		//output informations for each layer
+		stringMap infoOut;
+ 		preAlgPtr->getLayerResultSpec(infoOut);
+        std::cout << std::endl;
+		std::cout << "output layer information "  << std::endl;
+        std::cout << std::endl;
+		for (pos = infoOut.begin(); pos != infoOut.end(); ++pos)
+		{
+			std::cout << pos->first << "   ";
+		    std::cout << pos->second << std::endl;
+		}
 
         return ;
       }

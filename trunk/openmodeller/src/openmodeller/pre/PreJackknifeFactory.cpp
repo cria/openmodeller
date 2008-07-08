@@ -1,9 +1,9 @@
 
 /**
-* Declaration of class PreParameters
+* Declaration of class PreJackknifeFactory
 *
 * @author Missae Yamamoto (missae at dpi . inpe . br)
-* $Id$
+* $Id: $
 *
 * LICENSE INFORMATION
 * 
@@ -25,20 +25,29 @@
 * http://www.gnu.org/copyleft/gpl.html
 */
 
-#include "PreParameters.hh"
+#include "PreJackknifeFactory.hh"
+#include "PreJackknife.hh"
 
-PreParameters::PreParameters()
+PreJackknifeFactory::PreJackknifeFactory()
+: PreAlgorithmFactory( std::string( "PreJackknife" ) )
 {
+};      
+
+PreJackknifeFactory::~PreJackknifeFactory()
+{
+};
+
+
+PreAlgorithm* PreJackknifeFactory::build ( const PreParameters& arg )
+{
+  PreAlgorithm* instance_ptr = new PreJackknife();
+
+  if(!instance_ptr->reset( arg ))
+  {
+     std::string msg = "PreJackknifeFactory::build: Invalid parameters.\n";
+     Log::instance()->error( msg.c_str() );
+	 throw InvalidParameterException( msg );
+  }
+  return instance_ptr;
 }
 
-PreParameters::~PreParameters()
-{
-}
-std::string PreParameters::decName() const
-{
-  std::string return_string;
-  
-  throw;
-  
-  return return_string;
-}
