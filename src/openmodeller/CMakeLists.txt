@@ -40,8 +40,12 @@ SET(OM_CORE_SRCS
   occ_io/SerializedXmlOccurrences.cpp 
   pre/PreParameters.cpp
   pre/PreAlgorithm.cpp
-  pre/Jackknife.cpp
-  pre/ChiSquare.cpp
+  pre/PreJackknife.cpp
+  pre/PreChiSquare.cpp
+  pre/PreAlgorithmFactory.cpp
+  pre/PreChiSquareFactory.cpp
+  pre/PreJackknifeFactory.cpp
+
 )
 
 IF (WIN32)
@@ -214,8 +218,12 @@ SET (OM_PRE_HDRS
 pre/PreMultiContainer.hh
 pre/PreParameters.hh
 pre/PreAlgorithm.hh
-pre/Jackknife.hh
-pre/ChiSquare.hh
+pre/PreJackknife.hh
+pre/PreChiSquare.hh
+pre/PreFactory.hh
+pre/PreAlgorithmFactory.hh
+pre/PreChiSquareFactory.hh
+pre/PreJackknifeFactory.hh
 )
 
 

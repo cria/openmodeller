@@ -1,34 +1,32 @@
-/************************************************************************************
-TerraLib - a library for developing GIS applications.
-Copyright 2001-2007 INPE and Tecgraf/PUC-Rio.
 
-This code is part of the TerraLib library.
-This library is free software; you can redistribute it and/or
-modify it under the terms of the GNU Lesser General Public
-License as published by the Free Software Foundation; either
-version 2.1 of the License, or (at your option) any later version.
+/**
+* Declaration of class PreMultiContainer
+*
+* @author Missae Yamamoto (missae at dpi . inpe . br)
+* $Id$
+*
+* LICENSE INFORMATION
+* 
+* Copyright(c) 2008 by INPE -
+* Instituto Nacional de Pesquisas Espaciais
+*
+* http://www.inpe.br
+* 
+* This program is free software; you can redistribute it and/or
+* modify it under the terms of the GNU General Public License
+* as published by the Free Software Foundation; either version 2
+* of the License, or (at your option) any later version.
+* 
+* This program is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+* GNU General Public License for more details:
+* 
+* http://www.gnu.org/copyleft/gpl.html
+*/
 
-You should have received a copy of the GNU Lesser General Public
-License along with this library.
-
-The authors reassure the license terms regarding the warranties.
-They specifically disclaim any warranties, including, but not limited to,
-the implied warranties of merchantability and fitness for a particular purpose.
-The library provided hereunder is on an "as is" basis, and the authors have no
-obligation to provide maintenance, support, updates, enhancements, or modifications.
-In no event shall INPE and Tecgraf / PUC-Rio be held liable to any party for direct,
-indirect, special, incidental, or consequential damages arising out of the use
-of this library and its documentation.
-*************************************************************************************/
-
-/*   A container class to store multiple types of object copies.
- *   adapted from PDI (Digital Image Processing) to OM Pre-analysis 
- *   (Missae & Emiliano - DPI/INPE - 2008/April)
- */
-
-
-#ifndef PREMULTICONTAINER_HH
-  #define PREMULTICONTAINER_HH
+#ifndef PRE_MULTICONTAINER_HH
+  #define PRE_MULTICONTAINER_HH
 
   #include <openmodeller/Log.hh>
   #include <openmodeller/Exceptions.hh>
@@ -39,78 +37,61 @@ of this library and its documentation.
   #include <map>
   #include <typeinfo>
 
-  /**
-    * @brief Multi-container node interface.
-    * @author Emiliano F. Castejon <castejon@dpi.inpe.br>
-    * @ingroup Utils
-    */    
+  //adapted from Terralib PDI (Digital Image Processing) to OM Pre-analysis ( Missae & Emiliano - DPI/INPE )
+  //Multi-container node interface.
+  //author Emiliano F. Castejon <castejon@dpi.inpe.br>
   template< typename PreMultiContainerKeyT >
   class MCNodeInterface {
     public :
     
-      /**
-        * @brief Default Constructor.
-        */        
+      //Default Constructor.    
       MCNodeInterface() {};
       
-      /**
-        * @brief Default Destructor.
-        */        
+      //Default Destructor.  
       virtual ~MCNodeInterface() {};
       
       /**
-        * @brief Copies the the current node instance by calling
-        * the operator= from the contained object instance.
-        * @return A pointer to the new node copy.
-        */            
+       * Copies the current node instance by calling
+       * the operator= from the contained object instance.
+       * return: A pointer to the new node copy.
+       */            
       virtual MCNodeInterface< PreMultiContainerKeyT >* clone() 
         const = 0;
         
       /**
-        * @brief Get the internal object type info.
-        * @return The internal object type info.
-        */        
+       * Get the internal object type info.
+       * return: The internal object type info.
+       */        
       virtual const std::string& getObjTypeInfo() const = 0;
       
     private :
     
-      /**
-        * @brief Alternative constructor.
-        */        
+      //Alternative constructor.  
       MCNodeInterface( 
         const MCNodeInterface< PreMultiContainerKeyT >& ) {};    
     
       /**
-      * @brief operator= overload.
-      *
-      * @param ext_instance External instance reference.
-      * @return The external instance reference.
+      * operator= overload.
+      * return: The external instance reference.
       */
       const MCNodeInterface< PreMultiContainerKeyT >& operator=( 
         const MCNodeInterface< PreMultiContainerKeyT >& ) {};        
   };
 
-
-  /**
-    * @brief Multi-container node class.
-    * @author Emiliano F. Castejon <castejon@dpi.inpe.br>
-    * @ingroup Utils
-    */       
+  //adapted from Terralib PDI (Digital Image Processing) to OM Pre-analysis ( Missae & Emiliano - DPI/INPE )
+  // Multi-container node class.
+  //author Emiliano F. Castejon <castejon@dpi.inpe.br>
   template< typename ObjectT, typename PreMultiContainerKeyT >
   class MCNode : public MCNodeInterface< PreMultiContainerKeyT > {
     public :
     
-      /**
-        * @brief Default Constructor.
-        */        
+      //Default Constructor.
       MCNode() 
       {
         obj_ptr_ = 0;
       };
       
-      /**
-        * @brief Default Destructor.
-        */        
+      //Default Destructor.
       ~MCNode()
       {
         if( obj_ptr_ ) {
@@ -119,10 +100,10 @@ of this library and its documentation.
       };
       
       /**
-        * @brief Copies the the current node instance by calling
-        * the operator= from the contained object instance.
-        * @return A pointer to the new node copy.
-        */              
+       * Copies the the current node instance by calling
+       * the operator= from the contained object instance.
+       * return: A pointer to the new node copy.
+       */              
       MCNodeInterface< PreMultiContainerKeyT >* clone() const
       {
         MCNode< ObjectT, PreMultiContainerKeyT >* new_node_ptr =
@@ -139,9 +120,9 @@ of this library and its documentation.
       };
       
       /**
-        * @brief Set the internal object pointer.
-        * @param ptr Object pointer.
-        */        
+       * Set the internal object pointer.
+       * ptr: Object pointer.
+       */        
       void setObjPtr( ObjectT* ptr ) 
       { 
 		if( !ptr ) {
@@ -159,18 +140,18 @@ of this library and its documentation.
       };
       
       /**
-        * @brief Get the internal object pointer.
-        * @return The object pointer.
-        */        
+       * Get the internal object pointer.
+       * return: The object pointer.
+       */        
       ObjectT* getObjPtr() const
       { 
         return obj_ptr_; 
       };
       
       /**
-        * @brief Get the internal object type info.
-        * @return The internal object type info.
-        */        
+       * Get the internal object type info.
+       * return: The internal object type info.
+       */        
       const std::string& getObjTypeInfo() const
       { 
         return obj_type_str_; 
@@ -178,160 +159,142 @@ of this library and its documentation.
       
     protected :
       
-      /**
-        * @brief The internal object pointer.
-        */
+ 
+      //The internal object pointer.
       ObjectT* obj_ptr_;
       
-      /**
-        * @brief The internal object type.
-        */
+      //The internal object type.
       std::string obj_type_str_;      
       
   }; 
 
- /**
-  * @brief A container class to store multiple types os object copies.
-  * @author Emiliano F. Castejon <castejon@dpi.inpe.br>
-  * @note This is a thread-safe class.
-  * @note Do not use this class with polymorphic types !!
-  * @ingroup Utils
-  */
+  //adapted from Terralib PDI (Digital Image Processing) to OM Pre-analysis ( Missae & Emiliano - DPI/INPE )
+  //A container class to store multiple types os object copies.
+  //author Emiliano F. Castejon <castejon@dpi.inpe.br>
+  //note: This is a thread-safe class.
+  //note: Do not use this class with polymorphic types !!
   template< typename PreMultiContainerKeyT >
   class PreMultiContainer {
   
     public :
     
-      /**
-       * @brief Default Constructor
-       */
+      //brief Default Constructor
       PreMultiContainer();
       
-      /**
-       * @brief Alternative Constructor
-       * @param external External reference.
-       */
+      //Alternative Constructor
+      //external: External reference.
       PreMultiContainer( 
         const PreMultiContainer< PreMultiContainerKeyT >& external );      
 
-      /**
-       * @brief  Default Destructor
-       */
+      //Default Destructor
       ~PreMultiContainer();
                            
       /**
-       * @brief Operator == overload.
+       * Operator == overload.
        *
-       * @param ext_instance External instance reference.
-       * @return true if this instance have the same internal
+       * ext_instance: External instance reference.
+       * return true if this instance have the same internal
        * update time that the external instance.
        */
       bool operator==( 
         const PreMultiContainer< PreMultiContainerKeyT >& ext_instance ) const;
       
       /**
-       * @brief Operator != overload.
+       * Operator != overload.
        *
-       * @param ext_instance External instance reference.
-       * @return true if this instance don't have the same internal
+       * ext_instance: External instance reference.
+       * return true if this instance don't have the same internal
        * update time that the external instance.
        */
       bool operator!=( 
         const PreMultiContainer< PreMultiContainerKeyT >& ext_instance ) const;
       
       /**
-       * @brief operator= overload.
+       * operator= overload.
        *
-       * @param ext_instance External instance reference.
-       * @return The external instance reference.
+       * ext_instance: External instance reference.
+       * return The external instance reference.
        */
       const PreMultiContainer< PreMultiContainerKeyT >& operator=( 
         const PreMultiContainer< PreMultiContainerKeyT >& ext_instance );
       
-      /**
-       * @brief Clear all contents.
-       *
-       */
+      //Clear all contents.
       void clear();
                          
       /**
-       * @brief Store a object copy.
+       * Store a object copy.
        *
-       * @param obj_key Object key.
-       * @param obj_reference Object instance.
+       * obj_key: Object key.
+       * obj_reference: Object instance.
        */                         
       template< typename ObjectT >
       void store( const PreMultiContainerKeyT& obj_key,
                          const ObjectT& obj_reference );
       
       /**
-       * @brief Retrive a copy of a stored object.
+       * Retrive a copy of a stored object.
        *
-       * @param obj_key Object key.
-       * @param obj_reference Object instance.
-       * @return true if OK, false if the parameter was no found or error.
+       * obj_key: Object key.
+       * obj_reference: Object instance.
+       * return true if OK, false if the parameter was no found or error.
        */      
       template< typename ObjectT >
       bool retrive( const PreMultiContainerKeyT& obj_key,
         ObjectT& obj_reference ) const;
         
       /**
-       * @brief Retrive copies of all stored objects of a defined type.
+       * Retrive copies of all stored objects of a defined type.
        *
-       * @param objs_vector A vector with copies of all found objects.
-       * @note An empty vector will be returned if no object was found.
+       * objs_vector: A vector with copies of all found objects.
+       * note: An empty vector will be returned if no object was found.
        */      
       template< typename ObjectT >
       void multiRetrive( std::vector< std::pair< PreMultiContainerKeyT, 
         ObjectT > >& objs_vector ) const;        
      
       /** 
-       * @brief Checks if a object is stored.
+       * Checks if a object is stored.
        * 
-       * @param obj_key Object key.
-       * @note The object type must be specified.
-       * @return true if OK, false if the object is not stored.
+       * obj_key: Object key.
+       * note: The object type must be specified.
+       * return true if OK, false if the object is not stored.
        */
       template< typename ObjectT >
       bool isStored( const PreMultiContainerKeyT& obj_key ) const;
       
       /** 
-       * @brief Remove a stored object.
+       * Remove a stored object.
        * 
-       * @param obj_key Object key.
+       * obj_key: Object key.
        */
       void remove( const PreMultiContainerKeyT& obj_key );      
       
     protected :
 
-      /** @brief Internal container type definition. */
+      //Internal container type definition. 
       typedef typename std::map< PreMultiContainerKeyT,
         MCNodeInterface< PreMultiContainerKeyT >* > IntContainerT;
       
-      /** @brief The nodes container instance. */
+      //The nodes container instance. 
       IntContainerT container_instance_;    
       
-      /**
-       * @brief The last update time.
-       */
+      //The last update time.
       time_t last_up_time_;
 
       /**
-       * @brief Updates the internal last update time.
+       * Updates the internal last update time.
        *
-       * @note Needed by comparison between two multi containers.
+       * note: Needed by comparison between two multi containers.
        */
       void update_time();            
 
 };
-
 
 template< typename PreMultiContainerKeyT >
 PreMultiContainer< PreMultiContainerKeyT >::PreMultiContainer()
 {
   last_up_time_ = 0;
 }
-
 
 template< typename PreMultiContainerKeyT >
 PreMultiContainer< PreMultiContainerKeyT >::PreMultiContainer( 
@@ -342,13 +305,11 @@ PreMultiContainer< PreMultiContainerKeyT >::PreMultiContainer(
   operator=( external );
 }
 
-
 template< typename PreMultiContainerKeyT >
 PreMultiContainer< PreMultiContainerKeyT >::~PreMultiContainer()
 {
   clear();
 }
-
 
 template< typename PreMultiContainerKeyT >
 void PreMultiContainer< PreMultiContainerKeyT >::clear()
@@ -367,7 +328,6 @@ void PreMultiContainer< PreMultiContainerKeyT >::clear()
   
 }
 
-
 template< typename PreMultiContainerKeyT >
 bool PreMultiContainer< PreMultiContainerKeyT >::operator==( 
   const PreMultiContainer< PreMultiContainerKeyT >& ext_instance ) const
@@ -378,7 +338,6 @@ bool PreMultiContainer< PreMultiContainerKeyT >::operator==(
     return false;
   }
 }
-
 
 template< typename PreMultiContainerKeyT >
 bool PreMultiContainer< PreMultiContainerKeyT >::operator!=( 
@@ -392,7 +351,6 @@ bool PreMultiContainer< PreMultiContainerKeyT >::operator!=(
   }
 }
 
-
 template< typename PreMultiContainerKeyT >
 const PreMultiContainer< PreMultiContainerKeyT >& 
 PreMultiContainer< PreMultiContainerKeyT >::operator=( 
@@ -400,7 +358,7 @@ PreMultiContainer< PreMultiContainerKeyT >::operator=(
 {
   if( ( &ext_instance ) != this ) {
     
-    /* Clearing the current objects */
+    //Clearing the current objects 
     
     typename IntContainerT::iterator my_container_it = 
       container_instance_.begin();
@@ -415,7 +373,7 @@ PreMultiContainer< PreMultiContainerKeyT >::operator=(
     
     container_instance_.clear();
     
-    /* Cloning external objects */
+    //Cloning external objects 
     
     typename IntContainerT::const_iterator container_it = 
       ext_instance.container_instance_.begin();
@@ -437,13 +395,11 @@ PreMultiContainer< PreMultiContainerKeyT >::operator=(
   return *this;
 }
 
-
 template< typename PreMultiContainerKeyT >
 void PreMultiContainer< PreMultiContainerKeyT >::update_time()
 {
   last_up_time_ = time( 0 );
 }
-
 
 template< typename PreMultiContainerKeyT >
 template< typename ObjectT >
@@ -451,7 +407,7 @@ void PreMultiContainer< PreMultiContainerKeyT >::store(
   const PreMultiContainerKeyT& obj_key, const ObjectT& obj_reference )
 {
 
-  /* Creating a new node */
+  //Creating a new node 
   
   ObjectT* newobjptr = new ObjectT;
   ( *newobjptr ) = obj_reference;
@@ -463,7 +419,7 @@ void PreMultiContainer< PreMultiContainerKeyT >::store(
   typename IntContainerT::iterator container_it = 
     container_instance_.find( obj_key );
     
-  /* If a old node with the same key exists, it will be deleted */
+  //If a old node with the same key exists, it will be deleted 
     
   if( container_it == container_instance_.end() ) {
     container_instance_[ obj_key ] = newnodeptr;
@@ -476,7 +432,6 @@ void PreMultiContainer< PreMultiContainerKeyT >::store(
   update_time();
   
 }
-
 
 template< typename PreMultiContainerKeyT >
 template< typename ObjectT >
@@ -505,7 +460,6 @@ bool PreMultiContainer< PreMultiContainerKeyT >::retrive(
     }
   }
 }
-
 
 template< typename PreMultiContainerKeyT >
 template< typename ObjectT >
@@ -538,7 +492,6 @@ void PreMultiContainer< PreMultiContainerKeyT >::multiRetrive(
   }
   
 }
-
 
 template< typename PreMultiContainerKeyT >
 template< typename ObjectT >
@@ -573,7 +526,7 @@ void PreMultiContainer< PreMultiContainerKeyT >::remove(
   typename IntContainerT::iterator container_it = 
     container_instance_.find( obj_key );
     
-  /* If a old node with the same key exists, it will be deleted */
+  //If a old node with the same key exists, it will be deleted 
     
   if( container_it != container_instance_.end() ) {
     delete (container_it->second);
@@ -584,10 +537,6 @@ void PreMultiContainer< PreMultiContainerKeyT >::remove(
   update_time();
   
 }
-
-/** @example PreMultiContainer_test.cpp
- *    Shows how to use this class.
- */  
 
 #endif
 

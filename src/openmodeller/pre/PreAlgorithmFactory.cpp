@@ -1,9 +1,9 @@
-
+ 
 /**
-* Declaration of class PreParameters
+* Declaration of class PreAlgorithmFactory
 *
 * @author Missae Yamamoto (missae at dpi . inpe . br)
-* $Id$
+* $Id: $
 *
 * LICENSE INFORMATION
 * 
@@ -25,20 +25,13 @@
 * http://www.gnu.org/copyleft/gpl.html
 */
 
-#include "PreParameters.hh"
+#include "PreAlgorithmFactory.hh"
 
-PreParameters::PreParameters()
+PreAlgorithmFactory::PreAlgorithmFactory( const std::string& factoryName )
+: PreFactory< PreAlgorithm, PreParameters >( factoryName )
 {
-}
+};      
 
-PreParameters::~PreParameters()
+PreAlgorithmFactory::~PreAlgorithmFactory()
 {
-}
-std::string PreParameters::decName() const
-{
-  std::string return_string;
-  
-  throw;
-  
-  return return_string;
-}
+};
