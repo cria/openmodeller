@@ -3,6 +3,7 @@
  * 
  * @author Elisangela S. da C. Rodrigues (elisangela . rodrigues [at] poli . usp . br)
  * @author Renato De Giovanni (renato [at] cria . org . br)
+ * @authot Rafael M. de Araujo (rafael . araujo1 [at] poli . usp . br)
  * $Id$
  * 
  * LICENSE INFORMATION 
@@ -154,8 +155,9 @@ static AlgParamMetadata parameters[NUM_PARAM] = {
     0,  // Parameter's lower limit.
     1,  // Not zero if the parameter has upper limit.
     1,  // Parameter's upper limit.
-    "1" // Parameter's typical (default) value.
+    "0" // Parameter's typical (default) value.
   },
+  //Quadratic Feature
   {
     QUADRATIC_FEAT_ID, // Id.
     "Quadratic Feature", // Name.
@@ -168,6 +170,7 @@ static AlgParamMetadata parameters[NUM_PARAM] = {
     1,  // Parameter's upper limit.
     "0" // Parameter's typical (default) value.
   },
+  //Product Feature
   {
     PRODUCT_FEAT_ID, // Id.
     "Product Feature", // Name.
@@ -180,6 +183,7 @@ static AlgParamMetadata parameters[NUM_PARAM] = {
     1,  // Parameter's upper limit.
     "0" // Parameter's typical (default) value.
   },
+  //Threshold Feature
   {
     THRESHOLD_FEAT_ID, // Id.
     "Threshold Feature", // Name.
@@ -192,6 +196,7 @@ static AlgParamMetadata parameters[NUM_PARAM] = {
     1,  // Parameter's upper limit.
     "0" // Parameter's typical (default) value.
   },
+  //Hinge Feature
   {
     HINGE_FEAT_ID, // Id.
     "Hinge Feature", // Name.
@@ -226,9 +231,9 @@ static AlgMetadata metadata = {
 
   "1) Jaynes, E.T. (1957) Information Theory and Statistical Mechanics. In Physical Review, Vol. 106, #4 (pp 620-630). 2) Berger, A. L., Pietra, S. A. D. and Pietra, V. J. D. (1996). A maximum entropy approach to natural language processing. Computational Linguistics, 22, 39-71. 3) Darroch, J.N. and Ratcliff, D. (1972) Generalized iterative scaling for log-linear models. The Annals of Mathematical Statistics, Vol. 43: pp 1470-1480. 4) Malouf, R. (2003) A comparison of algorithms for maximum entropy parameter estimation. Proceedings of the Sixth Conference on Natural Language Learning. 5) Phillips, S.J., Dudík, M. and Schapire, R.E. (2004) A maximum entropy approach to species distribution modeling. Proceedings of the Twenty-First International Conference on Machine Learning, pp 655-662.", // Bibliography.
 
-  "Elisangela S. da C. Rodrigues, Renato De Giovanni", // Code author.
+  "Elisangela S. da C. Rodrigues, Renato De Giovanni, Rafael M. de Araujo", // Code author.
 
-  "elisangela.rodrigues [at] poli . usp . br, renato [at] cria . org . br", // Code author's contact.
+  "elisangela.rodrigues [at] poli . usp . br, renato [at] cria . org . br, rafael.araujo1 [at] poli . usp . br", // Code author's contact.
 
   0, // Does not accept categorical data.
   0, // Does not need (pseudo)absence points.
@@ -349,13 +354,13 @@ _method = "gis";
   if ( ! getParameter( LINEAR_FEAT_ID, &_linear_feat ) ) {
 
     Log::instance()->warn( MAXENT_LOG_PREFIX "Parameter '" LINEAR_FEAT_ID "' not passed. Using default value (1).\n" );
-    _linear_feat = 1;
+    _linear_feat = 0;
   }
 
   if ( _linear_feat != 0 && _linear_feat != 1 ) {
     
     Log::instance()->warn( MAXENT_LOG_PREFIX "Parameter '" LINEAR_FEAT_ID "' must be zero or one. Using default value.\n" );
-    _linear_feat = 1;
+    _linear_feat = 0;
   }
 
   // Quadratic Feature
@@ -410,10 +415,14 @@ _method = "gis";
     _hinge_feat = 0;
   }
 
+  // Check the features.
   if ( _linear_feat == 0 && _quadratic_feat == 0 && _threshold_feat ==0 && _hinge_feat == 0 && _product_feat == 0) {
     
-    Log::instance()->warn( MAXENT_LOG_PREFIX "At least one feature must be 1. Using default values.\n" );
-    _linear_feat = 1;
+    Log::instance()->warn( MAXENT_LOG_PREFIX "Features not passed. Using auto features.\n" );
+    _auto_feat = 1;
+  }
+  else {
+    _auto_feat = 0;
   }
 
   // Check the number of absences.
@@ -475,7 +484,30 @@ MaximumEntropy::iterate()
   // outcome = class (presence / absence)
   // feature = linear; quadratic; threshold; hinge
   // context = sample
-
+  
+  if (_auto_feat == 1) {
+    
+    if ( (_presences + _absences) < 10 ) {
+      
+      _linear_feat = 1;
+      
+    }
+    else
+      if ( (_presences + _absences) >= 10  && (_presences + _absences) < 15 ) {
+	
+	_linear_feat = _quadratic_feat = 1;
+	
+      }
+      else
+	if ( (_presences + _absences) >= 15 && (_presences + _absences) < 80 ) {
+	  
+	  _linear_feat = _quadratic_feat = _hinge_feat = 1;
+	  
+	}
+	else
+	  _linear_feat = _quadratic_feat = _product_feat = _threshold_feat = _hinge_feat = 1;
+  }
+    
   // Presences
 
   OccurrencesImpl::const_iterator p_iterator = _presences->begin();
@@ -485,94 +517,56 @@ MaximumEntropy::iterate()
 
     Sample sample = (*p_iterator)->environment();
 
-    if (_linear_feat == 1 ) {
+    me_context_type context;
+    me_outcome_type outcome("p"); // p = presence
+    
+    for ( int i = 0; i < _num_layers; ++i ) {
+      
+      stringstream out;
+      out << i;
 
-      me_context_type context;
-      me_outcome_type outcome("p"); // p = presence
-            
-      for ( int i = 0; i < _num_layers; ++i ) {
-	
-	stringstream out;
-	out << i;
+      if ( _linear_feat == 1 ) {
+
 	context.push_back( make_pair( out.str(), (float)sample[i] ) );
 
       }
-      _model.add_event( context, outcome, 1 );
-    }     
+      if (_quadratic_feat == 1 ) {
 
-    if (_quadratic_feat == 1 ) {
-
-      me_context_type context;
-      me_outcome_type outcome("p"); // p = presence
-
-      for ( int i = 0; i < _num_layers; ++i ) {
-	
-	stringstream out;
-	out << i;
 	context.push_back( make_pair( out.str(), ((float)sample[i] * (float)sample[i])) );
 
       }
-      _model.add_event( context, outcome, 1 );
-    }  
+      if ( _product_feat == 1 ) {
 
-    if ( _product_feat == 1 ) {
-      
-      me_context_type context;
-      me_outcome_type outcome("p"); // p = presence
-      
-      for ( int i = 0; i < _num_layers; ++i ) {
-	
-	stringstream out;
-	out << i;
-
-	for ( int j = i+1; j < _num_layers; ++j )
+	for ( int j = i+1; j < _num_layers; ++j ) {
+	  
 	  context.push_back( make_pair( out.str(), ((float)sample[i]*(float)sample[j] ) ) );
 
+	}
       }
+      if (_threshold_feat == 1 ) {
 
-      _model.add_event( context, outcome, 1 );
-    }   
-    
-    if (_threshold_feat == 1 ) {
-
-      me_context_type context;
-      me_outcome_type outcome("p"); // p = presence
-
-      for ( int i = 0; i < _num_layers; ++i ) {
-	
-	stringstream out;
-	out << i;
-
-	if ( (float)sample[i] > _tolerance )
+	if ( (float)sample[i] > _tolerance ) {
 	  context.push_back( make_pair( out.str(), 1 ) );
-	else
+	}
+	else {
 	  context.push_back( make_pair( out.str(), 0 ) );
-
+	}
       }
-      _model.add_event( context, outcome, 1 );
-    }     
-
-    if (_hinge_feat == 1 ) {
-
-      me_context_type context;
-      me_outcome_type outcome("p"); // p = presence
-
-      for ( int i = 0; i < _num_layers; ++i ) {
+      if (_hinge_feat == 1 ) {
 	
-	stringstream out;
-	out << i;
-
-	if ( (float)sample[i] > _tolerance )
+	if ( (float)sample[i] > _tolerance ) {
 	  context.push_back( make_pair( out.str(), (float)sample[i] ) );
-	else
+	}
+	else {
 	  context.push_back( make_pair( out.str(), 0 ) );
-
+	}
       }
-      _model.add_event( context, outcome, 1 );
-    }     
+    } // for
+    
+    _model.add_event( context, outcome, 1 );     
 
     ++p_iterator;
-  }
+  } // while
 
   Log::instance()->info( MAXENT_LOG_PREFIX "Added %d presence events.\n", _presences->numOccurrences() );
 
@@ -585,94 +579,54 @@ MaximumEntropy::iterate()
 
     Sample sample = (*p_iterator)->environment();
 
-    if (_linear_feat == 1 ) {
-
-      me_context_type context;
-      me_outcome_type outcome("a"); // a = absence
+    me_context_type context;
+    me_outcome_type outcome("a"); // a = absence
+    
+    for ( int i = 0; i < _num_layers; ++i ) {
       
-      for ( int i = 0; i < _num_layers; ++i ) {
-	
-	stringstream out;
-	out << i;
+      stringstream out;
+      out << i;
+      
+      if (_linear_feat == 1 ) {
+
 	context.push_back( make_pair( out.str(), (float)sample[i] ) );
 	
       }
-      _model.add_event( context, outcome, 1 );
-    }
-
-    if (_quadratic_feat == 1 ) {
-      
-      me_context_type context;
-      me_outcome_type outcome("a"); // a = absence
-
-      for ( int i = 0; i < _num_layers; ++i ) {
+      if (_quadratic_feat == 1 ) {
 	
-	stringstream out;
-	out << i;
 	context.push_back( make_pair( out.str(), ((float)sample[i] * (float)sample[i])) );
-
-      }
-      _model.add_event( context, outcome, 1 );
-    } 
-
-    if ( _product_feat == 1 ) {
-      
-      me_context_type context;
-      me_outcome_type outcome("a"); // a = absence
-      
-      for ( int i = 0; i < _num_layers; ++i ) {
 	
-	stringstream out;
-	out << i;
-
+      }
+      if ( _product_feat == 1 ) {
+      
 	for ( int j = i+1; j < _num_layers; ++j )
 	  context.push_back( make_pair( out.str(), ((float)sample[i]*(float)sample[j] ) ) );
-
-      }
-
-      _model.add_event( context, outcome, 1 );
-    }   
-        
-    if (_threshold_feat == 1 ) {
-
-      me_context_type context;
-      me_outcome_type outcome("a"); // a = absence
-
-      for ( int i = 0; i < _num_layers; ++i ) {
 	
-	stringstream out;
-	out << i;
+      }
+      if (_threshold_feat == 1 ) {
 
-	if ( (float)sample[i] > _tolerance )
+	if ( (float)sample[i] > _tolerance ) {
 	  context.push_back( make_pair( out.str(), 1 ) );
-	else
+	}
+	else {
 	  context.push_back( make_pair( out.str(), 0 ) );
-
-      }
-      _model.add_event( context, outcome, 1 );
-    }     
-
-    if (_hinge_feat == 1 ) {
-
-      me_context_type context;
-      me_outcome_type outcome("a"); // a = absence
-
-      for ( int i = 0; i < _num_layers; ++i ) {
+	}
 	
-	stringstream out;
-	out << i;
+      }
+      if (_hinge_feat == 1 ) {
 
 	if ( (float)sample[i] > _tolerance )
 	  context.push_back( make_pair( out.str(), (float)sample[i] ) );
 	else
 	  context.push_back( make_pair( out.str(), 0 ) );
-
+	
       }
-      _model.add_event( context, outcome, 1 );
-    }     
+    } // for
+
+    _model.add_event( context, outcome, 1 );
 
     ++p_iterator;
-  }
+  } // while
 
   Log::instance()->info( MAXENT_LOG_PREFIX "Added %d absence events.\n", _absences->numOccurrences() );
 
