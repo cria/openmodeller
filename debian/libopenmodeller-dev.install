@@ -44,9 +44,13 @@
 /usr/include/openmodeller/env_io/RasterFactory.hh
 /usr/include/openmodeller/env_io/RasterGdal.hh
 /usr/include/openmodeller/env_io/Raster.hh
-/usr/include/openmodeller/pre/ChiSquare.hh
-/usr/include/openmodeller/pre/Jackknife.hh
 /usr/include/openmodeller/pre/PreAlgorithm.hh
+/usr/include/openmodeller/pre/PreAlgorithmFactory.hh
+/usr/include/openmodeller/pre/PreChiSquare.hh
+/usr/include/openmodeller/pre/PreChiSquareFactory.hh
+/usr/include/openmodeller/pre/PreFactory.hh
+/usr/include/openmodeller/pre/PreJackknife.hh
+/usr/include/openmodeller/pre/PreJackknifeFactory.hh
 /usr/include/openmodeller/pre/PreMultiContainer.hh
 /usr/include/openmodeller/pre/PreParameters.hh
 
