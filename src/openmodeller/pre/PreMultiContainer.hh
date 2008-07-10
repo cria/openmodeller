@@ -1,4 +1,3 @@
-
 /**
 * Declaration of class PreMultiContainer
 *
@@ -232,24 +231,24 @@
                          const ObjectT& obj_reference );
       
       /**
-       * Retrive a copy of a stored object.
+       * Retrieve a copy of a stored object.
        *
        * obj_key: Object key.
        * obj_reference: Object instance.
        * return true if OK, false if the parameter was no found or error.
        */      
       template< typename ObjectT >
-      bool retrive( const PreMultiContainerKeyT& obj_key,
+      bool retrieve( const PreMultiContainerKeyT& obj_key,
         ObjectT& obj_reference ) const;
         
       /**
-       * Retrive copies of all stored objects of a defined type.
+       * Retrieve copies of all stored objects of a defined type.
        *
        * objs_vector: A vector with copies of all found objects.
        * note: An empty vector will be returned if no object was found.
        */      
       template< typename ObjectT >
-      void multiRetrive( std::vector< std::pair< PreMultiContainerKeyT, 
+      void multiRetrieve( std::vector< std::pair< PreMultiContainerKeyT, 
         ObjectT > >& objs_vector ) const;        
      
       /** 
@@ -435,7 +434,7 @@ void PreMultiContainer< PreMultiContainerKeyT >::store(
 
 template< typename PreMultiContainerKeyT >
 template< typename ObjectT >
-bool PreMultiContainer< PreMultiContainerKeyT >::retrive(
+bool PreMultiContainer< PreMultiContainerKeyT >::retrieve(
   const PreMultiContainerKeyT& obj_key, ObjectT& obj_reference ) const
 {
   
@@ -463,7 +462,7 @@ bool PreMultiContainer< PreMultiContainerKeyT >::retrive(
 
 template< typename PreMultiContainerKeyT >
 template< typename ObjectT >
-void PreMultiContainer< PreMultiContainerKeyT >::multiRetrive(
+void PreMultiContainer< PreMultiContainerKeyT >::multiRetrieve(
   std::vector< std::pair< PreMultiContainerKeyT, 
   ObjectT > >& objs_vector ) const
 {
