@@ -29,7 +29,7 @@
   #define PRE_ALGORITHM_FACTORIES_HH
 
   #include "PreChiSquareFactory.hh"
-  #include "PrejackknifeFactory.hh"
+  #include "PreJackknifeFactory.hh"
     
 #endif 
 
