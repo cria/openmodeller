@@ -57,7 +57,7 @@ PreJackknife::checkParameters( const PreParameters& parameters ) const
 {
   SamplerPtr samplerPtr;
 
-  if ( ! parameters.retrive( "Sampler", samplerPtr ) ) {
+  if ( ! parameters.retrieve( "Sampler", samplerPtr ) ) {
 
     Log::instance()->error( "Missing parameter: Sampler. \n" );
     return false;
@@ -65,7 +65,7 @@ PreJackknife::checkParameters( const PreParameters& parameters ) const
 
   AlgorithmPtr algorithmPtr;
 
-  if ( ! parameters.retrive( "Algorithm", algorithmPtr ) ) {
+  if ( ! parameters.retrieve( "Algorithm", algorithmPtr ) ) {
 
     Log::instance()->error( "Missing parameter: Algorithm. \n" );
     return false;
@@ -104,14 +104,14 @@ bool PreJackknife::runImplementation()
   Log::instance()->debug( "Running jackknife\n" );
 
   SamplerPtr samplerPtr;
-  params_.retrive( "Sampler", samplerPtr );
+  params_.retrieve( "Sampler", samplerPtr );
 
   AlgorithmPtr algorithmPtr;
-  params_.retrive( "Algorithm", algorithmPtr );
+  params_.retrieve( "Algorithm", algorithmPtr );
 
   double propTrain;
 
-  if ( ! params_.retrive( "PropTrain", propTrain ) ) {
+  if ( ! params_.retrieve( "PropTrain", propTrain ) ) {
 
     // default
     propTrain = 0.9;

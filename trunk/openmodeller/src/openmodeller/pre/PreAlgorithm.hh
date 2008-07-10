@@ -1,4 +1,3 @@
-
 /**
 * Declaration of class PreAlgorithm
 *

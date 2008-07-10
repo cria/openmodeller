@@ -1,4 +1,3 @@
-
 /**
  * Declaration of class PreChiSquare
  *
@@ -45,7 +44,7 @@ bool
 PreChiSquare::checkParameters( const PreParameters& parameters ) const
 {
   SamplerPtr samplerPtr;
-  if( ! parameters.retrive( "Sampler", samplerPtr ) ) 
+  if( ! parameters.retrieve( "Sampler", samplerPtr ) ) 
   {
      Log::instance()->error( "Missing parameter: Sampler. \n" );
      return false;
@@ -118,7 +117,7 @@ void
 PreChiSquare::init()
 {
   SamplerPtr samplerPtr;
-  params_.retrive( "Sampler", samplerPtr );
+  params_.retrieve( "Sampler", samplerPtr );
 
   setNlayers(samplerPtr);
 

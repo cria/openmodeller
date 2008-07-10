@@ -86,53 +86,53 @@ class test_ChiSquare : public CxxTest :: TestSuite
         PreParameters params;
         params.store( "Sampler", om.getSampler() );
 
-		PreAlgorithm* preAlgPtr = PreAlgorithmFactory::make("PreChiSquare", params);
+        PreAlgorithm* preAlgPtr = PreAlgorithmFactory::make("PreChiSquare", params);
 
-		TS_ASSERT(preAlgPtr != 0);
+        TS_ASSERT(preAlgPtr != 0);
 
-		TS_ASSERT( preAlgPtr->apply());
+        TS_ASSERT( preAlgPtr->apply());
 
-		preAlgPtr->resetState(params);
+        preAlgPtr->resetState(params);
 
         std::vector< size_t > statistic;
-		TS_ASSERT( params.retrive( "statistic", statistic ) );
+        TS_ASSERT( params.retrieve( "statistic", statistic ) );
 
-		std::cout << std::endl;
-		std::cout << "*************** chisquare results ****************** "  << std::endl;
-		std::cout << std::endl; 
-		std::cout << "layer number         statistic" << std::endl;
-		std::cout << std::endl; 
-		for (size_t i = 0; i < statistic.size(); ++i)
-		{
-			std::cout << "    " << i << "                    ";
-			std::cout << statistic[i] << std::endl;
-		}
+        std::cout << std::endl;
+        std::cout << "*************** chisquare results ****************** "  << std::endl;
+        std::cout << std::endl;
+        std::cout << "layer number         statistic" << std::endl;
+        std::cout << std::endl;
+        for (size_t i = 0; i < statistic.size(); ++i)
+        {
+            std::cout << "    " << i << "                    ";
+            std::cout << statistic[i] << std::endl;
+        }
 
-		//input informations
-		typedef std::map<string, string> stringMap;
-		stringMap infoIn;
-		preAlgPtr->getAcceptedParameters( infoIn ); 
-		std::map<string, string>::const_iterator pos;
+        //input informations
+        typedef std::map<string, string> stringMap;
+        stringMap infoIn;
+        preAlgPtr->getAcceptedParameters( infoIn ); 
+        std::map<string, string>::const_iterator pos;
         std::cout << std::endl;
-		std::cout << "input information "  << std::endl;
+        std::cout << "input information "  << std::endl;
         std::cout << std::endl;
-		for (pos = infoIn.begin(); pos != infoIn.end(); ++pos)
-		{
-			std::cout << pos->first << "   ";
-		    std::cout << pos->second << std::endl;
-		}
+        for (pos = infoIn.begin(); pos != infoIn.end(); ++pos)
+        {
+            std::cout << pos->first << "   ";
+            std::cout << pos->second << std::endl;
+        }
 
-		//output informations for each layer
-		stringMap infoOut;
- 		preAlgPtr->getLayerResultSpec( infoOut );
+        //output informations for each layer
+        stringMap infoOut;
+         preAlgPtr->getLayerResultSpec( infoOut );
         std::cout << std::endl;
-		std::cout << "output information "  << std::endl;
+        std::cout << "output information "  << std::endl;
         std::cout << std::endl;
-		for (pos = infoOut.begin(); pos != infoOut.end(); ++pos)
-		{
-			std::cout << pos->first << "   ";
-		    std::cout << pos->second << std::endl;
-		}
+        for (pos = infoOut.begin(); pos != infoOut.end(); ++pos)
+        {
+            std::cout << pos->first << "   ";
+            std::cout << pos->second << std::endl;
+        }
 
         return ;
       }

@@ -84,13 +84,13 @@ class test_Jackknife : public CxxTest :: TestSuite
         params.store( "Algorithm", om.getAlgorithm() );
         params.store( "PropTrain", 0.9 );
 
-		PreAlgorithm* preAlgPtr = PreAlgorithmFactory::make("PreJackknife", params);
+        PreAlgorithm* preAlgPtr = PreAlgorithmFactory::make("PreJackknife", params);
 
-		TS_ASSERT(preAlgPtr != 0);
+        TS_ASSERT(preAlgPtr != 0);
 
-		TS_ASSERT( preAlgPtr->apply());
+        TS_ASSERT( preAlgPtr->apply());
 
-	    preAlgPtr->resetState(params);
+        preAlgPtr->resetState(params);
 
         double out_param = 0;                  // <------ output 1
         std::multimap<double, int> out_params; // <------ output 2
@@ -100,51 +100,51 @@ class test_Jackknife : public CxxTest :: TestSuite
         double jackknife_estimate = 0;         // <------ output 6
         double jackknife_bias = 0;             // <------ output 7
 
-        TS_ASSERT( params.retrive( "out_param"    , out_param          ) );
-        TS_ASSERT( params.retrive( "out_params"   , out_params         ) );
-        TS_ASSERT( params.retrive( "out_Mean"     , mean               ) );
-        TS_ASSERT( params.retrive( "out_Variance" , variance           ) );
-        TS_ASSERT( params.retrive( "out_Deviation", std_deviation      ) );
-        TS_ASSERT( params.retrive( "out_Estimate" , jackknife_estimate ) );
-        TS_ASSERT( params.retrive( "out_Bias"     , jackknife_bias     ) );
+        TS_ASSERT( params.retrieve( "out_param"    , out_param          ) );
+        TS_ASSERT( params.retrieve( "out_params"   , out_params         ) );
+        TS_ASSERT( params.retrieve( "out_Mean"     , mean               ) );
+        TS_ASSERT( params.retrieve( "out_Variance" , variance           ) );
+        TS_ASSERT( params.retrieve( "out_Deviation", std_deviation      ) );
+        TS_ASSERT( params.retrieve( "out_Estimate" , jackknife_estimate ) );
+        TS_ASSERT( params.retrieve( "out_Bias"     , jackknife_bias     ) );
 
-		//input informations
-		typedef std::map<string, string> stringMap;
-		stringMap infoIn;
-		preAlgPtr->getAcceptedParameters(infoIn);
-    	std::map<string, string>::const_iterator pos;
+        //input informations
+        typedef std::map<string, string> stringMap;
+        stringMap infoIn;
+        preAlgPtr->getAcceptedParameters(infoIn);
+        std::map<string, string>::const_iterator pos;
         std::cout << std::endl;
-		std::cout << "input information "  << std::endl;
+        std::cout << "input information "  << std::endl;
         std::cout << std::endl;
-		for (pos = infoIn.begin(); pos != infoIn.end(); ++pos)
-		{
-			std::cout << pos->first << "   ";
-		    std::cout << pos->second << std::endl;
-		}
+        for (pos = infoIn.begin(); pos != infoIn.end(); ++pos)
+        {
+            std::cout << pos->first << "   ";
+            std::cout << pos->second << std::endl;
+        }
 
-		//output set informations
-		stringMap infoSetOut;
- 		preAlgPtr->getLayersetResultSpec(infoSetOut);
+        //output set informations
+        stringMap infoSetOut;
+         preAlgPtr->getLayersetResultSpec(infoSetOut);
         std::cout << std::endl;
-		std::cout << "output set information "  << std::endl;
+        std::cout << "output set information "  << std::endl;
         std::cout << std::endl;
-		for (pos = infoSetOut.begin(); pos != infoSetOut.end(); ++pos)
-		{
-			std::cout << pos->first << "   ";
-		    std::cout << pos->second << std::endl;
-		}
+        for (pos = infoSetOut.begin(); pos != infoSetOut.end(); ++pos)
+        {
+            std::cout << pos->first << "   ";
+            std::cout << pos->second << std::endl;
+        }
 
-		//output informations for each layer
-		stringMap infoOut;
- 		preAlgPtr->getLayerResultSpec(infoOut);
+        //output informations for each layer
+        stringMap infoOut;
+         preAlgPtr->getLayerResultSpec(infoOut);
         std::cout << std::endl;
-		std::cout << "output layer information "  << std::endl;
+        std::cout << "output layer information "  << std::endl;
         std::cout << std::endl;
-		for (pos = infoOut.begin(); pos != infoOut.end(); ++pos)
-		{
-			std::cout << pos->first << "   ";
-		    std::cout << pos->second << std::endl;
-		}
+        for (pos = infoOut.begin(); pos != infoOut.end(); ++pos)
+        {
+            std::cout << pos->first << "   ";
+            std::cout << pos->second << std::endl;
+        }
 
         return ;
       }
