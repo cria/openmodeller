@@ -3,7 +3,7 @@
 * Declaration of class PreAlgorithmFactory
 *
 * @author Missae Yamamoto (missae at dpi . inpe . br)
-* $Id: $
+* $Id$
 *
 * LICENSE INFORMATION
 * 

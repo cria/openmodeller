@@ -3,7 +3,7 @@
  * 
  * @author Fabrício Rodrigues (fabricio . poliusp at gmail . com)
  * @author Renato De Giovanni (renato at cria . org . br)
- * $Id: Jackknife.hh 4280 2008-05-05 19:07:53Z missae $
+ * $Id$
  *
  * LICENSE INFORMATION
  * 

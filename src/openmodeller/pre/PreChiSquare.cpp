@@ -3,7 +3,7 @@
  * Declaration of class PreChiSquare
  *
  * @author Missae Yamamoto (missae at dpi . inpe . br)
- * $Id: ChiSquare.hh 4280 2008-05-05 19:07:53Z missae $
+ * $Id$
  *
  * LICENSE INFORMATION
  * 

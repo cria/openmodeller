@@ -2,7 +2,7 @@
 * Declaration of class PreFactory
 *
 * @author Missae Yamamoto (missae at dpi . inpe . br)
-* $Id: $
+* $Id$
 *
 * LICENSE INFORMATION
 * 
