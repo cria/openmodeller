@@ -127,7 +127,7 @@ Output file type = ByteHFA
 # GARP with Best Subsets Procedure
 #
 #Algorithm = DG_GARP_BS
-#Parameter = TrainingProportion 0.5
+#Parameter = TrainingProportion 50
 #Parameter = TotalRuns 10
 #Parameter = HardOmissionThreshold 100
 #Parameter = ModelsUnderOmissionThreshold 20
