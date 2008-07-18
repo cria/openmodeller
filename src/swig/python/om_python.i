@@ -426,11 +426,23 @@ private:
 
 //*****************************************************************************
 //
-// AlgMetadata.hh typemaps and supporting delcs.
+// AlgMetadata.hh typemaps and supporting decls.
 //
 // Defines the AlgMetadata and AlgParamMetadata structs
 //
 //******************************************************************************
+
+// Typemaps for AlgMetadata and AlgParamMetadata std::string attributes
+%apply const std::string& {std::string* id};
+%apply const std::string& {std::string* name};
+%apply const std::string& {std::string* version};
+%apply const std::string& {std::string* overview};
+%apply const std::string& {std::string* description};
+%apply const std::string& {std::string* author};
+%apply const std::string& {std::string* biblio};
+%apply const std::string& {std::string* code_author};
+%apply const std::string& {std::string* contact};
+%apply const std::string& {std::string* typical};
 
 %include "openmodeller/AlgMetadata.hh"
 
