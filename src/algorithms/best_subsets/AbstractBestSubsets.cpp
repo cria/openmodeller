@@ -277,6 +277,11 @@ int AbstractBestSubsets::initialize()
     Log::instance()->warn("Multithreading is still experimental. When max threads is greater than 1, depending on software and hardware configuration this application may crash or you may see lots of raster IO warnings. In these cases, we recommend you to set this parameter to 1.\n");
   }
 
+  if (_trainProp <= 1.0)
+  {
+    Log::instance()->warn("The specified training proportion value is less than or equals 1. Please note that there was a change in the valid range for this parameter from 0-1 to 0-100. Small values may result in zero presence points being used to train the model.\n");
+  }
+
   // convert percentages (100%) to proportions (1.0) for external parameters 
   _trainProp /= 100.0;
   _commissionThreshold /= 100.0;
