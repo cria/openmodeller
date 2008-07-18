@@ -101,7 +101,7 @@ int AlgorithmRun::initialize(int id, int comm_samples,
 			     int nparam, AlgParameter * param,
 			     BSAlgorithmFactory * factory)
 {
-  //Log::instance()->debug("Initializing garp run (%d)\n", id);
+  Log::instance()->debug( "Initializing garp run (%d)\n", id );
 
   _id = id;
   _commission_samples = comm_samples;
