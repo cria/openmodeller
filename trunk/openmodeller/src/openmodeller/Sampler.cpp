@@ -320,9 +320,18 @@ SamplerImpl::getOneSample( ) const
 {
   Random rnd;
 
-  if ( ( ! _presence ) || ! _presence->numOccurrences() ) { 
+  if ( ! _presence ) { 
 
     std::string msg = "No presence points available for sampling.\n";
+
+    Log::instance()->error( msg.c_str() );
+
+    throw SamplerException( msg );
+  }
+
+  if ( ! _presence->numOccurrences() ) { 
+
+    std::string msg = "Cannot use zero presence points for sampling.\n";
 
     Log::instance()->error( msg.c_str() );
 
