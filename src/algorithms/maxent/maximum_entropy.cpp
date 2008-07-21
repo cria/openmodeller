@@ -3,7 +3,7 @@
  * 
  * @author Elisangela S. da C. Rodrigues (elisangela . rodrigues [at] poli . usp . br)
  * @author Renato De Giovanni (renato [at] cria . org . br)
- * @authot Rafael M. de Araujo (rafael . araujo1 [at] poli . usp . br)
+ * @author Rafael M. de Araujo (rafael . araujo1 [at] poli . usp . br)
  * $Id$
  * 
  * LICENSE INFORMATION 
@@ -268,6 +268,7 @@ algorithmMetadata()
 MaximumEntropy::MaximumEntropy() :
   AlgorithmImpl(&metadata),
   _done(false),
+  _hasCategorical(false),
   _num_layers(0)
 { 
   _normalizerPtr = new ScaleNormalizer( 0.0, 1.0, true );
@@ -468,9 +469,20 @@ _method = "gis";
   }
 
   _num_layers = _samp->numIndependent();
+  
+  // Identify categorical layers
+  _isCategorical.resize( _num_layers );
+  
+  for( int i = 0; i < _num_layers; ++i ) {
+    if ( _samp->isCategorical( i ) ) {
+      _hasCategorical = true;
+      _isCategorical[i] = 1.0;
+    }
+  }
 
   return 1;
-}
+
+} // initialize
 
 /***************/
 /*** iterate ***/
@@ -482,7 +494,7 @@ MaximumEntropy::iterate()
 
   // Notes:  
   // outcome = class (presence / absence)
-  // feature = linear; quadratic; threshold; hinge
+  // feature = linear; quadratic; product; threshold; hinge; auto
   // context = sample
   
   if (_auto_feat == 1) {
@@ -490,18 +502,21 @@ MaximumEntropy::iterate()
     if ( (_presences + _absences) < 10 ) {
       
       _linear_feat = 1;
+      _quadratic_feat = _product_feat = _threshold_feat = _hinge_feat = 0;
       
     }
     else
       if ( (_presences + _absences) >= 10  && (_presences + _absences) < 15 ) {
 	
 	_linear_feat = _quadratic_feat = 1;
+	_product_feat = _threshold_feat = _hinge_feat = 0;
 	
       }
       else
 	if ( (_presences + _absences) >= 15 && (_presences + _absences) < 80 ) {
 	  
 	  _linear_feat = _quadratic_feat = _hinge_feat = 1;
+	  _product_feat = _threshold_feat = 0;
 	  
 	}
 	else
