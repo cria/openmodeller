@@ -69,6 +69,9 @@ protected:
   OccurrencesPtr _presences;
   OccurrencesPtr _absences;
 
+  bool _hasCategorical;
+  Sample _isCategorical;
+
   int _num_layers;
 
   MaxentModel _model;
