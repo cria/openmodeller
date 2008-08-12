@@ -37,6 +37,7 @@
 #include <iostream>
 #include <sstream>
 #include <vector>
+#include <string>
 
 #include <boost/shared_ptr.hpp>
 #include <boost/shared_array.hpp>
@@ -542,38 +543,49 @@ MaximumEntropy::iterate()
 
       if ( _linear_feat == 1 ) {
 
-	context.push_back( make_pair( out.str(), (float)sample[i] ) );
+        _featstring.assign(out.str());
+        _featstring.append("_linear_feature");
+	context.push_back( make_pair( _featstring, (float)sample[i] ) );
 
       }
       if (_quadratic_feat == 1 ) {
 
-	context.push_back( make_pair( out.str(), ((float)sample[i] * (float)sample[i])) );
+        _featstring.assign(out.str());
+        _featstring.append("_quadratic_feature");
+	context.push_back( make_pair( _featstring, ((float)sample[i] * (float)sample[i])) );
 
       }
       if ( _product_feat == 1 ) {
 
 	for ( int j = i+1; j < _num_layers; ++j ) {
-	  
-	  context.push_back( make_pair( out.str(), ((float)sample[i]*(float)sample[j] ) ) );
+
+	  out << i+j;
+          _featstring.assign(out.str());
+          _featstring.append("_product_feature");
+	  context.push_back( make_pair( _featstring, ((float)sample[i]*(float)sample[j] ) ) );
 
 	}
       }
       if (_threshold_feat == 1 ) {
 
+	_featstring.assign(out.str());
+	_featstring.append("_treshold_feature");
 	if ( (float)sample[i] > _tolerance ) {
-	  context.push_back( make_pair( out.str(), 1 ) );
+	  context.push_back( make_pair( _featstring, 1 ) );
 	}
 	else {
-	  context.push_back( make_pair( out.str(), 0 ) );
+	  context.push_back( make_pair( _featstring, 0 ) );
 	}
       }
       if (_hinge_feat == 1 ) {
-	
+
+	_featstring.assign(out.str());
+	_featstring.append("_hinge_feature");
 	if ( (float)sample[i] > _tolerance ) {
-	  context.push_back( make_pair( out.str(), (float)sample[i] ) );
+	  context.push_back( make_pair( _featstring, (float)sample[i] ) );
 	}
 	else {
-	  context.push_back( make_pair( out.str(), 0 ) );
+	  context.push_back( make_pair( _featstring, 0 ) );
 	}
       }
     } // for
@@ -604,36 +616,49 @@ MaximumEntropy::iterate()
       
       if (_linear_feat == 1 ) {
 
-	context.push_back( make_pair( out.str(), (float)sample[i] ) );
+        _featstring.assign(out.str());
+        _featstring.append("_linear_feature");
+	context.push_back( make_pair( _featstring, (float)sample[i] ) );
 	
       }
       if (_quadratic_feat == 1 ) {
 	
-	context.push_back( make_pair( out.str(), ((float)sample[i] * (float)sample[i])) );
+        _featstring.assign(out.str());
+        _featstring.append("_quadratic_feature");
+	context.push_back( make_pair( _featstring, ((float)sample[i] * (float)sample[i])) );
 	
       }
       if ( _product_feat == 1 ) {
       
-	for ( int j = i+1; j < _num_layers; ++j )
-	  context.push_back( make_pair( out.str(), ((float)sample[i]*(float)sample[j] ) ) );
-	
+	for ( int j = i+1; j < _num_layers; ++j ){
+
+	  out << i+j;
+          _featstring.assign(out.str());
+          _featstring.append("_product_feature");
+	  context.push_back( make_pair( _featstring, ((float)sample[i]*(float)sample[j] ) ) );
+
+	}
       }
       if (_threshold_feat == 1 ) {
 
+	_featstring.assign(out.str());
+	_featstring.append("_treshold_feature");
 	if ( (float)sample[i] > _tolerance ) {
-	  context.push_back( make_pair( out.str(), 1 ) );
+	  context.push_back( make_pair( _featstring, 1 ) );
 	}
 	else {
-	  context.push_back( make_pair( out.str(), 0 ) );
+	  context.push_back( make_pair( _featstring, 0 ) );
 	}
 	
       }
       if (_hinge_feat == 1 ) {
 
+	_featstring.assign(out.str());
+	_featstring.append("_hinge_feature");
 	if ( (float)sample[i] > _tolerance )
-	  context.push_back( make_pair( out.str(), (float)sample[i] ) );
+	  context.push_back( make_pair( _featstring, (float)sample[i] ) );
 	else
-	  context.push_back( make_pair( out.str(), 0 ) );
+	  context.push_back( make_pair( _featstring, 0 ) );
 	
       }
     } // for

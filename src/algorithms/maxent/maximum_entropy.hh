@@ -86,6 +86,7 @@ protected:
   int _hinge_feat;
   int _product_feat;
   int _auto_feat;
+  std::string _featstring;
 };
 
 #endif
