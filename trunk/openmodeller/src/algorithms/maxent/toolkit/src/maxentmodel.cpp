@@ -652,12 +652,12 @@ const char* MaxentModel::__str__() const {
             n += (*m_params)[i].size();
 
         static char buf[300];
-        sprintf(buf, 
+        /*sprintf(buf, 
 "Conditional Maximum Entropy Model (C++ version)\n"
 "Number of context predicates  : %d\n"
 "Number of outcome             : %d\n"
 "Number of paramaters(features): %d" ,  m_pred_map->size()
-, m_outcome_map->size() , n);
+, m_outcome_map->size() , n);*/
         return buf;
     }
 }
