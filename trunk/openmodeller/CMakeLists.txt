@@ -32,7 +32,9 @@ SET (OM_CTEST FALSE CACHE BOOL "Build unit tests")
 
 SET (WITH_PROFILING FALSE CACHE BOOL "Add profiling symbols to build products (-pg)")
 
-SET (WITH_FORTRAN TRUE CACHE BOOL "Turn off this option to avoid the build system check if there is a Fortran compiler available (used to enable the LBFGS training method in the Maximum Entropy algorithm)")
+SET (OM_BUILD_SERVICE FALSE CACHE BOOL "Indicates whether the openModeller Web Service should be built")
+
+SET (OM_USE_FORTRAN TRUE CACHE BOOL "Turn off this option to avoid the build system check if there is a Fortran compiler available (used to enable the LBFGS training method in the Maximum Entropy algorithm)")
 
 #############################################################
 IF (OM_CTEST)
