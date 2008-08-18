@@ -17,9 +17,6 @@ SET(CMAKE_COLOR_MAKEFILE ON)
 # set path to additional CMake modules
 SET(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake ${CMAKE_MODULE_PATH})
 
-# bindings are disabled by default
-SET (WITH_BINDINGS FALSE CACHE BOOL "Indicates whether python bindings should be built")
-
 # treat all warnings as errors
 SET (PEDANTIC TRUE CACHE BOOL "Treat all compiler warnings as errors")
 
@@ -30,7 +27,9 @@ SET (OM_DEBUG_MEMORY FALSE CACHE BOOL "Output log messages to help debugging mem
 
 SET (OM_CTEST FALSE CACHE BOOL "Build unit tests")
 
-SET (WITH_PROFILING FALSE CACHE BOOL "Add profiling symbols to build products (-pg)")
+SET (OM_WITH_PROFILING FALSE CACHE BOOL "Add profiling symbols to build products (-pg)")
+
+SET (OM_BUILD_BINDINGS FALSE CACHE BOOL "Indicates whether Python bindings should be built")
 
 SET (OM_BUILD_SERVICE FALSE CACHE BOOL "Indicates whether the openModeller Web Service should be built")
 
@@ -139,9 +138,9 @@ ENDIF (NOT GDAL_FOUND)
 
 #############################################################
 # Add g++ directive to create profiling symbols
-IF (WITH_PROFILING)
+IF (OM_WITH_PROFILING)
   ADD_DEFINITIONS( -pg )
-ENDIF (WITH_PROFILING)
+ENDIF (OM_WITH_PROFILING)
 
 #############################################################
 # enable warnings and set compile time defines
