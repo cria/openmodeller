@@ -170,7 +170,7 @@ static AlgParamMetadata parameters[NUM_PARAM] = {
     "Number of pseudo-absences", // Name.
     Integer,                     // Type.
     "Number of pseudo-absences to be generated (only for C-SVC and Nu-SVC when no absences have been provided).", // Overview
-    "Number of pseudo-absences to be generated (only for C-SVC and Nu-SVC when no absences have been provided.", // Description.
+    "Number of pseudo-absences to be generated (only for C-SVC and Nu-SVC when no absences have been provided).", // Description.
     1,         // Not zero if the parameter has lower limit.
     1,         // Parameter's lower limit.
     0,         // Not zero if the parameter has upper limit.
