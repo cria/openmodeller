@@ -225,7 +225,7 @@ ELSE (WIN32)
   SET (OM_DATA_DIR "${CMAKE_INSTALL_PREFIX}/share/openmodeller")
   SET (OM_INCLUDE_DIR "${CMAKE_INSTALL_PREFIX}/include")
   SET (OM_EXAMPLES_DIR "${CMAKE_INSTALL_PREFIX}/share/openmodeller/examples")
-  SET (OM_CONFIG_DIR "/etc/openmodeller")
+  SET (OM_CONFIG_DIR "/etc/openmodeller" CACHE STRING "Directory to store openModeller configuration files")
 
   IF (UNIX AND NOT OM_BUNDLE)
     SET (OM_BIN_DIR ${CMAKE_INSTALL_PREFIX}/bin)
