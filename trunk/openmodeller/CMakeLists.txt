@@ -123,6 +123,7 @@ FIND_PACKAGE(Sqlite3)
 FIND_PACKAGE(TerraLib)  # version >= 3.2.0
 FIND_PACKAGE(CURL)      # note: minimum version is 7.15.4
 FIND_PACKAGE(Boost)     # For maximum entropy algorithm (version must be >= 1.31)
+FIND_PACKAGE(Mpi)
 
 # python support:
 FIND_PACKAGE(PythonLibs)
