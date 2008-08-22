@@ -73,27 +73,30 @@ INCLUDE_DIRECTORIES(
      ${CMAKE_CURRENT_SOURCE_DIR}/../openmodeller
 )
 
-if (GSL_FOUND)
-  #MESSAGE ("Building with GSL includes at ${GSL_INCLUDE_DIR}...")
-  #MESSAGE ("Building with GSL libs at ${GSL_LIBRARIES}...")
+IF (GSL_FOUND)
+
   INCLUDE_DIRECTORIES(
     ${INCLUDE_DIRECTORIES}
     ${GSL_INCLUDE_DIR}
   )
+
   ADD_LIBRARY (csm_bs MODULE ${LIBCSMBS_SRCS})
 
   TARGET_LINK_LIBRARIES(csm_bs ${GSL_LIBRARIES} openmodeller)
 
 ENDIF(GSL_FOUND)
 
-if (SQLITE3_FOUND)
-  #MESSAGE ("Building with SQLite3 includes at ${SQLITE3_INCLUDE_DIR}...")
+IF (SQLITE3_FOUND)
+
   INCLUDE_DIRECTORIES(
     ${INCLUDE_DIRECTORIES}
     ${SQLITE3_INCLUDE_DIR}
   )
+
   ADD_LIBRARY (aquamaps MODULE ${LIBAQUAMAPS_SRCS})
+
   TARGET_LINK_LIBRARIES(aquamaps sqlite3 openmodeller)
+
 ENDIF(SQLITE3_FOUND)
 
 ########################################################
