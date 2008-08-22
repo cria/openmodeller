@@ -189,6 +189,14 @@ IF (CURL_FOUND)
   ENDIF (APPLE)
 ENDIF (CURL_FOUND)
 
+IF (MPI_FOUND)
+  IF (APPLE)
+    ADD_DEFINITIONS(-DMPI_FOUND=\\'TRUE\\')
+  ELSE (APPLE)
+    ADD_DEFINITIONS(-DMPI_FOUND='"TRUE"')
+  ENDIF (APPLE)
+ENDIF (MPI_FOUND)
+
 #############################################################
 # platform specific stuff
 
