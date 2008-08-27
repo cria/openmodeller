@@ -152,7 +152,7 @@ bool PreJackknife::runImplementation()
 
   conf_matrix.calculate( algorithm_ptr->getModel(), testing_sampler );
 
-  double out_param = conf_matrix.getAccuracy(); // <------ output 1
+  double out_param = conf_matrix.getAccuracy() * 100; // <------ output 1
 
   // Calculate reference parameter for each layer by excluding it from the layer set
 
@@ -257,7 +257,7 @@ bool PreJackknife::runImplementation()
     conf_matrix.reset(); // reuse object
     conf_matrix.calculate( new_algorithm->getModel(), new_testing_sampler );
 
-    double myaccuracy = conf_matrix.getAccuracy();
+    double myaccuracy = conf_matrix.getAccuracy() * 100;
 
     mean += myaccuracy;
 
@@ -286,7 +286,7 @@ bool PreJackknife::runImplementation()
 //     break;
   }
 
-  Log::instance()->debug( "With all layers: %f\n", out_param );
+  Log::instance()->debug( "Accuracy with all layers: %.2f%%\n", out_param );
 
   EnvironmentPtr environment_ptr = samplerPtr->getEnvironment();
   
@@ -296,7 +296,7 @@ bool PreJackknife::runImplementation()
   std::multimap<double, int>::const_iterator end = out_params.end();
   for ( ; it != end; ++it ) {
 
-    Log::instance()->debug( "Without layer %d: %f (%s)\n", (*it).second, (*it).first, (environment_ptr->getLayerPath( (*it).second )).c_str() );
+    Log::instance()->debug( "Accuracy without layer %d: %.2f%% (%s)\n", (*it).second, (*it).first, (environment_ptr->getLayerPath( (*it).second )).c_str() );
     variance += ((*it).first - mean)*((*it).first - mean);
   }
 
@@ -304,7 +304,7 @@ bool PreJackknife::runImplementation()
 
   variance /= num_layers;
 
-  variance *= (num_layers - 1);
+  variance /= (num_layers - 1);
 
   Log::instance()->debug( "Variance = %f\n", variance );
 
