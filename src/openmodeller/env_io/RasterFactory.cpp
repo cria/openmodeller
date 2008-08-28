@@ -45,7 +45,7 @@ RasterFactory::instance()
   if ( ! _initiated ) {
 
 #ifdef TERRALIB_FOUND
-_instance.registerDriver( "terralib", &TeOMRaster::CreateRasterCallback )
+_instance.registerDriver( "terralib", &TeOMRaster::CreateRasterCallback );
 #endif
 
     _initiated = true;
