@@ -130,7 +130,7 @@ private:
 	TeLayer *layer_;
 
 	//! TerraLib DataBase string parser.
-	TeUrlParser *te_str_parser_;
+	TeStringParser *te_str_parser_;
 
 	//! Open an existing TeRaster in a database or file disk.
 	void openTeRaster();
