@@ -72,7 +72,7 @@ TeOMRaster::CreateRasterCallback()
 void
 TeOMRaster::createRaster( const string& str, int categ )
 {
-	te_str_parser_ = new TeUrlParser();
+	te_str_parser_ = new TeStringParser();
 	te_str_parser_->str_ = str;
 	f_scalefactor = 1.0;
 	f_hdr.minmax = 0;
@@ -155,7 +155,7 @@ TeOMRaster::createRaster( const string& str, int categ )
 void
 TeOMRaster::createRaster( const std::string& str, const MapFormat& format )
 {
-	te_str_parser_ = new TeUrlParser();
+	te_str_parser_ = new TeStringParser();
 	te_str_parser_->str_ = str;
 
 	Scalar nv; 
