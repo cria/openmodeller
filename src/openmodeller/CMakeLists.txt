@@ -83,6 +83,11 @@ IF (TERRALIB_FOUND)
 	  ${TERRALIB_INCLUDE_DIR}/TeOCIOracle.cpp
 	  ${TERRALIB_INCLUDE_DIR}/TeOCISDO.cpp
 	  ${TERRALIB_INCLUDE_DIR}/TeOracleSpatial.cpp
+	  # PostgreSQL
+	  ${TERRALIB_INCLUDE_DIR}/TePGInterface.cpp
+	  ${TERRALIB_INCLUDE_DIR}/TePGUtils.cpp
+	  ${TERRALIB_INCLUDE_DIR}/TePostgreSQL.cpp
+	  ${TERRALIB_INCLUDE_DIR}/TePostGIS.cpp
     )
 	
 	IF (WIN32)
@@ -90,6 +95,7 @@ IF (TERRALIB_FOUND)
 			${TERRALIB_LIBRARY}
 			"$ENV{LIB_DIR}/lib/libmysql.lib"
 			"$ENV{LIB_DIR}/lib/oci.lib"
+			"$ENV{LIB_DIR}/lib/libpq.lib"
 		)
 	ENDIF (WIN32)
 	
