@@ -68,8 +68,21 @@ IF (TERRALIB_FOUND)
       TeStringParser.cpp
       env_io/TeOMRaster.cpp
       occ_io/TeOccurrences.cpp
+	  # Ado
       ${TERRALIB_INCLUDE_DIR}/TeAdoDB.cpp
+	  ${TERRALIB_INCLUDE_DIR}/TeAdoOracle.cpp
+	  ${TERRALIB_INCLUDE_DIR}/TeAdoSqlServer.cpp
+	  # MrSID
+	  #${TERRALIB_INCLUDE_DIR}/TeDecoderMrSID.cpp
+	  #${TERRALIB_INCLUDE_DIR}/TeMrSID.cpp
+	  # MySQL
+	  ${TERRALIB_INCLUDE_DIR}/TeMySQL.cpp
     )
+	
+	SET(TERRALIB_LIBRARY
+		${TERRALIB_LIBRARY}
+		"$ENV{LIB_DIR}/lib/libmysql.lib"
+	)
 ENDIF (TERRALIB_FOUND)
 
 IF (CURL_FOUND)
