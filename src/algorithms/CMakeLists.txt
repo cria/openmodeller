@@ -1,10 +1,3 @@
-SUBDIRS(best_subsets garp dg_garp svm)
-
-if (Boost_FOUND)
-  SUBDIRS(maxent)
-ENDIF(Boost_FOUND)
-
-
 #######################################################
 #  MSVC DEFINITIONS
 IF (WIN32)
@@ -13,6 +6,14 @@ IF (WIN32)
 		SET(LIBRARY_OUTPUT_PATH ${OUTPUT_DIR}/algs)
 	ENDIF (MSVC)
 ENDIF(WIN32)
+
+########################################################
+# Subdirectories
+SUBDIRS(best_subsets garp dg_garp svm)
+
+if (Boost_FOUND)
+  SUBDIRS(maxent)
+ENDIF(Boost_FOUND)
 
 ########################################################
 # Files
