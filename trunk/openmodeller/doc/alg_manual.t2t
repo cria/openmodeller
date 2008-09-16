@@ -25,7 +25,7 @@ Last updated: 16th September 2008
 % python t2t.py -t txt --toc --enum-title -o alg_manual.txt alg_manual.t2t
 % To generate the moinmoin version of this document
 % python t2t.py -t moin --toc --enum-title -o alg_manual.moin alg_manual.t2t
-% To generate the moinmoin version of this document
+% To generate the html version of this document
 % python t2t.py -t html --toc --enum-title -o alg_manual.html alg_manual.t2t
 %
 % End of comments
@@ -33,20 +33,20 @@ Last updated: 16th September 2008
 
 = Introduction =
 
-This manual was prepared for developers who want to add new algorithms in 
-openModeller. For more information about openModeller and ecological niche 
+This manual was prepared for developers who want to add new algorithms in
+openModeller. For more information about openModeller and ecological niche
 modelling, please visit http://openmodeller.sf.net. 
 
-More information about how to check out the current source code and how to 
+More information about how to check out the current source code and how to
 compile it can be found in the following link:
 
 http://openmodeller.sf.net/INSTALL.html
 
 You will need to follow the installation instructions (checking out the source
-code from Subversion and compiling openModeller) before going through this 
-document. From now, we will assume that the openModeller source files are already 
-installed on your system in a directory that will be represented here by 
-//OM_INSTALL_DIR//.
+code from Subversion and compiling openModeller) before going through this
+document. From now, we will assume that the openModeller source files are
+already installed on your system in a directory that will be represented here
+by //OM_INSTALL_DIR//.
 
 The directory where you can find all openModeller source code is:
 
@@ -60,22 +60,22 @@ While the algorithms reside in:
 
 //OM_INSTALL_DIR/src/algorithms//
 
-If you intend to make your algorithm available in an official openModeller release, 
-please contact one of the openModeller developers.
+If you intend to make your algorithm available in an official openModeller
+release, please contact one of the openModeller developers.
 
-Important: openModeller is a C++ framework that is currently only prepared to run 
-algorithms that are written in the same language.
+**Important:** openModeller is a C++ framework that is currently only prepared
+to run algorithms that are written in the same language.
 
 = Quick start =
 
 == Creating the files ==
 
-Algorithms with just one header and one source file are usually created 
-directly under //OM_INSTALL_DIR/src/algorithms//. In case there are more files or
-even copies of external libraries involved, then it is recommended to create a new
-directory under //OM_INSTALL_DIR/src/algorithms//. This document will cover the 
-simplest case, so we will only create a "dummy.cpp" and its header "dummy.hh" 
-directly in //OM_INSTALL_DIR/src/algorithms//.
+Algorithms with just one header and one source file are usually created
+directly under //OM_INSTALL_DIR/src/algorithms//. In case there are more files
+or even copies of external libraries involved, then it is recommended to create
+a new directory under //OM_INSTALL_DIR/src/algorithms//. This document will
+cover the simplest case, so we will only create a "dummy.cpp" and its header
+"dummy.hh" directly in //OM_INSTALL_DIR/src/algorithms//.
 
 Let's first take a look at the header file "dummy.hh":
 
@@ -108,36 +108,36 @@ Let's first take a look at the header file "dummy.hh":
 
 class DummyAlgorithm : public AlgorithmImpl {
 
-public:
+  public:
 
-DummyAlgorithm();
+    DummyAlgorithm();
 
-int initialize();
+    int initialize();
 
-Scalar getValue( const Sample& x ) const;
+    Scalar getValue( const Sample& x ) const;
 
 };
 
 #endif
 ``` 
 
-This is the shortest code that we need for the header of our new algorithm. 
-If you're planning to release your algorithm with openModeller, please make 
-sure that your license is compatible with GPL (the license used by 
-openModeller). We recommend that all files start with specific comments 
-indicating: purpose of the file, author name and contact, copyright and 
-licensing information. The previous header follows the same style of most 
-algorithms in openModeller, so you can simply use the same approach.
+This is the simplest form header for our new algorithm.  If you are planning to
+release your algorithm with openModeller, please make sure that your license is
+compatible with GPL (the license used by openModeller). We recommend that all
+files start with specific comments indicating: purpose of the file, author name
+and contact, copyright and licensing information. The header shown here follows
+the same style of most algorithms in openModeller, so you can simply use the
+same approach.
 
-If you are wondering about the $Id in the comments, this is one of the 
-keywords recognized by Subversion. When the keyword Id is enabled for the 
-file, whenever the file gets changed in the repository, that line is 
-automatically updated with all essential information about the file version. 
-The line is then expanded to something like this: 
+If you are wondering about the $Id in the comments, this is one of the keywords
+recognized by Subversion. When the keyword Id is enabled for the file, whenever
+the file gets changed in the repository, that line is automatically updated
+with all essential information about the file version.  The line is then
+expanded to something like this: 
 
 $Id: dummy.hh 4473 2008-07-18 11:41:01Z rdg $
 
-So it will contain the file name, revision number, date/time when it was last 
+So it will contain the file name, revision number, date/time when it was last
 modified and who made the last change.
 
 Now let's continue with the dummy.cpp file:
@@ -247,26 +247,30 @@ Scalar DummyAlgorithm::getValue( const Sample& x ) const {
 }
 ``` 
 
-This isn't the shortest .cpp file we can create, but it's close to. It
-contains only the methods that are strictly required by openModeller.
+This isn't the shortest .cpp file we can create, but it's close to it. Only the
+methods that are strictly required by openModeller have been included here. In
+you own implementation you will likely want to include additional helper
+methods that are required for algorithm logic.
 
 == Compiling ==
 
-openModeller uses a cross-platform build environment called CMake. This means that
-you don't need to write any Makefile directly. Instead, you just need to edit 
-configuration files called CMakeLists.txt that can be found in each directory. These 
-files are used by CMake to generate the Makefiles for your platform.
+openModeller uses a cross-platform build environment called CMake. This means
+that you don't need to write any Makefile directly. Instead, you just need to
+edit configuration files called CMakeLists.txt that can be found in each
+directory. These files are used by CMake to generate the Makefiles for your
+platform.
 
-Let's open the "CMakeLists.txt" file in the algorithms directory. You will notice that
-there are basically 3 steps to configure the compilation of your algorithm:
+Let's open the "CMakeLists.txt" file in the algorithms directory. You will
+notice that there are basically 3 steps to configure the compilation of your
+algorithm:
 
 + Specify the source files.
 + Add a new library target for your algorithm, linking it with openModeller.
 + Add an installation instruction for your algorithm.
 
 
-To specify the sources of our new algorithm, we just need to include in the appropriate
-section something like:
+To specify the sources of our new algorithm, we just need to include in the
+appropriate section something like:
 
 ```
 SET (LIBDUMMY_SRCS
@@ -282,28 +286,30 @@ ADD_LIBRARY(dummy MODULE ${LIBDUMMY_SRCS})
 TARGET_LINK_LIBRARIES(dummy openmodeller)
 ```
 
-Here "dummy" is just the library name. Finally, the installation instruction will be:
+Here "dummy" is just the library name. Finally, the installation instruction
+will be:
 
 ```
 INSTALL(TARGETS dummy RUNTIME DESTINATION ${OM_ALG_DIR} LIBRARY DESTINATION ${OM_ALG_DIR})
 ```
 
-This is the simplest case. When the algorithm has its own directory, you need to specify 
-it with SUBDIRS and then create another "CMakeLists.txt" file in that directory. You can 
-conditionally compile an algorithm depending on the platform being used or on the presence 
-of one or more specific libraries (in which case you'll also need to link with those 
-libraries), you can easily add custom compiler flags, etc.
+This is the simplest case. When the algorithm has its own directory, you need
+to specify it with SUBDIRS and then create another "CMakeLists.txt" file in
+that directory. You can conditionally compile an algorithm depending on the
+platform being used or on the presence of one or more specific libraries (in
+which case you'll also need to link with those libraries), you can easily add
+custom compiler flags, etc.
 
-After making the changes in CMakeLists.txt for the dummy algorithm, recompile openModeller 
-and install it again.
+After making the changes in CMakeLists.txt for the dummy algorithm, recompile
+openModeller and install it again.
 
 == Testing ==
 
-After installation, you can now test your algorithm using one of the interfaces. Let's 
-use "om_console" with the sample request.txt file that you can find in the 
-//OM_INSTALL_DIR/examples// directory. Actually, the new algorithm doesn't 
-do anything special, but at least we can already see it on the list of available 
-algorithms and we can try to run it:
+After installation, you can now test your algorithm using one of the
+interfaces. Let's use "om_console" with the sample request.txt file that you
+can find in the //OM_INSTALL_DIR/examples// directory. Actually, the new 
+algorithm doesn't do anything special, but at least we can already see it on
+the list of available algorithms and we can try to run it:
 
 ```
 $ om_console request.txt
@@ -339,90 +345,99 @@ Enter with value [0.5]:
 [Info] Exception occurred: Algorithm could not be initialized.
 ```
 
-As you can see, our algorithm couldn't be initialized (we'll see the reason below) 
-but we have taken the first step: we added the new algorithm!
+As you can see, our algorithm couldn't be initialized (we'll see the reason
+below) but we have taken the first step: we added the new algorithm!
 
 = Exploring the example =
 
 == Header file ==
 
-Now, let's understand what we did. First take a look at dummy.hh (by the way, never forget to 
-include the algorithm's header in the .cpp file!). It's really small, with only 10 lines of 
-code that are strictly needed for compilation - real algorithms will have a bigger header file. 
-Notice that all code is inside an "#ifndef" C++ directive that avoids including this file more 
-than once. For your algorithm you will need to change the name _OM_DUMMY_HH to a name of your 
-choice (in the #ifdef and #define lines). We suggest to use the real file name in uppercase 
-replacing the dot with an underscore and prepending the name with _OM_.
+Now, let's understand what we did. First take a look at dummy.hh (by the way,
+never forget to include the algorithm's header in the .cpp file!). It's really
+small, with only 10 lines of code that are strictly needed for compilation -
+real algorithms will have a bigger header file.  Notice that all code is inside
+an "#ifndef" 'sentinel' C++ directive that avoids including this file more than
+once. For your algorithm you will need to change the name _OM_DUMMY_HH to a
+name of your choice (in the #ifdef and #define lines). We suggest to use the
+real file name in uppercase replacing the dot with an underscore and prepending
+the name with _OM_.
 
-Algorithm header files must include om.hh to work. Also, the algorithm class (named
-DummyAlgorithm in our example) must inherit from the AlgorithmImpl class (included in om.hh). 
-The constructor must be created explicitly and the methods "initialize" and "getValue" are 
-needed for compilation.
+Algorithm header files must include om.hh to work. Also, the algorithm class
+(named DummyAlgorithm in our example) must inherit from the AlgorithmImpl class
+(included in om.hh).  The constructor must be created explicitly and the
+methods "initialize" and "getValue" are needed for compilation.
 
 == Metadata ==
 
-Although an algorithm may not need any extra parameters (see envelope_score.cpp, for instance) 
-it can tell openModeller that it needs one or more parameters to run. Custom parameters must be 
-specified in a static/global vector of AlgParamMetadata. In our example this vector was named 
-"parameters" (see dummy.cpp). NUM_PARAM is a defined constant indicating the number of custom 
-parameters needed by the algorithm, and TESTPAR is just another defined constant for the 
-identifier of our single parameter. Since these values are used more than once in the program, 
-it's better to keep them as defined constants. TESTPAR is specific to this example, so you 
-should rename it when writing a real algorithm according to your parameter name.
+Although an algorithm may not need any extra parameters (see
+envelope_score.cpp, for instance) it can tell openModeller that it needs one or
+more parameters to run. Custom parameters must be specified in a static/global
+vector of AlgParamMetadata. In our example this vector was named "parameters"
+(see dummy.cpp). NUM_PARAM is a defined constant indicating the number of
+custom parameters needed by the algorithm, and TESTPAR is just another defined
+constant for the identifier of our single parameter. Since these values are
+used more than once in the program, it's better to keep them as defined
+constants. TESTPAR is specific to this example, so you should rename it when
+writing a real algorithm according to your parameter name.
 
-All parameters are specified in that way and the comments on the side will help you remember 
-what metadata need to be put in each line. Remember: DON'T remove any of the lines for each 
-of your parameters, even if one of the values is null. The order and the number of lines are 
-important (otherwise it won't comply with the AlgParamMetadata structure anymore). Each 
-parameter is separated by comma from the others, so the entire block inside "parameters" 
-can be copied below itself to create a second, third, etc. parameters. Just remember to 
-update NUM_PARAM in this case.
+All parameters are specified in that way and the comments on the side will help
+you remember what metadata need to be put in each line. Remember: DON'T remove
+any of the lines for each of your parameters, even if one of the values is
+null. The order and the number of lines are important (otherwise it won't
+comply with the AlgParamMetadata structure anymore). Each parameter is
+separated by comma from the others, so the entire block inside "parameters" can
+be copied below itself to create a second, third, etc. parameters. Just
+remember to update NUM_PARAM in this case.
 
-If your algorithm has no parameters, define NUM_PARAM as 0 and then use the following line 
-to define the parameters variable:
+If your algorithm has no parameters, define NUM_PARAM as 0 and then use the
+following line to define the parameters variable:
 
 ```
 static AlgParamMetadata * parameters = 0;
 ```
 
-Parameter datatypes can be one of the following: Integer, Real or String. Numeric parameters
-can have an associated valid range, so that user interfaces can validate the input before 
-running the algorithm.
+Parameter datatypes can be one of the following: Integer, Real or String.
+Numeric parameters can have an associated valid range, so that user interfaces
+can validate the input before running the algorithm.
 
-Parameters are part of the algorithm metadata, which also includes things such as version, 
-description, author, bibliography, etc. Algorithm metadata is also declared in a static/global 
-"AlgMetadata" datatype (named "metadata" in our case). The basic rules here are almost the same 
-for each parameter: keep all lines, adjusting the content to your needs.
+Parameters are part of the algorithm metadata, which also includes things such
+as version, description, author, bibliography, etc. Algorithm metadata is also
+declared in a static/global "AlgMetadata" datatype (named "metadata" in our
+case). The basic rules here are almost the same for each parameter: keep all
+lines, adjusting the content to your needs.
 
-It is very important to pay special attention to description and bibliography so that users 
-can understand how the algorithm works, in which way it is different from existing algorithms, 
-and where they can find more information about it.
+It is very important to pay special attention to description and bibliography
+so that users can understand how the algorithm works, in which way it is
+different from existing algorithms, and where they can find more information
+about it.
 
-If you need to make any change to an existing algorithm, you should always remember to increase 
-the version number - especially if you change the logic of the algorithm, fix a bug or just 
-update the metadata.
+If you need to make any change to an existing algorithm, you should always
+remember to increase the version number - especially if you change the logic of
+the algorithm, fix a bug or just update the metadata.
 
 == Dynamic link ==
 
-Algorithms in openModeller are dynamically loaded as plugins. The two functions defined 
-after metadata (under the "Factory" comment) enable this dynamic connection between the 
-algorithm and openModeller. The first one is used to return an instance of the algorithm
-and the other is used to return the algorithm metadata. The only thing you will need
-to change here is the name "DummyAlgorithm" - just replace it with the class name of your 
-real algorithm.
+Algorithms in openModeller are dynamically loaded as plugins. The two functions
+defined after metadata (under the "Factory" comment) enable this dynamic
+connection between the algorithm and openModeller. The first one is used to
+return an instance of the algorithm and the other is used to return the
+algorithm metadata. The only thing you will need to change here is the name
+"DummyAlgorithm" - just replace it with the class name of your real algorithm.
 
 == Algorithm initialization ==
 
-Now that we know how to insert a new algorithm in openModeller and how to specify its metadata, 
-the next step is to make the dummy algorithm work. When we first tried to run the algorithm, it
-failed with an "Algorithm could not be initialized" exception. The reason is simply because our 
-initialize method always returns 0 (false).
+Now that we know how to insert a new algorithm in openModeller and how to
+specify its metadata, the next step is to make the dummy algorithm work. When
+we first tried to run the algorithm, it failed with an "Algorithm could not be
+initialized" exception. The reason is simply because our initialize method
+always returns 0 (false).
 
-Let's change the initilize method in dummy.cpp to make it return 1 (true) under certain 
-conditions. One of the typical actions taken by algorithms during initialization is to 
-check if all mandatory parameters were passed and if their values are correct. Our parameter 
-"TESTPAR" will be stored in a "_testpar" property that you should declare in the DummyAlgorithm 
-class, better as private, so add these lines just before the "};" line in dummy.hh:
+Let's change the initilize method in dummy.cpp to make it return 1 (true) under
+certain conditions. One of the typical actions taken by algorithms during
+initialization is to check if all mandatory parameters were passed and if their
+values are correct. Our parameter "TESTPAR" will be stored in a "_testpar"
+property that you should declare in the DummyAlgorithm class, better as
+private, so add these lines just before the "};" line in dummy.hh:
 
 ```
 private:
@@ -430,12 +445,13 @@ private:
 Scalar _testpar;
 ```
 
-Why is the datatype "Scalar"? Scalar is defined by openModeller to encapsulate the type used 
-for real numbers. You can find this definition in om_defs.hh (src/openmodeller) where it's 
-currently associated with the "double" datatype.
+Why is the datatype "Scalar"? Scalar is defined by openModeller to encapsulate
+the type used for real numbers. You can find this definition in om_defs.hh
+(src/openmodeller) where it's currently associated with the "double" datatype.
 
-Now let's go back to dummy.cpp and rewrite the initialize method. The method "getParameter"
-that is implemented in the parent class can used to get the parameter value:
+Now let's go back to dummy.cpp and rewrite the initialize method. The method
+"getParameter" that is implemented in the parent class can used to get the
+parameter value:
 
 ```
 int DummyAlgorithm::initialize() {
@@ -450,13 +466,13 @@ int DummyAlgorithm::initialize() {
 }
 ```
 
-For numeric parameters with a valid range, remember to also verify if the value is within 
-the expected range (maximum and minimum). 
+For numeric parameters with a valid range, remember to also verify if the value
+is within the expected range (maximum and minimum). 
 
 == Complete run ==
 
-After making these changes, recompile the algorithm, install the new version, and if you 
-run om_console again you should now see the following output:
+After making these changes, recompile the algorithm, install the new version,
+and if you run om_console again you should now see the following output:
 
 ```
 Enter with value [0.5]:
@@ -474,45 +490,51 @@ Model statistics
 [Info] Done.
 ```
 
-Now that's a complete run. If you look again at the getValue method you'll see that it always 
-returns 1.0, which means that no matter what are the environmental conditions, there's always
-"100% of chance to find the species". For this reason the resulting map is "white" and all 
-cells are predicting presence.
+Now that's a complete run. If you look again at the getValue method you'll see
+that it always returns 1.0, which means that no matter what are the
+environmental conditions, there's always "100% of chance to find the species".
+For this reason the resulting map is "white" and all cells are predicting
+presence.
 
 = Additional topics =
 
 == Model creation ==
 
-Our example focused only on including a new algorithm in openModeller. No attempt was made 
-to generate a real model. In openModeller, a model can be seen as a function that returns 
-the probability of finding a species in a location with certain environmental conditions. 
-Actually the framework can be used with virtually anything whose distribution depends on the
-layers that were provided as input. Therefore, creating a model means creating that function.
-The notion of a function here is completely generic - each algorithm is free to build its own
-representation of the potential distribution, making use of any kind of resources: custom 
-properties and methods, external libraries, web services, local databases, etc.
+Our example focused only on including a new algorithm in openModeller. No
+attempt was made to generate a real model. In openModeller, a model can be seen
+as a function that returns the probability of finding a species in a location
+with certain environmental conditions.  Actually the framework can be used with
+virtually anything whose distribution depends on the layers that were provided
+as input. Therefore, creating a model means creating that function.  The notion
+of a function here is completely generic - each algorithm is free to build its
+own representation of the potential distribution, making use of any kind of
+resources: custom properties and methods, external libraries, web services,
+local databases, etc.
 
-But how can a model be created in the previous example if the only input provided was a custom
-parameter? Actually, the most important input is already captured by the parent class 
-(AlgorithmImpl) and made available in a property called "_samp". "_samp" is an instance of a 
-SamplerPtr. In openModeller, the sampler is responsible for connecting the two basic inputs
-of a modelling experiment: a set of occurrence points and a set of rasters.
+But how can a model be created in the previous example if the only input
+provided was a custom parameter? Actually, the most important input is already
+captured by the parent class (AlgorithmImpl) and made available in a property
+called "_samp". "_samp" is an instance of a SamplerPtr. In openModeller, the
+sampler is responsible for connecting the two basic inputs of a modelling
+experiment: a set of occurrence points and a set of rasters.
 
-Non-iterative algorithms, i.e., algorithms that can directly generate a model in a single step,
-can create the model during algorithm initialization (see bioclim.cpp for an example) or can 
-use the "iterate" method in a single step (see svm/svm_alg.cpp for an example). Iterative 
-algorithms must implement the iteration in the "iterate" method (see garp/garp.cpp for an 
-example). During model creation, this method will be called as many times as necessary by the 
-parent class until the "done" method returns true. For this reason algorithms usually define
-a property "_done", which is returned by the "done" method. As soon the model is created 
-"_done" should be set to "true" (remember to initialize "_done" with "false"). The iterate 
-method must return 1, unless something wrong happens - in which case you should return 0.
+Non-iterative algorithms, i.e., algorithms that can directly generate a model
+in a single step, can create the model during algorithm initialization (see
+bioclim.cpp for an example) or can use the "iterate" method in a single step
+(see svm/svm_alg.cpp for an example). Iterative algorithms must implement the
+iteration in the "iterate" method (see garp/garp.cpp for an example). During
+model creation, this method will be called as many times as necessary by the
+parent class until the "done" method returns true. For this reason algorithms
+usually define a property "_done", which is returned by the "done" method. As
+soon the model is created "_done" should be set to "true" (remember to
+initialize "_done" with "false"). The iterate method must return 1, unless
+something wrong happens - in which case you should return 0.
 
 Models can make use of any number of custom properties to be stored.
 
-When model creation involves many steps and can take a long time, you should use the 
-"getProgress" method to return a value between 0 and 1 to give an indication of how far
-the algorithm is in the task of model creation.  
+When model creation involves many steps and can take a long time, you should
+use the "getProgress" method to return a value between 0 and 1 to give an
+indication of how far the algorithm is in the task of model creation.  
 
 == Using the sampler ==
 
@@ -549,30 +571,32 @@ while ( it != end ) {
 }
 ```
 
-Sample is basically a vector where each value corresponds to the value of a layer in 
-that specific location (lat/long). You can access the individual values through the "[]"
-operator. The size of the vector should always match the number of independent variables.
-There are many pointwise operators available for samples: "+=", "-=", "*=", "/=", "&=",
-"|=", besides the operators "equals", "sqr", "sqrt", "norm" and "dotProduct".
+Sample is basically a vector where each value corresponds to the value of a
+layer in that specific location (lat/long). You can access the individual
+values through the "[]" operator. The size of the vector should always match
+the number of independent variables.  There are many pointwise operators
+available for samples: "+=", "-=", "*=", "/=", "&=", "|=", besides the
+operators "equals", "sqr", "sqrt", "norm" and "dotProduct".
 
 == Normalization ==
 
-Depending on the type of model being created, it is frequently necessary to normalize the 
-environment values before working with them, otherwise layers with greater values will jut
-out from the others during model creation. There are two normalization strategies available 
-in openModeller (others can be implemented in the future):
+Depending on the type of model being created, it is frequently necessary to
+normalize the environment values before working with them, otherwise layers
+with greater values will jut out from the others during model creation. There
+are two normalization strategies available in openModeller (others can be
+implemented in the future):
 
-- **Scale normalization:** all values are scaled to a specified range, usually [0,1] or [-1,1]. 
-This method is implemented by the ScaleNormalizer class.
+- **Scale normalization:** all values are scaled to a specified range, usually
+  [0,1] or [-1,1].  This method is implemented by the ScaleNormalizer class.
 
-- **Mean/Variance normalization:** this one subtracts values from the mean and divides the 
-result by the standard deviation. This method is implemented by the MeanVarianceNormalizer 
-class.
+- **Mean/Variance normalization:** this one subtracts values from the mean and
+  divides the result by the standard deviation. This method is implemented by
+  the MeanVarianceNormalizer class.
 
 
-AlgorithmImpl already has a property ("_normalizerPtr") to store a normalizer object, so 
-when an algorithm needs to use normalization it can simply instantiate the desired normalizer 
-class in the constructor:
+AlgorithmImpl already has a property ("_normalizerPtr") to store a normalizer
+object, so when an algorithm needs to use normalization it can simply
+instantiate the desired normalizer class in the constructor:
 
 ```
 DummyAlgorithm::DummyAlgorithm() : 
@@ -587,35 +611,38 @@ AlgorithmImpl( &metadata ) {
 
 == Model projection ==
 
-During model projection, openModeller will iterate over each cell of the resulting 
-distribution map, read the corresponding environmental values from each layer and then
-call the "getValue" method of the algorithm. This method must always return a probability
-between 0 and 1 that will be written in the corresponding cell of the distribution map.
+During model projection, openModeller will iterate over each cell of the
+resulting distribution map, read the corresponding environmental values from
+each layer and then call the "getValue" method of the algorithm. This method
+must always return a probability between 0 and 1 that will be written in the
+corresponding cell of the distribution map.
 
-Therefore, "getValue" receives a sample as a parameter, which contains the environment
-conditions at a specific location. The algorithm should be able to use its model to 
-calculate a probability for the specified sample.
+Therefore, "getValue" receives a sample as a parameter, which contains the
+environment conditions at a specific location. The algorithm should be able to
+use its model to calculate a probability for the specified sample.
 
 == Serialization ==
 
-As it was mentioned before, algorithms can make use any number of custom properties to 
-store all necessary data for representing their models. However, developers must also
-figure out a way of representing the same data in XML, which is the format used by 
-openModeller to serialize objects. Otherwise, models won't last too much if they are only
-stored in memory. In our example, om_console was used to run the model and immediately
-project it, so it was not necessary to deal with serialization at all. It is very 
-important to be able to store models so that they can be loaded at any time in the future 
-to project results in different scenarios (past conditions, future conditions, different
+As mentioned before, algorithms can make use any number of custom
+properties to store all necessary data for representing their models. However,
+developers must also figure out a way of representing the same data in XML,
+which is the format used by openModeller to serialize objects. Otherwise,
+models won't last too long if they are only stored in memory. In our example,
+om_console was used to run the model and immediately project it, so it was not
+necessary to deal with serialization at all. It is very important to be able to
+store models so that they can be loaded at any time in the future to project
+results in different scenarios (past conditions, future conditions, different
 geographical regions, etc.).
 
-In openModeller, serialization and deserialization can be implemented in the methods 
-"_getConfiguration" and "_setConfiguration" respectively. These methods receive a 
-ConfigurationPtr as a parameter. ConfigurationPtr encapsulates XML reading and writing,
-so all you need to know is the API of this class.
+In openModeller, serialization and deserialization can be implemented in the
+methods "_getConfiguration" and "_setConfiguration" respectively. These methods
+receive a ConfigurationPtr as a parameter. ConfigurationPtr encapsulates XML
+reading and writing, so all you need to know is the API of this class.
 
-The following example only illustrates the main methods available in ConfigurationPtr
-(again, no real model is involved, you can look at the existing algorithms to see how
-different they are when representing their models).
+The following example only illustrates the main methods available in
+ConfigurationPtr (again, no real model is involved, you can look at the
+existing algorithms to see how different they are when representing their
+models).
 
 ```
 // Use this method for model serialization
