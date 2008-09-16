@@ -180,14 +180,13 @@ main( int argc, char **argv )
       Log::instance()->info( "Percentage of cells predicted present: %7.2f%%\n", 
              stats->getAreaPredictedPresent() / (double) stats->getTotalArea() * 100 );
       Log::instance()->info( "Total number of cells: %d\n", stats->getTotalArea() );
-      Log::instance()->info( "\nDone.\n" );
+      Log::instance()->info( "Done.\n" );
 
       delete stats;
     }
   }
   catch ( std::exception& e ) {
-    Log::instance()->info( "%s\n", e.what() );
-    Log::instance()->info( "Exception occurred\n" );
+    Log::instance()->info( "Exception occurred: %s", e.what() );
   }
   catch ( ... ) {
     Log::instance()->info( "Unknown error occurred\n" );

@@ -245,7 +245,7 @@ AlgorithmImpl::getFreshCopy()
 {
   if ( ! _metadata ) {
 
-    std::string msg = "Cannot produce copies of an algorithm without metadata.";
+    std::string msg = "Cannot produce copies of an algorithm without metadata.\n";
 
     Log::instance()->error( msg.c_str() );
 
@@ -353,7 +353,7 @@ AlgorithmImpl::createModel( const SamplerPtr& samp, CallbackWrapper *callbackWra
 
   if ( !samp ) {
 
-    std::string msg = "Sampler not specified.";
+    std::string msg = "Sampler not specified.\n";
 
     Log::instance()->error( msg.c_str() );
 
@@ -362,7 +362,7 @@ AlgorithmImpl::createModel( const SamplerPtr& samp, CallbackWrapper *callbackWra
 
   if ( !samp->numPresence() && !samp->numAbsence() ) {
 
-    std::string msg = "Cannot create model without any presence or absence point.";
+    std::string msg = "Cannot create model without any presence or absence point.\n";
 
     Log::instance()->error( msg.c_str() );
 
@@ -383,7 +383,7 @@ AlgorithmImpl::createModel( const SamplerPtr& samp, CallbackWrapper *callbackWra
     }
     else {
 
-      std::string msg = "Normalizer not specified.";
+      std::string msg = "Normalizer not specified.\n";
 
       Log::instance()->error( msg.c_str() );
 
@@ -393,7 +393,7 @@ AlgorithmImpl::createModel( const SamplerPtr& samp, CallbackWrapper *callbackWra
 
   if ( ! initialize() ) {
 
-    std::string msg = "Algorithm could not be initialized.";
+    std::string msg = "Algorithm could not be initialized.\n";
 
     Log::instance()->error( msg.c_str() );
 
@@ -416,7 +416,7 @@ AlgorithmImpl::createModel( const SamplerPtr& samp, CallbackWrapper *callbackWra
 
         if ( abort ) {
 
-          Log::instance()->error( "Model creation aborted." );
+          Log::instance()->error( "Model creation aborted.\n" );
           break;
         }
       }
@@ -468,7 +468,7 @@ AlgorithmImpl::createModel( const SamplerPtr& samp, CallbackWrapper *callbackWra
 
   if ( abort ) {
 
-    std::string msg = "Model creation aborted.";
+    std::string msg = "Model creation aborted.\n";
 
     Log::instance()->error( msg.c_str() );
 
@@ -477,7 +477,7 @@ AlgorithmImpl::createModel( const SamplerPtr& samp, CallbackWrapper *callbackWra
 
   if ( ! done() ) {
 
-    std::string msg = "Algorithm not done.";
+    std::string msg = "Algorithm not done.\n";
 
     Log::instance()->error( msg.c_str() );
 
@@ -486,7 +486,7 @@ AlgorithmImpl::createModel( const SamplerPtr& samp, CallbackWrapper *callbackWra
 
   if ( ! finalize() ) {
 
-    std::string msg = "Algorithm not finalized.";
+    std::string msg = "Algorithm not finalized.\n";
 
     Log::instance()->error( msg.c_str() );
 
