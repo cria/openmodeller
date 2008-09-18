@@ -63,7 +63,7 @@ int omws__getLayers(void *_, struct omws__getLayersResponse *out);
 
 /** Create a distribution model (not a map!) using all input parameters.
  *
- * @param omws__createModel XML with model creation parameters 
+ * @param om__ModelParameters XML with model creation parameters 
  * @param ticket Job identification.
  * @return standard gSOAP integer code
  */
@@ -83,9 +83,31 @@ struct omws__getModelResponse
 //gsoap om service method-documentation: getModel Retrieves a serialized model given a ticket.
 int omws__getModel(xsd__string ticket, struct omws__getModelResponse *out);
 
+/** Test a distribution model.
+ *
+ * @param om__TestParameters XML with parameters to test a model
+ * @param ticket Job identification.
+ * @return standard gSOAP integer code
+ */
+//gsoap om service method-documentation: testModel Test a given distribution model with the given points
+int omws__testModel(XML om__TestParameters, xsd__string &ticket);
+
+/** Return type of testModel */
+struct omws__testResponse
+{
+   XML om__TestResultEnvelope;
+}; 
+
+/** Return the result of a test.
+ * @param ticket Job identification.
+ * @return standard gSOAP integer code
+ */
+//gsoap om service method-documentation: getTestResult Retrieves the result of a test.
+int omws__getTestResult(xsd__string ticket, struct omws__testResponse *out);
+
 /** Project a distribution model (creating a map) using all input parameters.
  *
- * @param omws__projectModel XML with model projection parameters 
+ * @param om__ProjectionParameters XML with model projection parameters 
  * @param ticket Job identification.
  * @return standard gSOAP integer code
  */
