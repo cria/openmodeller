@@ -33,6 +33,11 @@
      <element ref="om:ModelParameters" minOccurs="0" maxOccurs="1" nillable="true"/>
    </sequence>
   </complexType>
+  <complexType name="testModel">
+   <sequence>
+     <element ref="om:TestParameters" minOccurs="0" maxOccurs="1" nillable="true"/>
+   </sequence>
+  </complexType>
   <complexType name="projectModel">
    <sequence>
      <element ref="om:ProjectionParameters" minOccurs="0" maxOccurs="1" nillable="true"/>
@@ -113,6 +118,38 @@
    <complexType>
     <sequence>
      <element ref="om:ModelEnvelope" minOccurs="0" maxOccurs="1" nillable="true"/>
+    </sequence>
+   </complexType>
+  </element>
+  <!-- operation request element -->
+  <element name="testModel">
+   <complexType>
+    <sequence>
+     <element ref="om:TestParameters" minOccurs="0" maxOccurs="1" nillable="true"/>
+    </sequence>
+   </complexType>
+  </element>
+  <!-- operation response element -->
+  <element name="testModelResponse">
+   <complexType>
+    <sequence>
+     <element name="ticket" type="xsd:string" minOccurs="1" maxOccurs="1"/>
+    </sequence>
+   </complexType>
+  </element>
+  <!-- operation request element -->
+  <element name="getTestResult">
+   <complexType>
+    <sequence>
+     <element name="ticket" type="xsd:string" minOccurs="0" maxOccurs="1" nillable="true"/>
+    </sequence>
+   </complexType>
+  </element>
+  <!-- operation response element -->
+  <element name="testResponse">
+   <complexType>
+    <sequence>
+     <element ref="om:TestResultEnvelope" minOccurs="0" maxOccurs="1" nillable="true"/>
     </sequence>
    </complexType>
   </element>
@@ -273,6 +310,22 @@
  <part name="parameters" element="omws:getModelResponse"/>
 </message>
 
+<message name="testModelRequest">
+ <part name="parameters" element="omws:testModel"/>
+</message>
+
+<message name="testModelResponse">
+ <part name="parameters" element="omws:testModelResponse"/>
+</message>
+
+<message name="getTestResult">
+ <part name="parameters" element="omws:getTestResult"/>
+</message>
+
+<message name="testResponse">
+ <part name="parameters" element="omws:testResponse"/>
+</message>
+
 <message name="projectModelRequest">
  <part name="parameters" element="omws:projectModel"/>
 </message>
@@ -359,6 +412,16 @@
   <input message="tns:getModel"/>
   <output message="tns:getModelResponse"/>
  </operation>
+ <operation name="testModel">
+  <documentation>Service definition of function omws__testModel</documentation>
+  <input message="tns:testModelRequest"/>
+  <output message="tns:testModelResponse"/>
+ </operation>
+ <operation name="getTestResult">
+  <documentation>Service definition of function omws__getTestResult</documentation>
+  <input message="tns:getTestResult"/>
+  <output message="tns:testResponse"/>
+ </operation>
  <operation name="projectModel">
   <documentation>Service definition of function omws__projectModel</documentation>
   <input message="tns:projectModelRequest"/>
@@ -435,6 +498,24 @@
   </output>
  </operation>
  <operation name="getModel">
+  <SOAP:operation soapAction=""/>
+  <input>
+     <SOAP:body parts="parameters" use="literal"/>
+  </input>
+  <output>
+     <SOAP:body parts="parameters" use="literal"/>
+  </output>
+ </operation>
+ <operation name="testModel">
+  <SOAP:operation soapAction=""/>
+  <input>
+     <SOAP:body parts="parameters" use="literal"/>
+  </input>
+  <output>
+     <SOAP:body parts="parameters" use="literal"/>
+  </output>
+ </operation>
+ <operation name="getTestResult">
   <SOAP:operation soapAction=""/>
   <input>
      <SOAP:body parts="parameters" use="literal"/>

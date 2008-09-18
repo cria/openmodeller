@@ -51,6 +51,8 @@ using namespace std;
 #define OMWS_TICKET_TEMPLATE "XXXXXX"
 #define OMWS_MODEL_CREATION_REQUEST_PREFIX "model_req."
 #define OMWS_MODEL_CREATION_RESPONSE_PREFIX "model_resp."
+#define OMWS_TEST_REQUEST_PREFIX "test_req."
+#define OMWS_TEST_RESPONSE_PREFIX "test_resp."
 #define OMWS_MODEL_PROJECTION_REQUEST_PREFIX "proj_req."
 #define OMWS_MODEL_PROJECTION_PROCESSING_PREFIX "proj_proc."
 #define OMWS_PROJECTION_STATISTICS_PREFIX "stats."
@@ -460,6 +462,82 @@ omws__createModel( struct soap *soap, XML om__ModelParameters, xsd__string &tick
   return SOAP_OK;
 }
 
+/********************/
+/**** test Model ****/
+int 
+omws__testModel( struct soap *soap, XML om__TestParameters, xsd__string &ticket )
+{
+  string ticketFileName( gFileParser.get( "TICKET_DIRECTORY" ) );
+
+  // Append slash if necessary
+  if ( ticketFileName.find_last_of( "/" ) != ticketFileName.size() - 1 ) {
+
+    ticketFileName.append( "/" );
+  }
+
+  // Copy name to future request file name
+  string requestFileName( ticketFileName );
+
+  // Append ticket template
+  ticketFileName.append( OMWS_TICKET_TEMPLATE );
+
+  // Temporary variable to generate ticket and copy its value
+  char *tempFileName = (char*)soap_malloc( soap, ticketFileName.length() +1 );
+
+  strcpy( tempFileName, ticketFileName.c_str() );
+
+  // Generate unique ticket file
+  int fd = mkstemp( tempFileName );
+
+  if ( fd == -1 ) {
+
+    return soap_receiver_fault( soap, "Could not create ticket", NULL );
+  }
+
+  // Get ticket value
+  ticket = strrchr( tempFileName, '/' ) + 1;
+
+  // Append prefix to request file
+  requestFileName.append( OMWS_TEST_REQUEST_PREFIX );
+
+  // Append ticket to request file
+  requestFileName.append( ticket );
+
+  // Create and open request file - at this point there should be no file with the same name!
+  FILE *file = fopen( requestFileName.c_str(), "w" );
+
+  if ( file == NULL ) {
+
+     return soap_receiver_fault( soap, "Could not open ticket", NULL );
+  }
+
+  // Add wrapper element
+  wchar_t openRoot[] = L"<TestParameters>";
+
+  if ( fputws( openRoot, file ) < 0 ) {
+
+    return soap_receiver_fault( soap, "Could not start processing ticket", NULL );
+  }
+
+  // Put content of model request there
+  if ( fputws( om__TestParameters, file ) < 0 ) {
+
+    return soap_receiver_fault( soap, "Could not process request", NULL );
+  }
+
+  // Close wrapper element
+  wchar_t closeRoot[] = L"</TestParameters>";
+
+  if ( fputws( closeRoot, file ) < 0 ) {
+
+    return soap_receiver_fault( soap, "Could not finish processing ticket", NULL );
+  }
+
+  fclose( file );
+
+  return SOAP_OK;
+}
+
 /***********************/
 /**** project Model ****/
 int 
@@ -537,7 +615,7 @@ omws__projectModel( struct soap *soap, XML om__ProjectionParameters, xsd__string
 }
 
 /**********************/
-/**** get progress ****/
+/**** get Progress ****/
 int 
 omws__getProgress( struct soap *soap, xsd__string ticket, xsd__int &progress )
 { 
@@ -617,7 +695,7 @@ omws__getProgress( struct soap *soap, xsd__string ticket, xsd__int &progress )
 }
 
 /*****************/
-/**** get log ****/
+/**** get Log ****/
 int 
 omws__getLog( struct soap *soap, xsd__string ticket, xsd__string &log )
 { 
@@ -665,7 +743,7 @@ omws__getLog( struct soap *soap, xsd__string ticket, xsd__string &log )
 }
 
 /*******************/
-/**** get model ****/
+/**** get Model ****/
 int 
 omws__getModel( struct soap *soap, xsd__string ticket, struct omws__getModelResponse *out )
 { 
@@ -711,8 +789,55 @@ omws__getModel( struct soap *soap, xsd__string ticket, struct omws__getModelResp
   return SOAP_OK;
 }
 
+/*************************/
+/**** get Test Result ****/
+int 
+omws__getTestResult( struct soap *soap, xsd__string ticket, struct omws__testResponse *out )
+{ 
+  if ( ! ticket ) {
+
+    return soap_sender_fault( soap, "Missing ticket in request", NULL );
+  }
+
+  string fileName( gFileParser.get( "TICKET_DIRECTORY" ) );
+
+  // Append slash if necessary
+  if ( fileName.find_last_of( "/" ) != fileName.size() - 1 ) {
+
+    fileName.append( "/" );
+  }
+
+  fileName.append( OMWS_TEST_RESPONSE_PREFIX );
+  fileName.append( ticket );
+
+  fstream fin;
+  fin.open( fileName.c_str(), ios::in );
+
+  if ( fin.is_open() ) {
+
+    ostringstream oss;
+    string line;
+
+    while ( ! fin.eof() )
+    {
+      getline( fin, line );
+      oss << line << endl;
+    }
+
+    out->om__TestResultEnvelope = convertToWideChar( oss.str().c_str() );
+
+    fin.close();
+  }
+  else {
+
+    return soap_receiver_fault( soap, "Test result unavailable", NULL );
+  }
+
+  return SOAP_OK;
+}
+
 /**********************************/
-/**** get layer as attachment ****/
+/**** get Layer As Attachment ****/
 int 
 omws__getLayerAsAttachment( struct soap *soap, xsd__string id, xsd__base64Binary &file )
 { 
@@ -730,7 +855,7 @@ omws__getLayerAsAttachment( struct soap *soap, xsd__string id, xsd__base64Binary
 }
 
 /**************************/
-/**** get layer as URL ****/
+/**** get Layer As URL ****/
 int 
 omws__getLayerAsUrl( struct soap *soap, xsd__string id, xsd__string &url )
 { 
@@ -765,8 +890,8 @@ omws__getLayerAsUrl( struct soap *soap, xsd__string id, xsd__string &url )
   return SOAP_OK;
 }
 
-/********************************/
-/**** get layer as a WCS URL ****/
+/******************************/
+/**** get Layer As WCS URL ****/
 int 
 omws__getLayerAsWcs( struct soap *soap, xsd__string id, xsd__string &url )
 { 
@@ -805,7 +930,7 @@ omws__getLayerAsWcs( struct soap *soap, xsd__string id, xsd__string &url )
 }
 
 /*****************************/
-/**** get projection data ****/
+/**** get Projection Data ****/
 int 
 omws__getProjectionMetadata( struct soap *soap, xsd__string ticket, struct omws__getProjectionMetadataResponse *out )
 { 

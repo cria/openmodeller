@@ -16,6 +16,11 @@
      <element ref="om:ModelParameters" minOccurs="0" maxOccurs="1" nillable="true"/>
    </sequence>
   </complexType>
+  <complexType name="testModel">
+   <sequence>
+     <element ref="om:TestParameters" minOccurs="0" maxOccurs="1" nillable="true"/>
+   </sequence>
+  </complexType>
   <complexType name="projectModel">
    <sequence>
      <element ref="om:ProjectionParameters" minOccurs="0" maxOccurs="1" nillable="true"/>
@@ -96,6 +101,38 @@
    <complexType>
     <sequence>
      <element ref="om:ModelEnvelope" minOccurs="0" maxOccurs="1" nillable="true"/>
+    </sequence>
+   </complexType>
+  </element>
+  <!-- operation request element -->
+  <element name="testModel">
+   <complexType>
+    <sequence>
+     <element ref="om:TestParameters" minOccurs="0" maxOccurs="1" nillable="true"/>
+    </sequence>
+   </complexType>
+  </element>
+  <!-- operation response element -->
+  <element name="testModelResponse">
+   <complexType>
+    <sequence>
+     <element name="ticket" type="xsd:string" minOccurs="1" maxOccurs="1"/>
+    </sequence>
+   </complexType>
+  </element>
+  <!-- operation request element -->
+  <element name="getTestResult">
+   <complexType>
+    <sequence>
+     <element name="ticket" type="xsd:string" minOccurs="0" maxOccurs="1" nillable="true"/>
+    </sequence>
+   </complexType>
+  </element>
+  <!-- operation response element -->
+  <element name="testResponse">
+   <complexType>
+    <sequence>
+     <element ref="om:TestResultEnvelope" minOccurs="0" maxOccurs="1" nillable="true"/>
     </sequence>
    </complexType>
   </element>

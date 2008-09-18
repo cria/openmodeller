@@ -6,7 +6,7 @@
 */
 #include "soapH.h"
 
-SOAP_SOURCE_STAMP("@(#) soapServer.cpp ver 2.7.6d 2007-04-04 21:53:59 GMT")
+SOAP_SOURCE_STAMP("@(#) soapServer.cpp ver 2.7.6d 2008-09-16 19:53:58 GMT")
 
 
 SOAP_FMAC5 int SOAP_FMAC6 soap_serve(struct soap *soap)
@@ -81,6 +81,10 @@ SOAP_FMAC5 int SOAP_FMAC6 soap_serve_request(struct soap *soap)
 		return soap_serve_omws__createModel(soap);
 	if (!soap_match_tag(soap, soap->tag, "omws:getModel"))
 		return soap_serve_omws__getModel(soap);
+	if (!soap_match_tag(soap, soap->tag, "omws:testModel"))
+		return soap_serve_omws__testModel(soap);
+	if (!soap_match_tag(soap, soap->tag, "omws:getTestResult"))
+		return soap_serve_omws__getTestResult(soap);
 	if (!soap_match_tag(soap, soap->tag, "omws:projectModel"))
 		return soap_serve_omws__projectModel(soap);
 	if (!soap_match_tag(soap, soap->tag, "omws:getProgress"))
@@ -297,6 +301,88 @@ SOAP_FMAC5 int SOAP_FMAC6 soap_serve_omws__getModel(struct soap *soap)
 	 || soap_putheader(soap)
 	 || soap_body_begin_out(soap)
 	 || soap_put_omws__getModelResponse(soap, &out, "omws:getModelResponse", "")
+	 || soap_body_end_out(soap)
+	 || soap_envelope_end_out(soap)
+	 || soap_end_send(soap))
+		return soap->error;
+	return soap_closesock(soap);
+}
+
+SOAP_FMAC5 int SOAP_FMAC6 soap_serve_omws__testModel(struct soap *soap)
+{	struct omws__testModel soap_tmp_omws__testModel;
+	struct omws__testModelResponse soap_tmp_omws__testModelResponse;
+	soap_default_omws__testModelResponse(soap, &soap_tmp_omws__testModelResponse);
+	soap_default_omws__testModel(soap, &soap_tmp_omws__testModel);
+	soap->encodingStyle = NULL;
+	if (!soap_get_omws__testModel(soap, &soap_tmp_omws__testModel, "omws:testModel", NULL))
+		return soap->error;
+	if (soap_body_end_in(soap)
+	 || soap_envelope_end_in(soap)
+	 || soap_end_recv(soap))
+		return soap->error;
+	soap->error = omws__testModel(soap, soap_tmp_omws__testModel.om__TestParameters, soap_tmp_omws__testModelResponse.ticket);
+	if (soap->error)
+		return soap->error;
+	soap_serializeheader(soap);
+	soap_serialize_omws__testModelResponse(soap, &soap_tmp_omws__testModelResponse);
+	if (soap_begin_count(soap))
+		return soap->error;
+	if (soap->mode & SOAP_IO_LENGTH)
+	{	if (soap_envelope_begin_out(soap)
+		 || soap_putheader(soap)
+		 || soap_body_begin_out(soap)
+		 || soap_put_omws__testModelResponse(soap, &soap_tmp_omws__testModelResponse, "omws:testModelResponse", "")
+		 || soap_body_end_out(soap)
+		 || soap_envelope_end_out(soap))
+			 return soap->error;
+	};
+	if (soap_end_count(soap)
+	 || soap_response(soap, SOAP_OK)
+	 || soap_envelope_begin_out(soap)
+	 || soap_putheader(soap)
+	 || soap_body_begin_out(soap)
+	 || soap_put_omws__testModelResponse(soap, &soap_tmp_omws__testModelResponse, "omws:testModelResponse", "")
+	 || soap_body_end_out(soap)
+	 || soap_envelope_end_out(soap)
+	 || soap_end_send(soap))
+		return soap->error;
+	return soap_closesock(soap);
+}
+
+SOAP_FMAC5 int SOAP_FMAC6 soap_serve_omws__getTestResult(struct soap *soap)
+{	struct omws__getTestResult soap_tmp_omws__getTestResult;
+	struct omws__testResponse out;
+	soap_default_omws__testResponse(soap, &out);
+	soap_default_omws__getTestResult(soap, &soap_tmp_omws__getTestResult);
+	soap->encodingStyle = NULL;
+	if (!soap_get_omws__getTestResult(soap, &soap_tmp_omws__getTestResult, "omws:getTestResult", NULL))
+		return soap->error;
+	if (soap_body_end_in(soap)
+	 || soap_envelope_end_in(soap)
+	 || soap_end_recv(soap))
+		return soap->error;
+	soap->error = omws__getTestResult(soap, soap_tmp_omws__getTestResult.ticket, &out);
+	if (soap->error)
+		return soap->error;
+	soap_serializeheader(soap);
+	soap_serialize_omws__testResponse(soap, &out);
+	if (soap_begin_count(soap))
+		return soap->error;
+	if (soap->mode & SOAP_IO_LENGTH)
+	{	if (soap_envelope_begin_out(soap)
+		 || soap_putheader(soap)
+		 || soap_body_begin_out(soap)
+		 || soap_put_omws__testResponse(soap, &out, "omws:testResponse", "")
+		 || soap_body_end_out(soap)
+		 || soap_envelope_end_out(soap))
+			 return soap->error;
+	};
+	if (soap_end_count(soap)
+	 || soap_response(soap, SOAP_OK)
+	 || soap_envelope_begin_out(soap)
+	 || soap_putheader(soap)
+	 || soap_body_begin_out(soap)
+	 || soap_put_omws__testResponse(soap, &out, "omws:testResponse", "")
 	 || soap_body_end_out(soap)
 	 || soap_envelope_end_out(soap)
 	 || soap_end_send(soap))
