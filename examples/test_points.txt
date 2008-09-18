@@ -1,0 +1,5 @@
+#id	label	long	lat	abundance
+1	Acacia aculeatissima	-67.845739	-11.327340	1
+2	Acacia aculeatissima	-69.549969	-12.350801	1
+3	Acacia aculeatissima	-68.245959	-12.060403	0
+4	Acacia aculeatissima	-74.534959	-15.340201	0

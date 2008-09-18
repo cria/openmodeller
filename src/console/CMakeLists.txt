@@ -17,10 +17,10 @@ SET (OMSAMPLEDUMP_SRCS
     request_file.cpp 
     file_parser.cpp
     )
-SET (OMTESTMODEL_SRCS
-    om_testmodel.cpp 
-    request_file.cpp 
-    file_parser.cpp
+SET (OMTEST_SRCS
+    om_test.cpp 
+     getopts/getopts.C 
+     om_cmd_utils.cpp 
     )
 SET (OMCREATE_SRCS
      om_create.cpp
@@ -110,8 +110,8 @@ TARGET_LINK_LIBRARIES(om_dump openmodeller)
 ADD_EXECUTABLE (om_sampledump ${OMSAMPLEDUMP_SRCS})
 TARGET_LINK_LIBRARIES(om_sampledump openmodeller)
 
-ADD_EXECUTABLE (om_testmodel ${OMTESTMODEL_SRCS})
-TARGET_LINK_LIBRARIES(om_testmodel openmodeller)
+ADD_EXECUTABLE (om_test ${OMTEST_SRCS})
+TARGET_LINK_LIBRARIES(om_test openmodeller)
 
 if (X11_FOUND)
   #MESSAGE ("Building with X11 includes at ${X11_INCLUDE_DIR}...")
@@ -147,7 +147,7 @@ INSTALL(TARGETS om_create RUNTIME DESTINATION ${OM_BIN_DIR})
 INSTALL(TARGETS om_project RUNTIME DESTINATION ${OM_BIN_DIR})
 INSTALL(TARGETS om_dump RUNTIME DESTINATION ${OM_BIN_DIR})
 INSTALL(TARGETS om_sampledump RUNTIME DESTINATION ${OM_BIN_DIR})
-INSTALL(TARGETS om_testmodel RUNTIME DESTINATION ${OM_BIN_DIR})
+INSTALL(TARGETS om_test RUNTIME DESTINATION ${OM_BIN_DIR})
 if (X11_FOUND)
   INSTALL(TARGETS om_viewer RUNTIME DESTINATION ${OM_BIN_DIR})
   INSTALL(TARGETS om_niche RUNTIME DESTINATION ${OM_BIN_DIR})
@@ -159,6 +159,7 @@ IF (UNIX AND NOT OM_BUNDLE)
                  ${CMAKE_CURRENT_SOURCE_DIR}/man/om_points.1 
                  ${CMAKE_CURRENT_SOURCE_DIR}/man/om_pseudo.1 
                  ${CMAKE_CURRENT_SOURCE_DIR}/man/om_create.1 
+                 ${CMAKE_CURRENT_SOURCE_DIR}/man/om_test.1 
                  ${CMAKE_CURRENT_SOURCE_DIR}/man/om_project.1 
            DESTINATION ${CMAKE_INSTALL_PREFIX}/man/man1)
 ENDIF (UNIX AND NOT OM_BUNDLE)
