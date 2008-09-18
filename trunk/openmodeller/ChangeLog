@@ -2,7 +2,7 @@ Release 0.6.1 (2008-?-?)
 ------------------------
 SVN revision: 
 
-	* 
+	* Renamed om_testmodel to om_test. The new version is using getopts and accepts XML requests. A man page was also created.
 
 
 Release 0.6.0 (2008-07-07)

@@ -4,7 +4,7 @@
  xmlns:xs="http://www.w3.org/2001/XMLSchema"
  elementFormDefault="qualified"
  attributeFormDefault="unqualified"
- version="1.0.8" xml:lang="EN">
+ version="1.0.9" xml:lang="EN">
   <xs:annotation>
     <xs:documentation xml:lang="en">
         XML Schema with all basic element and type definitions used by openModeller.
@@ -22,6 +22,10 @@
   <xs:element name="ModelParameters" type="ModelParametersType"/>
 
   <xs:element name="ModelEnvelope" type="ModelEnvelopeType"/>
+
+  <xs:element name="TestParameters" type="TestParametersType"/>
+
+  <xs:element name="TestResultEnvelope" type="TestResultEnvelopeType"/>
 
   <xs:element name="SerializedModel" type="SerializedModelType"/>
 
@@ -317,6 +321,19 @@
     <xs:sequence>
       <xs:element name="Sampler" type="SamplerType"/>
       <xs:element name="Algorithm" type="SerializedAlgorithmType"/>
+      <xs:element name="Statistics" type="ModelStatisticsType" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="TestParametersType">
+    <xs:sequence>
+      <xs:element name="Sampler" type="SamplerType"/>
+      <xs:element name="Algorithm" type="SerializedAlgorithmType"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="TestResultEnvelopeType">
+    <xs:sequence>
       <xs:element name="Statistics" type="ModelStatisticsType" minOccurs="0"/>
     </xs:sequence>
   </xs:complexType>

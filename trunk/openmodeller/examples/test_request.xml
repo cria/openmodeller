@@ -1,0 +1,31 @@
+<TestParameters>
+  <Sampler>
+    <Environment NumLayers="2">
+      <Map Id="rain_coolest.tif" IsCategorical="0"/>
+      <Map Id="temp_avg.tif" IsCategorical="0"/>
+      <Mask Id="rain_coolest.tif"/>
+    </Environment>
+    <Presence Label="Acacia aculeatissima">
+      <CoordinateSystem>
+         GEOGCS["WGS 84",DATUM["WGS_1984",SPHEROID["WGS 84",6378137,298.257223563,AUTHORITY["EPSG","7030"]],TOWGS84[0,0,0,0,0,0,0],AUTHORITY["EPSG","6326"]],PRIMEM["Greenwich",0,AUTHORITY["EPSG","8901"]],UNIT["degree",0.0174532925199433,AUTHORITY["EPSG","9108"]],AXIS["Lat",NORTH],AXIS["Long",EAST],AUTHORITY["EPSG","4326"]]
+      </CoordinateSystem>
+      <Point Id='1' X='-67.845739' Y='-11.327340' />
+      <Point Id='2' X='-69.549969' Y='-12.350801' />
+    </Presence>
+    <Absence Label="Acacia aculeatissima">
+      <CoordinateSystem>
+         GEOGCS["WGS 84",DATUM["WGS_1984",SPHEROID["WGS 84",6378137,298.257223563,AUTHORITY["EPSG","7030"]],TOWGS84[0,0,0,0,0,0,0],AUTHORITY["EPSG","6326"]],PRIMEM["Greenwich",0,AUTHORITY["EPSG","8901"]],UNIT["degree",0.0174532925199433,AUTHORITY["EPSG","9108"]],AXIS["Lat",NORTH],AXIS["Long",EAST],AUTHORITY["EPSG","4326"]]
+      </CoordinateSystem>
+      <Point Id='3' X='-68.245959' Y='-12.060403' />
+      <Point Id='4' X='-74.534959' Y='-15.340201' />
+    </Absence>
+  </Sampler>
+  <Algorithm Id="BIOCLIM" Version="0.2">
+    <Parameters>
+      <Parameter Id="StandardDeviationCutoff" Value="0.9"/>
+    </Parameters>
+    <Model>
+      <Bioclim Mean="208.8333333333333 2446.728352864583" StdDev="93.20701153883221 95.8400666007785" Minimum="90 2285.860107421875" Maximum="305 2565.010009765625"/>
+      </Model>
+  </Algorithm>
+</TestParameters>
