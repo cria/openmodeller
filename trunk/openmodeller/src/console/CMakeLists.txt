@@ -22,8 +22,8 @@ SET (OMTEST_SRCS
      getopts/getopts.C 
      om_cmd_utils.cpp 
     )
-SET (OMCREATE_SRCS
-     om_create.cpp
+SET (OMMODEL_SRCS
+     om_model.cpp
      getopts/getopts.C 
      om_cmd_utils.cpp 
      )
@@ -98,8 +98,8 @@ INCLUDE_DIRECTORIES(
 ADD_EXECUTABLE (om_console ${OMCONSOLE_SRCS})
 TARGET_LINK_LIBRARIES(om_console openmodeller )
 
-ADD_EXECUTABLE (om_create ${OMCREATE_SRCS})
-TARGET_LINK_LIBRARIES(om_create openmodeller)
+ADD_EXECUTABLE (om_model ${OMMODEL_SRCS})
+TARGET_LINK_LIBRARIES(om_model openmodeller)
 
 ADD_EXECUTABLE (om_project ${OMPROJECT_SRCS})
 TARGET_LINK_LIBRARIES(om_project openmodeller)
@@ -143,7 +143,7 @@ INSTALL(TARGETS om_console RUNTIME DESTINATION ${OM_BIN_DIR})
 INSTALL(TARGETS om_algorithm RUNTIME DESTINATION ${OM_BIN_DIR})
 INSTALL(TARGETS om_points RUNTIME DESTINATION ${OM_BIN_DIR})
 INSTALL(TARGETS om_pseudo RUNTIME DESTINATION ${OM_BIN_DIR})
-INSTALL(TARGETS om_create RUNTIME DESTINATION ${OM_BIN_DIR})
+INSTALL(TARGETS om_model RUNTIME DESTINATION ${OM_BIN_DIR})
 INSTALL(TARGETS om_project RUNTIME DESTINATION ${OM_BIN_DIR})
 INSTALL(TARGETS om_dump RUNTIME DESTINATION ${OM_BIN_DIR})
 INSTALL(TARGETS om_sampledump RUNTIME DESTINATION ${OM_BIN_DIR})
@@ -158,7 +158,7 @@ IF (UNIX AND NOT OM_BUNDLE)
                  ${CMAKE_CURRENT_SOURCE_DIR}/man/om_algorithm.1 
                  ${CMAKE_CURRENT_SOURCE_DIR}/man/om_points.1 
                  ${CMAKE_CURRENT_SOURCE_DIR}/man/om_pseudo.1 
-                 ${CMAKE_CURRENT_SOURCE_DIR}/man/om_create.1 
+                 ${CMAKE_CURRENT_SOURCE_DIR}/man/om_model.1 
                  ${CMAKE_CURRENT_SOURCE_DIR}/man/om_test.1 
                  ${CMAKE_CURRENT_SOURCE_DIR}/man/om_project.1 
            DESTINATION ${CMAKE_INSTALL_PREFIX}/man/man1)

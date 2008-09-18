@@ -61,7 +61,7 @@ int main( int argc, char **argv ) {
     switch ( option ) {
 
       case 0:
-        printf("om_create 0.2.2\n");
+        printf("om_model 0.2.2\n");
         printf("This is free software; see the source for copying conditions. There is NO\n");
         printf("warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n");
         exit(0);
@@ -193,6 +193,6 @@ int main( int argc, char **argv ) {
       progressFileCallback( -2.0, &prog_data );
     }
 
-    printf( "om_create aborted: %s\n", e.what() );
+    printf( "om_model aborted: %s\n", e.what() );
   }
 }
