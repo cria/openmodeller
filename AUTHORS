@@ -63,6 +63,10 @@ Poli - Escola Politécninca da Universidade de São Paulo:
 
      Helped implementing the jackknife pre-analysis.
 
+ * Silvio Luiz Stanzani <silvio_ls [at] yahoo . com . br>
+
+     Enabled integration with Condor in the modelling server.
+
 Other individual collaborators
 
  * Lin, Cheng-Tao <b89605222 [at] ntu . edu . tw>
