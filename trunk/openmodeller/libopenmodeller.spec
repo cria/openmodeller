@@ -84,8 +84,11 @@ rm -rf $RPM_BUILD_ROOT
 %{prefix}/share/openmodeller/examples
 /etc/openmodeller/scheduler.sh
 /etc/openmodeller/server.conf
+/etc/openmodeller/vrts/bytehfa.vrt
 
 %changelog -n libopenmodeller
+* Mon Sep 22 2008 - Renato De Giovanni <renato [at] cria . org . br>
+- install virtual raster template file
 * Mon Jun 23 2008 - Renato De Giovanni <renato [at] cria . org . br>
 - replaced automake commands by cmake ones
 - included data dir in libopenmodeller package
