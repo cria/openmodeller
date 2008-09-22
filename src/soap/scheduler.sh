@@ -91,13 +91,15 @@ for req in `find $TICKET_DIRECTORY/test_req.* -type f 2> /dev/null`; do
   resp=$TICKET_DIRECTORY"/test_resp."$ticket
   log=$TICKET_DIRECTORY"/"$ticket
 
+  test_prog=$TICKET_DIRECTORY"/prog."$ticket
+
   # Rename file, avoiding that another process take it
   mv "$req" "$moved"
 
   # if condor_integration then create the script and submit
   if [[ "$CONDOR_INTEGRATION" == "yes" ]]; then
     echo "universe        = vanilla" >> $TICKET_DIRECTORY"/condor_sc."$ticket
-    echo "arguments = --xml-req "$moved" --result-file "$resp>> $TICKET_DIRECTORY"/condor_sc."$ticket
+    echo "arguments = --xml-req "$moved" --result-file "$resp" --prog-file "$test_prog>> $TICKET_DIRECTORY"/condor_sc."$ticket
     echo "executable = /home/silvio/om_serial/bin/om_test " >> $TICKET_DIRECTORY"/condor_sc."$ticket
     echo "environment = LD_LIBRARY_PATH=/home/silvio/om_serial/lib:/home/om/bin/lib_extern/lib" >> $TICKET_DIRECTORY"/condor_sc."$ticket
     echo "output          = "$TICKET_DIRECTORY"/om_test_log"$ticket".out" >> $TICKET_DIRECTORY"/condor_sc."$ticket
@@ -113,7 +115,7 @@ for req in `find $TICKET_DIRECTORY/test_req.* -type f 2> /dev/null`; do
     /application/condor/bin/condor_submit $TICKET_DIRECTORY"/condor_sc."$ticket
   else
     # no Condor - execute om_test directly
-    "$OM_BIN_DIR"/om_test --xml-req "$moved" --result-file "$resp" --log-file "$log"
+    "$OM_BIN_DIR"/om_test --xml-req "$moved" --result-file "$resp" --log-file "$log" --prog-file "$test_prog"
   fi  
   exit 1
 done
