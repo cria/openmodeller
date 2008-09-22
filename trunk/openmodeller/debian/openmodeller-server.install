@@ -1,4 +1,5 @@
 /usr/bin/om_soap_server
 /etc/openmodeller/server.conf
+/etc/openmodeller/vrts/bytehfa.vrt
 /etc/openmodeller/scheduler.sh
 
