@@ -171,7 +171,7 @@ for req in `find $TICKET_DIRECTORY/proj_req.* -type f 2> /dev/null`; do
       # Create a virtual raster from an existing template
       vrt_file=$DISTRIBUTION_MAP_DIRECTORY"/"$ticket".vrt"
       # Get x and y dimensions from raster using gdalinfo
-      info=`gdalinfo $map_img`
+      info=`$GDAL_BIN_DIR/gdalinfo $map_img`
       match=`echo $info | sed -n -e 's#.*Size\sis\s\([0-9\.]*\),\s\([0-9\.]*\).*$#\1 \2#p'`
       match_len=${#match}
       x_size=0
@@ -183,7 +183,7 @@ for req in `find $TICKET_DIRECTORY/proj_req.* -type f 2> /dev/null`; do
       # Replace values in the virtual raster file
       sed 's/\$x/'$x_size'/' "$VRT_TEMPLATE" | sed 's/\$y/'$y_size'/' | sed 's#\$file_name#'$map_img'#' > "$vrt_file"
       # Convert the virtual raster to PNG
-      gdal_translate "$vrt_file" -ot Byte -of PNG "$tempmap_png"
+      "$GDAL_BIN_DIR"/gdal_translate "$vrt_file" -ot Byte -of PNG "$tempmap_png"
       mv "$tempmap_png" "$finalmap_png"
       rm -f "$vrt_file"
     fi
