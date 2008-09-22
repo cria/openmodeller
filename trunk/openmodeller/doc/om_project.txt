@@ -18,7 +18,7 @@ OPTIONS
 
        --log-file        File to store log information.
 
-       --prog-file       File to store progress.
+       --prog-file       File to store progress (-1=queued, -2=aborted, [0,100]=progress).
 
        --stat-file       File to store projection statistics (in XML).
 
