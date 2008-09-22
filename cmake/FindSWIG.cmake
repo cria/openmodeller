@@ -16,7 +16,8 @@ FIND_PATH(SWIG_DIR
   /usr/share/swig1.3
   /usr/lib/swig1.3
   /usr/local/share/swig1.3
-  /usr/local/share/swig/1.3.22)
+  /usr/local/share/swig/1.3.22
+  /usr/share/swig/1.3.31/)
 IF(EXISTS ${SWIG_DIR})
   IF("x${SWIG_DIR}x" STREQUAL "x${CMAKE_ROOT}/Modulesx")
     MESSAGE("SWIG_DIR should not be modules subdirectory of CMake")
