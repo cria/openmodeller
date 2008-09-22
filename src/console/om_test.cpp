@@ -27,6 +27,7 @@ int main( int argc, char **argv ) {
   opts.addOption( "", "result-file", "File to store test result in XML"            , true );
   opts.addOption( "", "log-level"  , "Set the log level (debug, warn, info, error)", true );
   opts.addOption( "", "log-file"   , "Log file"                                    , true );
+  opts.addOption( "" , "prog-file" , "File to store test progress"                 , true );
 
   std::string log_level("info");
   std::string request_file;
@@ -34,6 +35,7 @@ int main( int argc, char **argv ) {
   std::string points_file;
   std::string result_file;
   std::string log_file;
+  std::string progress_file;
 
   if ( ! opts.parse( argc, argv ) ) {
 
@@ -68,9 +70,27 @@ int main( int argc, char **argv ) {
       case 6:
         log_file = opts.getArgs( option );
         break;
+      case 7:
+        progress_file = opts.getArgs( option );
+        break;
       default:
         break;
     }
+  }
+
+  // Initialize progress data if user wants to track progress
+  progress_data prog_data;
+
+  if ( ! progress_file.empty() ) { 
+
+    prog_data.file_name = progress_file;
+
+    time( &prog_data.timestamp );
+
+    prog_data.progress = -3.0;
+
+    // Always create initial file with status "queued" (-1)
+    progressFileCallback( -1.0, &prog_data );
   }
 
   // Log stuff
@@ -107,6 +127,14 @@ int main( int argc, char **argv ) {
   else {
 
     printf( "Please specify either a test request file in XML or a serialized model and a TAB-delimited file with the points to be tested\n");
+
+    // If user is tracking progress
+    if ( ! progress_file.empty() ) { 
+
+      // -2 means aborted
+      progressFileCallback( -2.0, &prog_data );
+    }
+
     exit(-1);
   }
 
@@ -258,8 +286,22 @@ int main( int argc, char **argv ) {
 
       std::cout << endl << flush;
     }
+
+    // If user wants to track progress
+    if ( ! progress_file.empty() ) { 
+
+      // Indicate that the job is finished
+      progressFileCallback( 1.0, &prog_data );
+    }
   }
   catch ( runtime_error e ) {
+
+    // If user is tracking progress
+    if ( ! progress_file.empty() ) { 
+
+      // -2 means aborted
+      progressFileCallback( -2.0, &prog_data );
+    }
 
     printf( "om_test aborted: %s\n", e.what() );
   }
