@@ -78,11 +78,13 @@ my %options = ( 0  => 'Ping service',
 		4  => 'Get job progress', 
 		5  => 'Get model', 
 		6  => 'Get log', 
-		7  => 'Project model', 
-		8  => 'Get projection metadata', 
-		9  => 'Get map as attachment', 
-		10 => 'Get map as URL', 
-		11 => 'Exit' );
+		7  => 'Test model', 
+		8  => 'Get test result', 
+		9  => 'Project model', 
+		10 => 'Get projection metadata', 
+		11 => 'Get map as attachment', 
+		12 => 'Get map as URL', 
+		13 => 'Exit' );
 
 my $option = -1;
 
@@ -122,17 +124,25 @@ while ( $option != $exit_option or not exists( $options{$option-1} ) )
     }
     elsif ($option == 8)
     {
-	$option = ( project_model() ) ? -1 : $exit_option;
+	$option = ( test_model() ) ? -1 : $exit_option;
     }
     elsif ($option == 9)
     {
-	$option = ( get_projection_metadata() ) ? -1 : $exit_option;
+	$option = ( get_test_result() ) ? -1 : $exit_option;
     }
     elsif ($option == 10)
     {
-	$option = ( get_layer_as_attachment() ) ? -1 : $exit_option;
+	$option = ( project_model() ) ? -1 : $exit_option;
     }
     elsif ($option == 11)
+    {
+	$option = ( get_projection_metadata() ) ? -1 : $exit_option;
+    }
+    elsif ($option == 12)
+    {
+	$option = ( get_layer_as_attachment() ) ? -1 : $exit_option;
+    }
+    elsif ($option == 13)
     {
 	$option = ( get_layer_as_url() ) ? -1 : $exit_option;
     }
@@ -748,6 +758,121 @@ sub get_model
     unless ( $response->fault )
     { 
 	print "OK\n";
+    }
+    else
+    {
+	print "Ops, found some problems:\n";
+	print join ', ', $response->faultcode, $response->faultstring; 
+	print "\n";
+	return 0;
+    }
+
+    return 1;
+}
+
+
+####################
+#  Get test result # 
+####################
+sub get_test_result
+{
+    prepare_soap();
+
+    my $method = SOAP::Data
+	-> name( 'getTestResult' )
+        -> encodingStyle( 'http://xml.apache.org/xml-soap/literalxml' )
+	-> prefix( 'omws' )
+        -> uri( $omws_uri );
+
+    ### Get ticket
+
+    my $ticket = get_ticket_from_user();
+
+    if ( ! $ticket )
+    {
+	return 0;
+    }
+
+    print "Requesting test result... ";
+
+    my $soap_ticket = SOAP::Data
+	-> name( 'ticket' )
+	-> type( 'string' )
+	-> value( $ticket );
+    
+    my $response = $soap->call( $method => $soap_ticket );
+
+    unless ( $response->fault )
+    { 
+	print "OK\n";
+    }
+    else
+    {
+	print "Ops, found some problems:\n";
+	print join ', ', $response->faultcode, $response->faultstring; 
+	print "\n";
+	return 0;
+    }
+
+    return 1;
+}
+
+###############
+#  test model # 
+###############
+sub test_model
+{
+    prepare_soap();
+
+    my $method = SOAP::Data
+	-> name( 'testModel' )
+        -> encodingStyle( 'http://xml.apache.org/xml-soap/literalxml' )
+	-> prefix( 'omws' )
+        -> uri( $omws_uri );
+
+    # Hard coded for now
+    my $xml = '<TestParameters xmlns="http://openmodeller.cria.org.br/xml/1.0">
+  <Sampler>
+    <Environment NumLayers="2">
+      <Map Id="/home/renato/projects/openmodeller/examples/layers/rain_coolest.tif" IsCategorical="0"/>
+      <Map Id="/home/renato/projects/openmodeller/examples/layers/temp_avg.tif" IsCategorical="0"/>
+      <Mask Id="/home/renato/projects/openmodeller/examples/layers/rain_coolest.tif"/>
+    </Environment>
+    <Presence Label="Acacia aculeatissima">
+      <CoordinateSystem>
+         GEOGCS["WGS 84",DATUM["WGS_1984",SPHEROID["WGS 84",6378137,298.257223563,AUTHORITY["EPSG","7030"]],TOWGS84[0,0,0,0,0,0,0],AUTHORITY["EPSG","6326"]],PRIMEM["Greenwich",0,AUTHORITY["EPSG","8901"]],UNIT["degree",0.0174532925199433,AUTHORITY["EPSG","9108"]],AXIS["Lat",NORTH],AXIS["Long",EAST],AUTHORITY["EPSG","4326"]]
+      </CoordinateSystem>
+      <Point Id="1" X="-67.845739" Y="-11.327340" />
+      <Point Id="2" X="-69.549969" Y="-12.350801" />
+    </Presence>
+    <Absence Label="Acacia aculeatissima">
+      <CoordinateSystem>
+         GEOGCS["WGS 84",DATUM["WGS_1984",SPHEROID["WGS 84",6378137,298.257223563,AUTHORITY["EPSG","7030"]],TOWGS84[0,0,0,0,0,0,0],AUTHORITY["EPSG","6326"]],PRIMEM["Greenwich",0,AUTHORITY["EPSG","8901"]],UNIT["degree",0.0174532925199433,AUTHORITY["EPSG","9108"]],AXIS["Lat",NORTH],AXIS["Long",EAST],AUTHORITY["EPSG","4326"]]
+      </CoordinateSystem>
+      <Point Id="3" X="-68.245959" Y="-12.060403" />
+      <Point Id="4" X="-74.534959" Y="-15.340201" />
+    </Absence>
+  </Sampler>
+  <Algorithm Id="BIOCLIM" Version="0.2">
+    <Parameters>
+      <Parameter Id="StandardDeviationCutoff" Value="0.9"/>
+    </Parameters>
+    <Model>      <Bioclim Mean="208.8333333333333 2446.728352864583" StdDev="93.20701153883221 95.8400666007785" Minimum="90 2285.860107421875" Maximum="305 2565.010009765625"/>
+      </Model>
+  </Algorithm>
+</TestParameters>';
+
+    # Encode coord system directly in XML to avoid automatic xsi:types for the content
+    my $xml_parameters = SOAP::Data
+	-> type( 'xml' => $xml );
+
+    print "Requesting model test... ";
+    
+    my $response = $soap->call( $method => $xml_parameters );
+
+    unless ( $response->fault )
+    { 
+	print "Your ticket is: ".$response->result ."\n";
     }
     else
     {
