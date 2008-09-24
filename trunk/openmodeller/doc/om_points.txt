@@ -2,7 +2,7 @@ NAME
      om_points - retrieve locality data from a specified source
 
 SYNOPSIS
-       om_points [-] v --version | l --list | s --source PATH/URL n --name POINT_LABEL [ w --wkt SPATIAL_REF_WKT ] [ o --type OUTPUT_TYPE ] [ --log-level LEVEL ]
+       om_points [-] v --version | l --list | s --source PATH/URL n --name POINT_LABEL [ w --wkt SPATIAL_REF_WKT ] [ o --type OUTPUT_TYPE ] [ --split PROPORTION --file1 FILE --file2 FILE ] [ --log-level LEVEL ]
 
 DESCRIPTION
        om_points is a command line tool to retrieve locality data (occurrence points) from a specified source through one of the available drivers in openModeller. Locality data is one of the required inputs to create distribution models.
@@ -31,6 +31,12 @@ OPTIONS
        -w, --wkt         Spatial reference of the points. Optional. Defaults to lat/long datum WGS84. This is only useful if the output will be in XML, when the coordinateSystem tag is displayed. Please note that most drivers (GBIF, TAPIR and TerraLib) already assume that the points are in lat/long datum WGS84. When specified, the value must be in Well-Known Text format, with all double quotes escaped.
 
        -o, --type        Output type (can be TXT or XML). Optional. Defaults to TXT.
+
+       --split           Split points into two subsets using the given proportion (value between 0 and 1). This can be used to create test/training partitions. Results are stored in the files specified with parameters file1 and file2. Optional.
+
+       --file1           File name to store the first subset when points are splitted. Mandatory only when the split parameter is present.
+
+       --file2           File name to store the second subset when points are splitted. Mandatory only when the split parameter is present.
 
        --log-level       openModeller log level: debug, warn, info or error. Defaults to "info".
 
