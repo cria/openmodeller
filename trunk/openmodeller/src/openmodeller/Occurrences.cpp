@@ -33,6 +33,7 @@
 #include <openmodeller/env_io/GeoTransform.hh>
 #include <openmodeller/Configuration.hh>
 #include <openmodeller/Exceptions.hh>
+#include <openmodeller/os_specific.hh>
 
 #include <string>
 using std::string;
@@ -40,6 +41,8 @@ using std::string;
 // String stream is included for the dump method
 #include <sstream>
 using std::ostringstream;
+
+#include <algorithm> // needed for random_shuffle
 
 /****************************************************************/
 /************************ Occurrences ***************************/
@@ -456,6 +459,8 @@ void splitOccurrences(const OccurrencesPtr& occurrences,
   }
 
   // shuffle elements well
+  initRandom();
+
   std::random_shuffle( goToTrainSet.begin(), goToTrainSet.end() );
 
   // traverse occurrences copying them to the right sampler
