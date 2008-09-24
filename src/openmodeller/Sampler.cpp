@@ -40,7 +40,6 @@
 #include <stdio.h>
 
 #include <string>
-#include <algorithm>
 
 #include <openmodeller/Exceptions.hh>
 
