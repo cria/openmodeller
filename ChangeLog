@@ -6,7 +6,7 @@ SVN revision:
 	* Added new method in the modelling service to perform external tests.
 	* Renamed om_testmodel to om_test. The new version is using getopts and accepts XML requests. A man page was also created.
 	* Renamed om_create to om_model.
-
+	* Added new parameter in om_points to split points into test/training with a given proportion.
 
 Release 0.6.0 (2008-07-07)
 --------------------------
@@ -23,7 +23,6 @@ SVN revision: 4453
 	* Removed automake files (now completely replaced by cmake).
 	* Renamed compiled constant that can be used to indicate the location of algorithms from OM_LIB_PATH to OM_ALG_PATH.
 	
-
 Release 0.5.3 (2008-03-26)
 --------------------------
 SVN revision: 4209

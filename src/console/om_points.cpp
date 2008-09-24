@@ -15,6 +15,8 @@
 
 using namespace std;
 
+void writeOutput( ostream & stream, std::string format, OccurrencesPtr presences, OccurrencesPtr absences, std::string label );
+
 int main( int argc, char **argv ) {
 
   Options opts;
@@ -28,6 +30,9 @@ int main( int argc, char **argv ) {
   opts.addOption( "n", "name"     , "Name (label) to filter points"               , true );
   opts.addOption( "w", "wkt"      , "Spatial reference in WKT"                    , true );
   opts.addOption( "o", "type"     , "Output type"                                 , true );
+  opts.addOption( "" , "split"    , "Split points using the specified proportion (0,1)"  , true );
+  opts.addOption( "" , "file1"    , "File name to store 1st subset (used w/ param split)", true );
+  opts.addOption( "" , "file2"    , "File name to store 2nd subset (used w/ param split)", true );
 
   std::string log_level("info");
   bool        list_formats = false;
@@ -35,6 +40,9 @@ int main( int argc, char **argv ) {
   std::string label("");
   std::string wkt("GEOGCS[\"WGS84\",DATUM[\"WGS84\",SPHEROID[\"WGS84\",6378137.0,298.257223563]],PRIMEM[\"Greenwich\",0.0],UNIT[\"degree\",0.017453292519943295],AXIS[\"Longitude\",EAST],AXIS[\"Latitude\",NORTH]]");
   std::string format("TXT");
+  std::string split_prop_string;
+  std::string file1;
+  std::string file2;
 
   if ( ! opts.parse( argc, argv ) ) {
 
@@ -50,7 +58,7 @@ int main( int argc, char **argv ) {
         log_level = opts.getArgs( option );
         break;
       case 1:
-        printf("om_points 0.1.1\n");
+        printf("om_points 0.2\n");
         printf("This is free software; see the source for copying conditions. There is NO\n");
         printf("warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n");
         exit(0);
@@ -70,6 +78,15 @@ int main( int argc, char **argv ) {
       case 6:
         format = opts.getArgs( option );
         break;
+      case 7:
+        split_prop_string = opts.getArgs( option );
+        break;
+      case 8:
+        file1 = opts.getArgs( option );
+        break;
+      case 9:
+        file2 = opts.getArgs( option );
+        break;
       default:
         break;
     }
@@ -87,7 +104,7 @@ int main( int argc, char **argv ) {
 
     if ( list_formats ) {
 
-      // List drivers
+      // Process list drivers request
 
       std::vector<std::string> driver_ids = OccurrencesFactory::instance().getRegisteredDrivers();
 
@@ -128,80 +145,92 @@ int main( int argc, char **argv ) {
 
       return 0;
     }
-    else {
 
-      // Check requirements
-      if ( source.empty() ) {
 
-        printf( "Please specify a source to load points from.\n");
+    // Check requirements
+    if ( source.empty() ) {
+
+      printf( "Please specify a source to load points from.\n");
+      exit(-1);
+    }
+    if ( label.empty() ) {
+
+      printf( "Please specify a name to filter points.\n");
+      exit(-1);
+    }
+
+    // Check parameter split
+    double split_prop = 0.0;
+
+    if ( ! split_prop_string.empty() ) {
+
+      if ( file1.empty() || file2.empty() ) {
+
+        printf( "When splitting points, you need to specify file1 and file2.\n");
         exit(-1);
       }
-      if ( label.empty() ) {
 
-        printf( "Please specify a label to filter points.\n");
+      split_prop = atof( split_prop_string.c_str() );
+
+      if ( split_prop <= 0.0 || split_prop >= 1.0 ) {
+
+        printf( "Splitting proportion must be a value between 0 and 1.\n");
         exit(-1);
-      }
-
-      // Read occurrences
-      OccurrencesReader * occ = OccurrencesFactory::instance().create( source.c_str(), wkt.c_str() );
-
-      OccurrencesPtr presences = occ->getPresences( label.c_str() );
-
-      OccurrencesPtr absences = occ->getAbsences( label.c_str() );
-
-      delete occ;
-
-      // Write occurrences
-      std::cerr << flush;
-
-      if ( format == "XML" ) {
-
-        if ( presences ) {
-
-          ConfigurationPtr cfg = presences->getConfiguration();
-          cfg->setName( "Presence" );
-
-          Configuration::writeXml( cfg, cout );
-        }
-
-        if ( absences && absences->numOccurrences() ) {
-
-          ConfigurationPtr cfg = absences->getConfiguration();
-          cfg->setName( "Absence" );
-
-          Configuration::writeXml( cfg, cout );
-        }
-      }
-      else {
-
-        // Header
-        cout << "#id\t" << "label\t" << "long\t" << "lat\t" << "abundance" << endl << flush;
-
-        if ( presences ) {
-
-          OccurrencesImpl::iterator it   = presences->begin();
-          OccurrencesImpl::iterator last = presences->end();
-
-          while ( it != last ) {
-
-            cout << (*it)->id() << "\t" << label.c_str() << "\t" << (*it)->x() << "\t" << (*it)->y() << "\t" << (*it)->abundance() << endl << flush;
-            ++it;
-          }
-	}
-
-        if ( absences ) {
-
-          OccurrencesImpl::iterator it   = absences->begin();
-          OccurrencesImpl::iterator last = absences->end();
-
-          while ( it != last ) {
-
-            cout << (*it)->id() << "\t" << label.c_str() << "\t" << (*it)->x() << "\t" << (*it)->y() << "\t" << (*it)->abundance() << endl << flush;
-            ++it;
-          }
-	}
       }
     }
+
+    // Read occurrences
+    OccurrencesReader * occ = OccurrencesFactory::instance().create( source.c_str(), wkt.c_str() );
+
+    OccurrencesPtr presences = occ->getPresences( label.c_str() );
+
+    OccurrencesPtr absences = occ->getAbsences( label.c_str() );
+
+    delete occ;
+
+    // Split points if necessary
+    if ( split_prop ) {
+
+      OccurrencesPtr pres1, abs1, pres2, abs2;
+
+      if ( presences ) {
+
+        pres1 = new OccurrencesImpl( presences->name(), presences->coordSystem() );
+        pres2 = new OccurrencesImpl( presences->name(), presences->coordSystem() );
+
+        splitOccurrences( presences, pres1, pres2, split_prop );
+      }
+
+      if ( absences ) {
+
+        abs1 = new OccurrencesImpl( absences->name(), absences->coordSystem() );
+        abs2 = new OccurrencesImpl( absences->name(), absences->coordSystem() );
+
+        splitOccurrences( absences, abs1, abs2, split_prop );
+      }
+
+      // Write result in two files
+
+      ofstream outfile1( file1.c_str() );
+
+      writeOutput( outfile1, format, pres1, abs1, label );
+
+      outfile1.close();
+
+      ofstream outfile2( file2.c_str() );
+
+      writeOutput( outfile2, format, pres2, abs2, label );
+
+      outfile2.close();
+
+      return 0;
+    }
+
+    // Write result in cout
+
+    std::cerr << flush;
+
+    writeOutput( cout, format, presences, absences, label );
   }
   catch ( runtime_error e ) {
 
@@ -210,4 +239,57 @@ int main( int argc, char **argv ) {
   }
 
   return 0;
+}
+
+
+// Function to output result
+void writeOutput( ostream & stream, std::string format, OccurrencesPtr presences, OccurrencesPtr absences, std::string label ) {
+
+    if ( format == "XML" ) {
+
+      if ( presences ) {
+
+        ConfigurationPtr cfg = presences->getConfiguration();
+        cfg->setName( "Presence" );
+
+        Configuration::writeXml( cfg, stream );
+      }
+
+      if ( absences && absences->numOccurrences() ) {
+
+        ConfigurationPtr cfg = absences->getConfiguration();
+        cfg->setName( "Absence" );
+
+        Configuration::writeXml( cfg, stream );
+      }
+    }
+    else {
+
+      // Header
+      stream << "#id\t" << "label\t" << "long\t" << "lat\t" << "abundance" << endl << flush;
+
+      if ( presences ) {
+
+        OccurrencesImpl::iterator it   = presences->begin();
+        OccurrencesImpl::iterator last = presences->end();
+
+        while ( it != last ) {
+
+          stream << (*it)->id() << "\t" << label.c_str() << "\t" << (*it)->x() << "\t" << (*it)->y() << "\t" << (*it)->abundance() << endl << flush;
+          ++it;
+        }
+      }
+
+      if ( absences ) {
+
+        OccurrencesImpl::iterator it   = absences->begin();
+        OccurrencesImpl::iterator last = absences->end();
+
+        while ( it != last ) {
+
+          stream << (*it)->id() << "\t" << label.c_str() << "\t" << (*it)->x() << "\t" << (*it)->y() << "\t" << (*it)->abundance() << endl << flush;
+          ++it;
+        }
+      }
+    }
 }
