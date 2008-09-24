@@ -297,7 +297,12 @@ scanDirectory( string dir )
 int
 initRandom()
 {
-  unsigned int seed;
+  static unsigned int seed = 0;
+
+  if ( seed ) {
+
+    return 1; // reseeding rand can decrease the randomness, so avoid doing it
+  }
 
 #ifndef WIN32
   struct timeval time;
@@ -309,7 +314,7 @@ initRandom()
 
 #endif
 
-  //printf("Random seed: %d\n", seed);
+  Log::instance()->debug( "Setting random seed %u\n", seed );
 
   srand( seed );
   return 1;
