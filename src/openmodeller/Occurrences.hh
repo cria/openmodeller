@@ -41,14 +41,25 @@
 #include <vector>
 #include <string>
 
-typedef std::vector<Scalar> ScalarVector;
+/****************************************************************/
+/************************* Occurrences **************************/
 
 class OccurrencesImpl;
 typedef ReferenceCountedPointer<OccurrencesImpl> OccurrencesPtr;
 typedef ReferenceCountedPointer<const OccurrencesImpl> ConstOccurrencesPtr;
 
-/****************************************************************/
-/************************* Occurrences **************************/
+typedef std::vector<Scalar> ScalarVector;
+
+/** Splits data points into to 2 new subsets
+ *  @param orig  Original occurrences to split
+ *  @param train Train occurrences to be returned
+ *  @param test  Test occurrences to be returned
+ *  @param propTrain Percentage of points to go to train occurrences
+ */
+dllexp void splitOccurrences(const OccurrencesPtr& occurrences, 
+			     OccurrencesPtr& trainOccurrences, 
+			     OccurrencesPtr& testOccurrences, 
+			     double propTrain);
 
 /** 
  * Representation of a set of occurrences.

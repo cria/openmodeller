@@ -563,62 +563,8 @@ SamplerImpl::dump() const
 }
 
 
-/**************************/
-/**** splitOccurrences ****/
-static void splitOccurrences(OccurrencesPtr& occurrences, 
-			     OccurrencesPtr& trainOccurrences, 
-			     OccurrencesPtr& testOccurrences, 
-			     double propTrain)
-{
-  // add all samples to an array
-  int i;
-  int n = occurrences->numOccurrences();
-  int k = (int) (n * propTrain);
-  std::vector<int> goToTrainSet(n);
-
-  // first k are set to go to train set
-  for ( i = 0; i < k; i++ ) {
-
-    goToTrainSet[i] = 1;
-  }
-
-  // all others are set to go to test set
-  for ( ; i < n; i++ ) {
-
-    goToTrainSet[i] = 0;
-  }
-
-  // shuffle elements well
-  std::random_shuffle( goToTrainSet.begin(), goToTrainSet.end() );
-
-  // traverse occurrences copying them to the right sampler
-  OccurrencesImpl::const_iterator it = occurrences->begin();
-  OccurrencesImpl::const_iterator fin = occurrences->end();
-
-  i = 0;
-
-  while( it != fin ) {
-
-    if ( goToTrainSet[i] ) {
-
-      trainOccurrences->insert( new OccurrenceImpl( *(*it) ) );
-      //printf("+");
-    }
-    else {
-
-      testOccurrences->insert( new OccurrenceImpl( *(*it) ) );
-      //printf("-");
-    }
-
-    ++i; ++it;
-  }
-
-  //printf("\n");
-}
-
-
-/********************/
-/**** split *********/
+/***********************/
+/**** split Sampler ****/
 void splitSampler(const SamplerPtr& orig, 
 		  SamplerPtr * train,
 		  SamplerPtr * test,
