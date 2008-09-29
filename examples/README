@@ -66,17 +66,17 @@ om_niche request.txt
 
 ---
 
-4) om_sampledump
+4) om_sampler
 
 When openmodeller creates a model, it fetches the values
 through each of the climate layers. This is known as a sample. The
 sample at each presence (or absence) point can be obtained using 
-the om_sampledump application. This is useful if you want to under-
+the om_sampler application. This is useful if you want to under-
 stand the actual data being used to build the model.
 
 e.g.
 
-om_sampledump request.txt outputfile.txt
+om_sampler --source request.txt
 
 ---
 
