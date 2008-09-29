@@ -6,6 +6,8 @@ SVN revision:
 	* Added new method in the modelling service to perform external tests.
 	* Renamed om_testmodel to om_test. The new version is using getopts and accepts XML requests. A man page was also created.
 	* Renamed om_create to om_model.
+	* Renamed om_sampledump to om_sampler, which now accepts txt or xml input files.
+	* Removed om_dump (its functionality was incorporated by the new om_sampler).
 	* Added new parameter in om_points to split points into test/training with a given proportion.
 
 Release 0.6.0 (2008-07-07)

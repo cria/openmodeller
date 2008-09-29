@@ -7,15 +7,12 @@ SET (OMCONSOLE_SRCS
     request_file.cpp
     file_parser.cpp
 )
-SET (OMDUMP_SRCS
-     om_dump.cpp 
-     request_file.cpp 
-     file_parser.cpp
-     )
-SET (OMSAMPLEDUMP_SRCS
-    om_sampledump.cpp 
+SET (OMSAMPLER_SRCS
+    om_sampler.cpp 
     request_file.cpp 
     file_parser.cpp
+    getopts/getopts.C 
+    om_cmd_utils.cpp 
     )
 SET (OMTEST_SRCS
     om_test.cpp 
@@ -104,11 +101,8 @@ TARGET_LINK_LIBRARIES(om_model openmodeller)
 ADD_EXECUTABLE (om_project ${OMPROJECT_SRCS})
 TARGET_LINK_LIBRARIES(om_project openmodeller)
 
-ADD_EXECUTABLE (om_dump ${OMDUMP_SRCS})
-TARGET_LINK_LIBRARIES(om_dump openmodeller)
-
-ADD_EXECUTABLE (om_sampledump ${OMSAMPLEDUMP_SRCS})
-TARGET_LINK_LIBRARIES(om_sampledump openmodeller)
+ADD_EXECUTABLE (om_sampler ${OMSAMPLER_SRCS})
+TARGET_LINK_LIBRARIES(om_sampler openmodeller)
 
 ADD_EXECUTABLE (om_test ${OMTEST_SRCS})
 TARGET_LINK_LIBRARIES(om_test openmodeller)
@@ -145,8 +139,7 @@ INSTALL(TARGETS om_points RUNTIME DESTINATION ${OM_BIN_DIR})
 INSTALL(TARGETS om_pseudo RUNTIME DESTINATION ${OM_BIN_DIR})
 INSTALL(TARGETS om_model RUNTIME DESTINATION ${OM_BIN_DIR})
 INSTALL(TARGETS om_project RUNTIME DESTINATION ${OM_BIN_DIR})
-INSTALL(TARGETS om_dump RUNTIME DESTINATION ${OM_BIN_DIR})
-INSTALL(TARGETS om_sampledump RUNTIME DESTINATION ${OM_BIN_DIR})
+INSTALL(TARGETS om_sampler RUNTIME DESTINATION ${OM_BIN_DIR})
 INSTALL(TARGETS om_test RUNTIME DESTINATION ${OM_BIN_DIR})
 if (X11_FOUND)
   INSTALL(TARGETS om_viewer RUNTIME DESTINATION ${OM_BIN_DIR})
@@ -159,6 +152,7 @@ IF (UNIX AND NOT OM_BUNDLE)
                  ${CMAKE_CURRENT_SOURCE_DIR}/man/om_points.1 
                  ${CMAKE_CURRENT_SOURCE_DIR}/man/om_pseudo.1 
                  ${CMAKE_CURRENT_SOURCE_DIR}/man/om_model.1 
+                 ${CMAKE_CURRENT_SOURCE_DIR}/man/om_sampler.1 
                  ${CMAKE_CURRENT_SOURCE_DIR}/man/om_test.1 
                  ${CMAKE_CURRENT_SOURCE_DIR}/man/om_project.1 
            DESTINATION ${CMAKE_INSTALL_PREFIX}/man/man1)

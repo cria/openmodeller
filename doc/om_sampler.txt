@@ -1,0 +1,24 @@
+NAME
+     om_sampler - dump samples from a specified source
+
+SYNOPSIS
+       om_sampler [-] v --version | s --source FILE ] [ --dump-env --cell-start NUM --cell-end NUM ] [ --log-level LEVEL ]
+
+DESCRIPTION
+       om_sampler is a command line tool to dump openModeller sample data given a source file specifying sampler parameters. A sample is a vector of environmental data associated with a point in the geographical space. Source files must include references to locality points and environmental layers, which constitute the basic parameters to the openModeller sampler. Accepted formats for source files are request files following the same pattern used to run om_console or XML files containing serialized models or model request parameters.
+
+       By default, om_sampler will dump all data associated with the presence and/or absence points specified in the source file. However, if the "dump-env" parameter is present, then all environment samples will be dumped for each cell of the mask file. Start and end positions can be specified in this case. The first cell (position zero) is the top left most. Iteration happens from left to right, and from top to bottom in the raster. When dumping the environment, the coordinates displayed correspond to the centroid of the cell. When "nodata" is displayed for a given sample, this means that at least one of the layers (including the mask) has no value in the location.
+
+OPTIONS
+       -v, --version     Display version info.
+
+       -s, --source      Source file with sampler parameters (locality data and layers). It must be a path in the file system pointing to a request file following the same pattern used to run om_console or an XML file containing serialized models or model request parameters.
+
+       -e, --dump-env    Dump environment data for all cells of the mask file instead of dumping locality data.
+
+       --cell-start      Start at cell (default 0). Used only with dump-env.
+
+       --cell-end        End at cell (default 1000). Used only with dump-env.
+
+AUTHORS
+       Renato De Giovanni <renato at cria dot org dot br>
