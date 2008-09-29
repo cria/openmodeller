@@ -34,6 +34,7 @@
 #include <openmodeller/Log.hh>
 #include <openmodeller/Random.hh>
 #include <openmodeller/env_io/Map.hh>
+#include <openmodeller/Model.hh>
 
 #include <string.h>
 
@@ -378,6 +379,78 @@ SamplerImpl::getPseudoAbsence() const
   return oc;
 }
 
+ConstOccurrencePtr 
+SamplerImpl::getPseudoAbsence( const Model& model, const Scalar threshold, bool& flag ) const
+{
+   double probOcorrencia = 0.0;
+   ConstOccurrencePtr ponto;
+   int loop = 0;
+   do{
+     ponto = getPseudoAbsence();
+	 probOcorrencia = model->getValue(ponto->attributes());
+	 loop++;
+   }while (( probOcorrencia > threshold ) || ( loop < 50 ));
+   if (loop == 50)
+		flag = true;
+   return ponto;
+}
+
+OccurrencesPtr 
+SamplerImpl::getPseudoAbsences( const int& numPoints, const Model& model, const Scalar threshold, const bool geoUnique, const bool envUnique) const 
+{
+   bool flag = false;
+   int i = 0;
+
+   OccurrencesPtr occurrencesPtr( new OccurrencesImpl(0.0) );
+
+   do
+   {
+     OccurrencePtr point = getPseudoAbsence(model, threshold, flag);
+	 if (flag)
+		 return occurrencesPtr;
+
+     switch( geoUnique ) 
+     {
+       case false:
+	     if (envUnique == false)
+		 {
+		   occurrencesPtr->insert(point);
+		   i++;
+		 }
+		 else 
+		 {
+		   if (environmentallyUniqueAbsences( occurrencesPtr, point) )
+		   {
+		     occurrencesPtr->insert(point);
+		     i++;
+		   }
+		 }
+         break;
+       case true:
+	     if (envUnique == false)
+		 {
+      		if ( spatiallyUniqueAbsences( occurrencesPtr, point ) )
+			{
+			  occurrencesPtr->insert(point);
+			  i++;
+			}
+		 }
+		 else
+		 {
+			if ( spatiallyUniqueAbsences( occurrencesPtr, point ) )
+			  if (environmentallyUniqueAbsences( occurrencesPtr, point) )
+				{
+					occurrencesPtr->insert(point);
+					i++;
+		  		}
+		 }
+         break;
+     }
+
+   }while ( i < numPoints );
+   return occurrencesPtr;
+}
+
 /*****************/
 /*** var Types ***/
 int
@@ -528,6 +601,78 @@ SamplerImpl::spatiallyUnique( OccurrencesPtr& occurrencesPtr, const char *type )
 
     ++it;
   }
+}
+
+
+/******************************/
+/*** environmentally unique ***/
+bool 
+SamplerImpl::environmentallyUniqueAbsences( const OccurrencesPtr& absence, const OccurrencePtr& point )const
+{
+    if ( ! ( absence && absence->numOccurrences() ) ) {
+
+    return true;
+  }
+
+  OccurrencesImpl::iterator it   = absence->begin();
+  OccurrencesImpl::iterator last = absence->end();
+
+  Sample sample = _env->getUnnormalized( point->x(), point->y() );
+
+  while ( it != last ) {
+
+    Sample nextSample = _env->getUnnormalized( (*it)->x(), (*it)->y() );
+
+    if ( sample.equals( nextSample ) ) {
+      return false;
+    }
+    else {
+    ++it;
+    }
+  }
+  return true;
+}
+
+/************************/
+/*** spatially unique ***/
+bool 
+SamplerImpl::spatiallyUniqueAbsences( const OccurrencesPtr& absence, const OccurrencePtr& point)const
+{
+ if ( ! ( absence && absence->numOccurrences() ) ) {
+
+    return true;
+  }
+
+  Map *mask = _env->getMask();
+
+  // If mask is undefined, use first layer as a mask
+  if ( ! mask ) {
+
+    mask = _env->getLayer( 0 );
+  }
+
+  OccurrencesImpl::iterator it   = absence->begin();
+  OccurrencesImpl::iterator last = absence->end();
+
+  int row, col;
+  mask->getRowColumn( point->x(), point->y(), &row, &col );
+
+  while ( it != last ) {
+
+   int nextRow, nextCol;
+
+   mask->getRowColumn( (*it)->x(), (*it)->y(), &nextRow, &nextCol );
+
+   if ( row == nextRow && col == nextCol ) 
+   {
+     return false;
+   }
+   else 
+   {
+     ++it;
+   }
+  }
+  return true;
 }
 
 
