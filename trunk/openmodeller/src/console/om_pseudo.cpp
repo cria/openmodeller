@@ -27,13 +27,21 @@ int main( int argc, char **argv ) {
   opts.addOption( "s", "seq-start" , "Sequence start for points id"                , true );
   opts.addOption( "m", "mask"      , "Mask file"                                   , true );
   opts.addOption( "p", "proportion", "Proportion of absence points (in %)"         , true );
+  opts.addOption( "o", "model"     , "File with serialized model"                  , true );
+  opts.addOption( "t", "threshold" , "Model threshold (default 0.5)"               , true );
+  opts.addOption( "" , "geo-unique", "Avoid repeating same coordinates"            , false );
+  opts.addOption( "" , "env-unique", "Avoid repeating same environment condition"  , false );
 
   std::string log_level("info");
   std::string num_points_string;
   std::string label("label");
   std::string sequence_start_string;
   std::string mask_file;
-  std::string proportion_string("100");
+  std::string proportion_string;
+  std::string model_file;
+  std::string threshold_string;
+  bool geo_unique = false;
+  bool env_unique = false;
 
   if ( ! opts.parse( argc, argv ) ) {
 
@@ -68,6 +76,18 @@ int main( int argc, char **argv ) {
         break;
       case 6:
         proportion_string = opts.getArgs( option );
+        break;
+      case 7:
+        model_file = opts.getArgs( option );
+        break;
+      case 8:
+        threshold_string = opts.getArgs( option );
+        break;
+      case 9:
+        geo_unique = true;
+        break;
+      case 10:
+        env_unique = true;
         break;
       default:
         break;
@@ -135,6 +155,25 @@ int main( int argc, char **argv ) {
 
   int num_absences_to_be_generated = (int)(num_points * proportion);
 
+  double threshold = 0.5;
+  
+  if ( ! threshold_string.empty() ) {
+
+    threshold = atof( threshold_string.c_str() );
+  }
+
+  if ( threshold <= 0.0 ) {
+
+    printf( "Model threshold must be greater than zero\n");
+    exit(-1);
+  }
+
+  if ( threshold >= 1.0 ) {
+
+    printf( "Model threshold must be smaller than one\n");
+    exit(-1);
+  }
+
   // Log stuff
 
   Log::Level level_code = getLogLevel( log_level );
@@ -172,6 +211,56 @@ int main( int argc, char **argv ) {
 
     // Header
     cout << "#id\t" << "label\t" << "long\t" << "lat\t" << "abundance" << endl << flush;
+
+///////// New code will be something like this ////////////
+    
+//     if ( empty( model_file ) ) {
+    
+//       OccurrencesPtr pseudo = samp->getPseudoAbsences( num_points, geo_unique, env_unique );
+//     }
+//     else {
+    
+//       // Load avaulable algorithms
+//       AlgorithmFactory::searchDefaultDirs();
+
+//       // Load serialized model
+//       ConfigurationPtr config = Configuration::readXml( model_file.c_str() );
+     
+//       AlgorithmPtr alg = AlgorithmFactory::newAlgorithm( config->getSubsection( "Algorithm" ) );
+
+//       OccurrencesPtr pseudo = samp->getPseudoAbsences( num_points, alg->getModel(), threshold, geo_unique, env_unique );
+//     }
+    
+//     string abundance("0");
+
+//     int num_generated_absences = 0;
+
+//     int i = 1;
+
+//     const_iterator it = pseudo.begin();
+//     const_iterator end = pseudo.end();
+
+//     while ( it != end ) {
+
+//       std::string id = (*it)->id();
+//       Scalar x = (*it)->x();
+//       Scalar y = (*it)->y();
+
+//       if ( num_generated_absences == num_absences_to_be_generated ) {
+
+//         abundance = "1";
+//       }
+
+//       std::cerr << flush;
+
+//       cout << sequence_start + i << "\t" << label.c_str() << "\t" << (*it)->x() << "\t" << (*it)->y() << "\t" << abundance.c_str() << endl << flush;
+
+//       num_generated_absences++;
+//       it++;
+//       i++
+//     }
+
+
 
     string abundance;
 
