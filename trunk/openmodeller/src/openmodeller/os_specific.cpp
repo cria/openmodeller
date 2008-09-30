@@ -304,17 +304,6 @@ initRandom()
     return 1; // reseeding rand can decrease the randomness, so avoid doing it
   }
 
-// This is an ugly workaround to get things working with GCC. Unfortunately we don't
-// know if the implementation of functions like random_shuffle use rand or lrand48
-// internally so that we can seed it accordingly. Apparently, the test below is the
-// same one used by the function. A more portable solution would be to develop our
-// custom random number generator and pass it to random_shuffle or use it directly 
-// in other parts of the code.
-#ifdef _GLIBCPP_HAVE_DRAND48
-#define rand lrand48
-#define srand srand48
-#endif
-
 #ifndef WIN32
   struct timeval time;
   gettimeofday( &time, (struct timezone *)NULL );
@@ -328,5 +317,16 @@ initRandom()
   Log::instance()->debug( "Setting random seed %u\n", seed );
 
   srand( seed );
+
+// This is an workaround to get some things working with GCC. Unfortunately we don't
+// know if the implementation of functions like random_shuffle use rand or lrand48
+// internally so that we can seed it accordingly. Apparently, the test below is the
+// same one used by the function. A more portable solution would be to develop our
+// custom random number generator and pass it to random_shuffle or use it directly 
+// in other parts of the code.
+#ifdef _GLIBCPP_HAVE_DRAND48
+  srand48( seed );
+#endif
+
   return 1;
 }
