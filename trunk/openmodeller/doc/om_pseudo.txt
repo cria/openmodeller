@@ -2,10 +2,11 @@ NAME
      om_pseudo - generate random points (longitude and latitude pairs)
 
 SYNOPSIS
-       om_pseudo [-] v --version | n --num-points NUM_POINTS m --mask FILE [ -l, --label ] [ -s, --seq-start ] [ -p, --proportion ] [ --log-level LEVEL ]
+       om_pseudo [-] v --version | n --num-points NUM_POINTS m --mask FILE [ -l, --label ] [ -s, --seq-start ] [ -p, --proportion ] [ -o, --model FILE -t, [--threshold NUM] [--env-unique] ] [--geo-unique] [ --log-level LEVEL ]
 
 DESCRIPTION
        om_pseudo is a command line tool to generate random coordinates in a specified geographic region (mask). The output will be a series of lines, one for each longitude/latitude pair, with TAB-delimited content compatible with openModeller. Coordinates will always be generated in the WGS84 datum.
+       By default, points can be randomly generated in any cell of the mask, except in those with "novalue". When "model" and "threshold" are specified, points will be randomly generated in any cell of the mask where the model predicts probabilities less than the threshold value. If "env-unique" is specified, all points will have unique environmental values based on the same layers that were used to create tyhe specified model. If "geo-unique" is specified, all points will have a unique pair of coordinates.
 
 OPTIONS
        -v, --version     Display version info.
@@ -19,6 +20,14 @@ OPTIONS
        -s, --seq-start   Id (integer) of the first point to be generated. Defaults to 1. The next points will follow the sequence.
 
        -p, --proportion  Percentage of absence points to be generated. Defaults to 100 (all points will be absence points).
+
+       -o, --model       Serialized model file. When specified, points will only be generated in cells where the model predicts a probability less than the specified threshold.
+
+       -t, --threshold   Probability threshold that can be used with the "model" parameter. Must be a value between 0 and 1. Default is 0.5.
+
+       --env-unique      Can be used with the "model" parameter to avoid repeating the same environment condition for each point. This will be based on the same layers that were used to create the model.
+
+       --geo-unique      Avoid repeating the same coordinates for each point.
 
        --log-level       openModeller log level: debug, warn, info or error. Defaults to "info".
 
