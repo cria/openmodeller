@@ -1,7 +1,4 @@
 #include <openmodeller/om.hh>
-#include <openmodeller/om_defs.hh>
-#include <openmodeller/Log.hh>
-#include <openmodeller/Random.hh>
 
 #include "getopts/getopts.h"
 
@@ -212,89 +209,51 @@ int main( int argc, char **argv ) {
     // Header
     cout << "#id\t" << "label\t" << "long\t" << "lat\t" << "abundance" << endl << flush;
 
-///////// New code will be something like this ////////////
+    Model model = 0;
     
-//     if ( empty( model_file ) ) {
+    if ( ! model_file.empty() ) {
     
-//       OccurrencesPtr pseudo = samp->getPseudoAbsences( num_points, geo_unique, env_unique );
-//     }
-//     else {
-    
-//       // Load avaulable algorithms
-//       AlgorithmFactory::searchDefaultDirs();
+      // Load avaulable algorithms
+      AlgorithmFactory::searchDefaultDirs();
 
-//       // Load serialized model
-//       ConfigurationPtr config = Configuration::readXml( model_file.c_str() );
+      // Load serialized model
+      ConfigurationPtr config = Configuration::readXml( model_file.c_str() );
      
-//       AlgorithmPtr alg = AlgorithmFactory::newAlgorithm( config->getSubsection( "Algorithm" ) );
+      AlgorithmPtr alg = AlgorithmFactory::newAlgorithm( config->getSubsection( "Algorithm" ) );
 
-//       OccurrencesPtr pseudo = samp->getPseudoAbsences( num_points, alg->getModel(), threshold, geo_unique, env_unique );
-//     }
-    
-//     string abundance("0");
+      model = alg->getModel();
+    }
 
-//     int num_generated_absences = 0;
+    OccurrencesPtr pseudo = samp->getPseudoAbsences( num_points, model, threshold, geo_unique, env_unique );
 
-//     int i = 1;
-
-//     const_iterator it = pseudo.begin();
-//     const_iterator end = pseudo.end();
-
-//     while ( it != end ) {
-
-//       std::string id = (*it)->id();
-//       Scalar x = (*it)->x();
-//       Scalar y = (*it)->y();
-
-//       if ( num_generated_absences == num_absences_to_be_generated ) {
-
-//         abundance = "1";
-//       }
-
-//       std::cerr << flush;
-
-//       cout << sequence_start + i << "\t" << label.c_str() << "\t" << (*it)->x() << "\t" << (*it)->y() << "\t" << abundance.c_str() << endl << flush;
-
-//       num_generated_absences++;
-//       it++;
-//       i++
-//     }
-
-
-
-    string abundance;
+    string abundance("0");
 
     int num_generated_absences = 0;
 
-    for ( int i = 0; i < num_points; ++i ) {
+    int i = 1;
 
-      OccurrencePtr point = samp->getPseudoAbsence();
+    OccurrencesImpl::iterator it = pseudo->begin();
+    OccurrencesImpl::iterator end = pseudo->end();
 
-      Random rnd;
+    while ( it != end ) {
 
+      std::string id = (*it)->id();
+      Scalar x = (*it)->x();
+      Scalar y = (*it)->y();
+
+      // Start with absences. Switch to presence after reaching the number of absences.
       if ( num_generated_absences == num_absences_to_be_generated ) {
 
-        // If we already have all absence points, generate a presence point
         abundance = "1";
-      }
-      else {
-
-        // If we can still generate both categories (presence/absence), use rand
-        if ( rnd() <= proportion ) {
-
-          abundance = "0";
-
-          ++num_generated_absences;
-        }
-        else {
-
-          abundance = "1";
-        }
       }
 
       std::cerr << flush;
 
-      cout << sequence_start + i << "\t" << label.c_str() << "\t" << point->x() << "\t" << point->y() << "\t" << abundance.c_str() << endl << flush;
+      cout << sequence_start + i << "\t" << label.c_str() << "\t" << (*it)->x() << "\t" << (*it)->y() << "\t" << abundance.c_str() << endl << flush;
+
+      num_generated_absences++;
+      it++;
+      i++;
     }
   }
   catch ( runtime_error e ) {
