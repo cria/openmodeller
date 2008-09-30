@@ -160,7 +160,7 @@ public:
   /**
    * Get one pseudoAbsence point  (Missae/set-2008)
    */
-  ConstOccurrencePtr getPseudoAbsence( const Model& model, const Scalar threshold, bool& flag  ) const;
+  ConstOccurrencePtr getPseudoAbsence( const Model& model, const Scalar threshold ) const;
 
     /**
    * Get a set of pseudoAbsence points  (Missae/set-2008)
@@ -177,17 +177,10 @@ public:
    */
   void environmentallyUnique( );
 
-   /** If OccurrencePtr point duplicates accross geographic space, return false. Otherwise return true.
-   *  Uniqueness is considered for row/col pairs defined in the input mask.
-   *  If mask is undefined, use first layer as a mask.
-   *  Missae(set/2008)
-   */
-  bool spatiallyUniqueAbsences( const OccurrencesPtr& absence, const OccurrencePtr& point )const;
-
   /** If OccurrencePtr point duplicates accross the environment, return false. Otherwise return true.
    *  Missae(set/2008)
    */
-  bool environmentallyUniqueAbsences( const OccurrencesPtr& absence, const OccurrencePtr& point )const;
+  bool isEnvironmentallyUnique( const OccurrencesPtr& occurrences, const OccurrencePtr& point ) const;
 
   /** Remove sample duplicates accross geographic space (presences and absences are treated separately).
    *  After erasing a point, the remaining one increases the abundance by one.
@@ -195,6 +188,13 @@ public:
    *  If mask is undefined, use first layer as a mask.
    */
   void spatiallyUnique( );
+
+   /** If OccurrencePtr point duplicates accross geographic space, return false. Otherwise return true.
+   *  Uniqueness is considered for row/col pairs defined in the input mask.
+   *  If mask is undefined, use first layer as a mask.
+   *  Missae(set/2008)
+   */
+  bool isSpatiallyUnique( const OccurrencesPtr& occurrences, const OccurrencePtr& point ) const;
 
   ConfigurationPtr getConfiguration() const;
 
