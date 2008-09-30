@@ -181,22 +181,67 @@ int main( int argc, char **argv ) {
 
   try {
 
-    std::vector<std::string> categorical_layers, continuous_layers;
+    SamplerPtr samp;
 
-    continuous_layers.push_back( mask_file ); // need to add at least one layer
+    Model model = 0;
+    
+    if ( model_file.empty() ) {
 
-    EnvironmentPtr env = createEnvironment( categorical_layers, continuous_layers, mask_file );
+      std::vector<std::string> categorical_layers, continuous_layers;
 
-    if ( ! env ) {
+      continuous_layers.push_back( mask_file ); // need to add at least one layer
 
-      printf( "Could not create environment object" );
-      exit(-1);
+      EnvironmentPtr env = createEnvironment( categorical_layers, continuous_layers, mask_file );
+
+      if ( ! env ) {
+
+        printf( "Could not create environment object" );
+        exit(-1);
+      }
+
+      OccurrencesPtr presences( new OccurrencesImpl( label ) );
+      OccurrencesPtr absences( new OccurrencesImpl( label ) );
+
+      samp = createSampler( env, presences, absences );
     }
+    else {
+    
+      // Load available algorithms
+      AlgorithmFactory::searchDefaultDirs();
 
-    OccurrencesPtr presences( new OccurrencesImpl( label ) );
-    OccurrencesPtr absences( new OccurrencesImpl( label ) );
+      // Load serialized model
+      ConfigurationPtr config = Configuration::readXml( model_file.c_str() );
 
-    SamplerPtr samp = createSampler( env, presences, absences );
+      AlgorithmPtr alg = AlgorithmFactory::newAlgorithm( config->getSubsection( "Algorithm" ) );
+
+      model = alg->getModel();
+
+      // note: alg deserialization doesn't include sampler stuff
+      SamplerPtr alg_samp = createSampler( config->getSubsection( "Sampler" ) );
+
+      if ( ! alg_samp ) {
+
+        printf( "Could not find sampler data in the specified model file" );
+        exit(-1);
+      }
+
+      EnvironmentPtr env = alg_samp->getEnvironment();
+
+      env->changeMask( mask_file );
+
+      // note: no need to change the label in presences & absences, because it 
+      // will be ignored when generating the points
+      OccurrencesPtr presences = alg_samp->getPresences();
+      OccurrencesPtr absences = alg_samp->getAbsences();
+ 
+      samp = createSampler( env, presences, absences );
+
+      // Overwrite sampler, in case masks are different
+      alg->setSampler( samp );
+
+      // Normalize environment if necessary
+      model->setNormalization( env );
+    }
 
     if ( ! samp ) {
 
@@ -204,27 +249,14 @@ int main( int argc, char **argv ) {
       exit(-1);
     }
 
+    OccurrencesPtr pseudo = samp->getPseudoAbsences( num_points, model, threshold, geo_unique, env_unique );
+
+    // Start output
+
     std::cerr << flush;
 
     // Header
     cout << "#id\t" << "label\t" << "long\t" << "lat\t" << "abundance" << endl << flush;
-
-    Model model = 0;
-    
-    if ( ! model_file.empty() ) {
-    
-      // Load avaulable algorithms
-      AlgorithmFactory::searchDefaultDirs();
-
-      // Load serialized model
-      ConfigurationPtr config = Configuration::readXml( model_file.c_str() );
-     
-      AlgorithmPtr alg = AlgorithmFactory::newAlgorithm( config->getSubsection( "Algorithm" ) );
-
-      model = alg->getModel();
-    }
-
-    OccurrencesPtr pseudo = samp->getPseudoAbsences( num_points, model, threshold, geo_unique, env_unique );
 
     string abundance("0");
 
@@ -235,6 +267,7 @@ int main( int argc, char **argv ) {
     OccurrencesImpl::iterator it = pseudo->begin();
     OccurrencesImpl::iterator end = pseudo->end();
 
+    // Points
     while ( it != end ) {
 
       std::string id = (*it)->id();
