@@ -110,8 +110,7 @@ public:
    *  of models to other environmental data layers. By default
    *  all algorithms support that feature. 
    */
-  virtual int supportsModelProjection() const
-  { return 1; }
+  virtual int supportsModelProjection() const { return 1; }
   
   /*
    * Training Methods
@@ -153,8 +152,7 @@ public:
   /** The algorithm should return != 0 if it needs normalization
    *  of environmental variables (non categorical ones).
    */
-  virtual int needNormalization()
-  { return ( _normalizerPtr == 0 ) ? 0 : 1; }
+  virtual int needNormalization() { return ( _normalizerPtr == 0 ) ? 0 : 1; }
 
   /** Returns the normalizer used by the algorithm. This method was 
    *  created for super algorithms like "best subsets", so that the
