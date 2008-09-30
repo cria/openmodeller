@@ -270,10 +270,6 @@ int main( int argc, char **argv ) {
     // Points
     while ( it != end ) {
 
-      std::string id = (*it)->id();
-      Scalar x = (*it)->x();
-      Scalar y = (*it)->y();
-
       // Start with absences. Switch to presence after reaching the number of absences.
       if ( num_generated_absences == num_absences_to_be_generated ) {
 
