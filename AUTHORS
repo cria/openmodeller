@@ -59,6 +59,11 @@ Poli - Escola Politécninca da Universidade de São Paulo:
  * Danilo J. S. Bellini <danilo . estagio [at] gmail . com>
 
      Developed the Environmental Distance algorithm.
+     Created documentation about how to add new algorithms in openModeller.
+
+ * Elisângela Silva da Cunha Rodrigues <elisangela . poli . usp [at] gmail . com>
+
+     Implemented the Maximum Entropy algorithm.
 
  * Fabrício Rodrigues <fabricio . poliusp [at] gmail . com>
 
