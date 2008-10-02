@@ -109,6 +109,7 @@ void MaxentModel::add_event(
     assert(m_pred_map);
     assert(m_outcome_map);
     m_es->add_event(context, count, outcome);
+    
 }
 
 /**
@@ -172,7 +173,7 @@ void MaxentModel::add_heldout_event(
  */
 void MaxentModel::end_add_event(size_t cutoff) {
     assert(m_es && m_heldout_es);
-
+    
     //remove duplicate events and update event count
     display("Total %d training events and %d heldout events added in %.2f s",
             m_es->size(), m_heldout_es->size(), m_timer->elapsed());
@@ -181,7 +182,7 @@ void MaxentModel::end_add_event(size_t cutoff) {
     m_es->merge_events(cutoff);
 
     display("Reduced to %d training events", m_es->size());
-
+    
     // merge the held out events
     if (m_heldout_es->size() > 0) {
         m_heldout_es->merge_events(cutoff);
@@ -553,7 +554,7 @@ void MaxentModel::train(size_t iter, const std::string& method,
         gaussian.reset(new double[m_n_theta]);
         fill(gaussian.get(), gaussian.get() + m_n_theta, sigma2);
     }
-
+    
     t->set_training_data(m_es, m_params, m_n_theta,
             m_theta, gaussian, m_outcome_map->size(), m_heldout_es);
     t->train(iter, tol);

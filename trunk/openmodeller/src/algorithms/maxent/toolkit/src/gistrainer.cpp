@@ -68,7 +68,7 @@ void GISTrainer::init_trainer() {
             (m_params->size(), vector<double>(0)) );
     m_observed_expects.reset(new vector<vector<double> >
             (m_params->size(), vector<double>(0)) );
-
+    
     // init all thetas to 0.0
     for (size_t i = 0; i < m_params->size(); ++i) {
         std::vector<pair<size_t, size_t> >& param = (*m_params)[i];
@@ -177,7 +177,7 @@ void GISTrainer::train(size_t iter, double tol) {
     vector<double> q(m_n_outcomes); // q(y|x)
     boost::timer t;
     size_t niter = 0;
-
+    
     display("");
     display("Starting GIS iterations...");
     display("Number of Predicates: %d", m_params->size());
@@ -199,6 +199,7 @@ void GISTrainer::train(size_t iter, double tol) {
         for (vector<Event>::iterator it = m_es->begin();
                 it != m_es->end(); ++it) {
             best_oid = eval(it->m_context, it->context_size(), q);
+
             if (best_oid == it->m_outcome)
                 correct += it->m_count;
             // TODO:optimize the code
@@ -206,8 +207,8 @@ void GISTrainer::train(size_t iter, double tol) {
             // (need not being divided by N)
             for (size_t i = 0; i < it->context_size(); ++i) {
                 size_t pid = it->m_context[i].first;
-                double fval = it->m_context[i].second;
-                vector<pair<size_t, size_t> >& param = (*m_params)[pid];
+		double fval = it->m_context[i].second;
+		vector<pair<size_t, size_t> >& param = (*m_params)[pid];
                 for (size_t j = 0; j < param.size(); ++j) {
                     size_t oid = param[j].first;
                     (*m_modifiers)[pid][j] += q[oid] * it->m_count * fval;
@@ -227,7 +228,7 @@ void GISTrainer::train(size_t iter, double tol) {
                 vector<pair<size_t, size_t> >& param = (*m_params)[pid];
                 for (size_t i = 0; i < param.size(); ++i) {
                     size_t fid = param[i].second;
-                    m_theta[fid] += newton((*m_modifiers)[pid][i],
+		    m_theta[fid] += newton((*m_modifiers)[pid][i],
                             (*m_observed_expects)[pid][i], fid);
                     (*m_modifiers)[pid][i] = 0.0; // clear modifiers for next iteration
                 }

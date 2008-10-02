@@ -3,8 +3,7 @@
  * 
  * @author Elisangela S. da C. Rodrigues (elisangela . rodrigues [at] poli . usp . br)
  * @author Renato De Giovanni (renato [at] cria . org . br)
- * @author Rafael M. de Araujo (rafael . araujo1 [at] poli . usp . br)
- * $Id$
+ * * $Id$
  * 
  * LICENSE INFORMATION 
  * 
@@ -37,7 +36,7 @@
 #include <iostream>
 #include <sstream>
 #include <vector>
-#include <string>
+//#include <string>
 
 #include <boost/shared_ptr.hpp>
 #include <boost/shared_array.hpp>
@@ -270,7 +269,8 @@ MaximumEntropy::MaximumEntropy() :
   AlgorithmImpl(&metadata),
   _done(false),
   _hasCategorical(false),
-  _num_layers(0)
+  _num_layers(0),
+  _num_features(0)
 { 
   _normalizerPtr = new ScaleNormalizer( 0.0, 1.0, true );
 }
@@ -523,7 +523,13 @@ MaximumEntropy::iterate()
 	else
 	  _linear_feat = _quadratic_feat = _product_feat = _threshold_feat = _hinge_feat = 1;
   }
-    
+
+  _num_features = _num_layers * _linear_feat +
+		  _num_layers * _quadratic_feat +
+		  _num_layers * _product_feat * (_num_layers - 1) / 2 +
+		  _num_layers * _threshold_feat +
+		  _num_layers * _hinge_feat;
+
   // Presences
 
   OccurrencesImpl::const_iterator p_iterator = _presences->begin();
@@ -532,65 +538,51 @@ MaximumEntropy::iterate()
   while ( p_iterator != p_end ) {
 
     Sample sample = (*p_iterator)->environment();
-
     me_context_type context;
     me_outcome_type outcome("p"); // p = presence
-    
+    int id=0;
     for ( int i = 0; i < _num_layers; ++i ) {
-      
+
       stringstream out;
-      out << i;
+      out << id;
 
       if ( _linear_feat == 1 ) {
-
-        _featstring.assign(out.str());
-        _featstring.append("_linear_feature");
-	context.push_back( make_pair( _featstring, (float)sample[i] ) );
-
+	context.push_back( make_pair( out.str(), ((float)sample[i] )));
+	out << ++id;
       }
       if (_quadratic_feat == 1 ) {
-
-        _featstring.assign(out.str());
-        _featstring.append("_quadratic_feature");
-	context.push_back( make_pair( _featstring, ((float)sample[i] * (float)sample[i])) );
-
+	context.push_back( make_pair( out.str(), ((float)sample[i] * (float)sample[i])) );
+	out << ++id;
       }
       if ( _product_feat == 1 ) {
-
 	for ( int j = i+1; j < _num_layers; ++j ) {
-
-	  out << i+j;
-          _featstring.assign(out.str());
-          _featstring.append("_product_feature");
-	  context.push_back( make_pair( _featstring, ((float)sample[i]*(float)sample[j] ) ) );
-
+	  context.push_back( make_pair( out.str(), ((float)sample[i]*(float)sample[j] ) ) );
+	  out << ++id;
 	}
       }
       if (_threshold_feat == 1 ) {
-
-	_featstring.assign(out.str());
-	_featstring.append("_treshold_feature");
 	if ( (float)sample[i] > _tolerance ) {
-	  context.push_back( make_pair( _featstring, 1 ) );
+	  context.push_back( make_pair( out.str(), 1 ) );
+	  out << ++id;
 	}
 	else {
-	  context.push_back( make_pair( _featstring, 0 ) );
+	  context.push_back( make_pair( out.str(), 0 ) );
+	  out << ++id;
 	}
       }
       if (_hinge_feat == 1 ) {
-
-	_featstring.assign(out.str());
-	_featstring.append("_hinge_feature");
 	if ( (float)sample[i] > _tolerance ) {
-	  context.push_back( make_pair( _featstring, (float)sample[i] ) );
+	  context.push_back( make_pair( out.str(), (float)sample[i] ) );
+	  out << ++id;
 	}
 	else {
-	  context.push_back( make_pair( _featstring, 0 ) );
+	  context.push_back( make_pair( out.str(), 0 ) );
+	  out << ++id;
 	}
       }
     } // for
-    
-    _model.add_event( context, outcome, 1 );     
+
+    _model.add_event( context, outcome, 1 );
 
     ++p_iterator;
   } // while
@@ -608,58 +600,45 @@ MaximumEntropy::iterate()
 
     me_context_type context;
     me_outcome_type outcome("a"); // a = absence
-    
+    int id=0;
     for ( int i = 0; i < _num_layers; ++i ) {
-      
-      stringstream out;
-      out << i;
-      
-      if (_linear_feat == 1 ) {
 
-        _featstring.assign(out.str());
-        _featstring.append("_linear_feature");
-	context.push_back( make_pair( _featstring, (float)sample[i] ) );
-	
+      stringstream out;
+      out << id;
+ 
+      if (_linear_feat == 1 ) {
+	context.push_back( make_pair( out.str(), (float)sample[i] ) );
+	out << ++id;
       }
       if (_quadratic_feat == 1 ) {
-	
-        _featstring.assign(out.str());
-        _featstring.append("_quadratic_feature");
-	context.push_back( make_pair( _featstring, ((float)sample[i] * (float)sample[i])) );
-	
+	context.push_back( make_pair( out.str(), ((float)sample[i] * (float)sample[i])) );
+	out << ++id;
       }
       if ( _product_feat == 1 ) {
-      
 	for ( int j = i+1; j < _num_layers; ++j ){
-
-	  out << i+j;
-          _featstring.assign(out.str());
-          _featstring.append("_product_feature");
-	  context.push_back( make_pair( _featstring, ((float)sample[i]*(float)sample[j] ) ) );
-
+	  context.push_back( make_pair( out.str(), ((float)sample[i]*(float)sample[j] ) ) );
+	  out << ++id;
 	}
       }
       if (_threshold_feat == 1 ) {
-
-	_featstring.assign(out.str());
-	_featstring.append("_treshold_feature");
 	if ( (float)sample[i] > _tolerance ) {
-	  context.push_back( make_pair( _featstring, 1 ) );
+	  context.push_back( make_pair( out.str(), 1 ) );
+	  out << ++id;
 	}
 	else {
-	  context.push_back( make_pair( _featstring, 0 ) );
+	  context.push_back( make_pair( out.str(), 0 ) );
+	  out << ++id;
 	}
-	
       }
       if (_hinge_feat == 1 ) {
-
-	_featstring.assign(out.str());
-	_featstring.append("_hinge_feature");
-	if ( (float)sample[i] > _tolerance )
-	  context.push_back( make_pair( _featstring, (float)sample[i] ) );
-	else
-	  context.push_back( make_pair( _featstring, 0 ) );
-	
+	if ( (float)sample[i] > _tolerance ) {
+	  context.push_back( make_pair( out.str(), (float)sample[i] ) );
+	  out << ++id;
+	}
+	else {
+	  context.push_back( make_pair( out.str(), 0 ) );
+	  out << ++id;
+	}
       }
     } // for
 
@@ -695,14 +674,46 @@ Scalar
 MaximumEntropy::getValue( const Sample& x ) const
 {
   me_context_type context;
-
+  int id=0;
   for ( int i = 0; i < _num_layers; ++i ) {
 
     stringstream out;
-    out << i;
-    context.push_back( make_pair( out.str(), (float)x[i] ) );
+    out << id;
+    if (_linear_feat == 1 ) {
+      context.push_back( make_pair( out.str(), (float)x[i] ) );
+      out << ++id;
+    }
+    if (_quadratic_feat == 1 ) {
+      context.push_back( make_pair( out.str(), ((float)x[i] * (float)x[i])) );
+      out << ++id;
+    }
+    if ( _product_feat == 1 ) {
+      for ( int j = i+1; j < _num_layers; ++j ){
+	context.push_back( make_pair( out.str(), ((float)x[i]*(float)x[j] ) ) );
+        out << ++id;
+      }
+    }
+    if (_threshold_feat == 1 ) {
+      if ( (float)x[i] > _tolerance ) {
+	context.push_back( make_pair( out.str(), 1 ) );
+	out << ++id;
+      }
+      else {
+	context.push_back( make_pair( out.str(), 0 ) );
+        out << ++id;
+      }
+    }
+    if (_hinge_feat == 1 ) {
+      if ( (float)x[i] > _tolerance ) {
+	context.push_back( make_pair( out.str(), (float)x[i] ) );
+        out << ++id;
+      }
+      else {
+	context.push_back( make_pair( out.str(), 0 ) );
+        out << ++id;
+      }
+    }
   }
-
   me_outcome_type outcome("p"); // p = presence
 
   return _model.eval( context, outcome ); // probability of presence
@@ -723,15 +734,17 @@ MaximumEntropy::getConvergence( Scalar *val )
 void
 MaximumEntropy::_getConfiguration( ConfigurationPtr& config ) const
 {
+  //avoid serialization when something went wrong
   if ( ! _done ) {
 
     return;
   }
-  
+  //These two lines create a new XML element called "MaximumEntropy"
   ConfigurationPtr model_config( new ConfigurationImpl( "MaximumEntropy" ) );
+
   config->addSubsection( model_config );
 
-  model_config->addNameValue( "NumLayers", _num_layers );
+  model_config->addNameValue( "NumFeatures", _num_features );
 
   MaxentModelFile model_file = _model.save();
 
@@ -747,7 +760,7 @@ MaximumEntropy::_getConfiguration( ConfigurationPtr& config ) const
   model_config->addSubsection( theta_config );
 
   double *theta_values = new double[m_n_theta];
-
+  
   for ( size_t i = 0; i < m_n_theta; ++i ) {
 
     theta_values[i] = m_theta[i];
@@ -768,7 +781,7 @@ MaximumEntropy::_setConfiguration( const ConstConfigurationPtr& config )
     return;
   }
 
-  _num_layers = model_config->getAttributeAsInt( "NumLayers", 0 );
+  _num_features = model_config->getAttributeAsInt( "NumFeatures", 0 );
 
   MaxentModelFile model_file;
 
@@ -776,7 +789,7 @@ MaximumEntropy::_setConfiguration( const ConstConfigurationPtr& config )
 
   shared_ptr<me::PredMapType> m_pred_map( new me::PredMapType );
 
-  for ( int i = 0; i < _num_layers; ++i ) {
+  for ( int i = 0; i < _num_features; ++i ) {
 
     stringstream out;
     out << i;
@@ -803,7 +816,7 @@ MaximumEntropy::_setConfiguration( const ConstConfigurationPtr& config )
 
   size_t fid = 0;
 
-  for ( int i = 0; i < _num_layers; ++i ) {
+  for ( int i = 0; i < _num_features; ++i ) {
 
     params.clear();
     params.push_back( make_pair( 0, fid++ ) );
