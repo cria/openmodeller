@@ -291,6 +291,12 @@ OpenModeller::createMap( const EnvironmentPtr & env, char const *output_file, Ma
 
   _projEnv = env;
 
+  if ( ! _alg ) {
+
+    Log::instance()->error( "Algorithm not specified\n" );
+    return 0;
+  }
+
   Model model( _alg->getModel() );
 
   Map *mask = _projEnv->getMask();
