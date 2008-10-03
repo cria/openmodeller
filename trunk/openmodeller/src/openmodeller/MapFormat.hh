@@ -82,6 +82,7 @@ public:
   void unsetProjection() { projIsSet = false; }
 
   void setFormat( int format );
+  void setFormat( std::string format );
   void setXCel( Coord xcel );
   void setYCel( Coord ycel );
   void setXMin( Coord xmin );

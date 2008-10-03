@@ -647,44 +647,12 @@ OpenModeller::setProjectionConfiguration( const ConstConfigurationPtr & config )
 
       fileType = output_param_config->getAttribute( "FileType" );
 
-      // Default is 8-bit tiff
-      int type = MapFormat::GreyTiff;
-
-      Log::instance()->info( "Setting Output file type to: %s\n", fileType.c_str() );
-
       if ( ! fileType.empty() ) {
 
-        if ( fileType == "GreyTiff" ) {
+        Log::instance()->debug( "Setting output file type to: %s\n", fileType.c_str() );
 
-          // nothing to do - it's already the default
-        }
-        else if ( fileType == "GreyTiff100" ) {
-
-          type = MapFormat::GreyTiff100;
-        }
-        else if ( fileType == "FloatingTiff" ) {
-
-          type = MapFormat::FloatingTiff;
-        }
-        else if ( fileType == "GreyBMP" ) {
-
-          type = MapFormat::GreyBMP;
-        }
-        else if ( fileType == "FloatingHFA" ) {
-
-          type = MapFormat::FloatingHFA;
-        }
-        else if ( fileType == "ByteHFA" ) {
-
-          type = MapFormat::ByteHFA;
-        }
-        else {
-
-          Log::instance()->warn( "Wrong value for 'Output file type' (%s). It should be GreyTiff, FloatingTiff, GreyBMP, FloatingHFA or ByteHFA. Using default.\n", fileType.c_str() );
-        }
+        _format.setFormat( fileType );
       }
-
-      _format.setFormat( type );
     }
     catch ( AttributeNotFound& e ) { 
 
