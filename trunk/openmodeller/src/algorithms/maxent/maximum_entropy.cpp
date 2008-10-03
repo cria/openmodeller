@@ -327,12 +327,12 @@ MaximumEntropy::initialize()
     return 0;
   }
 #else
-_method = "gis";
+  _method = "gis";
 #endif
-
+  
   // Gaussian prior smoothing
   if ( ! getParameter( GAUSSIAN_COEF_ID, &_gaussian_coef ) ) {
-
+    
     Log::instance()->warn( MAXENT_LOG_PREFIX "Parameter '" GAUSSIAN_COEF_ID "' not passed. Gaussian smoothing will be turned off.\n" );
     _gaussian_coef = 0.0;
   }
@@ -421,12 +421,25 @@ _method = "gis";
   if ( _linear_feat == 0 && _quadratic_feat == 0 && _threshold_feat ==0 && _hinge_feat == 0 && _product_feat == 0) {
     
     Log::instance()->warn( MAXENT_LOG_PREFIX "Features not passed. Using auto features.\n" );
-    _auto_feat = 1;
+    
+    if ( (_presences + _absences) < 10 ) {
+      _linear_feat = 1;
+      _quadratic_feat = _product_feat = _threshold_feat = _hinge_feat = 0;
+    }
+    else
+      if ( (_presences + _absences) >= 10  && (_presences + _absences) < 15 ) {
+	_linear_feat = _quadratic_feat = 1;
+	_product_feat = _threshold_feat = _hinge_feat = 0;
+      }
+      else
+	if ( (_presences + _absences) >= 15 && (_presences + _absences) < 80 ) {
+	  _linear_feat = _quadratic_feat = _hinge_feat = 1;
+	  _product_feat = _threshold_feat = 0;
+	}
+	else
+	  _linear_feat = _quadratic_feat = _product_feat = _threshold_feat = _hinge_feat = 1;
   }
-  else {
-    _auto_feat = 0;
-  }
-
+  
   // Check the number of absences.
   int num_absences = _samp->numAbsence();
 
@@ -470,7 +483,7 @@ _method = "gis";
   }
 
   _num_layers = _samp->numIndependent();
-  
+  /*
   // Identify categorical layers
   _isCategorical.resize( _num_layers );
   
@@ -479,7 +492,7 @@ _method = "gis";
       _hasCategorical = true;
       _isCategorical[i] = 1.0;
     }
-  }
+    }*/
 
   return 1;
 
@@ -497,32 +510,6 @@ MaximumEntropy::iterate()
   // outcome = class (presence / absence)
   // feature = linear; quadratic; product; threshold; hinge; auto
   // context = sample
-  
-  if (_auto_feat == 1) {
-    
-    if ( (_presences + _absences) < 10 ) {
-      
-      _linear_feat = 1;
-      _quadratic_feat = _product_feat = _threshold_feat = _hinge_feat = 0;
-      
-    }
-    else
-      if ( (_presences + _absences) >= 10  && (_presences + _absences) < 15 ) {
-	
-	_linear_feat = _quadratic_feat = 1;
-	_product_feat = _threshold_feat = _hinge_feat = 0;
-	
-      }
-      else
-	if ( (_presences + _absences) >= 15 && (_presences + _absences) < 80 ) {
-	  
-	  _linear_feat = _quadratic_feat = _hinge_feat = 1;
-	  _product_feat = _threshold_feat = 0;
-	  
-	}
-	else
-	  _linear_feat = _quadratic_feat = _product_feat = _threshold_feat = _hinge_feat = 1;
-  }
 
   _num_features = _num_layers * _linear_feat +
 		  _num_layers * _quadratic_feat +
@@ -531,7 +518,6 @@ MaximumEntropy::iterate()
 		  _num_layers * _hinge_feat;
 
   // Presences
-
   OccurrencesImpl::const_iterator p_iterator = _presences->begin();
   OccurrencesImpl::const_iterator p_end = _presences->end();
 
@@ -714,6 +700,7 @@ MaximumEntropy::getValue( const Sample& x ) const
       }
     }
   }
+ 
   me_outcome_type outcome("p"); // p = presence
 
   return _model.eval( context, outcome ); // probability of presence
@@ -744,8 +731,15 @@ MaximumEntropy::_getConfiguration( ConfigurationPtr& config ) const
 
   config->addSubsection( model_config );
 
+  model_config->addNameValue( "NumLayers", _num_layers );
   model_config->addNameValue( "NumFeatures", _num_features );
-
+  
+  model_config->addNameValue( "LinearFeature", _linear_feat );
+  model_config->addNameValue( "QuadraticFeature", _quadratic_feat );
+  model_config->addNameValue( "ProductFeature", _product_feat );
+  model_config->addNameValue( "ThresholdFeature", _threshold_feat );
+  model_config->addNameValue( "HingeFeature", _hinge_feat );
+  
   MaxentModelFile model_file = _model.save();
 
   shared_ptr<me::ParamsType> m_params;
@@ -781,7 +775,13 @@ MaximumEntropy::_setConfiguration( const ConstConfigurationPtr& config )
     return;
   }
 
+  _num_layers = model_config->getAttributeAsInt( "NumLayers", 0 );
   _num_features = model_config->getAttributeAsInt( "NumFeatures", 0 );
+  _linear_feat = model_config->getAttributeAsInt( "LinearFeature", 0 );
+  _quadratic_feat = model_config->getAttributeAsInt( "QuadraticFeature", 0 );
+  _product_feat = model_config->getAttributeAsInt( "ProductFeature", 0 );
+  _threshold_feat = model_config->getAttributeAsInt( "ThresholdFeature", 0 );
+  _hinge_feat = model_config->getAttributeAsInt( "HingeFeature", 0 );
 
   MaxentModelFile model_file;
 
