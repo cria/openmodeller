@@ -154,7 +154,43 @@ void MapFormat::setFormat( int f ) {
 
   if ( format < 0 || format > ByteHFA ) {
 
-    format = FloatingTiff;
+    format = DEFAULT_FORMAT;
+  }
+}
+
+void MapFormat::setFormat( std::string format ) {
+
+  if ( format == "GreyTiff" ) {
+
+    setFormat( GreyTiff );
+  }
+  else if ( format == "GreyTiff100" ) {
+
+    setFormat( GreyTiff100 );
+  }
+  else if ( format == "FloatingTiff" ) {
+
+    setFormat( FloatingTiff );
+  }
+  else if ( format == "GreyBMP" ) {
+
+    setFormat( GreyBMP );
+  }
+  else if ( format == "FloatingHFA" ) {
+
+    setFormat( FloatingHFA );
+  }
+  else if ( format == "ByteHFA" ) {
+
+    setFormat( ByteHFA );
+  }
+  else {
+
+    std::string msg = "Unknown map format: ";
+    msg.append( format );
+    msg.append( "\n" );
+
+    Log::instance()->warn( msg.c_str() );
   }
 }
 
