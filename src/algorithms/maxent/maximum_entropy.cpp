@@ -219,7 +219,7 @@ static AlgMetadata metadata = {
   
   "MAXENT",          // Id.
   "Maximum Entropy", // Name.
-  "0.1",       	     // Version.
+  "0.2",       	     // Version.
 
   // Overview.
   "The principle of maximum entropy is a method for analyzing available qualitative information in order to determine a unique epistemic probability distribution. It states that the least biased distribution that encodes certain given information is that which maximizes the information entropy (content retrieved from Wikipedia on the 19th of May, 2008: http://en.wikipedia.org/wiki/Maximum_entropy). The openModeller implementation of this algorithm makes use of the Maximum Entropy Modeling Toolkit written by Zhang Le, which offers two methods to estimate the maximum entropy parameters: GIS (Generalized Iterative Scaling) and L-BFGS (Limited-Memory Variable Metric). GIS is the default training method (the training method parameter will only be available when a Fortran compiler is used to enable LBFGS in the Maximum Entropy Modeling Toolkit). Please note that the maxent sofware package uses its own method (not implemented here) to find the maximum entropy parameters.",
@@ -777,6 +777,7 @@ MaximumEntropy::_setConfiguration( const ConstConfigurationPtr& config )
 
   _num_layers = model_config->getAttributeAsInt( "NumLayers", 0 );
   _num_features = model_config->getAttributeAsInt( "NumFeatures", 0 );
+
   _linear_feat = model_config->getAttributeAsInt( "LinearFeature", 0 );
   _quadratic_feat = model_config->getAttributeAsInt( "QuadraticFeature", 0 );
   _product_feat = model_config->getAttributeAsInt( "ProductFeature", 0 );
