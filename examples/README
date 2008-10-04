@@ -126,28 +126,39 @@ corresponding man page, or just by typing om_test without parameters.
 
 7) om_project
 
-This program is used to project a serialised model into an 
+This program is used to project a serialized model into an 
 environment scenario. The output will be an image showing 
 a probability surface.
 
-The first parameter points to an XML file that describes how the
-projection should be built. Note that there must be a match 
-between each layer used to originally build the model and each 
-layer in the projection environment:
+There are two ways to use om_project. The first one is to specify
+an XML file that describes how the projection should be built (see
+projection_request.xml for an example). In this case the projection
+layers can be different from the layers used to create the model.
+However, note that there must be a match between each layer used to 
+originally build the model and each layer in the projection 
+environment:
 
  Create Model           Project Model
  ------------------------------------
- temp             |     temp
- rainfall         |     rainfall
+ temp             |     temp_2
+ rainfall         |     rainfall_2
  etc              |     etc
 
-The second parameter specifies the name of the distribution map 
-that will be generated. Optional statistics file and log file
-can be saved as well.
+The second way to use om_project is to specify a serialized model. 
+This can only be used with native projections, i.e., the same layers
+that were used to create the model will be used in the projection. 
+
+In either way, it is always necessary to also specify the name of the 
+distribution map that will be generated. Optional statistics file and 
+log file can be saved as well.
 
 e.g.
 
 om_project --xml-req projection_request.xml --disp-map furcata.img
+
+or 
+
+om_project --model acacia_model.xml --disp-map acacia.img
 
 Additional parameters and detailed documentation can be found in the
 corresponding man page, or just by typing om_project without parameters.
