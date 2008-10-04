@@ -56,13 +56,14 @@ om_viewer request.txt
 
 3) om_niche
 
-If you have built with X11 support, and if your experiment has only 
-two input layers, you can use the om_niche program to visualise the 
+If you have built with X11 support and if your experiment has only 
+two input layers, you can use the om_niche program to visualize the 
 model as a graphic showing probabilities in the environmental space.
+Just pass the serialized model as a parameter.
 
 e.g.
 
-om_niche request.txt
+om_niche furcata.xml
 
 ---
 
