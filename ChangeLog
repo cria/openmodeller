@@ -9,7 +9,8 @@ SVN revision:
 	* Renamed om_sampledump to om_sampler, which now accepts txt or xml input files.
 	* Removed om_dump (its functionality was incorporated by the new om_sampler).
 	* Added new parameter in om_points to split points into test/training with a given proportion.
-	* Added new parameters in the Maximum Entropy algorithm to treat layer values in a different way (feature types). 
+	* Added new parameters in the Maximum Entropy algorithm to treat layer values in a different way (feature types).
+	* Changed om_niche to receive a serialized model as a parameter.
 
 Release 0.6.0 (2008-07-07)
 --------------------------
