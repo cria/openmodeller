@@ -22,9 +22,9 @@ int main( int argc, char **argv ) {
   // command-line parameters (short name, long name, description, take args)
   opts.addOption( "v", "version"   , "Display version info"                        , false );
   opts.addOption( "r", "xml-req"   , "(option 1) Test request file in XML"         , true );
-  opts.addOption( "", "model-file" , "(option 2) Serialized model file"            , true );
-  opts.addOption( "", "points-file", "(option 2) TAB-delimited file with points"   , true );
-  opts.addOption( "", "result-file", "File to store test result in XML"            , true );
+  opts.addOption( "o", "model"     , "(option 2) Serialized model file"            , true );
+  opts.addOption( "p", "points"    , "(option 2) TAB-delimited file with points"   , true );
+  opts.addOption( "s", "result"    , "File to store test result in XML"            , true );
   opts.addOption( "", "log-level"  , "Set the log level (debug, warn, info, error)", true );
   opts.addOption( "", "log-file"   , "Log file"                                    , true );
   opts.addOption( "" , "prog-file" , "File to store test progress"                 , true );
