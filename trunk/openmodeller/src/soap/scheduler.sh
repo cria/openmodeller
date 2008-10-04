@@ -115,7 +115,7 @@ for req in `find $TICKET_DIRECTORY/test_req.* -type f 2> /dev/null`; do
     /application/condor/bin/condor_submit $TICKET_DIRECTORY"/condor_sc."$ticket
   else
     # no Condor - execute om_test directly
-    "$OM_BIN_DIR"/om_test --xml-req "$moved" --result-file "$resp" --log-file "$log" --prog-file "$test_prog"
+    "$OM_BIN_DIR"/om_test --xml-req "$moved" --result "$resp" --log-file "$log" --prog-file "$test_prog"
   fi  
   exit 1
 done
