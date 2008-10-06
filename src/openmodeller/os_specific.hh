@@ -87,7 +87,7 @@ std::vector<std::string> scanDirectory( std::string dir );
  * micro-seconds of the current machine time.
  * @return Not zero if the generator was initiated.
  */
-int initRandom();
+dllexp int initRandom();
 
 
 
