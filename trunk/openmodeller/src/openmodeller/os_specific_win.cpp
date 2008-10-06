@@ -254,8 +254,7 @@ scanDirectory( string dir )
 
 /*******************/
 /*** init Random ***/
-int
-initRandom()
+dllexp int initRandom()
 {
   unsigned int seed;
   seed = (unsigned int) time( NULL );
