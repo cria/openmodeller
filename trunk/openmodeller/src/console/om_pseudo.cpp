@@ -262,7 +262,7 @@ int main( int argc, char **argv ) {
 
     int num_generated_absences = 0;
 
-    int i = 1;
+    int i = 0;
 
     OccurrencesImpl::iterator it = pseudo->begin();
     OccurrencesImpl::iterator end = pseudo->end();
