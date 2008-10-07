@@ -201,6 +201,7 @@ ENDIF (MPI_FOUND)
 # platform specific stuff
 
 IF (WIN32)
+
   SET (OM_BIN_DIR ${CMAKE_INSTALL_PREFIX})
   SET (OM_DATA_DIR ${CMAKE_INSTALL_PREFIX}/data)
   SET (OM_ALG_DIR ${CMAKE_INSTALL_PREFIX}/algs)
@@ -217,43 +218,10 @@ IF (WIN32)
     SET(LIBRARY_OUTPUT_PATH ${OUTPUT_DIR})
     #INSTALL(FILES $ENV{LIB_DIR}/bin/gdal15.dll DESTINATION ${OUTPUT_DIR}/debug)
     EXEC_PROGRAM(${CMAKE_CURRENT_SOURCE_DIR}/install_win/CopyDebugDll.bat)
-  ENDIF (MSVC)
 
-ELSE (WIN32)
-
-  IF (OM_BUNDLE)
-    ADD_DEFINITIONS(-DOM_BUNDLE=\\"TRUE\\")
-    # for Mac OS X, everything is put inside an application bundle
-    SET (CMAKE_INSTALL_PREFIX ${CMAKE_INSTALL_PREFIX}/${PROJECT_NAME}.app/Contents/MacOS)
-    SET (OM_BIN_DIR    ${CMAKE_INSTALL_PREFIX})
-    # path for library references
-    SET (CMAKE_INSTALL_NAME_DIR @executable_path/lib)
-    SET (OM_ALG_DIR ${CMAKE_INSTALL_PREFIX}/algs)
-  ENDIF (OM_BUNDLE)
-
-  # common for MAC and UNIX
-  SET (OM_DATA_DIR "${CMAKE_INSTALL_PREFIX}/share/openmodeller")
-  SET (OM_INCLUDE_DIR "${CMAKE_INSTALL_PREFIX}/include")
-  SET (OM_EXAMPLES_DIR "${CMAKE_INSTALL_PREFIX}/share/openmodeller/examples")
-  SET (OM_CONFIG_DIR "/etc/openmodeller" CACHE STRING "Directory to store openModeller configuration files")
-
-  IF (UNIX AND NOT OM_BUNDLE)
-    SET (OM_BIN_DIR ${CMAKE_INSTALL_PREFIX}/bin)
-    SET (OM_ALG_DIR ${CMAKE_INSTALL_PREFIX}/lib/openmodeller)
-    ADD_DEFINITIONS(-DPREFIX=\\"${CMAKE_INSTALL_PREFIX}\\")
-    ADD_DEFINITIONS(-DPLUGINPATH=\\"${OM_ALG_DIR}\\")
-  ENDIF (UNIX AND NOT OM_BUNDLE)
-  ADD_DEFINITIONS(-DPKGDATAPATH=\\"${OM_DATA_DIR}\\")
-  
-ENDIF (WIN32)
-
-
-IF (WIN32)
-
-  # expect that classes are being imported
-  # Note: MSVC doesn't like when the macros are quotes
-  # and MSYS doesn't like them unqouted (bacause of braces)
-  IF (MSVC)
+    # expect that classes are being imported
+    # Note: MSVC doesn't like when the macros are quotes
+    # and MSYS doesn't like them unqouted (bacause of braces)
     ADD_DEFINITIONS("-Ddllexp=__declspec(dllimport)")
     ADD_DEFINITIONS("-DOM_XML_DLL_EXPORT=__declspec(dllimport)")
     ADD_DEFINITIONS("-DOM_ALG_DLL_EXPORT=__declspec(dllexport)")
@@ -262,14 +230,17 @@ IF (WIN32)
     ADD_DEFINITIONS("-DOM_XML_DLL_EXPORT\"=__declspec(dllimport)\"")
     ADD_DEFINITIONS("-DOM_ALG_DLL_EXPORT\"=__declspec(dllexport)\"")
   ENDIF (MSVC)
-ELSE (WIN32)
-  # common for MAC and UNIX
-  SET (OM_DATA_DIR   ${CMAKE_INSTALL_PREFIX}/share/openmodeller)
-  SET (OM_INCLUDE_DIR "${CMAKE_INSTALL_PREFIX}/include")
-  SET (OM_EXAMPLES_DIR "${CMAKE_INSTALL_PREFIX}/share/openmodeller/examples")
 
-  SET (OM_BIN_DIR    ${CMAKE_INSTALL_PREFIX}/bin)
-  SET (OM_ALG_DIR ${CMAKE_INSTALL_PREFIX}/lib/openmodeller)
+ELSE (WIN32)
+
+  # common for MAC and UNIX
+  SET (OM_DATA_DIR     "${CMAKE_INSTALL_PREFIX}/share/openmodeller/data")
+  SET (OM_INCLUDE_DIR  "${CMAKE_INSTALL_PREFIX}/include")
+  SET (OM_EXAMPLES_DIR "${CMAKE_INSTALL_PREFIX}/share/openmodeller/examples")
+  SET (OM_BIN_DIR      "${CMAKE_INSTALL_PREFIX}/bin")
+  SET (OM_ALG_DIR      "${CMAKE_INSTALL_PREFIX}/lib/openmodeller")
+  SET (OM_CONFIG_DIR   "/etc/openmodeller" CACHE STRING "Directory to store openModeller configuration files")
+
   IF (APPLE)
     #xcode doesnt like those escaped quotes
     ADD_DEFINITIONS(-DPREFIX='"${CMAKE_INSTALL_PREFIX}"')
@@ -280,13 +251,25 @@ ELSE (WIN32)
     ADD_DEFINITIONS(-DPLUGINPATH=\\"${OM_ALG_DIR}\\")
     ADD_DEFINITIONS(-DPKGDATAPATH=\\"${OM_DATA_DIR}\\")
   ENDIF (APPLE)
+
   ADD_DEFINITIONS("-Ddllexp=")
   ADD_DEFINITIONS("-DOM_ALG_DLL_EXPORT=")
   ADD_DEFINITIONS("-DOM_XML_DLL_EXPORT=")
+
+  IF (OM_BUNDLE)
+
+    ADD_DEFINITIONS(-DOM_BUNDLE=\\"TRUE\\")
+
+    # for Mac OS X, everything is put inside an application bundle
+    SET (CMAKE_INSTALL_PREFIX ${CMAKE_INSTALL_PREFIX}/${PROJECT_NAME}.app/Contents/MacOS)
+    SET (OM_BIN_DIR    ${CMAKE_INSTALL_PREFIX})
+
+    # path for library references
+    SET (CMAKE_INSTALL_NAME_DIR @executable_path/lib)
+    SET (OM_ALG_DIR ${CMAKE_INSTALL_PREFIX}/algs)
+  ENDIF (OM_BUNDLE)
+
 ENDIF (WIN32)
-
-
-
 
 #############################################################
 # process subdirs

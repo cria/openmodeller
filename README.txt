@@ -56,8 +56,13 @@ CURRENT STATUS
 - Python binding.
 
 
-REQUIREMENTS
+DEPENDENCIES
 ------------
+
+The following libraries are necessary to compile and run openModeller.
+If you installed openModeller from a pre-built package, you don't
+need to worry about this (most dependencies should already be included 
+in the package).
 
 * cmake (>= 2.4) if you need to compile the library.
 
@@ -92,9 +97,16 @@ Optional libraries:
 DOCUMENTATION
 -------------
 
-For installation instructions, please read INSTALL.
+For compilation and installation instructions, please read:
+
+http://openmodeller.sf.net/INSTALL.html
 
 For code documentation, see: http://openmodeller.cria.org.br/doxygen/
+
+Besides the library itself, openModeller comes with a series of 
+command line tools. Please look at the README.txt file in the 
+"examples" directory for more information about each tool.
+Windows users must use the DOS shell to run command line tools.
 
 ------------ x -----------
 

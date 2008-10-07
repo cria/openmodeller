@@ -11,10 +11,10 @@
 ; Defines added by Tim to streamline / softcode install process
 !define PRODUCT_VERSION "0.6.1"
 ; This is where cmake builds and installs to - no space separating name and version
-!define BUILD_DIR "c:\Program Files\${PRODUCT_NAME}${PRODUCT_VERSION}"
+!define BUILD_DIR "C:\Program files\${PRODUCT_NAME}${PRODUCT_VERSION}"
 ; This is where the nsis installer will install to. Having the space lets you
-; keep dev and inst versions side by side on teh same machine
-!define INSTALL_DIR "c:\Program Files\${PRODUCT_NAME} ${PRODUCT_VERSION}"
+; keep dev and inst versions side by side on the same machine
+!define INSTALL_DIR "$PROGRAMFILES\${PRODUCT_NAME} ${PRODUCT_VERSION}"
 
 Name "${PRODUCT_NAME} ${PRODUCT_VERSION}"
 InstallDir "${INSTALL_DIR}"
@@ -27,6 +27,7 @@ OutFile "openModellerSetup${PRODUCT_VERSION}.exe"
 SetCompressor zlib
 ; Added by Tim for setting env vars (see this file on disk)
 !include WriteEnvStr.nsh
+!include EnvVarUpdate.nsh
 ; MUI 1.67 compatible ------
 !include "MUI.nsh"
 ;Added by Tim for a macro that will recursively delete the files in the install dir
@@ -114,7 +115,8 @@ Section "Application" SEC01
   SetOverwrite ifnewer
   File "${BUILD_DIR}\*.exe"
   SetOverwrite try
-  
+ 
+  File "${BUILD_DIR}\*.txt" 
   File "${BUILD_DIR}\*.dll"
 ;------- gdal related
   File "${BUILD_DIR}\cubewerx_extra.wkt"
@@ -172,17 +174,26 @@ Section "Application" SEC01
 ; Shortcuts
 ; Next line is important - added by Tim
 ; if its not there the application working dir will be the last used
-;outpath and libom wont be able to find its alg
+; outpath and libom wont be able to find its alg
   SetOutPath "$INSTDIR"
   !insertmacro MUI_STARTMENU_WRITE_BEGIN Application
   CreateDirectory "$SMPROGRAMS\$ICONS_GROUP"
-  CreateShortCut "$SMPROGRAMS\$ICONS_GROUP\openModeller .lnk" "$INSTDIR\openModeller.exe"
-  ;CreateShortCut "$DESKTOP\openModeller .lnk" "$INSTDIR\om_console.exe"
+  CreateShortCut "$SMPROGRAMS\$ICONS_GROUP\openModeller .lnk" "$INSTDIR\README.txt"
   !insertmacro MUI_STARTMENU_WRITE_END
-; Added by Tim to set the PROJ_LIB env var so teh nad dir can be located by Proj
+; Set the PROJ_LIB env var so the nad dir can be located by Proj
   Push PROJ_LIB
   Push "$INSTDIR\nad"
   Call WriteEnvStr
+; Set the OM_ALG_PATH env var so that the algorithms can always be located by om
+  Push OM_ALG_PATH
+  Push "$INSTDIR\algs"
+  Call WriteEnvStr
+; Add path
+  Push "Path"
+  Push "A"
+  Push "HKLM"
+  Push "$INSTDIR"
+  Call EnvVarUpdate 
 
 SectionEnd
 
@@ -207,8 +218,7 @@ Section /o "Sample Data - South America" SEC04
  !insertmacro ZIPDLL_EXTRACT "$INSTDIR\SampleData\SouthAmerica.zip" "$INSTDIR\SampleData\EnvironmentLayers\" "<ALL>"
 SectionEnd
 
-; /o means unchecked by default
-Section /o "Small examples data" SEC05
+Section "Small examples data" SEC05
   SetOutPath "$INSTDIR\examples"
   File "${BUILD_DIR}\examples\*"
 SectionEnd
@@ -265,9 +275,16 @@ Function un.onInit
 FunctionEnd
 
 Section Uninstall
-  # remove the variable
+  # remove env variables
   Push PROJ_LIB
   Call un.DeleteEnvStr
+  Push OM_ALG_PATH
+  Call un.DeleteEnvStr
+  Push "Path"
+  Push "R"
+  Push "HKLM"
+  Push "$INSTDIR"
+  Call un.EnvVarUpdate
 
   !insertmacro MUI_STARTMENU_GETFOLDER "Application" $ICONS_GROUP
   Delete "$INSTDIR\${PRODUCT_NAME}.url"
@@ -321,7 +338,7 @@ Section Uninstall
   Delete "$INSTDIR\pluginpath.cfg"
   Delete "$INSTDIR\libopenmodeller.a"
   Delete "$INSTDIR\algs\*.dll"
-  ;Delete "$INSTDIR\data\aquamaps.db"
+  Delete "$INSTDIR\data\aquamaps.db"
 ;---------------- translations
 
   Delete "$INSTDIR\*.qm"

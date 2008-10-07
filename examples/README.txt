@@ -10,18 +10,10 @@ the idea is that you examine the configuration files provided
 and available parameters to decide how to prepare your own 
 models.
 
-Note 1: If you are using these tools on Windows, you may first
-want to add the openModeller installation directory in your
-"Path" environment variable so that you can run them from 
-anywhere. In this case, you should also set another 
-environment variable called "OM_ALG_PATH" pointing to the 
-absolute path of the "alg" subdirectory, otherwise 
-openModeller will fail to load the algorithms.
-
-Note 2: Since the configuration files provided (request.txt, 
-model_request.xml and projection_request.xml) have references 
-to other files, when using them you should run the 
-command-line tools from inside the "examples" directory.
+Note: Since the sample request files provided (request.txt, 
+model_request.xml, projection_request.xml and test_request.xml)
+have references to other files, when using them you should run 
+the command-line tools from inside the "examples" directory.
 
 ---
 
