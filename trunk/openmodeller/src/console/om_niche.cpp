@@ -90,6 +90,15 @@ main( int argc, char **argv )
 
     EnvironmentPtr env = _om.getEnvironment();
 
+    // Normalize environment if necessary
+    // IMPORTANT: this must be done before calling "getExtremes" below, 
+    // otherwise min/max won't be normalized.
+    
+    AlgorithmPtr alg = _om.getAlgorithm();
+
+    alg->setNormalization( env );
+
+    // Get environment info
     int nmap = env->numLayers();
 
     Sample min;
@@ -114,20 +123,20 @@ main( int argc, char **argv )
     _presences = samp->getPresences();
     _absences = samp->getAbsences();
 
-    // Instantiate graphical window.
+    // Instantiate graphical window
     int dimx = 256;
     int dimy = 256;
     GFrame *frame = createFrame( "openModeller Niche Viewer", 1, dimx, dimy );
     _cnv = frame->newCanvas( 0, 0, dimx, dimy );
     _pm  = frame->newPixmap( _cnv, dimx, dimy );
 
-    // Drawing area.
+    // Drawing area
     _graph = new GGraph( _pm );
     _graph->scale( min[0], min[1], max[0], max[1] );
     _graph->background( _bg );
     _graph->clear();
 
-    // Zoom in and out with mouse buttons.
+    // Zoom in and out with mouse buttons
     _zoom = 2.0;
 
     frame->funcShow( draw );
