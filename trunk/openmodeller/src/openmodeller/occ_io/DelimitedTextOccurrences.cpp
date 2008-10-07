@@ -108,8 +108,8 @@ DelimitedTextOccurrences::load()
   Scalar *attributes    = 0;
 
   // Columns to be read.
-  char id[50];
-  char label[256];
+  char id[100];
+  char label[150];
   double x, y;
   int abundance;
 

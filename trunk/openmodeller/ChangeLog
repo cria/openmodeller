@@ -1,6 +1,6 @@
 Release 0.6.1 (2008-10-06)
 --------------------------
-SVN revision: 4570
+SVN revision: 4571
 
 	* Enabled integration with Condor in the modelling server.
 	* Added new method in the modelling service to perform external tests.
