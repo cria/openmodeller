@@ -267,10 +267,10 @@ class test_MapFormat: public CxxTest :: TestSuite
       TS_ASSERT(A->getFormat()==0);
       A->setFormat(MapFormat::ByteHFA);
       TS_ASSERT(A->getFormat()==MapFormat::ByteHFA);
-      A->setFormat(MapFormat::ByteHFA+1);
-      TS_ASSERT(A->getFormat()==MapFormat::FloatingTiff);
+      A->setFormat(MapFormat::FloatingTiff+1);
+      TS_ASSERT(A->getFormat()==MapFormat::GreyTiff);
       A->setFormat(-1);
-      TS_ASSERT(A->getFormat()==MapFormat::FloatingTiff);
+      TS_ASSERT(A->getFormat()==MapFormat::ByteHFA);
     }
 
 /**
