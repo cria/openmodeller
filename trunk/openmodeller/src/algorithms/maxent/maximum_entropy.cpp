@@ -100,7 +100,7 @@ static AlgParamMetadata parameters[NUM_PARAM] = {
     1,         // Parameter's lower limit.
     0,         // Not zero if the parameter has upper limit.
     0,         // Parameter's upper limit.
-    "15"       // Parameter's typical (default) value.
+    "500"      // Parameter's typical (default) value.
   },
 #ifdef HAVE_FORTRAN
   // Training method
