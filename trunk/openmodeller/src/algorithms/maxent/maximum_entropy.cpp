@@ -231,9 +231,9 @@ static AlgMetadata metadata = {
 
   "1) Jaynes, E.T. (1957) Information Theory and Statistical Mechanics. In Physical Review, Vol. 106, #4 (pp 620-630). 2) Berger, A. L., Pietra, S. A. D. and Pietra, V. J. D. (1996). A maximum entropy approach to natural language processing. Computational Linguistics, 22, 39-71. 3) Darroch, J.N. and Ratcliff, D. (1972) Generalized iterative scaling for log-linear models. The Annals of Mathematical Statistics, Vol. 43: pp 1470-1480. 4) Malouf, R. (2003) A comparison of algorithms for maximum entropy parameter estimation. Proceedings of the Sixth Conference on Natural Language Learning. 5) Phillips, S.J., Dudík, M. and Schapire, R.E. (2004) A maximum entropy approach to species distribution modeling. Proceedings of the Twenty-First International Conference on Machine Learning, pp 655-662.", // Bibliography.
 
-  "Elisangela S. da C. Rodrigues, Renato De Giovanni, Rafael M. de Araujo", // Code author.
+  "Elisangela S. da C. Rodrigues, Renato De Giovanni", // Code author.
 
-  "elisangela.rodrigues [at] poli . usp . br, renato [at] cria . org . br, rafael.araujo1 [at] poli . usp . br", // Code author's contact.
+  "elisangela.rodrigues [at] poli . usp . br, renato [at] cria . org . br", // Code author's contact.
 
   0, // Does not accept categorical data.
   0, // Does not need (pseudo)absence points.
@@ -417,29 +417,6 @@ MaximumEntropy::initialize()
     _hinge_feat = 0;
   }
 
-  // Check the features.
-  if ( _linear_feat == 0 && _quadratic_feat == 0 && _threshold_feat ==0 && _hinge_feat == 0 && _product_feat == 0) {
-    
-    Log::instance()->warn( MAXENT_LOG_PREFIX "Features not passed. Using auto features.\n" );
-    
-    if ( (_presences + _absences) < 10 ) {
-      _linear_feat = 1;
-      _quadratic_feat = _product_feat = _threshold_feat = _hinge_feat = 0;
-    }
-    else
-      if ( (_presences + _absences) >= 10  && (_presences + _absences) < 15 ) {
-	_linear_feat = _quadratic_feat = 1;
-	_product_feat = _threshold_feat = _hinge_feat = 0;
-      }
-      else
-	if ( (_presences + _absences) >= 15 && (_presences + _absences) < 80 ) {
-	  _linear_feat = _quadratic_feat = _hinge_feat = 1;
-	  _product_feat = _threshold_feat = 0;
-	}
-	else
-	  _linear_feat = _quadratic_feat = _product_feat = _threshold_feat = _hinge_feat = 1;
-  }
-  
   // Check the number of absences.
   int num_absences = _samp->numAbsence();
 
@@ -482,6 +459,29 @@ MaximumEntropy::initialize()
     _absences = _samp->getAbsences();
   }
 
+  // Check the features.
+  if ( _linear_feat == 0 && _quadratic_feat == 0 && _threshold_feat ==0 && _hinge_feat == 0 && _product_feat == 0) {
+    
+    Log::instance()->warn( MAXENT_LOG_PREFIX "Features not passed. Using auto features.\n" );
+    
+    if ( (num_presences + num_absences) < 10 ) {
+      _linear_feat = 1;
+      _quadratic_feat = _product_feat = _threshold_feat = _hinge_feat = 0;
+    }
+    else
+      if ( (num_presences + num_absences) >= 10  && (num_presences + num_absences) < 15 ) {
+	_linear_feat = _quadratic_feat = 1;
+	_product_feat = _threshold_feat = _hinge_feat = 0;
+      }
+      else
+	if ( (num_presences + num_absences) >= 15 && (num_presences + num_absences) < 80 ) {
+	  _linear_feat = _quadratic_feat = _hinge_feat = 1;
+	  _product_feat = _threshold_feat = 0;
+	}
+	else
+	  _linear_feat = _quadratic_feat = _product_feat = _threshold_feat = _hinge_feat = 1;
+  }
+  
   _num_layers = _samp->numIndependent();
   /*
   // Identify categorical layers
