@@ -151,7 +151,7 @@ main( int argc, char **argv )
     const RocCurve * const roc_curve = om.getRocCurve();
 
     // Confusion Matrix
-    Log::instance()->info( "\nModel statistics\n" );
+    Log::instance()->info( "\nModel statistics for training data\n" );
     Log::instance()->info( "Accuracy:          %7.2f%%\n", matrix->getAccuracy() * 100 );
 
     int omissions = matrix->getValue(0.0, 1.0);
