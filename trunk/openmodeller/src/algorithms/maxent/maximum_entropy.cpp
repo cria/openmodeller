@@ -464,17 +464,17 @@ MaximumEntropy::initialize()
     
     Log::instance()->warn( MAXENT_LOG_PREFIX "Features not passed. Using auto features.\n" );
     
-    if ( (num_presences + num_absences) < 10 ) {
+    if ( num_presences < 10 ) {
       _linear_feat = 1;
       _quadratic_feat = _product_feat = _threshold_feat = _hinge_feat = 0;
     }
     else
-      if ( (num_presences + num_absences) >= 10  && (num_presences + num_absences) < 15 ) {
+      if ( (num_presences >= 10)  && (num_presences < 15) ) {
 	_linear_feat = _quadratic_feat = 1;
 	_product_feat = _threshold_feat = _hinge_feat = 0;
       }
       else
-	if ( (num_presences + num_absences) >= 15 && (num_presences + num_absences) < 80 ) {
+	if ( (num_presences >= 15) && (num_presences < 80) ) {
 	  _linear_feat = _quadratic_feat = _hinge_feat = 1;
 	  _product_feat = _threshold_feat = 0;
 	}
