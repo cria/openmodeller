@@ -674,9 +674,9 @@ AquaMaps::_readSpeciesData( const char *species )
   string dbname( PKGDATAPATH );
 
 #ifndef WIN32
-  dbname.append( "/data/aquamaps.db" );
+  dbname.append( "/aquamaps.db" );
 #else
-  dbname.append( "\\data\\aquamaps.db" );
+  dbname.append( "\\aquamaps.db" );
 #endif
   int rc = sqlite3_open( dbname.c_str(), &db);
 
