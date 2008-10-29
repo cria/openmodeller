@@ -404,7 +404,7 @@ SamplerImpl::getPseudoAbsence( const Model& model, const Scalar threshold ) cons
 
    if ( loop == max_loop ) {
 
-     std::string msg = "Exceeded maximum number of attempts to generate pseudo absence.\n";
+     std::string msg = "Exceeded maximum number of attempts to generate point outside the probability threshold.\n";
 
      Log::instance()->error( msg.c_str() );
 
