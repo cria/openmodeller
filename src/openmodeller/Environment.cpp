@@ -484,22 +484,36 @@ EnvironmentImpl::get( Coord x, Coord y ) const
 }
 
 Sample
-EnvironmentImpl::getRandom( Coord *xout, Coord *yout) const
+EnvironmentImpl::getRandom( Coord *xout, Coord *yout ) const
 {
   Random myrand;
   Coord x, y;
 
   Sample s;
 
-  do
-    {
-      x = myrand( _xmin, _xmax );
-      y = myrand( _ymin, _ymax );
+  int max_loop = 5000;
 
-      s = get(x,y);
+  int loop = 0;
 
-    } while ( s.size() == 0 );
+  do {
 
+    x = myrand( _xmin, _xmax );
+    y = myrand( _ymin, _ymax );
+
+    s = get( x, y );
+
+    loop++;
+
+  } while ( s.size() == 0 && loop < max_loop );
+
+  if ( loop == max_loop ) {
+
+    std::string msg = "Exceeded maximum number of attempts to generate pseudo point.\n";
+
+    Log::instance()->error( msg.c_str() );
+
+    throw OmException( msg );
+  }
 
   if ( xout != 0 )
     *xout = x;
