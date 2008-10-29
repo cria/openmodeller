@@ -35,6 +35,9 @@
 #include <openmodeller/Environment.hh>
 #include <openmodeller/Sampler.hh>
 
+#define DEFAULT_RESOLUTION 15
+#define DEFAULT_BACKGROUND_POINTS 10000
+
 /**
  * Class ROC curve
  */
@@ -44,8 +47,9 @@ public:
   /** 
    * Default constructor.
    * @param resolution Number of points to be calculated for the curve.
+   * @param background_points Number of background points to be generated when there are no absences.
    */
-  RocCurve( int resolution=15 );
+  RocCurve( int resolution=DEFAULT_RESOLUTION, int background_points=DEFAULT_BACKGROUND_POINTS );
 
   /** 
    * Destructor.
@@ -55,13 +59,14 @@ public:
   /** 
    * Reset all internal values.
    * @param resolution New resolution (number of points to be calculated).
+   * @param background_points Number of background points to be generated when there are no absences.
    */
-  void reset( int resolution=15 );
+  void reset( int resolution=DEFAULT_RESOLUTION, int background_points=DEFAULT_BACKGROUND_POINTS );
 
   /** 
-   * Calculate ROC curve based on an abstract Sampler object. This method loads model
-   * predictions for all sampler points, calculates all points for the curve and calculates
-   * the area under the curve.
+   * Calculate ROC curve given a Model and a Sampler object. This method loads model
+   * predictions for all sampler points, calculates all points for the curve and 
+   * calculates the area under the curve.
    * @param model Model object to be evaluated.
    * @param Sampler Pointer to a Sampler object that will provide data for evaluation.
    */
@@ -74,18 +79,21 @@ public:
   int numPoints() const { return _data.size(); }
 
   /** 
-   * Return the specificity of a particular point. Need to call "calculate" first.
+   * Return the X axis value for a particular point (1-specificity if absence
+   * points were provided, otherwise proportion of background points predicted present). 
+   * Need to call "calculate" first.
    * @param point_index Point index.
-   * @return Specificity for the point.
+   * @return X value for the point.
    */
-  double getSpecificity( int point_index ) const { return 1 - _data[point_index][0]; }
+  double getX( int point_index ) const { return _data[point_index][0]; }
 
   /** 
-   * Return the sensitivity of a particular point. Need to call "calculate" first.
+   * Return the Y axis value of a particular point (sensitivity). Need to call 
+   * "calculate" first.
    * @param point_index Point index.
-   * @return Sensitivity for the point.
+   * @return Y value for the point.
    */
-  double getSensitivity( int point_index ) const { return _data[point_index][1]; }
+  double getY( int point_index ) const { return _data[point_index][1]; }
 
   /** 
    * Return the area under the curve. Need to call "calculate" first.
@@ -125,14 +133,10 @@ private:
 
  /**
   * Get model predictions for each sample.
-  * @param env Pointer to Environment object containing the environmental data to be used.
   * @param model Model object to be evaluated.
-  * @param presences Pointer to an Occurrences object storing the presence points being evaluated.
-  * @param absences Pointer to an Occurrences object storing the absence points being evaluated.
+  * @param sampler Sampler object with environment, presences and optionally absence points (no absences will trigger the background points approach).
   */
-  void _loadPredictions( const EnvironmentPtr & env, const Model& model,
-                         const OccurrencesPtr& presences, 
-                         const OccurrencesPtr& absences = OccurrencesPtr() );
+  void _loadPredictions( const Model& model, const SamplerPtr& sampler );
  
   /** 
    * Calculate all points of the curve.
@@ -150,11 +154,17 @@ private:
   std::vector< std::vector<Scalar> > _data; // Main data structure to store all points
   
   int _resolution; // Number of points on the curve
+  int _background_points; // Number of background points to be generated when there are no absences
+  bool _gen_background_points; // Indicates if background points were generated or not
 
   int _true_negatives; // Number of true negatives (binarized)
   int _true_positives; // Number of true positives (binarized)
 
   double _auc; // Area under the curve
+
+  std::vector<Scalar> _thresholds; // Thresholds in ascending order
+
+  std::vector<Scalar> _proportions; // Proportional area for each point
 
   bool _ready;
 };

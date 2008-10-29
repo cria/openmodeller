@@ -48,9 +48,9 @@ using namespace std;
 
 /*******************/
 /*** constructor ***/
-RocCurve::RocCurve( int resolution )
+RocCurve::RocCurve( int resolution, int background_points )
 {
-  reset( resolution );
+  reset( resolution, background_points );
 }
 
 
@@ -62,16 +62,31 @@ RocCurve::~RocCurve()
 
 /*************/
 /*** reset ***/
-void RocCurve::reset( int resolution )
+void RocCurve::reset( int resolution, int background_points )
 {
   _ready = false;
   _resolution = resolution;
+  _background_points = background_points;
+  _gen_background_points = false;
   _category.erase( _category.begin(), _category.end() );
   _prediction.erase( _prediction.begin(), _prediction.end() );
   _data.erase( _data.begin(), _data.end() );
   _true_negatives = 0;
   _true_positives = 0;
   _auc = 0.0;
+
+  _proportions.erase( _proportions.begin(), _proportions.end() );
+  _proportions.reserve( _resolution );
+
+  _thresholds.erase( _thresholds.begin(), _thresholds.end() );
+  _thresholds.reserve( _resolution );
+
+  // Compute thresholds
+  for ( int i = 0; i < _resolution; i++ ) {
+
+    _thresholds.push_back( Scalar(i) / ( _resolution - 1 ) );
+    _proportions.push_back( 0 );
+  }
 }
 
 
@@ -81,8 +96,7 @@ void RocCurve::calculate( const Model& model, const SamplerPtr& sampler )
 {
   reset( _resolution );
 
-  _loadPredictions( sampler->getEnvironment(), model, 
-                    sampler->getPresences(), sampler->getAbsences() );
+  _loadPredictions( model, sampler );
 
   _calculateGraphPoints();
 
@@ -94,12 +108,11 @@ void RocCurve::calculate( const Model& model, const SamplerPtr& sampler )
 
 /************************/
 /*** load Predictions ***/
-void RocCurve::_loadPredictions( const EnvironmentPtr & env,
-                                 const Model& model,
-                                 const OccurrencesPtr& presences, 
-                                 const OccurrencesPtr& absences )
+void RocCurve::_loadPredictions( const Model& model, const SamplerPtr& sampler )
 {
   // Check parameters
+
+  EnvironmentPtr env = sampler->getEnvironment();
 
   if ( ! env ) {
 
@@ -110,6 +123,9 @@ void RocCurve::_loadPredictions( const EnvironmentPtr & env,
     throw InvalidParameterException( msg );
   }
 
+  OccurrencesPtr presences = sampler->getPresences();
+  OccurrencesPtr absences = sampler->getAbsences();
+
   if ( ! presences ) {
 
     std::string msg = "No presence points specified for the ROC curve\n";
@@ -119,18 +135,14 @@ void RocCurve::_loadPredictions( const EnvironmentPtr & env,
     throw InvalidParameterException( msg );
   }
 
-  if ( ! absences ) {
-
-    std::string msg = "No absence points specified for the ROC curve\n";
-
-    Log::instance()->error( msg.c_str() );
-
-    throw InvalidParameterException( msg );
-  }
-
   // Load predictions
 
-  int size = presences->numOccurrences() + absences->numOccurrences();
+  int size = presences->numOccurrences();
+
+  if ( absences ) {
+
+    size += absences->numOccurrences();
+  }
 
   _category.reserve( size );
   _prediction.reserve( size );
@@ -142,18 +154,19 @@ void RocCurve::_loadPredictions( const EnvironmentPtr & env,
 
   model->setNormalization( env );
 
+  // Store predictions for presence points
   int i = 0;
   while( it != fin ) {
 
     Sample sample; 
 
-    if ( env ) {
+    if ( (*it)->hasEnvironment() ) {
 
-      sample = env->get( (*it)->x(), (*it)->y() );
+      sample = (*it)->environment();
     }
     else {
 
-      sample = (*it)->environment();
+      sample = env->get( (*it)->x(), (*it)->y() );
     }
 
     if ( sample.size() > 0 ) {
@@ -172,6 +185,7 @@ void RocCurve::_loadPredictions( const EnvironmentPtr & env,
     ++it;
   }
 
+  // Store predictions for absence points
   i = 0;
   if ( absences && ! absences->isEmpty() ) {
 
@@ -182,13 +196,13 @@ void RocCurve::_loadPredictions( const EnvironmentPtr & env,
 
       Sample sample;
 
-      if ( env ) {
+      if ( (*it)->hasEnvironment() ) {
 
-	sample = env->get( (*it)->x(), (*it)->y() );
+	sample = (*it)->environment();
       }
       else {
 
-	sample = (*it)->environment();
+	sample = env->get( (*it)->x(), (*it)->y() );
       }
 
       if ( sample.size() > 0 ) {
@@ -206,6 +220,50 @@ void RocCurve::_loadPredictions( const EnvironmentPtr & env,
 
       ++it;
     }
+  }
+  else {
+
+    // Generate background points when there are no absences
+
+    std::string msg = "No absence points specified\n";
+
+    Log::instance()->info( msg.c_str() );
+
+    msg = "Generating background points\n";
+
+    Log::instance()->info( msg.c_str() );
+
+    Scalar prob;
+
+    int i = 0;
+
+    do {
+
+      Coord x,y;
+      Sample s( env->getRandom( &x, &y ) );
+
+      prob = model->getValue( s );
+
+      for ( unsigned int j = 0; j < _thresholds.size(); j++ ) {
+
+        if ( prob < _thresholds[j] ) {
+
+          break;
+        }
+
+        _proportions[j] += 1;
+      }
+
+      ++i;
+
+    } while ( i < _background_points );
+
+    for ( unsigned int f = 0; f < _proportions.size(); f++ ) {
+
+      _proportions[f] /= _background_points;
+    }
+
+    _gen_background_points = true;
   }
 }
 
@@ -225,8 +283,8 @@ void RocCurve::_calculateGraphPoints()
     int num_tn = 0; // true negatives
     int num_fn = 0; // false negatives
 
-    // Determine positivity criterion (threshold) for current point
-    Scalar threshold = Scalar(i) / ( _resolution - 1 );
+    // Positivity criterion for current point
+    Scalar threshold = _thresholds[i];
 
     // Process all pairs
     for ( j = 0; j < num_pairs; j++ ) {
@@ -271,8 +329,14 @@ void RocCurve::_calculateGraphPoints()
     Scalar npvalue     = (num_pn == 0) ? Scalar(-1) : Scalar(num_tn) / num_pn;
     Scalar accuracy    = (num_tt == 0) ? Scalar(-1) : Scalar(num_tp + num_tn) / num_tt;
 
-    // Is sensitivity and specificity defined?
-    if ( sensitivity == -1 || specificity == -1 ) {
+    // Ignore points with unknown sensitivity
+    if ( sensitivity == -1 ) {
+
+      continue;
+    }
+
+    // Ignore points with unknown specificity if absence points were provided
+    if ( specificity == -1 && ! _gen_background_points ) {
 
       continue;
     }
@@ -281,8 +345,20 @@ void RocCurve::_calculateGraphPoints()
     v.reserve(6);
 
     // Store vector contents
-    v.push_back(1 - specificity);
+
+    // x value
+    if ( _gen_background_points ) {
+
+      v.push_back( _proportions[i] );
+    }
+    else {
+
+      v.push_back(1 - specificity);
+    }
+
+    // y value
     v.push_back(sensitivity);
+
     v.push_back(ppvalue);
     v.push_back(npvalue);
     v.push_back(accuracy);
@@ -290,7 +366,6 @@ void RocCurve::_calculateGraphPoints()
 
     // Append to data vector
     _data.push_back(v);
-
   }
 
   std::vector<Scalar> v00, v11;
@@ -342,10 +417,10 @@ bool RocCurve::_calculateArea()
   // Approximate area under ROC curve with trapezes
   for ( i = 1; i < num_points; i++ ) {
 
-    double x1 = 1 - getSpecificity(i - 1);
-    double y1 = getSensitivity(i - 1);
-    double x2 = 1 - getSpecificity(i);
-    double y2 = getSensitivity(i);
+    double x1 = getX(i - 1);
+    double y1 = getY(i - 1);
+    double x2 = getX(i);
+    double y2 = getY(i);
 
     if ( x2 != x1 ) {
 
@@ -368,6 +443,11 @@ RocCurve::getConfiguration() const
 
   config->addNameValue( "Auc", getArea() );
 
+  if ( _gen_background_points ) {
+
+    config->addNameValue( "NumBackgroundPoints", _background_points );
+  }
+
   int num_points = numPoints();
 
   double *tmp_points = new double[num_points*2];
@@ -376,11 +456,11 @@ RocCurve::getConfiguration() const
 
   for ( int i = 0; i < num_points; ++i, ++cnt ) {
 
-    tmp_points[cnt] = 1 - getSpecificity( i );
+    tmp_points[cnt] = getX( i );
 
     ++cnt;
 
-    tmp_points[cnt] = getSensitivity( i );
+    tmp_points[cnt] = getY( i );
   }
 
   config->addNameValue( "Points", tmp_points, num_points*2 );
