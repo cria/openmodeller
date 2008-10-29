@@ -497,38 +497,7 @@ const RocCurve * const OpenModeller::getRocCurve()
 
   Log::instance()->debug( "Calculating ROC curve using training dataset\n" );
 
-  int num_presences = _samp->numPresence();
-
-  int num_absence = _samp->numAbsence();
-
-  SamplerPtr sampler;
-
-  if ( ! num_absence ) {
-
-    // If there are no absences, generate pseudo-absences (same number of presences)
-
-    Log::instance()->debug( "Sampling pseudo-absences\n" );
-
-    OccurrencesImpl * pseudo_absences = new OccurrencesImpl( 0.0 );
-
-    for ( int i = 0; i < num_presences; ++i ) {
-
-      OccurrencePtr oc = _samp->getPseudoAbsence();
-      pseudo_absences->insert( oc );
-
-      Log::instance()->debug( "(%f,%f)\n", oc->x(), oc->y() );
-    }
-
-    sampler = createSampler( _env, _samp->getPresences(), pseudo_absences );
-  }
-  else {
-
-   // If there are absences, use the same sampler
-
-    sampler = getSampler();
-  }
-
-  _roc_curve->calculate( getModel(), sampler );
+  _roc_curve->calculate( getModel(), getSampler() );
 
   return _roc_curve;
 }
