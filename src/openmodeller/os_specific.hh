@@ -2,7 +2,6 @@
 /**
  * Declaration of AlgorithmFactory class.
  * 
- * @file
  * @author Mauro E S Muñoz (mauro@cria.org.br)
  * @date   2004-03-19
  * $Id$
@@ -40,7 +39,7 @@
   // fake use to make unused variable warnings go away in Visual C++
   #define UNUSED(symbol) symbol
 #else
-  #  define UNUSED(symbol)
+  #define UNUSED(symbol)
 #endif
 
 
