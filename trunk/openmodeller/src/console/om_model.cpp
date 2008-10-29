@@ -37,18 +37,22 @@ int main( int argc, char **argv ) {
   int option;
 
   // command-line parameters (short name, long name, description, take args)
-  opts.addOption( "v", "version"   , "Display version info"                        , false );
-  opts.addOption( "r", "xml-req"   , "Model creation request file in XML"          , true );
-  opts.addOption( "m", "model-file", "File to store the generated model"           , true );
-  opts.addOption( "" , "log-level" , "Set the log level (debug, warn, info, error)", true );
-  opts.addOption( "" , "log-file"  , "Log file"                                    , true );
-  opts.addOption( "" , "prog-file" , "File to store model creation progress"       , true );
+  opts.addOption( "v", "version"    , "Display version info"                        , false );
+  opts.addOption( "r", "xml-req"    , "Model creation request file in XML"          , true );
+  opts.addOption( "m", "model-file" , "File to store the generated model"           , true );
+  opts.addOption( "" , "calc-matrix", "Calculate confusion matrix"                  , false );
+  opts.addOption( "" , "calc-roc"   , "Calculate ROC curve"                         , false );
+  opts.addOption( "" , "log-level"  , "Set the log level (debug, warn, info, error)", true );
+  opts.addOption( "" , "log-file"   , "Log file"                                    , true );
+  opts.addOption( "" , "prog-file"  , "File to store model creation progress"       , true );
 
   std::string log_level("info");
   std::string request_file;
   std::string model_file;
   std::string log_file;
   std::string progress_file;
+  bool calc_matrix = false;
+  bool calc_roc = false;
 
   if ( ! opts.parse( argc, argv ) ) {
 
@@ -73,12 +77,18 @@ int main( int argc, char **argv ) {
         model_file = opts.getArgs( option );
         break;
       case 3:
-        log_level = opts.getArgs( option );
+        calc_matrix = true;
         break;
       case 4:
-        log_file = opts.getArgs( option );
+        calc_roc = true;
         break;
       case 5:
+        log_level = opts.getArgs( option );
+        break;
+      case 6:
+        log_file = opts.getArgs( option );
+        break;
+      case 7:
         progress_file = opts.getArgs( option );
         break;
       default:
@@ -149,6 +159,26 @@ int main( int argc, char **argv ) {
     om.setModelConfiguration( input );
 
     om.createModel();
+
+    if ( calc_matrix ) {
+
+      const ConfusionMatrix * const matrix = om.getConfusionMatrix();
+
+      if ( ! matrix->ready() ) {
+
+        Log::instance()->error( "Could not calculate confusion matrix\n" );
+      }
+    }
+
+    if ( calc_roc ) {
+
+      const RocCurve * const roc_curve = om.getRocCurve();
+
+      if ( ! roc_curve->ready() ) {
+
+        Log::instance()->error( "Could not calculate ROC curve\n" );
+      }
+    }
 
     ConfigurationPtr output = om.getModelConfiguration();
 
