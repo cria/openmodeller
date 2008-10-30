@@ -33,6 +33,7 @@ CMakeCache.txt: CMakeLists.txt
 	#-D GDAL_INCLUDE_DIR=/usr/include/gdal \
 	#-D GDAL_LIBRARY=/usr/lib/libgdal1.3.2.so \
 	cmake -D CMAKE_INSTALL_PREFIX=/usr \
+        -DOM_BUILD_SERVICE=ON \
         -DPEDANTIC=OFF \
 	.
 
