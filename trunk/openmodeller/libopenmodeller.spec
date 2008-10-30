@@ -82,11 +82,13 @@ rm -rf $RPM_BUILD_ROOT
 %{_bindir}/om_*
 %{prefix}/man/man1/*
 %{prefix}/share/openmodeller/examples
-/etc/openmodeller/scheduler.sh
-/etc/openmodeller/server.conf
-/etc/openmodeller/vrts/bytehfa.vrt
+#/etc/openmodeller/scheduler.sh
+#/etc/openmodeller/server.conf
+#/etc/openmodeller/vrts/bytehfa.vrt
 
 %changelog -n libopenmodeller
+* Thu Oct 30 2008 - Renato De Giovanni <renato [at] cria . org . br>
+- do not install files related to the soap server (should be a new separate package in the future)
 * Mon Sep 22 2008 - Renato De Giovanni <renato [at] cria . org . br>
 - install virtual raster template file
 * Mon Jun 23 2008 - Renato De Giovanni <renato [at] cria . org . br>
