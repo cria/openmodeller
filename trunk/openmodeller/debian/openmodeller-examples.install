@@ -2,7 +2,8 @@
 /usr/share/openmodeller/examples/model_request.xml
 /usr/share/openmodeller/examples/projection_request.xml
 /usr/share/openmodeller/examples/rain_coolest.tif
-/usr/share/openmodeller/examples/README
+/usr/share/openmodeller/examples/README.txt
 /usr/share/openmodeller/examples/request.txt
 /usr/share/openmodeller/examples/temp_avg.tif
-
+/usr/share/openmodeller/examples/test_points.txt
+/usr/share/openmodeller/examples/test_request.xml
