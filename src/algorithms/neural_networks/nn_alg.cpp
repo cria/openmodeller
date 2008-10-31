@@ -48,13 +48,13 @@ using namespace std;
 
 #define NUM_PARAM 7
 
-#define HIDDEN_ID    "HiddenLayerNeurons"
-#define LEARNING_RATE_ID    "LearningRate"
-#define MOMENTUM_ID    "Momentum"
-#define PROPTRAIN_ID    "Proptrain"
-#define CHOICE_ID    "Choice"
-#define EPOCH_ID    "Epoch"
-#define MIN_ERROR_ID    "MinimunError"
+#define HIDDEN_ID        "HiddenLayerNeurons"
+#define LEARNING_RATE_ID "LearningRate"
+#define MOMENTUM_ID      "Momentum"
+#define PROPTRAIN_ID     "Proptrain"
+#define CHOICE_ID        "Choice"
+#define EPOCH_ID         "Epoch"
+#define MIN_ERROR_ID     "MinimunError"
 
 #define NN_LOG_PREFIX "NNAlgorithm: "
 
@@ -172,12 +172,12 @@ static AlgParamMetadata parameters[NUM_PARAM] = {
 
 static AlgMetadata metadata = {
 
-  "NN_EPOCH",	// Id.
-  "NEURAL NETWORK",	// Name.
+  "ANN_EPOCH",	// Id.
+  "Artificial Neural Network",	// Name.
   "0.1",	// Version.
 
   // Overview
-  "Artificial neural networks are made up of interconnecting artificial neurons (programming constructs that mimic the properties of biological neurons). Artificial neural networks may either be used to gain an understanding of biological neural networks, or for solving artificial intelligence problems without necessarily creating a model of a real biological system. Content retrieved from Wikipedia on the 06th of May, 2008: http://en.wikipedia.org/wiki/Neural_network.\nTraining realized by number of epochs.",
+  "Artificial neural networks are made up of interconnecting artificial neurons (programming constructs that mimic the properties of biological neurons). Artificial neural networks may either be used to gain an understanding of biological neural networks, or for solving artificial intelligence problems without necessarily creating a model of a real biological system. Content retrieved from Wikipedia on the 06th of May, 2008: http://en.wikipedia.org/wiki/Neural_network",
 
   // Description.
   "An artificial neural network (ANN), also called a simulated neural network (SNN) or commonly just neural network (NN) is an interconnected group of artificial neurons that uses a mathematical or computational model for information processing based on a connectionistic approach to computation. In most cases an ANN is an adaptive system that changes its structure based on external or internal information that flows through the network.In more practical terms neural networks are non-linear statistical data modeling or decision making tools. They can be used to model complex relationships between inputs and outputs or to find patterns in data. Content retrieved from Wikipedia on the 06th of May, 2008: http://en.wikipedia.org/wiki/Neural_network",
