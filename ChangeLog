@@ -1,7 +1,8 @@
-Release 0.? (2008-?-?)
+Release 0.7 (2008-?-?)
 --------------------------
 SVN revision: ?
 
+	* New Algorithm using Artificial Neural Networks.
 	* Changed AUC calculation when no absence points are provided (instead of using 1-specificity after generating pseudo-absences, it now uses the proportion of points predicted present for a large number of random background points).
 	* Added parameters --calc-matrix and --calc-roc to om_model.
 
