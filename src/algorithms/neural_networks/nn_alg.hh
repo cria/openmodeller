@@ -1,9 +1,9 @@
 /**
  * Declaration of Neural Network algorithm class.
  * 
- * @author FabrÃ­cio Augusto Rodrigues (fabricio.rodrigues [at] poli . usp .br)
+ * @author Fabrício Augusto Rodrigues (fabricio.rodrigues [at] poli . usp .br)
  * @author Alex Oshika Avilla (alex.avilla [at] poli . usp .br)
- * $Id:
+ * $Id
  * 
  * LICENSE INFORMATION 
  * 
