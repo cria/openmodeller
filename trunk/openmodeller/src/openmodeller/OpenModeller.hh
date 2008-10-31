@@ -341,7 +341,7 @@ public:
    * curve that was calculated from the last generated model. 
    * IMPORTANT: you should NOT delete the returned pointer!
    */
-  const RocCurve * const getRocCurve();
+  RocCurve * const getRocCurve();
 
   /*****************************************************************************
    *

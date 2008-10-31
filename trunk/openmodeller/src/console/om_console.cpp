@@ -148,7 +148,7 @@ main( int argc, char **argv )
 
     // Instantiate objects for model statistics
     const ConfusionMatrix * const matrix = om.getConfusionMatrix();
-    const RocCurve * const roc_curve = om.getRocCurve();
+    RocCurve * const roc_curve = om.getRocCurve();
 
     // Confusion Matrix
     Log::instance()->info( "\nModel statistics for training data\n" );
@@ -170,7 +170,7 @@ main( int argc, char **argv )
     }
 
     // ROC curve
-    Log::instance()->info( "AUC:               %7.2f\n", roc_curve->getArea() );
+    Log::instance()->info( "AUC:               %7.2f\n", roc_curve->getTotalArea() );
 
     // Projection statistics
     if ( request.requestedProjection() ) {

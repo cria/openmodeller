@@ -43,6 +43,7 @@
 
 #include <string.h>
 #include <algorithm>
+#include <map>
 
 using namespace std;
 
@@ -73,7 +74,7 @@ void RocCurve::reset( int resolution, int background_points )
   _data.erase( _data.begin(), _data.end() );
   _true_negatives = 0;
   _true_positives = 0;
-  _auc = 0.0;
+  _auc = -1.0;
 
   _proportions.erase( _proportions.begin(), _proportions.end() );
   _proportions.reserve( _resolution );
@@ -87,6 +88,8 @@ void RocCurve::reset( int resolution, int background_points )
     _thresholds.push_back( Scalar(i) / ( _resolution - 1 ) );
     _proportions.push_back( 0 );
   }
+
+  _ratios.clear();
 }
 
 
@@ -99,8 +102,6 @@ void RocCurve::calculate( const Model& model, const SamplerPtr& sampler )
   _loadPredictions( model, sampler );
 
   _calculateGraphPoints();
-
-  _calculateArea();
 
   _ready = true;
 }
@@ -368,28 +369,31 @@ void RocCurve::_calculateGraphPoints()
     _data.push_back(v);
   }
 
-  std::vector<Scalar> v00, v11;
+  if ( ! _gen_background_points ) {
 
-  v00.reserve(6);
-  v11.reserve(6);
+    // Append (0, 0) and (1, 1) points artificially.
+    std::vector<Scalar> v00, v11;
 
-  // Append (0, 0) and (1, 1) points artificially.
-  v00.push_back(0.0);  // 1 - specificity
-  v00.push_back(0.0);  // sensitivity
-  v00.push_back(-1);   // ppvalue
-  v00.push_back(-1);   // npvalue
-  v00.push_back(-1);   // accuracy
-  v00.push_back(-1);   // threshold
+    v00.reserve(6);
+    v11.reserve(6);
 
-  v11.push_back(1.0);  // 1 - specificity
-  v11.push_back(1.0);  // sensitivity
-  v11.push_back(-1);   // ppvalue
-  v11.push_back(-1);   // npvalue
-  v11.push_back(-1);   // accuracy
-  v11.push_back(-1);   // threshold
+    v00.push_back(0.0);  // 1 - specificity
+    v00.push_back(0.0);  // sensitivity
+    v00.push_back(-1);   // ppvalue
+    v00.push_back(-1);   // npvalue
+    v00.push_back(-1);   // accuracy
+    v00.push_back(-1);   // threshold
 
-  _data.push_back(v00);
-  _data.push_back(v11);
+    v11.push_back(1.0);  // 1 - specificity
+    v11.push_back(1.0);  // sensitivity
+    v11.push_back(-1);   // ppvalue
+    v11.push_back(-1);   // npvalue
+    v11.push_back(-1);   // accuracy
+    v11.push_back(-1);   // threshold
+
+    _data.push_back(v00);
+    _data.push_back(v11);
+  }
 
   VectorCompare compare;
 
@@ -400,9 +404,9 @@ void RocCurve::_calculateGraphPoints()
 
 /**********************/
 /*** calculate Area ***/
-bool RocCurve::_calculateArea()
+bool RocCurve::_calculateTotalArea()
 {
-  _auc = -1;
+  _auc = -1.0;
 
   int i, num_points = numPoints();
 
@@ -434,6 +438,68 @@ bool RocCurve::_calculateArea()
 }
 
 
+/**********************/
+/*** get Total Area ***/
+double 
+RocCurve::getTotalArea() {
+
+  if ( _auc < 0.0 ) {
+
+    _calculateTotalArea();
+  }
+
+  return _auc; 
+}
+
+
+/******************************/
+/*** get Partial Area Ratio ***/
+double RocCurve::getPartialAreaRatio( double e )
+{
+  double area = 0.0;
+
+  double diag_area = 0.0;
+
+  int i, num_points = numPoints();
+
+  // Verify dimensions
+  if ( num_points < 2 ) {
+
+    return -1.0;
+  }
+
+  map<double, double>::iterator it;
+
+  it = _ratios.find( e );
+
+  if ( it != _ratios.end() ) {
+
+    return _ratios[e];
+  }
+
+  // Approximate area under ROC curve with trapezes
+  for ( i = 1; i < num_points; i++ ) {
+
+    double x1 = getX(i - 1);
+    double y1 = getY(i - 1);
+    double x2 = getX(i);
+    double y2 = getY(i);
+
+    // Only points where Y is greater than or equals 1-e (e=maximum accepted omission)
+    if ( x2 != x1 && y1 >= (1 - e) ) {
+
+      area += (x2 - x1) * 0.5 * (y1 + y2);
+
+      diag_area += (x2 - x1) * 0.5 * (x1 + x2);
+    }
+  }
+
+  _ratios[e] = area / diag_area;
+
+  return _ratios[e];
+}
+
+
 /*************************/
 /*** get Configuration ***/
 ConfigurationPtr 
@@ -441,7 +507,7 @@ RocCurve::getConfiguration() const
 {
   ConfigurationPtr config( new ConfigurationImpl("RocCurve") );
 
-  config->addNameValue( "Auc", getArea() );
+  config->addNameValue( "Auc", _auc );
 
   if ( _gen_background_points ) {
 
@@ -464,6 +530,16 @@ RocCurve::getConfiguration() const
   }
 
   config->addNameValue( "Points", tmp_points, num_points*2 );
+
+  for ( map<double, double>::const_iterator it = _ratios.begin(); it != _ratios.end(); it++ ) {
+
+    ConfigurationPtr ratio( new ConfigurationImpl( "Ratio" ) );
+
+    ratio->addNameValue( "E", (*it).first );
+    ratio->addNameValue( "Value", (*it).second );
+
+    config->addSubsection( ratio );
+  }
 
   delete[] tmp_points;
 

@@ -20,19 +20,26 @@ int main( int argc, char **argv ) {
   int option;
 
   // command-line parameters (short name, long name, description, take args)
-  opts.addOption( "v", "version"   , "Display version info"                        , false );
-  opts.addOption( "r", "xml-req"   , "(option 1) Test request file in XML"         , true );
-  opts.addOption( "o", "model"     , "(option 2) Serialized model file"            , true );
-  opts.addOption( "p", "points"    , "(option 2) TAB-delimited file with points"   , true );
-  opts.addOption( "s", "result"    , "File to store test result in XML"            , true );
-  opts.addOption( "", "log-level"  , "Set the log level (debug, warn, info, error)", true );
-  opts.addOption( "", "log-file"   , "Log file"                                    , true );
-  opts.addOption( "" , "prog-file" , "File to store test progress"                 , true );
+  opts.addOption( "v", "version"     , "Display version info"                        , false );
+  opts.addOption( "r", "xml-req"     , "(option 1) Test request file in XML"         , true );
+  opts.addOption( "o", "model"       , "(option 2) Serialized model file"            , true );
+  opts.addOption( "p", "points"      , "(option 2) TAB-delimited file with points"   , true );
+  opts.addOption( "" , "calc-matrix" , "Calculate confusion matrix"                  , false );
+  opts.addOption( "" , "calc-roc"    , "Calculate ROC curve"                         , false );
+  opts.addOption( "e", "max-omission", "Calculate ROC partial area ratio given the maximum omission", true );
+  opts.addOption( "s", "result"      , "File to store test result in XML"            , true );
+  opts.addOption( "", "log-level"    , "Set the log level (debug, warn, info, error)", true );
+  opts.addOption( "", "log-file"     , "Log file"                                    , true );
+  opts.addOption( "" , "prog-file"   , "File to store test progress"                 , true );
 
   std::string log_level("info");
   std::string request_file;
   std::string model_file;
   std::string points_file;
+  bool calc_matrix = false;
+  bool calc_roc = false;
+  std::string max_omission_string("");
+  double max_omission;
   std::string result_file;
   std::string log_file;
   std::string progress_file;
@@ -47,13 +54,15 @@ int main( int argc, char **argv ) {
     switch ( option ) {
 
       case 0:
-        printf("om_test 0.1\n");
+        printf("om_test 0.2\n");
         printf("This is free software; see the source for copying conditions. There is NO\n");
         printf("warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n");
         exit(0);
         break;
       case 1:
         request_file = opts.getArgs( option );
+        calc_matrix = true;
+        calc_roc = true;
         break;
       case 2:
         model_file = opts.getArgs( option );
@@ -62,15 +71,24 @@ int main( int argc, char **argv ) {
         points_file = opts.getArgs( option );
         break;
       case 4:
-        result_file = opts.getArgs( option );
+        calc_matrix = true;
         break;
       case 5:
-        log_level = opts.getArgs( option );
+        calc_roc = true;
         break;
       case 6:
-        log_file = opts.getArgs( option );
+        max_omission_string = opts.getArgs( option );
         break;
       case 7:
+        result_file = opts.getArgs( option );
+        break;
+      case 8:
+        log_level = opts.getArgs( option );
+        break;
+      case 9:
+        log_file = opts.getArgs( option );
+        break;
+      case 10:
         progress_file = opts.getArgs( option );
         break;
       default:
@@ -138,6 +156,11 @@ int main( int argc, char **argv ) {
     exit(-1);
   }
 
+  if ( ( ! calc_roc ) && ! max_omission_string.empty() ) {
+
+    Log::instance()->warn( "Ignoring maximum omission - option only available with ROC curve\n" );
+  }
+
   // Real work
 
   try {
@@ -203,63 +226,86 @@ int main( int argc, char **argv ) {
     ConfusionMatrix matrix;
 
     // Confusion matrix can only be calculated with presence and/or absence points
-    if ( num_presences || num_absences ) {
+    if ( calc_matrix && ( num_presences || num_absences ) ) {
 
       matrix.calculate( alg->getModel(), sampler );
     }
 
     RocCurve roc_curve;
 
-    // ROC curve can only be calculated with presence and absence points
-    if ( num_presences && num_absences ) {
+    // ROC curve can only be calculated with presence points
+    // No absence points will force background points to be generated
+    if ( calc_roc && num_presences ) {
 
       roc_curve.calculate( alg->getModel(), sampler );
     }
 
-    if ( ! num_presences ) {
+    if ( calc_matrix && ! num_presences ) {
 
-      Log::instance()->warn( "No presence points - omission error won't be calculated\n" );
+      Log::instance()->warn( "No presence points - ROC curve and omission error won't be calculated\n" );
     }
 
-    if ( ! num_absences ) {
+    if ( calc_matrix && ! num_absences ) {
 
-      Log::instance()->warn( "No absence points - ROC curve and commission error won't be calculated\n" );
+      Log::instance()->warn( "No absence points - commission error won't be calculated\n" );
     }
 
-    if ( num_presences || num_absences ) {
 
-      Log::instance()->info( "\nModel statistics\n" );
-      Log::instance()->info( "Accuracy:          %7.2f%%\n", matrix.getAccuracy() * 100 );
+    if ( calc_roc && ! num_presences ) {
+
+      Log::instance()->warn( "No presence points - ROC curve won't be calculated\n" );
     }
 
-    if ( num_presences ) {
+    if ( calc_matrix ) {
 
-      int omissions = matrix.getValue(0.0, 1.0);
-      int total     = omissions + matrix.getValue(1.0, 1.0);
+      if ( num_presences || num_absences ) {
 
-      Log::instance()->info( "Omission error:    %7.2f%% (%d/%d)\n", matrix.getOmissionError() * 100, omissions, total );
+        Log::instance()->info( "\nModel statistics\n" );
+        Log::instance()->info( "Accuracy:          %7.2f%%\n", matrix.getAccuracy() * 100 );
+      }
+
+      if ( num_presences ) {
+
+        int omissions = matrix.getValue(0.0, 1.0);
+        int total     = omissions + matrix.getValue(1.0, 1.0);
+
+        Log::instance()->info( "Omission error:    %7.2f%% (%d/%d)\n", matrix.getOmissionError() * 100, omissions, total );
+      }
+
+      if ( num_absences ) {
+
+        int commissions = matrix.getValue(1.0, 0.0);
+        int total       = commissions + matrix.getValue(0.0, 0.0);
+
+        Log::instance()->info( "Commission error:  %7.2f%% (%d/%d)\n", matrix.getCommissionError() * 100, commissions, total );
+      }
     }
 
-    if ( num_absences ) {
+    if ( calc_roc ) {
 
-      int commissions = matrix.getValue(1.0, 0.0);
-      int total       = commissions + matrix.getValue(0.0, 0.0);
+      if ( num_presences ) {
 
-      Log::instance()->info( "Commission error:  %7.2f%% (%d/%d)\n", matrix.getCommissionError() * 100, commissions, total );
+        Log::instance()->info( "AUC:               %7.2f\n", roc_curve.getTotalArea() );
 
-      Log::instance()->info( "AUC:               %7.2f\n", roc_curve.getArea() );
+        if ( ! max_omission_string.empty() ) {
+
+          max_omission = atof( max_omission_string.c_str() );
+
+          Log::instance()->info( "Ratio:             %7.2f\n", roc_curve.getPartialAreaRatio( max_omission ) );
+        }
+      }
     }
 
     ConfigurationPtr output( new ConfigurationImpl("Statistics") );
 
-    if ( matrix.ready() ) {
+    if ( calc_matrix && matrix.ready() ) {
 
       ConfigurationPtr cm_config( matrix.getConfiguration() );
 
       output->addSubsection( cm_config );
     }
 
-    if ( num_absences && roc_curve.ready() ) {
+    if ( calc_roc && roc_curve.ready() ) {
 
       ConfigurationPtr roc_config( roc_curve.getConfiguration() );
 
