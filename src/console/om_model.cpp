@@ -37,14 +37,15 @@ int main( int argc, char **argv ) {
   int option;
 
   // command-line parameters (short name, long name, description, take args)
-  opts.addOption( "v", "version"    , "Display version info"                        , false );
-  opts.addOption( "r", "xml-req"    , "Model creation request file in XML"          , true );
-  opts.addOption( "m", "model-file" , "File to store the generated model"           , true );
-  opts.addOption( "" , "calc-matrix", "Calculate confusion matrix"                  , false );
-  opts.addOption( "" , "calc-roc"   , "Calculate ROC curve"                         , false );
-  opts.addOption( "" , "log-level"  , "Set the log level (debug, warn, info, error)", true );
-  opts.addOption( "" , "log-file"   , "Log file"                                    , true );
-  opts.addOption( "" , "prog-file"  , "File to store model creation progress"       , true );
+  opts.addOption( "v", "version"     , "Display version info"                        , false );
+  opts.addOption( "r", "xml-req"     , "Model creation request file in XML"          , true );
+  opts.addOption( "m", "model-file"  , "File to store the generated model"           , true );
+  opts.addOption( "" , "calc-matrix" , "Calculate confusion matrix"                  , false );
+  opts.addOption( "" , "calc-roc"    , "Calculate ROC curve"                         , false );
+  opts.addOption( "e", "max-omission", "Calculate ROC partial area ratio given the maximum omission", true );
+  opts.addOption( "" , "log-level"   , "Set the log level (debug, warn, info, error)", true );
+  opts.addOption( "" , "log-file"    , "Log file"                                    , true );
+  opts.addOption( "" , "prog-file"   , "File to store model creation progress"       , true );
 
   std::string log_level("info");
   std::string request_file;
@@ -53,6 +54,8 @@ int main( int argc, char **argv ) {
   std::string progress_file;
   bool calc_matrix = false;
   bool calc_roc = false;
+  std::string max_omission_string("");
+  double max_omission;
 
   if ( ! opts.parse( argc, argv ) ) {
 
@@ -65,7 +68,7 @@ int main( int argc, char **argv ) {
     switch ( option ) {
 
       case 0:
-        printf("om_model 0.2.2\n");
+        printf("om_model 0.3\n");
         printf("This is free software; see the source for copying conditions. There is NO\n");
         printf("warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n");
         exit(0);
@@ -83,17 +86,34 @@ int main( int argc, char **argv ) {
         calc_roc = true;
         break;
       case 5:
-        log_level = opts.getArgs( option );
+        max_omission_string = opts.getArgs( option );
         break;
       case 6:
-        log_file = opts.getArgs( option );
+        log_level = opts.getArgs( option );
         break;
       case 7:
+        log_file = opts.getArgs( option );
+        break;
+      case 8:
         progress_file = opts.getArgs( option );
         break;
       default:
         break;
     }
+  }
+
+  // Log stuff
+
+  Log::Level level_code = getLogLevel( log_level );
+
+  if ( ! log_file.empty() ) {
+
+    Log::instance()->set( level_code, log_file, "" );
+  }
+  else {
+ 
+    // Just set the level - things will go to stderr
+    Log::instance()->setLevel( level_code );
   }
 
   // Check parameters
@@ -102,6 +122,11 @@ int main( int argc, char **argv ) {
 
     printf( "Please specify a model creation request file in XML\n");
     exit(-1);
+  }
+
+  if ( ( ! calc_roc ) && ! max_omission_string.empty() ) {
+
+    Log::instance()->warn( "Ignoring maximum omission - option only available with ROC curve\n" );
   }
 
   // Initialize progress data if user wants to track progress
@@ -117,20 +142,6 @@ int main( int argc, char **argv ) {
 
     // Always create initial file with status "queued" (-1)
     progressFileCallback( -1.0, &prog_data );
-  }
-
-  // Log stuff
-
-  Log::Level level_code = getLogLevel( log_level );
-
-  if ( ! log_file.empty() ) {
-
-    Log::instance()->set( level_code, log_file, "" );
-  }
-  else {
- 
-    // Just set the level - things will go to stderr
-    Log::instance()->setLevel( level_code );
   }
 
   // Real work
@@ -172,11 +183,20 @@ int main( int argc, char **argv ) {
 
     if ( calc_roc ) {
 
-      const RocCurve * const roc_curve = om.getRocCurve();
+      RocCurve * const roc_curve = om.getRocCurve();
 
       if ( ! roc_curve->ready() ) {
 
         Log::instance()->error( "Could not calculate ROC curve\n" );
+      }
+
+      roc_curve->getTotalArea(); // no need to use value. roc class will serialize result
+
+      if ( ! max_omission_string.empty() ) {
+
+        max_omission = atof( max_omission_string.c_str() );
+
+        roc_curve->getPartialAreaRatio( max_omission ); // no need to use value. roc class will serialize result
       }
     }
 

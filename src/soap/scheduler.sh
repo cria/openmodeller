@@ -62,7 +62,7 @@ for req in `find $TICKET_DIRECTORY/model_req.* -type f 2> /dev/null`; do
   # if condor_integration then create the script and submit
   if [[ "$CONDOR_INTEGRATION" == "yes" ]]; then
     echo "universe        = vanilla" >> $TICKET_DIRECTORY"/condor_sc."$ticket
-    echo "arguments = --xml-req "$moved" --model-file "$resp" --prog-file "$model_prog>> $TICKET_DIRECTORY"/condor_sc."$ticket
+    echo "arguments = --xml-req "$moved" --model-file "$resp" --calc-matrix --calc-roc --prog-file "$model_prog>> $TICKET_DIRECTORY"/condor_sc."$ticket
     echo "executable = /home/silvio/om_serial/bin/om_model " >> $TICKET_DIRECTORY"/condor_sc."$ticket
     echo "environment = LD_LIBRARY_PATH=/home/silvio/om_serial/lib:/home/om/bin/lib_extern/lib" >> $TICKET_DIRECTORY"/condor_sc."$ticket
     echo "output          = "$TICKET_DIRECTORY"/om_model_log"$ticket".out" >> $TICKET_DIRECTORY"/condor_sc."$ticket
@@ -78,7 +78,7 @@ for req in `find $TICKET_DIRECTORY/model_req.* -type f 2> /dev/null`; do
     /application/condor/bin/condor_submit $TICKET_DIRECTORY"/condor_sc."$ticket
   else
     # no Condor - execute om_model directly
-    "$OM_BIN_DIR"/om_model --xml-req "$moved" --model-file "$resp" --log-file "$log" --prog-file "$model_prog"
+    "$OM_BIN_DIR"/om_model --xml-req "$moved" --model-file "$resp" --calc-matrix --calc-roc --log-file "$log" --prog-file "$model_prog"
   fi  
   exit 1
 done

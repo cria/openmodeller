@@ -35,6 +35,8 @@
 #include <openmodeller/Environment.hh>
 #include <openmodeller/Sampler.hh>
 
+#include <map>
+
 #define DEFAULT_RESOLUTION 15
 #define DEFAULT_BACKGROUND_POINTS 10000
 
@@ -96,10 +98,20 @@ public:
   double getY( int point_index ) const { return _data[point_index][1]; }
 
   /** 
-   * Return the area under the curve. Need to call "calculate" first.
+   * Return the total area under the curve. Need to call "calculate" first.
    * @return Area under the curve.
    */
-  double getArea() const { return _auc; }
+  double getTotalArea();
+
+  /** 
+   * Return the ratio between the area under the curve and the area under the diagonal
+   * considering only points where Y is greater than (1 - e), i.e, with omission error
+   * less than a specified value. Need to call "calculate" first.
+   * @param e Maximum accepted omission error [0,1].
+   * @return Ratio between area under the curve and area under the diagonal for points
+   * that have omission error lesss than a specified value.
+   */
+  double getPartialAreaRatio( double e=1.0 );
 
   /** 
    * Check whether the ROC curve has been calculated already
@@ -144,9 +156,9 @@ private:
   void _calculateGraphPoints(); 
 
   /** 
-   * Calculate the area under the curve.
+   * Calculate the total area under the curve.
    */
-  bool _calculateArea(); 
+  bool _calculateTotalArea(); 
   
   std::vector<int> _category;      // 0=absence, 1=presence
   std::vector<Scalar> _prediction; // associated probabilities
@@ -160,7 +172,9 @@ private:
   int _true_negatives; // Number of true negatives (binarized)
   int _true_positives; // Number of true positives (binarized)
 
-  double _auc; // Area under the curve
+  double _auc; // Area under the curve. Need to store this to avoid recalculating in serialization.
+
+  std::map<double, double> _ratios; // Ratios calculated via getPartialAreaRatio (max omission <=> ratio). Ratios are stored here to be used during serialization.
 
   std::vector<Scalar> _thresholds; // Thresholds in ascending order
 

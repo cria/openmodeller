@@ -49,21 +49,8 @@
 
 #include <openmodeller/Exceptions.hh>
 
-
 #include <string>
 using std::string;
-#include <map>
-using std::map;
-
-
-// REMOVE ME
-#include <istream>
-#include <stdlib.h>
-#include <stdio.h>
-#include <iostream>  // I/O 
-#include <fstream>   // file I/O
-#include <sstream>   // treat string as a stream
-
 
 /*** Callback "setters" ***/
 
@@ -488,7 +475,7 @@ const ConfusionMatrix * const OpenModeller::getConfusionMatrix()
 
 /*****************************/
 /******* get Roc Curve *******/
-const RocCurve * const OpenModeller::getRocCurve()
+RocCurve * const OpenModeller::getRocCurve()
 {
   if ( _roc_curve->ready() ) {
 
