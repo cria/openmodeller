@@ -551,7 +551,7 @@ NNAlgorithm::initialize()
     testing_vector_output[testing_points_cont][0] = 1.00000000; // Exist presence point
     testing_vector_output[testing_points_cont+1][0] = 0.00000000; // Exist absence point
     testing_points_cont = testing_points_cont + 2;
-    }  }
+    }  }
 
 
 /************ Print to screen the Environment Layers *************/
@@ -968,10 +968,10 @@ NNAlgorithm::_getConfiguration( ConfigurationPtr& config ) const
 	if(i != 2){ //Last layer does not require weights
 
 	  for(int k = 0; k < layers[i+1]; k++){
-	    weight_values[siz] = network.getWeight(i, j, k); //Get weights
-	    siz ++;	  }
+	    weight_values[siz] = network.getWeight(i, j, k); //Get weights
+	    siz ++;	  }
 	}
-    }  }
+    }  }
 
   weight_config->addNameValue( "Values", weight_values,  size_weight);
 
