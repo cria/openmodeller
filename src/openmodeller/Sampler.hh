@@ -165,7 +165,7 @@ public:
     /**
    * Get a set of pseudoAbsence points  (Missae/set-2008)
    */
-  OccurrencesPtr getPseudoAbsences( const int& numPoints, const Model& model=0, const Scalar threshold=0.5, const bool geoUnique=false, const bool envUnique=false) const;
+  OccurrencesPtr getPseudoAbsences( const int& numPoints, const Model& model, const Scalar threshold=0.5, const bool geoUnique=false, const bool envUnique=false) const;
 
   /** Returns 1 if i-th variable is categorical,
    * otherwise returns 0.
