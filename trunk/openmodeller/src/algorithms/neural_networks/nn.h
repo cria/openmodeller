@@ -5,6 +5,9 @@
 extern "C" {
 #endif
 
+#ifdef WIN32
+   #include <time.h>
+#endif
 
 #include <ctype.h>
 #include <float.h>
