@@ -58,7 +58,7 @@ struct GDAL_Format
   bool hasMeta;
 };
 
-GDAL_Format Formats[6] =
+GDAL_Format Formats[7] =
 {
   // Floating GeoTiff
   { "GTiff",
@@ -76,11 +76,17 @@ GDAL_Format Formats[6] =
   { "BMP",
     GDT_Byte,
     false },
-  // Floating HFA (Erdas Imagine Format which ArcMap can read directly)
+  // Floating HFA (Erdas Imagine Format)
   { "HFA",
     GDT_Float32,
     true },
-  // Byte HFA (Erdas Imagine Format which ArcMap can read directly)
+  // Byte HFA (Erdas Imagine Format scaled 0-100)
+  { "HFA",
+    GDT_Byte,
+    true },
+  // Byte ASC (Arc/Info ASCII Grid Format scaled 0-100). 
+  // The GDAL code here should be AAIGrid, but this driver does not support the Create 
+  // method, so the trick is to create as HFA and then translate to AAIGrid
   { "HFA",
     GDT_Byte,
     true }
@@ -154,6 +160,11 @@ RasterGdal::RasterGdal( const string& file, const MapFormat& format):
       nv = 101;
       Log::instance()->debug( "RasterGdal format set to MapFormat::ByteHFA:\n" );
       break;
+    case MapFormat::ByteASC:
+      f_scalefactor = 100;
+      nv = 101;
+      Log::instance()->debug( "RasterGdal format set to MapFormat::ByteASC:\n" );
+      break;
     default:
       Log::instance()->error( "Unsupported output format.\n" );
       throw InvalidParameterException( "Unsupported output format" );
@@ -180,9 +191,6 @@ RasterGdal::RasterGdal( const string& file, const MapFormat& format):
 /*** destructor ***/
 RasterGdal::~RasterGdal()
 {
-  // Save the last line read, if needed.
-  saveRow();
-
   if ( f_data ) {
 
     delete [] f_data;
@@ -326,6 +334,9 @@ RasterGdal::open( char mode )
 void
 RasterGdal::create( int format )
 {
+  // Store format for future reference (used in method "finish")
+  f_format = format;
+
   GDALDriver *poDriver;
   char **papszMetadata; 
   GDALAllRegister();
@@ -394,14 +405,26 @@ RasterGdal::create( int format )
         papszOptions ); //opt parameters
     CSLDestroy( papszOptions );
   }
+  //Create temporary ByteHFA file with a different name (tmp_+original_file name)
+  //It will be converted to ASC in the finish method
+  else if (format==MapFormat::ByteASC)
+  {
+    std::string temp_file = "tmp_" + f_file;
+
+    f_ds = poDriver->Create( temp_file.c_str(),
+                             f_hdr.xdim, f_hdr.ydim,
+                             f_hdr.nband,
+                             /* data type */ Formats[format].dataType,
+                             /* opt parameters */ NULL );
+  }
   else {
 
     //uncompressed
     f_ds = poDriver->Create( f_file.c_str(),
-        f_hdr.xdim, f_hdr.ydim,
-        f_hdr.nband,
-        /* data type */ Formats[format].dataType,
-        /* opt parameters */ NULL );
+                             f_hdr.xdim, f_hdr.ydim,
+                             f_hdr.nband,
+                             /* data type */ Formats[format].dataType,
+                             /* opt parameters */ NULL );
   }
 
   if ( ! f_ds ) {
@@ -696,6 +719,51 @@ RasterGdal::saveRow()
   f_changed = 0;
 }
 
+/**************/
+/*** finish ***/
+void 
+RasterGdal::finish()
+{
+  // Save the last line read, if needed.
+  saveRow();
+
+  if ( f_format == MapFormat::ByteASC )
+  {
+    // Temporary file name
+    std::string temp_file = "tmp_" + f_file;
+
+    // Get ArcInfo/ASC Grid driver
+    GDALDriver *hDriver;
+    hDriver = GetGDALDriverManager()->GetDriverByName("AAIGrid");
+
+    if ( hDriver == NULL ) {
+
+      std::string msg = "Unable to load AAIGrid GDAL driver";
+
+      Log::instance()->error( msg.c_str() );
+      throw FileIOException( msg.c_str(), f_file );
+    }
+
+    // Convert temporary raster to ArcInfo/ASC Grid
+    GDALDataset * new_ds = hDriver->CreateCopy( f_file.c_str(), f_ds, FALSE, NULL, NULL, NULL );
+
+    if ( ! new_ds ) {
+
+      Log::instance()->warn( "Unable to create raster copy %s.\n",f_file.c_str() );
+      throw FileIOException( "Unable to create raster copy " + f_file, f_file );
+    }
+
+    // Delete temporary ByteHFA raster
+    GDALDriver * temp_driver = f_ds->GetDriver();
+
+    if ( temp_driver->Delete( temp_file.c_str() ) == CE_Failure ) {
+
+      Log::instance()->warn( "Could not delete temporary file %s", temp_file.c_str() );
+    }
+
+    f_ds = new_ds;
+  }
+}
 
 /*********************/
 /*** delete Raster ***/

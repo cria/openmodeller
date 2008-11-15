@@ -135,6 +135,11 @@ public:
   int getRowColumn( Coord x, Coord y, int *row, int *col );
 
   /** 
+  * Event that must be called to indicate when the projection is finished.
+  */
+  void finish();
+
+  /** 
   * Deletes the associated raster.
   * @return 1 if the associated raster was deleted, 0 otherwise.
   */

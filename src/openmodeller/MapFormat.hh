@@ -1,7 +1,6 @@
 /**
  * Declaration of MapFormat class.
  * 
- * @file
  * @author Ricardo Scachetti Pereira <rpereira@ku.edu>
  * @date 2004-05-27
  * $Id$
@@ -67,8 +66,9 @@ public:
          GreyTiff = 1,
          GreyTiff100 = 2,
          GreyBMP = 3,
-         FloatingHFA = 4, //erdas imagine  floating point format which ArcMap can read
-         ByteHFA = 5 //erdas imagine single byte format which ArcMap can read (scaled 0-100)
+         FloatingHFA = 4, //erdas imagine floating point format
+         ByteHFA = 5, //erdas imagine single byte format (scaled 0-100)
+         ByteASC = 6 //Arc/Info ASCII Grid single byte format (scaled 0-100)
   };
 
   void unsetFormat() { format = FloatingTiff; }

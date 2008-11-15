@@ -1,7 +1,6 @@
 /**
  * Declaration of Header class.
  * 
- * @file
  * @author Mauro E S Muñoz <mauro@cria.org.br>
  * @date 2003-08-22
  * $Id$
