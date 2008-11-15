@@ -69,7 +69,7 @@ protected:
   OccurrencesPtr _presences;
   OccurrencesPtr _absences;
 
-  bool _hasCategorical;
+  int _hasCategorical;
   Sample _isCategorical;
 
   int _num_layers;
@@ -86,6 +86,8 @@ protected:
   int _threshold_feat;
   int _hinge_feat;
   int _product_feat;
+
+  std::vector<pair<int,float> > _categorical_values; 
 };
 
 #endif

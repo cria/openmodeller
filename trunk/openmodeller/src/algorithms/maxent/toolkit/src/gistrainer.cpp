@@ -90,6 +90,7 @@ void GISTrainer::init_trainer() {
         Event& e = (*m_es)[i];
         // assume no duplicated features
         for (size_t j = 0; j < e.context_size(); ++j) {
+	  //cout << e.m_context[j].first << " " << e.m_context[j].second << endl;
             assert (e.m_context[j].second >= 0.0);
             t += e.m_context[j].second;
         }
