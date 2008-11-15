@@ -1,7 +1,6 @@
 /**
  * Definition of ConfusionMatrix class 
  * 
- * @file conf_matrix.cpp
  * @author Ricardo Scachetti Pereira (rpereira@ku.edu)
  * @date 2004-10-18
  * $Id$
@@ -218,6 +217,10 @@ ConfusionMatrix::getConfiguration() const
   config->addNameValue( "Accuracy", getAccuracy() * 100 );
   config->addNameValue( "OmissionError", getOmissionError() * 100 );
   config->addNameValue( "CommissionError", getCommissionError() * 100 );
+  config->addNameValue( "TruePositives", getValue( 1, 1 ) );
+  config->addNameValue( "FalsePositives", getValue( 0, 1 ) );
+  config->addNameValue( "TrueNegatives", getValue( 0, 0 ) );
+  config->addNameValue( "FalseNegatives", getValue( 1, 0 ) );
 
   return config;
 }
