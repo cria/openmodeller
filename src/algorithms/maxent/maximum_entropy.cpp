@@ -235,7 +235,7 @@ static AlgMetadata metadata = {
 
   "elisangela.rodrigues [at] poli . usp . br, renato [at] cria . org . br", // Code author's contact.
 
-  0, // Does not accept categorical data.
+  1, // Accept categorical data.
   0, // Does not need (pseudo)absence points.
 
   NUM_PARAM, // Algorithm's parameters.
@@ -268,7 +268,7 @@ algorithmMetadata()
 MaximumEntropy::MaximumEntropy() :
   AlgorithmImpl(&metadata),
   _done(false),
-  _hasCategorical(false),
+  _hasCategorical(0),
   _num_layers(0),
   _num_features(0)
 { 
@@ -483,19 +483,36 @@ MaximumEntropy::initialize()
   }
   
   _num_layers = _samp->numIndependent();
-  /*
+  
   // Identify categorical layers
   _isCategorical.resize( _num_layers );
   
   for( int i = 0; i < _num_layers; ++i ) {
     if ( _samp->isCategorical( i ) ) {
-      _hasCategorical = true;
+      _hasCategorical = 1;
       _isCategorical[i] = 1.0;
+
+      // Get the possible values of each categorical layer
+      OccurrencesImpl::const_iterator p_iterator = _presences->begin();
+      OccurrencesImpl::const_iterator p_end = _presences->end();
+      
+      bool hasValue = false;
+      Sample sample = (*p_iterator)->environment();
+
+      while ( p_iterator != p_end ) {
+	for ( size_t j = 0; j < _categorical_values.size() ; j++ ) {
+	  if ( _categorical_values[j].first == i ) {
+	    if ( (float)sample[i] == _categorical_values[j].second ) {
+	      hasValue = true;
+	    }
+	  }
+	}
+      }
+      if ( !hasValue )
+	_categorical_values.push_back( make_pair (i,(float)sample[i]) );
     }
-    }*/
-
+  }
   return 1;
-
 } // initialize
 
 /***************/
@@ -527,43 +544,59 @@ MaximumEntropy::iterate()
     me_context_type context;
     me_outcome_type outcome("p"); // p = presence
     int id=0;
+
     for ( int i = 0; i < _num_layers; ++i ) {
 
       stringstream out;
       out << id;
 
-      if ( _linear_feat == 1 ) {
-	context.push_back( make_pair( out.str(), ((float)sample[i] )));
-	out << ++id;
-      }
-      if (_quadratic_feat == 1 ) {
-	context.push_back( make_pair( out.str(), ((float)sample[i] * (float)sample[i])) );
-	out << ++id;
-      }
-      if ( _product_feat == 1 ) {
-	for ( int j = i+1; j < _num_layers; ++j ) {
-	  context.push_back( make_pair( out.str(), ((float)sample[i]*(float)sample[j] ) ) );
-	  out << ++id;
+      if ( _isCategorical[i] ) {
+	for ( size_t j = 0; j < _categorical_values.size() ; j++ ) {             
+	  if (_categorical_values[j].first == i ) {
+	    if ( (float)sample[i] == _categorical_values[j].second ) {
+	      context.push_back( make_pair( out.str(), 1 ) );
+	    }  
+	    else {
+	      context.push_back( make_pair( out.str(), 0) );
+	    }
+	    out << ++id;
+	  }
 	}
       }
-      if (_threshold_feat == 1 ) {
-	if ( (float)sample[i] > _tolerance ) {
-	  context.push_back( make_pair( out.str(), 1 ) );
+      else {
+	if ( _linear_feat == 1 ) {
+	  context.push_back( make_pair( out.str(), ((float)sample[i] )));
 	  out << ++id;
 	}
-	else {
-	  context.push_back( make_pair( out.str(), 0 ) );
+	if (_quadratic_feat == 1 ) {
+	  context.push_back( make_pair( out.str(), ((float)sample[i] * (float)sample[i])) );
 	  out << ++id;
 	}
-      }
-      if (_hinge_feat == 1 ) {
-	if ( (float)sample[i] > _tolerance ) {
-	  context.push_back( make_pair( out.str(), (float)sample[i] ) );
-	  out << ++id;
+	if ( _product_feat == 1 ) {
+	  for ( int j = i+1; j < _num_layers; ++j ) {
+	    context.push_back( make_pair( out.str(), ((float)sample[i]*(float)sample[j] ) ) );
+	    out << ++id;
+	  }
 	}
-	else {
-	  context.push_back( make_pair( out.str(), 0 ) );
-	  out << ++id;
+	if (_threshold_feat == 1 ) {
+	  if ( (float)sample[i] > _tolerance ) {
+	    context.push_back( make_pair( out.str(), 1 ) );
+	    out << ++id;
+	  }
+	  else {
+	    context.push_back( make_pair( out.str(), 0 ) );
+	    out << ++id;
+	  }
+	}
+	if (_hinge_feat == 1 ) {
+	  if ( (float)sample[i] > _tolerance ) {
+	    context.push_back( make_pair( out.str(), (float)sample[i] ) );
+	    out << ++id;
+	  }
+	  else {
+	    context.push_back( make_pair( out.str(), 0 ) );
+	    out << ++id;
+	  }
 	}
       }
     } // for
@@ -591,56 +624,71 @@ MaximumEntropy::iterate()
 
       stringstream out;
       out << id;
- 
-      if (_linear_feat == 1 ) {
-	context.push_back( make_pair( out.str(), (float)sample[i] ) );
-	out << ++id;
-      }
-      if (_quadratic_feat == 1 ) {
-	context.push_back( make_pair( out.str(), ((float)sample[i] * (float)sample[i])) );
-	out << ++id;
-      }
-      if ( _product_feat == 1 ) {
-	for ( int j = i+1; j < _num_layers; ++j ){
-	  context.push_back( make_pair( out.str(), ((float)sample[i]*(float)sample[j] ) ) );
-	  out << ++id;
+
+      if ( _isCategorical[i] ) {
+	for ( size_t j = 0; j < _categorical_values.size() ; j++ ) {             
+	  if (_categorical_values[j].first == i ) {
+	    if ( (float)sample[i] == _categorical_values[j].second ) {
+	      context.push_back( make_pair( out.str(), 1 ) );
+	    }  
+	    else {
+	      context.push_back( make_pair( out.str(), 0) );
+	    }
+	    out << ++id;
+	  }
 	}
       }
-      if (_threshold_feat == 1 ) {
-	if ( (float)sample[i] > _tolerance ) {
-	  context.push_back( make_pair( out.str(), 1 ) );
-	  out << ++id;
-	}
-	else {
-	  context.push_back( make_pair( out.str(), 0 ) );
-	  out << ++id;
-	}
-      }
-      if (_hinge_feat == 1 ) {
-	if ( (float)sample[i] > _tolerance ) {
+      else {
+	if (_linear_feat == 1 ) {
 	  context.push_back( make_pair( out.str(), (float)sample[i] ) );
 	  out << ++id;
 	}
-	else {
-	  context.push_back( make_pair( out.str(), 0 ) );
+	if (_quadratic_feat == 1 ) {
+	  context.push_back( make_pair( out.str(), ((float)sample[i] * (float)sample[i])) );
 	  out << ++id;
+	}
+	if ( _product_feat == 1 ) {
+	  for ( int j = i+1; j < _num_layers; ++j ){
+	    context.push_back( make_pair( out.str(), ((float)sample[i]*(float)sample[j] ) ) );
+	    out << ++id;
+	  }
+	}
+	if (_threshold_feat == 1 ) {
+	  if ( (float)sample[i] > _tolerance ) {
+	    context.push_back( make_pair( out.str(), 1 ) );
+	    out << ++id;
+	  }
+	  else {
+	    context.push_back( make_pair( out.str(), 0 ) );
+	    out << ++id;
+	  }
+	}
+	if (_hinge_feat == 1 ) {
+	  if ( (float)sample[i] > _tolerance ) {
+	    context.push_back( make_pair( out.str(), (float)sample[i] ) );
+	    out << ++id;
+	  }
+	  else {
+	    context.push_back( make_pair( out.str(), 0 ) );
+	    out << ++id;
+	  }
 	}
       }
     } // for
-
+    
     _model.add_event( context, outcome, 1 );
-
+    
     ++p_iterator;
   } // while
-
+  
   Log::instance()->info( MAXENT_LOG_PREFIX "Added %d absence events.\n", _absences->numOccurrences() );
-
+  
   _model.end_add_event();
-
+  
   _model.train( _num_iterations, _method, _gaussian_coef, _tolerance );
-
+  
   _done = true;
-
+  
   return 1;
 }
 
@@ -662,41 +710,57 @@ MaximumEntropy::getValue( const Sample& x ) const
   me_context_type context;
   int id=0;
   for ( int i = 0; i < _num_layers; ++i ) {
-
+    
     stringstream out;
     out << id;
-    if (_linear_feat == 1 ) {
-      context.push_back( make_pair( out.str(), (float)x[i] ) );
-      out << ++id;
-    }
-    if (_quadratic_feat == 1 ) {
-      context.push_back( make_pair( out.str(), ((float)x[i] * (float)x[i])) );
-      out << ++id;
-    }
-    if ( _product_feat == 1 ) {
-      for ( int j = i+1; j < _num_layers; ++j ){
-	context.push_back( make_pair( out.str(), ((float)x[i]*(float)x[j] ) ) );
-        out << ++id;
+    
+    if ( _isCategorical[i] ) {
+      for ( size_t j = 0; j < _categorical_values.size() ; j++ ) {             
+	if (_categorical_values[j].first == i ) {
+	  if ( (float)x[i] == _categorical_values[j].second ) {
+	    context.push_back( make_pair( out.str(), 1 ) );
+	  }       
+	  else {
+	    context.push_back( make_pair( out.str(), 0) );
+	  }
+	  out << ++id;
+	}
       }
     }
-    if (_threshold_feat == 1 ) {
-      if ( (float)x[i] > _tolerance ) {
-	context.push_back( make_pair( out.str(), 1 ) );
+    else {
+      if (_linear_feat == 1 ) {
+	context.push_back( make_pair( out.str(), (float)x[i] ) );
 	out << ++id;
       }
-      else {
-	context.push_back( make_pair( out.str(), 0 ) );
-        out << ++id;
+      if (_quadratic_feat == 1 ) {
+	context.push_back( make_pair( out.str(), ((float)x[i] * (float)x[i])) );
+	out << ++id;
       }
-    }
-    if (_hinge_feat == 1 ) {
-      if ( (float)x[i] > _tolerance ) {
-	context.push_back( make_pair( out.str(), (float)x[i] ) );
-        out << ++id;
+      if ( _product_feat == 1 ) {
+	for ( int j = i+1; j < _num_layers; ++j ){
+	  context.push_back( make_pair( out.str(), ((float)x[i]*(float)x[j] ) ) );
+	  out << ++id;
+	}
       }
-      else {
-	context.push_back( make_pair( out.str(), 0 ) );
-        out << ++id;
+      if (_threshold_feat == 1 ) {
+	if ( (float)x[i] > _tolerance ) {
+	  context.push_back( make_pair( out.str(), 1 ) );
+	  out << ++id;
+	}
+	else {
+	  context.push_back( make_pair( out.str(), 0 ) );
+	  out << ++id;
+	}
+      }
+      if (_hinge_feat == 1 ) {
+	if ( (float)x[i] > _tolerance ) {
+	  context.push_back( make_pair( out.str(), (float)x[i] ) );
+	  out << ++id;
+	}
+	else {
+	  context.push_back( make_pair( out.str(), 0 ) );
+	  out << ++id;
+	}
       }
     }
   }
@@ -739,7 +803,25 @@ MaximumEntropy::_getConfiguration( ConfigurationPtr& config ) const
   model_config->addNameValue( "ProductFeature", _product_feat );
   model_config->addNameValue( "ThresholdFeature", _threshold_feat );
   model_config->addNameValue( "HingeFeature", _hinge_feat );
-  
+  model_config->addNameValue( "Categorical", _hasCategorical );
+
+  if ( _hasCategorical ) {
+    model_config->addNameValue( "Categorical_layers", _isCategorical);
+    
+    Sample layer_cat;
+    Sample layer_cat_value;
+
+    layer_cat.resize( _categorical_values.size() );
+    layer_cat_value.resize( _categorical_values.size() );
+
+    for ( size_t i = 0; i < _categorical_values.size(); i++ ) {
+      layer_cat[i] = _categorical_values[i].first;
+      layer_cat_value[i] = _categorical_values[i].second;
+    }
+    model_config->addNameValue( "Index_categorical_values", layer_cat);
+    model_config->addNameValue( "Categorical_values", layer_cat_value );
+  }
+
   MaxentModelFile model_file = _model.save();
 
   shared_ptr<me::ParamsType> m_params;
@@ -783,6 +865,21 @@ MaximumEntropy::_setConfiguration( const ConstConfigurationPtr& config )
   _product_feat = model_config->getAttributeAsInt( "ProductFeature", 0 );
   _threshold_feat = model_config->getAttributeAsInt( "ThresholdFeature", 0 );
   _hinge_feat = model_config->getAttributeAsInt( "HingeFeature", 0 );
+  _hasCategorical = model_config->getAttributeAsInt( "Categorical", 0 );
+
+  if ( _hasCategorical ) {
+    _isCategorical = model_config->getAttributeAsSample( "Categorical_layers" );
+
+    Sample layer_cat;
+    Sample layer_cat_value;
+
+    layer_cat = model_config->getAttributeAsSample( "Index_categorical_values" );
+    layer_cat_value = model_config->getAttributeAsSample( "Categorical_values" );
+
+    for ( size_t i = 0; i < layer_cat.size(); i++ ) {
+      	_categorical_values.push_back( make_pair ((int)layer_cat[i],(float)layer_cat_value[i]) );
+    }
+  }
 
   MaxentModelFile model_file;
 
