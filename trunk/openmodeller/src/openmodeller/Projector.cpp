@@ -173,6 +173,8 @@ Projector::createMap( const Model& model,
     catch ( ... ) {}
   }
 
+  map->finish();
+
   return true;
 }
 

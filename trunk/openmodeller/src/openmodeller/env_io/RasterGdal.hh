@@ -104,6 +104,11 @@ public:
   /** Find the minimum and maximum values in 'band'. */
   int calcMinMax( int band=0 );
 
+  /** 
+   * Event that must be called to indicate when the projection is finished.
+   */
+  void finish();
+
   /** Method to delete a raster.
    * @return 1 if the raster was successfully deleted, 0 otherwise.
    */
@@ -142,6 +147,8 @@ private:
   
   Scalar *f_data; // One line data for all bands.
   int     f_size; // Size of one line.
+
+  int     f_format; // File format used to create the raster (MapFormat::getFormat())
 
   int f_currentRow;
   int f_changed;

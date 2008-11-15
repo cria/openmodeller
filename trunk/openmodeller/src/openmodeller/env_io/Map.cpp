@@ -140,6 +140,14 @@ Map::getRowColumn( Coord x, Coord y, int *row, int *col )
   return result;
 }
 
+/**************/
+/*** finish ***/
+void 
+Map::finish()
+{
+  _rst->finish();
+}
+
 /*********************/
 /*** delete Raster ***/
 int 

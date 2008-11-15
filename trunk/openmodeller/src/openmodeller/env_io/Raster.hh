@@ -138,6 +138,11 @@ public:
      */
     void setMinMax( Scalar min, Scalar max );
 
+    /** 
+     * Event that must be called to indicate when the projection is finished.
+     */
+    virtual void finish() {};
+
     /** Method to delete a raster.
      * @return 1 if the raster was successfully deleted, 0 otherwise.
      */
