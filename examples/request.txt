@@ -28,6 +28,7 @@ Occurrences group = furcata boliviana
 # Maps to be used as environmental variables to generate the model
 # For TerraLib rasters, use the following pattern:
 # terralib>yourusername>yourpassword@PostgreSQL>localhost>terralib>5432>rain_coolest
+# To specify a categorical map use: Categorical map = 
 #
 Map = rain_coolest.tif
 Map = temp_avg.tif
@@ -50,6 +51,7 @@ Output format = rain_coolest.tif
 
 # Maps to be used as environmental variables to project the model
 # to create the output distribution map.
+# To specify a categorical map use: Categorical output map = 
 #
 Output map = rain_coolest.tif
 Output map = temp_avg.tif
@@ -78,11 +80,11 @@ Output file = furcata.img
 # FloatingTiff = floating point GeoTiff (cell value = probability of presence) (*.tif)
 # GreyBMP = grey scale BMP (*.bmp)
 # FloatingHFA = Erdas Imagine Floating Point (cell value = probability of presence)
-#               NoData will be written as -1. This format is directly 
-#               readable by ArcMap. (*.img) 
+#               NoData will be written as -1. (*.img) 
 # ByteHFA = Erdas Imagine Byte representation (0 <= cell value <= 100)
-#           NoData will be written as 101. This format is directly 
-#           readable by ArcMap. (*.img) 
+#           NoData will be written as 101. (*.img) 
+# ByteASC = ARC/Info ASCII grid Byte representation (0 <= cell value <= 100)
+#           NoData will be written as 101. (*.asc) 
 #
 Output file type = ByteHFA
 
@@ -179,3 +181,15 @@ Output file type = ByteHFA
 #Parameter = ProductFeature 0
 #Parameter = ThresholdFeature 0
 #Parameter = HingeFeature 0
+
+########
+# Artificial Neural Networks
+#
+#Algorithm = ANN_EPOCH
+#Parameter = HiddenLayerNeurons 8
+#Parameter = LearningRate 0.3
+#Parameter = Momentum 0.05
+#Parameter = Proptrain 0.8
+#Parameter = Choice 0
+#Parameter = Epoch 100000
+#Parameter = MinimunError 0.01
