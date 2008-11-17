@@ -339,8 +339,7 @@ RasterGdal::create( int format )
 
   GDALDriver *poDriver;
   char **papszMetadata; 
-  GDALAllRegister();
-
+ 
   char const *fmt = Formats[ format ].GDalDriverName;
 
   // Added by Tim to see if the chosen format supports the gdal create method
