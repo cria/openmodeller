@@ -48,6 +48,7 @@ public:
 
   ~MaximumEntropy();
 
+  int needNormalization();
   int initialize();
   int iterate();
   int done() const;

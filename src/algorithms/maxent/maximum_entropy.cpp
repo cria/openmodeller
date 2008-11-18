@@ -282,6 +282,22 @@ MaximumEntropy::~MaximumEntropy()
 {
 }
 
+/**************************/
+/*** need Normalization ***/
+int MaximumEntropy::needNormalization()
+{
+  if ( _samp->numAbsence() == 0 ) {
+
+    // It will be necessary to generate pseudo absences, so do not waste
+    // time normalizing things because normalization should ideally consider
+    // all trainning points (including pseudo-absences). In this specific case, 
+    // normalization will take place in initialize().
+    return 0;
+  }
+
+  return 1;
+}
+
 /******************/
 /*** initialize ***/
 
