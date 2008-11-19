@@ -70,8 +70,7 @@ protected:
   OccurrencesPtr _presences;
   OccurrencesPtr _absences;
 
-  int _hasCategorical;
-  Sample _isCategorical;
+  Sample _is_categorical;
 
   int _num_layers;
   int _num_features;
@@ -88,7 +87,6 @@ protected:
   int _hinge_feat;
   int _product_feat;
 
-  std::vector<pair<int,float> > _categorical_values; 
 };
 
 #endif
