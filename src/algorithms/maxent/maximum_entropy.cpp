@@ -36,7 +36,6 @@
 #include <iostream>
 #include <sstream>
 #include <vector>
-//#include <string>
 
 #include <boost/shared_ptr.hpp>
 #include <boost/shared_array.hpp>
@@ -268,7 +267,6 @@ algorithmMetadata()
 MaximumEntropy::MaximumEntropy() :
   AlgorithmImpl(&metadata),
   _done(false),
-  _hasCategorical(0),
   _num_layers(0),
   _num_features(0)
 { 
@@ -501,33 +499,13 @@ MaximumEntropy::initialize()
   _num_layers = _samp->numIndependent();
   
   // Identify categorical layers
-  _isCategorical.resize( _num_layers );
+  _is_categorical.resize( _num_layers );
   
-  for( int i = 0; i < _num_layers; ++i ) {
-    if ( _samp->isCategorical( i ) ) {
-      _hasCategorical = 1;
-      _isCategorical[i] = 1.0;
+  for ( int i = 0; i < _num_layers; ++i ) {
 
-      // Get the possible values of each categorical layer
-      OccurrencesImpl::const_iterator p_iterator = _presences->begin();
-      OccurrencesImpl::const_iterator p_end = _presences->end();
-      
-      bool hasValue = false;
-      Sample sample = (*p_iterator)->environment();
-
-      while ( p_iterator != p_end ) {
-	for ( size_t j = 0; j < _categorical_values.size() ; j++ ) {
-	  if ( _categorical_values[j].first == i ) {
-	    if ( (float)sample[i] == _categorical_values[j].second ) {
-	      hasValue = true;
-	    }
-	  }
-	}
-      }
-      if ( !hasValue )
-	_categorical_values.push_back( make_pair (i,(float)sample[i]) );
-    }
+    _is_categorical[i] = (Scalar)_samp->isCategorical( i );
   }
+
   return 1;
 } // initialize
 
@@ -566,20 +544,15 @@ MaximumEntropy::iterate()
       stringstream out;
       out << id;
 
-      if ( _isCategorical[i] ) {
-	for ( size_t j = 0; j < _categorical_values.size() ; j++ ) {             
-	  if (_categorical_values[j].first == i ) {
-	    if ( (float)sample[i] == _categorical_values[j].second ) {
-	      context.push_back( make_pair( out.str(), 1 ) );
-	    }  
-	    else {
-	      context.push_back( make_pair( out.str(), 0) );
-	    }
-	    out << ++id;
-	  }
-	}
+      if ( _is_categorical[i] ) {
+
+        stringstream cat_value;
+        cat_value << out.str() << "=" << (int)sample[i];
+        context.push_back( make_pair( cat_value.str(), 1.0 ) );
+        out << ++id;
       }
       else {
+
 	if ( _linear_feat == 1 ) {
 	  context.push_back( make_pair( out.str(), ((float)sample[i] )));
 	  out << ++id;
@@ -641,20 +614,15 @@ MaximumEntropy::iterate()
       stringstream out;
       out << id;
 
-      if ( _isCategorical[i] ) {
-	for ( size_t j = 0; j < _categorical_values.size() ; j++ ) {             
-	  if (_categorical_values[j].first == i ) {
-	    if ( (float)sample[i] == _categorical_values[j].second ) {
-	      context.push_back( make_pair( out.str(), 1 ) );
-	    }  
-	    else {
-	      context.push_back( make_pair( out.str(), 0) );
-	    }
-	    out << ++id;
-	  }
-	}
+      if ( _is_categorical[i] ) {
+
+        stringstream cat_value;
+        cat_value << out.str() << "=" << (int)sample[i];
+        context.push_back( make_pair( cat_value.str(), 1.0 ) );
+        out << ++id;
       }
       else {
+
 	if (_linear_feat == 1 ) {
 	  context.push_back( make_pair( out.str(), (float)sample[i] ) );
 	  out << ++id;
@@ -730,20 +698,15 @@ MaximumEntropy::getValue( const Sample& x ) const
     stringstream out;
     out << id;
     
-    if ( _isCategorical[i] ) {
-      for ( size_t j = 0; j < _categorical_values.size() ; j++ ) {             
-	if (_categorical_values[j].first == i ) {
-	  if ( (float)x[i] == _categorical_values[j].second ) {
-	    context.push_back( make_pair( out.str(), 1 ) );
-	  }       
-	  else {
-	    context.push_back( make_pair( out.str(), 0) );
-	  }
-	  out << ++id;
-	}
-      }
+    if ( _is_categorical[i] ) {
+
+      stringstream cat_value;
+      cat_value << out.str() << "=" << (int)x[i];
+      context.push_back( make_pair( cat_value.str(), 1.0 ) );
+      out << ++id;
     }
     else {
+
       if (_linear_feat == 1 ) {
 	context.push_back( make_pair( out.str(), (float)x[i] ) );
 	out << ++id;
@@ -819,24 +782,7 @@ MaximumEntropy::_getConfiguration( ConfigurationPtr& config ) const
   model_config->addNameValue( "ProductFeature", _product_feat );
   model_config->addNameValue( "ThresholdFeature", _threshold_feat );
   model_config->addNameValue( "HingeFeature", _hinge_feat );
-  model_config->addNameValue( "Categorical", _hasCategorical );
-
-  if ( _hasCategorical ) {
-    model_config->addNameValue( "Categorical_layers", _isCategorical);
-    
-    Sample layer_cat;
-    Sample layer_cat_value;
-
-    layer_cat.resize( _categorical_values.size() );
-    layer_cat_value.resize( _categorical_values.size() );
-
-    for ( size_t i = 0; i < _categorical_values.size(); i++ ) {
-      layer_cat[i] = _categorical_values[i].first;
-      layer_cat_value[i] = _categorical_values[i].second;
-    }
-    model_config->addNameValue( "Index_categorical_values", layer_cat);
-    model_config->addNameValue( "Categorical_values", layer_cat_value );
-  }
+  model_config->addNameValue( "Categorical", _is_categorical );
 
   MaxentModelFile model_file = _model.save();
 
@@ -881,21 +827,7 @@ MaximumEntropy::_setConfiguration( const ConstConfigurationPtr& config )
   _product_feat = model_config->getAttributeAsInt( "ProductFeature", 0 );
   _threshold_feat = model_config->getAttributeAsInt( "ThresholdFeature", 0 );
   _hinge_feat = model_config->getAttributeAsInt( "HingeFeature", 0 );
-  _hasCategorical = model_config->getAttributeAsInt( "Categorical", 0 );
-
-  if ( _hasCategorical ) {
-    _isCategorical = model_config->getAttributeAsSample( "Categorical_layers" );
-
-    Sample layer_cat;
-    Sample layer_cat_value;
-
-    layer_cat = model_config->getAttributeAsSample( "Index_categorical_values" );
-    layer_cat_value = model_config->getAttributeAsSample( "Categorical_values" );
-
-    for ( size_t i = 0; i < layer_cat.size(); i++ ) {
-      	_categorical_values.push_back( make_pair ((int)layer_cat[i],(float)layer_cat_value[i]) );
-    }
-  }
+  _is_categorical = model_config->getAttributeAsSample( "Categorical" );
 
   MaxentModelFile model_file;
 
