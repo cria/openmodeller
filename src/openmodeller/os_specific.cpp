@@ -148,11 +148,13 @@ initialPluginPath()
     return entries;
   }
 
+  Log::instance()->debug( "Checking CONFIG_FILE constant: " CONFIG_FILE "\n" );
+
   std::ifstream conf_file( CONFIG_FILE, std::ios::in );
   
   if ( conf_file ) {
 
-    Log::instance()->debug( "Found CONFIG_FILE constant: " CONFIG_FILE "\n" );
+    Log::instance()->debug( "Found config file\n" );
 
     while ( conf_file ) {
 
@@ -167,12 +169,12 @@ initialPluginPath()
   Log::instance()->debug( "Checking PLUGINPATH constant\n" );
 
 #if defined(__APPLE__)
-	CFURLRef myPluginRef = CFBundleCopyBundleURL(CFBundleGetMainBundle());
-	CFStringRef myMacPath = CFURLCopyFileSystemPath(myPluginRef, kCFURLPOSIXPathStyle);
-	const char *mypPathPtr = CFStringGetCStringPtr(myMacPath,CFStringGetSystemEncoding());
-	CFRelease(myPluginRef);
-	CFRelease(myMacPath);
-	std::string myFullPath(mypPathPtr);
+  CFURLRef myPluginRef = CFBundleCopyBundleURL(CFBundleGetMainBundle());
+  CFStringRef myMacPath = CFURLCopyFileSystemPath(myPluginRef, kCFURLPOSIXPathStyle);
+  const char *mypPathPtr = CFStringGetCStringPtr(myMacPath,CFStringGetSystemEncoding());
+  CFRelease(myPluginRef);
+  CFRelease(myMacPath);
+  std::string myFullPath(mypPathPtr);
   string::size_type loc = myFullPath.find( ".app", 0 );
   if( loc != string::npos ) //found so we are in a mac application bundle
   {

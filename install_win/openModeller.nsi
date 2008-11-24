@@ -188,6 +188,10 @@ Section "Application" SEC01
   Push OM_ALG_PATH
   Push "$INSTDIR\algs"
   Call WriteEnvStr
+; Set the OM_DATA_PATH env var so that aquamaps.db can be found
+  Push OM_DATA_PATH
+  Push "$INSTDIR\data"
+  Call WriteEnvStr
 ; Add path
   Push "Path"
   Push "A"
@@ -279,6 +283,8 @@ Section Uninstall
   Push PROJ_LIB
   Call un.DeleteEnvStr
   Push OM_ALG_PATH
+  Call un.DeleteEnvStr
+  Push OM_DATA_PATH
   Call un.DeleteEnvStr
   Push "Path"
   Push "R"

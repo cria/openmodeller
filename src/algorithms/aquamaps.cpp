@@ -35,6 +35,7 @@
 #include <stdio.h>
 #include <math.h>
 #include <sstream>
+#include <fstream>
 #include <sqlite3.h>
 
 // Algorithm is included for std::min and std::max.
@@ -669,24 +670,68 @@ AquaMaps::_percentile( Scalar *result, int n, double percent, std::vector<Scalar
 void 
 AquaMaps::_readSpeciesData( const char *species )
 {
-  sqlite3 *db;
-
-  string dbname( PKGDATAPATH );
+  string relname, dbname;
 
 #ifndef WIN32
-  dbname.append( "/aquamaps.db" );
+  relname.append( "/aquamaps.db" );
 #else
-  dbname.append( "\\aquamaps.db" );
+  relname.append( "\\aquamaps.db" );
 #endif
-  int rc = sqlite3_open( dbname.c_str(), &db);
 
-  Log::instance()->debug( "Internal database: %s\n", dbname.c_str() );
+  bool found = false;
+
+  // Try env variable
+  char *env = getenv( "OM_DATA_PATH" );
+
+  if ( env != 0 ) {
+
+    dbname = (char const *)env;
+
+    dbname.append( relname );
+    
+    Log::instance()->debug( "Trying database: %s\n", dbname.c_str() );
+
+    ifstream dbfile1( dbname.c_str(), ios::in );
+
+    if ( dbfile1 ) {
+
+      found = true;
+    }
+    else {
+
+      Log::instance()->debug( "Database not found.\n" );
+    }
+  }
+
+  if ( ! found ) {
+
+    // Try compile constant
+    dbname = PKGDATAPATH;
+
+    dbname.append( relname );
+
+    Log::instance()->debug( "Trying database: %s\n", dbname.c_str() );
+
+    ifstream dbfile2( dbname.c_str(), ios::in );
+
+    if ( ! dbfile2 ) {
+
+      Log::instance()->warn( "Could not find internal database with species data.\n" );
+      return;
+    }
+  }
+
+  Log::instance()->info( "Using internal database with species data.\n" );
+  
+  sqlite3 *db;
+  
+  int rc = sqlite3_open( dbname.c_str(), &db);
 
   if ( rc ) {
 
     // This will likely never happen since on open, sqlite creates the
     // database if it does not exist.
-    Log::instance()->warn( "Could not open database with species data: %s\n", sqlite3_errmsg( db ) );
+    Log::instance()->warn( "Could not open internal database: %s\n", sqlite3_errmsg( db ) );
     sqlite3_close( db );
     return;
   }

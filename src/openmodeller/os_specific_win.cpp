@@ -1,7 +1,6 @@
 /**
  * Definitions of Windows operating system's specific functions.
  * 
- * @file
  * @author Ricardo Scachetti Pereira (rpereira at ku.edu)
  * @date   2004-04-20
  * $Id$
@@ -150,6 +149,8 @@ initialPluginPath()
     return entries;
   }
 
+  Log::instance()->debug( "Checking CONFIG_FILE constant: " CONFIG_FILE "\n" );
+
   std::ifstream conf_file( CONFIG_FILE, std::ios::in );
 
   if ( ! conf_file ) {
@@ -163,7 +164,7 @@ initialPluginPath()
 
   while ( conf_file ) {
 
-    Log::instance()->debug( "Found CONFIG_FILE constant: " CONFIG_FILE "\n" );
+    Log::instance()->debug( "Found config file\n" );
 
     string line;
     getline( conf_file, line );
