@@ -404,11 +404,11 @@ RasterGdal::create( int format )
         papszOptions ); //opt parameters
     CSLDestroy( papszOptions );
   }
-  //Create temporary ByteHFA file with a different name (tmp_+original_file name)
+  //Create temporary ByteHFA file with a different name (original file name + .tmp)
   //It will be converted to ASC in the finish method
   else if (format==MapFormat::ByteASC)
   {
-    std::string temp_file = "tmp_" + f_file;
+    std::string temp_file = f_file + ".tmp";
 
     f_ds = poDriver->Create( temp_file.c_str(),
                              f_hdr.xdim, f_hdr.ydim,
@@ -729,7 +729,7 @@ RasterGdal::finish()
   if ( f_format == MapFormat::ByteASC )
   {
     // Temporary file name
-    std::string temp_file = "tmp_" + f_file;
+    std::string temp_file = f_file + ".tmp";
 
     // Get ArcInfo/ASC Grid driver
     GDALDriver *hDriver;
