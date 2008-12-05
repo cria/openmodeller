@@ -85,6 +85,8 @@ Output file = furcata.img
 #           NoData will be written as 101. (*.img) 
 # ByteASC = ARC/Info ASCII grid Byte representation (0 <= cell value <= 100)
 #           NoData will be written as 101. (*.asc) 
+# FloatingASC = ARC/Info ASCII grid Floating Point (cell value = probability of presence)
+#           NoData will be written as -9999. (*.asc) 
 #
 Output file type = ByteHFA
 

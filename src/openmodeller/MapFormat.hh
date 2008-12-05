@@ -68,7 +68,8 @@ public:
          GreyBMP = 3,
          FloatingHFA = 4, //erdas imagine floating point format
          ByteHFA = 5, //erdas imagine single byte format (scaled 0-100)
-         ByteASC = 6 //Arc/Info ASCII Grid single byte format (scaled 0-100)
+         ByteASC = 6, //Arc/Info ASCII Grid single byte format (scaled 0-100)
+         FloatingASC = 7 //Arc/Info ASCII Grid floating point format
   };
 
   void unsetFormat() { format = FloatingTiff; }

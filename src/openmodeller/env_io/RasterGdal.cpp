@@ -58,7 +58,7 @@ struct GDAL_Format
   bool hasMeta;
 };
 
-GDAL_Format Formats[7] =
+GDAL_Format Formats[8] =
 {
   // Floating GeoTiff
   { "GTiff",
@@ -89,7 +89,13 @@ GDAL_Format Formats[7] =
   // method, so the trick is to create as HFA and then translate to AAIGrid
   { "HFA",
     GDT_Byte,
-    true }
+    true },
+  // Floating ASC (Arc/Info ASCII Grid floating point format).
+  // The GDAL code here should be AAIGrid, but this driver does not support the Create 
+  // method, so the trick is to create as TIF and then translate to AAIGrid
+  { "GTiff",
+    (sizeof(Scalar) == 4) ? GDT_Float32 : GDT_Float64,
+    true },
 };
 
 static const GDALDataType f_type = (sizeof(Scalar) == 4) ? GDT_Float32 : GDT_Float64;
@@ -164,6 +170,11 @@ RasterGdal::RasterGdal( const string& file, const MapFormat& format):
       f_scalefactor = 100;
       nv = 101;
       Log::instance()->debug( "RasterGdal format set to MapFormat::ByteASC:\n" );
+      break;
+    case MapFormat::FloatingASC:
+      f_scalefactor = 1.0;
+      nv = -9999;
+      Log::instance()->debug( "RasterGdal format set to MapFormat::FloatingASC:\n" );
       break;
     default:
       Log::instance()->error( "Unsupported output format.\n" );
@@ -407,6 +418,18 @@ RasterGdal::create( int format )
   //Create temporary ByteHFA file with a different name (original file name + .tmp)
   //It will be converted to ASC in the finish method
   else if (format==MapFormat::ByteASC)
+  {
+    std::string temp_file = f_file + ".tmp";
+
+    f_ds = poDriver->Create( temp_file.c_str(),
+                             f_hdr.xdim, f_hdr.ydim,
+                             f_hdr.nband,
+                             /* data type */ Formats[format].dataType,
+                             /* opt parameters */ NULL );
+  }
+  //Create temporary GeoTiff file with a different name (original file name + .tmp)
+  //It will be converted to ASC in the finish method
+  else if (format==MapFormat::FloatingASC)
   {
     std::string temp_file = f_file + ".tmp";
 
@@ -726,7 +749,7 @@ RasterGdal::finish()
   // Save the last line read, if needed.
   saveRow();
 
-  if ( f_format == MapFormat::ByteASC )
+  if ( f_format == MapFormat::ByteASC || f_format == MapFormat::FloatingASC )
   {
     // Temporary file name
     std::string temp_file = f_file + ".tmp";

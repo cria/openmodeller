@@ -152,7 +152,7 @@ void MapFormat::setFormat( int f ) {
 
   format = f;
 
-  if ( format < 0 || format > ByteASC ) {
+  if ( format < 0 || format > FloatingASC ) {
 
     format = DEFAULT_FORMAT;
   }
@@ -187,6 +187,10 @@ void MapFormat::setFormat( std::string format ) {
   else if ( format == "ByteASC" ) {
 
     setFormat( ByteASC );
+  }
+  else if ( format == "FloatingASC" ) {
+
+    setFormat( FloatingASC );
   }
   else {
 
