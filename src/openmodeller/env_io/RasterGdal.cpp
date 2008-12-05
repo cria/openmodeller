@@ -752,11 +752,11 @@ RasterGdal::finish()
       throw FileIOException( "Unable to create raster copy " + f_file, f_file );
     }
 
-	// Delete temporary ByteHFA raster
-	delete f_ds;
-	if (GDALDriver::QuietDelete( temp_file.c_str() ) == CE_Failure )
-	{
-        Log::instance()->warn( "Could not delete temporary file %s", temp_file.c_str() );
+    // Delete temporary ByteHFA raster
+    delete f_ds;
+    if ( GDALDriver::QuietDelete( temp_file.c_str() ) == CE_Failure )
+    {
+      Log::instance()->warn( "Could not delete temporary file %s", temp_file.c_str() );
     }
 
     f_ds = new_ds;
