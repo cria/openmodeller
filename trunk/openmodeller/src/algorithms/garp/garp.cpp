@@ -135,7 +135,7 @@ AlgMetadata metadata = {
   
   "GARP",                                                // Id.
   "GARP (single run) - new openModeller implementation", // Name.
-  "3.2 beta",                                            // Version.
+  "3.3",                                                 // Version.
 
   // Overview.
   "GARP is a genetic algorithm that creates ecological niche \
@@ -144,7 +144,9 @@ under which the species should be able to maintain populations. \
 For input, GARP uses a set of point localities where the species \
 is known to occur and a set of geographic layers representing \
 the environmental parameters that might limit the species' \
-capabilities to survive.",
+capabilities to survive. Please refer to algorithm description for \
+more information about the differences between this new GARP \
+implementation and the Desktop GARP implementation.",
 
   // Description.
   "GARP is a genetic algorithm that creates ecological niche \

@@ -262,7 +262,7 @@ AlgMetadata metadata_bs = {
   
   "GARP_BS",                                                  // Id.
   "GARP with Best Subsets - new openModeller implementation", // Name.
-  "3.0.3",                                                    // Version.
+  "3.0.4",                                                    // Version.
 
   // Overview.
   "GARP is a genetic algorithm that creates ecological niche \
@@ -273,9 +273,9 @@ is known to occur and a set of geographic layers representing \
 the environmental parameters that might limit the species' \
 capabilities to survive. This algorithm applies the Best Subsets \
 procedure using the new openModeller implementation in each GARP \
-run. Please refer to the GARP algorithm description to know the \
-differences between the DesktopGarp and the new openModeller GARP \
-implementations.",
+run. Please refer to GARP single run algorithm description for more \
+information about the differences between DesktopGarp and the new \
+GARP implementation.",
 
   // Description.
   "GARP is a genetic algorithm that creates ecological niche \
@@ -286,9 +286,9 @@ is known to occur and a set of geographic layers representing \
 the environmental parameters that might limit the species' \
 capabilities to survive. This algorithm applies the Best Subsets \
 procedure using the new openModeller implementation in each GARP \
-run. Please refer to the GARP algorithm description to know the \
-differences between the DesktopGarp and the new openModeller GARP \
-implementations.",
+run. Please refer to GARP single run algorithm description for more \
+information about the differences between DesktopGarp and the new \
+GARP implementation.",
 
   // Author
   "Anderson, R. P., D. Lew, D. and A. T. Peterson.",  
