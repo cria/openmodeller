@@ -7,7 +7,7 @@ SVN revision: ?
 	* Included method to calculate partial area ratio in ROC class.
 	* Added parameters --calc-matrix, --max-omission and --calc-roc to om_model and om_test.
 	* Changed confusion matrix serialization to store all raw values.
-	* Included new map format to generate ARC/Info ASCII grid files.
+	* Included new map format to generate ARC/Info ASCII grid files (byte or floating point fomats).
 	* Fixed bug in Maximum Entropy algorithm (environment was being re-normalized when pseudo-absences were generated internally).
 	* Added support to handle categorical values in the Maximum Entropy algorithm.
 
