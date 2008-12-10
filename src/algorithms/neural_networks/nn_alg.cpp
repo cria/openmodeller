@@ -239,6 +239,23 @@ NNAlgorithm::~NNAlgorithm()
 }
 
 
+/**************************/
+/*** need Normalization ***/
+int NNAlgorithm::needNormalization()
+{
+  if ( _samp->numAbsence() == 0 ) {
+
+    // It will be necessary to generate pseudo absences, so do not waste
+    // time normalizing things because normalization should ideally consider
+    // all trainning points (including pseudo-absences). In this specific case, 
+    // normalization will take place in initialize().
+    return 0;
+  }
+
+  return 1;
+}
+
+
 /******************/
 /*** initialize ***/
 /* Initialize the model specifying a threshold / cutoff point.
