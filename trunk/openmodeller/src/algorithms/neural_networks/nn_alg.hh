@@ -47,6 +47,8 @@ public:
 
   ~NNAlgorithm();
 
+  int needNormalization();
+
   /** Initialise the model specifying a threshold / cutoff point.
     * This is optional (model dependent).
     * @note This method is inherited from the Algorithm class
