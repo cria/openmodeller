@@ -60,6 +60,10 @@ public:
     */
   int iterate();
 
+  /** Return progress so far 
+    */
+  float getProgress() const;
+
   /** Use this method to find out if the model has completed (e.g. convergence
     * point has been met. 
     * @note This method is inherited from the Algorithm class
@@ -81,23 +85,13 @@ public:
     */
   Scalar getValue( const Sample& x ) const;
   
-  /** Returns a value that represents the convergence of the algorithm
-    * expressed as a number between 0 and 1 where 0 represents model
-    * completion. 
-    * @return 
-    * @param Scalar *val 
-  */
-  int getConvergence( Scalar *val );
 
  
-protected:
-
 protected:
 
   virtual void _getConfiguration( ConfigurationPtr& ) const;
 
   virtual void _setConfiguration( const ConstConfigurationPtr& );
-
 
 
   bool _done;
@@ -109,8 +103,7 @@ protected:
   int num_absences;
 
 
-
-  //Algorithm's variables
+  // Algorithm's variables
   
   Network network;
 
@@ -123,11 +116,23 @@ protected:
 
   double training_vector_input[10000][500]; // [training num_patterns][_num_layers]
 
-  double training_vector_output[10000][1]; //[training num_pattern][_nn_parameter.outp]
+  double training_vector_output[10000][1]; // [training num_pattern][_nn_parameter.outp]
 
   double testing_vector_input[10000][500]; // [testing num_patterns][_num_layers]
 
-  double testing_vector_output[10000][1]; //[testing num_pattern][_nn_parameter.outp]
+  double testing_vector_output[10000][1]; // [testing num_pattern][_nn_parameter.outp]
+
+
+  nn_parameter _nn_parameter;
+
+  double *outputs;
+
+  unsigned long amount_epoch; // Number of epoch in training
+
+  float _progress; // Percent of training
+
+  int converged; // Used to verify if the training by minimum error converged
+
 
   // Work with occurrences 
   OccurrencesPtr training_presences;
@@ -137,11 +142,6 @@ protected:
   OccurrencesPtr testing_presences;
 
   OccurrencesPtr testing_absences;
-
-
-  double *outputs;
-
-  nn_parameter _nn_parameter;
 
 };
 

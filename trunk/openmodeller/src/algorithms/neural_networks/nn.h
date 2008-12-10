@@ -14,34 +14,6 @@ extern "C" {
 #include <string.h>
 #include <stdarg.h>
 
-/*
- * Copied from the svm.cpp
- * It's used to print to screen
- */
-/******************************/
-#if 1
-
-void info(const char *fmt,...)
-{
-	va_list ap;
-	va_start(ap,fmt);
-	vprintf(fmt,ap);
-	va_end(ap);
-}
-
-
-void info_flush()
-{
-	fflush(stdout);
-}
-
-#else
-void info(char *fmt,...) {}
-void info_flush() {}
-
-#endif
-/******************************/
-
 
 struct nn_parameter
 {
@@ -53,7 +25,7 @@ struct nn_parameter
 	double momentum;
 	double proptrain;
 
-	// Choice Variable
+	// Choice Variable between training by epoch or minimum error
 	int choice;
 
 	// Variables especified of training by epoch
@@ -92,18 +64,18 @@ struct nn_parameter
 
   public:
 
-    //Weights of the neuron
+    // Weights of the neuron
     double d_weight;
     double d_weight_ancient;
     double d_weight_actual;
-    unsigned long d_points_to; //The index of the neuron of the next layer to which it points
+    unsigned long d_points_to; // The index of the neuron of the next layer to which it points
 
     Dendrite(double weight = 0.0, double weight_ancient = 0.0, double weight_actual = 0.0, unsigned long points_to = 0){ //Constructor
 
 	d_weight = weight;
 	d_weight_ancient = weight_ancient;
 	d_weight_actual = weight_actual;
-	d_points_to = points_to; //Give it a initial value
+	d_points_to = points_to; // Give it a initial value
     }
 };
 
@@ -112,14 +84,14 @@ class Neuron{
 
   public:
   
-    unsigned long n_ID; //ID of a particular neuron in a layer. Used to find a particular neuron in an array
-    double n_value; //Value which Neuron currently is holding
-    double n_bias;  //Bias of the neuron
-    double n_delta; //Used in back  prop. Note it is backprop specific
+    unsigned long n_ID; // ID of a particular neuron in a layer. Used to find a particular neuron in an array
+    double n_value; // Value which Neuron currently is holding
+    double n_bias;  // Bias of the neuron
+    double n_delta; // Used in back  prop. Note it is backprop specific
 
-    Dendrite *Dendrites; //Dendrites
+    Dendrite *Dendrites; // Dendrites
 
-    //Constructor assigning initial values
+    // Constructor assigning initial values
     Neuron(unsigned long ID = 0,double value = 0.0,double bias = 0.0){
 
 	n_ID = ID;
@@ -128,7 +100,7 @@ class Neuron{
         n_delta = 0.0;
     }
 
-    void SetDendrites(unsigned long dendrite){ //Set the dendrites from the neuron to given dendrite
+    void SetDendrites(unsigned long dendrite){ // Set the dendrites from the neuron to given dendrite
 
 	Dendrites = new Dendrite[dendrite];
 
@@ -144,64 +116,65 @@ class Layer{
 
   public:
   
-    Neuron *Neurons; //Pointer to array of neurons
+    Neuron *Neurons; // Pointer to array of neurons
 
-    /*Layer(int size = 1){    //size is no. of neurons in it
+    /*Layer(int size = 1){    // Size is no. of neurons in it
 
 	Neurons = new Neuron [size];
     }  */
 
-    void Initialize(int size) {   //Initialize the layer
+    void Initialize(int size) {   // Initialize the layer
 
 	Neurons = new Neuron [size];
     }
 
-    ~Layer(){ //destructor deletes Neurons from the memory
+    ~Layer(){ // Destructor deletes Neurons from the memory
 
 	delete Neurons;
     }
 
-    Neuron GetNeuron(int index){  //Give the neuron at index
+    Neuron GetNeuron(int index){  // Give the neuron at index
 
 	return Neurons[index];
     }
 
-    void SetNeuron(Neuron neuron, int index){ //sets the neuron
+    void SetNeuron(Neuron neuron, int index){ // Sets the neuron
 
 	Neurons[index] = neuron;
     }
 };
 
 
-/*A&F*/class Network { //The real neural network
+/*A&F*/class Network { // The real neural network
 
   public:
   
-    double net_learning_rate; //Learning rate of network
-    Layer *Layers; //The total layers in network
-    int net_tot_layers; //Number of layers
-    double *net_inputs; //Input array
-    double *net_outputs;//Output layers
-    int *net_layers; //Array which tells no. of neurons in each layer
+    double net_learning_rate; // Learning rate of network
+    Layer *Layers; // The total layers in network
+    int net_tot_layers; // Number of layers
+    double *net_inputs; // Input array
+    double *net_outputs;// Output layers
+    int *net_layers; // Array which tells no. of neurons in each layer
     //double GetRand(void);
 
     double *square_error; // Mean square error of each training
     double *mean_square_error; // Total plus of each epoch
 
+    float progress; // Percent of training
 
     Network() {
-	//Blank Constructor
+	// Blank Constructor
     }
 
 
-    int SetData(double learning_rate, int layers[], int tot_layers) { //Function to set various parameters of the net
+    int SetData(double learning_rate, int layers[], int tot_layers) { // Function to set various parameters of the net
                 
-	if (tot_layers<2) return(-1); //Return error if total no. of layers < 2
-                                               //Because input and output layers are necessary
+	if (tot_layers<2) return(-1); // Return error if total no. of layers < 2
+                                               // Because input and output layers are necessary
                 
 	net_learning_rate = learning_rate;
 
-        net_layers = new int [tot_layers]; //Initialize the layers array
+        net_layers = new int [tot_layers]; // Initialize the layers array
 
         Layers = new Layer[tot_layers];
 
@@ -210,7 +183,7 @@ class Layer{
 
           net_layers[i] = layers[i];
 
-          Layers[i].Initialize(layers[i]); //Initialize each layer with the specified size
+          Layers[i].Initialize(layers[i]); // Initialize each layer with the specified size
         }
 
 
@@ -225,7 +198,7 @@ class Layer{
     }
 
 		
-    void SetInputs(double inputs[]) const{ //Function to set the inputs
+    void SetInputs(double inputs[]) const{ // Function to set the inputs
                  
 	for(int i = 0; i < net_layers[0]; i++){
 
@@ -234,7 +207,7 @@ class Layer{
     }
 
 
-    void RandomizeWB(void){ //Randomize weights and biases
+    void RandomizeWB(void){ // Randomize weights and biases
 
 	int i,j,k;
 
@@ -242,36 +215,34 @@ class Layer{
 
           for(j = 0; j < net_layers[i]; j++){
 
-            if(i != net_tot_layers-1){ //Last layer does not require weights
+            if(i != net_tot_layers-1){ // Last layer does not require weights
 
 		Layers[i].Neurons[j].SetDendrites(net_layers[i+1]); //Initialize the dendrites
 
 		for(k = 0; k < net_layers[i+1]; k++){
 
-		  Layers[i].Neurons[j].Dendrites[k].d_weight = 0.000000; //Let weight be the zero value
-		  Layers[i].Neurons[j].Dendrites[k].d_weight_ancient = 0.000000; //Let weight be the zero value
-		  Layers[i].Neurons[j].Dendrites[k].d_weight_actual = GetRand(); //Let weight be the random value
-		  //printf("Weight %f\n", Layers[i].Neurons[j].Dendrites[k].d_weight_actual);
+		  Layers[i].Neurons[j].Dendrites[k].d_weight = 0.000000; // Let weight be the zero value
+		  Layers[i].Neurons[j].Dendrites[k].d_weight_ancient = 0.000000; // Let weight be the zero value
+		  Layers[i].Neurons[j].Dendrites[k].d_weight_actual = GetRand(); // Let weight be the random value
 	        }
 		
              }
 
-             if(i != 0){ //First layer does not need biases
+             if(i != 0){ // First layer does not need biases
 
 		Layers[i].Neurons[j].n_bias = GetRand();
              }
 	  }
 	}
-//printf("\n\n\n");
     }
 	
 
-    double * GetOutput(void) const{ //Gives the output of the net
+    double * GetOutput(void) const{ // Gives the output of the net
     
 	double *outputs;
 	int i,j,k;
 
-	outputs = new double[net_layers[net_tot_layers-1]]; //Temp ouput array
+	outputs = new double[net_layers[net_tot_layers-1]]; // Temp ouput array
 
 	for(i = 1; i < net_tot_layers; i++){
 
@@ -281,12 +252,12 @@ class Layer{
                           
 	    for(k = 0; k < net_layers[i-1]; k++){
 
-		Layers[i].Neurons[j].n_value = Layers[i].Neurons[j].n_value + Layers[i-1].Neurons[k].n_value * Layers[i-1].Neurons[k].Dendrites[j].d_weight; //Multiply and add all the inputs
+		Layers[i].Neurons[j].n_value = Layers[i].Neurons[j].n_value + Layers[i-1].Neurons[k].n_value * Layers[i-1].Neurons[k].Dendrites[j].d_weight; // Multiply and add all the inputs
 	    }
 
-            Layers[i].Neurons[j].n_value = Layers[i].Neurons[j].n_value + Layers[i].Neurons[j].n_bias; //Add bias
+            Layers[i].Neurons[j].n_value = Layers[i].Neurons[j].n_value + Layers[i].Neurons[j].n_bias; // Add bias
 
-            Layers[i].Neurons[j].n_value = Limiter(Layers[i].Neurons[j].n_value);  //Squash that value
+            Layers[i].Neurons[j].n_value = Limiter(Layers[i].Neurons[j].n_value);  // Squash that value
 
           }
 	}
@@ -296,42 +267,42 @@ class Layer{
 	  outputs[i] = Layers[net_tot_layers-1].Neurons[i].n_value;
 	}
 
-	return outputs; //Return the outputs
+	return outputs; // Return the outputs
     }
 
 
     /******************************************************************/
-    // Used at _GetConfiguration and _SetConfiguration in the library ??????_alg.cpp
+    // Used at _GetConfiguration and _SetConfiguration in the library nn_alg.cpp
 
-    double getWeight(int i, int j, int k) const{ //Get weights
+    double getWeight(int i, int j, int k) const{ // Get weights
 
 	return Layers[i].Neurons[j].Dendrites[k].d_weight;
     }
 
 
-    void setWeight(int i, int j, int k, double w){ //Set weights
+    void setWeight(int i, int j, int k, double w){ // Set weights
 	
 	Layers[i].Neurons[j].Dendrites[k].d_weight = w;
 
     }
 
 
-    double getBias(int i, int j) const{ //Get bias
+    double getBias(int i, int j) const{ // Get bias
 
 	return Layers[i].Neurons[j].n_bias;
     }
 
 
-    void setBias(int i, int j, double b){ //Set bias
+    void setBias(int i, int j, double b){ // Set bias
 
 	Layers[i].Neurons[j].n_bias = b;
     }
     /******************************************************************/
 
 
-    void Update(void){ //Just a dummy function
+    void Update(void){ // Just a dummy function
 
-	double *temp; //Temperory pointer
+	double *temp; // Temperory pointer
         temp = GetOutput();
         //GetOutput();
         delete temp;
@@ -347,14 +318,14 @@ class Layer{
     } */
 
 
-    double Limiter(double value) const{ //Limiet to limit value between 1 and -1
+    double Limiter(double value) const{ // Limiet to limit value between 1 and -1
 
-	//return tanh(value);   //To use tanh fuction
+	//return tanh(value);   // To use tanh fuction
         return (1.0/(1+exp(-value))); // To use sigmoid function
     }
 
 
-    double GetRand(void){  //Return a random number between range -1 e 1 using time to seed the srand function
+    double GetRand(void){  // Return a random number between range -1 e 1 using time to seed the srand function
 
 	time_t timer;
         struct tm *tblock;
@@ -364,20 +335,17 @@ class Layer{
         //srand(tblock->tm_sec);
         srand(seed);
 
-	//Debug
-	//printf("\nRand: %f", (RANDOM_CLAMP+RANDOM_NUM)/400);
-
         return ((RANDOM_CLAMP+RANDOM_NUM)/400);
    }
 
 
-    double SigmaWeightDelta( unsigned long layer_no, unsigned long neuron_no){ //Calculate sum of weights * delta. Used in back prop. layer_no is layer number. Layer number and neuron number can be zero and neuron_no is neuron number.
+    double SigmaWeightDelta( unsigned long layer_no, unsigned long neuron_no){ // Calculate sum of weights * delta. Used in back prop. layer_no is layer number. Layer number and neuron number can be zero and neuron_no is neuron number.
 
 	double result = 0.0;
  
-	for(int i = 0; i < net_layers[layer_no+1]; i++) { //Go through all the neurons in the next layer
+	for(int i = 0; i < net_layers[layer_no+1]; i++) { // Go through all the neurons in the next layer
 
-	  result = result + Layers[layer_no].Neurons[neuron_no].Dendrites[i].d_weight * Layers[layer_no+1].Neurons[i].n_delta; //Comput the summation
+	  result = result + Layers[layer_no].Neurons[neuron_no].Dendrites[i].d_weight * Layers[layer_no+1].Neurons[i].n_delta; // Comput the summation
         }
 
 	return result;
@@ -397,7 +365,7 @@ class Layer{
 */
 
 
-    void setError(int max_pattern){ //Function to set the errors
+    void setError(int max_pattern){ // Function to set the errors
 
 	mean_square_error = new double;
 	*mean_square_error = 0.000000;
@@ -411,7 +379,7 @@ class Layer{
     }
 
 
-    void addError(int max_pattern){ //Function to add the errors
+    void addError(int max_pattern){ // Function to add the errors
 
 	for(int i = 0; i < max_pattern; i++){
 
@@ -419,13 +387,10 @@ class Layer{
 	}
 	
 	delete square_error;
-
-	//Debug
-	//printf("\nmean_square_error: %f", *mean_square_error);
     }
 
 
-    int Train(double inputs[],double outputs[], int number_pattern, int max_pattern, double momentum){ //The standard Backprop Learning algorithm
+    int Train(double inputs[],double outputs[], int number_pattern, int max_pattern, double momentum){ // The standard Backprop Learning algorithm
 
 	int i,j,k;
 
@@ -435,11 +400,11 @@ class Layer{
 	double *error = new double;;
 
 
-        SetInputs(inputs); //Set the inputs
+        SetInputs(inputs); // Set the inputs
 
-	Update(); //Update all the values
+	Update(); // Update all the values
 
-        //SetOutputs(outputs); //Set the outputs
+        //SetOutputs(outputs); // Set the outputs
 
 
 	if(number_pattern == 0){
@@ -448,63 +413,58 @@ class Layer{
 	}
 
 
-        for(i = (net_tot_layers-1); i > 0; i--){ //Go from last layer to first layer
+        for(i = (net_tot_layers-1); i > 0; i--){ // Go from last layer to first layer
 
-          for(j = 0; j < net_layers[i]; j++) {//Go thru every neuron
+          for(j = 0; j < net_layers[i]; j++) {// Go thru every neuron
 
-            if(i == (net_tot_layers-1)){ //Output layer, Needs special atential
+            if(i == (net_tot_layers-1)){ // Output layer, Needs special atential
 
-		(*Target) = outputs[j]; //Target value
-		(*Actual) = Layers[i].Neurons[j].n_value; //Actual value
+		(*Target) = outputs[j]; // Target value
+		(*Actual) = Layers[i].Neurons[j].n_value; // Actual value
                            
-		(*Delta) = ((*Target) - (*Actual)) * (*Actual) * (1 - (*Actual)); //Function to compute error
+		(*Delta) = ((*Target) - (*Actual)) * (*Actual) * (1 - (*Actual)); // Function to compute error
                            
-		Layers[i].Neurons[j].n_delta = (*Delta); //Compute the delta
+		Layers[i].Neurons[j].n_delta = (*Delta); // Compute the delta
 
 
                 for(k = 0; k < net_layers[i-1]; k++) {
 
-	          Layers[i-1].Neurons[k].Dendrites[j].d_weight = ( Layers[i-1].Neurons[k].Dendrites[j].d_weight_actual) + ( net_learning_rate * (*Delta) * Layers[i-1].Neurons[k].n_value) + (momentum * ( Layers[i-1].Neurons[k].Dendrites[j].d_weight_actual - Layers[i-1].Neurons[k].Dendrites[j].d_weight_ancient)); //Calculate the new weights
+	          Layers[i-1].Neurons[k].Dendrites[j].d_weight = ( Layers[i-1].Neurons[k].Dendrites[j].d_weight_actual) + ( net_learning_rate * (*Delta) * Layers[i-1].Neurons[k].n_value) + (momentum * ( Layers[i-1].Neurons[k].Dendrites[j].d_weight_actual - Layers[i-1].Neurons[k].Dendrites[j].d_weight_ancient)); // Calculate the new weights
 
 	          Layers[i-1].Neurons[k].Dendrites[j].d_weight_ancient = Layers[i-1].Neurons[k].Dendrites[j].d_weight_actual;
 		  Layers[i-1].Neurons[k].Dendrites[j].d_weight_actual = Layers[i-1].Neurons[k].Dendrites[j].d_weight;	
                 }
 
-                Layers[i].Neurons[j].n_bias = Layers[i].Neurons[j].n_bias + (*Delta) * net_learning_rate * 1; //n_value is always 1 for bias
+                Layers[i].Neurons[j].n_bias = Layers[i].Neurons[j].n_bias + (*Delta) * net_learning_rate * 1; // n_value is always 1 for bias
 
 
-		//if((*Target) > (*Actual))
 		*error = ((*Target) - (*Actual));
-		//else *error = ((*Actual) - (*Target));
 	    }
-	    else { //Here
+	    else { // Here
                            
-		//Target value
-                (*Actual) = Layers[i].Neurons[j].n_value; //Actual value
+		// Target value
+                (*Actual) = Layers[i].Neurons[j].n_value; // Actual value
 
-                (*Delta) =  (*Actual) * (1 - (*Actual)) * SigmaWeightDelta(i,j); //Function to compute error
+                (*Delta) =  (*Actual) * (1 - (*Actual)) * SigmaWeightDelta(i,j); // Function to compute error
 
 
                 for(k = 0; k < net_layers[i-1]; k++) {
 
-	          Layers[i-1].Neurons[k].Dendrites[j].d_weight = ( Layers[i-1].Neurons[k].Dendrites[j].d_weight_actual) + ( net_learning_rate * (*Delta) * Layers[i-1].Neurons[k].n_value) + (momentum * ( Layers[i-1].Neurons[k].Dendrites[j].d_weight_actual - Layers[i-1].Neurons[k].Dendrites[j].d_weight_ancient)); //Calculate the new weights
+	          Layers[i-1].Neurons[k].Dendrites[j].d_weight = ( Layers[i-1].Neurons[k].Dendrites[j].d_weight_actual) + ( net_learning_rate * (*Delta) * Layers[i-1].Neurons[k].n_value) + (momentum * ( Layers[i-1].Neurons[k].Dendrites[j].d_weight_actual - Layers[i-1].Neurons[k].Dendrites[j].d_weight_ancient)); // Calculate the new weights
 
 	          Layers[i-1].Neurons[k].Dendrites[j].d_weight_ancient = Layers[i-1].Neurons[k].Dendrites[j].d_weight_actual;
 		  Layers[i-1].Neurons[k].Dendrites[j].d_weight_actual = Layers[i-1].Neurons[k].Dendrites[j].d_weight;	
                 }
 
 
-		if(i != 0){ //Input layer does not have a bias
+		if(i != 0){ // Input layer does not have a bias
 
-		  Layers[i].Neurons[j].n_bias = Layers[i].Neurons[j].n_bias + (*Delta) * net_learning_rate * 1; //n_value is always 1 for bias
+		  Layers[i].Neurons[j].n_bias = Layers[i].Neurons[j].n_bias + (*Delta) * net_learning_rate * 1; // n_value is always 1 for bias
 		}
 	    }
 	  }
 	}
-	
-	//Debug
-	//printf("\nError[%d]: %f", number_pattern+1, *error);
-	
+
 
 	square_error[number_pattern] = (*error) * (*error); 
 
@@ -526,57 +486,49 @@ class Layer{
 
 
     // Used to training by epoch
-    void print_to_file(FILE *file, unsigned long actual_epoch, double epoch_total, int patterns, unsigned long print_points_wished){
+    void trainingEpoch( unsigned long actual_epoch, double epoch_total, int patterns){
 
 	*mean_square_error = sqrt(*mean_square_error/patterns);
 
-	//Debug
-	//printf("\nNumber of the epoch: %lu", actual_epoch+1);
-	//printf("\tMean square error: %.10f", *mean_square_error);
-	Log::instance()->info( "Training: %.4f%% \r", 100*(1.00-(epoch_total - (actual_epoch+1))/(epoch_total)) );
 
-
-	if(actual_epoch == print_points_wished){
-
-	  fprintf (file, "%lu\t0,%.0f\n", actual_epoch+1, *mean_square_error*10000000);
-	}
-
+	progress = (1.00-(epoch_total - (actual_epoch+1))/(epoch_total));
 
 	delete mean_square_error;
     }
 
 
     // Used to training by minimum error
-    int convergence(FILE *file, unsigned long epoch, int patterns, double min_error, unsigned long print_points_wished){
+    int trainingMinimumError( int patterns, double min_error){
 
 	int converg = 0;
 
 	*mean_square_error = sqrt(*mean_square_error/patterns);
 
-
-	if(epoch == print_points_wished){
-
-	  fprintf (file, "%lu\t0,%.0f\n", epoch, *mean_square_error*10000000);
-	}
-
-
+	
 	if(*mean_square_error < min_error){
 
 	  converg = 1;
-	  Log::instance()->info( "Training: 100.0000%% \r");
+	  progress = 1;
 	}
 
 	else{
-	  //Debug
-	  //printf("\nNumber of the epoch: %lu", epoch);
-	  //printf("\tMean square error: %.10f", *mean_square_error);
-	  Log::instance()->info( "Training: %.4f%% \r", 100*(1.00-(*mean_square_error - min_error)/(*mean_square_error)) );
+
+	  progress = (1.00-(*mean_square_error - min_error)/(*mean_square_error));
 	}
+
 
 	delete mean_square_error;
 
 	return converg;
     }
+
+
+    // Percent of training
+    float getProgress(){
+
+	return progress;
+    }
+
 
 
     ~Network(){ }//delete Layers; }
