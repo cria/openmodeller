@@ -174,7 +174,7 @@ Output file type = ByteHFA
 #
 #Algorithm = MAXENT
 #Parameter = NumberOfPseudoAbsences 500
-#Parameter = NumberOfIterations 15
+#Parameter = NumberOfIterations 500
 #Parameter = TrainingMethod gis
 #Parameter = GaussianPriorSmoothingCoeficient 0.0
 #Parameter = TerminateTolerance 0.00001
@@ -187,7 +187,7 @@ Output file type = ByteHFA
 ########
 # Artificial Neural Networks
 #
-#Algorithm = ANN_EPOCH
+#Algorithm = ANN
 #Parameter = HiddenLayerNeurons 8
 #Parameter = LearningRate 0.3
 #Parameter = Momentum 0.05
