@@ -39,6 +39,7 @@
 
 #include <openmodeller/MapFormat.hh>
 
+#include <gdal_version.h>
 #include <gdal.h>
 #include <gdal_priv.h>
 #include <cpl_string.h>
@@ -776,11 +777,24 @@ RasterGdal::finish()
     }
 
     // Delete temporary ByteHFA raster
-    delete f_ds;
-    if ( GDALDriver::QuietDelete( temp_file.c_str() ) == CE_Failure )
-    {
-      Log::instance()->warn( "Could not delete temporary file %s", temp_file.c_str() );
-    }
+#if GDAL_VERSION_MAJOR > 1 || ( GDAL_VERSION_MAJOR == 1 && GDAL_VERSION_MINOR >= 5 )
+
+      delete f_ds;
+
+      if ( GDALDriver::QuietDelete( temp_file.c_str() ) == CE_Failure )
+      {
+        Log::instance()->warn( "Could not delete temporary file %s", temp_file.c_str() );
+      }
+#else
+      GDALDriver * temp_driver = f_ds->GetDriver();
+
+      if ( temp_driver->Delete( temp_file.c_str() ) == CE_Failure )
+      {
+        Log::instance()->warn( "Could not delete temporary file %s", temp_file.c_str() );
+      }
+
+      delete f_ds;
+#endif
 
     f_ds = new_ds;
   }
