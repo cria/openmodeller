@@ -1,7 +1,7 @@
 /**
- * Definition of OpenModeller class (former ControlInterface class).
+ * Definition of Projector class
  * 
- * @author Mauro E S MuÃ±oz <mauro@cria.org.br>
+ * @author Mauro E S Muñoz <mauro@cria.org.br>
  * @date 2003-09-25
  * $Id$
  *
@@ -39,8 +39,8 @@
 #include <openmodeller/AreaStats.hh>
 
 #include <openmodeller/Exceptions.hh>
-#ifdef MPI_FOUND
 
+#ifdef MPI_FOUND
 #include "mpi.h"
 #endif
 
@@ -225,13 +225,13 @@ Projector::createMap( const Model& model,
 
   Header hdr = map->getHeader();
 
-  #ifndef GEO_TRANSFORMATIONS_OFF
+#ifndef GEO_TRANSFORMATIONS_OFF
   if ( ! hdr.hasProj() )
   {
     throw;
   }
 #endif
-  Log::instance()->warn( "projection Par." );
+  Log::instance()->debug( "Parallel version of createMap\n" );
   // Normalize the environment
   model->setNormalization( env );
 
@@ -328,7 +328,7 @@ while (init_pixel<(total_pixels)) {
             // Write noval on the map.
 
  /* map->put( lg, lt );********************************************************/
- /*substituir pela funÃ§Ã£o, coloco lat, long, 255*******************************/
+ /*substituir pela função, coloco lat, long, 255*******************************/
  /*****escrevo nada na struct, 255*********************************************/
 
             X[ix][j].lt=lt;
@@ -349,7 +349,7 @@ while (init_pixel<(total_pixels)) {
                   areaStats->addPrediction( val );
             }
             // Write value on map.
-    /**********  map->put( lg, lt, val );substituir pela funÃ§Ã£o***************/
+    /**********  map->put( lg, lt, val );substituir pela função***************/
             X[ix][j].lt=lt;
             X[ix][j].lg=lg;
             X[ix][j].val=val;

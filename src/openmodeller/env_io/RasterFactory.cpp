@@ -100,15 +100,9 @@ RasterFactory::create( const string& source, int categ )
 #ifdef MPI_FOUND
 /**************/
 /*** create ***/
-
 Raster*
 RasterFactory::create( const string& output_file_source, const string& source, const MapFormat& format )
 {
-
-
-
-
-
   // Another Raster Lib
   int i = source.find( ">" );
 
