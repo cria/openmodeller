@@ -96,6 +96,40 @@ RasterFactory::create( const string& source, int categ )
   return new RasterGdal( source, categ );
 }
 
+
+#ifdef MPI_FOUND
+/**************/
+/*** create ***/
+
+Raster*
+RasterFactory::create( const string& output_file_source, const string& source, const MapFormat& format )
+{
+
+
+
+
+
+  // Another Raster Lib
+  int i = source.find( ">" );
+
+  if ( i != -1 ) {
+
+    string driver_id = source.substr( 0, i );
+
+    DriversMap::const_iterator i = _drivers.find( driver_id );
+
+    if ( i != _drivers.end() ) {
+
+      Raster* r = (i->second)();
+      r->createRaster( source, format );
+      return r;
+    }
+  }
+
+  // Default: GDAL Raster Lib
+  return new RasterGdal( output_file_source, source, format );
+}
+#else
 /**************/
 /*** create ***/
 Raster* 
@@ -121,3 +155,4 @@ RasterFactory::create( const string& source, const MapFormat& format )
   // Default: GDAL Raster Lib
   return new RasterGdal( source, format );
 }
+#endif

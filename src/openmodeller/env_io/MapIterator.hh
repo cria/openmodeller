@@ -68,6 +68,11 @@ public:
   // postfix operator--
   MapIterator operator--( int );
 
+  #ifdef MPI_FOUND
+  //method added for the parallel version
+  void nextblock(int init);
+  #endif
+
 private:
   bool isPastBounds() const;
   // If isTerminal is true, then this MapIterator object

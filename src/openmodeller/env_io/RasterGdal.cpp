@@ -52,6 +52,11 @@ using std::vector;
 #include <utility>
 using std::pair;
 
+#ifdef MPI_FOUND
+
+#include "mpi.h"
+#endif
+
 struct GDAL_Format
 {
   char const *GDalDriverName;
@@ -101,6 +106,10 @@ GDAL_Format Formats[8] =
 
 static const GDALDataType f_type = (sizeof(Scalar) == 4) ? GDT_Float32 : GDT_Float64;
 
+#ifdef MPI_FOUND
+ int rank = 0;
+#endif
+
 /****************************************************************/
 /************************** Raster Gdal *************************/
 
@@ -125,6 +134,78 @@ RasterGdal::RasterGdal( const string& file, int categ ):
   f_hdr.categ = categ;
 }
 
+#ifdef MPI_FOUND
+RasterGdal::RasterGdal( const string& output_file, const string& file, const MapFormat& format):
+  f_data(0),
+  f_size(0),
+  f_currentRow(-1),
+  f_changed(0)
+{
+#ifdef MPI_FOUND
+  MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+#endif
+  f_file = file;
+
+  // will be utilized by MPI
+  f_output_file = output_file;
+
+  Scalar nv;
+
+  switch( format.getFormat() )
+  {
+    case MapFormat::GreyBMP:
+      f_scalefactor = 255.0;
+      nv = 0.0;
+      Log::instance()->debug( "RasterGdal format set to MapFormat::GreyBMP:\n" );
+      break;
+    case MapFormat::GreyTiff:
+      f_scalefactor = 254.0;
+      nv = 255.0;
+      Log::instance()->debug( "RasterGdal format set to MapFormat::GreyTiff:\n" );
+      break;
+    case MapFormat::GreyTiff100:
+      f_scalefactor = 100.0;
+      nv = 127.0; //represented as 7bit so cant use 254
+      Log::instance()->debug( "RasterGdal format set to MapFormat::GreyTiff100:\n" );
+      break;
+    case MapFormat::FloatingTiff:
+      f_scalefactor = 1.0;
+      nv = -1.0;
+      Log::instance()->debug( "RasterGdal format set to MapFormat::FloatingTiff:\n" );
+      break;
+    case MapFormat::FloatingHFA:
+      f_scalefactor = 1.0;
+      nv = -1.0;
+      Log::instance()->debug( "RasterGdal format set to MapFormat::FloatingHFA:\n" );
+      break;
+    case MapFormat::ByteHFA:
+      f_scalefactor = 100;
+      nv = 101;
+      Log::instance()->debug( "RasterGdal format set to MapFormat::ByteHFA:\n" );
+      break;
+    default:
+      Log::instance()->error( "Unsupported output format.\n" );
+      throw InvalidParameterException( "Unsupported output format" );
+  }
+
+  f_hdr = Header( format.getWidth(),
+                  format.getHeight(),
+                  format.getXMin(),
+                  format.getYMin(),
+                  format.getXMax(),
+                  format.getYMax(),
+                  nv,
+                  1,
+                  0 );
+
+  f_hdr.setProj( format.getProjection() );
+
+  // Create a new file in disk.
+  initGdal();
+  create( format.getFormat() );
+}
+
+#else
 RasterGdal::RasterGdal( const string& file, const MapFormat& format):
   f_data(0),
   f_size(0),
@@ -198,17 +279,34 @@ RasterGdal::RasterGdal( const string& file, const MapFormat& format):
   initGdal();
   create( format.getFormat() );
 }
+#endif
 
 /*****************/
 /*** destructor ***/
 RasterGdal::~RasterGdal()
 {
-  if ( f_data ) {
+#ifdef MPI_FOUND
+  if (((rank != 0) && (strcmp (f_file.c_str(), f_output_file.c_str()) != 0)) || (rank == 0)){
+#endif
+    // Save the last line read, if needed.
+    saveRow();
 
-    delete [] f_data;
+    if ( f_data ) {
+
+      delete [] f_data;
+    }
+
+    GDALClose( f_ds );
+#ifdef MPI_FOUND
   }
+#endif
 
-  GDALClose( f_ds );
+//  if ( f_data ) {
+
+//    delete [] f_data;
+//  }
+
+//  GDALClose( f_ds );
 }
 
 
@@ -340,9 +438,146 @@ RasterGdal::open( char mode )
   initBuffer();
 }
 
+/**************/
+/*** create ***/
+void
+RasterGdal::create( int format )
+{
+  GDALDriver *poDriver;
+  char **papszMetadata;
+  GDALAllRegister();
+
+  char const *fmt = Formats[ format ].GDalDriverName;
+
+  // Added by Tim to see if the chosen format supports the gdal create method
+  poDriver = GetGDALDriverManager()->GetDriverByName(fmt);
+
+  if ( poDriver == NULL ) {
+
+    std::string msg = "Unable to load GDAL driver " + string(fmt) + " for file " + f_file;
+
+    Log::instance()->error( msg.c_str() );
+
+    throw FileIOException( "Unable to load GDAL driver " + string(fmt), f_file );
+  }
+
+  papszMetadata = poDriver->GetMetadata();
+
+  if ( ! CSLFetchBoolean( papszMetadata, GDAL_DCAP_CREATE, FALSE ) ) {
+
+    Log::instance()->error( "Driver %s, format %s does not support Create() method.\n",
+                            poDriver->GetDescription(),
+                            fmt );
+
+    throw FileIOException( "Driver " + string(fmt) + " does not support Create() method", f_file );
+  }
+
+  //
+  // Read the parameters in 'hdr' used to create the file.
+  //
+  // The other parameters come from the copied header.
+  f_hdr.nband = 1;
+
+  // Create the file.
+  if ( format == MapFormat::FloatingHFA || format == MapFormat::ByteHFA ) {
+
+    // Note: HFA (erdas imagine) format does not support nodata before GDAL 1.5
+    //see http://www.gdal.org/gdal_tutorial.html for options examples
+    char **papszOptions = NULL;
+
+    papszOptions = CSLSetNameValue( papszOptions, "COMPRESS", "YES" );
+    //#ifdef MPI_FOUND
+    //if (rank ==0){
+    //#endif
+    f_ds = poDriver->Create( f_file.c_str(),
+        f_hdr.xdim, f_hdr.ydim,
+        f_hdr.nband,
+        /* data type */ Formats[format].dataType,
+        /* opt parameters */ papszOptions );
+    //#ifdef MPI_FOUND
+    //}
+    //#endif
+    CSLDestroy( papszOptions );
+
+  }
+  //ArcMap needs a LZW compression license to read files compressed
+  //like this so you may need to comment out this code if you want
+  //to open the generated maps without having the license. Compression
+  //is enabled for now because it offers significant size reduction.
+  else if (format==MapFormat::GreyTiff100)
+  {
+    //lzw compression and represent each pixel with 7bits only
+    char **papszOptions = NULL;
+    papszOptions = CSLSetNameValue( papszOptions, "NBITS", "7" );
+    papszOptions = CSLSetNameValue( papszOptions, "COMPRESS", "LZW" );
+    //#ifdef MPI_FOUND
+    //if (rank ==0){
+    //#endif
+    f_ds = poDriver->Create( f_file.c_str(),
+        f_hdr.xdim, f_hdr.ydim,
+        f_hdr.nband,
+        Formats[format].dataType, //data type
+        papszOptions ); //opt parameters
+    //#ifdef MPI_FOUND
+    //}
+    //#endif
+    CSLDestroy( papszOptions );
+ 
+    
+
+
+  }
+  else {
+    //#ifdef MPI_FOUND
+    //if (rank ==0){
+    //#endif
+    //uncompressed
+    f_ds = poDriver->Create( f_file.c_str(),
+        f_hdr.xdim, f_hdr.ydim,
+        f_hdr.nband,
+        /* data type */ Formats[format].dataType,
+        /* opt parameters */ NULL );
+    //#ifdef MPI_FOUND
+    //}
+    //#endif
+  }
+
+  //#ifdef MPI_FOUND
+  //if (rank ==0) {
+  //#endif
+  if ( ! f_ds ) {
+
+    Log::instance()->warn( "Unable to create file %s.\n",f_file.c_str() );
+    throw FileIOException( "Unable to create file " + f_file, f_file );
+  }
+
+  if ( Formats[format].hasMeta ) {
+
+    /*** Metadata ***/
+
+    // Limits (without rotations).
+    f_ds->SetGeoTransform( f_hdr.gt );
+
+    // Projection.
+    f_ds->SetProjection( f_hdr.proj.c_str() );
+
+    // Sets the "nodata" value in all bands.
+    int ret = f_ds->GetRasterBand(1)->SetNoDataValue( f_hdr.noval );
+
+    if ( ret == CE_Failure ) {
+Log::instance()->warn( "Raster %s (%s) does not support nodata value assignment. Nodata values will correspond to %f anyway, but this will not be stored as part of the raster metadata.\n", f_file.c_str(), fmt, f_hdr.noval );
+    }
+  }
+  //#ifdef MPI_FOUND
+  //}
+  //#endif
+  // Initialize the Buffer
+  initBuffer();
+}
 
 /**************/
 /*** create ***/
+/*
 void
 RasterGdal::create( int format )
 {
@@ -395,8 +630,8 @@ RasterGdal::create( int format )
     f_ds = poDriver->Create( f_file.c_str(),
         f_hdr.xdim, f_hdr.ydim,
         f_hdr.nband,
-        /* data type */ Formats[format].dataType,
-        /* opt parameters */ papszOptions );
+        Formats[format].dataType,
+        papszOptions );
     CSLDestroy( papszOptions );
   }
   //ArcMap needs a LZW compression license to read files compressed 
@@ -425,8 +660,8 @@ RasterGdal::create( int format )
     f_ds = poDriver->Create( temp_file.c_str(),
                              f_hdr.xdim, f_hdr.ydim,
                              f_hdr.nband,
-                             /* data type */ Formats[format].dataType,
-                             /* opt parameters */ NULL );
+                             Formats[format].dataType,
+                             NULL );
   }
   //Create temporary GeoTiff file with a different name (original file name + .tmp)
   //It will be converted to ASC in the finish method
@@ -437,8 +672,8 @@ RasterGdal::create( int format )
     f_ds = poDriver->Create( temp_file.c_str(),
                              f_hdr.xdim, f_hdr.ydim,
                              f_hdr.nband,
-                             /* data type */ Formats[format].dataType,
-                             /* opt parameters */ NULL );
+                             Formats[format].dataType,
+                             NULL );
   }
   else {
 
@@ -446,8 +681,8 @@ RasterGdal::create( int format )
     f_ds = poDriver->Create( f_file.c_str(),
                              f_hdr.xdim, f_hdr.ydim,
                              f_hdr.nband,
-                             /* data type */ Formats[format].dataType,
-                             /* opt parameters */ NULL );
+                             Formats[format].dataType,
+                             NULL );
   }
 
   if ( ! f_ds ) {
@@ -458,7 +693,7 @@ RasterGdal::create( int format )
 
   if ( Formats[format].hasMeta ) {
 
-    /*** Metadata ***/
+    // Metadata 
 
     // Limits (without rotations).
     f_ds->SetGeoTransform( f_hdr.gt );
@@ -477,7 +712,7 @@ RasterGdal::create( int format )
 
   // Initialize the Buffer
   initBuffer();
-}
+}*/
 
 /*******************/
 /*** init Buffer ***/

@@ -153,6 +153,9 @@ protected:
     Scalar f_scalefactor;  // used in projection put.
 
     std::string f_file;
+    #ifdef MPI_FOUND
+    std::string f_output_file;
+    #endif
 
     // Raster header
     Header f_hdr;

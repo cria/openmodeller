@@ -31,6 +31,11 @@
 #include <string>    // string library
 #include <stdexcept> // try/catch
 
+#ifdef MPI_FOUND
+
+#include "mpi.h"
+#endif
+
 using namespace std;
 
 int main( int argc, char **argv ) {
@@ -160,6 +165,18 @@ int main( int argc, char **argv ) {
 
   try {
 
+    #ifdef MPI_FOUND
+      MPI_Init(&argc,&argv);
+      int myRank;
+      MPI_Comm_rank(MPI_COMM_WORLD,&myRank);
+      printf("\n Begin OM_project Rank: %d \n \n",myRank); fflush(stdout);
+      MPI_Barrier(MPI_COMM_WORLD);
+      Log::instance()->warn( "parallel version" );
+    #else
+      Log::instance()->warn( "serial version" );
+
+    #endif
+
     // Load algorithms and instantiate controller class
     AlgorithmFactory::searchDefaultDirs();
 
@@ -266,4 +283,12 @@ int main( int argc, char **argv ) {
 
     printf( "om_project aborted: %s\n", e.what() );
   }
+
+  printf("\n end OM_project Rank!!!!!!!!!!!!:  \n \n"); fflush(stdout);
+  #ifdef MPI_FOUND
+  MPI_Barrier(MPI_COMM_WORLD); 
+    
+  MPI_Finalize();
+  #endif
+
 }
