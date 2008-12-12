@@ -117,7 +117,16 @@ Output file type = ByteHFA
 #Parameter = VerboseDebugging 1
 
 ########
-# GARP: Genetic Algorithm for Rule Set Production
+# GARP: Genetic Algorithm for Rule Set Production (new implementation)
+#
+#Algorithm = GARP
+#Parameter = MaxGenerations 400
+#Parameter = ConvergenceLimit 0.01
+#Parameter = PopulationSize 50
+#Parameter = Resamples 2500
+
+########
+# GARP: Genetic Algorithm for Rule Set Production (original DesktopGarp implementation)
 #
 #Algorithm = DG_GARP
 #Parameter = MaxGenerations 100
@@ -128,7 +137,23 @@ Output file type = ByteHFA
 #Parameter = CrossoverRate 0.25
 
 ########
-# GARP with Best Subsets Procedure
+# GARP with Best Subsets Procedure (using the new implementation)
+#
+#Algorithm = GARP_BS
+#Parameter = TrainingProportion 50
+#Parameter = TotalRuns 20
+#Parameter = HardOmissionThreshold 100
+#Parameter = ModelsUnderOmissionThreshold 20
+#Parameter = CommissionThreshold 50
+#Parameter = CommissionSampleSize 10000
+#Parameter = MaxThreads 1
+#Parameter = MaxGenerations 400
+#Parameter = ConvergenceLimit 0.01
+#Parameter = PopulationSize 50
+#Parameter = Resamples 2500
+
+########
+# GARP with Best Subsets Procedure (using the DesktopGarp implementation)
 #
 #Algorithm = DG_GARP_BS
 #Parameter = TrainingProportion 50
