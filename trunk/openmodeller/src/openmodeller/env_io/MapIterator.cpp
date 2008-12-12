@@ -125,3 +125,18 @@ operator!=( const MapIterator& lhs, const MapIterator& rhs )
 {
   return ! (lhs == rhs );
 }
+
+#ifdef MPI_FOUND
+//new method for the parallel version
+void MapIterator::nextblock(int init_pixel)
+{
+
+
+
+  ycur=init_pixel/h.xdim;
+  xcur=init_pixel%h.xdim;
+
+
+
+}
+#endif

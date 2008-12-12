@@ -64,7 +64,12 @@ public:
   * @param file is the name of the output file
   * @param format is the output format specification.
   */
+  #ifdef MPI_FOUND
+  RasterGdal( const std::string& output_file, const std::string& file, const MapFormat& format );
+  #else
   RasterGdal( const std::string& file, const MapFormat& format );
+  #endif
+  //RasterGdal( const std::string& file, const MapFormat& format );
 
   /**
   * Destructor

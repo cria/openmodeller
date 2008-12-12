@@ -86,7 +86,11 @@ public:
   /**
   * Create a new file for projections.
   */
-  Raster* create( const string& source, const MapFormat& format );
+  #ifdef MPI_FOUND
+    Raster* create( const string& output_file_source, const string& source, const MapFormat& format );
+  #else 
+    Raster* create( const string& source, const MapFormat& format );
+  #endif
 
 private:
 

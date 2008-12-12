@@ -315,7 +315,14 @@ OpenModeller::createMap( const EnvironmentPtr & env, char const *output_file, Ma
   }
 
   // Create map on disc.
+
+#ifdef MPI_FOUND
+  Map map( RasterFactory::instance().create( output_file, output_file, _format ) );
+#else
   Map map( RasterFactory::instance().create( output_file, _format ) );
+#endif
+
+  //Map map( RasterFactory::instance().create( output_file, _format ) );
 
   bool finished = Projector::createMap( model, _projEnv, &map, _actualAreaStats, &_callback_wrapper );
 
