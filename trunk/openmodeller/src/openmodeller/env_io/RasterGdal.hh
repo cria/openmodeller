@@ -59,17 +59,21 @@ public:
   // Open an existing file -- read only.
   RasterGdal( const std::string& file, int categ=0 );
 
+  #ifdef MPI_FOUND
   /**
   * Create a new file for projections.
   * @param file is the name of the output file
   * @param format is the output format specification.
   */
-  #ifdef MPI_FOUND
   RasterGdal( const std::string& output_file, const std::string& file, const MapFormat& format );
   #else
+  /**
+  * Create a new file for projections.
+  * @param file is the name of the output file
+  * @param format is the output format specification.
+  */
   RasterGdal( const std::string& file, const MapFormat& format );
   #endif
-  //RasterGdal( const std::string& file, const MapFormat& format );
 
   /**
   * Destructor

@@ -322,8 +322,6 @@ OpenModeller::createMap( const EnvironmentPtr & env, char const *output_file, Ma
   Map map( RasterFactory::instance().create( output_file, _format ) );
 #endif
 
-  //Map map( RasterFactory::instance().create( output_file, _format ) );
-
   bool finished = Projector::createMap( model, _projEnv, &map, _actualAreaStats, &_callback_wrapper );
 
   if ( ! finished ) {

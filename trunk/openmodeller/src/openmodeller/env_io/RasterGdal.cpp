@@ -53,7 +53,6 @@ using std::vector;
 using std::pair;
 
 #ifdef MPI_FOUND
-
 #include "mpi.h"
 #endif
 
@@ -300,13 +299,6 @@ RasterGdal::~RasterGdal()
 #ifdef MPI_FOUND
   }
 #endif
-
-//  if ( f_data ) {
-
-//    delete [] f_data;
-//  }
-
-//  GDALClose( f_ds );
 }
 
 
