@@ -32,7 +32,6 @@
 #include <stdexcept> // try/catch
 
 #ifdef MPI_FOUND
-
 #include "mpi.h"
 #endif
 
@@ -76,7 +75,7 @@ int main( int argc, char **argv ) {
     switch ( option ) {
 
       case 0:
-        printf("om_project 0.3\n");
+        printf("om_project 0.4\n");
         printf("This is free software; see the source for copying conditions. There is NO\n");
         printf("warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n");
         exit(0);
@@ -166,15 +165,14 @@ int main( int argc, char **argv ) {
   try {
 
     #ifdef MPI_FOUND
-      MPI_Init(&argc,&argv);
-      int myRank;
-      MPI_Comm_rank(MPI_COMM_WORLD,&myRank);
-      printf("\n Begin OM_project Rank: %d \n \n",myRank); fflush(stdout);
-      MPI_Barrier(MPI_COMM_WORLD);
-      Log::instance()->warn( "parallel version" );
+      Log::instance()->info( "Running parallel projection version\n" );
+      MPI_Init( &argc, &argv );
+      int rank;
+      MPI_Comm_rank( MPI_COMM_WORLD, &rank );
+      Log::instance()->debug( "Rank of calling process: %d\n", rank );
+      MPI_Barrier( MPI_COMM_WORLD );
     #else
-      Log::instance()->warn( "serial version" );
-
+      Log::instance()->info( "Running serial projection version\n" );
     #endif
 
     // Load algorithms and instantiate controller class
@@ -284,10 +282,8 @@ int main( int argc, char **argv ) {
     printf( "om_project aborted: %s\n", e.what() );
   }
 
-  printf("\n end OM_project Rank!!!!!!!!!!!!:  \n \n"); fflush(stdout);
   #ifdef MPI_FOUND
-  MPI_Barrier(MPI_COMM_WORLD); 
-    
+  MPI_Barrier( MPI_COMM_WORLD ); 
   MPI_Finalize();
   #endif
 
