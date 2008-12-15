@@ -46,12 +46,11 @@ using namespace std;
 /****************************************************************/
 /********************** Algorithm's Metadata ********************/
 
-#define NUM_PARAM 7
+#define NUM_PARAM 6
 
 #define HIDDEN_ID        "HiddenLayerNeurons"
 #define LEARNING_RATE_ID "LearningRate"
 #define MOMENTUM_ID      "Momentum"
-#define PROPTRAIN_ID     "Proptrain"
 #define CHOICE_ID        "Choice"
 #define EPOCH_ID         "Epoch"
 #define MIN_ERROR_ID     "MinimunError"
@@ -105,20 +104,6 @@ static AlgParamMetadata parameters[NUM_PARAM] = {
     1,         	// Not zero if the parameter has upper limit.
     1.0,        // Parameter's upper limit.
     "0.05"      // Parameter's typical (default) value.
-  },
-
-  // Proptrain
-  {
-    PROPTRAIN_ID,	// Id.
-    "Proptrain",	// Name.
-    Real,		// Type.
-    "Proportion of training set according to total data sets.", 	// Overview
-    "Proportion of training set according to total data sets.", 	// Description.
-    1,         	// Not zero if the parameter has lower limit.
-    0.5,     	// Parameter's lower limit.
-    1,         	// Not zero if the parameter has upper limit.
-    1.0,        // Parameter's upper limit.
-    "0.8"      	// Parameter's typical (default) value.
   },
 
   // Choice
@@ -306,19 +291,6 @@ NNAlgorithm::initialize()
   }
 
 
-  // PROPTRAIN
-  if ( ! getParameter( PROPTRAIN_ID, &_nn_parameter.proptrain ) ) {
-
-    Log::instance()->error( NN_LOG_PREFIX "Parameter '" PROPTRAIN_ID "' not passed.\n" );
-    return 0;
-  }
-
-  if ( _nn_parameter.proptrain < 0.5 ||  _nn_parameter.proptrain > 1) {
-    Log::instance()->warn( NN_LOG_PREFIX "Parameter out of range: %f\n", _nn_parameter.proptrain );
-    return 0;
-  }
-
-
   // CHOICE
   if ( ! getParameter( CHOICE_ID, &_nn_parameter.choice ) ) {
 
@@ -347,7 +319,6 @@ NNAlgorithm::initialize()
 	return 0;
     }
   }
-
 
 
   // MINIMUM ERROR
@@ -379,186 +350,94 @@ NNAlgorithm::initialize()
     return 0;
   }
 
+  // Load presence points.
+  presences = _samp->getPresences();
+
 
   // Check the number of absences
   num_absences = _samp->numAbsence();
 
-
-  // Split sampler into test and trainning
-  SamplerPtr training_sampler;
-  SamplerPtr testing_sampler;
-
-  splitSampler( _samp, &training_sampler, &testing_sampler, _nn_parameter.proptrain );
-
-
-  training_points_cont = 0;
-  testing_points_cont = 0;
-
-
-
-  // TRAINING PRESENCE AND ABSENCE POINTS
-  if ( training_sampler->numPresence() ) {
-
-    // Load training presence points.
-    training_presences = training_sampler->getPresences();
-  }
-
-  std::vector<Sample> training_presencePoints;
-
-  Log::instance()->debug( NN_LOG_PREFIX "\n\n");
-
-
-  if ( training_sampler->numAbsence() ) {
-
-    Log::instance()->debug( NN_LOG_PREFIX "Is not necessary to generate pseudo-absences because exist absence points.\n" );
-
-    // Load training absence points.
-    training_absences = training_sampler->getAbsences();  // absences = _samp->getAbsences();
-  }
-
-  else{
+  if ( num_absences == 0 ) {
 
     Log::instance()->debug( NN_LOG_PREFIX "Generating pseudo-absences.\n" );
 
-    training_absences = new OccurrencesImpl( training_presences->name(), training_presences->coordSystem() );
+    num_absences = num_presences;
 
-    num_pseudoabesences =  training_sampler->numPresence();
+    absences = new OccurrencesImpl( presences->name(), presences->coordSystem() );
 
 
-    for ( int i = 0; i < num_pseudoabesences; ++i ) {
+    for ( int i = 0; i < num_absences; ++i ) {
 
 	OccurrencePtr oc = _samp->getPseudoAbsence();
-	training_absences->insert( oc ); 
+	absences->insert( oc ); 
     }
 
     // Compute normalization with all points
-    SamplerPtr mySamplerPtr = createSampler( _samp->getEnvironment(), training_presences, training_absences );
+    SamplerPtr mySamplerPtr = createSampler( _samp->getEnvironment(), presences, absences );
 
 
     // They generate points that are out of Map.
     _normalizerPtr->computeNormalization( mySamplerPtr );
     setNormalization( _samp );
-    training_absences->normalize( _normalizerPtr );
+    absences->normalize( _normalizerPtr );
+  }
+  else {
+
+    Log::instance()->debug( NN_LOG_PREFIX "Is not necessary to generate pseudo-absences because exist absence points.\n" );
+
+    // should be normalized already
+    absences = _samp->getAbsences();
   }
 
-  std::vector<Sample> training_absencePoints;
+  // Presence Points
+  std::vector<Sample> _presencePoints;
 
+  for(int j = 0; j < num_presences; j++){
 
-  if(training_sampler->numAbsence() != training_sampler->numPresence() && num_pseudoabesences != training_sampler->numPresence()){
+    _presencePoints.push_back((*presences)[j]->environment());
 
-    for(int j = 0; j < training_sampler->numPresence(); j++){
+    for(int i = 0; i < _num_layers; i++){
 
-	training_presencePoints.push_back((*training_presences)[j]->environment());
-
-	for(int i = 0; i < _num_layers; i++){
-
-	  training_vector_input[training_points_cont][i] = (double)training_presencePoints[j][i];
-	}
-
-    training_vector_output[training_points_cont][0] = 1.00000000; // Exist presence point
-    training_points_cont ++;
-    }
-
-    for(int j = 0; j < training_sampler->numAbsence() || j < num_pseudoabesences; j++){
-
-	training_absencePoints.push_back((*training_absences)[j]->environment());
-
-	for(int i = 0; i < _num_layers; i++){
-
-	  training_vector_input[training_points_cont][i] = (double)training_absencePoints[j][i];
-	}
-
-    training_vector_output[training_points_cont][0] = 0.00000000; // Exist absence point
-    training_points_cont ++;
+	vector_input[j][i] = (double)_presencePoints[j][i];
     }
   }
 
-  else{
+  // Absence Points
+  std::vector<Sample> _absencePoints;
 
-    for(int j = 0; j < training_sampler->numAbsence() || j < num_pseudoabesences; j++){
+  for(int j = 0; j < num_absences; j++){
 
-	training_presencePoints.push_back((*training_presences)[j]->environment());
-	training_absencePoints.push_back((*training_absences)[j]->environment());
+    _absencePoints.push_back((*absences)[j]->environment());
 
-	for(int i = 0; i < _num_layers; i++){
+    for(int i = 0; i < _num_layers; i++){
 
-          training_vector_input[training_points_cont][i] = (double)training_presencePoints[j][i];
-          training_vector_input[training_points_cont+1][i] = (double)training_absencePoints[j][i];
-	}
-
-    training_vector_output[training_points_cont][0] = 1.00000000; // Exist presence point
-    training_vector_output[training_points_cont+1][0] = 0.00000000; // Exist absence point
-    training_points_cont = training_points_cont + 2;
+	vector_input[j+num_presences][i] = (double)_absencePoints[j][i];
     }
   }
 
 
+  _nn_parameter.pattern = num_presences + num_absences;
 
-  // TESTING PRESENCE AND ABSENCE POINTS
-  if ( testing_sampler->numPresence() ) {
-
-    // Load testing presence points.
-    testing_presences = testing_sampler->getPresences();
-  }
-
-  std::vector<Sample> testing_presencePoints;
+  _nn_parameter.outp = 1;
 
 
-  if ( testing_sampler->numAbsence() ) {
+  // Presence points
+  for(int j = 0; j < num_presences; j++){
 
-    // Load testing absence points.
-    testing_absences = testing_sampler->getAbsences();
-  }
+    for(int i = 0; i < _nn_parameter.outp; i++){ // Always i=0 because it has one output
 
-  std::vector<Sample> testing_absencePoints;
-
-
-  if(testing_sampler->numPresence() != testing_sampler->numAbsence()){
-
-    for(int j = 0; j < testing_sampler->numPresence(); j++){
-
-	testing_presencePoints.push_back((*testing_presences)[j]->environment());
-
-	for(int i = 0; i < _num_layers; i++){
-
-	  testing_vector_input[testing_points_cont][i] = (double)testing_presencePoints[j][i];
-	}
-
-    testing_vector_output[testing_points_cont][0] = 1.00000000; // Exist presence point
-    testing_points_cont ++;
-    }
-
-    for(int j = 0; j < testing_sampler->numAbsence(); j++){
-
-	testing_absencePoints.push_back((*testing_absences)[j]->environment());
-
-	for(int i = 0; i < _num_layers; i++){
-
-	  testing_vector_input[testing_points_cont][i] = (double)testing_absencePoints[j][i];
-	}
-
-    testing_vector_output[testing_points_cont][0] = 0.00000000; // Exist absence point
-    testing_points_cont ++;
+	vector_output[j][i] = 1.00000000; // Exist presence point
     }
   }
 
-  else{
+  // Absence points
+  for(int j = num_presences; j < _nn_parameter.pattern; j++){
 
-    for(int j = 0; j < testing_sampler->numPresence(); j++){
+    for(int i = 0; i < _nn_parameter.outp; i++){ // Always i=0 because it has one output
 
-	testing_presencePoints.push_back((*testing_presences)[j]->environment());
-	testing_absencePoints.push_back((*testing_absences)[j]->environment());
-
-	for(int i = 0; i < _num_layers; i++){
-
-	  testing_vector_input[testing_points_cont][i] = (double)testing_presencePoints[j][i];
-  	  testing_vector_input[testing_points_cont+1][i] = (double)testing_absencePoints[j][i];
-	}
-
-    testing_vector_output[testing_points_cont][0] = 1.00000000; // Exist presence point
-    testing_vector_output[testing_points_cont+1][0] = 0.00000000; // Exist absence point
-    testing_points_cont = testing_points_cont + 2;
-    }  }
+	vector_output[j][i] = 0.00000000; // Exist absence point
+    }
+  }
 
 
 
@@ -577,8 +456,6 @@ NNAlgorithm::initialize()
 
   _nn_parameter.inp = _num_layers;
 
-  _nn_parameter.outp = 1;
-
   amount_epoch = 1;
 
   Log::instance()->debug( NN_LOG_PREFIX "\n\n\nStarting Training... ");
@@ -591,14 +468,12 @@ NNAlgorithm::initialize()
     Log::instance()->debug( NN_LOG_PREFIX "\nNumber of absence: %d", num_absences);
   }
   else{
-    Log::instance()->debug( NN_LOG_PREFIX "\nNumber of pseudoabsence: %d", num_pseudoabesences);
+    Log::instance()->debug( NN_LOG_PREFIX "\nNumber of pseudoabsence: %d", num_presences);
   }
   Log::instance()->debug( NN_LOG_PREFIX "\nInput neurons: %d", _nn_parameter.inp);
   Log::instance()->debug( NN_LOG_PREFIX "\nHidden neurons: %d", _nn_parameter.hid);
   Log::instance()->debug( NN_LOG_PREFIX "\nOutput neuron: %d", _nn_parameter.outp);
-  Log::instance()->debug( NN_LOG_PREFIX "\nProptrain: %f", _nn_parameter.proptrain);
-  Log::instance()->debug( NN_LOG_PREFIX "\nLearning Patterns: %d", training_points_cont);
-  Log::instance()->debug( NN_LOG_PREFIX "\nTesting Patterns: %d", testing_points_cont);
+  Log::instance()->debug( NN_LOG_PREFIX "\nLearning Patterns: %d", _nn_parameter.pattern);
   Log::instance()->debug( NN_LOG_PREFIX "\nLearning rate: %f", _nn_parameter.learning_rate);
   Log::instance()->debug( NN_LOG_PREFIX "\nMomentum: %f", _nn_parameter.momentum);
   Log::instance()->debug( NN_LOG_PREFIX "\nChoice: %d", _nn_parameter.choice);
@@ -632,12 +507,12 @@ NNAlgorithm::iterate()
 
     if(amount_epoch != (unsigned long)_nn_parameter.epoch+1){
 
-	for(int j = 0; j < training_points_cont; j++){
+	for(int j = 0; j < _nn_parameter.pattern; j++){
 
-	  network.Train(training_vector_input[j], training_vector_output[j], j, training_points_cont, _nn_parameter.momentum);
+	  network.Train(vector_input[j], vector_output[j], j, _nn_parameter.pattern, _nn_parameter.momentum);
 	}
 
-	network.trainingEpoch( amount_epoch, _nn_parameter.epoch, training_points_cont);
+	network.trainingEpoch( amount_epoch, _nn_parameter.epoch, _nn_parameter.pattern);
     }
 
     else _done = true; // Training ends
@@ -647,12 +522,12 @@ NNAlgorithm::iterate()
   // Training by minimum error
   if(_nn_parameter.choice == 1){
 
-    for(int j = 0; j < training_points_cont; j++){
+    for(int j = 0; j < _nn_parameter.pattern; j++){
 
-	network.Train(training_vector_input[j], training_vector_output[j], j, training_points_cont, _nn_parameter.momentum );
+	network.Train(vector_input[j], vector_output[j], j, _nn_parameter.pattern, _nn_parameter.momentum );
     }
 
-    converged = network.trainingMinimumError( training_points_cont, _nn_parameter.minimum_error);
+    converged = network.trainingMinimumError( _nn_parameter.pattern, _nn_parameter.minimum_error);
 
     if(converged == 1) _done = true; // Training ends
 
