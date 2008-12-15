@@ -21,15 +21,14 @@ struct nn_parameter
 	int inp;
 	int hid;
 	int outp;
+	int pattern;
 	double learning_rate;
 	double momentum;
-	double proptrain;
 
 	// Choice Variable between training by epoch or minimum error
 	int choice;
 
 	// Variables especified of training by epoch
-	int pattern;
 	double epoch;
 
 	// Variables especified of training by minimum error

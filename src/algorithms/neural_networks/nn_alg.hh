@@ -109,21 +109,9 @@ protected:
   
   Network network;
 
-  int num_pseudoabesences;
+  double vector_input[10000][500]; // [num_patterns][_num_layers]
 
-  int training_points_cont;
-
-  int testing_points_cont;
-
-
-  double training_vector_input[10000][500]; // [training num_patterns][_num_layers]
-
-  double training_vector_output[10000][1]; // [training num_pattern][_nn_parameter.outp]
-
-  double testing_vector_input[10000][500]; // [testing num_patterns][_num_layers]
-
-  double testing_vector_output[10000][1]; // [testing num_pattern][_nn_parameter.outp]
-
+  double vector_output[10000][1]; // [num_pattern][_nn_parameter.outp]
 
   nn_parameter _nn_parameter;
 
@@ -137,13 +125,10 @@ protected:
 
 
   // Work with occurrences 
-  OccurrencesPtr training_presences;
 
-  OccurrencesPtr training_absences;
+  OccurrencesPtr absences;
 
-  OccurrencesPtr testing_presences;
-
-  OccurrencesPtr testing_absences;
+  OccurrencesPtr presences;
 
 };
 
