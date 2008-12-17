@@ -10,6 +10,7 @@ SVN revision: ?
 	* Included new map format to generate ARC/Info ASCII grid files (byte or floating point fomats).
 	* Fixed bug in Maximum Entropy algorithm (environment was being re-normalized when pseudo-absences were generated internally).
 	* Added support to handle categorical values in the Maximum Entropy algorithm.
+	* Fixed bug in ROC curve calculation: when the corresponding algorithm required normalization and the sampler passed as a parameter was unnormalized, algorithm prediction values were being calculated based on unnormalized samples.
 
 Release 0.6.1 (2008-10-13)
 --------------------------
