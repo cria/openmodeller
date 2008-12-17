@@ -80,7 +80,6 @@ void ConfusionMatrix::calculate(const EnvironmentPtr & env,
   OccurrencesImpl::const_iterator fin = presences->end();
 
   model->setNormalization( env );
-  model->setNormalization( sampler );
 
   Log::instance()->debug( "Testing presences\n" );
 
