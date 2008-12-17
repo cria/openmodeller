@@ -156,6 +156,7 @@ void RocCurve::_loadPredictions( const Model& model, const SamplerPtr& sampler )
   Scalar predictionValue;
 
   model->setNormalization( env );
+  model->setNormalization( sampler );
 
   // Store predictions for presence points
   int i = 0;
