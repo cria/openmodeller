@@ -241,6 +241,12 @@ void SamplerImpl::getMinMax( Sample * min, Sample * max ) const
 /*** normalize ***/
 void SamplerImpl::normalize( Normalizer * normalizerPtr )
 {
+  // Avoid renormalizing the sampler
+  if ( _normalized ) {
+
+    return;
+  }
+
   if ( _env ) {
 
       // set env in all occurrences before normalizing env so that
