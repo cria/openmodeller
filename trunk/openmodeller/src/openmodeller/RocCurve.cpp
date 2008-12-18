@@ -229,13 +229,9 @@ void RocCurve::_loadPredictions( const Model& model, const SamplerPtr& sampler )
 
     // Generate background points when there are no absences
 
-    std::string msg = "No absence points specified\n";
+    Log::instance()->info( "No absence points specified\n" );
 
-    Log::instance()->info( msg.c_str() );
-
-    msg = "Generating background points\n";
-
-    Log::instance()->info( msg.c_str() );
+    Log::instance()->info( "Generating %d background points\n", _background_points );
 
     Scalar prob;
 
