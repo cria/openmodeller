@@ -20,13 +20,14 @@ int main( int argc, char **argv ) {
   int option;
 
   // command-line parameters (short name, long name, description, take args)
-  opts.addOption( "v", "version"     , "Display version info"                        , false );
-  opts.addOption( "r", "xml-req"     , "(option 1) Test request file in XML"         , true );
-  opts.addOption( "o", "model"       , "(option 2) Serialized model file"            , true );
-  opts.addOption( "p", "points"      , "(option 2) TAB-delimited file with points"   , true );
-  opts.addOption( "" , "calc-matrix" , "Calculate confusion matrix"                  , false );
-  opts.addOption( "" , "calc-roc"    , "Calculate ROC curve"                         , false );
-  opts.addOption( "e", "max-omission", "Calculate ROC partial area ratio given the maximum omission", true );
+  opts.addOption( "v", "version"       , "Display version info"                        , false );
+  opts.addOption( "r", "xml-req"       , "(option 1) Test request file in XML"         , true );
+  opts.addOption( "o", "model"         , "(option 2) Serialized model file"            , true );
+  opts.addOption( "p", "points"        , "(option 2) TAB-delimited file with points"   , true );
+  opts.addOption( "" , "calc-matrix"   , "Calculate confusion matrix"                  , false );
+  opts.addOption( "" , "calc-roc"      , "Calculate ROC curve"                         , false );
+  opts.addOption( "b", "num-background", "Number of background points for the ROC curve when there are no absences", true );
+  opts.addOption( "e", "max-omission"  , "Calculate ROC partial area ratio given the maximum omission", true );
   opts.addOption( "s", "result"      , "File to store test result in XML"            , true );
   opts.addOption( "", "log-level"    , "Set the log level (debug, warn, info, error)", true );
   opts.addOption( "", "log-file"     , "Log file"                                    , true );
@@ -38,6 +39,8 @@ int main( int argc, char **argv ) {
   std::string points_file;
   bool calc_matrix = false;
   bool calc_roc = false;
+  std::string num_background_string("");
+  int num_background = 0;
   std::string max_omission_string("");
   double max_omission;
   std::string result_file;
@@ -54,7 +57,7 @@ int main( int argc, char **argv ) {
     switch ( option ) {
 
       case 0:
-        printf("om_test 0.2\n");
+        printf("om_test 0.3\n");
         printf("This is free software; see the source for copying conditions. There is NO\n");
         printf("warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n");
         exit(0);
@@ -77,18 +80,21 @@ int main( int argc, char **argv ) {
         calc_roc = true;
         break;
       case 6:
-        max_omission_string = opts.getArgs( option );
+        num_background_string = opts.getArgs( option );
         break;
       case 7:
-        result_file = opts.getArgs( option );
+        max_omission_string = opts.getArgs( option );
         break;
       case 8:
-        log_level = opts.getArgs( option );
+        result_file = opts.getArgs( option );
         break;
       case 9:
-        log_file = opts.getArgs( option );
+        log_level = opts.getArgs( option );
         break;
       case 10:
+        log_file = opts.getArgs( option );
+        break;
+      case 11:
         progress_file = opts.getArgs( option );
         break;
       default:
@@ -156,9 +162,16 @@ int main( int argc, char **argv ) {
     exit(-1);
   }
 
-  if ( ( ! calc_roc ) && ! max_omission_string.empty() ) {
+  if ( ! calc_roc ) {
 
-    Log::instance()->warn( "Ignoring maximum omission - option only available with ROC curve\n" );
+    if ( ! max_omission_string.empty() ) {
+
+      Log::instance()->warn( "Ignoring maximum omission - option only available with ROC curve\n" );
+    }
+    if ( ! num_background_string.empty() ) {
+
+      Log::instance()->warn( "Ignoring number of background points - option only available with ROC curve\n" );
+    }
   }
 
   // Real work
@@ -236,6 +249,14 @@ int main( int argc, char **argv ) {
     // ROC curve can only be calculated with presence points
     // No absence points will force background points to be generated
     if ( calc_roc && num_presences ) {
+
+      // Custom number of background points
+      if ( ! num_background_string.empty() ) {
+
+        num_background = atoi( num_background_string.c_str() );
+
+        roc_curve.reset( ROC_DEFAULT_RESOLUTION, num_background );
+      }
 
       roc_curve.calculate( alg->getModel(), sampler );
     }

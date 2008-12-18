@@ -5,7 +5,7 @@ SVN revision: ?
 	* New Algorithm using Artificial Neural Networks.
 	* Changed AUC calculation when no absence points are provided (instead of using 1-specificity after generating pseudo-absences, it now uses the proportion of points predicted present for a large number of random background points).
 	* Included method to calculate partial area ratio in ROC class.
-	* Added parameters --calc-matrix, --max-omission and --calc-roc to om_model and om_test.
+	* Added parameters --calc-matrix, --calc-roc, --num-background and --max-omission to om_test.
 	* Changed confusion matrix serialization to store all raw values.
 	* Included new map format to generate ARC/Info ASCII grid files (byte or floating point fomats).
 	* Fixed bug in Maximum Entropy algorithm (environment was being re-normalized when pseudo-absences were generated internally).

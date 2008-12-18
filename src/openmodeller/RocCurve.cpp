@@ -459,6 +459,8 @@ RocCurve::getTotalArea() {
 /*** get Partial Area Ratio ***/
 double RocCurve::getPartialAreaRatio( double e )
 {
+  Log::instance()->info( "Calculating partial area for limit %f", e );
+
   double area = 0.0;
 
   double diag_area = 0.0;
@@ -496,6 +498,8 @@ double RocCurve::getPartialAreaRatio( double e )
       diag_area += (x2 - x1) * 0.5 * (x1 + x2);
     }
   }
+
+  Log::instance()->debug( "Partial area calculated as: %f / %f", area, diag_area );
 
   _ratios[e] = area / diag_area;
 

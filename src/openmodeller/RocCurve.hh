@@ -37,8 +37,8 @@
 
 #include <map>
 
-#define DEFAULT_RESOLUTION 15
-#define DEFAULT_BACKGROUND_POINTS 10000
+#define ROC_DEFAULT_RESOLUTION 15
+#define ROC_DEFAULT_BACKGROUND_POINTS 10000
 
 /**
  * Class ROC curve
@@ -51,7 +51,7 @@ public:
    * @param resolution Number of points to be calculated for the curve.
    * @param background_points Number of background points to be generated when there are no absences.
    */
-  RocCurve( int resolution=DEFAULT_RESOLUTION, int background_points=DEFAULT_BACKGROUND_POINTS );
+  RocCurve( int resolution=ROC_DEFAULT_RESOLUTION, int background_points=ROC_DEFAULT_BACKGROUND_POINTS );
 
   /** 
    * Destructor.
@@ -63,7 +63,7 @@ public:
    * @param resolution New resolution (number of points to be calculated).
    * @param background_points Number of background points to be generated when there are no absences.
    */
-  void reset( int resolution=DEFAULT_RESOLUTION, int background_points=DEFAULT_BACKGROUND_POINTS );
+  void reset( int resolution=ROC_DEFAULT_RESOLUTION, int background_points=ROC_DEFAULT_BACKGROUND_POINTS );
 
   /** 
    * Calculate ROC curve given a Model and a Sampler object. This method loads model
