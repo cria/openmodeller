@@ -25,6 +25,14 @@ Occurrences source = furcata_boliviana.txt
 #
 Occurrences group = furcata boliviana
 
+# Uncomment the following line to automatically ignore duplicate points (same coordinates).
+#
+#Spatially unique = true
+
+# Uncomment the following line to automatically ignore duplicate points (same environment values).
+#
+#Environmentally unique = true
+
 # Maps to be used as environmental variables to generate the model
 # For TerraLib rasters, use the following pattern:
 # terralib>yourusername>yourpassword@PostgreSQL>localhost>terralib>5432>rain_coolest
