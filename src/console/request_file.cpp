@@ -52,7 +52,9 @@ RequestFile::RequestFile() :
   _inputModelFile(),
   _outputModelFile(),
   _projectionFile(),
-  _outputFormat()
+  _outputFormat(),
+  _spatiallyUnique( false ),
+  _environmentallyUnique( false )
 { 
 }
 
@@ -71,6 +73,22 @@ RequestFile::configure( OpenModeller *om, char *request_file )
 
   _occurrencesSet = _setOccurrences( om, fp );
   _environmentSet = _setEnvironment( om, fp );
+
+  // Optional sampler filters
+  std::string spatially_unique = fp.get( "Spatially unique" );
+
+  if ( spatially_unique == "true" ) {
+
+    _spatiallyUnique = true;
+  }
+
+  std::string environmentally_unique = fp.get( "Environmentally unique" );
+
+  if ( environmentally_unique == "true" ) {
+
+    _environmentallyUnique = true;
+  }
+
   _projectionSet  = _setProjection ( om, fp );
   _algorithmSet   = _setAlgorithm  ( om, fp );
 
@@ -463,8 +481,40 @@ RequestFile::requestedProjection( )
 void
 RequestFile::makeModel( OpenModeller *om )
 {
+  // No serialized model - create model with all settings from the request file
+  if ( _inputModelFile.empty() ) {
+
+    // Apply sampler filters if requested by user
+    if ( _spatiallyUnique ) {
+
+      SamplerPtr sampler = om->getSampler();
+
+      if ( sampler ) {
+
+        sampler->spatiallyUnique();
+      }
+      else {
+
+        Log::instance()->warn( "Cannot set spatially unique filter: no sampler available\n" );
+      }
+    }
+
+    if ( _environmentallyUnique ) {
+
+      SamplerPtr sampler = om->getSampler();
+
+      if ( sampler ) {
+
+        sampler->environmentallyUnique();
+      }
+      else {
+
+        Log::instance()->warn( "Cannot set environmentally unique filter: no sampler available\n" );
+      }
+    }
+  }
   // If user provided a serialized model, just load it
-  if ( ! _inputModelFile.empty() ) {
+  else {
 
     Log::instance()->info( "Loading serialized model\n" );
 

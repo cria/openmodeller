@@ -2,7 +2,6 @@
  * Class used to configure an OpenModeller object reading parameters from a standard request file.
  * It also has methods to encapsulate model creation and projection.
  * 
- * @file
  * @author Mauro E S Muñoz (mauro@cria.org.br)
  * @date   2004-06-22
  * $Id$
@@ -115,6 +114,9 @@ private:
   std::string _projectionFile;
 
   MapFormat _outputFormat;
+
+  bool _spatiallyUnique;
+  bool _environmentallyUnique;
 
 };
 

@@ -519,6 +519,8 @@ SamplerImpl::isCategorical( int i )
 void 
 SamplerImpl::environmentallyUnique( )
 {
+  Log::instance()->info( "Applying filter: enviromentally unique\n" );
+
   // Presences
   this->environmentallyUnique( _presence, "Presence" );
 
@@ -580,6 +582,8 @@ SamplerImpl::environmentallyUnique( OccurrencesPtr& occurrencesPtr, const char *
 void 
 SamplerImpl::spatiallyUnique( )
 {
+  Log::instance()->info( "Applying filter: spatially unique\n" );
+
   // Presences
   this->spatiallyUnique( _presence, "Presence" );
 
