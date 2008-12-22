@@ -66,16 +66,16 @@ static AlgParamMetadata parameters[NUM_PARAM] = {
 
   // Amount of neurons of the hidden layer
   {
-    HIDDEN_ID,		    	// Id.
-    "Hidden Layer's Neurons",   // Name.
-    Integer,           		// Type.
-    "Amount of Hidden Layer's Neurons.\nHidden Layer => Layer additional to the input and output layers, not connected externally.",  // Overview
-    "Amount of Hidden Layer's Neurons.\nHidden Layer => Layer additional to the input and output layers, not connected externally.",  // Description.
+    HIDDEN_ID,		                     // Id.
+    "Number of neurons in the hidden layer", // Name.
+    Integer,           		             // Type.
+    "Number of neurons in the hidden layer (additional layer to the input and output layers, not connected externally).",  // Overview
+    "Number of neurons in the hidden layer (additional layer to the input and output layers, not connected externally).",  // Description.
     1,         // Not zero if the parameter has lower limit.
     1,         // Parameter's lower limit.
     0,         // Not zero if the parameter has upper limit.
     0,         // Parameter's upper limit.
-    "08"       // Parameter's typical (default) value.
+    "8"        // Parameter's typical (default) value.
   },
 
   // Learning rate
@@ -83,8 +83,8 @@ static AlgParamMetadata parameters[NUM_PARAM] = {
     LEARNING_RATE_ID,         	// Id.
     "Learning Rate",           	// Name.
     Real,             		// Type.
-    "Learning Rate => Training parameter that controls the size of weight and bias changes during learning.", 		// Overview
-    "Learning Rate => Training parameter that controls the size of weight and bias changes during learning.", 		// Description.
+    "Learning Rate. Training parameter that controls the size of weight and bias changes during learning.", 		// Overview
+    "Learning Rate. Training parameter that controls the size of weight and bias changes during learning.", 		// Description.
     1,		// Not zero if the parameter has lower limit.
     0.0,	// Parameter's lower limit.
     1,		// Not zero if the parameter has upper limit.
@@ -97,8 +97,8 @@ static AlgParamMetadata parameters[NUM_PARAM] = {
     MOMENTUM_ID,	// Id.
     "Momentum",		// Name.
     Real,		// Type.
-    "Momentum simply adds a fraction m of the previous weight update to the current one.\n Obs: The momentum parameter is used to prevent the system from converging to a local minimum or saddle point. A high momentum parameter can also help to increase the speed of convergence of the system. However, setting the momentum parameter too high can create a risk of overshooting the minimum, which can cause the system to become unstable. A momentum coefficient that is too low cannot reliably avoid local minima, and also can slow the training of the system.", 	// Overview
-    "Momentum simply adds a fraction m of the previous weight update to the current one.\n Obs: The momentum parameter is used to prevent the system from converging to a local minimum or saddle point. A high momentum parameter can also help to increase the speed of convergence of the system. However, setting the momentum parameter too high can create a risk of overshooting the minimum, which can cause the system to become unstable. A momentum coefficient that is too low cannot reliably avoid local minima, and also can slow the training of the system.", 	// Description.
+    "Momentum simply adds a fraction m of the previous weight update to the current one. The momentum parameter is used to prevent the system from converging to a local minimum or saddle point.", 	// Overview
+    "Momentum simply adds a fraction m of the previous weight update to the current one. The momentum parameter is used to prevent the system from converging to a local minimum or saddle point. A high momentum parameter can also help to increase the speed of convergence of the system. However, setting the momentum parameter too high can create a risk of overshooting the minimum, which can cause the system to become unstable. A momentum coefficient that is too low cannot reliably avoid local minima, and can also slow down the training of the system.", 	// Description.
     1,         	// Not zero if the parameter has lower limit.
     0.0,     	// Parameter's lower limit.
     1,         	// Not zero if the parameter has upper limit.
@@ -109,10 +109,10 @@ static AlgParamMetadata parameters[NUM_PARAM] = {
   // Choice
   {
     CHOICE_ID,         	// Id.
-    "Choice",           // Name.
+    "Training type",    // Name.
     Integer,            // Type.
-    "Choice:\n 0 -> to training by epoch.\n 1 -> to training by minimum error", 	// Overview
-    "Choice:\n 0 -> to training by epoch.\n 1 -> to training by minimum error", 	// Description.
+    "0 = train by epoch, 1 = train by minimum error", 	// Overview
+    "0 = train by epoch, 1 = train by minimum error", 	// Description.
     1,	// Not zero if the parameter has lower limit.
     0,	// Parameter's lower limit.
     1,	// Not zero if the parameter has upper limit.
@@ -125,8 +125,8 @@ static AlgParamMetadata parameters[NUM_PARAM] = {
     EPOCH_ID,	// Id.
     "Epoch",	// Name.
     Integer,	// Type.
-    "Presentation of the patterns of training to a network and the calculation of new weights and biases (only for training by epoch).", 	// Overview
-    "Presentation of the patterns of training to a network and the calculation of new weights and biases (only for training by epoch).", 	// Description.
+    "Determines when training will stop once the number of iterations exceeds epochs (only for training by epoch).", 	// Overview
+    "Determines when training will stop once the number of iterations exceeds epochs (only for training by epoch).", 	// Description.
     1,         	// Not zero if the parameter has lower limit.
     1,     	// Parameter's lower limit.
     0,         	// Not zero if the parameter has upper limit.
@@ -139,8 +139,8 @@ static AlgParamMetadata parameters[NUM_PARAM] = {
     MIN_ERROR_ID,	// Id.
     "Minimun Error",	// Name.
     Real,		// Type.
-    "Minumum mean square error of the epoch.\nSquare root of the sum of squared differences between the network targets and actual outputs divided by number of patterns (only for training by minimum error).", 	// Overview
-    "Minumum mean square error of the epoch.\nSquare root of the sum of squared differences between the network targets and actual outputs divided by number of patterns (only for training by minimum error).", 	// Description.
+    "Minimum mean square error of the epoch.", 	// Overview
+    "Minimum mean square error of the epoch. Square root of the sum of squared differences between the network targets and actual outputs divided by number of patterns (only for training by minimum error).", 	// Description.
     1,         	// Not zero if the parameter has lower limit.
     0.0,     	// Parameter's lower limit.
     1,         	// Not zero if the parameter has upper limit.
@@ -165,7 +165,7 @@ static AlgMetadata metadata = {
   "Artificial neural networks are made up of interconnecting artificial neurons (programming constructs that mimic the properties of biological neurons). Artificial neural networks may either be used to gain an understanding of biological neural networks, or for solving artificial intelligence problems without necessarily creating a model of a real biological system. Content retrieved from Wikipedia on the 06th of May, 2008: http://en.wikipedia.org/wiki/Neural_network",
 
   // Description.
-  "An artificial neural network (ANN), also called a simulated neural network (SNN) or commonly just neural network (NN) is an interconnected group of artificial neurons that uses a mathematical or computational model for information processing based on a connectionistic approach to computation. In most cases an ANN is an adaptive system that changes its structure based on external or internal information that flows through the network.In more practical terms neural networks are non-linear statistical data modeling or decision making tools. They can be used to model complex relationships between inputs and outputs or to find patterns in data. Content retrieved from Wikipedia on the 06th of May, 2008: http://en.wikipedia.org/wiki/Neural_network",
+  "An artificial neural network (ANN), also called a simulated neural network (SNN) or commonly just neural network (NN), is an interconnected group of artificial neurons that uses a mathematical or computational model for information processing based on a connectionistic approach to computation. In most cases an ANN is an adaptive system that changes its structure based on external or internal information that flows through the network. In more practical terms, neural networks are non-linear statistical data modeling or decision making tools. They can be used to model complex relationships between inputs and outputs or to find patterns in data. Content retrieved from Wikipedia on the 06th of May, 2008: http://en.wikipedia.org/wiki/Neural_network",
 
   "Chopra, Paras, modified by Alex Oshika Avilla and Fabrício Augusto Rodrigues", // Algorithm author.
   "", // Bibliography.
