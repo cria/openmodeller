@@ -66,9 +66,9 @@ static AlgParamMetadata parameters[NUM_PARAM] = {
 
   // Amount of neurons of the hidden layer
   {
-    HIDDEN_ID,		                     // Id.
+    HIDDEN_ID,                               // Id.
     "Number of neurons in the hidden layer", // Name.
-    Integer,           		             // Type.
+    Integer,                                // Type.
     "Number of neurons in the hidden layer (additional layer to the input and output layers, not connected externally).",  // Overview
     "Number of neurons in the hidden layer (additional layer to the input and output layers, not connected externally).",  // Description.
     1,         // Not zero if the parameter has lower limit.
@@ -80,72 +80,72 @@ static AlgParamMetadata parameters[NUM_PARAM] = {
 
   // Learning rate
   {
-    LEARNING_RATE_ID,         	// Id.
-    "Learning Rate",           	// Name.
-    Real,             		// Type.
-    "Learning Rate. Training parameter that controls the size of weight and bias changes during learning.", 		// Overview
-    "Learning Rate. Training parameter that controls the size of weight and bias changes during learning.", 		// Description.
-    1,		// Not zero if the parameter has lower limit.
-    0.0,	// Parameter's lower limit.
-    1,		// Not zero if the parameter has upper limit.
-    1.0,	// Parameter's upper limit.
-    "0.3"	// Parameter's typical (default) value.
+    LEARNING_RATE_ID,         // Id.
+    "Learning Rate",          // Name.
+    Real,                     // Type.
+    "Learning Rate. Training parameter that controls the size of weight and bias changes during learning.", // Overview
+    "Learning Rate. Training parameter that controls the size of weight and bias changes during learning.", // Description.
+    1,    // Not zero if the parameter has lower limit.
+    0.0,  // Parameter's lower limit.
+    1,    // Not zero if the parameter has upper limit.
+    1.0,  // Parameter's upper limit.
+    "0.3" // Parameter's typical (default) value.
   },
 
   // Momentum
   {
-    MOMENTUM_ID,	// Id.
-    "Momentum",		// Name.
-    Real,		// Type.
-    "Momentum simply adds a fraction m of the previous weight update to the current one. The momentum parameter is used to prevent the system from converging to a local minimum or saddle point.", 	// Overview
-    "Momentum simply adds a fraction m of the previous weight update to the current one. The momentum parameter is used to prevent the system from converging to a local minimum or saddle point. A high momentum parameter can also help to increase the speed of convergence of the system. However, setting the momentum parameter too high can create a risk of overshooting the minimum, which can cause the system to become unstable. A momentum coefficient that is too low cannot reliably avoid local minima, and can also slow down the training of the system.", 	// Description.
-    1,         	// Not zero if the parameter has lower limit.
-    0.0,     	// Parameter's lower limit.
-    1,         	// Not zero if the parameter has upper limit.
-    1.0,        // Parameter's upper limit.
-    "0.05"      // Parameter's typical (default) value.
+    MOMENTUM_ID, // Id.
+    "Momentum",  // Name.
+    Real,        // Type.
+    "Momentum simply adds a fraction m of the previous weight update to the current one. The momentum parameter is used to prevent the system from converging to a local minimum or saddle point.", // Overview
+    "Momentum simply adds a fraction m of the previous weight update to the current one. The momentum parameter is used to prevent the system from converging to a local minimum or saddle point. A high momentum parameter can also help to increase the speed of convergence of the system. However, setting the momentum parameter too high can create a risk of overshooting the minimum, which can cause the system to become unstable. A momentum coefficient that is too low cannot reliably avoid local minima, and can also slow down the training of the system.", // Description.
+    1,         // Not zero if the parameter has lower limit.
+    0.0,       // Parameter's lower limit.
+    1,         // Not zero if the parameter has upper limit.
+    1.0,       // Parameter's upper limit.
+    "0.05"     // Parameter's typical (default) value.
   },
 
   // Choice
   {
-    CHOICE_ID,         	// Id.
-    "Training type",    // Name.
-    Integer,            // Type.
-    "0 = train by epoch, 1 = train by minimum error", 	// Overview
-    "0 = train by epoch, 1 = train by minimum error", 	// Description.
-    1,	// Not zero if the parameter has lower limit.
-    0,	// Parameter's lower limit.
-    1,	// Not zero if the parameter has upper limit.
-    1,	// Parameter's upper limit.
-    "0"	// Parameter's typical (default) value.
+    CHOICE_ID,         // Id.
+    "Training type",   // Name.
+    Integer,           // Type.
+    "0 = train by epoch, 1 = train by minimum error", // Overview
+    "0 = train by epoch, 1 = train by minimum error", // Description.
+    1,  // Not zero if the parameter has lower limit.
+    0,  // Parameter's lower limit.
+    1,  // Not zero if the parameter has upper limit.
+    1,  // Parameter's upper limit.
+    "0" // Parameter's typical (default) value.
   },
 
   // Epoch
   {
-    EPOCH_ID,	// Id.
-    "Epoch",	// Name.
-    Integer,	// Type.
-    "Determines when training will stop once the number of iterations exceeds epochs (only for training by epoch).", 	// Overview
-    "Determines when training will stop once the number of iterations exceeds epochs (only for training by epoch).", 	// Description.
-    1,         	// Not zero if the parameter has lower limit.
-    1,     	// Parameter's lower limit.
-    0,         	// Not zero if the parameter has upper limit.
-    0,         	// Parameter's upper limit.
-    "100000"    // Parameter's typical (default) value.
+    EPOCH_ID,  // Id.
+    "Epoch",   // Name.
+    Integer,   // Type.
+    "Determines when training will stop once the number of iterations exceeds epochs (only for training by epoch).", // Overview
+    "Determines when training will stop once the number of iterations exceeds epochs (only for training by epoch).", // Description.
+    1,         // Not zero if the parameter has lower limit.
+    1,         // Parameter's lower limit.
+    0,         // Not zero if the parameter has upper limit.
+    0,         // Parameter's upper limit.
+    "100000"   // Parameter's typical (default) value.
   },
 
   // Minimun Error
   {
-    MIN_ERROR_ID,	// Id.
-    "Minimun Error",	// Name.
-    Real,		// Type.
-    "Minimum mean square error of the epoch.", 	// Overview
-    "Minimum mean square error of the epoch. Square root of the sum of squared differences between the network targets and actual outputs divided by number of patterns (only for training by minimum error).", 	// Description.
-    1,         	// Not zero if the parameter has lower limit.
-    0.0,     	// Parameter's lower limit.
-    1,         	// Not zero if the parameter has upper limit.
-    0.5,        // Parameter's upper limit.
-    "0.01"     	// Parameter's typical (default) value.
+    MIN_ERROR_ID,    // Id.
+    "Minimun Error", // Name.
+    Real,            // Type.
+    "Minimum mean square error of the epoch.", // Overview
+    "Minimum mean square error of the epoch. Square root of the sum of squared differences between the network targets and actual outputs divided by number of patterns (only for training by minimum error).", // Description.
+    1,         // Not zero if the parameter has lower limit.
+    0.0,       // Parameter's lower limit.
+    1,         // Not zero if the parameter has upper limit.
+    0.5,       // Parameter's upper limit.
+    "0.01"     // Parameter's typical (default) value.
   },
 
 };
@@ -157,9 +157,9 @@ static AlgParamMetadata parameters[NUM_PARAM] = {
 
 static AlgMetadata metadata = {
 
-  "ANN",	// Id.
-  "Artificial Neural Network",	// Name.
-  "0.1",	// Version.
+  "ANN",  // Id.
+  "Artificial Neural Network", // Name.
+  "0.1", // Version.
 
   // Overview
   "Artificial neural networks are made up of interconnecting artificial neurons (programming constructs that mimic the properties of biological neurons). Artificial neural networks may either be used to gain an understanding of biological neural networks, or for solving artificial intelligence problems without necessarily creating a model of a real biological system. Content retrieved from Wikipedia on the 06th of May, 2008: http://en.wikipedia.org/wiki/Neural_network",
@@ -309,14 +309,14 @@ NNAlgorithm::initialize()
 
     if ( ! getParameter( EPOCH_ID, &_nn_parameter.epoch ) ) {
 
-	Log::instance()->error( NN_LOG_PREFIX "Parameter '" EPOCH_ID "' not passed.\n" );
-	return 0;
+      Log::instance()->error( NN_LOG_PREFIX "Parameter '" EPOCH_ID "' not passed.\n" );
+      return 0;
     }
 
     if ( _nn_parameter.epoch < 1) {
 
-	Log::instance()->warn( NN_LOG_PREFIX "Parameter out of range: %d\n", _nn_parameter.epoch );
-	return 0;
+      Log::instance()->warn( NN_LOG_PREFIX "Parameter out of range: %d\n", _nn_parameter.epoch );
+      return 0;
     }
   }
 
@@ -326,13 +326,14 @@ NNAlgorithm::initialize()
 
     if ( ! getParameter( MIN_ERROR_ID, &_nn_parameter.minimum_error ) ) {
 
-	Log::instance()->error( NN_LOG_PREFIX "Parameter '" MIN_ERROR_ID "' not passed.\n" );
-	return 0;
+      Log::instance()->error( NN_LOG_PREFIX "Parameter '" MIN_ERROR_ID "' not passed.\n" );
+      return 0;
     }
 
     if ( _nn_parameter.minimum_error < 0 ||  _nn_parameter.minimum_error > 0.5) {
-	Log::instance()->warn( NN_LOG_PREFIX "Parameter out of range: %f\n", _nn_parameter.minimum_error );
-	return 0;
+
+      Log::instance()->warn( NN_LOG_PREFIX "Parameter out of range: %f\n", _nn_parameter.minimum_error );
+      return 0;
     }
   }
 
@@ -368,8 +369,8 @@ NNAlgorithm::initialize()
 
     for ( int i = 0; i < num_absences; ++i ) {
 
-	OccurrencePtr oc = _samp->getPseudoAbsence();
-	absences->insert( oc ); 
+      OccurrencePtr oc = _samp->getPseudoAbsence();
+      absences->insert( oc ); 
     }
 
     // Compute normalization with all points
@@ -398,7 +399,7 @@ NNAlgorithm::initialize()
 
     for(int i = 0; i < _num_layers; i++){
 
-	vector_input[j][i] = (double)_presencePoints[j][i];
+      vector_input[j][i] = (double)_presencePoints[j][i];
     }
   }
 
@@ -411,7 +412,7 @@ NNAlgorithm::initialize()
 
     for(int i = 0; i < _num_layers; i++){
 
-	vector_input[j+num_presences][i] = (double)_absencePoints[j][i];
+      vector_input[j+num_presences][i] = (double)_absencePoints[j][i];
     }
   }
 
@@ -426,7 +427,7 @@ NNAlgorithm::initialize()
 
     for(int i = 0; i < _nn_parameter.outp; i++){ // Always i=0 because it has one output
 
-	vector_output[j][i] = 1.00000000; // Exist presence point
+      vector_output[j][i] = 1.00000000; // Exist presence point
     }
   }
 
@@ -435,10 +436,9 @@ NNAlgorithm::initialize()
 
     for(int i = 0; i < _nn_parameter.outp; i++){ // Always i=0 because it has one output
 
-	vector_output[j][i] = 0.00000000; // Exist absence point
+      vector_output[j][i] = 0.00000000; // Exist absence point
     }
   }
-
 
 
   // Initialize the variables of Neural Network that will be used at training
@@ -448,11 +448,9 @@ NNAlgorithm::initialize()
   layers[1] = _nn_parameter.hid;
   layers[2] = 1; // or layer[2] = _nn_parameter.outp = 1;
 
-				
   network.SetData(_nn_parameter.learning_rate,layers,3);
 
   network.RandomizeWB();
-			
 
   _nn_parameter.inp = _num_layers;
 
@@ -507,12 +505,12 @@ NNAlgorithm::iterate()
 
     if(amount_epoch != (unsigned long)_nn_parameter.epoch+1){
 
-	for(int j = 0; j < _nn_parameter.pattern; j++){
+      for(int j = 0; j < _nn_parameter.pattern; j++){
 
-	  network.Train(vector_input[j], vector_output[j], j, _nn_parameter.pattern, _nn_parameter.momentum);
-	}
+        network.Train(vector_input[j], vector_output[j], j, _nn_parameter.pattern, _nn_parameter.momentum);
+      }
 
-	network.trainingEpoch( amount_epoch, _nn_parameter.epoch, _nn_parameter.pattern);
+      network.trainingEpoch( amount_epoch, _nn_parameter.epoch, _nn_parameter.pattern);
     }
 
     else _done = true; // Training ends
@@ -524,15 +522,15 @@ NNAlgorithm::iterate()
 
     for(int j = 0; j < _nn_parameter.pattern; j++){
 
-	network.Train(vector_input[j], vector_output[j], j, _nn_parameter.pattern, _nn_parameter.momentum );
+      network.Train(vector_input[j], vector_output[j], j, _nn_parameter.pattern, _nn_parameter.momentum );
     }
 
     converged = network.trainingMinimumError( _nn_parameter.pattern, _nn_parameter.minimum_error);
 
     if(converged == 1){
-	
-	_done = true; // Training ends
-	Log::instance()->info( NN_LOG_PREFIX "Final number of the epoch: %lu\n\n", amount_epoch);
+
+      _done = true; // Training ends
+      Log::instance()->info( NN_LOG_PREFIX "Final number of the epoch: %lu\n\n", amount_epoch);
     }
   }
 
@@ -655,13 +653,16 @@ NNAlgorithm::_getConfiguration( ConfigurationPtr& config ) const
 
     for(int j = 0; j < layers[i]; j++){
 
-	if(i != 2){ // Last layer does not require weights
+      if(i != 2){ // Last layer does not require weights
 
-	  for(int k = 0; k < layers[i+1]; k++){
-	    weight_values[siz] = network.getWeight(i, j, k); // Get weights
-	    siz ++;	  }
-	}
-    }  }
+        for(int k = 0; k < layers[i+1]; k++){
+
+          weight_values[siz] = network.getWeight(i, j, k); // Get weights
+          siz ++;
+        }
+      }
+    }
+  }
 
   weight_config->addNameValue( "Values", weight_values,  size_weight);
 
@@ -684,11 +685,11 @@ NNAlgorithm::_getConfiguration( ConfigurationPtr& config ) const
 
     for(int j = 0; j < layers[i]; j++){
 
-	if(i != 0){ // First layer does not need biases
+      if(i != 0){ // First layer does not need biases
 
-	  bias_values[siz] = network.getBias(i, j); // Get bias
-	  siz++;
-	}
+        bias_values[siz] = network.getBias(i, j); // Get bias
+        siz++;
+      }
     }
   }
 
@@ -743,14 +744,14 @@ NNAlgorithm::_setConfiguration( const ConstConfigurationPtr& config )
 
     for(int j = 0; j < layers[i]; j++){
 
-	if(i != 2){ // Last layer does not require weights
+      if(i != 2){ // Last layer does not require weights
 
-	  for(int k = 0; k < layers[i+1]; k++){
+        for(int k = 0; k < layers[i+1]; k++){
 
-	    network.setWeight(i, j, k, weight_values[siz]); // Set weights
-	    siz ++;
-	  }
-	}
+          network.setWeight(i, j, k, weight_values[siz]); // Set weights
+          siz ++;
+        }
+      }
     }
   }
 
@@ -772,11 +773,11 @@ NNAlgorithm::_setConfiguration( const ConstConfigurationPtr& config )
 
     for(int j = 0; j < layers[i]; j++){
 
-	if(i != 0){ // First layer does not need biases
+      if(i != 0){ // First layer does not need biases
 
-	  network.setBias(i, j, bias_values[siz]); // Set bias
-	  siz++;
-	}
+        network.setBias(i, j, bias_values[siz]); // Set bias
+        siz++;
+      }
     }
   }
 
