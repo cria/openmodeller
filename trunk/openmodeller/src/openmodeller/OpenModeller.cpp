@@ -257,7 +257,9 @@ OpenModeller::createModel()
 
   _alg->createModel( _samp, &_callback_wrapper );
 
-  Log::instance()->info( "Finished creating model\n" );
+  // note: Leave the 2 spaces in the end of the message to cover the  
+  //       previous model creation progress log.
+  Log::instance()->info( "Finished creating model  \n" );
 
   return 1;
 }
