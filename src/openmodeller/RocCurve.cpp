@@ -202,11 +202,11 @@ void RocCurve::_loadPredictions( const Model& model, const SamplerPtr& sampler )
 
       if ( (*it)->hasEnvironment() ) {
 
-	sample = (*it)->environment();
+        sample = (*it)->environment();
       }
       else {
 
-	sample = env->get( (*it)->x(), (*it)->y() );
+        sample = env->get( (*it)->x(), (*it)->y() );
       }
 
       if ( sample.size() > 0 ) {
@@ -215,8 +215,8 @@ void RocCurve::_loadPredictions( const Model& model, const SamplerPtr& sampler )
 
         predictionValue = model->getValue( sample );
 
-	_category.push_back( 0 );
-	_prediction.push_back( predictionValue );
+        _category.push_back( 0 );
+        _prediction.push_back( predictionValue );
 
         Log::instance()->debug( "Probability for absence point %s (%f,%f): %f\n", 
                      ((*it)->id()).c_str(), (*it)->x(), (*it)->y(), predictionValue );
