@@ -28,6 +28,9 @@
 #ifndef _MAXIMUM_ENTROPYHH_
 #define _MAXIMUM_ENTROPYHH_
 
+#include <set>
+#include <map>
+
 #include <openmodeller/om.hh>
 
 #include "maxentmodel.hpp"
@@ -87,6 +90,7 @@ protected:
   int _hinge_feat;
   int _product_feat;
 
+  std::map< int, std::set<Scalar> > _categorical_values; // layer index => set of values
 };
 
 #endif

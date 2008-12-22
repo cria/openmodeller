@@ -504,6 +504,41 @@ MaximumEntropy::initialize()
   for ( int i = 0; i < _num_layers; ++i ) {
 
     _is_categorical[i] = (Scalar)_samp->isCategorical( i );
+
+    if ( _is_categorical[i] ) {
+
+      // Get possible values of each categorical layer based on presence and absence points
+
+      std::set<Scalar> values;
+
+      OccurrencesImpl::const_iterator p_iterator = _presences->begin();
+      OccurrencesImpl::const_iterator p_end = _presences->end();
+
+      while ( p_iterator != p_end ) {
+
+        Sample sample = (*p_iterator)->environment();
+
+        sample.dump();
+
+        values.insert( sample[i] ); // std::set already avoids duplicate values
+
+        ++p_iterator;
+      }
+
+      p_iterator = _absences->begin();
+      p_end = _absences->end();
+
+      while ( p_iterator != p_end ) {
+
+        Sample sample = (*p_iterator)->environment();
+
+        values.insert( sample[i] );
+
+        ++p_iterator;
+      }
+
+      _categorical_values.insert( std::pair< int, std::set<Scalar> >( i, values ) );
+    }
   }
 
   return 1;
@@ -546,10 +581,24 @@ MaximumEntropy::iterate()
 
       if ( _is_categorical[i] ) {
 
-        stringstream cat_value;
-        cat_value << out.str() << "=" << (int)sample[i];
-        context.push_back( make_pair( cat_value.str(), 1.0 ) );
-        out << ++id;
+        std::set<Scalar>::iterator it = _categorical_values[i].begin();
+        std::set<Scalar>::iterator it_end = _categorical_values[i].end();
+
+        while ( it != it_end ) {
+
+          if ( sample[i] == *it ) {
+
+            context.push_back( make_pair( out.str(), 1.0 ) );
+          }
+          else {
+
+            context.push_back( make_pair( out.str(), 0.0 ) );
+          }
+
+          out << ++id;
+
+          ++it;
+	}
       }
       else {
 
@@ -616,10 +665,24 @@ MaximumEntropy::iterate()
 
       if ( _is_categorical[i] ) {
 
-        stringstream cat_value;
-        cat_value << out.str() << "=" << (int)sample[i];
-        context.push_back( make_pair( cat_value.str(), 1.0 ) );
-        out << ++id;
+        std::set<Scalar>::iterator it = _categorical_values[i].begin();
+        std::set<Scalar>::iterator it_end = _categorical_values[i].end();
+
+        while ( it != it_end ) {
+
+          if ( sample[i] == *it ) {
+
+            context.push_back( make_pair( out.str(), 1.0 ) );
+          }
+          else {
+
+            context.push_back( make_pair( out.str(), 0.0 ) );
+          }
+
+          out << ++id;
+
+          ++it;
+	}
       }
       else {
 
@@ -697,13 +760,32 @@ MaximumEntropy::getValue( const Sample& x ) const
     
     stringstream out;
     out << id;
-    
+
     if ( _is_categorical[i] ) {
 
-      stringstream cat_value;
-      cat_value << out.str() << "=" << (int)x[i];
-      context.push_back( make_pair( cat_value.str(), 1.0 ) );
-      out << ++id;
+      std::map< int, std::set<Scalar> >::const_iterator layer_categories = _categorical_values.find(i);
+
+      if ( layer_categories != _categorical_values.end() ) {
+
+        std::set<Scalar>::iterator it = layer_categories->second.begin();
+        std::set<Scalar>::iterator it_end = layer_categories->second.end();
+
+        while ( it != it_end ) {
+
+          if ( x[i] == *it ) {
+
+            context.push_back( make_pair( out.str(), 1.0 ) );
+          }
+          else {
+
+            context.push_back( make_pair( out.str(), 0.0 ) );
+          }
+
+          out << ++id;
+
+          ++it;
+        }
+      }
     }
     else {
 
@@ -784,6 +866,39 @@ MaximumEntropy::_getConfiguration( ConfigurationPtr& config ) const
   model_config->addNameValue( "HingeFeature", _hinge_feat );
   model_config->addNameValue( "Categorical", _is_categorical );
 
+  ConfigurationPtr cat_section_config( new ConfigurationImpl( "CategoricalData" ) );
+  model_config->addSubsection( cat_section_config );
+
+  std::map< int, std::set<Scalar> >::const_iterator it = _categorical_values.begin();
+  std::map< int, std::set<Scalar> >::const_iterator it_end = _categorical_values.end();
+
+  while ( it != it_end ) {
+
+    // There can be be multiple <Categories> elements, one for each categorical layer
+    ConfigurationPtr cat_config( new ConfigurationImpl( "Categories" ) );
+    cat_section_config->addSubsection( cat_config );
+
+    int layer_index = (*it).first;
+    std::set<Scalar> layer_categories = (*it).second;
+
+    // Transform std::set into Sample
+    Sample categories;
+    categories.resize( layer_categories.size() );
+
+    int i = 0;
+
+    for ( std::set<Scalar>::iterator val_it = layer_categories.begin(); val_it != layer_categories.end(); val_it++ ) {
+
+      categories[i] = (*val_it);
+      ++i;
+    }
+
+    cat_config->addNameValue( "Index", layer_index );
+    cat_config->addNameValue( "Values", categories );
+
+    ++it;
+  }
+
   MaxentModelFile model_file = _model.save();
 
   shared_ptr<me::ParamsType> m_params;
@@ -828,6 +943,33 @@ MaximumEntropy::_setConfiguration( const ConstConfigurationPtr& config )
   _threshold_feat = model_config->getAttributeAsInt( "ThresholdFeature", 0 );
   _hinge_feat = model_config->getAttributeAsInt( "HingeFeature", 0 );
   _is_categorical = model_config->getAttributeAsSample( "Categorical" );
+
+  ConstConfigurationPtr cat_section = model_config->getSubsection( "CategoricalData", false );
+
+  if ( cat_section ) {
+
+    Configuration::subsection_list categories = cat_section->getAllSubsections();
+
+    Configuration::subsection_list::iterator it = categories.begin();
+    Configuration::subsection_list::iterator it_end = categories.end();
+
+    for ( ; it != it_end; ++it ) {
+
+      int layer_index = (*it)->getAttributeAsInt( "Index", 0 );
+
+      Sample layer_categories = (*it)->getAttributeAsSample( "Values" );
+
+      // Convert from Sample to std::set
+      std::set<Scalar> values;
+
+      for ( int i = 0; i < layer_categories.size(); ++i ) {
+
+        values.insert( layer_categories[i] );
+      }
+
+      _categorical_values.insert( std::pair< int, std::set<Scalar> >( layer_index, values ) );
+    }
+  }
 
   MaxentModelFile model_file;
 
