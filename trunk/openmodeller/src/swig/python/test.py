@@ -123,7 +123,7 @@ commission = matrix.getCommissionError()
 if ( commission != -1 ):
     print "Commission error:  ", commission * 100, "%"
     
-print "AUC:               ", roc.getArea()
+print "AUC:               ", roc.getTotalArea()
 
 print "Projecting model..."
 
