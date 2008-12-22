@@ -214,13 +214,13 @@ showAlgorithms( AlgMetadata const **availables )
 
   printf( "\nChoose an algorithm between:\n" );
 
-  int count = 0;
+  int count = 1;
   AlgMetadata const *metadata;
   while ( ( metadata = *availables++ ) )
   {
     printf( " [%d] %s\n", count++, metadata->name.c_str() );
   }
-  printf( " [%d] Quit\n", count );
+  printf( " [q] Quit\n" );
   printf( "\n" );
 
   return count;
@@ -252,20 +252,20 @@ readAlgorithm( AlgMetadata const **availables )
 
     int first_char_ascii = (int)buf[0];
 
-    // Also quit if input is "q" or "Q"
+    // Quit if input is "q" or "Q"
     if ( first_char_ascii == 113 || first_char_ascii == 81 ) {
       return 0;
     }
 
     option = atoi( buf );
 
-    if ( option == quit_option ) {
+    if ( option <= 0 || option >= quit_option ) {
       return 0;
     }
 
     // An algorithm was choosed.
-    else if ( option >= 0 && option < quit_option ) {
-      return availables[option];
+    else {
+      return availables[option-1];
     }
   }
 }
