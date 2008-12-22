@@ -169,13 +169,13 @@ static AlgParamMetadata parameters[NUM_PARAM] = {
     PSEUDO_ID,                   // Id.
     "Number of pseudo-absences", // Name.
     Integer,                     // Type.
-    "Number of pseudo-absences to be generated (only for C-SVC and Nu-SVC when no absences have been provided).", // Overview
-    "Number of pseudo-absences to be generated (only for C-SVC and Nu-SVC when no absences have been provided).", // Description.
+    "Number of pseudo-absences to be generated (only for C-SVC and Nu-SVC when no absences have been provided). When absences are needed, a zero parameter will default to the same number of presences.", // Overview
+    "Number of pseudo-absences to be generated (only for C-SVC and Nu-SVC when no absences have been provided). When absences are needed, a zero parameter will default to the same number of presences.", // Description.
     1,         // Not zero if the parameter has lower limit.
-    1,         // Parameter's lower limit.
+    0,         // Parameter's lower limit.
     0,         // Not zero if the parameter has upper limit.
     0,         // Parameter's upper limit.
-    "500"      // Parameter's typical (default) value.
+    "0"        // Parameter's typical (default) value.
   },
 };
 
@@ -186,7 +186,7 @@ static AlgMetadata metadata = {
 
   "SVM", 	                   // Id.
   "SVM (Support Vector Machines)", // Name.
-  "0.2",       	                   // Version.
+  "0.3",       	                   // Version.
 
   // Overview
   "Support vector machines (SVMs) are a set of related supervised learning methods that belong to a family of generalized linear classifiers. They can also be considered a special case of Tikhonov regularization. A special property of SVMs is that they simultaneously minimize the empirical classification error and maximize the geometric margin; hence they are also known as maximum margin classifiers. Content retrieved from Wikipedia on the 13th of June, 2007: http://en.wikipedia.org/w/index.php?title=Support_vector_machine&oldid=136646498.",
@@ -440,20 +440,26 @@ SvmAlgorithm::initialize()
   bool generate_pseudo_absences = false;
 
   // All types of SVM will need absences, except one-class SVM
-  if ( num_absences == 0 && _svm_parameter.svm_type != 2 ) {
+  if ( num_absences <= 0 && _svm_parameter.svm_type != 2 ) {
 
-    Log::instance()->warn( SVM_LOG_PREFIX "No absence points inside the mask.\n" );
+    Log::instance()->warn( SVM_LOG_PREFIX "No absence points available.\n" );
 
     // Pseudo-absences will be generated later
     if ( ! getParameter( PSEUDO_ID, &num_absences ) ) {
 
-      Log::instance()->warn( SVM_LOG_PREFIX "Number of pseudo absences unspecified. Default will be 500.\n" );
+      Log::instance()->warn( SVM_LOG_PREFIX "Number of pseudo absences unspecified. Default will be %d (same number of presences).\n", num_presences );
 
-      num_absences = 500;
+      num_absences = num_presences;
     }
-    else if ( num_absences <= 0 ) {
+    else if ( num_absences == 0 ) {
 
-      Log::instance()->warn( SVM_LOG_PREFIX "Number of pseudo absences must be greater than zero.\n" );
+      Log::instance()->warn( SVM_LOG_PREFIX "Number of pseudo absences will be %d (same number of presences).\n", num_presences );
+
+      num_absences = num_presences;
+    }
+    else if ( num_absences < 0 ) {
+
+      Log::instance()->warn( SVM_LOG_PREFIX "Number of pseudo absences must be a positive number.\n" );
       return 0;
     }
 
