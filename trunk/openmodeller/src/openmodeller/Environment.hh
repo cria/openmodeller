@@ -193,15 +193,12 @@ private:
   /* utility to construct a ConfigurationPtr representation of a Layer.
      Does not properly set the Configuration name.
      Is a member function so it can access the private typedefs. */
-  static ConfigurationPtr
-  getLayerConfig( const layer& l, bool basicConfig=false );
+  static ConfigurationPtr getLayerConfig( const layer& l, bool basicConfig=false );
 
   /* utility to construct a layer pair object.
      It is declared a member so it has access to the private typedef for layer */
-  static layer
-  makeLayer( const std::string& filename, int categ );
-  static layer
-  makeLayer( const ConstConfigurationPtr& config );
+  static layer makeLayer( const std::string& filename, int categ );
+  static layer makeLayer( const ConstConfigurationPtr& config );
 
   /** Rebuild the layer representation. */
   int changeLayers( const std::vector<std::string>& categs, 
