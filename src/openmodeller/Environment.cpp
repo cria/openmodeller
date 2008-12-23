@@ -391,15 +391,13 @@ EnvironmentImpl::getMinMax( Sample * min, Sample * max ) const
   layers::const_iterator end = _layers.end();
 
   while ( lay != end ) {
+
     Map *map = lay->second;
 
-    if ( !map->isCategorical() ) {
-
-      Scalar mapMin, mapMax;
-      map->getMinMax( &mapMin, &mapMax );
-      (*min)[i] = mapMin;
-      (*max)[i] = mapMax;
-    }
+    Scalar mapMin, mapMax;
+    map->getMinMax( &mapMin, &mapMax );
+    (*min)[i] = mapMin;
+    (*max)[i] = mapMax;
 
     ++lay;
     i++;
