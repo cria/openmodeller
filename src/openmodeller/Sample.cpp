@@ -34,7 +34,8 @@ using namespace std;
 
 Sample::Sample() :
   size_( 0 ),
-  value_( 0 )
+  value_( 0 ),
+  start_( 0 )
 { }
 
 Sample::Sample( size_t size ) :
@@ -51,6 +52,8 @@ Sample::Sample( size_t size ) :
   for ( size_t i = 0; i < size; ++i, ++v ) {
     *v = Scalar(0);
   }
+
+  start_ = 0;
 }
 
 Sample::Sample( std::size_t size, Scalar value ) :
@@ -66,6 +69,8 @@ Sample::Sample( std::size_t size, Scalar value ) :
   for( size_t i = 0; i<size; ++i ) {
     *v++ = value;
   }
+
+  start_ = 0;
 }
 
 Sample::Sample( size_t size, Scalar const * values ) :
@@ -77,6 +82,8 @@ Sample::Sample( size_t size, Scalar const * values ) :
   }
   alloc( size );
   copy( size, values );
+
+  start_ = 0;
 }
 
 Sample::Sample( std::vector<Scalar> values ) :
@@ -99,6 +106,8 @@ Sample::Sample( std::vector<Scalar> values ) :
     ++v;
     ++it;
   }
+
+  start_ = 0;
 }
 
 Sample::Sample( const Sample & rhs ) :
@@ -110,6 +119,8 @@ Sample::Sample( const Sample & rhs ) :
   }
   alloc( rhs.size_ );
   copy( rhs.size_, rhs.value_ );
+
+  start_ = 0;
 }
 
 Sample::~Sample()
@@ -134,6 +145,8 @@ Sample::operator=( const Sample & rhs )
   }
 
   copy( rhs.size_, rhs.value_ );
+
+  start_ = rhs.start_;
 
   return *this;
 }
@@ -171,7 +184,17 @@ Sample::resize( size_t size )
   // Finally, update this->size.
   this->size_ = size;
 
+  start_ = min( size, start_ );
 }
+
+
+void
+Sample::setCategoricalThreshold( std::size_t index )
+{
+  index = max( (std::size_t)0, index ); // avoid negative values
+  start_ = min( index, size_ ); // avoid values greater than the size
+}
+
 
 void
 Sample::alloc( size_t size )
@@ -208,7 +231,7 @@ Sample::equals( const Sample& rhs ) const
   // Check each value in Sample.
   Scalar *l = value_;
   Scalar *r = rhs.value_;
-  for( size_t i = 0; i< size_; ++i ) {
+  for( size_t i = 0; i < size_; ++i ) {
     // If they are not equal, then Samples not equal
     if ( *l != *r )
       return false;
@@ -226,7 +249,7 @@ Sample::dump() const
   ss << "[";
   Scalar *vl = value_;
   size_t count = size_;
-  for( size_t i = 0; i<count; ++i ) {
+  for( size_t i = 0; i < count; ++i ) {
     ss << *vl++;
     if ( i < count-1 )
       ss << ", ";
@@ -241,8 +264,10 @@ Sample::operator+=( const Sample& rhs )
   Scalar *vl = value_;
   Scalar *vr = rhs.value_;
   size_t count = min( size_, rhs.size_);
-  for( size_t i = 0; i<count; ++i ) {
-    *vl++ += *vr++;
+  for( size_t i = 0; i < count; ++i,*vl++,*vr++ ) {
+    if ( i >= start_ ) {
+      *vl += *vr;
+    }
   }
   return *this;
 }
@@ -251,8 +276,10 @@ Sample&
 Sample::operator+=( const Scalar& rhs )
 {
   iterator it = begin();
-  for( ; it != end() ; ++it ) {
-    *it += rhs;
+  for( size_t i = 0; it != end() ; ++it,++i ) {
+    if ( i >= start_ ) {
+      *it += rhs;
+    }
   }
   return *this;
 }
@@ -263,8 +290,10 @@ Sample::operator-=( const Sample& rhs )
   Scalar *vl = value_;
   Scalar *vr = rhs.value_;
   size_t count = min( size_, rhs.size_);
-  for( size_t i = 0; i<count; ++i ) {
-    *vl++ -= *vr++;
+  for( size_t i = 0; i < count; ++i,*vl++,*vr++ ) {
+    if ( i >= start_ ) {
+      *vl -= *vr;
+    }
   }
   return *this;
 }
@@ -273,8 +302,10 @@ Sample&
 Sample::operator-=( const Scalar& rhs )
 {
   iterator it = begin();
-  for( ; it != end() ; ++it ) {
-    *it -= rhs;
+  for( size_t i = 0; it != end() ; ++it,++i ) {
+    if ( i >= start_ ) {
+      *it -= rhs;
+    }
   }
   return *this;
 }
@@ -285,8 +316,10 @@ Sample::operator*=( const Sample& rhs )
   Scalar *vl = value_;
   Scalar *vr = rhs.value_;
   size_t count = min( size_, rhs.size_);
-  for( size_t i = 0; i<count; ++i ) {
-    *vl++ *= *vr++;
+  for( size_t i = 0; i < count; ++i,*vl++,*vr++ ) {
+    if ( i >= start_ ) {
+      *vl *= *vr;
+    }
   }
   return *this;
 }
@@ -296,8 +329,10 @@ Sample::operator*=( const Scalar& rhs )
 {
   Scalar *vl = value_;
   size_t count = size_;
-  for( size_t i = 0; i<count; ++i ) {
-    *vl++ *= rhs;
+  for( size_t i = 0; i < count; ++i,*vl++ ) {
+    if ( i >= start_ ) {
+      *vl *= rhs;
+    }
   }
   return *this;
 }
@@ -308,8 +343,10 @@ Sample::operator/=( const Sample& rhs )
   Scalar *vl = value_;
   Scalar *vr = rhs.value_;
   size_t count = min( size_, rhs.size_);
-  for( size_t i = 0; i<count; ++i ) {
-    *vl++ /= *vr++;
+  for( size_t i = 0; i < count; ++i,*vl++,*vr++ ) {
+    if ( i >= start_ ) {
+      *vl /= *vr;
+    }
   }
   return *this;
 }
@@ -319,8 +356,10 @@ Sample::operator/=( const Scalar& rhs )
 {
   Scalar *vl = value_;
   size_t count = size_;
-  for( size_t i = 0; i<count; ++i ) {
-    *vl++ /= rhs;
+  for( size_t i = start_; i < count; ++i,*vl++ ) {
+    if ( i >= start_ ) {
+     *vl /= rhs;
+    }
   }
   return *this;
 }
@@ -331,14 +370,14 @@ Sample::operator&=( const Sample& rhs )
   Scalar *vl = value_;
   Scalar *vr = rhs.value_;
   size_t count = min( size_, rhs.size_);
-  for( size_t i = 0; i<count; ++i ) {
+  for( size_t i = 0; i < count; ++i,vl++,vr++ ) {
     // The increments are not in the min() statement
     // because gcc has problems producing good code
     // when using -fno-inline.  For safety sake
     // the increments are explicitly after the min.
-    *vl = min(*vl,*vr);
-     vl++;
-     vr++;
+    if ( i >= start_ ) {
+      *vl = min(*vl,*vr);
+    }
   }
   return *this;
 }
@@ -349,14 +388,14 @@ Sample::operator|=( const Sample& rhs )
   Scalar *vl = value_;
   Scalar *vr = rhs.value_;
   size_t count = min( size_, rhs.size_);
-  for( size_t i = 0; i<count; ++i ) {
+  for( size_t i = start_; i < count; ++i,vl++,vr++ ) {
     // The increments are not in the max() statement
     // because gcc has problems producing good code
     // when using -fno-inline.  For safety sake
     // the increments are explicitly after the max.
-    *vl = max(*vl,*vr);
-    vl++;
-    vr++;
+    if ( i >= start_ ) {
+      *vl = max(*vl,*vr);
+    }
   }
   return *this;
 }
@@ -365,8 +404,10 @@ Sample&
 Sample::sqr()
 {
   iterator it = begin();
-  for( ; it != end() ; ++it ) {
-    *it = (*it) * (*it);
+  for( size_t i = 0; it != end() ; ++it,++i ) {
+    if ( i >= start_ ) {
+      *it = (*it) * (*it);
+    }
   }
   return *this;
 }
@@ -375,8 +416,10 @@ Sample&
 Sample::sqrt()
 {
   iterator it = begin();
-  for( ; it != end() ; ++it ) {
-    *it = std::sqrt( *it );
+  for( size_t i = 0; it != end() ; ++it,++i ) {
+    if ( i >= start_ ) {
+      *it = std::sqrt( *it );
+    }
   }
   return *this;
 }
@@ -386,8 +429,10 @@ Sample::norm() const
 {
   Scalar norm = 0.0;
   const_iterator it = begin();
-  for( ; it != end() ; ++it ) {
-    norm += *it* *it;
+  for( size_t i = 0; it != end() ; ++it,++i ) {
+    if ( i >= start_ ) {
+      norm += *it* *it;
+    }
   }
   return std::sqrt(norm);
 }
@@ -398,8 +443,10 @@ Sample::dotProduct( const Sample& rhs ) const
   Scalar norm = 0.0;
   const_iterator lhs_it = begin();
   const_iterator rhs_it = rhs.begin();
-  for( ; lhs_it != end() && rhs_it != rhs.end() ; ++lhs_it, ++rhs_it ) {
-    norm += *lhs_it* *rhs_it;
+  for( size_t i = 0; lhs_it != end() && rhs_it != rhs.end() ; ++lhs_it, ++rhs_it, ++i ) {
+    if ( i >= start_ ) {
+      norm += *lhs_it* *rhs_it;
+    }
   }
   return std::sqrt(norm);
 }

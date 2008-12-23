@@ -66,6 +66,12 @@ public:
   // First iteration mechanism works with indexing.
   inline std::size_t size() const { return size_; }
 
+  // Set the index of the first attribute related to a continuous variable.
+  // When a Sample contains attributes from both categorical and continuous
+  // variables, categorical attributes always come first and their values 
+  // should not be changed in most operations.
+  void setCategoricalThreshold( std::size_t index );
+
   // Return an lvalue.
   inline Scalar& operator[]( std::size_t index ) { return value_[index]; }
 
@@ -129,6 +135,8 @@ private:
 
   std::size_t size_;
   Scalar *value_;
+
+  std::size_t start_; // index of the first attribute of a continuous variable
 
   void alloc( std::size_t size );
 
