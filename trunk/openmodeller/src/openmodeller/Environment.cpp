@@ -371,6 +371,26 @@ EnvironmentImpl::changeMask( const std::string& mask_file )
 }
 
 
+/******************************/
+/*** num Categorical Layers ***/
+size_t
+EnvironmentImpl::numCategoricalLayers() const
+{
+  size_t size = 0;
+
+  layers::const_iterator lay = _layers.begin();
+  layers::const_iterator end = _layers.end();
+
+  while ( lay != end && lay->second->isCategorical() ) {
+
+    ++size;
+    ++lay;
+  }
+
+  return size;
+}
+
+
 /*****************/
 /*** get Type ***/
 int
@@ -459,6 +479,8 @@ EnvironmentImpl::getNormalized( Coord x, Coord y ) const
 {
   Sample sample;
   getUnnormalizedInternal( &sample, x, y);
+
+  sample.setCategoricalThreshold( numCategoricalLayers() );
 
   if ( _normalizerPtr ) {
 

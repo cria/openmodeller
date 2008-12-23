@@ -191,7 +191,7 @@ public:
 
   Sample const & originalEnvironment() const; 
 
-  void normalize( Normalizer * normalizerPtr );
+  void normalize( Normalizer * normalizerPtr, size_t categoricalThreshold=0 );
 
   void setNormalizedEnvironment( const Sample& s );
 

@@ -65,7 +65,7 @@ dllexp void splitOccurrences(const OccurrencesPtr& occurrences,
  * Representation of a set of occurrences.
  *
  */
-class dllexp OccurrencesImpl : public Configurable, public Normalizable, private ReferenceCountedObject
+class dllexp OccurrencesImpl : public Configurable, private ReferenceCountedObject
 {
   friend class ReferenceCountedPointer<OccurrencesImpl>;
   friend class ReferenceCountedPointer<const OccurrencesImpl>;
@@ -198,7 +198,7 @@ public:
   /** normalizable interface */
   void getMinMax( Sample * min, Sample * max ) const;
 
-  void normalize( Normalizer * normalizerPtr );
+  void normalize( Normalizer * normalizerPtr, size_t categoricalThreshold=0 );
 
   /** Sets environment object in each occurrence object
    */

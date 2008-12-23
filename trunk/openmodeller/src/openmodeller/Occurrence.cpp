@@ -79,8 +79,10 @@ Sample const & OccurrenceImpl::originalEnvironment() const
 }
 
 void
-OccurrenceImpl::normalize( Normalizer * normalizerPtr )
+OccurrenceImpl::normalize( Normalizer * normalizerPtr, size_t categoricalThreshold )
 {
+  unnormEnv_.setCategoricalThreshold( categoricalThreshold );
+
   normEnv_ = unnormEnv_;
 
   if ( normalizerPtr ) {
