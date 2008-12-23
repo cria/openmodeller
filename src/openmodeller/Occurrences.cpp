@@ -187,7 +187,7 @@ OccurrencesImpl::setEnvironment( const EnvironmentPtr& env, const char *type )
 /*****************/
 /*** normalize ***/
 void 
-OccurrencesImpl::normalize( Normalizer * normalizerPtr )
+OccurrencesImpl::normalize( Normalizer * normalizerPtr, size_t categoricalThreshold )
 {
   if ( ! normalizerPtr ) {
 
@@ -200,7 +200,7 @@ OccurrencesImpl::normalize( Normalizer * normalizerPtr )
   // set the normalized values 
   while ( occ != end ) {
 
-    (*occ)->normalize( normalizerPtr );
+    (*occ)->normalize( normalizerPtr, categoricalThreshold );
     ++occ;
   }
 }

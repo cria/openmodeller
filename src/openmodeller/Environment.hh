@@ -104,7 +104,9 @@ public:
   /** Deep copy of this. */
   EnvironmentImpl* clone() const;
 
-  unsigned int numLayers() const  { return _layers.size(); }
+  unsigned int numLayers() const { return _layers.size(); }
+
+  size_t numCategoricalLayers() const;
 
   /** Returns 1 if the i-th variable is categorical.
    * else returns 0.

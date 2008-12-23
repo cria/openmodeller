@@ -247,25 +247,31 @@ void SamplerImpl::normalize( Normalizer * normalizerPtr )
     return;
   }
 
-  if ( _env ) {
+  if ( ! _env ) {
 
-      // set env in all occurrences before normalizing env so that
-      // occurrences get the unnormalized values
-      setEnvironmentInOccurrences();
-      _env->normalize( normalizerPtr );
+    std::string msg = "Cannot normalize sampler without an Environment.\n";
+
+    Log::instance()->error( msg.c_str() );
+
+    throw SamplerException( msg );
   }
+
+  // set env in all occurrences before normalizing env so that
+  // occurrences get the unnormalized values
+  setEnvironmentInOccurrences();
+  _env->normalize( normalizerPtr );
 
   // need to normalize presences and absences even if _env is present
   // because environment in occurrences was set with unnormalized values
   // if _env doesn't exist, then normalize occurrences anyway
   if ( _presence && _presence->numOccurrences() ) {
 
-    _presence->normalize( normalizerPtr );
+    _presence->normalize( normalizerPtr, _env->numCategoricalLayers() );
   }
 
   if ( _absence && _absence->numOccurrences() ) {
 
-    _absence->normalize( normalizerPtr );
+    _absence->normalize( normalizerPtr, _env->numCategoricalLayers() );
   }
 
   _normalized = true;

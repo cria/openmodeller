@@ -3,7 +3,7 @@
  * 
  * @author Elisangela S. da C. Rodrigues (elisangela . rodrigues [at] poli . usp . br)
  * @author Renato De Giovanni (renato [at] cria . org . br)
- * * $Id$
+ * $Id$
  * 
  * LICENSE INFORMATION 
  * 
@@ -465,7 +465,7 @@ MaximumEntropy::initialize()
 
     setNormalization( _samp );
 
-    _absences->normalize( _normalizerPtr );
+    _absences->normalize( _normalizerPtr, _samp->getEnvironment()->numCategoricalLayers() );
   }
   else {
 
@@ -517,8 +517,6 @@ MaximumEntropy::initialize()
       while ( p_iterator != p_end ) {
 
         Sample sample = (*p_iterator)->environment();
-
-        sample.dump();
 
         values.insert( sample[i] ); // std::set already avoids duplicate values
 
