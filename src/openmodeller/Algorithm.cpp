@@ -41,6 +41,9 @@
 #include <openmodeller/ScaleNormalizer.hh>
 #include <openmodeller/MeanVarianceNormalizer.hh>
 
+//needed for atoi function
+#include <stdlib.h>
+
 using std::string;
 
 #undef DEBUG_MEMORY
