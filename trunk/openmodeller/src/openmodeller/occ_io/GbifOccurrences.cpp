@@ -32,7 +32,8 @@
 
 #include <stdlib.h>
 
-#include <string>
+//c style include needed for strcmp etc
+#include <string.h>
 using std::string;
 
 #include <sstream>

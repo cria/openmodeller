@@ -30,6 +30,9 @@
 
 #include <openmodeller/Exceptions.hh>
 
+//Needed for strlen calls otherwise gcc 4.3.2 throws error
+#include <string.h>
+
 using std::ostream;
 using std::ios_base;
 using std::fstream;

@@ -100,7 +100,8 @@
 #  include <cmath>
 #  include <cstdio>
 #  include <cstdlib>
-#  include <string>
+//gcc 4.3.2 also likes c style include here
+#  include <string.h>
 #  include <iostream>
 #endif
 
