@@ -412,7 +412,7 @@ bool EnvironmentalDistance::InitDistanceType(){
          bool foundDist = false;
          for(int i=0; i<(1<<(layerCount-1)); i++){ // for(i FROM 0 TO 2 "power" (layerCount - 1))
             for(int k=0; k<layerCount; k++) // This is the same loop used to create
-               if(i & (1<<k) != 0){         // binary numbers, but with "max" and
+               if((i & (1<<k)) != 0){         // binary numbers, but with "max" and
                   x[k] = DATA_MAX;          // "min" instead of "1" and "0"
                   y[k] = DATA_MIN; // y is the oposite of x
                }else{

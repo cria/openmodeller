@@ -32,7 +32,7 @@
 
 #include <stdlib.h>
 
-#include <string>
+#include <string.h>
 using std::string;
 
 #include <sstream>

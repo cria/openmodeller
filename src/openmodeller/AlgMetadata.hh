@@ -32,7 +32,7 @@
 #include <openmodeller/om_defs.hh>
 #include <string>
 
-typedef enum AlgParamDatatype {
+enum AlgParamDatatype {
 
   Integer = 0,
   Real    = 1,

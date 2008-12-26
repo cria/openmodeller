@@ -38,8 +38,10 @@
 */
 
 #include <iostream>
-#include <string>
+#include <string.h>
 #include <map>
+//required for gcc 4.3.x
+#include <cstdlib>
 
 #include "getopts.h"
 
