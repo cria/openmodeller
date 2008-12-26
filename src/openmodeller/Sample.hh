@@ -15,6 +15,8 @@
 #include <cstddef>
 #include <iostream>
 #include <vector>
+//Needed for using free in template function with gcc4.3.2
+#include <stdlib.h>
 
 // Decl of SExp which is defined in SampleExpr.hh
 template< typename T > class SExpr;
