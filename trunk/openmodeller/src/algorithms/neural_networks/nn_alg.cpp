@@ -627,7 +627,7 @@ NNAlgorithm::_getConfiguration( ConfigurationPtr& config ) const
   model_config->addNameValue( "HiddenLayerNeurons", _nn_parameter.hid );
 
 
-  int *layers = new int (3);
+  int *layers = new int[3];
 
   layers[0] = _num_layers;
   layers[1] = _nn_parameter.hid;
@@ -648,7 +648,7 @@ NNAlgorithm::_getConfiguration( ConfigurationPtr& config ) const
 
 
   int siz = 0;
- 
+
   for(int i = 0; i < 3; i++){
 
     for(int j = 0; j < layers[i]; j++){
