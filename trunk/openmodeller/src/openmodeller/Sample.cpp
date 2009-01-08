@@ -40,7 +40,8 @@ Sample::Sample() :
 
 Sample::Sample( size_t size ) :
   size_( 0 ),
-  value_( 0 )
+  value_( 0 ),
+  start_( 0 )
 {
   if ( size == 0 ) {
     return;
@@ -52,13 +53,12 @@ Sample::Sample( size_t size ) :
   for ( size_t i = 0; i < size; ++i, ++v ) {
     *v = Scalar(0);
   }
-
-  start_ = 0;
 }
 
 Sample::Sample( std::size_t size, Scalar value ) :
   size_( 0 ),
-  value_( 0 )
+  value_( 0 ),
+  start_( 0 )
 {
   if ( size == 0 ) {
     return;
@@ -69,26 +69,24 @@ Sample::Sample( std::size_t size, Scalar value ) :
   for( size_t i = 0; i<size; ++i ) {
     *v++ = value;
   }
-
-  start_ = 0;
 }
 
 Sample::Sample( size_t size, Scalar const * values ) :
   size_( 0 ),
-  value_( 0 )
+  value_( 0 ),
+  start_( 0 )
 {
   if ( size == 0 ) {
     return;
   }
   alloc( size );
   copy( size, values );
-
-  start_ = 0;
 }
 
 Sample::Sample( std::vector<Scalar> values ) :
   size_( 0 ),
-  value_( 0 )
+  value_( 0 ),
+  start_( 0 )
 {
   size_ = values.size();
   if ( size_ == 0 ) {
@@ -106,21 +104,18 @@ Sample::Sample( std::vector<Scalar> values ) :
     ++v;
     ++it;
   }
-
-  start_ = 0;
 }
 
 Sample::Sample( const Sample & rhs ) :
   size_( 0 ),
-  value_( 0 )
+  value_( 0 ),
+  start_( 0 )
 {
   if ( rhs.size_ == 0 ) {
     return;
   }
   alloc( rhs.size_ );
   copy( rhs.size_, rhs.value_ );
-
-  start_ = 0;
 }
 
 Sample::~Sample()
@@ -168,6 +163,7 @@ Sample::resize( size_t size )
     free( value_ );
     value_ = 0;
     this->size_ = 0;
+    this->start_ = 0;
     return;
   }
 
@@ -184,7 +180,7 @@ Sample::resize( size_t size )
   // Finally, update this->size.
   this->size_ = size;
 
-  start_ = min( size, start_ );
+  this->start_ = min( size, this->start_ );
 }
 
 
@@ -200,6 +196,7 @@ void
 Sample::alloc( size_t size )
 {
   this->size_ = size;
+  this->start_ = 0;
   value_ = (Scalar*)malloc( size * sizeof( Scalar ) );
 
   if ( ! value_ ) {
