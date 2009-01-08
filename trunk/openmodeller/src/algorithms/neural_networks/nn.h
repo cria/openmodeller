@@ -304,7 +304,7 @@ class Layer{
 	double *temp; // Temperory pointer
         temp = GetOutput();
         //GetOutput();
-        delete temp;
+        delete[] temp;
     }
 
 
@@ -385,7 +385,7 @@ class Layer{
 	  *mean_square_error += square_error[i];
 	}
 	
-	delete square_error;
+	delete[] square_error;
     }
 
 
