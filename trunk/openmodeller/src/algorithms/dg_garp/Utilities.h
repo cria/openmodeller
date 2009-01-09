@@ -22,6 +22,8 @@
 #ifndef __UTILITIES_H__
 #define __UTILITIES_H__
 
+#include <openmodeller/Exceptions.hh>
+
 #include <math.h>
 #include <time.h>
 #include <stdio.h>
@@ -105,23 +107,28 @@ int getFileSize(char * strFilename);
 // ===========================================================================
 //  Declaration and Implementation of class GarpException
 // ===========================================================================
-class GarpException
+class GarpException : public AlgorithmException 
 {
 public:
-	int intCode;
-	string strMessage;
 
-	GarpException(int code, string message)
-	{
-		intCode = code;
-		strMessage = message;
-	}
+  GarpException(int code, string message) :
+     AlgorithmException( message ),
+     intCode( code ),
+     strMessage( message)
+  { }
 
-	void getError(int& code, string& message)
-	{
-		code = intCode;
-		message = strMessage;
-	}
+  ~GarpException() throw() {}
+
+  void getError(int& code, string& message)
+  {
+    code = intCode;
+    message = strMessage;
+  }
+
+private:
+
+  int intCode;
+  string strMessage;
 };
 
 // ===========================================================================
