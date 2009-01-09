@@ -5,9 +5,13 @@
 extern "C" {
 #endif
 
-#ifdef WIN32
+#ifndef WIN32
+   #include <sys/time.h>
+   #include <sys/resource.h>
+#else
    #include <time.h>
 #endif
+
 
 #include <ctype.h>
 #include <float.h>
@@ -326,13 +330,25 @@ class Layer{
 
     double GetRand(void){  // Return a random number between range -1 e 1 using time to seed the srand function
 
-	time_t timer;
-        struct tm *tblock;
-        timer = time(NULL);
-        tblock = localtime(&timer);
-        int seed = int(tblock->tm_sec + 100*RANDOM_CLAMP + 100*RANDOM_NUM);
-        //srand(tblock->tm_sec);
+	int seconds;
+
+#ifndef WIN32
+        struct timeval time;
+        gettimeofday( &time, (struct timezone *)NULL );
+        seconds = (int)time.tv_usec;
+#else
+        time_t timer = time( NULL );
+        struct tm *tblock = localtime(&timer);
+        seconds = tblock->tm_sec;
+#endif
+
+        int seed = int(seconds + 100*RANDOM_CLAMP + 100*RANDOM_NUM);
+        //srand(seconds);
         srand(seed);
+
+#ifdef _GLIBCPP_HAVE_DRAND48
+        srand48(seed);
+#endif
 
         return ((RANDOM_CLAMP+RANDOM_NUM)/400);
    }
