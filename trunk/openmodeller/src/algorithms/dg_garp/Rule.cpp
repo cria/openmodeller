@@ -321,7 +321,7 @@ void Rule::mutate(int intTemperature)
 	rnd2 = GarpUtil::randint(-intTemperature, intTemperature);
 
 	if ((k + 1 > intLength) || (k < 2))
-		throw "Array read out of bounds";
+		throw GarpException(100, "Array read out of bounds (Rule::mutate)");
 
 	aux1 = Gene[k];
 	aux2 = Gene[k + 1];
@@ -361,7 +361,7 @@ bool Rule::similar(Rule * objOtherRule)
 			k = iGeneIndex[j];
 
 			if ((k * 2 + 1 > intLength) || (k * 2 < 2))
-				throw "Array read out of bounds";
+				throw GarpException(100, "Array read out of bounds (Rule::similar)");
 
 			ng_2k_1 = Gene[k * 2 + 1];
 			ng_2k   = Gene[k * 2];
@@ -522,7 +522,7 @@ void RangeRule::initialize(EnvCellSet * objEnvCellSet, const RuleSet * objRuleSe
 		j = iGeneIndex[i];
 		
 		if ((j * 2 + 1 > intLength) || (j * 2 < 2))
-			throw "Array out of bounds";
+			throw GarpException(100, "Array out of bounds (RangeRule::initialize)");
 
 		bioclimRange(objEnvCellSet, Gene[0], GarpUtil::random() * 0.1, j);
 	}
@@ -595,7 +595,7 @@ double RangeRule::getStrength(EnvCell * cell)
 		i = iGeneIndex[k];
 
 		if ((i * 2 + 1 > intLength) || (i * 2 < 2))
-			throw "Array out of bounds";
+			throw GarpException(100, "Array out of bounds (RangeRule::getStrength)");
 
 		a = Gene[i * 2];
 		b = Gene[i * 2 + 1];
@@ -634,7 +634,7 @@ bool NegatedRangeRule::applyToCell(EnvCell * cell)
 		j = iGeneIndex[i];
 
 		if ((j * 2 + 1 > intLength) || (j * 2 < 2))
-			throw "Array out of bounds";
+			throw GarpException(100, "Array out of bounds (NegatedRangeRule::applyToCell)");
 
 		if (!((Gene[j * 2] == 0) && (Gene[j * 2 + 1] == 255)))
 			if (GarpUtil::notBetween(cell->values[j], Gene[j * 2], Gene[j * 2 + 1]))
@@ -681,7 +681,7 @@ void AtomicRule::initialize(EnvCellSet * objEnvCellSet, const RuleSet * objRuleS
 		k = iGeneIndex[j];
 
 		if ((k * 2 + 1 > intLength) || (k * 2 < 2))
-			throw "Array out of bounds";
+			throw GarpException(100, "Array out of bounds (AtomicRule::initialize)");
 
 		Gene[2 * k] = Gene[2 * k + 1] = objEnvCell->values[k]; 
     }  
@@ -825,7 +825,7 @@ double LogitRule::getStrength(EnvCell * cell)
 		i = iGeneIndex[k];
 
 		if ((i * 2 + 1 > intLength) || (i * 2 < 2))
-			throw "Array read out of bounds";
+			throw GarpException(100, "Array read out of bounds (LogitRule::getStrength)");
 
 		if (GarpUtil::membership(Gene[i * 2], Gene[i * 2 + 1], 1) != 255) 
 		{
@@ -857,7 +857,7 @@ void LogitRule::mutate(int intTemperature)
 	j = 2 * iGeneIndex[k];
 
 	if ((j > intLength) || (j < 0))
-		throw "Array read out of bounds";
+		throw GarpException(100, "Array read out of bounds (LogitRule::mutate)");
 
 	Gene[j]     = Gene[j]     + GarpUtil::randint(-intTemperature, intTemperature); 
 	Gene[j + 1] = Gene[j + 1] + GarpUtil::randint(-intTemperature, intTemperature); 
@@ -884,7 +884,7 @@ bool LogitRule::similar(Rule * objRule)
 		for (k = 2, found = true; (k < intLength) && (found); k ++)
 		{
 			if ((k > intLength) || (k < 2))
-				throw "Array read out of bounds";
+				throw GarpException(100, "Array read out of bounds (LogitRule::similar)");
 
 			found = !( ((abs(Gene[k] - 128) < 10) && 
 						(abs(objOtherRule->Gene[k] - 128) > 10)) || 
