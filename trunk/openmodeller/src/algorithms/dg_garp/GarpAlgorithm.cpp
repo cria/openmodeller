@@ -270,6 +270,8 @@ int GarpAlgorithm::initialize()
 	  values[j + 1] = (BYTE) sample[j]; 
 	  //printf("%3d (%8.3f) ", values[j + 1], sample[j]);
 	}
+      // Always initialize last element (added by rdg 2009-01-09)
+      values[dim+1] = (BYTE)0;
 
       //printf("\n");
       objTrainSet->add(cell);
