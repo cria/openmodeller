@@ -118,9 +118,9 @@ static const GDALDataType f_type = (sizeof(Scalar) == 4) ? GDT_Float32 : GDT_Flo
 RasterGdal::RasterGdal( const string& file, int categ ):
   f_data(0),
   f_size(0),
+  f_format(-1), // unknown
   f_currentRow(-1),
-  f_changed(0),
-  f_format(-1) // unknown
+  f_changed(0)
 {
   f_file = file;
   f_scalefactor = 1.0;
@@ -138,6 +138,7 @@ RasterGdal::RasterGdal( const string& file, int categ ):
 RasterGdal::RasterGdal( const string& output_file, const string& file, const MapFormat& format):
   f_data(0),
   f_size(0),
+  f_format(-1), // unknown
   f_currentRow(-1),
   f_changed(0)
 {
@@ -219,6 +220,7 @@ RasterGdal::RasterGdal( const string& output_file, const string& file, const Map
 RasterGdal::RasterGdal( const string& file, const MapFormat& format):
   f_data(0),
   f_size(0),
+  f_format(-1), // unknown
   f_currentRow(-1),
   f_changed(0)
 {
