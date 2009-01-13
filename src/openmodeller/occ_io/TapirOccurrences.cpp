@@ -42,6 +42,11 @@ using std::ostringstream;
 
 #include <expat.h>
 
+#define TP_TEMPLATE_LOCATION "http://openmodeller.cria.org.br/xml/tapir/1.0/st_v3.xml"
+#define TP_TEMPLATE_STRSIZE 55
+#define TP_OUTPUT_MODEL_LOCATION "http://openmodeller.cria.org.br/xml/tapir/1.0/om.xml"
+#define TP_OUTPUT_MODEL_STRSIZE 52
+
 /*****************************************/
 /*** create OccurrencesReader callback ***/
 OccurrencesReader * 
@@ -247,9 +252,9 @@ TapirOccurrences::load()
     Log::instance()->error( "TapirOccurrences::load - Provider did not map the DarwinCore DecimalLatitude concept from the geospatial extension\n" );
     return false;
   }
-  if ( ( ! info._accepts_any_model ) && ! info._accepts_om_model ) {
+  if ( ( ! info._accepts_om_template ) && ( ! info._accepts_any_model ) && ! info._accepts_om_model ) {
 
-    Log::instance()->error( "TapirOccurrences::load - Provider must accept searches with any output model or searches with the openModeller output model\n" );
+    Log::instance()->error( "TapirOccurrences::load - Provider must accept searches with the openModeller query template or searches with the openModeller output model or searches with any output model\n" );
     return false;
   }
 
@@ -342,6 +347,19 @@ TapirOccurrences::_startCapabilitiesElement( void *data, const char *el, const c
       }
     }
   }
+  // template element
+  else if ( strncmp( el, "http://rs.tdwg.org/tapir/1.0/template", 37 ) == 0 ) {
+
+    for ( int i = 0; attr[i]; i += 2 ) {
+
+      // location attribute
+      if ( strncmp( attr[i], "location", 8 ) == 0 && 
+           strncmp( attr[i+1], TP_TEMPLATE_LOCATION, TP_TEMPLATE_STRSIZE ) == 0 ) {
+
+        info._accepts_om_template = true;
+      }
+    }
+  }
   // outputModel element
   else if ( strncmp( el, "http://rs.tdwg.org/tapir/1.0/outputModel", 40 ) == 0 ) {
 
@@ -349,7 +367,7 @@ TapirOccurrences::_startCapabilitiesElement( void *data, const char *el, const c
 
       // location attribute
       if ( strncmp( attr[i], "location", 8 ) == 0 && 
-           strncmp( attr[i+1], "http://openmodeller.cria.org.br/xml/tapir/1.0/om.xml", 52 ) == 0 ) {
+           strncmp( attr[i+1], TP_OUTPUT_MODEL_LOCATION, TP_OUTPUT_MODEL_STRSIZE ) == 0 ) {
 
         info._accepts_om_model = true;
       }
@@ -494,10 +512,10 @@ TapirOccurrences::_retrieveRecords( TapirRecordData *data, int limit )
 // curl_easy_escape was included in libcurl version 7.15.4
 #if LIBCURL_VERSION_NUM >= 0x070f04
   search_url << "&sciname=" << curl_easy_escape( curl_handle, data->_occurrences->name(), 0 );
-  search_url << "&t=" << curl_easy_escape( curl_handle, "http://openmodeller.cria.org.br/xml/tapir/1.0/st_v3.xml", 0 );
+  search_url << "&t=" << curl_easy_escape( curl_handle, TP_TEMPLATE_LOCATION, 0 );
 #else
   search_url << "&sciname=" << curl_escape( data->_occurrences->name(), 0 );
-  search_url << "&t=" << curl_escape( "http://openmodeller.cria.org.br/xml/tapir/1.0/st_v3.xml", 0 );
+  search_url << "&t=" << curl_escape( TP_TEMPLATE_LOCATION, 0 );
 #endif
 
   // After using next to make the URL, set it to -1 to stop the process in case 
