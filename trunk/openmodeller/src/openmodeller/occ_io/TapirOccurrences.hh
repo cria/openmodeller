@@ -40,7 +40,7 @@ using std::string;
 // Data structure to store relevant information about a TAPIR capabilities response
 struct CapabilitiesInfo {
 
-  CapabilitiesInfo(): _is_tapir(false), _has_guid(false), _has_name(false),_has_long(false),_has_lat(false),_accepts_any_model(false),_accepts_om_model(false),_max_records("") { }
+  CapabilitiesInfo(): _is_tapir(false), _has_guid(false), _has_name(false),_has_long(false),_has_lat(false),_accepts_any_model(false),_accepts_om_model(false),_accepts_om_template(false),_max_records("") { }
 
   XML_Parser _parser;
   bool _is_tapir; // indicates if it's a TAPIR response
@@ -50,6 +50,7 @@ struct CapabilitiesInfo {
   bool _has_lat;  // indicates if provider mapped the DarwinCore latitude concept
   bool _accepts_any_model; // indicates if provider accepts any output model
   bool _accepts_om_model;  // indicates if provider accepts the openModeller output model
+  bool _accepts_om_template;  // indicates if provider accepts the openModeller query template
   std::string _max_records; // maximum number of records that can be returned by the provider
 };
 
