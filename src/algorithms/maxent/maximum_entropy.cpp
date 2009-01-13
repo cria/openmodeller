@@ -960,7 +960,7 @@ MaximumEntropy::_setConfiguration( const ConstConfigurationPtr& config )
       // Convert from Sample to std::set
       std::set<Scalar> values;
 
-      for ( int i = 0; i < layer_categories.size(); ++i ) {
+      for ( unsigned int i = 0; i < layer_categories.size(); ++i ) {
 
         values.insert( layer_categories[i] );
       }
