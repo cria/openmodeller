@@ -1,6 +1,6 @@
-Release 0.7 (2008-?-?)
---------------------------
-SVN revision: ?
+Release 0.7 (2009-01-14)
+------------------------
+SVN revision: 4758
 
 	* New Algorithm using Artificial Neural Networks.
 	* Changed AUC calculation when no absence points are provided (instead of using 1-specificity after generating pseudo-absences, it now uses the proportion of points predicted present for a large number of random background points).
