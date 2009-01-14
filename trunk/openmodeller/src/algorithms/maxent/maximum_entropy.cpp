@@ -586,11 +586,11 @@ MaximumEntropy::iterate()
 
           if ( sample[i] == *it ) {
 
-            context.push_back( make_pair( out.str(), 1.0 ) );
+            context.push_back( make_pair( out.str(), (float)1.0 ) );
           }
           else {
 
-            context.push_back( make_pair( out.str(), 0.0 ) );
+            context.push_back( make_pair( out.str(), (float)0.0 ) );
           }
 
           out << ++id;
@@ -616,11 +616,11 @@ MaximumEntropy::iterate()
 	}
 	if (_threshold_feat == 1 ) {
 	  if ( (float)sample[i] > _tolerance ) {
-	    context.push_back( make_pair( out.str(), 1 ) );
+	    context.push_back( make_pair( out.str(), (float)1.0 ) );
 	    out << ++id;
 	  }
 	  else {
-	    context.push_back( make_pair( out.str(), 0 ) );
+	    context.push_back( make_pair( out.str(), (float)0.0 ) );
 	    out << ++id;
 	  }
 	}
@@ -630,7 +630,7 @@ MaximumEntropy::iterate()
 	    out << ++id;
 	  }
 	  else {
-	    context.push_back( make_pair( out.str(), 0 ) );
+	    context.push_back( make_pair( out.str(), (float)0.0 ) );
 	    out << ++id;
 	  }
 	}
@@ -670,11 +670,11 @@ MaximumEntropy::iterate()
 
           if ( sample[i] == *it ) {
 
-            context.push_back( make_pair( out.str(), 1.0 ) );
+            context.push_back( make_pair( out.str(), (float)1.0 ) );
           }
           else {
 
-            context.push_back( make_pair( out.str(), 0.0 ) );
+            context.push_back( make_pair( out.str(), (float)0.0 ) );
           }
 
           out << ++id;
@@ -700,11 +700,11 @@ MaximumEntropy::iterate()
 	}
 	if (_threshold_feat == 1 ) {
 	  if ( (float)sample[i] > _tolerance ) {
-	    context.push_back( make_pair( out.str(), 1 ) );
+	    context.push_back( make_pair( out.str(), (float)1.0 ) );
 	    out << ++id;
 	  }
 	  else {
-	    context.push_back( make_pair( out.str(), 0 ) );
+	    context.push_back( make_pair( out.str(), (float)0.0 ) );
 	    out << ++id;
 	  }
 	}
@@ -714,7 +714,7 @@ MaximumEntropy::iterate()
 	    out << ++id;
 	  }
 	  else {
-	    context.push_back( make_pair( out.str(), 0 ) );
+	    context.push_back( make_pair( out.str(), (float)0.0 ) );
 	    out << ++id;
 	  }
 	}
@@ -772,11 +772,11 @@ MaximumEntropy::getValue( const Sample& x ) const
 
           if ( x[i] == *it ) {
 
-            context.push_back( make_pair( out.str(), 1.0 ) );
+            context.push_back( make_pair( out.str(), (float)1.0 ) );
           }
           else {
 
-            context.push_back( make_pair( out.str(), 0.0 ) );
+            context.push_back( make_pair( out.str(), (float)0.0 ) );
           }
 
           out << ++id;
@@ -803,11 +803,11 @@ MaximumEntropy::getValue( const Sample& x ) const
       }
       if (_threshold_feat == 1 ) {
 	if ( (float)x[i] > _tolerance ) {
-	  context.push_back( make_pair( out.str(), 1 ) );
+	  context.push_back( make_pair( out.str(), (float)1.0 ) );
 	  out << ++id;
 	}
 	else {
-	  context.push_back( make_pair( out.str(), 0 ) );
+	  context.push_back( make_pair( out.str(), (float)0.0 ) );
 	  out << ++id;
 	}
       }
@@ -817,7 +817,7 @@ MaximumEntropy::getValue( const Sample& x ) const
 	  out << ++id;
 	}
 	else {
-	  context.push_back( make_pair( out.str(), 0 ) );
+	  context.push_back( make_pair( out.str(), (float)0.0 ) );
 	  out << ++id;
 	}
       }
