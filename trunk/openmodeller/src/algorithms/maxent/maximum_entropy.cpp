@@ -765,8 +765,8 @@ MaximumEntropy::getValue( const Sample& x ) const
 
       if ( layer_categories != _categorical_values.end() ) {
 
-        std::set<Scalar>::iterator it = layer_categories->second.begin();
-        std::set<Scalar>::iterator it_end = layer_categories->second.end();
+        std::set<Scalar>::const_iterator it = layer_categories->second.begin();
+        std::set<Scalar>::const_iterator it_end = layer_categories->second.end();
 
         while ( it != it_end ) {
 
