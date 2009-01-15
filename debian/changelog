@@ -1,3 +1,19 @@
+libopenmodeller (0.7.0) hardy; urgency=low
+
+  * New Algorithm using Artificial Neural Networks.
+  * Changed AUC calculation when no absence points are provided (instead of using 1-specificity after generating pseudo-absences, it now uses the proportion of points predicted present for a large number of random background points).
+  * Included method to calculate partial area ratio in ROC class.
+  * Added parameters --calc-matrix, --calc-roc, --num-background and --max-omission to om_test.
+  * Changed confusion matrix serialization to store all raw values.
+  * Included new map format to generate ARC/Info ASCII grid files (byte or floating point fomats).
+  * Fixed bug in Maximum Entropy algorithm (environment was being re-normalized when pseudo-absences were generated internally).
+  * Added support to handle categorical values in the Maximum Entropy algorithm.
+  * Fixed bug in ROC curve calculation: when the corresponding algorithm required normalization and the sampler passed as a parameter was unnormalized, algorithm prediction values were being calculated based on unnormalized samples.
+  * Added support to use "Spatially unique" and Environmentally unique" keywords in the request file (console interface).
+
+
+ -- Renato De Giovanni <renato@vm-cria>  Thu, 15 Jan 2009 09:00:00 -0300
+
 libopenmodeller (0.6.1) hardy; urgency=low
 
   * Enabled integration with Condor in the modelling server.
