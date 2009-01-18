@@ -125,8 +125,8 @@ static AlgParamMetadata parameters[NUM_PARAM] = {
     EPOCH_ID,  // Id.
     "Epoch",   // Name.
     Integer,   // Type.
-    "Determines when training will stop once the number of iterations exceeds epochs (only for training by epoch).", // Overview
-    "Determines when training will stop once the number of iterations exceeds epochs (only for training by epoch).", // Description.
+    "Determines when training will stop once the number of iterations exceeds epochs (for training by minimum error choice the maximum number of epochs).", // Overview
+    "Determines when training will stop once the number of iterations exceeds epochs (for training by minimum error choice the maximum number of epochs).", // Description.
     1,         // Not zero if the parameter has lower limit.
     1,         // Parameter's lower limit.
     0,         // Not zero if the parameter has upper limit.
@@ -305,19 +305,16 @@ NNAlgorithm::initialize()
 
 
   // EPOCH
-  if (_nn_parameter.choice == 0){
+  if ( ! getParameter( EPOCH_ID, &_nn_parameter.epoch ) ) {
 
-    if ( ! getParameter( EPOCH_ID, &_nn_parameter.epoch ) ) {
+    Log::instance()->error( NN_LOG_PREFIX "Parameter '" EPOCH_ID "' not passed.\n" );
+    return 0;
+  }
 
-      Log::instance()->error( NN_LOG_PREFIX "Parameter '" EPOCH_ID "' not passed.\n" );
-      return 0;
-    }
+  if ( _nn_parameter.epoch < 1) {
 
-    if ( _nn_parameter.epoch < 1) {
-
-      Log::instance()->warn( NN_LOG_PREFIX "Parameter out of range: %d\n", _nn_parameter.epoch );
-      return 0;
-    }
+    Log::instance()->warn( NN_LOG_PREFIX "Parameter out of range: %d\n", _nn_parameter.epoch );
+    return 0;
   }
 
 
@@ -475,9 +472,7 @@ NNAlgorithm::initialize()
   Log::instance()->debug( NN_LOG_PREFIX "\nLearning rate: %f", _nn_parameter.learning_rate);
   Log::instance()->debug( NN_LOG_PREFIX "\nMomentum: %f", _nn_parameter.momentum);
   Log::instance()->debug( NN_LOG_PREFIX "\nChoice: %d", _nn_parameter.choice);
-  if(_nn_parameter.choice == 0){
-    Log::instance()->debug( NN_LOG_PREFIX "\nEpoches: %.0f", _nn_parameter.epoch);
-  }
+  Log::instance()->debug( NN_LOG_PREFIX "\nEpochs: %.0f", _nn_parameter.epoch);
   if(_nn_parameter.choice == 1){
     Log::instance()->debug( NN_LOG_PREFIX "\nMinimum mean square error: %f", _nn_parameter.minimum_error);
   }
@@ -520,6 +515,13 @@ NNAlgorithm::iterate()
   // Training by minimum error
   if(_nn_parameter.choice == 1){
 
+    // Case the bound of epochs be bigger than the amount of epochs
+    if(amount_epoch > _nn_parameter.epoch){
+
+      _done = true; // Training ends
+      Log::instance()->info( NN_LOG_PREFIX "Exceeded the number of epochs.\n\n");
+    }
+
     for(int j = 0; j < _nn_parameter.pattern; j++){
 
       network.Train(vector_input[j], vector_output[j], j, _nn_parameter.pattern, _nn_parameter.momentum );
@@ -527,6 +529,7 @@ NNAlgorithm::iterate()
 
     converged = network.trainingMinimumError( _nn_parameter.pattern, _nn_parameter.minimum_error);
 
+    // Case converge
     if(converged == 1){
 
       _done = true; // Training ends
