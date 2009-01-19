@@ -555,11 +555,8 @@ MaximumEntropy::iterate()
   // feature = linear; quadratic; product; threshold; hinge; auto
   // context = sample
 
-  _num_features = _num_layers * _linear_feat +
-		  _num_layers * _quadratic_feat +
-		  _num_layers * _product_feat * (_num_layers - 1) / 2 +
-		  _num_layers * _threshold_feat +
-		  _num_layers * _hinge_feat;
+  _num_features = _num_layers * (_linear_feat + _quadratic_feat +
+		  _product_feat * (_num_layers - 1) / 2 + _threshold_feat + _hinge_feat);
 
   // Presences
   OccurrencesImpl::const_iterator p_iterator = _presences->begin();
@@ -615,7 +612,7 @@ MaximumEntropy::iterate()
 	  }
 	}
 	if (_threshold_feat == 1 ) {
-	  if ( (float)sample[i] > _tolerance ) {
+	  if ( (float)sample[i] >= _tolerance ) {
 	    context.push_back( make_pair( out.str(), (float)1.0 ) );
 	    out << ++id;
 	  }
@@ -699,7 +696,7 @@ MaximumEntropy::iterate()
 	  }
 	}
 	if (_threshold_feat == 1 ) {
-	  if ( (float)sample[i] > _tolerance ) {
+	  if ( (float)sample[i] >= _tolerance ) {
 	    context.push_back( make_pair( out.str(), (float)1.0 ) );
 	    out << ++id;
 	  }
@@ -802,7 +799,7 @@ MaximumEntropy::getValue( const Sample& x ) const
 	}
       }
       if (_threshold_feat == 1 ) {
-	if ( (float)x[i] > _tolerance ) {
+	if ( (float)x[i] >= _tolerance ) {
 	  context.push_back( make_pair( out.str(), (float)1.0 ) );
 	  out << ++id;
 	}
