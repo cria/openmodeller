@@ -125,8 +125,8 @@ static AlgParamMetadata parameters[NUM_PARAM] = {
     EPOCH_ID,  // Id.
     "Epoch",   // Name.
     Integer,   // Type.
-    "Determines when training will stop once the number of iterations exceeds epochs (for training by minimum error choice the maximum number of epochs).", // Overview
-    "Determines when training will stop once the number of iterations exceeds epochs (for training by minimum error choice the maximum number of epochs).", // Description.
+    "Determines when training will stop once the number of iterations exceeds epochs. When training by minimum error, this represents the maximum number of iterations.", // Overview
+    "Determines when training will stop once the number of iterations exceeds epochs. When training by minimum error, this represents the maximum number of iterations.", // Description.
     1,         // Not zero if the parameter has lower limit.
     1,         // Parameter's lower limit.
     0,         // Not zero if the parameter has upper limit.
@@ -515,11 +515,11 @@ NNAlgorithm::iterate()
   // Training by minimum error
   if(_nn_parameter.choice == 1){
 
-    // Case the bound of epochs be bigger than the amount of epochs
+    // Check if number of iterations exceeded the limit
     if(amount_epoch > _nn_parameter.epoch){
 
-      _done = true; // Training ends
-      Log::instance()->info( NN_LOG_PREFIX "Exceeded the number of epochs.\n\n");
+      Log::instance()->warn( NN_LOG_PREFIX "Exceeded maximum number of iterations.\n\n");
+      return 0;
     }
 
     for(int j = 0; j < _nn_parameter.pattern; j++){

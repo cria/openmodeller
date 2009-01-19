@@ -1,3 +1,9 @@
+Release 1.0 (2009-?-?)
+------------------------
+SVN revision: ?
+
+	* Changed Artificial Neural Networks algorithm to avoid exceeding a maximum number of iterations when training by minimum error (parameter Epoch is used to specify the maximum number of iterations).
+
 Release 0.7 (2009-01-14)
 ------------------------
 SVN revision: 4761

@@ -480,7 +480,7 @@ AlgorithmImpl::createModel( const SamplerPtr& samp, CallbackWrapper *callbackWra
 
   if ( ! done() ) {
 
-    std::string msg = "Algorithm not done.\n";
+    std::string msg = "Algorithm could not produce a model.\n";
 
     Log::instance()->error( msg.c_str() );
 
@@ -489,7 +489,7 @@ AlgorithmImpl::createModel( const SamplerPtr& samp, CallbackWrapper *callbackWra
 
   if ( ! finalize() ) {
 
-    std::string msg = "Algorithm not finalized.\n";
+    std::string msg = "Algorithm could not be finalized.\n";
 
     Log::instance()->error( msg.c_str() );
 
