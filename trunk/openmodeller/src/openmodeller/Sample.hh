@@ -75,10 +75,10 @@ public:
   void setCategoricalThreshold( std::size_t index );
 
   // Return an lvalue.
-  inline Scalar& operator[]( std::size_t index ) { return value_[index]; }
+  Scalar& operator[]( std::size_t index );
 
   // Return an rvalue from a const reference.
-  inline Scalar operator[]( std::size_t index ) const  { return value_[index]; }
+  Scalar operator[]( std::size_t index ) const;
 
   // Second iteration mechanism works with pointers.
   // Looks like a real iterator;

@@ -214,6 +214,34 @@ Sample::copy( size_t size, Scalar const * values )
   }
 }
 
+Scalar& 
+Sample::operator[]( std::size_t index ) 
+{
+  if ( index >= size_ ) {
+
+    ostringstream ss;
+    ss << "Sample index (" << index << ") out of bounds (" << size_ << ")";
+
+    throw MemoryException( ss.str().c_str() );
+  }
+ 
+  return value_[index]; 
+}
+
+Scalar 
+Sample::operator[]( std::size_t index ) const 
+{
+  if ( index >= size_ ) {
+
+    ostringstream ss;
+    ss << "Sample index (" << index << ") out of bounds (" << size_ << ")";
+
+    throw MemoryException( ss.str().c_str() );
+  }
+ 
+  return value_[index]; 
+}
+
 bool
 Sample::equals( const Sample& rhs ) const
 {
