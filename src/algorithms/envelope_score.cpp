@@ -280,7 +280,7 @@ EnvelopeScore::_getConfiguration( ConfigurationPtr& config ) const
 void
 EnvelopeScore::_setConfiguration( const ConstConfigurationPtr& config )
 {
-  ConstConfigurationPtr model_config = config->getSubsection("EnvelopeScore",false );
+  ConstConfigurationPtr model_config = config->getSubsection("EnvelopeScore");
 
   if (!model_config)
     return;

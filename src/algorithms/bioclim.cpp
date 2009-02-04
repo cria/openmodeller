@@ -367,7 +367,7 @@ Bioclim::_getConfiguration( ConfigurationPtr& config ) const
 void
 Bioclim::_setConfiguration( const ConstConfigurationPtr& config )
 {
-  ConstConfigurationPtr model_config = config->getSubsection("Bioclim",false );
+  ConstConfigurationPtr model_config = config->getSubsection( "Bioclim" );
 
   if (!model_config)
     return;
