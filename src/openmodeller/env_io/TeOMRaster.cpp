@@ -211,7 +211,7 @@ TeOMRaster::createRaster( const std::string& str, const MapFormat& format )
 			format.getHeight(), format.getWidth());
 
 		// Block Size.
-		if(format.getHeight() > 128 || format.getWidth() > 128)
+		/*if(format.getHeight() > 128 || format.getWidth() > 128)
 		{
 			params_->blockHeight_ = 128;
 			params_->blockWidth_ = 128; 
@@ -220,7 +220,9 @@ TeOMRaster::createRaster( const std::string& str, const MapFormat& format )
 		{
 			params_->blockHeight_ = format.getHeight();
 			params_->blockWidth_ = format.getWidth(); 
-		}
+		}*/
+		params_->blockHeight_ = 1;
+		params_->blockWidth_ = format.getWidth(); 
 		
 		raster_->init();
 
