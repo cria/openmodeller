@@ -145,11 +145,11 @@ log file can be saved as well.
 
 e.g.
 
-om_project --xml-req projection_request.xml --disp-map furcata.img
+om_project --xml-req projection_request.xml --dist-map furcata.img
 
 or 
 
-om_project --model acacia_model.xml --disp-map acacia.img
+om_project --model acacia_model.xml --dist-map acacia.img
 
 Additional parameters and detailed documentation can be found in the
 corresponding man page, or just by typing om_project without parameters.
