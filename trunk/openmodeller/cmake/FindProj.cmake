@@ -17,7 +17,9 @@ FIND_PATH(PROJ_INCLUDE_DIR proj_api.h
   "$ENV{LIB_DIR}/include/proj"
   "$ENV{LIB_DIR}/include"
   /usr/local/include 
-  /usr/include 
+  /usr/include
+  #Apple
+  /Library/Frameworks/PROJ.framework/Headers 
   #mingw
   c:/msys/local/include
   NO_DEFAULT_PATH
@@ -26,7 +28,10 @@ FIND_PATH(PROJ_INCLUDE_DIR proj_api.h
 FIND_LIBRARY(PROJ_LIBRARY NAMES proj PATHS 
   "$ENV{LIB_DIR}/lib"
   /usr/local/lib 
-  /usr/lib 
+  /usr/lib
+  #Apple
+  /Library/Frameworks/PROJ.framework/Versions/Current/unix/lib
+  #mingw 
   c:/msys/local/lib
   NO_DEFAULT_PATH
   )
