@@ -117,7 +117,7 @@ static AlgParamMetadata parameters[NUM_PARAM] = {
     0,  // Parameter's lower limit.
     1,  // Not zero if the parameter has upper limit.
     1,  // Parameter's upper limit.
-    "0" // Parameter's typical (default) value.
+    "1" // Parameter's typical (default) value.
   },
 
   // Epoch
@@ -131,7 +131,7 @@ static AlgParamMetadata parameters[NUM_PARAM] = {
     1,         // Parameter's lower limit.
     0,         // Not zero if the parameter has upper limit.
     0,         // Parameter's upper limit.
-    "100000"   // Parameter's typical (default) value.
+    "5000000"   // Parameter's typical (default) value.
   },
 
   // Minimun Error
@@ -518,8 +518,8 @@ NNAlgorithm::iterate()
     // Check if number of iterations exceeded the limit
     if(amount_epoch > _nn_parameter.epoch){
 
+      _done = true; // Training ends
       Log::instance()->warn( NN_LOG_PREFIX "Exceeded maximum number of iterations.\n\n");
-      return 0;
     }
 
     for(int j = 0; j < _nn_parameter.pattern; j++){
