@@ -1,5 +1,5 @@
 #!/bin/sh
-# Copy supportibng libraries (except Qt) to openModeller bundle
+# Copy supporting libraries to openModeller bundle
 # and make search paths for them relative to bundle
 
 APP_PREFIX=/usr/local/openModeller
