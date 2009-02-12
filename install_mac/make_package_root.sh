@@ -24,15 +24,19 @@ for FILE in `cat ../../build_universal/install_manifest.txt`; do
   cp $FILE $DIR
 done
 #copy over a few extra needed libs
-mkdir -p Library/Frameworks
-cp -r /Library/Frameworks/GDAL.framework Library/Frameworks
-cp -r /Library/Frameworks/UnixImageIO.framework Library/Frameworks
-cp -r /Library/Frameworks/Xerces.framework Library/Frameworks
-cp -r /Library/Frameworks/GEOS.framework Library/Frameworks
-cp -r /Library/Frameworks/PROJ.framework Library/Frameworks
-cp -r /Library/Frameworks/SQLite3.framework Library/Frameworks
+#mkdir -p Library/Frameworks
+#cp -r /Library/Frameworks/GDAL.framework Library/Frameworks
+#cp -r /Library/Frameworks/UnixImageIO.framework Library/Frameworks
+#cp -r /Library/Frameworks/Xerces.framework Library/Frameworks
+#cp -r /Library/Frameworks/GEOS.framework Library/Frameworks
+#cp -r /Library/Frameworks/PROJ.framework Library/Frameworks
+#cp -r /Library/Frameworks/SQLite3.framework Library/Frameworks
 #using -d to preserve symlinks etc AAArgh...not supported on mac!
-cp -p /usr/local/lib/libexpat* usr/local/lib/
-cp -p /usr/local/lib/libgsl* usr/local/lib/
+cp -p /usr/local/om_universal_deps/lib/libexpat* usr/local/lib/
+cp -p /usr/local/om_universal_deps/lib/libgsl* usr/local/lib/
+cp -p /usr/local/om_universal_deps/lib/libproj* usr/local/lib/
+cp -p /usr/local/om_universal_deps/lib/libgeos* usr/local/lib/
+cp -p /usr/local/om_universal_deps/lib/libgdal* usr/local/lib/
+cp -p /usr/local/om_universal_deps/lib/libsql* usr/local/lib/
 
 # All done!
