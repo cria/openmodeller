@@ -49,15 +49,15 @@
 #else // not using STLPORT
 
     #ifdef __GNUC__
-        #if __GNUC__ >= 3
-            // RDG 2009-02-13: Avoid warnings in recent compilers by replacing deprecated headers
-            #if __GNUC__ >= 4
-                #include <unordered_map>
-                #include <unordered_set>
-            #else // GCC 3.x
-              #include <ext/hash_map>
-              #include <ext/hash_set>
-            #endif // end GCC >= 4
+        #include <features.h>
+        #if __GNUC_PREREQ(4,2)
+            #include <unordered_map>
+            #include <unordered_set>
+            // TODO: figure out how to make things work...
+
+        #elif __GNUC__ >= 3 // GCC 3.x to 4.2
+            #include <ext/hash_map>
+            #include <ext/hash_set>
             namespace __gnu_cxx {
                 template <>
                 struct hash<std::string> {
