@@ -349,9 +349,7 @@ int main( int argc, char **argv ) {
     else {
 
       // Otherwise send it to stdout
-      fprintf( stdout, test_output.str().c_str() );
-
-      std::cout << endl << flush;
+      std::cout << test_output.str().c_str() << endl << flush;
     }
 
     // If user wants to track progress

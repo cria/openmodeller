@@ -218,9 +218,7 @@ int main( int argc, char **argv ) {
     else {
 
       // Otherwise send it to stdout
-      fprintf( stdout, model_output.str().c_str() );
-
-      std::cout << endl << flush;
+      std::cout << model_output.str().c_str() << endl << flush;
     }
 
     // If user wants to track progress
