@@ -252,9 +252,7 @@ int main( int argc, char **argv ) {
     else {
 
       // Otherwise send it to stdout
-      fprintf( stdout, statistics_output.str().c_str() );
-
-      std::cout << endl << flush;
+      std::cout << statistics_output.str().c_str() << endl << flush;
     }
 
     delete stats;
