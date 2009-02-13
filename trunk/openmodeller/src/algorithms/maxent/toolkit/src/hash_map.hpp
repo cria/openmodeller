@@ -50,8 +50,14 @@
 
     #ifdef __GNUC__
         #if __GNUC__ >= 3
-            #include <ext/hash_map>
-            #include <ext/hash_set>
+            // RDG 2009-02-13: Avoid warnings in recent compilers by replacing deprecated headers
+            #if __GNUC__ >= 4
+                #include <unordered_map>
+                #include <unordered_set>
+            #else // GCC 3.x
+              #include <ext/hash_map>
+              #include <ext/hash_set>
+            #endif // end GCC >= 4
             namespace __gnu_cxx {
                 template <>
                 struct hash<std::string> {
