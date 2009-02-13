@@ -203,8 +203,6 @@ AlgorithmImpl::setConfiguration( const ConstConfigurationPtr &config )
   }
   catch( SubsectionNotFound& e ) {
     UNUSED (e);
-    // Try getting directly from config object (backwards compatibility)
-    _setConfiguration( config );
   }
 }
 
