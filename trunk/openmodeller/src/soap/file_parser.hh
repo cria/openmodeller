@@ -44,26 +44,26 @@ class FileParser
 {
 public:
 
-  FileParser( char const *file );
+  FileParser( std::string const file );
 
   ~FileParser();
 
-  int load( char const *file );
+  int load( std::string const file );
 
   /**
   * Get the value of a key (case insensitive).
   */
-  std::string get( char const *key ) const;
+  std::string get( std::string const key ) const;
 
   /**
   * Return the number of times that a certain key appears in the file.
   */
-  int count( char const *key ) const;
+  int count( std::string const key ) const;
 
   /**
    * Get a set of values with the same key specified in the argument.
    */
-  std::vector<std::string> getAll( char const *key) const;
+  std::vector<std::string> getAll( std::string const key ) const;
 
   /**
    * Returns the number of lines in file.
@@ -74,6 +74,7 @@ public:
   }
   
 private:
+
   typedef std::pair<icstring,std::string> Item;
   typedef std::vector<Item> ItemList;
 
