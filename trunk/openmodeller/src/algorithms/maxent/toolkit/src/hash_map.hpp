@@ -51,10 +51,25 @@
     #ifdef __GNUC__
         #include <features.h>
         #if __GNUC_PREREQ(4,2)
-            #include <unordered_map>
-            #include <unordered_set>
-            // TODO: figure out how to make things work...
+            //#include <unordered_map>
+            //#include <unordered_set>
+            // TODO: change code below to use the headers above...
+            #include <ext/hash_map>
+            #include <ext/hash_set>
+            namespace __gnu_cxx {
+                template <>
+                struct hash<std::string> {
+                    size_t operator()(const std::string& s) const {
+                        unsigned long __h = 0;
+                        for (unsigned i = 0;i < s.size();++i)
+                            __h ^= (( __h << 5) + (__h >> 2) + s[i]);
 
+                        return size_t(__h);
+                    }
+                };
+            };
+            using __gnu_cxx::hash_map;
+            using __gnu_cxx::hash;
         #elif __GNUC__ >= 3 // GCC 3.x to 4.2
             #include <ext/hash_map>
             #include <ext/hash_set>
