@@ -216,6 +216,7 @@ ConfusionMatrix::getConfiguration() const
 {
   ConfigurationPtr config( new ConfigurationImpl("ConfusionMatrix") );
 
+  config->addNameValue( "Threshold", getThreshold() );
   config->addNameValue( "Accuracy", getAccuracy() * 100 );
   config->addNameValue( "OmissionError", getOmissionError() * 100 );
   config->addNameValue( "CommissionError", getCommissionError() * 100 );
