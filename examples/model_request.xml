@@ -9,12 +9,12 @@
       <CoordinateSystem>
          GEOGCS["WGS 84",DATUM["WGS_1984",SPHEROID["WGS 84",6378137,298.257223563,AUTHORITY["EPSG","7030"]],TOWGS84[0,0,0,0,0,0,0],AUTHORITY["EPSG","6326"]],PRIMEM["Greenwich",0,AUTHORITY["EPSG","8901"]],UNIT["degree",0.0174532925199433,AUTHORITY["EPSG","9108"]],AXIS["Lat",NORTH],AXIS["Long",EAST],AUTHORITY["EPSG","4326"]]
       </CoordinateSystem>
-        <Point Id='1' X='-68.849999' Y='-11.150000' />
-        <Point Id='2' X='-67.379999' Y='-14.320000' />
-        <Point Id='3' X='-67.549999' Y='-14.330000' />
-        <Point Id='4' X='-67.579999' Y='-14.500000' />
-        <Point Id='5' X='-68.170000' Y='-15.250000' />
-        <Point Id='6' X='-67.750000' Y='-15.269999' /> 
+        <Point Id="1" X="-68.849999" Y="-11.150000" />
+        <Point Id="2" X="-67.379999" Y="-14.320000" />
+        <Point Id="3" X="-67.549999" Y="-14.330000" />
+        <Point Id="4" X="-67.579999" Y="-14.500000" />
+        <Point Id="5" X="-68.170000" Y="-15.250000" />
+        <Point Id="6" X="-67.750000" Y="-15.269999" /> 
       </Presence>
   </Sampler>
   <Algorithm Id="BIOCLIM" Version="0.2">
@@ -22,4 +22,8 @@
       <Parameter Id="StandardDeviationCutoff" Value="0.9"/>
     </Parameters>
   </Algorithm>
+  <Statistics>
+    <ConfusionMatrix Threshold="0.5"/>
+    <RocCurve Resolution="15" BackgroundPoints="10000"/>
+  </Statistics>
 </ModelParameters>

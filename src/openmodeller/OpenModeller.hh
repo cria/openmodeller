@@ -355,6 +355,8 @@ public:
 
   void setProjectionConfiguration( const ConstConfigurationPtr & );
 
+  void calculateModelStatistics( const ConstConfigurationPtr & );
+
 private:
 
   bool hasEnvironment();
