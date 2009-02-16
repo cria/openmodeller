@@ -153,8 +153,7 @@ ConfigurationImpl::getSubsection( const string & name, bool throws ) const
 #endif
 
   ConfigurationNameTest tester(name);
-  Configuration::subsection_list::const_iterator c = find_if( subsections.begin(), subsections.end(),
-							      tester );
+  Configuration::subsection_list::const_iterator c = find_if( subsections.begin(), subsections.end(), tester );
 
   //
   // Subsection found.
