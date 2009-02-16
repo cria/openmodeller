@@ -472,8 +472,6 @@ const ConfusionMatrix * const OpenModeller::getConfusionMatrix()
     return _confusion_matrix;
   }
 
-  Log::instance()->debug( "Calculating confusion matrix using training dataset\n" );
-
   _confusion_matrix->calculate( getModel(), getSampler() );
 
   return _confusion_matrix;
@@ -488,8 +486,6 @@ RocCurve * const OpenModeller::getRocCurve()
 
     return _roc_curve;
   }
-
-  Log::instance()->debug( "Calculating ROC curve using training dataset\n" );
 
   _roc_curve->calculate( getModel(), getSampler() );
 
