@@ -1,4 +1,5 @@
 #include <openmodeller/om.hh>
+#include <openmodeller/Exceptions.hh>
 
 #include "getopts/getopts.h"
 
@@ -25,7 +26,9 @@ int main( int argc, char **argv ) {
   opts.addOption( "o", "model"         , "(option 2) Serialized model file"            , true );
   opts.addOption( "p", "points"        , "(option 2) TAB-delimited file with points"   , true );
   opts.addOption( "" , "calc-matrix"   , "Calculate confusion matrix"                  , false );
+  opts.addOption( "t", "threshold"     , "Confusion matrix threshold"                  , true );
   opts.addOption( "" , "calc-roc"      , "Calculate ROC curve"                         , false );
+  opts.addOption( "n", "resolution"     , "Number of points in the ROC curve"           , true );
   opts.addOption( "b", "num-background", "Number of background points for the ROC curve when there are no absences", true );
   opts.addOption( "e", "max-omission"  , "Calculate ROC partial area ratio given the maximum omission", true );
   opts.addOption( "s", "result"      , "File to store test result in XML"            , true );
@@ -38,9 +41,13 @@ int main( int argc, char **argv ) {
   std::string model_file;
   std::string points_file;
   bool calc_matrix = false;
+  std::string threshold_string("");
+  double threshold = CONF_MATRIX_DEFAULT_THRESHOLD;
   bool calc_roc = false;
+  std::string resolution_string("");
+  int resolution = ROC_DEFAULT_RESOLUTION;
   std::string num_background_string("");
-  int num_background = 0;
+  int num_background = ROC_DEFAULT_BACKGROUND_POINTS;
   std::string max_omission_string("");
   double max_omission;
   std::string result_file;
@@ -52,20 +59,20 @@ int main( int argc, char **argv ) {
     opts.showHelp( argv[0] );
   }
 
+  OpenModeller om;
+
   while ( ( option = opts.cycle() ) >= 0 ) {
 
     switch ( option ) {
 
       case 0:
-        printf("om_test 0.3\n");
+        printf( "om_test %s\n", om.getVersion().c_str() );
         printf("This is free software; see the source for copying conditions. There is NO\n");
         printf("warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n");
         exit(0);
         break;
       case 1:
         request_file = opts.getArgs( option );
-        calc_matrix = true;
-        calc_roc = true;
         break;
       case 2:
         model_file = opts.getArgs( option );
@@ -77,24 +84,30 @@ int main( int argc, char **argv ) {
         calc_matrix = true;
         break;
       case 5:
-        calc_roc = true;
+        threshold_string = opts.getArgs( option );
         break;
       case 6:
-        num_background_string = opts.getArgs( option );
+        calc_roc = true;
         break;
       case 7:
-        max_omission_string = opts.getArgs( option );
+        resolution_string = opts.getArgs( option );
         break;
       case 8:
-        result_file = opts.getArgs( option );
+        num_background_string = opts.getArgs( option );
         break;
       case 9:
-        log_level = opts.getArgs( option );
+        max_omission_string = opts.getArgs( option );
         break;
       case 10:
-        log_file = opts.getArgs( option );
+        result_file = opts.getArgs( option );
         break;
       case 11:
+        log_level = opts.getArgs( option );
+        break;
+      case 12:
+        log_file = opts.getArgs( option );
+        break;
+      case 13:
         progress_file = opts.getArgs( option );
         break;
       default:
@@ -143,10 +156,34 @@ int main( int argc, char **argv ) {
 
       printf( "Points file parameter will be ignored (using XML request instead)\n");
     }
+    if ( calc_roc ) {
+
+      printf( "Parameter to calculate ROC curve will be ignored (when using XML request you should specify it in the XML)\n");
+    }
+    if ( calc_matrix ) {
+
+      printf( "Parameter to calculate confusion matrix will be ignored (when using XML request you should specify it in the XML)\n");
+    }
   }
   else if ( ( ! model_file.empty() ) && ! points_file.empty() ) {
 
-    // OK here. Condition used just to allow the else below.
+    // Custom threshold
+    if ( ! threshold_string.empty() ) {
+
+      threshold = atof( threshold_string.c_str() );
+    }
+
+    // Custom resolution
+    if ( ! resolution_string.empty() ) {
+
+      resolution = atoi( resolution_string.c_str() );
+    }
+
+    // Custom number of background points
+    if ( ! num_background_string.empty() ) {
+
+      num_background = atoi( num_background_string.c_str() );
+    }
   }
   else {
 
@@ -162,8 +199,20 @@ int main( int argc, char **argv ) {
     exit(-1);
   }
 
+  if ( ! calc_matrix ) {
+
+    if ( ! threshold_string.empty() ) {
+
+      Log::instance()->warn( "Ignoring threshold - option only available with confusion matrix\n" );
+    }
+  }
+
   if ( ! calc_roc ) {
 
+    if ( ! resolution_string.empty() ) {
+
+      Log::instance()->warn( "Ignoring resolution - option only available with ROC curve\n" );
+    }
     if ( ! max_omission_string.empty() ) {
 
       Log::instance()->warn( "Ignoring maximum omission - option only available with ROC curve\n" );
@@ -181,8 +230,6 @@ int main( int argc, char **argv ) {
     // Load algorithms and instantiate controller class
     AlgorithmFactory::searchDefaultDirs();
 
-    OpenModeller om;
-
     SamplerPtr sampler;
 
     AlgorithmPtr alg;
@@ -196,6 +243,45 @@ int main( int argc, char **argv ) {
       alg = AlgorithmFactory::newAlgorithm( input->getSubsection( "Algorithm" ) );
 
       sampler = createSampler( input->getSubsection( "Sampler" ) );
+
+      try {
+
+        ConfigurationPtr statistics_param = input->getSubsection( "Statistics" );
+
+        try {
+
+          ConfigurationPtr matrix_param = statistics_param->getSubsection( "ConfusionMatrix" );
+
+          calc_matrix = true;
+
+          threshold = matrix_param->getAttributeAsDouble( "Threshold", CONF_MATRIX_DEFAULT_THRESHOLD );
+        }
+        catch( SubsectionNotFound& e ) {
+
+          UNUSED(e);
+	}
+        try {
+
+          ConfigurationPtr roc_param = statistics_param->getSubsection( "RocCurve" );
+
+          calc_roc = true;
+
+          resolution = roc_param->getAttributeAsInt( "Resolution", ROC_DEFAULT_RESOLUTION );
+
+          num_background = roc_param->getAttributeAsInt( "BackGroundPoints", ROC_DEFAULT_BACKGROUND_POINTS );
+        }
+        catch( SubsectionNotFound& e ) {
+
+          UNUSED(e);
+	}
+      }
+      catch( SubsectionNotFound& e ) {
+
+        // For backwards compatibility, calculate matrix and ROC if 
+        // <Statistics> is not present
+        calc_matrix = true;
+        calc_roc = true;  
+      }
     }
     else {
 
@@ -236,7 +322,7 @@ int main( int argc, char **argv ) {
     int num_presences = sampler->numPresence();
     int num_absences = sampler->numAbsence();
 
-    ConfusionMatrix matrix;
+    ConfusionMatrix matrix( threshold );
 
     // Confusion matrix can only be calculated with presence and/or absence points
     if ( calc_matrix && ( num_presences || num_absences ) ) {
@@ -250,13 +336,7 @@ int main( int argc, char **argv ) {
     // No absence points will force background points to be generated
     if ( calc_roc && num_presences ) {
 
-      // Custom number of background points
-      if ( ! num_background_string.empty() ) {
-
-        num_background = atoi( num_background_string.c_str() );
-
-        roc_curve.reset( ROC_DEFAULT_RESOLUTION, num_background );
-      }
+      roc_curve.reset( resolution, num_background );
 
       roc_curve.calculate( alg->getModel(), sampler );
     }
@@ -319,11 +399,15 @@ int main( int argc, char **argv ) {
 
     ConfigurationPtr output( new ConfigurationImpl("Statistics") );
 
+    bool no_statistics = true;
+
     if ( calc_matrix && matrix.ready() ) {
 
       ConfigurationPtr cm_config( matrix.getConfiguration() );
 
       output->addSubsection( cm_config );
+
+      no_statistics = false;
     }
 
     if ( calc_roc && roc_curve.ready() ) {
@@ -331,6 +415,13 @@ int main( int argc, char **argv ) {
       ConfigurationPtr roc_config( roc_curve.getConfiguration() );
 
       output->addSubsection( roc_config );
+
+      no_statistics = false;
+    }
+
+    if ( no_statistics )
+    {
+      Log::instance()->warn( "No statistics calculated\n" );
     }
 
     std::ostringstream test_output;
