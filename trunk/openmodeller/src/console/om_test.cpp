@@ -268,7 +268,7 @@ int main( int argc, char **argv ) {
 
           resolution = roc_param->getAttributeAsInt( "Resolution", ROC_DEFAULT_RESOLUTION );
 
-          num_background = roc_param->getAttributeAsInt( "BackGroundPoints", ROC_DEFAULT_BACKGROUND_POINTS );
+          num_background = roc_param->getAttributeAsInt( "BackgroundPoints", ROC_DEFAULT_BACKGROUND_POINTS );
         }
         catch( SubsectionNotFound& e ) {
 

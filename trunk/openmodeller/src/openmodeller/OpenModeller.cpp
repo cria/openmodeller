@@ -636,3 +636,106 @@ OpenModeller::setProjectionConfiguration( const ConstConfigurationPtr & config )
     throw e;
   }
 }
+
+
+/********************************************/
+/******* set Statistics Configuration *******/
+void
+OpenModeller::calculateModelStatistics( const ConstConfigurationPtr & config )
+{
+  Log::instance()->debug( "Setting statistics configuration\n" );
+
+  _confusion_matrix->reset();
+  _roc_curve->reset();
+
+  bool calc_matrix = false;
+  double threshold = CONF_MATRIX_DEFAULT_THRESHOLD;
+
+  bool calc_roc = false;
+  int resolution = ROC_DEFAULT_RESOLUTION;
+  int num_background = ROC_DEFAULT_BACKGROUND_POINTS;
+
+  try {
+
+    ConfigurationPtr statistics_param = config->getSubsection( "Statistics" );
+
+    try {
+
+      ConfigurationPtr matrix_param = statistics_param->getSubsection( "ConfusionMatrix" );
+
+      calc_matrix = true;
+
+      threshold = matrix_param->getAttributeAsDouble( "Threshold", CONF_MATRIX_DEFAULT_THRESHOLD );
+    }
+    catch( SubsectionNotFound& e ) {
+
+      Log::instance()->info( "Confusion matrix not calculated\n" );
+      UNUSED(e);
+    }
+    try {
+
+      ConfigurationPtr roc_param = statistics_param->getSubsection( "RocCurve" );
+
+      calc_roc = true;
+
+      resolution = roc_param->getAttributeAsInt( "Resolution", ROC_DEFAULT_RESOLUTION );
+
+      num_background = roc_param->getAttributeAsInt( "BackgroundPoints", ROC_DEFAULT_BACKGROUND_POINTS );
+    }
+    catch( SubsectionNotFound& e ) {
+
+      Log::instance()->info( "ROC curve not calculated\n" );
+      UNUSED(e);
+    }
+  }
+  catch( SubsectionNotFound& e ) {
+
+    // For backwards compatibility, calculate matrix and ROC if 
+    // <Statistics> is not present
+    calc_matrix = true;
+    calc_roc = true;  
+  }
+
+  if ( calc_matrix || calc_roc )
+  {
+    if ( ! _samp ) {
+
+      Log::instance()->error( "Sampler not specified for calculating statistics.\n" );
+      return;
+    }
+
+    if ( ! _alg ) {
+
+      Log::instance()->error( "Model not specified for calculating statistics.\n" );
+      return;
+    }
+  }
+
+  int num_presences = _samp->numPresence();
+  int num_absences = _samp->numAbsence();
+
+  // Confusion matrix can only be calculated with presence and/or absence points
+  if ( calc_matrix && ( num_presences || num_absences ) ) {
+
+    _confusion_matrix->reset( threshold );
+    _confusion_matrix->calculate( getModel(), getSampler() );
+  }
+
+  // ROC curve can only be calculated with presence points
+  // No absence points will force background points to be generated
+  if ( calc_roc && num_presences ) {
+
+    _roc_curve->reset( resolution, num_background );
+
+    _roc_curve->calculate( getModel(), getSampler() );
+
+    _roc_curve->getTotalArea(); // no need to use value. roc class will serialize result
+
+//     if ( ! max_omission_string.empty() ) {
+
+//       max_omission = atof( max_omission_string.c_str() );
+
+//       roc_curve->getPartialAreaRatio( max_omission ); // no need to use value. roc class will serialize result
+//     }
+  }
+}
