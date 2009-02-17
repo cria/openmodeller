@@ -30,6 +30,6 @@
   </Algorithm>
   <Statistics>
     <ConfusionMatrix Threshold="0.5"/>
-    <RocCurve Resolution="15"/>
+    <RocCurve Resolution="15" MaxOmission="1.0"/>
   </Statistics>
 </TestParameters>
