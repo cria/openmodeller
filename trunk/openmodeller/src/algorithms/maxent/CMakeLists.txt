@@ -34,6 +34,7 @@ SET (LIBMAXENT_SRCS
     toolkit/src/maxentmodel.cpp
     toolkit/src/modelfile.cpp
     toolkit/src/trainer.cpp
+    toolkit/src/seqtrainer.cpp
 )
 
 IF (CMAKE_Fortran_COMPILER_WORKS AND FORTRANLIBS_FOUND)
@@ -61,6 +62,7 @@ SET (LIBMAXENT_HDRS
     toolkit/src/modelfile.hpp
     toolkit/src/rfevent.hpp
     toolkit/src/trainer.hpp
+    toolkit/src/seqtrainer.hpp
 )
 
 IF (CMAKE_Fortran_COMPILER_WORKS AND FORTRANLIBS_FOUND)
