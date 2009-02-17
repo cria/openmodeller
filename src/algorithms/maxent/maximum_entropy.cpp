@@ -105,10 +105,10 @@ static AlgParamMetadata parameters[NUM_PARAM] = {
   // Training method
   {
     METHOD_ID,                         // Id.
-    "Training method (gis or lbfgs)",  // Name.
+    "Training method (gis or lbfgs or seq)",  // Name.
     String,                            // Type.
-    "Training method (gis or lbfgs) used to estimate the maximum entropy parameters.", // Overview
-    "Training method (gis or lbfgs) used to estimate the maximum entropy parameters. Possible values are: gis (Generalized Iterative Scaling) or lbfgs (Limited-Memory Variable Metric).", // Description.
+    "Training method (gis or lbfgs or seq) used to estimate the maximum entropy parameters.", // Overview
+    "Training method (gis or lbfgs or seq) used to estimate the maximum entropy parameters. Possible values are: gis (Generalized Iterative Scaling) or lbfgs (Limited-Memory Variable Metric) or seq (Sequential method based on MAXENT Software).", // Description.
     0,         // Not zero if the parameter has lower limit.
     0,         // Parameter's lower limit.
     0,         // Not zero if the parameter has upper limit.
@@ -335,9 +335,9 @@ MaximumEntropy::initialize()
     return 0;
   }
 
-  if ( _method != "gis" && _method != "lbfgs" ) {
+  if ( _method != "gis" && _method != "lbfgs" && _method != "seq" ) {
 
-    Log::instance()->error( MAXENT_LOG_PREFIX "Parameter '" METHOD_ID "' must be either gis or lbfgs. Found [%s].\n", _method.c_str() );
+    Log::instance()->error( MAXENT_LOG_PREFIX "Parameter '" METHOD_ID "' must be either gis or lbfgs or seq. Found [%s].\n", _method.c_str() );
     return 0;
   }
 #else
@@ -435,7 +435,7 @@ MaximumEntropy::initialize()
   int num_absences = _samp->numAbsence();
 
   if ( num_absences == 0 ) {
-
+    
     Log::instance()->info( MAXENT_LOG_PREFIX "Generating pseudo-absences.\n" );
 
     if ( ! getParameter( PSEUDO_ID, &num_absences ) ) {
@@ -601,7 +601,7 @@ MaximumEntropy::iterate()
 	  context.push_back( make_pair( out.str(), ((float)sample[i] )));
 	  out << ++id;
 	}
-	if (_quadratic_feat == 1 ) {
+	if ( _quadratic_feat == 1 ) {
 	  context.push_back( make_pair( out.str(), ((float)sample[i] * (float)sample[i])) );
 	  out << ++id;
 	}
@@ -611,7 +611,7 @@ MaximumEntropy::iterate()
 	    out << ++id;
 	  }
 	}
-	if (_threshold_feat == 1 ) {
+	if ( _threshold_feat == 1 ) {
 	  if ( (float)sample[i] >= _tolerance ) {
 	    context.push_back( make_pair( out.str(), (float)1.0 ) );
 	    out << ++id;
@@ -621,7 +621,7 @@ MaximumEntropy::iterate()
 	    out << ++id;
 	  }
 	}
-	if (_hinge_feat == 1 ) {
+	if ( _hinge_feat == 1 ) {
 	  if ( (float)sample[i] > _tolerance ) {
 	    context.push_back( make_pair( out.str(), (float)sample[i] ) );
 	    out << ++id;
@@ -681,11 +681,11 @@ MaximumEntropy::iterate()
       }
       else {
 
-	if (_linear_feat == 1 ) {
+	if ( _linear_feat == 1 ) {
 	  context.push_back( make_pair( out.str(), (float)sample[i] ) );
 	  out << ++id;
 	}
-	if (_quadratic_feat == 1 ) {
+	if ( _quadratic_feat == 1 ) {
 	  context.push_back( make_pair( out.str(), ((float)sample[i] * (float)sample[i])) );
 	  out << ++id;
 	}
@@ -695,7 +695,7 @@ MaximumEntropy::iterate()
 	    out << ++id;
 	  }
 	}
-	if (_threshold_feat == 1 ) {
+	if ( _threshold_feat == 1 ) {
 	  if ( (float)sample[i] >= _tolerance ) {
 	    context.push_back( make_pair( out.str(), (float)1.0 ) );
 	    out << ++id;
@@ -705,7 +705,7 @@ MaximumEntropy::iterate()
 	    out << ++id;
 	  }
 	}
-	if (_hinge_feat == 1 ) {
+	if ( _hinge_feat == 1 ) {
 	  if ( (float)sample[i] > _tolerance ) {
 	    context.push_back( make_pair( out.str(), (float)sample[i] ) );
 	    out << ++id;

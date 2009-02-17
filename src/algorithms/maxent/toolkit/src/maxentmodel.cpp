@@ -48,6 +48,7 @@
 
 #include "display.hpp"
 #include "gistrainer.hpp"
+#include "seqtrainer.hpp"
 #ifdef HAVE_FORTRAN
     #include "lbfgstrainer.hpp"
 #endif
@@ -546,6 +547,8 @@ void MaxentModel::train(size_t iter, const std::string& method,
     }
     else if (method == "gis")
         t.reset(new GISTrainer);
+    else if (method == "seq")
+        t.reset(new SEQTrainer);
     else
         throw runtime_error("training method not supported");
 
