@@ -259,7 +259,7 @@ int main( int argc, char **argv ) {
         catch( SubsectionNotFound& e ) {
 
           UNUSED(e);
-	}
+        }
         try {
 
           ConfigurationPtr roc_param = statistics_param->getSubsection( "RocCurve" );
@@ -273,7 +273,7 @@ int main( int argc, char **argv ) {
         catch( SubsectionNotFound& e ) {
 
           UNUSED(e);
-	}
+        }
       }
       catch( SubsectionNotFound& e ) {
 

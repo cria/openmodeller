@@ -522,7 +522,7 @@ RequestFile::makeModel( OpenModeller *om )
     strcpy( file_name, _inputModelFile.c_str() );
 
     ConfigurationPtr conf = Configuration::readXml( file_name );
-      
+
     om->setModelConfiguration( conf );
 
     delete[] file_name;
@@ -541,7 +541,7 @@ RequestFile::makeModel( OpenModeller *om )
   om->getConfusionMatrix();
 
   // Calculate ROC curve to store in the serialized model
-  om->getRocCurve();
+  om->getRocCurve()->getTotalArea();
 
   // Serialize model, if requested
   if ( _inputModelFile.empty() && ! _outputModelFile.empty() ) {

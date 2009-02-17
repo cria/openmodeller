@@ -147,11 +147,8 @@ main( int argc, char **argv )
     }
 
     // Instantiate objects for model statistics
-    Log::instance()->debug( "Getting confusion matrix for training dataset\n" );
-
     const ConfusionMatrix * const matrix = om.getConfusionMatrix();
 
-    Log::instance()->debug( "Getting ROC curve for training dataset\n" );
     RocCurve * const roc_curve = om.getRocCurve();
 
     // Confusion Matrix
