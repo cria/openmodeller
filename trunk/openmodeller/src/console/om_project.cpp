@@ -70,12 +70,14 @@ int main( int argc, char **argv ) {
     exit(0);
   }
 
+  OpenModeller om;
+
   while ( ( option = opts.cycle() ) >= 0 ) {
 
     switch ( option ) {
 
       case 0:
-        printf("om_project 0.4\n");
+        printf( "om_project %s\n", om.getVersion().c_str() );
         printf("This is free software; see the source for copying conditions. There is NO\n");
         printf("warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n");
         exit(0);
@@ -177,8 +179,6 @@ int main( int argc, char **argv ) {
 
     // Load algorithms and instantiate controller class
     AlgorithmFactory::searchDefaultDirs();
-
-    OpenModeller om;
 
     // If user wants to track progress
     if ( ! progress_file.empty() ) { 

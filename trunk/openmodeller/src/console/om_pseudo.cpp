@@ -46,6 +46,8 @@ int main( int argc, char **argv ) {
     exit(0);
   }
 
+  OpenModeller om;
+
   while ( ( option = opts.cycle() ) >= 0 ) {
 
     switch ( option ) {
@@ -54,7 +56,7 @@ int main( int argc, char **argv ) {
         log_level = opts.getArgs( option );
         break;
       case 1:
-        printf("om_pseudo 0.3.1\n");
+        printf( "om_pseudo %s\n", om.getVersion().c_str() );
         printf("This is free software; see the source for copying conditions. There is NO\n");
         printf("warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n");
         exit(0);

@@ -46,12 +46,14 @@ int main( int argc, char **argv ) {
     exit(0);
   }
 
+  OpenModeller om;
+
   while ( ( option = opts.cycle() ) >= 0 ) {
 
     switch ( option ) {
 
       case 0:
-        printf("om_sampler 0.1\n");
+        printf( "om_sampler %s\n", om.getVersion().c_str() );
         printf("This is free software; see the source for copying conditions. There is NO\n");
         printf("warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n");
         exit(0);
