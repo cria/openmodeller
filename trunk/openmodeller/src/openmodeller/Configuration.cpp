@@ -271,8 +271,7 @@ ConfigurationImpl::getAttribute( const string & name, const string& defaultValue
 #endif
   
   AttributeNameTest tester( name );
-  Configuration::attribute_list::const_iterator nv = find_if( attributes.begin(), attributes.end(),
-							      tester );
+  Configuration::attribute_list::const_iterator nv = find_if( attributes.begin(), attributes.end(), tester );
 
   if ( nv == attributes.end() ) {
 #if defined(DEBUG_CREATE)

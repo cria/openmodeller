@@ -650,6 +650,7 @@ OpenModeller::calculateModelStatistics( const ConstConfigurationPtr & config )
   bool calc_roc = false;
   int resolution = ROC_DEFAULT_RESOLUTION;
   int num_background = ROC_DEFAULT_BACKGROUND_POINTS;
+  double max_omission = 1.0;
 
   try {
 
@@ -677,6 +678,8 @@ OpenModeller::calculateModelStatistics( const ConstConfigurationPtr & config )
       resolution = roc_param->getAttributeAsInt( "Resolution", ROC_DEFAULT_RESOLUTION );
 
       num_background = roc_param->getAttributeAsInt( "BackgroundPoints", ROC_DEFAULT_BACKGROUND_POINTS );
+
+      max_omission = roc_param->getAttributeAsDouble( "MaxOmission", 1.0 );
     }
     catch( SubsectionNotFound& e ) {
 
@@ -725,13 +728,11 @@ OpenModeller::calculateModelStatistics( const ConstConfigurationPtr & config )
 
     _roc_curve->calculate( getModel(), getSampler() );
 
-    _roc_curve->getTotalArea(); // no need to use value. roc class will serialize result
+    _roc_curve->getTotalArea(); // call method to force serialization
 
-//     if ( ! max_omission_string.empty() ) {
+    if ( max_omission < 1.0 ) {
 
-//       max_omission = atof( max_omission_string.c_str() );
-
-//       roc_curve->getPartialAreaRatio( max_omission ); // no need to use value. roc class will serialize result
-//     }
+      _roc_curve->getPartialAreaRatio( max_omission ); // call method to force serialization
+    }
   }
 }

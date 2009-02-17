@@ -49,7 +49,7 @@ int main( int argc, char **argv ) {
   std::string num_background_string("");
   int num_background = ROC_DEFAULT_BACKGROUND_POINTS;
   std::string max_omission_string("");
-  double max_omission;
+  double max_omission = 1.0;
   std::string result_file;
   std::string log_file;
   std::string progress_file;
@@ -184,6 +184,12 @@ int main( int argc, char **argv ) {
 
       num_background = atoi( num_background_string.c_str() );
     }
+
+    // Custom max omission
+    if ( ! max_omission_string.empty() ) {
+
+      max_omission = atof( max_omission_string.c_str() );
+    }
   }
   else {
 
@@ -213,7 +219,7 @@ int main( int argc, char **argv ) {
 
       Log::instance()->warn( "Ignoring resolution - option only available with ROC curve\n" );
     }
-    if ( ! max_omission_string.empty() ) {
+    if ( max_omission_string.empty() ) {
 
       Log::instance()->warn( "Ignoring maximum omission - option only available with ROC curve\n" );
     }
@@ -260,6 +266,9 @@ int main( int argc, char **argv ) {
 
           UNUSED(e);
         }
+
+        ConfigurationPtr roc_param;
+
         try {
 
           ConfigurationPtr roc_param = statistics_param->getSubsection( "RocCurve" );
@@ -269,6 +278,8 @@ int main( int argc, char **argv ) {
           resolution = roc_param->getAttributeAsInt( "Resolution", ROC_DEFAULT_RESOLUTION );
 
           num_background = roc_param->getAttributeAsInt( "BackgroundPoints", ROC_DEFAULT_BACKGROUND_POINTS );
+
+          max_omission = roc_param->getAttributeAsDouble( "MaxOmission", 1.0 );
         }
         catch( SubsectionNotFound& e ) {
 
@@ -388,9 +399,7 @@ int main( int argc, char **argv ) {
 
         Log::instance()->info( "AUC:               %7.2f\n", roc_curve.getTotalArea() );
 
-        if ( ! max_omission_string.empty() ) {
-
-          max_omission = atof( max_omission_string.c_str() );
+        if ( max_omission < 1.0 ) {
 
           Log::instance()->info( "Ratio:             %7.2f\n", roc_curve.getPartialAreaRatio( max_omission ) );
         }

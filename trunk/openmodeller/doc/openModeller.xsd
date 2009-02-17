@@ -266,6 +266,7 @@
         <xs:complexType>
           <xs:attribute name="Resolution" type="xs:int" use="optional"/>
           <xs:attribute name="BackgroundPoints" type="xs:int" use="optional"/>
+          <xs:attribute name="MaxOmission" type="xs:double" use="optional"/>
         </xs:complexType>
       </xs:element>
     </xs:sequence>
