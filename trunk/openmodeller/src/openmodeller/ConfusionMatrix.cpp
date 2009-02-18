@@ -47,12 +47,54 @@ ConfusionMatrix::~ConfusionMatrix()
 {
 }
 
-
 void ConfusionMatrix::reset(Scalar predictionThreshold)
 {
   _ready = false;
   _predictionThreshold = predictionThreshold;
   memset(_confMatrix, 0, sizeof(int) * 4);
+}
+
+void ConfusionMatrix::setLowestTrainingThreshold(const Model& model, const SamplerPtr& sampler)
+{
+  Log::instance()->debug( "Determining lowest training threshold\n" );
+
+  OccurrencesPtr presences = sampler->getPresences();
+
+  OccurrencesImpl::const_iterator it = presences->begin();
+  OccurrencesImpl::const_iterator fin = presences->end();
+
+  _predictionThreshold = 2.0;
+
+  Scalar predictionValue;
+
+  while( it != fin ) {
+
+    Sample sample = (*it)->environment();
+
+    if ( sample.size() > 0 ) {
+
+      predictionValue = model->getValue( sample );
+
+      if ( predictionValue > 0.0 && predictionValue < _predictionThreshold ) {
+
+        _predictionThreshold = predictionValue;
+      }
+    }
+
+    ++it;
+  }
+
+  if ( _predictionThreshold > 1.0 ) {
+
+    // Reset to default value
+    _predictionThreshold = CONF_MATRIX_DEFAULT_THRESHOLD;
+
+    Log::instance()->warn( "Could not find any valid threshold among all training points. Resetting confusion matrix threshold to the default value (%f)\n", CONF_MATRIX_DEFAULT_THRESHOLD );
+  }
+  else {
+
+    Log::instance()->debug( "Lowest training threshold is %f\n", _predictionThreshold );
+  }
 }
 
 /* 

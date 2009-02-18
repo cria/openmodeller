@@ -663,6 +663,22 @@ OpenModeller::calculateModelStatistics( const ConstConfigurationPtr & config )
       calc_matrix = true;
 
       threshold = matrix_param->getAttributeAsDouble( "Threshold", CONF_MATRIX_DEFAULT_THRESHOLD );
+
+      if ( threshold < 0.0 ) {
+
+        if ( _samp && _alg ) {
+
+          _confusion_matrix->setLowestTrainingThreshold( getModel(), getSampler() );
+
+          threshold = _confusion_matrix->getThreshold();
+        }
+        else {
+
+          threshold = CONF_MATRIX_DEFAULT_THRESHOLD;
+
+          Log::instance()->error( "Cannot determine lowest training threshold without a Model and a Sampler. The default confusion matrix threshold will be used.\n" );
+        }
+      }
     }
     catch( SubsectionNotFound& e ) {
 
