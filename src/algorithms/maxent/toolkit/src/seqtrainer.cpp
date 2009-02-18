@@ -2,7 +2,7 @@
  * seqtrainer.cpp  -  trainer for conditional ME with a sequential method
  *
  * @author Elisangela S. da C. Rodrigues (elisangela . rodrigues [at] poli . usp . br)
- * * $Id $
+ * $Id $
  *
  * LICENSE INFORMATION 
  * 
@@ -108,7 +108,7 @@ SEQTrainer::init_trainer()
 
   // initialize the regularization parameters
   for ( size_t i = 0; i < m_params->size(); ++i ) {
-    regularization_parameters[i] = (0.1 * feat_stan_devi[i]) / sqrt(m_N);
+      regularization_parameters[i] = (0.1 * feat_stan_devi[i]) / sqrt((double)m_N);
   }
 
 } //init_trainer();
