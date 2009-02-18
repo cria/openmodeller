@@ -82,6 +82,14 @@ public:
   void reset(Scalar predictionThreshold = CONF_MATRIX_DEFAULT_THRESHOLD);
 
   /** 
+   * Set the threshold to the lowest probability value of all training points.
+   * Note: it is assumed that both parameters are already normalized, if necessary.
+   * @param model Model object to be evaluated
+   * @param Sampler Pointer to a Sampler object with training data
+   */
+  void setLowestTrainingThreshold(const Model& model, const SamplerPtr& sampler);
+
+  /** 
    * Calculate confusion matrix based on model and sampled data
    * from environment and occurrences objects.
    * @param env Pointer to Environment object containing the 
