@@ -333,10 +333,21 @@ int main( int argc, char **argv ) {
     int num_presences = sampler->numPresence();
     int num_absences = sampler->numAbsence();
 
-    ConfusionMatrix matrix( threshold );
+    ConfusionMatrix matrix;
 
     // Confusion matrix can only be calculated with presence and/or absence points
     if ( calc_matrix && ( num_presences || num_absences ) ) {
+
+      if ( threshold < 0.0 ) {
+
+        matrix.setLowestTrainingThreshold( alg->getModel(), sampler );
+
+        threshold = matrix.getThreshold();
+      }
+      else {
+
+        matrix.reset( threshold );
+      }
 
       matrix.calculate( alg->getModel(), sampler );
     }
