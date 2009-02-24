@@ -63,8 +63,8 @@ for req in `find $TICKET_DIRECTORY/model_req.* -type f 2> /dev/null`; do
   if [[ "$CONDOR_INTEGRATION" == "yes" ]]; then
     echo "universe        = vanilla" >> $TICKET_DIRECTORY"/condor_sc."$ticket
     echo "arguments = --xml-req "$moved" --model-file "$resp" --prog-file "$model_prog>> $TICKET_DIRECTORY"/condor_sc."$ticket
-    echo "executable = /home/silvio/om_serial/bin/om_model " >> $TICKET_DIRECTORY"/condor_sc."$ticket
-    echo "environment = LD_LIBRARY_PATH=/home/silvio/om_serial/lib:/home/om/bin/lib_extern/lib" >> $TICKET_DIRECTORY"/condor_sc."$ticket
+    echo "executable = "$NODE_BIN_DIR"/om_model " >> $TICKET_DIRECTORY"/condor_sc."$ticket
+    echo "environment = "$NODE_ENVIRONMENT >> $TICKET_DIRECTORY"/condor_sc."$ticket
     echo "output          = "$TICKET_DIRECTORY"/om_model_log"$ticket".out" >> $TICKET_DIRECTORY"/condor_sc."$ticket
     echo "error           = "$TICKET_DIRECTORY"/om_model_log"$ticket".err" >> $TICKET_DIRECTORY"/condor_sc."$ticket
     echo "log             = "$TICKET_DIRECTORY"/om_model_log"$ticket".log" >> $TICKET_DIRECTORY"/condor_sc."$ticket
@@ -74,8 +74,8 @@ for req in `find $TICKET_DIRECTORY/model_req.* -type f 2> /dev/null`; do
     echo "queue" >> $TICKET_DIRECTORY"/condor_sc."$ticket
     echo "" >> $TICKET_DIRECTORY"/condor_sc."$ticket
 
-    export CONDOR_CONFIG=/application/condor/etc/condor_config
-    /application/condor/bin/condor_submit $TICKET_DIRECTORY"/condor_sc."$ticket
+    export CONDOR_CONFIG="$CONDOR_CONFIG"
+    "$CONDOR_BIN_DIR"/condor_submit $TICKET_DIRECTORY"/condor_sc."$ticket
   else
     # no Condor - execute om_model directly
     "$OM_BIN_DIR"/om_model --xml-req "$moved" --model-file "$resp" --log-file "$log" --prog-file "$model_prog"
@@ -100,8 +100,8 @@ for req in `find $TICKET_DIRECTORY/test_req.* -type f 2> /dev/null`; do
   if [[ "$CONDOR_INTEGRATION" == "yes" ]]; then
     echo "universe        = vanilla" >> $TICKET_DIRECTORY"/condor_sc."$ticket
     echo "arguments = --xml-req "$moved" --result-file "$resp" --prog-file "$test_prog>> $TICKET_DIRECTORY"/condor_sc."$ticket
-    echo "executable = /home/silvio/om_serial/bin/om_test " >> $TICKET_DIRECTORY"/condor_sc."$ticket
-    echo "environment = LD_LIBRARY_PATH=/home/silvio/om_serial/lib:/home/om/bin/lib_extern/lib" >> $TICKET_DIRECTORY"/condor_sc."$ticket
+    echo "executable = "$NODE_BIN_DIR"/om_test " >> $TICKET_DIRECTORY"/condor_sc."$ticket
+    echo "environment = "$NODE_ENVIRONMENT >> $TICKET_DIRECTORY"/condor_sc."$ticket
     echo "output          = "$TICKET_DIRECTORY"/om_test_log"$ticket".out" >> $TICKET_DIRECTORY"/condor_sc."$ticket
     echo "error           = "$TICKET_DIRECTORY"/om_test_log"$ticket".err" >> $TICKET_DIRECTORY"/condor_sc."$ticket
     echo "log             = "$TICKET_DIRECTORY"/om_test_log"$ticket".log" >> $TICKET_DIRECTORY"/condor_sc."$ticket
@@ -111,8 +111,8 @@ for req in `find $TICKET_DIRECTORY/test_req.* -type f 2> /dev/null`; do
     echo "queue" >> $TICKET_DIRECTORY"/condor_sc."$ticket
     echo "" >> $TICKET_DIRECTORY"/condor_sc."$ticket
 
-    export CONDOR_CONFIG=/application/condor/etc/condor_config
-    /application/condor/bin/condor_submit $TICKET_DIRECTORY"/condor_sc."$ticket
+    export CONDOR_CONFIG="$CONDOR_CONFIG"
+    "$CONDOR_BIN_DIR"/condor_submit $TICKET_DIRECTORY"/condor_sc."$ticket
   else
     # no Condor - execute om_test directly
     "$OM_BIN_DIR"/om_test --xml-req "$moved" --result "$resp" --log-file "$log" --prog-file "$test_prog"
@@ -139,8 +139,8 @@ for req in `find $TICKET_DIRECTORY/proj_req.* -type f 2> /dev/null`; do
   if [[ "$CONDOR_INTEGRATION" == "yes" ]]; then
     echo "universe 	= vanilla" >> $TICKET_DIRECTORY"/condor_sp."$ticket
     echo "arguments = --xml-req "$moved" --dist-map "$DISTRIBUTION_MAP_DIRECTORY"/"$ticket".img --stat-file "$stats" --prog-file "$proj_prog >> $TICKET_DIRECTORY"/condor_sp."$ticket
-    echo "executable = /home/silvio/om_serial/bin/om_project" >> $TICKET_DIRECTORY"/condor_sp."$ticket
-    echo "environment = LD_LIBRARY_PATH=/home/silvio/om_serial/lib:/home/om/bin/lib_extern/lib" >> $TICKET_DIRECTORY"/condor_sp."$ticket
+    echo "executable = "$NODE_BIN_DIR"/om_project" >> $TICKET_DIRECTORY"/condor_sp."$ticket
+    echo "environment = "$NODE_ENVIRONMENT >> $TICKET_DIRECTORY"/condor_sp."$ticket
     echo "output		= "$TICKET_DIRECTORY"/om_project_LOG"$ticket".out" >> $TICKET_DIRECTORY"/condor_sp."$ticket
     echo "error		= "$TICKET_DIRECTORY"/om_project_LOG"$ticket".err" >> $TICKET_DIRECTORY"/condor_sp."$ticket
     echo "log		= "$TICKET_DIRECTORY"/om_project_LOG"$ticket".log" >> $TICKET_DIRECTORY"/condor_sp."$ticket
@@ -149,8 +149,8 @@ for req in `find $TICKET_DIRECTORY/proj_req.* -type f 2> /dev/null`; do
     echo "when_to_transfer_output = on_exit" >> $TICKET_DIRECTORY"/condor_sp."$ticket
     echo "queue" >> $TICKET_DIRECTORY"/condor_sp."$ticket
 
-    export CONDOR_CONFIG=/application/condor/etc/condor_config
-    /application/condor/bin/condor_submit $TICKET_DIRECTORY"/condor_sp."$ticket
+    export CONDOR_CONFIG="$CONDOR_CONFIG"
+    "$CONDOR_BIN_DIR"/condor_submit $TICKET_DIRECTORY"/condor_sp."$ticket
   else
     # no Condor - execute om_project directly
     "$OM_BIN_DIR"/om_project --xml-req "$moved" --dist-map "$map_img" --stat-file "$stats" --log-file "$log" --prog-file "$proj_prog"
