@@ -59,14 +59,14 @@ public:
    //Reset the params state to the params_ state.
    void resetState( PreParameters& params );
 
-   	//get input parameters
-	void getAcceptedParameters ( stringMap& info );
+   //get input parameters
+   void getAcceptedParameters ( stringMap& info );
 
-	//get output information
-	void getLayersetResultSpec ( stringMap& info);
+   //get output information
+   void getLayersetResultSpec ( stringMap& info);
 
-	//get output information for each layer
-	void getLayerResultSpec ( stringMap& info);
+   //get output information for each layer
+   void getLayerResultSpec ( stringMap& info);
 
 };
 
