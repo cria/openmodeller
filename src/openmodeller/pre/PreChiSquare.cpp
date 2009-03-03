@@ -83,14 +83,22 @@ PreChiSquare::runImplementation()
       setStatistic(layer1, layer2);
     }
 
-  std::vector< size_t > statist;
+  SamplerPtr samplerPtr;
+  params_.retrieve( "Sampler", samplerPtr );
+
   size_t aux;
   for( unsigned int ind = 0 ; ind < num_layers ; ind++ ) 
   {
+    string layer_id = samplerPtr->getEnvironment()->getLayerPath(ind);
+
+    PreParameters result;
+
     aux = statistic1[ind] + statistic2[ind];
-    statist.push_back(aux);
+
+    result.store( "statistic", (int)aux );
+
+    result_by_layer_[layer_id] = result;
   }
-  params_.store( "statistic", statist );
 
   return true;
 }
@@ -110,7 +118,7 @@ PreChiSquare::getLayersetResultSpec ( stringMap& info)
 void
 PreChiSquare::getLayerResultSpec ( stringMap& info)
 {
-	info["statistic"] = "size_t";
+	info["statistic"] = "int";
 }
 
 void 
