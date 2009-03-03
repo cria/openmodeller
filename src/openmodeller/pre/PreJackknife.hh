@@ -48,25 +48,34 @@ public:
    */
   ~PreJackknife();
 
-   //Checks if the supplied parameters fits the requirements of PRE algorithm implementation.
-   //return true if the parameters are OK. false if not.
-   bool checkParameters( const PreParameters& parameters ) const;
+  //Return description about the algorithm
+  string getDescription() const { return "This technique first generates a model \
+to calculate a particular measure (accuracy) for the entire layerset. Then for \
+each layer a new model is generated without that particular layer and the accuracy \
+is calculated again. All models are trained with the same set of points that are \
+randomly selected from the specified occurrence points given the specified proportion, \
+and the accuracy is calculated with the remaining testing points. The algorithm can \
+also be specified as a parameter."; }
 
-   //Runs the current algorithm implementation.
-   //return true if OK. false on error.
-   bool runImplementation();
+  //Checks if the supplied parameters fits the requirements of PRE algorithm implementation.
+  //return true if the parameters are OK. false if not.
+  bool checkParameters( const PreParameters& parameters ) const;
 
-   //Reset the params state to the params_ state.
-   void resetState( PreParameters& params );
+  //Runs the current algorithm implementation.
+  //return true if OK. false on error.
+  bool runImplementation();
 
-   //get input parameters
-   void getAcceptedParameters ( stringMap& info );
+  //Reset the params state to the params_ state.
+  void resetState( PreParameters& params );
 
-   //get output information
-   void getLayersetResultSpec ( stringMap& info);
+  //get input parameters
+  void getAcceptedParameters ( stringMap& info );
 
-   //get output information for each layer
-   void getLayerResultSpec ( stringMap& info);
+  //get output information
+  void getLayersetResultSpec ( stringMap& info);
+
+  //get output information for each layer
+  void getLayerResultSpec ( stringMap& info);
 
 };
 
