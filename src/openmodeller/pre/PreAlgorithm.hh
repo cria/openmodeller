@@ -63,8 +63,8 @@
        * Reset the supplied parameters with internal state.
        *
        * params: The supplied parameters. 
-	   */
-	  void resetState( PreParameters& params );
+       */
+       void resetState( PreParameters& params );
  
       /**
        * Checks if the supplied parameters fits the requirements of each
@@ -80,17 +80,18 @@
       //Returns a reference to the current internal parameters.
       const PreParameters& getParameters() const;
 
-	  //get input information
-  	  typedef std::map<string, string> stringMap;
-	  virtual void getAcceptedParameters( stringMap& info) = 0;
+      //get input information
+      typedef std::map<string, string> stringMap;
+      virtual void getAcceptedParameters( stringMap& info) = 0;
 
-	  //get output information
-	  virtual void getLayersetResultSpec ( stringMap& info) = 0;
+      //get output information
+      virtual void getLayersetResultSpec ( stringMap& info) = 0;
      
-	  //get output information for each layer
-	  virtual void getLayerResultSpec ( stringMap& info) = 0;
+      //get output information for each layer
+      virtual void getLayerResultSpec ( stringMap& info) = 0;
       
     protected :
+
       //Internal parameters reference
       mutable PreParameters params_;
         
