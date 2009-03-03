@@ -1,4 +1,3 @@
-
 /**
 * Declaration of class PreAlgorithm
 *
@@ -55,7 +54,7 @@ bool PreAlgorithm::reset( const PreParameters& params )
   } 
   else 
   {
-	 std::string msg = "PreAlgorithm::Reset: Invalid supplied parameters.\n";
+     std::string msg = "PreAlgorithm::Reset: Invalid supplied parameters.\n";
      Log::instance()->error( msg.c_str() );
 	 throw InvalidParameterException( msg );
   }
@@ -78,7 +77,7 @@ bool PreAlgorithm::apply()
   } 
   else 
   {
-	 std::string msg = "TePreAlgorithm::apply: Invalid supplied parameters.\n";
+     std::string msg = "TePreAlgorithm::apply: Invalid supplied parameters.\n";
      Log::instance()->error( msg.c_str() );
 	 throw InvalidParameterException( msg );
   }
