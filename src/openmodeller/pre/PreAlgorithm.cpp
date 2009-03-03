@@ -56,7 +56,7 @@ bool PreAlgorithm::reset( const PreParameters& params )
   {
      std::string msg = "PreAlgorithm::Reset: Invalid supplied parameters.\n";
      Log::instance()->error( msg.c_str() );
-	 throw InvalidParameterException( msg );
+     throw InvalidParameterException( msg );
   }
 }
 
@@ -79,7 +79,7 @@ bool PreAlgorithm::apply()
   {
      std::string msg = "TePreAlgorithm::apply: Invalid supplied parameters.\n";
      Log::instance()->error( msg.c_str() );
-	 throw InvalidParameterException( msg );
+     throw InvalidParameterException( msg );
   }
   
   return return_value;
@@ -110,5 +110,17 @@ const PreAlgorithm& PreAlgorithm::operator=(
 void PreAlgorithm::getLayerResult( const string layer_id, PreParameters& result )
 {
   result.clear();
+
+  std::map<string, PreParameters>::iterator it;
+
+  if ( result_by_layer_.find( layer_id ) == result_by_layer_.end() ) {
+
+     string msg = "PreAlgorithm::getLayerResult: No results for the specified layer (";
+     msg.append( layer_id );
+     msg.append(")\n");
+     Log::instance()->error( msg.c_str() );
+     throw InvalidParameterException( msg );
+  }
+
   result = result_by_layer_[layer_id];
 }
