@@ -20,11 +20,11 @@ int main() {
 static test_Jackknife suite_test_Jackknife;
 
 static CxxTest::List Tests_test_Jackknife = { 0, 0 };
-CxxTest::StaticSuiteDescription suiteDescription_test_Jackknife( "pre_test_jackknife.hh", 50, "test_Jackknife", suite_test_Jackknife, Tests_test_Jackknife );
+CxxTest::StaticSuiteDescription suiteDescription_test_Jackknife( "pre_test_jackknife.hh", 51, "test_Jackknife", suite_test_Jackknife, Tests_test_Jackknife );
 
 static class TestDescription_test_Jackknife_test1 : public CxxTest::RealTestDescription {
 public:
- TestDescription_test_Jackknife_test1() : CxxTest::RealTestDescription( Tests_test_Jackknife, suiteDescription_test_Jackknife, 60, "test1" ) {}
+ TestDescription_test_Jackknife_test1() : CxxTest::RealTestDescription( Tests_test_Jackknife, suiteDescription_test_Jackknife, 61, "test1" ) {}
  void runTest() { suite_test_Jackknife.test1(); }
 } testDescription_test_Jackknife_test1;
 

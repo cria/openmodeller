@@ -79,8 +79,10 @@ class test_Jackknife : public CxxTest :: TestSuite
         ConfigurationPtr c1 = Configuration::readXml( myInFileName.c_str() );
         om.setModelConfiguration( c1 );
 
+        SamplerPtr samp = om.getSampler();
+
         PreParameters params;
-        params.store( "Sampler", om.getSampler() );
+        params.store( "Sampler", samp );
         params.store( "Algorithm", om.getAlgorithm() );
         params.store( "PropTrain", 0.9 );
 
@@ -92,21 +94,19 @@ class test_Jackknife : public CxxTest :: TestSuite
 
         preAlgPtr->resetState(params);
 
-        double out_param = 0;                  // <------ output 1
-        std::multimap<double, int> out_params; // <------ output 2
-        double mean = 0;                       // <------ output 3
-        double variance = 0;                   // <------ output 4
-        double std_deviation = 0;              // <------ output 5
-        double jackknife_estimate = 0;         // <------ output 6
-        double jackknife_bias = 0;             // <------ output 7
+        double ref_accuracy = 0;
+        double mean = 0;
+        double variance = 0;
+        double std_deviation = 0;
+        double jackknife_estimate = 0;
+        double jackknife_bias = 0;
 
-        TS_ASSERT( params.retrieve( "out_param"    , out_param          ) );
-        TS_ASSERT( params.retrieve( "out_params"   , out_params         ) );
-        TS_ASSERT( params.retrieve( "out_Mean"     , mean               ) );
-        TS_ASSERT( params.retrieve( "out_Variance" , variance           ) );
-        TS_ASSERT( params.retrieve( "out_Deviation", std_deviation      ) );
-        TS_ASSERT( params.retrieve( "out_Estimate" , jackknife_estimate ) );
-        TS_ASSERT( params.retrieve( "out_Bias"     , jackknife_bias     ) );
+        TS_ASSERT( params.retrieve( "Accuracy" , ref_accuracy       ) );
+        TS_ASSERT( params.retrieve( "Mean"     , mean               ) );
+        TS_ASSERT( params.retrieve( "Variance" , variance           ) );
+        TS_ASSERT( params.retrieve( "Deviation", std_deviation      ) );
+        TS_ASSERT( params.retrieve( "Estimate" , jackknife_estimate ) );
+        TS_ASSERT( params.retrieve( "Bias"     , jackknife_bias     ) );
 
         //input informations
         typedef std::map<string, string> stringMap;
@@ -124,7 +124,7 @@ class test_Jackknife : public CxxTest :: TestSuite
 
         //output set informations
         stringMap infoSetOut;
-         preAlgPtr->getLayersetResultSpec(infoSetOut);
+        preAlgPtr->getLayersetResultSpec(infoSetOut);
         std::cout << std::endl;
         std::cout << "output set information "  << std::endl;
         std::cout << std::endl;
@@ -134,16 +134,29 @@ class test_Jackknife : public CxxTest :: TestSuite
             std::cout << pos->second << std::endl;
         }
 
-        //output informations for each layer
+        //output information for each layer
         stringMap infoOut;
-         preAlgPtr->getLayerResultSpec(infoOut);
-        std::cout << std::endl;
-        std::cout << "output layer information "  << std::endl;
-        std::cout << std::endl;
-        for (pos = infoOut.begin(); pos != infoOut.end(); ++pos)
+        preAlgPtr->getLayerResultSpec(infoOut);
+
+        int num_layers = samp->numIndependent();
+
+        for ( int i = 0; i < num_layers; ++i )
         {
-            std::cout << pos->first << "   ";
-            std::cout << pos->second << std::endl;
+            string layer_id = samp->getEnvironment()->getLayerPath(i);
+
+            std::cout << std::endl << layer_id << std::endl;
+
+            PreParameters result;
+            preAlgPtr->getLayerResult( layer_id, result );
+
+            for (pos = infoOut.begin(); pos != infoOut.end(); ++pos)
+            {
+                double accuracy = 0;
+                result.retrieve( "Accuracy without layer", accuracy );
+
+                std::cout << pos->first << ": ";
+                std::cout << accuracy << std::endl;
+            }
         }
 
         return ;
