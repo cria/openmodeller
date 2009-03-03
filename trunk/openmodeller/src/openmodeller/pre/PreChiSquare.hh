@@ -38,16 +38,7 @@
 #define classLimit 16
 
 /*
- * Chi Square algorithm described at Li, L., et al. (2006). "An Integrated
- * Bayesian Modelling Approach for Predicting Mosquito Larval Habitats". The
- * authors tested the independence between all pairs of layers. They crossed
- * two layers by using a contingence matrix to detect the dependence between
- * them conditioning on the presence of habitat. The rows of the contingence
- * matrix are values of one layer, and the columns of the matrix are values of
- * the other variable.  Each cell of the matrix records the number of
- * occurrence of specie , that is calculated by considering the class of the
- * two layers. Given the significance level of 0.05, the Chi-square test is
- * then applied to evaluate the independence between two crossed layers.
+ *
  *
  * input: SamplerPtr output: shows for each variable the amount of layers that
  * maintain correlation at the significance level of 0.05
@@ -72,6 +63,19 @@ class dllexp PreChiSquare : public PreAlgorithm
 
     PreChiSquare(); //constructor
     ~PreChiSquare(); //destructor
+
+    //Return description about the algorithm
+    string getDescription() const { return "\
+This technique is described in Li, L., et al. (2006). \"An Integrated\
+Bayesian Modelling Approach for Predicting Mosquito Larval Habitats\". The \
+authors used chi-square to test the independence between all pairs of layers. \
+A contingency matrix is calculated to detect the dependency between each pair \
+of layers based on a set of presence points of a particular species. Rows in the \
+contingency matrix are associated with one layer, and the columns contain values \
+of each of the other layers. Each cell of the matrix represents the number of \
+species occurrences calculated by considering the class of the two layers. \
+Given the significance level of 0.05, the Chi-square test is \
+then applied to evaluate the independence between each pair of layers."; }
 
     //Checks if the supplied parameters fits the requirements of PRE algorithm implementation.
     //return true if the parameters are OK. false if not.

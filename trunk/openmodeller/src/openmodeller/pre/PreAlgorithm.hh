@@ -44,6 +44,13 @@
 	  {throw;};
 
       /**
+       * Return a description about the algorithm.
+       *
+       * @return Description about the algorithm.
+       */
+      virtual string getDescription() const = 0;
+
+      /**
        * Applies the algorithm following the current state and
        * internal stored parameters.
        *
