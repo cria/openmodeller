@@ -110,7 +110,7 @@ PreChiSquare::getLayersetResultSpec ( stringMap& info)
 void
 PreChiSquare::getLayerResultSpec ( stringMap& info)
 {
-	info["statistic"] = "int values for each layer";
+	info["statistic"] = "size_t";
 }
 
 void 

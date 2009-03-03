@@ -1,7 +1,7 @@
 /**
  * Definition of Jackknife class 
  * 
- * @author Fabrício Rodrigues (fabricio . poliusp at gmail . com)
+ * @author Fabrï¿½cio Rodrigues (fabricio . poliusp at gmail . com)
  * @author Renato De Giovanni (renato at cria . org . br)
  * $Id$
  *
@@ -77,26 +77,26 @@ PreJackknife::checkParameters( const PreParameters& parameters ) const
 void
 PreJackknife::getAcceptedParameters( stringMap& info)
 {
-	info["1: Sampler"] = "samplerPtr";
-	info["2: Algorithm"] = "algorithmPtr";
-	info["3: PropTrain"] = "double";
+	info["Sampler"] = "samplerPtr";
+	info["Algorithm"] = "algorithmPtr";
+	info["PropTrain"] = "double";
 }
 
 void
 PreJackknife::getLayersetResultSpec ( stringMap& info)
 {
-	info["1: param"] = "double";
-	info["2: mean"] = "double";
-	info["3: variance"] = "double";
-	info["4: deviation"] = "double";
-	info["5: estimate"] = "double";
-	info["6: bias"] = "double";
+	info["Accuracy"] = "double";
+	info["Mean"] = "double";
+	info["Variance"] = "double";
+	info["Deviation"] = "double";
+	info["Estimate"] = "double";
+	info["Bias"] = "double";
 }
 
 void
 PreJackknife::getLayerResultSpec ( stringMap& info)
 {
-	info["7: params"] = "std::multimap<double, int>";
+	info["Accuracy without layer"] = "std::multimap<double, int>";
 }
 
 bool PreJackknife::runImplementation()
@@ -320,13 +320,13 @@ bool PreJackknife::runImplementation()
 
   Log::instance()->debug( "Jackknife bias = %f\n", jackknife_bias );
 
-  params_.store( "out_param", out_param );
-  params_.store( "out_params", out_params );
-  params_.store( "out_Mean", mean );
-  params_.store( "out_Variance", variance );
-  params_.store( "out_Deviation", std_deviation );
-  params_.store( "out_Estimate", jackknife_estimate );
-  params_.store( "out_Bias", jackknife_bias );
+  params_.store( "Accuracy", out_param );
+  params_.store( "Accuracy without layer", out_params );
+  params_.store( "Mean", mean );
+  params_.store( "Variance", variance );
+  params_.store( "Deviation", std_deviation );
+  params_.store( "Estimate", jackknife_estimate );
+  params_.store( "Bias", jackknife_bias );
 
 
 
