@@ -65,8 +65,8 @@ class dllexp PreChiSquare : public PreAlgorithm
     Scalar	measured[classLimit][classLimit]; //measured points between two crossed layers.
     Scalar	expected [classLimit][classLimit]; //expected points between two crossed layers.
     Scalar  	chicell [classLimit][classLimit]; //chi value for each cell formed between two class of the crossed layers. 
-	std::vector< size_t > statistic1; //dependency between layers.
-	std::vector< size_t > statistic2; //dependency between layers.
+    std::vector< size_t > statistic1; //dependency between layers.
+    std::vector< size_t > statistic2; //dependency between layers.
 
   public:
 
@@ -75,20 +75,20 @@ class dllexp PreChiSquare : public PreAlgorithm
 
     //Checks if the supplied parameters fits the requirements of PRE algorithm implementation.
     //return true if the parameters are OK. false if not.
-	bool checkParameters( const PreParameters& parameters ) const;
+    bool checkParameters( const PreParameters& parameters ) const;
 
     //Runs the current algorithm implementation.
     //return true if OK. false on error.
     bool runImplementation();
 
- 	//get input parameters
-	void getAcceptedParameters ( stringMap& info );
+    //get input parameters
+    void getAcceptedParameters ( stringMap& info );
 
-	//get output information
-	void getLayersetResultSpec ( stringMap& info);
+    //get output information
+    void getLayersetResultSpec ( stringMap& info);
 
-	//get output information for each layer
-	void getLayerResultSpec ( stringMap& info);
+    //get output information for each layer
+    void getLayerResultSpec ( stringMap& info);
 
     //initialize attributes: num_points, num_layers, nclass, minimum, delta, my_presences.
     void init();

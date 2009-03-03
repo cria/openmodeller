@@ -83,8 +83,10 @@ class test_ChiSquare : public CxxTest :: TestSuite
         ConfigurationPtr c1 = Configuration::readXml( myInFileName.c_str() );
         om.setModelConfiguration( c1 );
 
+        SamplerPtr samp = om.getSampler();
+
         PreParameters params;
-        params.store( "Sampler", om.getSampler() );
+        params.store( "Sampler", samp );
 
         PreAlgorithm* preAlgPtr = PreAlgorithmFactory::make("PreChiSquare", params);
 
@@ -94,21 +96,7 @@ class test_ChiSquare : public CxxTest :: TestSuite
 
         preAlgPtr->resetState(params);
 
-        std::vector< size_t > statistic;
-        TS_ASSERT( params.retrieve( "statistic", statistic ) );
-
-        std::cout << std::endl;
-        std::cout << "*************** chisquare results ****************** "  << std::endl;
-        std::cout << std::endl;
-        std::cout << "layer number         statistic" << std::endl;
-        std::cout << std::endl;
-        for (size_t i = 0; i < statistic.size(); ++i)
-        {
-            std::cout << "    " << i << "                    ";
-            std::cout << statistic[i] << std::endl;
-        }
-
-        //input informations
+        //input information
         typedef std::map<string, string> stringMap;
         stringMap infoIn;
         preAlgPtr->getAcceptedParameters( infoIn ); 
@@ -122,16 +110,34 @@ class test_ChiSquare : public CxxTest :: TestSuite
             std::cout << pos->second << std::endl;
         }
 
-        //output informations for each layer
+        //output information for each layer
+
+        std::cout << std::endl;
+        std::cout << "*************** chisquare results ****************** "  << std::endl;
+        std::cout << std::endl;
+
         stringMap infoOut;
-         preAlgPtr->getLayerResultSpec( infoOut );
-        std::cout << std::endl;
-        std::cout << "output information "  << std::endl;
-        std::cout << std::endl;
-        for (pos = infoOut.begin(); pos != infoOut.end(); ++pos)
+        preAlgPtr->getLayerResultSpec(infoOut);
+
+        int num_layers = samp->numIndependent();
+
+        for ( int i = 0; i < num_layers; ++i )
         {
-            std::cout << pos->first << "   ";
-            std::cout << pos->second << std::endl;
+            string layer_id = samp->getEnvironment()->getLayerPath(i);
+
+            std::cout << std::endl << layer_id << std::endl;
+
+            PreParameters result;
+            preAlgPtr->getLayerResult( layer_id, result );
+
+            for (pos = infoOut.begin(); pos != infoOut.end(); ++pos)
+            {
+                int statistic = 0;
+                result.retrieve( "statistic", statistic );
+
+                std::cout << pos->first << ": ";
+                std::cout << statistic << std::endl;
+            }
         }
 
         return ;

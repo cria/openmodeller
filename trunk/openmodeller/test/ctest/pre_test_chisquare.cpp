@@ -20,11 +20,11 @@ int main() {
 static test_ChiSquare suite_test_ChiSquare;
 
 static CxxTest::List Tests_test_ChiSquare = { 0, 0 };
-CxxTest::StaticSuiteDescription suiteDescription_test_ChiSquare( "pre_test_chisquare.hh", 56, "test_ChiSquare", suite_test_ChiSquare, Tests_test_ChiSquare );
+CxxTest::StaticSuiteDescription suiteDescription_test_ChiSquare( "pre_test_chisquare.hh", 55, "test_ChiSquare", suite_test_ChiSquare, Tests_test_ChiSquare );
 
 static class TestDescription_test_ChiSquare_test1 : public CxxTest::RealTestDescription {
 public:
- TestDescription_test_ChiSquare_test1() : CxxTest::RealTestDescription( Tests_test_ChiSquare, suiteDescription_test_ChiSquare, 66, "test1" ) {}
+ TestDescription_test_ChiSquare_test1() : CxxTest::RealTestDescription( Tests_test_ChiSquare, suiteDescription_test_ChiSquare, 65, "test1" ) {}
  void runTest() { suite_test_ChiSquare.test1(); }
 } testDescription_test_ChiSquare_test1;
 
