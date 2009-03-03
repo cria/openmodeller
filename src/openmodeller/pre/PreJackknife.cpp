@@ -96,7 +96,7 @@ PreJackknife::getLayersetResultSpec ( stringMap& info)
 void
 PreJackknife::getLayerResultSpec ( stringMap& info)
 {
-	info["Accuracy without layer"] = "std::multimap<double, int>";
+	info["Accuracy without layer"] = "double";
 }
 
 bool PreJackknife::runImplementation()
@@ -152,17 +152,17 @@ bool PreJackknife::runImplementation()
 
   conf_matrix.calculate( algorithm_ptr->getModel(), testing_sampler );
 
-  double out_param = conf_matrix.getAccuracy() * 100; // <------ output 1
+  double out_param = conf_matrix.getAccuracy() * 100;
 
   // Calculate reference parameter for each layer by excluding it from the layer set
 
-  std::multimap<double, int> out_params; // <------ output 2
+  std::multimap<double, int> out_params;
 
-  double mean = 0.0;                 // <------ output 3
-  double variance = 0.0;             // <------ output 4
-  double std_deviation = 0.0;        // <------ output 5
-  double jackknife_estimate = 0.0;   // <------ output 6
-  double jackknife_bias = 0.0;       // <------ output 7
+  double mean = 0.0;
+  double variance = 0.0;
+  double std_deviation = 0.0;
+  double jackknife_estimate = 0.0;
+  double jackknife_bias = 0.0;
 
   // Work with clones of the occurrences 
   OccurrencesPtr training_presences;
@@ -196,6 +196,8 @@ bool PreJackknife::runImplementation()
 
     // Copy the original environment
     EnvironmentPtr new_environment = samplerPtr->getEnvironment()->clone();
+
+    PreParameters result;
 
     // Remove one of the layers
     new_environment->removeLayer( i );
@@ -263,6 +265,10 @@ bool PreJackknife::runImplementation()
 
     out_params.insert( std::pair<double, int>( myaccuracy, i ) );
 
+    result.store( "Accuracy without layer", myaccuracy );
+
+    result_by_layer_[samplerPtr->getEnvironment()->getLayerPath(i)] = result;
+
 // Code for debugging:
 
 //     string file_name = "model_";
@@ -321,7 +327,6 @@ bool PreJackknife::runImplementation()
   Log::instance()->debug( "Jackknife bias = %f\n", jackknife_bias );
 
   params_.store( "Accuracy", out_param );
-  params_.store( "Accuracy without layer", out_params );
   params_.store( "Mean", mean );
   params_.store( "Variance", variance );
   params_.store( "Deviation", std_deviation );

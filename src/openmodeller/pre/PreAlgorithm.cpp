@@ -107,4 +107,8 @@ const PreAlgorithm& PreAlgorithm::operator=(
   return external;
 }
 
-
+void PreAlgorithm::getLayerResult( const string layer_id, PreParameters& result )
+{
+  result.clear();
+  result = result_by_layer_[layer_id];
+}

@@ -90,11 +90,23 @@
       //get output information for each layer
       virtual void getLayerResultSpec ( stringMap& info) = 0;
       
+      /**
+       * Method used to retrieve statistics calculated for a specified layer.
+       *
+       * @param layer_id Layer id.
+       * @param result PreParameters object where the results are stored
+       * @return PreParamers object associated with the specified layer.
+       */
+      void getLayerResult( const string layer_id, PreParameters& result );
+
     protected :
 
       //Internal parameters reference
       mutable PreParameters params_;
-        
+
+      // Layer id => PreParams obj whose keys can be discovered by calling getLayerResultSpec
+      mutable std::map<string, PreParameters> result_by_layer_;
+
       //Default Constructor
       PreAlgorithm();
 
