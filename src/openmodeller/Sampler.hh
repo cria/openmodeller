@@ -141,16 +141,28 @@ public:
   ConstOccurrencePtr getOneSample( ) const;
 
   /**
-   * Get one Presence point
+   * Get a random presence point
    */
   ConstOccurrencePtr getPresence() const 
   { return getRandomOccurrence( _presence ); }
 
   /**
-   * Get one Absence point
+   * Get a specific presence point by index
+   */
+  ConstOccurrencePtr getPresence( int index ) const 
+  { return _presence->operator[]( index ); }
+
+  /**
+   * Get a random absence point
    */
   ConstOccurrencePtr getAbsence() const 
   { return getRandomOccurrence( _absence ); }
+
+  /**
+   * Get a specific absence point by index
+   */
+  ConstOccurrencePtr getAbsence( int index ) const 
+  { return _absence->operator[]( index ); }
 
   /**
    * Get one pseudoAbsence point
