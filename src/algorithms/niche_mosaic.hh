@@ -49,6 +49,7 @@ class NicheMosaic : public AlgorithmImpl
     OccurrencesPtr _my_absence_test;   // occurrence points of species (absence test).
     size_t _bestCost;                  // best cost
     bool _done;                        // is true if the algorithm is finished.
+    float _progress;                   // iteration progress
     std::vector<ScalarVector> _model_min_best;
     std::vector<ScalarVector> _model_max_best;
 
@@ -64,7 +65,8 @@ class NicheMosaic : public AlgorithmImpl
 
    int initialize();
    int iterate();
-   int done() const;
+   int done() const { return _done; }
+   float getProgress() const;
 
    Scalar getValue( const Sample& x ) const;
 

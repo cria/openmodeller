@@ -132,7 +132,8 @@ NicheMosaic::NicheMosaic() :
   _my_presences_test(0),
   _my_absence_test(0),
   _bestCost(0),
-  _done( false )
+  _done( false ),
+  _progress( 0.0 )
 {
 }
 
@@ -239,14 +240,17 @@ NicheMosaic::iterate()
   return 1;
 }
 
-
-/************/
-/*** done ***/
-int
-NicheMosaic::done() const
+float 
+NicheMosaic::getProgress() const
 {
-  // This is not an iterative algorithm.
-  return _done;
+  if (done()) {
+
+    return 1.0;
+  }
+  else {
+
+    return _progress;
+  }
 }
 
 /*****************/
@@ -481,6 +485,7 @@ NicheMosaic::findSolution()
 
   size_t nTabu = (size_t)floor(sqrt((double)(_num_layers)));
   std::vector<size_t> tabuDegree( _num_layers );
+
   for( int l = 0; l < _num_layers; l++ ) 
     tabuDegree[l] = 0;
 
@@ -491,12 +496,15 @@ NicheMosaic::findSolution()
   _model_max_best.reserve( _num_points );
 
   for ( unsigned int i = 0; i < model_min.size(); i++ ) {
+
     model_min[i] = ScalarVector( _num_layers );
     model_max[i] = ScalarVector( _num_layers );
     _model_min_best[i] = ScalarVector( _num_layers );
     _model_max_best[i] = ScalarVector( _num_layers );
   }//end for
+
   for ( int j = 0; j < _num_layers; j++ ){
+
     delta[j] = _delta[j] * 0.13;
   }
 
@@ -507,26 +515,30 @@ NicheMosaic::findSolution()
   cost = cost1 + cost2;
   _bestCost = cost;
 
-  for (int iter=0; iter < _num_iterations; iter++)
-  {
-	i_layer = getRandomLayerNumber();
-	if (tabuDegree[i_layer] == 0) 
-	{
+  for (int iter=0; iter < _num_iterations; iter++) {
+
+    _progress = (float)iter/(float)_num_iterations;
+
+    i_layer = getRandomLayerNumber();
+
+    if (tabuDegree[i_layer] == 0) {
+
       renewTabuDegree(tabuDegree);
-	  tabuDegree[i_layer] = nTabu;
-	  delta[i_layer] = _delta[i_layer] * getRandomPercent(delta, i_layer, cost1, cost2);
-	  editModel( model_min, model_max, delta, i_layer );
+      tabuDegree[i_layer] = nTabu;
+      delta[i_layer] = _delta[i_layer] * getRandomPercent(delta, i_layer, cost1, cost2);
+      editModel( model_min, model_max, delta, i_layer );
       cost1 = calculateCostPres( model_min, model_max );
       cost2 = calculateCostAus( model_min, model_max );
-	  cost = cost1 + cost2;
-	  if ( (cost > _bestCost) || ( (cost == _bestCost) && (cost1 >= cost1Aux) ) ){
-		  cost1Aux = cost1;
-		  _bestCost = cost;
-		  saveBestModel(model_min, model_max);
-		  if (_bestCost == (_num_points_test + _num_points_absence_test) )
-		    break;
-	  }//end if
-	}//end if
+      cost = cost1 + cost2;
+
+      if ( (cost > _bestCost) || ( (cost == _bestCost) && (cost1 >= cost1Aux) ) ) {
+        cost1Aux = cost1;
+        _bestCost = cost;
+        saveBestModel(model_min, model_max);
+        if (_bestCost == (_num_points_test + _num_points_absence_test) )
+          break;
+      }//end if
+    }//end if
   }//end for
 }
 
