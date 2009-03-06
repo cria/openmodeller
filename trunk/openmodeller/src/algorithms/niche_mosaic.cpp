@@ -227,7 +227,10 @@ NicheMosaic::iterate()
 
   _num_points = _my_presences->numOccurrences();
 
-  setMinMaxDelta();
+  if ( 0 == setMinMaxDelta() ) {
+
+    return 0;
+  }
 
   findSolution();
 
@@ -251,7 +254,7 @@ NicheMosaic::done() const
 Scalar
 NicheMosaic::getValue( const Sample& x ) const
 {
-  size_t i, j, npresence = 0;
+  int i, j = 0;
 
     //_num_points eh o numero de regras do modelo
     for (i = 0; i < _num_points; i++) {
@@ -271,7 +274,7 @@ NicheMosaic::getValue( const Sample& x ) const
    return 0.0;
 }
 
-void 
+int 
 NicheMosaic::setMinMaxDelta()
 {
   OccurrencesImpl::const_iterator oc = _my_presences->begin();
@@ -292,12 +295,14 @@ NicheMosaic::setMinMaxDelta()
   _delta = _maximum;
   _delta -= _minimum;
 
-  for ( size_t j = 0; j < _num_layers; j++ ) {
+  for ( int j = 0; j < _num_layers; j++ ) {
     if (_delta[j] == 0.0) {
-      Log::instance()->error( "Problem with layer %d\n", j );
-      exit(0);
+      Log::instance()->error( "No delta for layer %d\n", j );
+      return 0;
     }
   }
+
+  return 1;
 }
 
 void 
@@ -310,7 +315,7 @@ NicheMosaic::createModel( std::vector<ScalarVector> &model_min, std::vector<Scal
   while ( oc != end ) {
     Sample const& sample = (*oc)->environment();
 
-    for ( unsigned int j = 0; j < _num_layers; j++ ) {
+    for ( int j = 0; j < _num_layers; j++ ) {
       model_min[i][j] = sample[j] - delta[j];
       model_max[i][j] = sample[j] + delta[j];
     }//end for
@@ -344,7 +349,7 @@ NicheMosaic::calculateCostPres( const std::vector<ScalarVector> &model_min, cons
   OccurrencesImpl::iterator it = _my_presences_test->begin(); 
   OccurrencesImpl::iterator last = _my_presences_test->end();
 
-  size_t i, j, npresence = 0, nabsence = 0;
+  int i, j, npresence = 0;
 
   //presence
   while ( it != last ) {
@@ -376,7 +381,7 @@ NicheMosaic::calculateCostPres( const std::vector<ScalarVector> &model_min, cons
 size_t
 NicheMosaic::calculateCostAus( const std::vector<ScalarVector> &model_min, const std::vector<ScalarVector> &model_max )
 {
-  size_t i, j, nabsence = 0;
+  int i, j, nabsence = 0;
 
   //absence
   OccurrencesImpl::iterator it_absence = _my_absence_test->begin(); 
@@ -410,7 +415,7 @@ NicheMosaic::getRandomLayerNumber()
   size_t r;
   double a, b;
 
-  if (flag = 0)
+  if ( 0 == flag )
   {
     srand( (unsigned)time( NULL ) );
     flag = 1;
@@ -431,7 +436,7 @@ NicheMosaic::getRandomPercent(const std::vector<Scalar> &delta, const size_t i_l
   double a, b = 22;
   Scalar percent[22] = { 0.04, 0.05, 0.06, 0.07, 0.08, 0.09, 0.1, 0.11, 0.12, 0.13, 0.14, 0.15, 0.16, 0.17, 0.18, 0.19, 0.2, 0.21, 0.22, 0.23, 0.24, 0.25 };
   half = (size_t) (b/2);
-  if (flag = 0)
+  if (0 == flag)
   {
     srand( (unsigned)time( NULL ) );
     flag = 1;
@@ -450,73 +455,22 @@ NicheMosaic::getRandomPercent(const std::vector<Scalar> &delta, const size_t i_l
 void
 NicheMosaic::renewTabuDegree(std::vector<size_t> &tabuDegree)
 {
-  for (size_t i = 0; i < _num_layers; i++)
-  {
+  for (int i = 0; i < _num_layers; i++) {
+
     if (tabuDegree[i] > 0)
-	  tabuDegree[i] = tabuDegree[i] - 1;
+      tabuDegree[i] = tabuDegree[i] - 1;
   }
 }
 
 void
 NicheMosaic::saveBestModel(const std::vector<ScalarVector> &model_min, const std::vector<ScalarVector> &model_max)
 {
-  for (size_t i = 0; i < _num_points; i++){
-    for (size_t j = 0; j < _num_layers; j++){
-	  _model_min_best[i][j] = model_min[i][j];
-	  _model_max_best[i][j] = model_max[i][j];
-	}
+  for (int i = 0; i < _num_points; i++) {
+    for (int j = 0; j < _num_layers; j++) {
+      _model_min_best[i][j] = model_min[i][j];
+      _model_max_best[i][j] = model_max[i][j];
+    }
   }
-}
-
-void
-NicheMosaic::writeModel( const std::vector<ScalarVector> &model_min_best, const std::vector<ScalarVector> &model_max_best )
-{
-  FILE *model_out;
-  size_t i, j, n =_num_layers - 1;
-
-  if (( model_out = fopen("c:/tmp/model_min_max.txt","w")) == NULL) {
-    std::string msg = "The file was not opened!.\n";
-    Log::instance()->error( msg.c_str() );
-    throw InvalidParameterException( msg );
-  }
-  if (fprintf(model_out,"( ") == EOF){
-    std::string msg = "IO error!.\n";
-	Log::instance()->error( msg.c_str() );
-	throw InvalidParameterException( msg );
-  }//end if
-
-
-  for (i = 0; i < _num_points; i++)
-  {
-    for (j = 0; j < n; j++)
-    {
-      if (fprintf(model_out,"(var%d > %f) && (var%d < %f) &&\n", j, model_min_best[i][j], j, model_max_best[i][j]) == EOF){
-	    std::string msg = "IO error!.\n";
-		Log::instance()->error( msg.c_str() );
-		throw InvalidParameterException( msg );
-	  }//end if
-	}//end for
-
-	if (fprintf(model_out,"(var%d > %f) && (var%d < %f)) \n", j, model_min_best[i][n], j, model_max_best[i][n]) == EOF){
-	  std::string msg = "IO error!.\n";
-	  Log::instance()->error( msg.c_str() );
-	  throw InvalidParameterException( msg );
-	}//end if
-
-	if (fprintf(model_out,"? Classe(""Low"")\n: (") == EOF ){
-      std::string msg = "IO error!.\n";
-	  Log::instance()->error( msg.c_str() );
-	  throw InvalidParameterException( msg );
-	}//end if
-  }//end for
-
-  if (fprintf(model_out,"Classe (""High"");") == EOF ){
-    std::string msg = "IO error!.\n";
-    Log::instance()->error( msg.c_str() );
-	throw InvalidParameterException( msg );
-  }//end if
-
-  fclose(model_out);
 }
 
 void 
@@ -527,7 +481,7 @@ NicheMosaic::findSolution()
 
   size_t nTabu = (size_t)floor(sqrt((double)(_num_layers)));
   std::vector<size_t> tabuDegree( _num_layers );
-  for( size_t l = 0; l < _num_layers; l++ ) 
+  for( int l = 0; l < _num_layers; l++ ) 
     tabuDegree[l] = 0;
 
   //model
@@ -542,7 +496,7 @@ NicheMosaic::findSolution()
     _model_min_best[i] = ScalarVector( _num_layers );
     _model_max_best[i] = ScalarVector( _num_layers );
   }//end for
-  for ( unsigned int j = 0; j < _num_layers; j++ ){
+  for ( int j = 0; j < _num_layers; j++ ){
     delta[j] = _delta[j] * 0.13;
   }
 
@@ -574,8 +528,6 @@ NicheMosaic::findSolution()
 	  }//end if
 	}//end if
   }//end for
-
-//  writeModel( model_min_best, model_max_best );
 }
 
 /****************************************************************/
