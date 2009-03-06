@@ -1,8 +1,8 @@
 /**
- * Declaration of class Tabu
+ * Declaration of class NicheMosaic
  *
  * @author Missae Yamamoto (missae at dpi . inpe . br)
- * $Id: Tabu.cpp 
+ * $Id: $
  *
  * LICENSE INFORMATION
  * 
@@ -24,7 +24,7 @@
  * http://www.gnu.org/copyleft/gpl.html
  */
 
-#include "tabu.hh"
+#include "niche_mosaic.hh"
 
 #include <openmodeller/Configuration.hh>
 
@@ -73,8 +73,8 @@ static AlgParamMetadata parameters[NUM_PARAM] = {
 
 static AlgMetadata metadata = {
 
-  "TABU",   // Id.
-  "TABU",   // Name.
+  "NICHE_MOSAIC",   // Id.
+  "Niche Mosaic",   // Name.
   "0.1",    // Version.
 
   // Overview
@@ -105,7 +105,7 @@ OM_ALG_DLL_EXPORT
 AlgorithmImpl *
 algorithmFactory()
 {
-  return new Tabu();
+  return new NicheMosaic();
 }
 
 OM_ALG_DLL_EXPORT
@@ -116,9 +116,9 @@ algorithmMetadata()
 }
 
 /*************************************************************/
-/**************************** Tabu ***************************/
+/************************ Niche Mosaic ***********************/
 
-Tabu::Tabu() :
+NicheMosaic::NicheMosaic() :
   AlgorithmImpl( &metadata ),
   _num_iterations(0),
   _num_points(0),
@@ -136,14 +136,14 @@ Tabu::Tabu() :
 {
 }
 
-Tabu::~Tabu()
+NicheMosaic::~NicheMosaic()
 {
 }
 
 /******************/
 /*** initialize ***/
 int
-Tabu::initialize()
+NicheMosaic::initialize()
 {
   // Check the number of presences
   int num_presences = _samp->numPresence();
@@ -218,7 +218,7 @@ Tabu::initialize()
 /***************/
 /*** iterate ***/
 int
-Tabu::iterate()
+NicheMosaic::iterate()
 {
   // Split sampler in test/train
   splitOccurrences( _samp->getPresences(), _my_presences, _my_presences_test, 0.7 );
@@ -229,7 +229,7 @@ Tabu::iterate()
 
   setMinMaxDelta();
 
-  runTabu();
+  findSolution();
 
   _done = 1;
 
@@ -240,7 +240,7 @@ Tabu::iterate()
 /************/
 /*** done ***/
 int
-Tabu::done() const
+NicheMosaic::done() const
 {
   // This is not an iterative algorithm.
   return _done;
@@ -249,7 +249,7 @@ Tabu::done() const
 /*****************/
 /*** get Value ***/
 Scalar
-Tabu::getValue( const Sample& x ) const
+NicheMosaic::getValue( const Sample& x ) const
 {
   size_t i, j, npresence = 0;
 
@@ -272,7 +272,7 @@ Tabu::getValue( const Sample& x ) const
 }
 
 void 
-Tabu::setMinMaxDelta()
+NicheMosaic::setMinMaxDelta()
 {
   OccurrencesImpl::const_iterator oc = _my_presences->begin();
   OccurrencesImpl::const_iterator end = _my_presences->end();
@@ -301,7 +301,7 @@ Tabu::setMinMaxDelta()
 }
 
 void 
-Tabu::createModel( std::vector<ScalarVector> &model_min, std::vector<ScalarVector> &model_max, const std::vector<Scalar> &delta )
+NicheMosaic::createModel( std::vector<ScalarVector> &model_min, std::vector<ScalarVector> &model_max, const std::vector<Scalar> &delta )
 {
   size_t i=0;
   OccurrencesImpl::const_iterator oc = _my_presences->begin();
@@ -321,7 +321,7 @@ Tabu::createModel( std::vector<ScalarVector> &model_min, std::vector<ScalarVecto
 }
 
 void 
-Tabu::editModel( std::vector<ScalarVector> &model_min, std::vector<ScalarVector> &model_max, const std::vector<Scalar> &delta, size_t i_layer )
+NicheMosaic::editModel( std::vector<ScalarVector> &model_min, std::vector<ScalarVector> &model_max, const std::vector<Scalar> &delta, size_t i_layer )
 {
   size_t i=0;
   OccurrencesImpl::const_iterator oc = _my_presences->begin();
@@ -339,7 +339,7 @@ Tabu::editModel( std::vector<ScalarVector> &model_min, std::vector<ScalarVector>
 }
 
 size_t
-Tabu::calculateCostPres( const std::vector<ScalarVector> &model_min, const std::vector<ScalarVector> &model_max )
+NicheMosaic::calculateCostPres( const std::vector<ScalarVector> &model_min, const std::vector<ScalarVector> &model_max )
 {
   OccurrencesImpl::iterator it = _my_presences_test->begin(); 
   OccurrencesImpl::iterator last = _my_presences_test->end();
@@ -374,7 +374,7 @@ Tabu::calculateCostPres( const std::vector<ScalarVector> &model_min, const std::
 }
 
 size_t
-Tabu::calculateCostAus( const std::vector<ScalarVector> &model_min, const std::vector<ScalarVector> &model_max )
+NicheMosaic::calculateCostAus( const std::vector<ScalarVector> &model_min, const std::vector<ScalarVector> &model_max )
 {
   size_t i, j, nabsence = 0;
 
@@ -404,7 +404,7 @@ Tabu::calculateCostAus( const std::vector<ScalarVector> &model_min, const std::v
 }
 
 size_t 
-Tabu::getRandomLayerNumber()
+NicheMosaic::getRandomLayerNumber()
 {
   static size_t flag = 0;
   size_t r;
@@ -424,7 +424,7 @@ Tabu::getRandomLayerNumber()
 }
 
 Scalar 
-Tabu::getRandomPercent(const std::vector<Scalar> &delta, const size_t i_layer, size_t &costPres, size_t &costAus)
+NicheMosaic::getRandomPercent(const std::vector<Scalar> &delta, const size_t i_layer, size_t &costPres, size_t &costAus)
 {
   static size_t flag = 0;
   size_t r, half;
@@ -448,7 +448,7 @@ Tabu::getRandomPercent(const std::vector<Scalar> &delta, const size_t i_layer, s
 }
 
 void
-Tabu::renewTabuDegree(std::vector<size_t> &tabuDegree)
+NicheMosaic::renewTabuDegree(std::vector<size_t> &tabuDegree)
 {
   for (size_t i = 0; i < _num_layers; i++)
   {
@@ -458,7 +458,7 @@ Tabu::renewTabuDegree(std::vector<size_t> &tabuDegree)
 }
 
 void
-Tabu::saveBestModel(const std::vector<ScalarVector> &model_min, const std::vector<ScalarVector> &model_max)
+NicheMosaic::saveBestModel(const std::vector<ScalarVector> &model_min, const std::vector<ScalarVector> &model_max)
 {
   for (size_t i = 0; i < _num_points; i++){
     for (size_t j = 0; j < _num_layers; j++){
@@ -469,7 +469,7 @@ Tabu::saveBestModel(const std::vector<ScalarVector> &model_min, const std::vecto
 }
 
 void
-Tabu::writeModel( const std::vector<ScalarVector> &model_min_best, const std::vector<ScalarVector> &model_max_best )
+NicheMosaic::writeModel( const std::vector<ScalarVector> &model_min_best, const std::vector<ScalarVector> &model_max_best )
 {
   FILE *model_out;
   size_t i, j, n =_num_layers - 1;
@@ -520,7 +520,7 @@ Tabu::writeModel( const std::vector<ScalarVector> &model_min_best, const std::ve
 }
 
 void 
-Tabu::runTabu()
+NicheMosaic::findSolution()
 {
   size_t cost, cost1, cost2, cost1Aux, i_layer;
   std::vector<Scalar> delta( _num_layers );
@@ -581,7 +581,7 @@ Tabu::runTabu()
 /****************************************************************/
 /****************** configuration *******************************/
 void
-Tabu::_getConfiguration( ConfigurationPtr& config ) const
+NicheMosaic::_getConfiguration( ConfigurationPtr& config ) const
 {
   if ( !_done )
     return;
@@ -594,7 +594,7 @@ Tabu::_getConfiguration( ConfigurationPtr& config ) const
 }
 
 void
-Tabu::_setConfiguration( const ConstConfigurationPtr& config )
+NicheMosaic::_setConfiguration( const ConstConfigurationPtr& config )
 {
   ConstConfigurationPtr model_config = config->getSubsection( "NicheMosaic" );
 

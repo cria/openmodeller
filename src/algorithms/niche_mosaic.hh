@@ -1,8 +1,8 @@
 /**
-* Declaration of class Tabu
+* Declaration of class NicheMosaic
 *
 * @author Missae Yamamoto (missae at dpi . inpe . br)
-* $Id: tabu.hh 
+* $Id: $
 *
 * LICENSE INFORMATION
 * 
@@ -24,15 +24,15 @@
 * http://www.gnu.org/copyleft/gpl.html
 */
 
-#ifndef TABU_HH
-#define TABU_HH
+#ifndef NICHEMOSAIC_HH
+#define NICHEMOSAIC_HH
 
 #include <openmodeller/om.hh>
 #include <openmodeller/Exceptions.hh>
 
 typedef std::vector<Scalar> ScalarVector;
 
-class Tabu : public AlgorithmImpl
+class NicheMosaic : public AlgorithmImpl
 {
   private:
 
@@ -59,8 +59,8 @@ class Tabu : public AlgorithmImpl
 
   public:
 
-   Tabu(); //constructor
-   ~Tabu(); //destructor
+   NicheMosaic(); //constructor
+   ~NicheMosaic(); //destructor
 
    int initialize();
    int iterate();
@@ -98,8 +98,8 @@ class Tabu : public AlgorithmImpl
    //write model to use for legal program (SPRING)
    void writeModel( const std::vector<ScalarVector> &_model_min_best, const std::vector<ScalarVector> &_model_max_best );
 
-   //Run tabu.
-   void runTabu();
+   //Find solution.
+   void findSolution();
    
 };
 
