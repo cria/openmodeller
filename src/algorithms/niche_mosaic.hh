@@ -69,7 +69,7 @@ class NicheMosaic : public AlgorithmImpl
    Scalar getValue( const Sample& x ) const;
 
    //set minimum, maximum and delta for each layer.
-   void setMinMaxDelta();
+   int setMinMaxDelta();
 
    //create rules
    void createModel( std::vector<ScalarVector> &_model_min, std::vector<ScalarVector> &_model_max, const std::vector<Scalar> &delta );
@@ -94,9 +94,6 @@ class NicheMosaic : public AlgorithmImpl
 
    //save best model
    void saveBestModel(const std::vector<ScalarVector> &model_min, const std::vector<ScalarVector> &model_max);
-
-   //write model to use for legal program (SPRING)
-   void writeModel( const std::vector<ScalarVector> &_model_min_best, const std::vector<ScalarVector> &_model_max_best );
 
    //Find solution.
    void findSolution();
