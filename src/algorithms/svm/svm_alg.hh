@@ -57,9 +57,9 @@ protected:
 
   svm_node * _getNode( const Sample& sample ) const;
 
-  virtual void _getConfiguration( ConfigurationPtr& ) const;
+  void _getConfiguration( ConfigurationPtr& ) const;
 
-  virtual void _setConfiguration( const ConstConfigurationPtr& );
+  void _setConfiguration( const ConstConfigurationPtr& );
 
   bool _done;
 
