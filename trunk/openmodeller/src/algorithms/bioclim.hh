@@ -54,8 +54,9 @@ public:
   int    getConvergence( Scalar * const val ) const;
 
 protected:
-  virtual void _getConfiguration( ConfigurationPtr& ) const;
-  virtual void _setConfiguration( const ConstConfigurationPtr & );
+
+  void _getConfiguration( ConfigurationPtr& ) const;
+  void _setConfiguration( const ConstConfigurationPtr & );
 
 private:
 
