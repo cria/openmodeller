@@ -1,0 +1,411 @@
+/**
+ * Declaration of class Tabu
+ *
+ * @author Missae Yamamoto (missae at dpi . inpe . br)
+ * $Id: Tabu.cpp 
+ *
+ * LICENSE INFORMATION
+ * 
+ * Copyright(c) 2009 by INPE -
+ * Instituto Nacional de Pesquisas Espaciais
+ *
+ * http://www.inpe.br
+ * 
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details:
+ * 
+ * http://www.gnu.org/copyleft/gpl.html
+ */
+
+#include <openmodeller/Tabu.hh>
+#include <openmodeller/Sampler.hh>
+#include <openmodeller/Log.hh>
+#include <openmodeller/Exceptions.hh>
+#include <openmodeller/PseudoAbsence.hh>
+
+#include <stdio.h>
+#include <math.h>
+#include <stdlib.h>
+#include <time.h>
+
+Tabu::Tabu() //constructor
+{
+}
+
+Tabu::~Tabu() //destructor
+{
+}
+
+void 
+Tabu::init()
+{
+  AlgorithmFactory::searchDefaultDirs();  
+  OpenModeller om;
+
+  //for test
+//  std::string myInFileNameTest( "C:/tmp/model_request_Parah_test.xml" ); 
+  std::string myInFileNameTest( "C:/tmp/model_request_furcata_test_pres.xml" ); 
+  ConfigurationPtr c1 = Configuration::readXml( myInFileNameTest.c_str() );
+  om.setModelConfiguration( c1 );
+
+  SamplerPtr samplerPtr = om.getSampler();
+
+  _my_presences_test = samplerPtr->getPresences();
+  _num_points_test = _my_presences_test->numOccurrences();
+
+  //for train
+//  std::string myInFileName( "C:/tmp/model_request_Parah_treino.xml" ); 
+  std::string myInFileName( "C:/tmp/model_request_furcata_treino.xml" ); 
+  c1 = Configuration::readXml( myInFileName.c_str() );
+  om.setModelConfiguration( c1 );
+
+  samplerPtr = om.getSampler();
+
+  _num_layers = samplerPtr->numIndependent();
+  if ( _num_layers < 2 ) 
+  {
+    std::string msg = "Tabu needs at least 2 layers.\n";
+
+    Log::instance()->error( msg.c_str() );
+
+    throw InvalidParameterException( msg );
+  }
+
+  _my_presences = samplerPtr->getPresences();
+  _num_points = _my_presences->numOccurrences();
+  setMinMaxDelta();
+ 
+  _bestCost = 0;
+
+  //pseudo absence points
+  AlgorithmPtr algorithmPtr = om.getAlgorithm();
+  algorithmPtr->createModel( samplerPtr );
+
+  PseudoAbsence pseudo;
+  pseudo.setSamplerPtr( samplerPtr );
+  pseudo.setModel( algorithmPtr->getModel() );
+  pseudo.setLabel( "Acacia" );
+  pseudo.setNumPoints( 100 );
+  pseudo.setLimiar( 0.6 );
+
+  _my_absence_test = pseudo.getPseudoAbsences();
+  _num_points_absence_test = _my_absence_test->numOccurrences(); 
+
+}
+
+void 
+Tabu::setMinMaxDelta()
+{
+  OccurrencesImpl::const_iterator oc = _my_presences->begin();
+  OccurrencesImpl::const_iterator end = _my_presences->end();
+
+  Sample const & sample = (*oc)->environment();
+  _minimum = sample;
+  _maximum = sample;
+  ++oc;
+
+  while ( oc != end ) {
+    Sample const& sample = (*oc)->environment();
+    _minimum &= sample;
+    _maximum |= sample;
+    ++oc;
+  }
+
+  _delta = _maximum;
+  _delta -= _minimum;
+
+  for ( size_t j = 0; j < _num_layers; j++ ) {
+    if (_delta[j] == 0.0) {
+	  Log::instance()->error( "Problem with layer %d\n", j );
+	  exit(0);	
+	}
+  }
+}
+
+void 
+Tabu::createModel( std::vector<ScalarVector> &model_min, std::vector<ScalarVector> &model_max, const std::vector<Scalar> &delta )
+{
+  size_t i=0;
+  OccurrencesImpl::const_iterator oc = _my_presences->begin();
+  OccurrencesImpl::const_iterator end = _my_presences->end();
+
+  while ( oc != end ) {
+    Sample const& sample = (*oc)->environment();
+
+    for ( unsigned int j = 0; j < _num_layers; j++ ) {
+      model_min[i][j] = sample[j] - delta[j];
+      model_max[i][j] = sample[j] + delta[j];
+    }//end for
+
+    ++oc;
+    ++i;
+  }//end while
+}
+
+void 
+Tabu::editModel( std::vector<ScalarVector> &model_min, std::vector<ScalarVector> &model_max, const std::vector<Scalar> &delta, size_t i_layer )
+{
+  size_t i=0;
+  OccurrencesImpl::const_iterator oc = _my_presences->begin();
+  OccurrencesImpl::const_iterator end = _my_presences->end();
+
+  while ( oc != end ) {
+    Sample const& sample = (*oc)->environment();
+
+    model_min[i][i_layer] = sample[i_layer] - delta[i_layer];
+    model_max[i][i_layer] = sample[i_layer] + delta[i_layer];
+
+    ++oc;
+    ++i;
+  }//end while
+}
+
+size_t
+Tabu::calculateCostPres( const std::vector<ScalarVector> &model_min, const std::vector<ScalarVector> &model_max )
+{
+  OccurrencesImpl::iterator it = _my_presences_test->begin(); 
+  OccurrencesImpl::iterator last = _my_presences_test->end();
+
+  size_t i, j, npresence = 0, nabsence = 0;
+
+  //presence
+  while ( it != last ) 
+  {     
+    Sample const& sample = (*it)->environment();
+	for (i = 0; i < _num_points; i++)//_num_points eh o numero de regras do modelo
+	{
+      for (j = 0; j < _num_layers; j++)
+	  {
+	    if ( ( model_min[i][j] <= sample[j] ) && ( sample[j] <= model_max[i][j] ) )
+          continue;
+	    else
+          break;
+	  }//end for
+	  if ( j == _num_layers )
+	  {
+        npresence++;
+		break;
+	  }//end if
+	}//end for
+    ++it;
+  }//end while
+
+  return npresence;
+}
+
+size_t
+Tabu::calculateCostAus( const std::vector<ScalarVector> &model_min, const std::vector<ScalarVector> &model_max )
+{
+  OccurrencesImpl::iterator it = _my_presences_test->begin(); 
+  OccurrencesImpl::iterator last = _my_presences_test->end();
+
+  size_t i, j, nabsence = 0;
+
+  //absence
+  OccurrencesImpl::iterator it_absence = _my_absence_test->begin(); 
+  OccurrencesImpl::iterator last_absence = _my_absence_test->end();
+
+  while ( it_absence != last_absence ) 
+  {     
+    Sample const& samp = (*it_absence)->environment();
+	for (i = 0; i < _num_points; i++){ //_num_points eh o numero de regras do modelo
+      for (j = 0; j < _num_layers; j++){
+	    if ( ( model_min[i][j] <= samp[j] ) && ( samp[j] <= model_max[i][j] ) )
+          continue;
+	    else
+          break;
+	  }//end for
+	  if ( j == _num_layers )
+		break;
+	}//end for
+	if ( i == _num_points)
+		nabsence++;
+    ++it_absence;
+  }//end while
+
+  return nabsence;
+}
+
+size_t 
+Tabu::getRandomLayerNumber()
+{
+  static size_t flag = 0;
+  size_t r;
+  double a, b;
+
+  if (flag = 0)
+  {
+    srand( (unsigned)time( NULL ) );
+    flag = 1;
+  }
+
+  a = (double)rand()/(double)RAND_MAX;
+  b = (double)_num_layers;
+  r = (int)(b*a);
+
+  return r;
+}
+
+Scalar 
+Tabu::getRandomPercent(const std::vector<Scalar> &delta, const size_t i_layer, size_t &costPres, size_t &costAus)
+{
+  static size_t flag = 0;
+  size_t r, half;
+  double a, b = 22;
+  Scalar percent[22] = { 0.04, 0.05, 0.06, 0.07, 0.08, 0.09, 0.1, 0.11, 0.12, 0.13, 0.14, 0.15, 0.16, 0.17, 0.18, 0.19, 0.2, 0.21, 0.22, 0.23, 0.24, 0.25 };
+  half = (size_t) (b/2);
+  if (flag = 0)
+  {
+    srand( (unsigned)time( NULL ) );
+    flag = 1;
+  }
+  do{
+    a = (double)rand()/(double)RAND_MAX;
+    r = (int)(b*a);
+  }while (delta[i_layer] == _delta[i_layer]*percent[r]);
+
+  if ( (costPres < _num_points_test) && (r < half) ){
+    r = r + half;
+  }
+  return percent[r];
+}
+
+void
+Tabu::renewTabuDegree(std::vector<size_t> &tabuDegree)
+{
+  for (size_t i = 0; i < _num_layers; i++)
+  {
+    if (tabuDegree[i] > 0)
+	  tabuDegree[i] = tabuDegree[i] - 1;
+  }
+}
+
+void
+Tabu::saveBestModel(const std::vector<ScalarVector> &model_min, const std::vector<ScalarVector> &model_max, std::vector<ScalarVector> &model_min_best, std::vector<ScalarVector> &model_max_best)
+{
+  for (size_t i = 0; i < _num_points; i++){
+    for (size_t j = 0; j < _num_layers; j++){
+	  model_min_best[i][j] = model_min[i][j];
+	  model_max_best[i][j] = model_max[i][j];
+	}
+  }
+}
+
+void
+Tabu::writeModel( const std::vector<ScalarVector> &model_min_best, const std::vector<ScalarVector> &model_max_best )
+{
+  FILE *model_out;
+  size_t i, j, n =_num_layers - 1;
+
+  if (( model_out = fopen("c:/tmp/model_min_max.txt","w")) == NULL) {
+    std::string msg = "The file was not opened!.\n";
+    Log::instance()->error( msg.c_str() );
+    throw InvalidParameterException( msg );
+  }
+  if (fprintf(model_out,"( ") == EOF){
+    std::string msg = "IO error!.\n";
+	Log::instance()->error( msg.c_str() );
+	throw InvalidParameterException( msg );
+  }//end if
+
+
+  for (i = 0; i < _num_points; i++)
+  {
+    for (j = 0; j < n; j++)
+    {
+      if (fprintf(model_out,"(var%d > %f) && (var%d < %f) &&\n", j, model_min_best[i][j], j, model_max_best[i][j]) == EOF){
+	    std::string msg = "IO error!.\n";
+		Log::instance()->error( msg.c_str() );
+		throw InvalidParameterException( msg );
+	  }//end if
+	}//end for
+
+	if (fprintf(model_out,"(var%d > %f) && (var%d < %f)) \n", j, model_min_best[i][n], j, model_max_best[i][n]) == EOF){
+	  std::string msg = "IO error!.\n";
+	  Log::instance()->error( msg.c_str() );
+	  throw InvalidParameterException( msg );
+	}//end if
+
+	if (fprintf(model_out,"? Classe(""Low"")\n: (") == EOF ){
+      std::string msg = "IO error!.\n";
+	  Log::instance()->error( msg.c_str() );
+	  throw InvalidParameterException( msg );
+	}//end if
+  }//end for
+
+  if (fprintf(model_out,"Classe (""High"");") == EOF ){
+    std::string msg = "IO error!.\n";
+    Log::instance()->error( msg.c_str() );
+	throw InvalidParameterException( msg );
+  }//end if
+
+  fclose(model_out);
+}
+
+void 
+Tabu::runTabu()
+{
+  init();
+
+  size_t niter = 20000, cost, cost1, cost2, cost1Aux, i_layer;
+  std::vector<Scalar> delta( _num_layers );
+
+  size_t nTabu = (size_t)floor(sqrt((double)(_num_layers)));
+  std::vector<size_t> tabuDegree( _num_layers );
+  for( size_t l = 0; l < _num_layers; l++ ) 
+    tabuDegree[l] = 0;
+
+  //model
+  std::vector<ScalarVector> model_min( _num_points );
+  std::vector<ScalarVector> model_max( _num_points );
+  std::vector<ScalarVector> model_min_best( _num_points );
+  std::vector<ScalarVector> model_max_best( _num_points );
+
+  for ( unsigned int i = 0; i < model_min.size(); i++ ) {
+    model_min[i] = ScalarVector( _num_layers );
+    model_max[i] = ScalarVector( _num_layers );
+	model_min_best[i] = ScalarVector( _num_layers );
+    model_max_best[i] = ScalarVector( _num_layers );
+  }//end for
+  for ( unsigned int j = 0; j < _num_layers; j++ ){
+	  delta[j] = _delta[j] * 0.13;
+  }
+
+  createModel( model_min, model_max, delta );
+  cost1 = calculateCostPres( model_min, model_max );
+  cost1Aux = cost1;
+  cost2 = calculateCostAus( model_min, model_max );
+  cost = cost1 + cost2;
+  _bestCost = cost;
+
+  for (size_t iter=0; iter < niter; iter++)
+  {
+	i_layer = getRandomLayerNumber();
+	if (tabuDegree[i_layer] == 0) 
+	{
+      renewTabuDegree(tabuDegree);
+	  tabuDegree[i_layer] = nTabu;
+	  delta[i_layer] = _delta[i_layer] * getRandomPercent(delta, i_layer, cost1, cost2);
+	  editModel( model_min, model_max, delta, i_layer );
+      cost1 = calculateCostPres( model_min, model_max );
+      cost2 = calculateCostAus( model_min, model_max );
+	  cost = cost1 + cost2;
+	  if ( (cost > _bestCost) || ( (cost == _bestCost) && (cost1 >= cost1Aux) ) ){
+		  cost1Aux = cost1;
+		  _bestCost = cost;
+		  saveBestModel(model_min, model_max, model_min_best, model_max_best);
+		  if (_bestCost == (_num_points_test + _num_points_absence_test) )
+		    break;
+	  }//end if
+	}//end if
+  }//end for
+
+  writeModel( model_min_best, model_max_best );
+}
