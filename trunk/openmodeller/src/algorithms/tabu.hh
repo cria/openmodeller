@@ -49,6 +49,8 @@ class Tabu : public AlgorithmImpl
     OccurrencesPtr _my_absence_test;   // occurrence points of species (absence test).
     size_t _bestCost;                  // best cost
     bool _done;                        // is true if the algorithm is finished.
+    std::vector<ScalarVector> _model_min_best;
+	std::vector<ScalarVector> _model_max_best;
 
   public:
 
@@ -86,7 +88,7 @@ class Tabu : public AlgorithmImpl
    void renewTabuDegree(std::vector<size_t> &tabuDegree);
 
    //save best model
-   void saveBestModel(const std::vector<ScalarVector> &model_min, const std::vector<ScalarVector> &model_max, std::vector<ScalarVector> &model_min_best, std::vector<ScalarVector> &model_max_best);
+   void saveBestModel(const std::vector<ScalarVector> &model_min, const std::vector<ScalarVector> &model_max);
 
    //write model to use for legal program (SPRING)
    void writeModel( const std::vector<ScalarVector> &_model_min_best, const std::vector<ScalarVector> &_model_max_best );
