@@ -2,7 +2,7 @@
 * Declaration of class NicheMosaic
 *
 * @author Missae Yamamoto (missae at dpi . inpe . br)
-* $Id: $
+* $Id$
 *
 * LICENSE INFORMATION
 * 
