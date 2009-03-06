@@ -37,10 +37,10 @@ class Tabu : public AlgorithmImpl
   private:
 
     int _num_iterations;               // number of iterations
-    size_t _num_points;                // number of points.
+    int _num_points;                   // number of points.
     size_t _num_points_test;           // number of points (test).
     size_t _num_points_absence_test;   // number of points (absence test).
-    size_t _num_layers;                // number of layers.
+    int _num_layers;                   // number of layers.
     Sample _minimum;                   // minimum of sampled points.
     Sample _maximum;	               // maximum of sampled points.
     Sample _delta;                     // delta of sampled points.
@@ -50,7 +50,12 @@ class Tabu : public AlgorithmImpl
     size_t _bestCost;                  // best cost
     bool _done;                        // is true if the algorithm is finished.
     std::vector<ScalarVector> _model_min_best;
-	std::vector<ScalarVector> _model_max_best;
+    std::vector<ScalarVector> _model_max_best;
+
+  protected:
+
+    void _getConfiguration( ConfigurationPtr& ) const;
+    void _setConfiguration( const ConstConfigurationPtr & );
 
   public:
 
