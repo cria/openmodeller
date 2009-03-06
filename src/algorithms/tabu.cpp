@@ -247,10 +247,24 @@ Tabu::done() const
 Scalar
 Tabu::getValue( const Sample& x ) const
 {
+  size_t i, j, npresence = 0;
 
+    //_num_points eh o numero de regras do modelo
+    for (i = 0; i < _num_points; i++) {
 
+      for (j = 0; j < _num_layers; j++) {
 
-  return 0.0;
+        if ( ( _model_min_best[i][j] <= x[j] ) && ( x[j] <= _model_max_best[i][j] ) )
+          continue;
+        else
+          break;
+      }//end for
+
+      if ( j == _num_layers ) {
+        return 1.0;
+      }//end if
+    }//end for
+   return 0.0;
 }
 
 void 
@@ -440,12 +454,12 @@ Tabu::renewTabuDegree(std::vector<size_t> &tabuDegree)
 }
 
 void
-Tabu::saveBestModel(const std::vector<ScalarVector> &model_min, const std::vector<ScalarVector> &model_max, std::vector<ScalarVector> &model_min_best, std::vector<ScalarVector> &model_max_best)
+Tabu::saveBestModel(const std::vector<ScalarVector> &model_min, const std::vector<ScalarVector> &model_max)
 {
   for (size_t i = 0; i < _num_points; i++){
     for (size_t j = 0; j < _num_layers; j++){
-	  model_min_best[i][j] = model_min[i][j];
-	  model_max_best[i][j] = model_max[i][j];
+	  _model_min_best[i][j] = model_min[i][j];
+	  _model_max_best[i][j] = model_max[i][j];
 	}
   }
 }
@@ -515,14 +529,14 @@ Tabu::runTabu()
   //model
   std::vector<ScalarVector> model_min( _num_points );
   std::vector<ScalarVector> model_max( _num_points );
-  std::vector<ScalarVector> model_min_best( _num_points );
-  std::vector<ScalarVector> model_max_best( _num_points );
+  _model_min_best.reserve( _num_points );
+  _model_max_best.reserve( _num_points );
 
   for ( unsigned int i = 0; i < model_min.size(); i++ ) {
     model_min[i] = ScalarVector( _num_layers );
     model_max[i] = ScalarVector( _num_layers );
-    model_min_best[i] = ScalarVector( _num_layers );
-    model_max_best[i] = ScalarVector( _num_layers );
+    _model_min_best[i] = ScalarVector( _num_layers );
+    _model_max_best[i] = ScalarVector( _num_layers );
   }//end for
   for ( unsigned int j = 0; j < _num_layers; j++ ){
     delta[j] = _delta[j] * 0.13;
@@ -550,12 +564,12 @@ Tabu::runTabu()
 	  if ( (cost > _bestCost) || ( (cost == _bestCost) && (cost1 >= cost1Aux) ) ){
 		  cost1Aux = cost1;
 		  _bestCost = cost;
-		  saveBestModel(model_min, model_max, model_min_best, model_max_best);
+		  saveBestModel(model_min, model_max);
 		  if (_bestCost == (_num_points_test + _num_points_absence_test) )
 		    break;
 	  }//end if
 	}//end if
   }//end for
 
-  writeModel( model_min_best, model_max_best );
+//  writeModel( model_min_best, model_max_best );
 }
