@@ -291,7 +291,8 @@ int main( int argc, char **argv ) {
         // For backwards compatibility, calculate matrix and ROC if 
         // <Statistics> is not present
         calc_matrix = true;
-        calc_roc = true;  
+        calc_roc = true;
+        UNUSED(e);
       }
     }
     else {
