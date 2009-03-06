@@ -128,9 +128,9 @@ Tabu::Tabu() :
   _minimum(),
   _maximum(),
   _delta(),
-  _my_presences(),
-  _my_presences_test(),
-  _my_absence_test(),
+  _my_presences(0),
+  _my_presences_test(0),
+  _my_absence_test(0),
   _bestCost(0),
   _done( false )
 {
@@ -206,6 +206,10 @@ Tabu::initialize()
   }
 
   _num_points_absence_test = _my_absence_test->numOccurrences(); 
+
+  _my_presences = new OccurrencesImpl( _my_absence_test->name(), _my_absence_test->coordSystem() );
+
+  _my_presences_test = new OccurrencesImpl( _my_absence_test->name(), _my_absence_test->coordSystem() );
 
   return 1;
 }
@@ -572,4 +576,35 @@ Tabu::runTabu()
   }//end for
 
 //  writeModel( model_min_best, model_max_best );
+}
+
+/****************************************************************/
+/****************** configuration *******************************/
+void
+Tabu::_getConfiguration( ConfigurationPtr& config ) const
+{
+  if ( !_done )
+    return;
+
+  ConfigurationPtr model_config( new ConfigurationImpl( "NicheMosaic" ) );
+  config->addSubsection( model_config );
+
+  model_config->addNameValue( "NumLayers", _num_layers );
+  model_config->addNameValue( "NumPoints", _num_points );
+}
+
+void
+Tabu::_setConfiguration( const ConstConfigurationPtr& config )
+{
+  ConstConfigurationPtr model_config = config->getSubsection( "NicheMosaic" );
+
+  if (!model_config)
+    return;
+
+  _num_layers = model_config->getAttributeAsInt( "NumLayers", 0 );
+  _num_points = model_config->getAttributeAsInt( "NumPoints", 0 );
+
+  _done = true;
+
+  return;
 }
