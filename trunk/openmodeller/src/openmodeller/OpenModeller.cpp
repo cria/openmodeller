@@ -708,7 +708,8 @@ OpenModeller::calculateModelStatistics( const ConstConfigurationPtr & config )
     // For backwards compatibility, calculate matrix and ROC if 
     // <Statistics> is not present
     calc_matrix = true;
-    calc_roc = true;  
+    calc_roc = true;
+    UNUSED(e);
   }
 
   if ( calc_matrix || calc_roc )
