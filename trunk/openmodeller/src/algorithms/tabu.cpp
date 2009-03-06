@@ -24,80 +24,233 @@
  * http://www.gnu.org/copyleft/gpl.html
  */
 
-#include <openmodeller/Tabu.hh>
-#include <openmodeller/Sampler.hh>
-#include <openmodeller/Log.hh>
+#include "tabu.hh"
+
+#include <openmodeller/Configuration.hh>
+
 #include <openmodeller/Exceptions.hh>
-#include <openmodeller/PseudoAbsence.hh>
+
 
 #include <stdio.h>
 #include <math.h>
 #include <stdlib.h>
 #include <time.h>
 
-Tabu::Tabu() //constructor
+/****************************************************************/
+/********************** Algorithm's Metadata ********************/
+
+#define NUM_PARAM 1
+
+#define NUMITERATIONS_ID "NumberOfIterations"
+
+/*************************************/
+/*** Algorithm parameters metadata ***/
+
+static AlgParamMetadata parameters[NUM_PARAM] = {
+
+  // Metadata of the first parameter.
+  {
+    NUMITERATIONS_ID,       // Id
+    "Number of iterations", // Name.
+    Integer,                // Type.
+
+    // Overview
+    "Number of iterations.",
+
+    // Description.
+    "Number of iterations.",
+
+    1,       // Not zero if the parameter has lower limit.
+    1000,    // Parameter's lower limit.
+    0,       // Not zero if the parameter has upper limit.
+    0,       // Parameter's upper limit.
+    "2000"   // Parameter's typical (default) value.
+  },
+};
+
+/************************************/
+/*** Algorithm's general metadata ***/
+
+static AlgMetadata metadata = {
+
+  "TABU",   // Id.
+  "TABU",   // Name.
+  "0.1",    // Version.
+
+  // Overview
+  "This algorithm is cool.",
+
+  // Description.
+  "This algorithm is cool.",
+
+  "Missae Yamamoto",  // Author
+
+  // Bibliography.
+  "",
+
+  "Missae Yamamoto",         // Code author.
+  "missae [at] dpi.inpe.br", // Code author's contact.
+
+  0,  // Does not accept categorical data.
+  0,  // Does not need (pseudo)absence points.
+
+  NUM_PARAM,   // Algorithm's parameters.
+  parameters
+};
+
+/****************************************************************/
+/****************** Algorithm's factory function ****************/
+
+OM_ALG_DLL_EXPORT
+AlgorithmImpl *
+algorithmFactory()
+{
+  return new Tabu();
+}
+
+OM_ALG_DLL_EXPORT
+AlgMetadata const *
+algorithmMetadata()
+{
+  return &metadata;
+}
+
+/*************************************************************/
+/**************************** Tabu ***************************/
+
+Tabu::Tabu() :
+  AlgorithmImpl( &metadata ),
+  _num_iterations(0),
+  _num_points(0),
+  _num_points_test(0),
+  _num_points_absence_test(0),
+  _num_layers(0),
+  _minimum(),
+  _maximum(),
+  _delta(),
+  _my_presences(),
+  _my_presences_test(),
+  _my_absence_test(),
+  _bestCost(0),
+  _done( false )
 {
 }
 
-Tabu::~Tabu() //destructor
+Tabu::~Tabu()
 {
 }
 
-void 
-Tabu::init()
+/******************/
+/*** initialize ***/
+int
+Tabu::initialize()
 {
-  AlgorithmFactory::searchDefaultDirs();  
-  OpenModeller om;
+  // Check the number of presences
+  int num_presences = _samp->numPresence();
 
-  //for test
-//  std::string myInFileNameTest( "C:/tmp/model_request_Parah_test.xml" ); 
-  std::string myInFileNameTest( "C:/tmp/model_request_furcata_test_pres.xml" ); 
-  ConfigurationPtr c1 = Configuration::readXml( myInFileNameTest.c_str() );
-  om.setModelConfiguration( c1 );
+  if ( num_presences == 0 ) {
 
-  SamplerPtr samplerPtr = om.getSampler();
+    Log::instance()->warn( "No presence points inside the mask!\n" );
+    return 0;
+  }
 
-  _my_presences_test = samplerPtr->getPresences();
-  _num_points_test = _my_presences_test->numOccurrences();
+  // Check number of layers
+  _num_layers = _samp->numIndependent();
 
-  //for train
-//  std::string myInFileName( "C:/tmp/model_request_Parah_treino.xml" ); 
-  std::string myInFileName( "C:/tmp/model_request_furcata_treino.xml" ); 
-  c1 = Configuration::readXml( myInFileName.c_str() );
-  om.setModelConfiguration( c1 );
-
-  samplerPtr = om.getSampler();
-
-  _num_layers = samplerPtr->numIndependent();
   if ( _num_layers < 2 ) 
   {
     std::string msg = "Tabu needs at least 2 layers.\n";
 
     Log::instance()->error( msg.c_str() );
-
-    throw InvalidParameterException( msg );
+    return 0;
   }
 
-  _my_presences = samplerPtr->getPresences();
-  _num_points = _my_presences->numOccurrences();
-  setMinMaxDelta();
- 
-  _bestCost = 0;
+  // Get parameters
+  if ( ! getParameter( NUMITERATIONS_ID, &_num_iterations ) ) {
 
-  //pseudo absence points
-  AlgorithmPtr algorithmPtr = om.getAlgorithm();
-  algorithmPtr->createModel( samplerPtr );
+    Log::instance()->error( "Parameter '" NUMITERATIONS_ID "' not passed.\n" );
+    return 0;
+  }
 
-  PseudoAbsence pseudo;
-  pseudo.setSamplerPtr( samplerPtr );
-  pseudo.setModel( algorithmPtr->getModel() );
-  pseudo.setLabel( "Acacia" );
-  pseudo.setNumPoints( 100 );
-  pseudo.setLimiar( 0.6 );
+  if ( _num_iterations < 1000 ) {
 
-  _my_absence_test = pseudo.getPseudoAbsences();
+    Log::instance()->error( "Parameter '" NUMITERATIONS_ID "' must be greater than 999.\n" );
+    return 0;
+  }
+
+  int num_absences = _samp->numAbsence();
+
+  if ( num_absences <= 0 ) {
+
+    // generate pseudo absence points
+    string alg_id = "BIOCLIM";
+    AlgorithmPtr alg = AlgorithmFactory::newAlgorithm( alg_id );
+
+    if ( ! alg ) {
+
+      Log::instance()->error( "Could not instantiate BIOCLIM algorithm to generate pseudo-absences." );
+      return 0;
+    }
+
+    ParamSetType param;
+    param["StandardDeviationCutoff"] = "0.9";
+
+    alg->setParameters( param );
+    alg->createModel( _samp );
+
+    _my_absence_test = _samp->getPseudoAbsences( 100, alg->getModel(), 0.6 );
+  }
+  else {
+
+    _my_absence_test = _samp->getAbsences();
+  }
+
   _num_points_absence_test = _my_absence_test->numOccurrences(); 
 
+  return 1;
+}
+
+
+/***************/
+/*** iterate ***/
+int
+Tabu::iterate()
+{
+  // Split sampler in test/train
+  splitOccurrences( _samp->getPresences(), _my_presences, _my_presences_test, 0.7 );
+
+  _num_points_test = _my_presences_test->numOccurrences();
+
+  _num_points = _my_presences->numOccurrences();
+
+  setMinMaxDelta();
+
+  runTabu();
+
+  _done = 1;
+
+  return 1;
+}
+
+
+/************/
+/*** done ***/
+int
+Tabu::done() const
+{
+  // This is not an iterative algorithm.
+  return _done;
+}
+
+/*****************/
+/*** get Value ***/
+Scalar
+Tabu::getValue( const Sample& x ) const
+{
+
+
+
+  return 0.0;
 }
 
 void 
@@ -123,9 +276,9 @@ Tabu::setMinMaxDelta()
 
   for ( size_t j = 0; j < _num_layers; j++ ) {
     if (_delta[j] == 0.0) {
-	  Log::instance()->error( "Problem with layer %d\n", j );
-	  exit(0);	
-	}
+      Log::instance()->error( "Problem with layer %d\n", j );
+      exit(0);
+    }
   }
 }
 
@@ -176,24 +329,26 @@ Tabu::calculateCostPres( const std::vector<ScalarVector> &model_min, const std::
   size_t i, j, npresence = 0, nabsence = 0;
 
   //presence
-  while ( it != last ) 
-  {     
+  while ( it != last ) {
+
     Sample const& sample = (*it)->environment();
-	for (i = 0; i < _num_points; i++)//_num_points eh o numero de regras do modelo
-	{
-      for (j = 0; j < _num_layers; j++)
-	  {
-	    if ( ( model_min[i][j] <= sample[j] ) && ( sample[j] <= model_max[i][j] ) )
+
+    //_num_points eh o numero de regras do modelo
+    for (i = 0; i < _num_points; i++) {
+
+      for (j = 0; j < _num_layers; j++) {
+
+        if ( ( model_min[i][j] <= sample[j] ) && ( sample[j] <= model_max[i][j] ) )
           continue;
-	    else
+        else
           break;
-	  }//end for
-	  if ( j == _num_layers )
-	  {
+      }//end for
+
+      if ( j == _num_layers ) {
         npresence++;
-		break;
-	  }//end if
-	}//end for
+	break;
+      }//end if
+    }//end for
     ++it;
   }//end while
 
@@ -203,9 +358,6 @@ Tabu::calculateCostPres( const std::vector<ScalarVector> &model_min, const std::
 size_t
 Tabu::calculateCostAus( const std::vector<ScalarVector> &model_min, const std::vector<ScalarVector> &model_max )
 {
-  OccurrencesImpl::iterator it = _my_presences_test->begin(); 
-  OccurrencesImpl::iterator last = _my_presences_test->end();
-
   size_t i, j, nabsence = 0;
 
   //absence
@@ -352,9 +504,7 @@ Tabu::writeModel( const std::vector<ScalarVector> &model_min_best, const std::ve
 void 
 Tabu::runTabu()
 {
-  init();
-
-  size_t niter = 20000, cost, cost1, cost2, cost1Aux, i_layer;
+  size_t cost, cost1, cost2, cost1Aux, i_layer;
   std::vector<Scalar> delta( _num_layers );
 
   size_t nTabu = (size_t)floor(sqrt((double)(_num_layers)));
@@ -371,11 +521,11 @@ Tabu::runTabu()
   for ( unsigned int i = 0; i < model_min.size(); i++ ) {
     model_min[i] = ScalarVector( _num_layers );
     model_max[i] = ScalarVector( _num_layers );
-	model_min_best[i] = ScalarVector( _num_layers );
+    model_min_best[i] = ScalarVector( _num_layers );
     model_max_best[i] = ScalarVector( _num_layers );
   }//end for
   for ( unsigned int j = 0; j < _num_layers; j++ ){
-	  delta[j] = _delta[j] * 0.13;
+    delta[j] = _delta[j] * 0.13;
   }
 
   createModel( model_min, model_max, delta );
@@ -385,7 +535,7 @@ Tabu::runTabu()
   cost = cost1 + cost2;
   _bestCost = cost;
 
-  for (size_t iter=0; iter < niter; iter++)
+  for (int iter=0; iter < _num_iterations; iter++)
   {
 	i_layer = getRandomLayerNumber();
 	if (tabuDegree[i_layer] == 0) 

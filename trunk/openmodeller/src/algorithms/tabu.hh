@@ -1,4 +1,3 @@
-
 /**
 * Declaration of class Tabu
 *
@@ -30,66 +29,70 @@
 
 #include <openmodeller/om.hh>
 #include <openmodeller/Exceptions.hh>
-#include <openmodeller/Sample.hh>
-#include <openmodeller/Sampler.hh>
 
 typedef std::vector<Scalar> ScalarVector;
 
-class Tabu // : public AlgorithmImpl
+class Tabu : public AlgorithmImpl
 {
   private:
-    size_t	_num_points;	// number of points.
-	size_t  _num_points_test; //number of points (test).
-	size_t  _num_points_absence_test; //number of points (absence test).
-    size_t	_num_layers;	// number of layers.
-	Sample  _minimum;		// minimum of sampled points.
-	Sample  _maximum;		//maximum of sampled points.
-	Sample  _delta;		    //delta of sampled points.
-    OccurrencesPtr _my_presences; //occurrence points of species.
-	OccurrencesPtr _my_presences_test; //occurrence points of species (test).
-	OccurrencesPtr _my_absence_test; //occurrence points of species (absence test).
-	size_t _bestCost; //best cost
+
+    int _num_iterations;               // number of iterations
+    size_t _num_points;                // number of points.
+    size_t _num_points_test;           // number of points (test).
+    size_t _num_points_absence_test;   // number of points (absence test).
+    size_t _num_layers;                // number of layers.
+    Sample _minimum;                   // minimum of sampled points.
+    Sample _maximum;	               // maximum of sampled points.
+    Sample _delta;                     // delta of sampled points.
+    OccurrencesPtr _my_presences;      // occurrence points of species.
+    OccurrencesPtr _my_presences_test; // occurrence points of species (test).
+    OccurrencesPtr _my_absence_test;   // occurrence points of species (absence test).
+    size_t _bestCost;                  // best cost
+    bool _done;                        // is true if the algorithm is finished.
 
   public:
 
-    Tabu(); //constructor
-    ~Tabu(); //destructor
+   Tabu(); //constructor
+   ~Tabu(); //destructor
 
-    //initialize attributes.
-    void init();
+   int initialize();
+   int iterate();
+   int done() const;
 
-	//set minimum, maximum and delta for each layer.
-	void setMinMaxDelta();
+   Scalar getValue( const Sample& x ) const;
 
-	//create rules
-	void createModel( std::vector<ScalarVector> &_model_min, std::vector<ScalarVector> &_model_max, const std::vector<Scalar> &delta );
+   //set minimum, maximum and delta for each layer.
+   void setMinMaxDelta();
 
-	//edit rules
-    void editModel( std::vector<ScalarVector> &model_min, std::vector<ScalarVector> &model_max, const std::vector<Scalar> &delta, size_t i_layer );
+   //create rules
+   void createModel( std::vector<ScalarVector> &_model_min, std::vector<ScalarVector> &_model_max, const std::vector<Scalar> &delta );
 
-	//verify test data for presence
-	size_t calculateCostPres( const std::vector<ScalarVector> &_model_min, const std::vector<ScalarVector> &_model_max );
+   //edit rules
+   void editModel( std::vector<ScalarVector> &model_min, std::vector<ScalarVector> &model_max, const std::vector<Scalar> &delta, size_t i_layer );
 
-	//verify test data for absence
-	size_t calculateCostAus( const std::vector<ScalarVector> &_model_min, const std::vector<ScalarVector> &_model_max );
+   //verify test data for presence
+   size_t calculateCostPres( const std::vector<ScalarVector> &_model_min, const std::vector<ScalarVector> &_model_max );
 
-	//generate random layer number.
-	size_t getRandomLayerNumber();
+   //verify test data for absence
+   size_t calculateCostAus( const std::vector<ScalarVector> &_model_min, const std::vector<ScalarVector> &_model_max );
 
-    //return random percent.
-	Scalar getRandomPercent(const std::vector<Scalar> &delta, const size_t i_layer, size_t &cost1, size_t &cost2);
+   //generate random layer number.
+   size_t getRandomLayerNumber();
 
-	//renew tabu degree list
-	void renewTabuDegree(std::vector<size_t> &tabuDegree);
+   //return random percent.
+   Scalar getRandomPercent(const std::vector<Scalar> &delta, const size_t i_layer, size_t &cost1, size_t &cost2);
 
-	//save best model
-	void saveBestModel(const std::vector<ScalarVector> &model_min, const std::vector<ScalarVector> &model_max, std::vector<ScalarVector> &model_min_best, std::vector<ScalarVector> &model_max_best);
+   //renew tabu degree list
+   void renewTabuDegree(std::vector<size_t> &tabuDegree);
 
-	//write model to use for legal program (SPRING)
-	void writeModel( const std::vector<ScalarVector> &_model_min_best, const std::vector<ScalarVector> &_model_max_best );
+   //save best model
+   void saveBestModel(const std::vector<ScalarVector> &model_min, const std::vector<ScalarVector> &model_max, std::vector<ScalarVector> &model_min_best, std::vector<ScalarVector> &model_max_best);
 
-	//Run tabu.
-    void runTabu();
+   //write model to use for legal program (SPRING)
+   void writeModel( const std::vector<ScalarVector> &_model_min_best, const std::vector<ScalarVector> &_model_max_best );
+
+   //Run tabu.
+   void runTabu();
    
 };
 
