@@ -259,7 +259,7 @@ NicheMosaic::getValue( const Sample& x ) const
 {
   int i, j = 0;
 
-  //_num_points eh o numero de regras do modelo
+  //_num_points represents the number of rules
   for (i = 0; i < _num_points; i++) {
 
     for (j = 0; j < _num_layers; j++) {
@@ -552,6 +552,18 @@ NicheMosaic::_getConfiguration( ConfigurationPtr& config ) const
 
   model_config->addNameValue( "NumLayers", _num_layers );
   model_config->addNameValue( "NumPoints", _num_points );
+
+  for (int i = 0; i < _num_points; i++) {
+
+    ConfigurationPtr rule_config( new ConfigurationImpl( "Rule" ) );
+    model_config->addSubsection( rule_config );
+
+    Sample min( _model_min_best[i] );
+    Sample max( _model_max_best[i] );
+
+    rule_config->addNameValue( "Min", min );
+    rule_config->addNameValue( "Max", max );
+  }
 }
 
 void
@@ -564,6 +576,33 @@ NicheMosaic::_setConfiguration( const ConstConfigurationPtr& config )
 
   _num_layers = model_config->getAttributeAsInt( "NumLayers", 0 );
   _num_points = model_config->getAttributeAsInt( "NumPoints", 0 );
+
+  Configuration::subsection_list subelements = model_config->getAllSubsections();
+
+  Configuration::subsection_list::iterator subelement = subelements.begin();
+  Configuration::subsection_list::iterator last_subelement = subelements.end();
+
+  int i = 0;
+
+  for ( ; subelement != last_subelement; ++subelement ) {
+
+    if ( (*subelement)->getName() == "Rule" ) {
+
+      Sample min = (*subelement)->getAttributeAsSample( "Min" );
+      Sample max = (*subelement)->getAttributeAsSample( "Max" );
+
+      _model_min_best[i] = ScalarVector( _num_layers );
+      _model_max_best[i] = ScalarVector( _num_layers );
+
+      for (int j = 0; j < _num_layers; j++) {
+
+        _model_min_best[i][j] = min[j];
+        _model_max_best[i][j] = max[j];
+      }
+
+      ++i;
+    }
+  }
 
   _done = true;
 
