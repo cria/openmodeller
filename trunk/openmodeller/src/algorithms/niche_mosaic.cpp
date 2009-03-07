@@ -489,8 +489,8 @@ NicheMosaic::findSolution()
   //model
   std::vector<ScalarVector> model_min( _num_points );
   std::vector<ScalarVector> model_max( _num_points );
-  _model_min_best.reserve( _num_points );
-  _model_max_best.reserve( _num_points );
+  _model_min_best.resize( _num_points );
+  _model_max_best.resize( _num_points );
 
   for ( unsigned int i = 0; i < model_min.size(); i++ ) {
 
@@ -577,6 +577,9 @@ NicheMosaic::_setConfiguration( const ConstConfigurationPtr& config )
   _num_layers = model_config->getAttributeAsInt( "NumLayers", 0 );
   _num_points = model_config->getAttributeAsInt( "NumPoints", 0 );
 
+  _model_min_best.resize( _num_points );
+  _model_max_best.resize( _num_points );
+
   Configuration::subsection_list subelements = model_config->getAllSubsections();
 
   Configuration::subsection_list::iterator subelement = subelements.begin();
@@ -588,17 +591,8 @@ NicheMosaic::_setConfiguration( const ConstConfigurationPtr& config )
 
     if ( (*subelement)->getName() == "Rule" ) {
 
-      Sample min = (*subelement)->getAttributeAsSample( "Min" );
-      Sample max = (*subelement)->getAttributeAsSample( "Max" );
-
-      _model_min_best[i] = ScalarVector( _num_layers );
-      _model_max_best[i] = ScalarVector( _num_layers );
-
-      for (int j = 0; j < _num_layers; j++) {
-
-        _model_min_best[i][j] = min[j];
-        _model_max_best[i][j] = max[j];
-      }
+      _model_min_best[i] = (*subelement)->getAttributeAsVecDouble( "Min" );
+      _model_max_best[i] = (*subelement)->getAttributeAsVecDouble( "Max" );
 
       ++i;
     }
