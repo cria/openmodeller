@@ -28,8 +28,7 @@
 
 #include <openmodeller/Configuration.hh>
 
-#include <openmodeller/Exceptions.hh>
-
+#include <openmodeller/Random.hh>
 
 #include <stdio.h>
 #include <math.h>
@@ -415,44 +414,35 @@ NicheMosaic::calculateCostAus( const std::vector<ScalarVector> &model_min, const
 size_t 
 NicheMosaic::getRandomLayerNumber()
 {
-  static size_t flag = 0;
-  size_t r;
-  double a, b;
+  Random random;
 
-  if ( 0 == flag )
-  {
-    srand( (unsigned)time( NULL ) );
-    flag = 1;
-  }
-
-  a = (double)rand()/(double)RAND_MAX;
-  b = (double)_num_layers;
-  r = (int)(b*a);
-
-  return r;
+  return random( 0, _num_layers );
 }
 
 Scalar 
 NicheMosaic::getRandomPercent(const std::vector<Scalar> &delta, const size_t i_layer, size_t &costPres, size_t &costAus)
 {
-  static size_t flag = 0;
-  size_t r, half;
-  double a, b = 22;
+  int size = 22;
+
   Scalar percent[22] = { 0.04, 0.05, 0.06, 0.07, 0.08, 0.09, 0.1, 0.11, 0.12, 0.13, 0.14, 0.15, 0.16, 0.17, 0.18, 0.19, 0.2, 0.21, 0.22, 0.23, 0.24, 0.25 };
-  half = (size_t) (b/2);
-  if (0 == flag)
-  {
-    srand( (unsigned)time( NULL ) );
-    flag = 1;
-  }
+
+  int half = (int)(size/2);
+
+  int r;
+
+  Random random;
+
   do{
-    a = (double)rand()/(double)RAND_MAX;
-    r = (int)(b*a);
-  }while (delta[i_layer] == _delta[i_layer]*percent[r]);
+
+    r = random( 0, size );
+
+  } while (delta[i_layer] == _delta[i_layer]*percent[r]);
 
   if ( (costPres < _num_points_test) && (r < half) ){
+
     r = r + half;
   }
+
   return percent[r];
 }
 
