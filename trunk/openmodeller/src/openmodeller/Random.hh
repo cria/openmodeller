@@ -1,7 +1,6 @@
 /**
  * Declaration of Random class.
  * 
- * @file
  * @author Mauro E S Munoz
  * @date   1997-06-18
  * $Id$
