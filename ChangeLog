@@ -8,6 +8,7 @@ SVN revision: ?
 	* Changed the modelling protocol to allow createModel and testModel requests to specify what statistics should be calculated.
 	* Removed model statistics parameters from om_model since they can be specified as part of the XML request.
 	* All command line programs now return the same openModeller version number.
+	* New algorithm Niche Mosaic.
 
 Release 0.7 (2009-01-14)
 ------------------------
