@@ -77,10 +77,10 @@ static AlgMetadata metadata = {
   "0.1",    // Version.
 
   // Overview
-  "This algorithm is cool.",
+  "This algorithm is still experimental. You may not use it in publications without the author's permission.",
 
   // Description.
-  "This algorithm is cool.",
+  "This algorithm is still experimental. You may not use it in publications without the author's permission.",
 
   "Missae Yamamoto",  // Author
 
