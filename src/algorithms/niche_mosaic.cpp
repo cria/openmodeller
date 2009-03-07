@@ -259,22 +259,23 @@ NicheMosaic::getValue( const Sample& x ) const
 {
   int i, j = 0;
 
-    //_num_points eh o numero de regras do modelo
-    for (i = 0; i < _num_points; i++) {
+  //_num_points eh o numero de regras do modelo
+  for (i = 0; i < _num_points; i++) {
 
-      for (j = 0; j < _num_layers; j++) {
+    for (j = 0; j < _num_layers; j++) {
 
-        if ( ( _model_min_best[i][j] <= x[j] ) && ( x[j] <= _model_max_best[i][j] ) )
-          continue;
-        else
-          break;
-      }//end for
-
-      if ( j == _num_layers ) {
-        return 1.0;
-      }//end if
+      if ( ( _model_min_best[i][j] <= x[j] ) && ( x[j] <= _model_max_best[i][j] ) )
+        continue;
+      else
+        break;
     }//end for
-   return 0.0;
+
+    if ( j == _num_layers ) {
+      return 1.0;
+    }//end if
+  }//end for
+
+  return 0.0;
 }
 
 int 
@@ -393,18 +394,24 @@ NicheMosaic::calculateCostAus( const std::vector<ScalarVector> &model_min, const
   while ( it_absence != last_absence ) 
   {     
     Sample const& samp = (*it_absence)->environment();
-	for (i = 0; i < _num_points; i++){ //_num_points eh o numero de regras do modelo
+
+    for (i = 0; i < _num_points; i++){ //_num_points eh o numero de regras do modelo
+
       for (j = 0; j < _num_layers; j++){
-	    if ( ( model_min[i][j] <= samp[j] ) && ( samp[j] <= model_max[i][j] ) )
+
+        if ( ( model_min[i][j] <= samp[j] ) && ( samp[j] <= model_max[i][j] ) )
           continue;
-	    else
+        else
           break;
-	  }//end for
-	  if ( j == _num_layers )
-		break;
-	}//end for
-	if ( i == _num_points)
-		nabsence++;
+      }//end for
+
+      if ( j == _num_layers )
+        break;
+    }//end for
+
+    if ( i == _num_points)
+      nabsence++;
+
     ++it_absence;
   }//end while
 
