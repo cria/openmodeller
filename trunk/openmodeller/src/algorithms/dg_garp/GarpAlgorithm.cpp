@@ -17,6 +17,11 @@
 
 // Algorithm.cpp : Implementation of CGarpAlgorithm
 
+#ifdef WIN32
+// avoid warnings caused by problems in VC headers
+#define _SCL_SECURE_NO_DEPRECATE
+#endif
+
 #include "Rule.h"
 #include "GarpAlgorithm.h"
 #include "Utilities.h"
@@ -297,7 +302,7 @@ float GarpAlgorithm::getProgress() const
   else
     { 
       float byIterations  = ( Gen / (float) Totalgens );
-      float byConvergence = ( Conv_limit / Convergence );
+      float byConvergence = (float)( Conv_limit / Convergence );
       float progress = (byIterations > byConvergence) ? byIterations : byConvergence; 
 
       if (progress > _maxProgress)
@@ -519,7 +524,7 @@ void GarpAlgorithm::setParameter(char * strParamName, char * strParamValue)
 	else if (strcmp(strParamName, "Lost"			   ) == 0) Lost = atoi(strParamValue);
 	else if (strcmp(strParamName, "Spin"			   ) == 0) Spin = atoi(strParamValue);
 	else if (strcmp(strParamName, "Improvements"       ) == 0) Improvements = atoi(strParamValue);
-	else if (strcmp(strParamName, "Doneflag"           ) == 0) Doneflag = (bool) atoi(strParamValue);
+	else if (strcmp(strParamName, "Doneflag"           ) == 0) Doneflag = ( atoi(strParamValue) ) ? true : false;
 	else if (strcmp(strParamName, "Heuristic_0"        ) == 0) Heuristic[0][0] = atoi(strParamValue);
 	else if (strcmp(strParamName, "Heuristic_1"        ) == 0) Heuristic[0][1] = atoi(strParamValue);
 	else if (strcmp(strParamName, "Heuristic_2"        ) == 0) Heuristic[0][2] = atoi(strParamValue);
@@ -648,7 +653,7 @@ void GarpAlgorithm::generate(EnvCellSet * objTrainSet)
 	measure();
 
 	// check termination condition for this experiment
-	Doneflag = done();
+	Doneflag = ( done() ) ? true : false;
 
 	//objBest.gatherRuleSetStats(Gen);
 	//objNew.gatherRuleSetStats(-Gen);

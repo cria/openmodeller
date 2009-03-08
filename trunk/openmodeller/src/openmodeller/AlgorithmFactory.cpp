@@ -25,6 +25,11 @@
  * http://www.gnu.org/copyleft/gpl.html
  */
 
+#ifdef WIN32
+// avoid warnings caused by problems in VC headers
+#define _SCL_SECURE_NO_DEPRECATE
+#endif
+
 #include <openmodeller/AlgorithmFactory.hh>
 #include <openmodeller/Algorithm.hh>
 #include <openmodeller/Log.hh>
