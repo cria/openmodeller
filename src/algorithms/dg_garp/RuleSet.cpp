@@ -18,6 +18,11 @@
 
 // RuleSet.cpp : Implementation of CRuleSet
 
+#ifdef WIN32
+// avoid warnings caused by problems in VC headers
+#define _SCL_SECURE_NO_DEPRECATE
+#endif
+
 #include "Rule.h"
 #include "RuleSet.h"
 #include "EnvCell.h"

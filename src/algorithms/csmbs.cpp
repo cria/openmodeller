@@ -10,6 +10,11 @@
 //
 //
 
+#ifdef WIN32
+// avoid warnings caused by problems in VC headers
+#define _SCL_SECURE_NO_DEPRECATE
+#endif
+
 #include <string.h>
 #include <iostream>
 #include "csmbs.hh"

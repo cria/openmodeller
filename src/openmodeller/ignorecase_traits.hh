@@ -1,4 +1,3 @@
-
 #ifndef _ICSTRING_HH
 #define _ICSTRING_HH
 

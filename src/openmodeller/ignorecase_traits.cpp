@@ -1,3 +1,8 @@
+#ifdef WIN32
+// avoid warnings caused by problems in VC headers
+#define _SCL_SECURE_NO_DEPRECATE
+#endif
+
 #include <openmodeller/ignorecase_traits.hh>
 
 using std::size_t;
