@@ -834,7 +834,7 @@ MaximumEntropy::getValue( const Sample& x ) const
 /***********************/
 /*** get Convergence ***/
 int
-MaximumEntropy::getConvergence( Scalar *val )
+MaximumEntropy::getConvergence( Scalar * const val )
 {
   *val = 1.0;
   return 1;

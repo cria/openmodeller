@@ -26,6 +26,11 @@
  * 
  */
 
+#ifdef WIN32
+// avoid warnings caused by problems in VC headers
+#define _SCL_SECURE_NO_DEPRECATE
+#endif
+
 #include <string>
 using std::string;
 
@@ -555,7 +560,7 @@ Scalar AbstractBestSubsets::getValue( const Sample& x ) const
 /****************************************************************/
 /****************** getConvergence ******************************/
 
-int AbstractBestSubsets::getConvergence( Scalar *val )
+int AbstractBestSubsets::getConvergence( Scalar * const val )
 {
   *val = 0;
   return 0;

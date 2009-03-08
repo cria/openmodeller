@@ -506,7 +506,7 @@ class Layer{
 	*mean_square_error = sqrt(*mean_square_error/patterns);
 
 
-	progress = (1.00-(epoch_total - (actual_epoch+1))/(epoch_total));
+	progress = (float)(1.0-(epoch_total - (actual_epoch+1.0))/(epoch_total));
 
 	delete mean_square_error;
     }
@@ -528,7 +528,7 @@ class Layer{
 
 	else{
 
-	  progress = (1.00-(*mean_square_error - min_error)/(*mean_square_error));
+	  progress = (float)(1.0-(*mean_square_error - min_error)/(*mean_square_error));
 	}
 
 
