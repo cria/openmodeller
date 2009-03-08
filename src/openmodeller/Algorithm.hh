@@ -64,8 +64,8 @@ typedef AlgorithmImpl *(*TAlgFactory)();
 typedef AlgMetadata *(*TAlgMetadata)();
 extern "C"
 {
-dllexp AlgorithmImpl *algorithmFactory();
-dllexp AlgMetadata const *algorithmMetadata();
+OM_ALG_DLL_EXPORT AlgorithmImpl *algorithmFactory();
+OM_ALG_DLL_EXPORT AlgMetadata const *algorithmMetadata();
 }
 
 /** 
