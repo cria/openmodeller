@@ -558,11 +558,11 @@ NicheMosaic::_getConfiguration( ConfigurationPtr& config ) const
     ConfigurationPtr rule_config( new ConfigurationImpl( "Rule" ) );
     model_config->addSubsection( rule_config );
 
-    Sample min( _model_min_best[i] );
-    Sample max( _model_max_best[i] );
+    Sample min_best( _model_min_best[i] );
+    Sample max_best( _model_max_best[i] );
 
-    rule_config->addNameValue( "Min", min );
-    rule_config->addNameValue( "Max", max );
+    rule_config->addNameValue( "Min", min_best );
+    rule_config->addNameValue( "Max", max_best );
   }
 }
 
