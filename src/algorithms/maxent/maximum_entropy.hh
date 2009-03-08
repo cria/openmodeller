@@ -60,7 +60,7 @@ public:
 
   Scalar getValue( const Sample& x ) const;
 
-  int getConvergence( Scalar *val );
+  int getConvergence( Scalar * const val );
 
 protected:
 

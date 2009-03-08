@@ -148,7 +148,7 @@ public:
 		if (iOrigSeedProvided == 0)
 		{
 			time(&clock);
-			OrigSeed = clock;
+			OrigSeed = (unsigned long)clock;
 		}
 		else
 		{
@@ -158,42 +158,6 @@ public:
 		Seed = OrigSeed;
 	}
 
-	// ------------------------------------------------
-	static long getFileSize(char * strFilename)
-	{
-		// get the file size
-		FILE * f;
-		int intFileSize;
-
-		f = fopen(strFilename, "rb");
-		if (f)
-		{
-			fseek(f, 0, SEEK_END); 
-			intFileSize = ftell(f);
-			fclose(f);
-		}
-		else
-			intFileSize = 0;
-		
-		return intFileSize;
-	}
-
-	// ------------------------------------------------
-	static double readDoubleFromFile(FILE *f)
-	{
-		char S[255];
-		double val;
-
-		// read in into a string and then convert it into a double
-		fscanf(f,"%s", S);
-
-		// convert value
-		val = atof(S);
-
-		// return the value
-		return val;
-	}
-	
 	// ==================================================
 	//  Method:		bool between(x, y, z)
 	// --------------------------------------------------
@@ -289,19 +253,6 @@ public:
 	    return 1;
 	}
 
-
-	// ------------------------------------------------
-	//  XML Utilities
-	// ------------------------------------------------
-	static void addXMLTag(char * strXML)
-	{
-		char * strTemp = new char[strlen(strXML)];
-		sprintf(strTemp, "<?xml version=\"1.0\"?>\n%s", strXML); 
-		strcpy(strXML, strTemp); 
-	}
-
-	// ------------------------------------------------
-
 };
 
 // ===========================================================================
@@ -325,98 +276,6 @@ public:
 	}
 };
 
-// ===========================================================================
-// ===========================================================================
-//  Declaration of Generic Garp Classes
-// ===========================================================================
-// ===========================================================================
-
-// ===========================================================================
-//  Declaration of class: GarpGenericCoClass
-// ===========================================================================
-class GarpGenericCoClass
-{
-protected:
-	// exception handling
-	int intLastErrorCode;
-	char strLastErrorMessage[CHAR_ARRAY_SIZE];
-
-protected:
-	// private methods
-	// ------------------------------------------------------------
-	void resetError()
-	{
-		intLastErrorCode = 0;
-		strcpy(strLastErrorMessage, "No error has occurred");
-	}
-	// ------------------------------------------------------------
-
-public:
-	GarpGenericCoClass()   { resetError(); }
-	virtual ~GarpGenericCoClass()  {}
-};
-
-/*
-// ===========================================================================
-//  Declaration of class: GarpProgressEvents
-// ===========================================================================
-class GarpProgressEvents
-{
-private:
-	void * oCaller;
-	double dblStep;
-
-	void ( * callBackFunction ) (void * obj, int intPercentage, int intMethodId, int iObjectId);
-
-public:
-	// ------------------------------------------------------------
-	static void defaultCallBackFunction (void * obj, int intPercentage, int intMethodId, int iObjectId)
-	{ 
-		int aux = intPercentage; 
-	}
-
-	// ------------------------------------------------------------
-	void setDefaultCallBackFunction()
-	{
-		oCaller = NULL;
-		callBackFunction = defaultCallBackFunction; 
-	}
-
-	// ------------------------------------------------------------
-	GarpProgressEvents()
-	{ 
-		dblStep = 0.10;
-		setDefaultCallBackFunction();
-	}
-	
-	// ------------------------------------------------------------
-	virtual ~GarpProgressEvents() {}
-
-	// ------------------------------------------------------------
-	double getStep()
-	{ return dblStep; }
-
-	// ------------------------------------------------------------
-	void setStep(double dblNewStep)
-	{ dblStep = dblNewStep; }
-
-	// ------------------------------------------------------------
-	void setCallBackFunction(void * obj, void (* cbFunction) (void *, int, int, int))
-	{
-		oCaller = obj;
-		callBackFunction = cbFunction; 
-	}
-
-	// ------------------------------------------------------------
-	void fireProcessEvent(int intPercent, int intMethodId, int intObjectId)
-	{ 
-		if (callBackFunction)
-		{ 
-		  //callBackFunction(oCaller, intPercent, intMethodId, intObjectId); 
-		}
-	}
-};
-*/
 // ===========================================================================
 // ===========================================================================
 #endif
