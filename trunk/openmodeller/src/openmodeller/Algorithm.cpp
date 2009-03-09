@@ -120,26 +120,35 @@ AlgorithmImpl::getConfiguration() const
 void
 AlgorithmImpl::setConfiguration( const ConstConfigurationPtr &config )
 {
-  // Important: this code runs in two different situations:
+  // Important: this code runs in the following situations:
   // 1- Loading a fully serialized algorithm, i.e. an algorithm that was just
-  //    run and has all its properties filled with content.
+  //    run and has all its properties filled with content (parameters & model).
   // 2- Loading a createModel request which contains only the algorithm id
   //    and its parameters.
+  // 3- Loading only the serialized model of an algorithm.
 
-  ConstConfigurationPtr param_config = config->getSubsection( "Parameters" );
+  try { 
+
+    ConstConfigurationPtr param_config = config->getSubsection( "Parameters" );
   
-  Configuration::subsection_list params = param_config->getAllSubsections();
+    Configuration::subsection_list params = param_config->getAllSubsections();
 
-  _param.clear();
+    _param.clear();
 
-  Configuration::subsection_list::const_iterator nv;
+    Configuration::subsection_list::const_iterator nv;
 
-  for ( nv = params.begin(); nv != params.end(); ) {
+    for ( nv = params.begin(); nv != params.end(); ) {
 
-    string id = (*nv)->getAttribute( "Id" );
-    string value = (*nv)->getAttribute( "Value" );
-    _param.insert( ParamSetValueType( id, value ) );
-    ++nv;
+      string id = (*nv)->getAttribute( "Id" );
+      string value = (*nv)->getAttribute( "Value" );
+      _param.insert( ParamSetValueType( id, value ) );
+      ++nv;
+    }
+  }
+  catch( SubsectionNotFound& e ) {
+    UNUSED(e);
+    // In this case the XML has probably just the model definition that will be 
+    // loaded below.
   }
 
   ConstConfigurationPtr norm_config;
