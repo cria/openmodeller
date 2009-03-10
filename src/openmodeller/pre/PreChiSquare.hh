@@ -70,11 +70,9 @@ This technique is described in Li, L., et al. (2006). \"An Integrated\
 Bayesian Modelling Approach for Predicting Mosquito Larval Habitats\". The \
 authors tested the independence between all pairs of layers. Each pair is \
 cross-referenced using a contingency matrix to detect the dependency between \
-the layers based on a set of presence points from a particular species. Each layer \
-has a corresponding row and column in the contingency matrix. Each cell of the \
-matrix represents the number of species occurrences calculated by considering the \
-class of the two layers. The Chi-square test is then applied with a significance \
-level of 0.05 to evaluate the independence between each pair of layers."; }
+the layers based on a set of presence points from a particular species. \
+The output shows for each layer the number of layers that maintain correlation \
+with the significance level of 0.05."; }
 
     //Checks if the supplied parameters fits the requirements of PRE algorithm implementation.
     //return true if the parameters are OK. false if not.
