@@ -95,7 +95,7 @@ PreChiSquare::runImplementation()
 
     aux = statistic1[ind] + statistic2[ind];
 
-    result.store( "statistic", (int)aux );
+    result.store( "number of correlated layers", (int)aux );
 
     result_by_layer_[layer_id] = result;
   }
@@ -118,7 +118,7 @@ PreChiSquare::getLayersetResultSpec ( stringMap& info)
 void
 PreChiSquare::getLayerResultSpec ( stringMap& info)
 {
-	info["statistic"] = "int";
+	info["number of correlated layers"] = "int";
 }
 
 void 
