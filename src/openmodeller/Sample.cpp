@@ -1,8 +1,11 @@
 
 #include <Sample.hh>
 
-#ifndef __APPLE__
+// check for malloc.h or stdlib.h
+#ifdef HAVE_MALLOC_H
 #include <malloc.h>
+#else
+#include <stdlib.h>
 #endif
 
 // cmath is included for std::sqrt
