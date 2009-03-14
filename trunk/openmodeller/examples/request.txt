@@ -84,7 +84,7 @@ Output file = furcata.img
 # Output file type. Options:
 #
 # GreyTiff = grey scale GeoTiff (0 <= cell value <= 255). Default. (*.tif)
-# GreyTiff100 = grey scale GeoTiff (0 <= cell value <= 199). (*.tif)
+# GreyTiff100 = grey scale GeoTiff (0 <= cell value <= 100). (*.tif)
 # FloatingTiff = floating point GeoTiff (cell value = probability of presence) (*.tif)
 # GreyBMP = grey scale BMP (*.bmp)
 # FloatingHFA = Erdas Imagine Floating Point (cell value = probability of presence)
