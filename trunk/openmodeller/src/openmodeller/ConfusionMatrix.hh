@@ -55,8 +55,8 @@
  * +---------------------------------+
  * </pre>
  * 
- * Values a and d are correct predictions, while b and c are
- * Type I and Type II errors.
+ * Values a and d are correct predictions, while b (false positives) 
+ * and c (false negatives) are Type I and Type II errors.
  */
 class dllexp ConfusionMatrix
 {
