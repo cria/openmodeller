@@ -73,6 +73,7 @@ static bool     isValidGdalFile( const char* fileName );
 static bool     hasValidGdalProjection( const char* fileName );
 static int      getSize( FILE *fd );
 static bool     getData( struct soap*, const xsd__string, xsd__base64Binary& );
+static void     logRequest( struct soap*, const char* operation );
 
 
 /****************/
@@ -240,6 +241,8 @@ void *process_request( void *soap )
 int
 omws__ping( struct soap *soap, void *_, xsd__int &status )
 {
+  logRequest( soap, "ping" );
+
   // Get controller object previously instantiated
   OpenModeller *om = (OpenModeller*)soap->user; 
 
@@ -257,6 +260,8 @@ omws__ping( struct soap *soap, void *_, xsd__int &status )
 int 
 omws__getAlgorithms( struct soap *soap, void *_, struct omws__getAlgorithmsResponse *out )
 {
+  logRequest( soap, "getAlgorithms" );
+
   // Get controller object previously instantiated
   OpenModeller *om = (OpenModeller*)soap->user; 
 
@@ -287,6 +292,8 @@ omws__getAlgorithms( struct soap *soap, void *_, struct omws__getAlgorithmsRespo
 int 
 omws__getLayers( struct soap *soap, void *_, struct omws__getLayersResponse *out )
 {
+  logRequest( soap, "getLayers" );
+
   // Get controller object previously instantiated
   OpenModeller *om = (OpenModeller*)soap->user; 
 
@@ -391,6 +398,8 @@ omws__getLayers( struct soap *soap, void *_, struct omws__getLayersResponse *out
 int 
 omws__createModel( struct soap *soap, XML om__ModelParameters, xsd__string &ticket )
 {
+  logRequest( soap, "createModel" );
+
   string ticketFileName( gFileParser.get( "TICKET_DIRECTORY" ) );
 
   // Append slash if necessary
@@ -467,6 +476,8 @@ omws__createModel( struct soap *soap, XML om__ModelParameters, xsd__string &tick
 int 
 omws__testModel( struct soap *soap, XML om__TestParameters, xsd__string &ticket )
 {
+  logRequest( soap, "testModel" );
+
   string ticketFileName( gFileParser.get( "TICKET_DIRECTORY" ) );
 
   // Append slash if necessary
@@ -543,6 +554,8 @@ omws__testModel( struct soap *soap, XML om__TestParameters, xsd__string &ticket 
 int 
 omws__projectModel( struct soap *soap, XML om__ProjectionParameters, xsd__string &ticket )
 {
+  logRequest( soap, "projectModel" );
+
   string ticketFileName( gFileParser.get( "TICKET_DIRECTORY" ) );
 
   // Append slash if necessary
@@ -699,6 +712,8 @@ omws__getProgress( struct soap *soap, xsd__string ticket, xsd__int &progress )
 int 
 omws__getLog( struct soap *soap, xsd__string ticket, xsd__string &log )
 { 
+  logRequest( soap, "getLog" );
+
   if ( ! ticket ) {
 
     return soap_sender_fault( soap, "Missing ticket in request", NULL );
@@ -747,6 +762,8 @@ omws__getLog( struct soap *soap, xsd__string ticket, xsd__string &log )
 int 
 omws__getModel( struct soap *soap, xsd__string ticket, struct omws__getModelResponse *out )
 { 
+  logRequest( soap, "getModel" );
+
   if ( ! ticket ) {
 
     return soap_sender_fault( soap, "Missing ticket in request", NULL );
@@ -794,6 +811,8 @@ omws__getModel( struct soap *soap, xsd__string ticket, struct omws__getModelResp
 int 
 omws__getTestResult( struct soap *soap, xsd__string ticket, struct omws__testResponse *out )
 { 
+  logRequest( soap, "getTestResult" );
+
   if ( ! ticket ) {
 
     return soap_sender_fault( soap, "Missing ticket in request", NULL );
@@ -841,6 +860,8 @@ omws__getTestResult( struct soap *soap, xsd__string ticket, struct omws__testRes
 int 
 omws__getLayerAsAttachment( struct soap *soap, xsd__string id, xsd__base64Binary &file )
 { 
+  logRequest( soap, "getLayerAsAttachment" );
+
   if ( ! id ) {
 
     return soap_sender_fault( soap, "Layer id required", NULL );
@@ -859,6 +880,7 @@ omws__getLayerAsAttachment( struct soap *soap, xsd__string id, xsd__base64Binary
 int 
 omws__getLayerAsUrl( struct soap *soap, xsd__string id, xsd__string &url )
 { 
+  logRequest( soap, "getLayerAsUrl" );
 
   // This method is now working only for distribution maps!
 
@@ -934,6 +956,8 @@ omws__getLayerAsWcs( struct soap *soap, xsd__string id, xsd__string &url )
 int 
 omws__getProjectionMetadata( struct soap *soap, xsd__string ticket, struct omws__getProjectionMetadataResponse *out )
 { 
+  logRequest( soap, "getProjectionMetadata" );
+
   if ( ! ticket ) {
 
     return soap_sender_fault( soap, "Missing ticket in request", NULL );
@@ -1393,6 +1417,67 @@ getData( struct soap *soap, const xsd__string ticket, xsd__base64Binary &file )
   file.options = soap_dime_option( soap, 0, "Distribution map" );
 
   return true;
+}
+
+/********************/
+/**** logRequest ****/
+static void
+logRequest( struct soap* soap, const char* operation )
+{
+  string logFile( gFileParser.get( "LOG_DIRECTORY" ) );
+
+  if ( logFile.find_last_of( "/" ) != logFile.size() - 1 ) {
+
+    logFile.append( "/" );
+  }
+
+  time_t mytime = time((time_t *)NULL);
+  struct tm * mytm = localtime(&mytime);
+
+  int year = mytm->tm_year + 1900;
+
+  ostringstream name;
+
+  name << year << "-";
+
+  int month = mytm->tm_mon + 1;
+
+  if ( month < 10 ) {
+
+    name << "0";
+  }
+
+  name << month;
+
+  logFile.append( name.str() );
+  logFile.append( ".log" );
+
+  FILE *file = fopen( logFile.c_str(), "a" );
+
+  if ( file == NULL ) {
+
+    return;
+  }
+
+  int ip1 = (int)(soap->ip >> 24)&0xFF;
+  int ip2 = (int)(soap->ip >> 16)&0xFF;
+  int ip3 = (int)(soap->ip >> 8)&0xFF;
+  int ip4 = (int)soap->ip&0xFF;
+
+  char strtime[30];
+  strftime( strtime, 30, "%Y-%m-%d %X %Z", mytm );
+
+  ostringstream log;
+
+  // IP TAB datetime TAB operation
+log << ip1 << "." << ip2 << "." << ip3 << "." << ip4 << "\t" << strtime << "\t" << operation << endl;
+ 
+  if ( fputs( log.str().c_str(), file ) < 0 ) {
+
+    return;
+  }
+
+  fclose( file );
 }
 
 ///////////////////////
