@@ -9,6 +9,7 @@ SVN revision: ?
 	* Removed model statistics parameters from om_model since they can be specified as part of the XML request.
 	* All command line programs now return the same openModeller version number.
 	* New algorithm Niche Mosaic.
+	* Implemented custom log file in the modelling server.
 
 Release 0.7 (2009-01-14)
 ------------------------
