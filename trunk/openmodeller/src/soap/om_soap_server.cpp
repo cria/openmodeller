@@ -1459,10 +1459,14 @@ logRequest( struct soap* soap, const char* operation )
     return;
   }
 
-  int ip1 = (int)(soap->ip >> 24)&0xFF;
-  int ip2 = (int)(soap->ip >> 16)&0xFF;
-  int ip3 = (int)(soap->ip >> 8)&0xFF;
-  int ip4 = (int)soap->ip&0xFF;
+  string ip("");
+  char * remote_addr = getenv( "REMOTE_ADDR" );
+
+  // Check if the environment variable is set
+  if ( remote_addr != 0 ) {
+
+    ip = (char const *)remote_addr;
+  }
 
   char strtime[30];
   strftime( strtime, 30, "%Y-%m-%d %X %Z", mytm );
@@ -1470,7 +1474,7 @@ logRequest( struct soap* soap, const char* operation )
   ostringstream log;
 
   // IP TAB datetime TAB operation
-log << ip1 << "." << ip2 << "." << ip3 << "." << ip4 << "\t" << strtime << "\t" << operation << endl;
+  log << ip.c_str() << "\t" << strtime << "\t" << operation << endl;
  
   if ( fputs( log.str().c_str(), file ) < 0 ) {
 
