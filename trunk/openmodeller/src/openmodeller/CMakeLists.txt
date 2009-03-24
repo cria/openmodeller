@@ -62,6 +62,22 @@ ENDIF (WIN32)
 
 IF (TERRALIB_FOUND)
 
+  IF (MSVC)
+    # TerraLib has references to the wchar_t datatype, and 
+    # depending on the MSVC version being used it may
+    # be necessary to disable the use of the built-in datatype.
+    # You can do this manually too in MSVC express by clicking 
+    # on the openmodeller project, then from the top menu go:
+    # Project -> Properties -> Configuration Properties ->
+    # C/C++ -> Language -> Treat wchar_t as Built-in type
+    # and change it to No (/Zc:wchar_t)
+    IF (MSVC80)
+      ADD_DEFINITIONS("/Zc:wchar_t")
+    ELSE (MSVC80)
+      ADD_DEFINITIONS("/Zc:wchar_t-")
+    ENDIF (MSVC80)
+  ENDIF (MSVC)
+
   SET(OM_CORE_SRCS
       ${OM_CORE_SRCS}
       TeDatabaseManager.cpp
