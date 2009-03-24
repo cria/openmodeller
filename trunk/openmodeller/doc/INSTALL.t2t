@@ -580,7 +580,7 @@ Tim Sutton, 2007
 
 I started with a clean XP install with Service Pack 2 and all patches applied.
 I have already compiled all the dependencies you need for gdal, expat etc,
-so this tutorial wont cover compiling those from source too. Since compiling 
+so this tutorial won't cover compiling those from source too. Since compiling 
 these dependencies was a somewhat painful task I hope my precompiled libs 
 will be adequate. If not I suggest you consult the individual projects for
 specific build documentation and support. Lets go over the process in a nutshell 
@@ -632,14 +632,14 @@ differently.
 
 First thing we need to get is MSVC Express from here:
 
-http://msdn2.microsoft.com/en-us/express/aa975050.aspx
+http://www.microsoft.com/express/2005/
 
-The page is really confusing so dont feel bad if you cant actually find the 
-download at first! There are six coloured blocks on the page for the various  
-studio family members (vb / c# / j# etc). Simply choose your language under 
-the 'select your language' combo under the yellow C++ block, and your download 
-will begin. Under internet explorer I had to disable popup blocking for the 
-download to be able to commence.
+Click on "Download Now" under the Visual C++ 2005 image. The next page is a bit 
+confusing so don't feel bad if you cant actually find the download at first! 
+There are six coloured blocks on the page for the various studio family members 
+(vb / c# / j# etc). Simply choose your language under the 'select your language' 
+combo under the yellow C++ block, and your download will begin. Under internet 
+explorer I had to disable popup blocking for the download to be able to commence.
 
 Once the setup commences you will be prompted with various options. Here is what 
 I chose :
@@ -983,8 +983,27 @@ Currently I have only made release built dependencies for openModeller
 
 Next, right click on ALL_BUILD in the solution browser, and then choose build.
 
-Once the build completes right click on INSTALL in the solution browser and 
-choose build. This will by default install openmodeller into 
+Sometimes (depending on your version of the MS SDK platform) you may face the 
+following error when compiling the openmodeller project:
+
+```
+Linking...
+LINK : fatal error LNK1104: cannot open file 'atlthunk.lib'
+```
+
+In this case, you can comment (add a "//" in the beginning of) line 293 in the file 
+C:\Program files\Microsoft Platform SDK for Windows Server 2003 R2\Include\atl\atlbase.h 
+
+The line will look like this:
+
+```
+//#pragma comment(lib, "atlthunk.lib")
+```
+
+After that, try rebuilding the whole project.
+
+Once the build completes with no errors, right click on INSTALL in the solution browser 
+and choose build. This will by default install openmodeller into 
 c:\Program Files\openModellerX.X.X which will be used to create the installation
 package.
 
