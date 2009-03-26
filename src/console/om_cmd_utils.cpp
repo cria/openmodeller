@@ -25,7 +25,7 @@
  */
 
 #include <om_cmd_utils.hh>
-#include <time.h> 
+#include <time.h>
 
 using std::ios_base;
 

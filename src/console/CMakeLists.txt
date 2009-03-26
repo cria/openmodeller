@@ -93,7 +93,7 @@ INCLUDE_DIRECTORIES(
 ########################################################
 # Build the varios command line apps
 ADD_EXECUTABLE (om_console ${OMCONSOLE_SRCS})
-TARGET_LINK_LIBRARIES(om_console openmodeller )
+TARGET_LINK_LIBRARIES(om_console openmodeller)
 
 ADD_EXECUTABLE (om_model ${OMMODEL_SRCS})
 TARGET_LINK_LIBRARIES(om_model openmodeller)
