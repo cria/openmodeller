@@ -27,20 +27,26 @@
  * http://www.gnu.org/copyleft/gpl.html
  */
 
+#ifdef WIN32
+// avoid warnings caused by problems in VC headers
+#define _SCL_SECURE_NO_DEPRECATE
+#endif
+
 #include <os_specific.hh>
 #include <openmodeller/Log.hh>
-
-
-/****************************************************************/
-/********************* Dynamic Linking Loader *******************/
+#include <openmodeller/AlgorithmFactory.hh>
 
 #include <stdio.h>
+#include <fstream>
 #include <windows.h>
+#include <cpl_conv.h> // for setting gdal options
+#include <proj/proj_api.h> // for setting proj options
 
 using std::vector;
 using std::string;
 
-#include <fstream>
+/****************************************************************/
+/********************* Dynamic Linking Loader *******************/
 
 /****************/
 /*** dll Open ***/
@@ -91,9 +97,54 @@ dllError( DLLHandle )
   return szBuf;
 }
 
+/*********************************/
+/*** set up External Resources ***/
+void setupExternalResources()
+{
+  // Get directory where the .exe resides
+  char initial_path[FILENAME_MAX];
 
+  int bytes = GetModuleFileName( NULL, initial_path, FILENAME_MAX );
 
-/*************************/
+  if ( bytes == 0 ) {
+        
+      return;
+  }
+
+  // Remove file name from path
+  string initial_path_str( initial_path );
+        
+  size_t last_sep;
+        
+  last_sep = initial_path_str.find_last_of("/\\");
+        
+  if ( ! last_sep ) {
+        
+      return;
+  }
+
+  string path = initial_path_str.substr( 0, last_sep+1 );
+        
+  // Set algorithms path
+  string alg_path = path;
+  alg_path.append( "algs" );
+  AlgorithmFactory::setDefaultAlgDir( alg_path );
+
+  // Set GDAL_DATA for openModeller lib
+  string gdal_data_path = path;
+  gdal_data_path.append( "gdal" );
+  CPLSetConfigOption( "GDAL_DATA", gdal_data_path.c_str() );
+
+  // Set PROJ_LIB for openModeller lib
+  string proj_data_path = path;
+  proj_data_path.append( "nad" );
+  const char * char_path = proj_data_path.c_str();
+  const char ** paths;
+  paths = &char_path;
+  pj_set_searchpath( 1, paths );
+}
+
+/***************************/
 /*** initial Plugin Path ***/
 vector<string>
 initialPluginPath()
@@ -101,6 +152,14 @@ initialPluginPath()
   Log::instance()->debug( "Determining algorithm paths\n" );
 
   vector<string> entries;
+
+  std::string default_dir = AlgorithmFactory::getDefaultAlgDir();
+    
+  if ( ! default_dir.empty() ) {
+
+    entries.push_back( default_dir );
+    return entries;
+  }
 
   char *env = getenv( "OM_ALG_PATH" );
 

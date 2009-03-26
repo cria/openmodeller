@@ -1,4 +1,3 @@
-
 /**
  * Declaration of AlgorithmFactory class.
  * 
@@ -57,6 +56,11 @@ extern DLLHandle   dllOpen    ( char const *dll_file_name );
 extern void       *dllFunction( DLLHandle, char const *function_name );
 extern int         dllClose   ( DLLHandle );
 extern const char *dllError   ( DLLHandle );
+
+/****************************************************************/
+/***************** Set up external resources ********************/
+
+dllexp void setupExternalResources();
 
 /****************************************************************/
 /*************** Retrieve initial library path ******************/

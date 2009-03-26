@@ -1,7 +1,7 @@
 /**
  * Definitions of operating system's specific functions.
  * 
- * @author Mauro E S MuÃ±oz (mauro@cria.org.br)
+ * @author Mauro E S Muñoz (mauro@cria.org.br)
  * @date   2004-03-19
  * $Id$
  * 
@@ -27,6 +27,7 @@
 
 #include <os_specific.hh>
 #include <openmodeller/Log.hh>
+#include <openmodeller/AlgorithmFactory.hh>
 
 #include <iostream>
 #include <stdlib.h>
@@ -83,7 +84,14 @@ dllError( DLLHandle )
   return dlerror();
 }
 
-/*************************/
+/*********************************/
+/*** set up External Resources ***/
+void setupExternalResources()
+{
+  // nothing here now. See os_specific_win.cpp
+}
+
+/***************************/
 /*** initial Plugin Path ***/
 vector<string>
 initialPluginPath()
@@ -92,17 +100,24 @@ initialPluginPath()
 
   vector<string> entries;
 
-  //
   // Order of initialization:
   //
-  // 1) environment variable: OM_ALG_PATH
-  // 2) read from CONFIG_FILE compiled constant.
-  // 3) PLUGINPATH compiled constant.
-  // 4) on mac <application bundle>.app/Contents/MacOS/algs
+  // 1) AlgorithmFactory::_default_alg_dir
+  // 2) environment variable: OM_ALG_PATH
+  // 3) read from CONFIG_FILE compiled constant.
+  // 4) PLUGINPATH compiled constant.
+  // 5) on mac <application bundle>.app/Contents/MacOS/algs
 
+  std::string default_dir = AlgorithmFactory::getDefaultAlgDir();
+    
+  if ( ! default_dir.empty() ) {
+
+    entries.push_back( default_dir );
+    return entries;
+  }
+    
   char *env = getenv( "OM_ALG_PATH" );
 
-  //
   // Check if the environment variable is set
   if ( env != 0 ) {
 
