@@ -1,4 +1,5 @@
 #include <openmodeller/om.hh>
+#include <openmodeller/os_specific.hh>
 
 #include "getopts/getopts.h"
 
@@ -45,6 +46,9 @@ int main( int argc, char **argv ) {
     opts.showHelp( argv[0] ); 
     exit(0);
   }
+
+  // Set up any related external resources
+  setupExternalResources();
 
   OpenModeller om;
 
