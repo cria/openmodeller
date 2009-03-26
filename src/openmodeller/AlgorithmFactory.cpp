@@ -178,14 +178,33 @@ AlgorithmFactory::~AlgorithmFactory()
 {
 }
 
-/******************/
+/**************************/
 /*** Singleton accessor ***/
-
 AlgorithmFactory&
 AlgorithmFactory::getInstance()
 {
   static AlgorithmFactory theInstance;
   return theInstance;
+}
+
+/***************************/
+/*** set Default Alg Dir ***/
+void
+AlgorithmFactory::setDefaultAlgDir( std::string const dir )
+{
+  AlgorithmFactory& af = getInstance();
+
+  af._default_alg_dir = dir;
+}
+
+/***************************/
+/*** get Default Alg Dir ***/
+std::string
+AlgorithmFactory::getDefaultAlgDir()
+{
+  AlgorithmFactory& af = getInstance();
+
+  return af._default_alg_dir;
 }
 
 /****************************/
