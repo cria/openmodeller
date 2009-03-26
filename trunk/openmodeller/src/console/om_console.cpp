@@ -25,12 +25,13 @@
  */
 
 #include <openmodeller/om.hh>
+#include <openmodeller/Configuration.hh>
+#include <openmodeller/os_specific.hh>
+
 #include "request_file.hh"
 #include "file_parser.hh"
 
-#include <openmodeller/Configuration.hh>
 #include <istream>
-
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
@@ -53,12 +54,13 @@ void modelCallback( float progress, void * extra_param );
 int
 main( int argc, char **argv )
 {
-  char * path = 0;
-
   // Reconfigure the global logger.
   Log::instance()->setLevel( Log::Info );
   Log::instance()->setPrefix( "" );
 
+  // Set up any related external resources
+  setupExternalResources();
+  
   try {
 
     if ( argc < 2 ) {
@@ -72,8 +74,6 @@ main( int argc, char **argv )
     AlgorithmFactory::searchDefaultDirs();
     OpenModeller om;
     Log::instance()->info( "\nopenModeller version %s\n", om.getVersion().c_str() );
-
-    delete[] path;
 
     // Configure the OpenModeller object from data read from the
     // request file.
