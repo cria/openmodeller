@@ -119,12 +119,6 @@ Section "Application" SEC01
   File "${BUILD_DIR}\*.txt" 
   File "${BUILD_DIR}\*.dll"
 
-;------- gdal related
-  File "${BUILD_DIR}\*.wkt"
-  File "${BUILD_DIR}\*.svg"
-  File "${BUILD_DIR}\*.csv"
-  File "${BUILD_DIR}\*.dgn"
-
   SetOutPath "$INSTDIR\include\openmodeller"
   File "${BUILD_DIR}\include\openmodeller\*"
   SetOutPath "$INSTDIR\include\openmodeller\env_io\"
@@ -134,6 +128,14 @@ Section "Application" SEC01
   SetOutPath "$INSTDIR\include\openmodeller\pre\"
   File "${BUILD_DIR}\include\openmodeller\pre\*"
 
+; gdal related
+  SetOutPath "$INSTDIR\gdal"
+  File "${BUILD_DIR}\gdal\*.wkt"
+  File "${BUILD_DIR}\gdal\*.svg"
+  File "${BUILD_DIR}\gdal\*.csv"
+  File "${BUILD_DIR}\gdal\*.dgn"
+
+; proj4 related
   SetOutPath "$INSTDIR\nad"
   File "${BUILD_DIR}\nad\epsg"
   File "${BUILD_DIR}\nad\esri"
@@ -161,14 +163,6 @@ Section "Application" SEC01
   CreateDirectory "$SMPROGRAMS\$ICONS_GROUP"
   CreateShortCut "$SMPROGRAMS\$ICONS_GROUP\openModeller .lnk" "$INSTDIR\README.txt"
   !insertmacro MUI_STARTMENU_WRITE_END
-; Set the PROJ_LIB env var so the nad dir can be located by Proj
-  Push PROJ_LIB
-  Push "$INSTDIR\nad"
-  Call WriteEnvStr
-; Set the OM_ALG_PATH env var so that the algorithms can always be located by om
-  Push OM_ALG_PATH
-  Push "$INSTDIR\algs"
-  Call WriteEnvStr
 ; Set the OM_DATA_PATH env var so that aquamaps.db can be found
   Push OM_DATA_PATH
   Push "$INSTDIR\data"
@@ -261,10 +255,6 @@ FunctionEnd
 
 Section Uninstall
   # remove env variables
-  Push PROJ_LIB
-  Call un.DeleteEnvStr
-  Push OM_ALG_PATH
-  Call un.DeleteEnvStr
   Push OM_DATA_PATH
   Call un.DeleteEnvStr
   Push "Path"
@@ -277,72 +267,48 @@ Section Uninstall
   Delete "$INSTDIR\${PRODUCT_NAME}.url"
   Delete "$INSTDIR\uninst-release.exe"
   Delete "$INSTDIR\*.dll"
-;------------------- Sample Data
+
+;---------- Sample data
   Delete "$INSTDIR\examples\*.*"
-;---------- Gdal Requirements
-  Delete "$INSTDIR\projop_wparm.csv"
-  Delete "$INSTDIR\prime_meridian.csv"
-  Delete "$INSTDIR\pcs.csv"
-  Delete "$INSTDIR\unit_of_measure.csv"
-  Delete "$INSTDIR\stateplane.csv"
-  Delete "$INSTDIR\seed_3d.dgn"
-  Delete "$INSTDIR\s57objectclasses_iw.csv"
-  Delete "$INSTDIR\s57objectclasses_aml.csv"
-  Delete "$INSTDIR\s57objectclasses.csv"
-  Delete "$INSTDIR\s57expectedinput.csv"
-  Delete "$INSTDIR\s57attributes_iw.csv"
-  Delete "$INSTDIR\s57attributes_aml.csv"
-  Delete "$INSTDIR\s57attributes.csv"
-  Delete "$INSTDIR\s57agencies.csv"
-  Delete "$INSTDIR\gdal_datum.csv"
-  Delete "$INSTDIR\ellipsoid.csv"
-  Delete "$INSTDIR\nad\FL.lla"
-  Delete "$INSTDIR\nad\MD.lla"
-  Delete "$INSTDIR\nad\TN.lla"
-  Delete "$INSTDIR\nad\WI.lla"
-  Delete "$INSTDIR\nad\WO.lla"
-  Delete "$INSTDIR\nad\alaska.lla"
-  Delete "$INSTDIR\nad\conus.lla"
+
+;---------- GDAL data
+  Delete "$INSTDIR\gdal\*.wkt"
+  Delete "$INSTDIR\gdal\*.svg"
+  Delete "$INSTDIR\gdal\*.csv"
+  Delete "$INSTDIR\gdal\*.dgn"
+
+;---------- proj4 data
   Delete "$INSTDIR\nad\epsg"
   Delete "$INSTDIR\nad\esri"
-  Delete "$INSTDIR\nad\hawaii.lla"
+  Delete "$INSTDIR\nad\esri.extra"
+  Delete "$INSTDIR\nad\GL27"
+  Delete "$INSTDIR\nad\IGNF"
+  Delete "$INSTDIR\nad\nad.lst"
   Delete "$INSTDIR\nad\nad27"
   Delete "$INSTDIR\nad\nad83"
-  Delete "$INSTDIR\nad\ntv1_can.dat"
-  Delete "$INSTDIR\nad\prvi.lla"
-  Delete "$INSTDIR\nad\stgeorge.lla"
-  Delete "$INSTDIR\nad\stlrnc.lla"
-  Delete "$INSTDIR\nad\stpaul.lla"
+  Delete "$INSTDIR\nad\other.extra"
+  Delete "$INSTDIR\nad\proj_def.dat"
   Delete "$INSTDIR\nad\world"
-  Delete "$INSTDIR\gcs.csv"
-  Delete "$INSTDIR\esri_extra.wkt"
-  Delete "$INSTDIR\epsg.wkt"
-  Delete "$INSTDIR\ecw_cs.dat"
-  Delete "$INSTDIR\cubewerx_extra.wkt"
-  RMDir /r "$INSTDIR\lib"
-  RMDir /r "$INSTDIR\share"
-;---------- openModeller Requirements
-  Delete "$INSTDIR\pluginpath.cfg"
+
+;---------- openModeller stuff
+  Delete "$INSTDIR\om.cfg"
   Delete "$INSTDIR\libopenmodeller.a"
   Delete "$INSTDIR\algs\*.dll"
   Delete "$INSTDIR\data\aquamaps.db"
-;---------------- translations
-
-  Delete "$INSTDIR\*.qm"
-;---------------- openModeller desktop related
   Delete "$INSTDIR\*.exe"
 
   RMDir /r "$INSTDIR\examples"
   RMDir /r "$INSTDIR\algs"
+  RMDir /r "$INSTDIR\gdal"
   RMDir /r "$INSTDIR\nad"
   RMDir /r "$INSTDIR"
+
 ;----------------- The application dir gets zapped next ...  
   ;I added this recursive delte implementation because
   ; RM -R wasnt working properly
   Push "$INSTDIR"
   !insertmacro RemoveFilesAndSubDirs "$INSTDIR\"
   RMDir "$INSTDIR"
-
 
 ;----------------- icons and shortcuts
   ;Delete "$SMPROGRAMS\$ICONS_GROUP\Uninstall.lnk"
