@@ -59,6 +59,16 @@ public:
 
   ~AlgorithmFactory();
 
+  /** Set a default directory to search for algorithms.
+   * @param dir Default directory
+   */
+  static void setDefaultAlgDir( std::string const dir );
+
+  /** Return the default directory to search for algorithms.
+   * @return Default directory
+   */
+  static std::string getDefaultAlgDir();
+
   /** Search for all DLLs in default directories.
    *
    * The default search algorithm is platform specific.
@@ -135,7 +145,6 @@ public:
    */
   static ConfigurationPtr getConfiguration();
 
-
   /** Returns the current algorithm id in case it matches one of the previous
    * ids of an algorithm. This method was created to allow changes in algorithm
    * ids without breaking compatibility with serialized data.
@@ -150,6 +159,9 @@ private:
   AlgorithmFactory();
 
   static AlgorithmFactory& getInstance();
+
+  // Default directory to search for algorithms
+  std::string _default_alg_dir;
 
   friend class testDLLId;
   class DLL;
