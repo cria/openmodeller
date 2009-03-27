@@ -28,8 +28,8 @@
 #include "aquamaps.hh"
 
 #include <openmodeller/Configuration.hh>
-
 #include <openmodeller/Exceptions.hh>
+#include <openmodeller/os_specific.hh>
 
 #include <string.h>
 #include <stdio.h>
@@ -670,62 +670,31 @@ AquaMaps::_percentile( Scalar *result, int n, double percent, std::vector<Scalar
 void 
 AquaMaps::_readSpeciesData( const char *species )
 {
-  string relname, dbname;
+  string dbfullname = omDataPath();
 
 #ifndef WIN32
-  relname.append( "/aquamaps.db" );
+  dbfullname.append( "/" );
 #else
-  relname.append( "\\aquamaps.db" );
+  dbfullname.append( "\\" );
 #endif
 
-  bool found = false;
+  dbfullname.append( "aquamaps.db" );
 
-  // Try env variable
-  char *env = getenv( "OM_DATA_PATH" );
+  Log::instance()->debug( "Trying database: %s\n", dbfullname.c_str() );
 
-  if ( env != 0 ) {
+  ifstream dbfile( dbfullname.c_str(), ios::in );
 
-    dbname = (char const *)env;
+  if ( ! dbfile ) {
 
-    dbname.append( relname );
-    
-    Log::instance()->debug( "Trying database: %s\n", dbname.c_str() );
-
-    ifstream dbfile1( dbname.c_str(), ios::in );
-
-    if ( dbfile1 ) {
-
-      found = true;
-    }
-    else {
-
-      Log::instance()->debug( "Database not found.\n" );
-    }
-  }
-
-  if ( ! found ) {
-
-    // Try compile constant
-    dbname = PKGDATAPATH;
-
-    dbname.append( relname );
-
-    Log::instance()->debug( "Trying database: %s\n", dbname.c_str() );
-
-    ifstream dbfile2( dbname.c_str(), ios::in );
-
-    if ( ! dbfile2 ) {
-
-      Log::instance()->warn( "Could not find internal database with species data.\n" );
-      return;
-    }
+    Log::instance()->warn( "Could not find internal database with species data.\n" );
+    return;
   }
 
   Log::instance()->info( "Using internal database with species data.\n" );
   
   sqlite3 *db;
   
-  int rc = sqlite3_open( dbname.c_str(), &db);
+  int rc = sqlite3_open( dbfullname.c_str(), &db);
 
   if ( rc ) {
 
