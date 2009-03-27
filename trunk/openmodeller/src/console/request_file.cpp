@@ -155,6 +155,8 @@ RequestFile::_setOccurrences( OpenModeller *om, FileParser &fp )
   }
 
   // Populate the occurences list from the localities file
+  Log::instance()->info( "Reading occurrences...\r" );
+
   OccurrencesReader* oc_reader = OccurrencesFactory::instance().create( oc_file.c_str(), oc_cs.c_str() );
 
   _presences = oc_reader->getPresences( oc_name.c_str() );
@@ -165,10 +167,13 @@ RequestFile::_setOccurrences( OpenModeller *om, FileParser &fp )
 
   if ( _absences )
   {
+    Log::instance()->info( "Reading occurrences...done\n" );
+
     return om->setOccurrences( _presences, _absences );
   }
   else if ( _presences ) {
 
+    Log::instance()->info( "Reading occurrences...done\n" );
     return om->setOccurrences( _presences );
   }
   else {
@@ -222,7 +227,9 @@ RequestFile::_setEnvironment( OpenModeller *om, FileParser &fp )
   }
 
   // Set input environment
+  Log::instance()->info( "Reading layers...\r" );
   om->setEnvironment( cat, map, _inputMask );
+  Log::instance()->info( "Reading layers...done\n" );
 
   return 1;
 }
