@@ -163,10 +163,6 @@ Section "Application" SEC01
   CreateDirectory "$SMPROGRAMS\$ICONS_GROUP"
   CreateShortCut "$SMPROGRAMS\$ICONS_GROUP\openModeller .lnk" "$INSTDIR\README.txt"
   !insertmacro MUI_STARTMENU_WRITE_END
-; Set the OM_DATA_PATH env var so that aquamaps.db can be found
-  Push OM_DATA_PATH
-  Push "$INSTDIR\data"
-  Call WriteEnvStr
 ; Add path
   Push "Path"
   Push "A"
@@ -254,9 +250,6 @@ Function un.onInit
 FunctionEnd
 
 Section Uninstall
-  # remove env variables
-  Push OM_DATA_PATH
-  Call un.DeleteEnvStr
   Push "Path"
   Push "R"
   Push "HKLM"
