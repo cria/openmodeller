@@ -130,6 +130,11 @@ void setupExternalResources()
   alg_path.append( "algs" );
   AlgorithmFactory::setDefaultAlgDir( alg_path );
 
+  // Set data path
+  string data_path = path;
+  data_path.append( "data" );
+  omDataPath( data_path );
+
   // Set GDAL_DATA for openModeller lib
   string gdal_data_path = path;
   gdal_data_path.append( "gdal" );
@@ -144,6 +149,48 @@ void setupExternalResources()
   pj_set_searchpath( 1, paths );
 }
 
+/********************/
+/*** om Data Path ***/
+std::string omDataPath( std::string dir )
+{
+  static string data_path;
+
+  // Set default directory, if specified through parameter
+  if ( ! dir.empty() ) {
+
+    data_path = dir;
+  }
+
+  // Priority to env variable
+  char *env = getenv( "OM_DATA_PATH" );
+
+  if ( env != 0 ) {
+
+    string om_data_path = (char const *)env;
+
+    if ( ! om_data_path.empty() ) {
+
+      return om_data_path;
+    }
+  }
+
+  // Return static content if it's not empty
+  if ( ! data_path.empty() ) {
+
+    return data_path;
+  }
+
+  string pkg_data_path = PKGDATAPATH;
+  
+  // Try compile constant
+  if ( ! pkg_data_path.empty() ) {
+
+    return pkg_data_path;
+  }
+
+  return data_path;
+}
+
 /***************************/
 /*** initial Plugin Path ***/
 vector<string>
@@ -153,14 +200,6 @@ initialPluginPath()
 
   vector<string> entries;
 
-  std::string default_dir = AlgorithmFactory::getDefaultAlgDir();
-    
-  if ( ! default_dir.empty() ) {
-
-    entries.push_back( default_dir );
-    return entries;
-  }
-
   char *env = getenv( "OM_ALG_PATH" );
 
   // Check if the environment variable is set
@@ -168,43 +207,51 @@ initialPluginPath()
 
     string envpath( (char const *)env );
 
-    Log::instance()->debug( "Found environment variable OM_ALG_PATH: %s\n", envpath.c_str() );
+    // Ignore empty string
+    if ( ! envpath.empty() ) {
 
-    // If it's set to "" then we return.  Don't know what this means since the
-    // path is emtpy.  Maybe we need to have this drop to using CONFIG_FILE
-    if ( envpath.empty() ) {
+      Log::instance()->debug( "Found not empty environment variable OM_ALG_PATH: %s\n", envpath.c_str() );
+
+      // Parse the OM_ALG_PATH with semi-colon (';') delimiters just like all other 
+      // Windows path structures.
+
+      // string::size_type start marks the beginning of the substring.
+      // initial value is beginning of string, iterate value is one past the ';'
+      for ( string::size_type start = 0; start < envpath.length() ; ) {
+      
+        // Find the next ';' after start
+        string::size_type it = envpath.find( ';', start );
+
+        // If no ';' is found..
+        if ( it == string::npos ) {
+
+          // the substring is (start, end-of-string)
+          entries.push_back( envpath.substr( start ) );
+          break;
+        }
+        // Else, test that the substring is non empty.
+        else if ( it > start ) {
+        
+          string::size_type len = it - start;
+          entries.push_back( envpath.substr( start, len ) );
+        }
+
+        // move the start of the next substring to one after the ':'
+        start = it+1;
+      }
 
       return entries;
     }
+  }
 
-    // Parse the OM_ALG_PATH with semi-colon (';') delimiters just like all other 
-    // Windows path structures.
+  // Default location that can be set programatically
+  std::string default_dir = AlgorithmFactory::getDefaultAlgDir();
+    
+  if ( ! default_dir.empty() ) {
 
-    // string::size_type start marks the beginning of the substring.
-    // initial value is beginning of string, iterate value is one past the ';'
-    for ( string::size_type start = 0; start < envpath.length() ; ) {
-      
-      // Find the next ';' after start
-      string::size_type it = envpath.find( ';', start );
+    Log::instance()->debug( "Default location is set\n" );
 
-      // If no ';' is found..
-      if ( it == string::npos ) {
-
-        // the substring is (start, end-of-string)
-        entries.push_back( envpath.substr( start ) );
-        break;
-      }
-      // Else, test that the substring is non empty.
-      else if ( it > start ) {
-        
-        string::size_type len = it - start;
-        entries.push_back( envpath.substr( start, len ) );
-      }
-
-      // move the start of the next substring to one after the ':'
-      start = it+1;
-    }
-
+    entries.push_back( default_dir );
     return entries;
   }
 

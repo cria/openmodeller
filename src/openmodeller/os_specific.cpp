@@ -91,6 +91,48 @@ void setupExternalResources()
   // nothing here now. See os_specific_win.cpp
 }
 
+/********************/
+/*** om Data Path ***/
+std::string omDataPath( std::string dir )
+{
+  static string data_path;
+
+  // Set default directory, if specified through parameter
+  if ( ! dir.empty() ) {
+
+    data_path = dir;
+  }
+
+  // Priority to env variable
+  char *env = getenv( "OM_DATA_PATH" );
+
+  if ( env != 0 ) {
+
+    string om_data_path = (char const *)env;
+
+    if ( ! om_data_path.empty() ) {
+
+      return om_data_path;
+    }
+  }
+
+  // Return static content if it's not empty
+  if ( ! data_path.empty() ) {
+
+    return data_path;
+  }
+
+  string pkg_data_path = PKGDATAPATH;
+  
+  // Try compile constant
+  if ( ! pkg_data_path.empty() ) {
+
+    return pkg_data_path;
+  }
+
+  return data_path;
+}
+
 /***************************/
 /*** initial Plugin Path ***/
 vector<string>
@@ -102,19 +144,11 @@ initialPluginPath()
 
   // Order of initialization:
   //
-  // 1) AlgorithmFactory::_default_alg_dir
-  // 2) environment variable: OM_ALG_PATH
+  // 1) environment variable: OM_ALG_PATH
+  // 2) AlgorithmFactory::_default_alg_dir
   // 3) read from CONFIG_FILE compiled constant.
   // 4) PLUGINPATH compiled constant.
   // 5) on mac <application bundle>.app/Contents/MacOS/algs
-
-  std::string default_dir = AlgorithmFactory::getDefaultAlgDir();
-    
-  if ( ! default_dir.empty() ) {
-
-    entries.push_back( default_dir );
-    return entries;
-  }
     
   char *env = getenv( "OM_ALG_PATH" );
 
@@ -123,43 +157,51 @@ initialPluginPath()
 
     string envpath( (char const *)env );
 
-    Log::instance()->debug( "Found environment variable OM_ALG_PATH: %s\n", envpath.c_str() );
+    // Ignore empty string
+    if ( ! envpath.empty() ) {
 
-    // If it's set to "" then we return.  Don't know what this means since the
-    // path is emtpy.  Maybe we need to have this drop to using CONFIG_FILE
-    if ( envpath.empty() ) {
+      Log::instance()->debug( "Found not empty environment variable OM_ALG_PATH: %s\n", envpath.c_str() );
+
+      // Parse the OM_ALG_PATH with colon (':') delimiters just like all other 
+      // unix path structures.
+
+      // string::size_type start marks the beginning of the substring.
+      // initial value is beginning of string, iterate value is one past the ':'
+      for ( string::size_type start = 0; start < envpath.length() ; ) {
+      
+        // Find the next ':' after start
+        string::size_type it = envpath.find( ':', start );
+
+        // If no ':' is found..
+        if ( it == string::npos ) {
+
+          // the substring is (start, end-of-string)
+          entries.push_back( envpath.substr( start ) );
+          break;
+        }
+        // Else, test that the substring is non empty.
+        else if ( it > start ) {
+        
+          string::size_type len = it - start;
+          entries.push_back( envpath.substr( start, len ) );
+        }
+
+        // move the start of the next substring to one after the ':'
+        start = it+1;
+      }
 
       return entries;
     }
+  }
 
-    // Parse the OM_ALG_PATH with colon (':') delimiters just like all other 
-    // unix path structures.
+  // Default location that can be set programatically
+  std::string default_dir = AlgorithmFactory::getDefaultAlgDir();
 
-    // string::size_type start marks the beginning of the substring.
-    // initial value is beginning of string, iterate value is one past the ':'
-    for ( string::size_type start = 0; start < envpath.length() ; ) {
-      
-      // Find the next ':' after start
-      string::size_type it = envpath.find( ':', start );
+  if ( ! default_dir.empty() ) {
 
-      // If no ':' is found..
-      if ( it == string::npos ) {
+    Log::instance()->debug( "Default location is set\n" );
 
-        // the substring is (start, end-of-string)
-        entries.push_back( envpath.substr( start ) );
-        break;
-      }
-      // Else, test that the substring is non empty.
-      else if ( it > start ) {
-        
-        string::size_type len = it - start;
-        entries.push_back( envpath.substr( start, len ) );
-      }
-
-      // move the start of the next substring to one after the ':'
-      start = it+1;
-    }
-
+    entries.push_back( default_dir );
     return entries;
   }
 
