@@ -73,7 +73,7 @@ main( int argc, char **argv )
 
     AlgorithmFactory::searchDefaultDirs();
     OpenModeller om;
-    Log::instance()->info( "\nopenModeller version %s\n", om.getVersion().c_str() );
+    Log::instance()->info( "openModeller version %s\n", om.getVersion().c_str() );
 
     // Configure the OpenModeller object from data read from the
     // request file.
