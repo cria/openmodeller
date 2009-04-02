@@ -185,6 +185,8 @@ OccurrencesFactory::create( const char * source, const char * coordSystem )
 
       return xml_driver;
     }
+
+    delete xml_driver;
   }
   catch ( OmException& e ) {
 
