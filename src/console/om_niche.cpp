@@ -26,6 +26,10 @@
 
 #include <openmodeller/om.hh>
 
+#include "getopts/getopts.h"
+
+#include "om_cmd_utils.hh"
+
 #include "graph/graphic.hh"
 
 #include <string.h>
@@ -66,25 +70,68 @@ void draw_occur( GGraph *graph, const OccurrencesPtr& oc, GColor color );
 int
 main( int argc, char **argv )
 {
-  // Reconfigure the global logger.
-  Log::instance()->setLevel( Log::Error );
-  Log::instance()->setPrefix( "" );
+  Options opts;
+  int option;
 
-  if ( argc < 2 ) {
+  // command-line parameters (short name, long name, description, take args)
+  opts.addOption( "" , "log-level", "Set the log level (debug, warn, info, error)", true );
+  opts.addOption( "v", "version"  , "Display version info"                        , false );
+  opts.addOption( "o", "model"    , "File with serialized model"                  , true );
 
-    Log::instance()->error( "\n%s <file with serialized model>\n\n", argv[0] );
-    exit(1);
+  std::string log_level("info");
+  std::string model_file;
+
+  if ( ! opts.parse( argc, argv ) ) {
+
+    opts.showHelp( argv[0] ); 
+    exit(0);
   }
 
-  char *model_file = argv[1];
+  // Set up any related external resources
+  setupExternalResources();
 
-  Log::instance()->info( "\nopenModeller Two-dimensional Niche Viewer - CRIA\n" );
+  OpenModeller om;
+
+  while ( ( option = opts.cycle() ) >= 0 ) {
+
+    switch ( option ) {
+
+      case 0:
+        log_level = opts.getArgs( option );
+        break;
+      case 1:
+        printf( "om_niche %s\n", om.getVersion().c_str() );
+        printf("This is free software; see the source for copying conditions. There is NO\n");
+        printf("warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n");
+        exit(0);
+        break;
+      case 2:
+        model_file = opts.getArgs( option );
+        break;
+      default:
+        break;
+    }
+  }
+
+  // Check parameters
+
+  if ( model_file.empty() ) {
+
+    printf( "Please specify a model file\n");
+    exit(-1);
+  }
+
+  // Log stuff
+
+  Log::Level level_code = getLogLevel( log_level );
+
+  Log::instance()->setLevel( level_code );
 
   try {
 
     AlgorithmFactory::searchDefaultDirs();
 
-    ConfigurationPtr input = Configuration::readXml( model_file );
+    ConfigurationPtr input = Configuration::readXml( model_file.c_str() );
 
     _om.setModelConfiguration( input );
 

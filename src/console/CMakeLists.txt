@@ -39,8 +39,8 @@ SET (OMVIEWER_SRCS
      )
 SET (OMNICHE_SRCS
      om_niche.cpp 
-     request_file.cpp 
-     file_parser.cpp 
+     getopts/getopts.C
+     om_cmd_utils.cpp 
      graph/color.cpp 
      graph/graphic.cpp 
      graph/graphic_x11.cpp
@@ -107,7 +107,7 @@ TARGET_LINK_LIBRARIES(om_sampler openmodeller)
 ADD_EXECUTABLE (om_test ${OMTEST_SRCS})
 TARGET_LINK_LIBRARIES(om_test openmodeller)
 
-if (X11_FOUND)
+IF (X11_FOUND)
   #MESSAGE ("Building with X11 includes at ${X11_INCLUDE_DIR}...")
   INCLUDE_DIRECTORIES(
     ${INCLUDE_DIRECTORIES}
@@ -141,7 +141,7 @@ INSTALL(TARGETS om_model RUNTIME DESTINATION ${OM_BIN_DIR})
 INSTALL(TARGETS om_project RUNTIME DESTINATION ${OM_BIN_DIR})
 INSTALL(TARGETS om_sampler RUNTIME DESTINATION ${OM_BIN_DIR})
 INSTALL(TARGETS om_test RUNTIME DESTINATION ${OM_BIN_DIR})
-if (X11_FOUND)
+IF (X11_FOUND)
   INSTALL(TARGETS om_viewer RUNTIME DESTINATION ${OM_BIN_DIR})
   INSTALL(TARGETS om_niche RUNTIME DESTINATION ${OM_BIN_DIR})
 ENDIF(X11_FOUND)
@@ -156,4 +156,10 @@ IF (UNIX AND NOT OM_BUNDLE)
                  ${CMAKE_CURRENT_SOURCE_DIR}/man/om_test.1 
                  ${CMAKE_CURRENT_SOURCE_DIR}/man/om_project.1 
            DESTINATION ${CMAKE_INSTALL_PREFIX}/man/man1)
+
+  IF (X11_FOUND)
+    INSTALL (FILES ${CMAKE_CURRENT_SOURCE_DIR}/man/om_niche.1
+             DESTINATION ${CMAKE_INSTALL_PREFIX}/man/man1)
+  ENDIF(X11_FOUND)
+
 ENDIF (UNIX AND NOT OM_BUNDLE)
