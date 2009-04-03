@@ -8,4 +8,5 @@
 ./txt2man.sh -P om_model -t om_model om_model.txt > ../src/console/man/om_model.1
 ./txt2man.sh -P om_test -t om_test om_test.txt > ../src/console/man/om_test.1
 ./txt2man.sh -P om_project -t om_project om_project.txt > ../src/console/man/om_project.1
+./txt2man.sh -P om_niche -t om_niche om_niche.txt > ../src/console/man/om_niche.1
 
