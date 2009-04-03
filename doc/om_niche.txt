@@ -1,0 +1,21 @@
+NAME
+       om_niche - Command line tool to visualize an openModeller model in the environmental space
+
+SYNOPSIS
+       om_niche [-] v --version | -o, --model FILE [ --log-level LEVEL ]
+
+DESCRIPTION
+       om_niche is a command line tool for visualizing openModeller serialized models in the environmental space. Serialized models can be produced with om_console(1) or om_model(1) and are stored as XML files. Please note that only models that were generated with two layers can be visualized with this tool. This is mostly a didactic tool that was created to show how different algorithms can build different models for the same input data.
+
+OPTIONS
+       -v, --version     Display version info.
+
+       -o, --model       Serialized model.
+
+       --log-level       openModeller log level: debug, warn, info or error. Defaults to "info".
+
+SEE ALSO
+       om_console(1), om_viewer(1), om_model(1)
+
+AUTHORS
+       Mauro E. S. Muñoz, Renato De Giovanni
