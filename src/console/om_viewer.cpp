@@ -315,5 +315,7 @@ readOccurrences( char const *source, char const *name, char const *coord_system 
     occurrences->appendFrom( absences );
   }
 
+  delete oc_reader;
+
   return occurrences;
 }
