@@ -286,6 +286,8 @@ void RocCurve::_calculateGraphPoints()
     // Positivity criterion for current point
     Scalar threshold = _thresholds[i];
 
+    Log::instance()->debug( "Calculating ROC point for %f threshold\n", threshold );
+
     // Process all pairs
     for ( j = 0; j < num_pairs; j++ ) {
 
@@ -350,11 +352,15 @@ void RocCurve::_calculateGraphPoints()
     if ( _gen_background_points ) {
 
       v.push_back( _proportions[i] );
+      Log::instance()->debug( "Proportion = %f\n", _proportions[i] );
     }
     else {
 
       v.push_back(1 - specificity);
+      Log::instance()->debug( "1 - specificity = %f\n", 1 - specificity );
     }
+
+    Log::instance()->debug( "Sensitivity = %f\n", sensitivity );
 
     // y value
     v.push_back(sensitivity);
