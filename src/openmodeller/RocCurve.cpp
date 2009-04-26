@@ -374,20 +374,26 @@ void RocCurve::_calculateGraphPoints()
     _data.push_back(v);
   }
 
+  // Append (0, 0) artificially.
+  std::vector<Scalar> v00;
+
+  v00.reserve(6);
+
+  v00.push_back(0.0);  // 1 - specificity
+  v00.push_back(0.0);  // sensitivity
+  v00.push_back(-1);   // ppvalue
+  v00.push_back(-1);   // npvalue
+  v00.push_back(-1);   // accuracy
+  v00.push_back(-1);   // threshold
+
+  _data.push_back(v00);
+
   if ( ! _gen_background_points ) {
 
-    // Append (0, 0) and (1, 1) points artificially.
-    std::vector<Scalar> v00, v11;
+    // Append (1, 1) artificially.
+    std::vector<Scalar> v11;
 
-    v00.reserve(6);
     v11.reserve(6);
-
-    v00.push_back(0.0);  // 1 - specificity
-    v00.push_back(0.0);  // sensitivity
-    v00.push_back(-1);   // ppvalue
-    v00.push_back(-1);   // npvalue
-    v00.push_back(-1);   // accuracy
-    v00.push_back(-1);   // threshold
 
     v11.push_back(1.0);  // 1 - specificity
     v11.push_back(1.0);  // sensitivity
@@ -396,7 +402,6 @@ void RocCurve::_calculateGraphPoints()
     v11.push_back(-1);   // accuracy
     v11.push_back(-1);   // threshold
 
-    _data.push_back(v00);
     _data.push_back(v11);
   }
 

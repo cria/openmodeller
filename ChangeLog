@@ -8,8 +8,10 @@ SVN revision: ?
 	* Changed the modelling protocol to allow createModel and testModel requests to specify what statistics should be calculated.
 	* Removed model statistics parameters from om_model since they can be specified as part of the XML request.
 	* All command line programs now return the same openModeller version number.
+	* Changed om_niche parameters (now using getopts) and created a man page for it.
 	* New algorithm Niche Mosaic.
 	* Implemented custom log file in the modelling server.
+	* ROC curve was not including (0,0) when background points were being generated, therefore producing lower AUC values.
 
 Release 0.7 (2009-01-14)
 ------------------------
