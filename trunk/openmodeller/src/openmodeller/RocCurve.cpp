@@ -468,6 +468,16 @@ double RocCurve::getPartialAreaRatio( double e )
 {
   Log::instance()->info( "Calculating partial area for limit %f\n", e );
 
+  if ( e < 0.0 ) {
+
+    e = 0.0;
+  }
+
+  if ( e > 1.0 ) {
+
+    e = 1.0;
+  }
+
   double area = 0.0;
 
   double diag_area = 0.0;
@@ -489,6 +499,8 @@ double RocCurve::getPartialAreaRatio( double e )
     return _ratios[e];
   }
 
+  bool interpolate = true;
+
   // Approximate area under ROC curve with trapezes
   for ( i = 1; i < num_points; i++ ) {
 
@@ -498,11 +510,49 @@ double RocCurve::getPartialAreaRatio( double e )
     double y2 = getY(i);
 
     // Only points where Y is greater than or equals 1-e (e=maximum accepted omission)
-    if ( x2 != x1 && y1 >= (1 - e) ) {
+    if ( x2 != x1 ) {
 
-      area += (x2 - x1) * 0.5 * (y1 + y2);
+      if ( y1 == (1.0 - e) ) {
 
-      diag_area += (x2 - x1) * 0.5 * (x1 + x2);
+        area += (x2 - x1) * 0.5 * (y1 + y2);
+
+        diag_area += (x2 - x1) * 0.5 * (x1 + x2);
+
+        interpolate = false;
+      }
+      else if ( y1 > (1.0 - e) ) { // y1 is in ascending order
+
+        if ( interpolate ) {
+ 
+          if ( i > 1 ) {
+
+            double x0 = getX(i - 2);
+            double y0 = getY(i - 2);
+
+            double y = 1.0 - e;
+
+            double x = x1 - ((x1-x0)*(y1-y)/(y1-y0));
+
+            // Add missing previous area via interpolation
+            area += (x1 - x) * 0.5 * (y + y1);
+
+            diag_area += (x1 - x) * 0.5 * (x + x1);
+
+            // Normal trapezoid
+            area += (x2 - x1) * 0.5 * (y1 + y2);
+
+            diag_area += (x2 - x1) * 0.5 * (x1 + x2);
+
+            interpolate = false;
+          }
+        }
+        else {
+ 
+          area += (x2 - x1) * 0.5 * (y1 + y2);
+
+          diag_area += (x2 - x1) * 0.5 * (x1 + x2);
+        }
+      }
     }
   }
 
