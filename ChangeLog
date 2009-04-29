@@ -12,6 +12,7 @@ SVN revision: ?
 	* New algorithm Niche Mosaic.
 	* Implemented custom log file in the modelling server.
 	* ROC curve was not including (0,0) when background points were being generated, therefore producing lower AUC values.
+	* Added more precision to partial AUC through interpolation.
 
 Release 0.7 (2009-01-14)
 ------------------------
