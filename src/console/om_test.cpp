@@ -223,7 +223,7 @@ int main( int argc, char **argv ) {
 
       Log::instance()->warn( "Ignoring resolution - option only available with ROC curve\n" );
     }
-    if ( max_omission_string.empty() ) {
+    if ( ! max_omission_string.empty() ) {
 
       Log::instance()->warn( "Ignoring maximum omission - option only available with ROC curve\n" );
     }
