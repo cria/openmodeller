@@ -220,7 +220,7 @@ struct svm_model
   svm_node **SV;      // SVs (SV[l])
   double **sv_coef;   // coefficients for SVs in decision functions (sv_coef[k-1][l])
   double *rho;        // constants in decision functions (rho[k*(k-1)/2])
-  double *probA;      // pariwise probability information
+  double *probA;      // parwise probability information
   double *probB;
 
   // for classification only
@@ -693,6 +693,7 @@ SvmAlgorithm::_getConfiguration( ConfigurationPtr& config ) const
   model_config->addNameValue( "Degree", _svm_parameter.degree );
   model_config->addNameValue( "Gamma", _svm_parameter.gamma );
   model_config->addNameValue( "Coef0", _svm_parameter.coef0 );
+  model_config->addNameValue( "C", _svm_parameter.C );
   model_config->addNameValue( "Rho", _svm_model->rho[0] ); // assuming always one
 
   if ( _svm_parameter.probability == 1 ) {
@@ -768,6 +769,7 @@ SvmAlgorithm::_setConfiguration( const ConstConfigurationPtr& config )
   _svm_parameter.degree = model_config->getAttributeAsInt( "Degree", 3 );
   _svm_parameter.gamma = model_config->getAttributeAsDouble( "Gamma", 0 );
   _svm_parameter.coef0 = model_config->getAttributeAsDouble( "Coef0", 0 );
+  _svm_parameter.C = model_config->getAttributeAsDouble( "C", 1 );
 
   _svm_parameter.cache_size = 100;
   _svm_parameter.eps = 1e-3;
