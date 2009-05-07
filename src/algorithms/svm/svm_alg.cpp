@@ -531,7 +531,9 @@ SvmAlgorithm::initialize()
 
       _svm_problem.y[i] = -1; // absence
 
-      _svm_problem.x[i] = _getNode( point );
+      _svm_problem.x[i] = new svm_node[_num_layers+1];
+
+      _getNode( _svm_problem.x[i], point );
     
       ++p_iterator;
       ++i;
@@ -549,7 +551,9 @@ SvmAlgorithm::initialize()
 
     _svm_problem.y[i] = +1; // presence
 
-    _svm_problem.x[i] = _getNode( point );
+    _svm_problem.x[i] = new svm_node[_num_layers+1];
+
+    _getNode( _svm_problem.x[i], point );
     
     ++p_iterator;
     ++i;
@@ -617,7 +621,9 @@ SvmAlgorithm::getValue( const Sample& x ) const
     throw AlgorithmException( "Algorithm not initialized" );
   }
 
-  svm_node * node = _getNode( x );
+  svm_node * node = new svm_node[_num_layers+1];
+
+  _getNode( node, x );
 
   double prob;
 
@@ -658,11 +664,9 @@ SvmAlgorithm::getConvergence( Scalar * const val ) const
 
 /****************/
 /*** get Node ***/
-svm_node *
-SvmAlgorithm::_getNode( const Sample& sample ) const
+void
+SvmAlgorithm::_getNode( svm_node * node, const Sample& sample ) const
 {
-  svm_node * node = new svm_node[_num_layers+1];
-
   for ( int j = 0; j < _num_layers; ++j ) {
 
     node[j].index = j+1;  // attr index (must start with 1!)
@@ -671,8 +675,6 @@ SvmAlgorithm::_getNode( const Sample& sample ) const
 
   node[_num_layers].index = -1; // end of array
   node[_num_layers].value = 0;  // end of array
- 
-  return node;
 }
 
 /****************************************************************/

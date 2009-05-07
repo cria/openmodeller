@@ -55,7 +55,7 @@ public:
 
 protected:
 
-  svm_node * _getNode( const Sample& sample ) const;
+  void _getNode( svm_node * node, const Sample& sample ) const;
 
   void _getConfiguration( ConfigurationPtr& ) const;
 
