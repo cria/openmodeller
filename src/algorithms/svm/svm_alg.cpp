@@ -28,7 +28,6 @@
 #include "svm.h"
 #include <openmodeller/MeanVarianceNormalizer.hh>
 #include <openmodeller/Sampler.hh>
-#include <openmodeller/Exceptions.hh>
 
 #include <string.h>
 #include <stdio.h>
@@ -616,11 +615,6 @@ SvmAlgorithm::done() const
 Scalar
 SvmAlgorithm::getValue( const Sample& x ) const
 {
-  if ( ! _done ) {
-
-    throw AlgorithmException( "Algorithm not initialized" );
-  }
-
   svm_node * node = new svm_node[_num_layers+1];
 
   _getNode( node, x );
