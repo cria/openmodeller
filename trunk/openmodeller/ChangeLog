@@ -2,17 +2,16 @@ Release 1.0 (2009-?-?)
 ------------------------
 SVN revision: ?
 
-	* Implemented new training method in the maximum entropy algorithm to produce similar results to MaxEnt.
 	* Changed Artificial Neural Networks algorithm to avoid exceeding a maximum number of iterations when training by minimum error (parameter Epoch is used to specify the maximum number of iterations).
 	* Added new method in the ConfusionMatrix class to use the lowest probability among the training presences as the threshold.
 	* Changed the modelling protocol to allow createModel and testModel requests to specify what statistics should be calculated.
 	* Removed model statistics parameters from om_model since they can be specified as part of the XML request.
 	* All command line programs now return the same openModeller version number.
 	* Changed om_niche parameters (now using getopts) and created a man page for it.
-	* New algorithm Niche Mosaic.
 	* Implemented custom log file in the modelling server.
 	* ROC curve was not including (0,0) when background points were being generated, therefore producing lower AUC values.
 	* Added more precision to partial AUC through interpolation.
+	* Disabled the experimental maximum entropy algorithm.
 
 Release 0.7 (2009-01-14)
 ------------------------

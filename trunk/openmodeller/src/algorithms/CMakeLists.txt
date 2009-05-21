@@ -11,9 +11,9 @@ ENDIF(WIN32)
 # Subdirectories
 SUBDIRS(best_subsets garp dg_garp svm neural_networks)
 
-if (Boost_FOUND)
-  SUBDIRS(maxent)
-ENDIF(Boost_FOUND)
+#if (Boost_FOUND)
+#  SUBDIRS(maxent)
+#ENDIF(Boost_FOUND)
 
 ########################################################
 # Files
@@ -50,10 +50,10 @@ SET (LIBENVIRONMENTALDISTANCE_SRCS
      matrix.hh
 )
 
-SET (LIBNICHEMOSAIC_SRCS
-     niche_mosaic.cpp 
-     niche_mosaic.hh
-)
+#SET (LIBNICHEMOSAIC_SRCS
+#     niche_mosaic.cpp 
+#     niche_mosaic.hh
+#)
 
 ########################################################
 # Build
@@ -73,8 +73,8 @@ TARGET_LINK_LIBRARIES(bioclim openmodeller)
 ADD_LIBRARY (environmental_distance MODULE ${LIBENVIRONMENTALDISTANCE_SRCS})
 TARGET_LINK_LIBRARIES(environmental_distance openmodeller)
 
-ADD_LIBRARY (niche_mosaic MODULE ${LIBNICHEMOSAIC_SRCS})
-TARGET_LINK_LIBRARIES(niche_mosaic openmodeller)
+#ADD_LIBRARY (niche_mosaic MODULE ${LIBNICHEMOSAIC_SRCS})
+#TARGET_LINK_LIBRARIES(niche_mosaic openmodeller)
 
 INCLUDE_DIRECTORIES(
      ${CMAKE_CURRENT_SOURCE_DIR}
@@ -134,7 +134,7 @@ ENDIF(SQLITE3_FOUND)
 
 INSTALL(TARGETS environmental_distance RUNTIME DESTINATION ${OM_ALG_DIR} LIBRARY DESTINATION ${OM_ALG_DIR})
 
-INSTALL(TARGETS niche_mosaic RUNTIME DESTINATION ${OM_ALG_DIR} LIBRARY DESTINATION ${OM_ALG_DIR})
+#INSTALL(TARGETS niche_mosaic RUNTIME DESTINATION ${OM_ALG_DIR} LIBRARY DESTINATION ${OM_ALG_DIR})
 
 if (GSL_FOUND)
   INSTALL(TARGETS csm_bs RUNTIME DESTINATION ${OM_ALG_DIR} LIBRARY DESTINATION ${OM_ALG_DIR})
