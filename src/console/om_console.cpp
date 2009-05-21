@@ -152,7 +152,9 @@ main( int argc, char **argv )
     RocCurve * const roc_curve = om.getRocCurve();
 
     // Confusion Matrix
-    Log::instance()->info( "\nModel statistics for training data\n" );
+    Log::instance()->info( "\n" );
+    Log::instance()->info( "Model statistics for training data\n" );
+    Log::instance()->info( "Threshold:         %7.2f%%\n", matrix->getThreshold() * 100 );
     Log::instance()->info( "Accuracy:          %7.2f%%\n", matrix->getAccuracy() * 100 );
 
     int omissions = matrix->getValue(0.0, 1.0);
@@ -170,17 +172,25 @@ main( int argc, char **argv )
       Log::instance()->info( "Commission error:  %7.2f%% (%d/%d)\n", commissionError * 100, commissions, total );
     }
 
+    ConfusionMatrix auxMatrix;
+    auxMatrix.setLowestTrainingThreshold( om.getModel(), om.getSampler() );
+    Log::instance()->info( "Lowest prediction: %7.2f\n", auxMatrix.getThreshold() );
+
     // ROC curve
     Log::instance()->info( "AUC:               %7.2f\n", roc_curve->getTotalArea() );
 
     // Projection statistics
     if ( request.requestedProjection() ) {
 
+      Log::instance()->info( "\n" );
+      Log::instance()->info( "Projection statistics\n" );
+
       AreaStats * stats = om.getActualAreaStats();
 
-      Log::instance()->info( "Percentage of cells predicted present: %7.2f%%\n", 
+      Log::instance()->info( "Threshold:                 50%%\n" );
+      Log::instance()->info( "Cells predicted present: %7.2f%%\n", 
              stats->getAreaPredictedPresent() / (double) stats->getTotalArea() * 100 );
-      Log::instance()->info( "Total number of cells: %d\n", stats->getTotalArea() );
+      Log::instance()->info( "Total number of cells:     %d\n", stats->getTotalArea() );
       Log::instance()->info( "Done.\n" );
 
       delete stats;
@@ -334,7 +344,7 @@ readParameters( AlgParameter *result, AlgMetadata const *metadata )
 
             *pos = '\0';
           }
-	}
+        }
 
         result->setValue( value );
       }
