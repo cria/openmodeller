@@ -101,6 +101,8 @@ void RocCurve::calculate( const Model& model, const SamplerPtr& sampler )
 
   reset( _resolution, _background_points );
 
+  model->setNormalization( sampler );
+
   _loadPredictions( model, sampler );
 
   _calculateGraphPoints();
@@ -154,9 +156,6 @@ void RocCurve::_loadPredictions( const Model& model, const SamplerPtr& sampler )
   OccurrencesImpl::const_iterator fin = presences->end();
 
   Scalar predictionValue;
-
-  model->setNormalization( env );
-  model->setNormalization( sampler );
 
   // Store predictions for presence points
   int i = 0;
