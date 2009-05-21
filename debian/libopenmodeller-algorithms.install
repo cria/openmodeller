@@ -7,7 +7,6 @@
 /usr/lib/openmodeller/libenvironmental_distance.so
 /usr/lib/openmodeller/libgarp_best_subsets.so
 /usr/lib/openmodeller/libgarp.so
-/usr/lib/openmodeller/libmaximum_entropy.so
 /usr/lib/openmodeller/libomsvm.so
 /usr/lib/openmodeller/libomneuralnet.so
 /usr/share/openmodeller/data/aquamaps.db
