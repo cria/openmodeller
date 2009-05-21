@@ -4,9 +4,11 @@
 
 #undef dllexp
 #undef dll_log
+#undef OM_ALG_DLL_EXPORT
 
 #define dllexp
 #define dll_log
+#define OM_ALG_DLL_EXPORT
 
 %{
 #include <stdio.h>
