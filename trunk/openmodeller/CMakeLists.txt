@@ -33,7 +33,7 @@ SET (OM_BUILD_BINDINGS FALSE CACHE BOOL "Indicates whether Python bindings shoul
 
 SET (OM_BUILD_SERVICE FALSE CACHE BOOL "Indicates whether the openModeller Web Service should be built")
 
-SET (OM_USE_FORTRAN TRUE CACHE BOOL "Turn off this option to avoid the build system check if there is a Fortran compiler available (used to enable the LBFGS training method in the Maximum Entropy algorithm)")
+#SET (OM_USE_FORTRAN TRUE CACHE BOOL "Turn off this option to avoid the build system check if there is a Fortran compiler available (used to enable the LBFGS training method in the Maximum Entropy algorithm)")
 
 #############################################################
 IF (OM_CTEST)
