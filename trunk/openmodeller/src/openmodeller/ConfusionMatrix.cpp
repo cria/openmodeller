@@ -58,6 +58,8 @@ void ConfusionMatrix::setLowestTrainingThreshold(const Model& model, const Sampl
 {
   Log::instance()->debug( "Determining lowest training threshold\n" );
 
+  model->setNormalization( sampler );
+
   OccurrencesPtr presences = sampler->getPresences();
 
   OccurrencesImpl::const_iterator it = presences->begin();
