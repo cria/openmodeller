@@ -28,6 +28,7 @@
 #include "svm.h"
 #include <openmodeller/MeanVarianceNormalizer.hh>
 #include <openmodeller/Sampler.hh>
+#include <openmodeller/Exceptions.hh>
 
 #include <string.h>
 #include <stdio.h>
@@ -186,7 +187,7 @@ static AlgMetadata metadata = {
 
   "SVM", 	                   // Id.
   "SVM (Support Vector Machines)", // Name.
-  "0.3",       	                   // Version.
+  "0.4",       	                   // Version.
 
   // Overview
   "Support vector machines (SVMs) are a set of related supervised learning methods that belong to a family of generalized linear classifiers. They can also be considered a special case of Tikhonov regularization. A special property of SVMs is that they simultaneously minimize the empirical classification error and maximize the geometric margin; hence they are also known as maximum margin classifiers. Content retrieved from Wikipedia on the 13th of June, 2007: http://en.wikipedia.org/w/index.php?title=Support_vector_machine&oldid=136646498.",
@@ -765,7 +766,16 @@ SvmAlgorithm::_setConfiguration( const ConstConfigurationPtr& config )
   _svm_parameter.degree = model_config->getAttributeAsInt( "Degree", 3 );
   _svm_parameter.gamma = model_config->getAttributeAsDouble( "Gamma", 0 );
   _svm_parameter.coef0 = model_config->getAttributeAsDouble( "Coef0", 0 );
-  _svm_parameter.C = model_config->getAttributeAsDouble( "C", 1 );
+
+  try {
+
+    // Serialization of "C" was added in version 0.4 of this algorithm
+    _svm_parameter.C = model_config->getAttributeAsDouble( "C", 1 );
+  }
+  catch ( AttributeNotFound& e ) {
+
+    UNUSED( e );
+  }
 
   _svm_parameter.cache_size = 100;
   _svm_parameter.eps = 1e-3;
