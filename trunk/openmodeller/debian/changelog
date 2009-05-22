@@ -1,3 +1,26 @@
+libopenmodeller (1.0.0-0) gutsy; urgency=low
+
+  * Changed ANN algorithm to avoid exceeding a maximum number of iterations when training by minimum error (parameter Epoch can be used for this purpose).
+  * Added missing parameter serialization in SVM (the C parameter in the SVC method).
+  * Added new method in the ConfusionMatrix class to use the lowest probability among the training presences as the threshold.
+  * Changed the modelling protocol to allow createModel and testModel requests to specify what statistics should be calculated.
+  * Removed model statistics parameters from om_model since they can be specified as part of the XML request.
+  * All command line programs now return the same openModeller version number.
+  * Changed om_niche parameters (now using getops) and created a man page for it.
+  * Implemented custom log file in the modelling server.
+  * ROC curve was not including (0,0) when background points were being generated, therefore producing lower AUC values.
+  * Added more precision to partial AUC through interpolation.
+  * Disabled the experimental maximum entropy algorithm.
+
+
+ -- Renato De Giovanni <renato@cria.org.br>  Fri, 22 May 2009 09:22:42 -0400
+
+libopenmodeller (0.7.0-3) gutsy; urgency=low
+
+  * First attempt to generate Gutsy package.
+
+ -- Renato De Giovanni <renato@cria.org.br>  Thu, 15 Jan 2009 03:17:27 -0500
+
 libopenmodeller (0.7.0) hardy; urgency=low
 
   * New Algorithm using Artificial Neural Networks.
@@ -130,6 +153,6 @@ libopenmodeller (0.5.0pre1+svn20010807) experimental; urgency=low
 libopenmodeller (0.4.2) experimental; urgency=low
 
   * New version number. This version includes the following changes:
-       bugfixes
+ bugfixes
 
  -- Tim Sutton <tim@linfiniti.com>  Fri, 23 Mar 2007 09:50:00 +0100
