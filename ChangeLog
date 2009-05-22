@@ -1,6 +1,6 @@
-Release 1.0 (2009-?-?)
+Release 1.0 (2009-05-22)
 ------------------------
-SVN revision: ?
+SVN revision: 5035
 
 	* Changed Artificial Neural Networks algorithm to avoid exceeding a maximum number of iterations when training by minimum error (parameter Epoch is used to specify the maximum number of iterations).
 	* Added new method in the ConfusionMatrix class to use the lowest probability among the training presences as the threshold.
