@@ -2,10 +2,10 @@
 # Copy supporting libraries to openModeller bundle
 # and make search paths for them relative to bundle
 
-APP_PREFIX=/usr/local/openModeller
+APP_PREFIX=/Applications/openmodeller.app/Contents/MacOS
 APP_LIB_DIR=${APP_PREFIX}/lib
 APP_BIN_DIR=${APP_PREFIX}/bin
-LIB_DIR=/usr/local/qgis_universal_deps/lib
+LIB_DIR=/usr/local/om_universal_deps/lib
 set -x
 cp -r ${LIB_DIR}/libexpat.dylib  ${APP_LIB_DIR}
 cp -r ${LIB_DIR}/libgdal.1.dylib  ${APP_LIB_DIR}
@@ -27,10 +27,10 @@ LIBS="libexpat.1.dylib \
       libgsl.0.dylib \
       libgslcblas.0.dylib \
       libopenmodeller.dylib \
-      libopenmodellerxml.dylib \
       libexpat.dylib \
       libgdal.dylib \
       libgeos.dylib \
+      libgeos_c.dylib \
       libproj.dylib \
       libsqlite3.dylib \
       openmodeller/libaquamaps.so \
@@ -38,7 +38,7 @@ LIBS="libexpat.1.dylib \
       openmodeller/libgarp_best_subsets.so \
       openmodeller/libbioclim.so \
       openmodeller/libenvelope_score.so \
-      openmodeller/libdistance_to_average.so \
+      openmodeller/libomneuralnet.so \
       openmodeller/libcsm_bs.so \
       openmodeller/libenvironmental_distance.so \
       openmodeller/libdesktop_garp.so \
@@ -71,16 +71,13 @@ do
 done
 
 BINS="om_console \
-      om_console \
-      om_create \
-      om_dump \
-      om_niche \
+      om_model \
       om_project \
+      om_algorithm \
+      om_points \
       om_pseudo \
-      om_sampledump \
-      om_soap_serve \
-      om_testmodel \
-      om_viewer"
+      om_sampler \
+      om_test"
 
 #
 # and update the library ids and paths for these libs
