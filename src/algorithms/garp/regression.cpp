@@ -74,7 +74,7 @@ void Regression::calculateParameters(const OccurrencesPtr& occs)
 
   while (oc_it != oc_end)
     {
-      Scalar y = (*oc_it)->abundance();
+      Scalar y = ( (*oc_it)->abundance() > 0.0 ) ? 1.0 : 0.0;
       Sample x = (*oc_it)->environment();
 
       Sample::iterator xit = x.begin();

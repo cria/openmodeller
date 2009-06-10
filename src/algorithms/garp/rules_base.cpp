@@ -358,7 +358,7 @@ double GarpRule::evaluate(const OccurrencesPtr& occs)
   while (it != end)
     {	
       // environmental (independent) variables values from current sample point
-      Scalar pointValue = (*it)->abundance();
+      Scalar pointValue = ( (*it)->abundance() > 0.0 ) ? 1.0 : 0.0;
       Sample sample = (*it)->environment();
 
       strength = getStrength(sample);
