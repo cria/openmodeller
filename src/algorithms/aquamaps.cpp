@@ -881,12 +881,12 @@ AquaMaps::_hasExpertRange( sqlite3_stmt * stmt, int varIndex )
 void
 AquaMaps::_adjustInterquartile( int layerIndex, Scalar adjmin, Scalar adjmax )
 {
-  if ( adjmin > _lower_limit[layerIndex] && adjmin < _minimum[layerIndex] ) {
+  if ( adjmin > _lower_limit[_getRelatedIndex(layerIndex)] && adjmin < _minimum[layerIndex] ) {
 
     _minimum[layerIndex] = adjmin;
   }
 
-  if ( adjmax < _upper_limit[layerIndex] && adjmax > _maximum[layerIndex] ) {
+  if ( adjmax < _upper_limit[_getRelatedIndex(layerIndex)] && adjmax > _maximum[layerIndex] ) {
 
     _maximum[layerIndex] = adjmax;
   }
@@ -898,11 +898,11 @@ AquaMaps::_adjustInterquartile( int layerIndex, Scalar adjmin, Scalar adjmax )
 void
 AquaMaps::_ensureEnvelopeSize( int layerIndex )
 {
-  Scalar halfSize = _inner_size[layerIndex]/2;
+  Scalar halfSize = _inner_size[_getRelatedIndex(layerIndex)]/2;
 
   // Try to ensure that the prefered envelope has the specified size
   // (but only change if the new values are still within the accepted envelope)
-  if ( _pref_maximum[layerIndex] - _pref_minimum[layerIndex] < _inner_size[layerIndex] ) {
+  if ( _pref_maximum[layerIndex] - _pref_minimum[layerIndex] < _inner_size[_getRelatedIndex(layerIndex)] ) {
 
     Scalar center = (_pref_minimum[layerIndex] + _pref_maximum[layerIndex]) / 2;
 
@@ -927,13 +927,13 @@ AquaMaps::_ensureEnvelopeSize( int layerIndex )
 
     Scalar new_min = _pref_minimum[layerIndex] - halfSize;
 
-    if ( new_min > _lower_limit[layerIndex] ) {
+    if ( new_min > _lower_limit[_getRelatedIndex(layerIndex)] ) {
 
       _minimum[layerIndex] = new_min;
     }
     else {
 
-      _minimum[layerIndex] = _lower_limit[layerIndex];
+      _minimum[layerIndex] = _lower_limit[_getRelatedIndex(layerIndex)];
     }
   }
 
@@ -941,13 +941,13 @@ AquaMaps::_ensureEnvelopeSize( int layerIndex )
 
     Scalar new_max = _pref_maximum[layerIndex] + halfSize;
 
-    if ( new_max < _upper_limit[layerIndex] ) {
+    if ( new_max < _upper_limit[_getRelatedIndex(layerIndex)] ) {
 
       _maximum[layerIndex] = new_max;
     }
     else {
 
-      _maximum[layerIndex] = _upper_limit[layerIndex];
+      _maximum[layerIndex] = _upper_limit[_getRelatedIndex(layerIndex)];
     }
   }
 }
@@ -1181,4 +1181,19 @@ AquaMaps::_logEnvelope()
     Log::instance()->info( " Maximum         : %f\n", _maximum[i] );
     Log::instance()->info( "\n" );
   }
+}
+
+int 
+AquaMaps::_getRelatedIndex( int index )
+{
+  if ( index == 8 ) {
+
+    return index - 2;
+  }
+  else if ( index > 5 ) {
+
+    return index - 1;
+  }
+
+  return index;
 }

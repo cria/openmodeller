@@ -236,6 +236,9 @@ private:
   /** Log the bioclimatic envelopes information. */
   void _logEnvelope();
 
+  /** Return the 0-6 index from the constants defined in this header related to the 0-8 index from the complete set of layers. */
+  int _getRelatedIndex( int index );
+
   /** Indicates if the respective layer should be used or not when calculating probabilities */
   int * _use_layer;
 
