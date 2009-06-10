@@ -263,7 +263,7 @@ int GarpAlgorithm::initialize()
     {
       OccurrencePtr oc = _samp->getOneSample();
       Sample sample = (*oc).environment();
-      Scalar dep = (*oc).abundance();
+      Scalar dep = ( (*oc).abundance() > 0.0 ) ? 1.0 : 0.0;
 
       // transfer values to cell
       BYTE * values = new BYTE[dim + 2];

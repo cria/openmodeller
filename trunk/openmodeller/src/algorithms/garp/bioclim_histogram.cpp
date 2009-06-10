@@ -77,9 +77,8 @@ void BioclimHistogram::initialize(const OccurrencesPtr& occs)
   int sampleIndex = 0;
   while (it != end)
     {
-      Scalar pointValue = (*it)->abundance();
+      Scalar pointValue = ( (*it)->abundance() > 0.0 ) ? 1.0 : 0.0;
       Sample sample = (*it)->environment();
-
 
       int predictionIndex = static_cast<int>(pointValue);
 
