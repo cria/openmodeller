@@ -378,6 +378,18 @@ while (init_pixel<(total_pixels)) {
 
   MPI_Barrier(MPI_COMM_WORLD);
 
+// Call the callback function if it is set.
+
+    if ( callbackWrapper ) {
+
+      try  {
+
+        callbackWrapper->notifyModelProjectionProgress( 1.0 );
+      }
+      catch ( ... ) {}
+    }
+
+
   return true;
 }
 #endif
