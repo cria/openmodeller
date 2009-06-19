@@ -491,17 +491,17 @@ RasterGdal::create( int format )
     char **papszOptions = NULL;
 
     papszOptions = CSLSetNameValue( papszOptions, "COMPRESS", "YES" );
-    //#ifdef MPI_FOUND
-    //if (rank ==0){
-    //#endif
+    #ifdef MPI_FOUND
+    if (rank ==0){
+    #endif
     f_ds = poDriver->Create( f_file.c_str(),
                              f_hdr.xdim, f_hdr.ydim,
                              f_hdr.nband,
                              Formats[format].dataType,
                              papszOptions );
-    //#ifdef MPI_FOUND
-    //}
-    //#endif
+    #ifdef MPI_FOUND
+    }
+    #endif
     CSLDestroy( papszOptions );
   }
   //ArcMap needs a LZW compression license to read files compressed
@@ -514,17 +514,17 @@ RasterGdal::create( int format )
     char **papszOptions = NULL;
     papszOptions = CSLSetNameValue( papszOptions, "NBITS", "7" );
     papszOptions = CSLSetNameValue( papszOptions, "COMPRESS", "LZW" );
-    //#ifdef MPI_FOUND
-    //if (rank ==0){
-    //#endif
+    #ifdef MPI_FOUND
+    if (rank ==0){
+    #endif
     f_ds = poDriver->Create( f_file.c_str(),
                              f_hdr.xdim, f_hdr.ydim,
                              f_hdr.nband,
                              Formats[format].dataType, //data type
                              papszOptions ); //opt parameters
-    //#ifdef MPI_FOUND
-    //}
-    //#endif
+    #ifdef MPI_FOUND
+    }
+    #endif
     CSLDestroy( papszOptions );
   }
   //Create temporary ByteHFA file with a different name (original file name + .tmp)
@@ -533,17 +533,17 @@ RasterGdal::create( int format )
   {
     std::string temp_file = f_file + ".tmp";
 
-    //#ifdef MPI_FOUND
-    //if (rank ==0){
-    //#endif
+    #ifdef MPI_FOUND
+    if (rank ==0){
+    #endif
     f_ds = poDriver->Create( temp_file.c_str(),
                              f_hdr.xdim, f_hdr.ydim,
                              f_hdr.nband,
                              Formats[format].dataType,
                              NULL );
-    //#ifdef MPI_FOUND
-    //}
-    //#endif
+    #ifdef MPI_FOUND
+    }
+    #endif
   }
   //Create temporary GeoTiff file with a different name (original file name + .tmp)
   //It will be converted to ASC in the finish method
@@ -551,36 +551,36 @@ RasterGdal::create( int format )
   {
     std::string temp_file = f_file + ".tmp";
 
-    //#ifdef MPI_FOUND
-    //if (rank ==0){
-    //#endif
+    #ifdef MPI_FOUND
+    if (rank ==0){
+    #endif
     f_ds = poDriver->Create( temp_file.c_str(),
                              f_hdr.xdim, f_hdr.ydim,
                              f_hdr.nband,
                              Formats[format].dataType,
                              NULL );
-    //#ifdef MPI_FOUND
-    //}
-    //#endif
+    #ifdef MPI_FOUND
+    }
+    #endif
   }
   else {
-    //#ifdef MPI_FOUND
-    //if (rank ==0){
-    //#endif
+    #ifdef MPI_FOUND
+    if (rank ==0){
+    #endif
     //uncompressed
     f_ds = poDriver->Create( f_file.c_str(),
                              f_hdr.xdim, f_hdr.ydim,
                              f_hdr.nband,
                              Formats[format].dataType,
                              NULL );
-    //#ifdef MPI_FOUND
-    //}
-    //#endif
+    #ifdef MPI_FOUND
+    }
+    #endif
   }
 
-  //#ifdef MPI_FOUND
-  //if (rank ==0) {
-  //#endif
+  #ifdef MPI_FOUND
+  if (rank ==0) {
+  #endif
   if ( ! f_ds ) {
 
     Log::instance()->warn( "Unable to create file %s.\n",f_file.c_str() );
@@ -605,9 +605,9 @@ RasterGdal::create( int format )
       Log::instance()->warn( "Raster %s (%s) does not support nodata value assignment. Nodata values will correspond to %f anyway, but this will not be stored as part of the raster metadata.\n", f_file.c_str(), fmt, f_hdr.noval );
     }
   }
-  //#ifdef MPI_FOUND
-  //}
-  //#endif
+  #ifdef MPI_FOUND
+  }
+  #endif
   // Initialize the Buffer
   initBuffer();
 }
