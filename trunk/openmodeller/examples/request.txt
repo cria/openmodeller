@@ -221,9 +221,9 @@ Output file type = ByteHFA
 # Artificial Neural Networks
 #
 #Algorithm = ANN
-#Parameter = HiddenLayerNeurons 8
+#Parameter = HiddenLayerNeurons 14
 #Parameter = LearningRate 0.3
 #Parameter = Momentum 0.05
-#Parameter = Choice 0
-#Parameter = Epoch 100000
+#Parameter = Choice 1
+#Parameter = Epoch 5000000
 #Parameter = MinimunError 0.01
