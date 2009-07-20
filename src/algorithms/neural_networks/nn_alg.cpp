@@ -75,7 +75,7 @@ static AlgParamMetadata parameters[NUM_PARAM] = {
     1,         // Parameter's lower limit.
     0,         // Not zero if the parameter has upper limit.
     0,         // Parameter's upper limit.
-    "8"        // Parameter's typical (default) value.
+    "14"        // Parameter's typical (default) value.
   },
 
   // Learning rate
@@ -715,7 +715,7 @@ NNAlgorithm::_setConfiguration( const ConstConfigurationPtr& config )
   }
 
   _num_layers = model_config->getAttributeAsInt( "NumLayers", 0 );
-  _nn_parameter.hid = model_config->getAttributeAsInt( "HiddenLayerNeurons", 8 );
+  _nn_parameter.hid = model_config->getAttributeAsInt( "HiddenLayerNeurons", 14 );
 
 
   int *layers = new int (3);
