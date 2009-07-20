@@ -224,7 +224,6 @@ Output file type = ByteHFA
 #Parameter = HiddenLayerNeurons 8
 #Parameter = LearningRate 0.3
 #Parameter = Momentum 0.05
-#Parameter = Proptrain 0.8
 #Parameter = Choice 0
 #Parameter = Epoch 100000
 #Parameter = MinimunError 0.01
