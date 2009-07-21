@@ -4,6 +4,7 @@ SVN revision: ?
 
 	* Bugfix: Interquartile and envelope size adjustments were using wrong reference values for salinity and temperature in the Aquamaps algorithm.
 	* Bugfix: All GARP algorithms were crashing when the abundance value associated with one of the occurrence points had more than two digits in the integer part.
+	* Increased the default number of neurons in the hidden layer of the ANN algorithm.
 
 Release 1.0 (2009-05-22)
 ------------------------
