@@ -159,7 +159,7 @@ static AlgMetadata metadata = {
 
   "ANN",  // Id.
   "Artificial Neural Network", // Name.
-  "0.1", // Version.
+  "0.2", // Version.
 
   // Overview
   "Artificial neural networks are made up of interconnecting artificial neurons (programming constructs that mimic the properties of biological neurons). Artificial neural networks may either be used to gain an understanding of biological neural networks, or for solving artificial intelligence problems without necessarily creating a model of a real biological system. Content retrieved from Wikipedia on the 06th of May, 2008: http://en.wikipedia.org/wiki/Neural_network",
