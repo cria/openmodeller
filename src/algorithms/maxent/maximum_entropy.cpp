@@ -34,44 +34,21 @@
 #include <openmodeller/ScaleNormalizer.hh>
 #include <openmodeller/Sampler.hh>
 
-#include "meevent.hpp"
-#include "maxentmodel.hpp"
-#include "modelfile.hpp"
-
 #include <iostream>
 #include <sstream>
 #include <vector>
-
-#include <boost/shared_ptr.hpp>
-#include <boost/shared_array.hpp>
-
-using boost::shared_ptr;
-using boost::shared_array;
+#include <cmath>
 
 using namespace std;
-using namespace maxent;
-
-typedef MaxentModel::context_type me_context_type;
-typedef MaxentModel::outcome_type me_outcome_type;
 
 /****************************************************************/
 /********************** Algorithm's Metadata ********************/
-#ifdef HAVE_FORTRAN
-#define NUM_PARAM 10
-#else
-#define NUM_PARAM 9
-#endif
 
-#define PSEUDO_ID          "NumberOfPseudoAbsences"
+#define NUM_PARAM 3
+
+#define BACKGROUND_ID      "NumberOfBackgroundPoints"
 #define ITERATIONS_ID      "NumberOfIterations"
-#define METHOD_ID          "TrainingMethod"
-#define GAUSSIAN_COEF_ID   "GaussianPriorSmoothingCoeficient"
 #define TOLERANCE_ID       "TerminateTolerance"
-#define LINEAR_FEAT_ID     "LinearFeature"
-#define QUADRATIC_FEAT_ID  "QuadraticFeature"
-#define PRODUCT_FEAT_ID    "ProductFeature"
-#define THRESHOLD_FEAT_ID  "ThresholdFeature"
-#define HINGE_FEAT_ID      "HingeFeature"
 
 #define MAXENT_LOG_PREFIX "Maxent: "
 
@@ -79,19 +56,19 @@ typedef MaxentModel::outcome_type me_outcome_type;
 /*** Algorithm's parameters ***/
 
 static AlgParamMetadata parameters[NUM_PARAM] = {
-
-  // Number of pseudo absences to be generated
+  
+  // Number of background points to be generated
   {
-    PSEUDO_ID,                   // Id.
-    "Number of pseudo-absences", // Name.
-    Integer,                     // Type.
-    "Number of pseudo-absences to be generated (when no absences have been provided).", // Overview
-    "Number of pseudo-absences to be generated (when no absences have been provided).", // Description.
+    BACKGROUND_ID,                 // Id.
+    "Number of background points", // Name.
+    Integer,                       // Type.
+    "Number of background points to be generated.", // Overview
+    "Number of background points to be generated.", // Description.
     1,         // Not zero if the parameter has lower limit.
-    1,         // Parameter's lower limit.
-    0,         // Not zero if the parameter has upper limit.
-    0,         // Parameter's upper limit.
-    "500"      // Parameter's typical (default) value.
+    0,         // Parameter's lower limit.
+    1,         // Not zero if the parameter has upper limit.
+    10000,     // Parameter's upper limit.
+    "10000"    // Parameter's typical (default) value.
   },
   // Number of iterations
   {
@@ -106,34 +83,6 @@ static AlgParamMetadata parameters[NUM_PARAM] = {
     0,         // Parameter's upper limit.
     "500"      // Parameter's typical (default) value.
   },
-#ifdef HAVE_FORTRAN
-  // Training method
-  {
-    METHOD_ID,                         // Id.
-    "Training method (gis or lbfgs or seq)",  // Name.
-    String,                            // Type.
-    "Training method (gis or lbfgs or seq) used to estimate the maximum entropy parameters.", // Overview
-    "Training method (gis or lbfgs or seq) used to estimate the maximum entropy parameters. Possible values are: gis (Generalized Iterative Scaling) or lbfgs (Limited-Memory Variable Metric) or seq (Sequential method based on MAXENT Software).", // Description.
-    0,         // Not zero if the parameter has lower limit.
-    0,         // Parameter's lower limit.
-    0,         // Not zero if the parameter has upper limit.
-    0,         // Parameter's upper limit.
-    "gis"      // Parameter's typical (default) value.
-  },
-#endif
-  // Gaussian Prior Smoothing Coeficient
-  {
-    GAUSSIAN_COEF_ID, // Id.
-    "Gaussian Prior Smoothing Coeficient (variance)", // Name.
-    Real, // Type.
-    "Gaussian Prior Smoothing Coeficient (variance).", // Overview
-    "Gaussian Prior Smoothing Coeficient (variance). Zero turns off Gaussian Prior Smoothing.", // Description.
-    1,  // Not zero if the parameter has lower limit.
-    0,  // Parameter's lower limit.
-    0,  // Not zero if the parameter has upper limit.
-    0,  // Parameter's upper limit.
-    "0.0" // Parameter's typical (default) value.
-  },
   // Terminate tolerance
   {
     TOLERANCE_ID, // Id.
@@ -141,80 +90,13 @@ static AlgParamMetadata parameters[NUM_PARAM] = {
     Real, // Type.
     "Tolerance for detecting model convergence.", // Overview
     "Tolerance for detecting model convergence.", // Description.
-    0,  // Not zero if the parameter has lower limit.
-    0,  // Parameter's lower limit.
-    0,  // Not zero if the parameter has upper limit.
-    0,  // Parameter's upper limit.
+    1,    // Not zero if the parameter has lower limit.
+    0.0,  // Parameter's lower limit.
+    0,    // Not zero if the parameter has upper limit.
+    0,    // Parameter's upper limit.
     "0.00001" // Parameter's typical (default) value.
   },
-  // Features to be used
-  // Linear Feature
-  {
-    LINEAR_FEAT_ID, // Id.
-    "Linear Feature", // Name.
-    Integer, // Type.
-    "Continuous environmental variables values.", // Overview
-    "1 - Set the training algorithm to use the environmental variables values, 0 - otherwise.", // Description.
-    1,  // Not zero if the parameter has lower limit.
-    0,  // Parameter's lower limit.
-    1,  // Not zero if the parameter has upper limit.
-    1,  // Parameter's upper limit.
-    "0" // Parameter's typical (default) value.
-  },
-  //Quadratic Feature
-  {
-    QUADRATIC_FEAT_ID, // Id.
-    "Quadratic Feature", // Name.
-    Integer, // Type.
-    "Square of continuous environmental variables.", // Overview
-    "1 - Set the training algorithm to use the square of continuous environmental variables, 0 - otherwise.", // Description.
-    1,  // Not zero if the parameter has lower limit.
-    0,  // Parameter's lower limit.
-    1,  // Not zero if the parameter has upper limit.
-    1,  // Parameter's upper limit.
-    "0" // Parameter's typical (default) value.
-  },
-  //Product Feature
-  {
-    PRODUCT_FEAT_ID, // Id.
-    "Product Feature", // Name.
-    Integer, // Type.
-    "Product of pairs of continuous environmental variables.", // Overview
-    "1 - Set the training algorithm to use the product of continuous environmental variables, 0 - otherwise.", // Description.
-    1,  // Not zero if the parameter has lower limit.
-    0,  // Parameter's lower limit.
-    1,  // Not zero if the parameter has upper limit.
-    1,  // Parameter's upper limit.
-    "0" // Parameter's typical (default) value.
-  },
-  //Threshold Feature
-  {
-    THRESHOLD_FEAT_ID, // Id.
-    "Threshold Feature", // Name.
-    Integer, // Type.
-    "Binary feature. Depends on convergence threshold. It is 1 when the variable has value greater than the convergence threshold and is 0 otherwise.", // Overview
-    "1 - Set the training algorithm to use the threshold feature, 0 - otherwise. This binary feature is derived from continuous environmental variables. It is 1 when the variable has value greater than the convergence threshold and is 0 otherwise.", // Description.
-    1,  // Not zero if the parameter has lower limit.
-    0,  // Parameter's lower limit.
-    1,  // Not zero if the parameter has upper limit.
-    1,  // Parameter's upper limit.
-    "0" // Parameter's typical (default) value.
-  },
-  //Hinge Feature
-  {
-    HINGE_FEAT_ID, // Id.
-    "Hinge Feature", // Name.
-    Integer, // Type.
-    "Depends on convergence threshold. It is 0 when the variable has value below the convergence threshold and it's like the linear feature, otherwise.", // Overview
-    "1 - Set the training algorithm to use the hinge feature, 0 - otherwise. This feature is derived from continuous environmental variables. It is 0 when the variable has value below the convergence threshold and it's like the linear feature, otherwise.", // Description.
-    1,  // Not zero if the parameter has lower limit.
-    0,  // Parameter's lower limit.
-    1,  // Not zero if the parameter has upper limit.
-    1,  // Parameter's upper limit.
-    "0" // Parameter's typical (default) value.
-  },
 };
-
 
 /************************************/
 /*** Algorithm's general metadata ***/
@@ -240,7 +122,7 @@ static AlgMetadata metadata = {
   "elisangela.rodrigues [at] poli . usp . br, renato [at] cria . org . br", // Code author's contact.
 
   1, // Accept categorical data.
-  0, // Does not need (pseudo)absence points.
+  1, // Does not need (pseudo)absence points.
 
   NUM_PARAM, // Algorithm's parameters.
   parameters
@@ -272,8 +154,7 @@ algorithmMetadata()
 MaximumEntropy::MaximumEntropy() :
   AlgorithmImpl(&metadata),
   _done(false),
-  _num_layers(0),
-  _num_features(0)
+  _num_layers(0)
 { 
   _normalizerPtr = new ScaleNormalizer( 0.0, 1.0, true );
 }
@@ -297,7 +178,6 @@ int MaximumEntropy::needNormalization()
     // normalization will take place in initialize().
     return 0;
   }
-
   return 1;
 }
 
@@ -308,9 +188,9 @@ int
 MaximumEntropy::initialize()
 {
   // Check the number of presences.
-  int num_presences = _samp->numPresence();
+  _num_presences = _samp->numPresence();
 
-  if ( num_presences == 0 ) {
+  if ( _num_presences == 0 ) {
 
     Log::instance()->error( MAXENT_LOG_PREFIX "No presence points inside the mask!\n" );
     return 0;
@@ -318,44 +198,21 @@ MaximumEntropy::initialize()
   
   // Load presence points.
   _presences = _samp->getPresences();
-
+  
   // Number of iterations
   if ( ! getParameter( ITERATIONS_ID, &_num_iterations ) ) {
 
-    Log::instance()->error( MAXENT_LOG_PREFIX "Parameter '" ITERATIONS_ID "' not passed.\n" );
-    return 0;
+    Log::instance()->warn( MAXENT_LOG_PREFIX "Parameter '" ITERATIONS_ID "' not passed. Using default value (500)\n" );
+    _num_iterations = 500;
   }
-
-  if ( _num_iterations <= 0 ) {
-
-    Log::instance()->error( MAXENT_LOG_PREFIX "Parameter '" ITERATIONS_ID "' must be greater then zero.\n" );
-    return 0;
+  else {
+    if ( _num_iterations <= 0 ) {
+      
+      Log::instance()->error( MAXENT_LOG_PREFIX "Parameter '" ITERATIONS_ID "' must be greater then zero.\n" );
+      return 0;
+    }
   }
-
-#ifdef HAVE_FORTRAN
-  // Training method
-  if ( ! getParameter( METHOD_ID, &_method ) ) {
-
-    Log::instance()->error( MAXENT_LOG_PREFIX "Parameter '" METHOD_ID "' not passed.\n" );
-    return 0;
-  }
-
-  if ( _method != "gis" && _method != "lbfgs" && _method != "seq" ) {
-
-    Log::instance()->error( MAXENT_LOG_PREFIX "Parameter '" METHOD_ID "' must be either gis or lbfgs or seq. Found [%s].\n", _method.c_str() );
-    return 0;
-  }
-#else
-  _method = "gis";
-#endif
   
-  // Gaussian prior smoothing
-  if ( ! getParameter( GAUSSIAN_COEF_ID, &_gaussian_coef ) ) {
-    
-    Log::instance()->warn( MAXENT_LOG_PREFIX "Parameter '" GAUSSIAN_COEF_ID "' not passed. Gaussian smoothing will be turned off.\n" );
-    _gaussian_coef = 0.0;
-  }
-
   // Tolerance
   if ( ! getParameter( TOLERANCE_ID, &_tolerance ) ) {
 
@@ -363,7 +220,6 @@ MaximumEntropy::initialize()
     _tolerance = 0.00001;
   }
   else {
-
     if ( _tolerance <= 0.0 ) {
 
       Log::instance()->error( MAXENT_LOG_PREFIX "Parameter '" TOLERANCE_ID "' must be greater than zero\n" );
@@ -371,138 +227,51 @@ MaximumEntropy::initialize()
     }
   }
 
-  // Linear Feature
-  if ( ! getParameter( LINEAR_FEAT_ID, &_linear_feat ) ) {
-
-    Log::instance()->warn( MAXENT_LOG_PREFIX "Parameter '" LINEAR_FEAT_ID "' not passed. Using default value (1).\n" );
-    _linear_feat = 0;
-  }
-
-  if ( _linear_feat != 0 && _linear_feat != 1 ) {
-    
-    Log::instance()->warn( MAXENT_LOG_PREFIX "Parameter '" LINEAR_FEAT_ID "' must be zero or one. Using default value.\n" );
-    _linear_feat = 0;
-  }
-
-  // Quadratic Feature
-  if ( ! getParameter( QUADRATIC_FEAT_ID, &_quadratic_feat ) ) {
-
-    Log::instance()->warn( MAXENT_LOG_PREFIX "Parameter '" QUADRATIC_FEAT_ID "' not passed. Quadratic feature will be turned off.\n" );
-    _quadratic_feat = 0;
-  }
-
-  if ( _quadratic_feat != 0 && _quadratic_feat != 1 ) {
-    
-    Log::instance()->warn( MAXENT_LOG_PREFIX "Parameter '" QUADRATIC_FEAT_ID "' must be zero or one. Using default value.\n" );
-    _quadratic_feat = 0;
-  }
-
-  // Product Feature
-  if ( ! getParameter( PRODUCT_FEAT_ID, &_product_feat ) ) {
-
-    Log::instance()->warn( MAXENT_LOG_PREFIX "Parameter '" PRODUCT_FEAT_ID "' not passed. Product feature will be turned off.\n" );
-    _product_feat = 0;
-  }
-
-  if ( _product_feat != 0 && _product_feat != 1 ) {
-    
-    Log::instance()->warn( MAXENT_LOG_PREFIX "Parameter '" PRODUCT_FEAT_ID "' must be zero or one. Using default value.\n" );
-    _product_feat = 0;
-  }
-
-  // Threshold Feature
-  if ( ! getParameter( THRESHOLD_FEAT_ID, &_threshold_feat ) ) {
-
-    Log::instance()->warn( MAXENT_LOG_PREFIX "Parameter '" THRESHOLD_FEAT_ID "' not passed. Threshold feature will be turned off.\n" );
-    _threshold_feat = 0;
-  }
-
-  if ( _threshold_feat != 0 && _threshold_feat != 1 ) {
-    
-    Log::instance()->warn( MAXENT_LOG_PREFIX "Parameter '" THRESHOLD_FEAT_ID "' must be zero or one. Using default value.\n" );
-    _threshold_feat = 0;
-  }
-
-  // Hinge Feature
-  if ( ! getParameter( HINGE_FEAT_ID, &_hinge_feat ) ) {
-
-    Log::instance()->warn( MAXENT_LOG_PREFIX "Parameter '" HINGE_FEAT_ID "' not passed. Hinge feature will be turned off.\n" );
-    _hinge_feat = 0;
-  }
-
-  if ( _hinge_feat != 0 && _hinge_feat != 1 ) {
-    
-    Log::instance()->warn( MAXENT_LOG_PREFIX "Parameter '" HINGE_FEAT_ID "' must be zero or one. Using default value.\n" );
-    _hinge_feat = 0;
-  }
-
   // Check the number of absences.
-  int num_absences = _samp->numAbsence();
+  _num_absences = _samp->numAbsence();
 
-  if ( num_absences == 0 ) {
+  if ( _num_absences == 0 ) {
+
+    Log::instance()->info( MAXENT_LOG_PREFIX "Generating background points.\n" );
+
+    if ( ! getParameter( BACKGROUND_ID, &_num_absences ) ) {
+
+      Log::instance()->warn( MAXENT_LOG_PREFIX "Parameter '" BACKGROUND_ID "' unspecified. Using default value (10000).\n");
+
+      _num_absences = 10000;
+    }
+    else {
+      if ( _num_absences < 0 ) {
+	
+	Log::instance()->warn( MAXENT_LOG_PREFIX "Parameter '" BACKGROUND_ID "' must be greater than zero.\n" );
+	return 0;
+      }
+    }
     
-    Log::instance()->info( MAXENT_LOG_PREFIX "Generating pseudo-absences.\n" );
+    _background = new OccurrencesImpl( _presences->name(), _presences->coordSystem() );
 
-    if ( ! getParameter( PSEUDO_ID, &num_absences ) ) {
-
-      Log::instance()->warn( MAXENT_LOG_PREFIX "Number of pseudo absences unspecified. Default will be 500.\n" );
-
-      num_absences = 500;
-    }
-    else if ( num_absences <= 0 ) {
-
-      Log::instance()->warn( MAXENT_LOG_PREFIX "Number of pseudo absences must be greater than zero.\n" );
-      return 0;
-    }
-
-    _absences = new OccurrencesImpl( _presences->name(), _presences->coordSystem() );
-
-    for ( int i = 0; i < num_absences; ++i ) {
+    for ( int i = 0; i < _num_absences; ++i ) {
 
       OccurrencePtr oc = _samp->getPseudoAbsence();
-      _absences->insert( oc ); 
+      _background->insert( oc ); 
     }
 
     // Compute normalization with all points
-    SamplerPtr mySamplerPtr = createSampler( _samp->getEnvironment(), _presences, _absences );
+    SamplerPtr mySamplerPtr = createSampler( _samp->getEnvironment(), _presences, _background );
 
     _normalizerPtr->computeNormalization( mySamplerPtr );
 
     setNormalization( _samp );
 
-    _absences->normalize( _normalizerPtr, _samp->getEnvironment()->numCategoricalLayers() );
+    _background->normalize( _normalizerPtr, _samp->getEnvironment()->numCategoricalLayers() );
   }
   else {
-
     // should be normalized already
-    _absences = _samp->getAbsences();
-  }
-
-  // Check the features.
-  if ( _linear_feat == 0 && _quadratic_feat == 0 && _threshold_feat ==0 && _hinge_feat == 0 && _product_feat == 0) {
-    
-    Log::instance()->warn( MAXENT_LOG_PREFIX "Features not passed. Using auto features.\n" );
-    
-    if ( num_presences < 10 ) {
-      _linear_feat = 1;
-      _quadratic_feat = _product_feat = _threshold_feat = _hinge_feat = 0;
-    }
-    else
-      if ( (num_presences >= 10)  && (num_presences < 15) ) {
-	_linear_feat = _quadratic_feat = 1;
-	_product_feat = _threshold_feat = _hinge_feat = 0;
-      }
-      else
-	if ( (num_presences >= 15) && (num_presences < 80) ) {
-	  _linear_feat = _quadratic_feat = _hinge_feat = 1;
-	  _product_feat = _threshold_feat = 0;
-	}
-	else
-	  _linear_feat = _quadratic_feat = _product_feat = _threshold_feat = _hinge_feat = 1;
+    _background = _samp->getAbsences();
   }
   
   _num_layers = _samp->numIndependent();
-  
+
   // Identify categorical layers
   _is_categorical.resize( _num_layers );
   
@@ -512,7 +281,7 @@ MaximumEntropy::initialize()
 
     if ( _is_categorical[i] ) {
 
-      // Get possible values of each categorical layer based on presence and absence points
+      // Get possible values of each categorical layer based on presence and absence/background points
 
       std::set<Scalar> values;
 
@@ -528,8 +297,8 @@ MaximumEntropy::initialize()
         ++p_iterator;
       }
 
-      p_iterator = _absences->begin();
-      p_end = _absences->end();
+      p_iterator = _background->begin();
+      p_end = _background->end();
 
       while ( p_iterator != p_end ) {
 
@@ -544,6 +313,8 @@ MaximumEntropy::initialize()
     }
   }
 
+  _num_samples = _num_presences + _num_absences;
+
   return 1;
 } // initialize
 
@@ -553,26 +324,15 @@ MaximumEntropy::initialize()
 int
 MaximumEntropy::iterate()
 {
-  _model.begin_add_event();
-
-  // Notes:  
-  // outcome = class (presence / absence)
-  // feature = linear; quadratic; product; threshold; hinge; auto
-  // context = sample
-
-  _num_features = _num_layers * (_linear_feat + _quadratic_feat +
-		  _product_feat * (_num_layers - 1) / 2 + _threshold_feat + _hinge_feat);
-
-  // Presences
+  /*
   OccurrencesImpl::const_iterator p_iterator = _presences->begin();
   OccurrencesImpl::const_iterator p_end = _presences->end();
 
   while ( p_iterator != p_end ) {
 
     Sample sample = (*p_iterator)->environment();
-    me_context_type context;
-    me_outcome_type outcome("p"); // p = presence
-    int id=0;
+
+    int id = 0;
 
     for ( int i = 0; i < _num_layers; ++i ) {
 
@@ -588,76 +348,29 @@ MaximumEntropy::iterate()
 
           if ( sample[i] == *it ) {
 
-            context.push_back( make_pair( out.str(), (float)1.0 ) );
           }
           else {
 
-            context.push_back( make_pair( out.str(), (float)0.0 ) );
           }
 
           out << ++id;
-
           ++it;
 	}
       }
-      else {
-
-	if ( _linear_feat == 1 ) {
-	  context.push_back( make_pair( out.str(), ((float)sample[i] )));
-	  out << ++id;
-	}
-	if ( _quadratic_feat == 1 ) {
-	  context.push_back( make_pair( out.str(), ((float)sample[i] * (float)sample[i])) );
-	  out << ++id;
-	}
-	if ( _product_feat == 1 ) {
-	  for ( int j = i+1; j < _num_layers; ++j ) {
-	    context.push_back( make_pair( out.str(), ((float)sample[i]*(float)sample[j] ) ) );
-	    out << ++id;
-	  }
-	}
-	if ( _threshold_feat == 1 ) {
-	  if ( (float)sample[i] >= _tolerance ) {
-	    context.push_back( make_pair( out.str(), (float)1.0 ) );
-	    out << ++id;
-	  }
-	  else {
-	    context.push_back( make_pair( out.str(), (float)0.0 ) );
-	    out << ++id;
-	  }
-	}
-	if ( _hinge_feat == 1 ) {
-	  if ( (float)sample[i] > _tolerance ) {
-	    context.push_back( make_pair( out.str(), (float)sample[i] ) );
-	    out << ++id;
-	  }
-	  else {
-	    context.push_back( make_pair( out.str(), (float)0.0 ) );
-	    out << ++id;
-	  }
-	}
-      }
-    } // for
-
-    _model.add_event( context, outcome, 1 );
+    }
 
     ++p_iterator;
-  } // while
+  }
 
-  Log::instance()->info( MAXENT_LOG_PREFIX "Added %d presence events.\n", _presences->numOccurrences() );
-
-  // Absences
-
-  p_iterator = _absences->begin();
-  p_end = _absences->end();
+  p_iterator = _background->begin();
+  p_end = _background->end();
 
   while ( p_iterator != p_end ) {
 
     Sample sample = (*p_iterator)->environment();
 
-    me_context_type context;
-    me_outcome_type outcome("a"); // a = absence
-    int id=0;
+    int id = 0;
+
     for ( int i = 0; i < _num_layers; ++i ) {
 
       stringstream out;
@@ -672,11 +385,9 @@ MaximumEntropy::iterate()
 
           if ( sample[i] == *it ) {
 
-            context.push_back( make_pair( out.str(), (float)1.0 ) );
           }
           else {
 
-            context.push_back( make_pair( out.str(), (float)0.0 ) );
           }
 
           out << ++id;
@@ -684,60 +395,366 @@ MaximumEntropy::iterate()
           ++it;
 	}
       }
-      else {
-
-	if ( _linear_feat == 1 ) {
-	  context.push_back( make_pair( out.str(), (float)sample[i] ) );
-	  out << ++id;
-	}
-	if ( _quadratic_feat == 1 ) {
-	  context.push_back( make_pair( out.str(), ((float)sample[i] * (float)sample[i])) );
-	  out << ++id;
-	}
-	if ( _product_feat == 1 ) {
-	  for ( int j = i+1; j < _num_layers; ++j ){
-	    context.push_back( make_pair( out.str(), ((float)sample[i]*(float)sample[j] ) ) );
-	    out << ++id;
-	  }
-	}
-	if ( _threshold_feat == 1 ) {
-	  if ( (float)sample[i] >= _tolerance ) {
-	    context.push_back( make_pair( out.str(), (float)1.0 ) );
-	    out << ++id;
-	  }
-	  else {
-	    context.push_back( make_pair( out.str(), (float)0.0 ) );
-	    out << ++id;
-	  }
-	}
-	if ( _hinge_feat == 1 ) {
-	  if ( (float)sample[i] > _tolerance ) {
-	    context.push_back( make_pair( out.str(), (float)sample[i] ) );
-	    out << ++id;
-	  }
-	  else {
-	    context.push_back( make_pair( out.str(), (float)0.0 ) );
-	    out << ++id;
-	  }
-	}
-      }
-    } // for
-    
-    _model.add_event( context, outcome, 1 );
+    }
     
     ++p_iterator;
-  } // while
-  
-  Log::instance()->info( MAXENT_LOG_PREFIX "Added %d absence events.\n", _absences->numOccurrences() );
-  
-  _model.end_add_event();
-  
-  _model.train( _num_iterations, _method, _gaussian_coef, _tolerance );
-  
+  }
+  */    
+  train( _num_iterations, _tolerance );
+
   _done = true;
   
   return 1;
 }
+
+/********************/
+/*** init_trainer ***/
+
+void
+MaximumEntropy::init_trainer()
+{
+  regularization_parameters = new double[_num_layers];
+
+  features_mean = new double[_num_layers]; // mean of each feature
+
+  feat_stan_devi = new double[_num_layers]; // standard deviation of each feature
+
+  q_lambda_f = new double[_num_layers];
+
+  lambda = new double[_num_layers]; // weight of each feature
+
+  q_lambda_x = new double[_num_samples]; // probability of each point
+  
+  for ( int i = 0; i < _num_layers; ++i ) {
+
+    regularization_parameters[i] = 0.0;
+    features_mean[i] = 0.0;
+    feat_stan_devi[i] = 0.0;
+    q_lambda_f[i] = 0.0;
+    lambda[i] = 1.0;
+  }
+
+  for ( int i = 0; i < _num_samples; ++i ) {
+
+    q_lambda_x[i] = 0.0;
+  }
+    
+  // calculate observed feature expectations - pi~[f] (empirical average of f)
+  OccurrencesImpl::const_iterator p_iterator = _presences->begin();
+  OccurrencesImpl::const_iterator p_end = _presences->end();
+
+  // sum the feature values to calculate the mean.  
+  while ( p_iterator != p_end ) {
+    
+    Sample sample = (*p_iterator)->environment();
+
+    for ( int i = 0; i < _num_layers; ++i ) {
+
+      features_mean[i] += sample[i];
+    }
+    ++p_iterator;
+  }
+
+  p_iterator = _background->begin();
+  p_end = _background->end();
+  
+  while ( p_iterator != p_end ) {
+    
+    Sample sample = (*p_iterator)->environment();
+
+    for ( int i = 0; i < _num_layers; ++i ) {
+
+      features_mean[i] += sample[i];
+    }
+    ++p_iterator;
+  }
+  
+  // calculate the features mean
+  for ( int i = 0; i < _num_layers; ++i ) {
+
+    features_mean[i] /= _num_samples;
+  }
+
+  // calculate the variance of each feature
+  p_iterator = _presences->begin();
+  p_end = _presences->end();
+
+  while ( p_iterator != p_end ) {
+    
+    Sample sample = (*p_iterator)->environment();
+    
+    for ( int i = 0; i < _num_layers; ++i ) {
+      
+      feat_stan_devi[i] += pow((sample[i] - features_mean[i]),2);
+    }
+    ++p_iterator;
+  }
+  
+  p_iterator = _background->begin();
+  p_end = _background->end();
+
+  while ( p_iterator != p_end ) {
+    
+    Sample sample = (*p_iterator)->environment();
+    
+    for ( int i = 0; i < _num_layers; ++i ) {
+      
+      feat_stan_devi[i] += pow((sample[i] - features_mean[i]),2);
+    }
+    ++p_iterator;
+  }
+
+  for ( int i = 0; i < _num_layers; ++i ) {
+
+    feat_stan_devi[i] /= ( _num_samples - 1 );
+  }
+
+  // initialize the regularization parameters
+  for ( int i = 0; i < _num_layers; ++i ) {
+
+    regularization_parameters[i] = 1.0 / sqrt((double)(_num_samples)) * sqrt(min(0.25,feat_stan_devi[i]));
+
+    if ( regularization_parameters[i] < 0.00001 ) {
+
+      regularization_parameters[i] = 0.00001;
+    }
+  }
+} // init_trainer();
+
+/***********************/
+/*** calc_q_lambda_x ***/
+
+void
+MaximumEntropy::calc_q_lambda_x()
+{
+  Z_lambda = 0.0;
+  
+  OccurrencesImpl::const_iterator p_iterator = _presences->begin();
+  OccurrencesImpl::const_iterator p_end = _presences->end();
+
+  int i = 0;
+  while ( p_iterator != p_end ) {
+    
+    Sample sample = (*p_iterator)->environment();
+
+    double sum_lambdaj_fj = 0.0;
+
+    for ( int j = 0; j < _num_layers; ++j ) {
+
+      sum_lambdaj_fj += lambda[j] * sample[j];
+    }
+    
+    q_lambda_x[i] = exp(sum_lambdaj_fj);
+    Z_lambda += q_lambda_x[i]; // normalization constant
+
+    ++i;
+    ++p_iterator;
+  }
+  
+  p_iterator = _background->begin();
+  p_end = _background->end();
+  
+  while ( p_iterator != p_end ) {
+    
+    Sample sample = (*p_iterator)->environment();
+
+    double sum_lambdaj_fj = 0.0;
+
+    for ( int j = 0; j < _num_layers; ++j ) {
+
+      sum_lambdaj_fj += lambda[j] * sample[j];
+    }
+    
+    q_lambda_x[i] = exp(sum_lambdaj_fj);
+    Z_lambda += q_lambda_x[i]; // normalization constant
+
+    ++i;
+    ++p_iterator;
+  }
+  
+  // normalize all q_lambda_x
+  for ( int j = 0; j < _num_samples; ++j ) {
+    
+    q_lambda_x[j] /= Z_lambda;
+  }
+}
+
+/***********************/
+/*** calc_q_lambda_f ***/
+
+void
+MaximumEntropy::calc_q_lambda_f()
+{
+  for ( int i = 0; i < _num_layers; ++i ) {
+
+    q_lambda_f[i] = 0.0;
+  }
+
+  OccurrencesImpl::const_iterator p_iterator = _presences->begin();
+  OccurrencesImpl::const_iterator p_end = _presences->end();
+
+  int i = 0;
+
+  while ( p_iterator != p_end ) {
+    
+    Sample sample = (*p_iterator)->environment();
+
+    for ( int j = 0; j < _num_layers; ++j ) {
+
+      q_lambda_f[j] += q_lambda_x[i] * sample[j];
+    }
+    ++i;
+    ++p_iterator;
+  }
+  
+  p_iterator = _background->begin();
+  p_end = _background->end();
+  
+  while ( p_iterator != p_end ) {
+    
+    Sample sample = (*p_iterator)->environment();
+
+    for ( int j = 0; j < _num_layers; ++j ) {
+
+      q_lambda_f[j] += q_lambda_x[i] * sample[j];
+    }
+    ++i;
+    ++p_iterator;
+  }
+}
+
+/*************/
+/*** train ***/
+
+void
+MaximumEntropy::train( size_t iter, double tol )
+{
+  init_trainer();
+
+  double loss = numeric_limits<double>::infinity();
+  double new_loss = 0.0;
+
+  for ( size_t niter = 0; niter < iter; ++niter ) {
+    
+    double *F;
+    double *alfa;
+    double *alfa_pos_neg;
+    double min_F = numeric_limits<double>::infinity();
+    double sum_mean_lambda = 0.0;
+    double sum_regu_lambda = 0.0;
+    double *midpoint;
+    int *sign_pos;
+    int *sign_neg;
+    int *signs;
+    int neg;
+    int pos;
+    int best_id = -1;
+
+    calc_q_lambda_x();
+    
+    for ( int i = 0; i < _num_layers; ++i ) {
+
+      sum_mean_lambda += -features_mean[i] * lambda[i];
+      sum_regu_lambda += regularization_parameters[i] * fabs(lambda[i]);
+    }
+
+    new_loss = sum_mean_lambda + log(Z_lambda) + sum_regu_lambda;
+
+    if ( (loss - new_loss) < tol ) {
+      break;
+    }
+
+    loss = new_loss;
+
+    calc_q_lambda_f();
+    
+    midpoint = new double[_num_layers];
+    
+    for ( int i = 0; i < _num_layers; ++i ) {
+
+      midpoint[i] = -features_mean[i] + q_lambda_f[i] / ( exp(lambda[i]) + ( 1 - exp(lambda[i]) ) * q_lambda_f[i]);
+    }
+    
+    sign_pos = new int[_num_layers];
+    sign_neg = new int[_num_layers];
+
+    for ( int i = 0; i < _num_layers; ++i ) {
+
+      if ( (midpoint[i] + regularization_parameters[i]) < 0.0 ) {
+	sign_pos[i] = -1;
+      }
+      else {
+	if ( (midpoint[i] + regularization_parameters[i]) > 0.0 ) {
+	  sign_pos[i] = 1;
+	}
+	else{
+	  sign_pos[i] = 0;
+	}
+      }
+
+      if ( (midpoint[i] - regularization_parameters[i]) < 0.0 ) {
+	sign_neg[i] = -1;
+      }
+      else {
+	if ( (midpoint[i] - regularization_parameters[i]) > 0.0 ) {
+	  sign_neg[i] = 1;
+	}
+	else {
+	  sign_neg[i] = 0;
+	}
+      }
+    }
+    
+    signs = new int[_num_layers];
+
+    for ( int i = 0; i < _num_layers; ++i ) {
+      
+      if ( sign_neg[i] > 0 ) neg = 1;
+      else neg = 0;
+
+      if ( sign_pos[i] < 0 ) pos = 1;
+      else pos = 0;
+
+      signs[i] = neg - pos;
+    }
+    
+    F = new double[_num_layers];
+    alfa = new double[_num_layers];
+    alfa_pos_neg = new double[_num_layers];
+
+    for ( int i = 0; i < _num_layers; ++i ) {
+
+      alfa_pos_neg[i] = log((features_mean[i]+signs[i]*regularization_parameters[i])*(1-q_lambda_f[i])
+			    /((1-features_mean[i]-signs[i]*regularization_parameters[i])*q_lambda_f[i]));
+    }
+
+    for ( int i = 0; i < _num_layers; ++i ) {
+
+      alfa[i] = -lambda[i];
+    }
+
+    for ( int i = 0; i < _num_layers; ++i ) {
+
+      if ( signs[i] != 0 ) {
+	alfa[i] = alfa_pos_neg[i];
+      }
+    }
+
+    for ( int i = 0; i < _num_layers; ++i ) {
+
+      F[i] = -alfa[i] * features_mean[i] + log(1 + (exp(alfa[i]) - 1) * q_lambda_f[i])
+	     + regularization_parameters[i] * (fabs(lambda[i] + alfa[i]) - fabs(lambda[i]));
+
+      if ( min_F > F[i] ) {
+	min_F = F[i];
+	best_id = i;
+      }
+    }
+
+    lambda[best_id] += min_F;
+
+  } // for ( size_t niter = 0; niter < iter; ++niter )
+} // train
 
 /************/
 /*** done ***/
@@ -754,10 +771,12 @@ MaximumEntropy::done() const
 Scalar
 MaximumEntropy::getValue( const Sample& x ) const
 {
-  me_context_type context;
-  int id=0;
+  double prob = 0.0 ;
+  
+  //int id = 0;
+
   for ( int i = 0; i < _num_layers; ++i ) {
-    
+    /*
     stringstream out;
     out << id;
 
@@ -774,61 +793,30 @@ MaximumEntropy::getValue( const Sample& x ) const
 
           if ( x[i] == *it ) {
 
-            context.push_back( make_pair( out.str(), (float)1.0 ) );
           }
           else {
 
-            context.push_back( make_pair( out.str(), (float)0.0 ) );
           }
 
           out << ++id;
-
           ++it;
         }
       }
     }
     else {
-
-      if (_linear_feat == 1 ) {
-	context.push_back( make_pair( out.str(), (float)x[i] ) );
-	out << ++id;
-      }
-      if (_quadratic_feat == 1 ) {
-	context.push_back( make_pair( out.str(), ((float)x[i] * (float)x[i])) );
-	out << ++id;
-      }
-      if ( _product_feat == 1 ) {
-	for ( int j = i+1; j < _num_layers; ++j ){
-	  context.push_back( make_pair( out.str(), ((float)x[i]*(float)x[j] ) ) );
-	  out << ++id;
-	}
-      }
-      if (_threshold_feat == 1 ) {
-	if ( (float)x[i] >= _tolerance ) {
-	  context.push_back( make_pair( out.str(), (float)1.0 ) );
-	  out << ++id;
-	}
-	else {
-	  context.push_back( make_pair( out.str(), (float)0.0 ) );
-	  out << ++id;
-	}
-      }
-      if (_hinge_feat == 1 ) {
-	if ( (float)x[i] > _tolerance ) {
-	  context.push_back( make_pair( out.str(), (float)x[i] ) );
-	  out << ++id;
-	}
-	else {
-	  context.push_back( make_pair( out.str(), (float)0.0 ) );
-	  out << ++id;
-	}
-      }
-    }
+    */
+    prob += lambda[i] * x[i];
+    //}
   }
- 
-  me_outcome_type outcome("p"); // p = presence
 
-  return _model.eval( context, outcome ); // probability of presence
+  prob = exp(prob);
+  prob = exp(prob)/Z_lambda;
+
+  if ( !finite(prob) ) {
+
+    prob = numeric_limits<double>::max(); // DBL_MAX;
+  }
+  return prob;
 }
 
 /***********************/
@@ -851,19 +839,15 @@ MaximumEntropy::_getConfiguration( ConfigurationPtr& config ) const
 
     return;
   }
+
   //These two lines create a new XML element called "MaximumEntropy"
   ConfigurationPtr model_config( new ConfigurationImpl( "MaximumEntropy" ) );
 
   config->addSubsection( model_config );
 
   model_config->addNameValue( "NumLayers", _num_layers );
-  model_config->addNameValue( "NumFeatures", _num_features );
-  
-  model_config->addNameValue( "LinearFeature", _linear_feat );
-  model_config->addNameValue( "QuadraticFeature", _quadratic_feat );
-  model_config->addNameValue( "ProductFeature", _product_feat );
-  model_config->addNameValue( "ThresholdFeature", _threshold_feat );
-  model_config->addNameValue( "HingeFeature", _hinge_feat );
+  model_config->addNameValue( "Z", Z_lambda );
+  /*
   model_config->addNameValue( "Categorical", _is_categorical );
 
   ConfigurationPtr cat_section_config( new ConfigurationImpl( "CategoricalData" ) );
@@ -898,30 +882,19 @@ MaximumEntropy::_getConfiguration( ConfigurationPtr& config ) const
 
     ++it;
   }
+  */
+  // write lambda
+  ConfigurationPtr lambda_config( new ConfigurationImpl( "Lambda" ) );
+  model_config->addSubsection( lambda_config );
 
-  MaxentModelFile model_file = _model.save();
-
-  shared_ptr<me::ParamsType> m_params;
-  size_t m_n_theta;
-  shared_array<double> m_theta;
-
-  // Get maxent model parameters
-  model_file.params( m_params, m_n_theta, m_theta );
-
-  // write theta
-  ConfigurationPtr theta_config( new ConfigurationImpl( "Theta" ) );
-  model_config->addSubsection( theta_config );
-
-  double *theta_values = new double[m_n_theta];
+  double *lambda_values = new double[_num_layers];
   
-  for ( size_t i = 0; i < m_n_theta; ++i ) {
+  for ( int i = 0; i < _num_layers; ++i ) {
 
-    theta_values[i] = m_theta[i];
+    lambda_values[i] = lambda[i];
   }
 
-  theta_config->addNameValue( "Values", theta_values, m_n_theta );
-
-  delete[] theta_values;
+  lambda_config->addNameValue( "Values", lambda_values, _num_layers );
 }
 
 void
@@ -930,18 +903,14 @@ MaximumEntropy::_setConfiguration( const ConstConfigurationPtr& config )
   ConstConfigurationPtr model_config = config->getSubsection( "MaximumEntropy", false );
 
   if ( ! model_config ) {
-
     return;
   }
-
+  
   _num_layers = model_config->getAttributeAsInt( "NumLayers", 0 );
-  _num_features = model_config->getAttributeAsInt( "NumFeatures", 0 );
 
-  _linear_feat = model_config->getAttributeAsInt( "LinearFeature", 0 );
-  _quadratic_feat = model_config->getAttributeAsInt( "QuadraticFeature", 0 );
-  _product_feat = model_config->getAttributeAsInt( "ProductFeature", 0 );
-  _threshold_feat = model_config->getAttributeAsInt( "ThresholdFeature", 0 );
-  _hinge_feat = model_config->getAttributeAsInt( "HingeFeature", 0 );
+  Z_lambda = model_config->getAttributeAsDouble( "Z", 0.0 );
+  
+  /*
   _is_categorical = model_config->getAttributeAsSample( "Categorical" );
 
   ConstConfigurationPtr cat_section = model_config->getSubsection( "CategoricalData", false );
@@ -970,72 +939,21 @@ MaximumEntropy::_setConfiguration( const ConstConfigurationPtr& config )
       _categorical_values.insert( std::pair< int, std::set<Scalar> >( layer_index, values ) );
     }
   }
+  */
+  
+  // Lambda
+  ConstConfigurationPtr lambda_config = model_config->getSubsection( "Lambda", false );
 
-  MaxentModelFile model_file;
-
-  // note: pred_map has the same size of _num_layers, and the index starts with zero. 
-
-  shared_ptr<me::PredMapType> m_pred_map( new me::PredMapType );
-
-  for ( int i = 0; i < _num_features; ++i ) {
-
-    stringstream out;
-    out << i;
-    m_pred_map->add( out.str() );
-  }
-
-  model_file.set_pred_map( m_pred_map );
-
-  // note: outcome_map has size 2 and values "p" and "a"
-
-  shared_ptr<me::OutcomeMapType> m_outcome_map( new me::OutcomeMapType );
-
-  m_outcome_map->add( "p" );
-  m_outcome_map->add( "a" );
-
-  model_file.set_outcome_map( m_outcome_map );
-
-  // note: params seems to always have _num_layers size, and each
-  //       param seems to always have outcomes size (2) with index starting at zero.
-
-  shared_ptr<me::ParamsType> m_params( new me::ParamsType );
-
-  std::vector<pair<me::outcome_id_type, size_t> > params;
-
-  size_t fid = 0;
-
-  for ( int i = 0; i < _num_features; ++i ) {
-
-    params.clear();
-    params.push_back( make_pair( 0, fid++ ) );
-    params.push_back( make_pair( 1, fid++ ) );
-
-    m_params->push_back( params );
-  }
-
-  // Theta
-
-  ConstConfigurationPtr theta_config = model_config->getSubsection( "Theta", false );
-
-  if ( ! theta_config ) {
-
+  if ( ! lambda_config ) {
     return;
   }
 
-  std::vector<double> theta_values = theta_config->getAttributeAsVecDouble( "Values" );
+  std::vector<double> lambda_values = lambda_config->getAttributeAsVecDouble( "Values" );
 
-  size_t m_n_theta = theta_values.size();
+  for ( int i = 0; i < _num_layers; ++i ) {
 
-  shared_array<double> m_theta( new double[m_n_theta] );
-
-  for ( unsigned int i = 0; i < m_n_theta; ++i ) {
-
-    m_theta[i] = theta_values[i];
+    lambda[i] = lambda_values[i];
   }
-
-  model_file.set_params( m_params, m_n_theta, m_theta );
-
-  _model.load( model_file );
-
+  
   _done = true;
 }

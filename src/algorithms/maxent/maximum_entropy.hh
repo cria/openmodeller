@@ -1,3 +1,4 @@
+
 /**
  * Declaration of Maximum Entropy algorithm class.
  * 
@@ -33,10 +34,6 @@
 
 #include <openmodeller/om.hh>
 
-#include "maxentmodel.hpp"
-
-using namespace maxent;
-
 /*********************************************************/
 /******************** Maximum Entropy ********************/
 
@@ -62,6 +59,28 @@ public:
 
   int getConvergence( Scalar * const val );
 
+private:
+
+  void init_trainer();
+
+  void calc_q_lambda_x();
+  
+  void calc_q_lambda_f();
+
+  void train(size_t iter = 500, double tol = 1E-05);
+
+  double *regularization_parameters;
+  double *features_mean;
+  double *feat_stan_devi;
+  double *q_lambda_f;
+  double *_min;
+  double *_max;
+  double *lambda;
+  double *q_lambda_x;
+
+  double Z_lambda;
+  double soma;
+ 
 protected:
 
   virtual void _getConfiguration( ConfigurationPtr& ) const;
@@ -72,23 +91,17 @@ protected:
 
   OccurrencesPtr _presences;
   OccurrencesPtr _absences;
+  OccurrencesPtr _background;
 
   Sample _is_categorical;
 
   int _num_layers;
-  int _num_features;
-
-  MaxentModel _model;
+  int _num_presences;
+  int _num_absences;
+  int _num_samples;
 
   int _num_iterations;
-  std::string _method;
-  double _gaussian_coef;
   double _tolerance;
-  int _linear_feat;
-  int _quadratic_feat;
-  int _threshold_feat;
-  int _hinge_feat;
-  int _product_feat;
 
   std::map< int, std::set<Scalar> > _categorical_values; // layer index => set of values
 };
