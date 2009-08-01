@@ -9,11 +9,7 @@ ENDIF(WIN32)
 
 ########################################################
 # Subdirectories
-SUBDIRS(best_subsets garp dg_garp svm neural_networks)
-
-#if (Boost_FOUND)
-#  SUBDIRS(maxent)
-#ENDIF(Boost_FOUND)
+SUBDIRS(best_subsets garp dg_garp svm neural_networks maxent)
 
 ########################################################
 # Files
