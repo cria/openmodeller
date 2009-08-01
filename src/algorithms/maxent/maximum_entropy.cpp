@@ -950,6 +950,8 @@ MaximumEntropy::_setConfiguration( const ConstConfigurationPtr& config )
 
   std::vector<double> lambda_values = lambda_config->getAttributeAsVecDouble( "Values" );
 
+  lambda = new double[_num_layers];
+
   for ( int i = 0; i < _num_layers; ++i ) {
 
     lambda[i] = lambda_values[i];
