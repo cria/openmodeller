@@ -87,9 +87,6 @@ Optional libraries:
   the CSM (Climate Space Model) algorithm.
   http://www.gnu.org/software/gsl
 
-* Boost (>= 1.31) is needed to run the Maximum Entropy algorithm.
-  http://www.boost.org/
-
 * libcurl (>= 7.15.4) is needed to enable to TAPIR and GBIF occurrence drivers.
   http://curl.haxx.se/libcurl/
 

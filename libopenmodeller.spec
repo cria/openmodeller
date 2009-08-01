@@ -10,8 +10,6 @@ Autoreqprov:   on
 #Requires:   libcurl >= 7.18.1
 #Requires:   sqlite >= 3.3.6
 #Requires:   gsl >= 1.4
-#Requires:   boost >= 1.31
-#Requires:   gcc-g77
 Version:       1.0.1
 Release:       0
 Source:        %{name}-src-%{version}.tar.gz
