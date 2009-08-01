@@ -1,4 +1,3 @@
-
 /**
  * Declaration of Maximum Entropy algorithm class.
  * 
@@ -73,8 +72,6 @@ private:
   double *features_mean;
   double *feat_stan_devi;
   double *q_lambda_f;
-  double *_min;
-  double *_max;
   double *lambda;
   double *q_lambda_x;
 

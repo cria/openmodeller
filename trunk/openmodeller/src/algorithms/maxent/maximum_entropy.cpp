@@ -108,10 +108,10 @@ static AlgMetadata metadata = {
   "0.2",       	     // Version.
 
   // Overview.
-  "The principle of maximum entropy is a method for analyzing available qualitative information in order to determine a unique epistemic probability distribution. It states that the least biased distribution that encodes certain given information is that which maximizes the information entropy (content retrieved from Wikipedia on the 19th of May, 2008: http://en.wikipedia.org/wiki/Maximum_entropy). The openModeller implementation of this algorithm makes use of the Maximum Entropy Modeling Toolkit written by Zhang Le, which offers two methods to estimate the maximum entropy parameters: GIS (Generalized Iterative Scaling) and L-BFGS (Limited-Memory Variable Metric). GIS is the default training method (the training method parameter will only be available when a Fortran compiler is used to enable LBFGS in the Maximum Entropy Modeling Toolkit). Please note that the maxent sofware package uses its own method (not implemented here) to find the maximum entropy parameters.",
+  "The principle of maximum entropy is a method for analyzing available qualitative information in order to determine a unique epistemic probability distribution. It states that the least biased distribution that encodes certain given information is that which maximizes the information entropy (content retrieved from Wikipedia on the 19th of May, 2008: http://en.wikipedia.org/wiki/Maximum_entropy).",
 
   // Description.
-  "The principle of maximum entropy is a method for analyzing available qualitative information in order to determine a unique epistemic probability distribution. It states that the least biased distribution that encodes certain given information is that which maximizes the information entropy (content retrieved from Wikipedia on the 19th of May, 2008: http://en.wikipedia.org/wiki/Maximum_entropy). E.T. Jaynes introduced the maximum entropy principle in 1957 saying that 'Information theory provides a constructive criterion for setting up probability distributions on the basis of partial knowledge, and leads to a type of statistical inference which is called the maximum entropy estimate. It is the least biased estimate possible on the given information; i.e., it is maximally noncommittal with regard to missing information'. The openModeller implementation of this algorithm makes use of the Maximum Entropy Modeling Toolkit written by Zhang Le, which offers two methods to estimate the maximum entropy parameters: GIS (Generalized Iterative Scaling) and L-BFGS (Limited-Memory Variable Metric). GIS is the default training method (the training method parameter will only be available when a Fortran compiler is used to enable LBFGS in the Maximum Entropy Modeling Toolkit). Please note that the maxent sofware package uses its own method (not implemented here) to find the maximum entropy parameters.",
+  "The principle of maximum entropy is a method for analyzing available qualitative information in order to determine a unique epistemic probability distribution. It states that the least biased distribution that encodes certain given information is that which maximizes the information entropy (content retrieved from Wikipedia on the 19th of May, 2008: http://en.wikipedia.org/wiki/Maximum_entropy). E.T. Jaynes introduced the maximum entropy principle in 1957 saying that 'Information theory provides a constructive criterion for setting up probability distributions on the basis of partial knowledge, and leads to a type of statistical inference which is called the maximum entropy estimate. It is the least biased estimate possible on the given information; i.e., it is maximally noncommittal with regard to missing information'.",
 
   "", // Algorithm author.
 
@@ -164,6 +164,12 @@ MaximumEntropy::MaximumEntropy() :
 
 MaximumEntropy::~MaximumEntropy()
 {
+  delete regularization_parameters;
+  delete features_mean;
+  delete feat_stan_devi;
+  delete q_lambda_f;
+  delete lambda;
+  delete q_lambda_x;
 }
 
 /**************************/
