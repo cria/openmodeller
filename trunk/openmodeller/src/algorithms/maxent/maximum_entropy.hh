@@ -93,7 +93,7 @@ protected:
 
   int _num_layers;
   int _num_presences;
-  int _num_absences;
+  int _num_background;
   int _num_samples;
 
   int _num_iterations;

@@ -178,15 +178,10 @@ MaximumEntropy::~MaximumEntropy()
 /*** need Normalization ***/
 int MaximumEntropy::needNormalization()
 {
-  if ( _samp->numAbsence() == 0 ) {
-
-    // It will be necessary to generate pseudo absences, so do not waste
-    // time normalizing things because normalization should ideally consider
-    // all trainning points (including pseudo-absences). In this specific case, 
-    // normalization will take place in initialize().
-    return 0;
-  }
-  return 1;
+  // It will be necessary to generate background points, so do not waste
+  // time normalizing things because normalization should ideally consider
+  // all points. In this specific case, normalization will take place in initialize().
+  return 0;
 }
 
 /******************/
@@ -235,48 +230,41 @@ MaximumEntropy::initialize()
     }
   }
 
-  // Check the number of absences.
-  _num_absences = _samp->numAbsence();
+  // Generate background points
 
-  if ( _num_absences == 0 ) {
+  Log::instance()->info( MAXENT_LOG_PREFIX "Generating background points.\n" );
 
-    Log::instance()->info( MAXENT_LOG_PREFIX "Generating background points.\n" );
+  if ( ! getParameter( BACKGROUND_ID, &_num_background ) ) {
 
-    if ( ! getParameter( BACKGROUND_ID, &_num_absences ) ) {
+    Log::instance()->warn( MAXENT_LOG_PREFIX "Parameter '" BACKGROUND_ID "' unspecified. Using default value (10000).\n");
 
-      Log::instance()->warn( MAXENT_LOG_PREFIX "Parameter '" BACKGROUND_ID "' unspecified. Using default value (10000).\n");
-
-      _num_absences = 10000;
-    }
-    else {
-      if ( _num_absences < 0 ) {
-	
-	Log::instance()->warn( MAXENT_LOG_PREFIX "Parameter '" BACKGROUND_ID "' must be greater than zero.\n" );
-	return 0;
-      }
-    }
-    
-    _background = new OccurrencesImpl( _presences->name(), _presences->coordSystem() );
-
-    for ( int i = 0; i < _num_absences; ++i ) {
-
-      OccurrencePtr oc = _samp->getPseudoAbsence();
-      _background->insert( oc ); 
-    }
-
-    // Compute normalization with all points
-    SamplerPtr mySamplerPtr = createSampler( _samp->getEnvironment(), _presences, _background );
-
-    _normalizerPtr->computeNormalization( mySamplerPtr );
-
-    setNormalization( _samp );
-
-    _background->normalize( _normalizerPtr, _samp->getEnvironment()->numCategoricalLayers() );
+    _num_background = 10000;
   }
   else {
-    // should be normalized already
-    _background = _samp->getAbsences();
+
+    if ( _num_background < 0 ) {
+	
+      Log::instance()->warn( MAXENT_LOG_PREFIX "Parameter '" BACKGROUND_ID "' must be greater than zero.\n" );
+      return 0;
+    }
   }
+    
+  _background = new OccurrencesImpl( _presences->name(), _presences->coordSystem() );
+
+  for ( int i = 0; i < _num_background; ++i ) {
+
+    OccurrencePtr oc = _samp->getPseudoAbsence();
+    _background->insert( oc ); 
+  }
+
+  // Compute normalization with all points
+  SamplerPtr mySamplerPtr = createSampler( _samp->getEnvironment(), _presences, _background );
+
+  _normalizerPtr->computeNormalization( mySamplerPtr );
+
+  setNormalization( _samp );
+
+  _background->normalize( _normalizerPtr, _samp->getEnvironment()->numCategoricalLayers() );
   
   _num_layers = _samp->numIndependent();
 
@@ -321,7 +309,7 @@ MaximumEntropy::initialize()
     }
   }
 
-  _num_samples = _num_presences + _num_absences;
+  _num_samples = _num_presences + _num_background;
 
   return 1;
 } // initialize
