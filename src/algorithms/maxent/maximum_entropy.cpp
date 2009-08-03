@@ -39,6 +39,8 @@
 #include <vector>
 #include <cmath>
 
+#include <limits>
+
 using namespace std;
 
 /****************************************************************/
@@ -637,7 +639,7 @@ MaximumEntropy::train( size_t iter, double tol )
 {
   init_trainer();
 
-  double loss = numeric_limits<double>::infinity();
+  double loss = std::numeric_limits<double>::infinity();
   double new_loss = 0.0;
 
   for ( size_t niter = 0; niter < iter; ++niter ) {
@@ -645,7 +647,7 @@ MaximumEntropy::train( size_t iter, double tol )
     double *F;
     double *alfa;
     double *alfa_pos_neg;
-    double min_F = numeric_limits<double>::infinity();
+    double min_F = std::numeric_limits<double>::infinity();
     double sum_mean_lambda = 0.0;
     double sum_regu_lambda = 0.0;
     double *midpoint;
@@ -820,7 +822,7 @@ MaximumEntropy::getValue( const Sample& x ) const
 
   if ( !finite(prob) ) {
 
-    prob = numeric_limits<double>::max(); // DBL_MAX;
+    prob = std::numeric_limits<double>::max(); // DBL_MAX;
   }
   return prob;
 }
