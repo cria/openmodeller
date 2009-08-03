@@ -87,7 +87,6 @@ protected:
   bool _done;
 
   OccurrencesPtr _presences;
-  OccurrencesPtr _absences;
   OccurrencesPtr _background;
 
   Sample _is_categorical;
