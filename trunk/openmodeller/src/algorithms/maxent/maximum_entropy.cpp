@@ -805,7 +805,6 @@ MaximumEntropy::getValue( const Sample& x ) const
     //}
   }
 
-  prob = exp(prob);
   prob = exp(prob)/Z_lambda;
 
   if ( !finite(prob) ) {
