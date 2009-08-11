@@ -44,6 +44,7 @@ using std::string;
 float _zoom;
 int   _redraw    = 1;
 int   _last_draw = 0;
+int   _scale = 1;
 
 GColor _bg( 0, 140, 150 );
 
@@ -77,6 +78,7 @@ main( int argc, char **argv )
   opts.addOption( "" , "log-level", "Set the log level (debug, warn, info, error)", true );
   opts.addOption( "v", "version"  , "Display version info"                        , false );
   opts.addOption( "o", "model"    , "File with serialized model"                  , true );
+  opts.addOption( "s", "scale"    , "Scale factor for model output"               , true );
 
   std::string log_level("info");
   std::string model_file;
@@ -107,6 +109,9 @@ main( int argc, char **argv )
         break;
       case 2:
         model_file = opts.getArgs( option );
+        break;
+      case 3:
+        _scale = atoi( opts.getArgs( option ).c_str() );
         break;
       default:
         break;
@@ -248,7 +253,7 @@ draw_niche( GGraph *graph )
     for ( *x = xmin; *x < xmax; *x += xstep ) {
 
       GColor color = GColor::Blue;
-      color.scale( _om.getValue( amb ) );
+      color.scale( _scale*_om.getValue( amb ) );
       graph->pixel( float(*x), float(*y), color );
     }
 
