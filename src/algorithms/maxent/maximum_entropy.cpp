@@ -46,11 +46,12 @@ using namespace std;
 /****************************************************************/
 /********************** Algorithm's Metadata ********************/
 
-#define NUM_PARAM 3
+#define NUM_PARAM 4
 
 #define BACKGROUND_ID      "NumberOfBackgroundPoints"
 #define ITERATIONS_ID      "NumberOfIterations"
 #define TOLERANCE_ID       "TerminateTolerance"
+#define OUTPUT_ID          "OutputFormat"
 
 #define MAXENT_LOG_PREFIX "Maxent: "
 
@@ -97,6 +98,23 @@ static AlgParamMetadata parameters[NUM_PARAM] = {
     0,    // Not zero if the parameter has upper limit.
     0,    // Parameter's upper limit.
     "0.00001" // Parameter's typical (default) value.
+  },
+  // Output Format
+  {
+    OUTPUT_ID, // Id.
+    "Output Format", // Name
+    Integer, // Type
+    "Output Format: " // Overview
+    "1 = Raw, "
+    "2 = Logistic. ",
+    "Output Format: " // Description
+    "1 = Raw, "
+    "2 = Logistic. ",
+    1, // Not zero if the parameter has lower limit
+    1, // Parameter's lower limit
+    1, // Not zero if the parameter has upper limit
+    2, // Parameter's upper limit
+    "2"         // Parameter's typical (default) value
   },
 };
 
@@ -267,6 +285,20 @@ MaximumEntropy::initialize()
   _background->normalize( _normalizerPtr, _samp->getEnvironment()->numCategoricalLayers() );
   
   _num_layers = _samp->numIndependent();
+
+  // Output Format
+  if ( ! getParameter( OUTPUT_ID, &_output_format ) ) {
+
+    Log::instance()->warn( MAXENT_LOG_PREFIX "Parameter '" OUTPUT_ID "' not passed. Using default value (Logistic)\n" );
+    _output_format = 2;
+  }
+  else {
+    if ( _output_format != 1 && _output_format != 2 ) {
+
+      Log::instance()->error( MAXENT_LOG_PREFIX "Parameter '" OUTPUT_ID "' must be 1 or 2\n" );
+      return 0;
+    }
+  }
 
   // Identify categorical layers
   _is_categorical.resize( _num_layers );
@@ -576,6 +608,7 @@ MaximumEntropy::calc_q_lambda_x()
     entropy += (q_lambda_x[j] * log(q_lambda_x[j]));
   }
   entropy = -entropy;
+
   Log::instance()->info( MAXENT_LOG_PREFIX "Entropy\t %.2f \r", entropy );
 }
 
@@ -754,6 +787,7 @@ MaximumEntropy::train( size_t iter, double tol )
     lambda[best_id] += min_F;
 
   } // for ( size_t niter = 0; niter < iter; ++niter )
+
   Log::instance()->info( MAXENT_LOG_PREFIX "Entropy\t %.2f \n", entropy );
 } // train
 
@@ -816,7 +850,12 @@ MaximumEntropy::getValue( const Sample& x ) const
 
     prob = std::numeric_limits<double>::max(); // DBL_MAX;
   }
-  return prob;
+  if ( _output_format == 1 ) {
+    return prob;
+  }
+  else {
+    return ( ( exp(entropy) * prob ) / ( 1 + ( exp(entropy) * prob ) ) );
+  }
 }
 
 /***********************/
@@ -847,6 +886,8 @@ MaximumEntropy::_getConfiguration( ConfigurationPtr& config ) const
 
   model_config->addNameValue( "NumLayers", _num_layers );
   model_config->addNameValue( "Z", Z_lambda );
+  model_config->addNameValue( "Entropy", entropy);
+  model_config->addNameValue( "OutputFormat", _output_format );
   /*
   model_config->addNameValue( "Categorical", _is_categorical );
 
@@ -909,6 +950,10 @@ MaximumEntropy::_setConfiguration( const ConstConfigurationPtr& config )
   _num_layers = model_config->getAttributeAsInt( "NumLayers", 0 );
 
   Z_lambda = model_config->getAttributeAsDouble( "Z", 0.0 );
+
+  entropy = model_config->getAttributeAsDouble( "Entropy", 0.0 );
+
+  _output_format = model_config->getAttributeAsInt( "OutputFormat", 2 );
   
   /*
   _is_categorical = model_config->getAttributeAsSample( "Categorical" );
