@@ -76,7 +76,6 @@ private:
   double *q_lambda_x;
 
   double Z_lambda;
-  double soma;
   double entropy;
  
 protected:
@@ -99,6 +98,7 @@ protected:
 
   int _num_iterations;
   double _tolerance;
+  int _output_format;
 
   std::map< int, std::set<Scalar> > _categorical_values; // layer index => set of values
 };
