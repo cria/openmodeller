@@ -77,6 +77,7 @@ private:
 
   double Z_lambda;
   double soma;
+  double entropy;
  
 protected:
 
