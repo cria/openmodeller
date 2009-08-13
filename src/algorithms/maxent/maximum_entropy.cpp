@@ -420,7 +420,7 @@ MaximumEntropy::init_trainer()
   lambda = new double[_num_layers]; // weight of each feature
 
   q_lambda_x = new double[_num_samples]; // probability of each point
-  
+
   for ( int i = 0; i < _num_layers; ++i ) {
 
     regularization_parameters[i] = 0.0;
@@ -450,7 +450,7 @@ MaximumEntropy::init_trainer()
     }
     ++p_iterator;
   }
-
+  
   p_iterator = _background->begin();
   p_end = _background->end();
   
@@ -485,7 +485,7 @@ MaximumEntropy::init_trainer()
     }
     ++p_iterator;
   }
-  
+   
   p_iterator = _background->begin();
   p_end = _background->end();
 
@@ -499,7 +499,7 @@ MaximumEntropy::init_trainer()
     }
     ++p_iterator;
   }
-
+  
   for ( int i = 0; i < _num_layers; ++i ) {
 
     feat_stan_devi[i] /= ( _num_samples - 1 );
@@ -524,6 +524,7 @@ void
 MaximumEntropy::calc_q_lambda_x()
 {
   Z_lambda = 0.0;
+  entropy = 0.0;
   
   OccurrencesImpl::const_iterator p_iterator = _presences->begin();
   OccurrencesImpl::const_iterator p_end = _presences->end();
@@ -572,7 +573,10 @@ MaximumEntropy::calc_q_lambda_x()
   for ( int j = 0; j < _num_samples; ++j ) {
     
     q_lambda_x[j] /= Z_lambda;
+    entropy += (q_lambda_x[j] * log(q_lambda_x[j]));
   }
+  entropy = -entropy;
+  Log::instance()->info( MAXENT_LOG_PREFIX "Entropy\t %.2f \r", entropy );
 }
 
 /***********************/
@@ -750,6 +754,7 @@ MaximumEntropy::train( size_t iter, double tol )
     lambda[best_id] += min_F;
 
   } // for ( size_t niter = 0; niter < iter; ++niter )
+  Log::instance()->info( MAXENT_LOG_PREFIX "Entropy\t %.2f \n", entropy );
 } // train
 
 /************/
