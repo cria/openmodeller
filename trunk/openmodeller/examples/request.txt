@@ -206,16 +206,12 @@ Output file type = ByteHFA
 # Maximum Entropy
 #
 #Algorithm = MAXENT
-#Parameter = NumberOfPseudoAbsences 500
+#Parameter = NumberOfBackgroundPoints 10000
 #Parameter = NumberOfIterations 500
-#Parameter = TrainingMethod gis
-#Parameter = GaussianPriorSmoothingCoeficient 0.0
 #Parameter = TerminateTolerance 0.00001
-#Parameter = LinearFeature 1
-#Parameter = QuadraticFeature 0
-#Parameter = ProductFeature 0
-#Parameter = ThresholdFeature 0
-#Parameter = HingeFeature 0
+# Valid values for the parameter Output Format:
+# 1 = Raw, 2 = Logistic.
+#Parameter = OutputFormat 2
 
 ########
 # Artificial Neural Networks
