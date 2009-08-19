@@ -95,12 +95,15 @@ protected:
   int _num_presences;
   int _num_background;
   int _num_samples;
+  int _num_values_cat;
+  int _len;
 
   int _num_iterations;
   double _tolerance;
   int _output_format;
 
-  std::map< int, std::set<Scalar> > _categorical_values; // layer index => set of values
+  std::map< int, std::set<Scalar> > _cat_values; // layer index => set of values (used in getValue)
+  std::map< int, std::map< Scalar, std::vector< bool > > > _categorical_values; // layer index => set of values => binary values of samples according to feature values.
 };
 
 #endif

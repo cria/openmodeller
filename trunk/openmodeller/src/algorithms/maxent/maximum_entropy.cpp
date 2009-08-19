@@ -38,6 +38,8 @@
 #include <sstream>
 #include <vector>
 #include <cmath>
+#include <map>
+#include <set>
 
 #include <limits>
 
@@ -300,7 +302,10 @@ MaximumEntropy::initialize()
     }
   }
 
+  _num_samples = _num_presences + _num_background;
+
   // Identify categorical layers
+  _num_values_cat = 0;
   _is_categorical.resize( _num_layers );
   
   for ( int i = 0; i < _num_layers; ++i ) {
@@ -309,10 +314,9 @@ MaximumEntropy::initialize()
 
     if ( _is_categorical[i] ) {
 
-      // Get possible values of each categorical layer based on presence and absence/background points
-
+      // Get possible values of each categorical layer based on presence points
       std::set<Scalar> values;
-
+ 
       OccurrencesImpl::const_iterator p_iterator = _presences->begin();
       OccurrencesImpl::const_iterator p_end = _presences->end();
 
@@ -321,28 +325,64 @@ MaximumEntropy::initialize()
         Sample sample = (*p_iterator)->environment();
 
         values.insert( sample[i] ); // std::set already avoids duplicate values
-
         ++p_iterator;
       }
 
-      p_iterator = _background->begin();
-      p_end = _background->end();
+      std::map<Scalar, std::vector<bool > > bin_each_value;
 
-      while ( p_iterator != p_end ) {
+      set<Scalar>::const_iterator bin_iterator = values.begin();
+      set<Scalar>::const_iterator bin_end = values.end();
+      
+      while ( bin_iterator != bin_end ) {
 
-        Sample sample = (*p_iterator)->environment();
+	std::vector<bool > bin_values;
 
-        values.insert( sample[i] );
+	OccurrencesImpl::const_iterator pbin_iterator = _presences->begin();
+	OccurrencesImpl::const_iterator pbin_end = _presences->end();
 
-        ++p_iterator;
+	while ( pbin_iterator != pbin_end ) {
+
+	  Sample bin_sample = (*pbin_iterator)->environment();
+
+	  if ( bin_sample[i] == *bin_iterator ) {
+
+	    bin_values.push_back( 1 );
+	  }
+	  else {
+
+	    bin_values.push_back( 0 );
+	  }
+	  ++pbin_iterator;
+	}
+
+	pbin_iterator = _background->begin();
+	pbin_end = _background->end();
+
+	while ( pbin_iterator != pbin_end ) {
+
+	  Sample bin_sample = (*pbin_iterator)->environment();
+
+	  if ( bin_sample[i] == *bin_iterator ) {
+
+	    bin_values.push_back( 1 );
+	  }
+	  else {
+
+	    bin_values.push_back( 0 );
+	  }
+	  ++pbin_iterator;
+	}
+
+	bin_each_value.insert( std::pair< Scalar, std::vector<bool > >( (Scalar) *bin_iterator, bin_values) );
+	++bin_iterator;
       }
+      
+      _categorical_values.insert( std::pair< int, std::map< Scalar, std::vector<bool > > > ( i, bin_each_value ) );
 
-      _categorical_values.insert( std::pair< int, std::set<Scalar> >( i, values ) );
-    }
-  }
-
-  _num_samples = _num_presences + _num_background;
-
+      _num_values_cat += values.size();
+    } // if ( _is_categorical[i] )
+  } // for ( int i = 0; i < _num_layers; ++i )
+  
   return 1;
 } // initialize
 
@@ -352,82 +392,6 @@ MaximumEntropy::initialize()
 int
 MaximumEntropy::iterate()
 {
-  /*
-  OccurrencesImpl::const_iterator p_iterator = _presences->begin();
-  OccurrencesImpl::const_iterator p_end = _presences->end();
-
-  while ( p_iterator != p_end ) {
-
-    Sample sample = (*p_iterator)->environment();
-
-    int id = 0;
-
-    for ( int i = 0; i < _num_layers; ++i ) {
-
-      stringstream out;
-      out << id;
-
-      if ( _is_categorical[i] ) {
-
-        std::set<Scalar>::iterator it = _categorical_values[i].begin();
-        std::set<Scalar>::iterator it_end = _categorical_values[i].end();
-
-        while ( it != it_end ) {
-
-          if ( sample[i] == *it ) {
-
-          }
-          else {
-
-          }
-
-          out << ++id;
-          ++it;
-	}
-      }
-    }
-
-    ++p_iterator;
-  }
-
-  p_iterator = _background->begin();
-  p_end = _background->end();
-
-  while ( p_iterator != p_end ) {
-
-    Sample sample = (*p_iterator)->environment();
-
-    int id = 0;
-
-    for ( int i = 0; i < _num_layers; ++i ) {
-
-      stringstream out;
-      out << id;
-
-      if ( _is_categorical[i] ) {
-
-        std::set<Scalar>::iterator it = _categorical_values[i].begin();
-        std::set<Scalar>::iterator it_end = _categorical_values[i].end();
-
-        while ( it != it_end ) {
-
-          if ( sample[i] == *it ) {
-
-          }
-          else {
-
-          }
-
-          out << ++id;
-
-          ++it;
-	}
-      }
-    }
-    
-    ++p_iterator;
-  }
-  */    
   train( _num_iterations, _tolerance );
 
   _done = true;
@@ -441,19 +405,21 @@ MaximumEntropy::iterate()
 void
 MaximumEntropy::init_trainer()
 {
-  regularization_parameters = new double[_num_layers];
+  _len = _num_layers - _categorical_values.size() + _num_values_cat;
 
-  features_mean = new double[_num_layers]; // mean of each feature
+  regularization_parameters = new double[_len];
 
-  feat_stan_devi = new double[_num_layers]; // standard deviation of each feature
+  features_mean = new double[_len]; // mean of each feature
 
-  q_lambda_f = new double[_num_layers];
+  feat_stan_devi = new double[_len]; // standard deviation of each feature
 
-  lambda = new double[_num_layers]; // weight of each feature
+  q_lambda_f = new double[_len];
 
+  lambda = new double[_len]; // weight of each feature
+  
   q_lambda_x = new double[_num_samples]; // probability of each point
 
-  for ( int i = 0; i < _num_layers; ++i ) {
+  for ( int i = 0; i < _len; ++i ) {
 
     regularization_parameters[i] = 0.0;
     features_mean[i] = 0.0;
@@ -470,77 +436,92 @@ MaximumEntropy::init_trainer()
   // calculate observed feature expectations - pi~[f] (empirical average of f)
   OccurrencesImpl::const_iterator p_iterator = _presences->begin();
   OccurrencesImpl::const_iterator p_end = _presences->end();
+  int j = 0;
 
   // sum the feature values to calculate the mean.  
   while ( p_iterator != p_end ) {
-    
+
     Sample sample = (*p_iterator)->environment();
+    int index = 0;
 
     for ( int i = 0; i < _num_layers; ++i ) {
 
-      features_mean[i] += sample[i];
+      if ( _is_categorical[i] ) {
+
+	std::map< int, std::map< Scalar, std::vector< bool > > >::const_iterator t;
+	t = _categorical_values.find(i);
+
+	std::map<Scalar, std::vector<bool > >::const_iterator t_bin = t->second.begin(); 
+	std::map<Scalar, std::vector<bool > >::const_iterator t_bin_end = t->second.end(); 
+
+	while ( t_bin != t_bin_end ) {
+      
+	  features_mean[index] += t_bin->second[j];
+	  ++index;
+	  ++t_bin;
+	}
+      }
+      else {
+	features_mean[index] += sample[i];
+	++index;
+      }
     }
     ++p_iterator;
+    ++j;
   }
-  
-  p_iterator = _background->begin();
-  p_end = _background->end();
-  
-  while ( p_iterator != p_end ) {
-    
-    Sample sample = (*p_iterator)->environment();
 
-    for ( int i = 0; i < _num_layers; ++i ) {
-
-      features_mean[i] += sample[i];
-    }
-    ++p_iterator;
-  }
-  
   // calculate the features mean
-  for ( int i = 0; i < _num_layers; ++i ) {
+  for ( int i = 0; i < _len; ++i ) {
 
-    features_mean[i] /= _num_samples;
+    features_mean[i] /= _num_presences;
   }
 
   // calculate the variance of each feature
   p_iterator = _presences->begin();
   p_end = _presences->end();
+  j = 0;
 
   while ( p_iterator != p_end ) {
     
     Sample sample = (*p_iterator)->environment();
-    
+    int index = 0;
+
     for ( int i = 0; i < _num_layers; ++i ) {
       
-      feat_stan_devi[i] += pow((sample[i] - features_mean[i]),2);
+      if ( _is_categorical[i] ) {
+
+	std::map< int, std::map< Scalar, std::vector< bool > > >::const_iterator t;
+	t = _categorical_values.find(i);
+
+	std::map<Scalar, std::vector<bool > >::const_iterator t_bin = t->second.begin(); 
+	std::map<Scalar, std::vector<bool > >::const_iterator t_bin_end = t->second.end(); 
+	
+	while ( t_bin != t_bin_end ) {
+	  
+	  feat_stan_devi[index] += pow((t_bin->second[j] - features_mean[index]),2);
+	  ++index;
+	  ++t_bin;
+	}
+      }
+      else {
+	
+	feat_stan_devi[index] += pow((sample[i] - features_mean[index]),2);
+	++index;
+      }
     }
     ++p_iterator;
+    ++j;
   }
-   
-  p_iterator = _background->begin();
-  p_end = _background->end();
 
-  while ( p_iterator != p_end ) {
-    
-    Sample sample = (*p_iterator)->environment();
-    
-    for ( int i = 0; i < _num_layers; ++i ) {
-      
-      feat_stan_devi[i] += pow((sample[i] - features_mean[i]),2);
-    }
-    ++p_iterator;
-  }
-  
-  for ( int i = 0; i < _num_layers; ++i ) {
+  for ( int i = 0; i < _len; ++i ) {
 
-    feat_stan_devi[i] /= ( _num_samples - 1 );
+    feat_stan_devi[i] /= ( _num_presences - 1 );
   }
 
   // initialize the regularization parameters
-  for ( int i = 0; i < _num_layers; ++i ) {
+  for ( int i = 0; i < _len; ++i ) {
 
-    regularization_parameters[i] = 1.0 / sqrt((double)(_num_samples)) * sqrt(min(0.25,feat_stan_devi[i]));
+    regularization_parameters[i] = 1.0 / sqrt((double)(_num_presences)) * sqrt(min(0.25,feat_stan_devi[i]));
 
     if ( regularization_parameters[i] < 0.00001 ) {
 
@@ -560,17 +541,36 @@ MaximumEntropy::calc_q_lambda_x()
   
   OccurrencesImpl::const_iterator p_iterator = _presences->begin();
   OccurrencesImpl::const_iterator p_end = _presences->end();
-
   int i = 0;
+
   while ( p_iterator != p_end ) {
     
     Sample sample = (*p_iterator)->environment();
-
+    int index = 0;
     double sum_lambdaj_fj = 0.0;
 
     for ( int j = 0; j < _num_layers; ++j ) {
 
-      sum_lambdaj_fj += lambda[j] * sample[j];
+      if ( _is_categorical[j] ) {
+
+	std::map< int, std::map< Scalar, std::vector< bool > > >::const_iterator t;
+	t = _categorical_values.find(j);
+
+	std::map<Scalar, std::vector<bool > >::const_iterator t_bin = t->second.begin(); 
+	std::map<Scalar, std::vector<bool > >::const_iterator t_bin_end = t->second.end(); 
+	
+	while ( t_bin != t_bin_end ) {
+	  
+	  sum_lambdaj_fj += lambda[index] * t_bin->second[i];
+	  ++index;
+	  ++t_bin;
+	}
+      }
+      else {
+
+	sum_lambdaj_fj += lambda[index] * sample[j];
+	++index;
+      }
     }
     
     q_lambda_x[i] = exp(sum_lambdaj_fj);
@@ -586,12 +586,31 @@ MaximumEntropy::calc_q_lambda_x()
   while ( p_iterator != p_end ) {
     
     Sample sample = (*p_iterator)->environment();
-
+    int index = 0;
     double sum_lambdaj_fj = 0.0;
 
     for ( int j = 0; j < _num_layers; ++j ) {
 
-      sum_lambdaj_fj += lambda[j] * sample[j];
+      if ( _is_categorical[j] ) {
+
+	std::map< int, std::map< Scalar, std::vector< bool > > >::const_iterator t;
+	t = _categorical_values.find(j);
+
+	std::map<Scalar, std::vector<bool > >::const_iterator t_bin = t->second.begin(); 
+	std::map<Scalar, std::vector<bool > >::const_iterator t_bin_end = t->second.end(); 
+	
+	while ( t_bin != t_bin_end ) {
+	  
+	  sum_lambdaj_fj += lambda[index] * t_bin->second[i];
+	  ++index;
+	  ++t_bin;
+	}
+      }
+      else {
+
+	sum_lambdaj_fj += lambda[index] * sample[j];
+	++index;
+      }
     }
     
     q_lambda_x[i] = exp(sum_lambdaj_fj);
@@ -600,12 +619,12 @@ MaximumEntropy::calc_q_lambda_x()
     ++i;
     ++p_iterator;
   }
-  
+
   // normalize all q_lambda_x
   for ( int j = 0; j < _num_samples; ++j ) {
     
     q_lambda_x[j] /= Z_lambda;
-    entropy += (q_lambda_x[j] * log(q_lambda_x[j]));
+      entropy += (q_lambda_x[j] * log(q_lambda_x[j]));
   }
   entropy = -entropy;
 
@@ -618,23 +637,42 @@ MaximumEntropy::calc_q_lambda_x()
 void
 MaximumEntropy::calc_q_lambda_f()
 {
-  for ( int i = 0; i < _num_layers; ++i ) {
+  for ( int i = 0; i < _len; ++i ) {
 
     q_lambda_f[i] = 0.0;
   }
 
   OccurrencesImpl::const_iterator p_iterator = _presences->begin();
   OccurrencesImpl::const_iterator p_end = _presences->end();
-
   int i = 0;
 
   while ( p_iterator != p_end ) {
     
     Sample sample = (*p_iterator)->environment();
+    int index = 0;
 
     for ( int j = 0; j < _num_layers; ++j ) {
 
-      q_lambda_f[j] += q_lambda_x[i] * sample[j];
+      if ( _is_categorical[j] ) {
+
+	std::map< int, std::map< Scalar, std::vector< bool > > >::const_iterator t;
+	t = _categorical_values.find(j);
+
+	std::map<Scalar, std::vector<bool > >::const_iterator t_bin = t->second.begin(); 
+	std::map<Scalar, std::vector<bool > >::const_iterator t_bin_end = t->second.end(); 
+	
+	while ( t_bin != t_bin_end ) {
+
+	  q_lambda_f[index] += q_lambda_x[i] * t_bin->second[i];
+	  ++index;
+	  ++t_bin;
+	}
+      }
+      else {
+
+	q_lambda_f[index] += q_lambda_x[i] * sample[j];
+	++index;
+      }
     }
     ++i;
     ++p_iterator;
@@ -646,10 +684,30 @@ MaximumEntropy::calc_q_lambda_f()
   while ( p_iterator != p_end ) {
     
     Sample sample = (*p_iterator)->environment();
+    int index = 0;
 
     for ( int j = 0; j < _num_layers; ++j ) {
 
-      q_lambda_f[j] += q_lambda_x[i] * sample[j];
+      if ( _is_categorical[j] ) {
+
+	std::map< int, std::map< Scalar, std::vector< bool > > >::const_iterator t;
+	t = _categorical_values.find(j);
+
+	std::map<Scalar, std::vector<bool > >::const_iterator t_bin = t->second.begin(); 
+	std::map<Scalar, std::vector<bool > >::const_iterator t_bin_end = t->second.end(); 
+	
+	while ( t_bin != t_bin_end ) {
+
+	  q_lambda_f[index] += q_lambda_x[i] * t_bin->second[i];
+	  ++index;
+	  ++t_bin;
+	}
+      }
+      else {
+
+	q_lambda_f[index] += q_lambda_x[i] * sample[j];
+	++index;
+      }
     }
     ++i;
     ++p_iterator;
@@ -684,8 +742,8 @@ MaximumEntropy::train( size_t iter, double tol )
     int best_id = -1;
 
     calc_q_lambda_x();
-    
-    for ( int i = 0; i < _num_layers; ++i ) {
+
+    for ( int i = 0; i < _len; ++i ) {
 
       sum_mean_lambda += -features_mean[i] * lambda[i];
       sum_regu_lambda += regularization_parameters[i] * fabs(lambda[i]);
@@ -701,17 +759,17 @@ MaximumEntropy::train( size_t iter, double tol )
 
     calc_q_lambda_f();
     
-    midpoint = new double[_num_layers];
+    midpoint = new double[_len];
     
-    for ( int i = 0; i < _num_layers; ++i ) {
+    for ( int i = 0; i < _len; ++i ) {
 
       midpoint[i] = -features_mean[i] + q_lambda_f[i] / ( exp(lambda[i]) + ( 1 - exp(lambda[i]) ) * q_lambda_f[i]);
     }
     
-    sign_pos = new int[_num_layers];
-    sign_neg = new int[_num_layers];
+    sign_pos = new int[_len];
+    sign_neg = new int[_len];
 
-    for ( int i = 0; i < _num_layers; ++i ) {
+    for ( int i = 0; i < _len; ++i ) {
 
       if ( (midpoint[i] + regularization_parameters[i]) < 0.0 ) {
 	sign_pos[i] = -1;
@@ -738,9 +796,9 @@ MaximumEntropy::train( size_t iter, double tol )
       }
     }
     
-    signs = new int[_num_layers];
+    signs = new int[_len];
 
-    for ( int i = 0; i < _num_layers; ++i ) {
+    for ( int i = 0; i < _len; ++i ) {
       
       if ( sign_neg[i] > 0 ) neg = 1;
       else neg = 0;
@@ -751,29 +809,29 @@ MaximumEntropy::train( size_t iter, double tol )
       signs[i] = neg - pos;
     }
     
-    F = new double[_num_layers];
-    alfa = new double[_num_layers];
-    alfa_pos_neg = new double[_num_layers];
+    F = new double[_len];
+    alfa = new double[_len];
+    alfa_pos_neg = new double[_len];
 
-    for ( int i = 0; i < _num_layers; ++i ) {
+    for ( int i = 0; i < _len; ++i ) {
 
       alfa_pos_neg[i] = log((features_mean[i]+signs[i]*regularization_parameters[i])*(1-q_lambda_f[i])
 			    /((1-features_mean[i]-signs[i]*regularization_parameters[i])*q_lambda_f[i]));
     }
 
-    for ( int i = 0; i < _num_layers; ++i ) {
+    for ( int i = 0; i < _len; ++i ) {
 
       alfa[i] = -lambda[i];
     }
 
-    for ( int i = 0; i < _num_layers; ++i ) {
+    for ( int i = 0; i < _len; ++i ) {
 
       if ( signs[i] != 0 ) {
 	alfa[i] = alfa_pos_neg[i];
       }
     }
 
-    for ( int i = 0; i < _num_layers; ++i ) {
+    for ( int i = 0; i < _len; ++i ) {
 
       F[i] = -alfa[i] * features_mean[i] + log(1 + (exp(alfa[i]) - 1) * q_lambda_f[i])
 	     + regularization_parameters[i] * (fabs(lambda[i] + alfa[i]) - fabs(lambda[i]));
@@ -807,19 +865,15 @@ Scalar
 MaximumEntropy::getValue( const Sample& x ) const
 {
   double prob = 0.0 ;
+  int index = 0;
   
-  //int id = 0;
-
   for ( int i = 0; i < _num_layers; ++i ) {
-    /*
-    stringstream out;
-    out << id;
 
     if ( _is_categorical[i] ) {
 
-      std::map< int, std::set<Scalar> >::const_iterator layer_categories = _categorical_values.find(i);
+      std::map< int, std::set<Scalar> >::const_iterator layer_categories = _cat_values.find(i);
 
-      if ( layer_categories != _categorical_values.end() ) {
+      if ( layer_categories != _cat_values.end() ) {
 
         std::set<Scalar>::const_iterator it = layer_categories->second.begin();
         std::set<Scalar>::const_iterator it_end = layer_categories->second.end();
@@ -827,21 +881,23 @@ MaximumEntropy::getValue( const Sample& x ) const
         while ( it != it_end ) {
 
           if ( x[i] == *it ) {
-
+	 
+	    prob += lambda[index];
+	    ++index;
           }
           else {
 
+	    ++index;
           }
-
-          out << ++id;
           ++it;
         }
       }
     }
     else {
-    */
-    prob += lambda[i] * x[i];
-    //}
+    
+      prob += lambda[index] * x[index];
+      ++index;
+    }
   }
 
   prob = exp(prob)/Z_lambda;
@@ -850,6 +906,7 @@ MaximumEntropy::getValue( const Sample& x ) const
 
     prob = std::numeric_limits<double>::max(); // DBL_MAX;
   }
+ 
   if ( _output_format == 1 ) {
     return prob;
   }
@@ -888,14 +945,14 @@ MaximumEntropy::_getConfiguration( ConfigurationPtr& config ) const
   model_config->addNameValue( "Z", Z_lambda );
   model_config->addNameValue( "Entropy", entropy);
   model_config->addNameValue( "OutputFormat", _output_format );
-  /*
+
   model_config->addNameValue( "Categorical", _is_categorical );
 
   ConfigurationPtr cat_section_config( new ConfigurationImpl( "CategoricalData" ) );
   model_config->addSubsection( cat_section_config );
 
-  std::map< int, std::set<Scalar> >::const_iterator it = _categorical_values.begin();
-  std::map< int, std::set<Scalar> >::const_iterator it_end = _categorical_values.end();
+  std::map< int, std::map< Scalar, std::vector< bool > > >::const_iterator it = _categorical_values.begin();
+  std::map< int, std::map< Scalar, std::vector< bool > > >::const_iterator it_end = _categorical_values.end();
 
   while ( it != it_end ) {
 
@@ -904,17 +961,19 @@ MaximumEntropy::_getConfiguration( ConfigurationPtr& config ) const
     cat_section_config->addSubsection( cat_config );
 
     int layer_index = (*it).first;
-    std::set<Scalar> layer_categories = (*it).second;
+    std::map<Scalar, std::vector<bool > > layer_categories = (*it).second;
 
     // Transform std::set into Sample
     Sample categories;
     categories.resize( layer_categories.size() );
 
     int i = 0;
+    std::map<Scalar, std::vector<bool > >::iterator val_it;
 
-    for ( std::set<Scalar>::iterator val_it = layer_categories.begin(); val_it != layer_categories.end(); val_it++ ) {
+    for ( val_it = layer_categories.begin(); val_it != layer_categories.end(); val_it++ ) {
 
-      categories[i] = (*val_it);
+      //      categories[i] = (*val_it);
+      categories[i] = (*val_it).first;
       ++i;
     }
 
@@ -923,7 +982,7 @@ MaximumEntropy::_getConfiguration( ConfigurationPtr& config ) const
 
     ++it;
   }
-  */
+
   // write lambda
   ConfigurationPtr lambda_config( new ConfigurationImpl( "Lambda" ) );
   model_config->addSubsection( lambda_config );
@@ -955,7 +1014,6 @@ MaximumEntropy::_setConfiguration( const ConstConfigurationPtr& config )
 
   _output_format = model_config->getAttributeAsInt( "OutputFormat", 2 );
   
-  /*
   _is_categorical = model_config->getAttributeAsSample( "Categorical" );
 
   ConstConfigurationPtr cat_section = model_config->getSubsection( "CategoricalData", false );
@@ -981,10 +1039,9 @@ MaximumEntropy::_setConfiguration( const ConstConfigurationPtr& config )
         values.insert( layer_categories[i] );
       }
 
-      _categorical_values.insert( std::pair< int, std::set<Scalar> >( layer_index, values ) );
+      _cat_values.insert( std::pair< int, std::set<Scalar> >( layer_index, values ) );
     }
   }
-  */
   
   // Lambda
   ConstConfigurationPtr lambda_config = model_config->getSubsection( "Lambda", false );
