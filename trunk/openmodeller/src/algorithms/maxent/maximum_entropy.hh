@@ -66,7 +66,9 @@ private:
   
   void calc_q_lambda_f();
 
-  void train(size_t iter = 500, double tol = 1E-05);
+  double interpol( char type_feat );
+
+  void train( size_t iter = 500, double tol = 1E-05 );
 
   double *regularization_parameters;
   double *features_mean;
@@ -97,6 +99,9 @@ protected:
   int _num_samples;
   int _num_values_cat;
   int _len;
+  double beta_l;
+  double beta_c;
+  bool _hasCategorical;
 
   int _num_iterations;
   double _tolerance;
