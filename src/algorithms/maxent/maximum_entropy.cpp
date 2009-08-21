@@ -307,12 +307,15 @@ MaximumEntropy::initialize()
   // Identify categorical layers
   _num_values_cat = 0;
   _is_categorical.resize( _num_layers );
-  
+  _hasCategorical = false;
+
   for ( int i = 0; i < _num_layers; ++i ) {
 
     _is_categorical[i] = (Scalar)_samp->isCategorical( i );
 
     if ( _is_categorical[i] ) {
+
+      _hasCategorical = true;
 
       // Get possible values of each categorical layer based on presence points
       std::set<Scalar> values;
@@ -518,17 +521,138 @@ MaximumEntropy::init_trainer()
     feat_stan_devi[i] /= ( _num_presences - 1 );
   }
 
+  if ( _num_presences <= 10 ) {
+    beta_l = 1.0;
+  }
+  else {
+    if ( _num_presences >= 100 ) {
+      beta_l = 0.05;
+    }
+    else {
+      if ( _num_presences == 30 ) {
+	beta_l = 0.2;
+      }
+      else{
+	beta_l = interpol( 'l' );
+      }
+    }
+  }
+
+  if ( _hasCategorical ) {
+    if ( _num_presences < 17 ) {
+      if ( _num_presences == 10 ) {
+	beta_c = 0.5;
+      }
+      beta_c = interpol( 'c' );
+    }
+    else {
+      beta_c = 0.25;
+    }
+  }
+
+  int index = 0;
+
   // initialize the regularization parameters
-  for ( int i = 0; i < _len; ++i ) {
+  for ( int i = 0; i < _num_layers; ++i ) {
+    
+    if ( _is_categorical[i] ) {
 
-    regularization_parameters[i] = 1.0 / sqrt((double)(_num_presences)) * sqrt(min(0.25,feat_stan_devi[i]));
+      std::map< int, std::map< Scalar, std::vector< bool > > >::const_iterator t;
+      t = _categorical_values.find(i);
+      
+      for ( size_t tam = 0; tam < t->second.size(); ++tam ) {
 
-    if ( regularization_parameters[i] < 0.00001 ) {
+	regularization_parameters[index] = beta_c / sqrt((double)(_num_presences)) * sqrt(min(0.25,feat_stan_devi[index]));
 
-      regularization_parameters[i] = 0.00001;
+	if ( regularization_parameters[index] < 0.00001 ) {
+
+	  regularization_parameters[index] = 0.00001;
+	}
+	++index;
+      }
+    }
+    else {
+
+      regularization_parameters[index] = beta_l / sqrt((double)(_num_presences)) * sqrt(min(0.25,feat_stan_devi[index]));
+    
+      if ( regularization_parameters[index] < 0.00001 ) {
+	
+	regularization_parameters[index] = 0.00001;
+      }
+      ++index;
     }
   }
 } // init_trainer();
+
+/***********************/
+/****** interpol *******/
+
+double
+MaximumEntropy::interpol( char type_feat )
+{
+  std::map< int, double > table_beta_l;
+  std::map< int, double > table_beta_c;
+  double product = 0.0;
+  double answer = 0.0;
+
+  table_beta_l.insert( std::pair< int, double > ( 10, 1.0 ) );
+  table_beta_l.insert( std::pair< int, double > ( 30, 0.2 ) );
+  table_beta_l.insert( std::pair< int, double > ( 100, 0.05 ) );
+  table_beta_c.insert( std::pair< int, double > ( 0, 0.65 ) );
+  table_beta_c.insert( std::pair< int, double > ( 10, 0.5 ) );
+  table_beta_c.insert( std::pair< int, double > ( 17, 0.25 ) );
+ 
+  if ( type_feat == 'l' ) {
+
+    std::map< int, double >::const_iterator it = table_beta_l.begin();
+    std::map< int, double >::const_iterator it_end = table_beta_l.end();
+    
+    while ( it != it_end ){
+
+      product = (*it).second;
+
+      std::map< int, double >::const_iterator its = table_beta_l.begin();
+      std::map< int, double >::const_iterator its_end = table_beta_l.end();
+
+      while ( its != its_end ){
+
+	if ( it != its ) {
+
+	  product *= ( double ( _num_presences - (*its).first ) / double ( (*it).first - (*its).first ) );
+	}
+	++its;
+      }
+      answer += product;
+      ++it;
+    }
+  }
+
+  if ( type_feat == 'c' ) {
+
+    std::map< int, double >::const_iterator it = table_beta_c.begin();
+    std::map< int, double >::const_iterator it_end = table_beta_c.end();
+    
+    while ( it != it_end ){
+
+      product = (*it).second;
+
+      std::map< int, double >::const_iterator its = table_beta_c.begin();
+      std::map< int, double >::const_iterator its_end = table_beta_c.end();
+
+      while ( its != its_end ){
+
+	if ( it != its ) {
+
+	  product *= ( double ( _num_presences - (*its).first ) / double ( (*it).first - (*its).first ) );
+	}
+	++its;
+      }
+      answer += product;
+      ++it;
+    }
+  }
+  return answer;
+}
 
 /***********************/
 /*** calc_q_lambda_x ***/
@@ -724,8 +848,8 @@ MaximumEntropy::train( size_t iter, double tol )
 
   double loss = std::numeric_limits<double>::infinity();
   double new_loss = 0.0;
-
-  for ( size_t niter = 0; niter < iter; ++niter ) {
+  size_t niter;
+  for ( niter = 0; niter < iter; ++niter ) {
     
     double *F;
     double *alfa;
