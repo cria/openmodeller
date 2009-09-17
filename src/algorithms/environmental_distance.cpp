@@ -306,16 +306,26 @@ void EnvironmentalDistance::CalcCovarianceMatrix(){
    covMatrix = new Matrix(layerCount,layerCount); // Alloc memory for new matrices
    covMatrixInv = new Matrix(layerCount,layerCount);
 
-   // Calcs the cross-covariance for each place in the matrix
-   for(int i = 0 ; i < layerCount ; i++)
-      for(int j = i ; j < layerCount ; j++){
-         (*covMatrix)(i,j) = 0;
-         for(int k = 0 ; k < presenceCount ; k++)
-            (*covMatrix)(i,j) += (presencePoints[k][i]-averagePoint[i]) *
-                                 (presencePoints[k][j]-averagePoint[j]);
-         (*covMatrix)(i,j) /= presenceCount;
-         (*covMatrix)(j,i) = (*covMatrix)(i,j);
-      }
+   if(presenceCount > 1){
+      // Calcs the cross-covariance for each place in the matrix
+      for(int i = 0 ; i < layerCount ; i++)
+         for(int j = i ; j < layerCount ; j++){
+            (*covMatrix)(i,j) = 0;
+            for(int k = 0 ; k < presenceCount ; k++)
+               (*covMatrix)(i,j) += (presencePoints[k][i]-averagePoint[i]) *
+                                    (presencePoints[k][j]-averagePoint[j]);
+            (*covMatrix)(i,j) /= presenceCount;
+            (*covMatrix)(j,i) = (*covMatrix)(i,j);
+         }
+   }
+   else{
+      // Use an identity matrix if there's only one point
+      for(int i = 0 ; i < layerCount ; i++)
+         for(int j = i ; j < layerCount ; j++){
+            (*covMatrix)(i,j) = (i == j) ? 1 : 0;
+         }
+   }
+   //std::cout << (*covMatrix); // Debug
 
    try{
       (*covMatrixInv) = !(*covMatrix);
