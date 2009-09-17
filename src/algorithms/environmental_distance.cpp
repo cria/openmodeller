@@ -54,8 +54,8 @@ static AlgParamMetadata parameters[NUM_PARAM] = { // Parameters
       "Nearest \'n\' points whose mean value will be the reference when calculating environmental distances. When set to 1, distances will be measured to the closest point, which is the same behavior of the previously existing minimum distance algorithm. When set to 0, distances will be measured to the average of all presence points, which is the same behavior of the previously existing distance to average algorithm. Intermediate values between 1 and the total number of presence points are now accepted.", // Description
       1,          // Not zero if the parameter has lower limit
       0,          // Parameter's lower limit
-      0,          // Not zero if the parameter has upper limit
-      0,          // Parameter's upper limit
+      1,          // Not zero if the parameter has upper limit
+      1000,       // Parameter's upper limit
       "1"         // Parameter's typical (default) value
    },
    { // 3rd parameter
