@@ -75,7 +75,7 @@ static AlgParamMetadata parameters[NUM_PARAM] = { // Parameters
 static AlgMetadata metadata = { // General metadata
   "ENVDIST",                    // Id
   "Environmental Distance",     // Name
-  "0.3",                        // Version
+  "0.4",                        // Version
   "Generic algorithm based on environmental dissimilarity metrics.", // Overview
   "Generic algorithm based on environmental dissimilarity metrics. When used with the Gower metric and maximum distance 1, this algorithm should produce the same result of the algorithm known as DOMAIN.", // Description
   "Mauro E. S. Munoz, Renato De Giovanni, Danilo J. S. Bellini",    // Algorithm author
