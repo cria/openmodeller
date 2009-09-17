@@ -206,7 +206,7 @@ int EnvironmentalDistance::initialize(){
 
    // Allow using "Distance" method and normalize ParDist
    if(!InitDistanceType()){
-      Log::instance()->error("Could not determine a maximum distance in the environmental space in this case.\n");
+      Log::instance()->error("Could not determine maximum distance in the environmental space.\n");
       return 0;
    }
 
@@ -322,7 +322,7 @@ void EnvironmentalDistance::CalcCovarianceMatrix(){
    }
    catch ( std::exception& e ) {
       string msg = e.what();
-      msg.append( "\nThis experiment has no solution using Mahalanobis distance" );
+      msg.append( "\nExperiment has no solution using Mahalanobis distance.\n" );
       throw AlgorithmException( msg.c_str() );
    }
    //std::cout << (*covMatrixInv); // Debug
