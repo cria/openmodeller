@@ -178,9 +178,9 @@ NicheMosaic::initialize()
     return 0;
   }
 
-  int num_absences = _samp->numAbsence();
+ // int num_absences = _samp->numAbsence();
 
-  if ( num_absences <= 0 ) {
+ // if ( num_absences <= 0 ) {
 
     // generate pseudo absence points
     string alg_id = "BIOCLIM";
@@ -197,13 +197,13 @@ NicheMosaic::initialize()
 
     alg->setParameters( param );
     alg->createModel( _samp );
+    size_t num_abs = 0.40 * num_presences;
+    _my_absence_test = _samp->getPseudoAbsences( num_abs, alg->getModel(), 0.6 );
+//  }
+ // else {
 
-    _my_absence_test = _samp->getPseudoAbsences( 100, alg->getModel(), 0.6 );
-  }
-  else {
-
-    _my_absence_test = _samp->getAbsences();
-  }
+//    _my_absence_test = _samp->getAbsences();
+//  }
 
   _num_points_absence_test = _my_absence_test->numOccurrences(); 
 
@@ -220,19 +220,57 @@ NicheMosaic::initialize()
 int
 NicheMosaic::iterate()
 {
+  std::vector<Scalar> deltaBest( _num_layers );
+  size_t costBest, num_points_train_test, bestCost2=0;
+  int bestIter = 0;
+
+  num_points_train_test = _samp->getPresences()->numOccurrences();
+  _model_min_best.resize( num_points_train_test );
+  _model_max_best.resize( num_points_train_test );
+
+  for ( unsigned int i = 0; i < _model_min_best.size(); i++ ) {
+	_model_min_best[i] = ScalarVector( _num_layers );
+    _model_max_best[i] = ScalarVector( _num_layers );
+  }//end for
+
+
   // Split sampler in test/train
-  splitOccurrences( _samp->getPresences(), _my_presences, _my_presences_test, 0.7 );
-
+  splitOccurrences( _samp->getPresences(), _my_presences, _my_presences_test );
   _num_points_test = _my_presences_test->numOccurrences();
-
   _num_points = _my_presences->numOccurrences();
 
-  if ( 0 == setMinMaxDelta() ) {
+  if ( 0 == setMinMaxDelta() ) {return 0;}
+  
+  int endDo = _num_layers * 10;
+  do{
+    findSolution(costBest, deltaBest, bestIter, bestCost2);
+	_num_iterations = _num_iterations + 8000;
+  }while(bestIter < endDo);
 
-    return 0;
+  if ( (_num_points_absence_test - bestCost2) > 10 ){
+	string alg_id = "BIOCLIM";
+    AlgorithmPtr alg = AlgorithmFactory::newAlgorithm( alg_id );
+
+    if ( ! alg ) {
+
+      Log::instance()->error( "Could not instantiate BIOCLIM algorithm to generate pseudo-absences." );
+      return 0;
+    }
+
+    ParamSetType param;
+    param["StandardDeviationCutoff"] = "0.9";
+
+    alg->setParameters( param );
+    alg->createModel( _samp );
+    _my_absence_test = _samp->getPseudoAbsences( 100, alg->getModel(), 0.6 );
+    _num_points_absence_test = _my_absence_test->numOccurrences(); 
+
+	_num_iterations = 10000;
+    findSolution(costBest, deltaBest, bestIter, bestCost2);
   }
 
-  findSolution();
+  if (costBest < _num_points_test)
+	  improveModel(deltaBest);
 
   _done = 1;
 
@@ -373,7 +411,7 @@ NicheMosaic::calculateCostPres( const std::vector<ScalarVector> &model_min, cons
 
       if ( j == _num_layers ) {
         npresence++;
-	break;
+		break;
       }//end if
     }//end for
     ++it;
@@ -427,11 +465,11 @@ NicheMosaic::getRandomLayerNumber()
 }
 
 Scalar 
-NicheMosaic::getRandomPercent(const std::vector<Scalar> &delta, const size_t i_layer, size_t &costPres, size_t &costAus)
+NicheMosaic::getRandomPercent(const std::vector<Scalar> &delta, const size_t i_layer, size_t &costPres)
 {
-  int size = 22;
+  int size = 26;
 
-  Scalar percent[22] = { 0.04, 0.05, 0.06, 0.07, 0.08, 0.09, 0.1, 0.11, 0.12, 0.13, 0.14, 0.15, 0.16, 0.17, 0.18, 0.19, 0.2, 0.21, 0.22, 0.23, 0.24, 0.25 };
+  Scalar percent[26] = { 0.1, 0.11, 0.12, 0.13, 0.14, 0.15, 0.16, 0.17, 0.18, 0.19, 0.2, 0.21, 0.22, 0.23, 0.24, 0.25, 0.26, 0.27, 0.28, 0.29, 0.3, 0.31, 0.32, 0.33, 0.34, 0.35 };
 
   int half = (int)(size/2);
 
@@ -442,7 +480,7 @@ NicheMosaic::getRandomPercent(const std::vector<Scalar> &delta, const size_t i_l
   do{
 
     r = random( 0, size );
-
+    
   } while (delta[i_layer] == _delta[i_layer]*percent[r]);
 
   if ( (costPres < _num_points_test) && (r < half) ){
@@ -475,9 +513,52 @@ NicheMosaic::saveBestModel(const std::vector<ScalarVector> &model_min, const std
 }
 
 void 
-NicheMosaic::findSolution()
+NicheMosaic::improveModel( const std::vector<Scalar> &deltaBest )
 {
-  size_t cost, cost1, cost2, cost1Aux, i_layer;
+  OccurrencesImpl::iterator it = _my_presences_test->begin(); 
+  OccurrencesImpl::iterator last = _my_presences_test->end();
+
+  int i, j, flag = 0, n = _num_points;
+
+  while ( it != last ) {
+
+    Sample const& sample = (*it)->environment();
+
+    //_num_points eh o numero de regras do modelo
+    for (i = 0; i < n; i++) {
+
+      for (j = 0; j < _num_layers; j++) {
+
+        if ( ( _model_min_best[i][j] <= sample[j] ) && ( sample[j] <= _model_max_best[i][j] ) )
+          continue;
+        else
+          break;
+      }//end for
+
+      if ( j == _num_layers ) {
+        flag = 1;
+		break;
+      }//end if
+    }//end for
+	if (flag){
+		flag = 0;
+	}else {
+	    for (j = 0; j < _num_layers; j++) {
+	        _model_min_best[n][j] = sample[j] - deltaBest[j];
+			_model_max_best[n][j] = sample[j] + deltaBest[j];
+		}//end for
+		n++;
+	}//end if
+    ++it;
+  }//end while
+  _num_points = n;
+}
+
+void 
+NicheMosaic::findSolution(size_t &costBest, std::vector<Scalar> &deltaBest, int &bestIter, size_t &bestCost2)//, Scalar &deltaBestAverage, const Scalar &deltaIni )
+{
+  size_t cost1, cost2, i_layer, bestCost1=0;
+  Scalar importance = 0.25 * _num_layers, cost, deltaBestAverage=0, deltaIni=0.35;
   std::vector<Scalar> delta( _num_layers );
 
   size_t nTabu = (size_t)floor(sqrt((double)(_num_layers)));
@@ -489,54 +570,72 @@ NicheMosaic::findSolution()
   //model
   std::vector<ScalarVector> model_min( _num_points );
   std::vector<ScalarVector> model_max( _num_points );
-  _model_min_best.resize( _num_points );
-  _model_max_best.resize( _num_points );
 
   for ( unsigned int i = 0; i < model_min.size(); i++ ) {
-
     model_min[i] = ScalarVector( _num_layers );
     model_max[i] = ScalarVector( _num_layers );
-    _model_min_best[i] = ScalarVector( _num_layers );
-    _model_max_best[i] = ScalarVector( _num_layers );
   }//end for
 
   for ( int j = 0; j < _num_layers; j++ ){
 
-    delta[j] = _delta[j] * 0.13;
-  }
+    delta[j] = _delta[j] * deltaIni;
+	deltaBest[j] = delta[j];
+  }//end for
 
   createModel( model_min, model_max, delta );
   cost1 = calculateCostPres( model_min, model_max );
-  cost1Aux = cost1;
+  costBest = cost1;
   cost2 = calculateCostAus( model_min, model_max );
-  cost = cost1 + cost2;
-  _bestCost = cost;
+  cost = (Scalar)cost1*importance + (Scalar)cost2;
+
+ _bestCost = cost;
+  saveBestModel(model_min, model_max);
+  if (_bestCost == ((Scalar)_num_points_test*importance + (Scalar)_num_points_absence_test) )
+	  return;
 
   for (int iter=0; iter < _num_iterations; iter++) {
 
     _progress = (float)iter/(float)_num_iterations;
+	i_layer = getRandomLayerNumber();
 
-    i_layer = getRandomLayerNumber();
+	Scalar deltaAux = delta[i_layer];
+	delta[i_layer] = _delta[i_layer] * getRandomPercent(delta, i_layer, cost1);
+	editModel( model_min, model_max, delta, i_layer );
+	cost1 = calculateCostPres( model_min, model_max );
+	cost2 = calculateCostAus( model_min, model_max );
+	cost = (Scalar)cost1*importance + (Scalar)cost2;
 
-    if (tabuDegree[i_layer] == 0) {
+	if ( (cost > _bestCost) || ( (cost == _bestCost) && (cost1 >= costBest) ) ) {
+	  renewTabuDegree(tabuDegree);
+	  tabuDegree[i_layer] = nTabu;
+	  costBest = cost1;
+	  _bestCost = cost;
+	  deltaBest[i_layer] = delta[i_layer];
+	  saveBestModel(model_min, model_max);
+	  bestIter = iter;
+	  bestCost1=cost1;
+	  bestCost2=cost2;
 
-      renewTabuDegree(tabuDegree);
-      tabuDegree[i_layer] = nTabu;
-      delta[i_layer] = _delta[i_layer] * getRandomPercent(delta, i_layer, cost1, cost2);
-      editModel( model_min, model_max, delta, i_layer );
-      cost1 = calculateCostPres( model_min, model_max );
-      cost2 = calculateCostAus( model_min, model_max );
-      cost = cost1 + cost2;
-
-      if ( (cost > _bestCost) || ( (cost == _bestCost) && (cost1 >= cost1Aux) ) ) {
-        cost1Aux = cost1;
-        _bestCost = cost;
-        saveBestModel(model_min, model_max);
-        if (_bestCost == (_num_points_test + _num_points_absence_test) )
-          break;
-      }//end if
-    }//end if
+	  if (_bestCost == ((Scalar)_num_points_test*importance + (Scalar)_num_points_absence_test) )
+		break;
+	}else {
+		if (tabuDegree[i_layer] == 0) {
+			renewTabuDegree(tabuDegree);
+			tabuDegree[i_layer] = nTabu;
+		}else{
+			delta[i_layer] = deltaAux;
+			editModel( model_min, model_max, delta, i_layer );
+		}//end if
+	}//end if
   }//end for
+  deltaBestAverage = 0;
+  for (int k=0; k < _num_layers; k++) {
+    Log::instance()->info( "delta=  %7.2f \n", deltaBest[k]/_delta[k] );
+	deltaBestAverage = deltaBestAverage + (deltaBest[k]/_delta[k]);
+  }
+  deltaBestAverage = deltaBestAverage/_num_layers;
+  Log::instance()->info( "soma(media)=  %7.2f \n", deltaBestAverage);
+	Log::instance()->info("\n***********************************************\n");
 }
 
 /****************************************************************/

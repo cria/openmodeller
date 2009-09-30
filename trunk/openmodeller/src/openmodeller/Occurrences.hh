@@ -58,8 +58,18 @@ typedef std::vector<Scalar> ScalarVector;
  */
 dllexp void splitOccurrences(const OccurrencesPtr& occurrences, 
 			     OccurrencesPtr& trainOccurrences, 
-			     OccurrencesPtr& testOccurrences, 
-			     double propTrain);
+			     OccurrencesPtr& testOccurrences,
+				 double propTrain);
+
+/** Splits data points into to 2 new subsets
+ *  @param orig  Original occurrences to split
+ *  @param train Train occurrences to be returned
+ *  @param test  Test occurrences to be returned
+ */
+dllexp void splitOccurrences(const OccurrencesPtr& occurrences, 
+			     OccurrencesPtr& trainOccurrences, 
+			     OccurrencesPtr& testOccurrences);
+
 
 /** 
  * Representation of a set of occurrences.

@@ -47,7 +47,7 @@ class NicheMosaic : public AlgorithmImpl
     OccurrencesPtr _my_presences;      // occurrence points of species.
     OccurrencesPtr _my_presences_test; // occurrence points of species (test).
     OccurrencesPtr _my_absence_test;   // occurrence points of species (absence test).
-    size_t _bestCost;                  // best cost
+    Scalar _bestCost;                  // best cost
     bool _done;                        // is true if the algorithm is finished.
     float _progress;                   // iteration progress
     std::vector<ScalarVector> _model_min_best;
@@ -89,7 +89,7 @@ class NicheMosaic : public AlgorithmImpl
    size_t getRandomLayerNumber();
 
    //return random percent.
-   Scalar getRandomPercent(const std::vector<Scalar> &delta, const size_t i_layer, size_t &cost1, size_t &cost2);
+   Scalar getRandomPercent(const std::vector<Scalar> &delta, const size_t i_layer, size_t &cost1);
 
    //renew tabu degree list
    void renewTabuDegree(std::vector<size_t> &tabuDegree);
@@ -97,9 +97,12 @@ class NicheMosaic : public AlgorithmImpl
    //save best model
    void saveBestModel(const std::vector<ScalarVector> &model_min, const std::vector<ScalarVector> &model_max);
 
+   //improve model
+   void improveModel(const std::vector<Scalar> &deltaBest);
+
    //Find solution.
-   void findSolution();
-   
+   void findSolution(size_t &costBest, std::vector<Scalar> &deltaBest, int &bestIter, size_t &bestCost2);
+
 };
 
 

@@ -44,6 +44,8 @@ using std::ostringstream;
 
 #include <algorithm> // needed for random_shuffle
 
+#include <math.h>
+
 /****************************************************************/
 /************************ Occurrences ***************************/
 
@@ -484,3 +486,97 @@ void splitOccurrences(const OccurrencesPtr& occurrences,
   }
 }
 
+/***************************/
+/**** split Occurrences in train/test using distance between points( Missae 09/2009 ) ****/
+void splitOccurrences(const OccurrencesPtr& occurrences, 
+                      OccurrencesPtr& trainOccurrences, 
+                      OccurrencesPtr& testOccurrences)
+{
+  double dist, distLimit=8.0, x, y, xmin, xmax, ymin, ymax, deltax, deltay;
+  unsigned int flag = 0, i = 0, itrain=0, ktrain=0, ioccur=0, flagOk=0;
+  std::vector<double> occurTransformx( occurrences->numOccurrences() );
+  std::vector<double> occurTransformy( occurrences->numOccurrences() );
+  std::vector<int> testId( occurrences->numOccurrences() );
+  int n = occurrences->numOccurrences(), icont=0;
+  int nptTeste = (int) (n * 0.40) + 2;
+
+  OccurrencesImpl::const_iterator it = occurrences->begin();
+  OccurrencesImpl::const_iterator fin = occurrences->end();
+  
+  xmin = xmax = (*it)->x();
+  ymin = ymax = (*it)->y();
+  
+  ++it;
+  while( it != fin ) {
+    if ( (*it)->x() < xmin ) xmin = (*it)->x();
+	else  if ( (*it)->x() > xmax) xmax = (*it)->x();
+	if ( (*it)->y() < ymin) ymin = (*it)->y();
+	else  if ( (*it)->y() > ymax) ymax = (*it)->y();
+    ++it;
+  }
+  deltax = xmax - xmin;
+  deltay = ymax - ymin;
+
+  it = occurrences->begin();
+  while( it != fin ) {
+    occurTransformx[i] = 100 * ( (*it)->x() - xmin ) / deltax;
+    occurTransformy[i] = 100 * ( (*it)->y() - ymin ) / deltay;
+    i++;
+    ++it;
+  }
+  do{
+    flagOk=0, flag = 0, itrain=0, ktrain=0, ioccur=0, icont=0;
+
+    it = occurrences->begin();
+
+    trainOccurrences->insert( new OccurrenceImpl( *(*it) ) );
+    ++it;
+    testId[ktrain] = ioccur;
+    ktrain++;
+    ioccur++;
+
+    while( it != fin ) {
+
+      for ( i = 0; i < ktrain; i++ ) {
+	    itrain = testId[i];
+	    x = occurTransformx[ioccur] - occurTransformx[itrain];
+	    y = occurTransformy[ioccur] - occurTransformy[itrain];
+        dist = sqrt(  (x*x) + (y*y)  );
+
+        if ( dist < distLimit) {
+          testOccurrences->insert( new OccurrenceImpl( *(*it) ) );
+		  flag = 1;
+		  icont++;
+		  break;
+        }
+	  }
+
+	  if (icont > nptTeste){
+	    OccurrencesImpl::iterator it = testOccurrences->begin();
+ 	    OccurrencesImpl::iterator last = testOccurrences->end();
+	    while ( it != last ) {
+		  it = testOccurrences->erase(it);
+		  last = testOccurrences->end();
+	    }
+	    OccurrencesImpl::iterator itt = trainOccurrences->begin();
+ 	    OccurrencesImpl::iterator lastt = trainOccurrences->end();
+	    while ( itt != lastt ) {
+		  itt = trainOccurrences->erase(itt);
+		  lastt = trainOccurrences->end();
+	    }
+        distLimit = distLimit - 1.0;
+	    flagOk=1;
+        break;
+	  }
+  	  if (!flag){
+        trainOccurrences->insert( new OccurrenceImpl( *(*it) ) );
+        testId[ktrain] = ioccur;
+	    ktrain++;
+	  }else{
+        flag = 0;
+	  }
+	  ioccur++;
+      ++it;
+    }
+  }while(flagOk == 1);
+}
