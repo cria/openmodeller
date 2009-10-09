@@ -530,6 +530,8 @@ void splitOccurrences(const OccurrencesPtr& occurrences,
     it = occurrences->begin();
 
     trainOccurrences->insert( new OccurrenceImpl( *(*it) ) );
+    testOccurrences->insert( new OccurrenceImpl( *(*it) ) );
+
     ++it;
     testId[ktrain] = ioccur;
     ktrain++;
