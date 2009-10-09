@@ -148,9 +148,15 @@ NicheMosaic::initialize()
   // Check the number of presences
   int num_presences = _samp->numPresence();
 
-  if ( num_presences == 0 ) {
+ // if ( num_presences == 0 ) {
 
-    Log::instance()->warn( "No presence points inside the mask!\n" );
+ //   Log::instance()->warn( "No presence points inside the mask!\n" );
+ //   return 0;
+ // }
+
+ if ( num_presences < 10 ) {
+
+    Log::instance()->warn( "Niche Mosaic needs at least 10 presence points.\n" );
     return 0;
   }
 
@@ -159,7 +165,7 @@ NicheMosaic::initialize()
 
   if ( _num_layers < 2 ) 
   {
-    std::string msg = "Tabu needs at least 2 layers.\n";
+    std::string msg = "Niche Mosaic needs at least 2 layers.\n";
 
     Log::instance()->error( msg.c_str() );
     return 0;
@@ -197,7 +203,8 @@ NicheMosaic::initialize()
 
     alg->setParameters( param );
     alg->createModel( _samp );
-    size_t num_abs = 0.40 * num_presences;
+  	size_t num_abs = (size_t)(0.40 * num_presences);
+    if (num_abs < 10) num_abs = 10;///////////////////////////////////////////////////////////////////////////////
     _my_absence_test = _samp->getPseudoAbsences( num_abs, alg->getModel(), 0.6 );
 //  }
  // else {
@@ -245,9 +252,10 @@ NicheMosaic::iterate()
   do{
     findSolution(costBest, deltaBest, bestIter, bestCost2);
 	_num_iterations = _num_iterations + 8000;
-  }while(bestIter < endDo);
+	if (_num_iterations > 30000) break;
+  }while( (bestIter < endDo) || (costBest < (size_t)(_num_points_test*0.8)) );
 
-  if ( (_num_points_absence_test - bestCost2) > 10 ){
+  if ( (size_t)(_num_points_absence_test*0.6) > bestCost2 ){
 	string alg_id = "BIOCLIM";
     AlgorithmPtr alg = AlgorithmFactory::newAlgorithm( alg_id );
 
@@ -467,9 +475,10 @@ NicheMosaic::getRandomLayerNumber()
 Scalar 
 NicheMosaic::getRandomPercent(const std::vector<Scalar> &delta, const size_t i_layer, size_t &costPres)
 {
-  int size = 26;
+  int size = 24;
 
-  Scalar percent[26] = { 0.1, 0.11, 0.12, 0.13, 0.14, 0.15, 0.16, 0.17, 0.18, 0.19, 0.2, 0.21, 0.22, 0.23, 0.24, 0.25, 0.26, 0.27, 0.28, 0.29, 0.3, 0.31, 0.32, 0.33, 0.34, 0.35 };
+  Scalar percent[24] = { 0.12, 0.13, 0.14, 0.15, 0.16, 0.17, 0.18, 0.19, 0.2, 0.21, 0.22, 0.23, 0.24, 0.25, 0.26, 0.27, 0.28, 0.29, 0.3, 0.31, 0.32, 0.33, 0.34, 0.35 };
+
 
   int half = (int)(size/2);
 
@@ -546,6 +555,8 @@ NicheMosaic::improveModel( const std::vector<Scalar> &deltaBest )
 	    for (j = 0; j < _num_layers; j++) {
 	        _model_min_best[n][j] = sample[j] - deltaBest[j];
 			_model_max_best[n][j] = sample[j] + deltaBest[j];
+            Log::instance()->info( "model_min=  %7.2f  model_max=  %7.2f    n= %d     j= %d \n", _model_min_best[n][j], _model_max_best[n][j], n, j);
+
 		}//end for
 		n++;
 	}//end if
