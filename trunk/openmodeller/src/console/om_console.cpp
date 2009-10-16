@@ -38,6 +38,10 @@
 
 #include <stdexcept>
 
+#ifdef MPI_FOUND
+#include "mpi.h"
+#endif
+
 int showAlgorithms ( AlgMetadata const **availables );
 AlgMetadata const *readAlgorithm( AlgMetadata const **availables );
 int readParameters( AlgParameter *result, AlgMetadata const *metadata );
@@ -125,6 +129,18 @@ main( int argc, char **argv )
       }
     }
 
+#ifdef MPI_FOUND
+
+      Log::instance()->info( "Running the parallel version of the algorithm\n" );
+
+      MPI_Init( &argc, &argv ); // MPI initialization
+
+      int rank;
+
+      MPI_Comm_rank( MPI_COMM_WORLD, &rank );
+
+#endif
+
     // Run model
     om.setModelCallback( modelCallback );
 
@@ -202,6 +218,10 @@ main( int argc, char **argv )
   catch ( ... ) {
     Log::instance()->info( "Unknown error occurred\n" );
   }
+
+  #ifdef MPI_FOUND
+    MPI_Finalize();
+  #endif
 
   return 0;
 }
