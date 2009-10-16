@@ -43,6 +43,12 @@
 
 #include <limits>
 
+#ifdef MPI_FOUND
+#include "mpi.h"
+#define WORKTAG 1
+#define DIETAG 2
+#endif
+
 using namespace std;
 
 /****************************************************************/
@@ -395,7 +401,265 @@ MaximumEntropy::initialize()
 int
 MaximumEntropy::iterate()
 {
-  train( _num_iterations, _tolerance );
+  init_trainer();
+
+  double loss = std::numeric_limits<double>::infinity();
+  double new_loss = 0.0;
+  int niter;
+
+  for ( niter = 0; niter < _num_iterations; ++niter ) {
+    
+    double *alfa;
+    double *alfa_pos_neg;
+    double min_F = std::numeric_limits<double>::infinity();
+    double sum_mean_lambda = 0.0;
+    double sum_regu_lambda = 0.0;
+    double *midpoint;
+    int *sign_pos;
+    int *sign_neg;
+    int *signs;
+    int neg;
+    int pos;
+    int best_id = -1;
+
+    calc_q_lambda_x();
+
+    for ( int i = 0; i < _len; ++i ) {
+
+      sum_mean_lambda += -features_mean[i] * lambda[i];
+      sum_regu_lambda += regularization_parameters[i] * fabs(lambda[i]);
+    }
+
+    new_loss = sum_mean_lambda + log(Z_lambda) + sum_regu_lambda;
+
+    if ( (loss - new_loss) < _tolerance ) {
+      break;
+    }
+
+    loss = new_loss;
+
+    calc_q_lambda_f();
+    
+#ifdef MPI_FOUND
+    int my_rank, n_tasks;
+    MPI_Status status;
+    MPI_Comm_rank( MPI_COMM_WORLD, &my_rank );
+    MPI_Comm_size( MPI_COMM_WORLD, &n_tasks); // Find out how many processes there are in the default communicator
+
+    if ( my_rank == 0 ){
+
+      double result;
+      int ind, i, rank;
+
+      for ( rank = 1, i = 0; rank < n_tasks && rank <= _len; ++rank, ++i ) {
+
+	MPI_Send(&i,                // i-th work to do
+		 1,                 // one data item
+		 MPI_INT,           // data item is an integer
+		 rank,              // destination process rank
+		 WORKTAG,           // user chosen message tag
+		 MPI_COMM_WORLD);   // default communicator
+      }
+
+      while ( i < _len ) {
+
+	// Receive F[i] from a slave
+	MPI_Recv(&result,           // result from some slave
+                 1,                 // one data item
+		 MPI_DOUBLE,        // of type double real
+		 MPI_ANY_SOURCE,    // receive from any sender
+		 MPI_ANY_TAG,       // any type of message
+		 MPI_COMM_WORLD,    // default communicator
+		 &status);          // info about the received message
+
+	// Receive i from the same slave
+	MPI_Recv(&ind,              // index from the same slave that sent F[i]
+                 1,                 // one data item
+		 MPI_INT,           // of type int
+		 status.MPI_SOURCE, // receive from the same sender
+		 MPI_ANY_TAG,       // any type of message
+		 MPI_COMM_WORLD,    // default communicator
+		 &status);          // info about the received message
+
+	// Send the slave a new work unit
+	MPI_Send(&i,                // i-th work to do
+		 1,                 // one data item
+		 MPI_INT,           // data item is an integer
+		 status.MPI_SOURCE, // to who we just received from
+		 WORKTAG,           // user chosen message tag
+		 MPI_COMM_WORLD);   // default communicator
+
+	if ( min_F > result ) {
+	  min_F = result;
+	  best_id = ind;
+	}
+
+	++i;
+      }
+
+      // Receive all the outstanding results from the slaves.
+      for ( rank = 1; rank < n_tasks; ++rank ) {
+
+	MPI_Recv( &result, 1, MPI_DOUBLE, MPI_ANY_SOURCE, MPI_ANY_TAG, MPI_COMM_WORLD, &status );
+	MPI_Recv( &ind, 1, MPI_INT, status.MPI_SOURCE, MPI_ANY_TAG, MPI_COMM_WORLD, &status );
+
+	if ( min_F > result ) {
+	  min_F = result;
+	  best_id = ind;
+	}
+      }
+
+      // Tell all the slaves to exit by sending an empty message with the DIETAG.
+      for ( rank = 1; rank < n_tasks; ++rank ) {
+
+	MPI_Send( 0, 0, MPI_INT, rank, DIETAG, MPI_COMM_WORLD );
+      }
+    } // if ( myrank == 0 )
+    else {
+
+      int i;
+      double result;
+
+      midpoint = new double[_len];
+      sign_pos = new int[_len];
+      sign_neg = new int[_len];
+      signs = new int[_len];
+      alfa = new double[_len];
+      alfa_pos_neg = new double[_len];
+
+      while ( 1 ) {
+	
+	// Receive a message from the master
+	MPI_Recv( &i, 1, MPI_INT, 0, MPI_ANY_TAG, MPI_COMM_WORLD, &status);
+
+	// Check the tag of the received message.
+	if ( status.MPI_TAG == DIETAG ) {
+	 
+	  return 1;
+	}
+
+	// Do the work
+	midpoint[i] = -features_mean[i] + q_lambda_f[i] / ( exp(lambda[i]) + ( 1 - exp(lambda[i]) ) * q_lambda_f[i]);
+	
+	if ( (midpoint[i] + regularization_parameters[i]) < 0.0 ) {
+	  sign_pos[i] = -1;
+	}
+	else {
+	  if ( (midpoint[i] + regularization_parameters[i]) > 0.0 ) {
+	    sign_pos[i] = 1;
+	  }
+	  else{
+	    sign_pos[i] = 0;
+	  }
+	}
+	
+	if ( (midpoint[i] - regularization_parameters[i]) < 0.0 ) {
+	  sign_neg[i] = -1;
+	}
+	else {
+	  if ( (midpoint[i] - regularization_parameters[i]) > 0.0 ) {
+	    sign_neg[i] = 1;
+	  }
+	  else {
+	    sign_neg[i] = 0;
+	  }
+	}
+	
+	if ( sign_neg[i] > 0 ) neg = 1;
+	else neg = 0;
+	
+	if ( sign_pos[i] < 0 ) pos = 1;
+	else pos = 0;
+	
+	signs[i] = neg - pos;
+	
+	alfa_pos_neg[i] = log((features_mean[i]+signs[i]*regularization_parameters[i])*(1-q_lambda_f[i])
+			      /((1-features_mean[i]-signs[i]*regularization_parameters[i])*q_lambda_f[i]));
+	
+	alfa[i] = -lambda[i];
+	
+	if ( signs[i] != 0 ) {
+	  alfa[i] = alfa_pos_neg[i];
+	}
+	
+	result = -alfa[i] * features_mean[i] + log(1 + (exp(alfa[i]) - 1) * q_lambda_f[i])
+	         + regularization_parameters[i] * (fabs(lambda[i] + alfa[i]) - fabs(lambda[i]));
+	
+	// Send the result back
+	MPI_Send( &result, 1, MPI_DOUBLE, 0, 0, MPI_COMM_WORLD );
+	MPI_Send( &i, 1, MPI_INT, 0, 0, MPI_COMM_WORLD );
+
+      } // While (1)
+    } // else
+#else
+    double *F;
+    midpoint = new double[_len];
+    sign_pos = new int[_len];
+    sign_neg = new int[_len];
+    signs = new int[_len];
+    F = new double[_len];
+    alfa = new double[_len];
+    alfa_pos_neg = new double[_len];
+
+    for ( int i = 0; i < _len; ++i ) {
+
+      midpoint[i] = -features_mean[i] + q_lambda_f[i] / ( exp(lambda[i]) + ( 1 - exp(lambda[i]) ) * q_lambda_f[i]);
+
+      if ( (midpoint[i] + regularization_parameters[i]) < 0.0 ) {
+	sign_pos[i] = -1;
+      }
+      else {
+	if ( (midpoint[i] + regularization_parameters[i]) > 0.0 ) {
+	  sign_pos[i] = 1;
+	}
+	else{
+	  sign_pos[i] = 0;
+	}
+      }
+
+      if ( (midpoint[i] - regularization_parameters[i]) < 0.0 ) {
+	sign_neg[i] = -1;
+      }
+      else {
+	if ( (midpoint[i] - regularization_parameters[i]) > 0.0 ) {
+	  sign_neg[i] = 1;
+	}
+	else {
+	  sign_neg[i] = 0;
+	}
+      }
+      
+      if ( sign_neg[i] > 0 ) neg = 1;
+      else neg = 0;
+
+      if ( sign_pos[i] < 0 ) pos = 1;
+      else pos = 0;
+
+      signs[i] = neg - pos;
+
+      alfa_pos_neg[i] = log((features_mean[i]+signs[i]*regularization_parameters[i])*(1-q_lambda_f[i])
+			    /((1-features_mean[i]-signs[i]*regularization_parameters[i])*q_lambda_f[i]));
+
+      alfa[i] = -lambda[i];
+ 
+      if ( signs[i] != 0 ) {
+	alfa[i] = alfa_pos_neg[i];
+      }
+
+      F[i] = -alfa[i] * features_mean[i] + log(1 + (exp(alfa[i]) - 1) * q_lambda_f[i])
+	     + regularization_parameters[i] * (fabs(lambda[i] + alfa[i]) - fabs(lambda[i]));
+
+      if ( min_F > F[i] ) {
+	min_F = F[i];
+	best_id = i;
+      }
+    } // for ( int i = 0; i < _len; ++i )
+#endif
+    lambda[best_id] += min_F;
+
+  } // for ( size_t niter = 0; niter < iter; ++niter )
+
+  Log::instance()->info( MAXENT_LOG_PREFIX "Entropy\t %.2f \n", entropy );
 
   _done = true;
   
@@ -748,7 +1012,7 @@ MaximumEntropy::calc_q_lambda_x()
   for ( int j = 0; j < _num_samples; ++j ) {
     
     q_lambda_x[j] /= Z_lambda;
-      entropy += (q_lambda_x[j] * log(q_lambda_x[j]));
+    entropy += (q_lambda_x[j] * log(q_lambda_x[j]));
   }
   entropy = -entropy;
 
@@ -837,141 +1101,6 @@ MaximumEntropy::calc_q_lambda_f()
     ++p_iterator;
   }
 }
-
-/*************/
-/*** train ***/
-
-void
-MaximumEntropy::train( size_t iter, double tol )
-{
-  init_trainer();
-
-  double loss = std::numeric_limits<double>::infinity();
-  double new_loss = 0.0;
-  size_t niter;
-  for ( niter = 0; niter < iter; ++niter ) {
-    
-    double *F;
-    double *alfa;
-    double *alfa_pos_neg;
-    double min_F = std::numeric_limits<double>::infinity();
-    double sum_mean_lambda = 0.0;
-    double sum_regu_lambda = 0.0;
-    double *midpoint;
-    int *sign_pos;
-    int *sign_neg;
-    int *signs;
-    int neg;
-    int pos;
-    int best_id = -1;
-
-    calc_q_lambda_x();
-
-    for ( int i = 0; i < _len; ++i ) {
-
-      sum_mean_lambda += -features_mean[i] * lambda[i];
-      sum_regu_lambda += regularization_parameters[i] * fabs(lambda[i]);
-    }
-
-    new_loss = sum_mean_lambda + log(Z_lambda) + sum_regu_lambda;
-
-    if ( (loss - new_loss) < tol ) {
-      break;
-    }
-
-    loss = new_loss;
-
-    calc_q_lambda_f();
-    
-    midpoint = new double[_len];
-    
-    for ( int i = 0; i < _len; ++i ) {
-
-      midpoint[i] = -features_mean[i] + q_lambda_f[i] / ( exp(lambda[i]) + ( 1 - exp(lambda[i]) ) * q_lambda_f[i]);
-    }
-    
-    sign_pos = new int[_len];
-    sign_neg = new int[_len];
-
-    for ( int i = 0; i < _len; ++i ) {
-
-      if ( (midpoint[i] + regularization_parameters[i]) < 0.0 ) {
-	sign_pos[i] = -1;
-      }
-      else {
-	if ( (midpoint[i] + regularization_parameters[i]) > 0.0 ) {
-	  sign_pos[i] = 1;
-	}
-	else{
-	  sign_pos[i] = 0;
-	}
-      }
-
-      if ( (midpoint[i] - regularization_parameters[i]) < 0.0 ) {
-	sign_neg[i] = -1;
-      }
-      else {
-	if ( (midpoint[i] - regularization_parameters[i]) > 0.0 ) {
-	  sign_neg[i] = 1;
-	}
-	else {
-	  sign_neg[i] = 0;
-	}
-      }
-    }
-    
-    signs = new int[_len];
-
-    for ( int i = 0; i < _len; ++i ) {
-      
-      if ( sign_neg[i] > 0 ) neg = 1;
-      else neg = 0;
-
-      if ( sign_pos[i] < 0 ) pos = 1;
-      else pos = 0;
-
-      signs[i] = neg - pos;
-    }
-    
-    F = new double[_len];
-    alfa = new double[_len];
-    alfa_pos_neg = new double[_len];
-
-    for ( int i = 0; i < _len; ++i ) {
-
-      alfa_pos_neg[i] = log((features_mean[i]+signs[i]*regularization_parameters[i])*(1-q_lambda_f[i])
-			    /((1-features_mean[i]-signs[i]*regularization_parameters[i])*q_lambda_f[i]));
-    }
-
-    for ( int i = 0; i < _len; ++i ) {
-
-      alfa[i] = -lambda[i];
-    }
-
-    for ( int i = 0; i < _len; ++i ) {
-
-      if ( signs[i] != 0 ) {
-	alfa[i] = alfa_pos_neg[i];
-      }
-    }
-
-    for ( int i = 0; i < _len; ++i ) {
-
-      F[i] = -alfa[i] * features_mean[i] + log(1 + (exp(alfa[i]) - 1) * q_lambda_f[i])
-	     + regularization_parameters[i] * (fabs(lambda[i] + alfa[i]) - fabs(lambda[i]));
-
-      if ( min_F > F[i] ) {
-	min_F = F[i];
-	best_id = i;
-      }
-    }
-
-    lambda[best_id] += min_F;
-
-  } // for ( size_t niter = 0; niter < iter; ++niter )
-
-  Log::instance()->info( MAXENT_LOG_PREFIX "Entropy\t %.2f \n", entropy );
-} // train
 
 /************/
 /*** done ***/
