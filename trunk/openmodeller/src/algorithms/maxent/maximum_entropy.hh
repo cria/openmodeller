@@ -68,8 +68,6 @@ private:
 
   double interpol( char type_feat );
 
-  void train( size_t iter = 500, double tol = 1E-05 );
-
   double *regularization_parameters;
   double *features_mean;
   double *feat_stan_devi;
