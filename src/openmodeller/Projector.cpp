@@ -213,6 +213,7 @@ Projector::createMap( const Model& model,
   MPI_Request req_dado[N_X];
   MPI_Request inf_N[N_X];
   int ix;
+  int n_elem[N_X];
   int env_dado[N_X],total_pixels;
   int pixel_next,interval_pixels[3];
   int count_tag,max_count_tag;
@@ -358,7 +359,10 @@ while (init_pixel<(total_pixels)) {
         j++;
       } //end do for
 
-          MPI_Isend(&j,1,MPI_INT,0,interval_pixels[2],MPI_COMM_WORLD,&inf_N[ix]);
+	  n_elem[ix]=j;
+
+	  MPI_Isend(&n_elem[ix],1,MPI_INT,0,interval_pixels[2],MPI_COMM_WORLD,&inf_N[ix]);
+      //MPI_Isend(&j,1,MPI_INT,0,interval_pixels[2],MPI_COMM_WORLD,&inf_N[ix]);
       MPI_Isend(X[ix],j*sizeof(buff),MPI_UNSIGNED_CHAR,0,interval_pixels[2],MPI_COMM_WORLD,&req_dado[ix]);
       env_dado[ix]=1;
       ix=(ix+1)%N_X;
