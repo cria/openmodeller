@@ -148,13 +148,7 @@ NicheMosaic::initialize()
   // Check the number of presences
   int num_presences = _samp->numPresence();
 
- // if ( num_presences == 0 ) {
-
- //   Log::instance()->warn( "No presence points inside the mask!\n" );
- //   return 0;
- // }
-
- if ( num_presences < 10 ) {
+  if ( num_presences < 10 ) {
 
     Log::instance()->warn( "Niche Mosaic needs at least 10 presence points.\n" );
     return 0;
@@ -183,29 +177,38 @@ NicheMosaic::initialize()
     Log::instance()->error( "Parameter '" NUMITERATIONS_ID "' must be greater than 999.\n" );
     return 0;
   }
-
+  
+  // remove discrepancy presence points
+  OccurrencesPtr cleanPresences = cleanOccurrences( _samp->getPresences() );
+  _sampp = createSampler( _samp->getEnvironment(), cleanPresences, _samp->getAbsences() );
+  int aa = _sampp->numPresence();
+  int aaa = cleanPresences->numOccurrences();
+  if (_sampp->numPresence() == num_presences){
+    Log::instance()->info( "==> no discrepancy presence points\n");
+  }
  // int num_absences = _samp->numAbsence();
 
  // if ( num_absences <= 0 ) {
 
-    // generate pseudo absence points
-    string alg_id = "BIOCLIM";
-    AlgorithmPtr alg = AlgorithmFactory::newAlgorithm( alg_id );
+  // generate pseudo absence points
+  string alg_id = "BIOCLIM";
+  AlgorithmPtr alg = AlgorithmFactory::newAlgorithm( alg_id );
 
-    if ( ! alg ) {
+  if ( ! alg ) {
 
-      Log::instance()->error( "Could not instantiate BIOCLIM algorithm to generate pseudo-absences." );
-      return 0;
-    }
+    Log::instance()->error( "Could not instantiate BIOCLIM algorithm to generate pseudo-absences." );
+    return 0;
+  }
 
-    ParamSetType param;
-    param["StandardDeviationCutoff"] = "0.9";
+  ParamSetType param;
+  param["StandardDeviationCutoff"] = "0.9";
 
-    alg->setParameters( param );
-    alg->createModel( _samp );
-  	size_t num_abs = (size_t)(0.40 * num_presences);
-    if (num_abs < 10) num_abs = 10;///////////////////////////////////////////////////////////////////////////////
-    _my_absence_test = _samp->getPseudoAbsences( num_abs, alg->getModel(), 0.6 );
+  alg->setParameters( param );
+  alg->createModel( _sampp );
+  size_t num_abs = (size_t)(0.40 * num_presences);
+  if (num_abs < 10) num_abs = 10;
+    _my_absence_test = _sampp->getPseudoAbsences( num_abs, alg->getModel(), 0.6 ); 
+
 //  }
  // else {
 
@@ -221,7 +224,6 @@ NicheMosaic::initialize()
   return 1;
 }
 
-
 /***************/
 /*** iterate ***/
 int
@@ -231,7 +233,7 @@ NicheMosaic::iterate()
   size_t costBest, num_points_train_test, bestCost2=0;
   int bestIter = 0;
 
-  num_points_train_test = _samp->getPresences()->numOccurrences();
+  num_points_train_test = _sampp->getPresences()->numOccurrences();
   _model_min_best.resize( num_points_train_test );
   _model_max_best.resize( num_points_train_test );
 
@@ -242,15 +244,16 @@ NicheMosaic::iterate()
 
 
   // Split sampler in test/train
-  splitOccurrences( _samp->getPresences(), _my_presences, _my_presences_test );
+  splitOccurrences( _sampp->getPresences(), _my_presences, _my_presences_test );
   _num_points_test = _my_presences_test->numOccurrences();
   _num_points = _my_presences->numOccurrences();
-
+  
   if ( 0 == setMinMaxDelta() ) {return 0;}
   
   int endDo = _num_layers * 10;
   do{
     findSolution(costBest, deltaBest, bestIter, bestCost2);
+
 	_num_iterations = _num_iterations + 8000;
 	if (_num_iterations > 30000) break;
   }while( (bestIter < endDo) || (costBest < (size_t)(_num_points_test*0.8)) );
@@ -269,9 +272,10 @@ NicheMosaic::iterate()
     param["StandardDeviationCutoff"] = "0.9";
 
     alg->setParameters( param );
-    alg->createModel( _samp );
-    _my_absence_test = _samp->getPseudoAbsences( 100, alg->getModel(), 0.6 );
-    _num_points_absence_test = _my_absence_test->numOccurrences(); 
+    alg->createModel( _sampp ); 
+
+    _my_absence_test = _sampp->getPseudoAbsences( 100, alg->getModel(), 0.6 );
+    _num_points_absence_test = _my_absence_test->numOccurrences();  
 
 	_num_iterations = 10000;
     findSolution(costBest, deltaBest, bestIter, bestCost2);
@@ -555,7 +559,6 @@ NicheMosaic::improveModel( const std::vector<Scalar> &deltaBest )
 	    for (j = 0; j < _num_layers; j++) {
 	        _model_min_best[n][j] = sample[j] - deltaBest[j];
 			_model_max_best[n][j] = sample[j] + deltaBest[j];
-            Log::instance()->info( "model_min=  %7.2f  model_max=  %7.2f    n= %d     j= %d \n", _model_min_best[n][j], _model_max_best[n][j], n, j);
 
 		}//end for
 		n++;
@@ -566,7 +569,7 @@ NicheMosaic::improveModel( const std::vector<Scalar> &deltaBest )
 }
 
 void 
-NicheMosaic::findSolution(size_t &costBest, std::vector<Scalar> &deltaBest, int &bestIter, size_t &bestCost2)//, Scalar &deltaBestAverage, const Scalar &deltaIni )
+NicheMosaic::findSolution(size_t &costBest, std::vector<Scalar> &deltaBest, int &bestIter, size_t &bestCost2)
 {
   size_t cost1, cost2, i_layer, bestCost1=0;
   Scalar importance = 0.25 * _num_layers, cost, deltaBestAverage=0, deltaIni=0.35;
@@ -646,7 +649,7 @@ NicheMosaic::findSolution(size_t &costBest, std::vector<Scalar> &deltaBest, int 
   }
   deltaBestAverage = deltaBestAverage/_num_layers;
   Log::instance()->info( "soma(media)=  %7.2f \n", deltaBestAverage);
-	Log::instance()->info("\n***********************************************\n");
+  Log::instance()->info("\n***********************************************\n");
 }
 
 /****************************************************************/
@@ -711,4 +714,160 @@ NicheMosaic::_setConfiguration( const ConstConfigurationPtr& config )
   _done = true;
 
   return;
+}
+
+OccurrencesPtr
+NicheMosaic::cleanOccurrences( const OccurrencesPtr& occurrences )
+{
+  OccurrencesPtr presence( new OccurrencesImpl(0.0) );
+  OccurrencesPtr presenceAux( new OccurrencesImpl(0.0) );
+  
+  double dist, distLimit=8.0, x, y, xmin, xmax, ymin, ymax, deltax, deltay;
+  unsigned int flag = 0, i = 0, itrain=0, ktrain=0, ioccur=0;
+  std::vector<double> occurTransformx( occurrences->numOccurrences() );
+  std::vector<double> occurTransformy( occurrences->numOccurrences() );
+  std::vector<int> testId( occurrences->numOccurrences() );
+
+  OccurrencesImpl::const_iterator it = occurrences->begin();
+  OccurrencesImpl::const_iterator fin = occurrences->end();
+  
+  xmin = xmax = (*it)->x();
+  ymin = ymax = (*it)->y();
+  
+  ++it;
+  while( it != fin ) {
+    if ( (*it)->x() < xmin ) xmin = (*it)->x();
+	else  if ( (*it)->x() > xmax) xmax = (*it)->x();
+	if ( (*it)->y() < ymin) ymin = (*it)->y();
+	else  if ( (*it)->y() > ymax) ymax = (*it)->y();
+    ++it;
+  }
+  deltax = xmax - xmin;
+  deltay = ymax - ymin;
+
+  it = occurrences->begin();
+  while( it != fin ) {
+    occurTransformx[i] = 100 * ( (*it)->x() - xmin ) / deltax;
+    occurTransformy[i] = 100 * ( (*it)->y() - ymin ) / deltay;
+    i++;
+    ++it;
+  }
+
+  flag = 0, itrain=0, ktrain=0, ioccur=0;
+
+  it = occurrences->begin();
+
+  presenceAux->insert( new OccurrenceImpl( *(*it) ) );
+
+  ++it;
+  testId[ktrain] = ioccur;
+  ktrain++;
+  ioccur++;
+
+  while( it != fin ) {
+
+    for ( i = 0; i < ktrain; i++ ) {
+      itrain = testId[i];
+	  x = occurTransformx[ioccur] - occurTransformx[itrain];
+	  y = occurTransformy[ioccur] - occurTransformy[itrain];
+      dist = sqrt(  (x*x) + (y*y)  );
+
+      if ( dist < distLimit) {
+        presence->insert( new OccurrenceImpl( *(*it) ) );
+	    flag = 1;
+	    break;
+      }
+	}
+
+  	if (!flag){
+      presenceAux->insert( new OccurrenceImpl( *(*it) ) );
+      testId[ktrain] = ioccur;
+	  ktrain++;
+	}else{
+      flag = 0;
+	}
+	ioccur++;
+    ++it;
+  }
+  
+  //verify presenceAux points 
+  SamplerPtr samp = createSampler( _samp->getEnvironment(), presence, _samp->getAbsences() );
+  Sample mean;
+  Sample deviation;
+  computeMeanDeviation( presence, mean, deviation  );
+
+  OccurrencesImpl::const_iterator itt = presenceAux->begin();
+  OccurrencesImpl::const_iterator finn = presenceAux->end();
+
+  double prob;
+  OccurrencePtr occ;
+  while( itt != finn ) {
+    occ = (*itt);
+
+	Sample dif = occ->environment();
+    dif -= mean;
+    prob = 1.0;
+    for( unsigned int i=0; i<dif.size(); i++) {
+      Scalar cutoff = deviation[i];
+
+      if ( dif[i] > cutoff || dif[i] < -cutoff ) {
+        prob = 0.0;
+		break;
+      }
+    }
+
+    if ( prob == 1.0 ){
+      presence->insert( new OccurrenceImpl( *(*itt) ) );
+    }
+    ++itt;
+  }
+
+  return presence;
+}
+
+void
+NicheMosaic::computeMeanDeviation( const OccurrencesPtr& occs, Sample& mean, Sample& deviation  )
+{
+  // compute mean
+  OccurrencesImpl::const_iterator oc = occs->begin();
+  OccurrencesImpl::const_iterator end = occs->end();
+
+  Sample min, max;
+
+  Sample const & sample = (*oc)->environment();
+  min = sample;
+  max = sample;
+  mean = sample;   
+  ++oc;
+ 
+  while ( oc != end ) {
+      
+    Sample const& sample = (*oc)->environment();
+      
+    mean += sample;
+    min &= sample;
+    max |= sample;
+
+    ++oc;
+  }
+  mean /= Scalar( occs->numOccurrences() );
+
+  // compute the std deviation 
+  deviation.resize( mean.size() );
+  oc = occs->begin();
+
+  // compute the variance.
+  while ( oc != end ) {
+    Sample tmp( (*oc)->environment() );
+    tmp -= mean;
+    tmp *= tmp;
+    deviation += tmp;
+    ++oc;
+  }
+
+  // divide by (npnt - 1)
+  Scalar npts = Scalar( occs->numOccurrences() - 1 );
+  deviation /= npts;
+  deviation.sqrt();
+  deviation *= 5.0;
 }

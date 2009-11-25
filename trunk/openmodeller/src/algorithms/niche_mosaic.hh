@@ -50,6 +50,7 @@ class NicheMosaic : public AlgorithmImpl
     Scalar _bestCost;                  // best cost
     bool _done;                        // is true if the algorithm is finished.
     float _progress;                   // iteration progress
+	SamplerPtr _sampp;
     std::vector<ScalarVector> _model_min_best;
     std::vector<ScalarVector> _model_max_best;
 
@@ -102,6 +103,12 @@ class NicheMosaic : public AlgorithmImpl
 
    //Find solution.
    void findSolution(size_t &costBest, std::vector<Scalar> &deltaBest, int &bestIter, size_t &bestCost2);
+
+   //remove discrepancy points
+   OccurrencesPtr cleanOccurrences( const OccurrencesPtr& occurrences );
+
+   //compute mean and deviation
+   void computeMeanDeviation( const OccurrencesPtr& occs, Sample& mean, Sample& deviation  );
 
 };
 
