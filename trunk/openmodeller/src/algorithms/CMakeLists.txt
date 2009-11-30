@@ -107,6 +107,10 @@ IF (SQLITE3_FOUND)
     ${SQLITE3_INCLUDE_DIR}
   )
 
+  IF(COMMAND cmake_policy)
+    cmake_policy(SET CMP0003 NEW)
+  ENDIF(COMMAND cmake_policy)
+
   ADD_LIBRARY (aquamaps MODULE ${LIBAQUAMAPS_SRCS})
 
   TARGET_LINK_LIBRARIES(aquamaps sqlite3 openmodeller)
