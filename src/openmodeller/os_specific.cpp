@@ -289,7 +289,7 @@ filter( const TDirent *dir )
   std::string ext = ".so";
 #endif
 
-  char *found = strstr( dir->d_name, (const char *)ext.c_str() );
+  const char *found = strstr( dir->d_name, (const char *)ext.c_str() );
 
   return found ? ! strcmp( found, ext.c_str() ) : 0;
 }
