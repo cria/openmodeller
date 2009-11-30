@@ -181,8 +181,9 @@ NicheMosaic::initialize()
   // remove discrepancy presence points
   OccurrencesPtr cleanPresences = cleanOccurrences( _samp->getPresences() );
   _sampp = createSampler( _samp->getEnvironment(), cleanPresences, _samp->getAbsences() );
-  int aa = _sampp->numPresence();
-  int aaa = cleanPresences->numOccurrences();
+  //@todo Remove these vars as they are unused and cause compile errors TS
+  //int aa = _sampp->numPresence();
+  //int aaa = cleanPresences->numOccurrences();
   if (_sampp->numPresence() == num_presences){
     Log::instance()->info( "==> no discrepancy presence points\n");
   }
