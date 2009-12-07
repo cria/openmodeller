@@ -181,12 +181,6 @@ NicheMosaic::initialize()
   // remove discrepancy presence points
   OccurrencesPtr cleanPresences = cleanOccurrences( _samp->getPresences() );
   _sampp = createSampler( _samp->getEnvironment(), cleanPresences, _samp->getAbsences() );
-  //@todo Remove these vars as they are unused and cause compile errors TS
-  //int aa = _sampp->numPresence();
-  //int aaa = cleanPresences->numOccurrences();
-  if (_sampp->numPresence() == num_presences){
-    Log::instance()->info( "==> no discrepancy presence points\n");
-  }
  // int num_absences = _samp->numAbsence();
 
  // if ( num_absences <= 0 ) {
@@ -573,7 +567,7 @@ void
 NicheMosaic::findSolution(size_t &costBest, std::vector<Scalar> &deltaBest, int &bestIter, size_t &bestCost2)
 {
   size_t cost1, cost2, i_layer, bestCost1=0;
-  Scalar importance = 0.25 * _num_layers, cost, deltaBestAverage=0, deltaIni=0.35;
+  Scalar importance = 0.25 * _num_layers, cost, deltaIni=0.35;
   std::vector<Scalar> delta( _num_layers );
 
   size_t nTabu = (size_t)floor(sqrt((double)(_num_layers)));
@@ -643,14 +637,6 @@ NicheMosaic::findSolution(size_t &costBest, std::vector<Scalar> &deltaBest, int 
 		}//end if
 	}//end if
   }//end for
-  deltaBestAverage = 0;
-  for (int k=0; k < _num_layers; k++) {
-    Log::instance()->info( "delta=  %7.2f \n", deltaBest[k]/_delta[k] );
-	deltaBestAverage = deltaBestAverage + (deltaBest[k]/_delta[k]);
-  }
-  deltaBestAverage = deltaBestAverage/_num_layers;
-  Log::instance()->info( "soma(media)=  %7.2f \n", deltaBestAverage);
-  Log::instance()->info("\n***********************************************\n");
 }
 
 /****************************************************************/
