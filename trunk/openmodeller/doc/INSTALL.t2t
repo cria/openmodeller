@@ -561,7 +561,7 @@ used from that place.
 Downlad and install NSIS from (http://nsis.sourceforge.net/Main_Page)
 
 
-Now using windows explorer, enter the win_build directory in your openModeller source
+Now using windows explorer, enter the install_win directory in your openModeller source
 tree. Read the README file there and follow the instructions. Next right click
 on openmodeller.nsi and choose the option 'Compile NSIS Script'. 
 
@@ -1017,7 +1017,7 @@ the installation directory to check which files are needed.
 
 Download and install NSIS from (http://nsis.sourceforge.net/Main_Page)
 
-Now using windows explorer, enter the win_build directory in your openModeller source
+Now using windows explorer, enter the install_win directory in your openModeller source
 tree. Read the README file there and follow the instructions. Next, right click
 on openmodeller.nsi and choose the option 'Compile NSIS Script'. 
 
