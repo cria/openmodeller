@@ -441,9 +441,15 @@ message giving useage instructions.
 % ----Please leave this break marker here for clarity - it wont be rendered ---
 % -----------------------------------------------------------------------------
 
-= Building under windows using msys =
+= Building under windows using MSYS =
 
 == MSYS: ==
+
+**IMPORTANT: This section is here for historical reasons, because in ancient** 
+**times there was an attempt to use this approach to generate the Windows version** 
+**of openModeller. Until now, no official version of openModeller was ever** 
+**released for Windows using MSYS. All official versions were generated with**
+**MSVC (see next section).**
 
 MSYS provides a unix style build environment under windows. We have created a
 zip archive that contains just about all dependencies.
@@ -1013,7 +1019,13 @@ To run openModeller you need to at the minimum copy the DLLs from
 c:\dev\cpp\omlibs-release\bin into the c:\program files\openmodellerX.X.X directory. 
 If you are unsure about which DLL and configuration files should be copied, then
 download the last installation package for Windows, install it and then inspect
-the installation directory to check which files are needed.
+the installation directory to check which files are needed. In other words: the option
+INSTALL in the solution browser **does not** copy all files needed to create the 
+package. The best approach is probably to install the latest version of openModeller,
+make a parallel copy of the entire installation directory, rename the new directory so 
+that it uses the same version number that you are using, and run the INSTALL option 
+again to overwrite all files that were changed since the last release. Then it should 
+be OK to use NSIS.
 
 Download and install NSIS from (http://nsis.sourceforge.net/Main_Page)
 
