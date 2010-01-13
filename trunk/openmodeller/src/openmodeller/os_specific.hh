@@ -41,6 +41,11 @@
   #define UNUSED(symbol)
 #endif
 
+/****************************************************************/
+/****** Replace finite with _finite when using MSVC *************/
+#ifdef _MSC_VER
+  #define finite _finite // function used by maxent
+#endif
 
 /****************************************************************/
 /********************* Dynamic Linking Loader *******************/
