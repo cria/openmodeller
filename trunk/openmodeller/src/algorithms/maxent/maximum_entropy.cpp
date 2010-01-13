@@ -1157,7 +1157,10 @@ MaximumEntropy::getValue( const Sample& x ) const
 
   if ( !finite(prob) ) {
 
-    prob = std::numeric_limits<double>::max(); // DBL_MAX;
+    // Beware that on windows max is also defined as a macro
+    // in <windows.h> so it should be enclosed in () in the
+    // next line to cause the macro not to be expanded 
+    prob = (std::numeric_limits<double>::max)(); // DBL_MAX;
   }
  
   if ( _output_format == 1 ) {
