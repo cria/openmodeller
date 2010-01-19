@@ -630,11 +630,12 @@ gsl_matrix * Csm::autoCovariance(gsl_matrix * original_matrix)
   // get x'
   gsl_matrix * mt = transpose(m);
 
-  // x / (n - 1)
-  gsl_matrix_scale (m, (double)1/(numrows-1));
-
   // multiply by x'
   gsl_matrix * p = product(mt, m);
+
+  // Note: scaling should happen after calculating the product with x-transpose 
+  // x / (n - 1)
+  gsl_matrix_scale (p, (double)1/(numrows-1));
 
   gsl_matrix_free (mt);
   gsl_matrix_free (m);
