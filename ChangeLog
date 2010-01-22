@@ -8,6 +8,7 @@ SVN revision: ?
 	* New argument "s" in om_niche allowing model outputs to be scaled.
 	* Re-implemented and re-enabled Maximum entropy algorithm based on the well-known Maxent.
 	* Changed environmental distance algorithm forcing the Mahalanobis distance to use an identity matrix as the covariance matrix when there's only one input point.
+	* Fixed small logical error in the CSM algorithm that could affect models with a large number of layers.
 
 Release 1.0 (2009-05-22)
 ------------------------
