@@ -39,6 +39,8 @@ The University of Kansas:
      Performed general code review, making lots of improvements everywhere.
      Finished the SWIG Python interface.
 
+The University of Reading:
+
  * Peter Brewer <p . w . brewer [at] reading . ac . uk>
 
      Designed the logo and the original website.
@@ -92,3 +94,7 @@ Other individual collaborators
  * Tom Elwertowski
 
      Added support for MAC OS X.
+
+ * Dr Chris Yesson
+
+     Revised the CSM algorithm implementation.
