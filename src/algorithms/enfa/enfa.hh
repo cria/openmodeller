@@ -365,8 +365,6 @@ protected:
      * variables at each locality. It is converted to a gsl matrix from the oM 
      * Sampler.samples primitive structure. */
     gsl_matrix * _gsl_environment_matrix;
-    /* copy of _gsl_environment_matrix. */
-    gsl_matrix * _gsl_environment_matrix_original;
     /* Pointer to gsl matrix with environmental data for each locality 
        converted to factors using the enfa score matrix */
     gsl_matrix * _gsl_environment_factor_matrix;
