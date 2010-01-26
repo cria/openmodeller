@@ -1,0 +1,1 @@
+/usr/bin/c++  -fPIC   -shared -Wl,-soname,libenfa.so -o libenfa.so CMakeFiles/enfa.dir/enfa.o ../../openmodeller/libopenmodeller.so -L/usr/lib -lgsl -lgslcblas -lm ../../openmodeller/libopenmodeller.so -lexpat -lproj -lgdal1.5.0 -lcurl -Wl,-rpath,/home/chris/dev/cpp/openmodeller/src/openmodeller 

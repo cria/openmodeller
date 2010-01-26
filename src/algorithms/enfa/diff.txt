@@ -1,0 +1,43 @@
+Comparing files enfa.hh and C:ENFA.HH
+***** enfa.hh
+    gsl_vector * _gsl_eigenvalue_vector;
+    /** Temporary copy of the vector of eigen values **/
+    gsl_vector * _gsl_eigenvalue_vector_copy;
+    /** This is a pointer to a gsl matrix that will hold the eigen vectors */
+***** C:ENFA.HH
+    gsl_vector * _gsl_eigenvalue_vector;
+    /** This is a pointer to a gsl matrix that will hold the eigen vectors */
+*****
+
+***** enfa.hh
+    gsl_matrix * _gsl_workspace_H;
+    gsl_matrix * _gsl_workspace_H_temp1;
+    gsl_matrix * _gsl_workspace_H_temp2;
+    gsl_matrix * _gsl_workspace_H_temp3;
+    /** gsl matrix used to store transitional phase of enfa calculation **/
+***** C:ENFA.HH
+    gsl_matrix * _gsl_workspace_H;
+    /** gsl matrix used to store transitional phase of enfa calculation **/
+*****
+
+***** enfa.hh
+    gsl_matrix * _gsl_workspace_y;
+    /** gsl matrix used to store transitional phase of enfa calculation **/
+    gsl_matrix * _gsl_workspace_y_temp;
+    /** gsl vector used to store transitional phase of enfa calculation **/
+***** C:ENFA.HH
+    gsl_matrix * _gsl_workspace_y;
+    /** gsl vector used to store transitional phase of enfa calculation **/
+*****
+
+***** enfa.hh
+    
+    /** verbose debugging to print lots of details */
+    int _verboseDebug; 
+
+    /** find the index of the minimum vector **/
+***** C:ENFA.HH
+    
+    /** find the index of the minimum vector **/
+*****
+
