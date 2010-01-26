@@ -97,4 +97,5 @@ Other individual collaborators
 
  * Dr Chris Yesson
 
+     Implemented the ENFA algorithm.
      Revised the CSM algorithm implementation.
