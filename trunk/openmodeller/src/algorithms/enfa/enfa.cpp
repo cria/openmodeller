@@ -118,7 +118,7 @@ static AlgParamMetadata parameters[NUM_PARAM] = {
 /****************************** Enfa *****************************/
 static AlgMetadata metadata = { // General metadata
   "ENFA",                    // Id
-  "Environmental Niche Factor Analysis",     // Name
+  "ENFA (Environmental Niche Factor Analysis)",     // Name
   "0.1",                        // Version
   "Algorithm based on presence only data using a modified principal components analysis.", // Overview
   "Environmental Niche Factor Analysis (Hirzel et al, 2002) uses a modified principal components analysis to develop a model based on presence only data.  The observed environment is compared to the background data of the study area.  The analysis produces factors similar to a PCA.  The first factor is termed the 'marginality' of the species, marginality is defined as the ecological distance between the species optimum and the mean habitat within the background data. Other factors are termed the 'specialization', and are defined as the ratio of the ecological variance in mean habitat to that observed for the target species.  Model projection uses the geomeans method of Hirzel & Arlettaz (2003)", // Description
@@ -174,10 +174,9 @@ Enfa::~Enfa()
     gsl_matrix_free (_gsl_eigenvector_matrix);
     gsl_matrix_free (_gsl_environment_factor_matrix);
     gsl_matrix_free (_gsl_environment_matrix);
-    gsl_matrix_free (_gsl_environment_matrix_original);
     gsl_matrix_free (_gsl_score_matrix);
     gsl_matrix_free (_gsl_workspace_H);
-    gsl_matrix_free (_gsl_workspace_W);
+    //gsl_matrix_free (_gsl_workspace_W); // this is causing a seg fault (?)
     gsl_matrix_free (_gsl_workspace_y);
 
     gsl_vector_free (_gsl_avg_vector);
