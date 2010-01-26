@@ -1,1 +1,0 @@
-/usr/bin/c++  -fPIC -g -O2  -Wl,-Bsymbolic-functions -shared -Wl,-soname,libenfa.so -o CMakeFiles/CMakeRelink.dir/libenfa.so "CMakeFiles/enfa.dir/enfa.o" -L/home/aps03cy/dev/cpp/openmodeller/src/openmodeller -lopenmodeller -L/usr/lib -lgsl -lgslcblas -lm -lopenmodeller -lexpat -lproj -lgdal1.6.0 -lcurl -Wl,-rpath,/usr/lib 
