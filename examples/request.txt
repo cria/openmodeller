@@ -223,3 +223,14 @@ Output file type = ByteHFA
 #Parameter = Choice 1
 #Parameter = Epoch 5000000
 #Parameter = MinimunError 0.01
+
+########
+# ENFA
+#
+#Algorithm = ENFA
+#Parameter = NumberOfBackgroundPoints 10000
+#Parameter = NumberOfRetries 5
+#Parameter = DiscardMethod 2
+#Parameter = RetainComponents 2
+#Parameter = RetainVariation 75
+#Parameter = VerboseDebug 0
