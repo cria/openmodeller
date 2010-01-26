@@ -1,0 +1,17 @@
+The system is: Linux - 2.6.24-25-386 - unknown
+Determining if the C compiler is GNU succeeded with the following output:
+# 1 "/usr/local/share/cmake-2.4/Modules/CMakeTestGNU.c"
+# 1 "<built-in>"
+# 1 "<command-line>"
+# 1 "/usr/local/share/cmake-2.4/Modules/CMakeTestGNU.c"
+
+void THIS_IS_GNU();
+
+Determining if the C++ compiler is GNU succeeded with the following output:
+# 1 "/usr/local/share/cmake-2.4/Modules/CMakeTestGNU.c"
+# 1 "<built-in>"
+# 1 "<command-line>"
+# 1 "/usr/local/share/cmake-2.4/Modules/CMakeTestGNU.c"
+
+void THIS_IS_GNU();
+

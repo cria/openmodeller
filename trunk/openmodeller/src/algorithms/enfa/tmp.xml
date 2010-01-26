@@ -1,0 +1,656 @@
+
+<Algorithms>
+<Algorithm Id="AQUAMAPS" Version="0.3">
+<Name>AquaMaps (beta version)</Name>
+<Overview>Environmental envelope modelling algorithm for marine organisms. Needs 9 predefined layers (see detailed description) to calculate the preferred and accepted envelopes, and also needs a scientific name (genus plus species) labeling each occurrence group.</Overview>
+<Description>AquaMaps is a niche modelling tool developed as part of the Incofish project and particularly tailored towards modelling marine organisms distribution.
+ The basic idea follows the environmental envelope type modelling approach, where each variable has an associated preferred range and a broader accepted range. Within the preferred range the probabilty of presence is 1, between the preferred range and the acceptable range the probability varies from 1 to 0 (linear decay), and outside the accepted range the probability is 0. The overall probability is calculated by multiplying all individual probabilities.
+This algorithm differs from other traditional ones since it requires a specific set of layers to work, which should also be in this order: maximum depth in meters, minimum depth in meters, mean annual sea ice concentration, mean annual distance to land in kilometers, mean annual primary production (chlorophyll A, measured in mgC per square meter per day), mean annual bottom salinity in psu, mean annual surface salinity in psu, mean annual bottom temperature in celsius, mean annual surface temperature in celsius. These layers can be downloaded from: 
+http://openmodeller.cria.org.br/download/marine2.zip 
+Preferred ranges are usually calculated based on percentiles 10th and 90th. They are further adjusted using interquartile values but also ensuring a minimum envelope size based on pre-defined values. Under certain circumstances, AquaMaps can make use of expert information to define the envelopes. This can happen for mammals (any envelope) or for fishes (depth range envelope). Expert information comes from FishBase and is stored in a local SQLite database (aquamaps.db) accessed by the algorithm. To find information in the database, all occurrences provided to openModeller must be labeled with the scientific name (only genus and species). Matches are exact, using case-sensitive equals operation. In this version, the internal database contains information for more then 7000 marine species.</Description>
+<Designers>
+<Designer Name="Kaschner, K., J. S. Ready, E. Agbayani, J. Rius, K. Kesner-Reyes, P. D. Eastwood, A. B. South, S. O. Kullander, T. Rees, C. H. Close, R. Watson, D. Pauly, and R. Froese"/></Designers>
+<Bibliography>Kaschner, K., J. S. Ready, E. Agbayani, J. Rius, K. Kesner-Reyes, P. D. Eastwood, A. B. South, S. O. Kullander, T. Rees, C. H. Close, R. Watson, D. Pauly, and R. Froese. 2007 AquaMaps: Predicted range maps for aquatic species. World wide web electronic publication, www.aquamaps.org, Version 12/2007.</Bibliography>
+<Developers>
+<Developer Name="Renato De Giovanni" Contact="renato [at] cria dot org dot br"/></Developers>
+<AcceptsCategoricalMaps>0</AcceptsCategoricalMaps>
+<RequiresAbsencePoints>0</RequiresAbsencePoints>
+<Parameters>
+<Parameter Id="UseSurfaceLayers">
+<Name>Use surface layers (only for temperature and salinity)</Name>
+<Type>Integer</Type>
+<Overview>Use surface layers (1=yes, 0=no, -1=let the algorithm decide)</Overview>
+<Description>Use surface layers (1=yes, 0=no, -1=let the algorithm decide). By default (-1), aquamaps will try to find the species' depth range in its internal database. If the minimum depth is equals or less than 200m, then aquamaps will use sea surface layers for temperature and salinity. Otherwise it will use bottom layers. This parameter can be used to force aquamaps to use surface or bottom layers.</Description>
+<AcceptedRange Min="-1" Max="1"/>
+<Default>-1</Default></Parameter>
+<Parameter Id="UseDepthRange">
+<Name>Use depth range</Name>
+<Type>Integer</Type>
+<Overview>Use depth range when calculating probabilities</Overview>
+<Description>Use depth range provided by experts (if available) when calculating probabilities</Description>
+<AcceptedRange Min="0" Max="1"/>
+<Default>1</Default></Parameter>
+<Parameter Id="UseIceConcentration">
+<Name>Use ice concentration</Name>
+<Type>Integer</Type>
+<Overview>Use ice concentration envelope when calculating probabilities</Overview>
+<Description>Use ice concentration when calculating probabilities</Description>
+<AcceptedRange Min="0" Max="1"/>
+<Default>1</Default></Parameter>
+<Parameter Id="UseDistanceToLand">
+<Name>Use distance to land</Name>
+<Type>Integer</Type>
+<Overview>Use distance to land envelope when calculating probabilities</Overview>
+<Description>Use distance to land envelope when calculating probabilities</Description>
+<AcceptedRange Min="0" Max="1"/>
+<Default>0</Default></Parameter>
+<Parameter Id="UsePrimaryProduction">
+<Name>Use primary production</Name>
+<Type>Integer</Type>
+<Overview>Use primary production envelope when calculating probabilities</Overview>
+<Description>Use primary production envelope when calculating probabilities</Description>
+<AcceptedRange Min="0" Max="1"/>
+<Default>1</Default></Parameter>
+<Parameter Id="UseSalinity">
+<Name>Use salinity</Name>
+<Type>Integer</Type>
+<Overview>Use salinity envelope when calculating probabilities</Overview>
+<Description>Use salinity envelope when calculating probabilities</Description>
+<AcceptedRange Min="0" Max="1"/>
+<Default>1</Default></Parameter>
+<Parameter Id="UseTemperature">
+<Name>Use temperature</Name>
+<Type>Integer</Type>
+<Overview>Use temperature envelope when calculating probabilities</Overview>
+<Description>Use temperature envelope when calculating probabilities</Description>
+<AcceptedRange Min="0" Max="1"/>
+<Default>1</Default></Parameter></Parameters></Algorithm>
+<Algorithm Id="BIOCLIM" Version="0.2">
+<Name>Bioclim</Name>
+<Overview>Uses mean and standard deviation for each environmental variable separately to calculate bioclimatic envelopes. Level of fitness between the environmental values on a point and the respective envelopes classifies points as Suitable, Marginal, or Unsuitable for presence.</Overview>
+<Description>Implements the Bioclimatic Envelope Algorithm. For each given environmental variable the algorithm finds the mean and standard deviation (assuming normal distribution) associated to the occurrence points. Each variable has its own envelope represented by the interval [m - c*s, m + c*s], where 'm' is the mean; 'c' is the cutoff input parameter; and 's' is the standard deviation. Besides the envelope, each environmental variable has additional upper and lower limits taken from the maximum and minimum values related to the set of occurrence points.
+In this model, any point can be classified as:
+ Suitable: if all associated environmental values fall within the calculated envelopes;
+ Marginal: if one or more associated environmental value falls outside the calculated envelope, but still within the upper and lower limits.
+ Unsuitable: if one or more associated enviromental value falls outside the upper and lower limits.
+Bioclim's categorical output is mapped to probabilities of 1.0, 0.5 and 0.0 respectively.</Description>
+<Designers>
+<Designer Name="Nix, H. A."/></Designers>
+<Bibliography>Nix, H.A. (1986) A biogeographic analysis of Australian elapid snakes. In: Atlas of Elapid Snakes of Australia. (Ed.) R. Longmore, pp. 4-15. Australian Flora and Fauna Series Number 7. Australian Government Publishing Service: Canberra.</Bibliography>
+<Developers>
+<Developer Name="Mauro Muñoz" Contact="mesmunoz [at] gmail.com"/></Developers>
+<AcceptsCategoricalMaps>0</AcceptsCategoricalMaps>
+<RequiresAbsencePoints>0</RequiresAbsencePoints>
+<Parameters>
+<Parameter Id="StandardDeviationCutoff">
+<Name>Standard deviation cutoff</Name>
+<Type>Real</Type>
+<Overview>The envelope is determined by multiplying this parameter and the standard deviation.</Overview>
+<Description>Standard deviation cutoff for all bioclimatic envelopes.
+ Examples of (fraction of inclusion, parameter value) are:
+ (50.0%, 0.674); (68.3%, 1.000); (90.0%, 1.645); (95.0%, 1.960); (99.7%, 3.000)</Description>
+<AcceptedRange Min="0"/>
+<Default>0.674</Default></Parameter></Parameters></Algorithm>
+<Algorithm Id="CSMBS" Version="0.4">
+<Name>Climate Space Model</Name>
+<Overview>Climate Space Model [CSM] is a principle components based algorithm developed by Dr. Neil Caithness</Overview>
+<Description>Climate Space Model [CSM] is a principle components based algorithm developed by Dr. Neil Caithness. The component selection process int this algorithm implementation is based on the Broken-Stick cutoff where any component with an eigenvalue less than (n stddevs above a randomised sample) is discarded. 
+The original CSM was written as series of Matlab functions.</Description>
+<Designers>
+<Designer Name="Neil Caithness"/></Designers>
+<Bibliography/>
+<Developers>
+<Developer Name="Tim Sutton, Renato De Giovanni" Contact="t.sutton [at] reading.ac.uk"/></Developers>
+<AcceptsCategoricalMaps>0</AcceptsCategoricalMaps>
+<RequiresAbsencePoints>0</RequiresAbsencePoints>
+<Parameters>
+<Parameter Id="Randomisations">
+<Name>Number of random eigenvalues</Name>
+<Type>Integer</Type>
+<Overview>The number of eigenvalues to generate from randomly 'shuffled' environment data.</Overview>
+<Description>The Broken Stick method of selecting the number of components to keep is carried out by randomising the row order of each column in the environmental matrix and then obtaining the eigen value for the randomised matrix. This is repeatedly carried out for the amount of times specified by the user here.</Description>
+<AcceptedRange Min="1" Max="1000"/>
+<Default>8</Default></Parameter>
+<Parameter Id="StandardDeviations">
+<Name>Number of standard deviations</Name>
+<Type>Real</Type>
+<Overview>The number of standard deviations added to the randomised eigen value.</Overview>
+<Description>When all the eigen values for the 'shuffled' environmental matrix have been summed this number of standard deviations is added to the mean of the eigen values. Any components whose eigen values are above this threshold are retained.</Description>
+<AcceptedRange Min="-10" Max="10"/>
+<Default>2.0</Default></Parameter>
+<Parameter Id="MinComponents">
+<Name>Minimum number of components in model</Name>
+<Type>Integer</Type>
+<Overview>The minimum number of components that the model must have.</Overview>
+<Description>If not enough components are selected, the model produced will be erroneous or fail. Usually three or more components are acceptable</Description>
+<AcceptedRange Min="1" Max="20"/>
+<Default>1</Default></Parameter>
+<Parameter Id="VerboseDebugging">
+<Name>Show very detailed debugging info</Name>
+<Type>Integer</Type>
+<Overview>Warning this will cause a large amount of information to be printed</Overview>
+<Description>Set this to 1 to show extremely verbose diagnostics. Set this to 0 to disable verbose diagnostics (this is default behaviour).</Description>
+<AcceptedRange Min="0" Max="1"/>
+<Default>0</Default></Parameter></Parameters></Algorithm>
+<Algorithm Id="DG_GARP" Version="1.1 alpha">
+<Name>GARP (single run) - DesktopGARP implementation</Name>
+<Overview>This is the 2nd implementation of GARP algorithm, based on the original C code by David Stockwell. This version correspondss to the version in use by the DesktopGarp modeling package, with modifications to use OpenModeller base data access objects.</Overview>
+<Description>GARP is a genetic algorithm that creates ecological niche models for species. The models describe environmental conditions under which the species should be able to maintain populations. For input, GARP uses a set of point localities where the species is known to occur and a set of geographic layers representing the environmental parameters that might limit the species' capabilities to survive.</Description>
+<Designers>
+<Designer Name="Stockwell, D. R. B., modified by Ricardo Scachetti Pereira"/></Designers>
+<Bibliography>Stockwell, D. R. B. 1999. Genetic algorithms II. Pages 123-144 in A. H. Fielding, editor. Machine learning methods for ecological applications. Kluwer Academic Publishers, Boston.
+Stockwell, D. R. B., and D. P. Peters. 1999. The GARP modelling system: Problems and solutions to automated spatial prediction. International Journal of Geographic Information Systems 13:143-158.
+Stockwell, D. R. B., and I. R. Noble. 1992. Induction of sets of rules from animal distribution data: A robust and informative method of analysis. Mathematics and Computers in Simulation 33:385-390.</Bibliography>
+<Developers>
+<Developer Name="Ricardo Scachetti Pereira" Contact="rpereira [at] ku.edu"/></Developers>
+<AcceptsCategoricalMaps>0</AcceptsCategoricalMaps>
+<RequiresAbsencePoints>1</RequiresAbsencePoints>
+<Parameters>
+<Parameter Id="MaxGenerations">
+<Name>Max generations</Name>
+<Type>Integer</Type>
+<Overview>Maximum number of iterations run by the Genetic Algorithm.</Overview>
+<Description>Maximum number of iterations (generations) run by the Genetic Algorithm.</Description>
+<AcceptedRange Min="1"/>
+<Default>400</Default></Parameter>
+<Parameter Id="ConvergenceLimit">
+<Name>Convergence limit</Name>
+<Type>Real</Type>
+<Overview>Defines the convergence value that makes the algorithm stop (before reaching MaxGenerations).</Overview>
+<Description>Defines the convergence value that makes the algorithm stop (before reaching MaxGenerations).</Description>
+<AcceptedRange Min="0" Max="1"/>
+<Default>0.01</Default></Parameter>
+<Parameter Id="PopulationSize">
+<Name>Population size</Name>
+<Type>Integer</Type>
+<Overview>Maximum number of rules to be kept in solution.</Overview>
+<Description>Maximum number of rules to be kept in solution.</Description>
+<AcceptedRange Min="1" Max="500"/>
+<Default>50</Default></Parameter>
+<Parameter Id="Resamples">
+<Name>Resamples</Name>
+<Type>Integer</Type>
+<Overview>Number of points sampled (with replacement) used to test rules.</Overview>
+<Description>Number of points sampled (with replacement) used to test rules.</Description>
+<AcceptedRange Min="1" Max="100000"/>
+<Default>2500</Default></Parameter></Parameters></Algorithm>
+<Algorithm Id="DG_GARP_BS" Version="3.0.2">
+<Name>GARP with best subsets - DesktopGARP implementation</Name>
+<Overview>GARP is a genetic algorithm that creates ecological niche models for species. The models describe environmental conditions under which the species should be able to maintain populations. For input, GARP uses a set of point localities where the species is known to occur and a set of geographic layers representing the environmental parameters that might limit the species' capabilities to survive.</Overview>
+<Description>GARP is a genetic algorithm that creates ecological niche models for species. The models describe environmental conditions under which the species should be able to maintain populations. For input, GARP uses a set of point localities where the species is known to occur and a set of geographic layers representing the environmental parameters that might limit the species' capabilities to survive.</Description>
+<Designers>
+<Designer Name="Anderson, R. P., D. Lew, D. and A. T. Peterson."/></Designers>
+<Bibliography>Anderson, R. P., D. Lew, and A. T. Peterson. 2003. Evaluating predictive models of species' distributions: criteria for selecting optimal models.Ecological Modelling, v. 162, p. 211 232.</Bibliography>
+<Developers>
+<Developer Name="Ricardo Scachetti Pereira" Contact="rpereira [at] ku.edu"/></Developers>
+<AcceptsCategoricalMaps>0</AcceptsCategoricalMaps>
+<RequiresAbsencePoints>1</RequiresAbsencePoints>
+<Parameters>
+<Parameter Id="TrainingProportion">
+<Name>Training Proportion</Name>
+<Type>Real</Type>
+<Overview>Percentage of occurrence data to be used to train models.</Overview>
+<Description>Percentage of occurrence data to be used to train models.</Description>
+<AcceptedRange Min="0" Max="100"/>
+<Default>50</Default></Parameter>
+<Parameter Id="TotalRuns">
+<Name>Total Runs</Name>
+<Type>Integer</Type>
+<Overview>Maximum number of GARP runs to be performed.</Overview>
+<Description>Maximum number of GARP runs to be performed.</Description>
+<AcceptedRange Min="0" Max="10000"/>
+<Default>20</Default></Parameter>
+<Parameter Id="HardOmissionThreshold">
+<Name>Hard Omission Threshold</Name>
+<Type>Real</Type>
+<Overview>Maximum acceptable omission error. Set to 100% to use only soft omission.</Overview>
+<Description>Maximum acceptable omission error. Set to 100% to use only soft omission.</Description>
+<AcceptedRange Min="0" Max="100"/>
+<Default>100</Default></Parameter>
+<Parameter Id="ModelsUnderOmissionThreshold">
+<Name>Models Under Omission Threshold</Name>
+<Type>Integer</Type>
+<Overview>Minimum number of models below omission threshold.</Overview>
+<Description>Minimum number of models below omission threshold.</Description>
+<AcceptedRange Min="0" Max="10000"/>
+<Default>20</Default></Parameter>
+<Parameter Id="CommissionThreshold">
+<Name>Commission Threshold</Name>
+<Type>Real</Type>
+<Overview>Percentage of distribution models to be taken regarding commission error.</Overview>
+<Description>Percentage of distribution models to be taken regarding commission error.</Description>
+<AcceptedRange Min="0" Max="100"/>
+<Default>50</Default></Parameter>
+<Parameter Id="CommissionSampleSize">
+<Name>Commission Sample Size</Name>
+<Type>Real</Type>
+<Overview>Number of samples used to calculate commission error.</Overview>
+<Description>Number of samples used to calculate commission error.</Description>
+<AcceptedRange Min="1"/>
+<Default>10000</Default></Parameter>
+<Parameter Id="MaxThreads">
+<Name>Maximum Number of Threads</Name>
+<Type>Integer</Type>
+<Overview>Maximum number of threads of executions to run simultaneously.</Overview>
+<Description>Maximum number of threads of executions to run simultaneously.</Description>
+<AcceptedRange Min="1" Max="1024"/>
+<Default>1</Default></Parameter>
+<Parameter Id="MaxGenerations">
+<Name>Max generations</Name>
+<Type>Integer</Type>
+<Overview>Maximum number of iterations run by the Genetic Algorithm.</Overview>
+<Description>Maximum number of iterations (generations) run by the Genetic Algorithm.</Description>
+<AcceptedRange Min="1"/>
+<Default>400</Default></Parameter>
+<Parameter Id="ConvergenceLimit">
+<Name>Convergence limit</Name>
+<Type>Real</Type>
+<Overview>Defines the convergence value that makes the algorithm stop (before reaching MaxGenerations).</Overview>
+<Description>Defines the convergence value that makes the algorithm stop (before reaching MaxGenerations).</Description>
+<AcceptedRange Min="0" Max="1"/>
+<Default>0.01</Default></Parameter>
+<Parameter Id="PopulationSize">
+<Name>Population size</Name>
+<Type>Integer</Type>
+<Overview>Maximum number of rules to be kept in solution.</Overview>
+<Description>Maximum number of rules to be kept in solution.</Description>
+<AcceptedRange Min="1" Max="500"/>
+<Default>50</Default></Parameter>
+<Parameter Id="Resamples">
+<Name>Resamples</Name>
+<Type>Integer</Type>
+<Overview>Number of points sampled (with replacement) used to test rules.</Overview>
+<Description>Number of points sampled (with replacement) used to test rules.</Description>
+<AcceptedRange Min="1" Max="100000"/>
+<Default>2500</Default></Parameter></Parameters></Algorithm>
+<Algorithm Id="ENFA" Version="0.1">
+<Name>Environmental Niche Factor Analysis</Name>
+<Overview>Algorithm based on presence only data using a modified principal components analysis.</Overview>
+<Description>Environmental Niche Factor Analysis uses a modified principal components analysis to develop a model based on presence only data.  The observed environment is compared to the background data of the study area.  The analysis produces factors similar to a PCA.  The first factor is termed the 'marginality' of the species, marginality is defined as the ecological distance between the species optimum and the mean habitat within the background data. Other factors are termed the 'specialization', and are defined as the ratio of the ecological variance in mean habitat to that observed for the target species.</Description>
+<Designers>
+<Designer Name="Hirzel, A.H.; Hausser, J.; Chessel, D. &amp; Perrin, N."/></Designers>
+<Bibliography>Hirzel, A.H.; Hausser, J.; Chessel, D. &amp; Perrin, N. Ecological-niche factor analysis: How to compute habitat-suitability maps without absence data? Ecology, 2002, 83, 2027-2036</Bibliography>
+<Developers>
+<Developer Name="Chris Yesson" Contact="chris.yesson [at] ioz.ac.uk"/></Developers>
+<AcceptsCategoricalMaps>0</AcceptsCategoricalMaps>
+<RequiresAbsencePoints>0</RequiresAbsencePoints>
+<Parameters>
+<Parameter Id="NumberOfBackgroundPoints">
+<Name>Number of background sample points</Name>
+<Type>Integer</Type>
+<Overview>Number of background points to be sampled when estimating the mean and standard deviation.</Overview>
+<Description>The ENFA algorithm compares the species presence data with the background environment.  This requires the calculation of the mean, standard deviation and covariances of each environmental layer.  This could be prohibitively slow and expensive for large datasets, so estimate these values by randomly sampling X points from the background data.</Description>
+<AcceptedRange Min="10"/>
+<Default>10000</Default></Parameter></Parameters></Algorithm>
+<Algorithm Id="ENVSCORE" Version="0.1">
+<Name>Envelope Score</Name>
+<Overview>Uses the minimum and maximum observed value for each environmental variable to define bioclimatic envelopes. Probability of occurrence for a point is determined by the number of environmental variables within which the environmental values at the point fall into the min/max criteria.</Overview>
+<Description>Implements a lax Bioclimatic Envelope Algorithm. For each given environmental variable the algorithm finds the minimum and maximum at all occurrence sites. During model projection, the probability of occurrences is determined as:
+
+ p = layers within min-max threshold / number of layers
+
+ Thus choosing a threshold of p=1 gives you the same model output as the original Bioclim model taking both the Suitable &amp; Marginal classes as predicted presences. The Envelope Score algorithm is equivalent to the inclusive 'OR' implementation of Bioclim described in Pineiro et al (2007).</Description>
+<Designers>
+<Designer Name="Nix, H. A."/></Designers>
+<Bibliography>Nix, H.A. (1986) A biogeographic analysis of Australian elapid snakes. In: Atlas of Elapid Snakes of Australia. (Ed.) R. Longmore, pp. 4-15. Australian Flora and Fauna Series Number 7. Australian Government Publishing Service: Canberra.
+
+ Piñeiro, R., Aguilar, J. F., Munt, D. D. &amp; Feliner, G. N. (2007) Ecology matters: Atlantic-Mediterranean disjunction in the sand-dune shrub Armeria pungens (Plumbaginaceae). Molecular Ecology. 16, 2155-2171.</Bibliography>
+<Developers>
+<Developer Name="Tim Sutton and Chris Yesson" Contact="tim [at] linfiniti.com"/></Developers>
+<AcceptsCategoricalMaps>0</AcceptsCategoricalMaps>
+<RequiresAbsencePoints>0</RequiresAbsencePoints>
+<Parameters/></Algorithm>
+<Algorithm Id="ENVDIST" Version="0.4">
+<Name>Environmental Distance</Name>
+<Overview>Generic algorithm based on environmental dissimilarity metrics.</Overview>
+<Description>Generic algorithm based on environmental dissimilarity metrics. When used with the Gower metric and maximum distance 1, this algorithm should produce the same result of the algorithm known as DOMAIN.</Description>
+<Designers>
+<Designer Name="Mauro E. S. Munoz, Renato De Giovanni, Danilo J. S. Bellini"/></Designers>
+<Bibliography>Carpenter G, Gillison AN, Winter J (1993) DOMAIN: A flexible modeling procedure for mapping potential distributions of animals and plants. Biodiversity and Conservation 2: 667-680.</Bibliography>
+<Developers>
+<Developer Name="Danilo J. S. Bellini" Contact="danilo.estagio [at] gmail.com"/></Developers>
+<AcceptsCategoricalMaps>0</AcceptsCategoricalMaps>
+<RequiresAbsencePoints>0</RequiresAbsencePoints>
+<Parameters>
+<Parameter Id="DistanceType">
+<Name>Metric</Name>
+<Type>Integer</Type>
+<Overview>Metric used to calculate distances: 1=Euclidean, 2=Mahalanobis, 3=Manhattan/Gower, 4=Chebyshev.</Overview>
+<Description>Metric used to calculate distances: 1=Euclidean, 2=Mahalanobis, 3=Manhattan/Gower, 4=Chebyshev</Description>
+<AcceptedRange Min="1" Max="4"/>
+<Default>1</Default></Parameter>
+<Parameter Id="NearestPoints">
+<Name>Nearest 'n' points</Name>
+<Type>Integer</Type>
+<Overview>Nearest 'n' points whose mean value will be the reference when calculating environmental distances.</Overview>
+<Description>Nearest 'n' points whose mean value will be the reference when calculating environmental distances. When set to 1, distances will be measured to the closest point, which is the same behavior of the previously existing minimum distance algorithm. When set to 0, distances will be measured to the average of all presence points, which is the same behavior of the previously existing distance to average algorithm. Intermediate values between 1 and the total number of presence points are now accepted.</Description>
+<AcceptedRange Min="0" Max="1000"/>
+<Default>1</Default></Parameter>
+<Parameter Id="MaxDistance">
+<Name>Maximum distance</Name>
+<Type>Real</Type>
+<Overview>Maximum distance to the reference in the environmental space.</Overview>
+<Description>Maximum distance to the reference in the environmental space, above which the conditions will be considered unsuitable for presence. Since 1 corresponds to the biggest possible distance between any two points in the environment space, setting the maximum distance to this value means that all points in the environmental space will have an associated probability. The probability of presence for points that fall within the range of the maximum distance is inversely proportional to the distance to the reference point (linear decay).</Description>
+<AcceptedRange Min="0" Max="1"/>
+<Default>0.1</Default></Parameter></Parameters></Algorithm>
+<Algorithm Id="GARP" Version="3.3">
+<Name>GARP (single run) - new openModeller implementation</Name>
+<Overview>GARP is a genetic algorithm that creates ecological niche models for species. The models describe environmental conditions under which the species should be able to maintain populations. For input, GARP uses a set of point localities where the species is known to occur and a set of geographic layers representing the environmental parameters that might limit the species' capabilities to survive. Please refer to algorithm description for more information about the differences between this new GARP implementation and the Desktop GARP implementation.</Overview>
+<Description>GARP is a genetic algorithm that creates ecological niche models for species. The models describe environmental conditions under which the species should be able to maintain populations. For input, GARP uses a set of point localities where the species is known to occur and a set of geographic layers representing the environmental parameters that might limit the species' capabilities to survive. This implementation is a complete rewrite of the DesktopGarp code, and it also contains the following changes/improvements: (1) Gene values changed from integers (between 1 and 253) to floating point numbers (between -1.0 and 1.0). This avoids precision problems in environment values during projection (for example, if an environment variable has the value 2.56 in some raster cell and 2.76 in another one, DesktopGarp rounds them off to 3). (2) Atomic rules were removed since they seem to have little significance compared to the other rules. (3) Heuristic operator parameters (percentage of mutation and crossover per iteration) are now static since they used to converge to fixed values during the very first iterations. This implementation simply keeps the converged values. (4) A bug was fixed in the procedure responsible for ordering the rules. When a rule was only replacing another, it was being included in the wrong position.</Description>
+<Designers>
+<Designer Name="Stockwell, D. R. B., modified by Ricardo Scachetti Pereira"/></Designers>
+<Bibliography>Stockwell, D. R. B. 1999. Genetic algorithms II. Pages 123-144 in A. H. Fielding, editor. Machine learning methods for ecological applications. Kluwer Academic Publishers, Boston.
+Stockwell, D. R. B., and D. P. Peters. 1999. The GARP modelling system: Problems and solutions to automated spatial prediction. International Journal of Geographic Information Systems 13:143-158.
+Stockwell, D. R. B., and I. R. Noble. 1992. Induction of sets of rules from animal distribution data: A robust and informative method of analysis. Mathematics and Computers in Simulation 33:385-390.</Bibliography>
+<Developers>
+<Developer Name="Ricardo Scachetti Pereira" Contact="ricardo [at] tdwg . org"/></Developers>
+<AcceptsCategoricalMaps>0</AcceptsCategoricalMaps>
+<RequiresAbsencePoints>1</RequiresAbsencePoints>
+<Parameters>
+<Parameter Id="MaxGenerations">
+<Name>Max generations</Name>
+<Type>Integer</Type>
+<Overview>Maximum number of iterations run by the Genetic Algorithm.</Overview>
+<Description>Maximum number of iterations (generations) run by the Genetic Algorithm.</Description>
+<AcceptedRange Min="1"/>
+<Default>400</Default></Parameter>
+<Parameter Id="ConvergenceLimit">
+<Name>Convergence limit</Name>
+<Type>Real</Type>
+<Overview>Defines the convergence value that makes the algorithm stop (before reaching MaxGenerations).</Overview>
+<Description/>
+<AcceptedRange Min="0" Max="1"/>
+<Default>0.01</Default></Parameter>
+<Parameter Id="PopulationSize">
+<Name>Population size</Name>
+<Type>Integer</Type>
+<Overview>Maximum number of rules to be kept in solution.</Overview>
+<Description>Maximum number of rules to be kept in solution.</Description>
+<AcceptedRange Min="1" Max="500"/>
+<Default>50</Default></Parameter>
+<Parameter Id="Resamples">
+<Name>Resamples</Name>
+<Type>Integer</Type>
+<Overview>Number of points sampled (with replacement) used to test rules.</Overview>
+<Description>Number of points sampled (with replacement) used to test rules.</Description>
+<AcceptedRange Min="1" Max="100000"/>
+<Default>2500</Default></Parameter></Parameters></Algorithm>
+<Algorithm Id="GARP_BS" Version="3.0.4">
+<Name>GARP with Best Subsets - new openModeller implementation</Name>
+<Overview>GARP is a genetic algorithm that creates ecological niche models for species. The models describe environmental conditions under which the species should be able to maintain populations. For input, GARP uses a set of point localities where the species is known to occur and a set of geographic layers representing the environmental parameters that might limit the species' capabilities to survive. This algorithm applies the Best Subsets procedure using the new openModeller implementation in each GARP run. Please refer to GARP single run algorithm description for more information about the differences between DesktopGarp and the new GARP implementation.</Overview>
+<Description>GARP is a genetic algorithm that creates ecological niche models for species. The models describe environmental conditions under which the species should be able to maintain populations. For input, GARP uses a set of point localities where the species is known to occur and a set of geographic layers representing the environmental parameters that might limit the species' capabilities to survive. This algorithm applies the Best Subsets procedure using the new openModeller implementation in each GARP run. Please refer to GARP single run algorithm description for more information about the differences between DesktopGarp and the new GARP implementation.</Description>
+<Designers>
+<Designer Name="Anderson, R. P., D. Lew, D. and A. T. Peterson."/></Designers>
+<Bibliography>Anderson, R. P., D. Lew, and A. T. Peterson. 2003. Evaluating predictive models of species' distributions: criteria for selecting optimal models.Ecological Modelling, v. 162, p. 211 232.</Bibliography>
+<Developers>
+<Developer Name="Ricardo Scachetti Pereira" Contact="ricardo [at] tdwg . org"/></Developers>
+<AcceptsCategoricalMaps>0</AcceptsCategoricalMaps>
+<RequiresAbsencePoints>1</RequiresAbsencePoints>
+<Parameters>
+<Parameter Id="TrainingProportion">
+<Name>Training Proportion</Name>
+<Type>Real</Type>
+<Overview>Percentage of occurrence data to be used to train models.</Overview>
+<Description>Percentage of occurrence data to be used to train models.</Description>
+<AcceptedRange Min="0" Max="100"/>
+<Default>50</Default></Parameter>
+<Parameter Id="TotalRuns">
+<Name>Total Runs</Name>
+<Type>Integer</Type>
+<Overview>Maximum number of GARP runs to be performed.</Overview>
+<Description>Maximum number of GARP runs to be performed.</Description>
+<AcceptedRange Min="0" Max="10000"/>
+<Default>20</Default></Parameter>
+<Parameter Id="HardOmissionThreshold">
+<Name>Hard Omission Threshold</Name>
+<Type>Real</Type>
+<Overview>Maximum acceptable omission error. Set to 100% to use only soft omission.</Overview>
+<Description>Maximum acceptable omission error. Set to 100% to use only soft omission.</Description>
+<AcceptedRange Min="0" Max="100"/>
+<Default>100</Default></Parameter>
+<Parameter Id="ModelsUnderOmissionThreshold">
+<Name>Models Under Omission Threshold</Name>
+<Type>Integer</Type>
+<Overview>Minimum number of models below omission threshold.</Overview>
+<Description>Minimum number of models below omission threshold.</Description>
+<AcceptedRange Min="0" Max="10000"/>
+<Default>20</Default></Parameter>
+<Parameter Id="CommissionThreshold">
+<Name>Commission Threshold</Name>
+<Type>Real</Type>
+<Overview>Percentage of distribution of models to be taken regarding commission error.</Overview>
+<Description>Percentage of distribution of models to be taken regarding commission error.</Description>
+<AcceptedRange Min="0" Max="100"/>
+<Default>50</Default></Parameter>
+<Parameter Id="CommissionSampleSize">
+<Name>Commission Sample Size</Name>
+<Type>Integer</Type>
+<Overview>Number of samples used to calculate commission error.</Overview>
+<Description>Number of samples used to calculate commission error.</Description>
+<AcceptedRange Min="1"/>
+<Default>10000</Default></Parameter>
+<Parameter Id="MaxThreads">
+<Name>Maximum Number of Threads</Name>
+<Type>Integer</Type>
+<Overview>Maximum number of threads of executions to run simultaneously.</Overview>
+<Description>Maximum number of threads of executions to run simultaneously.</Description>
+<AcceptedRange Min="1" Max="1024"/>
+<Default>1</Default></Parameter>
+<Parameter Id="MaxGenerations">
+<Name>Max generations</Name>
+<Type>Integer</Type>
+<Overview>Maximum number of iterations run by the Genetic Algorithm.</Overview>
+<Description>Maximum number of iterations (generations) run by the Genetic Algorithm.</Description>
+<AcceptedRange Min="1"/>
+<Default>400</Default></Parameter>
+<Parameter Id="ConvergenceLimit">
+<Name>Convergence limit</Name>
+<Type>Real</Type>
+<Overview>Defines the convergence value that makes the algorithm stop (before reaching MaxGenerations).</Overview>
+<Description>Defines the convergence value that makes the algorithm stop (before reaching MaxGenerations).</Description>
+<AcceptedRange Min="0" Max="1"/>
+<Default>0.01</Default></Parameter>
+<Parameter Id="PopulationSize">
+<Name>Population size</Name>
+<Type>Integer</Type>
+<Overview>Maximum number of rules to be kept in solution.</Overview>
+<Description>Maximum number of rules to be kept in solution.</Description>
+<AcceptedRange Min="1" Max="500"/>
+<Default>50</Default></Parameter>
+<Parameter Id="Resamples">
+<Name>Resamples</Name>
+<Type>Integer</Type>
+<Overview>Number of points sampled (with replacement) used to test rules.</Overview>
+<Description>Number of points sampled (with replacement) used to test rules.</Description>
+<AcceptedRange Min="1" Max="100000"/>
+<Default>2500</Default></Parameter></Parameters></Algorithm>
+<Algorithm Id="MAXENT" Version="0.2">
+<Name>Maximum Entropy</Name>
+<Overview>The principle of maximum entropy is a method for analyzing available qualitative information in order to determine a unique epistemic probability distribution. It states that the least biased distribution that encodes certain given information is that which maximizes the information entropy (content retrieved from Wikipedia on the 19th of May, 2008: http://en.wikipedia.org/wiki/Maximum_entropy).</Overview>
+<Description>The principle of maximum entropy is a method for analyzing available qualitative information in order to determine a unique epistemic probability distribution. It states that the least biased distribution that encodes certain given information is that which maximizes the information entropy (content retrieved from Wikipedia on the 19th of May, 2008: http://en.wikipedia.org/wiki/Maximum_entropy). E.T. Jaynes introduced the maximum entropy principle in 1957 saying that 'Information theory provides a constructive criterion for setting up probability distributions on the basis of partial knowledge, and leads to a type of statistical inference which is called the maximum entropy estimate. It is the least biased estimate possible on the given information; i.e., it is maximally noncommittal with regard to missing information'.</Description>
+<Designers>
+<Designer Name=""/></Designers>
+<Bibliography>1) Jaynes, E.T. (1957) Information Theory and Statistical Mechanics. In Physical Review, Vol. 106, #4 (pp 620-630). 2) Berger, A. L., Pietra, S. A. D. and Pietra, V. J. D. (1996). A maximum entropy approach to natural language processing. Computational Linguistics, 22, 39-71. 3) Darroch, J.N. and Ratcliff, D. (1972) Generalized iterative scaling for log-linear models. The Annals of Mathematical Statistics, Vol. 43: pp 1470-1480. 4) Malouf, R. (2003) A comparison of algorithms for maximum entropy parameter estimation. Proceedings of the Sixth Conference on Natural Language Learning. 5) Phillips, S.J., DudÃ­k, M. and Schapire, R.E. (2004) A maximum entropy approach to species distribution modeling. Proceedings of the Twenty-First International Conference on Machine Learning, pp 655-662.</Bibliography>
+<Developers>
+<Developer Name="Elisangela S. da C. Rodrigues, Renato De Giovanni" Contact="elisangela.rodrigues [at] poli . usp . br, renato [at] cria . org . br"/></Developers>
+<AcceptsCategoricalMaps>1</AcceptsCategoricalMaps>
+<RequiresAbsencePoints>1</RequiresAbsencePoints>
+<Parameters>
+<Parameter Id="NumberOfBackgroundPoints">
+<Name>Number of background points</Name>
+<Type>Integer</Type>
+<Overview>Number of background points to be generated.</Overview>
+<Description>Number of background points to be generated.</Description>
+<AcceptedRange Min="0" Max="10000"/>
+<Default>10000</Default></Parameter>
+<Parameter Id="NumberOfIterations">
+<Name>Number of iterations</Name>
+<Type>Integer</Type>
+<Overview>Number of iterations.</Overview>
+<Description>Number of iterations.</Description>
+<AcceptedRange Min="1"/>
+<Default>500</Default></Parameter>
+<Parameter Id="TerminateTolerance">
+<Name>Terminate tolerance</Name>
+<Type>Real</Type>
+<Overview>Tolerance for detecting model convergence.</Overview>
+<Description>Tolerance for detecting model convergence.</Description>
+<AcceptedRange Min="0"/>
+<Default>0.00001</Default></Parameter>
+<Parameter Id="OutputFormat">
+<Name>Output Format</Name>
+<Type>Integer</Type>
+<Overview>Output Format: 1 = Raw, 2 = Logistic.</Overview>
+<Description>Output Format: 1 = Raw, 2 = Logistic.</Description>
+<AcceptedRange Min="1" Max="2"/>
+<Default>2</Default></Parameter></Parameters></Algorithm>
+<Algorithm Id="NICHE_MOSAIC" Version="0.1">
+<Name>Niche Mosaic</Name>
+<Overview>This algorithm is still experimental. You may not use it in publications without the author's permission.</Overview>
+<Description>This algorithm is still experimental. You may not use it in publications without the author's permission.</Description>
+<Designers>
+<Designer Name="Missae Yamamoto"/></Designers>
+<Bibliography/>
+<Developers>
+<Developer Name="Missae Yamamoto" Contact="missae [at] dpi.inpe.br"/></Developers>
+<AcceptsCategoricalMaps>0</AcceptsCategoricalMaps>
+<RequiresAbsencePoints>0</RequiresAbsencePoints>
+<Parameters>
+<Parameter Id="NumberOfIterations">
+<Name>Number of iterations</Name>
+<Type>Integer</Type>
+<Overview>Number of iterations.</Overview>
+<Description>Number of iterations.</Description>
+<AcceptedRange Min="1000"/>
+<Default>2000</Default></Parameter></Parameters></Algorithm>
+<Algorithm Id="ANN" Version="0.2">
+<Name>Artificial Neural Network</Name>
+<Overview>Artificial neural networks are made up of interconnecting artificial neurons (programming constructs that mimic the properties of biological neurons). Artificial neural networks may either be used to gain an understanding of biological neural networks, or for solving artificial intelligence problems without necessarily creating a model of a real biological system. Content retrieved from Wikipedia on the 06th of May, 2008: http://en.wikipedia.org/wiki/Neural_network</Overview>
+<Description>An artificial neural network (ANN), also called a simulated neural network (SNN) or commonly just neural network (NN), is an interconnected group of artificial neurons that uses a mathematical or computational model for information processing based on a connectionistic approach to computation. In most cases an ANN is an adaptive system that changes its structure based on external or internal information that flows through the network. In more practical terms, neural networks are non-linear statistical data modeling or decision making tools. They can be used to model complex relationships between inputs and outputs or to find patterns in data. Content retrieved from Wikipedia on the 06th of May, 2008: http://en.wikipedia.org/wiki/Neural_network</Description>
+<Designers>
+<Designer Name="Chopra, Paras, modified by Alex Oshika Avilla and Fabrício Augusto Rodrigues"/></Designers>
+<Bibliography/>
+<Developers>
+<Developer Name="Alex Oshika Avilla, Fabricio Augusto Rodrigues" Contact="alex.avilla [at] poli . usp .br, fabricio.rodrigues [at] poli . usp .br"/></Developers>
+<AcceptsCategoricalMaps>0</AcceptsCategoricalMaps>
+<RequiresAbsencePoints>0</RequiresAbsencePoints>
+<Parameters>
+<Parameter Id="HiddenLayerNeurons">
+<Name>Number of neurons in the hidden layer</Name>
+<Type>Integer</Type>
+<Overview>Number of neurons in the hidden layer (additional layer to the input and output layers, not connected externally).</Overview>
+<Description>Number of neurons in the hidden layer (additional layer to the input and output layers, not connected externally).</Description>
+<AcceptedRange Min="1"/>
+<Default>14</Default></Parameter>
+<Parameter Id="LearningRate">
+<Name>Learning Rate</Name>
+<Type>Real</Type>
+<Overview>Learning Rate. Training parameter that controls the size of weight and bias changes during learning.</Overview>
+<Description>Learning Rate. Training parameter that controls the size of weight and bias changes during learning.</Description>
+<AcceptedRange Min="0" Max="1"/>
+<Default>0.3</Default></Parameter>
+<Parameter Id="Momentum">
+<Name>Momentum</Name>
+<Type>Real</Type>
+<Overview>Momentum simply adds a fraction m of the previous weight update to the current one. The momentum parameter is used to prevent the system from converging to a local minimum or saddle point.</Overview>
+<Description>Momentum simply adds a fraction m of the previous weight update to the current one. The momentum parameter is used to prevent the system from converging to a local minimum or saddle point. A high momentum parameter can also help to increase the speed of convergence of the system. However, setting the momentum parameter too high can create a risk of overshooting the minimum, which can cause the system to become unstable. A momentum coefficient that is too low cannot reliably avoid local minima, and can also slow down the training of the system.</Description>
+<AcceptedRange Min="0" Max="1"/>
+<Default>0.05</Default></Parameter>
+<Parameter Id="Choice">
+<Name>Training type</Name>
+<Type>Integer</Type>
+<Overview>0 = train by epoch, 1 = train by minimum error</Overview>
+<Description>0 = train by epoch, 1 = train by minimum error</Description>
+<AcceptedRange Min="0" Max="1"/>
+<Default>1</Default></Parameter>
+<Parameter Id="Epoch">
+<Name>Epoch</Name>
+<Type>Integer</Type>
+<Overview>Determines when training will stop once the number of iterations exceeds epochs. When training by minimum error, this represents the maximum number of iterations.</Overview>
+<Description>Determines when training will stop once the number of iterations exceeds epochs. When training by minimum error, this represents the maximum number of iterations.</Description>
+<AcceptedRange Min="1"/>
+<Default>5000000</Default></Parameter>
+<Parameter Id="MinimunError">
+<Name>Minimun Error</Name>
+<Type>Real</Type>
+<Overview>Minimum mean square error of the epoch.</Overview>
+<Description>Minimum mean square error of the epoch. Square root of the sum of squared differences between the network targets and actual outputs divided by number of patterns (only for training by minimum error).</Description>
+<AcceptedRange Min="0" Max="0.5"/>
+<Default>0.01</Default></Parameter></Parameters></Algorithm>
+<Algorithm Id="SVM" Version="0.4">
+<Name>SVM (Support Vector Machines)</Name>
+<Overview>Support vector machines (SVMs) are a set of related supervised learning methods that belong to a family of generalized linear classifiers. They can also be considered a special case of Tikhonov regularization. A special property of SVMs is that they simultaneously minimize the empirical classification error and maximize the geometric margin; hence they are also known as maximum margin classifiers. Content retrieved from Wikipedia on the 13th of June, 2007: http://en.wikipedia.org/w/index.php?title=Support_vector_machine&amp;oldid=136646498.</Overview>
+<Description>Support vector machines map input vectors to a higher dimensional space where a maximal separating hyperplane is constructed. Two parallel hyperplanes are constructed on each side of the hyperplane that separates the data. The separating hyperplane is the hyperplane that maximises the distance between the two parallel hyperplanes. An assumption is made that the larger the margin or distance between these parallel hyperplanes the better the generalisation error of the classifier will be. The model produced by support vector classification only depends on a subset of the training data, because the cost function for building the model does not care about training points that lie beyond the margin. Content retrieved from Wikipedia on the 13th of June, 2007: http://en.wikipedia.org/w/index.php?title=Support_vector_machine&amp;oldid=136646498. The openModeller implementation of SVMs makes use of the libsvm library version 2.85: Chih-Chung Chang and Chih-Jen Lin, LIBSVM: a library for support vector machines, 2001. Software available at http://www.csie.ntu.edu.tw/~cjlin/libsvm.
+
+Release history:
+ version 0.1: initial release
+ version 0.2: New parameter to specify the number of pseudo-absences to be generated; upgraded to libsvm 2.85; fixed memory leaks</Description>
+<Designers>
+<Designer Name="Vladimir N. Vapnik"/></Designers>
+<Bibliography>1) Vapnik, V. (1995) The Nature of Statistical Learning Theory. SpringerVerlag. 2) Schölkopf, B., Smola, A., Williamson, R. and Bartlett, P.L.(2000). New support vector algorithms. Neural Computation, 12, 1207-1245. 3) Schölkopf, B., Platt, J.C., Shawe-Taylor, J., Smola A.J. and Williamson, R.C. (2001). Estimating the support of a high-dimensional distribution. Neural Computation, 13, 1443-1471. 4) Cristianini, N. &amp; Shawe-Taylor, J. (2000). An Introduction to Support Vector Machines and other kernel-based learning methods. Cambridge University Press.</Bibliography>
+<Developers>
+<Developer Name="Renato De Giovanni in collaboration with Ana Carolina Lorena" Contact="renato [at] cria . org . br"/></Developers>
+<AcceptsCategoricalMaps>0</AcceptsCategoricalMaps>
+<RequiresAbsencePoints>0</RequiresAbsencePoints>
+<Parameters>
+<Parameter Id="SvmType">
+<Name>SVM type</Name>
+<Type>Integer</Type>
+<Overview>Type of SVM: 0 = C-SVC, 1 = Nu-SVC, 2 = one-class SVM</Overview>
+<Description>Type of SVM: 0 = C-SVC, 1 = Nu-SVC, 2 = one-class SVM</Description>
+<AcceptedRange Min="0" Max="2"/>
+<Default>0</Default></Parameter>
+<Parameter Id="KernelType">
+<Name>Kernel type</Name>
+<Type>Integer</Type>
+<Overview>Type of kernel function: 0 = linear: u'*v , 1 = polynomial: (gamma*u'*v + coef0)^degree , 2 = radial basis function: exp(-gamma*|u-v|^2)</Overview>
+<Description>Type of kernel function: 0 = linear: u'*v , 1 = polynomial: (gamma*u'*v + coef0)^degree , 2 = radial basis function: exp(-gamma*|u-v|^2)</Description>
+<AcceptedRange Min="0" Max="4"/>
+<Default>2</Default></Parameter>
+<Parameter Id="Degree">
+<Name>Degree</Name>
+<Type>Integer</Type>
+<Overview>Degree in kernel function (only for polynomial kernels).</Overview>
+<Description>Degree in kernel function (only for polynomial kernels).</Description>
+<AcceptedRange Min="0"/>
+<Default>3</Default></Parameter>
+<Parameter Id="Gamma">
+<Name>Gamma</Name>
+<Type>Real</Type>
+<Overview>Gamma in kernel function (only for polynomial and radial basis kernels). When set to zero, the default value will actually be 1/k, where k is the number of layers.</Overview>
+<Description>Gamma in kernel function (only for polynomial and radial basis kernels). When set to zero, the default value will actually be 1/k, where k is the number of layers.</Description>
+<Default>0</Default></Parameter>
+<Parameter Id="Coef0">
+<Name>Coef0</Name>
+<Type>Real</Type>
+<Overview>Coef0 in kernel function (only for polynomial kernels).</Overview>
+<Description>Coef0 in kernel function (only for polynomial kernels).</Description>
+<Default>0</Default></Parameter>
+<Parameter Id="C">
+<Name>Cost</Name>
+<Type>Real</Type>
+<Overview>Cost (only for C-SVC types).</Overview>
+<Description>Cost (only for C-SVC types).</Description>
+<AcceptedRange Min="0.001000000000000000020816682"/>
+<Default>1</Default></Parameter>
+<Parameter Id="Nu">
+<Name>Nu</Name>
+<Type>Real</Type>
+<Overview>Nu (only for Nu-SVC and one-class SVM).</Overview>
+<Description>Nu (only for Nu-SVC and one-class SVM).</Description>
+<AcceptedRange Min="0.001000000000000000020816682" Max="1"/>
+<Default>0.5</Default></Parameter>
+<Parameter Id="ProbabilisticOutput">
+<Name>Probabilistic output</Name>
+<Type>Integer</Type>
+<Overview>Indicates if the output should be a probability instead of a binary response (only available for C-SVC and Nu-SVC).</Overview>
+<Description>Indicates if the output should be a probability instead of a binary response (only available for C-SVC and Nu-SVC).</Description>
+<AcceptedRange Min="0" Max="1"/>
+<Default>1</Default></Parameter>
+<Parameter Id="NumberOfPseudoAbsences">
+<Name>Number of pseudo-absences</Name>
+<Type>Integer</Type>
+<Overview>Number of pseudo-absences to be generated (only for C-SVC and Nu-SVC when no absences have been provided). When absences are needed, a zero parameter will default to the same number of presences.</Overview>
+<Description>Number of pseudo-absences to be generated (only for C-SVC and Nu-SVC when no absences have been provided). When absences are needed, a zero parameter will default to the same number of presences.</Description>
+<AcceptedRange Min="0"/>
+<Default>0</Default></Parameter></Parameters></Algorithm></Algorithms>
