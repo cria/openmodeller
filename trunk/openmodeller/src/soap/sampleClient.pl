@@ -1,8 +1,8 @@
 #!/usr/local/bin/perl
 
-# Simple perl client to test the openModeller SOAP interface
+# Simple console interface written in Perl to interact with 
+# a modelling service.
 # 
-# @file
 # @author Renato De Giovanni (renato [at] cria [dot] org [dot] br)
 # @date   2004-04-06
 # $Id$
@@ -84,7 +84,7 @@ my %options = ( 0  => 'Ping service',
 		10 => 'Get projection metadata', 
 		11 => 'Get map as attachment', 
 		12 => 'Get map as URL', 
-		13 => 'Exit' );
+		13 => 'Quit' );
 
 my $option = -1;
 
@@ -179,10 +179,13 @@ sub get_option
 {
     print "\nPlease select from one the options:\n\n";
 
+    my $exit_option = scalar( keys %options );
+
     foreach my $key ( sort { $a <=> $b } ( keys %options ) )
     {
 	my $val = $key+1;
-	print "  [$val] $options{$key}\n";
+        my $option = ( $key == $exit_option - 1 ) ? ' q ' : "$val";
+	print "  [$option] $options{$key}\n";
     }
 
     print "\nYour choice: ";
@@ -222,7 +225,6 @@ sub prepare_soap
 
         if ( $opt_debug )
 	{
-
             use SOAP::Lite +trace => [ transport => \&debug_soap ];
         }
 
