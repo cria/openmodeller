@@ -55,6 +55,7 @@ INPE - Instituto Nacional de Pesquisas Espaciais:
 
      Developed the pre-analysis API and implemented the chi-square method.
      Improved pseudo-absence generation.
+     Implemented the Niche Mosaic algorithm. 
 
 Poli - Escola Politécninca da Universidade de São Paulo:
 
