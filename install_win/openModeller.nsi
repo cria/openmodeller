@@ -9,7 +9,7 @@
 !define PRODUCT_STARTMENU_REGVAL "NSIS:StartMenuDir"
 
 ; Defines added by Tim to streamline / softcode install process
-!define PRODUCT_VERSION "1.0.1"
+!define PRODUCT_VERSION "1.1.0"
 ; This is where cmake builds and installs to - no space separating name and version
 !define BUILD_DIR "C:\Program files\${PRODUCT_NAME}${PRODUCT_VERSION}"
 ; This is where the nsis installer will install to. Having the space lets you

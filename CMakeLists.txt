@@ -1,7 +1,7 @@
 PROJECT(openModeller)
 SET(OM_MAJOR_VERSION "1")
-SET(OM_MINOR_VERSION "0")
-SET(OM_PATCH_VERSION "1")
+SET(OM_MINOR_VERSION "1")
+SET(OM_PATCH_VERSION "0")
 
 
 #############################################################

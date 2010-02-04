@@ -10,7 +10,7 @@ Autoreqprov:   on
 #Requires:   libcurl >= 7.18.1
 #Requires:   sqlite >= 3.3.6
 #Requires:   gsl >= 1.4
-Version:       1.0.1
+Version:       1.1.0
 Release:       0
 Source:        %{name}-src-%{version}.tar.gz
 Url:           http://openmodeller.sf.net
