@@ -26,6 +26,7 @@
 
 #include <file_parser.hh>
 #include <string.h>
+#include <stdio.h>
 
 #if 0
 // Need an ostream inserter for the special icstring type.
