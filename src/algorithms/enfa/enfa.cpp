@@ -1361,21 +1361,14 @@ Enfa::_getConfiguration( ConfigurationPtr& config ) const
   ConfigurationPtr model_config( new ConfigurationImpl("Enfa") );
   config->addSubsection( model_config );
 
-  double *value = new double[1];
-
   // _marginality
-  value[0] = _marginality;
-  model_config->addNameValue( "Marginality", value, 1 );
+  model_config->addNameValue( "Marginality", _marginality );
 
   // _specialisation
-  value[0] = _specialisation;
-  model_config->addNameValue( "Specialisation", value, 1 );
+  model_config->addNameValue( "Specialisation", _specialisation );
 
   // _retained_components_count
-  value[0] = _retained_components_count;
-  model_config->addNameValue( "RetainedComponents", value, 1 );
-
-  delete value;
+  model_config->addNameValue( "RetainedComponents", _retained_components_count );
 
   double *values = new double[_layer_count];
 
@@ -1483,11 +1476,16 @@ Enfa::_setConfiguration( const ConstConfigurationPtr& config )
     return;
 
   // _retained_components_count
-  std::vector<double> stl_vector = model_config->getAttributeAsVecDouble( "RetainedComponents" );
-  _retained_components_count = stl_vector[0];
+  _retained_components_count = model_config->getAttributeAsInt( "RetainedComponents", 0 );
+
+  // _marginality
+  _marginality = model_config->getAttributeAsDouble( "Marginality", 0.0 );
+
+  // _specialisation
+  _specialisation = model_config->getAttributeAsDouble( "Specialisation", 0.0 );
 
   // _gsl_avg_vector
-  stl_vector = model_config->getAttributeAsVecDouble( "AvgVector" );
+  std::vector<double> stl_vector = model_config->getAttributeAsVecDouble( "AvgVector" );
 
   _layer_count = stl_vector.size();
 
