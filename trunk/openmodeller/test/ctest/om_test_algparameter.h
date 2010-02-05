@@ -35,6 +35,7 @@
 #include <openmodeller/AlgParameter.hh>
 #include <string.h>
 #include <stdlib.h>
+#include <stdio.h>
 
 class test_AlgParameter : public CxxTest :: TestSuite 
 {
