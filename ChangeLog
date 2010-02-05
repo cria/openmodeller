@@ -1,6 +1,6 @@
-Release 1.1.0 (?)
-------------------------
-SVN revision: ?
+Release 1.1.0 (2010-02-05)
+--------------------------
+SVN revision: 5114
 
 	* Bugfix: Interquartile and envelope size adjustments were using wrong reference values for salinity and temperature in the Aquamaps algorithm.
 	* Bugfix: All GARP algorithms were crashing when the abundance value associated with one of the occurrence points had more than two digits in the integer part.
