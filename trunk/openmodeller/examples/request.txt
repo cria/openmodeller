@@ -234,3 +234,10 @@ Output file type = ByteHFA
 #Parameter = RetainComponents 2
 #Parameter = RetainVariation 75
 #Parameter = VerboseDebug 0
+
+
+########
+# Niche Mosaic
+#
+#Algorithm = NICHE_MOSAIC
+#Parameter = NumberOfIterations 2000
