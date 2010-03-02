@@ -176,7 +176,7 @@ Enfa::~Enfa()
     gsl_matrix_free (_gsl_environment_matrix);
     gsl_matrix_free (_gsl_score_matrix);
     gsl_matrix_free (_gsl_workspace_H);
-    //gsl_matrix_free (_gsl_workspace_W); // this is causing a seg fault (?)
+    gsl_matrix_free (_gsl_workspace_W);
     gsl_matrix_free (_gsl_workspace_y);
 
     gsl_vector_free (_gsl_avg_vector);
@@ -662,7 +662,9 @@ gsl_matrix* Enfa::sqrtm(gsl_matrix* original_matrix) const
 		     eigval_v,
 		     eigvect_m,
 		     temp_v);
-    
+
+    gsl_eigen_symmv_free(temp_v);
+
     /* allocate and initialise a new matrix temp_m  */
     /* this is eigvect_m scaled by the root of the eigenvalues */
     gsl_matrix* temp_m = gsl_matrix_alloc (m_size, m_size);
@@ -1076,7 +1078,9 @@ bool Enfa::enfa1()
 
   // get root inverse of species covariance matrix
   _gsl_covariance_matrix_root_inverse = gsl_matrix_alloc(_gsl_covariance_matrix->size1,_gsl_covariance_matrix->size2);
-  _gsl_covariance_matrix_root_inverse = inverse(sqrtm(_gsl_covariance_matrix));
+  gsl_matrix* gsl_sqrtm_matrix = sqrtm(_gsl_covariance_matrix);
+  _gsl_covariance_matrix_root_inverse = inverse(gsl_sqrtm_matrix);
+  gsl_matrix_free(gsl_sqrtm_matrix);
 
   //z = cov_species^-0.5 * m';
   _gsl_workspace_z = gsl_vector_alloc (_layer_count);
@@ -1087,7 +1091,7 @@ bool Enfa::enfa1()
 
   //W = cov_species^-0.5 * cov_global * cov_species^-0.5;
   gsl_matrix* _gsl_workspace_W_temp = gsl_matrix_alloc(_layer_count, _layer_count);
-  gsl_matrix* _gsl_workspace_W = gsl_matrix_alloc(_layer_count, _layer_count);
+  _gsl_workspace_W = gsl_matrix_alloc(_layer_count, _layer_count);
   gsl_blas_dgemm(CblasNoTrans,CblasNoTrans,1.0,
 		 _gsl_covariance_matrix_root_inverse,
 		 _gsl_covariance_background_matrix,0.0,
