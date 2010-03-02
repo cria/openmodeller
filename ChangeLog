@@ -1,3 +1,9 @@
+Release ? (?)
+--------------------------
+SVN revision: ?
+
+	* Bugfix: Fixed memory deallocation issue in maxent.
+
 Release 1.1.0 (2010-02-05)
 --------------------------
 SVN revision: 5114
