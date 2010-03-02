@@ -317,10 +317,7 @@ int Enfa::SamplerToMatrix()
 int Enfa::BackgroundToMatrix()
 {
 
-    //Log::instance()->info("Enfa:BackgroundToMatrix:Generating background samples.\n" );
-
-  // Allocate the gsl matrix to store environment data at each background point
-  _gsl_background_matrix = gsl_matrix_alloc (_backgroundCount, _layer_count);
+  //Log::instance()->info("Enfa:BackgroundToMatrix:Generating background samples.\n" );
 
   // try getting all background samples at once using the absence generator
   // this enables us to ensure geographic uniqueness
@@ -330,7 +327,7 @@ int Enfa::BackgroundToMatrix()
   OccurrencesImpl::const_iterator pit = _ocbg->begin();
   OccurrencesImpl::const_iterator fin = _ocbg->end();
 
-  // Allocate the gsl matrix to store environment data at each locality
+  // Allocate the gsl matrix to store environment data at each background point
   _gsl_background_matrix = gsl_matrix_alloc (_backgroundCount, _layer_count);
   // now populate the gsl matrix from the sample data
   for (int i=0; pit != fin; ++pit, ++i)
