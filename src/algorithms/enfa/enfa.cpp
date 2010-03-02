@@ -484,10 +484,15 @@ Scalar Enfa::getValue( const Sample& x ) const
     //displayVector(tmp_centered_gsl_vector, "getvalue: tmp_centered_gsl_vector", true);
     //}
 
+    gsl_vector_free(tmp_raw_gsl_vector);
+
     //vector for factored data
     gsl_matrix * tmp_centered_gsl_matrix = gsl_matrix_alloc(1,_layer_count);
     for (ii=0;ii<_layer_count;++ii)
       gsl_matrix_set(tmp_centered_gsl_matrix,0,ii,gsl_vector_get(tmp_centered_gsl_vector,ii));
+
+    gsl_vector_free(tmp_centered_gsl_vector);
+
     gsl_matrix * tmp_factored_gsl_matrix = gsl_matrix_alloc(1,_layer_count);
     
     // multiply centered data by score matrix to get factored data 
@@ -509,6 +514,10 @@ Scalar Enfa::getValue( const Sample& x ) const
     // work out geomean from this point to all specimen localites
     double tmp_geomean = getGeomean(tmp_factored_gsl_vector);
     
+    gsl_matrix_free(tmp_centered_gsl_matrix);
+    gsl_matrix_free(tmp_factored_gsl_matrix);
+    gsl_vector_free(tmp_factored_gsl_vector);
+
     //Log::instance()->info( "getValue: geomean %6.2f\n", tmp_geomean );
     
 
