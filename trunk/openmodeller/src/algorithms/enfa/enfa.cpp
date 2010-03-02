@@ -325,10 +325,6 @@ int Enfa::BackgroundToMatrix()
   // try getting all background samples at once using the absence generator
   // this enables us to ensure geographic uniqueness
   // question: what happens when num-background > number of cells in env layer?
-  string alg_id = "BIOCLIM";
-  AlgorithmPtr alg = AlgorithmFactory::newAlgorithm( alg_id );
-
-  //OccurrencesPtr _ocbg = _samp->getPseudoAbsences(_backgroundCount, alg->getModel(), 1, true, false);
   OccurrencesPtr _ocbg = _samp->getPseudoAbsences(_backgroundCount, false, 1, false, false);
 
   OccurrencesImpl::const_iterator pit = _ocbg->begin();
