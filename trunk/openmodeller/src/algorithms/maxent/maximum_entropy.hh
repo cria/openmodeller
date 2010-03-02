@@ -61,6 +61,7 @@ public:
 private:
 
   void init_trainer();
+  void end_trainer();
 
   void calc_q_lambda_x();
   

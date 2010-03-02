@@ -192,12 +192,6 @@ MaximumEntropy::MaximumEntropy() :
 
 MaximumEntropy::~MaximumEntropy()
 {
-  delete regularization_parameters;
-  delete features_mean;
-  delete feat_stan_devi;
-  delete q_lambda_f;
-  delete lambda;
-  delete q_lambda_x;
 }
 
 /**************************/
@@ -534,7 +528,8 @@ MaximumEntropy::iterate()
 
 	// Check the tag of the received message.
 	if ( status.MPI_TAG == DIETAG ) {
-	 
+
+          end_trainer();	 
 	  return 1;
 	}
 
@@ -662,6 +657,8 @@ MaximumEntropy::iterate()
   Log::instance()->info( MAXENT_LOG_PREFIX "Entropy\t %.2f \n", entropy );
 
   _done = true;
+
+  end_trainer();
   
   return 1;
 }
@@ -847,6 +844,22 @@ MaximumEntropy::init_trainer()
     }
   }
 } // init_trainer();
+
+
+/********************/
+/*** end_trainer ***/
+
+void
+MaximumEntropy::end_trainer()
+{
+  delete regularization_parameters;
+  delete features_mean;
+  delete feat_stan_devi;
+  delete q_lambda_f;
+  delete lambda;
+  delete q_lambda_x;
+} // end_trainer();
+
 
 /***********************/
 /****** interpol *******/
