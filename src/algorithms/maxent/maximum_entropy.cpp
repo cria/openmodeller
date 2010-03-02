@@ -192,7 +192,7 @@ MaximumEntropy::MaximumEntropy() :
 
 MaximumEntropy::~MaximumEntropy()
 {
-  delete lambda;
+  delete[] lambda;
 }
 
 /**************************/
@@ -592,12 +592,12 @@ MaximumEntropy::iterate()
 
       } // While (1)
 
-      delete midpoint;
-      delete sign_pos;
-      delete sign_neg;
-      delete signs;
-      delete alfa;
-      delete alfa_pos_neg;
+      delete[] midpoint;
+      delete[] sign_pos;
+      delete[] sign_neg;
+      delete[] signs;
+      delete[] alfa;
+      delete[] alfa_pos_neg;
 
     } // else
 #else
@@ -663,15 +663,16 @@ MaximumEntropy::iterate()
 	best_id = i;
       }
 
-    delete F;
-    delete midpoint;
-    delete sign_pos;
-    delete sign_neg;
-    delete signs;
-    delete alfa;
-    delete alfa_pos_neg;
-
     } // for ( int i = 0; i < _len; ++i )
+
+    delete[] F;
+    delete[] midpoint;
+    delete[] sign_pos;
+    delete[] sign_neg;
+    delete[] signs;
+    delete[] alfa;
+    delete[] alfa_pos_neg;
+
 #endif
     lambda[best_id] += min_F;
 
@@ -875,11 +876,11 @@ MaximumEntropy::init_trainer()
 void
 MaximumEntropy::end_trainer()
 {
-  delete regularization_parameters;
-  delete features_mean;
-  delete feat_stan_devi;
-  delete q_lambda_f;
-  delete q_lambda_x;
+  delete[] regularization_parameters;
+  delete[] features_mean;
+  delete[] feat_stan_devi;
+  delete[] q_lambda_f;
+  delete[] q_lambda_x;
 } // end_trainer();
 
 
@@ -1287,7 +1288,7 @@ MaximumEntropy::_getConfiguration( ConfigurationPtr& config ) const
 
   lambda_config->addNameValue( "Values", lambda_values, _num_layers );
 
-  delete lambda_values;
+  delete[] lambda_values;
 }
 
 void
