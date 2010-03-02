@@ -192,6 +192,7 @@ MaximumEntropy::MaximumEntropy() :
 
 MaximumEntropy::~MaximumEntropy()
 {
+  delete lambda;
 }
 
 /**************************/
@@ -401,20 +402,25 @@ MaximumEntropy::iterate()
   double new_loss = 0.0;
   int niter;
 
+  double *alfa;
+  double *alfa_pos_neg;
+  double min_F;
+  double sum_mean_lambda;
+  double sum_regu_lambda;
+  double *midpoint;
+  int *sign_pos;
+  int *sign_neg;
+  int *signs;
+  int neg;
+  int pos;
+  int best_id;
+
   for ( niter = 0; niter < _num_iterations; ++niter ) {
-    
-    double *alfa;
-    double *alfa_pos_neg;
-    double min_F = std::numeric_limits<double>::infinity();
-    double sum_mean_lambda = 0.0;
-    double sum_regu_lambda = 0.0;
-    double *midpoint;
-    int *sign_pos;
-    int *sign_neg;
-    int *signs;
-    int neg;
-    int pos;
-    int best_id = -1;
+
+    min_F = std::numeric_limits<double>::infinity();
+    sum_mean_lambda = 0.0;
+    sum_regu_lambda = 0.0;
+    best_id = -1;
 
     calc_q_lambda_x();
 
@@ -585,6 +591,14 @@ MaximumEntropy::iterate()
 	MPI_Send( &i, 1, MPI_INT, 0, 0, MPI_COMM_WORLD );
 
       } // While (1)
+
+      delete midpoint;
+      delete sign_pos;
+      delete sign_neg;
+      delete signs;
+      delete alfa;
+      delete alfa_pos_neg;
+
     } // else
 #else
     double *F;
@@ -648,6 +662,15 @@ MaximumEntropy::iterate()
 	min_F = F[i];
 	best_id = i;
       }
+
+    delete F;
+    delete midpoint;
+    delete sign_pos;
+    delete sign_neg;
+    delete signs;
+    delete alfa;
+    delete alfa_pos_neg;
+
     } // for ( int i = 0; i < _len; ++i )
 #endif
     lambda[best_id] += min_F;
@@ -856,7 +879,6 @@ MaximumEntropy::end_trainer()
   delete features_mean;
   delete feat_stan_devi;
   delete q_lambda_f;
-  delete lambda;
   delete q_lambda_x;
 } // end_trainer();
 
@@ -1264,6 +1286,8 @@ MaximumEntropy::_getConfiguration( ConfigurationPtr& config ) const
   }
 
   lambda_config->addNameValue( "Values", lambda_values, _num_layers );
+
+  delete lambda_values;
 }
 
 void
