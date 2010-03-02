@@ -1224,6 +1224,8 @@ bool Enfa::enfa1()
 	  }
       }
 
+  gsl_matrix_free(_gsl_score_matrix_copy);
+
   double score2norm;
   /* Norm the columns of the score_matrix
      - that is divide each value by the 2-norm of its column */
