@@ -400,43 +400,36 @@ MaximumEntropy::iterate()
 
   double loss = std::numeric_limits<double>::infinity();
   double new_loss = 0.0;
+  double Gain = 0.0;
   int niter;
-
-  double *alfa;
-  double *alfa_pos_neg;
-  double min_F;
-  double sum_mean_lambda;
-  double sum_regu_lambda;
-  double *midpoint;
-  int *sign_pos;
-  int *sign_neg;
-  int *signs;
-  int neg;
-  int pos;
-  int best_id;
 
   for ( niter = 0; niter < _num_iterations; ++niter ) {
 
-    min_F = std::numeric_limits<double>::infinity();
-    sum_mean_lambda = 0.0;
-    sum_regu_lambda = 0.0;
-    best_id = -1;
+    double *alfa;
+    double min_F = std::numeric_limits<double>::infinity();
+    double sum_mean_lambda = 0.0;
+    double sum_regu_lambda = 0.0;
+    int best_id = -1;
 
     calc_q_lambda_x();
 
     for ( int i = 0; i < _len; ++i ) {
 
-      sum_mean_lambda += -features_mean[i] * lambda[i];
+      sum_mean_lambda += features_mean[i] * lambda[i];
       sum_regu_lambda += regularization_parameters[i] * fabs(lambda[i]);
     }
 
-    new_loss = sum_mean_lambda + log(Z_lambda) + sum_regu_lambda;
+        new_loss = log(Z_lambda) - sum_mean_lambda + sum_regu_lambda;
 
     if ( (loss - new_loss) < _tolerance ) {
       break;
     }
 
     loss = new_loss;
+
+    Gain = log(_num_samples) - loss;
+
+    Log::instance()->info( MAXENT_LOG_PREFIX "Gain\t %f \r", Gain );
 
     calc_q_lambda_f();
     
@@ -518,14 +511,10 @@ MaximumEntropy::iterate()
     else {
 
       int i;
-      double result;
+      double F;
+      double min_F_local = std::numeric_limits<double>::infinity();
 
-      midpoint = new double[_len];
-      sign_pos = new int[_len];
-      sign_neg = new int[_len];
-      signs = new int[_len];
       alfa = new double[_len];
-      alfa_pos_neg = new double[_len];
 
       while ( 1 ) {
 	
@@ -540,120 +529,59 @@ MaximumEntropy::iterate()
 	}
 
 	// Do the work
-	midpoint[i] = -features_mean[i] + q_lambda_f[i] / ( exp(lambda[i]) + ( 1 - exp(lambda[i]) ) * q_lambda_f[i]);
-	
-	if ( (midpoint[i] + regularization_parameters[i]) < 0.0 ) {
-	  sign_pos[i] = -1;
-	}
-	else {
-	  if ( (midpoint[i] + regularization_parameters[i]) > 0.0 ) {
-	    sign_pos[i] = 1;
-	  }
-	  else{
-	    sign_pos[i] = 0;
-	  }
-	}
-	
-	if ( (midpoint[i] - regularization_parameters[i]) < 0.0 ) {
-	  sign_neg[i] = -1;
-	}
-	else {
-	  if ( (midpoint[i] - regularization_parameters[i]) > 0.0 ) {
-	    sign_neg[i] = 1;
-	  }
-	  else {
-	    sign_neg[i] = 0;
-	  }
-	}
-	
-	if ( sign_neg[i] > 0 ) neg = 1;
-	else neg = 0;
-	
-	if ( sign_pos[i] < 0 ) pos = 1;
-	else pos = 0;
-	
-	signs[i] = neg - pos;
-	
-	alfa_pos_neg[i] = log((features_mean[i]+signs[i]*regularization_parameters[i])*(1-q_lambda_f[i])
-			      /((1-features_mean[i]-signs[i]*regularization_parameters[i])*q_lambda_f[i]));
-	
 	alfa[i] = -lambda[i];
 	
-	if ( signs[i] != 0 ) {
-	  alfa[i] = alfa_pos_neg[i];
+	F = -alfa[i] * features_mean[i] + log(1 + (exp(alfa[i]) - 1) * q_lambda_f[i])
+	    + regularization_parameters[i] * (fabs(lambda[i] + alfa[i]) - fabs(lambda[i]));
+	
+	if ( min_F_local > F ) {
+	  min_F_local = F;
 	}
 	
-	result = -alfa[i] * features_mean[i] + log(1 + (exp(alfa[i]) - 1) * q_lambda_f[i])
+	alfa[i] = log(((features_mean[i]-regularization_parameters[i])*(1-q_lambda_f[i]))
+		      /((1-features_mean[i]-regularization_parameters[i])*q_lambda_f[i])); 
+	
+	F = -alfa[i] * features_mean[i] + log(1 + (exp(alfa[i]) - 1) * q_lambda_f[i])
+	    + regularization_parameters[i] * (fabs(lambda[i] + alfa[i]) - fabs(lambda[i]));
+	
+	if( ( lambda[i] + alfa[i] ) >= 0.0 ) {
+	  
+	  if ( min_F_local > F ) {
+	    min_F_local =  F;
+	  }
+	}
+	
+	alfa[i] = log(((features_mean[i]+regularization_parameters[i])*(1-q_lambda_f[i]))
+		     /((1-features_mean[i]+regularization_parameters[i])*q_lambda_f[i])); 
+
+	F = -alfa[i] * features_mean[i] + log(1 + (exp(alfa[i]) - 1) * q_lambda_f[i])
 	         + regularization_parameters[i] * (fabs(lambda[i] + alfa[i]) - fabs(lambda[i]));
 	
+	if( ( lambda[i] + alfa[i] ) <= 0.0 ) {
+	  
+	  if ( min_F_local > F ) { 
+	    min_F = F; 
+	  }
+	}
+	
 	// Send the result back
-	MPI_Send( &result, 1, MPI_DOUBLE, 0, 0, MPI_COMM_WORLD );
+	MPI_Send( &min_F_local, 1, MPI_DOUBLE, 0, 0, MPI_COMM_WORLD );
 	MPI_Send( &i, 1, MPI_INT, 0, 0, MPI_COMM_WORLD );
 
       } // While (1)
 
-      delete[] midpoint;
-      delete[] sign_pos;
-      delete[] sign_neg;
-      delete[] signs;
       delete[] alfa;
-      delete[] alfa_pos_neg;
 
     } // else
 #else
+
     double *F;
-    midpoint = new double[_len];
-    sign_pos = new int[_len];
-    sign_neg = new int[_len];
-    signs = new int[_len];
     F = new double[_len];
     alfa = new double[_len];
-    alfa_pos_neg = new double[_len];
 
     for ( int i = 0; i < _len; ++i ) {
 
-      midpoint[i] = -features_mean[i] + q_lambda_f[i] / ( exp(lambda[i]) + ( 1 - exp(lambda[i]) ) * q_lambda_f[i]);
-
-      if ( (midpoint[i] + regularization_parameters[i]) < 0.0 ) {
-	sign_pos[i] = -1;
-      }
-      else {
-	if ( (midpoint[i] + regularization_parameters[i]) > 0.0 ) {
-	  sign_pos[i] = 1;
-	}
-	else{
-	  sign_pos[i] = 0;
-	}
-      }
-
-      if ( (midpoint[i] - regularization_parameters[i]) < 0.0 ) {
-	sign_neg[i] = -1;
-      }
-      else {
-	if ( (midpoint[i] - regularization_parameters[i]) > 0.0 ) {
-	  sign_neg[i] = 1;
-	}
-	else {
-	  sign_neg[i] = 0;
-	}
-      }
-      
-      if ( sign_neg[i] > 0 ) neg = 1;
-      else neg = 0;
-
-      if ( sign_pos[i] < 0 ) pos = 1;
-      else pos = 0;
-
-      signs[i] = neg - pos;
-
-      alfa_pos_neg[i] = log((features_mean[i]+signs[i]*regularization_parameters[i])*(1-q_lambda_f[i])
-			    /((1-features_mean[i]-signs[i]*regularization_parameters[i])*q_lambda_f[i]));
-
       alfa[i] = -lambda[i];
- 
-      if ( signs[i] != 0 ) {
-	alfa[i] = alfa_pos_neg[i];
-      }
 
       F[i] = -alfa[i] * features_mean[i] + log(1 + (exp(alfa[i]) - 1) * q_lambda_f[i])
 	     + regularization_parameters[i] * (fabs(lambda[i] + alfa[i]) - fabs(lambda[i]));
@@ -663,22 +591,46 @@ MaximumEntropy::iterate()
 	best_id = i;
       }
 
+      alfa[i] =log(((features_mean[i]-regularization_parameters[i])*(1-q_lambda_f[i]))
+			    /((1-features_mean[i]-regularization_parameters[i])*q_lambda_f[i])); 
+
+      F[i] = -alfa[i] * features_mean[i] + log(1 + (exp(alfa[i]) - 1) * q_lambda_f[i])
+	     + regularization_parameters[i] * (fabs(lambda[i] + alfa[i]) - fabs(lambda[i]));
+
+      if((lambda[i]+alfa[i])>=0.0){
+
+	if ( min_F > F[i] ) {
+	  min_F = F[i];
+	  best_id = i;
+	}
+      }
+
+      alfa[i] =log(((features_mean[i]+regularization_parameters[i])*(1-q_lambda_f[i]))
+			    /((1-features_mean[i]+regularization_parameters[i])*q_lambda_f[i])); 
+
+      F[i] = -alfa[i] * features_mean[i] + log(1 + (exp(alfa[i]) - 1) * q_lambda_f[i])
+	     + regularization_parameters[i] * (fabs(lambda[i] + alfa[i]) - fabs(lambda[i]));
+
+      if((lambda[i]+alfa[i])<=0.0){
+
+	if ( min_F > F[i] ) {
+	  min_F = F[i];
+	  best_id = i;
+	}
+      }
     } // for ( int i = 0; i < _len; ++i )
 
     delete[] F;
-    delete[] midpoint;
-    delete[] sign_pos;
-    delete[] sign_neg;
-    delete[] signs;
     delete[] alfa;
-    delete[] alfa_pos_neg;
 
 #endif
     lambda[best_id] += min_F;
 
-  } // for ( size_t niter = 0; niter < iter; ++niter )
+  } // for ( niter = 0; niter < _num_iterations; ++niter )
 
+  Log::instance()->info( MAXENT_LOG_PREFIX "Gain\t %f \n", Gain );
   Log::instance()->info( MAXENT_LOG_PREFIX "Entropy\t %.2f \n", entropy );
+  Log::instance()->info( MAXENT_LOG_PREFIX "The algorithm stopped with %d iteration(s) \n", niter );
 
   _done = true;
 
@@ -713,7 +665,7 @@ MaximumEntropy::init_trainer()
     features_mean[i] = 0.0;
     feat_stan_devi[i] = 0.0;
     q_lambda_f[i] = 0.0;
-    lambda[i] = 1.0;
+    lambda[i] = 0.0;
   }
 
   for ( int i = 0; i < _num_samples; ++i ) {
@@ -818,7 +770,7 @@ MaximumEntropy::init_trainer()
 	beta_l = 0.2;
       }
       else{
-	beta_l = interpol( 'l' );
+	beta_l = interpol ( 'l' );
       }
     }
   }
@@ -847,7 +799,8 @@ MaximumEntropy::init_trainer()
       
       for ( size_t tam = 0; tam < t->second.size(); ++tam ) {
 
-	regularization_parameters[index] = beta_c / sqrt((double)(_num_presences)) * sqrt(min(0.25,feat_stan_devi[index]));
+	//	regularization_parameters[index] = beta_c / sqrt((double)(_num_presences)) * sqrt(min(0.25,feat_stan_devi[index]));
+      	regularization_parameters[index] = beta_c / sqrt((double)(_num_presences));
 
 	if ( regularization_parameters[index] < 0.00001 ) {
 
@@ -858,8 +811,9 @@ MaximumEntropy::init_trainer()
     }
     else {
 
-      regularization_parameters[index] = beta_l / sqrt((double)(_num_presences)) * sqrt(min(0.25,feat_stan_devi[index]));
-    
+      //      regularization_parameters[index] = beta_l / sqrt((double)(_num_presences)) * sqrt(min(0.25,feat_stan_devi[index]));
+      regularization_parameters[index] = beta_l / sqrt((double)(_num_presences));
+
       if ( regularization_parameters[index] < 0.00001 ) {
 	
 	regularization_parameters[index] = 0.00001;
@@ -895,9 +849,11 @@ MaximumEntropy::interpol( char type_feat )
   double product = 0.0;
   double answer = 0.0;
 
+  table_beta_l.insert( std::pair< int, double > ( 0, 1.0 ) );
   table_beta_l.insert( std::pair< int, double > ( 10, 1.0 ) );
   table_beta_l.insert( std::pair< int, double > ( 30, 0.2 ) );
   table_beta_l.insert( std::pair< int, double > ( 100, 0.05 ) );
+
   table_beta_c.insert( std::pair< int, double > ( 0, 0.65 ) );
   table_beta_c.insert( std::pair< int, double > ( 10, 0.5 ) );
   table_beta_c.insert( std::pair< int, double > ( 17, 0.25 ) );
@@ -907,24 +863,26 @@ MaximumEntropy::interpol( char type_feat )
     std::map< int, double >::const_iterator it = table_beta_l.begin();
     std::map< int, double >::const_iterator it_end = table_beta_l.end();
     
-    while ( it != it_end ){
+    do{
 
       product = (*it).second;
 
       std::map< int, double >::const_iterator its = table_beta_l.begin();
       std::map< int, double >::const_iterator its_end = table_beta_l.end();
 
-      while ( its != its_end ){
+      do{
 
 	if ( it != its ) {
 
 	  product *= ( double ( _num_presences - (*its).first ) / double ( (*it).first - (*its).first ) );
 	}
 	++its;
-      }
+      }while ( its != its_end );
+
       answer += product;
       ++it;
-    }
+
+    }while ( it != it_end );
   }
 
   if ( type_feat == 'c' ) {
@@ -932,24 +890,26 @@ MaximumEntropy::interpol( char type_feat )
     std::map< int, double >::const_iterator it = table_beta_c.begin();
     std::map< int, double >::const_iterator it_end = table_beta_c.end();
     
-    while ( it != it_end ){
-
+    do{
+ 
       product = (*it).second;
 
       std::map< int, double >::const_iterator its = table_beta_c.begin();
       std::map< int, double >::const_iterator its_end = table_beta_c.end();
 
-      while ( its != its_end ){
+      do{
 
 	if ( it != its ) {
 
 	  product *= ( double ( _num_presences - (*its).first ) / double ( (*it).first - (*its).first ) );
 	}
 	++its;
-      }
+      }while ( its != its_end );
+
       answer += product;
       ++it;
-    }
+
+    }while ( it != it_end );
   }
   return answer;
 }
@@ -1050,9 +1010,8 @@ MaximumEntropy::calc_q_lambda_x()
     q_lambda_x[j] /= Z_lambda;
     entropy += (q_lambda_x[j] * log(q_lambda_x[j]));
   }
-  entropy = -entropy;
 
-  Log::instance()->info( MAXENT_LOG_PREFIX "Entropy\t %.2f \r", entropy );
+  entropy = -entropy;
 }
 
 /***********************/
