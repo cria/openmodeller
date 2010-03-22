@@ -1,3 +1,17 @@
+libopenmodeller (1.1.0-0) karmic; urgency=low
+
+  * Bugfix: Interquartile and envelope size adjustments were using wrong reference values for salinity and temperature in the Aquamaps algorithm.
+  * Bugfix: All GARP algorithms were crashing when the abundance value associated with one of the occurrence points had more than two digits in the integer part.
+  * Increased the default number of neurons in the hidden layer of the ANN algorithm.
+  * New argument "s" in om_niche allowing model outputs to be scaled.
+  * Re-implemented and re-enabled Maximum entropy algorithm based on the well-known Maxent.
+  * Changed environmental distance algorithm forcing the Mahalanobis distance to use an identity matrix as the covariance matrix when there's only one input point.
+  * Fixed small logical error in the CSM algorithm that could affect models with a large number of layers.
+  * New algorithm (Niche Mosaic) implemented by Dr. Missae Yamamoto.
+  * New algorithm (ENFA) kindly implemented by Dr. Chris Yesson. 
+
+ -- Renato De Giovanni <renato@cria.org.br>  Mon, 22 Mar 2010 09:12:07 -0300
+
 libopenmodeller (1.0.0-0) gutsy; urgency=low
 
   * Changed ANN algorithm to avoid exceeding a maximum number of iterations when training by minimum error (parameter Epoch can be used for this purpose).
