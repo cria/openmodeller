@@ -94,9 +94,10 @@ std::vector<std::string> scanDirectory( std::string dir );
  * Generates a pseudo-random seed and initializes the system
  * random sequence generator. The seed is based in the
  * micro-seconds of the current machine time.
+ * @param new_seed Optional seed that can be explicitly provided.
  * @return Not zero if the generator was initiated.
  */
-dllexp int initRandom();
+dllexp int initRandom( unsigned int new_seed=0 );
 
 
 

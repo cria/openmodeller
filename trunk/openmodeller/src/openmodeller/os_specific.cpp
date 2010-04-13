@@ -354,24 +354,30 @@ scanDirectory( string dir )
 /*******************/
 /*** init Random ***/
 int
-initRandom()
+initRandom( unsigned int new_seed )
 {
   static unsigned int seed = 0;
 
-  if ( seed ) {
+  if ( seed && !new_seed ) {
 
-    return 1; // reseeding rand can decrease the randomness, so avoid doing it
+    // reseeding rand can decrease the randomness, so avoid doing it
+    return 1;
   }
 
+  if ( new_seed ) {
+
+    seed = new_seed;
+  }
+  else {
+
 #ifndef WIN32
-  struct timeval time;
-  gettimeofday( &time, (struct timezone *)NULL );
-  seed = time.tv_usec;
-
+    struct timeval time;
+    gettimeofday( &time, (struct timezone *)NULL );
+    seed = time.tv_usec;
 #else
-  seed = (unsigned int) time( NULL );
-
+    seed = (unsigned int) time( NULL );
 #endif
+  }
 
   Log::instance()->debug( "Setting random seed %u\n", seed );
 
