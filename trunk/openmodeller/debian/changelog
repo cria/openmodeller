@@ -1,3 +1,9 @@
+libopenmodeller (1.1.0-1) karmic; urgency=low
+
+  * Included missing algorithms in package libopenmodeller-algorithms. 
+
+ -- Renato De Giovanni <renato@polaris>  Wed, 14 Apr 2010 10:40:14 -0300
+
 libopenmodeller (1.1.0-0) karmic; urgency=low
 
   * Bugfix: Interquartile and envelope size adjustments were using wrong reference values for salinity and temperature in the Aquamaps algorithm.
