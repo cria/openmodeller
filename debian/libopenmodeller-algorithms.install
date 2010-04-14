@@ -3,10 +3,13 @@
 /usr/lib/openmodeller/libcsm_bs.so
 /usr/lib/openmodeller/libdesktop_garp_bs.so
 /usr/lib/openmodeller/libdesktop_garp.so
+/usr/lib/openmodeller/libenfa.so
 /usr/lib/openmodeller/libenvelope_score.so
 /usr/lib/openmodeller/libenvironmental_distance.so
 /usr/lib/openmodeller/libgarp_best_subsets.so
 /usr/lib/openmodeller/libgarp.so
+/usr/lib/openmodeller/libmaximum_entropy.so
+/usr/lib/openmodeller/libniche_mosaic.so
 /usr/lib/openmodeller/libomsvm.so
 /usr/lib/openmodeller/libomneuralnet.so
 /usr/share/openmodeller/data/aquamaps.db
