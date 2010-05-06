@@ -3,6 +3,7 @@ Release ? (?)
 SVN revision: ?
 
 	* Bugfix: Fixed memory deallocation issues in maxent.
+	* om_console now accepts a second parameter (after the request file) to specify the log level.
 
 Release 1.1.0 (2010-02-05)
 --------------------------

@@ -6,6 +6,7 @@ SET (OMCONSOLE_SRCS
     om_console.cpp
     request_file.cpp
     file_parser.cpp
+    om_cmd_utils.cpp 
 )
 SET (OMSAMPLER_SRCS
     om_sampler.cpp 
