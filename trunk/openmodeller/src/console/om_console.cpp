@@ -30,12 +30,13 @@
 
 #include "request_file.hh"
 #include "file_parser.hh"
+#include "om_cmd_utils.hh"
 
 #include <istream>
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
-
+#include <string>
 #include <stdexcept>
 
 #ifdef MPI_FOUND
@@ -58,20 +59,29 @@ void modelCallback( float progress, void * extra_param );
 int
 main( int argc, char **argv )
 {
-  // Reconfigure the global logger.
-  Log::instance()->setLevel( Log::Info );
+  if ( argc < 2 ) {
+
+    // Obs: default log level includes "error" messages
+    Log::instance()->error( "\n%s request_file [log_level]\n\n", argv[0] );
+    exit(1);
+  }
+
+  // Reconfigure the global logger
+  string log_level("info");
+
+  if ( argc > 2 ) {
+
+    log_level.assign( argv[2] );
+  }
+
+  Log::Level level_code = getLogLevel( log_level );
+  Log::instance()->setLevel( level_code );
   Log::instance()->setPrefix( "" );
 
   // Set up any related external resources
   setupExternalResources();
   
   try {
-
-    if ( argc < 2 ) {
-
-      Log::instance()->error( "\n%s <request>\n\n", argv[0] );
-      exit(1);
-    }
 
     char *request_file = argv[1];
 
