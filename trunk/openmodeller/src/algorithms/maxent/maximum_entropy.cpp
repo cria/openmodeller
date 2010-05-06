@@ -419,7 +419,11 @@ MaximumEntropy::iterate()
       sum_regu_lambda += regularization_parameters[i] * fabs(lambda[i]);
     }
 
-        new_loss = log(Z_lambda) - sum_mean_lambda + sum_regu_lambda;
+    new_loss = log(Z_lambda) - sum_mean_lambda + sum_regu_lambda;
+
+    double delta_loss = new_loss - loss;
+
+    Log::instance()->debug( "%d: loss = %f \n", niter, new_loss );
 
     if ( (loss - new_loss) < _tolerance ) {
       break;
@@ -429,7 +433,7 @@ MaximumEntropy::iterate()
 
     Gain = log(_num_samples) - loss;
 
-    Log::instance()->info( MAXENT_LOG_PREFIX "Gain\t %f \r", Gain );
+    //Log::instance()->info( MAXENT_LOG_PREFIX "Gain\t %f \r", Gain );
 
     calc_q_lambda_f();
     
@@ -619,6 +623,8 @@ MaximumEntropy::iterate()
 	}
       }
     } // for ( int i = 0; i < _len; ++i )
+
+    Log::instance()->debug( "alpha = %f deltaLoss = %f \n", alfa[best_id], delta_loss );
 
     delete[] F;
     delete[] alfa;
