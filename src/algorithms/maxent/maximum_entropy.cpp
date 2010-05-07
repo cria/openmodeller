@@ -671,7 +671,7 @@ MaximumEntropy::init_trainer()
     features_mean[i] = 0.0;
     feat_stan_devi[i] = 0.0;
     q_lambda_f[i] = 0.0;
-    lambda[i] = 0.0;
+    lambda[i] = 1.0;
   }
 
   for ( int i = 0; i < _num_samples; ++i ) {
