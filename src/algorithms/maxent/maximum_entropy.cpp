@@ -386,6 +386,10 @@ MaximumEntropy::initialize()
       _num_values_cat += values.size();
     } // if ( _is_categorical[i] )
   } // for ( int i = 0; i < _num_layers; ++i )
+
+  _min.resize( _num_layers );
+  _max.resize( _num_layers );
+  _background->getMinMax( &_min, &_max );
   
   return 1;
 } // initialize
@@ -624,6 +628,7 @@ MaximumEntropy::iterate()
       }
     } // for ( int i = 0; i < _len; ++i )
 
+    Log::instance()->debug( "%s: lambda = %f min = %f max = %f\n", _samp->getEnvironment()->getLayerPath(best_id).c_str(), lambda[best_id], _min[best_id], _max[best_id] );
     Log::instance()->debug( "alpha = %f deltaLoss = %f \n", alfa[best_id], delta_loss );
 
     delete[] F;
