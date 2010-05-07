@@ -91,6 +91,8 @@ protected:
   OccurrencesPtr _background;
 
   Sample _is_categorical;
+  Sample _min;
+  Sample _max;
 
   int _num_layers;
   int _num_presences;
