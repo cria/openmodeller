@@ -54,9 +54,10 @@ using namespace std;
 /****************************************************************/
 /********************** Algorithm's Metadata ********************/
 
-#define NUM_PARAM 4
+#define NUM_PARAM 5
 
 #define BACKGROUND_ID      "NumberOfBackgroundPoints"
+#define MERGE_POINTS_ID    "IncludeInputPointsInBackground"
 #define ITERATIONS_ID      "NumberOfIterations"
 #define TOLERANCE_ID       "TerminateTolerance"
 #define OUTPUT_ID          "OutputFormat"
@@ -80,6 +81,19 @@ static AlgParamMetadata parameters[NUM_PARAM] = {
     1,         // Not zero if the parameter has upper limit.
     10000,     // Parameter's upper limit.
     "10000"    // Parameter's typical (default) value.
+  },
+  // Indication if presence points should be merged with background points
+  {
+    MERGE_POINTS_ID,               // Id.
+    "Include input points in the background", // Name.
+    Integer,                       // Type.
+    "Include input points in the background: 0=No, 1=Yes.", // Overview
+    "Include input points in the background: 0=No, 1=Yes.", // Description.
+    1,   // Not zero if the parameter has lower limit.
+    0,   // Parameter's lower limit.
+    1,   // Not zero if the parameter has upper limit.
+    1,   // Parameter's upper limit.
+    "1"  // Parameter's typical (default) value.
   },
   // Number of iterations
   {
@@ -133,7 +147,7 @@ static AlgMetadata metadata = {
   
   "MAXENT",          // Id.
   "Maximum Entropy", // Name.
-  "0.3",       	     // Version.
+  "0.4",       	     // Version.
 
   // Overview.
   "The principle of maximum entropy is a method for analyzing available qualitative information in order to determine a unique epistemic probability distribution. It states that the least biased distribution that encodes certain given information is that which maximizes the information entropy (content retrieved from Wikipedia on the 19th of May, 2008: http://en.wikipedia.org/wiki/Maximum_entropy).",
@@ -269,6 +283,13 @@ MaximumEntropy::initialize()
       return 0;
     }
   }
+
+  bool merge_points = true; // default
+  int merge_param;
+  if ( getParameter( MERGE_POINTS_ID, &merge_param ) && !merge_param ) {
+
+    merge_points = false;
+  }
     
   _background = new OccurrencesImpl( _presences->name(), _presences->coordSystem() );
 
@@ -278,10 +299,25 @@ MaximumEntropy::initialize()
     _background->insert( oc ); 
   }
 
-  // Compute normalization with all points
-  SamplerPtr mySamplerPtr = createSampler( _samp->getEnvironment(), _presences, _background );
+  if ( merge_points ) {
 
-  _normalizerPtr->computeNormalization( mySamplerPtr );
+    _num_background += _num_presences;
+
+    // Mixing points with different abundance values (0 or 1) won't hurt
+    _background->appendFrom( _presences );
+
+    // Using a mixed occurrence object shouldn't affect the normalization procedure
+    SamplerPtr mySamplerPtr = createSampler( _samp->getEnvironment(), _background );
+
+    _normalizerPtr->computeNormalization( mySamplerPtr );
+  }
+  else {
+
+    // Compute normalization with all points
+    SamplerPtr mySamplerPtr = createSampler( _samp->getEnvironment(), _presences, _background );
+
+    _normalizerPtr->computeNormalization( mySamplerPtr );
+  }
 
   setNormalization( _samp );
 
