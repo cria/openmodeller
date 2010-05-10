@@ -665,7 +665,7 @@ MaximumEntropy::iterate()
     } // for ( int i = 0; i < _len; ++i )
 
     Log::instance()->debug( "%s: lambda = %f min = %f max = %f\n", _samp->getEnvironment()->getLayerPath(best_id).c_str(), lambda[best_id], _min[best_id], _max[best_id] );
-    Log::instance()->debug( "alpha = %f deltaLoss = %f \n", alfa[best_id], delta_loss );
+    Log::instance()->debug( "alpha = %f W1 = %f N1 = %f deltaLoss = %f \n", alfa[best_id], q_lambda_f[best_id], features_mean[best_id], delta_loss );
 
     delete[] F;
     delete[] alfa;
@@ -1068,7 +1068,7 @@ void
 MaximumEntropy::calc_q_lambda_f()
 {
   for ( int i = 0; i < _len; ++i ) {
-
+    
     q_lambda_f[i] = 0.0;
   }
 
