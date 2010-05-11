@@ -69,6 +69,9 @@ private:
 
   double interpol( char type_feat );
 
+  double reduceAlpha(double alpha);
+  double getLoss();
+
   double *regularization_parameters;
   double *features_mean;
   double *feat_stan_devi;
@@ -104,7 +107,8 @@ protected:
   double beta_c;
   bool _hasCategorical;
 
-  int _num_iterations;
+  int _max_iterations;
+  int iteration;
   double _tolerance;
   int _output_format;
 

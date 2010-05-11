@@ -238,13 +238,13 @@ MaximumEntropy::initialize()
   _presences = _samp->getPresences();
   
   // Number of iterations
-  if ( ! getParameter( ITERATIONS_ID, &_num_iterations ) ) {
+  if ( ! getParameter( ITERATIONS_ID, &_max_iterations ) ) {
 
     Log::instance()->warn( MAXENT_LOG_PREFIX "Parameter '" ITERATIONS_ID "' not passed. Using default value (500)\n" );
-    _num_iterations = 500;
+    _max_iterations = 500;
   }
   else {
-    if ( _num_iterations <= 0 ) {
+    if ( _max_iterations <= 0 ) {
       
       Log::instance()->error( MAXENT_LOG_PREFIX "Parameter '" ITERATIONS_ID "' must be greater then zero.\n" );
       return 0;
@@ -441,29 +441,21 @@ MaximumEntropy::iterate()
   double loss = std::numeric_limits<double>::infinity();
   double new_loss = 0.0;
   double Gain = 0.0;
-  int niter;
 
-  for ( niter = 0; niter < _num_iterations; ++niter ) {
+  for ( iteration = 0; iteration < _max_iterations; ++iteration ) {
 
-    double *alfa;
+    double *alpha;
     double min_F = std::numeric_limits<double>::infinity();
-    double sum_mean_lambda = 0.0;
-    double sum_regu_lambda = 0.0;
+
     int best_id = -1;
 
     calc_q_lambda_x();
 
-    for ( int i = 0; i < _len; ++i ) {
-
-      sum_mean_lambda += features_mean[i] * lambda[i];
-      sum_regu_lambda += regularization_parameters[i] * fabs(lambda[i]);
-    }
-
-    new_loss = log(Z_lambda) - sum_mean_lambda + sum_regu_lambda;
+    new_loss = getLoss();
 
     double delta_loss = new_loss - loss;
 
-    Log::instance()->debug( "%d: loss = %f \n", niter, new_loss );
+    Log::instance()->debug( "%d: loss = %f \n", iteration, new_loss );
 
     if ( (loss - new_loss) < _tolerance ) {
       break;
@@ -558,7 +550,7 @@ MaximumEntropy::iterate()
       double F;
       double min_F_local = std::numeric_limits<double>::infinity();
 
-      alfa = new double[_len];
+      alpha = new double[_len];
 
       while ( 1 ) {
 	
@@ -573,35 +565,38 @@ MaximumEntropy::iterate()
 	}
 
 	// Do the work
-	alfa[i] = -lambda[i];
+	alpha[i] = -lambda[i];
+	alpha[i] = reduceAlpha(alpha[i]);
 	
-	F = -alfa[i] * features_mean[i] + log(1 + (exp(alfa[i]) - 1) * q_lambda_f[i])
-	    + regularization_parameters[i] * (fabs(lambda[i] + alfa[i]) - fabs(lambda[i]));
+	F = -alpha[i] * features_mean[i] + log(1 + (exp(alpha[i]) - 1) * q_lambda_f[i])
+	    + regularization_parameters[i] * (fabs(lambda[i] + alpha[i]) - fabs(lambda[i]));
 	
 	if ( min_F_local > F ) {
 	  min_F_local = F;
 	}
 	
-	alfa[i] = log(((features_mean[i]-regularization_parameters[i])*(1-q_lambda_f[i]))
+	alpha[i] = log(((features_mean[i]-regularization_parameters[i])*(1-q_lambda_f[i]))
 		      /((1-features_mean[i]-regularization_parameters[i])*q_lambda_f[i])); 
+	alpha[i] = reduceAlpha(alpha[i]);
+
+	F = -alpha[i] * features_mean[i] + log(1 + (exp(alpha[i]) - 1) * q_lambda_f[i])
+	    + regularization_parameters[i] * (fabs(lambda[i] + alpha[i]) - fabs(lambda[i]));
 	
-	F = -alfa[i] * features_mean[i] + log(1 + (exp(alfa[i]) - 1) * q_lambda_f[i])
-	    + regularization_parameters[i] * (fabs(lambda[i] + alfa[i]) - fabs(lambda[i]));
-	
-	if( ( lambda[i] + alfa[i] ) >= 0.0 ) {
+	if( ( lambda[i] + alpha[i] ) >= 0.0 ) {
 	  
 	  if ( min_F_local > F ) {
 	    min_F_local =  F;
 	  }
 	}
 	
-	alfa[i] = log(((features_mean[i]+regularization_parameters[i])*(1-q_lambda_f[i]))
+	alpha[i] = log(((features_mean[i]+regularization_parameters[i])*(1-q_lambda_f[i]))
 		     /((1-features_mean[i]+regularization_parameters[i])*q_lambda_f[i])); 
+	alpha[i] = reduceAlpha(alpha[i]);
 
-	F = -alfa[i] * features_mean[i] + log(1 + (exp(alfa[i]) - 1) * q_lambda_f[i])
-	         + regularization_parameters[i] * (fabs(lambda[i] + alfa[i]) - fabs(lambda[i]));
+	F = -alpha[i] * features_mean[i] + log(1 + (exp(alpha[i]) - 1) * q_lambda_f[i])
+	         + regularization_parameters[i] * (fabs(lambda[i] + alpha[i]) - fabs(lambda[i]));
 	
-	if( ( lambda[i] + alfa[i] ) <= 0.0 ) {
+	if( ( lambda[i] + alpha[i] ) <= 0.0 ) {
 	  
 	  if ( min_F_local > F ) { 
 	    min_F = F; 
@@ -614,34 +609,36 @@ MaximumEntropy::iterate()
 
       } // While (1)
 
-      delete[] alfa;
+      delete[] alpha;
 
     } // else
 #else
 
     double *F;
     F = new double[_len];
-    alfa = new double[_len];
+    alpha = new double[_len];
 
     for ( int i = 0; i < _len; ++i ) {
 
-      alfa[i] = -lambda[i];
+      alpha[i] = -lambda[i];
+      alpha[i] = reduceAlpha(alpha[i]);
 
-      F[i] = -alfa[i] * features_mean[i] + log(1 + (exp(alfa[i]) - 1) * q_lambda_f[i])
-	     + regularization_parameters[i] * (fabs(lambda[i] + alfa[i]) - fabs(lambda[i]));
+      F[i] = -alpha[i] * features_mean[i] + log(1 + (exp(alpha[i]) - 1) * q_lambda_f[i])
+	     + regularization_parameters[i] * (fabs(lambda[i] + alpha[i]) - fabs(lambda[i]));
 
       if ( min_F > F[i] ) {
 	min_F = F[i];
 	best_id = i;
       }
 
-      alfa[i] =log(((features_mean[i]-regularization_parameters[i])*(1-q_lambda_f[i]))
+      alpha[i] =log(((features_mean[i]-regularization_parameters[i])*(1-q_lambda_f[i]))
 			    /((1-features_mean[i]-regularization_parameters[i])*q_lambda_f[i])); 
+      alpha[i] = reduceAlpha(alpha[i]);
 
-      F[i] = -alfa[i] * features_mean[i] + log(1 + (exp(alfa[i]) - 1) * q_lambda_f[i])
-	     + regularization_parameters[i] * (fabs(lambda[i] + alfa[i]) - fabs(lambda[i]));
+      F[i] = -alpha[i] * features_mean[i] + log(1 + (exp(alpha[i]) - 1) * q_lambda_f[i])
+	     + regularization_parameters[i] * (fabs(lambda[i] + alpha[i]) - fabs(lambda[i]));
 
-      if((lambda[i]+alfa[i])>=0.0){
+      if((lambda[i]+alpha[i])>=0.0){
 
 	if ( min_F > F[i] ) {
 	  min_F = F[i];
@@ -649,13 +646,14 @@ MaximumEntropy::iterate()
 	}
       }
 
-      alfa[i] =log(((features_mean[i]+regularization_parameters[i])*(1-q_lambda_f[i]))
+      alpha[i] =log(((features_mean[i]+regularization_parameters[i])*(1-q_lambda_f[i]))
 			    /((1-features_mean[i]+regularization_parameters[i])*q_lambda_f[i])); 
+      alpha[i] = reduceAlpha(alpha[i]);
 
-      F[i] = -alfa[i] * features_mean[i] + log(1 + (exp(alfa[i]) - 1) * q_lambda_f[i])
-	     + regularization_parameters[i] * (fabs(lambda[i] + alfa[i]) - fabs(lambda[i]));
+      F[i] = -alpha[i] * features_mean[i] + log(1 + (exp(alpha[i]) - 1) * q_lambda_f[i])
+	     + regularization_parameters[i] * (fabs(lambda[i] + alpha[i]) - fabs(lambda[i]));
 
-      if((lambda[i]+alfa[i])<=0.0){
+      if((lambda[i]+alpha[i])<=0.0){
 
 	if ( min_F > F[i] ) {
 	  min_F = F[i];
@@ -665,19 +663,19 @@ MaximumEntropy::iterate()
     } // for ( int i = 0; i < _len; ++i )
 
     Log::instance()->debug( "%s: lambda = %f min = %f max = %f\n", _samp->getEnvironment()->getLayerPath(best_id).c_str(), lambda[best_id], _min[best_id], _max[best_id] );
-    Log::instance()->debug( "alpha = %f W1 = %f N1 = %f deltaLoss = %f \n", alfa[best_id], q_lambda_f[best_id], features_mean[best_id], delta_loss );
+    Log::instance()->debug( "alpha = %f W1 = %f N1 = %f deltaLoss = %f \n", alpha[best_id], q_lambda_f[best_id], features_mean[best_id], delta_loss );
 
     delete[] F;
-    delete[] alfa;
+    delete[] alpha;
 
 #endif
     lambda[best_id] += min_F;
 
-  } // for ( niter = 0; niter < _num_iterations; ++niter )
+  } // for ( iteration = 0; iteration < _max_iterations; ++iteration )
 
   Log::instance()->info( MAXENT_LOG_PREFIX "Gain\t %f \n", Gain );
   Log::instance()->info( MAXENT_LOG_PREFIX "Entropy\t %.2f \n", entropy );
-  Log::instance()->info( MAXENT_LOG_PREFIX "The algorithm stopped with %d iteration(s) \n", niter );
+  Log::instance()->info( MAXENT_LOG_PREFIX "The algorithm stopped with %d iteration(s) \n", iteration );
 
   _done = true;
 
@@ -1142,6 +1140,39 @@ MaximumEntropy::calc_q_lambda_f()
     ++i;
     ++p_iterator;
   }
+}
+
+/********************/
+/*** reduce Alpha ***/
+
+double
+MaximumEntropy::reduceAlpha(double alpha)
+{
+  if (iteration < 10)
+    return alpha / 50.0;
+  if (iteration < 20)
+    return alpha / 10.0;
+  if (iteration < 50)
+    return alpha / 3.0;
+  return alpha;
+}
+
+/***************/
+/*** getLoss ***/
+
+double
+MaximumEntropy::getLoss()
+{
+  double sum_mean_lambda = 0.0;
+  double sum_regu_lambda = 0.0;
+
+  for ( int i = 0; i < _len; ++i ) {
+    
+    sum_mean_lambda += features_mean[i] * lambda[i];
+    sum_regu_lambda += regularization_parameters[i] * fabs(lambda[i]);
+  }
+  
+  return ( log(Z_lambda) - sum_mean_lambda + sum_regu_lambda );
 }
 
 /************/
