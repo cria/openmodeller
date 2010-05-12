@@ -657,7 +657,7 @@ MaximumEntropy::iterate()
       break;
     }
 
-    describeIteration(best_id, new_loss, delta_loss, alpha[best_id], iteration);
+    displayInfo(best_id, new_loss, delta_loss, alpha[best_id], iteration);
 
     delete[] alpha;
 
@@ -1134,11 +1134,11 @@ MaximumEntropy::calc_q_lambda_f()
   }
 }
 
-/**************************/
-/*** describe Iteration ***/
+/********************/
+/*** display Info ***/
 
 void
-MaximumEntropy::describeIteration(int best_id, double new_loss, double delta_loss, double alpha, int iteration)
+MaximumEntropy::displayInfo(int best_id, double new_loss, double delta_loss, double alpha, int iteration)
 {
   Log::instance()->debug( "%d: loss = %f \n", iteration, new_loss );
 
