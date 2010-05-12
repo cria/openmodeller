@@ -69,7 +69,8 @@ private:
 
   double interpol( char type_feat );
 
-  void describeIteration(int best_id, double new_loss, double delta_loss, double alpha, int iteration);
+  // Dump the given maxent vars related to a specfic iteration
+  void displayInfo(int best_id, double new_loss, double delta_loss, double alpha, int iteration);
   bool terminationTest(double newLoss);
   double reduceAlpha(double alpha);
   double getLoss();
