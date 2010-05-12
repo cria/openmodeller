@@ -438,8 +438,8 @@ MaximumEntropy::iterate()
 {
   init_trainer();
 
-  double loss = std::numeric_limits<double>::infinity();
-  double new_loss = 0.0;
+  //  double old_loss = std::numeric_limits<double>::infinity();
+  double new_loss = getLoss();
   double Gain = 0.0;
 
   for ( iteration = 0; iteration < _max_iterations; ++iteration ) {
@@ -452,20 +452,10 @@ MaximumEntropy::iterate()
     calc_q_lambda_x();
 
     new_loss = getLoss();
+    double delta_loss = new_loss - old_loss;
+    old_loss = new_loss;
 
-    double delta_loss = new_loss - loss;
-
-    Log::instance()->debug( "%d: loss = %f \n", iteration, new_loss );
-
-    if ( (loss - new_loss) < _tolerance ) {
-      break;
-    }
-
-    loss = new_loss;
-
-    Gain = log(_num_samples) - loss;
-
-    //Log::instance()->info( MAXENT_LOG_PREFIX "Gain\t %f \r", Gain );
+    Gain = log(_num_samples) - old_loss;
 
     calc_q_lambda_f();
     
@@ -608,9 +598,6 @@ MaximumEntropy::iterate()
 	MPI_Send( &i, 1, MPI_INT, 0, 0, MPI_COMM_WORLD );
 
       } // While (1)
-
-      delete[] alpha;
-
     } // else
 #else
 
@@ -662,20 +649,22 @@ MaximumEntropy::iterate()
       }
     } // for ( int i = 0; i < _len; ++i )
 
-    Log::instance()->debug( "%s: lambda = %f min = %f max = %f\n", _samp->getEnvironment()->getLayerPath(best_id).c_str(), lambda[best_id], _min[best_id], _max[best_id] );
-    Log::instance()->debug( "alpha = %f W1 = %f N1 = %f deltaLoss = %f \n", alpha[best_id], q_lambda_f[best_id], features_mean[best_id], delta_loss );
-
     delete[] F;
-    delete[] alpha;
-
 #endif
     lambda[best_id] += min_F;
+
+    if ( terminationTest(new_loss) ) {
+      break;
+    }
+
+    describeIteration(best_id, new_loss, delta_loss, alpha[best_id], iteration);
+
+    delete[] alpha;
 
   } // for ( iteration = 0; iteration < _max_iterations; ++iteration )
 
   Log::instance()->info( MAXENT_LOG_PREFIX "Gain\t %f \n", Gain );
   Log::instance()->info( MAXENT_LOG_PREFIX "Entropy\t %.2f \n", entropy );
-  Log::instance()->info( MAXENT_LOG_PREFIX "The algorithm stopped with %d iteration(s) \n", iteration );
 
   _done = true;
 
@@ -690,6 +679,9 @@ MaximumEntropy::iterate()
 void
 MaximumEntropy::init_trainer()
 {
+  convergenceTestFrequency = 20;
+  previousLoss = std::numeric_limits<double>::infinity();
+
   _len = _num_layers - _categorical_values.size() + _num_values_cat;
 
   regularization_parameters = new double[_len];
@@ -1142,23 +1134,61 @@ MaximumEntropy::calc_q_lambda_f()
   }
 }
 
+/**************************/
+/*** describe Iteration ***/
+
+void
+MaximumEntropy::describeIteration(int best_id, double new_loss, double delta_loss, double alpha, int iteration)
+{
+  Log::instance()->debug( "%d: loss = %f \n", iteration, new_loss );
+
+  Log::instance()->debug( "%s: lambda = %f min = %f max = %f\n", _samp->getEnvironment()->getLayerPath(best_id).c_str(), lambda[best_id], _min[best_id], _max[best_id] );
+
+  Log::instance()->debug( "alpha = %f W1 = %f N1 = %f deltaLoss = %f \n", alpha, q_lambda_f[best_id], features_mean[best_id], delta_loss );
+
+}
+
+/************************/
+/*** termination Test ***/
+
+bool
+MaximumEntropy::terminationTest(double newLoss)
+{
+  if ( iteration == 0 ) {
+    previousLoss = newLoss;
+    return false;
+  }
+  if ( iteration % convergenceTestFrequency != 0 ) {
+    return false;
+  }
+  if ( previousLoss - newLoss < _tolerance ) {
+    Log::instance()->info( MAXENT_LOG_PREFIX "The algorithm converged after %d iteration(s) \n", iteration );
+    return true;
+  }
+  previousLoss = newLoss;
+  return false;
+}
+
 /********************/
 /*** reduce Alpha ***/
 
 double
 MaximumEntropy::reduceAlpha(double alpha)
 {
-  if (iteration < 10)
+  if ( iteration < 10 ) {
     return alpha / 50.0;
-  if (iteration < 20)
+  }
+  if ( iteration < 20 ) {
     return alpha / 10.0;
-  if (iteration < 50)
+  }
+  if ( iteration < 50 ) {
     return alpha / 3.0;
+  }
   return alpha;
 }
 
-/***************/
-/*** getLoss ***/
+/****************/
+/*** get Loss ***/
 
 double
 MaximumEntropy::getLoss()
