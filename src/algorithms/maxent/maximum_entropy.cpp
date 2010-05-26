@@ -795,33 +795,14 @@ MaximumEntropy::init_trainer()
     feat_stan_devi[i] /= ( _num_presences - 1 );
   }
 
-  if ( _num_presences <= 10 ) {
-    beta_l = 1.0;
-  }
-  else {
-    if ( _num_presences >= 100 ) {
-      beta_l = 0.05;
-    }
-    else {
-      if ( _num_presences == 30 ) {
-	beta_l = 0.2;
-      }
-      else{
-	beta_l = interpol ( 'l' );
-      }
-    }
-  }
+  beta_l = interpol ( 'l' );
 
   if ( _hasCategorical ) {
-    if ( _num_presences < 17 ) {
-      if ( _num_presences == 10 ) {
-	beta_c = 0.5;
-      }
-      beta_c = interpol( 'c' );
-    }
-    else {
-      beta_c = 0.25;
-    }
+    beta_c = interpol( 'c' );
+    Log::instance()->debug( "Regularization values: Linear = %f \t Categorical = %f \n", beta_l, beta_c );
+  }
+  else {
+    Log::instance()->debug( "Regularization value = %f \n", beta_l );
   }
 
   int index = 0;
@@ -874,81 +855,49 @@ MaximumEntropy::end_trainer()
   delete[] q_lambda_x;
 } // end_trainer();
 
-
 /***********************/
 /****** interpol *******/
 
 double
 MaximumEntropy::interpol( char type_feat )
 {
-  std::map< int, double > table_beta_l;
-  std::map< int, double > table_beta_c;
-  double product = 0.0;
-  double answer = 0.0;
+  const int arraySize = 3;
+  int ts_l[arraySize] = { 10, 30, 100 }; //linear features thresholds 
+  double betas_l[arraySize] = { 1.0, 0.2, 0.05 };
+  int ts_c[arraySize] = { 0, 10, 17 }; //categorical features thresholds
+  double betas_c[arraySize] = { 0.65, 0.5, 0.25 };
 
-  table_beta_l.insert( std::pair< int, double > ( 0, 1.0 ) );
-  table_beta_l.insert( std::pair< int, double > ( 10, 1.0 ) );
-  table_beta_l.insert( std::pair< int, double > ( 30, 0.2 ) );
-  table_beta_l.insert( std::pair< int, double > ( 100, 0.05 ) );
-
-  table_beta_c.insert( std::pair< int, double > ( 0, 0.65 ) );
-  table_beta_c.insert( std::pair< int, double > ( 10, 0.5 ) );
-  table_beta_c.insert( std::pair< int, double > ( 17, 0.25 ) );
- 
   if ( type_feat == 'l' ) {
-
-    std::map< int, double >::const_iterator it = table_beta_l.begin();
-    std::map< int, double >::const_iterator it_end = table_beta_l.end();
-    
-    do{
-
-      product = (*it).second;
-
-      std::map< int, double >::const_iterator its = table_beta_l.begin();
-      std::map< int, double >::const_iterator its_end = table_beta_l.end();
-
-      do{
-
-	if ( it != its ) {
-
-	  product *= ( double ( _num_presences - (*its).first ) / double ( (*it).first - (*its).first ) );
-	}
-	++its;
-      }while ( its != its_end );
-
-      answer += product;
-      ++it;
-
-    }while ( it != it_end );
+    int i = 0;
+    for ( ; i < 3; ++i) {
+      if ( _num_presences <= ts_l[i] ) {
+	break;
+      }
+    }
+    if ( i == 0 ) {
+      return betas_l[0];
+    }
+    if ( i == 3 ) {
+      return betas_l[2];
+    }
+    return betas_l[(i-1)] + (betas_l[i] - betas_l[(i-1)]) * (_num_presences - ts_l[(i-1)]) / (ts_l[i] - ts_l[(i-1)]);
   }
-
-  if ( type_feat == 'c' ) {
-
-    std::map< int, double >::const_iterator it = table_beta_c.begin();
-    std::map< int, double >::const_iterator it_end = table_beta_c.end();
-    
-    do{
- 
-      product = (*it).second;
-
-      std::map< int, double >::const_iterator its = table_beta_c.begin();
-      std::map< int, double >::const_iterator its_end = table_beta_c.end();
-
-      do{
-
-	if ( it != its ) {
-
-	  product *= ( double ( _num_presences - (*its).first ) / double ( (*it).first - (*its).first ) );
-	}
-	++its;
-      }while ( its != its_end );
-
-      answer += product;
-      ++it;
-
-    }while ( it != it_end );
+  
+  else {
+    int i = 0;
+    for ( ; i < 3; ++i) {
+      if ( _num_presences <= ts_c[i] ) {
+	break;
+      }
+    }
+    if ( i == 0 ) {
+      return betas_c[0];
+    }
+    if ( i == 3 ) {
+      return betas_c[2];
+    }
+    return betas_c[(i-1)] + (betas_c[i] - betas_c[(i-1)]) * (_num_presences - ts_c[(i-1)]) / (ts_c[i] - ts_c[(i-1)]);
   }
-  return answer;
 }
 
 /***********************/
