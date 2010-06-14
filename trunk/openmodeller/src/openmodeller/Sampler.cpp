@@ -409,7 +409,12 @@ SamplerImpl::getPseudoAbsence( const Model& model, const Scalar threshold ) cons
    do {
 
      occ = getPseudoAbsence();
-     prob = model->getValue( occ->environment() );
+
+     if ( model ) {
+
+       prob = model->getValue( occ->environment() );
+     }
+
      loop++;
 
    } while ( ( prob > threshold ) && ( loop < max_loop ) );
