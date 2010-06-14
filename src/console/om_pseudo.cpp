@@ -255,8 +255,6 @@ int main( int argc, char **argv ) {
       exit(-1);
     }
 
-    OccurrencesPtr pseudo = samp->getPseudoAbsences( num_points, model, threshold, geo_unique, env_unique );
-
     // Start output
 
     std::cerr << flush;
@@ -270,25 +268,54 @@ int main( int argc, char **argv ) {
 
     int i = 0;
 
-    OccurrencesImpl::iterator it = pseudo->begin();
-    OccurrencesImpl::iterator end = pseudo->end();
+    if ( geo_unique || env_unique ) {
 
-    // Points
-    while ( it != end ) {
+      OccurrencesPtr pseudo = samp->getPseudoAbsences( num_points, model, threshold, geo_unique, env_unique );
 
-      // Start with absences. Switch to presence after reaching the number of absences.
-      if ( num_generated_absences == num_absences_to_be_generated ) {
+      OccurrencesImpl::iterator it = pseudo->begin();
+      OccurrencesImpl::iterator end = pseudo->end();
 
-        abundance = "1";
+      // Points
+      while ( it != end ) {
+
+        // Start with absences. Switch to presence after reaching the number of absences.
+        if ( num_generated_absences == num_absences_to_be_generated ) {
+
+          abundance = "1";
+        }
+
+        std::cerr << flush;
+
+        cout << sequence_start + i << "\t" << label.c_str() << "\t" << (*it)->x() << "\t" << (*it)->y() << "\t" << abundance.c_str() << endl << flush;
+
+        num_generated_absences++;
+        it++;
+        i++;
       }
+    }
+    // No geo or env uniqueness required - can generate one by one
+    else {
 
-      std::cerr << flush;
+      // Points
+      while ( i < num_points ) {
 
-      cout << sequence_start + i << "\t" << label.c_str() << "\t" << (*it)->x() << "\t" << (*it)->y() << "\t" << abundance.c_str() << endl << flush;
+        const ConstOccurrencePtr occ_ptr = samp->getPseudoAbsence( model, threshold );
 
-      num_generated_absences++;
-      it++;
-      i++;
+        // Start with absences. Switch to presence after reaching the number of absences.
+        if ( num_generated_absences == num_absences_to_be_generated ) {
+
+          abundance = "1";
+        }
+
+        std::cerr << flush;
+
+        cout << sequence_start + i << "\t" << label.c_str() << "\t" << occ_ptr->x() << "\t" << occ_ptr->y() << "\t" << abundance.c_str() << endl << flush;
+
+        num_generated_absences++;
+        i++;
+
+        //Log::instance()->info( "Points: %d \r", i );
+      }
     }
   }
   catch ( runtime_error e ) {
