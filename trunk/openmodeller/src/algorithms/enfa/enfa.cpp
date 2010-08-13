@@ -229,9 +229,9 @@ int Enfa::initialize()
   //if ( _samp->numAbsence() )
   if ( _samp->numAbsence() )
     {
-      Log::instance()->info( "Using background data provided (%7f records marked as absences in the occurrence file)\n",_backgroundCount);
       _backgroundProvided=1;
       _backgroundCount = _samp->numAbsence();
+      Log::instance()->info( "Using background data provided (%i records marked as absences in the occurrence file)\n",_backgroundCount);
 
     }
   else
