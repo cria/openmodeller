@@ -119,9 +119,9 @@ static AlgParamMetadata parameters[NUM_PARAM] = {
 static AlgMetadata metadata = { // General metadata
   "ENFA",                    // Id
   "ENFA (Ecological-Niche Factor Analysis)",     // Name
-  "0.1",                        // Version
+  "0.1.1",                        // Version
   "Algorithm based on presence only data using a modified principal components analysis.", // Overview
-  "Ecological-Niche Factor Analysis (Hirzel et al, 2002) uses a modified principal components analysis to develop a model based on presence only data.  The observed environment is compared to the background data of the study area.  The analysis produces factors similar to a PCA.  The first factor is termed the 'marginality' of the species, marginality is defined as the ecological distance between the species optimum and the mean habitat within the background data. Other factors are termed the 'specialization', and are defined as the ratio of the ecological variance in mean habitat to that observed for the target species.  Model projection uses the geomeans method of Hirzel & Arlettaz (2003)", // Description
+  "Ecological-Niche Factor Analysis (Hirzel et al, 2002) uses a modified principal components analysis to develop a model based on presence only data.  The observed environment is compared to the background data of the study area (note that absence points in the occurrence file are treated as background data).  The analysis produces factors similar to a PCA.  The first factor is termed the 'marginality' of the species, marginality is defined as the ecological distance between the species optimum and the mean habitat within the background data. Other factors are termed the 'specialization', and are defined as the ratio of the ecological variance in mean habitat to that observed for the target species.  Model projection uses the geomeans method of Hirzel & Arlettaz (2003)", // Description
   "Hirzel, A.H.; Hausser, J.; Chessel, D. & Perrin, N.",    // Algorithm author
   "Hirzel, A.H.; Hausser, J.; Chessel, D. & Perrin, N. Ecological-niche factor analysis: How to compute habitat-suitability maps without absence data? Ecology, 2002, 83, 2027-2036\nHirzel, A.H & Arlettaz, R. Modeling habitat suitability for complex species distributions by environmental distance geometric mean Environmental Management, 2003, 32, 614-623\n", // Bibliography
   "Chris Yesson",                     // Code author
@@ -225,8 +225,22 @@ int Enfa::initialize()
     return 0;
   }
 
+  // _backgroundCount = _backgroundSamp->numOccurrences();
+  //if ( _samp->numAbsence() )
+  if ( _samp->numAbsence() )
+    {
+      Log::instance()->info( "Using background data provided (%7f records marked as absences in the occurrence file)\n",_backgroundCount);
+      _backgroundProvided=1;
+      _backgroundCount = _samp->numAbsence();
+
+    }
+  else
+    {
+      getParameter( BACKGROUND_ID, &_backgroundCount );
+      _backgroundProvided=0;
+    }
+
   //use the pseudoabsence generator to do this
-  getParameter( BACKGROUND_ID, &_backgroundCount );
   getParameter( NUM_RETRIES, &_numRetries );
   getParameter( DISCARD_METHOD, &_discardMethod);
   getParameter( RETAIN_COMPONENTS, &_retainComponents);
@@ -322,10 +336,22 @@ int Enfa::BackgroundToMatrix()
   // try getting all background samples at once using the absence generator
   // this enables us to ensure geographic uniqueness
   // question: what happens when num-background > number of cells in env layer?
-  OccurrencesPtr _ocbg = _samp->getPseudoAbsences(_backgroundCount, false, 1, false, false);
+  // allow user to provide background points using the absence parser
+  OccurrencesPtr _ocbg;
+  OccurrencesImpl::const_iterator pit;
+  OccurrencesImpl::const_iterator fin;
 
-  OccurrencesImpl::const_iterator pit = _ocbg->begin();
-  OccurrencesImpl::const_iterator fin = _ocbg->end();
+  if (_backgroundProvided==1)
+    {
+      _ocbg = _samp->getAbsences();
+    }
+  else
+    {
+      _ocbg = _samp->getPseudoAbsences(_backgroundCount, false, 1, false, false);
+    }
+
+  pit = _ocbg->begin();
+  fin = _ocbg->end();
 
   // Allocate the gsl matrix to store environment data at each background point
   _gsl_background_matrix = gsl_matrix_alloc (_backgroundCount, _layer_count);
@@ -737,6 +763,7 @@ gsl_matrix* Enfa::sqrtm(gsl_matrix* original_matrix) const
 *****************************************************************/
 double Enfa::getGeomean(gsl_vector* v) const
 {
+
     //Log::instance()->info( "enfa::getGeomean\n" );
 
     //if (_verboseDebug)
@@ -788,16 +815,21 @@ double Enfa::getGeomean(gsl_vector* v) const
 	//Log::instance()->info( "euclidean distance: %6.2f\n", tmp_dist_workspace );
 
 	// accumulate for geometric mean calculation
-	if (tmp_dist_workspace!=0) tmp_geomean*=tmp_dist_workspace;
+	// if (tmp_dist_workspace!=0) tmp_geomean*=tmp_dist_workspace;
+        // log transform values to reduce chance of float overflow
+        if (tmp_dist_workspace!=0) tmp_geomean+=log(tmp_dist_workspace);
 	//Log::instance()->info( "accumulating distance: %6.2f\n", tmp_geomean );
     }
 
     //Log::instance()->info( "tmp_geomean1: %6.2f\n", tmp_geomean );    
 
     // finally work out geometric mean of distances to the species points
-    tmp_geomean=pow(tmp_geomean,(double)1/_localityCount);
+    // tmp_geomean=pow(tmp_geomean,(double)1/_localityCount);
+    // reverse the log transformation 
+    tmp_geomean=exp(tmp_geomean/_localityCount);
 
-    //Log::instance()->info( "getgeomean returns: %6.2f\n", tmp_geomean );    
+    //if (_verboseDebug)
+    //  Log::instance()->info( "getgeomean returns: %6.2f\n", tmp_geomean );    
 
     gsl_vector_free(tmp_distance_vector);
     gsl_vector_free(tmp_v);
