@@ -430,6 +430,9 @@ protected:
     
     /** the number of sample background points used to construct the model */
     int _backgroundCount; 
+
+    /** the marker to show whether background points are provided as 'absences' */
+    int _backgroundProvided; 
     
     /** flag identifying the method for component selection **/
     int _discardMethod; 
