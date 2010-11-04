@@ -369,3 +369,31 @@ dllexp int initRandom()
   return 1;
 }
 
+/*******************/
+/*** init Random ***/
+dllexp int
+initRandom( unsigned int new_seed )
+{
+  static unsigned int seed = 0;
+
+  if ( seed && !new_seed ) {
+
+    // reseeding rand can decrease the randomness, so avoid doing it
+    return 1;
+  }
+
+  if ( new_seed ) {
+
+    seed = new_seed;
+  }
+  else {
+
+    seed = (unsigned int) time( NULL );
+  }
+
+  Log::instance()->debug( "Setting random seed %u\n", seed );
+
+  srand( seed );
+
+  return 1;
+}
