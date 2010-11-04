@@ -40,7 +40,7 @@
 #include <fstream>
 #include <windows.h>
 #include <cpl_conv.h> // for setting gdal options
-#include <proj/proj_api.h> // for setting proj options
+#include <proj_api.h> // for setting proj options
 
 using std::vector;
 using std::string;

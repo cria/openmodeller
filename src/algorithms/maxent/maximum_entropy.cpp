@@ -455,7 +455,7 @@ MaximumEntropy::iterate()
     double delta_loss = new_loss - old_loss;
     old_loss = new_loss;
 
-    Gain = log(_num_samples) - old_loss;
+    Gain = log((double)_num_samples) - old_loss;
 
     calc_q_lambda_f();
     
