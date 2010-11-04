@@ -4,7 +4,7 @@ Compilation guide for openModeller
 %! target       : html
 %! style        : w3c_main.css
 %! style        : w3c_examples.css
-%! Options      : --toc --toc-level 3 --enum-title --css-sugar
+%! Options      : --toc --toc-level 3 --enum-title --css-sugar --css-inside
 %! preproc      : OM_URL   http://openmodeller.sf.net/
 %! PostProc(html): '(?i)(<pre>)' '<div class="exampleInner">\1'
 %! PostProc(html): '(?i)(</pre>)' '\1</div>'
