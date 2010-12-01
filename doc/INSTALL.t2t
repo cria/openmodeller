@@ -82,7 +82,7 @@ of cmake and provides some clues to build openModeller.
 
 **Required build deps:**
 
- - CMake >= 2.4.3
+ - CMake >= 2.6
 
 **Required runtime deps:**
  
@@ -184,7 +184,7 @@ http://www.cmake.org/HTML/Download.html
 At the time of writing the file I grabbed was:
 
 ``` 
-curl -O http://www.cmake.org/files/v2.4/cmake-2.4.6-Darwin-universal.dmg
+curl -O http://www.cmake.org/files/v2.6/cmake-2.6.4-Darwin-universal.dmg
 ```
 
 Once downloaded open the dmg and run the installer
@@ -477,7 +477,7 @@ the build process.
 
 CMake is build system used by openModeller. Download it from here:
 
-http://www.cmake.org/files/v2.4/cmake-2.4.6-win32-x86.exe
+http://www.cmake.org/files/v2.6/cmake-2.6.4-win32-x86.exe
 
 /!\ **Note:** Get the most recent version.
 
@@ -863,7 +863,7 @@ EDITOR             vim
 INCLUDE            C:\Program Files\Microsoft Platform SDK for Windows Server 2003 R2\Include\.
 LIB                C:\Program Files\Microsoft Platform SDK for Windows Server 2003 R2\Lib\.
 LIB_DIR            C:\dev\cpp\omlibs-release
-PATH               C:\Program Files\CMake 2.4\bin;
+PATH               C:\Program Files\CMake 2.6.4\bin;
                    %SystemRoot%\system32;
                    %SystemRoot%;
                    %SystemRoot%\System32\Wbem;
@@ -879,7 +879,7 @@ SVN_SSH            "C:\\Program Files\\PuTTY\\plink.exe"
 
 == Install CMake ==
 
-Download and install cmake 2.4.7 or better, making sure to enable the 
+Download and install cmake 2.6.4 or better, making sure to enable the 
 option
 
 ```

@@ -64,7 +64,7 @@ If you installed openModeller from a pre-built package, you don't
 need to worry about this (most dependencies should already be included 
 in the package).
 
-* cmake (>= 2.4) if you need to compile the library.
+* cmake (>= 2.6) if you need to compile the library.
 
 * Expat XML parser
   http://expat.sourceforge.net/
