@@ -26,8 +26,9 @@
 # 
 # http://www.gnu.org/copyleft/gpl.html
 
-use SOAP::Lite	
+use SOAP::Lite 
     on_fault => sub { my($soap, $res) = @_;
+                      print "SOAP::Lite fault! Aborting...\n";
 		      die ref $res ? $res->faultstring : $soap->transport->status, "\n";
 		  };
 use Getopt::Long;
