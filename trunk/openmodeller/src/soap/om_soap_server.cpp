@@ -248,7 +248,10 @@ omws__ping( struct soap *soap, void *_, xsd__int &status )
 
   // alloc new header
   soap->header = (struct SOAP_ENV__Header*)soap_malloc( soap, sizeof(struct SOAP_ENV__Header) ); 
-  soap->header->omws__version = const_cast<char *>( om->getVersion().c_str() );
+  string version( om->getVersion() );
+  char *version_buf = (char*)soap_malloc( soap, version.size() * sizeof( char ) );
+  strcpy( version_buf, version.c_str() );
+  soap->header->omws__version = version_buf;
 
   status = 1;
 
@@ -267,7 +270,10 @@ omws__getAlgorithms( struct soap *soap, void *_, struct omws__getAlgorithmsRespo
 
   // alloc new header
   soap->header = (struct SOAP_ENV__Header*)soap_malloc( soap, sizeof(struct SOAP_ENV__Header) ); 
-  soap->header->omws__version = const_cast<char *>( om->getVersion().c_str() );
+  string version( om->getVersion() );
+  char *version_buf = (char*)soap_malloc( soap, version.size() * sizeof( char ) );
+  strcpy( version_buf, version.c_str() );
+  soap->header->omws__version = version_buf;
 
   AlgMetadata const **algorithms = om->availableAlgorithms();
 
@@ -299,7 +305,10 @@ omws__getLayers( struct soap *soap, void *_, struct omws__getLayersResponse *out
 
   // alloc new header
   soap->header = (struct SOAP_ENV__Header*)soap_malloc( soap, sizeof(struct SOAP_ENV__Header) ); 
-  soap->header->omws__version = const_cast<char *>( om->getVersion().c_str() );
+  string version( om->getVersion() );
+  char *version_buf = (char*)soap_malloc( soap, version.size() * sizeof( char ) );
+  strcpy( version_buf, version.c_str() );
+  soap->header->omws__version = version_buf;
 
   string cacheDir( gFileParser.get( "CACHE_DIRECTORY" ) );
 
