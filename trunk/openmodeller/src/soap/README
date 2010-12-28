@@ -114,12 +114,16 @@ USE INSTRUCTIONS:
 
   So in the end you could have something like this in crontab, which
   will make the service react to any new modelling tasks every 10 seconds:
-  0-59/1 * * * * /usr/local/bin/scheduler.sh /var/www/config/server.conf
-  0-59/1 * * * * /usr/local/bin/scheduler.sh /var/www/config/server.conf 10
-  0-59/1 * * * * /usr/local/bin/scheduler.sh /var/www/config/server.conf 20
-  0-59/1 * * * * /usr/local/bin/scheduler.sh /var/www/config/server.conf 30
-  0-59/1 * * * * /usr/local/bin/scheduler.sh /var/www/config/server.conf 40
-  0-59/1 * * * * /usr/local/bin/scheduler.sh /var/www/config/server.conf 50
+  0-59/1 * * * * /bin/bash /usr/local/bin/scheduler.sh /var/www/config/server.conf 0
+  0-59/1 * * * * /bin/bash /usr/local/bin/scheduler.sh /var/www/config/server.conf 10
+  0-59/1 * * * * /bin/bash /usr/local/bin/scheduler.sh /var/www/config/server.conf 20
+  0-59/1 * * * * /bin/bash /usr/local/bin/scheduler.sh /var/www/config/server.conf 30
+  0-59/1 * * * * /bin/bash /usr/local/bin/scheduler.sh /var/www/config/server.conf 40
+  0-59/1 * * * * /bin/bash /usr/local/bin/scheduler.sh /var/www/config/server.conf 50
+
+  Important: scheduler.sh is only compatible with bash, so you should better
+  include /bin/bash in front of every command as demostrated above to avoid 
+  other shell programs trying to execute it.
 
 - To test your server you can run a command-line client which is also 
   included (you'll need Perl and the SOAP::Lite module):
