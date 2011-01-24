@@ -313,7 +313,7 @@ RfAlgorithm::iterate()
       w->add( instance, _class_weights[_set->label(instance)] );
     }
 
-    Tree* tree = new Tree( *_set, w, _k, 1, 0, _rand.get() );
+    Tree* tree = new Tree( *_set, w, _k, 1, 0, _rand.get(1000) );
     tree->grow();
 
     _trees.push_back(tree);
