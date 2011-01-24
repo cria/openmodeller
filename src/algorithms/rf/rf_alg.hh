@@ -2,7 +2,7 @@
  * Declaration of RF algorithm class.
  * 
  * @author Renato De Giovanni (renato [at] cria org br)
- * $Id:  $
+ * $Id$
  * 
  * LICENSE INFORMATION 
  * 
