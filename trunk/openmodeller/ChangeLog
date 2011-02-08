@@ -7,6 +7,7 @@ SVN revision: ?
 	* Changed the ENFA algorithm allowing absence data to be treated as background points, and log transforming the geomean calculation to avoid the occasional float overflow with large numbers of presences.
 	* Compilation now requires CMake 2.6.4.
 	* New algorithm Random Forests.
+	* Web service interface now accepts a new optional parameter specifying the prediction threshold to be used when calculating area statistics during projection.
 
 Release 1.1.0 (2010-02-05)
 --------------------------

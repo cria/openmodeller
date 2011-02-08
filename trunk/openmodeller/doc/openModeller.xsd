@@ -4,7 +4,7 @@
  xmlns:xs="http://www.w3.org/2001/XMLSchema"
  elementFormDefault="qualified"
  attributeFormDefault="unqualified"
- version="1.0.12" xml:lang="EN">
+ version="1.0.13" xml:lang="EN">
   <xs:annotation>
     <xs:documentation xml:lang="en">
         XML Schema with all basic element and type definitions used by openModeller.
@@ -296,6 +296,16 @@
     </xs:sequence>
   </xs:complexType>
 
+  <xs:complexType name="ProjectionStatisticsParametersType">
+    <xs:sequence>
+      <xs:element name="AreaStatistics" minOccurs="0">
+        <xs:complexType>
+          <xs:attribute name="PredictionThreshold" type="xs:double" use="required"/>
+        </xs:complexType>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+
   <xs:complexType name="AreaStatisticsType">
     <xs:attribute name="TotalCells" type="xs:int" use="required"/>
     <xs:attribute name="CellsPredicted" type="xs:int" use="required"/>
@@ -368,6 +378,7 @@
       <xs:element name="Algorithm" type="SerializedAlgorithmType"/>
       <xs:element name="Environment" type="EnvironmentType"/>
       <xs:element name="OutputParameters" type="MapOutputParametersType" minOccurs="0"/>
+      <xs:element name="Statistics" type="ProjectionStatisticsParametersType" minOccurs="0"/>
     </xs:sequence>
   </xs:complexType>
 

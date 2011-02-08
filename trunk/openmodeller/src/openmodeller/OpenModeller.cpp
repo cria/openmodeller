@@ -624,6 +624,21 @@ OpenModeller::setProjectionConfiguration( const ConstConfigurationPtr & config )
       // FileType attribute is optional
       UNUSED(e);
     }
+
+    try {
+
+      ConstConfigurationPtr stats_param_config = config->getSubsection( "Statistics" );
+      ConstConfigurationPtr areastats_param_config = stats_param_config->getSubsection( "AreaStatistics" );
+
+      double threshold = areastats_param_config->getAttributeAsDouble( "PredictionThreshold", 0.5 );
+
+      _actualAreaStats->reset( threshold );
+    }
+    catch ( SubsectionNotFound& e ) { 
+
+      // Statistics element is optional and AreaStatistics subelement is optional 
+      UNUSED(e);
+    }
   }
   catch( ConfigurationException& e ) { 
 

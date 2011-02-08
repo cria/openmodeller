@@ -78,7 +78,7 @@ Projector::createMap( const Model& model,
  
   if ( areaStats ) {
 
-    areaStats->reset();
+    areaStats->reset( areaStats->getPredictionThreshold() );
   }
 
   MapIterator fin;
