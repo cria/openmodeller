@@ -164,7 +164,7 @@ int omws__getLayerAsWcs(xsd__string id, xsd__string &url);
 struct omws__getProjectionMetadataResponse
 {
    @xsd__int FileSize; 
-   XML om__AreaStatistics;
+   XML om__ProjectionEnvelope;
 }; 
 
 /** Return additional data about the projection.

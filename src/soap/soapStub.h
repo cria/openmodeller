@@ -298,7 +298,7 @@ struct omws__getLayerAsWcs
 struct omws__getProjectionMetadataResponse
 {
 	int FileSize;	/* RPC return element */	/* optional attribute of type xsd:int */
-	wchar_t *om__AreaStatistics;	/* optional element of type xsd:anyType */
+	wchar_t *om__ProjectionEnvelope;	/* optional element of type xsd:anyType */
 };
 #endif
 

@@ -261,7 +261,7 @@
   <element name="getProjectionMetadataResponse">
    <complexType>
     <sequence>
-     <element ref="om:AreaStatistics" minOccurs="0" maxOccurs="1" nillable="true"/>
+     <element ref="om:ProjectionEnvelope" minOccurs="0" maxOccurs="1" nillable="true"/>
     </sequence>
      <attribute name="FileSize" type="xsd:int" use="required"/>
    </complexType>

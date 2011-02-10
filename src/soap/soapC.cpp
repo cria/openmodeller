@@ -7,7 +7,7 @@
 
 #include "soapH.h"
 
-SOAP_SOURCE_STAMP("@(#) soapC.cpp ver 2.7.6d 2008-09-16 19:53:58 GMT")
+SOAP_SOURCE_STAMP("@(#) soapC.cpp ver 2.7.6d 2011-02-10 15:50:26 GMT")
 
 
 #ifndef WITH_NOGLOBAL
@@ -1575,7 +1575,7 @@ SOAP_FMAC3 void SOAP_FMAC4 soap_default_omws__getProjectionMetadataResponse(stru
 {
 	(void)soap; (void)a; /* appease -Wall -Werror */
 	soap_default_xsd__int(soap, &a->FileSize);
-	a->om__AreaStatistics = NULL;
+	a->om__ProjectionEnvelope = NULL;
 }
 
 SOAP_FMAC3 int SOAP_FMAC4 soap_put_omws__getProjectionMetadataResponse(struct soap *soap, const struct omws__getProjectionMetadataResponse *a, const char *tag, const char *type)
@@ -1591,7 +1591,7 @@ SOAP_FMAC3 int SOAP_FMAC4 soap_out_omws__getProjectionMetadataResponse(struct so
 	soap_set_attr(soap, "FileSize", soap_int2s(soap, a->FileSize));
 	soap_element_begin_out(soap, tag, soap_embedded_id(soap, id, a, SOAP_TYPE_omws__getProjectionMetadataResponse), type);
 	soap_element_result(soap, "FileSize");
-	soap_outwliteral(soap, "om:AreaStatistics", &a->om__AreaStatistics);
+	soap_outwliteral(soap, "om:ProjectionEnvelope", &a->om__ProjectionEnvelope);
 	soap_element_end_out(soap, tag);
 	return SOAP_OK;
 }
@@ -1605,7 +1605,7 @@ SOAP_FMAC3 struct omws__getProjectionMetadataResponse * SOAP_FMAC4 soap_get_omws
 
 SOAP_FMAC3 struct omws__getProjectionMetadataResponse * SOAP_FMAC4 soap_in_omws__getProjectionMetadataResponse(struct soap *soap, const char *tag, struct omws__getProjectionMetadataResponse *a, const char *type)
 {
-	short soap_flag_om__AreaStatistics = 1;
+	short soap_flag_om__ProjectionEnvelope = 1;
 	if (soap_element_begin_in(soap, tag, 0))
 		return NULL;
 	if (*soap->type && soap_match_tag(soap, soap->type, type))
@@ -1622,9 +1622,9 @@ SOAP_FMAC3 struct omws__getProjectionMetadataResponse * SOAP_FMAC4 soap_in_omws_
 	{
 		for (;;)
 		{	soap->error = SOAP_TAG_MISMATCH;
-			if (soap_flag_om__AreaStatistics && (soap->error == SOAP_TAG_MISMATCH || soap->error == SOAP_NO_TAG))
-				if (soap_inwliteral(soap, "om:AreaStatistics", &a->om__AreaStatistics))
-				{	soap_flag_om__AreaStatistics--;
+			if (soap_flag_om__ProjectionEnvelope && (soap->error == SOAP_TAG_MISMATCH || soap->error == SOAP_NO_TAG))
+				if (soap_inwliteral(soap, "om:ProjectionEnvelope", &a->om__ProjectionEnvelope))
+				{	soap_flag_om__ProjectionEnvelope--;
 					continue;
 				}
 			if (soap->error == SOAP_TAG_MISMATCH)
