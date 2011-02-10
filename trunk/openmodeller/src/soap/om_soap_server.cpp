@@ -1026,7 +1026,7 @@ omws__getProjectionMetadata( struct soap *soap, xsd__string ticket, struct omws_
     }
 
     out->FileSize = size;
-    out->om__AreaStatistics = convertToWideChar( oss.str().c_str() );
+    out->om__ProjectionEnvelope = convertToWideChar( oss.str().c_str() );
 
     fin.close();
   }
