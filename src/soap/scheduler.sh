@@ -46,6 +46,35 @@ fi
 # schedulers at different intervals
 sleep $2
 
+# Don't allow number of concurrent jobs to exceed a maximum
+if [[ "$CONDOR_INTEGRATION" == "no" ]]; then
+
+  if [ ! -d "$PID_DIRECTORY" ]; then
+
+    mkdir "$PID_DIRECTORY"
+  fi
+
+  PROCS=0
+
+  for PID in `find $PID_DIRECTORY/* -type f -printf "%f\n" 2> /dev/null`; do
+
+    TEST_RUNNING=`ps -p $PID | grep $PID`
+
+    if [ -z "${TEST_RUNNING}" ]; then
+      # Process is not running for some reason, so remove pid file
+      rm -f "$PID_DIRECTORY/$PID"
+    else
+      # Process is running
+      PROCS=$((PROCS+1))
+    fi
+  done
+
+  if [ $PROCS -ge $MAX_SHELL_JOBS ]; then
+
+    exit 1
+  fi
+fi
+
 # Process model requests
 for req in `find $TICKET_DIRECTORY/model_req.* -type f 2> /dev/null`; do
 
@@ -78,7 +107,9 @@ for req in `find $TICKET_DIRECTORY/model_req.* -type f 2> /dev/null`; do
     "$CONDOR_BIN_DIR"/condor_submit $TICKET_DIRECTORY"/condor_sc."$ticket
   else
     # no Condor - execute om_model directly
+    touch "$PID_DIRECTORY/$$"
     "$OM_BIN_DIR"/om_model --xml-req "$moved" --model-file "$resp" --log-file "$log" --prog-file "$model_prog"
+    rm -f "$PID_DIRECTORY/$$"
   fi  
   exit 1
 done
@@ -115,7 +146,9 @@ for req in `find $TICKET_DIRECTORY/test_req.* -type f 2> /dev/null`; do
     "$CONDOR_BIN_DIR"/condor_submit $TICKET_DIRECTORY"/condor_sc."$ticket
   else
     # no Condor - execute om_test directly
+    touch "$PID_DIRECTORY/$$"
     "$OM_BIN_DIR"/om_test --xml-req "$moved" --result "$resp" --log-file "$log" --prog-file "$test_prog"
+    rm -f "$PID_DIRECTORY/$$"
   fi  
   exit 1
 done
@@ -153,7 +186,9 @@ for req in `find $TICKET_DIRECTORY/proj_req.* -type f 2> /dev/null`; do
     "$CONDOR_BIN_DIR"/condor_submit $TICKET_DIRECTORY"/condor_sp."$ticket
   else
     # no Condor - execute om_project directly
+    touch "$PID_DIRECTORY/$$"
     "$OM_BIN_DIR"/om_project --xml-req "$moved" --dist-map "$map_img" --stat-file "$stats" --log-file "$log" --prog-file "$proj_prog"
+    rm -f "$PID_DIRECTORY/$$"
   fi
 
   finalmap_img=$DISTRIBUTION_MAP_DIRECTORY"/"$ticket".img"
