@@ -73,10 +73,12 @@ if [[ "$CONDOR_INTEGRATION" == "no" ]]; then
 
     exit 1
   fi
+
+  touch "$PID_DIRECTORY/$$"
 fi
 
-# Process model requests
-for req in `find $TICKET_DIRECTORY/model_req.* -type f 2> /dev/null`; do
+# Process oldest model request
+ls -t $TICKET_DIRECTORY/model_req.* 2> /dev/null | tail -n -1 | while read req; do
 
   ticket="${req##*.}"
   moved=$TICKET_DIRECTORY"/model_proc."$ticket
@@ -107,15 +109,12 @@ for req in `find $TICKET_DIRECTORY/model_req.* -type f 2> /dev/null`; do
     "$CONDOR_BIN_DIR"/condor_submit $TICKET_DIRECTORY"/condor_sc."$ticket
   else
     # no Condor - execute om_model directly
-    touch "$PID_DIRECTORY/$$"
     "$OM_BIN_DIR"/om_model --xml-req "$moved" --model-file "$resp" --log-file "$log" --prog-file "$model_prog"
-    rm -f "$PID_DIRECTORY/$$"
   fi  
-  exit 1
 done
 
-# Process test requests
-for req in `find $TICKET_DIRECTORY/test_req.* -type f 2> /dev/null`; do
+# Process oldest test request
+ls -t $TICKET_DIRECTORY/test_req.* 2> /dev/null | tail -n -1 | while read req; do
 
   ticket="${req##*.}"
   moved=$TICKET_DIRECTORY"/test_proc."$ticket
@@ -146,15 +145,12 @@ for req in `find $TICKET_DIRECTORY/test_req.* -type f 2> /dev/null`; do
     "$CONDOR_BIN_DIR"/condor_submit $TICKET_DIRECTORY"/condor_sc."$ticket
   else
     # no Condor - execute om_test directly
-    touch "$PID_DIRECTORY/$$"
     "$OM_BIN_DIR"/om_test --xml-req "$moved" --result "$resp" --log-file "$log" --prog-file "$test_prog"
-    rm -f "$PID_DIRECTORY/$$"
   fi  
-  exit 1
 done
 
-# Process projection requests
-for req in `find $TICKET_DIRECTORY/proj_req.* -type f 2> /dev/null`; do
+# Process oldest projection request
+ls -t $TICKET_DIRECTORY/proj_req.* 2> /dev/null | tail -n -1 | while read req; do
 
   ticket="${req##*.}"
   moved=$TICKET_DIRECTORY"/proj_proc."$ticket
@@ -186,9 +182,7 @@ for req in `find $TICKET_DIRECTORY/proj_req.* -type f 2> /dev/null`; do
     "$CONDOR_BIN_DIR"/condor_submit $TICKET_DIRECTORY"/condor_sp."$ticket
   else
     # no Condor - execute om_project directly
-    touch "$PID_DIRECTORY/$$"
     "$OM_BIN_DIR"/om_project --xml-req "$moved" --dist-map "$map_img" --stat-file "$stats" --log-file "$log" --prog-file "$proj_prog"
-    rm -f "$PID_DIRECTORY/$$"
   fi
 
   finalmap_img=$DISTRIBUTION_MAP_DIRECTORY"/"$ticket".img"
@@ -227,6 +221,8 @@ for req in `find $TICKET_DIRECTORY/proj_req.* -type f 2> /dev/null`; do
   # This must be the last step, since getProgress will only return 100% if
   # the final map exists
   mv "$map_img" "$finalmap_img"
-
-  exit 1
 done
+
+if [[ "$CONDOR_INTEGRATION" == "no" ]]; then
+  rm -f "$PID_DIRECTORY/$$"
+fi
