@@ -10,6 +10,7 @@ SVN revision: ?
 	* Web service interface now accepts a new optional parameter specifying the prediction threshold to be used when calculating area statistics during projection.
 	* Renamed envelope element in the getProjectionMetadata response of the web service API to distinguish it from the subelement.
 	* Added control to a maximum number of concurrent jobs on the modelling server.
+	* Environmental values can now be loaded from the Sampler XML when provided.
 
 Release 1.1.0 (2010-02-05)
 --------------------------

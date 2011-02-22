@@ -150,7 +150,19 @@ OccurrencesImpl::setConfiguration( const ConstConfigurationPtr& config )
     Scalar y = (*begin)->getAttributeAsDouble( "Y", 0.0 );
     Scalar abundance = (*begin)->getAttributeAsDouble( "Abundance", default_abundance_ );
 
-    createOccurrence( id, x, y, 0, abundance, 0, 0, 0, 0 );
+    try {
+
+      // If present, load environmental values from XML
+      std::vector<Scalar> attrs;
+      std::vector<Scalar> unnormenv = (*begin)->getAttributeAsVecDouble( "Sample" );
+      createOccurrence( id, x, y, 0, abundance, attrs, unnormenv );
+    }
+    catch ( AttributeNotFound& e ) { 
+
+      // Sample attribute is optional
+      createOccurrence( id, x, y, 0, abundance, 0, 0, 0, 0 );
+      UNUSED(e);
+    }
   }
 }
 
