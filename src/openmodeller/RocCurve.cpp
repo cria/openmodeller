@@ -49,9 +49,9 @@ using namespace std;
 
 /*******************/
 /*** constructor ***/
-RocCurve::RocCurve( int resolution, int background_points )
+RocCurve::RocCurve( int resolution, int background_points, bool use_absences_as_background )
 {
-  reset( resolution, background_points );
+  reset( resolution, background_points, use_absences_as_background );
 }
 
 
@@ -63,12 +63,12 @@ RocCurve::~RocCurve()
 
 /*************/
 /*** reset ***/
-void RocCurve::reset( int resolution, int background_points )
+void RocCurve::reset( int resolution, int background_points, bool use_absences_as_background )
 {
   _ready = false;
   _resolution = resolution;
   _background_points = background_points;
-  _gen_background_points = false;
+  _use_proportional_area = use_absences_as_background;
   _category.erase( _category.begin(), _category.end() );
   _prediction.erase( _prediction.begin(), _prediction.end() );
   _data.erase( _data.begin(), _data.end() );
@@ -146,7 +146,29 @@ void RocCurve::_loadPredictions( const Model& model, const SamplerPtr& sampler )
 
   if ( absences ) {
 
-    size += absences->numOccurrences();
+    int num_absences = absences->numOccurrences();
+
+    if ( _use_proportional_area ) {
+
+      if ( num_absences < _background_points ) {
+
+        std::string msg = "Number of absences less than the expected number of background points for the ROC curve\n";
+
+        Log::instance()->error( msg.c_str() );
+
+        throw InvalidParameterException( msg );
+      }
+
+      Log::instance()->info( "Using absences as background for the ROC curve\n" );
+    }
+    else {
+
+      size += num_absences;
+    }
+  }
+  else {
+
+    _use_proportional_area = true;
   }
 
   _category.reserve( size );
@@ -214,11 +236,26 @@ void RocCurve::_loadPredictions( const Model& model, const SamplerPtr& sampler )
 
         predictionValue = model->getValue( sample );
 
-        _category.push_back( 0 );
-        _prediction.push_back( predictionValue );
+        if ( _use_proportional_area ) {
 
-        Log::instance()->debug( "Probability for absence point %s (%f,%f): %f\n", 
-                     ((*it)->id()).c_str(), (*it)->x(), (*it)->y(), predictionValue );
+          for ( unsigned int j = 0; j < _thresholds.size(); j++ ) {
+
+            if ( predictionValue < _thresholds[j] ) {
+
+              break;
+            }
+
+            _proportions[j] += 1;
+          }
+        }
+        else {
+
+          _category.push_back( 0 );
+          _prediction.push_back( predictionValue );
+
+          Log::instance()->debug( "Probability for absence point %s (%f,%f): %f\n", 
+                       ((*it)->id()).c_str(), (*it)->x(), (*it)->y(), predictionValue );
+        }
       }
 
       ++it;
@@ -257,12 +294,14 @@ void RocCurve::_loadPredictions( const Model& model, const SamplerPtr& sampler )
 
     } while ( i < _background_points );
 
+  }
+
+  if ( _use_proportional_area ) {
+
     for ( unsigned int f = 0; f < _proportions.size(); f++ ) {
 
       _proportions[f] /= _background_points;
     }
-
-    _gen_background_points = true;
   }
 }
 
@@ -337,7 +376,7 @@ void RocCurve::_calculateGraphPoints()
     }
 
     // Ignore points with unknown specificity if absence points were provided
-    if ( specificity == -1 && ! _gen_background_points ) {
+    if ( specificity == -1 && ! _use_proportional_area ) {
 
       continue;
     }
@@ -348,7 +387,7 @@ void RocCurve::_calculateGraphPoints()
     // Store vector contents
 
     // x value
-    if ( _gen_background_points ) {
+    if ( _use_proportional_area ) {
 
       v.push_back( _proportions[i] );
       Log::instance()->debug( "Proportion = %f\n", _proportions[i] );
@@ -387,7 +426,7 @@ void RocCurve::_calculateGraphPoints()
 
   _data.push_back(v00);
 
-  if ( ! _gen_background_points ) {
+  if ( ! _use_proportional_area ) {
 
     // Append (1, 1) artificially.
     std::vector<Scalar> v11;
@@ -572,7 +611,7 @@ RocCurve::getConfiguration() const
 
   config->addNameValue( "Auc", _auc );
 
-  if ( _gen_background_points ) {
+  if ( _use_proportional_area ) {
 
     config->addNameValue( "NumBackgroundPoints", _background_points );
   }

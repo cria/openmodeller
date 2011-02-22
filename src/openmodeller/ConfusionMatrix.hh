@@ -65,8 +65,9 @@ public:
    * Default constructor.
    * @param predictionThreshold Threshold for prediction values, above
    *        which a prediction value means a predicted presence.
+   * @param ignoreAbsences Indicates if absence points should be ignored.
    */
-  ConfusionMatrix(Scalar predictionThreshold = CONF_MATRIX_DEFAULT_THRESHOLD);
+  ConfusionMatrix(Scalar predictionThreshold = CONF_MATRIX_DEFAULT_THRESHOLD, bool ignoreAbsences=false);
 
   /** 
    * Destructor.
@@ -78,8 +79,9 @@ public:
    * @param predictionThreshold New threshold for prediction 
    *   values, above which a prediction value means a predicted
    *   presence.
+   * @param ignoreAbsences Indicates if absence points should be ignored.
    */
-  void reset(Scalar predictionThreshold = CONF_MATRIX_DEFAULT_THRESHOLD);
+  void reset(Scalar predictionThreshold = CONF_MATRIX_DEFAULT_THRESHOLD, bool ignoreAbsences=false);
 
   /** 
    * Set the threshold to the lowest probability value of all training points.
@@ -172,6 +174,8 @@ private:
   int _confMatrix[2][2];
 
   Scalar _predictionThreshold;
+
+  bool _ignoreAbsences;
 
   bool _ready;
 };

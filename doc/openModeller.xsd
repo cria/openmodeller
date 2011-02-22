@@ -4,7 +4,7 @@
  xmlns:xs="http://www.w3.org/2001/XMLSchema"
  elementFormDefault="qualified"
  attributeFormDefault="unqualified"
- version="1.0.14" xml:lang="EN">
+ version="1.0.15" xml:lang="EN">
   <xs:annotation>
     <xs:documentation xml:lang="en">
         XML Schema with all basic element and type definitions used by openModeller.
@@ -260,6 +260,7 @@
       <xs:element name="ConfusionMatrix" minOccurs="0">
         <xs:complexType>
           <xs:attribute name="Threshold" type="xs:double" use="optional"/>
+          <xs:attribute name="IgnoreAbsences" type="xs:int" use="optional"/>
         </xs:complexType>
       </xs:element>
       <xs:element name="RocCurve" minOccurs="0">
@@ -267,6 +268,7 @@
           <xs:attribute name="Resolution" type="xs:int" use="optional"/>
           <xs:attribute name="BackgroundPoints" type="xs:int" use="optional"/>
           <xs:attribute name="MaxOmission" type="xs:double" use="optional"/>
+          <xs:attribute name="UseAbsencesAsBackground" type="xs:int" use="optional"/>
         </xs:complexType>
       </xs:element>
     </xs:sequence>

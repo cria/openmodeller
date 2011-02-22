@@ -37,9 +37,9 @@
 
 #include <string.h>
 
-ConfusionMatrix::ConfusionMatrix(Scalar predictionThreshold)
+ConfusionMatrix::ConfusionMatrix(Scalar predictionThreshold, bool ignoreAbsences)
 {
-  reset(predictionThreshold);
+  reset(predictionThreshold, ignoreAbsences);
 }
 
 
@@ -47,10 +47,11 @@ ConfusionMatrix::~ConfusionMatrix()
 {
 }
 
-void ConfusionMatrix::reset(Scalar predictionThreshold)
+void ConfusionMatrix::reset(Scalar predictionThreshold, bool ignoreAbsences)
 {
   _ready = false;
   _predictionThreshold = predictionThreshold;
+  _ignoreAbsences = ignoreAbsences;
   memset(_confMatrix, 0, sizeof(int) * 4);
 }
 
@@ -158,46 +159,53 @@ void ConfusionMatrix::calculate(const EnvironmentPtr & env,
 
   Log::instance()->debug( "Tested %u presence point(s)\n", i );
 
-  Log::instance()->debug( "Testing absences\n" );
+  if ( _ignoreAbsences ) {
 
-  i = 0;
-
-  if ( absences && ! absences->isEmpty() ) {
-
-    it = absences->begin();
-    fin = absences->end();
-
-    while( it != fin ) {
-
-      Sample sample;
-
-      if ( env ) {
-
-	sample = env->get( (*it)->x(), (*it)->y() );
-      }
-      else {
-
-	sample = (*it)->environment();
-      }
-
-      if ( sample.size() > 0 ) {
-
-        ++i;
-
-	predictionValue = model->getValue( sample );
-	predictionIndex = (predictionValue >= _predictionThreshold);
-	actualIndex = 0; //data.isAbsence(i);
-	_confMatrix[predictionIndex][actualIndex]++;
-
-        Log::instance()->debug( "Probability for point %s (%f,%f): %f\n", 
-                     ((*it)->id()).c_str(), (*it)->x(), (*it)->y(), predictionValue );
-      }
-
-      ++it;
-    }
+    Log::instance()->debug( "Ignoring absence points\n" );
   }
+  else {
 
-  Log::instance()->debug( "Tested %u absence point(s)\n", i );
+    Log::instance()->debug( "Testing absences\n" );
+
+    i = 0;
+
+    if ( absences && ! absences->isEmpty() ) {
+
+      it = absences->begin();
+      fin = absences->end();
+
+      while( it != fin ) {
+
+        Sample sample;
+
+        if ( env ) {
+
+	  sample = env->get( (*it)->x(), (*it)->y() );
+        }
+        else {
+
+	  sample = (*it)->environment();
+        }
+
+        if ( sample.size() > 0 ) {
+
+          ++i;
+
+	  predictionValue = model->getValue( sample );
+	  predictionIndex = (predictionValue >= _predictionThreshold);
+	  actualIndex = 0; //data.isAbsence(i);
+          _confMatrix[predictionIndex][actualIndex]++;
+
+          Log::instance()->debug( "Probability for point %s (%f,%f): %f\n", 
+                       ((*it)->id()).c_str(), (*it)->x(), (*it)->y(), predictionValue );
+        }
+
+        ++it;
+      }
+    }
+
+    Log::instance()->debug( "Tested %u absence point(s)\n", i );
+  }
 
   _ready = true;
 }
