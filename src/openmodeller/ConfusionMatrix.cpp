@@ -52,6 +52,16 @@ void ConfusionMatrix::reset(Scalar predictionThreshold, bool ignoreAbsences)
   _ready = false;
   _predictionThreshold = predictionThreshold;
   _ignoreAbsences = ignoreAbsences;
+
+  if ( ignoreAbsences ) {
+
+    Log::instance()->debug( "Resseting matrix with ignore TRUE\n" );
+  }
+  else {
+
+    Log::instance()->debug( "Resseting matrix with ignore FALSE\n" );
+  }
+
   memset(_confMatrix, 0, sizeof(int) * 4);
 }
 
@@ -119,7 +129,7 @@ void ConfusionMatrix::calculate(const EnvironmentPtr & env,
   int predictionIndex, actualIndex;
   Scalar predictionValue;
 
-  reset(_predictionThreshold);
+  reset(_predictionThreshold,_ignoreAbsences);
 
   OccurrencesImpl::const_iterator it = presences->begin();
   OccurrencesImpl::const_iterator fin = presences->end();
