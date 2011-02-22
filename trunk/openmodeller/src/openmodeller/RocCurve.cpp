@@ -99,7 +99,7 @@ void RocCurve::calculate( const Model& model, const SamplerPtr& sampler )
 {
   Log::instance()->info( "Calculating ROC curve\n" );
 
-  reset( _resolution, _background_points );
+  reset( _resolution, _background_points, _use_proportional_area );
 
   model->setNormalization( sampler );
 
