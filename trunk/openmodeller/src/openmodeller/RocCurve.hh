@@ -50,8 +50,9 @@ public:
    * Default constructor.
    * @param resolution Number of points to be calculated for the curve.
    * @param background_points Number of background points to be generated when there are no absences.
+   * @param use_absences_as_background Indicates if absence points should be used as background points to calculate the proportional area. Internally, when no absence points are provided, background points are randomly generated to use the proportional area approach anyway.
    */
-  RocCurve( int resolution=ROC_DEFAULT_RESOLUTION, int background_points=ROC_DEFAULT_BACKGROUND_POINTS );
+    RocCurve( int resolution=ROC_DEFAULT_RESOLUTION, int background_points=ROC_DEFAULT_BACKGROUND_POINTS, bool use_absences_as_background=false );
 
   /** 
    * Destructor.
@@ -62,8 +63,9 @@ public:
    * Reset all internal values.
    * @param resolution New resolution (number of points to be calculated).
    * @param background_points Number of background points to be generated when there are no absences.
+   * @param use_absences_as_background Indicates if absence points should be used as background points to calculate the proportional area. Internally, when no absence points are provided, background points are randomly generated to use the proportional area approach anyway.
    */
-  void reset( int resolution=ROC_DEFAULT_RESOLUTION, int background_points=ROC_DEFAULT_BACKGROUND_POINTS );
+  void reset( int resolution=ROC_DEFAULT_RESOLUTION, int background_points=ROC_DEFAULT_BACKGROUND_POINTS, bool use_absences_as_background=false );
 
   /** 
    * Calculate ROC curve given a Model and a Sampler object. This method loads model
@@ -167,7 +169,7 @@ private:
   
   int _resolution; // Number of points on the curve
   int _background_points; // Number of background points to be generated when there are no absences
-  bool _gen_background_points; // Indicates if background points were generated or not
+  bool _use_proportional_area; // Indicates if background points should be used to calculate the proportional area instead of using absence points
 
   int _true_negatives; // Number of true negatives (binarized)
   int _true_positives; // Number of true positives (binarized)

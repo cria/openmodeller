@@ -138,6 +138,8 @@ OccurrencesImpl::setConfiguration( const ConstConfigurationPtr& config )
   Configuration::subsection_list::iterator begin = subs.begin();
   Configuration::subsection_list::iterator end = subs.end();
 
+  std::vector<Scalar> attrs;
+
   for ( ; begin != end; ++begin ) {
 
     if ( (*begin)->getName() != "Point" ) {
@@ -153,7 +155,6 @@ OccurrencesImpl::setConfiguration( const ConstConfigurationPtr& config )
     try {
 
       // If present, load environmental values from XML
-      std::vector<Scalar> attrs;
       std::vector<Scalar> unnormenv = (*begin)->getAttributeAsVecDouble( "Sample" );
       createOccurrence( id, x, y, 0, abundance, attrs, unnormenv );
     }

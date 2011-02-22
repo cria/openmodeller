@@ -11,6 +11,7 @@ SVN revision: ?
 	* Renamed envelope element in the getProjectionMetadata response of the web service API to distinguish it from the subelement.
 	* Added control to a maximum number of concurrent jobs on the modelling server.
 	* Environmental values can now be loaded from the Sampler XML when provided.
+	* Web service interface now accepts optional parameters: IgnoreAbsences for the confusion matrix and UseAbsencesAsBackground for the ROC curve calculations.
 
 Release 1.1.0 (2010-02-05)
 --------------------------

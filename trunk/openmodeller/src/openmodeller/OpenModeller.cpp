@@ -661,11 +661,13 @@ OpenModeller::calculateModelStatistics( const ConstConfigurationPtr & config )
 
   bool calc_matrix = false;
   double threshold = CONF_MATRIX_DEFAULT_THRESHOLD;
+  int ignore_absences_int = 0;
 
   bool calc_roc = false;
   int resolution = ROC_DEFAULT_RESOLUTION;
   int num_background = ROC_DEFAULT_BACKGROUND_POINTS;
   double max_omission = 1.0;
+  int use_absences_as_background_int = 0;
 
   try {
 
@@ -678,6 +680,8 @@ OpenModeller::calculateModelStatistics( const ConstConfigurationPtr & config )
       calc_matrix = true;
 
       threshold = matrix_param->getAttributeAsDouble( "Threshold", CONF_MATRIX_DEFAULT_THRESHOLD );
+
+      ignore_absences_int = matrix_param->getAttributeAsInt( "IgnoreAbsences", 0 );
 
       if ( threshold < 0.0 ) {
 
@@ -700,6 +704,7 @@ OpenModeller::calculateModelStatistics( const ConstConfigurationPtr & config )
       Log::instance()->info( "Confusion matrix not calculated\n" );
       UNUSED(e);
     }
+
     try {
 
       ConfigurationPtr roc_param = statistics_param->getSubsection( "RocCurve" );
@@ -711,6 +716,8 @@ OpenModeller::calculateModelStatistics( const ConstConfigurationPtr & config )
       num_background = roc_param->getAttributeAsInt( "BackgroundPoints", ROC_DEFAULT_BACKGROUND_POINTS );
 
       max_omission = roc_param->getAttributeAsDouble( "MaxOmission", 1.0 );
+
+      use_absences_as_background_int = roc_param->getAttributeAsInt( "UseAbsencesAsBackground", 0 );
     }
     catch( SubsectionNotFound& e ) {
 
@@ -748,7 +755,14 @@ OpenModeller::calculateModelStatistics( const ConstConfigurationPtr & config )
   // Confusion matrix can only be calculated with presence and/or absence points
   if ( calc_matrix && ( num_presences || num_absences ) ) {
 
-    _confusion_matrix->reset( threshold );
+    bool ignore_absences = false;
+
+    if ( ignore_absences_int > 0 ) {
+
+      ignore_absences = true;
+    }
+
+    _confusion_matrix->reset( threshold, ignore_absences );
     _confusion_matrix->calculate( getModel(), getSampler() );
   }
 
@@ -756,7 +770,14 @@ OpenModeller::calculateModelStatistics( const ConstConfigurationPtr & config )
   // No absence points will force background points to be generated
   if ( calc_roc && num_presences ) {
 
-    _roc_curve->reset( resolution, num_background );
+    bool use_absences_as_background = false;
+
+    if ( use_absences_as_background_int > 0 ) {
+
+      use_absences_as_background = true;
+    }
+
+    _roc_curve->reset( resolution, num_background, use_absences_as_background );
 
     _roc_curve->calculate( getModel(), getSampler() );
 
