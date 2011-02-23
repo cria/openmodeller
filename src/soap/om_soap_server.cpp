@@ -243,6 +243,8 @@ omws__ping( struct soap *soap, void *_, xsd__int &status )
 {
   logRequest( soap, "ping" );
 
+  soap_clr_omode(soap, SOAP_ENC_ZLIB); // disable Zlib's gzip
+
   // Get controller object previously instantiated
   OpenModeller *om = (OpenModeller*)soap->user; 
 
@@ -264,6 +266,21 @@ int
 omws__getAlgorithms( struct soap *soap, void *_, struct omws__getAlgorithmsResponse *out )
 {
   logRequest( soap, "getAlgorithms" );
+
+#ifdef WITH_GZIP
+  // client supports gzip?
+  if (soap->zlib_out == SOAP_ZLIB_GZIP) { 
+
+    // compress response
+    soap_set_omode(soap, SOAP_ENC_ZLIB);
+  }
+  else {
+
+    soap_clr_omode(soap, SOAP_ENC_ZLIB); // disable Zlib's gzip 
+  }
+#else
+soap_clr_omode(soap, SOAP_ENC_ZLIB); // disable Zlib's gzip 
+#endif
 
   // Get controller object previously instantiated
   OpenModeller *om = (OpenModeller*)soap->user; 
@@ -299,6 +316,21 @@ int
 omws__getLayers( struct soap *soap, void *_, struct omws__getLayersResponse *out )
 {
   logRequest( soap, "getLayers" );
+
+#ifdef WITH_GZIP
+  // client supports gzip?
+  if (soap->zlib_out == SOAP_ZLIB_GZIP) { 
+
+    // compress response
+    soap_set_omode(soap, SOAP_ENC_ZLIB);
+  }
+  else {
+
+    soap_clr_omode(soap, SOAP_ENC_ZLIB); // disable Zlib's gzip 
+  }
+#else
+soap_clr_omode(soap, SOAP_ENC_ZLIB); // disable Zlib's gzip 
+#endif
 
   // Get controller object previously instantiated
   OpenModeller *om = (OpenModeller*)soap->user; 
@@ -409,6 +441,8 @@ omws__createModel( struct soap *soap, XML om__ModelParameters, xsd__string &tick
 {
   logRequest( soap, "createModel" );
 
+  soap_clr_omode(soap, SOAP_ENC_ZLIB); // disable Zlib's gzip
+
   string ticketFileName( gFileParser.get( "TICKET_DIRECTORY" ) );
 
   // Append slash if necessary
@@ -486,6 +520,8 @@ int
 omws__testModel( struct soap *soap, XML om__TestParameters, xsd__string &ticket )
 {
   logRequest( soap, "testModel" );
+
+  soap_clr_omode(soap, SOAP_ENC_ZLIB); // disable Zlib's gzip
 
   string ticketFileName( gFileParser.get( "TICKET_DIRECTORY" ) );
 
@@ -565,6 +601,8 @@ omws__projectModel( struct soap *soap, XML om__ProjectionParameters, xsd__string
 {
   logRequest( soap, "projectModel" );
 
+  soap_clr_omode(soap, SOAP_ENC_ZLIB); // disable Zlib's gzip
+
   string ticketFileName( gFileParser.get( "TICKET_DIRECTORY" ) );
 
   // Append slash if necessary
@@ -641,6 +679,9 @@ omws__projectModel( struct soap *soap, XML om__ProjectionParameters, xsd__string
 int 
 omws__getProgress( struct soap *soap, xsd__string ticket, xsd__int &progress )
 { 
+
+  soap_clr_omode(soap, SOAP_ENC_ZLIB); // disable Zlib's gzip
+
   if ( ! ticket ) {
 
     return soap_sender_fault( soap, "Missing ticket in request", NULL );
@@ -723,6 +764,8 @@ omws__getLog( struct soap *soap, xsd__string ticket, xsd__string &log )
 { 
   logRequest( soap, "getLog" );
 
+  soap_clr_omode(soap, SOAP_ENC_ZLIB); // disable Zlib's gzip
+
   if ( ! ticket ) {
 
     return soap_sender_fault( soap, "Missing ticket in request", NULL );
@@ -773,6 +816,21 @@ omws__getModel( struct soap *soap, xsd__string ticket, struct omws__getModelResp
 { 
   logRequest( soap, "getModel" );
 
+#ifdef WITH_GZIP
+  // client supports gzip?
+  if (soap->zlib_out == SOAP_ZLIB_GZIP) { 
+
+    // compress response
+    soap_set_omode(soap, SOAP_ENC_ZLIB);
+  }
+  else {
+
+    soap_clr_omode(soap, SOAP_ENC_ZLIB); // disable Zlib's gzip 
+  }
+#else
+soap_clr_omode(soap, SOAP_ENC_ZLIB); // disable Zlib's gzip 
+#endif
+
   if ( ! ticket ) {
 
     return soap_sender_fault( soap, "Missing ticket in request", NULL );
@@ -821,6 +879,8 @@ int
 omws__getTestResult( struct soap *soap, xsd__string ticket, struct omws__testResponse *out )
 { 
   logRequest( soap, "getTestResult" );
+
+  soap_clr_omode(soap, SOAP_ENC_ZLIB); // disable Zlib's gzip
 
   if ( ! ticket ) {
 
@@ -871,6 +931,8 @@ omws__getLayerAsAttachment( struct soap *soap, xsd__string id, xsd__base64Binary
 { 
   logRequest( soap, "getLayerAsAttachment" );
 
+  soap_clr_omode(soap, SOAP_ENC_ZLIB); // disable Zlib's gzip
+
   if ( ! id ) {
 
     return soap_sender_fault( soap, "Layer id required", NULL );
@@ -890,6 +952,8 @@ int
 omws__getLayerAsUrl( struct soap *soap, xsd__string id, xsd__string &url )
 { 
   logRequest( soap, "getLayerAsUrl" );
+
+  soap_clr_omode(soap, SOAP_ENC_ZLIB); // disable Zlib's gzip
 
   // This method is now working only for distribution maps!
 
@@ -929,6 +993,8 @@ omws__getLayerAsWcs( struct soap *soap, xsd__string id, xsd__string &url )
 
   // This method is now working only for distribution maps!
 
+  soap_clr_omode(soap, SOAP_ENC_ZLIB); // disable Zlib's gzip
+
   if ( ! id ) {
 
     return soap_sender_fault(soap, "Layer id required", NULL);
@@ -966,6 +1032,8 @@ int
 omws__getProjectionMetadata( struct soap *soap, xsd__string ticket, struct omws__getProjectionMetadataResponse *out )
 { 
   logRequest( soap, "getProjectionMetadata" );
+
+  soap_clr_omode(soap, SOAP_ENC_ZLIB); // disable Zlib's gzip
 
   if ( ! ticket ) {
 

@@ -32,6 +32,19 @@ INCLUDE_DIRECTORIES(
      ${GDAL_INCLUDE_DIR}
 )
 
+# Check zlib presence to allow http compression
+FIND_PACKAGE(ZLIB)
+IF (ZLIB_FOUND)
+  MESSAGE(STATUS "Found ZLIB. Enabling compression in the SOAP server")
+  ADD_DEFINITIONS("-DWITH_GZIP")
+  INCLUDE_DIRECTORIES(
+    ${INCLUDE_DIRECTORIES}
+    ${ZLIB_INCLUDE_DIR}
+  )
+ELSE (ZLIB_FOUND)
+  MESSAGE(STATUS "ZLIB not found. Compression disabled in the SOAP server")
+ENDIF (ZLIB_FOUND)
+
 ########################################################
 # Build the command line apps
 IF (WIN32)
@@ -43,7 +56,12 @@ IF (WIN32)
 ENDIF (WIN32)
 
 ADD_EXECUTABLE (om_soap_server ${OMSOAP_SRCS})
-TARGET_LINK_LIBRARIES(om_soap_server openmodeller -lpthread)
+
+IF (ZLIB_FOUND)
+  TARGET_LINK_LIBRARIES(om_soap_server openmodeller -lpthread ${ZLIB_LIBRARIES})
+ELSE (ZLIB_FOUND)
+  TARGET_LINK_LIBRARIES(om_soap_server openmodeller -lpthread)
+ENDIF (ZLIB_FOUND)
 
 ########################################################
 # Install
