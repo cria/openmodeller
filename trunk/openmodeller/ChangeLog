@@ -12,6 +12,7 @@ SVN revision: ?
 	* Added control to a maximum number of concurrent jobs on the modelling server.
 	* Environmental values can now be loaded from the Sampler XML when provided.
 	* Web service interface now accepts optional parameters: IgnoreAbsences for the confusion matrix and UseAbsencesAsBackground for the ROC curve calculations.
+	* Added support to gzip compression in the Web service interface.
 
 Release 1.1.0 (2010-02-05)
 --------------------------
