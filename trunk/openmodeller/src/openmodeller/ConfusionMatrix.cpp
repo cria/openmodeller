@@ -52,16 +52,6 @@ void ConfusionMatrix::reset(Scalar predictionThreshold, bool ignoreAbsences)
   _ready = false;
   _predictionThreshold = predictionThreshold;
   _ignoreAbsences = ignoreAbsences;
-
-  if ( ignoreAbsences ) {
-
-    Log::instance()->debug( "Resseting matrix with ignore TRUE\n" );
-  }
-  else {
-
-    Log::instance()->debug( "Resseting matrix with ignore FALSE\n" );
-  }
-
   memset(_confMatrix, 0, sizeof(int) * 4);
 }
 
