@@ -236,9 +236,16 @@ Output file type = ByteHFA
 #Parameter = RetainVariation 75
 #Parameter = VerboseDebug 0
 
-
 ########
 # Niche Mosaic
 #
 #Algorithm = NICHE_MOSAIC
 #Parameter = NumberOfIterations 2000
+
+########
+# Random Forests
+#
+#Algorithm = RF
+#Parameter = NumTrees 10
+#Parameter = VarsPerTree 0
+#Parameter = ForceUnsupervisedLearning 0

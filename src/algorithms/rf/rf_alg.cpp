@@ -44,10 +44,11 @@ using namespace librf;
 /****************************************************************/
 /********************** Algorithm's Metadata ********************/
 
-#define NUM_PARAM 2
+#define NUM_PARAM 3
 
 #define NUMTREES_ID   "NumTrees"
 #define K_ID          "VarsPerTree"
+#define UNSUP_ID      "ForceUnsupervisedLearning"
 
 #define RF_LOG_PREFIX "RfAlgorithm: "
 
@@ -82,6 +83,19 @@ static AlgParamMetadata parameters[NUM_PARAM] = {
     0,         // Parameter's upper limit.
     "0"        // Parameter's typical (default) value.
   },
+  // Force unsupervised learning
+  {
+    UNSUP_ID,     // Id.
+    "Force unsupervised learning", // Name.
+    Integer,  // Type.
+    "Force unsupervised learning", // Overview
+    "When absence points are provided, this parameter can be used to ignore them forcing unsupervised learning. Note that if no absences are provided, unsupervised learning will be used anyway.", // Description.
+    1,         // Not zero if the parameter has lower limit.
+    0,         // Parameter's lower limit.
+    1,         // Not zero if the parameter has upper limit.
+    1,         // Parameter's upper limit.
+    "0"        // Parameter's typical (default) value.
+  },
 };
 
 /************************************/
@@ -91,7 +105,7 @@ static AlgMetadata metadata = {
 
   "RF", 	     // Id.
   "Random Forests",  // Name.
-  "0.1",       	     // Version.
+  "0.2",       	     // Version.
 
   // Overview
   "Random Forests",
@@ -208,6 +222,14 @@ RfAlgorithm::initialize()
     _k = int( sqrt( double( num_layers ) ) );
   }
 
+  // Unsupervised learning
+  bool force_unsupervised_learning = false;
+  int unsup;
+  if ( getParameter( UNSUP_ID, &unsup ) && unsup == 1 ) {
+
+    force_unsupervised_learning = true;
+  }
+
   _class_weights.resize(2, 1);
 
   // Check the number of presences
@@ -245,7 +267,7 @@ RfAlgorithm::initialize()
     ++p_iterator;
   }
 
-  if ( _samp->numAbsence() ) {
+  if ( _samp->numAbsence() && ! force_unsupervised_learning ) {
 
     OccurrencesPtr absences = _samp->getAbsences();
 
