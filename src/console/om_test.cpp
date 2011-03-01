@@ -28,10 +28,12 @@ int main( int argc, char **argv ) {
   opts.addOption( "p", "points"        , "(option 2) TAB-delimited file with points"   , true );
   opts.addOption( "" , "calc-matrix"   , "Calculate confusion matrix"                  , false );
   opts.addOption( "t", "threshold"     , "Confusion matrix threshold"                  , true );
+  opts.addOption( "" , "ignore-abs"    , "Ignore absences for the confusion matrix"    , false );
   opts.addOption( "" , "calc-roc"      , "Calculate ROC curve"                         , false );
-  opts.addOption( "n", "resolution"     , "Number of points in the ROC curve"           , true );
+  opts.addOption( "n", "resolution"    , "Number of points in the ROC curve"           , true );
   opts.addOption( "b", "num-background", "Number of background points for the ROC curve when there are no absences", true );
   opts.addOption( "e", "max-omission"  , "Calculate ROC partial area ratio given the maximum omission", true );
+  opts.addOption( "" , "abs-background", "Use absences as background in ROC curve"   , false );
   opts.addOption( "s", "result"      , "File to store test result in XML"            , true );
   opts.addOption( "", "log-level"    , "Set the log level (debug, warn, info, error)", true );
   opts.addOption( "", "log-file"     , "Log file"                                    , true );
@@ -44,6 +46,7 @@ int main( int argc, char **argv ) {
   bool calc_matrix = false;
   std::string threshold_string("");
   double threshold = CONF_MATRIX_DEFAULT_THRESHOLD;
+  bool ignore_abs = false;
   bool calc_roc = false;
   std::string resolution_string("");
   int resolution = ROC_DEFAULT_RESOLUTION;
@@ -51,6 +54,7 @@ int main( int argc, char **argv ) {
   int num_background = ROC_DEFAULT_BACKGROUND_POINTS;
   std::string max_omission_string("");
   double max_omission = 1.0;
+  bool abs_background = false;
   std::string result_file;
   std::string log_file;
   std::string progress_file;
@@ -91,27 +95,33 @@ int main( int argc, char **argv ) {
         threshold_string = opts.getArgs( option );
         break;
       case 6:
-        calc_roc = true;
+        ignore_abs = true;
         break;
       case 7:
-        resolution_string = opts.getArgs( option );
+        calc_roc = true;
         break;
       case 8:
-        num_background_string = opts.getArgs( option );
+        resolution_string = opts.getArgs( option );
         break;
       case 9:
-        max_omission_string = opts.getArgs( option );
+        num_background_string = opts.getArgs( option );
         break;
       case 10:
-        result_file = opts.getArgs( option );
+        max_omission_string = opts.getArgs( option );
         break;
       case 11:
-        log_level = opts.getArgs( option );
+        abs_background = true;
         break;
       case 12:
-        log_file = opts.getArgs( option );
+        result_file = opts.getArgs( option );
         break;
       case 13:
+        log_level = opts.getArgs( option );
+        break;
+      case 14:
+        log_file = opts.getArgs( option );
+        break;
+      case 15:
         progress_file = opts.getArgs( option );
         break;
       default:
@@ -215,6 +225,10 @@ int main( int argc, char **argv ) {
 
       Log::instance()->warn( "Ignoring threshold - option only available with confusion matrix\n" );
     }
+    if ( ignore_abs ) {
+
+      Log::instance()->warn( "Ignoring ignore-abs - option only available with confusion matrix\n" );
+    }
   }
 
   if ( ! calc_roc ) {
@@ -226,6 +240,10 @@ int main( int argc, char **argv ) {
     if ( ! max_omission_string.empty() ) {
 
       Log::instance()->warn( "Ignoring maximum omission - option only available with ROC curve\n" );
+    }
+    if ( abs_background ) {
+
+      Log::instance()->warn( "Ignoring abs-background - option only available with ROC curve\n" );
     }
     if ( ! num_background_string.empty() ) {
 
@@ -265,6 +283,13 @@ int main( int argc, char **argv ) {
           calc_matrix = true;
 
           threshold = matrix_param->getAttributeAsDouble( "Threshold", CONF_MATRIX_DEFAULT_THRESHOLD );
+
+          int ignore_absences_int = matrix_param->getAttributeAsInt( "IgnoreAbsences", 0 );
+
+          if ( ignore_absences_int > 0 ) {
+
+              ignore_abs = true;
+          }
         }
         catch( SubsectionNotFound& e ) {
 
@@ -284,6 +309,13 @@ int main( int argc, char **argv ) {
           num_background = roc_param->getAttributeAsInt( "BackgroundPoints", ROC_DEFAULT_BACKGROUND_POINTS );
 
           max_omission = roc_param->getAttributeAsDouble( "MaxOmission", 1.0 );
+
+          int use_absences_as_background_int = roc_param->getAttributeAsInt( "UseAbsencesAsBackground", 0 );
+
+          if ( use_absences_as_background_int > 0 ) {
+
+            abs_background = true;
+          }
         }
         catch( SubsectionNotFound& e ) {
 
@@ -349,10 +381,8 @@ int main( int argc, char **argv ) {
 
         threshold = matrix.getThreshold();
       }
-      else {
 
-        matrix.reset( threshold );
-      }
+      matrix.reset( threshold, ignore_abs );
 
       matrix.calculate( alg->getModel(), sampler );
     }
@@ -363,7 +393,7 @@ int main( int argc, char **argv ) {
     // No absence points will force background points to be generated
     if ( calc_roc && num_presences ) {
 
-      roc_curve.reset( resolution, num_background );
+      roc_curve.reset( resolution, num_background, abs_background );
 
       roc_curve.calculate( alg->getModel(), sampler );
     }
