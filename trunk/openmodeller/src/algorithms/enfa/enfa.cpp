@@ -1571,7 +1571,7 @@ Enfa::_setConfiguration( const ConstConfigurationPtr& config )
     gsl_vector_set( _gsl_eigenvalue_vector, i, stl_vector[i] );
 
   // _gsl_factor_weights
-  stl_vector = model_config->getAttributeAsVecDouble( "EigenvalueVector" );
+  stl_vector = model_config->getAttributeAsVecDouble( "FactorWeights" );
 
   _layer_count = stl_vector.size();
 
