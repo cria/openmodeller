@@ -95,10 +95,10 @@ static AlgParamMetadata parameters[NUM_PARAM] = {
     "Specify the amount of variation that the retained components should explain (only for DISCARD_METHOD=1)", // Overview
     "If the Discard_method=1, then this variable is used to determine the number of components to retain, by taking those components that cumulatively account for at least this much variation.", // Description.
     1,         // Not zero if the parameter has lower limit.
-    50,        // Parameter's lower limit.
+    0.5,        // Parameter's lower limit.
     1,         // Not zero if the parameter has upper limit.
-    100,         // Parameter's upper limit.
-    "75"        // Parameter's typical (default) value.
+    1.0,         // Parameter's upper limit.
+    "0.75"        // Parameter's typical (default) value.
   },
   {
     VERBOSE_DEBUG,                   // Id.
@@ -992,7 +992,7 @@ int Enfa::discardComponents() const
     // take the components that account for X % of variation
     else if (_discardMethod==1)
     {
-	Log::instance()->info( "Discarding components with variation method (1)\n");
+      Log::instance()->info( "Discarding components with variation method (1) (variation=%6.2f\n", _retainVariation);
 	for (int i=0; i<_layer_count; ++i)
 	{
 	    variationTotal+=gsl_vector_get(_gsl_factor_weights_all_components,i);

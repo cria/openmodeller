@@ -441,7 +441,7 @@ protected:
     int _retainComponents; 
 
     /** the percent variation for selection of components to retain */
-    int _retainVariation; 
+    double _retainVariation; 
 
     /** Minumum number of components required for a valid model */
     int minComponentsInt;
