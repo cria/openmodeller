@@ -233,7 +233,7 @@ Output file type = ByteHFA
 #Parameter = NumberOfRetries 5
 #Parameter = DiscardMethod 2
 #Parameter = RetainComponents 2
-#Parameter = RetainVariation 75
+#Parameter = RetainVariation 0.75
 #Parameter = VerboseDebug 0
 
 ########
