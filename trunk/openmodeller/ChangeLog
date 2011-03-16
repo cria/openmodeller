@@ -4,7 +4,7 @@ SVN revision: ?
 
 	* Bugfix: Fixed memory deallocation issues in maxent.
 	* om_console now accepts a second parameter (after the request file) to specify the log level.
-	* Changed the ENFA algorithm allowing absence data to be treated as background points, and log transforming the geomean calculation to avoid the occasional float overflow with large numbers of presences. Also fixed a deserialization error.
+	* Changed the ENFA algorithm allowing absence data to be treated as background points, and log transforming the geomean calculation to avoid the occasional float overflow with large numbers of presences. Fixed a bug in the RetainVariation parameter (range changed from 50-100 to 0.5-1.0). Also fixed a deserialization error.
 	* Compilation now requires CMake 2.6.4.
 	* New algorithm Random Forests.
 	* Web service interface now accepts a new optional parameter specifying the prediction threshold to be used when calculating area statistics during projection.

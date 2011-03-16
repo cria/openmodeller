@@ -119,7 +119,7 @@ static AlgParamMetadata parameters[NUM_PARAM] = {
 static AlgMetadata metadata = { // General metadata
   "ENFA",                    // Id
   "ENFA (Ecological-Niche Factor Analysis)",     // Name
-  "0.1.1",                        // Version
+  "0.1.2",                        // Version
   "Algorithm based on presence only data using a modified principal components analysis.", // Overview
   "Ecological-Niche Factor Analysis (Hirzel et al, 2002) uses a modified principal components analysis to develop a model based on presence only data.  The observed environment is compared to the background data of the study area (note that absence points in the occurrence file are treated as background data).  The analysis produces factors similar to a PCA.  The first factor is termed the 'marginality' of the species, marginality is defined as the ecological distance between the species optimum and the mean habitat within the background data. Other factors are termed the 'specialization', and are defined as the ratio of the ecological variance in mean habitat to that observed for the target species.  Model projection uses the geomeans method of Hirzel & Arlettaz (2003)", // Description
   "Hirzel, A.H.; Hausser, J.; Chessel, D. & Perrin, N.",    // Algorithm author
