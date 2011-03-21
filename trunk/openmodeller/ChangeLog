@@ -13,6 +13,7 @@ SVN revision: ?
 	* Environmental values can now be loaded from the Sampler XML when provided.
 	* Web service interface now accepts optional parameters: IgnoreAbsences for the confusion matrix and UseAbsencesAsBackground for the ROC curve calculations.
 	* Added support to gzip compression in the Web service interface.
+	* Changed the Environmental Distance algorithm to return chi-square distribution probabilities when the metric is Mahalanobis and the maximum distance is 1.
 
 Release 1.1.0 (2010-02-05)
 --------------------------
