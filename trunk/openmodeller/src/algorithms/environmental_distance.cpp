@@ -421,16 +421,16 @@ bool EnvironmentalDistance::_init_distance_type(){
    switch(_par_dist_type){
 
       case MahalanobisDistance:{
+         _calc_covariance_matrix(); // Initialize _cov_matrix_inv
          if (_par_dist < 1.0) {
             _use_chisq = false;
-            // Distance between oposite edges (vertex) of the hypercube
             Scalar distIterator;
             Sample x,y;
             x.resize(_layer_count);
             y.resize(_layer_count);
-            _calc_covariance_matrix(); // Initialize _cov_matrix_inv
             distMax = 0.0;
             bool foundDist = false;
+            // Distance between oposite edges (vertex) of the hypercube
             for(int i=0; i<(1<<(_layer_count-1)); i++){ // for(i FROM 0 TO 2 "power" (_layer_count - 1))
                for(int k=0; k<_layer_count; k++) // This is the same loop used to create
                   if((i & (1<<k)) != 0){         // binary numbers, but with "max" and
