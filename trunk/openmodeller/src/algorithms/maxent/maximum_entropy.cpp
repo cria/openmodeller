@@ -971,50 +971,10 @@ MaximumEntropy::calc_q_lambda_x()
   Z_lambda = 0.0;
   entropy = 0.0;
   
-  OccurrencesImpl::const_iterator p_iterator = _presences->begin();
-  OccurrencesImpl::const_iterator p_end = _presences->end();
+  OccurrencesImpl::const_iterator p_iterator = _background->begin();
+  OccurrencesImpl::const_iterator p_end = _background->end();
   int i = 0;
 
-  while ( p_iterator != p_end ) {
-    
-    Sample sample = (*p_iterator)->environment();
-    int index = 0;
-    double sum_lambdaj_fj = 0.0;
-
-    for ( int j = 0; j < _num_layers; ++j ) {
-
-      if ( _is_categorical[j] ) {
-
-	std::map< int, std::map< Scalar, std::vector< bool > > >::const_iterator t;
-	t = _categorical_values.find(j);
-
-	std::map<Scalar, std::vector<bool > >::const_iterator t_bin = t->second.begin(); 
-	std::map<Scalar, std::vector<bool > >::const_iterator t_bin_end = t->second.end(); 
-	
-	while ( t_bin != t_bin_end ) {
-	  
-	  sum_lambdaj_fj += lambda[index] * t_bin->second[i];
-	  ++index;
-	  ++t_bin;
-	}
-      }
-      else {
-
-	sum_lambdaj_fj += lambda[index] * sample[j];
-	++index;
-      }
-    }
-    
-    q_lambda_x[i] = exp(sum_lambdaj_fj);
-    Z_lambda += q_lambda_x[i]; // normalization constant
-
-    ++i;
-    ++p_iterator;
-  }
-  
-  p_iterator = _background->begin();
-  p_end = _background->end();
-  
   while ( p_iterator != p_end ) {
     
     Sample sample = (*p_iterator)->environment();
@@ -1073,45 +1033,10 @@ MaximumEntropy::calc_q_lambda_f()
     q_lambda_f[i] = 0.0;
   }
 
-  OccurrencesImpl::const_iterator p_iterator = _presences->begin();
-  OccurrencesImpl::const_iterator p_end = _presences->end();
+  OccurrencesImpl::const_iterator p_iterator = _background->begin();
+  OccurrencesImpl::const_iterator p_end = _background->end();
   int i = 0;
 
-  while ( p_iterator != p_end ) {
-    
-    Sample sample = (*p_iterator)->environment();
-    int index = 0;
-
-    for ( int j = 0; j < _num_layers; ++j ) {
-
-      if ( _is_categorical[j] ) {
-
-	std::map< int, std::map< Scalar, std::vector< bool > > >::const_iterator t;
-	t = _categorical_values.find(j);
-
-	std::map<Scalar, std::vector<bool > >::const_iterator t_bin = t->second.begin(); 
-	std::map<Scalar, std::vector<bool > >::const_iterator t_bin_end = t->second.end(); 
-	
-	while ( t_bin != t_bin_end ) {
-
-	  q_lambda_f[index] += q_lambda_x[i] * t_bin->second[i];
-	  ++index;
-	  ++t_bin;
-	}
-      }
-      else {
-
-	q_lambda_f[index] += q_lambda_x[i] * sample[j];
-	++index;
-      }
-    }
-    ++i;
-    ++p_iterator;
-  }
-  
-  p_iterator = _background->begin();
-  p_end = _background->end();
-  
   while ( p_iterator != p_end ) {
     
     Sample sample = (*p_iterator)->environment();
