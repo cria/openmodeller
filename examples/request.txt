@@ -207,7 +207,8 @@ Output file type = ByteHFA
 #
 #Algorithm = MAXENT
 #Parameter = NumberOfBackgroundPoints 10000
-#Parameter = IncludeInputPointsInBackground 1
+#Parameter = UseAbsencesAsBackground 0
+#Parameter = IncludePresencePointsInBackground 1
 #Parameter = NumberOfIterations 500
 #Parameter = TerminateTolerance 0.00001
 # Valid values for the parameter Output Format:

@@ -2,7 +2,6 @@ Release ? (?)
 --------------------------
 SVN revision: ?
 
-	* Bugfix: Fixed memory deallocation issues in maxent.
 	* om_console now accepts a second parameter (after the request file) to specify the log level.
 	* Changed the ENFA algorithm allowing absence data to be treated as background points, and log transforming the geomean calculation to avoid the occasional float overflow with large numbers of presences. Fixed a bug in the RetainVariation parameter (range changed from 50-100 to 0.5-1.0). Also fixed a deserialization error.
 	* Compilation now requires CMake 2.6.4.
@@ -14,6 +13,7 @@ SVN revision: ?
 	* Web service interface now accepts optional parameters: IgnoreAbsences for the confusion matrix and UseAbsencesAsBackground for the ROC curve calculations.
 	* Added support to gzip compression in the Web service interface.
 	* Changed the Environmental Distance algorithm to return chi-square distribution probabilities when the metric is Mahalanobis and the maximum distance is 1.
+	* Changed the Maxent algorithm allowing absence data to be treated as background points. Also fixed memory deallocation issues.
 
 Release 1.1.0 (2010-02-05)
 --------------------------

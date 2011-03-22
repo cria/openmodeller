@@ -54,10 +54,11 @@ using namespace std;
 /****************************************************************/
 /********************** Algorithm's Metadata ********************/
 
-#define NUM_PARAM 5
+#define NUM_PARAM 6
 
 #define BACKGROUND_ID      "NumberOfBackgroundPoints"
-#define MERGE_POINTS_ID    "IncludeInputPointsInBackground"
+#define USE_ABSENCES_ID    "UseAbsencesAsBackground"
+#define MERGE_POINTS_ID    "IncludePresencePointsInBackground"
 #define ITERATIONS_ID      "NumberOfIterations"
 #define TOLERANCE_ID       "TerminateTolerance"
 #define OUTPUT_ID          "OutputFormat"
@@ -81,6 +82,19 @@ static AlgParamMetadata parameters[NUM_PARAM] = {
     1,         // Not zero if the parameter has upper limit.
     10000,     // Parameter's upper limit.
     "10000"    // Parameter's typical (default) value.
+  },
+  // Use absence points as background
+  {
+    USE_ABSENCES_ID,     // Id.
+    " Use absence points as background", // Name.
+    Integer,  // Type.
+    " Use absence points as background", // Overview
+    "When absence points are provided, this parameter can be used to instruct the algorithm to use them as background points. This would prevent the algorithm to randomly generate them, also facilitating comparisons between different algorithms.", // Description.
+    1,         // Not zero if the parameter has lower limit.
+    0,         // Parameter's lower limit.
+    1,         // Not zero if the parameter has upper limit.
+    1,         // Parameter's upper limit.
+    "0"        // Parameter's typical (default) value.
   },
   // Indication if presence points should be merged with background points
   {
@@ -147,7 +161,7 @@ static AlgMetadata metadata = {
   
   "MAXENT",          // Id.
   "Maximum Entropy", // Name.
-  "0.4",       	     // Version.
+  "0.5",       	     // Version.
 
   // Overview.
   "The principle of maximum entropy is a method for analyzing available qualitative information in order to determine a unique epistemic probability distribution. It states that the least biased distribution that encodes certain given information is that which maximizes the information entropy (content retrieved from Wikipedia on the 19th of May, 2008: http://en.wikipedia.org/wiki/Maximum_entropy).",
@@ -265,23 +279,38 @@ MaximumEntropy::initialize()
     }
   }
 
-  // Generate background points
+  bool use_absences_as_background = false;
+  int use_abs;
+  if ( getParameter( USE_ABSENCES_ID, &use_abs ) && use_abs == 1 ) {
 
-  Log::instance()->info( MAXENT_LOG_PREFIX "Generating background points.\n" );
+    use_absences_as_background = true;
+  }
 
-  if ( ! getParameter( BACKGROUND_ID, &_num_background ) ) {
+  if ( use_absences_as_background ) {
 
-    Log::instance()->warn( MAXENT_LOG_PREFIX "Parameter '" BACKGROUND_ID "' unspecified. Using default value (10000).\n");
+    _num_background = _samp->numAbsence();
 
-    _num_background = 10000;
+    int param_background;
+
+    if ( _num_background && getParameter( BACKGROUND_ID, &param_background ) && param_background > _num_background ) {
+
+    Log::instance()->warn( MAXENT_LOG_PREFIX "Number of absence points (%d) is less than the specified number of background points (%d). Using the first.\n", _num_background, param_background);
+    }
   }
   else {
 
-    if ( _num_background < 0 ) {
-	
-      Log::instance()->warn( MAXENT_LOG_PREFIX "Parameter '" BACKGROUND_ID "' must be greater than zero.\n" );
-      return 0;
+    if ( ! getParameter( BACKGROUND_ID, &_num_background ) ) {
+
+      Log::instance()->warn( MAXENT_LOG_PREFIX "Parameter '" BACKGROUND_ID "' unspecified. Using default value (10000).\n");
+
+      _num_background = 10000;
     }
+  }
+
+  if ( _num_background <= 0 ) {
+	
+    Log::instance()->warn( MAXENT_LOG_PREFIX "Parameter '" BACKGROUND_ID "' must be greater than zero.\n" );
+    return 0;
   }
 
   bool merge_points = true; // default
@@ -293,10 +322,21 @@ MaximumEntropy::initialize()
     
   _background = new OccurrencesImpl( _presences->name(), _presences->coordSystem() );
 
-  for ( int i = 0; i < _num_background; ++i ) {
+  if ( use_absences_as_background ) {
 
-    OccurrencePtr oc = _samp->getPseudoAbsence();
-    _background->insert( oc ); 
+    _background->appendFrom( _samp->getAbsences() );
+  }
+  else {
+
+    // Generate background points
+
+    Log::instance()->info( MAXENT_LOG_PREFIX "Generating random background points.\n" );
+
+    for ( int i = 0; i < _num_background; ++i ) {
+
+      OccurrencePtr oc = _samp->getPseudoAbsence();
+      _background->insert( oc ); 
+    }
   }
 
   if ( merge_points ) {
