@@ -380,6 +380,8 @@ MaximumEntropy::initialize()
     }
   }
 
+  ///_num_samples = _num_presences + _num_background;
+
   // Identify categorical layers
   _num_values_cat = 0;
   _is_categorical.resize( _num_layers );
@@ -496,7 +498,8 @@ MaximumEntropy::iterate()
     double delta_loss = new_loss - old_loss;
     old_loss = new_loss;
 
-    Gain = log((double)_num_background) - old_loss;
+    ///Gain = log((double)_num_samples) - old_loss;
+    Gain = log((double)_num_background) - old_loss;///
 
     calc_q_lambda_f();
     
@@ -735,27 +738,29 @@ MaximumEntropy::init_trainer()
 
   lambda = new double[_len];
   
-  q_lambda_x = new double[_num_background];
+  ///q_lambda_x = new double[_num_samples];
+  q_lambda_x = new double[_num_background]; ///
 
-  _features_mid = new double[_len];
-  _features_dev = new double[_len];
-  double *features_min = new double[_len];
-  double *features_max = new double[_len];
+  _features_mid = new double[_len]; ///
+  _features_dev = new double[_len]; ///
+  double *features_min = new double[_len]; ///
+  double *features_max = new double[_len]; ///
 
   for ( int i = 0; i < _len; ++i ) {
 
     regularization_parameters[i] = 0.0;
     features_mean[i] = 0.0;
     feat_stan_devi[i] = 0.0;
-    _features_mid[i] = 0.0;
-    _features_dev[i] = 0.0;
-    features_min[i] = 1.1; // environment was normalized between 0 and 1, so 1.1 is safe
-    features_max[i] = -1.0;// environment was normalized between 0 and 1, so -1 is safe
+    _features_mid[i] = 0.0; ///
+    _features_dev[i] = 0.0; ///
+    features_min[i] = 1.1; /// environment was normalized between 0 and 1, so 1.1 is safe
+    features_max[i] = -1.0;/// environment was normalized between 0 and 1, so -1 is safe
     q_lambda_f[i] = 0.0;
     lambda[i] = 1.0;
   }
 
-  for ( int i = 0; i < _num_background; ++i ) {
+  ///for ( int i = 0; i < _num_samples; ++i ) {
+  for ( int i = 0; i < _num_background; ++i ) {///
 
     q_lambda_x[i] = 0.0;
   }
@@ -791,8 +796,8 @@ MaximumEntropy::init_trainer()
       }
       else {
 	features_mean[index] += sample[i];
-	features_min[index] = std::min(sample[i], features_min[index]);
-	features_max[index] = std::max(sample[i], features_max[index]);
+	features_min[index] = std::min(sample[i], features_min[index]);///
+	features_max[index] = std::max(sample[i], features_max[index]);///
 	++index;
       }
     }
@@ -804,12 +809,12 @@ MaximumEntropy::init_trainer()
   for ( int i = 0; i < _len; ++i ) {
 
     features_mean[i] /= _num_presences;
-    _features_mid[i] = 0.5*(features_max[i]+features_min[i]);
-    _features_dev[i] = 0.5*(features_max[i]-features_min[i]);
+    _features_mid[i] = 0.5*(features_max[i]+features_min[i]);///
+    _features_dev[i] = 0.5*(features_max[i]-features_min[i]);///
   }
 
-  delete[] features_min;
-  delete[] features_max;
+  delete[] features_min;///
+  delete[] features_max;///
 
   // calculate the variance of each feature
   p_iterator = _presences->begin();
@@ -969,8 +974,10 @@ MaximumEntropy::calc_q_lambda_x()
   Z_lambda = 0.0;
   entropy = 0.0;
   
-  OccurrencesImpl::const_iterator p_iterator = _background->begin();
-  OccurrencesImpl::const_iterator p_end = _background->end();
+  ///OccurrencesImpl::const_iterator p_iterator = _presences->begin();
+  ///OccurrencesImpl::const_iterator p_end = _presences->end();
+  OccurrencesImpl::const_iterator p_iterator = _background->begin();///
+  OccurrencesImpl::const_iterator p_end = _background->end();///
   int i = 0;
 
   while ( p_iterator != p_end ) {
@@ -1010,8 +1017,49 @@ MaximumEntropy::calc_q_lambda_x()
     ++p_iterator;
   }
 
+/// p_iterator = _background->begin();
+/// p_end = _background->end();
+///  
+/// while ( p_iterator != p_end ) {
+///   
+///   Sample sample = (*p_iterator)->environment();
+///   int index = 0;
+///   double sum_lambdaj_fj = 0.0;
+ 
+///   for ( int j = 0; j < _num_layers; ++j ) {
+///
+///     if ( _is_categorical[j] ) {
+///
+///       std::map< int, std::map< Scalar, std::vector< bool > > >::const_iterator t;
+///       t = _categorical_values.find(j);
+///
+///       std::map<Scalar, std::vector<bool > >::const_iterator t_bin = t->second.begin(); 
+///       std::map<Scalar, std::vector<bool > >::const_iterator t_bin_end = t->second.end(); 
+///       
+///       while ( t_bin != t_bin_end ) {
+///         
+///         sum_lambdaj_fj += lambda[index] * t_bin->second[i];
+///         ++index;
+///         ++t_bin;
+///       }
+///     }
+///     else {
+///
+///       sum_lambdaj_fj += lambda[index] * sample[j];
+///       ++index;
+///     }
+///   }
+///   
+///   q_lambda_x[i] = exp(sum_lambdaj_fj);
+///   Z_lambda += q_lambda_x[i]; // normalization constant
+///
+///   ++i;
+///   ++p_iterator;
+/// }
+
   // normalize all q_lambda_x
-  for ( int j = 0; j < _num_background; ++j ) {
+  ///for ( int j = 0; j < _num_samples; ++j ) {
+  for ( int j = 0; j < _num_background; ++j ) {///
     
     q_lambda_x[j] /= Z_lambda;
     entropy += (q_lambda_x[j] * log(q_lambda_x[j]));
@@ -1031,6 +1079,8 @@ MaximumEntropy::calc_q_lambda_f()
     q_lambda_f[i] = 0.0;
   }
 
+  ///OccurrencesImpl::const_iterator p_iterator = _presences->begin();
+  ///OccurrencesImpl::const_iterator p_end = _presences->end();
   OccurrencesImpl::const_iterator p_iterator = _background->begin();
   OccurrencesImpl::const_iterator p_end = _background->end();
   int i = 0;
@@ -1066,6 +1116,42 @@ MaximumEntropy::calc_q_lambda_f()
     ++i;
     ++p_iterator;
   }
+ 
+/// p_iterator = _background->begin();
+/// p_end = _background->end();
+/// 
+/// while ( p_iterator != p_end ) {
+///   
+///   Sample sample = (*p_iterator)->environment();
+///   int index = 0;
+///
+///   for ( int j = 0; j < _num_layers; ++j ) {
+///
+///     if ( _is_categorical[j] ) {
+///
+///       std::map< int, std::map< Scalar, std::vector< bool > > >::const_iterator t;
+///       t = _categorical_values.find(j);
+///
+///       std::map<Scalar, std::vector<bool > >::const_iterator t_bin = t->second.begin(); 
+///       std::map<Scalar, std::vector<bool > >::const_iterator t_bin_end = t->second.end(); 
+///       
+///       while ( t_bin != t_bin_end ) {
+///
+///         q_lambda_f[index] += q_lambda_x[i] * t_bin->second[i];
+///         ++index;
+///         ++t_bin;
+///       }
+///     }
+///     else {
+///
+///       q_lambda_f[index] += q_lambda_x[i] * sample[j];
+///       ++index;
+///     }
+///   }
+///   ++i;
+///   ++p_iterator;
+///  }
+
 }
 
 /********************/
@@ -1132,7 +1218,8 @@ MaximumEntropy::getLoss()
 
   for ( int i = 0; i < _len; ++i ) {
     
-    sum_mid_lambda += _features_mid[i] * lambda[i];
+    ///sum_mid_lambda += features_mean[i] * lambda[i];
+    sum_mid_lambda += _features_mid[i] * lambda[i]; ///
     sum_regu_lambda += regularization_parameters[i] * fabs(lambda[i]);
   }
   
