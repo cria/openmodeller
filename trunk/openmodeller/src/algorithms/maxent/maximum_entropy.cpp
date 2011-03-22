@@ -380,8 +380,6 @@ MaximumEntropy::initialize()
     }
   }
 
-  _num_samples = _num_presences + _num_background;
-
   // Identify categorical layers
   _num_values_cat = 0;
   _is_categorical.resize( _num_layers );
@@ -498,7 +496,7 @@ MaximumEntropy::iterate()
     double delta_loss = new_loss - old_loss;
     old_loss = new_loss;
 
-    Gain = log((double)_num_samples) - old_loss;
+    Gain = log((double)_num_background) - old_loss;
 
     calc_q_lambda_f();
     
@@ -737,7 +735,7 @@ MaximumEntropy::init_trainer()
 
   lambda = new double[_len];
   
-  q_lambda_x = new double[_num_samples];
+  q_lambda_x = new double[_num_background];
 
   _features_mid = new double[_len];
   _features_dev = new double[_len];
@@ -757,7 +755,7 @@ MaximumEntropy::init_trainer()
     lambda[i] = 1.0;
   }
 
-  for ( int i = 0; i < _num_samples; ++i ) {
+  for ( int i = 0; i < _num_background; ++i ) {
 
     q_lambda_x[i] = 0.0;
   }
@@ -1013,7 +1011,7 @@ MaximumEntropy::calc_q_lambda_x()
   }
 
   // normalize all q_lambda_x
-  for ( int j = 0; j < _num_samples; ++j ) {
+  for ( int j = 0; j < _num_background; ++j ) {
     
     q_lambda_x[j] /= Z_lambda;
     entropy += (q_lambda_x[j] * log(q_lambda_x[j]));
