@@ -40,6 +40,7 @@
 #include <cmath>
 #include <map>
 #include <set>
+#include <algorithm>
 
 #include <limits>
 
@@ -480,6 +481,8 @@ MaximumEntropy::iterate()
 
   //  double old_loss = std::numeric_limits<double>::infinity();
   double new_loss = getLoss();
+  Log::instance()->debug( "Initial loss = %f \n", new_loss );
+
   double Gain = 0.0;
 
   for ( iteration = 0; iteration < _max_iterations; ++iteration ) {
@@ -726,21 +729,30 @@ MaximumEntropy::init_trainer()
 
   regularization_parameters = new double[_len];
 
-  features_mean = new double[_len]; // mean of each feature
+  features_mean = new double[_len];
 
-  feat_stan_devi = new double[_len]; // standard deviation of each feature
+  feat_stan_devi = new double[_len];
 
   q_lambda_f = new double[_len];
 
-  lambda = new double[_len]; // weight of each feature
+  lambda = new double[_len];
   
-  q_lambda_x = new double[_num_samples]; // probability of each point
+  q_lambda_x = new double[_num_samples];
+
+  _features_mid = new double[_len];
+  _features_dev = new double[_len];
+  double *features_min = new double[_len];
+  double *features_max = new double[_len];
 
   for ( int i = 0; i < _len; ++i ) {
 
     regularization_parameters[i] = 0.0;
     features_mean[i] = 0.0;
     feat_stan_devi[i] = 0.0;
+    _features_mid[i] = 0.0;
+    _features_dev[i] = 0.0;
+    features_min[i] = 1.1; // environment was normalized between 0 and 1, so 1.1 is safe
+    features_max[i] = -1.0;// environment was normalized between 0 and 1, so -1 is safe
     q_lambda_f[i] = 0.0;
     lambda[i] = 1.0;
   }
@@ -774,12 +786,15 @@ MaximumEntropy::init_trainer()
 	while ( t_bin != t_bin_end ) {
       
 	  features_mean[index] += t_bin->second[j];
+          // TODO: handle min/max here!
 	  ++index;
 	  ++t_bin;
 	}
       }
       else {
 	features_mean[index] += sample[i];
+	features_min[index] = std::min(sample[i], features_min[index]);
+	features_max[index] = std::max(sample[i], features_max[index]);
 	++index;
       }
     }
@@ -787,11 +802,16 @@ MaximumEntropy::init_trainer()
     ++j;
   }
 
-  // calculate the features mean
+  // calculate the feature attributes for the samples
   for ( int i = 0; i < _len; ++i ) {
 
     features_mean[i] /= _num_presences;
+    _features_mid[i] = 0.5*(features_max[i]+features_min[i]);
+    _features_dev[i] = 0.5*(features_max[i]-features_min[i]);
   }
+
+  delete[] features_min;
+  delete[] features_max;
 
   // calculate the variance of each feature
   p_iterator = _presences->begin();
@@ -893,6 +913,8 @@ MaximumEntropy::end_trainer()
   delete[] feat_stan_devi;
   delete[] q_lambda_f;
   delete[] q_lambda_x;
+  delete[] _features_mid;
+  delete[] _features_dev;
 } // end_trainer();
 
 /***********************/
@@ -909,7 +931,7 @@ MaximumEntropy::interpol( char type_feat )
 
   if ( type_feat == 'l' ) {
     int i = 0;
-    for ( ; i < 3; ++i) {
+    for ( ; i < arraySize; ++i) {
       if ( _num_presences <= ts_l[i] ) {
 	break;
       }
@@ -917,15 +939,15 @@ MaximumEntropy::interpol( char type_feat )
     if ( i == 0 ) {
       return betas_l[0];
     }
-    if ( i == 3 ) {
-      return betas_l[2];
+    if ( i == arraySize ) {
+      return betas_l[arraySize-1];
     }
     return betas_l[(i-1)] + (betas_l[i] - betas_l[(i-1)]) * (_num_presences - ts_l[(i-1)]) / (ts_l[i] - ts_l[(i-1)]);
   }
   
   else {
     int i = 0;
-    for ( ; i < 3; ++i) {
+    for ( ; i < arraySize; ++i) {
       if ( _num_presences <= ts_c[i] ) {
 	break;
       }
@@ -933,8 +955,8 @@ MaximumEntropy::interpol( char type_feat )
     if ( i == 0 ) {
       return betas_c[0];
     }
-    if ( i == 3 ) {
-      return betas_c[2];
+    if ( i == arraySize ) {
+      return betas_c[arraySize-1];
     }
     return betas_c[(i-1)] + (betas_c[i] - betas_c[(i-1)]) * (_num_presences - ts_c[(i-1)]) / (ts_c[i] - ts_c[(i-1)]);
   }
@@ -1182,16 +1204,16 @@ MaximumEntropy::reduceAlpha(double alpha)
 double
 MaximumEntropy::getLoss()
 {
-  double sum_mean_lambda = 0.0;
+  double sum_mid_lambda = 0.0; // N1
   double sum_regu_lambda = 0.0;
 
   for ( int i = 0; i < _len; ++i ) {
     
-    sum_mean_lambda += features_mean[i] * lambda[i];
+    sum_mid_lambda += _features_mid[i] * lambda[i];
     sum_regu_lambda += regularization_parameters[i] * fabs(lambda[i]);
   }
   
-  return ( log(Z_lambda) - sum_mean_lambda + sum_regu_lambda );
+  return ( log(Z_lambda) - sum_mid_lambda + sum_regu_lambda );
 }
 
 /************/

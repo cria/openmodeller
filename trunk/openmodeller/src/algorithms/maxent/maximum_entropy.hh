@@ -76,11 +76,14 @@ private:
   double getLoss();
 
   double *regularization_parameters;
-  double *features_mean;
-  double *feat_stan_devi;
+  double *features_mean; // mean of each feature
+  double *feat_stan_devi; // standard deviation of each feature
   double *q_lambda_f;
-  double *lambda;
-  double *q_lambda_x;
+  double *lambda; // weight of each feature
+  double *q_lambda_x; // probability of each point
+
+  double *_features_mid; // mid value of each feature
+  double *_features_dev; // deviation of each feature
 
   double Z_lambda;
   double entropy;
