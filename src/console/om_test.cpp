@@ -49,9 +49,9 @@ int main( int argc, char **argv ) {
   bool ignore_abs = false;
   bool calc_roc = false;
   std::string resolution_string("");
-  int resolution = ROC_DEFAULT_RESOLUTION;
+  int resolution = -1;
   std::string num_background_string("");
-  int num_background = ROC_DEFAULT_BACKGROUND_POINTS;
+  int num_background = -1;
   std::string max_omission_string("");
   double max_omission = 1.0;
   bool abs_background = false;
@@ -304,9 +304,9 @@ int main( int argc, char **argv ) {
 
           calc_roc = true;
 
-          resolution = roc_param->getAttributeAsInt( "Resolution", ROC_DEFAULT_RESOLUTION );
+          resolution = roc_param->getAttributeAsInt( "Resolution", -1 );
 
-          num_background = roc_param->getAttributeAsInt( "BackgroundPoints", ROC_DEFAULT_BACKGROUND_POINTS );
+          num_background = roc_param->getAttributeAsInt( "BackgroundPoints", -1 );
 
           max_omission = roc_param->getAttributeAsDouble( "MaxOmission", 1.0 );
 
@@ -367,6 +367,8 @@ int main( int argc, char **argv ) {
 
     // Run tests
 
+    Log::instance()->debug( "Starting tests\n" );
+
     int num_presences = sampler->numPresence();
     int num_absences = sampler->numAbsence();
 
@@ -393,7 +395,23 @@ int main( int argc, char **argv ) {
     // No absence points will force background points to be generated
     if ( calc_roc && num_presences ) {
 
-      roc_curve.reset( resolution, num_background, abs_background );
+      resolution = (resolution <= 0) ? ROC_DEFAULT_RESOLUTION : resolution;
+
+      if ( abs_background ) {
+
+        roc_curve.initialize( resolution, true );
+      }
+      else {
+
+        if ( num_background > 0 ) {
+
+          roc_curve.initialize( resolution, num_background );
+        }	  
+        else {
+
+          roc_curve.initialize( resolution );
+        }
+      }
 
       roc_curve.calculate( alg->getModel(), sampler );
     }

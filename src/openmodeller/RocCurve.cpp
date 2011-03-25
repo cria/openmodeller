@@ -49,11 +49,10 @@ using namespace std;
 
 /*******************/
 /*** constructor ***/
-RocCurve::RocCurve( int resolution, int background_points, bool use_absences_as_background )
+RocCurve::RocCurve()
 {
-  reset( resolution, background_points, use_absences_as_background );
+  initialize();
 }
-
 
 /*******************/
 /*** destructor ***/
@@ -61,14 +60,43 @@ RocCurve::~RocCurve()
 {
 }
 
+/******************/
+/*** initialize ***/
+void RocCurve::initialize( int resolution )
+{
+  _resolution = resolution;
+  _approach = 0; // to be set later
+  _num_background_points = ROC_DEFAULT_BACKGROUND_POINTS; // when no absences are provided
+  _use_absences_as_background = false;
+}
+
+/******************/
+/*** initialize ***/
+void RocCurve::initialize( int resolution, int num_background_points )
+{
+  _resolution = resolution;
+  _approach = 2;
+  _num_background_points = num_background_points;
+  _use_absences_as_background = false;
+}
+
+/******************/
+/*** initialize ***/
+void RocCurve::initialize( int resolution, bool use_absences_as_background )
+{
+  _resolution = resolution;
+  _approach = 2;
+  _num_background_points = 0; // to be set later (= number of absence points)
+  _use_absences_as_background = use_absences_as_background;
+}
+
 /*************/
 /*** reset ***/
-void RocCurve::reset( int resolution, int background_points, bool use_absences_as_background )
+void RocCurve::reset()
 {
+  Log::instance()->debug( "Resetting ROC curve\n" );
+
   _ready = false;
-  _resolution = resolution;
-  _background_points = background_points;
-  _use_proportional_area = use_absences_as_background;
   _category.erase( _category.begin(), _category.end() );
   _prediction.erase( _prediction.begin(), _prediction.end() );
   _data.erase( _data.begin(), _data.end() );
@@ -99,7 +127,7 @@ void RocCurve::calculate( const Model& model, const SamplerPtr& sampler )
 {
   Log::instance()->info( "Calculating ROC curve\n" );
 
-  reset( _resolution, _background_points, _use_proportional_area );
+  reset();
 
   model->setNormalization( sampler );
 
@@ -124,7 +152,6 @@ void RocCurve::_loadPredictions( const Model& model, const SamplerPtr& sampler )
     std::string msg = "No environment specified for the ROC curve\n";
 
     Log::instance()->error( msg.c_str() );
-
     throw InvalidParameterException( msg );
   }
 
@@ -136,40 +163,72 @@ void RocCurve::_loadPredictions( const Model& model, const SamplerPtr& sampler )
     std::string msg = "No presence points specified for the ROC curve\n";
 
     Log::instance()->error( msg.c_str() );
-
     throw InvalidParameterException( msg );
   }
 
-  // Load predictions
+  // Set approach and check parameters
 
   int size = presences->numOccurrences();
 
-  if ( absences ) {
+  if ( absences && ! absences->isEmpty() ) {
+
+    if ( _approach == 0 ) { // undefined
+
+      _approach = 1; // traditional approach
+    }
 
     int num_absences = absences->numOccurrences();
 
-    if ( _use_proportional_area ) {
+    if ( _approach == 1 ) { // traditional approach
 
-      if ( num_absences < _background_points ) {
-
-        std::string msg = "Number of absences less than the expected number of background points for the ROC curve\n";
-
-        Log::instance()->error( msg.c_str() );
-
-        throw InvalidParameterException( msg );
-      }
-
-      Log::instance()->info( "Using absences as background for the ROC curve\n" );
+      size += num_absences;
     }
     else {
 
-      size += num_absences;
+      if ( _use_absences_as_background ) {
+
+        if ( absences->isEmpty() ) {
+
+          std::string msg = "Cannot use absences as background points for the ROC curve when no absences are provided\n";
+
+          Log::instance()->error( msg.c_str() );
+          throw InvalidParameterException( msg );
+        }
+
+        _num_background_points = num_absences;
+      }
+      else {
+
+        Log::instance()->info( "Ignoring absences for the ROC curve\n" );
+      }
     }
   }
   else {
 
-    _use_proportional_area = true;
+    // No absences provided
+
+    if ( _approach == 0 ) { // undefined
+
+      _approach = 2; // proportional area
+    }
+    else if ( _approach == 1 ) { // traditional approach
+
+      std::string msg = "Cannot calculate traditional ROC curve when no absences are provided\n";
+
+      Log::instance()->error( msg.c_str() );
+      throw InvalidParameterException( msg );
+    }
+
+    if ( _use_absences_as_background ) {
+
+      std::string msg = "Cannot use absences as background points for the ROC curve when no absences are provided\n";
+
+      Log::instance()->error( msg.c_str() );
+      throw InvalidParameterException( msg );
+    }
   }
+
+  // Load predictions
 
   _category.reserve( size );
   _prediction.reserve( size );
@@ -212,7 +271,7 @@ void RocCurve::_loadPredictions( const Model& model, const SamplerPtr& sampler )
 
   // Store predictions for absence points
   i = 0;
-  if ( absences && ! absences->isEmpty() ) {
+  if ( _approach == 1 ) {
 
     it = absences->begin();
     fin = absences->end();
@@ -236,7 +295,43 @@ void RocCurve::_loadPredictions( const Model& model, const SamplerPtr& sampler )
 
         predictionValue = model->getValue( sample );
 
-        if ( _use_proportional_area ) {
+        _category.push_back( 0 );
+        _prediction.push_back( predictionValue );
+
+        Log::instance()->debug( "Probability for absence point %s (%f,%f): %f\n", 
+                     ((*it)->id()).c_str(), (*it)->x(), (*it)->y(), predictionValue );
+      }
+
+      ++it;
+    }
+  }
+  else {
+
+    if ( _use_absences_as_background ) {
+
+      Log::instance()->info( "Using %d absences as background for the ROC curve\n", _num_background_points );
+
+      it = absences->begin();
+      fin = absences->end();
+
+      while( it != fin ) {
+
+        Sample sample;
+
+        if ( (*it)->hasEnvironment() ) {
+
+          sample = (*it)->environment();
+        }
+        else {
+
+          sample = env->get( (*it)->x(), (*it)->y() );
+        }
+
+        if ( sample.size() > 0 ) {
+
+          ++i;
+
+          predictionValue = model->getValue( sample );
 
           for ( unsigned int j = 0; j < _thresholds.size(); j++ ) {
 
@@ -248,59 +343,48 @@ void RocCurve::_loadPredictions( const Model& model, const SamplerPtr& sampler )
             _proportions[j] += 1;
           }
         }
-        else {
 
-          _category.push_back( 0 );
-          _prediction.push_back( predictionValue );
-
-          Log::instance()->debug( "Probability for absence point %s (%f,%f): %f\n", 
-                       ((*it)->id()).c_str(), (*it)->x(), (*it)->y(), predictionValue );
-        }
+        ++it;
       }
+    }
+    else {
 
-      ++it;
+      // Generate background points
+
+      Log::instance()->info( "Generating %d background points\n", _num_background_points );
+
+      Scalar prob;
+
+      int i = 0;
+
+      do {
+
+        Coord x,y;
+        Sample s( env->getRandom( &x, &y ) );
+
+        prob = model->getValue( s );
+
+        for ( unsigned int j = 0; j < _thresholds.size(); j++ ) {
+
+          if ( prob < _thresholds[j] ) {
+
+            break;
+          }
+
+          _proportions[j] += 1;
+        }
+
+        ++i;
+
+      } while ( i < _num_background_points );
     }
   }
-  else {
 
-    // Generate background points when there are no absences
-
-    Log::instance()->info( "No absence points specified\n" );
-
-    Log::instance()->info( "Generating %d background points\n", _background_points );
-
-    Scalar prob;
-
-    int i = 0;
-
-    do {
-
-      Coord x,y;
-      Sample s( env->getRandom( &x, &y ) );
-
-      prob = model->getValue( s );
-
-      for ( unsigned int j = 0; j < _thresholds.size(); j++ ) {
-
-        if ( prob < _thresholds[j] ) {
-
-          break;
-        }
-
-        _proportions[j] += 1;
-      }
-
-      ++i;
-
-    } while ( i < _background_points );
-
-  }
-
-  if ( _use_proportional_area ) {
+  if ( _approach == 2 ) { // proportional area
 
     for ( unsigned int f = 0; f < _proportions.size(); f++ ) {
 
-      _proportions[f] /= _background_points;
+      _proportions[f] /= _num_background_points;
     }
   }
 }
@@ -311,6 +395,15 @@ void RocCurve::_loadPredictions( const Model& model, const SamplerPtr& sampler )
 void RocCurve::_calculateGraphPoints()
 {
   int i, j, num_pairs = _prediction.size();
+
+  if ( _approach == 2 ) {
+
+    Log::instance()->debug( "Using proportional area approach\n" );
+  }
+  else {
+
+    Log::instance()->debug( "Using traditional ROC approach (presence x absence)\n" );
+  }
 
   // Compute a specified number of data points for the graph
   for ( i = 0; i < _resolution; i++ ) {
@@ -372,12 +465,14 @@ void RocCurve::_calculateGraphPoints()
     // Ignore points with unknown sensitivity
     if ( sensitivity == -1 ) {
 
+      Log::instance()->debug( "Ignoring point with unknown sensitivity\n" );
       continue;
     }
 
     // Ignore points with unknown specificity if absence points were provided
-    if ( specificity == -1 && ! _use_proportional_area ) {
+    if ( specificity == -1 && _approach == 1 ) {
 
+      Log::instance()->debug( "Ignoring point with unknown specificity\n" );
       continue;
     }
 
@@ -387,15 +482,15 @@ void RocCurve::_calculateGraphPoints()
     // Store vector contents
 
     // x value
-    if ( _use_proportional_area ) {
-
-      v.push_back( _proportions[i] );
-      Log::instance()->debug( "Proportion = %f\n", _proportions[i] );
-    }
-    else {
+    if ( _approach == 1 ) {
 
       v.push_back(1 - specificity);
       Log::instance()->debug( "1 - specificity = %f\n", 1 - specificity );
+    }
+    else {
+
+      v.push_back( _proportions[i] );
+      Log::instance()->debug( "Proportion = %f\n", _proportions[i] );
     }
 
     Log::instance()->debug( "Sensitivity = %f\n", sensitivity );
@@ -426,7 +521,7 @@ void RocCurve::_calculateGraphPoints()
 
   _data.push_back(v00);
 
-  if ( ! _use_proportional_area ) {
+  if ( _approach == 1 ) {
 
     // Append (1, 1) artificially.
     std::vector<Scalar> v11;
@@ -611,9 +706,9 @@ RocCurve::getConfiguration() const
 
   config->addNameValue( "Auc", _auc );
 
-  if ( _use_proportional_area ) {
+  if ( _approach == 2 ) {
 
-    config->addNameValue( "NumBackgroundPoints", _background_points );
+    config->addNameValue( "NumBackgroundPoints", _num_background_points );
   }
 
   int num_points = numPoints();
