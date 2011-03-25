@@ -35,8 +35,6 @@
 #include <openmodeller/Occurrences.hh>
 #include <openmodeller/AreaStats.hh>
 #include <openmodeller/Occurrence.hh>
-#include <openmodeller/ConfusionMatrix.hh>
-#include <openmodeller/RocCurve.hh>
 #include <openmodeller/MapFormat.hh>
 #include <openmodeller/AlgorithmFactory.hh>
 #include <openmodeller/Environment.hh>
@@ -75,16 +73,14 @@ void OpenModeller::setAbortionCallback( AbortionCallback func, void *param ) {
 /********************/
 /*** constructors ***/
 
-OpenModeller::OpenModeller()
+OpenModeller::OpenModeller():
+  _confusion_matrix(),
+  _roc_curve()
 {
   _error[0] = '\0';
 
   _actualAreaStats = new AreaStats();
   _estimatedAreaStats = new AreaStats();
-
-  _confusion_matrix = new ConfusionMatrix();
-
-  _roc_curve = new RocCurve();
 }
 
 
@@ -95,8 +91,6 @@ OpenModeller::~OpenModeller()
 {
   delete _actualAreaStats;
   delete _estimatedAreaStats;
-  delete _confusion_matrix;
-  delete _roc_curve;
 }
 
 
@@ -236,8 +230,8 @@ OpenModeller::setAlgorithm( std::string const id, int nparam,
 int
 OpenModeller::createModel()
 {
-  _confusion_matrix->reset();
-  _roc_curve->reset();
+  _confusion_matrix.reset();
+  _roc_curve.reset();
 
   Log::instance()->info( "Creating model\n" );
 
@@ -467,29 +461,28 @@ AreaStats * OpenModeller::getEstimatedAreaStats(const ConstEnvironmentPtr& env,
 /******* get Confusion Matrix *******/
 const ConfusionMatrix * const OpenModeller::getConfusionMatrix()
 {
-  if ( _confusion_matrix->ready() ) {
+  if ( _confusion_matrix.ready() ) {
 
-    return _confusion_matrix;
+    return &_confusion_matrix;
   }
 
-  _confusion_matrix->calculate( getModel(), getSampler() );
+  _confusion_matrix.calculate( getModel(), getSampler() );
 
-  return _confusion_matrix;
+  return &_confusion_matrix;
 }
-
 
 /*****************************/
 /******* get Roc Curve *******/
 RocCurve * const OpenModeller::getRocCurve()
 {
-  if ( _roc_curve->ready() ) {
+  if ( _roc_curve.ready() ) {
 
-    return _roc_curve;
+    return &_roc_curve;
   }
 
-  _roc_curve->calculate( getModel(), getSampler() );
+  _roc_curve.calculate( getModel(), getSampler() );
 
-  return _roc_curve;
+  return &_roc_curve;
 }
 
 
@@ -510,16 +503,16 @@ OpenModeller::getModelConfiguration() const
 
   ConfigurationPtr stats_config( new ConfigurationImpl("Statistics") );
 
-  if ( _confusion_matrix->ready() ) {
+  if ( _confusion_matrix.ready() ) {
 
-    ConfigurationPtr cm_config( _confusion_matrix->getConfiguration() );
+    ConfigurationPtr cm_config( _confusion_matrix.getConfiguration() );
 
     stats_config->addSubsection( cm_config );
   }
 
-  if ( _roc_curve->ready() ) {
+  if ( _roc_curve.ready() ) {
 
-    ConfigurationPtr roc_config( _roc_curve->getConfiguration() );
+    ConfigurationPtr roc_config( _roc_curve.getConfiguration() );
 
     stats_config->addSubsection( roc_config );
   }
@@ -537,8 +530,8 @@ OpenModeller::setModelConfiguration( const ConstConfigurationPtr & config )
 {
   Log::instance()->debug( "Setting model configuration\n" );
 
-  _confusion_matrix->reset();
-  _roc_curve->reset();
+  _confusion_matrix.reset();
+  _roc_curve.reset();
 
   Log::instance()->debug( "Creating sampler\n" );
 
@@ -656,16 +649,16 @@ OpenModeller::calculateModelStatistics( const ConstConfigurationPtr & config )
 {
   Log::instance()->debug( "Setting statistics configuration\n" );
 
-  _confusion_matrix->reset();
-  _roc_curve->reset();
+  _confusion_matrix.reset();
+  _roc_curve.reset();
 
   bool calc_matrix = false;
   double threshold = CONF_MATRIX_DEFAULT_THRESHOLD;
   int ignore_absences_int = 0;
 
   bool calc_roc = false;
-  int resolution = ROC_DEFAULT_RESOLUTION;
-  int num_background = ROC_DEFAULT_BACKGROUND_POINTS;
+  int resolution = -1;
+  int num_background = -1;
   double max_omission = 1.0;
   int use_absences_as_background_int = 0;
 
@@ -687,9 +680,9 @@ OpenModeller::calculateModelStatistics( const ConstConfigurationPtr & config )
 
         if ( _samp && _alg ) {
 
-          _confusion_matrix->setLowestTrainingThreshold( getModel(), getSampler() );
+          _confusion_matrix.setLowestTrainingThreshold( getModel(), getSampler() );
 
-          threshold = _confusion_matrix->getThreshold();
+          threshold = _confusion_matrix.getThreshold();
         }
         else {
 
@@ -711,9 +704,9 @@ OpenModeller::calculateModelStatistics( const ConstConfigurationPtr & config )
 
       calc_roc = true;
 
-      resolution = roc_param->getAttributeAsInt( "Resolution", ROC_DEFAULT_RESOLUTION );
+      resolution = roc_param->getAttributeAsInt( "Resolution", -1 );
 
-      num_background = roc_param->getAttributeAsInt( "BackgroundPoints", ROC_DEFAULT_BACKGROUND_POINTS );
+      num_background = roc_param->getAttributeAsInt( "BackgroundPoints", -1 );
 
       max_omission = roc_param->getAttributeAsDouble( "MaxOmission", 1.0 );
 
@@ -762,8 +755,8 @@ OpenModeller::calculateModelStatistics( const ConstConfigurationPtr & config )
       ignore_absences = true;
     }
 
-    _confusion_matrix->reset( threshold, ignore_absences );
-    _confusion_matrix->calculate( getModel(), getSampler() );
+    _confusion_matrix.reset( threshold, ignore_absences );
+    _confusion_matrix.calculate( getModel(), getSampler() );
   }
 
   // ROC curve can only be calculated with presence points
@@ -772,20 +765,33 @@ OpenModeller::calculateModelStatistics( const ConstConfigurationPtr & config )
 
     bool use_absences_as_background = false;
 
+    resolution = (resolution <= 0) ? ROC_DEFAULT_RESOLUTION : resolution;
+
     if ( use_absences_as_background_int > 0 ) {
 
       use_absences_as_background = true;
+
+      _roc_curve.initialize( resolution, use_absences_as_background );
+    }
+    else {
+
+      if ( num_background > 0 ) {
+
+        _roc_curve.initialize( resolution, num_background );
+      }	  
+      else {
+
+        _roc_curve.initialize( resolution );
+      }
     }
 
-    _roc_curve->reset( resolution, num_background, use_absences_as_background );
+    _roc_curve.calculate( getModel(), getSampler() );
 
-    _roc_curve->calculate( getModel(), getSampler() );
-
-    _roc_curve->getTotalArea(); // call method to force serialization
+    _roc_curve.getTotalArea(); // call method to force serialization
 
     if ( max_omission < 1.0 ) {
 
-      _roc_curve->getPartialAreaRatio( max_omission ); // call method to force serialization
+      _roc_curve.getPartialAreaRatio( max_omission ); // call method to force serialization
     }
   }
 }

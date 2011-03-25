@@ -35,6 +35,8 @@
 #include <openmodeller/AlgMetadata.hh>
 #include <openmodeller/Sampler.hh>
 #include <openmodeller/Algorithm.hh>
+#include <openmodeller/ConfusionMatrix.hh>
+#include <openmodeller/RocCurve.hh>
 
 class AlgParameter;
 
@@ -392,10 +394,10 @@ private:
   AreaStats * _estimatedAreaStats;
 
   // Confusion matrix
-  ConfusionMatrix * _confusion_matrix;
+  ConfusionMatrix _confusion_matrix;
 
   // ROC Curve
-  RocCurve * _roc_curve;
+  RocCurve _roc_curve;
 
   char _error[256];
 };
