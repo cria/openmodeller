@@ -43,12 +43,8 @@
 #include <algorithm>
 
 #include <limits>
+#include <math.h>
 
-#ifdef MPI_FOUND
-#include "mpi.h"
-#define WORKTAG 1
-#define DIETAG 2
-#endif
 
 using namespace std;
 
@@ -66,6 +62,10 @@ using namespace std;
 
 #define MAXENT_LOG_PREFIX "Maxent: "
 
+#define MINVAL 0.0
+#define MAXVAL 1.0
+#define MINLIMIT 1.0e-6
+
 /******************************/
 /*** Algorithm's parameters ***/
 
@@ -78,11 +78,11 @@ static AlgParamMetadata parameters[NUM_PARAM] = {
     Integer,                       // Type.
     "Number of background points to be generated.", // Overview
     "Number of background points to be generated.", // Description.
-    1,         // Not zero if the parameter has lower limit.
-    0,         // Parameter's lower limit.
-    1,         // Not zero if the parameter has upper limit.
-    10000,     // Parameter's upper limit.
-    "10000"    // Parameter's typical (default) value.
+    1,      // Not zero if the parameter has lower limit.
+    0,      // Parameter's lower limit.
+    1,      // Not zero if the parameter has upper limit.
+    10000,  // Parameter's upper limit.
+    "10000" // Parameter's typical (default) value.
   },
   // Use absence points as background
   {
@@ -91,11 +91,11 @@ static AlgParamMetadata parameters[NUM_PARAM] = {
     Integer,  // Type.
     " Use absence points as background", // Overview
     "When absence points are provided, this parameter can be used to instruct the algorithm to use them as background points. This would prevent the algorithm to randomly generate them, also facilitating comparisons between different algorithms.", // Description.
-    1,         // Not zero if the parameter has lower limit.
-    0,         // Parameter's lower limit.
-    1,         // Not zero if the parameter has upper limit.
-    1,         // Parameter's upper limit.
-    "0"        // Parameter's typical (default) value.
+    1,   // Not zero if the parameter has lower limit.
+    0,   // Parameter's lower limit.
+    1,   // Not zero if the parameter has upper limit.
+    1,   // Parameter's upper limit.
+    "0"  // Parameter's typical (default) value.
   },
   // Indication if presence points should be merged with background points
   {
@@ -117,11 +117,11 @@ static AlgParamMetadata parameters[NUM_PARAM] = {
     Integer,                // Type.
     "Number of iterations.", // Overview
     "Number of iterations.", // Description.
-    1,         // Not zero if the parameter has lower limit.
-    1,         // Parameter's lower limit.
-    0,         // Not zero if the parameter has upper limit.
-    0,         // Parameter's upper limit.
-    "500"      // Parameter's typical (default) value.
+    1,    // Not zero if the parameter has lower limit.
+    1,    // Parameter's lower limit.
+    0,    // Not zero if the parameter has upper limit.
+    0,    // Parameter's upper limit.
+    "500" // Parameter's typical (default) value.
   },
   // Terminate tolerance
   {
@@ -130,10 +130,10 @@ static AlgParamMetadata parameters[NUM_PARAM] = {
     Real, // Type.
     "Tolerance for detecting model convergence.", // Overview
     "Tolerance for detecting model convergence.", // Description.
-    1,    // Not zero if the parameter has lower limit.
-    0.0,  // Parameter's lower limit.
-    0,    // Not zero if the parameter has upper limit.
-    0,    // Parameter's upper limit.
+    1,        // Not zero if the parameter has lower limit.
+    0.0,      // Parameter's lower limit.
+    0,        // Not zero if the parameter has upper limit.
+    0,        // Parameter's upper limit.
     "0.00001" // Parameter's typical (default) value.
   },
   // Output Format
@@ -147,11 +147,11 @@ static AlgParamMetadata parameters[NUM_PARAM] = {
     "Output Format: " // Description
     "1 = Raw, "
     "2 = Logistic. ",
-    1, // Not zero if the parameter has lower limit
-    1, // Parameter's lower limit
-    1, // Not zero if the parameter has upper limit
-    2, // Parameter's upper limit
-    "2"         // Parameter's typical (default) value
+    1,  // Not zero if the parameter has lower limit
+    1,  // Parameter's lower limit
+    1,  // Not zero if the parameter has upper limit
+    2,  // Parameter's upper limit
+    "2" // Parameter's typical (default) value
   },
 };
 
@@ -162,7 +162,7 @@ static AlgMetadata metadata = {
   
   "MAXENT",          // Id.
   "Maximum Entropy", // Name.
-  "0.5",       	     // Version.
+  "0.6",       	     // Version.
 
   // Overview.
   "The principle of maximum entropy is a method for analyzing available qualitative information in order to determine a unique epistemic probability distribution. It states that the least biased distribution that encodes certain given information is that which maximizes the information entropy (content retrieved from Wikipedia on the 19th of May, 2008: http://en.wikipedia.org/wiki/Maximum_entropy).",
@@ -178,7 +178,7 @@ static AlgMetadata metadata = {
 
   "elisangela.rodrigues [at] poli . usp . br, renato [at] cria . org . br", // Code author's contact.
 
-  1, // Accept categorical data.
+  0, // Does not accept categorical data.
   1, // Does not need (pseudo)absence points.
 
   NUM_PARAM, // Algorithm's parameters.
@@ -211,9 +211,14 @@ algorithmMetadata()
 MaximumEntropy::MaximumEntropy() :
   AlgorithmImpl(&metadata),
   _done(false),
-  _num_layers(0)
+  _num_layers(0),
+  _iteration(0)
 { 
-  _normalizerPtr = new ScaleNormalizer( 0.0, 1.0, true );
+  // TODO: Switch back to use layers as ref to avoid problems in native projections(?)
+  //       Otherwise we should make sure that environmental values won't extrapolate 
+  //       min/max when calculating suitabilities.
+  bool use_layers_as_reference = false; // original Maxent always use background as ref
+  _normalizerPtr = new ScaleNormalizer( MINVAL, MAXVAL, use_layers_as_reference );
 }
 
 /******************/
@@ -221,7 +226,7 @@ MaximumEntropy::MaximumEntropy() :
 
 MaximumEntropy::~MaximumEntropy()
 {
-  delete[] lambda;
+  delete[] _f_lambda;
 }
 
 /**************************/
@@ -259,6 +264,7 @@ MaximumEntropy::initialize()
     _max_iterations = 500;
   }
   else {
+
     if ( _max_iterations <= 0 ) {
       
       Log::instance()->error( MAXENT_LOG_PREFIX "Parameter '" ITERATIONS_ID "' must be greater then zero.\n" );
@@ -350,12 +356,16 @@ MaximumEntropy::initialize()
     // Using a mixed occurrence object shouldn't affect the normalization procedure
     SamplerPtr mySamplerPtr = createSampler( _samp->getEnvironment(), _background );
 
+    //mySamplerPtr->spatiallyUnique();
+
     _normalizerPtr->computeNormalization( mySamplerPtr );
   }
   else {
 
     // Compute normalization with all points
     SamplerPtr mySamplerPtr = createSampler( _samp->getEnvironment(), _presences, _background );
+
+    //mySamplerPtr->spatiallyUnique();
 
     _normalizerPtr->computeNormalization( mySamplerPtr );
   }
@@ -373,6 +383,7 @@ MaximumEntropy::initialize()
     _output_format = 2;
   }
   else {
+
     if ( _output_format != 1 && _output_format != 2 ) {
 
       Log::instance()->error( MAXENT_LOG_PREFIX "Parameter '" OUTPUT_ID "' must be 1 or 2\n" );
@@ -380,96 +391,14 @@ MaximumEntropy::initialize()
     }
   }
 
-  ///_num_samples = _num_presences + _num_background;
-
-  // Identify categorical layers
-  _num_values_cat = 0;
-  _is_categorical.resize( _num_layers );
-  _hasCategorical = false;
-
-  for ( int i = 0; i < _num_layers; ++i ) {
-
-    _is_categorical[i] = (Scalar)_samp->isCategorical( i );
-
-    if ( _is_categorical[i] ) {
-
-      _hasCategorical = true;
-
-      // Get possible values of each categorical layer based on presence points
-      std::set<Scalar> values;
- 
-      OccurrencesImpl::const_iterator p_iterator = _presences->begin();
-      OccurrencesImpl::const_iterator p_end = _presences->end();
-
-      while ( p_iterator != p_end ) {
-
-        Sample sample = (*p_iterator)->environment();
-
-        values.insert( sample[i] ); // std::set already avoids duplicate values
-        ++p_iterator;
-      }
-
-      std::map<Scalar, std::vector<bool > > bin_each_value;
-
-      set<Scalar>::const_iterator bin_iterator = values.begin();
-      set<Scalar>::const_iterator bin_end = values.end();
-      
-      while ( bin_iterator != bin_end ) {
-
-	std::vector<bool > bin_values;
-
-	OccurrencesImpl::const_iterator pbin_iterator = _presences->begin();
-	OccurrencesImpl::const_iterator pbin_end = _presences->end();
-
-	while ( pbin_iterator != pbin_end ) {
-
-	  Sample bin_sample = (*pbin_iterator)->environment();
-
-	  if ( bin_sample[i] == *bin_iterator ) {
-
-	    bin_values.push_back( 1 );
-	  }
-	  else {
-
-	    bin_values.push_back( 0 );
-	  }
-	  ++pbin_iterator;
-	}
-
-	pbin_iterator = _background->begin();
-	pbin_end = _background->end();
-
-	while ( pbin_iterator != pbin_end ) {
-
-	  Sample bin_sample = (*pbin_iterator)->environment();
-
-	  if ( bin_sample[i] == *bin_iterator ) {
-
-	    bin_values.push_back( 1 );
-	  }
-	  else {
-
-	    bin_values.push_back( 0 );
-	  }
-	  ++pbin_iterator;
-	}
-
-	bin_each_value.insert( std::pair< Scalar, std::vector<bool > >( (Scalar) *bin_iterator, bin_values) );
-	++bin_iterator;
-      }
-      
-      _categorical_values.insert( std::pair< int, std::map< Scalar, std::vector<bool > > > ( i, bin_each_value ) );
-
-      _num_values_cat += values.size();
-    } // if ( _is_categorical[i] )
-  } // for ( int i = 0; i < _num_layers; ++i )
-
   _min.resize( _num_layers );
   _max.resize( _num_layers );
   _background->getMinMax( &_min, &_max );
+
+  initTrainer();
   
   return 1;
-} // initialize
+}
 
 /***************/
 /*** iterate ***/
@@ -477,294 +406,134 @@ MaximumEntropy::initialize()
 int
 MaximumEntropy::iterate()
 {
-  init_trainer();
+  if ( _iteration == _max_iterations ) {
 
-  //  double old_loss = std::numeric_limits<double>::infinity();
-  double new_loss = getLoss();
-  Log::instance()->debug( "Initial loss = %f \n", new_loss );
+    endTrainer();
+    return 1;
+  }
 
-  double Gain = 0.0;
+  // Determine best feature
+  int best_id = -1;
+  double best_dlb = 1.0;
+  double infinity = std::numeric_limits<double>::infinity();
+  double alpha = 0.0;
 
-  for ( iteration = 0; iteration < _max_iterations; ++iteration ) {
+  for ( int i = 0; i < _len; i++ ) {
 
-    double *alpha;
-    double min_F = std::numeric_limits<double>::infinity();
+    double dlb = 0.0;
 
-    int best_id = -1;
+    // Calculate delta loss bound
+    double w1 = _f_exp[i];
+    double w0 = 1.0 - w1;
+    double n1 = _f_samp_exp[i];
+    double beta1 = _f_samp_dev[i];
+    double lambda = _f_lambda[i];
 
-    calc_q_lambda_x();
+    if ( n1 != -1.0 ) {
 
-    new_loss = getLoss();
-    double delta_loss = new_loss - old_loss;
-    old_loss = new_loss;
+      // Determine alpha
+      alpha = getAlpha(i);
 
-    ///Gain = log((double)_num_samples) - old_loss;
-    Gain = log((double)_num_background) - old_loss;///
+      if ( alpha < infinity ) {
 
-    calc_q_lambda_f();
-    
-#ifdef MPI_FOUND
-    int my_rank, n_tasks;
-    MPI_Status status;
-    MPI_Comm_rank( MPI_COMM_WORLD, &my_rank );
-    MPI_Comm_size( MPI_COMM_WORLD, &n_tasks); // Find out how many processes there are in the default communicator
+        dlb = -n1 * alpha + log( w0 + w1 * exp(alpha) ) + beta1 * ( fabs(lambda + alpha) - fabs(lambda) );
 
-    if ( my_rank == 0 ){
+        if ( isnan( dlb ) ) {
 
-      double result;
-      int ind, i, rank;
-
-      for ( rank = 1, i = 0; rank < n_tasks && rank <= _len; ++rank, ++i ) {
-
-	MPI_Send(&i,                // i-th work to do
-		 1,                 // one data item
-		 MPI_INT,           // data item is an integer
-		 rank,              // destination process rank
-		 WORKTAG,           // user chosen message tag
-		 MPI_COMM_WORLD);   // default communicator
+          dlb = 0.0;
+        }
       }
-
-      while ( i < _len ) {
-
-	// Receive F[i] from a slave
-	MPI_Recv(&result,           // result from some slave
-                 1,                 // one data item
-		 MPI_DOUBLE,        // of type double real
-		 MPI_ANY_SOURCE,    // receive from any sender
-		 MPI_ANY_TAG,       // any type of message
-		 MPI_COMM_WORLD,    // default communicator
-		 &status);          // info about the received message
-
-	// Receive i from the same slave
-	MPI_Recv(&ind,              // index from the same slave that sent F[i]
-                 1,                 // one data item
-		 MPI_INT,           // of type int
-		 status.MPI_SOURCE, // receive from the same sender
-		 MPI_ANY_TAG,       // any type of message
-		 MPI_COMM_WORLD,    // default communicator
-		 &status);          // info about the received message
-
-	// Send the slave a new work unit
-	MPI_Send(&i,                // i-th work to do
-		 1,                 // one data item
-		 MPI_INT,           // data item is an integer
-		 status.MPI_SOURCE, // to who we just received from
-		 WORKTAG,           // user chosen message tag
-		 MPI_COMM_WORLD);   // default communicator
-
-	if ( min_F > result ) {
-	  min_F = result;
-	  best_id = ind;
-	}
-
-	++i;
-      }
-
-      // Receive all the outstanding results from the slaves.
-      for ( rank = 1; rank < n_tasks; ++rank ) {
-
-	MPI_Recv( &result, 1, MPI_DOUBLE, MPI_ANY_SOURCE, MPI_ANY_TAG, MPI_COMM_WORLD, &status );
-	MPI_Recv( &ind, 1, MPI_INT, status.MPI_SOURCE, MPI_ANY_TAG, MPI_COMM_WORLD, &status );
-
-	if ( min_F > result ) {
-	  min_F = result;
-	  best_id = ind;
-	}
-      }
-
-      // Tell all the slaves to exit by sending an empty message with the DIETAG.
-      for ( rank = 1; rank < n_tasks; ++rank ) {
-
-	MPI_Send( 0, 0, MPI_INT, rank, DIETAG, MPI_COMM_WORLD );
-      }
-    } // if ( myrank == 0 )
-    else {
-
-      int i;
-      double F;
-      double min_F_local = std::numeric_limits<double>::infinity();
-
-      alpha = new double[_len];
-
-      while ( 1 ) {
-	
-	// Receive a message from the master
-	MPI_Recv( &i, 1, MPI_INT, 0, MPI_ANY_TAG, MPI_COMM_WORLD, &status);
-
-	// Check the tag of the received message.
-	if ( status.MPI_TAG == DIETAG ) {
-
-          end_trainer();	 
-	  return 1;
-	}
-
-	// Do the work
-	alpha[i] = -lambda[i];
-	alpha[i] = reduceAlpha(alpha[i]);
-	
-	F = -alpha[i] * features_mean[i] + log(1 + (exp(alpha[i]) - 1) * q_lambda_f[i])
-	    + regularization_parameters[i] * (fabs(lambda[i] + alpha[i]) - fabs(lambda[i]));
-	
-	if ( min_F_local > F ) {
-	  min_F_local = F;
-	}
-	
-	alpha[i] = log(((features_mean[i]-regularization_parameters[i])*(1-q_lambda_f[i]))
-		      /((1-features_mean[i]-regularization_parameters[i])*q_lambda_f[i])); 
-	alpha[i] = reduceAlpha(alpha[i]);
-
-	F = -alpha[i] * features_mean[i] + log(1 + (exp(alpha[i]) - 1) * q_lambda_f[i])
-	    + regularization_parameters[i] * (fabs(lambda[i] + alpha[i]) - fabs(lambda[i]));
-	
-	if( ( lambda[i] + alpha[i] ) >= 0.0 ) {
-	  
-	  if ( min_F_local > F ) {
-	    min_F_local =  F;
-	  }
-	}
-	
-	alpha[i] = log(((features_mean[i]+regularization_parameters[i])*(1-q_lambda_f[i]))
-		     /((1-features_mean[i]+regularization_parameters[i])*q_lambda_f[i])); 
-	alpha[i] = reduceAlpha(alpha[i]);
-
-	F = -alpha[i] * features_mean[i] + log(1 + (exp(alpha[i]) - 1) * q_lambda_f[i])
-	         + regularization_parameters[i] * (fabs(lambda[i] + alpha[i]) - fabs(lambda[i]));
-	
-	if( ( lambda[i] + alpha[i] ) <= 0.0 ) {
-	  
-	  if ( min_F_local > F ) { 
-	    min_F = F; 
-	  }
-	}
-	
-	// Send the result back
-	MPI_Send( &min_F_local, 1, MPI_DOUBLE, 0, 0, MPI_COMM_WORLD );
-	MPI_Send( &i, 1, MPI_INT, 0, 0, MPI_COMM_WORLD );
-
-      } // While (1)
-    } // else
-#else
-
-    double *F;
-    F = new double[_len];
-    alpha = new double[_len];
-
-    for ( int i = 0; i < _len; ++i ) {
-
-      alpha[i] = -lambda[i];
-      alpha[i] = reduceAlpha(alpha[i]);
-
-      F[i] = -alpha[i] * features_mean[i] + log(1 + (exp(alpha[i]) - 1) * q_lambda_f[i])
-	     + regularization_parameters[i] * (fabs(lambda[i] + alpha[i]) - fabs(lambda[i]));
-
-      if ( min_F > F[i] ) {
-	min_F = F[i];
-	best_id = i;
-      }
-
-      alpha[i] =log(((features_mean[i]-regularization_parameters[i])*(1-q_lambda_f[i]))
-			    /((1-features_mean[i]-regularization_parameters[i])*q_lambda_f[i])); 
-      alpha[i] = reduceAlpha(alpha[i]);
-
-      F[i] = -alpha[i] * features_mean[i] + log(1 + (exp(alpha[i]) - 1) * q_lambda_f[i])
-	     + regularization_parameters[i] * (fabs(lambda[i] + alpha[i]) - fabs(lambda[i]));
-
-      if((lambda[i]+alpha[i])>=0.0){
-
-	if ( min_F > F[i] ) {
-	  min_F = F[i];
-	  best_id = i;
-	}
-      }
-
-      alpha[i] =log(((features_mean[i]+regularization_parameters[i])*(1-q_lambda_f[i]))
-			    /((1-features_mean[i]+regularization_parameters[i])*q_lambda_f[i])); 
-      alpha[i] = reduceAlpha(alpha[i]);
-
-      F[i] = -alpha[i] * features_mean[i] + log(1 + (exp(alpha[i]) - 1) * q_lambda_f[i])
-	     + regularization_parameters[i] * (fabs(lambda[i] + alpha[i]) - fabs(lambda[i]));
-
-      if((lambda[i]+alpha[i])<=0.0){
-
-	if ( min_F > F[i] ) {
-	  min_F = F[i];
-	  best_id = i;
-	}
-      }
-    } // for ( int i = 0; i < _len; ++i )
-
-    delete[] F;
-#endif
-    lambda[best_id] += min_F;
-
-    if ( terminationTest(new_loss) ) {
-      break;
     }
 
-    displayInfo(best_id, new_loss, delta_loss, alpha[best_id], iteration);
+    if ( dlb >= best_dlb ) {
 
-    delete[] alpha;
+      continue;
+    }
 
-  } // for ( iteration = 0; iteration < _max_iterations; ++iteration )
+    best_id = i;
+    best_dlb = dlb;
+  }
 
-  Log::instance()->info( MAXENT_LOG_PREFIX "Gain\t %f \n", Gain );
-  Log::instance()->info( MAXENT_LOG_PREFIX "Entropy\t %.2f \n", entropy );
+  if ( best_id == -1 ) {
 
-  _done = true;
+    endTrainer();
+    return 1;
+  }
 
-  end_trainer();
+  // Get loss
+  alpha = runNewtonStep( best_id );
+  alpha = decreaseAlpha( alpha );
+  _new_loss = increaseLambda( best_id, alpha );
+
+  double delta_loss = _new_loss - _old_loss;
+
+  if ( delta_loss > best_dlb) {
+
+    Log::instance()->debug("Undoing: newLoss %f, oldLoss %f, deltaLossBound %f\n", _new_loss, _old_loss, best_dlb);
+    increaseLambda( best_id, -alpha );
+    alpha = searchAlpha( best_id, getAlpha( best_id ) );
+    alpha = decreaseAlpha( alpha );
+    _new_loss = increaseLambda( best_id, alpha );
+  }
+
+  // TODO: calculate feature contribution!
+
+  delta_loss = _new_loss - _old_loss;
+ 
+  _old_loss = _new_loss;
+
+  _gain = log((double)_num_background) - _old_loss;
+
+  displayInfo(best_id, best_dlb, _new_loss, delta_loss, alpha);
+
+  if ( terminationTest(_new_loss) ) {
+
+    endTrainer();
+    return 1;
+  }
   
+  ++_iteration;
+
   return 1;
 }
 
 /********************/
-/*** init_trainer ***/
+/*** init Trainer ***/
 
 void
-MaximumEntropy::init_trainer()
+MaximumEntropy::initTrainer()
 {
-  convergenceTestFrequency = 20;
-  previousLoss = std::numeric_limits<double>::infinity();
+  _convergence_test_frequency = 20;
+  _previous_loss = std::numeric_limits<double>::infinity();
 
-  _len = _num_layers - _categorical_values.size() + _num_values_cat;
+  _len = _num_layers;
 
-  regularization_parameters = new double[_len];
-
-  features_mean = new double[_len];
-
-  feat_stan_devi = new double[_len];
-
-  q_lambda_f = new double[_len];
-
-  lambda = new double[_len];
+  _f_mean = new double[_len];
+  _f_std = new double[_len];
+  _f_lambda = new double[_len];
   
-  ///q_lambda_x = new double[_num_samples];
-  q_lambda_x = new double[_num_background]; ///
+  _linear_pred = new double[_num_background];
 
-  _features_mid = new double[_len]; ///
-  _features_dev = new double[_len]; ///
-  double *features_min = new double[_len]; ///
-  double *features_max = new double[_len]; ///
+  _f_samp_exp = new double[_len];
+  _f_samp_dev = new double[_len];
+
+  _f_exp = new double[_len];
 
   for ( int i = 0; i < _len; ++i ) {
 
-    regularization_parameters[i] = 0.0;
-    features_mean[i] = 0.0;
-    feat_stan_devi[i] = 0.0;
-    _features_mid[i] = 0.0; ///
-    _features_dev[i] = 0.0; ///
-    features_min[i] = 1.1; /// environment was normalized between 0 and 1, so 1.1 is safe
-    features_max[i] = -1.0;/// environment was normalized between 0 and 1, so -1 is safe
-    q_lambda_f[i] = 0.0;
-    lambda[i] = 1.0;
+    _f_mean[i] = 0.0;
+    _f_std[i] = 0.0;
+    _f_samp_exp[i] = 0.0;
+    _f_samp_dev[i] = 0.0;
+    _f_lambda[i] = 0.0;
   }
 
-  ///for ( int i = 0; i < _num_samples; ++i ) {
-  for ( int i = 0; i < _num_background; ++i ) {///
+  setLinearPred();
 
-    q_lambda_x[i] = 0.0;
-  }
-    
+  _beta_l = interpol ( 'l' );
+
+  Log::instance()->debug( "Regularization value = %f \n", _beta_l );
+
   // calculate observed feature expectations - pi~[f] (empirical average of f)
   OccurrencesImpl::const_iterator p_iterator = _presences->begin();
   OccurrencesImpl::const_iterator p_end = _presences->end();
@@ -774,151 +543,121 @@ MaximumEntropy::init_trainer()
   while ( p_iterator != p_end ) {
 
     Sample sample = (*p_iterator)->environment();
-    int index = 0;
 
     for ( int i = 0; i < _num_layers; ++i ) {
 
-      if ( _is_categorical[i] ) {
-
-	std::map< int, std::map< Scalar, std::vector< bool > > >::const_iterator t;
-	t = _categorical_values.find(i);
-
-	std::map<Scalar, std::vector<bool > >::const_iterator t_bin = t->second.begin(); 
-	std::map<Scalar, std::vector<bool > >::const_iterator t_bin_end = t->second.end(); 
-
-	while ( t_bin != t_bin_end ) {
-      
-	  features_mean[index] += t_bin->second[j];
-          // TODO: handle min/max here!
-	  ++index;
-	  ++t_bin;
-	}
-      }
-      else {
-	features_mean[index] += sample[i];
-	features_min[index] = std::min(sample[i], features_min[index]);///
-	features_max[index] = std::max(sample[i], features_max[index]);///
-	++index;
-      }
+      _f_mean[i] += sample[i];
+      _f_std[i] += pow(sample[i], 2);
     }
     ++p_iterator;
     ++j;
   }
 
-  // calculate the feature attributes for the samples
+  double *f_lower = new double[_len];
+  double *f_upper = new double[_len];
+
+  // calculate the mean, standard deviation and expected values for each feature
   for ( int i = 0; i < _len; ++i ) {
 
-    features_mean[i] /= _num_presences;
-    _features_mid[i] = 0.5*(features_max[i]+features_min[i]);///
-    _features_dev[i] = 0.5*(features_max[i]-features_min[i]);///
-  }
+    if ( _num_presences == 1 ) {
 
-  delete[] features_min;///
-  delete[] features_max;///
-
-  // calculate the variance of each feature
-  p_iterator = _presences->begin();
-  p_end = _presences->end();
-  j = 0;
-
-  while ( p_iterator != p_end ) {
-    
-    Sample sample = (*p_iterator)->environment();
-    int index = 0;
-
-    for ( int i = 0; i < _num_layers; ++i ) {
-      
-      if ( _is_categorical[i] ) {
-
-	std::map< int, std::map< Scalar, std::vector< bool > > >::const_iterator t;
-	t = _categorical_values.find(i);
-
-	std::map<Scalar, std::vector<bool > >::const_iterator t_bin = t->second.begin(); 
-	std::map<Scalar, std::vector<bool > >::const_iterator t_bin_end = t->second.end(); 
-	
-	while ( t_bin != t_bin_end ) {
-	  
-	  feat_stan_devi[index] += pow((t_bin->second[j] - features_mean[index]),2);
-	  ++index;
-	  ++t_bin;
-	}
-      }
-      else {
-	
-	feat_stan_devi[index] += pow((sample[i] - features_mean[index]),2);
-	++index;
-      }
-    }
-    ++p_iterator;
-    ++j;
-  }
-
-  for ( int i = 0; i < _len; ++i ) {
-
-    feat_stan_devi[i] /= ( _num_presences - 1 );
-  }
-
-  beta_l = interpol ( 'l' );
-
-  if ( _hasCategorical ) {
-    beta_c = interpol( 'c' );
-    Log::instance()->debug( "Regularization values: Linear = %f \t Categorical = %f \n", beta_l, beta_c );
-  }
-  else {
-    Log::instance()->debug( "Regularization value = %f \n", beta_l );
-  }
-
-  int index = 0;
-
-  // initialize the regularization parameters
-  for ( int i = 0; i < _num_layers; ++i ) {
-    
-    if ( _is_categorical[i] ) {
-
-      std::map< int, std::map< Scalar, std::vector< bool > > >::const_iterator t;
-      t = _categorical_values.find(i);
-      
-      for ( size_t tam = 0; tam < t->second.size(); ++tam ) {
-
-	//	regularization_parameters[index] = beta_c / sqrt((double)(_num_presences)) * sqrt(min(0.25,feat_stan_devi[index]));
-      	regularization_parameters[index] = beta_c / sqrt((double)(_num_presences));
-
-	if ( regularization_parameters[index] < 0.00001 ) {
-
-	  regularization_parameters[index] = 0.00001;
-	}
-	++index;
-      }
+      _f_std[i] = (MAXVAL - MINVAL)*0.5;
     }
     else {
 
-      //      regularization_parameters[index] = beta_l / sqrt((double)(_num_presences)) * sqrt(min(0.25,feat_stan_devi[index]));
-      regularization_parameters[index] = beta_l / sqrt((double)(_num_presences));
+      _f_mean[i] /= (double)_num_presences;
 
-      if ( regularization_parameters[index] < 0.00001 ) {
-	
-	regularization_parameters[index] = 0.00001;
+      if ( _f_std[i] < (double)_num_presences * pow(_f_mean[i], 2) ) {
+
+        _f_std[i] = MINVAL;
       }
-      ++index;
+      else {
+
+        _f_std[i] = sqrt((_f_std[i] - (double)_num_presences * pow(_f_mean[i], 2)) / (double)(_num_presences - 1));
+      }
+
+      if ( _f_std[i] > (MAXVAL - MINVAL)*0.5 ) {
+
+        _f_std[i] = (MAXVAL - MINVAL)*0.5;
+      }
+    }
+
+    f_lower[i] = _f_mean[i] - (_beta_l / sqrt((double)_num_presences)) * _f_std[i];
+    f_upper[i] = _f_mean[i] + (_beta_l / sqrt((double)_num_presences)) * _f_std[i];
+
+    if ( f_lower[i] < MINVAL ) {
+
+      f_lower[i] = MINVAL;
+    }
+    if ( f_upper[i] > MAXVAL ) {
+
+      f_upper[i] = MAXVAL;
+    }
+
+    _f_samp_exp[i] = 0.5*(f_upper[i]+f_lower[i]);
+    _f_samp_dev[i] = 0.5*(f_upper[i]-f_lower[i]);
+
+    if ( _f_samp_dev[i] < MINLIMIT ) {
+
+      // TODO: Change here when including binary features in the future
+      _f_samp_dev[i] = MINLIMIT;
     }
   }
-} // init_trainer();
+
+  delete[] f_lower;
+  delete[] f_upper;
+
+  _density = new double[_num_background];
+
+  calcDensity();
+
+  // Initialize reg
+  for ( int j = 0; j < _len; j++ ) {
+
+    _reg += fabs( _f_lambda[j] ) * _f_samp_dev[j];
+  }
+
+  _new_loss = getLoss();
+  Log::instance()->debug( "Initial loss = %f \n", _new_loss );
+
+  _old_loss = _new_loss;
+
+  _gain = 0.0;
+}
 
 
-/********************/
-/*** end_trainer ***/
+/*******************/
+/*** end Trainer ***/
 
 void
-MaximumEntropy::end_trainer()
+MaximumEntropy::endTrainer()
 {
-  delete[] regularization_parameters;
-  delete[] features_mean;
-  delete[] feat_stan_devi;
-  delete[] q_lambda_f;
-  delete[] q_lambda_x;
-  delete[] _features_mid;
-  delete[] _features_dev;
-} // end_trainer();
+  // Calculate entropy
+  _entropy = 0.0;
+
+  for ( int j = 0; j < _num_background; ++j ) {
+    
+    double dd = _density[j] /= _z_lambda;
+
+    if ( dd > 0.0 ) {
+
+      _entropy += -dd * log(dd);
+    }
+  }
+
+  Log::instance()->info( MAXENT_LOG_PREFIX "Gain\t %f \n", _gain );
+  Log::instance()->info( MAXENT_LOG_PREFIX "Entropy\t %.2f \n", _entropy );
+
+  delete[] _f_mean;
+  delete[] _f_std;
+  delete[] _f_samp_exp;
+  delete[] _f_samp_dev;
+  delete[] _density;
+  delete[] _linear_pred;
+  delete[] _f_exp;
+
+  _done = true;
+}
 
 /***********************/
 /****** interpol *******/
@@ -966,121 +705,16 @@ MaximumEntropy::interpol( char type_feat )
 }
 
 /***********************/
-/*** calc_q_lambda_x ***/
+/*** set Linear Pred ***/
 
 void
-MaximumEntropy::calc_q_lambda_x()
+MaximumEntropy::setLinearPred()
 {
-  Z_lambda = 0.0;
-  entropy = 0.0;
+  for ( int i = 0; i < _num_background; ++i ) {
+
+    _linear_pred[i] = 0.0;
+  }
   
-  ///OccurrencesImpl::const_iterator p_iterator = _presences->begin();
-  ///OccurrencesImpl::const_iterator p_end = _presences->end();
-  OccurrencesImpl::const_iterator p_iterator = _background->begin();///
-  OccurrencesImpl::const_iterator p_end = _background->end();///
-  int i = 0;
-
-  while ( p_iterator != p_end ) {
-    
-    Sample sample = (*p_iterator)->environment();
-    int index = 0;
-    double sum_lambdaj_fj = 0.0;
-
-    for ( int j = 0; j < _num_layers; ++j ) {
-
-      if ( _is_categorical[j] ) {
-
-	std::map< int, std::map< Scalar, std::vector< bool > > >::const_iterator t;
-	t = _categorical_values.find(j);
-
-	std::map<Scalar, std::vector<bool > >::const_iterator t_bin = t->second.begin(); 
-	std::map<Scalar, std::vector<bool > >::const_iterator t_bin_end = t->second.end(); 
-	
-	while ( t_bin != t_bin_end ) {
-	  
-	  sum_lambdaj_fj += lambda[index] * t_bin->second[i];
-	  ++index;
-	  ++t_bin;
-	}
-      }
-      else {
-
-	sum_lambdaj_fj += lambda[index] * sample[j];
-	++index;
-      }
-    }
-    
-    q_lambda_x[i] = exp(sum_lambdaj_fj);
-    Z_lambda += q_lambda_x[i]; // normalization constant
-
-    ++i;
-    ++p_iterator;
-  }
-
-/// p_iterator = _background->begin();
-/// p_end = _background->end();
-///  
-/// while ( p_iterator != p_end ) {
-///   
-///   Sample sample = (*p_iterator)->environment();
-///   int index = 0;
-///   double sum_lambdaj_fj = 0.0;
- 
-///   for ( int j = 0; j < _num_layers; ++j ) {
-///
-///     if ( _is_categorical[j] ) {
-///
-///       std::map< int, std::map< Scalar, std::vector< bool > > >::const_iterator t;
-///       t = _categorical_values.find(j);
-///
-///       std::map<Scalar, std::vector<bool > >::const_iterator t_bin = t->second.begin(); 
-///       std::map<Scalar, std::vector<bool > >::const_iterator t_bin_end = t->second.end(); 
-///       
-///       while ( t_bin != t_bin_end ) {
-///         
-///         sum_lambdaj_fj += lambda[index] * t_bin->second[i];
-///         ++index;
-///         ++t_bin;
-///       }
-///     }
-///     else {
-///
-///       sum_lambdaj_fj += lambda[index] * sample[j];
-///       ++index;
-///     }
-///   }
-///   
-///   q_lambda_x[i] = exp(sum_lambdaj_fj);
-///   Z_lambda += q_lambda_x[i]; // normalization constant
-///
-///   ++i;
-///   ++p_iterator;
-/// }
-
-  // normalize all q_lambda_x
-  ///for ( int j = 0; j < _num_samples; ++j ) {
-  for ( int j = 0; j < _num_background; ++j ) {///
-    
-    q_lambda_x[j] /= Z_lambda;
-    entropy += (q_lambda_x[j] * log(q_lambda_x[j]));
-  }
-
-  entropy = -entropy;
-}
-
-/***********************/
-/*** calc_q_lambda_f ***/
-
-void
-MaximumEntropy::calc_q_lambda_f()
-{
-  for ( int i = 0; i < _len; ++i ) {
-    
-    q_lambda_f[i] = 0.0;
-  }
-
-  ///OccurrencesImpl::const_iterator p_iterator = _presences->begin();
-  ///OccurrencesImpl::const_iterator p_end = _presences->end();
   OccurrencesImpl::const_iterator p_iterator = _background->begin();
   OccurrencesImpl::const_iterator p_end = _background->end();
   int i = 0;
@@ -1088,83 +722,320 @@ MaximumEntropy::calc_q_lambda_f()
   while ( p_iterator != p_end ) {
     
     Sample sample = (*p_iterator)->environment();
-    int index = 0;
 
-    for ( int j = 0; j < _num_layers; ++j ) {
+    for ( int j = 0; j < _len; ++j ) {
 
-      if ( _is_categorical[j] ) {
+      if ( _f_lambda[j] != 0.0 ) {
 
-	std::map< int, std::map< Scalar, std::vector< bool > > >::const_iterator t;
-	t = _categorical_values.find(j);
-
-	std::map<Scalar, std::vector<bool > >::const_iterator t_bin = t->second.begin(); 
-	std::map<Scalar, std::vector<bool > >::const_iterator t_bin_end = t->second.end(); 
-	
-	while ( t_bin != t_bin_end ) {
-
-	  q_lambda_f[index] += q_lambda_x[i] * t_bin->second[i];
-	  ++index;
-	  ++t_bin;
-	}
-      }
-      else {
-
-	q_lambda_f[index] += q_lambda_x[i] * sample[j];
-	++index;
+        _linear_pred[i] += _f_lambda[j] * sample[j];
       }
     }
     ++i;
     ++p_iterator;
   }
- 
-/// p_iterator = _background->begin();
-/// p_end = _background->end();
-/// 
-/// while ( p_iterator != p_end ) {
-///   
-///   Sample sample = (*p_iterator)->environment();
-///   int index = 0;
-///
-///   for ( int j = 0; j < _num_layers; ++j ) {
-///
-///     if ( _is_categorical[j] ) {
-///
-///       std::map< int, std::map< Scalar, std::vector< bool > > >::const_iterator t;
-///       t = _categorical_values.find(j);
-///
-///       std::map<Scalar, std::vector<bool > >::const_iterator t_bin = t->second.begin(); 
-///       std::map<Scalar, std::vector<bool > >::const_iterator t_bin_end = t->second.end(); 
-///       
-///       while ( t_bin != t_bin_end ) {
-///
-///         q_lambda_f[index] += q_lambda_x[i] * t_bin->second[i];
-///         ++index;
-///         ++t_bin;
-///       }
-///     }
-///     else {
-///
-///       q_lambda_f[index] += q_lambda_x[i] * sample[j];
-///       ++index;
-///     }
-///   }
-///   ++i;
-///   ++p_iterator;
-///  }
 
+  setLinearNormalizer();
+}
+
+/*****************************/
+/*** set Linear Normalizer ***/
+
+void
+MaximumEntropy::setLinearNormalizer()
+{
+  _linear_normalizer = _linear_pred[0];
+
+  for ( int i = 1; i < _num_background; ++i ) {
+
+    if ( _linear_pred[i] > _linear_normalizer ) {
+
+      _linear_normalizer = _linear_pred[i]; 
+    }
+  }
+}
+
+/********************/
+/*** calc Density ***/
+
+void
+MaximumEntropy::calcDensity()
+{
+  _z_lambda = 0.0;
+  
+  double *aux = new double[_len];
+
+  OccurrencesImpl::const_iterator p_iterator = _background->begin();
+  OccurrencesImpl::const_iterator p_end = _background->end();
+  int i = 0;
+
+  while ( p_iterator != p_end ) {
+    
+    _density[i] = exp( _linear_pred[i] - _linear_normalizer );
+
+    _z_lambda += _density[i];
+
+    Sample sample = (*p_iterator)->environment();
+
+    for ( int j = 0; j < _len; ++j ) {
+
+      aux[j] += _density[i] * sample[j];
+    }
+
+    ++i;
+    ++p_iterator;
+  }
+
+  for ( int j = 0; j < _len; ++j ) {
+
+    _f_exp[j] = aux[j] / _z_lambda;
+  }
+
+  delete[] aux;
+}
+
+/*****************/
+/*** get Alpha ***/
+
+double
+MaximumEntropy::getAlpha( int feature_index )
+{
+  double alpha = 0.0;
+
+  double w1 = _f_exp[feature_index];
+  double w0 = 1.0 - w1;
+  double n1 = _f_samp_exp[feature_index];
+  double n0 = 1.0 - n1;
+  double beta1 = _f_samp_dev[feature_index];
+  double lambda = _f_lambda[feature_index];
+
+  if ( ( w0 >= 1.0e-6 ) && ( w1 >= 1.0e-6 ) ) {
+
+    if ( n1 - beta1 > MINLIMIT ) {
+
+      alpha = log( (n1 - beta1) * w0 / ((n0 + beta1) * w1) );
+
+      if ( alpha + lambda <= 0.0 ) {
+
+        if ( n0 - beta1 > MINLIMIT ) {
+
+          alpha = log( (n1 + beta1) * w0 / ( (n0 - beta1) * w1) );
+
+          if ( alpha + lambda >= 0.0 ) {
+
+            alpha = -lambda;
+          }
+        }
+      }
+    }
+    else {
+
+      if ( n0 - beta1 > MINLIMIT ) {
+
+        alpha = log( (n1 + beta1) * w0 / ( (n0 - beta1) * w1) );
+
+        if ( alpha + lambda >= 0.0 ) {
+
+          alpha = -lambda;
+        }
+      }
+      else {
+
+        alpha = -lambda;
+      }
+    }
+  }
+
+  return alpha;
+}
+
+/********************/
+/*** search Alpha ***/
+
+double 
+MaximumEntropy::searchAlpha( int feature_index, double alpha )
+{
+  double ini_loss = lossChange( feature_index, alpha );
+  double current_loss = ini_loss;
+  double tentative_loss;
+
+  while ( true ) {
+
+    tentative_loss = lossChange( feature_index, alpha * 4.0 );
+
+    if ( !finite(tentative_loss) || tentative_loss >= current_loss ) {
+
+      break;
+    }
+
+    current_loss = tentative_loss;
+    alpha *= 4.0;
+  }
+
+  tentative_loss = lossChange( feature_index, alpha * 2.0 );
+
+  if ( finite(tentative_loss) && tentative_loss < current_loss ) {
+
+    current_loss = tentative_loss;
+    alpha *= 2.0;
+  }
+
+  return alpha;
+}
+
+/*******************/
+/*** loss Change ***/
+
+double 
+MaximumEntropy::lossChange( int feature_index, double alpha )
+{
+  double lambda = _f_lambda[feature_index];
+  double n1 = _f_samp_exp[feature_index];
+  double beta1 = _f_samp_dev[feature_index];
+
+  OccurrencesImpl::const_iterator p_iterator = _background->begin();
+  OccurrencesImpl::const_iterator p_end = _background->end();
+  int i = 0;
+  double zz = 0.0;
+
+  while ( p_iterator != p_end ) {
+
+    Sample sample = (*p_iterator)->environment();
+
+    zz += _density[i] * exp(alpha * sample[feature_index]);
+
+    ++i;
+    ++p_iterator;
+  }
+
+  double change = -alpha * n1 + log(zz) + (fabs(lambda + alpha) - fabs(lambda)) * beta1;
+ 
+  return change;
+}
+
+/***********************/
+/*** run Newton Step ***/
+
+double 
+MaximumEntropy::runNewtonStep(int feature_index) {
+
+  double w1 = _f_exp[feature_index];
+  double wu = 0.0;
+
+  OccurrencesImpl::const_iterator p_iterator = _background->begin();
+  OccurrencesImpl::const_iterator p_end = _background->end();
+  int i = 0;
+
+  while ( p_iterator != p_end ) {
+
+    Sample sample = (*p_iterator)->environment();
+
+    wu += _density[i] * pow( sample[feature_index], 2 );
+
+    ++i;
+    ++p_iterator;
+  }
+
+  wu = wu / _z_lambda - pow(w1, 2);
+
+  if ( wu < 1.0e-12 ) return 0.0;
+ 
+  double step = -getDeriv(feature_index) / wu;
+  double lambda = _f_lambda[feature_index];
+
+  if ( lambda * (step + lambda) < 0.0 ) {
+
+    step = -lambda;
+  }
+
+  return step;
+}
+
+/*****************/
+/*** get Deriv ***/
+
+double
+MaximumEntropy::getDeriv( int feature_index )
+{
+  double w1 = _f_exp[feature_index];
+  double n1 = _f_samp_exp[feature_index];
+  double beta1 = _f_samp_dev[feature_index];
+  double lambda = _f_lambda[feature_index];
+  double deriv = w1 - n1;
+
+  if ( lambda < 0.0 ) {
+
+     return deriv - beta1;
+  }
+
+  if ( lambda > 0.0 ) {
+
+     return deriv + beta1;
+  }
+
+  if ( deriv + beta1 > 0.0 ) {
+
+     return deriv + beta1;
+  }
+
+  if ( deriv - beta1 < 0.0 ) {
+
+    return deriv - beta1;
+  }
+
+  return 0.0;
+}
+
+/***********************/
+/*** increase Lambda ***/
+
+double 
+MaximumEntropy::increaseLambda(int feature_index, double alpha)
+{
+  double beta1 = _f_samp_dev[feature_index];
+  double lambda = _f_lambda[feature_index];
+
+  _reg += ( fabs(lambda + alpha) - fabs(lambda) ) * beta1;
+
+  if ( alpha != 0.0 ) {
+
+    _f_lambda[feature_index] += alpha;
+
+    OccurrencesImpl::const_iterator p_iterator = _background->begin();
+    OccurrencesImpl::const_iterator p_end = _background->end();
+    int i = 0;
+
+    while ( p_iterator != p_end ) {
+
+      Sample sample = (*p_iterator)->environment();
+
+      _linear_pred[i] += alpha * sample[feature_index];
+
+      if ( i == 0 || _linear_pred[i] > _linear_normalizer ) {
+
+        _linear_normalizer = _linear_pred[i];
+      }
+
+      ++i;
+      ++p_iterator;
+    }
+
+    calcDensity();
+  }
+
+  return getLoss() + _reg;
 }
 
 /********************/
 /*** display Info ***/
 
 void
-MaximumEntropy::displayInfo(int best_id, double new_loss, double delta_loss, double alpha, int iteration)
+MaximumEntropy::displayInfo(int best_id, double loss_bound, double new_loss, double delta_loss, double alpha)
 {
-  Log::instance()->debug( "%d: loss = %f \n", iteration, new_loss );
+  Log::instance()->debug( "%d: loss = %f \n", _iteration, new_loss );
 
-  Log::instance()->debug( "%s: lambda = %f min = %f max = %f\n", _samp->getEnvironment()->getLayerPath(best_id).c_str(), lambda[best_id], _min[best_id], _max[best_id] );
+  Log::instance()->debug( "%s: lambda = %f min = %f max = %f\n", _samp->getEnvironment()->getLayerPath(best_id).c_str(), _f_lambda[best_id], _min[best_id], _max[best_id] );
 
-  Log::instance()->debug( "alpha = %f W1 = %f N1 = %f deltaLoss = %f \n", alpha, q_lambda_f[best_id], features_mean[best_id], delta_loss );
+  Log::instance()->debug( "alpha = %f lossBound = %f W1 = %f N1 = %f deltaLoss = %f \n", alpha, loss_bound, _f_exp[best_id], _f_samp_exp[best_id], delta_loss );
 
 }
 
@@ -1172,36 +1043,43 @@ MaximumEntropy::displayInfo(int best_id, double new_loss, double delta_loss, dou
 /*** termination Test ***/
 
 bool
-MaximumEntropy::terminationTest(double newLoss)
+MaximumEntropy::terminationTest(double new_loss)
 {
-  if ( iteration == 0 ) {
-    previousLoss = newLoss;
+  if ( _iteration == 0 ) {
+
+    _previous_loss = new_loss;
     return false;
   }
-  if ( iteration % convergenceTestFrequency != 0 ) {
+
+  if ( _iteration % _convergence_test_frequency != 0 ) {
+
     return false;
   }
-  if ( previousLoss - newLoss < _tolerance ) {
-    Log::instance()->info( MAXENT_LOG_PREFIX "The algorithm converged after %d iteration(s) \n", iteration );
+
+  if ( _previous_loss - new_loss < _tolerance ) {
+
+    Log::instance()->info( MAXENT_LOG_PREFIX "Algorithm converged after %d iteration(s) \n", _iteration );
     return true;
   }
-  previousLoss = newLoss;
+
+  _previous_loss = new_loss;
+
   return false;
 }
 
-/********************/
-/*** reduce Alpha ***/
+/**********************/
+/*** decrease Alpha ***/
 
 double
-MaximumEntropy::reduceAlpha(double alpha)
+MaximumEntropy::decreaseAlpha(double alpha)
 {
-  if ( iteration < 10 ) {
+  if ( _iteration < 10 ) {
     return alpha / 50.0;
   }
-  if ( iteration < 20 ) {
+  if ( _iteration < 20 ) {
     return alpha / 10.0;
   }
-  if ( iteration < 50 ) {
+  if ( _iteration < 50 ) {
     return alpha / 3.0;
   }
   return alpha;
@@ -1213,17 +1091,32 @@ MaximumEntropy::reduceAlpha(double alpha)
 double
 MaximumEntropy::getLoss()
 {
-  double sum_mid_lambda = 0.0; // N1
-  double sum_regu_lambda = 0.0;
+  double sum_mid_lambda = 0.0;
 
   for ( int i = 0; i < _len; ++i ) {
     
-    ///sum_mid_lambda += features_mean[i] * lambda[i];
-    sum_mid_lambda += _features_mid[i] * lambda[i]; ///
-    sum_regu_lambda += regularization_parameters[i] * fabs(lambda[i]);
+    Log::instance()->debug( "lambda %f exp %f \n", _f_lambda[i], _f_samp_exp[i] );
+    sum_mid_lambda += _f_samp_exp[i] * _f_lambda[i];
   }
   
-  return ( log(Z_lambda) - sum_mid_lambda + sum_regu_lambda );
+  Log::instance()->debug( "linearPredictorNormalizer %f \n", _linear_normalizer );
+  Log::instance()->debug( "densityNormalizer %f \n", log(_z_lambda) );
+
+  return ( log(_z_lambda) - sum_mid_lambda + _linear_normalizer );
+}
+
+/********************/
+/*** get Progress ***/
+
+float 
+MaximumEntropy::getProgress() const
+{
+  if ( done() ) {
+
+    return 1.0;
+  }
+
+  return (float)_iteration / (float)_max_iterations;
 }
 
 /************/
@@ -1242,42 +1135,19 @@ Scalar
 MaximumEntropy::getValue( const Sample& x ) const
 {
   double prob = 0.0 ;
-  int index = 0;
+  double val;
   
-  for ( int i = 0; i < _num_layers; ++i ) {
+  for ( int i = 0; i < _len; ++i ) {
 
-    if ( _is_categorical[i] ) {
+    // Clamp values if necessary
+    val = x[i];
+    val = ( val < MINVAL ) ? MINVAL : val; 
+    val = ( val > MAXVAL ) ? MAXVAL : val; 
 
-      std::map< int, std::set<Scalar> >::const_iterator layer_categories = _cat_values.find(i);
-
-      if ( layer_categories != _cat_values.end() ) {
-
-        std::set<Scalar>::const_iterator it = layer_categories->second.begin();
-        std::set<Scalar>::const_iterator it_end = layer_categories->second.end();
-
-        while ( it != it_end ) {
-
-          if ( x[i] == *it ) {
-	 
-	    prob += lambda[index];
-	    ++index;
-          }
-          else {
-
-	    ++index;
-          }
-          ++it;
-        }
-      }
-    }
-    else {
-    
-      prob += lambda[index] * x[index];
-      ++index;
-    }
+    prob += _f_lambda[i] * val;
   }
 
-  prob = exp(prob)/Z_lambda;
+  prob = exp(prob - _linear_normalizer)/_z_lambda;
 
   if ( !finite(prob) ) {
 
@@ -1288,10 +1158,12 @@ MaximumEntropy::getValue( const Sample& x ) const
   }
  
   if ( _output_format == 1 ) {
+
     return prob;
   }
   else {
-    return ( ( exp(entropy) * prob ) / ( 1 + ( exp(entropy) * prob ) ) );
+
+    return ( ( exp(_entropy) * prob ) / ( 1 + ( exp(_entropy) * prob ) ) );
   }
 }
 
@@ -1322,46 +1194,10 @@ MaximumEntropy::_getConfiguration( ConfigurationPtr& config ) const
   config->addSubsection( model_config );
 
   model_config->addNameValue( "NumLayers", _num_layers );
-  model_config->addNameValue( "Z", Z_lambda );
-  model_config->addNameValue( "Entropy", entropy);
+  model_config->addNameValue( "Z", _z_lambda );
+  model_config->addNameValue( "LN", _linear_normalizer );
+  model_config->addNameValue( "Entropy", _entropy);
   model_config->addNameValue( "OutputFormat", _output_format );
-
-  model_config->addNameValue( "Categorical", _is_categorical );
-
-  ConfigurationPtr cat_section_config( new ConfigurationImpl( "CategoricalData" ) );
-  model_config->addSubsection( cat_section_config );
-
-  std::map< int, std::map< Scalar, std::vector< bool > > >::const_iterator it = _categorical_values.begin();
-  std::map< int, std::map< Scalar, std::vector< bool > > >::const_iterator it_end = _categorical_values.end();
-
-  while ( it != it_end ) {
-
-    // There can be be multiple <Categories> elements, one for each categorical layer
-    ConfigurationPtr cat_config( new ConfigurationImpl( "Categories" ) );
-    cat_section_config->addSubsection( cat_config );
-
-    int layer_index = (*it).first;
-    std::map<Scalar, std::vector<bool > > layer_categories = (*it).second;
-
-    // Transform std::set into Sample
-    Sample categories;
-    categories.resize( layer_categories.size() );
-
-    int i = 0;
-    std::map<Scalar, std::vector<bool > >::iterator val_it;
-
-    for ( val_it = layer_categories.begin(); val_it != layer_categories.end(); val_it++ ) {
-
-      //      categories[i] = (*val_it);
-      categories[i] = (*val_it).first;
-      ++i;
-    }
-
-    cat_config->addNameValue( "Index", layer_index );
-    cat_config->addNameValue( "Values", categories );
-
-    ++it;
-  }
 
   // write lambda
   ConfigurationPtr lambda_config( new ConfigurationImpl( "Lambda" ) );
@@ -1371,7 +1207,7 @@ MaximumEntropy::_getConfiguration( ConfigurationPtr& config ) const
   
   for ( int i = 0; i < _num_layers; ++i ) {
 
-    lambda_values[i] = lambda[i];
+    lambda_values[i] = _f_lambda[i];
   }
 
   lambda_config->addNameValue( "Values", lambda_values, _num_layers );
@@ -1390,40 +1226,15 @@ MaximumEntropy::_setConfiguration( const ConstConfigurationPtr& config )
   
   _num_layers = model_config->getAttributeAsInt( "NumLayers", 0 );
 
-  Z_lambda = model_config->getAttributeAsDouble( "Z", 0.0 );
+  _len = _num_layers;
 
-  entropy = model_config->getAttributeAsDouble( "Entropy", 0.0 );
+  _z_lambda = model_config->getAttributeAsDouble( "Z", 0.0 );
+
+  _linear_normalizer = model_config->getAttributeAsDouble( "LN", 0.0 );
+
+  _entropy = model_config->getAttributeAsDouble( "Entropy", 0.0 );
 
   _output_format = model_config->getAttributeAsInt( "OutputFormat", 2 );
-  
-  _is_categorical = model_config->getAttributeAsSample( "Categorical" );
-
-  ConstConfigurationPtr cat_section = model_config->getSubsection( "CategoricalData", false );
-
-  if ( cat_section ) {
-
-    Configuration::subsection_list categories = cat_section->getAllSubsections();
-
-    Configuration::subsection_list::iterator it = categories.begin();
-    Configuration::subsection_list::iterator it_end = categories.end();
-
-    for ( ; it != it_end; ++it ) {
-
-      int layer_index = (*it)->getAttributeAsInt( "Index", 0 );
-
-      Sample layer_categories = (*it)->getAttributeAsSample( "Values" );
-
-      // Convert from Sample to std::set
-      std::set<Scalar> values;
-
-      for ( unsigned int i = 0; i < layer_categories.size(); ++i ) {
-
-        values.insert( layer_categories[i] );
-      }
-
-      _cat_values.insert( std::pair< int, std::set<Scalar> >( layer_index, values ) );
-    }
-  }
   
   // Lambda
   ConstConfigurationPtr lambda_config = model_config->getSubsection( "Lambda", false );
@@ -1434,11 +1245,11 @@ MaximumEntropy::_setConfiguration( const ConstConfigurationPtr& config )
 
   std::vector<double> lambda_values = lambda_config->getAttributeAsVecDouble( "Values" );
 
-  lambda = new double[_num_layers];
+  _f_lambda = new double[_num_layers];
 
   for ( int i = 0; i < _num_layers; ++i ) {
 
-    lambda[i] = lambda_values[i];
+    _f_lambda[i] = lambda_values[i];
   }
   
   _done = true;

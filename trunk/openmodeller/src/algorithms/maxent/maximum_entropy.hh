@@ -50,43 +50,58 @@ public:
   int needNormalization();
   int initialize();
   int iterate();
+  float getProgress() const;
   int done() const;
-
-  void add_samples();
-
   Scalar getValue( const Sample& x ) const;
-
   int getConvergence( Scalar * const val );
 
 private:
 
-  void init_trainer();
-  void end_trainer();
+  void initTrainer();
 
-  void calc_q_lambda_x();
-  
-  void calc_q_lambda_f();
+  void endTrainer();
+
+  void setLinearPred();
+
+  void setLinearNormalizer();
+
+  void calcDensity();
 
   double interpol( char type_feat );
 
-  // Dump the given maxent vars related to a specfic iteration
-  void displayInfo(int best_id, double new_loss, double delta_loss, double alpha, int iteration);
+  double getAlpha( int feature_index );
+
+  double searchAlpha( int feature_index, double alpha );
+
+  double lossChange( int feature_index, double alpha );
+
+  double runNewtonStep( int feature_index );
+
+  double getDeriv( int feature_index );
+
   bool terminationTest(double newLoss);
-  double reduceAlpha(double alpha);
+
+  double decreaseAlpha(double alpha);
+
+  double increaseLambda(int feature_index, double alpha);
+
   double getLoss();
 
-  double *regularization_parameters;
-  double *features_mean; // mean of each feature
-  double *feat_stan_devi; // standard deviation of each feature
-  double *q_lambda_f;
-  double *lambda; // weight of each feature
-  double *q_lambda_x; // probability of each point
+  // Dump the given maxent vars related to a specfic iteration
+  void displayInfo(int best_id, double loss_bound, double new_loss, double delta_loss, double alpha);
 
-  double *_features_mid; // mid value of each feature
-  double *_features_dev; // deviation of each feature
-
-  double Z_lambda;
-  double entropy;
+  double *_f_mean; // mean of each feature
+  double *_f_std; // standard deviation of each feature
+  double *_f_samp_exp; // sample expectation
+  double *_f_samp_dev; // sample deviation
+  double *_f_exp; // feature expectation
+  double *_f_lambda; // weight of each feature
+  double *_linear_pred; // probability of each point
+  double _linear_normalizer;/// linear normalizer
+  double *_density; // density for each point
+  double _reg;
+  double _z_lambda;
+  double _entropy;
  
 protected:
 
@@ -99,31 +114,26 @@ protected:
   OccurrencesPtr _presences;
   OccurrencesPtr _background;
 
-  Sample _is_categorical;
   Sample _min;
   Sample _max;
 
   int _num_layers;
   int _num_presences;
   int _num_background;
-  ///int _num_samples;
-  int _num_values_cat;
+
   int _len;
-  double beta_l;
-  double beta_c;
-  bool _hasCategorical;
+  double _beta_l;
 
   int _max_iterations;
-  int iteration;
-  double previousLoss;
-  double old_loss;
-  int convergenceTestFrequency;
+  int _iteration;
+  double _previous_loss;
+  double _new_loss;
+  double _old_loss;
+  double _gain;
+  int _convergence_test_frequency;
 
   double _tolerance;
   int _output_format;
-
-  std::map< int, std::set<Scalar> > _cat_values; // layer index => set of values (used in getValue)
-  std::map< int, std::map< Scalar, std::vector< bool > > > _categorical_values; // layer index => set of values => binary values of samples according to feature values.
 };
 
 #endif
