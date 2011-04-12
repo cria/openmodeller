@@ -2,7 +2,7 @@
  * Declaration of Feature Interface
  * 
  * @author Renato De Giovanni
- * $Id: $
+ * $Id$
  *
  * LICENSE INFORMATION
  * 
