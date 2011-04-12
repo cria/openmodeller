@@ -28,10 +28,13 @@
 #ifndef _MAXIMUM_ENTROPYHH_
 #define _MAXIMUM_ENTROPYHH_
 
-#include <set>
-#include <map>
+#include <vector>
+//#include <set>
+//#include <map>
 
 #include <openmodeller/om.hh>
+
+#include "feature.hh"
 
 /*********************************************************/
 /******************** Maximum Entropy ********************/
@@ -65,44 +68,38 @@ private:
 
   void setLinearNormalizer();
 
+  double calcBeta( Feature * f );
+
   void calcDensity();
 
-  double interpol( char type_feat );
+  double getAlpha( Feature * f );
 
-  double getAlpha( int feature_index );
+  double searchAlpha( Feature * f, double alpha );
 
-  double searchAlpha( int feature_index, double alpha );
+  double lossChange( Feature * f, double alpha );
 
-  double lossChange( int feature_index, double alpha );
+  double runNewtonStep( Feature * f );
 
-  double runNewtonStep( int feature_index );
+  double getDeriv( Feature * f );
 
-  double getDeriv( int feature_index );
+  bool terminationTest( double newLoss );
 
-  bool terminationTest(double newLoss);
+  double decreaseAlpha( double alpha );
 
-  double decreaseAlpha(double alpha);
-
-  double increaseLambda(int feature_index, double alpha);
+  double increaseLambda( Feature * f, double alpha );
 
   double getLoss();
 
   // Dump the given maxent vars related to a specfic iteration
-  void displayInfo(int best_id, double loss_bound, double new_loss, double delta_loss, double alpha);
+  void displayInfo( Feature * f, double loss_bound, double new_loss, double delta_loss, double alpha );
 
-  double *_f_mean; // mean of each feature
-  double *_f_std; // standard deviation of each feature
-  double *_f_samp_exp; // sample expectation
-  double *_f_samp_dev; // sample deviation
-  double *_f_exp; // feature expectation
-  double *_f_lambda; // weight of each feature
   double *_linear_pred; // probability of each point
   double _linear_normalizer;/// linear normalizer
   double *_density; // density for each point
   double _reg;
   double _z_lambda;
   double _entropy;
- 
+
 protected:
 
   virtual void _getConfiguration( ConfigurationPtr& ) const;
@@ -114,15 +111,8 @@ protected:
   OccurrencesPtr _presences;
   OccurrencesPtr _background;
 
-  Sample _min;
-  Sample _max;
-
-  int _num_layers;
   int _num_presences;
   int _num_background;
-
-  int _len;
-  double _beta_l;
 
   int _max_iterations;
   int _iteration;
@@ -134,6 +124,8 @@ protected:
 
   double _tolerance;
   int _output_format;
+
+  vector<Feature*> _features;
 };
 
 #endif
