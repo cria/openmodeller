@@ -34,6 +34,8 @@
 #include <openmodeller/ScaleNormalizer.hh>
 #include <openmodeller/Sampler.hh>
 
+#include "linear_feature.hh"
+
 #include <iostream>
 #include <sstream>
 #include <vector>
@@ -211,7 +213,6 @@ algorithmMetadata()
 MaximumEntropy::MaximumEntropy() :
   AlgorithmImpl(&metadata),
   _done(false),
-  _num_layers(0),
   _iteration(0)
 { 
   // TODO: Switch back to use layers as ref to avoid problems in native projections(?)
@@ -226,7 +227,10 @@ MaximumEntropy::MaximumEntropy() :
 
 MaximumEntropy::~MaximumEntropy()
 {
-  delete[] _f_lambda;
+  for ( unsigned int i = 0; i < _features.size(); ++i ) {
+
+    delete _features[i];
+  }
 }
 
 /**************************/
@@ -373,8 +377,6 @@ MaximumEntropy::initialize()
   setNormalization( _samp );
 
   _background->normalize( _normalizerPtr, _samp->getEnvironment()->numCategoricalLayers() );
-  
-  _num_layers = _samp->numIndependent();
 
   // Output Format
   if ( ! getParameter( OUTPUT_ID, &_output_format ) ) {
@@ -390,10 +392,6 @@ MaximumEntropy::initialize()
       return 0;
     }
   }
-
-  _min.resize( _num_layers );
-  _max.resize( _num_layers );
-  _background->getMinMax( &_min, &_max );
 
   initTrainer();
   
@@ -413,26 +411,27 @@ MaximumEntropy::iterate()
   }
 
   // Determine best feature
-  int best_id = -1;
+  Feature* best_f = 0;
   double best_dlb = 1.0;
   double infinity = std::numeric_limits<double>::infinity();
   double alpha = 0.0;
 
-  for ( int i = 0; i < _len; i++ ) {
+  vector<Feature*>::iterator it;
+  for ( it = _features.begin(); it != _features.end(); ++it ) {
 
     double dlb = 0.0;
 
     // Calculate delta loss bound
-    double w1 = _f_exp[i];
+    double w1 = (*it)->exp();
     double w0 = 1.0 - w1;
-    double n1 = _f_samp_exp[i];
-    double beta1 = _f_samp_dev[i];
-    double lambda = _f_lambda[i];
+    double n1 = (*it)->sampExp();
+    double beta1 = (*it)->sampDev();
+    double lambda = (*it)->lambda();
 
     if ( n1 != -1.0 ) {
 
       // Determine alpha
-      alpha = getAlpha(i);
+      alpha = getAlpha(*it);
 
       if ( alpha < infinity ) {
 
@@ -450,30 +449,30 @@ MaximumEntropy::iterate()
       continue;
     }
 
-    best_id = i;
+    best_f = *it;
     best_dlb = dlb;
   }
 
-  if ( best_id == -1 ) {
+  if ( best_f == 0 ) {
 
     endTrainer();
     return 1;
   }
 
   // Get loss
-  alpha = runNewtonStep( best_id );
+  alpha = runNewtonStep( best_f );
   alpha = decreaseAlpha( alpha );
-  _new_loss = increaseLambda( best_id, alpha );
+  _new_loss = increaseLambda( best_f, alpha );
 
   double delta_loss = _new_loss - _old_loss;
 
   if ( delta_loss > best_dlb) {
 
     Log::instance()->debug("Undoing: newLoss %f, oldLoss %f, deltaLossBound %f\n", _new_loss, _old_loss, best_dlb);
-    increaseLambda( best_id, -alpha );
-    alpha = searchAlpha( best_id, getAlpha( best_id ) );
+    increaseLambda( best_f, -alpha );
+    alpha = searchAlpha( best_f, getAlpha( best_f ) );
     alpha = decreaseAlpha( alpha );
-    _new_loss = increaseLambda( best_id, alpha );
+    _new_loss = increaseLambda( best_f, alpha );
   }
 
   // TODO: calculate feature contribution!
@@ -484,7 +483,7 @@ MaximumEntropy::iterate()
 
   _gain = log((double)_num_background) - _old_loss;
 
-  displayInfo(best_id, best_dlb, _new_loss, delta_loss, alpha);
+  displayInfo(best_f, best_dlb, _new_loss, delta_loss, alpha);
 
   if ( terminationTest(_new_loss) ) {
 
@@ -506,115 +505,97 @@ MaximumEntropy::initTrainer()
   _convergence_test_frequency = 20;
   _previous_loss = std::numeric_limits<double>::infinity();
 
-  _len = _num_layers;
+  for ( int i = 0; i < _samp->numIndependent(); ++i ) {
 
-  _f_mean = new double[_len];
-  _f_std = new double[_len];
-  _f_lambda = new double[_len];
-  
-  _linear_pred = new double[_num_background];
-
-  _f_samp_exp = new double[_len];
-  _f_samp_dev = new double[_len];
-
-  _f_exp = new double[_len];
-
-  for ( int i = 0; i < _len; ++i ) {
-
-    _f_mean[i] = 0.0;
-    _f_std[i] = 0.0;
-    _f_samp_exp[i] = 0.0;
-    _f_samp_dev[i] = 0.0;
-    _f_lambda[i] = 0.0;
+    _features.push_back( new LinearFeature(i) );
   }
 
   setLinearPred();
 
-  _beta_l = interpol ( 'l' );
+  vector<Feature*>::iterator it;
+  for ( it = _features.begin(); it != _features.end(); ++it ) {
 
-  Log::instance()->debug( "Regularization value = %f \n", _beta_l );
+    (*it)->setBeta( calcBeta(*it) );
+  }
 
   // calculate observed feature expectations - pi~[f] (empirical average of f)
   OccurrencesImpl::const_iterator p_iterator = _presences->begin();
   OccurrencesImpl::const_iterator p_end = _presences->end();
-  int j = 0;
 
-  // sum the feature values to calculate the mean.  
+  // sum feature values to calculate mean and std
+  Scalar val;
   while ( p_iterator != p_end ) {
 
     Sample sample = (*p_iterator)->environment();
 
-    for ( int i = 0; i < _num_layers; ++i ) {
+    for ( it = _features.begin(); it != _features.end(); ++it ) {
 
-      _f_mean[i] += sample[i];
-      _f_std[i] += pow(sample[i], 2);
+      val = (*it)->getVal(sample);
+      (*it)->setMean( (*it)->mean() + val );
+      (*it)->setStd( (*it)->std() + pow(val, 2) );
     }
     ++p_iterator;
-    ++j;
   }
 
-  double *f_lower = new double[_len];
-  double *f_upper = new double[_len];
-
-  // calculate the mean, standard deviation and expected values for each feature
-  for ( int i = 0; i < _len; ++i ) {
+  // calculate mean, std and expected values for each feature
+  double margin;
+  for ( it = _features.begin(); it != _features.end(); ++it ) {
 
     if ( _num_presences == 1 ) {
 
-      _f_std[i] = (MAXVAL - MINVAL)*0.5;
+      (*it)->setStd( (MAXVAL - MINVAL)*0.5 );
     }
     else {
 
-      _f_mean[i] /= (double)_num_presences;
+      (*it)->setMean( (*it)->mean() / (double)_num_presences );
 
-      if ( _f_std[i] < (double)_num_presences * pow(_f_mean[i], 2) ) {
+      if ( (*it)->std() < (double)_num_presences * pow((*it)->mean(), 2) ) {
 
-        _f_std[i] = MINVAL;
+        (*it)->setStd( MINVAL );
       }
       else {
 
-        _f_std[i] = sqrt((_f_std[i] - (double)_num_presences * pow(_f_mean[i], 2)) / (double)(_num_presences - 1));
+        (*it)->setStd( sqrt(((*it)->std() - (double)_num_presences * pow((*it)->mean(), 2)) / (double)(_num_presences - 1)) );
       }
 
-      if ( _f_std[i] > (MAXVAL - MINVAL)*0.5 ) {
+      if ( (*it)->std() > (MAXVAL - MINVAL)*0.5 ) {
 
-        _f_std[i] = (MAXVAL - MINVAL)*0.5;
+        (*it)->setStd( (MAXVAL - MINVAL)*0.5 );
       }
     }
 
-    f_lower[i] = _f_mean[i] - (_beta_l / sqrt((double)_num_presences)) * _f_std[i];
-    f_upper[i] = _f_mean[i] + (_beta_l / sqrt((double)_num_presences)) * _f_std[i];
+    margin = ((*it)->beta() / sqrt((double)_num_presences)) * (*it)->std();
 
-    if ( f_lower[i] < MINVAL ) {
+    (*it)->setLower( (*it)->mean() - margin );
+    (*it)->setUpper( (*it)->mean() + margin );
 
-      f_lower[i] = MINVAL;
+    if ( (*it)->lower() < MINVAL ) {
+
+      (*it)->setLower( MINVAL );
     }
-    if ( f_upper[i] > MAXVAL ) {
+    if ( (*it)->upper() > MAXVAL ) {
 
-      f_upper[i] = MAXVAL;
+      (*it)->setUpper( MAXVAL );
     }
 
-    _f_samp_exp[i] = 0.5*(f_upper[i]+f_lower[i]);
-    _f_samp_dev[i] = 0.5*(f_upper[i]-f_lower[i]);
+    (*it)->setSampExp( 0.5*((*it)->upper()+(*it)->lower()) );
+    (*it)->setSampDev( 0.5*((*it)->upper()-(*it)->lower()) );
 
-    if ( _f_samp_dev[i] < MINLIMIT ) {
+    if ( (*it)->sampDev() < MINLIMIT ) {
 
       // TODO: Change here when including binary features in the future
-      _f_samp_dev[i] = MINLIMIT;
+      (*it)->setSampDev( MINLIMIT );
     }
   }
-
-  delete[] f_lower;
-  delete[] f_upper;
 
   _density = new double[_num_background];
 
   calcDensity();
 
   // Initialize reg
-  for ( int j = 0; j < _len; j++ ) {
+  for ( it = _features.begin(); it != _features.end(); ++it ) {
 
-    _reg += fabs( _f_lambda[j] ) * _f_samp_dev[j];
+    _reg += fabs( (*it)->lambda() ) * (*it)->sampDev();
   }
 
   _new_loss = getLoss();
@@ -648,60 +629,10 @@ MaximumEntropy::endTrainer()
   Log::instance()->info( MAXENT_LOG_PREFIX "Gain\t %f \n", _gain );
   Log::instance()->info( MAXENT_LOG_PREFIX "Entropy\t %.2f \n", _entropy );
 
-  delete[] _f_mean;
-  delete[] _f_std;
-  delete[] _f_samp_exp;
-  delete[] _f_samp_dev;
   delete[] _density;
   delete[] _linear_pred;
-  delete[] _f_exp;
 
   _done = true;
-}
-
-/***********************/
-/****** interpol *******/
-
-double
-MaximumEntropy::interpol( char type_feat )
-{
-  const int arraySize = 3;
-  int ts_l[arraySize] = { 10, 30, 100 }; //linear features thresholds 
-  double betas_l[arraySize] = { 1.0, 0.2, 0.05 };
-  int ts_c[arraySize] = { 0, 10, 17 }; //categorical features thresholds
-  double betas_c[arraySize] = { 0.65, 0.5, 0.25 };
-
-  if ( type_feat == 'l' ) {
-    int i = 0;
-    for ( ; i < arraySize; ++i) {
-      if ( _num_presences <= ts_l[i] ) {
-	break;
-      }
-    }
-    if ( i == 0 ) {
-      return betas_l[0];
-    }
-    if ( i == arraySize ) {
-      return betas_l[arraySize-1];
-    }
-    return betas_l[(i-1)] + (betas_l[i] - betas_l[(i-1)]) * (_num_presences - ts_l[(i-1)]) / (ts_l[i] - ts_l[(i-1)]);
-  }
-  
-  else {
-    int i = 0;
-    for ( ; i < arraySize; ++i) {
-      if ( _num_presences <= ts_c[i] ) {
-	break;
-      }
-    }
-    if ( i == 0 ) {
-      return betas_c[0];
-    }
-    if ( i == arraySize ) {
-      return betas_c[arraySize-1];
-    }
-    return betas_c[(i-1)] + (betas_c[i] - betas_c[(i-1)]) * (_num_presences - ts_c[(i-1)]) / (ts_c[i] - ts_c[(i-1)]);
-  }
 }
 
 /***********************/
@@ -710,6 +641,8 @@ MaximumEntropy::interpol( char type_feat )
 void
 MaximumEntropy::setLinearPred()
 {
+  _linear_pred = new double[_num_background];
+
   for ( int i = 0; i < _num_background; ++i ) {
 
     _linear_pred[i] = 0.0;
@@ -723,11 +656,12 @@ MaximumEntropy::setLinearPred()
     
     Sample sample = (*p_iterator)->environment();
 
-    for ( int j = 0; j < _len; ++j ) {
+    vector<Feature*>::iterator it;
+    for ( it = _features.begin(); it != _features.end(); ++it ) {
 
-      if ( _f_lambda[j] != 0.0 ) {
+      if ( (*it)->lambda() != 0.0 ) {
 
-        _linear_pred[i] += _f_lambda[j] * sample[j];
+        _linear_pred[i] += (*it)->lambda() * (*it)->getVal(sample);
       }
     }
     ++i;
@@ -735,6 +669,43 @@ MaximumEntropy::setLinearPred()
   }
 
   setLinearNormalizer();
+}
+
+
+/***********************/
+/****** set Beta *******/
+
+double
+MaximumEntropy::calcBeta( Feature * f )
+{
+  const int arraySize = 3;
+  int ts_l[arraySize] = { 10, 30, 100 }; //linear features thresholds 
+  double betas_l[arraySize] = { 1.0, 0.2, 0.05 };
+
+  if ( f->type() == F_LINEAR ) {
+
+    int i = 0;
+
+    for ( ; i < arraySize; ++i) {
+
+      if ( _num_presences <= ts_l[i] ) {
+
+	break;
+      }
+    }
+    if ( i == 0 ) {
+
+      return betas_l[0];
+    }
+    if ( i == arraySize ) {
+
+      return betas_l[arraySize-1];
+    }
+
+    return betas_l[(i-1)] + (betas_l[i] - betas_l[(i-1)]) * (_num_presences - ts_l[(i-1)]) / (ts_l[i] - ts_l[(i-1)]);
+  }
+
+  return 0.0;
 }
 
 /*****************************/
@@ -762,8 +733,6 @@ MaximumEntropy::calcDensity()
 {
   _z_lambda = 0.0;
   
-  double *aux = new double[_len];
-
   OccurrencesImpl::const_iterator p_iterator = _background->begin();
   OccurrencesImpl::const_iterator p_end = _background->end();
   int i = 0;
@@ -776,39 +745,39 @@ MaximumEntropy::calcDensity()
 
     Sample sample = (*p_iterator)->environment();
 
-    for ( int j = 0; j < _len; ++j ) {
+    vector<Feature*>::iterator it;
+    for ( it = _features.begin(); it != _features.end(); ++it ) {
 
-      aux[j] += _density[i] * sample[j];
+      (*it)->setExp( (*it)->exp() + (_density[i] * (*it)->getVal(sample)) );
     }
 
     ++i;
     ++p_iterator;
   }
 
-  for ( int j = 0; j < _len; ++j ) {
+  vector<Feature*>::iterator it;
+  for ( it = _features.begin(); it != _features.end(); ++it ) {
 
-    _f_exp[j] = aux[j] / _z_lambda;
+    (*it)->setExp( (*it)->exp() / _z_lambda );
   }
-
-  delete[] aux;
 }
 
 /*****************/
 /*** get Alpha ***/
 
 double
-MaximumEntropy::getAlpha( int feature_index )
+MaximumEntropy::getAlpha( Feature * f )
 {
   double alpha = 0.0;
 
-  double w1 = _f_exp[feature_index];
+  double w1 = f->exp();
   double w0 = 1.0 - w1;
-  double n1 = _f_samp_exp[feature_index];
+  double n1 = f->sampExp();
   double n0 = 1.0 - n1;
-  double beta1 = _f_samp_dev[feature_index];
-  double lambda = _f_lambda[feature_index];
+  double beta1 = f->sampDev();
+  double lambda = f->lambda();
 
-  if ( ( w0 >= 1.0e-6 ) && ( w1 >= 1.0e-6 ) ) {
+  if ( ( w0 >= MINLIMIT ) && ( w1 >= MINLIMIT ) ) {
 
     if ( n1 - beta1 > MINLIMIT ) {
 
@@ -852,15 +821,15 @@ MaximumEntropy::getAlpha( int feature_index )
 /*** search Alpha ***/
 
 double 
-MaximumEntropy::searchAlpha( int feature_index, double alpha )
+MaximumEntropy::searchAlpha( Feature * f, double alpha )
 {
-  double ini_loss = lossChange( feature_index, alpha );
+  double ini_loss = lossChange( f, alpha );
   double current_loss = ini_loss;
   double tentative_loss;
 
   while ( true ) {
 
-    tentative_loss = lossChange( feature_index, alpha * 4.0 );
+    tentative_loss = lossChange( f, alpha * 4.0 );
 
     if ( !finite(tentative_loss) || tentative_loss >= current_loss ) {
 
@@ -871,7 +840,7 @@ MaximumEntropy::searchAlpha( int feature_index, double alpha )
     alpha *= 4.0;
   }
 
-  tentative_loss = lossChange( feature_index, alpha * 2.0 );
+  tentative_loss = lossChange( f, alpha * 2.0 );
 
   if ( finite(tentative_loss) && tentative_loss < current_loss ) {
 
@@ -886,11 +855,11 @@ MaximumEntropy::searchAlpha( int feature_index, double alpha )
 /*** loss Change ***/
 
 double 
-MaximumEntropy::lossChange( int feature_index, double alpha )
+MaximumEntropy::lossChange( Feature * f, double alpha )
 {
-  double lambda = _f_lambda[feature_index];
-  double n1 = _f_samp_exp[feature_index];
-  double beta1 = _f_samp_dev[feature_index];
+  double lambda = f->lambda();
+  double n1 = f->sampExp();
+  double beta1 = f->sampDev();
 
   OccurrencesImpl::const_iterator p_iterator = _background->begin();
   OccurrencesImpl::const_iterator p_end = _background->end();
@@ -901,7 +870,7 @@ MaximumEntropy::lossChange( int feature_index, double alpha )
 
     Sample sample = (*p_iterator)->environment();
 
-    zz += _density[i] * exp(alpha * sample[feature_index]);
+    zz += _density[i] * exp(alpha * f->getVal( sample ));
 
     ++i;
     ++p_iterator;
@@ -916,9 +885,9 @@ MaximumEntropy::lossChange( int feature_index, double alpha )
 /*** run Newton Step ***/
 
 double 
-MaximumEntropy::runNewtonStep(int feature_index) {
+MaximumEntropy::runNewtonStep( Feature * f ) {
 
-  double w1 = _f_exp[feature_index];
+  double w1 = f->exp();
   double wu = 0.0;
 
   OccurrencesImpl::const_iterator p_iterator = _background->begin();
@@ -929,7 +898,7 @@ MaximumEntropy::runNewtonStep(int feature_index) {
 
     Sample sample = (*p_iterator)->environment();
 
-    wu += _density[i] * pow( sample[feature_index], 2 );
+    wu += _density[i] * pow( f->getVal(sample), 2 );
 
     ++i;
     ++p_iterator;
@@ -939,8 +908,8 @@ MaximumEntropy::runNewtonStep(int feature_index) {
 
   if ( wu < 1.0e-12 ) return 0.0;
  
-  double step = -getDeriv(feature_index) / wu;
-  double lambda = _f_lambda[feature_index];
+  double step = -getDeriv(f) / wu;
+  double lambda = f->lambda();
 
   if ( lambda * (step + lambda) < 0.0 ) {
 
@@ -954,12 +923,12 @@ MaximumEntropy::runNewtonStep(int feature_index) {
 /*** get Deriv ***/
 
 double
-MaximumEntropy::getDeriv( int feature_index )
+MaximumEntropy::getDeriv( Feature * f )
 {
-  double w1 = _f_exp[feature_index];
-  double n1 = _f_samp_exp[feature_index];
-  double beta1 = _f_samp_dev[feature_index];
-  double lambda = _f_lambda[feature_index];
+  double w1 = f->exp();
+  double n1 = f->sampExp();
+  double beta1 = f->sampDev();
+  double lambda = f->lambda();
   double deriv = w1 - n1;
 
   if ( lambda < 0.0 ) {
@@ -989,16 +958,16 @@ MaximumEntropy::getDeriv( int feature_index )
 /*** increase Lambda ***/
 
 double 
-MaximumEntropy::increaseLambda(int feature_index, double alpha)
+MaximumEntropy::increaseLambda( Feature * f, double alpha )
 {
-  double beta1 = _f_samp_dev[feature_index];
-  double lambda = _f_lambda[feature_index];
+  double beta1 = f->sampDev();
+  double lambda = f->lambda();
 
   _reg += ( fabs(lambda + alpha) - fabs(lambda) ) * beta1;
 
   if ( alpha != 0.0 ) {
 
-    _f_lambda[feature_index] += alpha;
+    f->setLambda( lambda + alpha );
 
     OccurrencesImpl::const_iterator p_iterator = _background->begin();
     OccurrencesImpl::const_iterator p_end = _background->end();
@@ -1008,7 +977,7 @@ MaximumEntropy::increaseLambda(int feature_index, double alpha)
 
       Sample sample = (*p_iterator)->environment();
 
-      _linear_pred[i] += alpha * sample[feature_index];
+      _linear_pred[i] += alpha * f->getVal( sample );
 
       if ( i == 0 || _linear_pred[i] > _linear_normalizer ) {
 
@@ -1029,13 +998,13 @@ MaximumEntropy::increaseLambda(int feature_index, double alpha)
 /*** display Info ***/
 
 void
-MaximumEntropy::displayInfo(int best_id, double loss_bound, double new_loss, double delta_loss, double alpha)
+MaximumEntropy::displayInfo( Feature * f, double loss_bound, double new_loss, double delta_loss, double alpha )
 {
   Log::instance()->debug( "%d: loss = %f \n", _iteration, new_loss );
 
-  Log::instance()->debug( "%s: lambda = %f min = %f max = %f\n", _samp->getEnvironment()->getLayerPath(best_id).c_str(), _f_lambda[best_id], _min[best_id], _max[best_id] );
+  Log::instance()->debug( "%s: lambda = %f\n", f->getDescription(_samp->getEnvironment()).c_str(), f->lambda() );
 
-  Log::instance()->debug( "alpha = %f lossBound = %f W1 = %f N1 = %f deltaLoss = %f \n", alpha, loss_bound, _f_exp[best_id], _f_samp_exp[best_id], delta_loss );
+  Log::instance()->debug( "alpha = %f lossBound = %f W1 = %f N1 = %f deltaLoss = %f \n", alpha, loss_bound, f->exp(), f->sampExp(), delta_loss );
 
 }
 
@@ -1093,10 +1062,11 @@ MaximumEntropy::getLoss()
 {
   double sum_mid_lambda = 0.0;
 
-  for ( int i = 0; i < _len; ++i ) {
-    
-    Log::instance()->debug( "lambda %f exp %f \n", _f_lambda[i], _f_samp_exp[i] );
-    sum_mid_lambda += _f_samp_exp[i] * _f_lambda[i];
+  vector<Feature*>::iterator it;
+  for ( it = _features.begin(); it != _features.end(); ++it ) {
+
+    Log::instance()->debug( "lambda %f exp %f \n", (*it)->lambda(), (*it)->sampExp() );
+    sum_mid_lambda += (*it)->sampExp() * (*it)->lambda();
   }
   
   Log::instance()->debug( "linearPredictorNormalizer %f \n", _linear_normalizer );
@@ -1136,15 +1106,16 @@ MaximumEntropy::getValue( const Sample& x ) const
 {
   double prob = 0.0 ;
   double val;
-  
-  for ( int i = 0; i < _len; ++i ) {
+
+  vector<Feature*>::const_iterator it;
+  for ( it = _features.begin(); it != _features.end(); ++it ) {
 
     // Clamp values if necessary
-    val = x[i];
+    val = (*it)->getVal( x );
     val = ( val < MINVAL ) ? MINVAL : val; 
     val = ( val > MAXVAL ) ? MAXVAL : val; 
 
-    prob += _f_lambda[i] * val;
+    prob += (*it)->lambda() * val;
   }
 
   prob = exp(prob - _linear_normalizer)/_z_lambda;
@@ -1193,26 +1164,21 @@ MaximumEntropy::_getConfiguration( ConfigurationPtr& config ) const
 
   config->addSubsection( model_config );
 
-  model_config->addNameValue( "NumLayers", _num_layers );
   model_config->addNameValue( "Z", _z_lambda );
   model_config->addNameValue( "LN", _linear_normalizer );
   model_config->addNameValue( "Entropy", _entropy);
   model_config->addNameValue( "OutputFormat", _output_format );
 
-  // write lambda
-  ConfigurationPtr lambda_config( new ConfigurationImpl( "Lambda" ) );
-  model_config->addSubsection( lambda_config );
+  ConfigurationPtr features_config( new ConfigurationImpl( "Features" ) );
 
-  double *lambda_values = new double[_num_layers];
-  
-  for ( int i = 0; i < _num_layers; ++i ) {
+  features_config->addNameValue( "Num", (int)_features.size() );
 
-    lambda_values[i] = _f_lambda[i];
+  for ( unsigned int i = 0; i < _features.size(); ++i ) {
+
+    features_config->addSubsection( _features[i]->getConfiguration() );
   }
 
-  lambda_config->addNameValue( "Values", lambda_values, _num_layers );
-
-  delete[] lambda_values;
+  model_config->addSubsection( features_config );
 }
 
 void
@@ -1224,10 +1190,6 @@ MaximumEntropy::_setConfiguration( const ConstConfigurationPtr& config )
     return;
   }
   
-  _num_layers = model_config->getAttributeAsInt( "NumLayers", 0 );
-
-  _len = _num_layers;
-
   _z_lambda = model_config->getAttributeAsDouble( "Z", 0.0 );
 
   _linear_normalizer = model_config->getAttributeAsDouble( "LN", 0.0 );
@@ -1236,21 +1198,38 @@ MaximumEntropy::_setConfiguration( const ConstConfigurationPtr& config )
 
   _output_format = model_config->getAttributeAsInt( "OutputFormat", 2 );
   
-  // Lambda
-  ConstConfigurationPtr lambda_config = model_config->getSubsection( "Lambda", false );
+  // Features
+  ConstConfigurationPtr features_config = model_config->getSubsection( "Features", false );
 
-  if ( ! lambda_config ) {
+  if ( ! features_config ) {
     return;
   }
 
-  std::vector<double> lambda_values = lambda_config->getAttributeAsVecDouble( "Values" );
+  int num_features = features_config->getAttributeAsInt( "Num", 0 );
 
-  _f_lambda = new double[_num_layers];
+  _features.reserve( num_features );
 
-  for ( int i = 0; i < _num_layers; ++i ) {
+  Configuration::subsection_list features = features_config->getAllSubsections();
 
-    _f_lambda[i] = lambda_values[i];
+  Configuration::subsection_list::iterator feature = features.begin();
+  Configuration::subsection_list::iterator last_feature = features.end();
+
+  for ( ; feature != last_feature; ++feature ) {
+
+    if ( (*feature)->getName() != "Feature" ) {
+
+      continue;
+    }
+
+    int feature_type = (*feature)->getAttributeAsInt( "Type", 0 );
+
+    ConstConfigurationPtr feature_config = *feature;
+
+    if ( feature_type == F_LINEAR ) {
+
+      _features.push_back( new LinearFeature( feature_config ) );
+    }
   }
-  
+
   _done = true;
 }
