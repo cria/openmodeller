@@ -2,7 +2,7 @@
  * Declaration of LinearFeature class
  * 
  * @author Renato De Giovanni
- * $Id: $
+ * $Id$
  *
  * LICENSE INFORMATION
  * 
