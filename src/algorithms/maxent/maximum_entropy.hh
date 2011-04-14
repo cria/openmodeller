@@ -64,6 +64,10 @@ private:
 
   void endTrainer();
 
+  double sequentialProc();
+
+  double parallelProc();
+
   void setLinearPred();
 
   void setLinearNormalizer();
@@ -86,7 +90,13 @@ private:
 
   double decreaseAlpha( double alpha );
 
+  void updateReg();
+
+  void updateReg( Feature * f, double alpha );
+
   double increaseLambda( Feature * f, double alpha );
+
+  double increaseLambda( double* alpha );
 
   double getLoss();
 
@@ -116,6 +126,7 @@ protected:
 
   int _max_iterations;
   int _iteration;
+  int _parallelUpdateFreq;
   double _previous_loss;
   double _new_loss;
   double _old_loss;
