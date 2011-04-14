@@ -71,8 +71,14 @@ public:
   void setLambda( Scalar lambda ){_lambda = lambda;}
   Scalar lambda() {return _lambda;}
 
+  void setPrevLambda( Scalar lambda ){_prevLambda = lambda;}
+  Scalar prevLambda() {return _prevLambda;}
+
   void setBeta( Scalar beta ){_beta = beta;}
   Scalar beta() {return _beta;}
+
+  void setLastExpChange( int last_exp_change ){_last_exp_change = last_exp_change;}
+  int lastExpChange() {return _last_exp_change;}
 
 protected:
 
@@ -85,7 +91,9 @@ protected:
   Scalar _samp_exp;
   Scalar _samp_dev;
   Scalar _lambda;
+  Scalar _prevLambda;
   Scalar _beta;
+  int _last_exp_change;
 };
 
 #endif

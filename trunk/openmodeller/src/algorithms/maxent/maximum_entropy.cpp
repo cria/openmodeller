@@ -37,6 +37,7 @@
 #include "linear_feature.hh"
 
 #include <iostream>
+#include <iomanip>
 #include <sstream>
 #include <vector>
 #include <cmath>
@@ -67,6 +68,7 @@ using namespace std;
 #define MINVAL 0.0
 #define MAXVAL 1.0
 #define MINLIMIT 1.0e-6
+#define MINDEV 1.0e-5
 
 /******************************/
 /*** Algorithm's parameters ***/
@@ -213,13 +215,15 @@ algorithmMetadata()
 MaximumEntropy::MaximumEntropy() :
   AlgorithmImpl(&metadata),
   _done(false),
-  _iteration(0)
+  _iteration(0),
+  _parallelUpdateFreq(30)
 { 
   // TODO: Switch back to use layers as ref to avoid problems in native projections(?)
   //       Otherwise we should make sure that environmental values won't extrapolate 
   //       min/max when calculating suitabilities.
   bool use_layers_as_reference = false; // original Maxent always use background as ref
   _normalizerPtr = new ScaleNormalizer( MINVAL, MAXVAL, use_layers_as_reference );
+  cerr.precision(17);
 }
 
 /******************/
@@ -410,80 +414,18 @@ MaximumEntropy::iterate()
     return 1;
   }
 
-  // Determine best feature
-  Feature* best_f = 0;
-  double best_dlb = 1.0;
-  double infinity = std::numeric_limits<double>::infinity();
-  double alpha = 0.0;
-
-  vector<Feature*>::iterator it;
-  for ( it = _features.begin(); it != _features.end(); ++it ) {
-
-    double dlb = 0.0;
-
-    // Calculate delta loss bound
-    double w1 = (*it)->exp();
-    double w0 = 1.0 - w1;
-    double n1 = (*it)->sampExp();
-    double beta1 = (*it)->sampDev();
-    double lambda = (*it)->lambda();
-
-    if ( n1 != -1.0 ) {
-
-      // Determine alpha
-      alpha = getAlpha(*it);
-
-      if ( alpha < infinity ) {
-
-        dlb = -n1 * alpha + log( w0 + w1 * exp(alpha) ) + beta1 * ( fabs(lambda + alpha) - fabs(lambda) );
-
-        if ( isnan( dlb ) ) {
-
-          dlb = 0.0;
-        }
-      }
-    }
-
-    if ( dlb >= best_dlb ) {
-
-      continue;
-    }
-
-    best_f = *it;
-    best_dlb = dlb;
-  }
-
-  if ( best_f == 0 ) {
-
-    endTrainer();
-    return 1;
-  }
-
-  // Get loss
-  alpha = runNewtonStep( best_f );
-  alpha = decreaseAlpha( alpha );
-  _new_loss = increaseLambda( best_f, alpha );
-
-  double delta_loss = _new_loss - _old_loss;
-
-  if ( delta_loss > best_dlb) {
-
-    Log::instance()->debug("Undoing: newLoss %f, oldLoss %f, deltaLossBound %f\n", _new_loss, _old_loss, best_dlb);
-    increaseLambda( best_f, -alpha );
-    alpha = searchAlpha( best_f, getAlpha( best_f ) );
-    alpha = decreaseAlpha( alpha );
-    _new_loss = increaseLambda( best_f, alpha );
-  }
-
-  // TODO: calculate feature contribution!
-
-  delta_loss = _new_loss - _old_loss;
- 
   _old_loss = _new_loss;
 
-  _gain = log((double)_num_background) - _old_loss;
+  if ( _iteration && _parallelUpdateFreq && (_iteration % _parallelUpdateFreq == 0) ) {
 
-  displayInfo(best_f, best_dlb, _new_loss, delta_loss, alpha);
+    _new_loss = parallelProc();
+  }
+  else {
+
+    _new_loss = sequentialProc();
+  }
+
+  _gain = log((double)_num_background) - _old_loss;
 
   if ( terminationTest(_new_loss) ) {
 
@@ -581,27 +523,31 @@ MaximumEntropy::initTrainer()
     (*it)->setSampExp( 0.5*((*it)->upper()+(*it)->lower()) );
     (*it)->setSampDev( 0.5*((*it)->upper()-(*it)->lower()) );
 
-    if ( (*it)->sampDev() < MINLIMIT ) {
+    if ( (*it)->sampDev() < MINDEV ) {
 
-      // TODO: Change here when including binary features in the future
-      (*it)->setSampDev( MINLIMIT );
+      if ( (*it)->isBinary() && (*it)->sampExp() == 1.0 ) {
+
+        (*it)->setSampDev( 1.0 / (2.0 * (double)_num_presences) );
+      }
+      else {
+
+        (*it)->setSampDev( MINDEV );
+      }
     }
+
+    //cerr << "D avg=" << (*it)->mean() << " std=" << (*it)->std() << " min=" << MINVAL << " max=" << MAXVAL << " cnt=" << _num_presences << endl;
+    //cerr << "D sampDev=" << (*it)->sampDev() << " sampExp=" << (*it)->std() << (*it)->sampExp() << endl;
   }
 
   _density = new double[_num_background];
 
   calcDensity();
 
-  // Initialize reg
-  for ( it = _features.begin(); it != _features.end(); ++it ) {
+  updateReg();
 
-    _reg += fabs( (*it)->lambda() ) * (*it)->sampDev();
-  }
+  Log::instance()->debug( "Initial loss = %f \n", getLoss() );
 
   _new_loss = getLoss();
-  Log::instance()->debug( "Initial loss = %f \n", _new_loss );
-
-  _old_loss = _new_loss;
 
   _gain = 0.0;
 }
@@ -633,6 +579,269 @@ MaximumEntropy::endTrainer()
   delete[] _linear_pred;
 
   _done = true;
+}
+
+/***********************/
+/*** sequential Proc ***/
+
+double
+MaximumEntropy::sequentialProc()
+{
+  // Determine best feature
+  Feature* best_f = 0;
+  double best_dlb = 1.0;
+  double infinity = std::numeric_limits<double>::infinity();
+  double alpha = 0.0;
+
+  vector<Feature*>::iterator it;
+  for ( it = _features.begin(); it != _features.end(); ++it ) {
+
+    double dlb = 0.0;
+
+    // Calculate delta loss bound
+    double w1 = (*it)->exp();
+    double w0 = 1.0 - w1;
+    double n1 = (*it)->sampExp();
+    double beta1 = (*it)->sampDev();
+    double lambda = (*it)->lambda();
+
+    if ( n1 != -1.0 ) {
+
+      // Determine alpha
+      alpha = getAlpha(*it);
+
+      //cerr << endl << "D alpha = " << alpha << " w1 = " << w1 << " n1 = " << n1 << " beta1 = " << beta1 << " lambda = " << lambda << endl;
+
+      if ( alpha < infinity ) {
+
+        dlb = -n1 * alpha + log( w0 + w1 * exp(alpha) ) + beta1 * ( fabs(lambda + alpha) - fabs(lambda) );
+
+        if ( isnan( dlb ) ) {
+
+          dlb = 0.0;
+        }
+      }
+    }
+
+    //cerr << "D DLB = " << dlb << endl;
+
+    if ( dlb >= best_dlb ) {
+
+      continue;
+    }
+
+    best_f = *it;
+    best_dlb = dlb;
+  }
+
+  if ( best_f == 0 ) {
+
+    Log::instance()->error( MAXENT_LOG_PREFIX "Could not determine best feature!\n");
+    return 0.0;
+  }
+
+  // Update expectation if necessary
+  if ( best_f->lastExpChange() != _iteration - 1 ) {
+
+    OccurrencesImpl::const_iterator p_iterator = _background->begin();
+    OccurrencesImpl::const_iterator p_end = _background->end();
+    int i = 0;
+    double sum = 0.0;
+
+    while ( p_iterator != p_end ) {
+    
+      Sample sample = (*p_iterator)->environment();
+
+      sum += _density[i] * best_f->getVal(sample);
+
+      ++i;
+      ++p_iterator;
+    }
+
+    best_f->setExp( sum / _z_lambda );
+    best_f->setLastExpChange( _iteration );
+  }
+
+  // Get loss
+  double loss;
+  double delta_loss;
+
+  if ( best_f->isBinary() ) {
+
+    alpha = getAlpha( best_f );
+    alpha = decreaseAlpha( alpha );
+    updateReg( best_f, alpha );
+    loss = increaseLambda( best_f, alpha );
+  }
+  else {
+
+    //cerr << "D a) W1=" << best_f->exp() << " N1=" << best_f->sampExp() << endl;
+    alpha = runNewtonStep( best_f );
+    //cerr << "D b) W1=" << best_f->exp() << " N1=" << best_f->sampExp() << endl;
+    alpha = decreaseAlpha( alpha );
+    //cerr << "D c) W1=" << best_f->exp() << " N1=" << best_f->sampExp() << endl;
+    updateReg( best_f, alpha );
+    loss = increaseLambda( best_f, alpha );
+    //cerr << "D d) W1=" << best_f->exp() << " N1=" << best_f->sampExp() << endl;
+
+    delta_loss = loss - _old_loss;
+
+    if ( delta_loss > best_dlb) {
+
+      Log::instance()->debug("Undoing: newLoss %f, oldLoss %f, deltaLossBound %f\n", loss, _old_loss, best_dlb);
+      updateReg( best_f, -alpha );
+      loss = increaseLambda( best_f, -alpha );
+      alpha = searchAlpha( best_f, getAlpha( best_f ) );
+      alpha = decreaseAlpha( alpha );
+      updateReg( best_f, alpha );
+      loss = increaseLambda( best_f, alpha );
+    }
+  }
+
+  delta_loss = loss - _old_loss;
+
+  displayInfo(best_f, best_dlb, _new_loss, delta_loss, alpha);
+
+  return loss;
+}
+
+/*********************/
+/*** parallel Proc ***/
+
+double
+MaximumEntropy::parallelProc()
+{
+  Log::instance()->debug("Parallel update\n");
+
+  // Calculate alphas for each feature
+  double* alpha = new double[_features.size()];
+  double* sum = new double[_features.size()];
+  double lambda;
+
+  for ( unsigned int i = 0; i < _features.size(); ++i ) {
+
+    lambda = _features[i]->lambda();
+
+    if ( lambda == 0.0 || _features[i]->isBinary() ) {
+
+      alpha[i] = 0.0;
+    }
+    else {
+
+      alpha[i] = lambda - _features[i]->prevLambda();
+    }
+
+    _features[i]->setPrevLambda( lambda );
+
+    sum[i] = 0.0;
+  }
+
+  // Newton step
+  double th = 0.0;
+  double ty = 0.0;
+  double ft;
+  double d;
+  double v;
+
+  OccurrencesImpl::const_iterator p_iterator = _background->begin();
+  OccurrencesImpl::const_iterator p_end = _background->end();
+  int i = 0;
+
+  while ( p_iterator != p_end ) {
+    
+    Sample sample = (*p_iterator)->environment();
+
+    ft = 0.0;
+    d = _density[i];
+
+    for ( unsigned int j = 0; j < _features.size(); ++j ) {
+
+      if ( alpha[j] != 0.0 ) {
+
+        v = _features[j]->getVal(sample);
+
+        ft += alpha[j] * v;
+        sum[j] += d * v;
+      }
+    }
+
+    th += d * pow(ft, 2);
+    ty += d * ft;
+
+    ++i;
+    ++p_iterator;
+  }
+
+  for ( unsigned int i = 0; i < _features.size(); ++i ) {
+
+    if ( alpha[i] != 0.0 ) {
+
+      _features[i]->setLastExpChange( _iteration );
+      _features[i]->setExp( sum[i] / _z_lambda );
+    }
+  }
+
+  ty /= _z_lambda;
+  th = (th/_z_lambda) - pow(ty, 2);
+
+  double step = 0.0;
+
+  if ( th >= 1.0e-12 ) {
+
+    for ( unsigned int i = 0; i < _features.size(); ++i ) {
+
+      step += getDeriv( _features[i] ) * alpha[i];
+    }
+
+    step = -step / th;
+
+    // Reduce newton step if necessary
+    for ( unsigned int i = 0; i < _features.size(); ++i ) {
+
+      lambda = _features[i]->lambda();
+
+      if ( (step * alpha[i] + lambda) * lambda < 0.0 ) {
+
+        step = -lambda / alpha[i];
+      }
+    }
+  }
+
+  Log::instance()->debug("Calculated step: %f\n", step);
+
+  // Revise alpha
+  for ( unsigned int i = 0; i < _features.size(); ++i ) {
+
+    lambda = _features[i]->lambda();
+
+    alpha[i] *= step;
+
+    if ( ( alpha[i] != -lambda ) && fabs( alpha[i] + lambda ) < MINLIMIT ) {
+
+      alpha[i] = -lambda;
+    }
+
+    //cerr << "D rev alpha = " << alpha[i] << endl;
+  }
+
+  double prev_loss = getLoss();
+
+  double loss = increaseLambda( alpha );
+
+  if ( loss > prev_loss ) {
+
+    for ( unsigned int i = 0; i < _features.size(); ++i ) {
+
+      alpha[i] = -alpha[i];
+    }
+
+    loss = increaseLambda( alpha );
+  }
+
+  delete[] alpha;
+  delete[] sum;
+
+  return loss;
 }
 
 /***********************/
@@ -723,6 +932,8 @@ MaximumEntropy::setLinearNormalizer()
       _linear_normalizer = _linear_pred[i]; 
     }
   }
+
+  //cerr << "D linearPredictorNormalizer = " << _linear_normalizer << endl;
 }
 
 /********************/
@@ -731,7 +942,15 @@ MaximumEntropy::setLinearNormalizer()
 void
 MaximumEntropy::calcDensity()
 {
+  //cerr << "D calcDensity with numPoints = " << _num_background << endl;
+
   _z_lambda = 0.0;
+  double d;
+  double* f_sum = new double[_features.size()];
+  for ( unsigned int j = 0; j < _features.size(); ++j ) {
+
+    f_sum[j] = 0.0;
+  }
   
   OccurrencesImpl::const_iterator p_iterator = _background->begin();
   OccurrencesImpl::const_iterator p_end = _background->end();
@@ -739,27 +958,32 @@ MaximumEntropy::calcDensity()
 
   while ( p_iterator != p_end ) {
     
-    _density[i] = exp( _linear_pred[i] - _linear_normalizer );
+    d = exp( _linear_pred[i] - _linear_normalizer );
 
-    _z_lambda += _density[i];
+    _density[i] = d;
+
+    _z_lambda += d;
 
     Sample sample = (*p_iterator)->environment();
 
-    vector<Feature*>::iterator it;
-    for ( it = _features.begin(); it != _features.end(); ++it ) {
+    for ( unsigned int j = 0; j < _features.size(); ++j ) {
 
-      (*it)->setExp( (*it)->exp() + (_density[i] * (*it)->getVal(sample)) );
+      f_sum[j] += d * _features[j]->getVal(sample);
     }
 
     ++i;
     ++p_iterator;
   }
 
-  vector<Feature*>::iterator it;
-  for ( it = _features.begin(); it != _features.end(); ++it ) {
+  for ( unsigned int j = 0; j < _features.size(); ++j ) {
 
-    (*it)->setExp( (*it)->exp() / _z_lambda );
+    _features[j]->setLastExpChange( _iteration );
+    _features[j]->setExp( f_sum[j] / _z_lambda );
   }
+
+  delete[] f_sum;
+
+  //cerr << "D density normalizer = " << _z_lambda << "linear normalizer = " << _linear_normalizer << endl;
 }
 
 /*****************/
@@ -954,18 +1178,44 @@ MaximumEntropy::getDeriv( Feature * f )
   return 0.0;
 }
 
+/******************/
+/*** update Reg ***/
+
+void
+MaximumEntropy::updateReg()
+{
+  double sum = 0.0;
+
+  vector<Feature*>::iterator it;
+  for ( it = _features.begin(); it != _features.end(); ++it ) {
+
+    sum += fabs( (*it)->lambda() ) * (*it)->sampDev();
+  }
+
+  _reg = sum;
+}
+
+/******************/
+/*** update Reg ***/
+
+void
+MaximumEntropy::updateReg( Feature * f, double alpha )
+{
+  double beta1 = f->sampDev();
+  double lambda = f->lambda();
+
+  _reg += ( fabs(lambda + alpha) - fabs(lambda) ) * beta1;
+}
+
 /***********************/
 /*** increase Lambda ***/
 
 double 
 MaximumEntropy::increaseLambda( Feature * f, double alpha )
 {
-  double beta1 = f->sampDev();
-  double lambda = f->lambda();
-
-  _reg += ( fabs(lambda + alpha) - fabs(lambda) ) * beta1;
-
   if ( alpha != 0.0 ) {
+
+    double lambda = f->lambda();
 
     f->setLambda( lambda + alpha );
 
@@ -991,7 +1241,48 @@ MaximumEntropy::increaseLambda( Feature * f, double alpha )
     calcDensity();
   }
 
-  return getLoss() + _reg;
+  return getLoss();
+}
+
+/***********************/
+/*** increase Lambda ***/
+
+double
+MaximumEntropy::increaseLambda( double* alpha )
+{
+  double lambda;
+
+  for ( unsigned int i = 0; i < _features.size(); ++i ) {
+
+    lambda = _features[i]->lambda();
+
+    //cerr << "D IL alpha = " << alpha[i] << " lambda = " << lambda << endl;
+
+    if ( alpha[i] != 0.0 ) {
+
+      _features[i]->setLambda( lambda + alpha[i] );
+
+      OccurrencesImpl::const_iterator p_iterator = _background->begin();
+      OccurrencesImpl::const_iterator p_end = _background->end();
+      int j = 0;
+
+      while ( p_iterator != p_end ) {
+
+        Sample sample = (*p_iterator)->environment();
+
+        _linear_pred[j] += alpha[i] * _features[i]->getVal( sample );
+
+        ++j;
+        ++p_iterator;
+      }
+    }
+  }
+
+  setLinearNormalizer();
+  calcDensity();
+  updateReg();
+
+  return getLoss();
 }
 
 /********************/
@@ -1060,6 +1351,7 @@ MaximumEntropy::decreaseAlpha(double alpha)
 double
 MaximumEntropy::getLoss()
 {
+  //cerr << "D getLoss" << endl;
   double sum_mid_lambda = 0.0;
 
   vector<Feature*>::iterator it;
@@ -1069,10 +1361,10 @@ MaximumEntropy::getLoss()
     sum_mid_lambda += (*it)->sampExp() * (*it)->lambda();
   }
   
-  Log::instance()->debug( "linearPredictorNormalizer %f \n", _linear_normalizer );
-  Log::instance()->debug( "densityNormalizer %f \n", log(_z_lambda) );
+  //cerr << "D N1 " << (_linear_normalizer - sum_mid_lambda) << endl;
+  //cerr << "D log dn " << log(_z_lambda) << endl;
 
-  return ( log(_z_lambda) - sum_mid_lambda + _linear_normalizer );
+  return ( log(_z_lambda) - sum_mid_lambda + _linear_normalizer  + _reg );
 }
 
 /********************/

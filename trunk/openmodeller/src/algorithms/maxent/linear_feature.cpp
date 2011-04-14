@@ -38,6 +38,8 @@ LinearFeature::LinearFeature( Scalar layerIndex )
   _samp_exp = 0.0;
   _samp_dev = 0.0;
   _lambda = 0.0;
+  _prevLambda = 0.0;
+  _last_exp_change = -1;
 }
 
 LinearFeature::LinearFeature( const ConstConfigurationPtr & config )
@@ -51,6 +53,8 @@ LinearFeature::LinearFeature( const ConstConfigurationPtr & config )
   _samp_exp = 0.0;
   _samp_dev = 0.0;
   _lambda = 0.0;
+  _prevLambda = 0.0;
+  _last_exp_change = -1;
   setConfiguration( config );
 }
 
