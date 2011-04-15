@@ -33,7 +33,7 @@ class dllexp LinearFeature : public Feature {
 
 public:
 
-  LinearFeature( Scalar layerIndex );
+  LinearFeature( int layerIndex );
 
   LinearFeature( const ConstConfigurationPtr & config );
 
@@ -51,7 +51,7 @@ public:
 
 private:
   
-  Scalar _layerIndex;
+  int _layerIndex;
 };
 
 #endif

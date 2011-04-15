@@ -1,5 +1,5 @@
 /**
- * Definition of QuadraticFeature class
+ * Definition of HingeFeature class
  * 
  * @author Renato De Giovanni
  * $Id$
@@ -24,46 +24,51 @@
  * http://www.gnu.org/copyleft/gpl.html
  */
 
-#include "quadratic_feature.hh"
+#include "hinge_feature.hh"
 #include <openmodeller/Exceptions.hh>
 
-QuadraticFeature::QuadraticFeature( int layerIndex ):Feature()
+HingeFeature::HingeFeature( int layerIndex, Scalar min, Scalar max ):Feature()
 {
-  _type = F_QUADRATIC;
+  _type = F_HINGE;
   _layerIndex = layerIndex;
+  _min = min;
+  _max = max;
 }
 
-QuadraticFeature::QuadraticFeature( const ConstConfigurationPtr & config ):Feature()
+HingeFeature::HingeFeature( const ConstConfigurationPtr & config ):Feature()
 {
-  _type = F_QUADRATIC;
+  _type = F_HINGE;
   setConfiguration( config );
 }
 
-QuadraticFeature::~QuadraticFeature() {}
+HingeFeature::~HingeFeature() {}
 
 Scalar 
-QuadraticFeature::getVal( const Sample& sample ) const
+HingeFeature::getVal( const Sample& sample ) const
 {
-  return sample[_layerIndex]*sample[_layerIndex];
+  double val = sample[_layerIndex];
+  return (val > _min) ? (val-_min)/(_max-_min) : 0.0;
 }
 
 std::string
-QuadraticFeature::getDescription( const EnvironmentPtr& env ) const
+HingeFeature::getDescription( const EnvironmentPtr& env ) const
 {
-  std::string desc("Q");
+  std::string desc("H");
   std::string path = env->getLayerPath(_layerIndex);
   desc.append( path.substr( path.rfind("/") + 1 ) );
   return desc;
 }
 
 ConfigurationPtr 
-QuadraticFeature::getConfiguration() const
+HingeFeature::getConfiguration() const
 {
   ConfigurationPtr config( new ConfigurationImpl("Feature") );
 
   config->addNameValue( "Type", _type );
 
   config->addNameValue( "Ref", _layerIndex );
+  config->addNameValue( "Min", _min );
+  config->addNameValue( "Max", _max );
 
   config->addNameValue( "Lambda", _lambda );
 
@@ -71,13 +76,13 @@ QuadraticFeature::getConfiguration() const
 }
 
 void 
-QuadraticFeature::setConfiguration( const ConstConfigurationPtr & config )
+HingeFeature::setConfiguration( const ConstConfigurationPtr & config )
 {
   int type = config->getAttributeAsInt( "Type", -1 );
 
-  if ( type != F_QUADRATIC ) {
+  if ( type != F_HINGE ) {
 
-    std::string msg = "Incompatible feature type in quadratic feature deserialization.\n";
+    std::string msg = "Incompatible feature type in hinge feature deserialization.\n";
     Log::instance()->error( msg.c_str() );
     throw InvalidParameterException( msg );
   }
@@ -86,7 +91,25 @@ QuadraticFeature::setConfiguration( const ConstConfigurationPtr & config )
 
   if ( _layerIndex == -1 ) {
 
-    std::string msg = "Missing 'Ref' parameter in quadratic feature deserialization.\n";
+    std::string msg = "Missing 'Ref' parameter in hinge feature deserialization.\n";
+    Log::instance()->error( msg.c_str() );
+    throw InvalidParameterException( msg );
+  }
+
+  _min = config->getAttributeAsDouble( "Min", -1 );
+
+  if ( _min == -1 ) {
+
+    std::string msg = "Missing 'Min' parameter in hinge feature deserialization.\n";
+    Log::instance()->error( msg.c_str() );
+    throw InvalidParameterException( msg );
+  }
+
+  _max = config->getAttributeAsDouble( "Max", -1 );
+
+  if ( _max == -1 ) {
+
+    std::string msg = "Missing 'Max' parameter in hinge feature deserialization.\n";
     Log::instance()->error( msg.c_str() );
     throw InvalidParameterException( msg );
   }

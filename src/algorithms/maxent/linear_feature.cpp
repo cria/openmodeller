@@ -25,8 +25,9 @@
  */
 
 #include "linear_feature.hh"
+#include <openmodeller/Exceptions.hh>
 
-LinearFeature::LinearFeature( Scalar layerIndex ):Feature()
+LinearFeature::LinearFeature( int layerIndex ):Feature()
 {
   _type = F_LINEAR;
   _layerIndex = layerIndex;
@@ -76,14 +77,18 @@ LinearFeature::setConfiguration( const ConstConfigurationPtr & config )
 
   if ( type != F_LINEAR ) {
 
-    // TODO: throw exception
+    std::string msg = "Incompatible feature type in linear feature deserialization.\n";
+    Log::instance()->error( msg.c_str() );
+    throw InvalidParameterException( msg );
   }
 
   _layerIndex = config->getAttributeAsInt( "Ref", -1 );
 
   if ( _layerIndex == -1 ) {
 
-    // TODO: throw exception
+    std::string msg = "Missing 'Ref' parameter in linear feature deserialization.\n";
+    Log::instance()->error( msg.c_str() );
+    throw InvalidParameterException( msg );
   }
 
   _lambda = config->getAttributeAsDouble( "Lambda", 0.0 );

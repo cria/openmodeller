@@ -1,8 +1,8 @@
 /**
- * Declaration of ProductFeature class
+ * Declaration of ThresholdFeature class
  * 
  * @author Renato De Giovanni
- * $Id: $
+ * $Id$
  *
  * LICENSE INFORMATION
  * 
@@ -24,24 +24,24 @@
  * http://www.gnu.org/copyleft/gpl.html
  */
 
-#ifndef _PRODUCTFEATURE_HH
-#define _PRODUCTFEATURE_HH
+#ifndef _THRESHOLDFEATURE_HH
+#define _THRESHOLDFEATURE_HH
 
 #include "feature.hh"
 
-class dllexp ProductFeature : public Feature {
+class dllexp ThresholdFeature : public Feature {
 
 public:
 
-  ProductFeature( int layerIndex1, int layerIndex2 );
+  ThresholdFeature( int layerIndex, Scalar threshold );
 
-  ProductFeature( const ConstConfigurationPtr & config );
+  ThresholdFeature( const ConstConfigurationPtr & config );
 
-  ~ProductFeature();
+  ~ThresholdFeature();
 
   Scalar getVal( const Sample& sample ) const;
 
-  bool isBinary() const { return false; }
+  bool isBinary() const { return true; }
 
   std::string getDescription( const EnvironmentPtr& env ) const;
 
@@ -51,8 +51,8 @@ public:
 
 private:
   
-  int _layerIndex1;
-  int _layerIndex2;
+  int _layerIndex;
+  Scalar _t;
 };
 
 #endif

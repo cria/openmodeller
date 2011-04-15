@@ -1,5 +1,5 @@
 /**
- * Definition of QuadraticFeature class
+ * Definition of ThresholdFeature class
  * 
  * @author Renato De Giovanni
  * $Id$
@@ -24,46 +24,48 @@
  * http://www.gnu.org/copyleft/gpl.html
  */
 
-#include "quadratic_feature.hh"
+#include "threshold_feature.hh"
 #include <openmodeller/Exceptions.hh>
 
-QuadraticFeature::QuadraticFeature( int layerIndex ):Feature()
+ThresholdFeature::ThresholdFeature( int layerIndex, Scalar threshold ):Feature()
 {
-  _type = F_QUADRATIC;
+  _type = F_THRESHOLD;
   _layerIndex = layerIndex;
+  _t = threshold;
 }
 
-QuadraticFeature::QuadraticFeature( const ConstConfigurationPtr & config ):Feature()
+ThresholdFeature::ThresholdFeature( const ConstConfigurationPtr & config ):Feature()
 {
-  _type = F_QUADRATIC;
+  _type = F_THRESHOLD;
   setConfiguration( config );
 }
 
-QuadraticFeature::~QuadraticFeature() {}
+ThresholdFeature::~ThresholdFeature() {}
 
 Scalar 
-QuadraticFeature::getVal( const Sample& sample ) const
+ThresholdFeature::getVal( const Sample& sample ) const
 {
-  return sample[_layerIndex]*sample[_layerIndex];
+  return (sample[_layerIndex] > _t ) ? 1.0 : 0.0;
 }
 
 std::string
-QuadraticFeature::getDescription( const EnvironmentPtr& env ) const
+ThresholdFeature::getDescription( const EnvironmentPtr& env ) const
 {
-  std::string desc("Q");
+  std::string desc("T");
   std::string path = env->getLayerPath(_layerIndex);
   desc.append( path.substr( path.rfind("/") + 1 ) );
   return desc;
 }
 
 ConfigurationPtr 
-QuadraticFeature::getConfiguration() const
+ThresholdFeature::getConfiguration() const
 {
   ConfigurationPtr config( new ConfigurationImpl("Feature") );
 
   config->addNameValue( "Type", _type );
 
   config->addNameValue( "Ref", _layerIndex );
+  config->addNameValue( "Threshold", _t );
 
   config->addNameValue( "Lambda", _lambda );
 
@@ -71,13 +73,13 @@ QuadraticFeature::getConfiguration() const
 }
 
 void 
-QuadraticFeature::setConfiguration( const ConstConfigurationPtr & config )
+ThresholdFeature::setConfiguration( const ConstConfigurationPtr & config )
 {
   int type = config->getAttributeAsInt( "Type", -1 );
 
-  if ( type != F_QUADRATIC ) {
+  if ( type != F_THRESHOLD ) {
 
-    std::string msg = "Incompatible feature type in quadratic feature deserialization.\n";
+    std::string msg = "Incompatible feature type in threshold feature deserialization.\n";
     Log::instance()->error( msg.c_str() );
     throw InvalidParameterException( msg );
   }
@@ -86,7 +88,16 @@ QuadraticFeature::setConfiguration( const ConstConfigurationPtr & config )
 
   if ( _layerIndex == -1 ) {
 
-    std::string msg = "Missing 'Ref' parameter in quadratic feature deserialization.\n";
+    std::string msg = "Missing 'Ref' parameter in threshold feature deserialization.\n";
+    Log::instance()->error( msg.c_str() );
+    throw InvalidParameterException( msg );
+  }
+
+  _t = config->getAttributeAsDouble( "Threshold", -1.0 );
+
+  if ( _t == -1.0 ) {
+
+    std::string msg = "Missing 'Threshold' parameter in threshold feature deserialization.\n";
     Log::instance()->error( msg.c_str() );
     throw InvalidParameterException( msg );
   }

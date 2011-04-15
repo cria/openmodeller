@@ -140,6 +140,8 @@ protected:
 
   bool _quadratic;
   bool _product;
+  bool _hinge;
+  bool _threshold;
 
   vector<Feature*> _features;
 };
