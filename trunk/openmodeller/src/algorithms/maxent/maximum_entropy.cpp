@@ -564,7 +564,7 @@ MaximumEntropy::initTrainer()
     }
 
     //cerr << "D avg=" << (*it)->mean() << " std=" << (*it)->std() << " min=" << MINVAL << " max=" << MAXVAL << " cnt=" << _num_presences << endl;
-    //cerr << "D sampDev=" << (*it)->sampDev() << " sampExp=" << (*it)->std() << (*it)->sampExp() << endl;
+    //cerr << "D sampDev=" << (*it)->sampDev() << " sampExp=" << (*it)->sampExp() << endl;
   }
 
   _density = new double[_num_background];
@@ -929,34 +929,48 @@ MaximumEntropy::setLinearPred()
 double
 MaximumEntropy::calcBeta( Feature * f )
 {
-  const int arraySize = 3;
-  int ts_l[arraySize] = { 10, 30, 100 }; //linear features thresholds 
-  double betas_l[arraySize] = { 1.0, 0.2, 0.05 };
+  vector<int> ts;
+  vector<double> betas;
 
   if ( f->type() == F_LINEAR ) {
 
-    int i = 0;
+    int ts_l[] = { 10, 30, 100 };
+    ts.assign( ts_l, ts_l + 3 );
 
-    for ( ; i < arraySize; ++i) {
+    double betas_l[] = { 1.0, 0.2, 0.05 };
+    betas.assign( betas_l, betas_l + 3 );
+  }
+  else if ( f->type() == F_QUADRATIC ) {
 
-      if ( _num_presences <= ts_l[i] ) {
+    int ts_l[] = { 0, 10, 17, 30, 100 };
+    ts.assign( ts_l, ts_l + 5 );
 
-	break;
-      }
-    }
-    if ( i == 0 ) {
-
-      return betas_l[0];
-    }
-    if ( i == arraySize ) {
-
-      return betas_l[arraySize-1];
-    }
-
-    return betas_l[(i-1)] + (betas_l[i] - betas_l[(i-1)]) * (_num_presences - ts_l[(i-1)]) / (ts_l[i] - ts_l[(i-1)]);
+    double betas_l[] = { 1.3, 0.8, 0.5, 0.25, 0.05 };
+    betas.assign( betas_l, betas_l + 5 );
   }
 
-  return 0.0;
+  int size = (int)ts.size();
+  int i = 0;
+
+  for ( ; i < size; ++i) {
+
+    if ( _num_presences <= ts[i] ) {
+
+      break;
+    }
+  }
+
+  if ( i == 0 ) {
+
+    return betas[0];
+  }
+
+  if ( i == size ) {
+
+    return betas[size-1];
+  }
+
+  return betas[(i-1)] + (betas[i] - betas[(i-1)]) * (_num_presences - ts[(i-1)]) / (ts[i] - ts[(i-1)]);
 }
 
 /*****************************/
