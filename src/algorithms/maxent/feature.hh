@@ -35,6 +35,9 @@
 
 #define F_LINEAR 0
 #define F_QUADRATIC 1
+#define F_PRODUCT 2
+#define F_HINGE 3
+#define F_THRESHOLD 4
 
 class Feature : public Configurable {
 

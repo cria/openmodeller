@@ -36,6 +36,7 @@
 
 #include "linear_feature.hh"
 #include "quadratic_feature.hh"
+#include "product_feature.hh"
 
 #include <iostream>
 #include <iomanip>
@@ -55,7 +56,7 @@ using namespace std;
 /****************************************************************/
 /********************** Algorithm's Metadata ********************/
 
-#define NUM_PARAM 7
+#define NUM_PARAM 8
 
 #define BACKGROUND_ID      "NumberOfBackgroundPoints"
 #define USE_ABSENCES_ID    "UseAbsencesAsBackground"
@@ -64,6 +65,7 @@ using namespace std;
 #define TOLERANCE_ID       "TerminateTolerance"
 #define OUTPUT_ID          "OutputFormat"
 #define QUADRATIC_ID       "QuadraticFeatures"
+#define PRODUCT_ID         "ProductFeatures"
 
 #define MAXENT_LOG_PREFIX "Maxent: "
 
@@ -166,6 +168,19 @@ static AlgParamMetadata parameters[NUM_PARAM] = {
     Integer, // Type
     "Enable quadratic features (0=no, 1=yes)", // Overview
     "Enable quadratic features (0=no, 1=yes)", // Description
+    1,  // Not zero if the parameter has lower limit
+    0,  // Parameter's lower limit
+    1,  // Not zero if the parameter has upper limit
+    1,  // Parameter's upper limit
+    "1" // Parameter's typical (default) value
+  },
+  // Product features
+  {
+    PRODUCT_ID, // Id.
+    "Product features", // Name
+    Integer, // Type
+    "Enable product features (0=no, 1=yes)", // Overview
+    "Enable product features (0=no, 1=yes)", // Description
     1,  // Not zero if the parameter has lower limit
     0,  // Parameter's lower limit
     1,  // Not zero if the parameter has upper limit
@@ -315,6 +330,14 @@ MaximumEntropy::initialize()
   if ( getParameter( QUADRATIC_ID, &quadratic ) && quadratic == 0 ) {
 
     _quadratic = false;
+  }
+
+  // Product features
+  _product = true;
+  int product;
+  if ( getParameter( PRODUCT_ID, &product ) && product == 0 ) {
+
+    _product = false;
   }
 
   bool use_absences_as_background = false;
@@ -477,6 +500,14 @@ MaximumEntropy::initTrainer()
     if ( _quadratic ) {
 
       _features.push_back( new QuadraticFeature(i) );
+    }
+
+    if ( _product ) {
+
+      for ( int j = i+1; j < _samp->numIndependent(); ++j ) {
+
+	  _features.push_back( new ProductFeature(i, j) );
+      }
     }
   }
 
@@ -946,6 +977,14 @@ MaximumEntropy::calcBeta( Feature * f )
     ts.assign( ts_l, ts_l + 5 );
 
     double betas_l[] = { 1.3, 0.8, 0.5, 0.25, 0.05 };
+    betas.assign( betas_l, betas_l + 5 );
+  }
+  else if ( f->type() == F_PRODUCT ) {
+
+    int ts_l[] = { 0, 10, 17, 30, 100 };
+    ts.assign( ts_l, ts_l + 5 );
+
+    double betas_l[] = { 2.6, 1.6, 0.9, 0.55, 0.05 };
     betas.assign( betas_l, betas_l + 5 );
   }
 
@@ -1580,6 +1619,10 @@ MaximumEntropy::_setConfiguration( const ConstConfigurationPtr& config )
     else if ( feature_type == F_QUADRATIC ) {
 
       _features.push_back( new QuadraticFeature( feature_config ) );
+    }
+    else if ( feature_type == F_PRODUCT ) {
+
+      _features.push_back( new ProductFeature( feature_config ) );
     }
   }
 
