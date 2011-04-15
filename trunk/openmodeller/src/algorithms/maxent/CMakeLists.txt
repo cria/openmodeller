@@ -5,6 +5,7 @@ SET (LIBMAXENT_SRCS
     maximum_entropy.cpp
     linear_feature.cpp
     quadratic_feature.cpp
+    product_feature.cpp
 )
 
 #these are not needed to build but I specified them in 

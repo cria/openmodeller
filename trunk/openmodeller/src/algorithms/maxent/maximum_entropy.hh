@@ -139,6 +139,7 @@ protected:
   int _output_format;
 
   bool _quadratic;
+  bool _product;
 
   vector<Feature*> _features;
 };
