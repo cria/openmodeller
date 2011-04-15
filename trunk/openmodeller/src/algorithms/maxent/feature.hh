@@ -34,6 +34,7 @@
 #include <string>
 
 #define F_LINEAR 0
+#define F_QUADRATIC 1
 
 class Feature : public Configurable {
 
@@ -81,6 +82,8 @@ public:
   int lastExpChange() {return _last_exp_change;}
 
 protected:
+
+  Feature(){_lower = 0.0; _upper = 0.0;_mean = 0.0; _std = 0.0; _exp = 0.0; _samp_exp = 0.0; _samp_dev = 0.0; _lambda = 0.0; _prevLambda = 0.0; _last_exp_change = -1;}
 
   int _type;
   Scalar _lower;

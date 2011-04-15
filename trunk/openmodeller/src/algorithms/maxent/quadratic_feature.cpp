@@ -1,5 +1,5 @@
 /**
- * Definition of LinearFeature class
+ * Definition of QuadraticFeature class
  * 
  * @author Renato De Giovanni
  * $Id$
@@ -24,37 +24,37 @@
  * http://www.gnu.org/copyleft/gpl.html
  */
 
-#include "linear_feature.hh"
+#include "quadratic_feature.hh"
 
-LinearFeature::LinearFeature( Scalar layerIndex ):Feature()
+QuadraticFeature::QuadraticFeature( Scalar layerIndex ):Feature()
 {
-  _type = F_LINEAR;
+  _type = F_QUADRATIC;
   _layerIndex = layerIndex;
 }
 
-LinearFeature::LinearFeature( const ConstConfigurationPtr & config ):Feature()
+QuadraticFeature::QuadraticFeature( const ConstConfigurationPtr & config ):Feature()
 {
-  _type = F_LINEAR;
+  _type = F_QUADRATIC;
   setConfiguration( config );
 }
 
-LinearFeature::~LinearFeature() {}
+QuadraticFeature::~QuadraticFeature() {}
 
 Scalar 
-LinearFeature::getVal( const Sample& sample ) const
+QuadraticFeature::getVal( const Sample& sample ) const
 {
-  return sample[_layerIndex];
+  return sample[_layerIndex]*sample[_layerIndex];
 }
 
 std::string
-LinearFeature::getDescription( const EnvironmentPtr& env ) const
+QuadraticFeature::getDescription( const EnvironmentPtr& env ) const
 {
   std::string desc = env->getLayerPath(_layerIndex);
   return desc;
 }
 
 ConfigurationPtr 
-LinearFeature::getConfiguration() const
+QuadraticFeature::getConfiguration() const
 {
   ConfigurationPtr config( new ConfigurationImpl("Feature") );
 
@@ -68,11 +68,11 @@ LinearFeature::getConfiguration() const
 }
 
 void 
-LinearFeature::setConfiguration( const ConstConfigurationPtr & config )
+QuadraticFeature::setConfiguration( const ConstConfigurationPtr & config )
 {
   int type = config->getAttributeAsInt( "Type", -1 );
 
-  if ( type != F_LINEAR ) {
+  if ( type != F_QUADRATIC ) {
 
     // TODO: throw exception
   }

@@ -35,6 +35,7 @@
 #include <openmodeller/Sampler.hh>
 
 #include "linear_feature.hh"
+#include "quadratic_feature.hh"
 
 #include <iostream>
 #include <iomanip>
@@ -54,7 +55,7 @@ using namespace std;
 /****************************************************************/
 /********************** Algorithm's Metadata ********************/
 
-#define NUM_PARAM 6
+#define NUM_PARAM 7
 
 #define BACKGROUND_ID      "NumberOfBackgroundPoints"
 #define USE_ABSENCES_ID    "UseAbsencesAsBackground"
@@ -62,6 +63,7 @@ using namespace std;
 #define ITERATIONS_ID      "NumberOfIterations"
 #define TOLERANCE_ID       "TerminateTolerance"
 #define OUTPUT_ID          "OutputFormat"
+#define QUADRATIC_ID       "QuadraticFeatures"
 
 #define MAXENT_LOG_PREFIX "Maxent: "
 
@@ -143,12 +145,12 @@ static AlgParamMetadata parameters[NUM_PARAM] = {
   // Output Format
   {
     OUTPUT_ID, // Id.
-    "Output Format", // Name
+    "Output format", // Name
     Integer, // Type
-    "Output Format: " // Overview
+    "Output format: " // Overview
     "1 = Raw, "
     "2 = Logistic. ",
-    "Output Format: " // Description
+    "Output format: " // Description
     "1 = Raw, "
     "2 = Logistic. ",
     1,  // Not zero if the parameter has lower limit
@@ -156,6 +158,19 @@ static AlgParamMetadata parameters[NUM_PARAM] = {
     1,  // Not zero if the parameter has upper limit
     2,  // Parameter's upper limit
     "2" // Parameter's typical (default) value
+  },
+  // Quadratic features
+  {
+    QUADRATIC_ID, // Id.
+    "Quadratic features", // Name
+    Integer, // Type
+    "Enable quadratic features (0=no, 1=yes)", // Overview
+    "Enable quadratic features (0=no, 1=yes)", // Description
+    1,  // Not zero if the parameter has lower limit
+    0,  // Parameter's lower limit
+    1,  // Not zero if the parameter has upper limit
+    1,  // Parameter's upper limit
+    "1" // Parameter's typical (default) value
   },
 };
 
@@ -292,6 +307,14 @@ MaximumEntropy::initialize()
       Log::instance()->error( MAXENT_LOG_PREFIX "Parameter '" TOLERANCE_ID "' must be greater than zero\n" );
       return 0;
     }
+  }
+
+  // Quadratic features
+  _quadratic = true;
+  int quadratic;
+  if ( getParameter( QUADRATIC_ID, &quadratic ) && quadratic == 0 ) {
+
+    _quadratic = false;
   }
 
   bool use_absences_as_background = false;
@@ -450,6 +473,11 @@ MaximumEntropy::initTrainer()
   for ( int i = 0; i < _samp->numIndependent(); ++i ) {
 
     _features.push_back( new LinearFeature(i) );
+
+    if ( _quadratic ) {
+
+      _features.push_back( new QuadraticFeature(i) );
+    }
   }
 
   setLinearPred();
@@ -590,38 +618,12 @@ MaximumEntropy::sequentialProc()
   // Determine best feature
   Feature* best_f = 0;
   double best_dlb = 1.0;
-  double infinity = std::numeric_limits<double>::infinity();
   double alpha = 0.0;
 
   vector<Feature*>::iterator it;
   for ( it = _features.begin(); it != _features.end(); ++it ) {
 
-    double dlb = 0.0;
-
-    // Calculate delta loss bound
-    double w1 = (*it)->exp();
-    double w0 = 1.0 - w1;
-    double n1 = (*it)->sampExp();
-    double beta1 = (*it)->sampDev();
-    double lambda = (*it)->lambda();
-
-    if ( n1 != -1.0 ) {
-
-      // Determine alpha
-      alpha = getAlpha(*it);
-
-      //cerr << endl << "D alpha = " << alpha << " w1 = " << w1 << " n1 = " << n1 << " beta1 = " << beta1 << " lambda = " << lambda << endl;
-
-      if ( alpha < infinity ) {
-
-        dlb = -n1 * alpha + log( w0 + w1 * exp(alpha) ) + beta1 * ( fabs(lambda + alpha) - fabs(lambda) );
-
-        if ( isnan( dlb ) ) {
-
-          dlb = 0.0;
-        }
-      }
-    }
+    double dlb = lossBound( *it );
 
     //cerr << "D DLB = " << dlb << endl;
 
@@ -639,6 +641,8 @@ MaximumEntropy::sequentialProc()
     Log::instance()->error( MAXENT_LOG_PREFIX "Could not determine best feature!\n");
     return 0.0;
   }
+
+  Log::instance()->debug("Best feature: %s, dlb = %E\n", best_f->getDescription(_samp->getEnvironment()).c_str(), best_dlb);
 
   // Update expectation if necessary
   if ( best_f->lastExpChange() != _iteration - 1 ) {
@@ -703,6 +707,44 @@ MaximumEntropy::sequentialProc()
   displayInfo(best_f, best_dlb, _new_loss, delta_loss, alpha);
 
   return loss;
+}
+
+/*****************/
+/*** lossBound ***/
+
+double 
+MaximumEntropy::lossBound( Feature * f )
+{
+  // Calculate delta loss bound
+  double dlb;
+
+  double w1 = f->exp();
+  double w0 = 1.0 - w1;
+  double n1 = f->sampExp();
+  double beta1 = f->sampDev();
+  double lambda = f->lambda();
+
+  double infinity = std::numeric_limits<double>::infinity();
+
+  if ( n1 != -1.0 ) {
+
+    // Determine alpha
+    double alpha = getAlpha( f );
+
+    //cerr << endl << "D alpha = " << alpha << " w1 = " << w1 << " n1 = " << n1 << " beta1 = " << beta1 << " lambda = " << lambda << endl;
+
+    if ( alpha < infinity ) {
+
+      dlb = -n1 * alpha + log( w0 + w1 * exp(alpha) ) + beta1 * ( fabs(lambda + alpha) - fabs(lambda) );
+
+      if ( isnan( dlb ) ) {
+
+        dlb = 0.0;
+      }
+    }
+  }
+
+  return dlb;
 }
 
 /*********************/
@@ -1520,6 +1562,10 @@ MaximumEntropy::_setConfiguration( const ConstConfigurationPtr& config )
     if ( feature_type == F_LINEAR ) {
 
       _features.push_back( new LinearFeature( feature_config ) );
+    }
+    else if ( feature_type == F_QUADRATIC ) {
+
+      _features.push_back( new QuadraticFeature( feature_config ) );
     }
   }
 
