@@ -66,6 +66,8 @@ private:
 
   double sequentialProc();
 
+  double lossBound( Feature * f );
+
   double parallelProc();
 
   void setLinearPred();
@@ -135,6 +137,8 @@ protected:
 
   double _tolerance;
   int _output_format;
+
+  bool _quadratic;
 
   vector<Feature*> _features;
 };
