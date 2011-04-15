@@ -37,6 +37,8 @@
 #include "linear_feature.hh"
 #include "quadratic_feature.hh"
 #include "product_feature.hh"
+#include "hinge_feature.hh"
+#include "threshold_feature.hh"
 
 #include <iostream>
 #include <iomanip>
@@ -56,7 +58,7 @@ using namespace std;
 /****************************************************************/
 /********************** Algorithm's Metadata ********************/
 
-#define NUM_PARAM 8
+#define NUM_PARAM 10
 
 #define BACKGROUND_ID      "NumberOfBackgroundPoints"
 #define USE_ABSENCES_ID    "UseAbsencesAsBackground"
@@ -66,6 +68,8 @@ using namespace std;
 #define OUTPUT_ID          "OutputFormat"
 #define QUADRATIC_ID       "QuadraticFeatures"
 #define PRODUCT_ID         "ProductFeatures"
+#define HINGE_ID           "HingeFeatures"
+#define THRESHOLD_ID       "ThresholdFeatures"
 
 #define MAXENT_LOG_PREFIX "Maxent: "
 
@@ -181,6 +185,32 @@ static AlgParamMetadata parameters[NUM_PARAM] = {
     Integer, // Type
     "Enable product features (0=no, 1=yes)", // Overview
     "Enable product features (0=no, 1=yes)", // Description
+    1,  // Not zero if the parameter has lower limit
+    0,  // Parameter's lower limit
+    1,  // Not zero if the parameter has upper limit
+    1,  // Parameter's upper limit
+    "1" // Parameter's typical (default) value
+  },
+  // Hinge features
+  {
+    HINGE_ID, // Id.
+    "Hinge features", // Name
+    Integer, // Type
+    "Enable hinge features (0=no, 1=yes)", // Overview
+    "Enable hinge features (0=no, 1=yes)", // Description
+    1,  // Not zero if the parameter has lower limit
+    0,  // Parameter's lower limit
+    1,  // Not zero if the parameter has upper limit
+    1,  // Parameter's upper limit
+    "1" // Parameter's typical (default) value
+  },
+  // Threshold features
+  {
+    THRESHOLD_ID, // Id.
+    "Threshold features", // Name
+    Integer, // Type
+    "Enable threshold features (0=no, 1=yes)", // Overview
+    "Enable threshold features (0=no, 1=yes)", // Description
     1,  // Not zero if the parameter has lower limit
     0,  // Parameter's lower limit
     1,  // Not zero if the parameter has upper limit
@@ -338,6 +368,22 @@ MaximumEntropy::initialize()
   if ( getParameter( PRODUCT_ID, &product ) && product == 0 ) {
 
     _product = false;
+  }
+
+  // Hinge features
+  _hinge = true;
+  int hinge;
+  if ( getParameter( HINGE_ID, &hinge ) && hinge == 0 ) {
+
+    _hinge = false;
+  }
+
+  // Threshold features
+  _threshold = true;
+  int threshold;
+  if ( getParameter( THRESHOLD_ID, &threshold ) && threshold == 0 ) {
+
+    _threshold = false;
   }
 
   bool use_absences_as_background = false;
@@ -1623,6 +1669,19 @@ MaximumEntropy::_setConfiguration( const ConstConfigurationPtr& config )
     else if ( feature_type == F_PRODUCT ) {
 
       _features.push_back( new ProductFeature( feature_config ) );
+    }
+    else if ( feature_type == F_HINGE ) {
+
+      _features.push_back( new HingeFeature( feature_config ) );
+    }
+    else if ( feature_type == F_THRESHOLD ) {
+
+      _features.push_back( new ThresholdFeature( feature_config ) );
+    }
+    else {
+
+      Log::instance()->error( MAXENT_LOG_PREFIX "Unknown feature type\n" );
+      return;
     }
   }
 

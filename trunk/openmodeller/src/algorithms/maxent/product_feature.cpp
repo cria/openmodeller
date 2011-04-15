@@ -25,8 +25,9 @@
  */
 
 #include "product_feature.hh"
+#include <openmodeller/Exceptions.hh>
 
-ProductFeature::ProductFeature( Scalar layerIndex1, Scalar layerIndex2 ):Feature()
+ProductFeature::ProductFeature( int layerIndex1, int layerIndex2 ):Feature()
 {
   _type = F_PRODUCT;
   _layerIndex1 = layerIndex1;
@@ -79,21 +80,27 @@ ProductFeature::setConfiguration( const ConstConfigurationPtr & config )
 
   if ( type != F_PRODUCT ) {
 
-    // TODO: throw exception
+    std::string msg = "Incompatible feature type in product feature deserialization.\n";
+    Log::instance()->error( msg.c_str() );
+    throw InvalidParameterException( msg );
   }
 
   _layerIndex1 = config->getAttributeAsInt( "Ref1", -1 );
 
   if ( _layerIndex1 == -1 ) {
 
-    // TODO: throw exception
+    std::string msg = "Missing 'Ref1' parameter in product feature deserialization.\n";
+    Log::instance()->error( msg.c_str() );
+    throw InvalidParameterException( msg );
   }
 
   _layerIndex2 = config->getAttributeAsInt( "Ref2", -1 );
 
   if ( _layerIndex2 == -1 ) {
 
-    // TODO: throw exception
+    std::string msg = "Missing 'Ref2' parameter in product feature deserialization.\n";
+    Log::instance()->error( msg.c_str() );
+    throw InvalidParameterException( msg );
   }
 
   _lambda = config->getAttributeAsDouble( "Lambda", 0.0 );

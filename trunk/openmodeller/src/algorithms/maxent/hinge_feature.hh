@@ -1,8 +1,8 @@
 /**
- * Declaration of ProductFeature class
+ * Declaration of HingeFeature class
  * 
  * @author Renato De Giovanni
- * $Id: $
+ * $Id$
  *
  * LICENSE INFORMATION
  * 
@@ -24,20 +24,20 @@
  * http://www.gnu.org/copyleft/gpl.html
  */
 
-#ifndef _PRODUCTFEATURE_HH
-#define _PRODUCTFEATURE_HH
+#ifndef _HINGEFEATURE_HH
+#define _HINGEFEATURE_HH
 
 #include "feature.hh"
 
-class dllexp ProductFeature : public Feature {
+class dllexp HingeFeature : public Feature {
 
 public:
 
-  ProductFeature( int layerIndex1, int layerIndex2 );
+  HingeFeature( int layerIndex, Scalar min, Scalar max );
 
-  ProductFeature( const ConstConfigurationPtr & config );
+  HingeFeature( const ConstConfigurationPtr & config );
 
-  ~ProductFeature();
+  ~HingeFeature();
 
   Scalar getVal( const Sample& sample ) const;
 
@@ -51,8 +51,9 @@ public:
 
 private:
   
-  int _layerIndex1;
-  int _layerIndex2;
+  int _layerIndex;
+  Scalar _min;
+  Scalar _max;
 };
 
 #endif

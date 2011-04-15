@@ -6,6 +6,8 @@ SET (LIBMAXENT_SRCS
     linear_feature.cpp
     quadratic_feature.cpp
     product_feature.cpp
+    hinge_feature.cpp
+    threshold_feature.cpp
 )
 
 #these are not needed to build but I specified them in 
