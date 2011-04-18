@@ -68,6 +68,9 @@ public:
   OccurrencesPtr getPresences();
   OccurrencesPtr getAbsences();
 
+  bool calcConfusionMatrix() { return _calcConfusionMatrix; }
+  bool calcAuc() { return _calcAuc; }
+
   bool requestedProjection();
 
   void makeModel( OpenModeller *om );
@@ -117,6 +120,8 @@ private:
 
   bool _spatiallyUnique;
   bool _environmentallyUnique;
+  bool _calcConfusionMatrix;
+  bool _calcAuc;
 
 };
 

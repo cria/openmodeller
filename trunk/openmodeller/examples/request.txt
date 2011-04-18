@@ -49,6 +49,10 @@ Map = temp_avg.tif
 #
 Mask = rain_coolest.tif
 
+# Uncomment the following lines to disable model statistics.
+#
+#Confusion matrix = false
+#AUC = false
 
 ######################
 ### Output section ###
@@ -214,6 +218,14 @@ Output file type = ByteHFA
 # Valid values for the parameter Output Format:
 # 1 = Raw, 2 = Logistic.
 #Parameter = OutputFormat 2
+# Valid values: enable = 1, disable = 0
+#Parameter = QuadraticFeatures 1
+# Valid values: enable = 1, disable = 0
+#Parameter = ProductFeatures 1
+# Valid values: enable = 1, disable = 0
+#Parameter = HingeFeatures 1
+# Valid values: enable = 1, disable = 0
+#Parameter = ThresholdFeatures 1
 
 ########
 # Artificial Neural Networks

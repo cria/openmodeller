@@ -172,38 +172,44 @@ main( int argc, char **argv )
       Log::instance()->warn( "Skipping projection\n" );
     }
 
-    // Instantiate objects for model statistics
-    const ConfusionMatrix * const matrix = om.getConfusionMatrix();
+    if ( request.calcConfusionMatrix() ) {
 
-    RocCurve * const roc_curve = om.getRocCurve();
+      // Instantiate objects for model statistics
+      const ConfusionMatrix * const matrix = om.getConfusionMatrix();
 
-    // Confusion Matrix
-    Log::instance()->info( "\n" );
-    Log::instance()->info( "Model statistics for training data\n" );
-    Log::instance()->info( "Threshold:         %7.2f%%\n", matrix->getThreshold() * 100 );
-    Log::instance()->info( "Accuracy:          %7.2f%%\n", matrix->getAccuracy() * 100 );
+      // Confusion Matrix
+      Log::instance()->info( "\n" );
+      Log::instance()->info( "Model statistics for training data\n" );
+      Log::instance()->info( "Threshold:         %7.2f%%\n", matrix->getThreshold() * 100 );
+      Log::instance()->info( "Accuracy:          %7.2f%%\n", matrix->getAccuracy() * 100 );
 
-    int omissions = matrix->getValue(0.0, 1.0);
-    int total     = omissions + matrix->getValue(1.0, 1.0);
+      int omissions = matrix->getValue(0.0, 1.0);
+      int total     = omissions + matrix->getValue(1.0, 1.0);
 
-    Log::instance()->info( "Omission error:    %7.2f%% (%d/%d)\n", matrix->getOmissionError() * 100, omissions, total );
+      Log::instance()->info( "Omission error:    %7.2f%% (%d/%d)\n", matrix->getOmissionError() * 100, omissions, total );
 
-    double commissionError = matrix->getCommissionError();
+      double commissionError = matrix->getCommissionError();
 
-    if ( commissionError >= 0.0 ) {
+      if ( commissionError >= 0.0 ) {
 
-      int commissions = matrix->getValue(1.0, 0.0);
-      total           = commissions + matrix->getValue(0.0, 0.0);
+        int commissions = matrix->getValue(1.0, 0.0);
+        total           = commissions + matrix->getValue(0.0, 0.0);
 
-      Log::instance()->info( "Commission error:  %7.2f%% (%d/%d)\n", commissionError * 100, commissions, total );
+        Log::instance()->info( "Commission error:  %7.2f%% (%d/%d)\n", commissionError * 100, commissions, total );
+      }
+
+      ConfusionMatrix auxMatrix;
+      auxMatrix.setLowestTrainingThreshold( om.getModel(), om.getSampler() );
+      Log::instance()->info( "Lowest prediction: %7.2f\n", auxMatrix.getThreshold() );
     }
 
-    ConfusionMatrix auxMatrix;
-    auxMatrix.setLowestTrainingThreshold( om.getModel(), om.getSampler() );
-    Log::instance()->info( "Lowest prediction: %7.2f\n", auxMatrix.getThreshold() );
+    if ( request.calcAuc() ) {
 
-    // ROC curve
-    Log::instance()->info( "AUC:               %7.2f\n", roc_curve->getTotalArea() );
+      RocCurve * const roc_curve = om.getRocCurve();
+
+      // ROC curve
+      Log::instance()->info( "AUC:               %7.2f\n", roc_curve->getTotalArea() );
+    }
 
     // Projection statistics
     if ( request.requestedProjection() ) {
