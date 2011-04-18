@@ -54,7 +54,9 @@ RequestFile::RequestFile() :
   _projectionFile(),
   _outputFormat(),
   _spatiallyUnique( false ),
-  _environmentallyUnique( false )
+  _environmentallyUnique( false ),
+  _calcConfusionMatrix( false ),
+  _calcAuc( false )
 { 
 }
 
@@ -87,6 +89,21 @@ RequestFile::configure( OpenModeller *om, char *request_file )
   if ( environmentally_unique == "true" ) {
 
     _environmentallyUnique = true;
+  }
+
+  // Optional model statistics
+  std::string confusion_matrix = fp.get( "Confusion matrix" );
+
+  if ( confusion_matrix == "true" ) {
+
+    _calcConfusionMatrix = true;
+  }
+
+  std::string auc = fp.get( "AUC" );
+
+  if ( auc == "true" ) {
+
+    _calcAuc = true;
   }
 
   _projectionSet  = _setProjection ( om, fp );
@@ -544,11 +561,17 @@ RequestFile::makeModel( OpenModeller *om )
     return;
   }
 
-  // Calculate confusion matrix to store in the serialized model
-  om->getConfusionMatrix();
+  if ( calcConfusionMatrix() ) {
 
-  // Calculate ROC curve to store in the serialized model
-  om->getRocCurve()->getTotalArea();
+    // Calculate confusion matrix to store in the serialized model
+    om->getConfusionMatrix();
+  }
+
+  if ( calcAuc() ) {
+
+    // Calculate ROC curve to store in the serialized model
+    om->getRocCurve()->getTotalArea();
+  }
 
   // Serialize model, if requested
   if ( _inputModelFile.empty() && ! _outputModelFile.empty() ) {
