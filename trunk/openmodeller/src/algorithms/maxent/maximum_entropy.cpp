@@ -1006,6 +1006,11 @@ MaximumEntropy::setLinearPred()
 double
 MaximumEntropy::calcBeta( Feature * f )
 {
+  if ( f->type() == F_HINGE ) {
+
+    return 0.5;
+  }
+
   vector<int> ts;
   vector<double> betas;
 
@@ -1032,6 +1037,14 @@ MaximumEntropy::calcBeta( Feature * f )
 
     double betas_l[] = { 2.6, 1.6, 0.9, 0.55, 0.05 };
     betas.assign( betas_l, betas_l + 5 );
+  }
+  else if ( f->type() == F_THRESHOLD ) {
+
+    int ts_l[] = { 0, 100 };
+    ts.assign( ts_l, ts_l + 2 );
+
+    double betas_l[] = { 2.0, 1.0 };
+    betas.assign( betas_l, betas_l + 2 );
   }
 
   int size = (int)ts.size();
