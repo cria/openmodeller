@@ -211,6 +211,8 @@ int EnvironmentalDistance::initialize(){
       _average_point += _presence_points[i];
    _average_point /= _presence_count;
 
+   _use_chisq = false;
+
    // Allow using "Distance" method and normalize _par_dist
    if(!_init_distance_type()){
       Log::instance()->error("Could not determine maximum distance in the environmental space.\n");
@@ -300,7 +302,7 @@ Scalar EnvironmentalDistance::getValue(const Sample& x) const{
       return 0.0;
    else if(_use_chisq) // Only for Mahalanobis distance when maxdist == 1
       return _pochisq(dist, _layer_count-1 );
-   else if(dist > _par_dist) // Point is too farway from nearest point
+   else if(dist > _par_dist) // Point is too faraway from nearest point
       return 0.0;
    else
       return 1.0 - (dist / _par_dist);
@@ -423,7 +425,6 @@ bool EnvironmentalDistance::_init_distance_type(){
       case MahalanobisDistance:{
          _calc_covariance_matrix(); // Initialize _cov_matrix_inv
          if (_par_dist < 1.0) {
-            _use_chisq = false;
             Scalar distIterator;
             Sample x,y;
             x.resize(_layer_count);
@@ -592,8 +593,9 @@ void EnvironmentalDistance::_setConfiguration(const ConstConfigurationPtr& confi
       Log::instance()->error("Parameter '" PARDIST "' was not found in serialized model.\n");
       return;
    }
-   if (_par_dist_type == MahalanobisDistance) {
-      _use_chisq = (max_distance < 1.0) ? false : true;
+   _use_chisq = false;
+   if (_par_dist_type == MahalanobisDistance && max_distance == 1.0) {
+      _use_chisq = true;
    }
    // Maximum distance
    _par_dist = model_config->getAttributeAsDouble("MaxDistance", 0.0);
