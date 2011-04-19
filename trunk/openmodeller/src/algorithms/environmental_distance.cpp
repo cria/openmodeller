@@ -336,6 +336,7 @@ void EnvironmentalDistance::_calc_covariance_matrix(){
             (*_cov_matrix)(i,j) = (i == j) ? 1 : 0;
          }
    }
+   //Log::instance()->debug("Cov matrix:\n");
    //std::cout << (*_cov_matrix); // Debug
 
    try{
@@ -346,6 +347,7 @@ void EnvironmentalDistance::_calc_covariance_matrix(){
       msg.append( "\nExperiment has no solution using Mahalanobis distance.\n" );
       throw AlgorithmException( msg.c_str() );
    }
+   //Log::instance()->debug("Inv cov matrix:\n");
    //std::cout << (*_cov_matrix_inv); // Debug
 }
 
@@ -363,9 +365,9 @@ inline Scalar EnvironmentalDistance::_distance(const Sample& x, const Sample& y)
          for(int i=0; i<_layer_count; i++)
             lineMatrix(0,i) = x[i] - y[i];
          // Definition of Mahalanobis distance
-         dist = sqrt(
-            (lineMatrix * (*_cov_matrix_inv) * (~lineMatrix))(0,0) // Operator () of a 1x1 matrix
-         );
+         dist = (lineMatrix * (*_cov_matrix_inv) * (~lineMatrix))(0,0); // Operator () of a 1x1 matrix
+         if(!_use_chisq)
+            dist = sqrt(dist);
          //Log::instance()->info("\nDISTANCE: %g\n",dist); // Debug
       }break;
 
@@ -424,7 +426,8 @@ bool EnvironmentalDistance::_init_distance_type(){
 
       case MahalanobisDistance:{
          _calc_covariance_matrix(); // Initialize _cov_matrix_inv
-         if (_par_dist < 1.0) {
+         if(_par_dist < 1.0) {
+            Log::instance()->info("Using normalized maximum distance\n"); // Debug
             Scalar distIterator;
             Sample x,y;
             x.resize(_layer_count);
@@ -449,11 +452,11 @@ bool EnvironmentalDistance::_init_distance_type(){
             }
             if(!foundDist)
                return false;
-            //Log::instance()->info("\nMaximum distance: %.8g\n",distMax); // Debug
          }
          else {
             // In this case, chi-square probabilities will be used, 
             // so no need to find the max distance
+            Log::instance()->info("Using chi-square probabilities\n");
             _use_chisq = true;
             return true;
          }
