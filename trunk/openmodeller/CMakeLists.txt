@@ -147,6 +147,15 @@ IF (PEDANTIC AND NOT MSVC)
 ADD_DEFINITIONS( -Wall -Werror )
 ENDIF (PEDANTIC AND NOT MSVC)
 
+#assume we have escaped compiler directives
+#eventually we want to change this to new
+#since we don't need to jump through so many 
+#hoops to escape compiler directives then
+IF(COMMAND cmake_policy)
+  cmake_policy(SET CMP0003 NEW)
+  cmake_policy(SET CMP0005 OLD)
+ENDIF(COMMAND cmake_policy)
+
 IF (APPLE)
   #xcode doesnt like those double quotes
   ADD_DEFINITIONS(-DCONFIG_FILE='"om.cfg"')
