@@ -144,7 +144,10 @@ ENDIF (OM_WITH_PROFILING)
 # enable warnings and set compile time defines
 
 IF (PEDANTIC AND NOT MSVC)
-ADD_DEFINITIONS( -Wall -Werror )
+  # unfortunately some otherwise valid functions in sample (e.g. += operator)
+  # throw unused variable warnings, so I have disabled this warning using
+  # -Wno-unused-value - TS
+  ADD_DEFINITIONS( -Wall -Werror -Wno-unused-value)
 ENDIF (PEDANTIC AND NOT MSVC)
 
 #assume we have escaped compiler directives
