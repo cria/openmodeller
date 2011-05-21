@@ -342,13 +342,13 @@ int Enfa::BackgroundToMatrix()
   OccurrencesImpl::const_iterator fin;
 
   if (_backgroundProvided==1)
-    {
-      _ocbg = _samp->getAbsences();
-    }
+  {
+    _ocbg = _samp->getAbsences();
+  }
   else
-    {
-      _ocbg = _samp->getPseudoAbsences(_backgroundCount, false, 1, false, false);
-    }
+  {
+    _ocbg = _samp->getPseudoAbsences(_backgroundCount, 0, 1, false, false);
+  }
 
   pit = _ocbg->begin();
   fin = _ocbg->end();
