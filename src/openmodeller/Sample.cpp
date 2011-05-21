@@ -297,6 +297,7 @@ Sample::operator+=( const Sample& rhs )
       *vl += *vr;
     }
   }
+  (void) vr; // avoid unused var warning
   return *this;
 }
 
