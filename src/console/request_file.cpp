@@ -55,8 +55,8 @@ RequestFile::RequestFile() :
   _outputFormat(),
   _spatiallyUnique( false ),
   _environmentallyUnique( false ),
-  _calcConfusionMatrix( false ),
-  _calcAuc( false )
+  _calcConfusionMatrix( true ),
+  _calcAuc( true )
 { 
 }
 
@@ -94,16 +94,16 @@ RequestFile::configure( OpenModeller *om, char *request_file )
   // Optional model statistics
   std::string confusion_matrix = fp.get( "Confusion matrix" );
 
-  if ( confusion_matrix == "true" ) {
+  if ( confusion_matrix == "false" ) {
 
-    _calcConfusionMatrix = true;
+    _calcConfusionMatrix = false;
   }
 
   std::string auc = fp.get( "AUC" );
 
-  if ( auc == "true" ) {
+  if ( auc == "false" ) {
 
-    _calcAuc = true;
+    _calcAuc = false;
   }
 
   _projectionSet  = _setProjection ( om, fp );
