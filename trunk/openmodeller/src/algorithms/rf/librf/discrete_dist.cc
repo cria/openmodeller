@@ -2,6 +2,6 @@
 #include <math.h>
 namespace librf {
 
-const double DiscreteDist::kLog2 = log(2);
+const double DiscreteDist::kLog2 = log(2.0);
 
 } // namespace

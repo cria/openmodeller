@@ -9,6 +9,10 @@
 #include "librf/weights.h"
 #include "librf/types.h"
 #include "librf/stringutils.h"
+#ifdef WIN32
+#include <cstdlib>
+#endif
+
 
 using namespace std;
 

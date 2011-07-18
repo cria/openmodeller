@@ -51,6 +51,11 @@
 
 #include <limits>
 #include <math.h>
+#ifdef MSVC
+#include <float.h> //for _isnan
+#endif
+
+
 
 
 using namespace std;
@@ -814,8 +819,11 @@ MaximumEntropy::lossBound( Feature * f )
 
       dlb = -n1 * alpha + log( w0 + w1 * exp(alpha) ) + beta1 * ( fabs(lambda + alpha) - fabs(lambda) );
 
-      if ( isnan( dlb ) ) {
-
+#ifdef MSVC
+	  if ( _isnan( dlb ) ) {
+#else
+	  if ( isnan( dlb ) ) {
+#endif
         dlb = 0.0;
       }
     }
