@@ -1,4 +1,9 @@
-
+# Find Sqlite3
+# ~~~~~~~~~~~~
+# Copyright (c) 2007, Martin Dobias <wonder.sk at gmail.com>
+# Redistribution and use is allowed according to the terms of the BSD license.
+# For details see the accompanying COPYING-CMAKE-SCRIPTS file.
+#
 # CMake module to search for Sqlite3 library
 #
 # If it's found it sets SQLITE3_FOUND to TRUE
@@ -7,29 +12,47 @@
 #    SQLITE3_LIBRARY
 
 
-# Normally there is no need to specify /usr/... paths because 
-# cmake will look there automatically. However the NO_DEFAULT_PATH
-# prevents this behaviour allowing you to use no standard file
-# locations in preference over standard ones. Note in this case
-# you then need to explicitly add /usr and /usr/local prefixes
-# to the search list. This applies both to FIND_PATH and FIND_LIBRARY
-FIND_PATH(SQLITE3_INCLUDE_DIR sqlite3.h 
+# FIND_PATH and FIND_LIBRARY normally search standard locations
+# before the specified paths. To search non-standard paths first,
+# FIND_* is invoked first with specified paths and NO_DEFAULT_PATH
+# and then again with no specified paths to search the default
+# locations. When an earlier FIND_* succeeds, subsequent FIND_*s
+# searching for the same item do nothing. 
+
+# try to use framework on mac
+# want clean framework path, not unix compatibility path
+IF (APPLE)
+  IF (CMAKE_FIND_FRAMEWORK MATCHES "FIRST"
+      OR CMAKE_FRAMEWORK_PATH MATCHES "ONLY"
+      OR NOT CMAKE_FIND_FRAMEWORK)
+    SET (CMAKE_FIND_FRAMEWORK_save ${CMAKE_FIND_FRAMEWORK} CACHE STRING "" FORCE)
+    SET (CMAKE_FIND_FRAMEWORK "ONLY" CACHE STRING "" FORCE)
+    #FIND_PATH(SQLITE3_INCLUDE_DIR SQLite3/sqlite3.h)
+    FIND_LIBRARY(SQLITE3_LIBRARY SQLite3)
+    IF (SQLITE3_LIBRARY)
+      # FIND_PATH doesn't add "Headers" for a framework
+      SET (SQLITE3_INCLUDE_DIR ${SQLITE3_LIBRARY}/Headers CACHE PATH "Path to a file.")
+    ENDIF (SQLITE3_LIBRARY)
+    SET (CMAKE_FIND_FRAMEWORK ${CMAKE_FIND_FRAMEWORK_save} CACHE STRING "" FORCE)
+  ENDIF ()
+ENDIF (APPLE)
+
+FIND_PATH(SQLITE3_INCLUDE_DIR sqlite3.h
   "$ENV{LIB_DIR}/include"
-  "$ENV{LIB_DIR}/include/sqlite3"
-  /usr/local/include 
-  /usr/include 
+  "$ENV{LIB_DIR}/include/sqlite"
   #mingw
   c:/msys/local/include
   NO_DEFAULT_PATH
   )
+FIND_PATH(SQLITE3_INCLUDE_DIR sqlite3.h)
 
-FIND_LIBRARY(SQLITE3_LIBRARY NAMES sqlite3 PATHS 
+FIND_LIBRARY(SQLITE3_LIBRARY NAMES sqlite3 sqlite3_i PATHS
   "$ENV{LIB_DIR}/lib"
-  /usr/local/lib 
-  /usr/lib 
+  #mingw
   c:/msys/local/lib
   NO_DEFAULT_PATH
   )
+FIND_LIBRARY(SQLITE3_LIBRARY NAMES sqlite3)
 
 IF (SQLITE3_INCLUDE_DIR AND SQLITE3_LIBRARY)
    SET(SQLITE3_FOUND TRUE)
@@ -45,12 +68,7 @@ IF (SQLITE3_FOUND)
 ELSE (SQLITE3_FOUND)
 
    IF (SQLITE3_FIND_REQUIRED)
-      MESSAGE(FATAL_ERROR "Could not find SQLite3")
-   ELSE (SQLITE3_FIND_REQUIRED)
-      MESSAGE(STATUS "Could not find SQLite3")
-      # Avoid cmake complaints if sqlite3 is not found
-      SET(SQLITE3_INCLUDE_DIR "")
-      SET(SQLITE3_LIBRARY "")
+      MESSAGE(FATAL_ERROR "Could not find Sqlite3")
    ENDIF (SQLITE3_FIND_REQUIRED)
 
 ENDIF (SQLITE3_FOUND)
