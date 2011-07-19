@@ -48,6 +48,8 @@ ThresholdFeature::getVal( const Sample& sample ) const
   return (sample[_layerIndex] > _t ) ? 1.0 : 0.0;
 }
 
+bool ThresholdFeature::isBinary() const { return true; }
+
 std::string
 ThresholdFeature::getDescription( const EnvironmentPtr& env ) const
 {

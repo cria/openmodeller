@@ -48,6 +48,8 @@ ProductFeature::getVal( const Sample& sample ) const
   return sample[_layerIndex1]*sample[_layerIndex2];
 }
 
+bool ProductFeature::isBinary() const { return false; }
+
 std::string
 ProductFeature::getDescription( const EnvironmentPtr& env ) const
 {

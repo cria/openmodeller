@@ -41,7 +41,7 @@ public:
 
   Scalar getVal( const Sample& sample ) const;
 
-  bool isBinary() const { return false; }
+  bool isBinary() const;
 
   std::string getDescription( const EnvironmentPtr& env ) const;
 
