@@ -29,7 +29,7 @@
 
 #include "feature.hh"
 
-class dllexp LinearFeature : public Feature {
+class LinearFeature : public Feature {
 
 public:
 

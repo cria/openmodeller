@@ -29,7 +29,7 @@
 
 #include "feature.hh"
 
-class dllexp ThresholdFeature : public Feature {
+class ThresholdFeature : public Feature {
 
 public:
 
