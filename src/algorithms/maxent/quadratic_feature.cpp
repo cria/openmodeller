@@ -47,6 +47,8 @@ QuadraticFeature::getVal( const Sample& sample ) const
   return sample[_layerIndex]*sample[_layerIndex];
 }
 
+bool QuadraticFeature::isBinary() const { return false; }
+
 std::string
 QuadraticFeature::getDescription( const EnvironmentPtr& env ) const
 {

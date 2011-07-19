@@ -50,6 +50,8 @@ HingeFeature::getVal( const Sample& sample ) const
   return (val > _min) ? (val-_min)/(_max-_min) : 0.0;
 }
 
+bool HingeFeature::isBinary() const { return false; }
+
 std::string
 HingeFeature::getDescription( const EnvironmentPtr& env ) const
 {

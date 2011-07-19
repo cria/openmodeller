@@ -47,6 +47,8 @@ LinearFeature::getVal( const Sample& sample ) const
   return sample[_layerIndex];
 }
 
+bool LinearFeature::isBinary() const { return false; }
+
 std::string
 LinearFeature::getDescription( const EnvironmentPtr& env ) const
 {
