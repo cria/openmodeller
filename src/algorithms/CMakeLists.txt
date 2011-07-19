@@ -8,6 +8,13 @@ IF (WIN32)
 ENDIF(WIN32)
 
 ########################################################
+# Fix for LNK2001: unresolved external symbol _gsl_rng_default under msvc 2008
+IF (WIN32)
+    ADD_DEFINITIONS("-DGSL_DLL")
+ENDIF (WIN32)  
+
+
+########################################################
 # Subdirectories
 SUBDIRS(best_subsets garp dg_garp svm neural_networks maxent rf)
 
