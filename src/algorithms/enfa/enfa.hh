@@ -339,6 +339,13 @@ protected:
      */
     void displayMatrix(const gsl_matrix * m, const char * name, const bool roundFlag=true) const;
     
+    /** This a utility function to display the variable loadings for each factor in the log info
+     * @param m gsl_matrix Input matrix
+     * @param n integer number of retained components
+     **/ 
+
+    void displayLoadings(const gsl_matrix * m, const int f) const;
+
     /** This a utility function to calculate the auto covariance of a gsl matrix.
      * @param m gsl_matrix Input matrix
      * @return gsl_matrix Output matrix
@@ -448,6 +455,9 @@ protected:
     
     /** verbose debugging to print lots of details */
     int _verboseDebug; 
+
+    /** verbose debugging to print lots of details */
+    int _displayLoadings; 
 
     /** find the index of the minimum vector **/
     int _gsl_vector_min;

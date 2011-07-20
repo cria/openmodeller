@@ -247,6 +247,7 @@ Output file type = ByteHFA
 #Parameter = DiscardMethod 2
 #Parameter = RetainComponents 2
 #Parameter = RetainVariation 0.75
+#Parameter = DisplayLoadings 0
 #Parameter = VerboseDebug 0
 
 ########
