@@ -22,6 +22,12 @@ struct dllexp ignorecase_traits : std::char_traits<char>
 
 class icstring : public std::basic_string< char, ignorecase_traits > {
 public:
+  
+  inline
+  icstring() :
+    std::basic_string<char,ignorecase_traits>()
+  {}
+
   inline
   icstring( const std::string & rhs ) :
     std::basic_string<char,ignorecase_traits>( rhs.c_str() )
