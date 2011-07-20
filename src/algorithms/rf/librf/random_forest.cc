@@ -1,5 +1,4 @@
 /**
- * @file
  * @brief random forest implementation
  */
 #include "librf/random_forest.h"
@@ -8,10 +7,12 @@
 #include "librf/weights.h"
 #include <fstream>
 #include <algorithm>
+
 namespace librf {
 
 RandomForest::RandomForest() : set_(InstanceSet()) {}
-/**
+
+	/**
  * @param set training data
  * @param num_trees #trees to train
  * @param K #random vars to consider at each split
@@ -107,8 +108,8 @@ void RandomForest::reliability_diagram(const InstanceSet&set,
                                        int bins,
                                        vector<pair<float, float> >*out,
                                        vector<int>* count, int label) const {
-  float increment = 1.0 / bins;
-  float half = increment / 2.0;
+  float increment = 1.0f / (float)bins;
+  float half = increment / 2.0f;
   vector<DiscreteDist> bin_dists(bins);
   count->resize(bins, 0);
   for (unsigned int i = 0; i < set.size(); ++i) {
@@ -133,8 +134,8 @@ void RandomForest::reliability_diagram(const InstanceSet&set,
 void RandomForest::reliability_diagram(int bins,
                                        vector<pair<float, float> >*out,
                                        vector<int>* count, int label) const {
-  float increment = 1.0 / bins;
-  float half = increment / 2.0;
+  float increment = 1.0f / (float)bins;
+  float half = increment / 2.0f;
   vector<DiscreteDist> bin_dists(bins);
   count->resize(bins, 0);
   for (unsigned int i = 0; i < set_.size(); ++i) {

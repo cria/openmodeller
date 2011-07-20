@@ -1,5 +1,4 @@
 /**
- * @file
  * @brief Tree implementation
  * TODO: fix nodes to be contiguous
  * use ncur idea
@@ -19,6 +18,12 @@
 #include <map>
 // binary tree implcit in array
 // rows in sorted_inum matrix are arranged in a similar style
+
+// disables warning C4056: overflow in floating-point constant arithmetic and C4756: overflow in constant arithmetic
+#ifdef WIN32
+#pragma warning (disable: 4056)
+#pragma warning (disable: 4756)
+#endif
 
 namespace librf {
 
@@ -438,7 +443,7 @@ void Tree::find_best_split_for_attr(tree_node* n,
       if (curr_gain > *best_gain) {
         *best_gain = curr_gain;
         *split_idx = i;
-        *split_point = (cur_value + next_value)/2.0;
+        *split_point = (cur_value + next_value)/2.0f;
       }
     }
   }
@@ -660,7 +665,7 @@ void Tree::variable_importance(vector<float>* score,
         }
       }
       // decrease in accuracy!
-      (*score)[i] = (correct - permuted);
+      (*score)[i] = (correct - (float)permuted);
       // restore the proper stuff
       subset->load_var(i, backup);
     } else {
