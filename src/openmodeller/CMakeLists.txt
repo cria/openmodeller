@@ -142,6 +142,9 @@ INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}
 
 IF (WIN32)
   IF (MSVC)
+    #explicitly remove the defs first otherwise msvc lists them twice TS
+    REMOVE_DEFINITIONS("-Ddllexp=__declspec(dllimport)")
+    REMOVE_DEFINITIONS("-DOM_XML_DLL_EXPORT=__declspec(dllimport)")
     ADD_DEFINITIONS("-Ddllexp=__declspec(dllexport)")
     ADD_DEFINITIONS("-DOM_XML_DLL_EXPORT=__declspec(dllexport)")
   ELSE (MSVC)
@@ -175,6 +178,10 @@ IF (APPLE)
   )
 ENDIF (APPLE)
   
+IF (MSVC)
+  # SET_TARGET_PROPERTIES(openmodeller PROPERTIES LIBRARY_OUTPUT_DIRECTORY ${OM_LIB_DIR})
+ENDIF (MSVC)
+
 INSTALL(TARGETS openmodeller
   RUNTIME DESTINATION ${OM_BIN_DIR}
   LIBRARY DESTINATION lib)
