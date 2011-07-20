@@ -5,6 +5,7 @@
  */
 #include "librf/tree_node.h"
 #include <cassert>
+
 namespace librf {
 void tree_node::write(ostream& o) const {
   // we shouldn't be saving any other kind of node
