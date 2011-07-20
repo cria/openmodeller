@@ -30,12 +30,13 @@
 /****************************************************************/
 /********************** Algorithm's Metadata ********************/
 
-#define NUM_PARAM 6
+#define NUM_PARAM 7
 #define BACKGROUND_ID      "NumberOfBackgroundPoints"
 #define NUM_RETRIES        "NumberOfRetries"
 #define DISCARD_METHOD     "DiscardMethod"
 #define RETAIN_COMPONENTS  "RetainComponents"
 #define RETAIN_VARIATION   "RetainVariation"
+#define DISPLAY_LOADINGS   "DisplayLoadings"
 #define VERBOSE_DEBUG      "VerboseDebug"
 
 static AlgParamMetadata parameters[NUM_PARAM] = {
@@ -101,6 +102,18 @@ static AlgParamMetadata parameters[NUM_PARAM] = {
     "0.75"        // Parameter's typical (default) value.
   },
   {
+    DISPLAY_LOADINGS,                   // Id.
+    "Display variable loadings for each factor", // Name.
+    Integer,                     // Type.
+    "Output a comma separated matrix of variable loadings for each retained factor", // Overview
+    "Set to 1 to display the matrix.  Var=variable, Marg=Marginality (factor 0), Sp-1=Specialisation factor 1, etc. Variables are numbered in the order they are input in the request file.", // Description.
+    1,         // Not zero if the parameter has lower limit.
+    0,        // Parameter's lower limit.
+    1,         // Not zero if the parameter has upper limit.
+    1,         // Parameter's upper limit.
+    "0"        // Parameter's typical (default) value.
+  },
+  {
     VERBOSE_DEBUG,                   // Id.
     "Verbose printing for debugging", // Name.
     Integer,                     // Type.
@@ -119,7 +132,7 @@ static AlgParamMetadata parameters[NUM_PARAM] = {
 static AlgMetadata metadata = { // General metadata
   "ENFA",                    // Id
   "ENFA (Ecological-Niche Factor Analysis)",     // Name
-  "0.1.2",                        // Version
+  "0.1.3",                        // Version
   "Algorithm based on presence only data using a modified principal components analysis.", // Overview
   "Ecological-Niche Factor Analysis (Hirzel et al, 2002) uses a modified principal components analysis to develop a model based on presence only data.  The observed environment is compared to the background data of the study area (note that absence points in the occurrence file are treated as background data).  The analysis produces factors similar to a PCA.  The first factor is termed the 'marginality' of the species, marginality is defined as the ecological distance between the species optimum and the mean habitat within the background data. Other factors are termed the 'specialization', and are defined as the ratio of the ecological variance in mean habitat to that observed for the target species.  Model projection uses the geomeans method of Hirzel & Arlettaz (2003)", // Description
   "Hirzel, A.H.; Hausser, J.; Chessel, D. & Perrin, N.",    // Algorithm author
@@ -245,6 +258,7 @@ int Enfa::initialize()
   getParameter( DISCARD_METHOD, &_discardMethod);
   getParameter( RETAIN_COMPONENTS, &_retainComponents);
   getParameter( RETAIN_VARIATION, &_retainVariation);
+  getParameter( DISPLAY_LOADINGS, &_displayLoadings);
   getParameter( VERBOSE_DEBUG, &_verboseDebug);
 
   /* sometimes our random background samples produce singular matrices
@@ -662,6 +676,36 @@ void Enfa::displayMatrix(const gsl_matrix * m, const char * name, const bool rou
     fprintf( stderr, "]\n----------------------------------------------\n" );
 }
 
+/**********************/
+/**** displayMatrix ***/
+void Enfa::displayLoadings(const gsl_matrix * m, const int f) const
+{
+  Log::instance()->info( "Factor Loadings:\n");
+
+  // generate header
+  Log::instance()->info( "Var,Marg");
+  //fprintf( stderr, "Var,Marg");
+
+  for (signed int j=1;j<f;j++)
+    {
+      fprintf( stderr, ",Sp-%i", j);
+    }
+
+  fprintf( stderr, "\n");
+
+  for (unsigned int i=0;i<m->size1;++i)
+    {
+      Log::instance()->info( "%i",i);
+      //fprintf( stderr, "%i",i);
+      for (signed int j=0;j<f;j++)
+      {
+        double myDouble = gsl_matrix_get (m,i,j);
+
+  	fprintf( stderr, ",%3.3f", myDouble);
+      }
+      fprintf( stderr, "\n");
+    }
+}
 
 /*****************************************************************
  function to find the 'square-root' of a matrix:
@@ -992,7 +1036,7 @@ int Enfa::discardComponents() const
     // take the components that account for X % of variation
     else if (_discardMethod==1)
     {
-      Log::instance()->info( "Discarding components with variation method (1) (variation=%6.2f\n", _retainVariation);
+      Log::instance()->info( "Discarding components with variation method (1) (variation=%6.2f)\n", _retainVariation);
 	for (int i=0; i<_layer_count; ++i)
 	{
 	    variationTotal+=gsl_vector_get(_gsl_factor_weights_all_components,i);
@@ -1011,32 +1055,41 @@ int Enfa::discardComponents() const
         /* work out the broken stick distribution of expected eigenvalues
 	 * based on Jackson's formula for the kth eigenvalue
 	 * bk = sum[i=k...p](1/i) where p=number of eigenvalues */
-	gsl_vector* _brokenStickDist = gsl_vector_alloc(_layer_count);
-	for (int i=0; i<_layer_count; ++i)
+	/* use broken stick only for specialisation factors
+	   as often marginality weight is lower than other factors,
+	   but we always want to keep marginality as the first factor */
+	gsl_vector* _brokenStickDist = gsl_vector_alloc(_layer_count-1);
+	for (int i=0; i<_layer_count-1; ++i)
 	{
 	    double tmp_total=0;
-	    for (int j=i+1; j<=_layer_count; ++j)
+	    for (int j=i+1; j<=_layer_count-1; ++j)
 		tmp_total+=(double)1/j;
-	    gsl_vector_set(_brokenStickDist,i, (double)tmp_total/_layer_count);
+	    gsl_vector_set(_brokenStickDist,i, (double)tmp_total/(_layer_count-1));
 	}
+
+	//displayVector(_brokenStickDist, "broken stick distribution", true);
 
 	double myVariation;
 	// now compare with the observed variation
-	for (int i=0; i<_layer_count; ++i)
+	for (int i=0; i<_layer_count-1; ++i)
 	{
-	    myVariation=gsl_vector_get(_gsl_factor_weights_all_components,i);
-	    if (myVariation < gsl_vector_get(_brokenStickDist,i))
+	  //myVariation=gsl_vector_get(_gsl_factor_weights_all_components,i);
+	  // rescale specificity ignoring marginality (first) factor
+	  myVariation=gsl_vector_get(_gsl_factor_weights_all_components,i+1)/(1-gsl_vector_get(_gsl_factor_weights_all_components,0));
+	  //Log::instance()->info("Orig variation %6.2f, new variation %6.2f\n", gsl_vector_get(_gsl_factor_weights_all_components,i+1), myVariation);
+
+	    if (myVariation <= gsl_vector_get(_brokenStickDist,i))
 	    {
 		if (i==0) // problem - no components selected
 		{
-		    Log::instance()->warn( "First component explains less variation than the broken stick distribution - retaining all components by default\n" );
+		    Log::instance()->warn( "First specialisation component explains less variation than the broken stick distribution - retaining all components by default\n" );
 		    variationTotal=1;
 		    returnValue=_layer_count;
 		    break;
 		}
 		else // this component is discarded but keep earlier ones
 		{
-		    returnValue=i;
+		    returnValue=i+1;
 		    break;
 		}
 	    }
@@ -1205,6 +1258,23 @@ bool Enfa::enfa1()
   //free the temporary workspace
   gsl_eigen_symmv_free (_gsl_eigen_workpace);
 
+  //create score_matrix = cov_species^-0.5 * v;
+  _gsl_score_matrix=gsl_matrix_alloc(_layer_count,_layer_count);
+  gsl_blas_dgemm(CblasNoTrans, CblasNoTrans, 1.0, 
+		 _gsl_covariance_matrix_root_inverse,
+		 _gsl_eigenvector_matrix,
+		 0.0, _gsl_score_matrix);
+
+  /* sort eigenvalues, eigenvectors and score matrix */
+  gsl_vector * _gsl_eigenvalue_vector_presort = gsl_vector_alloc(_layer_count);
+  gsl_vector_memcpy(_gsl_eigenvalue_vector_presort, _gsl_eigenvalue_vector);
+  gsl_eigen_symmv_sort (_gsl_eigenvalue_vector, _gsl_eigenvector_matrix,
+			GSL_EIGEN_SORT_VAL_DESC);
+  gsl_eigen_symmv_sort (_gsl_eigenvalue_vector_presort, _gsl_score_matrix,
+			GSL_EIGEN_SORT_VAL_DESC);
+
+  //Log::instance()->info( "Eigenvector sorted\n" );
+
   /* Replace the min eigenvalue with the difference of the trace of W & H
      this becomes eigenvalue 1, the remaining eigenvalues move to index 2+
      t = eigenvalues ~= min(eigenvalues);
@@ -1240,14 +1310,7 @@ bool Enfa::enfa1()
   for (int i=0; i<_layer_count; ++i) traceH+=gsl_matrix_get(_gsl_workspace_H, i, i);
   gsl_vector_set(_gsl_eigenvalue_vector,0,traceW-traceH);
 
-  /* % Figure out which eigenvalue has gone AWOL
-     score_matrix = cov_species^-0.5 * v;*/
-
-  _gsl_score_matrix=gsl_matrix_alloc(_layer_count,_layer_count);
-  gsl_blas_dgemm(CblasNoTrans, CblasNoTrans, 1.0, 
-		 _gsl_covariance_matrix_root_inverse,
-		 _gsl_eigenvector_matrix,
-		 0.0, _gsl_score_matrix);
+  /* % Figure out which eigenvalue has gone AWOL */
 
   /* remove column associated with dodgy eigenvector (_gsl_vector_min) */
   /* Replace the first column with the vector of means */
@@ -1295,21 +1358,12 @@ bool Enfa::enfa1()
       }
   }
 
-  /* sort eigenvalues and eigenvectors */
-  gsl_vector * _gsl_eigenvalue_vector_presort = gsl_vector_alloc(_layer_count);
-  gsl_vector_memcpy(_gsl_eigenvalue_vector_presort, _gsl_eigenvalue_vector);
-  gsl_eigen_symmv_sort (_gsl_eigenvalue_vector, _gsl_eigenvector_matrix,
-			GSL_EIGEN_SORT_VAL_DESC);
-  gsl_eigen_symmv_sort (_gsl_eigenvalue_vector_presort, _gsl_score_matrix,
-			GSL_EIGEN_SORT_VAL_DESC);
-  //Log::instance()->info( "Eigenvector sorted\n" );
   if (_verboseDebug)
   {
       displayVector(_gsl_eigenvalue_vector, "Eigenvalues", true);
       displayMatrix(_gsl_eigenvector_matrix, "Eigenvectors", true);
       displayMatrix(_gsl_score_matrix, "Score Matrix", true);
   }
-  gsl_vector_free(_gsl_eigenvalue_vector_presort);
 
   /* marginality = geometric mean of means 
      marginality = sqrt(sum(m.^2));
@@ -1325,6 +1379,7 @@ bool Enfa::enfa1()
      specialization = sqrt(sum(eigenvalues)/length(m)) */
   _specialisation=pow((gsl_blas_dasum(_gsl_eigenvalue_vector)/_layer_count),0.5);
   Log::instance()->info( "Specialisation: %6.2f\n", _specialisation );
+
 
   /* work out factor weights = eigenvalues/sum(eigenvalues) 
    * dicarded components are given a zero weighting */
@@ -1353,8 +1408,21 @@ bool Enfa::enfa1()
   // print factor weights
   for (int i=0; i<_retained_components_count; ++i)
   {
-      Log::instance()->info("Factor %i weight: %.2f, variation explained: %.2f\n", i, gsl_vector_get(_gsl_factor_weights,i), gsl_vector_get(_gsl_factor_weights_all_components,i));
+    if (i==0)
+      {
+	Log::instance()->info("Marginality (factor 0) weight: %.2f, variation explained: %.2f\n", gsl_vector_get(_gsl_factor_weights,i), gsl_vector_get(_gsl_factor_weights_all_components,i));
+      }
+    else
+      {
+	Log::instance()->info("Specialisation factor %i weight: %.2f, variation explained: %.2f\n", i, gsl_vector_get(_gsl_factor_weights,i), gsl_vector_get(_gsl_factor_weights_all_components,i));
+      }
   }
+
+  /* Display the variable loadings of each factor (score matrix) */
+  if (_displayLoadings)
+    {
+      displayLoadings(_gsl_score_matrix, _retained_components_count);
+    }
 
   /* work out geometric mean of the distance between each species locality and 
      every other locality based on the factored data */
