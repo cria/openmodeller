@@ -4,6 +4,7 @@
 
 #include <vector>
 #include <stdlib.h>
+#include <openmodeller/os_specific.hh>
 
 namespace librf {
 
