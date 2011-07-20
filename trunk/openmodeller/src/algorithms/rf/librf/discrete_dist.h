@@ -63,9 +63,8 @@ class DiscreteDist {
     float percentage(int i) const {
       return float(weight(i)) / sum();
     }
-		static const double kLog2;
-    static float entropy_conditioned_naive(const DiscreteDist* sets,
-                                           int num_dists) {
+		static const float kLog2;
+    static float entropy_conditioned_naive(const DiscreteDist* sets, int num_dists) {
       float H = 0;
       // H(Y |X) = Sum Prob(X=x) H(Y | x = x)
       float total = 0;
@@ -73,7 +72,7 @@ class DiscreteDist {
         float split_entropy = 0;
         float split_total = 0;
         for (unsigned int j = 0; j< sets[i].num_labels(); ++j) {
-          float weight = sets[i].weight(j);
+          float weight = (float)sets[i].weight(j);
           split_entropy -= lnFunc(weight);
           split_total += weight;
           total += weight;
@@ -82,11 +81,9 @@ class DiscreteDist {
         if (split_total == 0) {
           split_entropy = 0;
         } else {
-        split_entropy = (split_entropy + lnFunc(split_total) ) /
-            (split_total *kLog2);
+        split_entropy = (split_entropy + lnFunc(split_total) ) / (split_total *kLog2);
         }
-        cerr << "Split " << i << ":" << split_entropy <<endl
-          ;
+        cerr << "Split " << i << ":" << split_entropy <<endl;
         H += split_total * split_entropy;
       }
       return H / (total);
@@ -99,7 +96,7 @@ class DiscreteDist {
 			for (int i = 0; i < num_dists; ++i ) {
 				sumForSet = 0;
 				for (unsigned int j = 0; j < sets[i].num_labels(); ++j) {
-					float weight = sets[i].weight(j);
+					float weight = (float)sets[i].weight(j);
 					returnValue += lnFunc(weight);
 					sumForSet += weight;
 				}
@@ -119,7 +116,7 @@ class DiscreteDist {
 			float returnValue = 0;
 			float total = 0;
 			for (unsigned int i = 0; i < size_; ++i) {
-				returnValue -= lnFunc(counter_[i]);
+				returnValue -= lnFunc((float)counter_[i]);
 				total += counter_[i];
 			}
 			if (total == 0) {

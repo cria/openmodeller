@@ -9,10 +9,7 @@
 #include "librf/weights.h"
 #include "librf/types.h"
 #include "librf/stringutils.h"
-#ifdef WIN32
-#include <cstdlib>
-#endif
-
+#include <openmodeller/os_specific.hh>
 
 using namespace std;
 

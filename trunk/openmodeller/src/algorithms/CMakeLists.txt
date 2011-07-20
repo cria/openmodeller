@@ -16,12 +16,7 @@ ENDIF (WIN32)
 
 ########################################################
 # Subdirectories
-SUBDIRS(best_subsets garp dg_garp svm neural_networks maxent)
-
-# Temporary hack to disable rf alg under msvc 2008
-IF (NOT MSVC90)
-  SUBDIRS(rf)
-ENDIF (NOT MSVC90)
+SUBDIRS(best_subsets garp dg_garp svm neural_networks maxent rf)
 
 if (GSL_FOUND)
    SUBDIRS(enfa)
