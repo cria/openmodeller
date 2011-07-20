@@ -295,6 +295,7 @@ int Enfa::initialize()
       }
       catch (InverseFailedException& exception)
       {
+	  UNUSED(exception);
 	  Log::instance()->warn( "Model failed, retry number %i\n", _retryCount );
 	  myFlag=false;
       }
