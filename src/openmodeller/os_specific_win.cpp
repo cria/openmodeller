@@ -397,3 +397,12 @@ initRandom( unsigned int new_seed )
 
   return 1;
 }
+
+/*****************************************/
+/*** rand_r implementation for Windows ***/
+dllexp int
+rand_r( unsigned * seed )
+{
+  * seed = (* seed) * 1103515245 + 12345;
+  return ((unsigned)(*seed / 65536) % 32768);
+}

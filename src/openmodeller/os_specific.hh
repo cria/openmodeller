@@ -99,6 +99,9 @@ std::vector<std::string> scanDirectory( std::string dir );
  */
 dllexp int initRandom( unsigned int new_seed=0 );
 
-
+#ifdef WIN32 
+// rand_r implementation for Windows
+dllexp int rand_r( unsigned * seed );
+#endif
 
 #endif
