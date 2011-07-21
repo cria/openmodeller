@@ -11,7 +11,7 @@
 ; Defines added by Tim to streamline / softcode install process
 !define PRODUCT_VERSION "1.2.0"
 ; This is where cmake builds and installs to - no space separating name and version
-!define BUILD_DIR "C:\Program files\${PRODUCT_NAME}${PRODUCT_VERSION}"
+!define BUILD_DIR "C:\Arquivos de programas\${PRODUCT_NAME} ${PRODUCT_VERSION}"
 ; This is where the nsis installer will install to. Having the space lets you
 ; keep dev and inst versions side by side on the same machine
 !define INSTALL_DIR "$PROGRAMFILES\${PRODUCT_NAME} ${PRODUCT_VERSION}"
@@ -19,7 +19,7 @@
 Name "${PRODUCT_NAME} ${PRODUCT_VERSION}"
 InstallDir "${INSTALL_DIR}"
 OutFile "openModellerSetup${PRODUCT_VERSION}.exe"
-# If this next lineis uncommented the installer will try to install to
+# If this next line is uncommented the installer will try to install to
 # the same dir as any prefvious install of omdesktop
 # With it commented it will try to used INSTALL_DIR as defined above
 #InstallDirRegKey HKLM "${PRODUCT_DIR_REGKEY}" ""
