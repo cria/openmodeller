@@ -100,3 +100,7 @@ Other individual collaborators
 
      Implemented the ENFA algorithm.
      Revised the CSM algorithm implementation.
+
+ * Alexander Bruy
+ 
+     Provided patches to fix compilation issues in different platforms.
