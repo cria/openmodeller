@@ -1,6 +1,6 @@
 Release 1.2.0 (2011-07-21)
 --------------------------
-SVN revision: ?
+SVN revision: 5328
 
 	* Changed the ENFA algorithm to force marginality to be the first factor.  Changed broken stick distribution to work on specialisation factors only.  Add new parameter to enable log display of variable loadings for retained factors.
 	* om_console now accepts a second parameter (after the request file) to specify the log level.
