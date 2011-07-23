@@ -7,6 +7,7 @@
 
 # Look for the header file.
 FIND_PATH(CURL_INCLUDE_DIR curl/curl.h
+  $ENV{INCLUDE}
   "$ENV{LIB_DIR}/include"
   /usr/local/include
   /usr/include
@@ -18,7 +19,8 @@ FIND_PATH(CURL_INCLUDE_DIR curl/curl.h
 MARK_AS_ADVANCED(CURL_INCLUDE_DIR)
 
 # Look for the library.
-FIND_LIBRARY(CURL_LIBRARY NAMES curl PATHS
+FIND_LIBRARY(CURL_LIBRARY NAMES curl libcurl_imp PATHS
+  $ENV{LIB}
   "$ENV{LIB_DIR}/lib"
   /usr/local/lib
   /usr/lib
@@ -27,6 +29,13 @@ FIND_LIBRARY(CURL_LIBRARY NAMES curl PATHS
   )
 
 MARK_AS_ADVANCED(CURL_LIBRARY)
+
+IF(CURL_INCLUDE_DIR)
+  MESSAGE(STATUS "Curl include was found")
+ENDIF(CURL_INCLUDE_DIR)
+IF(CURL_LIBRARY)
+  MESSAGE(STATUS "Curl lib was found")
+ENDIF(CURL_LIBRARY)
 
 # Copy the results to the output variables.
 IF(CURL_INCLUDE_DIR AND CURL_LIBRARY)
