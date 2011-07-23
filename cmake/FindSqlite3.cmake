@@ -47,6 +47,8 @@ FIND_PATH(SQLITE3_INCLUDE_DIR sqlite3.h
 FIND_PATH(SQLITE3_INCLUDE_DIR sqlite3.h)
 
 FIND_LIBRARY(SQLITE3_LIBRARY NAMES sqlite3 sqlite3_i PATHS
+  $ENV{LIB} 
+  /usr/lib 
   "$ENV{LIB_DIR}/lib"
   #mingw
   c:/msys/local/lib
