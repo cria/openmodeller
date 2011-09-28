@@ -627,9 +627,10 @@ RCP_CONST_TYPEMAP( ConstEnvironmentPtr, EnvironmentPtr );
   }
 }
 
-%newobject OpenModeller::getConfusionMatrix;
-
-%newobject OpenModeller::getRocCurve;
+// The next two lines were necessary when the OpenModeller members 
+// _confusion_matrix and _roc_curve where pointers. 
+//%newobject OpenModeller::getConfusionMatrix;
+//%newobject OpenModeller::getRocCurve;
 
 %include "openmodeller/OpenModeller.hh"
 
