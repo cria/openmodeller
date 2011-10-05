@@ -181,34 +181,12 @@ NicheMosaic::initialize()
   // remove discrepancy presence points
   OccurrencesPtr cleanPresences = cleanOccurrences( _samp->getPresences() );
   _sampp = createSampler( _samp->getEnvironment(), cleanPresences, _samp->getAbsences() );
- // int num_absences = _samp->numAbsence();
 
- // if ( num_absences <= 0 ) {
-
-  // generate pseudo absence points
-  string alg_id = "BIOCLIM";
-  AlgorithmPtr alg = AlgorithmFactory::newAlgorithm( alg_id );
-
-  if ( ! alg ) {
-
-    Log::instance()->error( "Could not instantiate BIOCLIM algorithm to generate pseudo-absences." );
-    return 0;
-  }
-
-  ParamSetType param;
-  param["StandardDeviationCutoff"] = "0.9";
-
-  alg->setParameters( param );
-  alg->createModel( _sampp );
+  // generate pseudo absence points using simple algorithm.
   size_t num_abs = (size_t)(0.40 * num_presences);
   if (num_abs < 10) num_abs = 10;
-    _my_absence_test = _sampp->getPseudoAbsences( num_abs, alg->getModel(), 0.6 ); 
+  _my_absence_test = _sampp->getPseudoAbsences( num_abs, 0 , 0.1 ); 
 
-//  }
- // else {
-
-//    _my_absence_test = _samp->getAbsences();
-//  }
 
   _num_points_absence_test = _my_absence_test->numOccurrences(); 
 
@@ -269,7 +247,8 @@ NicheMosaic::iterate()
     alg->setParameters( param );
     alg->createModel( _sampp ); 
 
-    _my_absence_test = _sampp->getPseudoAbsences( 100, alg->getModel(), 0.6 );
+    _my_absence_test = _sampp->getPseudoAbsences( 100, 0, 0.1 );
+
     _num_points_absence_test = _my_absence_test->numOccurrences();  
 
 	_num_iterations = 10000;
@@ -298,15 +277,16 @@ NicheMosaic::getProgress() const
 }
 
 /*****************/
-/*** get Value ***/
+/*** get Value ***/   /********matchRules classes******/
 Scalar
 NicheMosaic::getValue( const Sample& x ) const
 {
-  int i, j = 0;
+  int i, j, k = 0;
+  Scalar perc_layer = 0.0;
+  Scalar percent;
 
   //_num_points represents the number of rules
   for (i = 0; i < _num_points; i++) {
-
     for (j = 0; j < _num_layers; j++) {
 
       if ( ( _model_min_best[i][j] <= x[j] ) && ( x[j] <= _model_max_best[i][j] ) )
@@ -316,12 +296,18 @@ NicheMosaic::getValue( const Sample& x ) const
     }//end for
 
     if ( j == _num_layers ) {
-      return 1.0;
+      k++;
     }//end if
   }//end for
 
-  return 0.0;
+  percent = (Scalar)k /(Scalar)_num_points;
+  if (percent == 0.0) return 0.0;
+  else if (percent < 0.10) return 0.5;
+  else if (percent < 0.25) return 0.7;
+  else if (percent < 0.90) return 0.9;
+  else return 1.0; 
 }
+
 
 int 
 NicheMosaic::setMinMaxDelta()
@@ -474,29 +460,24 @@ NicheMosaic::getRandomLayerNumber()
 Scalar 
 NicheMosaic::getRandomPercent(const std::vector<Scalar> &delta, const size_t i_layer, size_t &costPres)
 {
-  int size = 24;
+  int size = 100, r;
 
-  Scalar percent[24] = { 0.12, 0.13, 0.14, 0.15, 0.16, 0.17, 0.18, 0.19, 0.2, 0.21, 0.22, 0.23, 0.24, 0.25, 0.26, 0.27, 0.28, 0.29, 0.3, 0.31, 0.32, 0.33, 0.34, 0.35 };
+  float min_percent = 0.12, max_percent = 0.4;
 
-
-  int half = (int)(size/2);
-
-  int r;
+  float old_percent, new_percent, half_percent = (max_percent - min_percent) / 2 + min_percent;
 
   Random random;
+  old_percent = delta[i_layer] / _delta[i_layer];
 
-  do{
-
-    r = random( 0, size );
+  r = random( 0, size );
+  new_percent = (max_percent - min_percent) * ( (float) r / (float) size ) + min_percent;
     
-  } while (delta[i_layer] == _delta[i_layer]*percent[r]);
+  if ( (costPres < _num_points_test) && (new_percent < half_percent) ){
 
-  if ( (costPres < _num_points_test) && (r < half) ){
-
-    r = r + half;
+    new_percent = new_percent + half_percent - min_percent;
   }
 
-  return percent[r];
+  return new_percent;
 }
 
 void
@@ -567,7 +548,7 @@ void
 NicheMosaic::findSolution(size_t &costBest, std::vector<Scalar> &deltaBest, int &bestIter, size_t &bestCost2)
 {
   size_t cost1, cost2, i_layer, bestCost1=0;
-  Scalar importance = 0.25 * _num_layers, cost, deltaIni=0.35;
+  Scalar importance = 1.0, cost, deltaIni=0.4;
   std::vector<Scalar> delta( _num_layers );
 
   size_t nTabu = (size_t)floor(sqrt((double)(_num_layers)));
@@ -644,6 +625,7 @@ NicheMosaic::findSolution(size_t &costBest, std::vector<Scalar> &deltaBest, int 
 void
 NicheMosaic::_getConfiguration( ConfigurationPtr& config ) const
 {
+
   if ( !_done )
     return;
 
@@ -656,13 +638,14 @@ NicheMosaic::_getConfiguration( ConfigurationPtr& config ) const
   for (int i = 0; i < _num_points; i++) {
 
     ConfigurationPtr rule_config( new ConfigurationImpl( "Rule" ) );
-    model_config->addSubsection( rule_config );
+	model_config->addSubsection( rule_config );
 
     Sample min_best( _model_min_best[i] );
     Sample max_best( _model_max_best[i] );
 
     rule_config->addNameValue( "Min", min_best );
     rule_config->addNameValue( "Max", max_best );
+
   }
 }
 

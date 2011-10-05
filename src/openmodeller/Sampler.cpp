@@ -437,8 +437,12 @@ OccurrencesPtr
 SamplerImpl::getPseudoAbsences( const int& numPoints, const Model& model, const Scalar threshold, const bool geoUnique, const bool envUnique) const 
 {
    int i = 0;
+   Sample minimum, maximum;
 
    OccurrencesPtr occurrences( new OccurrencesImpl(0.0) );
+
+   if ( !model )
+	     computeMinMax( minimum, maximum );
 
    do
    {
@@ -450,7 +454,7 @@ SamplerImpl::getPseudoAbsences( const int& numPoints, const Model& model, const 
      }
      else {
 
-       point = getPseudoAbsence();
+       point = getPseudoAbsenceSimple( minimum, maximum );
      }
 
      switch ( geoUnique ) {
@@ -505,6 +509,90 @@ SamplerImpl::getPseudoAbsences( const int& numPoints, const Model& model, const 
 
    return occurrences;
 }
+
+/**************************/
+/*** get Pseudo Absence ***/
+ConstOccurrencePtr 
+SamplerImpl::getPseudoAbsenceSimple( const Sample& minimum, const Sample& maximum ) const
+{
+   double prob = 1.0;
+
+   ConstOccurrencePtr occ;
+   Sample x;
+
+   int max_loop = 5000;
+
+   int loop = 0;
+
+   do {
+
+     occ = getPseudoAbsence();
+	 x = occ->environment();
+
+     for( unsigned int i=0; i<x.size(); i++) {
+
+		if (x[i] == -32768) 
+		   break;
+
+        if ( x[i] < minimum[i] || x[i] > maximum[i] ) {
+           prob = 0.0;
+		   break;
+		}
+     }
+
+     loop++;
+
+   } while ( ( prob != 0.0 ) && ( loop < max_loop ) );
+
+   if ( loop == max_loop ) {
+
+     std::string msg = "Exceeded maximum number of attempts to generate point outside the probability threshold.\n";
+
+     Log::instance()->error( msg.c_str() );
+
+     throw SamplerException( msg );
+   }
+
+   return occ;
+}
+
+void
+SamplerImpl::computeMinMax( Sample& minimum, Sample& maximum )const
+{
+
+  // Compute min and max
+    OccurrencesImpl::const_iterator oc = _presence->begin();
+    OccurrencesImpl::const_iterator end = _presence->end();
+
+    // Intialize minimum and maximum
+    // to the values of the first point, and increment
+    // to get it out of the loop.
+    Sample const & sample = (*oc)->environment();
+    minimum = sample;
+    maximum = sample;
+    
+    ++oc;
+    
+    // For each Occurrence, update the
+    // statistics for minimum and maximum
+    
+    while ( oc != end ) {
+      
+      Sample const& sample = (*oc)->environment();
+      
+      minimum &= sample;
+      maximum |= sample;
+
+      ++oc;
+    }
+
+	double delta;
+	for( unsigned int i=0; i<minimum.size(); i++) {
+	   delta = (maximum[i] - minimum[i]) * 0.10;
+	   minimum[i] = minimum[i] - delta;
+	   maximum[i] = maximum[i] + delta;
+	}
+ }
 
 /**********************/
 /*** is Categorical ***/
