@@ -569,17 +569,27 @@ void splitOccurrences(const OccurrencesPtr& occurrences,
 	  if (icont > nptTeste){
 	    OccurrencesImpl::iterator it = testOccurrences->begin();
  	    OccurrencesImpl::iterator last = testOccurrences->end();
+		--last;
 	    while ( it != last ) {
 		  it = testOccurrences->erase(it);
 		  last = testOccurrences->end();
+		  --last;
 	    }
+		it = testOccurrences->erase(it);
+
 	    OccurrencesImpl::iterator itt = trainOccurrences->begin();
  	    OccurrencesImpl::iterator lastt = trainOccurrences->end();
+		--lastt;
 	    while ( itt != lastt ) {
 		  itt = trainOccurrences->erase(itt);
 		  lastt = trainOccurrences->end();
+		  --lastt;
 	    }
-        distLimit = distLimit - 1.0;
+		itt = trainOccurrences->erase(itt);
+
+        if (distLimit > 1.0) distLimit = distLimit - 1.0;
+		else if (distLimit > 0.2) distLimit = distLimit - 0.2;
+		else distLimit = distLimit - 0.02;
 	    flagOk=1;
         break;
 	  }
