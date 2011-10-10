@@ -185,8 +185,11 @@ NicheMosaic::initialize()
   // generate pseudo absence points using simple algorithm.
   size_t num_abs = (size_t)(0.40 * num_presences);
   if (num_abs < 10) num_abs = 10;
-  _my_absence_test = _sampp->getPseudoAbsences( num_abs, _samp->getPresences() ); 
-
+  int dim = _samp->numIndependent();
+  Sample minimum(dim), maximum(dim);
+  OccurrencesPtr pres = _samp->getPresences();
+  pres->getMinMax( &minimum, &maximum );
+  _my_absence_test = _sampp->getPseudoAbsences( num_abs, &minimum, &maximum ); 
 
   _num_points_absence_test = _my_absence_test->numOccurrences(); 
 

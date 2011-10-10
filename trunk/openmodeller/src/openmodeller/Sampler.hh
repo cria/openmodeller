@@ -187,7 +187,7 @@ public:
   /**
    * Get a set of pseudoAbsence points
    */
-  OccurrencesPtr getPseudoAbsences( const int& numPoints, const OccurrencesPtr& reference, const bool geoUnique=false, const bool envUnique=false) const;
+  OccurrencesPtr getPseudoAbsences( const int& numPoints, const Sample * minimum, const Sample * maximum, const bool geoUnique=false, const bool envUnique=false) const;
 
   /** Returns 1 if i-th variable is categorical,
    * otherwise returns 0.

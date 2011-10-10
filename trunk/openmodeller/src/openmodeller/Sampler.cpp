@@ -556,31 +556,17 @@ SamplerImpl::getPseudoAbsences( const int& numPoints, const Model& model, const 
 /***************************/
 /*** get Pseudo Absences ***/
 OccurrencesPtr 
-SamplerImpl::getPseudoAbsences( const int& numPoints, const OccurrencesPtr& reference, const bool geoUnique, const bool envUnique) const 
+SamplerImpl::getPseudoAbsences( const int& numPoints, const Sample * minimum, const Sample * maximum, const bool geoUnique, const bool envUnique) const 
 {
    int i = 0;
-   int dim = numIndependent();
-   Sample minimum(dim), maximum(dim);
 
    OccurrencesPtr occurrences( new OccurrencesImpl(0.0) );
-
-   if ( reference ) {
-
-     reference->getMinMax( &minimum, &maximum );
-   }
 
    do
    {
      ConstOccurrencePtr point;
 
-     if ( reference ) {
-
-       point = getPseudoAbsenceOutsideInterval( &minimum, &maximum );
-     }
-     else {
-
-       point = getPseudoAbsence();
-     }
+     point = getPseudoAbsenceOutsideInterval( minimum, maximum );
 
      switch ( geoUnique ) {
 
