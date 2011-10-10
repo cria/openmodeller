@@ -170,24 +170,24 @@ public:
   ConstOccurrencePtr getPseudoAbsence() const;
 
   /**
-   * Get one pseudoAbsence point  (Missae/set-2008)
+   * Get one pseudoAbsence point
    */
   ConstOccurrencePtr getPseudoAbsence( const Model& model, const Scalar threshold ) const;
 
-    /**
-   * Get a set of pseudoAbsence points  (Missae/set-2008)
+  /**
+   * Get one pseudoAbsence point outside the minimum and maximum
+   */
+  ConstOccurrencePtr getPseudoAbsenceOutsideInterval( const Sample * minimum, const Sample * maximum ) const;
+
+  /**
+   * Get a set of pseudoAbsence points
    */
   OccurrencesPtr getPseudoAbsences( const int& numPoints, const Model& model, const Scalar threshold=0.5, const bool geoUnique=false, const bool envUnique=false) const;
 
-   /**
-   * Get one pseudoAbsence point outside the minimum and maximum  (Missae/set-2011)
+  /**
+   * Get a set of pseudoAbsence points
    */
-  ConstOccurrencePtr getPseudoAbsenceSimple( const Sample& minimum, const Sample& maximum ) const;
-
-  /** compute the minimum and maxmum member variables based on
-      the data in the OccurrencesPtr  (Missae/set-2011)
-  */
-  void computeMinMax( Sample& minimum, Sample& maximum )const;
+  OccurrencesPtr getPseudoAbsences( const int& numPoints, const OccurrencesPtr& reference, const bool geoUnique=false, const bool envUnique=false) const;
 
   /** Returns 1 if i-th variable is categorical,
    * otherwise returns 0.
