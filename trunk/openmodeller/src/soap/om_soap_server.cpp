@@ -377,7 +377,8 @@ soap_clr_omode(soap, SOAP_ENC_ZLIB); // disable Zlib's gzip
 
       if ( file == NULL ) {
 
-        return soap_receiver_fault( soap, "Could not open cache", NULL );
+        // TODO: Does the client need to know about this?
+        return soap_receiver_fault( soap, "Cache manipulation error (1)", NULL );
       }
 
       //while ( fgetws( buf, bufSize, file ) != (wchar_t *)NULL ) {
@@ -388,7 +389,8 @@ soap_clr_omode(soap, SOAP_ENC_ZLIB); // disable Zlib's gzip
 
       if ( ! feof( file ) ) {
 
-        return soap_receiver_fault( soap, "Cache reading error", NULL );
+        // TODO: Does the client need to know about this?
+        return soap_receiver_fault( soap, "Cache manipulation error (2)", NULL );
       }
 
       //out->om__AvailableLayers = (wchar_t*)cachedXml.c_str();
@@ -419,13 +421,14 @@ soap_clr_omode(soap, SOAP_ENC_ZLIB); // disable Zlib's gzip
 
     if ( file == NULL ) {
 
-      return soap_receiver_fault( soap, "Could not open cache", NULL );
+      return soap_receiver_fault( soap, "Cache manipulation error (3)", NULL );
     }
 
     //if ( fputws( out->om__AvailableLayers, file ) < 0 ) {
     if ( fputs( oss.str().c_str(), file ) < 0 ) {
 
-      return soap_receiver_fault( soap, "Could not write to cache", NULL );
+      // TODO: Does the client need to know about this?
+      return soap_receiver_fault( soap, "Cache manipulation error (4)", NULL );
     }
 
     fclose( file );
@@ -467,7 +470,7 @@ omws__createModel( struct soap *soap, XML om__ModelParameters, xsd__string &tick
 
   if ( fd == -1 ) {
 
-    return soap_receiver_fault( soap, "Could not create ticket", NULL );
+    return soap_receiver_fault( soap, "Failed to create ticket (1)", NULL );
   }
 
   // Get ticket value
@@ -484,7 +487,7 @@ omws__createModel( struct soap *soap, XML om__ModelParameters, xsd__string &tick
 
   if ( file == NULL ) {
 
-     return soap_receiver_fault( soap, "Could not open ticket", NULL );
+     return soap_receiver_fault( soap, "Failed to create ticket (2)", NULL );
   }
 
   // Add wrapper element
@@ -492,13 +495,13 @@ omws__createModel( struct soap *soap, XML om__ModelParameters, xsd__string &tick
 
   if ( fputws( openRoot, file ) < 0 ) {
 
-    return soap_receiver_fault( soap, "Could not start processing ticket", NULL );
+    return soap_receiver_fault( soap, "Failed to create ticket (3)", NULL );
   }
 
   // Put content of model request there
   if ( fputws( om__ModelParameters, file ) < 0 ) {
 
-    return soap_receiver_fault( soap, "Could not process request", NULL );
+    return soap_receiver_fault( soap, "Failed to create ticket (4)", NULL );
   }
 
   // Close wrapper element
@@ -506,7 +509,7 @@ omws__createModel( struct soap *soap, XML om__ModelParameters, xsd__string &tick
 
   if ( fputws( closeRoot, file ) < 0 ) {
 
-    return soap_receiver_fault( soap, "Could not finish processing ticket", NULL );
+    return soap_receiver_fault( soap, "Failed to create ticket (5)", NULL );
   }
 
   fclose( file );
@@ -547,7 +550,7 @@ omws__testModel( struct soap *soap, XML om__TestParameters, xsd__string &ticket 
 
   if ( fd == -1 ) {
 
-    return soap_receiver_fault( soap, "Could not create ticket", NULL );
+    return soap_receiver_fault( soap, "Failed to create ticket (1)", NULL );
   }
 
   // Get ticket value
@@ -564,7 +567,7 @@ omws__testModel( struct soap *soap, XML om__TestParameters, xsd__string &ticket 
 
   if ( file == NULL ) {
 
-     return soap_receiver_fault( soap, "Could not open ticket", NULL );
+     return soap_receiver_fault( soap, "Failed to create ticket (2)", NULL );
   }
 
   // Add wrapper element
@@ -572,13 +575,13 @@ omws__testModel( struct soap *soap, XML om__TestParameters, xsd__string &ticket 
 
   if ( fputws( openRoot, file ) < 0 ) {
 
-    return soap_receiver_fault( soap, "Could not start processing ticket", NULL );
+    return soap_receiver_fault( soap, "Failed to create ticket (3)", NULL );
   }
 
   // Put content of model request there
   if ( fputws( om__TestParameters, file ) < 0 ) {
 
-    return soap_receiver_fault( soap, "Could not process request", NULL );
+    return soap_receiver_fault( soap, "Failed to create ticket (4)", NULL );
   }
 
   // Close wrapper element
@@ -586,7 +589,7 @@ omws__testModel( struct soap *soap, XML om__TestParameters, xsd__string &ticket 
 
   if ( fputws( closeRoot, file ) < 0 ) {
 
-    return soap_receiver_fault( soap, "Could not finish processing ticket", NULL );
+    return soap_receiver_fault( soap, "Failed to create ticket (5)", NULL );
   }
 
   fclose( file );
@@ -627,7 +630,7 @@ omws__projectModel( struct soap *soap, XML om__ProjectionParameters, xsd__string
 
   if ( fd == -1 ) {
 
-    return soap_receiver_fault( soap, "Could not create ticket", NULL );
+    return soap_receiver_fault( soap, "Failed to create ticket (1)", NULL );
   }
 
   // Get ticket value
@@ -644,7 +647,7 @@ omws__projectModel( struct soap *soap, XML om__ProjectionParameters, xsd__string
 
   if ( file == NULL ) {
 
-     return soap_receiver_fault( soap, "Could not open ticket", NULL );
+     return soap_receiver_fault( soap, "Failed to create ticket (2)", NULL );
   }
 
   // Add wrapper element
@@ -652,13 +655,13 @@ omws__projectModel( struct soap *soap, XML om__ProjectionParameters, xsd__string
 
   if ( fputws( openRoot, file ) < 0 ) {
 
-    return soap_receiver_fault( soap, "Could not start processing ticket", NULL );
+    return soap_receiver_fault( soap, "Failed to create ticket (3)", NULL );
   }
 
   // Put content of model request there
   if ( fputws( om__ProjectionParameters, file ) < 0 ) {
 
-    return soap_receiver_fault( soap, "Could not process request", NULL );
+    return soap_receiver_fault( soap, "Failed to create ticket (4)", NULL );
   }
 
   // Close wrapper element
@@ -666,7 +669,7 @@ omws__projectModel( struct soap *soap, XML om__ProjectionParameters, xsd__string
 
   if ( fputws( closeRoot, file ) < 0 ) {
 
-    return soap_receiver_fault( soap, "Could not finish processing ticket", NULL );
+    return soap_receiver_fault( soap, "Failed to create ticket (5)", NULL );
   }
 
   fclose( file );
