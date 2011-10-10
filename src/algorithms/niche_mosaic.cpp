@@ -185,7 +185,7 @@ NicheMosaic::initialize()
   // generate pseudo absence points using simple algorithm.
   size_t num_abs = (size_t)(0.40 * num_presences);
   if (num_abs < 10) num_abs = 10;
-  _my_absence_test = _sampp->getPseudoAbsences( num_abs, 0 , 0.1 ); 
+  _my_absence_test = _sampp->getPseudoAbsences( num_abs, _samp->getPresences() ); 
 
 
   _num_points_absence_test = _my_absence_test->numOccurrences(); 
@@ -282,7 +282,6 @@ Scalar
 NicheMosaic::getValue( const Sample& x ) const
 {
   int i, j, k = 0;
-  Scalar perc_layer = 0.0;
   Scalar percent;
 
   //_num_points represents the number of rules
