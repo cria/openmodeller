@@ -185,10 +185,18 @@ NicheMosaic::initialize()
   // generate pseudo absence points using simple algorithm.
   size_t num_abs = (size_t)(0.40 * num_presences);
   if (num_abs < 10) num_abs = 10;
-  int dim = _samp->numIndependent();
+  int dim = _sampp->numIndependent();
   Sample minimum(dim), maximum(dim);
-  OccurrencesPtr pres = _samp->getPresences();
+  OccurrencesPtr pres = _sampp->getPresences();
   pres->getMinMax( &minimum, &maximum );
+
+  double delta;
+  for( unsigned int i=0; i<minimum.size(); i++) {
+    delta = (maximum[i] - minimum[i]) * 0.10;
+    minimum[i] = minimum[i] - delta;
+    maximum[i] = maximum[i] + delta;
+  }
+
   _my_absence_test = _sampp->getPseudoAbsences( num_abs, &minimum, &maximum ); 
 
   _num_points_absence_test = _my_absence_test->numOccurrences(); 
@@ -235,24 +243,23 @@ NicheMosaic::iterate()
   }while( (bestIter < endDo) || (costBest < (size_t)(_num_points_test*0.8)) );
 
   if ( (size_t)(_num_points_absence_test*0.6) > bestCost2 ){
-	string alg_id = "BIOCLIM";
-    AlgorithmPtr alg = AlgorithmFactory::newAlgorithm( alg_id );
 
-    if ( ! alg ) {
+    int dim = _sampp->numIndependent();
+    Sample minimum(dim), maximum(dim);
+    OccurrencesPtr pres = _sampp->getPresences();
+    pres->getMinMax( &minimum, &maximum );
 
-      Log::instance()->error( "Could not instantiate BIOCLIM algorithm to generate pseudo-absences." );
-      return 0;
+    double delta;
+    for( unsigned int i=0; i<minimum.size(); i++) {
+      delta = (maximum[i] - minimum[i]) * 0.10;
+      minimum[i] = minimum[i] - delta;
+      maximum[i] = maximum[i] + delta;
     }
 
-    ParamSetType param;
-    param["StandardDeviationCutoff"] = "0.9";
+    _my_absence_test = _sampp->getPseudoAbsences( 100, &minimum, &maximum ); 
 
-    alg->setParameters( param );
-    alg->createModel( _sampp ); 
-
-    _my_absence_test = _sampp->getPseudoAbsences( 100, 0, 0.1 );
-
-    _num_points_absence_test = _my_absence_test->numOccurrences();  
+	  
+	_num_points_absence_test = _my_absence_test->numOccurrences();  
 
 	_num_iterations = 10000;
     findSolution(costBest, deltaBest, bestIter, bestCost2);
