@@ -1,0 +1,98 @@
+The openModeller Web Service
+Renato De Giovanni
+Last updated: 31st October 2011
+%! target       : html
+%! style        : w3c_main.css
+%! style        : w3c_examples.css
+%! Options      : --toc --toc-level 3 --enum-title --css-sugar
+%! preproc      : OM_URL   http://openmodeller.sf.net/
+%! PostProc(html): '(?i)(<pre>)' '<div class="exampleInner">\1'
+%! PostProc(html): '(?i)(</pre>)' '\1</div>'
+%! encoding: iso-8859-1
+
+% These are comments and will not be generated in any output
+% -------------------
+%
+% This document is in text2tags format. You can generate html, plain text and
+% moinmoin formatted documentation by running txt2tags on this document. See the
+% txt2tags home page for more details. Please insert manual line breaks in this
+% document as it makes diffing for changes much easier. To do this in vim 
+% automatically, select a section then issue (gq) command. Please dont
+% apply vim formatting to the whole document as it screws up some formatting
+% rather apply it selectively to paragraphs where needed.
+%
+% To generate the text version of this document:
+% python t2t.py -t txt --toc --enum-title -o web_service.txt web_service.t2t
+% To generate the moinmoin version of this document
+% python t2t.py -t moin --toc --enum-title -o web_service.moin web_service.t2t
+% To generate the html version of this document
+% python t2t.py -t html --toc --enum-title -o web_service.html web_service.t2t
+%
+% End of comments
+% -------------------
+
+= Introduction =
+
+This document describes the openModeller web service interface (OMWS). This interface was created so that the main ecological niche modelling functionalities provided by openModeller could be made available in a standardized way over the web to other programs. Therefore the target audience for this document are developers who want to write programs that will interact with instances of the openModeller web service. It is assumed that readers have basic understanding about ecological niche modelling (for more information: http://en.wikipedia.org/wiki/Environmental_niche_modelling), basic understanding of openModeller (for more information: http://openmodeller.sf.net) and knowledge about web services.
+
+= Technology =
+
+OMWS is based on SOAP following the document/literal style. The whole interface is programatically defined in a WSDL file and contains the main operations to run ecological niche modelling experiments:
+
+http://openmodeller.cria.org.br/ws/1.0/openModeller.wsdl
+
+All XML elements, attributes, structure and data types are defined in a separate XML Schema compatible with all openModeller serializable objects:
+
+http://openmodeller.cria.org.br/xml/1.0/openModeller.xsd
+
+= Overview of the implementations =
+
+So far there is only one implementation of the server developed in C++ using gSOAP. This implementation is available as part of the openModeller code and you can find it under the src/soap directory. The server can run as a CGI application, a stand alone server (daemon) or a multi-threaded server in the future (until now openModeller is not thread-safe). By using gSOAP, stubs are also available for developers willling to write clients in C++ (openModeller Desktop uses them). There is also a simple command-line client written in Perl that depends on the SOAPLite Perl module, which is also available under the same directory in the openModeller source code (src/soap/sampleClient.pl). Finally, there's code in Java to interact with the service. This must be available somewhere in the GBIF code base, since the GBIF portal also includes functionality to generate niche models through the openModeller web service.
+
+= Service instances =
+
+Currently the following instance is publicly available:
+
+http://modeller.cria.org.br/cgi-bin/om_soap_server.cgi
+
+= Interaction with the service =
+
+Figure 1 shows a typical workflow to interact with the service.
+
+[ws_diagram_small.png]
+**Figure 1:** Typical workflow to interact with the service. Boxes with solid lines indicate calls to service operations. Boxes with dashed lines indicate external tasks, except those indicating the whole "getProgress" procedure. 
+
+To better understand the diagram, it is important to note that a "model" for openModeller is the mathemathical representation of the ecological niche. If we take a simple algorithm like Bioclim for example, the model will be the bioclimatic envelopes and the logic that says that inside the inner envelope the environmental conditions are suitable (corresponding to the numerical value 1), inside the marginal envelope the environmental conditions can still be considered acceptable (corresponding to 0.5) and outiside the marginal envelope the environmental conditions are unsuitable (corresponding to 0). Therefore, the operation "createModel" will request the creation of that kind of model - not a map! The result of "getModel" will be the serialized model, which in the case of Bioclim will be just the bioclimatic envelopes (minimum, maximum, average and standard deviation cutoff for each variable). Two things can be done with a model in OMWS: it can be tested as many times as necessary (getting back statistical results as a confusion matrix and/or ROC curve) or it can be projected into a geographic region given an environmental scenario. This can also be done as many times as necessary. The result of model projection is finally the potential distribution map in the form of a georeferenced raster.
+
+It should be noted that there are many different ways to use the service. Some people  may be interested only in the models - without even testing of projecting them. This may happen in phyloclimatic modelling experiments for example. Others may want to project only if the test indicates that the results are good enough. This can actually be done in different ways, since the model result also includes statistics for the training dataset, while "testModel" requests are usually performed with an external dataset. Even model creation may be conditioned by previous tests involving preliminary models created with different subsets of the input data (through n-fold cross validation). Multiple projections can also be requested, for instance when multiple climate scenarios are involved, or just to project in different periods of time.
+
+As can be seen, OMWS is centered around a few core operations for ecological niche modelling, not covering other related things such as data cleaning, splitting points into test/training, pre-analysis on input data, post processing distribution maps, etc. Nevertheless, these core operations can still be used and combined in many different ways, keeping the interface simple and effective. 
+
+= Operations =
+
+== createModel ==
+
+== getAlgorithms ==
+
+== ping ==
+
+== getLayerAsUrl ==
+
+== getLayers ==
+
+== getLog ==
+
+== getModel ==
+
+== getProgress ==
+
+== getProjectionMetadata ==
+
+== getTestResult ==
+
+== projectModel ==
+
+== testModel ==
+
+
+
