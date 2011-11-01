@@ -1426,13 +1426,13 @@ bool hasValidGdalProjection( const char* fileName )
 static
 string getLayerLabel( const string path, const string name, bool isDir )
 {
-  string metaFile;
+  string metaFile = path;
 
   // It is a directory
   if ( isDir ) {
 
-    // exclude last / from directory and add ".meta"
-    metaFile = path.substr( 0, path.size()-1 ).append(".meta"); 
+    // append last dir name and ".meta"
+    metaFile = metaFile.append(name).append(".meta"); 
 
     if ( fileExists( metaFile.c_str() ) ) {
 
@@ -1449,7 +1449,6 @@ string getLayerLabel( const string path, const string name, bool isDir )
     if ( pos != string::npos ) {
 
       // replace extension with ".meta"
-      metaFile = path;
       string metaName = name.substr( 0, pos ).append(".meta");
       metaFile = metaFile.append( metaName ); 
 
