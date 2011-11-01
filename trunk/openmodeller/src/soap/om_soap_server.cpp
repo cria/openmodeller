@@ -71,6 +71,7 @@ static wchar_t* convertToWideChar( const char* p );
 static bool     readDirectory( const char* dir, const char* label, ostream &xml, int depth );
 static bool     isValidGdalFile( const char* fileName );
 static bool     hasValidGdalProjection( const char* fileName );
+static string   getLayerLabel( const string path, const string name, bool isDir );
 static int      getSize( FILE *fd );
 static bool     getData( struct soap*, const xsd__string, xsd__base64Binary& );
 static void     logRequest( struct soap*, const char* operation );
@@ -1319,13 +1320,15 @@ bool readDirectory( const char* dir, const char* label, ostream &xml, int depth 
 
         string hasProj = ( hasValidGdalProjection( fullName.c_str() ) ) ? "1" : "0";
 
+        string label = getLayerLabel( myDir, nameList[i]->d_name, true );
+
         xmlFiles.append( "<Layer Id=\"" );
         xmlFiles.append( fullName );
         xmlFiles.append( "\" HasProjection=\"");
         xmlFiles.append( hasProj );
         xmlFiles.append( "\">" );
         xmlFiles.append( "<Label>" );
-        xmlFiles.append( nameList[i]->d_name );
+        xmlFiles.append( label );
         xmlFiles.append( "</Label>" );
         xmlFiles.append( "</Layer>" );
       }
@@ -1341,13 +1344,15 @@ bool readDirectory( const char* dir, const char* label, ostream &xml, int depth 
 
         string hasProj = ( hasValidGdalProjection( fullName.c_str() ) ) ? "1" : "0";
 
+        string label = getLayerLabel( myDir, nameList[i]->d_name, false );
+
         xmlFiles.append( "<Layer Id=\"" );
         xmlFiles.append( fullName );
         xmlFiles.append( "\" HasProjection=\"");
         xmlFiles.append( hasProj );
         xmlFiles.append( "\">" );
         xmlFiles.append( "<Label>" );
-        xmlFiles.append( nameList[i]->d_name );
+        xmlFiles.append( label );
         xmlFiles.append( "</Label>" );
         xmlFiles.append( "</Layer>" );
       }
@@ -1414,6 +1419,48 @@ bool hasValidGdalProjection( const char* fileName )
     GDALClose( testFile );
     return true;
   }
+}
+
+/***********************/
+/**** getLayerLabel ****/
+static
+string getLayerLabel( const string path, const string name, bool isDir )
+{
+  string metaFile;
+
+  // It is a directory
+  if ( isDir ) {
+
+    // exclude last / from directory and add ".meta"
+    metaFile = path.substr( 0, path.size()-1 ).append(".meta"); 
+
+    if ( fileExists( metaFile.c_str() ) ) {
+
+      FileParser fParser( metaFile.c_str() );
+
+      return fParser.get( "LABEL" );
+    }
+  }
+  // It is a file
+  else {
+
+    size_t pos = path.find_last_of( "." );
+
+    if ( pos != string::npos ) {
+
+      // replace extension with ".meta"
+      metaFile = path.substr( 0, pos-1 ).append(".meta"); 
+
+      if ( fileExists( metaFile.c_str() ) ) {
+
+        FileParser fParser( metaFile.c_str() );
+
+        return fParser.get( "LABEL" );
+      }
+    }
+  }
+
+  return name;  
 }
 
 /******************/

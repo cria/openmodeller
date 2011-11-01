@@ -1,7 +1,6 @@
 /**
  * Declaration of FileParser class.
  * 
- * @file
  * @author Mauro E S Muñoz <mauro@cria.org.br>
  * @date 2003-09-25
  * $Id$
