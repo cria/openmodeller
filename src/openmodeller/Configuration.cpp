@@ -53,7 +53,13 @@ public:
     name( name )
   {}
   bool operator()( const Configuration::attribute & a ) {
-    return name == a.first;
+    std::string cmp_name = a.first;
+    size_t prefix_pos = cmp_name.find(":");
+    if ( prefix_pos != string::npos ) {
+      // if there is a namespace prefix, remove it
+      cmp_name = cmp_name.substr( prefix_pos+1 );
+    }
+    return name == cmp_name;
   }
   string name;
 };
@@ -65,7 +71,13 @@ public:
     name( name )
   {}
   bool operator()( const ConfigurationPtr &config ) {
-    return name == config->getName();
+    std::string cmp_name = config->getName();
+    size_t prefix_pos = cmp_name.find(":");
+    if ( prefix_pos != string::npos ) {
+      // if there is a namespace prefix, remove it
+      cmp_name = cmp_name.substr( prefix_pos+1 );
+    }
+    return name == cmp_name;
   }
   string name;
 };
