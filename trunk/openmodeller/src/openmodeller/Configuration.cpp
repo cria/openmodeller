@@ -71,13 +71,7 @@ public:
     name( name )
   {}
   bool operator()( const ConfigurationPtr &config ) {
-    std::string cmp_name = config->getName();
-    size_t prefix_pos = cmp_name.find(":");
-    if ( prefix_pos != string::npos ) {
-      // if there is a namespace prefix, remove it
-      cmp_name = cmp_name.substr( prefix_pos+1 );
-    }
-    return name == cmp_name;
+    return name == config->getName();
   }
   string name;
 };
@@ -141,6 +135,20 @@ ConfigurationImpl::ConfigurationImpl( char const * name ) :
 
 ConfigurationImpl::~ConfigurationImpl()
 {}
+
+string
+ConfigurationImpl::getName() const {
+
+  size_t prefix_pos = name.find(":");
+
+  if ( prefix_pos != string::npos ) {
+
+    // if there is a namespace prefix, remove it
+    return name.substr( prefix_pos+1 );
+  }
+
+  return name;
+}
 
 void
 ConfigurationImpl::setValue( const string& val )

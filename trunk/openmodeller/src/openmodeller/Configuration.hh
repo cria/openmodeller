@@ -133,11 +133,6 @@ private:
 };
 
 
-inline std::string
-ConfigurationImpl::getName() const {
-  return name;
-}
-
 inline void
 ConfigurationImpl::setName( const std::string& name ) {
   this->name = name;
