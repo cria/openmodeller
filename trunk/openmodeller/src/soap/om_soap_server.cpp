@@ -822,7 +822,7 @@ omws__getModel( struct soap *soap, xsd__string ticket, struct omws__getModelResp
 
 #ifdef WITH_GZIP
   // client supports gzip?
-  if (soap->zlib_out == SOAP_ZLIB_GZIP) { 
+  if (true || soap->zlib_out == SOAP_ZLIB_GZIP) { 
 
     // compress response
     soap_set_omode(soap, SOAP_ENC_ZLIB);
@@ -1444,12 +1444,14 @@ string getLayerLabel( const string path, const string name, bool isDir )
   // It is a file
   else {
 
-    size_t pos = path.find_last_of( "." );
+    size_t pos = name.find_last_of( "." );
 
     if ( pos != string::npos ) {
 
       // replace extension with ".meta"
-      metaFile = path.substr( 0, pos-1 ).append(".meta"); 
+      metaFile = path;
+      string metaName = name.substr( 0, pos ).append(".meta");
+      metaFile = metaFile.append( metaName ); 
 
       if ( fileExists( metaFile.c_str() ) ) {
 
