@@ -1,3 +1,9 @@
+Release ? (?)
+-------------
+SVN revision: ?
+
+	* Changed the deserialization code to accept XML with namespace prefixes (they are now ignored if present).
+
 Release 1.2.0 (2011-07-21)
 --------------------------
 SVN revision: 5330
