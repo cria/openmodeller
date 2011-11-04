@@ -195,3 +195,30 @@ om_pseudo --num-points 20 --mask rain_coolest.tif
 Additional parameters and detailed documentation can be found in the
 corresponding man page, or just by typing om_pseudo without parameters.
 
+-----------------------------------------------------------------------
+
+ADDITIONAL INFORMATION
+
+If you are a developer interested in performance optimization, you can
+follow the next steps to run an experiment using several high resolution
+environmental layers, thousands of points and an algorithm that can take
+quite some time to run:
+
+# Download high resolution environmental layers from worldclim
+wget http://biogeo.ucdavis.edu/data/climate/worldclim/1_4/grid/cur/tmin_30s_esri.zip
+wget http://biogeo.ucdavis.edu/data/climate/worldclim/1_4/grid/cur/tmax_30s_esri.zip
+wget http://biogeo.ucdavis.edu/data/climate/worldclim/1_4/grid/cur/prec_30s_esri.zip
+
+unzip tmin_30s_esri.zip
+unzip tmax_30s_esri.zip
+unzip prec_30s_esri.zip
+
+# Download file with points
+wget http://openmodeller.cria.org.br/download/examples/points_example_1.txt
+
+# Download openModeller request file for this experiment
+wget http://openmodeller.cria.org.br/download/examples/request_example_1.txt
+
+# Run experiment
+om_console request_example_1.txt
+
