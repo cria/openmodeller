@@ -268,20 +268,25 @@ omws__getAlgorithms( struct soap *soap, void *_, struct omws__getAlgorithmsRespo
 {
   logRequest( soap, "getAlgorithms" );
 
+   string enableCompression( gFileParser.get( "ENABLE_COMPRESSION" ) );
+
+   if ( enableCompression == "yes" ) {
+
 #ifdef WITH_GZIP
-  // client supports gzip?
-  if (soap->zlib_out == SOAP_ZLIB_GZIP) { 
+    // client supports gzip?
+    if (soap->zlib_out == SOAP_ZLIB_GZIP) { 
 
-    // compress response
-    soap_set_omode(soap, SOAP_ENC_ZLIB);
-  }
-  else {
+      // compress response
+      soap_set_omode(soap, SOAP_ENC_ZLIB);
+    }
+    else {
 
-    soap_clr_omode(soap, SOAP_ENC_ZLIB); // disable Zlib's gzip 
-  }
+      soap_clr_omode(soap, SOAP_ENC_ZLIB); // disable Zlib's gzip 
+    }
 #else
-soap_clr_omode(soap, SOAP_ENC_ZLIB); // disable Zlib's gzip 
+    soap_clr_omode(soap, SOAP_ENC_ZLIB); // disable Zlib's gzip 
 #endif
+  }
 
   // Get controller object previously instantiated
   OpenModeller *om = (OpenModeller*)soap->user; 
@@ -318,20 +323,25 @@ omws__getLayers( struct soap *soap, void *_, struct omws__getLayersResponse *out
 {
   logRequest( soap, "getLayers" );
 
+   string enableCompression( gFileParser.get( "ENABLE_COMPRESSION" ) );
+
+   if ( enableCompression == "yes" ) {
+
 #ifdef WITH_GZIP
-  // client supports gzip?
-  if (soap->zlib_out == SOAP_ZLIB_GZIP) { 
+    // client supports gzip?
+    if (soap->zlib_out == SOAP_ZLIB_GZIP) { 
 
-    // compress response
-    soap_set_omode(soap, SOAP_ENC_ZLIB);
-  }
-  else {
+      // compress response
+      soap_set_omode(soap, SOAP_ENC_ZLIB);
+    }
+    else {
 
-    soap_clr_omode(soap, SOAP_ENC_ZLIB); // disable Zlib's gzip 
-  }
+      soap_clr_omode(soap, SOAP_ENC_ZLIB); // disable Zlib's gzip 
+    }
 #else
-soap_clr_omode(soap, SOAP_ENC_ZLIB); // disable Zlib's gzip 
+    soap_clr_omode(soap, SOAP_ENC_ZLIB); // disable Zlib's gzip 
 #endif
+  }
 
   // Get controller object previously instantiated
   OpenModeller *om = (OpenModeller*)soap->user; 
@@ -820,20 +830,25 @@ omws__getModel( struct soap *soap, xsd__string ticket, struct omws__getModelResp
 { 
   logRequest( soap, "getModel" );
 
+   string enableCompression( gFileParser.get( "ENABLE_COMPRESSION" ) );
+
+   if ( enableCompression == "yes" ) {
+
 #ifdef WITH_GZIP
-  // client supports gzip?
-  if (true || soap->zlib_out == SOAP_ZLIB_GZIP) { 
+    // client supports gzip?
+    if (true || soap->zlib_out == SOAP_ZLIB_GZIP) { 
 
-    // compress response
-    soap_set_omode(soap, SOAP_ENC_ZLIB);
-  }
-  else {
+      // compress response
+      soap_set_omode(soap, SOAP_ENC_ZLIB);
+    }
+    else {
 
-    soap_clr_omode(soap, SOAP_ENC_ZLIB); // disable Zlib's gzip 
-  }
+      soap_clr_omode(soap, SOAP_ENC_ZLIB); // disable Zlib's gzip 
+    }
 #else
-soap_clr_omode(soap, SOAP_ENC_ZLIB); // disable Zlib's gzip 
+    soap_clr_omode(soap, SOAP_ENC_ZLIB); // disable Zlib's gzip 
 #endif
+  }
 
   if ( ! ticket ) {
 
