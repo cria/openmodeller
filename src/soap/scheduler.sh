@@ -195,26 +195,39 @@ ls -t $TICKET_DIRECTORY/proj_req.* 2> /dev/null | tail -n -1 | while read req; d
   # Create a PNG with pseudocolor (requires GDAL command-line tools)
   if [[ "$CREATE_PNG" == "yes" ]]; then
     if [ -e $map_img ]; then
-      finalmap_png=$DISTRIBUTION_MAP_DIRECTORY"/"$ticket".png"
-      tempmap_png=$DISTRIBUTION_MAP_DIRECTORY"/"$ticket".png.tmp"
-      # Create a virtual raster from an existing template
-      vrt_file=$DISTRIBUTION_MAP_DIRECTORY"/"$ticket".vrt"
-      # Get x and y dimensions from raster using gdalinfo
-      info=`$GDAL_BIN_DIR/gdalinfo $map_img`
-      match=`echo $info | sed -n -e 's#.*Size\sis\s\([0-9\.]*\),\s\([0-9\.]*\).*$#\1 \2#p'`
-      match_len=${#match}
-      x_size=0
-      y_size=0
-      if [ $match_len -gt 0 ]; then
-        x_size=`echo $match | awk '{print $1}'`
-        y_size=`echo $match | awk '{print $2}'`
+      # Create a virtual raster
+      initial_vrt_file=$DISTRIBUTION_MAP_DIRECTORY"/"$ticket".tmp.vrt"
+      "$GDAL_BIN_DIR"/gdal_translate "$map_img" -of VRT "$initial_vrt_file"
+      if [ -e $initial_vrt_file ]; then
+        # Inject color table in VRT by replacing </VRTRasterBand>
+        final_vrt_file=$DISTRIBUTION_MAP_DIRECTORY"/"$ticket".vrt"
+        colors=`cat $COLOR_TABLE`
+        cat $initial_vrt_file | while line=`line`
+        do
+          trimmedline=`echo $line`
+          if [ "$trimmedline" == "</VRTRasterBand>" ]; then
+            echo "$colors" >> $final_vrt_file
+          fi
+          echo "$line" >> $final_vrt_file
+        done
+        if [ -e $final_vrt_file ]; then
+          # Create PNG expanding to RGB
+          png_file=$DISTRIBUTION_MAP_DIRECTORY"/"$ticket".png"
+          "$GDAL_BIN_DIR"/gdal_translate "$final_vrt_file" -of PNG -expand rgb "$png_file"
+          if [ -e $png_file ]; then
+            if [[ "$CREATE_KMZ" == "yes" ]]; then
+              kmz_file=$DISTRIBUTION_MAP_DIRECTORY"/"$ticket".kmz"
+              "$GDAL_BIN_DIR"/gdal_translate "$png_file" -of KMLSUPEROVERLAY -co format=png "$kmz_file"
+            fi
+            png_xml_file=$DISTRIBUTION_MAP_DIRECTORY"/"$ticket".png.aux.xml"
+            if [ -e $png_xml_file ]; then
+              rm -f "png_xml_file"
+            fi
+          fi
+          rm -f "$final_vrt_file"
+        fi
+        rm -f "$initial_vrt_file"
       fi
-      # Replace values in the virtual raster file
-      sed 's/\$x/'$x_size'/' "$VRT_TEMPLATE" | sed 's/\$y/'$y_size'/' | sed 's#\$file_name#'$map_img'#' > "$vrt_file"
-      # Convert the virtual raster to PNG
-      "$GDAL_BIN_DIR"/gdal_translate "$vrt_file" -ot Byte -of PNG "$tempmap_png"
-      mv "$tempmap_png" "$finalmap_png"
-      rm -f "$vrt_file"
     fi
   fi
 

@@ -1,11 +1,3 @@
-<VRTDataset rasterXSize="$x" rasterYSize="$y">
-  <VRTRasterBand dataType="Byte" band="1">
-    <SimpleSource>
-      <SourceFilename relativeToVRT="1">$file_name</SourceFilename>
-      <SourceBand>1</SourceBand>
-    </SimpleSource>
-    <ColorInterp>Palette</ColorInterp>
-    <NoDataValue>101</NoDataValue>
     <ColorTable>
       <Entry c1="0" c2="0" c3="255" c4="255"/>
       <Entry c1="0" c2="7" c3="255" c4="255"/>
@@ -136,5 +128,3 @@
       <Entry c1="0" c2="0" c3="0" c4="255"/>
       <Entry c1="0" c2="0" c3="0" c4="255"/>
     </ColorTable>
-  </VRTRasterBand>
-</VRTDataset>
