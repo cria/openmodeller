@@ -202,7 +202,7 @@ ls -t $TICKET_DIRECTORY/proj_req.* 2> /dev/null | tail -n -1 | while read req; d
         # Inject color table in VRT by replacing </VRTRasterBand>
         final_vrt_file=$DISTRIBUTION_MAP_DIRECTORY"/"$ticket".vrt"
         colors=`cat $COLOR_TABLE`
-        cat $initial_vrt_file | while line=`line`
+        cat $initial_vrt_file | while read line;
         do
           trimmedline=`echo $line`
           if [ "$trimmedline" == "</VRTRasterBand>" ]; then
@@ -221,7 +221,7 @@ ls -t $TICKET_DIRECTORY/proj_req.* 2> /dev/null | tail -n -1 | while read req; d
             fi
             png_xml_file=$DISTRIBUTION_MAP_DIRECTORY"/"$ticket".png.aux.xml"
             if [ -e $png_xml_file ]; then
-              rm -f "png_xml_file"
+              rm -f "$png_xml_file"
             fi
           fi
           rm -f "$final_vrt_file"
