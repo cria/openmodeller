@@ -229,6 +229,18 @@ int main( int argc, char **argv ) {
       EnvironmentPtr env = createEnvironment( categ_map, cont_map, input_mask );
 
       sampler = createSampler( env, presences, absences );
+
+      std::string spatially_unique = fp.get( "Spatially unique" );
+      if ( spatially_unique == "true" ) {
+
+        sampler->spatiallyUnique();
+      }
+
+      std::string environmentally_unique = fp.get( "Environmentally unique" );
+      if ( environmentally_unique == "true" ) {
+
+        sampler->environmentallyUnique();
+      }
     }
 
     // Print output
