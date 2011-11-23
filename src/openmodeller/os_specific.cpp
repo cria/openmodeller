@@ -266,13 +266,10 @@ typedef struct dirent TDirent;
  * Filter the file's names that refers to a dynamic shared
  * libraries.
  */
-int
-#ifdef __APPLE__
-filter( TDirent *dir )
-#elif __FreeBSD__
-filter( TDirent *dir )
+#if (defined(__unix__) || defined(unix)) && !defined(USG)
+int filter( TDirent *dir )
 #else
-filter( const TDirent *dir )
+int filter( const TDirent *dir )
 #endif
 {
 #if defined(__APPLE__)
