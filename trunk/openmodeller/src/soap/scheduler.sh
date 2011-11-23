@@ -193,7 +193,7 @@ ls -t $TICKET_DIRECTORY/proj_req.* 2> /dev/null | tail -n -1 | while read req; d
   fi
 
   # Create PNG and KMZ files with pseudocolor (requires GDAL command-line tools)
-  if [[ "$CREATE_PNG" == "yes" ] || [ "$CREATE_KMZ" == "yes" ]]; then
+  if [[ "$CREATE_PNG" == "yes" || "$CREATE_KMZ" == "yes" ]]; then
     if [ -e $map_img ]; then
       # Create a virtual raster
       initial_vrt_file=$DISTRIBUTION_MAP_DIRECTORY"/"$ticket".tmp.vrt"
