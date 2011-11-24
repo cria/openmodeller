@@ -9,7 +9,7 @@
 #######################################################################
 
 # Function to read configuration file
-function readconf() {
+function readconf {
  
   while read line; do
     # skip comments
