@@ -796,7 +796,7 @@ double
 MaximumEntropy::lossBound( Feature * f )
 {
   // Calculate delta loss bound
-  double dlb;
+  double dlb = 0;
 
   double w1 = f->exp();
   double w0 = 1.0 - w1;

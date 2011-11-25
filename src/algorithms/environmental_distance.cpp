@@ -520,7 +520,7 @@ Scalar EnvironmentalDistance::_poz(Scalar z) const {
 }
 
 Scalar EnvironmentalDistance::_pochisq(Scalar x, int df) const {
-   Scalar  a, y, s;
+   Scalar  a, y = 0, s;
    Scalar  e, c, z;
    int     even;     /* true if df is an even number */
    if (x <= 0.0 || df < 1)
