@@ -1,3 +1,5 @@
+#!/bin/bash
+
 #######################################################################
 # Script to be included in the cronjob. It checks if there are requests
 # (create model, test model or project model) in a specific directory 
@@ -21,7 +23,7 @@ function readconf {
     # got a config line eval it
     eval $line
  
-  done < "$CONFIG"
+  done < "$1"
 }
 
 # Configuration file can be passed as a parameter
@@ -34,7 +36,7 @@ fi
 # If configuration file exists, read the configuration
 if [ -f $CONFIG ]; then
   # read configuration
-  readconf
+  readconf $CONFIG
 else
   echo "Error: no configuration file available"
   exit 0
