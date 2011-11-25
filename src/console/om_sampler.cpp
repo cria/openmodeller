@@ -90,8 +90,8 @@ int main( int argc, char **argv ) {
     exit(-1);
   }
 
-  int cell_start;
-  int cell_end;
+  int cell_start = 0;
+  int cell_end = 0;
 
   if ( dump_env ) {
 
