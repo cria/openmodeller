@@ -634,8 +634,8 @@ TapirOccurrences::_startSearchElement( void *data, const char *el, const char **
 
     std::string guid("");
 
-    Coord lg;
-    Coord lt;
+    Coord lg = 0;
+    Coord lt = 0;
 
     for ( int i = 0; attr[i]; i += 2 ) {
 
