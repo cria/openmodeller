@@ -388,7 +388,7 @@
 
 <portType name="openModellerPortType">
  <operation name="ping">
-  <documentation>Simple method to monitor service availability.</documentation>
+  <documentation>Use this operation if you want to monitor the service.</documentation>
   <input message="tns:pingRequest"/>
   <output message="tns:pingResponse"/>
  </operation>
@@ -398,62 +398,62 @@
   <output message="tns:getAlgorithmsResponse"/>
  </operation>
  <operation name="getLayers">
-  <documentation>Returns all available layers on the server side.</documentation>
+  <documentation>Returns all available layers on the server.</documentation>
   <input message="tns:getLayers"/>
   <output message="tns:getLayersResponse"/>
  </operation>
  <operation name="createModel">
-  <documentation>Service definition of function omws__createModel</documentation>
+  <documentation>Schedules a model creation job using the specified algorithm, parameters, points and environmental scenario.</documentation>
   <input message="tns:createModelRequest"/>
   <output message="tns:createModelResponse"/>
  </operation>
  <operation name="getModel">
-  <documentation>Service definition of function omws__getModel</documentation>
+  <documentation>Returns a serialized model given a ticket.</documentation>
   <input message="tns:getModel"/>
   <output message="tns:getModelResponse"/>
  </operation>
  <operation name="testModel">
-  <documentation>Service definition of function omws__testModel</documentation>
+  <documentation>Schedules a test job for a specified model with the given points and environmental scenario. The test may include confusion matrix for a given threshold and ROC curve.</documentation>
   <input message="tns:testModelRequest"/>
   <output message="tns:testModelResponse"/>
  </operation>
  <operation name="getTestResult">
-  <documentation>Service definition of function omws__getTestResult</documentation>
+  <documentation>Returns a test result given a ticket.</documentation>
   <input message="tns:getTestResult"/>
   <output message="tns:testResponse"/>
  </operation>
  <operation name="projectModel">
-  <documentation>Service definition of function omws__projectModel</documentation>
+  <documentation>Schedules a model projection job with the specified model and environmental scenario.</documentation>
   <input message="tns:projectModelRequest"/>
   <output message="tns:projectModelResponse"/>
  </operation>
  <operation name="getProgress">
-  <documentation>Service definition of function omws__getProgress</documentation>
+  <documentation>Returns the status of a job request (createModel, testModel or projectModel) given a ticket. If the value is -1 then the job is queued (still waiting for execution on the server). If the value is -2 the job was aborted and you should be able to get more informaiton about the failure through the getLog operation. Values between [0,100) indicate how much the job has progressed. If the value is 100 the job is finished.</documentation>
   <input message="tns:getProgressRequest"/>
   <output message="tns:getProgressResponse"/>
  </operation>
  <operation name="getLog">
-  <documentation>Service definition of function omws__getLog</documentation>
+  <documentation>Returns log data for a job request (createModel, testModel or projectModel) given a ticket.</documentation>
   <input message="tns:getLogRequest"/>
   <output message="tns:getLogResponse"/>
  </operation>
  <operation name="getLayerAsAttachment">
-  <documentation>Service definition of function omws__getLayerAsAttachment</documentation>
+  <documentation>Returns a layer as a SOAP attachement given a ticket. Currently this only works for projected models, where the layer id is the ticket returned by the projectModel operation.</documentation>
   <input message="tns:getLayerAsAttachmentRequest"/>
   <output message="tns:getLayerAsAttachmentResponse"/>
  </operation>
  <operation name="getLayerAsUrl">
-  <documentation>Service definition of function omws__getLayerAsUrl</documentation>
+  <documentation>Returns the URL of a layer given a ticket. Currently this only works for projected models, where the layer id is the ticket returned by the projectModel operation.</documentation>
   <input message="tns:getLayerAsUrlRequest"/>
   <output message="tns:getLayerAsUrlResponse"/>
  </operation>
  <operation name="getLayerAsWcs">
-  <documentation>Service definition of function omws__getLayerAsWcs</documentation>
+  <documentation>Returns the WCS access point of a layer given a ticket. Only works if the service is configured to work with a WCS server.</documentation>
   <input message="tns:getLayerAsWcsRequest"/>
   <output message="tns:getLayerAsWcsResponse"/>
  </operation>
  <operation name="getProjectionMetadata">
-  <documentation>Service definition of function omws__getProjectionMetadata</documentation>
+  <documentation>Returns model projection metadata given a ticket.</documentation>
   <input message="tns:getProjectionMetadata"/>
   <output message="tns:getProjectionMetadataResponse"/>
  </operation>
