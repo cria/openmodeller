@@ -8,9 +8,9 @@ CRIA - Centro de Referência em Informação Ambiental:
 
   * Renato De Giovanni <renato [at] cria . org . br>
 
-     Current library maintainer.
-     Implemented SVM and Aquamaps algorithms.
-     Implemented the SOAP interface.
+     Current framework maintainer.
+     Implemented SVM, Aquamaps and Random Forests algorithms.
+     Implemented the Web Service interface.
      Refactored all command-line programs.
      Helped in other specific parts of the code.
      Helped in documentation and also making releases.
@@ -19,17 +19,21 @@ CRIA - Centro de Referência em Informação Ambiental:
 
      Implemented the CSM algorithm.
      Implemented CMake build system.
-     Implemented some command line tools.
-     Created new website.
-     Created OSX, windows and debian packages.
-     Some library maintenance.
+     Implemented some of the command line tools.
+     Created the new website.
+     Created the Mac OSX, Windows and Debian packages.
+     Helped a lot in the framework maintenance.
+
+ * Daniel Bolgheroni <daniel [at] cria . org . br>
+
+     Ported openModeller to OpenBSD.
 
 The University of Kansas:
 
  * Ricardo Scachetti Pereira <ricardo [at] tdwg . org>
 
      Participated in the design of the system.
-     Implemented the Bioclim and GARP algorithm.
+     Implemented the Bioclim and GARP algorithms.
      Maintainer of the Win version.
      Implemented initial versions of the SWIG Python and Java interfaces.
      Contributed in many other parts of the code.
