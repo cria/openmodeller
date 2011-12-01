@@ -129,7 +129,7 @@ an eigenvalue less than (n stddevs above a randomised sample) is discarded. \n\
 The original CSM was written as series of Matlab functions. ", //description
 
     "Neil Caithness",  // Author
-    "",                // Bibliography.
+    "Robertson M.P., Caithness N., Villet M.H. (2001) A PCA-based modelling technique for predicting environmental suitability for organisms from presence records. Diversity and Distributions, 7:15–27",  // Bibliography.
 
     "Tim Sutton, Renato De Giovanni",  // Code author.
     "t.sutton [at] reading.ac.uk",     // Code author's contact.
