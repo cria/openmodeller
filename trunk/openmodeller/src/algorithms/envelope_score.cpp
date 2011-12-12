@@ -235,18 +235,16 @@ EnvelopeScore::computeStats( const OccurrencesPtr& occs )
     OccurrencesImpl::const_iterator oc = occs->begin();
     OccurrencesImpl::const_iterator end = occs->end();
 
-    // Intialize _minimum, _maximum, and _mean
-    // to the values of the first point, and increment
-    // to get it out of the loop.
+    // Initialize _minimum and _maximum to the values of the first point
+    // and increment to get it out of the loop.
     Sample const & sample = (*oc)->environment();
     _minimum = sample;
     _maximum = sample;
     
     ++oc;
     
-    // For each Occurrence, update the
-    // statistics for _minimum, _maximum, and _mean
-    
+    // For each Occurrence, update the statistics for _minimum and
+    // _maximum.
     while ( oc != end ) {
       
       Sample const& sample = (*oc)->environment();
