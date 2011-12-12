@@ -230,7 +230,7 @@ void
 EnvelopeScore::computeStats( const OccurrencesPtr& occs )
 {
 
-  // Compute min, max, and mean
+  // Compute minimum and maximum.
   {
     OccurrencesImpl::const_iterator oc = occs->begin();
     OccurrencesImpl::const_iterator end = occs->end();
