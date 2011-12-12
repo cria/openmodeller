@@ -54,7 +54,7 @@ Just pass the serialized model as a parameter.
 
 e.g.
 
-om_niche furcata.xml
+om_niche -o furcata.xml
 
 ---
 
