@@ -40,8 +40,6 @@ THREAD_PROC_RETURN_TYPE AlgorithmRunThreadProc(void * threadData)
 {
   AlgorithmRun * algRun = (AlgorithmRun *) threadData;
 
-  //Log::instance()->debug("Starting new thread (%d).\n", algRun->getId());
-
   algRun->createModel();
 
   algRun->stop();
@@ -62,13 +60,13 @@ AlgorithmRun::AlgorithmRun(const AlgorithmPtr& algo) :
   _train_sampler(),
   _test_sampler()
 {
-  //Log::instance()->info("Creating an AlgorithmRun at: %x\n",this);
+
 }
 
 /****************************************************************/
 AlgorithmRun::~AlgorithmRun() 
 {
-  //Log::instance()->info("Deleting an AlgorithmRun at: %x\n",this);
+
 }
 
 /****************************************************************/
@@ -76,8 +74,6 @@ int AlgorithmRun::initialize(int id, int comm_samples,
 			     const SamplerPtr& train_sampler, 
 			     const SamplerPtr& test_sampler ) 
 {
-  //Log::instance()->debug("Initializing garp run (%d)\n", id);
-
   _id = id;
   _commission_samples = comm_samples;
 
@@ -90,14 +86,12 @@ int AlgorithmRun::initialize(int id, int comm_samples,
 /****************************************************************/
 void AlgorithmRun::run()
 {
-  //Log::instance()->debug("Starting new garp run (%d).\n", _id);
   _running = true;
   THREAD_START(AlgorithmRunThreadProc, this); 
 }
 
 void AlgorithmRun::stop()
 {
-  //Log::instance()->debug("Finishing thread (%d).\n", _id);
   _running = false;
   THREAD_END();
 }
@@ -112,8 +106,6 @@ bool AlgorithmRun::running() const
 /****************************************************************/
 void AlgorithmRun::createModel()
 {
-  //Log::instance()->debug("createModel: Iteration %6f on run %d.\n", _alg->getProgress(), _id);
-
   _alg->createModel( _train_sampler );
 
 #if 1
@@ -142,8 +134,6 @@ int AlgorithmRun::calculateCommission()
 
   // TODO: check how to use absences in computing commission
 
-  //Log::instance()->debug("Calculating commission error (%d).\n", _id);
-
   // get random points from the background to estimate 
   // area predicted present
   bool hasAbsences = (_train_sampler->numAbsence() != 0);
@@ -170,8 +160,6 @@ int AlgorithmRun::calculateCommission()
 int AlgorithmRun::calculateOmission()           
 {
   // TODO: check how to use absences in computing omission
-
-  //Log::instance()->debug("Calculating omission error (%d).\n", _id);
 
   // test which kind of test (intrinsic or extrinsic) should be performed
   SamplerPtr sampler;
