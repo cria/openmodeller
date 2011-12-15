@@ -91,6 +91,7 @@ om_model --xml-req model_request.xml --model-file acacia_model.xml
 
 Additional parameters and detailed documentation can be found in the
 corresponding man page, or just by typing om_model without parameters.
+
 ---
 
 6) om_test
@@ -199,26 +200,21 @@ corresponding man page, or just by typing om_pseudo without parameters.
 
 ADDITIONAL INFORMATION
 
-If you are a developer interested in performance optimization, you can
-follow the next steps to run an experiment using several high resolution
-environmental layers, thousands of points and an algorithm that can take
-quite some time to run:
+If you are a developer (and has a big bandwidth to download ~3.5G of
+data) interested in performance optimization, you can follow the steps
+below to run an experiment using several high resolution environmental
+layers, thousands of points and an algorithm that can take quite some
+time to run.
 
-# Download high resolution environmental layers from worldclim
-wget http://biogeo.ucdavis.edu/data/climate/worldclim/1_4/grid/cur/tmin_30s_esri.zip
-wget http://biogeo.ucdavis.edu/data/climate/worldclim/1_4/grid/cur/tmax_30s_esri.zip
-wget http://biogeo.ucdavis.edu/data/climate/worldclim/1_4/grid/cur/prec_30s_esri.zip
+In the examples/ directory, there is a little script to download all the
+necessary files, including environmental layers from WorldClim,
+occurrence points and a request file ready to use with openModeller.
 
-unzip tmin_30s_esri.zip
-unzip tmax_30s_esri.zip
-unzip prec_30s_esri.zip
+$ om_getperftests
 
-# Download file with points
-wget http://openmodeller.cria.org.br/download/examples/points_example_1.txt
+The script will also unzip these files. If all went well (e.g. the files
+downloaded isn't corrupted) you can run the experiment inside perftests/
+directory with om_console.
 
-# Download openModeller request file for this experiment
-wget http://openmodeller.cria.org.br/download/examples/request_example_1.txt
-
-# Run experiment
-om_console request_example_1.txt
-
+$ cd perftests
+$ om_console request_example_1.txt
