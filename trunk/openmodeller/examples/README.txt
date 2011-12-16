@@ -200,21 +200,36 @@ corresponding man page, or just by typing om_pseudo without parameters.
 
 ADDITIONAL INFORMATION
 
-If you are a developer (and has a big bandwidth to download ~3.5G of
-data) interested in performance optimization, you can follow the steps
+If you are a developer interested in performance optimization (and has 
+enough bandwidth to download ~3.5G of data), you can follow the steps
 below to run an experiment using several high resolution environmental
 layers, thousands of points and an algorithm that can take quite some
 time to run.
 
 In the examples/ directory, there is a little script to download all the
 necessary files, including environmental layers from WorldClim,
-occurrence points and a request file ready to use with openModeller.
+occurrence points and a request file ready to use with openModeller:
 
-$ om_getperftests
+$ getperftests.sh
 
-The script will also unzip these files. If all went well (e.g. the files
-downloaded isn't corrupted) you can run the experiment inside perftests/
-directory with om_console.
+If you use another platform without Bash, instead of using the script 
+above you can manually create the directory perftests/, download and 
+extract the environmental layers inside it:
+
+http://biogeo.ucdavis.edu/data/climate/worldclim/1_4/grid/cur/tmin_30s_esri.zip
+http://biogeo.ucdavis.edu/data/climate/worldclim/1_4/grid/cur/tmax_30s_esri.zip
+http://biogeo.ucdavis.edu/data/climate/worldclim/1_4/grid/cur/prec_30s_esri.zip
+
+Then downaload the occurrence points:
+
+http://openmodeller.cria.org.br/download/examples/points_example_1.txt
+
+And finally the request file:
+
+http://openmodeller.cria.org.br/download/examples/request_example_1.txt
+
+If all went well (e.g. the files downloaded aren't corrupted) you can run the 
+experiment inside perftests/ directory with om_console.
 
 $ cd perftests
 $ om_console request_example_1.txt
