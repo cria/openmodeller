@@ -25,6 +25,10 @@
  * http://www.gnu.org/copyleft/gpl.html
  */
 
+#if (defined(__unix__) || defined(unix)) && !defined(USG)
+#include <sys/param.h>
+#endif
+
 #include <os_specific.hh>
 #include <openmodeller/Log.hh>
 #include <openmodeller/AlgorithmFactory.hh>
@@ -268,10 +272,8 @@ typedef struct dirent TDirent;
  */
 #ifdef __APPLE__
 int filter( TDirent *dir )
-#elif __FreeBSD__
-int filter( TDirent *dir )
-#elif __OpenBSD__
-int filter( TDirent *dir )
+#elif BSD
+int filter ( TDirent *dir )
 #else
 int filter( const TDirent *dir )
 #endif
