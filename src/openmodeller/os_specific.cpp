@@ -403,7 +403,7 @@ initRandom( unsigned int new_seed )
  *
  * Should work on all BSDs and on Mac OS X. The bits regarding Linux and
  * Windows will be added as needed. Processors that implement
- * Hyper-Threading will see each virtual (or logic) processor as a
+ * Hyper-Threading will see each virtual (or logic) processor as an
  * independent CPU.
  */
 #ifdef BSD
