@@ -28,6 +28,15 @@
 #ifndef _OS_SPECIFICHH_
 #define _OS_SPECIFICHH_
 
+#if (defined(__unix__) || defined(unix)) && !defined(USG)
+#include <sys/param.h>
+#endif
+
+#ifdef BSD
+#include <sys/sysctl.h>
+#include <err.h>
+#endif
+
 #include <vector>
 #include <string>
 
@@ -102,6 +111,10 @@ dllexp int initRandom( unsigned int new_seed=0 );
 #ifdef WIN32 
 // rand_r implementation for Windows
 dllexp int rand_r( unsigned * seed );
+#endif
+
+#ifdef BSD
+int getNCPU();
 #endif
 
 #endif

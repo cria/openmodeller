@@ -25,10 +25,6 @@
  * http://www.gnu.org/copyleft/gpl.html
  */
 
-#if (defined(__unix__) || defined(unix)) && !defined(USG)
-#include <sys/param.h>
-#endif
-
 #include <os_specific.hh>
 #include <openmodeller/Log.hh>
 #include <openmodeller/AlgorithmFactory.hh>
@@ -38,6 +34,7 @@
 
 using std::vector;
 using std::string;
+
 #if defined(__APPLE__)
 //for getting app bundle path
     
@@ -398,3 +395,31 @@ initRandom( unsigned int new_seed )
 
   return 1;
 }
+
+/**********************/
+/*** number of cpus ***/
+/*
+ * Get the number of CPUs available on the system.
+ *
+ * Should work on all BSDs and on Mac OS X. The bits regarding Linux and
+ * Windows will be added as needed. Processors that implement
+ * Hyper-Threading will see each virtual (or logic) processor as a
+ * independent CPU.
+ */
+#ifdef BSD
+int getNCPU() {
+  int mib[2], ncpu;
+
+  size_t len;
+
+  mib[0] = CTL_HW;
+  mib[1] = HW_NCPU;
+
+  len = sizeof(ncpu);
+
+  if (sysctl(mib, 2, &ncpu, &len, NULL, 0) == -1)
+    err(1, "sysctl");
+
+  return ncpu;
+}
+#endif
