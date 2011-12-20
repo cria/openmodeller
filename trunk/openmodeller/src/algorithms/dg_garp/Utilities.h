@@ -68,8 +68,8 @@ const BYTE PRESENCE      =   1;
 const BYTE ABSENCE       =   0;
 
 // used in random number generator below
-extern unsigned long Seed;						// seed for random number generator
-extern unsigned long OrigSeed;					// original value for random seed
+extern unsigned long Seed;     // seed for random number generator
+extern unsigned long OrigSeed; // original value for random seed
 
 // macros for bitmap header generation
 typedef unsigned long       DWORD;
@@ -89,8 +89,14 @@ typedef unsigned short      WORD;
 #define HIBYTE(w)           ((BYTE)(((WORD)(w) >> 8) & 0xFF))
 #endif
 
+/*
+ * Generic definitions like this should be avoided as, at any time, may
+ * conflict with some system or other included header.
+ */
+#ifndef BSD
 #define MAX(a, b)           ( (a > b)? a : b )
 #define MIN(a, b)           ( (a < b)? a : b )
+#endif
 
 int getFileSize(char * strFilename);
 
