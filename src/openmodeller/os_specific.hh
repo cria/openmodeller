@@ -40,7 +40,6 @@
 #include <vector>
 #include <string>
 
-
 /****************************************************************/
 /****** DEFINE MACRO TO NEATLY HANDLE UNUSED VARS ***************/
 #ifdef _MSC_VER
@@ -114,7 +113,7 @@ dllexp int rand_r( unsigned * seed );
 #endif
 
 #ifdef BSD
-int getNCPU();
+unsigned int getNCPU();
 #endif
 
 #endif
