@@ -405,9 +405,12 @@ initRandom( unsigned int new_seed )
  * Windows will be added as needed. Processors that implement
  * Hyper-Threading will see each virtual (or logic) processor as an
  * independent CPU.
+ *
+ * Seems like C++11 has a std::thread::hardware_concurrency(), but we
+ * cannot rely on this.
  */
 #ifdef BSD
-int getNCPU() {
+unsigned int getNCPU() {
   int mib[2], ncpu;
 
   size_t len;
@@ -420,6 +423,15 @@ int getNCPU() {
   if (sysctl(mib, 2, &ncpu, &len, NULL, 0) == -1)
     err(1, "sysctl");
 
+  return ncpu;
+}
+#elif WIN32
+unsigned int getNCPU() {
+  SYSTEM_INFO sysinfo;
+
+  GetSystemInfo(&sysinfo);
+  unsigned int ncpu = (unsigned int)sysinfo.dwNumberOfProcessors;
+  
   return ncpu;
 }
 #endif
