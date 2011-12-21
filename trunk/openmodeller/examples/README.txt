@@ -3,8 +3,8 @@ Using the openModeller command line tools
 
 This directory contains examples to demonstrate how the 
 various om_* command line tools can be used. They use the 
-simplest case scenario of a bioclim model with a single
-environmental layer - subsequently the models produced 
+simplest case scenario of a bioclim model with a couple of
+environmental layers - subsequently the models produced 
 themselves are not particularly robust or interesting. Rather
 the idea is that you examine the configuration files provided
 and available parameters to decide how to prepare your own 
@@ -220,7 +220,7 @@ http://biogeo.ucdavis.edu/data/climate/worldclim/1_4/grid/cur/tmin_30s_esri.zip
 http://biogeo.ucdavis.edu/data/climate/worldclim/1_4/grid/cur/tmax_30s_esri.zip
 http://biogeo.ucdavis.edu/data/climate/worldclim/1_4/grid/cur/prec_30s_esri.zip
 
-Then downaload the occurrence points:
+Then download the occurrence points:
 
 http://openmodeller.cria.org.br/download/examples/points_example_1.txt
 
