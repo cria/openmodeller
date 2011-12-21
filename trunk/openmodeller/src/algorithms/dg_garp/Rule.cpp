@@ -23,6 +23,8 @@
 #include "EnvCellSet.h"
 #include "Utilities.h"
 
+#include <openmodeller/om.hh>
+
 #include <math.h> 
 
 // ==========================================================================
