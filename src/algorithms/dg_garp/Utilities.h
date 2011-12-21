@@ -93,7 +93,7 @@ typedef unsigned short      WORD;
  * Generic definitions like this should be avoided as, at any time, may
  * conflict with some system or other included header.
  */
-#ifndef BSD
+#ifdef WIN32
 #define MAX(a, b)           ( (a > b)? a : b )
 #define MIN(a, b)           ( (a < b)? a : b )
 #endif
