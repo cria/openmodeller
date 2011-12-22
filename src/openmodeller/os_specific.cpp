@@ -434,4 +434,9 @@ unsigned int getNCPU() {
   
   return ncpu;
 }
+#else
+unsigned int getNCPU() {
+  Log::instance()->warn( "getNCPU not implemented for this platform. Using 1 as default.\n" );
+  return 1;
+}
 #endif
