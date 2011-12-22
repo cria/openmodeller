@@ -112,8 +112,6 @@ dllexp int initRandom( unsigned int new_seed=0 );
 dllexp int rand_r( unsigned * seed );
 #endif
 
-#ifdef BSD
 unsigned int getNCPU();
-#endif
 
 #endif
