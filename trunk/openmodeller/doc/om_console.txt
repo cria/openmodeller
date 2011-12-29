@@ -2,12 +2,12 @@ NAME
        om_console - The console/command line front end to openModeller
 
 SYNOPSIS
-       om_console REQUEST_FILE
+       om_console REQUEST_FILE [log_level]
 
 DESCRIPTION
-       om_console is a console and command line tool for generating and/or projecting potential distribution models using the openModeller library. om_console requires a 'request file' name (with relative or absolute path) passed as a parameter.
+       om_console is a console and command line tool for generating and/or projecting potential distribution models using the openModeller library. om_console requires a 'request file' name (with relative or absolute path) passed as a parameter. A second optional parameter can be used to specify the minimum log level to control the messages output. Possible values for this parameter are: debug, info, warn, error.
 
-       The request file uses the following key-value pair pattern: KEY = VALUE where each pair is separated by one or more line feeds. om_console can be used to generate a model, project an existing model, or generate and then project a model in the same process depending on the parameters specified in the request file.
+       The request file uses the following key-value pair pattern: KEY = VALUE where each pair is separated by one or more line feeds. om_console can be used to generate a model, project an existing model, or generate and then project a model in the same process depending on the parameters specified in the request file. The following parameters can be used in the request file:
 
 POINT DATA PARAMETERS
 
