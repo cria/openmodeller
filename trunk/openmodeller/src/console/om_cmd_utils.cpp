@@ -50,7 +50,7 @@ Log::Level getLogLevel( std::string level ) {
     }
     else {
 
-      printf( "Unrecognized log level (%s). Using \"Default\" instead.\n", level.c_str() );
+      printf( "Unrecognized log level (%s). Using default value.\n", level.c_str() );
       return Log::Default;
     }
 }
