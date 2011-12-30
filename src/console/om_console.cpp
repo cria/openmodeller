@@ -437,5 +437,5 @@ modelCallback( float progress, void *extra_param )
 void
 mapCallback( float progress, void *extra_param )
 {
-  Log::instance()->info( "Map creation: %07.4f%%\n", 100 * progress );
+  Log::instance()->info( "Map creation: %07.4f%%\r", 100 * progress );
 }
