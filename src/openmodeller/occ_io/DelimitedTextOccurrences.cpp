@@ -163,7 +163,7 @@ DelimitedTextOccurrences::load()
     }
     else {
 
-      Log::instance()->debug( "Skipping line: %s\n", line );
+      Log::instance()->debug( "Skipping line: %s", line );
     }
   }
 
