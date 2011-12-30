@@ -172,7 +172,7 @@ RequestFile::_setOccurrences( OpenModeller *om, FileParser &fp )
   }
 
   // Populate the occurences list from the localities file
-  Log::instance()->info( "Reading occurrences..." );
+  Log::instance()->info( "Reading occurrences...\n" );
 
   OccurrencesReader* oc_reader = OccurrencesFactory::instance().create( oc_file.c_str(), oc_cs.c_str() );
 
