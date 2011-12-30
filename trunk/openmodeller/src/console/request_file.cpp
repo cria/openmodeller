@@ -172,7 +172,7 @@ RequestFile::_setOccurrences( OpenModeller *om, FileParser &fp )
   }
 
   // Populate the occurences list from the localities file
-  Log::instance()->info( "Reading occurrences...\n" );
+  Log::instance()->info( "Reading occurrences...\r" );
 
   OccurrencesReader* oc_reader = OccurrencesFactory::instance().create( oc_file.c_str(), oc_cs.c_str() );
 
@@ -244,7 +244,7 @@ RequestFile::_setEnvironment( OpenModeller *om, FileParser &fp )
   }
 
   // Set input environment
-  Log::instance()->info( "Reading layers..." );
+  Log::instance()->info( "Reading layers...\r" );
   om->setEnvironment( cat, map, _inputMask );
   Log::instance()->info( "Reading layers...done\n" );
 
