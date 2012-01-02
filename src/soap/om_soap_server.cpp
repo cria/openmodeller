@@ -250,6 +250,45 @@ omws__ping( struct soap *soap, void *_, xsd__int &status )
 
   addHeader( soap );
 
+  // Check essential configuration
+  string layersDir( gFileParser.get( "LAYERS_DIRECTORY" ) );
+
+  if ( ! layersDir.empty() ) {
+
+    return soap_receiver_fault( soap, "Missing configuration (1)", NULL );
+  }
+
+  string ticketDir( gFileParser.get( "TICKET_DIRECTORY" ) );
+
+  if ( ! ticketDir.empty() ) {
+
+    return soap_receiver_fault( soap, "Missing configuration (2)", NULL );
+  }
+
+  string baseUrl( gFileParser.get( "BASE_URL" ) );
+
+  if ( ! baseUrl.empty() ) {
+
+    return soap_receiver_fault( soap, "Missing configuration (3)", NULL );
+  }
+
+  string distMapDir( gFileParser.get( "DISTRIBUTION_MAP_DIRECTORY" ) );
+
+  if ( ! distMapDir.empty() ) {
+
+    return soap_receiver_fault( soap, "Missing configuration (4)", NULL );
+  }
+
+  OpenModeller *om = (OpenModeller*)soap->user; 
+
+  // Check algorithm availability
+  AlgMetadata const **algorithms = om->availableAlgorithms();
+
+  if ( ! *algorithms ) {
+
+    return soap_receiver_fault( soap, "No available algorithms", NULL );
+  }
+
   status = 1;
 
   return SOAP_OK;
