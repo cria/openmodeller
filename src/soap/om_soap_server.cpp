@@ -69,7 +69,7 @@ static bool     fileExists( const char* fileName );
 static string   getMapFile( string ticket );
 static string   getMapServerFile( const char* ticket );
 static wchar_t* convertToWideChar( const char* p );
-static bool     readDirectory( const char* dir, const char* label, ostream &xml, int depth );
+static bool     readDirectory( const char* dir, const char* label, ostream &xml, int depth, int * seq );
 static bool     isValidGdalFile( const char* fileName );
 static bool     hasValidGdalProjection( const char* fileName );
 static string   getLayerLabel( const string path, const string name, bool isDir );
@@ -435,8 +435,10 @@ omws__getLayers( struct soap *soap, void *_, struct omws__getLayersResponse *out
   // Recurse on all sub directories searching for GDAL compatible layers
   ostringstream oss;
 
+  int seq = 1;
+
   if ( ! readDirectory( gFileParser.get( "LAYERS_DIRECTORY" ).c_str(), 
-                        gFileParser.get( "LAYERS_LABEL" ).c_str(), oss, 0 ) ) {
+                        gFileParser.get( "LAYERS_LABEL" ).c_str(), oss, 0, &seq ) ) {
 
     return soap_receiver_fault( soap, "Could not read available layers", NULL );
   }
@@ -1263,7 +1265,7 @@ wchar_t* convertToWideChar( const char* p )
 /***********************/
 /**** readDirectory ****/
 static 
-bool readDirectory( const char* dir, const char* label, ostream &xml, int depth )
+bool readDirectory( const char* dir, const char* label, ostream &xml, int depth, int* seq )
 {
   bool r = true;
 
@@ -1309,7 +1311,10 @@ bool readDirectory( const char* dir, const char* label, ostream &xml, int depth 
       return true;
   }
 
-  xml << "<LayersGroup Id=\"" << myDir << "\">";
+  //xml << "<LayersGroup Id=\"" << myDir << "\">";
+  xml << "<LayersGroup Id=\"" << seq << "\">";
+
+  ++seq;
 
   xml << "<Label>" << label << "</Label>";
 
@@ -1360,7 +1365,7 @@ bool readDirectory( const char* dir, const char* label, ostream &xml, int depth 
       }
       else {
 
-        r = readDirectory( fullName.c_str(), nameList[i]->d_name, xml, depth );
+	  r = readDirectory( fullName.c_str(), nameList[i]->d_name, xml, depth, seq );
       }
     }
     // Regular file
@@ -1387,7 +1392,7 @@ bool readDirectory( const char* dir, const char* label, ostream &xml, int depth 
     else if ( S_ISLNK( buf.st_mode ) ) {
 
       // What should we do with symlinks?
-      //readDirectory( fullName.c_str(), nameList[i]->d_name, xml, depth );
+      //readDirectory( fullName.c_str(), nameList[i]->d_name, xml, depth, seq );
     }
   }
 
