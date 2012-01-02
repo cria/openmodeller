@@ -45,6 +45,7 @@ using namespace std;
 
 #include "file_parser.hh"
 
+#define OMWS_VERSION "1.0"
 #define OMWS_BACKLOG (100) // Max. request backlog 
 #define OMWS_MIN *60
 #define OMWS_H *3600
@@ -75,6 +76,7 @@ static string   getLayerLabel( const string path, const string name, bool isDir 
 static int      getSize( FILE *fd );
 static bool     getData( struct soap*, const xsd__string, xsd__base64Binary& );
 static void     logRequest( struct soap*, const char* operation );
+static void     addHeader( struct soap* );
 
 
 /****************/
@@ -246,15 +248,7 @@ omws__ping( struct soap *soap, void *_, xsd__int &status )
 
   soap_clr_omode(soap, SOAP_ENC_ZLIB); // disable Zlib's gzip
 
-  // Get controller object previously instantiated
-  OpenModeller *om = (OpenModeller*)soap->user; 
-
-  // alloc new header
-  soap->header = (struct SOAP_ENV__Header*)soap_malloc( soap, sizeof(struct SOAP_ENV__Header) ); 
-  string version( om->getVersion() );
-  char *version_buf = (char*)soap_malloc( soap, version.size() * sizeof( char ) );
-  strcpy( version_buf, version.c_str() );
-  soap->header->omws__version = version_buf;
+  addHeader( soap );
 
   status = 1;
 
@@ -288,15 +282,9 @@ omws__getAlgorithms( struct soap *soap, void *_, struct omws__getAlgorithmsRespo
 #endif
   }
 
-  // Get controller object previously instantiated
-  OpenModeller *om = (OpenModeller*)soap->user; 
+  addHeader( soap );
 
-  // alloc new header
-  soap->header = (struct SOAP_ENV__Header*)soap_malloc( soap, sizeof(struct SOAP_ENV__Header) ); 
-  string version( om->getVersion() );
-  char *version_buf = (char*)soap_malloc( soap, version.size() * sizeof( char ) );
-  strcpy( version_buf, version.c_str() );
-  soap->header->omws__version = version_buf;
+  OpenModeller *om = (OpenModeller*)soap->user; 
 
   AlgMetadata const **algorithms = om->availableAlgorithms();
 
@@ -343,15 +331,7 @@ omws__getLayers( struct soap *soap, void *_, struct omws__getLayersResponse *out
 #endif
   }
 
-  // Get controller object previously instantiated
-  OpenModeller *om = (OpenModeller*)soap->user; 
-
-  // alloc new header
-  soap->header = (struct SOAP_ENV__Header*)soap_malloc( soap, sizeof(struct SOAP_ENV__Header) ); 
-  string version( om->getVersion() );
-  char *version_buf = (char*)soap_malloc( soap, version.size() * sizeof( char ) );
-  strcpy( version_buf, version.c_str() );
-  soap->header->omws__version = version_buf;
+  addHeader( soap );
 
   string cacheDir( gFileParser.get( "CACHE_DIRECTORY" ) );
 
@@ -1618,6 +1598,27 @@ logRequest( struct soap* soap, const char* operation )
 
   fclose( file );
 }
+
+/*******************/
+/**** addHeader ****/
+static void
+addHeader( struct soap* soap )
+{
+  // Get controller object
+  OpenModeller *om = (OpenModeller*)soap->user; 
+
+  // alloc new header
+  soap->header = (struct SOAP_ENV__Header*)soap_malloc( soap, sizeof(struct SOAP_ENV__Header) ); 
+  string version( "oM Server " ); // Default server implementation name
+  version.append( OMWS_VERSION ); // Control version on top of this file
+  version.append( " (openModeller " ); // Add om version 
+  version.append( om->getVersion() );
+  version.append( ")" );
+  char *version_buf = (char*)soap_malloc( soap, version.size() * sizeof( char ) );
+  strcpy( version_buf, version.c_str() );
+  soap->header->omws__version = version_buf;
+}
+
 
 ///////////////////////
 //
