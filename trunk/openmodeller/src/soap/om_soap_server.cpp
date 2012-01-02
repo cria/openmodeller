@@ -54,9 +54,9 @@ using namespace std;
 #define OMWS_TEST_REQUEST_PREFIX "test_req."
 #define OMWS_TEST_RESPONSE_PREFIX "test_resp."
 #define OMWS_MODEL_PROJECTION_REQUEST_PREFIX "proj_req."
-#define OMWS_MODEL_PROJECTION_PROCESSING_PREFIX "proj_proc."
 #define OMWS_PROJECTION_STATISTICS_PREFIX "stats."
 #define OMWS_JOB_PROGRESS_PREFIX "prog."
+#define OMWS_JOB_DONE_PREFIX "done."
 #define OMWS_CONFIG_FILE "../config/server.conf"
 #define OMWS_LAYERS_CACHE_FILE "layers.xml"
 
@@ -737,22 +737,14 @@ omws__getProgress( struct soap *soap, xsd__string ticket, xsd__int &progress )
       // Make sure that everything is really done before returning 100%
       if ( progress == 100 ) {
 
-        string projectionFootprint( fileName );
-        projectionFootprint.append( OMWS_MODEL_PROJECTION_PROCESSING_PREFIX );
-        projectionFootprint.append( ticket );
+        // Finished flag
+        string doneFlag( fileName );
+        doneFlag.append( OMWS_JOB_PROGRESS_PREFIX );
+        doneFlag.append( ticket );
 
-        // For projection jobs
-        if ( fileExists( projectionFootprint.c_str() ) ) {
- 
-          string mapFile = getMapFile( ticket );
+        if ( ! fileExists( doneFlag.c_str() ) ) {
 
-          // If the final map was not created yet, replace progress with 99%
-          // to indicate that we are almost there. (this may happen if there is 
-          // any post-processing step after the projection).
-          if ( mapFile.empty() ) {
-
-            progress = 99;
-          }
+          progress = 99;
         }
       }
 

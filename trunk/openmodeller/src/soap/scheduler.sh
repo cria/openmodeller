@@ -112,6 +112,8 @@ ls -t $TICKET_DIRECTORY/model_req.* 2> /dev/null | tail -n -1 | while read req; 
   else
     # no Condor - execute om_model directly
     "$OM_BIN_DIR"/om_model --xml-req "$moved" --model-file "$resp" --log-file "$log" --prog-file "$model_prog"
+    finished=$TICKET_DIRECTORY"/done."$ticket
+    touch "$finished"
   fi  
 done
 
@@ -148,6 +150,8 @@ ls -t $TICKET_DIRECTORY/test_req.* 2> /dev/null | tail -n -1 | while read req; d
   else
     # no Condor - execute om_test directly
     "$OM_BIN_DIR"/om_test --xml-req "$moved" --result "$resp" --log-file "$log" --prog-file "$test_prog"
+    finished=$TICKET_DIRECTORY"/done."$ticket
+    touch "$finished"
   fi  
 done
 
@@ -237,6 +241,8 @@ ls -t $TICKET_DIRECTORY/proj_req.* 2> /dev/null | tail -n -1 | while read req; d
   # This must be the last step, since getProgress will only return 100% if
   # the final map exists
   mv "$map_img" "$finalmap_img"
+  finished=$TICKET_DIRECTORY"/done."$ticket
+  touch "$finished"
 done
 
 if [[ "$CONDOR_INTEGRATION" == "no" ]]; then
