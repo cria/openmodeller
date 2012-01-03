@@ -757,7 +757,7 @@ sub get_model
 	return 0;
     }
 
-    print "Requesting model... ";
+    print "Retrieving model... ";
 
     my $soap_ticket = SOAP::Data
 	-> name( 'ticket' )
@@ -768,7 +768,21 @@ sub get_model
 
     unless ( $response->fault )
     { 
-	print "OK\n";
+        my $tmp = $last_xml_resp;
+        if ( $tmp =~ m/.*(<SerializedModel>.*<\/SerializedModel>).*/s )
+        {
+            my $file_name = "$ticket.mod";
+            open FILE, ">", $file_name or die $!;
+            print FILE $1;
+            close FILE or die $!;
+
+            print "\nOK! Model saved in $file_name\n";
+        }
+        else
+        {
+	    print "Ops, could not find serialized model in the response\n";
+	    return 0;
+        }
     }
     else
     {
