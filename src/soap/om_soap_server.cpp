@@ -253,28 +253,28 @@ omws__ping( struct soap *soap, void *_, xsd__int &status )
   // Check essential configuration
   string layersDir( gFileParser.get( "LAYERS_DIRECTORY" ) );
 
-  if ( ! layersDir.empty() ) {
+  if ( layersDir.empty() ) {
 
     return soap_receiver_fault( soap, "Missing configuration (1)", NULL );
   }
 
   string ticketDir( gFileParser.get( "TICKET_DIRECTORY" ) );
 
-  if ( ! ticketDir.empty() ) {
+  if ( ticketDir.empty() ) {
 
     return soap_receiver_fault( soap, "Missing configuration (2)", NULL );
   }
 
   string baseUrl( gFileParser.get( "BASE_URL" ) );
 
-  if ( ! baseUrl.empty() ) {
+  if ( baseUrl.empty() ) {
 
     return soap_receiver_fault( soap, "Missing configuration (3)", NULL );
   }
 
   string distMapDir( gFileParser.get( "DISTRIBUTION_MAP_DIRECTORY" ) );
 
-  if ( ! distMapDir.empty() ) {
+  if ( distMapDir.empty() ) {
 
     return soap_receiver_fault( soap, "Missing configuration (4)", NULL );
   }
