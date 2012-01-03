@@ -27,10 +27,11 @@
 # http://www.gnu.org/copyleft/gpl.html
 
 use SOAP::Lite 
+    +trace => [ transport => \&c_transport ],
     on_fault => sub { my($soap, $res) = @_;
                       print "SOAP::Lite fault! Aborting...\n";
 		      die ref $res ? $res->faultstring : $soap->transport->status, "\n";
-		  };
+                };
 use Getopt::Long;
 use Data::Dumper;
 
@@ -69,6 +70,8 @@ my %algorithms;
 my %layers;
 
 my $soap = 0; # future soap object
+
+my $last_xml_resp = '';
 
 ### Interact with user
 
@@ -230,31 +233,34 @@ sub prepare_soap
 		           -> proxy( $server, options => {compress_threshold => 10000} )
 		           #-> proxy( $server )
 		           -> encoding( 'iso-8859-1' );
-
-        if ( $opt_debug )
-        {
-            SOAP::Lite->import( +trace => [ transport => \&debug_soap ] );
-        }
-
     }
 }
 
-#################################################
-#  Print out the actual XML request or response # 
-#################################################
-sub debug_soap
+#############################
+#  Custom transport handler # 
+#############################
+sub c_transport
 {
     my ( $in ) = @_;
 
-    if ( ref( $in ) eq 'HTTP::Request' || ref( $in ) eq 'HTTP::Response' )
-    {
-        print "\n" . ref( $in ) . "\n\n";
-        print $in->content . "\n\n";
+    my $trans = ref( $in );
 
-        #open( OUT, ">>client.debug" );
-        #print OUT $in->content;
-        #print OUT "\n";
-        #close( OUT );
+    if ( $trans eq 'HTTP::Request' || $trans eq 'HTTP::Response' )
+    {
+        if ( $opt_debug )
+        {
+            print "\n" . $trans . "\n\n";
+            print $in->content . "\n\n";
+            #open( OUT, ">>client.debug" );
+            #print OUT $in->content;
+            #print OUT "\n";
+            #close( OUT );
+        }
+
+        if ( $trans eq 'HTTP::Response' )
+        {
+            $last_xml_resp = $in->content;
+        }
     } 
 }
 
