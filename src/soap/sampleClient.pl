@@ -205,7 +205,7 @@ sub get_url
 {
     while ( ! $url )
     {
-	print "\nWhere is the SOAP server located? (url address): ";
+	print "\nPlease specify the service address (URL): ";
 	
 	$url = <STDIN>;
 
@@ -224,17 +224,18 @@ sub prepare_soap
     {
         my $server = get_url();
 
-        if ( $opt_debug )
-	{
-            use SOAP::Lite +trace => [ transport => \&debug_soap ];
-        }
-
         $soap = SOAP::Lite
                           #-> service('http://openmodeller.sf.net/ns/1.0/openmodeller.wsdl')
 		           -> uri( $omws_uri )
 		           -> proxy( $server, options => {compress_threshold => 10000} )
 		           #-> proxy( $server )
 		           -> encoding( 'iso-8859-1' );
+
+        if ( $opt_debug )
+        {
+            SOAP::Lite->import( +trace => [ transport => \&debug_soap ] );
+        }
+
     }
 }
 
