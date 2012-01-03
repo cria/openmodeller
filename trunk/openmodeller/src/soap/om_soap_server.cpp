@@ -1312,9 +1312,9 @@ bool readDirectory( const char* dir, const char* label, ostream &xml, int depth,
   }
 
   //xml << "<LayersGroup Id=\"" << myDir << "\">";
-  xml << "<LayersGroup Id=\"" << seq << "\">";
+  xml << "<LayersGroup Id=\"" << *seq << "\">";
 
-  ++seq;
+  ++*seq;
 
   xml << "<Label>" << label << "</Label>";
 
