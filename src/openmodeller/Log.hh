@@ -105,7 +105,7 @@ class dllexp Log
     /** Change log level.*/
     void setLevel( Level level )  { _level = level; }
 
-    /** Change prefix to be shown befeore any message.*/
+    /** Change prefix to be shown before any message.*/
     void setPrefix( const char *pref );
 
     void debug( const char *format, ... );  ///< 'Debug' level.
