@@ -658,7 +658,7 @@ sub get_progress
 
     ### Get ticket
 
-    my $ticket = get_ticket_from_user();
+    my $ticket = get_string_from_user('Ticket number');
 
     if ( ! $ticket )
     {
@@ -704,7 +704,7 @@ sub get_log
 
     ### Get ticket
 
-    my $ticket = get_ticket_from_user();
+    my $ticket = get_string_from_user('Ticket number');
 
     if ( ! $ticket )
     {
@@ -750,7 +750,7 @@ sub get_model
 
     ### Get ticket
 
-    my $ticket = get_ticket_from_user();
+    my $ticket = get_string_from_user('Ticket number');
 
     if ( ! $ticket )
     {
@@ -811,14 +811,14 @@ sub get_test_result
 
     ### Get ticket
 
-    my $ticket = get_ticket_from_user();
+    my $ticket = get_string_from_user('Ticket number');
 
     if ( ! $ticket )
     {
 	return 0;
     }
 
-    print "Requesting test result... ";
+    print "Retrieving test result... ";
 
     my $soap_ticket = SOAP::Data
 	-> name( 'ticket' )
@@ -855,37 +855,112 @@ sub test_model
 	-> prefix( 'omws' )
         -> uri( $omws_uri );
 
-    # Hard coded for now
-    my $xml = '<TestParameters xmlns="http://openmodeller.cria.org.br/xml/1.0">
-  <Sampler>
-    <Environment NumLayers="2">
-      <Map Id="/home/renato/projects/openmodeller/examples/layers/rain_coolest.tif" IsCategorical="0"/>
-      <Map Id="/home/renato/projects/openmodeller/examples/layers/temp_avg.tif" IsCategorical="0"/>
-      <Mask Id="/home/renato/projects/openmodeller/examples/layers/rain_coolest.tif"/>
-    </Environment>
-    <Presence Label="Acacia aculeatissima">
-      <CoordinateSystem>
-         GEOGCS["WGS 84",DATUM["WGS_1984",SPHEROID["WGS 84",6378137,298.257223563,AUTHORITY["EPSG","7030"]],TOWGS84[0,0,0,0,0,0,0],AUTHORITY["EPSG","6326"]],PRIMEM["Greenwich",0,AUTHORITY["EPSG","8901"]],UNIT["degree",0.0174532925199433,AUTHORITY["EPSG","9108"]],AXIS["Lat",NORTH],AXIS["Long",EAST],AUTHORITY["EPSG","4326"]]
-      </CoordinateSystem>
-      <Point Id="1" X="-67.845739" Y="-11.327340" />
-      <Point Id="2" X="-69.549969" Y="-12.350801" />
-    </Presence>
-    <Absence Label="Acacia aculeatissima">
-      <CoordinateSystem>
-         GEOGCS["WGS 84",DATUM["WGS_1984",SPHEROID["WGS 84",6378137,298.257223563,AUTHORITY["EPSG","7030"]],TOWGS84[0,0,0,0,0,0,0],AUTHORITY["EPSG","6326"]],PRIMEM["Greenwich",0,AUTHORITY["EPSG","8901"]],UNIT["degree",0.0174532925199433,AUTHORITY["EPSG","9108"]],AXIS["Lat",NORTH],AXIS["Long",EAST],AUTHORITY["EPSG","4326"]]
-      </CoordinateSystem>
-      <Point Id="3" X="-68.245959" Y="-12.060403" />
-      <Point Id="4" X="-74.534959" Y="-15.340201" />
-    </Absence>
-  </Sampler>
-  <Algorithm Id="BIOCLIM" Version="0.2">
-    <Parameters>
-      <Parameter Id="StandardDeviationCutoff" Value="0.9"/>
-    </Parameters>
-    <Model>      <Bioclim Mean="208.8333333333333 2446.728352864583" StdDev="93.20701153883221 95.8400666007785" Minimum="90 2285.860107421875" Maximum="305 2565.010009765625"/>
-      </Model>
-  </Algorithm>
-</TestParameters>';
+    # Get model from file
+    my $got_file = 0;
+
+    my $model = '';
+    my $native_environment = '';
+    my $internal_presence_points = '';
+    my $internal_absence_points = '';
+    my $algorithm = '';
+
+    while ( ! $got_file )
+    {
+        my $model_file = get_string_from_user('File with the model');
+
+        unless ( length( $model_file ) )
+        {
+            print "No file specified. Aborting.\n";
+	    return 0;
+        }
+
+        $model = read_file( $model_file );
+
+        next unless ( $model );
+
+        unless ( $model =~ m/.*(<Environment\s.*<\/Environment>).*(<Presence\s.*<\/Presence>).*(<Absence\s.*<\/Absence>)?.*(<Algorithm\s.*<\/Algorithm>).*/s )
+        {
+            print "Could not find serialized model in file!\n";
+            next;
+        }
+
+        $native_environment = $1;
+        $internal_presence_points = $2;
+        $internal_absence_points = $3;
+        $algorithm = $4;
+
+        $got_file = 1;
+    }
+
+    # Get points from file
+    $got_file = 0;
+
+    # Default SRS
+    my $srs = '<CoordinateSystem>GEOGCS["WGS 84",DATUM["WGS_1984",SPHEROID["WGS 84",6378137,298.257223563,AUTHORITY["EPSG","7030"]],TOWGS84[0,0,0,0,0,0,0],AUTHORITY["EPSG","6326"]],PRIMEM["Greenwich",0,AUTHORITY["EPSG","8901"]],UNIT["degree",0.0174532925199433,AUTHORITY["EPSG","9108"]],AXIS["Lat",NORTH],AXIS["Long",EAST],AUTHORITY["EPSG","4326"]]</CoordinateSystem>';
+
+    # Default label
+    my $label = 'some species';
+
+    # XML to be built
+    my $external_presence_points = '';
+    my $external_absence_points = '';
+
+    while ( ! $got_file )
+    {
+        my $points_file = get_string_from_user('File with points');
+
+        unless ( length( $points_file ) )
+        {
+            print "No file specified. Aborting.\n";
+	    return 0;
+        }
+
+        $points = read_file( $points_file );
+
+        next unless ( $points );
+
+        # Extract points
+        for ( split /^/, $points )
+        {
+            my @point = split /\t/, $_;
+
+            next if ( scalar( @point ) < 4 );
+
+            my $str = '<Point Id="'.$point[0].'" X="'.$point[2].'" Y="'.$point[3].'" />';
+
+            if ( scalar( @point ) > 4 && $point[4] == 0 )
+            {
+                $external_absence_points .= $str;
+            }
+            else
+            {
+                $external_presence_points .= $str;
+            }
+        }
+
+        if ( length( $external_presence_points ) )
+        {
+            $external_presence_points = '<Presence Label="'.$label.'">'.$srs.$external_presence_points.'</Presence>';
+        }
+        else
+        {
+            unless ( length( $external_presence_points ) )
+            {
+                print "No points in file!\n";
+                next;
+            }
+        }
+
+        if ( length( $external_absence_points ) )
+        {
+            $external_absence_points = '<Absence Label="'.$label.'">'.$srs.$external_absence_points.'</Absence>';
+        }
+
+        $got_file = 1;
+    }
+
+    # Build XML request
+    my $xml = '<TestParameters xmlns="http://openmodeller.cria.org.br/xml/1.0"><Sampler>'. $native_environment . $external_presence_points . $external_absence_points .'</Sampler>' . $algorithm . '</TestParameters>';
 
     # Encode coord system directly in XML to avoid automatic xsi:types for the content
     my $xml_parameters = SOAP::Data
@@ -977,7 +1052,7 @@ sub get_projection_metadata
 
     ### Get ticket
 
-    my $ticket = get_ticket_from_user();
+    my $ticket = get_string_from_user('Ticket number');
 
     if ( ! $ticket )
     {
@@ -1023,7 +1098,7 @@ sub get_layer_as_attachment
 
     ### Get ticket
 
-    my $ticket = get_ticket_from_user();
+    my $ticket = get_string_from_user('Ticket number');
 
     if ( ! $ticket )
     {
@@ -1067,7 +1142,7 @@ sub get_layer_as_url
 
     ### Get ticket
 
-    my $ticket = get_ticket_from_user();
+    my $ticket = get_string_from_user('Ticket number');
 
     if ( ! $ticket )
     {
@@ -1182,14 +1257,54 @@ sub get_mask_from_user
 ######################################
 #  Get ticket from console interface # 
 ######################################
-sub get_ticket_from_user
+sub get_string_from_user
 {
-    print "\nTicket number: ";
+    ($label) = @_;
+
+    print "\n$label: ";
 
     my $value = <STDIN>;
     chomp($value);
 
     return $value;
+}
+
+#############################################
+#  Read the content of a file and return it # 
+#############################################
+sub read_file
+{
+    ($path) = @_;
+
+    my $content = '';
+
+    unless ( -e $path )
+    {
+        print "File does not exist!\n";
+    }
+    else
+    {
+        unless ( open( FILE, $path ) )
+        {
+            print "Could not open file!\n";
+        }
+        else
+        {
+            while (<FILE>)
+            {
+                $content .= $_;
+            }
+
+            close( FILE );
+
+            unless ( $content )
+            {
+                print "File is empty!";
+            }
+        }
+    }
+
+    return $content;
 }
 
 
