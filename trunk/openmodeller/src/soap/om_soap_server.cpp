@@ -1464,13 +1464,6 @@ string getLayerLabel( const string path, const string name, bool isDir )
 
     // append last dir name and ".meta"
     metaFile = metaFile.append(name).append(".meta"); 
-
-    if ( fileExists( metaFile.c_str() ) ) {
-
-      FileParser fParser( metaFile.c_str() );
-
-      return fParser.get( "LABEL" );
-    }
   }
   // It is a file
   else {
@@ -1482,14 +1475,19 @@ string getLayerLabel( const string path, const string name, bool isDir )
       // replace extension with ".meta"
       string metaName = name.substr( 0, pos ).append(".meta");
       metaFile = metaFile.append( metaName ); 
-
-      if ( fileExists( metaFile.c_str() ) ) {
-
-        FileParser fParser( metaFile.c_str() );
-
-        return fParser.get( "LABEL" );
-      }
     }
+    else {
+
+      // try just appending name and ".meta"
+      metaFile = metaFile.append(name).append(".meta"); 
+    }
+  }
+
+  if ( fileExists( metaFile.c_str() ) ) {
+
+    FileParser fParser( metaFile.c_str() );
+
+    return fParser.get( "LABEL" );
   }
 
   return name;  
