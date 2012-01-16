@@ -378,10 +378,13 @@ EOM
 		    {
 	                my $param_path = "$alg_parameters_path/[$j]";
 
-			my %complete_par = %{$par};
-			my %parameter = %{$complete_par{'_value'}[0]};
+                        my %parameter = ();
 
 			$parameter{'Id'} = $response->dataof($param_path)->attr->{'Id'};
+			$parameter{'Name'} = $response->valueof($param_path.'/Name');
+			$parameter{'Type'} = $response->valueof($param_path.'/Type');
+			$parameter{'Default'} = $response->valueof($param_path.'/Default');
+			$parameter{'Overview'} = $response->valueof($param_path.'/Overview');
 
 	                my $range_path = "$alg_parameters_path/[$j]/AcceptedRange";
 
@@ -447,7 +450,9 @@ sub get_layers
 	%layers = ();
     }
 
-    print "Requesting layers...\n" if $option == 3;
+    my $display = ($option == 3) ? 1 : 0;
+
+    print "Requesting layers...\n" if $display;
     
     my $method = SOAP::Data
 	-> name( 'getLayers' )
@@ -458,19 +463,9 @@ sub get_layers
     
     unless ( $response->fault )
     { 
-        my $i = 1;
-
-        # just get the layers - ignore groups
-        foreach my $layer ( $response->dataof('//Layer') ) 
-        {
-            print "[$i] " . $layer->attr->{'Id'} . "\n" if $option == 3;
-
-            $layers{$i} = $layer->attr->{'Id'};
-
-            ++$i;
-        }
-
-        # change this
+        my $level = 0;
+        my $seq = 0;
+        fetch_branch( $response, '//AvailableLayers', $level, \$seq, $display);
 	return 1;
     }
     else
@@ -550,7 +545,7 @@ sub create_model
 
     foreach my $code ( @layer_codes )
     {
-        push( @maps, {'Id'=> $layers{$code}, 'IsCategorical'=> 0} );
+        push( @maps, {'Id'=> $layers{$code}{'id'}, 'IsCategorical'=> 0} );
     }
 
     @maps = map( SOAP::Data->name('Map')->attr(\%{$_}), @maps );
@@ -567,7 +562,7 @@ sub create_model
     my $mask = SOAP::Data
 	->name( 'Mask' )
 	->type( 'struct' )
-	->attr( {'Id'=>$layers{$mask_code}} );
+	->attr( {'Id'=>$layers{$mask_code}{'id'}} );
 
     ## Environment
 
@@ -675,8 +670,20 @@ sub get_progress
     my $response = $soap->call( $method => $soap_ticket );
 
     unless ( $response->fault )
-    { 
-	print "Progress: ".$response->result ."%\n";
+    {
+        my $prog = $response->result;
+        if ( $prog == -1 )
+        {
+            print "Queued on server.\n";
+        }
+        elsif ( $prog == -2 )
+        {
+            print "Aborted!\n";
+        }
+        else
+        {
+	    print "Progress: ".$prog ."%\n";
+        }
     }
     else
     {
@@ -1228,7 +1235,14 @@ sub get_layers_from_user
 
     foreach my $i ( sort { $a <=> $b } ( keys %layers ) )
     {
-	print "  [$i] $layers{$i}\n";
+        if ( $layers{$i}{'is_layer'} )
+        {
+            print ' ' x $layers{$i}{'level'} . ' ['.$i.'] ' . $layers{$i}{'label'} . "\n";
+        }
+        else
+        {
+            print '-' x $layers{$i}{'level'} . ' ' . $layers{$i}{'label'} . "\n";
+        }
     }
 
     print "\nYour choice (comma separated list of values): ";
@@ -1259,7 +1273,7 @@ sub get_mask_from_user
 ######################################
 sub get_string_from_user
 {
-    ($label) = @_;
+    my ($label) = @_;
 
     print "\n$label: ";
 
@@ -1274,7 +1288,7 @@ sub get_string_from_user
 #############################################
 sub read_file
 {
-    ($path) = @_;
+    my ($path) = @_;
 
     my $content = '';
 
@@ -1307,5 +1321,48 @@ sub read_file
     return $content;
 }
 
+######################################
+#  Fetch a branch from getLayers XML # 
+######################################
+sub fetch_branch
+{
+    my ($resp, $path, $level, $seq, $display) = @_;
+
+    my $lev = $level + 1;
+
+    my $j = 0;
+
+    foreach my $node ( $resp->dataof( $path.'/*' ) )
+    {
+        $j++;
+
+        my $name = $node->name();
+
+        if ( $name eq 'LayersGroup' )
+        {
+            my $label = $resp->valueof( $path."/[$j]/Label" );
+            my $key = $$seq.'.'.$lev;
+            $layers{$key}{'is_layer'} = 0;
+            $layers{$key}{'id'} = 0;
+            $layers{$key}{'label'} = $label;
+            $layers{$key}{'level'} = $lev;
+            print '-' x $lev . ' ' . $label . "\n" if $display;
+            fetch_branch( $resp, $path."/[$j]", $lev, $seq, $display );
+        }
+        elsif ( $name eq 'Layer' )
+        {
+            $$seq = $$seq + 1;
+            my $label = $resp->valueof( $path."/[$j]/Label" );
+            my $lid = $node->attr->{'Id'};
+            $layers{$$seq}{'is_layer'} = 1;
+            $layers{$$seq}{'id'} = $lid;
+            $layers{$$seq}{'label'} = $label;
+            $layers{$$seq}{'level'} = $lev;
+            print ' ' x $lev . ' ['.$$seq.'] ' . $label . "\n" if $display;
+        }
+    }
+
+    return 1;
+}
 
 
