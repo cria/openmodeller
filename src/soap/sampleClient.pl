@@ -53,10 +53,9 @@ print "\nWelcome to the openModeller SOAP client demo!\n";
 
 print<<EOM;
 
-Please notice that this interface is just a simple prototype
+Please notice that this interface is a simple prototype
 and mostly an example of how to build a SOAP client
-to access an openModeller server. Many variables
-(occurrences/absences points) are still hardcoded...
+to interact with an openModeller web service.
 EOM
 
 print "\nNote: this machine has SOAP::Lite version $SOAP::Lite::VERSION\n";
