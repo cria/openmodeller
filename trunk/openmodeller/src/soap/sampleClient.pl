@@ -906,12 +906,12 @@ sub test_model
 	-> prefix( 'omws' )
         -> uri( $omws_uri );
 
-    # Get model from file
-    my @model_parts = get_model_from_user();
+    # Get model from user
+    my ($native_environment, $internal_presence_points, $internal_absence_points, $algorithm) = get_model_from_user();
     
-    return 0 unless scalar(@model_parts);
+    return 0 unless $algorithm;
 
-    # Get points from file
+    # Get points from user
     my $got_file = 0;
 
     # Default SRS
@@ -979,7 +979,7 @@ sub test_model
     }
 
     # Build XML request
-    my $xml = '<TestParameters xmlns="http://openmodeller.cria.org.br/xml/1.0"><Sampler>'. $model_parts[0] . $model_parts[1] . $model_parts[2] .'</Sampler>' . $model_parts[3] . '</TestParameters>';
+    my $xml = '<TestParameters xmlns="http://openmodeller.cria.org.br/xml/1.0"><Sampler>'. $native_environment . $external_presence_points . $external_absence_points .'</Sampler>' . $algorithm . '</TestParameters>';
 
     # Encode coord system directly in XML to avoid automatic xsi:types for the content
     my $xml_parameters = SOAP::Data
@@ -1018,9 +1018,9 @@ sub project_model
         -> uri( $omws_uri );
 
     # Get model from file
-    my @model_parts = get_model_from_user();
+    my ($native_environment, $internal_presence_points, $internal_absence_points, $algorithm) = get_model_from_user();
     
-    return 0 unless scalar(@model_parts);
+    return 0 unless $algorithm;
 
     my $format = get_format_from_user();
 
@@ -1072,7 +1072,7 @@ sub project_model
 
     # Build XML
     my $xml = '<ProjectionParameters xmlns="http://openmodeller.cria.org.br/xml/1.0">
-'.$model_parts[3].$environment.'<OutputParameters FileType="'.$format.'"><TemplateLayer Id="'.$layers{$template_code}{'id'}.'"/></OutputParameters></ProjectionParameters>';
+'.$algorithm.$environment.'<OutputParameters FileType="'.$format.'"><TemplateLayer Id="'.$layers{$template_code}{'id'}.'"/></OutputParameters></ProjectionParameters>';
 
     my $xml_parameters = SOAP::Data
 	-> type( 'xml' => $xml );
@@ -1398,7 +1398,7 @@ sub get_model_from_user
         unless ( length( $model_file ) )
         {
             print "No file specified. Aborting.\n";
-	    return @model_parts;
+	    return (0, 0, 0, 0);
         }
 
         $model = read_file( $model_file );
