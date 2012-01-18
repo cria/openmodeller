@@ -773,7 +773,7 @@ omws__getProgress( struct soap *soap, xsd__string ticket, xsd__int &progress )
     }
     else {
 
-      return soap_receiver_fault( soap, "Could not open progress file", NULL );
+      return soap_receiver_fault( soap, "Progress unreadable", NULL );
     }
 
     return SOAP_OK;
@@ -991,7 +991,7 @@ omws__getLayerAsUrl( struct soap *soap, xsd__string id, xsd__string &url )
 
   if ( ! id ) {
 
-    return soap_sender_fault(soap, "Layer id required", NULL);
+    return soap_sender_fault(soap, "Missing id in request", NULL);
   }
 
   string fileName = getMapFile( id );
@@ -1077,7 +1077,7 @@ omws__getProjectionMetadata( struct soap *soap, xsd__string ticket, struct omws_
 
   if ( mapFileName.empty() ) {
 
-    return soap_receiver_fault( soap, "Distribution map unavailable", NULL );
+    return soap_receiver_fault( soap, "Projection unavailable", NULL );
   }
 
   string completeFileName( gFileParser.get( "DISTRIBUTION_MAP_DIRECTORY" ) );
@@ -1094,7 +1094,7 @@ omws__getProjectionMetadata( struct soap *soap, xsd__string ticket, struct omws_
 
   if ( fd == NULL ) {
 
-    return soap_receiver_fault( soap, "Could not read distribution map", NULL );
+    return soap_receiver_fault( soap, "Projection unreadable", NULL );
   }
 
   int size = getSize( fd );
@@ -1132,7 +1132,7 @@ omws__getProjectionMetadata( struct soap *soap, xsd__string ticket, struct omws_
   }
   else {
 
-    return soap_receiver_fault( soap, "Projection data unavailable", NULL );
+    return soap_receiver_fault( soap, "Metadata unavailable", NULL );
   }
 
   return SOAP_OK;
