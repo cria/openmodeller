@@ -169,7 +169,7 @@ sub print_help
     print "\nUsage: $0 [options]\n".
           "           -help  Print this usage message\n".
 	  "          -debug  Output all SOAP messages\n".
-	  " -server=address  SOAP server address (URL)\n\n".
+	  " -server=address  Web service address (URL)\n\n".
           "If you are behind a proxy firewall, set the following environment variables\n".
           "to their respective values: HTTP_proxy, HTTP_proxy_user, HTTP_proxy_pass\n\n";
     exit;
@@ -180,7 +180,7 @@ sub print_help
 ###########################################
 sub get_option
 {
-    print "\nPlease select from one the options:\n\n";
+    print "\nPlease select one the options:\n\n";
 
     my $exit_option = scalar( keys %options );
 
@@ -533,7 +533,7 @@ sub create_model
 	return 0;
     }
 
-    my @layer_codes = get_layers_from_user();
+    my @layer_codes = get_layers_from_user('Choose the layers you want to use for model creation');
 
     if ( scalar( @layer_codes ) == 0 )
     {
@@ -551,7 +551,7 @@ sub create_model
 
     ### Mask
 
-    my $mask_code = get_mask_from_user();
+    my $mask_code = get_layer_from_user('Choose an input mask from the layers above');
 
     if ( not exists( $layers{$mask_code} ) )
     {
@@ -571,47 +571,92 @@ sub create_model
 
     ### Points
 
+    # Get points from file
+    $got_file = 0;
+
+    # Default label
+    my $label = 'Test species';
+
+    # Default SRS
     my $wkt = "<CoordinateSystem>GEOGCS['1924 ellipsoid',DATUM['Not_specified',SPHEROID['International 1924',6378388,297,AUTHORITY['EPSG','7022']],AUTHORITY['EPSG','6022']],PRIMEM['Greenwich',0,AUTHORITY['EPSG','8901']],UNIT['degree',0.0174532925199433,AUTHORITY['EPSG','9108']],AUTHORITY['EPSG','4022']]</CoordinateSystem>";
 
     # Encode coord system directly in XML to avoid automatic xsi:types for the content
     my $coordsystem = SOAP::Data
 	-> type( 'xml' => $wkt );
 
-    my @presencePoints = ( {'Id' => '1', 'Y' => -11.15, 'X' => -68.85},
-			   {'Id' => '2', 'Y' => -14.32, 'X' => -67.38},
-			   {'Id' => '3', 'Y' => -15.52, 'X' => -67.15},
-			   {'Id' => '4', 'Y' => -16.73, 'X' => -65.12},
-			   {'Id' => '5', 'Y' => -17.80, 'X' => -63.17} );
+    # Data structures
+    my @presencePoints = ();
+    my @absencePoints = ();
+
+    while ( ! $got_file )
+    {
+        my $points_file = get_string_from_user('File with points');
+
+        unless ( length( $points_file ) )
+        {
+            print "No file specified. Aborting.\n";
+	    return 0;
+        }
+
+        $points = read_file( $points_file );
+
+        next unless ( $points );
+
+        # Extract points
+        for ( split /^/, $points )
+        {
+            my @point = split /\t/, $_;
+
+            next if ( scalar( @point ) < 4 );
+
+            if ( scalar( @point ) > 4 && $point[4] == 0 )
+            {
+                push( @absencePoints, {'Id' => $point[0], 'X' => $point[2], 'Y' => $point[3]} );
+            }
+            else
+            {
+                push( @presencePoints, {'Id' => $point[0], 'X' => $point[2], 'Y' => $point[3]} );
+            }
+        }
+
+        unless ( scalar( @presencePoints ) )
+        {
+            print "No presence points in file!\n";
+            next;
+        }
+
+        $got_file = 1;
+    }
 
     @presencePoints = map( SOAP::Data->name('Point')->attr(\%{$_}), @presencePoints );
 
     my $presences = SOAP::Data
-	-> name('Presence')
-	-> attr( {'Label'=>'Test species'} )
+        -> name('Presence')
+        -> attr( {'Label'=>'Test species'} )
         -> value( \SOAP::Data->value( $coordsystem, 
                                       @presencePoints ) );
+
+    my $sampler = 0;
+
+    if ( scalar( @absencePoints ) )
+    {
+        @absencePoints = map( SOAP::Data->name('Point')->attr(\%{$_}), @absencePoints );
     
-    my @absencePoints = ( {'Id' => '6' , 'Y' => -47.07, 'X' => -22.82},
-			  {'Id' => '7' , 'Y' => -49.75, 'X' => -12.70},
-			  {'Id' => '8' , 'Y' => -50.37, 'X' => -3.52},
-			  {'Id' => '9' , 'Y' => -45.44, 'X' => -14.23},
-			  {'Id' => '10', 'Y' => -51.07, 'X' => -6.88} );
-
-    @absencePoints = map( SOAP::Data->name('Point')->attr(\%{$_}), @absencePoints );
-    
-    my $absences = SOAP::Data
-	-> name('Absence')
-	-> attr( {'Label'=>'Test species'} )
-        -> value( \SOAP::Data->value( $coordsystem, 
-                                      @absencePoints ) );
-
-#    my $sampler = SOAP::Data
-#	-> name( 'Sampler' )
-#        -> value( \SOAP::Data->value( $env, $presences, $absences ) );
-
-    my $sampler = SOAP::Data
-	-> name( 'Sampler' )
-        -> value( \SOAP::Data->value( $env, $presences ) );
+        my $absences = SOAP::Data
+	    -> name('Absence')
+	    -> attr( {'Label'=>'Test species'} )
+            -> value( \SOAP::Data->value( $coordsystem, 
+                                          @absencePoints ) );
+        $sampler = SOAP::Data
+            -> name( 'Sampler' )
+            -> value( \SOAP::Data->value( $env, $presences, $absences ) );
+    }
+    else
+    {
+        $sampler = SOAP::Data
+            -> name( 'Sampler' )
+            -> value( \SOAP::Data->value( $env, $presences ) );
+    }
 
     my $model_parameters = SOAP::Data
 	-> name( 'ModelParameters' )
@@ -862,50 +907,18 @@ sub test_model
         -> uri( $omws_uri );
 
     # Get model from file
-    my $got_file = 0;
-
-    my $model = '';
-    my $native_environment = '';
-    my $internal_presence_points = '';
-    my $internal_absence_points = '';
-    my $algorithm = '';
-
-    while ( ! $got_file )
-    {
-        my $model_file = get_string_from_user('File with the model');
-
-        unless ( length( $model_file ) )
-        {
-            print "No file specified. Aborting.\n";
-	    return 0;
-        }
-
-        $model = read_file( $model_file );
-
-        next unless ( $model );
-
-        unless ( $model =~ m/.*(<Environment\s.*<\/Environment>).*(<Presence\s.*<\/Presence>).*(<Absence\s.*<\/Absence>)?.*(<Algorithm\s.*<\/Algorithm>).*/s )
-        {
-            print "Could not find serialized model in file!\n";
-            next;
-        }
-
-        $native_environment = $1;
-        $internal_presence_points = $2;
-        $internal_absence_points = $3;
-        $algorithm = $4;
-
-        $got_file = 1;
-    }
+    my @model_parts = get_model_from_user();
+    
+    return 0 unless scalar(@model_parts);
 
     # Get points from file
-    $got_file = 0;
+    my $got_file = 0;
 
     # Default SRS
     my $srs = '<CoordinateSystem>GEOGCS["WGS 84",DATUM["WGS_1984",SPHEROID["WGS 84",6378137,298.257223563,AUTHORITY["EPSG","7030"]],TOWGS84[0,0,0,0,0,0,0],AUTHORITY["EPSG","6326"]],PRIMEM["Greenwich",0,AUTHORITY["EPSG","8901"]],UNIT["degree",0.0174532925199433,AUTHORITY["EPSG","9108"]],AXIS["Lat",NORTH],AXIS["Long",EAST],AUTHORITY["EPSG","4326"]]</CoordinateSystem>';
 
     # Default label
-    my $label = 'some species';
+    my $label = 'Test species';
 
     # XML to be built
     my $external_presence_points = '';
@@ -950,7 +963,7 @@ sub test_model
         }
         else
         {
-            unless ( length( $external_presence_points ) )
+            unless ( length( $external_absence_points ) )
             {
                 print "No points in file!\n";
                 next;
@@ -966,7 +979,7 @@ sub test_model
     }
 
     # Build XML request
-    my $xml = '<TestParameters xmlns="http://openmodeller.cria.org.br/xml/1.0"><Sampler>'. $native_environment . $external_presence_points . $external_absence_points .'</Sampler>' . $algorithm . '</TestParameters>';
+    my $xml = '<TestParameters xmlns="http://openmodeller.cria.org.br/xml/1.0"><Sampler>'. $model_parts[0] . $model_parts[1] . $model_parts[2] .'</Sampler>' . $model_parts[3] . '</TestParameters>';
 
     # Encode coord system directly in XML to avoid automatic xsi:types for the content
     my $xml_parameters = SOAP::Data
@@ -1004,23 +1017,63 @@ sub project_model
 	-> prefix( 'omws' )
         -> uri( $omws_uri );
 
-    # Hard coded for now
-    my $xml = '<ProjectionParameters xmlns="http://openmodeller.cria.org.br/xml/1.0">
-<Algorithm Id="Bioclim" Version="0.2">
-<Parameters>
-<Parameter Id="StandardDeviationCutoff" Value="0.7"/></Parameters>
-<Model>
-<Bioclim Mean="221.6 2375.984008789062" StdDev="93.9951700886806 184.4701277015361" Minimum="90 1911.670043945312" Maximum="413 2565.010009765625"/></Model></Algorithm>
-<Environment NumLayers="2">
-<Map Id="/home/renato/projects/openmodeller/examples/layers/rain_coolest" IsCategorical="0" Min="0" Max="2137"/>
-<Map Id="/home/renato/projects/openmodeller/examples/layers/temp_avg" IsCategorical="0" Min="-545.4199829101562" Max="3342.52001953125"/>
-<Mask Id="/home/renato/projects/openmodeller/examples/layers/rain_coolest"/></Environment>
-<OutputParameters FileType="FloatingHFA">
-<TemplateLayer Id="/home/renato/projects/openmodeller/examples/layers/rain_coolest"/>
-</OutputParameters>
-</ProjectionParameters>';
+    # Get model from file
+    my @model_parts = get_model_from_user();
+    
+    return 0 unless scalar(@model_parts);
 
-    # Encode coord system directly in XML to avoid automatic xsi:types for the content
+    my $format = get_format_from_user();
+
+    unless ( $format )
+    {
+	return 0;
+    }
+
+    ### Maps
+
+    if ( scalar( keys %layers ) == 0 and not get_layers() )
+    {
+	return 0;
+    }
+
+    my @layer_codes = get_layers_from_user('Choose the layers you want to use for model projection');
+
+    if ( scalar( @layer_codes ) == 0 )
+    {
+	return 0;
+    }
+
+    my $environment = '<Environment NumLayers="'.scalar( @layer_codes ).'">';
+
+    foreach my $code ( @layer_codes )
+    {
+        $environment .= '<Map Id="'.$layers{$code}{'id'}.'"/>';
+    }
+
+    ### Mask
+
+    my $mask_code = get_layer_from_user('Choose an output mask from the layers above');
+
+    if ( not exists( $layers{$mask_code} ) )
+    {
+	return 0;
+    }
+
+    $environment .= '<Mask Id="'.$layers{$mask_code}{'id'}.'"/></Environment>';
+
+    ### Template
+
+    my $template_code = get_layer_from_user('Choose an output template for resolution and SRS from the layers above');
+
+    if ( not exists( $layers{$template_code} ) )
+    {
+	return 0;
+    }
+
+    # Build XML
+    my $xml = '<ProjectionParameters xmlns="http://openmodeller.cria.org.br/xml/1.0">
+'.$model_parts[3].$environment.'<OutputParameters FileType="'.$format.'"><TemplateLayer Id="'.$layers{$template_code}{'id'}.'"/></OutputParameters></ProjectionParameters>';
+
     my $xml_parameters = SOAP::Data
 	-> type( 'xml' => $xml );
 
@@ -1230,7 +1283,9 @@ sub get_algorithm_parameter_from_user
 ######################################
 sub get_layers_from_user
 {
-    print "\nChoose the layers you want to use for model creation:\n\n";
+    my ($label) = @_;
+
+    print "\n$label:\n\n";
 
     foreach my $i ( sort { $a <=> $b } ( keys %layers ) )
     {
@@ -1257,9 +1312,11 @@ sub get_layers_from_user
 ##########################################
 #  Get input mask from console interface # 
 ##########################################
-sub get_mask_from_user
+sub get_layer_from_user
 {
-    print "\nChoose an input mask from the layers above: ";
+    my ($label) = @_;
+
+    print "\n$label: ";
 
     my $choice = <STDIN>;
     chomp( $choice );
@@ -1318,6 +1375,82 @@ sub read_file
     }
 
     return $content;
+}
+
+########################
+#  Get model from file # 
+########################
+sub get_model_from_user
+{
+    my $got_file = 0;
+
+    my @model_parts = ();
+    my $model = '';
+    my $native_environment = '';
+    my $internal_presence_points = '';
+    my $internal_absence_points = '';
+    my $algorithm = '';
+
+    while ( ! $got_file )
+    {
+        my $model_file = get_string_from_user('File with the model');
+
+        unless ( length( $model_file ) )
+        {
+            print "No file specified. Aborting.\n";
+	    return @model_parts;
+        }
+
+        $model = read_file( $model_file );
+
+        next unless ( $model );
+
+        unless ( $model =~ m/.*(<Environment\s.*<\/Environment>).*(<Presence\s.*<\/Presence>).*(<Absence\s.*<\/Absence>)?.*(<Algorithm\s.*<\/Algorithm>).*/s )
+        {
+            print "Could not find serialized model in file!\n";
+            next;
+        }
+
+        push( @model_parts, $1 ); # native_environment
+        push( @model_parts, $2 ); # internal_presence_points 
+        push( @model_parts, $3 ); # internal_absence_points
+        push( @model_parts, $4 ); # algorithm
+
+        $got_file = 1;
+    }
+
+    return @model_parts;
+}
+
+################################
+#  Get output format from user # 
+################################
+sub get_format_from_user
+{
+    print "\nChoose an output format:\n\n";
+
+    my %formats = ( 1 => {'code'=>'GreyTiff',    'label'=>'Grey scale GeoTiff [0,255]'},
+                    2 => {'code'=>'GreyTiff100', 'label'=>'Grey scale GeoTiff [0,100]'}, 
+                    3 => {'code'=>'FloatingTiff','label'=>'Floating point GeoTiff'}, 
+                    4 => {'code'=>'GreyBMP',     'label'=>'Grey scale BMP'}, 
+                    5 => {'code'=>'FloatingHFA', 'label'=>'Floating point Erdas Imagine'}, 
+                    6 => {'code'=>'ByteHFA',     'label'=>'Byte Erdas Imagine [0,100]'},
+                    7 => {'code'=>'ByteASC',     'label'=>'Byte ARC/Info ASCII grid [0,100]'},
+                    8 => {'code'=>'FloatingASC', 'label'=>'Floating point ARC/Info ASCII grid'} );
+
+    foreach my $key (sort { $a <=> $b } (keys %formats) )
+    {
+	print "  [$key] $formats{$key}{'label'}\n";
+    }
+
+    print "\nYour choice: ";
+
+    my $choice = <STDIN>;
+    chomp($choice);
+
+    return 0 unless ( exists( $formats{$choice} ) );
+
+    return $formats{$choice}{'code'};
 }
 
 ######################################
