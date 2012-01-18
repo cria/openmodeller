@@ -1,14 +1,14 @@
-<!-- Tufts VUE 3.0.2 concept-map (ws_diagram.vue) 2011-10-07 -->
+<!-- Tufts VUE 3.0.2 concept-map (ws_diagram.vue) 2012-01-18 -->
 <!-- Tufts VUE: http://vue.tufts.edu/ -->
 <!-- Do Not Remove: VUE mapping @version(1.1) jar:file:/usr/local/src/VUE.jar!/tufts/vue/resources/lw_mapping_1_1.xml -->
-<!-- Do Not Remove: Saved date Fri Oct 07 13:51:36 BRT 2011 by renato on platform Linux 2.6.31-23-generic in JVM 1.5.0_07-b03 -->
+<!-- Do Not Remove: Saved date Wed Jan 18 15:58:31 BRST 2012 by renato on platform Linux 2.6.32-37-generic in JVM 1.5.0_07-b03 -->
 <!-- Do Not Remove: Saving version @(#)VUE: built July 1 2010 at 1436 by vue on Linux 2.4.21-57.EL i386 JVM 1.5.0_06-b05(bits=32) -->
 <?xml version="1.0" encoding="US-ASCII"?>
 <LW-MAP xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:noNamespaceSchemaLocation="none" ID="0" label="ws_diagram.vue"
     created="1317671662490" x="0.0" y="0.0" width="1.4E-45"
     height="1.4E-45" strokeWidth="0.0" autoSized="false">
-    <resource referenceCreated="1318006296366" size="90871"
+    <resource referenceCreated="1326909512168" size="87627"
         spec="/home/renato/projects/openmodeller/subversion/framework/doc/ws_diagram.vue"
         type="1" xsi:type="URLResource">
         <title>ws_diagram.vue</title>
@@ -48,7 +48,7 @@
         <shape arcwidth="20.0" archeight="20.0" xsi:type="roundRect"/>
     </child>
     <child ID="7" label="getProgress" layerID="1"
-        created="1317671707629" x="-164.0" y="253.77574" width="130.0"
+        created="1317671707629" x="-366.0" y="340.77576" width="130.0"
         height="47.0" strokeWidth="1.0" autoSized="false" xsi:type="node">
         <fillColor>#EEEEEE</fillColor>
         <strokeColor>#000000</strokeColor>
@@ -67,7 +67,7 @@
         <shape arcwidth="20.0" archeight="20.0" xsi:type="roundRect"/>
     </child>
     <child ID="8" label="Aborted?" layerID="1" created="1317671797154"
-        x="9.0" y="251.77574" width="96.0" height="46.0"
+        x="-348.0" y="459.77576" width="96.0" height="46.0"
         strokeWidth="1.0" autoSized="false" xsi:type="node">
         <fillColor>#EEEEEE</fillColor>
         <strokeColor>#000000</strokeColor>
@@ -85,8 +85,8 @@
         <URIString>http://vue.tufts.edu/rdf/resource/cb6030247f00010100ed3b53f0380832</URIString>
         <shape xsi:type="diamond"/>
     </child>
-    <child ID="9" layerID="1" created="1317671841175" x="-34.5"
-        y="275.02008" width="45.553383" height="1.7139893"
+    <child ID="9" layerID="1" created="1317671841175" x="-301.3017"
+        y="387.27734" width="1.6083984" height="73.09375"
         strokeWidth="1.0" autoSized="false" controlCount="0"
         arrowState="2" xsi:type="link">
         <strokeColor>#404040</strokeColor>
@@ -102,13 +102,13 @@
             </metadata>
         </metadata-list>
         <URIString>http://vue.tufts.edu/rdf/resource/cb6030267f00010100ed3b5332648223</URIString>
-        <point1 x="-34.0" y="276.23407"/>
-        <point2 x="10.553384" y="275.52008"/>
+        <point1 x="-300.8017" y="387.77734"/>
+        <point2 x="-300.1933" y="459.8711"/>
         <ID1 xsi:type="node">7</ID1>
         <ID2 xsi:type="node">8</ID2>
     </child>
     <child ID="10" label="getLog" layerID="1" created="1317671892019"
-        x="98.0" y="90.27571" width="130.0" height="47.0"
+        x="-176.0" y="454.2757" width="130.0" height="47.0"
         strokeWidth="1.0" autoSized="false" xsi:type="node">
         <fillColor>#EEEEEE</fillColor>
         <strokeColor>#000000</strokeColor>
@@ -127,9 +127,9 @@
         <shape arcwidth="20.0" archeight="20.0" xsi:type="roundRect"/>
     </child>
     <child ID="11" label="no" layerID="1" created="1317671987967"
-        x="-36.07301" y="295.3357" width="236.2544" height="84.03552"
-        strokeWidth="1.0" autoSized="false" controlCount="2"
-        arrowState="2" xsi:type="link">
+        x="-493.15182" y="364.01724" width="146.05988"
+        height="206.20401" strokeWidth="1.0" autoSized="false"
+        controlCount="2" arrowState="2" xsi:type="link">
         <strokeColor>#404040</strokeColor>
         <textColor>#404040</textColor>
         <font>Arial-plain-11</font>
@@ -143,15 +143,15 @@
             </metadata>
         </metadata-list>
         <URIString>http://vue.tufts.edu/rdf/resource/cb60302e7f00010100ed3b538aff8089</URIString>
-        <point1 x="199.68138" y="298.37207"/>
-        <point2 x="-35.57301" y="295.8357"/>
+        <point1 x="-347.59195" y="569.72125"/>
+        <point2 x="-366.0" y="364.51724"/>
         <ID1 xsi:type="node">45</ID1>
         <ID2 xsi:type="node">7</ID2>
-        <ctrlPoint0 x="197.61261" y="446.71222" xsi:type="point"/>
-        <ctrlPoint1 x="143.40656" y="348.2085" xsi:type="point"/>
+        <ctrlPoint0 x="-546.94714" y="570.5403" xsi:type="point"/>
+        <ctrlPoint1 x="-511.59375" y="365.05814" xsi:type="point"/>
     </child>
-    <child ID="12" layerID="1" created="1317672171336" x="-233.5"
-        y="277.09753" width="70.0" height="1.3415833" strokeWidth="1.0"
+    <child ID="12" layerID="1" created="1317672171336" x="-301.5"
+        y="303.27576" width="1.0" height="38.0" strokeWidth="1.0"
         autoSized="false" controlCount="0" arrowState="2" xsi:type="link">
         <strokeColor>#404040</strokeColor>
         <textColor>#404040</textColor>
@@ -166,8 +166,8 @@
             </metadata>
         </metadata-list>
         <URIString>http://vue.tufts.edu/rdf/resource/cb79791b7f00010100ed3b53636ccda9</URIString>
-        <point1 x="-233.0" y="277.93912"/>
-        <point2 x="-164.0" y="277.59753"/>
+        <point1 x="-301.0" y="303.77576"/>
+        <point2 x="-301.0" y="340.77576"/>
         <ID1 xsi:type="node">6</ID1>
         <ID2 xsi:type="node">7</ID2>
     </child>
@@ -457,10 +457,10 @@
   &lt;head style="color: #000000" color="#000000"&gt;
     &lt;style type="text/css"&gt;
       &lt;!--
-        body { font-family: Arial; margin-right: 0px; color: #000000; margin-top: 0px; font-size: 12; margin-bottom: 0px; margin-left: 0px }
-        ol { font-family: Arial; vertical-align: middle; margin-top: 6; font-size: 12; list-style-position: outside; margin-left: 30 }
-        p { margin-right: 0; color: #000000; margin-top: 0; margin-bottom: 0; margin-left: 0 }
-        ul { font-family: Arial; vertical-align: middle; margin-top: 6; font-size: 12; list-style-position: outside; margin-left: 30 }
+        body { margin-left: 0px; font-size: 12; margin-bottom: 0px; color: #000000; margin-top: 0px; font-family: Arial; margin-right: 0px }
+        ol { margin-left: 30; font-size: 12; vertical-align: middle; margin-top: 6; list-style-position: outside; font-family: Arial }
+        p { margin-left: 0; margin-bottom: 0; color: #000000; margin-top: 0; margin-right: 0 }
+        ul { margin-left: 30; font-size: 12; vertical-align: middle; margin-top: 6; font-family: Arial; list-style-position: outside }
       --&gt;
     &lt;/style&gt;
         
@@ -517,10 +517,10 @@
   &lt;head&gt;
     &lt;style type="text/css"&gt;
       &lt;!--
-        body { font-family: Arial; margin-right: 0px; color: #000000; margin-top: 0px; font-size: 12; margin-bottom: 0px; margin-left: 0px }
-        ol { font-family: Arial; vertical-align: middle; margin-top: 6; font-size: 12; list-style-position: outside; margin-left: 30 }
-        p { margin-right: 0; color: #000000; margin-top: 0; margin-bottom: 0; margin-left: 0 }
-        ul { font-family: Arial; vertical-align: middle; margin-top: 6; font-size: 12; list-style-position: outside; margin-left: 30 }
+        body { margin-left: 0px; font-size: 12; margin-bottom: 0px; color: #000000; margin-top: 0px; font-family: Arial; margin-right: 0px }
+        ol { margin-left: 30; font-size: 12; vertical-align: middle; margin-top: 6; list-style-position: outside; font-family: Arial }
+        p { margin-left: 0; margin-bottom: 0; color: #000000; margin-top: 0; margin-right: 0 }
+        ul { margin-left: 30; font-size: 12; vertical-align: middle; margin-top: 6; font-family: Arial; list-style-position: outside }
       --&gt;
     &lt;/style&gt;
         
@@ -644,7 +644,7 @@
         <point2 x="-257.0" y="17.525711"/>
     </child>
     <child ID="40"
-        label="Faults: * Cache manipulation error (1,2,3,4) * Could not read available layers Note: Layers must exist on the server"
+        label="Faults: &#xa;    &#xa;    &#xa;      * Cache manipulation error (1,2,3,4) &#xa;    &#xa;    &#xa;      * Could not read available layers &#xa;    &#xa;    &#xa;      Note: Layers must exist on the server as &#xa;      they can be huge files"
         layerID="1" created="1317926484959" x="-137.5" y="63.02571"
         width="179.0" height="72.0" strokeWidth="0.0" autoSized="false" xsi:type="text">
         <strokeColor>#404040</strokeColor>
@@ -664,10 +664,10 @@
   &lt;head&gt;
     &lt;style type="text/css"&gt;
       &lt;!--
-        body { font-family: Arial; margin-right: 0px; color: #000000; margin-top: 0px; font-size: 12; margin-bottom: 0px; margin-left: 0px }
-        ol { font-family: Arial; vertical-align: middle; margin-top: 6; font-size: 12; list-style-position: outside; margin-left: 30 }
-        p { margin-right: 0; color: #000000; margin-top: 0; margin-bottom: 0; margin-left: 0 }
-        ul { font-family: Arial; vertical-align: middle; margin-top: 6; font-size: 12; list-style-position: outside; margin-left: 30 }
+        body { margin-left: 0px; font-size: 12; margin-bottom: 0px; color: #000000; margin-top: 0px; font-family: Arial; margin-right: 0px }
+        ol { margin-left: 30; font-size: 12; vertical-align: middle; margin-top: 6; list-style-position: outside; font-family: Arial }
+        p { margin-left: 0; margin-bottom: 0; color: #000000; margin-top: 0; margin-right: 0 }
+        ul { margin-left: 30; font-size: 12; vertical-align: middle; margin-top: 6; font-family: Arial; list-style-position: outside }
       --&gt;
     &lt;/style&gt;
         
@@ -683,15 +683,26 @@
       &lt;font style="font-size:10;"&gt;* Could not read available layers &lt;/font&gt;
     &lt;/p&gt;
     &lt;p style="color: #000000" color="#000000"&gt;
-      &lt;font style="font-size:10;"&gt;&lt;u&gt;Note: Layers must exist on the server&lt;/u&gt;&lt;/font&gt;
+      &lt;font style="font-size:10;"&gt;&lt;u&gt;Note: Layers must exist on the server as 
+      they can be huge files&lt;/u&gt;&lt;/font&gt;
     &lt;/p&gt;
   &lt;/body&gt;
 &lt;/html&gt;
 </richText>
-        <label>Faults: * Cache manipulation error (1,2,3,4) * Could not read available layers Note: Layers must exist on the server</label>
+        <label>Faults: 
+    
+    
+      * Cache manipulation error (1,2,3,4) 
+    
+    
+      * Could not read available layers 
+    
+    
+      Note: Layers must exist on the server as 
+      they can be huge files</label>
     </child>
     <child ID="41" label="Faults: * Failed to create ticket (1,2,3,4,5)"
-        layerID="1" created="1317927646491" x="-365.5" y="311.02576"
+        layerID="1" created="1317927646491" x="-225.5" y="256.02576"
         width="173.0" height="32.0" strokeWidth="0.0" autoSized="false" xsi:type="text">
         <strokeColor>#404040</strokeColor>
         <textColor>#000000</textColor>
@@ -710,10 +721,10 @@
   &lt;head&gt;
     &lt;style type="text/css"&gt;
       &lt;!--
-        body { font-family: Arial; margin-right: 0px; color: #000000; margin-top: 0px; font-size: 12; margin-bottom: 0px; margin-left: 0px }
-        ol { font-family: Arial; vertical-align: middle; margin-top: 6; font-size: 12; list-style-position: outside; margin-left: 30 }
-        p { margin-right: 0; color: #000000; margin-top: 0; margin-bottom: 0; margin-left: 0 }
-        ul { font-family: Arial; vertical-align: middle; margin-top: 6; font-size: 12; list-style-position: outside; margin-left: 30 }
+        body { margin-left: 0px; font-size: 12; margin-bottom: 0px; color: #000000; margin-top: 0px; font-family: Arial; margin-right: 0px }
+        ol { margin-left: 30; font-size: 12; vertical-align: middle; margin-top: 6; list-style-position: outside; font-family: Arial }
+        p { margin-left: 0; margin-bottom: 0; color: #000000; margin-top: 0; margin-right: 0 }
+        ul { margin-left: 30; font-size: 12; vertical-align: middle; margin-top: 6; font-family: Arial; list-style-position: outside }
       --&gt;
     &lt;/style&gt;
         
@@ -731,7 +742,7 @@
         <label>Faults: * Failed to create ticket (1,2,3,4,5)</label>
     </child>
     <child ID="42" label="testModel" layerID="1" created="1317928032219"
-        x="586.0" y="59.02571" width="136.0" height="51.0"
+        x="-517.0" y="801.0257" width="136.0" height="51.0"
         strokeWidth="1.0" autoSized="false" xsi:type="node">
         <fillColor>#EEEEEE</fillColor>
         <strokeColor>#000000</strokeColor>
@@ -750,7 +761,7 @@
         <shape arcwidth="20.0" archeight="20.0" xsi:type="roundRect"/>
     </child>
     <child ID="43" label="projectModel" layerID="1"
-        created="1317928045915" x="326.0" y="61.02571" width="136.0"
+        created="1317928045915" x="-218.0" y="801.0257" width="136.0"
         height="51.0" strokeWidth="1.0" autoSized="false" xsi:type="node">
         <fillColor>#EEEEEE</fillColor>
         <strokeColor>#000000</strokeColor>
@@ -769,8 +780,8 @@
         <shape arcwidth="20.0" archeight="20.0" xsi:type="roundRect"/>
     </child>
     <child ID="44"
-        label="Faults: * Missing ticket in request * Could not open progress file Status: -1 => queued -2 => aborted [0, 100) => in progress 100 => finished"
-        layerID="1" created="1317928154329" x="-159.5" y="308.52576"
+        label="Faults: &#xa;    &#xa;    &#xa;      * Missing ticket in request &#xa;    &#xa;    &#xa;      * Progress unreadable &#xa;    &#xa;    &#xa;      Status: &#xa;    &#xa;    &#xa;      -1 => queued &#xa;    &#xa;    &#xa;      -2 => aborted &#xa;    &#xa;    &#xa;      [0, 100) => in progress &#xa;    &#xa;    &#xa;      100 => finished"
+        layerID="1" created="1317928154329" x="-224.5" y="340.52576"
         width="173.0" height="107.0" strokeWidth="0.0" autoSized="false" xsi:type="text">
         <strokeColor>#404040</strokeColor>
         <textColor>#000000</textColor>
@@ -789,10 +800,10 @@
   &lt;head&gt;
     &lt;style type="text/css"&gt;
       &lt;!--
-        body { font-family: Arial; margin-right: 0px; color: #000000; margin-top: 0px; font-size: 12; margin-bottom: 0px; margin-left: 0px }
-        ol { font-family: Arial; vertical-align: middle; margin-top: 6; font-size: 12; list-style-position: outside; margin-left: 30 }
-        p { margin-right: 0; color: #000000; margin-top: 0; margin-bottom: 0; margin-left: 0 }
-        ul { font-family: Arial; vertical-align: middle; margin-top: 6; font-size: 12; list-style-position: outside; margin-left: 30 }
+        body { margin-left: 0px; font-size: 12; margin-bottom: 0px; color: #000000; margin-top: 0px; font-family: Arial; margin-right: 0px }
+        ol { margin-left: 30; font-size: 12; vertical-align: middle; margin-top: 6; list-style-position: outside; font-family: Arial }
+        p { margin-left: 0; margin-bottom: 0; color: #000000; margin-top: 0; margin-right: 0 }
+        ul { margin-left: 30; font-size: 12; vertical-align: middle; margin-top: 6; font-family: Arial; list-style-position: outside }
       --&gt;
     &lt;/style&gt;
         
@@ -805,7 +816,7 @@
       &lt;font style="font-size:10;"&gt;* Missing ticket in request &lt;/font&gt;
     &lt;/p&gt;
     &lt;p style="color: #000000" color="#000000"&gt;
-      &lt;font style="font-size:10;"&gt;* Could not open progress file &lt;/font&gt;
+      &lt;font style="font-size:10;"&gt;* Progress unreadable &lt;/font&gt;
     &lt;/p&gt;
     &lt;p style="color: #000000" color="#000000"&gt;
       &lt;font style="font-size:10;"&gt;Status: &lt;/font&gt;
@@ -825,10 +836,31 @@
   &lt;/body&gt;
 &lt;/html&gt;
 </richText>
-        <label>Faults: * Missing ticket in request * Could not open progress file Status: -1 =&gt; queued -2 =&gt; aborted [0, 100) =&gt; in progress 100 =&gt; finished</label>
+        <label>Faults: 
+    
+    
+      * Missing ticket in request 
+    
+    
+      * Progress unreadable 
+    
+    
+      Status: 
+    
+    
+      -1 =&gt; queued 
+    
+    
+      -2 =&gt; aborted 
+    
+    
+      [0, 100) =&gt; in progress 
+    
+    
+      100 =&gt; finished</label>
     </child>
     <child ID="45" label="Finished?" layerID="1" created="1317928452971"
-        x="152.0" y="252.52574" width="96.0" height="46.0"
+        x="-348.0" y="546.52576" width="96.0" height="46.0"
         strokeWidth="1.0" autoSized="false" xsi:type="node">
         <fillColor>#EEEEEE</fillColor>
         <strokeColor>#000000</strokeColor>
@@ -847,7 +879,7 @@
         <shape xsi:type="diamond"/>
     </child>
     <child ID="46" label="no" layerID="1" created="1317928478954"
-        x="103.98031" y="268.15076" width="49.039383" height="14.0"
+        x="-307.0" y="505.27576" width="14.0" height="41.75"
         strokeWidth="1.0" autoSized="false" controlCount="0"
         arrowState="2" xsi:type="link">
         <strokeColor>#404040</strokeColor>
@@ -863,14 +895,14 @@
             </metadata>
         </metadata-list>
         <URIString>http://vue.tufts.edu/rdf/resource/daad040f7f0001010163c5bb2749d0bf</URIString>
-        <point1 x="104.4803" y="275.02478"/>
-        <point2 x="152.51968" y="275.27673"/>
+        <point1 x="-300.0" y="505.77576"/>
+        <point2 x="-300.0" y="546.52576"/>
         <ID1 xsi:type="node">8</ID1>
         <ID2 xsi:type="node">45</ID2>
     </child>
     <child ID="47" label="yes" layerID="1" created="1317928622712"
-        x="58.821915" y="113.82346" width="39.678085" height="139.56485"
-        strokeWidth="1.0" autoSized="false" controlCount="1"
+        x="-255.01147" y="473.5338" width="79.51149" height="14.0"
+        strokeWidth="1.0" autoSized="false" controlCount="0"
         arrowState="2" xsi:type="link">
         <strokeColor>#404040</strokeColor>
         <textColor>#404040</textColor>
@@ -885,15 +917,14 @@
             </metadata>
         </metadata-list>
         <URIString>http://vue.tufts.edu/rdf/resource/daad04147f0001010163c5bbcf31710e</URIString>
-        <point1 x="59.321915" y="252.8883"/>
-        <point2 x="98.0" y="114.32346"/>
+        <point1 x="-254.51149" y="481.57233"/>
+        <point2 x="-176.0" y="479.4953"/>
         <ID1 xsi:type="node">8</ID1>
         <ID2 xsi:type="node">10</ID2>
-        <ctrlPoint0 x="74.0" y="114.52571" xsi:type="point"/>
     </child>
     <child ID="48"
         label="Faults: * Missing ticket in request * Log unavailable"
-        layerID="1" created="1317928694837" x="98.5" y="144.52573"
+        layerID="1" created="1317928694837" x="-33.5" y="453.5257"
         width="138.0" height="44.0" strokeWidth="0.0" autoSized="false" xsi:type="text">
         <strokeColor>#404040</strokeColor>
         <textColor>#000000</textColor>
@@ -912,10 +943,10 @@
   &lt;head&gt;
     &lt;style type="text/css"&gt;
       &lt;!--
-        body { font-family: Arial; margin-right: 0px; color: #000000; margin-top: 0px; font-size: 12; margin-bottom: 0px; margin-left: 0px }
-        ol { font-family: Arial; vertical-align: middle; margin-top: 6; font-size: 12; list-style-position: outside; margin-left: 30 }
-        p { margin-right: 0; color: #000000; margin-top: 0; margin-bottom: 0; margin-left: 0 }
-        ul { font-family: Arial; vertical-align: middle; margin-top: 6; font-size: 12; list-style-position: outside; margin-left: 30 }
+        body { margin-left: 0px; font-size: 12; margin-bottom: 0px; color: #000000; margin-top: 0px; font-family: Arial; margin-right: 0px }
+        ol { margin-left: 30; font-size: 12; vertical-align: middle; margin-top: 6; list-style-position: outside; font-family: Arial }
+        p { margin-left: 0; margin-bottom: 0; color: #000000; margin-top: 0; margin-right: 0 }
+        ul { margin-left: 30; font-size: 12; vertical-align: middle; margin-top: 6; font-family: Arial; list-style-position: outside }
       --&gt;
     &lt;/style&gt;
         
@@ -936,7 +967,7 @@
         <label>Faults: * Missing ticket in request * Log unavailable</label>
     </child>
     <child ID="49" label="getModel" layerID="1" created="1317928770712"
-        x="453.0" y="252.02574" width="136.0" height="51.0"
+        x="-368.0" y="636.02576" width="136.0" height="51.0"
         strokeWidth="1.0" autoSized="false" xsi:type="node">
         <fillColor>#EEEEEE</fillColor>
         <strokeColor>#000000</strokeColor>
@@ -955,7 +986,7 @@
         <shape arcwidth="20.0" archeight="20.0" xsi:type="roundRect"/>
     </child>
     <child ID="50" label="yes" layerID="1" created="1317928798106"
-        x="246.88379" y="269.46155" width="206.6162" height="14.0"
+        x="-309.0" y="592.02576" width="18.0" height="44.5"
         strokeWidth="1.0" autoSized="false" controlCount="0"
         arrowState="2" xsi:type="link">
         <strokeColor>#404040</strokeColor>
@@ -971,14 +1002,14 @@
             </metadata>
         </metadata-list>
         <URIString>http://vue.tufts.edu/rdf/resource/daaefa797f0001010163c5bb585c9e88</URIString>
-        <point1 x="247.3838" y="275.82098"/>
-        <point2 x="453.0" y="277.10208"/>
+        <point1 x="-300.0" y="592.52576"/>
+        <point2 x="-300.0" y="636.02576"/>
         <ID1 xsi:type="node">45</ID1>
         <ID2 xsi:type="node">49</ID2>
     </child>
     <child ID="51"
         label="Faults: * Missing ticket in request * Model unavailable Note: Result is a mathematical representation in XML. Each algorithm has its own representation."
-        layerID="1" created="1317928818595" x="460.5" y="307.52576"
+        layerID="1" created="1317928818595" x="-222.5" y="635.52576"
         width="158.0" height="96.0" strokeWidth="0.0" autoSized="false" xsi:type="text">
         <strokeColor>#404040</strokeColor>
         <textColor>#000000</textColor>
@@ -997,10 +1028,10 @@
   &lt;head&gt;
     &lt;style type="text/css"&gt;
       &lt;!--
-        body { font-family: Arial; margin-right: 0px; color: #000000; margin-top: 0px; font-size: 12; margin-bottom: 0px; margin-left: 0px }
-        ol { font-family: Arial; vertical-align: middle; margin-top: 6; font-size: 12; list-style-position: outside; margin-left: 30 }
-        p { margin-right: 0; color: #000000; margin-top: 0; margin-bottom: 0; margin-left: 0 }
-        ul { font-family: Arial; vertical-align: middle; margin-top: 6; font-size: 12; list-style-position: outside; margin-left: 30 }
+        body { margin-left: 0px; font-size: 12; margin-bottom: 0px; color: #000000; margin-top: 0px; font-family: Arial; margin-right: 0px }
+        ol { margin-left: 30; font-size: 12; vertical-align: middle; margin-top: 6; list-style-position: outside; font-family: Arial }
+        p { margin-left: 0; margin-bottom: 0; color: #000000; margin-top: 0; margin-right: 0 }
+        ul { margin-left: 30; font-size: 12; vertical-align: middle; margin-top: 6; font-family: Arial; list-style-position: outside }
       --&gt;
     &lt;/style&gt;
         
@@ -1025,7 +1056,7 @@
         <label>Faults: * Missing ticket in request * Model unavailable Note: Result is a mathematical representation in XML. Each algorithm has its own representation.</label>
     </child>
     <child ID="52" label="provide testing&#xa;points" layerID="1"
-        created="1317928965720" x="592.0" y="178.02573" width="130.0"
+        created="1317928965720" x="-514.0" y="711.0256" width="130.0"
         height="47.0" strokeWidth="1.0" strokeStyle="4"
         autoSized="false" xsi:type="node">
         <fillColor>#EEEEEE</fillColor>
@@ -1045,7 +1076,7 @@
         <shape arcwidth="20.0" archeight="20.0" xsi:type="roundRect"/>
     </child>
     <child ID="53" label="getLayerAsUrl" layerID="1"
-        created="1317929012574" x="231.0" y="-152.97429" width="136.0"
+        created="1317929012574" x="-364.0" y="1074.0258" width="136.0"
         height="51.0" strokeWidth="1.0" autoSized="false" xsi:type="node">
         <fillColor>#EEEEEE</fillColor>
         <strokeColor>#000000</strokeColor>
@@ -1064,7 +1095,7 @@
         <shape arcwidth="20.0" archeight="20.0" xsi:type="roundRect"/>
     </child>
     <child ID="54" label="getTestResult" layerID="1"
-        created="1317929034432" x="581.0" y="-155.97429" width="136.0"
+        created="1317929034432" x="-515.0" y="979.0257" width="136.0"
         height="51.0" strokeWidth="1.0" autoSized="false" xsi:type="node">
         <fillColor>#EEEEEE</fillColor>
         <strokeColor>#000000</strokeColor>
@@ -1083,7 +1114,7 @@
         <shape arcwidth="20.0" archeight="20.0" xsi:type="roundRect"/>
     </child>
     <child ID="55" label="getProjectionMetadata" layerID="1"
-        created="1317929071825" x="405.0" y="-153.97429" width="140.0"
+        created="1317929071825" x="-61.0" y="1074.0258" width="140.0"
         height="51.0" strokeWidth="1.0" autoSized="false" xsi:type="node">
         <fillColor>#EEEEEE</fillColor>
         <strokeColor>#000000</strokeColor>
@@ -1102,7 +1133,7 @@
         <shape arcwidth="20.0" archeight="20.0" xsi:type="roundRect"/>
     </child>
     <child ID="56" label="Faults: * Failed to create ticket (1,2,3,4,5)"
-        layerID="1" created="1317929534710" x="287.5" y="103.52571"
+        layerID="1" created="1317929534710" x="-72.5" y="800.5257"
         width="124.0" height="42.0" strokeWidth="0.0" autoSized="false" xsi:type="text">
         <strokeColor>#404040</strokeColor>
         <textColor>#000000</textColor>
@@ -1121,10 +1152,10 @@
   &lt;head&gt;
     &lt;style type="text/css"&gt;
       &lt;!--
-        body { font-family: Arial; margin-right: 0px; color: #000000; margin-top: 0px; font-size: 12; margin-bottom: 0px; margin-left: 0px }
-        ol { font-family: Arial; vertical-align: middle; margin-top: 6; font-size: 12; list-style-position: outside; margin-left: 30 }
-        p { margin-right: 0; color: #000000; margin-top: 0; margin-bottom: 0; margin-left: 0 }
-        ul { font-family: Arial; vertical-align: middle; margin-top: 6; font-size: 12; list-style-position: outside; margin-left: 30 }
+        body { margin-left: 0px; font-size: 12; margin-bottom: 0px; color: #000000; margin-top: 0px; font-family: Arial; margin-right: 0px }
+        ol { margin-left: 30; font-size: 12; vertical-align: middle; margin-top: 6; list-style-position: outside; font-family: Arial }
+        p { margin-left: 0; margin-bottom: 0; color: #000000; margin-top: 0; margin-right: 0 }
+        ul { margin-left: 30; font-size: 12; vertical-align: middle; margin-top: 6; font-family: Arial; list-style-position: outside }
       --&gt;
     &lt;/style&gt;
         
@@ -1145,7 +1176,7 @@
         <label>Faults: * Failed to create ticket (1,2,3,4,5)</label>
     </child>
     <child ID="57" label="Faults: * Failed to create ticket (1,2,3,4,5)"
-        layerID="1" created="1317929579142" x="664.5" y="112.52571"
+        layerID="1" created="1317929579142" x="-371.5" y="800.5257"
         width="123.0" height="42.0" strokeWidth="0.0" autoSized="false" xsi:type="text">
         <strokeColor>#404040</strokeColor>
         <textColor>#000000</textColor>
@@ -1164,10 +1195,10 @@
   &lt;head&gt;
     &lt;style type="text/css"&gt;
       &lt;!--
-        body { font-family: Arial; margin-right: 0px; color: #000000; margin-top: 0px; font-size: 12; margin-bottom: 0px; margin-left: 0px }
-        ol { font-family: Arial; vertical-align: middle; margin-top: 6; font-size: 12; list-style-position: outside; margin-left: 30 }
-        p { margin-right: 0; color: #000000; margin-top: 0; margin-bottom: 0; margin-left: 0 }
-        ul { font-family: Arial; vertical-align: middle; margin-top: 6; font-size: 12; list-style-position: outside; margin-left: 30 }
+        body { margin-left: 0px; font-size: 12; margin-bottom: 0px; color: #000000; margin-top: 0px; font-family: Arial; margin-right: 0px }
+        ol { margin-left: 30; font-size: 12; vertical-align: middle; margin-top: 6; list-style-position: outside; font-family: Arial }
+        p { margin-left: 0; margin-bottom: 0; color: #000000; margin-top: 0; margin-right: 0 }
+        ul { margin-left: 30; font-size: 12; vertical-align: middle; margin-top: 6; font-family: Arial; list-style-position: outside }
       --&gt;
     &lt;/style&gt;
         
@@ -1187,49 +1218,9 @@
 </richText>
         <label>Faults: * Failed to create ticket (1,2,3,4,5)</label>
     </child>
-    <child ID="58"
-        label="Typical interaction with the ecological &#xa;      niche modelling web service (OMWS)"
-        layerID="1" created="1317929616721" x="-154.0" y="-202.47429"
-        width="316.0" height="63.0" strokeWidth="0.0" autoSized="false" xsi:type="text">
-        <strokeColor>#404040</strokeColor>
-        <textColor>#000000</textColor>
-        <font>Arial-plain-16</font>
-        <metadata-list category-list-size="1" other-list-size="0"
-            ontology-list-size="0" RCategoryListSize="0">
-            <ontology-list-string></ontology-list-string>
-            <metadata xsi:type="vue-metadata-element">
-                <value></value>
-                <key>http://vue.tufts.edu/vue.rdfs#none</key>
-                <type>1</type>
-            </metadata>
-        </metadata-list>
-        <URIString>http://vue.tufts.edu/rdf/resource/dac6105b7f0001010163c5bb78a064cd</URIString>
-        <richText>&lt;html&gt;
-  &lt;head style="color: #000000" color="#000000"&gt;
-    &lt;style type="text/css"&gt;
-      &lt;!--
-        body { font-family: Arial; margin-right: 0px; color: #000000; margin-top: 0px; font-size: 12; margin-bottom: 0px; margin-left: 0px }
-        ol { font-family: Arial; vertical-align: middle; margin-top: 6; font-size: 12; list-style-position: outside; margin-left: 30 }
-        p { margin-right: 0; color: #000000; margin-top: 0; margin-bottom: 0; margin-left: 0 }
-        ul { font-family: Arial; vertical-align: middle; margin-top: 6; font-size: 12; list-style-position: outside; margin-left: 30 }
-      --&gt;
-    &lt;/style&gt;
-        
-  &lt;/head&gt;
-  &lt;body&gt;
-    &lt;p style="color: #000000; text-align: center" color="#000000"&gt;
-      &lt;font style="font-size:16;"&gt;&lt;b&gt;Typical interaction with the ecological 
-      niche modelling web service (OMWS)&lt;/b&gt;&lt;/font&gt;
-    &lt;/p&gt;
-  &lt;/body&gt;
-&lt;/html&gt;
-</richText>
-        <label>Typical interaction with the ecological 
-      niche modelling web service (OMWS)</label>
-    </child>
     <child ID="60"
-        label="Faults: * Layer id required * Layer unavailable"
-        layerID="1" created="1317929820476" x="233.5" y="-201.47429"
+        label="Faults: &#xa;    &#xa;    &#xa;      * Missing id in request&#xa;    &#xa;    &#xa;      * Layer unavailable"
+        layerID="1" created="1317929820476" x="-218.5" y="1073.5258"
         width="136.0" height="55.0" strokeWidth="0.0" autoSized="false" xsi:type="text">
         <strokeColor>#404040</strokeColor>
         <textColor>#000000</textColor>
@@ -1248,10 +1239,10 @@
   &lt;head&gt;
     &lt;style type="text/css"&gt;
       &lt;!--
-        body { font-family: Arial; margin-right: 0px; color: #000000; margin-top: 0px; font-size: 12; margin-bottom: 0px; margin-left: 0px }
-        ol { font-family: Arial; vertical-align: middle; margin-top: 6; font-size: 12; list-style-position: outside; margin-left: 30 }
-        p { margin-right: 0; color: #000000; margin-top: 0; margin-bottom: 0; margin-left: 0 }
-        ul { font-family: Arial; vertical-align: middle; margin-top: 6; font-size: 12; list-style-position: outside; margin-left: 30 }
+        body { margin-left: 0px; font-size: 12; margin-bottom: 0px; color: #000000; margin-top: 0px; font-family: Arial; margin-right: 0px }
+        ol { margin-left: 30; font-size: 12; vertical-align: middle; margin-top: 6; list-style-position: outside; font-family: Arial }
+        p { margin-left: 0; margin-bottom: 0; color: #000000; margin-top: 0; margin-right: 0 }
+        ul { margin-left: 30; font-size: 12; vertical-align: middle; margin-top: 6; font-family: Arial; list-style-position: outside }
       --&gt;
     &lt;/style&gt;
         
@@ -1261,7 +1252,7 @@
       &lt;font style="font-size:10;"&gt;Faults: &lt;/font&gt;
     &lt;/p&gt;
     &lt;p style="color: #000000" color="#000000"&gt;
-      &lt;font style="font-size:10;"&gt;* Layer id required &lt;/font&gt;
+      &lt;font style="font-size:10;"&gt;* Missing id in request&lt;/font&gt;
     &lt;/p&gt;
     &lt;p style="color: #000000" color="#000000"&gt;
       &lt;font style="font-size:10;"&gt;* Layer unavailable&lt;/font&gt;
@@ -1269,12 +1260,18 @@
   &lt;/body&gt;
 &lt;/html&gt;
 </richText>
-        <label>Faults: * Layer id required * Layer unavailable</label>
+        <label>Faults: 
+    
+    
+      * Missing id in request
+    
+    
+      * Layer unavailable</label>
     </child>
     <child ID="61"
-        label="Faults: * Missing ticket in request * Log unavailable"
-        layerID="1" created="1317930001288" x="406.0" y="-203.47429"
-        width="136.0" height="42.0" strokeWidth="0.0" autoSized="false" xsi:type="text">
+        label="Faults: &#xa;    &#xa;    &#xa;      * Missing ticket in request &#xa;    &#xa;    &#xa;      * Projection unavailable&#xa;    &#xa;    &#xa;      * Projection unreadable&#xa;    &#xa;    &#xa;      * Metadata unavailable"
+        layerID="1" created="1317930001288" x="89.0" y="1073.5258"
+        width="136.0" height="70.0" strokeWidth="0.0" autoSized="false" xsi:type="text">
         <strokeColor>#404040</strokeColor>
         <textColor>#000000</textColor>
         <font>-plain-10</font>
@@ -1292,10 +1289,10 @@
   &lt;head&gt;
     &lt;style type="text/css"&gt;
       &lt;!--
-        body { font-family: Arial; margin-right: 0px; color: #000000; margin-top: 0px; font-size: 12; margin-bottom: 0px; margin-left: 0px }
-        ol { font-family: Arial; vertical-align: middle; margin-top: 6; font-size: 12; list-style-position: outside; margin-left: 30 }
-        p { margin-right: 0; color: #000000; margin-top: 0; margin-bottom: 0; margin-left: 0 }
-        ul { font-family: Arial; vertical-align: middle; margin-top: 6; font-size: 12; list-style-position: outside; margin-left: 30 }
+        body { margin-left: 0px; font-size: 12; margin-bottom: 0px; color: #000000; margin-top: 0px; font-family: Arial; margin-right: 0px }
+        ol { margin-left: 30; font-size: 12; vertical-align: middle; margin-top: 6; list-style-position: outside; font-family: Arial }
+        p { margin-left: 0; margin-bottom: 0; color: #000000; margin-top: 0; margin-right: 0 }
+        ul { margin-left: 30; font-size: 12; vertical-align: middle; margin-top: 6; font-family: Arial; list-style-position: outside }
       --&gt;
     &lt;/style&gt;
         
@@ -1308,16 +1305,34 @@
       &lt;font style="font-size:10;"&gt;* Missing ticket in request &lt;/font&gt;
     &lt;/p&gt;
     &lt;p style="color: #000000" color="#000000"&gt;
-      &lt;font style="font-size:10;"&gt;* Log unavailable&lt;/font&gt;
+      &lt;font style="font-size:10;"&gt;* Projection unavailable
+&lt;/font&gt;    &lt;/p&gt;
+    &lt;p style="color: #000000" color="#000000"&gt;
+      &lt;font style="font-size:10;"&gt;* Projection unreadable
+&lt;/font&gt;    &lt;/p&gt;
+    &lt;p style="color: #000000" color="#000000"&gt;
+      &lt;font style="font-size:10;"&gt;* Metadata unavailable&lt;/font&gt;
     &lt;/p&gt;
   &lt;/body&gt;
 &lt;/html&gt;
 </richText>
-        <label>Faults: * Missing ticket in request * Log unavailable</label>
+        <label>Faults: 
+    
+    
+      * Missing ticket in request 
+    
+    
+      * Projection unavailable
+    
+    
+      * Projection unreadable
+    
+    
+      * Metadata unavailable</label>
     </child>
     <child ID="62"
         label="Faults: * Missing ticket in request * Test result unavailable"
-        layerID="1" created="1317930048493" x="584.0" y="-205.47429"
+        layerID="1" created="1317930048493" x="-370.0" y="981.5257"
         width="136.0" height="42.0" strokeWidth="0.0" autoSized="false" xsi:type="text">
         <strokeColor>#404040</strokeColor>
         <textColor>#000000</textColor>
@@ -1336,10 +1351,10 @@
   &lt;head&gt;
     &lt;style type="text/css"&gt;
       &lt;!--
-        body { font-family: Arial; margin-right: 0px; color: #000000; margin-top: 0px; font-size: 12; margin-bottom: 0px; margin-left: 0px }
-        ol { font-family: Arial; vertical-align: middle; margin-top: 6; font-size: 12; list-style-position: outside; margin-left: 30 }
-        p { margin-right: 0; color: #000000; margin-top: 0; margin-bottom: 0; margin-left: 0 }
-        ul { font-family: Arial; vertical-align: middle; margin-top: 6; font-size: 12; list-style-position: outside; margin-left: 30 }
+        body { margin-left: 0px; font-size: 12; margin-bottom: 0px; color: #000000; margin-top: 0px; font-family: Arial; margin-right: 0px }
+        ol { margin-left: 30; font-size: 12; vertical-align: middle; margin-top: 6; list-style-position: outside; font-family: Arial }
+        p { margin-left: 0; margin-bottom: 0; color: #000000; margin-top: 0; margin-right: 0 }
+        ul { margin-left: 30; font-size: 12; vertical-align: middle; margin-top: 6; font-family: Arial; list-style-position: outside }
       --&gt;
     &lt;/style&gt;
         
@@ -1360,7 +1375,7 @@
         <label>Faults: * Missing ticket in request * Test result unavailable</label>
     </child>
     <child ID="63" label="getProgress&#xa;procedure" layerID="1"
-        created="1317930125999" x="326.0" y="-29.974289" width="130.0"
+        created="1317930125999" x="-213.0" y="893.02563" width="130.0"
         height="47.0" strokeWidth="1.0" strokeStyle="4"
         autoSized="false" xsi:type="node">
         <fillColor>#EEEEEE</fillColor>
@@ -1380,7 +1395,7 @@
         <shape arcwidth="20.0" archeight="20.0" xsi:type="roundRect"/>
     </child>
     <child ID="64" label="getProgress&#xa;procedure" layerID="1"
-        created="1317930179307" x="586.0" y="-39.97429" width="130.0"
+        created="1317930179307" x="-514.0" y="893.02563" width="130.0"
         height="47.0" strokeWidth="1.0" strokeStyle="4"
         autoSized="false" xsi:type="node">
         <fillColor>#EEEEEE</fillColor>
@@ -1399,8 +1414,8 @@
         <URIString>http://vue.tufts.edu/rdf/resource/dac610647f0001010163c5bb2ae60ee4</URIString>
         <shape arcwidth="20.0" archeight="20.0" xsi:type="roundRect"/>
     </child>
-    <child ID="65" layerID="1" created="1317930225502" x="388.5"
-        y="-63.518173" width="2.1687927" height="34.043564"
+    <child ID="65" layerID="1" created="1317930225502" x="-148.23431"
+        y="939.5254" width="1.7343292" height="65.95642"
         strokeWidth="1.0" autoSized="false" controlCount="0"
         arrowState="2" xsi:type="link">
         <strokeColor>#404040</strokeColor>
@@ -1416,13 +1431,13 @@
             </metadata>
         </metadata-list>
         <URIString>http://vue.tufts.edu/rdf/resource/dac610657f0001010163c5bb84b73df9</URIString>
-        <point1 x="390.1688" y="-29.97461"/>
-        <point2 x="389.0" y="-63.018173"/>
+        <point1 x="-147.73433" y="940.0254"/>
+        <point2 x="-147.0" y="1004.9818"/>
         <ID1 xsi:type="node">63</ID1>
         <ID2 xsi:type="link">80</ID2>
     </child>
-    <child ID="66" layerID="1" created="1317930232186" x="388.5"
-        y="-103.47429" width="53.496643" height="40.956116"
+    <child ID="66" layerID="1" created="1317930232186" x="-147.5"
+        y="1004.4818" width="114.92435" height="70.043945"
         strokeWidth="1.0" autoSized="false" controlCount="0"
         arrowState="2" xsi:type="link">
         <strokeColor>#404040</strokeColor>
@@ -1438,13 +1453,13 @@
             </metadata>
         </metadata-list>
         <URIString>http://vue.tufts.edu/rdf/resource/dac610667f0001010163c5bb54629ea7</URIString>
-        <point1 x="389.0" y="-63.018173"/>
-        <point2 x="441.49664" y="-102.97429"/>
+        <point1 x="-147.0" y="1004.9818"/>
+        <point2 x="-33.075657" y="1074.0258"/>
         <ID1 xsi:type="link">80</ID1>
         <ID2 xsi:type="node">55</ID2>
     </child>
-    <child ID="67" layerID="1" created="1317930237548" x="648.9474"
-        y="-105.47266" width="2.1403198" height="66.0" strokeWidth="1.0"
+    <child ID="67" layerID="1" created="1317930237548" x="-448.9659"
+        y="939.5254" width="1.8863525" height="40.0" strokeWidth="1.0"
         autoSized="false" controlCount="0" arrowState="2" xsi:type="link">
         <strokeColor>#404040</strokeColor>
         <textColor>#404040</textColor>
@@ -1459,13 +1474,13 @@
             </metadata>
         </metadata-list>
         <URIString>http://vue.tufts.edu/rdf/resource/dac610667f0001010163c5bb541360f8</URIString>
-        <point1 x="650.5877" y="-39.972656"/>
-        <point2 x="649.4474" y="-104.97266"/>
+        <point1 x="-448.4659" y="940.0254"/>
+        <point2 x="-447.57956" y="979.0254"/>
         <ID1 xsi:type="node">64</ID1>
         <ID2 xsi:type="node">54</ID2>
     </child>
-    <child ID="68" layerID="1" created="1317930242130" x="391.25806"
-        y="16.52539" width="2.4193726" height="45.0" strokeWidth="1.0"
+    <child ID="68" layerID="1" created="1317930242130" x="-149.93335"
+        y="851.5259" width="1.9111176" height="42.0" strokeWidth="1.0"
         autoSized="false" controlCount="0" arrowState="2" xsi:type="link">
         <strokeColor>#404040</strokeColor>
         <textColor>#404040</textColor>
@@ -1480,13 +1495,13 @@
             </metadata>
         </metadata-list>
         <URIString>http://vue.tufts.edu/rdf/resource/dac610677f0001010163c5bbe4ded1bc</URIString>
-        <point1 x="393.17743" y="61.02539"/>
-        <point2 x="391.75806" y="17.02539"/>
+        <point1 x="-149.43333" y="852.0259"/>
+        <point2 x="-148.52222" y="893.0259"/>
         <ID1 xsi:type="node">43</ID1>
         <ID2 xsi:type="node">63</ID2>
     </child>
-    <child ID="69" layerID="1" created="1317930246130" x="651.198"
-        y="6.5253906" width="2.5445557" height="53.0" strokeWidth="1.0"
+    <child ID="69" layerID="1" created="1317930246130" x="-449.5"
+        y="851.52563" width="1.0" height="41.99994" strokeWidth="1.0"
         autoSized="false" controlCount="0" arrowState="2" xsi:type="link">
         <strokeColor>#404040</strokeColor>
         <textColor>#404040</textColor>
@@ -1501,15 +1516,14 @@
             </metadata>
         </metadata-list>
         <URIString>http://vue.tufts.edu/rdf/resource/dac610687f0001010163c5bb707563bd</URIString>
-        <point1 x="653.24255" y="59.02539"/>
-        <point2 x="651.698" y="7.0253906"/>
+        <point1 x="-449.0" y="852.0257"/>
+        <point2 x="-449.0" y="893.02563"/>
         <ID1 xsi:type="node">42</ID1>
         <ID2 xsi:type="node">64</ID2>
     </child>
-    <child ID="70" layerID="1" created="1317930285091" x="519.5"
-        y="183.73184" width="1.7266846" height="68.79941"
-        strokeWidth="1.0" autoSized="false" controlCount="0"
-        arrowState="2" xsi:type="link">
+    <child ID="70" layerID="1" created="1317930285091" x="-300.5"
+        y="686.52576" width="1.0" height="50.205994" strokeWidth="1.0"
+        autoSized="false" controlCount="0" arrowState="2" xsi:type="link">
         <strokeColor>#404040</strokeColor>
         <textColor>#404040</textColor>
         <font>Arial-plain-11</font>
@@ -1523,13 +1537,13 @@
             </metadata>
         </metadata-list>
         <URIString>http://vue.tufts.edu/rdf/resource/dac610697f0001010163c5bb06b04025</URIString>
-        <point1 x="520.7267" y="252.03125"/>
-        <point2 x="520.0" y="184.23184"/>
+        <point1 x="-300.0" y="687.02576"/>
+        <point2 x="-300.0" y="736.23175"/>
         <ID1 xsi:type="node">49</ID1>
         <ID2 xsi:type="link">75</ID2>
     </child>
-    <child ID="71" layerID="1" created="1317930291419" x="519.5"
-        y="109.52573" width="100.72925" height="75.206116"
+    <child ID="71" layerID="1" created="1317930291419" x="-407.42072"
+        y="735.73175" width="107.920715" height="65.793945"
         strokeWidth="1.0" autoSized="false" controlCount="0"
         arrowState="2" xsi:type="link">
         <strokeColor>#404040</strokeColor>
@@ -1545,13 +1559,13 @@
             </metadata>
         </metadata-list>
         <URIString>http://vue.tufts.edu/rdf/resource/dac6106a7f0001010163c5bb8cc2d71a</URIString>
-        <point1 x="520.0" y="184.23184"/>
-        <point2 x="619.72925" y="110.02573"/>
+        <point1 x="-300.0" y="736.23175"/>
+        <point2 x="-406.92072" y="801.0257"/>
         <ID1 xsi:type="link">75</ID1>
         <ID2 xsi:type="node">42</ID2>
     </child>
-    <child ID="72" layerID="1" created="1317930372251" x="654.1539"
-        y="109.52539" width="2.7435303" height="69.0" strokeWidth="1.0"
+    <child ID="72" layerID="1" created="1317930372251" x="-449.5"
+        y="757.5256" width="1.0" height="44.000122" strokeWidth="1.0"
         autoSized="false" controlCount="0" arrowState="2" xsi:type="link">
         <strokeColor>#404040</strokeColor>
         <textColor>#404040</textColor>
@@ -1566,32 +1580,13 @@
             </metadata>
         </metadata-list>
         <URIString>http://vue.tufts.edu/rdf/resource/dac6106b7f0001010163c5bb37557ac8</URIString>
-        <point1 x="656.3974" y="178.02539"/>
-        <point2 x="654.6539" y="110.02539"/>
+        <point1 x="-449.0" y="758.0256"/>
+        <point2 x="-449.0" y="801.0257"/>
         <ID1 xsi:type="node">52</ID1>
         <ID2 xsi:type="node">42</ID2>
     </child>
-    <child ID="73" layerID="1" created="1317930428316" x="-187.0"
-        y="229.52574" width="473.0" height="189.0" strokeWidth="1.0"
-        strokeStyle="4" autoSized="false" xsi:type="node">
-        <fillColor>#00000000</fillColor>
-        <strokeColor>#000000</strokeColor>
-        <textColor>#000000</textColor>
-        <font>Arial-plain-12</font>
-        <metadata-list category-list-size="1" other-list-size="0"
-            ontology-list-size="0" RCategoryListSize="0">
-            <ontology-list-string></ontology-list-string>
-            <metadata xsi:type="vue-metadata-element">
-                <value></value>
-                <key>http://vue.tufts.edu/vue.rdfs#none</key>
-                <type>1</type>
-            </metadata>
-        </metadata-list>
-        <URIString>http://vue.tufts.edu/rdf/resource/dac854c37f0001010163c5bbba1aae69</URIString>
-        <shape arcwidth="20.0" archeight="20.0" xsi:type="roundRect"/>
-    </child>
     <child ID="74" label="getProgress procedure" layerID="1"
-        created="1317930520521" x="-111.0" y="212.52574" width="140.0"
+        created="1317930520521" x="-31.0" y="311.52573" width="140.0"
         height="21.0" strokeWidth="0.0" autoSized="false" xsi:type="text">
         <strokeColor>#404040</strokeColor>
         <textColor>#000000</textColor>
@@ -1610,10 +1605,10 @@
   &lt;head&gt;
     &lt;style type="text/css"&gt;
       &lt;!--
-        body { font-family: Arial; margin-right: 0px; color: #000000; margin-top: 0px; font-size: 12; margin-bottom: 0px; margin-left: 0px }
-        ol { font-family: Arial; vertical-align: middle; margin-top: 6; font-size: 12; list-style-position: outside; margin-left: 30 }
-        p { margin-right: 0; color: #000000; margin-top: 0; margin-bottom: 0; margin-left: 0 }
-        ul { font-family: Arial; vertical-align: middle; margin-top: 6; font-size: 12; list-style-position: outside; margin-left: 30 }
+        body { margin-left: 0px; font-size: 12; margin-bottom: 0px; color: #000000; margin-top: 0px; font-family: Arial; margin-right: 0px }
+        ol { margin-left: 30; font-size: 12; vertical-align: middle; margin-top: 6; list-style-position: outside; font-family: Arial }
+        p { margin-left: 0; margin-bottom: 0; color: #000000; margin-top: 0; margin-right: 0 }
+        ul { margin-left: 30; font-size: 12; vertical-align: middle; margin-top: 6; font-family: Arial; list-style-position: outside }
       --&gt;
     &lt;/style&gt;
         
@@ -1627,8 +1622,8 @@
 </richText>
         <label>getProgress procedure</label>
     </child>
-    <child ID="76" layerID="1" created="1317931403562" x="426.38434"
-        y="111.52573" width="94.11566" height="73.206116"
+    <child ID="76" layerID="1" created="1317931403562" x="-300.5"
+        y="735.73175" width="108.63835" height="65.793945"
         strokeWidth="1.0" autoSized="false" controlCount="0"
         arrowState="2" xsi:type="link">
         <strokeColor>#404040</strokeColor>
@@ -1644,13 +1639,13 @@
             </metadata>
         </metadata-list>
         <URIString>http://vue.tufts.edu/rdf/resource/dada962f7f0001010163c5bb33d70547</URIString>
-        <point1 x="520.0" y="184.23184"/>
-        <point2 x="426.88434" y="112.02573"/>
+        <point1 x="-300.0" y="736.23175"/>
+        <point2 x="-192.36165" y="801.0257"/>
         <ID1 xsi:type="link">75</ID1>
         <ID2 xsi:type="node">43</ID2>
     </child>
-    <child ID="75" layerID="1" created="1317931332160" x="474.0"
-        y="182.18796" width="92.0" height="4.0877686" strokeWidth="4.0"
+    <child ID="75" layerID="1" created="1317931332160" x="-346.0"
+        y="734.1879" width="92.0" height="4.0876465" strokeWidth="4.0"
         autoSized="false" controlCount="0" arrowState="0" xsi:type="link">
         <strokeColor>#404040</strokeColor>
         <textColor>#404040</textColor>
@@ -1665,68 +1660,11 @@
             </metadata>
         </metadata-list>
         <URIString>http://vue.tufts.edu/rdf/resource/dada96327f0001010163c5bb303bb23a</URIString>
-        <point1 x="476.0" y="184.18796"/>
-        <point2 x="564.0" y="184.27573"/>
+        <point1 x="-344.0" y="736.1879"/>
+        <point2 x="-256.0" y="736.2756"/>
     </child>
-    <child ID="77" layerID="1" created="1317931508138" x="1050.0"
-        y="625.938" width="92.0" height="4.0877686" strokeWidth="4.0"
-        autoSized="false" controlCount="0" arrowState="0" xsi:type="link">
-        <strokeColor>#404040</strokeColor>
-        <textColor>#404040</textColor>
-        <font>Arial-plain-11</font>
-        <metadata-list category-list-size="1" other-list-size="0"
-            ontology-list-size="0" RCategoryListSize="0">
-            <ontology-list-string></ontology-list-string>
-            <metadata xsi:type="vue-metadata-element">
-                <value></value>
-                <key>http://vue.tufts.edu/vue.rdfs#none</key>
-                <type>1</type>
-            </metadata>
-        </metadata-list>
-        <URIString>http://vue.tufts.edu/rdf/resource/dada96337f0001010163c5bbc8a2a7ef</URIString>
-        <point1 x="1052.0" y="627.938"/>
-        <point2 x="1140.0" y="628.02576"/>
-    </child>
-    <child ID="78" layerID="1" created="1317931514928" x="1062.0"
-        y="563.938" width="92.0" height="4.0877686" strokeWidth="4.0"
-        autoSized="false" controlCount="0" arrowState="0" xsi:type="link">
-        <strokeColor>#404040</strokeColor>
-        <textColor>#404040</textColor>
-        <font>Arial-plain-11</font>
-        <metadata-list category-list-size="1" other-list-size="0"
-            ontology-list-size="0" RCategoryListSize="0">
-            <ontology-list-string></ontology-list-string>
-            <metadata xsi:type="vue-metadata-element">
-                <value></value>
-                <key>http://vue.tufts.edu/vue.rdfs#none</key>
-                <type>1</type>
-            </metadata>
-        </metadata-list>
-        <URIString>http://vue.tufts.edu/rdf/resource/dada96337f0001010163c5bb37ea83b5</URIString>
-        <point1 x="1064.0" y="565.938"/>
-        <point2 x="1152.0" y="566.02576"/>
-    </child>
-    <child ID="79" layerID="1" created="1317931521364" x="1047.0"
-        y="624.938" width="92.0" height="4.0877686" strokeWidth="4.0"
-        autoSized="false" controlCount="0" arrowState="0" xsi:type="link">
-        <strokeColor>#404040</strokeColor>
-        <textColor>#404040</textColor>
-        <font>Arial-plain-11</font>
-        <metadata-list category-list-size="1" other-list-size="0"
-            ontology-list-size="0" RCategoryListSize="0">
-            <ontology-list-string></ontology-list-string>
-            <metadata xsi:type="vue-metadata-element">
-                <value></value>
-                <key>http://vue.tufts.edu/vue.rdfs#none</key>
-                <type>1</type>
-            </metadata>
-        </metadata-list>
-        <URIString>http://vue.tufts.edu/rdf/resource/dada96347f0001010163c5bbf9e8dbab</URIString>
-        <point1 x="1049.0" y="626.938"/>
-        <point2 x="1137.0" y="627.02576"/>
-    </child>
-    <child ID="81" layerID="1" created="1317931625346" x="334.1056"
-        y="-102.47429" width="55.39441" height="39.956116"
+    <child ID="81" layerID="1" created="1317931625346" x="-256.31238"
+        y="1004.4818" width="109.81236" height="70.043945"
         strokeWidth="1.0" autoSized="false" controlCount="0"
         arrowState="2" xsi:type="link">
         <strokeColor>#404040</strokeColor>
@@ -1742,13 +1680,13 @@
             </metadata>
         </metadata-list>
         <URIString>http://vue.tufts.edu/rdf/resource/dada96367f0001010163c5bb7b318020</URIString>
-        <point1 x="389.0" y="-63.018173"/>
-        <point2 x="334.6056" y="-101.97429"/>
+        <point1 x="-147.0" y="1004.9818"/>
+        <point2 x="-255.81236" y="1074.0258"/>
         <ID1 xsi:type="link">80</ID1>
         <ID2 xsi:type="node">53</ID2>
     </child>
-    <child ID="80" layerID="1" created="1317931539837" x="343.0"
-        y="-65.06206" width="92.0" height="4.0877686" strokeWidth="4.0"
+    <child ID="80" layerID="1" created="1317931539837" x="-193.0"
+        y="1002.9379" width="92.0" height="4.0877686" strokeWidth="4.0"
         autoSized="false" controlCount="0" arrowState="0" xsi:type="link">
         <strokeColor>#404040</strokeColor>
         <textColor>#404040</textColor>
@@ -1763,8 +1701,27 @@
             </metadata>
         </metadata-list>
         <URIString>http://vue.tufts.edu/rdf/resource/dada96367f0001010163c5bb70125fa3</URIString>
-        <point1 x="345.0" y="-63.062057"/>
-        <point2 x="433.0" y="-62.97429"/>
+        <point1 x="-191.0" y="1004.9379"/>
+        <point2 x="-103.0" y="1005.0257"/>
+    </child>
+    <child ID="82" layerID="1" created="1326907680378" x="-569.5"
+        y="329.52573" width="674.0" height="295.99997" strokeWidth="1.0"
+        strokeStyle="4" autoSized="false" xsi:type="node">
+        <fillColor>#00000000</fillColor>
+        <strokeColor>#000000</strokeColor>
+        <textColor>#000000</textColor>
+        <font>Arial-plain-12</font>
+        <metadata-list category-list-size="1" other-list-size="0"
+            ontology-list-size="0" RCategoryListSize="0">
+            <ontology-list-string></ontology-list-string>
+            <metadata xsi:type="vue-metadata-element">
+                <value></value>
+                <key>http://vue.tufts.edu/vue.rdfs#none</key>
+                <type>1</type>
+            </metadata>
+        </metadata-list>
+        <URIString>http://vue.tufts.edu/rdf/resource/f1de35e47f00010101c0ae7683de8765</URIString>
+        <shape arcwidth="20.0" archeight="20.0" xsi:type="roundRect"/>
     </child>
     <layer ID="1" label="Layer 1" created="1317671662505" x="0.0"
         y="0.0" width="1.4E-45" height="1.4E-45" strokeWidth="0.0" autoSized="false">
@@ -1775,7 +1732,7 @@
         <URIString>http://vue.tufts.edu/rdf/resource/cb6030317f00010100ed3b53b68fa504</URIString>
     </layer>
     <userZoom>1.0</userZoom>
-    <userOrigin x="-603.0" y="-217.47429"/>
+    <userOrigin x="-721.5" y="-217.47429"/>
     <presentationBackground>#202020</presentationBackground>
     <PathwayList currentPathway="0" revealerIndex="-1">
         <pathway ID="0" label="Untitled Pathway" created="1317671662486"
