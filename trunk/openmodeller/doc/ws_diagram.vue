@@ -1,14 +1,14 @@
-<!-- Tufts VUE 3.0.2 concept-map (ws_diagram.vue) 2012-01-18 -->
+<!-- Tufts VUE 3.0.2 concept-map (ws_diagram.vue) 2012-01-19 -->
 <!-- Tufts VUE: http://vue.tufts.edu/ -->
 <!-- Do Not Remove: VUE mapping @version(1.1) jar:file:/usr/local/src/VUE.jar!/tufts/vue/resources/lw_mapping_1_1.xml -->
-<!-- Do Not Remove: Saved date Wed Jan 18 15:58:31 BRST 2012 by renato on platform Linux 2.6.32-37-generic in JVM 1.5.0_07-b03 -->
+<!-- Do Not Remove: Saved date Thu Jan 19 10:30:42 BRST 2012 by renato on platform Linux 2.6.32-37-generic in JVM 1.5.0_07-b03 -->
 <!-- Do Not Remove: Saving version @(#)VUE: built July 1 2010 at 1436 by vue on Linux 2.4.21-57.EL i386 JVM 1.5.0_06-b05(bits=32) -->
 <?xml version="1.0" encoding="US-ASCII"?>
 <LW-MAP xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:noNamespaceSchemaLocation="none" ID="0" label="ws_diagram.vue"
     created="1317671662490" x="0.0" y="0.0" width="1.4E-45"
     height="1.4E-45" strokeWidth="0.0" autoSized="false">
-    <resource referenceCreated="1326909512168" size="87627"
+    <resource referenceCreated="1326976242885" size="87579"
         spec="/home/renato/projects/openmodeller/subversion/framework/doc/ws_diagram.vue"
         type="1" xsi:type="URLResource">
         <title>ws_diagram.vue</title>
@@ -457,10 +457,10 @@
   &lt;head style="color: #000000" color="#000000"&gt;
     &lt;style type="text/css"&gt;
       &lt;!--
-        body { margin-left: 0px; font-size: 12; margin-bottom: 0px; color: #000000; margin-top: 0px; font-family: Arial; margin-right: 0px }
-        ol { margin-left: 30; font-size: 12; vertical-align: middle; margin-top: 6; list-style-position: outside; font-family: Arial }
-        p { margin-left: 0; margin-bottom: 0; color: #000000; margin-top: 0; margin-right: 0 }
-        ul { margin-left: 30; font-size: 12; vertical-align: middle; margin-top: 6; font-family: Arial; list-style-position: outside }
+        body { color: #000000; margin-bottom: 0px; margin-right: 0px; font-family: Arial; margin-left: 0px; font-size: 12; margin-top: 0px }
+        ol { font-family: Arial; list-style-position: outside; vertical-align: middle; margin-left: 30; margin-top: 6; font-size: 12 }
+        p { color: #000000; margin-bottom: 0; margin-right: 0; margin-left: 0; margin-top: 0 }
+        ul { font-family: Arial; list-style-position: outside; vertical-align: middle; margin-left: 30; margin-top: 6; font-size: 12 }
       --&gt;
     &lt;/style&gt;
         
@@ -517,10 +517,10 @@
   &lt;head&gt;
     &lt;style type="text/css"&gt;
       &lt;!--
-        body { margin-left: 0px; font-size: 12; margin-bottom: 0px; color: #000000; margin-top: 0px; font-family: Arial; margin-right: 0px }
-        ol { margin-left: 30; font-size: 12; vertical-align: middle; margin-top: 6; list-style-position: outside; font-family: Arial }
-        p { margin-left: 0; margin-bottom: 0; color: #000000; margin-top: 0; margin-right: 0 }
-        ul { margin-left: 30; font-size: 12; vertical-align: middle; margin-top: 6; font-family: Arial; list-style-position: outside }
+        body { color: #000000; margin-bottom: 0px; margin-right: 0px; font-family: Arial; margin-left: 0px; font-size: 12; margin-top: 0px }
+        ol { font-family: Arial; list-style-position: outside; vertical-align: middle; margin-left: 30; margin-top: 6; font-size: 12 }
+        p { color: #000000; margin-bottom: 0; margin-right: 0; margin-left: 0; margin-top: 0 }
+        ul { font-family: Arial; list-style-position: outside; vertical-align: middle; margin-left: 30; margin-top: 6; font-size: 12 }
       --&gt;
     &lt;/style&gt;
         
@@ -644,7 +644,7 @@
         <point2 x="-257.0" y="17.525711"/>
     </child>
     <child ID="40"
-        label="Faults: &#xa;    &#xa;    &#xa;      * Cache manipulation error (1,2,3,4) &#xa;    &#xa;    &#xa;      * Could not read available layers &#xa;    &#xa;    &#xa;      Note: Layers must exist on the server as &#xa;      they can be huge files"
+        label="Faults: * Cache manipulation error (1,2,3,4) * Could not read available layers Note: Layers must exist on the server as they can be huge files"
         layerID="1" created="1317926484959" x="-137.5" y="63.02571"
         width="179.0" height="72.0" strokeWidth="0.0" autoSized="false" xsi:type="text">
         <strokeColor>#404040</strokeColor>
@@ -664,10 +664,10 @@
   &lt;head&gt;
     &lt;style type="text/css"&gt;
       &lt;!--
-        body { margin-left: 0px; font-size: 12; margin-bottom: 0px; color: #000000; margin-top: 0px; font-family: Arial; margin-right: 0px }
-        ol { margin-left: 30; font-size: 12; vertical-align: middle; margin-top: 6; list-style-position: outside; font-family: Arial }
-        p { margin-left: 0; margin-bottom: 0; color: #000000; margin-top: 0; margin-right: 0 }
-        ul { margin-left: 30; font-size: 12; vertical-align: middle; margin-top: 6; font-family: Arial; list-style-position: outside }
+        body { color: #000000; margin-bottom: 0px; margin-right: 0px; font-family: Arial; margin-left: 0px; font-size: 12; margin-top: 0px }
+        ol { font-family: Arial; list-style-position: outside; vertical-align: middle; margin-left: 30; margin-top: 6; font-size: 12 }
+        p { color: #000000; margin-bottom: 0; margin-right: 0; margin-left: 0; margin-top: 0 }
+        ul { font-family: Arial; list-style-position: outside; vertical-align: middle; margin-left: 30; margin-top: 6; font-size: 12 }
       --&gt;
     &lt;/style&gt;
         
@@ -683,23 +683,13 @@
       &lt;font style="font-size:10;"&gt;* Could not read available layers &lt;/font&gt;
     &lt;/p&gt;
     &lt;p style="color: #000000" color="#000000"&gt;
-      &lt;font style="font-size:10;"&gt;&lt;u&gt;Note: Layers must exist on the server as 
-      they can be huge files&lt;/u&gt;&lt;/font&gt;
+      &lt;u&gt;&lt;font style="font-size:10;"&gt;Note: Layers must exist on the server as 
+      they can be huge files&lt;/font&gt;&lt;/u&gt;
     &lt;/p&gt;
   &lt;/body&gt;
 &lt;/html&gt;
 </richText>
-        <label>Faults: 
-    
-    
-      * Cache manipulation error (1,2,3,4) 
-    
-    
-      * Could not read available layers 
-    
-    
-      Note: Layers must exist on the server as 
-      they can be huge files</label>
+        <label>Faults: * Cache manipulation error (1,2,3,4) * Could not read available layers Note: Layers must exist on the server as they can be huge files</label>
     </child>
     <child ID="41" label="Faults: * Failed to create ticket (1,2,3,4,5)"
         layerID="1" created="1317927646491" x="-225.5" y="256.02576"
@@ -721,10 +711,10 @@
   &lt;head&gt;
     &lt;style type="text/css"&gt;
       &lt;!--
-        body { margin-left: 0px; font-size: 12; margin-bottom: 0px; color: #000000; margin-top: 0px; font-family: Arial; margin-right: 0px }
-        ol { margin-left: 30; font-size: 12; vertical-align: middle; margin-top: 6; list-style-position: outside; font-family: Arial }
-        p { margin-left: 0; margin-bottom: 0; color: #000000; margin-top: 0; margin-right: 0 }
-        ul { margin-left: 30; font-size: 12; vertical-align: middle; margin-top: 6; font-family: Arial; list-style-position: outside }
+        body { color: #000000; margin-bottom: 0px; margin-right: 0px; font-family: Arial; margin-left: 0px; font-size: 12; margin-top: 0px }
+        ol { font-family: Arial; list-style-position: outside; vertical-align: middle; margin-left: 30; margin-top: 6; font-size: 12 }
+        p { color: #000000; margin-bottom: 0; margin-right: 0; margin-left: 0; margin-top: 0 }
+        ul { font-family: Arial; list-style-position: outside; vertical-align: middle; margin-left: 30; margin-top: 6; font-size: 12 }
       --&gt;
     &lt;/style&gt;
         
@@ -780,7 +770,7 @@
         <shape arcwidth="20.0" archeight="20.0" xsi:type="roundRect"/>
     </child>
     <child ID="44"
-        label="Faults: &#xa;    &#xa;    &#xa;      * Missing ticket in request &#xa;    &#xa;    &#xa;      * Progress unreadable &#xa;    &#xa;    &#xa;      Status: &#xa;    &#xa;    &#xa;      -1 => queued &#xa;    &#xa;    &#xa;      -2 => aborted &#xa;    &#xa;    &#xa;      [0, 100) => in progress &#xa;    &#xa;    &#xa;      100 => finished"
+        label="Faults: * Missing ticket in request * Progress unreadable Status: -1 => queued -2 => aborted [0, 100) => in progress 100 => finished"
         layerID="1" created="1317928154329" x="-224.5" y="340.52576"
         width="173.0" height="107.0" strokeWidth="0.0" autoSized="false" xsi:type="text">
         <strokeColor>#404040</strokeColor>
@@ -800,10 +790,10 @@
   &lt;head&gt;
     &lt;style type="text/css"&gt;
       &lt;!--
-        body { margin-left: 0px; font-size: 12; margin-bottom: 0px; color: #000000; margin-top: 0px; font-family: Arial; margin-right: 0px }
-        ol { margin-left: 30; font-size: 12; vertical-align: middle; margin-top: 6; list-style-position: outside; font-family: Arial }
-        p { margin-left: 0; margin-bottom: 0; color: #000000; margin-top: 0; margin-right: 0 }
-        ul { margin-left: 30; font-size: 12; vertical-align: middle; margin-top: 6; font-family: Arial; list-style-position: outside }
+        body { color: #000000; margin-bottom: 0px; margin-right: 0px; font-family: Arial; margin-left: 0px; font-size: 12; margin-top: 0px }
+        ol { font-family: Arial; list-style-position: outside; vertical-align: middle; margin-left: 30; margin-top: 6; font-size: 12 }
+        p { color: #000000; margin-bottom: 0; margin-right: 0; margin-left: 0; margin-top: 0 }
+        ul { font-family: Arial; list-style-position: outside; vertical-align: middle; margin-left: 30; margin-top: 6; font-size: 12 }
       --&gt;
     &lt;/style&gt;
         
@@ -836,28 +826,7 @@
   &lt;/body&gt;
 &lt;/html&gt;
 </richText>
-        <label>Faults: 
-    
-    
-      * Missing ticket in request 
-    
-    
-      * Progress unreadable 
-    
-    
-      Status: 
-    
-    
-      -1 =&gt; queued 
-    
-    
-      -2 =&gt; aborted 
-    
-    
-      [0, 100) =&gt; in progress 
-    
-    
-      100 =&gt; finished</label>
+        <label>Faults: * Missing ticket in request * Progress unreadable Status: -1 =&gt; queued -2 =&gt; aborted [0, 100) =&gt; in progress 100 =&gt; finished</label>
     </child>
     <child ID="45" label="Finished?" layerID="1" created="1317928452971"
         x="-348.0" y="546.52576" width="96.0" height="46.0"
@@ -943,10 +912,10 @@
   &lt;head&gt;
     &lt;style type="text/css"&gt;
       &lt;!--
-        body { margin-left: 0px; font-size: 12; margin-bottom: 0px; color: #000000; margin-top: 0px; font-family: Arial; margin-right: 0px }
-        ol { margin-left: 30; font-size: 12; vertical-align: middle; margin-top: 6; list-style-position: outside; font-family: Arial }
-        p { margin-left: 0; margin-bottom: 0; color: #000000; margin-top: 0; margin-right: 0 }
-        ul { margin-left: 30; font-size: 12; vertical-align: middle; margin-top: 6; font-family: Arial; list-style-position: outside }
+        body { color: #000000; margin-bottom: 0px; margin-right: 0px; font-family: Arial; margin-left: 0px; font-size: 12; margin-top: 0px }
+        ol { font-family: Arial; list-style-position: outside; vertical-align: middle; margin-left: 30; margin-top: 6; font-size: 12 }
+        p { color: #000000; margin-bottom: 0; margin-right: 0; margin-left: 0; margin-top: 0 }
+        ul { font-family: Arial; list-style-position: outside; vertical-align: middle; margin-left: 30; margin-top: 6; font-size: 12 }
       --&gt;
     &lt;/style&gt;
         
@@ -1028,10 +997,10 @@
   &lt;head&gt;
     &lt;style type="text/css"&gt;
       &lt;!--
-        body { margin-left: 0px; font-size: 12; margin-bottom: 0px; color: #000000; margin-top: 0px; font-family: Arial; margin-right: 0px }
-        ol { margin-left: 30; font-size: 12; vertical-align: middle; margin-top: 6; list-style-position: outside; font-family: Arial }
-        p { margin-left: 0; margin-bottom: 0; color: #000000; margin-top: 0; margin-right: 0 }
-        ul { margin-left: 30; font-size: 12; vertical-align: middle; margin-top: 6; font-family: Arial; list-style-position: outside }
+        body { color: #000000; margin-bottom: 0px; margin-right: 0px; font-family: Arial; margin-left: 0px; font-size: 12; margin-top: 0px }
+        ol { font-family: Arial; list-style-position: outside; vertical-align: middle; margin-left: 30; margin-top: 6; font-size: 12 }
+        p { color: #000000; margin-bottom: 0; margin-right: 0; margin-left: 0; margin-top: 0 }
+        ul { font-family: Arial; list-style-position: outside; vertical-align: middle; margin-left: 30; margin-top: 6; font-size: 12 }
       --&gt;
     &lt;/style&gt;
         
@@ -1047,8 +1016,8 @@
       &lt;font style="font-size:10;"&gt;* Model unavailable &lt;/font&gt;
     &lt;/p&gt;
     &lt;p style="color: #000000" color="#000000"&gt;
-      &lt;font style="font-size:10;"&gt;&lt;u&gt;Note: Result is a mathematical 
-      representation in XML. Each algorithm has its own representation.&lt;/u&gt;&lt;/font&gt;
+      &lt;u&gt;&lt;font style="font-size:10;"&gt;Note: Result is a mathematical 
+      representation in XML. Each algorithm has its own representation.&lt;/font&gt;&lt;/u&gt;
     &lt;/p&gt;
   &lt;/body&gt;
 &lt;/html&gt;
@@ -1095,8 +1064,8 @@
         <shape arcwidth="20.0" archeight="20.0" xsi:type="roundRect"/>
     </child>
     <child ID="54" label="getTestResult" layerID="1"
-        created="1317929034432" x="-515.0" y="979.0257" width="136.0"
-        height="51.0" strokeWidth="1.0" autoSized="false" xsi:type="node">
+        created="1317929034432" x="-517.39996" y="979.0257"
+        width="136.0" height="51.0" strokeWidth="1.0" autoSized="false" xsi:type="node">
         <fillColor>#EEEEEE</fillColor>
         <strokeColor>#000000</strokeColor>
         <textColor>#000000</textColor>
@@ -1152,10 +1121,10 @@
   &lt;head&gt;
     &lt;style type="text/css"&gt;
       &lt;!--
-        body { margin-left: 0px; font-size: 12; margin-bottom: 0px; color: #000000; margin-top: 0px; font-family: Arial; margin-right: 0px }
-        ol { margin-left: 30; font-size: 12; vertical-align: middle; margin-top: 6; list-style-position: outside; font-family: Arial }
-        p { margin-left: 0; margin-bottom: 0; color: #000000; margin-top: 0; margin-right: 0 }
-        ul { margin-left: 30; font-size: 12; vertical-align: middle; margin-top: 6; font-family: Arial; list-style-position: outside }
+        body { color: #000000; margin-bottom: 0px; margin-right: 0px; font-family: Arial; margin-left: 0px; font-size: 12; margin-top: 0px }
+        ol { font-family: Arial; list-style-position: outside; vertical-align: middle; margin-left: 30; margin-top: 6; font-size: 12 }
+        p { color: #000000; margin-bottom: 0; margin-right: 0; margin-left: 0; margin-top: 0 }
+        ul { font-family: Arial; list-style-position: outside; vertical-align: middle; margin-left: 30; margin-top: 6; font-size: 12 }
       --&gt;
     &lt;/style&gt;
         
@@ -1195,10 +1164,10 @@
   &lt;head&gt;
     &lt;style type="text/css"&gt;
       &lt;!--
-        body { margin-left: 0px; font-size: 12; margin-bottom: 0px; color: #000000; margin-top: 0px; font-family: Arial; margin-right: 0px }
-        ol { margin-left: 30; font-size: 12; vertical-align: middle; margin-top: 6; list-style-position: outside; font-family: Arial }
-        p { margin-left: 0; margin-bottom: 0; color: #000000; margin-top: 0; margin-right: 0 }
-        ul { margin-left: 30; font-size: 12; vertical-align: middle; margin-top: 6; font-family: Arial; list-style-position: outside }
+        body { color: #000000; margin-bottom: 0px; margin-right: 0px; font-family: Arial; margin-left: 0px; font-size: 12; margin-top: 0px }
+        ol { font-family: Arial; list-style-position: outside; vertical-align: middle; margin-left: 30; margin-top: 6; font-size: 12 }
+        p { color: #000000; margin-bottom: 0; margin-right: 0; margin-left: 0; margin-top: 0 }
+        ul { font-family: Arial; list-style-position: outside; vertical-align: middle; margin-left: 30; margin-top: 6; font-size: 12 }
       --&gt;
     &lt;/style&gt;
         
@@ -1219,7 +1188,7 @@
         <label>Faults: * Failed to create ticket (1,2,3,4,5)</label>
     </child>
     <child ID="60"
-        label="Faults: &#xa;    &#xa;    &#xa;      * Missing id in request&#xa;    &#xa;    &#xa;      * Layer unavailable"
+        label="Faults: * Missing id in request * Layer unavailable"
         layerID="1" created="1317929820476" x="-218.5" y="1073.5258"
         width="136.0" height="55.0" strokeWidth="0.0" autoSized="false" xsi:type="text">
         <strokeColor>#404040</strokeColor>
@@ -1239,10 +1208,10 @@
   &lt;head&gt;
     &lt;style type="text/css"&gt;
       &lt;!--
-        body { margin-left: 0px; font-size: 12; margin-bottom: 0px; color: #000000; margin-top: 0px; font-family: Arial; margin-right: 0px }
-        ol { margin-left: 30; font-size: 12; vertical-align: middle; margin-top: 6; list-style-position: outside; font-family: Arial }
-        p { margin-left: 0; margin-bottom: 0; color: #000000; margin-top: 0; margin-right: 0 }
-        ul { margin-left: 30; font-size: 12; vertical-align: middle; margin-top: 6; font-family: Arial; list-style-position: outside }
+        body { color: #000000; margin-bottom: 0px; margin-right: 0px; font-family: Arial; margin-left: 0px; font-size: 12; margin-top: 0px }
+        ol { font-family: Arial; list-style-position: outside; vertical-align: middle; margin-left: 30; margin-top: 6; font-size: 12 }
+        p { color: #000000; margin-bottom: 0; margin-right: 0; margin-left: 0; margin-top: 0 }
+        ul { font-family: Arial; list-style-position: outside; vertical-align: middle; margin-left: 30; margin-top: 6; font-size: 12 }
       --&gt;
     &lt;/style&gt;
         
@@ -1260,16 +1229,10 @@
   &lt;/body&gt;
 &lt;/html&gt;
 </richText>
-        <label>Faults: 
-    
-    
-      * Missing id in request
-    
-    
-      * Layer unavailable</label>
+        <label>Faults: * Missing id in request * Layer unavailable</label>
     </child>
     <child ID="61"
-        label="Faults: &#xa;    &#xa;    &#xa;      * Missing ticket in request &#xa;    &#xa;    &#xa;      * Projection unavailable&#xa;    &#xa;    &#xa;      * Projection unreadable&#xa;    &#xa;    &#xa;      * Metadata unavailable"
+        label="Faults: * Missing ticket in request * Projection unavailable * Projection unreadable * Metadata unavailable"
         layerID="1" created="1317930001288" x="89.0" y="1073.5258"
         width="136.0" height="70.0" strokeWidth="0.0" autoSized="false" xsi:type="text">
         <strokeColor>#404040</strokeColor>
@@ -1289,10 +1252,10 @@
   &lt;head&gt;
     &lt;style type="text/css"&gt;
       &lt;!--
-        body { margin-left: 0px; font-size: 12; margin-bottom: 0px; color: #000000; margin-top: 0px; font-family: Arial; margin-right: 0px }
-        ol { margin-left: 30; font-size: 12; vertical-align: middle; margin-top: 6; list-style-position: outside; font-family: Arial }
-        p { margin-left: 0; margin-bottom: 0; color: #000000; margin-top: 0; margin-right: 0 }
-        ul { margin-left: 30; font-size: 12; vertical-align: middle; margin-top: 6; font-family: Arial; list-style-position: outside }
+        body { color: #000000; margin-bottom: 0px; margin-right: 0px; font-family: Arial; margin-left: 0px; font-size: 12; margin-top: 0px }
+        ol { font-family: Arial; list-style-position: outside; vertical-align: middle; margin-left: 30; margin-top: 6; font-size: 12 }
+        p { color: #000000; margin-bottom: 0; margin-right: 0; margin-left: 0; margin-top: 0 }
+        ul { font-family: Arial; list-style-position: outside; vertical-align: middle; margin-left: 30; margin-top: 6; font-size: 12 }
       --&gt;
     &lt;/style&gt;
         
@@ -1305,30 +1268,18 @@
       &lt;font style="font-size:10;"&gt;* Missing ticket in request &lt;/font&gt;
     &lt;/p&gt;
     &lt;p style="color: #000000" color="#000000"&gt;
-      &lt;font style="font-size:10;"&gt;* Projection unavailable
-&lt;/font&gt;    &lt;/p&gt;
+      &lt;font style="font-size:10;"&gt;* Projection unavailable &lt;/font&gt;
+    &lt;/p&gt;
     &lt;p style="color: #000000" color="#000000"&gt;
-      &lt;font style="font-size:10;"&gt;* Projection unreadable
-&lt;/font&gt;    &lt;/p&gt;
+      &lt;font style="font-size:10;"&gt;* Projection unreadable &lt;/font&gt;
+    &lt;/p&gt;
     &lt;p style="color: #000000" color="#000000"&gt;
       &lt;font style="font-size:10;"&gt;* Metadata unavailable&lt;/font&gt;
     &lt;/p&gt;
   &lt;/body&gt;
 &lt;/html&gt;
 </richText>
-        <label>Faults: 
-    
-    
-      * Missing ticket in request 
-    
-    
-      * Projection unavailable
-    
-    
-      * Projection unreadable
-    
-    
-      * Metadata unavailable</label>
+        <label>Faults: * Missing ticket in request * Projection unavailable * Projection unreadable * Metadata unavailable</label>
     </child>
     <child ID="62"
         label="Faults: * Missing ticket in request * Test result unavailable"
@@ -1351,10 +1302,10 @@
   &lt;head&gt;
     &lt;style type="text/css"&gt;
       &lt;!--
-        body { margin-left: 0px; font-size: 12; margin-bottom: 0px; color: #000000; margin-top: 0px; font-family: Arial; margin-right: 0px }
-        ol { margin-left: 30; font-size: 12; vertical-align: middle; margin-top: 6; list-style-position: outside; font-family: Arial }
-        p { margin-left: 0; margin-bottom: 0; color: #000000; margin-top: 0; margin-right: 0 }
-        ul { margin-left: 30; font-size: 12; vertical-align: middle; margin-top: 6; font-family: Arial; list-style-position: outside }
+        body { color: #000000; margin-bottom: 0px; margin-right: 0px; font-family: Arial; margin-left: 0px; font-size: 12; margin-top: 0px }
+        ol { font-family: Arial; list-style-position: outside; vertical-align: middle; margin-left: 30; margin-top: 6; font-size: 12 }
+        p { color: #000000; margin-bottom: 0; margin-right: 0; margin-left: 0; margin-top: 0 }
+        ul { font-family: Arial; list-style-position: outside; vertical-align: middle; margin-left: 30; margin-top: 6; font-size: 12 }
       --&gt;
     &lt;/style&gt;
         
@@ -1458,8 +1409,8 @@
         <ID1 xsi:type="link">80</ID1>
         <ID2 xsi:type="node">55</ID2>
     </child>
-    <child ID="67" layerID="1" created="1317930237548" x="-448.9659"
-        y="939.5254" width="1.8863525" height="40.0" strokeWidth="1.0"
+    <child ID="67" layerID="1" created="1317930237548" x="-449.78403"
+        y="939.52344" width="1.1772461" height="40.0" strokeWidth="1.0"
         autoSized="false" controlCount="0" arrowState="2" xsi:type="link">
         <strokeColor>#404040</strokeColor>
         <textColor>#404040</textColor>
@@ -1474,8 +1425,8 @@
             </metadata>
         </metadata-list>
         <URIString>http://vue.tufts.edu/rdf/resource/dac610667f0001010163c5bb541360f8</URIString>
-        <point1 x="-448.4659" y="940.0254"/>
-        <point2 x="-447.57956" y="979.0254"/>
+        <point1 x="-449.10678" y="940.02344"/>
+        <point2 x="-449.28403" y="979.02344"/>
         <ID1 xsi:type="node">64</ID1>
         <ID2 xsi:type="node">54</ID2>
     </child>
@@ -1605,10 +1556,10 @@
   &lt;head&gt;
     &lt;style type="text/css"&gt;
       &lt;!--
-        body { margin-left: 0px; font-size: 12; margin-bottom: 0px; color: #000000; margin-top: 0px; font-family: Arial; margin-right: 0px }
-        ol { margin-left: 30; font-size: 12; vertical-align: middle; margin-top: 6; list-style-position: outside; font-family: Arial }
-        p { margin-left: 0; margin-bottom: 0; color: #000000; margin-top: 0; margin-right: 0 }
-        ul { margin-left: 30; font-size: 12; vertical-align: middle; margin-top: 6; font-family: Arial; list-style-position: outside }
+        body { color: #000000; margin-bottom: 0px; margin-right: 0px; font-family: Arial; margin-left: 0px; font-size: 12; margin-top: 0px }
+        ol { font-family: Arial; list-style-position: outside; vertical-align: middle; margin-left: 30; margin-top: 6; font-size: 12 }
+        p { color: #000000; margin-bottom: 0; margin-right: 0; margin-left: 0; margin-top: 0 }
+        ul { font-family: Arial; list-style-position: outside; vertical-align: middle; margin-left: 30; margin-top: 6; font-size: 12 }
       --&gt;
     &lt;/style&gt;
         
@@ -1723,6 +1674,56 @@
         <URIString>http://vue.tufts.edu/rdf/resource/f1de35e47f00010101c0ae7683de8765</URIString>
         <shape arcwidth="20.0" archeight="20.0" xsi:type="roundRect"/>
     </child>
+    <child ID="83"
+        label="Faults: &#xa;    &#xa;    &#xa;      * Missing configuration&#xa;    &#xa;    &#xa;      * No available algorithms"
+        layerID="1" created="1326976055430" x="-227.2292" y="-181.5243"
+        width="124.0" height="41.0" strokeWidth="0.0" autoSized="false" xsi:type="text">
+        <strokeColor>#404040</strokeColor>
+        <textColor>#000000</textColor>
+        <font>-plain-10</font>
+        <metadata-list category-list-size="1" other-list-size="0"
+            ontology-list-size="0" RCategoryListSize="0">
+            <ontology-list-string></ontology-list-string>
+            <metadata xsi:type="vue-metadata-element">
+                <value></value>
+                <key>http://vue.tufts.edu/vue.rdfs#none</key>
+                <type>1</type>
+            </metadata>
+        </metadata-list>
+        <URIString>http://vue.tufts.edu/rdf/resource/f5f296487f0001010020463ea158430d</URIString>
+        <richText>&lt;html&gt;
+  &lt;head&gt;
+    &lt;style type="text/css"&gt;
+      &lt;!--
+        body { color: #000000; margin-bottom: 0px; margin-right: 0px; font-family: Arial; margin-left: 0px; font-size: 12; margin-top: 0px }
+        ol { font-family: Arial; list-style-position: outside; vertical-align: middle; margin-left: 30; margin-top: 6; font-size: 12 }
+        p { color: #000000; margin-bottom: 0; margin-right: 0; margin-left: 0; margin-top: 0 }
+        ul { font-family: Arial; list-style-position: outside; vertical-align: middle; margin-left: 30; margin-top: 6; font-size: 12 }
+      --&gt;
+    &lt;/style&gt;
+        
+  &lt;/head&gt;
+  &lt;body&gt;
+    &lt;p style="color: #000000" color="#000000"&gt;
+      &lt;font style="font-size:10;"&gt;Faults: &lt;/font&gt;
+    &lt;/p&gt;
+    &lt;p style="color: #000000" color="#000000"&gt;
+      &lt;font style="font-size:10;"&gt;* Missing configuration
+&lt;/font&gt;    &lt;/p&gt;
+    &lt;p style="color: #000000" color="#000000"&gt;
+      &lt;font style="font-size:10;"&gt;* No available algorithms&lt;/font&gt;
+    &lt;/p&gt;
+  &lt;/body&gt;
+&lt;/html&gt;
+</richText>
+        <label>Faults: 
+    
+    
+      * Missing configuration
+    
+    
+      * No available algorithms</label>
+    </child>
     <layer ID="1" label="Layer 1" created="1317671662505" x="0.0"
         y="0.0" width="1.4E-45" height="1.4E-45" strokeWidth="0.0" autoSized="false">
         <metadata-list category-list-size="0" other-list-size="0"
@@ -1731,8 +1732,8 @@
         </metadata-list>
         <URIString>http://vue.tufts.edu/rdf/resource/cb6030317f00010100ed3b53b68fa504</URIString>
     </layer>
-    <userZoom>1.0</userZoom>
-    <userOrigin x="-721.5" y="-217.47429"/>
+    <userZoom>1.25</userZoom>
+    <userOrigin x="-795.03656" y="-239.90538"/>
     <presentationBackground>#202020</presentationBackground>
     <PathwayList currentPathway="0" revealerIndex="-1">
         <pathway ID="0" label="Untitled Pathway" created="1317671662486"
