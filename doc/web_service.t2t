@@ -34,46 +34,51 @@ Last updated: 18th January 2012
 = Introduction =
 
 This document describes the openModeller web service interface
-(OMWS). This interface was created so that the main ecological niche
-modelling functionalities provided by openModeller could be available
-in a standardized way over the web to other programs. Therefore the
-target audience for this document are developers who want to write
-programs that will interact with instances of the openModeller web
-service. It is assumed that readers have basic understanding about
-ecological niche modelling (for more information:
-http://en.wikipedia.org/wiki/Environmental_niche_modelling), basic
-understanding of openModeller (for more information:
-http://openmodeller.sf.net) and knowledge about web services.
+(OMWS). OMWS was created so that the main ecological niche modelling
+functionalities provided by openModeller could be available in a
+standardized way over the web to other programs. Therefore the target
+audience for this document are developers who want to write programs
+that will interact with instances of the openModeller web service. It
+is assumed that readers have basic understanding about 
+[ecological niche modelling http://en.wikipedia.org/wiki/Environmental_niche_modelling], 
+basic understanding of [openModeller http://openmodeller.sf.net] and 
+knowledge about web services.
+
+This document was originally prepared for the 
+[BioVeL http://www.biovel.eu/] project with funds from the 
+[European Commission http://ec.europa.eu].
 
 = Technical details =
 
-OMWS is based on SOAP following the document/literal style. The whole
-interface is programatically defined in a WSDL file and contains the
+OMWS is based on [SOAP http://www.w3.org/TR/soap/] following the 
+document/literal style. The whole interface is programatically defined 
+in a [WSDL http://www.w3.org/TR/wsdl] file and contains the
 main operations to run ecological niche modelling experiments:
 
 http://openmodeller.cria.org.br/ws/1.0/openModeller.wsdl
 
-All XML elements, attributes, structure and data types are defined in
-a separate XML Schema compatible with all openModeller serializable
-objects:
+All [XML http://www.w3.org/XML/] elements, attributes, structure and 
+data types are defined in a separate [XML Schema www.w3.org/XML/Schema] 
+compatible with all openModeller serializable objects:
 
 http://openmodeller.cria.org.br/xml/1.0/openModeller.xsd
 
-= Overview of the implementations =
+= Software =
 
 So far there is only one implementation of the server developed in C++
-using gSOAP. This implementation is available as part of the
-openModeller code under the src/soap directory. The server can run as
-a CGI application, a stand alone server (daemon) or a multi-threaded
-server in the future (until now openModeller is not known to be
-thread-safe). By using gSOAP, stubs are also available for developers
-willing to write clients in C++ (openModeller Desktop, for example,
-uses those stubs). There is also a simple command-line client written
-in Perl that depends on the SOAPLite Perl module. This client is also
+using [gSOAP http://www.cs.fsu.edu/~engelen/soap.html]. This 
+implementation is available as part of the openModeller code under the
+src/soap directory. The server can run as a CGI application, a stand
+alone server (daemon) or a multi-threaded server. By using gSOAP,
+stubs are also available for developers willing to write clients in C++ 
+([openModeller Desktop http://openmodeller.sourceforge.net/index.php?Itemid=5&id=10&option=com_content&task=view], 
+for example, uses those stubs). There is also a simple command-line
+client written in Perl that depends on the 
+[SOAPLite Perl module http://www.soaplite.com/]. This client is also 
 available under the same directory in the openModeller source code
 (src/soap/sampleClient.pl). Finally, there is code in Java to interact
-with the service. This is available in the GBIF code base and is being
-used by the GBIF portal to generate niche models:
+with the service. This is being used by the [GBIF portal http://gbif.org] 
+to generate niche models and is therefore available in the GBIF code base:
 http://code.google.com/p/gbif-dataportal/source/browse/trunk/portal-web/src/main/java/org/gbif/portal/web/controller/openmodeller/
 
 = Service instances =
@@ -103,7 +108,11 @@ projections can also be requested when there is more than one
 environmental scenario available.
 
 [ws_diagram_small.png]
-**Figure 1:** Typical workflow to interact with the service. Boxes with solid lines indicate calls to service operations. Boxes with dashed lines indicate external tasks, except those indicating the whole "getProgress" procedure. 
+
+**Figure 1:** Typical workflow to interact with the service. Boxes
+  with solid lines indicate calls to service operations. Boxes with
+  dashed lines indicate external tasks, except those indicating the
+  whole "getProgress" procedure.
 
 To better understand the functionality, it is important to note that a
 "model" for openModeller is the mathemathical representation of the
@@ -133,19 +142,48 @@ input data, post processing distribution maps, etc. Nevertheless,
 these core operations can still be used and combined in many different
 ways, keeping the interface simple and effective.
 
+= Additional notes =
+
+All XML examples in this document were extracted from message dumps
+using the Perl client (through the -debug option) interacting with the
+http://modeller.cria.org.br/ws1/om service instance running a
+pre-release version of openModeller towards version 1.2.0. All XMLs
+were formatted for better visualization. In some cases they were
+deliberately shortened to avoid displaying dozens of algorithms and
+hundreds of layers in the examples. Despite these changes, all XML
+messages can be seen as real and functional examples of how to
+interact with the service.
+
+SOAP faults included here are all based on the only existing server
+implementation and should not be regarded as mandatory functionality
+for additional server software that may be implemented in the
+future. Some comments in this document may also be specifically
+related with the existing server implementation and not just with the
+protocol itself.
+
 = Operations =
 
 == ping ==
+
+=== Description ===
 
 Indicates service availability. In a broader sense, service
 availability is not just related with connectivity. It also involves
 correct configuration on the server side. Server implementations can
 therefore use this method to check as much as possible that the server
 is prepared to properly handle all requests. Clients must get a
-<status>1</status> if the service is available, or a SOAP fault. Additionally,
-server implementations may use the <version> element in the header to
-indicate their name and version.
+<status>1</status> if the service is available - otherwise a SOAP fault
+is raised. Additionally, server implementations may use the <version>
+element in the header to indicate their name and version. This is the
+right operation for service monitoring.
 
+=== SOAP faults ===
+
+- Missing configuration
+- No available algorithms
+
+
+=== Examples ===
 ```
 <?xml version="1.0" encoding="iso-8859-1"?>
 <soap:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
@@ -182,8 +220,45 @@ indicate their name and version.
 
 == getAlgorithms ==
 
-Returns metadata about all modelling algorithms available.
+=== Description ===
 
+Returns metadata about all modelling algorithms available. Metadata
+includes id, version, name, overview, description, designers,
+bibliography, developers, an indicator if the algorithm can handle
+categorical data, an indicator if it requires absence data and
+parameters. Parameter metadata includes id, name, data type (Integer,
+Real or String), overview, description, accepted range and default
+value. Algorithm and parameter ids are used to reference them in the other
+operations.
+
+In the current openModeller version all textual content is
+in English. When displaying algorithm metadata in user interfaces,
+descriptions of both algorithms and parameters are particularly
+important. For an algorithm, this may contain crucial information
+about how to run it, as in the case of AquaMaps, which requires a
+particular set of environmental layers to work. In other cases,
+descriptions may help to understand the differences between two
+implementations of the same algorithm, such as Desktop GARP and OM
+GARP, or they may contain additional information about the status of
+the algorithm and the conditions in which it can be used. For
+parameters, in many cases descriptions contain the possible values
+with additional explanations.
+
+An algorithm may have zero, one or more parameters. EnvelopeScore is
+an example of an algorithm without any parameters. Parameter metadata
+can optionally indicate an accepted range, with minimum and maximum
+values (both can be present, or at least one of them).
+
+Different service instances are not guaranteed to provide the same
+algorithms or the same versions of each algorithm, unless there is a
+specific policy in this respect controlling the different instances.
+
+=== SOAP faults ===
+
+- No available algorithms
+
+
+=== Examples ===
 ```
 <?xml version="1.0" encoding="iso-8859-1"?>
 <soap:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
@@ -377,8 +452,42 @@ in the sand-dune shrub Armeria pungens (Plumbaginaceae). Molecular Ecology. 16, 
 
 == getLayers ==
 
-Returns all environmental layers available.
+=== Description ===
 
+Returns all environmental layers available on the server side. Layers
+can be grouped and organized in a hierarchical structure by means of
+<LayersGroup> elements. Each layer group and each individual layer has
+an id and a label. Ids are used to reference layers in the other
+operations. An optional layer attribute (HasProjection) may indicate
+that there is no geographical projection information available for the
+layer. In such cases, openModeller will assume a latlong projection
+with the WGS84 datum when reading data from the corresponding layer.
+
+Currently, the server implementation only works with layers that are
+locally accessible (i.e., stored on the server or at least accessible
+from the server through the file system). The protocol does not
+include operations to manipulate layers (add or remove files, or
+edit metadata). These tasks need to be performed on the server side
+by other means. However, since openModeller makes use of the
+[GDAL http://gdal.org/] library to read raster data and GDAL has a
+driver to read remote rasters through the 
+[WCS www.opengeospatial.org/standards/wcs] protocol, with some 
+adjustments it may be possible to specify layers that are remote to 
+the server in the future.
+
+Different service instances are not guaranteed to provide the same
+layers, unless there is a specific policy in this respect controlling
+the different instances. Additionally, a service instance may not keep
+the same layer structure or even the identifiers for all layers over
+the time - again, unless there is a specific policy with this purpose.
+
+=== SOAP faults ===
+
+- Cache manipulation error
+- Could not read available layers
+
+
+=== Examples ===
 ```
 <?xml version="1.0" encoding="iso-8859-1"?>
 <soap:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
@@ -449,8 +558,45 @@ Returns all environmental layers available.
 
 == createModel ==
 
-Starts a new model creation job.
+=== Description ===
 
+Starts a new model creation job. This requires a set of layers
+referenced by their ids, a mask (which is also a layer!) referenced by
+its id, a set of presence points (samples where the environment is
+suitable for the species), an optional set of absence points (samples
+where the environment is unsuitable for the species), a modelling
+algorithm referenced by its id and - if the algorithm requires
+parameters - a set of parameters referenced by ids and followed by a
+value.
+
+Each set of points needs a spatial reference system specified in 
+[WKT http://www.geoapi.org/3.0/javadoc/org/opengis/referencing/doc-files/WKT.html].
+Example 7 shows the WKT for latlong in WGS84. Longitude and latitude 
+are represented by X and Y, respectivelly, and decimals must always be 
+separated by a dot. An identification for each point is highly recommended, 
+as points are referenced by it in the logs. The label for each set of 
+points can be used to store the species name. This information is not 
+used by the server, but it is returned later as part of the model created
+and can be a way to keep record of which species was modelled. 
+
+The mask is used to discard points outside its extent or inside cells 
+with nodata.
+
+An optional section <Options> followed by the <OccurrencesFilter>
+element can be used to instruct the server to apply filters in points
+before they are used. <SpatiallyUnique/> is used to discard duplicate
+points (same coordinates) and <EnvironmentallyUnique/> is used to
+discard points with the same environmental conditions.
+
+This operation is asynchronous. It immediately returns a ticket that 
+must be used to track job progress.
+
+=== SOAP faults ===
+
+- Failed to create ticket
+
+
+=== Examples ===
 ```
 <?xml version="1.0" encoding="iso-8859-1"?>
 <SOAP-ENV:Envelope xmlns:xsi="http://www.w3.org/1999/XMLSchema-instance" 
@@ -484,6 +630,12 @@ AUTHORITY['EPSG','7022']],AUTHORITY['EPSG','6022']],PRIMEM['Greenwich',0,AUTHORI
             <Parameter Value="0.8" Id="StandardDeviationCutoff"/>
           </Parameters>
         </Algorithm>
+        <Options>
+          <OccurrencesFilter>
+            <SpatiallyUnique/>
+            <EnvironmentallyUnique/>
+          </OccurrencesFilter>
+        </Options>
       </ModelParameters>
     </omws:createModel>
   </SOAP-ENV:Body>
@@ -510,8 +662,21 @@ AUTHORITY['EPSG','7022']],AUTHORITY['EPSG','6022']],PRIMEM['Greenwich',0,AUTHORI
 
 == getProgress ==
 
-Returns the progress of a job (model creation, model testing or model projection).
+=== Description ===
 
+Returns the progress of a job (model creation, model testing or model
+projection). Possible values are: -1 if the job is still queued, -2 if
+the job was aborted, a value between 0 and 100 if the job is in
+progress or 100 if the job was finished. More details about aborted
+jobs can be found with the getLog operation.
+
+=== SOAP faults ===
+
+- Missing ticket in request
+- Progress unreadable
+
+
+=== Examples ===
 ```
 <?xml version="1.0" encoding="iso-8859-1"?>
 <SOAP-ENV:Envelope xmlns:xsi="http://www.w3.org/1999/XMLSchema-instance" 
@@ -548,8 +713,17 @@ Returns the progress of a job (model creation, model testing or model projection
 
 == getLog ==
 
+=== Description ===
+
 Returns the log of a job.
 
+=== SOAP faults ===
+
+- Missing ticket in request
+- Log unavailable
+
+
+=== Examples ===
 ```
 <?xml version="1.0" encoding="iso-8859-1"?>
 <SOAP-ENV:Envelope xmlns:xsi="http://www.w3.org/1999/XMLSchema-instance" 
@@ -593,8 +767,25 @@ Returns the log of a job.
 
 == getModel ==
 
-Returns a created model.
+=== Description ===
 
+Returns a created model, which includes all parameters that were used
+to generate the model. Note in example 14 that the <Algorithm> element
+now includes a <Model> element with the actual result of the modelling
+process for that particular algorithm. This element contains all
+necessary information for algorithm predictions given an environmental
+scenario and each algorithm has its own unique XML representation.
+
+Model testing and model projection require the <Algorithm> section
+returned by this operation.
+
+=== SOAP faults ===
+
+- Missing ticket in request
+- Model unavailable
+
+
+=== Examples ===
 ```
 <?xml version="1.0" encoding="iso-8859-1"?>
 <SOAP-ENV:Envelope xmlns:xsi="http://www.w3.org/1999/XMLSchema-instance" 
@@ -665,8 +856,24 @@ AUTHORITY['EPSG','7022']],AUTHORITY['EPSG','6022']],PRIMEM['Greenwich',0,AUTHORI
 
 == testModel ==
 
-Starts a new model test job.
+=== Description ===
 
+Starts a new model test job. This requires an environmental scenario
+(set of layers including a mask), a set of presence points, an
+optional set of absence points, a model (<Algorithm> element returned
+by the createModel operation), and statistics parameters.
+
+Statistics may include confusion matrix and ROC curve. 
+
+This operation is asynchronous. It immediately returns a ticket that 
+must be used to track job progress.
+
+=== SOAP faults ===
+
+- Failed to create ticket
+
+
+=== Examples ===
 ```
 <?xml version="1.0" encoding="iso-8859-1"?>
 <SOAP-ENV:Envelope xmlns:xsi="http://www.w3.org/1999/XMLSchema-instance" 
@@ -739,8 +946,18 @@ UNIT["degree",0.0174532925199433,AUTHORITY["EPSG","9108"]],AXIS["Lat",NORTH],AXI
 
 == getTestResult ==
 
-Returns the result of a model test.
+=== Description ===
 
+Returns the result of a model test. Points of the ROC curve are
+serialized as a sequence of pairs (x y) separated by a space.
+
+=== SOAP faults ===
+
+- Missing ticket in request
+- Test result unavailable
+
+
+=== Examples ===
 ```
 <?xml version="1.0" encoding="iso-8859-1"?>
 <soap:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
@@ -784,8 +1001,40 @@ Returns the result of a model test.
 
 == projectModel ==
 
-Starts a new model projection job.
+=== Description ===
 
+Starts a new model projection job. This includes a model (<Algorithm>
+section returned by the createModel operation), an environmental
+scenario (set of layers with an output mask indicating the extent of
+the projection) and additional output parameters. If the environmental
+scenario is the same as the one used in model creation, this is known
+as a native projection. If the scenario is different, the number of
+layers must be the same and the corresponding variables must also be
+in the same order used for model creation.
+
+Output parameters include a template layer whose spatial resolution
+and spatial reference system will be used to create the distribution
+map, and a file type whose value can be:
+
+| GreyTiff     | Grey scale GeoTiff [0,255]         |
+| GreyTiff100  | Grey scale GeoTiff [0,100]         |
+| FloatingTiff | Floating point GeoTiff             |
+| GreyBMP      | Grey scale BMP                     |
+| FloatingHFA  | Floating point Erdas Imagine       |
+| ByteHFA      | Byte Erdas Imagine [0,100]         |
+| ByteASC      | Byte ARC/Info ASCII grid [0,100]   |
+| FloatingASC  | Floating point ARC/Info ASCII grid |
+
+
+This operation is asynchronous. It immediately returns a ticket that 
+must be used to track job progress.
+
+=== SOAP faults ===
+
+- Failed to create ticket
+
+
+=== Examples ===
 ```
 <?xml version="1.0" encoding="iso-8859-1"?>
 <soap:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
@@ -839,8 +1088,17 @@ Starts a new model projection job.
 
 == getLayerAsUrl ==
 
+=== Description ===
+
 Returns the URL of a projected model.
 
+=== SOAP faults ===
+
+- Missing id in request
+- Layer unavailable
+
+
+=== Examples ===
 ```
 <?xml version="1.0" encoding="iso-8859-1"?>
 <soap:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
@@ -877,8 +1135,22 @@ Returns the URL of a projected model.
 
 == getProjectionMetadata ==
 
-Returns metadata about a model projection.
+=== Description ===
 
+Returns metadata about a model projection given a ticket, including
+the total number of cells on the map, the number of cells predicted as
+suitable for the species and the threshold used to calculate these
+values.
+
+=== SOAP faults ===
+
+- Missing ticket in request
+- Projection unavailable
+- Projection unreadable
+- Metadata unavailable
+
+
+=== Examples ===
 ```
 <?xml version="1.0" encoding="iso-8859-1"?>
 <soap:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
