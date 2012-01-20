@@ -1,6 +1,6 @@
 The openModeller Web Service
 Renato De Giovanni
-Last updated: 18th January 2012
+Last updated: 20th January 2012
 %! target       : html
 %! style        : w3c_main.css
 %! style        : w3c_examples.css
@@ -8,7 +8,7 @@ Last updated: 18th January 2012
 %! preproc      : OM_URL   http://openmodeller.sf.net/
 %! PostProc(html): '(?i)(<pre>)' '<div class="exampleInner">\1'
 %! PostProc(html): '(?i)(</pre>)' '\1</div>'
-%! encoding: iso-8859-1
+%! encoding: utf-8
 
 % These are comments and will not be generated in any output
 % -------------------
@@ -35,14 +35,13 @@ Last updated: 18th January 2012
 
 This document describes the openModeller web service interface
 (OMWS). OMWS was created so that the main ecological niche modelling
-functionalities provided by openModeller could be available in a
-standardized way over the web to other programs. Therefore the target
-audience for this document are developers who want to write programs
-that will interact with instances of the openModeller web service. It
-is assumed that readers have basic understanding about 
+functionalities provided by [openModeller http://openmodeller.sf.net] 
+(Muñoz //et al.// 2011) could be available in a standardized way over 
+the web to other programs. Therefore the target audience for this document 
+are developers interested in writing programs to interact with OMWS. 
+It is assumed that readers have basic understanding about 
 [ecological niche modelling http://en.wikipedia.org/wiki/Environmental_niche_modelling], 
-basic understanding of [openModeller http://openmodeller.sf.net] and 
-knowledge about web services.
+basic understanding of openModeller and knowledge about web services.
 
 This document was originally prepared for the 
 [BioVeL http://www.biovel.eu/] project with funds from the 
@@ -57,9 +56,10 @@ main operations to run ecological niche modelling experiments:
 
 http://openmodeller.cria.org.br/ws/1.0/openModeller.wsdl
 
-All [XML http://www.w3.org/XML/] elements, attributes, structure and 
-data types are defined in a separate [XML Schema www.w3.org/XML/Schema] 
-compatible with all openModeller serializable objects:
+The main [XML http://www.w3.org/XML/] elements, attributes, structure 
+and data types used inside the SOAP Body are defined in a separate 
+[XML Schema www.w3.org/XML/Schema] compatible with all openModeller 
+serializable objects:
 
 http://openmodeller.cria.org.br/xml/1.0/openModeller.xsd
 
@@ -72,11 +72,11 @@ src/soap directory. The server can run as a CGI application, a stand
 alone server (daemon) or a multi-threaded server. By using gSOAP,
 stubs are also available for developers willing to write clients in C++ 
 ([openModeller Desktop http://openmodeller.sourceforge.net/index.php?Itemid=5&id=10&option=com_content&task=view], 
-for example, uses those stubs). There is also a simple command-line
+for example, uses them). There is also a simple command-line
 client written in Perl that depends on the 
-[SOAPLite Perl module http://www.soaplite.com/]. This client is also 
+[SOAPLite Perl module http://www.soaplite.com/]. This client is  
 available under the same directory in the openModeller source code
-(src/soap/sampleClient.pl). Finally, there is code in Java to interact
+(src/soap/sampleClient.pl). There is also code in Java to interact
 with the service. This is being used by the [GBIF portal http://gbif.org] 
 to generate niche models and is therefore available in the GBIF code base:
 http://code.google.com/p/gbif-dataportal/source/browse/trunk/portal-web/src/main/java/org/gbif/portal/web/controller/openmodeller/
@@ -89,7 +89,8 @@ http://modeller.cria.org.br/cgi-bin/om_soap_server.cgi
 
 http://modeller.cria.org.br/ws1/om
 
-Note: you need a SOAP client to interact with these URLs! If you click on the links using your browser you may get an error.
+Note: you need a SOAP client to interact with these URLs! If you click
+on the links using your browser you may get an error.
 
 = Interaction with the service =
 
@@ -97,12 +98,12 @@ Although the number of operations available on the service is
 relatively small, there are many different ways to use them. Figure 1
 shows a typical workflow as an example. Some people may be interested
 only in the models - without even testing of projecting them. Others
-may want to project only if a test indicates that the results are good
-enough. This can actually be done in different ways, since the model
-result also includes statistics for the training dataset, while
-"testModel" requests are usually performed with an external
-dataset. Even model creation may be conditioned by previous tests
-involving preliminary models created with different subsets of the
+may want to project a model only if a previous test indicates that the
+results are good enough. This can actually be done in different ways,
+since the model result also includes statistics for the training
+dataset, while "testModel" requests are usually performed with an
+external dataset. Even model creation may be conditioned by previous
+tests involving preliminary models created with different subsets of
 input data (through n-fold cross validation, for instance). Multiple
 projections can also be requested when there is more than one
 environmental scenario available.
@@ -123,7 +124,7 @@ are suitable (corresponding to the numerical value 1), inside the
 marginal envelope the environmental conditions can still be considered
 acceptable (corresponding to 0.5) and outiside the marginal envelope
 the environmental conditions are unsuitable (corresponding to
-0). Therefore, the operation "createModel" will request the creation
+0). Therefore, the [createModel #toc20] operation will request the creation
 of that kind of model - not a map! The result of "getModel" will be
 the serialized model, which in the case of Bioclim will be just the
 bioclimatic envelopes (minimum, maximum, average and standard
@@ -132,7 +133,7 @@ model in OMWS: it can be tested as many times as necessary (getting
 back statistical results as a confusion matrix and/or ROC curve) or it
 can be projected into a geographic region given an environmental
 scenario. This can also be done as many times as necessary. The result
-of model projection is finally the potential distribution map in the
+of a model projection is finally the potential distribution map in the
 form of a georeferenced raster.
 
 As can be seen, OMWS is centered around a few core operations for
@@ -158,7 +159,7 @@ SOAP faults included here are all based on the only existing server
 implementation and should not be regarded as mandatory functionality
 for additional server software that may be implemented in the
 future. Some comments in this document may also be specifically
-related with the existing server implementation and not just with the
+related to the existing server implementation and not just the
 protocol itself.
 
 = Operations =
@@ -174,8 +175,9 @@ therefore use this method to check as much as possible that the server
 is prepared to properly handle all requests. Clients must get a
 <status>1</status> if the service is available - otherwise a SOAP fault
 is raised. Additionally, server implementations may use the <version>
-element in the header to indicate their name and version. This is the
-right operation for service monitoring.
+element in the header to indicate their name and version.
+
+This is the right operation for service monitoring.
 
 === SOAP faults ===
 
@@ -225,11 +227,11 @@ right operation for service monitoring.
 Returns metadata about all modelling algorithms available. Metadata
 includes id, version, name, overview, description, designers,
 bibliography, developers, an indicator if the algorithm can handle
-categorical data, an indicator if it requires absence data and
+categorical data, an indicator if it requires absence data, and
 parameters. Parameter metadata includes id, name, data type (Integer,
 Real or String), overview, description, accepted range and default
-value. Algorithm and parameter ids are used to reference them in the other
-operations.
+value. Algorithm and parameter ids are used to reference them in the
+other operations.
 
 In the current openModeller version all textual content is
 in English. When displaying algorithm metadata in user interfaces,
@@ -468,12 +470,7 @@ locally accessible (i.e., stored on the server or at least accessible
 from the server through the file system). The protocol does not
 include operations to manipulate layers (add or remove files, or
 edit metadata). These tasks need to be performed on the server side
-by other means. However, since openModeller makes use of the
-[GDAL http://gdal.org/] library to read raster data and GDAL has a
-driver to read remote rasters through the 
-[WCS www.opengeospatial.org/standards/wcs] protocol, with some 
-adjustments it may be possible to specify layers that are remote to 
-the server in the future.
+by other means.
 
 Different service instances are not guaranteed to provide the same
 layers, unless there is a specific policy in this respect controlling
@@ -565,8 +562,8 @@ referenced by their ids, a mask (which is also a layer!) referenced by
 its id, a set of presence points (samples where the environment is
 suitable for the species), an optional set of absence points (samples
 where the environment is unsuitable for the species), a modelling
-algorithm referenced by its id and - if the algorithm requires
-parameters - a set of parameters referenced by ids and followed by a
+algorithm referenced by its id and, if the algorithm requires
+parameters, a set of parameters referenced by ids and followed by a
 value.
 
 Each set of points needs a spatial reference system specified in 
@@ -582,14 +579,22 @@ and can be a way to keep record of which species was modelled.
 The mask is used to discard points outside its extent or inside cells 
 with nodata.
 
-An optional section <Options> followed by the <OccurrencesFilter>
-element can be used to instruct the server to apply filters in points
-before they are used. <SpatiallyUnique/> is used to discard duplicate
-points (same coordinates) and <EnvironmentallyUnique/> is used to
-discard points with the same environmental conditions.
+An optional section <Options> can be used to instruct the server to
+apply filters in the points before they are used. <SpatiallyUnique/>
+is used to discard duplicate points (same coordinates) and
+<EnvironmentallyUnique/> is used to discard points with the same
+environmental conditions.
+
+An optional <Statistics> section can be used to specify statistics
+parameters for an internal test (a test with the training data). This
+section is described in the [testModel #toc36] operation. By default
+and for backwards compatibility reasons, if this section is not
+present, the service will calculate statistics with default
+values. Statistics results are also explained in the 
+[testModel #toc36] operation.
 
 This operation is asynchronous. It immediately returns a ticket that 
-must be used to track job progress.
+must be used to track job progress later.
 
 === SOAP faults ===
 
@@ -668,7 +673,7 @@ Returns the progress of a job (model creation, model testing or model
 projection). Possible values are: -1 if the job is still queued, -2 if
 the job was aborted, a value between 0 and 100 if the job is in
 progress or 100 if the job was finished. More details about aborted
-jobs can be found with the getLog operation.
+jobs can be discovered with the [getLog #toc28] operation.
 
 === SOAP faults ===
 
@@ -774,7 +779,7 @@ to generate the model. Note in example 14 that the <Algorithm> element
 now includes a <Model> element with the actual result of the modelling
 process for that particular algorithm. This element contains all
 necessary information for algorithm predictions given an environmental
-scenario and each algorithm has its own unique XML representation.
+scenario. Each algorithm has its own unique XML representation.
 
 Model testing and model projection require the <Algorithm> section
 returned by this operation.
@@ -861,12 +866,32 @@ AUTHORITY['EPSG','7022']],AUTHORITY['EPSG','6022']],PRIMEM['Greenwich',0,AUTHORI
 Starts a new model test job. This requires an environmental scenario
 (set of layers including a mask), a set of presence points, an
 optional set of absence points, a model (<Algorithm> element returned
-by the createModel operation), and statistics parameters.
+by the [createModel #toc20] operation), and statistics parameters.
 
-Statistics may include confusion matrix and ROC curve. 
+Statistics may include confusion matrix and ROC curve. A threshold can
+be specified for the confusion matrix. In this case, -1 can be used to
+instruct the server to use the lowest presence threshold (lowest
+prediction among training points). The "IgnoreAbsences" attribute can
+be used discard absence points in the calculations, in case they were
+passed as background points (some algorithms that require background
+points, like Maxent, have a parameter that allows users to specify the
+background points through absences).
+
+Two approaches can be used to calculate ROC curves. The first one is
+the traditional approach which requires presence and absence
+points. The second was proposed by Phillips //et al.// (2006) to
+handle presence-only data using the proportional predicted area. In
+openModeller this value is approximated by means of background
+points. When only presences are available, the second approach is
+always used and the attribute "BackgroundPoints" can be used to
+specify the number of background points to be generated (default is
+10000). Background points can also be specified by the user by means
+of absences. In this case the attribute "UseAbsencesAsBackground" must
+be 1. In both approaches the resolution (number of points in the
+curve) and a maximum accepted ommision can be specified.
 
 This operation is asynchronous. It immediately returns a ticket that 
-must be used to track job progress.
+must be used to track job progress later.
 
 === SOAP faults ===
 
@@ -917,8 +942,8 @@ UNIT["degree",0.0174532925199433,AUTHORITY["EPSG","9108"]],AXIS["Lat",NORTH],AXI
           </Model>
         </Algorithm>
         <Statistics>
-          <ConfusionMatrix Threshold="0.5"/>
-          <RocCurve Resolution="15" BackgroundPoints="10000"/>
+          <ConfusionMatrix Threshold="0.5" IgnoreAbsences="0"/>
+          <RocCurve Resolution="15" MaxOmission="1.0" UseAbsencesAsBackground="0"/>
         </Statistics>
       </TestParameters>
     </omws:testModel>
@@ -1004,7 +1029,7 @@ serialized as a sequence of pairs (x y) separated by a space.
 === Description ===
 
 Starts a new model projection job. This includes a model (<Algorithm>
-section returned by the createModel operation), an environmental
+section returned by the [createModel #toc20] operation), an environmental
 scenario (set of layers with an output mask indicating the extent of
 the projection) and additional output parameters. If the environmental
 scenario is the same as the one used in model creation, this is known
@@ -1014,7 +1039,7 @@ in the same order used for model creation.
 
 Output parameters include a template layer whose spatial resolution
 and spatial reference system will be used to create the distribution
-map, and a file type whose value can be:
+map, and a file type with the possible values:
 
 | GreyTiff     | Grey scale GeoTiff [0,255]         |
 | GreyTiff100  | Grey scale GeoTiff [0,100]         |
@@ -1025,9 +1050,13 @@ map, and a file type whose value can be:
 | ByteASC      | Byte ARC/Info ASCII grid [0,100]   |
 | FloatingASC  | Floating point ARC/Info ASCII grid |
 
+An optional <Statistics> section can be used to specify the threshold
+to calculate the number of cells considered suitable for the species
+occurrence. This information can be retrieved through the
+[getProjectionMetadata #toc52] operation.
 
 This operation is asynchronous. It immediately returns a ticket that 
-must be used to track job progress.
+must be used to track job progress later.
 
 === SOAP faults ===
 
@@ -1062,6 +1091,9 @@ must be used to track job progress.
         <OutputParameters FileType="ByteHFA">
           <TemplateLayer Id="/layers/en/terrestrial/climate/global/worldclim/present/bioclim/10arc-minutes/14aecd40-04d9-11e1-be50-0800200c9a66"/>
         </OutputParameters>
+        <Statistics>
+          <AreaStatistics PredictionThreshold="0.5"/>
+        </Statistics>
       </ProjectionParameters>
     </omws:projectModel>
   </soap:Body>
@@ -1187,3 +1219,10 @@ values.
 ```
 **Example 24:** getProjectionMetadata response.
 
+= Bibliography =
+
+Phillips, S.J., Anderson, R.P., and Schapire, R.E., 2006. Maximum entropy modeling of species geographic distributions. Ecological Modelling 190: 231–259.
+
+Muñoz, M.E.S., Giovanni, R., Siqueira, M.F., Sutton, T., Brewer, P., Pereira, R.S.,
+Canhos, D.A.L., Canhos, V.P., 2011. openModeller: a generic approach to species’
+potential distribution modelling. Geoinformatica, 15: 111-135.
