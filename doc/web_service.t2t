@@ -38,8 +38,9 @@ This document describes the openModeller web service interface
 functionalities provided by [openModeller http://openmodeller.sf.net] 
 (Muñoz //et al.// 2011) could be available in a standardized way over 
 the web to other programs. Therefore the target audience for this document 
-are developers interested in writing programs to interact with OMWS. 
-It is assumed that readers have basic understanding about 
+are developers interested in writing programs to interact with an OMWS 
+instance or perhaps in implementing a new OMWS server. It is assumed 
+that readers have basic understanding about 
 [ecological niche modelling http://en.wikipedia.org/wiki/Environmental_niche_modelling], 
 basic understanding of openModeller and knowledge about web services.
 
