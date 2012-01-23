@@ -39,6 +39,9 @@
 #define F_HINGE 3
 #define F_THRESHOLD 4
 
+/**
+ * Documents this.
+ */
 class Feature : public Configurable {
 
 public:
@@ -67,13 +70,34 @@ public:
   Scalar exp() {return _exp;}
 
   void setSampExp( Scalar samp_exp ){_samp_exp = samp_exp;}
-  Scalar sampExp() {return _samp_exp;}
+  Scalar sampExp() {
+    // Log::instance()->debug("samp_exp() called\n");
+    Scalar retvalue;
+
+    retvalue = _samp_exp;
+    // Log::instance()->debug("samp_exp() returned %f\n", retvalue);
+    return retvalue;
+  }
 
   void setSampDev( Scalar samp_dev ){_samp_dev = samp_dev;}
-  Scalar sampDev() {return _samp_dev;}
+  Scalar sampDev() {
+    // Log::instance()->debug("samp_dev() called\n");
+    Scalar retvalue;
+
+    retvalue = _samp_dev;
+    // Log::instance()->debug("samp_dev() returned %f\n", retvalue);
+    return retvalue;
+  }
 
   void setLambda( Scalar lambda ){_lambda = lambda;}
-  Scalar lambda() {return _lambda;}
+  Scalar lambda() {
+    // Log::instance()->debug("lambda() called\n");
+    Scalar retvalue;
+    
+    retvalue = _lambda;
+    // Log::instance()->debug("lambda() returned %f\n", retvalue);
+    return _lambda;
+  }
 
   void setPrevLambda( Scalar lambda ){_prevLambda = lambda;}
   Scalar prevLambda() {return _prevLambda;}
