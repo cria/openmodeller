@@ -139,17 +139,9 @@ TODO-LIST:
 ----------
 
 - Create new "cancelJob" request.
-- Include option to read maps from TerraLib databases on the server side.
-- Improve Perl client to read occurrences from species files.
-- Improve Perl client to store models in the current directory
-  and use them as parameters in projectModel requests.
-- Improve Perl client to specify projection environment and output parameters
-  in projectModel requests.
-- Improve Perl client to store maps in current directory after calling getMap 
-  requests (but first SOAP::lite needs to support dime attachments).
+- Improve Perl client to retrieve and store maps after calling getLayerAsUrl.
 - Improve server to also return environmental layers in getLayerAsUrl and
   getLayerAsAttachment.
-- Implement garbage collecttion for distribution maps on the server side.
 - Implement sigpipe handler.
 - Find portable and better solution to unique temporary files.
 
