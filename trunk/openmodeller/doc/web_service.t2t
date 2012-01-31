@@ -1,6 +1,6 @@
 The openModeller Web Service
 Renato De Giovanni
-Last updated: 20th January 2012
+Last updated: 31st January 2012
 %! target       : html
 %! style        : w3c_main.css
 %! style        : w3c_examples.css
@@ -51,8 +51,8 @@ This document was originally prepared for the
 = Technical details =
 
 OMWS is based on [SOAP http://www.w3.org/TR/soap/] following the 
-document/literal style. The whole interface is programatically defined 
-in a [WSDL http://www.w3.org/TR/wsdl] file and contains the
+document/literal style. The interface is programatically defined 
+in [WSDL http://www.w3.org/TR/wsdl] and it contains the
 main operations to run ecological niche modelling experiments:
 
 http://openmodeller.cria.org.br/ws/1.0/openModeller.wsdl
@@ -147,14 +147,14 @@ ways, keeping the interface simple and effective.
 = Additional notes =
 
 All XML examples in this document were extracted from message dumps
-using the Perl client (through the -debug option) interacting with the
-http://modeller.cria.org.br/ws1/om service instance running a
-pre-release version of openModeller towards version 1.2.0. All XMLs
-were formatted for better visualization. In some cases they were
-deliberately shortened to avoid displaying dozens of algorithms and
-hundreds of layers in the examples. Despite these changes, all XML
-messages can be seen as real and functional examples of how to
-interact with the service.
+using the Perl client (through the //-debug// option) interacting with the
+http://modeller.cria.org.br/ws1/om service instance running a version
+of openModeller currently under development on top of the previous
+1.2.0 stable version. All XMLs were formatted for better
+visualization. In some cases they were deliberately shortened to avoid
+displaying dozens of algorithms and hundreds of layers in the
+examples. Despite these changes, all XML messages can be seen as real
+and functional examples of how to interact with the service.
 
 SOAP faults included here are all based on the only existing server
 implementation and should not be regarded as mandatory functionality
@@ -235,7 +235,7 @@ value. Algorithm and parameter ids are used to reference them in the
 other operations.
 
 In the current openModeller version all textual content is
-in English. When displaying algorithm metadata in user interfaces,
+in English. When displaying algorithm metadata on user interfaces,
 descriptions of both algorithms and parameters are particularly
 important. For an algorithm, this may contain crucial information
 about how to run it, as in the case of AquaMaps, which requires a
@@ -1220,10 +1220,10 @@ values.
 ```
 **Example 24:** getProjectionMetadata response.
 
-= Bibliography =
+= References =
 
 Phillips, S.J., Anderson, R.P., and Schapire, R.E., 2006. Maximum entropy modeling of species geographic distributions. Ecological Modelling 190: 231–259.
 
 Muñoz, M.E.S., Giovanni, R., Siqueira, M.F., Sutton, T., Brewer, P., Pereira, R.S.,
 Canhos, D.A.L., Canhos, V.P., 2011. openModeller: a generic approach to species’
-potential distribution modelling. Geoinformatica, 15: 111-135.
+potential distribution modelling. [Geoinformatica, 15: 111-135 http://www.springerlink.com/content/n805714x26265573/].
