@@ -34,7 +34,6 @@ int main( int argc, char **argv ) {
   opts.addOption( "", "cell-start" , "Cell position to start environment dumping (default 0)"  , true );
   opts.addOption( "", "cell-end"   , "Cell position to end environment dumping (default 1000)" , true );
   opts.addOption( "", "log-level"  , "Set the log level (debug, warn, info, error)", true );
-  opts.addOption( "", "log-file"   , "Log file"                                    , true );
 
   std::string log_level("info");
   std::string source("");

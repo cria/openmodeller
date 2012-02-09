@@ -20,5 +20,7 @@ OPTIONS
 
        --cell-end        End at cell (default 1000). Used only with dump-env.
 
+       --log-level       openModeller log level: debug, warn, info or error. Defaults to "info".
+
 AUTHORS
        Renato De Giovanni <renato at cria dot org dot br>
