@@ -1,59 +1,35 @@
 OVERVIEW:
 ---------
-The available SOAP interface is an initial effort to provide 
-modelling services across the web. The current implementation 
-is still a prototype, but has enough functionality to be used  
-in production environment.
 
-The implementation is completely based on gSOAP v2.7
-(http://gsoap2.sourceforge.net) and has only been tested with 
-Linux. The gSOAP library seems to be compliant with "Windows, 
-Unix, Linux, Pocket PC, Mac OS X, TRU64, VxWorks, etc". However,
-parts of the openModeller SOAP server code are not prepared
-to run in other platforms - these parts include sigpipe 
-handling (if multi-threading is enabled) and unique temporary 
-file name generator (mkstemp function).
+This SOAP interface was created to provide modelling services across
+the web. The server implementation is based on gSOAP v2.7
+(http://gsoap2.sourceforge.net) and has only been tested with
+GNU/Linux. The gSOAP library seems to be compliant with "Windows,
+Unix, Linux, Pocket PC, Mac OS X, TRU64, VxWorks, etc". However, parts
+of the openModeller SOAP server code are probably not prepared to run
+in other platforms - these parts include sigpipe handling (if
+multi-threading is enabled) and unique temporary file name generator
+(mkstemp function). The server can potentially run as a CGI
+application, a stand alone server (daemon), or a multi-threaded
+server.
+
+A command line client in Perl is also available (sampleClient.pl,
+which depends on SOAP::Lite version >= 0.67).
+
+Both client and server can handle all operations.
 
 Note: although the SOAP server is already prepared to run as a
-multi-threaded daemon server, openModeller is not!!
-
-CURRENT FUNCTIONALITY:
----------------------
-
-- Server can run as a CGI application, stand alone server (daemon), 
-  or multi-threaded server.
-- Server can handle getAlgorithms requests (returning metadata 
-  about all available algorithms).
-- Server can handle getLayers requests (returning all available 
-  layers).
-- Server can handle createModel requests.
-- Server can handle getModel requests.
-- Server can handle testModel requests.
-- Server can handle projectModel requests.
-- Server can handle getProgress requests (althugh only using 0% and 
-  100%).
-- Server can handle getLog requests.
-- Server can handle getLayerAsUrl requests for distribution maps.
-- Server can handle getLayerAsAttachment requests for distribution
-  maps (returning maps as DIME attachments).
-- Server can handle getProjectionMetadata requests.
-- A simple command line perl client is available (depends on 
-  SOAP::Lite version >= 0.67). It can invoke all methods, but
-  occurrence points are still hard coded and projectModel parameters 
-  are also hard coded.
-
+multi-threaded daemon server, openModeller may not be ready for this!
+(not tested until now)
 
 COMPILING THE SERVER:
 ---------------------
 
-By using cmake, the SOAP server is automatically compiled, but
-if you're using automake, you need to enable its compilation with:
+You need to make sure that the option OM_BUILD_SERVICE is
+turned on using ccmake and then proceed with the compilation.
 
- ./configure --enable-soap
- make
-
-Note: gSOAP doesn't need to be installed to run openModeller's 
-SOAP server - all necessary files are included in the distribution.
+Note: gSOAP doesn't need to be installed to run the service - all 
+necessary files are already included.
 
 
 USE INSTRUCTIONS:
