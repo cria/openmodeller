@@ -289,6 +289,10 @@ omws__ping( struct soap *soap, void *_, xsd__int &status )
     return soap_receiver_fault( soap, "No available algorithms", NULL );
   }
 
+  // TODO: test layer cache
+
+  // TODO: at least one layer available
+
   status = 1;
 
   return SOAP_OK;
