@@ -144,6 +144,9 @@ the previous libraries (libgdal-dev, libexpat-dev, libsqlite3-dev, libgsl-dev).
 **Disk space:** At least 50GB are recommended to store the environmental
 layers and other 50GB to store results.
 
+Note: gSOAP doesn't need to be installed to run the service - all 
+necessary files are already included in openModeller.
+
 = Installation & Configuration =
 
 The following requirements refer to the server being run as a CGI
@@ -199,7 +202,7 @@ ccmake ..
 
 The last command should open the CMake ncurses GUI where you can
 configure various aspects of the build. Make sure that the option
-OM_SOAP_BINDINGS is turned ON, as this enables the compilation of the
+OM_BUILD_SERVICE is turned ON, as this enables the compilation of the
 openModelelr server. When finished, press 'c' to configure, 'e' to
 dismiss any error messages that may appear and 'g' to generate the
 make files. Note that sometimes 'c' needs to be pressed several times
