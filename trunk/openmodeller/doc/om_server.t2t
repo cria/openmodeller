@@ -149,7 +149,7 @@ layers and other 50GB to store results.
 The following requirements refer to the server being run as a CGI
 application, the job scheduler launching local command-line processes
 and openModeller being installed from source code. Although the
-openModelelr framework and command-line tools may be available as
+openModeller framework and command-line tools may be available as
 packages for some GNU/Linux distributions, the openModeller server is
 currently not available in a binary format, so it needs to be
 compiled. Additionally, at the moment this document is being written
