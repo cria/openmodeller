@@ -1,6 +1,6 @@
 The openModeller Web Service
 Renato De Giovanni
-Last updated: 31st January 2012
+Last updated: 9th February 2012
 %! target       : html
 %! style        : w3c_main.css
 %! style        : w3c_examples.css
@@ -51,9 +51,8 @@ This document was originally prepared for the
 = Technical details =
 
 OMWS is based on [SOAP http://www.w3.org/TR/soap/] following the 
-document/literal style. The interface is programatically defined 
-in [WSDL http://www.w3.org/TR/wsdl] and it contains the
-main operations to run ecological niche modelling experiments:
+document/literal style and the interface is programatically defined 
+in [WSDL http://www.w3.org/TR/wsdl]:
 
 http://openmodeller.cria.org.br/ws/1.0/openModeller.wsdl
 
@@ -77,9 +76,8 @@ for example, uses them). There is also a simple command-line
 client written in Perl that depends on the 
 [SOAPLite Perl module http://www.soaplite.com/]. This client is  
 available under the same directory in the openModeller source code
-(src/soap/sampleClient.pl). There is also code in Java to interact
-with the service. This is being used by the [GBIF portal http://gbif.org] 
-to generate niche models and is therefore available in the GBIF code base:
+(src/soap/sampleClient.pl). [GBIF http://gbif.org] has some Java code 
+to generate niche models through its portal by interacting with the service:
 http://code.google.com/p/gbif-dataportal/source/browse/trunk/portal-web/src/main/java/org/gbif/portal/web/controller/openmodeller/
 
 = Service instances =
