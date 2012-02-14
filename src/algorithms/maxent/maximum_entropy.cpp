@@ -744,7 +744,7 @@ MaximumEntropy::sequentialProc()
     double dlb = lossBound( *it );
 
     // NEW
-    if (!(*it)->isActive() || (*it)->isGenerated() || dlb >= best_dlb) {
+    if (!(*it)->isActive() || (*it)->postGenerated() || dlb >= best_dlb) {
       continue;
     } 
 
@@ -796,7 +796,7 @@ MaximumEntropy::sequentialProc()
   vector<Feature*> toUpdate;
   
   for (it = _features.begin(); it != _features.end(); ++it) {
-    if ((*it)->isActive() && !((*it)->isGenerated())) {
+    if ((*it)->isActive() && !((*it)->postGenerated())) {
       toUpdate.push_back(*it);
     }
 

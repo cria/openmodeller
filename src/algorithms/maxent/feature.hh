@@ -51,7 +51,7 @@ public:
 
   void activate(){_active = true;}
   void deactivate(){_active = false;}
-  bool isActive() {return _active;}
+  bool isActive() const {return _active;}
 
   void setLower( Scalar lower ){_lower = lower;}
   Scalar lower() {return _lower;}
@@ -88,15 +88,7 @@ public:
 
   virtual bool isBinary() const = 0;
 
-  bool isActive() const {
-    return _active;
-  }
-
-  void setActive(bool active) {
-    _active = active;
-  }
-
-  bool isGenerated() const {
+  bool postGenerated() const {
     return false;
   }
 
