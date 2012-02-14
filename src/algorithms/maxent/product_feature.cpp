@@ -50,6 +50,10 @@ ProductFeature::getVal( const Sample& sample ) const
 
 bool ProductFeature::isBinary() const { return false; }
 
+bool ProductFeature::isActive() const {
+  return _active;
+}
+
 std::string
 ProductFeature::getDescription( const EnvironmentPtr& env ) const
 {

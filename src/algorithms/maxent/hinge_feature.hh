@@ -32,25 +32,22 @@
 class HingeFeature : public Feature {
 
 public:
-
   HingeFeature( int layerIndex, Scalar min, Scalar max );
-
   HingeFeature( const ConstConfigurationPtr & config );
-
   ~HingeFeature();
 
   Scalar getVal( const Sample& sample ) const;
-
   bool isBinary() const;
 
   std::string getDescription( const EnvironmentPtr& env ) const;
-
   ConfigurationPtr getConfiguration() const;
-  
   void setConfiguration( const ConstConfigurationPtr & config );
 
+  bool isGenerated() const {
+    return true;
+  }
+
 private:
-  
   int _layerIndex;
   Scalar _min;
   Scalar _max;

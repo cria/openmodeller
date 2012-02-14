@@ -40,24 +40,14 @@
 #define F_THRESHOLD 4
 
 /**
- * Documents this.
+ * TODO: document this
  */
 class Feature : public Configurable {
 
 public:
-
   virtual Scalar getVal( const Sample& sample ) const = 0;
-
-  virtual bool isBinary() const = 0;
-
   virtual std::string getDescription( const EnvironmentPtr& env ) const = 0;
-
   Scalar type() {return _type;}
-
-  void activate(){_active = 1;}
-  void deactivate(){_active = 0;}
-
-  bool isActive() {return _active;}
 
   void setLower( Scalar lower ){_lower = lower;}
   Scalar lower() {return _lower;}
@@ -75,34 +65,13 @@ public:
   Scalar exp() {return _exp;}
 
   void setSampExp( Scalar samp_exp ){_samp_exp = samp_exp;}
-  Scalar sampExp() {
-    // Log::instance()->debug("samp_exp() called\n");
-    Scalar retvalue;
-
-    retvalue = _samp_exp;
-    // Log::instance()->debug("samp_exp() returned %f\n", retvalue);
-    return retvalue;
-  }
+  Scalar sampExp() {return _samp_exp;}
 
   void setSampDev( Scalar samp_dev ){_samp_dev = samp_dev;}
-  Scalar sampDev() {
-    // Log::instance()->debug("samp_dev() called\n");
-    Scalar retvalue;
-
-    retvalue = _samp_dev;
-    // Log::instance()->debug("samp_dev() returned %f\n", retvalue);
-    return retvalue;
-  }
+  Scalar sampDev() {return _samp_dev;}
 
   void setLambda( Scalar lambda ){_lambda = lambda;}
-  Scalar lambda() {
-    // Log::instance()->debug("lambda() called\n");
-    Scalar retvalue;
-    
-    retvalue = _lambda;
-    // Log::instance()->debug("lambda() returned %f\n", retvalue);
-    return _lambda;
-  }
+  Scalar lambda() {return _lambda;}
 
   void setPrevLambda( Scalar lambda ){_prevLambda = lambda;}
   Scalar prevLambda() {return _prevLambda;}
@@ -113,12 +82,36 @@ public:
   void setLastExpChange( int last_exp_change ){_last_exp_change = last_exp_change;}
   int lastExpChange() {return _last_exp_change;}
 
-protected:
+  virtual bool isBinary() const = 0;
 
-  Feature(){_active = 1; _lower = 0.0; _upper = 0.0;_mean = 0.0; _std = 0.0; _exp = 0.0; _samp_exp = 0.0; _samp_dev = 0.0; _lambda = 0.0; _prevLambda = 0.0; _last_exp_change = -1;}
+  bool isActive() const {
+    return _active;
+  }
+
+  void setActive(bool active) {
+    _active = active;
+  }
+
+  bool isGenerated() const {
+    return false;
+  }
+
+protected:
+  Feature() {
+    _lower = 0.0;
+    _upper = 0.0;
+    _mean = 0.0;
+    _std = 0.0;
+    _exp = 0.0;
+    _samp_exp = 0.0;
+    _samp_dev = 0.0;
+    _lambda = 0.0;
+    _prevLambda = 0.0;
+    _last_exp_change = -1;
+    _active = false;
+  }
 
   int _type;
-  bool _active;
   Scalar _lower;
   Scalar _upper;
   Scalar _mean;
@@ -130,6 +123,7 @@ protected:
   Scalar _prevLambda;
   Scalar _beta;
   int _last_exp_change;
+  bool _active;
 };
 
 #endif
