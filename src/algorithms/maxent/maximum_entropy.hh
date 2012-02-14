@@ -29,8 +29,7 @@
 #define _MAXIMUM_ENTROPYHH_
 
 #include <vector>
-//#include <set>
-//#include <map>
+using std::pair;
 
 #include <openmodeller/om.hh>
 
@@ -91,8 +90,17 @@ private:
   double _entropy;
 
 protected:
+
   virtual void _getConfiguration( ConfigurationPtr& ) const;
   virtual void _setConfiguration( const ConstConfigurationPtr& );
+
+  // Custom struct to sort pair by second value
+  struct by_value {
+
+    bool operator()(const pair<int,double> &left, const pair<int,double> &right) {
+        return left.second < right.second;
+    }
+  };
 
   bool _done;
 
@@ -105,6 +113,9 @@ protected:
   int _max_iterations;
   int _iteration;
   int _parallelUpdateFreq;
+  int _change;
+  int _updateInterval;
+  int _select;
   double _previous_loss;
   double _new_loss;
   double _old_loss;

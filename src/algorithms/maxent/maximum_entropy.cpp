@@ -45,8 +45,6 @@
 #include <sstream>
 #include <vector>
 #include <cmath>
-#include <map>
-#include <set>
 #include <algorithm>
 
 #include <limits>
@@ -57,6 +55,7 @@
 
 
 using namespace std;
+using std::pair;
 
 /****************************************************************/
 /********************** Algorithm's Metadata ********************/
@@ -279,7 +278,10 @@ MaximumEntropy::MaximumEntropy() :
   AlgorithmImpl(&metadata),
   _done(false),
   _iteration(0),
-  _parallelUpdateFreq(30)
+  _parallelUpdateFreq(30),
+  _change(10),
+  _updateInterval(20),
+  _select(5)
 { 
   unsigned int n = _features.size();
 
@@ -786,24 +788,6 @@ MaximumEntropy::sequentialProc()
     best_f->setExp( sum / _z_lambda );
     best_f->setLastExpChange( _iteration );
   }
-
-  /* TODO: featuresToUpdate() goes here
-  Log::instance()->debug("featuresToUpdate() called\n");
-
-  int j;
-  vector<double> lb;
-  vector<Feature*> toUpdate;
-  
-  for (it = _features.begin(); it != _features.end(); ++it) {
-    if ((*it)->isActive() && !((*it)->postGenerated())) {
-      toUpdate.push_back(*it);
-    }
-
-    lb[j] = lossBound(*it);
-  }
-
-  Log::instance()->debug("featuresToUpdate() returned\n");
-  */ 
 
   // get loss
   double loss;
@@ -1659,6 +1643,56 @@ MaximumEntropy::getLoss()
   retvalue = log(_z_lambda) - sum_mid_lambda + _linear_normalizer  + _reg;
   Log::instance()->debug("getLoss() returned %.16f\n", retvalue);  
   return retvalue;
+}
+
+/**************************/
+/*** features To Update ***/
+
+vector<Feature*> 
+MaximumEntropy::featuresToUpdate()
+{
+  Log::instance()->debug("featuresToUpdate() called\n");
+
+  int j = 0;
+  vector< pair<int, double> > lb;
+  vector<Feature*> to_update;
+  vector<int> to_update_idx;
+  
+  vector<Feature*>::iterator it;
+  for ( it = _features.begin(); it != _features.end(); ++it,++j ) {
+
+    if ( (*it)->isActive() && !((*it)->postGenerated()) && ((_iteration < (*it)->lastChange() + _change) || (j % _updateInterval == _iteration % _updateInterval)) ) {
+
+      to_update.push_back(*it);
+      to_update_idx.push_back(j);
+    }
+
+    lb.push_back( make_pair(j, lossBound(*it)) );
+  }
+
+  sort( lb.begin(), lb.end(), by_value() );
+
+  j = 0;
+  vector<int>::iterator idxit;
+  vector< pair<int, double> >::iterator lbit;
+  for ( lbit = lb.begin(); lbit != lb.end() && (j < _select); ++lbit,++j ) {
+
+    Feature * f = _features[(*lbit).first];
+
+    idxit = find ( to_update_idx.begin(), to_update_idx.end(), (*lbit).first );
+
+    bool contains = ( idxit == to_update_idx.end() ) ? false : true;
+
+    if ( f->isActive() && (!f->postGenerated()) && !contains ) {
+
+      to_update.push_back(f);
+      to_update_idx.push_back((*lbit).first);
+    }
+  }
+
+  Log::instance()->debug("featuresToUpdate() returned\n");
+
+  return to_update;
 }
 
 /********************/
