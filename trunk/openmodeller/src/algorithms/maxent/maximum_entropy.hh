@@ -45,9 +45,7 @@
 class MaximumEntropy : public AlgorithmImpl
 {
 public:
-
   MaximumEntropy();
-
   ~MaximumEntropy();
 
   int needNormalization();
@@ -59,48 +57,28 @@ public:
   int getConvergence( Scalar * const val );
 
 private:
-
   void initTrainer();
-
   void endTrainer();
-
   double sequentialProc();
-
   double lossBound( Feature * f );
-
   double parallelProc();
-
   void setLinearPred();
-
   void setLinearNormalizer();
-
   double calcBeta( Feature * f );
-
   void calcDensity();
-
   double getAlpha( Feature * f );
-
   double searchAlpha( Feature * f, double alpha );
-
   double lossChange( Feature * f, double alpha );
-
   double runNewtonStep( Feature * f );
-
   double getDeriv( Feature * f );
-
   bool terminationTest( double newLoss );
-
   double decreaseAlpha( double alpha );
-
   void updateReg();
-
   void updateReg( Feature * f, double alpha );
-
   double increaseLambda( Feature * f, double alpha );
-
   double increaseLambda( double* alpha );
-
   double getLoss();
+  vector<Feature*> featuresToUpdate();
 
   // Dump the given maxent vars related to a specfic iteration
   void displayInfo( Feature * f, double loss_bound, double new_loss, double delta_loss, double alpha );
@@ -113,9 +91,7 @@ private:
   double _entropy;
 
 protected:
-
   virtual void _getConfiguration( ConfigurationPtr& ) const;
-
   virtual void _setConfiguration( const ConstConfigurationPtr& );
 
   bool _done;
@@ -147,4 +123,3 @@ protected:
 };
 
 #endif
-

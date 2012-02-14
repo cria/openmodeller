@@ -32,25 +32,22 @@
 class ProductFeature : public Feature {
 
 public:
-
   ProductFeature( int layerIndex1, int layerIndex2 );
-
   ProductFeature( const ConstConfigurationPtr & config );
-
   ~ProductFeature();
 
   Scalar getVal( const Sample& sample ) const;
 
   bool isBinary() const;
 
+  bool isActive() const;
+
   std::string getDescription( const EnvironmentPtr& env ) const;
 
   ConfigurationPtr getConfiguration() const;
-  
   void setConfiguration( const ConstConfigurationPtr & config );
 
 private:
-  
   int _layerIndex1;
   int _layerIndex2;
 };
