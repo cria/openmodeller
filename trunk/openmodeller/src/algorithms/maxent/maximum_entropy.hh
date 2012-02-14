@@ -65,6 +65,7 @@ private:
   void setLinearNormalizer();
   double calcBeta( Feature * f );
   void calcDensity();
+  void calcDensity( vector<Feature*> to_update );
   double getAlpha( Feature * f );
   double searchAlpha( Feature * f, double alpha );
   double lossChange( Feature * f, double alpha );
@@ -74,7 +75,7 @@ private:
   double decreaseAlpha( double alpha );
   void updateReg();
   void updateReg( Feature * f, double alpha );
-  double increaseLambda( Feature * f, double alpha );
+  double increaseLambda( Feature * f, double alpha, vector<Feature*> to_update );
   double increaseLambda( double* alpha );
   double getLoss();
   vector<Feature*> featuresToUpdate();
