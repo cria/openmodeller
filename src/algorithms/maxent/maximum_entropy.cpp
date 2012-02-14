@@ -599,12 +599,6 @@ MaximumEntropy::initTrainer()
     (*it)->setBeta( calcBeta(*it) );
   }
 
-  // NEW
-  for (it = _features.begin(); it != _features.end(); ++it) {
-    (*it)->setActive(true);
-  }
-  // end NEW
-
   // calculate observed feature expectations - pi~[f] (empirical average of f)
   OccurrencesImpl::const_iterator p_iterator = _presences->begin();
   OccurrencesImpl::const_iterator p_end = _presences->end();
@@ -1763,12 +1757,18 @@ MaximumEntropy::_getConfiguration( ConfigurationPtr& config ) const
 
   ConfigurationPtr features_config( new ConfigurationImpl( "Features" ) );
 
-  features_config->addNameValue( "Num", (int)_features.size() );
+  int num_active_features = 0;
 
   for ( unsigned int i = 0; i < _features.size(); ++i ) {
 
-    features_config->addSubsection( _features[i]->getConfiguration() );
+    if ( _features[i]->isActive() ) {
+
+      features_config->addSubsection( _features[i]->getConfiguration() );
+      ++num_active_features;
+    }
   }
+
+  features_config->addNameValue( "Num", num_active_features );
 
   model_config->addSubsection( features_config );
 }
