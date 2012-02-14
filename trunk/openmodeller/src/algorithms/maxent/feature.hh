@@ -54,6 +54,11 @@ public:
 
   Scalar type() {return _type;}
 
+  void activate(){_active = 1;}
+  void deactivate(){_active = 0;}
+
+  bool isActive() {return _active;}
+
   void setLower( Scalar lower ){_lower = lower;}
   Scalar lower() {return _lower;}
 
@@ -110,9 +115,10 @@ public:
 
 protected:
 
-  Feature(){_lower = 0.0; _upper = 0.0;_mean = 0.0; _std = 0.0; _exp = 0.0; _samp_exp = 0.0; _samp_dev = 0.0; _lambda = 0.0; _prevLambda = 0.0; _last_exp_change = -1;}
+  Feature(){_active = 1; _lower = 0.0; _upper = 0.0;_mean = 0.0; _std = 0.0; _exp = 0.0; _samp_exp = 0.0; _samp_dev = 0.0; _lambda = 0.0; _prevLambda = 0.0; _last_exp_change = -1;}
 
   int _type;
+  bool _active;
   Scalar _lower;
   Scalar _upper;
   Scalar _mean;
