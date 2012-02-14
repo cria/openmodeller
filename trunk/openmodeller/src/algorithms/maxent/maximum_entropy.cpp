@@ -743,7 +743,6 @@ MaximumEntropy::sequentialProc()
   for ( it = _features.begin(); it != _features.end(); ++it ) {
     double dlb = lossBound( *it );
 
-    // NEW
     if (!(*it)->isActive() || (*it)->postGenerated() || dlb >= best_dlb) {
       continue;
     } 
@@ -856,10 +855,11 @@ MaximumEntropy::lossBound( Feature * f )
   Log::instance()->debug("lossBound() called\n");
   double retvalue;
 
-  // NEW
-  // if (!f->isActive()) {
-  //   return 0.0;
-  // }
+  if ( !f->isActive() ) {
+
+     Log::instance()->debug("lossBound() returned 0.0\n");
+     return 0.0;
+  }
 
   // Calculate delta loss bound
   double dlb = 0;
