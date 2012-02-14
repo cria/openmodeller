@@ -789,6 +789,9 @@ MaximumEntropy::sequentialProc()
     best_f->setLastExpChange( _iteration );
   }
 
+  // Determine features to update
+  vector<Feature*> to_update = featuresToUpdate();
+
   // get loss
   double loss;
   double delta_loss;
@@ -798,14 +801,14 @@ MaximumEntropy::sequentialProc()
     alpha = getAlpha( best_f );
     alpha = decreaseAlpha( alpha );
     updateReg( best_f, alpha );
-    loss = increaseLambda( best_f, alpha );
+    loss = increaseLambda( best_f, alpha, to_update );
   }
   else {
 
     alpha = runNewtonStep( best_f );
     alpha = decreaseAlpha( alpha );
     updateReg( best_f, alpha );
-    loss = increaseLambda( best_f, alpha );
+    loss = increaseLambda( best_f, alpha, to_update );
 
     delta_loss = loss - _old_loss;
 
@@ -813,11 +816,13 @@ MaximumEntropy::sequentialProc()
 
       Log::instance()->debug("Undoing: newLoss %.16f, oldLoss %.16f, deltaLossBound %.16f\n", loss, _old_loss, best_dlb);
       updateReg( best_f, -alpha );
-      loss = increaseLambda( best_f, -alpha );
+      vector<Feature*> f_update;
+      f_update.push_back( best_f );
+      loss = increaseLambda( best_f, -alpha, f_update );
       alpha = searchAlpha( best_f, getAlpha( best_f ) );
       alpha = decreaseAlpha( alpha );
       updateReg( best_f, alpha );
-      loss = increaseLambda( best_f, alpha );
+      loss = increaseLambda( best_f, alpha, to_update );
     }
   }
 
@@ -1153,12 +1158,32 @@ MaximumEntropy::setLinearNormalizer()
 void
 MaximumEntropy::calcDensity()
 {
+  vector<Feature*> to_update;
+
+  vector<Feature*>::iterator it;
+  for ( it = _features.begin(); it != _features.end(); ++it ) {
+
+    if ( (*it)->isActive() && !(*it)->postGenerated() ) {
+
+      to_update.push_back( (*it) );
+    }
+  }
+
+  calcDensity( to_update );
+}
+
+/********************/
+/*** calc Density ***/
+
+void
+MaximumEntropy::calcDensity( vector<Feature*> to_update )
+{
   //cerr << "D calcDensity with numPoints = " << _num_background << endl;
 
   _z_lambda = 0.0;
   double d;
-  double* f_sum = new double[_features.size()];
-  for ( unsigned int j = 0; j < _features.size(); ++j ) {
+  double* f_sum = new double[to_update.size()];
+  for ( unsigned int j = 0; j < to_update.size(); ++j ) {
 
     f_sum[j] = 0.0;
   }
@@ -1177,19 +1202,19 @@ MaximumEntropy::calcDensity()
 
     Sample sample = (*p_iterator)->environment();
 
-    for ( unsigned int j = 0; j < _features.size(); ++j ) {
+    for ( unsigned int j = 0; j < to_update.size(); ++j ) {
 
-      f_sum[j] += d * _features[j]->getVal(sample);
+      f_sum[j] += d * to_update[j]->getVal(sample);
     }
 
     ++i;
     ++p_iterator;
   }
 
-  for ( unsigned int j = 0; j < _features.size(); ++j ) {
+  for ( unsigned int j = 0; j < to_update.size(); ++j ) {
 
-    _features[j]->setLastExpChange( _iteration );
-    _features[j]->setExp( f_sum[j] / _z_lambda );
+    to_update[j]->setLastExpChange( _iteration ); // TODO: check this
+    to_update[j]->setExp( f_sum[j] / _z_lambda );
   }
 
   delete[] f_sum;
@@ -1467,7 +1492,7 @@ MaximumEntropy::updateReg( Feature * f, double alpha )
 /*** increase Lambda ***/
 
 double 
-MaximumEntropy::increaseLambda( Feature * f, double alpha )
+MaximumEntropy::increaseLambda( Feature * f, double alpha, vector<Feature*> to_update )
 {
   Log::instance()->debug("increaseLambda() called\n");
   double retvalue;
@@ -1497,7 +1522,7 @@ MaximumEntropy::increaseLambda( Feature * f, double alpha )
       ++p_iterator;
     }
 
-    calcDensity();
+    calcDensity( to_update );
   }
 
   retvalue = getLoss();
