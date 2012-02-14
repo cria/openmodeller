@@ -39,13 +39,13 @@ public:
   Scalar getVal( const Sample& sample ) const;
   bool isBinary() const;
 
+  bool postGenerated() const {
+    return true;
+  }
+
   std::string getDescription( const EnvironmentPtr& env ) const;
   ConfigurationPtr getConfiguration() const;
   void setConfiguration( const ConstConfigurationPtr & config );
-
-  bool isGenerated() const {
-    return true;
-  }
 
 private:
   int _layerIndex;

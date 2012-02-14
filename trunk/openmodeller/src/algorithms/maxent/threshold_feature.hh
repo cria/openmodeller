@@ -43,6 +43,10 @@ public:
 
   bool isBinary() const;
 
+  bool postGenerated() const {
+    return true;
+  }
+
   std::string getDescription( const EnvironmentPtr& env ) const;
 
   ConfigurationPtr getConfiguration() const;
