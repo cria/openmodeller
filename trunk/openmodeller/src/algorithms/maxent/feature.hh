@@ -83,6 +83,9 @@ public:
   void setBeta( Scalar beta ){_beta = beta;}
   Scalar beta() {return _beta;}
 
+  void setLastChange( int last_change ){_last_change = last_change;}
+  int lastChange() {return _last_change;}
+
   void setLastExpChange( int last_exp_change ){_last_exp_change = last_exp_change;}
   int lastExpChange() {return _last_exp_change;}
 
@@ -104,6 +107,7 @@ protected:
     _samp_dev = 0.0;
     _lambda = 0.0;
     _prevLambda = 0.0;
+    _last_change = -1;
     _last_exp_change = -1;
   }
 
@@ -119,6 +123,7 @@ protected:
   Scalar _lambda;
   Scalar _prevLambda;
   Scalar _beta;
+  int _last_change;
   int _last_exp_change;
 };
 
