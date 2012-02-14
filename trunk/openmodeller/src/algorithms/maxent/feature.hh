@@ -49,6 +49,10 @@ public:
   virtual std::string getDescription( const EnvironmentPtr& env ) const = 0;
   Scalar type() {return _type;}
 
+  void activate(){_active = true;}
+  void deactivate(){_active = false;}
+  bool isActive() {return _active;}
+
   void setLower( Scalar lower ){_lower = lower;}
   Scalar lower() {return _lower;}
 
@@ -98,6 +102,7 @@ public:
 
 protected:
   Feature() {
+    _active = true;
     _lower = 0.0;
     _upper = 0.0;
     _mean = 0.0;
@@ -108,10 +113,10 @@ protected:
     _lambda = 0.0;
     _prevLambda = 0.0;
     _last_exp_change = -1;
-    _active = false;
   }
 
   int _type;
+  bool _active;
   Scalar _lower;
   Scalar _upper;
   Scalar _mean;
@@ -123,7 +128,6 @@ protected:
   Scalar _prevLambda;
   Scalar _beta;
   int _last_exp_change;
-  bool _active;
 };
 
 #endif
