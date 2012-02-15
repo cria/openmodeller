@@ -650,6 +650,8 @@ MaximumEntropy::initTrainer()
 
     margin = ((*it)->beta() / sqrt((double)_num_presences)) * (*it)->std();
 
+    Log::instance()->debug("***beta: %.16f std: %.16f\n", (*it)->beta(), (*it)->std());
+
     (*it)->setLower( (*it)->mean() - margin );
     (*it)->setUpper( (*it)->mean() + margin );
 
@@ -1116,13 +1118,8 @@ MaximumEntropy::calcBeta( Feature * f )
   int size = (int)ts.size();
   int i = 0;
 
-  for ( ; i < size; ++i) {
-
-    if ( _num_presences <= ts[i] ) {
-
-      break;
-    }
-  }
+  // Get index
+  for ( ; i < size && _num_presences > ts[i]; ++i) {}
 
   if ( i == 0 ) {
 
@@ -1134,7 +1131,7 @@ MaximumEntropy::calcBeta( Feature * f )
     return betas[size-1];
   }
 
-  return betas[(i-1)] + (betas[i] - betas[(i-1)]) * (_num_presences - ts[(i-1)]) / (ts[i] - ts[(i-1)]);
+  return betas[i-1] + ((betas[i] - betas[i-1]) * (double)(_num_presences - ts[i-1])) / (double)(ts[i] - ts[i-1]);
 }
 
 /*****************************/
@@ -1217,7 +1214,7 @@ MaximumEntropy::calcDensity( vector<Feature*> to_update )
 
   for ( unsigned int j = 0; j < to_update.size(); ++j ) {
 
-    to_update[j]->setLastExpChange( _iteration ); // TODO: check this
+    to_update[j]->setLastExpChange( _iteration );
     to_update[j]->setExp( f_sum[j] / _z_lambda );
   }
 
