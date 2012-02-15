@@ -3,6 +3,7 @@
  * 
  * @author Elisangela S. da C. Rodrigues (elisangela . rodrigues [at] poli . usp . br)
  * @author Renato De Giovanni (renato [at] cria . org . br)
+ * @author Daniel Bolgheroni (daniel [at] cria . org . br)
  * $Id$
  * 
  * LICENSE INFORMATION 
@@ -240,9 +241,9 @@ static AlgMetadata metadata = {
 
   "1) Jaynes, E.T. (1957) Information Theory and Statistical Mechanics. In Physical Review, Vol. 106, #4 (pp 620-630). 2) Berger, A. L., Pietra, S. A. D. and Pietra, V. J. D. (1996). A maximum entropy approach to natural language processing. Computational Linguistics, 22, 39-71. 3) Darroch, J.N. and Ratcliff, D. (1972) Generalized iterative scaling for log-linear models. The Annals of Mathematical Statistics, Vol. 43: pp 1470-1480. 4) Malouf, R. (2003) A comparison of algorithms for maximum entropy parameter estimation. Proceedings of the Sixth Conference on Natural Language Learning. 5) Phillips, S.J., Dudík, M. and Schapire, R.E. (2004) A maximum entropy approach to species distribution modeling. Proceedings of the Twenty-First International Conference on Machine Learning, pp 655-662.", // Bibliography.
 
-  "Elisangela S. da C. Rodrigues, Renato De Giovanni", // Code author.
+  "Elisangela S. da C. Rodrigues, Renato De Giovanni, Daniel Bolgheroni", // Code author.
 
-  "elisangela.rodrigues [at] poli . usp . br, renato [at] cria . org . br", // Code author's contact.
+  "elisangela.rodrigues [at] poli . usp . br, renato [at] cria . org . br, daniel [at] cria . org . br", // Code author's contact.
 
   0, // Does not accept categorical data.
   1, // Does not need (pseudo)absence points.
@@ -1007,7 +1008,10 @@ MaximumEntropy::parallelProc()
 
   double prev_loss = getLoss();
 
-  double loss = increaseLambda( alpha );
+  // Determine features to update
+  vector<Feature*> to_update = featuresToUpdate();
+
+  double loss = increaseLambda( alpha, to_update );
 
   if ( loss > prev_loss ) {
 
@@ -1016,7 +1020,7 @@ MaximumEntropy::parallelProc()
       alpha[i] = -alpha[i];
     }
 
-    loss = increaseLambda( alpha );
+    loss = increaseLambda( alpha, to_update );
   }
 
   delete[] alpha;
@@ -1534,7 +1538,7 @@ MaximumEntropy::increaseLambda( Feature * f, double alpha, vector<Feature*> to_u
 /*** increase Lambda ***/
 
 double
-MaximumEntropy::increaseLambda( double* alpha )
+MaximumEntropy::increaseLambda( double* alpha, vector<Feature*> to_update )
 {
   Log::instance()->debug("increaseLambda() called\n");
   double retvalue;
@@ -1568,7 +1572,7 @@ MaximumEntropy::increaseLambda( double* alpha )
   }
 
   setLinearNormalizer();
-  calcDensity();
+  calcDensity( to_update );
   updateReg();
 
   retvalue = getLoss();

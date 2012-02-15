@@ -3,6 +3,7 @@
  * 
  * @author Elisangela S. da C. Rodrigues (elisangela . rodrigues [at] poli . usp . br)
  * @author Renato De Giovanni (renato [at] cria . org . br)
+ * @author Daniel Bolgheroni (daniel [at] cria . org . br)
  * $Id$
  * 
  * LICENSE INFORMATION 
@@ -76,7 +77,7 @@ private:
   void updateReg();
   void updateReg( Feature * f, double alpha );
   double increaseLambda( Feature * f, double alpha, vector<Feature*> to_update );
-  double increaseLambda( double* alpha );
+  double increaseLambda( double* alpha, vector<Feature*> to_update );
   double getLoss();
   vector<Feature*> featuresToUpdate();
 
