@@ -282,7 +282,8 @@ MaximumEntropy::MaximumEntropy() :
   _parallelUpdateFreq(30),
   _change(10),
   _updateInterval(20),
-  _select(5)
+  _select(5),
+  _autofeature(false)
 { 
   unsigned int n = _features.size();
 
@@ -596,11 +597,7 @@ MaximumEntropy::initTrainer()
 
   setLinearPred();
 
-  vector<Feature*>::iterator it;
-  for ( it = _features.begin(); it != _features.end(); ++it ) {
-
-    (*it)->setBeta( calcBeta(*it) );
-  }
+  assignBetas();
 
   // calculate observed feature expectations - pi~[f] (empirical average of f)
   OccurrencesImpl::const_iterator p_iterator = _presences->begin();
@@ -608,6 +605,7 @@ MaximumEntropy::initTrainer()
 
   // sum feature values to calculate mean and std
   Scalar val;
+  vector<Feature*>::iterator it;
   while ( p_iterator != p_end ) {
 
     Sample sample = (*p_iterator)->environment();
@@ -649,8 +647,6 @@ MaximumEntropy::initTrainer()
     }
 
     margin = ((*it)->beta() / sqrt((double)_num_presences)) * (*it)->std();
-
-    Log::instance()->debug("***beta: %.16f std: %.16f\n", (*it)->beta(), (*it)->std());
 
     (*it)->setLower( (*it)->mean() - margin );
     (*it)->setUpper( (*it)->mean() + margin );
@@ -1071,37 +1067,20 @@ MaximumEntropy::setLinearPred()
 }
 
 
-/***********************/
-/****** set Beta *******/
+/***************************/
+/****** assign Betas *******/
 
-double
-MaximumEntropy::calcBeta( Feature * f )
+void
+MaximumEntropy::assignBetas()
 {
-  if ( f->type() == F_HINGE ) {
+  // Default beta for each type of feature
 
-    return 0.5;
-  }
+  double beta_hinge = 0.5;
 
   vector<int> ts;
   vector<double> betas;
 
-  if ( f->type() == F_LINEAR ) {
-
-    int ts_l[] = { 10, 30, 100 };
-    ts.assign( ts_l, ts_l + 3 );
-
-    double betas_l[] = { 1.0, 0.2, 0.05 };
-    betas.assign( betas_l, betas_l + 3 );
-  }
-  else if ( f->type() == F_QUADRATIC ) {
-
-    int ts_l[] = { 0, 10, 17, 30, 100 };
-    ts.assign( ts_l, ts_l + 5 );
-
-    double betas_l[] = { 1.3, 0.8, 0.5, 0.25, 0.05 };
-    betas.assign( betas_l, betas_l + 5 );
-  }
-  else if ( f->type() == F_PRODUCT ) {
+  if ( _product && !_autofeature ) {
 
     int ts_l[] = { 0, 10, 17, 30, 100 };
     ts.assign( ts_l, ts_l + 5 );
@@ -1109,32 +1088,86 @@ MaximumEntropy::calcBeta( Feature * f )
     double betas_l[] = { 2.6, 1.6, 0.9, 0.55, 0.05 };
     betas.assign( betas_l, betas_l + 5 );
   }
-  else if ( f->type() == F_THRESHOLD ) {
+  else {
+
+    if ( _quadratic && !_autofeature ) {
+
+      int ts_l[] = { 0, 10, 17, 30, 100 };
+      ts.assign( ts_l, ts_l + 5 );
+
+      double betas_l[] = { 1.3, 0.8, 0.5, 0.25, 0.05 };
+      betas.assign( betas_l, betas_l + 5 );
+    }
+    else {
+
+      int ts_l[] = { 10, 30, 100 };
+      ts.assign( ts_l, ts_l + 3 );
+
+      double betas_l[] = { 1.0, 0.2, 0.05 };
+      betas.assign( betas_l, betas_l + 3 );
+    }
+  }
+
+  double beta_common = interpol( ts, betas, _num_presences );
+
+  double beta_threshold = 0.0;
+
+  if ( _threshold ) {
 
     int ts_l[] = { 0, 100 };
     ts.assign( ts_l, ts_l + 2 );
 
     double betas_l[] = { 2.0, 1.0 };
     betas.assign( betas_l, betas_l + 2 );
+
+    beta_threshold = interpol( ts, betas, _num_presences );
   }
 
+  // Assign beta values for each feature
+  vector<Feature*>::iterator it;
+  for ( it = _features.begin(); it != _features.end(); ++it ) {
+
+    if ( (*it)->type() == F_THRESHOLD ) {
+
+      (*it)->setBeta( beta_threshold );
+    }
+    else if ( (*it)->type() == F_HINGE ) {
+
+      (*it)->setBeta( beta_hinge );
+    }
+    else {
+
+      (*it)->setBeta( beta_common );
+    }
+  }
+}
+
+/****************/
+/*** interpol ***/
+
+double
+MaximumEntropy::interpol( vector<int> ts, vector<double> betas, int num )
+{
   int size = (int)ts.size();
   int i = 0;
 
-  // Get index
-  for ( ; i < size && _num_presences > ts[i]; ++i) {}
+  // Get reference index
+  for ( ; i < size && num > ts[i]; ++i) {}
 
   if ( i == 0 ) {
 
+    // num is less than or equals the lowest threshold
     return betas[0];
   }
 
   if ( i == size ) {
 
+    // num is greater than the highest threshold
     return betas[size-1];
   }
 
-  return betas[i-1] + ((betas[i] - betas[i-1]) * (double)(_num_presences - ts[i-1])) / (double)(ts[i] - ts[i-1]);
+  // num is less than or equals the i threshold
+  return betas[i-1] + ((betas[i] - betas[i-1]) * (double)(num - ts[i-1])) / (double)(ts[i] - ts[i-1]);
 }
 
 /*****************************/

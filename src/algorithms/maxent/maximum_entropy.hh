@@ -64,7 +64,8 @@ private:
   double parallelProc();
   void setLinearPred();
   void setLinearNormalizer();
-  double calcBeta( Feature * f );
+  void assignBetas();
+  double interpol( vector<int> ts, vector<double> betas, int num );
   void calcDensity();
   void calcDensity( vector<Feature*> to_update );
   double getAlpha( Feature * f );
@@ -131,6 +132,7 @@ protected:
   bool _product;
   bool _hinge;
   bool _threshold;
+  bool _autofeature;
 
   vector<Feature*> _features;
 };
