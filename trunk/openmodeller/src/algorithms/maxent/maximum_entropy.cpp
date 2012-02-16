@@ -788,10 +788,9 @@ MaximumEntropy::sequentialProc()
     best_f->setLastExpChange( _iteration );
   }
 
-  // Determine features to update
   vector<Feature*> to_update = featuresToUpdate();
+  best_dlb = lossBound( best_f );
 
-  // get loss
   double loss;
   double delta_loss;
 
