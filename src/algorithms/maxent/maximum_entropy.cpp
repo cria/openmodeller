@@ -895,7 +895,8 @@ MaximumEntropy::lossBound( Feature * f )
 double
 MaximumEntropy::parallelProc()
 {
-  Log::instance()->debug("Parallel update\n");
+  Log::instance()->debug("parallelProc() called\n");
+  double retvalue;
 
   // Calculate alphas for each feature
   double* alpha = new double[_features.size()];
@@ -1028,6 +1029,8 @@ MaximumEntropy::parallelProc()
   delete[] alpha;
   delete[] sum;
 
+  retvalue = loss;
+  Log::instance()->debug("parallelProc() returned %f\n", retvalue);
   return loss;
 }
 
@@ -1705,14 +1708,14 @@ MaximumEntropy::featuresToUpdate()
 
     Feature * f = _features[(*lbit).first];
 
-    idxit = find ( to_update_idx.begin(), to_update_idx.end(), (*lbit).first );
+    idxit = find ( to_update_idx.begin(), to_update_idx.end(), lbit->first );
 
     bool contains = ( idxit == to_update_idx.end() ) ? false : true;
 
     if ( f->isActive() && (!f->postGenerated()) && !contains ) {
 
       to_update.push_back(f);
-      to_update_idx.push_back((*lbit).first);
+      to_update_idx.push_back(lbit->first);
     }
   }
 
