@@ -857,8 +857,6 @@ MaximumEntropy::lossBound( Feature * f )
   double beta1 = f->sampDev();
   double lambda = f->lambda();
 
-  Log::instance()->debug("f: %s w1=%.16f n1=%.16f beta1=%.16f lambda=%.16f\n", f->getDescription(_samp->getEnvironment()).c_str(), w1, n1, beta1, lambda);
-
   double infinity = std::numeric_limits<double>::infinity();
 
   if ( n1 != -1.0 ) {
@@ -869,6 +867,7 @@ MaximumEntropy::lossBound( Feature * f )
     //cerr << endl << "D alpha = " << alpha << " w1 = " << w1 << " n1 = " << n1 << " beta1 = " << beta1 << " lambda = " << lambda << endl;
 
     if ( alpha < infinity ) {
+      Log::instance()->debug("f: %s w1=%.16f n1=%.16f beta1=%.16f lambda=%.16f\n", f->getDescription(_samp->getEnvironment()).c_str(), w1, n1, beta1, lambda);
       dlb = -n1 * alpha + log( w0 + w1 * exp(alpha) ) +
 	beta1 * ( fabs(lambda + alpha) - fabs(lambda) );
       Log::instance()->debug("DLB= %.16f\n", dlb);
