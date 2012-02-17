@@ -756,7 +756,7 @@ MaximumEntropy::sequentialProc()
     Log::instance()->error(MAXENT_LOG_PREFIX "Could not determine best feature!\n");
     
     retvalue = 0.0;
-    Log::instance()->debug("sequentialProc() returned %.16f\n");
+    Log::instance()->debug("sequentialProc() returned %.16f\n", retvalue);
     return retvalue;
   }
 
@@ -829,7 +829,7 @@ MaximumEntropy::sequentialProc()
   displayInfo(best_f, best_dlb, _new_loss, delta_loss, alpha);
 
   retvalue = loss;
-  Log::instance()->debug("sequentialProc() returned %.16f\n");
+  Log::instance()->debug("sequentialProc() returned %.16f\n", retvalue);
   return retvalue;
 }
 
@@ -857,6 +857,8 @@ MaximumEntropy::lossBound( Feature * f )
   double beta1 = f->sampDev();
   double lambda = f->lambda();
 
+  Log::instance()->debug("f: %s w1=%.16f n1=%.16f beta1=%.16f lambda=%.16f\n", f->getDescription(_samp->getEnvironment()).c_str(), w1, n1, beta1, lambda);
+
   double infinity = std::numeric_limits<double>::infinity();
 
   if ( n1 != -1.0 ) {
@@ -869,6 +871,7 @@ MaximumEntropy::lossBound( Feature * f )
     if ( alpha < infinity ) {
       dlb = -n1 * alpha + log( w0 + w1 * exp(alpha) ) +
 	beta1 * ( fabs(lambda + alpha) - fabs(lambda) );
+      Log::instance()->debug("DLB= %.16f\n", dlb);
 
 #ifdef MSVC
       if (_isnan(dlb))
@@ -1460,6 +1463,8 @@ MaximumEntropy::getDeriv( Feature * f )
   double lambda = f->lambda();
   double deriv = w1 - n1;
 
+  Log::instance()->debug("f: %s w1=%.16f n1=%.16f beta1=%.16f lambda=%.16f\n", f->getDescription(_samp->getEnvironment()).c_str(), w1, n1, beta1, lambda);
+
   if ( lambda < 0.0 ) {
     retvalue = deriv - beta1;
     Log::instance()->debug("getDeriv() returned %.16f\n", retvalue);
@@ -1467,7 +1472,7 @@ MaximumEntropy::getDeriv( Feature * f )
   }
 
   if ( lambda > 0.0 ) {
-    retvalue = deriv + beta1;
+    retvalue = deriv - beta1;
     Log::instance()->debug("getDeriv() returned %.16f\n", retvalue);
     return retvalue;
   }
