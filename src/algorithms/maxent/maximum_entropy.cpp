@@ -764,8 +764,6 @@ MaximumEntropy::sequentialProc()
 			 best_f->getDescription(_samp->getEnvironment()).c_str(),
 			 best_dlb);
 
-  // doSequentialUpdate()
-
   // Update expectation if necessary
   if ( best_f->lastExpChange() != _iteration - 1 ) {
 
@@ -826,7 +824,7 @@ MaximumEntropy::sequentialProc()
 
   delta_loss = loss - _old_loss;
 
-  displayInfo(best_f, best_dlb, _new_loss, delta_loss, alpha);
+  displayInfo(best_f, best_dlb, loss, delta_loss, alpha);
 
   retvalue = loss;
   Log::instance()->debug("sequentialProc() returned %.16f\n", retvalue);
@@ -1406,7 +1404,7 @@ MaximumEntropy::lossChange( Feature * f, double alpha )
 
 double 
 MaximumEntropy::runNewtonStep( Feature * f ) {
-  Log::instance()->debug("runNewtonStep() called\n");
+  Log::instance()->debug("runNewtonStep(Feature) called\n");
   double retvalue;
 
   double w1 = f->exp();
@@ -1430,7 +1428,7 @@ MaximumEntropy::runNewtonStep( Feature * f ) {
 
   if ( wu < 1.0e-12 ) {
     retvalue = 0.0;
-    Log::instance()->debug("runNewtonStep() returned %.16f\n", retvalue);
+    Log::instance()->debug("runNewtonStep(Feature) returned %.16f\n", retvalue);
     return retvalue;
   }
 
@@ -1439,11 +1437,12 @@ MaximumEntropy::runNewtonStep( Feature * f ) {
 
   if ( lambda * (step + lambda) < 0.0 ) {
 
+    Log::instance()->debug("Reducing newton stepsize from %.16f to %.16f\n", step, -lambda);
     step = -lambda;
   }
 
   retvalue = step;
-  Log::instance()->debug("runNewtonStep() returned %.16f\n", retvalue);
+  Log::instance()->debug("runNewtonStep(Feature) returned %.16f\n", retvalue);
   return retvalue;
 }
 
@@ -1471,7 +1470,7 @@ MaximumEntropy::getDeriv( Feature * f )
   }
 
   if ( lambda > 0.0 ) {
-    retvalue = deriv - beta1;
+    retvalue = deriv + beta1;
     Log::instance()->debug("getDeriv() returned %.16f\n", retvalue);
     return retvalue;
   }
@@ -1485,7 +1484,7 @@ MaximumEntropy::getDeriv( Feature * f )
   if ( deriv - beta1 < 0.0 ) {
     retvalue = deriv - beta1;
     Log::instance()->debug("getDeriv() returned %.16f\n", retvalue);
-    return deriv - beta1;
+    return retvalue;
   }
 
   retvalue = 0.0;
@@ -1510,7 +1509,7 @@ MaximumEntropy::updateReg()
   }
 
   _reg = sum;
-  Log::instance()->debug("updateReg() returned (void)\n");
+  Log::instance()->debug("updateReg() calculated %.16f\n", _reg);
 }
 
 /******************/
@@ -1519,13 +1518,13 @@ MaximumEntropy::updateReg()
 void
 MaximumEntropy::updateReg( Feature * f, double alpha )
 {
-  Log::instance()->debug("updateReg() called\n");
+  Log::instance()->debug("updateReg(Feature, alpha) called\n");
 
   double beta1 = f->sampDev();
   double lambda = f->lambda();
 
   _reg += ( fabs(lambda + alpha) - fabs(lambda) ) * beta1;
-  Log::instance()->debug("updateReg() returned (void)\n");
+  Log::instance()->debug("updateReg(Feature, alpha) calculated %.16f\n", _reg);
 }
 
 /***********************/
@@ -1622,6 +1621,8 @@ MaximumEntropy::increaseLambda( double* alpha, vector<Feature*> to_update )
 void
 MaximumEntropy::displayInfo( Feature * f, double loss_bound, double new_loss, double delta_loss, double alpha )
 {
+  Log::instance()->debug( "-------------------------------\n" );
+
   Log::instance()->debug( "%d: loss = %f \n", _iteration, new_loss );
 
   Log::instance()->debug( "%s: lambda = %f\n", f->getDescription(_samp->getEnvironment()).c_str(), f->lambda() );
