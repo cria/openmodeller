@@ -868,7 +868,7 @@ MaximumEntropy::lossBound( Feature * f )
       Log::instance()->debug("f: %s w1=%.16f n1=%.16f beta1=%.16f lambda=%.16f\n", f->getDescription(_samp->getEnvironment()).c_str(), w1, n1, beta1, lambda);
       dlb = -n1 * alpha + log( w0 + w1 * exp(alpha) ) +
 	beta1 * ( fabs(lambda + alpha) - fabs(lambda) );
-      Log::instance()->debug("DLB= %.16f\n", dlb);
+      Log::instance()->debug("DLB=%.16E\n", dlb);
 
 #ifdef MSVC
       if (_isnan(dlb))
@@ -1281,15 +1281,15 @@ MaximumEntropy::getAlpha( Feature * f )
   Log::instance()->debug("* %d: %s\n", calln, f->getDescription(_samp->getEnvironment()).c_str());
   calln++;
 
-  Log::instance()->debug("* n0    = %f\n", n0);
-  Log::instance()->debug("* n1    = %f\n", n1);
-  Log::instance()->debug("* w0    = %f\n", w0);
-  Log::instance()->debug("* w1    = %f\n", w1);
-  Log::instance()->debug("* beta1 = %f\n", beta1);
+  Log::instance()->debug("* n0    = %.16f\n", n0);
+  Log::instance()->debug("* n1    = %.16f\n", n1);
+  Log::instance()->debug("* w0    = %.16f\n", w0);
+  Log::instance()->debug("* w1    = %.16f\n", w1);
+  Log::instance()->debug("* beta1 = %.16f\n", beta1);
 
   Log::instance()->debug("lambda() called\n");
   double lambda = f->lambda();
-  Log::instance()->debug("lambda() returned %f\n", lambda);
+  Log::instance()->debug("lambda() returned %.16f\n", lambda);
 
   if ( ( w0 >= MINLIMIT ) && ( w1 >= MINLIMIT ) ) {
     if ( n1 - beta1 > MINLIMIT ) {
