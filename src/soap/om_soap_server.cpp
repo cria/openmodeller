@@ -764,7 +764,7 @@ omws__getProgress( struct soap *soap, xsd__string ticket, xsd__int &progress )
 
         // Finished flag
         string doneFlag( fileName );
-        doneFlag.append( OMWS_JOB_PROGRESS_PREFIX );
+        doneFlag.append( OMWS_JOB_DONE_PREFIX );
         doneFlag.append( ticket );
 
         if ( ! fileExists( doneFlag.c_str() ) ) {
