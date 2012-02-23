@@ -613,6 +613,7 @@ MaximumEntropy::initTrainer()
     for ( it = _features.begin(); it != _features.end(); ++it ) {
 
       val = (*it)->getVal(sample);
+      Log::instance()->debug("v=%.16f\n", val);
       (*it)->setMean( (*it)->mean() + val );
       (*it)->setStd( (*it)->std() + pow(val, 2) );
     }
@@ -622,6 +623,8 @@ MaximumEntropy::initTrainer()
   // calculate mean, std and expected values for each feature
   double margin;
   for ( it = _features.begin(); it != _features.end(); ++it ) {
+
+    Log::instance()->debug("pavg=%.16f pstd=%.16f\n", (*it)->mean(), (*it)->std());
 
     if ( _num_presences == 1 ) {
 
@@ -637,7 +640,7 @@ MaximumEntropy::initTrainer()
       }
       else {
 
-        (*it)->setStd( sqrt(((*it)->std() - (double)_num_presences * pow((*it)->mean(), 2)) / (double)(_num_presences - 1)) );
+        (*it)->setStd( sqrt( ((*it)->std() - (double)_num_presences * pow((*it)->mean(), 2)) / (double)(_num_presences - 1) ) );
       }
 
       if ( (*it)->std() > (MAXVAL - MINVAL)*0.5 ) {
@@ -660,6 +663,9 @@ MaximumEntropy::initTrainer()
       (*it)->setUpper( MAXVAL );
     }
 
+    Log::instance()->debug("f=%s\n", (*it)->getDescription(_samp->getEnvironment()).c_str());
+    Log::instance()->debug("SAMP mean=%.16f std=%.16f beta=%.16f margin=%.16f\n", (*it)->mean(), (*it)->std(), (*it)->beta(), margin);
+
     (*it)->setSampExp( 0.5*((*it)->upper()+(*it)->lower()) );
     (*it)->setSampDev( 0.5*((*it)->upper()-(*it)->lower()) );
 
@@ -674,6 +680,8 @@ MaximumEntropy::initTrainer()
         (*it)->setSampDev( MINDEV );
       }
     }
+
+    Log::instance()->debug("exp=%.16f dev=%.16f\n", (*it)->sampExp(), (*it)->sampDev());
 
     //cerr << "D avg=" << (*it)->mean() << " std=" << (*it)->std() << " min=" << MINVAL << " max=" << MAXVAL << " cnt=" << _num_presences << endl;
     //cerr << "D sampDev=" << (*it)->sampDev() << " sampExp=" << (*it)->sampExp() << endl;
@@ -917,6 +925,9 @@ MaximumEntropy::parallelProc()
   }
 
   // Newton step
+
+  Log::instance()->debug("runNewtonStep(alphas) called\n");
+
   double th = 0.0;
   double ty = 0.0;
   double ft;
@@ -987,7 +998,7 @@ MaximumEntropy::parallelProc()
     }
   }
 
-  Log::instance()->debug("Calculated step: %.16f\n", step);
+  Log::instance()->debug("runNewtonStep(alphas) returned %.16f\n", step);
 
   // Revise alpha
   for ( unsigned int i = 0; i < _features.size(); ++i ) {
@@ -1025,7 +1036,7 @@ MaximumEntropy::parallelProc()
   delete[] sum;
 
   retvalue = loss;
-  Log::instance()->debug("parallelProc() returned %f\n", retvalue);
+  Log::instance()->debug("parallelProc() returned %.16f\n", retvalue);
   return loss;
 }
 
