@@ -893,7 +893,7 @@ omws__getModel( struct soap *soap, xsd__string ticket, struct omws__getModelResp
 
 #ifdef WITH_GZIP
     // client supports gzip?
-    if (true || soap->zlib_out == SOAP_ZLIB_GZIP) { 
+    if (soap->zlib_out == SOAP_ZLIB_GZIP) { 
 
       // compress response
       soap_set_omode(soap, SOAP_ENC_ZLIB);
