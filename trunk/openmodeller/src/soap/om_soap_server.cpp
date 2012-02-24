@@ -77,6 +77,7 @@ static int      getSize( FILE *fd );
 static bool     getData( struct soap*, const xsd__string, xsd__base64Binary& );
 static void     logRequest( struct soap*, const char* operation );
 static void     addHeader( struct soap* );
+static int      getStatus();
 
 
 /****************/
@@ -293,7 +294,7 @@ omws__ping( struct soap *soap, void *_, xsd__int &status )
 
   // TODO: at least one layer available
 
-  status = 1;
+  status = getStatus();
 
   return SOAP_OK;
 }
@@ -305,9 +306,14 @@ omws__getAlgorithms( struct soap *soap, void *_, struct omws__getAlgorithmsRespo
 {
   logRequest( soap, "getAlgorithms" );
 
-   string enableCompression( gFileParser.get( "ENABLE_COMPRESSION" ) );
+  if ( getStatus() == 2 ) {
 
-   if ( enableCompression == "yes" ) {
+    return soap_receiver_fault( soap, "Service unavailable", NULL );
+  }
+
+  string enableCompression( gFileParser.get( "ENABLE_COMPRESSION" ) );
+
+  if ( enableCompression == "yes" ) {
 
 #ifdef WITH_GZIP
     // client supports gzip?
@@ -354,9 +360,14 @@ omws__getLayers( struct soap *soap, void *_, struct omws__getLayersResponse *out
 {
   logRequest( soap, "getLayers" );
 
-   string enableCompression( gFileParser.get( "ENABLE_COMPRESSION" ) );
+  if ( getStatus() == 2 ) {
 
-   if ( enableCompression == "yes" ) {
+    return soap_receiver_fault( soap, "Service unavailable", NULL );
+  }
+
+  string enableCompression( gFileParser.get( "ENABLE_COMPRESSION" ) );
+
+  if ( enableCompression == "yes" ) {
 
 #ifdef WITH_GZIP
     // client supports gzip?
@@ -480,6 +491,11 @@ omws__createModel( struct soap *soap, XML om__ModelParameters, xsd__string &tick
 {
   logRequest( soap, "createModel" );
 
+  if ( getStatus() == 2 ) {
+
+    return soap_receiver_fault( soap, "Service unavailable", NULL );
+  }
+
   soap_clr_omode(soap, SOAP_ENC_ZLIB); // disable Zlib's gzip
 
   string ticketFileName( gFileParser.get( "TICKET_DIRECTORY" ) );
@@ -559,6 +575,11 @@ int
 omws__testModel( struct soap *soap, XML om__TestParameters, xsd__string &ticket )
 {
   logRequest( soap, "testModel" );
+
+  if ( getStatus() == 2 ) {
+
+    return soap_receiver_fault( soap, "Service unavailable", NULL );
+  }
 
   soap_clr_omode(soap, SOAP_ENC_ZLIB); // disable Zlib's gzip
 
@@ -640,6 +661,11 @@ omws__projectModel( struct soap *soap, XML om__ProjectionParameters, xsd__string
 {
   logRequest( soap, "projectModel" );
 
+  if ( getStatus() == 2 ) {
+
+    return soap_receiver_fault( soap, "Service unavailable", NULL );
+  }
+
   soap_clr_omode(soap, SOAP_ENC_ZLIB); // disable Zlib's gzip
 
   string ticketFileName( gFileParser.get( "TICKET_DIRECTORY" ) );
@@ -718,6 +744,10 @@ omws__projectModel( struct soap *soap, XML om__ProjectionParameters, xsd__string
 int 
 omws__getProgress( struct soap *soap, xsd__string ticket, xsd__int &progress )
 { 
+  if ( getStatus() == 2 ) {
+
+    return soap_receiver_fault( soap, "Service unavailable", NULL );
+  }
 
   soap_clr_omode(soap, SOAP_ENC_ZLIB); // disable Zlib's gzip
 
@@ -793,6 +823,11 @@ omws__getProgress( struct soap *soap, xsd__string ticket, xsd__int &progress )
 int 
 omws__getLog( struct soap *soap, xsd__string ticket, xsd__string &log )
 { 
+  if ( getStatus() == 2 ) {
+
+    return soap_receiver_fault( soap, "Service unavailable", NULL );
+  }
+
   logRequest( soap, "getLog" );
 
   soap_clr_omode(soap, SOAP_ENC_ZLIB); // disable Zlib's gzip
@@ -847,9 +882,14 @@ omws__getModel( struct soap *soap, xsd__string ticket, struct omws__getModelResp
 { 
   logRequest( soap, "getModel" );
 
-   string enableCompression( gFileParser.get( "ENABLE_COMPRESSION" ) );
+  if ( getStatus() == 2 ) {
 
-   if ( enableCompression == "yes" ) {
+    return soap_receiver_fault( soap, "Service unavailable", NULL );
+  }
+
+  string enableCompression( gFileParser.get( "ENABLE_COMPRESSION" ) );
+
+  if ( enableCompression == "yes" ) {
 
 #ifdef WITH_GZIP
     // client supports gzip?
@@ -916,6 +956,11 @@ omws__getTestResult( struct soap *soap, xsd__string ticket, struct omws__testRes
 { 
   logRequest( soap, "getTestResult" );
 
+  if ( getStatus() == 2 ) {
+
+    return soap_receiver_fault( soap, "Service unavailable", NULL );
+  }
+
   soap_clr_omode(soap, SOAP_ENC_ZLIB); // disable Zlib's gzip
 
   if ( ! ticket ) {
@@ -967,6 +1012,11 @@ omws__getLayerAsAttachment( struct soap *soap, xsd__string id, xsd__base64Binary
 { 
   logRequest( soap, "getLayerAsAttachment" );
 
+  if ( getStatus() == 2 ) {
+
+    return soap_receiver_fault( soap, "Service unavailable", NULL );
+  }
+
   soap_clr_omode(soap, SOAP_ENC_ZLIB); // disable Zlib's gzip
 
   if ( ! id ) {
@@ -988,6 +1038,11 @@ int
 omws__getLayerAsUrl( struct soap *soap, xsd__string id, xsd__string &url )
 { 
   logRequest( soap, "getLayerAsUrl" );
+
+  if ( getStatus() == 2 ) {
+
+    return soap_receiver_fault( soap, "Service unavailable", NULL );
+  }
 
   soap_clr_omode(soap, SOAP_ENC_ZLIB); // disable Zlib's gzip
 
@@ -1026,8 +1081,12 @@ omws__getLayerAsUrl( struct soap *soap, xsd__string id, xsd__string &url )
 int 
 omws__getLayerAsWcs( struct soap *soap, xsd__string id, xsd__string &url )
 { 
-
   // This method is now working only for distribution maps!
+
+  if ( getStatus() == 2 ) {
+
+    return soap_receiver_fault( soap, "Service unavailable", NULL );
+  }
 
   soap_clr_omode(soap, SOAP_ENC_ZLIB); // disable Zlib's gzip
 
@@ -1068,6 +1127,11 @@ int
 omws__getProjectionMetadata( struct soap *soap, xsd__string ticket, struct omws__getProjectionMetadataResponse *out )
 { 
   logRequest( soap, "getProjectionMetadata" );
+
+  if ( getStatus() == 2 ) {
+
+    return soap_receiver_fault( soap, "Service unavailable", NULL );
+  }
 
   soap_clr_omode(soap, SOAP_ENC_ZLIB); // disable Zlib's gzip
 
@@ -1663,6 +1727,23 @@ addHeader( struct soap* soap )
   char *version_buf = (char*)soap_malloc( soap, version.size() * sizeof( char ) );
   strcpy( version_buf, version.c_str() );
   soap->header->omws__version = version_buf;
+}
+
+/*******************/
+/**** getStatus ****/
+static int
+getStatus()
+{ 
+  string sysStatus( gFileParser.get( "SYSTEM_STATUS" ) );
+
+  if ( sysStatus.empty() ) {
+
+    return 1; // Default value
+  }
+  else {
+
+    return atoi( sysStatus.c_str() );
+  }
 }
 
 
