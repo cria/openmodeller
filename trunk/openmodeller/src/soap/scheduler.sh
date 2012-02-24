@@ -42,8 +42,6 @@ else
   exit 0
 fi
 
-# TODO: check number of running processes and don't exceed a certain limit
-
 # Second parameter is sleep interval so we can be running several
 # schedulers at different intervals
 sleep $2
