@@ -39,9 +39,13 @@ public:
 
   ~LinearFeature();
 
+  Scalar getRawVal( const Sample& sample ) const;
+
   Scalar getVal( const Sample& sample ) const;
 
-  bool isBinary() const;
+  bool isBinary() const { return false; }
+
+  bool isNormalizable() const { return true; }
 
   std::string getDescription( const EnvironmentPtr& env ) const;
 

@@ -39,9 +39,13 @@ public:
 
   ~ThresholdFeature();
 
+  Scalar getRawVal( const Sample& sample ) const;
+
   Scalar getVal( const Sample& sample ) const;
 
-  bool isBinary() const;
+  bool isBinary() const { return true; }
+
+  bool isNormalizable() const { return false; }
 
   bool postGenerated() const {
     return true;

@@ -42,12 +42,16 @@ LinearFeature::LinearFeature( const ConstConfigurationPtr & config ):Feature()
 LinearFeature::~LinearFeature() {}
 
 Scalar 
-LinearFeature::getVal( const Sample& sample ) const
+LinearFeature::getRawVal( const Sample& sample ) const
 {
   return sample[_layerIndex];
 }
 
-bool LinearFeature::isBinary() const { return false; }
+Scalar 
+LinearFeature::getVal( const Sample& sample ) const
+{
+  return (getRawVal( sample ) - _min) / _scale;
+}
 
 std::string
 LinearFeature::getDescription( const EnvironmentPtr& env ) const
@@ -66,6 +70,10 @@ LinearFeature::getConfiguration() const
   config->addNameValue( "Type", _type );
 
   config->addNameValue( "Ref", _layerIndex );
+
+  config->addNameValue( "Min", _min );
+
+  config->addNameValue( "Max", _max );
 
   config->addNameValue( "Lambda", _lambda );
 
@@ -92,6 +100,26 @@ LinearFeature::setConfiguration( const ConstConfigurationPtr & config )
     Log::instance()->error( msg.c_str() );
     throw InvalidParameterException( msg );
   }
+
+  _min = config->getAttributeAsDouble( "Min", -1 );
+
+  if ( _min == -1 ) {
+
+    std::string msg = "Missing 'Min' parameter in linear feature deserialization.\n";
+    Log::instance()->error( msg.c_str() );
+    throw InvalidParameterException( msg );
+  }
+
+  _max = config->getAttributeAsDouble( "Max", -1 );
+
+  if ( _max == -1 ) {
+
+    std::string msg = "Missing 'Max' parameter in linear feature deserialization.\n";
+    Log::instance()->error( msg.c_str() );
+    throw InvalidParameterException( msg );
+  }
+
+  _scale = _max - _min;
 
   _lambda = config->getAttributeAsDouble( "Lambda", 0.0 );
 }

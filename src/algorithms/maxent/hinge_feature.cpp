@@ -33,6 +33,8 @@ HingeFeature::HingeFeature( int layerIndex, Scalar min, Scalar max ):Feature()
   _layerIndex = layerIndex;
   _min = min;
   _max = max;
+  _scale = _max - _min;
+
 }
 
 HingeFeature::HingeFeature( const ConstConfigurationPtr & config ):Feature()
@@ -44,13 +46,17 @@ HingeFeature::HingeFeature( const ConstConfigurationPtr & config ):Feature()
 HingeFeature::~HingeFeature() {}
 
 Scalar 
-HingeFeature::getVal( const Sample& sample ) const
+HingeFeature::getRawVal( const Sample& sample ) const
 {
   double val = sample[_layerIndex];
-  return (val > _min) ? (val-_min)/(_max-_min) : 0.0;
+  return (val > _min) ? (val-_min)/(_scale) : 0.0;
 }
 
-bool HingeFeature::isBinary() const { return false; }
+Scalar 
+HingeFeature::getVal( const Sample& sample ) const
+{
+  return getRawVal(sample);
+}
 
 std::string
 HingeFeature::getDescription( const EnvironmentPtr& env ) const
@@ -115,6 +121,8 @@ HingeFeature::setConfiguration( const ConstConfigurationPtr & config )
     Log::instance()->error( msg.c_str() );
     throw InvalidParameterException( msg );
   }
+
+  _scale = _max - _min;
 
   _lambda = config->getAttributeAsDouble( "Lambda", 0.0 );
 }

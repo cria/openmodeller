@@ -43,12 +43,16 @@ ThresholdFeature::ThresholdFeature( const ConstConfigurationPtr & config ):Featu
 ThresholdFeature::~ThresholdFeature() {}
 
 Scalar 
-ThresholdFeature::getVal( const Sample& sample ) const
+ThresholdFeature::getRawVal( const Sample& sample ) const
 {
   return (sample[_layerIndex] > _t ) ? 1.0 : 0.0;
 }
 
-bool ThresholdFeature::isBinary() const { return true; }
+Scalar 
+ThresholdFeature::getVal( const Sample& sample ) const
+{
+  return getRawVal(sample);
+}
 
 std::string
 ThresholdFeature::getDescription( const EnvironmentPtr& env ) const

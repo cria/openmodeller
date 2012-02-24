@@ -40,11 +40,12 @@
 #define F_THRESHOLD 4
 
 /**
- * TODO: document this
+ * Maxent feature
  */
 class Feature : public Configurable {
 
 public:
+  virtual Scalar getRawVal( const Sample& sample ) const = 0;
   virtual Scalar getVal( const Sample& sample ) const = 0;
   virtual std::string getDescription( const EnvironmentPtr& env ) const = 0;
   Scalar type() {return _type;}
@@ -91,6 +92,10 @@ public:
 
   virtual bool isBinary() const = 0;
 
+  virtual bool isNormalizable() const = 0;
+
+  void setMinMax( Scalar pmin, Scalar pmax ){_min=pmin; _max=pmax; _scale=pmax-pmin;}
+
   bool postGenerated() const {
     return false;
   }
@@ -109,6 +114,9 @@ protected:
     _prevLambda = 0.0;
     _last_change = -1;
     _last_exp_change = -1;
+    _min = 0.0;
+    _max = 1.0;
+    _scale = 1.0;
   }
 
   int _type;
@@ -125,6 +133,11 @@ protected:
   Scalar _beta;
   int _last_change;
   int _last_exp_change;
+
+  // only for normalizable features
+  Scalar _min;
+  Scalar _max;
+  Scalar _scale;
 };
 
 #endif

@@ -36,8 +36,13 @@ public:
   HingeFeature( const ConstConfigurationPtr & config );
   ~HingeFeature();
 
+  Scalar getRawVal( const Sample& sample ) const;
+
   Scalar getVal( const Sample& sample ) const;
-  bool isBinary() const;
+
+  bool isBinary() const { return false; }
+
+  bool isNormalizable() const { return false; }
 
   bool postGenerated() const {
     return true;
@@ -49,8 +54,6 @@ public:
 
 private:
   int _layerIndex;
-  Scalar _min;
-  Scalar _max;
 };
 
 #endif
