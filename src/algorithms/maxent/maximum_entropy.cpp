@@ -75,8 +75,6 @@ using std::pair;
 
 #define MAXENT_LOG_PREFIX "Maxent: "
 
-#define MINVAL 0.0
-#define MAXVAL 1.0
 #define MINLIMIT 1.0e-6
 #define MINDEV 1.0e-5
 
@@ -634,7 +632,6 @@ MaximumEntropy::initTrainer()
     for ( it = _features.begin(); it != _features.end(); ++it ) {
 
       val = (*it)->getVal(sample);
-      Log::instance()->debug("v=%.16f\n", val);
       (*it)->setMean( (*it)->mean() + val );
       (*it)->setStd( (*it)->std() + pow(val, 2) );
     }
@@ -643,13 +640,15 @@ MaximumEntropy::initTrainer()
 
   // calculate mean, std and expected values for each feature
   double margin;
+  Scalar minval, maxval;
   for ( it = _features.begin(); it != _features.end(); ++it ) {
 
-    Log::instance()->debug("pavg=%.16f pstd=%.16f\n", (*it)->mean(), (*it)->std());
+    minval = (*it)->min();
+    maxval = (*it)->max();
 
     if ( _num_presences == 1 ) {
 
-      (*it)->setStd( (MAXVAL - MINVAL)*0.5 );
+      (*it)->setStd( (maxval - minval)*0.5 );
     }
     else {
 
@@ -657,16 +656,16 @@ MaximumEntropy::initTrainer()
 
       if ( (*it)->std() < (double)_num_presences * pow((*it)->mean(), 2) ) {
 
-        (*it)->setStd( MINVAL );
+        (*it)->setStd( minval );
       }
       else {
 
         (*it)->setStd( sqrt( ((*it)->std() - (double)_num_presences * pow((*it)->mean(), 2)) / (double)(_num_presences - 1) ) );
       }
 
-      if ( (*it)->std() > (MAXVAL - MINVAL)*0.5 ) {
+      if ( (*it)->std() > (maxval - minval)*0.5 ) {
 
-        (*it)->setStd( (MAXVAL - MINVAL)*0.5 );
+        (*it)->setStd( (maxval - minval)*0.5 );
       }
     }
 
@@ -675,13 +674,13 @@ MaximumEntropy::initTrainer()
     (*it)->setLower( (*it)->mean() - margin );
     (*it)->setUpper( (*it)->mean() + margin );
 
-    if ( (*it)->lower() < MINVAL ) {
+    if ( (*it)->lower() < minval ) {
 
-      (*it)->setLower( MINVAL );
+      (*it)->setLower( minval );
     }
-    if ( (*it)->upper() > MAXVAL ) {
+    if ( (*it)->upper() > maxval ) {
 
-      (*it)->setUpper( MAXVAL );
+      (*it)->setUpper( maxval );
     }
 
     Log::instance()->debug("f=%s\n", (*it)->getDescription(_samp->getEnvironment()).c_str());
@@ -704,7 +703,7 @@ MaximumEntropy::initTrainer()
 
     Log::instance()->debug("exp=%.16f dev=%.16f\n", (*it)->sampExp(), (*it)->sampDev());
 
-    //cerr << "D avg=" << (*it)->mean() << " std=" << (*it)->std() << " min=" << MINVAL << " max=" << MAXVAL << " cnt=" << _num_presences << endl;
+    //cerr << "D avg=" << (*it)->mean() << " std=" << (*it)->std() << " min=" << minval << " max=" << maxval << " cnt=" << _num_presences << endl;
     //cerr << "D sampDev=" << (*it)->sampDev() << " sampExp=" << (*it)->sampExp() << endl;
   }
 
@@ -1828,10 +1827,12 @@ MaximumEntropy::getValue( const Sample& x ) const
   vector<Feature*>::const_iterator it;
   for ( it = _features.begin(); it != _features.end(); ++it ) {
 
-    // Clamp values if necessary
+    // TODO: Clamp environmental values if necessary?
     val = (*it)->getVal( x );
-    val = ( val < MINVAL ) ? MINVAL : val; 
-    val = ( val > MAXVAL ) ? MAXVAL : val; 
+ 
+    // Force result between 0 and 1
+    val = ( val < 0.0 ) ? 0.0 : val; 
+    val = ( val > 1.0 ) ? 1.0 : val;
 
     prob += (*it)->lambda() * val;
   }
