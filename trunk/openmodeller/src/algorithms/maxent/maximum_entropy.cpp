@@ -32,7 +32,6 @@
 #endif
 
 #include "maximum_entropy.hh"
-#include <openmodeller/ScaleNormalizer.hh>
 #include <openmodeller/Sampler.hh>
 
 #include "linear_feature.hh"
@@ -285,19 +284,6 @@ MaximumEntropy::MaximumEntropy() :
   _select(5),
   _autofeature(false)
 { 
-  unsigned int n = _features.size();
-
-  Log::instance()->debug("Using %d features\n", n);
-
-  // TODO: Switch back to use layers as ref to avoid problems in native
-  //       projections(?). Otherwise we should make sure that
-  //       environmental values won't extrapolate min/max when
-  //       calculating suitabilities.
-  bool use_layers_as_reference = false; // original Maxent always use
-					// background as ref
-  _normalizerPtr = new ScaleNormalizer( MINVAL, 
-					MAXVAL,
-					use_layers_as_reference );
   cerr.precision(17);
 }
 
@@ -318,10 +304,7 @@ MaximumEntropy::~MaximumEntropy()
 /*** need Normalization ***/
 int MaximumEntropy::needNormalization()
 {
-  // It will be necessary to generate background points, so do not waste
-  // time normalizing things because normalization should ideally
-  // consider all points. In this specific case, normalization will take
-  // place in initialize().
+  // Normalization is performed internally based on background points
   return 0;
 }
 
@@ -470,27 +453,7 @@ MaximumEntropy::initialize()
 
     // Mixing points with different abundance values (0 or 1) won't hurt
     _background->appendFrom( _presences );
-
-    // Using a mixed occurrence object shouldn't affect the normalization procedure
-    SamplerPtr mySamplerPtr = createSampler( _samp->getEnvironment(), _background );
-
-    //mySamplerPtr->spatiallyUnique();
-
-    _normalizerPtr->computeNormalization( mySamplerPtr );
   }
-  else {
-
-    // Compute normalization with all points
-    SamplerPtr mySamplerPtr = createSampler( _samp->getEnvironment(), _presences, _background );
-
-    //mySamplerPtr->spatiallyUnique();
-
-    _normalizerPtr->computeNormalization( mySamplerPtr );
-  }
-
-  setNormalization( _samp );
-
-  _background->normalize( _normalizerPtr, _samp->getEnvironment()->numCategoricalLayers() );
 
   // Output Format
   if ( ! getParameter( OUTPUT_ID, &_output_format ) ) {
@@ -595,6 +558,65 @@ MaximumEntropy::initTrainer()
   }
   // end NEW
 
+  unsigned int n = _features.size();
+  Log::instance()->debug("Using %d features\n", n);
+
+  // Normalize features
+  OccurrencesImpl::const_iterator b_iterator = _background->begin();
+  OccurrencesImpl::const_iterator b_end = _background->end();
+  vector<Feature*>::iterator it;
+  int i = 0;
+  Sample ref(n);
+  Sample smin(n);
+  Sample smax(n);
+  Scalar raw_val;
+
+  while ( b_iterator != b_end ) {
+    
+    Sample sample = (*b_iterator)->environment();
+
+    // Get raw values for each feature and put them in ref
+    i = 0;
+    for ( it = _features.begin(); it != _features.end(); ++it ) {
+
+      if ( (*it)->isNormalizable() ) {
+
+        raw_val = (*it)->getRawVal(sample);
+
+        ref[i] = raw_val;
+      }
+
+      ++i;
+    }
+
+    if ( b_iterator == _background->begin() ) {
+
+      // First iteration: use ref for smin and smax
+      smin = ref;
+      smax = ref;
+    }
+    else {
+
+      // Subsequent iterations: determine min and max 
+      smin &= ref;
+      smax |= ref;
+    }
+
+    ++b_iterator;
+  }
+
+  // Set final min and max values
+  i = 0;
+  for ( it = _features.begin(); it != _features.end(); ++it ) {
+
+    if ( (*it)->isNormalizable() ) {
+
+      (*it)->setMinMax( smin[i], smax[i] );
+    }
+
+    ++i;
+  }
+
   setLinearPred();
 
   assignBetas();
@@ -605,7 +627,6 @@ MaximumEntropy::initTrainer()
 
   // sum feature values to calculate mean and std
   Scalar val;
-  vector<Feature*>::iterator it;
   while ( p_iterator != p_end ) {
 
     Sample sample = (*p_iterator)->environment();
