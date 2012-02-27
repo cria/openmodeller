@@ -222,14 +222,32 @@ http://biogeo.ucdavis.edu/data/climate/worldclim/1_4/grid/cur/prec_30s_esri.zip
 
 Then download the occurrence points:
 
-http://openmodeller.cria.org.br/download/examples/points_example_1.txt
+http://openmodeller.cria.org.br/download/examples/all_points_1.txt
 
 And finally the request file:
 
-http://openmodeller.cria.org.br/download/examples/request_example_1.txt
+http://openmodeller.cria.org.br/download/examples/req_1.txt
 
 If all went well (e.g. the files downloaded aren't corrupted) you can run the 
 experiment inside perftests/ directory with om_console.
 
 $ cd perftests
-$ om_console request_example_1.txt
+$ om_console req_1.txt
+
+Similar tests can be run using the other command-line tools (points were split 
+into test and training using 0.5 proportion to generate the following requets).
+In this case, you should download a model request in XML:
+
+http://openmodeller.cria.org.br/download/examples/model_req_1.xml
+
+The set of testing points:
+
+http://openmodeller.cria.org.br/download/examples/test_1.txt
+
+And then run the command-line programs in the following order:
+
+$ om_model -r model_req_1.xml -m model_1.xml --log-file logm_1.txt --prog-file progm_1.txt
+
+$ om_test -o model_1.xml -p test_1.txt --log-file logt_1.txt --prog-file progt_1.txt
+
+$ om_project -o model_1.xml -m proj_1.img --stat-file stat_1.xml --log-file logp_1.txt --prog-file progp_1.txt

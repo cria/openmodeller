@@ -2,15 +2,18 @@
 
 RASTERS_SITE="biogeo.ucdavis.edu"
 RASTERS_DIR="/data/climate/worldclim/1_4/grid/cur/"
-POINTS_SITE="openmodeller.cria.org.br"
-POINTS_DIR="/download/examples/"
+OM_SITE="openmodeller.cria.org.br"
+EXAMPLES_DIR="/download/examples/"
 LOCAL_DIR="perftests/"
 
 ENV_LAYER1="tmin_30s_esri.zip"
 ENV_LAYER2="tmax_30s_esri.zip"
 ENV_LAYER3="prec_30s_esri.zip"
-POINTS="points_example_1.txt"
-REQUEST="request_example_1.txt"
+ALL_POINTS="all_points_1.txt"
+CONSOLE_REQUEST="req_1.txt"
+TEST_POINTS="test_1.txt"
+CONSOLE_REQUEST="req_1.txt"
+MODEL_REQUEST="model_req_1.xml"
 
 package1=wget
 package2=unzip
@@ -37,12 +40,14 @@ fi
 echo
 echo "Downloading files..."
 
-wget -c -P $LOCAL_DIR                                 \
-    http://${RASTERS_SITE}${RASTERS_DIR}${ENV_LAYER1} \
-    http://${RASTERS_SITE}${RASTERS_DIR}${ENV_LAYER2} \
-    http://${RASTERS_SITE}${RASTERS_DIR}${ENV_LAYER3} \
-    http://${POINTS_SITE}${POINTS_DIR}${POINTS}       \
-    http://${POINTS_SITE}${POINTS_DIR}${REQUEST}
+wget -c -P $LOCAL_DIR                                  \
+    http://${RASTERS_SITE}${RASTERS_DIR}${ENV_LAYER1}  \
+    http://${RASTERS_SITE}${RASTERS_DIR}${ENV_LAYER2}  \
+    http://${RASTERS_SITE}${RASTERS_DIR}${ENV_LAYER3}  \
+    http://${OM_SITE}${EXAMPLES_DIR}${ALL_POINTS}      \
+    http://${OM_SITE}${EXAMPLES_DIR}${TEST_POINTS}     \
+    http://${OM_SITE}${EXAMPLES_DIR}${CONSOLE_REQUEST} \
+    http://${OM_SITE}${EXAMPLES_DIR}${MODEL_REQUEST}
 
 echo "Extracting layer 1..."
 unzip -d${LOCAL_DIR} ${LOCAL_DIR}${ENV_LAYER1}
