@@ -105,7 +105,10 @@ OccurrencesImpl::getConfiguration() const
     cfg->addNameValue( "Id", id );
     cfg->addNameValue( "X", x );
     cfg->addNameValue( "Y", y );
-    cfg->addNameValue( "Sample", (*oc)->originalEnvironment() );
+    if ( (*oc)->hasEnvironment() ) {
+
+      cfg->addNameValue( "Sample", (*oc)->originalEnvironment() );
+    }
     config->addSubsection( cfg );
 
     oc++;
