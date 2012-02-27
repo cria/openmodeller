@@ -142,7 +142,7 @@ Projector::createMap( const Model& model,
 
       if ( val < 0.0 || val > 1.0 ) {
 
-        std::string msg = Log::format( "Probability for point (%f, %f) is outside the valid range: %f", lg, lt, val );
+        std::string msg = Log::format( "Suitability for point (%f, %f) is outside the range: %f", lg, lt, val );
         throw AlgorithmException( msg.c_str() );
       }
 
