@@ -52,21 +52,56 @@ else
   exit 0
 fi  
 
+# Use cases:
+# 1. a long running job
+# 2. a fast job
 
-# TODO: Change system status to 2 (service unavailable). 
-# Note: better not to recreate the configuration file to avoid
-#       permission problems.
+# Check to see if there are changes in repository
+# TODO: Check the status of rsync, in the case server is down
+if [ ! -e REPOSITORY_CHANGED ]; then
+    rsync -ani --delete --no-motd rsync://$RSYNC_LAYERS_REPOSITORY \
+        $LAYERS_DIRECTORY | grep -E '^(\*|>)'
 
+    # Change the status of the server accordingly
+    if [ $? -eq 0 ]; then
+        # There are changes
+        cat server.conf | \
+            sed 's/SYSTEM_STATUS=1/SYSTEM_STATUS=2/' > server.conf.tmp
+        mv server.conf.tmp server.conf
 
-# TODO: Wait for all jobs to finish (check number of files under $PID_DIRECTORY)
+        touch REPOSITORY_CHANGED
+    else
+        # no, there are no changes
+        exit 0
+    fi
 
+fi
 
-# Synchronize layers
-rsync -a rsync://$RSYNC_LAYERS_REPOSITORY $LAYERS_DIRECTORY
+# Wait for all jobs to finish (check number of files under $PID_DIRECTORY)
+#
+# Two problems arise here:
+# 1. If we check for files under $PID_DIRECTORY, the script will exit
+# early and a new request to the $RSYNC_LAYERS_REPOSITORY will be
+# generated next time cron runs this 
+#
+# 2. If we wait here long enough, cron will be called _before_ we leave
+# this script, so the correct time must be set
+# 
+# An alternative is to use a local file to bypass the rsync check if it
+# was already checked that the repository has changed, which is what we
+# do before the first rsync.
+
+if [ ]; then
+    # TODO: Check the format of the files under $PID_DIRECTORY
+else
+    # Synchronize layers
+    rsync -a --delete --no-motd rsync://$RSYNC_LAYERS_REPOSITORY $LAYERS_DIRECTORY
+    rm -fr REPOSITORY_CHANGED
+
+    # Switch back system status to 1 (normal)
+    cat server.conf | \
+        sed 's/SYSTEM_STATUS=2/SYSTEM_STATUS=1/' > server.conf.tmp
+    mv server.conf.tmp server.conf
+fi
 
 # TODO: Remove getLayers cached response (layers.xml under $CACHE_DIRECTORY)
-
-
-# TODO: Switch back system status to 1 (normal)
-# Note: better not to recreate the configuration file to avoid
-#       permission problems.
