@@ -59,22 +59,25 @@ fi
 # Check to see if there are changes in repository
 # TODO: Check the status of rsync, in the case server is down
 if [ ! -e REPOSITORY_CHANGED ]; then
+    # check the status of rsync, to certify that server is running
     rsync -ani --delete --no-motd rsync://$RSYNC_LAYERS_REPOSITORY \
-        $LAYERS_DIRECTORY | grep -E '^(\*|>)'
+        $LAYERS_DIRECTORY > rsync.out.tmp
+    $SERVER_STATUS=$?
 
+    grep -E '^(\*|>)' rsync.out.tmp
+    $FOUND_CHANGES=$?
+
+    if [ $SERVER_STATUS -a $FOUND_CHANGES ]; then
     # Change the status of the server accordingly
-    if [ $? -eq 0 ]; then
-        # There are changes
         cat server.conf | \
             sed 's/SYSTEM_STATUS=1/SYSTEM_STATUS=2/' > server.conf.tmp
         mv server.conf.tmp server.conf
 
         touch REPOSITORY_CHANGED
     else
-        # no, there are no changes
+        # there server is down or there are no changes
         exit 0
     fi
-
 fi
 
 # Wait for all jobs to finish (check number of files under $PID_DIRECTORY)
@@ -96,7 +99,7 @@ if [ ]; then
 else
     # Synchronize layers
     rsync -a --delete --no-motd rsync://$RSYNC_LAYERS_REPOSITORY $LAYERS_DIRECTORY
-    rm -fr REPOSITORY_CHANGED
+    rm REPOSITORY_CHANGED
 
     # Switch back system status to 1 (normal)
     cat server.conf | \
