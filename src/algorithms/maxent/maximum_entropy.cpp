@@ -640,15 +640,14 @@ MaximumEntropy::initTrainer()
 
   // calculate mean, std and expected values for each feature
   double margin;
-  Scalar minval, maxval;
+  Scalar minval = 0.0;
+  Scalar maxval = 1.0;
+  Scalar std_samp_dev;
   for ( it = _features.begin(); it != _features.end(); ++it ) {
-
-    minval = (*it)->min();
-    maxval = (*it)->max();
 
     if ( _num_presences == 1 ) {
 
-      (*it)->setStd( (maxval - minval)*0.5 );
+      (*it)->setStd( 0.5*(maxval-minval) );
     }
     else {
 
@@ -663,9 +662,9 @@ MaximumEntropy::initTrainer()
         (*it)->setStd( sqrt( ((*it)->std() - (double)_num_presences * pow((*it)->mean(), 2)) / (double)(_num_presences - 1) ) );
       }
 
-      if ( (*it)->std() > (maxval - minval)*0.5 ) {
+      if ( (*it)->std() > 0.5*(maxval-minval) ) {
 
-        (*it)->setStd( (maxval - minval)*0.5 );
+        (*it)->setStd( 0.5*(maxval-minval) );
       }
     }
 
@@ -673,7 +672,7 @@ MaximumEntropy::initTrainer()
 
     (*it)->setLower( (*it)->mean() - margin );
     (*it)->setUpper( (*it)->mean() + margin );
-
+ 
     if ( (*it)->lower() < minval ) {
 
       (*it)->setLower( minval );
@@ -684,12 +683,14 @@ MaximumEntropy::initTrainer()
     }
 
     Log::instance()->debug("f=%s\n", (*it)->getDescription(_samp->getEnvironment()).c_str());
-    Log::instance()->debug("SAMP mean=%.16f std=%.16f beta=%.16f margin=%.16f\n", (*it)->mean(), (*it)->std(), (*it)->beta(), margin);
+    Log::instance()->debug("Interval\nlower=%.16f\nupper=%.16f\n", (*it)->lower(), (*it)->upper());
+    Log::instance()->debug("SAMP\nmean=%.16f\nstd=%.16f\nbeta=%.16f\nmargin=%.16f\n", (*it)->mean(), (*it)->std(), (*it)->beta(), margin);
 
     (*it)->setSampExp( 0.5*((*it)->upper()+(*it)->lower()) );
-    (*it)->setSampDev( 0.5*((*it)->upper()-(*it)->lower()) );
 
-    if ( (*it)->sampDev() < MINDEV ) {
+    std_samp_dev = 0.5*((*it)->upper()-(*it)->lower());
+
+    if ( std_samp_dev < MINDEV ) {
 
       if ( (*it)->isBinary() && (*it)->sampExp() == 1.0 ) {
 
@@ -700,8 +701,13 @@ MaximumEntropy::initTrainer()
         (*it)->setSampDev( MINDEV );
       }
     }
+    else {
 
-    Log::instance()->debug("exp=%.16f dev=%.16f\n", (*it)->sampExp(), (*it)->sampDev());
+      (*it)->setSampDev( std_samp_dev );
+    }
+
+    Log::instance()->debug("exp=%.16f\n", (*it)->sampExp());
+    Log::instance()->debug("dev=%.16f\n", (*it)->sampDev());
 
     //cerr << "D avg=" << (*it)->mean() << " std=" << (*it)->std() << " min=" << minval << " max=" << maxval << " cnt=" << _num_presences << endl;
     //cerr << "D sampDev=" << (*it)->sampDev() << " sampExp=" << (*it)->sampExp() << endl;
@@ -890,13 +896,11 @@ MaximumEntropy::lossBound( Feature * f )
     // Determine alpha
     double alpha = getAlpha( f );
 
-    //cerr << endl << "D alpha = " << alpha << " w1 = " << w1 << " n1 = " << n1 << " beta1 = " << beta1 << " lambda = " << lambda << endl;
-
     if ( alpha < infinity ) {
-      Log::instance()->debug("f: %s w1=%.16f n1=%.16f beta1=%.16f lambda=%.16f\n", f->getDescription(_samp->getEnvironment()).c_str(), w1, n1, beta1, lambda);
+      Log::instance()->debug("f: %s w1=%.17f n1=%.17f beta1=%.17f lambda=%.17f\n", f->getDescription(_samp->getEnvironment()).c_str(), w1, n1, beta1, lambda);
       dlb = -n1 * alpha + log( w0 + w1 * exp(alpha) ) +
 	beta1 * ( fabs(lambda + alpha) - fabs(lambda) );
-      Log::instance()->debug("DLB=%.16E\n", dlb);
+      Log::instance()->debug("DLB=%.17E\n", dlb);
 
 #ifdef MSVC
       if (_isnan(dlb))
