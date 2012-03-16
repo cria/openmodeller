@@ -78,10 +78,9 @@ check_om_processes() {
             server.conf.tmp
         mv server.conf.tmp server.conf
 
-        # swap directories
+        # change directories
         rm -fr $LAYERS_DIRECTORY/
-        mv $UPDATED_LAYERS_DIRECTORY/ $LAYERS_DIRECTORY/
-        mkdir $UPDATED_LAYERS_DIRECTORY/
+        cp -R $UPDATED_LAYERS_DIRECTORY $LAYERS_DIRECTORY
 
         # remove flag
         rm $STATUS_DIR_PREFIX/COPY_READY
@@ -106,7 +105,7 @@ else
         $HAVE_UPDATES=$?
 
         if [ $RSYNC_LAYERS_REPOSITORY_STATUS -and $HAVE_UPDATES ]; then
-            # needs to copy first, or the entire layers directory will
+            # need to copy first, or the entire layers directory will
             # be fetched again
             cp -R $LAYERS_DIRECTORY $UPDATED_LAYERS_DIRECTORY
 
