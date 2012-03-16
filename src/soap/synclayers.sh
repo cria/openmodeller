@@ -97,7 +97,7 @@ else
         exit 0
     else
         # check for repository updates
-        rsync -ani --delete --no-motd rsync://$RSYNC_LAYERS_DIRECTORY \
+        rsync -ani --delete --no-motd rsync://$RSYNC_LAYERS_REPOSITORY \
             $LAYERS_DIRECTORY > rsync.out.tmp
         $RSYNC_LAYERS_REPOSITORY_STATUS=$?
 
@@ -109,12 +109,12 @@ else
             # be fetched again
             cp -R $LAYERS_DIRECTORY $UPDATED_LAYERS_DIRECTORY
 
-            rsync -a --delete --no-motd rsync://$RSYNC_LAYERS_DIRECTORY \
+            rsync -a --delete --no-motd rsync://$RSYNC_LAYERS_REPOSITORY \
                 $LAYERS_DIRECTORY
 
             # set flag
             $RSYNC_LAYERS_REPOSITORY_STATUS=$?
-            if [ $RSYNC_LAYERS_DIRECTORY_STATUS ]; then
+            if [ $RSYNC_LAYERS_REPOSITORY ]; then
                 touch $STATUS_DIRECTORY_PREFIX/COPY_READY
             fi
 
