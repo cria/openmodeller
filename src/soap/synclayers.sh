@@ -97,6 +97,7 @@ else
 
         exit 0
     else
+        # check for repository updates
         rsync -ani --delete --no-motd rsync://$RSYNC_LAYERS_DIRECTORY \
             $LAYERS_DIRECTORY > rsync.out.tmp
         $RSYNC_LAYERS_REPOSITORY_STATUS=$?
@@ -105,17 +106,20 @@ else
         $HAVE_UPDATES=$?
 
         if [ $RSYNC_LAYERS_REPOSITORY_STATUS -and $HAVE_UPDATES ]; then
+            # needs to copy first, or the entire layers directory will
+            # be fetched again
+            cp -R $LAYERS_DIRECTORY $UPDATED_LAYERS_DIRECTORY
+
             rsync -a --delete --no-motd rsync://$RSYNC_LAYERS_DIRECTORY \
                 $LAYERS_DIRECTORY
 
+            # set flag
             $RSYNC_LAYERS_REPOSITORY_STATUS=$?
             if [ $RSYNC_LAYERS_DIRECTORY_STATUS ]; then
                 touch $STATUS_DIRECTORY_PREFIX/COPY_READY
-
-                check_om_processes
-            else
-                exit 0
             fi
+
+            check_om_processes
         fi
     fi
 fi
