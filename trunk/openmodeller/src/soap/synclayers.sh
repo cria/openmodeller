@@ -6,15 +6,20 @@
 # Parameter 1: path to configuration file.
 #######################################################################
 
+debug() {
+    [ "$DEBUG" = 1 ] && echo -e "\033[31m$*\033[m"
+}
+
+TAG="om_syncserver" 
+
 # Function to read configuration file
 function readconf {
- 
   while read line; do
     # skip comments
-    [[ ${line:0:1} == "#" ]] && continue
+    [ "${line:0:1}" = "#" ] && continue
  
     # skip empty lines
-    [[ -z "$line" ]] && continue
+    [ -z "$line" ] && continue
  
     # got a config line eval it
     eval $line
@@ -23,34 +28,33 @@ function readconf {
 }
 
 # Configuration file can be passed as a parameter
-if [[ "$1" ]]; then
-  CONFIG=$1
+if [ "$1" ]; then
+  CONFIG="$1"
 else
   CONFIG="server.conf"
-fi  
+fi 
+debug "config file: $CONFIG"
 
 # If configuration file exists, read the configuration
 if [ -f $CONFIG ]; then
   # read configuration
   readconf $CONFIG
 else
-  echo "Error: no configuration file available"
-  exit 0
+  exit 1
 fi
 
-# Check configuration
-if [[ "$RSYNC_LAYERS_REPOSITORY" ]]; then
-  if [[ "$LAYERS_DIRECTORY" ]]; then
-    if [ ! -d "$LAYERS_DIRECTORY" ]; then
+debug "\$RSYNC_LAYERS_REPOSITORY = $RSYNC_LAYERS_REPOSITORY"
 
-      mkdir "$LAYERS_DIRECTORY"
-    fi
-  else
+if [ -z "$RSYNC_LAYERS_REPOSITORY" ]; then
+    exit 1
+elif [ ! -d "$LAYERS_DIRECTORY" ]; then
+    # initial copy
+    debug "initial copy"
+    logger -t "$TAG" "initial copy"
+    rsync -a --delete --no-motd rsync://$RSYNC_LAYERS_REPOSITORY \
+        $LAYERS_DIRECTORY
     exit 0
-  fi  
-else
-  exit 0
-fi  
+fi
 
 # Use cases:
 # 1. a long running job
@@ -60,65 +64,94 @@ fi
 # this script syncs, which are (1) the effective repository, which is
 # $LAYERS_DIRECTORY and (2) the new repository, which is
 # $UPDATED_LAYERS_DIRECTORY
-#
-# Status codes:
-# 0: NORMAL_STAND_BY
-# 1: RUNNING (rsync initiated)
-# 2: READY
-# 3: ABORTED
 
 check_om_processes() {
-    # oM instances running?
+    # check for running oM instances
+    debug "check for running oM instances"
     if [ $(pgrep om_console) ]; then
-        exit 1
+        # y
+        debug "local copy ready (but not synced yet)"
+        exit 0
     else
+        # n
         # lock server
-        cat server.conf | \
+        debug "lock server"
+        cat $CONFIG | \
             sed 's/SYSTEM_STATUS=1/SYSTEM_STATUS=2/' > \
-            server.conf.tmp
-        mv server.conf.tmp server.conf
+            ${CONFIG}.tmp
+        mv ${CONFIG}.tmp $CONFIG
 
-        # change directories
-        rm -fr $LAYERS_DIRECTORY/
-        cp -R $UPDATED_LAYERS_DIRECTORY $LAYERS_DIRECTORY
+        # setting dirs
+        debug "setting dirs"
+        rm -fr $LAYERS_DIRECTORY
+        mv $UPDATED_LAYERS_DIRECTORY $LAYERS_DIRECTORY
 
         # remove flag
-        rm $STATUS_DIR_PREFIX/COPY_READY
+        debug "remove flag"
+        rm COPY_READY
+
+        # unlock server
+        debug "unlock server"
+        cat $CONFIG | \
+            sed 's/SYSTEM_STATUS=2/SYSTEM_STATUS=1/' > \
+            ${CONFIG}.tmp
+        mv ${CONFIG}.tmp $CONFIG
+
+        logger -t "$TAG" "local copy synced"
+        exit 0
     fi
 }
 
+# check rsync
+debug "check rsync"
 if [ $(pgrep rsync) ]; then
-    exit 1
+    # y
+    exit 0
 else
+    # n
     # check flag
-    if [ -e $STATUS_DIR_PREFIX/COPY_READY ]; then
+    debug "check flag"
+    if [ -e COPY_READY ]; then
+        # y
         check_om_processes
 
         exit 0
     else
+        # n
         # check for repository updates
+        debug "check for repository updates"
         rsync -ani --delete --no-motd rsync://$RSYNC_LAYERS_REPOSITORY \
             $LAYERS_DIRECTORY > rsync.out.tmp
-        $RSYNC_LAYERS_REPOSITORY_STATUS=$?
+        RSYNC_LAYERS_REPOSITORY_STATUS=$?
 
         grep -E '^(\*|>)' rsync.out.tmp
-        $HAVE_UPDATES=$?
+        HAVE_UPDATES=$?
+        rm rsync.out.tmp
 
-        if [ $RSYNC_LAYERS_REPOSITORY_STATUS -and $HAVE_UPDATES ]; then
-            # need to copy first, or the entire layers directory will
-            # be fetched again
+        if [ "$RSYNC_LAYERS_REPOSITORY_STATUS" -eq 0 -a \
+            "$HAVE_UPDATES" -eq 0 ]; then
+            # y
+            # copy "old" dir to "new"
+            debug "copy \"old\" dir to \"new\""
             cp -R $LAYERS_DIRECTORY $UPDATED_LAYERS_DIRECTORY
 
+            # run rsync
+            debug "run rsync"
             rsync -a --delete --no-motd rsync://$RSYNC_LAYERS_REPOSITORY \
-                $LAYERS_DIRECTORY
+                $UPDATED_LAYERS_DIRECTORY
 
             # set flag
-            $RSYNC_LAYERS_REPOSITORY_STATUS=$?
-            if [ $RSYNC_LAYERS_REPOSITORY ]; then
-                touch $STATUS_DIRECTORY_PREFIX/COPY_READY
+            debug "set flag"
+            RSYNC_LAYERS_REPOSITORY_STATUS=$?
+            if [ "$RSYNC_LAYERS_REPOSITORY_STATUS" -eq 0 ]; then
+                touch COPY_READY
             fi
 
             check_om_processes
+        else
+            # n
+            logger -t "$TAG" "no updates found"
+            exit 0
         fi
     fi
 fi
