@@ -84,7 +84,8 @@ check_om_processes() {
         # setting dirs
         debug "setting dirs"
         rm -fr $LAYERS_DIRECTORY
-        mv $UPDATED_LAYERS_DIRECTORY $LAYERS_DIRECTORY
+        #mv $UPDATED_LAYERS_DIRECTORY $LAYERS_DIRECTORY
+        rsync -a --delete $UPDATED_LAYERS_DIRECTORY $LAYERS_DIRECTORY
 
         # remove flag
         debug "remove flag"
@@ -131,9 +132,10 @@ else
         if [ "$RSYNC_LAYERS_REPOSITORY_STATUS" -eq 0 -a \
             "$HAVE_UPDATES" -eq 0 ]; then
             # y
-            # copy "old" dir to "new"
-            debug "copy \"old\" dir to \"new\""
-            cp -R $LAYERS_DIRECTORY $UPDATED_LAYERS_DIRECTORY
+            # copy "mirror local running layers"
+            debug "mirror local running layers"
+            #cp -R $LAYERS_DIRECTORY $UPDATED_LAYERS_DIRECTORY
+            rsync -a --delete $LAYERS_DIRECTORY $UPDATED_LAYERS_DIRECTORY
 
             # run rsync
             debug "run rsync"
