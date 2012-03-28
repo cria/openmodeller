@@ -89,7 +89,10 @@ check_om_processes() {
 
         # remove flag
         debug "remove flag"
-        rm COPY_READY
+        rm -f COPY_READY
+
+        # erase cache
+        rm -f $CACHE_DIRECTORY/layers.xml
 
         # unlock server
         debug "unlock server"
@@ -127,7 +130,7 @@ else
 
         grep -E '^(\*|>)' rsync.out.tmp
         HAVE_UPDATES=$?
-        rm rsync.out.tmp
+        rm -f rsync.out.tmp
 
         if [ "$RSYNC_LAYERS_REPOSITORY_STATUS" -eq 0 -a \
             "$HAVE_UPDATES" -eq 0 ]; then
