@@ -112,6 +112,17 @@ Output file type = ByteHFA
 # one of the algorithms will make om_console run
 # without asking for additional input.
 
+########
+# AquaMaps
+#
+#Algorithm = AQUAMAPS
+#Parameter = UseSurfaceLayers -1
+#Parameter = UseDepthRange 1
+#Parameter = UseIceConcentration 1
+#Parameter = UseDistanceToLand 0
+#Parameter = UsePrimaryProduction 1
+#Parameter = UseSalinity 1
+#Parameter = UseTemperature 1
 
 ########
 # Bioclim
@@ -249,6 +260,11 @@ Output file type = ByteHFA
 #Parameter = RetainVariation 0.75
 #Parameter = DisplayLoadings 0
 #Parameter = VerboseDebug 0
+
+########
+# Envelope score
+#
+#Algorithm = ENVSCORE
 
 ########
 # Niche Mosaic
