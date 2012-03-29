@@ -45,16 +45,16 @@ fi
 
 debug "\$RSYNC_LAYERS_REPOSITORY = $RSYNC_LAYERS_REPOSITORY"
 
-if [ -z "$RSYNC_LAYERS_REPOSITORY" ]; then
-    exit 1
-elif [ ! -d "$LAYERS_DIRECTORY" ]; then
-    # initial copy
-    debug "initial copy"
-    logger -t "$TAG" "initial copy"
-    rsync -a --delete --no-motd rsync://$RSYNC_LAYERS_REPOSITORY \
-        $LAYERS_DIRECTORY
-    exit 0
-fi
+#if [ -z "$RSYNC_LAYERS_REPOSITORY" ]; then
+#    exit 1
+#elif [ ! -d "$LAYERS_DIRECTORY" ]; then
+#    # initial copy
+#    debug "initial copy"
+#    logger -t "$TAG" "initial copy"
+#    rsync -avL --copy-unsafe-links rsync://$RSYNC_LAYERS_REPOSITORY \
+#        $LAYERS_DIRECTORY
+#    exit 0
+#fi
 
 # Use cases:
 # 1. a long running job
@@ -83,9 +83,8 @@ check_om_processes() {
 
         # setting dirs
         debug "setting dirs"
-        rm -fr $LAYERS_DIRECTORY
-        #mv $UPDATED_LAYERS_DIRECTORY $LAYERS_DIRECTORY
-        rsync -a --delete $UPDATED_LAYERS_DIRECTORY $LAYERS_DIRECTORY
+        rsync -aL --copy-unsafe-links --delete \
+            $UPDATED_LAYERS_DIRECTORY $LAYERS_DIRECTORY
 
         # remove flag
         debug "remove flag"
@@ -124,7 +123,8 @@ else
         # n
         # check for repository updates
         debug "check for repository updates"
-        rsync -ani --delete --no-motd rsync://$RSYNC_LAYERS_REPOSITORY \
+        rsync -aniL --copy-unsafe-links --delete \
+            rsync://$RSYNC_LAYERS_REPOSITORY \
             $LAYERS_DIRECTORY > rsync.out.tmp
         RSYNC_LAYERS_REPOSITORY_STATUS=$?
 
@@ -135,14 +135,15 @@ else
         if [ "$RSYNC_LAYERS_REPOSITORY_STATUS" -eq 0 -a \
             "$HAVE_UPDATES" -eq 0 ]; then
             # y
-            # copy "mirror local running layers"
-            debug "mirror local running layers"
-            #cp -R $LAYERS_DIRECTORY $UPDATED_LAYERS_DIRECTORY
-            rsync -a --delete $LAYERS_DIRECTORY $UPDATED_LAYERS_DIRECTORY
+            # copy "duplicate working copy"
+            debug "duplicate working copy"
+            rsync -aL --copy-unsafe-links --delete \
+                $LAYERS_DIRECTORY $UPDATED_LAYERS_DIRECTORY
 
             # run rsync
             debug "run rsync"
-            rsync -a --delete --no-motd rsync://$RSYNC_LAYERS_REPOSITORY \
+            rsync -aL --copy-unsafe-links --delete \
+                rsync://$RSYNC_LAYERS_REPOSITORY \
                 $UPDATED_LAYERS_DIRECTORY
 
             # set flag
