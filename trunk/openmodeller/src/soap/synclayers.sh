@@ -105,7 +105,7 @@ if [ $(pgrep rsync) ]; then
 else
     # n
     # check flag
-    debug "check flag"
+    debug "checking flag"
     if [ -e /tmp/COPY_READY ]; then
         # y
         logger -t "$TAG" "local copy is ready."
@@ -115,11 +115,11 @@ else
     else
         # n
         # check for repository updates
-        debug "check for repository updates"
+        debug "checking for repository updates"
         logger -t "$TAG" "checking updates."
         rsync -aniL --copy-unsafe-links --delete \
             rsync://$RSYNC_LAYERS_REPOSITORY \
-            $LAYERS_DIRECTORY > rsync.out.tmp
+            $LAYERS_DIRECTORY > /tmp/rsync.out.tmp
         RSYNC_LAYERS_REPOSITORY_STATUS=$?
 
         grep -E '^(\*|>)' /tmp/rsync.out.tmp
