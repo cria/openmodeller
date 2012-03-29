@@ -10,7 +10,7 @@ debug() {
     [ "$DEBUG" = 1 ] && echo -e "\033[31m$*\033[m"
 }
 
-TAG="om_syncserver" 
+TAG="synclayers.sh" 
 
 # Function to read configuration file
 function readconf {
@@ -45,21 +45,6 @@ fi
 
 debug "\$RSYNC_LAYERS_REPOSITORY = $RSYNC_LAYERS_REPOSITORY"
 
-#if [ -z "$RSYNC_LAYERS_REPOSITORY" ]; then
-#    exit 1
-#elif [ ! -d "$LAYERS_DIRECTORY" ]; then
-#    # initial copy
-#    debug "initial copy"
-#    logger -t "$TAG" "initial copy"
-#    rsync -avL --copy-unsafe-links rsync://$RSYNC_LAYERS_REPOSITORY \
-#        $LAYERS_DIRECTORY
-#    exit 0
-#fi
-
-# Use cases:
-# 1. a long running job
-# 2. a fast job
-
 # by default, we'll use 2 repositories in each server, at least when
 # this script syncs, which are (1) the effective repository, which is
 # $LAYERS_DIRECTORY and (2) the new repository, which is
@@ -68,27 +53,31 @@ debug "\$RSYNC_LAYERS_REPOSITORY = $RSYNC_LAYERS_REPOSITORY"
 check_om_processes() {
     # check for running oM instances
     debug "check for running oM instances"
-    if [ $(pgrep om_console) ]; then
-        # y
-        debug "local copy ready (but not synced yet)"
+    if [ $(pgrep om_model) -o  $(pgrep om_test) -o $(pgrep om_project) ]; then
+        # y: some job is still running
+        debug "jobs are still running. aborting."
+        logger -t "$TAG" "jobs are still running. aborting."
         exit 0
     else
         # n
         # lock server
+        logger -t "$TAG" "no jobs running."
         debug "lock server"
         cat $CONFIG | \
             sed 's/SYSTEM_STATUS=1/SYSTEM_STATUS=2/' > \
             ${CONFIG}.tmp
         mv ${CONFIG}.tmp $CONFIG
+        logger -t "$TAG" "service locked."
 
         # setting dirs
         debug "setting dirs"
+        logger -t "$TAG" "updating working copy."
         rsync -aL --copy-unsafe-links --delete \
             $UPDATED_LAYERS_DIRECTORY $LAYERS_DIRECTORY
 
         # remove flag
         debug "remove flag"
-        rm -f COPY_READY
+        rm -f /tmp/COPY_READY
 
         # erase cache
         rm -f $CACHE_DIRECTORY/layers.xml
@@ -99,23 +88,27 @@ check_om_processes() {
             sed 's/SYSTEM_STATUS=2/SYSTEM_STATUS=1/' > \
             ${CONFIG}.tmp
         mv ${CONFIG}.tmp $CONFIG
+        logger -t "$TAG" "service unlocked."
 
-        logger -t "$TAG" "local copy synced"
+        logger -t "$TAG" "working copy synced."
         exit 0
     fi
 }
 
 # check rsync
-debug "check rsync"
+# NOTE: Here we assume that rsync is only used by this script!
+debug "checking rsync"
 if [ $(pgrep rsync) ]; then
     # y
+    logger -t "$TAG" "rsync already running. Exiting."
     exit 0
 else
     # n
     # check flag
     debug "check flag"
-    if [ -e COPY_READY ]; then
+    if [ -e /tmp/COPY_READY ]; then
         # y
+        logger -t "$TAG" "local copy is ready."
         check_om_processes
 
         exit 0
@@ -123,40 +116,38 @@ else
         # n
         # check for repository updates
         debug "check for repository updates"
+        logger -t "$TAG" "checking updates."
         rsync -aniL --copy-unsafe-links --delete \
             rsync://$RSYNC_LAYERS_REPOSITORY \
             $LAYERS_DIRECTORY > rsync.out.tmp
         RSYNC_LAYERS_REPOSITORY_STATUS=$?
 
-        grep -E '^(\*|>)' rsync.out.tmp
+        grep -E '^(\*|>)' /tmp/rsync.out.tmp
         HAVE_UPDATES=$?
-        rm -f rsync.out.tmp
+        rm -f /tmp/rsync.out.tmp
 
         if [ "$RSYNC_LAYERS_REPOSITORY_STATUS" -eq 0 -a \
             "$HAVE_UPDATES" -eq 0 ]; then
             # y
-            # copy "duplicate working copy"
-            debug "duplicate working copy"
-            rsync -aL --copy-unsafe-links --delete \
-                $LAYERS_DIRECTORY $UPDATED_LAYERS_DIRECTORY
-
+            logger -t "$TAG" "updates found."
             # run rsync
-            debug "run rsync"
+            debug "updating local copy"
             rsync -aL --copy-unsafe-links --delete \
                 rsync://$RSYNC_LAYERS_REPOSITORY \
                 $UPDATED_LAYERS_DIRECTORY
 
             # set flag
-            debug "set flag"
+            debug "setting flag"
+            logger -t "$TAG" "setting local copy as ready."
             RSYNC_LAYERS_REPOSITORY_STATUS=$?
             if [ "$RSYNC_LAYERS_REPOSITORY_STATUS" -eq 0 ]; then
-                touch COPY_READY
+                touch /tmp/COPY_READY
             fi
 
             check_om_processes
         else
             # n
-            logger -t "$TAG" "no updates found"
+            logger -t "$TAG" "no updates."
             exit 0
         fi
     fi
