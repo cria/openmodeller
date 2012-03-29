@@ -51,8 +51,8 @@ debug "\$RSYNC_LAYERS_REPOSITORY = $RSYNC_LAYERS_REPOSITORY"
 # $UPDATED_LAYERS_DIRECTORY
 
 check_om_processes() {
-    # check for running oM instances
-    debug "check for running oM instances"
+    # checking for running oM instances
+    debug "checking for running oM instances"
     if [ $(pgrep om_model) -o  $(pgrep om_test) -o $(pgrep om_project) ]; then
         # y: some job is still running
         debug "jobs are still running. aborting."
@@ -62,7 +62,7 @@ check_om_processes() {
         # n
         # lock server
         logger -t "$TAG" "no jobs running."
-        debug "lock server"
+        debug "locking server"
         cat $CONFIG | \
             sed 's/SYSTEM_STATUS=1/SYSTEM_STATUS=2/' > \
             ${CONFIG}.tmp
@@ -76,14 +76,14 @@ check_om_processes() {
             $UPDATED_LAYERS_DIRECTORY $LAYERS_DIRECTORY
 
         # remove flag
-        debug "remove flag"
+        debug "removing flag"
         rm -f /tmp/COPY_READY
 
         # erase cache
         rm -f $CACHE_DIRECTORY/layers.xml
 
         # unlock server
-        debug "unlock server"
+        debug "unlocking server"
         cat $CONFIG | \
             sed 's/SYSTEM_STATUS=2/SYSTEM_STATUS=1/' > \
             ${CONFIG}.tmp
