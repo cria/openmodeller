@@ -2,7 +2,7 @@
  * Definition of ThresholdGenerator class
  * 
  * @author Renato De Giovanni
- * $Id: $
+ * $Id$
  *
  * LICENSE INFORMATION
  * 

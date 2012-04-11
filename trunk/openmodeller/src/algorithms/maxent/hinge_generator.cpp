@@ -2,7 +2,7 @@
  * Definition of HingeGenerator class
  * 
  * @author Renato De Giovanni
- * $Id: $
+ * $Id$
  *
  * LICENSE INFORMATION
  * 
