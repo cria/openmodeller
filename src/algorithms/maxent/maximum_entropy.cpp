@@ -40,6 +40,9 @@
 #include "hinge_feature.hh"
 #include "threshold_feature.hh"
 
+#include "threshold_generator.hh"
+#include "hinge_generator.hh"
+
 #include <iostream>
 #include <iomanip>
 #include <sstream>
@@ -552,6 +555,15 @@ MaximumEntropy::initTrainer()
       for (int j = i + 1; j < _samp->numIndependent(); j++) {
 	_features.push_back(new ProductFeature(i, j));
       }
+    }
+  }
+
+  for (int i = 0; i < _samp->numIndependent(); i++) {
+    if (_threshold) {
+      _generators.push_back(new ThresholdGenerator(_presences, _background, new LinearFeature(i)));
+    }
+    if (_hinge) {
+      _generators.push_back(new HingeGenerator(_presences, _background, new LinearFeature(i)));
     }
   }
   // end NEW
@@ -1161,17 +1173,19 @@ MaximumEntropy::assignBetas()
   vector<Feature*>::iterator it;
   for ( it = _features.begin(); it != _features.end(); ++it ) {
 
-    if ( (*it)->type() == F_THRESHOLD ) {
+    (*it)->setBeta( beta_common );
+  }
 
-      (*it)->setBeta( beta_threshold );
+  vector<FeatureGenerator*>::iterator itg;
+  for ( itg = _generators.begin(); itg != _generators.end(); ++itg ) {
+
+    if ( (*itg)->type() == G_THRESHOLD ) {
+
+      (*itg)->setBeta( beta_threshold );
     }
-    else if ( (*it)->type() == F_HINGE ) {
+    else if ( (*itg)->type() == G_HINGE ) {
 
-      (*it)->setBeta( beta_hinge );
-    }
-    else {
-
-      (*it)->setBeta( beta_common );
+      (*itg)->setBeta( beta_hinge );
     }
   }
 }

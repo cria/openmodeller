@@ -8,6 +8,9 @@ SET (LIBMAXENT_SRCS
     product_feature.cpp
     hinge_feature.cpp
     threshold_feature.cpp
+    feature_generator.cpp
+    threshold_generator.cpp
+    hinge_generator.cpp
 )
 
 #these are not needed to build but I specified them in 
