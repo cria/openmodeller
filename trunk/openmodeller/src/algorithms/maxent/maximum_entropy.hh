@@ -35,6 +35,7 @@ using std::pair;
 #include <openmodeller/om.hh>
 
 #include "feature.hh"
+#include "feature_generator.hh"
 
 /*********************************************************/
 /******************** Maximum Entropy ********************/
@@ -135,6 +136,7 @@ protected:
   bool _autofeature;
 
   vector<Feature*> _features;
+  vector<FeatureGenerator*> _generators;
 };
 
 #endif
