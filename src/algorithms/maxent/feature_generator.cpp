@@ -29,7 +29,7 @@
 
 #include <cmath>
 
-FeatureGenerator::FeatureGenerator(const OccurrencesPtr& presences, const OccurrencesPtr& background, Feature * feature)
+FeatureGenerator::FeatureGenerator(const OccurrencesPtr& presences, const OccurrencesPtr& background, LinearFeature * feature)
 {
   _presences = presences;
   _background = background;
@@ -40,6 +40,24 @@ FeatureGenerator::FeatureGenerator(const OccurrencesPtr& presences, const Occurr
 FeatureGenerator::~FeatureGenerator()
 {
   delete _feature;
+
+  unsigned int n = _features.size();
+
+  Log::instance()->debug("Deallocating %d features\n", n);
+
+  for (unsigned int i = 0; i < n; ++i)
+    delete _features[i];
+}
+
+Scalar 
+FeatureGenerator::lambda(int idx)
+{
+  if ( _features[idx] == 0 ) {
+
+    return 0.0;
+  }
+
+  return _features[idx]->lambda();
 }
 
 Scalar

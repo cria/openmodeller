@@ -33,9 +33,11 @@ class HingeGenerator : public FeatureGenerator {
 
 public:
 
-  HingeGenerator(const OccurrencesPtr& presences, const OccurrencesPtr& background, Feature * feature);
+  HingeGenerator(const OccurrencesPtr& presences, const OccurrencesPtr& background, LinearFeature * feature);
 
   ~HingeGenerator();
+
+  Feature * exportFeature(int idx);
 };
 
 #endif
