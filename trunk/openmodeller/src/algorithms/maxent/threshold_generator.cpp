@@ -25,12 +25,31 @@
  */
 
 #include "threshold_generator.hh"
+#include "threshold_feature.hh"
 
-ThresholdGenerator::ThresholdGenerator(const OccurrencesPtr& presences, const OccurrencesPtr& background, Feature * feature):FeatureGenerator(presences, background, feature)
+ThresholdGenerator::ThresholdGenerator(const OccurrencesPtr& presences, const OccurrencesPtr& background, LinearFeature * feature):FeatureGenerator(presences, background, feature)
 {
   _type = G_THRESHOLD;
 }
 
 ThresholdGenerator::~ThresholdGenerator() {}
 
+Feature * 
+ThresholdGenerator::exportFeature(int idx)
+{
+  if ( _features[idx] == 0 ) {
+
+    // Create feature if necessary
+    Feature * f = new ThresholdFeature(_feature->getLayerIndex(), _thresholds[idx]);
+
+    f->setSampExp( sampExp(idx) );
+    f->setSampDev( sampDev(idx) );
+    f->setExp( exp(idx) );
+    f->setBeta( _beta );
+
+    _features[idx] = f;
+  }
+
+  return _features[idx];
+}
 

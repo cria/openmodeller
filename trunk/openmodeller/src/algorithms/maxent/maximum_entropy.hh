@@ -32,6 +32,8 @@
 #include <vector>
 using std::pair;
 
+#include <string>
+
 #include <openmodeller/om.hh>
 
 #include "feature.hh"
@@ -61,7 +63,7 @@ private:
   void initTrainer();
   void endTrainer();
   double sequentialProc();
-  double lossBound( Feature * f );
+    double lossBound( bool active, double w1, double n1, double beta1, double lambda, std::string description );
   double parallelProc();
   void setLinearPred();
   void setLinearNormalizer();
@@ -69,7 +71,7 @@ private:
   double interpol( vector<int> ts, vector<double> betas, int num );
   void calcDensity();
   void calcDensity( vector<Feature*> to_update );
-  double getAlpha( Feature * f );
+  double getAlpha( double w1, double n1, double beta1, double lambda, std::string description );
   double searchAlpha( Feature * f, double alpha );
   double lossChange( Feature * f, double alpha );
   double runNewtonStep( Feature * f );

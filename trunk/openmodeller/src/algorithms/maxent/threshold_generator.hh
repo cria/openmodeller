@@ -33,9 +33,11 @@ class ThresholdGenerator : public FeatureGenerator {
 
 public:
 
-  ThresholdGenerator(const OccurrencesPtr& presences, const OccurrencesPtr& background, Feature * feature);
+  ThresholdGenerator(const OccurrencesPtr& presences, const OccurrencesPtr& background, LinearFeature * feature);
 
   ~ThresholdGenerator();
+
+  Feature * exportFeature(int idx);
 };
 
 #endif

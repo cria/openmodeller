@@ -25,12 +25,31 @@
  */
 
 #include "hinge_generator.hh"
+#include "hinge_feature.hh"
 
-HingeGenerator::HingeGenerator(const OccurrencesPtr& presences, const OccurrencesPtr& background, Feature * feature):FeatureGenerator(presences, background, feature)
+HingeGenerator::HingeGenerator(const OccurrencesPtr& presences, const OccurrencesPtr& background, LinearFeature * feature):FeatureGenerator(presences, background, feature)
 {
   _type = G_HINGE;
 }
 
 HingeGenerator::~HingeGenerator() {}
 
+Feature * 
+HingeGenerator::exportFeature(int idx)
+{
+  if ( _features[idx] == 0 ) {
+
+    // Create feature if necessary
+      Feature * f = new HingeFeature(_feature->getLayerIndex(), 0.0, 1.0);
+
+    f->setSampExp( sampExp(idx) );
+    f->setSampDev( sampDev(idx) );
+    f->setExp( exp(idx) );
+    f->setBeta( _beta );
+
+    _features[idx] = f;
+  }
+
+  return _features[idx];
+}
 

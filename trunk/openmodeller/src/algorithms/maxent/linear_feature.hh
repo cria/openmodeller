@@ -53,6 +53,9 @@ public:
   
   void setConfiguration( const ConstConfigurationPtr & config );
 
+  // Custom method used by threshold and hinge feature generators
+  int getLayerIndex() const {return _layerIndex;}
+
 private:
   
   int _layerIndex;

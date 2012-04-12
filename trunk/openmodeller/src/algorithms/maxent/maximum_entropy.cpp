@@ -56,6 +56,7 @@
 #include <float.h> //for _isnan
 #endif
 
+#include <string>
 
 using namespace std;
 using std::pair;
@@ -297,8 +298,14 @@ MaximumEntropy::~MaximumEntropy()
 
   Log::instance()->debug("Deallocating %d features\n", n);
 
-  for (unsigned int i = 0; i < n; ++i)
-    delete _features[i];
+  for (unsigned int i = 0; i < n; ++i) {
+
+   // Avoid deallocating post generated features - this happens in the feature generator
+   if ( ! _features[i]->postGenerated() ) {
+
+     delete _features[i];
+   }
+  }
 
   unsigned int m = _generators.size();
 
@@ -795,15 +802,47 @@ MaximumEntropy::sequentialProc()
 
   vector<Feature*>::iterator it;
   for ( it = _features.begin(); it != _features.end(); ++it ) {
-    double dlb = lossBound( *it );
+    double dlb = lossBound( (*it)->isActive(), (*it)->exp(), (*it)->sampExp(), (*it)->sampDev(), (*it)->lambda(), (*it)->getDescription(_samp->getEnvironment()) );
 
     if (!(*it)->isActive() || (*it)->postGenerated() || dlb >= best_dlb) {
       continue;
-    } 
+    }
 
     best_f = *it;
     best_dlb = dlb;
   }    
+
+  int best_thr = -1;
+  FeatureGenerator* best_gen = 0;
+
+  // Also check generator features
+  vector<FeatureGenerator*>::iterator git;
+  for ( git = _generators.begin(); git != _generators.end(); ++git ) {
+
+    for ( int j = (*git)->getFirstRef(); j < (*git)->getLastRef(); j++ ) {
+
+      double dlb = lossBound( true, (*git)->exp(j), (*git)->sampExp(j), (*git)->sampDev(j), (*git)->lambda(j), "G" );
+
+      if ( dlb < best_dlb ) {
+
+        best_gen = *git;
+        best_dlb = dlb;
+        best_thr = j;
+      }
+    }
+  }    
+
+  if ( best_gen != 0 ) {
+
+    best_f = best_gen->getFeature(best_thr);
+
+    if ( best_f == 0 ) {
+
+      best_f = best_gen->exportFeature(best_thr);
+
+      _features.push_back( best_f );
+    }
+  }
 
   if ( best_f == 0 ) {
     Log::instance()->error(MAXENT_LOG_PREFIX "Could not determine best feature!\n");
@@ -840,14 +879,14 @@ MaximumEntropy::sequentialProc()
   }
 
   vector<Feature*> to_update = featuresToUpdate();
-  best_dlb = lossBound( best_f );
+  best_dlb = lossBound( best_f->isActive(), best_f->exp(), best_f->sampExp(), best_f->sampDev(), best_f->lambda(), best_f->getDescription(_samp->getEnvironment()) );
 
   double loss;
   double delta_loss;
 
   if ( best_f->isBinary() ) {
 
-    alpha = getAlpha( best_f );
+    alpha = getAlpha( best_f->exp(), best_f->sampExp(), best_f->sampDev(), best_f->lambda(), best_f->getDescription(_samp->getEnvironment()) );
     alpha = decreaseAlpha( alpha );
     updateReg( best_f, alpha );
     loss = increaseLambda( best_f, alpha, to_update );
@@ -868,7 +907,7 @@ MaximumEntropy::sequentialProc()
       vector<Feature*> f_update;
       f_update.push_back( best_f );
       loss = increaseLambda( best_f, -alpha, f_update );
-      alpha = searchAlpha( best_f, getAlpha( best_f ) );
+      alpha = searchAlpha( best_f, getAlpha( best_f->exp(), best_f->sampExp(), best_f->sampDev(), best_f->lambda(), best_f->getDescription(_samp->getEnvironment()) ) );
       alpha = decreaseAlpha( alpha );
       updateReg( best_f, alpha );
       loss = increaseLambda( best_f, alpha, to_update );
@@ -888,12 +927,12 @@ MaximumEntropy::sequentialProc()
 /*** lossBound ***/
 
 double 
-MaximumEntropy::lossBound( Feature * f )
+MaximumEntropy::lossBound( bool active, double w1, double n1, double beta1, double lambda, std::string description )
 {
   Log::instance()->debug("lossBound() called\n");
   double retvalue;
 
-  if ( !f->isActive() ) {
+  if ( !active ) {
 
      Log::instance()->debug("lossBound() returned 0.0\n");
      return 0.0;
@@ -902,21 +941,17 @@ MaximumEntropy::lossBound( Feature * f )
   // Calculate delta loss bound
   double dlb = 0;
 
-  double w1 = f->exp();
   double w0 = 1.0 - w1;
-  double n1 = f->sampExp();
-  double beta1 = f->sampDev();
-  double lambda = f->lambda();
 
   double infinity = std::numeric_limits<double>::infinity();
 
   if ( n1 != -1.0 ) {
 
     // Determine alpha
-    double alpha = getAlpha( f );
+    double alpha = getAlpha( w1, n1, beta1, lambda, description );
 
     if ( alpha < infinity ) {
-      Log::instance()->debug("f: %s w1=%.17f n1=%.17f beta1=%.17f lambda=%.17f\n", f->getDescription(_samp->getEnvironment()).c_str(), w1, n1, beta1, lambda);
+      Log::instance()->debug("f: %s w1=%.17f n1=%.17f beta1=%.17f lambda=%.17f\n", description.c_str(), w1, n1, beta1, lambda);
       dlb = -n1 * alpha + log( w0 + w1 * exp(alpha) ) +
 	beta1 * ( fabs(lambda + alpha) - fabs(lambda) );
       Log::instance()->debug("DLB=%.17E\n", dlb);
@@ -1318,34 +1353,26 @@ MaximumEntropy::calcDensity( vector<Feature*> to_update )
 /*** get Alpha ***/
 
 double
-MaximumEntropy::getAlpha( Feature * f )
+MaximumEntropy::getAlpha( double w1, double n1, double beta1, double lambda, std::string description )
 {
   Log::instance()->debug("getAlpha() called\n");
   double retvalue;
 
   double alpha = 0.0;
-  double beta1 = f->sampDev();
-
-  double n1 = f->sampExp();
-  double w1 = f->exp();
-
   double w0 = 1.0 - w1;
   double n0 = 1.0 - n1;
 
   static int calln = 0;
 
-  Log::instance()->debug("* %d: %s\n", calln, f->getDescription(_samp->getEnvironment()).c_str());
+  Log::instance()->debug("* %d: %s\n", calln, description.c_str());
   calln++;
 
-  Log::instance()->debug("* n0    = %.16f\n", n0);
-  Log::instance()->debug("* n1    = %.16f\n", n1);
-  Log::instance()->debug("* w0    = %.16f\n", w0);
-  Log::instance()->debug("* w1    = %.16f\n", w1);
-  Log::instance()->debug("* beta1 = %.16f\n", beta1);
-
-  Log::instance()->debug("lambda() called\n");
-  double lambda = f->lambda();
-  Log::instance()->debug("lambda() returned %.16f\n", lambda);
+  Log::instance()->debug("* n0     = %.16f\n", n0);
+  Log::instance()->debug("* n1     = %.16f\n", n1);
+  Log::instance()->debug("* w0     = %.16f\n", w0);
+  Log::instance()->debug("* w1     = %.16f\n", w1);
+  Log::instance()->debug("* beta1  = %.16f\n", beta1);
+  Log::instance()->debug("* lambda = %.16f\n", lambda);
 
   if ( ( w0 >= MINLIMIT ) && ( w1 >= MINLIMIT ) ) {
     if ( n1 - beta1 > MINLIMIT ) {
@@ -1789,7 +1816,7 @@ MaximumEntropy::featuresToUpdate()
       to_update_idx.push_back(j);
     }
 
-    lb.push_back( make_pair(j, lossBound(*it)) );
+    lb.push_back( make_pair(j, lossBound( (*it)->isActive(), (*it)->exp(), (*it)->sampExp(), (*it)->sampDev(), (*it)->lambda(), (*it)->getDescription(_samp->getEnvironment())) ) );
   }
 
   sort( lb.begin(), lb.end(), by_value() );
