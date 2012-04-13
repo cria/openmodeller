@@ -141,6 +141,8 @@ FeatureGenerator::FeatureGenerator(const OccurrencesPtr& presences, const Occurr
   _exp.reserve(t_idx);
   _samp_exp.reserve(t_idx);
   _samp_dev.reserve(t_idx);
+
+  Log::instance()->debug("Num thresholds: %u\n", _thresholds.size());
 }
 
 FeatureGenerator::~FeatureGenerator()

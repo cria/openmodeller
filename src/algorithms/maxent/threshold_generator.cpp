@@ -54,6 +54,10 @@ ThresholdGenerator::ThresholdGenerator(const OccurrencesPtr& presences, const Oc
   }
 
   _last_ref = i;
+
+
+  Log::instance()->debug("first_ref: %d\n", _first_ref);
+  Log::instance()->debug("last_ref: %d\n", _last_ref);
 }
 
 ThresholdGenerator::~ThresholdGenerator() {}
@@ -61,6 +65,7 @@ ThresholdGenerator::~ThresholdGenerator() {}
 void
 ThresholdGenerator::setSampExp( double mindev )
 {
+  Log::instance()->debug("GEN setSampExp\n");
   int limit = _background->numOccurrences();
 
   int num_samples = _presences->numOccurrences();
@@ -76,6 +81,9 @@ ThresholdGenerator::setSampExp( double mindev )
   double i_lower;
   double i_upper;
 
+  // TMP
+  int control = 0;
+
   std::vector< pair<int, double> >::iterator vit;
   unsigned int i = _vals.size();
   for ( vit = _vals.end(); vit != _vals.begin(); --vit,--i ) {
@@ -83,7 +91,7 @@ ThresholdGenerator::setSampExp( double mindev )
     // Is this a sample?
     if ( vit->first >= limit ) {
 
-      double val = 1.0 / vit->second;
+      double val = 1.0;
       sum1 += val;
       sum2 += val * val;
     }
@@ -94,6 +102,8 @@ ThresholdGenerator::setSampExp( double mindev )
 
       continue;
     }
+
+    ++control; // TMP
 
     double avg;
     double std;
@@ -145,6 +155,16 @@ ThresholdGenerator::setSampExp( double mindev )
     if ( _samp_dev[t_idx] < mindev ) {
 
       _samp_dev[t_idx] = mindev;
+    }
+
+    if (control <= 2) {
+
+      Log::instance()->debug("TMP i: %u\n",  i);
+      //Log::instance()->debug("TMP val: %.16f\n", vit->second);
+      Log::instance()->debug("TMP avg: %.16f\n", avg);
+      Log::instance()->debug("TMP std: %.16f\n", std);
+      Log::instance()->debug("TMP samp_exp: %.16f\n", _samp_exp[t_idx]);
+      Log::instance()->debug("TMP samp_dev: %.16f\n", _samp_dev[t_idx]);
     }
   }
 }
