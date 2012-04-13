@@ -28,6 +28,7 @@
 #include <openmodeller/Exceptions.hh>
 
 #include <sstream>
+#include <iomanip>
 
 ThresholdFeature::ThresholdFeature( int layerIndex, Scalar threshold ):Feature()
 {
@@ -62,8 +63,19 @@ ThresholdFeature::getDescription( const EnvironmentPtr& env ) const
   std::string desc("T");
 
   std::ostringstream strs;
-  strs << _t;
+  strs << std::fixed << std::setprecision(13) << _t;
   std::string t_str = strs.str();
+  // Remove trailing zeros
+  size_t found = t_str.find(".");
+  if ( found != std::string::npos) {
+
+    size_t len = t_str.size();
+    while ( t_str[len-1] == '0' ) {
+
+      t_str = t_str.substr(0, len-1);
+      --len;
+    }
+  }
   desc.append(t_str);
   desc.append("<");
   std::string path = env->getLayerPath(_layerIndex);
