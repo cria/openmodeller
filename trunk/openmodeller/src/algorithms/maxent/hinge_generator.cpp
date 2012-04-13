@@ -34,6 +34,18 @@ HingeGenerator::HingeGenerator(const OccurrencesPtr& presences, const Occurrence
 
 HingeGenerator::~HingeGenerator() {}
 
+void
+HingeGenerator::setSampExp( double mindev )
+{
+
+}
+
+void 
+HingeGenerator::updateExp( double * density, double z_lambda )
+{
+
+}
+
 Feature * 
 HingeGenerator::exportFeature(int idx)
 {

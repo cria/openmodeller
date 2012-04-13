@@ -28,6 +28,7 @@
 #define _FEATUREGENERATOR_HH
 
 #include <vector>
+using std::pair;
 
 #include "feature.hh"
 #include "linear_feature.hh"
@@ -48,6 +49,10 @@ public:
 
   Scalar type() {return _type;}
 
+  virtual void setSampExp( double mindev ) = 0;
+
+  virtual void updateExp( double * density, double z_lambda ) = 0;
+
   Feature * getFeature(int idx) {return _features[idx];}
 
   Feature * toFeature(int idx);
@@ -66,13 +71,21 @@ public:
 
   Scalar lambda(int idx);
 
-  int getFirstRef() const { return _firstRef; }
+  int getFirstRef() const { return _first_ref; }
 
-  int getLastRef() const { return _lastRef; }
+  int getLastRef() const { return _last_ref; }
 
 protected:
 
-  Scalar _getPrecision(Scalar val);
+  // Custom struct to sort pair by second value
+  struct by_second_value {
+
+    bool operator()(const pair<int,double> &left, const pair<int,double> &right) {
+        return left.second < right.second;
+    }
+  };
+
+  Scalar getPrecision(Scalar val);
 
   int _type;
 
@@ -82,8 +95,8 @@ protected:
 
   Scalar _beta;
   
-  int _firstRef;
-  int _lastRef;
+  int _first_ref;
+  int _last_ref;
 
   std::vector<Feature*> _features;
 
@@ -91,7 +104,13 @@ protected:
   std::vector<Scalar> _samp_exp;
   std::vector<Scalar> _samp_dev;
 
+  std::vector< pair<int, Scalar> > _vals; // position, feature value
+
   std::vector<Scalar> _thresholds;
+  std::vector<Scalar> _threshold_index;
+
+  Scalar _first_samp_val;
+  Scalar _last_samp_val;
 };
 
 #endif
