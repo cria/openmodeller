@@ -37,6 +37,10 @@ public:
 
   ~HingeGenerator();
 
+  void setSampExp( double mindev );
+
+  void updateExp( double * density, double z_lambda );
+
   Feature * exportFeature(int idx);
 };
 

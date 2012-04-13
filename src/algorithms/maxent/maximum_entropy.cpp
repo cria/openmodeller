@@ -550,6 +550,14 @@ MaximumEntropy::initTrainer()
 	_features.push_back( new ProductFeature(i, j) );
       }
     }
+
+    if (_threshold) {
+      _generators.push_back(new ThresholdGenerator(_presences, _background, new LinearFeature(i)));
+    }
+
+    if (_hinge) {
+      _generators.push_back(new HingeGenerator(_presences, _background, new LinearFeature(i)));
+    }
   }
   */
   
@@ -738,6 +746,13 @@ MaximumEntropy::initTrainer()
     //cerr << "D avg=" << (*it)->mean() << " std=" << (*it)->std() << " min=" << minval << " max=" << maxval << " cnt=" << _num_presences << endl;
     //cerr << "D sampDev=" << (*it)->sampDev() << " sampExp=" << (*it)->sampExp() << endl;
   }
+
+  // Also set generators expectations
+  vector<FeatureGenerator*>::iterator git;
+  for ( git = _generators.begin(); git != _generators.end(); ++git ) {
+
+    (*git)->setSampExp( MINDEV );
+  }    
 
   _density = new double[_num_background];
 
@@ -1343,6 +1358,13 @@ MaximumEntropy::calcDensity( vector<Feature*> to_update )
     to_update[j]->setLastExpChange( _iteration );
     to_update[j]->setExp( f_sum[j] / _z_lambda );
   }
+
+  // Update feature expectations for all generators
+  vector<FeatureGenerator*>::iterator git;
+  for ( git = _generators.begin(); git != _generators.end(); ++git ) {
+
+    (*git)->updateExp( _density, _z_lambda );
+  }    
 
   delete[] f_sum;
 
