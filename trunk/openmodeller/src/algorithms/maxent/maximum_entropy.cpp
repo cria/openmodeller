@@ -944,7 +944,7 @@ MaximumEntropy::sequentialProc()
 double 
 MaximumEntropy::lossBound( bool active, double w1, double n1, double beta1, double lambda, std::string description )
 {
-  Log::instance()->debug("lossBound() called\n");
+  //Log::instance()->debug("lossBound() called\n");
   double retvalue;
 
   if ( !active ) {
@@ -966,10 +966,10 @@ MaximumEntropy::lossBound( bool active, double w1, double n1, double beta1, doub
     double alpha = getAlpha( w1, n1, beta1, lambda, description );
 
     if ( alpha < infinity ) {
-      Log::instance()->debug("f: %s w1=%.17f n1=%.17f beta1=%.17f lambda=%.17f\n", description.c_str(), w1, n1, beta1, lambda);
+      //Log::instance()->debug("f: %s w1=%.17f n1=%.17f beta1=%.17f lambda=%.17f\n", description.c_str(), w1, n1, beta1, lambda);
       dlb = -n1 * alpha + log( w0 + w1 * exp(alpha) ) +
 	beta1 * ( fabs(lambda + alpha) - fabs(lambda) );
-      Log::instance()->debug("DLB=%.17E\n", dlb);
+      //Log::instance()->debug("DLB=%.17E\n", dlb);
 
 #ifdef MSVC
       if (_isnan(dlb))
@@ -981,7 +981,7 @@ MaximumEntropy::lossBound( bool active, double w1, double n1, double beta1, doub
   }
 
   retvalue = dlb;
-  Log::instance()->debug("lossBound() returned %.16f\n", retvalue);
+  //Log::instance()->debug("lossBound() returned %.16f\n", retvalue);
   return retvalue;
 }
 
@@ -1377,24 +1377,24 @@ MaximumEntropy::calcDensity( vector<Feature*> to_update )
 double
 MaximumEntropy::getAlpha( double w1, double n1, double beta1, double lambda, std::string description )
 {
-  Log::instance()->debug("getAlpha() called\n");
+  //Log::instance()->debug("getAlpha() called\n");
   double retvalue;
 
   double alpha = 0.0;
   double w0 = 1.0 - w1;
   double n0 = 1.0 - n1;
 
-  static int calln = 0;
+  //static int calln = 0;
 
-  Log::instance()->debug("* %d: %s\n", calln, description.c_str());
-  calln++;
+  //Log::instance()->debug("* %d: %s\n", calln, description.c_str());
+  //calln++;
 
-  Log::instance()->debug("* n0     = %.16f\n", n0);
-  Log::instance()->debug("* n1     = %.16f\n", n1);
-  Log::instance()->debug("* w0     = %.16f\n", w0);
-  Log::instance()->debug("* w1     = %.16f\n", w1);
-  Log::instance()->debug("* beta1  = %.16f\n", beta1);
-  Log::instance()->debug("* lambda = %.16f\n", lambda);
+  //Log::instance()->debug("* n0     = %.16f\n", n0);
+  //Log::instance()->debug("* n1     = %.16f\n", n1);
+  //Log::instance()->debug("* w0     = %.16f\n", w0);
+  //Log::instance()->debug("* w1     = %.16f\n", w1);
+  //Log::instance()->debug("* beta1  = %.16f\n", beta1);
+  //Log::instance()->debug("* lambda = %.16f\n", lambda);
 
   if ( ( w0 >= MINLIMIT ) && ( w1 >= MINLIMIT ) ) {
     if ( n1 - beta1 > MINLIMIT ) {
@@ -1425,7 +1425,7 @@ MaximumEntropy::getAlpha( double w1, double n1, double beta1, double lambda, std
   }
 
   retvalue = alpha;
-  Log::instance()->debug("getAlpha() returned %.16f\n", retvalue);
+  //Log::instance()->debug("getAlpha() returned %.16f\n", retvalue);
   return retvalue;
 }
 
