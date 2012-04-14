@@ -34,12 +34,14 @@ ThresholdFeature::ThresholdFeature( int layerIndex, Scalar threshold ):Feature()
 {
   _type = F_THRESHOLD;
   _layerIndex = layerIndex;
+  _postgen = true;
   _t = threshold;
 }
 
 ThresholdFeature::ThresholdFeature( const ConstConfigurationPtr & config ):Feature()
 {
   _type = F_THRESHOLD;
+  _postgen = true;
   setConfiguration( config );
 }
 
