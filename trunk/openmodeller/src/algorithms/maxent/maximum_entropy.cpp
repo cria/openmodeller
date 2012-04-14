@@ -808,6 +808,7 @@ double
 MaximumEntropy::sequentialProc()
 {
   Log::instance()->debug("sequentialProc() called\n");
+  Log::instance()->debug("numFeatures = %u\n", _features.size());
   double retvalue;
 
   // Determine best feature
@@ -818,6 +819,8 @@ MaximumEntropy::sequentialProc()
   vector<Feature*>::iterator it;
   for ( it = _features.begin(); it != _features.end(); ++it ) {
     double dlb = lossBound( (*it)->isActive(), (*it)->exp(), (*it)->sampExp(), (*it)->sampDev(), (*it)->lambda(), (*it)->getDescription(_samp->getEnvironment()) );
+
+    Log::instance()->debug("F %s lb = %.15E\n",(*it)->getDescription(_samp->getEnvironment()).c_str(), dlb);
 
     if (!(*it)->isActive() || (*it)->postGenerated() || dlb >= best_dlb) {
       continue;
