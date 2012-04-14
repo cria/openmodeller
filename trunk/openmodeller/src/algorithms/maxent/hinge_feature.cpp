@@ -59,7 +59,7 @@ HingeFeature::getVal( const Sample& sample ) const
 }
 
 std::string
-HingeFeature::getDescription( const EnvironmentPtr& env ) const
+HingeFeature::getDescription( const EnvironmentPtr& env )
 {
   std::string desc("H");
   std::string path = env->getLayerPath(_layerIndex);

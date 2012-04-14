@@ -58,9 +58,14 @@ ThresholdFeature::getVal( const Sample& sample ) const
 }
 
 std::string
-ThresholdFeature::getDescription( const EnvironmentPtr& env ) const
+ThresholdFeature::getDescription( const EnvironmentPtr& env )
 {
-  std::string desc("T");
+  if ( _description.size() ) {
+
+    return _description;
+  }
+
+  _description = "T";
 
   std::ostringstream strs;
   strs << std::fixed << std::setprecision(13) << _t;
@@ -76,11 +81,12 @@ ThresholdFeature::getDescription( const EnvironmentPtr& env ) const
       --len;
     }
   }
-  desc.append(t_str);
-  desc.append("<");
+  _description.append(t_str);
+  _description.append("<");
   std::string path = env->getLayerPath(_layerIndex);
-  desc.append( path.substr( path.rfind("/") + 1 ) );
-  return desc;
+  _description.append( path.substr( path.rfind("/") + 1 ) );
+
+  return _description;
 }
 
 ConfigurationPtr 

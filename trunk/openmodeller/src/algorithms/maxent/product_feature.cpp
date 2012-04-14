@@ -59,7 +59,7 @@ bool ProductFeature::isActive() const {
 }
 
 std::string
-ProductFeature::getDescription( const EnvironmentPtr& env ) const
+ProductFeature::getDescription( const EnvironmentPtr& env )
 {
   std::string desc("P");
   std::string path1 = env->getLayerPath(_layerIndex1);

@@ -54,7 +54,7 @@ QuadraticFeature::getVal( const Sample& sample ) const
 }
 
 std::string
-QuadraticFeature::getDescription( const EnvironmentPtr& env ) const
+QuadraticFeature::getDescription( const EnvironmentPtr& env )
 {
   std::string desc("Q");
   std::string path = env->getLayerPath(_layerIndex);

@@ -54,7 +54,7 @@ LinearFeature::getVal( const Sample& sample ) const
 }
 
 std::string
-LinearFeature::getDescription( const EnvironmentPtr& env ) const
+LinearFeature::getDescription( const EnvironmentPtr& env )
 {
   std::string desc("L");
   std::string path = env->getLayerPath(_layerIndex);
