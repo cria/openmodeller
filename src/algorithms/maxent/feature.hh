@@ -47,7 +47,7 @@ class Feature : public Configurable {
 public:
   virtual Scalar getRawVal( const Sample& sample ) const = 0;
   virtual Scalar getVal( const Sample& sample ) const = 0;
-  virtual std::string getDescription( const EnvironmentPtr& env ) const = 0;
+  virtual std::string getDescription( const EnvironmentPtr& env ) = 0;
   Scalar type() {return _type;}
 
   void activate(){_active = true;}
@@ -105,6 +105,7 @@ public:
 
 protected:
   Feature() {
+    _description = "";
     _active = true;
     _lower = 0.0;
     _upper = 0.0;
@@ -123,6 +124,7 @@ protected:
   }
 
   int _type;
+  std::string _description;
   bool _active;
   Scalar _lower;
   Scalar _upper;

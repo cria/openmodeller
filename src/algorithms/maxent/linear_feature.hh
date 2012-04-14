@@ -47,7 +47,7 @@ public:
 
   bool isNormalizable() const { return true; }
 
-  std::string getDescription( const EnvironmentPtr& env ) const;
+  std::string getDescription( const EnvironmentPtr& env );
 
   ConfigurationPtr getConfiguration() const;
   
