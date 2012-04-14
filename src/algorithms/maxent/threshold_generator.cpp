@@ -84,20 +84,19 @@ ThresholdGenerator::setSampExp( double mindev )
   // TMP
   int control = 0;
 
-  Log::instance()->debug("SIZE = %u\n", _vals.size());
   for ( int i=(int)_vals.size()-1; i >= 0; --i ) {
 
     // Is this a sample?
-    if ( (_vals.at(i)).first >= limit ) { //*
+    if ( (_vals.at(i)).first >= limit ) {
 
       sum1 += 1.0;
       sum2 += 1.0;
-      Log::instance()->debug("i%u (%.13f) -> sample!\n", i, _vals[i].second);
+      //Log::instance()->debug("i%u (%.13f) -> sample!\n", i, _vals[i].second);
     }
-    else {
+//     else {
 
-      Log::instance()->debug("i%u (%.13f)-> not a sample (%d)\n", i, _vals[i].second, _vals[i].first); //*
-    }
+//       Log::instance()->debug("i%u (%.13f)-> not a sample (%d)\n", i, _vals[i].second, _vals[i].first);
+//     }
 
     int t_idx = _threshold_index[i];
 
