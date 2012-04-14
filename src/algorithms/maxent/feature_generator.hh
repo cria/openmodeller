@@ -80,7 +80,7 @@ protected:
   // Custom struct to sort pair by second value
   struct by_second_value {
 
-    bool operator()(const pair<int,double> &left, const pair<int,double> &right) {
+    bool operator()(const pair<int,Scalar> &left, const pair<int,Scalar> &right) {
         return left.second < right.second;
     }
   };

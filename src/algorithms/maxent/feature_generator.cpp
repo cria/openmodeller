@@ -84,10 +84,9 @@ FeatureGenerator::FeatureGenerator(const OccurrencesPtr& presences, const Occurr
   // Get best precision among values
   Scalar best_prec = std::numeric_limits<double>::infinity();
 
-  std::vector< pair<int, double> >::iterator vit;
-  for ( vit = _vals.begin(); vit != _vals.end(); ++vit ) {
+  for ( int i=0; i < (int)_vals.size(); ++i ) {
 
-    Scalar prec = getPrecision( vit->second );
+    Scalar prec = getPrecision( _vals[i].second );
 
     if ( prec < best_prec ) {
 
@@ -99,19 +98,18 @@ FeatureGenerator::FeatureGenerator(const OccurrencesPtr& presences, const Occurr
   _threshold_index.reserve(_vals.size());
   _threshold_index.assign(_vals.size(), -1);
 
-  i = 0;
   int t_idx = 0;
   Scalar v;
   Scalar last_v = _vals[0].second;
   Scalar t;
   bool got_first = false;
   int limit = _background->numOccurrences();
-  for ( vit = _vals.begin(); vit != _vals.end(); ++vit,++i ) {
+  for ( i=0; i < (int)_vals.size(); ++i ) {
 
-    v = vit->second;
+    v = _vals[i].second;
 
     // Is this a sample?
-    if ( vit->first >= limit ) {
+    if ( _vals[i].first >= limit ) {
 
       // Get first and last values (min/max)
       if ( !got_first ) {
@@ -126,7 +124,7 @@ FeatureGenerator::FeatureGenerator(const OccurrencesPtr& presences, const Occurr
     if ( v - last_v > best_prec ) {
 
       t = ((v + last_v)/2.0);
-      Log::instance()->debug("T: %.16f\n", t);
+      //Log::instance()->debug("T: %.16f\n", t);
       _thresholds.push_back( t );
       _threshold_index[i] = t_idx;
       last_v = v;
