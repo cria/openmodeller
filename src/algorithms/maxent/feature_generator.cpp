@@ -97,11 +97,13 @@ FeatureGenerator::FeatureGenerator(const OccurrencesPtr& presences, const Occurr
 
   // Calculate all thresholds
   _threshold_index.reserve(_vals.size());
+  _threshold_index.assign(_vals.size(), -1);
 
   i = 0;
   int t_idx = 0;
   Scalar v;
   Scalar last_v = _vals[0].second;
+  Scalar t;
   bool got_first = false;
   int limit = _background->numOccurrences();
   for ( vit = _vals.begin(); vit != _vals.end(); ++vit,++i ) {
@@ -123,14 +125,12 @@ FeatureGenerator::FeatureGenerator(const OccurrencesPtr& presences, const Occurr
 
     if ( v - last_v > best_prec ) {
 
-      _thresholds.push_back( ((v + last_v)/2.0) );
+      t = ((v + last_v)/2.0);
+      Log::instance()->debug("T: %.16f\n", t);
+      _thresholds.push_back( t );
       _threshold_index[i] = t_idx;
       last_v = v;
       ++t_idx;
-    }
-    else {
-
-      _threshold_index[i] = -1;
     }
   }
 
@@ -139,8 +139,11 @@ FeatureGenerator::FeatureGenerator(const OccurrencesPtr& presences, const Occurr
   _features.assign(t_idx, f);
 
   _exp.reserve(t_idx);
+  _exp.assign(t_idx, 0.0);
   _samp_exp.reserve(t_idx);
+  _samp_exp.assign(t_idx, 0.0);
   _samp_dev.reserve(t_idx);
+  _samp_dev.assign(t_idx, 0.0);
 
   Log::instance()->debug("Num thresholds: %u\n", _thresholds.size());
 }
@@ -153,8 +156,13 @@ FeatureGenerator::~FeatureGenerator()
 
   Log::instance()->debug("Deallocating %d features\n", n);
 
-  for (unsigned int i = 0; i < n; ++i)
-    delete _features[i];
+  for (unsigned int i = 0; i < n; ++i) {
+
+    if ( _features[i] != 0 ) {
+
+      delete _features[i];
+    }
+  }
 }
 
 Scalar 
