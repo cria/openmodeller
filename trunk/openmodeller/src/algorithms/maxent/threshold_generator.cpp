@@ -84,16 +84,19 @@ ThresholdGenerator::setSampExp( double mindev )
   // TMP
   int control = 0;
 
-  std::vector< pair<int, double> >::iterator vit;
-  unsigned int i = _vals.size();
-  for ( vit = _vals.end(); vit != _vals.begin(); --vit,--i ) {
+  Log::instance()->debug("SIZE = %u\n", _vals.size());
+  for ( int i=(int)_vals.size()-1; i >= 0; --i ) {
 
     // Is this a sample?
-    if ( vit->first >= limit ) {
+    if ( (_vals.at(i)).first >= limit ) { //*
 
-      double val = 1.0;
-      sum1 += val;
-      sum2 += val * val;
+      sum1 += 1.0;
+      sum2 += 1.0;
+      Log::instance()->debug("i%u (%.13f) -> sample!\n", i, _vals[i].second);
+    }
+    else {
+
+      Log::instance()->debug("i%u (%.13f)-> not a sample (%d)\n", i, _vals[i].second, _vals[i].first); //*
     }
 
     int t_idx = _threshold_index[i];
@@ -117,7 +120,7 @@ ThresholdGenerator::setSampExp( double mindev )
 
       avg = sum1 / num_samples;
 
-      if ( sum2 < num_samples * avg * avg ) {
+      if ( sum2 < (num_samples * avg * avg) ) {
 
         std = 0.0;
       }
@@ -126,9 +129,9 @@ ThresholdGenerator::setSampExp( double mindev )
         std = sqrt((sum2 - num_samples * avg * avg) / (num_samples - 1));
       }
 
-      if (std > ref_max / 2.0) {
+      if ( std > (ref_max/2.0) ) {
 
-        std = ref_max / 2.0;
+        std = ref_max/2.0;
       }
     }
 
@@ -160,7 +163,10 @@ ThresholdGenerator::setSampExp( double mindev )
     if (control <= 2) {
 
       Log::instance()->debug("TMP i: %u\n",  i);
-      //Log::instance()->debug("TMP val: %.16f\n", vit->second);
+      Log::instance()->debug("TMP idx: %u\n",  t_idx);
+      Log::instance()->debug("TMP max: %.16f\n", ref_max);
+      Log::instance()->debug("TMP sum1: %.16f\n", sum1);
+      Log::instance()->debug("TMP sum2: %.16f\n", sum2);
       Log::instance()->debug("TMP avg: %.16f\n", avg);
       Log::instance()->debug("TMP std: %.16f\n", std);
       Log::instance()->debug("TMP samp_exp: %.16f\n", _samp_exp[t_idx]);
@@ -176,14 +182,12 @@ ThresholdGenerator::updateExp( double * density, double z_lambda )
 
   int limit = _background->numOccurrences();
 
-  std::vector< pair<int, double> >::iterator vit;
-  unsigned int i = _vals.size();
-  for ( vit = _vals.end(); vit != _vals.begin(); --vit,--i ) {
+  for ( int i=(int)_vals.size()-1; i >= 0; --i ) {
 
     // Is this a background point?
-    if ( vit->first < limit ) {
+    if ( _vals[i].first < limit ) {
 
-      sum += density[ vit->first ];
+      sum += density[ _vals[i].first ];
     }
 
     int t_idx = _threshold_index[i];
