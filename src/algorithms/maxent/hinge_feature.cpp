@@ -31,6 +31,7 @@ HingeFeature::HingeFeature( int layerIndex, Scalar min, Scalar max ):Feature()
 {
   _type = F_HINGE;
   _layerIndex = layerIndex;
+  _postgen = true;
   _min = min;
   _max = max;
   _scale = _max - _min;
@@ -40,6 +41,7 @@ HingeFeature::HingeFeature( int layerIndex, Scalar min, Scalar max ):Feature()
 HingeFeature::HingeFeature( const ConstConfigurationPtr & config ):Feature()
 {
   _type = F_HINGE;
+  _postgen = true;
   setConfiguration( config );
 }
 

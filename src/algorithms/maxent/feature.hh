@@ -48,7 +48,7 @@ public:
   virtual Scalar getRawVal( const Sample& sample ) const = 0;
   virtual Scalar getVal( const Sample& sample ) const = 0;
   virtual std::string getDescription( const EnvironmentPtr& env ) = 0;
-  Scalar type() {return _type;}
+  int type() {return _type;}
 
   void activate(){_active = true;}
   void deactivate(){_active = false;}
@@ -99,13 +99,12 @@ public:
   Scalar min() {return _min;}
   Scalar max() {return _max;}
 
-  bool postGenerated() const {
-    return false;
-  }
+  bool postGenerated() const {return _postgen;}
 
 protected:
   Feature() {
     _description = "";
+    _postgen = false;
     _active = true;
     _lower = 0.0;
     _upper = 0.0;
@@ -125,6 +124,7 @@ protected:
 
   int _type;
   std::string _description;
+  bool _postgen;
   bool _active;
   Scalar _lower;
   Scalar _upper;
