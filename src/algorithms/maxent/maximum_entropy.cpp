@@ -820,7 +820,20 @@ MaximumEntropy::sequentialProc()
   for ( it = _features.begin(); it != _features.end(); ++it ) {
     double dlb = lossBound( (*it)->isActive(), (*it)->exp(), (*it)->sampExp(), (*it)->sampDev(), (*it)->lambda(), (*it)->getDescription(_samp->getEnvironment()) );
 
+    // debug
+    // if ( _iteration == 89 ) {
+      Log::instance()->debug("F exp() = %f\n", (*it)->exp());
+      Log::instance()->debug("F sampExp() = %f\n", (*it)->sampExp());
+      Log::instance()->debug("F sampDev() = %f\n", (*it)->sampDev());
+      Log::instance()->debug("F lambda()= %f\n", (*it)->lambda());
+    // }
+
     Log::instance()->debug("F %s lb = %.15E\n",(*it)->getDescription(_samp->getEnvironment()).c_str(), dlb);
+
+    // debug
+    // if ( _iteration == 89 ) {
+      Log::instance()->debug("\n");
+    // }
 
     if (!(*it)->isActive() || (*it)->postGenerated() || dlb >= best_dlb) {
       continue;
