@@ -818,22 +818,17 @@ MaximumEntropy::sequentialProc()
 
   vector<Feature*>::iterator it;
   for ( it = _features.begin(); it != _features.end(); ++it ) {
+    // debug
+    Log::instance()->debug("exp() -> lb = %.16f\n", (*it)->exp());
+    Log::instance()->debug("sampExp() -> lb = %.16f\n", (*it)->sampExp());
+    Log::instance()->debug("sampDev() -> lb = %.16f\n", (*it)->sampDev());
+    Log::instance()->debug("lambda() -> lb = %.16f\n", (*it)->lambda());
     double dlb = lossBound( (*it)->isActive(), (*it)->exp(), (*it)->sampExp(), (*it)->sampDev(), (*it)->lambda(), (*it)->getDescription(_samp->getEnvironment()) );
 
-    // debug
-    // if ( _iteration == 89 ) {
-      Log::instance()->debug("F exp() = %f\n", (*it)->exp());
-      Log::instance()->debug("F sampExp() = %f\n", (*it)->sampExp());
-      Log::instance()->debug("F sampDev() = %f\n", (*it)->sampDev());
-      Log::instance()->debug("F lambda()= %f\n", (*it)->lambda());
-    // }
-
-    Log::instance()->debug("F %s lb = %.15E\n",(*it)->getDescription(_samp->getEnvironment()).c_str(), dlb);
+    Log::instance()->debug("F %s lb = %.16E\n",(*it)->getDescription(_samp->getEnvironment()).c_str(), dlb);
 
     // debug
-    // if ( _iteration == 89 ) {
-      Log::instance()->debug("\n");
-    // }
+    Log::instance()->debug("\n");
 
     if (!(*it)->isActive() || (*it)->postGenerated() || dlb >= best_dlb) {
       continue;
@@ -960,32 +955,36 @@ MaximumEntropy::sequentialProc()
 double 
 MaximumEntropy::lossBound( bool active, double w1, double n1, double beta1, double lambda, std::string description )
 {
-  //Log::instance()->debug("lossBound() called\n");
-  double retvalue;
+  // Log::instance()->debug("lossBound() called\n");
 
   if ( !active ) {
-
-     Log::instance()->debug("lossBound() returned 0.0\n");
+     // Log::instance()->debug("lossBound() returned 0.0\n");
      return 0.0;
   }
 
   // Calculate delta loss bound
   double dlb = 0;
-
   double w0 = 1.0 - w1;
+  // Determine alpha
+  if ( _iteration == 89 || _iteration == 89 ) {
+    Log::instance()->debug(" lossBound(): getAlpha() called with:\n");
+    Log::instance()->debug(" lossBound(): w1 = %.16f\n", w1);
+    Log::instance()->debug(" lossBound(): n1 = %.16f\n", n1);
+    Log::instance()->debug(" lossBound(): beta1 = %.16f\n", beta1);
+    Log::instance()->debug(" lossBound(): Lambda = %.16f\n", lambda);
+  }
+  double alpha = getAlpha( w1, n1, beta1, lambda, description );
+  if ( _iteration == 89 || _iteration == 89 ) {
+    Log::instance()->debug(" lossBound(): getAlpha() returned with:\n");
+    Log::instance()->debug(" lossBound(): Alpha = %.16f\n", alpha);
+  }
 
   double infinity = std::numeric_limits<double>::infinity();
 
   if ( n1 != -1.0 ) {
-
-    // Determine alpha
-    double alpha = getAlpha( w1, n1, beta1, lambda, description );
-
     if ( alpha < infinity ) {
-      //Log::instance()->debug("f: %s w1=%.17f n1=%.17f beta1=%.17f lambda=%.17f\n", description.c_str(), w1, n1, beta1, lambda);
       dlb = -n1 * alpha + log( w0 + w1 * exp(alpha) ) +
 	beta1 * ( fabs(lambda + alpha) - fabs(lambda) );
-      //Log::instance()->debug("DLB=%.17E\n", dlb);
 
 #ifdef MSVC
       if (_isnan(dlb))
@@ -996,9 +995,8 @@ MaximumEntropy::lossBound( bool active, double w1, double n1, double beta1, doub
     }
   }
 
-  retvalue = dlb;
-  //Log::instance()->debug("lossBound() returned %.16f\n", retvalue);
-  return retvalue;
+  // Log::instance()->debug("lossBound() returned %.16f\n", dlb);
+  return dlb;
 }
 
 /*********************/
@@ -1412,6 +1410,16 @@ MaximumEntropy::getAlpha( double w1, double n1, double beta1, double lambda, std
   //Log::instance()->debug("* beta1  = %.16f\n", beta1);
   //Log::instance()->debug("* lambda = %.16f\n", lambda);
 
+  double x1 = log( (n1 - beta1) * w0 / ((n0 + beta1) * w1) );
+  double x2 = log( (n1 + beta1) * w0 / ( (n0 - beta1) * w1) );
+  double x3 = -lambda;
+
+  if ( _iteration == 89) {
+    Log::instance()->debug("x1 = %.16f\n", x1);
+    Log::instance()->debug("x2 = %.16f\n", x2);
+    Log::instance()->debug("x3 = %.16f\n", x3);
+  }
+ 
   if ( ( w0 >= MINLIMIT ) && ( w1 >= MINLIMIT ) ) {
     if ( n1 - beta1 > MINLIMIT ) {
       alpha = log( (n1 - beta1) * w0 / ((n0 + beta1) * w1) );
