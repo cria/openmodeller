@@ -42,6 +42,10 @@ public:
   void updateExp( double * density, double z_lambda );
 
   Feature * exportFeature(int idx);
+
+private:
+
+  Scalar _maxval;
 };
 
 #endif
