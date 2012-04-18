@@ -63,10 +63,16 @@ HingeFeature::getVal( const Sample& sample ) const
 std::string
 HingeFeature::getDescription( const EnvironmentPtr& env )
 {
-  std::string desc("H");
+  if ( _description.size() ) {
+
+    return _description;
+  }
+
+  _description = "H";
   std::string path = env->getLayerPath(_layerIndex);
-  desc.append( path.substr( path.rfind("/") + 1 ) );
-  return desc;
+  _description.append( path.substr( path.rfind("/") + 1 ) );
+
+  return _description;
 }
 
 ConfigurationPtr 
