@@ -904,6 +904,8 @@ MaximumEntropy::sequentialProc()
     best_f->setLastExpChange( _iteration );
   }
 
+  best_f->setLastChange( _iteration );
+
   vector<Feature*> to_update = featuresToUpdate();
   best_dlb = lossBound( best_f->isActive(), best_f->exp(), best_f->sampExp(), best_f->sampDev(), best_f->lambda(), best_f->getDescription(_samp->getEnvironment()) );
 
@@ -966,20 +968,7 @@ MaximumEntropy::lossBound( bool active, double w1, double n1, double beta1, doub
   double dlb = 0;
   double w0 = 1.0 - w1;
   // Determine alpha
-  Log::instance()->debug("@%d %s w1 %.16f\n", _iteration, description.c_str(), w1);
-  if ( _iteration == 89 || _iteration == 89 ) {
-    Log::instance()->debug(" lossBound(): getAlpha() called with:\n");
-    Log::instance()->debug(" lossBound(): w1 = %.16f\n", w1);
-    Log::instance()->debug(" lossBound(): n1 = %.16f\n", n1);
-    Log::instance()->debug(" lossBound(): beta1 = %.16f\n", beta1);
-    Log::instance()->debug(" lossBound(): Lambda = %.16f\n", lambda);
-  }
   double alpha = getAlpha( w1, n1, beta1, lambda, description );
-  if ( _iteration == 89 || _iteration == 89 ) {
-    Log::instance()->debug(" lossBound(): getAlpha() returned:\n");
-    Log::instance()->debug(" lossBound(): Alpha = %.16f\n", alpha);
-  }
-
   double infinity = std::numeric_limits<double>::infinity();
 
   if ( n1 != -1.0 ) {
@@ -1076,15 +1065,7 @@ MaximumEntropy::parallelProc()
     if ( alpha[i] != 0.0 ) {
 
       _features[i]->setLastExpChange( _iteration );
-
-      Log::instance()->debug("NS %s:\n", _features[i]->getDescription(_samp->getEnvironment()).c_str());
-
       _features[i]->setExp( sum[i] / _z_lambda );
-
-      Log::instance()->debug("@%d %s sum %.16f\n", _iteration, _features[i]->getDescription(_samp->getEnvironment()).c_str(), sum[i]);
-
-      Log::instance()->debug(" sum = %.16f\n", sum[i]);
-      Log::instance()->debug(" _z_lambda = %.16f\n", _z_lambda);
     }
   }
 
@@ -1407,30 +1388,6 @@ MaximumEntropy::getAlpha( double w1, double n1, double beta1, double lambda, std
   double w0 = 1.0 - w1;
   double n0 = 1.0 - n1;
 
-  //static int calln = 0;
-
-  //Log::instance()->debug("* %d: %s\n", calln, description.c_str());
-  //calln++;
-
-  if ( _iteration == 89) {
-    //Log::instance()->debug("  getAlpha() n0     = %.16f\n", n0);
-    //Log::instance()->debug("  getAlpha() w0     = %.16f\n", w0);
-    Log::instance()->debug("  getAlpha() w1     = %.16f\n", w1);
-    Log::instance()->debug("  getAlpha() n1     = %.16f\n", n1);
-    Log::instance()->debug("  getAlpha() beta1  = %.16f\n", beta1);
-    Log::instance()->debug("  getAlpha() lambda = %.16f\n", lambda);
-  }
-
-  double x1 = log( (n1 - beta1) * w0 / ((n0 + beta1) * w1) );
-  double x2 = log( (n1 + beta1) * w0 / ( (n0 - beta1) * w1) );
-  double x3 = -lambda;
-
-  if ( _iteration == 89) {
-    Log::instance()->debug("x1 = %.16f\n", x1);
-    Log::instance()->debug("x2 = %.16f\n", x2);
-    Log::instance()->debug("x3 = %.16f\n", x3);
-  }
- 
   if ( ( w0 >= MINLIMIT ) && ( w1 >= MINLIMIT ) ) {
 
     if ( n1 - beta1 > MINLIMIT ) {
