@@ -29,11 +29,12 @@
 
 #include <cmath>
 
-HingeGenerator::HingeGenerator(const OccurrencesPtr& presences, const OccurrencesPtr& background, LinearFeature * feature):FeatureGenerator(presences, background, feature)
+HingeGenerator::HingeGenerator(const OccurrencesPtr& presences, const OccurrencesPtr& background, LinearFeature * feature, bool reverse):FeatureGenerator(presences, background, feature)
 {
   _type = G_HINGE;
-  _first_samp_val = 0;
-  _last_samp_val = (int)_thresholds.size();
+  _reverse = reverse;
+  _first_ref = 0;
+  _last_ref = (int)_thresholds.size();
   _maxval = _vals[_vals.size()-1].second;
 }
 
@@ -201,7 +202,7 @@ HingeGenerator::exportFeature(int idx)
   if ( _features[idx] == 0 ) {
 
     // Create feature if necessary
-      Feature * f = new HingeFeature(_feature->getLayerIndex(), _thresholds[idx], _maxval);
+      Feature * f = new HingeFeature(_feature->getLayerIndex(), _thresholds[idx], _maxval, _reverse);
 
     f->setSampExp( sampExp(idx) );
     f->setSampDev( sampDev(idx) );
