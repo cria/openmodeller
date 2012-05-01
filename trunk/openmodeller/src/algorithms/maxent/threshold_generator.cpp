@@ -54,10 +54,6 @@ ThresholdGenerator::ThresholdGenerator(const OccurrencesPtr& presences, const Oc
   }
 
   _last_ref = i;
-
-
-  Log::instance()->debug("first_ref: %d\n", _first_ref);
-  Log::instance()->debug("last_ref: %d\n", _last_ref);
 }
 
 ThresholdGenerator::~ThresholdGenerator() {}
@@ -80,21 +76,13 @@ ThresholdGenerator::setSampExp( double mindev )
   double i_lower;
   double i_upper;
 
-  // TMP
-  int control = 0;
-
   for ( int i=(int)_vals.size()-1; i >= 0; --i ) {
 
     // Is this a sample?
     if ( (_vals.at(i)).first >= limit ) {
 
       sum += 1.0;
-      //Log::instance()->debug("i%u (%.13f) -> sample!\n", i, _vals[i].second);
     }
-//     else {
-
-//       Log::instance()->debug("i%u (%.13f)-> not a sample (%d)\n", i, _vals[i].second, _vals[i].first);
-//     }
 
     int t_idx = _threshold_index[i];
 
@@ -102,8 +90,6 @@ ThresholdGenerator::setSampExp( double mindev )
 
       continue;
     }
-
-    ++control; // TMP
 
     double avg;
     double std;
@@ -155,18 +141,6 @@ ThresholdGenerator::setSampExp( double mindev )
     if ( _samp_dev[t_idx] < mindev ) {
 
       _samp_dev[t_idx] = mindev;
-    }
-
-    if (control <= 2) {
-
-      Log::instance()->debug("TMP i: %u\n",  i);
-      Log::instance()->debug("TMP idx: %u\n",  t_idx);
-      Log::instance()->debug("TMP max: %.16f\n", ref_max);
-      Log::instance()->debug("TMP sum: %.16f\n", sum);
-      Log::instance()->debug("TMP avg: %.16f\n", avg);
-      Log::instance()->debug("TMP std: %.16f\n", std);
-      Log::instance()->debug("TMP samp_exp: %.16f\n", _samp_exp[t_idx]);
-      Log::instance()->debug("TMP samp_dev: %.16f\n", _samp_dev[t_idx]);
     }
   }
 }
