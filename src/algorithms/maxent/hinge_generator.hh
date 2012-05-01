@@ -33,7 +33,7 @@ class HingeGenerator : public FeatureGenerator {
 
 public:
 
-  HingeGenerator(const OccurrencesPtr& presences, const OccurrencesPtr& background, LinearFeature * feature);
+  HingeGenerator(const OccurrencesPtr& presences, const OccurrencesPtr& background, LinearFeature * feature, bool reverse);
 
   ~HingeGenerator();
 
@@ -46,6 +46,7 @@ public:
 private:
 
   Scalar _maxval;
+  bool _reverse;
 };
 
 #endif

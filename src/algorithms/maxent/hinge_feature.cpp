@@ -27,7 +27,7 @@
 #include "hinge_feature.hh"
 #include <openmodeller/Exceptions.hh>
 
-HingeFeature::HingeFeature( int layerIndex, Scalar min, Scalar max ):Feature()
+HingeFeature::HingeFeature( int layerIndex, Scalar min, Scalar max, bool reverse ):Feature()
 {
   _type = F_HINGE;
   _layerIndex = layerIndex;
@@ -35,7 +35,7 @@ HingeFeature::HingeFeature( int layerIndex, Scalar min, Scalar max ):Feature()
   _min = min;
   _max = max;
   _scale = _max - _min;
-
+  _reverse = reverse;
 }
 
 HingeFeature::HingeFeature( const ConstConfigurationPtr & config ):Feature()
@@ -51,6 +51,11 @@ Scalar
 HingeFeature::getRawVal( const Sample& sample ) const
 {
   double val = sample[_layerIndex];
+  if (_reverse) {
+
+    return (val < _min) ? (_min-val)/(_scale) : 0.0;
+  }
+
   return (val > _min) ? (val-_min)/(_scale) : 0.0;
 }
 
@@ -71,6 +76,10 @@ HingeFeature::getDescription( const EnvironmentPtr& env )
   _description = "H";
   std::string path = env->getLayerPath(_layerIndex);
   _description.append( path.substr( path.rfind("/") + 1 ) );
+  if (_reverse) {
+
+    _description.append("__rev");
+  }
 
   return _description;
 }
@@ -81,6 +90,8 @@ HingeFeature::getConfiguration() const
   ConfigurationPtr config( new ConfigurationImpl("Feature") );
 
   config->addNameValue( "Type", _type );
+  int rev = (_reverse) ? 1 : 0;
+  config->addNameValue( "Reverse", rev );
 
   config->addNameValue( "Ref", _layerIndex );
   config->addNameValue( "Min", _min );
@@ -111,6 +122,9 @@ HingeFeature::setConfiguration( const ConstConfigurationPtr & config )
     Log::instance()->error( msg.c_str() );
     throw InvalidParameterException( msg );
   }
+
+  int rev = config->getAttributeAsInt( "Reverse", 0 );
+  _reverse = (rev) ? true : false;
 
   _min = config->getAttributeAsDouble( "Min", -1 );
 

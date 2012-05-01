@@ -556,7 +556,8 @@ MaximumEntropy::initTrainer()
     }
 
     if (_hinge) {
-      _generators.push_back(new HingeGenerator(_presences, _background, new LinearFeature(i)));
+      _generators.push_back(new HingeGenerator(_presences, _background, new LinearFeature(i), false));
+      _generators.push_back(new HingeGenerator(_presences, _background, new LinearFeature(i), true));
     }
   }
   */
@@ -585,7 +586,8 @@ MaximumEntropy::initTrainer()
       _generators.push_back(new ThresholdGenerator(_presences, _background, new LinearFeature(i)));
     }
     if (_hinge) {
-      _generators.push_back(new HingeGenerator(_presences, _background, new LinearFeature(i)));
+      _generators.push_back(new HingeGenerator(_presences, _background, new LinearFeature(i), false));
+      _generators.push_back(new HingeGenerator(_presences, _background, new LinearFeature(i), true));
     }
   }
   // end NEW
@@ -808,7 +810,6 @@ double
 MaximumEntropy::sequentialProc()
 {
   Log::instance()->debug("sequentialProc() called\n");
-  Log::instance()->debug("numFeatures = %u\n", _features.size());
   double retvalue;
 
   // Determine best feature
@@ -819,16 +820,16 @@ MaximumEntropy::sequentialProc()
   vector<Feature*>::iterator it;
   for ( it = _features.begin(); it != _features.end(); ++it ) {
     // debug
-    Log::instance()->debug("exp() -> lb = %.16f\n", (*it)->exp());
-    Log::instance()->debug("sampExp() -> lb = %.16f\n", (*it)->sampExp());
-    Log::instance()->debug("sampDev() -> lb = %.16f\n", (*it)->sampDev());
-    Log::instance()->debug("lambda() -> lb = %.16f\n", (*it)->lambda());
+    //Log::instance()->debug("exp() -> lb = %.16f\n", (*it)->exp());
+    //Log::instance()->debug("sampExp() -> lb = %.16f\n", (*it)->sampExp());
+    //Log::instance()->debug("sampDev() -> lb = %.16f\n", (*it)->sampDev());
+    //Log::instance()->debug("lambda() -> lb = %.16f\n", (*it)->lambda());
     double dlb = lossBound( (*it)->isActive(), (*it)->exp(), (*it)->sampExp(), (*it)->sampDev(), (*it)->lambda(), (*it)->getDescription(_samp->getEnvironment()) );
 
-    Log::instance()->debug("F %s lb = %.16E\n",(*it)->getDescription(_samp->getEnvironment()).c_str(), dlb);
-
+    //Log::instance()->debug("F %s lb = %.16E\n",(*it)->getDescription(_samp->getEnvironment()).c_str(), dlb);
+    Log::instance()->debug("@%d %s bf_loss %.16f\n", _iteration, (*it)->getDescription(_samp->getEnvironment()).c_str(), dlb);
     // debug
-    Log::instance()->debug("\n");
+    //Log::instance()->debug("\n");
 
     if (!(*it)->isActive() || (*it)->postGenerated() || dlb >= best_dlb) {
       continue;
@@ -846,6 +847,13 @@ MaximumEntropy::sequentialProc()
   for ( git = _generators.begin(); git != _generators.end(); ++git ) {
 
     for ( int j = (*git)->getFirstRef(); j < (*git)->getLastRef(); j++ ) {
+
+      if ( j == (*git)->getFirstRef() ) {
+        Log::instance()->debug("@%d ? bf_exp %.16f\n", _iteration, (*git)->exp(j));
+        Log::instance()->debug("@%d ? bf_sampExp %.16f\n", _iteration, (*git)->sampExp(j));
+        Log::instance()->debug("@%d ? bf_sampDev %.16f\n", _iteration, (*git)->sampDev(j));
+        Log::instance()->debug("@%d ? bf_lambda %.16f\n", _iteration, (*git)->lambda(j));
+      }
 
       double dlb = lossBound( true, (*git)->exp(j), (*git)->sampExp(j), (*git)->sampDev(j), (*git)->lambda(j), "G" );
 
@@ -868,6 +876,8 @@ MaximumEntropy::sequentialProc()
 
       _features.push_back( best_f );
     }
+
+    Log::instance()->debug("@%d %s bf_g_loss %.16f\n", _iteration, best_f->getDescription(_samp->getEnvironment()).c_str(), best_dlb);
   }
 
   if ( best_f == 0 ) {

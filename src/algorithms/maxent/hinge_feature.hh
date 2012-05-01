@@ -32,7 +32,7 @@
 class HingeFeature : public Feature {
 
 public:
-  HingeFeature( int layerIndex, Scalar min, Scalar max );
+  HingeFeature( int layerIndex, Scalar min, Scalar max, bool reverse );
   HingeFeature( const ConstConfigurationPtr & config );
   ~HingeFeature();
 
@@ -50,6 +50,7 @@ public:
 
 private:
   int _layerIndex;
+  bool _reverse;
 };
 
 #endif
