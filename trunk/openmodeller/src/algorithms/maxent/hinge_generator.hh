@@ -46,7 +46,6 @@ public:
 private:
 
   Scalar _maxval;
-  bool _reverse;
 };
 
 #endif

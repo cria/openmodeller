@@ -29,10 +29,8 @@
 
 #include <cmath>
 
-ThresholdGenerator::ThresholdGenerator(const OccurrencesPtr& presences, const OccurrencesPtr& background, LinearFeature * feature):FeatureGenerator(presences, background, feature)
+ThresholdGenerator::ThresholdGenerator(const OccurrencesPtr& presences, const OccurrencesPtr& background, LinearFeature * feature, bool reverse):FeatureGenerator(presences, background, feature, G_THRESHOLD, reverse)
 {
-  _type = G_THRESHOLD;
-
   // Get threshold references
   unsigned int i;
   for ( i=0; i < _thresholds.size(); ++i ) {
@@ -61,7 +59,6 @@ ThresholdGenerator::~ThresholdGenerator() {}
 void
 ThresholdGenerator::setSampExp( double mindev )
 {
-  Log::instance()->debug("GEN setSampExp\n");
   int limit = _background->numOccurrences();
 
   int num_samples = _presences->numOccurrences();

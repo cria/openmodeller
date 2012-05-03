@@ -51,9 +51,10 @@ Scalar
 HingeFeature::getRawVal( const Sample& sample ) const
 {
   double val = sample[_layerIndex];
-  if (_reverse) {
 
-    return (val < _min) ? (_min-val)/(_scale) : 0.0;
+  if ( _reverse ) {
+
+    val = -val;
   }
 
   return (val > _min) ? (val-_min)/(_scale) : 0.0;

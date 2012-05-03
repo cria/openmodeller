@@ -36,11 +36,13 @@
 #include <algorithm>
 using std::pair;
 
-FeatureGenerator::FeatureGenerator(const OccurrencesPtr& presences, const OccurrencesPtr& background, LinearFeature * feature)
+FeatureGenerator::FeatureGenerator(const OccurrencesPtr& presences, const OccurrencesPtr& background, LinearFeature * feature, int type, bool reverse)
 {
   _presences = presences;
   _background = background;
   _feature = feature;
+  _type = type;
+  _reverse = reverse;
 
   _first_ref = -1;
   _last_ref = -1;
@@ -58,7 +60,7 @@ FeatureGenerator::FeatureGenerator(const OccurrencesPtr& presences, const Occurr
 
     Sample s = (*it)->environment();
 
-    _vals.push_back( std::make_pair(i, _feature->getRawVal(s)) );
+    _vals.push_back( std::make_pair(i, getVal(s)) );
 
     ++it;
     ++i;
@@ -72,7 +74,7 @@ FeatureGenerator::FeatureGenerator(const OccurrencesPtr& presences, const Occurr
 
     Sample s = (*it)->environment();
 
-    _vals.push_back( std::make_pair(i, _feature->getRawVal(s)) );
+    _vals.push_back( std::make_pair(i, getVal(s)) );
 
     ++it;
     ++i;
@@ -124,7 +126,6 @@ FeatureGenerator::FeatureGenerator(const OccurrencesPtr& presences, const Occurr
     if ( v - last_v > best_prec ) {
 
       t = ((v + last_v)/2.0);
-      //Log::instance()->debug("T: %.16f\n", t);
       _thresholds.push_back( t );
       _threshold_index[i] = t_idx;
       last_v = v;
@@ -161,6 +162,12 @@ FeatureGenerator::~FeatureGenerator()
       delete _features[i];
     }
   }
+}
+
+Scalar 
+FeatureGenerator::getVal(Sample s)
+{
+  return (_reverse) ? -_feature->getRawVal(s) : _feature->getRawVal(s);
 }
 
 Scalar 

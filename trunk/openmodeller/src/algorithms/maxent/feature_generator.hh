@@ -43,11 +43,11 @@ class FeatureGenerator {
 
 public:
 
-  FeatureGenerator(const OccurrencesPtr& presences, const OccurrencesPtr& background, LinearFeature * feature);
+  FeatureGenerator(const OccurrencesPtr& presences, const OccurrencesPtr& background, LinearFeature * feature, int type, bool reverse);
 
   ~FeatureGenerator();
 
-  Scalar type() {return _type;}
+  int type() {return _type;}
 
   virtual void setSampExp( double mindev ) = 0;
 
@@ -77,6 +77,8 @@ public:
 
 protected:
 
+  Scalar getVal(Sample s);
+
   // Custom struct to sort pair by second value
   struct by_second_value {
 
@@ -88,6 +90,8 @@ protected:
   Scalar getPrecision(Scalar val);
 
   int _type;
+
+  bool _reverse;
 
   OccurrencesPtr _presences;
   OccurrencesPtr _background;

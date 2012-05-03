@@ -230,7 +230,7 @@ static AlgMetadata metadata = {
   
   "MAXENT",          // Id.
   "Maximum Entropy", // Name.
-  "0.7",       	     // Version.
+  "0.8",       	     // Version.
 
   // Overview.
   "The principle of maximum entropy is a method for analyzing available qualitative information in order to determine a unique epistemic probability distribution. It states that the least biased distribution that encodes certain given information is that which maximizes the information entropy (content retrieved from Wikipedia on the 19th of May, 2008: http://en.wikipedia.org/wiki/Maximum_entropy).",
@@ -552,7 +552,7 @@ MaximumEntropy::initTrainer()
     }
 
     if (_threshold) {
-      _generators.push_back(new ThresholdGenerator(_presences, _background, new LinearFeature(i)));
+      _generators.push_back(new ThresholdGenerator(_presences, _background, new LinearFeature(i), false));
     }
 
     if (_hinge) {
@@ -583,7 +583,7 @@ MaximumEntropy::initTrainer()
 
   for (int i = 0; i < _samp->numIndependent(); i++) {
     if (_threshold) {
-      _generators.push_back(new ThresholdGenerator(_presences, _background, new LinearFeature(i)));
+	_generators.push_back(new ThresholdGenerator(_presences, _background, new LinearFeature(i), false));
     }
     if (_hinge) {
       _generators.push_back(new HingeGenerator(_presences, _background, new LinearFeature(i), false));
@@ -718,10 +718,6 @@ MaximumEntropy::initTrainer()
       (*it)->setUpper( maxval );
     }
 
-    Log::instance()->debug("f=%s\n", (*it)->getDescription(_samp->getEnvironment()).c_str());
-    Log::instance()->debug("Interval\nlower=%.16f\nupper=%.16f\n", (*it)->lower(), (*it)->upper());
-    Log::instance()->debug("SAMP\nmean=%.16f\nstd=%.16f\nbeta=%.16f\nmargin=%.16f\n", (*it)->mean(), (*it)->std(), (*it)->beta(), margin);
-
     (*it)->setSampExp( 0.5*((*it)->upper()+(*it)->lower()) );
 
     std_samp_dev = 0.5*((*it)->upper()-(*it)->lower());
@@ -742,9 +738,6 @@ MaximumEntropy::initTrainer()
       (*it)->setSampDev( std_samp_dev );
     }
 
-    Log::instance()->debug("exp=%.16f\n", (*it)->sampExp());
-    Log::instance()->debug("dev=%.16f\n", (*it)->sampDev());
-
     //cerr << "D avg=" << (*it)->mean() << " std=" << (*it)->std() << " min=" << minval << " max=" << maxval << " cnt=" << _num_presences << endl;
     //cerr << "D sampDev=" << (*it)->sampDev() << " sampExp=" << (*it)->sampExp() << endl;
   }
@@ -754,7 +747,7 @@ MaximumEntropy::initTrainer()
   for ( git = _generators.begin(); git != _generators.end(); ++git ) {
 
     (*git)->setSampExp( MINDEV );
-  }    
+  }
 
   _density = new double[_num_background];
 
@@ -819,17 +812,8 @@ MaximumEntropy::sequentialProc()
 
   vector<Feature*>::iterator it;
   for ( it = _features.begin(); it != _features.end(); ++it ) {
-    // debug
-    //Log::instance()->debug("exp() -> lb = %.16f\n", (*it)->exp());
-    //Log::instance()->debug("sampExp() -> lb = %.16f\n", (*it)->sampExp());
-    //Log::instance()->debug("sampDev() -> lb = %.16f\n", (*it)->sampDev());
-    //Log::instance()->debug("lambda() -> lb = %.16f\n", (*it)->lambda());
-    double dlb = lossBound( (*it)->isActive(), (*it)->exp(), (*it)->sampExp(), (*it)->sampDev(), (*it)->lambda(), (*it)->getDescription(_samp->getEnvironment()) );
 
-    //Log::instance()->debug("F %s lb = %.16E\n",(*it)->getDescription(_samp->getEnvironment()).c_str(), dlb);
-    Log::instance()->debug("@%d %s bf_loss %.16f\n", _iteration, (*it)->getDescription(_samp->getEnvironment()).c_str(), dlb);
-    // debug
-    //Log::instance()->debug("\n");
+    double dlb = lossBound( (*it)->isActive(), (*it)->exp(), (*it)->sampExp(), (*it)->sampDev(), (*it)->lambda(), (*it)->getDescription(_samp->getEnvironment()) );
 
     if (!(*it)->isActive() || (*it)->postGenerated() || dlb >= best_dlb) {
       continue;
@@ -847,13 +831,6 @@ MaximumEntropy::sequentialProc()
   for ( git = _generators.begin(); git != _generators.end(); ++git ) {
 
     for ( int j = (*git)->getFirstRef(); j < (*git)->getLastRef(); j++ ) {
-
-      if ( j == (*git)->getFirstRef() ) {
-        Log::instance()->debug("@%d ? bf_exp %.16f\n", _iteration, (*git)->exp(j));
-        Log::instance()->debug("@%d ? bf_sampExp %.16f\n", _iteration, (*git)->sampExp(j));
-        Log::instance()->debug("@%d ? bf_sampDev %.16f\n", _iteration, (*git)->sampDev(j));
-        Log::instance()->debug("@%d ? bf_lambda %.16f\n", _iteration, (*git)->lambda(j));
-      }
 
       double dlb = lossBound( true, (*git)->exp(j), (*git)->sampExp(j), (*git)->sampDev(j), (*git)->lambda(j), "G" );
 
@@ -876,8 +853,6 @@ MaximumEntropy::sequentialProc()
 
       _features.push_back( best_f );
     }
-
-    Log::instance()->debug("@%d %s bf_g_loss %.16f\n", _iteration, best_f->getDescription(_samp->getEnvironment()).c_str(), best_dlb);
   }
 
   if ( best_f == 0 ) {
