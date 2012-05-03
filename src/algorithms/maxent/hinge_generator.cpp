@@ -29,10 +29,8 @@
 
 #include <cmath>
 
-HingeGenerator::HingeGenerator(const OccurrencesPtr& presences, const OccurrencesPtr& background, LinearFeature * feature, bool reverse):FeatureGenerator(presences, background, feature)
+HingeGenerator::HingeGenerator(const OccurrencesPtr& presences, const OccurrencesPtr& background, LinearFeature * feature, bool reverse):FeatureGenerator(presences, background, feature, G_HINGE, reverse)
 {
-  _type = G_HINGE;
-  _reverse = reverse;
   _first_ref = 0;
   _last_ref = (int)_thresholds.size();
   _maxval = _vals[_vals.size()-1].second;
@@ -47,9 +45,9 @@ HingeGenerator::setSampExp( double mindev )
 
   int num_samples = _presences->numOccurrences();
 
-  double sum = 0.0;
-  double wsum1 = 0.0;
-  double wsum2 = 0.0;
+  double wsum = 0.0;
+  double sum1 = 0.0;
+  double sum2 = 0.0;
 
   double ref_min = 0.0;
   double ref_max = 1.0;
@@ -59,23 +57,15 @@ HingeGenerator::setSampExp( double mindev )
   double i_lower;
   double i_upper;
 
-  // TMP
-  int control = 0;
-
   for ( int i=(int)_vals.size()-1; i >= 0; --i ) {
 
     // Is this a sample?
     if ( (_vals.at(i)).first >= limit ) {
 
-      sum += 1.0;
-      wsum1 += _vals[i].second;
-      wsum2 += pow(_vals[i].second, 2);
-      //Log::instance()->debug("i%u (%.13f) -> sample!\n", i, _vals[i].second);
+      wsum += 1.0;
+      sum1 += _vals[i].second;
+      sum2 += pow(_vals[i].second, 2);
     }
-//     else {
-
-//       Log::instance()->debug("i%u (%.13f)-> not a sample (%d)\n", i, _vals[i].second, _vals[i].first);
-//     }
 
     int t_idx = _threshold_index[i];
 
@@ -84,16 +74,14 @@ HingeGenerator::setSampExp( double mindev )
       continue;
     }
 
-    ++control; // TMP
-
     double avg = ref_max / 2.0;
     double std = ref_max / 2.0;
 
     if ( num_samples ) {
 
-      double csum1 = (sum - _thresholds[t_idx] * wsum1) / (_maxval - _thresholds[t_idx]);
+      double csum1 = (sum1 - _thresholds[t_idx] * wsum) / (_maxval - _thresholds[t_idx]);
 
-      double csum2 = (sum - 2.0 * sum * _thresholds[t_idx] + pow(_thresholds[t_idx], 2) * wsum2) / (_maxval - _thresholds[t_idx]) / (_maxval - _thresholds[t_idx]);
+      double csum2 = (sum2 - 2.0 * sum1 * _thresholds[t_idx] + pow(_thresholds[t_idx], 2) * wsum) / (_maxval - _thresholds[t_idx]) / (_maxval - _thresholds[t_idx]);
 
       avg = csum1 / num_samples;
 
@@ -142,20 +130,6 @@ HingeGenerator::setSampExp( double mindev )
     if ( _samp_dev[t_idx] < mindev ) {
 
       _samp_dev[t_idx] = mindev;
-    }
-
-    if (control <= 2) {
-
-      Log::instance()->debug("TMP i: %u\n",  i);
-      Log::instance()->debug("TMP idx: %u\n",  t_idx);
-      Log::instance()->debug("TMP max: %.16f\n", ref_max);
-      Log::instance()->debug("TMP sum: %.16f\n", sum);
-      Log::instance()->debug("TMP wsum1: %.16f\n", wsum1);
-      Log::instance()->debug("TMP wsum2: %.16f\n", wsum2);
-      Log::instance()->debug("TMP avg: %.16f\n", avg);
-      Log::instance()->debug("TMP std: %.16f\n", std);
-      Log::instance()->debug("TMP samp_exp: %.16f\n", _samp_exp[t_idx]);
-      Log::instance()->debug("TMP samp_dev: %.16f\n", _samp_dev[t_idx]);
     }
   }
 }
