@@ -111,7 +111,7 @@ protected:
   std::vector< pair<int, Scalar> > _vals; // position, feature value
 
   std::vector<Scalar> _thresholds;
-  std::vector<Scalar> _threshold_index;
+  std::vector<int> _threshold_index;
 
   Scalar _first_samp_val;
   Scalar _last_samp_val;
