@@ -641,59 +641,41 @@ MaximumEntropy::iterate()
 void
 MaximumEntropy::initTrainer()
 {
-  Log::instance()->debug("initTrainer() called\n");
-
   _convergence_test_frequency = 20;
   _previous_loss = std::numeric_limits<double>::infinity();
 
-  /*
-  for ( int i = 0; i < _samp->numIndependent(); ++i ) {
-    _features.push_back( new LinearFeature(i) );
-
-    if ( _quadratic ) {
-      _features.push_back( new QuadraticFeature(i) );
-    }
-
-    if ( _product ) {
-      for ( int j = i+1; j < _samp->numIndependent(); ++j ) {
-	_features.push_back( new ProductFeature(i, j) );
-      }
-    }
-
-    if (_threshold) {
-      _generators.push_back(new ThresholdGenerator(_presences, _background, new LinearFeature(i), false));
-    }
-
-    if (_hinge) {
-      _generators.push_back(new HingeGenerator(_presences, _background, new LinearFeature(i), false));
-      _generators.push_back(new HingeGenerator(_presences, _background, new LinearFeature(i), true));
-    }
-  }
-  */
-  
-  // NEW
   bool deactivated_threshold_generator = false;
   bool deactivated_hinge_generator = false;
 
+  // Instantiate features 
+  // Note: this sequence of loops is not the most efficient way of doing this, 
+  // but this seems to be important in terms of getting the same results as Maxent.
   for (int i = 0; i < _samp->numIndependent(); i++) {
+
     _features.push_back(new LinearFeature(i));
   }
 
   for (int i = 0; i < _samp->numIndependent(); i++) {
+
     if (_quadratic) {
+
       _features.push_back(new QuadraticFeature(i));
     }
   }
 
   for (int i = 0; i < _samp->numIndependent(); i++) {
+
     if (_product) {
+
       for (int j = i + 1; j < _samp->numIndependent(); j++) {
+
 	_features.push_back(new ProductFeature(i, j));
       }
     }
   }
 
   for (int i = 0; i < _samp->numIndependent(); i++) {
+
     if (_threshold) {
 
       if ( (!_autofeatures) || _num_presences >= _pt_thr ) {
@@ -743,6 +725,7 @@ MaximumEntropy::initTrainer()
   bool deactivated_product_features = false;
   bool deactivated_quadratic_features = false;
 
+  // Deactivate features if necessary
   if ( _autofeatures ) {
 
     for ( it = _features.begin(); it != _features.end(); ++it ) {
@@ -763,7 +746,6 @@ MaximumEntropy::initTrainer()
       ++i;
     }
   }
-  // end NEW
 
   if ( deactivated_product_features ) {
 
@@ -957,8 +939,6 @@ MaximumEntropy::initTrainer()
   _new_loss = getLoss();
 
   _gain = 0.0;
-
-  Log::instance()->debug("initTrainer() returned\n");
 }
 
 /*******************/
@@ -967,8 +947,6 @@ MaximumEntropy::initTrainer()
 void
 MaximumEntropy::endTrainer()
 {
-  Log::instance()->debug("endTrainer called\n");
-
   // Calculate entropy
   _entropy = 0.0;
 
@@ -989,8 +967,6 @@ MaximumEntropy::endTrainer()
   delete[] _linear_pred;
 
   _done = true;
-
-  Log::instance()->debug("endTrainer() returned\n");
 }
 
 /***********************/
@@ -999,7 +975,6 @@ MaximumEntropy::endTrainer()
 double
 MaximumEntropy::sequentialProc()
 {
-  Log::instance()->debug("sequentialProc() called\n");
   double retvalue;
 
   // Determine best feature
@@ -1056,7 +1031,6 @@ MaximumEntropy::sequentialProc()
     Log::instance()->error(MAXENT_LOG_PREFIX "Could not determine best feature!\n");
     
     retvalue = 0.0;
-    Log::instance()->debug("sequentialProc() returned %.16f\n", retvalue);
     return retvalue;
   }
 
@@ -1128,7 +1102,7 @@ MaximumEntropy::sequentialProc()
   displayInfo(best_f, best_dlb, loss, delta_loss, alpha);
 
   retvalue = loss;
-  Log::instance()->debug("sequentialProc() returned %.16f\n", retvalue);
+
   return retvalue;
 }
 
@@ -1138,10 +1112,8 @@ MaximumEntropy::sequentialProc()
 double 
 MaximumEntropy::lossBound( bool active, double w1, double n1, double beta1, double lambda, std::string description )
 {
-  // Log::instance()->debug("lossBound() called\n");
-
   if ( !active ) {
-     // Log::instance()->debug("lossBound() returned 0.0\n");
+
      return 0.0;
   }
 
@@ -1166,7 +1138,6 @@ MaximumEntropy::lossBound( bool active, double w1, double n1, double beta1, doub
     }
   }
 
-  // Log::instance()->debug("lossBound() returned %.16f\n", dlb);
   return dlb;
 }
 
@@ -1176,7 +1147,6 @@ MaximumEntropy::lossBound( bool active, double w1, double n1, double beta1, doub
 double
 MaximumEntropy::parallelProc()
 {
-  Log::instance()->debug("parallelProc() called\n");
   double retvalue;
 
   // Calculate alphas for each feature
@@ -1203,8 +1173,6 @@ MaximumEntropy::parallelProc()
   }
 
   // Newton step
-
-  Log::instance()->debug("runNewtonStep(alphas) called\n");
 
   double th = 0.0;
   double ty = 0.0;
@@ -1276,8 +1244,6 @@ MaximumEntropy::parallelProc()
     }
   }
 
-  Log::instance()->debug("runNewtonStep(alphas) returned %.16f\n", step);
-
   // Revise alpha
   for ( unsigned int i = 0; i < _features.size(); ++i ) {
 
@@ -1314,7 +1280,7 @@ MaximumEntropy::parallelProc()
   delete[] sum;
 
   retvalue = loss;
-  Log::instance()->debug("parallelProc() returned %.16f\n", retvalue);
+
   return loss;
 }
 
@@ -1562,9 +1528,6 @@ MaximumEntropy::calcDensity( vector<Feature*> to_update )
 double
 MaximumEntropy::getAlpha( double w1, double n1, double beta1, double lambda, std::string description )
 {
-  //Log::instance()->debug("getAlpha() called\n");
-  double retvalue;
-
   double alpha = 0.0;
   double w0 = 1.0 - w1;
   double n0 = 1.0 - n1;
@@ -1606,9 +1569,7 @@ MaximumEntropy::getAlpha( double w1, double n1, double beta1, double lambda, std
     }
   }
 
-  retvalue = alpha;
-  //Log::instance()->debug("getAlpha() returned %.16f\n", retvalue);
-  return retvalue;
+  return alpha;
 }
 
 /********************/
@@ -1617,9 +1578,6 @@ MaximumEntropy::getAlpha( double w1, double n1, double beta1, double lambda, std
 double 
 MaximumEntropy::searchAlpha( Feature * f, double alpha )
 {
-  Log::instance()->debug("searchAlpha() called\n");
-  double retvalue;
-
   double ini_loss = lossChange( f, alpha );
   double current_loss = ini_loss;
   double tentative_loss;
@@ -1645,9 +1603,7 @@ MaximumEntropy::searchAlpha( Feature * f, double alpha )
     alpha *= 2.0;
   }
 
-  retvalue = alpha;
-  Log::instance()->debug("searchAlpha() returned %.16f\n", retvalue);
-  return retvalue;
+  return alpha;
 }
 
 /*******************/
@@ -1656,9 +1612,6 @@ MaximumEntropy::searchAlpha( Feature * f, double alpha )
 double 
 MaximumEntropy::lossChange( Feature * f, double alpha )
 {
-  Log::instance()->debug("lossChange() called\n");
-  double retvalue;
-
   double lambda = f->lambda();
   double n1 = f->sampExp();
   double beta1 = f->sampDev();
@@ -1681,9 +1634,7 @@ MaximumEntropy::lossChange( Feature * f, double alpha )
 
   change = -alpha * n1 + log(zz) + (fabs(lambda + alpha) - fabs(lambda)) * beta1;
  
-  retvalue = change;
-  Log::instance()->debug("lossChange() returned %.16f\n", retvalue);
-  return retvalue;
+  return change;
 }
 
 /***********************/
@@ -1691,8 +1642,6 @@ MaximumEntropy::lossChange( Feature * f, double alpha )
 
 double 
 MaximumEntropy::runNewtonStep( Feature * f ) {
-  Log::instance()->debug("runNewtonStep(Feature) called\n");
-  double retvalue;
 
   double w1 = f->exp();
   double wu = 0.0;
@@ -1714,9 +1663,8 @@ MaximumEntropy::runNewtonStep( Feature * f ) {
   wu = wu / _z_lambda - pow(w1, 2);
 
   if ( wu < 1.0e-12 ) {
-    retvalue = 0.0;
-    Log::instance()->debug("runNewtonStep(Feature) returned %.16f\n", retvalue);
-    return retvalue;
+
+    return 0.0;
   }
 
   double step = -getDeriv(f) / wu;
@@ -1728,9 +1676,7 @@ MaximumEntropy::runNewtonStep( Feature * f ) {
     step = -lambda;
   }
 
-  retvalue = step;
-  Log::instance()->debug("runNewtonStep(Feature) returned %.16f\n", retvalue);
-  return retvalue;
+  return step;
 }
 
 /*****************/
@@ -1739,9 +1685,6 @@ MaximumEntropy::runNewtonStep( Feature * f ) {
 double
 MaximumEntropy::getDeriv( Feature * f )
 {
-  Log::instance()->debug("getDeriv() called\n");
-  double retvalue;
-
   double w1 = f->exp();
   double n1 = f->sampExp();
   double beta1 = f->sampDev();
@@ -1751,32 +1694,26 @@ MaximumEntropy::getDeriv( Feature * f )
   Log::instance()->debug("f: %s w1=%.16f n1=%.16f beta1=%.16f lambda=%.16f\n", f->getDescription(_samp->getEnvironment()).c_str(), w1, n1, beta1, lambda);
 
   if ( lambda < 0.0 ) {
-    retvalue = deriv - beta1;
-    Log::instance()->debug("getDeriv() returned %.16f\n", retvalue);
-    return retvalue;
+
+    return deriv - beta1;
   }
 
   if ( lambda > 0.0 ) {
-    retvalue = deriv + beta1;
-    Log::instance()->debug("getDeriv() returned %.16f\n", retvalue);
-    return retvalue;
+
+    return deriv + beta1;
   }
 
   if ( deriv + beta1 > 0.0 ) {
-    retvalue = deriv + beta1;
-    Log::instance()->debug("getDeriv() returned %.16f\n", retvalue);
-    return retvalue;
+
+    return deriv + beta1;
   }
 
   if ( deriv - beta1 < 0.0 ) {
-    retvalue = deriv - beta1;
-    Log::instance()->debug("getDeriv() returned %.16f\n", retvalue);
-    return retvalue;
+
+    return deriv - beta1;
   }
 
-  retvalue = 0.0;
-  Log::instance()->debug("getDeriv() returned %.16f\n", retvalue);
-  return retvalue;
+  return 0.0;
 }
 
 /******************/
@@ -1785,8 +1722,6 @@ MaximumEntropy::getDeriv( Feature * f )
 void
 MaximumEntropy::updateReg()
 {
-  Log::instance()->debug("updateReg() called\n");
-
   double sum = 0.0;
 
   vector<Feature*>::iterator it;
@@ -1796,7 +1731,6 @@ MaximumEntropy::updateReg()
   }
 
   _reg = sum;
-  Log::instance()->debug("updateReg() calculated %.16f\n", _reg);
 }
 
 /******************/
@@ -1805,13 +1739,10 @@ MaximumEntropy::updateReg()
 void
 MaximumEntropy::updateReg( Feature * f, double alpha )
 {
-  Log::instance()->debug("updateReg(Feature, alpha) called\n");
-
   double beta1 = f->sampDev();
   double lambda = f->lambda();
 
   _reg += ( fabs(lambda + alpha) - fabs(lambda) ) * beta1;
-  Log::instance()->debug("updateReg(Feature, alpha) calculated %.16f\n", _reg);
 }
 
 /***********************/
@@ -1820,9 +1751,6 @@ MaximumEntropy::updateReg( Feature * f, double alpha )
 double 
 MaximumEntropy::increaseLambda( Feature * f, double alpha, vector<Feature*> to_update )
 {
-  Log::instance()->debug("increaseLambda() called\n");
-  double retvalue;
-
   if ( alpha != 0.0 ) {
 
     double lambda = f->lambda();
@@ -1851,9 +1779,7 @@ MaximumEntropy::increaseLambda( Feature * f, double alpha, vector<Feature*> to_u
     calcDensity( to_update );
   }
 
-  retvalue = getLoss();
-  Log::instance()->debug("increaseLambda() returned %.16f\n", retvalue);
-  return retvalue;
+  return getLoss();
 }
 
 /***********************/
@@ -1862,9 +1788,6 @@ MaximumEntropy::increaseLambda( Feature * f, double alpha, vector<Feature*> to_u
 double
 MaximumEntropy::increaseLambda( double* alpha, vector<Feature*> to_update )
 {
-  Log::instance()->debug("increaseLambda() called\n");
-  double retvalue;
-
   double lambda;
 
   for ( unsigned int i = 0; i < _features.size(); ++i ) {
@@ -1897,9 +1820,7 @@ MaximumEntropy::increaseLambda( double* alpha, vector<Feature*> to_update )
   calcDensity( to_update );
   updateReg();
 
-  retvalue = getLoss();
-  Log::instance()->debug("increaseLambda() returned %.16f\n", retvalue);
-  return retvalue;
+  return getLoss();
 }
 
 /********************/
@@ -1952,28 +1873,20 @@ MaximumEntropy::terminationTest(double new_loss)
 double
 MaximumEntropy::decreaseAlpha(double alpha)
 {
-  Log::instance()->debug("decreaseAlpha() called\n");
-  double retvalue;
-
   if ( _iteration < 10 ) {
-    retvalue = alpha / 50.0;
-    Log::instance()->debug("decreaseAlpha() returned %.16f\n", retvalue);
-    return retvalue;
+
+    return alpha / 50.0;
   }
   if ( _iteration < 20 ) {
-    retvalue = alpha / 10.0;
-    Log::instance()->debug("decreaseAlpha() returned %.16f\n", retvalue);
-    return retvalue;
+
+    return alpha / 10.0;
   }
   if ( _iteration < 50 ) {
-    retvalue = alpha / 3.0;
-    Log::instance()->debug("decreaseAlpha() returned %.16f\n", retvalue);
-    return retvalue;
+
+    return alpha / 3.0;
   }
 
-  retvalue = alpha;
-  Log::instance()->debug("decreaseAlpha() returned %.16f\n", retvalue);
-  return retvalue;
+  return alpha;
 }
 
 /****************/
@@ -1982,14 +1895,12 @@ MaximumEntropy::decreaseAlpha(double alpha)
 double
 MaximumEntropy::getLoss()
 {
-  Log::instance()->debug("getLoss() called\n");
   double retvalue;
   double sum_mid_lambda = 0.0;
 
   vector<Feature*>::iterator it;
   for ( it = _features.begin(); it != _features.end(); ++it ) {
 
-    // Log::instance()->debug( "lambda %.16f exp %.16f \n", (*it)->lambda(), (*it)->sampExp() );
     sum_mid_lambda += (*it)->sampExp() * (*it)->lambda();
   }
 
@@ -2004,8 +1915,6 @@ MaximumEntropy::getLoss()
 vector<Feature*> 
 MaximumEntropy::featuresToUpdate()
 {
-  Log::instance()->debug("featuresToUpdate() called\n");
-
   int j = 0;
   vector< pair<int, double> > lb;
   vector<Feature*> to_update;
@@ -2042,8 +1951,6 @@ MaximumEntropy::featuresToUpdate()
       to_update_idx.push_back(lbit->first);
     }
   }
-
-  Log::instance()->debug("featuresToUpdate() returned\n");
 
   return to_update;
 }
