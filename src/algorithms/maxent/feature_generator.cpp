@@ -143,8 +143,6 @@ FeatureGenerator::FeatureGenerator(const OccurrencesPtr& presences, const Occurr
   _samp_exp.assign(t_idx, 0.0);
   _samp_dev.reserve(t_idx);
   _samp_dev.assign(t_idx, 0.0);
-
-  Log::instance()->debug("Num thresholds: %u\n", _thresholds.size());
 }
 
 FeatureGenerator::~FeatureGenerator()
@@ -152,8 +150,6 @@ FeatureGenerator::~FeatureGenerator()
   delete _feature;
 
   unsigned int n = _features.size();
-
-  Log::instance()->debug("Deallocating %d features\n", n);
 
   for (unsigned int i = 0; i < n; ++i) {
 
