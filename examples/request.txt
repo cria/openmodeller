@@ -237,6 +237,11 @@ Output file type = ByteHFA
 #Parameter = HingeFeatures 1
 # Valid values: enable = 1, disable = 0
 #Parameter = ThresholdFeatures 1
+# Valid values: enable = 1, disable = 0
+#Parameter = AutoFeatures 1
+#Parameter = MinSamplesForProductThreshold 80
+#Parameter = MinSamplesForQuadratic 10
+#Parameter = MinSamplesForHinge 15
 
 ########
 # Artificial Neural Networks
