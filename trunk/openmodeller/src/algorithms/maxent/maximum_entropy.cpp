@@ -64,7 +64,7 @@ using std::pair;
 /****************************************************************/
 /********************** Algorithm's Metadata ********************/
 
-#define NUM_PARAM 10
+#define NUM_PARAM 14
 
 #define BACKGROUND_ID      "NumberOfBackgroundPoints"
 #define USE_ABSENCES_ID    "UseAbsencesAsBackground"
@@ -76,6 +76,10 @@ using std::pair;
 #define PRODUCT_ID         "ProductFeatures"
 #define HINGE_ID           "HingeFeatures"
 #define THRESHOLD_ID       "ThresholdFeatures"
+#define AUTOFEATURES_ID    "AutoFeatures"
+#define PT_THR_ID          "MinSamplesForProductThreshold"
+#define Q_THR_ID           "MinSamplesForQuadratic"
+#define HINGE_THR_ID       "MinSamplesForHinge"
 
 #define MAXENT_LOG_PREFIX "Maxent: "
 
@@ -221,6 +225,58 @@ static AlgParamMetadata parameters[NUM_PARAM] = {
     1,  // Parameter's upper limit
     "1" // Parameter's typical (default) value
   },
+  // Auto features
+  {
+    AUTOFEATURES_ID, // Id.
+    "Auto features", // Name
+    Integer,         // Type
+    "Enable auto features (0=no, 1=yes)", // Overview
+    "Enable auto features (0=no, 1=yes)", // Description
+    1,  // Not zero if the parameter has lower limit
+    0,  // Parameter's lower limit
+    1,  // Not zero if the parameter has upper limit
+    1,  // Parameter's upper limit
+    "1" // Parameter's typical (default) value
+  },
+  // Product/threshold threshold
+  {
+    PT_THR_ID,                    // Id.
+    "Product/threshold threshod", // Name.
+    Integer,                      // Type.
+    "Number of samples at which product and threshold features start being used.", // Overview
+    "Number of samples at which product and threshold features start being used (only when auto features is enabled).", // Description.
+    1,      // Not zero if the parameter has lower limit.
+    1,      // Parameter's lower limit.
+    0,      // Not zero if the parameter has upper limit.
+    0,      // Parameter's upper limit.
+    "80"    // Parameter's typical (default) value.
+  },
+  // Quadratic threshold
+  {
+    Q_THR_ID,              // Id.
+    "Quadratic threshold", // Name.
+    Integer,               // Type.
+    "Number of samples at which quadratic features start being used.", // Overview
+    "Number of samples at which quadratic features start being used (only when auto features is enabled).", // Description.
+    1,      // Not zero if the parameter has lower limit.
+    1,      // Parameter's lower limit.
+    0,      // Not zero if the parameter has upper limit.
+    0,      // Parameter's upper limit.
+    "10"    // Parameter's typical (default) value.
+  },
+  // Hinge threshold
+  {
+    HINGE_THR_ID,      // Id.
+    "Hinge threshold", // Name.
+    Integer,           // Type.
+    "Number of samples at which hinge features start being used.", // Overview
+    "Number of samples at which hinge features start being used (only when auto features is enabled).", // Description.
+    1,      // Not zero if the parameter has lower limit.
+    1,      // Parameter's lower limit.
+    0,      // Not zero if the parameter has upper limit.
+    0,      // Parameter's upper limit.
+    "15"    // Parameter's typical (default) value.
+  },
 };
 
 /************************************/
@@ -230,7 +286,7 @@ static AlgMetadata metadata = {
   
   "MAXENT",          // Id.
   "Maximum Entropy", // Name.
-  "0.8",       	     // Version.
+  "0.9",       	     // Version.
 
   // Overview.
   "The principle of maximum entropy is a method for analyzing available qualitative information in order to determine a unique epistemic probability distribution. It states that the least biased distribution that encodes certain given information is that which maximizes the information entropy (content retrieved from Wikipedia on the 19th of May, 2008: http://en.wikipedia.org/wiki/Maximum_entropy).",
@@ -284,7 +340,10 @@ MaximumEntropy::MaximumEntropy() :
   _change(10),
   _updateInterval(20),
   _select(5),
-  _autofeature(false)
+  _autofeatures(false),
+  _pt_thr(80),
+  _q_thr(10),
+  _hinge_thr(15)
 { 
   cerr.precision(17);
 }
@@ -400,6 +459,56 @@ MaximumEntropy::initialize()
   if ( getParameter( THRESHOLD_ID, &threshold ) && threshold == 0 ) {
 
     _threshold = false;
+  }
+
+  // Auto features
+  _autofeatures = true;
+  int autofeatures;
+  if ( getParameter( AUTOFEATURES_ID, &autofeatures ) && autofeatures == 0 ) {
+
+    _autofeatures = false;
+  }
+
+  if ( _autofeatures ) {
+
+    // Product & threshold threshold
+    if ( ! getParameter( PT_THR_ID, &_pt_thr ) ) {
+
+      _pt_thr = 80;
+    }
+    else {
+
+      if ( _pt_thr < 1 ) {
+      
+        _pt_thr = 1;
+      }
+    }  
+
+    // Quadratic threshold
+    if ( ! getParameter( Q_THR_ID, &_q_thr ) ) {
+
+      _q_thr = 10;
+    }
+    else {
+
+      if ( _q_thr < 1 ) {
+      
+        _q_thr = 1;
+      }
+    }  
+
+    // Hinge threshold
+    if ( ! getParameter( HINGE_THR_ID, &_hinge_thr ) ) {
+
+      _hinge_thr = 15;
+    }
+    else {
+
+      if ( _hinge_thr < 1 ) {
+      
+        _hinge_thr = 1;
+      }
+    }  
   }
 
   bool use_absences_as_background = false;
@@ -563,6 +672,9 @@ MaximumEntropy::initTrainer()
   */
   
   // NEW
+  bool deactivated_threshold_generator = false;
+  bool deactivated_hinge_generator = false;
+
   for (int i = 0; i < _samp->numIndependent(); i++) {
     _features.push_back(new LinearFeature(i));
   }
@@ -583,27 +695,102 @@ MaximumEntropy::initTrainer()
 
   for (int i = 0; i < _samp->numIndependent(); i++) {
     if (_threshold) {
-	_generators.push_back(new ThresholdGenerator(_presences, _background, new LinearFeature(i), false));
+
+      if ( (!_autofeatures) || _num_presences >= _pt_thr ) {
+
+        _generators.push_back(new ThresholdGenerator(_presences, _background, new LinearFeature(i), false));
+      }
+      else {
+
+        if ( _autofeatures ) {
+
+          deactivated_threshold_generator = true;
+        }
+      }
     }
     if (_hinge) {
-      _generators.push_back(new HingeGenerator(_presences, _background, new LinearFeature(i), false));
-      _generators.push_back(new HingeGenerator(_presences, _background, new LinearFeature(i), true));
+
+      if ( (!_autofeatures) || _num_presences >= _hinge_thr ) {
+
+        _generators.push_back(new HingeGenerator(_presences, _background, new LinearFeature(i), false));
+        _generators.push_back(new HingeGenerator(_presences, _background, new LinearFeature(i), true));
+      }
+      else {
+
+        if ( _autofeatures ) {
+
+          deactivated_hinge_generator = true;
+        }
+      }
+    }
+  }
+
+  if ( deactivated_threshold_generator ) {
+
+    Log::instance()->warn( MAXENT_LOG_PREFIX "Threshold feature generator deactivated due to low number of presence points.\n" );
+  }
+
+  if ( deactivated_hinge_generator ) {
+
+    Log::instance()->warn( MAXENT_LOG_PREFIX "Hinge feature generator deactivated due to low number of presence points.\n" );
+  }
+
+  int i = 0;
+  vector<Feature*>::iterator it;
+
+  unsigned int active_features = _features.size();
+
+  bool deactivated_product_features = false;
+  bool deactivated_quadratic_features = false;
+
+  if ( _autofeatures ) {
+
+    for ( it = _features.begin(); it != _features.end(); ++it ) {
+
+      if ( (*it)->type() == F_PRODUCT && _num_presences < _pt_thr ) {
+
+        (*it)->deactivate();
+        --active_features;
+        deactivated_product_features = true;
+      }
+      else if ( (*it)->type() == F_QUADRATIC && _num_presences < _q_thr ) {
+
+        (*it)->deactivate();
+        --active_features;
+        deactivated_quadratic_features = true;
+      }
+
+      ++i;
     }
   }
   // end NEW
 
-  unsigned int n = _features.size();
-  Log::instance()->debug("Using %d features\n", n);
+  if ( deactivated_product_features ) {
+
+    Log::instance()->warn( MAXENT_LOG_PREFIX "Product features deactivated due to low number of presence points.\n" );
+  }
+
+  if ( deactivated_quadratic_features ) {
+
+    Log::instance()->warn( MAXENT_LOG_PREFIX "Quadratic features deactivated due to low number of presence points.\n" );
+  }
+
+  if ( active_features == 0 ) {
+
+    Log::instance()->error( MAXENT_LOG_PREFIX "No features available. Select more feature types or deselect auto features.\n" );
+  }
+
+  unsigned int n = active_features;
+  Log::instance()->debug("Using %d features\n", active_features);
 
   // Normalize features
   OccurrencesImpl::const_iterator b_iterator = _background->begin();
   OccurrencesImpl::const_iterator b_end = _background->end();
-  vector<Feature*>::iterator it;
-  int i = 0;
   Sample ref(n);
   Sample smin(n);
   Sample smax(n);
   Scalar raw_val;
+  i = 0;
 
   while ( b_iterator != b_end ) {
     
@@ -1172,7 +1359,7 @@ MaximumEntropy::assignBetas()
   vector<int> ts;
   vector<double> betas;
 
-  if ( _product && !_autofeature ) {
+  if ( _product && ((!_autofeatures) || _num_presences >= _pt_thr) ) {
 
     int ts_l[] = { 0, 10, 17, 30, 100 };
     ts.assign( ts_l, ts_l + 5 );
@@ -1182,7 +1369,7 @@ MaximumEntropy::assignBetas()
   }
   else {
 
-    if ( _quadratic && !_autofeature ) {
+    if ( _quadratic && ((!_autofeatures) || _num_presences >= _q_thr) ) {
 
       int ts_l[] = { 0, 10, 17, 30, 100 };
       ts.assign( ts_l, ts_l + 5 );

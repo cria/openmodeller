@@ -135,7 +135,10 @@ protected:
   bool _product;
   bool _hinge;
   bool _threshold;
-  bool _autofeature;
+  bool _autofeatures;
+  int _pt_thr;
+  int _q_thr;
+  int _hinge_thr;
 
   vector<Feature*> _features;
   vector<FeatureGenerator*> _generators;
