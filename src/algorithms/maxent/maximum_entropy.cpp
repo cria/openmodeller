@@ -800,6 +800,11 @@ MaximumEntropy::initTrainer()
     i = 0;
     for ( it = _features.begin(); it != _features.end(); ++it ) {
 
+      if ( !(*it)->isActive() ) {
+
+        continue;
+      }
+
       if ( (*it)->isNormalizable() ) {
 
         raw_val = (*it)->getRawVal(sample);
@@ -829,6 +834,11 @@ MaximumEntropy::initTrainer()
   // Set final min and max values
   i = 0;
   for ( it = _features.begin(); it != _features.end(); ++it ) {
+
+    if ( !(*it)->isActive() ) {
+
+      continue;
+    }
 
     if ( (*it)->isNormalizable() ) {
 
