@@ -1089,7 +1089,6 @@ MaximumEntropy::sequentialProc()
   best_f->setLastChange( _iteration );
 
   vector<Feature*> to_update = featuresToUpdate();
-  best_dlb = lossBound( best_f->isActive(), best_f->exp(), best_f->sampExp(), best_f->sampDev(), best_f->lambda(), best_f->getDescription(_samp->getEnvironment()) );
 
   double loss;
   double delta_loss;
