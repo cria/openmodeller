@@ -418,15 +418,16 @@ RCP_WRAP( AverageModelPtr, AverageModelImpl );
 class Projector {
 public:
 %extend {
-  static void createMap( const ReferenceCountedPointer<AverageModelImpl>& model, const EnvironmentPtr& env, char *filename, CallbackWrapper *callbackWrapper = 0 )
+  static void createMap( Model model, const EnvironmentPtr& env, char *filename )
   {
+    CallbackWrapper *callbackWrapper = 0;
     MapFormat mf;
     Map *mask = env->getMask();
     if (!mask)
       mask = env->getLayer(0);
     mf.copyDefaults( *mask );
     Map map( RasterFactory::instance().create( filename, mf ) );
-    Projector::createMap( Model(model), env, &map, 0, callbackWrapper );
+    Projector::createMap( model, env, &map, 0, callbackWrapper );
   }
 } // %extend
 private:
