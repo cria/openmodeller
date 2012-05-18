@@ -224,7 +224,6 @@ private:
 %define RCP_CONST_TYPEMAP( const_type, nonconst_type )
 %typemap(in) const const_type &
 {
-  //%typemap(in) const const_type &
   if ( ((SWIG_ConvertPtr($input, (void**) &$1, $1_descriptor, SWIG_POINTER_EXCEPTION | 0 )) == -1)
        &&
        ((SWIG_ConvertPtr($input, (void**) &$1, $descriptor( nonconst_type *), SWIG_POINTER_EXCEPTION | 0 )) == -1)
@@ -345,14 +344,6 @@ RCP_CONST_TYPEMAP( ConstOccurrencesPtr, OccurrencesPtr );
 %rename ( getOccurrence ) OccurrencesImpl::operator[];
 
 %include "openmodeller/Occurrences.hh"
-
-%extend OccurrencesImpl {
-
-  void insert(ConstOccurrencePtr *occ) {
-
-    self->insert(*occ);
-  }
-}
 
 %inline %{
   ReferenceCountedPointer<OccurrencesImpl> createOccurrences( char *species_name, char *cs ) {
