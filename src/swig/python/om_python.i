@@ -45,6 +45,7 @@
 %include "std_vector.i"
 
 %init %{
+  Log::instance()->setLevel(Log::Default);
   AlgorithmFactory::searchDefaultDirs();
 %}
 
@@ -238,7 +239,6 @@ private:
 }
 %typecheck(SWIG_TYPECHECK_POINTER) const const_type &
 {
-  //%typecheck(SWIG_TYPECHECK_POINTER) const const_type &
   void *ptr;
   if (SWIG_ConvertPtr($input, (void**) &ptr, $descriptor( nonconst_type *) , 0 ) == -1)
   {
