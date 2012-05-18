@@ -368,29 +368,37 @@ SamplerImpl::getOneSample( ) const
   return getPseudoAbsence();
 }
 
-/**************************/
-/*** get Pseudo Absence ***/
+/******************************/
+/*** generate Random Sample ***/
 ConstOccurrencePtr
-SamplerImpl::getPseudoAbsence() const 
+SamplerImpl::generateRandomSample(Scalar abundance) const 
 {
   if ( ! _env ) {
 
-    std::string msg = "Cannot generate pseudo absences without setting the Environment object.\n";
+    std::string msg = "Cannot generate random samples without an Environment object.\n";
 
     Log::instance()->error( msg.c_str() );
 
     throw SamplerException( msg );
   }
 
-  // Get a random pseudo-absence point.
-  static const Sample absenceSample( numDependent() );
+  // Generate a random sample
+  static const Sample mysample( numDependent() );
   Coord x,y;
 
   Sample env( _env->getRandom( &x, &y ) );
 
-  ConstOccurrencePtr oc = new OccurrenceImpl( "?", x, y, 0.0, 0.0, absenceSample, env );
+  ConstOccurrencePtr oc = new OccurrenceImpl( "?", x, y, 0.0, abundance, mysample, env );
 
   return oc;
+}
+
+/**************************/
+/*** get Pseudo Absence ***/
+ConstOccurrencePtr
+SamplerImpl::getPseudoAbsence() const 
+{
+  return generateRandomSample(0.0);
 }
 
 /**************************/
