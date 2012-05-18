@@ -339,13 +339,20 @@ RCP_CONST_TYPEMAP( ConstOccurrencesPtr, OccurrencesPtr );
 
 %ignore ConstOccurrencesPtr;
 
-%ignore OccurrencesImpl;
 %ignore OccurrencesImpl::print;
 %ignore OccurrencesImpl::begin;
 %ignore OccurrencesImpl::end;
 %rename ( getOccurrence ) OccurrencesImpl::operator[];
 
 %include "openmodeller/Occurrences.hh"
+
+%extend OccurrencesImpl {
+
+  void insert(ConstOccurrencePtr *occ) {
+
+    self->insert(*occ);
+  }
+}
 
 %inline %{
   ReferenceCountedPointer<OccurrencesImpl> createOccurrences( char *species_name, char *cs ) {
