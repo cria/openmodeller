@@ -370,7 +370,7 @@ SamplerImpl::getOneSample( ) const
 
 /******************************/
 /*** generate Random Sample ***/
-ConstOccurrencePtr
+OccurrencePtr
 SamplerImpl::generateRandomSample(Scalar abundance) const 
 {
   if ( ! _env ) {
@@ -388,14 +388,14 @@ SamplerImpl::generateRandomSample(Scalar abundance) const
 
   Sample env( _env->getRandom( &x, &y ) );
 
-  ConstOccurrencePtr oc = new OccurrenceImpl( "?", x, y, 0.0, abundance, mysample, env );
+  OccurrencePtr oc = new OccurrenceImpl( "?", x, y, 0.0, abundance, mysample, env );
 
   return oc;
 }
 
 /**************************/
 /*** get Pseudo Absence ***/
-ConstOccurrencePtr
+OccurrencePtr
 SamplerImpl::getPseudoAbsence() const 
 {
   return generateRandomSample(0.0);
@@ -403,12 +403,12 @@ SamplerImpl::getPseudoAbsence() const
 
 /**************************/
 /*** get Pseudo Absence ***/
-ConstOccurrencePtr 
+OccurrencePtr 
 SamplerImpl::getPseudoAbsence( const Model& model, const Scalar threshold ) const
 {
    double prob = 0.0;
 
-   ConstOccurrencePtr occ;
+   OccurrencePtr occ;
 
    int max_loop = 5000;
 
@@ -441,12 +441,12 @@ SamplerImpl::getPseudoAbsence( const Model& model, const Scalar threshold ) cons
 
 /**************************/
 /*** get Pseudo Absence ***/
-ConstOccurrencePtr 
+OccurrencePtr 
 SamplerImpl::getPseudoAbsenceOutsideInterval( const Sample * minimum, const Sample * maximum ) const
 {
    bool not_found = true;
 
-   ConstOccurrencePtr occ;
+   OccurrencePtr occ;
    Sample x;
 
    int max_loop = 5000;
@@ -497,7 +497,7 @@ SamplerImpl::getPseudoAbsences( const int& numPoints, const Model& model, const 
 
    do
    {
-     ConstOccurrencePtr point;
+     OccurrencePtr point;
 
      if ( model ) {
 
@@ -572,7 +572,7 @@ SamplerImpl::getPseudoAbsences( const int& numPoints, const Sample * minimum, co
 
    do
    {
-     ConstOccurrencePtr point;
+     OccurrencePtr point;
 
      point = getPseudoAbsenceOutsideInterval( minimum, maximum );
 

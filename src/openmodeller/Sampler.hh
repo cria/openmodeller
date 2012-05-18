@@ -167,22 +167,22 @@ public:
   /**
    * Generate a random sample
    */
-  ConstOccurrencePtr generateRandomSample( Scalar abundance=1.0 ) const;
+  OccurrencePtr generateRandomSample( Scalar abundance=1.0 ) const;
 
   /**
    * Generate a pseudo absence sample
    */
-  ConstOccurrencePtr getPseudoAbsence() const;
+  OccurrencePtr getPseudoAbsence() const;
 
   /**
    * Generate a pseudo absence sample outside the given model
    */
-  ConstOccurrencePtr getPseudoAbsence( const Model& model, const Scalar threshold ) const;
+  OccurrencePtr getPseudoAbsence( const Model& model, const Scalar threshold ) const;
 
   /**
    * Generate a pseudo absence sample outside the minimum and maximum
    */
-  ConstOccurrencePtr getPseudoAbsenceOutsideInterval( const Sample * minimum, const Sample * maximum ) const;
+  OccurrencePtr getPseudoAbsenceOutsideInterval( const Sample * minimum, const Sample * maximum ) const;
 
   /**
    * Generate pseudo absence samples
