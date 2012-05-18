@@ -165,27 +165,32 @@ public:
   { return _absence->operator[]( index ); }
 
   /**
-   * Get one pseudoAbsence point
+   * Generate a random sample
+   */
+  ConstOccurrencePtr generateRandomSample( Scalar abundance=1.0 ) const;
+
+  /**
+   * Generate a pseudo absence sample
    */
   ConstOccurrencePtr getPseudoAbsence() const;
 
   /**
-   * Get one pseudoAbsence point
+   * Generate a pseudo absence sample outside the given model
    */
   ConstOccurrencePtr getPseudoAbsence( const Model& model, const Scalar threshold ) const;
 
   /**
-   * Get one pseudoAbsence point outside the minimum and maximum
+   * Generate a pseudo absence sample outside the minimum and maximum
    */
   ConstOccurrencePtr getPseudoAbsenceOutsideInterval( const Sample * minimum, const Sample * maximum ) const;
 
   /**
-   * Get a set of pseudoAbsence points
+   * Generate pseudo absence samples
    */
   OccurrencesPtr getPseudoAbsences( const int& numPoints, const Model& model, const Scalar threshold=0.5, const bool geoUnique=false, const bool envUnique=false) const;
 
   /**
-   * Get a set of pseudoAbsence points
+   * Generate pseudo absence samples
    */
   OccurrencesPtr getPseudoAbsences( const int& numPoints, const Sample * minimum, const Sample * maximum, const bool geoUnique=false, const bool envUnique=false) const;
 
