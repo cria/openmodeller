@@ -987,6 +987,8 @@ MaximumEntropy::sequentialProc()
 
     double dlb = lossBound( (*it)->isActive(), (*it)->exp(), (*it)->sampExp(), (*it)->sampDev(), (*it)->lambda(), (*it)->getDescription(_samp->getEnvironment()) );
 
+    Log::instance()->debug("@%d %s bf_loss %.16f\n", _iteration, (*it)->getDescription(_samp->getEnvironment()).c_str(), dlb);
+
     if (!(*it)->isActive() || (*it)->postGenerated() || dlb >= best_dlb) {
       continue;
     }
@@ -1117,6 +1119,10 @@ MaximumEntropy::lossBound( bool active, double w1, double n1, double beta1, doub
 
      return 0.0;
   }
+
+  Log::instance()->debug("@%d %s bf_exp %.16f\n", _iteration, description.c_str(), w1);
+  Log::instance()->debug("@%d %s bf_sampExp %.16f\n", _iteration, description.c_str(), n1);
+  Log::instance()->debug("@%d %s bf_sampDev %.16f\n", _iteration, description.c_str(), beta1);
 
   // Calculate delta loss bound
   double dlb = 0;
