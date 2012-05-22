@@ -318,6 +318,20 @@ RCP_WRAP( SamplerPtr, SamplerImpl );
 
 %include "openmodeller/Sampler.hh"
 
+%ignore Sample::operator=;
+%ignore Sample::operator[];
+%ignore operator==(const Sample&, const Sample&);
+%ignore operator!=(const Sample&, const Sample&);
+%ignore operator<<(std::ostream&,const Sample&);
+%ignore operator>>(std::istream&, Sample&);
+%include "openmodeller/Sample.hh"
+
+%extend Sample {
+    Scalar getVal(int i) {
+         return self->operator[](i);
+    }
+};
+
 //*****************************************************************************
 //
 // Occurrences.
