@@ -46,6 +46,7 @@
 
 %init %{
   Log::instance()->setLevel(Log::Default);
+  //Log::instance()->set(Log::Default, "log.txt", "");
   AlgorithmFactory::searchDefaultDirs();
 %}
 
@@ -355,7 +356,13 @@ RCP_CONST_TYPEMAP( ConstOccurrencesPtr, OccurrencesPtr );
 %ignore OccurrencesImpl::print;
 %ignore OccurrencesImpl::begin;
 %ignore OccurrencesImpl::end;
-%rename ( getOccurrence ) OccurrencesImpl::operator[];
+%ignore OccurrencesImpl::operator[];
+%extend OccurrencesImpl {
+    OccurrencePtr getOccurrence(int i) {
+         ConstOccurrencePtr occ= self->operator[](i);
+         return new OccurrenceImpl(occ->id(), occ->x(), occ->y(), occ->error(), occ->abundance(), occ->attributes(), occ->environment());
+    }
+};
 
 %include "openmodeller/Occurrences.hh"
 
