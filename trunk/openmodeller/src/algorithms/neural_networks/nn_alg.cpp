@@ -381,45 +381,41 @@ NNAlgorithm::initialize()
   }
   else {
 
-    Log::instance()->debug( NN_LOG_PREFIX "It is not necessary to generate pseudo-absences because it does exist absence points.\n" );
+    Log::instance()->debug( NN_LOG_PREFIX "Using absence points provided.\n" );
 
     // should be normalized already
     absences = _samp->getAbsences();
   }
 
   // Presence Points
-  std::vector<Sample> _presencePoints;
-  
-  vector_input.resize(10000); // initialize vector_input
-  for (int i = 0; i < 500; ++i) {
-      vector_input[i].resize(500, 0);
+  vector_input.resize(num_presences + num_absences); // initialize vector_input
+  for (int i = 0; i < (num_presences + num_absences); ++i) {
+      vector_input[i].resize(_num_layers, 0);
   }
   
-  vector_output.resize(10000); // initialize vector_output
-  for (int i = 0; i < 1; ++i) {
-      vector_input[i].resize(1, 0);
+  vector_output.resize(num_presences + num_absences); // initialize vector_output
+  for (int i = 0; i < (num_presences + num_absences); ++i) {
+      vector_output[i].resize(1, 0);
   }
 
   for(int j = 0; j < num_presences; j++){
 
-    _presencePoints.push_back((*presences)[j]->environment());
+    Sample env_data = (*presences)[j]->environment();
 
     for(int i = 0; i < _num_layers; i++){
         
-      vector_input[j][i] = (double)_presencePoints[j][i];
+      vector_input[j][i] = (double)env_data[i];
     }
   }
 
   // Absence Points
-  std::vector<Sample> _absencePoints;
-
   for(int j = 0; j < num_absences; j++){
 
-    _absencePoints.push_back((*absences)[j]->environment());
+    Sample env_data = (*absences)[j]->environment();
 
     for(int i = 0; i < _num_layers; i++){
 
-      vector_input[j+num_presences][i] = (double)_absencePoints[j][i];
+      vector_input[j+num_presences][i] = (double)env_data[i];
     }
   }
 
@@ -600,27 +596,20 @@ NNAlgorithm::done() const
 Scalar
 NNAlgorithm::getValue( const Sample& x ) const
 {
-
-  vector<vector<double> > env_input;
-
+  vector<vector<double> > env_input;// [1][_num_layers]
   env_input.resize(1);
-  for (int j = 0; j < 500; ++j) {
-    env_input[j].resize(500, 0);
-  }
-
+  env_input[0].resize(_num_layers);
 
   for(int i = 0; i < _num_layers; i++){
 
     env_input[0][i] = (double)x[i];
   }
 
-
   double *output;
 
   network.SetInputs(env_input[0]); // Load the values of each layer
 
   output = network.GetOutput();
-
 
   return (Scalar)*output;
 }
