@@ -111,9 +111,9 @@ protected:
   
   Network network;
 
-  vector<vector<double> > vector_input;
+  vector<vector<double> > vector_input; // [num_patterns][_num_layers]
 
-  vector<vector<double> > vector_output;
+  vector<vector<double> > vector_output;// [num_pattern][_nn_parameter.outp]
 
   nn_parameter _nn_parameter;
 
