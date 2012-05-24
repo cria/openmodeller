@@ -201,7 +201,7 @@ class Layer{
     }
 
 		
-    void SetInputs(double inputs[]) const{ // Function to set the inputs
+    void SetInputs(vector<double> inputs) const{ // Function to set the inputs
                  
 	for(int i = 0; i < net_layers[0]; i++){
 
@@ -405,7 +405,7 @@ class Layer{
     }
 
 
-    int Train(double inputs[],double outputs[], int number_pattern, int max_pattern, double momentum){ // The standard Backprop Learning algorithm
+    int Train(vector<double> inputs, vector<double> outputs, int number_pattern, int max_pattern, double momentum){ // The standard Backprop Learning algorithm
 
 	int i,j,k;
 

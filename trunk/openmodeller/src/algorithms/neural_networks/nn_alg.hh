@@ -28,6 +28,8 @@
 #ifndef _NN_ALGHH_
 #define _NN_ALGHH_
 
+#include <vector>
+
 #include <openmodeller/om.hh>
 
 #include "nn.h"
@@ -109,9 +111,9 @@ protected:
   
   Network network;
 
-  double vector_input[10000][500]; // [num_patterns][_num_layers]
+  vector<vector<double> > vector_input;
 
-  double vector_output[10000][1]; // [num_pattern][_nn_parameter.outp]
+  vector<vector<double> > vector_output;
 
   nn_parameter _nn_parameter;
 
@@ -129,7 +131,6 @@ protected:
   OccurrencesPtr absences;
 
   OccurrencesPtr presences;
-
 };
 
 

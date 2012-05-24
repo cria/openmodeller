@@ -381,7 +381,7 @@ NNAlgorithm::initialize()
   }
   else {
 
-    Log::instance()->debug( NN_LOG_PREFIX "Is not necessary to generate pseudo-absences because exist absence points.\n" );
+    Log::instance()->debug( NN_LOG_PREFIX "It is not necessary to generate pseudo-absences because it does exist absence points.\n" );
 
     // should be normalized already
     absences = _samp->getAbsences();
@@ -389,13 +389,23 @@ NNAlgorithm::initialize()
 
   // Presence Points
   std::vector<Sample> _presencePoints;
+  
+  vector_input.resize(10000); // initialize vector_input
+  for (int i = 0; i < 500; ++i) {
+      vector_input[i].resize(500, 0);
+  }
+  
+  vector_output.resize(10000); // initialize vector_output
+  for (int i = 0; i < 1; ++i) {
+      vector_input[i].resize(1, 0);
+  }
 
   for(int j = 0; j < num_presences; j++){
 
     _presencePoints.push_back((*presences)[j]->environment());
 
     for(int i = 0; i < _num_layers; i++){
-
+        
       vector_input[j][i] = (double)_presencePoints[j][i];
     }
   }
@@ -418,7 +428,7 @@ NNAlgorithm::initialize()
 
   _nn_parameter.outp = 1;
 
-
+  
   // Presence points
   for(int j = 0; j < num_presences; j++){
 
@@ -591,7 +601,12 @@ Scalar
 NNAlgorithm::getValue( const Sample& x ) const
 {
 
-  Scalar env_input[1][500]; // [1][_num_layers]
+  vector<vector<double> > env_input;
+
+  env_input.resize(1);
+  for (int j = 0; j < 500; ++j) {
+    env_input[j].resize(500, 0);
+  }
 
 
   for(int i = 0; i < _num_layers; i++){
