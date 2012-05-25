@@ -430,7 +430,7 @@ RCP_WRAP( AverageModelPtr, AverageModelImpl );
 class Projector {
 public:
 %extend {
-  static void createMap( Model model, const EnvironmentPtr& env, char *filename )
+  static void createMap( Model model, const EnvironmentPtr& env, char *projectionfile )
   {
     CallbackWrapper *callbackWrapper = 0;
     MapFormat mf;
@@ -438,7 +438,14 @@ public:
     if (!mask)
       mask = env->getLayer(0);
     mf.copyDefaults( *mask );
-    Map map( RasterFactory::instance().create( filename, mf ) );
+    Map map( RasterFactory::instance().create( projectionfile, mf ) );
+    Projector::createMap( model, env, &map, 0, callbackWrapper );
+  }
+  static void createMap( Model model, const EnvironmentPtr& env, char *projectionfile, char *templatefile )
+  {
+    CallbackWrapper *callbackWrapper = 0;
+    MapFormat mf = MapFormat(templatefile);
+    Map map( RasterFactory::instance().create( projectionfile, mf ) );
     Projector::createMap( model, env, &map, 0, callbackWrapper );
   }
 } // %extend
