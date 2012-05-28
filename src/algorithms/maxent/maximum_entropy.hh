@@ -63,7 +63,7 @@ private:
   void initTrainer();
   void endTrainer();
   double sequentialProc();
-    double lossBound( bool active, double w1, double n1, double beta1, double lambda, std::string description );
+  double lossBound( bool active, double w1, double n1, double beta1, double lambda, std::string description, bool debug=false );
   double parallelProc();
   void setLinearPred();
   void setLinearNormalizer();

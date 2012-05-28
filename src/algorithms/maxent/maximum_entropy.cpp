@@ -1002,11 +1002,25 @@ MaximumEntropy::sequentialProc()
 
   // Also check generator features
   vector<FeatureGenerator*>::iterator git;
+
+  //int z = 0;
   for ( git = _generators.begin(); git != _generators.end(); ++git ) {
 
     for ( int j = (*git)->getFirstRef(); j < (*git)->getLastRef(); j++ ) {
 
-      double dlb = lossBound( true, (*git)->exp(j), (*git)->sampExp(j), (*git)->sampDev(j), (*git)->lambda(j), "G" );
+      bool debug = false;
+
+      //if ( condition) {
+      //  debug = true;
+      //}
+
+      double dlb = lossBound( true, (*git)->exp(j), (*git)->sampExp(j), (*git)->sampDev(j), (*git)->lambda(j), "G", debug );
+
+      //if ( condition) {
+      //
+      //  Feature * tmp = (*git)->exportFeature(j);
+      //  Log::instance()->debug("@%d-%d-%d %s gen_loss %.16f\n", _iteration, z, j, tmp->getDescription(_samp->getEnvironment()).c_str(), dlb);
+      //}
 
       if ( dlb < best_dlb ) {
 
@@ -1015,6 +1029,7 @@ MaximumEntropy::sequentialProc()
         best_thr = j;
       }
     }
+    //++z;
   }    
 
   if ( best_gen != 0 ) {
@@ -1027,13 +1042,14 @@ MaximumEntropy::sequentialProc()
 
       _features.push_back( best_f );
     }
+
+    //Log::instance()->debug("@%d %s bfg_loss %.16f\n", _iteration, best_f->getDescription(_samp->getEnvironment()).c_str(), best_dlb);
   }
 
   if ( best_f == 0 ) {
+
     Log::instance()->error(MAXENT_LOG_PREFIX "Could not determine best feature!\n");
-    
-    retvalue = 0.0;
-    return retvalue;
+    return 0.0;
   }
 
   Log::instance()->debug("Best feature: %s, dlb = %.16f\n",
@@ -1113,17 +1129,12 @@ MaximumEntropy::sequentialProc()
 /*** lossBound ***/
 
 double 
-MaximumEntropy::lossBound( bool active, double w1, double n1, double beta1, double lambda, std::string description )
+MaximumEntropy::lossBound( bool active, double w1, double n1, double beta1, double lambda, std::string description, bool debug )
 {
   if ( !active ) {
 
      return 0.0;
   }
-
-  //Log::instance()->debug("@%d %s bf_exp %.16f\n", _iteration, description.c_str(), w1);
-  //Log::instance()->debug("@%d %s bf_sampExp %.16f\n", _iteration, description.c_str(), n1);
-  //Log::instance()->debug("@%d %s bf_sampDev %.16f\n", _iteration, description.c_str(), beta1);
-  //Log::instance()->debug("@%d %s bf_lambda %.16f\n", _iteration, description.c_str(), lambda);
 
   // Calculate delta loss bound
   double dlb = 0;
@@ -1132,17 +1143,30 @@ MaximumEntropy::lossBound( bool active, double w1, double n1, double beta1, doub
   double alpha = getAlpha( w1, n1, beta1, lambda, description );
   double infinity = std::numeric_limits<double>::infinity();
 
+  if ( debug ) {
+
+    Log::instance()->debug("@%d %s bf_exp %.16f\n", _iteration, description.c_str(), w1);
+    Log::instance()->debug("@%d %s bf_sampExp %.16f\n", _iteration, description.c_str(), n1);
+    Log::instance()->debug("@%d %s bf_sampDev %.16f\n", _iteration, description.c_str(), beta1);
+    Log::instance()->debug("@%d %s bf_lambda %.16f\n", _iteration, description.c_str(), lambda);
+    Log::instance()->debug("@%d %s alpha %.16f\n", _iteration, description.c_str(), alpha);
+  }
+
   if ( n1 != -1.0 ) {
+
     if ( alpha < infinity ) {
-      dlb = -n1 * alpha + log( w0 + w1 * exp(alpha) ) +
-	beta1 * ( fabs(lambda + alpha) - fabs(lambda) );
+
+      dlb = -n1 * alpha + log( w0 + w1 * exp(alpha) ) +	beta1 * ( fabs(lambda + alpha) - fabs(lambda) );
 
 #ifdef MSVC
-      if (_isnan(dlb))
+      bool dlb_isnan = _isnan(dlb);
 #else
-      if (isnan(dlb))
+      bool dlb_isnan = isnan(dlb);
 #endif
-	dlb = 0.0;
+      if ( dlb_isnan ) {
+
+        dlb = 0.0;
+      }
     }
   }
 
@@ -1558,6 +1582,10 @@ MaximumEntropy::getAlpha( double w1, double n1, double beta1, double lambda, std
 
             alpha = -lambda;
           }
+        }
+        else {
+
+          alpha = -lambda;
         }
       }
     }
