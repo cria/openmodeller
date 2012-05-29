@@ -286,13 +286,13 @@ static AlgMetadata metadata = {
   
   "MAXENT",          // Id.
   "Maximum Entropy", // Name.
-  "0.9",       	     // Version.
+  "1.0",       	     // Version.
 
   // Overview.
   "The principle of maximum entropy is a method for analyzing available qualitative information in order to determine a unique epistemic probability distribution. It states that the least biased distribution that encodes certain given information is that which maximizes the information entropy (content retrieved from Wikipedia on the 19th of May, 2008: http://en.wikipedia.org/wiki/Maximum_entropy).",
 
   // Description.
-  "The principle of maximum entropy is a method for analyzing available qualitative information in order to determine a unique epistemic probability distribution. It states that the least biased distribution that encodes certain given information is that which maximizes the information entropy (content retrieved from Wikipedia on the 19th of May, 2008: http://en.wikipedia.org/wiki/Maximum_entropy). E.T. Jaynes introduced the maximum entropy principle in 1957 saying that 'Information theory provides a constructive criterion for setting up probability distributions on the basis of partial knowledge, and leads to a type of statistical inference which is called the maximum entropy estimate. It is the least biased estimate possible on the given information; i.e., it is maximally noncommittal with regard to missing information'.",
+  "The principle of maximum entropy is a method for analyzing available qualitative information in order to determine a unique epistemic probability distribution. It states that the least biased distribution that encodes certain given information is that which maximizes the information entropy (content retrieved from Wikipedia on the 19th of May, 2008: http://en.wikipedia.org/wiki/Maximum_entropy). This implementation in openModeller follows the same approach of Maxent (Phillips et al. 2004). It was compared with Maxent 3.3.3e through a standard experiment using all possible combinations of parameters, generating models with the same number of iterations, at least a 90% rate of matching best features considering all iterations, distribution maps with a correlation (r) greater than 0.999 and no difference in the final loss. However, previous implementations of this algorithm (before version 1.0) used to generate quite different results. The first versions were based on an existing third-party Maximum Entropy library which produced low quality models compared with all other algorithms. After that, the algorithm was re-written a couple of times by Elisangela Rodrigues as part of her Doctorate. Finally, the EUBrazil-OpenBio project funded the remaining work to make this algorithm compatible with Maxent. Please note that not all functionality available from Maxent is available here - in particular the possibility of using collecting bias and categorical maps is not present, as well as many specific parameters for advanced users. However, you should be able to get compatible results for all other available parameters.",
 
   "Steven J. Phillips, Miroslav Dudík, Robert E. Schapire", // Algorithm authors.
 
@@ -344,9 +344,7 @@ MaximumEntropy::MaximumEntropy() :
   _pt_thr(80),
   _q_thr(10),
   _hinge_thr(15)
-{ 
-  cerr.precision(17);
-}
+{ }
 
 /******************/
 /*** destructor ***/
@@ -916,9 +914,6 @@ MaximumEntropy::initTrainer()
 
       (*it)->setSampDev( std_samp_dev );
     }
-
-    //cerr << "D avg=" << (*it)->mean() << " std=" << (*it)->std() << " min=" << minval << " max=" << maxval << " cnt=" << _num_presences << endl;
-    //cerr << "D sampDev=" << (*it)->sampDev() << " sampExp=" << (*it)->sampExp() << endl;
   }
 
   // Also set generators expectations
@@ -934,9 +929,9 @@ MaximumEntropy::initTrainer()
 
   updateReg();
 
-  // Log::instance()->debug( "Initial loss = %.16f \n", getLoss() );
-
   _new_loss = getLoss();
+
+  Log::instance()->debug( "Initial loss = %.16f \n", _new_loss );
 
   _gain = 0.0;
 }
@@ -987,8 +982,6 @@ MaximumEntropy::sequentialProc()
 
     double dlb = lossBound( (*it)->isActive(), (*it)->exp(), (*it)->sampExp(), (*it)->sampDev(), (*it)->lambda(), (*it)->getDescription(_samp->getEnvironment()) );
 
-    //Log::instance()->debug("@%d %s bf_loss %.16f\n", _iteration, (*it)->getDescription(_samp->getEnvironment()).c_str(), dlb);
-
     if (!(*it)->isActive() || (*it)->postGenerated() || dlb >= best_dlb) {
       continue;
     }
@@ -1003,24 +996,11 @@ MaximumEntropy::sequentialProc()
   // Also check generator features
   vector<FeatureGenerator*>::iterator git;
 
-  //int z = 0;
   for ( git = _generators.begin(); git != _generators.end(); ++git ) {
 
     for ( int j = (*git)->getFirstRef(); j < (*git)->getLastRef(); j++ ) {
 
-      bool debug = false;
-
-      //if ( condition) {
-      //  debug = true;
-      //}
-
-      double dlb = lossBound( true, (*git)->exp(j), (*git)->sampExp(j), (*git)->sampDev(j), (*git)->lambda(j), "G", debug );
-
-      //if ( condition) {
-      //
-      //  Feature * tmp = (*git)->exportFeature(j);
-      //  Log::instance()->debug("@%d-%d-%d %s gen_loss %.16f\n", _iteration, z, j, tmp->getDescription(_samp->getEnvironment()).c_str(), dlb);
-      //}
+      double dlb = lossBound( true, (*git)->exp(j), (*git)->sampExp(j), (*git)->sampDev(j), (*git)->lambda(j), "G" );
 
       if ( dlb < best_dlb ) {
 
@@ -1029,7 +1009,6 @@ MaximumEntropy::sequentialProc()
         best_thr = j;
       }
     }
-    //++z;
   }    
 
   if ( best_gen != 0 ) {
@@ -1042,8 +1021,6 @@ MaximumEntropy::sequentialProc()
 
       _features.push_back( best_f );
     }
-
-    //Log::instance()->debug("@%d %s bfg_loss %.16f\n", _iteration, best_f->getDescription(_samp->getEnvironment()).c_str(), best_dlb);
   }
 
   if ( best_f == 0 ) {
@@ -1051,10 +1028,6 @@ MaximumEntropy::sequentialProc()
     Log::instance()->error(MAXENT_LOG_PREFIX "Could not determine best feature!\n");
     return 0.0;
   }
-
-  Log::instance()->debug("Best feature: %s, dlb = %.16f\n",
-			 best_f->getDescription(_samp->getEnvironment()).c_str(),
-			 best_dlb);
 
   // Update expectation if necessary
   if ( best_f->lastExpChange() != _iteration - 1 ) {
@@ -1129,7 +1102,7 @@ MaximumEntropy::sequentialProc()
 /*** lossBound ***/
 
 double 
-MaximumEntropy::lossBound( bool active, double w1, double n1, double beta1, double lambda, std::string description, bool debug )
+MaximumEntropy::lossBound( bool active, double w1, double n1, double beta1, double lambda, std::string description )
 {
   if ( !active ) {
 
@@ -1142,15 +1115,6 @@ MaximumEntropy::lossBound( bool active, double w1, double n1, double beta1, doub
   // Determine alpha
   double alpha = getAlpha( w1, n1, beta1, lambda, description );
   double infinity = std::numeric_limits<double>::infinity();
-
-  if ( debug ) {
-
-    Log::instance()->debug("@%d %s bf_exp %.16f\n", _iteration, description.c_str(), w1);
-    Log::instance()->debug("@%d %s bf_sampExp %.16f\n", _iteration, description.c_str(), n1);
-    Log::instance()->debug("@%d %s bf_sampDev %.16f\n", _iteration, description.c_str(), beta1);
-    Log::instance()->debug("@%d %s bf_lambda %.16f\n", _iteration, description.c_str(), lambda);
-    Log::instance()->debug("@%d %s alpha %.16f\n", _iteration, description.c_str(), alpha);
-  }
 
   if ( n1 != -1.0 ) {
 
@@ -1241,14 +1205,19 @@ MaximumEntropy::parallelProc()
     ++p_iterator;
   }
 
+  int cnt = 0;
+
   for ( unsigned int i = 0; i < _features.size(); ++i ) {
 
     if ( alpha[i] != 0.0 ) {
 
       _features[i]->setLastExpChange( _iteration );
       _features[i]->setExp( sum[i] / _z_lambda );
+      ++cnt;
     }
   }
+
+  Log::instance()->debug("Updated %u features\n", cnt);
 
   ty /= _z_lambda;
   th = (th/_z_lambda) - pow(ty, 2);
@@ -1287,8 +1256,6 @@ MaximumEntropy::parallelProc()
 
       alpha[i] = -lambda;
     }
-
-    //cerr << "D rev alpha = " << alpha[i] << endl;
   }
 
   double prev_loss = getLoss();
@@ -1413,8 +1380,6 @@ MaximumEntropy::assignBetas()
   vector<Feature*>::iterator it;
   for ( it = _features.begin(); it != _features.end(); ++it ) {
 
-    //Log::instance()->debug("@1 %s beta %.16f\n", (*it)->getDescription(_samp->getEnvironment()).c_str(), beta_common);
-
     (*it)->setBeta( beta_common );
   }
 
@@ -1475,8 +1440,6 @@ MaximumEntropy::setLinearNormalizer()
       _linear_normalizer = _linear_pred[i]; 
     }
   }
-
-  //cerr << "D linearPredictorNormalizer = " << _linear_normalizer << endl;
 }
 
 /********************/
@@ -1505,8 +1468,6 @@ MaximumEntropy::calcDensity()
 void
 MaximumEntropy::calcDensity( vector<Feature*> to_update )
 {
-  //cerr << "D calcDensity with numPoints = " << _num_background << endl;
-
   _z_lambda = 0.0;
   double d;
   double* f_sum = new double[to_update.size()];
@@ -1552,8 +1513,6 @@ MaximumEntropy::calcDensity( vector<Feature*> to_update )
   }    
 
   delete[] f_sum;
-
-  //cerr << "D density normalizer = " << _z_lambda << "linear normalizer = " << _linear_normalizer << endl;
 }
 
 /*****************/
@@ -1832,8 +1791,6 @@ MaximumEntropy::increaseLambda( double* alpha, vector<Feature*> to_update )
 
     lambda = _features[i]->lambda();
 
-    //cerr << "D IL alpha = " << alpha[i] << " lambda = " << lambda << endl;
-
     if ( alpha[i] != 0.0 ) {
 
       _features[i]->setLambda( lambda + alpha[i] );
@@ -1933,7 +1890,6 @@ MaximumEntropy::decreaseAlpha(double alpha)
 double
 MaximumEntropy::getLoss()
 {
-  double retvalue;
   double sum_mid_lambda = 0.0;
 
   vector<Feature*>::iterator it;
@@ -1942,9 +1898,7 @@ MaximumEntropy::getLoss()
     sum_mid_lambda += (*it)->sampExp() * (*it)->lambda();
   }
 
-  retvalue = log(_z_lambda) - sum_mid_lambda + _linear_normalizer  + _reg;
-  Log::instance()->debug("getLoss() returned %.16f\n", retvalue);  
-  return retvalue;
+  return log(_z_lambda) - sum_mid_lambda + _linear_normalizer  + _reg;
 }
 
 /**************************/
@@ -1989,6 +1943,8 @@ MaximumEntropy::featuresToUpdate()
       to_update_idx.push_back(lbit->first);
     }
   }
+
+  Log::instance()->debug("Updating %u features\n", to_update.size());
 
   return to_update;
 }
