@@ -100,9 +100,9 @@ HingeGenerator::setSampExp( double mindev )
 
           std = ref_max/2.0;
         }
-        if ( std < (ref_max/sqrt(num_samples)) ) {
+        if ( std < (ref_max/sqrt((double)num_samples)) ) {
 
-          std = ref_max/sqrt(num_samples);
+          std = ref_max/sqrt((double)num_samples);
         }
       }
     }
