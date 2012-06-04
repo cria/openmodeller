@@ -45,7 +45,7 @@ public:
 
   FeatureGenerator(const OccurrencesPtr& presences, const OccurrencesPtr& background, LinearFeature * feature, int type, bool reverse);
 
-  ~FeatureGenerator();
+  virtual ~FeatureGenerator();
 
   int type() {return _type;}
 
