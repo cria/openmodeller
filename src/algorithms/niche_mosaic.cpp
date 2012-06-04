@@ -471,15 +471,15 @@ NicheMosaic::getRandomPercent(const std::vector<Scalar> &delta, const size_t i_l
 {
   int size = 100, r;
 
-  float min_percent = 0.12, max_percent = 0.4;
+  double min_percent = 0.12, max_percent = 0.4;
 
-  float old_percent, new_percent, half_percent = (max_percent - min_percent) / 2 + min_percent;
+  double old_percent, new_percent, half_percent = (max_percent - min_percent) / 2 + min_percent;
 
   Random random;
   old_percent = delta[i_layer] / _delta[i_layer];
 
   r = random( 0, size );
-  new_percent = (max_percent - min_percent) * ( (float) r / (float) size ) + min_percent;
+  new_percent = (max_percent - min_percent) * ( (double) r / (double) size ) + min_percent;
     
   if ( (costPres < _num_points_test) && (new_percent < half_percent) ){
 
