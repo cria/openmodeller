@@ -96,9 +96,6 @@ public:
 
   void setMinMax( Scalar pmin, Scalar pmax ){_min=pmin; _max=pmax; _scale=pmax-pmin;}
 
-  Scalar min() {return _min;}
-  Scalar max() {return _max;}
-
   bool postGenerated() const {return _postgen;}
 
 protected:
