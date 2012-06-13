@@ -8,7 +8,13 @@ SRC_DIR='openmodeller'
 CTRL_FILE='http://www.cria.org.br/~daniel/omrev.txt'
 
 omrev=`curl -s ${CTRL_FILE}`
-echo "$0 to update to openModeller to rev. $omrev"
+
+if [ -z "$omrev" ]; then
+    echo "no revision external revision reference found, quitting"
+    exit 1
+else
+    echo "$0 to update to openModeller to rev. $omrev"
+fi
 
 if [ -d "$SRC_DIR" ]; then
     cd $SRC_DIR
