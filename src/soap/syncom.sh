@@ -1,19 +1,48 @@
 #!/bin/sh
-#
-# this script assumes it's located on a path on level up the
-# openmodeller directory fetched from openModeller SVN on
-# Sourceforge.net
 
-SRC_DIR='openmodeller'
-CTRL_FILE='http://www.cria.org.br/~daniel/omrev.txt'
+#######################################################################
+# Script that can be included in the cronjob to update openModeller. 
+# Requires Subversion and curl.
+# Parameter 1: path to configuration file.
+#######################################################################
+
+# Function to read configuration file
+function readconf {
+  while read line; do
+    # skip comments
+    [ "${line:0:1}" = "#" ] && continue
+ 
+    # skip empty lines
+    [ -z "$line" ] && continue
+ 
+    # got a config line eval it
+    eval $line
+ 
+  done < "$1"
+}
+
+# Configuration file can be passed as a parameter
+if [ "$1" ]; then
+  CONFIG="$1"
+else
+  CONFIG="server.conf"
+fi 
+
+# If configuration file exists, read the configuration
+if [ -f $CONFIG ]; then
+  # read configuration
+  readconf $CONFIG
+else
+  exit 1
+fi
 
 omrev=`curl -s ${CTRL_FILE}`
 
 if [ -z "$omrev" ]; then
-    echo "no revision external revision reference found, quitting"
+    echo "Could not retrieve reference revision."
     exit 1
 else
-    echo "$0 to update to openModeller to rev. $omrev"
+    echo "Detected reference revision $omrev."
 fi
 
 if [ -d "$SRC_DIR" ]; then
@@ -22,16 +51,15 @@ if [ -d "$SRC_DIR" ]; then
     #rm -fr cmake/FindGDAL* # workaround
     cd build
     make
-    sudo make install
+    make install
 else
-    svn co -r$omrev https://openmodeller.svn.sourceforge.net/svnroot/openmodeller/trunk/openmodeller
-    echo "$SRC_DIR directory does not exists, checkout'ing"
+    echo "$SRC_DIR directory does not exist, checking out code"
+    svn co -r$omrev https://openmodeller.svn.sourceforge.net/svnroot/openmodeller/trunk/openmodeller $SRC_DIR
     cd $SRC_DIR
     #rm -fr cmake/FindGDAL* # workaround
     mkdir build
     cd build
-    cmake -DOM_BUILD_SERVICE=ON -DCMAKE_INSTALL_PREFIX=/usr/local-dev ..
-    #cmake -DOM_BUILD_SERVICE=OFF -DCMAKE_INSTALL_PREFIX=/usr/local-dev ..
+    cmake -DOM_BUILD_SERVICE=ON ..
     make
-    sudo make install
+    make install
 fi
