@@ -38,11 +38,12 @@ fi
 
 omrev=`curl -s ${CTRL_FILE}`
 
-if [ -z "$omrev" ]; then
+# validates integer
+if [ "$omrev" -ne 0 -o "$omrev" -eq 0 2>/dev/null ]; then
+    echo "Detected reference revision $omrev."
+else
     echo "Could not retrieve reference revision."
     exit 1
-else
-    echo "Detected reference revision $omrev."
 fi
 
 if [ -d "$SRC_DIR" ]; then
@@ -53,7 +54,7 @@ if [ -d "$SRC_DIR" ]; then
     make
     make install
 else
-    echo "$SRC_DIR directory does not exist, checking out code"
+    echo "$SRC_DIR directory does not exist, checking out code."
     svn co -r$omrev https://openmodeller.svn.sourceforge.net/svnroot/openmodeller/trunk/openmodeller $SRC_DIR
     cd $SRC_DIR
     #rm -fr cmake/FindGDAL* # workaround
