@@ -1,3 +1,12 @@
+!include MUI2.nsh
+!include LogicLib.nsh
+!include nsDialogs.nsh
+!include WinMessages.nsh
+!include FileFunc.nsh
+!include ZipDLL.nsh
+!include RecursiveDelete.nsh
+!include EnvVarUpdate.nsh
+;!include WriteEnvStr.nsh
 
 ; HM NIS Edit Wizard helper defines
 !define PRODUCT_NAME "openModeller"
@@ -7,11 +16,11 @@
 !define PRODUCT_UNINST_KEY "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PRODUCT_NAME}"
 !define PRODUCT_UNINST_ROOT_KEY "HKLM"
 !define PRODUCT_STARTMENU_REGVAL "NSIS:StartMenuDir"
-
-; Defines added by Tim to streamline / softcode install process
 !define PRODUCT_VERSION "1.3.0"
+
 ; This is where cmake builds and installs to - no space separating name and version
-!define BUILD_DIR "C:\Arquivos de programas\${PRODUCT_NAME} ${PRODUCT_VERSION}"
+!define BUILD_DIR "C:\Arquivos de Programas\${PRODUCT_NAME} ${PRODUCT_VERSION}"
+;
 ; This is where the nsis installer will install to. Having the space lets you
 ; keep dev and inst versions side by side on the same machine
 !define INSTALL_DIR "$PROGRAMFILES\${PRODUCT_NAME} ${PRODUCT_VERSION}"
@@ -19,47 +28,39 @@
 Name "${PRODUCT_NAME} ${PRODUCT_VERSION}"
 InstallDir "${INSTALL_DIR}"
 OutFile "openModellerSetup${PRODUCT_VERSION}.exe"
-# If this next line is uncommented the installer will try to install to
-# the same dir as any prefvious install of omdesktop
-# With it commented it will try to used INSTALL_DIR as defined above
-#InstallDirRegKey HKLM "${PRODUCT_DIR_REGKEY}" ""
-
 SetCompressor zlib
-; Added by Tim for setting env vars (see this file on disk)
-!include WriteEnvStr.nsh
-!include EnvVarUpdate.nsh
-; MUI 1.67 compatible ------
-!include "MUI.nsh"
-;Added by Tim for a macro that will recursively delete the files in the install dir
-!include RecursiveDelete.nsh
-;Added by Tim to support unzipping downloaded sample data automatically
-!include ZipDLL.nsh
 
 ; MUI Settings
 !define MUI_ABORTWARNING
 !define MUI_ICON "openmodeller64x64.ico"
 !define MUI_UNICON "openmodeller64x64.ico"
-; Added by Tim for side image
 !define MUI_WELCOMEFINISHPAGE_BITMAP "om_logo.bmp"
+
 ; Welcome page
 !insertmacro MUI_PAGE_WELCOME
+
 ; License page
 !define MUI_LICENSEPAGE_RADIOBUTTONS
 !insertmacro MUI_PAGE_LICENSE "..\COPYING.txt"
+
 ; Components page
 !insertmacro MUI_PAGE_COMPONENTS
+
 ; Directory page
-!insertmacro MUI_PAGE_DIRECTORY
+Page custom myCustomDirectoryShow
+
 ; Start menu page
 var ICONS_GROUP
 !define MUI_STARTMENUPAGE_NODISABLE
-!define MUI_STARTMENUPAGE_DEFAULTFOLDER "openModeller "
+!define MUI_STARTMENUPAGE_DEFAULTFOLDER "${PRODUCT_NAME} "
 !define MUI_STARTMENUPAGE_REGISTRY_ROOT "${PRODUCT_UNINST_ROOT_KEY}"
 !define MUI_STARTMENUPAGE_REGISTRY_KEY "${PRODUCT_UNINST_KEY}"
 !define MUI_STARTMENUPAGE_REGISTRY_VALUENAME "${PRODUCT_STARTMENU_REGVAL}"
 !insertmacro MUI_PAGE_STARTMENU Application $ICONS_GROUP
+
 ; Instfiles page
 !insertmacro MUI_PAGE_INSTFILES
+
 ; Finish page
 ;!define MUI_FINISHPAGE_RUN "$INSTDIR\om_console.exe"
 !insertmacro MUI_PAGE_FINISH
@@ -68,36 +69,33 @@ var ICONS_GROUP
 !insertmacro MUI_UNPAGE_INSTFILES
 
 ; Reserve files
-!insertmacro MUI_RESERVEFILE_INSTALLOPTIONS
+;!insertmacro MUI_RESERVEFILE_INSTALLOPTIONS
 
 ; Language files
 !insertmacro MUI_LANGUAGE "English"
 !insertmacro MUI_LANGUAGE "PortugueseBR" 
-;!insertmacro MUI_LANGUAGE "French" 
-;!insertmacro MUI_LANGUAGE "German" 
-;!insertmacro MUI_LANGUAGE "SimpChinese" 
-;!insertmacro MUI_LANGUAGE "Japanese" 
-;!insertmacro MUI_LANGUAGE "Italian" 
-;!insertmacro MUI_LANGUAGE "Swedish" 
-;!insertmacro MUI_LANGUAGE "Russian" 
-;!insertmacro MUI_LANGUAGE "Portuguese" 
-;!insertmacro MUI_LANGUAGE "Polish" 
-;!insertmacro MUI_LANGUAGE "Czech" 
-;!insertmacro MUI_LANGUAGE "Slovak" 
-;!insertmacro MUI_LANGUAGE "Latvian" 
-;!insertmacro MUI_LANGUAGE "Indonesian" 
 
 ; Initialize language
 Function .onInit
   !insertmacro MUI_LANGDLL_DISPLAY
+
+  ;Push ""
+  ;Push ${LANG_ENGLISH}
+  ;Push English
+  ;Push ${LANG_PORTUGUESEBR}
+  ;Push PortugueseBR
+  ;Push A
+  
+  ;LangDLL::LangDialog "Installer Language" "Please select the language of the installer"
+
+  ;Pop $LANGUAGE
+  ;StrCmp $LANGUAGE "cancel" 0 +2
+  ;        Abort
 FunctionEnd
-
-
-; MUI end ------
+; MUI end
 
 ShowInstDetails show
 ShowUnInstDetails show
-
 
 Section "Application" SEC01
   ;this section is mandatory
@@ -193,7 +191,10 @@ Section /o "Sample Data - South America" SEC04
  !insertmacro ZIPDLL_EXTRACT "$INSTDIR\SampleData\SouthAmerica.zip" "$INSTDIR\SampleData\EnvironmentLayers\" "<ALL>"
 SectionEnd
 
+Var WDIR
 Section "Small examples data" SEC05
+  SetOutPath "$WDIR\examples"
+  File "${BUILD_DIR}\examples\*"
   SetOutPath "$INSTDIR\examples"
   File "${BUILD_DIR}\examples\*"
 SectionEnd
@@ -228,14 +229,32 @@ Section -Post
   WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "Publisher" "${PRODUCT_PUBLISHER}"
 SectionEnd
 
+LangString sec01 ${LANG_ENGLISH} "Main application files (obligatory)." 
+LangString sec01 ${LANG_PORTUGUESEBR} "Arquivos principais (obrigatório)."
+
+LangString sec02 ${LANG_ENGLISH} "Sample environment data. Global coverage derived from CRU CL2 present day scenario. About 41mb data will be downloaded from the internet."
+LangString sec02 ${LANG_PORTUGUESEBR} "foo"
+
+LangString sec03 ${LANG_ENGLISH} "Sample environment data. Global coverage derived from Hadley 2050 A1f scenario. About 4mb data will be downloaded from the internet."
+LangString sec03 ${LANG_PORTUGUESEBR} "foo"
+
+LangString sec04 ${LANG_ENGLISH} "Sample environment data. South America. About 1mb data will be downloaded from the internet."
+LangString sec04 ${LANG_PORTUGUESEBR} "foo"
+
+LangString sec05 ${LANG_ENGLISH} "Basic examples (not required if you have your own data already)"
+LangString sec05 ${LANG_PORTUGUESEBR} "foo"
+
+LangString sec06 ${LANG_ENGLISH} "Sample environment data. Aquamaps. About 1.4mb data will be downloaded from the internet."
+LangString sec06 ${LANG_PORTUGUESEBR} "foo"
+
 ; Section descriptions
 !insertmacro MUI_FUNCTION_DESCRIPTION_BEGIN
-  !insertmacro MUI_DESCRIPTION_TEXT ${SEC01} "Main application files - you really need this!"
-  !insertmacro MUI_DESCRIPTION_TEXT ${SEC02} "Sample environment data. Global coverage derived from CRU CL2 present day scenario. About 41mb data will be downloaded from the internet."
-  !insertmacro MUI_DESCRIPTION_TEXT ${SEC03} "Sample environment data. Global coverage derived from Hadley 2050 A1f scenario. About 4mb data will be downloaded from the internet."
-  !insertmacro MUI_DESCRIPTION_TEXT ${SEC04} "Sample environment data. South America. About 1mb data will be downloaded from the internet."
-  !insertmacro MUI_DESCRIPTION_TEXT ${SEC05} "Basic examples (not required if you have your own data already)"
-  !insertmacro MUI_DESCRIPTION_TEXT ${SEC06} "Sample environment data. Aquamaps. About 1.4mb data will be downloaded from the internet."
+  !insertmacro MUI_DESCRIPTION_TEXT ${SEC01} $(sec01)
+  !insertmacro MUI_DESCRIPTION_TEXT ${SEC02} $(sec02) 
+  !insertmacro MUI_DESCRIPTION_TEXT ${SEC03} $(sec03) 
+  !insertmacro MUI_DESCRIPTION_TEXT ${SEC04} $(sec04) 
+  !insertmacro MUI_DESCRIPTION_TEXT ${SEC05} $(sec05) 
+  !insertmacro MUI_DESCRIPTION_TEXT ${SEC06} $(sec06)
 !insertmacro MUI_FUNCTION_DESCRIPTION_END
 
 
@@ -316,3 +335,102 @@ Section Uninstall
   DeleteRegKey HKLM "${PRODUCT_DIR_REGKEY}"
   SetAutoClose true
 SectionEnd
+
+Var DIALOG
+
+Var IDIR 
+Var ILABEL
+Var IDIRBOX
+Var IDIRREQUEST
+Var IDIRBROWSE
+
+Var WLABEL
+Var WDIRBOX
+Var WDIRREQUEST
+Var WDIRBROWSE
+
+LangString header_text ${LANG_ENGLISH} "Choose Install and Working Location"
+LangString header_text ${LANG_PORTUGUESEBR} "Escolha o Local de Instalação e de Trabalho"
+
+LangString header_subtext ${LANG_ENGLISH} "Choose the folder in which to install ${PRODUCT_NAME} ${PRODUCT_VERSION} and the folder to copy files to work with ${PRODUCT_NAME}."
+LangString header_subtext ${LANG_PORTUGUESEBR} "Escolha o diretório para instalar o ${PRODUCT_NAME} ${PRODUCT_VERSION} e o diretório para copiar os arquivos para trabalhar com o ${PRODUCT_NAME}."
+
+LangString ilabel ${LANG_ENGLISH} "Setup will install ${PRODUCT_NAME} ${PRODUCT_VERSION} in the following folder. To install in a different folder, click Browse and select another folder. Click Next to continue."
+LangString ilabel ${LANG_PORTUGUESEBR} "Setup vai instalar ${PRODUCT_NAME} ${PRODUCT_VERSION} no seguinte diretório. Para instalar em um diretório diferente, clique Selecionar e selecione outro diretório. Clique Próximo para continuar."
+
+LangString idirbox ${LANG_ENGLISH} "Installation Folder"
+LangString idirbox ${LANG_PORTUGUESEBR} "Diretório de Instalação"
+
+LangString dirbrowse ${LANG_ENGLISH} "Browse"
+LangString dirbrowse ${LANG_PORTUGUESEBR} "Selecionar"
+
+LangString wlabel ${LANG_ENGLISH} "The Working Folder is where Setup will install examples files and where you should run ${PRODUCT_NAME} from."
+LangString wlabel ${LANG_PORTUGUESEBR} "O Diretório de Trabalho é onde o Setup instalará os arquivos de exemplo e de onde você deve rodar o ${PRODUCT_NAME}."
+
+LangString wdirbox ${LANG_ENGLISH} "Working Folder"
+LangString wdirbox ${LANG_PORTUGUESEBR} "Diretório de Trabalho"
+
+Function myCustomDirectoryShow
+        ;!insertmacro MUI_HEADER_TEXT "Choose Install and Working Location" "Choose the folder in which to install ${PRODUCT_NAME} ${PRODUCT_VERSION} and the folder to copy files to work with ${PRODUCT_NAME}."
+        !insertmacro MUI_HEADER_TEXT $(header_text) $(header_subtext)
+
+        nsDialogs::Create 1018
+        Pop $DIALOG
+
+        ${If} $DIALOG == error
+                Abort
+        ${EndIf}
+
+        ${NSD_CreateLabel} 0 0 100% 20% $(ilabel)
+        Pop $ILABEL
+
+        ${NSD_CreateGroupBox} 0 20% 100% 25% $(idirbox)
+        Pop $IDIRBOX
+
+        ${NSD_CreateDirRequest} 5% 30% 70% 10% "$INSTDIR"
+        Pop $IDIRREQUEST
+
+        ${NSD_CreateBrowseButton} 75% 30% 20% 10% $(dirbrowse)
+        Pop $IDIRBROWSE
+
+        ${NSD_OnClick} $IDIRBROWSE iDirBrowse
+
+        ${NSD_CreateLabel} 0 50% 100% 20% $(wlabel)
+        Pop $WLABEL
+
+        ${NSD_CreateGroupBox} 0 70% 100% 25% $(wdirbox)
+        Pop $WDIRBOX
+
+        ${NSD_CreateDirRequest} 5% 80% 70% 10% "C:\om"
+        Pop $WDIRREQUEST
+
+        ${NSD_CreateBrowseButton} 75% 80% 20% 10% $(dirbrowse)
+        Pop $WDIRBROWSE
+
+        ${NSD_OnClick} $WDIRBROWSE wDirBrowse
+
+        nsDialogs::Show
+FunctionEnd
+
+Function iDirBrowse
+        nsDialogs::SelectFolderDialog "" "c:\"
+        pop $IDIR
+
+        ${If} $IDIR == error
+                Abort
+        ${EndIf}
+
+        ${NSD_SetText} $IDIRREQUEST $IDIR
+        StrCpy $INSTDIR $IDIR
+FunctionEnd
+
+Function wDirBrowse
+        nsDialogs::SelectFolderDialog "" "c:\"
+        Pop $WDIR
+
+        ${If} $WDIR == error
+                Abort
+        ${EndIf}
+
+        ${NSD_SetText} $WDIRREQUEST $WDIR
+FunctionEnd
