@@ -232,20 +232,20 @@ SectionEnd
 LangString sec01 ${LANG_ENGLISH} "Main application files (obligatory)." 
 LangString sec01 ${LANG_PORTUGUESEBR} "Arquivos principais (obrigatório)."
 
-LangString sec02 ${LANG_ENGLISH} "Sample environment data. Global coverage derived from CRU CL2 present day scenario. About 41mb data will be downloaded from the internet."
-LangString sec02 ${LANG_PORTUGUESEBR} "foo"
+LangString sec02 ${LANG_ENGLISH} "Global coverage derived from CRU CL2 present day scenario (~41MB will be downloaded from the Internet)."
+LangString sec02 ${LANG_PORTUGUESEBR} "CRU CL2 cenário atual - dados climáticos globais (41MB terão que ser baixados da Internet)."
 
-LangString sec03 ${LANG_ENGLISH} "Sample environment data. Global coverage derived from Hadley 2050 A1f scenario. About 4mb data will be downloaded from the internet."
-LangString sec03 ${LANG_PORTUGUESEBR} "foo"
+LangString sec03 ${LANG_ENGLISH} "Global coverage derived from Hadley 2050 A1f scenario (~4MB will be downloaded from the Internet)."
+LangString sec03 ${LANG_PORTUGUESEBR} "Hadley 2050 cenário A1f - dados climáticos globais (~4MB terão que ser baixados da Internet)."
 
-LangString sec04 ${LANG_ENGLISH} "Sample environment data. South America. About 1mb data will be downloaded from the internet."
-LangString sec04 ${LANG_PORTUGUESEBR} "foo"
+LangString sec04 ${LANG_ENGLISH} "South America climate data from CIAT (~1MB will be downloaded from the Internet)."
+LangString sec04 ${LANG_PORTUGUESEBR} "CIAT - dados climáticos da América do Sul (~1MB terá que ser baixado da Internet)."
 
-LangString sec05 ${LANG_ENGLISH} "Basic examples (not required if you have your own data already)"
-LangString sec05 ${LANG_PORTUGUESEBR} "foo"
+LangString sec05 ${LANG_ENGLISH} "Basic examples including a couple of environmental layers and sample request files."
+LangString sec05 ${LANG_PORTUGUESEBR} "Arquivos de exemplo (inclui duas camadas ambientais e exemplos de requisição)."
 
-LangString sec06 ${LANG_ENGLISH} "Sample environment data. Aquamaps. About 1.4mb data will be downloaded from the internet."
-LangString sec06 ${LANG_PORTUGUESEBR} "foo"
+LangString sec06 ${LANG_ENGLISH} "AquaMaps marine layers (~1.4MB will be downloaded from the Internet)."
+LangString sec06 ${LANG_PORTUGUESEBR} "AquaMaps - camadas ambientais marinhas (~1.4MB terão que ser baixados da Internet)."
 
 ; Section descriptions
 !insertmacro MUI_FUNCTION_DESCRIPTION_BEGIN
@@ -316,7 +316,7 @@ Section Uninstall
   RMDir /r "$INSTDIR"
 
 ;----------------- The application dir gets zapped next ...  
-  ;I added this recursive delte implementation because
+  ;I added this recursive delete implementation because
   ; RM -R wasnt working properly
   Push "$INSTDIR"
   !insertmacro RemoveFilesAndSubDirs "$INSTDIR\"
@@ -349,11 +349,11 @@ Var WDIRBOX
 Var WDIRREQUEST
 Var WDIRBROWSE
 
-LangString header_text ${LANG_ENGLISH} "Choose Install and Working Location"
-LangString header_text ${LANG_PORTUGUESEBR} "Escolha o Local de Instalação e de Trabalho"
+LangString header_text ${LANG_ENGLISH} "Choose installation and working directories"
+LangString header_text ${LANG_PORTUGUESEBR} "Escolha de diretórios de instalação e trabalho"
 
-LangString header_subtext ${LANG_ENGLISH} "Choose the folder in which to install ${PRODUCT_NAME} ${PRODUCT_VERSION} and the folder to copy files to work with ${PRODUCT_NAME}."
-LangString header_subtext ${LANG_PORTUGUESEBR} "Escolha o diretório para instalar o ${PRODUCT_NAME} ${PRODUCT_VERSION} e o diretório para copiar os arquivos para trabalhar com o ${PRODUCT_NAME}."
+LangString header_subtext ${LANG_ENGLISH} "Choose a folder in which to install the ${PRODUCT_NAME} ${PRODUCT_VERSION} software and a different folder where you intend to run and use it."
+LangString header_subtext ${LANG_PORTUGUESEBR} "Escolha uma pasta para instalar o programa ${PRODUCT_NAME} ${PRODUCT_VERSION} e outra onde pretende usar e trabalhar com o programa."
 
 LangString ilabel ${LANG_ENGLISH} "Setup will install ${PRODUCT_NAME} ${PRODUCT_VERSION} in the following folder. To install in a different folder, click Browse and select another folder. Click Next to continue."
 LangString ilabel ${LANG_PORTUGUESEBR} "Setup vai instalar ${PRODUCT_NAME} ${PRODUCT_VERSION} no seguinte diretório. Para instalar em um diretório diferente, clique Selecionar e selecione outro diretório. Clique Próximo para continuar."
@@ -365,13 +365,13 @@ LangString dirbrowse ${LANG_ENGLISH} "Browse"
 LangString dirbrowse ${LANG_PORTUGUESEBR} "Selecionar"
 
 LangString wlabel ${LANG_ENGLISH} "The Working Folder is where Setup will install examples files and where you should run ${PRODUCT_NAME} from."
-LangString wlabel ${LANG_PORTUGUESEBR} "O Diretório de Trabalho é onde o Setup instalará os arquivos de exemplo e de onde você deve rodar o ${PRODUCT_NAME}."
+LangString wlabel ${LANG_PORTUGUESEBR} "O Diretório de Trabalho é onde o Setup instalará os arquivos de exemplo e onde você deve rodar o ${PRODUCT_NAME}."
 
 LangString wdirbox ${LANG_ENGLISH} "Working Folder"
 LangString wdirbox ${LANG_PORTUGUESEBR} "Diretório de Trabalho"
 
 Function myCustomDirectoryShow
-        ;!insertmacro MUI_HEADER_TEXT "Choose Install and Working Location" "Choose the folder in which to install ${PRODUCT_NAME} ${PRODUCT_VERSION} and the folder to copy files to work with ${PRODUCT_NAME}."
+
         !insertmacro MUI_HEADER_TEXT $(header_text) $(header_subtext)
 
         nsDialogs::Create 1018
