@@ -445,6 +445,10 @@ public:
   {
     CallbackWrapper *callbackWrapper = 0;
     MapFormat mf = MapFormat(templatefile);
+    Map *mask = env->getMask();
+    if (!mask)
+      mask = env->getLayer(0);
+    mf.copyDefaults( *mask );
     Map map( RasterFactory::instance().create( projectionfile, mf ) );
     Projector::createMap( model, env, &map, 0, callbackWrapper );
   }
