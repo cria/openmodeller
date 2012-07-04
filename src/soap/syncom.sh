@@ -33,8 +33,11 @@ if [ -f $CONFIG ]; then
   # read configuration
   readconf $CONFIG
 else
+  echo "No configuration file provided. Aborting."
   exit 1
 fi
+
+${CTRL_FILE:?"Missing entry CTRL_FILE in the configuration. Aborting."}
 
 omrev=`curl -s ${CTRL_FILE}`
 
@@ -42,14 +45,14 @@ omrev=`curl -s ${CTRL_FILE}`
 if [ "$omrev" -ne 0 -o "$omrev" -eq 0 2>/dev/null ]; then
     echo "Detected reference revision $omrev."
 else
-    echo "Could not retrieve reference revision."
+    echo "Could not retrieve reference revision. Aborting."
     exit 1
 fi
 
 if [ -d "$SRC_DIR" ]; then
     cd $SRC_DIR
     svn -r$omrev update
-    #rm -fr cmake/FindGDAL* # workaround
+    #rm -fr cmake/FindGDAL* # workaround for Mac and BSD
     cd build
     make
     make install
