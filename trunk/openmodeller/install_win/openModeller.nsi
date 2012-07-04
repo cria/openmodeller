@@ -46,8 +46,9 @@ SetCompressor zlib
 ; Components page
 !insertmacro MUI_PAGE_COMPONENTS
 
+Var WORKINGDIR
 ; Directory page
-Page custom myCustomDirectoryShow
+Page custom myCustomDirectory myCustomDirectoryLeave
 
 ; Start menu page
 var ICONS_GROUP
@@ -78,19 +79,6 @@ var ICONS_GROUP
 ; Initialize language
 Function .onInit
   !insertmacro MUI_LANGDLL_DISPLAY
-
-  ;Push ""
-  ;Push ${LANG_ENGLISH}
-  ;Push English
-  ;Push ${LANG_PORTUGUESEBR}
-  ;Push PortugueseBR
-  ;Push A
-  
-  ;LangDLL::LangDialog "Installer Language" "Please select the language of the installer"
-
-  ;Pop $LANGUAGE
-  ;StrCmp $LANGUAGE "cancel" 0 +2
-  ;        Abort
 FunctionEnd
 ; MUI end
 
@@ -100,7 +88,7 @@ ShowUnInstDetails show
 Section "Application" SEC01
   ;this section is mandatory
   SectionIn RO
-  ;Added by Tim to install for all users not just the logged in user..
+  ;install for all users not just the logged in user
   ;make sure this is at the top of the section
   SetShellVarContext all
   
@@ -153,13 +141,22 @@ Section "Application" SEC01
   File "${BUILD_DIR}\data\aquamaps.db"
 
 ; Shortcuts
-; Next line is important - added by Tim
 ; if its not there the application working dir will be the last used
-; outpath and libom wont be able to find its alg
+; outpath and libom wont be able to find its algorithm
   SetOutPath "$INSTDIR"
   !insertmacro MUI_STARTMENU_WRITE_BEGIN Application
   CreateDirectory "$SMPROGRAMS\$ICONS_GROUP"
   CreateShortCut "$SMPROGRAMS\$ICONS_GROUP\openModeller .lnk" "$INSTDIR\README.txt"
+  SetOutPath "$WORKINGDIR"
+  CreateShortCut "$SMPROGRAMS\$ICONS_GROUP\om_algorithm.lnk" "cmd" "/K om_algorithm" "$INSTDIR\om_algorithm.exe"
+  CreateShortCut "$SMPROGRAMS\$ICONS_GROUP\om_console.lnk" "cmd" "/K om_console" "$INSTDIR\om_console.exe"
+  CreateShortCut "$SMPROGRAMS\$ICONS_GROUP\om_model.lnk" "cmd" "/K om_model" "$INSTDIR\om_model.exe"
+  CreateShortCut "$SMPROGRAMS\$ICONS_GROUP\om_points.lnk" "cmd" "/K om_points" "$INSTDIR\om_points.exe"
+  CreateShortCut "$SMPROGRAMS\$ICONS_GROUP\om_project.lnk" "cmd" "/K om_project" "$INSTDIR\om_project.exe"
+  CreateShortCut "$SMPROGRAMS\$ICONS_GROUP\om_pseudo.lnk" "cmd" "/K om_pseudo" "$INSTDIR\om_pseudo.exe"
+  CreateShortCut "$SMPROGRAMS\$ICONS_GROUP\om_sampler.lnk" "cmd" "/K om_sampler" "$INSTDIR\om_sampler.exe"
+  CreateShortCut "$SMPROGRAMS\$ICONS_GROUP\om_test.lnk" "cmd" "/K om_test" "$INSTDIR\om_test.exe"
+  SetOutPath "$INSTDIR"
   !insertmacro MUI_STARTMENU_WRITE_END
 ; Add path
   Push "Path"
@@ -209,7 +206,7 @@ SectionEnd
 Section -AdditionalIcons
   SetOutPath $INSTDIR
   !insertmacro MUI_STARTMENU_WRITE_BEGIN Application
-  ;Added by Tim to install for all users not just the logged in user..
+  ;install for all users not just the logged in user
   SetShellVarContext all
   WriteIniStr "$INSTDIR\${PRODUCT_NAME}.url" "InternetShortcut" "URL" "${PRODUCT_WEB_SITE}"
   CreateShortCut "$SMPROGRAMS\$ICONS_GROUP\Website.lnk" "$INSTDIR\${PRODUCT_NAME}.url"
@@ -246,7 +243,6 @@ LangString sec05 ${LANG_PORTUGUESEBR} "Arquivos de exemplo (inclui duas camadas 
 
 LangString sec06 ${LANG_ENGLISH} "AquaMaps marine layers (~1.4MB will be downloaded from the Internet)."
 LangString sec06 ${LANG_PORTUGUESEBR} "AquaMaps - camadas ambientais marinhas (~1.4MB terão que ser baixados da Internet)."
-
 ; Section descriptions
 !insertmacro MUI_FUNCTION_DESCRIPTION_BEGIN
   !insertmacro MUI_DESCRIPTION_TEXT ${SEC01} $(sec01)
@@ -257,14 +253,17 @@ LangString sec06 ${LANG_PORTUGUESEBR} "AquaMaps - camadas ambientais marinhas (~
   !insertmacro MUI_DESCRIPTION_TEXT ${SEC06} $(sec06)
 !insertmacro MUI_FUNCTION_DESCRIPTION_END
 
-
+LangString successfully_removed ${LANG_ENGLISH} "$(^Name) was successfully removed from your computer."
+LangString successfully_removed ${LANG_PORTUGUESEBR} "$(^Name) foi removido com sucesso de seu computador."
 Function un.onUninstSuccess
   HideWindow
-  MessageBox MB_ICONINFORMATION|MB_OK "$(^Name) was successfully removed from your computer."
+  MessageBox MB_ICONINFORMATION|MB_OK $(successfully_removed) 
 FunctionEnd
 
+LangString uninstall_message ${LANG_ENGLISH} "Are you sure you want to completely remove $(^Name) and all of its components?"
+LangString uninstall_message ${LANG_PORTUGUESEBR} "Tem certeza que deseja remover $(^Name) e todos os seus componentes?"
 Function un.onInit
-  MessageBox MB_ICONQUESTION|MB_YESNO|MB_DEFBUTTON2 "Are you sure you want to completely remove $(^Name) and all of its components?" IDYES +2
+  MessageBox MB_ICONQUESTION|MB_YESNO|MB_DEFBUTTON2  $(uninstall_message) IDYES +2
   Abort
 FunctionEnd
 
@@ -325,10 +324,18 @@ Section Uninstall
 ;----------------- icons and shortcuts
   ;Delete "$SMPROGRAMS\$ICONS_GROUP\Uninstall.lnk"
   Delete "$SMPROGRAMS\$ICONS_GROUP\Website.lnk"
-  ;Added by Tim to uninstall for all users not just the logged in user..
+  ;uninstall for all users not just the logged in user
   SetShellVarContext all
   Delete "$DESKTOP\openModeller .lnk"
   Delete "$SMPROGRAMS\$ICONS_GROUP\openModeller .lnk"
+  Delete "$SMPROGRAMS\$ICONS_GROUP\om_algorithm.lnk"
+  Delete "$SMPROGRAMS\$ICONS_GROUP\om_console.lnk"
+  Delete "$SMPROGRAMS\$ICONS_GROUP\om_model.lnk"
+  Delete "$SMPROGRAMS\$ICONS_GROUP\om_points.lnk"
+  Delete "$SMPROGRAMS\$ICONS_GROUP\om_project.lnk"
+  Delete "$SMPROGRAMS\$ICONS_GROUP\om_pseudo.lnk"
+  Delete "$SMPROGRAMS\$ICONS_GROUP\om_sampler.lnk"
+  Delete "$SMPROGRAMS\$ICONS_GROUP\om_test.lnk"
   RMDir "$SMPROGRAMS\$ICONS_GROUP"
 
   DeleteRegKey ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}"
@@ -370,7 +377,7 @@ LangString wlabel ${LANG_PORTUGUESEBR} "O Diretório de Trabalho é onde o Setup i
 LangString wdirbox ${LANG_ENGLISH} "Working Folder"
 LangString wdirbox ${LANG_PORTUGUESEBR} "Diretório de Trabalho"
 
-Function myCustomDirectoryShow
+Function myCustomDirectory
 
         !insertmacro MUI_HEADER_TEXT $(header_text) $(header_subtext)
 
@@ -387,7 +394,7 @@ Function myCustomDirectoryShow
         ${NSD_CreateGroupBox} 0 20% 100% 25% $(idirbox)
         Pop $IDIRBOX
 
-        ${NSD_CreateDirRequest} 5% 30% 70% 10% "$INSTDIR"
+        ${NSD_CreateText} 5% 30% 70% 10% "$INSTDIR"
         Pop $IDIRREQUEST
 
         ${NSD_CreateBrowseButton} 75% 30% 20% 10% $(dirbrowse)
@@ -401,7 +408,7 @@ Function myCustomDirectoryShow
         ${NSD_CreateGroupBox} 0 70% 100% 25% $(wdirbox)
         Pop $WDIRBOX
 
-        ${NSD_CreateDirRequest} 5% 80% 70% 10% "C:\om"
+        ${NSD_CreateText} 5% 80% 70% 10% "c:\om"
         Pop $WDIRREQUEST
 
         ${NSD_CreateBrowseButton} 75% 80% 20% 10% $(dirbrowse)
@@ -410,6 +417,27 @@ Function myCustomDirectoryShow
         ${NSD_OnClick} $WDIRBROWSE wDirBrowse
 
         nsDialogs::Show
+FunctionEnd
+
+LangString empty ${LANG_ENGLISH} "Working Folder empty." 
+LangString empty ${LANG_PORTUGUESEBR} "Diretório de Trabalho vazio." 
+
+LangString alreadyexists ${LANG_ENGLISH} "Working Folder already exists. Please choose another one." 
+LangString alreadyexists ${LANG_PORTUGUESEBR} "Diretório de Trabalho já existe. Por favor selecione outro diretório." 
+Function myCustomDirectoryLeave
+        ; DEBUG
+        ;${NSD_GetText} $WDIRREQUEST $WDIR
+        ;MessageBox MB_OK "DEBUG: $WDIR"
+        
+        ${If} $WDIR == ''
+            MessageBox MB_OK $(empty)
+            Abort
+        ${EndIf}
+
+        ${If} ${FileExists} $WDIR
+            MessageBox MB_OK $(alreadyexists)
+            Abort
+        ${EndIf}
 FunctionEnd
 
 Function iDirBrowse
@@ -433,4 +461,5 @@ Function wDirBrowse
         ${EndIf}
 
         ${NSD_SetText} $WDIRREQUEST $WDIR
+        StrCpy $WORKINGDIR $WDIR
 FunctionEnd
