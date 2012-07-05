@@ -1,0 +1,161 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+        "http://www.w3.org/TR/html4/loose.dtd">
+
+<html>
+<head>
+  <title>openModeller Introduction</title>
+</head>
+
+<body>
+<p><h1>openModeller Introduction</h1></p>
+
+<p><i>Note: This document is <b>not</b> intended to be a
+    replacement for the manual pages nor for the documentation available
+    in openModeller website. Instead, this is a quick introduction on
+    how to generate a model using the CLI (command line interface) tools
+    available on every openModeller distribution.</i></p>
+
+<p>You have just installed openModeller. Here you'll find some
+instructions to get you into the basics on how to generate a simple
+model using the command-line interface tools available.</p>
+
+<h2>openModeller Modularity</h2>
+
+<p>openModeller itself isn't a standalone software. It's a modular
+software, in which many parts work together to generate its
+functionality. A simplified model of openModeller structure is shown
+below:</p> 
+
+<p><center><img src="openModeller.jpg"></center></p><br>
+
+<p>There are different ways to use its core modelling functionality.  If
+you are interested in a graphical user interface (GUI) with buttons,
+controls and images you should download a different package called <a
+    href="http://openmodeller.sourceforge.net/index.php?Itemid=5&id=10&option=com_content&task=view">openModeller
+    Desktop</a>. Instead, if you want to use the CLI interface,
+openModeller offers some specific tools (commands) to use all the
+funcionality the GUI offers (and sometimes, even more). The point
+here is that you can effectively use openModeller in a variety of
+ways.</p>
+
+<p>Now, let's get our hands dirt.</p>
+
+<h2>Generating a model</h2>
+
+<p><i>Note: This document focuses on the Windows platform to show how to
+    use a terminal, however, this should just apply for any other
+    platforms as well.</i></p>
+
+<p>In Windows, the <i>terminal</i> is the <i>Command prompt</i>, the
+MS-DOS prompt. Starting from openModeller 1.3.0, installer includes
+shortcuts to all the commands available. When you click in one of these
+shortcuts, a new terminal is opened called <i>openModeller
+    Terminal</i>, which is basically a standard <i>Command prompt</i>,
+with a usage help that shows the options to effectively use the
+command.</p>
+
+<p>The openModeller Terminal starts in the <i>Working Folder</i>
+specified at the installation. In its inside, there is a folder called
+<i>examples</i>, which we'll use to run our... example.</p>
+
+<p>From now on, we make some assumptions here. The commands you should
+type will be in <b>bold</b>, while the rest of the
+<code>monospaced</code> font is the output from the terminal itself
+and/or openModeller. Also, we assume the <i>Working Folder</i> to be
+<code>C:\om</code>.</p> 
+
+<p>So, let's enter the examples directory:</p>
+
+<p><code>
+    C:\om> <b>cd examples</b><br>
+    C:\om\examples>
+</code></p>
+
+<p>Now we will issue the command to generate a model itself. Here,
+as a matter of the example, we'll use a simple algorithm (faster)
+and also the default parameters of openModeller for the chosen
+algorithm.</p>
+
+<p><code>
+C:\om\examples> <b>om_console request.txt</b><br>
+[Info] openModeller version 1.3.0<br>
+[Info] Reading occurrences...done<br>
+[Info] Reading layers...done<br><br>
+
+Choose an algorithm between:<br>
+[1] AquaMaps (beta version)<br>
+[2] Bioclim<br>
+[3] Climate Space Model<br>
+[4] GARP (single run) - DesktopGARP implementation<br>
+[5] GARP with best subsets - DesktopGARP implementation<br>
+[6] ENFA (Ecological-Niche Factor Analysis)<br>
+[7] Envelope Score<br>
+[8] Environmental Distance<br>
+[9] GARP (single run) - new openModeller implementation<br>
+[10] GARP with Best Subsets - new openModeller implementation<br>
+[11] Maximum Entropy<br>
+[12] Niche Mosaic<br>
+[13] Artificial Neural Network<br>
+[14] Random Forests<br>
+[15] SVM (Support Vector Machines)<br>
+[q] Quit<br><br><br>
+
+
+Option: <b>2</b><br>
+[Info] <br>
+> Algorithm used: Bioclim<br><br>
+
+[Info]  Uses mean and standard deviation for each environmental variable<br>
+separately to calculate bioclimatic envelopes. Level of fitness between<br>
+the environmental values on a point and the respective envelopes<br>
+classified points as Suitable, Marginal, or Unsuitable for<br>
+presence.<br><br><br>
+
+
+* Parameter: Standard deviation cutoff<br><br>
+
+The envelope is determined by multiplying this<br>
+parameter and the standard deviation.<br>
+Standard deviation cutoff >= 0.000000<br>
+Enter with value [0.674]: <b>[Enter]</b><br>
+[Info] Creating model<br>
+[Info] Reading 2-dimensional occurrence<br>
+points.<br>
+[Info] Using 65 points to find the bioclimatic envelope.<br>
+[Info] Finished creating model  <br>
+[Info] Calculating ROC curve<br>
+[Info] Generating 10000 background points<br>
+[Info] Projecting model<br>
+[Info] Finished projecting model<br>
+[Info] <br>
+[Info] Model statistics for training data<br>
+[Info] Threshold:           50.00%<br>
+[Info] Accuracy:           100.00%<br>
+[Info] Omission error:       0.00% (0/65)<br>
+[Info] Lowest prediction:    0.50<br>
+[Info] AUC:                  0.72<br>
+[Info] <br>
+[Info] Projection statistics<br>
+[Info] Threshold:                 50%<br>
+[Info] Cells predicted present:   66.68%<br>
+[Info] Total number of cells:     64681<br>
+[Info] Done.<br>
+C:\om\examples> <br>
+</code></p>
+
+<p>The model was generated.</p>
+
+<p>The <code>request.txt</code> file contains many definitions that
+<code>om_console</code> use to generate its model. For instance,
+<i>Map</i> specifies the layers it uses, <i>Output file</i> is the file
+generated, and so on. You can modify this file to fit your own needs, or
+you can generate a completely different one.</p>
+
+<h2>Visualizing the model</h2>
+
+<p>In the previous example, <i>Output file</i> is defined as <i>furcata.img</i>. You can
+use <i>foo</i> to visualize the model just generated. Alternatively, you
+can...</p>
+
+</body>
+</html>
