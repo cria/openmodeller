@@ -36,7 +36,7 @@ using std::pair;
 
 #include <openmodeller/om.hh>
 
-#include "feature.hh"
+#include "mxfeature.hh"
 #include "feature_generator.hh"
 
 /*********************************************************/
@@ -70,23 +70,23 @@ private:
   void assignBetas();
   double interpol( vector<int> ts, vector<double> betas, int num );
   void calcDensity();
-  void calcDensity( vector<Feature*> to_update );
+  void calcDensity( vector<MxFeature*> to_update );
   double getAlpha( double w1, double n1, double beta1, double lambda, std::string description );
-  double searchAlpha( Feature * f, double alpha );
-  double lossChange( Feature * f, double alpha );
-  double runNewtonStep( Feature * f );
-  double getDeriv( Feature * f );
+  double searchAlpha( MxFeature * f, double alpha );
+  double lossChange( MxFeature * f, double alpha );
+  double runNewtonStep( MxFeature * f );
+  double getDeriv( MxFeature * f );
   bool terminationTest( double newLoss );
   double decreaseAlpha( double alpha );
   void updateReg();
-  void updateReg( Feature * f, double alpha );
-  double increaseLambda( Feature * f, double alpha, vector<Feature*> to_update );
-  double increaseLambda( double* alpha, vector<Feature*> to_update );
+  void updateReg( MxFeature * f, double alpha );
+  double increaseLambda( MxFeature * f, double alpha, vector<MxFeature*> to_update );
+  double increaseLambda( double* alpha, vector<MxFeature*> to_update );
   double getLoss();
-  vector<Feature*> featuresToUpdate();
+  vector<MxFeature*> featuresToUpdate();
 
   // Dump the given maxent vars related to a specfic iteration
-  void displayInfo( Feature * f, double loss_bound, double new_loss, double delta_loss, double alpha );
+  void displayInfo( MxFeature * f, double loss_bound, double new_loss, double delta_loss, double alpha );
 
   double *_linear_pred; // probability of each point
   double _linear_normalizer;/// linear normalizer
@@ -140,7 +140,7 @@ protected:
   int _q_thr;
   int _hinge_thr;
 
-  vector<Feature*> _features;
+  vector<MxFeature*> _features;
   vector<FeatureGenerator*> _generators;
 };
 

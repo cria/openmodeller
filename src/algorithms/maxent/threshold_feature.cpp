@@ -30,7 +30,7 @@
 #include <sstream>
 #include <iomanip>
 
-ThresholdFeature::ThresholdFeature( int layerIndex, Scalar threshold ):Feature()
+ThresholdFeature::ThresholdFeature( int layerIndex, Scalar threshold ):MxFeature()
 {
   _type = F_THRESHOLD;
   _layerIndex = layerIndex;
@@ -38,7 +38,7 @@ ThresholdFeature::ThresholdFeature( int layerIndex, Scalar threshold ):Feature()
   _t = threshold;
 }
 
-ThresholdFeature::ThresholdFeature( const ConstConfigurationPtr & config ):Feature()
+ThresholdFeature::ThresholdFeature( const ConstConfigurationPtr & config ):MxFeature()
 {
   _type = F_THRESHOLD;
   _postgen = true;

@@ -27,9 +27,9 @@
 #ifndef _LINEARFEATURE_HH
 #define _LINEARFEATURE_HH
 
-#include "feature.hh"
+#include "mxfeature.hh"
 
-class LinearFeature : public Feature {
+class LinearFeature : public MxFeature {
 
 public:
 

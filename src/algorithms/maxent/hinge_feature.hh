@@ -27,9 +27,9 @@
 #ifndef _HINGEFEATURE_HH
 #define _HINGEFEATURE_HH
 
-#include "feature.hh"
+#include "mxfeature.hh"
 
-class HingeFeature : public Feature {
+class HingeFeature : public MxFeature {
 
 public:
   HingeFeature( int layerIndex, Scalar min, Scalar max, bool reverse );

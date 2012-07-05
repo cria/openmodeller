@@ -27,13 +27,13 @@
 #include "linear_feature.hh"
 #include <openmodeller/Exceptions.hh>
 
-LinearFeature::LinearFeature( int layerIndex ):Feature()
+LinearFeature::LinearFeature( int layerIndex ):MxFeature()
 {
   _type = F_LINEAR;
   _layerIndex = layerIndex;
 }
 
-LinearFeature::LinearFeature( const ConstConfigurationPtr & config ):Feature()
+LinearFeature::LinearFeature( const ConstConfigurationPtr & config ):MxFeature()
 {
   _type = F_LINEAR;
   setConfiguration( config );

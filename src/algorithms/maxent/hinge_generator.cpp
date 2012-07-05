@@ -170,13 +170,13 @@ HingeGenerator::updateExp( double * density, double z_lambda )
   }
 }
 
-Feature * 
+MxFeature * 
 HingeGenerator::exportFeature(int idx)
 {
   if ( _features[idx] == 0 ) {
 
     // Create feature if necessary
-      Feature * f = new HingeFeature(_feature->getLayerIndex(), _thresholds[idx], _maxval, _reverse);
+    MxFeature * f = new HingeFeature(_feature->getLayerIndex(), _thresholds[idx], _maxval, _reverse);
 
     f->setSampExp( sampExp(idx) );
     f->setSampDev( sampDev(idx) );

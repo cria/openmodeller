@@ -27,13 +27,13 @@
 #include "quadratic_feature.hh"
 #include <openmodeller/Exceptions.hh>
 
-QuadraticFeature::QuadraticFeature( int layerIndex ):Feature()
+QuadraticFeature::QuadraticFeature( int layerIndex ):MxFeature()
 {
   _type = F_QUADRATIC;
   _layerIndex = layerIndex;
 }
 
-QuadraticFeature::QuadraticFeature( const ConstConfigurationPtr & config ):Feature()
+QuadraticFeature::QuadraticFeature( const ConstConfigurationPtr & config ):MxFeature()
 {
   _type = F_QUADRATIC;
   setConfiguration( config );

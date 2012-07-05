@@ -42,7 +42,7 @@
 /**
  * Maxent feature
  */
-class Feature : public Configurable {
+class MxFeature : public Configurable {
 
 public:
   virtual Scalar getRawVal( const Sample& sample ) const = 0;
@@ -99,7 +99,7 @@ public:
   bool postGenerated() const {return _postgen;}
 
 protected:
-  Feature() {
+  MxFeature() {
     _description = "";
     _postgen = false;
     _active = true;
