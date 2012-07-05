@@ -358,7 +358,11 @@ MaximumEntropy::~MaximumEntropy()
   for (unsigned int i = 0; i < n; ++i) {
 
    // Avoid deallocating post generated features - this happens in the feature generator
-   if ( ! _features[i]->postGenerated() ) {
+   if ( _features[i]->postGenerated() ) {
+
+     _features[i] = 0;
+   }
+   else {
 
      delete _features[i];
    }
