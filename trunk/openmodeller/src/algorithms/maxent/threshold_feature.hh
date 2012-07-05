@@ -27,9 +27,9 @@
 #ifndef _THRESHOLDFEATURE_HH
 #define _THRESHOLDFEATURE_HH
 
-#include "feature.hh"
+#include "mxfeature.hh"
 
-class ThresholdFeature : public Feature {
+class ThresholdFeature : public MxFeature {
 
 public:
 

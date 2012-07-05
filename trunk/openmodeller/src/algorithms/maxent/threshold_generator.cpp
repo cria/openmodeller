@@ -174,13 +174,13 @@ ThresholdGenerator::updateExp( double * density, double z_lambda )
   }
 }
 
-Feature * 
+MxFeature * 
 ThresholdGenerator::exportFeature(int idx)
 {
   if ( _features[idx] == 0 ) {
 
     // Create feature if necessary
-    Feature * f = new ThresholdFeature(_feature->getLayerIndex(), _thresholds[idx]);
+    MxFeature * f = new ThresholdFeature(_feature->getLayerIndex(), _thresholds[idx]);
 
     f->setSampExp( sampExp(idx) );
     f->setSampDev( sampDev(idx) );

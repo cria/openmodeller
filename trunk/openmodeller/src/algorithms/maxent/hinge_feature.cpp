@@ -27,7 +27,7 @@
 #include "hinge_feature.hh"
 #include <openmodeller/Exceptions.hh>
 
-HingeFeature::HingeFeature( int layerIndex, Scalar min, Scalar max, bool reverse ):Feature()
+HingeFeature::HingeFeature( int layerIndex, Scalar min, Scalar max, bool reverse ):MxFeature()
 {
   _type = F_HINGE;
   _layerIndex = layerIndex;
@@ -38,7 +38,7 @@ HingeFeature::HingeFeature( int layerIndex, Scalar min, Scalar max, bool reverse
   _reverse = reverse;
 }
 
-HingeFeature::HingeFeature( const ConstConfigurationPtr & config ):Feature()
+HingeFeature::HingeFeature( const ConstConfigurationPtr & config ):MxFeature()
 {
   _type = F_HINGE;
   _postgen = true;

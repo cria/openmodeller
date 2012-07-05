@@ -41,7 +41,7 @@ public:
 
   void updateExp( double * density, double z_lambda );
 
-  Feature * exportFeature(int idx);
+  MxFeature * exportFeature(int idx);
 };
 
 #endif

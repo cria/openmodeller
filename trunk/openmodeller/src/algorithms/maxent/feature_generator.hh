@@ -30,7 +30,7 @@
 #include <vector>
 using std::pair;
 
-#include "feature.hh"
+#include "mxfeature.hh"
 #include "linear_feature.hh"
 #include <openmodeller/Occurrences.hh>
 
@@ -53,11 +53,11 @@ public:
 
   virtual void updateExp( double * density, double z_lambda ) = 0;
 
-  Feature * getFeature(int idx) {return _features[idx];}
+  MxFeature * getFeature(int idx) {return _features[idx];}
 
-  Feature * toFeature(int idx);
+  MxFeature * toFeature(int idx);
 
-  virtual Feature * exportFeature(int idx) = 0;
+  virtual MxFeature * exportFeature(int idx) = 0;
 
   void setBeta( Scalar beta ){_beta = beta;}
 
@@ -102,7 +102,7 @@ protected:
   int _first_ref;
   int _last_ref;
 
-  std::vector<Feature*> _features;
+  std::vector<MxFeature*> _features;
 
   std::vector<Scalar> _exp;
   std::vector<Scalar> _samp_exp;

@@ -27,9 +27,9 @@
 #ifndef _QUADRATICFEATURE_HH
 #define _QUADRATICFEATURE_HH
 
-#include "feature.hh"
+#include "mxfeature.hh"
 
-class QuadraticFeature : public Feature {
+class QuadraticFeature : public MxFeature {
 
 public:
 

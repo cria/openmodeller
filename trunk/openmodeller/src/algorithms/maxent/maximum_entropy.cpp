@@ -720,7 +720,7 @@ MaximumEntropy::initTrainer()
   }
 
   int i = 0;
-  vector<Feature*>::iterator it;
+  vector<MxFeature*>::iterator it;
 
   unsigned int active_features = _features.size();
 
@@ -977,11 +977,11 @@ MaximumEntropy::sequentialProc()
   double retvalue;
 
   // Determine best feature
-  Feature* best_f = 0;
+  MxFeature* best_f = 0;
   double best_dlb = 1.0;
   double alpha = 0.0;
 
-  vector<Feature*>::iterator it;
+  vector<MxFeature*>::iterator it;
   for ( it = _features.begin(); it != _features.end(); ++it ) {
 
     double dlb = lossBound( (*it)->isActive(), (*it)->exp(), (*it)->sampExp(), (*it)->sampDev(), (*it)->lambda(), (*it)->getDescription(_samp->getEnvironment()) );
@@ -1057,7 +1057,7 @@ MaximumEntropy::sequentialProc()
 
   best_f->setLastChange( _iteration );
 
-  vector<Feature*> to_update = featuresToUpdate();
+  vector<MxFeature*> to_update = featuresToUpdate();
   best_dlb = lossBound( best_f->isActive(), best_f->exp(), best_f->sampExp(), best_f->sampDev(), best_f->lambda(), best_f->getDescription(_samp->getEnvironment()) );
 
   double loss;
@@ -1083,7 +1083,7 @@ MaximumEntropy::sequentialProc()
 
       Log::instance()->debug("Undoing: newLoss %.16f, oldLoss %.16f, deltaLossBound %.16f\n", loss, _old_loss, best_dlb);
       updateReg( best_f, -alpha );
-      vector<Feature*> f_update;
+      vector<MxFeature*> f_update;
       f_update.push_back( best_f );
       loss = increaseLambda( best_f, -alpha, f_update );
       alpha = searchAlpha( best_f, getAlpha( best_f->exp(), best_f->sampExp(), best_f->sampDev(), best_f->lambda(), best_f->getDescription(_samp->getEnvironment()) ) );
@@ -1265,7 +1265,7 @@ MaximumEntropy::parallelProc()
   double prev_loss = getLoss();
 
   // Determine features to update
-  vector<Feature*> to_update = featuresToUpdate();
+  vector<MxFeature*> to_update = featuresToUpdate();
 
   double loss = increaseLambda( alpha, to_update );
 
@@ -1308,7 +1308,7 @@ MaximumEntropy::setLinearPred()
     
     Sample sample = (*p_iterator)->environment();
 
-    vector<Feature*>::iterator it;
+    vector<MxFeature*>::iterator it;
     for ( it = _features.begin(); it != _features.end(); ++it ) {
 
       if ( (*it)->lambda() != 0.0 ) {
@@ -1381,7 +1381,7 @@ MaximumEntropy::assignBetas()
   }
 
   // Assign beta values for each feature
-  vector<Feature*>::iterator it;
+  vector<MxFeature*>::iterator it;
   for ( it = _features.begin(); it != _features.end(); ++it ) {
 
     (*it)->setBeta( beta_common );
@@ -1452,9 +1452,9 @@ MaximumEntropy::setLinearNormalizer()
 void
 MaximumEntropy::calcDensity()
 {
-  vector<Feature*> to_update;
+  vector<MxFeature*> to_update;
 
-  vector<Feature*>::iterator it;
+  vector<MxFeature*>::iterator it;
   for ( it = _features.begin(); it != _features.end(); ++it ) {
 
     if ( (*it)->isActive() && !(*it)->postGenerated() ) {
@@ -1470,7 +1470,7 @@ MaximumEntropy::calcDensity()
 /*** calc Density ***/
 
 void
-MaximumEntropy::calcDensity( vector<Feature*> to_update )
+MaximumEntropy::calcDensity( vector<MxFeature*> to_update )
 {
   _z_lambda = 0.0;
   double d;
@@ -1577,7 +1577,7 @@ MaximumEntropy::getAlpha( double w1, double n1, double beta1, double lambda, std
 /*** search Alpha ***/
 
 double 
-MaximumEntropy::searchAlpha( Feature * f, double alpha )
+MaximumEntropy::searchAlpha( MxFeature * f, double alpha )
 {
   double ini_loss = lossChange( f, alpha );
   double current_loss = ini_loss;
@@ -1611,7 +1611,7 @@ MaximumEntropy::searchAlpha( Feature * f, double alpha )
 /*** loss Change ***/
 
 double 
-MaximumEntropy::lossChange( Feature * f, double alpha )
+MaximumEntropy::lossChange( MxFeature * f, double alpha )
 {
   double lambda = f->lambda();
   double n1 = f->sampExp();
@@ -1642,7 +1642,7 @@ MaximumEntropy::lossChange( Feature * f, double alpha )
 /*** run Newton Step ***/
 
 double 
-MaximumEntropy::runNewtonStep( Feature * f ) {
+MaximumEntropy::runNewtonStep( MxFeature * f ) {
 
   double w1 = f->exp();
   double wu = 0.0;
@@ -1684,7 +1684,7 @@ MaximumEntropy::runNewtonStep( Feature * f ) {
 /*** get Deriv ***/
 
 double
-MaximumEntropy::getDeriv( Feature * f )
+MaximumEntropy::getDeriv( MxFeature * f )
 {
   double w1 = f->exp();
   double n1 = f->sampExp();
@@ -1725,7 +1725,7 @@ MaximumEntropy::updateReg()
 {
   double sum = 0.0;
 
-  vector<Feature*>::iterator it;
+  vector<MxFeature*>::iterator it;
   for ( it = _features.begin(); it != _features.end(); ++it ) {
 
     sum += fabs( (*it)->lambda() ) * (*it)->sampDev();
@@ -1738,7 +1738,7 @@ MaximumEntropy::updateReg()
 /*** update Reg ***/
 
 void
-MaximumEntropy::updateReg( Feature * f, double alpha )
+MaximumEntropy::updateReg( MxFeature * f, double alpha )
 {
   double beta1 = f->sampDev();
   double lambda = f->lambda();
@@ -1750,7 +1750,7 @@ MaximumEntropy::updateReg( Feature * f, double alpha )
 /*** increase Lambda ***/
 
 double 
-MaximumEntropy::increaseLambda( Feature * f, double alpha, vector<Feature*> to_update )
+MaximumEntropy::increaseLambda( MxFeature * f, double alpha, vector<MxFeature*> to_update )
 {
   if ( alpha != 0.0 ) {
 
@@ -1787,7 +1787,7 @@ MaximumEntropy::increaseLambda( Feature * f, double alpha, vector<Feature*> to_u
 /*** increase Lambda ***/
 
 double
-MaximumEntropy::increaseLambda( double* alpha, vector<Feature*> to_update )
+MaximumEntropy::increaseLambda( double* alpha, vector<MxFeature*> to_update )
 {
   double lambda;
 
@@ -1826,7 +1826,7 @@ MaximumEntropy::increaseLambda( double* alpha, vector<Feature*> to_update )
 /*** display Info ***/
 
 void
-MaximumEntropy::displayInfo( Feature * f, double loss_bound, double new_loss, double delta_loss, double alpha )
+MaximumEntropy::displayInfo( MxFeature * f, double loss_bound, double new_loss, double delta_loss, double alpha )
 {
   Log::instance()->debug( "-------------------------------\n" );
 
@@ -1896,7 +1896,7 @@ MaximumEntropy::getLoss()
 {
   double sum_mid_lambda = 0.0;
 
-  vector<Feature*>::iterator it;
+  vector<MxFeature*>::iterator it;
   for ( it = _features.begin(); it != _features.end(); ++it ) {
 
     sum_mid_lambda += (*it)->sampExp() * (*it)->lambda();
@@ -1908,15 +1908,15 @@ MaximumEntropy::getLoss()
 /**************************/
 /*** features To Update ***/
 
-vector<Feature*> 
+vector<MxFeature*> 
 MaximumEntropy::featuresToUpdate()
 {
   int j = 0;
   vector< pair<int, double> > lb;
-  vector<Feature*> to_update;
+  vector<MxFeature*> to_update;
   vector<int> to_update_idx;
   
-  vector<Feature*>::iterator it;
+  vector<MxFeature*>::iterator it;
   for ( it = _features.begin(); it != _features.end(); ++it,++j ) {
 
     if ( (*it)->isActive() && !((*it)->postGenerated()) && ((_iteration < (*it)->lastChange() + _change) || (j % _updateInterval == _iteration % _updateInterval)) ) {
@@ -1935,7 +1935,7 @@ MaximumEntropy::featuresToUpdate()
   vector< pair<int, double> >::iterator lbit;
   for ( lbit = lb.begin(); lbit != lb.end() && (j < _select); ++lbit,++j ) {
 
-    Feature * f = _features[(*lbit).first];
+    MxFeature * f = _features[(*lbit).first];
 
     idxit = find ( to_update_idx.begin(), to_update_idx.end(), lbit->first );
 
@@ -1985,7 +1985,7 @@ MaximumEntropy::getValue( const Sample& x ) const
   double prob = 0.0 ;
   double val;
 
-  vector<Feature*>::const_iterator it;
+  vector<MxFeature*>::const_iterator it;
   for ( it = _features.begin(); it != _features.end(); ++it ) {
 
     // TODO: Clamp environmental values if necessary?

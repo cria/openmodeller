@@ -27,9 +27,9 @@
 #ifndef _PRODUCTFEATURE_HH
 #define _PRODUCTFEATURE_HH
 
-#include "feature.hh"
+#include "mxfeature.hh"
 
-class ProductFeature : public Feature {
+class ProductFeature : public MxFeature {
 
 public:
   ProductFeature( int layerIndex1, int layerIndex2 );

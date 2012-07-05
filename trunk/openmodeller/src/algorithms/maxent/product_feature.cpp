@@ -27,14 +27,14 @@
 #include "product_feature.hh"
 #include <openmodeller/Exceptions.hh>
 
-ProductFeature::ProductFeature( int layerIndex1, int layerIndex2 ):Feature()
+ProductFeature::ProductFeature( int layerIndex1, int layerIndex2 ):MxFeature()
 {
   _type = F_PRODUCT;
   _layerIndex1 = layerIndex1;
   _layerIndex2 = layerIndex2;
 }
 
-ProductFeature::ProductFeature( const ConstConfigurationPtr & config ):Feature()
+ProductFeature::ProductFeature( const ConstConfigurationPtr & config ):MxFeature()
 {
   _type = F_PRODUCT;
   setConfiguration( config );

@@ -134,7 +134,7 @@ FeatureGenerator::FeatureGenerator(const OccurrencesPtr& presences, const Occurr
   }
 
   _features.reserve(t_idx);
-  Feature* f = 0;
+  MxFeature* f = 0;
   _features.assign(t_idx, f);
 
   _exp.reserve(t_idx);
