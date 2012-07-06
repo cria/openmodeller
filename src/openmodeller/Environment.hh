@@ -120,7 +120,11 @@ public:
 
   /** Set specific normalization parameters
    */
-  void normalize( Normalizer * _normalizerPtr );
+  void normalize( Normalizer * normalizerPtr );
+
+  /** Reset normalization parameters
+   */
+  void resetNormalization();
 
   /** Read for vector 'sample' all values of environmental variables
    *  of coordinate (x,y).

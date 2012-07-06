@@ -277,6 +277,28 @@ void SamplerImpl::normalize( Normalizer * normalizerPtr )
   _normalized = true;
 }
 
+/*****************/
+/*** normalize ***/
+void SamplerImpl::resetNormalization()
+{
+  if ( _normalized ) {
+
+    _env->resetNormalization();
+
+    if ( _presence && _presence->numOccurrences() ) {
+
+      _presence->resetNormalization();
+    }
+
+    if ( _absence && _absence->numOccurrences() ) {
+
+      _absence->resetNormalization();
+    }
+
+    _normalized = false;
+  }
+}
+
 /***********************/
 /*** num Independent ***/
 int

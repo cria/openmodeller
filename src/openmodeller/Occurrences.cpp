@@ -223,6 +223,21 @@ OccurrencesImpl::normalize( Normalizer * normalizerPtr, size_t categoricalThresh
   }
 }
 
+/***************************/
+/*** reset Normalization ***/
+void 
+OccurrencesImpl::resetNormalization()
+{
+  OccurrencesImpl::const_iterator occ = occur_.begin();
+  OccurrencesImpl::const_iterator end = occur_.end();
+  
+  while ( occ != end ) {
+
+    (*occ)->setNormalizedEnvironment( (*occ)->originalEnvironment() );
+    ++occ;
+  }
+}
+
 /******************/
 /*** get MinMax ***/
 void

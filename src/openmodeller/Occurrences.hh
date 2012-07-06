@@ -208,7 +208,11 @@ public:
   /** normalizable interface */
   void getMinMax( Sample * min, Sample * max ) const;
 
+  /** Normalize */
   void normalize( Normalizer * normalizerPtr, size_t categoricalThreshold=0 );
+
+  /** Reset normalization */
+  void resetNormalization();
 
   /** Sets environment object in each occurrence object
    */
