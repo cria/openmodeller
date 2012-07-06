@@ -381,24 +381,34 @@ AlgorithmImpl::createModel( const SamplerPtr& samp, CallbackWrapper *callbackWra
 
   setSampler( samp );
 
-  if ( needNormalization() && !_samp->isNormalized() ) {
+  if ( needNormalization() ) {
 
-    Log::instance()->info( "Computing normalization\n" );
+    if ( !_samp->isNormalized() ) {
 
-    if ( _normalizerPtr ) {
+      Log::instance()->info( "Computing normalization\n" );
 
-      _normalizerPtr->computeNormalization( _samp );
+      if ( _normalizerPtr ) {
 
-      setNormalization( _samp );
+        _normalizerPtr->computeNormalization( _samp );
+
+        setNormalization( _samp );
+      }
+      else {
+
+        std::string msg = "Normalizer not specified.\n";
+
+        Log::instance()->error( msg.c_str() );
+
+        throw AlgorithmException( msg.c_str() );
+      }
     }
-    else {
+  }
+  else {
 
-      std::string msg = "Normalizer not specified.\n";
+    if ( _samp->isNormalized() ) {
 
-      Log::instance()->error( msg.c_str() );
-
-      throw AlgorithmException( msg.c_str() );
-    }
+      _samp->resetNormalization();
+    }    
   }
 
   if ( ! initialize() ) {
