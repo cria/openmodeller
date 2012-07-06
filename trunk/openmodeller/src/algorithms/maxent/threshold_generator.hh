@@ -33,7 +33,7 @@ class ThresholdGenerator : public FeatureGenerator {
 
 public:
 
-    ThresholdGenerator(const OccurrencesPtr& presences, const OccurrencesPtr& background, LinearFeature * feature, bool reverse);
+  ThresholdGenerator(const OccurrencesPtr& presences, const OccurrencesPtr& background, LinearFeature * feature, bool reverse);
 
   ~ThresholdGenerator();
 
