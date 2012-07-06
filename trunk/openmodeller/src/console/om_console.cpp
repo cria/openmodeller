@@ -61,8 +61,7 @@ main( int argc, char **argv )
 {
   if ( argc < 2 ) {
 
-    // Obs: default log level includes "error" messages
-    Log::instance()->error( "\n%s request_file [log_level]\n\n", argv[0] );
+    printf ("Usage: %s request_file [log_level]\n", argv[0]);
     exit(1);
   }
 
