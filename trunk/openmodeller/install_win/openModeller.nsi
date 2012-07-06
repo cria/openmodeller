@@ -30,6 +30,22 @@ InstallDir "${INSTALL_DIR}"
 OutFile "openModellerSetup${PRODUCT_VERSION}.exe"
 SetCompressor zlib
 
+; Try to declare all variables here
+Var DIALOG
+
+Var IDIR 
+Var ILABEL
+Var IDIRBOX
+Var IDIRREQUEST
+Var IDIRBROWSE
+
+Var WLABEL
+Var WDIRBOX
+Var WDIRREQUEST
+Var WDIRBROWSE
+Var WDIR
+
+
 ; MUI Settings
 !define MUI_ABORTWARNING
 !define MUI_ICON "openmodeller64x64.ico"
@@ -100,6 +116,7 @@ Section "Application" SEC01
 
   SetOverwrite ifnewer
   File "${BUILD_DIR}\*.exe"
+  File "${BUILD_DIR}\*.bat"
   SetOverwrite try
  
   File "${BUILD_DIR}\*.txt" 
@@ -146,16 +163,16 @@ Section "Application" SEC01
   SetOutPath "$INSTDIR"
   !insertmacro MUI_STARTMENU_WRITE_BEGIN Application
   CreateDirectory "$SMPROGRAMS\$ICONS_GROUP"
-  CreateShortCut "$SMPROGRAMS\$ICONS_GROUP\openModeller .lnk" "$INSTDIR\README.txt"
+  CreateShortCut "$SMPROGRAMS\$ICONS_GROUP\openModeller.lnk" "$INSTDIR\README.html"
   SetOutPath "$WORKINGDIR"
-  CreateShortCut "$SMPROGRAMS\$ICONS_GROUP\om_algorithm.lnk" "cmd" "/K om_algorithm" "$INSTDIR\om_algorithm.exe"
-  CreateShortCut "$SMPROGRAMS\$ICONS_GROUP\om_console.lnk" "cmd" "/K om_console" "$INSTDIR\om_console.exe"
-  CreateShortCut "$SMPROGRAMS\$ICONS_GROUP\om_model.lnk" "cmd" "/K om_model" "$INSTDIR\om_model.exe"
-  CreateShortCut "$SMPROGRAMS\$ICONS_GROUP\om_points.lnk" "cmd" "/K om_points" "$INSTDIR\om_points.exe"
-  CreateShortCut "$SMPROGRAMS\$ICONS_GROUP\om_project.lnk" "cmd" "/K om_project" "$INSTDIR\om_project.exe"
-  CreateShortCut "$SMPROGRAMS\$ICONS_GROUP\om_pseudo.lnk" "cmd" "/K om_pseudo" "$INSTDIR\om_pseudo.exe"
-  CreateShortCut "$SMPROGRAMS\$ICONS_GROUP\om_sampler.lnk" "cmd" "/K om_sampler" "$INSTDIR\om_sampler.exe"
-  CreateShortCut "$SMPROGRAMS\$ICONS_GROUP\om_test.lnk" "cmd" "/K om_test" "$INSTDIR\om_test.exe"
+  CreateShortCut "$SMPROGRAMS\$ICONS_GROUP\om_algorithm.lnk" "om_cmd" "$WDIR om_algorithm"
+  CreateShortCut "$SMPROGRAMS\$ICONS_GROUP\om_console.lnk" "om_cmd" "$WDIR om_console" 
+  CreateShortCut "$SMPROGRAMS\$ICONS_GROUP\om_model.lnk" "om_cmd" "$WDIR om_model"
+  CreateShortCut "$SMPROGRAMS\$ICONS_GROUP\om_points.lnk" "om_cmd" "$WDIR om_points"
+  CreateShortCut "$SMPROGRAMS\$ICONS_GROUP\om_project.lnk" "om_cmd" "$WDIR om_project"
+  CreateShortCut "$SMPROGRAMS\$ICONS_GROUP\om_pseudo.lnk" "om_cmd" "$WDIR om_pseudo"
+  CreateShortCut "$SMPROGRAMS\$ICONS_GROUP\om_sampler.lnk" "om_cmd" "$WDIR om_sampler"
+  CreateShortCut "$SMPROGRAMS\$ICONS_GROUP\om_test.lnk" "om_cmd" "/K om_test"
   SetOutPath "$INSTDIR"
   !insertmacro MUI_STARTMENU_WRITE_END
 ; Add path
@@ -188,7 +205,6 @@ Section /o "Sample Data - South America" SEC04
  !insertmacro ZIPDLL_EXTRACT "$INSTDIR\SampleData\SouthAmerica.zip" "$INSTDIR\SampleData\EnvironmentLayers\" "<ALL>"
 SectionEnd
 
-Var WDIR
 Section "Small examples data" SEC05
   SetOutPath "$WDIR\examples"
   File "${BUILD_DIR}\examples\*"
@@ -343,19 +359,6 @@ Section Uninstall
   SetAutoClose true
 SectionEnd
 
-Var DIALOG
-
-Var IDIR 
-Var ILABEL
-Var IDIRBOX
-Var IDIRREQUEST
-Var IDIRBROWSE
-
-Var WLABEL
-Var WDIRBOX
-Var WDIRREQUEST
-Var WDIRBROWSE
-
 LangString header_text ${LANG_ENGLISH} "Choose installation and working directories"
 LangString header_text ${LANG_PORTUGUESEBR} "Escolha de diretórios de instalação e trabalho"
 
@@ -425,9 +428,7 @@ LangString empty ${LANG_PORTUGUESEBR} "Diretório de Trabalho vazio."
 LangString alreadyexists ${LANG_ENGLISH} "Working Folder already exists. Please choose another one." 
 LangString alreadyexists ${LANG_PORTUGUESEBR} "Diretório de Trabalho já existe. Por favor selecione outro diretório." 
 Function myCustomDirectoryLeave
-        ; DEBUG
-        ;${NSD_GetText} $WDIRREQUEST $WDIR
-        ;MessageBox MB_OK "DEBUG: $WDIR"
+        ${NSD_GetText} $WDIRREQUEST $WDIR
         
         ${If} $WDIR == ''
             MessageBox MB_OK $(empty)
