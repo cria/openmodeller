@@ -343,7 +343,7 @@ Section Uninstall
   ;uninstall for all users not just the logged in user
   SetShellVarContext all
   Delete "$DESKTOP\openModeller .lnk"
-  Delete "$SMPROGRAMS\$ICONS_GROUP\openModeller .lnk"
+  Delete "$SMPROGRAMS\$ICONS_GROUP\openModeller.lnk"
   Delete "$SMPROGRAMS\$ICONS_GROUP\om_algorithm.lnk"
   Delete "$SMPROGRAMS\$ICONS_GROUP\om_console.lnk"
   Delete "$SMPROGRAMS\$ICONS_GROUP\om_model.lnk"
