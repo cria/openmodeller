@@ -110,6 +110,9 @@ public:
    */
   bool isNormalized() const { return _normalized; }
 
+  /** Reset normalization */
+  void resetNormalization();
+
   /** Number of independent variables (environmental variables). */
   int numIndependent() const;
 

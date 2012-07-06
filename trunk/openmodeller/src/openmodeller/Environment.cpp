@@ -424,6 +424,8 @@ EnvironmentImpl::getMinMax( Sample * min, Sample * max ) const
   }
 }
 
+/*****************/
+/*** normalize ***/
 void
 EnvironmentImpl::normalize( Normalizer * normalizerPtr ) {
 
@@ -433,6 +435,22 @@ EnvironmentImpl::normalize( Normalizer * normalizerPtr ) {
   }
 }
 
+
+/***************************/
+/*** reset Normalization ***/
+void
+EnvironmentImpl::resetNormalization() {
+
+  if ( _normalizerPtr ) {
+
+    delete _normalizerPtr;
+
+    _normalizerPtr = 0;
+  }
+}
+
+/*********************************/
+/*** get Unnormalized Internal ***/
 void
 EnvironmentImpl::getUnnormalizedInternal( Sample *sample, Coord x, Coord y ) const
 {
