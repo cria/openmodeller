@@ -433,6 +433,10 @@ EnvironmentImpl::normalize( Normalizer * normalizerPtr ) {
 
     _normalizerPtr = normalizerPtr->getCopy();
   }
+  else {
+
+    resetNormalization();
+  }
 }
 
 
