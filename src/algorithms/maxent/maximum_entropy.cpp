@@ -778,7 +778,7 @@ MaximumEntropy::initTrainer()
 
   while ( b_iterator != b_end ) {
     
-    Sample sample = (*b_iterator)->environment();
+    Sample sample = (*b_iterator)->originalEnvironment();
 
     // Get raw values for each feature and put them in ref
     i = 0;
@@ -844,7 +844,7 @@ MaximumEntropy::initTrainer()
   Scalar val;
   while ( p_iterator != p_end ) {
 
-    Sample sample = (*p_iterator)->environment();
+    Sample sample = (*p_iterator)->originalEnvironment();
 
     for ( it = _features.begin(); it != _features.end(); ++it ) {
 
@@ -1043,7 +1043,7 @@ MaximumEntropy::sequentialProc()
 
     while ( p_iterator != p_end ) {
     
-      Sample sample = (*p_iterator)->environment();
+      Sample sample = (*p_iterator)->originalEnvironment();
 
       sum += _density[i] * best_f->getVal(sample);
 
@@ -1186,7 +1186,7 @@ MaximumEntropy::parallelProc()
 
   while ( p_iterator != p_end ) {
     
-    Sample sample = (*p_iterator)->environment();
+    Sample sample = (*p_iterator)->originalEnvironment();
 
     ft = 0.0;
     d = _density[i];
@@ -1306,7 +1306,7 @@ MaximumEntropy::setLinearPred()
 
   while ( p_iterator != p_end ) {
     
-    Sample sample = (*p_iterator)->environment();
+    Sample sample = (*p_iterator)->originalEnvironment();
 
     vector<MxFeature*>::iterator it;
     for ( it = _features.begin(); it != _features.end(); ++it ) {
@@ -1492,7 +1492,7 @@ MaximumEntropy::calcDensity( vector<MxFeature*> to_update )
 
     _z_lambda += d;
 
-    Sample sample = (*p_iterator)->environment();
+    Sample sample = (*p_iterator)->originalEnvironment();
 
     for ( unsigned int j = 0; j < to_update.size(); ++j ) {
 
@@ -1625,7 +1625,7 @@ MaximumEntropy::lossChange( MxFeature * f, double alpha )
 
   while ( p_iterator != p_end ) {
 
-    Sample sample = (*p_iterator)->environment();
+    Sample sample = (*p_iterator)->originalEnvironment();
 
     zz += _density[i] * exp(alpha * f->getVal( sample ));
 
@@ -1653,7 +1653,7 @@ MaximumEntropy::runNewtonStep( MxFeature * f ) {
 
   while ( p_iterator != p_end ) {
 
-    Sample sample = (*p_iterator)->environment();
+    Sample sample = (*p_iterator)->originalEnvironment();
 
     wu += _density[i] * pow( f->getVal(sample), 2 );
 
@@ -1764,7 +1764,7 @@ MaximumEntropy::increaseLambda( MxFeature * f, double alpha, vector<MxFeature*> 
 
     while ( p_iterator != p_end ) {
 
-      Sample sample = (*p_iterator)->environment();
+      Sample sample = (*p_iterator)->originalEnvironment();
 
       _linear_pred[i] += alpha * f->getVal( sample );
 
@@ -1805,7 +1805,7 @@ MaximumEntropy::increaseLambda( double* alpha, vector<MxFeature*> to_update )
 
       while ( p_iterator != p_end ) {
 
-        Sample sample = (*p_iterator)->environment();
+        Sample sample = (*p_iterator)->originalEnvironment();
 
         _linear_pred[j] += alpha[i] * _features[i]->getVal( sample );
 

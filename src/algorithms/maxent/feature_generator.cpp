@@ -58,7 +58,7 @@ FeatureGenerator::FeatureGenerator(const OccurrencesPtr& presences, const Occurr
 
   while ( it != end ) {
 
-    Sample s = (*it)->environment();
+    Sample s = (*it)->originalEnvironment();
 
     _vals.push_back( std::make_pair(i, getVal(s)) );
 
@@ -72,7 +72,7 @@ FeatureGenerator::FeatureGenerator(const OccurrencesPtr& presences, const Occurr
 
   while ( it != end ) {
 
-    Sample s = (*it)->environment();
+    Sample s = (*it)->originalEnvironment();
 
     _vals.push_back( std::make_pair(i, getVal(s)) );
 
