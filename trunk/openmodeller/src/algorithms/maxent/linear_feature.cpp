@@ -26,6 +26,7 @@
 
 #include "linear_feature.hh"
 #include <openmodeller/Exceptions.hh>
+#include <openmodeller/os_specific.hh>
 
 LinearFeature::LinearFeature( int layerIndex ):MxFeature()
 {
@@ -83,7 +84,19 @@ LinearFeature::getConfiguration() const
 void 
 LinearFeature::setConfiguration( const ConstConfigurationPtr & config )
 {
-  int type = config->getAttributeAsInt( "Type", -1 );
+  int type = -1;
+
+  try {
+
+    type = config->getAttributeAsInt( "Type", -1 );
+  }
+  catch ( AttributeNotFound& e ) {
+
+    std::string msg = "Missing 'Type' parameter in hinge feature deserialization.\n";
+    Log::instance()->error( msg.c_str() );
+    throw InvalidParameterException( msg );
+    UNUSED(e);
+  }
 
   if ( type != F_LINEAR ) {
 
@@ -92,27 +105,33 @@ LinearFeature::setConfiguration( const ConstConfigurationPtr & config )
     throw InvalidParameterException( msg );
   }
 
-  _layerIndex = config->getAttributeAsInt( "Ref", -1 );
+  try {
 
-  if ( _layerIndex == -1 ) {
+    _layerIndex = config->getAttributeAsInt( "Ref", -1 );
+  }
+  catch ( AttributeNotFound& e ) {
 
     std::string msg = "Missing 'Ref' parameter in linear feature deserialization.\n";
     Log::instance()->error( msg.c_str() );
     throw InvalidParameterException( msg );
   }
 
-  _min = config->getAttributeAsDouble( "Min", -1 );
+  try {
 
-  if ( _min == -1 ) {
+    _min = config->getAttributeAsDouble( "Min", 0.0 );
+  }
+  catch ( AttributeNotFound& e ) {
 
     std::string msg = "Missing 'Min' parameter in linear feature deserialization.\n";
     Log::instance()->error( msg.c_str() );
     throw InvalidParameterException( msg );
   }
 
-  _max = config->getAttributeAsDouble( "Max", -1 );
+  try {
 
-  if ( _max == -1 ) {
+    _max = config->getAttributeAsDouble( "Max", 0.0 );
+  }
+  catch ( AttributeNotFound& e ) {
 
     std::string msg = "Missing 'Max' parameter in linear feature deserialization.\n";
     Log::instance()->error( msg.c_str() );

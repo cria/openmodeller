@@ -26,6 +26,7 @@
 
 #include "hinge_feature.hh"
 #include <openmodeller/Exceptions.hh>
+#include <openmodeller/os_specific.hh>
 
 HingeFeature::HingeFeature( int layerIndex, Scalar min, Scalar max, bool reverse ):MxFeature()
 {
@@ -106,7 +107,19 @@ HingeFeature::getConfiguration() const
 void 
 HingeFeature::setConfiguration( const ConstConfigurationPtr & config )
 {
-  int type = config->getAttributeAsInt( "Type", -1 );
+  int type = -1;
+
+  try {
+
+    type = config->getAttributeAsInt( "Type", -1 );
+  }
+  catch ( AttributeNotFound& e ) {
+
+    std::string msg = "Missing 'Type' parameter in hinge feature deserialization.\n";
+    Log::instance()->error( msg.c_str() );
+    throw InvalidParameterException( msg );
+    UNUSED(e);
+  }
 
   if ( type != F_HINGE ) {
 
@@ -115,34 +128,53 @@ HingeFeature::setConfiguration( const ConstConfigurationPtr & config )
     throw InvalidParameterException( msg );
   }
 
-  _layerIndex = config->getAttributeAsInt( "Ref", -1 );
+  try {
 
-  if ( _layerIndex == -1 ) {
+    _layerIndex = config->getAttributeAsInt( "Ref", -1 );
+  }
+  catch ( AttributeNotFound& e ) {
 
     std::string msg = "Missing 'Ref' parameter in hinge feature deserialization.\n";
     Log::instance()->error( msg.c_str() );
     throw InvalidParameterException( msg );
+    UNUSED(e);
   }
 
-  int rev = config->getAttributeAsInt( "Reverse", 0 );
-  _reverse = (rev) ? true : false;
+  try {
 
-  _min = config->getAttributeAsDouble( "Min", -1 );
+    int rev = config->getAttributeAsInt( "Reverse", 0 );
+    _reverse = (rev) ? true : false;
+  }
+  catch ( AttributeNotFound& e ) {
 
-  if ( _min == -1 ) {
+    std::string msg = "Missing 'Reverse' parameter in hinge feature deserialization.\n";
+    Log::instance()->error( msg.c_str() );
+    throw InvalidParameterException( msg );
+    UNUSED(e);
+  }
+
+  try {
+
+    _min = config->getAttributeAsDouble( "Min", 0.0 );
+  }
+  catch ( AttributeNotFound& e ) {
 
     std::string msg = "Missing 'Min' parameter in hinge feature deserialization.\n";
     Log::instance()->error( msg.c_str() );
     throw InvalidParameterException( msg );
+    UNUSED(e);
   }
 
-  _max = config->getAttributeAsDouble( "Max", -1 );
+  try {
 
-  if ( _max == -1 ) {
+    _max = config->getAttributeAsDouble( "Max", -1 );
+  }
+  catch ( AttributeNotFound& e ) {
 
     std::string msg = "Missing 'Max' parameter in hinge feature deserialization.\n";
     Log::instance()->error( msg.c_str() );
     throw InvalidParameterException( msg );
+    UNUSED(e);
   }
 
   _scale = _max - _min;
