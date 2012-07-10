@@ -26,6 +26,7 @@
 
 #include "product_feature.hh"
 #include <openmodeller/Exceptions.hh>
+#include <openmodeller/os_specific.hh>
 
 ProductFeature::ProductFeature( int layerIndex1, int layerIndex2 ):MxFeature()
 {
@@ -90,7 +91,19 @@ ProductFeature::getConfiguration() const
 void 
 ProductFeature::setConfiguration( const ConstConfigurationPtr & config )
 {
-  int type = config->getAttributeAsInt( "Type", -1 );
+  int type = -1;
+
+  try {
+
+    type = config->getAttributeAsInt( "Type", -1 );
+  }
+  catch ( AttributeNotFound& e ) {
+
+    std::string msg = "Missing 'Type' parameter in hinge feature deserialization.\n";
+    Log::instance()->error( msg.c_str() );
+    throw InvalidParameterException( msg );
+    UNUSED(e);
+  }
 
   if ( type != F_PRODUCT ) {
 
@@ -99,36 +112,44 @@ ProductFeature::setConfiguration( const ConstConfigurationPtr & config )
     throw InvalidParameterException( msg );
   }
 
-  _layerIndex1 = config->getAttributeAsInt( "Ref1", -1 );
+  try {
 
-  if ( _layerIndex1 == -1 ) {
+    _layerIndex1 = config->getAttributeAsInt( "Ref1", -1 );
+  }
+  catch ( AttributeNotFound& e ) {
 
     std::string msg = "Missing 'Ref1' parameter in product feature deserialization.\n";
     Log::instance()->error( msg.c_str() );
     throw InvalidParameterException( msg );
   }
 
-  _layerIndex2 = config->getAttributeAsInt( "Ref2", -1 );
+  try {
 
-  if ( _layerIndex2 == -1 ) {
+    _layerIndex2 = config->getAttributeAsInt( "Ref2", -1 );
+  }
+  catch ( AttributeNotFound& e ) {
 
     std::string msg = "Missing 'Ref2' parameter in product feature deserialization.\n";
     Log::instance()->error( msg.c_str() );
     throw InvalidParameterException( msg );
   }
 
-  _min = config->getAttributeAsDouble( "Min", -1 );
+  try {
 
-  if ( _min == -1 ) {
+    _min = config->getAttributeAsDouble( "Min", -1 );
+  }
+  catch ( AttributeNotFound& e ) {
 
     std::string msg = "Missing 'Min' parameter in product feature deserialization.\n";
     Log::instance()->error( msg.c_str() );
     throw InvalidParameterException( msg );
   }
 
-  _max = config->getAttributeAsDouble( "Max", -1 );
+  try {
 
-  if ( _max == -1 ) {
+    _max = config->getAttributeAsDouble( "Max", -1 );
+  }
+  catch ( AttributeNotFound& e ) {
 
     std::string msg = "Missing 'Max' parameter in product feature deserialization.\n";
     Log::instance()->error( msg.c_str() );
