@@ -394,8 +394,15 @@ RCP_CONST_TYPEMAP( ConstOccurrencesPtr, OccurrencesPtr );
 %include "openmodeller/AlgParameter.hh"
 %include "openmodeller/AreaStats.hh"
 %include "openmodeller/ConfusionMatrix.hh"
-%include "openmodeller/RocCurve.hh"
 %include "openmodeller/MapFormat.hh"
+
+%extend RocCurve {
+    void useAbsencesAsBackground( int resolution ) {
+         self->initialize(resolution, true);
+    }
+};
+
+%include "openmodeller/RocCurve.hh"
 
 //*****************************************************************************
 //
