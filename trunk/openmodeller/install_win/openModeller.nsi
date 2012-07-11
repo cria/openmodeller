@@ -117,6 +117,7 @@ Section "Application" SEC01
   SetOverwrite ifnewer
   File "${BUILD_DIR}\*.exe"
   File "${BUILD_DIR}\*.bat"
+  File "${BUILD_DIR}\*.html"
   SetOverwrite try
  
   File "${BUILD_DIR}\*.txt" 
@@ -163,16 +164,16 @@ Section "Application" SEC01
   SetOutPath "$INSTDIR"
   !insertmacro MUI_STARTMENU_WRITE_BEGIN Application
   CreateDirectory "$SMPROGRAMS\$ICONS_GROUP"
-  CreateShortCut "$SMPROGRAMS\$ICONS_GROUP\openModeller.lnk" "$INSTDIR\README.html"
+  CreateShortCut "$SMPROGRAMS\$ICONS_GROUP\openModeller README.lnk" "$INSTDIR\README.html"
   SetOutPath "$WORKINGDIR"
-  CreateShortCut "$SMPROGRAMS\$ICONS_GROUP\om_algorithm.lnk" "om_cmd" "$WDIR om_algorithm"
-  CreateShortCut "$SMPROGRAMS\$ICONS_GROUP\om_console.lnk" "om_cmd" "$WDIR om_console" 
-  CreateShortCut "$SMPROGRAMS\$ICONS_GROUP\om_model.lnk" "om_cmd" "$WDIR om_model"
-  CreateShortCut "$SMPROGRAMS\$ICONS_GROUP\om_points.lnk" "om_cmd" "$WDIR om_points"
-  CreateShortCut "$SMPROGRAMS\$ICONS_GROUP\om_project.lnk" "om_cmd" "$WDIR om_project"
-  CreateShortCut "$SMPROGRAMS\$ICONS_GROUP\om_pseudo.lnk" "om_cmd" "$WDIR om_pseudo"
-  CreateShortCut "$SMPROGRAMS\$ICONS_GROUP\om_sampler.lnk" "om_cmd" "$WDIR om_sampler"
-  CreateShortCut "$SMPROGRAMS\$ICONS_GROUP\om_test.lnk" "om_cmd" "/K om_test"
+  CreateShortCut "$SMPROGRAMS\$ICONS_GROUP\om_algorithm.lnk" "$INSTDIR\om_cmd" "$WDIR om_algorithm"
+  CreateShortCut "$SMPROGRAMS\$ICONS_GROUP\om_console.lnk" "$INSTDIR\om_cmd" "$WDIR om_console" 
+  CreateShortCut "$SMPROGRAMS\$ICONS_GROUP\om_model.lnk" "$INSTDIR\om_cmd" "$WDIR om_model"
+  CreateShortCut "$SMPROGRAMS\$ICONS_GROUP\om_points.lnk" "$INSTDIR\om_cmd" "$WDIR om_points"
+  CreateShortCut "$SMPROGRAMS\$ICONS_GROUP\om_project.lnk" "$INSTDIR\om_cmd" "$WDIR om_project"
+  CreateShortCut "$SMPROGRAMS\$ICONS_GROUP\om_pseudo.lnk" "$INSTDIR\om_cmd" "$WDIR om_pseudo"
+  CreateShortCut "$SMPROGRAMS\$ICONS_GROUP\om_sampler.lnk" "$INSTDIR\om_cmd" "$WDIR om_sampler"
+  CreateShortCut "$SMPROGRAMS\$ICONS_GROUP\om_test.lnk" "$INSTDIR\om_cmd" "$WDIR om_test"
   SetOutPath "$INSTDIR"
   !insertmacro MUI_STARTMENU_WRITE_END
 ; Add path
@@ -219,17 +220,17 @@ Section /o "Sample Data - Aquamaps" SEC06
  !insertmacro ZIPDLL_EXTRACT "$INSTDIR\SampleData\marine2.zip" "$INSTDIR\SampleData\EnvironmentLayers\" "<ALL>"
 SectionEnd
 
-Section -AdditionalIcons
-  SetOutPath $INSTDIR
-  !insertmacro MUI_STARTMENU_WRITE_BEGIN Application
-  ;install for all users not just the logged in user
-  SetShellVarContext all
-  WriteIniStr "$INSTDIR\${PRODUCT_NAME}.url" "InternetShortcut" "URL" "${PRODUCT_WEB_SITE}"
-  CreateShortCut "$SMPROGRAMS\$ICONS_GROUP\Website.lnk" "$INSTDIR\${PRODUCT_NAME}.url"
-  ; its more consistant to let user remove the app from add/remove progs in control panel
-  ;CreateShortCut "$SMPROGRAMS\$ICONS_GROUP\Uninstall.lnk" "$INSTDIR\uninst-release.exe"
-  !insertmacro MUI_STARTMENU_WRITE_END
-SectionEnd
+;Section -AdditionalIcons
+;  SetOutPath $INSTDIR
+;  !insertmacro MUI_STARTMENU_WRITE_BEGIN Application
+;  ;install for all users not just the logged in user
+;  SetShellVarContext all
+;  WriteIniStr "$INSTDIR\${PRODUCT_NAME}.url" "InternetShortcut" "URL" "${PRODUCT_WEB_SITE}"
+;  CreateShortCut "$SMPROGRAMS\$ICONS_GROUP\Website.lnk" "$INSTDIR\${PRODUCT_NAME}.url"
+;  ; its more consistant to let user remove the app from add/remove progs in control panel
+;  ;CreateShortCut "$SMPROGRAMS\$ICONS_GROUP\Uninstall.lnk" "$INSTDIR\uninst-release.exe"
+;  !insertmacro MUI_STARTMENU_WRITE_END
+;SectionEnd
 
 Section -Post
   WriteUninstaller "$INSTDIR\uninst-release.exe"
@@ -339,11 +340,11 @@ Section Uninstall
 
 ;----------------- icons and shortcuts
   ;Delete "$SMPROGRAMS\$ICONS_GROUP\Uninstall.lnk"
-  Delete "$SMPROGRAMS\$ICONS_GROUP\Website.lnk"
+  ;Delete "$SMPROGRAMS\$ICONS_GROUP\Website.lnk"
   ;uninstall for all users not just the logged in user
   SetShellVarContext all
-  Delete "$DESKTOP\openModeller .lnk"
-  Delete "$SMPROGRAMS\$ICONS_GROUP\openModeller.lnk"
+  ;Delete "$DESKTOP\openModeller .lnk"
+  Delete "$SMPROGRAMS\$ICONS_GROUP\openModeller README.lnk"
   Delete "$SMPROGRAMS\$ICONS_GROUP\om_algorithm.lnk"
   Delete "$SMPROGRAMS\$ICONS_GROUP\om_console.lnk"
   Delete "$SMPROGRAMS\$ICONS_GROUP\om_model.lnk"
