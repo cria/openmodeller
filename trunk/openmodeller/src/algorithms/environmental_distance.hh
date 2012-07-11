@@ -47,7 +47,6 @@ class EnvironmentalDistance : public AlgorithmImpl{
 
    private:
       // Common-use attributes
-      bool _initialized;  // Flag to indicate that the algorithm was initialized.
       bool _done;         // Flag to indicate when the work is finished;
       int _layer_count;     // Amount of layers used (dimension of environmental space)
       int _presence_count;  // Amount of presence points

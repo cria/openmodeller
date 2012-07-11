@@ -116,7 +116,6 @@ AlgMetadata const *algorithmMetadata(){
 
 // Constructor for the algorithm class
 EnvironmentalDistance::EnvironmentalDistance() : AlgorithmImpl(&metadata){
-   _initialized = false;
    _cov_matrix = _cov_matrix_inv = NULL;
    _normalizerPtr = new ScaleNormalizer( DATA_MIN, DATA_MAX, true );
 }
@@ -124,19 +123,17 @@ EnvironmentalDistance::EnvironmentalDistance() : AlgorithmImpl(&metadata){
 // Destructor for the algorithm class
 EnvironmentalDistance::~EnvironmentalDistance()
 {
-   if(_initialized){
-      switch(_par_dist_type){
-         case MahalanobisDistance:
-            if(_cov_matrix!=NULL){
-               delete _cov_matrix;
-               delete _cov_matrix_inv;
-            }
-            break;
-         //case ManhattanDistance:
-         //case ChebyshevDistance:
-         //case EuclideanDistance:
-         //default:
-      }
+   switch(_par_dist_type){
+      case MahalanobisDistance:
+         if(_cov_matrix!=NULL){
+            delete _cov_matrix;
+            delete _cov_matrix_inv;
+         }
+         break;
+      //case ManhattanDistance:
+      //case ChebyshevDistance:
+      //case EuclideanDistance:
+      //default:
    }
 }
 
@@ -220,7 +217,6 @@ int EnvironmentalDistance::initialize(){
    }
 
    _done = true;       // Needed for not-iterative algorithms
-   _initialized = true;
    return 1; // There was no problem in initialization
 }
 
