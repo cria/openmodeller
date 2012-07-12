@@ -130,6 +130,9 @@ Projector::createMap( const Model& model,
     // Read environmental values and find the output value.
     if ( amb.size() == 0 ) {
 
+      // Write noval on the map.
+      map->put( lg, lt );
+
       val = -1; // could be used in a log
     }
     else {
@@ -146,6 +149,9 @@ Projector::createMap( const Model& model,
 
 	areaStats->addPrediction( val ); 
       }
+
+      // Write value on map.
+      map->put( lg, lt, val );
     }
 
     // Call the callback function if it is set.
