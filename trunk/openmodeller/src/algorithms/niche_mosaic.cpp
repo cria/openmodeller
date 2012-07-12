@@ -473,10 +473,9 @@ NicheMosaic::getRandomPercent(const std::vector<Scalar> &delta, const size_t i_l
 
   double min_percent = 0.12, max_percent = 0.4;
 
-  double old_percent, new_percent, half_percent = (max_percent - min_percent) / 2 + min_percent;
+  double new_percent, half_percent = (max_percent - min_percent) / 2 + min_percent;
 
   Random random;
-  old_percent = delta[i_layer] / _delta[i_layer];
 
   r = random( 0, size );
   new_percent = (max_percent - min_percent) * ( (double) r / (double) size ) + min_percent;
@@ -556,7 +555,7 @@ NicheMosaic::improveModel( const std::vector<Scalar> &deltaBest )
 void 
 NicheMosaic::findSolution(size_t &costBest, std::vector<Scalar> &deltaBest, int &bestIter, size_t &bestCost2)
 {
-  size_t cost1, cost2, i_layer, bestCost1=0;
+  size_t cost1, cost2, i_layer;
   Scalar importance = 1.0, cost, deltaIni=0.4;
   std::vector<Scalar> delta( _num_layers );
 
@@ -612,7 +611,6 @@ NicheMosaic::findSolution(size_t &costBest, std::vector<Scalar> &deltaBest, int 
 	  deltaBest[i_layer] = delta[i_layer];
 	  saveBestModel(model_min, model_max);
 	  bestIter = iter;
-	  bestCost1=cost1;
 	  bestCost2=cost2;
 
 	  if (_bestCost == ((Scalar)_num_points_test*importance + (Scalar)_num_points_absence_test) )
