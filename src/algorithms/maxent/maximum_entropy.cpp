@@ -1147,7 +1147,6 @@ MaximumEntropy::lossBound( bool active, double w1, double n1, double beta1, doub
 double
 MaximumEntropy::parallelProc()
 {
-  double retvalue;
 
   // Calculate alphas for each feature
   double* alpha = new double[_features.size()];
@@ -1281,8 +1280,6 @@ MaximumEntropy::parallelProc()
 
   delete[] alpha;
   delete[] sum;
-
-  retvalue = loss;
 
   return loss;
 }
