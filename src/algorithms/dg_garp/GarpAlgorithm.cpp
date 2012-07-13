@@ -924,7 +924,7 @@ int GarpAlgorithm::saveRule(int iIndex)
 	//  if it is one of the Popsize best seen so far
 
 	int j, l;			// loop control var
-	int found, ind, iLength, iBestSize;
+	int found, ind, iBestSize;
 	char cNewType;
 	Rule * Temp, * oNewRule;
 
@@ -939,7 +939,7 @@ int GarpAlgorithm::saveRule(int iIndex)
 	cNewType = oNewRule->type();
 
 	// get Gene length
-	iLength = oNewRule->intGenes * 2;
+	oNewRule->intGenes * 2;
 
 	// Check if an identical or more general structure is already there
 	for (j = 0, found = 0; j < iBestSize && (!found); j++)
