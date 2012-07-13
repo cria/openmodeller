@@ -102,8 +102,7 @@ void progressFileCallback( float progress, void *progressData )
       else {
 
         char buffer[4];
-        int ret;
-        ret = sprintf( buffer, "%d", my_progress );
+        sprintf( buffer, "%d", my_progress );
         fputs( buffer, p_file );
         fclose( p_file );
         prog_data->progress = progress;
