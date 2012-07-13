@@ -127,14 +127,14 @@ void
 ViewModel::draw()
 {
   // Coordinates of last plotted point in extra fuction window.
-  static double x0,y0;
+  // static double x0,y0;
 
   printf( "ViewModel::draw()\n" );
 
   // A new training has started.
   if ( ! f_cicle )
     {
-      x0 = y0 = 0.0;
+      // x0 = y0 = 0.0;
       f_alg->initialize();
     }
 
