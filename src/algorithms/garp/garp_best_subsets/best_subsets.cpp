@@ -274,7 +274,6 @@ int BestSubsets::numActiveThreads()
 {
   int i;
   AlgorithmRun * run;
-  bool atLeastOneRunFinished = false;
 
   for (i = 0; i < _numActiveRuns; i++)
   {
@@ -297,8 +296,6 @@ int BestSubsets::numActiveThreads()
         if (run->getOmission() <= _omissionThreshold)
         { _currentModelsUnderOmissionThreshold++; }
       }
-
-      atLeastOneRunFinished = true;
     }
   }
 

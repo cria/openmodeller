@@ -579,7 +579,7 @@ Garp::_setConfiguration( const ConstConfigurationPtr& config )
 void Garp::keepFittest(GarpRuleSet * source, GarpRuleSet * target, 
 		     PerfIndex perfIndex)
 {
-  int i, n, accepted, converged, similarIndex, insertIndex;
+  int i, n, converged, similarIndex;
   GarpRule * candidateRule, * similarRule;
 
   converged = 0;
@@ -588,8 +588,6 @@ void Garp::keepFittest(GarpRuleSet * source, GarpRuleSet * target,
   n = source->numRules();
   for (i = 0; i < n; i++)
     {
-      insertIndex = -1;
-      accepted = 0;
       candidateRule = source->get(i);
       similarIndex = target->findSimilar(candidateRule);
       //if ((similarIndex < -1) || (similarIndex >= target->numRules()))
@@ -608,7 +606,7 @@ void Garp::keepFittest(GarpRuleSet * source, GarpRuleSet * target,
               candidateRule = candidateRule->clone();
 	      //target->replace(similarIndex, candidateRule);
 	      target->remove(similarIndex);
-	      insertIndex = target->insert(perfIndex, candidateRule);
+	      target->insert(perfIndex, candidateRule);
             }
         }
       else
@@ -619,8 +617,6 @@ void Garp::keepFittest(GarpRuleSet * source, GarpRuleSet * target,
           candidateRule = candidateRule->clone();
           target->insert(perfIndex, candidateRule);
         }
-
-      //printf("InsertIndex=%+3d | converged=%3d\n", insertIndex, converged);
     }
 
   // update convergence value
@@ -797,7 +793,7 @@ void Garp::mutate(GarpRuleSet * ruleset)
 void Garp::crossover(GarpRuleSet * ruleset)
 {
   Random rnd;
-  int nrules, genes, xcount, last, diff, mom, dad, xpt1, xpt2;
+  int nrules, genes, xcount, last, mom, dad, xpt1, xpt2;
 
   genes = _samp->numIndependent();
   nrules = ruleset->numRules();
@@ -805,7 +801,6 @@ void Garp::crossover(GarpRuleSet * ruleset)
 
   for (xcount = 0; xcount < last; xcount += 2)
   {
-    diff = 0;
     mom = rnd.get(nrules);
     dad = rnd.get(nrules);
     if (dad == mom)

@@ -166,12 +166,10 @@ int GarpRuleSet::insert(PerfIndex perfIndex, GarpRule * rule)
 {
   double newRulePerformance;
   int i, j;
-  bool found;
 
   // insert rule and keep set sorted by performance index specified (_performance[perfIndex])
   // find place where rule should be inserted
   newRulePerformance = rule->getPerformance(perfIndex);
-  found = false;
   for (i = 0; i < _numRules; i++)
   { 
     /*
