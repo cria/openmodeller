@@ -38,8 +38,6 @@
 
 using namespace std;
 
-#undef DEBUG_CREATE
-
 /***********************************************************************************
  *
  * Helper code for this module
@@ -165,146 +163,76 @@ ConfigurationImpl::getValue() const {
 ConstConfigurationPtr
 ConfigurationImpl::getSubsection( const string & name, bool throws ) const
 {
-
-#if defined(DEBUG_CREATE)
-  cout << "In " << getName()
-       << " Looking for subsection named: " << name
-       << endl;
-#endif
-
   ConfigurationNameTest tester(name);
   Configuration::subsection_list::const_iterator c = find_if( subsections.begin(), subsections.end(), tester );
 
-  //
   // Subsection found.
-  //
   if ( c != subsections.end() ) {
-#if defined(DEBUG_CREATE)
-    cout << "Found: " << endl;
-#endif
+
     return ConstConfigurationPtr( *c );
   }
 
-  //
   // Subsection not found
-  //
-#if defined(DEBUG_CREATE)
-  cout << "Not found" << endl;
-#endif
   if ( throws ) {
-    throw SubsectionNotFound( name );
+ 
+   throw SubsectionNotFound( name );
   }
 
   return ConstConfigurationPtr();
-
 }
 
 ConfigurationPtr
 ConfigurationImpl::getSubsection( const string & name, bool throws )
 {
-
-#if defined(DEBUG_CREATE)
-  cout << "In " << getName()
-       << " Looking for subsection named: " << name
-       << endl;
-#endif
-
   ConfigurationNameTest tester(name);
-  Configuration::subsection_list::iterator c = find_if( subsections.begin(), subsections.end(),
-							tester );
+  Configuration::subsection_list::iterator c = find_if( subsections.begin(), subsections.end(),	tester );
 
-  //
   // Subsection found.
-  //
   if ( c != subsections.end() ) {
-#if defined(DEBUG_CREATE)
-    cout << "Found: " << endl;
-#endif
+
     return ConstConfigurationPtr( *c );
   }
 
-  //
   // Subsection not found
-  //
-#if defined(DEBUG_CREATE)
-  cout << "Not found" << endl;
-#endif
   if ( throws ) {
     throw SubsectionNotFound( name );
   }
 
   return ConstConfigurationPtr();
-
 }
 
 void
 ConfigurationImpl::addSubsection( const ConfigurationPtr & config )
 {
-
-#if defined(DEBUG_CREATE)
-  cout << "In " << getName()
-       << " adding subsection named: " << config->getName()
-       << endl;
-#endif
-
   subsections.push_back( config );
-
 }
 
 string
 ConfigurationImpl::getAttribute( const string & name ) const
 {
-
-#if defined(DEBUG_CREATE)
-  cout << "In " << getName()
-       << " Looking for attribute named: " << name
-       << endl;
-#endif
-  
   AttributeNameTest tester( name );
-  Configuration::attribute_list::const_iterator nv = find_if( attributes.begin(), attributes.end(),
-							      tester );
+  Configuration::attribute_list::const_iterator nv = find_if( attributes.begin(), attributes.end(), tester );
 
   if ( nv == attributes.end() ) {
-#if defined(DEBUG_CREATE)
-    cout << "Not found" << endl;
-#endif
+
     throw AttributeNotFound( name );
   }
 
-#if defined(DEBUG_CREATE)
-    cout << "Found: " << nv->second << endl;
-#endif
-
   return nv->second;
-
 }
 
 string
 ConfigurationImpl::getAttribute( const string & name, const string& defaultValue ) const
 {
-
-#if defined(DEBUG_CREATE)
-  cout << "In " << getName()
-       << " Looking for attribute named: " << name
-       << endl;
-#endif
-  
   AttributeNameTest tester( name );
   Configuration::attribute_list::const_iterator nv = find_if( attributes.begin(), attributes.end(), tester );
 
   if ( nv == attributes.end() ) {
-#if defined(DEBUG_CREATE)
-    cout << "Not found" << endl;
-#endif
+
     return defaultValue;
   }
 
-#if defined(DEBUG_CREATE)
-    cout << "Found: " << nv->second << endl;
-#endif
   return nv->second;
-
 }
 
 template<typename T>
@@ -318,15 +246,12 @@ ConfigurationImpl::getAttributeAsVec( const string & name ) const {
   vector<T> v;
 
   istream_iterator<T> end;
-  for ( istream_iterator<T> is_it(ss);
-	is_it != end;
-	is_it ++ ) {
+  for ( istream_iterator<T> is_it(ss); is_it != end; is_it ++ ) {
 
     v.push_back( *is_it );
   }
 
   return v;
-
 }
 
 int
@@ -339,12 +264,10 @@ ConfigurationImpl::getAttributeAsInt( const string & name, int defaultvalue ) co
   sscanf( val.c_str(), "%d", &returnValue );
 
   return returnValue;
-
 }
 
 double
 ConfigurationImpl::getAttributeAsDouble( const string & name, double defaultvalue ) const {
-
   string val = getAttribute( name, "" );
 
   double returnValue = defaultvalue;
@@ -352,7 +275,6 @@ ConfigurationImpl::getAttributeAsDouble( const string & name, double defaultvalu
   sscanf( val.c_str(), "%lf", &returnValue );
   
   return returnValue;
-
 }
 
 vector<double>
@@ -373,7 +295,6 @@ ConfigurationImpl::getAttributeAsVecDouble( const string & name ) const {
   }
 
   return v;
-
 }
 
 void
@@ -382,19 +303,20 @@ ConfigurationImpl::getAttributeAsDoubleArray( const string & name, double **arry
   vector<double> vec = getAttributeAsVecDouble( name );
 
   if ( dim ) {
+
     *dim = vec.size();
   }
 
   if ( arry ) {
+
     int end = vec.size();
 
     *arry = new double[ end ];
 
-    for (int i=0; i< end; i++ ) {
+    for (int i=0; i<end; i++ ) {
       (*arry)[i] = vec[i];
     }
   }
-
 }
 
 vector<int>
@@ -407,15 +329,12 @@ ConfigurationImpl::getAttributeAsVecInt( const string & name ) const {
   vector<int> v;
 
   istream_iterator<int> end;
-  for ( istream_iterator<int> is_it(ss);
-	is_it != end;
-	is_it ++ ) {
+  for ( istream_iterator<int> is_it(ss); is_it != end; is_it ++ ) {
 
     v.push_back( *is_it );
   }
 
   return v;
-
 }
 
 void
@@ -424,19 +343,21 @@ ConfigurationImpl::getAttributeAsIntArray( const string & name, int **arry, int 
   vector<int> vec = getAttributeAsVecInt( name );
 
   if ( dim ) {
+
     *dim = vec.size();
   }
 
   if ( arry ) {
+
     int end = vec.size();
 
     *arry = new int[ end ];
 
-    for (int i=0; i< end; i++ ) {
+    for ( int i=0; i<end; i++ ) {
+
       (*arry)[i] = vec[i];
     }
   }
-
 }
 
 Sample
@@ -451,7 +372,6 @@ ConfigurationImpl::getAttributeAsSample( const string & name ) const {
   is >> sample;
 
   return sample;
-
 }
 
 void
@@ -460,36 +380,30 @@ ConfigurationImpl::getAttributeAsByteArray( const string & name, unsigned char *
   vector<int> vec = getAttributeAsVec<int>( name );
 
   if ( dim ) {
+
     *dim = vec.size();
   }
 
   if ( arry ) {
+
     int end = vec.size();
 
     *arry = new unsigned char[ end ];
 
-    for (int i=0; i< end; i++ ) {
+    for ( int i=0; i<end; i++ ) {
+
       (*arry)[i] = (unsigned char) (vec[i] & 0x00FF) ;
     }
   }
-
 }
 
 void
 ConfigurationImpl::addNameValue( const string & name, const string & value ) {
 
-#if defined(DEBUG_CREATE)
-  cout << "In " << getName()
-       << " adding attribute: " << name
-       << " value: " << value
-       << endl;
-#endif
-
   string theval = value;
   trim(theval);
 
   attributes.push_back( make_pair( name, theval ) );
-
 }
 
 void
@@ -498,7 +412,6 @@ ConfigurationImpl::addNameValue( const string & name, char const *value ) {
   string sval( (value)? value: "");
 
   addNameValue( name, sval );
-
 }
 
 void
@@ -509,7 +422,6 @@ ConfigurationImpl::addNameValue( const string & name, int value ) {
   ss << value;
 
   addNameValue( name, ss.str() );
-
 }
 
 void
@@ -520,7 +432,6 @@ ConfigurationImpl::addNameValue( const string & name, double value ) {
   ss << value;
 
   addNameValue( name, ss.str() );
-
 }
 
 void
@@ -529,12 +440,12 @@ ConfigurationImpl::addNameValue( const string & name, double const *values, int 
   stringstream ss(ios::out);
 
   ss.precision(25);
-  for( int i=0; i<count; i++ ) {
+  for ( int i=0; i<count; i++ ) {
+
     ss << *values++ << " ";
   }
 
   addNameValue( name, ss.str() );
-
 }
 
 void
@@ -542,12 +453,11 @@ ConfigurationImpl::addNameValue( const string & name, int const *values, int cou
 
   stringstream ss(ios::out);
 
-  for( int i=0; i<count; i++ ) {
+  for ( int i=0; i<count; i++ ) {
     ss << *values++ << " ";
   }
 
   addNameValue( name, ss.str() );
-
 }
 
 void
@@ -558,7 +468,6 @@ ConfigurationImpl::addNameValue( const string & name, const Sample& value ) {
   ss << value;
 
   addNameValue( name, ss.str() );
-
 }
 
 void
@@ -566,11 +475,11 @@ ConfigurationImpl::addNameValue( const string & name, unsigned char const *value
 
   stringstream ss(ios::out);
 
-  for( int i=0; i<count; i++ ) {
+  for ( int i=0; i<count; i++ ) {
+
     ss << (int)*values++ << " ";
   }
 
   addNameValue( name, ss.str() );
-
 }
 
