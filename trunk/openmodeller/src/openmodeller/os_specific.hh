@@ -112,6 +112,24 @@ dllexp int initRandom( unsigned int new_seed=0 );
 dllexp int rand_r( unsigned * seed );
 #endif
 
-unsigned int getNCPU();
+/**
+ * Returns the current working path.
+ * @return Working path.
+ */
+std::string getWorkingPath();
+
+/**
+ * Indicates if the specified path exists in the file system.
+ * @path path Path to be tested
+ * @return Yes or no.
+ */
+bool pathExists( const std::string path );
+
+/**
+ * Creates (recursively) the specified path.
+ * @path path Path to be created
+ * @return Succeeded or not.
+ */
+bool createPath( const std::string path );
 
 #endif

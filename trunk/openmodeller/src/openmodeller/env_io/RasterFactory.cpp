@@ -45,8 +45,10 @@ RasterFactory::instance()
   if ( ! _initiated ) {
 
 #ifdef TERRALIB_FOUND
-_instance.registerDriver( "terralib", &TeOMRaster::CreateRasterCallback );
+_instance.registerDriver( "terralib", &TerralibRaster::CreateRasterCallback );
 #endif
+
+    _instance.registerDriver( "wcs", &WcsProxyRaster::CreateRasterCallback );
 
     _initiated = true;
   }
@@ -93,7 +95,7 @@ RasterFactory::create( const string& source, int categ )
   }
   
   // Default: GDAL Raster Lib
-  return new RasterGdal( source, categ );
+  return new GdalRaster( source, categ );
 }
 
 
@@ -121,7 +123,7 @@ RasterFactory::create( const string& output_file_source, const string& source, c
   }
 
   // Default: GDAL Raster Lib
-  return new RasterGdal( output_file_source, source, format );
+  return new GdalRaster( output_file_source, source, format );
 }
 #else
 /**************/
@@ -147,6 +149,6 @@ RasterFactory::create( const string& source, const MapFormat& format )
   }
   
   // Default: GDAL Raster Lib
-  return new RasterGdal( source, format );
+  return new GdalRaster( source, format );
 }
 #endif

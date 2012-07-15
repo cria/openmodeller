@@ -30,10 +30,11 @@
 #define _RASTER_FACTORYHH_
 
 #include <openmodeller/env_io/Raster.hh>
-#include <openmodeller/env_io/RasterGdal.hh>
+#include <openmodeller/env_io/GdalRaster.hh>
+#include <openmodeller/env_io/WcsProxyRaster.hh>
 
 #ifdef TERRALIB_FOUND
-#include <openmodeller/env_io/TeOMRaster.hh>
+#include <openmodeller/env_io/TerralibRaster.hh>
 #endif
 
 #include <string>

@@ -6,6 +6,7 @@ SET(OM_CORE_SRCS
   AlgorithmFactory.cpp 
   AlgParameter.cpp 
   AreaStats.cpp 
+  CacheManager.cpp
   CallbackWrapper.cpp
   Configuration.cpp 
   Configuration_xmlio.cpp 
@@ -29,7 +30,8 @@ SET(OM_CORE_SRCS
   env_io/Map.cpp 
   env_io/MapIterator.cpp 
   env_io/Raster.cpp 
-  env_io/RasterGdal.cpp 
+  env_io/GdalRaster.cpp 
+  env_io/WcsProxyRaster.cpp 
   env_io/RasterFactory.cpp 
   models/AlgoAdapterModel.cpp 
   models/AverageModel.cpp 
@@ -45,7 +47,7 @@ SET(OM_CORE_SRCS
   pre/PreAlgorithmFactory.cpp
   pre/PreChiSquareFactory.cpp
   pre/PreJackknifeFactory.cpp
-
+  ext/md5/md5.c
 )
 
 IF (WIN32)
@@ -82,7 +84,7 @@ IF (TERRALIB_FOUND)
       ${OM_CORE_SRCS}
       TeDatabaseManager.cpp
       TeStringParser.cpp
-      env_io/TeOMRaster.cpp
+      env_io/TerralibRaster.cpp
       occ_io/TeOccurrences.cpp
 	  # Ado
       ${TERRALIB_INCLUDE_DIR}/TeAdoDB.cpp
@@ -130,6 +132,7 @@ INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}
   env_io 
   occ_io
   pre
+  ext/md5
   ${CMAKE_CURRENT_SOURCE_DIR}/../
   ${CMAKE_CURRENT_SOURCE_DIR}/../console
   ${PROJ_INCLUDE_DIR}
@@ -192,6 +195,7 @@ SET(OM_CORE_HDRS
   Algorithm.hh     
   AlgParameter.hh      
   AreaStats.hh     
+  CacheManager.hh
   CallbackWrapper.hh
   Configurable.hh      
   Configuration.hh     
@@ -244,7 +248,8 @@ env_io/Map.hh
 env_io/MapIterator.hh
 env_io/Raster.hh
 env_io/RasterFactory.hh
-env_io/RasterGdal.hh
+env_io/GdalRaster.hh
+env_io/WcsProxyRaster.hh
 )
 
 IF (TERRALIB_FOUND)
@@ -262,7 +267,7 @@ IF (TERRALIB_FOUND)
 
   SET(OM_ENVIO_HDRS
       ${OM_ENVIO_HDRS}
-      env_io/TeOMRaster.hh
+      env_io/TerralibRaster.hh
     )
 ENDIF (TERRALIB_FOUND)
 

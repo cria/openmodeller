@@ -39,6 +39,7 @@
 #include <stdio.h>
 #include <fstream>
 #include <windows.h>
+#include <direct.h>
 #include <cpl_conv.h> // for setting gdal options
 #include <proj_api.h> // for setting proj options
 
@@ -405,4 +406,62 @@ rand_r( unsigned * seed )
 {
   * seed = (* seed) * 1103515245 + 12345;
   return ((unsigned)(*seed / 65536) % 32768);
+}
+
+/************************/
+/*** get Working path ***/
+std::string
+getWorkingPath()
+{
+   char temp[MAX_PATH];
+   return ( _getcwd(temp, MAX_PATH) ? std::string( temp ) : std::string("") );
+}
+
+/*******************/
+/*** path Exists ***/
+bool
+pathExists( const std::string path )
+{
+  DWORD ftyp = GetFileAttributesA( path.c_str() );
+
+  if ( ftyp == INVALID_FILE_ATTRIBUTES ) {
+
+    return false; // something is wrong with the path
+  }
+
+  if ( ftyp & FILE_ATTRIBUTE_DIRECTORY ) {
+
+    return true; // this is a directory
+  }
+
+  return false; // not a directoy
+}
+
+/*******************/
+/*** create Path ***/
+bool
+createPath( const std::string path )
+{
+  static const std::wstring separators(L"\\/");
+ 
+  DWORD file_attr = ::GetFileAttributesW( path.c_str() );
+
+  // If the specified directory name doesn't exist
+  if ( file_attr == INVALID_FILE_ATTRIBUTES ) {
+ 
+    // Recursively do it all again for the parent directory, if any
+    std::size_t slash_idx = path.find_last_of(separators);
+
+    if ( slash_idx != std::wstring::npos ) {
+
+      create_path( path.substr(0, slash_idx) );
+    }
+ 
+    // Create the last directory on the path (the recursive calls will have taken
+    // care of the parent directories by now)
+    return ::CreateDirectoryW( path.c_str(), nullptr );
+  }
+
+  // Specified directory name already exists as a file or directory
+  return false;
 }
