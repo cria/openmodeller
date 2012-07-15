@@ -1,5 +1,5 @@
 /**
- * Definition of RasterGdal class.
+ * Definition of GDalRaster class.
  * 
  * @author Mauro E S Muñoz <mauro@cria.org.br>
  * @date 2003-08-22
@@ -27,16 +27,12 @@
  * http://www.gnu.org/copyleft/gpl.html
  */
 
-#include <openmodeller/env_io/RasterGdal.hh>
+#include <openmodeller/env_io/GdalRaster.hh>
 #include <openmodeller/env_io/Raster.hh>
 #include <openmodeller/env_io/Map.hh>
 #include <openmodeller/env_io/GeoTransform.hh>
 #include <openmodeller/Log.hh>
-
 #include <openmodeller/Exceptions.hh>
-
-#include <openmodeller/Log.hh>
-
 #include <openmodeller/MapFormat.hh>
 
 #include <gdal_version.h>
@@ -115,7 +111,7 @@ static const GDALDataType f_type = (sizeof(Scalar) == 4) ? GDT_Float32 : GDT_Flo
 /*******************/
 /*** constructor ***/
 
-RasterGdal::RasterGdal( const string& file, int categ ):
+GdalRaster::GdalRaster( const string& file, int categ ):
   f_data(0),
   f_size(0),
   f_format(-1), // unknown
@@ -135,7 +131,7 @@ RasterGdal::RasterGdal( const string& file, int categ ):
 }
 
 #ifdef MPI_FOUND
-RasterGdal::RasterGdal( const string& output_file, const string& file, const MapFormat& format):
+GdalRaster::GdalRaster( const string& output_file, const string& file, const MapFormat& format):
   f_data(0),
   f_size(0),
   f_format(-1), // unknown
@@ -157,42 +153,42 @@ RasterGdal::RasterGdal( const string& output_file, const string& file, const Map
     case MapFormat::GreyBMP:
       f_scalefactor = 255.0;
       nv = 0.0;
-      Log::instance()->debug( "RasterGdal format set to MapFormat::GreyBMP:\n" );
+      Log::instance()->debug( "GdalRaster format set to MapFormat::GreyBMP:\n" );
       break;
     case MapFormat::GreyTiff:
       f_scalefactor = 254.0;
       nv = 255.0;
-      Log::instance()->debug( "RasterGdal format set to MapFormat::GreyTiff:\n" );
+      Log::instance()->debug( "GdalRaster format set to MapFormat::GreyTiff:\n" );
       break;
     case MapFormat::GreyTiff100:
       f_scalefactor = 100.0;
       nv = 127.0; //represented as 7bit so cant use 254
-      Log::instance()->debug( "RasterGdal format set to MapFormat::GreyTiff100:\n" );
+      Log::instance()->debug( "GdalRaster format set to MapFormat::GreyTiff100:\n" );
       break;
     case MapFormat::FloatingTiff:
       f_scalefactor = 1.0;
       nv = -1.0;
-      Log::instance()->debug( "RasterGdal format set to MapFormat::FloatingTiff:\n" );
+      Log::instance()->debug( "GdalRaster format set to MapFormat::FloatingTiff:\n" );
       break;
     case MapFormat::FloatingHFA:
       f_scalefactor = 1.0;
       nv = -1.0;
-      Log::instance()->debug( "RasterGdal format set to MapFormat::FloatingHFA:\n" );
+      Log::instance()->debug( "GdalRaster format set to MapFormat::FloatingHFA:\n" );
       break;
     case MapFormat::ByteHFA:
       f_scalefactor = 100;
       nv = 101;
-      Log::instance()->debug( "RasterGdal format set to MapFormat::ByteHFA:\n" );
+      Log::instance()->debug( "GdalRaster format set to MapFormat::ByteHFA:\n" );
       break;
     case MapFormat::ByteASC:
       f_scalefactor = 100;
       nv = 101;
-      Log::instance()->debug( "RasterGdal format set to MapFormat::ByteASC:\n" );
+      Log::instance()->debug( "GdalRaster format set to MapFormat::ByteASC:\n" );
       break;
     case MapFormat::FloatingASC:
       f_scalefactor = 1.0;
       nv = -9999;
-      Log::instance()->debug( "RasterGdal format set to MapFormat::FloatingASC:\n" );
+      Log::instance()->debug( "GdalRaster format set to MapFormat::FloatingASC:\n" );
       break;
     default:
       Log::instance()->error( "Unsupported output format.\n" );
@@ -217,7 +213,7 @@ RasterGdal::RasterGdal( const string& output_file, const string& file, const Map
 }
 
 #else
-RasterGdal::RasterGdal( const string& file, const MapFormat& format):
+GdalRaster::GdalRaster( const string& file, const MapFormat& format):
   f_data(0),
   f_size(0),
   f_format(-1), // unknown
@@ -233,42 +229,42 @@ RasterGdal::RasterGdal( const string& file, const MapFormat& format):
     case MapFormat::GreyBMP:
       f_scalefactor = 255.0;
       nv = 0.0;
-      Log::instance()->debug( "RasterGdal format set to MapFormat::GreyBMP:\n" );
+      Log::instance()->debug( "GdalRaster format set to MapFormat::GreyBMP:\n" );
       break;
     case MapFormat::GreyTiff:
       f_scalefactor = 254.0;
       nv = 255.0;
-      Log::instance()->debug( "RasterGdal format set to MapFormat::GreyTiff:\n" );
+      Log::instance()->debug( "GdalRaster format set to MapFormat::GreyTiff:\n" );
       break;
     case MapFormat::GreyTiff100:
       f_scalefactor = 100.0;
       nv = 127.0; //represented as 7bit so cant use 254
-      Log::instance()->debug( "RasterGdal format set to MapFormat::GreyTiff100:\n" );
+      Log::instance()->debug( "GdalRaster format set to MapFormat::GreyTiff100:\n" );
       break;
     case MapFormat::FloatingTiff:
       f_scalefactor = 1.0;
       nv = -1.0;
-      Log::instance()->debug( "RasterGdal format set to MapFormat::FloatingTiff:\n" );
+      Log::instance()->debug( "GdalRaster format set to MapFormat::FloatingTiff:\n" );
       break;
     case MapFormat::FloatingHFA:
       f_scalefactor = 1.0;
       nv = -1.0;
-      Log::instance()->debug( "RasterGdal format set to MapFormat::FloatingHFA:\n" );
+      Log::instance()->debug( "GdalRaster format set to MapFormat::FloatingHFA:\n" );
       break;
     case MapFormat::ByteHFA:
       f_scalefactor = 100;
       nv = 101;
-      Log::instance()->debug( "RasterGdal format set to MapFormat::ByteHFA:\n" );
+      Log::instance()->debug( "GdalRaster format set to MapFormat::ByteHFA:\n" );
       break;
     case MapFormat::ByteASC:
       f_scalefactor = 100;
       nv = 101;
-      Log::instance()->debug( "RasterGdal format set to MapFormat::ByteASC:\n" );
+      Log::instance()->debug( "GdalRaster format set to MapFormat::ByteASC:\n" );
       break;
     case MapFormat::FloatingASC:
       f_scalefactor = 1.0;
       nv = -9999;
-      Log::instance()->debug( "RasterGdal format set to MapFormat::FloatingASC:\n" );
+      Log::instance()->debug( "GdalRaster format set to MapFormat::FloatingASC:\n" );
       break;
     default:
       Log::instance()->error( "Unsupported output format.\n" );
@@ -295,7 +291,7 @@ RasterGdal::RasterGdal( const string& file, const MapFormat& format):
 
 /*****************/
 /*** destructor ***/
-RasterGdal::~RasterGdal()
+GdalRaster::~GdalRaster()
 {
 #ifdef MPI_FOUND
   if (((rank != 0) && (strcmp (f_file.c_str(), f_output_file.c_str()) != 0)) || (rank == 0)){
@@ -318,7 +314,7 @@ RasterGdal::~RasterGdal()
 /************/
 /*** read ***/
 void
-RasterGdal::read( Scalar *buf, int frow, int nrow )
+GdalRaster::read( Scalar *buf, int frow, int nrow )
 {
   // Header's data
   int nband = f_hdr.nband;
@@ -348,7 +344,7 @@ RasterGdal::read( Scalar *buf, int frow, int nrow )
 /*************/
 /*** write ***/
 void
-RasterGdal::write( Scalar *buf, int frow, int nrow )
+GdalRaster::write( Scalar *buf, int frow, int nrow )
 {
   // Header's data.
   int nband = f_hdr.nband;
@@ -374,7 +370,7 @@ RasterGdal::write( Scalar *buf, int frow, int nrow )
 /************/
 /*** open ***/
 void
-RasterGdal::open( char mode )
+GdalRaster::open( char mode )
 {
   // Mode: write or read.
   GDALAccess gmod = (mode == 'w') ? GA_Update : GA_ReadOnly;
@@ -446,7 +442,7 @@ RasterGdal::open( char mode )
 /**************/
 /*** create ***/
 void
-RasterGdal::create( int format )
+GdalRaster::create( int format )
 {
   // Store format for future reference (used in method "finish")
   f_format = format;
@@ -615,7 +611,7 @@ RasterGdal::create( int format )
 /*******************/
 /*** init Buffer ***/
 void
-RasterGdal::initBuffer()
+GdalRaster::initBuffer()
 {
   // Initialize the buffer.
   f_size = f_hdr.xdim;
@@ -634,7 +630,7 @@ RasterGdal::initBuffer()
 /*****************/
 /*** init Gdal ***/
 void
-RasterGdal::initGdal()
+GdalRaster::initGdal()
 {
   static int first = 1;
 
@@ -648,7 +644,7 @@ RasterGdal::initGdal()
 /************/
 /*** iput ***/
 int
-RasterGdal::iput( int x, int y, Scalar val )
+GdalRaster::iput( int x, int y, Scalar val )
 {
   // Be sure that 'y' line is in the buffer 'f_data'.
   loadRow( y, true );
@@ -665,7 +661,7 @@ RasterGdal::iput( int x, int y, Scalar val )
 /************/
 /*** iget ***/
 int
-RasterGdal::iget( int x, int y, Scalar *val )
+GdalRaster::iget( int x, int y, Scalar *val )
 {
   // Be sure that 'y' line is in the buffer 'f_data'.
   loadRow( y );
@@ -687,7 +683,7 @@ RasterGdal::iget( int x, int y, Scalar *val )
 /***********/
 /*** get ***/
 int
-RasterGdal::get( Coord px, Coord py, Scalar *val )
+GdalRaster::get( Coord px, Coord py, Scalar *val )
 {
   Scalar *pv = val;
   for ( int i = 0; i < f_hdr.nband; i++ ) {
@@ -714,7 +710,7 @@ RasterGdal::get( Coord px, Coord py, Scalar *val )
 /***********/
 /*** put ***/
 int
-RasterGdal::put( Coord px, Coord py, Scalar val )
+GdalRaster::put( Coord px, Coord py, Scalar val )
 {
   pair<int,int> xy = f_hdr.convertLonLat2XY( px, py );
   int x = xy.first;
@@ -732,7 +728,7 @@ RasterGdal::put( Coord px, Coord py, Scalar val )
 /***********/
 /*** put ***/
 int
-RasterGdal::put( Coord px, Coord py )
+GdalRaster::put( Coord px, Coord py )
 {
   pair<int,int> xy = f_hdr.convertLonLat2XY( px, py );
   int x = xy.first;
@@ -752,7 +748,7 @@ RasterGdal::put( Coord px, Coord py )
 /*******************/
 /*** get Min Max ***/
 int
-RasterGdal::getMinMax( Scalar *min, Scalar *max )
+GdalRaster::getMinMax( Scalar *min, Scalar *max )
 {
   if ( ! calcMinMax() ) {
 
@@ -769,7 +765,7 @@ RasterGdal::getMinMax( Scalar *min, Scalar *max )
 /********************/
 /*** calc Min Max ***/
 int
-RasterGdal::calcMinMax( int band )
+GdalRaster::calcMinMax( int band )
 {
   if ( f_hdr.minmax ) {
 
@@ -829,7 +825,7 @@ RasterGdal::calcMinMax( int band )
 /****************/
 /*** load Row ***/
 void
-RasterGdal::loadRow( int row, bool writeOperation )
+GdalRaster::loadRow( int row, bool writeOperation )
 {
   // If the line is already read, return.
   if ( row == f_currentRow ) {
@@ -862,7 +858,7 @@ RasterGdal::loadRow( int row, bool writeOperation )
 /****************/
 /*** save Row ***/
 void
-RasterGdal::saveRow()
+GdalRaster::saveRow()
 {
   if ( ! f_changed || f_currentRow < 0 ) {
 
@@ -877,7 +873,7 @@ RasterGdal::saveRow()
 /**************/
 /*** finish ***/
 void 
-RasterGdal::finish()
+GdalRaster::finish()
 {
   // Save the last line read, if needed.
   saveRow();
@@ -935,7 +931,7 @@ RasterGdal::finish()
 /*********************/
 /*** delete Raster ***/
 int
-RasterGdal::deleteRaster()
+GdalRaster::deleteRaster()
 {
   GDALDriver * driver = f_ds->GetDriver();
 

@@ -31,6 +31,8 @@
 
 #include <iostream>
 #include <stdlib.h>
+#include <sys/stat.h>
+#include <errno.h>
 
 using std::vector;
 using std::string;
@@ -394,4 +396,63 @@ initRandom( unsigned int new_seed )
 #endif
 
   return 1;
+}
+
+/************************/
+/*** get Working path ***/
+std::string
+getWorkingPath()
+{
+   char temp[MAXPATHLEN];
+   return ( getcwd(temp, MAXPATHLEN) ? std::string( temp ) : std::string("") );
+}
+
+/*******************/
+/*** path Exists ***/
+bool
+pathExists( const std::string path )
+{
+  struct stat status;
+  if ( stat( path.c_str(), &status ) == 0 && S_ISDIR(status.st_mode) ) {
+
+    return true;
+  }
+
+  return false;
+}
+
+/*******************/
+/*** create Path ***/
+bool
+createPath( const std::string path )
+{
+  bool ok = false;
+  int nRC = ::mkdir( path.c_str(), 0775 );
+
+  if ( nRC == -1 ) {
+
+    switch( errno ) {
+
+      case ENOENT:
+        // parent didn't exist, try to create it
+        if( createPath( path.substr(0, path.find_last_of('/')) ) )
+          // try to create again.
+          ok = 0 == ::mkdir( path.c_str(), 0775 );
+        else
+          ok = false;
+          break;
+      case EEXIST:
+        ok = true;
+        break;
+      default:
+        ok = false;
+        break;
+    }
+  }
+  else {
+
+    ok = true;
+  }
+
+  return ok;
 }

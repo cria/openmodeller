@@ -1,5 +1,5 @@
 /**
- * Definition of TeOMRaster class.
+ * Definition of TerralibRaster class.
  * 
  * @author Alexandre Copertino Jardim <alexcj@dpi.inpe.br>
  * @date 2006-03-21
@@ -28,11 +28,10 @@
  */
 
 
-#ifndef _TE_OM_RASTERHH_
-#define _TE_OM_RASTERHH_
+#ifndef _TE_RASTERHH_
+#define _TE_RASTERHH_
 
 #include <openmodeller/env_io/Raster.hh>
-//#include <openmodeller/TeStringParser.hh>
 
 class TeRaster;
 class TeDatabase;
@@ -49,10 +48,10 @@ class MapFormat;
 /**
 * Manages raster files with TerraLib http://www.dpi.inpe.br/terralib/index.php .
 */
-class dllexp TeOMRaster: public Raster
+class dllexp TerralibRaster: public Raster
 {
 public:
-	//! Return a new instance of TeOMRaster.
+	//! Return a new instance of TerralibRaster.
 	/**
 	* RasterFactory calls this function to build a new Raster.
 	*/
@@ -62,7 +61,7 @@ public:
 	/**
 	* RasterFactory need a empty constructor.
 	*/
-	TeOMRaster(): db_(0), raster_(0),	layer_(0), params_(0), te_str_parser_(0) {};
+	TerralibRaster(): db_(0), raster_(0), layer_(0), params_(0), te_str_parser_(0) {};
 
 	//! Open an existing raster file or a raster in a TerraLib database (read only).
 	/** 
@@ -85,7 +84,7 @@ public:
 	/**
 	* Destructor
 	*/
-	~TeOMRaster();
+	~TerralibRaster();
 
 	//! Fills '*val' with the map value at (x,y).
 	/**

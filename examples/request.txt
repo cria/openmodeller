@@ -36,6 +36,8 @@ Occurrences group = furcata boliviana
 # Maps to be used as environmental variables to generate the model
 # For TerraLib rasters, use the following pattern:
 # terralib>yourusername>yourpassword@PostgreSQL>localhost>terralib>5432>rain_coolest
+# WCS rasters can be directly accessed with this pattern:
+# wcs>wcs url>wcs layer
 # To specify a categorical map use: Categorical map = 
 #
 Map = rain_coolest.tif

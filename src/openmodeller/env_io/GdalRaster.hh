@@ -1,5 +1,5 @@
 /**
- * Declaration of RasterGdal class.
+ * Declaration of GdalRaster class.
  * 
  * @author Mauro E S Muñoz <mauro@cria.org.br>
  * @date 2003-08-22
@@ -27,8 +27,8 @@
  * http://www.gnu.org/copyleft/gpl.html
  */
 
-#ifndef _RASTER_GDALHH_
-#define _RASTER_GDALHH_
+#ifndef _GDAL_RASTERHH_
+#define _GDAL_RASTERHH_
 
 #include <openmodeller/om_defs.hh>
 #include <openmodeller/env_io/Header.hh>
@@ -48,7 +48,7 @@ class MapFormat;
  * Library - http://www.remotesensing.org/gdal/index.html)
  *
  */
-class dllexp RasterGdal : public Raster
+class dllexp GdalRaster : public Raster
 {
 public:
   /** 
@@ -57,7 +57,7 @@ public:
   *
   */
   // Open an existing file -- read only.
-  RasterGdal( const std::string& file, int categ=0 );
+  GdalRaster( const std::string& file, int categ=0 );
 
   #ifdef MPI_FOUND
   /**
@@ -65,20 +65,20 @@ public:
   * @param file is the name of the output file
   * @param format is the output format specification.
   */
-  RasterGdal( const std::string& output_file, const std::string& file, const MapFormat& format );
+  GdalRaster( const std::string& output_file, const std::string& file, const MapFormat& format );
   #else
   /**
   * Create a new file for projections.
   * @param file is the name of the output file
   * @param format is the output format specification.
   */
-  RasterGdal( const std::string& file, const MapFormat& format );
+  GdalRaster( const std::string& file, const MapFormat& format );
   #endif
 
   /**
   * Destructor
   */
-  ~RasterGdal();
+  ~GdalRaster();
 
   int iget( int x, int y, Scalar *val );
   int iput( int x, int y, Scalar val );
@@ -163,10 +163,10 @@ private:
   int f_changed;
 
   // Disable copying.
-  RasterGdal( const RasterGdal& );
-  RasterGdal& operator=( const RasterGdal& );
+  GdalRaster( const GdalRaster& );
+  GdalRaster& operator=( const GdalRaster& );
 
-  // No need to implement because RasterGdal is the default driver, so RasterFactory
+  // No need to implement because GdalRaster is the default driver, so RasterFactory
   // will always instantiate it through "new". However, these methods need to be
   // declared.
   void createRaster( const std::string& file, int categ = 0 ) {};

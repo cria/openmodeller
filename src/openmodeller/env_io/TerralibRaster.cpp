@@ -1,5 +1,5 @@
 /**
- * Definition of TeOMRaster class.
+ * Definition of TerralibRaster class.
  * 
  * @author Alexandre Copertino Jardim <alexcj@dpi.inpe.br>
  * @date 2006-03-21
@@ -27,7 +27,7 @@
  * http://www.gnu.org/copyleft/gpl.html
  */
 
-#include <openmodeller/env_io/TeOMRaster.hh>
+#include <openmodeller/env_io/TerralibRaster.hh>
 
 #include <openmodeller/TeDatabaseManager.hh>
 #include <openmodeller/TeStringParser.hh>
@@ -58,9 +58,9 @@ using std::pair;
 * Needed by RasterFactory.
 */
 Raster*
-TeOMRaster::CreateRasterCallback()
+TerralibRaster::CreateRasterCallback()
 {
-	return new TeOMRaster();
+	return new TerralibRaster();
 }
 
 /** 
@@ -70,7 +70,7 @@ TeOMRaster::CreateRasterCallback()
 */
 // Open an existing file -- read only.
 void
-TeOMRaster::createRaster( const string& str, int categ )
+TerralibRaster::createRaster( const string& str, int categ )
 {
 	te_str_parser_ = new TeStringParser();
 	te_str_parser_->str_ = str;
@@ -88,7 +88,7 @@ TeOMRaster::createRaster( const string& str, int categ )
 
 		if (params_->status_ != TeRasterParams::TeReadyToRead)
 		{
-			std::string msg = "TeOMRaster::createRaster - Raster cannot be opened: ";
+			std::string msg = "TerralibRaster::createRaster - Raster cannot be opened: ";
                         msg += raster_->errorMessage().c_str();
 			Log::instance()->error( msg.c_str() );
 			throw RasterException( msg );
@@ -153,7 +153,7 @@ TeOMRaster::createRaster( const string& str, int categ )
 * @param format is the output format specification.
 */
 void
-TeOMRaster::createRaster( const std::string& str, const MapFormat& format )
+TerralibRaster::createRaster( const std::string& str, const MapFormat& format )
 {
 	te_str_parser_ = new TeStringParser();
 	te_str_parser_->str_ = str;
@@ -236,7 +236,7 @@ TeOMRaster::createRaster( const std::string& str, const MapFormat& format )
 /**
 * Destructor
 */
-TeOMRaster::~TeOMRaster()
+TerralibRaster::~TerralibRaster()
 {
 	if( layer_ )
 	{
@@ -251,7 +251,7 @@ TeOMRaster::~TeOMRaster()
 * Returns zero if (x,y) is out of range.
 */
 int
-TeOMRaster::get( Coord px, Coord py, Scalar *val )
+TerralibRaster::get( Coord px, Coord py, Scalar *val )
 {
 	pair<int,int> xy = f_hdr.convertLonLat2XY( px, py );
 	int x = xy.first;
@@ -276,7 +276,7 @@ TeOMRaster::get( Coord px, Coord py, Scalar *val )
 * supports only single band output files.
 */
 int
-TeOMRaster::put( Coord px, Coord py, Scalar val )
+TerralibRaster::put( Coord px, Coord py, Scalar val )
 {
 	pair<int,int> xy = f_hdr.convertLonLat2XY( px, py );
 	int x = xy.first;
@@ -297,7 +297,7 @@ TeOMRaster::put( Coord px, Coord py, Scalar val )
 * supports only single band output files.
 */
 int
-TeOMRaster::put( Coord px, Coord py )
+TerralibRaster::put( Coord px, Coord py )
 {
 	pair<int,int> xy = f_hdr.convertLonLat2XY( px, py );
 	int x = xy.first;
@@ -316,7 +316,7 @@ TeOMRaster::put( Coord px, Coord py )
 *
 */
 void
-TeOMRaster::openTeRaster()
+TerralibRaster::openTeRaster()
 {
 	if( te_str_parser_->parse() )
 	{
@@ -325,7 +325,7 @@ TeOMRaster::openTeRaster()
 		if ( !db_->isConnected() )
 		{
 			//delete db_;
-			std::string msg = "TeOMRaster::openTeRaster - Cannot connect to database: ";
+			std::string msg = "TerralibRaster::openTeRaster - Cannot connect to database: ";
                         msg += db_->errorMessage().c_str();
 			Log::instance()->error( msg.c_str() );
 			throw RasterException( msg );
@@ -350,7 +350,7 @@ TeOMRaster::openTeRaster()
 *
 */
 void
-TeOMRaster::createTeRaster()
+TerralibRaster::createTeRaster()
 {
 	if( te_str_parser_->parse() )
 	{
@@ -359,7 +359,7 @@ TeOMRaster::createTeRaster()
 		if ( !db_->isConnected() )
 		{
 			//delete db_;
-			std::string msg = "TeOMRaster::createTeRaster - Cannot connect to database: ";
+			std::string msg = "TerralibRaster::createTeRaster - Cannot connect to database: ";
                         msg += db_->errorMessage().c_str();
 			Log::instance()->error( msg.c_str() );
 			throw RasterException( msg );
@@ -396,7 +396,7 @@ TeOMRaster::createTeRaster()
 /*******************/
 /*** get Min Max ***/
 int
-TeOMRaster::getMinMax( Scalar *min, Scalar *max )
+TerralibRaster::getMinMax( Scalar *min, Scalar *max )
 {
 	*min = f_hdr.min;
 
@@ -409,14 +409,14 @@ TeOMRaster::getMinMax( Scalar *min, Scalar *max )
 /*********************/
 /*** delete Raster ***/
 int
-TeOMRaster::deleteRaster()
+TerralibRaster::deleteRaster()
 {
 	db_ = TeDatabaseManager::instance().create( *te_str_parser_ );
     
 	if ( !db_->isConnected() )
 	{
 		//delete db_;
-		std::string msg = "TeOMRaster::openTeRaster - Cannot connect to database: ";
+		std::string msg = "TerralibRaster::openTeRaster - Cannot connect to database: ";
                     msg += db_->errorMessage().c_str();
 		Log::instance()->error( msg.c_str() );
 		throw RasterException( msg );
