@@ -95,7 +95,9 @@ RasterFactory::create( const string& source, int categ )
   }
   
   // Default: GDAL Raster Lib
-  return new GdalRaster( source, categ );
+  Raster* r = new GdalRaster();
+  r->createRaster( source, categ );
+  return r;
 }
 
 
@@ -117,13 +119,15 @@ RasterFactory::create( const string& output_file_source, const string& source, c
     if ( i != _drivers.end() ) {
 
       Raster* r = (i->second)();
-      r->createRaster( source, format );
+      r->createRaster( output_file_source, source, format );
       return r;
     }
   }
 
   // Default: GDAL Raster Lib
-  return new GdalRaster( output_file_source, source, format );
+  Raster* r = new GdalRaster();
+  r->createRaster( output_file_source, source, format );
+  return r;
 }
 #else
 /**************/
@@ -149,6 +153,8 @@ RasterFactory::create( const string& source, const MapFormat& format )
   }
   
   // Default: GDAL Raster Lib
-  return new GdalRaster( source, format );
+  Raster* r = new GdalRaster();
+  r->createRaster( source, format );
+  return r;
 }
 #endif

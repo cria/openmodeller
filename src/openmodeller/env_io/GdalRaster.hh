@@ -51,13 +51,16 @@ class MapFormat;
 class dllexp GdalRaster : public Raster
 {
 public:
+
+  // Empty constructor
+  GdalRaster(): f_data(0), f_size(0), f_format(-1), f_currentRow(-1), f_changed(0) {};
+
   /** 
+  * Open an existing file -- read only.
   * If 'categ' != 0 this is a categorical map (ie it can't be
   * interpolated). Othewise this is a continuos map.
-  *
   */
-  // Open an existing file -- read only.
-  GdalRaster( const std::string& file, int categ=0 );
+  void createRaster( const std::string& file, int categ = 0 );
 
   #ifdef MPI_FOUND
   /**
@@ -65,14 +68,14 @@ public:
   * @param file is the name of the output file
   * @param format is the output format specification.
   */
-  GdalRaster( const std::string& output_file, const std::string& file, const MapFormat& format );
-  #else
+  void createRaster( const string& output_file_source, const string& file, const MapFormat& format );
+  #else 
   /**
   * Create a new file for projections.
   * @param file is the name of the output file
   * @param format is the output format specification.
   */
-  GdalRaster( const std::string& file, const MapFormat& format );
+  void createRaster( const std::string& file, const MapFormat& format );
   #endif
 
   /**
@@ -165,12 +168,6 @@ private:
   // Disable copying.
   GdalRaster( const GdalRaster& );
   GdalRaster& operator=( const GdalRaster& );
-
-  // No need to implement because GdalRaster is the default driver, so RasterFactory
-  // will always instantiate it through "new". However, these methods need to be
-  // declared.
-  void createRaster( const std::string& file, int categ = 0 ) {};
-  void createRaster( const std::string& file, const MapFormat& format ) {};
 };
 
 #endif
