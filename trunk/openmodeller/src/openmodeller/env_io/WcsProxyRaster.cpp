@@ -42,29 +42,18 @@ using namespace std;
 /****************************************************************/
 /*********************** WCS Proxy Raster ***********************/
 
+/******************/
+/*** Destructor ***/
+WcsProxyRaster::~WcsProxyRaster()
+{
+}
+
 /******************************/
 /*** create Raster Callback ***/
 Raster*
 WcsProxyRaster::CreateRasterCallback()
 {
   return new WcsProxyRaster();
-}
-
-/*******************/
-/*** constructor ***/
-WcsProxyRaster::WcsProxyRaster()
-{
-  f_gdal = 0;
-}
-
-/*****************/
-/*** destructor ***/
-WcsProxyRaster::~WcsProxyRaster()
-{
-  if ( f_gdal ) {
-
-    delete f_gdal;
-  }
 }
 
 /*********************/
@@ -103,7 +92,7 @@ WcsProxyRaster::createRaster( const string& str, int categ )
 
   string cached_ref = CacheManager::getContentLocationMd5( str, "wcs" );
 
-  f_gdal = new GdalRaster( cached_ref, categ );
+  GdalRaster::createRaster( cached_ref, categ );
 }
 
 #ifdef MPI_FOUND
@@ -126,14 +115,6 @@ WcsProxyRaster::createRaster( const string& file, const MapFormat& format) {
 #endif
 
 /***********/
-/*** get ***/
-int
-WcsProxyRaster::get( Coord px, Coord py, Scalar *val )
-{
-  return f_gdal->get(px, py, val);
-}
-
-/***********/
 /*** put ***/
 int
 WcsProxyRaster::put( Coord px, Coord py, Scalar val )
@@ -151,14 +132,6 @@ WcsProxyRaster::put( Coord px, Coord py )
   std::string msg = "Method put() not available for WCS rasters.\n";
   Log::instance()->warn( msg.c_str() );
   throw RasterException( msg.c_str() );
-}
-
-/*******************/
-/*** get Min Max ***/
-int
-WcsProxyRaster::getMinMax( Scalar *min, Scalar *max )
-{
-  return f_gdal->getMinMax(min, max);
 }
 
 /**************/

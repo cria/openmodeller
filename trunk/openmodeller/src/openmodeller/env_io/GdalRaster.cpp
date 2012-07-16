@@ -108,15 +108,10 @@ static const GDALDataType f_type = (sizeof(Scalar) == 4) ? GDT_Float32 : GDT_Flo
 /****************************************************************/
 /************************** Raster Gdal *************************/
 
-/*******************/
-/*** constructor ***/
-
-GdalRaster::GdalRaster( const string& file, int categ ):
-  f_data(0),
-  f_size(0),
-  f_format(-1), // unknown
-  f_currentRow(-1),
-  f_changed(0)
+/*********************/
+/*** create Raster ***/
+void
+GdalRaster::createRaster( const string& file, int categ )
 {
   f_file = file;
   f_scalefactor = 1.0;
@@ -131,16 +126,11 @@ GdalRaster::GdalRaster( const string& file, int categ ):
 }
 
 #ifdef MPI_FOUND
-GdalRaster::GdalRaster( const string& output_file, const string& file, const MapFormat& format):
-  f_data(0),
-  f_size(0),
-  f_format(-1), // unknown
-  f_currentRow(-1),
-  f_changed(0)
+void
+GdalRaster::createRaster( const string& output_file, const string& file, const MapFormat& format)
 {
-#ifdef MPI_FOUND
   MPI_Comm_rank(MPI_COMM_WORLD, &rank);
-#endif
+
   f_file = file;
 
   // will be utilized by MPI
@@ -213,12 +203,8 @@ GdalRaster::GdalRaster( const string& output_file, const string& file, const Map
 }
 
 #else
-GdalRaster::GdalRaster( const string& file, const MapFormat& format):
-  f_data(0),
-  f_size(0),
-  f_format(-1), // unknown
-  f_currentRow(-1),
-  f_changed(0)
+void
+GdalRaster::createRaster( const string& file, const MapFormat& format)
 {
   f_file = file;
 

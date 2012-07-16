@@ -43,7 +43,7 @@ class MapFormat;
  * XML files compatible with the GDAL WCS format
  *
  */
-class dllexp WcsProxyRaster : public Raster
+class dllexp WcsProxyRaster : public GdalRaster
 {
 public:
   /**
@@ -54,7 +54,7 @@ public:
   /**
   * RasterFactory needs an empty constructor.
   */
-  WcsProxyRaster();
+  WcsProxyRaster():GdalRaster() {};
 
   /**
   * Destructor
@@ -84,12 +84,6 @@ public:
   #endif
 
   /**
-  * Fills '*val' with the map value at (x,y).
-  * Returns zero if (x,y) is out of range.
-  */
-  int get( Coord x, Coord y, Scalar *val );
-
-  /**
   * Put '*val' at the (x,y) coordinate.
   * Returns 0 if (x,y) is out of range or the map is read only.
   * supports only single band output files.
@@ -103,13 +97,6 @@ public:
   */
   int put( Coord x, Coord y );
 
-  /** Finds the minimum and maximum values in the first band. 
-   * @param min Pointer to minimum value
-   * @param max Pointer to maximum value
-   * @return 1 if values are present, 0 otherwise
-   */
-  int getMinMax( Scalar *min, Scalar *max );
-
   /** 
    * Event that must be called to indicate when the projection is finished.
    */
@@ -121,8 +108,6 @@ public:
   int deleteRaster();
 
 private:
-
-  GdalRaster* f_gdal;
 
   // Disable copying.
   WcsProxyRaster( const WcsProxyRaster& );
