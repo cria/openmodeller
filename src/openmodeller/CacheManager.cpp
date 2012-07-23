@@ -245,7 +245,7 @@ CacheManager::_md5Encode( const std::string id )
 {
   Log::instance()->debug( "Original string: %s.\n", id.c_str() );
 
-  size_t MYSIZE = 16;
+  const size_t MYSIZE = 16;
 
   unsigned char digest[MYSIZE];
 
