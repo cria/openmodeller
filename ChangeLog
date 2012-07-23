@@ -1,6 +1,6 @@
 Release 1.3.0 (2012-07-23)
 -------------
-SVN revision: 5580
+SVN revision: 5583
 
 	* New version of OM-MAXENT compatible with Maxent 3.3.3e.
 	* Changed the deserialization code to accept XML with namespace prefixes (they are now ignored if present).
