@@ -452,7 +452,7 @@ createPath( const std::string path )
     // Recursively do it all again for the parent directory, if any
     std::size_t slash_idx = path.find_last_of( separators.c_str() );
 
-    if ( slash_idx != std::wstring::npos ) {
+    if ( slash_idx != std::string::npos ) {
 
       createPath( path.substr(0, slash_idx) );
     }
