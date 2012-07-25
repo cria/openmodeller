@@ -444,7 +444,7 @@ createPath( const std::string path )
 {
   static const std::string separators("\\/");
  
-  DWORD file_attr = ::GetFileAttributesW( (LPCWSTR) path.c_str() );
+  DWORD file_attr = ::GetFileAttributes( (LPCSTR) path.c_str() );
 
   // If the specified directory name doesn't exist
   if ( file_attr == INVALID_FILE_ATTRIBUTES ) {
@@ -459,7 +459,7 @@ createPath( const std::string path )
  
     // Create the last directory on the path (the recursive calls will have taken
     // care of the parent directories by now)
-    return ::CreateDirectoryW( (LPCWSTR) path.c_str(), NULL );
+    return ::CreateDirectory( (LPCSTR) path.c_str(), NULL );
   }
 
   // Specified directory name already exists as a file or directory
