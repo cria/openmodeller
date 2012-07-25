@@ -17,7 +17,8 @@ different software package called <a href="http://sourceforge.net/projects/openm
 Instead, if you want to learn and use the CLI interface, the package 
 you have just installed offers tools (commands) that provide a similar 
 funcionality to openModeller Desktop, except for the visualization facilities. 
-In this case, you can use a geographical information system, such as <a href="http://qgis.org">Quantum GIS</a>, to visualize your data. The fact is that openModeller can be used in a variety of ways and you can choose the one that best fits your needs.</p>
+In this case, you can use a geographical information system, such as 
+<a href="http://qgis.org">Quantum GIS</a>, to visualize your data.</p>
 
 <p>This document is not intended to be a
 replacement for the manual pages nor for the <a href="http://openmodeller.sourceforge.net/index.php?option=com_content&task=view&id=70&Itemid=17">documentation available
@@ -27,31 +28,40 @@ generate a simple model.</p>
 
 <h2>Getting started</h2>
 
-<p>Command line tools run on a <i>terminal</i>. On Windows, the <i>terminal</i> is the <i>Command prompt</i>, also known as the MS-DOS prompt. Starting from openModeller 1.3.0, the installer includes shortcuts to all openModeller commands available in this environment (there are a couple of additional commands that are only available under GNU/Linux). When you click on any of these shortcuts, a new terminal is opened called <i>openModeller Terminal</i>, which is basically a standard <i>Command prompt</i> configured to automatically run the associated command line tool without any parameters, forcing the tool to output usage help. This output is basically the set of parameters required to effectively use the tool.</p>
+<p>Command line tools run on a <i>terminal</i>. On Windows, the
+<i>terminal</i> is the <i>Command prompt</i>, also known as the MS-DOS
+prompt. Starting from openModeller 1.3.0, the installer includes
+shortcuts in the <i>Start menu</i> to all openModeller commands available 
+in this environment (there are a couple of additional commands that are only 
+available under GNU/Linux). When you click on any of these shortcuts, a new 
+terminal is opened called <i>openModeller Terminal</i>, which is basically a 
+standard <i>Command prompt</i> configured to automatically run the associated 
+command line tool without any parameters, forcing the tool to output usage help. 
+This output is basically the set of parameters required to effectively use the tool.</p>
 
 <p>The <i>openModeller Terminal</i> starts in the <i>Working Folder</i>
-specified during installation. Inside that folder, there is another folder called
-<i>examples</i> containing a couple of environmental layers, a file with point data and an example of a request file used to generate models.</p>
+specified during installation (the default is <code>C:\om</code>). Inside that folder, 
+there is another folder called <i>examples</i> containing a couple of environmental 
+layers, a file with point data and an example of a request file used to generate models.</p>
 
 <h2>Generating a model</h2>
 
-<p>From now on, the commands you should
-type are in <b>bold</b>, while the content in
-<code>monospaced</code> font shows the output from the terminal itself
-and/or openModeller. Also, we assume the <i>Working Folder</i> to be
-<code>C:\om</code>.</p> 
+<p>From now on, the commands you should type to reproduce the example are in <b>bold</b>, 
+while the content in <code>monospaced</code> font shows the output from the terminal itself
+and/or openModeller. We assume the <i>Working Folder</i> to be the default <code>C:\om</code>.</p> 
 
-<p>Click on the om_console shortcut to get into the prompt and then enter the examples directory:</p>
+<p>Click on the om_console shortcut in the <i>Start menu</i> to get into the prompt, and then 
+enter the examples directory:</p>
 
 <p><code>
-    C:\om> <b>cd examples</b><br>
-    C:\om\examples>
+    C:\om&gt; <b>cd examples</b><br>
+    C:\om\examples&gt;
 </code></p>
 
 <p>To generate a model with om_console you just need to provide a single parameter, which is a request file actually containing all possible parameters for this task. Use the request file provided as example:</p>
 
 <p><code>
-C:\om\examples> <b>om_console request.txt</b><br>
+C:\om\examples&gt; <b>om_console request.txt</b><br>
 [Info] openModeller version 1.3.0<br>
 [Info] Reading occurrences...done<br>
 [Info] Reading layers...done<br><br>
@@ -77,7 +87,7 @@ Choose an algorithm between:<br>
 
 Option: <b>2</b><br>
 [Info] <br>
-> Algorithm used: Bioclim<br><br>
+&gt; Algorithm used: Bioclim<br><br>
 
 [Info]  Uses mean and standard deviation for each environmental variable<br>
 separately to calculate bioclimatic envelopes. Level of fitness between<br>
@@ -90,7 +100,7 @@ presence.<br><br><br>
 
 The envelope is determined by multiplying this<br>
 parameter and the standard deviation.<br>
-Standard deviation cutoff >= 0.000000<br>
+Standard deviation cutoff &gt;= 0.000000<br>
 Enter with value [0.674]: <b>[Enter]</b><br>
 [Info] Creating model<br>
 [Info] Reading 2-dimensional occurrence<br>
@@ -114,10 +124,10 @@ points.<br>
 [Info] Cells predicted present:   66.68%<br>
 [Info] Total number of cells:     64681<br>
 [Info] Done.<br>
-C:\om\examples> <br>
+C:\om\examples&gt; <br>
 </code></p>
 
-<p>That's it. If you open <i>request.txt</i> with a text editor you will see all parameters that were used in the modelling procedure, including the file with point data, the environmental layers used for model creation and model projection and so on. As a result you get the openModeller serialized model in XML (in this case furcata.xml) and the projected model (furcata.img) that you can open in a GIS that supports this format (which is ERDAS Imagine). Note that you can also change that format in the request if you want to produce a GeoTiff or an ARC/Info ASCII Grid instead.</p>
+<p>That's it. If you open <i>request.txt</i> at <code>C:\om\examples</code> with a text editor you will see all parameters that were used in the modelling procedure, including the file with point data, the environmental layers used for model creation and model projection and so on. As a result you get the openModeller serialized model in XML (in this case furcata.xml) and the projected model (furcata.img) that you can open in a GIS that supports this format (which is ERDAS Imagine). Note that you can also change that format in the request if you want to produce a GeoTiff or an ARC/Info ASCII Grid instead.</p>
 
 <p>In order to produce models with your own data, you can create a copy of <i>request.txt</i>, edit the new file and then run the same command passing the new file as a parameter.</p>
 
