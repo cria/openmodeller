@@ -2,7 +2,7 @@
 
 #######################################################################
 # Script that can be included in the cronjob to update environmental 
-# layers. Requires rsync.
+# layers. Requires lftp AND rsync.
 # Parameter 1: path to configuration file.
 #######################################################################
 
@@ -43,7 +43,7 @@ else
   exit 1
 fi
 
-debug "\$RSYNC_LAYERS_REPOSITORY = $RSYNC_LAYERS_REPOSITORY"
+debug "\$RSYNC_LAYERS_REPOSITORY=$RSYNC_LAYERS_REPOSITORY"
 
 # by default, we'll use 2 repositories in each server, at least when
 # this script syncs, which are (1) the effective repository, which is
@@ -65,8 +65,8 @@ check_om_processes() {
         debug "locking server"
         cat $CONFIG | \
             sed 's/SYSTEM_STATUS=1/SYSTEM_STATUS=2/' > \
-            ${CONFIG}.tmp
-        mv ${CONFIG}.tmp $CONFIG
+            server.conf.tmp
+        mv server.conf.tmp $CONFIG
         logger -t "$TAG" "service locked."
 
         # setting dirs
@@ -86,8 +86,8 @@ check_om_processes() {
         debug "unlocking server"
         cat $CONFIG | \
             sed 's/SYSTEM_STATUS=2/SYSTEM_STATUS=1/' > \
-            ${CONFIG}.tmp
-        mv ${CONFIG}.tmp $CONFIG
+            server.conf.tmp
+        mv server.conf.tmp $CONFIG
         logger -t "$TAG" "service unlocked."
 
         logger -t "$TAG" "working copy synced."
@@ -95,12 +95,12 @@ check_om_processes() {
     fi
 }
 
-# check rsync
-# NOTE: Here we assume that rsync is only used by this script!
-debug "checking rsync"
-if [ $(pgrep rsync) ]; then
+# check lftp
+# NOTE: Here we assume that lftp is only used by this script!
+debug "checking lftp"
+if [ $(pgrep lftp) ]; then
     # y
-    logger -t "$TAG" "rsync already running. Exiting."
+    logger -t "$TAG" "lftp already running. Exiting."
     exit 0
 else
     # n
@@ -115,32 +115,38 @@ else
     else
         # n
         # check for repository updates
-        debug "checking for repository updates"
+        debug "checking updates"
         logger -t "$TAG" "checking updates."
-        rsync -aniL --copy-unsafe-links --delete \
-            rsync://$RSYNC_LAYERS_REPOSITORY \
-            $LAYERS_DIRECTORY > /tmp/rsync.out.tmp
-        RSYNC_LAYERS_REPOSITORY_STATUS=$?
+        OLD_DIR=`pwd`
+        cd $UPDATED_LAYERS_DIRECTORY
+        debug "\$RSYNC_LAYERS_REPOSITORY=$RSYNC_LAYERS_REPOSITORY; \$UPDATED_LAYERS_DIRECTORY=$UPDATED_LAYERS_DIRECTORY"
+        lftp -e'mirror -e --dry-run -L; quit' $RSYNC_LAYERS_REPOSITORY \
+            > /tmp/lftp.out.tmp
+        cd $OLD_DIR
 
-        grep -E '^(\*|>)' /tmp/rsync.out.tmp
+        grep -E '(New:|Modified:|Removed:)' /tmp/lftp.out.tmp
         HAVE_UPDATES=$?
-        rm -f /tmp/rsync.out.tmp
+        # 0: yes
+        #rm -f /tmp/lftp.out.tmp
 
-        if [ "$RSYNC_LAYERS_REPOSITORY_STATUS" -eq 0 -a \
-            "$HAVE_UPDATES" -eq 0 ]; then
+        debug "\$SYSTEM_STATUS=$SYSTEM_STATUS; \$HAVE_UPDATES=$HAVE_UPDATES"
+        if [ "$SYSTEM_STATUS" -eq 1 -a "$HAVE_UPDATES" -eq 0 ]; then
             # y
             logger -t "$TAG" "updates found."
-            # run rsync
+            # run lftp
             debug "updating local copy"
-            rsync -aL --copy-unsafe-links --delete \
-                rsync://$RSYNC_LAYERS_REPOSITORY \
-                $UPDATED_LAYERS_DIRECTORY
+            debug "\$RSYNC_LAYERS_REPOSITORY=$RSYNC_LAYERS_REPOSITORY; \$UPDATED_LAYERS_DIRECTORY=$UPDATED_LAYERS_DIRECTORY"
+            OLD_DIR=`pwd`
+            cd $UPDATED_LAYERS_DIRECTORY
+            lftp -e'mirror -e -L; quit' $RSYNC_LAYERS_REPOSITORY 
+            cd $OLD_DIR
 
             # set flag
             debug "setting flag"
             logger -t "$TAG" "setting local copy as ready."
-            RSYNC_LAYERS_REPOSITORY_STATUS=$?
-            if [ "$RSYNC_LAYERS_REPOSITORY_STATUS" -eq 0 ]; then
+            SYSTEM_STATUS=$?
+            debug "\$SYSTEM_STATUS=$SYSTEM_STATUS"
+            if [ "$SYSTEM_STATUS" -eq 0 ]; then
                 touch /tmp/COPY_READY
             fi
 
