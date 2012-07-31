@@ -65,8 +65,8 @@ check_om_processes() {
         debug "locking server"
         cat $CONFIG | \
             sed 's/SYSTEM_STATUS=1/SYSTEM_STATUS=2/' > \
-            server.conf.tmp
-        mv server.conf.tmp $CONFIG
+            ${CONFIG}.tmp
+        mv ${CONFIG}.tmp $CONFIG
         logger -t "$TAG" "service locked."
 
         # setting dirs
@@ -86,8 +86,8 @@ check_om_processes() {
         debug "unlocking server"
         cat $CONFIG | \
             sed 's/SYSTEM_STATUS=2/SYSTEM_STATUS=1/' > \
-            server.conf.tmp
-        mv server.conf.tmp $CONFIG
+            ${CONFIG}.tmp
+        mv ${CONFIG}.tmp $CONFIG
         logger -t "$TAG" "service unlocked."
 
         logger -t "$TAG" "working copy synced."
