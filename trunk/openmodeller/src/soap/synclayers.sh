@@ -45,12 +45,6 @@ fi
 
 debug "\$REFERENCE_LAYERS_REPOSITORY=$REFERENCE_LAYERS_REPOSITORY"
 
-# workaround to follow documentation
-LAYERS_DIRECTORY="/var/local/om/${LAYERS_DIRECTORY}"
-UPDATED_LAYERS_DIRECTORY="/var/local/om/${UPDATED_LAYERS_DIRECTORY}"
-debug "\$LAYERS_DIRECTORY=$LAYERS_DIRECTORY"
-debug "\$UPDATED_LAYERS_DIRECTORY=$UPDATED_LAYERS_DIRECTORY"
-
 # by default, we'll use 2 repositories in each server, at least when
 # this script syncs, which are (1) the effective repository, which is
 # $LAYERS_DIRECTORY and (2) the new repository, which is
