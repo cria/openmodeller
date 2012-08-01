@@ -43,7 +43,13 @@ else
   exit 1
 fi
 
-debug "\$RSYNC_LAYERS_REPOSITORY=$RSYNC_LAYERS_REPOSITORY"
+debug "\$REFERENCE_LAYERS_REPOSITORY=$REFERENCE_LAYERS_REPOSITORY"
+
+# workaround to follow documentation
+LAYERS_DIRECTORY="/var/local/om/${LAYERS_DIRECTORY}"
+UPDATED_LAYERS_DIRECTORY="/var/local/om/${UPDATED_LAYERS_DIRECTORY}"
+debug "\$LAYERS_DIRECTORY=$LAYERS_DIRECTORY"
+debug "\$UPDATED_LAYERS_DIRECTORY=$UPDATED_LAYERS_DIRECTORY"
 
 # by default, we'll use 2 repositories in each server, at least when
 # this script syncs, which are (1) the effective repository, which is
@@ -52,25 +58,22 @@ debug "\$RSYNC_LAYERS_REPOSITORY=$RSYNC_LAYERS_REPOSITORY"
 
 check_om_processes() {
     # checking for running oM instances
-    debug "checking for running oM instances"
+    logger -t "$TAG" "checking for running oM instances."
     if [ $(pgrep om_model) -o  $(pgrep om_test) -o $(pgrep om_project) ]; then
         # y: some job is still running
-        debug "jobs are still running. aborting."
         logger -t "$TAG" "jobs are still running. aborting."
         exit 0
     else
         # n
         # lock server
-        logger -t "$TAG" "no jobs running."
-        debug "locking server"
+        logger -t "$TAG" "no jobs running, locking server."
         cat $CONFIG | \
             sed 's/SYSTEM_STATUS=1/SYSTEM_STATUS=2/' > \
             ${CONFIG}.tmp
         mv ${CONFIG}.tmp $CONFIG
         logger -t "$TAG" "service locked."
 
-        # setting dirs
-        debug "setting dirs"
+        # update work dir
         logger -t "$TAG" "updating working copy."
         rsync -aL --copy-unsafe-links --delete \
             $UPDATED_LAYERS_DIRECTORY $LAYERS_DIRECTORY
@@ -83,13 +86,11 @@ check_om_processes() {
         rm -f $CACHE_DIRECTORY/layers.xml
 
         # unlock server
-        debug "unlocking server"
         cat $CONFIG | \
             sed 's/SYSTEM_STATUS=2/SYSTEM_STATUS=1/' > \
             ${CONFIG}.tmp
         mv ${CONFIG}.tmp $CONFIG
         logger -t "$TAG" "service unlocked."
-
         logger -t "$TAG" "working copy synced."
         exit 0
     fi
@@ -115,12 +116,11 @@ else
     else
         # n
         # check for repository updates
-        debug "checking updates"
         logger -t "$TAG" "checking updates."
         OLD_DIR=`pwd`
         cd $UPDATED_LAYERS_DIRECTORY
-        debug "\$RSYNC_LAYERS_REPOSITORY=$RSYNC_LAYERS_REPOSITORY; \$UPDATED_LAYERS_DIRECTORY=$UPDATED_LAYERS_DIRECTORY"
-        lftp -e'mirror -e --dry-run -L; quit' $RSYNC_LAYERS_REPOSITORY \
+        debug "\$REFERENCE_LAYERS_REPOSITORY=$REFERENCE_LAYERS_REPOSITORY; \$UPDATED_LAYERS_DIRECTORY=$UPDATED_LAYERS_DIRECTORY"
+        lftp -e'mirror -e --dry-run -L; quit' $REFERENCE_LAYERS_REPOSITORY \
             > /tmp/lftp.out.tmp
         cd $OLD_DIR
 
@@ -132,21 +132,19 @@ else
         debug "\$SYSTEM_STATUS=$SYSTEM_STATUS; \$HAVE_UPDATES=$HAVE_UPDATES"
         if [ "$SYSTEM_STATUS" -eq 1 -a "$HAVE_UPDATES" -eq 0 ]; then
             # y
-            logger -t "$TAG" "updates found."
+            logger -t "$TAG" "updates found, updating local copy."
             # run lftp
-            debug "updating local copy"
-            debug "\$RSYNC_LAYERS_REPOSITORY=$RSYNC_LAYERS_REPOSITORY; \$UPDATED_LAYERS_DIRECTORY=$UPDATED_LAYERS_DIRECTORY"
+            debug "\$REFERENCE_LAYERS_REPOSITORY=$REFERENCE_LAYERS_REPOSITORY; \$UPDATED_LAYERS_DIRECTORY=$UPDATED_LAYERS_DIRECTORY"
             OLD_DIR=`pwd`
             cd $UPDATED_LAYERS_DIRECTORY
-            lftp -e'mirror -e -L; quit' $RSYNC_LAYERS_REPOSITORY 
+            lftp -e'mirror -e -L; quit' $REFERENCE_LAYERS_REPOSITORY 
             cd $OLD_DIR
 
             # set flag
-            debug "setting flag"
+            COPY_SUCCEEDED=$?
+            debug "\$COPY_SUCCEEDED=$COPY_SUCCEEDED"
             logger -t "$TAG" "setting local copy as ready."
-            SYSTEM_STATUS=$?
-            debug "\$SYSTEM_STATUS=$SYSTEM_STATUS"
-            if [ "$SYSTEM_STATUS" -eq 0 ]; then
+            if [ "$COPY_SUCCEEDED" -eq 0 ]; then
                 touch /tmp/COPY_READY
             fi
 
