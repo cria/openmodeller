@@ -1,0 +1,18 @@
+
+
+
+
+%!target: html
+
+== Environmental Data Sources ==
+
+These are the sample environmental datasets provided with the openModeller Desktop Windows installer. For reasons of bandwidth they are currently not packaged with the OS X and Gnu/Linux versions of the software, but can be downloaded separately using the links provided below:
+
+- [http://openmodeller.cria.org.br/installer_sample_data/crucl2.zip http://openmodeller.cria.org.br/installer_sample_data/crucl2.zip]
+- [http://openmodeller.cria.org.br/installer_sample_data/hadley2050A1F.zip http://openmodeller.cria.org.br/installer_sample_data/hadley2050A1F.zip]
+- [http://openmodeller.cria.org.br/installer_sample_data/SouthAmerica.zip http://openmodeller.cria.org.br/installer_sample_data/SouthAmerica.zip]
+
+
+The European Distributed Institute of Taxonomy (EDIT) has also compiled a set of environmental layers as part of their project:
+
+- [http://edit.csic.es/GISdownloads.html http://edit.csic.es/GISdownloads.html]
