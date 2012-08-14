@@ -11,19 +11,22 @@
   attributeFormDefault="unqualified">
   <import namespace="http://openmodeller.cria.org.br/xml/1.0" schemaLocation="http://openmodeller.cria.org.br/xml/1.0/openModeller.xsd"/>
   <import namespace="http://schemas.xmlsoap.org/soap/encoding/"/>
-  <complexType name="createModel">
+  <complexType name="createModel"><!-- omws__createModel -->
+
    <sequence>
-     <element ref="om:ModelParameters" minOccurs="0" maxOccurs="1" nillable="true"/>
+     <element ref="om:ModelParameters" minOccurs="0" maxOccurs="1"/><!-- omws__createModel::om__ModelParameters -->
    </sequence>
   </complexType>
-  <complexType name="testModel">
+  <complexType name="testModel"><!-- omws__testModel -->
+
    <sequence>
-     <element ref="om:TestParameters" minOccurs="0" maxOccurs="1" nillable="true"/>
+     <element ref="om:TestParameters" minOccurs="0" maxOccurs="1"/><!-- omws__testModel::om__TestParameters -->
    </sequence>
   </complexType>
-  <complexType name="projectModel">
+  <complexType name="projectModel"><!-- omws__projectModel -->
+
    <sequence>
-     <element ref="om:ProjectionParameters" minOccurs="0" maxOccurs="1" nillable="true"/>
+     <element ref="om:ProjectionParameters" minOccurs="0" maxOccurs="1"/><!-- omws__projectModel::om__ProjectionParameters -->
    </sequence>
   </complexType>
   <element name="version" type="xsd:string"/>
@@ -38,7 +41,7 @@
   <element name="pingResponse">
    <complexType>
     <sequence>
-     <element name="status" type="xsd:int" minOccurs="1" maxOccurs="1"/>
+     <element name="status" type="xsd:int" minOccurs="1" maxOccurs="1"/><!-- omws__ping::status -->
     </sequence>
    </complexType>
   </element>
@@ -53,7 +56,7 @@
   <element name="getAlgorithmsResponse">
    <complexType>
     <sequence>
-     <element ref="om:AvailableAlgorithms" minOccurs="0" maxOccurs="1" nillable="true"/>
+     <element ref="om:AvailableAlgorithms" minOccurs="0" maxOccurs="1"/><!-- omws__getAlgorithmsResponse::om__AvailableAlgorithms -->
     </sequence>
    </complexType>
   </element>
@@ -68,7 +71,7 @@
   <element name="getLayersResponse">
    <complexType>
     <sequence>
-     <element ref="om:AvailableLayers" minOccurs="0" maxOccurs="1" nillable="true"/>
+     <element ref="om:AvailableLayers" minOccurs="0" maxOccurs="1"/><!-- omws__getLayersResponse::om__AvailableLayers -->
     </sequence>
    </complexType>
   </element>
@@ -76,7 +79,7 @@
   <element name="createModel">
    <complexType>
     <sequence>
-     <element ref="om:ModelParameters" minOccurs="0" maxOccurs="1" nillable="true"/>
+     <element ref="om:ModelParameters" minOccurs="0" maxOccurs="1"/><!-- omws__createModel::om__ModelParameters -->
     </sequence>
    </complexType>
   </element>
@@ -84,7 +87,7 @@
   <element name="createModelResponse">
    <complexType>
     <sequence>
-     <element name="ticket" type="xsd:string" minOccurs="1" maxOccurs="1"/>
+     <element name="ticket" type="xsd:string" minOccurs="1" maxOccurs="1"/><!-- omws__createModel::ticket -->
     </sequence>
    </complexType>
   </element>
@@ -92,7 +95,7 @@
   <element name="getModel">
    <complexType>
     <sequence>
-     <element name="ticket" type="xsd:string" minOccurs="0" maxOccurs="1" nillable="true"/>
+     <element name="ticket" type="xsd:string" minOccurs="0" maxOccurs="1" nillable="true"/><!-- omws__getModel::ticket -->
     </sequence>
    </complexType>
   </element>
@@ -100,7 +103,7 @@
   <element name="getModelResponse">
    <complexType>
     <sequence>
-     <element ref="om:ModelEnvelope" minOccurs="0" maxOccurs="1" nillable="true"/>
+     <element ref="om:ModelEnvelope" minOccurs="0" maxOccurs="1"/><!-- omws__getModelResponse::om__ModelEnvelope -->
     </sequence>
    </complexType>
   </element>
@@ -108,7 +111,7 @@
   <element name="testModel">
    <complexType>
     <sequence>
-     <element ref="om:TestParameters" minOccurs="0" maxOccurs="1" nillable="true"/>
+     <element ref="om:TestParameters" minOccurs="0" maxOccurs="1"/><!-- omws__testModel::om__TestParameters -->
     </sequence>
    </complexType>
   </element>
@@ -116,7 +119,7 @@
   <element name="testModelResponse">
    <complexType>
     <sequence>
-     <element name="ticket" type="xsd:string" minOccurs="1" maxOccurs="1"/>
+     <element name="ticket" type="xsd:string" minOccurs="1" maxOccurs="1"/><!-- omws__testModel::ticket -->
     </sequence>
    </complexType>
   </element>
@@ -124,7 +127,7 @@
   <element name="getTestResult">
    <complexType>
     <sequence>
-     <element name="ticket" type="xsd:string" minOccurs="0" maxOccurs="1" nillable="true"/>
+     <element name="ticket" type="xsd:string" minOccurs="0" maxOccurs="1" nillable="true"/><!-- omws__getTestResult::ticket -->
     </sequence>
    </complexType>
   </element>
@@ -132,7 +135,7 @@
   <element name="testResponse">
    <complexType>
     <sequence>
-     <element ref="om:TestResultEnvelope" minOccurs="0" maxOccurs="1" nillable="true"/>
+     <element ref="om:TestResultEnvelope" minOccurs="0" maxOccurs="1"/><!-- omws__testResponse::om__TestResultEnvelope -->
     </sequence>
    </complexType>
   </element>
@@ -140,7 +143,7 @@
   <element name="projectModel">
    <complexType>
     <sequence>
-     <element ref="om:ProjectionParameters" minOccurs="0" maxOccurs="1" nillable="true"/>
+     <element ref="om:ProjectionParameters" minOccurs="0" maxOccurs="1"/><!-- omws__projectModel::om__ProjectionParameters -->
     </sequence>
    </complexType>
   </element>
@@ -148,7 +151,7 @@
   <element name="projectModelResponse">
    <complexType>
     <sequence>
-     <element name="ticket" type="xsd:string" minOccurs="1" maxOccurs="1"/>
+     <element name="ticket" type="xsd:string" minOccurs="1" maxOccurs="1"/><!-- omws__projectModel::ticket -->
     </sequence>
    </complexType>
   </element>
@@ -156,7 +159,7 @@
   <element name="getProgress">
    <complexType>
     <sequence>
-     <element name="ticket" type="xsd:string" minOccurs="0" maxOccurs="1" nillable="true"/>
+     <element name="ticket" type="xsd:string" minOccurs="0" maxOccurs="1" nillable="true"/><!-- omws__getProgress::ticket -->
     </sequence>
    </complexType>
   </element>
@@ -164,7 +167,7 @@
   <element name="getProgressResponse">
    <complexType>
     <sequence>
-     <element name="progress" type="xsd:int" minOccurs="1" maxOccurs="1"/>
+     <element name="progress" type="xsd:int" minOccurs="1" maxOccurs="1"/><!-- omws__getProgress::progress -->
     </sequence>
    </complexType>
   </element>
@@ -172,7 +175,7 @@
   <element name="getLog">
    <complexType>
     <sequence>
-     <element name="ticket" type="xsd:string" minOccurs="0" maxOccurs="1" nillable="true"/>
+     <element name="ticket" type="xsd:string" minOccurs="0" maxOccurs="1" nillable="true"/><!-- omws__getLog::ticket -->
     </sequence>
    </complexType>
   </element>
@@ -180,7 +183,7 @@
   <element name="getLogResponse">
    <complexType>
     <sequence>
-     <element name="log" type="xsd:string" minOccurs="1" maxOccurs="1"/>
+     <element name="log" type="xsd:string" minOccurs="1" maxOccurs="1"/><!-- omws__getLog::log -->
     </sequence>
    </complexType>
   </element>
@@ -188,7 +191,7 @@
   <element name="getLayerAsAttachment">
    <complexType>
     <sequence>
-     <element name="id" type="xsd:string" minOccurs="0" maxOccurs="1" nillable="true"/>
+     <element name="id" type="xsd:string" minOccurs="0" maxOccurs="1" nillable="true"/><!-- omws__getLayerAsAttachment::id -->
     </sequence>
    </complexType>
   </element>
@@ -196,7 +199,7 @@
   <element name="getLayerAsAttachmentResponse">
    <complexType>
     <sequence>
-     <element name="file" type="xsd:base64Binary" minOccurs="1" maxOccurs="1"/>
+     <element name="file" type="xsd:base64Binary" minOccurs="1" maxOccurs="1"/><!-- omws__getLayerAsAttachment::file -->
     </sequence>
    </complexType>
   </element>
@@ -204,7 +207,7 @@
   <element name="getLayerAsUrl">
    <complexType>
     <sequence>
-     <element name="id" type="xsd:string" minOccurs="0" maxOccurs="1" nillable="true"/>
+     <element name="id" type="xsd:string" minOccurs="0" maxOccurs="1" nillable="true"/><!-- omws__getLayerAsUrl::id -->
     </sequence>
    </complexType>
   </element>
@@ -212,7 +215,7 @@
   <element name="getLayerAsUrlResponse">
    <complexType>
     <sequence>
-     <element name="url" type="xsd:string" minOccurs="1" maxOccurs="1"/>
+     <element name="url" type="xsd:string" minOccurs="1" maxOccurs="1"/><!-- omws__getLayerAsUrl::url -->
     </sequence>
    </complexType>
   </element>
@@ -220,7 +223,7 @@
   <element name="getLayerAsWcs">
    <complexType>
     <sequence>
-     <element name="id" type="xsd:string" minOccurs="0" maxOccurs="1" nillable="true"/>
+     <element name="id" type="xsd:string" minOccurs="0" maxOccurs="1" nillable="true"/><!-- omws__getLayerAsWcs::id -->
     </sequence>
    </complexType>
   </element>
@@ -228,7 +231,7 @@
   <element name="getLayerAsWcsResponse">
    <complexType>
     <sequence>
-     <element name="url" type="xsd:string" minOccurs="1" maxOccurs="1"/>
+     <element name="url" type="xsd:string" minOccurs="1" maxOccurs="1"/><!-- omws__getLayerAsWcs::url -->
     </sequence>
    </complexType>
   </element>
@@ -236,7 +239,7 @@
   <element name="getProjectionMetadata">
    <complexType>
     <sequence>
-     <element name="ticket" type="xsd:string" minOccurs="0" maxOccurs="1" nillable="true"/>
+     <element name="ticket" type="xsd:string" minOccurs="0" maxOccurs="1" nillable="true"/><!-- omws__getProjectionMetadata::ticket -->
     </sequence>
    </complexType>
   </element>
@@ -244,9 +247,9 @@
   <element name="getProjectionMetadataResponse">
    <complexType>
     <sequence>
-     <element ref="om:ProjectionEnvelope" minOccurs="0" maxOccurs="1" nillable="true"/>
+     <element ref="om:ProjectionEnvelope" minOccurs="0" maxOccurs="1"/><!-- omws__getProjectionMetadataResponse::om__ProjectionEnvelope -->
     </sequence>
-     <attribute name="FileSize" type="xsd:int" use="required"/>
+     <attribute name="FileSize" type="xsd:int" use="required"/><!-- omws__getProjectionMetadataResponse::FileSize -->
    </complexType>
   </element>
  </schema>
