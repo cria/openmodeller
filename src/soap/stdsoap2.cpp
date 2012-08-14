@@ -16155,7 +16155,7 @@ soap_sprint_fault(struct soap *soap, char *buf, size_t len)
       v = *soap_faultsubcode(soap);
     s = *soap_faultstring(soap);
     d = soap_check_faultdetail(soap);
-#ifdef HAVE_SNPRINTF
+#ifdef GSOAP_HAVE_SNPRINTF
 # ifdef WIN32
     _snprintf
 # else
