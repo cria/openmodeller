@@ -46,7 +46,7 @@ This document was originally prepared for the
 = How it works =
 
 The server implementation was developed using 
-[gSOAP http://gsoap2.sourceforge.net] v2.7 in a way that it can 
+[gSOAP http://gsoap2.sourceforge.net] v2.8.9 in a way that it can 
 run as a CGI application, a stand alone server (daemon) or a 
 multi-threaded server. However, in production it has only been 
 used as a CGI.

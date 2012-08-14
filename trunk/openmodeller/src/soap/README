@@ -2,7 +2,7 @@ OVERVIEW:
 ---------
 
 This SOAP interface was created to provide modelling services across
-the web. The server implementation is based on gSOAP v2.7
+the web. The server implementation is based on gSOAP v2.8.9
 (http://gsoap2.sourceforge.net) and has only been tested with
 GNU/Linux. The gSOAP library seems to be compliant with "Windows,
 Unix, Linux, Pocket PC, Mac OS X, TRU64, VxWorks, etc". However, parts
