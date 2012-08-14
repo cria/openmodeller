@@ -1,0 +1,44 @@
+
+
+
+
+%!target: html
+
+== CSM - Climate Space Model ==
+
+**Current version:** 0.3 **Developer(s):** Tim Sutton, Renato De Giovanni
+
+**Accepts categorical maps:** no
+**Needs absence points:** no
+
+**Author(s):** Neil Caithness
+
+=== Description ===
+
+Climate Space Model [CSM] is a principle components based algorithm developed by Dr. Neil Caithness. The component selection process int this algorithm implementation is based on the Broken-Stick cutoff where any component with an eigenvalue less than (n stddevs above a randomised sample) is discarded. The original CSM was written as series of Matlab functions.  
+
+**Parameters (4):**
+
+=== Number of random eigenvalues ===
+
+**Data type:** Integer **Domain:** [1, 1000] **Typical value:** 8
+
+**Meaning:** The Broken Stick method of selecting the number of components to keep is carried out by randomising the row order of each column in the environmental matrix and then obtaining the eigen value for the randomised matrix. This is repeatedly carried out for the amount of times specified by the user here.
+
+=== Number of standard deviations ===
+
+**Data type:** Real **Domain:** [-10, 10] **Typical value:** 2.0
+
+**Meaning:** When all the eigen values for the 'shuffled' environmental matrix have been summed this number of standard deviations is added to the mean of the eigen values. Any components whose eigen values are above this threshold are retained.  
+
+=== Minimum number of components in model ===
+
+**Data type:** Integer **Domain:** [1, 20] **Typical value:** 1
+
+**Meaning:** If not enough components are selected, the model produced will be erroneous or fail. Usually three or more components are acceptable.
+
+=== Show very detailed debugging info ===
+
+**Data type:** Integer **Domain:** [0, 1] **Typical value:** 0
+
+**Meaning:** Set this to 1 to show extremely verbose diagnostics. Set this to 0 to disable verbose diagnostics (this is default behaviour).

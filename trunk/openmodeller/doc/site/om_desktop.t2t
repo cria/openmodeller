@@ -1,0 +1,50 @@
+
+
+
+
+%!target: html
+
+== openModeller Desktop ==
+
+ | [oMDesktopOverview.jpg]
+
+The openModeller desktop graphical user interface provides a user friendly front end to the openModeller library. The program runs on both GNU/Linux and Windows (9x,ME,2k,NT,XP). In the future a Mac OSX  binary will also be available. There are two versions of the application.  
+
+The newer openModeller Desktop Version 1 is the version now under active development.  The older version of the application (openModeller Desktop Version 0) can be run as a standalone GUI application or as a plugin for [Quantum GIS http://www.qgis.org/]. 
+
+Below you will find more details on each version.
+
+openModeller Desktop Version 1
+
+Main Features
+
+- **A layerset manager.** This is for creating named collections of layers for use in modelling experiments. Having layers organised in named sets removes the tedium of repeatedly having to select layers from the file system for different model runs.
+
+- **An algorithm profile manager.** Algorithm profiles let you store the custom parameters you use for running models in a reusable way.
+
+- **An experiment designer.** The experiment designer allows you to set up an experiment consisting of multiple species and algorithm profiles.
+
+- **An experiment browser.** Once an experiment is completed the experiment browser presents the list of algorithm profiles and the species names in a tree view. Clicking on an item in the experiment tree shows a detailed report for that model. The report includes all the details of which algorithm was used, which parameters for the algorithm were changed, which layers were used, the model duration and so on.
+
+- **A map browser.** The map browser allows you to pan and zoom on the model's map image.
+
+- **Translations.** The openModeller Desktop application is available with Brazillian Portuguese and English translations.
+
+- **Modelling Plugins.** The actual modelling work is managed by plugins. This release includes a 'local' plugin that uses the recent 0.4.0 openModeller library release, and a 'web service' plugin that allows models to be run on a remote server.* 
+
+
+**Note:** The web service plugin is still considered experimental.
+
+=== Availability ===
+
+The software is available in source form (all platforms) and as a binary installer package for Microsoft Windows. In future releases we will make binaries available for Mac OSX and GNU/Linux. If you are an Ubuntu Linux user, [step by step http://openmodeller.cria.org.br/wikis/omgui/InstallFromScratchOnUbuntuDapper] instructions for building the application on your system are available. Visit the openModeller [download page http://sourceforge.net/project/showfiles.php?group_id=101808] to get the latest version of the application.  
+
+=== Tutorial Video ===
+
+A [tutorial video http://openmodeller.cria.org.br/images/openModellerDesktopVideoHighQuality.mpg] is available (~124mb!) which will help in getting started with openModeller Desktop.  
+
+=== openModeller Desktop '0' Wizard based version ===
+
+**(no longer maintained)** 
+
+The original version of the application (openModeller Desktop Version '0') can be run as a standalone GUI application or as a plugin for [Quantum GIS http://openmodeller.cria.org.br/images/openModellerDesktopVideoHighQuality.mpg]. The program takes the form of a 'Wizard', collecting information from the user via a number of screens. The selections made are saved between sessions thus streamlining the modelling process on subsequent occasions. Click on the thumbnail images below to view full size screen captures.  Alternatively, if you have a good internet connection, you may like to view the flash movie demo. The last available version of openModeller visit the download area. 

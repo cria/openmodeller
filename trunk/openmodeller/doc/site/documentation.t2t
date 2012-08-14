@@ -1,0 +1,50 @@
+
+
+
+
+%!target: html
+
+== Documentation ==
+
+Miscellaneous documents:
+
+- [Framework compilation guide http://openmodeller.sourceforge.net/INSTALL.html]
+- [How to add new algorithms http://openmodeller.sourceforge.net/alg_manual.html]
+- [openModeller Web Service interface (OMWS) http://openmodeller.sourceforge.net/web_service.html]
+- [openModeller server guide http://openmodeller.sourceforge.net/om_server.html]
+
+
+Framework API:
+
+- [version 1.2.0 http://openmodeller.cria.org.br/doxygen/1.2.0/]
+- [version 1.1.0 http://openmodeller.cria.org.br/doxygen/1.1.0/]
+- [version 1.0.0 http://openmodeller.cria.org.br/doxygen/1.0.0/]
+- [version 0.7.0 http://openmodeller.cria.org.br/doxygen/0.7.0/]
+- [version 0.6.1 http://openmodeller.cria.org.br/doxygen/0.6.1/]
+- [version 0.5.3 http://openmodeller.cria.org.br/doxygen/0.5.3/]
+- [version 0.4.2 http://openmodeller.cria.org.br/doxygen/0.4.2/]
+- [version 0.4.1 http://openmodeller.cria.org.br/doxygen/0.4.1/]
+- [version 0.4 http://openmodeller.cria.org.br/doxygen/0.4/]
+- [version 0.3.4 http://openmodeller.cria.org.br/doxygen/0.3.4/]
+- [version 0.3.1 http://openmodeller.cria.org.br/doxygen/0.3.1/]
+- [version 0.3 http://openmodeller.cria.org.br/doxygen/0.3/]
+- [version 0.2.1 http://openmodeller.cria.org.br/doxygen/0.2.1/]
+
+
+oM Desktop API:
+
+- [version 1.0.7 http://openmodeller.cria.org.br/doxygen/desktop/1.0.7/]
+
+
+Command line tools:
+
+- [om_algorithm http://openmodeller.cria.org.br/cmd/om_algorithm.html]
+- [om_console http://openmodeller.cria.org.br/cmd/om_console.html]
+- [om_model http://openmodeller.cria.org.br/cmd/om_model.html]
+- [om_niche http://openmodeller.cria.org.br/cmd/om_niche.html] (only for GNU/Linux with X11)
+- [om_points http://openmodeller.cria.org.br/cmd/om_points.html]
+- [om_project http://openmodeller.cria.org.br/cmd/om_project.html]
+- [om_pseudo http://openmodeller.cria.org.br/cmd/om_project.html]
+- [om_sampler http://openmodeller.cria.org.br/cmd/om_sampler.html]
+- [om_test http://openmodeller.cria.org.br/cmd/om_test.html]
+- [om_viewer http://openmodeller.sourceforge.net/index.php?option=com_content&task=view&id=28&Itemid=11] (only for GNU/Linux with X11)
