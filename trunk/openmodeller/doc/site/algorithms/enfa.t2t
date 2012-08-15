@@ -3,6 +3,9 @@
 
 
 %!target: html
+%!postproc(html): bb [
+%!postproc(html): bB ]
+
 
 == ENFA - Ecological-Niche Factor Analysis ==
 
@@ -42,7 +45,7 @@ data.
 
 === Method for discarding components ===
 
-**Data type:** Integer **Domain:** [0, 2] **Typical value:** 2
+**Data type:** Integer **Domain:** bb0, 2bB **Typical value:** 2
 
 **Meaning:**
 
@@ -60,13 +63,13 @@ data.
 
 === Percent varition for component retention ===
 
-**Data type:** Integer **Domain:** [0.5, 1] **Typical value:** 0.75
+**Data type:** Integer **Domain:** bb0.5, 1bB **Typical value:** 0.75
 
 **Meaning:** If the Discard_method=1, then this variable is used to determine the number of components to retain, by taking those components that cumulatively account for at least this much variation.
 
 === Verbose printing for debugging ===
 
-**Data type:** Integer **Domain:** [0, 1] **Typical value:** 0
+**Data type:** Integer **Domain:** bb0, 1bB **Typical value:** 0
 
 -----------------------
 

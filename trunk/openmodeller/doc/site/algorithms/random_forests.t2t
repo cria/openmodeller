@@ -3,6 +3,8 @@
 
 
 %!target: html
+%!postproc(html): bb [
+%!postproc(html): bB ]
 
 == Random Forests ==
 
@@ -25,7 +27,7 @@ Random Forests
 
 === Number of trees ===
 
-**Data type:** Integer **Domain:** [1, 1000] **Typical value:** 10
+**Data type:** Integer **Domain:** bb1, 1000bB **Typical value:** 10
 
 **Meaning:** Number of trees
 
@@ -37,7 +39,7 @@ Random Forests
 
 === Force unsupervised learning ===
 
-**Data type:** Integer **Domain:** [0, 1] **Typical value:** 0
+**Data type:** Integer **Domain:** bb0, 1bB **Typical value:** 0
 
 **Meaning:** When absence points are provided, this parameter can be used to ignore them forcing unsupervised learning. Note that if no absences are provided, unsupervised learning will be used anyway.  
 
