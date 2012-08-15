@@ -3,6 +3,8 @@
 
 
 %!target: html
+%!postproc(html): bb [
+%!postproc(html): bB ]
 
 == GARP - Genetic Algorithm for Rule-set Production ==
 
@@ -31,19 +33,19 @@ GARP is a genetic algorithm that creates ecological niche models for species. Th
 
 === Convergence limit ===
 
-**Data type:** Real **Domain:** [0, 1] **Typical value:** 0.01
+**Data type:** Real **Domain:** bb0, 1bB **Typical value:** 0.01
 
 **Meaning:** Defines the convergence value that makes the algorithm stop (before reaching MaxGenerations).
 
 === Population size ===
 
-**Data type:** Integer **Domain:** [1, 500] **Typical value:** 50
+**Data type:** Integer **Domain:** bb1, 500bB **Typical value:** 50
 
 **Meaning:** Maximum number of rules to be kept in solution.
 
 === Resamples ===
 
-**Data type:** Integer **Domain:** [1, 100000] **Typical value:** 2500
+**Data type:** Integer **Domain:** bb1, 100000bB **Typical value:** 2500
 
 **Meaning:** Number of points sampled (with replacement) used to test rules.
 

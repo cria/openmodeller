@@ -4,15 +4,17 @@
 
 %!target: html
 %!postproc(html): @@ <BR>
+%!postproc(html): bb [
+%!postproc(html): bB ]
 
 = ANN - Artificial Neural Networks =
 
-**Current version:**  0.1 **Developer(s)**:  Alex Oshika Avilla, Fabricio Augusto Rodrigues
+**Current version:** 0.1 **Developer(s)**: Alex Oshika Avilla, Fabricio Augusto Rodrigues
 
 **Accepts categorical maps:** no @@
 **Needs absence points:** no
 
-**Author(s):**  Chopra, Paras, modified by Alex Oshika Avilla and Fabrício Augusto Rodrigues
+**Author(s):** Chopra, Paras, modified by Alex Oshika Avilla and Fabrício Augusto Rodrigues
 
 === Description ===
 
@@ -28,32 +30,32 @@ An artificial neural network (ANN), also called a simulated neural network (SNN)
 
 === Learning Rate ===
 
-**Data type:** Real **Domain:** [0, 1] **Typical value:** 0.3
+**Data type:** Real **Domain:** bb0, 1bB **Typical value:** 0.3
 
 Meaning: Learning Rate. Training parameter that controls the size of
 weight and bias changes during learning.
 
 === Momentum ===
 
-**Data type:** Real **Domain:** [0, 1] **Typical value:** 0.05
+**Data type:** Real **Domain:** bb0, 1bB **Typical value:** 0.05
 
 **Meaning:** Momentum simply adds a fraction m of the previous weight update to the current one. The momentum parameter is used to prevent the system from converging to a local minimum or saddle point. A high momentum parameter can also help to increase the speed of convergence of the system. However, setting the momentum parameter too high can create a risk of overshooting the minimum, which can cause the system to become unstable. A momentum coefficient that is too low cannot reliably avoid local minima, and can also slow down the training of the system.
 
 === Training type ===
 
-**Data type:** Integer **Domain:** [0, 1] **Typical value:** 1
+**Data type:** Integer **Domain:** bb0, 1bB **Typical value:** 1
 
 **Meaning:** 0 = train by epoch, 1 = train by minimum error
 
 === Epoch ===
 
-**Data type:** Integer **Domain:** [1, oo) **Typical value:** 5000000
+**Data type:** Integer **Domain:** bb1, oobB **Typical value:** 5000000
 
 **Meaning:** Determines when training will stop once the number of iterations exceeds epochs. When training by minimum error, this represents the maximum number of iterations.
 
 === Minimun Error ===
 
-**Data type:** Real **Domain:** [0, 0.5] **Typical value:** 0.01
+**Data type:** Real **Domain:** bb0, 0.5bB **Typical value:** 0.01
 
 **Meaning:** Minimum mean square error of the epoch. Square root of the sum of squared differences between the network targets and actual outputs divided by number of patterns (only for training by minimum error).
 

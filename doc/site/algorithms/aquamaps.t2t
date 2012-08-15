@@ -3,8 +3,8 @@
 
 
 %!target: html
-%!postproc(html): \[ [
-%!postproc(html): \] ]
+%!postproc(html): bb [
+%!postproc(html): bB ]
 
 == AquaMaps ==
 **Current version:** 0.3 **Developer(s):** Renato De Giovanni
@@ -26,7 +26,7 @@ AquaMaps is a niche modelling tool developed as part of the Incofish project and
 
 === Use surface layers (only for temperature and salinity) ===
 
-**Data type:** Integer **Domain:** \[ -1, 1 \] **Typical value:** -1
+**Data type:** Integer **Domain:** bb-1, 1bB **Typical value:** -1
 
 **Meaning:** Use surface layers (1=yes, 0=no, -1=let the algorithm decide).
 By default (-1), aquamaps will try to find the species' depth range in
@@ -37,37 +37,37 @@ aquamaps to use surface or bottom layers.
 
 === Use depth range ===
 
-**Data type:** Integer **Domain:** [0, 1] **Typical value:** 1
+**Data type:** Integer **Domain:** bb0, 1bB **Typical value:** 1
 
 **Meaning:** Use depth range provided by experts (if available) when
 calculating probabilities
 
 === Use ice concentration ===
 
-**Data type:** Integer **Domain:** [0, 1] **Typical value:** 1
+**Data type:** Integer **Domain:** bb0, 1bB **Typical value:** 1
 
 **Meaning:** Use ice concentration when calculating probabilities
 
 === Use distance to land ===
 
-**Data type:** Integer **Domain:** [0, 1] **Typical value:** 0
+**Data type:** Integer **Domain:** bb0, 1bB **Typical value:** 0
 
 **Meaning:** Use distance to land envelope when calculating probabilities
 
 === Use primary production ===
 
-**Data type:** Integer **Domain:** [0, 1] **Typical value:** 1
+**Data type:** Integer **Domain:** bb0, 1bB **Typical value:** 1
 
 **Meaning:** Use primary production envelope when calculating probabilities
 
 === Use salinity ===
 
-**Data type:** Integer **Domain:** [0, 1] **Typical value:** 1
+**Data type:** Integer **Domain:** bb0, 1bB **Typical value:** 1
 
 **Meaning:** Use salinity envelope when calculating probabilities
 
 === Use temperature ===
 
-**Data type:** Integer **Domain:** [0, 1] **Typical value:** 1
+**Data type:** Integer **Domain:** bb0, 1bB **Typical value:** 1
 
 **Meaning:** Use temperature envelope when calculating probabilities

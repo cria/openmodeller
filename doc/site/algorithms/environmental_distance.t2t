@@ -3,6 +3,8 @@
 
 
 %!target: html
+%!postproc(html): bb [
+%!postproc(html): bB ]
 
 == Environmental Distance ==
 
@@ -25,7 +27,7 @@ Generic algorithm based on environmental dissimilarity metrics. When used with t
 
 === Metric ===
 
-**Data type:** Integer **Domain:** [1, 4] **Typical value:** 1
+**Data type:** Integer **Domain:** bb1, 4bB **Typical value:** 1
 
 **Meaning:** Metric used to calculate distances: 1=Euclidean, 2=Mahalanobis, 3=Manhattan/Gower, 4=Chebyshev
 
@@ -37,7 +39,7 @@ Generic algorithm based on environmental dissimilarity metrics. When used with t
 
 === Maximum distance ===
 
-**Data type:** Real **Domain:** [0, 1] **Typical value:** 0.1
+**Data type:** Real **Domain:** bb0, 1bB **Typical value:** 0.1
 
 **Meaning:** Maximum distance to the reference in the environmental space, above which the conditions will be considered unsuitable for presence.  Since 1 corresponds to the biggest possible distance between any two points in the environment space, setting the maximum distance to this value means that all points in the environmental space will have an associated probability. The probability of presence for points that fall within the range of the maximum distance is inversely proportional to the distance to the reference point (linear decay).
 

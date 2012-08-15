@@ -3,6 +3,8 @@
 
 
 %!target: html
+%!postproc(html): bb [
+%!postproc(html): bB ]
 
 == SVM - Support Vector Machines ==
 
@@ -25,19 +27,19 @@ Support vector machines map input vectors to a higher dimensional space where a 
 
 === SVM type ===
 
-**Data type:** Integer **Domain:** [0, 2] **Typical value:** 0
+**Data type:** Integer **Domain:** bb0, 2bB **Typical value:** 0
 
 **Meaning:** Type of SVM: 0 = C-SVC, 1 = Nu-SVC, 2 = one-class SVM
 
 === Kernel type ===
 
-**Data type:** Integer **Domain:** [0, 4] **Typical value:** 2
+**Data type:** Integer **Domain:** bb0, 4bB **Typical value:** 2
 
 **Meaning:** Type of kernel function: 0 = linear: u'*v , 1 = polynomial: (gamma*u'*v + coef0)^degree , 2 = radial basis function: exp(-gamma*|u-v|^2)
 
 === Degree ===
 
-**Data type:** Integer **Domain:** [0, oo) **Typical value:** 3
+**Data type:** Integer **Domain:** bb0, oo) **Typical value:** 3
 
 **Meaning:** Degree in kernel function (only for polynomial kernels).
 
@@ -63,13 +65,13 @@ where k is the number of layers.
 
 === Nu ===
 
-**Data type:** Double **Domain:** [0.001, 1] **Typical value:** 0.5
+**Data type:** Double **Domain:** bb0.001, 1bB **Typical value:** 0.5
 
 **Meaning:** Nu (only for Nu-SVC).
 
 === Probabilistic output ===
 
-**Data type:** Integer **Domain:** [0, 1] **Typical value:** 1
+**Data type:** Integer **Domain:** bb0, 1bB **Typical value:** 1
 
 **Meaning:** Indicates if the output should be a probability instead of a
 binary response (only available for C-SVC and Nu-SVC).
