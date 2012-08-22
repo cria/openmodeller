@@ -92,7 +92,7 @@ with the significance level of 0.05."; }
     void getLayerResultSpec ( stringMap& info);
 
     //initialize attributes: num_points, num_layers, nclass, minimum, delta, my_presences.
-    void init();
+    bool init();
 
     //get number of points.
     size_t getNpoints();
