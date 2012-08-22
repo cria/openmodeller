@@ -121,7 +121,7 @@ PreChiSquare::getLayerResultSpec ( stringMap& info)
 	info["number of correlated layers"] = "int";
 }
 
-void 
+bool 
 PreChiSquare::init()
 {
   SamplerPtr samplerPtr;
@@ -139,8 +139,10 @@ PreChiSquare::init()
   if (nclass > classLimit)
   {
     Log::instance()->error( "ChiSquare: measured, expected, chicell: number of class > %d\n", classLimit );
-    exit(0);	
+    return false;
   }
+
+  return true;
 }
 
 size_t
