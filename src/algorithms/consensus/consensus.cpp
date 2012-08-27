@@ -26,18 +26,90 @@
 
 #include "consensus.hh"
 
+#include <string>
+#include <algorithm>
+#include <sstream>
+
+using namespace std;
+
 /****************************************************************/
 /********************** Algorithm's Metadata ********************/
 
-#define NUM_PARAM 0
+#define NUM_PARAM 5
 
 #define CONSENSUS_LOG_PREFIX "Consensus: "
 
 /******************************/
 /*** Algorithm's parameters ***/
 
-//static AlgParamMetadata parameters[NUM_PARAM] = {};
-
+static AlgParamMetadata parameters[NUM_PARAM] = {
+  
+  // Algorithm 1
+  {
+    "Alg1",       // Id.
+    "Algorithm1", // Name.
+    String,       // Type.
+    "Algorithm 1", // Overview
+    "First algorithm to be used in the consensus. It must be specified by its id followed by a sequence of parameter_name=parameter_value separated by comma and enclosed by a parentheses, such as: RF(NumTrees=10,VarsPerTree=0,ForceUnsupervisedLearning=0). Existing algorithm ids and parameter names can be found in the end of the om_console request file that comes with the openModeller command line interface.", // Description.
+    0,      // Not zero if the parameter has lower limit.
+    0,      // Parameter's lower limit.
+    0,      // Not zero if the parameter has upper limit.
+    0,      // Parameter's upper limit.
+    "RF(NumTrees=10,VarsPerTree=0,ForceUnsupervisedLearning=1)" // Parameter's typical (default) value.
+  },
+  // Algorithm 2
+  {
+    "Alg2",       // Id.
+    "Algorithm2", // Name.
+    String,       // Type.
+    "Algorithm 2", // Overview
+    "Second algorithm to be used in the consensus. It must be specified by its id followed by a sequence of parameter_name=parameter_value separated by comma and enclosed by a parentheses, such as: RF(NumTrees=10,VarsPerTree=0,ForceUnsupervisedLearning=0). Existing algorithm ids and parameter names can be found in the end of the om_console request file that comes with the openModeller command line interface. Leave empty if you don't want to use any further algorithms", // Description.
+    0,      // Not zero if the parameter has lower limit.
+    0,      // Parameter's lower limit.
+    0,      // Not zero if the parameter has upper limit.
+    0,      // Parameter's upper limit.
+    "BIOCLIM(StandardDeviationCutoff=0.674)" // Parameter's typical (default) value.
+  },
+  // Algorithm 3
+  {
+    "Alg3",       // Id.
+    "Algorithm3", // Name.
+    String,       // Type.
+    "Algorithm 3", // Overview
+    "Third algorithm to be used in the consensus. It must be specified by its id followed by a sequence of parameter_name=parameter_value separated by comma and enclosed by a parentheses, such as: RF(NumTrees=10,VarsPerTree=0,ForceUnsupervisedLearning=0). Existing algorithm ids and parameter names can be found in the end of the om_console request file that comes with the openModeller command line interface. Leave empty if you don't want to use any further algorithms", // Description.
+    0,      // Not zero if the parameter has lower limit.
+    0,      // Parameter's lower limit.
+    0,      // Not zero if the parameter has upper limit.
+    0,      // Parameter's upper limit.
+    "ENVSCORE" // Parameter's typical (default) value.
+  },
+  // Algorithm 4
+  {
+    "Alg4",       // Id.
+    "Algorithm4", // Name.
+    String,       // Type.
+    "Algorithm 4", // Overview
+    "Fourth algorithm to be used in the consensus. It must be specified by its id followed by a sequence of parameter_name=parameter_value separated by comma and enclosed by a parentheses, such as: RF(NumTrees=10,VarsPerTree=0,ForceUnsupervisedLearning=0). Existing algorithm ids and parameter names can be found in the end of the om_console request file that comes with the openModeller command line interface. Leave empty if you don't want to use any further algorithms", // Description.
+    0,      // Not zero if the parameter has lower limit.
+    0,      // Parameter's lower limit.
+    0,      // Not zero if the parameter has upper limit.
+    0,      // Parameter's upper limit.
+    "" // Parameter's typical (default) value.
+  },
+  // Algorithm 5
+  {
+    "Alg5",       // Id.
+    "Algorithm5", // Name.
+    String,       // Type.
+    "Algorithm 5", // Overview
+    "Fifth algorithm to be used in the consensus. It must be specified by its id followed by a sequence of parameter_name=parameter_value separated by comma and enclosed by a parentheses, such as: RF(NumTrees=10,VarsPerTree=0,ForceUnsupervisedLearning=0). Existing algorithm ids and parameter names can be found in the end of the om_console request file that comes with the openModeller command line interface. Leave empty if you don't want to use any further algorithms", // Description.
+    0,      // Not zero if the parameter has lower limit.
+    0,      // Parameter's lower limit.
+    0,      // Not zero if the parameter has upper limit.
+    0,      // Parameter's upper limit.
+    "" // Parameter's typical (default) value.
+  },
+};
 
 /************************************/
 /*** Algorithm's general metadata ***/
@@ -63,7 +135,8 @@ static AlgMetadata metadata = {
   0, // Does not accept categorical data.
   0, // Does not need (pseudo)absence points.
 
-  NUM_PARAM // Algorithm's parameters.
+  NUM_PARAM, // Algorithm's parameters.
+  parameters
 };
 
 /****************************************************************/
@@ -124,8 +197,135 @@ int ConsensusAlgorithm::needNormalization()
 int
 ConsensusAlgorithm::initialize()
 {
-  Log::instance()->error( CONSENSUS_LOG_PREFIX "This algorithm is still not prepared to run interactively. It only works by loading an existing serialized model.\n" );
-  return 0;
+  std::string alg;
+
+  if ( getParameter( "Alg1", &alg ) ) {
+
+    if ( !_setAlgorithm( alg ) ) return 0;
+  }
+
+  if ( getParameter( "Alg2", &alg ) ) {
+
+    if ( !_setAlgorithm( alg ) ) return 0;
+  }
+
+  if ( getParameter( "Alg3", &alg ) ) {
+
+    if ( !_setAlgorithm( alg ) ) return 0;
+  }
+
+  if ( getParameter( "Alg4", &alg ) ) {
+
+    if ( !_setAlgorithm( alg ) ) return 0;
+  }
+
+  if ( getParameter( "Alg5", &alg ) ) {
+
+    if ( !_setAlgorithm( alg ) ) return 0;
+  }
+
+  if ( _algs.size() == 0 ) {
+
+    Log::instance()->error( CONSENSUS_LOG_PREFIX "Consensus needs at least one algorithm. No algorithm could be instantiated based on the parameters.\n" );
+    return 0;
+  }
+
+  return 1;
+}
+
+/*********************/
+/*** set Algorithm ***/
+bool
+ConsensusAlgorithm::_setAlgorithm( std::string alg_str )
+{
+  // Remove spaces
+  alg_str.erase( std::remove_if( alg_str.begin(), alg_str.end(), ::isspace ), alg_str.end() );
+
+  if ( alg_str.size() == 0 ) {
+
+    // Empty alg. Do nothing.
+    return true;
+  }
+
+  size_t ini_p = alg_str.find( "(" );
+
+  // No parentheses
+  if ( ini_p == string::npos ) {
+
+    // means no parameters, so just instantiate the algorithm
+    AlgorithmPtr alg = AlgorithmFactory::newAlgorithm( alg_str );
+
+    _algs.push_back( alg );
+
+    return true;
+  }
+
+  // There are parentheses
+
+  // extract ID
+  std::string alg_id = alg_str.substr(0, ini_p);
+
+  Log::instance()->info( CONSENSUS_LOG_PREFIX "ID is %s\n", alg_id.c_str() );
+
+  // get parameters
+  size_t end_p = alg_str.find( ")" );
+
+  if ( end_p == string::npos ) {
+
+    Log::instance()->error( CONSENSUS_LOG_PREFIX "Missing parenthesis in algorithm parameters.\n" );
+    return false;
+  }
+  else if ( end_p < ini_p ) {
+
+    Log::instance()->error( CONSENSUS_LOG_PREFIX "Mismatching parenthesis in algoroithm parameters.\n" );
+    return false;
+  }
+
+  std::string alg_params = alg_str.substr(ini_p + 1, end_p - ini_p -1);
+
+  Log::instance()->info( CONSENSUS_LOG_PREFIX "PARAMS is %s\n", alg_params.c_str() );
+
+  vector<string> pairs;
+  stringstream ss(alg_params);
+  string pair;
+  int nparam = 0;
+  while ( getline(ss, pair, ',') ) {
+
+    pairs.push_back(pair);
+    ++nparam;
+  }
+
+  AlgParameter *param = new AlgParameter[nparam];
+
+  for ( int i = 0; i < nparam; i++, param++) {
+
+    size_t eq = pairs[i].find( "=" );
+
+    if ( eq == string::npos or eq == 0 ) {
+
+      Log::instance()->error( CONSENSUS_LOG_PREFIX "Algorithm parameter failed to match key=value pair format.\n" );
+      delete[] param;
+      return false;
+    }
+
+    std::string param_id = pairs[i].substr(0, eq);
+    std::string param_val = pairs[i].substr(eq+1);
+
+    param->setId( param_id );
+    param->setValue( param_val.c_str() );
+
+    Log::instance()->info( CONSENSUS_LOG_PREFIX "Setting %s = %s\n", param_id.c_str(), param_val.c_str() );
+  }
+
+  AlgorithmPtr alg = AlgorithmFactory::newAlgorithm( alg_id );
+
+  alg->setParameters( nparam, param );
+
+  _algs.push_back( alg );
+
+  delete[] param;
+
+  return true;
 }
 
 /***************/
