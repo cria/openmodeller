@@ -28,6 +28,8 @@
 #define _CONSENSUS_ALGHH_
 
 #include <vector>
+#include <string>
+
 #include <openmodeller/om.hh>
 
 /**********************************************/
@@ -58,6 +60,8 @@ protected:
   void _getConfiguration( ConfigurationPtr& ) const;
 
   void _setConfiguration( const ConstConfigurationPtr& );
+
+  bool _setAlgorithm( std::string alg_str );
 
   bool _done;
 

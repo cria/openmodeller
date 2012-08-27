@@ -16,7 +16,7 @@ ENDIF (WIN32)
 
 ########################################################
 # Subdirectories
-SUBDIRS(best_subsets garp dg_garp svm neural_networks maxent rf)
+SUBDIRS(best_subsets garp dg_garp svm neural_networks maxent rf consensus)
 
 if (GSL_FOUND)
    SUBDIRS(enfa)
