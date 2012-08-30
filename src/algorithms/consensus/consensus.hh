@@ -72,7 +72,8 @@ protected:
   Sample _thresholds;
 
   vector<AlgorithmPtr> _algs;
-  vector<Normalizer*> _norms;
+
+  int _agreement;
 };
 
 

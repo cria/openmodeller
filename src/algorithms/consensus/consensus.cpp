@@ -35,7 +35,8 @@ using namespace std;
 /****************************************************************/
 /********************** Algorithm's Metadata ********************/
 
-#define NUM_PARAM 5
+#define NUM_PARAM 7
+#define MAX_ALGORITHMS 5
 
 #define CONSENSUS_LOG_PREFIX "Consensus: "
 
@@ -109,6 +110,32 @@ static AlgParamMetadata parameters[NUM_PARAM] = {
     0,      // Parameter's upper limit.
     "" // Parameter's typical (default) value.
   },
+  // Weigths
+  {
+    "Weights", // Id.
+    "Weights", // Name.
+    String,    // Type.
+    "Weights", // Overview
+    "Sequence of weights, each one related to the corresponding algorithm, separated by space. This can be used to give more importance to certain algorithms. Use dot as decimal separator.", // Description.
+    0,      // Not zero if the parameter has lower limit.
+    0,      // Parameter's lower limit.
+    0,      // Not zero if the parameter has upper limit.
+    0,      // Parameter's upper limit.
+    "1.0 1.0 1.0 0.0 0.0" // Parameter's typical (default) value.
+  },
+  // Minimum level of agreement
+  {
+    "Agreement", // Id.
+    "Agreement", // Name.
+    Integer,     // Type.
+    "Minimum level of agreement", // Overview
+    "Minimum level of agreement between the algorithms. Only predictions that are agreed between the specified number of algorithms will be returned as a positive value.", // Description.
+    1,      // Not zero if the parameter has lower limit.
+    1,      // Parameter's lower limit.
+    1,      // Not zero if the parameter has upper limit.
+    5,      // Parameter's upper limit.
+    "2" // Parameter's typical (default) value.
+  },
 };
 
 /************************************/
@@ -176,13 +203,6 @@ ConsensusAlgorithm::ConsensusAlgorithm() :
 
 ConsensusAlgorithm::~ConsensusAlgorithm()
 {
-  for ( int i=0; i < (int)_algs.size(); i++ ) {
-
-    if ( _norms[i] ) {
-
-      delete _norms[i];
-    }
-  }
 }
 
 /**************************/
@@ -228,6 +248,68 @@ ConsensusAlgorithm::initialize()
 
     Log::instance()->error( CONSENSUS_LOG_PREFIX "Consensus needs at least one algorithm. No algorithm could be instantiated based on the parameters.\n" );
     return 0;
+  }
+
+  _thresholds = Sample(MAX_ALGORITHMS, 1.0); // start with maximum threshold
+
+  _weights.resize(MAX_ALGORITHMS);
+
+  std::string weights_param;
+
+  int nw = 0;
+
+  _sum_weights = 0.0;
+
+  if ( getParameter( "Weights", &weights_param ) ) {
+
+    stringstream ss(weights_param);
+    string weight;
+    double weight_val;
+    while ( getline(ss, weight, ' ') ) {
+
+      weight_val = 1.0;
+      sscanf( weight.c_str(), "%lf", &weight_val );
+      _weights[nw] = weight_val;
+      _sum_weights += weight_val;
+      ++nw;
+
+      if ( nw == MAX_ALGORITHMS ) {
+        break;
+      }
+    }
+  }
+
+  for ( int i=nw; i < MAX_ALGORITHMS; ++i ) {
+
+    _weights[i] = 1.0;
+    _sum_weights += 1.0;
+  }
+
+  _thresholds.resize(MAX_ALGORITHMS);
+
+  if ( ! getParameter( "Agreement", &_agreement ) ) {
+
+    _agreement = 2; // default value
+  }
+  else {
+
+    if ( _agreement < 1 || _agreement > MAX_ALGORITHMS ) {
+
+      _agreement = 2;
+    }
+  }
+
+  for ( int j=0; j < (int)_algs.size(); j++ ) {
+
+    SamplerPtr fresh_sampler = _samp->clone();
+
+    if ( _algs[j]->needNormalization() ) {
+
+      fresh_sampler->normalize( _algs[j]->getNormalizer() );
+    }
+
+    _algs[j]->setSampler( fresh_sampler );
+    _algs[j]->initialize();
   }
 
   return 1;
@@ -333,6 +415,58 @@ ConsensusAlgorithm::_setAlgorithm( std::string alg_str )
 int
 ConsensusAlgorithm::iterate()
 {
+  _done = true;
+
+  for ( int j=0; j < (int)_algs.size(); j++ ) {
+
+    if ( ! _algs[j]->done() ) {
+
+      _done = false;
+
+      if ( ! _algs[j]->iterate() ) {
+
+        return 0;
+      }
+    }
+  }
+
+  // get LPT
+  if ( _done ) {
+
+    OccurrencesPtr presences = _samp->getPresences();
+
+    OccurrencesImpl::const_iterator p_iterator;
+    OccurrencesImpl::const_iterator p_end;
+
+    Scalar val;
+
+    while ( p_iterator != p_end ) {
+
+      Sample env = (*p_iterator)->environment();
+
+      for ( int j=0; j < (int)_algs.size(); j++ ) {
+
+        if ( _algs[j]->needNormalization() ) {
+
+          Sample mysamp = Sample( env ); // deep copy
+          _algs[j]->getNormalizer()->normalize( &mysamp );
+          val = _algs[j]->getValue( mysamp );
+        }
+        else {
+
+          val = _algs[j]->getValue( env );
+	}
+
+        if ( val < _thresholds[j] && val > 0.0 ) {
+
+          _thresholds[j] = val;
+        }
+      }
+
+      ++p_iterator;
+    }
+  }
+
   return 1;
 }
 
@@ -340,7 +474,14 @@ ConsensusAlgorithm::iterate()
 /*** get Progress ***/
 float ConsensusAlgorithm::getProgress() const
 {
-  return 1.0;
+  float progress = 0.0;
+
+  for ( int j=0; j < (int)_algs.size(); j++ ) {
+
+    progress += _algs[j]->getProgress();
+  }
+
+  return progress/(float)_algs.size();
 }
 
 
@@ -359,22 +500,29 @@ ConsensusAlgorithm::getValue( const Sample& x ) const
 {
   Scalar prob = 0.0;
   Scalar v;
+  int agree = 0;
 
   for ( int i=0; i < (int)_algs.size(); i++ ) {
 
     Sample y( x );
 
-    if ( _norms[i] ) {
+    if ( _algs[i]->needNormalization() ) {
 
-      _norms[i]->normalize( &y );
+      _algs[i]->getNormalizer()->normalize( &y );
     }
 
     v = _algs[i]->getValue( x );
 
     if ( v >= _thresholds[i] ) {
 
-      prob +=  v * _weights[i];
+      prob +=  1.0 * _weights[i];
+      agree++;
     }
+  }
+
+  if ( agree < _agreement ) {
+
+    return 0.0;
   }
 
   return prob/_sum_weights;
@@ -400,6 +548,8 @@ ConsensusAlgorithm::_getConfiguration( ConfigurationPtr& config ) const
   ConfigurationPtr model_config( new ConfigurationImpl("Consensus") );
   config->addSubsection( model_config );
 
+  model_config->addNameValue( "Agreement", _agreement );
+
   model_config->addNameValue( "Weights", _weights );
 
   model_config->addNameValue( "Thresholds", _thresholds );
@@ -421,6 +571,8 @@ ConsensusAlgorithm::_setConfiguration( const ConstConfigurationPtr& config )
 
   if ( ! model_config )
     return;
+
+  _agreement = model_config->getAttributeAsInt( "Agreement", 2 );
 
   _weights = model_config->getAttributeAsSample( "Weights" );
 
@@ -454,7 +606,6 @@ ConsensusAlgorithm::_setConfiguration( const ConstConfigurationPtr& config )
       AlgorithmPtr alg = AlgorithmFactory::newAlgorithm( subelement );
 
       _algs.push_back( alg );
-      _norms.push_back( alg->getNormalizer() );
     }
   }
 
