@@ -284,7 +284,7 @@ Scalar Csm::getValue( const Sample& x ) const
 {
 
   float myFloat;
-  bool myAllAreZeroFlag=true;
+  //bool myAllAreZeroFlag=true;
   //first thing we do is convert the oM primitive env value array to a gsl matrix
   //with only one row so we can do matrix multplication with it
   gsl_matrix * tmp_gsl_matrix = gsl_matrix_alloc (1,_layer_count);
@@ -294,10 +294,10 @@ Scalar Csm::getValue( const Sample& x ) const
     myFloat = static_cast<float>(x[i]);
     gsl_matrix_set (tmp_raw_gsl_matrix,0,i,myFloat);
 
-    if (myFloat!=0)
-    {
-      myAllAreZeroFlag=false;
-    }
+    //if (myFloat!=0)
+    //{
+    //  myAllAreZeroFlag=false;
+    //}
     //Log::instance()->debug( "myFloat = %f\n", myFloat );
     //get the stddev and mean for this column
     float myAverage = (float)gsl_vector_get (_gsl_avg_vector,i);
