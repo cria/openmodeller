@@ -148,10 +148,10 @@ static AlgMetadata metadata = {
   "0.1",       	// Version.
 
   // Overview
-  "Consensus",
+  "Builds a consensus model with the specified algorithms",
 
   // Description.
-  "Consensus",
+  "This is a kind of meta algorithm that receives other algorithms as parameters so that it can generate the individual models and then merge the results into an aggregated model. The maximum number of algorithms is limited to 5. Leave the algorithm parameter blank if you want to use fewer algorithms. IMPORTANT: To specify an algorithm you need to know the algorithm id and its parameters names in openModeller (you can do this by inspecting the request.txt file that comes as an exemple in the command-line interface). Before merging the models, each individual model is transformed into a binary model using the lowest presence threshold. You can assign different weights to each algorithm and also specify the minimum level of agreement between the algorithms. A minimum level of 3 when 5 algorithms are used means that, when less than 3 algorithms agree on a prediction, the result will be zero, so the final model only shows areas where the specified number of algorithms agree on the prediction.",
 
   "", // Algorithm author.
   "", // Bibliography.
