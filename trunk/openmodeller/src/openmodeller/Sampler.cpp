@@ -900,6 +900,32 @@ SamplerImpl::getRandomOccurrence( const OccurrencesPtr& occur ) const
 }
 
 
+/*************/
+/*** clone ***/
+SamplerPtr
+SamplerImpl::clone() const
+{
+  OccurrencesPtr presences;
+  OccurrencesPtr absences;
+
+  if ( numPresence() ) {
+
+    presences = _presence->clone();
+  }
+
+  if ( numAbsence() ) {
+
+    absences = _absence->clone();
+  }
+
+  EnvironmentPtr environment = _env->clone();
+
+  SamplerPtr fresh_sampler = createSampler( environment, presences, absences );
+
+  return fresh_sampler;
+}
+
+
 /************/
 /*** dump ***/
 void
