@@ -226,6 +226,8 @@ public:
    */
   bool isSpatiallyUnique( const OccurrencesPtr& occurrences, const OccurrencePtr& point ) const;
 
+  SamplerPtr clone() const;
+
   ConfigurationPtr getConfiguration() const;
 
   void setConfiguration ( const ConstConfigurationPtr& );
