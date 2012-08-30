@@ -347,8 +347,6 @@ ConsensusAlgorithm::_setAlgorithm( std::string alg_str )
   // extract ID
   std::string alg_id = alg_str.substr(0, ini_p);
 
-  Log::instance()->info( CONSENSUS_LOG_PREFIX "ID is %s\n", alg_id.c_str() );
-
   // get parameters
   size_t end_p = alg_str.find( ")" );
 
@@ -365,8 +363,6 @@ ConsensusAlgorithm::_setAlgorithm( std::string alg_str )
 
   std::string alg_params = alg_str.substr(ini_p + 1, end_p - ini_p -1);
 
-  Log::instance()->info( CONSENSUS_LOG_PREFIX "PARAMS is %s\n", alg_params.c_str() );
-
   vector<string> pairs;
   stringstream ss(alg_params);
   string pair;
@@ -377,35 +373,29 @@ ConsensusAlgorithm::_setAlgorithm( std::string alg_str )
     ++nparam;
   }
 
-  AlgParameter *param = new AlgParameter[nparam];
+  ParamSetType params;
 
-  for ( int i = 0; i < nparam; i++, param++) {
+  for ( int i = 0; i < nparam; i++) {
 
     size_t eq = pairs[i].find( "=" );
 
     if ( eq == string::npos or eq == 0 ) {
 
       Log::instance()->error( CONSENSUS_LOG_PREFIX "Algorithm parameter failed to match key=value pair format.\n" );
-      delete[] param;
       return false;
     }
 
     std::string param_id = pairs[i].substr(0, eq);
     std::string param_val = pairs[i].substr(eq+1);
 
-    param->setId( param_id );
-    param->setValue( param_val.c_str() );
-
-    Log::instance()->info( CONSENSUS_LOG_PREFIX "Setting %s = %s\n", param_id.c_str(), param_val.c_str() );
+    params.insert( std::pair<icstring,std::string>(param_id, param_val) );
   }
 
   AlgorithmPtr alg = AlgorithmFactory::newAlgorithm( alg_id );
 
-  alg->setParameters( nparam, param );
+  alg->setParameters( params );
 
   _algs.push_back( alg );
-
-  delete[] param;
 
   return true;
 }
