@@ -1,7 +1,6 @@
 /**
  * Declaration of Sampler and Samples classes.
  * 
- * @file
  * @author Mauro E S Muñoz (mauro@cria.org.br)
  * @date   2003-05-27
  * $Id$
@@ -49,14 +48,6 @@ class SamplerImpl;
 typedef ReferenceCountedPointer<SamplerImpl> SamplerPtr;
 typedef ReferenceCountedPointer<const SamplerImpl> ConstSamplerPtr;
 
-/** Splits data points into to 2 new samplers
- *  @param orig  Original sampler to split
- *  @param train Pointer to train sampler to be returned
- *  @param test  Pointer to test sampler to be returned
- *  @param propTrain Percentage of points to go to train sampler
- */
-dllexp void splitSampler(const SamplerPtr& orig, SamplerPtr *train, SamplerPtr *test, double propTrain);
-
 /**
  * Factory method that creates a Sampler based on Environment
  * and Occurrences objects
@@ -66,6 +57,19 @@ dllexp SamplerPtr createSampler(const EnvironmentPtr& env,
 			 const OccurrencesPtr& absence = OccurrencesPtr() );
 
 dllexp SamplerPtr createSampler( const ConstConfigurationPtr& config );
+
+/** Splits data points into to 2 new samplers
+ *  @param orig  Original sampler to split
+ *  @param train Pointer to train sampler to be returned
+ *  @param test  Pointer to test sampler to be returned
+ *  @param propTrain Percentage of points to go to train sampler
+ */
+dllexp void splitSampler(const SamplerPtr& orig, SamplerPtr *train, SamplerPtr *test, double propTrain);
+
+/**
+ * Returns a fresh sampler cloned from the current object.
+ */
+dllexp SamplerPtr cloneSampler(const SamplerPtr& orig);
 
 /** 
  * Base class to create samplers of environmental variables and
@@ -225,8 +229,6 @@ public:
    *  Missae(set/2008)
    */
   bool isSpatiallyUnique( const OccurrencesPtr& occurrences, const OccurrencePtr& point ) const;
-
-  SamplerPtr clone() const;
 
   ConfigurationPtr getConfiguration() const;
 
