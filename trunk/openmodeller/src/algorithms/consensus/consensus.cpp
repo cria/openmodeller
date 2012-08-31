@@ -250,6 +250,18 @@ ConsensusAlgorithm::initialize()
     return 0;
   }
 
+  if ( ! getParameter( "Agreement", &_agreement ) ) {
+
+    _agreement = 2; // default value
+  }
+  else {
+
+    if ( _agreement < 1 || _agreement > MAX_ALGORITHMS ) {
+
+      _agreement = 2;
+    }
+  }
+
   _thresholds = Sample(MAX_ALGORITHMS, 1.0); // start with maximum threshold
 
   _weights.resize(MAX_ALGORITHMS);
@@ -283,20 +295,6 @@ ConsensusAlgorithm::initialize()
 
     _weights[i] = 1.0;
     _sum_weights += 1.0;
-  }
-
-  _thresholds.resize(MAX_ALGORITHMS);
-
-  if ( ! getParameter( "Agreement", &_agreement ) ) {
-
-    _agreement = 2; // default value
-  }
-  else {
-
-    if ( _agreement < 1 || _agreement > MAX_ALGORITHMS ) {
-
-      _agreement = 2;
-    }
   }
 
   for ( int j=0; j < (int)_algs.size(); j++ ) {
@@ -538,10 +536,6 @@ ConsensusAlgorithm::_getConfiguration( ConfigurationPtr& config ) const
   ConfigurationPtr model_config( new ConfigurationImpl("Consensus") );
   config->addSubsection( model_config );
 
-  model_config->addNameValue( "Agreement", _agreement );
-
-  model_config->addNameValue( "Weights", _weights );
-
   model_config->addNameValue( "Thresholds", _thresholds );
 
   ConfigurationPtr algs_config( new ConfigurationImpl("Algorithms") );
@@ -562,15 +556,55 @@ ConsensusAlgorithm::_setConfiguration( const ConstConfigurationPtr& config )
   if ( ! model_config )
     return;
 
-  _agreement = model_config->getAttributeAsInt( "Agreement", 2 );
+  if ( ! getParameter("Agreement", &_agreement) ) {
 
-  _weights = model_config->getAttributeAsSample( "Weights" );
+    Log::instance()->error("Parameter 'Agreement' was not found in serialized model.\n");
+    return;
+  }
+  else {
+
+    if ( _agreement < 1 || _agreement > MAX_ALGORITHMS ) {
+
+      _agreement = 2;
+    }
+  }
+
+  _weights.resize(MAX_ALGORITHMS);
+
+  std::string weights_param;
+
+  int nw = 0;
 
   _sum_weights = 0.0;
 
-  for ( int i=0; i < (int)_weights.size(); i++ ) {
+  if ( ! getParameter( "Weights", &weights_param ) ) {
 
-    _sum_weights += _weights[i];
+    Log::instance()->error("Parameter 'Weights' was not found in serialized model.\n");
+    return;
+  }
+  else {
+
+    stringstream ss(weights_param);
+    string weight;
+    double weight_val;
+    while ( getline(ss, weight, ' ') ) {
+
+      weight_val = 1.0;
+      sscanf( weight.c_str(), "%lf", &weight_val );
+      _weights[nw] = weight_val;
+      _sum_weights += weight_val;
+      ++nw;
+
+      if ( nw == MAX_ALGORITHMS ) {
+        break;
+      }
+    }
+  }
+
+  for ( int i=nw; i < MAX_ALGORITHMS; ++i ) {
+
+    _weights[i] = 1.0;
+    _sum_weights += 1.0;
   }
 
   _thresholds = model_config->getAttributeAsSample( "Thresholds" );
