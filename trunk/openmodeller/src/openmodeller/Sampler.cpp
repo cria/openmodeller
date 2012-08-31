@@ -900,32 +900,6 @@ SamplerImpl::getRandomOccurrence( const OccurrencesPtr& occur ) const
 }
 
 
-/*************/
-/*** clone ***/
-SamplerPtr
-SamplerImpl::clone() const
-{
-  OccurrencesPtr presences;
-  OccurrencesPtr absences;
-
-  if ( numPresence() ) {
-
-    presences = _presence->clone();
-  }
-
-  if ( numAbsence() ) {
-
-    absences = _absence->clone();
-  }
-
-  EnvironmentPtr environment = _env->clone();
-
-  SamplerPtr fresh_sampler = createSampler( environment, presences, absences );
-
-  return fresh_sampler;
-}
-
-
 /************/
 /*** dump ***/
 void
@@ -988,3 +962,29 @@ void splitSampler(const SamplerPtr& orig,
                            test_presence, test_absence,
                            orig->isNormalized() );
 }
+
+/*************/
+/*** clone ***/
+SamplerPtr
+cloneSampler(const SamplerPtr& orig)
+{
+  OccurrencesPtr presences;
+  OccurrencesPtr absences;
+
+  if ( orig->numPresence() ) {
+
+    presences = orig->getPresences()->clone();
+  }
+
+  if ( orig->numAbsence() ) {
+
+    absences = orig->getAbsences()->clone();
+  }
+
+  EnvironmentPtr environment = orig->getEnvironment()->clone();
+
+  SamplerPtr fresh_sampler = createSampler( environment, presences, absences );
+
+  return fresh_sampler;
+}
+

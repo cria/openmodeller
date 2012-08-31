@@ -301,7 +301,7 @@ ConsensusAlgorithm::initialize()
 
   for ( int j=0; j < (int)_algs.size(); j++ ) {
 
-    SamplerPtr fresh_sampler = _samp->clone();
+    SamplerPtr fresh_sampler = cloneSampler(_samp);
 
     if ( _algs[j]->needNormalization() ) {
 
