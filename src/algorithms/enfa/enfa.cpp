@@ -771,8 +771,7 @@ gsl_matrix* Enfa::sqrtm(gsl_matrix* original_matrix) const
     gsl_blas_dgemm(CblasNoTrans,CblasNoTrans,1.0,
 		   _root,_root,0.0,_testRoot);
 
-    int mycomp, myval, myfailed;
-    myfailed=0;
+    int mycomp, myval;
     for (int i=0; i<m_size; i++)
 	for (int j=0; j<m_size; j++)
 	{
@@ -898,14 +897,14 @@ gsl_matrix* Enfa::inverse(gsl_matrix* _m) const
 
     int choldecomp;
     choldecomp = gsl_linalg_cholesky_decomp(_mcopy);
-    //Log::instance()->info( "Cholesky decomp result %i\n", choldecomp );
+    Log::instance()->debug( "Cholesky decomp result %i\n", choldecomp );
 
     int cholsvx;
     for (int i=0; i<m_size; i++)
     {
 	_MI=gsl_matrix_row(_inverse,i);
 	cholsvx = gsl_linalg_cholesky_svx(_mcopy, &_MI.vector);
-	//Log::instance()->info( "Cholesky svx result %i\n", cholsvx );
+	Log::instance()->debug( "Cholesky svx result %i\n", cholsvx );
 	//displayVector(&_MI.vector, "&MI.vector", true);
     }
 
@@ -915,8 +914,7 @@ gsl_matrix* Enfa::inverse(gsl_matrix* _m) const
     gsl_blas_dgemm(CblasNoTrans,CblasNoTrans,1.0,
 		   _m,_inverse,0.0,_testInverse);
 
-    int mycomp, myval, myfailed;
-    myfailed=0;
+    int mycomp, myval;
     for (int i=0; i<m_size; i++)
 	for (int j=0; j<m_size; j++)
 	{
