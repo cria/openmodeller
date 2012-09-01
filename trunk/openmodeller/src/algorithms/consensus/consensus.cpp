@@ -499,7 +499,7 @@ ConsensusAlgorithm::getValue( const Sample& x ) const
       _algs[i]->getNormalizer()->normalize( &y );
     }
 
-    v = _algs[i]->getValue( x );
+    v = _algs[i]->getValue( y );
 
     if ( v >= _thresholds[i] ) {
 
