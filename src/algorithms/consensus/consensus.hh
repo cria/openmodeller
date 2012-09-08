@@ -73,7 +73,11 @@ protected:
 
   vector<AlgorithmPtr> _algs;
 
+  int _num_algs;
+
   int _agreement;
+
+  vector<Normalizer*> _norms;
 };
 
 

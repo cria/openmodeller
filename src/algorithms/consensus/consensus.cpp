@@ -193,7 +193,9 @@ algorithmMetadata()
 ConsensusAlgorithm::ConsensusAlgorithm() :
   AlgorithmImpl( &metadata ),
   _done( false ),
-  _initialized( false )
+  _initialized( false ),
+  _num_algs( 0 ),
+  _agreement( 1 )
 {
 }
 
@@ -203,6 +205,13 @@ ConsensusAlgorithm::ConsensusAlgorithm() :
 
 ConsensusAlgorithm::~ConsensusAlgorithm()
 {
+  for ( int i=0; i < (int)_algs.size(); i++ ) {
+
+    if ( _norms[i] ) {
+
+      delete _norms[i];
+    }
+  }
 }
 
 /**************************/
@@ -244,7 +253,9 @@ ConsensusAlgorithm::initialize()
     if ( !_setAlgorithm( alg ) ) return 0;
   }
 
-  if ( _algs.size() == 0 ) {
+  _num_algs = (int)_algs.size();
+
+  if ( _num_algs == 0 ) {
 
     Log::instance()->error( CONSENSUS_LOG_PREFIX "Consensus needs at least one algorithm. No algorithm could be instantiated based on the parameters.\n" );
     return 0;
@@ -252,13 +263,13 @@ ConsensusAlgorithm::initialize()
 
   if ( ! getParameter( "Agreement", &_agreement ) ) {
 
-    _agreement = 2; // default value
+    _agreement = _num_algs; // default value
   }
   else {
 
-    if ( _agreement < 1 || _agreement > MAX_ALGORITHMS ) {
+    if ( _agreement < 1 || _agreement > _num_algs ) {
 
-      _agreement = 2;
+      _agreement = _num_algs;
     }
   }
 
@@ -297,7 +308,7 @@ ConsensusAlgorithm::initialize()
     _sum_weights += 1.0;
   }
 
-  for ( int j=0; j < (int)_algs.size(); j++ ) {
+  for ( int j=0; j < _num_algs; j++ ) {
 
     SamplerPtr fresh_sampler = cloneSampler(_samp);
 
@@ -336,6 +347,8 @@ ConsensusAlgorithm::_setAlgorithm( std::string alg_str )
     AlgorithmPtr alg = AlgorithmFactory::newAlgorithm( alg_str );
 
     _algs.push_back( alg );
+
+    _norms.push_back( alg->getNormalizer() );
 
     return true;
   }
@@ -395,6 +408,8 @@ ConsensusAlgorithm::_setAlgorithm( std::string alg_str )
 
   _algs.push_back( alg );
 
+  _norms.push_back( alg->getNormalizer() );
+
   return true;
 }
 
@@ -405,7 +420,7 @@ ConsensusAlgorithm::iterate()
 {
   _done = true;
 
-  for ( int j=0; j < (int)_algs.size(); j++ ) {
+  for ( int j=0; j < _num_algs; j++ ) {
 
     if ( ! _algs[j]->done() ) {
 
@@ -432,12 +447,12 @@ ConsensusAlgorithm::iterate()
 
       Sample env = (*p_iterator)->environment();
 
-      for ( int j=0; j < (int)_algs.size(); j++ ) {
+      for ( int j=0; j < _num_algs; j++ ) {
 
-        if ( _algs[j]->needNormalization() ) {
+        if ( _norms[j] ) {
 
           Sample mysamp = Sample( env ); // deep copy
-          _algs[j]->getNormalizer()->normalize( &mysamp );
+          _norms[j]->normalize( &mysamp );
           val = _algs[j]->getValue( mysamp );
         }
         else {
@@ -464,12 +479,12 @@ float ConsensusAlgorithm::getProgress() const
 {
   float progress = 0.0;
 
-  for ( int j=0; j < (int)_algs.size(); j++ ) {
+  for ( int j=0; j < _num_algs; j++ ) {
 
     progress += _algs[j]->getProgress();
   }
 
-  return progress/(float)_algs.size();
+  return progress/(float)_num_algs;
 }
 
 
@@ -490,13 +505,13 @@ ConsensusAlgorithm::getValue( const Sample& x ) const
   Scalar v;
   int agree = 0;
 
-  for ( int i=0; i < (int)_algs.size(); i++ ) {
+  for ( int i=0; i < _num_algs; i++ ) {
 
     Sample y( x );
 
-    if ( _algs[i]->needNormalization() ) {
+    if ( _norms[i] ) {
 
-      _algs[i]->getNormalizer()->normalize( &y );
+      _norms[i]->normalize( &y );
     }
 
     v = _algs[i]->getValue( y );
@@ -541,7 +556,7 @@ ConsensusAlgorithm::_getConfiguration( ConfigurationPtr& config ) const
   ConfigurationPtr algs_config( new ConfigurationImpl("Algorithms") );
   model_config->addSubsection( algs_config );
 
-  for ( int i=0; i < (int)_algs.size(); i++ ) {
+  for ( int i=0; i < _num_algs; i++ ) {
 
     ConfigurationPtr alg_config = _algs[i]->getConfiguration();
     algs_config->addSubsection( alg_config );
@@ -630,8 +645,12 @@ ConsensusAlgorithm::_setConfiguration( const ConstConfigurationPtr& config )
       AlgorithmPtr alg = AlgorithmFactory::newAlgorithm( subelement );
 
       _algs.push_back( alg );
+
+      _norms.push_back( alg->getNormalizer() );
     }
   }
+
+  _num_algs = (int)_algs.size();
 
   _initialized = true;
 
