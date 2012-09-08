@@ -507,14 +507,16 @@ ConsensusAlgorithm::getValue( const Sample& x ) const
 
   for ( int i=0; i < _num_algs; i++ ) {
 
-    Sample y( x );
-
     if ( _norms[i] ) {
 
+      Sample y( x );
       _norms[i]->normalize( &y );
+      v = _algs[i]->getValue( y );
     }
+    else {
 
-    v = _algs[i]->getValue( y );
+      v = _algs[i]->getValue( x );
+    }
 
     if ( v >= _thresholds[i] ) {
 
