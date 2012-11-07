@@ -179,6 +179,8 @@ OccurrencesFactory::create( const char * source, const char * coordSystem )
   // Try to open as XML file
   try {
 
+    Log::instance()->debug( "Trying to open occurrences source as XML file.\n" );
+
     OccurrencesReader * xml_driver = new SerializedXmlOccurrences( source, coordSystem );
 
     if ( xml_driver->load() ) {
@@ -192,6 +194,8 @@ OccurrencesFactory::create( const char * source, const char * coordSystem )
 
     Log::instance()->debug( "XML occurrences reader exception: %s\n", e.what() );
   }
+
+  Log::instance()->debug( "Trying to open occurrences source as TXT file.\n" );
 
   // Default driver for delimited text
   OccurrencesReader * file_driver = new DelimitedTextOccurrences( source, coordSystem );
