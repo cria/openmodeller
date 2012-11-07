@@ -104,7 +104,16 @@ void ScaleNormalizer::computeNormalization( const ReferenceCountedPointer<const 
 
   for ( int i = 0; i < dim; ++i ) {
 
-    _scales[i] = (_max - _min) / (max[i] - min[i]);
+    if ( max[i] == min[i] ) {
+
+      // Avoid zero division
+      _scales[i] = 1.0;
+    }
+    else {
+
+      _scales[i] = (_max - _min) / (max[i] - min[i]);
+    }
+
     _offsets[i] = _min - _scales[i] * min[i];
   }
 }
