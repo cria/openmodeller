@@ -223,10 +223,10 @@ This is the right operation for service monitoring.
 
 === Description ===
 
-Returns metadata about all modelling algorithms available. Metadata
-includes id, version, name, overview, description, designers,
-bibliography, developers, an indicator if the algorithm can handle
-categorical data, an indicator if it requires absence data, and
+Returns metadata about all modelling algorithms available on the
+server. Metadata includes id, version, name, overview, description,
+designers, bibliography, developers, an indicator if the algorithm can
+handle categorical data, an indicator if it requires absence data, and
 parameters. Parameter metadata includes id, name, data type (Integer,
 Real or String), overview, description, accepted range and default
 value. Algorithm and parameter ids are used to reference them in the
@@ -464,12 +464,18 @@ that there is no geographical projection information available for the
 layer. In such cases, openModeller will assume a latlong projection
 with the WGS84 datum when reading data from the corresponding layer.
 
-Currently, the server implementation only works with layers that are
-locally accessible (i.e., stored on the server or at least accessible
-from the server through the file system). The protocol does not
-include operations to manipulate layers (add or remove files, or
-edit metadata). These tasks need to be performed on the server side
-by other means.
+Historically, the openModeller server implementation only worked with
+layers that were locally accessible (i.e., stored on the server or at
+least accessible from the server through the file system). However,
+recent versions do allow remote layers that are accessible through the
+WCS protocol to be used. In this case, the layer id should follow the
+pattern:
+
+wcs>wcs_service_url>coverage_id
+
+The protocol does not include operations to manipulate layers (add or
+remove files, or edit metadata). These tasks need to be performed on
+the server side by other means.
 
 Different service instances are not guaranteed to provide the same
 layers, unless there is a specific policy in this respect controlling
@@ -568,7 +574,7 @@ value.
 Each set of points needs a spatial reference system specified in 
 [WKT http://www.geoapi.org/3.0/javadoc/org/opengis/referencing/doc-files/WKT.html].
 Example 7 shows the WKT for latlong in WGS84. Longitude and latitude 
-are represented by X and Y, respectivelly, and decimals must always be 
+are represented by X and Y, respectively, and decimals must always be 
 separated by a dot. An identification for each point is highly recommended, 
 as points are referenced by it in the logs. The label for each set of 
 points can be used to store the species name. This information is not 
