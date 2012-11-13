@@ -265,6 +265,11 @@ void RocCurve::_loadPredictions( const Model& model, const SamplerPtr& sampler )
       Log::instance()->debug( "Probability for presence point %s (%f,%f): %f\n", 
                    ((*it)->id()).c_str(), (*it)->x(), (*it)->y(), predictionValue );
     }
+    else {
+
+      Log::instance()->warn( "Skipping point (%s) with no environmental data!\n", 
+                   ((*it)->id()).c_str() );
+    }
 
     ++it;
   }
@@ -300,6 +305,11 @@ void RocCurve::_loadPredictions( const Model& model, const SamplerPtr& sampler )
 
         Log::instance()->debug( "Probability for absence point %s (%f,%f): %f\n", 
                      ((*it)->id()).c_str(), (*it)->x(), (*it)->y(), predictionValue );
+      }
+      else {
+
+        Log::instance()->warn( "Skipping point (%s) with no environmental data!\n", 
+                     ((*it)->id()).c_str() );
       }
 
       ++it;
