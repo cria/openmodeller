@@ -131,13 +131,13 @@ void ConfusionMatrix::calculate(const EnvironmentPtr & env,
 
     Sample sample; 
 
-    if ( env ) {
-
-      sample = env->get( (*it)->x(), (*it)->y() );
-    }
-    else {
+    if ( (*it)->hasEnvironment() ) {
 
       sample = (*it)->environment();
+    }
+    else if ( env ) {
+
+      sample = env->get( (*it)->x(), (*it)->y() );
     }
 
     if ( sample.size() > 0 ) {
@@ -152,6 +152,11 @@ void ConfusionMatrix::calculate(const EnvironmentPtr & env,
 
       Log::instance()->debug( "Probability for point %s (%f,%f): %f\n", 
                    ((*it)->id()).c_str(), (*it)->x(), (*it)->y(), predictionValue );
+    }
+    else {
+
+      Log::instance()->warn( "Skipping point (%s) with no environmental data!\n", 
+                   ((*it)->id()).c_str() );
     }
 
     ++it;
@@ -178,13 +183,13 @@ void ConfusionMatrix::calculate(const EnvironmentPtr & env,
 
         Sample sample;
 
-        if ( env ) {
-
-	  sample = env->get( (*it)->x(), (*it)->y() );
-        }
-        else {
+        if ( (*it)->hasEnvironment() ) {
 
 	  sample = (*it)->environment();
+        }
+        else if ( env ) {
+
+	  sample = env->get( (*it)->x(), (*it)->y() );
         }
 
         if ( sample.size() > 0 ) {
@@ -198,6 +203,11 @@ void ConfusionMatrix::calculate(const EnvironmentPtr & env,
 
           Log::instance()->debug( "Probability for point %s (%f,%f): %f\n", 
                        ((*it)->id()).c_str(), (*it)->x(), (*it)->y(), predictionValue );
+        }
+        else {
+
+          Log::instance()->warn( "Skipping point (%s) with no environmental data!\n", 
+                       ((*it)->id()).c_str() );
         }
 
         ++it;
