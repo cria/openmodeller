@@ -85,6 +85,7 @@ EnvironmentPtr createEnvironment( )
 
 ConfigurationPtr
 EnvironmentImpl::getLayerConfig( const layer& l, bool basicConfig ) {
+
   ConfigurationPtr cfg( new ConfigurationImpl() );
 
   cfg->addNameValue( "Id", l.first );
@@ -104,16 +105,18 @@ EnvironmentImpl::getLayerConfig( const layer& l, bool basicConfig ) {
   }
 
   return cfg;
-
 }
 
 EnvironmentImpl::layer
 EnvironmentImpl::makeLayer( const ConstConfigurationPtr& config ) {
+
   string filename = config->getAttribute( "Id" );
   int categ = config->getAttributeAsInt( "IsCategorical", 0 );
 
   layer l = makeLayer( filename, categ );
+
   try {
+
     // The calls to getAttribute( string ) will throw if
     // the attribute is not found.
     config->getAttribute("Min");
@@ -125,27 +128,32 @@ EnvironmentImpl::makeLayer( const ConstConfigurationPtr& config ) {
     double max = config->getAttributeAsDouble( "Max", 0.0 );
 
     l.second->setMinMax( min, max );
-
   }
   catch (AttributeNotFound& e) {
+
     UNUSED(e);
   }
 
   return l;
-
 }
 
 EnvironmentImpl::layer
 EnvironmentImpl::makeLayer( const string& filename, int categ ) {
+
   layer l;
+
   Map *map = new Map( RasterFactory::instance().create( filename, categ ) );
+
   if ( !map ) {
+
     Log::instance()->warn( "Cannot read environment file: '%s'\n", filename.c_str() );
   }
   else {
+
     l.first = filename;
     l.second = map;
   }
+
   return l;
 }
 
@@ -303,15 +311,17 @@ EnvironmentImpl::setConfiguration( const ConstConfigurationPtr & config )
   while( it != subs.end() ) {
 
     string subname = (*it)->getName();
-    string filename = (*it)->getAttribute( "Id" );
-    int categ = (*it)->getAttributeAsInt( "IsCategorical", 0 );
-    
-    layer l = makeLayer( filename, categ );
+
+    // Call makeLayer with the config object! This implementation is more complete
+    // than just calling it with id and categorical attributes.
+    layer l = makeLayer( (*it) );
 
     if ( subname == "Mask" ) {
+
       _mask = l;
     }
     else if ( l.second ) {
+
       _layers.push_back( l );
     }
 
@@ -359,8 +369,11 @@ EnvironmentImpl::changeMask( const std::string& mask_file )
 
   // New mask
   if ( !mask_file.empty() ) {
+
     _mask = makeLayer( mask_file, 0 );
+
     if ( !_mask.second ) {
+
       ret = 0;
     }
   }
@@ -604,8 +617,7 @@ EnvironmentImpl::check( Coord x, Coord y ) const
 /******************/
 /*** get Region ***/
 int
-EnvironmentImpl::getRegion( Coord *xmin, Coord *ymin,
-			Coord *xmax, Coord *ymax ) const
+EnvironmentImpl::getRegion( Coord *xmin, Coord *ymin, Coord *xmax, Coord *ymax ) const
 {
   *xmin = _xmin;
   *ymin = _ymin;
