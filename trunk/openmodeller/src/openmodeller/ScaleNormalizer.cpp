@@ -106,6 +106,8 @@ void ScaleNormalizer::computeNormalization( const ReferenceCountedPointer<const 
 
     if ( max[i] == min[i] ) {
 
+      Log::instance()->warn( "Min/max values for variable %d are the same during normalization!\n", (i+1));
+
       // Avoid zero division
       _scales[i] = 1.0;
     }
