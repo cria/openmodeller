@@ -721,7 +721,7 @@ OpenModeller::calculateModelStatistics( const ConstConfigurationPtr & config )
   catch( SubsectionNotFound& e ) {
 
     // For backwards compatibility, calculate matrix and ROC if 
-    // <Statistics> is not present
+    // <Statistics> is not present. To avoid this, use an empty <Statistics/> element
     calc_matrix = true;
     calc_roc = true;
     UNUSED(e);
