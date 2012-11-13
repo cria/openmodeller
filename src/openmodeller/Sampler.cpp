@@ -163,16 +163,8 @@ SamplerImpl::setConfiguration( const ConstConfigurationPtr& config )
     env->setConfiguration( env_config );
   }
 
-  //
-  // Here's a hack for ya.  We need the Presence points to have abundance=1.0
-  // So the Occurrences container now has a default abundance so if
-  // the record in the configuration doesn't have an abundance for a point
-  // it is set to the default value.
-  //
   // As of now, the configuration for occurrences do not set/get
-  // abundance values.
-  //
-
+  // abundance values. It's hard-coded here, 1 for presences, 0 for absences.
   Log::instance()->debug( "Getting presence\n" );
   OccurrencesPtr presence( new OccurrencesImpl(1.0) );
   presence->setConfiguration( config->getSubsection( "Presence" ) );
