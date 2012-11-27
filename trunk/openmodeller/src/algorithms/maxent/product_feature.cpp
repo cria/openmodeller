@@ -2,7 +2,7 @@
  * Definition of ProductFeature class
  * 
  * @author Renato De Giovanni
- * $Id: $
+ * $Id$
  *
  * LICENSE INFORMATION
  * 
