@@ -74,7 +74,7 @@ int main( int argc, char **argv ) {
   if ( ( ! list_algs ) && ( ! dump_algs ) && alg_id.empty() ) {
 
     printf( "Please specify one of the parameters: --list, --dump-xml or --id\n");
-    exit(-1);
+    exit(1);
   }
 
   // Log stuff
@@ -104,7 +104,7 @@ int main( int argc, char **argv ) {
       if ( ! *availables ) {
 
         printf( "Could not find any algorithm.\n" );
-        exit(-1);
+        exit(1);
       }
 
       AlgMetadata const *metadata;
@@ -186,7 +186,7 @@ int main( int argc, char **argv ) {
   catch ( runtime_error e ) {
 
     printf( "om_algorithm: %s\n", e.what() );
-    exit(-1);
+    exit(1);
   }
 
   return 0;
