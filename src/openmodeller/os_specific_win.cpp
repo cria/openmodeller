@@ -459,7 +459,8 @@ createPath( const std::string path )
  
     // Create the last directory on the path (the recursive calls will have taken
     // care of the parent directories by now)
-    return ::CreateDirectory( (LPCSTR) path.c_str(), NULL );
+    ::CreateDirectory( (LPCSTR) path.c_str(), NULL );
+    return pathExists( path );
   }
 
   // Specified directory name already exists as a file or directory
