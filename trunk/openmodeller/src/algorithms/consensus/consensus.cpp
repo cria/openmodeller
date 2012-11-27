@@ -390,7 +390,7 @@ ConsensusAlgorithm::_setAlgorithm( std::string alg_str )
 
     size_t eq = pairs[i].find( "=" );
 
-    if ( eq == string::npos or eq == 0 ) {
+    if ( eq == string::npos || eq == 0 ) {
 
       Log::instance()->error( CONSENSUS_LOG_PREFIX "Algorithm parameter failed to match key=value pair format.\n" );
       return false;
