@@ -118,6 +118,7 @@ ProductFeature::setConfiguration( const ConstConfigurationPtr & config )
   }
   catch ( AttributeNotFound& e ) {
 
+    UNUSED(e);
     std::string msg = "Missing 'Ref1' parameter in product feature deserialization.\n";
     Log::instance()->error( msg.c_str() );
     throw InvalidParameterException( msg );
@@ -129,6 +130,7 @@ ProductFeature::setConfiguration( const ConstConfigurationPtr & config )
   }
   catch ( AttributeNotFound& e ) {
 
+    UNUSED(e);
     std::string msg = "Missing 'Ref2' parameter in product feature deserialization.\n";
     Log::instance()->error( msg.c_str() );
     throw InvalidParameterException( msg );
@@ -140,6 +142,7 @@ ProductFeature::setConfiguration( const ConstConfigurationPtr & config )
   }
   catch ( AttributeNotFound& e ) {
 
+    UNUSED(e);
     std::string msg = "Missing 'Min' parameter in product feature deserialization.\n";
     Log::instance()->error( msg.c_str() );
     throw InvalidParameterException( msg );
@@ -151,6 +154,7 @@ ProductFeature::setConfiguration( const ConstConfigurationPtr & config )
   }
   catch ( AttributeNotFound& e ) {
 
+    UNUSED(e);
     std::string msg = "Missing 'Max' parameter in product feature deserialization.\n";
     Log::instance()->error( msg.c_str() );
     throw InvalidParameterException( msg );

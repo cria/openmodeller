@@ -92,10 +92,10 @@ QuadraticFeature::setConfiguration( const ConstConfigurationPtr & config )
   }
   catch ( AttributeNotFound& e ) {
 
+    UNUSED(e);
     std::string msg = "Missing 'Type' parameter in hinge feature deserialization.\n";
     Log::instance()->error( msg.c_str() );
     throw InvalidParameterException( msg );
-    UNUSED(e);
   }
 
   if ( type != F_QUADRATIC ) {
@@ -111,6 +111,7 @@ QuadraticFeature::setConfiguration( const ConstConfigurationPtr & config )
   }
   catch ( AttributeNotFound& e ) {
 
+    UNUSED(e);
     std::string msg = "Missing 'Ref' parameter in quadratic feature deserialization.\n";
     Log::instance()->error( msg.c_str() );
     throw InvalidParameterException( msg );
@@ -122,6 +123,7 @@ QuadraticFeature::setConfiguration( const ConstConfigurationPtr & config )
   }
   catch ( AttributeNotFound& e ) {
 
+    UNUSED(e);
     std::string msg = "Missing 'Min' parameter in quadratic feature deserialization.\n";
     Log::instance()->error( msg.c_str() );
     throw InvalidParameterException( msg );
@@ -133,6 +135,7 @@ QuadraticFeature::setConfiguration( const ConstConfigurationPtr & config )
   }
   catch ( AttributeNotFound& e ) {
 
+    UNUSED(e);
     std::string msg = "Missing 'Max' parameter in quadratic feature deserialization.\n";
     Log::instance()->error( msg.c_str() );
     throw InvalidParameterException( msg );
