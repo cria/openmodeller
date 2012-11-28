@@ -6,8 +6,6 @@
 #include "om_cmd_utils.hh"
 
 #include <string>
-#include <iostream>  // I/O 
-
 #include <stdexcept>
  
 using namespace std;
@@ -102,7 +100,7 @@ int main( int argc, char **argv ) {
   if ( num_points_string.empty() ) {
 
     printf( "Please specify the number of points to be generated\n");
-    exit(-1);
+    exit(1);
   }
 
   int num_points = atoi( num_points_string.c_str() );
@@ -110,25 +108,13 @@ int main( int argc, char **argv ) {
   if ( num_points <= 0 ) {
 
     printf( "Please specify a valid (> 0) number of points to be generated\n");
-    exit(-1);
+    exit(1);
   }
 
   if ( mask_file.empty() ) {
 
     printf( "Please specify a mask file\n");
-    exit(-1);
-  }
-  else {
-
-    FILE * fh = fopen( mask_file.c_str(), "r" );
-
-    if ( fh == NULL ) {
-
-      printf( "Could not open the specified mask file (check parameter and permissions)\n");
-      exit(-1);
-    }
-
-    fclose( fh );
+    exit(1);
   }
 
   int sequence_start = 1; // default
@@ -168,13 +154,13 @@ int main( int argc, char **argv ) {
   if ( threshold <= 0.0 ) {
 
     printf( "Model threshold must be greater than zero\n");
-    exit(-1);
+    exit(1);
   }
 
   if ( threshold >= 1.0 ) {
 
     printf( "Model threshold must be smaller than one\n");
-    exit(-1);
+    exit(1);
   }
 
   // Log stuff
@@ -228,7 +214,7 @@ int main( int argc, char **argv ) {
       if ( ! alg_samp ) {
 
         printf( "Could not find sampler data in the specified model file" );
-        exit(-1);
+        exit(1);
       }
 
       EnvironmentPtr env = alg_samp->getEnvironment();
@@ -252,7 +238,7 @@ int main( int argc, char **argv ) {
     if ( ! samp ) {
 
       printf( "Could not create sampler object" );
-      exit(-1);
+      exit(1);
     }
 
     // Start output
@@ -321,7 +307,7 @@ int main( int argc, char **argv ) {
   catch ( runtime_error e ) {
 
     printf( "om_pseudo: %s\n", e.what() );
-    exit(-1);
+    exit(1);
   }
 
   return 0;
