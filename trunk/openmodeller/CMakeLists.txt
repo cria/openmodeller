@@ -29,9 +29,12 @@ SET (OM_CTEST FALSE CACHE BOOL "Build unit tests")
 
 SET (OM_WITH_PROFILING FALSE CACHE BOOL "Add profiling symbols to build products (-pg)")
 
+SET (OM_WITH_MPI FALSE CACHE BOOL "Determines whether MPI support should be built")
+
 SET (OM_BUILD_BINDINGS FALSE CACHE BOOL "Indicates whether Python bindings should be built")
 
 SET (OM_BUILD_SERVICE FALSE CACHE BOOL "Indicates whether the openModeller Web Service should be built")
+
 
 #############################################################
 IF (OM_CTEST)
@@ -50,7 +53,7 @@ IF (OM_CTEST)
 ENDIF (OM_CTEST)
 
 
-# 
+#
 # Enable the use of RPATH so that the executeable
 # library search paths are relative to the executeable
 #
@@ -60,7 +63,7 @@ SET(CMAKE_SKIP_BUILD_RPATH FALSE)
 
 # when building, don't use the install RPATH already
 # (but later on when installing)
-SET(CMAKE_BUILD_WITH_INSTALL_RPATH FALSE) 
+SET(CMAKE_BUILD_WITH_INSTALL_RPATH FALSE)
 
 # the RPATH to be used when installing
 SET(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib")
@@ -120,7 +123,10 @@ FIND_PACKAGE(X11)
 FIND_PACKAGE(Sqlite3)
 FIND_PACKAGE(TerraLib)  # version >= 3.2.0
 FIND_PACKAGE(CURL)      # note: minimum version is 7.15.4
-FIND_PACKAGE(Mpi)
+
+IF (OM_WITH_MPI)
+  FIND_PACKAGE(Mpi)
+ENDIF (OM_WITH_MPI)
 
 # python support:
 FIND_PACKAGE(PythonLibs)
@@ -152,7 +158,7 @@ ENDIF (PEDANTIC AND NOT MSVC)
 
 #assume we have escaped compiler directives
 #eventually we want to change this to new
-#since we don't need to jump through so many 
+#since we don't need to jump through so many
 #hoops to escape compiler directives then
 IF(COMMAND cmake_policy)
   cmake_policy(SET CMP0003 NEW)
