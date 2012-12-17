@@ -53,11 +53,21 @@ public:
      */
     virtual void createRaster( const std::string& source, int categ = 0 ) = 0;
 
+ #ifdef MPI_FOUND
+    /**
+     * Method to create a raster representation (needed by RasterFactory).
+     * @param source A string pointing to a raster source (file name, URL, etc.)
+     * @param file is the name of the output file
+     * @param format is the output format specification.
+     */
+    virtual void createRaster( const std::string& output_file_source, const std::string& file, const MapFormat& format ) = 0;
+ #else
     /** Method to create a raster representation (needed by RasterFactory).
      * @param source A string pointing to a raster source (file name, URL, etc.)
      * @param format Map format
      */
     virtual void createRaster( const std::string& source, const MapFormat& format )= 0;
+#endif
 
     //virtual static Raster* CreateRasterCallback() { return 0; };
 
