@@ -1,6 +1,6 @@
 /**
  * Declaration of GdalRaster class.
- * 
+ *
  * @author Mauro E S Muñoz <mauro@cria.org.br>
  * @date 2003-08-22
  * @author Alexandre Copertino Jardim <alexcj@dpi.inpe.br>
@@ -8,22 +8,22 @@
  * $Id$
  *
  * LICENSE INFORMATION
- * 
+ *
  * Copyright(c) 2003 by CRIA -
  * Centro de Referencia em Informacao Ambiental
  *
  * http://www.cria.org.br
- * 
+ *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; either version 2
  * of the License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details:
- * 
+ *
  * http://www.gnu.org/copyleft/gpl.html
  */
 
@@ -43,7 +43,7 @@ class MapFormat;
 /****************************************************************/
 /************************** Raster Gdal *************************/
 
-/** 
+/**
  * Manages raster files with GDAL (Geospatial Data Abstraction
  * Library - http://www.remotesensing.org/gdal/index.html)
  *
@@ -55,7 +55,7 @@ public:
   // Empty constructor
   GdalRaster(): f_data(0), f_size(0), f_format(-1), f_currentRow(-1), f_changed(0) {};
 
-  /** 
+  /**
   * Open an existing file -- read only.
   * If 'categ' != 0 this is a categorical map (ie it can't be
   * interpolated). Othewise this is a continuos map.
@@ -68,8 +68,8 @@ public:
   * @param file is the name of the output file
   * @param format is the output format specification.
   */
-  void createRaster( const string& output_file_source, const string& file, const MapFormat& format );
-  #else 
+  void createRaster( const std::string& output_file_source, const std::string& file, const MapFormat& format );
+  #else
   /**
   * Create a new file for projections.
   * @param file is the name of the output file
@@ -106,7 +106,7 @@ public:
   */
   int put( Coord x, Coord y );
 
-  /** Finds the minimum and maximum values in the first band. 
+  /** Finds the minimum and maximum values in the first band.
    * @param min Pointer to minimum value
    * @param max Pointer to maximum value
    * @return 1 if values are present, 0 otherwise
@@ -116,7 +116,7 @@ public:
   /** Find the minimum and maximum values in 'band'. */
   int calcMinMax( int band=0 );
 
-  /** 
+  /**
    * Event that must be called to indicate when the projection is finished.
    */
   void finish();
@@ -156,7 +156,7 @@ private:
   void saveRow(); // Save the current row.
 
   GDALDataset *f_ds;
-  
+
   Scalar *f_data; // One line data for all bands.
   int     f_size; // Size of one line.
 
