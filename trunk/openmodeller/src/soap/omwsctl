@@ -1,0 +1,59 @@
+#!/usr/bin/python
+#
+# Python 2.x
+
+import os
+import re
+import sys
+import time
+from optparse import OptionParser
+
+opts = OptionParser()
+(options, args) = opts.parse_args()
+
+# some defs
+#basedir = os.path.join('/system', 'modelagem', 'workdir', 'tickets');
+if not args:
+    print "no tickets directory specified"
+    sys.exit(1) # Python 2.x
+else:
+    basedir = args[0]
+
+# define functions
+def get_files():
+    for f in os.walk(basedir):
+        # files reside in the third index, hence f[2]
+        return f[2]
+    
+def get_tickets():
+    tickets = []
+    regex = "prog\.(?P<ticket>[a-zA-Z0-9]{6})"
+
+    for f in files:
+	pattern = re.compile(regex)
+	match = pattern.search(f)
+	
+	if match:
+	    #print "found"
+	    t = match.group('ticket')
+	    tickets.append(t)
+
+    return tickets
+
+# starts here
+files = get_files()
+tickets = get_tickets()
+
+for t in tickets:
+    filename = 'prog.' + t
+    file = os.path.join(basedir, filename)
+
+    f = open(file)
+    d = time.ctime(os.path.getctime(file))
+    prog = f.readline()
+    if prog != '':
+        p = int(prog)
+        if p >= 0 and p < 100:
+            print t, "running, progress at", p, "since", d
+
+    f.close()
