@@ -116,9 +116,9 @@ INCLUDE(CPack)
 FIND_PACKAGE(Proj REQUIRED)
 FIND_PACKAGE(GDAL REQUIRED)
 FIND_PACKAGE(Expat REQUIRED)
+FIND_PACKAGE(GSL REQUIRED)   # For CSM algorithm (version must be >= 1.4)
 
 # optional
-FIND_PACKAGE(GSL)       # For CSM algorithm (version must be >= 1.4)
 FIND_PACKAGE(X11)
 FIND_PACKAGE(Sqlite3)
 FIND_PACKAGE(TerraLib)  # version >= 3.2.0
@@ -129,7 +129,9 @@ IF (OM_WITH_MPI)
 ENDIF (OM_WITH_MPI)
 
 # python support:
-FIND_PACKAGE(PythonLibs)
+IF (OM_BUILD_BINDINGS)
+  FIND_PACKAGE(PythonLibs)
+ENDIF (OM_BUILD_BINDINGS)
 
 IF (NOT PROJ_FOUND)
   MESSAGE (SEND_ERROR "PROJ4 library was not found!")
@@ -139,6 +141,9 @@ IF (NOT GDAL_FOUND)
   MESSAGE (SEND_ERROR "GDAL library was not found!")
 ENDIF (NOT GDAL_FOUND)
 
+IF (NOT GSL_FOUND)
+  MESSAGE (SEND_ERROR "GSL library was not found!")
+ENDIF (NOT GSL_FOUND)
 
 #############################################################
 # Add g++ directive to create profiling symbols
