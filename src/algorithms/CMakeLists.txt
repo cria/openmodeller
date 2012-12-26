@@ -16,11 +16,7 @@ ENDIF (WIN32)
 
 ########################################################
 # Subdirectories
-SUBDIRS(best_subsets garp dg_garp svm neural_networks maxent rf consensus)
-
-if (GSL_FOUND)
-   SUBDIRS(enfa)
-ENDIF(GSL_FOUND)
+SUBDIRS(best_subsets garp dg_garp svm neural_networks maxent rf consensus enfa)
 
 ########################################################
 # Files
@@ -88,6 +84,9 @@ TARGET_LINK_LIBRARIES(environmental_distance openmodeller)
 ADD_LIBRARY (niche_mosaic MODULE ${LIBNICHEMOSAIC_SRCS})
 TARGET_LINK_LIBRARIES(niche_mosaic openmodeller)
 
+ADD_LIBRARY (csm_bs MODULE ${LIBCSMBS_SRCS})
+TARGET_LINK_LIBRARIES(csm_bs ${GSL_LIBRARIES} openmodeller)
+
 #ADD_LIBRARY (virtual_niche MODULE ${LIBVIRTUALNICHE_SRCS})
 #TARGET_LINK_LIBRARIES(virtual_niche openmodeller)
 
@@ -95,6 +94,7 @@ INCLUDE_DIRECTORIES(
      ${CMAKE_CURRENT_SOURCE_DIR}
      ${CMAKE_CURRENT_SOURCE_DIR}/..
      ${CMAKE_CURRENT_SOURCE_DIR}/../openmodeller
+     ${GSL_INCLUDE_DIR}
 )
 
 IF (CURL_FOUND)
@@ -105,19 +105,6 @@ IF (CURL_FOUND)
   )
   
 ENDIF(CURL_FOUND)
-
-IF (GSL_FOUND)
-
-  INCLUDE_DIRECTORIES(
-    ${INCLUDE_DIRECTORIES}
-    ${GSL_INCLUDE_DIR}
-  )
-
-  ADD_LIBRARY (csm_bs MODULE ${LIBCSMBS_SRCS})
-
-  TARGET_LINK_LIBRARIES(csm_bs ${GSL_LIBRARIES} openmodeller)
-
-ENDIF(GSL_FOUND)
 
 IF (SQLITE3_FOUND)
 
@@ -147,7 +134,7 @@ INSTALL(TARGETS envelope_score RUNTIME DESTINATION ${OM_ALG_DIR} LIBRARY DESTINA
 
 #INSTALL(TARGETS minimum_distance RUNTIME DESTINATION ${OM_ALG_DIR} LIBRARY DESTINATION ${OM_ALG_DIR})
 
-if (SQLITE3_FOUND)
+IF (SQLITE3_FOUND)
   INSTALL(TARGETS aquamaps RUNTIME DESTINATION ${OM_ALG_DIR} LIBRARY DESTINATION ${OM_ALG_DIR})
 ENDIF(SQLITE3_FOUND)
 
@@ -157,6 +144,4 @@ INSTALL(TARGETS niche_mosaic RUNTIME DESTINATION ${OM_ALG_DIR} LIBRARY DESTINATI
 
 #INSTALL(TARGETS virtual_niche RUNTIME DESTINATION ${OM_ALG_DIR} LIBRARY DESTINATION ${OM_ALG_DIR})
 
-if (GSL_FOUND)
-  INSTALL(TARGETS csm_bs RUNTIME DESTINATION ${OM_ALG_DIR} LIBRARY DESTINATION ${OM_ALG_DIR})
-ENDIF(GSL_FOUND)
+INSTALL(TARGETS csm_bs RUNTIME DESTINATION ${OM_ALG_DIR} LIBRARY DESTINATION ${OM_ALG_DIR})
