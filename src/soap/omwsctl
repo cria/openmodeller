@@ -4,6 +4,7 @@
 
 import os
 import re
+import subprocess
 import sys
 import time
 from optparse import OptionParser
@@ -28,9 +29,9 @@ def get_files():
 def get_tickets():
     tickets = []
     regex = "prog\.(?P<ticket>[a-zA-Z0-9]{6})"
+    pattern = re.compile(regex)
 
     for f in files:
-	pattern = re.compile(regex)
 	match = pattern.search(f)
 	
 	if match:
@@ -44,6 +45,37 @@ def get_tickets():
 files = get_files()
 tickets = get_tickets()
 
+# checks for running instances LOOKING AT PROCESSES
+#
+# Note that there is no unique or standard way to check for running processes
+# with Python. There are some external alternative modules such as 'psutil',
+# but it's not included in python distrib. However, this should work with any
+# POSIX-complaint ps.
+print "Checking for running instances looking at processes:"
+ps_output = subprocess.Popen(["ps", "ax"], stdout=subprocess.PIPE).communicate()[0]
+ps = ps_output.split("\n")
+
+regex = "om_(model|project|test)"
+pattern = re.compile(regex)
+
+psfound = False
+for p in ps:
+    match = pattern.search(p)
+
+    if match:
+        psfound = True
+        pid = p.split()[0]
+
+        command = p.split()[4]
+        print command, "running, pid", pid
+
+if not psfound:
+    print "no om_* processes found"
+
+print 
+
+# checks for running instances LOOKING AT TICKETS
+print "Checking for running instances looking at tickets:"
 for t in tickets:
     filename = 'prog.' + t
     file = os.path.join(basedir, filename)
@@ -51,9 +83,9 @@ for t in tickets:
     f = open(file)
     d = time.ctime(os.path.getctime(file))
     prog = f.readline()
-    if prog != '':
+    if prog:
         p = int(prog)
         if p >= 0 and p < 100:
-            print t, "running, progress at", p, "since", d
+            print t, "ticket running, progress at", p, "since", d
 
     f.close()
