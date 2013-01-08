@@ -20,29 +20,6 @@ if not args:
 else:
     basedir = args[0]
 
-# define functions
-def get_files():
-    for f in os.walk(basedir):
-        # files reside in the third index, hence f[2]
-        return f[2]
-    
-def get_tickets():
-    tickets = []
-    regex = "prog\.(?P<ticket>[a-zA-Z0-9]{6})"
-    pattern = re.compile(regex)
-
-    for f in files:
-	match = pattern.search(f)
-	
-	if match:
-	    #print "found"
-	    t = match.group('ticket')
-	    tickets.append(t)
-
-    return tickets
-
-########################### starts here ################################
-
 # checks for running instances LOOKING AT PROCESSES
 #
 # Note that there is no unique or standard way to check for running processes
@@ -73,20 +50,21 @@ if not psfound:
 print 
 
 # checks for running instances LOOKING AT TICKETS
-files = get_files()
-tickets = get_tickets()
-
 print "Checking for running instances looking at tickets:"
-for t in tickets:
-    filename = 'prog.' + t
-    file = os.path.join(basedir, filename)
-
-    f = open(file)
-    d = time.ctime(os.path.getctime(file))
-    prog = f.readline()
-    if prog:
-        p = int(prog)
-        if p >= 0 and p < 100:
-            print t, "ticket running, progress at", p, "since", d
-
-    f.close()
+for f in os.walk(basedir):
+    regex = "prog\.(?P<ticket>[a-zA-Z0-9]{6})"
+    pattern = re.compile(regex)
+    # files reside in the third index, hence f[2]
+    match = pattern.search(f[2])
+    if match:
+        t = match.group('ticket')
+        filename = 'prog.' + t
+        mfile = os.path.join(basedir, filename)
+        fh = open(mfile)
+        d = time.ctime(os.path.getctime(mfile))
+        prog = fh.readline()
+        if prog:
+            p = int(prog)
+            if p >= 0 and p < 100:
+                print t, "ticket running, progress at", p, "since", d
+        fh.close()
