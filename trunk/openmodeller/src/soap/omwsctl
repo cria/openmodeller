@@ -41,9 +41,7 @@ def get_tickets():
 
     return tickets
 
-# starts here
-files = get_files()
-tickets = get_tickets()
+########################### starts here ################################
 
 # checks for running instances LOOKING AT PROCESSES
 #
@@ -75,6 +73,9 @@ if not psfound:
 print 
 
 # checks for running instances LOOKING AT TICKETS
+files = get_files()
+tickets = get_tickets()
+
 print "Checking for running instances looking at tickets:"
 for t in tickets:
     filename = 'prog.' + t
