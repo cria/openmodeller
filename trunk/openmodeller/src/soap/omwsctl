@@ -47,15 +47,15 @@ for p in ps:
 if not psfound:
     print "no om_* processes found"
 
-print 
+print
 
 # checks for running instances LOOKING AT TICKETS
 print "Checking for running instances looking at tickets:"
-for f in os.walk(basedir):
+# files reside in the third index, hence f[2]
+for f in os.listdir(basedir):
     regex = "prog\.(?P<ticket>[a-zA-Z0-9]{6})"
     pattern = re.compile(regex)
-    # files reside in the third index, hence f[2]
-    match = pattern.search(f[2])
+    match = pattern.search(f)
     if match:
         t = match.group('ticket')
         filename = 'prog.' + t
