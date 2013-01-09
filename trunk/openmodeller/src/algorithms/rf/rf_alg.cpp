@@ -114,7 +114,7 @@ static AlgMetadata metadata = {
   "Random Forests",
 
   "Leo Breiman & Adele Cutler", // Algorithm author.
-  "Breiman, L. (2001). Random forests. Machine Learning, 45, 5–32.", // Bibliography.
+  "Breiman, L. (2001). Random forests. Machine Learning, 45, 5-32.", // Bibliography.
 
   "Renato De Giovanni", // Code author.
   "renato [at] cria . org . br", // Code author's contact.
