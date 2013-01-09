@@ -1,7 +1,7 @@
 //
 // CsmBS
 //
-// Description: Csm implementation using Keiser-Gutman cutoff to discard components
+// Description: Csm implementation using Broken Stick method to discard components
 //
 //
 // Author: CRIA <t.sutton@reading.ac.uk>, (C) 2004
@@ -129,7 +129,7 @@ an eigenvalue less than (n stddevs above a randomised sample) is discarded. \n\
 The original CSM was written as series of Matlab functions. ", //description
 
     "Neil Caithness",  // Author
-    "Robertson M.P., Caithness N., Villet M.H. (2001) A PCA-based modelling technique for predicting environmental suitability for organisms from presence records. Diversity and Distributions, 7:15–27",  // Bibliography.
+    "Robertson M.P., Caithness N., Villet M.H. (2001) A PCA-based modelling technique for predicting environmental suitability for organisms from presence records. Diversity and Distributions, 7:15-27",  // Bibliography.
 
     "Tim Sutton, Renato De Giovanni",  // Code author.
     "t.sutton [at] reading.ac.uk",     // Code author's contact.
