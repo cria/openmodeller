@@ -349,10 +349,10 @@ You can create another script to delete all files that are older than
 a month, for example //cleanup.sh//, with the following content:
 
 ```
-find /var/www/vhosts/modeller/ws1/tickets/* -mtime +30 -exec rm {} \;
-find /var/www/vhosts/modeller/ws1/distmaps/*.img -mtime +30 -exec rm {} \;
-find /var/www/vhosts/modeller/ws1/distmaps/*.png -mtime +30 -exec rm {} \;
-find /var/www/vhosts/modeller/ws1/distmaps/*.kmz -mtime +30 -exec rm {} \;
+find /var/www/vhosts/modeller/ws1/tickets/ -name "*" -mtime +30 -exec rm {} \;
+find /var/www/vhosts/modeller/ws1/distmaps/ -name "*.img" -mtime +30 -exec rm {} \;
+find /var/www/vhosts/modeller/ws1/distmaps/ -name "*.png" -mtime +30 -exec rm {} \;
+find /var/www/vhosts/modeller/ws1/distmaps/ -name "*.kmz" -mtime +30 -exec rm {} \;
 ```
 
 Make them all executable:
