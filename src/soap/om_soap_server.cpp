@@ -1325,7 +1325,7 @@ wchar_t* convertToWideChar( const char* p )
 
   wchar_t *tempdest = r;
 
-  while (( *tempdest++ = *tempsource++ ));
+  while (( *tempdest++ = (unsigned char)*tempsource++ ));
 
   return r;
 }
