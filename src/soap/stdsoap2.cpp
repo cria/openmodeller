@@ -3163,7 +3163,7 @@ soap_ssl_error(struct soap *soap, int ret)
         strcpy(soap->msgbuf, "EOF was observed that violates the protocol. The client probably provided invalid authentication information.");
         break;
       case -1:
-#ifdef HAVE_SNPRINTF
+#ifdef GSOAP_HAVE_SNPRINTF
         soap_snprintf(soap->msgbuf, sizeof(soap->msgbuf), "Error observed by underlying BIO: %s", strerror(errno));
 #else
         sprintf(soap->msgbuf, "Error observed by underlying BIO: %s", strerror(errno));
@@ -15760,13 +15760,13 @@ soap_puthttphdr(struct soap *soap, int status, size_t count)
 static const char*
 soap_set_validation_fault(struct soap *soap, const char *s, const char *t)
 { if (*soap->tag)
-#ifdef HAVE_SNPRINTF
+#ifdef GSOAP_HAVE_SNPRINTF
     soap_snprintf(soap->msgbuf, sizeof(soap->msgbuf), "Validation constraint violation: %s%s in element '%s'", s, t ? t : SOAP_STR_EOS, soap->tag);
 #else
     sprintf(soap->msgbuf, "Validation constraint violation: %s%s in element '%s'", s, t ? t : SOAP_STR_EOS, soap->tag);
 #endif
   else
-#ifdef HAVE_SNPRINTF
+#ifdef GSOAP_HAVE_SNPRINTF
     soap_snprintf(soap->msgbuf, sizeof(soap->msgbuf), "Validation constraint violation: %s%s", s, t ? t : SOAP_STR_EOS);
 #else
     sprintf(soap->msgbuf, "Validation constraint violation: %s%s", s, t ? t : SOAP_STR_EOS);
@@ -15816,7 +15816,7 @@ soap_set_fault(struct soap *soap)
       break;
     case SOAP_MUSTUNDERSTAND:
       *c = "SOAP-ENV:MustUnderstand";
-#ifdef HAVE_SNPRINTF
+#ifdef GSOAP_HAVE_SNPRINTF
       soap_snprintf(soap->msgbuf, sizeof(soap->msgbuf), "The data in element '%s' must be understood but cannot be handled", soap->tag);
 #else
       sprintf(soap->msgbuf, "The data in element '%s' must be understood but cannot be handled", soap->tag);
@@ -15841,7 +15841,7 @@ soap_set_fault(struct soap *soap)
       *s = "Fatal error";
       break;
     case SOAP_NO_METHOD:
-#ifdef HAVE_SNPRINTF
+#ifdef GSOAP_HAVE_SNPRINTF
       soap_snprintf(soap->msgbuf, sizeof(soap->msgbuf), "Method '%s' not implemented: method name or namespace not recognized", soap->tag);
 #else
       sprintf(soap->msgbuf, "Method '%s' not implemented: method name or namespace not recognized", soap->tag);
@@ -15937,7 +15937,7 @@ soap_set_fault(struct soap *soap)
       break;
     case SOAP_ZLIB_ERROR:
 #ifdef WITH_ZLIB
-#ifdef HAVE_SNPRINTF
+#ifdef GSOAP_HAVE_SNPRINTF
       soap_snprintf(soap->msgbuf, sizeof(soap->msgbuf), "Zlib/gzip error: '%s'", soap->d_stream->msg ? soap->d_stream->msg : SOAP_STR_EOS);
 #else
       sprintf(soap->msgbuf, "Zlib/gzip error: '%s'", soap->d_stream->msg ? soap->d_stream->msg : SOAP_STR_EOS);
@@ -15988,7 +15988,7 @@ soap_set_fault(struct soap *soap)
 #ifndef WITH_LEAN
       if (soap->error > 200 && soap->error < 600)
       { 
-#ifdef HAVE_SNPRINTF
+#ifdef GSOAP_HAVE_SNPRINTF
         soap_snprintf(soap->msgbuf, sizeof(soap->msgbuf), "HTTP Error: %d %s", soap->error, http_error(soap, soap->error));
 #else
         sprintf(soap->msgbuf, "HTTP Error: %d %s", soap->error, http_error(soap, soap->error));
@@ -16383,7 +16383,7 @@ soap_sprint_fault(struct soap *soap, char *buf, size_t len)
       v = *soap_faultsubcode(soap);
     s = *soap_faultstring(soap);
     d = soap_check_faultdetail(soap);
-#ifdef HAVE_SNPRINTF
+#ifdef GSOAP_HAVE_SNPRINTF
     soap_snprintf(buf, len, "%s%d fault: %s [%s]\n\"%s\"\nDetail: %s\n", soap->version ? "SOAP 1." : "Error ", soap->version ? (int)soap->version : soap->error, *c, v ? v : "no subcode", s ? s : "[no reason]", d ? d : "[no detail]");
 #else
     if (len > 40 + (v ? strlen(v) : 0) + (s ? strlen(s) : 0) + (d ? strlen(d) : 0))
