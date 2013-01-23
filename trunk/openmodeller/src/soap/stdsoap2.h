@@ -216,7 +216,7 @@ A commercial use license is available from Genivia, Inc., contact@genivia.com
 #  define WITH_LEAN
 #  define HAVE_SSCANF
 # elif defined(WIN32)
-#  define HAVE_SNPRINTF
+#  define GSOAP_HAVE_SNPRINTF
 #  define HAVE_STRRCHR
 #  define HAVE_STRTOD
 #  define HAVE_SSCANF
@@ -237,7 +237,7 @@ A commercial use license is available from Genivia, Inc., contact@genivia.com
 #  define SOAP_ULONG_FORMAT "%I64u"
 # elif defined(CYGWIN)
 #  define HAVE_POLL
-#  define HAVE_SNPRINTF
+#  define GSOAP_HAVE_SNPRINTF
 #  define HAVE_STRRCHR
 #  define HAVE_STRTOD
 #  define HAVE_SSCANF
@@ -253,7 +253,7 @@ A commercial use license is available from Genivia, Inc., contact@genivia.com
 #  define HAVE_MBTOWC
 # elif defined(__APPLE__)
 #  define HAVE_POLL
-#  define HAVE_SNPRINTF
+#  define GSOAP_HAVE_SNPRINTF
 #  define HAVE_STRRCHR
 #  define HAVE_STRTOD
 #  define HAVE_SSCANF
@@ -270,7 +270,7 @@ A commercial use license is available from Genivia, Inc., contact@genivia.com
 #  define HAVE_WCTOMB
 #  define HAVE_MBTOWC
 # elif defined(_AIX43)
-#  define HAVE_SNPRINTF
+#  define GSOAP_HAVE_SNPRINTF
 #  define HAVE_STRRCHR
 #  define HAVE_STRTOD
 #  define HAVE_SSCANF
@@ -284,7 +284,7 @@ A commercial use license is available from Genivia, Inc., contact@genivia.com
 #  define HAVE_WCTOMB
 #  define HAVE_MBTOWC
 # elif defined(_AIX41)
-#  define HAVE_SNPRINTF
+#  define GSOAP_HAVE_SNPRINTF
 #  define HAVE_STRRCHR
 #  define HAVE_STRTOD
 #  define HAVE_SSCANF
@@ -294,7 +294,7 @@ A commercial use license is available from Genivia, Inc., contact@genivia.com
 #  define HAVE_WCTOMB
 #  define HAVE_MBTOWC
 # elif defined(HP_UX)
-#  define HAVE_SNPRINTF
+#  define GSOAP_HAVE_SNPRINTF
 #  define HAVE_STRRCHR
 #  define HAVE_STRTOD
 #  define HAVE_SSCANF
@@ -310,7 +310,7 @@ A commercial use license is available from Genivia, Inc., contact@genivia.com
 #  define HAVE_ISNAN
 # elif defined(FREEBSD) || defined(__FreeBSD__) || defined(OPENBSD)
 #  define HAVE_POLL
-#  define HAVE_SNPRINTF
+#  define GSOAP_HAVE_SNPRINTF
 #  define HAVE_STRRCHR
 #  define HAVE_STRTOD
 #  define HAVE_SSCANF
@@ -334,7 +334,7 @@ A commercial use license is available from Genivia, Inc., contact@genivia.com
 #  define HAVE_ISINF
 # elif defined(__VMS)
 #  include <ioctl.h>
-#  define HAVE_SNPRINTF
+#  define GSOAP_HAVE_SNPRINTF
 #  define HAVE_STRRCHR
 #  define HAVE_STRTOD
 #  define HAVE_SSCANF
@@ -349,7 +349,7 @@ A commercial use license is available from Genivia, Inc., contact@genivia.com
 #  define HAVE_MBTOWC
 # elif defined(__GLIBC__) || defined(__GNU__)
 #  define HAVE_POLL
-#  define HAVE_SNPRINTF
+#  define GSOAP_HAVE_SNPRINTF
 #  define HAVE_STRRCHR
 #  define HAVE_STRTOD
 #  define HAVE_SSCANF
@@ -372,7 +372,7 @@ A commercial use license is available from Genivia, Inc., contact@genivia.com
 #  define HAVE_ISNAN
 #  define HAVE_ISINF
 # elif defined(TRU64)
-#  define HAVE_SNPRINTF
+#  define GSOAP_HAVE_SNPRINTF
 #  define HAVE_STRRCHR
 #  define HAVE_STRTOD
 #  define HAVE_SSCANF
@@ -390,7 +390,7 @@ A commercial use license is available from Genivia, Inc., contact@genivia.com
 #  define SOAP_ULONG_FORMAT "%lu"
 # elif defined(MAC_CARBON)
 #  define WITH_NOIO
-#  define HAVE_SNPRINTF
+#  define GSOAP_HAVE_SNPRINTF
 #  define HAVE_STRRCHR
 #  define HAVE_STRTOD
 #  define HAVE_SSCANF
@@ -436,7 +436,7 @@ A commercial use license is available from Genivia, Inc., contact@genivia.com
 #  define HAVE_LOCALTIME
 #  define HAVE_MKTIME
 # elif defined(OS390)
-#  define HAVE_SNPRINTF
+#  define GSOAP_HAVE_SNPRINTF
 #  define HAVE_STRRCHR
 #  define HAVE_STRTOD
 #  define HAVE_SSCANF
@@ -450,7 +450,7 @@ A commercial use license is available from Genivia, Inc., contact@genivia.com
 #  define HAVE_WCTOMB
 #  define HAVE_MBTOWC
 # elif defined(AS400)
-#  define HAVE_SNPRINTF
+#  define GSOAP_HAVE_SNPRINTF
 #  define HAVE_STRRCHR
 #  define HAVE_STRTOD
 #  define HAVE_SSCANF
@@ -467,7 +467,7 @@ A commercial use license is available from Genivia, Inc., contact@genivia.com
 /* QNX does not have a working version of strtof */
 #  undef HAVE_STRTOF
 #  define HAVE_POLL
-#  define HAVE_SNPRINTF
+#  define GSOAP_HAVE_SNPRINTF
 #  define HAVE_STRRCHR
 #  define HAVE_STRTOD
 #  define HAVE_SSCANF
@@ -487,7 +487,7 @@ A commercial use license is available from Genivia, Inc., contact@genivia.com
 #  define SOAP_LONG_FORMAT "%ld"
 #  define SOAP_ULONG_FORMAT "%lu"
 # elif defined(SUN_OS)
-#  define HAVE_SNPRINTF
+#  define GSOAP_HAVE_SNPRINTF
 #  define HAVE_STRRCHR
 #  define HAVE_STRTOD
 #  define HAVE_SSCANF
@@ -501,7 +501,7 @@ A commercial use license is available from Genivia, Inc., contact@genivia.com
 #  define HAVE_LOCALTIME_R
 # else
 /* Default assumptions for supported functions */
-#  define HAVE_SNPRINTF
+#  define GSOAP_HAVE_SNPRINTF
 #  define HAVE_STRRCHR
 #  define HAVE_STRTOD
 #  define HAVE_SSCANF
@@ -593,7 +593,7 @@ A commercial use license is available from Genivia, Inc., contact@genivia.com
 # undef HAVE_MBTOWC
 # undef HAVE_GMTIME_R
 # undef HAVE_LOCALTIME_R
-# undef HAVE_SNPRINTF
+# undef GSOAP_HAVE_SNPRINTF
 # define SOAP_BUFLEN (32767)
 # define SOAP_SOCKET short
 #pragma nolist
@@ -1206,7 +1206,7 @@ extern const char soap_base64o[], soap_base64i[];
 #define soap_isninfd(n) ((n) < 0 && soap_isinf(n))
 #define soap_isninff(n) ((n) < 0 && soap_isinf(n))
 
-#ifdef HAVE_SNPRINTF
+#ifdef GSOAP_HAVE_SNPRINTF
 # ifdef WIN32
 #  define soap_snprintf _snprintf
 # else
