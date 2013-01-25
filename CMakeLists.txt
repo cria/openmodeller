@@ -254,13 +254,14 @@ IF (WIN32)
   ENDIF (MSVC)
 
 ELSE (WIN32)
+  INCLUDE(GNUInstallDirs)
 
   # common for MAC and UNIX
   SET (OM_DATA_DIR     "${CMAKE_INSTALL_PREFIX}/share/openmodeller/data")
   SET (OM_INCLUDE_DIR  "${CMAKE_INSTALL_PREFIX}/include")
   SET (OM_EXAMPLES_DIR "${CMAKE_INSTALL_PREFIX}/share/openmodeller/examples")
   SET (OM_BIN_DIR      "${CMAKE_INSTALL_PREFIX}/bin")
-  SET (OM_ALG_DIR      "${CMAKE_INSTALL_PREFIX}/lib/openmodeller")
+  SET (OM_ALG_DIR      "${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR}/openmodeller")
   SET (OM_CONFIG_DIR   "/etc/openmodeller" CACHE STRING "Directory to store openModeller configuration files")
 
   IF (APPLE)
