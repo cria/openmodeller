@@ -12,6 +12,7 @@
 #define _SAMPLE_HH_
 
 #include <openmodeller/om_defs.hh>
+#include <openmodeller/os_specific.hh>
 #include <cstddef>
 #include <iostream>
 #include <vector>

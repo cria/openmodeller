@@ -30,6 +30,8 @@
 
 #if (defined(__unix__) || defined(unix)) && !defined(USG)
 #include <sys/param.h>
+#define dllexp
+#define OM_ALG_DLL_EXPORT
 #endif
 
 #ifdef BSD
