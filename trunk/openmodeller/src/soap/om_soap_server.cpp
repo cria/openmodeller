@@ -800,8 +800,17 @@ omws__getProgress( struct soap *soap, xsd__string ticket, xsd__int &progress )
 
     return SOAP_OK;
   }
+  else {
 
-  progress = -1; // return "queued" if file does not exist yet
+    string ticketFile = getTicketFilePath( "", ticket );
+
+    if ( ! fileExists( ticketFile.c_str() ) ) {
+
+      return soap_sender_fault( soap, "Unknown ticket", NULL );
+    }
+  }
+
+  progress = -1; // return "queued" if progress file does not exist yet
 
   return SOAP_OK;
 }
