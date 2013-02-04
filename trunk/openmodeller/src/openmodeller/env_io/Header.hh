@@ -28,6 +28,7 @@
 #ifndef _HEADERHH_
 #define _HEADERHH_
 
+#include <openmodeller/os_specific.hh>
 #include <openmodeller/om_defs.hh>
 
 #include <string>

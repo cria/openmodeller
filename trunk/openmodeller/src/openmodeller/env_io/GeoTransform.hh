@@ -29,6 +29,7 @@
 #ifndef _GEO_TRANSFHH_
 #define _GEO_TRANSFHH_
 
+#include <openmodeller/os_specific.hh>
 #include <openmodeller/om_defs.hh>
 #include <string>
 

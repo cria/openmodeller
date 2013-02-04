@@ -30,6 +30,8 @@
 #include <string>
 #include <sstream>
 
+#include <openmodeller/os_specific.hh>
+
 /************************************************************/
 /*********************** Cache Manager **********************/
 

@@ -32,6 +32,18 @@
 #include <sys/param.h>
 #define dllexp
 #define OM_ALG_DLL_EXPORT
+#define OM_XML_DLL_EXPORT
+#endif
+
+#ifdef WIN32 
+#define dllexp __declspec(dllimport)
+#define OM_XML_DLL_EXPORT __declspec(dllimport)
+#define OM_ALG_DLL_EXPORT __declspec(dllexport)
+#ifdef _MSC_VER
+#define dllexp "__declspec(dllimport)"
+#define OM_XML_DLL_EXPORT "=__declspec(dllimport)"
+#define OM_ALG_DLL_EXPORT "=__declspec(dllexport)"
+#endif
 #endif
 
 #ifdef BSD

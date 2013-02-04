@@ -245,13 +245,13 @@ IF (WIN32)
     # expect that classes are being imported
     # Note: MSVC doesn't like when the macros are quotes
     # and MSYS doesn't like them unqouted (bacause of braces)
-    ADD_DEFINITIONS("-Ddllexp=__declspec(dllimport)")
-    ADD_DEFINITIONS("-DOM_XML_DLL_EXPORT=__declspec(dllimport)")
-    ADD_DEFINITIONS("-DOM_ALG_DLL_EXPORT=__declspec(dllexport)")
-  ELSE (MSVC)
-    ADD_DEFINITIONS("-Ddllexp\"=__declspec(dllimport)\"")
-    ADD_DEFINITIONS("-DOM_XML_DLL_EXPORT\"=__declspec(dllimport)\"")
-    ADD_DEFINITIONS("-DOM_ALG_DLL_EXPORT\"=__declspec(dllexport)\"")
+    #ADD_DEFINITIONS("-Ddllexp=__declspec(dllimport)")
+    #ADD_DEFINITIONS("-DOM_XML_DLL_EXPORT=__declspec(dllimport)")
+    #ADD_DEFINITIONS("-DOM_ALG_DLL_EXPORT=__declspec(dllexport)")
+  #ELSE (MSVC)
+    #ADD_DEFINITIONS("-Ddllexp\"=__declspec(dllimport)\"")
+    #ADD_DEFINITIONS("-DOM_XML_DLL_EXPORT\"=__declspec(dllimport)\"")
+    #ADD_DEFINITIONS("-DOM_ALG_DLL_EXPORT\"=__declspec(dllexport)\"")
   ENDIF (MSVC)
 
 ELSE (WIN32)
@@ -275,10 +275,6 @@ ELSE (WIN32)
     ADD_DEFINITIONS(-DPLUGINPATH=\\"${OM_ALG_DIR}\\")
     ADD_DEFINITIONS(-DPKGDATAPATH=\\"${OM_DATA_DIR}\\")
   ENDIF (APPLE)
-
-  ADD_DEFINITIONS("-Ddllexp=")
-  ADD_DEFINITIONS("-DOM_ALG_DLL_EXPORT=")
-  ADD_DEFINITIONS("-DOM_XML_DLL_EXPORT=")
 
   IF (OM_BUNDLE)
 
