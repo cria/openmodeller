@@ -683,6 +683,7 @@ jobs can be discovered with the [getLog #toc28] operation.
 === SOAP faults ===
 
 - Missing ticket in request
+- Unknown ticket
 - Progress unreadable
 
 
