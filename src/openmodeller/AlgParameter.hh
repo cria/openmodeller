@@ -29,6 +29,7 @@
 #ifndef _ALG_PARAMETERHH_
 #define _ALG_PARAMETERHH_
 
+#include <openmodeller/os_specific.hh>
 #include <openmodeller/om_defs.hh>
 #include <string>
 

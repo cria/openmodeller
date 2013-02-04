@@ -28,6 +28,7 @@
 #ifndef _LOGHH_
 #define _LOGHH_
 
+#include <openmodeller/os_specific.hh>
 #include <openmodeller/om_defs.hh>
 
 #include <iostream>

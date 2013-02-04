@@ -30,6 +30,7 @@
 #ifndef _RANDOMHH_
 #define _RANDOMHH_
 
+#include <openmodeller/os_specific.hh>
 #include <openmodeller/om_defs.hh>
 
 

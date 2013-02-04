@@ -32,6 +32,7 @@
 
 #include <string>
 
+#include <openmodeller/os_specific.hh>
 #include <openmodeller/om_defs.hh>
 
 class Map;
