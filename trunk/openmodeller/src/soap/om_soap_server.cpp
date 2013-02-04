@@ -78,6 +78,7 @@ static bool     getData( struct soap*, const xsd__string, xsd__base64Binary& );
 static void     logRequest( struct soap*, const char* operation );
 static void     addHeader( struct soap* );
 static int      getStatus();
+static string   getTicketFilePath( string prefix, string ticket );
 
 
 /****************/
@@ -756,18 +757,7 @@ omws__getProgress( struct soap *soap, xsd__string ticket, xsd__int &progress )
     return soap_sender_fault( soap, "Missing ticket in request", NULL );
   }
 
-  string fileName( gFileParser.get( "TICKET_DIRECTORY" ) );
-
-  // Append slash if necessary
-  if ( fileName.find_last_of( "/" ) != fileName.size() - 1 ) {
-
-    fileName.append( "/" );
-  }
-
-  string jobProgressFile( fileName );
-
-  jobProgressFile.append( OMWS_JOB_PROGRESS_PREFIX );
-  jobProgressFile.append( ticket );
+  string jobProgressFile = getTicketFilePath( OMWS_JOB_PROGRESS_PREFIX, ticket );
 
   if ( fileExists( jobProgressFile.c_str() ) ) {
 
@@ -793,9 +783,7 @@ omws__getProgress( struct soap *soap, xsd__string ticket, xsd__int &progress )
       if ( progress == 100 ) {
 
         // Finished flag
-        string doneFlag( fileName );
-        doneFlag.append( OMWS_JOB_DONE_PREFIX );
-        doneFlag.append( ticket );
+        string doneFlag = getTicketFilePath( OMWS_JOB_DONE_PREFIX, ticket );
 
         if ( ! fileExists( doneFlag.c_str() ) ) {
 
@@ -837,16 +825,7 @@ omws__getLog( struct soap *soap, xsd__string ticket, xsd__string &log )
     return soap_sender_fault( soap, "Missing ticket in request", NULL );
   }
 
-  string fileName( gFileParser.get( "TICKET_DIRECTORY" ) );
-
-  // Append slash if necessary
-  if ( fileName.find_last_of( "/" ) != fileName.size() - 1 ) {
-
-    fileName.append( "/" );
-  }
-
-  // Log should be in the ticket file
-  fileName.append( ticket );
+  string fileName = getTicketFilePath( "", ticket );
 
   fstream fin;
   fin.open( fileName.c_str(), ios::in );
@@ -912,16 +891,7 @@ omws__getModel( struct soap *soap, xsd__string ticket, struct omws__getModelResp
     return soap_sender_fault( soap, "Missing ticket in request", NULL );
   }
 
-  string fileName( gFileParser.get( "TICKET_DIRECTORY" ) );
-
-  // Append slash if necessary
-  if ( fileName.find_last_of( "/" ) != fileName.size() - 1 ) {
-
-    fileName.append( "/" );
-  }
-
-  fileName.append( OMWS_MODEL_CREATION_RESPONSE_PREFIX );
-  fileName.append( ticket );
+  string fileName = getTicketFilePath( OMWS_MODEL_CREATION_RESPONSE_PREFIX, ticket );
 
   fstream fin;
   fin.open( fileName.c_str(), ios::in );
@@ -968,16 +938,7 @@ omws__getTestResult( struct soap *soap, xsd__string ticket, struct omws__testRes
     return soap_sender_fault( soap, "Missing ticket in request", NULL );
   }
 
-  string fileName( gFileParser.get( "TICKET_DIRECTORY" ) );
-
-  // Append slash if necessary
-  if ( fileName.find_last_of( "/" ) != fileName.size() - 1 ) {
-
-    fileName.append( "/" );
-  }
-
-  fileName.append( OMWS_TEST_RESPONSE_PREFIX );
-  fileName.append( ticket );
+  string fileName = getTicketFilePath( OMWS_TEST_RESPONSE_PREFIX, ticket );
 
   fstream fin;
   fin.open( fileName.c_str(), ios::in );
@@ -1168,16 +1129,7 @@ omws__getProjectionMetadata( struct soap *soap, xsd__string ticket, struct omws_
   int size = getSize( fd );
 
   // Get statistics
-  string statsFileName( gFileParser.get( "TICKET_DIRECTORY" ) );
-
-  // Append slash if necessary
-  if ( statsFileName.find_last_of( "/" ) != statsFileName.size() - 1 ) {
-
-    statsFileName.append( "/" );
-  }
-
-  statsFileName.append( OMWS_PROJECTION_STATISTICS_PREFIX );
-  statsFileName.append( ticket );
+  string statsFileName = getTicketFilePath( OMWS_PROJECTION_STATISTICS_PREFIX, ticket );
 
   fstream fin;
   fin.open( statsFileName.c_str(), ios::in );
@@ -1744,6 +1696,25 @@ getStatus()
 
     return atoi( sysStatus.c_str() );
   }
+}
+
+/***************************/
+/**** getTicketFilePath ****/
+static string
+getTicketFilePath( string prefix, string ticket )
+{
+  string filePath( gFileParser.get( "TICKET_DIRECTORY" ) );
+
+  // Append slash if necessary
+  if ( filePath.find_last_of( "/" ) != filePath.size() - 1 ) {
+
+    filePath.append( "/" );
+  }
+
+  filePath.append( prefix );
+  filePath.append( ticket );
+
+  return filePath;
 }
 
 
