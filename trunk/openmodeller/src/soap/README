@@ -132,5 +132,8 @@ MAINTENANCE:
  
   soapcpp2 om_soap.hh
 
+- Don't forget to overwrite stdsoap2.cpp and stdsoap2.h with the newer versions.
+  They have to be manually copied to this directory.
+
 - To activate server debug logging, add -DDEBUG in the
   beginning of om_soap_server_CPPFLAGS in Makefile.am
