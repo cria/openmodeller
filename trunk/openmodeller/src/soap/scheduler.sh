@@ -158,8 +158,40 @@ ls -t $TICKET_DIRECTORY/proj_req.* 2> /dev/null | tail -n -1 | while read req; d
 
   ticket="${req##*.}"
   moved=$TICKET_DIRECTORY"/proj_proc."$ticket
+
+  # define image file extension based on filetype
+  proj_ext=`cat $moved | sed 's/.*FileType="//; s/".*//'`
+  case "$proj_ext" in
+      GreyTiff)
+          img_ext=".tif"
+          map_img=$map_base$img_ext ;;
+      GreyTiff100)
+          img_ext=".tif"
+          map_img=$map_base$img_ext ;;
+      FloatingTiff)
+          img_ext=".tif"
+          map_img=$map_base$img_ext ;;
+      GreyBMP)
+          img_ext=".bmp" 
+          map_img=$map_base$img_ext ;;
+      FloatingHFA)
+          img_ext=".img"
+          map_img=$map_base$img_ext ;;
+      ByteHFA)
+          img_ext=".img"
+          map_img=$map_base$img_ext;;
+      ByteASC)
+          img_ext=".asc"
+          map_img=$map_base$img_ext ;;
+      FloatingASC)
+          img_ext=".asc"
+          map_img=$map_base$img_ext ;;
+      *)
+          img_ext=".img"
+          map_img=$map_base$img_ext ;;
+  esac
+
   map_base=$DISTRIBUTION_MAP_DIRECTORY"/proc_"$ticket
-  map_img=$map_base".img"
   map_ige=$map_base".ige"
   stats=$TICKET_DIRECTORY"/stats."$ticket
   log=$TICKET_DIRECTORY"/"$ticket
@@ -171,7 +203,7 @@ ls -t $TICKET_DIRECTORY/proj_req.* 2> /dev/null | tail -n -1 | while read req; d
   # if condor_integration then create the script and submit
   if [[ "$CONDOR_INTEGRATION" == "yes" ]]; then
     echo "universe 	= vanilla" >> $TICKET_DIRECTORY"/condor_sp."$ticket
-    echo "arguments = --xml-req "$moved" --dist-map "$DISTRIBUTION_MAP_DIRECTORY"/"$ticket".img --stat-file "$stats" --prog-file "$proj_prog >> $TICKET_DIRECTORY"/condor_sp."$ticket
+    echo "arguments = --xml-req "$moved" --dist-map "$DISTRIBUTION_MAP_DIRECTORY"/"$ticket$img_ext" --stat-file "$stats" --prog-file "$proj_prog >> $TICKET_DIRECTORY"/condor_sp."$ticket
     echo "executable = "$NODE_BIN_DIR"/om_project" >> $TICKET_DIRECTORY"/condor_sp."$ticket
     echo "environment = "$NODE_ENVIRONMENT >> $TICKET_DIRECTORY"/condor_sp."$ticket
     echo "output		= "$TICKET_DIRECTORY"/om_project_LOG"$ticket".out" >> $TICKET_DIRECTORY"/condor_sp."$ticket
