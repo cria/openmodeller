@@ -164,31 +164,31 @@ ls -t $TICKET_DIRECTORY/proj_req.* 2> /dev/null | tail -n -1 | while read req; d
   case "$proj_ext" in
       GreyTiff)
           img_ext=".tif"
-          map_img=$map_base$img_ext ;;
+          map_file=$map_base$img_ext ;;
       GreyTiff100)
           img_ext=".tif"
-          map_img=$map_base$img_ext ;;
+          map_file=$map_base$img_ext ;;
       FloatingTiff)
           img_ext=".tif"
-          map_img=$map_base$img_ext ;;
+          map_file=$map_base$img_ext ;;
       GreyBMP)
           img_ext=".bmp" 
-          map_img=$map_base$img_ext ;;
+          map_file=$map_base$img_ext ;;
       FloatingHFA)
           img_ext=".img"
-          map_img=$map_base$img_ext ;;
+          map_file=$map_base$img_ext ;;
       ByteHFA)
           img_ext=".img"
-          map_img=$map_base$img_ext;;
+          map_file=$map_base$img_ext;;
       ByteASC)
           img_ext=".asc"
-          map_img=$map_base$img_ext ;;
+          map_file=$map_base$img_ext ;;
       FloatingASC)
           img_ext=".asc"
-          map_img=$map_base$img_ext ;;
+          map_file=$map_base$img_ext ;;
       *)
           img_ext=".img"
-          map_img=$map_base$img_ext ;;
+          map_file=$map_base$img_ext ;;
   esac
 
   map_base=$DISTRIBUTION_MAP_DIRECTORY"/proc_"$ticket
@@ -218,59 +218,62 @@ ls -t $TICKET_DIRECTORY/proj_req.* 2> /dev/null | tail -n -1 | while read req; d
     "$CONDOR_BIN_DIR"/condor_submit $TICKET_DIRECTORY"/condor_sp."$ticket
   else
     # no Condor - execute om_project directly
-    "$OM_BIN_DIR"/om_project --xml-req "$moved" --dist-map "$map_img" --stat-file "$stats" --log-file "$log" --prog-file "$proj_prog"
+    "$OM_BIN_DIR"/om_project --xml-req "$moved" --dist-map "$map_file" --stat-file "$stats" --log-file "$log" --prog-file "$proj_prog"
   fi
 
-  finalmap_img=$DISTRIBUTION_MAP_DIRECTORY"/"$ticket".img"
+  finalmap_file=$DISTRIBUTION_MAP_DIRECTORY"/"$ticket$img_ext
   finalmap_ige=$DISTRIBUTION_MAP_DIRECTORY"/"$ticket".ige"
 
   if [ -e $map_ige ]; then
     mv "$map_ige" "$finalmap_ige"
   fi
 
-  # Create PNG and KMZ files with pseudocolor (requires GDAL command-line tools)
-  if [[ "$CREATE_PNG" == "yes" || "$CREATE_KMZ" == "yes" ]]; then
-    if [ -e $map_img ]; then
-      # Create a virtual raster
-      initial_vrt_file=$DISTRIBUTION_MAP_DIRECTORY"/"$ticket".tmp.vrt"
-      "$GDAL_BIN_DIR"/gdal_translate "$map_img" -of VRT "$initial_vrt_file"
-      if [ -e $initial_vrt_file ]; then
-        # Inject color table in VRT before </VRTRasterBand>
-        final_vrt_file=$DISTRIBUTION_MAP_DIRECTORY"/"$ticket".vrt"
-        colors=`cat $COLOR_TABLE`
-        cat $initial_vrt_file | while read line;
-        do
-          trimmedline=`echo $line`
-          if [ "$trimmedline" == "</VRTRasterBand>" ]; then
-            echo "$colors" >> $final_vrt_file
-          fi
-          echo "$line" >> $final_vrt_file
-        done
-        if [ -e $final_vrt_file ]; then
-          # Create PNG expanding to RGB
-          png_file=$DISTRIBUTION_MAP_DIRECTORY"/"$ticket".png"
-          "$GDAL_BIN_DIR"/gdal_translate "$final_vrt_file" -of PNG -expand rgb "$png_file"
-          if [ -e $png_file ]; then
-            if [[ "$CREATE_KMZ" == "yes" ]]; then
-              # Create KMZ file based on PNG
-              kmz_file=$DISTRIBUTION_MAP_DIRECTORY"/"$ticket".kmz"
-              "$GDAL_BIN_DIR"/gdal_translate "$png_file" -of KMLSUPEROVERLAY -co format=png "$kmz_file"
+  # Create PNG and KMZ files with pseudocolor (requires GDAL command-line tools).
+  # This is still an unofficial feature!! Works only for ByteHFA
+  if [[ "$proj_ext" == "ByteHFA" ]]; then
+    if [[ "$CREATE_PNG" == "yes" || "$CREATE_KMZ" == "yes" ]]; then
+      if [ -e $map_file ]; then
+        # Create a virtual raster
+        initial_vrt_file=$DISTRIBUTION_MAP_DIRECTORY"/"$ticket".tmp.vrt"
+        "$GDAL_BIN_DIR"/gdal_translate "$map_file" -of VRT "$initial_vrt_file"
+        if [ -e $initial_vrt_file ]; then
+          # Inject color table in VRT before </VRTRasterBand>
+          final_vrt_file=$DISTRIBUTION_MAP_DIRECTORY"/"$ticket".vrt"
+          colors=`cat $COLOR_TABLE`
+          cat $initial_vrt_file | while read line;
+          do
+            trimmedline=`echo $line`
+            if [ "$trimmedline" == "</VRTRasterBand>" ]; then
+              echo "$colors" >> $final_vrt_file
             fi
-            png_xml_file=$DISTRIBUTION_MAP_DIRECTORY"/"$ticket".png.aux.xml"
-            if [ -e $png_xml_file ]; then
-              rm -f "$png_xml_file"
+            echo "$line" >> $final_vrt_file
+          done
+          if [ -e $final_vrt_file ]; then
+            # Create PNG expanding to RGB
+            png_file=$DISTRIBUTION_MAP_DIRECTORY"/"$ticket".png"
+            "$GDAL_BIN_DIR"/gdal_translate "$final_vrt_file" -of PNG -expand rgb "$png_file"
+            if [ -e $png_file ]; then
+              if [[ "$CREATE_KMZ" == "yes" ]]; then
+                # Create KMZ file based on PNG
+                kmz_file=$DISTRIBUTION_MAP_DIRECTORY"/"$ticket".kmz"
+                "$GDAL_BIN_DIR"/gdal_translate "$png_file" -of KMLSUPEROVERLAY -co format=png "$kmz_file"
+              fi
+              png_xml_file=$DISTRIBUTION_MAP_DIRECTORY"/"$ticket".png.aux.xml"
+              if [ -e $png_xml_file ]; then
+                rm -f "$png_xml_file"
+              fi
             fi
+            rm -f "$final_vrt_file"
           fi
-          rm -f "$final_vrt_file"
+          rm -f "$initial_vrt_file"
         fi
-        rm -f "$initial_vrt_file"
       fi
     fi
   fi
 
   # This must be the last step, since getProgress will only return 100% if
   # the final map exists
-  mv "$map_img" "$finalmap_img"
+  mv "$map_file" "$finalmap_file"
   finished=$TICKET_DIRECTORY"/done."$ticket
   touch "$finished"
 done
