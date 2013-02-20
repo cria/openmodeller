@@ -1230,6 +1230,18 @@ getMapFile( string ticket )
     return fileName;
   }
 
+  // ASC
+  fileName = ticket;
+  fileName.append( ".asc" );
+
+  filePath = path;
+  filePath.append( fileName );
+
+  if ( fileExists( filePath.c_str() ) ) {
+
+    return fileName;
+  }
+
   // BMP
   fileName = ticket;
   fileName.append( ".bmp" );
