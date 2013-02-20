@@ -609,7 +609,7 @@ sub create_model
 
             next if ( scalar( @point ) < 4 );
 
-            if ( scalar( @point ) > 4 && $point[4] == 0 )
+            if ( @point > 4 && $point[4] eq "0" )
             {
                 push( @absencePoints, {'Id' => $point[0], 'X' => $point[2], 'Y' => $point[3]} );
             }
@@ -947,7 +947,7 @@ sub test_model
 
             my $str = '<Point Id="'.$point[0].'" X="'.$point[2].'" Y="'.$point[3].'" />';
 
-            if ( scalar( @point ) > 4 && $point[4] == 0 )
+            if ( @point > 4 && $point[4] eq "0" )
             {
                 $external_absence_points .= $str;
             }
