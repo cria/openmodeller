@@ -1206,9 +1206,9 @@ getMapFile( string ticket )
     path.append( "/" );
   }
 
-  // TIF
+  // IMG
   string fileName( ticket );
-  fileName.append( ".tif" );
+  fileName.append( ".img" );
 
   string filePath( path );
   filePath.append( fileName );
@@ -1218,9 +1218,9 @@ getMapFile( string ticket )
     return fileName;
   }
 
-  // IMG
+  // TIF
   fileName = ticket;
-  fileName.append( ".img" );
+  fileName.append( ".tif" );
 
   filePath = path;
   filePath.append( fileName );
