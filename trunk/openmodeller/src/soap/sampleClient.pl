@@ -483,7 +483,7 @@ sub create_model
 {
     prepare_soap();
 
-    if ( scalar( keys %algorithms ) == 0 and not get_algorithms() )
+    if ( ! keys( %algorithms ) and ! get_algorithms() )
     {
 	return 0;
     }
@@ -498,14 +498,14 @@ sub create_model
 
     my $alg_code = get_algorithm_from_user();
 
-    if ( ! $alg_code or not exists( $algorithms{$alg_code} ) )
+    if ( ! $alg_code or ! exists( $algorithms{$alg_code} ) )
     {
 	return 0;
     }
 
     my @alg_parameters = ();
 
-    if ( scalar( keys( %{$algorithms{$alg_code}{parameters}} ) ) )
+    if ( keys( %{$algorithms{$alg_code}{parameters}} ) )
     {
 	foreach my $param (keys(%{$algorithms{$alg_code}{parameters}}))
 	{
@@ -528,14 +528,14 @@ sub create_model
 
     ### Maps
 
-    if ( scalar( keys %layers ) == 0 and not get_layers() )
+    if ( ! keys( %layers ) and ! get_layers() )
     {
 	return 0;
     }
 
     my @layer_codes = get_layers_from_user('Choose the layers you want to use for model creation');
 
-    if ( scalar( @layer_codes ) == 0 )
+    if ( ! @layer_codes )
     {
 	return 0;
     }
@@ -553,7 +553,7 @@ sub create_model
 
     my $mask_code = get_layer_from_user('Choose an input mask from the layers above');
 
-    if ( not exists( $layers{$mask_code} ) )
+    if ( ! exists( $layers{$mask_code} ) )
     {
 	return 0;
     }
@@ -607,7 +607,7 @@ sub create_model
         {
             my @point = split /\t/, $_;
 
-            next if ( scalar( @point ) < 4 );
+            next if ( @point  < 4 );
 
             if ( @point > 4 && $point[4] eq "0" )
             {
@@ -619,7 +619,7 @@ sub create_model
             }
         }
 
-        unless ( scalar( @presencePoints ) )
+        unless ( @presencePoints )
         {
             print "No presence points in file!\n";
             next;
@@ -638,7 +638,7 @@ sub create_model
 
     my $sampler = 0;
 
-    if ( scalar( @absencePoints ) )
+    if ( @absencePoints )
     {
         @absencePoints = map( SOAP::Data->name('Point')->attr(\%{$_}), @absencePoints );
     
