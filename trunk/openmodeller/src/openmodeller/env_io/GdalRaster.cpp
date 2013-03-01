@@ -378,7 +378,7 @@ GdalRaster::open( char mode )
 
   if ( ! f_hdr.hasProj() ) {
 
-    Log::instance()->warn( "The raster %s is not georeferenced. Assuming WGS84\n", f_file.c_str() );
+    Log::instance()->warn( "The raster %s is not georeferenced. Assuming LatLong WGS84\n", f_file.c_str() );
     f_hdr.setProj( GeoTransform::getDefaultCS() );
   }
 
