@@ -126,7 +126,7 @@ OccurrencesImpl::setConfiguration( const ConstConfigurationPtr& config )
   
   if ( ! cs_config ) {
 
-    Log::instance()->warn( "Occurrences has no Coordinate System. Assuming WSG84\n" );
+    Log::instance()->warn( "Occurrences has no Coordinate System. Assuming LatLong WSG84\n" );
     cs_ = GeoTransform::getDefaultCS();
   }
   else {

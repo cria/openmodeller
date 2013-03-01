@@ -103,7 +103,7 @@ TerralibRaster::createRaster( const string& str, int categ )
 			f_hdr.setProj( TeGetWKTFromTeProjection( raster_->projection() ) );
     		if ( ! f_hdr.hasProj() )
 			{/**/
-				Log::instance()->warn( "Raster %s is not georeferenced.  Assuming WGS84\n", f_file.c_str() );
+				Log::instance()->warn( "Raster %s is not georeferenced.  Assuming LatLong WGS84\n", f_file.c_str() );
 				f_hdr.setProj( GeoTransform::getDefaultCS() );
 			}/**/
 
