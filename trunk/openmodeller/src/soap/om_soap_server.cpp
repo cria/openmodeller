@@ -26,6 +26,7 @@
 
 #include "openModeller.nsmap"
 #include <openmodeller/om.hh>
+#include <openmodeller/file_parser.hh>
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -42,8 +43,6 @@
 using namespace std;
 
 #include "gdal_priv.h"
-
-#include "file_parser.hh"
 
 #define OMWS_VERSION "1.0"
 #define OMWS_BACKLOG (100) // Max. request backlog 

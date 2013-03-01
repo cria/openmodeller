@@ -5,13 +5,11 @@
 SET (OMCONSOLE_SRCS
     om_console.cpp
     request_file.cpp
-    file_parser.cpp
     om_cmd_utils.cpp 
 )
 SET (OMSAMPLER_SRCS
     om_sampler.cpp 
     request_file.cpp 
-    file_parser.cpp
     getopts/getopts.C 
     om_cmd_utils.cpp 
     )
@@ -32,7 +30,6 @@ SET (OMPROJECT_SRCS
      )
 SET (OMVIEWER_SRCS
      om_viewer.cpp 
-     file_parser.cpp 
      graph/color.cpp 
      graph/graphic.cpp 
      graph/graphic_x11.cpp 
@@ -62,7 +59,6 @@ SET (OMPOINTS_SRCS
      om_cmd_utils.cpp 
      )
 set (EXTRA_DIST
-  file_parser.hh
   request_file.hh
   om_cmd_utils.hh
   graph/color.hh

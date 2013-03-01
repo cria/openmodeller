@@ -26,11 +26,11 @@
  */
 
 #include <openmodeller/om.hh>
+#include <openmodeller/file_parser.hh>
 
 #include <openmodeller/env_io/GeoTransform.hh>
 #include <openmodeller/env_io/Raster.hh>
 #include <openmodeller/Occurrence.hh>
-#include "file_parser.hh"
 
 #include "graph/graphic.hh"
 

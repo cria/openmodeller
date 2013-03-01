@@ -26,9 +26,9 @@
  */
 
 #include "request_file.hh"
-#include "file_parser.hh"
 
 #include <openmodeller/om.hh>
+#include <openmodeller/file_parser.hh>
 
 #include <stdlib.h>
 #include <string.h>

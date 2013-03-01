@@ -12,6 +12,7 @@ SET(OM_CORE_SRCS
   Configuration_xmlio.cpp 
   ConfusionMatrix.cpp 
   Environment.cpp 
+  file_parser.cpp
   ignorecase_traits.cpp 
   Log.cpp 
   MapFormat.cpp 
@@ -204,39 +205,40 @@ ELSE (WIN32)
 ENDIF (WIN32)
 
 SET(OM_CORE_HDRS
-  AlgMetadata.hh 
-  AlgorithmFactory.hh  
-  Algorithm.hh     
-  AlgParameter.hh      
-  AreaStats.hh     
+  AlgMetadata.hh
+  AlgorithmFactory.hh
+  Algorithm.hh
+  AlgParameter.hh
+  AreaStats.hh
   CacheManager.hh
   CallbackWrapper.hh
-  Configurable.hh      
-  Configuration.hh     
-  ConfusionMatrix.hh 
-  Environment.hh   
-  Exceptions.hh   
-  ignorecase_traits.hh  
-  Log.hh   
+  Configurable.hh
+  Configuration.hh
+  ConfusionMatrix.hh
+  Environment.hh
+  Exceptions.hh
+  file_parser.hh
+  ignorecase_traits.hh
+  Log.hh
   MapFormat.hh
-  MeanVarianceNormalizer.hh 
-  Model.hh 
-  Normalizable.hh 
-  Normalizer.hh 
-  Occurrence.hh    
-  Occurrences.hh   
-  om.hh 
-  om_defs.hh    
-  OpenModeller.hh  
-  os_specific.hh   
-  Projector.hh 
+  MeanVarianceNormalizer.hh
+  Model.hh
+  Normalizable.hh
+  Normalizer.hh
+  Occurrence.hh
+  Occurrences.hh
+  om.hh
+  om_defs.hh
+  OpenModeller.hh
+  os_specific.hh
+  Projector.hh
   Random.hh
   RocCurve.hh
   refcount.hh 
-  SampleExpr.hh 
-  SampleExprVar.hh 
-  Sample.hh 
-  Sampler.hh 
+  SampleExpr.hh
+  SampleExprVar.hh
+  Sample.hh
+  Sampler.hh
   ScaleNormalizer.hh
 )
 
