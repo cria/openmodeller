@@ -1,9 +1,9 @@
 #include <openmodeller/om.hh>
 #include <openmodeller/Configuration.hh>
 #include <openmodeller/os_specific.hh>
+#include <openmodeller/file_parser.hh>
 
 #include "request_file.hh"
-#include "file_parser.hh"
 
 #include "getopts/getopts.h"
 
