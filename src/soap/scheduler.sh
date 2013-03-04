@@ -160,20 +160,30 @@ ls -t $TICKET_DIRECTORY/proj_req.* 2> /dev/null | tail -n -1 | while read req; d
   moved=$TICKET_DIRECTORY"/proj_proc."$ticket
 
   # define image file extension based on filetype
-  proj_ext=`cat $moved | grep -Eo '(Tiff|BMP|ASC)'`
-  case "$proj_ext" in
-      Tiff)
-          img_ext=".tif"
-          map_file=$map_base$img_ext ;;
-      BMP)
-          img_ext=".bmp" 
-          map_file=$map_base$img_ext ;;
-      ASC)
-          img_ext=".asc"
-          map_file=$map_base$img_ext ;;
-      *)
-          img_ext=".img"
-          map_file=$map_base$img_ext ;;
+  filetype=`cat $p | grep -Eo 'FileType="\w+"'`
+  filecont=`echo $filetype | sed 's/FileType="//; s/".*//'`
+  case "$filecont" in
+    GreyTiff)
+      img_ext=".tif"
+      map_file=$map_base$img_ext ;;
+    GreyTiff100)
+      img_ext=".tif"
+      map_file=$map_base$img_ext ;;
+    FloatingTiff)
+      img_ext=".tif"
+      map_file=$map_base$img_ext ;;
+    GreyBMP)
+      img_ext=".bmp" 
+      map_file=$map_base$img_ext ;;
+    ByteASC)
+      img_ext=".asc" 
+      map_file=$map_base$img_ext ;;
+    FloatingASC)
+      img_ext=".asc" 
+      map_file=$map_base$img_ext ;;
+    *)
+      img_ext=".img"
+      map_file=$map_base$img_ext ;;
   esac
 
   map_base=$DISTRIBUTION_MAP_DIRECTORY"/proc_"$ticket
