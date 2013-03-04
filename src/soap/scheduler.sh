@@ -160,7 +160,7 @@ ls -t $TICKET_DIRECTORY/proj_req.* 2> /dev/null | tail -n -1 | while read req; d
   moved=$TICKET_DIRECTORY"/proj_proc."$ticket
 
   # define image file extension based on filetype
-  filetype=`cat $p | grep -Eo 'FileType="\w+"'`
+  filetype=`cat $moved | grep -Eo 'FileType="\w+"'`
   filecont=`echo $filetype | sed 's/FileType="//; s/".*//'`
   case "$filecont" in
     GreyTiff)
