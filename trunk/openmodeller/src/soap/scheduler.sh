@@ -158,11 +158,12 @@ ls -t $TICKET_DIRECTORY/proj_req.* 2> /dev/null | tail -n -1 | while read req; d
 
   ticket="${req##*.}"
   moved=$TICKET_DIRECTORY"/proj_proc."$ticket
+  map_base=$DISTRIBUTION_MAP_DIRECTORY"/proc_"$ticket
 
   # define image file extension based on filetype
   filetype=`cat $moved | grep -Eo 'FileType="\w+"'`
-  filecont=`echo $filetype | sed 's/FileType="//; s/".*//'`
-  case "$filecont" in
+  proj_type=`echo $filetype | sed 's/FileType="//; s/".*//'`
+  case "$proj_type" in
     GreyTiff)
       img_ext=".tif"
       map_file=$map_base$img_ext ;;
@@ -186,7 +187,6 @@ ls -t $TICKET_DIRECTORY/proj_req.* 2> /dev/null | tail -n -1 | while read req; d
       map_file=$map_base$img_ext ;;
   esac
 
-  map_base=$DISTRIBUTION_MAP_DIRECTORY"/proc_"$ticket
   map_ige=$map_base".ige"
   stats=$TICKET_DIRECTORY"/stats."$ticket
   log=$TICKET_DIRECTORY"/"$ticket
@@ -225,7 +225,7 @@ ls -t $TICKET_DIRECTORY/proj_req.* 2> /dev/null | tail -n -1 | while read req; d
 
   # Create PNG and KMZ files with pseudocolor (requires GDAL command-line tools).
   # This is still an unofficial feature!! Works only for ByteHFA
-  if [[ "$proj_ext" == "ByteHFA" ]]; then
+  if [[ "$proj_type" == "ByteHFA" ]]; then
     if [[ "$CREATE_PNG" == "yes" || "$CREATE_KMZ" == "yes" ]]; then
       if [ -e $map_file ]; then
         # Create a virtual raster
