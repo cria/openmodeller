@@ -158,6 +158,10 @@ ls -t $TICKET_DIRECTORY/proj_req.* 2> /dev/null | tail -n -1 | while read req; d
 
   ticket="${req##*.}"
   moved=$TICKET_DIRECTORY"/proj_proc."$ticket
+
+  # Rename file, avoiding that another process take it
+  mv "$req" "$moved"
+
   map_base=$DISTRIBUTION_MAP_DIRECTORY"/proc_"$ticket
 
   # define image file extension based on filetype
@@ -191,9 +195,6 @@ ls -t $TICKET_DIRECTORY/proj_req.* 2> /dev/null | tail -n -1 | while read req; d
   stats=$TICKET_DIRECTORY"/stats."$ticket
   log=$TICKET_DIRECTORY"/"$ticket
   proj_prog=$TICKET_DIRECTORY"/prog."$ticket
-
-  # Rename file, avoiding that another process take it
-  mv "$req" "$moved"
 
   # if condor_integration then create the script and submit
   if [[ "$CONDOR_INTEGRATION" == "yes" ]]; then
