@@ -187,13 +187,13 @@ static AlgMetadata metadata = {
 
   "SVM", 	                   // Id.
   "SVM (Support Vector Machines)", // Name.
-  "0.4",       	                   // Version.
+  "0.5",       	                   // Version.
 
   // Overview
   "Support vector machines (SVMs) are a set of related supervised learning methods that belong to a family of generalized linear classifiers. They can also be considered a special case of Tikhonov regularization. A special property of SVMs is that they simultaneously minimize the empirical classification error and maximize the geometric margin; hence they are also known as maximum margin classifiers. Content retrieved from Wikipedia on the 13th of June, 2007: http://en.wikipedia.org/w/index.php?title=Support_vector_machine&oldid=136646498.",
 
   // Description.
-  "Support vector machines map input vectors to a higher dimensional space where a maximal separating hyperplane is constructed. Two parallel hyperplanes are constructed on each side of the hyperplane that separates the data. The separating hyperplane is the hyperplane that maximises the distance between the two parallel hyperplanes. An assumption is made that the larger the margin or distance between these parallel hyperplanes the better the generalisation error of the classifier will be. The model produced by support vector classification only depends on a subset of the training data, because the cost function for building the model does not care about training points that lie beyond the margin. Content retrieved from Wikipedia on the 13th of June, 2007: http://en.wikipedia.org/w/index.php?title=Support_vector_machine&oldid=136646498. The openModeller implementation of SVMs makes use of the libsvm library version 2.85: Chih-Chung Chang and Chih-Jen Lin, LIBSVM: a library for support vector machines, 2001. Software available at http://www.csie.ntu.edu.tw/~cjlin/libsvm.\n\nRelease history:\n version 0.1: initial release\n version 0.2: New parameter to specify the number of pseudo-absences to be generated; upgraded to libsvm 2.85; fixed memory leaks",
+  "Support vector machines map input vectors to a higher dimensional space where a maximal separating hyperplane is constructed. Two parallel hyperplanes are constructed on each side of the hyperplane that separates the data. The separating hyperplane is the hyperplane that maximises the distance between the two parallel hyperplanes. An assumption is made that the larger the margin or distance between these parallel hyperplanes the better the generalisation error of the classifier will be. The model produced by support vector classification only depends on a subset of the training data, because the cost function for building the model does not care about training points that lie beyond the margin. Content retrieved from Wikipedia on the 13th of June, 2007: http://en.wikipedia.org/w/index.php?title=Support_vector_machine&oldid=136646498. The openModeller implementation of SVMs makes use of the libsvm library version 2.85: Chih-Chung Chang and Chih-Jen Lin, LIBSVM: a library for support vector machines, 2001. Software available at http://www.csie.ntu.edu.tw/~cjlin/libsvm.\n\nRelease history:\n version 0.1: initial release\n version 0.2: New parameter to specify the number of pseudo-absences to be generated; upgraded to libsvm 2.85; fixed memory leaks\n version 0.3: when absences are needed and the number of pseudo absences to be generated is zero, it will default to the same number of presences\n version 0.4: included missing serialization of C\n version 0.5: the indication if the algorithm needed normalized environmental data was not working when the algorithm was loaded from an existing model.",
 
   "Vladimir N. Vapnik", // Algorithm author.
   "1) Vapnik, V. (1995) The Nature of Statistical Learning Theory. SpringerVerlag. 2) Schölkopf, B., Smola, A., Williamson, R. and Bartlett, P.L.(2000). New support vector algorithms. Neural Computation, 12, 1207-1245. 3) Schölkopf, B., Platt, J.C., Shawe-Taylor, J., Smola A.J. and Williamson, R.C. (2001). Estimating the support of a high-dimensional distribution. Neural Computation, 13, 1443-1471. 4) Cristianini, N. & Shawe-Taylor, J. (2000). An Introduction to Support Vector Machines and other kernel-based learning methods. Cambridge University Press.", // Bibliography.
@@ -302,13 +302,23 @@ int SvmAlgorithm::needNormalization()
 {
   int svm_type;
 
-  if ( getParameter( SVMTYPE_ID, &svm_type ) && svm_type != 2 && _samp->numAbsence() == 0 ) {
+  if ( done() ) {
 
-    // It will be necessary to generate pseudo absences, so do not waste
-    // time normalizing things because normalization should ideally consider
-    // all trainning points (including pseudo-absences). In this specific case, 
-    // normalization will take place in initialize().
-    return 0;
+    if ( ! _normalizerPtr ) {
+	    
+      return 0;
+    }
+  }
+  else {
+	  
+    if ( getParameter( SVMTYPE_ID, &svm_type ) && svm_type != 2 && _samp->numAbsence() == 0 ) {
+
+      // It will be necessary to generate pseudo absences, so do not waste
+      // time normalizing things because normalization should ideally consider
+      // all trainning points (including pseudo-absences). In this specific case, 
+      // normalization will take place in initialize().
+      return 0;
+    }
   }
 
   return 1;
