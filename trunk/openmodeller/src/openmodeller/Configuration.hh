@@ -110,9 +110,9 @@ public:
   void addNameValue( const std::string & name, const std::string & value );
   void addNameValue( const std::string & name, char const * value );
   void addNameValue( const std::string & name, int value );
-  void addNameValue( const std::string & name, double value );
+  void addNameValue( const std::string & name, double value, int precision=25 );
   void addNameValue( const std::string & name, const Sample& value );
-  void addNameValue( const std::string & name, double const *values, int count );
+  void addNameValue( const std::string & name, double const *values, int count, int precision=25 );
   void addNameValue( const std::string & name, int const *values, int count );
   void addNameValue( const std::string & name, unsigned char const *values, int count );
   

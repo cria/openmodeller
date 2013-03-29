@@ -425,23 +425,23 @@ ConfigurationImpl::addNameValue( const string & name, int value ) {
 }
 
 void
-ConfigurationImpl::addNameValue( const string & name, double value ) {
+ConfigurationImpl::addNameValue( const string & name, double value, int precision ) {
 
   stringstream ss(ios::out);
-  ss.precision(25);
+  ss.precision(precision);
+
   ss << value;
 
   addNameValue( name, ss.str() );
 }
 
 void
-ConfigurationImpl::addNameValue( const string & name, double const *values, int count ) {
+ConfigurationImpl::addNameValue( const string & name, double const *values, int count, int precision ) {
 
   stringstream ss(ios::out);
+  ss.precision(precision);
 
-  ss.precision(25);
   for ( int i=0; i<count; i++ ) {
-
     ss << *values++ << " ";
   }
 
