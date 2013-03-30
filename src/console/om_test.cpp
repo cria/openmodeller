@@ -365,6 +365,20 @@ int main( int argc, char **argv ) {
       sampler = createSampler( env, presences, absences );
     }
 
+    if ( ! alg->done() ) {
+
+      Log::instance()->error( "No model could be found as part of the specified algorithm. Aborting.\n");
+
+      // If user is tracking progress
+      if ( ! progress_file.empty() ) { 
+
+        // -2 means aborted
+        progressFileCallback( -2.0, &prog_data );
+      }
+
+      exit(-1);
+    }
+
     // Run tests
 
     Log::instance()->debug( "Starting tests\n" );
