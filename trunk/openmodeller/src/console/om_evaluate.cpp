@@ -142,7 +142,7 @@ int main( int argc, char **argv ) {
     }
     if ( ! points_file.empty() ) {
 
-      printf( "Points file parameter will be ignored (using XML request instead)\n");
+      Log::instance()->warn( "Points file parameter will be ignored (using XML request instead)\n");
     }
   }
 
