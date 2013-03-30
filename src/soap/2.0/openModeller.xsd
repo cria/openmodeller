@@ -1,0 +1,574 @@
+<xs:schema xmlns="http://openmodeller.cria.org.br/xml/2.0" xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="http://openmodeller.cria.org.br/xml/2.0" elementFormDefault="qualified" attributeFormDefault="unqualified" version="2.0" xml:lang="EN">
+	<xs:annotation>
+		<xs:documentation xml:lang="en">
+		XML Schema with all basic element and type definitions used by openModeller and OMWS+
+		</xs:documentation>		
+	</xs:annotation>
+	<!-- GLOBAL ELEMENTS -->
+	<xs:element name="AvailableAlgorithms" type="AvailableAlgorithmsType"/>
+	<xs:element name="Algorithms" type="AlgorithmsMetadataType"/>
+	<xs:element name="AvailableLayers" type="AvailableLayersType"/>
+	<xs:element name="ModelParameters" type="ModelParametersType"/>
+	<xs:element name="ModelEnvelope" type="ModelEnvelopeType"/>
+	<xs:element name="TestParameters" type="TestParametersType"/>
+	<xs:element name="TestResultEnvelope" type="TestResultEnvelopeType"/>
+	<xs:element name="SerializedModel" type="SerializedModelType"/>
+	<xs:element name="ProjectionParameters" type="ProjectionParametersType"/>
+	<xs:element name="ProjectionEnvelope" type="ProjectionEnvelopeType"/>
+	<xs:element name="ModelEvaluationParameters" type="ModelEvaluationParametersType"/>
+	<xs:element name="ModelEvaluation" type="ModelEvaluationResultType"/>
+	<xs:element name="SamplingParameters" type="SamplingParametersType"/>
+	<xs:element name="SamplingResult" type="SamplingResultType"/>
+	<xs:element name="ExperimentParameters" type="ExperimentParametersType"/>
+	<xs:element name="ExperimentTickets" type="JobTicketsType"/>
+	<xs:element name="ResultSet" type="ResultSetType"/>
+	<xs:element name="AbstractJob" abstract="true"/>
+	<xs:element name="SamplingJob" type="SamplingJobType" substitutionGroup="AbstractJob"/>
+	<xs:element name="CreateModelJob" type="CreateModelJobType" substitutionGroup="AbstractJob"/>
+	<xs:element name="TestModelJob" type="TestModelJobType" substitutionGroup="AbstractJob"/>
+	<xs:element name="ProjectModelJob" type="ProjectModelJobType" substitutionGroup="AbstractJob"/>
+	<!-- TYPE DEFINITIONS -->
+	<xs:complexType name="AvailableAlgorithmsType">
+		<xs:sequence>
+			<xs:element ref="Algorithms"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="AlgorithmsMetadataType">
+		<xs:sequence>
+			<xs:element name="Algorithm" type="AlgorithmMetadataType" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="AlgorithmMetadataType">
+		<xs:sequence>
+			<xs:element name="Name" type="xs:string"/>
+			<xs:element name="Overview" type="xs:string"/>
+			<xs:element name="Description" type="xs:string"/>
+			<xs:element name="Designers">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="Designer" maxOccurs="unbounded">
+							<xs:complexType>
+								<xs:attribute name="Name" type="xs:string" use="required"/>
+								<xs:attribute name="Contact" type="xs:string"/>
+							</xs:complexType>
+						</xs:element>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="Bibliography" type="xs:string" minOccurs="0"/>
+			<xs:element name="Developers">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="Developer" maxOccurs="unbounded">
+							<xs:complexType>
+								<xs:attribute name="Name" type="xs:string" use="required"/>
+								<xs:attribute name="Contact" type="xs:string"/>
+							</xs:complexType>
+						</xs:element>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="AcceptsCategoricalMaps" type="xs:boolean"/>
+			<xs:element name="RequiresAbsencePoints" type="xs:boolean"/>
+			<xs:element name="Parameters">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="Parameter" minOccurs="0" maxOccurs="unbounded">
+							<xs:complexType>
+								<xs:sequence>
+									<xs:element name="Name" type="xs:string"/>
+									<xs:element name="Type" type="xs:string"/>
+									<xs:element name="Overview" type="xs:string"/>
+									<xs:element name="Description" type="xs:string"/>
+									<xs:element name="AcceptedRange" minOccurs="0">
+										<xs:complexType>
+											<xs:attribute name="Min" type="xs:double"/>
+											<xs:attribute name="Max" type="xs:double"/>
+										</xs:complexType>
+									</xs:element>
+									<xs:element name="AcceptedValues" minOccurs="0">
+										<xs:complexType>
+											<xs:sequence>
+												<xs:element name="Value" type="xs:string" maxOccurs="unbounded"/>
+											</xs:sequence>
+										</xs:complexType>
+									</xs:element>
+									<xs:element name="Default" type="xs:string" minOccurs="0"/>
+								</xs:sequence>
+								<xs:attribute name="Id" type="xs:string" use="required"/>
+							</xs:complexType>
+						</xs:element>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="Id" type="xs:string" use="required"/>
+		<xs:attribute name="Version" type="xs:string" use="required"/>
+	</xs:complexType>
+	<xs:complexType name="BasicAlgorithmDefinitionType">
+		<xs:sequence>
+			<xs:element name="Parameters">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="Parameter" minOccurs="0" maxOccurs="unbounded">
+							<xs:complexType>
+								<xs:attribute name="Id" type="xs:string" use="required"/>
+								<xs:attribute name="Value" type="xs:string" use="required"/>
+							</xs:complexType>
+						</xs:element>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="Id" type="xs:string" use="required"/>
+		<xs:attribute name="Version" type="xs:string" use="required"/>
+	</xs:complexType>
+	<xs:complexType name="SerializedAlgorithmType">
+		<xs:sequence>
+			<xs:element name="Parameters">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="Parameter" minOccurs="0" maxOccurs="unbounded">
+							<xs:complexType>
+								<xs:attribute name="Id" type="xs:string" use="required"/>
+								<xs:attribute name="Value" type="xs:string" use="required"/>
+							</xs:complexType>
+						</xs:element>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="Normalization" type="NormalizationType" minOccurs="0"/>
+			<xs:element name="Model">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:any processContents="lax"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="Id" type="xs:string" use="required"/>
+		<xs:attribute name="Version" type="xs:string" use="required"/>
+	</xs:complexType>
+	<xs:complexType name="AvailableLayersType">
+		<xs:sequence>
+			<xs:element name="LayersGroup" type="LayersGroupType"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="BasicLayerType">
+		<xs:attribute name="Id" type="xs:string" use="required"/>
+	</xs:complexType>
+	<xs:complexType name="ModellingLayerType">
+		<xs:complexContent>
+			<xs:extension base="BasicLayerType">
+				<xs:attribute name="IsCategorical" type="xs:boolean"/>
+				<xs:attribute name="Min" type="xs:double"/>
+				<xs:attribute name="Max" type="xs:double"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="LayerMetadataType">
+		<xs:complexContent>
+			<xs:extension base="ModellingLayerType">
+				<xs:sequence>
+					<xs:element name="Label" type="xs:string" minOccurs="0"/>
+				</xs:sequence>
+				<xs:attribute name="HasProjection" type="xs:boolean"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="LayersGroupType">
+		<xs:sequence>
+			<xs:element name="Label" type="xs:string"/>
+			<xs:element name="LayersGroup" type="LayersGroupType" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="Layer" type="LayerMetadataType" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+		<xs:attribute name="Id" type="xs:string" use="required"/>
+	</xs:complexType>
+	<xs:complexType name="EnvironmentType">
+		<xs:sequence>
+			<xs:element name="Map" type="ModellingLayerType" maxOccurs="unbounded"/>
+			<xs:element name="Mask" type="BasicLayerType"/>
+		</xs:sequence>
+		<xs:attribute name="NumLayers" type="xs:int"/>
+	</xs:complexType>
+	<xs:complexType name="OccurrencesType">
+		<xs:sequence>
+			<xs:element name="CoordinateSystem" type="xs:string" minOccurs="0"/>
+			<xs:element name="Point" maxOccurs="unbounded">
+				<xs:complexType>
+					<xs:attribute name="Id" type="xs:string"/>
+					<xs:attribute name="X" type="xs:string" use="required"/>
+					<xs:attribute name="Y" type="xs:string" use="required"/>
+					<xs:attribute name="Sample" type="xs:string"/>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="Count" type="xs:int"/>
+		<xs:attribute name="Label" type="xs:string"/>
+	</xs:complexType>
+	<xs:complexType name="SamplerType">
+		<xs:sequence>
+			<xs:element name="Environment" type="EnvironmentType"/>
+			<xs:element name="Presence" type="OccurrencesType"/>
+			<xs:element name="Absence" type="OccurrencesType" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:attributeGroup name="ScaleNormalizerAttributes">
+		<xs:attribute name="UseLayerAsRef" type="xs:int"/>
+		<xs:attribute name="Min" type="xs:double"/>
+		<xs:attribute name="Max" type="xs:double"/>
+		<xs:attribute name="Scales" type="xs:string"/>
+		<xs:attribute name="Offsets" type="xs:string"/>
+	</xs:attributeGroup>
+	<xs:attributeGroup name="MeanVarianceNormalizerAttributes">
+		<xs:attribute name="Mean" type="xs:string"/>
+		<xs:attribute name="StdDev" type="xs:string"/>
+	</xs:attributeGroup>
+	<xs:complexType name="NormalizationType">
+		<xs:attribute name="Class" type="xs:string"/>
+		<xs:attributeGroup ref="ScaleNormalizerAttributes"/>
+		<xs:attributeGroup ref="MeanVarianceNormalizerAttributes"/>
+		<!-- Class attribute is optional just to keep old XML compatible with this schema -->
+		<!-- Using super flexible attribute groups is the best we can do to validate different normalizer data structures -->
+		<!-- (unless each normalizer had its own element name, but we want to be backwards compatible) -->
+	</xs:complexType>
+	<xs:simpleType name="PredefinedThresholdType">
+		<xs:restriction base="xs:double">
+			<xs:minInclusion value="0.0" />
+			<xs:maxInclusion value="1.0" />
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="ThresholdCalculationType">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="lpt">
+				<xs:annotation>
+					<xs:documentation>Non-zero Lowest Presence Threshold for training points (presences)</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="ThresholdType">
+		<xs:union memberTypes="PredefinedThresholdType ThresholdCalculationType"/>
+	</xs:simpleType>
+	<xs:complexType name="TestOptionsType">
+		<xs:sequence>
+			<xs:element name="ConfusionMatrix" minOccurs="0">
+				<xs:complexType>
+					<xs:attribute name="Threshold" type="ThresholdType"/>
+					<xs:attribute name="IgnoreAbsences" type="xs:int"/>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="RocCurve" minOccurs="0">
+				<xs:complexType>
+					<xs:attribute name="Resolution" type="xs:int"/>
+					<xs:attribute name="BackgroundPoints" type="xs:int"/>
+					<xs:attribute name="MaxOmission" type="xs:double"/>
+					<xs:attribute name="UseAbsencesAsBackground" type="xs:int"/>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="TestResultType">
+		<xs:sequence>
+			<xs:element name="ConfusionMatrix" minOccurs="0">
+				<xs:complexType>
+					<xs:attribute name="Threshold" type="xs:double" use="required"/>
+					<xs:attribute name="Accuracy" type="xs:double" use="required"/>
+					<xs:attribute name="OmissionError" type="xs:double" use="required"/>
+					<xs:attribute name="CommissionError" type="xs:double" use="required"/>
+					<xs:attribute name="TruePositives" type="xs:int"/>
+					<xs:attribute name="FalsePositives" type="xs:int"/>
+					<xs:attribute name="TrueNegatives" type="xs:int"/>
+					<xs:attribute name="FalseNegatives" type="xs:int"/>
+					<!-- TruePositives, FalsePositives, TrueNegatives and FalseNegatives are optional attributes for backwards compatibility -->
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="RocCurve" minOccurs="0">
+				<xs:complexType>
+					<xs:attribute name="Auc" type="xs:double" use="required"/>
+					<xs:attribute name="Points" type="xs:string" use="required"/>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="ProjectionStatisticsParametersType">
+		<xs:sequence>
+			<xs:element name="AreaStatistics" minOccurs="0">
+				<xs:complexType>
+					<xs:attribute name="PredictionThreshold" type="ThresholdType" use="required"/>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="ProjectionEnvelopeType">
+		<xs:sequence>
+			<xs:element name="AreaStatistics" type="AreaStatisticsType"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="AreaStatisticsType">
+		<xs:attribute name="TotalCells" type="xs:int" use="required"/>
+		<xs:attribute name="CellsPredicted" type="xs:int" use="required"/>
+		<xs:attribute name="PredictionThreshold" type="xs:double" use="required"/>
+	</xs:complexType>
+	<xs:complexType name="MapOutputParametersType">
+		<xs:sequence>
+			<xs:element name="TemplateLayer" type="BasicLayerType"/>
+		</xs:sequence>
+		<xs:attribute name="FileType" type="xs:string"/>
+	</xs:complexType>
+	<xs:complexType name="ModelParametersType">
+		<xs:sequence>
+			<xs:element name="Sampler" type="SamplerType"/>
+			<xs:element name="Algorithm" type="BasicAlgorithmDefinitionType"/>
+			<xs:element name="Options" type="ModelOptionsType" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="OccurrencesFilterType">
+		<xs:choice>
+			<xs:element name="SpatiallyUnique">
+				<xs:complexType/>
+			</xs:element>
+			<xs:element name="EnvironmentallyUnique">
+				<xs:complexType/>
+			</xs:element>
+		</xs:choice>
+	</xs:complexType>
+	<xs:complexType name="ModelOptionsType">
+		<xs:sequence>
+			<xs:element name="OccurrencesFilter"  type="OccurrencesFilterType" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="ModelEnvelopeType">
+		<xs:sequence>
+			<xs:element ref="SerializedModel"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="SerializedModelType">
+		<xs:sequence>
+			<xs:element name="Sampler" type="SamplerType"/>
+			<xs:element name="Algorithm" type="SerializedAlgorithmType"/>
+			<xs:element name="Statistics" type="TestResultType" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="TestParametersType">
+		<xs:sequence>
+			<xs:element name="Sampler" type="SamplerType"/>
+			<xs:element name="Algorithm" type="SerializedAlgorithmType"/>
+			<xs:element name="Statistics" type="TestOptionsType" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="TestResultEnvelopeType">
+		<xs:sequence>
+			<xs:element name="Statistics" type="TestResultType" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="ProjectionParametersType">
+		<xs:sequence>
+			<xs:element name="Algorithm" type="SerializedAlgorithmType"/>
+			<xs:element name="Environment" type="EnvironmentType"/>
+			<xs:element name="OutputParameters" type="MapOutputParametersType" minOccurs="0"/>
+			<xs:element name="Statistics" type="ProjectionStatisticsParametersType" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="ModelEvaluationParametersType">
+		<xs:sequence>
+			<xs:element name="Sampler" type="SamplerType"/>
+			<xs:element name="Algorithm" type="SerializedAlgorithmType"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="ModelEvaluationResultType">
+		<xs:annotation>
+			<xs:documentation>Values are returned in the V attribute as a sequence of values separated by space in 
+			the same order as the points in the request (first presences then absences). Each value is expected to be in the 
+			range [0,1.0], but if the point is masked out, -1.0 is returned.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="Values">
+				<xs:complexType>
+					<xs:attribute name="V" type="xs:string" use="required"/>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="SamplingOptionsType">
+		<xs:sequence>
+			<xs:element name="OccurrencesFilter"  type="OccurrencesFilterType" minOccurs="0"/>
+		</xs:sequence>
+		<xs:attribute name="NumPoints" type="xs:int" use="required"/>
+		<xs:attribute name="Label" type="xs:string"/>
+		<xs:attribute name="ProportionOfAbsences" type="xs:double"/>
+	</xs:complexType>
+	<xs:complexType name="SamplingParametersType">
+		<xs:sequence>
+			<xs:element name="Environment" type="EnvironmentType"/>
+			<xs:element name="Options" type="SamplingOptionsType"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="SamplingResultType">
+		<xs:sequence>
+			<xs:element name="Environment" type="EnvironmentType"/>
+			<xs:choice>
+				<xs:sequence>
+					<xs:element name="Presence" type="OccurrencesType"/>
+					<xs:element name="Absence" type="OccurrencesType" minOccurs="0"/>
+				</xs:sequence>
+				<xs:element name="Absence" type="OccurrencesType"/>
+			</xs:choice>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="ExperimentParametersType">
+		<xs:sequence>
+			<xs:element name="Environment" maxOccurs="unbounded">
+				<xs:complexType>
+					<xs:complexContent>
+						<xs:extension base="EnvironmentType">
+							<xs:attribute name="id" type="xs:ID" use="required"/>
+						</xs:extension>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="Presence" minOccurs="0" maxOccurs="unbounded">
+				<xs:complexType>
+					<xs:complexContent>
+						<xs:extension base="OccurrencesType">
+							<xs:attribute name="id" type="xs:ID" use="required"/>
+						</xs:extension>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="Absence" minOccurs="0" maxOccurs="unbounded">
+				<xs:complexType>
+					<xs:complexContent>
+						<xs:extension base="OccurrencesType">
+							<xs:attribute name="id" type="xs:ID" use="required"/>
+						</xs:extension>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="AlgorithmSettings" minOccurs="0" maxOccurs="unbounded">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="Algorithm" type="BasicAlgorithmDefinitionType"/>
+					</xs:sequence>
+					<xs:attribute name="id" type="xs:ID" use="required"/>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="SerializedAlgorithm" minOccurs="0" maxOccurs="unbounded">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="Algorithm" type="SerializedAlgorithmType"/>
+					</xs:sequence>
+					<xs:attribute name="id" type="xs:ID" use="required"/>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="Jobs">
+				<xs:complexType>
+					<xs:complexContent>
+						<xs:extension base="IdentifiedType">
+							<xs:sequence>
+								<xs:element ref="AbstractJob" maxOccurs="unbounded"/>
+							</xs:sequence>
+						</xs:extension>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="ReferenceType">
+		<xs:attribute name="idref" type="xs:IDREF" use="required"/>
+	</xs:complexType>
+	<xs:complexType name="IdentifiedType" abstract="true">
+		<xs:attribute name="id" type="xs:ID" use="required"/>
+	</xs:complexType>
+	<xs:complexType name="SamplingJobType">
+		<xs:complexContent>
+			<xs:extension base="IdentifiedType">
+				<xs:sequence>
+					<xs:element name="EnvironmentRef" type="ReferenceType"/>
+					<xs:element name="Options" type="SamplingOptionsType"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="CreateModelJobType">
+		<xs:complexContent>
+			<xs:extension base="IdentifiedType">
+				<xs:sequence>
+					<xs:element name="EnvironmentRef" type="ReferenceType"/>
+					<!-- PresenceRef can point to a SamplingJob -->
+					<xs:element name="PresenceRef" type="ReferenceType"/>
+					<!-- AbsenceRef can point to a SamplingJob -->
+					<xs:element name="AbsenceRef" type="ReferenceType" minOccurs="0"/>
+					<xs:element name="AlgorithmRef" type="ReferenceType"/>
+					<xs:element name="Options" type="ModelOptionsType" minOccurs="0"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="TestModelJobType">
+		<xs:complexContent>
+			<xs:extension base="IdentifiedType">
+				<xs:sequence>
+					<xs:element name="EnvironmentRef" type="ReferenceType"/>
+					<!-- PresenceRef can point to a SamplingJob -->
+					<xs:element name="PresenceRef" type="ReferenceType"/>
+					<!-- AbsenceRef can point to a SamplingJob -->
+					<xs:element name="AbsenceRef" type="ReferenceType" minOccurs="0"/>
+					<!-- ModelRef can point to a CreateModelJob -->
+					<xs:element name="ModelRef" type="ReferenceType"/>
+					<xs:element name="Statistics" type="TestOptionsType" minOccurs="0"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="ProjectModelJobType">
+		<xs:complexContent>
+			<xs:extension base="IdentifiedType">
+				<xs:sequence>
+					<xs:element name="EnvironmentRef" type="ReferenceType"/>
+					<!-- ModelRef can point to a CreateModelJob -->
+					<xs:element name="ModelRef" type="ReferenceType"/>
+					<xs:element name="OutputParameters" type="MapOutputParametersType" minOccurs="0"/>
+					<xs:element name="Statistics" type="ProjectionStatisticsParametersType" minOccurs="0"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="JobTicketsType">
+		<xs:sequence>
+			<xs:element name="Job" maxOccurs="unbounded">
+				<xs:complexType>
+					<xs:complexContent>
+						<xs:extension base="IdentifiedType">
+							<xs:attribute name="Ticket" type="xs:string" use="required"/>
+						</xs:extension>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="ResultSetType">
+		<xs:sequence>
+			<xs:element name="Job" maxOccurs="unbounded">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:choice>
+							<xs:element name="SamplingResult" type="SamplingResultType"/>
+							<xs:element name="ModelEnvelope" type="ModelEnvelopeType"/>
+							<xs:element name="TestResultEnvelope" type="TestResultEnvelopeType"/>
+							<xs:element name="ProjectionEnvelope">
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element name="Statistics" type="ProjectionEnvelopeType" minOccurs="0"/>
+									</xs:sequence>
+									<xs:attribute name="url" type="xs:anyURI" use="required"/>
+								</xs:complexType>
+							</xs:element>
+						</xs:choice>
+					</xs:sequence>
+					<xs:attribute name="Ticket" type="xs:string" use="required"/>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+</xs:schema>
