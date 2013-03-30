@@ -6,6 +6,8 @@ SVN revision: ?
 	* Upgraded gSOAP version being used by OMWS to 2.8.13.
 	* Included library API versioning, starting with 0 from this release.
 	* Moved some of the compiler definitions from CMake to internal #defines, so that client programs can include openModeller headers without worrying about adding specific definitions if they want to compile directly without using CMake.
+	* New command-line tool om_evaluate to return raw model values given a set of points and an environmental scenario.
+	* Fixed segfault when needNormalization was called on a deserialized SVM algorithm.
 
 Release 1.3.0 (2012-07-23)
 -------------
