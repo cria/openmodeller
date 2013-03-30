@@ -8,7 +8,6 @@ SET (OMSOAP_SRCS
   stdsoap2.cpp 
   soapServer.cpp 
   soapC.cpp 
-  httpget.c
 )
 
 SET (OMSOAP_HDRS

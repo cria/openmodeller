@@ -28,8 +28,6 @@
 #include <openmodeller/om.hh>
 #include <openmodeller/file_parser.hh>
 
-#include "httpget.h"
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -62,10 +60,9 @@ using namespace std;
 #define OMWS_CONFIG_FILE "../config/server.conf"
 #define OMWS_LAYERS_CACHE_FILE "layers.xml"
 
-/****************************/
-/*** Forward declarations ***/
+/*****************************/
+/***  Forward declarations ***/
 
-int             my_http_get_handler( struct soap* );
 static void*    process_request( void* );
 static bool     fileExists( const char* fileName );
 static string   getMapFile( string ticket );
@@ -92,9 +89,7 @@ FileParser gFileParser( OMWS_CONFIG_FILE ); // Config file parser
 /*** main gSOAP code ***/
 
 int main(int argc, char **argv)
-{
-  fprintf( stderr, "debug1\n");
- 
+{ 
   struct soap soap;
   soap_init(&soap);
   soap.encodingStyle = NULL;
@@ -111,37 +106,12 @@ int main(int argc, char **argv)
   soap.send_timeout = 10 OMWS_H;
   soap.recv_timeout = 3 OMWS_MIN;
 
-  fprintf( stderr, "debug2\n");
-
   // no args: assume this is a CGI application
   if ( argc < 2 ) { 
 
-    fprintf( stderr, "debug3\n");
-
-    if ( soap_register_plugin_arg( &soap, http_get, (void*)my_http_get_handler ) ) {
-
-      fprintf( stderr, "debug4\n");
-
-      soap_print_fault( &soap, stderr ); // failed to register
-    }
-    else {
-
-      fprintf( stderr, "debug5\n");
-
-      soap_serve( &soap );
-
-      fprintf( stderr, "debugx\n");
-
-      soap_destroy( &soap );
-
-      fprintf( stderr, "debugy\n");
-
-      soap_end( &soap );
-
-      fprintf( stderr, "debugz\n");
-
-      soap_done( &soap );
-    }
+    soap_serve( &soap );
+    soap_destroy( &soap );
+    soap_end( &soap );
   }
   else { 
 
@@ -254,18 +224,6 @@ int main(int argc, char **argv)
   return 0;
 }
 
-/**************************/
-/**** HTTP GET handler ****/
-int my_http_get_handler( struct soap* soap)
-{
-   fprintf( stderr, "debug6\n");
-   soap->http_content = "text/html";
-   soap_response(soap, SOAP_FILE);
-   soap_send(soap, "<html>Hello</html>");
-   soap_end_send(soap);
-   return SOAP_OK; // return SOAP_OK or HTTP error code, e.g. 404
-}
-
 /*************************/
 /**** Process request ****/
 void *process_request( void *soap )
@@ -287,8 +245,6 @@ void *process_request( void *soap )
 int
 omws__ping( struct soap *soap, void *_, xsd__int &status )
 {
-  fprintf( stderr, "debug_ping\n");
-
   logRequest( soap, "ping" );
 
   soap_clr_omode(soap, SOAP_ENC_ZLIB); // disable Zlib's gzip
