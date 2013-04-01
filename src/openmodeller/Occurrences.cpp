@@ -58,6 +58,12 @@ OccurrencesImpl::~OccurrencesImpl()
 }
 
 void
+OccurrencesImpl::setLabel( const string& label )
+{
+  name_ = label;
+}
+
+void
 OccurrencesImpl::setCoordinateSystem( const string& cs )
 {
   cs_ = cs;
