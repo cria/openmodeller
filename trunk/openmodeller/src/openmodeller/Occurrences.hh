@@ -137,6 +137,10 @@ public:
    */
   int dimension() const;
 
+  /** set the label
+   */
+  void setLabel( const std::string& label );
+
   /** set the coordinate system
    *
    *  All occurrences inserted after this call are assumed to be
