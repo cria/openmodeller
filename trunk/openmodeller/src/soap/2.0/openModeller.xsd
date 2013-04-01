@@ -18,7 +18,7 @@
 	<xs:element name="ModelEvaluationParameters" type="ModelEvaluationParametersType"/>
 	<xs:element name="ModelEvaluation" type="ModelEvaluationResultType"/>
 	<xs:element name="SamplingParameters" type="SamplingParametersType"/>
-	<xs:element name="SamplingResult" type="SamplingResultType"/>
+	<xs:element name="Sampler" type="SamplerType"/>
 	<xs:element name="ExperimentParameters" type="ExperimentParametersType"/>
 	<xs:element name="ExperimentTickets" type="JobTicketsType"/>
 	<xs:element name="ResultSet" type="ResultSetType"/>
@@ -209,8 +209,13 @@
 	<xs:complexType name="SamplerType">
 		<xs:sequence>
 			<xs:element name="Environment" type="EnvironmentType"/>
-			<xs:element name="Presence" type="OccurrencesType"/>
-			<xs:element name="Absence" type="OccurrencesType" minOccurs="0"/>
+			<xs:choice>
+				<xs:sequence>
+					<xs:element name="Presence" type="OccurrencesType"/>
+					<xs:element name="Absence" type="OccurrencesType" minOccurs="0"/>
+				</xs:sequence>
+				<xs:element name="Absence" type="OccurrencesType"/>
+			</xs:choice>
 		</xs:sequence>
 	</xs:complexType>
 	<xs:attributeGroup name="ScaleNormalizerAttributes">
@@ -404,18 +409,6 @@
 			<xs:element name="Options" type="SamplingOptionsType"/>
 		</xs:sequence>
 	</xs:complexType>
-	<xs:complexType name="SamplingResultType">
-		<xs:sequence>
-			<xs:element name="Environment" type="EnvironmentType"/>
-			<xs:choice>
-				<xs:sequence>
-					<xs:element name="Presence" type="OccurrencesType"/>
-					<xs:element name="Absence" type="OccurrencesType" minOccurs="0"/>
-				</xs:sequence>
-				<xs:element name="Absence" type="OccurrencesType"/>
-			</xs:choice>
-		</xs:sequence>
-	</xs:complexType>
 	<xs:complexType name="ExperimentParametersType">
 		<xs:sequence>
 			<xs:element name="Environment" maxOccurs="unbounded">
@@ -553,7 +546,7 @@
 				<xs:complexType>
 					<xs:sequence>
 						<xs:choice>
-							<xs:element name="SamplingResult" type="SamplingResultType"/>
+							<xs:element name="Sampler" type="SamplerType"/>
 							<xs:element name="ModelEnvelope" type="ModelEnvelopeType"/>
 							<xs:element name="TestResultEnvelope" type="TestResultEnvelopeType"/>
 							<xs:element name="ProjectionEnvelope">
