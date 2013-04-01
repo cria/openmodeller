@@ -219,7 +219,7 @@
 		</xs:sequence>
 	</xs:complexType>
 	<xs:attributeGroup name="ScaleNormalizerAttributes">
-		<xs:attribute name="UseLayerAsRef" type="xs:int"/>
+		<xs:attribute name="UseLayerAsRef" type="xs:boolean"/>
 		<xs:attribute name="Min" type="xs:double"/>
 		<xs:attribute name="Max" type="xs:double"/>
 		<xs:attribute name="Scales" type="xs:string"/>
@@ -237,7 +237,7 @@
 		<!-- Using super flexible attribute groups is the best we can do to validate different normalizer data structures -->
 		<!-- (unless each normalizer had its own element name, but we want to be backwards compatible) -->
 	</xs:complexType>
-	<xs:simpleType name="PredefinedThresholdType">
+	<xs:simpleType name="ZeroOneIntervalType">
 		<xs:restriction base="xs:double">
 			<xs:minInclusion value="0.0" />
 			<xs:maxInclusion value="1.0" />
@@ -252,23 +252,23 @@
 			</xs:enumeration>
 		</xs:restriction>
 	</xs:simpleType>
-	<xs:simpleType name="ThresholdType">
-		<xs:union memberTypes="PredefinedThresholdType ThresholdCalculationType"/>
+	<xs:simpleType name="ThresholdParameterType">
+		<xs:union memberTypes="ZeroOneIntervalType ThresholdCalculationType"/>
 	</xs:simpleType>
 	<xs:complexType name="TestOptionsType">
 		<xs:sequence>
 			<xs:element name="ConfusionMatrix" minOccurs="0">
 				<xs:complexType>
-					<xs:attribute name="Threshold" type="ThresholdType"/>
-					<xs:attribute name="IgnoreAbsences" type="xs:int"/>
+					<xs:attribute name="Threshold" type="ThresholdParameterType"/>
+					<xs:attribute name="IgnoreAbsences" type="xs:boolean"/>
 				</xs:complexType>
 			</xs:element>
 			<xs:element name="RocCurve" minOccurs="0">
 				<xs:complexType>
 					<xs:attribute name="Resolution" type="xs:int"/>
 					<xs:attribute name="BackgroundPoints" type="xs:int"/>
-					<xs:attribute name="MaxOmission" type="xs:double"/>
-					<xs:attribute name="UseAbsencesAsBackground" type="xs:int"/>
+					<xs:attribute name="MaxOmission" type="ZeroOneIntervalType"/>
+					<xs:attribute name="UseAbsencesAsBackground" type="xs:boolean"/>
 				</xs:complexType>
 			</xs:element>
 		</xs:sequence>
@@ -277,20 +277,19 @@
 		<xs:sequence>
 			<xs:element name="ConfusionMatrix" minOccurs="0">
 				<xs:complexType>
-					<xs:attribute name="Threshold" type="xs:double" use="required"/>
+					<xs:attribute name="Threshold" type="ZeroOneIntervalType" use="required"/>
 					<xs:attribute name="Accuracy" type="xs:double" use="required"/>
 					<xs:attribute name="OmissionError" type="xs:double" use="required"/>
 					<xs:attribute name="CommissionError" type="xs:double" use="required"/>
-					<xs:attribute name="TruePositives" type="xs:int"/>
-					<xs:attribute name="FalsePositives" type="xs:int"/>
-					<xs:attribute name="TrueNegatives" type="xs:int"/>
-					<xs:attribute name="FalseNegatives" type="xs:int"/>
-					<!-- TruePositives, FalsePositives, TrueNegatives and FalseNegatives are optional attributes for backwards compatibility -->
+					<xs:attribute name="TruePositives" type="xs:int" use="required"/>
+					<xs:attribute name="FalsePositives" type="xs:int" use="required"/>
+					<xs:attribute name="TrueNegatives" type="xs:int" use="required"/>
+					<xs:attribute name="FalseNegatives" type="xs:int" use="required"/>
 				</xs:complexType>
 			</xs:element>
 			<xs:element name="RocCurve" minOccurs="0">
 				<xs:complexType>
-					<xs:attribute name="Auc" type="xs:double" use="required"/>
+					<xs:attribute name="Auc" type="ZeroOneIntervalType" use="required"/>
 					<xs:attribute name="Points" type="xs:string" use="required"/>
 				</xs:complexType>
 			</xs:element>
@@ -300,7 +299,7 @@
 		<xs:sequence>
 			<xs:element name="AreaStatistics" minOccurs="0">
 				<xs:complexType>
-					<xs:attribute name="PredictionThreshold" type="ThresholdType" use="required"/>
+					<xs:attribute name="PredictionThreshold" type="ZeroOneIntervalType" use="required"/>
 				</xs:complexType>
 			</xs:element>
 		</xs:sequence>
@@ -313,7 +312,7 @@
 	<xs:complexType name="AreaStatisticsType">
 		<xs:attribute name="TotalCells" type="xs:int" use="required"/>
 		<xs:attribute name="CellsPredicted" type="xs:int" use="required"/>
-		<xs:attribute name="PredictionThreshold" type="xs:double" use="required"/>
+		<xs:attribute name="PredictionThreshold" type="ZeroOneIntervalType" use="required"/>
 	</xs:complexType>
 	<xs:complexType name="MapOutputParametersType">
 		<xs:sequence>
@@ -340,7 +339,7 @@
 	</xs:complexType>
 	<xs:complexType name="ModelOptionsType">
 		<xs:sequence>
-			<xs:element name="OccurrencesFilter"  type="OccurrencesFilterType" minOccurs="0"/>
+			<xs:element name="OccurrencesFilter" type="OccurrencesFilterType" minOccurs="0"/>
 		</xs:sequence>
 	</xs:complexType>
 	<xs:complexType name="ModelEnvelopeType">
@@ -401,7 +400,7 @@
 		</xs:sequence>
 		<xs:attribute name="NumPoints" type="xs:int" use="required"/>
 		<xs:attribute name="Label" type="xs:string"/>
-		<xs:attribute name="ProportionOfAbsences" type="xs:double"/>
+		<xs:attribute name="ProportionOfAbsences" type="ZeroOneIntervalType"/>
 	</xs:complexType>
 	<xs:complexType name="SamplingParametersType">
 		<xs:sequence>
