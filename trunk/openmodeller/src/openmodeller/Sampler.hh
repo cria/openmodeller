@@ -207,22 +207,22 @@ public:
   OccurrencePtr getPseudoPresenceInsideInterval( const Sample * minimum, const Sample * maximum ) const;
 
   /**
-   * Generate pseudo absence samples
+   * Generate pseudo absence samples outside the given model according to the specified threshold
    */
   OccurrencesPtr getPseudoAbsences( const int& numPoints, const Model& model, const Scalar threshold=0.5, const bool geoUnique=false, const bool envUnique=false) const;
 
   /**
-   * Generate pseudo presence samples
+   * Generate pseudo presence samples inside the given model according to the specified threshold
    */
   OccurrencesPtr getPseudoPresences( const int& numPoints, const Model& model, const Scalar threshold=0.5, const bool geoUnique=false, const bool envUnique=false) const;
 
   /**
-   * Generate pseudo absence samples
+   * Generate pseudo absence samples outside the minimum and maximum
    */
   OccurrencesPtr getPseudoAbsences( const int& numPoints, const Sample * minimum, const Sample * maximum, const bool geoUnique=false, const bool envUnique=false) const;
 
   /**
-   * Generate pseudo presence samples
+   * Generate pseudo presence samples inside the minimum and maximum
    */
   OccurrencesPtr getPseudoPresences( const int& numPoints, const Sample * minimum, const Sample * maximum, const bool geoUnique=false, const bool envUnique=false) const;
 
