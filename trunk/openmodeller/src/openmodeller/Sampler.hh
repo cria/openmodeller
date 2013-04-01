@@ -182,9 +182,19 @@ public:
   OccurrencePtr getPseudoAbsence() const;
 
   /**
+   * Generate a pseudo presence sample
+   */
+  OccurrencePtr getPseudoPresence() const;
+
+  /**
    * Generate a pseudo absence sample outside the given model
    */
   OccurrencePtr getPseudoAbsence( const Model& model, const Scalar threshold ) const;
+
+  /**
+   * Generate a pseudo presence sample inside the given model
+   */
+  OccurrencePtr getPseudoPresence( const Model& model, const Scalar threshold ) const;
 
   /**
    * Generate a pseudo absence sample outside the minimum and maximum
@@ -192,14 +202,29 @@ public:
   OccurrencePtr getPseudoAbsenceOutsideInterval( const Sample * minimum, const Sample * maximum ) const;
 
   /**
+   * Generate a pseudo presence sample inside the minimum and maximum
+   */
+  OccurrencePtr getPseudoPresenceInsideInterval( const Sample * minimum, const Sample * maximum ) const;
+
+  /**
    * Generate pseudo absence samples
    */
   OccurrencesPtr getPseudoAbsences( const int& numPoints, const Model& model, const Scalar threshold=0.5, const bool geoUnique=false, const bool envUnique=false) const;
 
   /**
+   * Generate pseudo presence samples
+   */
+  OccurrencesPtr getPseudoPresences( const int& numPoints, const Model& model, const Scalar threshold=0.5, const bool geoUnique=false, const bool envUnique=false) const;
+
+  /**
    * Generate pseudo absence samples
    */
   OccurrencesPtr getPseudoAbsences( const int& numPoints, const Sample * minimum, const Sample * maximum, const bool geoUnique=false, const bool envUnique=false) const;
+
+  /**
+   * Generate pseudo presence samples
+   */
+  OccurrencesPtr getPseudoPresences( const int& numPoints, const Sample * minimum, const Sample * maximum, const bool geoUnique=false, const bool envUnique=false) const;
 
   /** Returns 1 if i-th variable is categorical,
    * otherwise returns 0.

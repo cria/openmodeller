@@ -416,6 +416,14 @@ SamplerImpl::getPseudoAbsence() const
 }
 
 /**************************/
+/*** get Pseudo Presence ***/
+OccurrencePtr
+SamplerImpl::getPseudoPresence() const 
+{
+  return generateRandomSample(1.0);
+}
+
+/**************************/
 /*** get Pseudo Absence ***/
 OccurrencePtr 
 SamplerImpl::getPseudoAbsence( const Model& model, const Scalar threshold ) const
@@ -439,11 +447,49 @@ SamplerImpl::getPseudoAbsence( const Model& model, const Scalar threshold ) cons
 
      loop++;
 
-   } while ( ( prob > threshold ) && ( loop < max_loop ) );
+   } while ( ( prob >= threshold ) && ( loop < max_loop ) );
 
    if ( loop == max_loop ) {
 
-     std::string msg = "Exceeded maximum number of attempts to generate point outside the probability threshold.\n";
+     std::string msg = "Exceeded maximum number of attempts to generate point outside model.\n";
+
+     Log::instance()->error( msg.c_str() );
+
+     throw SamplerException( msg );
+   }
+
+   return occ;
+}
+
+/**************************/
+/*** get Pseudo Presence ***/
+OccurrencePtr 
+SamplerImpl::getPseudoPresence( const Model& model, const Scalar threshold ) const
+{
+   double prob = 0.0;
+
+   OccurrencePtr occ;
+
+   int max_loop = 5000;
+
+   int loop = 0;
+
+   do {
+
+     occ = getPseudoPresence();
+
+     if ( model ) {
+
+       prob = model->getValue( occ->environment() );
+     }
+
+     loop++;
+
+   } while ( ( prob < threshold ) && ( loop < max_loop ) );
+
+   if ( loop == max_loop ) {
+
+     std::string msg = "Exceeded maximum number of attempts to generate point inside model.\n";
 
      Log::instance()->error( msg.c_str() );
 
@@ -474,7 +520,7 @@ SamplerImpl::getPseudoAbsenceOutsideInterval( const Sample * minimum, const Samp
 
      for ( unsigned int i = 0; i < x.size(); i++ ) {
 
-       if ( x[i] == -32768 ) 
+       if ( x.size() == 0 ) 
          break;
 
        if ( x[i] < (*minimum)[i] || x[i] > (*maximum)[i] ) {
@@ -490,7 +536,54 @@ SamplerImpl::getPseudoAbsenceOutsideInterval( const Sample * minimum, const Samp
 
    if ( loop == max_loop ) {
 
-     std::string msg = "Exceeded maximum number of attempts to generate point outside the probability threshold.\n";
+     std::string msg = "Exceeded maximum number of attempts to generate point outside interval.\n";
+
+     Log::instance()->error( msg.c_str() );
+
+     throw SamplerException( msg );
+   }
+
+   return occ;
+}
+
+/**************************/
+/*** get Pseudo Presence ***/
+OccurrencePtr 
+SamplerImpl::getPseudoPresenceInsideInterval( const Sample * minimum, const Sample * maximum ) const
+{
+   bool not_found = true;
+
+   OccurrencePtr occ;
+   Sample x;
+
+   int max_loop = 5000;
+
+   int loop = 0;
+
+   do {
+
+     occ = getPseudoPresence();
+     x = occ->environment();
+
+     for ( unsigned int i = 0; i < x.size(); i++ ) {
+
+       if ( x.size() == 0 ) 
+         break;
+
+       if ( x[i] >= (*minimum)[i] && x[i] <= (*maximum)[i] ) {
+
+         not_found = false;
+         break;
+       }
+     }
+
+     loop++;
+
+   } while ( ( not_found ) && ( loop < max_loop ) );
+
+   if ( loop == max_loop ) {
+
+     std::string msg = "Exceeded maximum number of attempts to generate point inside interval.\n";
 
      Log::instance()->error( msg.c_str() );
 
@@ -520,6 +613,81 @@ SamplerImpl::getPseudoAbsences( const int& numPoints, const Model& model, const 
      else {
 
        point = getPseudoAbsence();
+     }
+
+     switch ( geoUnique ) {
+
+       case false:
+
+         if ( envUnique ) {
+
+           if ( isEnvironmentallyUnique( occurrences, point ) && 
+                isEnvironmentallyUnique( _presence, point ) && 
+                isEnvironmentallyUnique( _absence, point ) ) {
+
+             occurrences->insert( point );
+             i++;
+           }
+         }
+         else {
+
+           occurrences->insert( point );
+           i++;
+         }
+
+         break;
+
+       case true:
+
+         if ( envUnique ) {
+
+           if ( isEnvironmentallyUnique( occurrences, point ) && 
+                isEnvironmentallyUnique( _presence, point ) && 
+                isEnvironmentallyUnique( _absence, point ) ) {
+
+               occurrences->insert( point );
+               i++;
+           }
+         }
+         else {
+
+           if ( isSpatiallyUnique( occurrences, point ) && 
+                isSpatiallyUnique( _presence, point ) && 
+                isSpatiallyUnique( _absence, point ) ) {
+
+             occurrences->insert( point );
+             i++;
+           }
+         }
+
+         break;
+     }
+
+   } while ( i < numPoints );
+
+   return occurrences;
+}
+
+/***************************/
+/*** get Pseudo Presences ***/
+OccurrencesPtr 
+SamplerImpl::getPseudoPresences( const int& numPoints, const Model& model, const Scalar threshold, const bool geoUnique, const bool envUnique) const 
+{
+   int i = 0;
+
+   OccurrencesPtr occurrences( new OccurrencesImpl(1.0) );
+
+   do
+   {
+     OccurrencePtr point;
+
+     if ( model ) {
+
+       point = getPseudoPresence( model, threshold );
+     }
+     else {
+
+       point = getPseudoPresence();
      }
 
      switch ( geoUnique ) {
@@ -643,6 +811,73 @@ SamplerImpl::getPseudoAbsences( const int& numPoints, const Sample * minimum, co
    return occurrences;
 }
 
+/***************************/
+/*** get Pseudo Presences ***/
+OccurrencesPtr 
+SamplerImpl::getPseudoPresences( const int& numPoints, const Sample * minimum, const Sample * maximum, const bool geoUnique, const bool envUnique) const 
+{
+   int i = 0;
+
+   OccurrencesPtr occurrences( new OccurrencesImpl(1.0) );
+
+   do
+   {
+     OccurrencePtr point;
+
+     point = getPseudoPresenceInsideInterval( minimum, maximum );
+
+     switch ( geoUnique ) {
+
+       case false:
+
+         if ( envUnique ) {
+
+           if ( isEnvironmentallyUnique( occurrences, point ) && 
+                isEnvironmentallyUnique( _presence, point ) && 
+                isEnvironmentallyUnique( _absence, point ) ) {
+
+             occurrences->insert( point );
+             i++;
+           }
+         }
+         else {
+
+           occurrences->insert( point );
+           i++;
+         }
+
+         break;
+
+       case true:
+
+         if ( envUnique ) {
+
+           if ( isEnvironmentallyUnique( occurrences, point ) && 
+                isEnvironmentallyUnique( _presence, point ) && 
+                isEnvironmentallyUnique( _absence, point ) ) {
+
+               occurrences->insert( point );
+               i++;
+           }
+         }
+         else {
+
+           if ( isSpatiallyUnique( occurrences, point ) && 
+                isSpatiallyUnique( _presence, point ) && 
+                isSpatiallyUnique( _absence, point ) ) {
+
+             occurrences->insert( point );
+             i++;
+           }
+         }
+
+         break;
+     }
+
+   } while ( i < numPoints );
+
+   return occurrences;
+}
 
 /**********************/
 /*** is Categorical ***/
