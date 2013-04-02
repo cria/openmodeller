@@ -2,14 +2,16 @@ NAME
      om_pseudo - generate random points (longitude and latitude pairs)
 
 SYNOPSIS
-       om_pseudo [-] v --version | n --num-points NUM_POINTS m --mask FILE [ -l, --label ] [ -s, --seq-start ] [ -p, --proportion ] [ -o, --model FILE -t, [--threshold NUM] [--env-unique] ] [--geo-unique] [ --log-level LEVEL ]
+       om_pseudo [-] v --version | r --xml-req FILE | n --num-points NUM_POINTS m --mask FILE [ -l, --label ] [ -q, --seq-start ] [ -p, --proportion ] [ -o, --model FILE -t, [--threshold NUM] [--env-unique] ] [--geo-unique] [ s --result FILE ] [ --log-level LEVEL ] [ --log-file FILE ] [ --prog-file FILE ]
 
 DESCRIPTION
-       om_pseudo is a command line tool to generate random coordinates in a specified geographic region (mask). The output will be a series of lines, one for each longitude/latitude pair, with TAB-delimited content compatible with openModeller. Coordinates will always be generated in the WGS84 datum.
-       By default, points can be randomly generated in any cell of the mask, except in those with "novalue". When "model" and "threshold" are specified, points will be randomly generated in any cell of the mask where the model predicts probabilities less than the threshold value. If "env-unique" is specified, all points will have unique environmental values based on the same layers that were used to create tyhe specified model. If "geo-unique" is specified, all points will have a unique pair of coordinates.
+       om_pseudo is a command line tool to generate random coordinates in a specified geographic region (mask for non-XML requests or environment for XML requests). If the request is provided in XML, the response will be in XML too (according to the SamplingParametersType and SamplerType definitions in the openModeller XML Schema, respectivelly). Otherwise the output will be a series of lines, one for each longitude/latitude pair, with TAB-delimited content compatible with openModeller. Coordinates will always be generated in decimals with WGS84 datum.
+       By default, points can be randomly generated in any cell of the mask, except in those with "novalue". When "model" and "threshold" are specified, points will be randomly generated in any cell of the mask where the model predicts probabilities less than the threshold value (for absences) or greater than or equals the threshold value (for presences). If "env-unique" is specified, all points will have unique environmental values based on the same layers that were used to create the specified model. If "geo-unique" is specified, all points will have a unique pair of coordinates.
 
 OPTIONS
        -v, --version     Display version info.
+
+       -r, --xml-req     File containing a sampling request in XML.
 
        -n, --num-points  Number of points to be generated.
 
@@ -17,9 +19,9 @@ OPTIONS
 
        -l, --label       Label to be associated with the points. Defaults to "label".
 
-       -s, --seq-start   Id (integer) of the first point to be generated. Defaults to 1. The next points will follow the sequence.
+       -q, --seq-start   Id (integer) of the first point to be generated. Defaults to 1. The next points will follow the sequence.
 
-       -p, --proportion  Percentage of absence points to be generated. Defaults to 100 (all points will be absence points).
+       -p, --proportion  Proportion of absence points to be generated. Defaults to 1 (all points will be absence points).
 
        -o, --model       Serialized model file. When specified, points will only be generated in cells where the model predicts a probability less than the specified threshold.
 
@@ -29,7 +31,13 @@ OPTIONS
 
        --geo-unique      Avoid repeating the same coordinates for each point.
 
+       -s, --result      File to store result.
+
        --log-level       openModeller log level: debug, warn, info or error. Defaults to "info".
+
+       --log-file        File to store log information.
+
+       --prog-file       File to store progress (-1=queued, -2=aborted, [0,100]=progress).
 
 AUTHORS
        Renato De Giovanni <renato at cria dot org dot br>
