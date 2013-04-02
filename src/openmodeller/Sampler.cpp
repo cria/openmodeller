@@ -136,14 +136,15 @@ SamplerImpl::getConfiguration( ) const
     config->addSubsection( _env->getConfiguration() );
   }
 
-  if ( _presence ) {
+  // Even if there are zero presences, include the element if there no absences (the XML Schema mandates at least one of <Presence> or <Absence>)
+  if ( _presence && ( _presence->numOccurrences() > 0 || ! _absence || _absence->numOccurrences() == 0) ) {
 
     ConfigurationPtr cfg( _presence->getConfiguration() );
     cfg->setName( "Presence" );
     config->addSubsection( cfg );
   }
 
-  if ( _absence ) {
+  if ( _absence && _absence->numOccurrences() > 0 ) {
 
     ConfigurationPtr cfg( _absence->getConfiguration() );
     cfg->setName( "Absence" );
