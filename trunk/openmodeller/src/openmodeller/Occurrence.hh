@@ -199,21 +199,23 @@ public:
 
   bool hasEnvironment() const;
 
+  void setId( const std::string& id );
+
   void setAbundance( Scalar value );
 
   void dump() const;
 
 private:
 
-  std::string id_; ///< Unique identifier.
-  Coord  x_;
-  Coord  y_;
-  Scalar error_;  ///< (x,y) uncertanty in meters.
-  Scalar abundance_;
+  std::string id_; // Unique identifier
+  Coord  x_; // Longitude
+  Coord  y_; // Latitude
+  Scalar error_;  // coordinate uncertanty in meters (unused so far)
+  Scalar abundance_; // used only to distinguish between presence (1) and absence (0)
 
-  Sample attr_;
-  Sample unnormEnv_;
-  Sample normEnv_;
+  Sample attr_; // extra attributes
+  Sample unnormEnv_; // unnormalized environment
+  Sample normEnv_; // normalized enviroment
 };
 
 #endif

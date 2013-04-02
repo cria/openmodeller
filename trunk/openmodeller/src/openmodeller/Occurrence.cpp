@@ -110,6 +110,12 @@ OccurrenceImpl::hasEnvironment() const
 }
 
 void
+OccurrenceImpl::setId( const std::string& id )
+{
+  id_ = id;
+}
+
+void
 OccurrenceImpl::setAbundance( Scalar value )
 {
   abundance_ = value;
