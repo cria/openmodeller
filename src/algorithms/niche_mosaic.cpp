@@ -201,9 +201,9 @@ NicheMosaic::initialize()
 
   _num_points_absence_test = _my_absence_test->numOccurrences(); 
 
-  _my_presences = new OccurrencesImpl( _my_absence_test->name(), _my_absence_test->coordSystem() );
+  _my_presences = new OccurrencesImpl( _my_absence_test->label(), _my_absence_test->coordSystem() );
 
-  _my_presences_test = new OccurrencesImpl( _my_absence_test->name(), _my_absence_test->coordSystem() );
+  _my_presences_test = new OccurrencesImpl( _my_absence_test->label(), _my_absence_test->coordSystem() );
 
   return 1;
 }

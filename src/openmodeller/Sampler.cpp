@@ -215,11 +215,11 @@ void SamplerImpl::getMinMax( Sample * min, Sample * max ) const
 
   if ( _presence ) {
 
-    allOccs = new OccurrencesImpl( _presence->name(), _presence->coordSystem() );
+    allOccs = new OccurrencesImpl( _presence->label(), _presence->coordSystem() );
   }
   else {
 
-    allOccs = new OccurrencesImpl( _absence->name(), _absence->coordSystem() );
+    allOccs = new OccurrencesImpl( _absence->label(), _absence->coordSystem() );
   }
 
   allOccs->appendFrom( _presence );
@@ -1159,9 +1159,9 @@ void splitSampler(const SamplerPtr& orig,
 
   if ( presence ) {
 
-    test_presence = new OccurrencesImpl( presence->name(), presence->coordSystem() );
+    test_presence = new OccurrencesImpl( presence->label(), presence->coordSystem() );
 
-    train_presence = new OccurrencesImpl( presence->name(), presence->coordSystem() );
+    train_presence = new OccurrencesImpl( presence->label(), presence->coordSystem() );
 
     splitOccurrences( presence, train_presence, test_presence, propTrain );
   }
@@ -1174,9 +1174,9 @@ void splitSampler(const SamplerPtr& orig,
 
   if ( absence ) { 
 
-    test_absence = new OccurrencesImpl( absence->name(), absence->coordSystem() );
+    test_absence = new OccurrencesImpl( absence->label(), absence->coordSystem() );
 
-    train_absence = new OccurrencesImpl( absence->name(), absence->coordSystem() );
+    train_absence = new OccurrencesImpl( absence->label(), absence->coordSystem() );
 
     splitOccurrences( absence, train_absence, test_absence, propTrain );
   }

@@ -509,7 +509,7 @@ SvmAlgorithm::initialize()
 
       Log::instance()->info( SVM_LOG_PREFIX "Generating pseudo-absences.\n" );
 
-      absences = new OccurrencesImpl( presences->name(), presences->coordSystem() );
+      absences = new OccurrencesImpl( presences->label(), presences->coordSystem() );
 
       for ( int i = 0; i < num_absences; ++i ) {
 

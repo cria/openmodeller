@@ -55,7 +55,7 @@ OccurrencesReader::getPresences( const char *groupId )
 
     OccurrencesPtr oc = *ocs;
 
-    if ( ! strcasecmp( groupId, oc->name() ) ) {
+    if ( ! strcasecmp( groupId, oc->label() ) ) {
 
       _presences.erase( ocs );
 
@@ -87,7 +87,7 @@ OccurrencesReader::getAbsences( const char *groupId )
 
     OccurrencesPtr oc = *ocs;
 
-    if ( ! strcasecmp( groupId, oc->name() ) ) {
+    if ( ! strcasecmp( groupId, oc->label() ) ) {
 
       _absences.erase( ocs );
 
@@ -169,7 +169,7 @@ OccurrencesReader::_addPresence( const char *id, const char *groupId, Coord lg, 
 
     OccurrencesPtr const & group = *ocs;
 
-    if ( ! strcasecmp( group->name(), groupId ) ) {
+    if ( ! strcasecmp( group->label(), groupId ) ) {
 
       group->createOccurrence( id, lg, lt, error, abundance, num_attributes, attributes );
       return 0;
@@ -204,7 +204,7 @@ OccurrencesReader::_addAbsence( const char *id, const char *groupId, Coord lg, C
 
       OccurrencesPtr const & group = *ocs;
 
-      if ( ! strcasecmp( group->name(), groupId ) ) {
+      if ( ! strcasecmp( group->label(), groupId ) ) {
 
         group->createOccurrence( id, lg, lt, error, 0.0, num_attributes, attributes );
         return 0;

@@ -201,16 +201,16 @@ int main( int argc, char **argv ) {
 
       if ( presences ) {
 
-        pres1 = new OccurrencesImpl( presences->name(), presences->coordSystem() );
-        pres2 = new OccurrencesImpl( presences->name(), presences->coordSystem() );
+        pres1 = new OccurrencesImpl( presences->label(), presences->coordSystem() );
+        pres2 = new OccurrencesImpl( presences->label(), presences->coordSystem() );
 
         splitOccurrences( presences, pres1, pres2, split_prop );
       }
 
       if ( absences ) {
 
-        abs1 = new OccurrencesImpl( absences->name(), absences->coordSystem() );
-        abs2 = new OccurrencesImpl( absences->name(), absences->coordSystem() );
+        abs1 = new OccurrencesImpl( absences->label(), absences->coordSystem() );
+        abs2 = new OccurrencesImpl( absences->label(), absences->coordSystem() );
 
         splitOccurrences( absences, abs1, abs2, split_prop );
       }

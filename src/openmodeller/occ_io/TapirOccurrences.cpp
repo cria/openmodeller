@@ -433,7 +433,7 @@ TapirOccurrences::getPresences( const char *groupId )
 
     OccurrencesPtr oc = *ocs;
 
-    if ( ! strcasecmp( groupId, oc->name() ) ) {
+    if ( ! strcasecmp( groupId, oc->label() ) ) {
 
       _presences.erase( ocs );
 
@@ -511,10 +511,10 @@ TapirOccurrences::_retrieveRecords( TapirRecordData *data, int limit )
 
 // curl_easy_escape was included in libcurl version 7.15.4
 #if LIBCURL_VERSION_NUM >= 0x070f04
-  search_url << "&sciname=" << curl_easy_escape( curl_handle, data->_occurrences->name(), 0 );
+  search_url << "&sciname=" << curl_easy_escape( curl_handle, data->_occurrences->label(), 0 );
   search_url << "&t=" << curl_easy_escape( curl_handle, TP_TEMPLATE_LOCATION, 0 );
 #else
-  search_url << "&sciname=" << curl_escape( data->_occurrences->name(), 0 );
+  search_url << "&sciname=" << curl_escape( data->_occurrences->label(), 0 );
   search_url << "&t=" << curl_escape( TP_TEMPLATE_LOCATION, 0 );
 #endif
 

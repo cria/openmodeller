@@ -349,7 +349,7 @@ void printOccurrences( ostream & stream, ConstOccurrencesPtr occ ) {
 
   while ( it != fin ) {
 
-    stream << "\n" << ((*it)->id()).c_str() << "\t" << occ->name() << "\t" << (*it)->x() << "\t" << (*it)->y() << "\t" << (*it)->abundance();
+    stream << "\n" << ((*it)->id()).c_str() << "\t" << occ->label() << "\t" << (*it)->x() << "\t" << (*it)->y() << "\t" << (*it)->abundance();
 
     Sample s = (*it)->environment();
 
