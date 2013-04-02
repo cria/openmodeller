@@ -1,0 +1,8 @@
+<SamplingParameters>
+  <Environment NumLayers="2">
+    <Map Id="rain_coolest.tif" IsCategorical="0"/>
+    <Map Id="temp_avg.tif" IsCategorical="0"/>
+    <Mask Id="rain_coolest.tif"/>
+  </Environment>
+  <Options NumPoints="100" Label="spp" ProportionOfAbsences="0.5"/> 
+</SamplingParameters>

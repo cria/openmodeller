@@ -8,6 +8,7 @@ SVN revision: ?
 	* Moved some of the compiler definitions from CMake to internal #defines, so that client programs can include openModeller headers without worrying about adding specific definitions if they want to compile directly without using CMake.
 	* New command-line tool om_evaluate to return raw model values given a set of points and an environmental scenario.
 	* Fixed segfault when needNormalization was called on a deserialized SVM algorithm.
+	* Modified om_pseudo command-line tool to also accept XML input (in this case also producing XML output), optionally storing it into a file. When a model is specified as a parameter, presences are generated inside the model, while absences are generated outside.
 
 Release 1.3.0 (2012-07-23)
 -------------
