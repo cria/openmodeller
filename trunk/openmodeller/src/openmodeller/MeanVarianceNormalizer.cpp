@@ -63,7 +63,7 @@ void MeanVarianceNormalizer::computeNormalization( const ReferenceCountedPointer
   OccurrencesPtr presences = samplerPtr->getPresences();
   OccurrencesPtr absences = samplerPtr->getAbsences();
   
-  OccurrencesPtr allOccs( new OccurrencesImpl( presences->name(), presences->coordSystem() ) );
+  OccurrencesPtr allOccs( new OccurrencesImpl( presences->label(), presences->coordSystem() ) );
 
   allOccs->appendFrom( presences );
   allOccs->appendFrom( absences );

@@ -349,7 +349,7 @@ int main( int argc, char **argv ) {
       // Get label and spatial reference from presence points of the training sampler
       OccurrencesPtr training_presences = training_sampler->getPresences();
 
-      std::string label( training_presences->name() );
+      std::string label( training_presences->label() );
       std::string spatial_ref( training_presences->coordSystem() );
 
       Log::instance()->debug( "Loading test points %s %s\n", label.c_str(), spatial_ref.c_str() );

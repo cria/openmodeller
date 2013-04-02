@@ -422,7 +422,7 @@ AquaMaps::_getAndCheckParameter( std::string const &name, int * value )
 void
 AquaMaps::_calculateEnvelopes( const OccurrencesPtr& occs )
 {
-  Log::instance()->debug("Species is: %s\n", occs->name());
+  Log::instance()->debug("Species is: %s\n", occs->label());
   Log::instance()->debug("Layers are:\n");
   Log::instance()->debug("0 = Maximum depth\n");
   Log::instance()->debug("1 = Minimum depth\n");
@@ -474,7 +474,7 @@ AquaMaps::_calculateEnvelopes( const OccurrencesPtr& occs )
   _maximum[MAXDEPTH] = _maximum[MINDEPTH] = _pref_maximum[MAXDEPTH] = _pref_maximum[MINDEPTH] = 9999.0;
 
   // Try to get expert information about depth range from database
-  _readSpeciesData( occs->name() );
+  _readSpeciesData( occs->label() );
 
   if ( _use_surface_layers == -1 ) {
 

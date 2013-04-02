@@ -90,7 +90,7 @@ public:
    */
   inline OccurrencesImpl( double default_abundance ) :
     default_abundance_( default_abundance ),
-    name_( ),
+    label_( ),
     cs_( GeoTransform::getDefaultCS() ),
     gt_( 0 ),
     occur_( )
@@ -98,15 +98,15 @@ public:
     initGeoTransform();
   };
 
-  /** Creates a collection of occurrences points.
-   *  @param name Collection of occurrences' name.
+  /** Creates a collection of occurrence points.
+   *  @param label Label for the collection.
    *  @param coord_system Coordinate system of the occurrences
    *   points to be inserted in this collection (in WKT format).
    */
-  inline OccurrencesImpl( const std::string& name, 
+  inline OccurrencesImpl( const std::string& label, 
 			  const std::string& coord_system=GeoTransform::getDefaultCS() ) :
     default_abundance_( 0.0 ),
-    name_( name ),
+    label_( label ),
     cs_( coord_system ),
     gt_( 0 ),
     occur_()
@@ -122,8 +122,8 @@ public:
   /** change the reserve setting for the container */
   void reserve( int estimate ) { occur_.reserve( estimate ); }
 
-  /** name of the occurrences/species */
-  char const * name() const { return name_.c_str(); }
+  /** label of the occurrences */
+  char const * label() const { return label_.c_str(); }
 
   /** coordinate system name */
   char const * coordSystem() const { return cs_.c_str(); }
@@ -245,13 +245,12 @@ private:
 
   double default_abundance_;
 
-  std::string name_; ///< Name for the list of occurrences (e.g. species name).
-  std::string cs_;   ///< Coordinate system name
+  std::string label_; // Label for the list of occurrences (e.g. species name)
+  std::string cs_;   // Coordinate system name
 
-  /** Object to transform between different coordinate systems. */
-  GeoTransform *gt_;
+  GeoTransform *gt_; // Object to transform between different coordinate systems
 
-  std::vector< OccurrencePtr > occur_;  ///< Coordinates of the occurrences.
+  std::vector< OccurrencePtr > occur_;  // Occurrences
 };
 
 

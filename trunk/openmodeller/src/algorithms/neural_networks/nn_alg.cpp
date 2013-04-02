@@ -361,7 +361,7 @@ NNAlgorithm::initialize()
 
     num_absences = num_presences;
 
-    absences = new OccurrencesImpl( presences->name(), presences->coordSystem() );
+    absences = new OccurrencesImpl( presences->label(), presences->coordSystem() );
 
 
     for ( int i = 0; i < num_absences; ++i ) {

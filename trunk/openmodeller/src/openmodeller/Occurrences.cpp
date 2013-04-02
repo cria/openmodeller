@@ -60,7 +60,7 @@ OccurrencesImpl::~OccurrencesImpl()
 void
 OccurrencesImpl::setLabel( const string& label )
 {
-  name_ = label;
+  label_ = label;
 }
 
 void
@@ -89,7 +89,7 @@ OccurrencesImpl::getConfiguration() const
 {
   ConfigurationPtr config( new ConfigurationImpl("Occurrences") );
 
-  config->addNameValue( "Label", name() );
+  config->addNameValue( "Label", label() );
 
   ConfigurationPtr cs( new ConfigurationImpl( "CoordinateSystem" ) );
   cs->setValue( coordSystem() );
@@ -126,7 +126,7 @@ OccurrencesImpl::getConfiguration() const
 void
 OccurrencesImpl::setConfiguration( const ConstConfigurationPtr& config )
 {
-  name_ = config->getAttribute("Label");
+  label_ = config->getAttribute("Label");
   
   ConstConfigurationPtr cs_config = config->getSubsection( "CoordinateSystem", false );
   
@@ -314,7 +314,7 @@ OccurrencesImpl::clone() const
   const_iterator it = occur_.begin();
   const_iterator end = occur_.end();
   
-  OccurrencesImpl* clone = new OccurrencesImpl( name_, cs_ );
+  OccurrencesImpl* clone = new OccurrencesImpl( label_, cs_ );
 
   while( it != end ) {
     
@@ -439,7 +439,7 @@ OccurrencesImpl::dump( std::string msg ) const
   Log::instance()->info( "%s\n", msg.c_str() );
 
   // Occurrences general data.
-  Log::instance()->info( "Name: %s\n", name_.c_str() );
+  Log::instance()->info( "Label: %s\n", label_.c_str() );
   Log::instance()->info( "\nOccurrences: %d\n\n", numOccurrences() );
 
   const_iterator c = occur_.begin();

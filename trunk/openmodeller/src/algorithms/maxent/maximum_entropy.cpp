@@ -554,7 +554,7 @@ MaximumEntropy::initialize()
     merge_points = false;
   }
     
-  _background = new OccurrencesImpl( _presences->name(), _presences->coordSystem() );
+  _background = new OccurrencesImpl( _presences->label(), _presences->coordSystem() );
 
   if ( use_absences_as_background ) {
 
