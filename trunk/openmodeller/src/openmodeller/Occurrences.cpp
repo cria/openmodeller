@@ -108,9 +108,10 @@ OccurrencesImpl::getConfiguration() const
     Scalar x = (*oc)->x();
     Scalar y = (*oc)->y();
     gt_->transfIn( &x, &y );
+    int precision = 9;
     cfg->addNameValue( "Id", id );
-    cfg->addNameValue( "X", x );
-    cfg->addNameValue( "Y", y );
+    cfg->addNameValue( "X", x, precision );
+    cfg->addNameValue( "Y", y, precision );
     if ( (*oc)->hasEnvironment() ) {
 
       cfg->addNameValue( "Sample", (*oc)->originalEnvironment() );
