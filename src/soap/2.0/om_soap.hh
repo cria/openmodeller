@@ -219,3 +219,10 @@ struct omws__getResultsResponse
  */
 //gsoap om service method-documentation: getResults Retrieves job results given one or more tickets.
 int omws__getResults(xsd__string tickets, struct omws__getResultsResponse *out);
+
+/** Cancel the specified jobs.
+ * @param ticket Comma-separated job tickets.
+ * @return standard gSOAP integer code
+ */
+//gsoap om service method-documentation: cancel Cancel one or more jobs, returning the list of cancelled jobs.
+int omws__cancel(xsd__string tickets, xsd__string &cancelledTickets);

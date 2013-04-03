@@ -490,10 +490,34 @@ public:
 };
 #endif
 
+#ifndef SOAP_TYPE_omws__cancelResponse
+#define SOAP_TYPE_omws__cancelResponse (83)
+/* omws:cancelResponse */
+struct omws__cancelResponse
+{
+public:
+	char *cancelledTickets;	/* SOAP 1.2 RPC return element (when namespace qualified) */	/* required element of type xsd:string */
+public:
+	int soap_type() const { return 83; } /* = unique id SOAP_TYPE_omws__cancelResponse */
+};
+#endif
+
+#ifndef SOAP_TYPE_omws__cancel
+#define SOAP_TYPE_omws__cancel (84)
+/* omws:cancel */
+struct omws__cancel
+{
+public:
+	char *tickets;	/* optional element of type xsd:string */
+public:
+	int soap_type() const { return 84; } /* = unique id SOAP_TYPE_omws__cancel */
+};
+#endif
+
 #ifndef WITH_NOGLOBAL
 
 #ifndef SOAP_TYPE_SOAP_ENV__Code
-#define SOAP_TYPE_SOAP_ENV__Code (82)
+#define SOAP_TYPE_SOAP_ENV__Code (85)
 /* SOAP Fault Code: */
 struct SOAP_ENV__Code
 {
@@ -501,7 +525,7 @@ public:
 	char *SOAP_ENV__Value;	/* optional element of type xsd:QName */
 	struct SOAP_ENV__Code *SOAP_ENV__Subcode;	/* optional element of type SOAP-ENV:Code */
 public:
-	int soap_type() const { return 82; } /* = unique id SOAP_TYPE_SOAP_ENV__Code */
+	int soap_type() const { return 85; } /* = unique id SOAP_TYPE_SOAP_ENV__Code */
 };
 #endif
 
@@ -510,7 +534,7 @@ public:
 #ifndef WITH_NOGLOBAL
 
 #ifndef SOAP_TYPE_SOAP_ENV__Detail
-#define SOAP_TYPE_SOAP_ENV__Detail (84)
+#define SOAP_TYPE_SOAP_ENV__Detail (87)
 /* SOAP-ENV:Detail */
 struct SOAP_ENV__Detail
 {
@@ -519,7 +543,7 @@ public:
 	int __type;	/* any type of element <fault> (defined below) */
 	void *fault;	/* transient */
 public:
-	int soap_type() const { return 84; } /* = unique id SOAP_TYPE_SOAP_ENV__Detail */
+	int soap_type() const { return 87; } /* = unique id SOAP_TYPE_SOAP_ENV__Detail */
 };
 #endif
 
@@ -528,14 +552,14 @@ public:
 #ifndef WITH_NOGLOBAL
 
 #ifndef SOAP_TYPE_SOAP_ENV__Reason
-#define SOAP_TYPE_SOAP_ENV__Reason (85)
+#define SOAP_TYPE_SOAP_ENV__Reason (88)
 /* SOAP-ENV:Reason */
 struct SOAP_ENV__Reason
 {
 public:
 	char *SOAP_ENV__Text;	/* optional element of type xsd:string */
 public:
-	int soap_type() const { return 85; } /* = unique id SOAP_TYPE_SOAP_ENV__Reason */
+	int soap_type() const { return 88; } /* = unique id SOAP_TYPE_SOAP_ENV__Reason */
 };
 #endif
 
@@ -544,7 +568,7 @@ public:
 #ifndef WITH_NOGLOBAL
 
 #ifndef SOAP_TYPE_SOAP_ENV__Fault
-#define SOAP_TYPE_SOAP_ENV__Fault (86)
+#define SOAP_TYPE_SOAP_ENV__Fault (89)
 /* SOAP Fault: */
 struct SOAP_ENV__Fault
 {
@@ -559,7 +583,7 @@ public:
 	char *SOAP_ENV__Role;	/* optional element of type xsd:string */
 	struct SOAP_ENV__Detail *SOAP_ENV__Detail;	/* optional element of type SOAP-ENV:Detail */
 public:
-	int soap_type() const { return 86; } /* = unique id SOAP_TYPE_SOAP_ENV__Fault */
+	int soap_type() const { return 89; } /* = unique id SOAP_TYPE_SOAP_ENV__Fault */
 };
 #endif
 
@@ -652,6 +676,8 @@ SOAP_FMAC5 int SOAP_FMAC6 omws__runExperiment(struct soap*, wchar_t *om__Experim
 
 SOAP_FMAC5 int SOAP_FMAC6 omws__getResults(struct soap*, char *tickets, struct omws__getResultsResponse *out);
 
+SOAP_FMAC5 int SOAP_FMAC6 omws__cancel(struct soap*, char *tickets, char *&cancelledTickets);
+
 /******************************************************************************\
  *                                                                            *
  * Server-Side Skeletons to Invoke Service Operations                         *
@@ -698,6 +724,8 @@ SOAP_FMAC5 int SOAP_FMAC6 soap_serve_omws__runExperiment(struct soap*);
 
 SOAP_FMAC5 int SOAP_FMAC6 soap_serve_omws__getResults(struct soap*);
 
+SOAP_FMAC5 int SOAP_FMAC6 soap_serve_omws__cancel(struct soap*);
+
 /******************************************************************************\
  *                                                                            *
  * Client-Side Call Stubs                                                     *
@@ -740,6 +768,8 @@ SOAP_FMAC5 int SOAP_FMAC6 soap_call_omws__getSamplingResult(struct soap *soap, c
 SOAP_FMAC5 int SOAP_FMAC6 soap_call_omws__runExperiment(struct soap *soap, const char *soap_endpoint, const char *soap_action, wchar_t *om__ExperimentParameters, struct omws__runExperimentResponse *out);
 
 SOAP_FMAC5 int SOAP_FMAC6 soap_call_omws__getResults(struct soap *soap, const char *soap_endpoint, const char *soap_action, char *tickets, struct omws__getResultsResponse *out);
+
+SOAP_FMAC5 int SOAP_FMAC6 soap_call_omws__cancel(struct soap *soap, const char *soap_endpoint, const char *soap_action, char *tickets, char *&cancelledTickets);
 
 #endif
 

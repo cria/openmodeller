@@ -15,7 +15,7 @@ compiling, linking, and/or using OpenSSL is allowed.
 
 #include "soapH.h"
 
-SOAP_SOURCE_STAMP("@(#) soapC.cpp ver 2.8.13 2013-03-22 20:07:46 GMT")
+SOAP_SOURCE_STAMP("@(#) soapC.cpp ver 2.8.13 2013-04-03 19:59:40 GMT")
 
 
 #ifndef WITH_NOGLOBAL
@@ -198,6 +198,10 @@ SOAP_FMAC3 void * SOAP_FMAC4 soap_getelement(struct soap *soap, int *type)
 		return soap_in_xsd__double(soap, NULL, NULL, "xsd:double");
 	case SOAP_TYPE_double:
 		return soap_in_double(soap, NULL, NULL, "xsd:double");
+	case SOAP_TYPE_omws__cancel:
+		return soap_in_omws__cancel(soap, NULL, NULL, "omws:cancel");
+	case SOAP_TYPE_omws__cancelResponse:
+		return soap_in_omws__cancelResponse(soap, NULL, NULL, "omws:cancelResponse");
 	case SOAP_TYPE_omws__getResults:
 		return soap_in_omws__getResults(soap, NULL, NULL, "omws:getResults");
 	case SOAP_TYPE_omws__getResultsResponse:
@@ -332,6 +336,14 @@ SOAP_FMAC3 void * SOAP_FMAC4 soap_getelement(struct soap *soap, int *type)
 		if (!soap_match_tag(soap, t, "xsd:double"))
 		{	*type = SOAP_TYPE_double;
 			return soap_in_double(soap, NULL, NULL, NULL);
+		}
+		if (!soap_match_tag(soap, t, "omws:cancel"))
+		{	*type = SOAP_TYPE_omws__cancel;
+			return soap_in_omws__cancel(soap, NULL, NULL, NULL);
+		}
+		if (!soap_match_tag(soap, t, "omws:cancelResponse"))
+		{	*type = SOAP_TYPE_omws__cancelResponse;
+			return soap_in_omws__cancelResponse(soap, NULL, NULL, NULL);
 		}
 		if (!soap_match_tag(soap, t, "omws:getResults"))
 		{	*type = SOAP_TYPE_omws__getResults;
@@ -570,6 +582,10 @@ SOAP_FMAC3 int SOAP_FMAC4 soap_putelement(struct soap *soap, const void *ptr, co
 		return soap_out_xsd__double(soap, tag, id, (const double *)ptr, "xsd:double");
 	case SOAP_TYPE_double:
 		return soap_out_double(soap, tag, id, (const double *)ptr, "xsd:double");
+	case SOAP_TYPE_omws__cancel:
+		return soap_out_omws__cancel(soap, tag, id, (const struct omws__cancel *)ptr, "omws:cancel");
+	case SOAP_TYPE_omws__cancelResponse:
+		return soap_out_omws__cancelResponse(soap, tag, id, (const struct omws__cancelResponse *)ptr, "omws:cancelResponse");
 	case SOAP_TYPE_omws__getResults:
 		return soap_out_omws__getResults(soap, tag, id, (const struct omws__getResults *)ptr, "omws:getResults");
 	case SOAP_TYPE_omws__getResultsResponse:
@@ -686,6 +702,12 @@ SOAP_FMAC3 void SOAP_FMAC4 soap_markelement(struct soap *soap, const void *ptr, 
 	(void)soap; (void)ptr; (void)type; /* appease -Wall -Werror */
 	switch (type)
 	{
+	case SOAP_TYPE_omws__cancel:
+		soap_serialize_omws__cancel(soap, (const struct omws__cancel *)ptr);
+		break;
+	case SOAP_TYPE_omws__cancelResponse:
+		soap_serialize_omws__cancelResponse(soap, (const struct omws__cancelResponse *)ptr);
+		break;
 	case SOAP_TYPE_omws__getResults:
 		soap_serialize_omws__getResults(soap, (const struct omws__getResults *)ptr);
 		break;
@@ -921,6 +943,10 @@ SOAP_FMAC3 void * SOAP_FMAC4 soap_instantiate(struct soap *soap, int t, const ch
 		return (void*)soap_instantiate_omws__getResultsResponse(soap, -1, type, arrayType, n);
 	case SOAP_TYPE_omws__getResults:
 		return (void*)soap_instantiate_omws__getResults(soap, -1, type, arrayType, n);
+	case SOAP_TYPE_omws__cancelResponse:
+		return (void*)soap_instantiate_omws__cancelResponse(soap, -1, type, arrayType, n);
+	case SOAP_TYPE_omws__cancel:
+		return (void*)soap_instantiate_omws__cancel(soap, -1, type, arrayType, n);
 #ifndef WITH_NOGLOBAL
 	case SOAP_TYPE_SOAP_ENV__Code:
 		return (void*)soap_instantiate_SOAP_ENV__Code(soap, -1, type, arrayType, n);
@@ -1167,6 +1193,18 @@ SOAP_FMAC3 int SOAP_FMAC4 soap_fdelete(struct soap_clist *p)
 			SOAP_DELETE((struct omws__getResults*)p->ptr);
 		else
 			SOAP_DELETE_ARRAY((struct omws__getResults*)p->ptr);
+		break;
+	case SOAP_TYPE_omws__cancelResponse:
+		if (p->size < 0)
+			SOAP_DELETE((struct omws__cancelResponse*)p->ptr);
+		else
+			SOAP_DELETE_ARRAY((struct omws__cancelResponse*)p->ptr);
+		break;
+	case SOAP_TYPE_omws__cancel:
+		if (p->size < 0)
+			SOAP_DELETE((struct omws__cancel*)p->ptr);
+		else
+			SOAP_DELETE_ARRAY((struct omws__cancel*)p->ptr);
 		break;
 #ifndef WITH_NOGLOBAL
 	case SOAP_TYPE_SOAP_ENV__Code:
@@ -1916,6 +1954,226 @@ SOAP_FMAC3 void SOAP_FMAC4 soap_copy_SOAP_ENV__Code(struct soap *soap, int st, i
 }
 
 #endif
+
+SOAP_FMAC3 void SOAP_FMAC4 soap_default_omws__cancel(struct soap *soap, struct omws__cancel *a)
+{
+	(void)soap; (void)a; /* appease -Wall -Werror */
+	soap_default_xsd__string(soap, &a->tickets);
+}
+
+SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_omws__cancel(struct soap *soap, const struct omws__cancel *a)
+{
+#ifndef WITH_NOIDREF
+	(void)soap; (void)a; /* appease -Wall -Werror */
+	soap_serialize_xsd__string(soap, &a->tickets);
+#endif
+}
+
+SOAP_FMAC3 int SOAP_FMAC4 soap_out_omws__cancel(struct soap *soap, const char *tag, int id, const struct omws__cancel *a, const char *type)
+{
+	(void)soap; (void)tag; (void)id; (void)type;
+	if (soap_element_begin_out(soap, tag, soap_embedded_id(soap, id, a, SOAP_TYPE_omws__cancel), type))
+		return soap->error;
+	if (soap_out_xsd__string(soap, "tickets", -1, &a->tickets, ""))
+		return soap->error;
+	return soap_element_end_out(soap, tag);
+}
+
+SOAP_FMAC3 struct omws__cancel * SOAP_FMAC4 soap_in_omws__cancel(struct soap *soap, const char *tag, struct omws__cancel *a, const char *type)
+{
+	size_t soap_flag_tickets = 1;
+	if (soap_element_begin_in(soap, tag, 0, type))
+		return NULL;
+	a = (struct omws__cancel *)soap_id_enter(soap, soap->id, a, SOAP_TYPE_omws__cancel, sizeof(struct omws__cancel), 0, NULL, NULL, NULL);
+	if (!a)
+		return NULL;
+	soap_default_omws__cancel(soap, a);
+	if (soap->body && !*soap->href)
+	{
+		for (;;)
+		{	soap->error = SOAP_TAG_MISMATCH;
+			if (soap_flag_tickets && (soap->error == SOAP_TAG_MISMATCH || soap->error == SOAP_NO_TAG))
+				if (soap_in_xsd__string(soap, "tickets", &a->tickets, "xsd:string"))
+				{	soap_flag_tickets--;
+					continue;
+				}
+			if (soap->error == SOAP_TAG_MISMATCH)
+				soap->error = soap_ignore_element(soap);
+			if (soap->error == SOAP_NO_TAG)
+				break;
+			if (soap->error)
+				return NULL;
+		}
+		if (soap_element_end_in(soap, tag))
+			return NULL;
+	}
+	else
+	{	a = (struct omws__cancel *)soap_id_forward(soap, soap->href, (void*)a, 0, SOAP_TYPE_omws__cancel, 0, sizeof(struct omws__cancel), 0, NULL);
+		if (soap->body && soap_element_end_in(soap, tag))
+			return NULL;
+	}
+	return a;
+}
+
+SOAP_FMAC3 int SOAP_FMAC4 soap_put_omws__cancel(struct soap *soap, const struct omws__cancel *a, const char *tag, const char *type)
+{
+	register int id = soap_embed(soap, (void*)a, NULL, 0, tag, SOAP_TYPE_omws__cancel);
+	if (soap_out_omws__cancel(soap, tag?tag:"omws:cancel", id, a, type))
+		return soap->error;
+	return soap_putindependent(soap);
+}
+
+SOAP_FMAC3 struct omws__cancel * SOAP_FMAC4 soap_get_omws__cancel(struct soap *soap, struct omws__cancel *p, const char *tag, const char *type)
+{
+	if ((p = soap_in_omws__cancel(soap, tag, p, type)))
+		if (soap_getindependent(soap))
+			return NULL;
+	return p;
+}
+
+SOAP_FMAC1 struct omws__cancel * SOAP_FMAC2 soap_instantiate_omws__cancel(struct soap *soap, int n, const char *type, const char *arrayType, size_t *size)
+{
+	(void)type; (void)arrayType; /* appease -Wall -Werror */
+	DBGLOG(TEST, SOAP_MESSAGE(fdebug, "soap_instantiate_omws__cancel(%d, %s, %s)\n", n, type?type:"", arrayType?arrayType:""));
+	struct soap_clist *cp = soap_link(soap, NULL, SOAP_TYPE_omws__cancel, n, soap_fdelete);
+	if (!cp)
+		return NULL;
+	if (n < 0)
+	{	cp->ptr = (void*)SOAP_NEW(struct omws__cancel);
+		if (size)
+			*size = sizeof(struct omws__cancel);
+	}
+	else
+	{	cp->ptr = (void*)SOAP_NEW_ARRAY(struct omws__cancel, n);
+		if (size)
+			*size = n * sizeof(struct omws__cancel);
+	}
+	DBGLOG(TEST, SOAP_MESSAGE(fdebug, "Instantiated location=%p\n", cp->ptr));
+	if (!cp->ptr)
+		soap->error = SOAP_EOM;
+	return (struct omws__cancel*)cp->ptr;
+}
+
+SOAP_FMAC3 void SOAP_FMAC4 soap_copy_omws__cancel(struct soap *soap, int st, int tt, void *p, size_t len, const void *q, size_t n)
+{
+	(void)soap; (void)tt; (void)st; (void)len; (void)n; /* appease -Wall -Werror */
+	DBGLOG(TEST, SOAP_MESSAGE(fdebug, "Copying struct omws__cancel %p -> %p\n", q, p));
+	*(struct omws__cancel*)p = *(struct omws__cancel*)q;
+}
+
+SOAP_FMAC3 void SOAP_FMAC4 soap_default_omws__cancelResponse(struct soap *soap, struct omws__cancelResponse *a)
+{
+	(void)soap; (void)a; /* appease -Wall -Werror */
+	soap_default_xsd__string(soap, &a->cancelledTickets);
+}
+
+SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_omws__cancelResponse(struct soap *soap, const struct omws__cancelResponse *a)
+{
+#ifndef WITH_NOIDREF
+	(void)soap; (void)a; /* appease -Wall -Werror */
+	soap_serialize_xsd__string(soap, &a->cancelledTickets);
+#endif
+}
+
+SOAP_FMAC3 int SOAP_FMAC4 soap_out_omws__cancelResponse(struct soap *soap, const char *tag, int id, const struct omws__cancelResponse *a, const char *type)
+{
+	(void)soap; (void)tag; (void)id; (void)type;
+	if (soap_element_begin_out(soap, tag, soap_embedded_id(soap, id, a, SOAP_TYPE_omws__cancelResponse), type))
+		return soap->error;
+	if (a->cancelledTickets)
+	{	if (soap_out_xsd__string(soap, "cancelledTickets", -1, &a->cancelledTickets, ""))
+			return soap->error;
+	}
+	else if (soap_element_nil(soap, "cancelledTickets"))
+		return soap->error;
+	return soap_element_end_out(soap, tag);
+}
+
+SOAP_FMAC3 struct omws__cancelResponse * SOAP_FMAC4 soap_in_omws__cancelResponse(struct soap *soap, const char *tag, struct omws__cancelResponse *a, const char *type)
+{
+	size_t soap_flag_cancelledTickets = 1;
+	if (soap_element_begin_in(soap, tag, 0, type))
+		return NULL;
+	a = (struct omws__cancelResponse *)soap_id_enter(soap, soap->id, a, SOAP_TYPE_omws__cancelResponse, sizeof(struct omws__cancelResponse), 0, NULL, NULL, NULL);
+	if (!a)
+		return NULL;
+	soap_default_omws__cancelResponse(soap, a);
+	if (soap->body && !*soap->href)
+	{
+		for (;;)
+		{	soap->error = SOAP_TAG_MISMATCH;
+			if (soap_flag_cancelledTickets && (soap->error == SOAP_TAG_MISMATCH || soap->error == SOAP_NO_TAG))
+				if (soap_in_xsd__string(soap, "cancelledTickets", &a->cancelledTickets, "xsd:string"))
+				{	soap_flag_cancelledTickets--;
+					continue;
+				}
+			if (soap->error == SOAP_TAG_MISMATCH)
+				soap->error = soap_ignore_element(soap);
+			if (soap->error == SOAP_NO_TAG)
+				break;
+			if (soap->error)
+				return NULL;
+		}
+		if (soap_element_end_in(soap, tag))
+			return NULL;
+	}
+	else
+	{	a = (struct omws__cancelResponse *)soap_id_forward(soap, soap->href, (void*)a, 0, SOAP_TYPE_omws__cancelResponse, 0, sizeof(struct omws__cancelResponse), 0, NULL);
+		if (soap->body && soap_element_end_in(soap, tag))
+			return NULL;
+	}
+	if ((soap->mode & SOAP_XML_STRICT) && (soap_flag_cancelledTickets > 0))
+	{	soap->error = SOAP_OCCURS;
+		return NULL;
+	}
+	return a;
+}
+
+SOAP_FMAC3 int SOAP_FMAC4 soap_put_omws__cancelResponse(struct soap *soap, const struct omws__cancelResponse *a, const char *tag, const char *type)
+{
+	register int id = soap_embed(soap, (void*)a, NULL, 0, tag, SOAP_TYPE_omws__cancelResponse);
+	if (soap_out_omws__cancelResponse(soap, tag?tag:"omws:cancelResponse", id, a, type))
+		return soap->error;
+	return soap_putindependent(soap);
+}
+
+SOAP_FMAC3 struct omws__cancelResponse * SOAP_FMAC4 soap_get_omws__cancelResponse(struct soap *soap, struct omws__cancelResponse *p, const char *tag, const char *type)
+{
+	if ((p = soap_in_omws__cancelResponse(soap, tag, p, type)))
+		if (soap_getindependent(soap))
+			return NULL;
+	return p;
+}
+
+SOAP_FMAC1 struct omws__cancelResponse * SOAP_FMAC2 soap_instantiate_omws__cancelResponse(struct soap *soap, int n, const char *type, const char *arrayType, size_t *size)
+{
+	(void)type; (void)arrayType; /* appease -Wall -Werror */
+	DBGLOG(TEST, SOAP_MESSAGE(fdebug, "soap_instantiate_omws__cancelResponse(%d, %s, %s)\n", n, type?type:"", arrayType?arrayType:""));
+	struct soap_clist *cp = soap_link(soap, NULL, SOAP_TYPE_omws__cancelResponse, n, soap_fdelete);
+	if (!cp)
+		return NULL;
+	if (n < 0)
+	{	cp->ptr = (void*)SOAP_NEW(struct omws__cancelResponse);
+		if (size)
+			*size = sizeof(struct omws__cancelResponse);
+	}
+	else
+	{	cp->ptr = (void*)SOAP_NEW_ARRAY(struct omws__cancelResponse, n);
+		if (size)
+			*size = n * sizeof(struct omws__cancelResponse);
+	}
+	DBGLOG(TEST, SOAP_MESSAGE(fdebug, "Instantiated location=%p\n", cp->ptr));
+	if (!cp->ptr)
+		soap->error = SOAP_EOM;
+	return (struct omws__cancelResponse*)cp->ptr;
+}
+
+SOAP_FMAC3 void SOAP_FMAC4 soap_copy_omws__cancelResponse(struct soap *soap, int st, int tt, void *p, size_t len, const void *q, size_t n)
+{
+	(void)soap; (void)tt; (void)st; (void)len; (void)n; /* appease -Wall -Werror */
+	DBGLOG(TEST, SOAP_MESSAGE(fdebug, "Copying struct omws__cancelResponse %p -> %p\n", q, p));
+	*(struct omws__cancelResponse*)p = *(struct omws__cancelResponse*)q;
+}
 
 SOAP_FMAC3 void SOAP_FMAC4 soap_default_omws__getResults(struct soap *soap, struct omws__getResults *a)
 {

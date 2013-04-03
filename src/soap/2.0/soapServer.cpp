@@ -14,7 +14,7 @@ compiling, linking, and/or using OpenSSL is allowed.
 #endif
 #include "soapH.h"
 
-SOAP_SOURCE_STAMP("@(#) soapServer.cpp ver 2.8.13 2013-03-22 20:07:46 GMT")
+SOAP_SOURCE_STAMP("@(#) soapServer.cpp ver 2.8.13 2013-04-03 19:59:40 GMT")
 
 
 extern "C" SOAP_FMAC5 int SOAP_FMAC6 soap_serve(struct soap *soap)
@@ -92,6 +92,8 @@ extern "C" SOAP_FMAC5 int SOAP_FMAC6 soap_serve_request(struct soap *soap)
 		return soap_serve_omws__runExperiment(soap);
 	if (!soap_match_tag(soap, soap->tag, "omws:getResults"))
 		return soap_serve_omws__getResults(soap);
+	if (!soap_match_tag(soap, soap->tag, "omws:cancel"))
+		return soap_serve_omws__cancel(soap);
 	return soap->error = SOAP_NO_METHOD;
 }
 #endif
@@ -827,6 +829,47 @@ SOAP_FMAC5 int SOAP_FMAC6 soap_serve_omws__getResults(struct soap *soap)
 	 || soap_putheader(soap)
 	 || soap_body_begin_out(soap)
 	 || soap_put_omws__getResultsResponse(soap, &out, "omws:getResultsResponse", NULL)
+	 || soap_body_end_out(soap)
+	 || soap_envelope_end_out(soap)
+	 || soap_end_send(soap))
+		return soap->error;
+	return soap_closesock(soap);
+}
+
+SOAP_FMAC5 int SOAP_FMAC6 soap_serve_omws__cancel(struct soap *soap)
+{	struct omws__cancel soap_tmp_omws__cancel;
+	struct omws__cancelResponse soap_tmp_omws__cancelResponse;
+	soap_default_omws__cancelResponse(soap, &soap_tmp_omws__cancelResponse);
+	soap_default_omws__cancel(soap, &soap_tmp_omws__cancel);
+	soap->encodingStyle = NULL;
+	if (!soap_get_omws__cancel(soap, &soap_tmp_omws__cancel, "omws:cancel", NULL))
+		return soap->error;
+	if (soap_body_end_in(soap)
+	 || soap_envelope_end_in(soap)
+	 || soap_end_recv(soap))
+		return soap->error;
+	soap->error = omws__cancel(soap, soap_tmp_omws__cancel.tickets, soap_tmp_omws__cancelResponse.cancelledTickets);
+	if (soap->error)
+		return soap->error;
+	soap_serializeheader(soap);
+	soap_serialize_omws__cancelResponse(soap, &soap_tmp_omws__cancelResponse);
+	if (soap_begin_count(soap))
+		return soap->error;
+	if (soap->mode & SOAP_IO_LENGTH)
+	{	if (soap_envelope_begin_out(soap)
+		 || soap_putheader(soap)
+		 || soap_body_begin_out(soap)
+		 || soap_put_omws__cancelResponse(soap, &soap_tmp_omws__cancelResponse, "omws:cancelResponse", NULL)
+		 || soap_body_end_out(soap)
+		 || soap_envelope_end_out(soap))
+			 return soap->error;
+	};
+	if (soap_end_count(soap)
+	 || soap_response(soap, SOAP_OK)
+	 || soap_envelope_begin_out(soap)
+	 || soap_putheader(soap)
+	 || soap_body_begin_out(soap)
+	 || soap_put_omws__cancelResponse(soap, &soap_tmp_omws__cancelResponse, "omws:cancelResponse", NULL)
 	 || soap_body_end_out(soap)
 	 || soap_envelope_end_out(soap)
 	 || soap_end_send(soap))
