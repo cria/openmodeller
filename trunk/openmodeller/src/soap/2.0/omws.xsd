@@ -334,5 +334,21 @@
     </sequence>
    </complexType>
   </element>
+  <!-- operation request element -->
+  <element name="cancel">
+   <complexType>
+    <sequence>
+     <element name="tickets" type="xsd:string" minOccurs="0" maxOccurs="1" nillable="true"/><!-- omws__cancel::tickets -->
+    </sequence>
+   </complexType>
+  </element>
+  <!-- operation response element -->
+  <element name="cancelResponse">
+   <complexType>
+    <sequence>
+     <element name="cancelledTickets" type="xsd:string" minOccurs="1" maxOccurs="1"/><!-- omws__cancel::cancelledTickets -->
+    </sequence>
+   </complexType>
+  </element>
  </schema>
 

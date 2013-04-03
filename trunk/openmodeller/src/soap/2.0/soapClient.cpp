@@ -14,7 +14,7 @@ compiling, linking, and/or using OpenSSL is allowed.
 #endif
 #include "soapH.h"
 
-SOAP_SOURCE_STAMP("@(#) soapClient.cpp ver 2.8.13 2013-03-22 20:07:46 GMT")
+SOAP_SOURCE_STAMP("@(#) soapClient.cpp ver 2.8.13 2013-04-03 19:59:40 GMT")
 
 
 SOAP_FMAC5 int SOAP_FMAC6 soap_call_omws__ping(struct soap *soap, const char *soap_endpoint, const char *soap_action, void *_, int &status)
@@ -898,6 +898,55 @@ SOAP_FMAC5 int SOAP_FMAC6 soap_call_omws__getResults(struct soap *soap, const ch
 	 || soap_envelope_end_in(soap)
 	 || soap_end_recv(soap))
 		return soap_closesock(soap);
+	return soap_closesock(soap);
+}
+
+SOAP_FMAC5 int SOAP_FMAC6 soap_call_omws__cancel(struct soap *soap, const char *soap_endpoint, const char *soap_action, char *tickets, char *&cancelledTickets)
+{	struct omws__cancel soap_tmp_omws__cancel;
+	struct omws__cancelResponse *soap_tmp_omws__cancelResponse;
+	if (soap_endpoint == NULL)
+		soap_endpoint = "http://modeller.cria.org.br/ws2/om";
+	soap->encodingStyle = NULL;
+	soap_tmp_omws__cancel.tickets = tickets;
+	soap_begin(soap);
+	soap_serializeheader(soap);
+	soap_serialize_omws__cancel(soap, &soap_tmp_omws__cancel);
+	if (soap_begin_count(soap))
+		return soap->error;
+	if (soap->mode & SOAP_IO_LENGTH)
+	{	if (soap_envelope_begin_out(soap)
+		 || soap_putheader(soap)
+		 || soap_body_begin_out(soap)
+		 || soap_put_omws__cancel(soap, &soap_tmp_omws__cancel, "omws:cancel", NULL)
+		 || soap_body_end_out(soap)
+		 || soap_envelope_end_out(soap))
+			 return soap->error;
+	}
+	if (soap_end_count(soap))
+		return soap->error;
+	if (soap_connect(soap, soap_endpoint, soap_action)
+	 || soap_envelope_begin_out(soap)
+	 || soap_putheader(soap)
+	 || soap_body_begin_out(soap)
+	 || soap_put_omws__cancel(soap, &soap_tmp_omws__cancel, "omws:cancel", NULL)
+	 || soap_body_end_out(soap)
+	 || soap_envelope_end_out(soap)
+	 || soap_end_send(soap))
+		return soap_closesock(soap);
+	cancelledTickets = NULL;
+	if (soap_begin_recv(soap)
+	 || soap_envelope_begin_in(soap)
+	 || soap_recv_header(soap)
+	 || soap_body_begin_in(soap))
+		return soap_closesock(soap);
+	soap_tmp_omws__cancelResponse = soap_get_omws__cancelResponse(soap, NULL, "omws:cancelResponse", "");
+	if (soap->error)
+		return soap_recv_fault(soap, 0);
+	if (soap_body_end_in(soap)
+	 || soap_envelope_end_in(soap)
+	 || soap_end_recv(soap))
+		return soap_closesock(soap);
+	cancelledTickets = soap_tmp_omws__cancelResponse->cancelledTickets;
 	return soap_closesock(soap);
 }
 

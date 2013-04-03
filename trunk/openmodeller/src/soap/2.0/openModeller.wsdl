@@ -351,6 +351,22 @@
     </sequence>
    </complexType>
   </element>
+  <!-- operation request element -->
+  <element name="cancel">
+   <complexType>
+    <sequence>
+     <element name="tickets" type="xsd:string" minOccurs="0" maxOccurs="1" nillable="true"/><!-- omws__cancel::tickets -->
+    </sequence>
+   </complexType>
+  </element>
+  <!-- operation response element -->
+  <element name="cancelResponse">
+   <complexType>
+    <sequence>
+     <element name="cancelledTickets" type="xsd:string" minOccurs="1" maxOccurs="1"/><!-- omws__cancel::cancelledTickets -->
+    </sequence>
+   </complexType>
+  </element>
  </schema>
 
 </types>
@@ -499,6 +515,14 @@
  <part name="parameters" element="omws:getResultsResponse"/><!-- omws__getResults::out -->
 </message>
 
+<message name="cancelRequest">
+ <part name="parameters" element="omws:cancel"/><!-- omws__cancel::omws__cancel -->
+</message>
+
+<message name="cancelResponse">
+ <part name="parameters" element="omws:cancelResponse"/>
+</message>
+
 <message name="openModellerHeader">
  <part name="version" element="omws:version"/>
 </message>
@@ -593,6 +617,11 @@
   <documentation>Service definition of function omws__getResults</documentation>
   <input message="tns:getResults"/>
   <output message="tns:getResultsResponse"/>
+ </operation>
+ <operation name="cancel">
+  <documentation>Service definition of function omws__cancel</documentation>
+  <input message="tns:cancelRequest"/>
+  <output message="tns:cancelResponse"/>
  </operation>
 </portType>
 
@@ -752,6 +781,15 @@
   </output>
  </operation>
  <operation name="getResults">
+  <SOAP:operation soapAction=""/>
+  <input>
+     <SOAP:body parts="parameters" use="literal"/>
+  </input>
+  <output>
+     <SOAP:body parts="parameters" use="literal"/>
+  </output>
+ </operation>
+ <operation name="cancel">
   <SOAP:operation soapAction=""/>
   <input>
      <SOAP:body parts="parameters" use="literal"/>

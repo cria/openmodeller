@@ -149,7 +149,7 @@ SOAP_FMAC3 double * SOAP_FMAC4 soap_get_double(struct soap*, double *, const cha
 #ifndef WITH_NOGLOBAL
 
 #ifndef SOAP_TYPE_SOAP_ENV__Fault
-#define SOAP_TYPE_SOAP_ENV__Fault (86)
+#define SOAP_TYPE_SOAP_ENV__Fault (89)
 #endif
 SOAP_FMAC3 void SOAP_FMAC4 soap_default_SOAP_ENV__Fault(struct soap*, struct SOAP_ENV__Fault *);
 SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_SOAP_ENV__Fault(struct soap*, const struct SOAP_ENV__Fault *);
@@ -185,7 +185,7 @@ SOAP_FMAC3 void SOAP_FMAC4 soap_copy_SOAP_ENV__Fault(struct soap*, int, int, voi
 #ifndef WITH_NOGLOBAL
 
 #ifndef SOAP_TYPE_SOAP_ENV__Reason
-#define SOAP_TYPE_SOAP_ENV__Reason (85)
+#define SOAP_TYPE_SOAP_ENV__Reason (88)
 #endif
 SOAP_FMAC3 void SOAP_FMAC4 soap_default_SOAP_ENV__Reason(struct soap*, struct SOAP_ENV__Reason *);
 SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_SOAP_ENV__Reason(struct soap*, const struct SOAP_ENV__Reason *);
@@ -221,7 +221,7 @@ SOAP_FMAC3 void SOAP_FMAC4 soap_copy_SOAP_ENV__Reason(struct soap*, int, int, vo
 #ifndef WITH_NOGLOBAL
 
 #ifndef SOAP_TYPE_SOAP_ENV__Detail
-#define SOAP_TYPE_SOAP_ENV__Detail (84)
+#define SOAP_TYPE_SOAP_ENV__Detail (87)
 #endif
 SOAP_FMAC3 void SOAP_FMAC4 soap_default_SOAP_ENV__Detail(struct soap*, struct SOAP_ENV__Detail *);
 SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_SOAP_ENV__Detail(struct soap*, const struct SOAP_ENV__Detail *);
@@ -257,7 +257,7 @@ SOAP_FMAC3 void SOAP_FMAC4 soap_copy_SOAP_ENV__Detail(struct soap*, int, int, vo
 #ifndef WITH_NOGLOBAL
 
 #ifndef SOAP_TYPE_SOAP_ENV__Code
-#define SOAP_TYPE_SOAP_ENV__Code (82)
+#define SOAP_TYPE_SOAP_ENV__Code (85)
 #endif
 SOAP_FMAC3 void SOAP_FMAC4 soap_default_SOAP_ENV__Code(struct soap*, struct SOAP_ENV__Code *);
 SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_SOAP_ENV__Code(struct soap*, const struct SOAP_ENV__Code *);
@@ -289,6 +289,70 @@ inline void soap_delete_SOAP_ENV__Code(struct soap *soap, struct SOAP_ENV__Code 
 SOAP_FMAC3 void SOAP_FMAC4 soap_copy_SOAP_ENV__Code(struct soap*, int, int, void*, size_t, const void*, size_t);
 
 #endif
+
+#ifndef SOAP_TYPE_omws__cancel
+#define SOAP_TYPE_omws__cancel (84)
+#endif
+SOAP_FMAC3 void SOAP_FMAC4 soap_default_omws__cancel(struct soap*, struct omws__cancel *);
+SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_omws__cancel(struct soap*, const struct omws__cancel *);
+SOAP_FMAC3 int SOAP_FMAC4 soap_out_omws__cancel(struct soap*, const char*, int, const struct omws__cancel *, const char*);
+SOAP_FMAC3 struct omws__cancel * SOAP_FMAC4 soap_in_omws__cancel(struct soap*, const char*, struct omws__cancel *, const char*);
+
+SOAP_FMAC3 int SOAP_FMAC4 soap_put_omws__cancel(struct soap*, const struct omws__cancel *, const char*, const char*);
+
+#ifndef soap_write_omws__cancel
+#define soap_write_omws__cancel(soap, data) ( soap_begin(soap), soap_serialize_omws__cancel(soap, data), soap_begin_send(soap) || soap_put_omws__cancel(soap, data, "omws:cancel", NULL) || soap_end_send(soap), soap->error )
+#endif
+
+SOAP_FMAC3 struct omws__cancel * SOAP_FMAC4 soap_get_omws__cancel(struct soap*, struct omws__cancel *, const char*, const char*);
+
+#ifndef soap_read_omws__cancel
+#define soap_read_omws__cancel(soap, data) ( soap_begin_recv(soap) || !soap_get_omws__cancel(soap, data, NULL, NULL) || soap_end_recv(soap), soap->error )
+#endif
+
+SOAP_FMAC1 struct omws__cancel * SOAP_FMAC2 soap_instantiate_omws__cancel(struct soap*, int, const char*, const char*, size_t*);
+
+inline struct omws__cancel * soap_new_omws__cancel(struct soap *soap, int n = -1) { return soap_instantiate_omws__cancel(soap, n, NULL, NULL, NULL); }
+
+inline struct omws__cancel * soap_new_req_omws__cancel(struct soap *soap) { struct omws__cancel *_p = soap_instantiate_omws__cancel(soap, -1, NULL, NULL, NULL); if (_p) { soap_default_omws__cancel(soap, _p); } return _p; }
+
+inline struct omws__cancel * soap_new_set_omws__cancel(struct soap *soap, char *tickets) { struct omws__cancel *_p = soap_instantiate_omws__cancel(soap, -1, NULL, NULL, NULL); if (_p) { soap_default_omws__cancel(soap, _p); _p->tickets = tickets; } return _p; }
+
+inline void soap_delete_omws__cancel(struct soap *soap, struct omws__cancel *p) { soap_delete(soap, p); }
+
+SOAP_FMAC3 void SOAP_FMAC4 soap_copy_omws__cancel(struct soap*, int, int, void*, size_t, const void*, size_t);
+
+#ifndef SOAP_TYPE_omws__cancelResponse
+#define SOAP_TYPE_omws__cancelResponse (83)
+#endif
+SOAP_FMAC3 void SOAP_FMAC4 soap_default_omws__cancelResponse(struct soap*, struct omws__cancelResponse *);
+SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_omws__cancelResponse(struct soap*, const struct omws__cancelResponse *);
+SOAP_FMAC3 int SOAP_FMAC4 soap_out_omws__cancelResponse(struct soap*, const char*, int, const struct omws__cancelResponse *, const char*);
+SOAP_FMAC3 struct omws__cancelResponse * SOAP_FMAC4 soap_in_omws__cancelResponse(struct soap*, const char*, struct omws__cancelResponse *, const char*);
+
+SOAP_FMAC3 int SOAP_FMAC4 soap_put_omws__cancelResponse(struct soap*, const struct omws__cancelResponse *, const char*, const char*);
+
+#ifndef soap_write_omws__cancelResponse
+#define soap_write_omws__cancelResponse(soap, data) ( soap_begin(soap), soap_serialize_omws__cancelResponse(soap, data), soap_begin_send(soap) || soap_put_omws__cancelResponse(soap, data, "omws:cancelResponse", NULL) || soap_end_send(soap), soap->error )
+#endif
+
+SOAP_FMAC3 struct omws__cancelResponse * SOAP_FMAC4 soap_get_omws__cancelResponse(struct soap*, struct omws__cancelResponse *, const char*, const char*);
+
+#ifndef soap_read_omws__cancelResponse
+#define soap_read_omws__cancelResponse(soap, data) ( soap_begin_recv(soap) || !soap_get_omws__cancelResponse(soap, data, NULL, NULL) || soap_end_recv(soap), soap->error )
+#endif
+
+SOAP_FMAC1 struct omws__cancelResponse * SOAP_FMAC2 soap_instantiate_omws__cancelResponse(struct soap*, int, const char*, const char*, size_t*);
+
+inline struct omws__cancelResponse * soap_new_omws__cancelResponse(struct soap *soap, int n = -1) { return soap_instantiate_omws__cancelResponse(soap, n, NULL, NULL, NULL); }
+
+inline struct omws__cancelResponse * soap_new_req_omws__cancelResponse(struct soap *soap, char *cancelledTickets) { struct omws__cancelResponse *_p = soap_instantiate_omws__cancelResponse(soap, -1, NULL, NULL, NULL); if (_p) { soap_default_omws__cancelResponse(soap, _p); _p->cancelledTickets = cancelledTickets; } return _p; }
+
+inline struct omws__cancelResponse * soap_new_set_omws__cancelResponse(struct soap *soap, char *cancelledTickets) { struct omws__cancelResponse *_p = soap_instantiate_omws__cancelResponse(soap, -1, NULL, NULL, NULL); if (_p) { soap_default_omws__cancelResponse(soap, _p); _p->cancelledTickets = cancelledTickets; } return _p; }
+
+inline void soap_delete_omws__cancelResponse(struct soap *soap, struct omws__cancelResponse *p) { soap_delete(soap, p); }
+
+SOAP_FMAC3 void SOAP_FMAC4 soap_copy_omws__cancelResponse(struct soap*, int, int, void*, size_t, const void*, size_t);
 
 #ifndef SOAP_TYPE_omws__getResults
 #define SOAP_TYPE_omws__getResults (81)
@@ -1481,7 +1545,7 @@ SOAP_FMAC3 void SOAP_FMAC4 soap_copy_SOAP_ENV__Header(struct soap*, int, int, vo
 #ifndef WITH_NOGLOBAL
 
 #ifndef SOAP_TYPE_PointerToSOAP_ENV__Reason
-#define SOAP_TYPE_PointerToSOAP_ENV__Reason (88)
+#define SOAP_TYPE_PointerToSOAP_ENV__Reason (91)
 #endif
 SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_PointerToSOAP_ENV__Reason(struct soap*, struct SOAP_ENV__Reason *const*);
 SOAP_FMAC3 int SOAP_FMAC4 soap_out_PointerToSOAP_ENV__Reason(struct soap*, const char *, int, struct SOAP_ENV__Reason *const*, const char *);
@@ -1504,7 +1568,7 @@ SOAP_FMAC3 struct SOAP_ENV__Reason ** SOAP_FMAC4 soap_get_PointerToSOAP_ENV__Rea
 #ifndef WITH_NOGLOBAL
 
 #ifndef SOAP_TYPE_PointerToSOAP_ENV__Detail
-#define SOAP_TYPE_PointerToSOAP_ENV__Detail (87)
+#define SOAP_TYPE_PointerToSOAP_ENV__Detail (90)
 #endif
 SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_PointerToSOAP_ENV__Detail(struct soap*, struct SOAP_ENV__Detail *const*);
 SOAP_FMAC3 int SOAP_FMAC4 soap_out_PointerToSOAP_ENV__Detail(struct soap*, const char *, int, struct SOAP_ENV__Detail *const*, const char *);
@@ -1527,7 +1591,7 @@ SOAP_FMAC3 struct SOAP_ENV__Detail ** SOAP_FMAC4 soap_get_PointerToSOAP_ENV__Det
 #ifndef WITH_NOGLOBAL
 
 #ifndef SOAP_TYPE_PointerToSOAP_ENV__Code
-#define SOAP_TYPE_PointerToSOAP_ENV__Code (83)
+#define SOAP_TYPE_PointerToSOAP_ENV__Code (86)
 #endif
 SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_PointerToSOAP_ENV__Code(struct soap*, struct SOAP_ENV__Code *const*);
 SOAP_FMAC3 int SOAP_FMAC4 soap_out_PointerToSOAP_ENV__Code(struct soap*, const char *, int, struct SOAP_ENV__Code *const*, const char *);
