@@ -69,7 +69,7 @@ static AlgParamMetadata parameters[NUM_PARAM] = {
     0,      // Parameter's lower limit.
     0,      // Not zero if the parameter has upper limit.
     0,      // Parameter's upper limit.
-    "BIOCLIM(StandardDeviationCutoff=0.674)" // Parameter's typical (default) value.
+    "" // Parameter's typical (default) value.
   },
   // Algorithm 3
   {
@@ -82,7 +82,7 @@ static AlgParamMetadata parameters[NUM_PARAM] = {
     0,      // Parameter's lower limit.
     0,      // Not zero if the parameter has upper limit.
     0,      // Parameter's upper limit.
-    "ENVSCORE" // Parameter's typical (default) value.
+    "" // Parameter's typical (default) value.
   },
   // Algorithm 4
   {
