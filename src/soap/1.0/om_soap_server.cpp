@@ -109,6 +109,21 @@ int main(int argc, char **argv)
   // no args: assume this is a CGI application
   if ( argc < 2 ) { 
 
+    char * request_method = getenv( "REQUEST_METHOD" );
+
+    if ( request_method != 0 && strcmp(request_method, "GET") == 0 ) {
+
+      // Display HTML
+      printf("Content-type: text/html\n\n");
+      printf("<html><title>oM Server</title><body>\n");
+      printf("<h1>oM Server</h1>\n");
+      printf("<p>This is an <a href=\"http://openmodeller.sf.net\">openModeller</a> web service.</p>\n");
+      printf("<p>You can find documentation about it <a href=\"http://openmodeller.sf.net/web_service.html\">here</a>.\n");
+      printf("<p>To interact with the service you need a <a href=\"http://en.wikipedia.org/wiki/SOAP\">SOAP</a> client pointing to the service address.</p>\n");
+      printf("</body></html>");
+      return 0;
+    }
+
     soap_serve( &soap );
     soap_destroy( &soap );
     soap_end( &soap );
