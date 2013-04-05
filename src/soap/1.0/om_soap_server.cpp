@@ -58,11 +58,13 @@ using namespace std;
 #define OMWS_JOB_PROGRESS_PREFIX "prog."
 #define OMWS_JOB_DONE_PREFIX "done."
 #define OMWS_CONFIG_FILE "../config/server.conf"
+#define OMWS_WSDL_FILE "../config/openModeller.wsdl"
 #define OMWS_LAYERS_CACHE_FILE "layers.xml"
 
 /*****************************/
 /***  Forward declarations ***/
 
+static string   getServiceAddress();
 static void*    process_request( void* );
 static bool     fileExists( const char* fileName );
 static string   getMapFile( string ticket );
@@ -106,23 +108,77 @@ int main(int argc, char **argv)
   soap.send_timeout = 10 OMWS_H;
   soap.recv_timeout = 3 OMWS_MIN;
 
-  // no args: assume this is a CGI application
-  if ( argc < 2 ) { 
+  // Handle HTTP GET
+  char * request_method = getenv( "REQUEST_METHOD" );
 
-    char * request_method = getenv( "REQUEST_METHOD" );
+  if ( request_method != 0 && strcmp(request_method, "GET") == 0 ) {
 
-    if ( request_method != 0 && strcmp(request_method, "GET") == 0 ) {
+    char * query_string = getenv( "QUERY_STRING" );
 
-      // Display HTML
-      printf("Content-type: text/html\n\n");
-      printf("<html><title>oM Server</title><body>\n");
-      printf("<h1>oM Server</h1>\n");
-      printf("<p>This is an <a href=\"http://openmodeller.sf.net\">openModeller</a> web service.</p>\n");
-      printf("<p>You can find documentation about it <a href=\"http://openmodeller.sf.net/web_service.html\">here</a>.\n");
-      printf("<p>To interact with the service you need a <a href=\"http://en.wikipedia.org/wiki/SOAP\">SOAP</a> client pointing to the service address.</p>\n");
-      printf("</body></html>");
+    if ( query_string != 0 && strcmp(query_string, "wsdl") == 0 ) {
+
+      // Display WSDL
+
+      // read wsdl file
+      
+      fstream fin;
+      fin.open( OMWS_WSDL_FILE, ios::in );
+
+      if ( fin.is_open() ) {
+
+        ostringstream oss;
+        string line;
+
+        while ( ! fin.eof() ) {
+          getline( fin, line );
+          oss << line << endl;
+        }
+
+        string wsdl = oss.str();
+
+        // determine service address
+        string service_address = getServiceAddress();
+
+        // replace service address in wsdl
+        string key("address location=");
+        unsigned found = wsdl.rfind( key );
+        unsigned found_closing_quote;
+        if ( found != string::npos ) {
+
+          found_closing_quote = wsdl.find( "\"", found+key.length()+1 );
+          if ( found_closing_quote != string::npos ) {
+
+            wsdl.replace( found+key.length()+1, found_closing_quote-(found+key.length())-1, service_address );
+          }
+        }
+
+        printf("Content-type: text/xml\n\n");
+        printf("%s", wsdl.c_str());
+        fin.close();
+      }
+      else {
+
+        printf("Status:404 Not found\n");
+        printf("Content-Type: text/plain\n\n");
+        printf("Resource not found\n");
+      }
+
       return 0;
     }
+
+    // Display HTML
+    printf("Content-type: text/html\n\n");
+    printf("<html><head><title>oM Server</title></head><body>\n");
+    printf("<h1>oM Server</h1>\n");
+    printf("<p>This is an <a href=\"http://openmodeller.sf.net\">openModeller</a> web service.</p>\n");
+    printf("<p>You can find documentation about it <a href=\"http://openmodeller.sf.net/web_service.html\">here</a>.\n");
+    printf("<p>To interact with the service you need a <a href=\"http://en.wikipedia.org/wiki/SOAP\">SOAP</a> client pointing to the service address.</p>\n");
+    printf("</body></html>");
+    return 0;
+  }
+
+  // no args: assume this is a CGI application
+  if ( argc < 2 ) { 
 
     soap_serve( &soap );
     soap_destroy( &soap );
@@ -237,6 +293,33 @@ int main(int argc, char **argv)
   }
 
   return 0;
+}
+
+/***************************/
+/**** getServiceAddress ****/
+static string
+getServiceAddress()
+{ 
+  string url("http");
+  char * https = getenv( "HTTPS");
+  if ( https != 0  ) {
+    url.append("s");
+  }
+  url.append("://");
+  char * server_name = getenv( "SERVER_NAME");
+  url.append( server_name );
+  url.append(":");
+  char * port = getenv( "SERVER_PORT");
+  url.append( port );
+  char * script_name = getenv( "SCRIPT_NAME");
+  if ( script_name != 0  ) {
+    url.append(script_name);
+  }
+  char * path_info = getenv( "PATH_INFO");
+  if ( path_info != 0  ) {
+    url.append(path_info);
+  }
+  return url;
 }
 
 /*************************/
