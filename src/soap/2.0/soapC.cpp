@@ -15,7 +15,7 @@ compiling, linking, and/or using OpenSSL is allowed.
 
 #include "soapH.h"
 
-SOAP_SOURCE_STAMP("@(#) soapC.cpp ver 2.8.13 2013-04-03 19:59:40 GMT")
+SOAP_SOURCE_STAMP("@(#) soapC.cpp ver 2.8.13 2013-04-09 14:09:28 GMT")
 
 
 #ifndef WITH_NOGLOBAL
@@ -2708,7 +2708,7 @@ SOAP_FMAC3 void SOAP_FMAC4 soap_copy_omws__getSamplingResult(struct soap *soap, 
 SOAP_FMAC3 void SOAP_FMAC4 soap_default_omws__getSamplingResultResponse(struct soap *soap, struct omws__getSamplingResultResponse *a)
 {
 	(void)soap; (void)a; /* appease -Wall -Werror */
-	a->om__SamplingResult = NULL;
+	a->om__Sampler = NULL;
 }
 
 SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_omws__getSamplingResultResponse(struct soap *soap, const struct omws__getSamplingResultResponse *a)
@@ -2723,15 +2723,15 @@ SOAP_FMAC3 int SOAP_FMAC4 soap_out_omws__getSamplingResultResponse(struct soap *
 	(void)soap; (void)tag; (void)id; (void)type;
 	if (soap_element_begin_out(soap, tag, soap_embedded_id(soap, id, a, SOAP_TYPE_omws__getSamplingResultResponse), type))
 		return soap->error;
-	if (a->om__SamplingResult)
-		soap_element_result(soap, "om:SamplingResult");
-	soap_outwliteral(soap, "om:SamplingResult", &a->om__SamplingResult, NULL);
+	if (a->om__Sampler)
+		soap_element_result(soap, "om:Sampler");
+	soap_outwliteral(soap, "om:Sampler", &a->om__Sampler, NULL);
 	return soap_element_end_out(soap, tag);
 }
 
 SOAP_FMAC3 struct omws__getSamplingResultResponse * SOAP_FMAC4 soap_in_omws__getSamplingResultResponse(struct soap *soap, const char *tag, struct omws__getSamplingResultResponse *a, const char *type)
 {
-	size_t soap_flag_om__SamplingResult = 1;
+	size_t soap_flag_om__Sampler = 1;
 	if (soap_element_begin_in(soap, tag, 0, type))
 		return NULL;
 	a = (struct omws__getSamplingResultResponse *)soap_id_enter(soap, soap->id, a, SOAP_TYPE_omws__getSamplingResultResponse, sizeof(struct omws__getSamplingResultResponse), 0, NULL, NULL, NULL);
@@ -2742,12 +2742,12 @@ SOAP_FMAC3 struct omws__getSamplingResultResponse * SOAP_FMAC4 soap_in_omws__get
 	{
 		for (;;)
 		{	soap->error = SOAP_TAG_MISMATCH;
-			if (soap_flag_om__SamplingResult && (soap->error == SOAP_TAG_MISMATCH || soap->error == SOAP_NO_TAG))
-				if (soap_inwliteral(soap, "om:SamplingResult", &a->om__SamplingResult))
-				{	soap_flag_om__SamplingResult--;
+			if (soap_flag_om__Sampler && (soap->error == SOAP_TAG_MISMATCH || soap->error == SOAP_NO_TAG))
+				if (soap_inwliteral(soap, "om:Sampler", &a->om__Sampler))
+				{	soap_flag_om__Sampler--;
 					continue;
 				}
-			soap_check_result(soap, "om:SamplingResult");
+			soap_check_result(soap, "om:Sampler");
 			if (soap->error == SOAP_TAG_MISMATCH)
 				soap->error = soap_ignore_element(soap);
 			if (soap->error == SOAP_NO_TAG)

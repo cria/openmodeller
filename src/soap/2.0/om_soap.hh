@@ -183,7 +183,7 @@ int omws__samplePoints(XML om__SamplingParameters, xsd__string &ticket);
 /** Return type of samplePoints */
 struct omws__getSamplingResultResponse
 {
-   XML om__SamplingResult;
+   XML om__Sampler;
 }; 
 
 /** Return sampling result given a ticket.

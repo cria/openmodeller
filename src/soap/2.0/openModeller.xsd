@@ -239,8 +239,8 @@
 	</xs:complexType>
 	<xs:simpleType name="ZeroOneIntervalType">
 		<xs:restriction base="xs:double">
-			<xs:minInclusion value="0.0" />
-			<xs:maxInclusion value="1.0" />
+			<xs:minInclusive value="0.0" />
+			<xs:maxInclusive value="1.0" />
 		</xs:restriction>
 	</xs:simpleType>
 	<xs:simpleType name="ThresholdCalculationType">

@@ -424,7 +424,7 @@ public:
 struct omws__getSamplingResultResponse
 {
 public:
-	wchar_t *om__SamplingResult;	/* SOAP 1.2 RPC return element (when namespace qualified) */	/* optional element of type xsd:anyType */
+	wchar_t *om__Sampler;	/* SOAP 1.2 RPC return element (when namespace qualified) */	/* optional element of type xsd:anyType */
 public:
 	int soap_type() const { return 70; } /* = unique id SOAP_TYPE_omws__getSamplingResultResponse */
 };

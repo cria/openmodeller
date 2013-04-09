@@ -315,7 +315,7 @@
   <element name="getSamplingResultResponse">
    <complexType>
     <sequence>
-     <element ref="om:SamplingResult" minOccurs="0" maxOccurs="1"/><!-- omws__getSamplingResultResponse::om__SamplingResult -->
+     <element ref="om:Sampler" minOccurs="0" maxOccurs="1"/><!-- omws__getSamplingResultResponse::om__Sampler -->
     </sequence>
    </complexType>
   </element>
