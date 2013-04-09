@@ -540,7 +540,7 @@ inline struct omws__getSamplingResultResponse * soap_new_omws__getSamplingResult
 
 inline struct omws__getSamplingResultResponse * soap_new_req_omws__getSamplingResultResponse(struct soap *soap) { struct omws__getSamplingResultResponse *_p = soap_instantiate_omws__getSamplingResultResponse(soap, -1, NULL, NULL, NULL); if (_p) { soap_default_omws__getSamplingResultResponse(soap, _p); } return _p; }
 
-inline struct omws__getSamplingResultResponse * soap_new_set_omws__getSamplingResultResponse(struct soap *soap, wchar_t *om__SamplingResult) { struct omws__getSamplingResultResponse *_p = soap_instantiate_omws__getSamplingResultResponse(soap, -1, NULL, NULL, NULL); if (_p) { soap_default_omws__getSamplingResultResponse(soap, _p); _p->om__SamplingResult = om__SamplingResult; } return _p; }
+inline struct omws__getSamplingResultResponse * soap_new_set_omws__getSamplingResultResponse(struct soap *soap, wchar_t *om__Sampler) { struct omws__getSamplingResultResponse *_p = soap_instantiate_omws__getSamplingResultResponse(soap, -1, NULL, NULL, NULL); if (_p) { soap_default_omws__getSamplingResultResponse(soap, _p); _p->om__Sampler = om__Sampler; } return _p; }
 
 inline void soap_delete_omws__getSamplingResultResponse(struct soap *soap, struct omws__getSamplingResultResponse *p) { soap_delete(soap, p); }
 
