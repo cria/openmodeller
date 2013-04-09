@@ -1,0 +1,1 @@
+fig. 2: ANN model 2 with default parameters

@@ -1,0 +1,1 @@
+fig. 3: mahalanobis distance to nearest point, max distance = 0.05

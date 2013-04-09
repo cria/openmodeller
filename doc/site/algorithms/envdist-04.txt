@@ -1,0 +1,1 @@
+fig. 4: mahalanobis distance to the centroid, max distance = 0.3
