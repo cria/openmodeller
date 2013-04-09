@@ -1,0 +1,2 @@
+fig. 6: euclidean distance to the centroid of the 10 nearest points, max
+distance = 0.05

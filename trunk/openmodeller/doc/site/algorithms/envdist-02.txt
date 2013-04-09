@@ -1,0 +1,1 @@
+fig. 2: gower distance to nearest point, max distance = 0.05
