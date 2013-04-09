@@ -1,5 +1,6 @@
 #!/usr/bin/env python2
 
+import glob
 import om
 
 # You'll need this instance for sure...
@@ -10,10 +11,6 @@ algList = mod.availableAlgorithms()
 
 strAlgList = ""
 
-#for i in range(0, len(algList)):
-#    #alg = algList[i]
-#    print algList[i].name
-
 id = []
 html = []
 for a in algList:
@@ -22,9 +19,6 @@ for a in algList:
     output = a.id.lower() + ".html"
     html.append(output)
 
-    print a.id, output
-
-print "--"
 i = 0
 for a in id:
     # open file for output
@@ -66,7 +60,7 @@ for a in id:
     o.write('<h3>Description</h3>\n')
     o.write('<p>{0}</p>\n'.format(alg.description))
 
-    #parameters
+    # parameters
     o.write('<h3>Parameters</h3>\n')
     j = 0
     parameters = alg.getParameterList()
@@ -88,7 +82,26 @@ for a in id:
                 format("real" if int(param.type) else "integer"))
         o.write('<b>Typical value:</b> {}<br></p>\n'.format(param.typical))
         o.write('<p><b>Meaning:</b> {0}</p>\n'.format(param.overview))
-        print param.id, param.name, min
         
+    # models
+    model = 'algorithms/' + a.lower()
+    fglob = model + '-*.png'
+    dglob = model + '-*.txt' 
+
+    figs = glob.glob(fglob)
+    figs.sort()
+    descs = glob.glob(dglob)
+    descs.sort()
+
+    o.write('<h3>Models</h3>\n')
+
+    for f, d in zip(figs, descs):
+        # read description
+        dd = open(d, 'r')
+        description = dd.readline()
+        
+        o.write('<p><center><img src="' + f + '"</center><br>')
+        o.write(description + '</p>')
+
     i = i + 1
     o.close()
