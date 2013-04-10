@@ -93,6 +93,10 @@ for a in id:
     descs = glob.glob(dglob)
     descs.sort()
 
+    if not figs: # doesn't include Models if there is no figures
+        i = i + 1
+        continue
+
     o.write('<h3>Models</h3>\n')
 
     for f, d in zip(figs, descs):
@@ -100,8 +104,9 @@ for a in id:
         dd = open(d, 'r')
         description = dd.readline()
         
-        o.write('<p><center><img src="' + f + '"</center><br>')
-        o.write(description + '</p>')
+        o.write('<p><center><img src="' + f + '"></center><br>' +
+                description + '</p>')
+                
 
     i = i + 1
     o.close()
