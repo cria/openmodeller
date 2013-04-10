@@ -41,15 +41,15 @@ for a in id:
     o.write('<h2>{0}</h2>\n'.format(alg.name))
 
     # developers
-    o.write('<p><h3>Developers</h3>\n')
-    o.write('<p><b>Developer(s)</b>: {0}</p>\n'.format(alg.code_author))
+    o.write('<h3>Developers</h3>\n')
+    o.write('<p><b>Developer(s)</b>: {0}\n'.format(alg.code_author))
 
     # accepts categorical maps
-    o.write('<p><b>Accepts Categorical Maps:</b> {0}</p>'.
+    o.write('<p><b>Accepts Categorical Maps:</b> {0}'.
             format("yes" if int(alg.categorical) else "no"))
 
     # require absence points
-    o.write('<p><b>Requires absence points:</b> {0}</p>'.
+    o.write('<p><b>Requires absence points:</b> {0}'.
             format("yes" if int(alg.absence) else "no")) 
 
     # bibliography
@@ -80,8 +80,8 @@ for a in id:
         o.write('<p><b>Domain:</b> [{}, {}]<br>\n'.format(min, max))
         o.write('<b>Data type:</b> {}<br>\n'.
                 format("real" if int(param.type) else "integer"))
-        o.write('<b>Typical value:</b> {}<br></p>\n'.format(param.typical))
-        o.write('<p><b>Meaning:</b> {0}</p>\n'.format(param.overview))
+        o.write('<b>Typical value:</b> {}<br>\n'.format(param.typical))
+        o.write('<p><b>Meaning:</b> {0}\n'.format(param.overview))
         
     # models
     model = 'algorithms/' + a.lower()
@@ -104,9 +104,11 @@ for a in id:
         dd = open(d, 'r')
         description = dd.readline()
         
-        o.write('<p><center><img src="' + f + '"></center><br>' +
-                description + '</p>')
+        o.write('<p><center><img src="' + f +
+                '" alt="error"><br>' +
+                description.rstrip() + '</center>\n')
                 
+    o.write('</body></html>\n')
 
     i = i + 1
     o.close()
