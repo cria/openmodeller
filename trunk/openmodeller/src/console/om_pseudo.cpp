@@ -270,7 +270,7 @@ int main( int argc, char **argv ) {
 
         continuous_layers.push_back( mask_file ); // need to add at least one layer
 
-        EnvironmentPtr env = createEnvironment( categorical_layers, continuous_layers, mask_file );
+        EnvironmentPtr env = createEnvironment( categorical_layers, continuous_layers );
 
         if ( ! env ) {
 
