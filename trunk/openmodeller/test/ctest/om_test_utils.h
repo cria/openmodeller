@@ -121,11 +121,9 @@ std::string prepareTempFile( std::string templateFileName ) {
   }
   catch( std::exception& e ) {
 
-    std::string myError("Exception caught!\n");
     std::cout << "Exception caught!" << std::endl;
     std::cout << e.what() << std::endl;
-    myError.insert(myError.length(),e.what());
-    return false;
+    throw e;
   }
 }
 
