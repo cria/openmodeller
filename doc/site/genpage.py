@@ -1,6 +1,7 @@
 #!/usr/bin/env python2
 
 import glob
+import os.path
 import om
 
 # You'll need this instance for sure...
@@ -21,9 +22,11 @@ for a in algList:
 
 i = 0
 for a in id:
+    output = os.path.join("algorithms", html[i])
+
     # open file for output
-    print "writing " + html[i]
-    o = open(html[i], 'w')
+    print "writing " + output
+    o = open(output, 'w')
 
     alg = mod.algorithmMetadata(a)
 
