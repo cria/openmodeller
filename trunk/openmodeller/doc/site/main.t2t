@@ -6,6 +6,88 @@
 
 == Welcome to the openModeller project ==
 
-[mapa.jpg] openModeller aims to provide a flexible, user friendly, cross-platform environment where the entire process of conducting a fundamental niche modeling experiment can be carried out. The software includes facilities for reading species occurrence and environmental data, selection of environmental layers on which the model should be based, creating a fundamental niche model and projecting the model into an environmental scenario.  A number of algorithms are provided as plugins, including GARP, Climate Space Model, Bioclimatic Envelopes, Support Vector Machines and others.  
+openModeller aims to provide a flexible, user friendly, cross-platform environment where the entire process of conducting a fundamental niche modeling experiment can be carried out. The software includes facilities for reading species occurrence and environmental data, selection of environmental layers on which the model should be based, creating a fundamental niche model and projecting the model into an environmental scenario.  A number of algorithms are provided as plugins, including GARP, Climate Space Model, Bioclimatic Envelopes, Support Vector Machines and others.
 
-The project is currently being developed by the Centro de Referência em Informação Ambiental ([CRIA http://www.cria.org.br]), Escola Politécnica da USP ([Poli http://www.poli.usp.br]), and Instituto Nacional de Pesquisas Espaciais ([INPE http://www.inpe.br]) as an open-source initiative. It is funded by Fundação de Amparo à Pesquisa do Estado de São Paulo ([FAPESP http://www.fapesp.br]), the [Incofish http://www.incofish.br] project, and by individuals that have generously contributed their time. Previous collaborators include the BDWorld project (University of Reading), the University of Kansas Natural History Museum & Biodiversity Research Center (KU), and other individual participants. 
+The project is currently being developed by the Centro de Referência em Informação Ambiental ([CRIA http://www.cria.org.br]), Escola Politécnica da USP ([Poli http://www.poli.usp.br]), and Instituto Nacional de Pesquisas Espaciais ([INPE http://www.inpe.br]) as an open-source initiative. It is funded by Fundação de Amparo à Pesquisa do Estado de São Paulo ([FAPESP http://www.fapesp.br]), the [Incofish http://www.incofish.br] project, and by individuals that have generously contributed their time. Previous collaborators include the BDWorld project (University of Reading), the University of Kansas Natural History Museum & Biodiversity Research Center (KU), and other individual participants.
+
+
+== Algorithms ==
+
+openModeller uses an extensible plugin architecture for the implementation of the modelling algorithms. The available algorithms are listed below. Click on the algorithm name to find out more information.
+
+- [ANN - Artificial Neural Networks algorithms/ann.html]
+- [AquaMaps algorithms/aquamaps.html]
+- [Bioclim algorithms/bioclim.html]
+- [Consensus algorithms/consensus.html]
+- [CSM - Climate Space Model algorithms/csmbs.html]
+- [GARP (single run) - DesktopGARP implementation algorithms/dg_garp.html]
+- [GARP with best subsets - DesktopGARP implementation algorithms/dg_garp_bs.html]
+- [GARP - Genetic Algorithm for Rule-set Production algorithms/garp.html]
+- [GARP Best Subsets algorithms/garp_bs.html]
+- [ENFA - Ecological-Niche Factor Analysis algorithms/enfa.html]
+- [Envelope Score algorithms/envscore.html]
+- [Environmental Distance algorithms/envdist.html] 
+- [Maxent algorithms/maxent.html]
+- [Niche Mosaic algorithms/niche_mosaic.html]
+- [Random Forests algorithms/rf.html]
+- [SVM - Support Vector Machines algorithms/svm.html]
+
+
+== Resources ==
+
+=== Users mailing list ===
+
+- [Archives http://sourceforge.net/mailarchive/forum.php?forum_id=40728]
+- [Subscribe/Unsubscribe/Preferences http://lists.sourceforge.net/mailman/listinfo/openmodeller-users]
+
+
+=== Developers mailing list ===
+
+- [Archives http://sourceforge.net/mailarchive/forum.php?forum_id=37479]
+- [Subscribe/Unsubscribe/Preferences http://lists.sourceforge.net/mailman/listinfo/openmodeller-devel]
+
+
+=== Subversion commits notification list ===
+
+- [Subscribe/Unsubscribe/Preferences http://lists.sourceforge.net/mailman/listinfo/openmodeller-cvs]
+
+
+=== Step by Step Compilation Procedure for All Platforms ===
+
+- [for openModeller Library http://openmodeller.sf.net/INSTALL.html]  
+
+
+=== IRC ===
+
+- Chat server: irc.freenode.net
+- Channel: #openmodeller
+- [Log history http://linux-gis.co.uk/irclogs/?C=M;O=D]
+
+
+=== Subversion ===
+
+[Instructions and repository location http://sourceforge.net/cvs/?group_id=101808]
+
+To retrieve the openModeller library sources do:
+
+```svn co https://openmodeller.svn.sourceforge.net/svnroot/openmodeller/trunk/openmodeller```
+
+To retrieve the openModeller Desktop application sources do:
+
+```svn co https://openmodeller.svn.sourceforge.net/svnroot/openmodeller/trunk/openModellerDesktop```
+
+To retrieve the terraView Plugin application sources do:
+
+```svn co https://openmodeller.svn.sourceforge.net/svnroot/openmodeller/trunk/terraViewPlugin```
+
+For activity monitoring and source code statistics, visit our ohloh.net project page.
+
+=== Related links ===
+
+- [WIKI for the openModeller Library Project http://openmodeller.cria.org.br/wikis/om/FrontPage]
+- [WIKI for the openModeller Graphical User Interface Project http://openmodeller.cria.org.br/wikis/omgui/FrontPage]
+
+
+=== Translation ===
+
+We have a translation guide available if you would like to translate openModeller Desktop into your own language. - [SVM - Support Vector Machines algorithms/svm.html]

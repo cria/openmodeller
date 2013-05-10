@@ -107,7 +107,7 @@ for a in id:
         dd = open(d, 'r')
         description = dd.readline()
         
-        o.write('<p><center><img src="' + f +
+        o.write('<p><center><img src="' + "../" + f +
                 '" alt="error"><br>' +
                 description.rstrip() + '</center>\n')
                 
