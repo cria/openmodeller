@@ -49,13 +49,13 @@ use vars qw($opt_help, $opt_debug, $opt_server);
 
 print_help() if $opt_help;
 
-print "\nWelcome to the openModeller SOAP client demo!\n";
+print "\nWelcome to the openModeller 1.0 SOAP client demo!\n";
 
 print<<EOM;
 
 Please notice that this interface is a simple prototype
 and mostly an example of how to build a SOAP client
-to interact with an openModeller web service.
+to interact with an openModeller web service version 1.0.
 EOM
 
 print "\nNote: this machine has SOAP::Lite version $SOAP::Lite::VERSION\n";
