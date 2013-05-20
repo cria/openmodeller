@@ -691,7 +691,30 @@ omws__projectModel( struct soap *soap, XML om__ProjectionParameters, xsd__string
 int 
 omws__evaluateModel( struct soap *soap, XML om__ModelEvaluationParameters, xsd__string &ticket )
 {
-  return soap_receiver_fault( soap, "Not implemented", NULL );
+  logRequest( soap, "evaluateModel" );
+
+  if ( getStatus() == 2 ) {
+
+    return soap_receiver_fault( soap, "Service unavailable", NULL );
+  }
+
+  soap_clr_omode(soap, SOAP_ENC_ZLIB); // disable Zlib's gzip
+
+  try {
+
+    wchar_t elementName[] = L"ModelEvaluationParameters";
+    scheduleJob( soap, "OMWS_EVALUATE_REQUEST", om__ModelEvaluationParameters, elementName, ticket );
+  }
+  catch (OmwsException& e) {
+
+    return soap_receiver_fault( soap, e.what(), NULL );
+  }
+  catch (...) {
+
+    return soap_receiver_fault( soap, "Failed to process request", NULL );
+  }
+
+  return SOAP_OK;
 }
 
 /***********************/
@@ -699,7 +722,30 @@ omws__evaluateModel( struct soap *soap, XML om__ModelEvaluationParameters, xsd__
 int 
 omws__samplePoints( struct soap *soap, XML om__SamplingParameters, xsd__string &ticket )
 {
-  return soap_receiver_fault( soap, "Not implemented", NULL );
+  logRequest( soap, "samplePoints" );
+
+  if ( getStatus() == 2 ) {
+
+    return soap_receiver_fault( soap, "Service unavailable", NULL );
+  }
+
+  soap_clr_omode(soap, SOAP_ENC_ZLIB); // disable Zlib's gzip
+
+  try {
+
+    wchar_t elementName[] = L"SamplingParameters";
+    scheduleJob( soap, "OMWS_SAMPLING_REQUEST", om__SamplingParameters, elementName, ticket );
+  }
+  catch (OmwsException& e) {
+
+    return soap_receiver_fault( soap, e.what(), NULL );
+  }
+  catch (...) {
+
+    return soap_receiver_fault( soap, "Failed to process request", NULL );
+  }
+
+  return SOAP_OK;
 }
 
 /************************/
