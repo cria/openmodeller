@@ -65,5 +65,5 @@ ENDIF (ZLIB_FOUND)
 ########################################################
 # Install
 
-INSTALL(TARGETS om_soap_server RUNTIME DESTINATION ${OM_BIN_DIR})
+#INSTALL(TARGETS om_soap_server RUNTIME DESTINATION ${OM_BIN_DIR})
 
