@@ -55,6 +55,7 @@ using namespace std;
 #define OMWS_PROJECTION proj
 #define OMWS_EVALUATE eval
 #define OMWS_SAMPLING samp
+#define OMWS_EXPERIMENT exp
 #define _REQUEST _req.
 #define _RESPONSE _resp.
 #define OMWS_PROJECTION_STATISTICS_PREFIX "stats."
@@ -753,7 +754,35 @@ omws__samplePoints( struct soap *soap, XML om__SamplingParameters, xsd__string &
 int
 omws__runExperiment( struct soap *soap, XML om__ExperimentParameters, struct omws__runExperimentResponse *out )
 {
-  return soap_receiver_fault( soap, "Not implemented", NULL );
+  logRequest( soap, "runExperiment" );
+
+  if ( getStatus() == 2 ) {
+
+    return soap_receiver_fault( soap, "Service unavailable", NULL );
+  }
+
+  soap_clr_omode(soap, SOAP_ENC_ZLIB); // disable Zlib's gzip
+
+  try {
+
+    xsd__string ticket;
+    wchar_t elementName[] = L"ExperimentParameters";
+    scheduleJob( soap, "OMWS_EXPERIMENT_REQUEST", om__ExperimentParameters, elementName, ticket );
+    string result( "<ExperimentTickets><Job Id=\"experiment\" Ticket=\"" );
+    result.append( ticket );
+    result.append( "\"/></ExperimentTickets>" );
+    out->om__ExperimentTickets = convertToWideChar( result.c_str() ); 
+  }
+  catch (OmwsException& e) {
+
+    return soap_receiver_fault( soap, e.what(), NULL );
+  }
+  catch (...) {
+
+    return soap_receiver_fault( soap, "Failed to process request", NULL );
+  }
+
+  return SOAP_OK;
 }
 
 /**********************/
