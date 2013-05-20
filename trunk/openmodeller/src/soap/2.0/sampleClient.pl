@@ -85,8 +85,8 @@ my %options = ( 0  => 'Ping service',
 		8  => 'Get test result', 
 		9  => 'Project model', 
 		10 => 'Get projection metadata', 
-		11 => 'Get map as attachment', 
-		12 => 'Get map as URL', 
+		11 => 'Get map as URL', 
+		12 => 'Run Experiment', 
 		13 => 'Quit' );
 
 my $option = -1;
@@ -143,11 +143,11 @@ while ( $option != $exit_option or not exists( $options{$option-1} ) )
     }
     elsif ($option == 12)
     {
-	$option = ( get_layer_as_attachment() ) ? -1 : $exit_option;
+	$option = ( get_layer_as_url() ) ? -1 : $exit_option;
     }
     elsif ($option == 13)
     {
-	$option = ( get_layer_as_url() ) ? -1 : $exit_option;
+	$option = ( run_experiment() ) ? -1 : $exit_option;
     }
     elsif ( ! $option )
     {
@@ -1142,50 +1142,6 @@ sub get_projection_metadata
     return 1;
 }
 
-##########################
-#  Get map as attachment # 
-##########################
-sub get_layer_as_attachment
-{
-    prepare_soap();
-
-    my $method = SOAP::Data
-	-> name( 'getLayerAsAttachment' )
-        -> encodingStyle( 'http://xml.apache.org/xml-soap/literalxml' )
-	-> prefix( 'omws' )
-	-> uri( $omws_uri );
-
-    ### Get ticket
-
-    my $ticket = get_string_from_user('Ticket number');
-
-    if ( ! $ticket )
-    {
-	return 0;
-    }
-
-    print "Requesting map...\n";
-
-    my $soap_ticket = SOAP::Data
-	-> name( 'id' )
-	-> type( 'string' )
-	-> value( $ticket );
-    
-    my $response = $soap->call( $method => $soap_ticket );
-    
-    unless ( $response->fault or ! $response->result )
-    { 
-	print "OK\n";
-    }
-    else
-    {
-	print "Ops, found some problems:\n";
-	print join ', ', $response->faultcode, $response->faultstring; 
-	print "\n";
-	return 0;
-    }
-}
-
 ############
 #  Get log # 
 ############
@@ -1231,6 +1187,45 @@ sub get_layer_as_url
 
     return 1;
 }
+
+##################
+# Run experiment #
+##################
+sub run_experiment
+{
+    prepare_soap();
+
+    my $method = SOAP::Data
+        -> name( 'runExperiment' )
+        -> encodingStyle( 'http://xml.apache.org/xml-soap/literalxml' )
+        -> prefix( 'omws' )
+        -> uri( $omws_uri );
+
+    # Hard coded for now
+    my $xml = '<ExperimentParameters xmlns="http://openmodeller.cria.org.br/xml/2.0"></ExperimentParameters>';
+
+    # Encode coord system directly in XML to avoid automatic xsi:types for the content
+    my $xml_parameters = SOAP::Data
+        -> type( 'xml' => $xml );
+
+    print "Requesting experiment... ";
+
+    my $response = $soap->call( $method => $xml_parameters );
+
+    unless ( $response->fault )
+    {
+        print "Start program with --debug to see response\n";
+    }
+    else
+    {
+        print "Ops, found some problems:\n";
+        print join ', ', $response->faultcode, $response->faultstring;
+        print "\n";
+        return 0;
+    }
+
+    return 1;
+} 
 
 #########################################
 #  Get algorithm from console interface # 
