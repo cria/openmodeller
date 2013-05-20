@@ -68,7 +68,7 @@ using namespace std;
 /***  Forward declarations ***/
 
 static string   getServiceAddress();
-static void*    process_request( void* );
+static void*    processRequest( void* );
 static bool     fileExists( const char* fileName );
 static string   getMapFile( string ticket );
 static wchar_t* convertToWideChar( const char* p );
@@ -297,7 +297,7 @@ int main(int argc, char **argv)
 		  
           soap_thr[i]->socket = s; // new socket fd 
           //pthread_create(&tid[i], NULL, (void*(*)(void*))soap_serve, (void*)soap_thr[i]); 
-          pthread_create( &tid[i], NULL, (void*(*)(void*))process_request, (void*)soap_thr[i] ); 
+          pthread_create( &tid[i], NULL, (void*(*)(void*))processRequest, (void*)soap_thr[i] ); 
         } 
       }
     }
@@ -335,7 +335,7 @@ getServiceAddress()
 
 /*************************/
 /**** Process request ****/
-void *process_request( void *soap )
+void *processRequest( void *soap )
 {
   pthread_detach( pthread_self() );
   ((struct soap*)soap)->recv_timeout = 300; // Timeout after 5 minutes stall on recv
@@ -624,80 +624,6 @@ omws__createModel( struct soap *soap, XML om__ModelParameters, xsd__string &tick
   return SOAP_OK;
 }
 
-
-/**********************/
-/**** schedule Job ****/
-void
-scheduleJob( struct soap *soap, string requestPrefix, XML xmlParameters, wchar_t* elementName, xsd__string &ticket )
-{
-  string ticketFileName( gFileParser.get( "TICKET_DIRECTORY" ) );
-
-  // Append slash if necessary
-  if ( ticketFileName.find_last_of( "/" ) != ticketFileName.size() - 1 ) {
-
-    ticketFileName.append( "/" );
-  }
-
-  // Copy name to future request file name
-  string requestFileName( ticketFileName );
-
-  // Append ticket template
-  ticketFileName.append( OMWS_TICKET_TEMPLATE );
-
-  // Temporary variable to generate ticket and copy its value
-  char *tempFileName = (char*)soap_malloc( soap, ticketFileName.length() +1 );
-
-  strcpy( tempFileName, ticketFileName.c_str() );
-
-  // Generate unique ticket file
-  int fd = mkstemp( tempFileName );
-
-  if ( fd == -1 ) {
-
-    throw OmwsException("Failed to create ticket (1)");
-  }
-
-  // Get ticket value
-  ticket = strrchr( tempFileName, '/' ) + 1;
-
-  // Append prefix to request file
-  requestFileName.append( requestPrefix );
-
-  // Append ticket to request file
-  requestFileName.append( ticket );
-
-  // Create and open request file - at this point there should be no file with the same name!
-  FILE *file = fopen( requestFileName.c_str(), "w" );
-
-  if ( file == NULL ) {
-
-    throw OmwsException("Failed to create ticket (2)");
-  }
-
-  // Add wrapper element
-  if ( fputws(L"<", file) < 0 || fputws(elementName, file) < 0 || fputws(L">", file) < 0 ) {
-
-    fclose( file );
-    throw OmwsException("Failed to create ticket (3)");
-  }
-
-  // Put content of model request there
-  if ( fputws( xmlParameters, file ) < 0 ) {
-
-    fclose( file );
-    throw OmwsException("Failed to create ticket (4)");
-  }
-
-  // Close wrapper element
-  if ( fputws(L"</", file) < 0 || fputws(elementName, file) < 0 || fputws(L">", file) < 0 ) {
-
-    fclose( file );
-    throw OmwsException("Failed to create ticket (5)");
-  }
-
-  fclose( file );
-}
-
 /********************/
 /**** test Model ****/
 int 
@@ -712,73 +638,19 @@ omws__testModel( struct soap *soap, XML om__TestParameters, xsd__string &ticket 
 
   soap_clr_omode(soap, SOAP_ENC_ZLIB); // disable Zlib's gzip
 
-  string ticketFileName( gFileParser.get( "TICKET_DIRECTORY" ) );
+  try {
 
-  // Append slash if necessary
-  if ( ticketFileName.find_last_of( "/" ) != ticketFileName.size() - 1 ) {
-
-    ticketFileName.append( "/" );
+    wchar_t elementName[] = L"TestParameters";
+    scheduleJob( soap, "OMWS_TEST_REQUEST", om__TestParameters, elementName, ticket );
   }
+  catch (OmwsException& e) {
 
-  // Copy name to future request file name
-  string requestFileName( ticketFileName );
-
-  // Append ticket template
-  ticketFileName.append( OMWS_TICKET_TEMPLATE );
-
-  // Temporary variable to generate ticket and copy its value
-  char *tempFileName = (char*)soap_malloc( soap, ticketFileName.length() +1 );
-
-  strcpy( tempFileName, ticketFileName.c_str() );
-
-  // Generate unique ticket file
-  int fd = mkstemp( tempFileName );
-
-  if ( fd == -1 ) {
-
-    return soap_receiver_fault( soap, "Failed to create ticket (1)", NULL );
+    return soap_receiver_fault( soap, e.what(), NULL );
   }
+  catch (...) {
 
-  // Get ticket value
-  ticket = strrchr( tempFileName, '/' ) + 1;
-
-  // Append prefix to request file
-  requestFileName.append( "OMWS_TEST_REQUEST" );
-
-  // Append ticket to request file
-  requestFileName.append( ticket );
-
-  // Create and open request file - at this point there should be no file with the same name!
-  FILE *file = fopen( requestFileName.c_str(), "w" );
-
-  if ( file == NULL ) {
-
-     return soap_receiver_fault( soap, "Failed to create ticket (2)", NULL );
+    return soap_receiver_fault( soap, "Failed to process request", NULL );
   }
-
-  // Add wrapper element
-  wchar_t openRoot[] = L"<TestParameters>";
-
-  if ( fputws( openRoot, file ) < 0 ) {
-
-    return soap_receiver_fault( soap, "Failed to create ticket (3)", NULL );
-  }
-
-  // Put content of model request there
-  if ( fputws( om__TestParameters, file ) < 0 ) {
-
-    return soap_receiver_fault( soap, "Failed to create ticket (4)", NULL );
-  }
-
-  // Close wrapper element
-  wchar_t closeRoot[] = L"</TestParameters>";
-
-  if ( fputws( closeRoot, file ) < 0 ) {
-
-    return soap_receiver_fault( soap, "Failed to create ticket (5)", NULL );
-  }
-
-  fclose( file );
 
   return SOAP_OK;
 }
@@ -797,73 +669,19 @@ omws__projectModel( struct soap *soap, XML om__ProjectionParameters, xsd__string
 
   soap_clr_omode(soap, SOAP_ENC_ZLIB); // disable Zlib's gzip
 
-  string ticketFileName( gFileParser.get( "TICKET_DIRECTORY" ) );
+  try {
 
-  // Append slash if necessary
-  if ( ticketFileName.find_last_of( "/" ) != ticketFileName.size() - 1 ) {
-
-    ticketFileName.append( "/" );
+    wchar_t elementName[] = L"ProjectionParameters";
+    scheduleJob( soap, "OMWS_PROJECTION_REQUEST", om__ProjectionParameters, elementName, ticket );
   }
+  catch (OmwsException& e) {
 
-  // Copy name to future request file name
-  string requestFileName( ticketFileName );
-
-  // Append ticket template
-  ticketFileName.append( OMWS_TICKET_TEMPLATE );
-
-  // Temporary variable to generate ticket and copy its value
-  char *tempFileName = (char*)soap_malloc( soap, ticketFileName.length() +1 );
-
-  strcpy( tempFileName, ticketFileName.c_str() );
-
-  // Generate unique ticket file
-  int fd = mkstemp( tempFileName );
-
-  if ( fd == -1 ) {
-
-    return soap_receiver_fault( soap, "Failed to create ticket (1)", NULL );
+    return soap_receiver_fault( soap, e.what(), NULL );
   }
+  catch (...) {
 
-  // Get ticket value
-  ticket = strrchr( tempFileName, '/' ) + 1;
-
-  // Append prefix to request file
-  requestFileName.append( "OMWS_PROJECTION_REQUEST" );
-
-  // Append ticket to request file
-  requestFileName.append( ticket );
-
-  // Create and open request file - at this point there should be no file with the same name!
-  FILE *file = fopen( requestFileName.c_str(), "w" );
-
-  if ( file == NULL ) {
-
-     return soap_receiver_fault( soap, "Failed to create ticket (2)", NULL );
+    return soap_receiver_fault( soap, "Failed to process request", NULL );
   }
-
-  // Add wrapper element
-  wchar_t openRoot[] = L"<ProjectionParameters>";
-
-  if ( fputws( openRoot, file ) < 0 ) {
-
-    return soap_receiver_fault( soap, "Failed to create ticket (3)", NULL );
-  }
-
-  // Put content of model request there
-  if ( fputws( om__ProjectionParameters, file ) < 0 ) {
-
-    return soap_receiver_fault( soap, "Failed to create ticket (4)", NULL );
-  }
-
-  // Close wrapper element
-  wchar_t closeRoot[] = L"</ProjectionParameters>";
-
-  if ( fputws( closeRoot, file ) < 0 ) {
-
-    return soap_receiver_fault( soap, "Failed to create ticket (5)", NULL );
-  }
-
-  fclose( file );
 
   return SOAP_OK;
 }
@@ -1745,4 +1563,77 @@ getTicketFilePath( string prefix, string ticket )
   filePath.append( ticket );
 
   return filePath;
+}
+
+/**********************/
+/**** schedule Job ****/
+void
+scheduleJob( struct soap *soap, string requestPrefix, XML xmlParameters, wchar_t* elementName, xsd__string &ticket )
+{
+  string ticketFileName( gFileParser.get( "TICKET_DIRECTORY" ) );
+
+  // Append slash if necessary
+  if ( ticketFileName.find_last_of( "/" ) != ticketFileName.size() - 1 ) {
+
+    ticketFileName.append( "/" );
+  }
+
+  // Copy name to future request file name
+  string requestFileName( ticketFileName );
+
+  // Append ticket template
+  ticketFileName.append( OMWS_TICKET_TEMPLATE );
+
+  // Temporary variable to generate ticket and copy its value
+  char *tempFileName = (char*)soap_malloc( soap, ticketFileName.length() +1 );
+
+  strcpy( tempFileName, ticketFileName.c_str() );
+
+  // Generate unique ticket file
+  int fd = mkstemp( tempFileName );
+
+  if ( fd == -1 ) {
+
+    throw OmwsException("Failed to create ticket (1)");
+  }
+
+  // Get ticket value
+  ticket = strrchr( tempFileName, '/' ) + 1;
+
+  // Append prefix to request file
+  requestFileName.append( requestPrefix );
+
+  // Append ticket to request file
+  requestFileName.append( ticket );
+
+  // Create and open request file - at this point there should be no file with the same name!
+  FILE *file = fopen( requestFileName.c_str(), "w" );
+
+  if ( file == NULL ) {
+
+    throw OmwsException("Failed to create ticket (2)");
+  }
+
+  // Add wrapper element
+  if ( fputws(L"<", file) < 0 || fputws(elementName, file) < 0 || fputws(L">", file) < 0 ) {
+
+    fclose( file );
+    throw OmwsException("Failed to create ticket (3)");
+  }
+
+  // Put content of model request there
+  if ( fputws( xmlParameters, file ) < 0 ) {
+
+    fclose( file );
+    throw OmwsException("Failed to create ticket (4)");
+  }
+
+  // Close wrapper element
+  if ( fputws(L"</", file) < 0 || fputws(elementName, file) < 0 || fputws(L">", file) < 0 ) {
+
+    fclose( file );
+    throw OmwsException("Failed to create ticket (5)");
+  }
+
+  fclose( file );
 }
