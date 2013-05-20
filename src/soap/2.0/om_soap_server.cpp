@@ -50,14 +50,14 @@ using namespace std;
 #define OMWS_MIN *60
 #define OMWS_H *3600
 #define OMWS_TICKET_TEMPLATE "XXXXXX"
-#define OMWS_MODEL model
-#define OMWS_TEST test
-#define OMWS_PROJECTION proj
-#define OMWS_EVALUATE eval
-#define OMWS_SAMPLING samp
-#define OMWS_EXPERIMENT exp
-#define _REQUEST _req.
-#define _RESPONSE _resp.
+#define OMWS_MODEL "model"
+#define OMWS_TEST "test"
+#define OMWS_PROJECTION "proj"
+#define OMWS_EVALUATE "eval"
+#define OMWS_SAMPLING "samp"
+#define OMWS_EXPERIMENT "exp"
+#define _REQUEST "_req."
+#define _RESPONSE "_resp."
 #define OMWS_PROJECTION_STATISTICS_PREFIX "stats."
 #define OMWS_JOB_PROGRESS_PREFIX "prog."
 #define OMWS_JOB_DONE_PREFIX "done."
@@ -611,7 +611,7 @@ omws__createModel( struct soap *soap, XML om__ModelParameters, xsd__string &tick
   try {
 
     wchar_t elementName[] = L"ModelParameters";
-    scheduleJob( soap, "OMWS_MODEL_REQUEST", om__ModelParameters, elementName, ticket );
+    scheduleJob( soap, OMWS_MODEL _REQUEST, om__ModelParameters, elementName, ticket );
   }
   catch (OmwsException& e) {
 
@@ -642,7 +642,7 @@ omws__testModel( struct soap *soap, XML om__TestParameters, xsd__string &ticket 
   try {
 
     wchar_t elementName[] = L"TestParameters";
-    scheduleJob( soap, "OMWS_TEST_REQUEST", om__TestParameters, elementName, ticket );
+    scheduleJob( soap, OMWS_TEST _REQUEST, om__TestParameters, elementName, ticket );
   }
   catch (OmwsException& e) {
 
@@ -673,7 +673,7 @@ omws__projectModel( struct soap *soap, XML om__ProjectionParameters, xsd__string
   try {
 
     wchar_t elementName[] = L"ProjectionParameters";
-    scheduleJob( soap, "OMWS_PROJECTION_REQUEST", om__ProjectionParameters, elementName, ticket );
+    scheduleJob( soap, OMWS_PROJECTION _REQUEST, om__ProjectionParameters, elementName, ticket );
   }
   catch (OmwsException& e) {
 
@@ -704,7 +704,7 @@ omws__evaluateModel( struct soap *soap, XML om__ModelEvaluationParameters, xsd__
   try {
 
     wchar_t elementName[] = L"ModelEvaluationParameters";
-    scheduleJob( soap, "OMWS_EVALUATE_REQUEST", om__ModelEvaluationParameters, elementName, ticket );
+    scheduleJob( soap, OMWS_EVALUATE _REQUEST, om__ModelEvaluationParameters, elementName, ticket );
   }
   catch (OmwsException& e) {
 
@@ -735,7 +735,7 @@ omws__samplePoints( struct soap *soap, XML om__SamplingParameters, xsd__string &
   try {
 
     wchar_t elementName[] = L"SamplingParameters";
-    scheduleJob( soap, "OMWS_SAMPLING_REQUEST", om__SamplingParameters, elementName, ticket );
+    scheduleJob( soap, OMWS_SAMPLING _REQUEST, om__SamplingParameters, elementName, ticket );
   }
   catch (OmwsException& e) {
 
@@ -767,7 +767,7 @@ omws__runExperiment( struct soap *soap, XML om__ExperimentParameters, struct omw
 
     xsd__string ticket;
     wchar_t elementName[] = L"ExperimentParameters";
-    scheduleJob( soap, "OMWS_EXPERIMENT_REQUEST", om__ExperimentParameters, elementName, ticket );
+    scheduleJob( soap, OMWS_EXPERIMENT _REQUEST, om__ExperimentParameters, elementName, ticket );
     string result( "<ExperimentTickets><Job Id=\"experiment\" Ticket=\"" );
     result.append( ticket );
     result.append( "\"/></ExperimentTickets>" );
@@ -946,7 +946,7 @@ omws__getModel( struct soap *soap, xsd__string ticket, struct omws__getModelResp
     return soap_sender_fault( soap, "Missing ticket in request", NULL );
   }
 
-  string fileName = getTicketFilePath( "OMWS_MODEL_RESPONSE", ticket );
+  string fileName = getTicketFilePath( OMWS_MODEL _RESPONSE, ticket );
 
   fstream fin;
   fin.open( fileName.c_str(), ios::in );
@@ -993,7 +993,7 @@ omws__getTestResult( struct soap *soap, xsd__string ticket, struct omws__testRes
     return soap_sender_fault( soap, "Missing ticket in request", NULL );
   }
 
-  string fileName = getTicketFilePath( "OMWS_TEST_RESPONSE", ticket );
+  string fileName = getTicketFilePath( OMWS_TEST _RESPONSE, ticket );
 
   fstream fin;
   fin.open( fileName.c_str(), ios::in );
