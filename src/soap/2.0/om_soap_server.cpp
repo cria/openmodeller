@@ -768,9 +768,9 @@ omws__runExperiment( struct soap *soap, XML om__ExperimentParameters, struct omw
     xsd__string ticket;
     wchar_t elementName[] = L"ExperimentParameters";
     scheduleJob( soap, OMWS_EXPERIMENT _REQUEST, om__ExperimentParameters, elementName, ticket );
-    string result( "<ExperimentTickets><Job Id=\"experiment\" Ticket=\"" );
+    string result( "<Job Id=\"experiment\" Ticket=\"" );
     result.append( ticket );
-    result.append( "\"/></ExperimentTickets>" );
+    result.append( "\"/>" );
     out->om__ExperimentTickets = convertToWideChar( result.c_str() ); 
   }
   catch (OmwsException& e) {
