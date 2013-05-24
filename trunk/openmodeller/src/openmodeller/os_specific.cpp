@@ -273,8 +273,6 @@ typedef struct dirent TDirent;
  */
 #ifdef __APPLE__
 int filter( TDirent *dir )
-#elif BSD
-int filter ( TDirent *dir )
 #else
 int filter( const TDirent *dir )
 #endif
