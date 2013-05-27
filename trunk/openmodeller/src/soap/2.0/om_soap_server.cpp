@@ -39,6 +39,7 @@
 
 #include <dirent.h>
 
+#include <iostream>
 #include <sstream>
 #include <fstream>
 using namespace std;
@@ -83,6 +84,7 @@ static void     addHeader( struct soap* );
 static int      getStatus();
 static string   getTicketFilePath( string prefix, string ticket );
 static void     scheduleJob( struct soap *soap, string requestPrefix, XML xmlParameters, wchar_t* elementName, xsd__string &ticket );
+static int      getProgress( string ticket );
 
 /****************/
 /***  Globals ***/
@@ -788,7 +790,7 @@ omws__runExperiment( struct soap *soap, XML om__ExperimentParameters, struct omw
 /**********************/
 /**** get Progress ****/
 int 
-omws__getProgress( struct soap *soap, xsd__string ticket, xsd__string &progress )
+omws__getProgress( struct soap *soap, xsd__string tickets, xsd__string &progress )
 { 
   if ( getStatus() == 2 ) {
 
@@ -797,58 +799,42 @@ omws__getProgress( struct soap *soap, xsd__string ticket, xsd__string &progress 
 
   soap_clr_omode(soap, SOAP_ENC_ZLIB); // disable Zlib's gzip
 
-  if ( ! ticket ) {
+  if ( ! tickets ) {
 
-    return soap_sender_fault( soap, "Missing ticket in request", NULL );
+    return soap_sender_fault( soap, "Missing ticket(s) in request", NULL );
   }
 
-  string jobProgressFile = getTicketFilePath( OMWS_JOB_PROGRESS_PREFIX, ticket );
+  // Split tokens and process each one
+  stringstream ss( tickets );
+  stringstream res( "" );
+  string ticket;
+  bool notFirst = false;
+  while ( getline( ss, ticket, ',' ) ) {
 
-  if ( fileExists( jobProgressFile.c_str() ) ) {
+    try {
 
-    // If file exists, get its content
-    fstream fin;
-    fin.open( jobProgressFile.c_str(), ios::in );
+      if ( notFirst ) {
 
-    if ( fin.is_open() ) {
+        res << ",";
+      }
+      else {
 
-      string line;
-      getline( fin, line );
-
-      progress = (char*)line.c_str();
-
-      // Make sure that everything is really done before returning 100%
-      if ( strcmp( progress, "100" ) == 0 ) {
-
-        // Finished flag
-        string doneFlag = getTicketFilePath( OMWS_JOB_DONE_PREFIX, ticket );
-
-        if ( ! fileExists( doneFlag.c_str() ) ) {
-
-          strcpy( progress, "99" );
-        }
+        notFirst = true;
       }
 
-      fin.close();
+      res << getProgress( ticket );
     }
-    else {
+    catch (OmwsException& e) {
 
-      return soap_receiver_fault( soap, "Progress unreadable", NULL );
+      return soap_receiver_fault( soap, e.what(), NULL );
     }
+    catch (...) {
 
-    return SOAP_OK;
-  }
-  else {
-
-    string ticketFile = getTicketFilePath( "", ticket );
-
-    if ( ! fileExists( ticketFile.c_str() ) ) {
-
-      return soap_sender_fault( soap, "Unknown ticket", NULL );
+      return soap_receiver_fault( soap, "Failed to process request", NULL );
     }
   }
 
-  strcpy( progress, "-1" ); // return "queued" if progress file does not exist yet
+  progress = (char*)res.str().c_str();
 
   return SOAP_OK;
 }
@@ -1711,4 +1697,65 @@ scheduleJob( struct soap *soap, string requestPrefix, XML xmlParameters, wchar_t
   }
 
   fclose( file );
+}
+
+/**********************/
+/**** get Progress ****/
+int 
+getProgress( string ticket )
+{
+  string jobProgressFile = getTicketFilePath( OMWS_JOB_PROGRESS_PREFIX, ticket );
+
+  if ( fileExists( jobProgressFile.c_str() ) ) {
+
+    int progress = -1;
+
+    // If file exists, get its content
+    fstream fin;
+    fin.open( jobProgressFile.c_str(), ios::in );
+
+    if ( fin.is_open() ) {
+
+      // If file was opened, read the content
+      ostringstream oss;
+      string line;
+
+      getline( fin, line );
+      oss << line << endl;
+
+      // Note: if the content is empty, atoi will return 0
+      progress = atoi( oss.str().c_str() );
+
+      // Make sure that everything is really done before returning 100%
+      if ( progress == 100 ) {
+
+        // Finished flag
+        string doneFlag = getTicketFilePath( OMWS_JOB_DONE_PREFIX, ticket );
+
+        if ( ! fileExists( doneFlag.c_str() ) ) {
+
+          progress = 99;
+        }
+      }
+
+      fin.close();
+    }
+    else {
+
+      throw OmwsException("Failed to read ticket data");
+    }
+
+    return progress;
+  }
+  else {
+
+    string ticketFile = getTicketFilePath( "", ticket );
+
+    if ( ! fileExists( ticketFile.c_str() ) ) {
+
+      return -4;
+    }
+  }
+
+  return -1; // return "queued" if progress file does not exist yet
 }

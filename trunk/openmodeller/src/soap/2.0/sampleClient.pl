@@ -707,7 +707,7 @@ sub get_progress
     print "Requesting job progress... ";
 
     my $soap_ticket = SOAP::Data
-	-> name( 'ticket' )
+	-> name( 'tickets' )
 	-> type( 'string' )
 	-> value( $ticket );
     
@@ -723,6 +723,14 @@ sub get_progress
         elsif ( $prog == -2 )
         {
             print "Aborted!\n";
+        }
+        elsif ( $prog == -3 )
+        {
+            print "Cancelled!\n";
+        }
+        elsif ( $prog == -4 )
+        {
+            print "Unknown ticket!\n";
         }
         else
         {
