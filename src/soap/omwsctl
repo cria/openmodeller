@@ -55,7 +55,7 @@ jobs = {'mod':{1:0,0:0,-1:0,-2:0},'tes':{1:0,0:0,-1:0,-2:0},'pro':{1:0,0:0,-1:0,
 
 for f in os.listdir(basedir):
     # Process only request files
-    if len(f) > 8 and f.find('_req.') > -1:
+    if len(f) > 8 and (f.find('_req.') > -1 or f.find('_proc.') > -1):
         # Get ticket
         t = f[-6:]
         # Check progress
