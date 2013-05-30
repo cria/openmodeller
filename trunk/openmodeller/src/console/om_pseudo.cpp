@@ -248,9 +248,9 @@ int main( int argc, char **argv ) {
 
     time( &prog_data.timestamp );
 
-    prog_data.progress = -3.0;
+    prog_data.progress = -1.0; // queued
 
-    // Always create initial file with status 0.0
+    // Always create initial file with progress 0
     progressFileCallback( 0.0, &prog_data );
   }
   
