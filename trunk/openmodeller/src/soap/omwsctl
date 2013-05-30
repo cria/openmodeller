@@ -68,7 +68,7 @@ for f in os.listdir(basedir):
             prog = fh.readline()
             if prog:
                 p = int(prog)
-                if p >= 0:
+                if p >= 0 and p < 100:
                     print t, "ticket running, progress at", p, "since", d
             fh.close()
         except IOError:
