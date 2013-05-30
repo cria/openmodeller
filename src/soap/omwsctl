@@ -30,7 +30,7 @@ print "Checking for running instances looking at processes:"
 ps_output = subprocess.Popen(["ps", "ax"], stdout=subprocess.PIPE).communicate()[0]
 ps = ps_output.split("\n")
 
-regex = "om_(model|project|test)"
+regex = "om_(model|project|test|pseudo|evaluate)"
 pattern = re.compile(regex)
 
 psfound = False
@@ -48,23 +48,69 @@ if not psfound:
     print "no om_* processes found"
 
 print
-
-# checks for running instances LOOKING AT TICKETS
 print "Checking for running instances looking at tickets:"
-# files reside in the third index, hence f[2]
+
+# 1:finished, 0:running, -1:queued, -2:aborted
+jobs = {'mod':{1:0,0:0,-1:0,-2:0},'tes':{1:0,0:0,-1:0,-2:0},'pro':{1:0,0:0,-1:0,-2:0},'eva':{1:0,0:0,-1:0,-2:0},'sam':{1:0,0:0,-1:0,-2:0},'exp':{1:0,0:0,-1:0,-2:0}}
+
 for f in os.listdir(basedir):
-    regex = "prog\.(?P<ticket>[a-zA-Z0-9]{6})"
-    pattern = re.compile(regex)
-    match = pattern.search(f)
-    if match:
-        t = match.group('ticket')
-        filename = 'prog.' + t
-        mfile = os.path.join(basedir, filename)
-        fh = open(mfile)
-        d = time.ctime(os.path.getctime(mfile))
-        prog = fh.readline()
-        if prog:
-            p = int(prog)
-            if p >= 0 and p < 100:
-                print t, "ticket running, progress at", p, "since", d
-        fh.close()
+    # Process only request files
+    if len(f) > 8 and f.find('_req.') > -1:
+        # Get ticket
+        t = f[-6:]
+        # Check progress
+        p = -1 # queued by default (even when prog file doesn't exist)
+        prog_filename = 'prog.' + t
+        mfile = os.path.join(basedir, prog_filename)
+        try:
+            fh = open(mfile)
+            d = time.ctime(os.path.getctime(mfile))
+            prog = fh.readline()
+            if prog:
+                p = int(prog)
+                if p >= 0:
+                    print t, "ticket running, progress at", p, "since", d
+            fh.close()
+        except IOError:
+            pass
+        key = f[:3] # type of job prefix
+        if p == 100:
+            jobs[key][1] += 1
+        elif p >= 0:
+            jobs[key][0] += 1
+        elif p == -1:
+            jobs[key][-1] += 1
+        elif p == -2:
+            jobs[key][-2] += 1
+
+print
+
+total_queued = 0
+
+for k,v in jobs.iteritems():
+    total_queued += v[-1]
+    if k == 'mod':
+        print 'Create model requests:'
+        print '---------------------'
+    elif k == 'tes':
+        print 'Test model requests:'
+        print '-------------------'
+    elif k == 'pro':
+        print 'Project model requests:'
+        print '----------------------'
+    elif k == 'eva':
+        print 'Evaluate model requests:'
+        print '-----------------------'
+    elif k == 'sam':
+        print 'Sample points requests:'
+        print '----------------------'
+    elif k == 'exp':
+        print 'Run experiment requests:'
+        print '-----------------------'
+    print ' finished: ' + str(v[1])
+    print ' running : ' + str(v[0])
+    print ' queued  : ' + str(v[-1])
+    print ' aborted : ' + str(v[-2])
+
+print
+print 'Total jobs queued: ' + str(total_queued) 
