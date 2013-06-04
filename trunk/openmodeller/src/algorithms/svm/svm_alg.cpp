@@ -642,7 +642,7 @@ SvmAlgorithm::getValue( const Sample& x ) const
 
     prob = estimates[_presence_index];
 
-    delete estimates;
+    delete[] estimates;
   }
   else {
 
@@ -653,7 +653,7 @@ SvmAlgorithm::getValue( const Sample& x ) const
     prob = ( class_predicted < 0.0 ) ? 0 : 1;
   }
 
-  delete node;
+  delete[] node;
 
   return prob;
 }
