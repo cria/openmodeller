@@ -2,16 +2,21 @@
 
 #################################################################################
 # This program was created for the BioVeL project to test an OMWS 1.0 endpoint
-# by the BiodiversityCatalogue (http://www.biodiversitycatalogue.org).
-# The test runs all operations, relying on the existence of the BIOCLIM algorithm
-# and the following two layers on the server side:
+# through the BiodiversityCatalogue (http://www.biodiversitycatalogue.org).
+#
+# To run it you need Python >= 2.4 (but very likely < 3.0) and the suds library
+# that can be downloaded from:
+# https://fedorahosted.org/releases/s/u/suds/python-suds-0.4.tar.gz
+#
+# The test runs all service operations, relying on the existence of the BIOCLIM
+# algorithm and the following two layers on the server side:
 #
 # Minimum temperature during the coldest month:
 layer1 = '/layers/en/terrestrial/climate/global/worldclim/present/bioclim/10arc-minutes/f6e850a0-04d9-11e1-be50-0800200c9a66'
 # Precipitation during the driest month:
 layer2 = '/layers/en/terrestrial/climate/global/worldclim/present/bioclim/10arc-minutes/3ed05d93-04da-11e1-be50-0800200c9a66'
 #
-# Since BiodiversityCatalogue service tests don't take any arguments, a default
+# Since BiodiversityCatalogue test scripts don't take any arguments, a default
 # oM Server endpoint is hard coded here. You need to replace it if you wish to
 # use the same test for a different endpoint in BiodiversityCatalogue:
 #
