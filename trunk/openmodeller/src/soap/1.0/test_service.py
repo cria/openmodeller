@@ -251,6 +251,9 @@ try:
     while retries:
         try:
             ticket = soap_client.service.createModel( mod_params )
+            if ticket is None:
+                print 'No ticket returned in createModel!'
+                exit(11)
             ticket = str(ticket)
             break
         except WebFault, f:
@@ -258,22 +261,22 @@ try:
                 retries -= 1
                 if retries == 0:
                     print 'Exceeded number of retries. Last fault:',str(f)
-                    exit(11)
+                    exit(12)
             else:
                 print 'Web fault:',str(f)
-                exit(12)
+                exit(13)
         except URLError, u:
             if string.find( str(u), 'Name or service not known' ) > -1:
                 retries -= 1
                 if retries == 0:
                     print 'Exceeded number of retries. Last fault:',str(u)
-                    exit(13)
+                    exit(14)
             else:
                 print 'URL error:',str(f)
-                exit(14)
+                exit(15)
         except Exception, e:
             print 'createModel call failure:',str(e)
-            exit(15)
+            exit(16)
 
     print 'CreateModel: OK','( ticket',ticket,')'
 
@@ -373,6 +376,9 @@ try:
     while retries:
         try:
             ticket = soap_client.service.testModel( test_params )
+            if ticket is None:
+                print 'No ticket returned in testModel!'
+                exit(22)
             ticket = str(ticket)
             break
         except WebFault, f:
@@ -380,22 +386,22 @@ try:
                 retries -= 1
                 if retries == 0:
                     print 'Exceeded number of retries. Last fault:',str(f)
-                    exit(22)
+                    exit(23)
             else:
                 print 'Web fault:',str(f)
-                exit(23)
+                exit(24)
         except URLError, u:
             if string.find( str(u), 'Name or service not known' ) > -1:
                 retries -= 1
                 if retries == 0:
                     print 'Exceeded number of retries. Last fault:',str(u)
-                    exit(24)
+                    exit(25)
             else:
                 print 'URL error:',str(f)
-                exit(25)
+                exit(26)
         except Exception, e:
             print 'testModel call failure:',str(e)
-            exit(26)
+            exit(27)
 
     print 'TestModel: OK','( ticket',ticket,')'
 
@@ -471,6 +477,9 @@ try:
     while retries:
         try:
             ticket = soap_client.service.projectModel( proj_params )
+            if ticket is None:
+                print 'No ticket returned in projectModel!'
+                exit(33)
             ticket = str(ticket)
             break
         except WebFault, f:
@@ -478,22 +487,22 @@ try:
                 retries -= 1
                 if retries == 0:
                     print 'Exceeded number of retries. Last fault:',str(f)
-                    exit(33)
+                    exit(34)
             else:
                 print 'Web fault:',str(f)
-                exit(34)
+                exit(35)
         except URLError, u:
             if string.find( str(u), 'Name or service not known' ) > -1:
                 retries -= 1
                 if retries == 0:
                     print 'Exceeded number of retries. Last fault:',str(u)
-                    exit(35)
+                    exit(36)
             else:
                 print 'URL error:',str(f)
-                exit(36)
+                exit(37)
         except Exception, e:
             print 'projectModel call failure:',str(e)
-            exit(37)
+            exit(38)
 
     print 'ProjectModel: OK','( ticket',ticket,')'
 
@@ -504,16 +513,16 @@ try:
         while progress != 100:
             if progress == -2:
                 print 'Model projection aborted!'
-                exit(38)
+                exit(39)
             now = time.time()
             if now - start > 20*60:
                 print 'Service is taking too long to project model. Aborting.'
-                exit(39)
+                exit(40)
             time.sleep(5)
             progress = check_status( soap_client, ticket )
     except Exception, e:
         print 'getProgress call failure:',str(e)
-        exit(40)
+        exit(41)
 
     print 'GetProgress: OK'
 
@@ -523,15 +532,15 @@ try:
         statistics = soap_client.service.getProjectionMetadata( ticket )
     except Exception, e:
         print 'getProjectionMetadata call failure:',str(e)
-        exit(41)
+        exit(42)
 
     if not hasattr( statistics, 'ProjectionEnvelope' ):
         print 'Missing projection envelope!'
-        exit(42)
+        exit(43)
 
     if not hasattr( statistics.ProjectionEnvelope, 'AreaStatistics' ):
         print 'Missing area statistics!'
-        exit(43)
+        exit(44)
 
     print 'Total cells:',statistics.ProjectionEnvelope.AreaStatistics._TotalCells
     print 'Suitable cells:',statistics.ProjectionEnvelope.AreaStatistics._CellsPredicted
@@ -544,7 +553,7 @@ try:
         url = soap_client.service.getLayerAsUrl( ticket )
     except Exception, e:
         print 'getLayerAsUrl call failure:',str(e)
-        exit(44)
+        exit(45)
 
     print 'Projection URL',url
 
@@ -554,14 +563,14 @@ try:
         info = urllib.urlopen( url )
         if info.code != 200:
             print 'Remote resource does not exist! ( HTTP status code',info.code,')'
-            exit(45)
+            exit(46)
     except Exception, e:
         print 'URL unreachable:',str(e)
-        exit(46)
+        exit(47)
 
     print 'Finished test in',str(int(time.time()-started)),'seconds'
 except Exception, e:
     print 'Caught exception:',str(e)
-    exit(47)
+    exit(48)
 
 exit(0)
