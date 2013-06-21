@@ -76,7 +76,7 @@ static bool     hasValidGdalProjection( const char* fileName );
 static string   getLayerLabel( const string path, const string name, bool isDir );
 static int      getSize( FILE *fd );
 static bool     getData( struct soap*, const xsd__string, xsd__base64Binary& );
-static void     logRequest( struct soap*, const char* operation );
+static void     logRequest( struct soap*, const char* operation, const char* params );
 static void     addHeader( struct soap* );
 static int      getStatus();
 static string   getTicketFilePath( string prefix, string ticket );
@@ -343,7 +343,7 @@ void *process_request( void *soap )
 int
 omws__ping( struct soap *soap, void *_, xsd__int &status )
 {
-  logRequest( soap, "ping" );
+  logRequest( soap, "ping", "" );
 
   soap_clr_omode(soap, SOAP_ENC_ZLIB); // disable Zlib's gzip
 
@@ -402,7 +402,7 @@ omws__ping( struct soap *soap, void *_, xsd__int &status )
 int 
 omws__getAlgorithms( struct soap *soap, void *_, struct omws__getAlgorithmsResponse *out )
 {
-  logRequest( soap, "getAlgorithms" );
+  logRequest( soap, "getAlgorithms", "" );
 
   if ( getStatus() == 2 ) {
 
@@ -456,7 +456,7 @@ omws__getAlgorithms( struct soap *soap, void *_, struct omws__getAlgorithmsRespo
 int 
 omws__getLayers( struct soap *soap, void *_, struct omws__getLayersResponse *out )
 {
-  logRequest( soap, "getLayers" );
+  logRequest( soap, "getLayers", "" );
 
   if ( getStatus() == 2 ) {
 
@@ -587,8 +587,6 @@ omws__getLayers( struct soap *soap, void *_, struct omws__getLayersResponse *out
 int 
 omws__createModel( struct soap *soap, XML om__ModelParameters, xsd__string &ticket )
 {
-  logRequest( soap, "createModel" );
-
   if ( getStatus() == 2 ) {
 
     return soap_receiver_fault( soap, "Service unavailable", NULL );
@@ -625,6 +623,8 @@ omws__createModel( struct soap *soap, XML om__ModelParameters, xsd__string &tick
 
   // Get ticket value
   ticket = strrchr( tempFileName, '/' ) + 1;
+
+  logRequest( soap, "createModel", ticket );
 
   // Append prefix to request file
   requestFileName.append( OMWS_MODEL_CREATION_REQUEST_PREFIX );
@@ -672,8 +672,6 @@ omws__createModel( struct soap *soap, XML om__ModelParameters, xsd__string &tick
 int 
 omws__testModel( struct soap *soap, XML om__TestParameters, xsd__string &ticket )
 {
-  logRequest( soap, "testModel" );
-
   if ( getStatus() == 2 ) {
 
     return soap_receiver_fault( soap, "Service unavailable", NULL );
@@ -710,6 +708,8 @@ omws__testModel( struct soap *soap, XML om__TestParameters, xsd__string &ticket 
 
   // Get ticket value
   ticket = strrchr( tempFileName, '/' ) + 1;
+
+  logRequest( soap, "testModel", ticket );
 
   // Append prefix to request file
   requestFileName.append( OMWS_TEST_REQUEST_PREFIX );
@@ -757,8 +757,6 @@ omws__testModel( struct soap *soap, XML om__TestParameters, xsd__string &ticket 
 int 
 omws__projectModel( struct soap *soap, XML om__ProjectionParameters, xsd__string &ticket )
 {
-  logRequest( soap, "projectModel" );
-
   if ( getStatus() == 2 ) {
 
     return soap_receiver_fault( soap, "Service unavailable", NULL );
@@ -795,6 +793,8 @@ omws__projectModel( struct soap *soap, XML om__ProjectionParameters, xsd__string
 
   // Get ticket value
   ticket = strrchr( tempFileName, '/' ) + 1;
+
+  logRequest( soap, "projectModel", ticket );
 
   // Append prefix to request file
   requestFileName.append( OMWS_MODEL_PROJECTION_REQUEST_PREFIX );
@@ -841,7 +841,9 @@ omws__projectModel( struct soap *soap, XML om__ProjectionParameters, xsd__string
 /**** get Progress ****/
 int 
 omws__getProgress( struct soap *soap, xsd__string ticket, xsd__int &progress )
-{ 
+{
+  logRequest( soap, "getProgress", ticket );
+
   if ( getStatus() == 2 ) {
 
     return soap_receiver_fault( soap, "Service unavailable", NULL );
@@ -917,12 +919,12 @@ omws__getProgress( struct soap *soap, xsd__string ticket, xsd__int &progress )
 int 
 omws__getLog( struct soap *soap, xsd__string ticket, xsd__string &log )
 { 
+  logRequest( soap, "getLog", ticket );
+
   if ( getStatus() == 2 ) {
 
     return soap_receiver_fault( soap, "Service unavailable", NULL );
   }
-
-  logRequest( soap, "getLog" );
 
   soap_clr_omode(soap, SOAP_ENC_ZLIB); // disable Zlib's gzip
 
@@ -965,7 +967,7 @@ omws__getLog( struct soap *soap, xsd__string ticket, xsd__string &log )
 int 
 omws__getModel( struct soap *soap, xsd__string ticket, struct omws__getModelResponse *out )
 { 
-  logRequest( soap, "getModel" );
+  logRequest( soap, "getModel", ticket );
 
   if ( getStatus() == 2 ) {
 
@@ -1030,7 +1032,7 @@ omws__getModel( struct soap *soap, xsd__string ticket, struct omws__getModelResp
 int 
 omws__getTestResult( struct soap *soap, xsd__string ticket, struct omws__testResponse *out )
 { 
-  logRequest( soap, "getTestResult" );
+  logRequest( soap, "getTestResult", ticket );
 
   if ( getStatus() == 2 ) {
 
@@ -1077,7 +1079,7 @@ omws__getTestResult( struct soap *soap, xsd__string ticket, struct omws__testRes
 int 
 omws__getLayerAsAttachment( struct soap *soap, xsd__string id, xsd__base64Binary &file )
 { 
-  logRequest( soap, "getLayerAsAttachment" );
+  logRequest( soap, "getLayerAsAttachment", id );
 
   if ( getStatus() == 2 ) {
 
@@ -1104,7 +1106,7 @@ omws__getLayerAsAttachment( struct soap *soap, xsd__string id, xsd__base64Binary
 int 
 omws__getLayerAsUrl( struct soap *soap, xsd__string id, xsd__string &url )
 { 
-  logRequest( soap, "getLayerAsUrl" );
+  logRequest( soap, "getLayerAsUrl", id );
 
   if ( getStatus() == 2 ) {
 
@@ -1193,7 +1195,7 @@ omws__getLayerAsWcs( struct soap *soap, xsd__string id, xsd__string &url )
 int 
 omws__getProjectionMetadata( struct soap *soap, xsd__string ticket, struct omws__getProjectionMetadataResponse *out )
 { 
-  logRequest( soap, "getProjectionMetadata" );
+  logRequest( soap, "getProjectionMetadata", ticket );
 
   if ( getStatus() == 2 ) {
 
@@ -1717,7 +1719,7 @@ getData( struct soap *soap, const xsd__string ticket, xsd__base64Binary &file )
 /********************/
 /**** logRequest ****/
 static void
-logRequest( struct soap* soap, const char* operation )
+logRequest( struct soap* soap, const char* operation, const char* params )
 {
   string logFile( gFileParser.get( "LOG_DIRECTORY" ) );
 
@@ -1769,7 +1771,7 @@ logRequest( struct soap* soap, const char* operation )
   ostringstream log;
 
   // IP TAB datetime TAB operation
-  log << ip.c_str() << "\t" << strtime << "\t" << operation << endl;
+  log << ip.c_str() << "\t" << strtime << "\t" << operation << "\t" << params << endl;
  
   if ( fputs( log.str().c_str(), file ) < 0 ) {
 
