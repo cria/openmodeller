@@ -149,7 +149,7 @@ SOAP_FMAC3 double * SOAP_FMAC4 soap_get_double(struct soap*, double *, const cha
 #ifndef WITH_NOGLOBAL
 
 #ifndef SOAP_TYPE_SOAP_ENV__Fault
-#define SOAP_TYPE_SOAP_ENV__Fault (89)
+#define SOAP_TYPE_SOAP_ENV__Fault (90)
 #endif
 SOAP_FMAC3 void SOAP_FMAC4 soap_default_SOAP_ENV__Fault(struct soap*, struct SOAP_ENV__Fault *);
 SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_SOAP_ENV__Fault(struct soap*, const struct SOAP_ENV__Fault *);
@@ -185,7 +185,7 @@ SOAP_FMAC3 void SOAP_FMAC4 soap_copy_SOAP_ENV__Fault(struct soap*, int, int, voi
 #ifndef WITH_NOGLOBAL
 
 #ifndef SOAP_TYPE_SOAP_ENV__Reason
-#define SOAP_TYPE_SOAP_ENV__Reason (88)
+#define SOAP_TYPE_SOAP_ENV__Reason (89)
 #endif
 SOAP_FMAC3 void SOAP_FMAC4 soap_default_SOAP_ENV__Reason(struct soap*, struct SOAP_ENV__Reason *);
 SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_SOAP_ENV__Reason(struct soap*, const struct SOAP_ENV__Reason *);
@@ -221,7 +221,7 @@ SOAP_FMAC3 void SOAP_FMAC4 soap_copy_SOAP_ENV__Reason(struct soap*, int, int, vo
 #ifndef WITH_NOGLOBAL
 
 #ifndef SOAP_TYPE_SOAP_ENV__Detail
-#define SOAP_TYPE_SOAP_ENV__Detail (87)
+#define SOAP_TYPE_SOAP_ENV__Detail (88)
 #endif
 SOAP_FMAC3 void SOAP_FMAC4 soap_default_SOAP_ENV__Detail(struct soap*, struct SOAP_ENV__Detail *);
 SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_SOAP_ENV__Detail(struct soap*, const struct SOAP_ENV__Detail *);
@@ -257,7 +257,7 @@ SOAP_FMAC3 void SOAP_FMAC4 soap_copy_SOAP_ENV__Detail(struct soap*, int, int, vo
 #ifndef WITH_NOGLOBAL
 
 #ifndef SOAP_TYPE_SOAP_ENV__Code
-#define SOAP_TYPE_SOAP_ENV__Code (85)
+#define SOAP_TYPE_SOAP_ENV__Code (86)
 #endif
 SOAP_FMAC3 void SOAP_FMAC4 soap_default_SOAP_ENV__Code(struct soap*, struct SOAP_ENV__Code *);
 SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_SOAP_ENV__Code(struct soap*, const struct SOAP_ENV__Code *);
@@ -291,7 +291,7 @@ SOAP_FMAC3 void SOAP_FMAC4 soap_copy_SOAP_ENV__Code(struct soap*, int, int, void
 #endif
 
 #ifndef SOAP_TYPE_omws__cancel
-#define SOAP_TYPE_omws__cancel (84)
+#define SOAP_TYPE_omws__cancel (85)
 #endif
 SOAP_FMAC3 void SOAP_FMAC4 soap_default_omws__cancel(struct soap*, struct omws__cancel *);
 SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_omws__cancel(struct soap*, const struct omws__cancel *);
@@ -323,7 +323,7 @@ inline void soap_delete_omws__cancel(struct soap *soap, struct omws__cancel *p) 
 SOAP_FMAC3 void SOAP_FMAC4 soap_copy_omws__cancel(struct soap*, int, int, void*, size_t, const void*, size_t);
 
 #ifndef SOAP_TYPE_omws__cancelResponse
-#define SOAP_TYPE_omws__cancelResponse (83)
+#define SOAP_TYPE_omws__cancelResponse (84)
 #endif
 SOAP_FMAC3 void SOAP_FMAC4 soap_default_omws__cancelResponse(struct soap*, struct omws__cancelResponse *);
 SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_omws__cancelResponse(struct soap*, const struct omws__cancelResponse *);
@@ -355,7 +355,7 @@ inline void soap_delete_omws__cancelResponse(struct soap *soap, struct omws__can
 SOAP_FMAC3 void SOAP_FMAC4 soap_copy_omws__cancelResponse(struct soap*, int, int, void*, size_t, const void*, size_t);
 
 #ifndef SOAP_TYPE_omws__getResults
-#define SOAP_TYPE_omws__getResults (81)
+#define SOAP_TYPE_omws__getResults (82)
 #endif
 SOAP_FMAC3 void SOAP_FMAC4 soap_default_omws__getResults(struct soap*, struct omws__getResults *);
 SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_omws__getResults(struct soap*, const struct omws__getResults *);
@@ -387,7 +387,7 @@ inline void soap_delete_omws__getResults(struct soap *soap, struct omws__getResu
 SOAP_FMAC3 void SOAP_FMAC4 soap_copy_omws__getResults(struct soap*, int, int, void*, size_t, const void*, size_t);
 
 #ifndef SOAP_TYPE_omws__getResultsResponse
-#define SOAP_TYPE_omws__getResultsResponse (78)
+#define SOAP_TYPE_omws__getResultsResponse (79)
 #endif
 SOAP_FMAC3 void SOAP_FMAC4 soap_default_omws__getResultsResponse(struct soap*, struct omws__getResultsResponse *);
 SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_omws__getResultsResponse(struct soap*, const struct omws__getResultsResponse *);
@@ -419,7 +419,7 @@ inline void soap_delete_omws__getResultsResponse(struct soap *soap, struct omws_
 SOAP_FMAC3 void SOAP_FMAC4 soap_copy_omws__getResultsResponse(struct soap*, int, int, void*, size_t, const void*, size_t);
 
 #ifndef SOAP_TYPE_omws__runExperiment
-#define SOAP_TYPE_omws__runExperiment (77)
+#define SOAP_TYPE_omws__runExperiment (78)
 #endif
 SOAP_FMAC3 void SOAP_FMAC4 soap_default_omws__runExperiment(struct soap*, struct omws__runExperiment *);
 SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_omws__runExperiment(struct soap*, const struct omws__runExperiment *);
@@ -444,14 +444,14 @@ inline struct omws__runExperiment * soap_new_omws__runExperiment(struct soap *so
 
 inline struct omws__runExperiment * soap_new_req_omws__runExperiment(struct soap *soap) { struct omws__runExperiment *_p = soap_instantiate_omws__runExperiment(soap, -1, NULL, NULL, NULL); if (_p) { soap_default_omws__runExperiment(soap, _p); } return _p; }
 
-inline struct omws__runExperiment * soap_new_set_omws__runExperiment(struct soap *soap, wchar_t *om__ExperimentParameters) { struct omws__runExperiment *_p = soap_instantiate_omws__runExperiment(soap, -1, NULL, NULL, NULL); if (_p) { soap_default_omws__runExperiment(soap, _p); _p->om__ExperimentParameters = om__ExperimentParameters; } return _p; }
+inline struct omws__runExperiment * soap_new_set_omws__runExperiment(struct soap *soap, char *om__ExperimentParameters) { struct omws__runExperiment *_p = soap_instantiate_omws__runExperiment(soap, -1, NULL, NULL, NULL); if (_p) { soap_default_omws__runExperiment(soap, _p); _p->om__ExperimentParameters = om__ExperimentParameters; } return _p; }
 
 inline void soap_delete_omws__runExperiment(struct soap *soap, struct omws__runExperiment *p) { soap_delete(soap, p); }
 
 SOAP_FMAC3 void SOAP_FMAC4 soap_copy_omws__runExperiment(struct soap*, int, int, void*, size_t, const void*, size_t);
 
 #ifndef SOAP_TYPE_omws__runExperimentResponse
-#define SOAP_TYPE_omws__runExperimentResponse (74)
+#define SOAP_TYPE_omws__runExperimentResponse (75)
 #endif
 SOAP_FMAC3 void SOAP_FMAC4 soap_default_omws__runExperimentResponse(struct soap*, struct omws__runExperimentResponse *);
 SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_omws__runExperimentResponse(struct soap*, const struct omws__runExperimentResponse *);
@@ -483,7 +483,7 @@ inline void soap_delete_omws__runExperimentResponse(struct soap *soap, struct om
 SOAP_FMAC3 void SOAP_FMAC4 soap_copy_omws__runExperimentResponse(struct soap*, int, int, void*, size_t, const void*, size_t);
 
 #ifndef SOAP_TYPE_omws__getSamplingResult
-#define SOAP_TYPE_omws__getSamplingResult (73)
+#define SOAP_TYPE_omws__getSamplingResult (74)
 #endif
 SOAP_FMAC3 void SOAP_FMAC4 soap_default_omws__getSamplingResult(struct soap*, struct omws__getSamplingResult *);
 SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_omws__getSamplingResult(struct soap*, const struct omws__getSamplingResult *);
@@ -515,7 +515,7 @@ inline void soap_delete_omws__getSamplingResult(struct soap *soap, struct omws__
 SOAP_FMAC3 void SOAP_FMAC4 soap_copy_omws__getSamplingResult(struct soap*, int, int, void*, size_t, const void*, size_t);
 
 #ifndef SOAP_TYPE_omws__getSamplingResultResponse
-#define SOAP_TYPE_omws__getSamplingResultResponse (70)
+#define SOAP_TYPE_omws__getSamplingResultResponse (71)
 #endif
 SOAP_FMAC3 void SOAP_FMAC4 soap_default_omws__getSamplingResultResponse(struct soap*, struct omws__getSamplingResultResponse *);
 SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_omws__getSamplingResultResponse(struct soap*, const struct omws__getSamplingResultResponse *);
@@ -547,7 +547,7 @@ inline void soap_delete_omws__getSamplingResultResponse(struct soap *soap, struc
 SOAP_FMAC3 void SOAP_FMAC4 soap_copy_omws__getSamplingResultResponse(struct soap*, int, int, void*, size_t, const void*, size_t);
 
 #ifndef SOAP_TYPE_omws__samplePoints
-#define SOAP_TYPE_omws__samplePoints (69)
+#define SOAP_TYPE_omws__samplePoints (70)
 #endif
 SOAP_FMAC3 void SOAP_FMAC4 soap_default_omws__samplePoints(struct soap*, struct omws__samplePoints *);
 SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_omws__samplePoints(struct soap*, const struct omws__samplePoints *);
@@ -579,7 +579,7 @@ inline void soap_delete_omws__samplePoints(struct soap *soap, struct omws__sampl
 SOAP_FMAC3 void SOAP_FMAC4 soap_copy_omws__samplePoints(struct soap*, int, int, void*, size_t, const void*, size_t);
 
 #ifndef SOAP_TYPE_omws__samplePointsResponse
-#define SOAP_TYPE_omws__samplePointsResponse (68)
+#define SOAP_TYPE_omws__samplePointsResponse (69)
 #endif
 SOAP_FMAC3 void SOAP_FMAC4 soap_default_omws__samplePointsResponse(struct soap*, struct omws__samplePointsResponse *);
 SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_omws__samplePointsResponse(struct soap*, const struct omws__samplePointsResponse *);
@@ -611,7 +611,7 @@ inline void soap_delete_omws__samplePointsResponse(struct soap *soap, struct omw
 SOAP_FMAC3 void SOAP_FMAC4 soap_copy_omws__samplePointsResponse(struct soap*, int, int, void*, size_t, const void*, size_t);
 
 #ifndef SOAP_TYPE_omws__getModelEvaluation
-#define SOAP_TYPE_omws__getModelEvaluation (66)
+#define SOAP_TYPE_omws__getModelEvaluation (67)
 #endif
 SOAP_FMAC3 void SOAP_FMAC4 soap_default_omws__getModelEvaluation(struct soap*, struct omws__getModelEvaluation *);
 SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_omws__getModelEvaluation(struct soap*, const struct omws__getModelEvaluation *);
@@ -643,7 +643,7 @@ inline void soap_delete_omws__getModelEvaluation(struct soap *soap, struct omws_
 SOAP_FMAC3 void SOAP_FMAC4 soap_copy_omws__getModelEvaluation(struct soap*, int, int, void*, size_t, const void*, size_t);
 
 #ifndef SOAP_TYPE_omws__modelEvaluationResponse
-#define SOAP_TYPE_omws__modelEvaluationResponse (63)
+#define SOAP_TYPE_omws__modelEvaluationResponse (64)
 #endif
 SOAP_FMAC3 void SOAP_FMAC4 soap_default_omws__modelEvaluationResponse(struct soap*, struct omws__modelEvaluationResponse *);
 SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_omws__modelEvaluationResponse(struct soap*, const struct omws__modelEvaluationResponse *);
@@ -675,7 +675,7 @@ inline void soap_delete_omws__modelEvaluationResponse(struct soap *soap, struct 
 SOAP_FMAC3 void SOAP_FMAC4 soap_copy_omws__modelEvaluationResponse(struct soap*, int, int, void*, size_t, const void*, size_t);
 
 #ifndef SOAP_TYPE_omws__evaluateModel
-#define SOAP_TYPE_omws__evaluateModel (62)
+#define SOAP_TYPE_omws__evaluateModel (63)
 #endif
 SOAP_FMAC3 void SOAP_FMAC4 soap_default_omws__evaluateModel(struct soap*, struct omws__evaluateModel *);
 SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_omws__evaluateModel(struct soap*, const struct omws__evaluateModel *);
@@ -707,7 +707,7 @@ inline void soap_delete_omws__evaluateModel(struct soap *soap, struct omws__eval
 SOAP_FMAC3 void SOAP_FMAC4 soap_copy_omws__evaluateModel(struct soap*, int, int, void*, size_t, const void*, size_t);
 
 #ifndef SOAP_TYPE_omws__evaluateModelResponse
-#define SOAP_TYPE_omws__evaluateModelResponse (61)
+#define SOAP_TYPE_omws__evaluateModelResponse (62)
 #endif
 SOAP_FMAC3 void SOAP_FMAC4 soap_default_omws__evaluateModelResponse(struct soap*, struct omws__evaluateModelResponse *);
 SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_omws__evaluateModelResponse(struct soap*, const struct omws__evaluateModelResponse *);
@@ -739,7 +739,7 @@ inline void soap_delete_omws__evaluateModelResponse(struct soap *soap, struct om
 SOAP_FMAC3 void SOAP_FMAC4 soap_copy_omws__evaluateModelResponse(struct soap*, int, int, void*, size_t, const void*, size_t);
 
 #ifndef SOAP_TYPE_omws__getProjectionMetadata
-#define SOAP_TYPE_omws__getProjectionMetadata (59)
+#define SOAP_TYPE_omws__getProjectionMetadata (60)
 #endif
 SOAP_FMAC3 void SOAP_FMAC4 soap_default_omws__getProjectionMetadata(struct soap*, struct omws__getProjectionMetadata *);
 SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_omws__getProjectionMetadata(struct soap*, const struct omws__getProjectionMetadata *);
@@ -771,7 +771,7 @@ inline void soap_delete_omws__getProjectionMetadata(struct soap *soap, struct om
 SOAP_FMAC3 void SOAP_FMAC4 soap_copy_omws__getProjectionMetadata(struct soap*, int, int, void*, size_t, const void*, size_t);
 
 #ifndef SOAP_TYPE_omws__getProjectionMetadataResponse
-#define SOAP_TYPE_omws__getProjectionMetadataResponse (56)
+#define SOAP_TYPE_omws__getProjectionMetadataResponse (57)
 #endif
 SOAP_FMAC3 void SOAP_FMAC4 soap_default_omws__getProjectionMetadataResponse(struct soap*, struct omws__getProjectionMetadataResponse *);
 SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_omws__getProjectionMetadataResponse(struct soap*, const struct omws__getProjectionMetadataResponse *);
@@ -803,7 +803,7 @@ inline void soap_delete_omws__getProjectionMetadataResponse(struct soap *soap, s
 SOAP_FMAC3 void SOAP_FMAC4 soap_copy_omws__getProjectionMetadataResponse(struct soap*, int, int, void*, size_t, const void*, size_t);
 
 #ifndef SOAP_TYPE_omws__getLayerAsUrl
-#define SOAP_TYPE_omws__getLayerAsUrl (55)
+#define SOAP_TYPE_omws__getLayerAsUrl (56)
 #endif
 SOAP_FMAC3 void SOAP_FMAC4 soap_default_omws__getLayerAsUrl(struct soap*, struct omws__getLayerAsUrl *);
 SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_omws__getLayerAsUrl(struct soap*, const struct omws__getLayerAsUrl *);
@@ -835,7 +835,7 @@ inline void soap_delete_omws__getLayerAsUrl(struct soap *soap, struct omws__getL
 SOAP_FMAC3 void SOAP_FMAC4 soap_copy_omws__getLayerAsUrl(struct soap*, int, int, void*, size_t, const void*, size_t);
 
 #ifndef SOAP_TYPE_omws__getLayerAsUrlResponse
-#define SOAP_TYPE_omws__getLayerAsUrlResponse (54)
+#define SOAP_TYPE_omws__getLayerAsUrlResponse (55)
 #endif
 SOAP_FMAC3 void SOAP_FMAC4 soap_default_omws__getLayerAsUrlResponse(struct soap*, struct omws__getLayerAsUrlResponse *);
 SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_omws__getLayerAsUrlResponse(struct soap*, const struct omws__getLayerAsUrlResponse *);
@@ -867,7 +867,7 @@ inline void soap_delete_omws__getLayerAsUrlResponse(struct soap *soap, struct om
 SOAP_FMAC3 void SOAP_FMAC4 soap_copy_omws__getLayerAsUrlResponse(struct soap*, int, int, void*, size_t, const void*, size_t);
 
 #ifndef SOAP_TYPE_omws__getLog
-#define SOAP_TYPE_omws__getLog (52)
+#define SOAP_TYPE_omws__getLog (53)
 #endif
 SOAP_FMAC3 void SOAP_FMAC4 soap_default_omws__getLog(struct soap*, struct omws__getLog *);
 SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_omws__getLog(struct soap*, const struct omws__getLog *);
@@ -899,7 +899,7 @@ inline void soap_delete_omws__getLog(struct soap *soap, struct omws__getLog *p) 
 SOAP_FMAC3 void SOAP_FMAC4 soap_copy_omws__getLog(struct soap*, int, int, void*, size_t, const void*, size_t);
 
 #ifndef SOAP_TYPE_omws__getLogResponse
-#define SOAP_TYPE_omws__getLogResponse (51)
+#define SOAP_TYPE_omws__getLogResponse (52)
 #endif
 SOAP_FMAC3 void SOAP_FMAC4 soap_default_omws__getLogResponse(struct soap*, struct omws__getLogResponse *);
 SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_omws__getLogResponse(struct soap*, const struct omws__getLogResponse *);
@@ -931,7 +931,7 @@ inline void soap_delete_omws__getLogResponse(struct soap *soap, struct omws__get
 SOAP_FMAC3 void SOAP_FMAC4 soap_copy_omws__getLogResponse(struct soap*, int, int, void*, size_t, const void*, size_t);
 
 #ifndef SOAP_TYPE_omws__getProgress
-#define SOAP_TYPE_omws__getProgress (49)
+#define SOAP_TYPE_omws__getProgress (50)
 #endif
 SOAP_FMAC3 void SOAP_FMAC4 soap_default_omws__getProgress(struct soap*, struct omws__getProgress *);
 SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_omws__getProgress(struct soap*, const struct omws__getProgress *);
@@ -963,7 +963,7 @@ inline void soap_delete_omws__getProgress(struct soap *soap, struct omws__getPro
 SOAP_FMAC3 void SOAP_FMAC4 soap_copy_omws__getProgress(struct soap*, int, int, void*, size_t, const void*, size_t);
 
 #ifndef SOAP_TYPE_omws__getProgressResponse
-#define SOAP_TYPE_omws__getProgressResponse (48)
+#define SOAP_TYPE_omws__getProgressResponse (49)
 #endif
 SOAP_FMAC3 void SOAP_FMAC4 soap_default_omws__getProgressResponse(struct soap*, struct omws__getProgressResponse *);
 SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_omws__getProgressResponse(struct soap*, const struct omws__getProgressResponse *);
@@ -995,7 +995,7 @@ inline void soap_delete_omws__getProgressResponse(struct soap *soap, struct omws
 SOAP_FMAC3 void SOAP_FMAC4 soap_copy_omws__getProgressResponse(struct soap*, int, int, void*, size_t, const void*, size_t);
 
 #ifndef SOAP_TYPE_omws__projectModel
-#define SOAP_TYPE_omws__projectModel (46)
+#define SOAP_TYPE_omws__projectModel (47)
 #endif
 SOAP_FMAC3 void SOAP_FMAC4 soap_default_omws__projectModel(struct soap*, struct omws__projectModel *);
 SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_omws__projectModel(struct soap*, const struct omws__projectModel *);
@@ -1027,7 +1027,7 @@ inline void soap_delete_omws__projectModel(struct soap *soap, struct omws__proje
 SOAP_FMAC3 void SOAP_FMAC4 soap_copy_omws__projectModel(struct soap*, int, int, void*, size_t, const void*, size_t);
 
 #ifndef SOAP_TYPE_omws__projectModelResponse
-#define SOAP_TYPE_omws__projectModelResponse (45)
+#define SOAP_TYPE_omws__projectModelResponse (46)
 #endif
 SOAP_FMAC3 void SOAP_FMAC4 soap_default_omws__projectModelResponse(struct soap*, struct omws__projectModelResponse *);
 SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_omws__projectModelResponse(struct soap*, const struct omws__projectModelResponse *);
@@ -1059,7 +1059,7 @@ inline void soap_delete_omws__projectModelResponse(struct soap *soap, struct omw
 SOAP_FMAC3 void SOAP_FMAC4 soap_copy_omws__projectModelResponse(struct soap*, int, int, void*, size_t, const void*, size_t);
 
 #ifndef SOAP_TYPE_omws__getTestResult
-#define SOAP_TYPE_omws__getTestResult (43)
+#define SOAP_TYPE_omws__getTestResult (44)
 #endif
 SOAP_FMAC3 void SOAP_FMAC4 soap_default_omws__getTestResult(struct soap*, struct omws__getTestResult *);
 SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_omws__getTestResult(struct soap*, const struct omws__getTestResult *);
@@ -1091,7 +1091,7 @@ inline void soap_delete_omws__getTestResult(struct soap *soap, struct omws__getT
 SOAP_FMAC3 void SOAP_FMAC4 soap_copy_omws__getTestResult(struct soap*, int, int, void*, size_t, const void*, size_t);
 
 #ifndef SOAP_TYPE_omws__testResponse
-#define SOAP_TYPE_omws__testResponse (40)
+#define SOAP_TYPE_omws__testResponse (41)
 #endif
 SOAP_FMAC3 void SOAP_FMAC4 soap_default_omws__testResponse(struct soap*, struct omws__testResponse *);
 SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_omws__testResponse(struct soap*, const struct omws__testResponse *);
@@ -1123,7 +1123,7 @@ inline void soap_delete_omws__testResponse(struct soap *soap, struct omws__testR
 SOAP_FMAC3 void SOAP_FMAC4 soap_copy_omws__testResponse(struct soap*, int, int, void*, size_t, const void*, size_t);
 
 #ifndef SOAP_TYPE_omws__testModel
-#define SOAP_TYPE_omws__testModel (39)
+#define SOAP_TYPE_omws__testModel (40)
 #endif
 SOAP_FMAC3 void SOAP_FMAC4 soap_default_omws__testModel(struct soap*, struct omws__testModel *);
 SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_omws__testModel(struct soap*, const struct omws__testModel *);
@@ -1155,7 +1155,7 @@ inline void soap_delete_omws__testModel(struct soap *soap, struct omws__testMode
 SOAP_FMAC3 void SOAP_FMAC4 soap_copy_omws__testModel(struct soap*, int, int, void*, size_t, const void*, size_t);
 
 #ifndef SOAP_TYPE_omws__testModelResponse
-#define SOAP_TYPE_omws__testModelResponse (38)
+#define SOAP_TYPE_omws__testModelResponse (39)
 #endif
 SOAP_FMAC3 void SOAP_FMAC4 soap_default_omws__testModelResponse(struct soap*, struct omws__testModelResponse *);
 SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_omws__testModelResponse(struct soap*, const struct omws__testModelResponse *);
@@ -1187,7 +1187,7 @@ inline void soap_delete_omws__testModelResponse(struct soap *soap, struct omws__
 SOAP_FMAC3 void SOAP_FMAC4 soap_copy_omws__testModelResponse(struct soap*, int, int, void*, size_t, const void*, size_t);
 
 #ifndef SOAP_TYPE_omws__getModel
-#define SOAP_TYPE_omws__getModel (36)
+#define SOAP_TYPE_omws__getModel (37)
 #endif
 SOAP_FMAC3 void SOAP_FMAC4 soap_default_omws__getModel(struct soap*, struct omws__getModel *);
 SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_omws__getModel(struct soap*, const struct omws__getModel *);
@@ -1219,7 +1219,7 @@ inline void soap_delete_omws__getModel(struct soap *soap, struct omws__getModel 
 SOAP_FMAC3 void SOAP_FMAC4 soap_copy_omws__getModel(struct soap*, int, int, void*, size_t, const void*, size_t);
 
 #ifndef SOAP_TYPE_omws__getModelResponse
-#define SOAP_TYPE_omws__getModelResponse (33)
+#define SOAP_TYPE_omws__getModelResponse (34)
 #endif
 SOAP_FMAC3 void SOAP_FMAC4 soap_default_omws__getModelResponse(struct soap*, struct omws__getModelResponse *);
 SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_omws__getModelResponse(struct soap*, const struct omws__getModelResponse *);
@@ -1251,7 +1251,7 @@ inline void soap_delete_omws__getModelResponse(struct soap *soap, struct omws__g
 SOAP_FMAC3 void SOAP_FMAC4 soap_copy_omws__getModelResponse(struct soap*, int, int, void*, size_t, const void*, size_t);
 
 #ifndef SOAP_TYPE_omws__createModel
-#define SOAP_TYPE_omws__createModel (32)
+#define SOAP_TYPE_omws__createModel (33)
 #endif
 SOAP_FMAC3 void SOAP_FMAC4 soap_default_omws__createModel(struct soap*, struct omws__createModel *);
 SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_omws__createModel(struct soap*, const struct omws__createModel *);
@@ -1283,7 +1283,7 @@ inline void soap_delete_omws__createModel(struct soap *soap, struct omws__create
 SOAP_FMAC3 void SOAP_FMAC4 soap_copy_omws__createModel(struct soap*, int, int, void*, size_t, const void*, size_t);
 
 #ifndef SOAP_TYPE_omws__createModelResponse
-#define SOAP_TYPE_omws__createModelResponse (31)
+#define SOAP_TYPE_omws__createModelResponse (32)
 #endif
 SOAP_FMAC3 void SOAP_FMAC4 soap_default_omws__createModelResponse(struct soap*, struct omws__createModelResponse *);
 SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_omws__createModelResponse(struct soap*, const struct omws__createModelResponse *);
@@ -1315,7 +1315,7 @@ inline void soap_delete_omws__createModelResponse(struct soap *soap, struct omws
 SOAP_FMAC3 void SOAP_FMAC4 soap_copy_omws__createModelResponse(struct soap*, int, int, void*, size_t, const void*, size_t);
 
 #ifndef SOAP_TYPE_omws__getLayers
-#define SOAP_TYPE_omws__getLayers (28)
+#define SOAP_TYPE_omws__getLayers (29)
 #endif
 SOAP_FMAC3 void SOAP_FMAC4 soap_default_omws__getLayers(struct soap*, struct omws__getLayers *);
 SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_omws__getLayers(struct soap*, const struct omws__getLayers *);
@@ -1347,7 +1347,7 @@ inline void soap_delete_omws__getLayers(struct soap *soap, struct omws__getLayer
 SOAP_FMAC3 void SOAP_FMAC4 soap_copy_omws__getLayers(struct soap*, int, int, void*, size_t, const void*, size_t);
 
 #ifndef SOAP_TYPE_omws__getLayersResponse
-#define SOAP_TYPE_omws__getLayersResponse (25)
+#define SOAP_TYPE_omws__getLayersResponse (26)
 #endif
 SOAP_FMAC3 void SOAP_FMAC4 soap_default_omws__getLayersResponse(struct soap*, struct omws__getLayersResponse *);
 SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_omws__getLayersResponse(struct soap*, const struct omws__getLayersResponse *);
@@ -1379,7 +1379,7 @@ inline void soap_delete_omws__getLayersResponse(struct soap *soap, struct omws__
 SOAP_FMAC3 void SOAP_FMAC4 soap_copy_omws__getLayersResponse(struct soap*, int, int, void*, size_t, const void*, size_t);
 
 #ifndef SOAP_TYPE_omws__getAlgorithms
-#define SOAP_TYPE_omws__getAlgorithms (24)
+#define SOAP_TYPE_omws__getAlgorithms (25)
 #endif
 SOAP_FMAC3 void SOAP_FMAC4 soap_default_omws__getAlgorithms(struct soap*, struct omws__getAlgorithms *);
 SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_omws__getAlgorithms(struct soap*, const struct omws__getAlgorithms *);
@@ -1411,7 +1411,7 @@ inline void soap_delete_omws__getAlgorithms(struct soap *soap, struct omws__getA
 SOAP_FMAC3 void SOAP_FMAC4 soap_copy_omws__getAlgorithms(struct soap*, int, int, void*, size_t, const void*, size_t);
 
 #ifndef SOAP_TYPE_omws__getAlgorithmsResponse
-#define SOAP_TYPE_omws__getAlgorithmsResponse (21)
+#define SOAP_TYPE_omws__getAlgorithmsResponse (22)
 #endif
 SOAP_FMAC3 void SOAP_FMAC4 soap_default_omws__getAlgorithmsResponse(struct soap*, struct omws__getAlgorithmsResponse *);
 SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_omws__getAlgorithmsResponse(struct soap*, const struct omws__getAlgorithmsResponse *);
@@ -1443,7 +1443,7 @@ inline void soap_delete_omws__getAlgorithmsResponse(struct soap *soap, struct om
 SOAP_FMAC3 void SOAP_FMAC4 soap_copy_omws__getAlgorithmsResponse(struct soap*, int, int, void*, size_t, const void*, size_t);
 
 #ifndef SOAP_TYPE_omws__ping
-#define SOAP_TYPE_omws__ping (20)
+#define SOAP_TYPE_omws__ping (21)
 #endif
 SOAP_FMAC3 void SOAP_FMAC4 soap_default_omws__ping(struct soap*, struct omws__ping *);
 SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_omws__ping(struct soap*, const struct omws__ping *);
@@ -1475,7 +1475,7 @@ inline void soap_delete_omws__ping(struct soap *soap, struct omws__ping *p) { so
 SOAP_FMAC3 void SOAP_FMAC4 soap_copy_omws__ping(struct soap*, int, int, void*, size_t, const void*, size_t);
 
 #ifndef SOAP_TYPE_omws__pingResponse
-#define SOAP_TYPE_omws__pingResponse (19)
+#define SOAP_TYPE_omws__pingResponse (20)
 #endif
 SOAP_FMAC3 void SOAP_FMAC4 soap_default_omws__pingResponse(struct soap*, struct omws__pingResponse *);
 SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_omws__pingResponse(struct soap*, const struct omws__pingResponse *);
@@ -1509,7 +1509,7 @@ SOAP_FMAC3 void SOAP_FMAC4 soap_copy_omws__pingResponse(struct soap*, int, int, 
 #ifndef WITH_NOGLOBAL
 
 #ifndef SOAP_TYPE_SOAP_ENV__Header
-#define SOAP_TYPE_SOAP_ENV__Header (14)
+#define SOAP_TYPE_SOAP_ENV__Header (15)
 #endif
 SOAP_FMAC3 void SOAP_FMAC4 soap_default_SOAP_ENV__Header(struct soap*, struct SOAP_ENV__Header *);
 SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_SOAP_ENV__Header(struct soap*, const struct SOAP_ENV__Header *);
@@ -1545,7 +1545,7 @@ SOAP_FMAC3 void SOAP_FMAC4 soap_copy_SOAP_ENV__Header(struct soap*, int, int, vo
 #ifndef WITH_NOGLOBAL
 
 #ifndef SOAP_TYPE_PointerToSOAP_ENV__Reason
-#define SOAP_TYPE_PointerToSOAP_ENV__Reason (91)
+#define SOAP_TYPE_PointerToSOAP_ENV__Reason (92)
 #endif
 SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_PointerToSOAP_ENV__Reason(struct soap*, struct SOAP_ENV__Reason *const*);
 SOAP_FMAC3 int SOAP_FMAC4 soap_out_PointerToSOAP_ENV__Reason(struct soap*, const char *, int, struct SOAP_ENV__Reason *const*, const char *);
@@ -1568,7 +1568,7 @@ SOAP_FMAC3 struct SOAP_ENV__Reason ** SOAP_FMAC4 soap_get_PointerToSOAP_ENV__Rea
 #ifndef WITH_NOGLOBAL
 
 #ifndef SOAP_TYPE_PointerToSOAP_ENV__Detail
-#define SOAP_TYPE_PointerToSOAP_ENV__Detail (90)
+#define SOAP_TYPE_PointerToSOAP_ENV__Detail (91)
 #endif
 SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_PointerToSOAP_ENV__Detail(struct soap*, struct SOAP_ENV__Detail *const*);
 SOAP_FMAC3 int SOAP_FMAC4 soap_out_PointerToSOAP_ENV__Detail(struct soap*, const char *, int, struct SOAP_ENV__Detail *const*, const char *);
@@ -1591,7 +1591,7 @@ SOAP_FMAC3 struct SOAP_ENV__Detail ** SOAP_FMAC4 soap_get_PointerToSOAP_ENV__Det
 #ifndef WITH_NOGLOBAL
 
 #ifndef SOAP_TYPE_PointerToSOAP_ENV__Code
-#define SOAP_TYPE_PointerToSOAP_ENV__Code (86)
+#define SOAP_TYPE_PointerToSOAP_ENV__Code (87)
 #endif
 SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_PointerToSOAP_ENV__Code(struct soap*, struct SOAP_ENV__Code *const*);
 SOAP_FMAC3 int SOAP_FMAC4 soap_out_PointerToSOAP_ENV__Code(struct soap*, const char *, int, struct SOAP_ENV__Code *const*, const char *);
@@ -1612,7 +1612,7 @@ SOAP_FMAC3 struct SOAP_ENV__Code ** SOAP_FMAC4 soap_get_PointerToSOAP_ENV__Code(
 #endif
 
 #ifndef SOAP_TYPE_PointerToomws__getResultsResponse
-#define SOAP_TYPE_PointerToomws__getResultsResponse (79)
+#define SOAP_TYPE_PointerToomws__getResultsResponse (80)
 #endif
 SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_PointerToomws__getResultsResponse(struct soap*, struct omws__getResultsResponse *const*);
 SOAP_FMAC3 int SOAP_FMAC4 soap_out_PointerToomws__getResultsResponse(struct soap*, const char *, int, struct omws__getResultsResponse *const*, const char *);
@@ -1631,7 +1631,7 @@ SOAP_FMAC3 struct omws__getResultsResponse ** SOAP_FMAC4 soap_get_PointerToomws_
 
 
 #ifndef SOAP_TYPE_PointerToomws__runExperimentResponse
-#define SOAP_TYPE_PointerToomws__runExperimentResponse (75)
+#define SOAP_TYPE_PointerToomws__runExperimentResponse (76)
 #endif
 SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_PointerToomws__runExperimentResponse(struct soap*, struct omws__runExperimentResponse *const*);
 SOAP_FMAC3 int SOAP_FMAC4 soap_out_PointerToomws__runExperimentResponse(struct soap*, const char *, int, struct omws__runExperimentResponse *const*, const char *);
@@ -1650,7 +1650,7 @@ SOAP_FMAC3 struct omws__runExperimentResponse ** SOAP_FMAC4 soap_get_PointerToom
 
 
 #ifndef SOAP_TYPE_PointerToomws__getSamplingResultResponse
-#define SOAP_TYPE_PointerToomws__getSamplingResultResponse (71)
+#define SOAP_TYPE_PointerToomws__getSamplingResultResponse (72)
 #endif
 SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_PointerToomws__getSamplingResultResponse(struct soap*, struct omws__getSamplingResultResponse *const*);
 SOAP_FMAC3 int SOAP_FMAC4 soap_out_PointerToomws__getSamplingResultResponse(struct soap*, const char *, int, struct omws__getSamplingResultResponse *const*, const char *);
@@ -1669,7 +1669,7 @@ SOAP_FMAC3 struct omws__getSamplingResultResponse ** SOAP_FMAC4 soap_get_Pointer
 
 
 #ifndef SOAP_TYPE_PointerToomws__modelEvaluationResponse
-#define SOAP_TYPE_PointerToomws__modelEvaluationResponse (64)
+#define SOAP_TYPE_PointerToomws__modelEvaluationResponse (65)
 #endif
 SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_PointerToomws__modelEvaluationResponse(struct soap*, struct omws__modelEvaluationResponse *const*);
 SOAP_FMAC3 int SOAP_FMAC4 soap_out_PointerToomws__modelEvaluationResponse(struct soap*, const char *, int, struct omws__modelEvaluationResponse *const*, const char *);
@@ -1688,7 +1688,7 @@ SOAP_FMAC3 struct omws__modelEvaluationResponse ** SOAP_FMAC4 soap_get_PointerTo
 
 
 #ifndef SOAP_TYPE_PointerToomws__getProjectionMetadataResponse
-#define SOAP_TYPE_PointerToomws__getProjectionMetadataResponse (57)
+#define SOAP_TYPE_PointerToomws__getProjectionMetadataResponse (58)
 #endif
 SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_PointerToomws__getProjectionMetadataResponse(struct soap*, struct omws__getProjectionMetadataResponse *const*);
 SOAP_FMAC3 int SOAP_FMAC4 soap_out_PointerToomws__getProjectionMetadataResponse(struct soap*, const char *, int, struct omws__getProjectionMetadataResponse *const*, const char *);
@@ -1707,7 +1707,7 @@ SOAP_FMAC3 struct omws__getProjectionMetadataResponse ** SOAP_FMAC4 soap_get_Poi
 
 
 #ifndef SOAP_TYPE_PointerToomws__testResponse
-#define SOAP_TYPE_PointerToomws__testResponse (41)
+#define SOAP_TYPE_PointerToomws__testResponse (42)
 #endif
 SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_PointerToomws__testResponse(struct soap*, struct omws__testResponse *const*);
 SOAP_FMAC3 int SOAP_FMAC4 soap_out_PointerToomws__testResponse(struct soap*, const char *, int, struct omws__testResponse *const*, const char *);
@@ -1726,7 +1726,7 @@ SOAP_FMAC3 struct omws__testResponse ** SOAP_FMAC4 soap_get_PointerToomws__testR
 
 
 #ifndef SOAP_TYPE_PointerToomws__getModelResponse
-#define SOAP_TYPE_PointerToomws__getModelResponse (34)
+#define SOAP_TYPE_PointerToomws__getModelResponse (35)
 #endif
 SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_PointerToomws__getModelResponse(struct soap*, struct omws__getModelResponse *const*);
 SOAP_FMAC3 int SOAP_FMAC4 soap_out_PointerToomws__getModelResponse(struct soap*, const char *, int, struct omws__getModelResponse *const*, const char *);
@@ -1745,7 +1745,7 @@ SOAP_FMAC3 struct omws__getModelResponse ** SOAP_FMAC4 soap_get_PointerToomws__g
 
 
 #ifndef SOAP_TYPE_PointerToomws__getLayersResponse
-#define SOAP_TYPE_PointerToomws__getLayersResponse (26)
+#define SOAP_TYPE_PointerToomws__getLayersResponse (27)
 #endif
 SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_PointerToomws__getLayersResponse(struct soap*, struct omws__getLayersResponse *const*);
 SOAP_FMAC3 int SOAP_FMAC4 soap_out_PointerToomws__getLayersResponse(struct soap*, const char *, int, struct omws__getLayersResponse *const*, const char *);
@@ -1764,7 +1764,7 @@ SOAP_FMAC3 struct omws__getLayersResponse ** SOAP_FMAC4 soap_get_PointerToomws__
 
 
 #ifndef SOAP_TYPE_PointerToomws__getAlgorithmsResponse
-#define SOAP_TYPE_PointerToomws__getAlgorithmsResponse (22)
+#define SOAP_TYPE_PointerToomws__getAlgorithmsResponse (23)
 #endif
 SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_PointerToomws__getAlgorithmsResponse(struct soap*, struct omws__getAlgorithmsResponse *const*);
 SOAP_FMAC3 int SOAP_FMAC4 soap_out_PointerToomws__getAlgorithmsResponse(struct soap*, const char *, int, struct omws__getAlgorithmsResponse *const*, const char *);

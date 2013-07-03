@@ -15,7 +15,7 @@ compiling, linking, and/or using OpenSSL is allowed.
 
 #include "soapH.h"
 
-SOAP_SOURCE_STAMP("@(#) soapC.cpp ver 2.8.15 2013-05-17 13:35:21 GMT")
+SOAP_SOURCE_STAMP("@(#) soapC.cpp ver 2.8.15 2013-07-03 13:42:01 GMT")
 
 
 #ifndef WITH_NOGLOBAL
@@ -2406,7 +2406,7 @@ SOAP_FMAC3 int SOAP_FMAC4 soap_out_omws__runExperiment(struct soap *soap, const 
 	(void)soap; (void)tag; (void)id; (void)type;
 	if (soap_element_begin_out(soap, tag, soap_embedded_id(soap, id, a, SOAP_TYPE_omws__runExperiment), type))
 		return soap->error;
-	soap_outwliteral(soap, "om:ExperimentParameters", &a->om__ExperimentParameters, NULL);
+	soap_outliteral(soap, "om:ExperimentParameters", &a->om__ExperimentParameters, NULL);
 	return soap_element_end_out(soap, tag);
 }
 
@@ -2424,7 +2424,7 @@ SOAP_FMAC3 struct omws__runExperiment * SOAP_FMAC4 soap_in_omws__runExperiment(s
 		for (;;)
 		{	soap->error = SOAP_TAG_MISMATCH;
 			if (soap_flag_om__ExperimentParameters && (soap->error == SOAP_TAG_MISMATCH || soap->error == SOAP_NO_TAG))
-				if (soap_inwliteral(soap, "om:ExperimentParameters", &a->om__ExperimentParameters))
+				if (soap_inliteral(soap, "om:ExperimentParameters", &a->om__ExperimentParameters))
 				{	soap_flag_om__ExperimentParameters--;
 					continue;
 				}

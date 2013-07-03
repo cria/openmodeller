@@ -12,13 +12,14 @@ typedef char *xsd__string;
 typedef double xsd__double;
 typedef int xsd__int; 
 typedef wchar_t *XML;
+typedef char *XML_;
 
 /** SOAP header structure.
  */
 struct SOAP_ENV__Header 
 {
   xsd__string omws__version; 
-}; 
+};
 
 /** Simple method just to monitor the service.
  *
@@ -33,7 +34,7 @@ int omws__ping(void *_, xsd__int &status);
 struct omws__getAlgorithmsResponse
 {
    XML om__AvailableAlgorithms;
-}; 
+};
 
 /** Get all available algorithms and return their metadata.
  *
@@ -49,7 +50,7 @@ int omws__getAlgorithms(void *_, struct omws__getAlgorithmsResponse *out);
 struct omws__getLayersResponse
 {
    XML om__AvailableLayers;
-}; 
+};
 
 /** Get all available layers on the server side.
  *
@@ -74,7 +75,7 @@ int omws__createModel(XML om__ModelParameters, xsd__string &ticket);
 struct omws__getModelResponse
 {
    XML om__ModelEnvelope;
-}; 
+};
 
 /** Return a serialized model given a ticket.
  * @param ticket Job identification.
@@ -96,7 +97,7 @@ int omws__testModel(XML om__TestParameters, xsd__string &ticket);
 struct omws__testResponse
 {
    XML om__TestResultEnvelope;
-}; 
+};
 
 /** Return the result of a test.
  * @param ticket Job identification.
@@ -140,7 +141,7 @@ struct omws__getProjectionMetadataResponse
 {
    @xsd__int FileSize; 
    XML om__ProjectionEnvelope;
-}; 
+};
 
 /** Return additional data about the projection.
  * @param ticket Job identification.
@@ -162,7 +163,7 @@ int omws__evaluateModel(XML om__ModelEvaluationParameters, xsd__string &ticket);
 struct omws__modelEvaluationResponse
 {
    XML om__ModelEvaluation;
-}; 
+};
 
 /** Return model evaluation given a ticket.
  * @param ticket Job identification.
@@ -184,7 +185,7 @@ int omws__samplePoints(XML om__SamplingParameters, xsd__string &ticket);
 struct omws__getSamplingResultResponse
 {
    XML om__Sampler;
-}; 
+};
 
 /** Return sampling result given a ticket.
  * @param ticket Job identification.
@@ -197,21 +198,22 @@ int omws__getSamplingResult(xsd__string ticket, struct omws__getSamplingResultRe
 struct omws__runExperimentResponse
 {
    XML om__ExperimentTickets;
-}; 
+};
 
-/** Run Experiment.
+/** Run Experiment. Note: the first parameter uses the char * type so that its content can be
+ *  deserialized by gsoap inside the method using an istream. 
  *
  * @param om__RunExperiment XML with experiment parameters 
-  * @return standard gSOAP integer code
+ * @return standard gSOAP integer code
  */
 //gsoap om service method-documentation: runExperiment Run the specified experiment, which may involve sampling points, model creation, test and/or projection.
-int omws__runExperiment(XML om__ExperimentParameters, struct omws__runExperimentResponse *out); 
+int omws__runExperiment(XML_ om__ExperimentParameters, struct omws__runExperimentResponse *out); 
 
 /** Return type of getResults */
 struct omws__getResultsResponse
 {
    XML om__ResultSet;
-}; 
+};
 
 /** Return sampling result given a list of tickets.
  * @param tickets Comma-separated job tickets.

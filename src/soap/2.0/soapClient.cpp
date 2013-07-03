@@ -14,7 +14,7 @@ compiling, linking, and/or using OpenSSL is allowed.
 #endif
 #include "soapH.h"
 
-SOAP_SOURCE_STAMP("@(#) soapClient.cpp ver 2.8.15 2013-05-17 13:35:21 GMT")
+SOAP_SOURCE_STAMP("@(#) soapClient.cpp ver 2.8.15 2013-07-03 13:42:01 GMT")
 
 
 SOAP_FMAC5 int SOAP_FMAC6 soap_call_omws__ping(struct soap *soap, const char *soap_endpoint, const char *soap_action, void *_, int &status)
@@ -803,7 +803,7 @@ SOAP_FMAC5 int SOAP_FMAC6 soap_call_omws__getSamplingResult(struct soap *soap, c
 	return soap_closesock(soap);
 }
 
-SOAP_FMAC5 int SOAP_FMAC6 soap_call_omws__runExperiment(struct soap *soap, const char *soap_endpoint, const char *soap_action, wchar_t *om__ExperimentParameters, struct omws__runExperimentResponse *out)
+SOAP_FMAC5 int SOAP_FMAC6 soap_call_omws__runExperiment(struct soap *soap, const char *soap_endpoint, const char *soap_action, char *om__ExperimentParameters, struct omws__runExperimentResponse *out)
 {	struct omws__runExperiment soap_tmp_omws__runExperiment;
 	if (soap_endpoint == NULL)
 		soap_endpoint = "http://modeller.cria.org.br/ws2/om";
