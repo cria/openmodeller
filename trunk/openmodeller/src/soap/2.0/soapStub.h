@@ -44,285 +44,285 @@ compiling, linking, and/or using OpenSSL is allowed.
 #ifndef WITH_NOGLOBAL
 
 #ifndef SOAP_TYPE_SOAP_ENV__Header
-#define SOAP_TYPE_SOAP_ENV__Header (14)
+#define SOAP_TYPE_SOAP_ENV__Header (15)
 /* SOAP Header: */
 struct SOAP_ENV__Header
 {
 public:
 	char *omws__version;	/* optional element of type xsd:string */
 public:
-	int soap_type() const { return 14; } /* = unique id SOAP_TYPE_SOAP_ENV__Header */
+	int soap_type() const { return 15; } /* = unique id SOAP_TYPE_SOAP_ENV__Header */
 };
 #endif
 
 #endif
 
 #ifndef SOAP_TYPE_omws__pingResponse
-#define SOAP_TYPE_omws__pingResponse (19)
+#define SOAP_TYPE_omws__pingResponse (20)
 /* omws:pingResponse */
 struct omws__pingResponse
 {
 public:
 	int status;	/* SOAP 1.2 RPC return element (when namespace qualified) */	/* required element of type xsd:int */
 public:
-	int soap_type() const { return 19; } /* = unique id SOAP_TYPE_omws__pingResponse */
+	int soap_type() const { return 20; } /* = unique id SOAP_TYPE_omws__pingResponse */
 };
 #endif
 
 #ifndef SOAP_TYPE_omws__ping
-#define SOAP_TYPE_omws__ping (20)
+#define SOAP_TYPE_omws__ping (21)
 /* omws:ping */
 struct omws__ping
 {
 public:
 	void *_;	/* transient */
 public:
-	int soap_type() const { return 20; } /* = unique id SOAP_TYPE_omws__ping */
+	int soap_type() const { return 21; } /* = unique id SOAP_TYPE_omws__ping */
 };
 #endif
 
 #ifndef SOAP_TYPE_omws__getAlgorithmsResponse
-#define SOAP_TYPE_omws__getAlgorithmsResponse (21)
+#define SOAP_TYPE_omws__getAlgorithmsResponse (22)
 /* omws:getAlgorithmsResponse */
 struct omws__getAlgorithmsResponse
 {
 public:
 	wchar_t *om__AvailableAlgorithms;	/* SOAP 1.2 RPC return element (when namespace qualified) */	/* optional element of type xsd:anyType */
 public:
-	int soap_type() const { return 21; } /* = unique id SOAP_TYPE_omws__getAlgorithmsResponse */
+	int soap_type() const { return 22; } /* = unique id SOAP_TYPE_omws__getAlgorithmsResponse */
 };
 #endif
 
 #ifndef SOAP_TYPE_omws__getAlgorithms
-#define SOAP_TYPE_omws__getAlgorithms (24)
+#define SOAP_TYPE_omws__getAlgorithms (25)
 /* omws:getAlgorithms */
 struct omws__getAlgorithms
 {
 public:
 	void *_;	/* transient */
 public:
-	int soap_type() const { return 24; } /* = unique id SOAP_TYPE_omws__getAlgorithms */
+	int soap_type() const { return 25; } /* = unique id SOAP_TYPE_omws__getAlgorithms */
 };
 #endif
 
 #ifndef SOAP_TYPE_omws__getLayersResponse
-#define SOAP_TYPE_omws__getLayersResponse (25)
+#define SOAP_TYPE_omws__getLayersResponse (26)
 /* omws:getLayersResponse */
 struct omws__getLayersResponse
 {
 public:
 	wchar_t *om__AvailableLayers;	/* SOAP 1.2 RPC return element (when namespace qualified) */	/* optional element of type xsd:anyType */
 public:
-	int soap_type() const { return 25; } /* = unique id SOAP_TYPE_omws__getLayersResponse */
+	int soap_type() const { return 26; } /* = unique id SOAP_TYPE_omws__getLayersResponse */
 };
 #endif
 
 #ifndef SOAP_TYPE_omws__getLayers
-#define SOAP_TYPE_omws__getLayers (28)
+#define SOAP_TYPE_omws__getLayers (29)
 /* omws:getLayers */
 struct omws__getLayers
 {
 public:
 	void *_;	/* transient */
 public:
-	int soap_type() const { return 28; } /* = unique id SOAP_TYPE_omws__getLayers */
+	int soap_type() const { return 29; } /* = unique id SOAP_TYPE_omws__getLayers */
 };
 #endif
 
 #ifndef SOAP_TYPE_omws__createModelResponse
-#define SOAP_TYPE_omws__createModelResponse (31)
+#define SOAP_TYPE_omws__createModelResponse (32)
 /* omws:createModelResponse */
 struct omws__createModelResponse
 {
 public:
 	char *ticket;	/* SOAP 1.2 RPC return element (when namespace qualified) */	/* required element of type xsd:string */
 public:
-	int soap_type() const { return 31; } /* = unique id SOAP_TYPE_omws__createModelResponse */
+	int soap_type() const { return 32; } /* = unique id SOAP_TYPE_omws__createModelResponse */
 };
 #endif
 
 #ifndef SOAP_TYPE_omws__createModel
-#define SOAP_TYPE_omws__createModel (32)
+#define SOAP_TYPE_omws__createModel (33)
 /* omws:createModel */
 struct omws__createModel
 {
 public:
 	wchar_t *om__ModelParameters;	/* optional element of type xsd:anyType */
 public:
-	int soap_type() const { return 32; } /* = unique id SOAP_TYPE_omws__createModel */
+	int soap_type() const { return 33; } /* = unique id SOAP_TYPE_omws__createModel */
 };
 #endif
 
 #ifndef SOAP_TYPE_omws__getModelResponse
-#define SOAP_TYPE_omws__getModelResponse (33)
+#define SOAP_TYPE_omws__getModelResponse (34)
 /* omws:getModelResponse */
 struct omws__getModelResponse
 {
 public:
 	wchar_t *om__ModelEnvelope;	/* SOAP 1.2 RPC return element (when namespace qualified) */	/* optional element of type xsd:anyType */
 public:
-	int soap_type() const { return 33; } /* = unique id SOAP_TYPE_omws__getModelResponse */
+	int soap_type() const { return 34; } /* = unique id SOAP_TYPE_omws__getModelResponse */
 };
 #endif
 
 #ifndef SOAP_TYPE_omws__getModel
-#define SOAP_TYPE_omws__getModel (36)
+#define SOAP_TYPE_omws__getModel (37)
 /* omws:getModel */
 struct omws__getModel
 {
 public:
 	char *ticket;	/* optional element of type xsd:string */
 public:
-	int soap_type() const { return 36; } /* = unique id SOAP_TYPE_omws__getModel */
+	int soap_type() const { return 37; } /* = unique id SOAP_TYPE_omws__getModel */
 };
 #endif
 
 #ifndef SOAP_TYPE_omws__testModelResponse
-#define SOAP_TYPE_omws__testModelResponse (38)
+#define SOAP_TYPE_omws__testModelResponse (39)
 /* omws:testModelResponse */
 struct omws__testModelResponse
 {
 public:
 	char *ticket;	/* SOAP 1.2 RPC return element (when namespace qualified) */	/* required element of type xsd:string */
 public:
-	int soap_type() const { return 38; } /* = unique id SOAP_TYPE_omws__testModelResponse */
+	int soap_type() const { return 39; } /* = unique id SOAP_TYPE_omws__testModelResponse */
 };
 #endif
 
 #ifndef SOAP_TYPE_omws__testModel
-#define SOAP_TYPE_omws__testModel (39)
+#define SOAP_TYPE_omws__testModel (40)
 /* omws:testModel */
 struct omws__testModel
 {
 public:
 	wchar_t *om__TestParameters;	/* optional element of type xsd:anyType */
 public:
-	int soap_type() const { return 39; } /* = unique id SOAP_TYPE_omws__testModel */
+	int soap_type() const { return 40; } /* = unique id SOAP_TYPE_omws__testModel */
 };
 #endif
 
 #ifndef SOAP_TYPE_omws__testResponse
-#define SOAP_TYPE_omws__testResponse (40)
+#define SOAP_TYPE_omws__testResponse (41)
 /* omws:testResponse */
 struct omws__testResponse
 {
 public:
 	wchar_t *om__TestResultEnvelope;	/* SOAP 1.2 RPC return element (when namespace qualified) */	/* optional element of type xsd:anyType */
 public:
-	int soap_type() const { return 40; } /* = unique id SOAP_TYPE_omws__testResponse */
+	int soap_type() const { return 41; } /* = unique id SOAP_TYPE_omws__testResponse */
 };
 #endif
 
 #ifndef SOAP_TYPE_omws__getTestResult
-#define SOAP_TYPE_omws__getTestResult (43)
+#define SOAP_TYPE_omws__getTestResult (44)
 /* omws:getTestResult */
 struct omws__getTestResult
 {
 public:
 	char *ticket;	/* optional element of type xsd:string */
 public:
-	int soap_type() const { return 43; } /* = unique id SOAP_TYPE_omws__getTestResult */
+	int soap_type() const { return 44; } /* = unique id SOAP_TYPE_omws__getTestResult */
 };
 #endif
 
 #ifndef SOAP_TYPE_omws__projectModelResponse
-#define SOAP_TYPE_omws__projectModelResponse (45)
+#define SOAP_TYPE_omws__projectModelResponse (46)
 /* omws:projectModelResponse */
 struct omws__projectModelResponse
 {
 public:
 	char *ticket;	/* SOAP 1.2 RPC return element (when namespace qualified) */	/* required element of type xsd:string */
 public:
-	int soap_type() const { return 45; } /* = unique id SOAP_TYPE_omws__projectModelResponse */
+	int soap_type() const { return 46; } /* = unique id SOAP_TYPE_omws__projectModelResponse */
 };
 #endif
 
 #ifndef SOAP_TYPE_omws__projectModel
-#define SOAP_TYPE_omws__projectModel (46)
+#define SOAP_TYPE_omws__projectModel (47)
 /* omws:projectModel */
 struct omws__projectModel
 {
 public:
 	wchar_t *om__ProjectionParameters;	/* optional element of type xsd:anyType */
 public:
-	int soap_type() const { return 46; } /* = unique id SOAP_TYPE_omws__projectModel */
+	int soap_type() const { return 47; } /* = unique id SOAP_TYPE_omws__projectModel */
 };
 #endif
 
 #ifndef SOAP_TYPE_omws__getProgressResponse
-#define SOAP_TYPE_omws__getProgressResponse (48)
+#define SOAP_TYPE_omws__getProgressResponse (49)
 /* omws:getProgressResponse */
 struct omws__getProgressResponse
 {
 public:
 	char *progress;	/* SOAP 1.2 RPC return element (when namespace qualified) */	/* required element of type xsd:string */
 public:
-	int soap_type() const { return 48; } /* = unique id SOAP_TYPE_omws__getProgressResponse */
+	int soap_type() const { return 49; } /* = unique id SOAP_TYPE_omws__getProgressResponse */
 };
 #endif
 
 #ifndef SOAP_TYPE_omws__getProgress
-#define SOAP_TYPE_omws__getProgress (49)
+#define SOAP_TYPE_omws__getProgress (50)
 /* omws:getProgress */
 struct omws__getProgress
 {
 public:
 	char *tickets;	/* optional element of type xsd:string */
 public:
-	int soap_type() const { return 49; } /* = unique id SOAP_TYPE_omws__getProgress */
+	int soap_type() const { return 50; } /* = unique id SOAP_TYPE_omws__getProgress */
 };
 #endif
 
 #ifndef SOAP_TYPE_omws__getLogResponse
-#define SOAP_TYPE_omws__getLogResponse (51)
+#define SOAP_TYPE_omws__getLogResponse (52)
 /* omws:getLogResponse */
 struct omws__getLogResponse
 {
 public:
 	char *log;	/* SOAP 1.2 RPC return element (when namespace qualified) */	/* required element of type xsd:string */
 public:
-	int soap_type() const { return 51; } /* = unique id SOAP_TYPE_omws__getLogResponse */
+	int soap_type() const { return 52; } /* = unique id SOAP_TYPE_omws__getLogResponse */
 };
 #endif
 
 #ifndef SOAP_TYPE_omws__getLog
-#define SOAP_TYPE_omws__getLog (52)
+#define SOAP_TYPE_omws__getLog (53)
 /* omws:getLog */
 struct omws__getLog
 {
 public:
 	char *ticket;	/* optional element of type xsd:string */
 public:
-	int soap_type() const { return 52; } /* = unique id SOAP_TYPE_omws__getLog */
+	int soap_type() const { return 53; } /* = unique id SOAP_TYPE_omws__getLog */
 };
 #endif
 
 #ifndef SOAP_TYPE_omws__getLayerAsUrlResponse
-#define SOAP_TYPE_omws__getLayerAsUrlResponse (54)
+#define SOAP_TYPE_omws__getLayerAsUrlResponse (55)
 /* omws:getLayerAsUrlResponse */
 struct omws__getLayerAsUrlResponse
 {
 public:
 	char *url;	/* SOAP 1.2 RPC return element (when namespace qualified) */	/* required element of type xsd:string */
 public:
-	int soap_type() const { return 54; } /* = unique id SOAP_TYPE_omws__getLayerAsUrlResponse */
+	int soap_type() const { return 55; } /* = unique id SOAP_TYPE_omws__getLayerAsUrlResponse */
 };
 #endif
 
 #ifndef SOAP_TYPE_omws__getLayerAsUrl
-#define SOAP_TYPE_omws__getLayerAsUrl (55)
+#define SOAP_TYPE_omws__getLayerAsUrl (56)
 /* omws:getLayerAsUrl */
 struct omws__getLayerAsUrl
 {
 public:
 	char *id;	/* optional element of type xsd:string */
 public:
-	int soap_type() const { return 55; } /* = unique id SOAP_TYPE_omws__getLayerAsUrl */
+	int soap_type() const { return 56; } /* = unique id SOAP_TYPE_omws__getLayerAsUrl */
 };
 #endif
 
 #ifndef SOAP_TYPE_omws__getProjectionMetadataResponse
-#define SOAP_TYPE_omws__getProjectionMetadataResponse (56)
+#define SOAP_TYPE_omws__getProjectionMetadataResponse (57)
 /* omws:getProjectionMetadataResponse */
 struct omws__getProjectionMetadataResponse
 {
@@ -330,194 +330,194 @@ public:
 	int FileSize;	/* optional attribute of type xsd:int */
 	wchar_t *om__ProjectionEnvelope;	/* optional element of type xsd:anyType */
 public:
-	int soap_type() const { return 56; } /* = unique id SOAP_TYPE_omws__getProjectionMetadataResponse */
+	int soap_type() const { return 57; } /* = unique id SOAP_TYPE_omws__getProjectionMetadataResponse */
 };
 #endif
 
 #ifndef SOAP_TYPE_omws__getProjectionMetadata
-#define SOAP_TYPE_omws__getProjectionMetadata (59)
+#define SOAP_TYPE_omws__getProjectionMetadata (60)
 /* omws:getProjectionMetadata */
 struct omws__getProjectionMetadata
 {
 public:
 	char *ticket;	/* optional element of type xsd:string */
 public:
-	int soap_type() const { return 59; } /* = unique id SOAP_TYPE_omws__getProjectionMetadata */
+	int soap_type() const { return 60; } /* = unique id SOAP_TYPE_omws__getProjectionMetadata */
 };
 #endif
 
 #ifndef SOAP_TYPE_omws__evaluateModelResponse
-#define SOAP_TYPE_omws__evaluateModelResponse (61)
+#define SOAP_TYPE_omws__evaluateModelResponse (62)
 /* omws:evaluateModelResponse */
 struct omws__evaluateModelResponse
 {
 public:
 	char *ticket;	/* SOAP 1.2 RPC return element (when namespace qualified) */	/* required element of type xsd:string */
 public:
-	int soap_type() const { return 61; } /* = unique id SOAP_TYPE_omws__evaluateModelResponse */
+	int soap_type() const { return 62; } /* = unique id SOAP_TYPE_omws__evaluateModelResponse */
 };
 #endif
 
 #ifndef SOAP_TYPE_omws__evaluateModel
-#define SOAP_TYPE_omws__evaluateModel (62)
+#define SOAP_TYPE_omws__evaluateModel (63)
 /* omws:evaluateModel */
 struct omws__evaluateModel
 {
 public:
 	wchar_t *om__ModelEvaluationParameters;	/* optional element of type xsd:anyType */
 public:
-	int soap_type() const { return 62; } /* = unique id SOAP_TYPE_omws__evaluateModel */
+	int soap_type() const { return 63; } /* = unique id SOAP_TYPE_omws__evaluateModel */
 };
 #endif
 
 #ifndef SOAP_TYPE_omws__modelEvaluationResponse
-#define SOAP_TYPE_omws__modelEvaluationResponse (63)
+#define SOAP_TYPE_omws__modelEvaluationResponse (64)
 /* omws:modelEvaluationResponse */
 struct omws__modelEvaluationResponse
 {
 public:
 	wchar_t *om__ModelEvaluation;	/* SOAP 1.2 RPC return element (when namespace qualified) */	/* optional element of type xsd:anyType */
 public:
-	int soap_type() const { return 63; } /* = unique id SOAP_TYPE_omws__modelEvaluationResponse */
+	int soap_type() const { return 64; } /* = unique id SOAP_TYPE_omws__modelEvaluationResponse */
 };
 #endif
 
 #ifndef SOAP_TYPE_omws__getModelEvaluation
-#define SOAP_TYPE_omws__getModelEvaluation (66)
+#define SOAP_TYPE_omws__getModelEvaluation (67)
 /* omws:getModelEvaluation */
 struct omws__getModelEvaluation
 {
 public:
 	char *ticket;	/* optional element of type xsd:string */
 public:
-	int soap_type() const { return 66; } /* = unique id SOAP_TYPE_omws__getModelEvaluation */
+	int soap_type() const { return 67; } /* = unique id SOAP_TYPE_omws__getModelEvaluation */
 };
 #endif
 
 #ifndef SOAP_TYPE_omws__samplePointsResponse
-#define SOAP_TYPE_omws__samplePointsResponse (68)
+#define SOAP_TYPE_omws__samplePointsResponse (69)
 /* omws:samplePointsResponse */
 struct omws__samplePointsResponse
 {
 public:
 	char *ticket;	/* SOAP 1.2 RPC return element (when namespace qualified) */	/* required element of type xsd:string */
 public:
-	int soap_type() const { return 68; } /* = unique id SOAP_TYPE_omws__samplePointsResponse */
+	int soap_type() const { return 69; } /* = unique id SOAP_TYPE_omws__samplePointsResponse */
 };
 #endif
 
 #ifndef SOAP_TYPE_omws__samplePoints
-#define SOAP_TYPE_omws__samplePoints (69)
+#define SOAP_TYPE_omws__samplePoints (70)
 /* omws:samplePoints */
 struct omws__samplePoints
 {
 public:
 	wchar_t *om__SamplingParameters;	/* optional element of type xsd:anyType */
 public:
-	int soap_type() const { return 69; } /* = unique id SOAP_TYPE_omws__samplePoints */
+	int soap_type() const { return 70; } /* = unique id SOAP_TYPE_omws__samplePoints */
 };
 #endif
 
 #ifndef SOAP_TYPE_omws__getSamplingResultResponse
-#define SOAP_TYPE_omws__getSamplingResultResponse (70)
+#define SOAP_TYPE_omws__getSamplingResultResponse (71)
 /* omws:getSamplingResultResponse */
 struct omws__getSamplingResultResponse
 {
 public:
 	wchar_t *om__Sampler;	/* SOAP 1.2 RPC return element (when namespace qualified) */	/* optional element of type xsd:anyType */
 public:
-	int soap_type() const { return 70; } /* = unique id SOAP_TYPE_omws__getSamplingResultResponse */
+	int soap_type() const { return 71; } /* = unique id SOAP_TYPE_omws__getSamplingResultResponse */
 };
 #endif
 
 #ifndef SOAP_TYPE_omws__getSamplingResult
-#define SOAP_TYPE_omws__getSamplingResult (73)
+#define SOAP_TYPE_omws__getSamplingResult (74)
 /* omws:getSamplingResult */
 struct omws__getSamplingResult
 {
 public:
 	char *ticket;	/* optional element of type xsd:string */
 public:
-	int soap_type() const { return 73; } /* = unique id SOAP_TYPE_omws__getSamplingResult */
+	int soap_type() const { return 74; } /* = unique id SOAP_TYPE_omws__getSamplingResult */
 };
 #endif
 
 #ifndef SOAP_TYPE_omws__runExperimentResponse
-#define SOAP_TYPE_omws__runExperimentResponse (74)
+#define SOAP_TYPE_omws__runExperimentResponse (75)
 /* omws:runExperimentResponse */
 struct omws__runExperimentResponse
 {
 public:
 	wchar_t *om__ExperimentTickets;	/* SOAP 1.2 RPC return element (when namespace qualified) */	/* optional element of type xsd:anyType */
 public:
-	int soap_type() const { return 74; } /* = unique id SOAP_TYPE_omws__runExperimentResponse */
+	int soap_type() const { return 75; } /* = unique id SOAP_TYPE_omws__runExperimentResponse */
 };
 #endif
 
 #ifndef SOAP_TYPE_omws__runExperiment
-#define SOAP_TYPE_omws__runExperiment (77)
+#define SOAP_TYPE_omws__runExperiment (78)
 /* omws:runExperiment */
 struct omws__runExperiment
 {
 public:
-	wchar_t *om__ExperimentParameters;	/* optional element of type xsd:anyType */
+	char *om__ExperimentParameters;	/* optional element of type xsd:anyType */
 public:
-	int soap_type() const { return 77; } /* = unique id SOAP_TYPE_omws__runExperiment */
+	int soap_type() const { return 78; } /* = unique id SOAP_TYPE_omws__runExperiment */
 };
 #endif
 
 #ifndef SOAP_TYPE_omws__getResultsResponse
-#define SOAP_TYPE_omws__getResultsResponse (78)
+#define SOAP_TYPE_omws__getResultsResponse (79)
 /* omws:getResultsResponse */
 struct omws__getResultsResponse
 {
 public:
 	wchar_t *om__ResultSet;	/* SOAP 1.2 RPC return element (when namespace qualified) */	/* optional element of type xsd:anyType */
 public:
-	int soap_type() const { return 78; } /* = unique id SOAP_TYPE_omws__getResultsResponse */
+	int soap_type() const { return 79; } /* = unique id SOAP_TYPE_omws__getResultsResponse */
 };
 #endif
 
 #ifndef SOAP_TYPE_omws__getResults
-#define SOAP_TYPE_omws__getResults (81)
+#define SOAP_TYPE_omws__getResults (82)
 /* omws:getResults */
 struct omws__getResults
 {
 public:
 	char *tickets;	/* optional element of type xsd:string */
 public:
-	int soap_type() const { return 81; } /* = unique id SOAP_TYPE_omws__getResults */
+	int soap_type() const { return 82; } /* = unique id SOAP_TYPE_omws__getResults */
 };
 #endif
 
 #ifndef SOAP_TYPE_omws__cancelResponse
-#define SOAP_TYPE_omws__cancelResponse (83)
+#define SOAP_TYPE_omws__cancelResponse (84)
 /* omws:cancelResponse */
 struct omws__cancelResponse
 {
 public:
 	char *cancelledTickets;	/* SOAP 1.2 RPC return element (when namespace qualified) */	/* required element of type xsd:string */
 public:
-	int soap_type() const { return 83; } /* = unique id SOAP_TYPE_omws__cancelResponse */
+	int soap_type() const { return 84; } /* = unique id SOAP_TYPE_omws__cancelResponse */
 };
 #endif
 
 #ifndef SOAP_TYPE_omws__cancel
-#define SOAP_TYPE_omws__cancel (84)
+#define SOAP_TYPE_omws__cancel (85)
 /* omws:cancel */
 struct omws__cancel
 {
 public:
 	char *tickets;	/* optional element of type xsd:string */
 public:
-	int soap_type() const { return 84; } /* = unique id SOAP_TYPE_omws__cancel */
+	int soap_type() const { return 85; } /* = unique id SOAP_TYPE_omws__cancel */
 };
 #endif
 
 #ifndef WITH_NOGLOBAL
 
 #ifndef SOAP_TYPE_SOAP_ENV__Code
-#define SOAP_TYPE_SOAP_ENV__Code (85)
+#define SOAP_TYPE_SOAP_ENV__Code (86)
 /* SOAP Fault Code: */
 struct SOAP_ENV__Code
 {
@@ -525,7 +525,7 @@ public:
 	char *SOAP_ENV__Value;	/* optional element of type xsd:QName */
 	struct SOAP_ENV__Code *SOAP_ENV__Subcode;	/* optional element of type SOAP-ENV:Code */
 public:
-	int soap_type() const { return 85; } /* = unique id SOAP_TYPE_SOAP_ENV__Code */
+	int soap_type() const { return 86; } /* = unique id SOAP_TYPE_SOAP_ENV__Code */
 };
 #endif
 
@@ -534,7 +534,7 @@ public:
 #ifndef WITH_NOGLOBAL
 
 #ifndef SOAP_TYPE_SOAP_ENV__Detail
-#define SOAP_TYPE_SOAP_ENV__Detail (87)
+#define SOAP_TYPE_SOAP_ENV__Detail (88)
 /* SOAP-ENV:Detail */
 struct SOAP_ENV__Detail
 {
@@ -543,7 +543,7 @@ public:
 	int __type;	/* any type of element <fault> (defined below) */
 	void *fault;	/* transient */
 public:
-	int soap_type() const { return 87; } /* = unique id SOAP_TYPE_SOAP_ENV__Detail */
+	int soap_type() const { return 88; } /* = unique id SOAP_TYPE_SOAP_ENV__Detail */
 };
 #endif
 
@@ -552,14 +552,14 @@ public:
 #ifndef WITH_NOGLOBAL
 
 #ifndef SOAP_TYPE_SOAP_ENV__Reason
-#define SOAP_TYPE_SOAP_ENV__Reason (88)
+#define SOAP_TYPE_SOAP_ENV__Reason (89)
 /* SOAP-ENV:Reason */
 struct SOAP_ENV__Reason
 {
 public:
 	char *SOAP_ENV__Text;	/* optional element of type xsd:string */
 public:
-	int soap_type() const { return 88; } /* = unique id SOAP_TYPE_SOAP_ENV__Reason */
+	int soap_type() const { return 89; } /* = unique id SOAP_TYPE_SOAP_ENV__Reason */
 };
 #endif
 
@@ -568,7 +568,7 @@ public:
 #ifndef WITH_NOGLOBAL
 
 #ifndef SOAP_TYPE_SOAP_ENV__Fault
-#define SOAP_TYPE_SOAP_ENV__Fault (89)
+#define SOAP_TYPE_SOAP_ENV__Fault (90)
 /* SOAP Fault: */
 struct SOAP_ENV__Fault
 {
@@ -583,7 +583,7 @@ public:
 	char *SOAP_ENV__Role;	/* optional element of type xsd:string */
 	struct SOAP_ENV__Detail *SOAP_ENV__Detail;	/* optional element of type SOAP-ENV:Detail */
 public:
-	int soap_type() const { return 89; } /* = unique id SOAP_TYPE_SOAP_ENV__Fault */
+	int soap_type() const { return 90; } /* = unique id SOAP_TYPE_SOAP_ENV__Fault */
 };
 #endif
 
@@ -623,6 +623,11 @@ typedef int xsd__int;
 #ifndef SOAP_TYPE_XML
 #define SOAP_TYPE_XML (13)
 typedef wchar_t *XML;
+#endif
+
+#ifndef SOAP_TYPE_XML_
+#define SOAP_TYPE_XML_ (14)
+typedef char *XML_;
 #endif
 
 
@@ -672,7 +677,7 @@ SOAP_FMAC5 int SOAP_FMAC6 omws__samplePoints(struct soap*, wchar_t *om__Sampling
 
 SOAP_FMAC5 int SOAP_FMAC6 omws__getSamplingResult(struct soap*, char *ticket, struct omws__getSamplingResultResponse *out);
 
-SOAP_FMAC5 int SOAP_FMAC6 omws__runExperiment(struct soap*, wchar_t *om__ExperimentParameters, struct omws__runExperimentResponse *out);
+SOAP_FMAC5 int SOAP_FMAC6 omws__runExperiment(struct soap*, char *om__ExperimentParameters, struct omws__runExperimentResponse *out);
 
 SOAP_FMAC5 int SOAP_FMAC6 omws__getResults(struct soap*, char *tickets, struct omws__getResultsResponse *out);
 
@@ -765,7 +770,7 @@ SOAP_FMAC5 int SOAP_FMAC6 soap_call_omws__samplePoints(struct soap *soap, const 
 
 SOAP_FMAC5 int SOAP_FMAC6 soap_call_omws__getSamplingResult(struct soap *soap, const char *soap_endpoint, const char *soap_action, char *ticket, struct omws__getSamplingResultResponse *out);
 
-SOAP_FMAC5 int SOAP_FMAC6 soap_call_omws__runExperiment(struct soap *soap, const char *soap_endpoint, const char *soap_action, wchar_t *om__ExperimentParameters, struct omws__runExperimentResponse *out);
+SOAP_FMAC5 int SOAP_FMAC6 soap_call_omws__runExperiment(struct soap *soap, const char *soap_endpoint, const char *soap_action, char *om__ExperimentParameters, struct omws__runExperimentResponse *out);
 
 SOAP_FMAC5 int SOAP_FMAC6 soap_call_omws__getResults(struct soap *soap, const char *soap_endpoint, const char *soap_action, char *tickets, struct omws__getResultsResponse *out);
 

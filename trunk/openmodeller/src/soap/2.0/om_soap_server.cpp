@@ -25,6 +25,7 @@
  */
 
 #include "openModeller.nsmap"
+#include "omH.h"
 #include <openmodeller/om.hh>
 #include <openmodeller/file_parser.hh>
 
@@ -46,7 +47,7 @@ using namespace std;
 
 #include "gdal_priv.h"
 
-#define OMWS_VERSION "1.0"
+#define OMWS_VERSION "2.0"
 #define OMWS_BACKLOG (100) // Max. request backlog 
 #define OMWS_MIN *60
 #define OMWS_H *3600
@@ -59,9 +60,11 @@ using namespace std;
 #define OMWS_EXPERIMENT "exp"
 #define _REQUEST "_req."
 #define _RESPONSE "_resp."
+#define _PENDING_REQUEST "_pend."
 #define OMWS_PROJECTION_STATISTICS_PREFIX "stats."
 #define OMWS_JOB_PROGRESS_PREFIX "prog."
 #define OMWS_JOB_DONE_PREFIX "done."
+#define OMWS_JOB_METADATA_PREFIX "job."
 #define OMWS_CONFIG_FILE "../config/server.conf"
 #define OMWS_WSDL_FILE "../config/openModeller.wsdl"
 #define OMWS_LAYERS_CACHE_FILE "layers.xml"
@@ -79,12 +82,18 @@ static bool     isValidGdalFile( const char* fileName );
 static bool     hasValidGdalProjection( const char* fileName );
 static string   getLayerLabel( const string path, const string name, bool isDir );
 static int      getSize( FILE *fd );
-static void     logRequest( struct soap*, const char* operation );
+static void     logRequest( struct soap*, const char* operation, const char* params );
 static void     addHeader( struct soap* );
 static int      getStatus();
 static string   getTicketFilePath( string prefix, string ticket );
+static void     createTicket( struct soap *soap, string requestPrefix, xsd__string &ticket, string *requestFileName );
 static void     scheduleJob( struct soap *soap, string requestPrefix, XML xmlParameters, wchar_t* elementName, xsd__string &ticket );
+static void     scheduleJob( struct soap *soap, string requestPrefix, string xmlParameters, wchar_t* elementName, xsd__string &ticket );
 static int      getProgress( string ticket );
+static map<string, string> scheduleExperiment( struct soap* soap, const om::_om__ExperimentParameters& ep );
+static void     updateNextJobs( string next_id, string prev_id, map< string, vector<string> > *next_deps );
+static string   collateTickets( vector<string>* ids, map<string, string> *jobs );
+static string   collateTickets( map<string, string>* ids, map<string, string> *jobs );
 
 /****************/
 /***  Globals ***/
@@ -357,7 +366,7 @@ void *processRequest( void *soap )
 int
 omws__ping( struct soap *soap, void *_, xsd__int &status )
 {
-  logRequest( soap, "ping" );
+  logRequest( soap, "ping", "" );
 
   soap_clr_omode(soap, SOAP_ENC_ZLIB); // disable Zlib's gzip
 
@@ -416,7 +425,7 @@ omws__ping( struct soap *soap, void *_, xsd__int &status )
 int 
 omws__getAlgorithms( struct soap *soap, void *_, struct omws__getAlgorithmsResponse *out )
 {
-  logRequest( soap, "getAlgorithms" );
+  logRequest( soap, "getAlgorithms", "" );
 
   if ( getStatus() == 2 ) {
 
@@ -426,7 +435,6 @@ omws__getAlgorithms( struct soap *soap, void *_, struct omws__getAlgorithmsRespo
   string enableCompression( gFileParser.get( "ENABLE_COMPRESSION" ) );
 
   if ( enableCompression == "yes" ) {
-
 #ifdef WITH_GZIP
     // client supports gzip?
     if (soap->zlib_out == SOAP_ZLIB_GZIP) { 
@@ -470,7 +478,7 @@ omws__getAlgorithms( struct soap *soap, void *_, struct omws__getAlgorithmsRespo
 int 
 omws__getLayers( struct soap *soap, void *_, struct omws__getLayersResponse *out )
 {
-  logRequest( soap, "getLayers" );
+  logRequest( soap, "getLayers", "" );
 
   if ( getStatus() == 2 ) {
 
@@ -601,8 +609,6 @@ omws__getLayers( struct soap *soap, void *_, struct omws__getLayersResponse *out
 int 
 omws__createModel( struct soap *soap, XML om__ModelParameters, xsd__string &ticket )
 {
-  logRequest( soap, "createModel" );
-
   if ( getStatus() == 2 ) {
 
     return soap_receiver_fault( soap, "Service unavailable", NULL );
@@ -614,6 +620,7 @@ omws__createModel( struct soap *soap, XML om__ModelParameters, xsd__string &tick
 
     wchar_t elementName[] = L"ModelParameters";
     scheduleJob( soap, OMWS_MODEL _REQUEST, om__ModelParameters, elementName, ticket );
+    logRequest( soap, "createModel", ticket );
   }
   catch (OmwsException& e) {
 
@@ -632,8 +639,6 @@ omws__createModel( struct soap *soap, XML om__ModelParameters, xsd__string &tick
 int 
 omws__testModel( struct soap *soap, XML om__TestParameters, xsd__string &ticket )
 {
-  logRequest( soap, "testModel" );
-
   if ( getStatus() == 2 ) {
 
     return soap_receiver_fault( soap, "Service unavailable", NULL );
@@ -645,6 +650,7 @@ omws__testModel( struct soap *soap, XML om__TestParameters, xsd__string &ticket 
 
     wchar_t elementName[] = L"TestParameters";
     scheduleJob( soap, OMWS_TEST _REQUEST, om__TestParameters, elementName, ticket );
+    logRequest( soap, "testModel", ticket );
   }
   catch (OmwsException& e) {
 
@@ -663,8 +669,6 @@ omws__testModel( struct soap *soap, XML om__TestParameters, xsd__string &ticket 
 int 
 omws__projectModel( struct soap *soap, XML om__ProjectionParameters, xsd__string &ticket )
 {
-  logRequest( soap, "projectModel" );
-
   if ( getStatus() == 2 ) {
 
     return soap_receiver_fault( soap, "Service unavailable", NULL );
@@ -676,6 +680,7 @@ omws__projectModel( struct soap *soap, XML om__ProjectionParameters, xsd__string
 
     wchar_t elementName[] = L"ProjectionParameters";
     scheduleJob( soap, OMWS_PROJECTION _REQUEST, om__ProjectionParameters, elementName, ticket );
+    logRequest( soap, "projectModel", ticket );
   }
   catch (OmwsException& e) {
 
@@ -694,8 +699,6 @@ omws__projectModel( struct soap *soap, XML om__ProjectionParameters, xsd__string
 int 
 omws__evaluateModel( struct soap *soap, XML om__ModelEvaluationParameters, xsd__string &ticket )
 {
-  logRequest( soap, "evaluateModel" );
-
   if ( getStatus() == 2 ) {
 
     return soap_receiver_fault( soap, "Service unavailable", NULL );
@@ -707,6 +710,7 @@ omws__evaluateModel( struct soap *soap, XML om__ModelEvaluationParameters, xsd__
 
     wchar_t elementName[] = L"ModelEvaluationParameters";
     scheduleJob( soap, OMWS_EVALUATE _REQUEST, om__ModelEvaluationParameters, elementName, ticket );
+    logRequest( soap, "evaluateModel", ticket );
   }
   catch (OmwsException& e) {
 
@@ -725,8 +729,6 @@ omws__evaluateModel( struct soap *soap, XML om__ModelEvaluationParameters, xsd__
 int 
 omws__samplePoints( struct soap *soap, XML om__SamplingParameters, xsd__string &ticket )
 {
-  logRequest( soap, "samplePoints" );
-
   if ( getStatus() == 2 ) {
 
     return soap_receiver_fault( soap, "Service unavailable", NULL );
@@ -738,6 +740,7 @@ omws__samplePoints( struct soap *soap, XML om__SamplingParameters, xsd__string &
 
     wchar_t elementName[] = L"SamplingParameters";
     scheduleJob( soap, OMWS_SAMPLING _REQUEST, om__SamplingParameters, elementName, ticket );
+    logRequest( soap, "samplePoints", ticket );
   }
   catch (OmwsException& e) {
 
@@ -754,10 +757,8 @@ omws__samplePoints( struct soap *soap, XML om__SamplingParameters, xsd__string &
 /************************/
 /**** run Experiment ****/
 int
-omws__runExperiment( struct soap *soap, XML om__ExperimentParameters, struct omws__runExperimentResponse *out )
+omws__runExperiment( struct soap *soap, XML_ om__ExperimentParameters, struct omws__runExperimentResponse *out )
 {
-  logRequest( soap, "runExperiment" );
-
   if ( getStatus() == 2 ) {
 
     return soap_receiver_fault( soap, "Service unavailable", NULL );
@@ -765,22 +766,78 @@ omws__runExperiment( struct soap *soap, XML om__ExperimentParameters, struct omw
 
   soap_clr_omode(soap, SOAP_ENC_ZLIB); // disable Zlib's gzip
 
+  // New soap context to parse experiment parameters manually
+  struct soap *ctx = soap_new1(SOAP_XML_STRICT);
+  soap_init(ctx);
+  soap_imode(ctx, SOAP_ENC_XML); // Set input mode
+  soap_imode(ctx, SOAP_XML_IGNORENS);
+  soap_begin(ctx); // start new (de)serialization phase
+
   try {
 
-    xsd__string ticket;
-    wchar_t elementName[] = L"ExperimentParameters";
-    scheduleJob( soap, OMWS_EXPERIMENT _REQUEST, om__ExperimentParameters, elementName, ticket );
-    string result( "<Job Id=\"experiment\" Ticket=\"" );
-    result.append( ticket );
-    result.append( "\"/>" );
-    out->om__ExperimentTickets = convertToWideChar( result.c_str() ); 
+    // Parse content
+    string params( "<ExperimentParameteres>" );
+    params.append(om__ExperimentParameters).append("</ExperimentParameters>");
+    istringstream iss( params );
+    ctx->is = &iss;
+
+    om::_om__ExperimentParameters ep;
+
+    if ( soap_read_om__ExperimentParametersType( ctx, &ep ) != SOAP_OK ) {
+
+      throw OmwsException("Failed to parse experiment parameters");
+    }
+    else {
+
+      // Store the request and create a ticket anyway, regardless using Condor DAGMan or not
+      xsd__string ticket;
+      wchar_t elementName[] = L"ExperimentParameters";
+      scheduleJob( soap, OMWS_EXPERIMENT _REQUEST, params, elementName, ticket );
+      logRequest( soap, "runExperiment", ticket );
+
+      string condorIntegration( gFileParser.get( "CONDOR_INTEGRATION" ) );
+      string dagmanEnabled( gFileParser.get( "DAGMAN_ENABLED" ) );
+
+      string exp_id = string( ep.Jobs.id ); // experiment id provided by client
+
+      string result( "<Job Id=\"" );
+      result.append( exp_id ).append("\" Ticket=\"" ).append( ticket ).append( "\"/>" );
+
+      if ( condorIntegration == "yes" && dagmanEnabled == "yes" ) {
+
+        // Return single experiment ticket and let Condor plugin handle the job behind the scenes
+        out->om__ExperimentTickets = convertToWideChar( result.c_str() ); 
+      }
+      else {
+
+        // Create individual jobs and return all of them
+        map<string, string> jobs = scheduleExperiment( ctx, ep );
+
+        for ( map<string, string>::const_iterator it = jobs.begin(); it != jobs.end(); ++it ) {
+
+	  result.append( "<Job Id=\"" ).append( (*it).first ).append("\" Ticket=\"" ).append( (*it).second ).append( "\"/>" );
+        }
+
+        out->om__ExperimentTickets = convertToWideChar( result.c_str() ); 
+      }
+    }
+
+    soap_destroy(ctx); // remove deserialized class instances (C++ objects)
+    soap_end(ctx);  // clean up and remove deserialized data
+    soap_done(ctx); // detach context (last use and no longer in scope)
   }
   catch (OmwsException& e) {
 
+    soap_destroy(ctx);
+    soap_end(ctx);
+    soap_done(ctx);
     return soap_receiver_fault( soap, e.what(), NULL );
   }
   catch (...) {
 
+    soap_destroy(ctx);
+    soap_end(ctx);
+    soap_done(ctx);
     return soap_receiver_fault( soap, "Failed to process request", NULL );
   }
 
@@ -792,6 +849,8 @@ omws__runExperiment( struct soap *soap, XML om__ExperimentParameters, struct omw
 int 
 omws__getProgress( struct soap *soap, xsd__string tickets, xsd__string &progress )
 { 
+  logRequest( soap, "getProgress", tickets );
+
   if ( getStatus() == 2 ) {
 
     return soap_receiver_fault( soap, "Service unavailable", NULL );
@@ -844,12 +903,12 @@ omws__getProgress( struct soap *soap, xsd__string tickets, xsd__string &progress
 int 
 omws__getLog( struct soap *soap, xsd__string ticket, xsd__string &log )
 { 
+  logRequest( soap, "getLog", ticket );
+
   if ( getStatus() == 2 ) {
 
     return soap_receiver_fault( soap, "Service unavailable", NULL );
   }
-
-  logRequest( soap, "getLog" );
 
   soap_clr_omode(soap, SOAP_ENC_ZLIB); // disable Zlib's gzip
 
@@ -900,7 +959,7 @@ omws__cancel( struct soap *soap, xsd__string tickets, xsd__string &cancelledTick
 int 
 omws__getModel( struct soap *soap, xsd__string ticket, struct omws__getModelResponse *out )
 { 
-  logRequest( soap, "getModel" );
+  logRequest( soap, "getModel", ticket );
 
   if ( getStatus() == 2 ) {
 
@@ -965,7 +1024,7 @@ omws__getModel( struct soap *soap, xsd__string ticket, struct omws__getModelResp
 int 
 omws__getTestResult( struct soap *soap, xsd__string ticket, struct omws__testResponse *out )
 { 
-  logRequest( soap, "getTestResult" );
+  logRequest( soap, "getTestResult", ticket );
 
   if ( getStatus() == 2 ) {
 
@@ -1012,7 +1071,7 @@ omws__getTestResult( struct soap *soap, xsd__string ticket, struct omws__testRes
 int 
 omws__getLayerAsUrl( struct soap *soap, xsd__string id, xsd__string &url )
 { 
-  logRequest( soap, "getLayerAsUrl" );
+  logRequest( soap, "getLayerAsUrl", id );
 
   if ( getStatus() == 2 ) {
 
@@ -1056,7 +1115,7 @@ omws__getLayerAsUrl( struct soap *soap, xsd__string id, xsd__string &url )
 int 
 omws__getProjectionMetadata( struct soap *soap, xsd__string ticket, struct omws__getProjectionMetadataResponse *out )
 { 
-  logRequest( soap, "getProjectionMetadata" );
+  logRequest( soap, "getProjectionMetadata", ticket );
 
   if ( getStatus() == 2 ) {
 
@@ -1241,8 +1300,8 @@ getMapFile( string ticket )
 
 /***************************/
 /**** convertToWideChar ****/
-static 
-wchar_t* convertToWideChar( const char* p )
+static wchar_t* 
+convertToWideChar( const char* p )
 {
   wchar_t *r;
 
@@ -1259,8 +1318,8 @@ wchar_t* convertToWideChar( const char* p )
 
 /***********************/
 /**** readDirectory ****/
-static 
-bool readDirectory( const char* dir, const char* label, ostream &xml, int depth, int* seq )
+static bool 
+readDirectory( const char* dir, const char* label, ostream &xml, int depth, int* seq )
 {
   bool r = true;
 
@@ -1401,8 +1460,8 @@ bool readDirectory( const char* dir, const char* label, ostream &xml, int depth,
 
 /*************************/
 /**** isValidGdalFile ****/
-static
-bool isValidGdalFile( const char* fileName )
+static bool 
+isValidGdalFile( const char* fileName )
 {
   // test whether the file is GDAL compatible
   GDALAllRegister();
@@ -1424,8 +1483,8 @@ bool isValidGdalFile( const char* fileName )
 
 /********************************/
 /**** hasValidGdalProjection ****/
-static
-bool hasValidGdalProjection( const char* fileName )
+static bool 
+hasValidGdalProjection( const char* fileName )
 {
   // test whether the file has GDAL projection info
   GDALAllRegister();
@@ -1449,8 +1508,8 @@ bool hasValidGdalProjection( const char* fileName )
 
 /***********************/
 /**** getLayerLabel ****/
-static
-string getLayerLabel( const string path, const string name, bool isDir )
+static string 
+getLayerLabel( const string path, const string name, bool isDir )
 {
   string metaFile = path;
 
@@ -1488,7 +1547,7 @@ string getLayerLabel( const string path, const string name, bool isDir )
   return name;  
 }
 
-/******************/
+/*****************/
 /**** getSize ****/
 static int 
 getSize( FILE *fd )
@@ -1508,7 +1567,7 @@ getSize( FILE *fd )
 /********************/
 /**** logRequest ****/
 static void
-logRequest( struct soap* soap, const char* operation )
+logRequest( struct soap* soap, const char* operation, const char* params )
 {
   string logFile( gFileParser.get( "LOG_DIRECTORY" ) );
 
@@ -1560,7 +1619,7 @@ logRequest( struct soap* soap, const char* operation )
   ostringstream log;
 
   // IP TAB datetime TAB operation
-  log << ip.c_str() << "\t" << strtime << "\t" << operation << endl;
+  log << ip.c_str() << "\t" << strtime << "\t" << operation << "\t" << params << endl;
  
   if ( fputs( log.str().c_str(), file ) < 0 ) {
 
@@ -1627,9 +1686,9 @@ getTicketFilePath( string prefix, string ticket )
 }
 
 /**********************/
-/**** schedule Job ****/
-void
-scheduleJob( struct soap *soap, string requestPrefix, XML xmlParameters, wchar_t* elementName, xsd__string &ticket )
+/**** createTicket ****/
+static void
+createTicket( struct soap *soap, string requestPrefix, xsd__string &ticket, string *requestFileName )
 {
   string ticketFileName( gFileParser.get( "TICKET_DIRECTORY" ) );
 
@@ -1639,8 +1698,11 @@ scheduleJob( struct soap *soap, string requestPrefix, XML xmlParameters, wchar_t
     ticketFileName.append( "/" );
   }
 
+  // Job metadata file
+  string mfile_name( ticketFileName );
+
   // Copy name to future request file name
-  string requestFileName( ticketFileName );
+  requestFileName->append( ticketFileName );
 
   // Append ticket template
   ticketFileName.append( OMWS_TICKET_TEMPLATE );
@@ -1662,10 +1724,60 @@ scheduleJob( struct soap *soap, string requestPrefix, XML xmlParameters, wchar_t
   ticket = strrchr( tempFileName, '/' ) + 1;
 
   // Append prefix to request file
-  requestFileName.append( requestPrefix );
+  requestFileName->append( requestPrefix );
 
   // Append ticket to request file
-  requestFileName.append( ticket );
+  requestFileName->append( ticket );
+
+  // Create metadata file
+  mfile_name.append( OMWS_JOB_METADATA_PREFIX ).append( ticket );
+
+  FILE *mfile = fopen( mfile_name.c_str(), "w" );
+
+  string job_type_line = "TYPE=";
+
+  if ( requestPrefix.compare(0, 5, "model") == 0 ) {
+    job_type_line.append("model");
+  }
+  else if ( requestPrefix.compare(0, 4, "test") == 0 ) {
+    job_type_line.append("test");
+  }
+  else if ( requestPrefix.compare(0, 4, "proj") == 0 ) {
+    job_type_line.append("proj");
+  }
+  else if ( requestPrefix.compare(0, 4, "samp") == 0 ) {
+    job_type_line.append("samp");
+  }
+  else if ( requestPrefix.compare(0, 4, "eval") == 0 ) {
+    job_type_line.append("eval");
+  }
+  else if ( requestPrefix.compare(0, 3, "exp") == 0 ) {
+    job_type_line.append("exp");
+  }
+  else {
+    fclose( mfile );
+    throw OmwsException("Unknown job prefix");
+  }
+
+  job_type_line.append("\n");
+
+  if ( mfile == NULL || fputs( job_type_line.c_str(), mfile ) < 0 ) {
+
+    fclose( mfile );
+    throw OmwsException("Failed to create metadata file");
+  }
+
+  fclose( mfile );
+}
+
+/*********************/
+/**** scheduleJob ****/
+static void
+scheduleJob( struct soap *soap, string requestPrefix, XML xmlParameters, wchar_t* elementName, xsd__string &ticket )
+{
+  string requestFileName = "";
+
+  createTicket( soap, requestPrefix, ticket, &requestFileName );
 
   // Create and open request file - at this point there should be no file with the same name!
   FILE *file = fopen( requestFileName.c_str(), "w" );
@@ -1699,9 +1811,19 @@ scheduleJob( struct soap *soap, string requestPrefix, XML xmlParameters, wchar_t
   fclose( file );
 }
 
-/**********************/
-/**** get Progress ****/
-int 
+/*********************/
+/**** scheduleJob ****/
+static void
+scheduleJob( struct soap *soap, string requestPrefix, string xmlParameters, wchar_t* elementName, xsd__string &ticket )
+{
+  XML wideXmlParameters = convertToWideChar( xmlParameters.c_str() );
+  scheduleJob( soap, requestPrefix, wideXmlParameters, elementName, ticket );
+  delete[] wideXmlParameters;
+}
+
+/*********************/
+/**** getProgress ****/
+static int 
 getProgress( string ticket )
 {
   string jobProgressFile = getTicketFilePath( OMWS_JOB_PROGRESS_PREFIX, ticket );
@@ -1758,4 +1880,556 @@ getProgress( string ticket )
   }
 
   return -1; // return "queued" if progress file does not exist yet
+}
+
+/****************************/
+/**** scheduleExperiment ****/
+static map<string, string> 
+scheduleExperiment(struct soap* soap, const om::_om__ExperimentParameters& ep) {
+
+  soap_set_omode(soap, SOAP_XML_CANONICAL);
+  soap_set_omode(soap, SOAP_XML_INDENT);
+  soap_set_omode(soap, SOAP_XML_TREE);
+  soap_set_omode(soap, SOAP_XML_NOTYPE);
+
+  // Read Environments provided
+  map<string, om::om__EnvironmentType> environments;
+
+  vector<om::_om__ExperimentParametersType_Environment>::const_iterator it = ep.Environment.begin();
+  for ( ; it != ep.Environment.end(); it++ ) {
+
+    string env_id = string( (*it).id );
+
+    om::om__EnvironmentType env;
+    env.NumLayers = (*it).NumLayers;
+    env.Map = (*it).Map;
+    env.Mask = (*it).Mask;
+
+    environments.insert( pair<string, om::om__EnvironmentType>( env_id, env ) );
+  }
+
+  // Read Presences provided
+  map<string, om::om__OccurrencesType> presences;
+
+  if ( ep.Presence != 0 ) {
+
+    vector<om::_om__ExperimentParametersType_Presence>::const_iterator it = ep.Presence->begin();
+    for ( ; it != ep.Presence->end(); it++ ) {
+
+      string pre_id = string( (*it).id );
+
+      om::om__OccurrencesType pre;
+      pre.Count = (*it).Count;
+      pre.Label = (*it).Label;
+      pre.CoordinateSystem = (*it).CoordinateSystem;
+
+      vector<om::_om__OccurrencesType_Point> points;
+      vector<om::_om__ExperimentParametersType_Presence_Point>::const_iterator pit = (*it).Point.begin();
+      for ( ; pit != (*it).Point.end(); pit++ ) {
+
+        om::_om__OccurrencesType_Point point;
+        point.Id = (*pit).Id;
+        point.X = (*pit).X;
+        point.Y = (*pit).Y;
+        point.Sample = (*pit).Sample;
+        points.push_back( point );
+      }
+      pre.Point = points;
+
+      presences.insert( pair<string, om::om__OccurrencesType>( pre_id, pre ) );
+    }
+  }
+
+  // Read Absences provided
+  map<string, om::om__OccurrencesType> absences;
+
+  if ( ep.Absence != 0 ) {
+
+    vector<om::_om__ExperimentParametersType_Absence>::const_iterator it = ep.Absence->begin();
+    for ( ; it != ep.Absence->end(); it++ ) {
+
+      string abs_id = string( (*it).id );
+
+      om::om__OccurrencesType abs;
+      abs.Count = (*it).Count;
+      abs.Label = (*it).Label;
+      abs.CoordinateSystem = (*it).CoordinateSystem;
+
+      vector<om::_om__OccurrencesType_Point> points;
+      vector<om::_om__ExperimentParametersType_Absence_Point>::const_iterator pit = (*it).Point.begin();
+      for ( ; pit != (*it).Point.end(); pit++ ) {
+
+        om::_om__OccurrencesType_Point point;
+        point.Id = (*pit).Id;
+        point.X = (*pit).X;
+        point.Y = (*pit).Y;
+        point.Sample = (*pit).Sample;
+        points.push_back( point );
+      }
+      abs.Point = points;
+
+      absences.insert( pair<string, om::om__OccurrencesType>( abs_id, abs ) );
+    }
+  }
+
+  // Read Algorithms provided
+  map<string, om::om__BasicAlgorithmDefinitionType> algorithms;
+
+  if ( ep.AlgorithmSettings != 0 ) {
+
+    vector<om::_om__ExperimentParametersType_AlgorithmSettings>::const_iterator it = ep.AlgorithmSettings->begin();
+    for ( ; it != ep.AlgorithmSettings->end(); it++ ) {
+
+      string alg_id = string( (*it).id );
+
+      om::om__BasicAlgorithmDefinitionType alg = *(*it).Algorithm;
+
+      algorithms.insert( pair<string, om::om__BasicAlgorithmDefinitionType>( alg_id, alg ) );
+    }
+  }
+
+  // Read Models provided
+  map<string, om::om__SerializedAlgorithmType> models;
+
+  if ( ep.SerializedAlgorithm != 0 ) {
+
+    vector<om::_om__ExperimentParametersType_SerializedAlgorithm>::const_iterator it = ep.SerializedAlgorithm->begin();
+    for ( ; it != ep.SerializedAlgorithm->end(); it++ ) {
+
+      string model_id = string( (*it).id );
+
+      om::om__SerializedAlgorithmType model = *(*it).Algorithm;
+
+      models.insert( pair<string, om::om__SerializedAlgorithmType>( model_id, model ) );
+    }
+  }
+
+  // Process jobs
+  int num_jobs = ep.Jobs.__sizeAbstractJob;
+
+  if ( num_jobs == 0 ) {
+
+    throw OmwsException( "Could not find any jobs after parsing request" );
+  } 
+
+  map<string, string> jobs; // job id -> job ticket
+  map< string, map<string, string> > prev_deps; // job id -> map of previous job ids/usage (dependencies)
+  map< string, vector<string> > next_deps; // job id -> vector of next job ids (dependencies)
+
+  string exp_id = string(ep.Jobs.id);
+
+  string job_id;
+  xsd__string ticket;
+
+  string ticket_dir( gFileParser.get( "TICKET_DIRECTORY" ) );
+
+  for ( int i=0; i < num_jobs; i++ ) {
+
+    om::__om__union_ExperimentParametersType_Jobs job = ep.Jobs.__union_ExperimentParametersType_Jobs[i];
+
+    job_id = "";
+    map<string, string> depends_on; // job_id -> result_usage (model, presence, absence)
+
+    // SamplingJobs
+    if ( job.__unionAbstractJob == 1 ) {
+
+      om::om__SamplingJobType * sampling_job = job.__union_ExperimentParametersType_Jobs.SamplingJob;
+
+      job_id = string( sampling_job->id );
+
+      om::_om__SamplingParameters sp;
+
+      string env_ref = string( sampling_job->EnvironmentRef->idref );
+      if ( environments.count( env_ref ) > 0 ) {
+
+        sp.Environment = &environments[env_ref];
+      }
+      else {
+
+        string msg = "No Environment found for reference ";
+        msg.append( env_ref ).append( " on job " ).append( job_id );
+        throw OmwsException( msg.c_str() );
+      }
+
+      sp.Options = sampling_job->Options;
+
+      string requestFileName = "";
+      createTicket( soap, OMWS_SAMPLING _REQUEST, ticket, &requestFileName );
+      ofstream fstreamOUT( requestFileName.c_str() );
+      soap->os = &fstreamOUT;
+ 
+      // The following line reproduces the same encapsulated call used by 
+      // soap_write_om__SamplingParametersType, but here we need a different element name, 
+      // that's why soap_write is not used directly
+      if ( ( sp.soap_serialize(soap), soap_begin_send(soap) || sp.soap_put(soap, "om:SamplingParameters", NULL) || soap_end_send(soap), soap->error ) != SOAP_OK ) {
+
+        string msg = "Failed to write sampling points job with id ";
+        msg.append( job_id );
+        throw OmwsException( msg.c_str() );
+      }
+    }
+    // Create model job
+    else if ( job.__unionAbstractJob == 2 ) {
+
+      om::om__CreateModelJobType * model_job = job.__union_ExperimentParametersType_Jobs.CreateModelJob;
+
+      job_id = string( model_job->id );
+
+      om::_om__ModelParameters mp;
+
+      om::_om__Sampler sampler;
+
+      string env_ref = string( model_job->EnvironmentRef->idref );
+      if ( environments.count( env_ref ) > 0 ) {
+
+        sampler.Environment = &environments[env_ref];
+      }
+      else {
+
+        string msg = "No Environment found for reference ";
+        msg.append( env_ref ).append( " on job " ).append( job_id );
+        throw OmwsException( msg.c_str() );
+      }
+
+      string pre_ref = string( model_job->PresenceRef->idref );
+      if ( presences.count( pre_ref ) > 0 ) {
+
+        sampler.Presence = &presences[pre_ref];
+      }
+      else {
+
+        depends_on.insert( pair<string, string>( pre_ref, "presence" ) );
+        updateNextJobs( job_id, pre_ref, &next_deps );
+      }
+
+      if ( model_job->AbsenceRef != 0 ) {
+
+        string abs_ref = string( model_job->AbsenceRef->idref );
+        if ( absences.count( abs_ref ) > 0 ) {
+
+          sampler.Absence = &absences[abs_ref];
+        }
+        else {
+
+          depends_on.insert( pair<string, string>( abs_ref, "absence" ) );
+          updateNextJobs( job_id, abs_ref, &next_deps );
+        }
+      }
+
+      mp.Sampler = &sampler;
+
+      string alg_ref = string( model_job->AlgorithmRef->idref );
+      if ( algorithms.count( alg_ref ) > 0 ) {
+
+        mp.Algorithm = &algorithms[alg_ref];
+      }
+      else {
+
+        string msg = "No AlgorithmSettings found for reference ";
+        msg.append( alg_ref ).append( " on job " ).append( job_id );
+        throw OmwsException( msg.c_str() );
+      }
+
+      mp.Options = model_job->Options;
+
+      string requestFileName = "";
+      if ( depends_on.size() > 0 ) {
+        createTicket( soap, OMWS_MODEL _PENDING_REQUEST, ticket, &requestFileName );
+      }
+      else {
+        createTicket( soap, OMWS_MODEL _REQUEST, ticket, &requestFileName );
+      }
+      ofstream fstreamOUT( requestFileName.c_str() );
+      soap->os = &fstreamOUT;
+ 
+      // The following line reproduces the same encapsulated call used by 
+      // soap_write_om__ModelParametersType, but here we need a different element name, 
+      // that's why soap_write is not used directly.
+      if ( ( mp.soap_serialize(soap), soap_begin_send(soap) || mp.soap_put(soap, "om:ModelParameters", NULL) || soap_end_send(soap), soap->error ) != SOAP_OK ) {
+
+        string msg = "Failed to write create model job with id ";
+        msg.append( job_id );
+        throw OmwsException( msg.c_str() );
+      } 
+    }
+    // Test model job
+    else if ( job.__unionAbstractJob == 3 ) {
+
+      om::om__TestModelJobType * test_job = job.__union_ExperimentParametersType_Jobs.TestModelJob;
+
+      job_id = string( test_job->id );
+
+      om::_om__TestParameters tp;
+
+      om::_om__Sampler sampler;
+
+      string env_ref = string( test_job->EnvironmentRef->idref );
+      if ( environments.count( env_ref ) > 0 ) {
+
+        sampler.Environment = &environments[env_ref];
+      }
+      else {
+
+        string msg = "No Environment found for reference ";
+        msg.append( env_ref ).append( " on job " ).append( job_id );
+        throw OmwsException( msg.c_str() );
+      }
+
+      string pre_ref = string( test_job->PresenceRef->idref );
+      if ( presences.count( pre_ref ) > 0 ) {
+
+        sampler.Presence = &presences[pre_ref];
+      }
+      else {
+
+        depends_on.insert( pair<string, string>( pre_ref, "presence" ) );
+        updateNextJobs( job_id, pre_ref, &next_deps );
+      }
+
+      if (  test_job->AbsenceRef != 0 ) {
+
+        string abs_ref = string( test_job->AbsenceRef->idref );
+        if ( absences.count( abs_ref ) > 0 ) {
+
+          sampler.Absence = &absences[abs_ref];
+        }
+        else {
+
+          depends_on.insert( pair<string, string>( abs_ref, "absence" ) );
+          updateNextJobs( job_id, abs_ref, &next_deps );
+        }
+      }
+
+      tp.Sampler = &sampler;
+
+      string model_ref = string( test_job->ModelRef->idref );
+      if ( models.count( model_ref ) > 0 ) {
+
+        tp.Algorithm = &models[model_ref];
+      }
+      else {
+
+        depends_on.insert( pair<string, string>( model_ref, "model" ) );
+        updateNextJobs( job_id, model_ref, &next_deps );
+      }
+
+      tp.Statistics = test_job->Statistics;
+
+      string requestFileName = "";
+      if ( depends_on.size() > 0 ) {
+        createTicket( soap, OMWS_TEST _PENDING_REQUEST, ticket, &requestFileName );
+      }
+      else {
+        createTicket( soap, OMWS_TEST _REQUEST, ticket, &requestFileName );
+      }
+      ofstream fstreamOUT( requestFileName.c_str() );
+      soap->os = &fstreamOUT;
+ 
+      // The following line reproduces the same encapsulated call used by 
+      // soap_write_om__TestParametersType, but here we need a different element name, 
+      // that's why soap_write is not used directly.
+      if ( ( tp.soap_serialize(soap), soap_begin_send(soap) || tp.soap_put(soap, "om:TestParameters", NULL) || soap_end_send(soap), soap->error ) != SOAP_OK ) {
+
+        string msg = "Failed to write test model job with id ";
+        msg.append( job_id );
+        throw OmwsException( msg.c_str() );
+      } 
+    }
+    // Project model job
+    else if ( job.__unionAbstractJob == 4 ) {
+
+      om::om__ProjectModelJobType * proj_job = job.__union_ExperimentParametersType_Jobs.ProjectModelJob;
+
+      job_id = string( proj_job->id );
+
+      om::_om__ProjectionParameters pp;
+
+      string model_ref = string( proj_job->ModelRef->idref );
+      if ( models.count( model_ref ) > 0 ) {
+
+        pp.Algorithm = &models[model_ref];
+      }
+      else {
+
+        depends_on.insert( pair<string, string>( model_ref, "model" ) );
+        updateNextJobs( job_id, model_ref, &next_deps );
+      }
+
+      string env_ref = string( proj_job->EnvironmentRef->idref );
+      if ( environments.count( env_ref ) > 0 ) {
+
+        pp.Environment = &environments[env_ref];
+      }
+      else {
+
+        string msg = "No Environment found for reference ";
+        msg.append( env_ref ).append( " on job " ).append( job_id );
+        throw OmwsException( msg.c_str() );
+      }
+
+      pp.OutputParameters = proj_job->OutputParameters;
+      pp.Statistics = proj_job->Statistics;
+
+      string requestFileName = "";
+      if ( depends_on.size() > 0 ) {
+        createTicket( soap, OMWS_PROJECTION _PENDING_REQUEST, ticket, &requestFileName );
+      }
+      else {
+        createTicket( soap, OMWS_PROJECTION _REQUEST, ticket, &requestFileName );
+      }
+      ofstream fstreamOUT( requestFileName.c_str() );
+      soap->os = &fstreamOUT;
+ 
+      // The following line reproduces the same encapsulated call used by 
+      // soap_write_om__TestParametersType, but here we need a different element name, 
+      // that's why soap_write is not used directly.
+      if ( ( pp.soap_serialize(soap), soap_begin_send(soap) || pp.soap_put(soap, "om:ProjectionParameters", NULL) || soap_end_send(soap), soap->error ) != SOAP_OK ) {
+
+        string msg = "Failed to write project model job with id ";
+        msg.append( job_id );
+        throw OmwsException( msg.c_str() );
+      } 
+    }
+    else {
+
+      throw OmwsException( "Unknown job type" );
+    }
+
+    jobs.insert( pair<string, string>( job_id, string( ticket ) ) );
+
+    if ( depends_on.size() > 0 ) {
+
+      prev_deps.insert( pair< string, map<string, string> >( job_id, depends_on ) );
+    }
+  }
+
+  // Insert dependencies in job metadata
+  map<string, string>::const_iterator jit = jobs.begin();
+  for ( ; jit != jobs.end(); ++jit ) {
+
+    string job_id = (*jit).first;
+    string job_ticket = (*jit).second;
+
+    if ( prev_deps.count( job_id ) > 0 || next_deps.count( job_id ) > 0 ) {
+
+      // Build metadata file name
+      string mfile_name( ticket_dir );
+      if ( mfile_name.find_last_of( "/" ) != mfile_name.size() - 1 ) {
+
+        mfile_name.append( "/" );
+      }
+      mfile_name.append( OMWS_JOB_METADATA_PREFIX ).append( job_ticket );
+
+      // Open metadata file
+      FILE *mfile = fopen( mfile_name.c_str(), "a" );
+
+      if ( mfile == NULL ) {
+
+        fclose( mfile );
+        throw OmwsException("Failed to update jobs metadata (1)");
+      }
+
+      if ( prev_deps.count( job_id ) > 0 ) {
+
+        string prev_line("PREV=");
+        prev_line.append( collateTickets( &prev_deps[job_id], &jobs ) ).append("\n");
+
+        if ( fputs( prev_line.c_str(), mfile ) < 0 ) {
+
+          fclose( mfile );
+          throw OmwsException("Failed to update jobs metadata (2)");
+        }
+      }
+
+      if ( next_deps.count( job_id ) > 0 ) {
+
+        string next_line("NEXT=");
+        next_line.append( collateTickets( &next_deps[job_id], &jobs ) ).append("\n");
+
+        if ( fputs( next_line.c_str(), mfile ) < 0 ) {
+
+          fclose( mfile );
+          throw OmwsException("Failed to update jobs metadata (3)");
+        }
+      }
+
+      fclose( mfile );
+    }
+  }
+
+  return jobs;
+}
+
+/************************/
+/**** updateNextJobs ****/
+static void
+updateNextJobs( string next_id, string prev_id, map< string, vector<string> > *next_deps )
+{
+  if ( next_deps->count( prev_id ) > 0 ) {
+
+    next_deps->at( prev_id ).push_back( next_id );
+  }
+  else {
+
+    vector<string> next;
+    next.push_back( next_id );
+    next_deps->insert( pair< string, vector<string> >( prev_id, next ) );
+  }
+}
+
+/************************/
+/**** collateTickets ****/
+static string
+collateTickets( vector<string>* ids, map<string, string> *jobs )
+{
+  string result;
+  for ( vector<string>::iterator it = ids->begin(); it != ids->end(); ++it ) {
+
+    if ( it != ids->begin() ) {
+
+      result += ",";
+    }
+
+    if ( jobs->count( *it ) > 0 ) {
+
+      result += jobs->at( *it );
+    }
+    else {
+
+      string msg( "Broken dependency (job referenced by id " );
+      msg.append( *it ).append(" does not exist)");
+      throw OmwsException( msg.c_str() );
+    }
+  }
+  return result;
+}
+
+/************************/
+/**** collateTickets ****/
+static string
+collateTickets( map<string, string>* ids, map<string, string> *jobs )
+{
+  string result;
+  for ( map<string, string>::iterator it = ids->begin(); it != ids->end(); ++it ) {
+
+    string job_id = (*it).first;
+    string job_usage = (*it).second;
+
+    if ( it != ids->begin() ) {
+
+      result += ",";
+    }
+
+    if ( jobs->count( job_id ) > 0 ) {
+
+      result += job_usage + "_" + jobs->at( job_id );
+    }
+    else {
+
+      string msg( "Broken dependency (job referenced by id " );
+      msg.append( job_id ).append(" does not exist)");
+      throw OmwsException( msg.c_str() );
+    }
+  }
+  return result;
 }
