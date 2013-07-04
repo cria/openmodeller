@@ -59,6 +59,7 @@ using namespace std;
 #define OMWS_SAMPLING "samp"
 #define OMWS_EXPERIMENT "exp"
 #define _REQUEST "_req."
+#define _PROCESSED_REQUEST "_proc."
 #define _RESPONSE "_resp."
 #define _PENDING_REQUEST "_pend."
 #define OMWS_PROJECTION_STATISTICS_PREFIX "stats."
@@ -90,10 +91,11 @@ static void     createTicket( struct soap *soap, string requestPrefix, xsd__stri
 static void     scheduleJob( struct soap *soap, string requestPrefix, XML xmlParameters, wchar_t* elementName, xsd__string &ticket );
 static void     scheduleJob( struct soap *soap, string requestPrefix, string xmlParameters, wchar_t* elementName, xsd__string &ticket );
 static int      getProgress( string ticket );
-static map<string, string> scheduleExperiment( struct soap* soap, const om::_om__ExperimentParameters& ep );
+static map<string, string> scheduleExperiment( struct soap* soap, const om::_om__ExperimentParameters& ep, const char * experiment_ticket );
 static void     updateNextJobs( string next_id, string prev_id, map< string, vector<string> > *next_deps );
 static string   collateTickets( vector<string>* ids, map<string, string> *jobs );
 static string   collateTickets( map<string, string>* ids, map<string, string> *jobs );
+static void     renameJobStatus( string job_full_path, const char * target, const char * replacement );
 
 /****************/
 /***  Globals ***/
@@ -811,7 +813,7 @@ omws__runExperiment( struct soap *soap, XML_ om__ExperimentParameters, struct om
       else {
 
         // Create individual jobs and return all of them
-        map<string, string> jobs = scheduleExperiment( ctx, ep );
+	  map<string, string> jobs = scheduleExperiment( ctx, ep, ticket );
 
         for ( map<string, string>::const_iterator it = jobs.begin(); it != jobs.end(); ++it ) {
 
@@ -1191,7 +1193,64 @@ omws__getProjectionMetadata( struct soap *soap, xsd__string ticket, struct omws_
 int 
 omws__getModelEvaluation( struct soap *soap, xsd__string ticket, struct omws__modelEvaluationResponse *out )
 { 
-  return soap_receiver_fault( soap, "Not implemented", NULL );
+  logRequest( soap, "getModelEvaluation", ticket );
+
+  if ( getStatus() == 2 ) {
+
+    return soap_receiver_fault( soap, "Service unavailable", NULL );
+  }
+
+  string enableCompression( gFileParser.get( "ENABLE_COMPRESSION" ) );
+
+  if ( enableCompression == "yes" ) {
+
+#ifdef WITH_GZIP
+    // client supports gzip?
+    if (soap->zlib_out == SOAP_ZLIB_GZIP) { 
+
+      // compress response
+      soap_set_omode(soap, SOAP_ENC_ZLIB);
+    }
+    else {
+
+      soap_clr_omode(soap, SOAP_ENC_ZLIB); // disable Zlib's gzip 
+    }
+#else
+    soap_clr_omode(soap, SOAP_ENC_ZLIB); // disable Zlib's gzip 
+#endif
+  }
+
+  if ( ! ticket ) {
+
+    return soap_sender_fault( soap, "Missing ticket in request", NULL );
+  }
+
+  string fileName = getTicketFilePath( OMWS_EVALUATE _RESPONSE, ticket );
+
+  fstream fin;
+  fin.open( fileName.c_str(), ios::in );
+
+  if ( fin.is_open() ) {
+
+    ostringstream oss;
+    string line;
+
+    while ( ! fin.eof() )
+    {
+      getline( fin, line );
+      oss << line << endl;
+    }
+
+    out->om__ModelEvaluation = convertToWideChar( oss.str().c_str() );
+
+    fin.close();
+  }
+  else {
+
+    return soap_receiver_fault( soap, "Result unavailable", NULL );
+  }
+
+  return SOAP_OK;
 }
 
 /*****************************/
@@ -1199,7 +1258,64 @@ omws__getModelEvaluation( struct soap *soap, xsd__string ticket, struct omws__mo
 int 
 omws__getSamplingResult( struct soap *soap, xsd__string ticket, struct omws__getSamplingResultResponse *out )
 { 
-  return soap_receiver_fault( soap, "Not implemented", NULL );
+  logRequest( soap, "getSamplingResult", ticket );
+
+  if ( getStatus() == 2 ) {
+
+    return soap_receiver_fault( soap, "Service unavailable", NULL );
+  }
+
+  string enableCompression( gFileParser.get( "ENABLE_COMPRESSION" ) );
+
+  if ( enableCompression == "yes" ) {
+
+#ifdef WITH_GZIP
+    // client supports gzip?
+    if (soap->zlib_out == SOAP_ZLIB_GZIP) { 
+
+      // compress response
+      soap_set_omode(soap, SOAP_ENC_ZLIB);
+    }
+    else {
+
+      soap_clr_omode(soap, SOAP_ENC_ZLIB); // disable Zlib's gzip 
+    }
+#else
+    soap_clr_omode(soap, SOAP_ENC_ZLIB); // disable Zlib's gzip 
+#endif
+  }
+
+  if ( ! ticket ) {
+
+    return soap_sender_fault( soap, "Missing ticket in request", NULL );
+  }
+
+  string fileName = getTicketFilePath( OMWS_SAMPLING _RESPONSE, ticket );
+
+  fstream fin;
+  fin.open( fileName.c_str(), ios::in );
+
+  if ( fin.is_open() ) {
+
+    ostringstream oss;
+    string line;
+
+    while ( ! fin.eof() )
+    {
+      getline( fin, line );
+      oss << line << endl;
+    }
+
+    out->om__Sampler = convertToWideChar( oss.str().c_str() );
+
+    fin.close();
+  }
+  else {
+
+    return soap_receiver_fault( soap, "Result unavailable", NULL );
+  }
+
+  return SOAP_OK;
 }
 /*********************/
 /**** get Results ****/
@@ -1885,7 +2001,7 @@ getProgress( string ticket )
 /****************************/
 /**** scheduleExperiment ****/
 static map<string, string> 
-scheduleExperiment(struct soap* soap, const om::_om__ExperimentParameters& ep) {
+scheduleExperiment(struct soap* soap, const om::_om__ExperimentParameters& ep, const char * experiment_ticket) {
 
   soap_set_omode(soap, SOAP_XML_CANONICAL);
   soap_set_omode(soap, SOAP_XML_INDENT);
@@ -2015,6 +2131,7 @@ scheduleExperiment(struct soap* soap, const om::_om__ExperimentParameters& ep) {
   map<string, string> jobs; // job id -> job ticket
   map< string, map<string, string> > prev_deps; // job id -> map of previous job ids/usage (dependencies)
   map< string, vector<string> > next_deps; // job id -> vector of next job ids (dependencies)
+  vector<string> files_to_be_renamed;
 
   string exp_id = string(ep.Jobs.id);
 
@@ -2022,6 +2139,10 @@ scheduleExperiment(struct soap* soap, const om::_om__ExperimentParameters& ep) {
   xsd__string ticket;
 
   string ticket_dir( gFileParser.get( "TICKET_DIRECTORY" ) );
+  if ( ticket_dir.find_last_of( "/" ) != ticket_dir.size() - 1 ) {
+
+    ticket_dir.append( "/" );
+  }
 
   for ( int i=0; i < num_jobs; i++ ) {
 
@@ -2054,9 +2175,10 @@ scheduleExperiment(struct soap* soap, const om::_om__ExperimentParameters& ep) {
       sp.Options = sampling_job->Options;
 
       string requestFileName = "";
-      createTicket( soap, OMWS_SAMPLING _REQUEST, ticket, &requestFileName );
+      createTicket( soap, OMWS_SAMPLING _PENDING_REQUEST, ticket, &requestFileName );
       ofstream fstreamOUT( requestFileName.c_str() );
       soap->os = &fstreamOUT;
+      files_to_be_renamed.push_back( requestFileName );
  
       // The following line reproduces the same encapsulated call used by 
       // soap_write_om__SamplingParametersType, but here we need a different element name, 
@@ -2133,14 +2255,14 @@ scheduleExperiment(struct soap* soap, const om::_om__ExperimentParameters& ep) {
       mp.Options = model_job->Options;
 
       string requestFileName = "";
-      if ( depends_on.size() > 0 ) {
-        createTicket( soap, OMWS_MODEL _PENDING_REQUEST, ticket, &requestFileName );
-      }
-      else {
-        createTicket( soap, OMWS_MODEL _REQUEST, ticket, &requestFileName );
-      }
+      createTicket( soap, OMWS_MODEL _PENDING_REQUEST, ticket, &requestFileName );
       ofstream fstreamOUT( requestFileName.c_str() );
       soap->os = &fstreamOUT;
+
+      if ( depends_on.size() == 0 ) {
+
+        files_to_be_renamed.push_back( requestFileName );
+      }      
  
       // The following line reproduces the same encapsulated call used by 
       // soap_write_om__ModelParametersType, but here we need a different element name, 
@@ -2216,14 +2338,14 @@ scheduleExperiment(struct soap* soap, const om::_om__ExperimentParameters& ep) {
       tp.Statistics = test_job->Statistics;
 
       string requestFileName = "";
-      if ( depends_on.size() > 0 ) {
-        createTicket( soap, OMWS_TEST _PENDING_REQUEST, ticket, &requestFileName );
-      }
-      else {
-        createTicket( soap, OMWS_TEST _REQUEST, ticket, &requestFileName );
-      }
+      createTicket( soap, OMWS_TEST _PENDING_REQUEST, ticket, &requestFileName );
       ofstream fstreamOUT( requestFileName.c_str() );
       soap->os = &fstreamOUT;
+
+      if ( depends_on.size() == 0 ) {
+
+        files_to_be_renamed.push_back( requestFileName );
+      }      
  
       // The following line reproduces the same encapsulated call used by 
       // soap_write_om__TestParametersType, but here we need a different element name, 
@@ -2271,14 +2393,14 @@ scheduleExperiment(struct soap* soap, const om::_om__ExperimentParameters& ep) {
       pp.Statistics = proj_job->Statistics;
 
       string requestFileName = "";
-      if ( depends_on.size() > 0 ) {
-        createTicket( soap, OMWS_PROJECTION _PENDING_REQUEST, ticket, &requestFileName );
-      }
-      else {
-        createTicket( soap, OMWS_PROJECTION _REQUEST, ticket, &requestFileName );
-      }
+      createTicket( soap, OMWS_PROJECTION _PENDING_REQUEST, ticket, &requestFileName );
       ofstream fstreamOUT( requestFileName.c_str() );
       soap->os = &fstreamOUT;
+
+      if ( depends_on.size() == 0 ) {
+
+        files_to_be_renamed.push_back( requestFileName );
+      }      
  
       // The following line reproduces the same encapsulated call used by 
       // soap_write_om__TestParametersType, but here we need a different element name, 
@@ -2303,59 +2425,94 @@ scheduleExperiment(struct soap* soap, const om::_om__ExperimentParameters& ep) {
     }
   }
 
-  // Insert dependencies in job metadata
-  map<string, string>::const_iterator jit = jobs.begin();
-  for ( ; jit != jobs.end(); ++jit ) {
+  // Insert dependencies in job metadata, also gathering the tickets to use after the loop
+  string all_tickets;
+  for ( map<string, string>::const_iterator jit = jobs.begin(); jit != jobs.end(); ++jit ) {
 
     string job_id = (*jit).first;
     string job_ticket = (*jit).second;
 
-    if ( prev_deps.count( job_id ) > 0 || next_deps.count( job_id ) > 0 ) {
+    // Concatenate all tickets to use later
+    if ( jit != jobs.begin() ) {
 
-      // Build metadata file name
-      string mfile_name( ticket_dir );
-      if ( mfile_name.find_last_of( "/" ) != mfile_name.size() - 1 ) {
+      all_tickets += ",";
+    }
+    all_tickets += job_ticket;
 
-        mfile_name.append( "/" );
-      }
-      mfile_name.append( OMWS_JOB_METADATA_PREFIX ).append( job_ticket );
+    // Build metadata file name
+    string mfile_name( ticket_dir );
+    mfile_name.append( OMWS_JOB_METADATA_PREFIX ).append( job_ticket );
 
-      // Open metadata file
-      FILE *mfile = fopen( mfile_name.c_str(), "a" );
+    // Open metadata file
+    FILE *mfile = fopen( mfile_name.c_str(), "a" );
 
-      if ( mfile == NULL ) {
+    // Add reference to experiment
+    string exp_line("EXP=");
+    exp_line.append( experiment_ticket ).append("\n");
 
-        fclose( mfile );
-        throw OmwsException("Failed to update jobs metadata (1)");
-      }
-
-      if ( prev_deps.count( job_id ) > 0 ) {
-
-        string prev_line("PREV=");
-        prev_line.append( collateTickets( &prev_deps[job_id], &jobs ) ).append("\n");
-
-        if ( fputs( prev_line.c_str(), mfile ) < 0 ) {
-
-          fclose( mfile );
-          throw OmwsException("Failed to update jobs metadata (2)");
-        }
-      }
-
-      if ( next_deps.count( job_id ) > 0 ) {
-
-        string next_line("NEXT=");
-        next_line.append( collateTickets( &next_deps[job_id], &jobs ) ).append("\n");
-
-        if ( fputs( next_line.c_str(), mfile ) < 0 ) {
-
-          fclose( mfile );
-          throw OmwsException("Failed to update jobs metadata (3)");
-        }
-      }
+    if ( mfile == NULL || fputs( exp_line.c_str(), mfile ) < 0 ) {
 
       fclose( mfile );
+      throw OmwsException("Failed to update jobs metadata (1)");
     }
+
+    // Add dependencies (previous jobs)
+    if ( prev_deps.count( job_id ) > 0 ) {
+
+      string prev_line("PREV=");
+      prev_line.append( collateTickets( &prev_deps[job_id], &jobs ) ).append("\n");
+
+      if ( fputs( prev_line.c_str(), mfile ) < 0 ) {
+
+        fclose( mfile );
+        throw OmwsException("Failed to update jobs metadata (2)");
+      }
+    }
+
+    // Add next jobs
+    if ( next_deps.count( job_id ) > 0 ) {
+
+      string next_line("NEXT=");
+      next_line.append( collateTickets( &next_deps[job_id], &jobs ) ).append("\n");
+
+      if ( fputs( next_line.c_str(), mfile ) < 0 ) {
+
+        fclose( mfile );
+        throw OmwsException("Failed to update jobs metadata (3)");
+      }
+    }
+
+    fclose( mfile );
   }
+
+  // Include job tickets in experiment metadata
+  string exp_ticket_file( ticket_dir );
+  exp_ticket_file.append( OMWS_JOB_METADATA_PREFIX ).append( experiment_ticket );
+
+  FILE *efile = fopen( exp_ticket_file.c_str(), "a" );
+
+  string jobs_line("JOBS=");
+  jobs_line.append( all_tickets ).append("\n");
+
+  if ( efile == NULL || fputs( jobs_line.c_str(), efile ) < 0 ) {
+
+    fclose( efile );
+    throw OmwsException("Failed to update experiment metadata");
+  }
+  fclose( efile );
+
+  // Rename jobs that can be executed
+  for ( vector<string>::const_iterator fit = files_to_be_renamed.begin(); fit != files_to_be_renamed.end(); ++fit ) {
+
+    string job_file_name = (*fit);
+
+    renameJobStatus( job_file_name, _PENDING_REQUEST, _REQUEST );
+  }
+
+  // Rename experiment job
+  string exp_job_file = ticket_dir + OMWS_EXPERIMENT _REQUEST + experiment_ticket;
+
+  renameJobStatus( exp_job_file, _REQUEST, _PROCESSED_REQUEST );
 
   return jobs;
 }
@@ -2432,4 +2589,29 @@ collateTickets( map<string, string>* ids, map<string, string> *jobs )
     }
   }
   return result;
+}
+
+/*************************/
+/**** renameJobStatus ****/
+static void
+renameJobStatus( string job_full_path, const char * target, const char * replacement )
+{
+  string sub( target );
+
+  size_t pos = job_full_path.rfind( target );
+
+  if ( pos != string::npos ) {
+
+    string newname( job_full_path );
+    newname.replace( pos, sub.size(), replacement );
+
+    if ( rename( job_full_path.c_str() , newname.c_str() ) != 0 ) {
+
+      throw OmwsException("Failed to update job status (2)");
+    }
+  }
+  else {
+
+    throw OmwsException("Failed to update job status (1)");
+  }
 }
