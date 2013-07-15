@@ -24,7 +24,7 @@
  * http://www.gnu.org/copyleft/gpl.html
  */
 
-#include <file_parser.hh>
+#include <openmodeller/file_parser.hh>
 #include <string.h>
 #include <stdio.h>
 
@@ -44,14 +44,14 @@ static char error[256];
 /******************/
 /*** constructor ***/
 
-FileParser::FileParser( std::string const file )
+FileParser::FileParser( const std::string & file )
 {
-  if ( ! load( file ) )
-    {
-      sprintf( error, "File '%s' was not found.\n", file.c_str() );
-      fprintf( stderr, "%s", error );
-      throw error;
-    }
+  if ( ! load( file ) ) {
+
+    sprintf( error, "File '%s' was not found.\n", file.c_str() );
+    fprintf( stderr, "%s", error );
+    throw error;
+  }
 }
 
 
@@ -65,7 +65,7 @@ FileParser::~FileParser()
 /************/
 /*** load ***/
 int
-FileParser::load( std::string const file )
+FileParser::load( const std::string & file )
 {
   FILE *fd = fopen( file.c_str(), "r" );
   if ( ! fd )
@@ -142,7 +142,7 @@ FileParser::load( std::string const file )
 /***********/
 /*** get ***/
 std::string
-FileParser::get( std::string const key ) const
+FileParser::get( const std::string & key ) const
 {
   ItemList::const_iterator it = f_lst.begin();
 
@@ -162,7 +162,7 @@ FileParser::get( std::string const key ) const
 /*************/
 /*** count ***/
 int
-FileParser::count( std::string const key ) const
+FileParser::count( const std::string & key ) const
 {
   int n = 0;
 
@@ -182,7 +182,7 @@ FileParser::count( std::string const key ) const
 /***************/
 /*** get All ***/
 std::vector<std::string>
-FileParser::getAll( std::string const key ) const
+FileParser::getAll( const std::string & key ) const
 {
   std::vector<std::string> values;
   ItemList::const_iterator it = f_lst.begin();

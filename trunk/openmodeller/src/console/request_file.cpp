@@ -69,7 +69,8 @@ RequestFile::~RequestFile()
 int
 RequestFile::configure( OpenModeller *om, char *request_file )
 {
-  FileParser fp( request_file );
+  std::string input_file( request_file );
+  FileParser fp( input_file );
 
   _inputModelFile = fp.get( "Input model" );
 
