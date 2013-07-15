@@ -27,7 +27,6 @@
 #include <openmodeller/om.hh>
 #include <openmodeller/Configuration.hh>
 #include <openmodeller/os_specific.hh>
-#include <openmodeller/file_parser.hh>
 
 #include "request_file.hh"
 #include "om_cmd_utils.hh"

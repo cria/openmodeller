@@ -3,18 +3,18 @@
 # Files
 
 SET (OMCONSOLE_SRCS
-    om_console.cpp
-    request_file.cpp
-    om_cmd_utils.cpp 
-)
+     om_console.cpp
+     request_file.cpp
+     om_cmd_utils.cpp 
+    )
 SET (OMSAMPLER_SRCS
-    om_sampler.cpp 
-    request_file.cpp 
-    getopts/getopts.C 
-    om_cmd_utils.cpp 
+     om_sampler.cpp 
+     request_file.cpp 
+     getopts/getopts.C 
+     om_cmd_utils.cpp 
     )
 SET (OMTEST_SRCS
-    om_test.cpp 
+     om_test.cpp 
      getopts/getopts.C 
      om_cmd_utils.cpp 
     )

@@ -39,30 +39,30 @@
  * Read key/value pairs from a configuration file.
  * 
  */
-class FileParser
+class dllexp FileParser
 {
 public:
 
-  FileParser( std::string const file );
+  FileParser( const std::string & file );
 
   ~FileParser();
 
-  int load( std::string const file );
+  int load( const std::string & file );
 
   /**
   * Get the value of a key (case insensitive).
   */
-  std::string get( std::string const key ) const;
+  std::string get( const std::string & key ) const;
 
   /**
   * Return the number of times that a certain key appears in the file.
   */
-  int count( std::string const key ) const;
+  int count( const std::string & key ) const;
 
   /**
    * Get a set of values with the same key specified in the argument.
    */
-  std::vector<std::string> getAll( std::string const key ) const;
+  std::vector<std::string> getAll( const std::string & key ) const;
 
   /**
    * Returns the number of lines in file.
