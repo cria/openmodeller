@@ -24,7 +24,7 @@
  * http://www.gnu.org/copyleft/gpl.html
  */
 
-#include <openmodeller/file_parser.hh>
+#include <openmodeller/FileParser.hh>
 #include <string.h>
 #include <stdio.h>
 

@@ -26,7 +26,7 @@
 
 #include "openModeller.nsmap"
 #include <openmodeller/om.hh>
-#include <openmodeller/file_parser.hh>
+#include <openmodeller/FileParser.hh>
 
 #include <stdio.h>
 #include <stdlib.h>

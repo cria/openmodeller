@@ -12,7 +12,7 @@ SET(OM_CORE_SRCS
   Configuration_xmlio.cpp 
   ConfusionMatrix.cpp 
   Environment.cpp 
-  file_parser.cpp
+  FileParser.cpp
   ignorecase_traits.cpp 
   Log.cpp 
   MapFormat.cpp 
@@ -217,7 +217,7 @@ SET(OM_CORE_HDRS
   ConfusionMatrix.hh
   Environment.hh
   Exceptions.hh
-  file_parser.hh
+  FileParser.hh
   ignorecase_traits.hh
   Log.hh
   MapFormat.hh
