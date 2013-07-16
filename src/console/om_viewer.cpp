@@ -26,7 +26,7 @@
  */
 
 #include <openmodeller/om.hh>
-#include <openmodeller/file_parser.hh>
+#include <openmodeller/FileParser.hh>
 
 #include <openmodeller/env_io/GeoTransform.hh>
 #include <openmodeller/env_io/Raster.hh>
