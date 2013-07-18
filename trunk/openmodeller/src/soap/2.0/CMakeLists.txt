@@ -15,6 +15,15 @@ SET (OMSOAP_SRCS
 SET (OMSOAP_HDRS
 )
 
+SET (OMWS_MANAGER_SRCS
+  omws_manager.cpp 
+  stdsoap2.cpp 
+  soapC.cpp 
+  omC.cpp
+  omStub.h
+  ../../console/getopts/getopts.C
+)
+
 ########################################################
 # Build
 IF (PEDANTIC)
@@ -58,14 +67,18 @@ ENDIF (WIN32)
 
 ADD_EXECUTABLE (om ${OMSOAP_SRCS})
 
+ADD_EXECUTABLE (omws_manager ${OMWS_MANAGER_SRCS})
+
 IF (ZLIB_FOUND)
   TARGET_LINK_LIBRARIES(om openmodeller -lpthread ${ZLIB_LIBRARIES})
+  TARGET_LINK_LIBRARIES(omws_manager openmodeller ${ZLIB_LIBRARIES})
 ELSE (ZLIB_FOUND)
   TARGET_LINK_LIBRARIES(om openmodeller -lpthread)
+  TARGET_LINK_LIBRARIES(omws_manager openmodeller)
 ENDIF (ZLIB_FOUND)
 
 ########################################################
 # Install
 
-#INSTALL(TARGETS om RUNTIME DESTINATION ${OM_BIN_DIR})
+INSTALL(TARGETS omws_manager RUNTIME DESTINATION ${OM_BIN_DIR})
 

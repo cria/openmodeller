@@ -85,6 +85,7 @@ ls -t $TICKET_DIRECTORY/samp_req.* 2> /dev/null | tail -n -1 | while read req; d
   resp=$TICKET_DIRECTORY"/samp_resp."$ticket
   log=$TICKET_DIRECTORY"/"$ticket
   prog=$TICKET_DIRECTORY"/prog."$ticket
+  meta=$TICKET_DIRECTORY"/job."$ticket
 
   # Rename file, avoiding that another process take it
   mv "$req" "$moved"
@@ -109,9 +110,16 @@ ls -t $TICKET_DIRECTORY/samp_req.* 2> /dev/null | tail -n -1 | while read req; d
   else
     # no Condor - execute om_pseudo directly
     "$OM_BIN_DIR"/om_pseudo --xml-req "$moved" --result "$resp" --log-file "$log" --prog-file "$prog"
+
+    # If this is part of an experiment
+    if grep -q "EXP=" "$meta"; then
+      # Run experiment manager to trigger other actions
+      "$OM_BIN_DIR"/omws_manager --config "$CONFIG" --ticket "$ticket" 
+    fi  
+
     finished=$TICKET_DIRECTORY"/done."$ticket
     touch "$finished"
-  fi  
+  fi
 done
 
 # Process oldest model request
@@ -122,6 +130,7 @@ ls -t $TICKET_DIRECTORY/model_req.* 2> /dev/null | tail -n -1 | while read req; 
   resp=$TICKET_DIRECTORY"/model_resp."$ticket
   log=$TICKET_DIRECTORY"/"$ticket
   prog=$TICKET_DIRECTORY"/prog."$ticket
+  meta=$TICKET_DIRECTORY"/job."$ticket
 
   # Rename file, avoiding that another process take it
   mv "$req" "$moved"
@@ -146,6 +155,13 @@ ls -t $TICKET_DIRECTORY/model_req.* 2> /dev/null | tail -n -1 | while read req; 
   else
     # no Condor - execute om_model directly
     "$OM_BIN_DIR"/om_model --xml-req "$moved" --model-file "$resp" --log-file "$log" --prog-file "$prog"
+
+    # If this is part of an experiment
+    if grep -q "EXP=" "$meta"; then
+      # Run experiment manager to trigger other actions
+      "$OM_BIN_DIR"/omws_manager --config "$CONFIG" --ticket "$ticket" 
+    fi  
+
     finished=$TICKET_DIRECTORY"/done."$ticket
     touch "$finished"
   fi  
@@ -196,6 +212,7 @@ ls -t $TICKET_DIRECTORY/test_req.* 2> /dev/null | tail -n -1 | while read req; d
   resp=$TICKET_DIRECTORY"/test_resp."$ticket
   log=$TICKET_DIRECTORY"/"$ticket
   prog=$TICKET_DIRECTORY"/prog."$ticket
+  meta=$TICKET_DIRECTORY"/job."$ticket
 
   # Rename file, avoiding that another process take it
   mv "$req" "$moved"
@@ -220,6 +237,13 @@ ls -t $TICKET_DIRECTORY/test_req.* 2> /dev/null | tail -n -1 | while read req; d
   else
     # no Condor - execute om_test directly
     "$OM_BIN_DIR"/om_test --xml-req "$moved" --result "$resp" --log-file "$log" --prog-file "$prog"
+
+    # If this is part of an experiment
+    if grep -q "EXP=" "$meta"; then
+      # Run experiment manager to trigger other actions
+      "$OM_BIN_DIR"/omws_manager --config "$CONFIG" --ticket "$ticket" 
+    fi  
+
     finished=$TICKET_DIRECTORY"/done."$ticket
     touch "$finished"
   fi  
@@ -267,6 +291,7 @@ ls -t $TICKET_DIRECTORY/proj_req.* 2> /dev/null | tail -n -1 | while read req; d
   stats=$TICKET_DIRECTORY"/stats."$ticket
   log=$TICKET_DIRECTORY"/"$ticket
   prog=$TICKET_DIRECTORY"/prog."$ticket
+  meta=$TICKET_DIRECTORY"/job."$ticket
 
   # if condor_integration then create the script and submit
   if [[ "$CONDOR_INTEGRATION" == "yes" ]]; then
@@ -342,6 +367,13 @@ ls -t $TICKET_DIRECTORY/proj_req.* 2> /dev/null | tail -n -1 | while read req; d
   # This must be the last step, since getProgress will only return 100% if
   # the final map exists
   mv "$map_file" "$finalmap_file"
+
+  # If this is part of an experiment
+  if grep -q "EXP=" "$meta"; then
+    # Run experiment manager to trigger other actions
+    "$OM_BIN_DIR"/omws_manager --config "$CONFIG" --ticket "$ticket" 
+  fi  
+
   finished=$TICKET_DIRECTORY"/done."$ticket
   touch "$finished"
 done
