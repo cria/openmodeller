@@ -34,6 +34,7 @@ use SOAP::Lite
                 };
 use Getopt::Long;
 use Data::Dumper;
+use XML::Parser;
 
 ### Settings
 
@@ -1209,12 +1210,29 @@ sub run_experiment
         -> prefix( 'omws' )
         -> uri( $omws_uri );
 
-    # Hard coded for now
-    my $xml = '<ExperimentParameters xmlns="http://openmodeller.cria.org.br/xml/2.0"></ExperimentParameters>';
+    # Get request file from user
+    $got_file = 0;
+
+    while ( ! $got_file )
+    {
+        my $exp_file = get_string_from_user('Experiment request file');
+
+        unless ( length( $exp_file ) )
+        {
+            print "No file specified. Aborting.\n";
+	    return 0;
+        }
+
+        $exp_req = read_file( $exp_file );
+
+        next unless ( $exp_req );
+
+        $got_file = 1;
+    }
 
     # Encode coord system directly in XML to avoid automatic xsi:types for the content
     my $xml_parameters = SOAP::Data
-        -> type( 'xml' => $xml );
+        -> type( 'xml' => $exp_req );
 
     print "Requesting experiment... ";
 
@@ -1222,7 +1240,21 @@ sub run_experiment
 
     unless ( $response->fault )
     {
-        print "Start program with --debug to see response\n";
+        my $parser = XML::Parser->new( Style => 'Stream', Namespaces => 0, ErrorContext => 2, Handlers => 
+                                     {
+                                        Start => \&handle_exp_resp_start, 
+                                        End   => \&handle_exp_resp_end,
+                                     });
+
+        print "\n\nTickets:\n";
+
+        $parser->parse( $last_xml_resp );
+
+        if ( $@ ) {
+
+          $@ =~ s/at \/.*?$//s; # remove module line number
+          print "\nError parsing XML reponse:\n$@\n";
+        }
     }
     else
     {
@@ -1500,4 +1532,20 @@ sub fetch_branch
     return 1;
 }
 
+########################################
+#  Handle experiment response elements # 
+########################################
+sub handle_exp_resp_start
+{
+    my( $expat, $element, %attrs ) = @_;
+ 
+    if ( substr($element, -3, 3) eq 'Job' )
+    {
+        print $attrs{'Id'} . " => " . $attrs{'Ticket'} . "\n";
+    }
+}
 
+sub handle_exp_resp_end
+{
+    my( $expat, $element ) = @_;
+}
