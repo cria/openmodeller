@@ -182,8 +182,20 @@ int main(int argc, char **argv)
       break;
     }
 
+    int progress = -1;
+
+    try {
+
+      progress = getProgress( ticket_dir, job_ticket );
+    }
+    catch (OmwsException& e) {
+
+      fputs( "Cannot read job progress data. Aborting.\n", fd_log );
+      break;
+    }
+
     // Read job progress
-    if ( getProgress( ticket_dir, job_ticket ) == 100 ) {
+    if ( progress == 100 ) {
 
       // Job finished successfully!
       fputs( "Job finished successfuly!\n", fd_log );
