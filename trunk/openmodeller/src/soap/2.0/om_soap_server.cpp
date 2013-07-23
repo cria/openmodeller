@@ -787,7 +787,7 @@ omws__runExperiment( struct soap *soap, XML_ om__ExperimentParameters, struct om
       else {
 
         // Create individual jobs and return all of them
-	  map<string, string> jobs = scheduleExperiment( ctx, ep, ticket );
+        map<string, string> jobs = scheduleExperiment( ctx, ep, ticket );
 
         for ( map<string, string>::const_iterator it = jobs.begin(); it != jobs.end(); ++it ) {
 
@@ -1790,23 +1790,23 @@ createTicket( struct soap *soap, string requestPrefix, xsd__string &ticket, stri
 
   string job_type_line = "TYPE=";
 
-  if ( requestPrefix.compare(0, 5, "model") == 0 ) {
-    job_type_line.append("model");
+  if ( requestPrefix.compare(0, 5, OMWS_MODEL) == 0 ) {
+    job_type_line.append(OMWS_MODEL);
   }
-  else if ( requestPrefix.compare(0, 4, "test") == 0 ) {
-    job_type_line.append("test");
+  else if ( requestPrefix.compare(0, 4, OMWS_TEST) == 0 ) {
+    job_type_line.append(OMWS_TEST);
   }
-  else if ( requestPrefix.compare(0, 4, "proj") == 0 ) {
-    job_type_line.append("proj");
+  else if ( requestPrefix.compare(0, 4, OMWS_PROJECTION) == 0 ) {
+    job_type_line.append(OMWS_PROJECTION);
   }
-  else if ( requestPrefix.compare(0, 4, "samp") == 0 ) {
-    job_type_line.append("samp");
+  else if ( requestPrefix.compare(0, 4, OMWS_SAMPLING) == 0 ) {
+    job_type_line.append(OMWS_SAMPLING);
   }
-  else if ( requestPrefix.compare(0, 4, "eval") == 0 ) {
-    job_type_line.append("eval");
+  else if ( requestPrefix.compare(0, 4, OMWS_EVALUATE) == 0 ) {
+    job_type_line.append(OMWS_EVALUATE);
   }
-  else if ( requestPrefix.compare(0, 3, "exp") == 0 ) {
-    job_type_line.append("exp");
+  else if ( requestPrefix.compare(0, 3, OMWS_EXPERIMENT) == 0 ) {
+    job_type_line.append(OMWS_EXPERIMENT);
   }
   else {
     fclose( mfile );
@@ -2009,11 +2009,7 @@ scheduleExperiment(struct soap* soap, const om::_om__ExperimentParameters& ep, c
   map< string, map<string, string> > prev_deps; // job id -> map of previous job ids/usage (dependencies)
   map< string, vector<string> > next_deps; // job id -> vector of next job ids (dependencies)
   vector<string> files_to_be_renamed;
-
-  string exp_id = string(ep.Jobs.id);
-
-  string job_id;
-  xsd__string ticket;
+  map<string, string> created_jobs; // job ticket -> job type (used to delete files in case of exception)
 
   string ticket_dir( gFileParser.get( "TICKET_DIRECTORY" ) );
   if ( ticket_dir.find_last_of( "/" ) != ticket_dir.size() - 1 ) {
@@ -2021,362 +2017,398 @@ scheduleExperiment(struct soap* soap, const om::_om__ExperimentParameters& ep, c
     ticket_dir.append( "/" );
   }
 
-  for ( int i=0; i < num_jobs; i++ ) {
+  try {
 
-    om::__om__union_ExperimentParametersType_Jobs job = ep.Jobs.__union_ExperimentParametersType_Jobs[i];
+    string exp_id = string(ep.Jobs.id);
 
-    job_id = "";
-    map<string, string> depends_on; // job_id -> result_usage (model, presence, absence)
+    string job_id;
+    xsd__string ticket;
 
-    // SamplingJobs
-    if ( job.__unionAbstractJob == 1 ) {
+    for ( int i=0; i < num_jobs; i++ ) {
 
-      om::om__SamplingJobType * sampling_job = job.__union_ExperimentParametersType_Jobs.SamplingJob;
+      om::__om__union_ExperimentParametersType_Jobs job = ep.Jobs.__union_ExperimentParametersType_Jobs[i];
 
-      job_id = string( sampling_job->id );
+      job_id = "";
+      map<string, string> depends_on; // job_id -> result_usage (model, presence, absence)
 
-      om::_om__SamplingParameters sp;
+      // SamplingJobs
+      if ( job.__unionAbstractJob == 1 ) {
 
-      string env_ref = string( sampling_job->EnvironmentRef->idref );
-      if ( environments.count( env_ref ) > 0 ) {
+        om::om__SamplingJobType * sampling_job = job.__union_ExperimentParametersType_Jobs.SamplingJob;
 
-        sp.Environment = &environments[env_ref];
-      }
-      else {
+        job_id = string( sampling_job->id );
 
-        string msg = "No Environment found for reference ";
-        msg.append( env_ref ).append( " on job " ).append( job_id );
-        throw OmwsException( msg.c_str() );
-      }
+        om::_om__SamplingParameters sp;
 
-      sp.Options = sampling_job->Options;
+        string env_ref = string( sampling_job->EnvironmentRef->idref );
+        if ( environments.count( env_ref ) > 0 ) {
 
-      string requestFileName = "";
-      createTicket( soap, OMWS_SAMPLING _PENDING_REQUEST, ticket, &requestFileName );
-      ofstream fstreamOUT( requestFileName.c_str() );
-      soap->os = &fstreamOUT;
-      files_to_be_renamed.push_back( requestFileName );
- 
-      // The following line reproduces the same encapsulated call used by 
-      // soap_write_om__SamplingParametersType, but here we need a different element name, 
-      // that's why soap_write is not used directly
-      if ( ( sp.soap_serialize(soap), soap_begin_send(soap) || sp.soap_put(soap, "om:SamplingParameters", NULL) || soap_end_send(soap), soap->error ) != SOAP_OK ) {
-
-        string msg = "Failed to write sampling points job with id ";
-        msg.append( job_id );
-        throw OmwsException( msg.c_str() );
-      }
-    }
-    // Create model job
-    else if ( job.__unionAbstractJob == 2 ) {
-
-      om::om__CreateModelJobType * model_job = job.__union_ExperimentParametersType_Jobs.CreateModelJob;
-
-      job_id = string( model_job->id );
-
-      om::_om__ModelParameters mp;
-
-      om::_om__Sampler sampler;
-
-      string env_ref = string( model_job->EnvironmentRef->idref );
-      if ( environments.count( env_ref ) > 0 ) {
-
-        sampler.Environment = &environments[env_ref];
-      }
-      else {
-
-        string msg = "No Environment found for reference ";
-        msg.append( env_ref ).append( " on job " ).append( job_id );
-        throw OmwsException( msg.c_str() );
-      }
-
-      string pre_ref = string( model_job->PresenceRef->idref );
-      if ( presences.count( pre_ref ) > 0 ) {
-
-        sampler.Presence = &presences[pre_ref];
-      }
-      else {
-
-        depends_on.insert( pair<string, string>( pre_ref, "presence" ) );
-        updateNextJobs( job_id, pre_ref, &next_deps );
-      }
-
-      if ( model_job->AbsenceRef != 0 ) {
-
-        string abs_ref = string( model_job->AbsenceRef->idref );
-        if ( absences.count( abs_ref ) > 0 ) {
-
-          sampler.Absence = &absences[abs_ref];
+          sp.Environment = &environments[env_ref];
         }
         else {
 
-          depends_on.insert( pair<string, string>( abs_ref, "absence" ) );
-          updateNextJobs( job_id, abs_ref, &next_deps );
+          string msg = "No Environment found for reference ";
+          msg.append( env_ref ).append( " on job " ).append( job_id );
+          throw OmwsException( msg.c_str() );
+        }
+
+        sp.Options = sampling_job->Options;
+
+        string requestFileName = "";
+        createTicket( soap, OMWS_SAMPLING _PENDING_REQUEST, ticket, &requestFileName );
+        created_jobs.insert( pair<string, string>( string( ticket ), OMWS_SAMPLING ) );
+        ofstream fstreamOUT( requestFileName.c_str() );
+        soap->os = &fstreamOUT;
+        files_to_be_renamed.push_back( requestFileName );
+ 
+        // The following line reproduces the same encapsulated call used by 
+        // soap_write_om__SamplingParametersType, but here we need a different element name, 
+        // that's why soap_write is not used directly
+        if ( ( sp.soap_serialize(soap), soap_begin_send(soap) || sp.soap_put(soap, "om:SamplingParameters", NULL) || soap_end_send(soap), soap->error ) != SOAP_OK ) {
+
+          string msg = "Failed to write sampling points job with id ";
+          msg.append( job_id );
+          throw OmwsException( msg.c_str() );
         }
       }
+      // Create model job
+      else if ( job.__unionAbstractJob == 2 ) {
 
-      mp.Sampler = &sampler;
+        om::om__CreateModelJobType * model_job = job.__union_ExperimentParametersType_Jobs.CreateModelJob;
 
-      string alg_ref = string( model_job->AlgorithmRef->idref );
-      if ( algorithms.count( alg_ref ) > 0 ) {
+        job_id = string( model_job->id );
 
-        mp.Algorithm = &algorithms[alg_ref];
-      }
-      else {
+        om::_om__ModelParameters mp;
 
-        string msg = "No AlgorithmSettings found for reference ";
-        msg.append( alg_ref ).append( " on job " ).append( job_id );
-        throw OmwsException( msg.c_str() );
-      }
+        om::_om__Sampler sampler;
 
-      mp.Options = model_job->Options;
+        string env_ref = string( model_job->EnvironmentRef->idref );
+        if ( environments.count( env_ref ) > 0 ) {
 
-      string requestFileName = "";
-      createTicket( soap, OMWS_MODEL _PENDING_REQUEST, ticket, &requestFileName );
-      ofstream fstreamOUT( requestFileName.c_str() );
-      soap->os = &fstreamOUT;
-
-      if ( depends_on.size() == 0 ) {
-
-        files_to_be_renamed.push_back( requestFileName );
-      }      
- 
-      // The following line reproduces the same encapsulated call used by 
-      // soap_write_om__ModelParametersType, but here we need a different element name, 
-      // that's why soap_write is not used directly.
-      if ( ( mp.soap_serialize(soap), soap_begin_send(soap) || mp.soap_put(soap, "om:ModelParameters", NULL) || soap_end_send(soap), soap->error ) != SOAP_OK ) {
-
-        string msg = "Failed to write create model job with id ";
-        msg.append( job_id );
-        throw OmwsException( msg.c_str() );
-      } 
-    }
-    // Test model job
-    else if ( job.__unionAbstractJob == 3 ) {
-
-      om::om__TestModelJobType * test_job = job.__union_ExperimentParametersType_Jobs.TestModelJob;
-
-      job_id = string( test_job->id );
-
-      om::_om__TestParameters tp;
-
-      om::_om__Sampler sampler;
-
-      string env_ref = string( test_job->EnvironmentRef->idref );
-      if ( environments.count( env_ref ) > 0 ) {
-
-        sampler.Environment = &environments[env_ref];
-      }
-      else {
-
-        string msg = "No Environment found for reference ";
-        msg.append( env_ref ).append( " on job " ).append( job_id );
-        throw OmwsException( msg.c_str() );
-      }
-
-      string pre_ref = string( test_job->PresenceRef->idref );
-      if ( presences.count( pre_ref ) > 0 ) {
-
-        sampler.Presence = &presences[pre_ref];
-      }
-      else {
-
-        depends_on.insert( pair<string, string>( pre_ref, "presence" ) );
-        updateNextJobs( job_id, pre_ref, &next_deps );
-      }
-
-      if (  test_job->AbsenceRef != 0 ) {
-
-        string abs_ref = string( test_job->AbsenceRef->idref );
-        if ( absences.count( abs_ref ) > 0 ) {
-
-          sampler.Absence = &absences[abs_ref];
+          sampler.Environment = &environments[env_ref];
         }
         else {
 
-          depends_on.insert( pair<string, string>( abs_ref, "absence" ) );
-          updateNextJobs( job_id, abs_ref, &next_deps );
+          string msg = "No Environment found for reference ";
+          msg.append( env_ref ).append( " on job " ).append( job_id );
+          throw OmwsException( msg.c_str() );
+        }
+
+        string pre_ref = string( model_job->PresenceRef->idref );
+        if ( presences.count( pre_ref ) > 0 ) {
+
+          sampler.Presence = &presences[pre_ref];
+        }
+        else {
+
+          depends_on.insert( pair<string, string>( pre_ref, "presence" ) );
+          updateNextJobs( job_id, pre_ref, &next_deps );
+        }
+
+        if ( model_job->AbsenceRef != 0 ) {
+
+          string abs_ref = string( model_job->AbsenceRef->idref );
+          if ( absences.count( abs_ref ) > 0 ) {
+
+            sampler.Absence = &absences[abs_ref];
+          }
+          else {
+
+            depends_on.insert( pair<string, string>( abs_ref, "absence" ) );
+            updateNextJobs( job_id, abs_ref, &next_deps );
+          }
+        }
+
+        mp.Sampler = &sampler;
+
+        string alg_ref = string( model_job->AlgorithmRef->idref );
+        if ( algorithms.count( alg_ref ) > 0 ) {
+
+          mp.Algorithm = &algorithms[alg_ref];
+        }
+        else {
+
+          string msg = "No AlgorithmSettings found for reference ";
+          msg.append( alg_ref ).append( " on job " ).append( job_id );
+          throw OmwsException( msg.c_str() );
+        }
+
+        mp.Options = model_job->Options;
+
+        string requestFileName = "";
+        createTicket( soap, OMWS_MODEL _PENDING_REQUEST, ticket, &requestFileName );
+        created_jobs.insert( pair<string, string>( string( ticket ), OMWS_MODEL ) );
+        ofstream fstreamOUT( requestFileName.c_str() );
+        soap->os = &fstreamOUT;
+
+        if ( depends_on.size() == 0 ) {
+
+          files_to_be_renamed.push_back( requestFileName );
+        }
+ 
+        // The following line reproduces the same encapsulated call used by 
+        // soap_write_om__ModelParametersType, but here we need a different element name, 
+        // that's why soap_write is not used directly.
+        if ( ( mp.soap_serialize(soap), soap_begin_send(soap) || mp.soap_put(soap, "om:ModelParameters", NULL) || soap_end_send(soap), soap->error ) != SOAP_OK ) {
+
+          string msg = "Failed to write create model job with id ";
+          msg.append( job_id );
+          throw OmwsException( msg.c_str() );
+        }
+      }
+      // Test model job
+      else if ( job.__unionAbstractJob == 3 ) {
+
+        om::om__TestModelJobType * test_job = job.__union_ExperimentParametersType_Jobs.TestModelJob;
+
+        job_id = string( test_job->id );
+
+        om::_om__TestParameters tp;
+
+        om::_om__Sampler sampler;
+
+        string env_ref = string( test_job->EnvironmentRef->idref );
+        if ( environments.count( env_ref ) > 0 ) {
+
+          sampler.Environment = &environments[env_ref];
+        }
+        else {
+
+          string msg = "No Environment found for reference ";
+          msg.append( env_ref ).append( " on job " ).append( job_id );
+          throw OmwsException( msg.c_str() );
+        }
+
+        string pre_ref = string( test_job->PresenceRef->idref );
+        if ( presences.count( pre_ref ) > 0 ) {
+
+          sampler.Presence = &presences[pre_ref];
+        }
+        else {
+
+          depends_on.insert( pair<string, string>( pre_ref, "presence" ) );
+          updateNextJobs( job_id, pre_ref, &next_deps );
+        }
+
+        if (  test_job->AbsenceRef != 0 ) {
+
+          string abs_ref = string( test_job->AbsenceRef->idref );
+          if ( absences.count( abs_ref ) > 0 ) {
+
+            sampler.Absence = &absences[abs_ref];
+          }
+          else {
+
+            depends_on.insert( pair<string, string>( abs_ref, "absence" ) );
+            updateNextJobs( job_id, abs_ref, &next_deps );
+          }
+        }
+
+        tp.Sampler = &sampler;
+
+        string model_ref = string( test_job->ModelRef->idref );
+        if ( models.count( model_ref ) > 0 ) {
+
+          tp.Algorithm = &models[model_ref];
+        }
+        else {
+
+          depends_on.insert( pair<string, string>( model_ref, "model" ) );
+          updateNextJobs( job_id, model_ref, &next_deps );
+        }
+
+        tp.Statistics = test_job->Statistics;
+
+        string requestFileName = "";
+        createTicket( soap, OMWS_TEST _PENDING_REQUEST, ticket, &requestFileName );
+        created_jobs.insert( pair<string, string>( string( ticket ), OMWS_TEST ) );
+        ofstream fstreamOUT( requestFileName.c_str() );
+        soap->os = &fstreamOUT;
+
+        if ( depends_on.size() == 0 ) {
+
+          files_to_be_renamed.push_back( requestFileName );
+        }
+ 
+        // The following line reproduces the same encapsulated call used by 
+        // soap_write_om__TestParametersType, but here we need a different element name, 
+        // that's why soap_write is not used directly.
+        if ( ( tp.soap_serialize(soap), soap_begin_send(soap) || tp.soap_put(soap, "om:TestParameters", NULL) || soap_end_send(soap), soap->error ) != SOAP_OK ) {
+
+          string msg = "Failed to write test model job with id ";
+          msg.append( job_id );
+          throw OmwsException( msg.c_str() );
+        }
+      }
+      // Project model job
+      else if ( job.__unionAbstractJob == 4 ) {
+
+        om::om__ProjectModelJobType * proj_job = job.__union_ExperimentParametersType_Jobs.ProjectModelJob;
+
+        job_id = string( proj_job->id );
+
+        om::_om__ProjectionParameters pp;
+
+        string model_ref = string( proj_job->ModelRef->idref );
+        if ( models.count( model_ref ) > 0 ) {
+
+          pp.Algorithm = &models[model_ref];
+        }
+        else {
+
+          depends_on.insert( pair<string, string>( model_ref, "model" ) );
+          updateNextJobs( job_id, model_ref, &next_deps );
+        }
+
+        string env_ref = string( proj_job->EnvironmentRef->idref );
+        if ( environments.count( env_ref ) > 0 ) {
+
+          pp.Environment = &environments[env_ref];
+        }
+        else {
+
+          string msg = "No Environment found for reference ";
+          msg.append( env_ref ).append( " on job " ).append( job_id );
+          throw OmwsException( msg.c_str() );
+        }
+
+        pp.OutputParameters = proj_job->OutputParameters;
+        pp.Statistics = proj_job->Statistics;
+
+        string requestFileName = "";
+        createTicket( soap, OMWS_PROJECTION _PENDING_REQUEST, ticket, &requestFileName );
+        created_jobs.insert( pair<string, string>( string( ticket ), OMWS_PROJECTION ) );
+        ofstream fstreamOUT( requestFileName.c_str() );
+        soap->os = &fstreamOUT;
+
+        if ( depends_on.size() == 0 ) {
+
+          files_to_be_renamed.push_back( requestFileName );
+        }
+ 
+        // The following line reproduces the same encapsulated call used by 
+        // soap_write_om__TestParametersType, but here we need a different element name, 
+        // that's why soap_write is not used directly.
+        if ( ( pp.soap_serialize(soap), soap_begin_send(soap) || pp.soap_put(soap, "om:ProjectionParameters", NULL) || soap_end_send(soap), soap->error ) != SOAP_OK ) {
+
+          string msg = "Failed to write project model job with id ";
+          msg.append( job_id );
+          throw OmwsException( msg.c_str() );
+        }
+      }
+      else {
+
+        throw OmwsException( "Unknown job type" );
+      }
+
+      jobs.insert( pair<string, string>( job_id, string( ticket ) ) );
+
+      if ( depends_on.size() > 0 ) {
+
+        prev_deps.insert( pair< string, map<string, string> >( job_id, depends_on ) );
+      }
+    }
+
+    // Insert dependencies in job metadata, also gathering the tickets to use after the loop
+    string all_tickets;
+    for ( map<string, string>::const_iterator jit = jobs.begin(); jit != jobs.end(); ++jit ) {
+
+      string job_id = (*jit).first;
+      string job_ticket = (*jit).second;
+
+      // Concatenate all tickets to use later
+      if ( jit != jobs.begin() ) {
+
+        all_tickets += ",";
+      }
+      all_tickets += job_ticket;
+
+      // Build metadata file name
+      string mfile_name( ticket_dir );
+      mfile_name.append( OMWS_JOB_METADATA_PREFIX ).append( job_ticket );
+
+      // Open metadata file
+      FILE *mfile = fopen( mfile_name.c_str(), "a" );
+
+      // Add reference to experiment
+      string exp_line("EXP=");
+      exp_line.append( experiment_ticket ).append("\n");
+
+      if ( mfile == NULL || fputs( exp_line.c_str(), mfile ) < 0 ) {
+
+        fclose( mfile );
+        throw OmwsException("Failed to update jobs metadata (1)");
+      }
+
+      // Add dependencies (previous jobs)
+      if ( prev_deps.count( job_id ) > 0 ) {
+
+        string prev_line("PREV=");
+        prev_line.append( collateTickets( &prev_deps[job_id], &jobs ) ).append("\n");
+
+        if ( fputs( prev_line.c_str(), mfile ) < 0 ) {
+
+          fclose( mfile );
+          throw OmwsException("Failed to update jobs metadata (2)");
         }
       }
 
-      tp.Sampler = &sampler;
+      // Add next jobs
+      if ( next_deps.count( job_id ) > 0 ) {
 
-      string model_ref = string( test_job->ModelRef->idref );
-      if ( models.count( model_ref ) > 0 ) {
+        string next_line("NEXT=");
+        next_line.append( collateTickets( &next_deps[job_id], &jobs ) ).append("\n");
 
-        tp.Algorithm = &models[model_ref];
+        if ( fputs( next_line.c_str(), mfile ) < 0 ) {
+
+          fclose( mfile );
+          throw OmwsException("Failed to update jobs metadata (3)");
+        }
       }
-      else {
-
-        depends_on.insert( pair<string, string>( model_ref, "model" ) );
-        updateNextJobs( job_id, model_ref, &next_deps );
-      }
-
-      tp.Statistics = test_job->Statistics;
-
-      string requestFileName = "";
-      createTicket( soap, OMWS_TEST _PENDING_REQUEST, ticket, &requestFileName );
-      ofstream fstreamOUT( requestFileName.c_str() );
-      soap->os = &fstreamOUT;
-
-      if ( depends_on.size() == 0 ) {
-
-        files_to_be_renamed.push_back( requestFileName );
-      }      
- 
-      // The following line reproduces the same encapsulated call used by 
-      // soap_write_om__TestParametersType, but here we need a different element name, 
-      // that's why soap_write is not used directly.
-      if ( ( tp.soap_serialize(soap), soap_begin_send(soap) || tp.soap_put(soap, "om:TestParameters", NULL) || soap_end_send(soap), soap->error ) != SOAP_OK ) {
-
-        string msg = "Failed to write test model job with id ";
-        msg.append( job_id );
-        throw OmwsException( msg.c_str() );
-      } 
-    }
-    // Project model job
-    else if ( job.__unionAbstractJob == 4 ) {
-
-      om::om__ProjectModelJobType * proj_job = job.__union_ExperimentParametersType_Jobs.ProjectModelJob;
-
-      job_id = string( proj_job->id );
-
-      om::_om__ProjectionParameters pp;
-
-      string model_ref = string( proj_job->ModelRef->idref );
-      if ( models.count( model_ref ) > 0 ) {
-
-        pp.Algorithm = &models[model_ref];
-      }
-      else {
-
-        depends_on.insert( pair<string, string>( model_ref, "model" ) );
-        updateNextJobs( job_id, model_ref, &next_deps );
-      }
-
-      string env_ref = string( proj_job->EnvironmentRef->idref );
-      if ( environments.count( env_ref ) > 0 ) {
-
-        pp.Environment = &environments[env_ref];
-      }
-      else {
-
-        string msg = "No Environment found for reference ";
-        msg.append( env_ref ).append( " on job " ).append( job_id );
-        throw OmwsException( msg.c_str() );
-      }
-
-      pp.OutputParameters = proj_job->OutputParameters;
-      pp.Statistics = proj_job->Statistics;
-
-      string requestFileName = "";
-      createTicket( soap, OMWS_PROJECTION _PENDING_REQUEST, ticket, &requestFileName );
-      ofstream fstreamOUT( requestFileName.c_str() );
-      soap->os = &fstreamOUT;
-
-      if ( depends_on.size() == 0 ) {
-
-        files_to_be_renamed.push_back( requestFileName );
-      }      
- 
-      // The following line reproduces the same encapsulated call used by 
-      // soap_write_om__TestParametersType, but here we need a different element name, 
-      // that's why soap_write is not used directly.
-      if ( ( pp.soap_serialize(soap), soap_begin_send(soap) || pp.soap_put(soap, "om:ProjectionParameters", NULL) || soap_end_send(soap), soap->error ) != SOAP_OK ) {
-
-        string msg = "Failed to write project model job with id ";
-        msg.append( job_id );
-        throw OmwsException( msg.c_str() );
-      } 
-    }
-    else {
-
-      throw OmwsException( "Unknown job type" );
-    }
-
-    jobs.insert( pair<string, string>( job_id, string( ticket ) ) );
-
-    if ( depends_on.size() > 0 ) {
-
-      prev_deps.insert( pair< string, map<string, string> >( job_id, depends_on ) );
-    }
-  }
-
-  // Insert dependencies in job metadata, also gathering the tickets to use after the loop
-  string all_tickets;
-  for ( map<string, string>::const_iterator jit = jobs.begin(); jit != jobs.end(); ++jit ) {
-
-    string job_id = (*jit).first;
-    string job_ticket = (*jit).second;
-
-    // Concatenate all tickets to use later
-    if ( jit != jobs.begin() ) {
-
-      all_tickets += ",";
-    }
-    all_tickets += job_ticket;
-
-    // Build metadata file name
-    string mfile_name( ticket_dir );
-    mfile_name.append( OMWS_JOB_METADATA_PREFIX ).append( job_ticket );
-
-    // Open metadata file
-    FILE *mfile = fopen( mfile_name.c_str(), "a" );
-
-    // Add reference to experiment
-    string exp_line("EXP=");
-    exp_line.append( experiment_ticket ).append("\n");
-
-    if ( mfile == NULL || fputs( exp_line.c_str(), mfile ) < 0 ) {
 
       fclose( mfile );
-      throw OmwsException("Failed to update jobs metadata (1)");
     }
 
-    // Add dependencies (previous jobs)
-    if ( prev_deps.count( job_id ) > 0 ) {
+    // Include job tickets in experiment metadata
+    string exp_ticket_file( ticket_dir );
+    exp_ticket_file.append( OMWS_JOB_METADATA_PREFIX ).append( experiment_ticket );
 
-      string prev_line("PREV=");
-      prev_line.append( collateTickets( &prev_deps[job_id], &jobs ) ).append("\n");
+    FILE *efile = fopen( exp_ticket_file.c_str(), "a" );
 
-      if ( fputs( prev_line.c_str(), mfile ) < 0 ) {
+    string jobs_line("JOBS=");
+    jobs_line.append( all_tickets ).append("\n");
 
-        fclose( mfile );
-        throw OmwsException("Failed to update jobs metadata (2)");
-      }
+    if ( efile == NULL || fputs( jobs_line.c_str(), efile ) < 0 ) {
+
+      fclose( efile );
+      throw OmwsException("Failed to update experiment metadata");
     }
-
-    // Add next jobs
-    if ( next_deps.count( job_id ) > 0 ) {
-
-      string next_line("NEXT=");
-      next_line.append( collateTickets( &next_deps[job_id], &jobs ) ).append("\n");
-
-      if ( fputs( next_line.c_str(), mfile ) < 0 ) {
-
-        fclose( mfile );
-        throw OmwsException("Failed to update jobs metadata (3)");
-      }
-    }
-
-    fclose( mfile );
-  }
-
-  // Include job tickets in experiment metadata
-  string exp_ticket_file( ticket_dir );
-  exp_ticket_file.append( OMWS_JOB_METADATA_PREFIX ).append( experiment_ticket );
-
-  FILE *efile = fopen( exp_ticket_file.c_str(), "a" );
-
-  string jobs_line("JOBS=");
-  jobs_line.append( all_tickets ).append("\n");
-
-  if ( efile == NULL || fputs( jobs_line.c_str(), efile ) < 0 ) {
-
     fclose( efile );
-    throw OmwsException("Failed to update experiment metadata");
   }
-  fclose( efile );
+  catch (...) {
+
+    // Delete files and re raise exception
+    for ( map<string, string>::const_iterator fit = created_jobs.begin(); fit != created_jobs.end(); ++fit ) {
+      // Delete job request
+      string j_req( ticket_dir );
+      j_req.append( (*fit).second );
+      j_req.append( _PENDING_REQUEST );
+      j_req.append( (*fit).first );
+      remove( j_req.c_str() );
+
+      // Delete metadata file
+      string j_meta( ticket_dir );
+      j_meta.append( OMWS_JOB_METADATA_PREFIX ).append( (*fit).first );
+      remove( j_meta.c_str() );
+
+      // Delete ticket
+      string j_ticket( ticket_dir );
+      j_ticket.append( (*fit).first );
+      remove( j_ticket.c_str() );
+    }
+
+    throw;
+  }
 
   // Rename jobs that can be executed
   for ( vector<string>::const_iterator fit = files_to_be_renamed.begin(); fit != files_to_be_renamed.end(); ++fit ) {
