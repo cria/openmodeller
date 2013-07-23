@@ -120,11 +120,65 @@ getProgress( const string & ticketDir, const string & ticket )
   }
   else {
 
-    string ticketFile = getTicketFilePath( ticketDir, "", ticket );
+    // Is this an experiment?
+    bool not_experiment = true;
 
-    if ( ! fileExists( ticketFile.c_str() ) ) {
+    string metadata_file = getTicketFilePath( ticketDir, OMWS_JOB_METADATA_PREFIX, ticket );
+    if ( fileExists( metadata_file.c_str() ) ) {
 
-      progress = -4; // non-existing job
+      FileParser metadata( metadata_file );
+      string job_type = metadata.get("TYPE");
+
+      if ( strcmp(job_type.c_str(), OMWS_EXPERIMENT) == 0 ) {
+
+        not_experiment = false;
+
+        string all_jobs = metadata.get( "JOBS" );
+        vector<string> all_tickets = getTickets( all_jobs );
+
+        int exp_progress = 0;
+        bool all_queued = true;
+
+        for ( vector<string>::iterator at = all_tickets.begin(); at != all_tickets.end(); ++at ) {
+
+          string subjob_ticket = (*at);
+
+          int job_progress = getProgress( ticketDir, subjob_ticket );
+
+          if ( job_progress < -1 ) {
+
+            all_queued = false;
+            exp_progress = job_progress;
+            break;
+          }
+          else if ( job_progress > -1 ) {
+
+            all_queued = false;
+            exp_progress += job_progress;
+          }
+        }
+
+        if ( all_queued ) {
+
+          exp_progress = -1;
+        }
+        else if ( exp_progress > -1 ) {
+
+	    exp_progress /= all_tickets.size();
+        }
+
+        progress = exp_progress;
+      }
+    }
+
+    if ( not_experiment ) {
+
+      string ticket_file = getTicketFilePath( ticketDir, "", ticket );
+
+      if ( ! fileExists( ticket_file.c_str() ) ) {
+
+        progress = -4; // non-existing job
+      }
     }
   }
 
