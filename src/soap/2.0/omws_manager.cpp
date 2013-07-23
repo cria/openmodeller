@@ -187,7 +187,7 @@ int main(int argc, char **argv)
 
     try {
 
-      progress = getProgress( ticket_dir, job_ticket );
+      progress = getProgress( ticket_dir, job_ticket, false );
     }
     catch (OmwsException& e) {
 
