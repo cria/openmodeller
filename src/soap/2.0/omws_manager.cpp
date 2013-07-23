@@ -39,6 +39,7 @@
 #include <unistd.h>
 #include <fstream>
 #include <string.h>
+#include <sstream>
 using namespace std;
 
 #include "omws_utils.hh"
@@ -707,7 +708,9 @@ int main(int argc, char **argv)
     else {
 
       // Job didn't finish successfully, so cancel the experiment and all pending jobs
-      fputs( "Job didn't finish successfully.\n", fd_log );
+      ostringstream oss;
+      oss << "Job didn't finish successfully (" << progress << ")." << endl;
+      fputs( oss.str().c_str(), fd_log );
       cancelExperiment( exp_metadata_file, exp_prog_file, exp_done_file, ticket_dir, job_ticket, fd_log );
     }
 
