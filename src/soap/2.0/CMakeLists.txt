@@ -20,6 +20,7 @@ SET (OMWS_MANAGER_SRCS
   stdsoap2.cpp 
   soapC.cpp 
   omC.cpp
+  omws_utils.cpp
   omStub.h
   ../../console/getopts/getopts.C
 )
