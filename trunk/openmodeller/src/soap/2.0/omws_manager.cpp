@@ -183,9 +183,7 @@ int main(int argc, char **argv)
     }
 
     // Read job progress
-    string job_prog_file = ticket_dir + OMWS_JOB_PROGRESS_PREFIX + job_ticket;
-
-    if ( getProgress( job_prog_file ) == 100 ) {
+    if ( getProgress( ticket_dir, job_ticket ) == 100 ) {
 
       // Job finished successfully!
       fputs( "Job finished successfuly!\n", fd_log );

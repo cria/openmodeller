@@ -27,6 +27,7 @@
 #ifndef OMWS_UTILS_H
 #define OMWS_UTILS_H
 
+#include <stdexcept>
 #include <string.h>
 #include <map>
 using namespace std;
@@ -41,13 +42,30 @@ using namespace std;
 #define _PROCESSED_REQUEST "_proc."
 #define _RESPONSE "_resp."
 #define _PENDING_REQUEST "_pend."
+#define OMWS_PROJECTION_STATISTICS_PREFIX "stats."
 #define OMWS_JOB_PROGRESS_PREFIX "prog."
 #define OMWS_JOB_DONE_PREFIX "done."
 #define OMWS_JOB_METADATA_PREFIX "job."
 
+/******************/
+/*** Exceptions ***/
+
+class OmwsException : public std::runtime_error {
+public:
+  OmwsException( const std::string& msg ) :
+    std::runtime_error( msg )
+  {}
+
+};
+
+/*****************/
+/*** Functions ***/
+
+string getTicketFilePath( string dir, string prefix, string ticket );
+
 bool fileExists( const char* fileName );
 
-int getProgress( const string & progFileName );
+int getProgress( const string & ticketDir, const string & ticket );
 
 bool updateProgress( const string & progFileName, const char * content );
 

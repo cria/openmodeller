@@ -36,7 +36,6 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <unistd.h>
-#include <stdexcept>
 
 #include <dirent.h>
 
@@ -47,25 +46,13 @@ using namespace std;
 
 #include "gdal_priv.h"
 
+#include "omws_utils.hh"
+
 #define OMWS_VERSION "2.0"
 #define OMWS_BACKLOG (100) // Max. request backlog 
 #define OMWS_MIN *60
 #define OMWS_H *3600
 #define OMWS_TICKET_TEMPLATE "XXXXXX"
-#define OMWS_MODEL "model"
-#define OMWS_TEST "test"
-#define OMWS_PROJECTION "proj"
-#define OMWS_EVALUATE "eval"
-#define OMWS_SAMPLING "samp"
-#define OMWS_EXPERIMENT "exp"
-#define _REQUEST "_req."
-#define _PROCESSED_REQUEST "_proc."
-#define _RESPONSE "_resp."
-#define _PENDING_REQUEST "_pend."
-#define OMWS_PROJECTION_STATISTICS_PREFIX "stats."
-#define OMWS_JOB_PROGRESS_PREFIX "prog."
-#define OMWS_JOB_DONE_PREFIX "done."
-#define OMWS_JOB_METADATA_PREFIX "job."
 #define OMWS_CONFIG_FILE "../config/server.conf"
 #define OMWS_WSDL_FILE "../config/openModeller.wsdl"
 #define OMWS_LAYERS_CACHE_FILE "layers.xml"
@@ -75,7 +62,6 @@ using namespace std;
 
 static string   getServiceAddress();
 static void*    processRequest( void* );
-static bool     fileExists( const char* fileName );
 static string   getMapFile( string ticket );
 static wchar_t* convertToWideChar( const char* p );
 static bool     readDirectory( const char* dir, const char* label, ostream &xml, int depth, int * seq );
@@ -86,11 +72,9 @@ static int      getSize( FILE *fd );
 static void     logRequest( struct soap*, const char* operation, const char* params );
 static void     addHeader( struct soap* );
 static int      getStatus();
-static string   getTicketFilePath( string prefix, string ticket );
 static void     createTicket( struct soap *soap, string requestPrefix, xsd__string &ticket, string *requestFileName );
 static void     scheduleJob( struct soap *soap, string requestPrefix, XML xmlParameters, wchar_t* elementName, xsd__string &ticket );
 static void     scheduleJob( struct soap *soap, string requestPrefix, string xmlParameters, wchar_t* elementName, xsd__string &ticket );
-static int      getProgress( string ticket );
 static map<string, string> scheduleExperiment( struct soap* soap, const om::_om__ExperimentParameters& ep, const char * experiment_ticket );
 static void     updateNextJobs( string next_id, string prev_id, map< string, vector<string> > *next_deps );
 static string   collateTickets( vector<string>* ids, map<string, string> *jobs );
@@ -101,16 +85,6 @@ static void     renameJobStatus( string job_full_path, const char * target, cons
 /***  Globals ***/
 
 FileParser gFileParser( OMWS_CONFIG_FILE ); // Config file parser
-
-/*******************/
-/***  Exceptions ***/
-class OmwsException : public std::runtime_error {
-public:
-  OmwsException( const std::string& msg ) :
-    std::runtime_error( msg )
-  {}
-
-};
 
 /***********************/
 /*** main gSOAP code ***/
@@ -866,6 +840,7 @@ omws__getProgress( struct soap *soap, xsd__string tickets, xsd__string &progress
   }
 
   // Split tokens and process each one
+  string ticket_dir = gFileParser.get( "TICKET_DIRECTORY" );
   stringstream ss( tickets );
   stringstream res( "" );
   string ticket;
@@ -883,7 +858,7 @@ omws__getProgress( struct soap *soap, xsd__string tickets, xsd__string &progress
         notFirst = true;
       }
 
-      res << getProgress( ticket );
+      res << getProgress( ticket_dir, ticket );
     }
     catch (OmwsException& e) {
 
@@ -919,7 +894,7 @@ omws__getLog( struct soap *soap, xsd__string ticket, xsd__string &log )
     return soap_sender_fault( soap, "Missing ticket in request", NULL );
   }
 
-  string fileName = getTicketFilePath( "", ticket );
+  string fileName = getTicketFilePath( gFileParser.get( "TICKET_DIRECTORY" ), "", ticket );
 
   fstream fin;
   fin.open( fileName.c_str(), ios::in );
@@ -993,7 +968,7 @@ omws__getModel( struct soap *soap, xsd__string ticket, struct omws__getModelResp
     return soap_sender_fault( soap, "Missing ticket in request", NULL );
   }
 
-  string fileName = getTicketFilePath( OMWS_MODEL _RESPONSE, ticket );
+  string fileName = getTicketFilePath( gFileParser.get( "TICKET_DIRECTORY" ), OMWS_MODEL _RESPONSE, ticket );
 
   fstream fin;
   fin.open( fileName.c_str(), ios::in );
@@ -1040,7 +1015,7 @@ omws__getTestResult( struct soap *soap, xsd__string ticket, struct omws__testRes
     return soap_sender_fault( soap, "Missing ticket in request", NULL );
   }
 
-  string fileName = getTicketFilePath( OMWS_TEST _RESPONSE, ticket );
+  string fileName = getTicketFilePath( gFileParser.get( "TICKET_DIRECTORY" ), OMWS_TEST _RESPONSE, ticket );
 
   fstream fin;
   fin.open( fileName.c_str(), ios::in );
@@ -1159,7 +1134,7 @@ omws__getProjectionMetadata( struct soap *soap, xsd__string ticket, struct omws_
   int size = getSize( fd );
 
   // Get statistics
-  string statsFileName = getTicketFilePath( OMWS_PROJECTION_STATISTICS_PREFIX, ticket );
+  string statsFileName = getTicketFilePath( gFileParser.get( "TICKET_DIRECTORY" ), OMWS_PROJECTION_STATISTICS_PREFIX, ticket );
 
   fstream fin;
   fin.open( statsFileName.c_str(), ios::in );
@@ -1225,7 +1200,7 @@ omws__getModelEvaluation( struct soap *soap, xsd__string ticket, struct omws__mo
     return soap_sender_fault( soap, "Missing ticket in request", NULL );
   }
 
-  string fileName = getTicketFilePath( OMWS_EVALUATE _RESPONSE, ticket );
+  string fileName = getTicketFilePath( gFileParser.get( "TICKET_DIRECTORY" ), OMWS_EVALUATE _RESPONSE, ticket );
 
   fstream fin;
   fin.open( fileName.c_str(), ios::in );
@@ -1290,7 +1265,7 @@ omws__getSamplingResult( struct soap *soap, xsd__string ticket, struct omws__get
     return soap_sender_fault( soap, "Missing ticket in request", NULL );
   }
 
-  string fileName = getTicketFilePath( OMWS_SAMPLING _RESPONSE, ticket );
+  string fileName = getTicketFilePath( gFileParser.get( "TICKET_DIRECTORY" ), OMWS_SAMPLING _RESPONSE, ticket );
 
   fstream fin;
   fin.open( fileName.c_str(), ios::in );
@@ -1331,24 +1306,6 @@ omws__getResults( struct soap *soap, xsd__string ticket, struct omws__getResults
 //                                                //
 ////////////////////////////////////////////////////
 
-/********************/
-/**** fileExists ****/
-static bool 
-fileExists( const char* fileName )
-{ 
-  bool exists = false;
-
-  FILE * file = fopen( fileName, "r" );
-
-  if ( file != NULL ) {
-
-    exists = true;
-
-    fclose( file );
-  }
-
-  return exists;
-}
 
 /********************/
 /**** getMapFile ****/
@@ -1782,25 +1739,6 @@ getStatus()
   }
 }
 
-/***************************/
-/**** getTicketFilePath ****/
-static string
-getTicketFilePath( string prefix, string ticket )
-{
-  string filePath( gFileParser.get( "TICKET_DIRECTORY" ) );
-
-  // Append slash if necessary
-  if ( filePath.find_last_of( "/" ) != filePath.size() - 1 ) {
-
-    filePath.append( "/" );
-  }
-
-  filePath.append( prefix );
-  filePath.append( ticket );
-
-  return filePath;
-}
-
 /**********************/
 /**** createTicket ****/
 static void
@@ -1935,67 +1873,6 @@ scheduleJob( struct soap *soap, string requestPrefix, string xmlParameters, wcha
   XML wideXmlParameters = convertToWideChar( xmlParameters.c_str() );
   scheduleJob( soap, requestPrefix, wideXmlParameters, elementName, ticket );
   delete[] wideXmlParameters;
-}
-
-/*********************/
-/**** getProgress ****/
-static int 
-getProgress( string ticket )
-{
-  string jobProgressFile = getTicketFilePath( OMWS_JOB_PROGRESS_PREFIX, ticket );
-
-  if ( fileExists( jobProgressFile.c_str() ) ) {
-
-    int progress = -1;
-
-    // If file exists, get its content
-    fstream fin;
-    fin.open( jobProgressFile.c_str(), ios::in );
-
-    if ( fin.is_open() ) {
-
-      // If file was opened, read the content
-      ostringstream oss;
-      string line;
-
-      getline( fin, line );
-      oss << line << endl;
-
-      // Note: if the content is empty, atoi will return 0
-      progress = atoi( oss.str().c_str() );
-
-      // Make sure that everything is really done before returning 100%
-      if ( progress == 100 ) {
-
-        // Finished flag
-        string doneFlag = getTicketFilePath( OMWS_JOB_DONE_PREFIX, ticket );
-
-        if ( ! fileExists( doneFlag.c_str() ) ) {
-
-          progress = 99;
-        }
-      }
-
-      fin.close();
-    }
-    else {
-
-      throw OmwsException("Failed to read ticket data");
-    }
-
-    return progress;
-  }
-  else {
-
-    string ticketFile = getTicketFilePath( "", ticket );
-
-    if ( ! fileExists( ticketFile.c_str() ) ) {
-
-      return -4;
-    }
-  }
-
-  return -1; // return "queued" if progress file does not exist yet
 }
 
 /****************************/
