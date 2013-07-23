@@ -9,6 +9,7 @@ SET (OMSOAP_SRCS
   soapServer.cpp 
   soapC.cpp 
   omC.cpp
+  omws_utils.cpp
   omStub.h
 )
 

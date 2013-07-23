@@ -35,6 +35,25 @@ using namespace std;
 
 #include "omws_utils.hh"
 
+/***************************/
+/**** getTicketFilePath ****/
+string
+getTicketFilePath( string dir, string prefix, string ticket )
+{
+  string filePath( dir );
+
+  // Append slash if necessary
+  if ( filePath.find_last_of( "/" ) != filePath.size() - 1 ) {
+
+    filePath.append( "/" );
+  }
+
+  filePath.append( prefix );
+  filePath.append( ticket );
+
+  return filePath;
+}
+
 /********************/
 /**** fileExists ****/
 bool 
@@ -55,15 +74,17 @@ fileExists( const char* fileName )
 /*********************/
 /**** getProgress ****/
 int 
-getProgress( const string & progFileName )
+getProgress( const string & ticketDir, const string & ticket )
 {
+  string job_prog_file = getTicketFilePath( ticketDir, OMWS_JOB_PROGRESS_PREFIX, ticket );
+
   int progress = -1;
 
-  if ( fileExists( progFileName.c_str() ) ) {
+  if ( fileExists( job_prog_file.c_str() ) ) {
 
     // If file exists, get its content
     fstream fin;
-    fin.open( progFileName.c_str(), ios::in );
+    fin.open( job_prog_file.c_str(), ios::in );
 
     if ( fin.is_open() ) {
 
@@ -77,12 +98,33 @@ getProgress( const string & progFileName )
       // Note: if the content is empty, atoi will return 0
       progress = atoi( oss.str().c_str() );
 
+      // Make sure that everything is really done before returning 100%
+      if ( progress == 100 ) {
+
+        // Finished flag
+        string done_file = getTicketFilePath( ticketDir, OMWS_JOB_DONE_PREFIX, ticket );
+
+        if ( ! fileExists( done_file.c_str() ) ) {
+
+          progress = 99;
+        }
+      }
+
       fin.close();
     }
     else {
 
-      // This should never happen. Report job abortion.
-      progress = -2;
+      // This should never happen!
+      throw OmwsException("Failed to read ticket data");
+    }
+  }
+  else {
+
+    string ticketFile = getTicketFilePath( ticketDir, "", ticket );
+
+    if ( ! fileExists( ticketFile.c_str() ) ) {
+
+      progress = -4; // non-existing job
     }
   }
 
