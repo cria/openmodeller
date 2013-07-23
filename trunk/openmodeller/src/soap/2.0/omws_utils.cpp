@@ -74,7 +74,7 @@ fileExists( const char* fileName )
 /*********************/
 /**** getProgress ****/
 int 
-getProgress( const string & ticketDir, const string & ticket )
+getProgress( const string & ticketDir, const string & ticket, bool checkDoneFile )
 {
   string job_prog_file = getTicketFilePath( ticketDir, OMWS_JOB_PROGRESS_PREFIX, ticket );
 
@@ -101,12 +101,15 @@ getProgress( const string & ticketDir, const string & ticket )
       // Make sure that everything is really done before returning 100%
       if ( progress == 100 ) {
 
-        // Finished flag
-        string done_file = getTicketFilePath( ticketDir, OMWS_JOB_DONE_PREFIX, ticket );
+        if ( checkDoneFile ) {
 
-        if ( ! fileExists( done_file.c_str() ) ) {
+          // Finished flag
+          string done_file = getTicketFilePath( ticketDir, OMWS_JOB_DONE_PREFIX, ticket );
 
-          progress = 99;
+          if ( ! fileExists( done_file.c_str() ) ) {
+
+            progress = 99;
+          }
         }
       }
 
