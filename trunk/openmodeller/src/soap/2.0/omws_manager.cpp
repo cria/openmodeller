@@ -129,6 +129,8 @@ int main(int argc, char **argv)
     exit(1);
   }
 
+  printf("Processing job %s\n", job_ticket.c_str());
+
   string exp_file = ticket_dir + exp_ticket;
 
   // Lock experiment file, which is also the log file
@@ -143,9 +145,12 @@ int main(int argc, char **argv)
 
   fcntl( fileno(fd_log), F_SETLKW, &fl ); // Wait for lock if necessary
 
+  printf("Acquired lock\n");
+
   // Open experiment log file
 
   bool start = true;
+  string msg;
 
   if ( fd_log == NULL ) {
 
@@ -154,8 +159,8 @@ int main(int argc, char **argv)
   }
   else {
 
-    string msg = "\nJob " + job_ticket + " finished. Managing workflow...\n";
-
+    msg = "Managing workflow...\n";
+    printf( "%s", msg.c_str() );
     if ( fputs( msg.c_str(), fd_log ) < 0 ) {
 
       printf("Could not write to experiment log file %s\n", exp_file.c_str());
@@ -177,9 +182,15 @@ int main(int argc, char **argv)
       // Some other process already did all necessary stuff!
       // Here we assume that the existence of this file means that the experiment
       // finished - successfully or not!
-      fputs( "Experiment already finished by other job. Aborting.\n", fd_log );
+      msg = "Experiment already finished by other job. Aborting.\n";
+      printf( "%s", msg.c_str() );
+      fputs( msg.c_str(), fd_log );
       break;
     }
+
+    msg = "Checked experiment status: unfinished\n";
+    printf( "%s", msg.c_str() );
+    fputs( msg.c_str(), fd_log );
 
     int progress = -1;
 
@@ -189,7 +200,9 @@ int main(int argc, char **argv)
     }
     catch (OmwsException& e) {
 
-      fputs( "Cannot read job progress data. Aborting.\n", fd_log );
+      msg = "Cannot read job progress data. Aborting.\n";
+      printf( "%s", msg.c_str() );
+      fputs( msg.c_str(), fd_log );
       break;
     }
 
@@ -197,14 +210,18 @@ int main(int argc, char **argv)
     if ( progress == 100 ) {
 
       // Job finished successfully!
-      fputs( "Job finished successfuly!\n", fd_log );
+      msg = "Job finished successfuly!\n";
+      printf( "%s", msg.c_str() );
+      fputs( msg.c_str(), fd_log );
 
       // Are there other jobs to be triggered?
 
       if ( next_jobs.empty() ) {
 
         // There are no subsequent jobs to be triggered
-        fputs( "No subsequent jobs.\n", fd_log );
+        msg = "No subsequent jobs.\n";
+        printf( "%s", msg.c_str() );
+        fputs( msg.c_str(), fd_log );
 
         // Get all jobs in the experiment to check if they all finished
         FileParser exp_data( exp_metadata_file );
@@ -230,7 +247,8 @@ int main(int argc, char **argv)
           //       would have already aborted the experiment!
           if ( ! fileExists( done_file.c_str() ) ) {
 
-            string msg = "Another job (" + (*at) + ") is still pending.\n";
+            msg = "Another job (" + (*at) + ") is still pending.\n";
+            printf( "%s", msg.c_str() );
             fputs( msg.c_str(), fd_log );
             finish_experiment = false;
             break;
@@ -240,7 +258,9 @@ int main(int argc, char **argv)
         // Only finish experiment if all jobs finished OK
         if ( finish_experiment ) {      
 
-          fputs( "All jobs finished OK. Finishing experiment.\n", fd_log );
+          msg = "All jobs finished OK. Finishing experiment.\n";
+          printf( "%s", msg.c_str() );
+          fputs( msg.c_str(), fd_log );
           updateProgress( exp_prog_file, "100" );
           createFile( exp_done_file );
         }
@@ -248,7 +268,9 @@ int main(int argc, char **argv)
       else {
 
         // There are subsequent jobs to be triggered
-        fputs( "Checking next jobs...\n", fd_log );
+        msg = "Checking next jobs...\n";
+        printf( "%s", msg.c_str() );
+        fputs( msg.c_str(), fd_log );
 
         // Check if they can be started
         vector<string> next_tickets = getTickets( next_jobs );
@@ -256,7 +278,8 @@ int main(int argc, char **argv)
         // For each of the next jobs
         for ( vector<string>::iterator nt = next_tickets.begin(); nt != next_tickets.end(); ++nt ) {
 
-          string msg = "Ticket " + (*nt) + "\n";
+          msg = "Ticket " + (*nt) + "\n";
+          printf( "%s", msg.c_str() );
           fputs( msg.c_str(), fd_log );
 
           // Get dependencies from metadata
@@ -287,7 +310,8 @@ int main(int argc, char **argv)
             //       would have already aborted the experiment!
             if ( ! fileExists( done_file.c_str() ) ) {
 
-              string msg = "Dependent job " + (*dt).first + " still pending.\n";
+              msg = "Dependent job " + (*dt).first + " still pending.\n";
+              printf( "%s", msg.c_str() );
               fputs( msg.c_str(), fd_log );
               can_start = false;
               break;
@@ -296,7 +320,9 @@ int main(int argc, char **argv)
 
           if ( can_start ) {
 
-            fputs( "All dependencies met! Starting job.\n", fd_log );
+            msg = "All dependencies met! Starting job.\n";
+            printf( "%s", msg.c_str() );
+            fputs( msg.c_str(), fd_log );
 
             string type = data.get("TYPE");
 
@@ -323,12 +349,17 @@ int main(int argc, char **argv)
             ///////////////////////////////////////////////////////////
             if ( strcmp(type.c_str(), OMWS_MODEL) == 0 ) {
 
+              msg = "Pending job is a model\n";
+              printf( "%s", msg.c_str() );
+              fputs( msg.c_str(), fd_log );
+
               string pend_file = ticket_dir + OMWS_MODEL + _PENDING_REQUEST + (*nt);
 
               // This file must exist!
               if ( ! fileExists( pend_file.c_str() ) ) {
 
-                string msg = "File does not exist: " + pend_file;
+                msg = "File does not exist: " + pend_file + "\n";
+                printf( "%s", msg.c_str() );
                 fputs( msg.c_str(), fd_log );
                 cancelExperiment( exp_metadata_file, exp_prog_file, exp_done_file, ticket_dir, job_ticket, fd_log );
                 releaseSoap(ctx_next, ctx_dep);
@@ -343,7 +374,8 @@ int main(int argc, char **argv)
               // Parsing must succeed! (file was created using the same lib)
               if ( soap_read_om__ModelParametersType( ctx_next, &mp ) != SOAP_OK ) {
 
-                string msg = "Could not deserialize: " + pend_file;
+                msg = "Could not deserialize: " + pend_file + "\n";
+                printf( "%s", msg.c_str() );
                 fputs( msg.c_str(), fd_log );
                 cancelExperiment( exp_metadata_file, exp_prog_file, exp_done_file, ticket_dir, job_ticket, fd_log );
                 releaseSoap(ctx_next, ctx_dep);
@@ -363,7 +395,8 @@ int main(int argc, char **argv)
                   // This file must exist!
                   if ( ! fileExists( result_file.c_str() ) ) {
 
-                    string msg = "File does not exist: " + result_file;
+                    msg = "File does not exist: " + result_file + "\n";
+                    printf( "%s", msg.c_str() );
                     fputs( msg.c_str(), fd_log );
                     cancelExperiment( exp_metadata_file, exp_prog_file, exp_done_file, ticket_dir, job_ticket, fd_log );
                     releaseSoap(ctx_next, ctx_dep);
@@ -377,7 +410,8 @@ int main(int argc, char **argv)
                   // Parsing must succeed! (job is expected to be finished successfully)
                   if ( soap_read_om__SamplerType( ctx_dep, &samp ) != SOAP_OK ) {
 
-                    string msg = "Could not deserialize: " + result_file;
+                    msg = "Could not deserialize: " + result_file + "\n";
+                    printf( "%s", msg.c_str() );
                     fputs( msg.c_str(), fd_log );
                     cancelExperiment( exp_metadata_file, exp_prog_file, exp_done_file, ticket_dir, job_ticket, fd_log );
                     releaseSoap(ctx_next, ctx_dep);
@@ -393,7 +427,8 @@ int main(int argc, char **argv)
                   // This file must exist!
                   if ( ! fileExists( result_file.c_str() ) ) {
 
-                    string msg = "File does not exist: " + result_file;
+                    msg = "File does not exist: " + result_file + "\n";
+                    printf( "%s", msg.c_str() );
                     fputs( msg.c_str(), fd_log );
                     cancelExperiment( exp_metadata_file, exp_prog_file, exp_done_file, ticket_dir, job_ticket, fd_log );
                     releaseSoap(ctx_next, ctx_dep);
@@ -407,7 +442,8 @@ int main(int argc, char **argv)
                   // Parsing must succeed! (job is expected to be finished successfully)
                   if ( soap_read_om__SamplerType( ctx_dep, &samp ) != SOAP_OK ) {
 
-                    string msg = "Could not deserialize: " + result_file;
+                    msg = "Could not deserialize: " + result_file + "\n";
+                    printf( "%s", msg.c_str() );
                     fputs( msg.c_str(), fd_log );
                     cancelExperiment( exp_metadata_file, exp_prog_file, exp_done_file, ticket_dir, job_ticket, fd_log );
                     releaseSoap(ctx_next, ctx_dep);
@@ -418,7 +454,8 @@ int main(int argc, char **argv)
                 }
                 else {
 
-                  string msg = "Ignoring unknown dependency type: " + dep_place;
+                  msg = "Ignoring unknown dependency type: " + dep_place + "\n";
+                  printf( "%s", msg.c_str() );
                   fputs( msg.c_str(), fd_log );
                 }
               }
@@ -438,7 +475,8 @@ int main(int argc, char **argv)
               // that's why soap_write is not used directly.
               if ( ( mp.soap_serialize(ctx_next), soap_begin_send(ctx_next) || mp.soap_put(ctx_next, "om:ModelParameters", NULL) || soap_end_send(ctx_next), ctx_next->error ) != SOAP_OK ) {
 
-                string msg = "Failed to serialize new job request: " + req_file;
+                msg = "Failed to serialize new job request: " + req_file + "\n";
+                printf( "%s", msg.c_str() );
                 fputs( msg.c_str(), fd_log );
                 cancelExperiment( exp_metadata_file, exp_prog_file, exp_done_file, ticket_dir, job_ticket, fd_log );
                 releaseSoap(ctx_next, ctx_dep);
@@ -449,12 +487,17 @@ int main(int argc, char **argv)
             ///////////////////////////////////////////////////////////
             else if ( strcmp(type.c_str(), OMWS_TEST) == 0 ) {
 
+              msg = "Pending job is a test\n";
+              printf( "%s", msg.c_str() );
+              fputs( msg.c_str(), fd_log );
+
               string pend_file = ticket_dir + OMWS_TEST + _PENDING_REQUEST + (*nt);
 
               // This file must exist!
               if ( ! fileExists( pend_file.c_str() ) ) {
 
-                string msg = "File does not exist: " + pend_file;
+                msg = "File does not exist: " + pend_file + "\n";
+                printf( "%s", msg.c_str() );
                 fputs( msg.c_str(), fd_log );
                 cancelExperiment( exp_metadata_file, exp_prog_file, exp_done_file, ticket_dir, job_ticket, fd_log );
                 releaseSoap(ctx_next, ctx_dep);
@@ -469,12 +512,17 @@ int main(int argc, char **argv)
               // Parsing must succeed! (file was created using the same lib)
               if ( soap_read_om__TestParametersType( ctx_next, &tp ) != SOAP_OK ) {
 
-                string msg = "Could not deserialize: " + pend_file;
+                msg = "Could not deserialize: " + pend_file + "\n";
+                printf( "%s", msg.c_str() );
                 fputs( msg.c_str(), fd_log );
                 cancelExperiment( exp_metadata_file, exp_prog_file, exp_done_file, ticket_dir, job_ticket, fd_log );
                 releaseSoap(ctx_next, ctx_dep);
                 break;
               }
+
+              msg = "Completed deserialization\n";
+              printf( "%s", msg.c_str() );
+              fputs( msg.c_str(), fd_log );
 
               // Get result from each dependency
               for ( dt = dep_tickets.begin(); dt != dep_tickets.end(); ++dt ) {
@@ -489,7 +537,8 @@ int main(int argc, char **argv)
                   // This file must exist!
                   if ( ! fileExists( result_file.c_str() ) ) {
 
-                    string msg = "File does not exist: " + result_file;
+                    msg = "File does not exist: " + result_file + "\n";
+                    printf( "%s", msg.c_str() );
                     fputs( msg.c_str(), fd_log );
                     cancelExperiment( exp_metadata_file, exp_prog_file, exp_done_file, ticket_dir, job_ticket, fd_log );
                     releaseSoap(ctx_next, ctx_dep);
@@ -503,7 +552,8 @@ int main(int argc, char **argv)
                   // Parsing must succeed! (job is expected to be finished successfully)
                   if ( soap_read_om__SamplerType( ctx_dep, &samp ) != SOAP_OK ) {
 
-                    string msg = "Could not deserialize: " + result_file;
+                    msg = "Could not deserialize: " + result_file + "\n";
+                    printf( "%s", msg.c_str() );
                     fputs( msg.c_str(), fd_log );
                     cancelExperiment( exp_metadata_file, exp_prog_file, exp_done_file, ticket_dir, job_ticket, fd_log );
                     releaseSoap(ctx_next, ctx_dep);
@@ -519,7 +569,8 @@ int main(int argc, char **argv)
                   // This file must exist!
                   if ( ! fileExists( result_file.c_str() ) ) {
 
-                    string msg = "File does not exist: " + result_file;
+                    msg = "File does not exist: " + result_file + "\n";
+                    printf( "%s", msg.c_str() );
                     fputs( msg.c_str(), fd_log );
                     cancelExperiment( exp_metadata_file, exp_prog_file, exp_done_file, ticket_dir, job_ticket, fd_log );
                     releaseSoap(ctx_next, ctx_dep);
@@ -533,7 +584,8 @@ int main(int argc, char **argv)
                   // Parsing must succeed! (job is expected to be finished successfully)
                   if ( soap_read_om__SamplerType( ctx_dep, &samp ) != SOAP_OK ) {
 
-                    string msg = "Could not deserialize: " + result_file;
+                    msg = "Could not deserialize: " + result_file + "\n";
+                    printf( "%s", msg.c_str() );
                     fputs( msg.c_str(), fd_log );
                     cancelExperiment( exp_metadata_file, exp_prog_file, exp_done_file, ticket_dir, job_ticket, fd_log );
                     releaseSoap(ctx_next, ctx_dep);
@@ -549,7 +601,8 @@ int main(int argc, char **argv)
                   // This file must exist!
                   if ( ! fileExists( result_file.c_str() ) ) {
 
-                    string msg = "File does not exist: " + result_file;
+                    msg = "File does not exist: " + result_file + "\n";
+                    printf( "%s", msg.c_str() );
                     fputs( msg.c_str(), fd_log );
                     cancelExperiment( exp_metadata_file, exp_prog_file, exp_done_file, ticket_dir, job_ticket, fd_log );
                     releaseSoap(ctx_next, ctx_dep);
@@ -563,7 +616,8 @@ int main(int argc, char **argv)
                   // Parsing must succeed! (job is expected to be finished successfully)
                   if ( soap_read_om__ModelEnvelopeType( ctx_dep, &model ) != SOAP_OK ) {
 
-                    string msg = "Could not deserialize: " + result_file;
+                    msg = "Could not deserialize: " + result_file + "\n";
+                    printf( "%s", msg.c_str() );
                     fputs( msg.c_str(), fd_log );
                     cancelExperiment( exp_metadata_file, exp_prog_file, exp_done_file, ticket_dir, job_ticket, fd_log );
                     releaseSoap(ctx_next, ctx_dep);
@@ -574,7 +628,8 @@ int main(int argc, char **argv)
                 }
                 else {
 
-                  string msg = "Ignoring unknown dependency type: " + dep_place;
+                  msg = "Ignoring unknown dependency type: " + dep_place + "\n";
+                  printf( "%s", msg.c_str() );
                   fputs( msg.c_str(), fd_log );
                 }
               }
@@ -594,7 +649,8 @@ int main(int argc, char **argv)
               // that's why soap_write is not used directly.
               if ( ( tp.soap_serialize(ctx_next), soap_begin_send(ctx_next) || tp.soap_put(ctx_next, "om:TestParameters", NULL) || soap_end_send(ctx_next), ctx_next->error ) != SOAP_OK ) {
 
-                string msg = "Failed to serialize new job request: " + req_file;
+                msg = "Failed to serialize new job request: " + req_file + "\n";
+                printf( "%s", msg.c_str() );
                 fputs( msg.c_str(), fd_log );
                 cancelExperiment( exp_metadata_file, exp_prog_file, exp_done_file, ticket_dir, job_ticket, fd_log );
                 releaseSoap(ctx_next, ctx_dep);
@@ -605,12 +661,17 @@ int main(int argc, char **argv)
             ///////////////////////////////////////////////////////////
             else if ( strcmp(type.c_str(), "proj") == 0 ) {
 
+              msg = "Pending job is a projection\n";
+              printf( "%s", msg.c_str() );
+              fputs( msg.c_str(), fd_log );
+
               string pend_file = ticket_dir + OMWS_PROJECTION + _PENDING_REQUEST + (*nt);
 
               // This file must exist!
               if ( ! fileExists( pend_file.c_str() ) ) {
 
-                string msg = "File does not exist: " + pend_file;
+                msg = "File does not exist: " + pend_file + "\n";
+                printf( "%s", msg.c_str() );
                 fputs( msg.c_str(), fd_log );
                 cancelExperiment( exp_metadata_file, exp_prog_file, exp_done_file, ticket_dir, job_ticket, fd_log );
                 releaseSoap(ctx_next, ctx_dep);
@@ -625,7 +686,8 @@ int main(int argc, char **argv)
               // Parsing must succeed! (file was created using the same lib)
               if ( soap_read_om__ProjectionParametersType( ctx_next, &pp ) != SOAP_OK ) {
 
-                string msg = "Could not deserialize: " + pend_file;
+                msg = "Could not deserialize: " + pend_file + "\n";
+                printf( "%s", msg.c_str() );
                 fputs( msg.c_str(), fd_log );
                 cancelExperiment( exp_metadata_file, exp_prog_file, exp_done_file, ticket_dir, job_ticket, fd_log );
                 releaseSoap(ctx_next, ctx_dep);
@@ -645,7 +707,8 @@ int main(int argc, char **argv)
                   // This file must exist!
                   if ( ! fileExists( result_file.c_str() ) ) {
 
-                    string msg = "File does not exist: " + result_file;
+                    msg = "File does not exist: " + result_file + "\n";
+                    printf( "%s", msg.c_str() );
                     fputs( msg.c_str(), fd_log );
                     cancelExperiment( exp_metadata_file, exp_prog_file, exp_done_file, ticket_dir, job_ticket, fd_log );
                     releaseSoap(ctx_next, ctx_dep);
@@ -659,7 +722,8 @@ int main(int argc, char **argv)
                   // Parsing must succeed! (job is expected to be finished successfully)
                   if ( soap_read_om__ModelEnvelopeType( ctx_dep, &model ) != SOAP_OK ) {
 
-                    string msg = "Could not deserialize: " + result_file;
+                    msg = "Could not deserialize: " + result_file + "\n";
+                    printf( "%s", msg.c_str() );
                     fputs( msg.c_str(), fd_log );
                     cancelExperiment( exp_metadata_file, exp_prog_file, exp_done_file, ticket_dir, job_ticket, fd_log );
                     releaseSoap(ctx_next, ctx_dep);
@@ -670,7 +734,8 @@ int main(int argc, char **argv)
                 }
                 else {
 
-                  string msg = "Ignoring unknown dependency type: " + dep_place;
+                  msg = "Ignoring unknown dependency type: " + dep_place + "\n";
+                  printf( "%s", msg.c_str() );
                   fputs( msg.c_str(), fd_log );
                 }
               }
@@ -690,7 +755,8 @@ int main(int argc, char **argv)
               // that's why soap_write is not used directly.
               if ( ( pp.soap_serialize(ctx_next), soap_begin_send(ctx_next) || pp.soap_put(ctx_next, "om:TestParameters", NULL) || soap_end_send(ctx_next), ctx_next->error ) != SOAP_OK ) {
 
-                string msg = "Failed to serialize new job request: " + req_file;
+                msg = "Failed to serialize new job request: " + req_file + "\n";
+                printf( "%s", msg.c_str() );
                 fputs( msg.c_str(), fd_log );
                 cancelExperiment( exp_metadata_file, exp_prog_file, exp_done_file, ticket_dir, job_ticket, fd_log );
                 releaseSoap(ctx_next, ctx_dep);
@@ -708,6 +774,7 @@ int main(int argc, char **argv)
       // Job didn't finish successfully, so cancel the experiment and all pending jobs
       ostringstream oss;
       oss << "Job didn't finish successfully (" << progress << ")." << endl;
+      printf( "%s", oss.str().c_str() );
       fputs( oss.str().c_str(), fd_log );
       cancelExperiment( exp_metadata_file, exp_prog_file, exp_done_file, ticket_dir, job_ticket, fd_log );
     }
@@ -715,7 +782,9 @@ int main(int argc, char **argv)
     break;
   }
 
-  fputs( "Finished management trigger\n", fd_log );
+  msg = "Finished management trigger\n";
+  printf( "%s", msg.c_str() );
+  fputs( msg.c_str(), fd_log );
   fclose( fd_log );
 
   // Unlock experiment file
