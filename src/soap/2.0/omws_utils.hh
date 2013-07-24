@@ -65,6 +65,8 @@ string getTicketFilePath( string dir, string prefix, string ticket );
 
 bool fileExists( const char* fileName );
 
+void logMessage( const string & msg, FILE * fd_log );
+
 int getProgress( const string & ticketDir, const string & ticket, bool checkDoneFile=true );
 
 bool updateProgress( const string & progFileName, const char * content );

@@ -71,6 +71,17 @@ fileExists( const char* fileName )
   return false;
 }
 
+/********************/
+/**** logMessage ****/
+void 
+logMessage( const string & msg, FILE * fd_log )
+{
+  printf( "%s\n", msg.c_str() );
+  fputs( msg.c_str(), fd_log );
+  fputs( "\n", fd_log );
+  fflush( fd_log );
+}
+
 /*********************/
 /**** getProgress ****/
 int 
