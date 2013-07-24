@@ -719,26 +719,43 @@ sub get_progress
     unless ( $response->fault )
     {
         my $prog = $response->result;
-        if ( $prog == -1 )
+
+        print "\n\nProgress: ";
+
+        my $not_first = 0;
+
+        for ( split(',', $prog ) )
         {
-            print "Queued on server.\n";
+            if ( $not_first )
+            {
+              print ",";
+            }
+
+            $not_first = 1;
+
+            if ( $_ == -1 )
+            {
+                print "queued";
+            }
+            elsif ( $_ == -2 )
+            {
+                print "aborted";
+            }
+            elsif ( $_ == -3 )
+            {
+                print "cancelled";
+            }
+            elsif ( $_ == -4 )
+            {
+                print "unknown";
+            }
+            else
+            {
+    	        print $_ ."%";
+            }
         }
-        elsif ( $prog == -2 )
-        {
-            print "Aborted!\n";
-        }
-        elsif ( $prog == -3 )
-        {
-            print "Cancelled!\n";
-        }
-        elsif ( $prog == -4 )
-        {
-            print "Unknown ticket!\n";
-        }
-        else
-        {
-	    print "Progress: ".$prog ."%\n";
-        }
+
+        print "\n";
     }
     else
     {
@@ -1551,9 +1568,9 @@ sub handle_exp_resp_start
     {
         print $attrs{'Id'} . " => " . $attrs{'Ticket'} . "\n";
 
-        if ( length($ctickets) > 0 ) {
-
-          $ctickets .= ',';
+        if ( length($ctickets) > 0 )
+        {
+            $ctickets .= ',';
         }
 
         $ctickets .= $attrs{'Ticket'};

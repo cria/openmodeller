@@ -131,21 +131,19 @@ int main(int argc, char **argv)
 
   string exp_file = ticket_dir + exp_ticket;
 
-  // Lock experiment file
+  // Lock experiment file, which is also the log file
   struct flock fl;
-  fl.l_type   = F_RDLCK;
+  fl.l_type   = F_WRLCK;
   fl.l_whence = SEEK_SET;
   fl.l_start  = 0;
   fl.l_len    = 0;
   fl.l_pid    = getpid();
 
-  int fd = open( exp_file.c_str(), O_RDONLY );
+  FILE *fd_log = fopen( exp_file.c_str(), "a" );
 
-  fcntl( fd, F_SETLKW, &fl ); // Wait for lock if necessary
+  fcntl( fileno(fd_log), F_SETLKW, &fl ); // Wait for lock if necessary
 
   // Open experiment log file
-  string log_file = ticket_dir + exp_ticket;
-  FILE *fd_log = fopen( log_file.c_str(), "a" );
 
   bool start = true;
 
@@ -160,7 +158,7 @@ int main(int argc, char **argv)
 
     if ( fputs( msg.c_str(), fd_log ) < 0 ) {
 
-      printf("Could not write to experiment log file %s\n", log_file.c_str());
+      printf("Could not write to experiment log file %s\n", exp_file.c_str());
       start = false;
     }
   }
@@ -722,7 +720,7 @@ int main(int argc, char **argv)
 
   // Unlock experiment file
   fl.l_type = F_UNLCK;
-  fcntl( fd, F_SETLK, &fl );
+  fcntl( fileno(fd_log), F_SETLK, &fl );
 
   return 0; 
 }
