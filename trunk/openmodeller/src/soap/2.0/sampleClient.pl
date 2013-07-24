@@ -73,6 +73,8 @@ my $soap = 0; # future soap object
 
 my $last_xml_resp = '';
 
+my $ctickets = '';
+
 ### Interact with user
 
 my %options = ( 0  => 'Ping service', 
@@ -1240,6 +1242,8 @@ sub run_experiment
 
     unless ( $response->fault )
     {
+        $ctickets = '';
+
         my $parser = XML::Parser->new( Style => 'Stream', Namespaces => 0, ErrorContext => 2, Handlers => 
                                      {
                                         Start => \&handle_exp_resp_start, 
@@ -1254,6 +1258,10 @@ sub run_experiment
 
           $@ =~ s/at \/.*?$//s; # remove module line number
           print "\nError parsing XML reponse:\n$@\n";
+        }
+        else {
+
+          print "\nList of tickets: " . $ctickets . "\n";
         }
     }
     else
@@ -1542,6 +1550,13 @@ sub handle_exp_resp_start
     if ( substr($element, -3, 3) eq 'Job' )
     {
         print $attrs{'Id'} . " => " . $attrs{'Ticket'} . "\n";
+
+        if ( length($ctickets) > 0 ) {
+
+          $ctickets .= ',';
+        }
+
+        $ctickets .= $attrs{'Ticket'};
     }
 }
 
