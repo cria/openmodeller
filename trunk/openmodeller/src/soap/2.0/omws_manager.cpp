@@ -159,7 +159,7 @@ int main(int argc, char **argv)
   }
   else {
 
-    msg = "Managing workflow...\n";
+    msg = "\nManaging workflow for job " + job_ticket + "\n\n";
     printf( "%s", msg.c_str() );
     if ( fputs( msg.c_str(), fd_log ) < 0 ) {
 
@@ -380,8 +380,6 @@ int main(int argc, char **argv)
                     break;
                   }
 
-                  releaseSoap(ctx1);
-
                   mp.Sampler->Presence = samp.Presence;
                 }
                 else if ( strcmp(dep_place.c_str(), "absence") == 0 ) {
@@ -413,8 +411,6 @@ int main(int argc, char **argv)
                     releaseSoap(ctx);
                     break;
                   }
-
-                  releaseSoap(ctx2);
 
                   mp.Sampler->Absence = samp.Absence;
                 }
@@ -512,8 +508,6 @@ int main(int argc, char **argv)
                     break;
                   }
 
-                  releaseSoap(ctx1);
-
                   tp.Sampler->Presence = samp.Presence;
                 }
                 else if ( strcmp(dep_place.c_str(), "absence") == 0 ) {
@@ -547,8 +541,6 @@ int main(int argc, char **argv)
                     releaseSoap(ctx);
                     break;
                   }
-
-                  releaseSoap(ctx2);
 
                   tp.Sampler->Absence = samp.Absence;
                 }
@@ -584,8 +576,6 @@ int main(int argc, char **argv)
                     break;
                   }
 
-                  releaseSoap(ctx3);
-
                   logMessage( "Managed to deserialize previous job.", fd_log );
 
                   tp.Algorithm = model.Algorithm;
@@ -597,13 +587,15 @@ int main(int argc, char **argv)
               }
 
               // Write request to file
+              logMessage( "Writing new request file.", fd_log );
+
               string req_file = ticket_dir + OMWS_TEST + _REQUEST + (*nt);
 
               ofstream fs_out( req_file.c_str() );
               ctx->os = &fs_out;
 
               // The following line reproduces the same encapsulated call used by 
-              // soap_write_om__ModelParametersType, but here we need a different element name, 
+              // soap_write_om__TestParametersType, but here we need a different element name, 
               // that's why soap_write is not used directly.
               if ( ( tp.soap_serialize(ctx), soap_begin_send(ctx) || tp.soap_put(ctx, "om:TestParameters", NULL) || soap_end_send(ctx), ctx->error ) != SOAP_OK ) {
 
@@ -612,6 +604,8 @@ int main(int argc, char **argv)
                 releaseSoap(ctx);
                 break;
               }
+
+              logMessage( "Done.", fd_log );
             }
             ////////////////////// PROJECTION /////////////////////////
             ///////////////////////////////////////////////////////////
@@ -679,8 +673,6 @@ int main(int argc, char **argv)
                     releaseSoap(ctx);
                     break;
                   }
-
-                  releaseSoap(ctx1);
 
                   pp.Algorithm = model.SerializedModel->Algorithm;
                 }
