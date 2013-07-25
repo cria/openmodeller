@@ -305,21 +305,11 @@ int main(int argc, char **argv)
             string type = data.get("TYPE");
 
             // gSOAP context to parse next jobs XML
-            struct soap *ctx_next = soap_new1(SOAP_XML_STRICT);
-            soap_init(ctx_next);
-            soap_imode(ctx_next, SOAP_ENC_XML); // Set input mode
-            soap_imode(ctx_next, SOAP_XML_IGNORENS);
-            soap_begin(ctx_next); // start new (de)serialization phase
-
-            // gSOAP context to parse dependent jobs XML
-            struct soap *ctx_dep = soap_new1(SOAP_XML_STRICT);
-            soap_init(ctx_dep);
-            soap_imode(ctx_dep, SOAP_ENC_XML); // Set input mode
-            soap_imode(ctx_dep, SOAP_XML_IGNORENS);
-            soap_begin(ctx_dep); // start new (de)serialization phase
-
-            ifstream fs_in;
-            ofstream fs_out;
+            struct soap *ctx = newSoapContext();
+            soap_set_omode(ctx, SOAP_XML_CANONICAL);
+            soap_set_omode(ctx, SOAP_XML_INDENT);
+            soap_set_omode(ctx, SOAP_XML_TREE);
+            soap_set_omode(ctx, SOAP_XML_NOTYPE);
 
             // Pending jobs can only be of type model, test or proj
 
@@ -336,21 +326,21 @@ int main(int argc, char **argv)
 
                 logMessage( "File does not exist: " + pend_file, fd_log );
                 cancelExperiment( exp_metadata_file, exp_prog_file, exp_done_file, ticket_dir, job_ticket, fd_log );
-                releaseSoap(ctx_next, ctx_dep);
+                releaseSoap(ctx);
                 break;
               }
 
-              fs_in.open( pend_file.c_str() );
-              ctx_next->is = &fs_in;
+              ifstream fs_in( pend_file.c_str() );
+              ctx->is = &fs_in;
 
               om::_om__ModelParameters mp;
 
               // Parsing must succeed! (file was created using the same lib)
-              if ( soap_read_om__ModelParametersType( ctx_next, &mp ) != SOAP_OK ) {
+              if ( soap_read_om__ModelParametersType( ctx, &mp ) != SOAP_OK ) {
 
                 logMessage( "Could not deserialize: " + pend_file, fd_log );
                 cancelExperiment( exp_metadata_file, exp_prog_file, exp_done_file, ticket_dir, job_ticket, fd_log );
-                releaseSoap(ctx_next, ctx_dep);
+                releaseSoap(ctx);
                 break;
               }
 
@@ -369,22 +359,28 @@ int main(int argc, char **argv)
 
                     logMessage( "File does not exist: " + result_file, fd_log );
                     cancelExperiment( exp_metadata_file, exp_prog_file, exp_done_file, ticket_dir, job_ticket, fd_log );
-                    releaseSoap(ctx_next, ctx_dep);
+                    releaseSoap(ctx);
                     break;
                   }
-
-                  fs_in.open( result_file.c_str() );
 
                   om::_om__Sampler samp;
 
+                  struct soap *ctx1 = newSoapContext();
+
+                  ifstream fs1( result_file.c_str() );
+                  ctx1->is = &fs1;
+
                   // Parsing must succeed! (job is expected to be finished successfully)
-                  if ( soap_read_om__SamplerType( ctx_dep, &samp ) != SOAP_OK ) {
+                  if ( soap_read_om__SamplerType( ctx1, &samp ) != SOAP_OK ) {
 
                     logMessage( "Could not deserialize: " + result_file, fd_log );
                     cancelExperiment( exp_metadata_file, exp_prog_file, exp_done_file, ticket_dir, job_ticket, fd_log );
-                    releaseSoap(ctx_next, ctx_dep);
+                    releaseSoap(ctx1);
+                    releaseSoap(ctx);
                     break;
                   }
+
+                  releaseSoap(ctx1);
 
                   mp.Sampler->Presence = samp.Presence;
                 }
@@ -397,22 +393,28 @@ int main(int argc, char **argv)
 
                     logMessage( "File does not exist: " + result_file, fd_log );
                     cancelExperiment( exp_metadata_file, exp_prog_file, exp_done_file, ticket_dir, job_ticket, fd_log );
-                    releaseSoap(ctx_next, ctx_dep);
+                    releaseSoap(ctx);
                     break;
                   }
-
-                  fs_in.open( result_file.c_str() );
 
                   om::_om__Sampler samp;
 
+                  struct soap *ctx2 = newSoapContext();
+
+                  ifstream fs2( result_file.c_str() );
+                  ctx2->is = &fs2;
+
                   // Parsing must succeed! (job is expected to be finished successfully)
-                  if ( soap_read_om__SamplerType( ctx_dep, &samp ) != SOAP_OK ) {
+                  if ( soap_read_om__SamplerType( ctx2, &samp ) != SOAP_OK ) {
 
                     logMessage( "Could not deserialize: " + result_file, fd_log );
                     cancelExperiment( exp_metadata_file, exp_prog_file, exp_done_file, ticket_dir, job_ticket, fd_log );
-                    releaseSoap(ctx_next, ctx_dep);
+                    releaseSoap(ctx2);
+                    releaseSoap(ctx);
                     break;
                   }
+
+                  releaseSoap(ctx2);
 
                   mp.Sampler->Absence = samp.Absence;
                 }
@@ -425,21 +427,17 @@ int main(int argc, char **argv)
               // Write request to file
               string req_file = ticket_dir + OMWS_MODEL + _REQUEST + (*nt);
 
-              fs_out.open( req_file.c_str() );
-              ctx_next->os = &fs_out;
-              soap_set_omode(ctx_next, SOAP_XML_CANONICAL);
-              soap_set_omode(ctx_next, SOAP_XML_INDENT);
-              soap_set_omode(ctx_next, SOAP_XML_TREE);
-              soap_set_omode(ctx_next, SOAP_XML_NOTYPE);
+              ofstream fs_out( req_file.c_str() );
+              ctx->os = &fs_out;
 
               // The following line reproduces the same encapsulated call used by 
               // soap_write_om__ModelParametersType, but here we need a different element name, 
               // that's why soap_write is not used directly.
-              if ( ( mp.soap_serialize(ctx_next), soap_begin_send(ctx_next) || mp.soap_put(ctx_next, "om:ModelParameters", NULL) || soap_end_send(ctx_next), ctx_next->error ) != SOAP_OK ) {
+              if ( ( mp.soap_serialize(ctx), soap_begin_send(ctx) || mp.soap_put(ctx, "om:ModelParameters", NULL) || soap_end_send(ctx), ctx->error ) != SOAP_OK ) {
 
                 logMessage( "Failed to serialize new job request: " + req_file, fd_log );
                 cancelExperiment( exp_metadata_file, exp_prog_file, exp_done_file, ticket_dir, job_ticket, fd_log );
-                releaseSoap(ctx_next, ctx_dep);
+                releaseSoap(ctx);
                 break;
               }
             }
@@ -456,21 +454,21 @@ int main(int argc, char **argv)
 
                 logMessage( "File does not exist: " + pend_file, fd_log );
                 cancelExperiment( exp_metadata_file, exp_prog_file, exp_done_file, ticket_dir, job_ticket, fd_log );
-                releaseSoap(ctx_next, ctx_dep);
+                releaseSoap(ctx);
                 break;
               }
 
-              fs_in.open( pend_file.c_str() );
-              ctx_next->is = &fs_in;
+              ifstream fs_in( pend_file.c_str() );
+              ctx->is = &fs_in;
 
               om::_om__TestParameters tp;
 
               // Parsing must succeed! (file was created using the same lib)
-              if ( soap_read_om__TestParametersType( ctx_next, &tp ) != SOAP_OK ) {
+              if ( soap_read_om__TestParametersType( ctx, &tp ) != SOAP_OK ) {
 
                 logMessage( "Could not deserialize: " + pend_file, fd_log );
                 cancelExperiment( exp_metadata_file, exp_prog_file, exp_done_file, ticket_dir, job_ticket, fd_log );
-                releaseSoap(ctx_next, ctx_dep);
+                releaseSoap(ctx);
                 break;
               }
 
@@ -493,22 +491,28 @@ int main(int argc, char **argv)
 
                     logMessage( "File does not exist: " + result_file, fd_log );
                     cancelExperiment( exp_metadata_file, exp_prog_file, exp_done_file, ticket_dir, job_ticket, fd_log );
-                    releaseSoap(ctx_next, ctx_dep);
+                    releaseSoap(ctx);
                     break;
                   }
-
-                  fs_in.open( result_file.c_str() );
 
                   om::_om__Sampler samp;
 
+                  struct soap *ctx1 = newSoapContext();
+
+                  ifstream fs1( result_file.c_str() );
+                  ctx1->is = &fs1;
+
                   // Parsing must succeed! (job is expected to be finished successfully)
-                  if ( soap_read_om__SamplerType( ctx_dep, &samp ) != SOAP_OK ) {
+                  if ( soap_read_om__SamplerType( ctx1, &samp ) != SOAP_OK ) {
 
                     logMessage( "Could not deserialize: " + result_file, fd_log );
                     cancelExperiment( exp_metadata_file, exp_prog_file, exp_done_file, ticket_dir, job_ticket, fd_log );
-                    releaseSoap(ctx_next, ctx_dep);
+                    releaseSoap(ctx1);
+                    releaseSoap(ctx);
                     break;
                   }
+
+                  releaseSoap(ctx1);
 
                   tp.Sampler->Presence = samp.Presence;
                 }
@@ -523,22 +527,28 @@ int main(int argc, char **argv)
 
                     logMessage( "File does not exist: " + result_file, fd_log );
                     cancelExperiment( exp_metadata_file, exp_prog_file, exp_done_file, ticket_dir, job_ticket, fd_log );
-                    releaseSoap(ctx_next, ctx_dep);
+                    releaseSoap(ctx);
                     break;
                   }
-
-                  fs_in.open( result_file.c_str() );
 
                   om::_om__Sampler samp;
 
+                  struct soap *ctx2 = newSoapContext();
+
+                  ifstream fs2( result_file.c_str() );
+                  ctx2->is = &fs2;
+
                   // Parsing must succeed! (job is expected to be finished successfully)
-                  if ( soap_read_om__SamplerType( ctx_dep, &samp ) != SOAP_OK ) {
+                  if ( soap_read_om__SamplerType( ctx2, &samp ) != SOAP_OK ) {
 
                     logMessage( "Could not deserialize: " + result_file, fd_log );
                     cancelExperiment( exp_metadata_file, exp_prog_file, exp_done_file, ticket_dir, job_ticket, fd_log );
-                    releaseSoap(ctx_next, ctx_dep);
+                    releaseSoap(ctx2);
+                    releaseSoap(ctx);
                     break;
                   }
+
+                  releaseSoap(ctx2);
 
                   tp.Sampler->Absence = samp.Absence;
                 }
@@ -553,26 +563,32 @@ int main(int argc, char **argv)
 
                     logMessage( "File does not exist: " + result_file, fd_log );
                     cancelExperiment( exp_metadata_file, exp_prog_file, exp_done_file, ticket_dir, job_ticket, fd_log );
-                    releaseSoap(ctx_next, ctx_dep);
+                    releaseSoap(ctx);
                     break;
                   }
 
-                  fs_in.open( result_file.c_str() );
+                  om::om__SerializedModelType model;
 
-                  om::om__ModelEnvelopeType model;
+                  struct soap *ctx3 = newSoapContext();
+
+                  ifstream fs3( result_file.c_str() );
+                  ctx3->is = &fs3;
 
                   // Parsing must succeed! (job is expected to be finished successfully)
-                  if ( soap_read_om__ModelEnvelopeType( ctx_dep, &model ) != SOAP_OK ) {
+                  if ( soap_read_om__SerializedModelType( ctx3, &model ) != SOAP_OK ) {
 
                     logMessage( "Could not deserialize: " + result_file, fd_log );
                     cancelExperiment( exp_metadata_file, exp_prog_file, exp_done_file, ticket_dir, job_ticket, fd_log );
-                    releaseSoap(ctx_next, ctx_dep);
+                    releaseSoap(ctx3);
+                    releaseSoap(ctx);
                     break;
                   }
 
+                  releaseSoap(ctx3);
+
                   logMessage( "Managed to deserialize previous job.", fd_log );
 
-                  tp.Algorithm = model.SerializedModel->Algorithm;
+                  tp.Algorithm = model.Algorithm;
                 }
                 else {
 
@@ -583,21 +599,17 @@ int main(int argc, char **argv)
               // Write request to file
               string req_file = ticket_dir + OMWS_TEST + _REQUEST + (*nt);
 
-              fs_out.open( req_file.c_str() );
-              ctx_next->os = &fs_out;
-              soap_set_omode(ctx_next, SOAP_XML_CANONICAL);
-              soap_set_omode(ctx_next, SOAP_XML_INDENT);
-              soap_set_omode(ctx_next, SOAP_XML_TREE);
-              soap_set_omode(ctx_next, SOAP_XML_NOTYPE);
+              ofstream fs_out( req_file.c_str() );
+              ctx->os = &fs_out;
 
               // The following line reproduces the same encapsulated call used by 
               // soap_write_om__ModelParametersType, but here we need a different element name, 
               // that's why soap_write is not used directly.
-              if ( ( tp.soap_serialize(ctx_next), soap_begin_send(ctx_next) || tp.soap_put(ctx_next, "om:TestParameters", NULL) || soap_end_send(ctx_next), ctx_next->error ) != SOAP_OK ) {
+              if ( ( tp.soap_serialize(ctx), soap_begin_send(ctx) || tp.soap_put(ctx, "om:TestParameters", NULL) || soap_end_send(ctx), ctx->error ) != SOAP_OK ) {
 
                 logMessage( "Failed to serialize new job request: " + req_file, fd_log );
                 cancelExperiment( exp_metadata_file, exp_prog_file, exp_done_file, ticket_dir, job_ticket, fd_log );
-                releaseSoap(ctx_next, ctx_dep);
+                releaseSoap(ctx);
                 break;
               }
             }
@@ -614,21 +626,21 @@ int main(int argc, char **argv)
 
                 logMessage( "File does not exist: " + pend_file, fd_log );
                 cancelExperiment( exp_metadata_file, exp_prog_file, exp_done_file, ticket_dir, job_ticket, fd_log );
-                releaseSoap(ctx_next, ctx_dep);
+                releaseSoap(ctx);
                 break;
               }
 
-              fs_in.open( pend_file.c_str() );
-              ctx_next->is = &fs_in;
+              ifstream fs_in( pend_file.c_str() );
+              ctx->is = &fs_in;
 
               om::_om__ProjectionParameters pp;
 
               // Parsing must succeed! (file was created using the same lib)
-              if ( soap_read_om__ProjectionParametersType( ctx_next, &pp ) != SOAP_OK ) {
+              if ( soap_read_om__ProjectionParametersType( ctx, &pp ) != SOAP_OK ) {
 
                 logMessage( "Could not deserialize: " + pend_file, fd_log );
                 cancelExperiment( exp_metadata_file, exp_prog_file, exp_done_file, ticket_dir, job_ticket, fd_log );
-                releaseSoap(ctx_next, ctx_dep);
+                releaseSoap(ctx);
                 break;
               }
 
@@ -647,22 +659,28 @@ int main(int argc, char **argv)
 
                     logMessage( "File does not exist: " + result_file, fd_log );
                     cancelExperiment( exp_metadata_file, exp_prog_file, exp_done_file, ticket_dir, job_ticket, fd_log );
-                    releaseSoap(ctx_next, ctx_dep);
+                    releaseSoap(ctx);
                     break;
                   }
-
-                  fs_in.open( result_file.c_str() );
 
                   om::om__ModelEnvelopeType model;
 
+                  struct soap *ctx1 = newSoapContext();
+
+                  ifstream fs1( result_file.c_str() );
+                  ctx1->is = &fs1;
+
                   // Parsing must succeed! (job is expected to be finished successfully)
-                  if ( soap_read_om__ModelEnvelopeType( ctx_dep, &model ) != SOAP_OK ) {
+                  if ( soap_read_om__ModelEnvelopeType( ctx1, &model ) != SOAP_OK ) {
 
                     logMessage( "Could not deserialize: " + result_file, fd_log );
                     cancelExperiment( exp_metadata_file, exp_prog_file, exp_done_file, ticket_dir, job_ticket, fd_log );
-                    releaseSoap(ctx_next, ctx_dep);
+                    releaseSoap(ctx1);
+                    releaseSoap(ctx);
                     break;
                   }
+
+                  releaseSoap(ctx1);
 
                   pp.Algorithm = model.SerializedModel->Algorithm;
                 }
@@ -675,26 +693,22 @@ int main(int argc, char **argv)
               // Write request to file
               string req_file = ticket_dir + OMWS_TEST + _REQUEST + (*nt);
 
-              fs_out.open( req_file.c_str() );
-              ctx_next->os = &fs_out;
-              soap_set_omode(ctx_next, SOAP_XML_CANONICAL);
-              soap_set_omode(ctx_next, SOAP_XML_INDENT);
-              soap_set_omode(ctx_next, SOAP_XML_TREE);
-              soap_set_omode(ctx_next, SOAP_XML_NOTYPE);
+              ofstream fs_out( req_file.c_str() );
+              ctx->os = &fs_out;
 
               // The following line reproduces the same encapsulated call used by 
               // soap_write_om__ModelParametersType, but here we need a different element name, 
               // that's why soap_write is not used directly.
-              if ( ( pp.soap_serialize(ctx_next), soap_begin_send(ctx_next) || pp.soap_put(ctx_next, "om:TestParameters", NULL) || soap_end_send(ctx_next), ctx_next->error ) != SOAP_OK ) {
+              if ( ( pp.soap_serialize(ctx), soap_begin_send(ctx) || pp.soap_put(ctx, "om:TestParameters", NULL) || soap_end_send(ctx), ctx->error ) != SOAP_OK ) {
 
                 logMessage( "Failed to serialize new job request: " + req_file, fd_log );
                 cancelExperiment( exp_metadata_file, exp_prog_file, exp_done_file, ticket_dir, job_ticket, fd_log );
-                releaseSoap(ctx_next, ctx_dep);
+                releaseSoap(ctx);
                 break;
               }
             }
 
-            releaseSoap( ctx_next, ctx_dep );
+            releaseSoap(ctx);
           }
         }
       }
