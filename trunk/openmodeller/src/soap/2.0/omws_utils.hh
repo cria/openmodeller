@@ -79,6 +79,8 @@ bool createFile( const string & fileName );
 
 void cancelExperiment( const string & exp_metadata_file, const string & exp_prog_file, const string & exp_done_file, const string & ticket_dir, const string & job_ticket, FILE * fd_log );
 
-void releaseSoap(struct soap *ctx1, struct soap *ctx2);
+struct soap * newSoapContext();
+
+void releaseSoap(struct soap *ctx);
 
 #endif

@@ -345,17 +345,26 @@ cancelExperiment( const string & exp_metadata_file, const string & exp_prog_file
   createFile( exp_done_file );
 }
 
+/************************/
+/**** newSoapContext ****/
+struct soap * 
+newSoapContext()
+{
+  struct soap *ctx = soap_new1(SOAP_XML_STRICT);
+  soap_init(ctx);
+  soap_imode(ctx, SOAP_ENC_XML); // Set input mode
+  soap_imode(ctx, SOAP_XML_IGNORENS);
+  soap_begin(ctx); // start new (de)serialization phase
+
+  return ctx;
+}
 
 /*********************/
 /**** releaseSoap ****/
 void 
-releaseSoap(struct soap *ctx1, struct soap *ctx2)
+releaseSoap(struct soap *ctx)
 {
-  soap_destroy(ctx1); // remove deserialized class instances (C++ objects)
-  soap_end(ctx1);     // clean up and remove deserialized data
-  soap_done(ctx1);    // detach context (last use and no longer in scope)
-
-  soap_destroy(ctx2);
-  soap_end(ctx2);
-  soap_done(ctx2);
+  soap_destroy(ctx); // remove deserialized class instances (C++ objects)
+  soap_end(ctx);     // clean up and remove deserialized data
+  soap_done(ctx);    // detach context (last use and no longer in scope)
 }
