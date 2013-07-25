@@ -689,9 +689,9 @@ int main(int argc, char **argv)
               ctx->os = &fs_out;
 
               // The following line reproduces the same encapsulated call used by 
-              // soap_write_om__ModelParametersType, but here we need a different element name, 
+              // soap_write_om__ProjectionParametersType, but here we need a different element name, 
               // that's why soap_write is not used directly.
-              if ( ( pp.soap_serialize(ctx), soap_begin_send(ctx) || pp.soap_put(ctx, "om:TestParameters", NULL) || soap_end_send(ctx), ctx->error ) != SOAP_OK ) {
+              if ( ( pp.soap_serialize(ctx), soap_begin_send(ctx) || pp.soap_put(ctx, "om:ProjectionParameters", NULL) || soap_end_send(ctx), ctx->error ) != SOAP_OK ) {
 
                 logMessage( "Failed to serialize new job request: " + req_file, fd_log );
                 cancelExperiment( exp_metadata_file, exp_prog_file, exp_done_file, ticket_dir, job_ticket, fd_log );
