@@ -79,7 +79,6 @@ static map<string, string> scheduleExperiment( struct soap* soap, const om::_om_
 static void     updateNextJobs( string next_id, string prev_id, map< string, vector<string> > *next_deps );
 static string   collateTickets( vector<string>* ids, map<string, string> *jobs );
 static string   collateTickets( map<string, string>* ids, map<string, string> *jobs );
-static void     renameJobStatus( string job_full_path, const char * target, const char * replacement );
 
 /****************/
 /***  Globals ***/
@@ -928,7 +927,57 @@ omws__getLog( struct soap *soap, xsd__string ticket, xsd__string &log )
 int
 omws__cancel( struct soap *soap, xsd__string tickets, xsd__string &cancelledTickets )
 {
-  return soap_receiver_fault( soap, "Not implemented", NULL );
+  logRequest( soap, "cancel", tickets );
+
+  if ( getStatus() == 2 ) {
+
+    return soap_receiver_fault( soap, "Service unavailable", NULL );
+  }
+
+  soap_clr_omode(soap, SOAP_ENC_ZLIB); // disable Zlib's gzip
+
+  if ( ! tickets ) {
+
+    return soap_sender_fault( soap, "Missing ticket(s) in request", NULL );
+  }
+
+  // Split tokens and process each one
+  string ticket_dir = gFileParser.get( "TICKET_DIRECTORY" );
+  stringstream ss( tickets );
+  stringstream res( "" );
+  string ticket;
+  bool not_first = false;
+  while ( getline( ss, ticket, ',' ) ) {
+
+    try {
+
+     if ( cancelJob( ticket_dir, ticket ) ) {
+
+        if ( not_first ) {
+
+          res << ",";
+        }
+        else {
+
+          not_first = true;
+        }
+
+        res << ticket;
+      }
+    }
+    catch (OmwsException& e) {
+
+      return soap_receiver_fault( soap, e.what(), NULL );
+    }
+    catch (...) {
+
+      return soap_receiver_fault( soap, "Failed to process request", NULL );
+    }
+  }
+
+  cancelledTickets = (char*)res.str().c_str();
+
+  return SOAP_OK;
 }
 
 /*******************/
@@ -2415,13 +2464,13 @@ scheduleExperiment(struct soap* soap, const om::_om__ExperimentParameters& ep, c
 
     string job_file_name = (*fit);
 
-    renameJobStatus( job_file_name, _PENDING_REQUEST, _REQUEST );
+    renameJobFile( job_file_name, _PENDING_REQUEST, _REQUEST );
   }
 
   // Rename experiment job
   string exp_job_file = ticket_dir + OMWS_EXPERIMENT _REQUEST + experiment_ticket;
 
-  renameJobStatus( exp_job_file, _REQUEST, _PROCESSED_REQUEST );
+  renameJobFile( exp_job_file, _REQUEST, _PROCESSED_REQUEST );
 
   return jobs;
 }
@@ -2498,29 +2547,4 @@ collateTickets( map<string, string>* ids, map<string, string> *jobs )
     }
   }
   return result;
-}
-
-/*************************/
-/**** renameJobStatus ****/
-static void
-renameJobStatus( string job_full_path, const char * target, const char * replacement )
-{
-  string sub( target );
-
-  size_t pos = job_full_path.rfind( target );
-
-  if ( pos != string::npos ) {
-
-    string newname( job_full_path );
-    newname.replace( pos, sub.size(), replacement );
-
-    if ( rename( job_full_path.c_str() , newname.c_str() ) != 0 ) {
-
-      throw OmwsException("Failed to update job status (2)");
-    }
-  }
-  else {
-
-    throw OmwsException("Failed to update job status (1)");
-  }
 }

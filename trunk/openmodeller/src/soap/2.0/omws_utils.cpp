@@ -74,12 +74,12 @@ fileExists( const char* fileName )
 /********************/
 /**** logMessage ****/
 void 
-logMessage( const string & msg, FILE * fd_log )
+logMessage( const string & msg, FILE * fdLog )
 {
   printf( "%s\n", msg.c_str() );
-  fputs( msg.c_str(), fd_log );
-  fputs( "\n", fd_log );
-  fflush( fd_log );
+  fputs( msg.c_str(), fdLog );
+  fputs( "\n", fdLog );
+  fflush( fdLog );
 }
 
 /*********************/
@@ -295,54 +295,128 @@ createFile( const string & fileName )
   return true;
 }
 
-
-/**************************/
-/**** cancelExperiment ****/
+/***********************/
+/**** renameJobFile ****/
 void
-cancelExperiment( const string & exp_metadata_file, const string & exp_prog_file, const string & exp_done_file, const string & ticket_dir, const string & job_ticket, FILE * fd_log )
+renameJobFile( const string & jobFullPath, const char * target, const char * replacement )
 {
-  fputs( "Cancelling experiment\n", fd_log );
+  string sub( target );
+
+  size_t pos = jobFullPath.rfind( target );
+
+  if ( pos != string::npos ) {
+
+    string newname( jobFullPath );
+    newname.replace( pos, sub.size(), replacement );
+
+    if ( rename( jobFullPath.c_str() , newname.c_str() ) != 0 ) {
+
+      throw OmwsException("Failed to update job status (2)");
+    }
+  }
+  else {
+
+    throw OmwsException("Failed to update job status (1)");
+  }
+}
+
+/*******************/
+/**** cancelJob ****/
+bool cancelJob( const string & ticketDir, const string & ticket )
+{
+  // Read job metadata to get type
+  string metadata_file = ticketDir + OMWS_JOB_METADATA_PREFIX + ticket;
+
+  FileParser data( metadata_file );
+
+  string type = data.get("TYPE");
+
+  if ( type.compare(0, 3, OMWS_EXPERIMENT) == 0 ) {
+
+    return stopExperiment( ticketDir, ticket, "", 0, "-3" );
+  }
+
+  // If job is pending, cancel it, otherwise let it finish behind the scenes
+  if ( getProgress( ticketDir, ticket, false ) == -1 ) {
+
+    string req_file = ticketDir + type + _REQUEST + ticket;
+
+    try {
+
+      if ( fileExists( req_file.c_str() ) ) {
+
+        renameJobFile( req_file, _REQUEST, _PROCESSED_REQUEST );
+      }
+
+      string prog_file = ticketDir + OMWS_JOB_PROGRESS_PREFIX + ticket;
+
+      updateProgress( prog_file, "-3" );
+      string done_file = ticketDir + OMWS_JOB_DONE_PREFIX + ticket;
+      createFile( done_file );
+
+      return true;
+    }
+    catch (OmwsException& e) {
+
+      printf( "Failed to cancel job: %s\n", e.what() );
+      return false;
+    }
+  }
+
+  return false;
+}
+
+/************************/
+/**** stopExperiment ****/
+bool
+stopExperiment( const string & ticketDir, const string & expTicket, const string & jobTicketException, FILE * fdLog, const char* newStatus )
+{
+  string done_file = ticketDir + OMWS_JOB_DONE_PREFIX + expTicket;
+
+  if ( fileExists( done_file.c_str() ) ) {
+
+    return false;
+  }
+
+  if ( fdLog ) {
+
+    fputs( "Stopping experiment\n", fdLog );
+    fflush( fdLog );
+  }
 
   // Are there other jobs to cancel?
 
   // Get all jobs in the experiment
-  FileParser exp_data( exp_metadata_file );
+  FileParser exp_data( ticketDir + OMWS_JOB_METADATA_PREFIX + expTicket );
 
   string all_jobs = exp_data.get( "JOBS" );
 
   vector<string> all_tickets = getTickets( all_jobs );
 
+  bool cancelled = false;
+
   for ( vector<string>::iterator at = all_tickets.begin(); at != all_tickets.end(); ++at ) {
 
-    if ( job_ticket.compare(0, 6, (*at)) == 0 ) {
+    if ( jobTicketException.size() == 6 && jobTicketException.compare(0, 6, (*at)) == 0 ) {
 
-      continue; // Skip current job!
+      continue; // Skip provided job!
     }
 
-    // Read job metadata to get type
-    string metadata_file = ticket_dir + OMWS_JOB_METADATA_PREFIX + (*at);
+    if ( cancelJob( ticketDir, (*at) ) ) {
 
-    FileParser data( metadata_file );
-
-    string type = data.get("TYPE");
-
-    // Build pending request file name
-    string pending_file = ticket_dir + type + _PENDING_REQUEST + (*at);
-
-    // If job is pending, cancel it, otherwise let it finish behind the scenes
-    if ( fileExists( pending_file.c_str() ) ) {
-
-      string prog_file = ticket_dir + OMWS_JOB_PROGRESS_PREFIX + (*at);
-
-      updateProgress( prog_file, "-3" );
-      string done_file = ticket_dir + OMWS_JOB_DONE_PREFIX + (*at);
-      createFile( done_file );
+      cancelled = true;
     }
   }
 
-  // Cancel experiment
-  updateProgress( exp_prog_file, "-2" );
-  createFile( exp_done_file );
+  if ( cancelled ) {
+
+    // Cancel experiment
+    updateProgress( ticketDir + OMWS_JOB_PROGRESS_PREFIX + expTicket, newStatus );
+    createFile( done_file );
+    return true;
+  }
+
+  return false;
 }
 
 /************************/

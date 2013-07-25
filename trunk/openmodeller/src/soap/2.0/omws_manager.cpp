@@ -325,7 +325,7 @@ int main(int argc, char **argv)
               if ( ! fileExists( pend_file.c_str() ) ) {
 
                 logMessage( "File does not exist: " + pend_file, fd_log );
-                cancelExperiment( exp_metadata_file, exp_prog_file, exp_done_file, ticket_dir, job_ticket, fd_log );
+                stopExperiment( ticket_dir, exp_ticket, job_ticket, fd_log, "-2" );
                 releaseSoap(ctx);
                 break;
               }
@@ -339,7 +339,7 @@ int main(int argc, char **argv)
               if ( soap_read_om__ModelParametersType( ctx, &mp ) != SOAP_OK ) {
 
                 logMessage( "Could not deserialize: " + pend_file, fd_log );
-                cancelExperiment( exp_metadata_file, exp_prog_file, exp_done_file, ticket_dir, job_ticket, fd_log );
+                stopExperiment( ticket_dir, exp_ticket, job_ticket, fd_log, "-2" );
                 releaseSoap(ctx);
                 break;
               }
@@ -358,7 +358,7 @@ int main(int argc, char **argv)
                   if ( ! fileExists( result_file.c_str() ) ) {
 
                     logMessage( "File does not exist: " + result_file, fd_log );
-                    cancelExperiment( exp_metadata_file, exp_prog_file, exp_done_file, ticket_dir, job_ticket, fd_log );
+                    stopExperiment( ticket_dir, exp_ticket, job_ticket, fd_log, "-2" );
                     releaseSoap(ctx);
                     break;
                   }
@@ -374,7 +374,7 @@ int main(int argc, char **argv)
                   if ( soap_read_om__SamplerType( ctx1, &samp ) != SOAP_OK ) {
 
                     logMessage( "Could not deserialize: " + result_file, fd_log );
-                    cancelExperiment( exp_metadata_file, exp_prog_file, exp_done_file, ticket_dir, job_ticket, fd_log );
+                    stopExperiment( ticket_dir, exp_ticket, job_ticket, fd_log, "-2" );
                     releaseSoap(ctx1);
                     releaseSoap(ctx);
                     break;
@@ -390,7 +390,7 @@ int main(int argc, char **argv)
                   if ( ! fileExists( result_file.c_str() ) ) {
 
                     logMessage( "File does not exist: " + result_file, fd_log );
-                    cancelExperiment( exp_metadata_file, exp_prog_file, exp_done_file, ticket_dir, job_ticket, fd_log );
+                    stopExperiment( ticket_dir, exp_ticket, job_ticket, fd_log, "-2" );
                     releaseSoap(ctx);
                     break;
                   }
@@ -406,7 +406,7 @@ int main(int argc, char **argv)
                   if ( soap_read_om__SamplerType( ctx2, &samp ) != SOAP_OK ) {
 
                     logMessage( "Could not deserialize: " + result_file, fd_log );
-                    cancelExperiment( exp_metadata_file, exp_prog_file, exp_done_file, ticket_dir, job_ticket, fd_log );
+                    stopExperiment( ticket_dir, exp_ticket, job_ticket, fd_log, "-2" );
                     releaseSoap(ctx2);
                     releaseSoap(ctx);
                     break;
@@ -432,7 +432,7 @@ int main(int argc, char **argv)
               if ( ( mp.soap_serialize(ctx), soap_begin_send(ctx) || mp.soap_put(ctx, "om:ModelParameters", NULL) || soap_end_send(ctx), ctx->error ) != SOAP_OK ) {
 
                 logMessage( "Failed to serialize new job request: " + req_file, fd_log );
-                cancelExperiment( exp_metadata_file, exp_prog_file, exp_done_file, ticket_dir, job_ticket, fd_log );
+                stopExperiment( ticket_dir, exp_ticket, job_ticket, fd_log, "-2" );
                 releaseSoap(ctx);
                 break;
               }
@@ -449,7 +449,7 @@ int main(int argc, char **argv)
               if ( ! fileExists( pend_file.c_str() ) ) {
 
                 logMessage( "File does not exist: " + pend_file, fd_log );
-                cancelExperiment( exp_metadata_file, exp_prog_file, exp_done_file, ticket_dir, job_ticket, fd_log );
+                stopExperiment( ticket_dir, exp_ticket, job_ticket, fd_log, "-2" );
                 releaseSoap(ctx);
                 break;
               }
@@ -463,7 +463,7 @@ int main(int argc, char **argv)
               if ( soap_read_om__TestParametersType( ctx, &tp ) != SOAP_OK ) {
 
                 logMessage( "Could not deserialize: " + pend_file, fd_log );
-                cancelExperiment( exp_metadata_file, exp_prog_file, exp_done_file, ticket_dir, job_ticket, fd_log );
+                stopExperiment( ticket_dir, exp_ticket, job_ticket, fd_log, "-2" );
                 releaseSoap(ctx);
                 break;
               }
@@ -486,7 +486,7 @@ int main(int argc, char **argv)
                   if ( ! fileExists( result_file.c_str() ) ) {
 
                     logMessage( "File does not exist: " + result_file, fd_log );
-                    cancelExperiment( exp_metadata_file, exp_prog_file, exp_done_file, ticket_dir, job_ticket, fd_log );
+                    stopExperiment( ticket_dir, exp_ticket, job_ticket, fd_log, "-2" );
                     releaseSoap(ctx);
                     break;
                   }
@@ -502,7 +502,7 @@ int main(int argc, char **argv)
                   if ( soap_read_om__SamplerType( ctx1, &samp ) != SOAP_OK ) {
 
                     logMessage( "Could not deserialize: " + result_file, fd_log );
-                    cancelExperiment( exp_metadata_file, exp_prog_file, exp_done_file, ticket_dir, job_ticket, fd_log );
+                    stopExperiment( ticket_dir, exp_ticket, job_ticket, fd_log, "-2" );
                     releaseSoap(ctx1);
                     releaseSoap(ctx);
                     break;
@@ -520,7 +520,7 @@ int main(int argc, char **argv)
                   if ( ! fileExists( result_file.c_str() ) ) {
 
                     logMessage( "File does not exist: " + result_file, fd_log );
-                    cancelExperiment( exp_metadata_file, exp_prog_file, exp_done_file, ticket_dir, job_ticket, fd_log );
+                    stopExperiment( ticket_dir, exp_ticket, job_ticket, fd_log, "-2" );
                     releaseSoap(ctx);
                     break;
                   }
@@ -536,7 +536,7 @@ int main(int argc, char **argv)
                   if ( soap_read_om__SamplerType( ctx2, &samp ) != SOAP_OK ) {
 
                     logMessage( "Could not deserialize: " + result_file, fd_log );
-                    cancelExperiment( exp_metadata_file, exp_prog_file, exp_done_file, ticket_dir, job_ticket, fd_log );
+                    stopExperiment( ticket_dir, exp_ticket, job_ticket, fd_log, "-2" );
                     releaseSoap(ctx2);
                     releaseSoap(ctx);
                     break;
@@ -554,7 +554,7 @@ int main(int argc, char **argv)
                   if ( ! fileExists( result_file.c_str() ) ) {
 
                     logMessage( "File does not exist: " + result_file, fd_log );
-                    cancelExperiment( exp_metadata_file, exp_prog_file, exp_done_file, ticket_dir, job_ticket, fd_log );
+                    stopExperiment( ticket_dir, exp_ticket, job_ticket, fd_log, "-2" );
                     releaseSoap(ctx);
                     break;
                   }
@@ -570,7 +570,7 @@ int main(int argc, char **argv)
                   if ( soap_read_om__SerializedModelType( ctx3, &model ) != SOAP_OK ) {
 
                     logMessage( "Could not deserialize: " + result_file, fd_log );
-                    cancelExperiment( exp_metadata_file, exp_prog_file, exp_done_file, ticket_dir, job_ticket, fd_log );
+                    stopExperiment( ticket_dir, exp_ticket, job_ticket, fd_log, "-2" );
                     releaseSoap(ctx3);
                     releaseSoap(ctx);
                     break;
@@ -600,7 +600,7 @@ int main(int argc, char **argv)
               if ( ( tp.soap_serialize(ctx), soap_begin_send(ctx) || tp.soap_put(ctx, "om:TestParameters", NULL) || soap_end_send(ctx), ctx->error ) != SOAP_OK ) {
 
                 logMessage( "Failed to serialize new job request: " + req_file, fd_log );
-                cancelExperiment( exp_metadata_file, exp_prog_file, exp_done_file, ticket_dir, job_ticket, fd_log );
+                stopExperiment( ticket_dir, exp_ticket, job_ticket, fd_log, "-2" );
                 releaseSoap(ctx);
                 break;
               }
@@ -619,7 +619,7 @@ int main(int argc, char **argv)
               if ( ! fileExists( pend_file.c_str() ) ) {
 
                 logMessage( "File does not exist: " + pend_file, fd_log );
-                cancelExperiment( exp_metadata_file, exp_prog_file, exp_done_file, ticket_dir, job_ticket, fd_log );
+                stopExperiment( ticket_dir, exp_ticket, job_ticket, fd_log, "-2" );
                 releaseSoap(ctx);
                 break;
               }
@@ -633,7 +633,7 @@ int main(int argc, char **argv)
               if ( soap_read_om__ProjectionParametersType( ctx, &pp ) != SOAP_OK ) {
 
                 logMessage( "Could not deserialize: " + pend_file, fd_log );
-                cancelExperiment( exp_metadata_file, exp_prog_file, exp_done_file, ticket_dir, job_ticket, fd_log );
+                stopExperiment( ticket_dir, exp_ticket, job_ticket, fd_log, "-2" );
                 releaseSoap(ctx);
                 break;
               }
@@ -652,7 +652,7 @@ int main(int argc, char **argv)
                   if ( ! fileExists( result_file.c_str() ) ) {
 
                     logMessage( "File does not exist: " + result_file, fd_log );
-                    cancelExperiment( exp_metadata_file, exp_prog_file, exp_done_file, ticket_dir, job_ticket, fd_log );
+                    stopExperiment( ticket_dir, exp_ticket, job_ticket, fd_log, "-2" );
                     releaseSoap(ctx);
                     break;
                   }
@@ -668,7 +668,7 @@ int main(int argc, char **argv)
                   if ( soap_read_om__SerializedModelType( ctx1, &model ) != SOAP_OK ) {
 
                     logMessage( "Could not deserialize: " + result_file, fd_log );
-                    cancelExperiment( exp_metadata_file, exp_prog_file, exp_done_file, ticket_dir, job_ticket, fd_log );
+                    stopExperiment( ticket_dir, exp_ticket, job_ticket, fd_log, "-2" );
                     releaseSoap(ctx1);
                     releaseSoap(ctx);
                     break;
@@ -694,7 +694,7 @@ int main(int argc, char **argv)
               if ( ( pp.soap_serialize(ctx), soap_begin_send(ctx) || pp.soap_put(ctx, "om:ProjectionParameters", NULL) || soap_end_send(ctx), ctx->error ) != SOAP_OK ) {
 
                 logMessage( "Failed to serialize new job request: " + req_file, fd_log );
-                cancelExperiment( exp_metadata_file, exp_prog_file, exp_done_file, ticket_dir, job_ticket, fd_log );
+                stopExperiment( ticket_dir, exp_ticket, job_ticket, fd_log, "-2" );
                 releaseSoap(ctx);
                 break;
               }
@@ -711,7 +711,7 @@ int main(int argc, char **argv)
       ostringstream oss;
       oss << "Job didn't finish successfully (" << progress << ").";
       logMessage( oss.str(), fd_log );
-      cancelExperiment( exp_metadata_file, exp_prog_file, exp_done_file, ticket_dir, job_ticket, fd_log );
+      stopExperiment( ticket_dir, exp_ticket, job_ticket, fd_log, "-2" );
     }
 
     break;
