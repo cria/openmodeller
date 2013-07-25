@@ -65,7 +65,7 @@ string getTicketFilePath( string dir, string prefix, string ticket );
 
 bool fileExists( const char* fileName );
 
-void logMessage( const string & msg, FILE * fd_log );
+void logMessage( const string & msg, FILE * fdLog );
 
 int getProgress( const string & ticketDir, const string & ticket, bool checkDoneFile=true );
 
@@ -77,7 +77,11 @@ map<string, string> getTicketsWithTask( const string & concatenatedValues );
 
 bool createFile( const string & fileName );
 
-void cancelExperiment( const string & exp_metadata_file, const string & exp_prog_file, const string & exp_done_file, const string & ticket_dir, const string & job_ticket, FILE * fd_log );
+void renameJobFile(  const string & jobFullPath, const char * target, const char * replacement );
+
+bool cancelJob( const string & ticketDir, const string & ticket );
+
+bool stopExperiment( const string & ticketDir, const string & expTicket, const string & jobTicketException, FILE * fdLog, const char* newStatus="-3" );
 
 struct soap * newSoapContext();
 
