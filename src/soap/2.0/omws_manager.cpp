@@ -657,7 +657,7 @@ int main(int argc, char **argv)
                     break;
                   }
 
-                  om::om__ModelEnvelopeType model;
+                  om::om__SerializedModelType model;
 
                   struct soap *ctx1 = newSoapContext();
 
@@ -665,7 +665,7 @@ int main(int argc, char **argv)
                   ctx1->is = &fs1;
 
                   // Parsing must succeed! (job is expected to be finished successfully)
-                  if ( soap_read_om__ModelEnvelopeType( ctx1, &model ) != SOAP_OK ) {
+                  if ( soap_read_om__SerializedModelType( ctx1, &model ) != SOAP_OK ) {
 
                     logMessage( "Could not deserialize: " + result_file, fd_log );
                     cancelExperiment( exp_metadata_file, exp_prog_file, exp_done_file, ticket_dir, job_ticket, fd_log );
@@ -674,7 +674,7 @@ int main(int argc, char **argv)
                     break;
                   }
 
-                  pp.Algorithm = model.SerializedModel->Algorithm;
+                  pp.Algorithm = model.Algorithm;
                 }
                 else {
 
