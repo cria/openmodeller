@@ -683,7 +683,7 @@ int main(int argc, char **argv)
               }
 
               // Write request to file
-              string req_file = ticket_dir + OMWS_TEST + _REQUEST + (*nt);
+              string req_file = ticket_dir + OMWS_PROJECTION + _REQUEST + (*nt);
 
               ofstream fs_out( req_file.c_str() );
               ctx->os = &fs_out;
