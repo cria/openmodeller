@@ -75,6 +75,8 @@ vector<string> getTickets( const string & concatenatedValues );
 
 map<string, string> getTicketsWithTask( const string & concatenatedValues );
 
+void readFile( const char* filePath, ostringstream & oss );
+
 bool createFile( const string & fileName );
 
 void renameJobFile(  const string & jobFullPath, const char * target, const char * replacement );

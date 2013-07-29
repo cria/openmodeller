@@ -277,6 +277,32 @@ getTicketsWithTask( const string & concatenatedValues )
   return tickets;
 }
 
+/******************/
+/**** readFile ****/
+void 
+readFile( const char* filePath, ostringstream & oss )
+{
+  fstream fin;
+  fin.open( filePath, ios::in );
+
+  if ( fin.is_open() ) {
+
+    string line;
+
+    while ( ! fin.eof() )
+    {
+      getline( fin, line );
+      oss << line << endl;
+    }
+
+    fin.close();
+  }
+  else {
+
+    throw OmwsException("Failed to read file content");
+  }
+}
+
 /********************/
 /**** createFile ****/
 bool 
