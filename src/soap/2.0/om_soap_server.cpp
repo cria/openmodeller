@@ -1344,9 +1344,101 @@ omws__getSamplingResult( struct soap *soap, xsd__string ticket, struct omws__get
 /*********************/
 /**** get Results ****/
 int 
-omws__getResults( struct soap *soap, xsd__string ticket, struct omws__getResultsResponse *out )
+omws__getResults( struct soap *soap, xsd__string tickets, struct omws__getResultsResponse *out )
 { 
-  return soap_receiver_fault( soap, "Not implemented", NULL );
+  logRequest( soap, "getResults", tickets );
+
+  if ( getStatus() == 2 ) {
+
+    return soap_receiver_fault( soap, "Service unavailable", NULL );
+  }
+
+  soap_clr_omode(soap, SOAP_ENC_ZLIB); // disable Zlib's gzip
+
+  if ( ! tickets ) {
+
+    return soap_sender_fault( soap, "Missing ticket(s) in request", NULL );
+  }
+
+  // Split tokens and process each one
+  string ticket_dir = gFileParser.get( "TICKET_DIRECTORY" );
+  stringstream ss( tickets );
+  ostringstream oss;
+
+  oss << "<ResultSet>" << endl;
+
+  string ticket;
+  bool has_result = false;
+  while ( getline( ss, ticket, ',' ) ) {
+
+    try {
+
+      string metadata_file = ticket_dir + OMWS_JOB_METADATA_PREFIX + ticket;
+
+      FileParser data( metadata_file );
+
+      string type = data.get("TYPE");
+
+      if ( type.compare(0, 3, OMWS_EXPERIMENT) == 0 ) {
+
+        FileParser exp_data( ticket_dir + OMWS_JOB_METADATA_PREFIX + ticket );
+
+        string all_jobs = exp_data.get( "JOBS" );
+
+        vector<string> all_tickets = getTickets( all_jobs );
+
+        for ( vector<string>::iterator at = all_tickets.begin(); at != all_tickets.end(); ++at ) {
+
+          if ( getProgress( ticket_dir, (*at) ) == 100 ) {
+
+            string res_file = ticket_dir + type + _RESPONSE + (*at);
+
+            has_result = true;
+
+            oss << "<Job Ticket=\"" << (*at) << "\">" << endl;
+
+            readFile( res_file.c_str(), oss );
+
+            oss << "</Job>" << endl;
+          }
+        }
+      }
+      else {
+
+        if ( getProgress( ticket_dir, ticket ) == 100 ) {
+
+          string res_file = ticket_dir + type + _RESPONSE + ticket;
+
+          has_result = true;
+
+          oss << "<Job Ticket=\"" << ticket << "\">" << endl;
+
+          readFile( res_file.c_str(), oss );
+
+          oss << "</Job>" << endl;
+        }
+      }
+    }
+    catch (OmwsException& e) {
+
+      return soap_receiver_fault( soap, e.what(), NULL );
+    }
+    catch (...) {
+
+      return soap_receiver_fault( soap, "Failed to process request", NULL );
+    }
+  }
+
+  if ( ! has_result ) {
+
+    return soap_receiver_fault( soap, "No results", NULL );
+  }
+
+  oss << "</ResultSet>" << endl;
+
+  out->om__ResultSet = convertToWideChar( oss.str().c_str() );
+
+  return SOAP_OK;
 }
 
 ////////////////////////////////////////////////////
