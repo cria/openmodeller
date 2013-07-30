@@ -3,14 +3,12 @@
 # Files
 
 SET (OMSOAP_SRCS
-  om_soap_server.cpp 
-  om_soap.hh
+  om_server.cpp 
   stdsoap2.cpp 
   soapServer.cpp 
   soapC.cpp 
-  omC.cpp
+  dom.cpp
   omws_utils.cpp
-  omStub.h
 )
 
 SET (OMSOAP_HDRS
@@ -20,9 +18,8 @@ SET (OMWS_MANAGER_SRCS
   omws_manager.cpp 
   stdsoap2.cpp 
   soapC.cpp 
-  omC.cpp
+  dom.cpp
   omws_utils.cpp
-  omStub.h
   ../../console/getopts/getopts.C
 )
 
