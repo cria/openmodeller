@@ -25,7 +25,7 @@
  */
 
 #include "openModeller.nsmap"
-#include "omH.h"
+#include "soapH.h"
 #include <openmodeller/om.hh>
 #include <openmodeller/FileParser.hh>
 
@@ -75,7 +75,7 @@ static int      getStatus();
 static void     createTicket( struct soap *soap, string requestPrefix, xsd__string &ticket, string *requestFileName );
 static void     scheduleJob( struct soap *soap, string requestPrefix, XML xmlParameters, wchar_t* elementName, xsd__string &ticket );
 static void     scheduleJob( struct soap *soap, string requestPrefix, string xmlParameters, wchar_t* elementName, xsd__string &ticket );
-static map<string, string> scheduleExperiment( struct soap* soap, const om::_om__ExperimentParameters& ep, const char * experiment_ticket );
+static map<string, string> scheduleExperiment( struct soap* soap, const _om__ExperimentParameters& ep, const char * experiment_ticket );
 static void     updateNextJobs( string next_id, string prev_id, map< string, vector<string> > *next_deps );
 static string   collateTickets( vector<string>* ids, map<string, string> *jobs );
 static string   collateTickets( map<string, string>* ids, map<string, string> *jobs );
@@ -756,7 +756,7 @@ omws__runExperiment( struct soap *soap, XML_ om__ExperimentParameters, struct om
     istringstream iss( params );
     ctx->is = &iss;
 
-    om::_om__ExperimentParameters ep;
+    _om__ExperimentParameters ep;
 
     if ( soap_read_om__ExperimentParametersType( ctx, &ep ) != SOAP_OK ) {
 
@@ -2019,7 +2019,7 @@ scheduleJob( struct soap *soap, string requestPrefix, string xmlParameters, wcha
 /****************************/
 /**** scheduleExperiment ****/
 static map<string, string> 
-scheduleExperiment(struct soap* soap, const om::_om__ExperimentParameters& ep, const char * experiment_ticket) {
+scheduleExperiment(struct soap* soap, const _om__ExperimentParameters& ep, const char * experiment_ticket) {
 
   soap_set_omode(soap, SOAP_XML_CANONICAL);
   soap_set_omode(soap, SOAP_XML_INDENT);
@@ -2027,41 +2027,41 @@ scheduleExperiment(struct soap* soap, const om::_om__ExperimentParameters& ep, c
   soap_set_omode(soap, SOAP_XML_NOTYPE);
 
   // Read Environments provided
-  map<string, om::om__EnvironmentType> environments;
+  map<string, om__EnvironmentType> environments;
 
-  vector<om::_om__ExperimentParametersType_Environment>::const_iterator it = ep.Environment.begin();
+  vector<_om__ExperimentParametersType_Environment>::const_iterator it = ep.Environment.begin();
   for ( ; it != ep.Environment.end(); it++ ) {
 
     string env_id = string( (*it).id );
 
-    om::om__EnvironmentType env;
+    om__EnvironmentType env;
     env.NumLayers = (*it).NumLayers;
     env.Map = (*it).Map;
     env.Mask = (*it).Mask;
 
-    environments.insert( pair<string, om::om__EnvironmentType>( env_id, env ) );
+    environments.insert( pair<string, om__EnvironmentType>( env_id, env ) );
   }
 
   // Read Presences provided
-  map<string, om::om__OccurrencesType> presences;
+  map<string, om__OccurrencesType> presences;
 
   if ( ep.Presence != 0 ) {
 
-    vector<om::_om__ExperimentParametersType_Presence>::const_iterator it = ep.Presence->begin();
+    vector<_om__ExperimentParametersType_Presence>::const_iterator it = ep.Presence->begin();
     for ( ; it != ep.Presence->end(); it++ ) {
 
       string pre_id = string( (*it).id );
 
-      om::om__OccurrencesType pre;
+      om__OccurrencesType pre;
       pre.Count = (*it).Count;
       pre.Label = (*it).Label;
       pre.CoordinateSystem = (*it).CoordinateSystem;
 
-      vector<om::_om__OccurrencesType_Point> points;
-      vector<om::_om__ExperimentParametersType_Presence_Point>::const_iterator pit = (*it).Point.begin();
+      vector<_om__OccurrencesType_Point> points;
+      vector<_om__ExperimentParametersType_Presence_Point>::const_iterator pit = (*it).Point.begin();
       for ( ; pit != (*it).Point.end(); pit++ ) {
 
-        om::_om__OccurrencesType_Point point;
+        _om__OccurrencesType_Point point;
         point.Id = (*pit).Id;
         point.X = (*pit).X;
         point.Y = (*pit).Y;
@@ -2070,30 +2070,30 @@ scheduleExperiment(struct soap* soap, const om::_om__ExperimentParameters& ep, c
       }
       pre.Point = points;
 
-      presences.insert( pair<string, om::om__OccurrencesType>( pre_id, pre ) );
+      presences.insert( pair<string, om__OccurrencesType>( pre_id, pre ) );
     }
   }
 
   // Read Absences provided
-  map<string, om::om__OccurrencesType> absences;
+  map<string, om__OccurrencesType> absences;
 
   if ( ep.Absence != 0 ) {
 
-    vector<om::_om__ExperimentParametersType_Absence>::const_iterator it = ep.Absence->begin();
+    vector<_om__ExperimentParametersType_Absence>::const_iterator it = ep.Absence->begin();
     for ( ; it != ep.Absence->end(); it++ ) {
 
       string abs_id = string( (*it).id );
 
-      om::om__OccurrencesType abs;
+      om__OccurrencesType abs;
       abs.Count = (*it).Count;
       abs.Label = (*it).Label;
       abs.CoordinateSystem = (*it).CoordinateSystem;
 
-      vector<om::_om__OccurrencesType_Point> points;
-      vector<om::_om__ExperimentParametersType_Absence_Point>::const_iterator pit = (*it).Point.begin();
+      vector<_om__OccurrencesType_Point> points;
+      vector<_om__ExperimentParametersType_Absence_Point>::const_iterator pit = (*it).Point.begin();
       for ( ; pit != (*it).Point.end(); pit++ ) {
 
-        om::_om__OccurrencesType_Point point;
+        _om__OccurrencesType_Point point;
         point.Id = (*pit).Id;
         point.X = (*pit).X;
         point.Y = (*pit).Y;
@@ -2102,39 +2102,39 @@ scheduleExperiment(struct soap* soap, const om::_om__ExperimentParameters& ep, c
       }
       abs.Point = points;
 
-      absences.insert( pair<string, om::om__OccurrencesType>( abs_id, abs ) );
+      absences.insert( pair<string, om__OccurrencesType>( abs_id, abs ) );
     }
   }
 
   // Read Algorithms provided
-  map<string, om::om__BasicAlgorithmDefinitionType> algorithms;
+  map<string, om__BasicAlgorithmDefinitionType> algorithms;
 
   if ( ep.AlgorithmSettings != 0 ) {
 
-    vector<om::_om__ExperimentParametersType_AlgorithmSettings>::const_iterator it = ep.AlgorithmSettings->begin();
+    vector<_om__ExperimentParametersType_AlgorithmSettings>::const_iterator it = ep.AlgorithmSettings->begin();
     for ( ; it != ep.AlgorithmSettings->end(); it++ ) {
 
       string alg_id = string( (*it).id );
 
-      om::om__BasicAlgorithmDefinitionType alg = *(*it).Algorithm;
+      om__BasicAlgorithmDefinitionType alg = *(*it).Algorithm;
 
-      algorithms.insert( pair<string, om::om__BasicAlgorithmDefinitionType>( alg_id, alg ) );
+      algorithms.insert( pair<string, om__BasicAlgorithmDefinitionType>( alg_id, alg ) );
     }
   }
 
   // Read Models provided
-  map<string, om::om__SerializedAlgorithmType> models;
+  map<string, om__SerializedAlgorithmType> models;
 
   if ( ep.SerializedAlgorithm != 0 ) {
 
-    vector<om::_om__ExperimentParametersType_SerializedAlgorithm>::const_iterator it = ep.SerializedAlgorithm->begin();
+    vector<_om__ExperimentParametersType_SerializedAlgorithm>::const_iterator it = ep.SerializedAlgorithm->begin();
     for ( ; it != ep.SerializedAlgorithm->end(); it++ ) {
 
       string model_id = string( (*it).id );
 
-      om::om__SerializedAlgorithmType model = *(*it).Algorithm;
+      om__SerializedAlgorithmType model = *(*it).Algorithm;
 
-      models.insert( pair<string, om::om__SerializedAlgorithmType>( model_id, model ) );
+      models.insert( pair<string, om__SerializedAlgorithmType>( model_id, model ) );
     }
   }
 
@@ -2167,7 +2167,7 @@ scheduleExperiment(struct soap* soap, const om::_om__ExperimentParameters& ep, c
 
     for ( int i=0; i < num_jobs; i++ ) {
 
-      om::__om__union_ExperimentParametersType_Jobs job = ep.Jobs.__union_ExperimentParametersType_Jobs[i];
+      __om__union_ExperimentParametersType_Jobs job = ep.Jobs.__union_ExperimentParametersType_Jobs[i];
 
       job_id = "";
       map<string, string> depends_on; // job_id -> result_usage (model, presence, absence)
@@ -2175,11 +2175,11 @@ scheduleExperiment(struct soap* soap, const om::_om__ExperimentParameters& ep, c
       // SamplingJobs
       if ( job.__unionAbstractJob == 1 ) {
 
-        om::om__SamplingJobType * sampling_job = job.__union_ExperimentParametersType_Jobs.SamplingJob;
+        om__SamplingJobType * sampling_job = job.__union_ExperimentParametersType_Jobs.SamplingJob;
 
         job_id = string( sampling_job->id );
 
-        om::_om__SamplingParameters sp;
+        _om__SamplingParameters sp;
 
         string env_ref = string( sampling_job->EnvironmentRef->idref );
         if ( environments.count( env_ref ) > 0 ) {
@@ -2215,13 +2215,13 @@ scheduleExperiment(struct soap* soap, const om::_om__ExperimentParameters& ep, c
       // Create model job
       else if ( job.__unionAbstractJob == 2 ) {
 
-        om::om__CreateModelJobType * model_job = job.__union_ExperimentParametersType_Jobs.CreateModelJob;
+        om__CreateModelJobType * model_job = job.__union_ExperimentParametersType_Jobs.CreateModelJob;
 
         job_id = string( model_job->id );
 
-        om::_om__ModelParameters mp;
+        _om__ModelParameters mp;
 
-        om::_om__Sampler sampler;
+        _om__Sampler sampler;
 
         string env_ref = string( model_job->EnvironmentRef->idref );
         if ( environments.count( env_ref ) > 0 ) {
@@ -2300,13 +2300,13 @@ scheduleExperiment(struct soap* soap, const om::_om__ExperimentParameters& ep, c
       // Test model job
       else if ( job.__unionAbstractJob == 3 ) {
 
-        om::om__TestModelJobType * test_job = job.__union_ExperimentParametersType_Jobs.TestModelJob;
+        om__TestModelJobType * test_job = job.__union_ExperimentParametersType_Jobs.TestModelJob;
 
         job_id = string( test_job->id );
 
-        om::_om__TestParameters tp;
+        _om__TestParameters tp;
 
-        om::_om__Sampler sampler;
+        _om__Sampler sampler;
 
         string env_ref = string( test_job->EnvironmentRef->idref );
         if ( environments.count( env_ref ) > 0 ) {
@@ -2384,11 +2384,11 @@ scheduleExperiment(struct soap* soap, const om::_om__ExperimentParameters& ep, c
       // Project model job
       else if ( job.__unionAbstractJob == 4 ) {
 
-        om::om__ProjectModelJobType * proj_job = job.__union_ExperimentParametersType_Jobs.ProjectModelJob;
+        om__ProjectModelJobType * proj_job = job.__union_ExperimentParametersType_Jobs.ProjectModelJob;
 
         job_id = string( proj_job->id );
 
-        om::_om__ProjectionParameters pp;
+        _om__ProjectionParameters pp;
 
         string model_ref = string( proj_job->ModelRef->idref );
         if ( models.count( model_ref ) > 0 ) {
