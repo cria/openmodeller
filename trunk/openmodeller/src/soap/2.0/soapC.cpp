@@ -15,7 +15,7 @@ compiling, linking, and/or using OpenSSL is allowed.
 
 #include "soapH.h"
 
-SOAP_SOURCE_STAMP("@(#) soapC.cpp ver 2.8.15 2013-07-30 22:04:31 GMT")
+SOAP_SOURCE_STAMP("@(#) soapC.cpp ver 2.8.15 2013-07-31 14:38:06 GMT")
 
 
 #ifndef WITH_NOGLOBAL
@@ -204,6 +204,8 @@ SOAP_FMAC3 void * SOAP_FMAC4 soap_getelement(struct soap *soap, int *type)
 		return soap_in_bool(soap, NULL, NULL, "xsd:boolean");
 	case SOAP_TYPE_om__ThresholdCalculationType:
 		return soap_in_om__ThresholdCalculationType(soap, NULL, NULL, "om:ThresholdCalculationType");
+	case SOAP_TYPE_xsd__string_:
+		return soap_in_xsd__string_(soap, NULL, NULL, "xsd:string");
 	case SOAP_TYPE_om__ThresholdParameterType:
 		return soap_in_om__ThresholdParameterType(soap, NULL, NULL, "om:ThresholdParameterType");
 	case SOAP_TYPE_om__ResultSetType:
@@ -505,6 +507,10 @@ SOAP_FMAC3 void * SOAP_FMAC4 soap_getelement(struct soap *soap, int *type)
 	{	const char *t = soap->type;
 		if (!*t)
 			t = soap->tag;
+		if (!soap_match_tag(soap, t, "xsd:string"))
+		{	*type = SOAP_TYPE_xsd__string_;
+			return soap_in_xsd__string_(soap, NULL, NULL, NULL);
+		}
 		if (!soap_match_tag(soap, t, "om:ThresholdParameterType"))
 		{	*type = SOAP_TYPE_om__ThresholdParameterType;
 			return soap_in_om__ThresholdParameterType(soap, NULL, NULL, NULL);
@@ -1188,6 +1194,8 @@ SOAP_FMAC3 int SOAP_FMAC4 soap_putelement(struct soap *soap, const void *ptr, co
 		return soap_out_bool(soap, tag, id, (const bool *)ptr, "xsd:boolean");
 	case SOAP_TYPE_om__ThresholdCalculationType:
 		return soap_out_om__ThresholdCalculationType(soap, tag, id, (const enum om__ThresholdCalculationType *)ptr, "om:ThresholdCalculationType");
+	case SOAP_TYPE_xsd__string_:
+		return soap_out_xsd__string_(soap, tag, id, (const std::string *)ptr, "xsd:string");
 	case SOAP_TYPE__om__ProjectModelJob:
 		return soap_out__om__ProjectModelJob(soap, "om:ProjectModelJob", id, (const om__ProjectModelJobType *)ptr, NULL);
 	case SOAP_TYPE__om__TestModelJob:
@@ -1598,6 +1606,9 @@ SOAP_FMAC3 void SOAP_FMAC4 soap_markelement(struct soap *soap, const void *ptr, 
 	(void)soap; (void)ptr; (void)type; /* appease -Wall -Werror */
 	switch (type)
 	{
+	case SOAP_TYPE_xsd__string_:
+		soap_serialize_xsd__string_(soap, (const std::string *)ptr);
+		break;
 	case SOAP_TYPE__om__ProjectModelJob:
 		soap_serialize__om__ProjectModelJob(soap, (const om__ProjectModelJobType *)ptr);
 		break;
@@ -2502,6 +2513,8 @@ SOAP_FMAC3 void * SOAP_FMAC4 soap_instantiate(struct soap *soap, int t, const ch
 		return (void*)soap_instantiate__om__TestModelJob(soap, -1, type, arrayType, n);
 	case SOAP_TYPE__om__ProjectModelJob:
 		return (void*)soap_instantiate__om__ProjectModelJob(soap, -1, type, arrayType, n);
+	case SOAP_TYPE_xsd__string_:
+		return (void*)soap_instantiate_xsd__string_(soap, -1, type, arrayType, n);
 	case SOAP_TYPE_std__vectorTemplateOf_om__ResultSetType_Job:
 		return (void*)soap_instantiate_std__vectorTemplateOf_om__ResultSetType_Job(soap, -1, type, arrayType, n);
 	case SOAP_TYPE_std__vectorTemplateOf_om__JobTicketsType_Job:
@@ -3423,6 +3436,12 @@ SOAP_FMAC3 int SOAP_FMAC4 soap_fdelete(struct soap_clist *p)
 		else
 			SOAP_DELETE_ARRAY((om__ProjectModelJobType*)p->ptr);
 		break;
+	case SOAP_TYPE_xsd__string_:
+		if (p->size < 0)
+			SOAP_DELETE((std::string*)p->ptr);
+		else
+			SOAP_DELETE_ARRAY((std::string*)p->ptr);
+		break;
 	case SOAP_TYPE_std__vectorTemplateOf_om__ResultSetType_Job:
 		if (p->size < 0)
 			SOAP_DELETE((std::vector<_om__ResultSetType_Job >*)p->ptr);
@@ -4004,6 +4023,60 @@ SOAP_FMAC3 int SOAP_FMAC4 soap_put_om__ThresholdCalculationType(struct soap *soa
 SOAP_FMAC3 enum om__ThresholdCalculationType * SOAP_FMAC4 soap_get_om__ThresholdCalculationType(struct soap *soap, enum om__ThresholdCalculationType *p, const char *tag, const char *type)
 {
 	if ((p = soap_in_om__ThresholdCalculationType(soap, tag, p, type)))
+		if (soap_getindependent(soap))
+			return NULL;
+	return p;
+}
+
+SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_xsd__string_(struct soap *soap, const std::string *a)
+{	(void)soap; (void)a; /* appease -Wall -Werror */
+}
+SOAP_FMAC3 int SOAP_FMAC4 soap_out_xsd__string_(struct soap *soap, const char *tag, int id, const std::string *s, const char *type)
+{
+	if ((soap->mode & SOAP_C_NILSTRING) && s->empty())
+		return soap_element_null(soap, tag, id, type);
+	if (soap_element_begin_out(soap, tag, soap_embedded_id(soap, id, s, SOAP_TYPE_xsd__string_), type) || soap_string_out(soap, s->c_str(), 0) || soap_element_end_out(soap, tag))
+		return soap->error;
+	return SOAP_OK;
+}
+
+SOAP_FMAC3 std::string * SOAP_FMAC4 soap_in_xsd__string_(struct soap *soap, const char *tag, std::string *s, const char *type)
+{
+	(void)type; /* appease -Wall -Werror */
+	if (soap_element_begin_in(soap, tag, 1, NULL))
+		return NULL;
+	if (!s)
+		s = soap_new_std__string(soap, -1);
+	if (soap->null)
+		if (s)
+			s->erase();
+	if (soap->body && !*soap->href)
+	{	char *t;
+		s = (std::string*)soap_class_id_enter(soap, soap->id, s, SOAP_TYPE_xsd__string_, sizeof(std::string), soap->type, soap->arrayType);
+		if (s)
+		{	if (!(t = soap_string_in(soap, 1, 0, -1)))
+				return NULL;
+			s->assign(t);
+		}
+	}
+	else
+		s = (std::string*)soap_id_forward(soap, soap->href, soap_class_id_enter(soap, soap->id, s, SOAP_TYPE_xsd__string_, sizeof(std::string), soap->type, soap->arrayType), 0, SOAP_TYPE_xsd__string_, 0, sizeof(std::string), 0, soap_copy_xsd__string_);
+	if (soap->body && soap_element_end_in(soap, tag))
+		return NULL;
+	return s;
+}
+
+SOAP_FMAC3 int SOAP_FMAC4 soap_put_xsd__string_(struct soap *soap, const std::string *a, const char *tag, const char *type)
+{
+	register int id = soap_embed(soap, (void*)a, NULL, 0, tag, SOAP_TYPE_xsd__string_);
+	if (soap_out_xsd__string_(soap, tag?tag:"xsd:string", id, a, type))
+		return soap->error;
+	return soap_putindependent(soap);
+}
+
+SOAP_FMAC3 std::string * SOAP_FMAC4 soap_get_xsd__string_(struct soap *soap, std::string *p, const char *tag, const char *type)
+{
+	if ((p = soap_in_xsd__string_(soap, tag, p, type)))
 		if (soap_getindependent(soap))
 			return NULL;
 	return p;
@@ -18879,14 +18952,14 @@ SOAP_FMAC3 void SOAP_FMAC4 soap_copy_omws__getProgress(struct soap *soap, int st
 SOAP_FMAC3 void SOAP_FMAC4 soap_default_omws__getProgressResponse(struct soap *soap, struct omws__getProgressResponse *a)
 {
 	(void)soap; (void)a; /* appease -Wall -Werror */
-	soap_default_xsd__string(soap, &a->progress);
+	soap_default_xsd__string_(soap, &a->progress);
 }
 
 SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_omws__getProgressResponse(struct soap *soap, const struct omws__getProgressResponse *a)
 {
 #ifndef WITH_NOIDREF
 	(void)soap; (void)a; /* appease -Wall -Werror */
-	soap_serialize_xsd__string(soap, &a->progress);
+	soap_serialize_xsd__string_(soap, &a->progress);
 #endif
 }
 
@@ -18895,11 +18968,7 @@ SOAP_FMAC3 int SOAP_FMAC4 soap_out_omws__getProgressResponse(struct soap *soap, 
 	(void)soap; (void)tag; (void)id; (void)type;
 	if (soap_element_begin_out(soap, tag, soap_embedded_id(soap, id, a, SOAP_TYPE_omws__getProgressResponse), type))
 		return soap->error;
-	if (a->progress)
-	{	if (soap_out_xsd__string(soap, "progress", -1, &a->progress, ""))
-			return soap->error;
-	}
-	else if (soap_element_nil(soap, "progress"))
+	if (soap_out_xsd__string_(soap, "progress", -1, &a->progress, ""))
 		return soap->error;
 	return soap_element_end_out(soap, tag);
 }
@@ -18909,7 +18978,7 @@ SOAP_FMAC3 struct omws__getProgressResponse * SOAP_FMAC4 soap_in_omws__getProgre
 	size_t soap_flag_progress = 1;
 	if (soap_element_begin_in(soap, tag, 0, type))
 		return NULL;
-	a = (struct omws__getProgressResponse *)soap_id_enter(soap, soap->id, a, SOAP_TYPE_omws__getProgressResponse, sizeof(struct omws__getProgressResponse), 0, NULL, NULL, NULL);
+	a = (struct omws__getProgressResponse *)soap_class_id_enter(soap, soap->id, a, SOAP_TYPE_omws__getProgressResponse, sizeof(struct omws__getProgressResponse), soap->type, soap->arrayType);
 	if (!a)
 		return NULL;
 	soap_default_omws__getProgressResponse(soap, a);
@@ -18918,7 +18987,7 @@ SOAP_FMAC3 struct omws__getProgressResponse * SOAP_FMAC4 soap_in_omws__getProgre
 		for (;;)
 		{	soap->error = SOAP_TAG_MISMATCH;
 			if (soap_flag_progress && (soap->error == SOAP_TAG_MISMATCH || soap->error == SOAP_NO_TAG))
-				if (soap_in_xsd__string(soap, "progress", &a->progress, "xsd:string"))
+				if (soap_in_xsd__string_(soap, "progress", &a->progress, "xsd:string"))
 				{	soap_flag_progress--;
 					continue;
 				}
@@ -18933,7 +19002,7 @@ SOAP_FMAC3 struct omws__getProgressResponse * SOAP_FMAC4 soap_in_omws__getProgre
 			return NULL;
 	}
 	else
-	{	a = (struct omws__getProgressResponse *)soap_id_forward(soap, soap->href, (void*)a, 0, SOAP_TYPE_omws__getProgressResponse, 0, sizeof(struct omws__getProgressResponse), 0, NULL);
+	{	a = (struct omws__getProgressResponse *)soap_id_forward(soap, soap->href, (void*)a, 0, SOAP_TYPE_omws__getProgressResponse, 0, sizeof(struct omws__getProgressResponse), 0, soap_copy_omws__getProgressResponse);
 		if (soap->body && soap_element_end_in(soap, tag))
 			return NULL;
 	}
