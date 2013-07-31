@@ -822,7 +822,7 @@ omws__runExperiment( struct soap *soap, XML_ om__ExperimentParameters, struct om
 /**********************/
 /**** get Progress ****/
 int 
-omws__getProgress( struct soap *soap, xsd__string tickets, xsd__string &progress )
+omws__getProgress( struct soap *soap, xsd__string tickets, xsd__string_ &progress )
 { 
   logRequest( soap, "getProgress", tickets );
 
@@ -869,7 +869,8 @@ omws__getProgress( struct soap *soap, xsd__string tickets, xsd__string &progress
     }
   }
 
-  progress = (char*)res.str().c_str();
+  //progress = (char*)res.str().c_str();
+  progress = res.str();
 
   return SOAP_OK;
 }
