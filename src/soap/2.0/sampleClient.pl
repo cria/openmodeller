@@ -90,7 +90,8 @@ my %options = ( 0  => 'Ping service',
 		10 => 'Get projection metadata', 
 		11 => 'Get map as URL', 
 		12 => 'Run Experiment', 
-		13 => 'Quit' );
+		13 => 'Cancel', 
+		14 => 'Quit' );
 
 my $option = -1;
 
@@ -151,6 +152,10 @@ while ( $option != $exit_option or not exists( $options{$option-1} ) )
     elsif ($option == 13)
     {
 	$option = ( run_experiment() ) ? -1 : $exit_option;
+    }
+    elsif ($option == 14)
+    {
+	$option = ( cancel() ) ? -1 : $exit_option;
     }
     elsif ( ! $option )
     {
@@ -1291,6 +1296,56 @@ sub run_experiment
 
     return 1;
 } 
+
+###########
+#  Cancel # 
+###########
+sub cancel
+{
+    prepare_soap();
+
+    my $method = SOAP::Data
+	-> name( 'cancel' )
+        -> encodingStyle( 'http://xml.apache.org/xml-soap/literalxml' )
+	-> prefix( 'omws' )
+        -> uri( $omws_uri );
+
+    ### Get ticket
+
+    my $ticket = get_string_from_user('Ticket number');
+
+    if ( ! $ticket )
+    {
+	return 0;
+    }
+
+    print "Cancelling job... ";
+
+    my $soap_ticket = SOAP::Data
+	-> name( 'tickets' )
+	-> type( 'string' )
+	-> value( $ticket );
+    
+    my $response = $soap->call( $method => $soap_ticket );
+
+    unless ( $response->fault )
+    {
+        my $statuses = $response->result;
+
+        print "\n\nNew status: " . $statuses;
+        print "\n";
+    }
+    else
+    {
+	print "Ops, found some problems:\n";
+	print join ', ', $response->faultcode, $response->faultstring; 
+	print "\n";
+	return 0;
+    }
+
+    return 1;
+}
+
 
 #########################################
 #  Get algorithm from console interface # 
