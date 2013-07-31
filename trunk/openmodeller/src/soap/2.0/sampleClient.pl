@@ -1330,9 +1330,9 @@ sub cancel
 
     unless ( $response->fault )
     {
-        my $statuses = $response->result;
+        my $tickets = $response->result;
 
-        print "\n\nNew status: " . $statuses;
+        print "\n\nCancelled tickets: " . $tickets;
         print "\n";
     }
     else
