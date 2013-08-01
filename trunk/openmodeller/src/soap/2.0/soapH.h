@@ -67,7 +67,7 @@ SOAP_FMAC3 char * SOAP_FMAC4 soap_get_byte(struct soap*, char *, const char*, co
 
 
 #ifndef SOAP_TYPE_xsd__int
-#define SOAP_TYPE_xsd__int (193)
+#define SOAP_TYPE_xsd__int (192)
 #endif
 
 #define soap_default_xsd__int(soap, a) soap_default_int(soap, a)
@@ -109,7 +109,7 @@ SOAP_FMAC3 int * SOAP_FMAC4 soap_get_int(struct soap*, int *, const char*, const
 
 
 #ifndef SOAP_TYPE_xsd__double
-#define SOAP_TYPE_xsd__double (192)
+#define SOAP_TYPE_xsd__double (191)
 #endif
 
 #define soap_default_xsd__double(soap, a) soap_default_double(soap, a)
@@ -220,33 +220,33 @@ SOAP_FMAC3 enum om__ThresholdCalculationType * SOAP_FMAC4 soap_get_om__Threshold
 #endif
 
 
-#ifndef SOAP_TYPE_xsd__string_
-#define SOAP_TYPE_xsd__string_ (191)
+#ifndef SOAP_TYPE_xsd__string
+#define SOAP_TYPE_xsd__string (190)
 #endif
 
-#define soap_default_xsd__string_(soap, a) soap_default_std__string(soap, a)
+#define soap_default_xsd__string(soap, a) soap_default_std__string(soap, a)
 
-SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_xsd__string_(struct soap*, const std::string *);
-SOAP_FMAC3 int SOAP_FMAC4 soap_out_xsd__string_(struct soap*, const char*, int, const std::string*, const char*);
-SOAP_FMAC3 std::string * SOAP_FMAC4 soap_in_xsd__string_(struct soap*, const char*, std::string*, const char*);
+SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_xsd__string(struct soap*, const std::string *);
+SOAP_FMAC3 int SOAP_FMAC4 soap_out_xsd__string(struct soap*, const char*, int, const std::string*, const char*);
+SOAP_FMAC3 std::string * SOAP_FMAC4 soap_in_xsd__string(struct soap*, const char*, std::string*, const char*);
 
-SOAP_FMAC3 int SOAP_FMAC4 soap_put_xsd__string_(struct soap*, const std::string *, const char*, const char*);
+SOAP_FMAC3 int SOAP_FMAC4 soap_put_xsd__string(struct soap*, const std::string *, const char*, const char*);
 
-#ifndef soap_write_xsd__string_
-#define soap_write_xsd__string_(soap, data) ( soap_serialize_xsd__string_(soap, data), soap_begin_send(soap) || soap_put_xsd__string_(soap, data, "xsd:string", NULL) || soap_end_send(soap), soap->error )
+#ifndef soap_write_xsd__string
+#define soap_write_xsd__string(soap, data) ( soap_serialize_xsd__string(soap, data), soap_begin_send(soap) || soap_put_xsd__string(soap, data, "xsd:string", NULL) || soap_end_send(soap), soap->error )
 #endif
 
-SOAP_FMAC3 std::string * SOAP_FMAC4 soap_get_xsd__string_(struct soap*, std::string *, const char*, const char*);
+SOAP_FMAC3 std::string * SOAP_FMAC4 soap_get_xsd__string(struct soap*, std::string *, const char*, const char*);
 
-#ifndef soap_read_xsd__string_
-#define soap_read_xsd__string_(soap, data) ( soap_begin_recv(soap) || !soap_get_xsd__string_(soap, data, NULL, NULL) || soap_end_recv(soap), soap->error )
+#ifndef soap_read_xsd__string
+#define soap_read_xsd__string(soap, data) ( soap_begin_recv(soap) || !soap_get_xsd__string(soap, data, NULL, NULL) || soap_end_recv(soap), soap->error )
 #endif
 
 
-#define soap_instantiate_xsd__string_ soap_instantiate_std__string
+#define soap_instantiate_xsd__string soap_instantiate_std__string
 
 
-#define soap_copy_xsd__string_ soap_copy_std__string
+#define soap_copy_xsd__string soap_copy_std__string
 
 /* _om__ProjectModelJob is a typedef element/attribute synonym for om__ProjectModelJobType */
 
@@ -3179,7 +3179,7 @@ SOAP_FMAC3 void SOAP_FMAC4 soap_copy_std__string(struct soap*, int, int, void*, 
 #ifndef WITH_NOGLOBAL
 
 #ifndef SOAP_TYPE_SOAP_ENV__Fault
-#define SOAP_TYPE_SOAP_ENV__Fault (274)
+#define SOAP_TYPE_SOAP_ENV__Fault (272)
 #endif
 SOAP_FMAC3 void SOAP_FMAC4 soap_default_SOAP_ENV__Fault(struct soap*, struct SOAP_ENV__Fault *);
 SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_SOAP_ENV__Fault(struct soap*, const struct SOAP_ENV__Fault *);
@@ -3215,7 +3215,7 @@ SOAP_FMAC3 void SOAP_FMAC4 soap_copy_SOAP_ENV__Fault(struct soap*, int, int, voi
 #ifndef WITH_NOGLOBAL
 
 #ifndef SOAP_TYPE_SOAP_ENV__Reason
-#define SOAP_TYPE_SOAP_ENV__Reason (273)
+#define SOAP_TYPE_SOAP_ENV__Reason (271)
 #endif
 SOAP_FMAC3 void SOAP_FMAC4 soap_default_SOAP_ENV__Reason(struct soap*, struct SOAP_ENV__Reason *);
 SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_SOAP_ENV__Reason(struct soap*, const struct SOAP_ENV__Reason *);
@@ -3251,7 +3251,7 @@ SOAP_FMAC3 void SOAP_FMAC4 soap_copy_SOAP_ENV__Reason(struct soap*, int, int, vo
 #ifndef WITH_NOGLOBAL
 
 #ifndef SOAP_TYPE_SOAP_ENV__Detail
-#define SOAP_TYPE_SOAP_ENV__Detail (272)
+#define SOAP_TYPE_SOAP_ENV__Detail (270)
 #endif
 SOAP_FMAC3 void SOAP_FMAC4 soap_default_SOAP_ENV__Detail(struct soap*, struct SOAP_ENV__Detail *);
 SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_SOAP_ENV__Detail(struct soap*, const struct SOAP_ENV__Detail *);
@@ -3287,7 +3287,7 @@ SOAP_FMAC3 void SOAP_FMAC4 soap_copy_SOAP_ENV__Detail(struct soap*, int, int, vo
 #ifndef WITH_NOGLOBAL
 
 #ifndef SOAP_TYPE_SOAP_ENV__Code
-#define SOAP_TYPE_SOAP_ENV__Code (270)
+#define SOAP_TYPE_SOAP_ENV__Code (268)
 #endif
 SOAP_FMAC3 void SOAP_FMAC4 soap_default_SOAP_ENV__Code(struct soap*, struct SOAP_ENV__Code *);
 SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_SOAP_ENV__Code(struct soap*, const struct SOAP_ENV__Code *);
@@ -3321,7 +3321,7 @@ SOAP_FMAC3 void SOAP_FMAC4 soap_copy_SOAP_ENV__Code(struct soap*, int, int, void
 #endif
 
 #ifndef SOAP_TYPE_omws__cancel
-#define SOAP_TYPE_omws__cancel (269)
+#define SOAP_TYPE_omws__cancel (267)
 #endif
 SOAP_FMAC3 void SOAP_FMAC4 soap_default_omws__cancel(struct soap*, struct omws__cancel *);
 SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_omws__cancel(struct soap*, const struct omws__cancel *);
@@ -3344,16 +3344,16 @@ SOAP_FMAC1 struct omws__cancel * SOAP_FMAC2 soap_instantiate_omws__cancel(struct
 
 inline struct omws__cancel * soap_new_omws__cancel(struct soap *soap, int n = -1) { return soap_instantiate_omws__cancel(soap, n, NULL, NULL, NULL); }
 
-inline struct omws__cancel * soap_new_req_omws__cancel(struct soap *soap) { struct omws__cancel *_p = soap_instantiate_omws__cancel(soap, -1, NULL, NULL, NULL); if (_p) { soap_default_omws__cancel(soap, _p); } return _p; }
+inline struct omws__cancel * soap_new_req_omws__cancel(struct soap *soap, std::string& tickets) { struct omws__cancel *_p = soap_instantiate_omws__cancel(soap, -1, NULL, NULL, NULL); if (_p) { soap_default_omws__cancel(soap, _p); _p->tickets = tickets; } return _p; }
 
-inline struct omws__cancel * soap_new_set_omws__cancel(struct soap *soap, char *tickets) { struct omws__cancel *_p = soap_instantiate_omws__cancel(soap, -1, NULL, NULL, NULL); if (_p) { soap_default_omws__cancel(soap, _p); _p->tickets = tickets; } return _p; }
+inline struct omws__cancel * soap_new_set_omws__cancel(struct soap *soap, std::string& tickets) { struct omws__cancel *_p = soap_instantiate_omws__cancel(soap, -1, NULL, NULL, NULL); if (_p) { soap_default_omws__cancel(soap, _p); _p->tickets = tickets; } return _p; }
 
 inline void soap_delete_omws__cancel(struct soap *soap, struct omws__cancel *p) { soap_delete(soap, p); }
 
 SOAP_FMAC3 void SOAP_FMAC4 soap_copy_omws__cancel(struct soap*, int, int, void*, size_t, const void*, size_t);
 
 #ifndef SOAP_TYPE_omws__cancelResponse
-#define SOAP_TYPE_omws__cancelResponse (268)
+#define SOAP_TYPE_omws__cancelResponse (266)
 #endif
 SOAP_FMAC3 void SOAP_FMAC4 soap_default_omws__cancelResponse(struct soap*, struct omws__cancelResponse *);
 SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_omws__cancelResponse(struct soap*, const struct omws__cancelResponse *);
@@ -3376,16 +3376,16 @@ SOAP_FMAC1 struct omws__cancelResponse * SOAP_FMAC2 soap_instantiate_omws__cance
 
 inline struct omws__cancelResponse * soap_new_omws__cancelResponse(struct soap *soap, int n = -1) { return soap_instantiate_omws__cancelResponse(soap, n, NULL, NULL, NULL); }
 
-inline struct omws__cancelResponse * soap_new_req_omws__cancelResponse(struct soap *soap, char *cancelledTickets) { struct omws__cancelResponse *_p = soap_instantiate_omws__cancelResponse(soap, -1, NULL, NULL, NULL); if (_p) { soap_default_omws__cancelResponse(soap, _p); _p->cancelledTickets = cancelledTickets; } return _p; }
+inline struct omws__cancelResponse * soap_new_req_omws__cancelResponse(struct soap *soap, std::string& cancelledTickets) { struct omws__cancelResponse *_p = soap_instantiate_omws__cancelResponse(soap, -1, NULL, NULL, NULL); if (_p) { soap_default_omws__cancelResponse(soap, _p); _p->cancelledTickets = cancelledTickets; } return _p; }
 
-inline struct omws__cancelResponse * soap_new_set_omws__cancelResponse(struct soap *soap, char *cancelledTickets) { struct omws__cancelResponse *_p = soap_instantiate_omws__cancelResponse(soap, -1, NULL, NULL, NULL); if (_p) { soap_default_omws__cancelResponse(soap, _p); _p->cancelledTickets = cancelledTickets; } return _p; }
+inline struct omws__cancelResponse * soap_new_set_omws__cancelResponse(struct soap *soap, std::string& cancelledTickets) { struct omws__cancelResponse *_p = soap_instantiate_omws__cancelResponse(soap, -1, NULL, NULL, NULL); if (_p) { soap_default_omws__cancelResponse(soap, _p); _p->cancelledTickets = cancelledTickets; } return _p; }
 
 inline void soap_delete_omws__cancelResponse(struct soap *soap, struct omws__cancelResponse *p) { soap_delete(soap, p); }
 
 SOAP_FMAC3 void SOAP_FMAC4 soap_copy_omws__cancelResponse(struct soap*, int, int, void*, size_t, const void*, size_t);
 
 #ifndef SOAP_TYPE_omws__getResults
-#define SOAP_TYPE_omws__getResults (266)
+#define SOAP_TYPE_omws__getResults (264)
 #endif
 SOAP_FMAC3 void SOAP_FMAC4 soap_default_omws__getResults(struct soap*, struct omws__getResults *);
 SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_omws__getResults(struct soap*, const struct omws__getResults *);
@@ -3408,16 +3408,16 @@ SOAP_FMAC1 struct omws__getResults * SOAP_FMAC2 soap_instantiate_omws__getResult
 
 inline struct omws__getResults * soap_new_omws__getResults(struct soap *soap, int n = -1) { return soap_instantiate_omws__getResults(soap, n, NULL, NULL, NULL); }
 
-inline struct omws__getResults * soap_new_req_omws__getResults(struct soap *soap) { struct omws__getResults *_p = soap_instantiate_omws__getResults(soap, -1, NULL, NULL, NULL); if (_p) { soap_default_omws__getResults(soap, _p); } return _p; }
+inline struct omws__getResults * soap_new_req_omws__getResults(struct soap *soap, std::string& tickets) { struct omws__getResults *_p = soap_instantiate_omws__getResults(soap, -1, NULL, NULL, NULL); if (_p) { soap_default_omws__getResults(soap, _p); _p->tickets = tickets; } return _p; }
 
-inline struct omws__getResults * soap_new_set_omws__getResults(struct soap *soap, char *tickets) { struct omws__getResults *_p = soap_instantiate_omws__getResults(soap, -1, NULL, NULL, NULL); if (_p) { soap_default_omws__getResults(soap, _p); _p->tickets = tickets; } return _p; }
+inline struct omws__getResults * soap_new_set_omws__getResults(struct soap *soap, std::string& tickets) { struct omws__getResults *_p = soap_instantiate_omws__getResults(soap, -1, NULL, NULL, NULL); if (_p) { soap_default_omws__getResults(soap, _p); _p->tickets = tickets; } return _p; }
 
 inline void soap_delete_omws__getResults(struct soap *soap, struct omws__getResults *p) { soap_delete(soap, p); }
 
 SOAP_FMAC3 void SOAP_FMAC4 soap_copy_omws__getResults(struct soap*, int, int, void*, size_t, const void*, size_t);
 
 #ifndef SOAP_TYPE_omws__getResultsResponse
-#define SOAP_TYPE_omws__getResultsResponse (263)
+#define SOAP_TYPE_omws__getResultsResponse (261)
 #endif
 SOAP_FMAC3 void SOAP_FMAC4 soap_default_omws__getResultsResponse(struct soap*, struct omws__getResultsResponse *);
 SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_omws__getResultsResponse(struct soap*, const struct omws__getResultsResponse *);
@@ -3449,7 +3449,7 @@ inline void soap_delete_omws__getResultsResponse(struct soap *soap, struct omws_
 SOAP_FMAC3 void SOAP_FMAC4 soap_copy_omws__getResultsResponse(struct soap*, int, int, void*, size_t, const void*, size_t);
 
 #ifndef SOAP_TYPE_omws__runExperiment
-#define SOAP_TYPE_omws__runExperiment (262)
+#define SOAP_TYPE_omws__runExperiment (260)
 #endif
 SOAP_FMAC3 void SOAP_FMAC4 soap_default_omws__runExperiment(struct soap*, struct omws__runExperiment *);
 SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_omws__runExperiment(struct soap*, const struct omws__runExperiment *);
@@ -3481,7 +3481,7 @@ inline void soap_delete_omws__runExperiment(struct soap *soap, struct omws__runE
 SOAP_FMAC3 void SOAP_FMAC4 soap_copy_omws__runExperiment(struct soap*, int, int, void*, size_t, const void*, size_t);
 
 #ifndef SOAP_TYPE_omws__runExperimentResponse
-#define SOAP_TYPE_omws__runExperimentResponse (259)
+#define SOAP_TYPE_omws__runExperimentResponse (257)
 #endif
 SOAP_FMAC3 void SOAP_FMAC4 soap_default_omws__runExperimentResponse(struct soap*, struct omws__runExperimentResponse *);
 SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_omws__runExperimentResponse(struct soap*, const struct omws__runExperimentResponse *);
@@ -3513,7 +3513,7 @@ inline void soap_delete_omws__runExperimentResponse(struct soap *soap, struct om
 SOAP_FMAC3 void SOAP_FMAC4 soap_copy_omws__runExperimentResponse(struct soap*, int, int, void*, size_t, const void*, size_t);
 
 #ifndef SOAP_TYPE_omws__getSamplingResult
-#define SOAP_TYPE_omws__getSamplingResult (258)
+#define SOAP_TYPE_omws__getSamplingResult (256)
 #endif
 SOAP_FMAC3 void SOAP_FMAC4 soap_default_omws__getSamplingResult(struct soap*, struct omws__getSamplingResult *);
 SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_omws__getSamplingResult(struct soap*, const struct omws__getSamplingResult *);
@@ -3536,16 +3536,16 @@ SOAP_FMAC1 struct omws__getSamplingResult * SOAP_FMAC2 soap_instantiate_omws__ge
 
 inline struct omws__getSamplingResult * soap_new_omws__getSamplingResult(struct soap *soap, int n = -1) { return soap_instantiate_omws__getSamplingResult(soap, n, NULL, NULL, NULL); }
 
-inline struct omws__getSamplingResult * soap_new_req_omws__getSamplingResult(struct soap *soap) { struct omws__getSamplingResult *_p = soap_instantiate_omws__getSamplingResult(soap, -1, NULL, NULL, NULL); if (_p) { soap_default_omws__getSamplingResult(soap, _p); } return _p; }
+inline struct omws__getSamplingResult * soap_new_req_omws__getSamplingResult(struct soap *soap, std::string& ticket) { struct omws__getSamplingResult *_p = soap_instantiate_omws__getSamplingResult(soap, -1, NULL, NULL, NULL); if (_p) { soap_default_omws__getSamplingResult(soap, _p); _p->ticket = ticket; } return _p; }
 
-inline struct omws__getSamplingResult * soap_new_set_omws__getSamplingResult(struct soap *soap, char *ticket) { struct omws__getSamplingResult *_p = soap_instantiate_omws__getSamplingResult(soap, -1, NULL, NULL, NULL); if (_p) { soap_default_omws__getSamplingResult(soap, _p); _p->ticket = ticket; } return _p; }
+inline struct omws__getSamplingResult * soap_new_set_omws__getSamplingResult(struct soap *soap, std::string& ticket) { struct omws__getSamplingResult *_p = soap_instantiate_omws__getSamplingResult(soap, -1, NULL, NULL, NULL); if (_p) { soap_default_omws__getSamplingResult(soap, _p); _p->ticket = ticket; } return _p; }
 
 inline void soap_delete_omws__getSamplingResult(struct soap *soap, struct omws__getSamplingResult *p) { soap_delete(soap, p); }
 
 SOAP_FMAC3 void SOAP_FMAC4 soap_copy_omws__getSamplingResult(struct soap*, int, int, void*, size_t, const void*, size_t);
 
 #ifndef SOAP_TYPE_omws__getSamplingResultResponse
-#define SOAP_TYPE_omws__getSamplingResultResponse (255)
+#define SOAP_TYPE_omws__getSamplingResultResponse (253)
 #endif
 SOAP_FMAC3 void SOAP_FMAC4 soap_default_omws__getSamplingResultResponse(struct soap*, struct omws__getSamplingResultResponse *);
 SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_omws__getSamplingResultResponse(struct soap*, const struct omws__getSamplingResultResponse *);
@@ -3577,7 +3577,7 @@ inline void soap_delete_omws__getSamplingResultResponse(struct soap *soap, struc
 SOAP_FMAC3 void SOAP_FMAC4 soap_copy_omws__getSamplingResultResponse(struct soap*, int, int, void*, size_t, const void*, size_t);
 
 #ifndef SOAP_TYPE_omws__samplePoints
-#define SOAP_TYPE_omws__samplePoints (254)
+#define SOAP_TYPE_omws__samplePoints (252)
 #endif
 SOAP_FMAC3 void SOAP_FMAC4 soap_default_omws__samplePoints(struct soap*, struct omws__samplePoints *);
 SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_omws__samplePoints(struct soap*, const struct omws__samplePoints *);
@@ -3609,7 +3609,7 @@ inline void soap_delete_omws__samplePoints(struct soap *soap, struct omws__sampl
 SOAP_FMAC3 void SOAP_FMAC4 soap_copy_omws__samplePoints(struct soap*, int, int, void*, size_t, const void*, size_t);
 
 #ifndef SOAP_TYPE_omws__samplePointsResponse
-#define SOAP_TYPE_omws__samplePointsResponse (253)
+#define SOAP_TYPE_omws__samplePointsResponse (251)
 #endif
 SOAP_FMAC3 void SOAP_FMAC4 soap_default_omws__samplePointsResponse(struct soap*, struct omws__samplePointsResponse *);
 SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_omws__samplePointsResponse(struct soap*, const struct omws__samplePointsResponse *);
@@ -3632,16 +3632,16 @@ SOAP_FMAC1 struct omws__samplePointsResponse * SOAP_FMAC2 soap_instantiate_omws_
 
 inline struct omws__samplePointsResponse * soap_new_omws__samplePointsResponse(struct soap *soap, int n = -1) { return soap_instantiate_omws__samplePointsResponse(soap, n, NULL, NULL, NULL); }
 
-inline struct omws__samplePointsResponse * soap_new_req_omws__samplePointsResponse(struct soap *soap, char *ticket) { struct omws__samplePointsResponse *_p = soap_instantiate_omws__samplePointsResponse(soap, -1, NULL, NULL, NULL); if (_p) { soap_default_omws__samplePointsResponse(soap, _p); _p->ticket = ticket; } return _p; }
+inline struct omws__samplePointsResponse * soap_new_req_omws__samplePointsResponse(struct soap *soap, std::string& ticket) { struct omws__samplePointsResponse *_p = soap_instantiate_omws__samplePointsResponse(soap, -1, NULL, NULL, NULL); if (_p) { soap_default_omws__samplePointsResponse(soap, _p); _p->ticket = ticket; } return _p; }
 
-inline struct omws__samplePointsResponse * soap_new_set_omws__samplePointsResponse(struct soap *soap, char *ticket) { struct omws__samplePointsResponse *_p = soap_instantiate_omws__samplePointsResponse(soap, -1, NULL, NULL, NULL); if (_p) { soap_default_omws__samplePointsResponse(soap, _p); _p->ticket = ticket; } return _p; }
+inline struct omws__samplePointsResponse * soap_new_set_omws__samplePointsResponse(struct soap *soap, std::string& ticket) { struct omws__samplePointsResponse *_p = soap_instantiate_omws__samplePointsResponse(soap, -1, NULL, NULL, NULL); if (_p) { soap_default_omws__samplePointsResponse(soap, _p); _p->ticket = ticket; } return _p; }
 
 inline void soap_delete_omws__samplePointsResponse(struct soap *soap, struct omws__samplePointsResponse *p) { soap_delete(soap, p); }
 
 SOAP_FMAC3 void SOAP_FMAC4 soap_copy_omws__samplePointsResponse(struct soap*, int, int, void*, size_t, const void*, size_t);
 
 #ifndef SOAP_TYPE_omws__getModelEvaluation
-#define SOAP_TYPE_omws__getModelEvaluation (251)
+#define SOAP_TYPE_omws__getModelEvaluation (249)
 #endif
 SOAP_FMAC3 void SOAP_FMAC4 soap_default_omws__getModelEvaluation(struct soap*, struct omws__getModelEvaluation *);
 SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_omws__getModelEvaluation(struct soap*, const struct omws__getModelEvaluation *);
@@ -3664,16 +3664,16 @@ SOAP_FMAC1 struct omws__getModelEvaluation * SOAP_FMAC2 soap_instantiate_omws__g
 
 inline struct omws__getModelEvaluation * soap_new_omws__getModelEvaluation(struct soap *soap, int n = -1) { return soap_instantiate_omws__getModelEvaluation(soap, n, NULL, NULL, NULL); }
 
-inline struct omws__getModelEvaluation * soap_new_req_omws__getModelEvaluation(struct soap *soap) { struct omws__getModelEvaluation *_p = soap_instantiate_omws__getModelEvaluation(soap, -1, NULL, NULL, NULL); if (_p) { soap_default_omws__getModelEvaluation(soap, _p); } return _p; }
+inline struct omws__getModelEvaluation * soap_new_req_omws__getModelEvaluation(struct soap *soap, std::string& ticket) { struct omws__getModelEvaluation *_p = soap_instantiate_omws__getModelEvaluation(soap, -1, NULL, NULL, NULL); if (_p) { soap_default_omws__getModelEvaluation(soap, _p); _p->ticket = ticket; } return _p; }
 
-inline struct omws__getModelEvaluation * soap_new_set_omws__getModelEvaluation(struct soap *soap, char *ticket) { struct omws__getModelEvaluation *_p = soap_instantiate_omws__getModelEvaluation(soap, -1, NULL, NULL, NULL); if (_p) { soap_default_omws__getModelEvaluation(soap, _p); _p->ticket = ticket; } return _p; }
+inline struct omws__getModelEvaluation * soap_new_set_omws__getModelEvaluation(struct soap *soap, std::string& ticket) { struct omws__getModelEvaluation *_p = soap_instantiate_omws__getModelEvaluation(soap, -1, NULL, NULL, NULL); if (_p) { soap_default_omws__getModelEvaluation(soap, _p); _p->ticket = ticket; } return _p; }
 
 inline void soap_delete_omws__getModelEvaluation(struct soap *soap, struct omws__getModelEvaluation *p) { soap_delete(soap, p); }
 
 SOAP_FMAC3 void SOAP_FMAC4 soap_copy_omws__getModelEvaluation(struct soap*, int, int, void*, size_t, const void*, size_t);
 
 #ifndef SOAP_TYPE_omws__modelEvaluationResponse
-#define SOAP_TYPE_omws__modelEvaluationResponse (248)
+#define SOAP_TYPE_omws__modelEvaluationResponse (246)
 #endif
 SOAP_FMAC3 void SOAP_FMAC4 soap_default_omws__modelEvaluationResponse(struct soap*, struct omws__modelEvaluationResponse *);
 SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_omws__modelEvaluationResponse(struct soap*, const struct omws__modelEvaluationResponse *);
@@ -3705,7 +3705,7 @@ inline void soap_delete_omws__modelEvaluationResponse(struct soap *soap, struct 
 SOAP_FMAC3 void SOAP_FMAC4 soap_copy_omws__modelEvaluationResponse(struct soap*, int, int, void*, size_t, const void*, size_t);
 
 #ifndef SOAP_TYPE_omws__evaluateModel
-#define SOAP_TYPE_omws__evaluateModel (247)
+#define SOAP_TYPE_omws__evaluateModel (245)
 #endif
 SOAP_FMAC3 void SOAP_FMAC4 soap_default_omws__evaluateModel(struct soap*, struct omws__evaluateModel *);
 SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_omws__evaluateModel(struct soap*, const struct omws__evaluateModel *);
@@ -3737,7 +3737,7 @@ inline void soap_delete_omws__evaluateModel(struct soap *soap, struct omws__eval
 SOAP_FMAC3 void SOAP_FMAC4 soap_copy_omws__evaluateModel(struct soap*, int, int, void*, size_t, const void*, size_t);
 
 #ifndef SOAP_TYPE_omws__evaluateModelResponse
-#define SOAP_TYPE_omws__evaluateModelResponse (246)
+#define SOAP_TYPE_omws__evaluateModelResponse (244)
 #endif
 SOAP_FMAC3 void SOAP_FMAC4 soap_default_omws__evaluateModelResponse(struct soap*, struct omws__evaluateModelResponse *);
 SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_omws__evaluateModelResponse(struct soap*, const struct omws__evaluateModelResponse *);
@@ -3760,16 +3760,16 @@ SOAP_FMAC1 struct omws__evaluateModelResponse * SOAP_FMAC2 soap_instantiate_omws
 
 inline struct omws__evaluateModelResponse * soap_new_omws__evaluateModelResponse(struct soap *soap, int n = -1) { return soap_instantiate_omws__evaluateModelResponse(soap, n, NULL, NULL, NULL); }
 
-inline struct omws__evaluateModelResponse * soap_new_req_omws__evaluateModelResponse(struct soap *soap, char *ticket) { struct omws__evaluateModelResponse *_p = soap_instantiate_omws__evaluateModelResponse(soap, -1, NULL, NULL, NULL); if (_p) { soap_default_omws__evaluateModelResponse(soap, _p); _p->ticket = ticket; } return _p; }
+inline struct omws__evaluateModelResponse * soap_new_req_omws__evaluateModelResponse(struct soap *soap, std::string& ticket) { struct omws__evaluateModelResponse *_p = soap_instantiate_omws__evaluateModelResponse(soap, -1, NULL, NULL, NULL); if (_p) { soap_default_omws__evaluateModelResponse(soap, _p); _p->ticket = ticket; } return _p; }
 
-inline struct omws__evaluateModelResponse * soap_new_set_omws__evaluateModelResponse(struct soap *soap, char *ticket) { struct omws__evaluateModelResponse *_p = soap_instantiate_omws__evaluateModelResponse(soap, -1, NULL, NULL, NULL); if (_p) { soap_default_omws__evaluateModelResponse(soap, _p); _p->ticket = ticket; } return _p; }
+inline struct omws__evaluateModelResponse * soap_new_set_omws__evaluateModelResponse(struct soap *soap, std::string& ticket) { struct omws__evaluateModelResponse *_p = soap_instantiate_omws__evaluateModelResponse(soap, -1, NULL, NULL, NULL); if (_p) { soap_default_omws__evaluateModelResponse(soap, _p); _p->ticket = ticket; } return _p; }
 
 inline void soap_delete_omws__evaluateModelResponse(struct soap *soap, struct omws__evaluateModelResponse *p) { soap_delete(soap, p); }
 
 SOAP_FMAC3 void SOAP_FMAC4 soap_copy_omws__evaluateModelResponse(struct soap*, int, int, void*, size_t, const void*, size_t);
 
 #ifndef SOAP_TYPE_omws__getProjectionMetadata
-#define SOAP_TYPE_omws__getProjectionMetadata (244)
+#define SOAP_TYPE_omws__getProjectionMetadata (242)
 #endif
 SOAP_FMAC3 void SOAP_FMAC4 soap_default_omws__getProjectionMetadata(struct soap*, struct omws__getProjectionMetadata *);
 SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_omws__getProjectionMetadata(struct soap*, const struct omws__getProjectionMetadata *);
@@ -3792,16 +3792,16 @@ SOAP_FMAC1 struct omws__getProjectionMetadata * SOAP_FMAC2 soap_instantiate_omws
 
 inline struct omws__getProjectionMetadata * soap_new_omws__getProjectionMetadata(struct soap *soap, int n = -1) { return soap_instantiate_omws__getProjectionMetadata(soap, n, NULL, NULL, NULL); }
 
-inline struct omws__getProjectionMetadata * soap_new_req_omws__getProjectionMetadata(struct soap *soap) { struct omws__getProjectionMetadata *_p = soap_instantiate_omws__getProjectionMetadata(soap, -1, NULL, NULL, NULL); if (_p) { soap_default_omws__getProjectionMetadata(soap, _p); } return _p; }
+inline struct omws__getProjectionMetadata * soap_new_req_omws__getProjectionMetadata(struct soap *soap, std::string& ticket) { struct omws__getProjectionMetadata *_p = soap_instantiate_omws__getProjectionMetadata(soap, -1, NULL, NULL, NULL); if (_p) { soap_default_omws__getProjectionMetadata(soap, _p); _p->ticket = ticket; } return _p; }
 
-inline struct omws__getProjectionMetadata * soap_new_set_omws__getProjectionMetadata(struct soap *soap, char *ticket) { struct omws__getProjectionMetadata *_p = soap_instantiate_omws__getProjectionMetadata(soap, -1, NULL, NULL, NULL); if (_p) { soap_default_omws__getProjectionMetadata(soap, _p); _p->ticket = ticket; } return _p; }
+inline struct omws__getProjectionMetadata * soap_new_set_omws__getProjectionMetadata(struct soap *soap, std::string& ticket) { struct omws__getProjectionMetadata *_p = soap_instantiate_omws__getProjectionMetadata(soap, -1, NULL, NULL, NULL); if (_p) { soap_default_omws__getProjectionMetadata(soap, _p); _p->ticket = ticket; } return _p; }
 
 inline void soap_delete_omws__getProjectionMetadata(struct soap *soap, struct omws__getProjectionMetadata *p) { soap_delete(soap, p); }
 
 SOAP_FMAC3 void SOAP_FMAC4 soap_copy_omws__getProjectionMetadata(struct soap*, int, int, void*, size_t, const void*, size_t);
 
 #ifndef SOAP_TYPE_omws__getProjectionMetadataResponse
-#define SOAP_TYPE_omws__getProjectionMetadataResponse (241)
+#define SOAP_TYPE_omws__getProjectionMetadataResponse (239)
 #endif
 SOAP_FMAC3 void SOAP_FMAC4 soap_default_omws__getProjectionMetadataResponse(struct soap*, struct omws__getProjectionMetadataResponse *);
 SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_omws__getProjectionMetadataResponse(struct soap*, const struct omws__getProjectionMetadataResponse *);
@@ -3833,7 +3833,7 @@ inline void soap_delete_omws__getProjectionMetadataResponse(struct soap *soap, s
 SOAP_FMAC3 void SOAP_FMAC4 soap_copy_omws__getProjectionMetadataResponse(struct soap*, int, int, void*, size_t, const void*, size_t);
 
 #ifndef SOAP_TYPE_omws__getLayerAsUrl
-#define SOAP_TYPE_omws__getLayerAsUrl (240)
+#define SOAP_TYPE_omws__getLayerAsUrl (238)
 #endif
 SOAP_FMAC3 void SOAP_FMAC4 soap_default_omws__getLayerAsUrl(struct soap*, struct omws__getLayerAsUrl *);
 SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_omws__getLayerAsUrl(struct soap*, const struct omws__getLayerAsUrl *);
@@ -3856,16 +3856,16 @@ SOAP_FMAC1 struct omws__getLayerAsUrl * SOAP_FMAC2 soap_instantiate_omws__getLay
 
 inline struct omws__getLayerAsUrl * soap_new_omws__getLayerAsUrl(struct soap *soap, int n = -1) { return soap_instantiate_omws__getLayerAsUrl(soap, n, NULL, NULL, NULL); }
 
-inline struct omws__getLayerAsUrl * soap_new_req_omws__getLayerAsUrl(struct soap *soap) { struct omws__getLayerAsUrl *_p = soap_instantiate_omws__getLayerAsUrl(soap, -1, NULL, NULL, NULL); if (_p) { soap_default_omws__getLayerAsUrl(soap, _p); } return _p; }
+inline struct omws__getLayerAsUrl * soap_new_req_omws__getLayerAsUrl(struct soap *soap, std::string& id) { struct omws__getLayerAsUrl *_p = soap_instantiate_omws__getLayerAsUrl(soap, -1, NULL, NULL, NULL); if (_p) { soap_default_omws__getLayerAsUrl(soap, _p); _p->id = id; } return _p; }
 
-inline struct omws__getLayerAsUrl * soap_new_set_omws__getLayerAsUrl(struct soap *soap, char *id) { struct omws__getLayerAsUrl *_p = soap_instantiate_omws__getLayerAsUrl(soap, -1, NULL, NULL, NULL); if (_p) { soap_default_omws__getLayerAsUrl(soap, _p); _p->id = id; } return _p; }
+inline struct omws__getLayerAsUrl * soap_new_set_omws__getLayerAsUrl(struct soap *soap, std::string& id) { struct omws__getLayerAsUrl *_p = soap_instantiate_omws__getLayerAsUrl(soap, -1, NULL, NULL, NULL); if (_p) { soap_default_omws__getLayerAsUrl(soap, _p); _p->id = id; } return _p; }
 
 inline void soap_delete_omws__getLayerAsUrl(struct soap *soap, struct omws__getLayerAsUrl *p) { soap_delete(soap, p); }
 
 SOAP_FMAC3 void SOAP_FMAC4 soap_copy_omws__getLayerAsUrl(struct soap*, int, int, void*, size_t, const void*, size_t);
 
 #ifndef SOAP_TYPE_omws__getLayerAsUrlResponse
-#define SOAP_TYPE_omws__getLayerAsUrlResponse (239)
+#define SOAP_TYPE_omws__getLayerAsUrlResponse (237)
 #endif
 SOAP_FMAC3 void SOAP_FMAC4 soap_default_omws__getLayerAsUrlResponse(struct soap*, struct omws__getLayerAsUrlResponse *);
 SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_omws__getLayerAsUrlResponse(struct soap*, const struct omws__getLayerAsUrlResponse *);
@@ -3888,16 +3888,16 @@ SOAP_FMAC1 struct omws__getLayerAsUrlResponse * SOAP_FMAC2 soap_instantiate_omws
 
 inline struct omws__getLayerAsUrlResponse * soap_new_omws__getLayerAsUrlResponse(struct soap *soap, int n = -1) { return soap_instantiate_omws__getLayerAsUrlResponse(soap, n, NULL, NULL, NULL); }
 
-inline struct omws__getLayerAsUrlResponse * soap_new_req_omws__getLayerAsUrlResponse(struct soap *soap, char *url) { struct omws__getLayerAsUrlResponse *_p = soap_instantiate_omws__getLayerAsUrlResponse(soap, -1, NULL, NULL, NULL); if (_p) { soap_default_omws__getLayerAsUrlResponse(soap, _p); _p->url = url; } return _p; }
+inline struct omws__getLayerAsUrlResponse * soap_new_req_omws__getLayerAsUrlResponse(struct soap *soap, std::string& url) { struct omws__getLayerAsUrlResponse *_p = soap_instantiate_omws__getLayerAsUrlResponse(soap, -1, NULL, NULL, NULL); if (_p) { soap_default_omws__getLayerAsUrlResponse(soap, _p); _p->url = url; } return _p; }
 
-inline struct omws__getLayerAsUrlResponse * soap_new_set_omws__getLayerAsUrlResponse(struct soap *soap, char *url) { struct omws__getLayerAsUrlResponse *_p = soap_instantiate_omws__getLayerAsUrlResponse(soap, -1, NULL, NULL, NULL); if (_p) { soap_default_omws__getLayerAsUrlResponse(soap, _p); _p->url = url; } return _p; }
+inline struct omws__getLayerAsUrlResponse * soap_new_set_omws__getLayerAsUrlResponse(struct soap *soap, std::string& url) { struct omws__getLayerAsUrlResponse *_p = soap_instantiate_omws__getLayerAsUrlResponse(soap, -1, NULL, NULL, NULL); if (_p) { soap_default_omws__getLayerAsUrlResponse(soap, _p); _p->url = url; } return _p; }
 
 inline void soap_delete_omws__getLayerAsUrlResponse(struct soap *soap, struct omws__getLayerAsUrlResponse *p) { soap_delete(soap, p); }
 
 SOAP_FMAC3 void SOAP_FMAC4 soap_copy_omws__getLayerAsUrlResponse(struct soap*, int, int, void*, size_t, const void*, size_t);
 
 #ifndef SOAP_TYPE_omws__getLog
-#define SOAP_TYPE_omws__getLog (237)
+#define SOAP_TYPE_omws__getLog (235)
 #endif
 SOAP_FMAC3 void SOAP_FMAC4 soap_default_omws__getLog(struct soap*, struct omws__getLog *);
 SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_omws__getLog(struct soap*, const struct omws__getLog *);
@@ -3920,16 +3920,16 @@ SOAP_FMAC1 struct omws__getLog * SOAP_FMAC2 soap_instantiate_omws__getLog(struct
 
 inline struct omws__getLog * soap_new_omws__getLog(struct soap *soap, int n = -1) { return soap_instantiate_omws__getLog(soap, n, NULL, NULL, NULL); }
 
-inline struct omws__getLog * soap_new_req_omws__getLog(struct soap *soap) { struct omws__getLog *_p = soap_instantiate_omws__getLog(soap, -1, NULL, NULL, NULL); if (_p) { soap_default_omws__getLog(soap, _p); } return _p; }
+inline struct omws__getLog * soap_new_req_omws__getLog(struct soap *soap, std::string& ticket) { struct omws__getLog *_p = soap_instantiate_omws__getLog(soap, -1, NULL, NULL, NULL); if (_p) { soap_default_omws__getLog(soap, _p); _p->ticket = ticket; } return _p; }
 
-inline struct omws__getLog * soap_new_set_omws__getLog(struct soap *soap, char *ticket) { struct omws__getLog *_p = soap_instantiate_omws__getLog(soap, -1, NULL, NULL, NULL); if (_p) { soap_default_omws__getLog(soap, _p); _p->ticket = ticket; } return _p; }
+inline struct omws__getLog * soap_new_set_omws__getLog(struct soap *soap, std::string& ticket) { struct omws__getLog *_p = soap_instantiate_omws__getLog(soap, -1, NULL, NULL, NULL); if (_p) { soap_default_omws__getLog(soap, _p); _p->ticket = ticket; } return _p; }
 
 inline void soap_delete_omws__getLog(struct soap *soap, struct omws__getLog *p) { soap_delete(soap, p); }
 
 SOAP_FMAC3 void SOAP_FMAC4 soap_copy_omws__getLog(struct soap*, int, int, void*, size_t, const void*, size_t);
 
 #ifndef SOAP_TYPE_omws__getLogResponse
-#define SOAP_TYPE_omws__getLogResponse (236)
+#define SOAP_TYPE_omws__getLogResponse (234)
 #endif
 SOAP_FMAC3 void SOAP_FMAC4 soap_default_omws__getLogResponse(struct soap*, struct omws__getLogResponse *);
 SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_omws__getLogResponse(struct soap*, const struct omws__getLogResponse *);
@@ -3952,16 +3952,16 @@ SOAP_FMAC1 struct omws__getLogResponse * SOAP_FMAC2 soap_instantiate_omws__getLo
 
 inline struct omws__getLogResponse * soap_new_omws__getLogResponse(struct soap *soap, int n = -1) { return soap_instantiate_omws__getLogResponse(soap, n, NULL, NULL, NULL); }
 
-inline struct omws__getLogResponse * soap_new_req_omws__getLogResponse(struct soap *soap, char *log) { struct omws__getLogResponse *_p = soap_instantiate_omws__getLogResponse(soap, -1, NULL, NULL, NULL); if (_p) { soap_default_omws__getLogResponse(soap, _p); _p->log = log; } return _p; }
+inline struct omws__getLogResponse * soap_new_req_omws__getLogResponse(struct soap *soap, std::string& log) { struct omws__getLogResponse *_p = soap_instantiate_omws__getLogResponse(soap, -1, NULL, NULL, NULL); if (_p) { soap_default_omws__getLogResponse(soap, _p); _p->log = log; } return _p; }
 
-inline struct omws__getLogResponse * soap_new_set_omws__getLogResponse(struct soap *soap, char *log) { struct omws__getLogResponse *_p = soap_instantiate_omws__getLogResponse(soap, -1, NULL, NULL, NULL); if (_p) { soap_default_omws__getLogResponse(soap, _p); _p->log = log; } return _p; }
+inline struct omws__getLogResponse * soap_new_set_omws__getLogResponse(struct soap *soap, std::string& log) { struct omws__getLogResponse *_p = soap_instantiate_omws__getLogResponse(soap, -1, NULL, NULL, NULL); if (_p) { soap_default_omws__getLogResponse(soap, _p); _p->log = log; } return _p; }
 
 inline void soap_delete_omws__getLogResponse(struct soap *soap, struct omws__getLogResponse *p) { soap_delete(soap, p); }
 
 SOAP_FMAC3 void SOAP_FMAC4 soap_copy_omws__getLogResponse(struct soap*, int, int, void*, size_t, const void*, size_t);
 
 #ifndef SOAP_TYPE_omws__getProgress
-#define SOAP_TYPE_omws__getProgress (234)
+#define SOAP_TYPE_omws__getProgress (232)
 #endif
 SOAP_FMAC3 void SOAP_FMAC4 soap_default_omws__getProgress(struct soap*, struct omws__getProgress *);
 SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_omws__getProgress(struct soap*, const struct omws__getProgress *);
@@ -3984,16 +3984,16 @@ SOAP_FMAC1 struct omws__getProgress * SOAP_FMAC2 soap_instantiate_omws__getProgr
 
 inline struct omws__getProgress * soap_new_omws__getProgress(struct soap *soap, int n = -1) { return soap_instantiate_omws__getProgress(soap, n, NULL, NULL, NULL); }
 
-inline struct omws__getProgress * soap_new_req_omws__getProgress(struct soap *soap) { struct omws__getProgress *_p = soap_instantiate_omws__getProgress(soap, -1, NULL, NULL, NULL); if (_p) { soap_default_omws__getProgress(soap, _p); } return _p; }
+inline struct omws__getProgress * soap_new_req_omws__getProgress(struct soap *soap, std::string& tickets) { struct omws__getProgress *_p = soap_instantiate_omws__getProgress(soap, -1, NULL, NULL, NULL); if (_p) { soap_default_omws__getProgress(soap, _p); _p->tickets = tickets; } return _p; }
 
-inline struct omws__getProgress * soap_new_set_omws__getProgress(struct soap *soap, char *tickets) { struct omws__getProgress *_p = soap_instantiate_omws__getProgress(soap, -1, NULL, NULL, NULL); if (_p) { soap_default_omws__getProgress(soap, _p); _p->tickets = tickets; } return _p; }
+inline struct omws__getProgress * soap_new_set_omws__getProgress(struct soap *soap, std::string& tickets) { struct omws__getProgress *_p = soap_instantiate_omws__getProgress(soap, -1, NULL, NULL, NULL); if (_p) { soap_default_omws__getProgress(soap, _p); _p->tickets = tickets; } return _p; }
 
 inline void soap_delete_omws__getProgress(struct soap *soap, struct omws__getProgress *p) { soap_delete(soap, p); }
 
 SOAP_FMAC3 void SOAP_FMAC4 soap_copy_omws__getProgress(struct soap*, int, int, void*, size_t, const void*, size_t);
 
 #ifndef SOAP_TYPE_omws__getProgressResponse
-#define SOAP_TYPE_omws__getProgressResponse (233)
+#define SOAP_TYPE_omws__getProgressResponse (231)
 #endif
 SOAP_FMAC3 void SOAP_FMAC4 soap_default_omws__getProgressResponse(struct soap*, struct omws__getProgressResponse *);
 SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_omws__getProgressResponse(struct soap*, const struct omws__getProgressResponse *);
@@ -4025,7 +4025,7 @@ inline void soap_delete_omws__getProgressResponse(struct soap *soap, struct omws
 SOAP_FMAC3 void SOAP_FMAC4 soap_copy_omws__getProgressResponse(struct soap*, int, int, void*, size_t, const void*, size_t);
 
 #ifndef SOAP_TYPE_omws__projectModel
-#define SOAP_TYPE_omws__projectModel (230)
+#define SOAP_TYPE_omws__projectModel (229)
 #endif
 SOAP_FMAC3 void SOAP_FMAC4 soap_default_omws__projectModel(struct soap*, struct omws__projectModel *);
 SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_omws__projectModel(struct soap*, const struct omws__projectModel *);
@@ -4057,7 +4057,7 @@ inline void soap_delete_omws__projectModel(struct soap *soap, struct omws__proje
 SOAP_FMAC3 void SOAP_FMAC4 soap_copy_omws__projectModel(struct soap*, int, int, void*, size_t, const void*, size_t);
 
 #ifndef SOAP_TYPE_omws__projectModelResponse
-#define SOAP_TYPE_omws__projectModelResponse (229)
+#define SOAP_TYPE_omws__projectModelResponse (228)
 #endif
 SOAP_FMAC3 void SOAP_FMAC4 soap_default_omws__projectModelResponse(struct soap*, struct omws__projectModelResponse *);
 SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_omws__projectModelResponse(struct soap*, const struct omws__projectModelResponse *);
@@ -4080,16 +4080,16 @@ SOAP_FMAC1 struct omws__projectModelResponse * SOAP_FMAC2 soap_instantiate_omws_
 
 inline struct omws__projectModelResponse * soap_new_omws__projectModelResponse(struct soap *soap, int n = -1) { return soap_instantiate_omws__projectModelResponse(soap, n, NULL, NULL, NULL); }
 
-inline struct omws__projectModelResponse * soap_new_req_omws__projectModelResponse(struct soap *soap, char *ticket) { struct omws__projectModelResponse *_p = soap_instantiate_omws__projectModelResponse(soap, -1, NULL, NULL, NULL); if (_p) { soap_default_omws__projectModelResponse(soap, _p); _p->ticket = ticket; } return _p; }
+inline struct omws__projectModelResponse * soap_new_req_omws__projectModelResponse(struct soap *soap, std::string& ticket) { struct omws__projectModelResponse *_p = soap_instantiate_omws__projectModelResponse(soap, -1, NULL, NULL, NULL); if (_p) { soap_default_omws__projectModelResponse(soap, _p); _p->ticket = ticket; } return _p; }
 
-inline struct omws__projectModelResponse * soap_new_set_omws__projectModelResponse(struct soap *soap, char *ticket) { struct omws__projectModelResponse *_p = soap_instantiate_omws__projectModelResponse(soap, -1, NULL, NULL, NULL); if (_p) { soap_default_omws__projectModelResponse(soap, _p); _p->ticket = ticket; } return _p; }
+inline struct omws__projectModelResponse * soap_new_set_omws__projectModelResponse(struct soap *soap, std::string& ticket) { struct omws__projectModelResponse *_p = soap_instantiate_omws__projectModelResponse(soap, -1, NULL, NULL, NULL); if (_p) { soap_default_omws__projectModelResponse(soap, _p); _p->ticket = ticket; } return _p; }
 
 inline void soap_delete_omws__projectModelResponse(struct soap *soap, struct omws__projectModelResponse *p) { soap_delete(soap, p); }
 
 SOAP_FMAC3 void SOAP_FMAC4 soap_copy_omws__projectModelResponse(struct soap*, int, int, void*, size_t, const void*, size_t);
 
 #ifndef SOAP_TYPE_omws__getTestResult
-#define SOAP_TYPE_omws__getTestResult (227)
+#define SOAP_TYPE_omws__getTestResult (226)
 #endif
 SOAP_FMAC3 void SOAP_FMAC4 soap_default_omws__getTestResult(struct soap*, struct omws__getTestResult *);
 SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_omws__getTestResult(struct soap*, const struct omws__getTestResult *);
@@ -4112,16 +4112,16 @@ SOAP_FMAC1 struct omws__getTestResult * SOAP_FMAC2 soap_instantiate_omws__getTes
 
 inline struct omws__getTestResult * soap_new_omws__getTestResult(struct soap *soap, int n = -1) { return soap_instantiate_omws__getTestResult(soap, n, NULL, NULL, NULL); }
 
-inline struct omws__getTestResult * soap_new_req_omws__getTestResult(struct soap *soap) { struct omws__getTestResult *_p = soap_instantiate_omws__getTestResult(soap, -1, NULL, NULL, NULL); if (_p) { soap_default_omws__getTestResult(soap, _p); } return _p; }
+inline struct omws__getTestResult * soap_new_req_omws__getTestResult(struct soap *soap, std::string& ticket) { struct omws__getTestResult *_p = soap_instantiate_omws__getTestResult(soap, -1, NULL, NULL, NULL); if (_p) { soap_default_omws__getTestResult(soap, _p); _p->ticket = ticket; } return _p; }
 
-inline struct omws__getTestResult * soap_new_set_omws__getTestResult(struct soap *soap, char *ticket) { struct omws__getTestResult *_p = soap_instantiate_omws__getTestResult(soap, -1, NULL, NULL, NULL); if (_p) { soap_default_omws__getTestResult(soap, _p); _p->ticket = ticket; } return _p; }
+inline struct omws__getTestResult * soap_new_set_omws__getTestResult(struct soap *soap, std::string& ticket) { struct omws__getTestResult *_p = soap_instantiate_omws__getTestResult(soap, -1, NULL, NULL, NULL); if (_p) { soap_default_omws__getTestResult(soap, _p); _p->ticket = ticket; } return _p; }
 
 inline void soap_delete_omws__getTestResult(struct soap *soap, struct omws__getTestResult *p) { soap_delete(soap, p); }
 
 SOAP_FMAC3 void SOAP_FMAC4 soap_copy_omws__getTestResult(struct soap*, int, int, void*, size_t, const void*, size_t);
 
 #ifndef SOAP_TYPE_omws__testResponse
-#define SOAP_TYPE_omws__testResponse (224)
+#define SOAP_TYPE_omws__testResponse (223)
 #endif
 SOAP_FMAC3 void SOAP_FMAC4 soap_default_omws__testResponse(struct soap*, struct omws__testResponse *);
 SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_omws__testResponse(struct soap*, const struct omws__testResponse *);
@@ -4153,7 +4153,7 @@ inline void soap_delete_omws__testResponse(struct soap *soap, struct omws__testR
 SOAP_FMAC3 void SOAP_FMAC4 soap_copy_omws__testResponse(struct soap*, int, int, void*, size_t, const void*, size_t);
 
 #ifndef SOAP_TYPE_omws__testModel
-#define SOAP_TYPE_omws__testModel (223)
+#define SOAP_TYPE_omws__testModel (222)
 #endif
 SOAP_FMAC3 void SOAP_FMAC4 soap_default_omws__testModel(struct soap*, struct omws__testModel *);
 SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_omws__testModel(struct soap*, const struct omws__testModel *);
@@ -4185,7 +4185,7 @@ inline void soap_delete_omws__testModel(struct soap *soap, struct omws__testMode
 SOAP_FMAC3 void SOAP_FMAC4 soap_copy_omws__testModel(struct soap*, int, int, void*, size_t, const void*, size_t);
 
 #ifndef SOAP_TYPE_omws__testModelResponse
-#define SOAP_TYPE_omws__testModelResponse (222)
+#define SOAP_TYPE_omws__testModelResponse (221)
 #endif
 SOAP_FMAC3 void SOAP_FMAC4 soap_default_omws__testModelResponse(struct soap*, struct omws__testModelResponse *);
 SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_omws__testModelResponse(struct soap*, const struct omws__testModelResponse *);
@@ -4208,16 +4208,16 @@ SOAP_FMAC1 struct omws__testModelResponse * SOAP_FMAC2 soap_instantiate_omws__te
 
 inline struct omws__testModelResponse * soap_new_omws__testModelResponse(struct soap *soap, int n = -1) { return soap_instantiate_omws__testModelResponse(soap, n, NULL, NULL, NULL); }
 
-inline struct omws__testModelResponse * soap_new_req_omws__testModelResponse(struct soap *soap, char *ticket) { struct omws__testModelResponse *_p = soap_instantiate_omws__testModelResponse(soap, -1, NULL, NULL, NULL); if (_p) { soap_default_omws__testModelResponse(soap, _p); _p->ticket = ticket; } return _p; }
+inline struct omws__testModelResponse * soap_new_req_omws__testModelResponse(struct soap *soap, std::string& ticket) { struct omws__testModelResponse *_p = soap_instantiate_omws__testModelResponse(soap, -1, NULL, NULL, NULL); if (_p) { soap_default_omws__testModelResponse(soap, _p); _p->ticket = ticket; } return _p; }
 
-inline struct omws__testModelResponse * soap_new_set_omws__testModelResponse(struct soap *soap, char *ticket) { struct omws__testModelResponse *_p = soap_instantiate_omws__testModelResponse(soap, -1, NULL, NULL, NULL); if (_p) { soap_default_omws__testModelResponse(soap, _p); _p->ticket = ticket; } return _p; }
+inline struct omws__testModelResponse * soap_new_set_omws__testModelResponse(struct soap *soap, std::string& ticket) { struct omws__testModelResponse *_p = soap_instantiate_omws__testModelResponse(soap, -1, NULL, NULL, NULL); if (_p) { soap_default_omws__testModelResponse(soap, _p); _p->ticket = ticket; } return _p; }
 
 inline void soap_delete_omws__testModelResponse(struct soap *soap, struct omws__testModelResponse *p) { soap_delete(soap, p); }
 
 SOAP_FMAC3 void SOAP_FMAC4 soap_copy_omws__testModelResponse(struct soap*, int, int, void*, size_t, const void*, size_t);
 
 #ifndef SOAP_TYPE_omws__getModel
-#define SOAP_TYPE_omws__getModel (220)
+#define SOAP_TYPE_omws__getModel (219)
 #endif
 SOAP_FMAC3 void SOAP_FMAC4 soap_default_omws__getModel(struct soap*, struct omws__getModel *);
 SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_omws__getModel(struct soap*, const struct omws__getModel *);
@@ -4240,16 +4240,16 @@ SOAP_FMAC1 struct omws__getModel * SOAP_FMAC2 soap_instantiate_omws__getModel(st
 
 inline struct omws__getModel * soap_new_omws__getModel(struct soap *soap, int n = -1) { return soap_instantiate_omws__getModel(soap, n, NULL, NULL, NULL); }
 
-inline struct omws__getModel * soap_new_req_omws__getModel(struct soap *soap) { struct omws__getModel *_p = soap_instantiate_omws__getModel(soap, -1, NULL, NULL, NULL); if (_p) { soap_default_omws__getModel(soap, _p); } return _p; }
+inline struct omws__getModel * soap_new_req_omws__getModel(struct soap *soap, std::string& ticket) { struct omws__getModel *_p = soap_instantiate_omws__getModel(soap, -1, NULL, NULL, NULL); if (_p) { soap_default_omws__getModel(soap, _p); _p->ticket = ticket; } return _p; }
 
-inline struct omws__getModel * soap_new_set_omws__getModel(struct soap *soap, char *ticket) { struct omws__getModel *_p = soap_instantiate_omws__getModel(soap, -1, NULL, NULL, NULL); if (_p) { soap_default_omws__getModel(soap, _p); _p->ticket = ticket; } return _p; }
+inline struct omws__getModel * soap_new_set_omws__getModel(struct soap *soap, std::string& ticket) { struct omws__getModel *_p = soap_instantiate_omws__getModel(soap, -1, NULL, NULL, NULL); if (_p) { soap_default_omws__getModel(soap, _p); _p->ticket = ticket; } return _p; }
 
 inline void soap_delete_omws__getModel(struct soap *soap, struct omws__getModel *p) { soap_delete(soap, p); }
 
 SOAP_FMAC3 void SOAP_FMAC4 soap_copy_omws__getModel(struct soap*, int, int, void*, size_t, const void*, size_t);
 
 #ifndef SOAP_TYPE_omws__getModelResponse
-#define SOAP_TYPE_omws__getModelResponse (217)
+#define SOAP_TYPE_omws__getModelResponse (216)
 #endif
 SOAP_FMAC3 void SOAP_FMAC4 soap_default_omws__getModelResponse(struct soap*, struct omws__getModelResponse *);
 SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_omws__getModelResponse(struct soap*, const struct omws__getModelResponse *);
@@ -4281,7 +4281,7 @@ inline void soap_delete_omws__getModelResponse(struct soap *soap, struct omws__g
 SOAP_FMAC3 void SOAP_FMAC4 soap_copy_omws__getModelResponse(struct soap*, int, int, void*, size_t, const void*, size_t);
 
 #ifndef SOAP_TYPE_omws__createModel
-#define SOAP_TYPE_omws__createModel (216)
+#define SOAP_TYPE_omws__createModel (215)
 #endif
 SOAP_FMAC3 void SOAP_FMAC4 soap_default_omws__createModel(struct soap*, struct omws__createModel *);
 SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_omws__createModel(struct soap*, const struct omws__createModel *);
@@ -4313,7 +4313,7 @@ inline void soap_delete_omws__createModel(struct soap *soap, struct omws__create
 SOAP_FMAC3 void SOAP_FMAC4 soap_copy_omws__createModel(struct soap*, int, int, void*, size_t, const void*, size_t);
 
 #ifndef SOAP_TYPE_omws__createModelResponse
-#define SOAP_TYPE_omws__createModelResponse (215)
+#define SOAP_TYPE_omws__createModelResponse (214)
 #endif
 SOAP_FMAC3 void SOAP_FMAC4 soap_default_omws__createModelResponse(struct soap*, struct omws__createModelResponse *);
 SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_omws__createModelResponse(struct soap*, const struct omws__createModelResponse *);
@@ -4336,16 +4336,16 @@ SOAP_FMAC1 struct omws__createModelResponse * SOAP_FMAC2 soap_instantiate_omws__
 
 inline struct omws__createModelResponse * soap_new_omws__createModelResponse(struct soap *soap, int n = -1) { return soap_instantiate_omws__createModelResponse(soap, n, NULL, NULL, NULL); }
 
-inline struct omws__createModelResponse * soap_new_req_omws__createModelResponse(struct soap *soap, char *ticket) { struct omws__createModelResponse *_p = soap_instantiate_omws__createModelResponse(soap, -1, NULL, NULL, NULL); if (_p) { soap_default_omws__createModelResponse(soap, _p); _p->ticket = ticket; } return _p; }
+inline struct omws__createModelResponse * soap_new_req_omws__createModelResponse(struct soap *soap, std::string& ticket) { struct omws__createModelResponse *_p = soap_instantiate_omws__createModelResponse(soap, -1, NULL, NULL, NULL); if (_p) { soap_default_omws__createModelResponse(soap, _p); _p->ticket = ticket; } return _p; }
 
-inline struct omws__createModelResponse * soap_new_set_omws__createModelResponse(struct soap *soap, char *ticket) { struct omws__createModelResponse *_p = soap_instantiate_omws__createModelResponse(soap, -1, NULL, NULL, NULL); if (_p) { soap_default_omws__createModelResponse(soap, _p); _p->ticket = ticket; } return _p; }
+inline struct omws__createModelResponse * soap_new_set_omws__createModelResponse(struct soap *soap, std::string& ticket) { struct omws__createModelResponse *_p = soap_instantiate_omws__createModelResponse(soap, -1, NULL, NULL, NULL); if (_p) { soap_default_omws__createModelResponse(soap, _p); _p->ticket = ticket; } return _p; }
 
 inline void soap_delete_omws__createModelResponse(struct soap *soap, struct omws__createModelResponse *p) { soap_delete(soap, p); }
 
 SOAP_FMAC3 void SOAP_FMAC4 soap_copy_omws__createModelResponse(struct soap*, int, int, void*, size_t, const void*, size_t);
 
 #ifndef SOAP_TYPE_omws__getLayers
-#define SOAP_TYPE_omws__getLayers (212)
+#define SOAP_TYPE_omws__getLayers (211)
 #endif
 SOAP_FMAC3 void SOAP_FMAC4 soap_default_omws__getLayers(struct soap*, struct omws__getLayers *);
 SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_omws__getLayers(struct soap*, const struct omws__getLayers *);
@@ -4377,7 +4377,7 @@ inline void soap_delete_omws__getLayers(struct soap *soap, struct omws__getLayer
 SOAP_FMAC3 void SOAP_FMAC4 soap_copy_omws__getLayers(struct soap*, int, int, void*, size_t, const void*, size_t);
 
 #ifndef SOAP_TYPE_omws__getLayersResponse
-#define SOAP_TYPE_omws__getLayersResponse (209)
+#define SOAP_TYPE_omws__getLayersResponse (208)
 #endif
 SOAP_FMAC3 void SOAP_FMAC4 soap_default_omws__getLayersResponse(struct soap*, struct omws__getLayersResponse *);
 SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_omws__getLayersResponse(struct soap*, const struct omws__getLayersResponse *);
@@ -4409,7 +4409,7 @@ inline void soap_delete_omws__getLayersResponse(struct soap *soap, struct omws__
 SOAP_FMAC3 void SOAP_FMAC4 soap_copy_omws__getLayersResponse(struct soap*, int, int, void*, size_t, const void*, size_t);
 
 #ifndef SOAP_TYPE_omws__getAlgorithms
-#define SOAP_TYPE_omws__getAlgorithms (208)
+#define SOAP_TYPE_omws__getAlgorithms (207)
 #endif
 SOAP_FMAC3 void SOAP_FMAC4 soap_default_omws__getAlgorithms(struct soap*, struct omws__getAlgorithms *);
 SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_omws__getAlgorithms(struct soap*, const struct omws__getAlgorithms *);
@@ -4441,7 +4441,7 @@ inline void soap_delete_omws__getAlgorithms(struct soap *soap, struct omws__getA
 SOAP_FMAC3 void SOAP_FMAC4 soap_copy_omws__getAlgorithms(struct soap*, int, int, void*, size_t, const void*, size_t);
 
 #ifndef SOAP_TYPE_omws__getAlgorithmsResponse
-#define SOAP_TYPE_omws__getAlgorithmsResponse (205)
+#define SOAP_TYPE_omws__getAlgorithmsResponse (204)
 #endif
 SOAP_FMAC3 void SOAP_FMAC4 soap_default_omws__getAlgorithmsResponse(struct soap*, struct omws__getAlgorithmsResponse *);
 SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_omws__getAlgorithmsResponse(struct soap*, const struct omws__getAlgorithmsResponse *);
@@ -4473,7 +4473,7 @@ inline void soap_delete_omws__getAlgorithmsResponse(struct soap *soap, struct om
 SOAP_FMAC3 void SOAP_FMAC4 soap_copy_omws__getAlgorithmsResponse(struct soap*, int, int, void*, size_t, const void*, size_t);
 
 #ifndef SOAP_TYPE_omws__ping
-#define SOAP_TYPE_omws__ping (204)
+#define SOAP_TYPE_omws__ping (203)
 #endif
 SOAP_FMAC3 void SOAP_FMAC4 soap_default_omws__ping(struct soap*, struct omws__ping *);
 SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_omws__ping(struct soap*, const struct omws__ping *);
@@ -4505,7 +4505,7 @@ inline void soap_delete_omws__ping(struct soap *soap, struct omws__ping *p) { so
 SOAP_FMAC3 void SOAP_FMAC4 soap_copy_omws__ping(struct soap*, int, int, void*, size_t, const void*, size_t);
 
 #ifndef SOAP_TYPE_omws__pingResponse
-#define SOAP_TYPE_omws__pingResponse (203)
+#define SOAP_TYPE_omws__pingResponse (202)
 #endif
 SOAP_FMAC3 void SOAP_FMAC4 soap_default_omws__pingResponse(struct soap*, struct omws__pingResponse *);
 SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_omws__pingResponse(struct soap*, const struct omws__pingResponse *);
@@ -4539,7 +4539,7 @@ SOAP_FMAC3 void SOAP_FMAC4 soap_copy_omws__pingResponse(struct soap*, int, int, 
 #ifndef WITH_NOGLOBAL
 
 #ifndef SOAP_TYPE_SOAP_ENV__Header
-#define SOAP_TYPE_SOAP_ENV__Header (198)
+#define SOAP_TYPE_SOAP_ENV__Header (197)
 #endif
 SOAP_FMAC3 void SOAP_FMAC4 soap_default_SOAP_ENV__Header(struct soap*, struct SOAP_ENV__Header *);
 SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_SOAP_ENV__Header(struct soap*, const struct SOAP_ENV__Header *);
@@ -4596,7 +4596,7 @@ SOAP_FMAC3 union _om__union_OccurrencesFilterType * SOAP_FMAC4 soap_in__om__unio
 #ifndef WITH_NOGLOBAL
 
 #ifndef SOAP_TYPE_PointerToSOAP_ENV__Reason
-#define SOAP_TYPE_PointerToSOAP_ENV__Reason (276)
+#define SOAP_TYPE_PointerToSOAP_ENV__Reason (274)
 #endif
 SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_PointerToSOAP_ENV__Reason(struct soap*, struct SOAP_ENV__Reason *const*);
 SOAP_FMAC3 int SOAP_FMAC4 soap_out_PointerToSOAP_ENV__Reason(struct soap*, const char *, int, struct SOAP_ENV__Reason *const*, const char *);
@@ -4619,7 +4619,7 @@ SOAP_FMAC3 struct SOAP_ENV__Reason ** SOAP_FMAC4 soap_get_PointerToSOAP_ENV__Rea
 #ifndef WITH_NOGLOBAL
 
 #ifndef SOAP_TYPE_PointerToSOAP_ENV__Detail
-#define SOAP_TYPE_PointerToSOAP_ENV__Detail (275)
+#define SOAP_TYPE_PointerToSOAP_ENV__Detail (273)
 #endif
 SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_PointerToSOAP_ENV__Detail(struct soap*, struct SOAP_ENV__Detail *const*);
 SOAP_FMAC3 int SOAP_FMAC4 soap_out_PointerToSOAP_ENV__Detail(struct soap*, const char *, int, struct SOAP_ENV__Detail *const*, const char *);
@@ -4642,7 +4642,7 @@ SOAP_FMAC3 struct SOAP_ENV__Detail ** SOAP_FMAC4 soap_get_PointerToSOAP_ENV__Det
 #ifndef WITH_NOGLOBAL
 
 #ifndef SOAP_TYPE_PointerToSOAP_ENV__Code
-#define SOAP_TYPE_PointerToSOAP_ENV__Code (271)
+#define SOAP_TYPE_PointerToSOAP_ENV__Code (269)
 #endif
 SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_PointerToSOAP_ENV__Code(struct soap*, struct SOAP_ENV__Code *const*);
 SOAP_FMAC3 int SOAP_FMAC4 soap_out_PointerToSOAP_ENV__Code(struct soap*, const char *, int, struct SOAP_ENV__Code *const*, const char *);
@@ -4663,7 +4663,7 @@ SOAP_FMAC3 struct SOAP_ENV__Code ** SOAP_FMAC4 soap_get_PointerToSOAP_ENV__Code(
 #endif
 
 #ifndef SOAP_TYPE_PointerToomws__getResultsResponse
-#define SOAP_TYPE_PointerToomws__getResultsResponse (264)
+#define SOAP_TYPE_PointerToomws__getResultsResponse (262)
 #endif
 SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_PointerToomws__getResultsResponse(struct soap*, struct omws__getResultsResponse *const*);
 SOAP_FMAC3 int SOAP_FMAC4 soap_out_PointerToomws__getResultsResponse(struct soap*, const char *, int, struct omws__getResultsResponse *const*, const char *);
@@ -4682,7 +4682,7 @@ SOAP_FMAC3 struct omws__getResultsResponse ** SOAP_FMAC4 soap_get_PointerToomws_
 
 
 #ifndef SOAP_TYPE_PointerToomws__runExperimentResponse
-#define SOAP_TYPE_PointerToomws__runExperimentResponse (260)
+#define SOAP_TYPE_PointerToomws__runExperimentResponse (258)
 #endif
 SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_PointerToomws__runExperimentResponse(struct soap*, struct omws__runExperimentResponse *const*);
 SOAP_FMAC3 int SOAP_FMAC4 soap_out_PointerToomws__runExperimentResponse(struct soap*, const char *, int, struct omws__runExperimentResponse *const*, const char *);
@@ -4701,7 +4701,7 @@ SOAP_FMAC3 struct omws__runExperimentResponse ** SOAP_FMAC4 soap_get_PointerToom
 
 
 #ifndef SOAP_TYPE_PointerToomws__getSamplingResultResponse
-#define SOAP_TYPE_PointerToomws__getSamplingResultResponse (256)
+#define SOAP_TYPE_PointerToomws__getSamplingResultResponse (254)
 #endif
 SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_PointerToomws__getSamplingResultResponse(struct soap*, struct omws__getSamplingResultResponse *const*);
 SOAP_FMAC3 int SOAP_FMAC4 soap_out_PointerToomws__getSamplingResultResponse(struct soap*, const char *, int, struct omws__getSamplingResultResponse *const*, const char *);
@@ -4720,7 +4720,7 @@ SOAP_FMAC3 struct omws__getSamplingResultResponse ** SOAP_FMAC4 soap_get_Pointer
 
 
 #ifndef SOAP_TYPE_PointerToomws__modelEvaluationResponse
-#define SOAP_TYPE_PointerToomws__modelEvaluationResponse (249)
+#define SOAP_TYPE_PointerToomws__modelEvaluationResponse (247)
 #endif
 SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_PointerToomws__modelEvaluationResponse(struct soap*, struct omws__modelEvaluationResponse *const*);
 SOAP_FMAC3 int SOAP_FMAC4 soap_out_PointerToomws__modelEvaluationResponse(struct soap*, const char *, int, struct omws__modelEvaluationResponse *const*, const char *);
@@ -4739,7 +4739,7 @@ SOAP_FMAC3 struct omws__modelEvaluationResponse ** SOAP_FMAC4 soap_get_PointerTo
 
 
 #ifndef SOAP_TYPE_PointerToomws__getProjectionMetadataResponse
-#define SOAP_TYPE_PointerToomws__getProjectionMetadataResponse (242)
+#define SOAP_TYPE_PointerToomws__getProjectionMetadataResponse (240)
 #endif
 SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_PointerToomws__getProjectionMetadataResponse(struct soap*, struct omws__getProjectionMetadataResponse *const*);
 SOAP_FMAC3 int SOAP_FMAC4 soap_out_PointerToomws__getProjectionMetadataResponse(struct soap*, const char *, int, struct omws__getProjectionMetadataResponse *const*, const char *);
@@ -4758,7 +4758,7 @@ SOAP_FMAC3 struct omws__getProjectionMetadataResponse ** SOAP_FMAC4 soap_get_Poi
 
 
 #ifndef SOAP_TYPE_PointerToomws__testResponse
-#define SOAP_TYPE_PointerToomws__testResponse (225)
+#define SOAP_TYPE_PointerToomws__testResponse (224)
 #endif
 SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_PointerToomws__testResponse(struct soap*, struct omws__testResponse *const*);
 SOAP_FMAC3 int SOAP_FMAC4 soap_out_PointerToomws__testResponse(struct soap*, const char *, int, struct omws__testResponse *const*, const char *);
@@ -4777,7 +4777,7 @@ SOAP_FMAC3 struct omws__testResponse ** SOAP_FMAC4 soap_get_PointerToomws__testR
 
 
 #ifndef SOAP_TYPE_PointerToomws__getModelResponse
-#define SOAP_TYPE_PointerToomws__getModelResponse (218)
+#define SOAP_TYPE_PointerToomws__getModelResponse (217)
 #endif
 SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_PointerToomws__getModelResponse(struct soap*, struct omws__getModelResponse *const*);
 SOAP_FMAC3 int SOAP_FMAC4 soap_out_PointerToomws__getModelResponse(struct soap*, const char *, int, struct omws__getModelResponse *const*, const char *);
@@ -4796,7 +4796,7 @@ SOAP_FMAC3 struct omws__getModelResponse ** SOAP_FMAC4 soap_get_PointerToomws__g
 
 
 #ifndef SOAP_TYPE_PointerToomws__getLayersResponse
-#define SOAP_TYPE_PointerToomws__getLayersResponse (210)
+#define SOAP_TYPE_PointerToomws__getLayersResponse (209)
 #endif
 SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_PointerToomws__getLayersResponse(struct soap*, struct omws__getLayersResponse *const*);
 SOAP_FMAC3 int SOAP_FMAC4 soap_out_PointerToomws__getLayersResponse(struct soap*, const char *, int, struct omws__getLayersResponse *const*, const char *);
@@ -4815,7 +4815,7 @@ SOAP_FMAC3 struct omws__getLayersResponse ** SOAP_FMAC4 soap_get_PointerToomws__
 
 
 #ifndef SOAP_TYPE_PointerToomws__getAlgorithmsResponse
-#define SOAP_TYPE_PointerToomws__getAlgorithmsResponse (206)
+#define SOAP_TYPE_PointerToomws__getAlgorithmsResponse (205)
 #endif
 SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_PointerToomws__getAlgorithmsResponse(struct soap*, struct omws__getAlgorithmsResponse *const*);
 SOAP_FMAC3 int SOAP_FMAC4 soap_out_PointerToomws__getAlgorithmsResponse(struct soap*, const char *, int, struct omws__getAlgorithmsResponse *const*, const char *);
@@ -4834,7 +4834,7 @@ SOAP_FMAC3 struct omws__getAlgorithmsResponse ** SOAP_FMAC4 soap_get_PointerToom
 
 
 #ifndef SOAP_TYPE_wstring
-#define SOAP_TYPE_wstring (195)
+#define SOAP_TYPE_wstring (194)
 #endif
 SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_wstring(struct soap*, wchar_t *const*);
 SOAP_FMAC3 int SOAP_FMAC4 soap_out_wstring(struct soap*, const char*, int, wchar_t*const*, const char*);
@@ -4849,28 +4849,6 @@ SOAP_FMAC3 wchar_t ** SOAP_FMAC4 soap_get_wstring(struct soap*, wchar_t **, cons
 
 #ifndef soap_read_wstring
 #define soap_read_wstring(soap, data) ( soap_begin_recv(soap) || !soap_get_wstring(soap, data, NULL, NULL) || soap_end_recv(soap), soap->error )
-#endif
-
-
-#ifndef SOAP_TYPE_xsd__string
-#define SOAP_TYPE_xsd__string (190)
-#endif
-
-#define soap_default_xsd__string(soap, a) soap_default_string(soap, a)
-
-SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_xsd__string(struct soap*, char *const*);
-SOAP_FMAC3 int SOAP_FMAC4 soap_out_xsd__string(struct soap*, const char*, int, char*const*, const char*);
-SOAP_FMAC3 char * * SOAP_FMAC4 soap_in_xsd__string(struct soap*, const char*, char **, const char*);
-SOAP_FMAC3 int SOAP_FMAC4 soap_put_xsd__string(struct soap*, char *const*, const char*, const char*);
-
-#ifndef soap_write_xsd__string
-#define soap_write_xsd__string(soap, data) ( soap_serialize_xsd__string(soap, data), soap_begin_send(soap) || soap_put_xsd__string(soap, data, "byte", NULL) || soap_end_send(soap), soap->error )
-#endif
-
-SOAP_FMAC3 char ** SOAP_FMAC4 soap_get_xsd__string(struct soap*, char **, const char*, const char*);
-
-#ifndef soap_read_xsd__string
-#define soap_read_xsd__string(soap, data) ( soap_begin_recv(soap) || !soap_get_xsd__string(soap, data, NULL, NULL) || soap_end_recv(soap), soap->error )
 #endif
 
 

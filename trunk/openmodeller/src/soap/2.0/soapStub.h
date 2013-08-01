@@ -1758,285 +1758,285 @@ public:
 #ifndef WITH_NOGLOBAL
 
 #ifndef SOAP_TYPE_SOAP_ENV__Header
-#define SOAP_TYPE_SOAP_ENV__Header (198)
+#define SOAP_TYPE_SOAP_ENV__Header (197)
 /* SOAP Header: */
 struct SOAP_ENV__Header
 {
 public:
 	char *omws__version;	/* optional element of type xsd:string */
 public:
-	int soap_type() const { return 198; } /* = unique id SOAP_TYPE_SOAP_ENV__Header */
+	int soap_type() const { return 197; } /* = unique id SOAP_TYPE_SOAP_ENV__Header */
 };
 #endif
 
 #endif
 
 #ifndef SOAP_TYPE_omws__pingResponse
-#define SOAP_TYPE_omws__pingResponse (203)
+#define SOAP_TYPE_omws__pingResponse (202)
 /* omws:pingResponse */
 struct omws__pingResponse
 {
 public:
 	int status;	/* SOAP 1.2 RPC return element (when namespace qualified) */	/* required element of type xsd:int */
 public:
-	int soap_type() const { return 203; } /* = unique id SOAP_TYPE_omws__pingResponse */
+	int soap_type() const { return 202; } /* = unique id SOAP_TYPE_omws__pingResponse */
 };
 #endif
 
 #ifndef SOAP_TYPE_omws__ping
-#define SOAP_TYPE_omws__ping (204)
+#define SOAP_TYPE_omws__ping (203)
 /* omws:ping */
 struct omws__ping
 {
 public:
 	void *_;	/* transient */
 public:
-	int soap_type() const { return 204; } /* = unique id SOAP_TYPE_omws__ping */
+	int soap_type() const { return 203; } /* = unique id SOAP_TYPE_omws__ping */
 };
 #endif
 
 #ifndef SOAP_TYPE_omws__getAlgorithmsResponse
-#define SOAP_TYPE_omws__getAlgorithmsResponse (205)
+#define SOAP_TYPE_omws__getAlgorithmsResponse (204)
 /* omws:getAlgorithmsResponse */
 struct omws__getAlgorithmsResponse
 {
 public:
 	wchar_t *om__AvailableAlgorithms;	/* SOAP 1.2 RPC return element (when namespace qualified) */	/* optional element of type xsd:anyType */
 public:
-	int soap_type() const { return 205; } /* = unique id SOAP_TYPE_omws__getAlgorithmsResponse */
+	int soap_type() const { return 204; } /* = unique id SOAP_TYPE_omws__getAlgorithmsResponse */
 };
 #endif
 
 #ifndef SOAP_TYPE_omws__getAlgorithms
-#define SOAP_TYPE_omws__getAlgorithms (208)
+#define SOAP_TYPE_omws__getAlgorithms (207)
 /* omws:getAlgorithms */
 struct omws__getAlgorithms
 {
 public:
 	void *_;	/* transient */
 public:
-	int soap_type() const { return 208; } /* = unique id SOAP_TYPE_omws__getAlgorithms */
+	int soap_type() const { return 207; } /* = unique id SOAP_TYPE_omws__getAlgorithms */
 };
 #endif
 
 #ifndef SOAP_TYPE_omws__getLayersResponse
-#define SOAP_TYPE_omws__getLayersResponse (209)
+#define SOAP_TYPE_omws__getLayersResponse (208)
 /* omws:getLayersResponse */
 struct omws__getLayersResponse
 {
 public:
 	wchar_t *om__AvailableLayers;	/* SOAP 1.2 RPC return element (when namespace qualified) */	/* optional element of type xsd:anyType */
 public:
-	int soap_type() const { return 209; } /* = unique id SOAP_TYPE_omws__getLayersResponse */
+	int soap_type() const { return 208; } /* = unique id SOAP_TYPE_omws__getLayersResponse */
 };
 #endif
 
 #ifndef SOAP_TYPE_omws__getLayers
-#define SOAP_TYPE_omws__getLayers (212)
+#define SOAP_TYPE_omws__getLayers (211)
 /* omws:getLayers */
 struct omws__getLayers
 {
 public:
 	void *_;	/* transient */
 public:
-	int soap_type() const { return 212; } /* = unique id SOAP_TYPE_omws__getLayers */
+	int soap_type() const { return 211; } /* = unique id SOAP_TYPE_omws__getLayers */
 };
 #endif
 
 #ifndef SOAP_TYPE_omws__createModelResponse
-#define SOAP_TYPE_omws__createModelResponse (215)
+#define SOAP_TYPE_omws__createModelResponse (214)
 /* omws:createModelResponse */
 struct omws__createModelResponse
 {
 public:
-	char *ticket;	/* SOAP 1.2 RPC return element (when namespace qualified) */	/* required element of type xsd:string */
+	std::string ticket;	/* SOAP 1.2 RPC return element (when namespace qualified) */	/* required element of type xsd:string */
 public:
-	int soap_type() const { return 215; } /* = unique id SOAP_TYPE_omws__createModelResponse */
+	int soap_type() const { return 214; } /* = unique id SOAP_TYPE_omws__createModelResponse */
 };
 #endif
 
 #ifndef SOAP_TYPE_omws__createModel
-#define SOAP_TYPE_omws__createModel (216)
+#define SOAP_TYPE_omws__createModel (215)
 /* omws:createModel */
 struct omws__createModel
 {
 public:
 	wchar_t *om__ModelParameters;	/* optional element of type xsd:anyType */
 public:
-	int soap_type() const { return 216; } /* = unique id SOAP_TYPE_omws__createModel */
+	int soap_type() const { return 215; } /* = unique id SOAP_TYPE_omws__createModel */
 };
 #endif
 
 #ifndef SOAP_TYPE_omws__getModelResponse
-#define SOAP_TYPE_omws__getModelResponse (217)
+#define SOAP_TYPE_omws__getModelResponse (216)
 /* omws:getModelResponse */
 struct omws__getModelResponse
 {
 public:
 	wchar_t *om__ModelEnvelope;	/* SOAP 1.2 RPC return element (when namespace qualified) */	/* optional element of type xsd:anyType */
 public:
-	int soap_type() const { return 217; } /* = unique id SOAP_TYPE_omws__getModelResponse */
+	int soap_type() const { return 216; } /* = unique id SOAP_TYPE_omws__getModelResponse */
 };
 #endif
 
 #ifndef SOAP_TYPE_omws__getModel
-#define SOAP_TYPE_omws__getModel (220)
+#define SOAP_TYPE_omws__getModel (219)
 /* omws:getModel */
 struct omws__getModel
 {
 public:
-	char *ticket;	/* optional element of type xsd:string */
+	std::string ticket;	/* required element of type xsd:string */
 public:
-	int soap_type() const { return 220; } /* = unique id SOAP_TYPE_omws__getModel */
+	int soap_type() const { return 219; } /* = unique id SOAP_TYPE_omws__getModel */
 };
 #endif
 
 #ifndef SOAP_TYPE_omws__testModelResponse
-#define SOAP_TYPE_omws__testModelResponse (222)
+#define SOAP_TYPE_omws__testModelResponse (221)
 /* omws:testModelResponse */
 struct omws__testModelResponse
 {
 public:
-	char *ticket;	/* SOAP 1.2 RPC return element (when namespace qualified) */	/* required element of type xsd:string */
+	std::string ticket;	/* SOAP 1.2 RPC return element (when namespace qualified) */	/* required element of type xsd:string */
 public:
-	int soap_type() const { return 222; } /* = unique id SOAP_TYPE_omws__testModelResponse */
+	int soap_type() const { return 221; } /* = unique id SOAP_TYPE_omws__testModelResponse */
 };
 #endif
 
 #ifndef SOAP_TYPE_omws__testModel
-#define SOAP_TYPE_omws__testModel (223)
+#define SOAP_TYPE_omws__testModel (222)
 /* omws:testModel */
 struct omws__testModel
 {
 public:
 	wchar_t *om__TestParameters;	/* optional element of type xsd:anyType */
 public:
-	int soap_type() const { return 223; } /* = unique id SOAP_TYPE_omws__testModel */
+	int soap_type() const { return 222; } /* = unique id SOAP_TYPE_omws__testModel */
 };
 #endif
 
 #ifndef SOAP_TYPE_omws__testResponse
-#define SOAP_TYPE_omws__testResponse (224)
+#define SOAP_TYPE_omws__testResponse (223)
 /* omws:testResponse */
 struct omws__testResponse
 {
 public:
 	wchar_t *om__TestResultEnvelope;	/* SOAP 1.2 RPC return element (when namespace qualified) */	/* optional element of type xsd:anyType */
 public:
-	int soap_type() const { return 224; } /* = unique id SOAP_TYPE_omws__testResponse */
+	int soap_type() const { return 223; } /* = unique id SOAP_TYPE_omws__testResponse */
 };
 #endif
 
 #ifndef SOAP_TYPE_omws__getTestResult
-#define SOAP_TYPE_omws__getTestResult (227)
+#define SOAP_TYPE_omws__getTestResult (226)
 /* omws:getTestResult */
 struct omws__getTestResult
 {
 public:
-	char *ticket;	/* optional element of type xsd:string */
+	std::string ticket;	/* required element of type xsd:string */
 public:
-	int soap_type() const { return 227; } /* = unique id SOAP_TYPE_omws__getTestResult */
+	int soap_type() const { return 226; } /* = unique id SOAP_TYPE_omws__getTestResult */
 };
 #endif
 
 #ifndef SOAP_TYPE_omws__projectModelResponse
-#define SOAP_TYPE_omws__projectModelResponse (229)
+#define SOAP_TYPE_omws__projectModelResponse (228)
 /* omws:projectModelResponse */
 struct omws__projectModelResponse
 {
 public:
-	char *ticket;	/* SOAP 1.2 RPC return element (when namespace qualified) */	/* required element of type xsd:string */
+	std::string ticket;	/* SOAP 1.2 RPC return element (when namespace qualified) */	/* required element of type xsd:string */
 public:
-	int soap_type() const { return 229; } /* = unique id SOAP_TYPE_omws__projectModelResponse */
+	int soap_type() const { return 228; } /* = unique id SOAP_TYPE_omws__projectModelResponse */
 };
 #endif
 
 #ifndef SOAP_TYPE_omws__projectModel
-#define SOAP_TYPE_omws__projectModel (230)
+#define SOAP_TYPE_omws__projectModel (229)
 /* omws:projectModel */
 struct omws__projectModel
 {
 public:
 	wchar_t *om__ProjectionParameters;	/* optional element of type xsd:anyType */
 public:
-	int soap_type() const { return 230; } /* = unique id SOAP_TYPE_omws__projectModel */
+	int soap_type() const { return 229; } /* = unique id SOAP_TYPE_omws__projectModel */
 };
 #endif
 
 #ifndef SOAP_TYPE_omws__getProgressResponse
-#define SOAP_TYPE_omws__getProgressResponse (233)
+#define SOAP_TYPE_omws__getProgressResponse (231)
 /* omws:getProgressResponse */
 struct omws__getProgressResponse
 {
 public:
 	std::string progress;	/* SOAP 1.2 RPC return element (when namespace qualified) */	/* required element of type xsd:string */
 public:
-	int soap_type() const { return 233; } /* = unique id SOAP_TYPE_omws__getProgressResponse */
+	int soap_type() const { return 231; } /* = unique id SOAP_TYPE_omws__getProgressResponse */
 };
 #endif
 
 #ifndef SOAP_TYPE_omws__getProgress
-#define SOAP_TYPE_omws__getProgress (234)
+#define SOAP_TYPE_omws__getProgress (232)
 /* omws:getProgress */
 struct omws__getProgress
 {
 public:
-	char *tickets;	/* optional element of type xsd:string */
+	std::string tickets;	/* required element of type xsd:string */
 public:
-	int soap_type() const { return 234; } /* = unique id SOAP_TYPE_omws__getProgress */
+	int soap_type() const { return 232; } /* = unique id SOAP_TYPE_omws__getProgress */
 };
 #endif
 
 #ifndef SOAP_TYPE_omws__getLogResponse
-#define SOAP_TYPE_omws__getLogResponse (236)
+#define SOAP_TYPE_omws__getLogResponse (234)
 /* omws:getLogResponse */
 struct omws__getLogResponse
 {
 public:
-	char *log;	/* SOAP 1.2 RPC return element (when namespace qualified) */	/* required element of type xsd:string */
+	std::string log;	/* SOAP 1.2 RPC return element (when namespace qualified) */	/* required element of type xsd:string */
 public:
-	int soap_type() const { return 236; } /* = unique id SOAP_TYPE_omws__getLogResponse */
+	int soap_type() const { return 234; } /* = unique id SOAP_TYPE_omws__getLogResponse */
 };
 #endif
 
 #ifndef SOAP_TYPE_omws__getLog
-#define SOAP_TYPE_omws__getLog (237)
+#define SOAP_TYPE_omws__getLog (235)
 /* omws:getLog */
 struct omws__getLog
 {
 public:
-	char *ticket;	/* optional element of type xsd:string */
+	std::string ticket;	/* required element of type xsd:string */
 public:
-	int soap_type() const { return 237; } /* = unique id SOAP_TYPE_omws__getLog */
+	int soap_type() const { return 235; } /* = unique id SOAP_TYPE_omws__getLog */
 };
 #endif
 
 #ifndef SOAP_TYPE_omws__getLayerAsUrlResponse
-#define SOAP_TYPE_omws__getLayerAsUrlResponse (239)
+#define SOAP_TYPE_omws__getLayerAsUrlResponse (237)
 /* omws:getLayerAsUrlResponse */
 struct omws__getLayerAsUrlResponse
 {
 public:
-	char *url;	/* SOAP 1.2 RPC return element (when namespace qualified) */	/* required element of type xsd:string */
+	std::string url;	/* SOAP 1.2 RPC return element (when namespace qualified) */	/* required element of type xsd:string */
 public:
-	int soap_type() const { return 239; } /* = unique id SOAP_TYPE_omws__getLayerAsUrlResponse */
+	int soap_type() const { return 237; } /* = unique id SOAP_TYPE_omws__getLayerAsUrlResponse */
 };
 #endif
 
 #ifndef SOAP_TYPE_omws__getLayerAsUrl
-#define SOAP_TYPE_omws__getLayerAsUrl (240)
+#define SOAP_TYPE_omws__getLayerAsUrl (238)
 /* omws:getLayerAsUrl */
 struct omws__getLayerAsUrl
 {
 public:
-	char *id;	/* optional element of type xsd:string */
+	std::string id;	/* required element of type xsd:string */
 public:
-	int soap_type() const { return 240; } /* = unique id SOAP_TYPE_omws__getLayerAsUrl */
+	int soap_type() const { return 238; } /* = unique id SOAP_TYPE_omws__getLayerAsUrl */
 };
 #endif
 
 #ifndef SOAP_TYPE_omws__getProjectionMetadataResponse
-#define SOAP_TYPE_omws__getProjectionMetadataResponse (241)
+#define SOAP_TYPE_omws__getProjectionMetadataResponse (239)
 /* omws:getProjectionMetadataResponse */
 struct omws__getProjectionMetadataResponse
 {
@@ -2044,194 +2044,194 @@ public:
 	int FileSize;	/* optional attribute of type xsd:int */
 	wchar_t *om__ProjectionEnvelope;	/* optional element of type xsd:anyType */
 public:
-	int soap_type() const { return 241; } /* = unique id SOAP_TYPE_omws__getProjectionMetadataResponse */
+	int soap_type() const { return 239; } /* = unique id SOAP_TYPE_omws__getProjectionMetadataResponse */
 };
 #endif
 
 #ifndef SOAP_TYPE_omws__getProjectionMetadata
-#define SOAP_TYPE_omws__getProjectionMetadata (244)
+#define SOAP_TYPE_omws__getProjectionMetadata (242)
 /* omws:getProjectionMetadata */
 struct omws__getProjectionMetadata
 {
 public:
-	char *ticket;	/* optional element of type xsd:string */
+	std::string ticket;	/* required element of type xsd:string */
 public:
-	int soap_type() const { return 244; } /* = unique id SOAP_TYPE_omws__getProjectionMetadata */
+	int soap_type() const { return 242; } /* = unique id SOAP_TYPE_omws__getProjectionMetadata */
 };
 #endif
 
 #ifndef SOAP_TYPE_omws__evaluateModelResponse
-#define SOAP_TYPE_omws__evaluateModelResponse (246)
+#define SOAP_TYPE_omws__evaluateModelResponse (244)
 /* omws:evaluateModelResponse */
 struct omws__evaluateModelResponse
 {
 public:
-	char *ticket;	/* SOAP 1.2 RPC return element (when namespace qualified) */	/* required element of type xsd:string */
+	std::string ticket;	/* SOAP 1.2 RPC return element (when namespace qualified) */	/* required element of type xsd:string */
 public:
-	int soap_type() const { return 246; } /* = unique id SOAP_TYPE_omws__evaluateModelResponse */
+	int soap_type() const { return 244; } /* = unique id SOAP_TYPE_omws__evaluateModelResponse */
 };
 #endif
 
 #ifndef SOAP_TYPE_omws__evaluateModel
-#define SOAP_TYPE_omws__evaluateModel (247)
+#define SOAP_TYPE_omws__evaluateModel (245)
 /* omws:evaluateModel */
 struct omws__evaluateModel
 {
 public:
 	wchar_t *om__ModelEvaluationParameters;	/* optional element of type xsd:anyType */
 public:
-	int soap_type() const { return 247; } /* = unique id SOAP_TYPE_omws__evaluateModel */
+	int soap_type() const { return 245; } /* = unique id SOAP_TYPE_omws__evaluateModel */
 };
 #endif
 
 #ifndef SOAP_TYPE_omws__modelEvaluationResponse
-#define SOAP_TYPE_omws__modelEvaluationResponse (248)
+#define SOAP_TYPE_omws__modelEvaluationResponse (246)
 /* omws:modelEvaluationResponse */
 struct omws__modelEvaluationResponse
 {
 public:
 	wchar_t *om__ModelEvaluation;	/* SOAP 1.2 RPC return element (when namespace qualified) */	/* optional element of type xsd:anyType */
 public:
-	int soap_type() const { return 248; } /* = unique id SOAP_TYPE_omws__modelEvaluationResponse */
+	int soap_type() const { return 246; } /* = unique id SOAP_TYPE_omws__modelEvaluationResponse */
 };
 #endif
 
 #ifndef SOAP_TYPE_omws__getModelEvaluation
-#define SOAP_TYPE_omws__getModelEvaluation (251)
+#define SOAP_TYPE_omws__getModelEvaluation (249)
 /* omws:getModelEvaluation */
 struct omws__getModelEvaluation
 {
 public:
-	char *ticket;	/* optional element of type xsd:string */
+	std::string ticket;	/* required element of type xsd:string */
 public:
-	int soap_type() const { return 251; } /* = unique id SOAP_TYPE_omws__getModelEvaluation */
+	int soap_type() const { return 249; } /* = unique id SOAP_TYPE_omws__getModelEvaluation */
 };
 #endif
 
 #ifndef SOAP_TYPE_omws__samplePointsResponse
-#define SOAP_TYPE_omws__samplePointsResponse (253)
+#define SOAP_TYPE_omws__samplePointsResponse (251)
 /* omws:samplePointsResponse */
 struct omws__samplePointsResponse
 {
 public:
-	char *ticket;	/* SOAP 1.2 RPC return element (when namespace qualified) */	/* required element of type xsd:string */
+	std::string ticket;	/* SOAP 1.2 RPC return element (when namespace qualified) */	/* required element of type xsd:string */
 public:
-	int soap_type() const { return 253; } /* = unique id SOAP_TYPE_omws__samplePointsResponse */
+	int soap_type() const { return 251; } /* = unique id SOAP_TYPE_omws__samplePointsResponse */
 };
 #endif
 
 #ifndef SOAP_TYPE_omws__samplePoints
-#define SOAP_TYPE_omws__samplePoints (254)
+#define SOAP_TYPE_omws__samplePoints (252)
 /* omws:samplePoints */
 struct omws__samplePoints
 {
 public:
 	wchar_t *om__SamplingParameters;	/* optional element of type xsd:anyType */
 public:
-	int soap_type() const { return 254; } /* = unique id SOAP_TYPE_omws__samplePoints */
+	int soap_type() const { return 252; } /* = unique id SOAP_TYPE_omws__samplePoints */
 };
 #endif
 
 #ifndef SOAP_TYPE_omws__getSamplingResultResponse
-#define SOAP_TYPE_omws__getSamplingResultResponse (255)
+#define SOAP_TYPE_omws__getSamplingResultResponse (253)
 /* omws:getSamplingResultResponse */
 struct omws__getSamplingResultResponse
 {
 public:
 	wchar_t *om__Sampler;	/* SOAP 1.2 RPC return element (when namespace qualified) */	/* optional element of type xsd:anyType */
 public:
-	int soap_type() const { return 255; } /* = unique id SOAP_TYPE_omws__getSamplingResultResponse */
+	int soap_type() const { return 253; } /* = unique id SOAP_TYPE_omws__getSamplingResultResponse */
 };
 #endif
 
 #ifndef SOAP_TYPE_omws__getSamplingResult
-#define SOAP_TYPE_omws__getSamplingResult (258)
+#define SOAP_TYPE_omws__getSamplingResult (256)
 /* omws:getSamplingResult */
 struct omws__getSamplingResult
 {
 public:
-	char *ticket;	/* optional element of type xsd:string */
+	std::string ticket;	/* required element of type xsd:string */
 public:
-	int soap_type() const { return 258; } /* = unique id SOAP_TYPE_omws__getSamplingResult */
+	int soap_type() const { return 256; } /* = unique id SOAP_TYPE_omws__getSamplingResult */
 };
 #endif
 
 #ifndef SOAP_TYPE_omws__runExperimentResponse
-#define SOAP_TYPE_omws__runExperimentResponse (259)
+#define SOAP_TYPE_omws__runExperimentResponse (257)
 /* omws:runExperimentResponse */
 struct omws__runExperimentResponse
 {
 public:
 	wchar_t *om__ExperimentTickets;	/* SOAP 1.2 RPC return element (when namespace qualified) */	/* optional element of type xsd:anyType */
 public:
-	int soap_type() const { return 259; } /* = unique id SOAP_TYPE_omws__runExperimentResponse */
+	int soap_type() const { return 257; } /* = unique id SOAP_TYPE_omws__runExperimentResponse */
 };
 #endif
 
 #ifndef SOAP_TYPE_omws__runExperiment
-#define SOAP_TYPE_omws__runExperiment (262)
+#define SOAP_TYPE_omws__runExperiment (260)
 /* omws:runExperiment */
 struct omws__runExperiment
 {
 public:
 	char *om__ExperimentParameters;	/* optional element of type xsd:anyType */
 public:
-	int soap_type() const { return 262; } /* = unique id SOAP_TYPE_omws__runExperiment */
+	int soap_type() const { return 260; } /* = unique id SOAP_TYPE_omws__runExperiment */
 };
 #endif
 
 #ifndef SOAP_TYPE_omws__getResultsResponse
-#define SOAP_TYPE_omws__getResultsResponse (263)
+#define SOAP_TYPE_omws__getResultsResponse (261)
 /* omws:getResultsResponse */
 struct omws__getResultsResponse
 {
 public:
 	wchar_t *om__ResultSet;	/* SOAP 1.2 RPC return element (when namespace qualified) */	/* optional element of type xsd:anyType */
 public:
-	int soap_type() const { return 263; } /* = unique id SOAP_TYPE_omws__getResultsResponse */
+	int soap_type() const { return 261; } /* = unique id SOAP_TYPE_omws__getResultsResponse */
 };
 #endif
 
 #ifndef SOAP_TYPE_omws__getResults
-#define SOAP_TYPE_omws__getResults (266)
+#define SOAP_TYPE_omws__getResults (264)
 /* omws:getResults */
 struct omws__getResults
 {
 public:
-	char *tickets;	/* optional element of type xsd:string */
+	std::string tickets;	/* required element of type xsd:string */
 public:
-	int soap_type() const { return 266; } /* = unique id SOAP_TYPE_omws__getResults */
+	int soap_type() const { return 264; } /* = unique id SOAP_TYPE_omws__getResults */
 };
 #endif
 
 #ifndef SOAP_TYPE_omws__cancelResponse
-#define SOAP_TYPE_omws__cancelResponse (268)
+#define SOAP_TYPE_omws__cancelResponse (266)
 /* omws:cancelResponse */
 struct omws__cancelResponse
 {
 public:
-	char *cancelledTickets;	/* SOAP 1.2 RPC return element (when namespace qualified) */	/* required element of type xsd:string */
+	std::string cancelledTickets;	/* SOAP 1.2 RPC return element (when namespace qualified) */	/* required element of type xsd:string */
 public:
-	int soap_type() const { return 268; } /* = unique id SOAP_TYPE_omws__cancelResponse */
+	int soap_type() const { return 266; } /* = unique id SOAP_TYPE_omws__cancelResponse */
 };
 #endif
 
 #ifndef SOAP_TYPE_omws__cancel
-#define SOAP_TYPE_omws__cancel (269)
+#define SOAP_TYPE_omws__cancel (267)
 /* omws:cancel */
 struct omws__cancel
 {
 public:
-	char *tickets;	/* optional element of type xsd:string */
+	std::string tickets;	/* required element of type xsd:string */
 public:
-	int soap_type() const { return 269; } /* = unique id SOAP_TYPE_omws__cancel */
+	int soap_type() const { return 267; } /* = unique id SOAP_TYPE_omws__cancel */
 };
 #endif
 
 #ifndef WITH_NOGLOBAL
 
 #ifndef SOAP_TYPE_SOAP_ENV__Code
-#define SOAP_TYPE_SOAP_ENV__Code (270)
+#define SOAP_TYPE_SOAP_ENV__Code (268)
 /* SOAP Fault Code: */
 struct SOAP_ENV__Code
 {
@@ -2239,7 +2239,7 @@ public:
 	char *SOAP_ENV__Value;	/* optional element of type xsd:QName */
 	struct SOAP_ENV__Code *SOAP_ENV__Subcode;	/* optional element of type SOAP-ENV:Code */
 public:
-	int soap_type() const { return 270; } /* = unique id SOAP_TYPE_SOAP_ENV__Code */
+	int soap_type() const { return 268; } /* = unique id SOAP_TYPE_SOAP_ENV__Code */
 };
 #endif
 
@@ -2248,7 +2248,7 @@ public:
 #ifndef WITH_NOGLOBAL
 
 #ifndef SOAP_TYPE_SOAP_ENV__Detail
-#define SOAP_TYPE_SOAP_ENV__Detail (272)
+#define SOAP_TYPE_SOAP_ENV__Detail (270)
 /* SOAP-ENV:Detail */
 struct SOAP_ENV__Detail
 {
@@ -2257,7 +2257,7 @@ public:
 	int __type;	/* any type of element <fault> (defined below) */
 	void *fault;	/* transient */
 public:
-	int soap_type() const { return 272; } /* = unique id SOAP_TYPE_SOAP_ENV__Detail */
+	int soap_type() const { return 270; } /* = unique id SOAP_TYPE_SOAP_ENV__Detail */
 };
 #endif
 
@@ -2266,14 +2266,14 @@ public:
 #ifndef WITH_NOGLOBAL
 
 #ifndef SOAP_TYPE_SOAP_ENV__Reason
-#define SOAP_TYPE_SOAP_ENV__Reason (273)
+#define SOAP_TYPE_SOAP_ENV__Reason (271)
 /* SOAP-ENV:Reason */
 struct SOAP_ENV__Reason
 {
 public:
 	char *SOAP_ENV__Text;	/* optional element of type xsd:string */
 public:
-	int soap_type() const { return 273; } /* = unique id SOAP_TYPE_SOAP_ENV__Reason */
+	int soap_type() const { return 271; } /* = unique id SOAP_TYPE_SOAP_ENV__Reason */
 };
 #endif
 
@@ -2282,7 +2282,7 @@ public:
 #ifndef WITH_NOGLOBAL
 
 #ifndef SOAP_TYPE_SOAP_ENV__Fault
-#define SOAP_TYPE_SOAP_ENV__Fault (274)
+#define SOAP_TYPE_SOAP_ENV__Fault (272)
 /* SOAP Fault: */
 struct SOAP_ENV__Fault
 {
@@ -2297,7 +2297,7 @@ public:
 	char *SOAP_ENV__Role;	/* optional element of type xsd:string */
 	struct SOAP_ENV__Detail *SOAP_ENV__Detail;	/* optional element of type SOAP-ENV:Detail */
 public:
-	int soap_type() const { return 274; } /* = unique id SOAP_TYPE_SOAP_ENV__Fault */
+	int soap_type() const { return 272; } /* = unique id SOAP_TYPE_SOAP_ENV__Fault */
 };
 #endif
 
@@ -2451,31 +2451,26 @@ typedef om__ProjectModelJobType _om__ProjectModelJob;
 
 #ifndef SOAP_TYPE_xsd__string
 #define SOAP_TYPE_xsd__string (190)
-typedef char *xsd__string;
-#endif
-
-#ifndef SOAP_TYPE_xsd__string_
-#define SOAP_TYPE_xsd__string_ (191)
-typedef std::string xsd__string_;
+typedef std::string xsd__string;
 #endif
 
 #ifndef SOAP_TYPE_xsd__double
-#define SOAP_TYPE_xsd__double (192)
+#define SOAP_TYPE_xsd__double (191)
 typedef double xsd__double;
 #endif
 
 #ifndef SOAP_TYPE_xsd__int
-#define SOAP_TYPE_xsd__int (193)
+#define SOAP_TYPE_xsd__int (192)
 typedef int xsd__int;
 #endif
 
 #ifndef SOAP_TYPE_XML
-#define SOAP_TYPE_XML (196)
+#define SOAP_TYPE_XML (195)
 typedef wchar_t *XML;
 #endif
 
 #ifndef SOAP_TYPE_XML_
-#define SOAP_TYPE_XML_ (197)
+#define SOAP_TYPE_XML_ (196)
 typedef char *XML_;
 #endif
 
@@ -2500,37 +2495,37 @@ SOAP_FMAC5 int SOAP_FMAC6 omws__getAlgorithms(struct soap*, void *_, struct omws
 
 SOAP_FMAC5 int SOAP_FMAC6 omws__getLayers(struct soap*, void *_, struct omws__getLayersResponse *out);
 
-SOAP_FMAC5 int SOAP_FMAC6 omws__createModel(struct soap*, wchar_t *om__ModelParameters, char *&ticket);
+SOAP_FMAC5 int SOAP_FMAC6 omws__createModel(struct soap*, wchar_t *om__ModelParameters, std::string &ticket);
 
-SOAP_FMAC5 int SOAP_FMAC6 omws__getModel(struct soap*, char *ticket, struct omws__getModelResponse *out);
+SOAP_FMAC5 int SOAP_FMAC6 omws__getModel(struct soap*, std::string ticket, struct omws__getModelResponse *out);
 
-SOAP_FMAC5 int SOAP_FMAC6 omws__testModel(struct soap*, wchar_t *om__TestParameters, char *&ticket);
+SOAP_FMAC5 int SOAP_FMAC6 omws__testModel(struct soap*, wchar_t *om__TestParameters, std::string &ticket);
 
-SOAP_FMAC5 int SOAP_FMAC6 omws__getTestResult(struct soap*, char *ticket, struct omws__testResponse *out);
+SOAP_FMAC5 int SOAP_FMAC6 omws__getTestResult(struct soap*, std::string ticket, struct omws__testResponse *out);
 
-SOAP_FMAC5 int SOAP_FMAC6 omws__projectModel(struct soap*, wchar_t *om__ProjectionParameters, char *&ticket);
+SOAP_FMAC5 int SOAP_FMAC6 omws__projectModel(struct soap*, wchar_t *om__ProjectionParameters, std::string &ticket);
 
-SOAP_FMAC5 int SOAP_FMAC6 omws__getProgress(struct soap*, char *tickets, std::string &progress);
+SOAP_FMAC5 int SOAP_FMAC6 omws__getProgress(struct soap*, std::string tickets, std::string &progress);
 
-SOAP_FMAC5 int SOAP_FMAC6 omws__getLog(struct soap*, char *ticket, char *&log);
+SOAP_FMAC5 int SOAP_FMAC6 omws__getLog(struct soap*, std::string ticket, std::string &log);
 
-SOAP_FMAC5 int SOAP_FMAC6 omws__getLayerAsUrl(struct soap*, char *id, char *&url);
+SOAP_FMAC5 int SOAP_FMAC6 omws__getLayerAsUrl(struct soap*, std::string id, std::string &url);
 
-SOAP_FMAC5 int SOAP_FMAC6 omws__getProjectionMetadata(struct soap*, char *ticket, struct omws__getProjectionMetadataResponse *out);
+SOAP_FMAC5 int SOAP_FMAC6 omws__getProjectionMetadata(struct soap*, std::string ticket, struct omws__getProjectionMetadataResponse *out);
 
-SOAP_FMAC5 int SOAP_FMAC6 omws__evaluateModel(struct soap*, wchar_t *om__ModelEvaluationParameters, char *&ticket);
+SOAP_FMAC5 int SOAP_FMAC6 omws__evaluateModel(struct soap*, wchar_t *om__ModelEvaluationParameters, std::string &ticket);
 
-SOAP_FMAC5 int SOAP_FMAC6 omws__getModelEvaluation(struct soap*, char *ticket, struct omws__modelEvaluationResponse *out);
+SOAP_FMAC5 int SOAP_FMAC6 omws__getModelEvaluation(struct soap*, std::string ticket, struct omws__modelEvaluationResponse *out);
 
-SOAP_FMAC5 int SOAP_FMAC6 omws__samplePoints(struct soap*, wchar_t *om__SamplingParameters, char *&ticket);
+SOAP_FMAC5 int SOAP_FMAC6 omws__samplePoints(struct soap*, wchar_t *om__SamplingParameters, std::string &ticket);
 
-SOAP_FMAC5 int SOAP_FMAC6 omws__getSamplingResult(struct soap*, char *ticket, struct omws__getSamplingResultResponse *out);
+SOAP_FMAC5 int SOAP_FMAC6 omws__getSamplingResult(struct soap*, std::string ticket, struct omws__getSamplingResultResponse *out);
 
 SOAP_FMAC5 int SOAP_FMAC6 omws__runExperiment(struct soap*, char *om__ExperimentParameters, struct omws__runExperimentResponse *out);
 
-SOAP_FMAC5 int SOAP_FMAC6 omws__getResults(struct soap*, char *tickets, struct omws__getResultsResponse *out);
+SOAP_FMAC5 int SOAP_FMAC6 omws__getResults(struct soap*, std::string tickets, struct omws__getResultsResponse *out);
 
-SOAP_FMAC5 int SOAP_FMAC6 omws__cancel(struct soap*, char *tickets, char *&cancelledTickets);
+SOAP_FMAC5 int SOAP_FMAC6 omws__cancel(struct soap*, std::string tickets, std::string &cancelledTickets);
 
 /******************************************************************************\
  *                                                                            *

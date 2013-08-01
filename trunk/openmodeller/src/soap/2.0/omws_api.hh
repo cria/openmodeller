@@ -8,8 +8,7 @@
 
 /** gSOAP data type mappings */
 
-typedef char *xsd__string;
-typedef std::string xsd__string_;
+typedef std::string xsd__string;
 typedef double xsd__double;
 typedef int xsd__int; 
 typedef wchar_t *XML;
@@ -19,7 +18,7 @@ typedef char *XML_;
  */
 struct SOAP_ENV__Header 
 {
-  xsd__string omws__version; 
+  char * omws__version; 
 };
 
 /** Simple method just to monitor the service.
@@ -121,7 +120,7 @@ int omws__projectModel(XML om__ProjectionParameters, xsd__string &ticket);
  * @return standard gSOAP integer code
  */
 //gsoap om service method-documentation: getProgress Returns the progress of one or more jobs.
-int omws__getProgress(xsd__string tickets, xsd__string_ &progress);
+int omws__getProgress(xsd__string tickets, xsd__string &progress);
 
 /** Return the log of a finished job given a ticket.
  * @param ticket Job identification.
