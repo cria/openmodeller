@@ -75,7 +75,7 @@ static int      getStatus();
 static void     createTicket( struct soap *soap, string requestPrefix, xsd__string &ticket, string *requestFileName );
 static void     scheduleJob( struct soap *soap, string requestPrefix, XML xmlParameters, wchar_t* elementName, xsd__string &ticket );
 static void     scheduleJob( struct soap *soap, string requestPrefix, string xmlParameters, wchar_t* elementName, xsd__string &ticket );
-static map<string, string> scheduleExperiment( struct soap* soap, const _om__ExperimentParameters& ep, const char * experiment_ticket );
+static map<string, string> scheduleExperiment( struct soap* soap, const _om__ExperimentParameters& ep, xsd__string experiment_ticket );
 static void     updateNextJobs( string next_id, string prev_id, map< string, vector<string> > *next_deps );
 static string   collateTickets( vector<string>* ids, map<string, string> *jobs );
 static string   collateTickets( map<string, string>* ids, map<string, string> *jobs );
@@ -93,14 +93,6 @@ int main(int argc, char **argv)
   struct soap soap;
   soap_init(&soap);
   soap.encodingStyle = NULL;
-
-  // Load algorithms
-  AlgorithmFactory::searchDefaultDirs();
-
-  // Instantiate a shared openModeller controller
-  OpenModeller *om = 0;
-
-  soap.user = (void*)om;   
 
   soap.accept_timeout = 0;  // always listening
   soap.send_timeout = 10 OMWS_H;
@@ -181,6 +173,7 @@ int main(int argc, char **argv)
     soap_serve( &soap );
     soap_destroy( &soap );
     soap_end( &soap );
+    soap_done( &soap );
   }
   else { 
 
@@ -376,15 +369,18 @@ omws__ping( struct soap *soap, void *_, xsd__int &status )
     return soap_receiver_fault( soap, "Missing configuration (4)", NULL );
   }
 
-  OpenModeller *om = (OpenModeller*)soap->user; 
-
   // Check algorithm availability
-  AlgMetadata const **algorithms = om->availableAlgorithms();
+  Log::instance()->setLevel( Log::Error ); // supress debug/info/warning
+  AlgorithmFactory::searchDefaultDirs();   // load DLL algorithms
+  OpenModeller om;
+  AlgMetadata const **algorithms = om.availableAlgorithms();
 
   if ( ! *algorithms ) {
 
+    delete[] algorithms;
     return soap_receiver_fault( soap, "No available algorithms", NULL );
   }
+  delete[] algorithms;
 
   // TODO: test layer cache
 
@@ -428,12 +424,18 @@ omws__getAlgorithms( struct soap *soap, void *_, struct omws__getAlgorithmsRespo
 
   addHeader( soap );
 
-  OpenModeller *om = (OpenModeller*)soap->user; 
+  // Load algorithms
+  Log::instance()->setLevel( Log::Error ); // supress debug/info/warning
+  AlgorithmFactory::searchDefaultDirs();
 
-  AlgMetadata const **algorithms = om->availableAlgorithms();
+  // Instantiate openModeller controller
+  OpenModeller om;
+
+  AlgMetadata const **algorithms = om.availableAlgorithms();
 
   if ( ! *algorithms ) {
 
+    delete[] algorithms;
     return soap_receiver_fault( soap, "No available algorithms", NULL );
   }
 
@@ -595,7 +597,7 @@ omws__createModel( struct soap *soap, XML om__ModelParameters, xsd__string &tick
 
     wchar_t elementName[] = L"ModelParameters";
     scheduleJob( soap, OMWS_MODEL _REQUEST, om__ModelParameters, elementName, ticket );
-    logRequest( soap, "createModel", ticket );
+    logRequest( soap, "createModel", ticket.c_str() );
   }
   catch (OmwsException& e) {
 
@@ -625,7 +627,7 @@ omws__testModel( struct soap *soap, XML om__TestParameters, xsd__string &ticket 
 
     wchar_t elementName[] = L"TestParameters";
     scheduleJob( soap, OMWS_TEST _REQUEST, om__TestParameters, elementName, ticket );
-    logRequest( soap, "testModel", ticket );
+    logRequest( soap, "testModel", ticket.c_str() );
   }
   catch (OmwsException& e) {
 
@@ -655,7 +657,7 @@ omws__projectModel( struct soap *soap, XML om__ProjectionParameters, xsd__string
 
     wchar_t elementName[] = L"ProjectionParameters";
     scheduleJob( soap, OMWS_PROJECTION _REQUEST, om__ProjectionParameters, elementName, ticket );
-    logRequest( soap, "projectModel", ticket );
+    logRequest( soap, "projectModel", ticket.c_str() );
   }
   catch (OmwsException& e) {
 
@@ -685,7 +687,7 @@ omws__evaluateModel( struct soap *soap, XML om__ModelEvaluationParameters, xsd__
 
     wchar_t elementName[] = L"ModelEvaluationParameters";
     scheduleJob( soap, OMWS_EVALUATE _REQUEST, om__ModelEvaluationParameters, elementName, ticket );
-    logRequest( soap, "evaluateModel", ticket );
+    logRequest( soap, "evaluateModel", ticket.c_str() );
   }
   catch (OmwsException& e) {
 
@@ -715,7 +717,7 @@ omws__samplePoints( struct soap *soap, XML om__SamplingParameters, xsd__string &
 
     wchar_t elementName[] = L"SamplingParameters";
     scheduleJob( soap, OMWS_SAMPLING _REQUEST, om__SamplingParameters, elementName, ticket );
-    logRequest( soap, "samplePoints", ticket );
+    logRequest( soap, "samplePoints", ticket.c_str() );
   }
   catch (OmwsException& e) {
 
@@ -768,7 +770,7 @@ omws__runExperiment( struct soap *soap, XML_ om__ExperimentParameters, struct om
       xsd__string ticket;
       wchar_t elementName[] = L"ExperimentParameters";
       scheduleJob( soap, OMWS_EXPERIMENT _REQUEST, params, elementName, ticket );
-      logRequest( soap, "runExperiment", ticket );
+      logRequest( soap, "runExperiment", ticket.c_str() );
 
       string condorIntegration( gFileParser.get( "CONDOR_INTEGRATION" ) );
       string dagmanEnabled( gFileParser.get( "DAGMAN_ENABLED" ) );
@@ -822,9 +824,9 @@ omws__runExperiment( struct soap *soap, XML_ om__ExperimentParameters, struct om
 /**********************/
 /**** get Progress ****/
 int 
-omws__getProgress( struct soap *soap, xsd__string tickets, xsd__string_ &progress )
+omws__getProgress( struct soap *soap, xsd__string tickets, xsd__string &progress )
 { 
-  logRequest( soap, "getProgress", tickets );
+  logRequest( soap, "getProgress", tickets.c_str() );
 
   if ( getStatus() == 2 ) {
 
@@ -833,7 +835,7 @@ omws__getProgress( struct soap *soap, xsd__string tickets, xsd__string_ &progres
 
   soap_clr_omode(soap, SOAP_ENC_ZLIB); // disable Zlib's gzip
 
-  if ( ! tickets ) {
+  if ( tickets.length() == 0 ) {
 
     return soap_sender_fault( soap, "Missing ticket(s) in request", NULL );
   }
@@ -869,7 +871,6 @@ omws__getProgress( struct soap *soap, xsd__string tickets, xsd__string_ &progres
     }
   }
 
-  //progress = (char*)res.str().c_str();
   progress = res.str();
 
   return SOAP_OK;
@@ -880,7 +881,7 @@ omws__getProgress( struct soap *soap, xsd__string tickets, xsd__string_ &progres
 int 
 omws__getLog( struct soap *soap, xsd__string ticket, xsd__string &log )
 { 
-  logRequest( soap, "getLog", ticket );
+  logRequest( soap, "getLog", ticket.c_str() );
 
   if ( getStatus() == 2 ) {
 
@@ -889,7 +890,7 @@ omws__getLog( struct soap *soap, xsd__string ticket, xsd__string &log )
 
   soap_clr_omode(soap, SOAP_ENC_ZLIB); // disable Zlib's gzip
 
-  if ( ! ticket ) {
+  if ( ticket.length() == 0 ) {
 
     return soap_sender_fault( soap, "Missing ticket in request", NULL );
   }
@@ -911,7 +912,7 @@ omws__getLog( struct soap *soap, xsd__string ticket, xsd__string &log )
       oss << line << endl;
     }
 
-    log = (char*)oss.str().c_str();
+    log = oss.str();
 
     fin.close();
   }
@@ -928,7 +929,7 @@ omws__getLog( struct soap *soap, xsd__string ticket, xsd__string &log )
 int
 omws__cancel( struct soap *soap, xsd__string tickets, xsd__string &cancelledTickets )
 {
-  logRequest( soap, "cancel", tickets );
+  logRequest( soap, "cancel", tickets.c_str() );
 
   if ( getStatus() == 2 ) {
 
@@ -937,7 +938,7 @@ omws__cancel( struct soap *soap, xsd__string tickets, xsd__string &cancelledTick
 
   soap_clr_omode(soap, SOAP_ENC_ZLIB); // disable Zlib's gzip
 
-  if ( ! tickets ) {
+  if ( tickets.length() == 0 ) {
 
     return soap_sender_fault( soap, "Missing ticket(s) in request", NULL );
   }
@@ -976,7 +977,7 @@ omws__cancel( struct soap *soap, xsd__string tickets, xsd__string &cancelledTick
     }
   }
 
-  cancelledTickets = (char*)res.str().c_str();
+  cancelledTickets = res.str();
 
   return SOAP_OK;
 }
@@ -986,7 +987,7 @@ omws__cancel( struct soap *soap, xsd__string tickets, xsd__string &cancelledTick
 int 
 omws__getModel( struct soap *soap, xsd__string ticket, struct omws__getModelResponse *out )
 { 
-  logRequest( soap, "getModel", ticket );
+  logRequest( soap, "getModel", ticket.c_str() );
 
   if ( getStatus() == 2 ) {
 
@@ -1013,7 +1014,7 @@ omws__getModel( struct soap *soap, xsd__string ticket, struct omws__getModelResp
 #endif
   }
 
-  if ( ! ticket ) {
+  if ( ticket.length() == 0 ) {
 
     return soap_sender_fault( soap, "Missing ticket in request", NULL );
   }
@@ -1051,7 +1052,7 @@ omws__getModel( struct soap *soap, xsd__string ticket, struct omws__getModelResp
 int 
 omws__getTestResult( struct soap *soap, xsd__string ticket, struct omws__testResponse *out )
 { 
-  logRequest( soap, "getTestResult", ticket );
+  logRequest( soap, "getTestResult", ticket.c_str() );
 
   if ( getStatus() == 2 ) {
 
@@ -1060,7 +1061,7 @@ omws__getTestResult( struct soap *soap, xsd__string ticket, struct omws__testRes
 
   soap_clr_omode(soap, SOAP_ENC_ZLIB); // disable Zlib's gzip
 
-  if ( ! ticket ) {
+  if ( ticket.length() == 0 ) {
 
     return soap_sender_fault( soap, "Missing ticket in request", NULL );
   }
@@ -1098,7 +1099,7 @@ omws__getTestResult( struct soap *soap, xsd__string ticket, struct omws__testRes
 int 
 omws__getLayerAsUrl( struct soap *soap, xsd__string id, xsd__string &url )
 { 
-  logRequest( soap, "getLayerAsUrl", id );
+  logRequest( soap, "getLayerAsUrl", id.c_str() );
 
   if ( getStatus() == 2 ) {
 
@@ -1109,7 +1110,7 @@ omws__getLayerAsUrl( struct soap *soap, xsd__string id, xsd__string &url )
 
   // This method is now working only for distribution maps!
 
-  if ( ! id ) {
+  if ( id.length() == 0 ) {
 
     return soap_sender_fault(soap, "Missing id in request", NULL);
   }
@@ -1121,18 +1122,14 @@ omws__getLayerAsUrl( struct soap *soap, xsd__string id, xsd__string &url )
     return soap_receiver_fault( soap, "Layer unavailable", NULL );
   }
 
-  string urlString( gFileParser.get( "BASE_URL" ) );
+  url = gFileParser.get( "BASE_URL" );
 
-  if ( urlString.find_last_of( "/" ) != urlString.size() - 1 ) {
+  if ( url.find_last_of( "/" ) != url.size() - 1 ) {
 
-    urlString.append( "/" );
+    url.append( "/" );
   }
 
-  urlString.append( fileName );
-
-  url = (char*)soap_malloc( soap, urlString.length() + 1 ); 
-
-  strcpy( url, urlString.c_str() );
+  url.append( fileName );
 
   return SOAP_OK;
 }
@@ -1142,7 +1139,7 @@ omws__getLayerAsUrl( struct soap *soap, xsd__string id, xsd__string &url )
 int 
 omws__getProjectionMetadata( struct soap *soap, xsd__string ticket, struct omws__getProjectionMetadataResponse *out )
 { 
-  logRequest( soap, "getProjectionMetadata", ticket );
+  logRequest( soap, "getProjectionMetadata", ticket.c_str() );
 
   if ( getStatus() == 2 ) {
 
@@ -1151,7 +1148,7 @@ omws__getProjectionMetadata( struct soap *soap, xsd__string ticket, struct omws_
 
   soap_clr_omode(soap, SOAP_ENC_ZLIB); // disable Zlib's gzip
 
-  if ( ! ticket ) {
+  if ( ticket.length() == 0 ) {
 
     return soap_sender_fault( soap, "Missing ticket in request", NULL );
   }
@@ -1218,7 +1215,7 @@ omws__getProjectionMetadata( struct soap *soap, xsd__string ticket, struct omws_
 int 
 omws__getModelEvaluation( struct soap *soap, xsd__string ticket, struct omws__modelEvaluationResponse *out )
 { 
-  logRequest( soap, "getModelEvaluation", ticket );
+  logRequest( soap, "getModelEvaluation", ticket.c_str() );
 
   if ( getStatus() == 2 ) {
 
@@ -1245,7 +1242,7 @@ omws__getModelEvaluation( struct soap *soap, xsd__string ticket, struct omws__mo
 #endif
   }
 
-  if ( ! ticket ) {
+  if ( ticket.length() == 0 ) {
 
     return soap_sender_fault( soap, "Missing ticket in request", NULL );
   }
@@ -1283,7 +1280,7 @@ omws__getModelEvaluation( struct soap *soap, xsd__string ticket, struct omws__mo
 int 
 omws__getSamplingResult( struct soap *soap, xsd__string ticket, struct omws__getSamplingResultResponse *out )
 { 
-  logRequest( soap, "getSamplingResult", ticket );
+  logRequest( soap, "getSamplingResult", ticket.c_str() );
 
   if ( getStatus() == 2 ) {
 
@@ -1310,7 +1307,7 @@ omws__getSamplingResult( struct soap *soap, xsd__string ticket, struct omws__get
 #endif
   }
 
-  if ( ! ticket ) {
+  if ( ticket.length() == 0 ) {
 
     return soap_sender_fault( soap, "Missing ticket in request", NULL );
   }
@@ -1347,7 +1344,7 @@ omws__getSamplingResult( struct soap *soap, xsd__string ticket, struct omws__get
 int 
 omws__getResults( struct soap *soap, xsd__string tickets, struct omws__getResultsResponse *out )
 { 
-  logRequest( soap, "getResults", tickets );
+  logRequest( soap, "getResults", tickets.c_str() );
 
   if ( getStatus() == 2 ) {
 
@@ -1356,7 +1353,7 @@ omws__getResults( struct soap *soap, xsd__string tickets, struct omws__getResult
 
   soap_clr_omode(soap, SOAP_ENC_ZLIB); // disable Zlib's gzip
 
-  if ( ! tickets ) {
+  if ( tickets.length() == 0 ) {
 
     return soap_sender_fault( soap, "Missing ticket(s) in request", NULL );
   }
@@ -1849,19 +1846,19 @@ logRequest( struct soap* soap, const char* operation, const char* params )
 static void
 addHeader( struct soap* soap )
 {
-  // Get controller object
-  OpenModeller *om = (OpenModeller*)soap->user; 
+  // Instantiate openModeller controller
+  OpenModeller om;
 
   // alloc new header
-  soap->header = (struct SOAP_ENV__Header*)soap_malloc( soap, sizeof(struct SOAP_ENV__Header) ); 
+  soap->header = (struct SOAP_ENV__Header*)soap_malloc( soap, sizeof(struct SOAP_ENV__Header) );
   string version( "oM Server " ); // Default server implementation name
   version.append( OMWS_VERSION ); // Control version on top of this file
-  version.append( " (openModeller " ); // Add om version 
-  version.append( om->getVersion() );
+  version.append( " (openModeller " ); // Add om version
+  version.append( om.getVersion() );
   version.append( ")" );
   char *version_buf = (char*)soap_malloc( soap, version.size() * sizeof( char ) );
   strcpy( version_buf, version.c_str() );
-  soap->header->omws__version = version_buf;
+  soap->header->omws__version = version_buf; 
 }
 
 /*******************/
@@ -1916,8 +1913,9 @@ createTicket( struct soap *soap, string requestPrefix, xsd__string &ticket, stri
     throw OmwsException("Failed to create ticket (1)");
   }
 
-  // Get ticket value
-  ticket = strrchr( tempFileName, '/' ) + 1;
+  char * cticket = strrchr( tempFileName, '/' ) + 1;
+
+  ticket = string( cticket );
 
   // Append prefix to request file
   requestFileName->append( requestPrefix );
@@ -2020,7 +2018,7 @@ scheduleJob( struct soap *soap, string requestPrefix, string xmlParameters, wcha
 /****************************/
 /**** scheduleExperiment ****/
 static map<string, string> 
-scheduleExperiment(struct soap* soap, const _om__ExperimentParameters& ep, const char * experiment_ticket) {
+scheduleExperiment(struct soap* soap, const _om__ExperimentParameters& ep, xsd__string experiment_ticket) {
 
   soap_set_omode(soap, SOAP_XML_CANONICAL);
   soap_set_omode(soap, SOAP_XML_INDENT);
