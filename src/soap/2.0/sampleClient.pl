@@ -723,20 +723,17 @@ sub get_progress
 
     unless ( $response->fault )
     {
+        my @tickets = split(',', $ticket );
+
         my $prog = $response->result;
 
-        print "\n\nProgress: ";
+        print "\n\nProgress: \n";
 
-        my $not_first = 0;
+        my $i = 0;
 
         for ( split(',', $prog ) )
         {
-            if ( $not_first )
-            {
-              print ",";
-            }
-
-            $not_first = 1;
+            print "\n" . $tickets[$i] . ' -> ';
 
             if ( $_ == -1 )
             {
@@ -758,6 +755,8 @@ sub get_progress
             {
     	        print $_ ."%";
             }
+
+            ++$i;
         }
 
         print "\n";
