@@ -1,3 +1,14 @@
+/*****************************************************************************
+ * openModeller Web Service (OMWS) API
+ * 
+ * This file contains all gSOAP definitions that are necessary to build client 
+ * and/or server implementations compliant with the OMWS API:
+ * namespaces, configuration, data type mapppings, structures and operations.
+ * It should be used as input to soapcpp2 to automatically generate WSDL and
+ * SOAP libraries.
+ *
+ *****************************************************************************/
+
 //gsoap omws service name: openModeller
 //gsoap omws service port: http://modeller.cria.org.br/ws2/om
 //gsoap omws service namespace: http://openmodeller.cria.org.br/ws/2.0
