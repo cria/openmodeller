@@ -24,7 +24,7 @@
  * http://www.gnu.org/copyleft/gpl.html
  */
 
-#include "openModeller.nsmap"
+#include "om.nsmap"
 #include "soapH.h"
 
 #include <openmodeller/FileParser.hh>
