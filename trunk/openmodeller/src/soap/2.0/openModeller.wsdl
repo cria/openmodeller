@@ -131,7 +131,7 @@
   <element name="getModel">
    <complexType>
     <sequence>
-     <element name="ticket" type="xsd:string" minOccurs="0" maxOccurs="1" nillable="true"/><!-- omws__getModel::ticket -->
+     <element name="ticket" type="xsd:string" minOccurs="1" maxOccurs="1"/><!-- omws__getModel::ticket -->
     </sequence>
    </complexType>
   </element>
@@ -163,7 +163,7 @@
   <element name="getTestResult">
    <complexType>
     <sequence>
-     <element name="ticket" type="xsd:string" minOccurs="0" maxOccurs="1" nillable="true"/><!-- omws__getTestResult::ticket -->
+     <element name="ticket" type="xsd:string" minOccurs="1" maxOccurs="1"/><!-- omws__getTestResult::ticket -->
     </sequence>
    </complexType>
   </element>
@@ -195,7 +195,7 @@
   <element name="getProgress">
    <complexType>
     <sequence>
-     <element name="tickets" type="xsd:string" minOccurs="0" maxOccurs="1" nillable="true"/><!-- omws__getProgress::tickets -->
+     <element name="tickets" type="xsd:string" minOccurs="1" maxOccurs="1"/><!-- omws__getProgress::tickets -->
     </sequence>
    </complexType>
   </element>
@@ -211,7 +211,7 @@
   <element name="getLog">
    <complexType>
     <sequence>
-     <element name="ticket" type="xsd:string" minOccurs="0" maxOccurs="1" nillable="true"/><!-- omws__getLog::ticket -->
+     <element name="ticket" type="xsd:string" minOccurs="1" maxOccurs="1"/><!-- omws__getLog::ticket -->
     </sequence>
    </complexType>
   </element>
@@ -227,7 +227,7 @@
   <element name="getLayerAsUrl">
    <complexType>
     <sequence>
-     <element name="id" type="xsd:string" minOccurs="0" maxOccurs="1" nillable="true"/><!-- omws__getLayerAsUrl::id -->
+     <element name="id" type="xsd:string" minOccurs="1" maxOccurs="1"/><!-- omws__getLayerAsUrl::id -->
     </sequence>
    </complexType>
   </element>
@@ -243,7 +243,7 @@
   <element name="getProjectionMetadata">
    <complexType>
     <sequence>
-     <element name="ticket" type="xsd:string" minOccurs="0" maxOccurs="1" nillable="true"/><!-- omws__getProjectionMetadata::ticket -->
+     <element name="ticket" type="xsd:string" minOccurs="1" maxOccurs="1"/><!-- omws__getProjectionMetadata::ticket -->
     </sequence>
    </complexType>
   </element>
@@ -276,7 +276,7 @@
   <element name="getModelEvaluation">
    <complexType>
     <sequence>
-     <element name="ticket" type="xsd:string" minOccurs="0" maxOccurs="1" nillable="true"/><!-- omws__getModelEvaluation::ticket -->
+     <element name="ticket" type="xsd:string" minOccurs="1" maxOccurs="1"/><!-- omws__getModelEvaluation::ticket -->
     </sequence>
    </complexType>
   </element>
@@ -308,7 +308,7 @@
   <element name="getSamplingResult">
    <complexType>
     <sequence>
-     <element name="ticket" type="xsd:string" minOccurs="0" maxOccurs="1" nillable="true"/><!-- omws__getSamplingResult::ticket -->
+     <element name="ticket" type="xsd:string" minOccurs="1" maxOccurs="1"/><!-- omws__getSamplingResult::ticket -->
     </sequence>
    </complexType>
   </element>
@@ -340,7 +340,7 @@
   <element name="getResults">
    <complexType>
     <sequence>
-     <element name="tickets" type="xsd:string" minOccurs="0" maxOccurs="1" nillable="true"/><!-- omws__getResults::tickets -->
+     <element name="tickets" type="xsd:string" minOccurs="1" maxOccurs="1"/><!-- omws__getResults::tickets -->
     </sequence>
    </complexType>
   </element>
@@ -356,7 +356,7 @@
   <element name="cancel">
    <complexType>
     <sequence>
-     <element name="tickets" type="xsd:string" minOccurs="0" maxOccurs="1" nillable="true"/><!-- omws__cancel::tickets -->
+     <element name="tickets" type="xsd:string" minOccurs="1" maxOccurs="1"/><!-- omws__cancel::tickets -->
     </sequence>
    </complexType>
   </element>

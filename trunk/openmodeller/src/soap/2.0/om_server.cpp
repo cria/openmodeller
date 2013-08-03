@@ -25,7 +25,9 @@
  */
 
 #include "om.nsmap"
-#include "soapH.h"
+#include "omwsH.h"
+#include "omH.h"
+
 #include <openmodeller/om.hh>
 #include <openmodeller/FileParser.hh>
 
@@ -72,10 +74,10 @@ static int      getSize( FILE *fd );
 static void     logRequest( struct soap*, const char* operation, const char* params );
 static void     addHeader( struct soap* );
 static int      getStatus();
-static void     createTicket( struct soap *soap, string requestPrefix, xsd__string &ticket, string *requestFileName );
-static void     scheduleJob( struct soap *soap, string requestPrefix, XML xmlParameters, wchar_t* elementName, xsd__string &ticket );
-static void     scheduleJob( struct soap *soap, string requestPrefix, string xmlParameters, wchar_t* elementName, xsd__string &ticket );
-static map<string, string> scheduleExperiment( struct soap* soap, const _om__ExperimentParameters& ep, xsd__string experiment_ticket );
+static void     createTicket( struct soap *soap, string requestPrefix, omws::xsd__string &ticket, string *requestFileName );
+static void     scheduleJob( struct soap *soap, string requestPrefix, omws::XML xmlParameters, wchar_t* elementName, omws::xsd__string &ticket );
+static void     scheduleJob( struct soap *soap, string requestPrefix, string xmlParameters, wchar_t* elementName, omws::xsd__string &ticket );
+static map<string, string> scheduleExperiment( struct soap* soap, const om::_om__ExperimentParameters& ep, omws::xsd__string experiment_ticket );
 static void     updateNextJobs( string next_id, string prev_id, map< string, vector<string> > *next_deps );
 static string   collateTickets( vector<string>* ids, map<string, string> *jobs );
 static string   collateTickets( map<string, string>* ids, map<string, string> *jobs );
@@ -170,7 +172,7 @@ int main(int argc, char **argv)
   // no args: assume this is a CGI application
   if ( argc < 2 ) { 
 
-    soap_serve( &soap );
+    omws::soap_serve( &soap );
     soap_destroy( &soap );
     soap_end( &soap );
     soap_done( &soap );
@@ -212,7 +214,7 @@ int main(int argc, char **argv)
           exit(-1);
         } 
 
-        soap_serve( &soap );
+        omws::soap_serve( &soap );
         soap_destroy( &soap );
         soap_end( &soap );
       }
@@ -320,7 +322,7 @@ void *processRequest( void *soap )
   pthread_detach( pthread_self() );
   ((struct soap*)soap)->recv_timeout = 300; // Timeout after 5 minutes stall on recv
   ((struct soap*)soap)->send_timeout = 60; // Timeout after 1 minute stall on send
-  soap_serve( (struct soap*)soap );
+  omws::soap_serve( (struct soap*)soap );
   soap_destroy( (struct soap*)soap );
   soap_end( (struct soap*)soap );
   soap_done( (struct soap*)soap );
@@ -332,7 +334,7 @@ void *processRequest( void *soap )
 /**************/
 /**** Ping ****/
 int
-omws__ping( struct soap *soap, void *_, xsd__int &status )
+omws::omws__ping( struct soap *soap, void *_, omws::xsd__int &status )
 {
   logRequest( soap, "ping", "" );
 
@@ -394,7 +396,7 @@ omws__ping( struct soap *soap, void *_, xsd__int &status )
 /**********************/
 /*** get Algorithms ***/
 int 
-omws__getAlgorithms( struct soap *soap, void *_, struct omws__getAlgorithmsResponse *out )
+omws::omws__getAlgorithms( struct soap *soap, void *_, struct omws::omws__getAlgorithmsResponse *out )
 {
   logRequest( soap, "getAlgorithms", "" );
 
@@ -453,7 +455,7 @@ omws__getAlgorithms( struct soap *soap, void *_, struct omws__getAlgorithmsRespo
 /**********************/
 /*** get Layers ***/
 int 
-omws__getLayers( struct soap *soap, void *_, struct omws__getLayersResponse *out )
+omws::omws__getLayers( struct soap *soap, void *_, struct omws::omws__getLayersResponse *out )
 {
   logRequest( soap, "getLayers", "" );
 
@@ -584,7 +586,7 @@ omws__getLayers( struct soap *soap, void *_, struct omws__getLayersResponse *out
 /**********************/
 /**** create Model ****/
 int 
-omws__createModel( struct soap *soap, XML om__ModelParameters, xsd__string &ticket )
+omws::omws__createModel( struct soap *soap, omws::XML om__ModelParameters, omws::xsd__string &ticket )
 {
   if ( getStatus() == 2 ) {
 
@@ -614,7 +616,7 @@ omws__createModel( struct soap *soap, XML om__ModelParameters, xsd__string &tick
 /********************/
 /**** test Model ****/
 int 
-omws__testModel( struct soap *soap, XML om__TestParameters, xsd__string &ticket )
+omws::omws__testModel( struct soap *soap, omws::XML om__TestParameters, omws::xsd__string &ticket )
 {
   if ( getStatus() == 2 ) {
 
@@ -644,7 +646,7 @@ omws__testModel( struct soap *soap, XML om__TestParameters, xsd__string &ticket 
 /***********************/
 /**** project Model ****/
 int 
-omws__projectModel( struct soap *soap, XML om__ProjectionParameters, xsd__string &ticket )
+omws::omws__projectModel( struct soap *soap, omws::XML om__ProjectionParameters, omws::xsd__string &ticket )
 {
   if ( getStatus() == 2 ) {
 
@@ -674,7 +676,7 @@ omws__projectModel( struct soap *soap, XML om__ProjectionParameters, xsd__string
 /************************/
 /**** evaluate Model ****/
 int 
-omws__evaluateModel( struct soap *soap, XML om__ModelEvaluationParameters, xsd__string &ticket )
+omws::omws__evaluateModel( struct soap *soap, omws::XML om__ModelEvaluationParameters, omws::xsd__string &ticket )
 {
   if ( getStatus() == 2 ) {
 
@@ -704,7 +706,7 @@ omws__evaluateModel( struct soap *soap, XML om__ModelEvaluationParameters, xsd__
 /***********************/
 /**** sample Points ****/
 int 
-omws__samplePoints( struct soap *soap, XML om__SamplingParameters, xsd__string &ticket )
+omws::omws__samplePoints( struct soap *soap, omws::XML om__SamplingParameters, omws::xsd__string &ticket )
 {
   if ( getStatus() == 2 ) {
 
@@ -734,7 +736,7 @@ omws__samplePoints( struct soap *soap, XML om__SamplingParameters, xsd__string &
 /************************/
 /**** run Experiment ****/
 int
-omws__runExperiment( struct soap *soap, XML_ om__ExperimentParameters, struct omws__runExperimentResponse *out )
+omws::omws__runExperiment( struct soap *soap, omws::XML_ om__ExperimentParameters, struct omws::omws__runExperimentResponse *out )
 {
   if ( getStatus() == 2 ) {
 
@@ -758,7 +760,7 @@ omws__runExperiment( struct soap *soap, XML_ om__ExperimentParameters, struct om
     istringstream iss( params );
     ctx->is = &iss;
 
-    _om__ExperimentParameters ep;
+    om::_om__ExperimentParameters ep;
 
     if ( soap_read_om__ExperimentParametersType( ctx, &ep ) != SOAP_OK ) {
 
@@ -767,7 +769,7 @@ omws__runExperiment( struct soap *soap, XML_ om__ExperimentParameters, struct om
     else {
 
       // Store the request and create a ticket anyway, regardless using Condor DAGMan or not
-      xsd__string ticket;
+      omws::xsd__string ticket;
       wchar_t elementName[] = L"ExperimentParameters";
       scheduleJob( soap, OMWS_EXPERIMENT _REQUEST, params, elementName, ticket );
       logRequest( soap, "runExperiment", ticket.c_str() );
@@ -824,7 +826,7 @@ omws__runExperiment( struct soap *soap, XML_ om__ExperimentParameters, struct om
 /**********************/
 /**** get Progress ****/
 int 
-omws__getProgress( struct soap *soap, xsd__string tickets, xsd__string &progress )
+omws::omws__getProgress( struct soap *soap, omws::xsd__string tickets, omws::xsd__string &progress )
 { 
   logRequest( soap, "getProgress", tickets.c_str() );
 
@@ -879,7 +881,7 @@ omws__getProgress( struct soap *soap, xsd__string tickets, xsd__string &progress
 /*****************/
 /**** get Log ****/
 int 
-omws__getLog( struct soap *soap, xsd__string ticket, xsd__string &log )
+omws::omws__getLog( struct soap *soap, omws::xsd__string ticket, omws::xsd__string &log )
 { 
   logRequest( soap, "getLog", ticket.c_str() );
 
@@ -927,7 +929,7 @@ omws__getLog( struct soap *soap, xsd__string ticket, xsd__string &log )
 /****************/
 /**** cancel ****/
 int
-omws__cancel( struct soap *soap, xsd__string tickets, xsd__string &cancelledTickets )
+omws::omws__cancel( struct soap *soap, omws::xsd__string tickets, omws::xsd__string &cancelledTickets )
 {
   logRequest( soap, "cancel", tickets.c_str() );
 
@@ -985,7 +987,7 @@ omws__cancel( struct soap *soap, xsd__string tickets, xsd__string &cancelledTick
 /*******************/
 /**** get Model ****/
 int 
-omws__getModel( struct soap *soap, xsd__string ticket, struct omws__getModelResponse *out )
+omws::omws__getModel( struct soap *soap, omws::xsd__string ticket, struct omws::omws__getModelResponse *out )
 { 
   logRequest( soap, "getModel", ticket.c_str() );
 
@@ -1050,7 +1052,7 @@ omws__getModel( struct soap *soap, xsd__string ticket, struct omws__getModelResp
 /*************************/
 /**** get Test Result ****/
 int 
-omws__getTestResult( struct soap *soap, xsd__string ticket, struct omws__testResponse *out )
+omws::omws__getTestResult( struct soap *soap, omws::xsd__string ticket, struct omws::omws__testResponse *out )
 { 
   logRequest( soap, "getTestResult", ticket.c_str() );
 
@@ -1097,7 +1099,7 @@ omws__getTestResult( struct soap *soap, xsd__string ticket, struct omws__testRes
 /**************************/
 /**** get Layer As URL ****/
 int 
-omws__getLayerAsUrl( struct soap *soap, xsd__string id, xsd__string &url )
+omws::omws__getLayerAsUrl( struct soap *soap, omws::xsd__string id, omws::xsd__string &url )
 { 
   logRequest( soap, "getLayerAsUrl", id.c_str() );
 
@@ -1137,7 +1139,7 @@ omws__getLayerAsUrl( struct soap *soap, xsd__string id, xsd__string &url )
 /*****************************/
 /**** get Projection Data ****/
 int 
-omws__getProjectionMetadata( struct soap *soap, xsd__string ticket, struct omws__getProjectionMetadataResponse *out )
+omws::omws__getProjectionMetadata( struct soap *soap, omws::xsd__string ticket, struct omws::omws__getProjectionMetadataResponse *out )
 { 
   logRequest( soap, "getProjectionMetadata", ticket.c_str() );
 
@@ -1213,7 +1215,7 @@ omws__getProjectionMetadata( struct soap *soap, xsd__string ticket, struct omws_
 /******************************/
 /**** get Model Evaluation ****/
 int 
-omws__getModelEvaluation( struct soap *soap, xsd__string ticket, struct omws__modelEvaluationResponse *out )
+omws::omws__getModelEvaluation( struct soap *soap, omws::xsd__string ticket, struct omws::omws__modelEvaluationResponse *out )
 { 
   logRequest( soap, "getModelEvaluation", ticket.c_str() );
 
@@ -1278,7 +1280,7 @@ omws__getModelEvaluation( struct soap *soap, xsd__string ticket, struct omws__mo
 /*****************************/
 /**** get Sampling Result ****/
 int 
-omws__getSamplingResult( struct soap *soap, xsd__string ticket, struct omws__getSamplingResultResponse *out )
+omws::omws__getSamplingResult( struct soap *soap, omws::xsd__string ticket, struct omws::omws__getSamplingResultResponse *out )
 { 
   logRequest( soap, "getSamplingResult", ticket.c_str() );
 
@@ -1342,7 +1344,7 @@ omws__getSamplingResult( struct soap *soap, xsd__string ticket, struct omws__get
 /*********************/
 /**** get Results ****/
 int 
-omws__getResults( struct soap *soap, xsd__string tickets, struct omws__getResultsResponse *out )
+omws::omws__getResults( struct soap *soap, omws::xsd__string tickets, struct omws::omws__getResultsResponse *out )
 { 
   logRequest( soap, "getResults", tickets.c_str() );
 
@@ -1881,7 +1883,7 @@ getStatus()
 /**********************/
 /**** createTicket ****/
 static void
-createTicket( struct soap *soap, string requestPrefix, xsd__string &ticket, string *requestFileName )
+createTicket( struct soap *soap, string requestPrefix, omws::xsd__string &ticket, string *requestFileName )
 {
   string ticketFileName( gFileParser.get( "TICKET_DIRECTORY" ) );
 
@@ -1967,7 +1969,7 @@ createTicket( struct soap *soap, string requestPrefix, xsd__string &ticket, stri
 /*********************/
 /**** scheduleJob ****/
 static void
-scheduleJob( struct soap *soap, string requestPrefix, XML xmlParameters, wchar_t* elementName, xsd__string &ticket )
+scheduleJob( struct soap *soap, string requestPrefix, omws::XML xmlParameters, wchar_t* elementName, omws::xsd__string &ticket )
 {
   string requestFileName = "";
 
@@ -2008,9 +2010,9 @@ scheduleJob( struct soap *soap, string requestPrefix, XML xmlParameters, wchar_t
 /*********************/
 /**** scheduleJob ****/
 static void
-scheduleJob( struct soap *soap, string requestPrefix, string xmlParameters, wchar_t* elementName, xsd__string &ticket )
+scheduleJob( struct soap *soap, string requestPrefix, string xmlParameters, wchar_t* elementName, omws::xsd__string &ticket )
 {
-  XML wideXmlParameters = convertToWideChar( xmlParameters.c_str() );
+  omws::XML wideXmlParameters = convertToWideChar( xmlParameters.c_str() );
   scheduleJob( soap, requestPrefix, wideXmlParameters, elementName, ticket );
   delete[] wideXmlParameters;
 }
@@ -2018,7 +2020,7 @@ scheduleJob( struct soap *soap, string requestPrefix, string xmlParameters, wcha
 /****************************/
 /**** scheduleExperiment ****/
 static map<string, string> 
-scheduleExperiment(struct soap* soap, const _om__ExperimentParameters& ep, xsd__string experiment_ticket) {
+scheduleExperiment(struct soap* soap, const om::_om__ExperimentParameters& ep, omws::xsd__string experiment_ticket) {
 
   soap_set_omode(soap, SOAP_XML_CANONICAL);
   soap_set_omode(soap, SOAP_XML_INDENT);
@@ -2026,41 +2028,41 @@ scheduleExperiment(struct soap* soap, const _om__ExperimentParameters& ep, xsd__
   soap_set_omode(soap, SOAP_XML_NOTYPE);
 
   // Read Environments provided
-  map<string, om__EnvironmentType> environments;
+  map<string, om::om__EnvironmentType> environments;
 
-  vector<_om__ExperimentParametersType_Environment>::const_iterator it = ep.Environment.begin();
+  vector<om::_om__ExperimentParametersType_Environment>::const_iterator it = ep.Environment.begin();
   for ( ; it != ep.Environment.end(); it++ ) {
 
     string env_id = string( (*it).id );
 
-    om__EnvironmentType env;
+    om::om__EnvironmentType env;
     env.NumLayers = (*it).NumLayers;
     env.Map = (*it).Map;
     env.Mask = (*it).Mask;
 
-    environments.insert( pair<string, om__EnvironmentType>( env_id, env ) );
+    environments.insert( pair<string, om::om__EnvironmentType>( env_id, env ) );
   }
 
   // Read Presences provided
-  map<string, om__OccurrencesType> presences;
+  map<string, om::om__OccurrencesType> presences;
 
   if ( ep.Presence != 0 ) {
 
-    vector<_om__ExperimentParametersType_Presence>::const_iterator it = ep.Presence->begin();
+    vector<om::_om__ExperimentParametersType_Presence>::const_iterator it = ep.Presence->begin();
     for ( ; it != ep.Presence->end(); it++ ) {
 
       string pre_id = string( (*it).id );
 
-      om__OccurrencesType pre;
+      om::om__OccurrencesType pre;
       pre.Count = (*it).Count;
       pre.Label = (*it).Label;
       pre.CoordinateSystem = (*it).CoordinateSystem;
 
-      vector<_om__OccurrencesType_Point> points;
-      vector<_om__ExperimentParametersType_Presence_Point>::const_iterator pit = (*it).Point.begin();
+      vector<om::_om__OccurrencesType_Point> points;
+      vector<om::_om__ExperimentParametersType_Presence_Point>::const_iterator pit = (*it).Point.begin();
       for ( ; pit != (*it).Point.end(); pit++ ) {
 
-        _om__OccurrencesType_Point point;
+        om::_om__OccurrencesType_Point point;
         point.Id = (*pit).Id;
         point.X = (*pit).X;
         point.Y = (*pit).Y;
@@ -2069,30 +2071,30 @@ scheduleExperiment(struct soap* soap, const _om__ExperimentParameters& ep, xsd__
       }
       pre.Point = points;
 
-      presences.insert( pair<string, om__OccurrencesType>( pre_id, pre ) );
+      presences.insert( pair<string, om::om__OccurrencesType>( pre_id, pre ) );
     }
   }
 
   // Read Absences provided
-  map<string, om__OccurrencesType> absences;
+  map<string, om::om__OccurrencesType> absences;
 
   if ( ep.Absence != 0 ) {
 
-    vector<_om__ExperimentParametersType_Absence>::const_iterator it = ep.Absence->begin();
+    vector<om::_om__ExperimentParametersType_Absence>::const_iterator it = ep.Absence->begin();
     for ( ; it != ep.Absence->end(); it++ ) {
 
       string abs_id = string( (*it).id );
 
-      om__OccurrencesType abs;
+      om::om__OccurrencesType abs;
       abs.Count = (*it).Count;
       abs.Label = (*it).Label;
       abs.CoordinateSystem = (*it).CoordinateSystem;
 
-      vector<_om__OccurrencesType_Point> points;
-      vector<_om__ExperimentParametersType_Absence_Point>::const_iterator pit = (*it).Point.begin();
+      vector<om::_om__OccurrencesType_Point> points;
+      vector<om::_om__ExperimentParametersType_Absence_Point>::const_iterator pit = (*it).Point.begin();
       for ( ; pit != (*it).Point.end(); pit++ ) {
 
-        _om__OccurrencesType_Point point;
+        om::_om__OccurrencesType_Point point;
         point.Id = (*pit).Id;
         point.X = (*pit).X;
         point.Y = (*pit).Y;
@@ -2101,39 +2103,39 @@ scheduleExperiment(struct soap* soap, const _om__ExperimentParameters& ep, xsd__
       }
       abs.Point = points;
 
-      absences.insert( pair<string, om__OccurrencesType>( abs_id, abs ) );
+      absences.insert( pair<string, om::om__OccurrencesType>( abs_id, abs ) );
     }
   }
 
   // Read Algorithms provided
-  map<string, om__BasicAlgorithmDefinitionType> algorithms;
+  map<string, om::om__BasicAlgorithmDefinitionType> algorithms;
 
   if ( ep.AlgorithmSettings != 0 ) {
 
-    vector<_om__ExperimentParametersType_AlgorithmSettings>::const_iterator it = ep.AlgorithmSettings->begin();
+    vector<om::_om__ExperimentParametersType_AlgorithmSettings>::const_iterator it = ep.AlgorithmSettings->begin();
     for ( ; it != ep.AlgorithmSettings->end(); it++ ) {
 
       string alg_id = string( (*it).id );
 
-      om__BasicAlgorithmDefinitionType alg = *(*it).Algorithm;
+      om::om__BasicAlgorithmDefinitionType alg = *(*it).Algorithm;
 
-      algorithms.insert( pair<string, om__BasicAlgorithmDefinitionType>( alg_id, alg ) );
+      algorithms.insert( pair<string, om::om__BasicAlgorithmDefinitionType>( alg_id, alg ) );
     }
   }
 
   // Read Models provided
-  map<string, om__SerializedAlgorithmType> models;
+  map<string, om::om__SerializedAlgorithmType> models;
 
   if ( ep.SerializedAlgorithm != 0 ) {
 
-    vector<_om__ExperimentParametersType_SerializedAlgorithm>::const_iterator it = ep.SerializedAlgorithm->begin();
+    vector<om::_om__ExperimentParametersType_SerializedAlgorithm>::const_iterator it = ep.SerializedAlgorithm->begin();
     for ( ; it != ep.SerializedAlgorithm->end(); it++ ) {
 
       string model_id = string( (*it).id );
 
-      om__SerializedAlgorithmType model = *(*it).Algorithm;
+      om::om__SerializedAlgorithmType model = *(*it).Algorithm;
 
-      models.insert( pair<string, om__SerializedAlgorithmType>( model_id, model ) );
+      models.insert( pair<string, om::om__SerializedAlgorithmType>( model_id, model ) );
     }
   }
 
@@ -2162,11 +2164,11 @@ scheduleExperiment(struct soap* soap, const _om__ExperimentParameters& ep, xsd__
     string exp_id = string(ep.Jobs.id);
 
     string job_id;
-    xsd__string ticket;
+    omws::xsd__string ticket;
 
     for ( int i=0; i < num_jobs; i++ ) {
 
-      __om__union_ExperimentParametersType_Jobs job = ep.Jobs.__union_ExperimentParametersType_Jobs[i];
+      om::__om__union_ExperimentParametersType_Jobs job = ep.Jobs.__union_ExperimentParametersType_Jobs[i];
 
       job_id = "";
       map<string, string> depends_on; // job_id -> result_usage (model, presence, absence)
@@ -2174,11 +2176,11 @@ scheduleExperiment(struct soap* soap, const _om__ExperimentParameters& ep, xsd__
       // SamplingJobs
       if ( job.__unionAbstractJob == 1 ) {
 
-        om__SamplingJobType * sampling_job = job.__union_ExperimentParametersType_Jobs.SamplingJob;
+        om::om__SamplingJobType * sampling_job = job.__union_ExperimentParametersType_Jobs.SamplingJob;
 
         job_id = string( sampling_job->id );
 
-        _om__SamplingParameters sp;
+        om::_om__SamplingParameters sp;
 
         string env_ref = string( sampling_job->EnvironmentRef->idref );
         if ( environments.count( env_ref ) > 0 ) {
@@ -2214,13 +2216,13 @@ scheduleExperiment(struct soap* soap, const _om__ExperimentParameters& ep, xsd__
       // Create model job
       else if ( job.__unionAbstractJob == 2 ) {
 
-        om__CreateModelJobType * model_job = job.__union_ExperimentParametersType_Jobs.CreateModelJob;
+        om::om__CreateModelJobType * model_job = job.__union_ExperimentParametersType_Jobs.CreateModelJob;
 
         job_id = string( model_job->id );
 
-        _om__ModelParameters mp;
+        om::_om__ModelParameters mp;
 
-        _om__Sampler sampler;
+        om::_om__Sampler sampler;
 
         string env_ref = string( model_job->EnvironmentRef->idref );
         if ( environments.count( env_ref ) > 0 ) {
@@ -2299,13 +2301,13 @@ scheduleExperiment(struct soap* soap, const _om__ExperimentParameters& ep, xsd__
       // Test model job
       else if ( job.__unionAbstractJob == 3 ) {
 
-        om__TestModelJobType * test_job = job.__union_ExperimentParametersType_Jobs.TestModelJob;
+        om::om__TestModelJobType * test_job = job.__union_ExperimentParametersType_Jobs.TestModelJob;
 
         job_id = string( test_job->id );
 
-        _om__TestParameters tp;
+        om::_om__TestParameters tp;
 
-        _om__Sampler sampler;
+        om::_om__Sampler sampler;
 
         string env_ref = string( test_job->EnvironmentRef->idref );
         if ( environments.count( env_ref ) > 0 ) {
@@ -2383,11 +2385,11 @@ scheduleExperiment(struct soap* soap, const _om__ExperimentParameters& ep, xsd__
       // Project model job
       else if ( job.__unionAbstractJob == 4 ) {
 
-        om__ProjectModelJobType * proj_job = job.__union_ExperimentParametersType_Jobs.ProjectModelJob;
+        om::om__ProjectModelJobType * proj_job = job.__union_ExperimentParametersType_Jobs.ProjectModelJob;
 
         job_id = string( proj_job->id );
 
-        _om__ProjectionParameters pp;
+        om::_om__ProjectionParameters pp;
 
         string model_ref = string( proj_job->ModelRef->idref );
         if ( models.count( model_ref ) > 0 ) {
