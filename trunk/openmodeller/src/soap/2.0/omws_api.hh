@@ -25,13 +25,6 @@ typedef int xsd__int;
 typedef wchar_t *XML;
 typedef char *XML_;
 
-/** SOAP header structure.
- */
-struct SOAP_ENV__Header 
-{
-  char * omws__version; 
-};
-
 /** Simple method just to monitor the service.
  *
  * @param _ A void* input parameter so that some compilers (notably vc++) will not complain 
