@@ -25,7 +25,7 @@
  */
 
 #include "om.nsmap"
-#include "soapH.h"
+#include "omH.h"
 
 #include <openmodeller/FileParser.hh>
 #include "console/getopts/getopts.h"
@@ -333,7 +333,7 @@ int main(int argc, char **argv)
               ifstream fs_in( pend_file.c_str() );
               ctx->is = &fs_in;
 
-              _om__ModelParameters mp;
+              om::_om__ModelParameters mp;
 
               // Parsing must succeed! (file was created using the same lib)
               if ( soap_read_om__ModelParametersType( ctx, &mp ) != SOAP_OK ) {
@@ -363,7 +363,7 @@ int main(int argc, char **argv)
                     break;
                   }
 
-                  _om__Sampler samp;
+                  om::_om__Sampler samp;
 
                   struct soap *ctx1 = newSoapContext();
 
@@ -395,7 +395,7 @@ int main(int argc, char **argv)
                     break;
                   }
 
-                  _om__Sampler samp;
+                  om::_om__Sampler samp;
 
                   struct soap *ctx2 = newSoapContext();
 
@@ -457,7 +457,7 @@ int main(int argc, char **argv)
               ifstream fs_in( pend_file.c_str() );
               ctx->is = &fs_in;
 
-              _om__TestParameters tp;
+              om::_om__TestParameters tp;
 
               // Parsing must succeed! (file was created using the same lib)
               if ( soap_read_om__TestParametersType( ctx, &tp ) != SOAP_OK ) {
@@ -491,7 +491,7 @@ int main(int argc, char **argv)
                     break;
                   }
 
-                  _om__Sampler samp;
+                  om::_om__Sampler samp;
 
                   struct soap *ctx1 = newSoapContext();
 
@@ -525,7 +525,7 @@ int main(int argc, char **argv)
                     break;
                   }
 
-                  _om__Sampler samp;
+                  om::_om__Sampler samp;
 
                   struct soap *ctx2 = newSoapContext();
 
@@ -559,7 +559,7 @@ int main(int argc, char **argv)
                     break;
                   }
 
-                  om__SerializedModelType model;
+                  om::om__SerializedModelType model;
 
                   struct soap *ctx3 = newSoapContext();
 
@@ -627,7 +627,7 @@ int main(int argc, char **argv)
               ifstream fs_in( pend_file.c_str() );
               ctx->is = &fs_in;
 
-              _om__ProjectionParameters pp;
+              om::_om__ProjectionParameters pp;
 
               // Parsing must succeed! (file was created using the same lib)
               if ( soap_read_om__ProjectionParametersType( ctx, &pp ) != SOAP_OK ) {
@@ -657,7 +657,7 @@ int main(int argc, char **argv)
                     break;
                   }
 
-                  om__SerializedModelType model;
+                  om::om__SerializedModelType model;
 
                   struct soap *ctx1 = newSoapContext();
 
