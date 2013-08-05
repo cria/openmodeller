@@ -24,7 +24,7 @@
  * http://www.gnu.org/copyleft/gpl.html
  */
 
-#include "soapH.h"
+#include "envH.h"
 
 #include <openmodeller/FileParser.hh>
 
