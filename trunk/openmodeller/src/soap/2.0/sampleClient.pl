@@ -235,7 +235,7 @@ sub prepare_soap
         my $server = get_url();
 
         $soap = SOAP::Lite
-                          #-> service('http://openmodeller.sf.net/ns/1.0/openmodeller.wsdl')
+                          #-> service('http://openmodeller.sf.net/ns/2.0/openmodeller.wsdl')
 		           -> uri( $omws_uri )
 		           -> proxy( $server, options => {compress_threshold => 10000} )
 		           #-> proxy( $server )
@@ -852,7 +852,7 @@ sub get_model
     unless ( $response->fault )
     { 
         my $tmp = $last_xml_resp;
-        if ( $tmp =~ m/.*(<SerializedModel>.*<\/SerializedModel>).*/s )
+        if ( $tmp =~ m/.*(<SerializedModel .*<\/SerializedModel>).*/s )
         {
             my $file_name = "$ticket.mod";
             open FILE, ">", $file_name or die $!;
@@ -863,56 +863,9 @@ sub get_model
         }
         else
         {
-	    print "Ops, could not find serialized model in the response\n";
+	    print "Ops, could not find serialized model in response\n";
 	    return 0;
         }
-    }
-    else
-    {
-	print "Ops, found some problems:\n";
-	print join ', ', $response->faultcode, $response->faultstring; 
-	print "\n";
-	return 0;
-    }
-
-    return 1;
-}
-
-
-####################
-#  Get test result # 
-####################
-sub get_test_result
-{
-    prepare_soap();
-
-    my $method = SOAP::Data
-	-> name( 'getTestResult' )
-        -> encodingStyle( 'http://xml.apache.org/xml-soap/literalxml' )
-	-> prefix( 'omws' )
-        -> uri( $omws_uri );
-
-    ### Get ticket
-
-    my $ticket = get_string_from_user('Ticket number');
-
-    if ( ! $ticket )
-    {
-	return 0;
-    }
-
-    print "Retrieving test result... ";
-
-    my $soap_ticket = SOAP::Data
-	-> name( 'ticket' )
-	-> type( 'string' )
-	-> value( $ticket );
-    
-    my $response = $soap->call( $method => $soap_ticket );
-
-    unless ( $response->fault )
-    { 
-	print "OK\n";
     }
     else
     {
@@ -1011,7 +964,7 @@ sub test_model
     }
 
     # Build XML request
-    my $xml = '<TestParameters xmlns="http://openmodeller.cria.org.br/xml/1.0"><Sampler>'. $native_environment . $external_presence_points . $external_absence_points .'</Sampler>' . $algorithm . '</TestParameters>';
+    my $xml = '<TestParameters xmlns="http://openmodeller.cria.org.br/xml/2.0"><Sampler>'. $native_environment . $external_presence_points . $external_absence_points .'</Sampler>' . $algorithm . '</TestParameters>';
 
     # Encode coord system directly in XML to avoid automatic xsi:types for the content
     my $xml_parameters = SOAP::Data
@@ -1024,6 +977,66 @@ sub test_model
     unless ( $response->fault )
     { 
 	print "Your ticket is: ".$response->result ."\n";
+    }
+    else
+    {
+	print "Ops, found some problems:\n";
+	print join ', ', $response->faultcode, $response->faultstring; 
+	print "\n";
+	return 0;
+    }
+
+    return 1;
+}
+
+####################
+#  Get test result # 
+####################
+sub get_test_result
+{
+    prepare_soap();
+
+    my $method = SOAP::Data
+	-> name( 'getTestResult' )
+        -> encodingStyle( 'http://xml.apache.org/xml-soap/literalxml' )
+	-> prefix( 'omws' )
+        -> uri( $omws_uri );
+
+    ### Get ticket
+
+    my $ticket = get_string_from_user('Ticket number');
+
+    if ( ! $ticket )
+    {
+	return 0;
+    }
+
+    print "Retrieving test result... ";
+
+    my $soap_ticket = SOAP::Data
+	-> name( 'ticket' )
+	-> type( 'string' )
+	-> value( $ticket );
+    
+    my $response = $soap->call( $method => $soap_ticket );
+
+    unless ( $response->fault )
+    { 
+        my $tmp = $last_xml_resp;
+        if ( $tmp =~ m/.*(<TestResultEnvelope .*<\/TestResultEnvelope>).*/s )
+        {
+            my $file_name = "$ticket.tst";
+            open FILE, ">", $file_name or die $!;
+            print FILE $1;
+            close FILE or die $!;
+
+            print "\nOK! Test result saved in $file_name\n";
+        }
+        else
+        {
+	    print "Ops, could not find test result envelope in response\n";
+	    return 0;
+        }
     }
     else
     {
@@ -1103,7 +1116,7 @@ sub project_model
     }
 
     # Build XML
-    my $xml = '<ProjectionParameters xmlns="http://openmodeller.cria.org.br/xml/1.0">
+    my $xml = '<ProjectionParameters xmlns="http://openmodeller.cria.org.br/xml/2.0">
 '.$algorithm.$environment.'<OutputParameters FileType="'.$format.'"><TemplateLayer Id="'.$layers{$template_code}{'id'}.'"/></OutputParameters></ProjectionParameters>';
 
     my $xml_parameters = SOAP::Data
