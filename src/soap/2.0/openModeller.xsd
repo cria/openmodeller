@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <xs:schema xmlns="http://openmodeller.cria.org.br/xml/2.0" xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="http://openmodeller.cria.org.br/xml/2.0" elementFormDefault="qualified" attributeFormDefault="unqualified" version="2.0" xml:lang="EN">
 	<xs:annotation>
 		<xs:documentation xml:lang="en">
