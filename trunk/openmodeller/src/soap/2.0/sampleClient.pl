@@ -1174,7 +1174,21 @@ sub get_projection_metadata
 
     unless ( $response->fault )
     { 
-	print "OK\n";
+        my $tmp = $last_xml_resp;
+        if ( $tmp =~ m/.*(<ProjectionEnvelope .*<\/ProjectionEnvelope>).*/s )
+        {
+            my $file_name = "$ticket.pjm";
+            open FILE, ">", $file_name or die $!;
+            print FILE $1;
+            close FILE or die $!;
+
+            print "\nOK! Projection metadata saved in $file_name\n";
+        }
+        else
+        {
+	    print "Ops, could not find projection envelope in response\n";
+	    return 0;
+        }
     }
     else
     {
