@@ -1336,7 +1336,7 @@ sub get_results
     prepare_soap();
 
     my $method = SOAP::Data
-	-> name( 'cancel' )
+	-> name( 'getResults' )
         -> encodingStyle( 'http://xml.apache.org/xml-soap/literalxml' )
 	-> prefix( 'omws' )
         -> uri( $omws_uri );
