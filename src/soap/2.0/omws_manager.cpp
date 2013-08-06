@@ -89,13 +89,13 @@ int main(int argc, char **argv)
   // Check parameters
   if ( config_file.empty() ) {
 
-    printf( "Please specify the omws configuration file\n");
+    printf( "Please specify the OMWS configuration file\n");
     exit(1);
   }
 
   if ( job_ticket.empty() ) {
 
-    printf( "Please specify the job ticket\n");
+    printf( "Please specify a job ticket that finished\n");
     exit(1);
   }
 
@@ -188,6 +188,7 @@ int main(int argc, char **argv)
 
     logMessage( "Checked experiment status.", fd_log );
 
+    // Read job progress
     int progress = -1;
 
     try {
@@ -200,7 +201,6 @@ int main(int argc, char **argv)
       break;
     }
 
-    // Read job progress
     if ( progress == 100 ) {
 
       // Job finished successfully!
