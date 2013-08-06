@@ -90,8 +90,9 @@ my %options = ( 0  => 'Ping service',
 		10 => 'Get projection metadata', 
 		11 => 'Get map as URL', 
 		12 => 'Run Experiment', 
-		13 => 'Cancel', 
-		14 => 'Quit' );
+		13 => 'Get Results', 
+		14 => 'Cancel', 
+		15 => 'Quit' );
 
 my $option = -1;
 
@@ -154,6 +155,10 @@ while ( $option != $exit_option or not exists( $options{$option-1} ) )
 	$option = ( run_experiment() ) ? -1 : $exit_option;
     }
     elsif ($option == 14)
+    {
+	$option = ( get_results() ) ? -1 : $exit_option;
+    }
+    elsif ($option == 15)
     {
 	$option = ( cancel() ) ? -1 : $exit_option;
     }
@@ -1323,6 +1328,66 @@ sub run_experiment
     return 1;
 } 
 
+################
+#  Get results # 
+################
+sub get_results
+{
+    prepare_soap();
+
+    my $method = SOAP::Data
+	-> name( 'cancel' )
+        -> encodingStyle( 'http://xml.apache.org/xml-soap/literalxml' )
+	-> prefix( 'omws' )
+        -> uri( $omws_uri );
+
+    ### Get ticket
+
+    my $ticket = get_string_from_user('Ticket number');
+
+    if ( ! $ticket )
+    {
+	return 0;
+    }
+
+    print "Retrieving results... ";
+
+    my $soap_ticket = SOAP::Data
+	-> name( 'tickets' )
+	-> type( 'string' )
+	-> value( $ticket );
+    
+    my $response = $soap->call( $method => $soap_ticket );
+
+    unless ( $response->fault )
+    {
+        my $tmp = $last_xml_resp;
+        if ( $tmp =~ m/.*(<ResultSet .*<\/ResultSet>).*/s )
+        {
+            my $file_name = "$ticket.res";
+            open FILE, ">", $file_name or die $!;
+            print FILE $1;
+            close FILE or die $!;
+
+            print "\nOK! Result set saved in $file_name\n";
+        }
+        else
+        {
+	    print "Ops, could not find result set in response\n";
+	    return 0;
+        }
+    }
+    else
+    {
+	print "Ops, found some problems:\n";
+	print join ', ', $response->faultcode, $response->faultstring; 
+	print "\n";
+	return 0;
+    }
+
+    return 1;
+}
+
 ###########
 #  Cancel # 
 ###########
@@ -1371,7 +1436,6 @@ sub cancel
 
     return 1;
 }
-
 
 #########################################
 #  Get algorithm from console interface # 
