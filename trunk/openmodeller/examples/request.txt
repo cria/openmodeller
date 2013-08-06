@@ -286,3 +286,15 @@ Output file type = ByteHFA
 #Parameter = NumTrees 10
 #Parameter = VarsPerTree 0
 #Parameter = ForceUnsupervisedLearning 0
+
+########
+# Consensus
+#
+#Algorithm = CONSENSUS
+#Parameter = Alg1 RF(NumTrees=10,VarsPerTree=0,ForceUnsupervisedLearning=1)
+#Parameter = Alg2 BIOCLIM(StandardDeviationCutoff=0.8)
+#Parameter = Alg3 ENVSCORE
+#Parameter = Alg4 
+#Parameter = Alg5 
+#Parameter = Weights 1.0 1.0 1.0 0.0 0.0
+#Parameter = Agreement 2
