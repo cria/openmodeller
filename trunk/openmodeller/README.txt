@@ -75,6 +75,10 @@ in the package).
 * GDAL (Geospatial Data Abstraction Library) version >= 1.1.9
   http://www.remotesensing.org/gdal
 
+* GSL (GNU Scientific Library) version >= 1.4 is needed to run 
+  CSM (Climate Space Model) and ENFA algorithms.
+  http://www.gnu.org/software/gsl
+
 Optional libraries:
 
 * TerraLib (>= 3.2.0) is needed to enable the TerraLib occurrence and raster drivers.
@@ -83,13 +87,10 @@ Optional libraries:
 * libX11 is needed to run the command line viewer (om_viewer).
   http://x.org/
 
-* GSL (GNU Scientific Library) version >= 1.4 is needed to run 
-  the CSM (Climate Space Model) algorithm.
-  http://www.gnu.org/software/gsl
-
 * libcurl (>= 7.15.4) is needed to enable to TAPIR and GBIF occurrence drivers.
   http://curl.haxx.se/libcurl/
 
+* SQLite3 is needed for the AquaMaps algorithm.
 
 DOCUMENTATION
 -------------
