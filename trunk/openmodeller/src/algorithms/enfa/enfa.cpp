@@ -172,6 +172,26 @@ Enfa::Enfa() :
     AlgorithmImpl( &metadata )
 {
   _initialized = 0;
+  _gsl_environment_matrix = 0;
+  _gsl_environment_factor_matrix = 0;
+  _gsl_background_matrix = 0;
+  _gsl_covariance_matrix = 0;
+  _gsl_covariance_background_matrix = 0;
+  _gsl_avg_vector = 0;
+  _gsl_stddev_vector = 0;
+  _gsl_avg_background_vector = 0;
+  _gsl_stddev_background_vector = 0;
+  _gsl_eigenvalue_vector = 0;
+  _gsl_eigenvector_matrix = 0;
+  _gsl_score_matrix = 0;
+  _gsl_covariance_matrix_root_inverse = 0;
+  _gsl_workspace_H = 0;
+  _gsl_workspace_W = 0;
+  _gsl_workspace_y = 0;
+  _gsl_workspace_z = 0;
+  _gsl_factor_weights_all_components = 0;
+  _gsl_factor_weights = 0;
+  _gsl_geomean_vector = 0;
 }
 
 
@@ -180,27 +200,86 @@ Enfa::~Enfa()
 {
   if ( _initialized )
   {
-    gsl_matrix_free (_gsl_background_matrix);
-    gsl_matrix_free (_gsl_covariance_background_matrix);
-    gsl_matrix_free (_gsl_covariance_matrix);
-    gsl_matrix_free (_gsl_covariance_matrix_root_inverse);
-    gsl_matrix_free (_gsl_eigenvector_matrix);
-    gsl_matrix_free (_gsl_environment_factor_matrix);
-    gsl_matrix_free (_gsl_environment_matrix);
-    gsl_matrix_free (_gsl_score_matrix);
-    gsl_matrix_free (_gsl_workspace_H);
-    gsl_matrix_free (_gsl_workspace_W);
-    gsl_matrix_free (_gsl_workspace_y);
-
-    gsl_vector_free (_gsl_avg_vector);
-    gsl_vector_free (_gsl_avg_background_vector);
-    gsl_vector_free (_gsl_eigenvalue_vector);
-    gsl_vector_free (_gsl_stddev_vector);
-    gsl_vector_free (_gsl_stddev_background_vector);
-    gsl_vector_free (_gsl_workspace_z);
-    gsl_vector_free (_gsl_factor_weights);
-    gsl_vector_free (_gsl_factor_weights_all_components);
-    gsl_vector_free (_gsl_geomean_vector);
+    if (_gsl_background_matrix)
+    {
+      gsl_matrix_free (_gsl_background_matrix);
+    }
+    if (_gsl_covariance_background_matrix)
+    {
+      gsl_matrix_free (_gsl_covariance_background_matrix);
+    }
+    if (_gsl_covariance_matrix)
+    {
+      gsl_matrix_free (_gsl_covariance_matrix);
+    }
+    if (_gsl_covariance_matrix_root_inverse)
+    {
+      gsl_matrix_free (_gsl_covariance_matrix_root_inverse);
+    }
+    if (_gsl_eigenvector_matrix)
+    {
+      gsl_matrix_free (_gsl_eigenvector_matrix);
+    }
+    if (_gsl_environment_factor_matrix)
+    {
+      gsl_matrix_free (_gsl_environment_factor_matrix);
+    }
+    if (_gsl_environment_matrix)
+    {
+      gsl_matrix_free (_gsl_environment_matrix);
+    }
+    if (_gsl_score_matrix)
+    {
+      gsl_matrix_free (_gsl_score_matrix);
+    }
+    if (_gsl_workspace_H)
+    {
+      gsl_matrix_free (_gsl_workspace_H);
+    }
+    if (_gsl_workspace_W)
+    {
+      gsl_matrix_free (_gsl_workspace_W);
+    }
+    if (_gsl_workspace_y)
+    {
+      gsl_matrix_free (_gsl_workspace_y);
+    }
+    if (_gsl_avg_vector)
+    {
+      gsl_vector_free (_gsl_avg_vector);
+    }
+    if (_gsl_avg_background_vector)
+    {
+      gsl_vector_free (_gsl_avg_background_vector);
+    }
+    if (_gsl_eigenvalue_vector)
+    {
+      gsl_vector_free (_gsl_eigenvalue_vector);
+    }
+    if (_gsl_stddev_vector)
+    {
+      gsl_vector_free (_gsl_stddev_vector);
+    }
+    if (_gsl_stddev_background_vector)
+    {
+      gsl_vector_free (_gsl_stddev_background_vector);
+    }
+    if (_gsl_workspace_z)
+    {
+      gsl_vector_free (_gsl_workspace_z);
+    }
+    if (_gsl_factor_weights)
+    {
+      gsl_vector_free (_gsl_factor_weights);
+    }
+    if (_gsl_factor_weights_all_components)
+    {
+      gsl_vector_free (_gsl_factor_weights_all_components);
+    }
+    if (_gsl_geomean_vector)
+    {
+      gsl_vector_free (_gsl_geomean_vector);
+    }
   }
 }
 
@@ -748,6 +827,10 @@ gsl_matrix* Enfa::sqrtm(gsl_matrix* original_matrix) const
 	{lambda=pow(v,0.5);}
 	else
 	{
+          gsl_matrix_free(temp_m);
+          gsl_matrix_free(m);
+          gsl_matrix_free(eigvect_m);
+          gsl_vector_free(eigval_v);
 	  std::string msg = "Enfa::sqrtm:Cannot calculate square root for matrix - model will fail\n", v;
 	  Log::instance()->error( msg.c_str() );
 	  throw InverseFailedException( msg.c_str() );
@@ -927,6 +1010,8 @@ gsl_matrix* Enfa::inverse(gsl_matrix* _m) const
 		//displayMatrix(_m, "input matrix", true);
 		//displayMatrix(_inverse, "inverse", true);
 		//displayMatrix(_testInverse, "check inverse", true);
+                gsl_matrix_free(_mcopy);
+                gsl_matrix_free(_testInverse);
 		std::string msg = "Enfa::inverse failed to invert matrix\n";
 		Log::instance()->error( msg.c_str() );
 		throw InverseFailedException( msg.c_str() );
