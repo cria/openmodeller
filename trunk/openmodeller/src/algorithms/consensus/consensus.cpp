@@ -69,7 +69,7 @@ static AlgParamMetadata parameters[NUM_PARAM] = {
     0,      // Parameter's lower limit.
     0,      // Not zero if the parameter has upper limit.
     0,      // Parameter's upper limit.
-    "" // Parameter's typical (default) value.
+    ""      // Parameter's typical (default) value.
   },
   // Algorithm 3
   {
@@ -82,7 +82,7 @@ static AlgParamMetadata parameters[NUM_PARAM] = {
     0,      // Parameter's lower limit.
     0,      // Not zero if the parameter has upper limit.
     0,      // Parameter's upper limit.
-    "" // Parameter's typical (default) value.
+    ""      // Parameter's typical (default) value.
   },
   // Algorithm 4
   {
@@ -95,7 +95,7 @@ static AlgParamMetadata parameters[NUM_PARAM] = {
     0,      // Parameter's lower limit.
     0,      // Not zero if the parameter has upper limit.
     0,      // Parameter's upper limit.
-    "" // Parameter's typical (default) value.
+    ""      // Parameter's typical (default) value.
   },
   // Algorithm 5
   {
@@ -108,7 +108,7 @@ static AlgParamMetadata parameters[NUM_PARAM] = {
     0,      // Parameter's lower limit.
     0,      // Not zero if the parameter has upper limit.
     0,      // Parameter's upper limit.
-    "" // Parameter's typical (default) value.
+    ""      // Parameter's typical (default) value.
   },
   // Weigths
   {
@@ -121,7 +121,7 @@ static AlgParamMetadata parameters[NUM_PARAM] = {
     0,      // Parameter's lower limit.
     0,      // Not zero if the parameter has upper limit.
     0,      // Parameter's upper limit.
-    "1.0 1.0 1.0 0.0 0.0" // Parameter's typical (default) value.
+    "1.0 0.0 0.0 0.0 0.0" // Parameter's typical (default) value.
   },
   // Minimum level of agreement
   {
@@ -134,7 +134,7 @@ static AlgParamMetadata parameters[NUM_PARAM] = {
     1,      // Parameter's lower limit.
     1,      // Not zero if the parameter has upper limit.
     5,      // Parameter's upper limit.
-    "2" // Parameter's typical (default) value.
+    "1"     // Parameter's typical (default) value.
   },
 };
 
