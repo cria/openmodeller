@@ -465,11 +465,9 @@
 			</xs:element>
 			<xs:element name="Jobs">
 				<xs:complexType>
-					<xs:complexContent>
-						<xs:sequence>
-							<xs:element ref="AbstractJob" maxOccurs="unbounded"/>
-						</xs:sequence>
-					</xs:complexContent>
+					<xs:sequence>
+						<xs:element ref="AbstractJob" maxOccurs="unbounded"/>
+					</xs:sequence>
 				</xs:complexType>
 			</xs:element>
 		</xs:sequence>
