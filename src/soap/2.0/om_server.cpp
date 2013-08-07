@@ -2152,8 +2152,6 @@ scheduleExperiment(struct soap* soap, const om::_om__ExperimentParameters& ep, o
 
   try {
 
-    string exp_id = string(ep.Jobs.id);
-
     string job_id;
     omws::xsd__string ticket;
 
