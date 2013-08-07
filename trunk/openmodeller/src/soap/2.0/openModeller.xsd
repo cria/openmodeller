@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xs:schema xmlns="http://openmodeller.cria.org.br/xml/2.0" xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="http://openmodeller.cria.org.br/xml/2.0" elementFormDefault="qualified" attributeFormDefault="unqualified" version="2.0" xml:lang="EN">
+<xs:schema xmlns="http://openmodeller.cria.org.br/xml/2.0" xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="http://openmodeller.cria.org.br/xml/2.0" elementFormDefault="qualified" attributeFormDefault="unqualified" version="2.0.1" xml:lang="EN">
 	<xs:annotation>
 		<xs:documentation xml:lang="en">
 		XML Schema with all basic element and type definitions used by openModeller and OMWS+
@@ -457,11 +457,9 @@
 			<xs:element name="Jobs">
 				<xs:complexType>
 					<xs:complexContent>
-						<xs:extension base="IdentifiedType">
-							<xs:sequence>
-								<xs:element ref="AbstractJob" maxOccurs="unbounded"/>
-							</xs:sequence>
-						</xs:extension>
+						<xs:sequence>
+							<xs:element ref="AbstractJob" maxOccurs="unbounded"/>
+						</xs:sequence>
 					</xs:complexContent>
 				</xs:complexType>
 			</xs:element>
