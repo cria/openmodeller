@@ -290,8 +290,17 @@
 			</xs:element>
 			<xs:element name="RocCurve" minOccurs="0">
 				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="Ratio" minOccurs="0">
+							<xs:complexType>
+								<xs:attribute name="E" type="xs:double" use="required"/>
+								<xs:attribute name="Value" type="xs:double" use="required"/>
+							</xs:complexType>
+						</xs:element>
+					</xs:sequence>
 					<xs:attribute name="Auc" type="ZeroOneIntervalType" use="required"/>
 					<xs:attribute name="Points" type="xs:string" use="required"/>
+					<xs:attribute name="NumBackgroundPoints" type="xs:int"/>
 				</xs:complexType>
 			</xs:element>
 		</xs:sequence>
