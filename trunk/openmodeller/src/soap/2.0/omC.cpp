@@ -17,7 +17,7 @@ compiling, linking, and/or using OpenSSL is allowed.
 
 namespace om {
 
-SOAP_SOURCE_STAMP("@(#) omC.cpp ver 2.8.15 2013-08-02 18:47:14 GMT")
+SOAP_SOURCE_STAMP("@(#) omC.cpp ver 2.8.15 2013-08-07 19:58:35 GMT")
 
 
 #ifndef WITH_NOGLOBAL
@@ -344,6 +344,8 @@ SOAP_FMAC3 void * SOAP_FMAC4 soap_getelement(struct soap *soap, int *type)
 		return soap_in_PointerTo_om__ProjectionStatisticsParametersType_AreaStatistics(soap, NULL, NULL, "om:ProjectionStatisticsParametersType-AreaStatistics");
 	case SOAP_TYPE_om_PointerTo_om__TestResultType_RocCurve:
 		return soap_in_PointerTo_om__TestResultType_RocCurve(soap, NULL, NULL, "om:TestResultType-RocCurve");
+	case SOAP_TYPE_om_PointerTo_om__TestResultType_RocCurve_Ratio:
+		return soap_in_PointerTo_om__TestResultType_RocCurve_Ratio(soap, NULL, NULL, "om:TestResultType-RocCurve-Ratio");
 	case SOAP_TYPE_om_PointerTo_om__TestResultType_ConfusionMatrix:
 		return soap_in_PointerTo_om__TestResultType_ConfusionMatrix(soap, NULL, NULL, "om:TestResultType-ConfusionMatrix");
 	case SOAP_TYPE_om_PointerTo_om__TestOptionsType_RocCurve:
@@ -772,6 +774,10 @@ SOAP_FMAC3 void * SOAP_FMAC4 soap_getelement(struct soap *soap, int *type)
 		{	*type = SOAP_TYPE_om__om__ProjectionStatisticsParametersType_AreaStatistics;
 			return soap_in__om__ProjectionStatisticsParametersType_AreaStatistics(soap, NULL, NULL, NULL);
 		}
+		if (!soap_match_tag(soap, t, "om:TestResultType-RocCurve-Ratio"))
+		{	*type = SOAP_TYPE_om__om__TestResultType_RocCurve_Ratio;
+			return soap_in__om__TestResultType_RocCurve_Ratio(soap, NULL, NULL, NULL);
+		}
 		if (!soap_match_tag(soap, t, "om:TestResultType-RocCurve"))
 		{	*type = SOAP_TYPE_om__om__TestResultType_RocCurve;
 			return soap_in__om__TestResultType_RocCurve(soap, NULL, NULL, NULL);
@@ -984,6 +990,8 @@ SOAP_FMAC3 int SOAP_FMAC4 soap_putelement(struct soap *soap, const void *ptr, co
 		return ((_om__OccurrencesFilterType_SpatiallyUnique *)ptr)->soap_out(soap, "om:OccurrencesFilterType-SpatiallyUnique", id, NULL);
 	case SOAP_TYPE_om__om__ProjectionStatisticsParametersType_AreaStatistics:
 		return ((_om__ProjectionStatisticsParametersType_AreaStatistics *)ptr)->soap_out(soap, "om:ProjectionStatisticsParametersType-AreaStatistics", id, NULL);
+	case SOAP_TYPE_om__om__TestResultType_RocCurve_Ratio:
+		return ((_om__TestResultType_RocCurve_Ratio *)ptr)->soap_out(soap, "om:TestResultType-RocCurve-Ratio", id, NULL);
 	case SOAP_TYPE_om__om__TestResultType_RocCurve:
 		return ((_om__TestResultType_RocCurve *)ptr)->soap_out(soap, "om:TestResultType-RocCurve", id, NULL);
 	case SOAP_TYPE_om__om__TestResultType_ConfusionMatrix:
@@ -1166,6 +1174,8 @@ SOAP_FMAC3 int SOAP_FMAC4 soap_putelement(struct soap *soap, const void *ptr, co
 		return soap_out_PointerTo_om__ProjectionStatisticsParametersType_AreaStatistics(soap, tag, id, (_om__ProjectionStatisticsParametersType_AreaStatistics *const*)ptr, "om:ProjectionStatisticsParametersType-AreaStatistics");
 	case SOAP_TYPE_om_PointerTo_om__TestResultType_RocCurve:
 		return soap_out_PointerTo_om__TestResultType_RocCurve(soap, tag, id, (_om__TestResultType_RocCurve *const*)ptr, "om:TestResultType-RocCurve");
+	case SOAP_TYPE_om_PointerTo_om__TestResultType_RocCurve_Ratio:
+		return soap_out_PointerTo_om__TestResultType_RocCurve_Ratio(soap, tag, id, (_om__TestResultType_RocCurve_Ratio *const*)ptr, "om:TestResultType-RocCurve-Ratio");
 	case SOAP_TYPE_om_PointerTo_om__TestResultType_ConfusionMatrix:
 		return soap_out_PointerTo_om__TestResultType_ConfusionMatrix(soap, tag, id, (_om__TestResultType_ConfusionMatrix *const*)ptr, "om:TestResultType-ConfusionMatrix");
 	case SOAP_TYPE_om_PointerTo_om__TestOptionsType_RocCurve:
@@ -1330,6 +1340,9 @@ SOAP_FMAC3 void SOAP_FMAC4 soap_markelement(struct soap *soap, const void *ptr, 
 		break;
 	case SOAP_TYPE_om__om__ProjectionStatisticsParametersType_AreaStatistics:
 		((_om__ProjectionStatisticsParametersType_AreaStatistics *)ptr)->soap_serialize(soap);
+		break;
+	case SOAP_TYPE_om__om__TestResultType_RocCurve_Ratio:
+		((_om__TestResultType_RocCurve_Ratio *)ptr)->soap_serialize(soap);
 		break;
 	case SOAP_TYPE_om__om__TestResultType_RocCurve:
 		((_om__TestResultType_RocCurve *)ptr)->soap_serialize(soap);
@@ -1607,6 +1620,9 @@ SOAP_FMAC3 void SOAP_FMAC4 soap_markelement(struct soap *soap, const void *ptr, 
 	case SOAP_TYPE_om_PointerTo_om__TestResultType_RocCurve:
 		soap_serialize_PointerTo_om__TestResultType_RocCurve(soap, (_om__TestResultType_RocCurve *const*)ptr);
 		break;
+	case SOAP_TYPE_om_PointerTo_om__TestResultType_RocCurve_Ratio:
+		soap_serialize_PointerTo_om__TestResultType_RocCurve_Ratio(soap, (_om__TestResultType_RocCurve_Ratio *const*)ptr);
+		break;
 	case SOAP_TYPE_om_PointerTo_om__TestResultType_ConfusionMatrix:
 		soap_serialize_PointerTo_om__TestResultType_ConfusionMatrix(soap, (_om__TestResultType_ConfusionMatrix *const*)ptr);
 		break;
@@ -1743,6 +1759,8 @@ SOAP_FMAC3 void * SOAP_FMAC4 om_instantiate(struct soap *soap, int t, const char
 		return (void*)soap_instantiate_om__TestOptionsType(soap, -1, type, arrayType, n);
 	case SOAP_TYPE_om__om__TestResultType_ConfusionMatrix:
 		return (void*)soap_instantiate__om__TestResultType_ConfusionMatrix(soap, -1, type, arrayType, n);
+	case SOAP_TYPE_om__om__TestResultType_RocCurve_Ratio:
+		return (void*)soap_instantiate__om__TestResultType_RocCurve_Ratio(soap, -1, type, arrayType, n);
 	case SOAP_TYPE_om__om__TestResultType_RocCurve:
 		return (void*)soap_instantiate__om__TestResultType_RocCurve(soap, -1, type, arrayType, n);
 	case SOAP_TYPE_om_om__TestResultType:
@@ -2139,6 +2157,12 @@ SOAP_FMAC3 int SOAP_FMAC4 om_fdelete(struct soap_clist *p)
 			SOAP_DELETE((_om__TestResultType_ConfusionMatrix*)p->ptr);
 		else
 			SOAP_DELETE_ARRAY((_om__TestResultType_ConfusionMatrix*)p->ptr);
+		break;
+	case SOAP_TYPE_om__om__TestResultType_RocCurve_Ratio:
+		if (p->size < 0)
+			SOAP_DELETE((_om__TestResultType_RocCurve_Ratio*)p->ptr);
+		else
+			SOAP_DELETE_ARRAY((_om__TestResultType_RocCurve_Ratio*)p->ptr);
 		break;
 	case SOAP_TYPE_om__om__TestResultType_RocCurve:
 		if (p->size < 0)
@@ -3662,7 +3686,6 @@ SOAP_FMAC3 void SOAP_FMAC4 soap_copy___om__union_ExperimentParametersType_Jobs(s
 void _om__ExperimentParametersType_Jobs::soap_default(struct soap *soap)
 {
 	(void)soap; /* appease -Wall -Werror */
-	soap_default_xsd__ID(soap, &this->_om__ExperimentParametersType_Jobs::id);
 	this->_om__ExperimentParametersType_Jobs::__sizeAbstractJob = 0;
 	this->_om__ExperimentParametersType_Jobs::__union_ExperimentParametersType_Jobs = NULL;
 }
@@ -3688,7 +3711,6 @@ int _om__ExperimentParametersType_Jobs::soap_out(struct soap *soap, const char *
 
 SOAP_FMAC3 int SOAP_FMAC4 soap_out__om__ExperimentParametersType_Jobs(struct soap *soap, const char *tag, int id, const _om__ExperimentParametersType_Jobs *a, const char *type)
 {
-	soap_set_attr(soap, "id", ((_om__ExperimentParametersType_Jobs*)a)->id.c_str(), 1);
 	if (soap_element_begin_out(soap, tag, soap_embedded_id(soap, id, a, SOAP_TYPE_om__om__ExperimentParametersType_Jobs), type))
 		return soap->error;
 	if (a->_om__ExperimentParametersType_Jobs::__union_ExperimentParametersType_Jobs)
@@ -3719,16 +3741,6 @@ SOAP_FMAC3 _om__ExperimentParametersType_Jobs * SOAP_FMAC4 soap_in__om__Experime
 			*soap->id = '\0';
 			return (_om__ExperimentParametersType_Jobs *)a->soap_in(soap, tag, type);
 		}
-	}
-	{	const char *t = soap_attr_value(soap, "id", 1);
-		if (t)
-		{	char *s;
-			if (soap_s2string(soap, t, &s, 0, -1))
-				return NULL;
-			((_om__ExperimentParametersType_Jobs*)a)->id.assign(s);
-		}
-		else if (soap->error)
-			return NULL;
 	}
 	struct soap_blist *soap_blist___union_ExperimentParametersType_Jobs1 = NULL;
 	if (soap->body && !*soap->href)
@@ -5493,17 +5505,145 @@ SOAP_FMAC3 void SOAP_FMAC4 soap_copy__om__ProjectionStatisticsParametersType_Are
 	*(_om__ProjectionStatisticsParametersType_AreaStatistics*)p = *(_om__ProjectionStatisticsParametersType_AreaStatistics*)q;
 }
 
+void _om__TestResultType_RocCurve_Ratio::soap_default(struct soap *soap)
+{
+	(void)soap; /* appease -Wall -Werror */
+	soap_default_double(soap, &this->_om__TestResultType_RocCurve_Ratio::E);
+	soap_default_double(soap, &this->_om__TestResultType_RocCurve_Ratio::Value);
+}
+
+void _om__TestResultType_RocCurve_Ratio::soap_serialize(struct soap *soap) const
+{
+#ifndef WITH_NOIDREF
+	(void)soap; /* appease -Wall -Werror */
+#endif
+}
+
+int _om__TestResultType_RocCurve_Ratio::soap_out(struct soap *soap, const char *tag, int id, const char *type) const
+{
+	return soap_out__om__TestResultType_RocCurve_Ratio(soap, tag, id, this, type);
+}
+
+SOAP_FMAC3 int SOAP_FMAC4 soap_out__om__TestResultType_RocCurve_Ratio(struct soap *soap, const char *tag, int id, const _om__TestResultType_RocCurve_Ratio *a, const char *type)
+{
+	soap_set_attr(soap, "E", soap_double2s(soap, ((_om__TestResultType_RocCurve_Ratio*)a)->E), 1);
+	soap_set_attr(soap, "Value", soap_double2s(soap, ((_om__TestResultType_RocCurve_Ratio*)a)->Value), 1);
+	if (soap_element_begin_out(soap, tag, soap_embedded_id(soap, id, a, SOAP_TYPE_om__om__TestResultType_RocCurve_Ratio), type))
+		return soap->error;
+	return soap_element_end_out(soap, tag);
+}
+
+void *_om__TestResultType_RocCurve_Ratio::soap_in(struct soap *soap, const char *tag, const char *type)
+{	return soap_in__om__TestResultType_RocCurve_Ratio(soap, tag, this, type);
+}
+
+SOAP_FMAC3 _om__TestResultType_RocCurve_Ratio * SOAP_FMAC4 soap_in__om__TestResultType_RocCurve_Ratio(struct soap *soap, const char *tag, _om__TestResultType_RocCurve_Ratio *a, const char *type)
+{
+	(void)type; /* appease -Wall -Werror */
+	if (soap_element_begin_in(soap, tag, 0, NULL))
+		return NULL;
+	a = (_om__TestResultType_RocCurve_Ratio *)soap_class_id_enter(soap, soap->id, a, SOAP_TYPE_om__om__TestResultType_RocCurve_Ratio, sizeof(_om__TestResultType_RocCurve_Ratio), soap->type, soap->arrayType);
+	if (!a)
+		return NULL;
+	if (soap->alloced)
+	{	a->soap_default(soap);
+		if (soap->clist->type != SOAP_TYPE_om__om__TestResultType_RocCurve_Ratio)
+		{	soap_revert(soap);
+			*soap->id = '\0';
+			return (_om__TestResultType_RocCurve_Ratio *)a->soap_in(soap, tag, type);
+		}
+	}
+	if (soap_s2double(soap, soap_attr_value(soap, "E", 1), &((_om__TestResultType_RocCurve_Ratio*)a)->E))
+		return NULL;
+	if (soap_s2double(soap, soap_attr_value(soap, "Value", 1), &((_om__TestResultType_RocCurve_Ratio*)a)->Value))
+		return NULL;
+	if (soap->body && !*soap->href)
+	{
+		for (;;)
+		{	soap->error = SOAP_TAG_MISMATCH;
+			if (soap->error == SOAP_TAG_MISMATCH)
+				soap->error = soap_ignore_element(soap);
+			if (soap->error == SOAP_NO_TAG)
+				break;
+			if (soap->error)
+				return NULL;
+		}
+		if (soap_element_end_in(soap, tag))
+			return NULL;
+	}
+	else
+	{	a = (_om__TestResultType_RocCurve_Ratio *)soap_id_forward(soap, soap->href, (void*)a, 0, SOAP_TYPE_om__om__TestResultType_RocCurve_Ratio, 0, sizeof(_om__TestResultType_RocCurve_Ratio), 0, soap_copy__om__TestResultType_RocCurve_Ratio);
+		if (soap->body && soap_element_end_in(soap, tag))
+			return NULL;
+	}
+	return a;
+}
+
+int _om__TestResultType_RocCurve_Ratio::soap_put(struct soap *soap, const char *tag, const  char *type) const
+{
+	register int id = soap_embed(soap, (void*)this, NULL, 0, tag, SOAP_TYPE_om__om__TestResultType_RocCurve_Ratio);
+	if (this->soap_out(soap, tag?tag:"om:TestResultType-RocCurve-Ratio", id, type))
+		return soap->error;
+	return soap_putindependent(soap);
+}
+
+void *_om__TestResultType_RocCurve_Ratio::soap_get(struct soap *soap, const char *tag, const char *type)
+{
+	return soap_get__om__TestResultType_RocCurve_Ratio(soap, this, tag, type);
+}
+
+SOAP_FMAC3 _om__TestResultType_RocCurve_Ratio * SOAP_FMAC4 soap_get__om__TestResultType_RocCurve_Ratio(struct soap *soap, _om__TestResultType_RocCurve_Ratio *p, const char *tag, const char *type)
+{
+	if ((p = soap_in__om__TestResultType_RocCurve_Ratio(soap, tag, p, type)))
+		if (soap_getindependent(soap))
+			return NULL;
+	return p;
+}
+
+SOAP_FMAC1 _om__TestResultType_RocCurve_Ratio * SOAP_FMAC2 soap_instantiate__om__TestResultType_RocCurve_Ratio(struct soap *soap, int n, const char *type, const char *arrayType, size_t *size)
+{
+	(void)type; (void)arrayType; /* appease -Wall -Werror */
+	DBGLOG(TEST, SOAP_MESSAGE(fdebug, "soap_instantiate__om__TestResultType_RocCurve_Ratio(%d, %s, %s)\n", n, type?type:"", arrayType?arrayType:""));
+	struct soap_clist *cp = soap_link(soap, NULL, SOAP_TYPE_om__om__TestResultType_RocCurve_Ratio, n, om_fdelete);
+	if (!cp)
+		return NULL;
+	if (n < 0)
+	{	cp->ptr = (void*)SOAP_NEW(_om__TestResultType_RocCurve_Ratio);
+		if (size)
+			*size = sizeof(_om__TestResultType_RocCurve_Ratio);
+	}
+	else
+	{	cp->ptr = (void*)SOAP_NEW_ARRAY(_om__TestResultType_RocCurve_Ratio, n);
+		if (size)
+			*size = n * sizeof(_om__TestResultType_RocCurve_Ratio);
+	}
+	DBGLOG(TEST, SOAP_MESSAGE(fdebug, "Instantiated location=%p\n", cp->ptr));
+	if (!cp->ptr)
+		soap->error = SOAP_EOM;
+	return (_om__TestResultType_RocCurve_Ratio*)cp->ptr;
+}
+
+SOAP_FMAC3 void SOAP_FMAC4 soap_copy__om__TestResultType_RocCurve_Ratio(struct soap *soap, int st, int tt, void *p, size_t len, const void *q, size_t n)
+{
+	(void)soap; (void)tt; (void)st; (void)len; (void)n; /* appease -Wall -Werror */
+	DBGLOG(TEST, SOAP_MESSAGE(fdebug, "Copying _om__TestResultType_RocCurve_Ratio %p -> %p\n", q, p));
+	*(_om__TestResultType_RocCurve_Ratio*)p = *(_om__TestResultType_RocCurve_Ratio*)q;
+}
+
 void _om__TestResultType_RocCurve::soap_default(struct soap *soap)
 {
 	(void)soap; /* appease -Wall -Werror */
+	this->_om__TestResultType_RocCurve::Ratio = NULL;
 	soap_default_om__ZeroOneIntervalType(soap, &this->_om__TestResultType_RocCurve::Auc);
 	soap_default_std__string(soap, &this->_om__TestResultType_RocCurve::Points);
+	this->_om__TestResultType_RocCurve::NumBackgroundPoints = NULL;
 }
 
 void _om__TestResultType_RocCurve::soap_serialize(struct soap *soap) const
 {
 #ifndef WITH_NOIDREF
 	(void)soap; /* appease -Wall -Werror */
+	soap_serialize_PointerTo_om__TestResultType_RocCurve_Ratio(soap, &this->_om__TestResultType_RocCurve::Ratio);
 #endif
 }
 
@@ -5516,7 +5656,11 @@ SOAP_FMAC3 int SOAP_FMAC4 soap_out__om__TestResultType_RocCurve(struct soap *soa
 {
 	soap_set_attr(soap, "Auc", soap_double2s(soap, ((_om__TestResultType_RocCurve*)a)->Auc), 1);
 	soap_set_attr(soap, "Points", ((_om__TestResultType_RocCurve*)a)->Points.c_str(), 1);
+	if (((_om__TestResultType_RocCurve*)a)->NumBackgroundPoints)
+		soap_set_attr(soap, "NumBackgroundPoints", soap_int2s(soap, *((_om__TestResultType_RocCurve*)a)->NumBackgroundPoints), 1);
 	if (soap_element_begin_out(soap, tag, soap_embedded_id(soap, id, a, SOAP_TYPE_om__om__TestResultType_RocCurve), type))
+		return soap->error;
+	if (soap_out_PointerTo_om__TestResultType_RocCurve_Ratio(soap, "om:Ratio", -1, &(a->_om__TestResultType_RocCurve::Ratio), ""))
 		return soap->error;
 	return soap_element_end_out(soap, tag);
 }
@@ -5553,10 +5697,29 @@ SOAP_FMAC3 _om__TestResultType_RocCurve * SOAP_FMAC4 soap_in__om__TestResultType
 		else if (soap->error)
 			return NULL;
 	}
+	{	const char *t = soap_attr_value(soap, "NumBackgroundPoints", 0);
+		if (t)
+		{
+			if (!(((_om__TestResultType_RocCurve*)a)->NumBackgroundPoints = (int *)soap_malloc(soap, sizeof(int))))
+			{	soap->error = SOAP_EOM;
+				return NULL;
+			}
+			if (soap_s2int(soap, t, ((_om__TestResultType_RocCurve*)a)->NumBackgroundPoints))
+				return NULL;
+		}
+		else if (soap->error)
+			return NULL;
+	}
+	size_t soap_flag_Ratio1 = 1;
 	if (soap->body && !*soap->href)
 	{
 		for (;;)
 		{	soap->error = SOAP_TAG_MISMATCH;
+			if (soap_flag_Ratio1 && soap->error == SOAP_TAG_MISMATCH)
+				if (soap_in_PointerTo_om__TestResultType_RocCurve_Ratio(soap, "om:Ratio", &(a->_om__TestResultType_RocCurve::Ratio), ""))
+				{	soap_flag_Ratio1--;
+					continue;
+				}
 			if (soap->error == SOAP_TAG_MISMATCH)
 				soap->error = soap_ignore_element(soap);
 			if (soap->error == SOAP_NO_TAG)
@@ -17969,6 +18132,63 @@ SOAP_FMAC3 int SOAP_FMAC4 soap_put_PointerTo_om__TestResultType_RocCurve(struct 
 SOAP_FMAC3 _om__TestResultType_RocCurve ** SOAP_FMAC4 soap_get_PointerTo_om__TestResultType_RocCurve(struct soap *soap, _om__TestResultType_RocCurve **p, const char *tag, const char *type)
 {
 	if ((p = soap_in_PointerTo_om__TestResultType_RocCurve(soap, tag, p, type)))
+		if (soap_getindependent(soap))
+			return NULL;
+	return p;
+}
+
+SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_PointerTo_om__TestResultType_RocCurve_Ratio(struct soap *soap, _om__TestResultType_RocCurve_Ratio *const*a)
+{
+#ifndef WITH_NOIDREF
+	if (!soap_reference(soap, *a, SOAP_TYPE_om__om__TestResultType_RocCurve_Ratio))
+		(*a)->soap_serialize(soap);
+#endif
+}
+
+SOAP_FMAC3 int SOAP_FMAC4 soap_out_PointerTo_om__TestResultType_RocCurve_Ratio(struct soap *soap, const char *tag, int id, _om__TestResultType_RocCurve_Ratio *const*a, const char *type)
+{
+	id = soap_element_id(soap, tag, id, *a, NULL, 0, type, SOAP_TYPE_om__om__TestResultType_RocCurve_Ratio);
+	if (id < 0)
+		return soap->error;
+	return (*a)->soap_out(soap, tag, id, type);
+}
+
+SOAP_FMAC3 _om__TestResultType_RocCurve_Ratio ** SOAP_FMAC4 soap_in_PointerTo_om__TestResultType_RocCurve_Ratio(struct soap *soap, const char *tag, _om__TestResultType_RocCurve_Ratio **a, const char *type)
+{
+	if (soap_element_begin_in(soap, tag, 1, NULL))
+		return NULL;
+	if (!a)
+		if (!(a = (_om__TestResultType_RocCurve_Ratio **)soap_malloc(soap, sizeof(_om__TestResultType_RocCurve_Ratio *))))
+			return NULL;
+	*a = NULL;
+	if (!soap->null && *soap->href != '#')
+	{	soap_revert(soap);
+		if (!(*a = (_om__TestResultType_RocCurve_Ratio *)soap_instantiate__om__TestResultType_RocCurve_Ratio(soap, -1, soap->type, soap->arrayType, NULL)))
+			return NULL;
+		(*a)->soap_default(soap);
+		if (!(*a)->soap_in(soap, tag, NULL))
+			return NULL;
+	}
+	else
+	{	_om__TestResultType_RocCurve_Ratio ** p = (_om__TestResultType_RocCurve_Ratio **)soap_id_lookup(soap, soap->href, (void**)a, SOAP_TYPE_om__om__TestResultType_RocCurve_Ratio, sizeof(_om__TestResultType_RocCurve_Ratio), 0);
+		a = p;
+		if (soap->body && soap_element_end_in(soap, tag))
+			return NULL;
+	}
+	return a;
+}
+
+SOAP_FMAC3 int SOAP_FMAC4 soap_put_PointerTo_om__TestResultType_RocCurve_Ratio(struct soap *soap, _om__TestResultType_RocCurve_Ratio *const*a, const char *tag, const char *type)
+{
+	register int id = soap_embed(soap, (void*)a, NULL, 0, tag, SOAP_TYPE_om_PointerTo_om__TestResultType_RocCurve_Ratio);
+	if (soap_out_PointerTo_om__TestResultType_RocCurve_Ratio(soap, tag?tag:"om:TestResultType-RocCurve-Ratio", id, a, type))
+		return soap->error;
+	return soap_putindependent(soap);
+}
+
+SOAP_FMAC3 _om__TestResultType_RocCurve_Ratio ** SOAP_FMAC4 soap_get_PointerTo_om__TestResultType_RocCurve_Ratio(struct soap *soap, _om__TestResultType_RocCurve_Ratio **p, const char *tag, const char *type)
+{
+	if ((p = soap_in_PointerTo_om__TestResultType_RocCurve_Ratio(soap, tag, p, type)))
 		if (soap_getindependent(soap))
 			return NULL;
 	return p;

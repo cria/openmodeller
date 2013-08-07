@@ -165,7 +165,7 @@ SOAP_FMAC3 enum om__ThresholdCalculationType * SOAP_FMAC4 soap_get_om__Threshold
 /* _om__ProjectModelJob is a typedef element/attribute synonym for om__ProjectModelJobType */
 
 #ifndef SOAP_TYPE_om__om__ProjectModelJob
-#define SOAP_TYPE_om__om__ProjectModelJob (194)
+#define SOAP_TYPE_om__om__ProjectModelJob (196)
 #endif
 
 #define soap_default__om__ProjectModelJob(soap, a) (a)->om__ProjectModelJobType::soap_default(soap)
@@ -194,7 +194,7 @@ SOAP_FMAC3 enum om__ThresholdCalculationType * SOAP_FMAC4 soap_get_om__Threshold
 /* _om__TestModelJob is a typedef element/attribute synonym for om__TestModelJobType */
 
 #ifndef SOAP_TYPE_om__om__TestModelJob
-#define SOAP_TYPE_om__om__TestModelJob (193)
+#define SOAP_TYPE_om__om__TestModelJob (195)
 #endif
 
 #define soap_default__om__TestModelJob(soap, a) (a)->om__TestModelJobType::soap_default(soap)
@@ -223,7 +223,7 @@ SOAP_FMAC3 enum om__ThresholdCalculationType * SOAP_FMAC4 soap_get_om__Threshold
 /* _om__CreateModelJob is a typedef element/attribute synonym for om__CreateModelJobType */
 
 #ifndef SOAP_TYPE_om__om__CreateModelJob
-#define SOAP_TYPE_om__om__CreateModelJob (192)
+#define SOAP_TYPE_om__om__CreateModelJob (194)
 #endif
 
 #define soap_default__om__CreateModelJob(soap, a) (a)->om__CreateModelJobType::soap_default(soap)
@@ -252,7 +252,7 @@ SOAP_FMAC3 enum om__ThresholdCalculationType * SOAP_FMAC4 soap_get_om__Threshold
 /* _om__SamplingJob is a typedef element/attribute synonym for om__SamplingJobType */
 
 #ifndef SOAP_TYPE_om__om__SamplingJob
-#define SOAP_TYPE_om__om__SamplingJob (191)
+#define SOAP_TYPE_om__om__SamplingJob (193)
 #endif
 
 #define soap_default__om__SamplingJob(soap, a) (a)->om__SamplingJobType::soap_default(soap)
@@ -281,7 +281,7 @@ SOAP_FMAC3 enum om__ThresholdCalculationType * SOAP_FMAC4 soap_get_om__Threshold
 /* _om__ResultSet is a typedef element/attribute synonym for om__ResultSetType */
 
 #ifndef SOAP_TYPE_om__om__ResultSet
-#define SOAP_TYPE_om__om__ResultSet (190)
+#define SOAP_TYPE_om__om__ResultSet (192)
 #endif
 
 #define soap_default__om__ResultSet(soap, a) (a)->om__ResultSetType::soap_default(soap)
@@ -310,7 +310,7 @@ SOAP_FMAC3 enum om__ThresholdCalculationType * SOAP_FMAC4 soap_get_om__Threshold
 /* _om__ExperimentTickets is a typedef element/attribute synonym for om__JobTicketsType */
 
 #ifndef SOAP_TYPE_om__om__ExperimentTickets
-#define SOAP_TYPE_om__om__ExperimentTickets (189)
+#define SOAP_TYPE_om__om__ExperimentTickets (191)
 #endif
 
 #define soap_default__om__ExperimentTickets(soap, a) (a)->om__JobTicketsType::soap_default(soap)
@@ -339,7 +339,7 @@ SOAP_FMAC3 enum om__ThresholdCalculationType * SOAP_FMAC4 soap_get_om__Threshold
 /* _om__ExperimentParameters is a typedef element/attribute synonym for om__ExperimentParametersType */
 
 #ifndef SOAP_TYPE_om__om__ExperimentParameters
-#define SOAP_TYPE_om__om__ExperimentParameters (188)
+#define SOAP_TYPE_om__om__ExperimentParameters (190)
 #endif
 
 #define soap_default__om__ExperimentParameters(soap, a) (a)->om__ExperimentParametersType::soap_default(soap)
@@ -368,7 +368,7 @@ SOAP_FMAC3 enum om__ThresholdCalculationType * SOAP_FMAC4 soap_get_om__Threshold
 /* _om__Sampler is a typedef element/attribute synonym for om__SamplerType */
 
 #ifndef SOAP_TYPE_om__om__Sampler
-#define SOAP_TYPE_om__om__Sampler (187)
+#define SOAP_TYPE_om__om__Sampler (189)
 #endif
 
 #define soap_default__om__Sampler(soap, a) (a)->om__SamplerType::soap_default(soap)
@@ -397,7 +397,7 @@ SOAP_FMAC3 enum om__ThresholdCalculationType * SOAP_FMAC4 soap_get_om__Threshold
 /* _om__SamplingParameters is a typedef element/attribute synonym for om__SamplingParametersType */
 
 #ifndef SOAP_TYPE_om__om__SamplingParameters
-#define SOAP_TYPE_om__om__SamplingParameters (186)
+#define SOAP_TYPE_om__om__SamplingParameters (188)
 #endif
 
 #define soap_default__om__SamplingParameters(soap, a) (a)->om__SamplingParametersType::soap_default(soap)
@@ -426,7 +426,7 @@ SOAP_FMAC3 enum om__ThresholdCalculationType * SOAP_FMAC4 soap_get_om__Threshold
 /* _om__ModelEvaluation is a typedef element/attribute synonym for om__ModelEvaluationResultType */
 
 #ifndef SOAP_TYPE_om__om__ModelEvaluation
-#define SOAP_TYPE_om__om__ModelEvaluation (185)
+#define SOAP_TYPE_om__om__ModelEvaluation (187)
 #endif
 
 #define soap_default__om__ModelEvaluation(soap, a) (a)->om__ModelEvaluationResultType::soap_default(soap)
@@ -455,7 +455,7 @@ SOAP_FMAC3 enum om__ThresholdCalculationType * SOAP_FMAC4 soap_get_om__Threshold
 /* _om__ModelEvaluationParameters is a typedef element/attribute synonym for om__ModelEvaluationParametersType */
 
 #ifndef SOAP_TYPE_om__om__ModelEvaluationParameters
-#define SOAP_TYPE_om__om__ModelEvaluationParameters (184)
+#define SOAP_TYPE_om__om__ModelEvaluationParameters (186)
 #endif
 
 #define soap_default__om__ModelEvaluationParameters(soap, a) (a)->om__ModelEvaluationParametersType::soap_default(soap)
@@ -484,7 +484,7 @@ SOAP_FMAC3 enum om__ThresholdCalculationType * SOAP_FMAC4 soap_get_om__Threshold
 /* _om__ProjectionEnvelope is a typedef element/attribute synonym for om__ProjectionEnvelopeType */
 
 #ifndef SOAP_TYPE_om__om__ProjectionEnvelope
-#define SOAP_TYPE_om__om__ProjectionEnvelope (183)
+#define SOAP_TYPE_om__om__ProjectionEnvelope (185)
 #endif
 
 #define soap_default__om__ProjectionEnvelope(soap, a) (a)->om__ProjectionEnvelopeType::soap_default(soap)
@@ -513,7 +513,7 @@ SOAP_FMAC3 enum om__ThresholdCalculationType * SOAP_FMAC4 soap_get_om__Threshold
 /* _om__ProjectionParameters is a typedef element/attribute synonym for om__ProjectionParametersType */
 
 #ifndef SOAP_TYPE_om__om__ProjectionParameters
-#define SOAP_TYPE_om__om__ProjectionParameters (182)
+#define SOAP_TYPE_om__om__ProjectionParameters (184)
 #endif
 
 #define soap_default__om__ProjectionParameters(soap, a) (a)->om__ProjectionParametersType::soap_default(soap)
@@ -542,7 +542,7 @@ SOAP_FMAC3 enum om__ThresholdCalculationType * SOAP_FMAC4 soap_get_om__Threshold
 /* _om__SerializedModel is a typedef element/attribute synonym for om__SerializedModelType */
 
 #ifndef SOAP_TYPE_om__om__SerializedModel
-#define SOAP_TYPE_om__om__SerializedModel (181)
+#define SOAP_TYPE_om__om__SerializedModel (183)
 #endif
 
 #define soap_default__om__SerializedModel(soap, a) (a)->om__SerializedModelType::soap_default(soap)
@@ -571,7 +571,7 @@ SOAP_FMAC3 enum om__ThresholdCalculationType * SOAP_FMAC4 soap_get_om__Threshold
 /* _om__TestResultEnvelope is a typedef element/attribute synonym for om__TestResultEnvelopeType */
 
 #ifndef SOAP_TYPE_om__om__TestResultEnvelope
-#define SOAP_TYPE_om__om__TestResultEnvelope (180)
+#define SOAP_TYPE_om__om__TestResultEnvelope (182)
 #endif
 
 #define soap_default__om__TestResultEnvelope(soap, a) (a)->om__TestResultEnvelopeType::soap_default(soap)
@@ -600,7 +600,7 @@ SOAP_FMAC3 enum om__ThresholdCalculationType * SOAP_FMAC4 soap_get_om__Threshold
 /* _om__TestParameters is a typedef element/attribute synonym for om__TestParametersType */
 
 #ifndef SOAP_TYPE_om__om__TestParameters
-#define SOAP_TYPE_om__om__TestParameters (179)
+#define SOAP_TYPE_om__om__TestParameters (181)
 #endif
 
 #define soap_default__om__TestParameters(soap, a) (a)->om__TestParametersType::soap_default(soap)
@@ -629,7 +629,7 @@ SOAP_FMAC3 enum om__ThresholdCalculationType * SOAP_FMAC4 soap_get_om__Threshold
 /* _om__ModelEnvelope is a typedef element/attribute synonym for om__ModelEnvelopeType */
 
 #ifndef SOAP_TYPE_om__om__ModelEnvelope
-#define SOAP_TYPE_om__om__ModelEnvelope (178)
+#define SOAP_TYPE_om__om__ModelEnvelope (180)
 #endif
 
 #define soap_default__om__ModelEnvelope(soap, a) (a)->om__ModelEnvelopeType::soap_default(soap)
@@ -658,7 +658,7 @@ SOAP_FMAC3 enum om__ThresholdCalculationType * SOAP_FMAC4 soap_get_om__Threshold
 /* _om__ModelParameters is a typedef element/attribute synonym for om__ModelParametersType */
 
 #ifndef SOAP_TYPE_om__om__ModelParameters
-#define SOAP_TYPE_om__om__ModelParameters (177)
+#define SOAP_TYPE_om__om__ModelParameters (179)
 #endif
 
 #define soap_default__om__ModelParameters(soap, a) (a)->om__ModelParametersType::soap_default(soap)
@@ -687,7 +687,7 @@ SOAP_FMAC3 enum om__ThresholdCalculationType * SOAP_FMAC4 soap_get_om__Threshold
 /* _om__AvailableLayers is a typedef element/attribute synonym for om__AvailableLayersType */
 
 #ifndef SOAP_TYPE_om__om__AvailableLayers
-#define SOAP_TYPE_om__om__AvailableLayers (176)
+#define SOAP_TYPE_om__om__AvailableLayers (178)
 #endif
 
 #define soap_default__om__AvailableLayers(soap, a) (a)->om__AvailableLayersType::soap_default(soap)
@@ -716,7 +716,7 @@ SOAP_FMAC3 enum om__ThresholdCalculationType * SOAP_FMAC4 soap_get_om__Threshold
 /* _om__Algorithms is a typedef element/attribute synonym for om__AlgorithmsMetadataType */
 
 #ifndef SOAP_TYPE_om__om__Algorithms
-#define SOAP_TYPE_om__om__Algorithms (175)
+#define SOAP_TYPE_om__om__Algorithms (177)
 #endif
 
 #define soap_default__om__Algorithms(soap, a) (a)->om__AlgorithmsMetadataType::soap_default(soap)
@@ -745,7 +745,7 @@ SOAP_FMAC3 enum om__ThresholdCalculationType * SOAP_FMAC4 soap_get_om__Threshold
 /* _om__AvailableAlgorithms is a typedef element/attribute synonym for om__AvailableAlgorithmsType */
 
 #ifndef SOAP_TYPE_om__om__AvailableAlgorithms
-#define SOAP_TYPE_om__om__AvailableAlgorithms (174)
+#define SOAP_TYPE_om__om__AvailableAlgorithms (176)
 #endif
 
 #define soap_default__om__AvailableAlgorithms(soap, a) (a)->om__AvailableAlgorithmsType::soap_default(soap)
@@ -772,7 +772,7 @@ SOAP_FMAC3 enum om__ThresholdCalculationType * SOAP_FMAC4 soap_get_om__Threshold
 #define soap_copy__om__AvailableAlgorithms soap_copy_om__AvailableAlgorithmsType
 
 #ifndef SOAP_TYPE_om__om__ResultSetType_Job_ProjectionEnvelope
-#define SOAP_TYPE_om__om__ResultSetType_Job_ProjectionEnvelope (168)
+#define SOAP_TYPE_om__om__ResultSetType_Job_ProjectionEnvelope (170)
 #endif
 
 SOAP_FMAC3 int SOAP_FMAC4 soap_out__om__ResultSetType_Job_ProjectionEnvelope(struct soap*, const char*, int, const _om__ResultSetType_Job_ProjectionEnvelope *, const char*);
@@ -801,7 +801,7 @@ inline void soap_delete__om__ResultSetType_Job_ProjectionEnvelope(struct soap *s
 SOAP_FMAC3 void SOAP_FMAC4 soap_copy__om__ResultSetType_Job_ProjectionEnvelope(struct soap*, int, int, void*, size_t, const void*, size_t);
 
 #ifndef SOAP_TYPE_om__om__ResultSetType_Job
-#define SOAP_TYPE_om__om__ResultSetType_Job (165)
+#define SOAP_TYPE_om__om__ResultSetType_Job (167)
 #endif
 
 SOAP_FMAC3 int SOAP_FMAC4 soap_out__om__ResultSetType_Job(struct soap*, const char*, int, const _om__ResultSetType_Job *, const char*);
@@ -830,7 +830,7 @@ inline void soap_delete__om__ResultSetType_Job(struct soap *soap, _om__ResultSet
 SOAP_FMAC3 void SOAP_FMAC4 soap_copy__om__ResultSetType_Job(struct soap*, int, int, void*, size_t, const void*, size_t);
 
 #ifndef SOAP_TYPE_om__om__JobTicketsType_Job
-#define SOAP_TYPE_om__om__JobTicketsType_Job (163)
+#define SOAP_TYPE_om__om__JobTicketsType_Job (165)
 #endif
 
 SOAP_FMAC3 int SOAP_FMAC4 soap_out__om__JobTicketsType_Job(struct soap*, const char*, int, const _om__JobTicketsType_Job *, const char*);
@@ -859,7 +859,7 @@ inline void soap_delete__om__JobTicketsType_Job(struct soap *soap, _om__JobTicke
 SOAP_FMAC3 void SOAP_FMAC4 soap_copy__om__JobTicketsType_Job(struct soap*, int, int, void*, size_t, const void*, size_t);
 
 #ifndef SOAP_TYPE_om___om__union_ExperimentParametersType_Jobs
-#define SOAP_TYPE_om___om__union_ExperimentParametersType_Jobs (156)
+#define SOAP_TYPE_om___om__union_ExperimentParametersType_Jobs (158)
 #endif
 
 SOAP_FMAC3 int SOAP_FMAC4 soap_out___om__union_ExperimentParametersType_Jobs(struct soap*, const char*, int, const __om__union_ExperimentParametersType_Jobs *, const char*);
@@ -888,7 +888,7 @@ inline void soap_delete___om__union_ExperimentParametersType_Jobs(struct soap *s
 SOAP_FMAC3 void SOAP_FMAC4 soap_copy___om__union_ExperimentParametersType_Jobs(struct soap*, int, int, void*, size_t, const void*, size_t);
 
 #ifndef SOAP_TYPE_om__om__ExperimentParametersType_Jobs
-#define SOAP_TYPE_om__om__ExperimentParametersType_Jobs (155)
+#define SOAP_TYPE_om__om__ExperimentParametersType_Jobs (157)
 #endif
 
 SOAP_FMAC3 int SOAP_FMAC4 soap_out__om__ExperimentParametersType_Jobs(struct soap*, const char*, int, const _om__ExperimentParametersType_Jobs *, const char*);
@@ -908,16 +908,16 @@ SOAP_FMAC1 _om__ExperimentParametersType_Jobs * SOAP_FMAC2 soap_instantiate__om_
 
 inline _om__ExperimentParametersType_Jobs * soap_new__om__ExperimentParametersType_Jobs(struct soap *soap, int n = -1) { return soap_instantiate__om__ExperimentParametersType_Jobs(soap, n, NULL, NULL, NULL); }
 
-inline _om__ExperimentParametersType_Jobs * soap_new_req__om__ExperimentParametersType_Jobs(struct soap *soap, std::string& id, int __sizeAbstractJob, __om__union_ExperimentParametersType_Jobs *__union_ExperimentParametersType_Jobs) { _om__ExperimentParametersType_Jobs *_p = soap_instantiate__om__ExperimentParametersType_Jobs(soap, -1, NULL, NULL, NULL); if (_p) { _p->soap_default(soap); _p->_om__ExperimentParametersType_Jobs::id = id; _p->_om__ExperimentParametersType_Jobs::__sizeAbstractJob = __sizeAbstractJob; _p->_om__ExperimentParametersType_Jobs::__union_ExperimentParametersType_Jobs = __union_ExperimentParametersType_Jobs; } return _p; }
+inline _om__ExperimentParametersType_Jobs * soap_new_req__om__ExperimentParametersType_Jobs(struct soap *soap, int __sizeAbstractJob, __om__union_ExperimentParametersType_Jobs *__union_ExperimentParametersType_Jobs) { _om__ExperimentParametersType_Jobs *_p = soap_instantiate__om__ExperimentParametersType_Jobs(soap, -1, NULL, NULL, NULL); if (_p) { _p->soap_default(soap); _p->_om__ExperimentParametersType_Jobs::__sizeAbstractJob = __sizeAbstractJob; _p->_om__ExperimentParametersType_Jobs::__union_ExperimentParametersType_Jobs = __union_ExperimentParametersType_Jobs; } return _p; }
 
-inline _om__ExperimentParametersType_Jobs * soap_new_set__om__ExperimentParametersType_Jobs(struct soap *soap, std::string& id, int __sizeAbstractJob, __om__union_ExperimentParametersType_Jobs *__union_ExperimentParametersType_Jobs) { _om__ExperimentParametersType_Jobs *_p = soap_instantiate__om__ExperimentParametersType_Jobs(soap, -1, NULL, NULL, NULL); if (_p) { _p->soap_default(soap); _p->_om__ExperimentParametersType_Jobs::id = id; _p->_om__ExperimentParametersType_Jobs::__sizeAbstractJob = __sizeAbstractJob; _p->_om__ExperimentParametersType_Jobs::__union_ExperimentParametersType_Jobs = __union_ExperimentParametersType_Jobs; } return _p; }
+inline _om__ExperimentParametersType_Jobs * soap_new_set__om__ExperimentParametersType_Jobs(struct soap *soap, int __sizeAbstractJob, __om__union_ExperimentParametersType_Jobs *__union_ExperimentParametersType_Jobs) { _om__ExperimentParametersType_Jobs *_p = soap_instantiate__om__ExperimentParametersType_Jobs(soap, -1, NULL, NULL, NULL); if (_p) { _p->soap_default(soap); _p->_om__ExperimentParametersType_Jobs::__sizeAbstractJob = __sizeAbstractJob; _p->_om__ExperimentParametersType_Jobs::__union_ExperimentParametersType_Jobs = __union_ExperimentParametersType_Jobs; } return _p; }
 
 inline void soap_delete__om__ExperimentParametersType_Jobs(struct soap *soap, _om__ExperimentParametersType_Jobs *p) { soap_delete(soap, p); }
 
 SOAP_FMAC3 void SOAP_FMAC4 soap_copy__om__ExperimentParametersType_Jobs(struct soap*, int, int, void*, size_t, const void*, size_t);
 
 #ifndef SOAP_TYPE_om__om__ExperimentParametersType_SerializedAlgorithm
-#define SOAP_TYPE_om__om__ExperimentParametersType_SerializedAlgorithm (152)
+#define SOAP_TYPE_om__om__ExperimentParametersType_SerializedAlgorithm (154)
 #endif
 
 SOAP_FMAC3 int SOAP_FMAC4 soap_out__om__ExperimentParametersType_SerializedAlgorithm(struct soap*, const char*, int, const _om__ExperimentParametersType_SerializedAlgorithm *, const char*);
@@ -946,7 +946,7 @@ inline void soap_delete__om__ExperimentParametersType_SerializedAlgorithm(struct
 SOAP_FMAC3 void SOAP_FMAC4 soap_copy__om__ExperimentParametersType_SerializedAlgorithm(struct soap*, int, int, void*, size_t, const void*, size_t);
 
 #ifndef SOAP_TYPE_om__om__ExperimentParametersType_AlgorithmSettings
-#define SOAP_TYPE_om__om__ExperimentParametersType_AlgorithmSettings (149)
+#define SOAP_TYPE_om__om__ExperimentParametersType_AlgorithmSettings (151)
 #endif
 
 SOAP_FMAC3 int SOAP_FMAC4 soap_out__om__ExperimentParametersType_AlgorithmSettings(struct soap*, const char*, int, const _om__ExperimentParametersType_AlgorithmSettings *, const char*);
@@ -975,7 +975,7 @@ inline void soap_delete__om__ExperimentParametersType_AlgorithmSettings(struct s
 SOAP_FMAC3 void SOAP_FMAC4 soap_copy__om__ExperimentParametersType_AlgorithmSettings(struct soap*, int, int, void*, size_t, const void*, size_t);
 
 #ifndef SOAP_TYPE_om__om__ExperimentParametersType_Absence_Point
-#define SOAP_TYPE_om__om__ExperimentParametersType_Absence_Point (145)
+#define SOAP_TYPE_om__om__ExperimentParametersType_Absence_Point (147)
 #endif
 
 SOAP_FMAC3 int SOAP_FMAC4 soap_out__om__ExperimentParametersType_Absence_Point(struct soap*, const char*, int, const _om__ExperimentParametersType_Absence_Point *, const char*);
@@ -1004,7 +1004,7 @@ inline void soap_delete__om__ExperimentParametersType_Absence_Point(struct soap 
 SOAP_FMAC3 void SOAP_FMAC4 soap_copy__om__ExperimentParametersType_Absence_Point(struct soap*, int, int, void*, size_t, const void*, size_t);
 
 #ifndef SOAP_TYPE_om__om__ExperimentParametersType_Absence
-#define SOAP_TYPE_om__om__ExperimentParametersType_Absence (144)
+#define SOAP_TYPE_om__om__ExperimentParametersType_Absence (146)
 #endif
 
 SOAP_FMAC3 int SOAP_FMAC4 soap_out__om__ExperimentParametersType_Absence(struct soap*, const char*, int, const _om__ExperimentParametersType_Absence *, const char*);
@@ -1033,7 +1033,7 @@ inline void soap_delete__om__ExperimentParametersType_Absence(struct soap *soap,
 SOAP_FMAC3 void SOAP_FMAC4 soap_copy__om__ExperimentParametersType_Absence(struct soap*, int, int, void*, size_t, const void*, size_t);
 
 #ifndef SOAP_TYPE_om__om__ExperimentParametersType_Presence_Point
-#define SOAP_TYPE_om__om__ExperimentParametersType_Presence_Point (140)
+#define SOAP_TYPE_om__om__ExperimentParametersType_Presence_Point (142)
 #endif
 
 SOAP_FMAC3 int SOAP_FMAC4 soap_out__om__ExperimentParametersType_Presence_Point(struct soap*, const char*, int, const _om__ExperimentParametersType_Presence_Point *, const char*);
@@ -1062,7 +1062,7 @@ inline void soap_delete__om__ExperimentParametersType_Presence_Point(struct soap
 SOAP_FMAC3 void SOAP_FMAC4 soap_copy__om__ExperimentParametersType_Presence_Point(struct soap*, int, int, void*, size_t, const void*, size_t);
 
 #ifndef SOAP_TYPE_om__om__ExperimentParametersType_Presence
-#define SOAP_TYPE_om__om__ExperimentParametersType_Presence (139)
+#define SOAP_TYPE_om__om__ExperimentParametersType_Presence (141)
 #endif
 
 SOAP_FMAC3 int SOAP_FMAC4 soap_out__om__ExperimentParametersType_Presence(struct soap*, const char*, int, const _om__ExperimentParametersType_Presence *, const char*);
@@ -1091,7 +1091,7 @@ inline void soap_delete__om__ExperimentParametersType_Presence(struct soap *soap
 SOAP_FMAC3 void SOAP_FMAC4 soap_copy__om__ExperimentParametersType_Presence(struct soap*, int, int, void*, size_t, const void*, size_t);
 
 #ifndef SOAP_TYPE_om__om__ExperimentParametersType_Environment
-#define SOAP_TYPE_om__om__ExperimentParametersType_Environment (137)
+#define SOAP_TYPE_om__om__ExperimentParametersType_Environment (139)
 #endif
 
 SOAP_FMAC3 int SOAP_FMAC4 soap_out__om__ExperimentParametersType_Environment(struct soap*, const char*, int, const _om__ExperimentParametersType_Environment *, const char*);
@@ -1120,7 +1120,7 @@ inline void soap_delete__om__ExperimentParametersType_Environment(struct soap *s
 SOAP_FMAC3 void SOAP_FMAC4 soap_copy__om__ExperimentParametersType_Environment(struct soap*, int, int, void*, size_t, const void*, size_t);
 
 #ifndef SOAP_TYPE_om__om__ModelEvaluationResultType_Values
-#define SOAP_TYPE_om__om__ModelEvaluationResultType_Values (135)
+#define SOAP_TYPE_om__om__ModelEvaluationResultType_Values (137)
 #endif
 
 SOAP_FMAC3 int SOAP_FMAC4 soap_out__om__ModelEvaluationResultType_Values(struct soap*, const char*, int, const _om__ModelEvaluationResultType_Values *, const char*);
@@ -1149,7 +1149,7 @@ inline void soap_delete__om__ModelEvaluationResultType_Values(struct soap *soap,
 SOAP_FMAC3 void SOAP_FMAC4 soap_copy__om__ModelEvaluationResultType_Values(struct soap*, int, int, void*, size_t, const void*, size_t);
 
 #ifndef SOAP_TYPE_om__om__OccurrencesFilterType_EnvironmentallyUnique
-#define SOAP_TYPE_om__om__OccurrencesFilterType_EnvironmentallyUnique (125)
+#define SOAP_TYPE_om__om__OccurrencesFilterType_EnvironmentallyUnique (127)
 #endif
 
 SOAP_FMAC3 int SOAP_FMAC4 soap_out__om__OccurrencesFilterType_EnvironmentallyUnique(struct soap*, const char*, int, const _om__OccurrencesFilterType_EnvironmentallyUnique *, const char*);
@@ -1178,7 +1178,7 @@ inline void soap_delete__om__OccurrencesFilterType_EnvironmentallyUnique(struct 
 SOAP_FMAC3 void SOAP_FMAC4 soap_copy__om__OccurrencesFilterType_EnvironmentallyUnique(struct soap*, int, int, void*, size_t, const void*, size_t);
 
 #ifndef SOAP_TYPE_om__om__OccurrencesFilterType_SpatiallyUnique
-#define SOAP_TYPE_om__om__OccurrencesFilterType_SpatiallyUnique (123)
+#define SOAP_TYPE_om__om__OccurrencesFilterType_SpatiallyUnique (125)
 #endif
 
 SOAP_FMAC3 int SOAP_FMAC4 soap_out__om__OccurrencesFilterType_SpatiallyUnique(struct soap*, const char*, int, const _om__OccurrencesFilterType_SpatiallyUnique *, const char*);
@@ -1207,7 +1207,7 @@ inline void soap_delete__om__OccurrencesFilterType_SpatiallyUnique(struct soap *
 SOAP_FMAC3 void SOAP_FMAC4 soap_copy__om__OccurrencesFilterType_SpatiallyUnique(struct soap*, int, int, void*, size_t, const void*, size_t);
 
 #ifndef SOAP_TYPE_om__om__ProjectionStatisticsParametersType_AreaStatistics
-#define SOAP_TYPE_om__om__ProjectionStatisticsParametersType_AreaStatistics (117)
+#define SOAP_TYPE_om__om__ProjectionStatisticsParametersType_AreaStatistics (119)
 #endif
 
 SOAP_FMAC3 int SOAP_FMAC4 soap_out__om__ProjectionStatisticsParametersType_AreaStatistics(struct soap*, const char*, int, const _om__ProjectionStatisticsParametersType_AreaStatistics *, const char*);
@@ -1235,6 +1235,35 @@ inline void soap_delete__om__ProjectionStatisticsParametersType_AreaStatistics(s
 
 SOAP_FMAC3 void SOAP_FMAC4 soap_copy__om__ProjectionStatisticsParametersType_AreaStatistics(struct soap*, int, int, void*, size_t, const void*, size_t);
 
+#ifndef SOAP_TYPE_om__om__TestResultType_RocCurve_Ratio
+#define SOAP_TYPE_om__om__TestResultType_RocCurve_Ratio (116)
+#endif
+
+SOAP_FMAC3 int SOAP_FMAC4 soap_out__om__TestResultType_RocCurve_Ratio(struct soap*, const char*, int, const _om__TestResultType_RocCurve_Ratio *, const char*);
+SOAP_FMAC3 _om__TestResultType_RocCurve_Ratio * SOAP_FMAC4 soap_in__om__TestResultType_RocCurve_Ratio(struct soap*, const char*, _om__TestResultType_RocCurve_Ratio *, const char*);
+
+#ifndef soap_write__om__TestResultType_RocCurve_Ratio
+#define soap_write__om__TestResultType_RocCurve_Ratio(soap, data) ( (data)->soap_serialize(soap), soap_begin_send(soap) || (data)->soap_put(soap, "om:TestResultType-RocCurve-Ratio", NULL) || soap_end_send(soap), soap->error )
+#endif
+
+SOAP_FMAC3 _om__TestResultType_RocCurve_Ratio * SOAP_FMAC4 soap_get__om__TestResultType_RocCurve_Ratio(struct soap*, _om__TestResultType_RocCurve_Ratio *, const char*, const char*);
+
+#ifndef soap_read__om__TestResultType_RocCurve_Ratio
+#define soap_read__om__TestResultType_RocCurve_Ratio(soap, data) ( soap_begin_recv(soap) || !om::soap_get__om__TestResultType_RocCurve_Ratio(soap, data, NULL, NULL) || soap_end_recv(soap), soap->error )
+#endif
+
+SOAP_FMAC1 _om__TestResultType_RocCurve_Ratio * SOAP_FMAC2 soap_instantiate__om__TestResultType_RocCurve_Ratio(struct soap*, int, const char*, const char*, size_t*);
+
+inline _om__TestResultType_RocCurve_Ratio * soap_new__om__TestResultType_RocCurve_Ratio(struct soap *soap, int n = -1) { return soap_instantiate__om__TestResultType_RocCurve_Ratio(soap, n, NULL, NULL, NULL); }
+
+inline _om__TestResultType_RocCurve_Ratio * soap_new_req__om__TestResultType_RocCurve_Ratio(struct soap *soap, double E, double Value) { _om__TestResultType_RocCurve_Ratio *_p = soap_instantiate__om__TestResultType_RocCurve_Ratio(soap, -1, NULL, NULL, NULL); if (_p) { _p->soap_default(soap); _p->_om__TestResultType_RocCurve_Ratio::E = E; _p->_om__TestResultType_RocCurve_Ratio::Value = Value; } return _p; }
+
+inline _om__TestResultType_RocCurve_Ratio * soap_new_set__om__TestResultType_RocCurve_Ratio(struct soap *soap, double E, double Value) { _om__TestResultType_RocCurve_Ratio *_p = soap_instantiate__om__TestResultType_RocCurve_Ratio(soap, -1, NULL, NULL, NULL); if (_p) { _p->soap_default(soap); _p->_om__TestResultType_RocCurve_Ratio::E = E; _p->_om__TestResultType_RocCurve_Ratio::Value = Value; } return _p; }
+
+inline void soap_delete__om__TestResultType_RocCurve_Ratio(struct soap *soap, _om__TestResultType_RocCurve_Ratio *p) { soap_delete(soap, p); }
+
+SOAP_FMAC3 void SOAP_FMAC4 soap_copy__om__TestResultType_RocCurve_Ratio(struct soap*, int, int, void*, size_t, const void*, size_t);
+
 #ifndef SOAP_TYPE_om__om__TestResultType_RocCurve
 #define SOAP_TYPE_om__om__TestResultType_RocCurve (115)
 #endif
@@ -1258,7 +1287,7 @@ inline _om__TestResultType_RocCurve * soap_new__om__TestResultType_RocCurve(stru
 
 inline _om__TestResultType_RocCurve * soap_new_req__om__TestResultType_RocCurve(struct soap *soap, double Auc, std::string& Points) { _om__TestResultType_RocCurve *_p = soap_instantiate__om__TestResultType_RocCurve(soap, -1, NULL, NULL, NULL); if (_p) { _p->soap_default(soap); _p->_om__TestResultType_RocCurve::Auc = Auc; _p->_om__TestResultType_RocCurve::Points = Points; } return _p; }
 
-inline _om__TestResultType_RocCurve * soap_new_set__om__TestResultType_RocCurve(struct soap *soap, double Auc, std::string& Points) { _om__TestResultType_RocCurve *_p = soap_instantiate__om__TestResultType_RocCurve(soap, -1, NULL, NULL, NULL); if (_p) { _p->soap_default(soap); _p->_om__TestResultType_RocCurve::Auc = Auc; _p->_om__TestResultType_RocCurve::Points = Points; } return _p; }
+inline _om__TestResultType_RocCurve * soap_new_set__om__TestResultType_RocCurve(struct soap *soap, _om__TestResultType_RocCurve_Ratio *Ratio, double Auc, std::string& Points, int *NumBackgroundPoints) { _om__TestResultType_RocCurve *_p = soap_instantiate__om__TestResultType_RocCurve(soap, -1, NULL, NULL, NULL); if (_p) { _p->soap_default(soap); _p->_om__TestResultType_RocCurve::Ratio = Ratio; _p->_om__TestResultType_RocCurve::Auc = Auc; _p->_om__TestResultType_RocCurve::Points = Points; _p->_om__TestResultType_RocCurve::NumBackgroundPoints = NumBackgroundPoints; } return _p; }
 
 inline void soap_delete__om__TestResultType_RocCurve(struct soap *soap, _om__TestResultType_RocCurve *p) { soap_delete(soap, p); }
 
@@ -3093,7 +3122,7 @@ SOAP_FMAC3 void SOAP_FMAC4 soap_copy_std__string(struct soap*, int, int, void*, 
 #ifndef WITH_NOGLOBAL
 
 #ifndef SOAP_TYPE_om_SOAP_ENV__Fault
-#define SOAP_TYPE_om_SOAP_ENV__Fault (202)
+#define SOAP_TYPE_om_SOAP_ENV__Fault (204)
 #endif
 SOAP_FMAC3 void SOAP_FMAC4 soap_default_SOAP_ENV__Fault(struct soap*, struct SOAP_ENV__Fault *);
 SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_SOAP_ENV__Fault(struct soap*, const struct SOAP_ENV__Fault *);
@@ -3129,7 +3158,7 @@ SOAP_FMAC3 void SOAP_FMAC4 soap_copy_SOAP_ENV__Fault(struct soap*, int, int, voi
 #ifndef WITH_NOGLOBAL
 
 #ifndef SOAP_TYPE_om_SOAP_ENV__Reason
-#define SOAP_TYPE_om_SOAP_ENV__Reason (201)
+#define SOAP_TYPE_om_SOAP_ENV__Reason (203)
 #endif
 SOAP_FMAC3 void SOAP_FMAC4 soap_default_SOAP_ENV__Reason(struct soap*, struct SOAP_ENV__Reason *);
 SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_SOAP_ENV__Reason(struct soap*, const struct SOAP_ENV__Reason *);
@@ -3165,7 +3194,7 @@ SOAP_FMAC3 void SOAP_FMAC4 soap_copy_SOAP_ENV__Reason(struct soap*, int, int, vo
 #ifndef WITH_NOGLOBAL
 
 #ifndef SOAP_TYPE_om_SOAP_ENV__Detail
-#define SOAP_TYPE_om_SOAP_ENV__Detail (198)
+#define SOAP_TYPE_om_SOAP_ENV__Detail (200)
 #endif
 SOAP_FMAC3 void SOAP_FMAC4 soap_default_SOAP_ENV__Detail(struct soap*, struct SOAP_ENV__Detail *);
 SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_SOAP_ENV__Detail(struct soap*, const struct SOAP_ENV__Detail *);
@@ -3201,7 +3230,7 @@ SOAP_FMAC3 void SOAP_FMAC4 soap_copy_SOAP_ENV__Detail(struct soap*, int, int, vo
 #ifndef WITH_NOGLOBAL
 
 #ifndef SOAP_TYPE_om_SOAP_ENV__Code
-#define SOAP_TYPE_om_SOAP_ENV__Code (196)
+#define SOAP_TYPE_om_SOAP_ENV__Code (198)
 #endif
 SOAP_FMAC3 void SOAP_FMAC4 soap_default_SOAP_ENV__Code(struct soap*, struct SOAP_ENV__Code *);
 SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_SOAP_ENV__Code(struct soap*, const struct SOAP_ENV__Code *);
@@ -3237,7 +3266,7 @@ SOAP_FMAC3 void SOAP_FMAC4 soap_copy_SOAP_ENV__Code(struct soap*, int, int, void
 #ifndef WITH_NOGLOBAL
 
 #ifndef SOAP_TYPE_om_SOAP_ENV__Header
-#define SOAP_TYPE_om_SOAP_ENV__Header (195)
+#define SOAP_TYPE_om_SOAP_ENV__Header (197)
 #endif
 SOAP_FMAC3 void SOAP_FMAC4 soap_default_SOAP_ENV__Header(struct soap*, struct SOAP_ENV__Header *);
 SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_SOAP_ENV__Header(struct soap*, const struct SOAP_ENV__Header *);
@@ -3359,21 +3388,21 @@ inline void soap_delete_xsd__anyType(struct soap *soap, struct soap_dom_element 
 SOAP_FMAC3 void SOAP_FMAC4 soap_copy_xsd__anyType(struct soap*, int, int, void*, size_t, const void*, size_t);
 
 #ifndef SOAP_TYPE_om__om__union_ResultSetType_Job
-#define SOAP_TYPE_om__om__union_ResultSetType_Job (171)
+#define SOAP_TYPE_om__om__union_ResultSetType_Job (173)
 #endif
 SOAP_FMAC3 void SOAP_FMAC4 soap_serialize__om__union_ResultSetType_Job(struct soap*, int, const union _om__union_ResultSetType_Job *);
 SOAP_FMAC3 int SOAP_FMAC4 soap_out__om__union_ResultSetType_Job(struct soap*, int, const union _om__union_ResultSetType_Job *);
 SOAP_FMAC3 union _om__union_ResultSetType_Job * SOAP_FMAC4 soap_in__om__union_ResultSetType_Job(struct soap*, int*, union _om__union_ResultSetType_Job *);
 
 #ifndef SOAP_TYPE_om__om__union_ExperimentParametersType_Jobs
-#define SOAP_TYPE_om__om__union_ExperimentParametersType_Jobs (161)
+#define SOAP_TYPE_om__om__union_ExperimentParametersType_Jobs (163)
 #endif
 SOAP_FMAC3 void SOAP_FMAC4 soap_serialize__om__union_ExperimentParametersType_Jobs(struct soap*, int, const union _om__union_ExperimentParametersType_Jobs *);
 SOAP_FMAC3 int SOAP_FMAC4 soap_out__om__union_ExperimentParametersType_Jobs(struct soap*, int, const union _om__union_ExperimentParametersType_Jobs *);
 SOAP_FMAC3 union _om__union_ExperimentParametersType_Jobs * SOAP_FMAC4 soap_in__om__union_ExperimentParametersType_Jobs(struct soap*, int*, union _om__union_ExperimentParametersType_Jobs *);
 
 #ifndef SOAP_TYPE_om__om__union_OccurrencesFilterType
-#define SOAP_TYPE_om__om__union_OccurrencesFilterType (127)
+#define SOAP_TYPE_om__om__union_OccurrencesFilterType (129)
 #endif
 SOAP_FMAC3 void SOAP_FMAC4 soap_serialize__om__union_OccurrencesFilterType(struct soap*, int, const union _om__union_OccurrencesFilterType *);
 SOAP_FMAC3 int SOAP_FMAC4 soap_out__om__union_OccurrencesFilterType(struct soap*, int, const union _om__union_OccurrencesFilterType *);
@@ -3382,7 +3411,7 @@ SOAP_FMAC3 union _om__union_OccurrencesFilterType * SOAP_FMAC4 soap_in__om__unio
 #ifndef WITH_NOGLOBAL
 
 #ifndef SOAP_TYPE_om_PointerToSOAP_ENV__Reason
-#define SOAP_TYPE_om_PointerToSOAP_ENV__Reason (204)
+#define SOAP_TYPE_om_PointerToSOAP_ENV__Reason (206)
 #endif
 SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_PointerToSOAP_ENV__Reason(struct soap*, struct SOAP_ENV__Reason *const*);
 SOAP_FMAC3 int SOAP_FMAC4 soap_out_PointerToSOAP_ENV__Reason(struct soap*, const char *, int, struct SOAP_ENV__Reason *const*, const char *);
@@ -3405,7 +3434,7 @@ SOAP_FMAC3 struct SOAP_ENV__Reason ** SOAP_FMAC4 soap_get_PointerToSOAP_ENV__Rea
 #ifndef WITH_NOGLOBAL
 
 #ifndef SOAP_TYPE_om_PointerToSOAP_ENV__Detail
-#define SOAP_TYPE_om_PointerToSOAP_ENV__Detail (203)
+#define SOAP_TYPE_om_PointerToSOAP_ENV__Detail (205)
 #endif
 SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_PointerToSOAP_ENV__Detail(struct soap*, struct SOAP_ENV__Detail *const*);
 SOAP_FMAC3 int SOAP_FMAC4 soap_out_PointerToSOAP_ENV__Detail(struct soap*, const char *, int, struct SOAP_ENV__Detail *const*, const char *);
@@ -3428,7 +3457,7 @@ SOAP_FMAC3 struct SOAP_ENV__Detail ** SOAP_FMAC4 soap_get_PointerToSOAP_ENV__Det
 #ifndef WITH_NOGLOBAL
 
 #ifndef SOAP_TYPE_om_PointerToSOAP_ENV__Code
-#define SOAP_TYPE_om_PointerToSOAP_ENV__Code (197)
+#define SOAP_TYPE_om_PointerToSOAP_ENV__Code (199)
 #endif
 SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_PointerToSOAP_ENV__Code(struct soap*, struct SOAP_ENV__Code *const*);
 SOAP_FMAC3 int SOAP_FMAC4 soap_out_PointerToSOAP_ENV__Code(struct soap*, const char *, int, struct SOAP_ENV__Code *const*, const char *);
@@ -3449,7 +3478,7 @@ SOAP_FMAC3 struct SOAP_ENV__Code ** SOAP_FMAC4 soap_get_PointerToSOAP_ENV__Code(
 #endif
 
 #ifndef SOAP_TYPE_om_PointerToom__ReferenceType
-#define SOAP_TYPE_om_PointerToom__ReferenceType (173)
+#define SOAP_TYPE_om_PointerToom__ReferenceType (175)
 #endif
 SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_PointerToom__ReferenceType(struct soap*, om__ReferenceType *const*);
 SOAP_FMAC3 int SOAP_FMAC4 soap_out_PointerToom__ReferenceType(struct soap*, const char *, int, om__ReferenceType *const*, const char *);
@@ -3468,7 +3497,7 @@ SOAP_FMAC3 om__ReferenceType ** SOAP_FMAC4 soap_get_PointerToom__ReferenceType(s
 
 
 #ifndef SOAP_TYPE_om_PointerTo_om__ResultSetType_Job_ProjectionEnvelope
-#define SOAP_TYPE_om_PointerTo_om__ResultSetType_Job_ProjectionEnvelope (170)
+#define SOAP_TYPE_om_PointerTo_om__ResultSetType_Job_ProjectionEnvelope (172)
 #endif
 SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_PointerTo_om__ResultSetType_Job_ProjectionEnvelope(struct soap*, _om__ResultSetType_Job_ProjectionEnvelope *const*);
 SOAP_FMAC3 int SOAP_FMAC4 soap_out_PointerTo_om__ResultSetType_Job_ProjectionEnvelope(struct soap*, const char *, int, _om__ResultSetType_Job_ProjectionEnvelope *const*, const char *);
@@ -3487,7 +3516,7 @@ SOAP_FMAC3 _om__ResultSetType_Job_ProjectionEnvelope ** SOAP_FMAC4 soap_get_Poin
 
 
 #ifndef SOAP_TYPE_om_PointerToom__ProjectionEnvelopeType
-#define SOAP_TYPE_om_PointerToom__ProjectionEnvelopeType (169)
+#define SOAP_TYPE_om_PointerToom__ProjectionEnvelopeType (171)
 #endif
 SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_PointerToom__ProjectionEnvelopeType(struct soap*, om__ProjectionEnvelopeType *const*);
 SOAP_FMAC3 int SOAP_FMAC4 soap_out_PointerToom__ProjectionEnvelopeType(struct soap*, const char *, int, om__ProjectionEnvelopeType *const*, const char *);
@@ -3506,7 +3535,7 @@ SOAP_FMAC3 om__ProjectionEnvelopeType ** SOAP_FMAC4 soap_get_PointerToom__Projec
 
 
 #ifndef SOAP_TYPE_om_PointerToom__TestResultEnvelopeType
-#define SOAP_TYPE_om_PointerToom__TestResultEnvelopeType (167)
+#define SOAP_TYPE_om_PointerToom__TestResultEnvelopeType (169)
 #endif
 SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_PointerToom__TestResultEnvelopeType(struct soap*, om__TestResultEnvelopeType *const*);
 SOAP_FMAC3 int SOAP_FMAC4 soap_out_PointerToom__TestResultEnvelopeType(struct soap*, const char *, int, om__TestResultEnvelopeType *const*, const char *);
@@ -3525,7 +3554,7 @@ SOAP_FMAC3 om__TestResultEnvelopeType ** SOAP_FMAC4 soap_get_PointerToom__TestRe
 
 
 #ifndef SOAP_TYPE_om_PointerToom__ModelEnvelopeType
-#define SOAP_TYPE_om_PointerToom__ModelEnvelopeType (166)
+#define SOAP_TYPE_om_PointerToom__ModelEnvelopeType (168)
 #endif
 SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_PointerToom__ModelEnvelopeType(struct soap*, om__ModelEnvelopeType *const*);
 SOAP_FMAC3 int SOAP_FMAC4 soap_out_PointerToom__ModelEnvelopeType(struct soap*, const char *, int, om__ModelEnvelopeType *const*, const char *);
@@ -3544,7 +3573,7 @@ SOAP_FMAC3 om__ModelEnvelopeType ** SOAP_FMAC4 soap_get_PointerToom__ModelEnvelo
 
 
 #ifndef SOAP_TYPE_om_PointerTo__om__union_ExperimentParametersType_Jobs
-#define SOAP_TYPE_om_PointerTo__om__union_ExperimentParametersType_Jobs (162)
+#define SOAP_TYPE_om_PointerTo__om__union_ExperimentParametersType_Jobs (164)
 #endif
 SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_PointerTo__om__union_ExperimentParametersType_Jobs(struct soap*, __om__union_ExperimentParametersType_Jobs *const*);
 SOAP_FMAC3 int SOAP_FMAC4 soap_out_PointerTo__om__union_ExperimentParametersType_Jobs(struct soap*, const char *, int, __om__union_ExperimentParametersType_Jobs *const*, const char *);
@@ -3563,7 +3592,7 @@ SOAP_FMAC3 __om__union_ExperimentParametersType_Jobs ** SOAP_FMAC4 soap_get_Poin
 
 
 #ifndef SOAP_TYPE_om_PointerToom__ProjectModelJobType
-#define SOAP_TYPE_om_PointerToom__ProjectModelJobType (160)
+#define SOAP_TYPE_om_PointerToom__ProjectModelJobType (162)
 #endif
 SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_PointerToom__ProjectModelJobType(struct soap*, om__ProjectModelJobType *const*);
 SOAP_FMAC3 int SOAP_FMAC4 soap_out_PointerToom__ProjectModelJobType(struct soap*, const char *, int, om__ProjectModelJobType *const*, const char *);
@@ -3582,7 +3611,7 @@ SOAP_FMAC3 om__ProjectModelJobType ** SOAP_FMAC4 soap_get_PointerToom__ProjectMo
 
 
 #ifndef SOAP_TYPE_om_PointerToom__TestModelJobType
-#define SOAP_TYPE_om_PointerToom__TestModelJobType (159)
+#define SOAP_TYPE_om_PointerToom__TestModelJobType (161)
 #endif
 SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_PointerToom__TestModelJobType(struct soap*, om__TestModelJobType *const*);
 SOAP_FMAC3 int SOAP_FMAC4 soap_out_PointerToom__TestModelJobType(struct soap*, const char *, int, om__TestModelJobType *const*, const char *);
@@ -3601,7 +3630,7 @@ SOAP_FMAC3 om__TestModelJobType ** SOAP_FMAC4 soap_get_PointerToom__TestModelJob
 
 
 #ifndef SOAP_TYPE_om_PointerToom__CreateModelJobType
-#define SOAP_TYPE_om_PointerToom__CreateModelJobType (158)
+#define SOAP_TYPE_om_PointerToom__CreateModelJobType (160)
 #endif
 SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_PointerToom__CreateModelJobType(struct soap*, om__CreateModelJobType *const*);
 SOAP_FMAC3 int SOAP_FMAC4 soap_out_PointerToom__CreateModelJobType(struct soap*, const char *, int, om__CreateModelJobType *const*, const char *);
@@ -3620,7 +3649,7 @@ SOAP_FMAC3 om__CreateModelJobType ** SOAP_FMAC4 soap_get_PointerToom__CreateMode
 
 
 #ifndef SOAP_TYPE_om_PointerToom__SamplingJobType
-#define SOAP_TYPE_om_PointerToom__SamplingJobType (157)
+#define SOAP_TYPE_om_PointerToom__SamplingJobType (159)
 #endif
 SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_PointerToom__SamplingJobType(struct soap*, om__SamplingJobType *const*);
 SOAP_FMAC3 int SOAP_FMAC4 soap_out_PointerToom__SamplingJobType(struct soap*, const char *, int, om__SamplingJobType *const*, const char *);
@@ -3639,7 +3668,7 @@ SOAP_FMAC3 om__SamplingJobType ** SOAP_FMAC4 soap_get_PointerToom__SamplingJobTy
 
 
 #ifndef SOAP_TYPE_om_PointerTostd__vectorTemplateOf_om__ExperimentParametersType_SerializedAlgorithm
-#define SOAP_TYPE_om_PointerTostd__vectorTemplateOf_om__ExperimentParametersType_SerializedAlgorithm (154)
+#define SOAP_TYPE_om_PointerTostd__vectorTemplateOf_om__ExperimentParametersType_SerializedAlgorithm (156)
 #endif
 SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_PointerTostd__vectorTemplateOf_om__ExperimentParametersType_SerializedAlgorithm(struct soap*, std::vector<_om__ExperimentParametersType_SerializedAlgorithm >*const*);
 SOAP_FMAC3 int SOAP_FMAC4 soap_out_PointerTostd__vectorTemplateOf_om__ExperimentParametersType_SerializedAlgorithm(struct soap*, const char *, int, std::vector<_om__ExperimentParametersType_SerializedAlgorithm >*const*, const char *);
@@ -3658,7 +3687,7 @@ SOAP_FMAC3 std::vector<_om__ExperimentParametersType_SerializedAlgorithm >** SOA
 
 
 #ifndef SOAP_TYPE_om_PointerTostd__vectorTemplateOf_om__ExperimentParametersType_AlgorithmSettings
-#define SOAP_TYPE_om_PointerTostd__vectorTemplateOf_om__ExperimentParametersType_AlgorithmSettings (151)
+#define SOAP_TYPE_om_PointerTostd__vectorTemplateOf_om__ExperimentParametersType_AlgorithmSettings (153)
 #endif
 SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_PointerTostd__vectorTemplateOf_om__ExperimentParametersType_AlgorithmSettings(struct soap*, std::vector<_om__ExperimentParametersType_AlgorithmSettings >*const*);
 SOAP_FMAC3 int SOAP_FMAC4 soap_out_PointerTostd__vectorTemplateOf_om__ExperimentParametersType_AlgorithmSettings(struct soap*, const char *, int, std::vector<_om__ExperimentParametersType_AlgorithmSettings >*const*, const char *);
@@ -3677,7 +3706,7 @@ SOAP_FMAC3 std::vector<_om__ExperimentParametersType_AlgorithmSettings >** SOAP_
 
 
 #ifndef SOAP_TYPE_om_PointerTostd__vectorTemplateOf_om__ExperimentParametersType_Absence
-#define SOAP_TYPE_om_PointerTostd__vectorTemplateOf_om__ExperimentParametersType_Absence (148)
+#define SOAP_TYPE_om_PointerTostd__vectorTemplateOf_om__ExperimentParametersType_Absence (150)
 #endif
 SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_PointerTostd__vectorTemplateOf_om__ExperimentParametersType_Absence(struct soap*, std::vector<_om__ExperimentParametersType_Absence >*const*);
 SOAP_FMAC3 int SOAP_FMAC4 soap_out_PointerTostd__vectorTemplateOf_om__ExperimentParametersType_Absence(struct soap*, const char *, int, std::vector<_om__ExperimentParametersType_Absence >*const*, const char *);
@@ -3696,7 +3725,7 @@ SOAP_FMAC3 std::vector<_om__ExperimentParametersType_Absence >** SOAP_FMAC4 soap
 
 
 #ifndef SOAP_TYPE_om_PointerTostd__vectorTemplateOf_om__ExperimentParametersType_Presence
-#define SOAP_TYPE_om_PointerTostd__vectorTemplateOf_om__ExperimentParametersType_Presence (143)
+#define SOAP_TYPE_om_PointerTostd__vectorTemplateOf_om__ExperimentParametersType_Presence (145)
 #endif
 SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_PointerTostd__vectorTemplateOf_om__ExperimentParametersType_Presence(struct soap*, std::vector<_om__ExperimentParametersType_Presence >*const*);
 SOAP_FMAC3 int SOAP_FMAC4 soap_out_PointerTostd__vectorTemplateOf_om__ExperimentParametersType_Presence(struct soap*, const char *, int, std::vector<_om__ExperimentParametersType_Presence >*const*, const char *);
@@ -3715,7 +3744,7 @@ SOAP_FMAC3 std::vector<_om__ExperimentParametersType_Presence >** SOAP_FMAC4 soa
 
 
 #ifndef SOAP_TYPE_om_PointerToom__SamplingOptionsType
-#define SOAP_TYPE_om_PointerToom__SamplingOptionsType (136)
+#define SOAP_TYPE_om_PointerToom__SamplingOptionsType (138)
 #endif
 SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_PointerToom__SamplingOptionsType(struct soap*, om__SamplingOptionsType *const*);
 SOAP_FMAC3 int SOAP_FMAC4 soap_out_PointerToom__SamplingOptionsType(struct soap*, const char *, int, om__SamplingOptionsType *const*, const char *);
@@ -3734,7 +3763,7 @@ SOAP_FMAC3 om__SamplingOptionsType ** SOAP_FMAC4 soap_get_PointerToom__SamplingO
 
 
 #ifndef SOAP_TYPE_om_PointerToom__ProjectionStatisticsParametersType
-#define SOAP_TYPE_om_PointerToom__ProjectionStatisticsParametersType (134)
+#define SOAP_TYPE_om_PointerToom__ProjectionStatisticsParametersType (136)
 #endif
 SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_PointerToom__ProjectionStatisticsParametersType(struct soap*, om__ProjectionStatisticsParametersType *const*);
 SOAP_FMAC3 int SOAP_FMAC4 soap_out_PointerToom__ProjectionStatisticsParametersType(struct soap*, const char *, int, om__ProjectionStatisticsParametersType *const*, const char *);
@@ -3753,7 +3782,7 @@ SOAP_FMAC3 om__ProjectionStatisticsParametersType ** SOAP_FMAC4 soap_get_Pointer
 
 
 #ifndef SOAP_TYPE_om_PointerToom__MapOutputParametersType
-#define SOAP_TYPE_om_PointerToom__MapOutputParametersType (133)
+#define SOAP_TYPE_om_PointerToom__MapOutputParametersType (135)
 #endif
 SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_PointerToom__MapOutputParametersType(struct soap*, om__MapOutputParametersType *const*);
 SOAP_FMAC3 int SOAP_FMAC4 soap_out_PointerToom__MapOutputParametersType(struct soap*, const char *, int, om__MapOutputParametersType *const*, const char *);
@@ -3772,7 +3801,7 @@ SOAP_FMAC3 om__MapOutputParametersType ** SOAP_FMAC4 soap_get_PointerToom__MapOu
 
 
 #ifndef SOAP_TYPE_om_PointerToom__TestOptionsType
-#define SOAP_TYPE_om_PointerToom__TestOptionsType (132)
+#define SOAP_TYPE_om_PointerToom__TestOptionsType (134)
 #endif
 SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_PointerToom__TestOptionsType(struct soap*, om__TestOptionsType *const*);
 SOAP_FMAC3 int SOAP_FMAC4 soap_out_PointerToom__TestOptionsType(struct soap*, const char *, int, om__TestOptionsType *const*, const char *);
@@ -3791,7 +3820,7 @@ SOAP_FMAC3 om__TestOptionsType ** SOAP_FMAC4 soap_get_PointerToom__TestOptionsTy
 
 
 #ifndef SOAP_TYPE_om_PointerToom__TestResultType
-#define SOAP_TYPE_om_PointerToom__TestResultType (131)
+#define SOAP_TYPE_om_PointerToom__TestResultType (133)
 #endif
 SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_PointerToom__TestResultType(struct soap*, om__TestResultType *const*);
 SOAP_FMAC3 int SOAP_FMAC4 soap_out_PointerToom__TestResultType(struct soap*, const char *, int, om__TestResultType *const*, const char *);
@@ -3810,7 +3839,7 @@ SOAP_FMAC3 om__TestResultType ** SOAP_FMAC4 soap_get_PointerToom__TestResultType
 
 
 #ifndef SOAP_TYPE_om_PointerToom__SerializedAlgorithmType
-#define SOAP_TYPE_om_PointerToom__SerializedAlgorithmType (130)
+#define SOAP_TYPE_om_PointerToom__SerializedAlgorithmType (132)
 #endif
 SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_PointerToom__SerializedAlgorithmType(struct soap*, om__SerializedAlgorithmType *const*);
 SOAP_FMAC3 int SOAP_FMAC4 soap_out_PointerToom__SerializedAlgorithmType(struct soap*, const char *, int, om__SerializedAlgorithmType *const*, const char *);
@@ -3829,7 +3858,7 @@ SOAP_FMAC3 om__SerializedAlgorithmType ** SOAP_FMAC4 soap_get_PointerToom__Seria
 
 
 #ifndef SOAP_TYPE_om_PointerToom__SerializedModelType
-#define SOAP_TYPE_om_PointerToom__SerializedModelType (129)
+#define SOAP_TYPE_om_PointerToom__SerializedModelType (131)
 #endif
 SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_PointerToom__SerializedModelType(struct soap*, om__SerializedModelType *const*);
 SOAP_FMAC3 int SOAP_FMAC4 soap_out_PointerToom__SerializedModelType(struct soap*, const char *, int, om__SerializedModelType *const*, const char *);
@@ -3848,7 +3877,7 @@ SOAP_FMAC3 om__SerializedModelType ** SOAP_FMAC4 soap_get_PointerToom__Serialize
 
 
 #ifndef SOAP_TYPE_om_PointerToom__OccurrencesFilterType
-#define SOAP_TYPE_om_PointerToom__OccurrencesFilterType (128)
+#define SOAP_TYPE_om_PointerToom__OccurrencesFilterType (130)
 #endif
 SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_PointerToom__OccurrencesFilterType(struct soap*, om__OccurrencesFilterType *const*);
 SOAP_FMAC3 int SOAP_FMAC4 soap_out_PointerToom__OccurrencesFilterType(struct soap*, const char *, int, om__OccurrencesFilterType *const*, const char *);
@@ -3867,7 +3896,7 @@ SOAP_FMAC3 om__OccurrencesFilterType ** SOAP_FMAC4 soap_get_PointerToom__Occurre
 
 
 #ifndef SOAP_TYPE_om_PointerTo_om__OccurrencesFilterType_EnvironmentallyUnique
-#define SOAP_TYPE_om_PointerTo_om__OccurrencesFilterType_EnvironmentallyUnique (126)
+#define SOAP_TYPE_om_PointerTo_om__OccurrencesFilterType_EnvironmentallyUnique (128)
 #endif
 SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_PointerTo_om__OccurrencesFilterType_EnvironmentallyUnique(struct soap*, _om__OccurrencesFilterType_EnvironmentallyUnique *const*);
 SOAP_FMAC3 int SOAP_FMAC4 soap_out_PointerTo_om__OccurrencesFilterType_EnvironmentallyUnique(struct soap*, const char *, int, _om__OccurrencesFilterType_EnvironmentallyUnique *const*, const char *);
@@ -3886,7 +3915,7 @@ SOAP_FMAC3 _om__OccurrencesFilterType_EnvironmentallyUnique ** SOAP_FMAC4 soap_g
 
 
 #ifndef SOAP_TYPE_om_PointerTo_om__OccurrencesFilterType_SpatiallyUnique
-#define SOAP_TYPE_om_PointerTo_om__OccurrencesFilterType_SpatiallyUnique (124)
+#define SOAP_TYPE_om_PointerTo_om__OccurrencesFilterType_SpatiallyUnique (126)
 #endif
 SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_PointerTo_om__OccurrencesFilterType_SpatiallyUnique(struct soap*, _om__OccurrencesFilterType_SpatiallyUnique *const*);
 SOAP_FMAC3 int SOAP_FMAC4 soap_out_PointerTo_om__OccurrencesFilterType_SpatiallyUnique(struct soap*, const char *, int, _om__OccurrencesFilterType_SpatiallyUnique *const*, const char *);
@@ -3905,7 +3934,7 @@ SOAP_FMAC3 _om__OccurrencesFilterType_SpatiallyUnique ** SOAP_FMAC4 soap_get_Poi
 
 
 #ifndef SOAP_TYPE_om_PointerToom__ModelOptionsType
-#define SOAP_TYPE_om_PointerToom__ModelOptionsType (122)
+#define SOAP_TYPE_om_PointerToom__ModelOptionsType (124)
 #endif
 SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_PointerToom__ModelOptionsType(struct soap*, om__ModelOptionsType *const*);
 SOAP_FMAC3 int SOAP_FMAC4 soap_out_PointerToom__ModelOptionsType(struct soap*, const char *, int, om__ModelOptionsType *const*, const char *);
@@ -3924,7 +3953,7 @@ SOAP_FMAC3 om__ModelOptionsType ** SOAP_FMAC4 soap_get_PointerToom__ModelOptions
 
 
 #ifndef SOAP_TYPE_om_PointerToom__BasicAlgorithmDefinitionType
-#define SOAP_TYPE_om_PointerToom__BasicAlgorithmDefinitionType (121)
+#define SOAP_TYPE_om_PointerToom__BasicAlgorithmDefinitionType (123)
 #endif
 SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_PointerToom__BasicAlgorithmDefinitionType(struct soap*, om__BasicAlgorithmDefinitionType *const*);
 SOAP_FMAC3 int SOAP_FMAC4 soap_out_PointerToom__BasicAlgorithmDefinitionType(struct soap*, const char *, int, om__BasicAlgorithmDefinitionType *const*, const char *);
@@ -3943,7 +3972,7 @@ SOAP_FMAC3 om__BasicAlgorithmDefinitionType ** SOAP_FMAC4 soap_get_PointerToom__
 
 
 #ifndef SOAP_TYPE_om_PointerToom__SamplerType
-#define SOAP_TYPE_om_PointerToom__SamplerType (120)
+#define SOAP_TYPE_om_PointerToom__SamplerType (122)
 #endif
 SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_PointerToom__SamplerType(struct soap*, om__SamplerType *const*);
 SOAP_FMAC3 int SOAP_FMAC4 soap_out_PointerToom__SamplerType(struct soap*, const char *, int, om__SamplerType *const*, const char *);
@@ -3962,7 +3991,7 @@ SOAP_FMAC3 om__SamplerType ** SOAP_FMAC4 soap_get_PointerToom__SamplerType(struc
 
 
 #ifndef SOAP_TYPE_om_PointerToom__AreaStatisticsType
-#define SOAP_TYPE_om_PointerToom__AreaStatisticsType (119)
+#define SOAP_TYPE_om_PointerToom__AreaStatisticsType (121)
 #endif
 SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_PointerToom__AreaStatisticsType(struct soap*, om__AreaStatisticsType *const*);
 SOAP_FMAC3 int SOAP_FMAC4 soap_out_PointerToom__AreaStatisticsType(struct soap*, const char *, int, om__AreaStatisticsType *const*, const char *);
@@ -3981,7 +4010,7 @@ SOAP_FMAC3 om__AreaStatisticsType ** SOAP_FMAC4 soap_get_PointerToom__AreaStatis
 
 
 #ifndef SOAP_TYPE_om_PointerTo_om__ProjectionStatisticsParametersType_AreaStatistics
-#define SOAP_TYPE_om_PointerTo_om__ProjectionStatisticsParametersType_AreaStatistics (118)
+#define SOAP_TYPE_om_PointerTo_om__ProjectionStatisticsParametersType_AreaStatistics (120)
 #endif
 SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_PointerTo_om__ProjectionStatisticsParametersType_AreaStatistics(struct soap*, _om__ProjectionStatisticsParametersType_AreaStatistics *const*);
 SOAP_FMAC3 int SOAP_FMAC4 soap_out_PointerTo_om__ProjectionStatisticsParametersType_AreaStatistics(struct soap*, const char *, int, _om__ProjectionStatisticsParametersType_AreaStatistics *const*, const char *);
@@ -4000,7 +4029,7 @@ SOAP_FMAC3 _om__ProjectionStatisticsParametersType_AreaStatistics ** SOAP_FMAC4 
 
 
 #ifndef SOAP_TYPE_om_PointerTo_om__TestResultType_RocCurve
-#define SOAP_TYPE_om_PointerTo_om__TestResultType_RocCurve (116)
+#define SOAP_TYPE_om_PointerTo_om__TestResultType_RocCurve (118)
 #endif
 SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_PointerTo_om__TestResultType_RocCurve(struct soap*, _om__TestResultType_RocCurve *const*);
 SOAP_FMAC3 int SOAP_FMAC4 soap_out_PointerTo_om__TestResultType_RocCurve(struct soap*, const char *, int, _om__TestResultType_RocCurve *const*, const char *);
@@ -4015,6 +4044,25 @@ SOAP_FMAC3 _om__TestResultType_RocCurve ** SOAP_FMAC4 soap_get_PointerTo_om__Tes
 
 #ifndef soap_read_PointerTo_om__TestResultType_RocCurve
 #define soap_read_PointerTo_om__TestResultType_RocCurve(soap, data) ( soap_begin_recv(soap) || !om::soap_get_PointerTo_om__TestResultType_RocCurve(soap, data, NULL, NULL) || soap_end_recv(soap), soap->error )
+#endif
+
+
+#ifndef SOAP_TYPE_om_PointerTo_om__TestResultType_RocCurve_Ratio
+#define SOAP_TYPE_om_PointerTo_om__TestResultType_RocCurve_Ratio (117)
+#endif
+SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_PointerTo_om__TestResultType_RocCurve_Ratio(struct soap*, _om__TestResultType_RocCurve_Ratio *const*);
+SOAP_FMAC3 int SOAP_FMAC4 soap_out_PointerTo_om__TestResultType_RocCurve_Ratio(struct soap*, const char *, int, _om__TestResultType_RocCurve_Ratio *const*, const char *);
+SOAP_FMAC3 _om__TestResultType_RocCurve_Ratio ** SOAP_FMAC4 soap_in_PointerTo_om__TestResultType_RocCurve_Ratio(struct soap*, const char*, _om__TestResultType_RocCurve_Ratio **, const char*);
+SOAP_FMAC3 int SOAP_FMAC4 soap_put_PointerTo_om__TestResultType_RocCurve_Ratio(struct soap*, _om__TestResultType_RocCurve_Ratio *const*, const char*, const char*);
+
+#ifndef soap_write_PointerTo_om__TestResultType_RocCurve_Ratio
+#define soap_write_PointerTo_om__TestResultType_RocCurve_Ratio(soap, data) ( om::soap_serialize_PointerTo_om__TestResultType_RocCurve_Ratio(soap, data), soap_begin_send(soap) || om::soap_put_PointerTo_om__TestResultType_RocCurve_Ratio(soap, data, "om:TestResultType-RocCurve-Ratio", NULL) || soap_end_send(soap), soap->error )
+#endif
+
+SOAP_FMAC3 _om__TestResultType_RocCurve_Ratio ** SOAP_FMAC4 soap_get_PointerTo_om__TestResultType_RocCurve_Ratio(struct soap*, _om__TestResultType_RocCurve_Ratio **, const char*, const char*);
+
+#ifndef soap_read_PointerTo_om__TestResultType_RocCurve_Ratio
+#define soap_read_PointerTo_om__TestResultType_RocCurve_Ratio(soap, data) ( soap_begin_recv(soap) || !om::soap_get_PointerTo_om__TestResultType_RocCurve_Ratio(soap, data, NULL, NULL) || soap_end_recv(soap), soap->error )
 #endif
 
 
@@ -4498,7 +4546,7 @@ SOAP_FMAC3 char ** SOAP_FMAC4 soap_get_string(struct soap*, char **, const char*
 
 
 #ifndef SOAP_TYPE_om_std__vectorTemplateOf_om__ResultSetType_Job
-#define SOAP_TYPE_om_std__vectorTemplateOf_om__ResultSetType_Job (172)
+#define SOAP_TYPE_om_std__vectorTemplateOf_om__ResultSetType_Job (174)
 #endif
 SOAP_FMAC3 void SOAP_FMAC4 soap_default_std__vectorTemplateOf_om__ResultSetType_Job(struct soap*, std::vector<_om__ResultSetType_Job >*);
 SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_std__vectorTemplateOf_om__ResultSetType_Job(struct soap*, const std::vector<_om__ResultSetType_Job >*);
@@ -4513,7 +4561,7 @@ inline void soap_delete_std__vectorTemplateOf_om__ResultSetType_Job(struct soap 
 SOAP_FMAC3 void SOAP_FMAC4 soap_copy_std__vectorTemplateOf_om__ResultSetType_Job(struct soap*, int, int, void*, size_t, const void*, size_t);
 
 #ifndef SOAP_TYPE_om_std__vectorTemplateOf_om__JobTicketsType_Job
-#define SOAP_TYPE_om_std__vectorTemplateOf_om__JobTicketsType_Job (164)
+#define SOAP_TYPE_om_std__vectorTemplateOf_om__JobTicketsType_Job (166)
 #endif
 SOAP_FMAC3 void SOAP_FMAC4 soap_default_std__vectorTemplateOf_om__JobTicketsType_Job(struct soap*, std::vector<_om__JobTicketsType_Job >*);
 SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_std__vectorTemplateOf_om__JobTicketsType_Job(struct soap*, const std::vector<_om__JobTicketsType_Job >*);
@@ -4528,7 +4576,7 @@ inline void soap_delete_std__vectorTemplateOf_om__JobTicketsType_Job(struct soap
 SOAP_FMAC3 void SOAP_FMAC4 soap_copy_std__vectorTemplateOf_om__JobTicketsType_Job(struct soap*, int, int, void*, size_t, const void*, size_t);
 
 #ifndef SOAP_TYPE_om_std__vectorTemplateOf_om__ExperimentParametersType_SerializedAlgorithm
-#define SOAP_TYPE_om_std__vectorTemplateOf_om__ExperimentParametersType_SerializedAlgorithm (153)
+#define SOAP_TYPE_om_std__vectorTemplateOf_om__ExperimentParametersType_SerializedAlgorithm (155)
 #endif
 SOAP_FMAC3 void SOAP_FMAC4 soap_default_std__vectorTemplateOf_om__ExperimentParametersType_SerializedAlgorithm(struct soap*, std::vector<_om__ExperimentParametersType_SerializedAlgorithm >*);
 SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_std__vectorTemplateOf_om__ExperimentParametersType_SerializedAlgorithm(struct soap*, const std::vector<_om__ExperimentParametersType_SerializedAlgorithm >*);
@@ -4543,7 +4591,7 @@ inline void soap_delete_std__vectorTemplateOf_om__ExperimentParametersType_Seria
 SOAP_FMAC3 void SOAP_FMAC4 soap_copy_std__vectorTemplateOf_om__ExperimentParametersType_SerializedAlgorithm(struct soap*, int, int, void*, size_t, const void*, size_t);
 
 #ifndef SOAP_TYPE_om_std__vectorTemplateOf_om__ExperimentParametersType_AlgorithmSettings
-#define SOAP_TYPE_om_std__vectorTemplateOf_om__ExperimentParametersType_AlgorithmSettings (150)
+#define SOAP_TYPE_om_std__vectorTemplateOf_om__ExperimentParametersType_AlgorithmSettings (152)
 #endif
 SOAP_FMAC3 void SOAP_FMAC4 soap_default_std__vectorTemplateOf_om__ExperimentParametersType_AlgorithmSettings(struct soap*, std::vector<_om__ExperimentParametersType_AlgorithmSettings >*);
 SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_std__vectorTemplateOf_om__ExperimentParametersType_AlgorithmSettings(struct soap*, const std::vector<_om__ExperimentParametersType_AlgorithmSettings >*);
@@ -4558,7 +4606,7 @@ inline void soap_delete_std__vectorTemplateOf_om__ExperimentParametersType_Algor
 SOAP_FMAC3 void SOAP_FMAC4 soap_copy_std__vectorTemplateOf_om__ExperimentParametersType_AlgorithmSettings(struct soap*, int, int, void*, size_t, const void*, size_t);
 
 #ifndef SOAP_TYPE_om_std__vectorTemplateOf_om__ExperimentParametersType_Absence
-#define SOAP_TYPE_om_std__vectorTemplateOf_om__ExperimentParametersType_Absence (147)
+#define SOAP_TYPE_om_std__vectorTemplateOf_om__ExperimentParametersType_Absence (149)
 #endif
 SOAP_FMAC3 void SOAP_FMAC4 soap_default_std__vectorTemplateOf_om__ExperimentParametersType_Absence(struct soap*, std::vector<_om__ExperimentParametersType_Absence >*);
 SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_std__vectorTemplateOf_om__ExperimentParametersType_Absence(struct soap*, const std::vector<_om__ExperimentParametersType_Absence >*);
@@ -4573,7 +4621,7 @@ inline void soap_delete_std__vectorTemplateOf_om__ExperimentParametersType_Absen
 SOAP_FMAC3 void SOAP_FMAC4 soap_copy_std__vectorTemplateOf_om__ExperimentParametersType_Absence(struct soap*, int, int, void*, size_t, const void*, size_t);
 
 #ifndef SOAP_TYPE_om_std__vectorTemplateOf_om__ExperimentParametersType_Absence_Point
-#define SOAP_TYPE_om_std__vectorTemplateOf_om__ExperimentParametersType_Absence_Point (146)
+#define SOAP_TYPE_om_std__vectorTemplateOf_om__ExperimentParametersType_Absence_Point (148)
 #endif
 SOAP_FMAC3 void SOAP_FMAC4 soap_default_std__vectorTemplateOf_om__ExperimentParametersType_Absence_Point(struct soap*, std::vector<_om__ExperimentParametersType_Absence_Point >*);
 SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_std__vectorTemplateOf_om__ExperimentParametersType_Absence_Point(struct soap*, const std::vector<_om__ExperimentParametersType_Absence_Point >*);
@@ -4588,7 +4636,7 @@ inline void soap_delete_std__vectorTemplateOf_om__ExperimentParametersType_Absen
 SOAP_FMAC3 void SOAP_FMAC4 soap_copy_std__vectorTemplateOf_om__ExperimentParametersType_Absence_Point(struct soap*, int, int, void*, size_t, const void*, size_t);
 
 #ifndef SOAP_TYPE_om_std__vectorTemplateOf_om__ExperimentParametersType_Presence
-#define SOAP_TYPE_om_std__vectorTemplateOf_om__ExperimentParametersType_Presence (142)
+#define SOAP_TYPE_om_std__vectorTemplateOf_om__ExperimentParametersType_Presence (144)
 #endif
 SOAP_FMAC3 void SOAP_FMAC4 soap_default_std__vectorTemplateOf_om__ExperimentParametersType_Presence(struct soap*, std::vector<_om__ExperimentParametersType_Presence >*);
 SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_std__vectorTemplateOf_om__ExperimentParametersType_Presence(struct soap*, const std::vector<_om__ExperimentParametersType_Presence >*);
@@ -4603,7 +4651,7 @@ inline void soap_delete_std__vectorTemplateOf_om__ExperimentParametersType_Prese
 SOAP_FMAC3 void SOAP_FMAC4 soap_copy_std__vectorTemplateOf_om__ExperimentParametersType_Presence(struct soap*, int, int, void*, size_t, const void*, size_t);
 
 #ifndef SOAP_TYPE_om_std__vectorTemplateOf_om__ExperimentParametersType_Presence_Point
-#define SOAP_TYPE_om_std__vectorTemplateOf_om__ExperimentParametersType_Presence_Point (141)
+#define SOAP_TYPE_om_std__vectorTemplateOf_om__ExperimentParametersType_Presence_Point (143)
 #endif
 SOAP_FMAC3 void SOAP_FMAC4 soap_default_std__vectorTemplateOf_om__ExperimentParametersType_Presence_Point(struct soap*, std::vector<_om__ExperimentParametersType_Presence_Point >*);
 SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_std__vectorTemplateOf_om__ExperimentParametersType_Presence_Point(struct soap*, const std::vector<_om__ExperimentParametersType_Presence_Point >*);
@@ -4618,7 +4666,7 @@ inline void soap_delete_std__vectorTemplateOf_om__ExperimentParametersType_Prese
 SOAP_FMAC3 void SOAP_FMAC4 soap_copy_std__vectorTemplateOf_om__ExperimentParametersType_Presence_Point(struct soap*, int, int, void*, size_t, const void*, size_t);
 
 #ifndef SOAP_TYPE_om_std__vectorTemplateOf_om__ExperimentParametersType_Environment
-#define SOAP_TYPE_om_std__vectorTemplateOf_om__ExperimentParametersType_Environment (138)
+#define SOAP_TYPE_om_std__vectorTemplateOf_om__ExperimentParametersType_Environment (140)
 #endif
 SOAP_FMAC3 void SOAP_FMAC4 soap_default_std__vectorTemplateOf_om__ExperimentParametersType_Environment(struct soap*, std::vector<_om__ExperimentParametersType_Environment >*);
 SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_std__vectorTemplateOf_om__ExperimentParametersType_Environment(struct soap*, const std::vector<_om__ExperimentParametersType_Environment >*);
