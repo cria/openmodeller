@@ -674,7 +674,16 @@ double RocCurve::getPartialAreaRatio( double e )
 
             double y = 1.0 - e;
 
-            double x = x1 - ((x1-x0)*(y1-y)/(y1-y0));
+            double x;
+
+            if ( y1 == y0 ) {
+
+              x = x1 - x0;
+            }
+            else {
+
+              x = x1 - ((x1-x0)*(y1-y)/(y1-y0));
+            }
 
             // Add missing previous area via interpolation
             area += (x1 - x) * 0.5 * (y + y1);
