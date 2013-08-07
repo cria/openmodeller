@@ -771,34 +771,25 @@ omws::omws__runExperiment( struct soap *soap, omws::XML_ om__ExperimentParameter
       // Store the request and create a ticket anyway, regardless using Condor DAGMan or not
       omws::xsd__string ticket;
       wchar_t elementName[] = L"ExperimentParameters";
-      scheduleJob( soap, OMWS_EXPERIMENT _REQUEST, params, elementName, ticket );
+      scheduleJob( soap, OMWS_EXPERIMENT _PENDING_REQUEST, params, elementName, ticket );
       logRequest( soap, "runExperiment", ticket.c_str() );
 
-      string condorIntegration( gFileParser.get( "CONDOR_INTEGRATION" ) );
-      string dagmanEnabled( gFileParser.get( "DAGMAN_ENABLED" ) );
+      string result("");
 
-      string exp_id = string( ep.Jobs.id ); // experiment id provided by client
+      // There's no experiment id anymore (removed from protocol)
+      //string exp_id = string( ep.Jobs.id ); // experiment id provided by client
+      //string result( "<Job Id=\"" );
+      //result.append( exp_id ).append("\" Ticket=\"" ).append( ticket ).append( "\"/>" );
 
-      string result( "<Job Id=\"" );
-      result.append( exp_id ).append("\" Ticket=\"" ).append( ticket ).append( "\"/>" );
+      // Create individual jobs and return all of them
+      map<string, string> jobs = scheduleExperiment( ctx, ep, ticket );
 
-      if ( condorIntegration == "yes" && dagmanEnabled == "yes" ) {
+      for ( map<string, string>::const_iterator it = jobs.begin(); it != jobs.end(); ++it ) {
 
-        // Return single experiment ticket and let Condor plugin handle the job behind the scenes
-        out->om__ExperimentTickets = convertToWideChar( result.c_str() ); 
+        result.append( "<Job Id=\"" ).append( (*it).first ).append("\" Ticket=\"" ).append( (*it).second ).append( "\"/>" );
       }
-      else {
 
-        // Create individual jobs and return all of them
-        map<string, string> jobs = scheduleExperiment( ctx, ep, ticket );
-
-        for ( map<string, string>::const_iterator it = jobs.begin(); it != jobs.end(); ++it ) {
-
-	  result.append( "<Job Id=\"" ).append( (*it).first ).append("\" Ticket=\"" ).append( (*it).second ).append( "\"/>" );
-        }
-
-        out->om__ExperimentTickets = convertToWideChar( result.c_str() ); 
-      }
+      out->om__ExperimentTickets = convertToWideChar( result.c_str() ); 
     }
 
     soap_destroy(ctx); // remove deserialized class instances (C++ objects)
@@ -2453,6 +2444,7 @@ scheduleExperiment(struct soap* soap, const om::_om__ExperimentParameters& ep, o
 
     // Insert dependencies in job metadata, also gathering the tickets to use after the loop
     string all_tickets;
+    string all_ids;
     for ( map<string, string>::const_iterator jit = jobs.begin(); jit != jobs.end(); ++jit ) {
 
       string job_id = (*jit).first;
@@ -2462,8 +2454,10 @@ scheduleExperiment(struct soap* soap, const om::_om__ExperimentParameters& ep, o
       if ( jit != jobs.begin() ) {
 
         all_tickets += ",";
+        all_ids += ",";
       }
       all_tickets += job_ticket;
+      all_ids += job_id;
 
       // Build metadata file name
       string mfile_name( ticket_dir );
@@ -2520,7 +2514,11 @@ scheduleExperiment(struct soap* soap, const om::_om__ExperimentParameters& ep, o
     string jobs_line("JOBS=");
     jobs_line.append( all_tickets ).append("\n");
 
-    if ( efile == NULL || fputs( jobs_line.c_str(), efile ) < 0 ) {
+    // This is only expected to be used by Condor/DAGMan backends
+    string ids_line("IDS=");
+    ids_line.append( all_ids ).append("\n");
+
+    if ( efile == NULL || fputs( jobs_line.c_str(), efile ) < 0 || fputs( ids_line.c_str(), efile ) < 0 ) {
 
       fclose( efile );
       throw OmwsException("Failed to update experiment metadata");
@@ -2552,18 +2550,31 @@ scheduleExperiment(struct soap* soap, const om::_om__ExperimentParameters& ep, o
     throw;
   }
 
-  // Rename jobs that can be executed
-  for ( vector<string>::const_iterator fit = files_to_be_renamed.begin(); fit != files_to_be_renamed.end(); ++fit ) {
+  string condorIntegration( gFileParser.get( "CONDOR_INTEGRATION" ) );
+  string dagmanEnabled( gFileParser.get( "DAGMAN_ENABLED" ) );
 
-    string job_file_name = (*fit);
+  if ( condorIntegration == "yes" && dagmanEnabled == "yes" ) {
 
-    renameJobFile( job_file_name, _PENDING_REQUEST, _REQUEST );
+    // Rename experiment job so that Condor can process it
+    string exp_job_file = ticket_dir + OMWS_EXPERIMENT _PENDING_REQUEST + experiment_ticket;
+
+    renameJobFile( exp_job_file, _PENDING_REQUEST, _REQUEST );
   }
+  else {
 
-  // Rename experiment job
-  string exp_job_file = ticket_dir + OMWS_EXPERIMENT _REQUEST + experiment_ticket;
+    // Rename jobs that can be executed
+    for ( vector<string>::const_iterator fit = files_to_be_renamed.begin(); fit != files_to_be_renamed.end(); ++fit ) {
 
-  renameJobFile( exp_job_file, _REQUEST, _PROCESSED_REQUEST );
+      string job_file_name = (*fit);
+
+      renameJobFile( job_file_name, _PENDING_REQUEST, _REQUEST );
+    }
+
+    // Rename experiment job, indicating that it was already processed
+    string exp_job_file = ticket_dir + OMWS_EXPERIMENT _PENDING_REQUEST + experiment_ticket;
+
+    renameJobFile( exp_job_file, _PENDING_REQUEST, _PROCESSED_REQUEST );
+  }
 
   return jobs;
 }
