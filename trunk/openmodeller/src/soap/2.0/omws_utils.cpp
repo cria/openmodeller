@@ -362,8 +362,10 @@ bool cancelJob( const string & ticketDir, const string & ticket )
     return stopExperiment( ticketDir, ticket, "", 0, "-3" );
   }
 
+  int progress = getProgress( ticketDir, ticket, false );
+
   // If job is pending, cancel it, otherwise let it finish behind the scenes
-  if ( getProgress( ticketDir, ticket, false ) == -1 ) {
+  if ( progress == -1 ) {
 
     string req_file = ticketDir + type + _REQUEST + ticket;
 
@@ -386,6 +388,25 @@ bool cancelJob( const string & ticketDir, const string & ticket )
 
       printf( "Failed to cancel job: %s\n", e.what() );
       return false;
+    }
+  }
+  else if ( progress == -3 ) {
+
+    // Already cancelled
+    return true;
+  }
+
+  // Check if there are subsequent jobs
+  string next_jobs = data.get( "NEXT" );
+
+  if ( ! next_jobs.empty() ) {
+
+    vector<string> next_tickets = getTickets( next_jobs );
+
+    // Try to cancel each subsequent job
+    for ( vector<string>::iterator nt = next_tickets.begin(); nt != next_tickets.end(); ++nt ) {
+
+      cancelJob( ticketDir, (*nt) );
     }
   }
 
