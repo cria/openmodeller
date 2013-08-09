@@ -97,6 +97,7 @@ int main(int argc, char **argv)
   soap.encodingStyle = NULL;
 
   // Load algorithms
+  Log::instance()->setLevel( Log::Error ); // supress debug/info/warning
   AlgorithmFactory::searchDefaultDirs();
 
   // Instantiate a shared openModeller controller
