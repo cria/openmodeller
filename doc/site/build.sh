@@ -2,7 +2,7 @@
 
 # generate algorithms pages
 echo "===> generating HTML pages directly from openModeller"
-PYTHONPATH=:~/cria/build/src/swig/python ./genpage.py
+./genpage.py
 
 # generate pages
 echo "===> generating HTML pages from .t2t files"
