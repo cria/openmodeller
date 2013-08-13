@@ -1,0 +1,10 @@
+html, body {
+	margin:5px;
+	padding:0px;
+	font-family:verdana,arial,sans-serif;
+	font-size:0.9em;
+	color:#585858;
+	line-height:1.2em;
+	height:100%;
+	text-align:justify;
+}

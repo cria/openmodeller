@@ -3,15 +3,19 @@
 
 
 %!target: html
-
-== Documentation ==
+%! style: om.css
+%! encoding: utf-8
 
 Miscellaneous documents:
 
-- [Framework compilation guide http://openmodeller.sourceforge.net/INSTALL.html]
-- [How to add new algorithms http://openmodeller.sourceforge.net/alg_manual.html]
-- [openModeller Web Service interface (OMWS) http://openmodeller.sourceforge.net/web_service.html]
-- [openModeller server guide http://openmodeller.sourceforge.net/om_server.html]
+- [Framework compilation guide INSTALL.html]
+- [How to add new algorithms alg_manual.html]
+- openModeller Web Service interface (OMWS)
+ - [version 2.0 web_service_2-0.html]
+ - [version 1.0 web_service_1-0.html]
+- oM Server guide
+ - [version 2.0 om_server_2-0.html]
+ - [version 1.0 om_server_1-0.html]
 
 
 Framework API:
