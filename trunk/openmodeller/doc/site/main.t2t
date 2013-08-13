@@ -19,86 +19,34 @@ The framework was originally developed by [CRIA http://www.cria.org.br] in 2003 
  - [Mac package http://sourceforge.net/projects/openmodeller/files/openModeller/1.3.0/openModeller-1.3.0.mac.tgz/download]
  - [Zipped source code http://sourceforge.net/projects/openmodeller/files/openModeller/1.3.0/libopenmodeller-src-1.3.0.zip/download]
  - [Complete list of versions and packages http://sourceforge.net/projects/openmodeller/files/openModeller/]
+ - Development version can be checked out from the Subversion repository URL: ""http://svn.code.sf.net/p/openmodeller/svn/trunk/openmodeller""
 - [oM Desktop interface http://sourceforge.net/projects/openmodeller/files/openModeller%20Desktop/] (older version!)
+ - Development version can be checked out from the Subversion repository URL: ""http://svn.code.sf.net/p/openmodeller/svn/trunk/openModellerDesktop""
 
 
-== Algorithms ==
+== Mailing Lists ==
 
-openModeller uses an extensible plugin architecture for the implementation of the modelling algorithms. The available algorithms are listed below. Click on the algorithm name to find out more information.
-
-- [ANN - Artificial Neural Networks algorithms/ann.html]
-- [AquaMaps algorithms/aquamaps.html]
-- [Bioclim algorithms/bioclim.html]
-- [Consensus algorithms/consensus.html]
-- [CSM - Climate Space Model algorithms/csmbs.html]
-- [GARP (single run) - DesktopGARP implementation algorithms/dg_garp.html]
-- [GARP with best subsets - DesktopGARP implementation algorithms/dg_garp_bs.html]
-- [GARP - Genetic Algorithm for Rule-set Production algorithms/garp.html]
-- [GARP Best Subsets algorithms/garp_bs.html]
-- [ENFA - Ecological-Niche Factor Analysis algorithms/enfa.html]
-- [Envelope Score algorithms/envscore.html]
-- [Environmental Distance algorithms/envdist.html] 
-- [Maxent algorithms/maxent.html]
-- [Niche Mosaic algorithms/niche_mosaic.html]
-- [Random Forests algorithms/rf.html]
-- [SVM - Support Vector Machines algorithms/svm.html]
+- For Users
+ - [Archives http://sourceforge.net/mailarchive/forum.php?forum_id=40728]
+ - [Subscribe/Unsubscribe/Preferences http://lists.sourceforge.net/mailman/listinfo/openmodeller-users]
+- For Developers
+ - [Archives http://sourceforge.net/mailarchive/forum.php?forum_id=37479]
+ - [Subscribe/Unsubscribe/Preferences http://lists.sourceforge.net/mailman/listinfo/openmodeller-devel]
+- To receive automatic notifications on Subversion commits
+ - [Subscribe/Unsubscribe/Preferences http://lists.sourceforge.net/mailman/listinfo/openmodeller-cvs]
 
 
-== Resources ==
+== Bug Reporting ==
 
-=== Users mailing list ===
-
-- [Archives http://sourceforge.net/mailarchive/forum.php?forum_id=40728]
-- [Subscribe/Unsubscribe/Preferences http://lists.sourceforge.net/mailman/listinfo/openmodeller-users]
+Use the [SourceForge Bug Tracker http://sourceforge.net/tracker/?group_id=101808&atid=631036]
 
 
-=== Developers mailing list ===
+== Other Resources ==
 
-- [Archives http://sourceforge.net/mailarchive/forum.php?forum_id=37479]
-- [Subscribe/Unsubscribe/Preferences http://lists.sourceforge.net/mailman/listinfo/openmodeller-devel]
+- IRC (not used very often these days)
+ - Chat server: irc.freenode.net
+ - Channel: #openmodeller
+- Wikis
+ - [openModeller framework http://openmodeller.cria.org.br/wikis/om/FrontPage]
+ - [oM Desktop http://openmodeller.cria.org.br/wikis/omgui/FrontPage]
 
-
-=== Subversion commits notification list ===
-
-- [Subscribe/Unsubscribe/Preferences http://lists.sourceforge.net/mailman/listinfo/openmodeller-cvs]
-
-
-=== Step by Step Compilation Procedure for All Platforms ===
-
-- [for openModeller Library http://openmodeller.sf.net/INSTALL.html]  
-
-
-=== IRC ===
-
-- Chat server: irc.freenode.net
-- Channel: #openmodeller
-- [Log history http://linux-gis.co.uk/irclogs/?C=M;O=D]
-
-
-=== Subversion ===
-
-[Instructions and repository location http://sourceforge.net/cvs/?group_id=101808]
-
-To retrieve the openModeller library sources do:
-
-```svn co https://openmodeller.svn.sourceforge.net/svnroot/openmodeller/trunk/openmodeller```
-
-To retrieve the openModeller Desktop application sources do:
-
-```svn co https://openmodeller.svn.sourceforge.net/svnroot/openmodeller/trunk/openModellerDesktop```
-
-To retrieve the terraView Plugin application sources do:
-
-```svn co https://openmodeller.svn.sourceforge.net/svnroot/openmodeller/trunk/terraViewPlugin```
-
-For activity monitoring and source code statistics, visit our ohloh.net project page.
-
-=== Related links ===
-
-- [WIKI for the openModeller Library Project http://openmodeller.cria.org.br/wikis/om/FrontPage]
-- [WIKI for the openModeller Graphical User Interface Project http://openmodeller.cria.org.br/wikis/omgui/FrontPage]
-
-
-=== Translation ===
-
-We have a translation guide available if you would like to translate openModeller Desktop into your own language.
