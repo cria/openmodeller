@@ -3,12 +3,23 @@
 
 
 %!target: html
+%! style: om.css
+%! encoding: utf-8
 
-== Welcome to the openModeller project ==
+== openModeller ==
 
-openModeller aims to provide a flexible, user friendly, cross-platform environment where the entire process of conducting a fundamental niche modeling experiment can be carried out. The software includes facilities for reading species occurrence and environmental data, selection of environmental layers on which the model should be based, creating a fundamental niche model and projecting the model into an environmental scenario.  A number of algorithms are provided as plugins, including GARP, Climate Space Model, Bioclimatic Envelopes, Support Vector Machines and others.
+openModeller provides a flexible, robust, cross-platform environment to carry out ecological niche modeling experiments. It is comprised of a single framework written in C++ allowing multipe interfaces on top of it, such as command line programs, Desktop interface, Web interface and Web Service interface. The framework includes facilities for sampling points, creating, testing, evaluating and projecting models into different environmental scenarios, reading species occurrence and environmental data in different formats (including remote sources, such as [GBIF http://gbif.org] and [speciesLink http://splink.org.br] for species occurrence data, and [WCS http://www.opengeospatial.org/standards/wcs] providers for raster data), among many other features. More than 10 algorithms are available as plugins, including GARP, Maxent, ENFA and Support Vector Machines. The same functionality can be used by Python programs through a built-in SWIG binding on top of the C++ API.
 
-The project is currently being developed by the Centro de Referência em Informação Ambiental ([CRIA http://www.cria.org.br]), Escola Politécnica da USP ([Poli http://www.poli.usp.br]), and Instituto Nacional de Pesquisas Espaciais ([INPE http://www.inpe.br]) as an open-source initiative. It is funded by Fundação de Amparo à Pesquisa do Estado de São Paulo ([FAPESP http://www.fapesp.br]), the [Incofish http://www.incofish.br] project, and by individuals that have generously contributed their time. Previous collaborators include the BDWorld project (University of Reading), the University of Kansas Natural History Museum & Biodiversity Research Center (KU), and other individual participants.
+The framework was originally developed by [CRIA http://www.cria.org.br] in 2003 as part of the speciesLink project with funds from [FAPESP http://www.fapesp.br]. It then became the main subject of a new 4-year thematic project funded by the same agency, which included two additional partners: [Poli/USP http://www.poli.usp.br] and [INPE http://www.inpe.br]. Being an open-source initiative, openModeller development also received important contributions from other people, projects and institutions since the very beginning, such as the University of Kansas Natural History Museum & Biodiversity Research Center (KU), the University of Reading through the BDWorld project, [Incofish http://www.incofish.org], GBIF and more recently from the [BioVeL http://biovel.eu] and [EUBrazilOpenBio http://eubrazilopenbio.eu] projects.
+
+== Download ==
+
+- openModeller framework & command-line tools (last version: 1.3.0)
+ - [Windows setup .exe http://sourceforge.net/projects/openmodeller/files/openModeller/1.3.0/openModellerSetup1.3.0.exe/download]
+ - [Mac package http://sourceforge.net/projects/openmodeller/files/openModeller/1.3.0/openModeller-1.3.0.mac.tgz/download]
+ - [Zipped source code http://sourceforge.net/projects/openmodeller/files/openModeller/1.3.0/libopenmodeller-src-1.3.0.zip/download]
+ - [Complete list of versions and packages http://sourceforge.net/projects/openmodeller/files/openModeller/]
+- [oM Desktop interface http://sourceforge.net/projects/openmodeller/files/openModeller%20Desktop/] (older version!)
 
 
 == Algorithms ==
