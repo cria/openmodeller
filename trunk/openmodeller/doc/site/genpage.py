@@ -2,7 +2,12 @@
 
 import glob
 import os.path
-import om
+
+try:
+    import om
+except:
+    print "You need the openModeller SWIG Python module (om.py) installed to generate all pages!"
+    exit(1)
 
 # You'll need this instance for sure...
 mod = om.OpenModeller()
