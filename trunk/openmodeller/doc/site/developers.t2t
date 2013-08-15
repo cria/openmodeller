@@ -9,6 +9,8 @@
 
 == openModeller Developers ==
 
+(in chronological order of involvement)
+
 === Mauro E. S. Muñoz ===
 
 [devs/mauro.gif] Computer Engineering degree from the State University of Campinas - UNICAMP, (1996). M.Sc in Artificial Inteligence from the Federal University of Rio Grande do Sul - UFRGS, (1999). After 1999 he worked for 2 years in telecommunication, smart card and telephone voice portals. Since the beginning of 2002 until the end of 2004 he worked at CRIA as a software developer in biodiversity informatics. His areas of interest include static and dynamic species modelling, artificial neural networks, celular automata, genetic algorithms and geographical information systems. 
@@ -17,19 +19,19 @@ openModeller development areas: Main developer and system architecture designer.
 
 -----------------------
 
+=== Marinez F. Siqueira ===
+
+[devs/marinez.gif] Biologist, PhD in Science (Environmental Engineering) by the University of São Paulo in 2005, entitled "Use of Ecological Niche Modelling to assess the geographical distribution patterns of Plant species".
+
+openModeller development areas: Participated in the initial planning and definition of user requirements of openModeller.  Continuously helps testing all different versions. Portuguese translator of the openModeller Desktop.
+
+-----------------------
+
 === Renato De Giovanni ===
 
 [devs/renato.gif] Received his B.Sc. degree in Mechanical Engineering from the Aeronautics Institute of Technology (ITA, 1993, Brazil). Since then has been working with software development at local consulting companies. Currently employed by CRIA being part of the team who has set up the first Brazilian network connecting distributed databases from biological collections (speciesLink).
 
 openModeller development areas: Current library maintainer. Developed the SOAP interface (modelling service), implemented the SVM and AquaMaps algorithms, helped in the implementation of other algorithms, participated in the openModeller Desktop development, made many improvements and bugfixes in the framework.  
-
------------------------
-
-=== Tim Sutton ===
-
-[devs/tim.gif] He studied his Masters Degree in Geography at the University of Stellenbosch, South Africa where he majored in GIS and Environmental Studies. He has worked in South Africa, England and Brazil on various projects specialising in developing applications for biodiversity inventory and analysis.
-
-openModeller development areas: original openModeller Desktop developer.  Also helped in many parts of the library, such as developing the CSM algorithm and making the Mac OSX and Ubuntu packages.
 
 -----------------------
 
@@ -45,6 +47,22 @@ Performed general code review, making many improvements during the first release
 
 -----------------------
 
+=== Tim Sutton ===
+
+[devs/tim.gif] He studied his Masters Degree in Geography at the University of Stellenbosch, South Africa where he majored in GIS and Environmental Studies. He has worked in South Africa, England and Brazil on various projects specialising in developing applications for biodiversity inventory and analysis.
+
+openModeller development areas: original openModeller Desktop developer.  Also helped in many parts of the library, such as developing the CSM algorithm and making the Mac OSX and Ubuntu packages.
+
+-----------------------
+
+=== Peter Brewer ===
+
+[devs/pete.gif] Completed a PhD at the University of Reading in 2003 entitled "Modelling the global distribution of Legume species in past, present and future climates".
+
+openModeller development areas: Developement and testing of openModeller Desktop (version 0 and 1).
+
+-----------------------
+
 === Jens Oberender ===
 
 Migrated the build process to automake/autoconf. Created the original RPM package specification.
@@ -54,14 +72,6 @@ Migrated the build process to automake/autoconf. Created the original RPM packag
 === Tom Elwertowski ===
 
 Added support for MAC OS X.
-
------------------------
-
-=== Peter Brewer ===
-
-[devs/pete.gif] Completed a PhD at the University of Reading in 2003 entitled "Modelling the global distribution of Legume species in past, present and future climates".
-
-openModeller development areas: Developement and testing of openModeller Desktop (version 0 and 1).
 
 -----------------------
 
@@ -82,14 +92,6 @@ openModeller development areas: Integrated TerraLib IO functionality within the 
 [devs/albert.gif] Albert is a student at Escola Politécnica da Universidade de São Paulo.  Albert is a Computer Engineering student and is interested in data mining using self organising maps. He is working on openModeller as part of his bachelors degree course.
 
 openModeller development areas: Implementation of a testing framework for openModeller library in order to improve the reliability of our code base.  
-
------------------------
-
-=== Marinez F. Siqueira ===
-
-[devs/marinez.gif] Biologist, PhD in Science (Environmental Engineering) by the University of São Paulo in 2005, entitled "Use of Ecological Niche Modelling to assess the geographical distribution patterns of Plant species".
-
-openModeller development areas: Participated in the initial planning and definition of user requirements of openModeller.  Continuously helps testing all different versions. Portuguese translator of the openModeller Desktop.
 
 -----------------------
 

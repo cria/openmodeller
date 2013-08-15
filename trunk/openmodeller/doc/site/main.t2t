@@ -27,11 +27,11 @@ The framework was originally developed by [CRIA http://www.cria.org.br] in 2003 
 == Mailing Lists ==
 
 - For Users
- - [Archives http://sourceforge.net/mailarchive/forum.php?forum_id=40728]
  - [Subscribe/Unsubscribe/Preferences http://lists.sourceforge.net/mailman/listinfo/openmodeller-users]
+ - [Archives http://sourceforge.net/mailarchive/forum.php?forum_id=40728]
 - For Developers
- - [Archives http://sourceforge.net/mailarchive/forum.php?forum_id=37479]
  - [Subscribe/Unsubscribe/Preferences http://lists.sourceforge.net/mailman/listinfo/openmodeller-devel]
+ - [Archives http://sourceforge.net/mailarchive/forum.php?forum_id=37479]
 - To receive automatic notifications on Subversion commits
  - [Subscribe/Unsubscribe/Preferences http://lists.sourceforge.net/mailman/listinfo/openmodeller-cvs]
 
@@ -39,7 +39,6 @@ The framework was originally developed by [CRIA http://www.cria.org.br] in 2003 
 == Bug Reporting ==
 
 Use the [SourceForge Bug Tracker http://sourceforge.net/tracker/?group_id=101808&atid=631036]
-
 
 == Other Resources ==
 
@@ -50,3 +49,12 @@ Use the [SourceForge Bug Tracker http://sourceforge.net/tracker/?group_id=101808
  - [openModeller framework http://openmodeller.cria.org.br/wikis/om/FrontPage]
  - [oM Desktop http://openmodeller.cria.org.br/wikis/omgui/FrontPage]
 
+
+== How to cite ==
+
+Muñoz, M.E.S., Giovanni, R., Siqueira, M.F., Sutton, T., Brewer, P., Pereira, R.S., Canhos, D.A.L. & Canhos, V.P. (2009) "openModeller: a generic approach to species' potential distribution modelling". GeoInformatica. DOI: 10.1007/s10707-009-0090-7 
+
+-------------------------------------
+Last updated on %%mtime(%d %B %Y)
+
+''' <a href="http://txt2tags.org"><img alt="Powered by txt2tags" style="border-width:0" src="http://txt2tags.org/img/t2tpowered-white.png"></a>
