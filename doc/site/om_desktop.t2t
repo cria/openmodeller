@@ -3,12 +3,14 @@
 
 
 %!target: html
+%! style: om.css
+%! encoding: utf-8
 
 == openModeller Desktop ==
 
  | [oMDesktopOverview.jpg]
 
-The openModeller desktop graphical user interface provides a user friendly front end to the openModeller library. The program runs on both GNU/Linux and Windows (9x,ME,2k,NT,XP). In the future a Mac OSX  binary will also be available. There are two versions of the application.  
+The openModeller desktop graphical user interface provides a user friendly front end to the openModeller library. The program runs on GNU/Linux, Windows (9x,ME,2k,NT,XP) and Mac OSX. There are two versions of the application.  
 
 The newer openModeller Desktop Version 1 is the version now under active development.  The older version of the application (openModeller Desktop Version 0) can be run as a standalone GUI application or as a plugin for [Quantum GIS http://www.qgis.org/]. 
 
@@ -41,7 +43,7 @@ The software is available in source form (all platforms) and as a binary install
 
 === Tutorial Video ===
 
-A [tutorial video http://openmodeller.cria.org.br/images/openModellerDesktopVideoHighQuality.mpg] is available (~124mb!) which will help in getting started with openModeller Desktop.  
+A [tutorial video http://openmodeller.cria.org.br/images/openModellerDesktopVideoHighQuality.mpg] is available (~124MB) which will help in getting started with openModeller Desktop.  
 
 === openModeller Desktop '0' Wizard based version ===
 

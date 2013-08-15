@@ -1,7 +1,7 @@
 #!/bin/sh
 
 # generate algorithms pages
-echo "===> generating HTML pages directly from openModeller"
+echo "===> generating algorithm pages using openModeller"
 ./genpage.py
 
 # generate pages
@@ -23,8 +23,8 @@ for f in $files; do
 done
 
 txt2tags -o INSTALL.html ../INSTALL.t2t
-txt2tags -o web_service_1-0.html ../../src/soap/1.0/web_service.t2t
-txt2tags -o om_server_1-0.html ../../src/soap/1.0/om_server.t2t
-txt2tags -o web_service_2-0.html ../../src/soap/2.0/web_service.t2t
-txt2tags -o om_server_2-0.html ../../src/soap/2.0/om_server.t2t
+txt2tags -o web_service.html ../../src/soap/1.0/web_service.t2t
+txt2tags -o om_server.html ../../src/soap/1.0/om_server.t2t
+txt2tags -o web_service_2.html ../../src/soap/2.0/web_service.t2t
+txt2tags -o om_server_2.html ../../src/soap/2.0/om_server.t2t
 
