@@ -3,16 +3,14 @@
 
 %!target: html
 
-''' <div id="menu" style="height:50px;">
+''' <div id="menu">
 - [Main Page index.html]
 - [Overview overview.html]
 - [Documentation documentation.html]
 - [Download http://sourceforge.net/project/showfiles.php?group_id=101808]
 - [News http://openmodeller.blogspot.com]
-- [Browse Source Code https://sourceforge.net/p/openmodeller/svn/HEAD/tree/trunk/]
-- [Environmental Data environmental_data.html]
-- [Screenshots screenshots.html]
 - [oM Desktop om_desktop.html]
+- [oM Server om_server_2.html]
 - [Publications publications.html]
 - [Developers developers.html]
 

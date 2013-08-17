@@ -151,3 +151,6 @@ Implemented the ENFA algorithm.
 === Daniel Bolgheroni ===
 
 Ported openModeller to OpenBSD, helped refactoring the Maxent algorithm and creating the new web site.
+
+-------------------------------------
+Last updated on %%mtime(%d %B %Y)
