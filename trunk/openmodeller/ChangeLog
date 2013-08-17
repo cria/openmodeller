@@ -1,5 +1,5 @@
 Release 1.4.0 (?-?-?)
--------------
+
 SVN revision: ?
 
 	* New CONSENSUS algorithm that can be used to generate models with different algorithms by converting each individual model into a binary model given a threshold and then "merging" them into a final combined model according to a specified level of agreement.
@@ -11,8 +11,10 @@ SVN revision: ?
 	* Modified om_pseudo command-line tool to also accept XML input (in this case also producing XML output), optionally storing it into a file. When a model is specified as a parameter, presences are generated inside the model, while absences are generated outside.
 	* New implementation of the SOAP client/server programs compatible with OMWS 2.0.
 
+
+--------------------------
 Release 1.3.0 (2012-07-23)
--------------
+
 SVN revision: 5592
 
 	* New version of OM-MAXENT compatible with Maxent 3.3.3e.
@@ -27,8 +29,10 @@ SVN revision: 5592
 	* Fixed memory leak in the Environmental Distance algorithm when the Mahalanobis metric was used after model deserialization.
 	* New WCS proxy raster driver that allows WCS rasters to be identified through strings in the format: wcs>wcs_service_url>coverage_id
 
-Release 1.2.0 (2011-07-21)
+
 --------------------------
+Release 1.2.0 (2011-07-21)
+
 SVN revision: 5330
 
 	* Changed the ENFA algorithm to force marginality to be the first factor.  Changed broken stick distribution to work on specialisation factors only.  Add new parameter to enable log display of variable loadings for retained factors.
@@ -45,8 +49,10 @@ SVN revision: 5330
 	* Changed the Environmental Distance algorithm to return chi-square distribution probabilities when the metric is Mahalanobis and the maximum distance is 1.
 	* Changed the Maxent algorithm allowing absence data to be treated as background points. Also fixed memory deallocation issues.
 
-Release 1.1.0 (2010-02-05)
+
 --------------------------
+Release 1.1.0 (2010-02-05)
+
 SVN revision: 5114
 
 	* Bugfix: Interquartile and envelope size adjustments were using wrong reference values for salinity and temperature in the Aquamaps algorithm.
@@ -59,8 +65,10 @@ SVN revision: 5114
 	* New algorithm (Niche Mosaic) implemented by Dr. Missae Yamamoto.
 	* New algorithm (ENFA) kindly implemented by Dr. Chris Yesson.
 
-Release 1.0 (2009-05-22)
+
 ------------------------
+Release 1.0 (2009-05-22)
+
 SVN revision: 5035
 
 	* Changed Artificial Neural Networks algorithm to avoid exceeding a maximum number of iterations when training by minimum error (parameter Epoch is used to specify the maximum number of iterations).
@@ -74,8 +82,10 @@ SVN revision: 5035
 	* Added more precision to partial AUC through interpolation.
 	* Disabled the experimental maximum entropy algorithm.
 
-Release 0.7 (2009-01-14)
+
 ------------------------
+Release 0.7 (2009-01-14)
+
 SVN revision: 4761
 
 	* New Algorithm using Artificial Neural Networks.
@@ -89,8 +99,10 @@ SVN revision: 4761
 	* Fixed bug in ROC curve calculation: when the corresponding algorithm required normalization and the sampler passed as a parameter was unnormalized, algorithm prediction values were being calculated based on unnormalized samples.
 	* Added support to use "Spatially unique" and Environmentally unique" keywords in the request file (console interface).
 
-Release 0.6.1 (2008-10-13)
+
 --------------------------
+Release 0.6.1 (2008-10-13)
+
 SVN revision: 4580
 
 	* Enabled integration with Condor in the modelling server.
@@ -103,8 +115,10 @@ SVN revision: 4580
 	* Added new parameters in the Maximum Entropy algorithm to treat layer values in a different way (feature types).
 	* Changed om_niche to receive a serialized model as a parameter.
 
-Release 0.6.0 (2008-07-07)
+
 --------------------------
+Release 0.6.0 (2008-07-07)
+
 SVN revision: 4453
 
 	* New driver to read point data from TAPIR/DarwinCore providers.
@@ -117,9 +131,11 @@ SVN revision: 4453
 	* Re-enabled max threads parameter in GARP Best Subsets.
 	* Removed automake files (now completely replaced by cmake).
 	* Renamed compiled constant that can be used to indicate the location of algorithms from OM_LIB_PATH to OM_ALG_PATH.
+
 	
-Release 0.5.3 (2008-03-26)
 --------------------------
+Release 0.5.3 (2008-03-26)
+
 SVN revision: 4209
 
 	* Fixed bug when GDAL failed to read a raster row (in which case the row used to have zero values). Now the row is filled with nodata values.
@@ -139,8 +155,10 @@ SVN revision: 4209
 	* New classes to perform jackknife and chi-square in the environmental layers.
 	* Updated TerraLib drivers for compatibility with TerraLib version 3.2.0.
 
-Release 0.5.2 (2007-10-24)
+
 --------------------------
+Release 0.5.2 (2007-10-24)
+
 SVN revision: 3806
 
 	* Fixed compilation issues under Windows.
@@ -148,8 +166,10 @@ SVN revision: 3806
 	* Minor improvements in console tools (absences are now displayed in om_viewer and om_niche).
 	* Code clean up.
 
-Release 0.5.1 (2007-08-30)
+
 --------------------------
+Release 0.5.1 (2007-08-30)
+
 SVN revision: 3661
 
 	* Fixed MSVC compilation problems.
@@ -160,8 +180,10 @@ SVN revision: 3661
 	* New algorithm "Envelope Score".
 	* Fixed bug in the pseudo-absence generation of the SVM algorithm when no absences were passed as a parameter.
 
-Release 0.5 (2007-08-15)
+
 ------------------------
+Release 0.5 (2007-08-15)
+
 SVN revision: 3527
 
 	* New algorithm "Support Vector Machines" (C-SVC, nu-SVC and one-class SVM).
@@ -170,24 +192,27 @@ SVN revision: 3527
 	* Sample serialization is now based on the original (unnormalized) environment values.
 	* New infrastructure for unit tests using cxxtest.
 
-Release 0.4.2 (2007-05-08)
+
 --------------------------
+Release 0.4.2 (2007-05-08)
 
 	* Included ROC curve as part of model statistics.
 	* Added metric Chebyshev in the Environmental Distance algorithm.
 	* Log object is now a singleton.
 	* Minor bugfixes.
 
-Release 0.4.1 (2007-03-12)
+
 --------------------------
+Release 0.4.1 (2007-03-12)
 
 	* New algorithm "Environmental Distance".
 	* Changed OccurrencesReader to handle presence and absence points separately.
 	* Changed occurrences file format (now TAB-delimited with each point having a unique identifier).
 	* Initial support to cmake (should work on GNU/Linux and Mac OSX).
 
-Release 0.4 (2006-12-04)
+
 ------------------------
+Release 0.4 (2006-12-04)
 
 	* Integration with TerraLib.
 	* Removed the algorithm Bioclim distance.
@@ -197,32 +222,37 @@ Release 0.4 (2006-12-04)
 	* Several fixes in the SWIG-Python binding.
 	* Fixed installation issue with the RPM packages.
 
-Release 0.3.4 (2005-12-14)
+
 --------------------------
+Release 0.3.4 (2005-12-14)
 
 	* Fixed bug in model projector that could cause localized distortions in the distribution map (near the grid cell scale).
 	* New version of the CSM algorithm with several adjustments in code (Broken Stick cutoff method).
 	* New command line tools om_sampledump, om_create, om_project.
 
-Release 0.3.3 (2005-09-01)
+
 --------------------------
+Release 0.3.3 (2005-09-01)
 
 	* Implemented serialization mechanism for the Best Subsets Procedure.
 	* Moved the createModel logic and ModelCommand object into Algorithm.
 	* Fixed issues related to the Mac OS X build (for both 10.3 and 10.4).
 
-Release 0.3.2 (2005-08-11)
+
 --------------------------
+Release 0.3.2 (2005-08-11)
 
 	* Fixed bug that was making GARP produce null models (100% omission) most part of the time.
 
-Release 0.3.1 (2005-07-18)
+
 --------------------------
+Release 0.3.1 (2005-07-18)
 
 	* Major restructuring of directories, file locations and file names.
 
-Release 0.3 (planned to 2005-05-25, but never happened)
+
 -------------------------------------------------------
+Release 0.3 (planned to 2005-05-25, but never happened)
 
 	* Reimplemented serialization/deserialization mechanism using generic configuration objects.
 	* All available algorithms are serializable.
@@ -237,8 +267,8 @@ Release 0.3 (planned to 2005-05-25, but never happened)
 	* Projected maps now have the mask extent and cell size of a specified "map format".
 	
 
-Release 0.2.1 (2005-02-19)
 --------------------------
+Release 0.2.1 (2005-02-19)
 
 	* Added DesktopGarp version of GARP (as GARP 2.1).
 	* Removed GARP 3.x from build due to instability under high dimensional datasets.
@@ -246,8 +276,9 @@ Release 0.2.1 (2005-02-19)
 	* Fixed bug in Bioclim distance algorithm (probabilities were greater than zero outside the envelop depending on the cutoff parameter).
 	* Fixed bug in sampler class: when absence data was available, it was splitting train samplers once again and test samplers were coming out empty.
 
-Release 0.2 (2005-01-25)
+
 ------------------------
+Release 0.2 (2005-01-25)
 
 	* Compatibility with Windows.
 	* Compatibility with Mac OS.
@@ -261,13 +292,15 @@ Release 0.2 (2005-01-25)
 	* Reprojection capabilities.
 	* New tool to visualize models in environmental space (only the first 2 variables).
 
-Release 0.1.1 (2004-04-29)
+
 --------------------------
+Release 0.1.1 (2004-04-29)
 
 	* Bugfix release: corrected problem of reading only the first algorithm's parameter.
 
-Release 0.1 (2004-04-27)
+
 ------------------------
+Release 0.1 (2004-04-27)
 
 	* A simple command-line (console) interface. 
 	* A driver to the GDAL library to read and write multiple map file formats. 
@@ -275,4 +308,5 @@ Release 0.1 (2004-04-27)
 	* Two simple distance-based algorithms. 
 	* Bioclim algorithm. 
 	* Climate Space Model algorithm using Kaiser-Gutman cutoff.
+
 
