@@ -14,4 +14,4 @@ SEE ALSO
        om_console(1)
 
 AUTHORS
-       Mauro E. S. MuÃ±oz, Renato De Giovanni
+       Mauro E. S. Muñoz, Renato De Giovanni
