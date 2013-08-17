@@ -11,8 +11,7 @@
 
 == oM Desktop ==
 
-%[oMDesktopOverview.jpg]
-The openModeller desktop graphical user interface provides a user friendly front end to the openModeller framework. The program runs on GNU/Linux, Windows (9x,ME,2k,NT,XP) and Mac OSX. There are two different versions of the application. Both versions are currently unmaintained (please contact the developers mailing list if you're interested in helping). The original wizard version (0.*) was replaced by a more advanced version (1.*) were complex niche modelling experiments involving several algorithms and species can be carried out. 
+| [[img/oMDesktopOverview_small.jpg] img/oMDesktopOverview.jpg] | The openModeller desktop graphical user interface provides a user friendly front end to the openModeller framework. The program runs on GNU/Linux, Windows (9x,ME,2k,NT,XP,7) and Mac OSX. There are two different versions of the application. Both versions are currently unmaintained (please contact the developers mailing list if you're interested in helping). The original wizard version (0.*) was replaced by a more advanced version (1.*) were complex niche modelling experiments involving several algorithms and species can be carried out. You can find more details about the different versions below.
 
 === Version 1.* ===
 
