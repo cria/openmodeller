@@ -1,0 +1,17 @@
+NAME
+       om_viewer - Command line tool to visualize the environmental layers and projected model based on an openModeller request file
+
+SYNOPSIS
+       om_viewer [-r] REQUEST_FILE
+
+DESCRIPTION
+       om_viewer is a quick alternative to visualize either the environmental layers used in model creation or the corresponding projected model given an openModeller request file. If you have a request file compatible with om_console(1) you can use this tool to look at the input points and environmental layers. After running om_console(1) against the same request file, use the same tool with the -r parameter to visualize the projected model. Note: om_viewer depends on X11.
+
+OPTIONS
+       -r       Visualize only the projected model. Omit this parameter to visualize all input layers used in model creation sequentially.
+
+SEE ALSO
+       om_console(1)
+
+AUTHORS
+       Mauro E. S. Muñoz, Renato De Giovanni
