@@ -10,16 +10,17 @@
 
 %!include: algorithms.t2t
 - Command line tools
- - [om_algorithm http://openmodeller.cria.org.br/cmd/om_algorithm.html]
- - [om_console http://openmodeller.cria.org.br/cmd/om_console.html]
- - [om_model http://openmodeller.cria.org.br/cmd/om_model.html]
- - [om_niche http://openmodeller.cria.org.br/cmd/om_niche.html] (only for GNU/Linux with X11)
- - [om_points http://openmodeller.cria.org.br/cmd/om_points.html]
- - [om_project http://openmodeller.cria.org.br/cmd/om_project.html]
- - [om_pseudo http://openmodeller.cria.org.br/cmd/om_project.html]
- - [om_sampler http://openmodeller.cria.org.br/cmd/om_sampler.html]
- - [om_test http://openmodeller.cria.org.br/cmd/om_test.html]
- - [om_viewer http://openmodeller.sourceforge.net/index.php?option=com_content&task=view&id=28&Itemid=11] (only for GNU/Linux with X11)
+ - [om_algorithm man1/om_algorithm.1.html]
+ - [om_console man1/om_console.1.html]
+ - [om_evaluate man1/om_evaluate.1.html]
+ - [om_model man1/om_model.1.html]
+ - [om_niche man1/om_niche.1.html] (only for GNU/Linux with X11)
+ - [om_points man1/om_points.1.html]
+ - [om_project man1/om_project.1.html]
+ - [om_pseudo man1/om_project.1.html]
+ - [om_sampler man1/om_sampler.1.html]
+ - [om_test man1/om_test.1.html]
+ - [om_viewer man1/om_viewer.1.html] (only for GNU/Linux with X11)
 
 
 == Documentation for Developers ==
