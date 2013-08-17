@@ -7,6 +7,8 @@
 %! style: om.css
 %! encoding: utf-8
 
+%!include: menu.t2t
+
 == openModeller Developers ==
 
 (in chronological order of involvement)
