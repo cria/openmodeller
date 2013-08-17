@@ -2,7 +2,7 @@
 
 # generate algorithms pages
 echo "===> generating algorithm pages using openModeller"
-./genpage.py
+./gen_alg_pages.py
 
 # generate command-line pages
 echo "===> generating command line pages"
