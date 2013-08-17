@@ -59,7 +59,7 @@ for a in ids:
 
     # developers
     o.write('<p><b>Current version:</b> {0}'.format(alg.version))
-    o.write('&nbsp;&nbsp;&nbsp;&nbsp;<b>Developer(s):</b> {0}</p>\n'.format(alg.code_author))
+    o.write('&nbsp;&nbsp;&nbsp;&nbsp;<b>Developer(s):</b> {0}</p>\n'.format(alg.code_author.decode("iso-8859-1").encode('utf8')))
 
     # accepts categorical maps
     o.write('<p><b>Accepts Categorical Maps:</b> {0}</p>'.
@@ -79,7 +79,7 @@ for a in ids:
     # bibliography
     if alg.biblio:
         o.write('<h3>Bibliography</h3>\n')
-        o.write('<p>{0}</p>\n'.format(alg.biblio))
+        o.write('<p>{0}</p>\n'.format(alg.biblio.decode("iso-8859-1").encode('utf8')))
 
     # parameters
     o.write('<h3>Parameters</h3>\n')
