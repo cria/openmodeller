@@ -1,30 +1,21 @@
 
 
 
-
 %!target: html
-%!postproc: <BODY.*?> <BODY bgcolor="#004494" text="#999896">
-%!postproc(html): @@ <BR>
 
-"openModeller is an ecological niche modelling library, providing a
-uniform method to model species distribution patterns with a variety of
-algorithms."
+''' <div id="menu" style="height:50px;">
+- [Main Page index.html]
+- [Overview overview.html]
+- [Documentation documentation.html]
+- [Download http://sourceforge.net/project/showfiles.php?group_id=101808]
+- [News http://openmodeller.blogspot.com]
+- [Browse Source Code https://sourceforge.net/p/openmodeller/svn/HEAD/tree/trunk/]
+- [Environmental Data environmental_data.html]
+- [Screenshots screenshots.html]
+- [oM Desktop om_desktop.html]
+- [Publications publications.html]
+- [Developers developers.html]
 
-Home @@
-News @@
-Overview @@
-Developers @@
-Documentation @@
-View Source Code @@
-Environmental Data @@
-Screenshots @@
-oM Desktop @@
-Algorithms @@
-Publications @@
-Resources @@
-Download @@
-Bugs @@
 
- | [sf_logo.png]
+''' </div>
 
- | [fapesp_small.png]

@@ -6,6 +6,8 @@
 %! style: om.css
 %! encoding: utf-8
 
+%!include: menu.t2t
+
 === openModeller: a generic approach to species’ potential distribution modelling ===
 
 Please use the following reference if you need to cite openModeller in a publication:

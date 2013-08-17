@@ -6,6 +6,8 @@
 %! style: om.css
 %! encoding: utf-8
 
+%!include: menu.t2t
+
 == Documentation for Users ==
 
 %!include: algorithms.t2t

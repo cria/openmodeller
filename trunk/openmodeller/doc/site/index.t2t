@@ -6,6 +6,8 @@
 %! style: om.css
 %! encoding: utf-8
 
+%!include: menu.t2t
+
 == openModeller ==
 
 openModeller provides a flexible, robust, cross-platform environment to carry out ecological niche modeling experiments. It is comprised of a single framework written in C++ allowing multipe interfaces on top of it, such as command line programs, Desktop interface, Web interface and Web Service interface. The framework includes facilities for sampling points, creating, testing, evaluating and projecting models into different environmental scenarios, reading species occurrence and environmental data in different formats (including remote sources, such as [GBIF http://gbif.org] and [speciesLink http://splink.org.br] for species occurrence data, and [WCS http://www.opengeospatial.org/standards/wcs] providers for raster data), among many other features. More than 10 algorithms are available as plugins, including GARP, Maxent, ENFA and Support Vector Machines. The same functionality can be used by Python programs through a built-in SWIG binding on top of the C++ API.

@@ -27,7 +27,7 @@ files="alg_manual
        developers 
        documentation 
        environmental_data 
-       main
+       index
        news 
        om_desktop
        overview 
