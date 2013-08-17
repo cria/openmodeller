@@ -21,9 +21,17 @@ The framework was originally developed by [CRIA http://www.cria.org.br] in 2003 
  - [Mac package http://sourceforge.net/projects/openmodeller/files/openModeller/1.3.0/openModeller-1.3.0.mac.tgz/download]
  - [Zipped source code http://sourceforge.net/projects/openmodeller/files/openModeller/1.3.0/libopenmodeller-src-1.3.0.zip/download]
  - [Complete list of versions and packages http://sourceforge.net/projects/openmodeller/files/openModeller/]
- - Development version can be checked out from the Subversion repository URL: ""http://svn.code.sf.net/p/openmodeller/svn/trunk/openmodeller""
-- [oM Desktop interface http://sourceforge.net/projects/openmodeller/files/openModeller%20Desktop/] (older version!)
- - Development version can be checked out from the Subversion repository URL: ""http://svn.code.sf.net/p/openmodeller/svn/trunk/openModellerDesktop""
+ - Development version can be checked out from the Subversion repository URL: ""http://svn.code.sf.net/p/openmodeller/svn/trunk/openmodeller"" ([browse source code https://sourceforge.net/p/openmodeller/svn/HEAD/tree/trunk/openmodeller])
+- oM Desktop interface (older version!)
+ - [Complete list of versions and packages http://sourceforge.net/projects/openmodeller/files/openModeller%20Desktop/]
+ - Development version can be checked out from the Subversion repository URL: ""http://svn.code.sf.net/p/openmodeller/svn/trunk/openModellerDesktop"" ([browse source code https://sourceforge.net/p/openmodeller/svn/HEAD/tree/trunk/openModellerDesktop])
+- Environmental data
+ - Sample datasets provided with the oM Desktop Windows installer:
+  - [CRU cl2 http://openmodeller.cria.org.br/installer_sample_data/crucl2.zip]
+  - [Hadley 2050A1F http://openmodeller.cria.org.br/installer_sample_data/hadley2050A1F.zip]
+  - [CIAT - SouthAmerica http://openmodeller.cria.org.br/installer_sample_data/SouthAmerica.zip]
+ - More datasets:
+  - [Compilation from the European Distributed Institute of Taxonomy (EDIT) http://edit.csic.es/GISdownloads.html]
 
 
 == Mailing Lists ==

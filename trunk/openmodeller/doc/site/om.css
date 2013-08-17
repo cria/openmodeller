@@ -8,6 +8,17 @@ html, body {
   height:100%;
   text-align:justify;
 }
+table {
+  font-family:verdana,arial,sans-serif;
+  font-size:0.9em;
+  color:#585858;
+  text-align:justify;
+}
+#menu
+{
+  width: 100%;
+  background-color:#295498;
+}
 #menu ul
 {
   list-style-type:none;
@@ -50,4 +61,24 @@ html, body {
 #menu a:active
 {
   background-color:#04B4AE;
+}
+#wizard_steps table
+{
+  width: 80%;
+  margin-left:10%; 
+  margin-right:10%;
+}
+#omdesktop_features table
+{
+  width: 60%;
+  margin-left:0%; 
+  margin-right:40%;
+}
+#omdesktop_features td
+{
+vertical-align:top;
+}
+.bullet
+{
+font-size:22px;
 }

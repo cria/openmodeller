@@ -26,14 +26,11 @@ echo "===> generating HTML pages from .t2t files"
 files="alg_manual
        developers 
        documentation 
-       environmental_data 
        index
        news 
        om_desktop
        overview 
-       publications
-       screenshots
-       title"
+       publications"
 
 for f in $files; do
     txt2tags $f.t2t

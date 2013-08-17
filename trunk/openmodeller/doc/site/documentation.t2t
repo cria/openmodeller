@@ -23,6 +23,7 @@
  - [om_sampler man1/om_sampler.1.html]
  - [om_test man1/om_test.1.html]
  - [om_viewer man1/om_viewer.1.html] (only for GNU/Linux with X11)
+- [Tutorial video for oM Desktop http://openmodeller.cria.org.br/images/openModellerDesktopVideoHighQuality.mpg]
 
 
 == Documentation for Developers ==
@@ -53,3 +54,5 @@
  - [version 1.0.7 http://openmodeller.cria.org.br/doxygen/desktop/1.0.7/]
 
 
+-------------------------------------
+Last updated on %%mtime(%d %B %Y)

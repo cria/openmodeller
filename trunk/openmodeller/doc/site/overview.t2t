@@ -29,3 +29,6 @@ web-based). In the future some tasks could be performed in a distributed
 way, including the possibility of running separately the algorithms in
 remote cluster machines. Its source code is available at sourceforge for
 all interested developers.
+
+-------------------------------------
+Last updated on %%mtime(%d %B %Y)
