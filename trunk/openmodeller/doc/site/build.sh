@@ -27,7 +27,6 @@ files="alg_manual
        developers 
        documentation 
        index
-       news 
        om_desktop
        overview 
        publications"
