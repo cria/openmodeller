@@ -1,0 +1,1 @@
+Since GARP is a non-deterministic algorithm, it produces a different result each time it runs with the same input. The following images show models in the environmental space (temperature x precipitation) generated with the same input (<i>Thalurania furcata boliviana</i> localities dataset) using the default parameters.

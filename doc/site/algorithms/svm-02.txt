@@ -1,1 +1,1 @@
-fig. 2: SVM one-class
+fig. 2: SVM one-class with Nu=0.5

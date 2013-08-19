@@ -1,0 +1,1 @@
+fig. 1: Niche mosaic model with default parameters.

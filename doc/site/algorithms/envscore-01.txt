@@ -1,0 +1,1 @@
+fig. 1: Envelope score model for 2 variables.

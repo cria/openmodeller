@@ -1,2 +1,1 @@
-fig. 1: SVM C-SVC with default parameters. Pseudo-absence points are
-displayed in red
+fig. 1: SVM C-SVC with default parameters. Pseudo-absence points are displayed in red.

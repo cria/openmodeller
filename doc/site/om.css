@@ -76,9 +76,52 @@ table {
 }
 #omdesktop_features td
 {
-vertical-align:top;
+  vertical-align:top;
 }
 .bullet
 {
-font-size:22px;
+  font-size:22px;
+}
+#overview_enm
+{
+  float:right;
+  margin-left:20px;
+  font-size:80%;
+}
+#overview_enm img
+{
+  border: 1px solid rgb(238, 238, 238);
+  box-shadow: 3px 3px 3px rgb(204, 204, 204);
+}
+#overview_arch
+{
+  float:left;
+  margin-right:20px;
+  font-size:80%;
+}
+#overview_arch img
+{
+  border: 1px solid rgb(238, 238, 238);
+  box-shadow: 3px 3px 3px rgb(204, 204, 204);
+}
+#models img
+{
+  border: 1px solid rgb(238, 238, 238);
+  box-shadow: 3px 3px 3px rgb(204, 204, 204);
+}
+#index_map
+{
+  float:right;
+  margin-left:20px;
+  margin-top: 0;
+  font-size:80%;
+}
+#index_map img
+{
+  border: 1px solid rgb(238, 238, 238);
+  box-shadow: 3px 3px 3px rgb(204, 204, 204);
+}
+#index_map p
+{
+  margin:0;
 }
