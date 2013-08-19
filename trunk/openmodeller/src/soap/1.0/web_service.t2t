@@ -107,7 +107,7 @@ input data (through n-fold cross validation, for instance). Multiple
 projections can also be requested when there is more than one
 environmental scenario available.
 
-[ws_diagram_small.png]
+[img/ws_diagram_small.png]
 
 **Figure 1:** Typical workflow to interact with the service. Boxes
   with solid lines indicate calls to service operations. Boxes with
