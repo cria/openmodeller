@@ -31,10 +31,10 @@
 - [Framework compilation guide INSTALL.html]
 - [How to add new algorithms alg_manual.html]
 - openModeller Web Service interface (OMWS)
- - [version 2.0 web_service_2.html]
+% - [version 2.0 web_service_2.html]
  - [version 1.0 web_service.html]
 - oM Server guide
- - [version 2.0 om_server_2.html]
+% - [version 2.0 om_server_2.html]
  - [version 1.0 om_server.html]
 - Framework API
  - [version 1.2.0 http://openmodeller.cria.org.br/doxygen/1.2.0/]

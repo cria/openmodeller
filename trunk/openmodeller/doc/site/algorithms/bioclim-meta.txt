@@ -1,0 +1,1 @@
+The following images show two models in the environmental space (temperature x precipitation) generated with the same input (<i>Thalurania furcata boliviana</i> localities dataset) but with different values for the "cutoff" parameter:

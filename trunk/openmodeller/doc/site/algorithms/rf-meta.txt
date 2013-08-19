@@ -1,0 +1,1 @@
+The following image shows a sample model in the environmental space (temperature x precipitation) generated with the standard dataset used for tests (<i>Thalurania furcata boliviana</i> localities dataset):

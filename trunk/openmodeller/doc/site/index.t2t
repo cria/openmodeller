@@ -3,12 +3,17 @@
 
 
 %!target: html
+%!postproc(html): '##(img.*)##' '<img src="\1"/>'
 %! style: om.css
 %! encoding: utf-8
 
 %!include: menu.t2t
 
 == openModeller ==
+
+''' <div id="index_map">
+##img/t_furcata_map_small.png##
+''' </div>
 
 openModeller provides a flexible, robust, cross-platform environment to carry out ecological niche modeling experiments. It is comprised of a single framework written in C++ allowing multipe interfaces on top of it, such as command line programs, Desktop interface, Web interface and Web Service interface. The framework includes facilities for sampling points, creating, testing, evaluating and projecting models into different environmental scenarios, reading species occurrence and environmental data in different formats (including remote sources, such as [GBIF http://gbif.org] and [speciesLink http://splink.org.br] for species occurrence data, and [WCS http://www.opengeospatial.org/standards/wcs] providers for raster data), among many other features. More than 10 algorithms are available as plugins, including GARP, Maxent, ENFA and Support Vector Machines. The same functionality can be used by Python programs through a built-in SWIG binding on top of the C++ API.
 
@@ -31,6 +36,9 @@ The framework was originally developed by [CRIA http://www.cria.org.br] in 2003 
   - [Hadley 2050A1F http://openmodeller.cria.org.br/installer_sample_data/hadley2050A1F.zip]
   - [CIAT - SouthAmerica http://openmodeller.cria.org.br/installer_sample_data/SouthAmerica.zip]
  - More datasets:
+  - [WorldClim http://www.worldclim.org]
+  - [Bio-ORACLE http://www.oracle.ugent.be]
+  - [AquaMaps http://www.aquamaps.org/envtdata/main.php]
   - [Compilation from the European Distributed Institute of Taxonomy (EDIT) http://edit.csic.es/GISdownloads.html]
 
 
@@ -52,7 +60,7 @@ Use the [SourceForge Bug Tracker http://sourceforge.net/tracker/?group_id=101808
 
 == Other Resources ==
 
-- IRC (not used very often these days)
+- IRC
  - Chat server: irc.freenode.net
  - Channel: #openmodeller
 - Wikis
