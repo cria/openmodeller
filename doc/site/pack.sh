@@ -1,0 +1,1 @@
+tar cvzf website.tgz devs/*.* img/*.* man1/ screenshots/*.* algorithms/*.png algorithms/*.html alg_manual.html changelog.html developers.html documentation.html index.html INSTALL.html om.css om_desktop.html om_server_2.html om_server.html overview.html publications.html w3c_examples.css w3c_main.css web_service_2.html web_service.html
