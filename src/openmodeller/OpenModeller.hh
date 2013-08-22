@@ -233,7 +233,6 @@ public:
    * @param env Pointer to Environment object with the layers 
    *  to project the model onto.
    * @param output_file Output file name.
-   * @param format Output file format (extent, data type, nodata value, etc.).
    */
   int createMap( const EnvironmentPtr & env, char const *output_file );
   
@@ -254,7 +253,6 @@ public:
    * setEnvironment() method. Output format defaults to the
    * output mask format.
    * @param output_file Output file name.
-   * @param format Output file format (extent, data type, nodata value, etc.).
    */
   int createMap( char const *output_file );
 

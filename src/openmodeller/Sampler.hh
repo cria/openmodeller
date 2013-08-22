@@ -136,11 +136,8 @@ public:
    * There is 50% of chance to get a presence point and 50% of
    * get an absence or pseudo-absence point.
    * If there are real absence points (user input) then only
-   * absence are sampled. If there are not real absence, samples
+   * absences are sampled. If there are not real absence, samples
    * pseudo-absence points.
-   * 
-   * @param independent Filled in with values of the independent
-   *  variables of the sample.
    *
    * @return Zero if got an absence or pseudo-absence point and
    *  not zero if got a presence point.

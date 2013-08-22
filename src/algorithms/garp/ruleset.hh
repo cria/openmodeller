@@ -80,7 +80,7 @@ public:
 /** Remove last rules in a rule set, trimming it to a certain
   *  number of rules.
   * @param rules Number of rules that will remain in the rule
-  *        set. It will preserve the first <rules> and will
+  *        set. It will preserve the first rules and will
   *        eliminate remaining ones from rule set.
   */
   void trim(int rules);
@@ -88,7 +88,7 @@ public:
 
 /** Eliminates rules with performance below a certain threshold
   *  from the rule set.
-  * @param index Index on performance array that will be 
+  * @param perfIndex Index on performance array that will be 
             considered for elimination of rules.
   * @param threshold Minimum performance value a rule must
             present to remain in the rule set. Rules with

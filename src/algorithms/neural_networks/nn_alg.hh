@@ -84,8 +84,7 @@ public:
   /** This method is used when projecting the model.  
     * @note This method is inherited from the Algorithm class
     * @return     
-    * @param Scalar *x a pointer to a vector of openModeller Scalar type (currently double). 
-    *    The vector should contain values looked up on the environmental variable layers into which the mode is being projected.
+    * @param x Pointer to a vector of openModeller Scalar type (currently double). The vector should contain values looked up on the environmental variable layers into which the mode is being projected.
     */
   Scalar getValue( const Sample& x ) const;
   

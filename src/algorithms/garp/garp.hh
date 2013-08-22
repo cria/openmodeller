@@ -93,7 +93,7 @@ public:
   /** This method is used when projecting the model.  
     * @note This method is inherited from the Algorithm class
     * @return     
-    * @param Scalar *x a pointer to a vector of openModeller Scalar 
+    * @param x a pointer to a vector of openModeller Scalar 
     *        type (currently double). The vector should contain values 
     *        looked up on the environmental variable layers into which 
     *        the mode is being projected. 
@@ -104,7 +104,7 @@ public:
     * expressed as a number between 0 and 1 where 0 represents model
     * completion. 
     * @return 
-    * @param Scalar *val 
+    * @param val 
     */
   int getConvergence( Scalar * const val ) const;
 
@@ -125,28 +125,24 @@ private:
   void cacheSamples(const SamplerPtr&, OccurrencesPtr&, int resamples);
 
 /** Fill a rule set with newly generated rules
-  * @param GarpRuleSet * ruleset: rule set where rules will be added to
-  * @param GarpCustomSampler * sampler: sampler that will provide
-  *        data points and other data used during rule creation.
+  * @param ruleset: rule set where rules will be added to
   * @param numRules number of rules to be added to the rule set.
   */
   void colonize(GarpRuleSet * ruleset, int numRules);
 
 /** Evaluate rules from a rule set based on their performance to predict 
   *  points provided by a sampler object.
-  * @param GarpRuleSet * ruleset: rule set to be tested.
-  * @param GarpCustomSampler * sampler: sampler that will provide
-  *        data points for testing.
+  * @param ruleset: rule set to be tested.
   */
   void evaluate(GarpRuleSet * ruleset);
 
 /** Keep fittest individuals from source rule set storing them in target 
   *   rule set in descending order of fitness.     
-  * @param GarpRuleSet * source: pointer to the source rule set where rules 
+  * @param source Pointer to the source rule set where rules 
   *        will be selected from (usually the previous generated population)
-  * @param GarpRuleSet * target: pointer to the target rule set where 
+  * @param target Pointer to the target rule set where 
   *        fittest rules will be transferred to (usually the fittest rule set)
-  * @param PerfIndex perfIndex: Index of value on performance array that
+  * @param perfIndex Index of value on performance array that
   *        will be used to select individuals.
   * @note: This method produces a side effect that is to update the
   *        statistics about heuristic operators performance (that will be
@@ -158,10 +154,11 @@ private:
 
 
 /** Select fittest individuals and store them into target ruleset
-  * @param GarpRuleSet * source: pointer to the rule set containing parents
+  * @param source Pointer to the rule set containing parents
   *        (individuals that will provide genes to create new individuals).
-  * @param GarpRuleSet * target: pointer to the target rule set where 
+  * @param target Pointer to the target rule set where 
   *        offspring will be transferred to.
+  * @param gapsize Proportion of contribution from the objBest archive set to the new population.
   */
   void select(GarpRuleSet * source, GarpRuleSet * target, double gapsize);
 

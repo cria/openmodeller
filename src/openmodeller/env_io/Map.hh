@@ -56,8 +56,6 @@ public:
   * to by rst.  It will be deleted when this is deleted.
   * 
   * @param rst Raster object
-  * @param ocs The coordinates given to this object will be in
-  *        this geografical coordinate system (in WKT format).
   */
   Map( Raster *rst );
   ~Map();

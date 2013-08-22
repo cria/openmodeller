@@ -74,7 +74,7 @@ public:
   /** Register an OccurrencesReader driver.
    * 
    * @param driverId Driver identifier.
-   * @param creator Function pointer to builder function.
+   * @param builder Function pointer to builder function.
    */
   bool registerDriver( const string& driverId, CreateOccurrencesReaderCallback builder );
   

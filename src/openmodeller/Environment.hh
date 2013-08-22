@@ -90,8 +90,9 @@ class dllexp EnvironmentImpl : public Configurable, public Normalizable, private
   /** Vector with file names that contain the variables to
    *  be used and also the mask layer.
    *
-   * @param categs Categorical layers (e.g. soil).
-   * @param maps   Continuous layers (e.g. temperature).
+   * @param categs    Categorical layers (e.g. soil).
+   * @param maps      Continuous layers (e.g. temperature).
+   * @param mask_file Mask file.
    */
   EnvironmentImpl( const std::vector<std::string>& categs,
 		   const std::vector<std::string>& maps, 

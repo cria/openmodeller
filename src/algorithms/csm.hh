@@ -310,7 +310,7 @@ class Csm : public AlgorithmImpl
         /** This method is used when projecting the model.  
          * @note This method is inherited from the Algorithm class
          * @return Scalar of the probablitiy of occurence    
-         * @param Scalar *x a pointer to a vector of openModeller Scalar type 
+         * @param x Pointer to a vector of openModeller Scalar type 
          * (currently double). The vector should contain values looked up on 
          * the environmental variable layers into which the mode is being projected. */
         Scalar getValue( const Sample& x ) const;
@@ -319,7 +319,7 @@ class Csm : public AlgorithmImpl
          * expressed as a number between 0 and 1 where 0 represents model
          * completion. 
          * @return 
-         * @param Scalar *val 
+         * @param val 
          */
         int getConvergence( Scalar * const val ) const;
 
@@ -409,14 +409,14 @@ class Csm : public AlgorithmImpl
         gsl_matrix * autoCovariance(gsl_matrix * m);
 
         /** Method to serialize a CSM model.
-         * @param ConfigurationPtr Pointer to the serializer object
+         * @param config Pointer to the serializer object
          */
-        virtual void _getConfiguration( ConfigurationPtr& ) const;
+        virtual void _getConfiguration( ConfigurationPtr& config ) const;
 
         /** Method to deserialize a CSM model.
-         * @param ConstConfigurationPtr Pointer to the serializer object
+         * @param config Pointer to the serializer object
          */
-        virtual void _setConfiguration( const ConstConfigurationPtr& );
+        virtual void _setConfiguration( const ConstConfigurationPtr& config );
 
 
         /** This is a flag to indicate that the algorithm was initialized. */
