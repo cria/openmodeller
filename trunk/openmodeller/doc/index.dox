@@ -16,10 +16,6 @@
 \section index_bugs Bug Reporting
 If you think you have found a bug, please report it using our <a href="http://sourceforge.net/tracker/?group_id=101808&atid=631036">bug tracker</a>. When reporting bugs, please include some contact information in case we need help with replicating your issue.
 
-\section index_maillist Mailing Lists
-Some openModeller users and developers can also often be found in the 
-<a href="irc://irc.freenode.net/#openModeller">#openModeller</a> IRC channel on irc.freenode.net.<p>
-
 \htmlonly
 <p>
 $Id:$
