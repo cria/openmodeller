@@ -42,7 +42,7 @@
 /**
   * Implements GARP with Best Subset Procedure (Anderson et al. 2003).
   * 
-  * It runs <n> Garp models, filter the best ones based on the
+  * It runs "n" Garp models, filter the best ones based on the
   * procedure defined by Anderson et al. 2003 and sum them to obtain
   * a probability map for the species distribution.
   * 

@@ -44,7 +44,7 @@ using std::string;
 /**
   * Implements Best Subset Procedure (Anderson et al. 2003).
   * 
-  * It runs <n> Garp models, filter the best ones based on the
+  * It runs "n" Garp models, filter the best ones based on the
   * procedure defined by Anderson et al. 2003 and sum them to obtain
   * a probability map for the species distribution.
   * 
@@ -87,7 +87,7 @@ public:
   /** This method is used when projecting the model.
    *  @note This method is inherited from the Algorithm class
    *  @return     
-   *  @param Scalar *x a pointer to a vector of openModeller Scalar 
+   *  @param x Pointer to a vector of openModeller Scalar 
    *         type (currently double). The vector should contain values 
    *         looked up on the environmental variable layers into which 
    *         the mode is being projected. 
@@ -98,7 +98,7 @@ public:
     * expressed as a number between 0 and 1 where 0 represents model
     * completion. 
     * @return 
-    * @param Scalar *val 
+    * @param val 
     */
   int getConvergence( Scalar * const val ) const;
 

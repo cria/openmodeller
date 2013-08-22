@@ -95,7 +95,7 @@ public:
    * predictions for all sampler points, calculates all points for the curve and 
    * calculates the area under the curve.
    * @param model Model object to be evaluated.
-   * @param Sampler Pointer to a Sampler object that will provide data for evaluation.
+   * @param sampler Pointer to a Sampler object that will provide data for evaluation.
    */
   void calculate( const Model& model, const SamplerPtr& sampler );
   

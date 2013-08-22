@@ -51,7 +51,6 @@ public:
    * Any model definition building stuff is done here.
    * This is optional (model dependent).
    * @note This method is inherited from the Algorithm class
-   * @param 
    * @return 0 on error
    */
   int initialize();

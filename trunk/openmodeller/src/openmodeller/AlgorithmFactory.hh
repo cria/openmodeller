@@ -78,7 +78,7 @@ public:
   static int searchDefaultDirs();
 
   /** Search for all DLLs in some directories.
-   * @param dir null terminated string representing a directory to scan
+   * @param dirs null terminated string representing a directory to scan
    * @return Number of DLLs found.
    */
   static int addDir( const std::string& dirs );
@@ -182,7 +182,7 @@ private:
    * @param file Name of file to laod.
    * @return True if successfully loaded.
    */
-  bool p_addDll( const std::string& dir );
+  bool p_addDll( const std::string& file );
 
   /** Manages an algorithm with its DLL file. */
   class DLL : private ReferenceCountedObject

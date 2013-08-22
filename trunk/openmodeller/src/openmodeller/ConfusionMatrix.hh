@@ -87,7 +87,7 @@ public:
    * Set the threshold to the lowest probability value of all training points.
    * Note: it is assumed that both parameters are already normalized, if necessary.
    * @param model Model object to be evaluated
-   * @param Sampler Pointer to a Sampler object with training data
+   * @param sampler Pointer to a Sampler object with training data
    */
   void setLowestTrainingThreshold(const Model& model, const SamplerPtr& sampler);
 
@@ -108,7 +108,7 @@ public:
   /** 
    * Calculate confusion matrix based on an abstract Sampler object
    * @param model Model object to be evaluated
-   * @param Sampler Pointer to a Sampler object that will provide
+   * @param sampler Pointer to a Sampler object that will provide
    *  data for evaluation
    */
   void calculate(const Model& model, const SamplerPtr& sampler);

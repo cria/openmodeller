@@ -82,14 +82,14 @@ public:
   /** This method is used when projecting the model.  
     * @note This method is inherited from the Algorithm class
     * @return     
-    * @param Scalar *x a pointer to a vector of openModeller Scalar type (currently double). The vector should contain values looked up on the environmental variable layers into which the mode is being projected. */
+    * @param x a pointer to a vector of openModeller Scalar type (currently double). The vector should contain values looked up on the environmental variable layers into which the mode is being projected. */
   Scalar getValue( Scalar const *x ) const;
   
   /** Returns a value that represents the convergence of the algorithm
     * expressed as a number between 0 and 1 where 0 represents model
     * completion. 
     * @return 
-    * @param Scalar *val 
+    * @param val 
   */
   int getConvergence( Scalar *val );
 

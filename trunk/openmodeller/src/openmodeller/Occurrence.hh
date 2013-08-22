@@ -75,9 +75,12 @@ public:
    * @param x Longitude of the occurrence (decimal degrees).
    * @param y Latitude of the occurrence (decimal degrees).
    * @param error (x,y) uncertanty (meters).
+   * @param abundance Abundance at point (0=absence, 1=single presence).
    * @param num_attributes Number of possible modelling
    *  attributes. - abundance must be first attribute
    * @param attributes Vector with possible modelling attributes.
+   * @param num_env Number of environmental variables.
+   * @param env Vector with unnormalized environmental data at the point.
    */
   OccurrenceImpl( const std::string& id, 
                   Coord x, Coord y, Scalar error,
@@ -97,6 +100,14 @@ public:
   { }
 
   /** Occurrence constructor with uncertanty, using std::vector
+   * 
+   * @param id Unique id.
+   * @param x Longitude of the occurrence (decimal degrees).
+   * @param y Latitude of the occurrence (decimal degrees).
+   * @param error (x,y) uncertanty (meters).
+   * @param abundance Abundance at point (0=absence, 1=single presence).
+   * @param attributes Vector with possible modelling attributes.
+   * @param env Vector with unnormalized environmental data at the point.
    */
   OccurrenceImpl( const std::string& id, 
                   Coord x, Coord y, Scalar error,
@@ -119,9 +130,9 @@ public:
    * @param x Longitude of the occurrence (decimal degrees).
    * @param y Latitude of the occurrence (decimal degrees).
    * @param error (x,y) uncertanty (meters).
-   * @param num_attributes Number of possible modelling
-   *  attributes. - abundance must be first attribute
+   * @param abundance Abundance at point (0=absence, 1=single presence).
    * @param attributes Vector with possible modelling attributes.
+   * @param env Vector with unnormalized environmental data at the point.
    */
   OccurrenceImpl( const std::string& id, 
                   Coord x, Coord y, Scalar error,
@@ -144,6 +155,7 @@ public:
    * @param x Longitude of the occurrence (decimal degrees).
    * @param y Latitude of the occurrence (decimal degrees).
    * @param error (x,y) uncertanty (meters).
+   * @param abundance Abundance at point (0=absence, 1=single presence).
    * @param num_attributes Number of possible modelling
    *  attributes. - abundance must be first attribute
    * @param attributes Vector with possible modelling attributes.
