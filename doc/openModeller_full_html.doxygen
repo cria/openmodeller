@@ -120,6 +120,7 @@ EXCLUDE_PATTERNS       = */test/pytest* \
                          */src/algorithms/matrix.hh \
                          */src/algorithms/maxent* \
                          */src/algorithms/svm/svm.* \
+                         */src/algorithms/rf/librf/* \
                          */src/openmodeller/SampleExpr* \
                          *soap* \
                          *swig*
