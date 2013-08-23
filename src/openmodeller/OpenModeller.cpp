@@ -672,7 +672,16 @@ OpenModeller::calculateModelStatistics( const ConstConfigurationPtr & config )
 
       calc_matrix = true;
 
-      threshold = matrix_param->getAttributeAsDouble( "Threshold", CONF_MATRIX_DEFAULT_THRESHOLD );
+      std::string threshold_str = matrix_param->getAttribute( "Threshold", "" );
+
+      if ( threshold_str.compare( "lpt" ) == 0 ) {
+
+        threshold = -1.0; 
+      }
+      else {
+
+        threshold = matrix_param->getAttributeAsDouble( "Threshold", CONF_MATRIX_DEFAULT_THRESHOLD );
+      }
 
       ignore_absences_int = matrix_param->getAttributeAsInt( "IgnoreAbsences", 0 );
 
