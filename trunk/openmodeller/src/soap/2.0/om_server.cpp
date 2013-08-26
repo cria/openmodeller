@@ -1398,7 +1398,16 @@ omws::omws__getResults( struct soap *soap, omws::xsd__string tickets, struct omw
 
         if ( getProgress( ticket_dir, ticket ) == 100 ) {
 
-          string res_file = ticket_dir + type + _RESPONSE + ticket;
+          string res_file;
+
+          if ( type.compare(0, 4, OMWS_PROJECTION) == 0 ) {
+
+            res_file = ticket_dir + OMWS_PROJECTION_STATISTICS_PREFIX + ticket;
+          }
+          else {
+
+            res_file = ticket_dir + type + _RESPONSE + ticket;
+          }
 
           has_result = true;
 
