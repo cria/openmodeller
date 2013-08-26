@@ -6,8 +6,6 @@ Last updated: %%mtime(%d %B %Y)
 %! style        : w3c_examples.css
 %! Options      : --toc --toc-level 3 --enum-title --css-sugar
 %! preproc      : OM_URL   http://openmodeller.sf.net/
-%! PostProc(html): '(?i)(<pre>)' '<div class="exampleInner">\1'
-%! PostProc(html): '(?i)(</pre>)' '\1</div>'
 %! encoding: utf-8
 
 % These are comments and will not be generated in any output
@@ -78,7 +76,7 @@ means that clients developed for the 1.0 version will not be able to
 communicate with servers developed for the 2.0 version. However, the
 necessary changes for an existing client to become compatible with the
 new version are //usually// minimal (essentially just change the protocol 
-and the openModeller namespaces).
+and the openModeller schema namespaces).
 
 So far there are two known server implementations of the service 
 compatible with this version. One of them ([oM Server om_server_2.html]) was 
@@ -135,12 +133,12 @@ the numerical value 1), inside the marginal envelope the environmental
 conditions can still be considered acceptable (corresponding to 0.5)
 and outiside the marginal envelope the environmental conditions are
 unsuitable (corresponding to 0). You can graphical examples of Bioclim
-models [here algorithms/bioclim.html]. Therefore, the [createModel #toc30] 
+models [here algorithms/bioclim.html]. Therefore, the [createModel #toc31] 
 operation will request the creation of that kind of model -
 not a map!  The result of "getModel" will be the serialized model,
 which in the case of Bioclim will be just the bioclimatic envelopes
 (minimum, maximum, average and standard deviation cutoff for each
-variable, as can be seen in the [getModel example response #toc37]). 
+variable, as can be seen in the [getModel example response #toc36]). 
 Two things are usually done with a model in OMWS: it can be
 tested as many times as necessary (getting back statistical results as
 a confusion matrix and/or ROC curve) or it can be projected into a
@@ -158,19 +156,31 @@ ways, keeping the interface simple and effective.
 
 Another important thing to mention is that, in this new version of the
 protocol, many parts of the workflow described in figure 1 can be
-encapsulated in a single runExperiment call, leaving the workflow
+encapsulated into a single runExperiment call, leaving the workflow
 management to the server side.
 
 = Changes from version 1.0 to 2.0 =
 
 - Internal tests must now be performed by means of a separate testModel
-  call/job (the <Statistics> parameter was removed from createModel 
+  call (the <Statistics> parameter was removed from createModel 
   requests).
 - getProgress now accepts a comma separated list of
   tickets, returning a comma separated list of progresses.
 - New progress code -3 to indicate cancelled jobs.
+- New progress code -4 to indicate unknown jobs.
+- New "samplePoints" operation that can be used to randomly sample
+  points in a given region & environmental scenario. This operation 
+  is followed by the corresponding "getSamplingResult" operation.
+- New "evaluateModel" operation that can be used to retrieve raw
+  model values for a given set of points in a given environmental
+  scenario. This operation is followed by the corresponding 
+  "getModelEvaluation" operation.
 - New "cancel" operation, accepting a comma separated list of job
   tickets.
+- New "runExperiment" operation that can be used to run several jobs
+  with dependencies between them, allowing backend implementations to
+  take care of the workflow using parallelization techniques. This
+  operation is followed by the corresponding "getResults" operation.
 
 
 = Additional notes =
@@ -203,27 +213,29 @@ element in the header to indicate their name and version.
 This is the right operation for service monitoring.
 
 === Examples ===
+
+''' <div class="exampleOuter"><div class="exampleWrapper"><small><b>Example 1:</b> ping request.</small></div><div class="exampleInner">
 ```
 <?xml version="1.0" encoding="iso-8859-1"?>
 <soap:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
                xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" 
                xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
-               soap:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" 
-               xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
+               xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+               soap:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/">
   <soap:Body>
     <omws:ping xsi:nil="true" xmlns:omws="http://openmodeller.cria.org.br/ws/2.0" />
   </soap:Body>
 </soap:Envelope>
 ```
-**Example 1:** ping request.
+''' </div></div><br/>
 
+''' <div class="exampleOuter"><div class="exampleWrapper"><small><b>Example 2:</b> ping response.</small></div><div class="exampleInner">
 ```
 <?xml version="1.0" encoding="UTF-8"?>
 <SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" 
                    xmlns:SOAP-ENC="http://schemas.xmlsoap.org/soap/encoding/" 
                    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
                    xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
-                   xmlns:om="http://openmodeller.cria.org.br/xml/2.0" 
                    xmlns:omws="http://openmodeller.cria.org.br/ws/2.0">
   <SOAP-ENV:Header>
     <omws:version>oM Server 2.0 (openModeller 1.3.0)</omws:version>
@@ -235,7 +247,7 @@ This is the right operation for service monitoring.
   </SOAP-ENV:Body>
 </SOAP-ENV:Envelope>
 ```
-**Example 2:** ping response.
+''' </div></div>
 
 == getAlgorithms ==
 
@@ -273,27 +285,30 @@ algorithms or the same versions of each algorithm, unless there is a
 specific policy in this respect controlling the different instances.
 
 === Examples ===
+
+''' <div class="exampleOuter"><div class="exampleWrapper"><small><b>Example 3:</b> getAlgorithms request.</small></div><div class="exampleInner">
 ```
 <?xml version="1.0" encoding="iso-8859-1"?>
 <soap:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
                xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" 
                xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
-               soap:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" 
-               xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
+               xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+               xmlns:omws="http://openmodeller.cria.org.br/ws/2.0"
+               soap:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/">
   <soap:Body>
-    <omws:getAlgorithms xsi:nil="true" xmlns:omws="http://openmodeller.cria.org.br/ws/2.0" />
+    <omws:getAlgorithms xsi:nil="true"/>
   </soap:Body>
 </soap:Envelope>
 ```
-**Example 3:** getAlgorithms request.
+''' </div></div><br/>
 
+''' <div class="exampleOuter"><div class="exampleWrapper"><small><b>Example 4:</b> getAlgorithms response.</small></div><div class="exampleInner">
 ```
 <?xml version="1.0" encoding="UTF-8"?>
 <SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" 
                    xmlns:SOAP-ENC="http://schemas.xmlsoap.org/soap/encoding/" 
                    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
                    xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
-                   xmlns:om="http://openmodeller.cria.org.br/xml/2.0" 
                    xmlns:omws="http://openmodeller.cria.org.br/ws/2.0">
   <SOAP-ENV:Body>
     <omws:getAlgorithmsResponse>
@@ -462,7 +477,7 @@ in the sand-dune shrub Armeria pungens (Plumbaginaceae). Molecular Ecology. 16, 
   </SOAP-ENV:Body>
 </SOAP-ENV:Envelope>
 ```
-**Example 4:** getAlgorithms response.
+''' </div></div>
 
 == getLayers ==
 
@@ -470,57 +485,63 @@ in the sand-dune shrub Armeria pungens (Plumbaginaceae). Molecular Ecology. 16, 
 
 Returns all environmental layers available on the server side. Layers
 can be grouped and organized in a hierarchical structure by means of
-<LayersGroup> elements. Each layer group and each individual layer has
-an id and a label. Ids are used to reference layers in the other
-operations. An optional layer attribute (HasProjection) can be used to
-indicate that there is no geographical projection information
-available for the layer. In such cases, the server must assume a
-latlong projection with the WGS84 datum when reading data from the
-corresponding layer.
+<LayersGroup> elements. This response format was explicitly designed
+to allow clients to browse remote layers in the same same they would
+do by inspecting the local file system looking for raster files.
 
-----------------------------
-Historically, the openModeller server implementation only worked with
-layers that were locally accessible (i.e., stored directly on the
-server or at least somehow accessible from the server through the file
-system). However, recent versions do allow remote layers that are
-accessible through the WCS protocol to be used. In this case, the
-layer id should follow the pattern:
-
-wcs>wcs_service_url>coverage_id
----------------------------
+Each layer group and each individual layer has an id and a label. Ids
+are used to reference layers in the other operations. An optional
+layer attribute (HasProjection) can be used to indicate that there is
+no geographical projection information available for the layer. In
+such cases, the server must assume a latlong projection with the WGS84
+datum when reading data from the corresponding layer.
 
 The protocol does not include operations to manipulate layers (add or
 remove files, or edit metadata). These tasks need to be performed on
-the server side by other means.
+the server side by other means. For this reason, and considering that
+there are lots of layers available everywhere, server implementations
+may additionally support references to external layers, either
+downloadable through URLs used as identifiers or through WCS layer
+identifiers following the pattern:
+
+wcs>wcs_service_url>coverage_id
+
+However, supporting access to external layers is not mandatory on the
+protocol. Service providers may prefer to only allow access to local
+layers advertised through this operation, or to a specific white list
+of external data providers. Clients must contact or test the data
+provider before counting on such functionality.
 
 Different service instances are not guaranteed to provide the same
-layers, unless there is a specific policy in this respect controlling
-the different instances. Additionally, a service instance may not keep
-the same layer structure or even the identifiers for all layers over
-the time - again, unless there is a specific policy with this purpose.
+layers, unless there is a specific policy in this
+respect. Additionally, a service instance may not keep the same layer
+structure or even the identifiers for all layers over the time -
+again, unless there is a specific policy with this purpose.
 
 === Examples ===
+
+''' <div class="exampleOuter"><div class="exampleWrapper"><small><b>Example 5:</b> getLayers request.</small></div><div class="exampleInner">
 ```
 <?xml version="1.0" encoding="iso-8859-1"?>
 <soap:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
                xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" 
                xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
-               soap:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" 
-               xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
+               xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+               soap:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/">
   <soap:Body>
     <omws:getLayers xmlns:omws="http://openmodeller.cria.org.br/ws/2.0" />
   </soap:Body>
 </soap:Envelope>
 ```
-**Example 5:** getLayers request.
+''' </div></div><br/>
 
+''' <div class="exampleOuter"><div class="exampleWrapper"><small><b>Example 6:</b> getLayers response.</small></div><div class="exampleInner">
 ```
 <?xml version="1.0" encoding="UTF-8"?>
 <SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" 
                    xmlns:SOAP-ENC="http://schemas.xmlsoap.org/soap/encoding/" 
                    xmlns:xsi="http://www.w3.org/1999/XMLSchema-instance" 
                    xmlns:xsd="http://www.w3.org/1999/XMLSchema" 
-                   xmlns:om="http://openmodeller.cria.org.br/xml/2.0" 
                    xmlns:omws="http://openmodeller.cria.org.br/ws/2.0">
   <SOAP-ENV:Body>
     <omws:getLayersResponse>
@@ -533,10 +554,10 @@ the time - again, unless there is a specific policy with this purpose.
                   <LayersGroup Id="6"><Label>present</Label>
                     <LayersGroup Id="7"><Label>bioclim</Label>
                       <LayersGroup Id="8"><Label>10arc-minutes</Label>
-                        <Layer Id="/layers/en/terrestrial/climate/global/worldclim/present/bioclim/10arc-minutes/14aecd40-04d9-11e1-be50-0800200c9a66" HasProjection="0">
-                          <Label>bio 01 - Annual Mean Temperature</Label></Layer>
-                        <Layer Id="/layers/en/terrestrial/climate/global/worldclim/present/bioclim/10arc-minutes/bf441530-04d9-11e1-be50-0800200c9a66" HasProjection="0">
-                          <Label>bio 02 - Mean Diurnal Range (Mean of monthly (max temp - min temp))</Label></Layer>
+                      <Layer Id="/layers/en/terrestrial/climate/global/worldclim/present/bioclim/10arc-minutes/14aecd40-04d9-11e1-be50-0800200c9a66"
+                             HasProjection="0"><Label>bio 01 - Annual Mean Temperature</Label></Layer>
+                      <Layer Id="/layers/en/terrestrial/climate/global/worldclim/present/bioclim/10arc-minutes/bf441530-04d9-11e1-be50-0800200c9a66"
+                             HasProjection="0"><Label>bio 02 - Mean Diurnal Range (Mean of monthly (max temp - min temp))</Label></Layer>
                       </LayersGroup>
                     </LayersGroup>
                   </LayersGroup>
@@ -550,10 +571,10 @@ the time - again, unless there is a specific policy with this purpose.
                 <LayersGroup Id="12"><Label>HCAFv4</Label>
                   <LayersGroup Id="13"><Label>present</Label>
                     <LayersGroup Id="14"><Label>30arc-minutes</Label>
-                      <Layer Id="/layers/en/marine/global/incofish/HCAFv4/present/30arc-minutes/61e7a060-04bf-11e1-be50-0800200c9a66" HasProjection="0">
-                        <Label>Mean annual sea ice concentration</Label></Layer>
-                      <Layer Id="/layers/en/marine/global/incofish/HCAFv4/present/30arc-minutes/9602dc20-04bf-11e1-be50-0800200c9a66" HasProjection="0">
-                        <Label>Mean annual primary production (chlorophyll A) in mgC per square meter per day</Label></Layer>
+                    <Layer Id="/layers/en/marine/global/incofish/HCAFv4/present/30arc-minutes/61e7a060-04bf-11e1-be50-0800200c9a66"
+                           HasProjection="0"><Label>Mean annual sea ice concentration</Label></Layer>
+                    <Layer Id="/layers/en/marine/global/incofish/HCAFv4/present/30arc-minutes/9602dc20-04bf-11e1-be50-0800200c9a66"
+                           HasProjection="0"><Label>Mean annual primary production (chlorophyll A) in mgC per square meter per day</Label></Layer>
                     </LayersGroup>
                   </LayersGroup>
                 </LayersGroup>
@@ -566,33 +587,302 @@ the time - again, unless there is a specific policy with this purpose.
   </SOAP-ENV:Body>
 </SOAP-ENV:Envelope>
 ```
-**Example 6:** getLayers response.
+''' </div></div>
+
+== samplePoints ==
+
+=== Description ===
+
+Randomly sample the specified number of points on the specified
+environmental scenario. The scenario requires a set of layers
+referenced by their ids and a mask (which is also a layer) referenced
+by its id. The mask is used to discard points outside its extent or
+inside cells with nodata.
+
+A mandatory section <Options> is used to indicate the number of points
+(NumPoints) to be sampled, an optional label for the points (usually
+a species name) and the proportion of absences (0 meaning only
+presences, 1 meaning only absences and intermediate values meaning a
+mix between them). Optional subelements can be used to instruct the
+service to sample only <SpatiallyUnique/> points (discarding points
+with the same coordinates) and/or <EnvironmentallyUnique/> points
+(discarding points with the same environmental conditions).
+
+This operation is asynchronous. It immediately returns a ticket that 
+must be used to track job progress later.
+
+=== Examples ===
+
+''' <div class="exampleOuter"><div class="exampleWrapper"><small><b>Example 7:</b> samplePoints request.</small></div><div class="exampleInner">
+```
+<?xml version="1.0" encoding="iso-8859-1"?>
+<SOAP-ENV:Envelope xmlns:xsi="http://www.w3.org/1999/XMLSchema-instance" 
+                   xmlns:SOAP-ENC="http://schemas.xmlsoap.org/soap/encoding/" 
+                   xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" 
+                   xmlns:xsd="http://www.w3.org/1999/XMLSchema" 
+                   xmlns:omws="http://openmodeller.cria.org.br/ws/2.0"
+                   SOAP-ENV:encodingStyle="http://xml.apache.org/xml-soap/literalxml">
+  <SOAP-ENV:Body>
+    <omws:samplePoints>
+      <SamplingParameters xmlns="http://openmodeller.cria.org.br/xml/2.0">
+        <Environment>
+          <Map Id="/layers/en/terrestrial/climate/global/worldclim/present/bioclim/10arc-minutes/14aecd40-04d9-11e1-be50-0800200c9a66"/>
+          <Map Id="/layers/en/terrestrial/climate/global/worldclim/present/bioclim/10arc-minutes/bf441530-04d9-11e1-be50-0800200c9a66"/>
+          <Mask Id="/layers/en/terrestrial/climate/global/worldclim/present/bioclim/10arc-minutes/14aecd40-04d9-11e1-be50-0800200c9a66"/>
+        </Environment>
+        <Options NumPoints="5" Label="Test species" ProportionOfAbsences="0">
+          <OccurrencesFilter>
+            <EnvironmentallyUnique/>
+          </OccurrencesFilter>
+        </Options>
+      </SamplingParameters>
+    </omws:samplePoints>
+  </SOAP-ENV:Body>
+</SOAP-ENV:Envelope>
+```
+''' </div></div><br/>
+
+''' <div class="exampleOuter"><div class="exampleWrapper"><small><b>Example 8:</b> samplePoints response.</small></div><div class="exampleInner">
+```
+<?xml version="1.0" encoding="UTF-8"?>
+<SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" 
+                   xmlns:SOAP-ENC="http://schemas.xmlsoap.org/soap/encoding/" 
+                   xmlns:xsi="http://www.w3.org/1999/XMLSchema-instance" 
+                   xmlns:xsd="http://www.w3.org/1999/XMLSchema" 
+                   xmlns:omws="http://openmodeller.cria.org.br/ws/2.0">
+  <SOAP-ENV:Body>
+    <omws:samplePointsResponse>
+      <ticket>wU48Pa</ticket>
+    </omws:samplePointsResponse>
+  </SOAP-ENV:Body>
+</SOAP-ENV:Envelope>
+```
+''' </div></div>
+
+== getProgress ==
+
+=== Description ===
+
+Returns the progress of one or more jobs of any type (sampling points,
+model creation, model testing, model evaluation or model
+projection). Multiple jobs can be specified by a comma separated list
+of tickets. In that case, a comma separated list of progresses will be
+returned in the same order. Possible values for an individual progress
+are: -1 if the job is still queued, -2 if the job was aborted, -3 if
+the job was cancelled, -4 is the job is unknown, a value between 0 and
+100 if the job is in progress or 100 if the job was finished. More
+details about aborted jobs can be discovered with the [getLog #toc25]
+operation.
+
+=== Examples ===
+
+''' <div class="exampleOuter"><div class="exampleWrapper"><small><b>Example 9:</b> getProgress request for a single job.</small></div><div class="exampleInner">
+```
+<?xml version="1.0" encoding="iso-8859-1"?>
+<SOAP-ENV:Envelope xmlns:xsi="http://www.w3.org/1999/XMLSchema-instance" 
+                   xmlns:SOAP-ENC="http://schemas.xmlsoap.org/soap/encoding/" 
+                   xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/"
+                   xmlns:xsd="http://www.w3.org/1999/XMLSchema" 
+                   SOAP-ENV:encodingStyle="http://xml.apache.org/xml-soap/literalxml"
+                   xmlns:omws="http://openmodeller.cria.org.br/ws/2.0">
+  <SOAP-ENV:Body>
+    <omws:getProgress>
+      <ticket xsi:type="xsd:string">wU48Pa</ticket>
+    </omws:getProgress>
+  </SOAP-ENV:Body>
+</SOAP-ENV:Envelope>
+```
+''' </div></div><br/>
+
+''' <div class="exampleOuter"><div class="exampleWrapper"><small><b>Example 10:</b> getProgress response for a single job.</small></div><div class="exampleInner">
+```
+<?xml version="1.0" encoding="UTF-8"?>
+<SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" 
+                   xmlns:SOAP-ENC="http://schemas.xmlsoap.org/soap/encoding/" 
+                   xmlns:xsi="http://www.w3.org/1999/XMLSchema-instance" 
+                   xmlns:xsd="http://www.w3.org/1999/XMLSchema" 
+                   xmlns:omws="http://openmodeller.cria.org.br/ws/2.0">
+  <SOAP-ENV:Body>
+    <omws:getProgressResponse>
+      <progress>100</progress>
+    </omws:getProgressResponse>
+  </SOAP-ENV:Body>
+</SOAP-ENV:Envelope>
+```
+''' </div></div><br/>
+
+''' <div class="exampleOuter"><div class="exampleWrapper"><small><b>Example 11:</b> getProgress request for two jobs.</small></div><div class="exampleInner">
+```
+<?xml version="1.0" encoding="iso-8859-1"?>
+<SOAP-ENV:Envelope xmlns:xsi="http://www.w3.org/1999/XMLSchema-instance" 
+                   xmlns:SOAP-ENC="http://schemas.xmlsoap.org/soap/encoding/" 
+                   xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/"
+                   xmlns:xsd="http://www.w3.org/1999/XMLSchema" 
+                   SOAP-ENV:encodingStyle="http://xml.apache.org/xml-soap/literalxml"
+                   xmlns:omws="http://openmodeller.cria.org.br/ws/2.0">
+  <SOAP-ENV:Body>
+    <omws:getProgress>
+      <ticket xsi:type="xsd:string">FXPAHp,kWs39a</ticket>
+    </omws:getProgress>
+  </SOAP-ENV:Body>
+</SOAP-ENV:Envelope>
+```
+''' </div></div><br/>
+
+''' <div class="exampleOuter"><div class="exampleWrapper"><small><b>Example 12:</b> getProgress response for two jobs.</small></div><div class="exampleInner">
+```
+<?xml version="1.0" encoding="UTF-8"?>
+<SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" 
+                   xmlns:SOAP-ENC="http://schemas.xmlsoap.org/soap/encoding/" 
+                   xmlns:xsi="http://www.w3.org/1999/XMLSchema-instance" 
+                   xmlns:xsd="http://www.w3.org/1999/XMLSchema" 
+                   xmlns:omws="http://openmodeller.cria.org.br/ws/2.0">
+  <SOAP-ENV:Body>
+    <omws:getProgressResponse>
+      <progress>100,-2</progress>
+    </omws:getProgressResponse>
+  </SOAP-ENV:Body>
+</SOAP-ENV:Envelope>
+```
+''' </div></div>
+
+== getLog ==
+
+=== Description ===
+
+Returns the log of a single job.
+
+=== Examples ===
+
+''' <div class="exampleOuter"><div class="exampleWrapper"><small><b>Example 13:</b> getLog request.</small></div><div class="exampleInner">
+```
+<?xml version="1.0" encoding="iso-8859-1"?>
+<SOAP-ENV:Envelope xmlns:xsi="http://www.w3.org/1999/XMLSchema-instance" 
+                   xmlns:SOAP-ENC="http://schemas.xmlsoap.org/soap/encoding/" 
+                   xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" 
+                   xmlns:xsd="http://www.w3.org/1999/XMLSchema" 
+                   xmlns:omws="http://openmodeller.cria.org.br/ws/2.0"
+                   SOAP-ENV:encodingStyle="http://xml.apache.org/xml-soap/literalxml">
+  <SOAP-ENV:Body>
+    <omws:getLog>
+      <ticket xsi:type="xsd:string">FXPAHp</ticket>
+    </omws:getLog>
+  </SOAP-ENV:Body>
+</SOAP-ENV:Envelope>
+```
+''' </div></div><br/>
+
+''' <div class="exampleOuter"><div class="exampleWrapper"><small><b>Example 14:</b> getLog response.</small></div><div class="exampleInner">
+```
+<?xml version="1.0" encoding="UTF-8"?>
+<SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" 
+                   xmlns:SOAP-ENC="http://schemas.xmlsoap.org/soap/encoding/" 
+                   xmlns:xsi="http://www.w3.org/1999/XMLSchema-instance" 
+                   xmlns:xsd="http://www.w3.org/1999/XMLSchema" 
+                   xmlns:omws="http://openmodeller.cria.org.br/ws/2.0">
+  <SOAP-ENV:Body>
+    <omws:getLogResponse>
+      <log>
+[Info] Creating model
+[Info] Reading 2-dimensional occurrence points.
+[Info] Using 5 points to find the bioclimatic envelope.
+[Info] Finished creating model
+[Info] Calculating ROC curve
+[Info] Generating 10000 background points
+      </log>
+    </omws:getLogResponse>
+  </SOAP-ENV:Body>
+</SOAP-ENV:Envelope>
+```
+''' </div></div>
+
+== getSamplingResult ==
+
+=== Description ===
+
+Returns the result of a previous samplePoints operation call given a
+ticket. Each returned point includes not only the X and Y values
+(Longitude and Latitude, respectively) but also the corresponding
+environmental values separated by space in the "Sample"
+attribute. Points will always be in the lat/long WGS84 spatial
+reference system, as indicated by the <CoordinateSystem> element.
+
+=== Examples ===
+
+''' <div class="exampleOuter"><div class="exampleWrapper"><small><b>Example 15:</b> getSamplingResult request.</small></div><div class="exampleInner">
+```
+<?xml version="1.0" encoding="iso-8859-1"?>
+<SOAP-ENV:Envelope xmlns:xsi="http://www.w3.org/1999/XMLSchema-instance" 
+                   xmlns:SOAP-ENC="http://schemas.xmlsoap.org/soap/encoding/" 
+                   xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" 
+                   xmlns:xsd="http://www.w3.org/1999/XMLSchema" 
+                   SOAP-ENV:encodingStyle="http://xml.apache.org/xml-soap/literalxml"
+                   xmlns:omws="http://openmodeller.cria.org.br/ws/2.0">
+  <SOAP-ENV:Body>
+    <omws:getModel>
+      <ticket xsi:type="xsd:string">wU48Pa</ticket>
+    </omws:getModel>
+  </SOAP-ENV:Body>
+</SOAP-ENV:Envelope>
+```
+''' </div></div><br/>
+
+''' <div class="exampleOuter"><div class="exampleWrapper"><small><b>Example 16:</b> getSamplingResult response.</small></div><div class="exampleInner">
+```
+<?xml version="1.0" encoding="UTF-8"?>
+<SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" 
+                   xmlns:SOAP-ENC="http://schemas.xmlsoap.org/soap/encoding/" 
+                   xmlns:xsi="http://www.w3.org/1999/XMLSchema-instance" 
+                   xmlns:xsd="http://www.w3.org/1999/XMLSchema" 
+                   xmlns:omws="http://openmodeller.cria.org.br/ws/2.0">
+  <SOAP-ENV:Body>
+    <omws:getSamplingResult>
+      <Sampler xmlns="http://openmodeller.cria.org.br/xml/2.0">
+        <Environment NumLayers="2">
+          <Map Id="/layers/en/terrestrial/climate/global/worldclim/present/bioclim/10arc-minutes/14aecd40-04d9-11e1-be50-0800200c9a66"
+               IsCategorical="0" Min="-281" Max="310"/>
+          <Map Id="/layers/en/terrestrial/climate/global/worldclim/present/bioclim/10arc-minutes/bf441530-04d9-11e1-be50-0800200c9a66"
+               IsCategorical="0" Min="9" Max="211"/>
+          <Mask Id="/layers/en/terrestrial/climate/global/worldclim/present/bioclim/10arc-minutes/14aecd40-04d9-11e1-be50-0800200c9a66"/>
+        </Environment>
+        <Presence Label="Test species" Count="5">
+          <CoordinateSystem>GEOGCS['1924 ellipsoid',DATUM['Not_specified',SPHEROID['International 1924',6378388,297,
+AUTHORITY['EPSG','7022']],AUTHORITY['EPSG','6022']],PRIMEM['Greenwich',0,AUTHORITY['EPSG','8901']],UNIT['degree',
+0.0174532925199433,AUTHORITY['EPSG','9108']],AUTHORITY['EPSG','4022']]</CoordinateSystem>
+          <Point Id="1" X="-68.85" Y="-11.15" Sample="250 107"/>
+          <Point Id="2" X="-67.38" Y="-14.32" Sample="260 114"/>
+          <Point Id="3" X="-67.15" Y="-15.52" Sample="225 112"/>
+          <Point Id="4" X="-65.12" Y="-16.73" Sample="254 112"/>
+          <Point Id="5" X="-63.17" Y="-17.80" Sample="241 103"/>
+        </Presence>
+      </Sampler>
+    </omws:getSamplingResult>
+  </SOAP-ENV:Body>
+</SOAP-ENV:Envelope>
+```
+''' </div></div>
 
 == createModel ==
 
 === Description ===
 
 Starts a new model creation job. This requires a set of layers
-referenced by their ids, a mask (which is also a layer!) referenced by
-its id, a set of presence points (samples where the environment is
-suitable for the species), an optional set of absence points (samples
-where the environment is unsuitable for the species), a modelling
-algorithm referenced by its id and, if the algorithm requires
-parameters, a set of parameters referenced by ids and followed by a
-value.
+referenced by their ids, a mask referenced by its id, a set of
+presence points (samples where the environment is suitable for the
+species), an optional set of absence points (samples where the
+environment is unsuitable for the species), a modelling algorithm
+referenced by its id and, if the algorithm requires parameters, a set
+of parameters referenced by ids and followed by a value.
 
 Each set of points needs a spatial reference system specified in 
 [WKT http://www.geoapi.org/3.0/javadoc/org/opengis/referencing/doc-files/WKT.html].
 Example 7 shows the WKT for latlong in WGS84. Longitude and latitude 
 are represented by X and Y, respectively, and decimals must always be 
 separated by a dot. An identification for each point is highly recommended, 
-as points are referenced by it in the logs. The label for each set of 
+as points are referenced by it in the logs. A label for each set of 
 points can be used to indicate the species name. This information is not 
 used by the server, but it is returned later as part of the model created
 and can be a way to keep record of which species was modelled. 
-
-The mask is used to discard points outside its extent or inside cells 
-with nodata.
 
 An optional section <Options> can be used to instruct the server to
 apply filters in the points before they are used. <SpatiallyUnique/>
@@ -604,21 +894,23 @@ This operation is asynchronous. It immediately returns a ticket that
 must be used to track job progress later.
 
 === Examples ===
+
+''' <div class="exampleOuter"><div class="exampleWrapper"><small><b>Example 17:</b> createModel request.</small></div><div class="exampleInner">
 ```
 <?xml version="1.0" encoding="iso-8859-1"?>
 <SOAP-ENV:Envelope xmlns:xsi="http://www.w3.org/1999/XMLSchema-instance" 
                    xmlns:SOAP-ENC="http://schemas.xmlsoap.org/soap/encoding/" 
                    xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" 
                    xmlns:xsd="http://www.w3.org/1999/XMLSchema" 
-                   SOAP-ENV:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/">
+                   SOAP-ENV:encodingStyle="http://xml.apache.org/xml-soap/literalxml"
+                   xmlns:omws="http://openmodeller.cria.org.br/ws/2.0">
   <SOAP-ENV:Body>
-    <omws:createModel xmlns:omws="http://openmodeller.cria.org.br/ws/2.0" 
-                      SOAP-ENV:encodingStyle="http://xml.apache.org/xml-soap/literalxml">
+    <omws:createModel>
       <ModelParameters xmlns="http://openmodeller.cria.org.br/xml/2.0">
         <Sampler>
           <Environment>
-            <Map Id="/layers/en/terrestrial/climate/global/worldclim/present/bioclim/10arc-minutes/14aecd40-04d9-11e1-be50-0800200c9a66" IsCategorical="0"/>
-            <Map Id="/layers/en/terrestrial/climate/global/worldclim/present/bioclim/10arc-minutes/bf441530-04d9-11e1-be50-0800200c9a66" IsCategorical="0"/>
+            <Map Id="/layers/en/terrestrial/climate/global/worldclim/present/bioclim/10arc-minutes/14aecd40-04d9-11e1-be50-0800200c9a66"/>
+            <Map Id="/layers/en/terrestrial/climate/global/worldclim/present/bioclim/10arc-minutes/bf441530-04d9-11e1-be50-0800200c9a66"/>
             <Mask Id="/layers/en/terrestrial/climate/global/worldclim/present/bioclim/10arc-minutes/14aecd40-04d9-11e1-be50-0800200c9a66"/>
           </Environment>
           <Presence Label="Test species">
@@ -640,7 +932,6 @@ AUTHORITY['EPSG','7022']],AUTHORITY['EPSG','6022']],PRIMEM['Greenwich',0,AUTHORI
         <Options>
           <OccurrencesFilter>
             <SpatiallyUnique/>
-            <EnvironmentallyUnique/>
           </OccurrencesFilter>
         </Options>
       </ModelParameters>
@@ -648,15 +939,15 @@ AUTHORITY['EPSG','7022']],AUTHORITY['EPSG','6022']],PRIMEM['Greenwich',0,AUTHORI
   </SOAP-ENV:Body>
 </SOAP-ENV:Envelope>
 ```
-**Example 7:** createModel request.
+''' </div></div><br/>
 
+''' <div class="exampleOuter"><div class="exampleWrapper"><small><b>Example 18:</b> createModel response.</small></div><div class="exampleInner">
 ```
 <?xml version="1.0" encoding="UTF-8"?>
 <SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" 
                    xmlns:SOAP-ENC="http://schemas.xmlsoap.org/soap/encoding/" 
                    xmlns:xsi="http://www.w3.org/1999/XMLSchema-instance" 
                    xmlns:xsd="http://www.w3.org/1999/XMLSchema" 
-                   xmlns:om="http://openmodeller.cria.org.br/xml/2.0" 
                    xmlns:omws="http://openmodeller.cria.org.br/ws/2.0">
   <SOAP-ENV:Body>
     <omws:createModelResponse>
@@ -665,153 +956,63 @@ AUTHORITY['EPSG','7022']],AUTHORITY['EPSG','6022']],PRIMEM['Greenwich',0,AUTHORI
   </SOAP-ENV:Body>
 </SOAP-ENV:Envelope>
 ```
-**Example 8:** createModel response.
-
-== getProgress ==
-
-=== Description ===
-
-Returns the progress of one or more jobs of any type (sampling points,
-model creation, model testing, model evaluation or model
-projection). Multiple jobs can be specified by a comma separated list
-of tickets. In that case, a comma separated list of progresses will be
-returned in the same order. Possible values for an individual progress
-are: -1 if the job is still queued, -2 if the job was aborted, -3 if
-the job was cancelled, a value between 0 and 100 if the job is in
-progress or 100 if the job was finished. More details about aborted
-jobs can be discovered with the [getLog #toc28] operation.
-
-=== Examples ===
-```
-<?xml version="1.0" encoding="iso-8859-1"?>
-<SOAP-ENV:Envelope xmlns:xsi="http://www.w3.org/1999/XMLSchema-instance" 
-                   xmlns:SOAP-ENC="http://schemas.xmlsoap.org/soap/encoding/" 
-                   xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/"
-                   xmlns:xsd="http://www.w3.org/1999/XMLSchema" 
-                   SOAP-ENV:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/">
-  <SOAP-ENV:Body>
-    <omws:getProgress xmlns:omws="http://openmodeller.cria.org.br/ws/2.0" 
-                      SOAP-ENV:encodingStyle="http://xml.apache.org/xml-soap/literalxml">
-      <ticket xsi:type="xsd:string">FXPAHp,kWs39a</ticket>
-    </omws:getProgress>
-  </SOAP-ENV:Body>
-</SOAP-ENV:Envelope>
-```
-**Example 9:** getProgress request.
-
-```
-<?xml version="1.0" encoding="UTF-8"?>
-<SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" 
-                   xmlns:SOAP-ENC="http://schemas.xmlsoap.org/soap/encoding/" 
-                   xmlns:xsi="http://www.w3.org/1999/XMLSchema-instance" 
-                   xmlns:xsd="http://www.w3.org/1999/XMLSchema" 
-                   xmlns:om="http://openmodeller.cria.org.br/xml/2.0" 
-                   xmlns:omws="http://openmodeller.cria.org.br/ws/2.0">
-  <SOAP-ENV:Body>
-    <omws:getProgressResponse>
-      <progress>100,-2</progress>
-    </omws:getProgressResponse>
-  </SOAP-ENV:Body>
-</SOAP-ENV:Envelope>
-```
-**Example 10:** getProgress response.
-
-== getLog ==
-
-=== Description ===
-
-Returns the log of a single job.
-
-=== Examples ===
-```
-<?xml version="1.0" encoding="iso-8859-1"?>
-<SOAP-ENV:Envelope xmlns:xsi="http://www.w3.org/1999/XMLSchema-instance" 
-                   xmlns:SOAP-ENC="http://schemas.xmlsoap.org/soap/encoding/" 
-                   xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" 
-                   xmlns:xsd="http://www.w3.org/1999/XMLSchema" 
-                   SOAP-ENV:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/">
-  <SOAP-ENV:Body>
-    <omws:getLog xmlns:omws="http://openmodeller.cria.org.br/ws/2.0" 
-                 SOAP-ENV:encodingStyle="http://xml.apache.org/xml-soap/literalxml">
-      <ticket xsi:type="xsd:string">FXPAHp</ticket>
-    </omws:getLog>
-  </SOAP-ENV:Body>
-</SOAP-ENV:Envelope>
-```
-**Example 11:** getLog request.
-
-```
-<?xml version="1.0" encoding="UTF-8"?>
-<SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" 
-                   xmlns:SOAP-ENC="http://schemas.xmlsoap.org/soap/encoding/" 
-                   xmlns:xsi="http://www.w3.org/1999/XMLSchema-instance" 
-                   xmlns:xsd="http://www.w3.org/1999/XMLSchema" 
-                   xmlns:om="http://openmodeller.cria.org.br/xml/2.0" 
-                   xmlns:omws="http://openmodeller.cria.org.br/ws/2.0">
-  <SOAP-ENV:Body>
-    <omws:getLogResponse>
-      <log>
-[Info] Creating model
-[Info] Reading 2-dimensional occurrence points.
-[Info] Using 5 points to find the bioclimatic envelope.
-[Info] Finished creating model
-[Info] Calculating ROC curve
-[Info] Generating 10000 background points
-      </log>
-    </omws:getLogResponse>
-  </SOAP-ENV:Body>
-</SOAP-ENV:Envelope>
-```
-**Example 12:** getLog response.
+''' </div></div>
 
 == getModel ==
 
 === Description ===
 
 Returns a created model, which includes all parameters that were used
-to generate the model. Note in example 14 that the <Algorithm> element
-now includes a <Model> element with the actual result of the modelling
-process for that particular algorithm. This element contains all
-necessary information for algorithm predictions given an environmental
-scenario. Each algorithm has its own unique XML representation.
+to generate the model. Note in the response example that the
+<Algorithm> element now includes a <Model> element with the actual
+result of the modelling process for that particular algorithm. This
+element contains all necessary information for algorithm predictions
+given an environmental scenario. Each algorithm has its own unique XML
+representation which is not part of this protocol. This XML
+representation must be, however, sufficient to be used in subsequent
+calls to other operations that require a model as a parameter.
 
-Model testing and model projection require the <Algorithm> section
+Model testing, projection and evaluation require the <Algorithm> section
 returned by this operation.
 
 === Examples ===
+
+''' <div class="exampleOuter"><div class="exampleWrapper"><small><b>Example 19:</b> getModel request.</small></div><div class="exampleInner">
 ```
 <?xml version="1.0" encoding="iso-8859-1"?>
 <SOAP-ENV:Envelope xmlns:xsi="http://www.w3.org/1999/XMLSchema-instance" 
                    xmlns:SOAP-ENC="http://schemas.xmlsoap.org/soap/encoding/" 
                    xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" 
                    xmlns:xsd="http://www.w3.org/1999/XMLSchema" 
-                   SOAP-ENV:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/">
-  <SOAP-ENV:Body>
-    <omws:getModel xmlns:omws="http://openmodeller.cria.org.br/ws/1.0" 
+                   xmlns:omws="http://openmodeller.cria.org.br/ws/2.0"
                    SOAP-ENV:encodingStyle="http://xml.apache.org/xml-soap/literalxml">
+  <SOAP-ENV:Body>
+    <omws:getModel>
       <ticket xsi:type="xsd:string">FXPAHp</ticket>
     </omws:getModel>
   </SOAP-ENV:Body>
 </SOAP-ENV:Envelope>
 ```
-**Example 13:** getModel request.
+''' </div></div><br/>
 
+''' <div class="exampleOuter"><div class="exampleWrapper"><small><b>Example 20:</b> getModel response.</small></div><div class="exampleInner">
 ```
 <?xml version="1.0" encoding="UTF-8"?>
 <SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" 
                    xmlns:SOAP-ENC="http://schemas.xmlsoap.org/soap/encoding/" 
                    xmlns:xsi="http://www.w3.org/1999/XMLSchema-instance" 
                    xmlns:xsd="http://www.w3.org/1999/XMLSchema" 
-                   xmlns:om="http://openmodeller.cria.org.br/xml/1.0" 
-                   xmlns:omws="http://openmodeller.cria.org.br/ws/1.0">
+                   xmlns:omws="http://openmodeller.cria.org.br/ws/2.0">
   <SOAP-ENV:Body>
     <omws:getModelResponse>
-      <ModelEnvelope xmlns="http://openmodeller.cria.org.br/xml/1.0">
+      <ModelEnvelope xmlns="http://openmodeller.cria.org.br/xml/2.0">
         <SerializedModel>
           <Sampler>
             <Environment NumLayers="2">
-              <Map Id="/layers/en/terrestrial/climate/global/worldclim/present/bioclim/10arc-minutes/14aecd40-04d9-11e1-be50-0800200c9a66" IsCategorical="0" Min="-281" Max="310"/>
-              <Map Id="/layers/en/terrestrial/climate/global/worldclim/present/bioclim/10arc-minutes/bf441530-04d9-11e1-be50-0800200c9a66" IsCategorical="0" Min="9" Max="211"/>
+              <Map Id="/layers/en/terrestrial/climate/global/worldclim/present/bioclim/10arc-minutes/14aecd40-04d9-11e1-be50-0800200c9a66"
+                   IsCategorical="0" Min="-281" Max="310"/>
+              <Map Id="/layers/en/terrestrial/climate/global/worldclim/present/bioclim/10arc-minutes/bf441530-04d9-11e1-be50-0800200c9a66"
+                   IsCategorical="0" Min="9" Max="211"/>
               <Mask Id="/layers/en/terrestrial/climate/global/worldclim/present/bioclim/10arc-minutes/14aecd40-04d9-11e1-be50-0800200c9a66"/>
             </Environment>
             <Presence Label="Test species" Count="5">
@@ -845,58 +1046,181 @@ AUTHORITY['EPSG','7022']],AUTHORITY['EPSG','6022']],PRIMEM['Greenwich',0,AUTHORI
   </SOAP-ENV:Body>
 </SOAP-ENV:Envelope>
 ```
-**Example 14:** getModel response.
+''' </div></div>
 
-== testModel ==
+== evaluateModel ==
 
 === Description ===
 
-Starts a new model test job. This requires an environmental scenario
-(set of layers including a mask), a set of presence points, an
-optional set of absence points, a model (<Algorithm> element returned
-by the [createModel #toc20] operation), and statistics parameters.
-
-Statistics may include confusion matrix and ROC curve. A threshold can
-be specified for the confusion matrix. In this case, -1 can be used to
-instruct the server to use the lowest presence threshold (lowest
-prediction among training points). The "IgnoreAbsences" attribute can
-be used discard absence points in the calculations, in case they were
-passed as background points (some algorithms that require background
-points, like Maxent, have a parameter that allows users to specify the
-background points through absences).
-
-Two approaches can be used to calculate ROC curves. The first one is
-the traditional approach which requires presence and absence
-points. The second was proposed by Phillips //et al.// (2006) to
-handle presence-only data using the proportional predicted area. In
-openModeller this value is approximated by means of background
-points. When only presences are available, the second approach is
-always used and the attribute "BackgroundPoints" can be used to
-specify the number of background points to be generated (default is
-10000). Background points can also be specified by the user by means
-of absences. In this case the attribute "UseAbsencesAsBackground" must
-be 1. In both approaches the resolution (number of points in the
-curve) and a maximum accepted ommision can be specified.
+Evaluates a model on a given set of points in a given environmental
+scenario. Unlike the testModel operation, this operation is only
+intended to return the raw model values for each point.
 
 This operation is asynchronous. It immediately returns a ticket that 
 must be used to track job progress later.
 
 === Examples ===
+
+''' <div class="exampleOuter"><div class="exampleWrapper"><small><b>Example 21:</b> evaluateModel request.</small></div><div class="exampleInner">
 ```
 <?xml version="1.0" encoding="iso-8859-1"?>
 <SOAP-ENV:Envelope xmlns:xsi="http://www.w3.org/1999/XMLSchema-instance" 
                    xmlns:SOAP-ENC="http://schemas.xmlsoap.org/soap/encoding/" 
                    xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" 
                    xmlns:xsd="http://www.w3.org/1999/XMLSchema" 
-                   SOAP-ENV:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/">
+                   xmlns:omws="http://openmodeller.cria.org.br/ws/2.0"
+                   SOAP-ENV:encodingStyle="http://xml.apache.org/xml-soap/literalxml">
   <SOAP-ENV:Body>
-    <omws:testModel xmlns:omws="http://openmodeller.cria.org.br/ws/1.0" 
-                    SOAP-ENV:encodingStyle="http://xml.apache.org/xml-soap/literalxml">
-      <TestParameters xmlns="http://openmodeller.cria.org.br/xml/1.0">
+    <omws:evaluateModel>
+      <ModelEvaluationParameters xmlns="http://openmodeller.cria.org.br/xml/2.0">
         <Sampler>
           <Environment NumLayers="2">
-            <Map Id="/layers/en/terrestrial/climate/global/worldclim/present/bioclim/10arc-minutes/14aecd40-04d9-11e1-be50-0800200c9a66" IsCategorical="0"/>
-            <Map Id="/layers/en/terrestrial/climate/global/worldclim/present/bioclim/10arc-minutes/bf441530-04d9-11e1-be50-0800200c9a66" IsCategorical="0"/>
+            <Map Id="/layers/en/terrestrial/climate/global/worldclim/present/bioclim/10arc-minutes/14aecd40-04d9-11e1-be50-0800200c9a66"/>
+            <Map Id="/layers/en/terrestrial/climate/global/worldclim/present/bioclim/10arc-minutes/bf441530-04d9-11e1-be50-0800200c9a66"/>
+            <Mask Id="/layers/en/terrestrial/climate/global/worldclim/present/bioclim/10arc-minutes/14aecd40-04d9-11e1-be50-0800200c9a66"/>
+          </Environment>
+          <Presence Label="Test species">
+            <CoordinateSystem>GEOGCS["WGS 84",DATUM["WGS_1984",SPHEROID["WGS 84",6378137,298.257223563,
+AUTHORITY["EPSG","7030"]],TOWGS84[0,0,0,0,0,0,0],AUTHORITY["EPSG","6326"]],PRIMEM["Greenwich",0,AUTHORITY["EPSG","8901"]],
+UNIT["degree",0.0174532925199433,AUTHORITY["EPSG","9108"]],AXIS["Lat",NORTH],AXIS["Long",EAST],AUTHORITY["EPSG","4326"]]
+            </CoordinateSystem>
+            <Point Id="1" X="-67.845739" Y="-11.327340" />
+            <Point Id="2" X="-69.549969" Y="-12.350801" />
+            <Point Id="3" X="-68.245959" Y="-12.060403" />
+            <Point Id="4" X="-74.534959" Y="-15.340201" />
+          </Presence>
+        </Sampler>
+        <Algorithm Id="BIOCLIM" Version="0.2">
+          <Parameters>
+            <Parameter Id="StandardDeviationCutoff" Value="0.8"/>
+          </Parameters>
+          <Model>
+            <Bioclim Mean="246 109.6" StdDev="10.9 3.60" Minimum="225 103" Maximum="260 114"/>
+          </Model>
+        </Algorithm>
+      </ModelEvaluationParameters>
+    </omws:evaluateModel>
+  </SOAP-ENV:Body>
+</SOAP-ENV:Envelope>
+```
+''' </div></div><br/>
+
+''' <div class="exampleOuter"><div class="exampleWrapper"><small><b>Example 22:</b> evaluateModel response.</small></div><div class="exampleInner">
+```
+<?xml version="1.0" encoding="UTF-8"?>
+<SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" 
+                   xmlns:SOAP-ENC="http://schemas.xmlsoap.org/soap/encoding/" 
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+                   xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+                   xmlns:omws="http://openmodeller.cria.org.br/ws/2.0">
+  <SOAP-ENV:Body>
+    <omws:evaluateModelResponse>
+      <ticket>H5r7z2</ticket>
+    </omws:evaluateModelResponse>
+  </SOAP-ENV:Body>
+</SOAP-ENV:Envelope>
+```
+''' </div></div>
+
+== getModelEvaluation ==
+
+=== Description ===
+
+Returns the result of a model evaluation. Values are separated by a
+space and returned in the same order as the points in the
+evaluateModel request.
+
+=== Examples ===
+
+''' <div class="exampleOuter"><div class="exampleWrapper"><small><b>Example 23:</b> getModelEvaluation request.</small></div><div class="exampleInner">
+```
+<?xml version="1.0" encoding="iso-8859-1"?>
+<soap:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+               xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" 
+               xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
+               xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+               xmlns:omws="http://openmodeller.cria.org.br/ws/2.0"
+               soap:encodingStyle="http://xml.apache.org/xml-soap/literalxml">
+  <soap:Body>
+    <omws:getModelEvaluation>
+      <ticket xsi:type="xsd:string">H5r7z2</ticket>
+    </omws:getModelEvaluation>
+  </soap:Body>
+</soap:Envelope>
+```
+''' </div></div><br/>
+
+''' <div class="exampleOuter"><div class="exampleWrapper"><small><b>Example 24:</b> getModelEvaluation response.</small></div><div class="exampleInner">
+```
+<?xml version="1.0" encoding="UTF-8"?>
+<SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" 
+                   xmlns:SOAP-ENC="http://schemas.xmlsoap.org/soap/encoding/" 
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+                   xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
+                   xmlns:omws="http://openmodeller.cria.org.br/ws/2.0">
+  <SOAP-ENV:Body>
+    <omws:modelEvaluationResponse>
+      <ModelEvaluation xmlns="http://openmodeller.cria.org.br/xml/2.0">
+        <Values V="0.5 1 0.5 0"/>
+      </ModelEvaluation>
+    </omws:modelEvaluationResponse>
+  </SOAP-ENV:Body>
+</SOAP-ENV:Envelope>
+```
+''' </div></div>
+
+== testModel ==
+
+=== Description ===
+
+Starts a new model testing job. This requires an environmental scenario
+(set of layers including a mask), a set of presence points, an
+optional set of absence points, a model (<Algorithm> element returned
+by the [createModel #toc31] operation), and statistics parameters.
+
+Statistics may include confusion matrix and ROC curve. A threshold can
+be specified for the confusion matrix. The "IgnoreAbsences" attribute
+can be used discard absence points in the calculations, in case they
+were passed as background points (in openModeller, some algorithms
+that require background points, like Maxent, have a parameter that
+allows users to specify the background points through absences).
+
+Two approaches can be used to calculate ROC curves. The first one is
+the traditional approach which requires presence and absence
+points. The second was proposed by Phillips //et al.// (2006) to
+handle presence-only data using the proportional predicted area that
+can be approximated by means of background points. When only presences
+are available, the second approach must be used used and the attribute
+"BackgroundPoints" is available to specify the number of background
+points to be generated (on its absence, the default 10000 must be
+assumed). Background points can also be specified by the user by means
+of absences. In this case the attribute "UseAbsencesAsBackground" must
+be 1. In both approaches the resolution (number of points in the
+curve) and a maximum accepted ommision can be specified. Maximum
+omission is used to calculate partial ROC curves, according to
+Peterson //et al.// (2008).
+
+This operation is asynchronous. It immediately returns a ticket that 
+must be used to track job progress later.
+
+=== Examples ===
+
+''' <div class="exampleOuter"><div class="exampleWrapper"><small><b>Example 25:</b> testModel request.</small></div><div class="exampleInner">
+```
+<?xml version="1.0" encoding="iso-8859-1"?>
+<SOAP-ENV:Envelope xmlns:xsi="http://www.w3.org/1999/XMLSchema-instance" 
+                   xmlns:SOAP-ENC="http://schemas.xmlsoap.org/soap/encoding/" 
+                   xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" 
+                   xmlns:xsd="http://www.w3.org/1999/XMLSchema" 
+                   xmlns:omws="http://openmodeller.cria.org.br/ws/2.0"
+                   SOAP-ENV:encodingStyle="http://xml.apache.org/xml-soap/literalxml">
+  <SOAP-ENV:Body>
+    <omws:testModel>
+      <TestParameters xmlns="http://openmodeller.cria.org.br/xml/2.0">
+        <Sampler>
+          <Environment NumLayers="2">
+            <Map Id="/layers/en/terrestrial/climate/global/worldclim/present/bioclim/10arc-minutes/14aecd40-04d9-11e1-be50-0800200c9a66"/>
+            <Map Id="/layers/en/terrestrial/climate/global/worldclim/present/bioclim/10arc-minutes/bf441530-04d9-11e1-be50-0800200c9a66"/>
             <Mask Id="/layers/en/terrestrial/climate/global/worldclim/present/bioclim/10arc-minutes/14aecd40-04d9-11e1-be50-0800200c9a66"/>
           </Environment>
           <Presence Label="Test species">
@@ -933,16 +1257,16 @@ UNIT["degree",0.0174532925199433,AUTHORITY["EPSG","9108"]],AXIS["Lat",NORTH],AXI
   </SOAP-ENV:Body>
 </SOAP-ENV:Envelope>
 ```
-**Example 15:** testModel request.
+''' </div></div><br/>
 
+''' <div class="exampleOuter"><div class="exampleWrapper"><small><b>Example 26:</b> testModel response.</small></div><div class="exampleInner">
 ```
 <?xml version="1.0" encoding="UTF-8"?>
 <SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" 
                    xmlns:SOAP-ENC="http://schemas.xmlsoap.org/soap/encoding/" 
                    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-                   xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
-                   xmlns:om="http://openmodeller.cria.org.br/xml/1.0" 
-                   xmlns:omws="http://openmodeller.cria.org.br/ws/1.0">
+                   xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+                   xmlns:omws="http://openmodeller.cria.org.br/ws/2.0">
   <SOAP-ENV:Body>
     <omws:testModelResponse>
       <ticket>9HhPVc</ticket>
@@ -950,7 +1274,7 @@ UNIT["degree",0.0174532925199433,AUTHORITY["EPSG","9108"]],AXIS["Lat",NORTH],AXI
   </SOAP-ENV:Body>
 </SOAP-ENV:Envelope>
 ```
-**Example 16:** testModel response.
+''' </div></div>
 
 == getTestResult ==
 
@@ -960,34 +1284,36 @@ Returns the result of a model test. Points of the ROC curve are
 serialized as a sequence of pairs (x y) separated by a space.
 
 === Examples ===
+
+''' <div class="exampleOuter"><div class="exampleWrapper"><small><b>Example 27:</b> getTestResult request.</small></div><div class="exampleInner">
 ```
 <?xml version="1.0" encoding="iso-8859-1"?>
 <soap:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
                xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" 
                xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
-               soap:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" 
-               xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
+               soap:encodingStyle="http://xml.apache.org/xml-soap/literalxml" 
+               xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+               xmlns:omws="http://openmodeller.cria.org.br/ws/2.0">
   <soap:Body>
-    <omws:getTestResult xmlns:omws="http://openmodeller.cria.org.br/ws/1.0" 
-                        soap:encodingStyle="http://xml.apache.org/xml-soap/literalxml">
+    <omws:getTestResult>
       <ticket xsi:type="xsd:string">9HhPVc</ticket>
     </omws:getTestResult>
   </soap:Body>
 </soap:Envelope>
 ```
-**Example 17:** getTestResult request.
+''' </div></div><br/>
 
+''' <div class="exampleOuter"><div class="exampleWrapper"><small><b>Example 28:</b> getTestResult response.</small></div><div class="exampleInner">
 ```
 <?xml version="1.0" encoding="UTF-8"?>
 <SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" 
                    xmlns:SOAP-ENC="http://schemas.xmlsoap.org/soap/encoding/" 
                    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
                    xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
-                   xmlns:om="http://openmodeller.cria.org.br/xml/1.0" 
-                   xmlns:omws="http://openmodeller.cria.org.br/ws/1.0">
+                   xmlns:omws="http://openmodeller.cria.org.br/ws/2.0">
   <SOAP-ENV:Body>
     <omws:testResponse>
-      <TestResultEnvelope xmlns="http://openmodeller.cria.org.br/xml/1.0">
+      <TestResultEnvelope xmlns="http://openmodeller.cria.org.br/xml/2.0">
         <Statistics>
           <ConfusionMatrix Threshold="0.5" Accuracy="75" OmissionError="0" CommissionError="50" 
                            TruePositives="2" FalsePositives="0" TrueNegatives="1" FalseNegatives="1"/>
@@ -999,14 +1325,14 @@ serialized as a sequence of pairs (x y) separated by a space.
   </SOAP-ENV:Body>
 </SOAP-ENV:Envelope>
 ```
-**Example 18:** getTestResult response.
+''' </div></div><br/>
 
 == projectModel ==
 
 === Description ===
 
 Starts a new model projection job. This includes a model (<Algorithm>
-section returned by the [createModel #toc20] operation), an environmental
+section returned by the [createModel #toc31] operation), an environmental
 scenario (set of layers with an output mask indicating the extent of
 the projection) and additional output parameters. If the environmental
 scenario is the same as the one used in model creation, this is known
@@ -1015,38 +1341,41 @@ layers must be the same and the corresponding variables must also be
 in the same order used for model creation.
 
 Output parameters include a template layer whose spatial resolution
-and spatial reference system will be used to create the distribution
+and spatial reference system are used to create the distribution
 map, and a file type with the possible values:
 
-| GreyTiff     | Grey scale GeoTiff [0,255]         |
-| GreyTiff100  | Grey scale GeoTiff [0,100]         |
-| FloatingTiff | Floating point GeoTiff             |
-| GreyBMP      | Grey scale BMP                     |
-| FloatingHFA  | Floating point Erdas Imagine       |
-| ByteHFA      | Byte Erdas Imagine [0,100]         |
-| ByteASC      | Byte ARC/Info ASCII grid [0,100]   |
-| FloatingASC  | Floating point ARC/Info ASCII grid |
+|| Id          | Format and range                   | Nodata value |
+| GreyTiff     | Grey scale GeoTiff [0,254]         | 255          |
+| GreyTiff100  | Grey scale GeoTiff [0,100]         | 127          |
+| FloatingTiff | Floating point GeoTiff             | -1           |
+| GreyBMP      | Grey scale BMP [0,255]             | 0            |
+| FloatingHFA  | Floating point Erdas Imagine       | -1           |
+| ByteHFA      | Byte Erdas Imagine [0,100]         | 101          |
+| ByteASC      | Byte ARC/Info ASCII grid [0,100]   | 101          |
+| FloatingASC  | Floating point ARC/Info ASCII grid | -9999        |
 
 An optional <Statistics> section can be used to specify the threshold
 to calculate the number of cells considered suitable for the species
 occurrence. This information can be retrieved through the
-[getProjectionMetadata #toc52] operation.
+[getProjectionMetadata #toc55] operation.
 
 This operation is asynchronous. It immediately returns a ticket that 
 must be used to track job progress later.
 
 === Examples ===
+
+''' <div class="exampleOuter"><div class="exampleWrapper"><small><b>Example 29:</b> projectModel request.</small></div><div class="exampleInner">
 ```
 <?xml version="1.0" encoding="iso-8859-1"?>
 <soap:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
                xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" 
                xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
-               soap:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
-               xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
+               xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+               xmlns:omws="http://openmodeller.cria.org.br/ws/2.0"
+               soap:encodingStyle="http://xml.apache.org/xml-soap/literalxml">
   <soap:Body>
-    <omws:projectModel xmlns:omws="http://openmodeller.cria.org.br/ws/1.0" 
-                       soap:encodingStyle="http://xml.apache.org/xml-soap/literalxml">
-      <ProjectionParameters xmlns="http://openmodeller.cria.org.br/xml/1.0">
+    <omws:projectModel>
+      <ProjectionParameters xmlns="http://openmodeller.cria.org.br/xml/2.0">
         <Algorithm Id="BIOCLIM" Version="0.2">
           <Parameters>
             <Parameter Id="StandardDeviationCutoff" Value="0.8"/>
@@ -1071,16 +1400,16 @@ must be used to track job progress later.
   </soap:Body>
 </soap:Envelope>
 ```
-**Example 19:** projectModel request.
+''' </div></div><br/>
 
+''' <div class="exampleOuter"><div class="exampleWrapper"><small><b>Example 30:</b> projectModel response.</small></div><div class="exampleInner">
 ```
 <?xml version="1.0" encoding="UTF-8"?>
 <SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" 
                    xmlns:SOAP-ENC="http://schemas.xmlsoap.org/soap/encoding/" 
                    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
                    xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
-                   xmlns:om="http://openmodeller.cria.org.br/xml/1.0" 
-                   xmlns:omws="http://openmodeller.cria.org.br/ws/1.0">
+                   xmlns:omws="http://openmodeller.cria.org.br/ws/2.0">
   <SOAP-ENV:Body>
     <omws:projectModelResponse>
       <ticket>Umz5UR</ticket>
@@ -1088,7 +1417,7 @@ must be used to track job progress later.
   </SOAP-ENV:Body>
 </SOAP-ENV:Envelope>
 ```
-**Example 20:** projectModel response.
+''' </div></div>
 
 == getLayerAsUrl ==
 
@@ -1097,31 +1426,33 @@ must be used to track job progress later.
 Returns the URL of a projected model.
 
 === Examples ===
+
+''' <div class="exampleOuter"><div class="exampleWrapper"><small><b>Example 31:</b> getLayerAsUrl request.</small></div><div class="exampleInner">
 ```
 <?xml version="1.0" encoding="iso-8859-1"?>
 <soap:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
                xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" 
                xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
-               soap:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" 
-               xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
+               xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+               xmlns:omws="http://openmodeller.cria.org.br/ws/2.0"
+               soap:encodingStyle="http://xml.apache.org/xml-soap/literalxml">
   <soap:Body>
-    <omws:getLayerAsUrl xmlns:omws="http://openmodeller.cria.org.br/ws/1.0" 
-                        soap:encodingStyle="http://xml.apache.org/xml-soap/literalxml">
+    <omws:getLayerAsUrl>
       <id xsi:type="xsd:string">xvQD6d</id>
     </omws:getLayerAsUrl>
   </soap:Body>
 </soap:Envelope>
 ```
-**Example 21:** getLayerAsUrl request.
+''' </div></div><br/>
 
+''' <div class="exampleOuter"><div class="exampleWrapper"><small><b>Example 32:</b> getLayerAsUrl response.</small></div><div class="exampleInner">
 ```
 <?xml version="1.0" encoding="UTF-8"?>
 <SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" 
                    xmlns:SOAP-ENC="http://schemas.xmlsoap.org/soap/encoding/" 
                    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
                    xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
-                   xmlns:om="http://openmodeller.cria.org.br/xml/1.0" 
-                   xmlns:omws="http://openmodeller.cria.org.br/ws/1.0">
+                   xmlns:omws="http://openmodeller.cria.org.br/ws/2.0">
   <SOAP-ENV:Body>
     <omws:getLayerAsUrlResponse>
       <url>http://modeller.cria.org.br/maps/xvQD6d.img</url>
@@ -1129,7 +1460,7 @@ Returns the URL of a projected model.
   </SOAP-ENV:Body>
 </SOAP-ENV:Envelope>
 ```
-**Example 22:** getLayerAsUrl response.
+''' </div></div><br/>
 
 == getProjectionMetadata ==
 
@@ -1141,46 +1472,471 @@ suitable for the species and the threshold used to calculate these
 values.
 
 === Examples ===
+
+''' <div class="exampleOuter"><div class="exampleWrapper"><small><b>Example 33:</b> getProjectionMetadata request.</small></div><div class="exampleInner">
 ```
 <?xml version="1.0" encoding="iso-8859-1"?>
 <soap:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
                xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" 
                xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
-               soap:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" 
-               xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
+               xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+               xmlns:omws="http://openmodeller.cria.org.br/ws/2.0"
+               soap:encodingStyle="http://xml.apache.org/xml-soap/literalxml">
   <soap:Body>
-    <omws:getProjectionMetadata xmlns:omws="http://openmodeller.cria.org.br/ws/1.0" 
-                                soap:encodingStyle="http://xml.apache.org/xml-soap/literalxml">
+    <omws:getProjectionMetadata>
       <ticket xsi:type="xsd:string">xvQD6d</ticket>
     </omws:getProjectionMetadata>
   </soap:Body>
 </soap:Envelope>
 ```
-**Example 23:** getProjectionMetadata request.
+''' </div></div><br/>
 
+''' <div class="exampleOuter"><div class="exampleWrapper"><small><b>Example 34:</b> getProjectionMetadata response.</small></div><div class="exampleInner">
 ```
 <?xml version="1.0" encoding="UTF-8"?>
 <SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" 
                    xmlns:SOAP-ENC="http://schemas.xmlsoap.org/soap/encoding/" 
                    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
                    xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
-                   xmlns:om="http://openmodeller.cria.org.br/xml/1.0" 
-                   xmlns:omws="http://openmodeller.cria.org.br/ws/1.0">
+                   xmlns:omws="http://openmodeller.cria.org.br/ws/2.0">
   <SOAP-ENV:Body>
     <omws:getProjectionMetadataResponse FileSize="81786">
-      <ProjectionEnvelope xmlns="http://openmodeller.cria.org.br/xml/1.0">
+      <ProjectionEnvelope xmlns="http://openmodeller.cria.org.br/xml/2.0">
         <AreaStatistics TotalCells="585176" CellsPredicted="13064" PredictionThreshold="0.5"/>
       </ProjectionEnvelope>
     </omws:getProjectionMetadataResponse>
   </SOAP-ENV:Body>
 </SOAP-ENV:Envelope>
 ```
-**Example 24:** getProjectionMetadata response.
+''' </div></div><br/>
+
+== runExperiment ==
+
+=== Description ===
+
+This operation can be used to specify multiple jobs of the following
+types: sampling points, model creation, model testing or model
+projection. Dependencies can be established between:
+
+- Points for model creation or model testing (presence and/or absence) 
+  and the result of sampling points jobs;
+- Models for testing or projection jobs and the result of model 
+  creation jobs.
+
+
+The idea is to allow a whole workflow to be specified in a single
+request rather than invoking the service multiple times through
+individual calls. Although it should be possible to use this operation
+to make individual calls (such as a single model creation job), it is 
+recommended to use the corresponding individual operation to avoid 
+possible additional processing due to workflow control mechanisms that
+may be in place on the server side.
+
+Requests are structured in the following way: An initial section is
+used to specify the basic parameters used by any job, including:
+environmental layers, presence and/or absence points, algorithm
+settings and models. Each basic parameter has an identifier ("id") in
+its main element. This section is then followed by one or more job
+specifications, which may reference existing parameters or jobs
+through the "idref" attribute. When a job is referenced, the result of
+the referenced job should be used as the corresponding parameter,
+indicating a dependency relationship between the two jobs.
+
+This operation can also be useful even when there are no dependencies
+between jobs, for example when multiple models need to be created for
+the same species using several algorithms, or for multiple species
+using the same algorithm.
+
+The response is a series of tickets, one for each job.
+
+%In this case, "lpt" can be used to
+%instruct the server to use the lowest presence threshold (lowest
+%prediction among training points).
+
+=== Examples ===
+
+''' <div class="exampleOuter"><div class="exampleWrapper"><small><b>Example 35:</b> Multiple model creation jobs using different algorithms, points and environmental scenarios.</small></div><div class="exampleInner">
+```
+<?xml version="1.0" encoding="UTF-8"?>
+<soap:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+               xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" 
+               xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
+               xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+               xmlns:omws="http://openmodeller.cria.org.br/ws/2.0"
+               soap:encodingStyle="http://xml.apache.org/xml-soap/literalxml">
+  <soap:Body>
+    <omws:runExperiment>
+      <ExperimentParameters xmlns="http://openmodeller.cria.org.br/xml/2.0">
+        <Environment NumLayers="2" id="environment0">
+          <Map Id="/layers/en/terrestrial/climate/global/worldclim/present/bioclim/10arc-minutes/14aecd40-04d9-11e1-be50-0800200c9a66"
+               IsCategorical="0" />
+          <Map Id="/layers/en/terrestrial/climate/global/worldclim/present/bioclim/10arc-minutes/bf441530-04d9-11e1-be50-0800200c9a66"
+               IsCategorical="0" />
+          <Mask Id="/layers/en/terrestrial/climate/global/worldclim/present/bioclim/10arc-minutes/14aecd40-04d9-11e1-be50-0800200c9a66" />
+        </Environment>
+        <Environment NumLayers="8" id="environment1">
+          <Map Id="/layers/en/terrestrial/climate/global/worldclim/present/bioclim/30arc-seconds/19afb361-0c8e-11e1-be50-0800200c9a66"
+               IsCategorical="0" />
+          <Map Id="/layers/en/terrestrial/climate/global/worldclim/present/bioclim/30arc-seconds/19afb364-0c8e-11e1-be50-0800200c9a66"
+               IsCategorical="0" />
+          <Map Id="/layers/en/terrestrial/climate/global/worldclim/present/bioclim/30arc-seconds/19afb365-0c8e-11e1-be50-0800200c9a66"
+               IsCategorical="0" />
+          <Map Id="/layers/en/terrestrial/climate/global/worldclim/present/bioclim/30arc-seconds/19afb36f-0c8e-11e1-be50-0800200c9a66"
+               IsCategorical="0" />
+          <Map Id="/layers/en/terrestrial/climate/global/worldclim/present/bioclim/30arc-seconds/19afb370-0c8e-11e1-be50-0800200c9a66"
+               IsCategorical="0" />
+          <Map Id="/layers/en/terrestrial/climate/global/worldclim/present/bioclim/30arc-seconds/19afb371-0c8e-11e1-be50-0800200c9a66"
+               IsCategorical="0" />
+          <Map Id="/layers/en/terrestrial/climate/global/worldclim/present/bioclim/30arc-seconds/19afb372-0c8e-11e1-be50-0800200c9a66"
+               IsCategorical="0" />
+          <Map Id="/layers/en/terrestrial/topography/global/worldclim/altitude/30arc-seconds/ede38a70-16cb-11e1-be50-0800200c9a66"
+               IsCategorical="0" />
+          <Mask Id="/layers/en/masks/country/brazil/30arc-seconds/2c1e2d30-c492-11e1-9b21-0800200c9a66" />
+        </Environment>
+        <Presence Count="2" Label="Test species" id="presence0">
+          <CoordinateSystem>GEOGCS['1924 ellipsoid',DATUM['Not_specified',SPHEROID['International 1924',6378388,297,
+AUTHORITY['EPSG','7022']],AUTHORITY['EPSG','6022']],PRIMEM['Greenwich',0,AUTHORITY['EPSG','8901']],UNIT['degree',
+0.0174532925199433,AUTHORITY['EPSG','9108']],AUTHORITY['EPSG','4022']]</CoordinateSystem>
+          <Point Id="1" X="-57.845739" Y="-11.327340" />
+          <Point Id="2" X="-59.549969" Y="-12.350801" />
+        </Presence>
+        <Presence Count="25" Label="Test species" id="presence1">
+          <CoordinateSystem>GEOGCS['1924 ellipsoid',DATUM['Not_specified',SPHEROID['International 1924',6378388,297,
+AUTHORITY['EPSG','7022']],AUTHORITY['EPSG','6022']],PRIMEM['Greenwich',0,AUTHORITY['EPSG','8901']],UNIT['degree',
+0.0174532925199433,AUTHORITY['EPSG','9108']],AUTHORITY['EPSG','4022']]</CoordinateSystem>
+          <Point Id="5992" X="-45.583888" Y="-22.763055" />
+          <Point Id="5993" X="-38.997777" Y="-15.676389" />
+          <Point Id="5994" X="-37.724443" Y="-12.016111" />
+          <Point Id="5995" X="-40.491666" Y="-12.310556" />
+          <Point Id="5996" X="-38.968888" Y="-16.163610" />
+          <Point Id="5997" X="-39.476944" Y="-12.869721" />
+          <Point Id="5998" X="-38.293332" Y="-12.571666" />
+          <Point Id="5999" X="-49.235588" Y="-26.365003" />
+          <Point Id="6000" X="-49.047778" Y="-26.192499" />
+          <Point Id="6001" X="-39.459167" Y="-13.890833" />
+          <Point Id="6002" X="-49.862222" Y="-27.450832" />
+          <Point Id="6003" X="-39.761667" Y="-18.940833" />
+          <Point Id="6004" X="-49.099443" Y="-24.068888" />
+          <Point Id="6005" X="-39.568582" Y="-15.383667" />
+          <Point Id="6006" X="-45.079166" Y="-23.381111" />
+          <Point Id="6007" X="-49.338861" Y="-26.365277" />
+          <Point Id="6008" X="-49.141666" Y="-16.523889" />
+          <Point Id="6009" X="-46.481610" Y="-14.870309" />
+          <Point Id="6010" X="-49.049444" Y="-27.630278" />
+          <Point Id="6011" X="-49.231405" Y="-27.181397" />
+          <Point Id="6013" X="-50.129446" Y="-27.000294" />
+          <Point Id="6015" X="-46.824199" Y="-24.041222" />
+          <Point Id="6016" X="-51.916666" Y="-23.416667" />
+          <Point Id="6018" X="-40.553055" Y="-19.907499" />
+          <Point Id="6019" X="-49.908889" Y="-29.574166" />
+        </Presence>
+        <Absence Count="2" Label="Test species" id="absence0">
+          <CoordinateSystem>GEOGCS['1924 ellipsoid',DATUM['Not_specified',SPHEROID['International 1924',6378388,297,
+AUTHORITY['EPSG','7022']],AUTHORITY['EPSG','6022']],PRIMEM['Greenwich',0,AUTHORITY['EPSG','8901']],UNIT['degree',
+0.0174532925199433,AUTHORITY['EPSG','9108']],AUTHORITY['EPSG','4022']]</CoordinateSystem>
+          <Point Id="3" X="-48.245959" Y="-12.060403" />
+          <Point Id="4" X="-44.534959" Y="-15.340201" />
+        </Absence>
+        <AlgorithmSettings id="algorithm0">
+          <Algorithm Id="BIOCLIM" Version="0.2">
+            <Parameters>
+              <Parameter Id="StandardDeviationCutoff" Value="0.8" />
+            </Parameters>
+          </Algorithm>
+        </AlgorithmSettings>
+        <AlgorithmSettings id="algorithm1">
+          <Algorithm Id="RF" Version="0.2">
+            <Parameters>
+              <Parameter Id="NumTrees" Value="100" />
+              <Parameter Id="VarsPerTree" Value="0" />
+              <Parameter Id="ForceUnsupervisedLearning" Value="0" />
+            </Parameters>
+          </Algorithm>
+        </AlgorithmSettings>
+        <Jobs id="jobs">
+          <CreateModelJob id="job0">
+            <EnvironmentRef idref="environment0" />
+            <PresenceRef idref="presence0" />
+            <AlgorithmRef idref="algorithm0" />
+            <Options>
+              <OccurrencesFilter>
+                <SpatiallyUnique />
+              </OccurrencesFilter>
+            </Options>
+          </CreateModelJob>
+          <CreateModelJob id="job1">
+            <EnvironmentRef idref="environment1" />
+            <PresenceRef idref="presence0" />
+            <AlgorithmRef idref="algorithm0" />
+            <Options>
+              <OccurrencesFilter>
+                <SpatiallyUnique />
+              </OccurrencesFilter>
+            </Options>
+          </CreateModelJob>
+          <CreateModelJob id="job2">
+            <EnvironmentRef idref="environment0" />
+            <PresenceRef idref="presence0" />
+            <AbsenceRef idref="absence0" />
+            <AlgorithmRef idref="algorithm1" />
+            <Options>
+              <OccurrencesFilter>
+                <SpatiallyUnique />
+              </OccurrencesFilter>
+            </Options>
+          </CreateModelJob>
+          <CreateModelJob id="job3">
+            <EnvironmentRef idref="environment1" />
+            <PresenceRef idref="presence0" />
+            <AbsenceRef idref="absence0" />
+            <AlgorithmRef idref="algorithm1" />
+            <Options>
+              <OccurrencesFilter>
+                <SpatiallyUnique />
+              </OccurrencesFilter>
+            </Options>
+          </CreateModelJob>
+        </Jobs>
+      </ExperimentParameters>
+    </omws:runExperiment>
+  </soap:Body>
+</soap:Envelope>
+```
+''' </div></div><br/>
+
+''' <div class="exampleOuter"><div class="exampleWrapper"><small><b>Example 36:</b> Multiple job types with dependencies.</small></div><div class="exampleInner">
+```
+<?xml version="1.0" encoding="UTF-8"?>
+<soap:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+               xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" 
+               xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
+               xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+               xmlns:omws="http://openmodeller.cria.org.br/ws/2.0"
+               soap:encodingStyle="http://xml.apache.org/xml-soap/literalxml">
+  <soap:Body>
+    <omws:runExperiment>
+      <ExperimentParameters xmlns="http://openmodeller.cria.org.br/xml/2.0">
+        <Environment NumLayers="8" id="environment0">
+          <Map Id="/layers/en/terrestrial/climate/global/worldclim/present/bioclim/30arc-seconds/19afb361-0c8e-11e1-be50-0800200c9a66"
+               IsCategorical="0" />
+          <Map Id="/layers/en/terrestrial/climate/global/worldclim/present/bioclim/30arc-seconds/19afb364-0c8e-11e1-be50-0800200c9a66"
+               IsCategorical="0" />
+          <Map Id="/layers/en/terrestrial/climate/global/worldclim/present/bioclim/30arc-seconds/19afb365-0c8e-11e1-be50-0800200c9a66"
+               IsCategorical="0" />
+          <Map Id="/layers/en/terrestrial/climate/global/worldclim/present/bioclim/30arc-seconds/19afb36f-0c8e-11e1-be50-0800200c9a66"
+               IsCategorical="0" />
+          <Map Id="/layers/en/terrestrial/climate/global/worldclim/present/bioclim/30arc-seconds/19afb370-0c8e-11e1-be50-0800200c9a66"
+               IsCategorical="0" />
+          <Map Id="/layers/en/terrestrial/climate/global/worldclim/present/bioclim/30arc-seconds/19afb371-0c8e-11e1-be50-0800200c9a66"
+               IsCategorical="0" />
+          <Map Id="/layers/en/terrestrial/climate/global/worldclim/present/bioclim/30arc-seconds/19afb372-0c8e-11e1-be50-0800200c9a66"
+               IsCategorical="0" />
+          <Map Id="/layers/en/terrestrial/topography/global/worldclim/altitude/30arc-seconds/ede38a70-16cb-11e1-be50-0800200c9a66"
+               IsCategorical="0" />
+          <Mask Id="/layers/en/masks/country/brazil/30arc-seconds/2c1e2d30-c492-11e1-9b21-0800200c9a66" />
+        </Environment>
+        <Presence Count="25" Label="Test species" id="presence1">
+          <CoordinateSystem>GEOGCS['1924 ellipsoid',DATUM['Not_specified',SPHEROID['International 1924',6378388,297,
+AUTHORITY['EPSG','7022']],AUTHORITY['EPSG','6022']],PRIMEM['Greenwich',0,AUTHORITY['EPSG','8901']],UNIT['degree',
+0.0174532925199433,AUTHORITY['EPSG','9108']],AUTHORITY['EPSG','4022']]</CoordinateSystem>
+          <Point Id="5992" X="-45.583888" Y="-22.763055" />
+          <Point Id="5993" X="-38.997777" Y="-15.676389" />
+          <Point Id="5994" X="-37.724443" Y="-12.016111" />
+          <Point Id="5995" X="-40.491666" Y="-12.310556" />
+          <Point Id="5996" X="-38.968888" Y="-16.163610" />
+          <Point Id="5997" X="-39.476944" Y="-12.869721" />
+          <Point Id="5998" X="-38.293332" Y="-12.571666" />
+          <Point Id="5999" X="-49.235588" Y="-26.365003" />
+          <Point Id="6000" X="-49.047778" Y="-26.192499" />
+          <Point Id="6001" X="-39.459167" Y="-13.890833" />
+          <Point Id="6002" X="-49.862222" Y="-27.450832" />
+          <Point Id="6003" X="-39.761667" Y="-18.940833" />
+          <Point Id="6004" X="-49.099443" Y="-24.068888" />
+          <Point Id="6005" X="-39.568582" Y="-15.383667" />
+          <Point Id="6006" X="-45.079166" Y="-23.381111" />
+          <Point Id="6007" X="-49.338861" Y="-26.365277" />
+          <Point Id="6008" X="-49.141666" Y="-16.523889" />
+          <Point Id="6009" X="-46.481610" Y="-14.870309" />
+          <Point Id="6010" X="-49.049444" Y="-27.630278" />
+          <Point Id="6011" X="-49.231405" Y="-27.181397" />
+          <Point Id="6013" X="-50.129446" Y="-27.000294" />
+          <Point Id="6015" X="-46.824199" Y="-24.041222" />
+          <Point Id="6016" X="-51.916666" Y="-23.416667" />
+          <Point Id="6018" X="-40.553055" Y="-19.907499" />
+          <Point Id="6019" X="-49.908889" Y="-29.574166" />
+        </Presence>
+        <AlgorithmSettings id="algorithm0">
+          <Algorithm Id="ENFA" Version="0.1.3">
+            <Parameters>
+              <Parameter Id="NumberOfBackgroundPoints" Value="5000" />
+              <Parameter Id="NumberOfRetries" Value="10" />
+              <Parameter Id="DiscardMethod" Value="2" />
+              <Parameter Id="RetainComponents" Value="2" />
+              <Parameter Id="RetainVariation" Value="0.75" />
+              <Parameter Id="DisplayLoadings" Value="0" />
+              <Parameter Id="VerboseDebug" Value="0" />
+            </Parameters>
+          </Algorithm>
+        </AlgorithmSettings>
+        <Jobs id="jobs">
+          <SamplingJob id="job10">
+            <EnvironmentRef idref="environment0" />
+            <Options NumPoints="5000" Label="Background" ProportionOfAbsences="1.0">
+              <OccurrencesFilter>
+                <EnvironmentallyUnique />
+              </OccurrencesFilter>
+            </Options>
+          </SamplingJob>
+          <CreateModelJob id="job20">
+            <EnvironmentRef idref="environment0" />
+            <PresenceRef idref="presence1" />
+            <AbsenceRef idref="job10" />
+            <AlgorithmRef idref="algorithm0" />
+          </CreateModelJob>
+          <TestModelJob id="job21">
+            <EnvironmentRef idref="environment0" />
+            <PresenceRef idref="presence1" />
+            <AbsenceRef idref="job10" />
+            <ModelRef idref="job20" />
+            <Statistics>
+              <RocCurve BackgroundPoints="5000" Resolution="15" MaxOmission="1.0" UseAbsencesAsBackground="1" />
+            </Statistics>
+          </TestModelJob>
+          <ProjectModelJob id="job30">
+            <EnvironmentRef idref="environment0" />
+            <ModelRef idref="job20" />
+            <OutputParameters FileType="ByteHFA">
+            <TemplateLayer Id="/layers/en/terrestrial/climate/global/worldclim/present/bioclim/10arc-minutes/14aecd40-04d9-11e1-be50-0800200c9a66"/>
+            </OutputParameters>
+          </ProjectModelJob>
+        </Jobs>
+      </ExperimentParameters>
+    </omws:runExperiment>
+  </soap:Body>
+</soap:Envelope>
+```
+''' </div></div><br/>
+
+''' <div class="exampleOuter"><div class="exampleWrapper"><small><b>Example 37:</b> runExperiment response.</small></div><div class="exampleInner">
+```
+<?xml version="1.0" encoding="UTF-8"?>
+<SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" 
+                   xmlns:SOAP-ENC="http://schemas.xmlsoap.org/soap/encoding/" 
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+                   xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
+                   xmlns:omws="http://openmodeller.cria.org.br/ws/2.0">
+  <SOAP-ENV:Body>
+    <omws:runExperimentResponse>
+      <ExperimentTickets xmlns="http://openmodeller.cria.org.br/xml/2.0">
+       <Job id="job10" Ticket="aaa121"/>
+       <Job id="job20" Ticket="aaa122"/>
+       <Job id="job21" Ticket="aaa123"/>
+       <Job id="job30" Ticket="aaa124"/>
+      </ExperimentTickets>
+    </omws:runExperimentResponse>
+  </SOAP-ENV:Body>
+</SOAP-ENV:Envelope>
+```
+''' </div></div>
+
+== getResults ==
+
+=== Description ===
+
+Operation used to retrieve results from one or more jobs initiated
+either from individual calls or from runExperiment calls. A
+comma-separated list of tickets is passsed as a parameter.
+
+=== Examples ===
+
+''' <div class="exampleOuter"><div class="exampleWrapper"><small><b>Example 38:</b> getResults request.</small></div><div class="exampleInner">
+```
+<?xml version="1.0" encoding="iso-8859-1"?>
+<SOAP-ENV:Envelope xmlns:xsi="http://www.w3.org/1999/XMLSchema-instance" 
+                   xmlns:SOAP-ENC="http://schemas.xmlsoap.org/soap/encoding/" 
+                   xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/"
+                   xmlns:xsd="http://www.w3.org/1999/XMLSchema" 
+                   SOAP-ENV:encodingStyle="http://xml.apache.org/xml-soap/literalxml"
+                   xmlns:omws="http://openmodeller.cria.org.br/ws/2.0">
+  <SOAP-ENV:Body>
+    <omws:getResults>
+      <tickets xsi:type="xsd:string">aaa121,aaa122,aaa123,aaa124</tickets>
+    </omws:getResults>
+  </SOAP-ENV:Body>
+</SOAP-ENV:Envelope>
+```
+''' </div></div><br/>
+
+''' <div class="exampleOuter"><div class="exampleWrapper"><small><b>Example 39:</b> getResults response.</small></div><div class="exampleInner">
+```
+<?xml version="1.0" encoding="UTF-8"?>
+<SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" 
+                   xmlns:SOAP-ENC="http://schemas.xmlsoap.org/soap/encoding/" 
+                   xmlns:xsi="http://www.w3.org/1999/XMLSchema-instance" 
+                   xmlns:xsd="http://www.w3.org/1999/XMLSchema" 
+                   xmlns:omws="http://openmodeller.cria.org.br/ws/2.0">
+  <SOAP-ENV:Body>
+    <omws:getResultsResponse>
+
+    </omws:getResultsResponse>
+  </SOAP-ENV:Body>
+</SOAP-ENV:Envelope>
+```
+''' </div></div><br/>
+
+== cancel ==
+
+=== Description ===
+
+Operation used to cancel one or more jobs on the server side. Jobs are
+specified as a comma-separated list of tickets. Results include a
+comma-separated list of jobs that were cancelled. If the server was
+unable to cancel a job, its corresponding ticket must not be returned
+in the response.
+
+=== Examples ===
+
+''' <div class="exampleOuter"><div class="exampleWrapper"><small><b>Example 39:</b> cancel request.</small></div><div class="exampleInner">
+```
+<?xml version="1.0" encoding="iso-8859-1"?>
+<SOAP-ENV:Envelope xmlns:xsi="http://www.w3.org/1999/XMLSchema-instance" 
+                   xmlns:SOAP-ENC="http://schemas.xmlsoap.org/soap/encoding/" 
+                   xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/"
+                   xmlns:xsd="http://www.w3.org/1999/XMLSchema" 
+                   SOAP-ENV:encodingStyle="http://xml.apache.org/xml-soap/literalxml"
+                   xmlns:omws="http://openmodeller.cria.org.br/ws/2.0">
+  <SOAP-ENV:Body>
+    <omws:cancel>
+      <tickets xsi:type="xsd:string">aaa121,aaa122,aaa123,aaa124</tickets>
+    </omws:cancel>
+  </SOAP-ENV:Body>
+</SOAP-ENV:Envelope>
+```
+''' </div></div><br/>
+
+''' <div class="exampleOuter"><div class="exampleWrapper"><small><b>Example 40:</b> cancel response.</small></div><div class="exampleInner">
+```
+<?xml version="1.0" encoding="UTF-8"?>
+<SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" 
+                   xmlns:SOAP-ENC="http://schemas.xmlsoap.org/soap/encoding/" 
+                   xmlns:xsi="http://www.w3.org/1999/XMLSchema-instance" 
+                   xmlns:xsd="http://www.w3.org/1999/XMLSchema" 
+                   xmlns:omws="http://openmodeller.cria.org.br/ws/2.0">
+  <SOAP-ENV:Body>
+    <omws:cancelResponse>
+      <cancelledTickets xsi:type="xsd:string">aaa122,aaa123,aaa124</cancelledTickets>
+    </omws:cancelResponse>
+  </SOAP-ENV:Body>
+</SOAP-ENV:Envelope>
+```
+''' </div></div>
 
 = References =
 
-Phillips, S.J., Anderson, R.P., and Schapire, R.E., 2006. Maximum entropy modeling of species geographic distributions. Ecological Modelling 190: 231–259.
-
 Muñoz, M.E.S., Giovanni, R., Siqueira, M.F., Sutton, T., Brewer, P., Pereira, R.S.,
-Canhos, D.A.L., Canhos, V.P., 2011. openModeller: a generic approach to species’
+Canhos, D.A.L., Canhos, V.P. (2011) openModeller: a generic approach to species’
 potential distribution modelling. [Geoinformatica, 15: 111-135 http://www.springerlink.com/content/n805714x26265573/].
+
+Peterson, A.T., Papes, M., Soberón, J. (2008) Rethinking receiver operating characteristic analysis applications in ecological niche modeling. Ecological Modelling, 213: 63-72.
+
+Phillips, S.J., Anderson, R.P., and Schapire, R.E., (2006) Maximum entropy modeling of species geographic distributions. Ecological Modelling, 190: 231–259.
