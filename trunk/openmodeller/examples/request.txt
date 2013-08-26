@@ -89,18 +89,22 @@ Output file = furcata.img
 
 # Output file type. Options:
 #
-# GreyTiff = grey scale GeoTiff (0 <= cell value <= 255). Default. (*.tif)
-# GreyTiff100 = grey scale GeoTiff (0 <= cell value <= 100). (*.tif)
-# FloatingTiff = floating point GeoTiff (cell value = probability of presence) (*.tif)
-# GreyBMP = grey scale BMP (*.bmp)
-# FloatingHFA = Erdas Imagine Floating Point (cell value = probability of presence)
+# GreyTiff = grey scale GeoTiff (0 <= cell value <= 254)
+#            NoData will be written as 255. (*.tif)
+# GreyTiff100 = grey scale GeoTiff (0 <= cell value <= 100)
+#               NoData will be written as 127. (*.tif)
+# FloatingTiff = floating point GeoTiff (cell value = suitability value)
+#                NoData will be written as -1. (*.tif)
+# GreyBMP = grey scale BMP (0 <= cell value <= 255).
+#           NoData will be written as 0. (*.bmp)
+# FloatingHFA = Erdas Imagine Floating Point (cell value = suitability value)
 #               NoData will be written as -1. (*.img) 
 # ByteHFA = Erdas Imagine Byte representation (0 <= cell value <= 100)
 #           NoData will be written as 101. (*.img) 
 # ByteASC = ARC/Info ASCII grid Byte representation (0 <= cell value <= 100)
 #           NoData will be written as 101. (*.asc) 
-# FloatingASC = ARC/Info ASCII grid Floating Point (cell value = probability of presence)
-#           NoData will be written as -9999. (*.asc) 
+# FloatingASC = ARC/Info ASCII grid Floating Point (cell value = suitability value)
+#               NoData will be written as -9999. (*.asc) 
 #
 Output file type = ByteHFA
 
