@@ -1356,8 +1356,6 @@ omws::omws__getResults( struct soap *soap, omws::xsd__string tickets, struct omw
   stringstream ss( tickets );
   ostringstream oss;
 
-  oss << "<ResultSet>" << endl;
-
   string ticket;
   bool has_result = false;
   while ( getline( ss, ticket, ',' ) ) {
@@ -1433,8 +1431,6 @@ omws::omws__getResults( struct soap *soap, omws::xsd__string tickets, struct omw
 
     return soap_receiver_fault( soap, "No results", NULL );
   }
-
-  oss << "</ResultSet>" << endl;
 
   out->om__ResultSet = convertToWideChar( oss.str().c_str() );
 
