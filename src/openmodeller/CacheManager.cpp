@@ -161,7 +161,7 @@ CacheManager::isCached( const std::string id, const std::string subdir )
 bool
 CacheManager::isCachedMd5( const std::string id, const std::string subdir )
 {
-  return isCached( _md5Encode( id ), subdir );
+  return isCached( getContentIdMd5( id ), subdir );
 }
 
 /*************/
@@ -204,7 +204,7 @@ CacheManager::cache( const std::string id, const std::ostringstream& content, co
 void
 CacheManager::cacheMd5( const std::string id, const std::ostringstream& content, const std::string subdir )
 {
-  cache( _md5Encode( id ), content, subdir );
+  cache( getContentIdMd5( id ), content, subdir );
 }
 
 /****************************/
@@ -235,16 +235,14 @@ CacheManager::getContentLocation( const std::string id, const std::string subdir
 std::string
 CacheManager::getContentLocationMd5( const std::string id, const std::string subdir )
 {
-  return getContentLocation( _md5Encode( id ), subdir );
+  return getContentLocation( getContentIdMd5( id ), subdir );
 }
 
 /*************************/
 /*** get Friendly Hash ***/
 std::string
-CacheManager::_md5Encode( const std::string id )
+CacheManager::getContentIdMd5( const std::string id )
 {
-  Log::instance()->debug( "Original string: %s.\n", id.c_str() );
-
   const size_t MYSIZE = 16;
 
   unsigned char digest[MYSIZE];
@@ -262,8 +260,6 @@ CacheManager::_md5Encode( const std::string id )
   }
 
   std::string md5_id( buffer );
-
-  Log::instance()->debug( "Hash: %s.\n", md5_id.c_str() );
 
   return md5_id;
 }

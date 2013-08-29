@@ -102,6 +102,12 @@ public:
    */
   static std::string getContentLocationMd5( const std::string id, const std::string subdir="" );
 
+  /** Return the local id of cached content. Id is converted to an MD5 hash.
+   * @param id Content identifier.
+   * @return Local id of cached content.
+   */
+  static std::string getContentIdMd5( const std::string id ); 
+
 private:
 
   CacheManager();
@@ -109,8 +115,6 @@ private:
   static CacheManager& _getInstance();
 
   static void _ensureInitialized();
-
-  static std::string _md5Encode( const std::string id ); 
 
   // Cache directory
   std::string _cacheDir;
