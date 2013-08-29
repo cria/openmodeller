@@ -61,7 +61,15 @@ WcsProxyRaster::CreateRasterCallback()
 void 
 WcsProxyRaster::createRaster( const string& str, int categ )
 {
-  if ( !CacheManager::isCachedMd5( str, "wcs" ) ) {
+  string cache_id = CacheManager::getContentIdMd5( str );
+
+  if ( CacheManager::isCachedMd5( str, OM_WCS_PROXY_SUBDIR ) ) {
+
+    Log::instance()->debug( "WCS raster %s already present in local cache (%s)\n", str.c_str(), cache_id.c_str() );
+  }
+  else {
+
+    Log::instance()->debug( "Setting up WCS proxy for %s (%s)\n", str.c_str(), cache_id.c_str() );
 
     // Extract tokens from identifier
     vector<string> tokens;
@@ -87,10 +95,10 @@ WcsProxyRaster::createRaster( const string& str, int categ )
     oss<<"</WCS_GDAL>";
 
     // Then cache it
-    CacheManager::cacheMd5( str, oss, "wcs" );
+    CacheManager::cacheMd5( str, oss, OM_WCS_PROXY_SUBDIR );
   }
 
-  string cached_ref = CacheManager::getContentLocationMd5( str, "wcs" );
+  string cached_ref = CacheManager::getContentLocationMd5( str, OM_WCS_PROXY_SUBDIR );
 
   GdalRaster::createRaster( cached_ref, categ );
 }
