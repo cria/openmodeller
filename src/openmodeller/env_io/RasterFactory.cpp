@@ -30,6 +30,7 @@
 #include <openmodeller/env_io/RasterFactory.hh>
 #include <openmodeller/MapFormat.hh>
 
+#include <algorithm>
 #include <string>
 using std::string;
 
@@ -93,7 +94,25 @@ RasterFactory::create( const string& source, int categ )
       return r;
     }
   }
+
+  #ifdef CURL_FOUND
+  // Check if name starts with http://, https:// or ftp:// 
+  if ( source.size() > 6 ) {
   
+    string lower_source;
+    transform( source.begin(), source.end(), std::back_inserter(lower_source), ::tolower );
+
+    if ( lower_source.compare( 0, 7, "http://" )  == 0 || 
+         lower_source.compare( 0, 8, "https://" ) == 0 ||
+         lower_source.compare( 0, 6, "ftp://" )   == 0 ) {
+
+      Raster* r = new RemoteRaster();
+      r->createRaster( source, categ );
+      return r;
+    }
+  }
+  #endif
+
   // Default: GDAL Raster Lib
   Raster* r = new GdalRaster();
   r->createRaster( source, categ );
@@ -124,6 +143,24 @@ RasterFactory::create( const string& output_file_source, const string& source, c
     }
   }
 
+  #ifdef CURL_FOUND
+  // Check if name starts with http://, https:// or ftp:// 
+  if ( source.size() > 6 ) {
+  
+    string lower_source;
+    transform( source.begin(), source.end(), std::back_inserter(lower_source), ::tolower );
+
+    if ( lower_source.compare( 0, 7, "http://" )  == 0 || 
+         lower_source.compare( 0, 8, "https://" ) == 0 ||
+         lower_source.compare( 0, 6, "ftp://" )   == 0 ) {
+
+      Raster* r = new RemoteRaster();
+      r->createRaster( output_file_source, source, format );
+      return r;
+    }
+  }
+  #endif
+
   // Default: GDAL Raster Lib
   Raster* r = new GdalRaster();
   r->createRaster( output_file_source, source, format );
@@ -151,6 +188,24 @@ RasterFactory::create( const string& source, const MapFormat& format )
       return r;
     }
   }
+
+  #ifdef CURL_FOUND
+  // Check if name starts with http://, https:// or ftp:// 
+  if ( source.size() > 6 ) {
+  
+    string lower_source;
+    transform( source.begin(), source.end(), std::back_inserter(lower_source), ::tolower );
+
+    if ( lower_source.compare( 0, 7, "http://" )  == 0 || 
+         lower_source.compare( 0, 8, "https://" ) == 0 ||
+         lower_source.compare( 0, 6, "ftp://" )   == 0 ) {
+
+      Raster* r = new RemoteRaster();
+      r->createRaster( source, format );
+      return r;
+    }
+  }
+  #endif
   
   // Default: GDAL Raster Lib
   Raster* r = new GdalRaster();
