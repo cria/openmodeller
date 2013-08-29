@@ -10,6 +10,7 @@ SVN revision: ?
 	* Fixed segfault when needNormalization was called on a deserialized SVM algorithm.
 	* Modified om_pseudo command-line tool to also accept XML input (in this case also producing XML output), optionally storing it into a file. When a model is specified as a parameter, presences are generated inside the model, while absences are generated outside.
 	* New implementation of the SOAP client/server programs compatible with OMWS 2.0.
+	* New driver to fetch remote rasters available through http, https or ftp. Layers can now be identified by URLs.
 
 
 --------------------------

@@ -126,6 +126,7 @@ IF (CURL_FOUND)
       ${OM_CORE_SRCS}
       occ_io/TapirOccurrences.cpp
       occ_io/GbifOccurrences.cpp
+      env_io/RemoteRaster.cpp
     )
 ENDIF (CURL_FOUND)
 
@@ -249,14 +250,6 @@ occ_io/DelimitedTextOccurrences.hh
 occ_io/SerializedXmlOccurrences.hh
 )
 
-IF (CURL_FOUND)
-  SET(OM_OCCIO_HDRS
-      ${OM_OCCIO_HDRS}
-      occ_io/TapirOccurrences.hh
-      occ_io/GbifOccurrences.hh
-     )
-ENDIF (CURL_FOUND)
-
 SET (OM_ENVIO_HDRS
 env_io/GeoTransform.hh
 env_io/Header.hh
@@ -267,6 +260,18 @@ env_io/RasterFactory.hh
 env_io/GdalRaster.hh
 env_io/WcsProxyRaster.hh
 )
+
+IF (CURL_FOUND)
+  SET(OM_OCCIO_HDRS
+      ${OM_OCCIO_HDRS}
+      occ_io/TapirOccurrences.hh
+      occ_io/GbifOccurrences.hh
+     )
+  SET(OM_ENVIO_HDRS
+      ${OM_ENVIO_HDRS}
+      env_io/RemoteRaster.hh
+     )
+ENDIF (CURL_FOUND)
 
 IF (TERRALIB_FOUND)
 

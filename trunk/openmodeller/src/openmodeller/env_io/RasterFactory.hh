@@ -32,6 +32,7 @@
 #include <openmodeller/env_io/Raster.hh>
 #include <openmodeller/env_io/GdalRaster.hh>
 #include <openmodeller/env_io/WcsProxyRaster.hh>
+#include <openmodeller/env_io/RemoteRaster.hh>
 
 #ifdef TERRALIB_FOUND
 #include <openmodeller/env_io/TerralibRaster.hh>
