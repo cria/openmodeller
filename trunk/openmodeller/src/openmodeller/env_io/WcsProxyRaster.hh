@@ -32,6 +32,8 @@
 
 #include <string>
 
+#define OM_WCS_PROXY_SUBDIR "wcs"
+
 class GDALDataset;
 class MapFormat;
 
