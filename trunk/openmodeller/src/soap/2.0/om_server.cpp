@@ -2,7 +2,7 @@
  * openModeller SOAP interface.
  * 
  * @author Renato De Giovanni (renato [at] cria [dot] org [dot] br)
- * $Id: om_soap_server.cpp 5722 2013-04-05 19:47:48Z rdg $
+ * $Id$
  * 
  * LICENSE INFORMATION 
  * 
