@@ -2,7 +2,7 @@
  * openModeller Web service utils library.
  * 
  * @author Renato De Giovanni (renato [at] cria [dot] org [dot] br)
- * $Id: $
+ * $Id$
  * 
  * LICENSE INFORMATION 
  * 

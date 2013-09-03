@@ -2,7 +2,7 @@
  * openModeller Web service manager for experiments.
  * 
  * @author Renato De Giovanni (renato [at] cria [dot] org [dot] br)
- * $Id: $
+ * $Id$
  * 
  * LICENSE INFORMATION 
  * 
