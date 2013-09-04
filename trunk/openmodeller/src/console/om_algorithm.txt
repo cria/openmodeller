@@ -18,5 +18,7 @@ OPTIONS
 
        --log-level       openModeller log level: debug, warn, info or error. Defaults to "info".
 
+       -c, --config-file Configuration file for openModeller (available since version 1.4).
+
 AUTHORS
        Renato De Giovanni <renato at cria dot org dot br>

@@ -24,16 +24,17 @@ int main( int argc, char **argv ) {
   int option;
 
   // command-line parameters (short name, long name, description, take args)
-  opts.addOption( "" , "log-level", "Set the log level (debug, warn, info, error)", true );
-  opts.addOption( "v", "version"  , "Display version info"                        , false );
-  opts.addOption( "l", "list"     , "List available formats"                      , false );
-  opts.addOption( "s", "source"   , "Source where points are located"             , true );
-  opts.addOption( "n", "name"     , "Name (label) to filter points"               , true );
-  opts.addOption( "w", "wkt"      , "Spatial reference in WKT"                    , true );
-  opts.addOption( "o", "type"     , "Output type"                                 , true );
-  opts.addOption( "" , "split"    , "Split points using the specified proportion (0,1)"  , true );
-  opts.addOption( "" , "file1"    , "File name to store 1st subset (used w/ param split)", true );
-  opts.addOption( "" , "file2"    , "File name to store 2nd subset (used w/ param split)", true );
+  opts.addOption( "" , "log-level"  , "Set the log level (debug, warn, info, error)", true );
+  opts.addOption( "v", "version"    , "Display version info"                        , false );
+  opts.addOption( "l", "list"       , "List available formats"                      , false );
+  opts.addOption( "s", "source"     , "Source where points are located"             , true );
+  opts.addOption( "n", "name"       , "Name (label) to filter points"               , true );
+  opts.addOption( "w", "wkt"        , "Spatial reference in WKT"                    , true );
+  opts.addOption( "o", "type"       , "Output type"                                 , true );
+  opts.addOption( "" , "split"      , "Split points using the specified proportion (0,1)"  , true );
+  opts.addOption( "" , "file1"      , "File name to store 1st subset (used w/ param split)", true );
+  opts.addOption( "" , "file2"      , "File name to store 2nd subset (used w/ param split)", true );
+  opts.addOption( "c", "config-file", "Configuration file for openModeller"         , true );
 
   std::string log_level("info");
   bool        list_formats = false;
@@ -44,6 +45,7 @@ int main( int argc, char **argv ) {
   std::string split_prop_string;
   std::string file1;
   std::string file2;
+  std::string config_file;
 
   if ( ! opts.parse( argc, argv ) ) {
 
@@ -93,9 +95,18 @@ int main( int argc, char **argv ) {
       case 9:
         file2 = opts.getArgs( option );
         break;
+      case 10:
+        config_file = opts.getArgs( option );
+        break;
       default:
         break;
     }
+  }
+
+  // om configuration
+  if ( ! config_file.empty() ) { 
+
+    Settings::loadConfig( config_file );
   }
 
   // Log stuff

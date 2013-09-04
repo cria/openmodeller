@@ -27,6 +27,7 @@
 #include <openmodeller/CacheManager.hh>
 #include <openmodeller/Log.hh>
 #include <openmodeller/Exceptions.hh>
+#include <openmodeller/Settings.hh>
 #include <openmodeller/os_specific.hh>
 extern "C" {
 #include <openmodeller/ext/md5/md5.h>
@@ -80,27 +81,39 @@ CacheManager::initialize( const std::string dir )
 
   if ( ! dir.empty() ) {
 
+    Log::instance()->debug( "Using specified directory as cache: %s\n", dir.c_str() );
     cm._cacheDir = dir;
     use_default = false;
   }
   else {
 
-    char *env = getenv( "OM_CACHE_PATH" );
+    if ( Settings::count( "CACHE_DIRECTORY" ) == 1 ) {
 
-    if ( env != 0 ) {
+      cm._cacheDir = Settings::get( "CACHE_DIRECTORY" );
+      Log::instance()->debug( "Using cache directory from configuration file: %s\n", cm._cacheDir.c_str() );
+      use_default = false;
+    }
+    else {
 
-      string om_cache_path = (char const *)env;
+      char *env = getenv( "OM_CACHE_PATH" );
 
-      if ( ! om_cache_path.empty() ) {
+      if ( env != 0 ) {
 
-        cm._cacheDir = om_cache_path;
-        use_default = false;
+        string om_cache_path = (char const *)env;
+
+        if ( ! om_cache_path.empty() ) {
+
+          Log::instance()->debug( "Using cache directory defined in OM_CACHE_PATH: %s\n", om_cache_path.c_str() );
+          cm._cacheDir = om_cache_path;
+          use_default = false;
+        }
       }
     }
   }
 
   if ( use_default ) {
 
+    Log::instance()->debug( "Using default cache directory under the current path\n" );
     cm._cacheDir = getWorkingPath();
     cm._cacheDir.append("/cache");
   }

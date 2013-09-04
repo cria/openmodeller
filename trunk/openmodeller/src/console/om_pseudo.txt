@@ -37,7 +37,9 @@ OPTIONS
 
        --log-file        File to store log information.
 
-       --prog-file       File to store progress (-1=queued, -2=aborted, [0,100]=progress).
+       --prog-file       File to store progress (-1=queued, -2=aborted, -3=cancelled, [0,100]=progress).
+
+       -c, --config-file Configuration file for openModeller (available since version 1.4).
 
 AUTHORS
        Renato De Giovanni <renato at cria dot org dot br>

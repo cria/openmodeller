@@ -19,21 +19,22 @@ int main( int argc, char **argv ) {
   int option;
 
   // command-line parameters (short name, long name, description, take args)
-  opts.addOption( "v", "version"   , "Display the version info"                             , false );
-  opts.addOption( "r", "xml-req"   , "(option 1) Model evaluation request file in XML"      , true );
-  opts.addOption( "n", "num-points", "(option 2) Number of points to be generated"          , true );
-  opts.addOption( "l", "label"     , "(option 2) Label for the points"                      , true );
-  opts.addOption( "q", "seq-start" , "(option 2) Sequence start for points id"              , true );
-  opts.addOption( "m", "mask"      , "(option 2) Mask file"                                 , true );
-  opts.addOption( "p", "proportion", "(option 2) Proportion of absence points (decimals)"   , true );
-  opts.addOption( "o", "model"     , "(option 2) File with serialized model"                , true );
-  opts.addOption( "t", "threshold" , "(option 2) Model threshold (default 0.5)"             , true );
-  opts.addOption( "" , "geo-unique", "(option 2) Avoid repeating same coordinates"          , false );
-  opts.addOption( "" , "env-unique", "(option 2) Avoid repeating same environment condition", false );
-  opts.addOption( "s", "result"    , "File to store result"                                 , true );
-  opts.addOption( "" , "log-level" , "Set the log level (debug, warn, info, error)"         , true );
-  opts.addOption( "" , "log-file"  , "Log file"                                             , true );
-  opts.addOption( "" , "prog-file" , "File to store progress"                               , true );
+  opts.addOption( "v", "version"    , "Display the version info"                             , false );
+  opts.addOption( "r", "xml-req"    , "(option 1) Model evaluation request file in XML"      , true );
+  opts.addOption( "n", "num-points" , "(option 2) Number of points to be generated"          , true );
+  opts.addOption( "l", "label"      , "(option 2) Label for the points"                      , true );
+  opts.addOption( "q", "seq-start"  , "(option 2) Sequence start for points id"              , true );
+  opts.addOption( "m", "mask"       , "(option 2) Mask file"                                 , true );
+  opts.addOption( "p", "proportion" , "(option 2) Proportion of absence points (decimals)"   , true );
+  opts.addOption( "o", "model"      , "(option 2) File with serialized model"                , true );
+  opts.addOption( "t", "threshold"  , "(option 2) Model threshold (default 0.5)"             , true );
+  opts.addOption( "" , "geo-unique" , "(option 2) Avoid repeating same coordinates"          , false );
+  opts.addOption( "" , "env-unique" , "(option 2) Avoid repeating same environment condition", false );
+  opts.addOption( "s", "result"     , "File to store result"                                 , true );
+  opts.addOption( "" , "log-level"  , "Set the log level (debug, warn, info, error)"         , true );
+  opts.addOption( "" , "log-file"   , "Log file"                                             , true );
+  opts.addOption( "" , "prog-file"  , "File to store progress"                               , true );
+  opts.addOption( "c", "config-file", "Configuration file for openModeller"                  , true );
 
   std::string log_level("info");
   std::string request_file;
@@ -54,6 +55,7 @@ int main( int argc, char **argv ) {
   std::string result_file;
   std::string log_file;
   std::string progress_file;
+  std::string config_file;
 
   if ( ! opts.parse( argc, argv ) ) {
 
@@ -118,9 +120,18 @@ int main( int argc, char **argv ) {
       case 14:
         progress_file = opts.getArgs( option );
         break;
+      case 15:
+        config_file = opts.getArgs( option );
+        break;
       default:
         break;
     }
+  }
+
+  // om configuration
+  if ( ! config_file.empty() ) { 
+
+    Settings::loadConfig( config_file );
   }
 
   // Log stuff

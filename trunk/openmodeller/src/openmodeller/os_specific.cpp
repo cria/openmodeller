@@ -28,6 +28,7 @@
 #include <os_specific.hh>
 #include <openmodeller/Log.hh>
 #include <openmodeller/AlgorithmFactory.hh>
+#include <openmodeller/Settings.hh>
 
 #include <iostream>
 #include <stdlib.h>
@@ -106,10 +107,18 @@ std::string omDataPath( std::string dir )
   if ( ! dir.empty() ) {
 
     data_path = dir;
+
+    return data_path;
   }
 
-  // Priority to env variable
-  char *env = getenv( "OM_DATA_PATH" );
+  // Check configuration
+  if ( Settings::count( "DATA_DIRECTORY" ) == 1 ) {
+
+    return Settings::get( "DATA_DIRECTORY" );
+  }
+
+  // Check env variable
+  char *env = getenv( "OM_DATA_DIR" );
 
   if ( env != 0 ) {
 
@@ -121,21 +130,8 @@ std::string omDataPath( std::string dir )
     }
   }
 
-  // Return static content if it's not empty
-  if ( ! data_path.empty() ) {
-
-    return data_path;
-  }
-
-  string pkg_data_path = PKGDATAPATH;
-  
-  // Try compile constant
-  if ( ! pkg_data_path.empty() ) {
-
-    return pkg_data_path;
-  }
-
-  return data_path;
+  // Finally compiler constant
+  return OM_DATA_DIR;
 }
 
 /***************************/
@@ -145,19 +141,38 @@ initialPluginPath()
 {
   Log::instance()->debug( "Determining algorithm paths\n" );
 
-  vector<string> entries;
-
   // Order of initialization:
   //
-  // 1) environment variable: OM_ALG_PATH
-  // 2) AlgorithmFactory::_default_alg_dir
-  // 3) read from CONFIG_FILE compiled constant.
-  // 4) PLUGINPATH compiled constant.
+  // 1) Programatic setting: AlgorithmFactory::_default_alg_dir
+  // 2) Settings file (by default om.cfg or set programatically).
+  // 3) environment variable: OM_ALGS_DIR
+  // 4) OM_ALGS_DIR compiled constant.
   // 5) on mac <application bundle>.app/Contents/MacOS/algs
-    
-  char *env = getenv( "OM_ALG_PATH" );
 
-  // Check if the environment variable is set
+  vector<string> entries;
+
+  // Default location that can be set programatically
+  std::string default_dir = AlgorithmFactory::getDefaultAlgDir();
+
+  if ( ! default_dir.empty() ) {
+
+    Log::instance()->debug( "Using programatic setting for algorithms location\n" );
+
+    entries.push_back( default_dir );
+    return entries;
+  }
+
+  // Otherwise check configuration
+  if ( Settings::count( "ALGS_DIRECTORY" ) == 1 ) {
+
+    Log::instance()->debug( "Using configuration setting for algorithms location\n" );
+    entries.push_back( Settings::get( "ALGS_DIRECTORY" ) );
+    return entries;
+  }
+
+  // Or check environment variable
+  char *env = getenv( "OM_ALGS_DIR" );
+
   if ( env != 0 ) {
 
     string envpath( (char const *)env );
@@ -165,9 +180,9 @@ initialPluginPath()
     // Ignore empty string
     if ( ! envpath.empty() ) {
 
-      Log::instance()->debug( "Found not empty environment variable OM_ALG_PATH: %s\n", envpath.c_str() );
+      Log::instance()->debug( "Using environment setting for algorithms location\n" );
 
-      // Parse the OM_ALG_PATH with colon (':') delimiters just like all other 
+      // Parse the OM_ALGS_DIR with colon (':') delimiters just like all other 
       // unix path structures.
 
       // string::size_type start marks the beginning of the substring.
@@ -199,37 +214,7 @@ initialPluginPath()
     }
   }
 
-  // Default location that can be set programatically
-  std::string default_dir = AlgorithmFactory::getDefaultAlgDir();
-
-  if ( ! default_dir.empty() ) {
-
-    Log::instance()->debug( "Default location is set\n" );
-
-    entries.push_back( default_dir );
-    return entries;
-  }
-
-  Log::instance()->debug( "Checking CONFIG_FILE constant: " CONFIG_FILE "\n" );
-
-  std::ifstream conf_file( CONFIG_FILE, std::ios::in );
-  
-  if ( conf_file ) {
-
-    Log::instance()->debug( "Found config file\n" );
-
-    while ( conf_file ) {
-
-      string line;
-      getline( conf_file, line );
-      entries.push_back( line );
-    }
-
-    return entries;
-  }
-
-  Log::instance()->debug( "Checking PLUGINPATH constant\n" );
-
+  // Default location
 #if defined(__APPLE__)
   CFURLRef myPluginRef = CFBundleCopyBundleURL(CFBundleGetMainBundle());
   CFStringRef myMacPath = CFURLCopyFileSystemPath(myPluginRef, kCFURLPOSIXPathStyle);
@@ -241,15 +226,18 @@ initialPluginPath()
   if( loc != string::npos ) //found so we are in a mac application bundle
   {
     myFullPath += "/Contents/MacOS/lib/openmodeller";
-    entries.push_back(myFullPath.c_str());
+    entries.push_back( myFullPath );
+    Log::instance()->debug( "Using Mac bundle for algorithms location\n" );
   } 
   else //not in a bundle! 
   {
     //otherwise use the normal search path
-    entries.push_back( PLUGINPATH );
+    Log::instance()->debug( "Using default algorithms location\n" );
+    entries.push_back( OM_ALGS_DIR );
   }
 #else
-  entries.push_back( PLUGINPATH );
+  Log::instance()->debug( "Using default algorithms location\n" );
+  entries.push_back( OM_ALGS_DIR );
 #endif
 
   return entries;

@@ -20,16 +20,18 @@ int main( int argc, char **argv ) {
   int option;
 
   // command-line parameters (short name, long name, description, take args)
-  opts.addOption( "" , "log-level", "Set the log level (debug, warn, info, error)", true );
-  opts.addOption( "v", "version"  , "Display version info", false );
-  opts.addOption( "l", "list"     , "List available algorithms (id and name)", false );
-  opts.addOption( "d", "dump-xml" , "Dump algorithms' metadata in XML", false );
-  opts.addOption( "i", "id"       , "Algorithm id", true );
+  opts.addOption( "" , "log-level"  , "Set the log level (debug, warn, info, error)", true );
+  opts.addOption( "v", "version"    , "Display version info", false );
+  opts.addOption( "l", "list"       , "List available algorithms (id and name)", false );
+  opts.addOption( "d", "dump-xml"   , "Dump algorithms' metadata in XML", false );
+  opts.addOption( "i", "id"         , "Algorithm id", true );
+  opts.addOption( "c", "config-file", "Configuration file for openModeller", true );
 
   std::string log_level("info");
   bool        list_algs = false;
   bool        dump_algs = false;
   std::string alg_id;
+  std::string config_file;
 
   if ( ! opts.parse( argc, argv ) ) {
 
@@ -64,6 +66,9 @@ int main( int argc, char **argv ) {
       case 4:
         alg_id = opts.getArgs( option );
         break;
+      case 5:
+        config_file = opts.getArgs( option );
+        break;
       default:
         break;
     }
@@ -75,6 +80,12 @@ int main( int argc, char **argv ) {
 
     printf( "Please specify one of the parameters: --list, --dump-xml or --id\n");
     exit(1);
+  }
+
+  // om configuration
+  if ( ! config_file.empty() ) { 
+
+    Settings::loadConfig( config_file );
   }
 
   // Log stuff

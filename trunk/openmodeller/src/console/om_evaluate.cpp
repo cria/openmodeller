@@ -29,9 +29,10 @@ int main( int argc, char **argv ) {
   opts.addOption( "o", "model"       , "(option 2) Serialized model file"               , true );
   opts.addOption( "p", "points"      , "(option 2) TAB-delimited file with points"      , true );
   opts.addOption( "s", "result"      , "File to store evaluation result in XML"         , true );
-  opts.addOption( "", "log-level"    , "Set the log level (debug, warn, info, error)"   , true );
-  opts.addOption( "", "log-file"     , "Log file"                                       , true );
+  opts.addOption( "" , "log-level"   , "Set the log level (debug, warn, info, error)"   , true );
+  opts.addOption( "" , "log-file"    , "Log file"                                       , true );
   opts.addOption( "" , "prog-file"   , "File to store job progress"                     , true );
+  opts.addOption( "c", "config-file" , "Configuration file for openModeller"            , true );
 
   std::string log_level("info");
   std::string request_file;
@@ -40,6 +41,7 @@ int main( int argc, char **argv ) {
   std::string result_file;
   std::string log_file;
   std::string progress_file;
+  std::string config_file;
 
   if ( ! opts.parse( argc, argv ) ) {
 
@@ -82,9 +84,18 @@ int main( int argc, char **argv ) {
       case 7:
         progress_file = opts.getArgs( option );
         break;
+      case 8:
+        config_file = opts.getArgs( option );
+        break;
       default:
         break;
     }
+  }
+
+  // om configuration
+  if ( ! config_file.empty() ) { 
+
+    Settings::loadConfig( config_file );
   }
 
   // Initialize progress data if user wants to track progress
