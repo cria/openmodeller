@@ -44,16 +44,17 @@ int main( int argc, char **argv ) {
   int option;
 
   // command-line parameters (short name, long name, description, take args)
-  opts.addOption( "v", "version"  , "Display version info"                        , false );
-  opts.addOption( "r", "xml-req"  , "Projection request file in XML"              , true );
-  opts.addOption( "o", "model"    , "File with serialized model (native projection)", true );
-  opts.addOption( "t", "template" , "Raster template for the distribution map (native projection)", true );
-  opts.addOption( "f", "format"   , "File format for the distribution map (native projection)", true );
-  opts.addOption( "m", "dist-map" , "File to store the generated model"           , true );
-  opts.addOption( "" , "log-level", "Set the log level (debug, warn, info, error)", true );
-  opts.addOption( "" , "log-file" , "Log file"                                    , true );
-  opts.addOption( "" , "prog-file", "File to store projection progress"           , true );
-  opts.addOption( "" , "stat-file", "File to store projection statistics"         , true );
+  opts.addOption( "v", "version"    , "Display version info"                        , false );
+  opts.addOption( "r", "xml-req"    , "Projection request file in XML"              , true );
+  opts.addOption( "o", "model"      , "File with serialized model (native projection)", true );
+  opts.addOption( "t", "template"   , "Raster template for the distribution map (native projection)", true );
+  opts.addOption( "f", "format"     , "File format for the distribution map (native projection)", true );
+  opts.addOption( "m", "dist-map"   , "File to store the generated model"           , true );
+  opts.addOption( "" , "log-level"  , "Set the log level (debug, warn, info, error)", true );
+  opts.addOption( "" , "log-file"   , "Log file"                                    , true );
+  opts.addOption( "" , "prog-file"  , "File to store projection progress"           , true );
+  opts.addOption( "" , "stat-file"  , "File to store projection statistics"         , true );
+  opts.addOption( "c", "config-file", "Configuration file for openModeller"         , true );
 
   std::string log_level("info");
   std::string request_file;
@@ -64,6 +65,7 @@ int main( int argc, char **argv ) {
   std::string log_file;
   std::string progress_file;
   std::string statistics_file;
+  std::string config_file;
 
   if ( ! opts.parse( argc, argv ) ) {
 
@@ -113,9 +115,18 @@ int main( int argc, char **argv ) {
       case 9:
         statistics_file = opts.getArgs( option );
         break;
+      case 10:
+        config_file = opts.getArgs( option );
+        break;
       default:
         break;
     }
+  }
+
+  // om configuration
+  if ( ! config_file.empty() ) { 
+
+    Settings::loadConfig( config_file );
   }
 
   // Log stuff

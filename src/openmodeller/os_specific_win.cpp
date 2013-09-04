@@ -160,10 +160,18 @@ std::string omDataPath( std::string dir )
   if ( ! dir.empty() ) {
 
     data_path = dir;
+
+    return data_path;
   }
 
-  // Priority to env variable
-  char *env = getenv( "OM_DATA_PATH" );
+  // Check configuration
+  if ( Settings::count( "DATA_DIRECTORY" ) == 1 ) {
+
+    return Settings::get( "DATA_DIRECTORY" );
+  }
+
+  // Check env variable
+  char *env = getenv( "OM_DATA_DIR" );
 
   if ( env != 0 ) {
 
@@ -175,21 +183,8 @@ std::string omDataPath( std::string dir )
     }
   }
 
-  // Return static content if it's not empty
-  if ( ! data_path.empty() ) {
-
-    return data_path;
-  }
-
-  string pkg_data_path = PKGDATAPATH;
-  
-  // Try compile constant
-  if ( ! pkg_data_path.empty() ) {
-
-    return pkg_data_path;
-  }
-
-  return data_path;
+  // Finally compiler constant
+  return OM_DATA_DIR;
 }
 
 /***************************/
@@ -197,13 +192,32 @@ std::string omDataPath( std::string dir )
 vector<string>
 initialPluginPath()
 {
-  Log::instance()->debug( "Determining algorithm paths\n" );
+  Log::instance()->debug( "Determining algorithms plugin path\n" );
 
   vector<string> entries;
 
-  char *env = getenv( "OM_ALG_PATH" );
+  // Default location can be set programatically
+  std::string default_dir = AlgorithmFactory::getDefaultAlgDir();
+    
+  if ( ! default_dir.empty() ) {
 
-  // Check if the environment variable is set
+    Log::instance()->debug( "Using programatic setting for algorithms location\n" );
+
+    entries.push_back( default_dir );
+    return entries;
+  }
+
+  // Otherwise check configuration
+  if ( Settings::count( "ALGS_DIRECTORY" ) == 1 ) {
+
+    Log::instance()->debug( "Using configuration setting for algorithms location\n" );
+    entries.push_back( Settings::get( "ALGS_DIRECTORY" ) );
+    return entries;
+  }
+
+  // Or environment variable
+  char *env = getenv( "OM_ALGS_DIR" );
+
   if ( env != 0 ) {
 
     string envpath( (char const *)env );
@@ -211,9 +225,9 @@ initialPluginPath()
     // Ignore empty string
     if ( ! envpath.empty() ) {
 
-      Log::instance()->debug( "Found not empty environment variable OM_ALG_PATH: %s\n", envpath.c_str() );
+      Log::instance()->debug( "Using environment setting for algorithms location\n" );
 
-      // Parse the OM_ALG_PATH with semi-colon (';') delimiters just like all other 
+      // Parse the OM_ALGS_DIR with semi-colon (';') delimiters just like all other 
       // Windows path structures.
 
       // string::size_type start marks the beginning of the substring.
@@ -245,39 +259,11 @@ initialPluginPath()
     }
   }
 
-  // Default location that can be set programatically
-  std::string default_dir = AlgorithmFactory::getDefaultAlgDir();
-    
-  if ( ! default_dir.empty() ) {
+  // Finally compiler constant
+  Log::instance()->debug( "Using default algorithms location\n" );
 
-    Log::instance()->debug( "Default location is set\n" );
-
-    entries.push_back( default_dir );
-    return entries;
-  }
-
-  Log::instance()->debug( "Checking CONFIG_FILE constant: " CONFIG_FILE "\n" );
-
-  std::ifstream conf_file( CONFIG_FILE, std::ios::in );
-
-  if ( ! conf_file ) {
-
-    Log::instance()->debug( "Using PLUGINPATH constant: " PLUGINPATH "\n" );
-
-    entries.reserve(1);
-    entries.push_back( PLUGINPATH );
-    return entries;
-  }
-
-  while ( conf_file ) {
-
-    Log::instance()->debug( "Found config file\n" );
-
-    string line;
-    getline( conf_file, line );
-    entries.push_back( line );
-  }
-
+  entries.reserve(1);
+  entries.push_back( OM_ALGS_DIR );
   return entries;
 }
 

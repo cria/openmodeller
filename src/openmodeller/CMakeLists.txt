@@ -25,6 +25,7 @@ SET(OM_CORE_SRCS
   RocCurve.cpp
   Sample.cpp 
   Sampler.cpp 
+  Settings.cpp
   ScaleNormalizer.cpp
   env_io/GeoTransform.cpp 
   env_io/Header.cpp 
@@ -241,6 +242,7 @@ SET(OM_CORE_HDRS
   Sample.hh
   Sampler.hh
   ScaleNormalizer.hh
+  Settings.hh
 )
 
 SET (OM_OCCIO_HDRS

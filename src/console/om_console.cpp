@@ -60,7 +60,7 @@ main( int argc, char **argv )
 {
   if ( argc < 2 ) {
 
-    printf ("Usage: %s request_file [log_level]\n", argv[0]);
+    printf ("Usage: %s request_file [log_level [config_file]]\n", argv[0]);
     exit(1);
   }
 
@@ -70,6 +70,10 @@ main( int argc, char **argv )
   if ( argc > 2 ) {
 
     log_level.assign( argv[2] );
+  }
+  if ( argc > 3 ) {
+
+    Settings::loadConfig( argv[3] );
   }
 
   Log::Level level_code = getLogLevel( log_level );

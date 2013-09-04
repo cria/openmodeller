@@ -28,18 +28,20 @@ int main( int argc, char **argv ) {
   int option;
 
   // command-line parameters (short name, long name, description, take args)
-  opts.addOption( "v", "version"   , "Display version info"                        , false );
-  opts.addOption( "s", "source"    , "Source with references to points and layers" , true );
-  opts.addOption( "e", "dump-env"  , "Dump environment data for a specified cell range", false );
-  opts.addOption( "", "cell-start" , "Cell position to start environment dumping (default 0)"  , true );
-  opts.addOption( "", "cell-end"   , "Cell position to end environment dumping (default 1000)" , true );
-  opts.addOption( "", "log-level"  , "Set the log level (debug, warn, info, error)", true );
+  opts.addOption( "v", "version"    , "Display version info"                        , false );
+  opts.addOption( "s", "source"     , "Source with references to points and layers" , true );
+  opts.addOption( "e", "dump-env"   , "Dump environment data for a specified cell range", false );
+  opts.addOption( "" , "cell-start" , "Cell position to start environment dumping (default 0)"  , true );
+  opts.addOption( "" , "cell-end"   , "Cell position to end environment dumping (default 1000)" , true );
+  opts.addOption( "" , "log-level"  , "Set the log level (debug, warn, info, error)", true );
+  opts.addOption( "c", "config-file", "Configuration file for openModeller"         , true );
 
   std::string log_level("info");
   std::string source("");
   bool        dump_env = false;
   std::string start_string("0");
   std::string end_string("1000");
+  std::string config_file;
 
   if ( ! opts.parse( argc, argv ) ) {
 
@@ -77,6 +79,9 @@ int main( int argc, char **argv ) {
       case 5:
         log_level = opts.getArgs( option );
         break;
+      case 6:
+        config_file = opts.getArgs( option );
+        break;
       default:
         break;
     }
@@ -87,6 +92,12 @@ int main( int argc, char **argv ) {
 
     printf( "Please specify a source (request file in txt or xml) with references to points and layers.\n");
     exit(-1);
+  }
+
+  // om configuration
+  if ( ! config_file.empty() ) { 
+
+    Settings::loadConfig( config_file );
   }
 
   int cell_start = 0;

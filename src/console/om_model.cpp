@@ -44,12 +44,14 @@ int main( int argc, char **argv ) {
   opts.addOption( "" , "log-level"   , "Set the log level (debug, warn, info, error)", true );
   opts.addOption( "" , "log-file"    , "Log file"                                    , true );
   opts.addOption( "" , "prog-file"   , "File to store model creation progress"       , true );
+  opts.addOption( "c", "config-file" , "Configuration file for openModeller"         , true );
 
   std::string log_level("info");
   std::string request_file;
   std::string model_file;
   std::string log_file;
   std::string progress_file;
+  std::string config_file;
 
   if ( ! opts.parse( argc, argv ) ) {
 
@@ -87,9 +89,18 @@ int main( int argc, char **argv ) {
       case 5:
         progress_file = opts.getArgs( option );
         break;
+      case 6:
+        config_file = opts.getArgs( option );
+        break;
       default:
         break;
     }
+  }
+
+  // om configuration
+  if ( ! config_file.empty() ) { 
+
+    Settings::loadConfig( config_file );
   }
 
   // Log stuff
