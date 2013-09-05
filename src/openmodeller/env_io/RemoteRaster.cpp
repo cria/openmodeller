@@ -29,9 +29,12 @@
 #include <openmodeller/Exceptions.hh>
 #include <openmodeller/MapFormat.hh>
 #include <openmodeller/CacheManager.hh>
+#include <openmodeller/Settings.hh>
 
+#include <vector>
 #include <string.h>
 #include <sstream>
+#include <algorithm>
 
 using namespace std;
 
@@ -71,6 +74,13 @@ RemoteRaster::createRaster( const string& str, int categ )
     Log::instance()->debug( "Layer %s already present in local cache (%s)\n", str.c_str(), cache_id.c_str() );
   }
   else {
+
+    if ( _isFromRejectedSource( str ) ) {
+
+      std::string msg = "Untrusted source for remote raster. Aborting operation.\n";
+      Log::instance()->error( msg.c_str() );
+      throw RasterException( msg.c_str() );
+    }
 
     Log::instance()->debug( "Fetching remote raster %s (%s)...\r", str.c_str(), cache_id.c_str() );
 
@@ -201,8 +211,8 @@ RemoteRaster::deleteRaster()
   throw RasterException( msg.c_str() );
 }
 
-/*************************/
-/*** Callback for curl ***/
+/*******************/
+/*** _write Data ***/
 size_t
 RemoteRaster::_writeData( void *buffer, size_t size, size_t nmemb, void *stream ) {
 
@@ -219,4 +229,77 @@ RemoteRaster::_writeData( void *buffer, size_t size, size_t nmemb, void *stream 
   }
 
   return fwrite( buffer, size, nmemb, out->stream );
+}
+
+/*************************/
+/*** Callback for curl ***/
+bool
+RemoteRaster::_isFromRejectedSource( const std::string& str ) {
+
+  // Remote sources are untrusted by default
+
+  if ( Settings::count( "ALLOW_RASTER_SOURCE" ) > 0 ) {
+
+    // get host from url
+    string host;
+    string lower_url;
+    transform( str.begin(), str.end(), std::back_inserter(lower_url), ::tolower );
+
+    if ( str.size() < 9 ) { // ftp://x.x
+
+      std::string msg = "Invalid identifier for remote raster (1).\n";
+      Log::instance()->error( msg.c_str() );
+      throw RasterException( msg.c_str() );
+    }
+
+    size_t prot_i = str.find("://");
+
+    if ( prot_i == string::npos ) {
+
+      std::string msg = "Missing protocol in remote raster identifier.\n";
+      Log::instance()->error( msg.c_str() );
+      throw RasterException( msg.c_str() );
+    }
+
+    size_t path_i = str.find("/", prot_i+3);
+
+    if ( path_i == string::npos ) {
+
+      // There must be at least one slash in the identifier! 
+      std::string msg = "Invalid identifier for remote raster (2).\n";
+      Log::instance()->error( msg.c_str() );
+      throw RasterException( msg.c_str() );
+    }
+
+    host = lower_url.substr( prot_i+3, path_i - (prot_i+3) );
+
+    size_t port_i = host.find(":");
+
+    if ( port_i != string::npos ) {
+
+      // Ignore port
+      host = host.substr( 0, port_i );
+    }
+
+    vector<string> accepted_sources = Settings::getAll( "ALLOW_RASTER_SOURCE" );
+
+    for( unsigned int i = 0; i < accepted_sources.size(); i++ ) {
+
+      // This is how you can accept any source (don't do that)
+      if ( accepted_sources[i].compare("*") == 0 ) {
+
+        return false;
+      }
+
+      size_t pos = host.find( accepted_sources[i] );
+
+      if ( pos == host.size() - accepted_sources[i].size() ) {
+
+        // Configured source must match the end of the host
+        return false;
+      }
+    }
+  }
+
+  return true;
 }

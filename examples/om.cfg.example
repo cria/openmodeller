@@ -6,3 +6,13 @@
 
 # Directory to store cache files
 #CACHE_DIRECTORY=./cache
+
+# Remote rasters are untrusted by default
+# To allow remote rasters, you must explicitly 
+# specify each trusted host, line by line.
+# Type only the host name in lower case. Do not include
+# protocol, port or path. Use * if you really 
+# want to indicate that any source can be trusted.
+#ALLOW_RASTER_SOURCE = 127.0.0.1
+#ALLOW_RASTER_SOURCE = cria.org.br
+
