@@ -1,1 +1,8 @@
-../bin/algs/debug
+# Directory where algorithms are located (.dll or .so files)
+#ALGS_DIRECTORY=/usr/local/lib/openmodeller
+
+# Directory where openModeller data files are located
+#DATA_DIRECTORY=../data
+
+# Directory to store cache files
+#CACHE_DIRECTORY=./cache
