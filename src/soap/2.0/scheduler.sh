@@ -93,7 +93,7 @@ ls -t $TICKET_DIRECTORY/samp_req.* 2> /dev/null | tail -n -1 | while read req; d
   # if condor_integration then create the script and submit
   if [[ "$CONDOR_INTEGRATION" == "yes" ]]; then
     echo "universe        = vanilla" >> $TICKET_DIRECTORY"/condor_sc."$ticket
-    echo "arguments = --xml-req "$moved" --result "$resp" --prog-file "$prog>> $TICKET_DIRECTORY"/condor_sc."$ticket
+    echo "arguments = --xml-req "$moved" --result "$resp" --prog-file "$prog" --config-file "$OM_CONFIGURATION>> $TICKET_DIRECTORY"/condor_sc."$ticket
     echo "executable = "$NODE_BIN_DIR"/om_pseudo " >> $TICKET_DIRECTORY"/condor_sc."$ticket
     echo "environment = "$NODE_ENVIRONMENT >> $TICKET_DIRECTORY"/condor_sc."$ticket
     echo "output          = "$TICKET_DIRECTORY"/om_samp_log"$ticket".out" >> $TICKET_DIRECTORY"/condor_sc."$ticket
@@ -109,7 +109,7 @@ ls -t $TICKET_DIRECTORY/samp_req.* 2> /dev/null | tail -n -1 | while read req; d
     "$CONDOR_BIN_DIR"/condor_submit $TICKET_DIRECTORY"/condor_sc."$ticket
   else
     # no Condor - execute om_pseudo directly
-    "$OM_BIN_DIR"/om_pseudo --xml-req "$moved" --result "$resp" --log-file "$log" --prog-file "$prog"
+    "$OM_BIN_DIR"/om_pseudo --xml-req "$moved" --result "$resp" --log-file "$log" --prog-file "$prog" --config-file "$OM_CONFIGURATION"
 
     # If this is part of an experiment
     if [ -e $meta ]; then
@@ -140,7 +140,7 @@ ls -t $TICKET_DIRECTORY/model_req.* 2> /dev/null | tail -n -1 | while read req; 
   # if condor_integration then create the script and submit
   if [[ "$CONDOR_INTEGRATION" == "yes" ]]; then
     echo "universe        = vanilla" >> $TICKET_DIRECTORY"/condor_sc."$ticket
-    echo "arguments = --xml-req "$moved" --model-file "$resp" --prog-file "$prog>> $TICKET_DIRECTORY"/condor_sc."$ticket
+    echo "arguments = --xml-req "$moved" --model-file "$resp" --prog-file "$prog" --config-file "$OM_CONFIGURATION>> $TICKET_DIRECTORY"/condor_sc."$ticket
     echo "executable = "$NODE_BIN_DIR"/om_model " >> $TICKET_DIRECTORY"/condor_sc."$ticket
     echo "environment = "$NODE_ENVIRONMENT >> $TICKET_DIRECTORY"/condor_sc."$ticket
     echo "output          = "$TICKET_DIRECTORY"/om_model_log"$ticket".out" >> $TICKET_DIRECTORY"/condor_sc."$ticket
@@ -156,7 +156,7 @@ ls -t $TICKET_DIRECTORY/model_req.* 2> /dev/null | tail -n -1 | while read req; 
     "$CONDOR_BIN_DIR"/condor_submit $TICKET_DIRECTORY"/condor_sc."$ticket
   else
     # no Condor - execute om_model directly
-    "$OM_BIN_DIR"/om_model --xml-req "$moved" --model-file "$resp" --log-file "$log" --prog-file "$prog"
+    "$OM_BIN_DIR"/om_model --xml-req "$moved" --model-file "$resp" --log-file "$log" --prog-file "$prog" --config-file "$OM_CONFIGURATION"
 
     # If this is part of an experiment
     if [ -e $meta ]; then
@@ -186,7 +186,7 @@ ls -t $TICKET_DIRECTORY/eval_req.* 2> /dev/null | tail -n -1 | while read req; d
   # if condor_integration then create the script and submit
   if [[ "$CONDOR_INTEGRATION" == "yes" ]]; then
     echo "universe        = vanilla" >> $TICKET_DIRECTORY"/condor_sc."$ticket
-    echo "arguments = --xml-req "$moved" --result "$resp" --prog-file "$prog>> $TICKET_DIRECTORY"/condor_sc."$ticket
+    echo "arguments = --xml-req "$moved" --result "$resp" --prog-file "$prog" --config-file "$OM_CONFIGURATION>> $TICKET_DIRECTORY"/condor_sc."$ticket
     echo "executable = "$NODE_BIN_DIR"/om_evaluate " >> $TICKET_DIRECTORY"/condor_sc."$ticket
     echo "environment = "$NODE_ENVIRONMENT >> $TICKET_DIRECTORY"/condor_sc."$ticket
     echo "output          = "$TICKET_DIRECTORY"/om_eval_log"$ticket".out" >> $TICKET_DIRECTORY"/condor_sc."$ticket
@@ -202,7 +202,7 @@ ls -t $TICKET_DIRECTORY/eval_req.* 2> /dev/null | tail -n -1 | while read req; d
     "$CONDOR_BIN_DIR"/condor_submit $TICKET_DIRECTORY"/condor_sc."$ticket
   else
     # no Condor - execute om_evaluate directly
-    "$OM_BIN_DIR"/om_evaluate --xml-req "$moved" --result "$resp" --log-file "$log" --prog-file "$prog"
+    "$OM_BIN_DIR"/om_evaluate --xml-req "$moved" --result "$resp" --log-file "$log" --prog-file "$prog" --config-file "$OM_CONFIGURATION"
     finished=$TICKET_DIRECTORY"/done."$ticket
     touch "$finished"
   fi  
@@ -224,7 +224,7 @@ ls -t $TICKET_DIRECTORY/test_req.* 2> /dev/null | tail -n -1 | while read req; d
   # if condor_integration then create the script and submit
   if [[ "$CONDOR_INTEGRATION" == "yes" ]]; then
     echo "universe        = vanilla" >> $TICKET_DIRECTORY"/condor_sc."$ticket
-    echo "arguments = --xml-req "$moved" --result-file "$resp" --prog-file "$prog>> $TICKET_DIRECTORY"/condor_sc."$ticket
+    echo "arguments = --xml-req "$moved" --result-file "$resp" --prog-file "$prog" --config-file "$OM_CONFIGURATION>> $TICKET_DIRECTORY"/condor_sc."$ticket
     echo "executable = "$NODE_BIN_DIR"/om_test " >> $TICKET_DIRECTORY"/condor_sc."$ticket
     echo "environment = "$NODE_ENVIRONMENT >> $TICKET_DIRECTORY"/condor_sc."$ticket
     echo "output          = "$TICKET_DIRECTORY"/om_test_log"$ticket".out" >> $TICKET_DIRECTORY"/condor_sc."$ticket
@@ -240,7 +240,7 @@ ls -t $TICKET_DIRECTORY/test_req.* 2> /dev/null | tail -n -1 | while read req; d
     "$CONDOR_BIN_DIR"/condor_submit $TICKET_DIRECTORY"/condor_sc."$ticket
   else
     # no Condor - execute om_test directly
-    "$OM_BIN_DIR"/om_test --xml-req "$moved" --result "$resp" --log-file "$log" --prog-file "$prog"
+    "$OM_BIN_DIR"/om_test --xml-req "$moved" --result "$resp" --log-file "$log" --prog-file "$prog" --config-file "$OM_CONFIGURATION"
 
     # If this is part of an experiment
     if [ -e $meta ]; then
@@ -302,7 +302,7 @@ ls -t $TICKET_DIRECTORY/proj_req.* 2> /dev/null | tail -n -1 | while read req; d
   # if condor_integration then create the script and submit
   if [[ "$CONDOR_INTEGRATION" == "yes" ]]; then
     echo "universe 	= vanilla" >> $TICKET_DIRECTORY"/condor_sp."$ticket
-    echo "arguments = --xml-req "$moved" --dist-map "$DISTRIBUTION_MAP_DIRECTORY"/"$ticket$img_ext" --stat-file "$stats" --prog-file "$prog >> $TICKET_DIRECTORY"/condor_sp."$ticket
+    echo "arguments = --xml-req "$moved" --dist-map "$DISTRIBUTION_MAP_DIRECTORY"/"$ticket$img_ext" --stat-file "$stats" --prog-file "$prog" --config-file "$OM_CONFIGURATION>> $TICKET_DIRECTORY"/condor_sp."$ticket
     echo "executable = "$NODE_BIN_DIR"/om_project" >> $TICKET_DIRECTORY"/condor_sp."$ticket
     echo "environment = "$NODE_ENVIRONMENT >> $TICKET_DIRECTORY"/condor_sp."$ticket
     echo "output		= "$TICKET_DIRECTORY"/om_project_LOG"$ticket".out" >> $TICKET_DIRECTORY"/condor_sp."$ticket
@@ -317,7 +317,7 @@ ls -t $TICKET_DIRECTORY/proj_req.* 2> /dev/null | tail -n -1 | while read req; d
     "$CONDOR_BIN_DIR"/condor_submit $TICKET_DIRECTORY"/condor_sp."$ticket
   else
     # no Condor - execute om_project directly
-    "$OM_BIN_DIR"/om_project --xml-req "$moved" --dist-map "$map_file" --stat-file "$stats" --log-file "$log" --prog-file "$prog"
+    "$OM_BIN_DIR"/om_project --xml-req "$moved" --dist-map "$map_file" --stat-file "$stats" --log-file "$log" --prog-file "$prog" --config-file "$OM_CONFIGURATION"
   fi
 
   finalmap_file=$DISTRIBUTION_MAP_DIRECTORY"/"$ticket$img_ext
