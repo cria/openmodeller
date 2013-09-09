@@ -1,6 +1,6 @@
-openModeller Server
-Renato De Giovanni
-Last updated: 10th February 2012
+oM Server 2.0
+Software documentation
+Last updated: %%mtime(%d %B %Y)
 %! target       : html
 %! style        : w3c_main.css
 %! style        : w3c_examples.css
@@ -34,110 +34,163 @@ Last updated: 10th February 2012
 
 = Introduction =
 
-The openModeller server (oM Server) is a server implementation compatible with 
-the [openModeller web service API http://openmodeller.sf.net/web_service.html].
-This document describes its functionality, including information about
-how to install and configure an instance of the service.
+The openModeller server (oM Server) 2.0 is a server implementation compatible with 
+the [openModeller web service API version 2.0 http://openmodeller.sf.net/web_service_2.html].
+This document describes the software functionality, including installation and configuration 
+instructions. For information about the previous version, please visit the corresponding page 
+dedicated to [oM Server 1.0 om_server.html].
 
-This document was originally prepared for the 
+The original version of this document was prepared for the 
 [BioVeL http://www.biovel.eu/] project with funds from the 
-[European Commission http://ec.europa.eu].
+[European Commission http://ec.europa.eu]. This new version 
+was also funded by the [EUBrazil-OpenBio http://eubrazilopenbio.eu] 
+project with funds from [CNPq http://cnpq.br] and the European Commission.
 
 = How it works =
 
-The server implementation was developed using 
-[gSOAP http://gsoap2.sourceforge.net] v2.8.9 in a way that it can 
-run as a CGI application, a stand alone server (daemon) or a 
-multi-threaded server. However, in production it has only been 
-used as a CGI.
-
-Although the CGI ([om_soap_server.cpp http://openmodeller.svn.sourceforge.net/viewvc/openmodeller/trunk/openmodeller/src/soap/om_soap_server.cpp?revision=HEAD&view=markup]) 
+The server was developed using [gSOAP http://gsoap2.sourceforge.net] 
+v2.8.15 in a way that it can run as a CGI application, a stand alone 
+server (daemon) or a multi-threaded server. Although the software 
+([om_soap_server.cpp http://sourceforge.net/p/openmodeller/svn/HEAD/tree/trunk/openmodeller/src/soap/2.0/om_soap_server.cpp]) 
 is written in C++ and could therefore interact directly with the 
-openModeller API, in most cases it follows a different approach 
-to benefit from high throughput computing techniques. Remember 
-that the most important operations can take a long time to be 
-performed, which is also reflected in the asynchronous design 
-of the service protocol. For this reason, the CGI is actually a 
-thin layer with minimum interaction with the openModeller C++ API. 
-For the most important operations - model creation, test and 
-projection - the CGI basically extracts a piece of XML from the SOAP 
-body and stores it into the file system to be processed independently
+openModeller library, in most cases it follows a different approach 
+to benefit from high throughput computing techniques. Since 
+the most important operations can take a long time to be 
+performed, the service protocol follows an asynchronous design. 
+Therefore, the server is actually just a thin layer with minimum 
+interaction with the openModeller library. For the most important 
+operations the server basically extracts a piece of XML from the SOAP 
+body and stores it into the file system to be processed independently 
 later.
 
 Each piece of XML stored into the file system happens to follow exactly
 the same input pattern needed to run the corresponding openModeller
-command-line tool (om_model, om_test and om_project). This way, a
-simple job scheduler writen in shell script ([scheduler.sh http://openmodeller.svn.sourceforge.net/viewvc/openmodeller/trunk/openmodeller/src/soap/scheduler.sh?revision=HEAD&view=markup]) 
-can be used to process the jobs. The script is called from Cron in 
-configurable intervals and it can actually run the command-line tools
-locally or it can be configured to use [Condor http://research.cs.wisc.edu/condor/]
-to distribute jobs to Cluster computing nodes.
+command-line tool. This way, a simple job scheduler writen in shell script 
+([scheduler.sh http://sourceforge.net/p/openmodeller/svn/HEAD/tree/trunk/openmodeller/src/soap/2.0/scheduler.sh]) 
+is used to process the jobs. The script is called from Cron in 
+configurable intervals. It can also be configured to run the command-line tools
+locally (default) or use [Condor http://research.cs.wisc.edu/condor/]
+to distribute the jobs to Cluster computing nodes.
 
-The following table summarizes the CGI behaviour for each operation:
+The following table summarizes the server behaviour for each operation:
 
-|| operation | CGI behaviour |
-| ping | involves direct calls to openModeller's C++ API and requires access to the file system to check configuration |
-| getAlgorithms | involves direct call to openModeller's C++ API |
+|| operation | server behaviour |
+| ping | involves direct calls to a local openModeller library and requires access to the file system to check configuration |
+| getAlgorithms | involves direct call to a local openModeller library |
 | getLayers | requires access to the file system to look for available layers (uses GDAL library to identify valid rasters) |
-| createModel #br# testModel #br# projectModel | CGI extracts XML from SOAP Body putting it on the file system and immediatly returning a ticket |
-| getProgress #br# getLog #br# getModel #br# getTestResult #br# getProjectionMetadata #br# getLayerAsUrl | only require access to the file system to read ticket information |
+| createModel #br# testModel #br# projectModel #br# evaluateModel #br# samplePoints | extract XML from SOAP Body putting it on the file system and immediatly returning a ticket |
+| runExperiment | extract XML from SOAP Body putting it on the file system, parsing it, creating all individual jobs and returning all related tickets |
+| getProgress #br# getLog #br# getModel #br# getTestResult #br# getProjectionMetadata #br# getLayerAsUrl #br# getModelEvaluation #br# getSamplingResult #br# getResults #br# cancel | only require access to the file system to read ticket information |
 
 The ticketing mechanism starts with the use of the mkstmp POSIX 
 function that creates a temporary file with a 6-digit unique name.
 This file will be later used to also store the job log. After ticket
 creation, the XML extracted from the SOAP request is stored into the
-file system following the pattern //model_req.ticket//, //test_req.ticket//
-or //proj_req.ticket//, depending on the type of job. The job scheduler 
-periodically checks the file system for //"_req."// jobs, giving priority 
-to the oldest one. When a job request is processed, its name is 
+file system following the pattern //model_req.ticket//, //test_req.ticket//,
+//proj_req.ticket//, //samp_req.ticket//, //eval_req.ticket// or //exp_req.ticket// 
+depending on the type of job. In the case of modelling experiments (runExperiment 
+request), the default implementation parses and expands all jobs creating individual 
+tickets following the pattern: //model_pend.ticket//, //test_pend.ticket//,
+//proj_pend.ticket//, //samp_pend.ticket// or //eval_pend.ticket//. Jobs that can
+be started are renamed to the //*_req.ticket// pattern. 
+
+The job scheduler periodically checks the file system for //"_req."// jobs, 
+giving priority to the oldest one. When a job request is processed, its name is 
 immediatly replaced by //"_proc."//, and in the end there can be different 
 results depending on the job: //model_resp.ticket// stores the model result,
-//test_resp.ticket// the model test result and //stats.ticket// the projection
-statistics. For all operations, //prog.ticket// is used to store job 
+//test_resp.ticket// the model test result, //stats.ticket// the projection
+statistics, //samp_resp.ticket// the sampling points result and //eval_resp.ticket//
+the model evaluation result. For all operations, //prog.ticket// is used to store job 
 progress, and //done.ticket// is a flag indicating that the job was finished.
 Projection jobs also result in a potential distribution map file named after
 the ticket. The following examples illustrate how each command-line tool
 is used in this context:
 
 ```
-TICKET_DIR=/var/www/vhosts/modeller/ws1/tickets
-DISTMAP_DIR=/var/www/vhosts/modeller/ws1/distmaps
+# Example directories
+OM_CONFIGURATION=/var/www/om_server/config/om.cfg
+TICKET_DIR=/var/www/om_server/ws1/tickets
+DISTMAP_DIR=/var/www/om_server/ws1/distmaps
 
+# sample points job
+om_pseudo --xml-req $TICKET_DIR/samp_proc.QWE123 --result $TICKET_DIR/samp_resp.QWE123 \
+--log-file $TICKET_DIR/QWE123 --prog-file $TICKET_DIR/prog.QWE123 --config-file $OM_CONFIGURATION
+
+# model creation job
 om_model --xml-req $TICKET_DIR/model_proc.ABC123 --model-file $TICKET_DIR/model_resp.ABC123 \
---log-file $TICKET_DIR/ABC123 --prog-file $TICKET_DIR/prog.ABC123
+--log-file $TICKET_DIR/ABC123 --prog-file $TICKET_DIR/prog.ABC123 --config-file $OM_CONFIGURATION
 
+# model evaluation job
+om_evaluate --xml-req $TICKET_DIR/eval_proc.ZXC123 --result $TICKET_DIR/model_resp.ZXC123 \
+--log-file $TICKET_DIR/ZXC123 --prog-file $TICKET_DIR/prog.ZXC123 --config-file $OM_CONFIGURATION
+
+# model testing job
 om_test --xml-req $TICKET_DIR/test_proc.DEF456 --result $TICKET_DIR/test_resp.DEF456 \
---log-file $TICKET_DIR/DEF456 --prog-file $TICKET_DIR/prog.DEF456
+--log-file $TICKET_DIR/DEF456 --prog-file $TICKET_DIR/prog.DEF456 --config-file $OM_CONFIGURATION
 
+# model projection job
 om_project --xml-req $TICKET_DIR/proj_proc.GHI789 --dist-map $DISTMAP_DIR/GHI789.img \
---stat-file $TICKET_DIR/stats.GHI789 --log-file $TICKET_DIR/GHI789 --prog-file $TICKET_DIR/prog.GHI789
+--stat-file $TICKET_DIR/stats.GHI789 --log-file $TICKET_DIR/GHI789 \
+--prog-file $TICKET_DIR/prog.GHI789 --config-file $OM_CONFIGURATION
 ```
+
+When each job request is stored into the file system, job metadata is also 
+saved into a separate file named //job.ticket//. Job metadata files follow
+the //key = value// pattern, and may contain:
+
+```
+TYPE = Type of job (samp, mod, eval, test, proj or exp).
+EXP  = Experiment ticket, in case the job belongs to an experiment.
+       (not used for experiment job metadata)
+JOBS = Comma-separated list of job tickets that belong to this experiment,
+       in case the job is an experiment.
+IDS  = Comma-separated list of job identifiers that belong to this experiment,
+       in case the job is an experiment. Identifiers are provided by clients in
+       the request.
+NEXT = Comma-separated list of job tickets that can be triggered after this job.
+       (not used for experiment job metadata)
+PREV = Comma-separated list of job tickets on which this job depends prefixed by their role.
+       Prefixes can be: presence_, absence_, model_ or lpt_
+       (not used for experiment job metadata)
+```
+
+Job metadata files were included in this version to allow experiment management.
+The default implementation of oM Server is capable of controlling an experiment
+workflow by running the omws_manager command-line tool after each job that 
+belongs to an experiment finishes. omws_manager basically checks if the job
+finished successfully or not, and depending on the result it triggers subsequent
+jobs or cancels the remaining jobs. This is only possible by inspecting job
+metadata.
 
 = Requirements =
 
-The following requirements refer to the server being run as a CGI
-application.
-
 **Operating system:** Only tested on GNU/Linux machines (should
-probably run on other UNIX flavors without changes).
+probably run on other UNIX flavors without changes). Although gSOAP seems 
+to be compliant with "Windows, Unix, Linux, Pocket PC, Mac OS X, TRU64, 
+VxWorks, etc.", parts of the openModeller SOAP server code are probably 
+not prepared to run on other platforms - these parts include sigpipe handling 
+(if multi-threading is enabled) and unique temporary file name generation
+(mkstemp function).
 
 **Web Server:** Only tested with Apache HTTP Server. The web server is
-used to run the CGI and also to expose the distribution maps generated
-by the service, allowing them to be downloaded through HTTP.
+used to run the server as a CGI and also to expose the distribution maps 
+generated by the service, allowing them to be downloaded through HTTP.
 
 **Modelling engine:** [openModeller http://openmodeller.sf.net] framework
-and command-line tools.
+and openModeller command-line tools.
 
 **Additional dependencies to run openModeller:** [GDAL http://www.gdal.org] 
 (better to use version >= 1.9), [PROJ.4 http://proj.osgeo.org], 
 [Expat http://expat.sf.net], [SQLite3 http://www.sqlite.org] (needed to 
 run the AquaMaps algorithm), [GSL http://www.gnu.org/s/gsl/] (needed to 
-run ENFA and CSM algorithms)
+run ENFA and CSM algorithms) and [libcURL http://curl.haxx.se/] (needed to 
+handle [WCS http://www.opengeospatial.org/standards/wcs] and remote rasters).
 
 **Additional dependencies to install and compile openModeller:**
 [Subversion http://subversion.tigris.org], g++, [cmake http://www.cmake.org], 
 ccmake (requires libcurses) and development packages for most of 
-the previous libraries (libgdal-dev, libexpat-dev, libsqlite3-dev, libgsl-dev).
+the previous libraries (libgdal-dev, libexpat-dev, libsqlite3-dev, libgsl-dev,
+libcurl-dev).
 
 **Additional tools:** Bash and cron.
 
@@ -149,13 +202,15 @@ necessary files are already included in openModeller.
 
 = Installation & Configuration =
 
+== Running the service as a CGI ==
+
 The following requirements refer to the server being run as a CGI
 application, the job scheduler launching local command-line processes
 and openModeller being installed from source code. Although the
 openModeller framework and command-line tools may be available as
 packages for some GNU/Linux distributions, the openModeller server is
-currently not available in a binary format, so it needs to be
-compiled. Additionally, at the moment this document is being written
+currently not available in binary format, so it needs to be
+compiled. Additionally, at the moment this document is being written,
 there were a few important changes to the server code that are still
 not part of any openModeller release. For this reason the instructions
 show how to retrieve the latest (potentially unstable!) code and how
@@ -164,11 +219,12 @@ to compile it.
 **Step 1:** Install all necessary packages before installing openModeller
 
 Note that package names vary between distributions. The following
-example refers to Linux Mint 9:
+example refers to Linux MiNT 9:
 
 ```
 apt-get install g++ make cmake cmake-curses-gui subversion gdal-bin \
-libgdal1-dev proj libgsl0-dev libexpat1-dev libsqlite3-dev sqlite3
+libgdal1-dev proj libgsl0-dev libexpat1-dev libsqlite3-dev sqlite3 curl \
+curl-devel
 ```
 
 It may be possible that some of these libraries do not have official
@@ -183,7 +239,7 @@ Cron and Apache HTTP Server) are already present on the system.
 
 ```
 cd /usr/local/src
-svn co https://openmodeller.svn.sourceforge.net/svnroot/openmodeller/trunk/openmodeller
+svn co http://svn.code.sf.net/p/openmodeller/svn/trunk/openmodeller
 ```
 
 The first time you check out the source you will likely be prompted to
@@ -202,8 +258,8 @@ ccmake ..
 
 The last command should open the CMake ncurses GUI where you can
 configure various aspects of the build. Make sure that the option
-OM_BUILD_SERVICE is turned ON, as this enables the compilation of the
-openModelelr server. When finished, press 'c' to configure, 'e' to
+OM_BUILD_SERVICE is turned ON, as this enables the compilation of 
+oM Server. When finished, press 'c' to configure, 'e' to
 dismiss any error messages that may appear and 'g' to generate the
 make files. Note that sometimes 'c' needs to be pressed several times
 before the 'g' option becomes available. After the 'g' generation is
@@ -267,10 +323,10 @@ chown -R modeller.modeller /layers
 
 Important: Most of the above structure can be changed at will, however
 the server configuration file (server.conf) needs to be in a directory
-called "config" parallel to the directory where the CGI program
-resides (this is currently hard coded in the CGI program). The
+called "config" parallel to the directory where the server program
+resides (this is currently hard coded in the server program). The
 configuration file must be readable by both the web server user and
-the modelling user, in case they are different.
+the modelling user, in case they are different users.
 
 **Step 7:** Configure the web server
 
@@ -311,11 +367,34 @@ httpd.conf) and including something like this in the end of the file:
 Note that in this case SuexecUserGroup is configured so that the web
 server user is the same as the modelling user.
 
-**Step 8:** Configure the openModeller server
+**Step 8:** Configure openModeller (optional)
+
+If the server needs to be able to read WCS or remote rasters,
+it will be necessary to create a configuration file for openModeller
+to indicate a cache directory and to specify accepted data sources.
+
+You can put the configuration file in the same directory of your
+service configuration, and you can use the same cache directory. This
+means editing /var/www/vhosts/modeller/ws1/config/om.cfg and typing:
+
+```
+CACHE_DIRECTORY = /var/www/vhosts/modeller/ws1/cache
+
+# Include as many lines as necessary, always in lower case
+# without protocol, port or path:
+ALLOW_RASTER_SOURCE = 127.0.0.1
+ALLOW_RASTER_SOURCE = cria.org.br
+
+```
+
+**Step 9:** Configure the openModeller server
 
 Edit /var/www/vhosts/modeller/ws1/config/server.conf and check that
 all configurations are correct considering the directory structure
-previously created. The following table illustrates the settings given
+previously created. OM_CONFIGURATION should point to the configuration 
+file for openModller created on the last step.
+
+The following table illustrates the settings given
 the above structure, including information about the necessary
 permissions in case there are different users for the web server and
 for the modelling tasks:
@@ -334,7 +413,7 @@ GDAL_BIN_DIR and CAT_BIN).
 Finally, set the BASE_URL value according to the machine's IP address or
 domain and the web server configuration, such as: http://your_domain/maps
 
-**Step 9:** Configure Cron
+**Step 10:** Configure Cron
 
 Copy the job scheduler bash script to the modelling user directory
 
@@ -382,13 +461,31 @@ And finally add:
 This will make the server process new jobs every 10 seconds and delete
 all files older than a month every day.
 
-**Step 10:** Test the service
+**Step 11:** Test the service
 
 Go to another machine where openModeller is installed and run the
 service command-line client inside the src/soap directory:
 
 ```
 perl sampleClient.pl --server=http://your_domain/ws1/om
+```
+
+== Other ways to run the service ==
+
+To run the server as a stand alone non-multi-threaded service,
+just start it passing as a parameter the port number and then
+another parameter indicating the number of threads (=1), e.g.:
+
+```
+./om_soap_server 8085 1 &
+```
+
+To run the server as a stand alone multi-threaded service, just
+start it passing as a parameter the port number and then another
+parameter indicating the number of threads (>1), e.g.: 
+
+```
+./om_soap_server 8085 10 &
 ```
 
 = Integration with Condor =

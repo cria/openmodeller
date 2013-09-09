@@ -73,7 +73,7 @@ to distribute the jobs to Cluster computing nodes.
 
 The following table summarizes the server behaviour for each operation:
 
-|| operation | CGI behaviour |
+|| operation | server behaviour |
 | ping | involves direct calls to a local openModeller library and requires access to the file system to check configuration |
 | getAlgorithms | involves direct call to a local openModeller library |
 | getLayers | requires access to the file system to look for available layers (uses GDAL library to identify valid rasters) |
