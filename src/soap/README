@@ -1,139 +1,20 @@
-OVERVIEW:
----------
+The openModeller Web Service (OMWS) interface was created to 
+provide programatic access to niche modelling services over the web. 
 
-This SOAP interface was created to provide modelling services across
-the web. The server implementation is based on gSOAP v2.8.9
+There are two versions of the API: 1.0 and 2.0. Although most 
+operations are the same, there's no backwards compatibility due 
+to a change in the namespace. Therefore, make sure you use the right 
+client version when interacting with a server.
+
+You can find more information about the OMWS API and the corresponding
+software inside each directory (web_service.t2t and om_server.t2t).
+
+OMWS is based on SOAP. The server implementation uses gSOAP v2.8.15
 (http://gsoap2.sourceforge.net) and has only been tested with
-GNU/Linux. The gSOAP library seems to be compliant with "Windows,
-Unix, Linux, Pocket PC, Mac OS X, TRU64, VxWorks, etc". However, parts
-of the openModeller SOAP server code are probably not prepared to run
-in other platforms - these parts include sigpipe handling (if
-multi-threading is enabled) and unique temporary file name generator
-(mkstemp function). The server can potentially run as a CGI
-application, a stand alone server (daemon), or a multi-threaded
-server.
+GNU/Linux running as a CGI.
 
 A command line client in Perl is also available (sampleClient.pl,
 which depends on SOAP::Lite version >= 0.67).
 
-Both client and server can handle all operations.
-
-Note: although the SOAP server is already prepared to run as a
-multi-threaded daemon server, openModeller may not be ready for this!
-(not tested until now)
-
-COMPILING THE SERVER:
----------------------
-
-You need to make sure that the option OM_BUILD_SERVICE is
-turned on using ccmake and then proceed with the compilation.
-
-Note: gSOAP doesn't need to be installed to run the service - all 
-necessary files are already included.
-
-
-USE INSTRUCTIONS:
-----------------
-
-- To run the server as a CGI application, just put it inside an 
-  accessible cgi-bin directory:
-
-  cp om_soap_server /var/www/cgi-bin/om_soap_server.cgi
-
-- To run the server as a stand alone non-multi-threaded service,
-  just start it passing as a parameter the port number and then
-  another parameter indicating the number of threads (=1):
-
-  ./om_soap_server 8085 1 &
-
-- To run the server as a stand alone multi-threaded service, just
-  start it passing as a parameter the port number and then another
-  parameter indicating the number of threads (>1). 
-
-  ./om_soap_server 8085 10 &
-
-- To configure the server copy the "server.conf" sample file into a 
-  directory called "config" (paralell to the directory where the 
-  server is going to run). Edit the file and make all necessary changes. 
-  You'll probably need to create a directory that will store all job 
-  tickets and another one to store all distribution maps. Bear in mind 
-  that these directories will need to be writtable by the user running 
-  the server (eg. apache, or www-data if running as a CGI under apache).
-
-  For instance, if running as a CGI in /var/www/cgi-bin/:
-
-  # Create config dir
-  mkdir /var/www/config
-
-  # Ensure that web server user has read permissions
-  chown root.apache /var/www/config
-
-  # Copy sample conf file
-  cp server.conf /var/www/config
-
-  # Edit file
-  vim /var/www/config/server.conf
-
-  Most tasks performed by the server will just store requests in the file
-  system so that openModeller command-line programs can be run. This means
-  that you also need to setup a scheduler program and make sure that the 
-  command-line tools om_model, om_test and om_project are available.
-
-- Add a cron job to run scheduler.sh every minute passing as 
-  parameters:
-
-  1- The path to the configuration file.
-  2- An optional number of seconds for the script to sleep.
-  (this way it is possible to include many cron jobs with 
-  different sleep intervals which in practice will reduce the 
-  limit of one minute for cron jobs).
-
-  So in the end you could have something like this in crontab, which
-  will make the service react to any new modelling tasks every 10 seconds:
-  0-59/1 * * * * /bin/bash /usr/local/bin/scheduler.sh /var/www/config/server.conf 0
-  0-59/1 * * * * /bin/bash /usr/local/bin/scheduler.sh /var/www/config/server.conf 10
-  0-59/1 * * * * /bin/bash /usr/local/bin/scheduler.sh /var/www/config/server.conf 20
-  0-59/1 * * * * /bin/bash /usr/local/bin/scheduler.sh /var/www/config/server.conf 30
-  0-59/1 * * * * /bin/bash /usr/local/bin/scheduler.sh /var/www/config/server.conf 40
-  0-59/1 * * * * /bin/bash /usr/local/bin/scheduler.sh /var/www/config/server.conf 50
-
-  Important: scheduler.sh is only compatible with bash, so you should better
-  include /bin/bash in front of every command as demostrated above to avoid 
-  other shell programs trying to execute it.
-
-- To test your server you can run a command-line client which is also 
-  included (you'll need Perl and the SOAP::Lite module):
-
-  perl sampleClient.pl --server=http://localhost:8085/
-
-  For more options, use:
-
-  perl sampleClient.pl --help
-
-
-TODO-LIST:
-----------
-
-- Create new "cancelJob" request.
-- Improve Perl client to retrieve and store maps after calling getLayerAsUrl.
-- Improve server to also return environmental layers in getLayerAsUrl and
-  getLayerAsAttachment.
-- Implement sigpipe handler.
-- Find portable and better solution to unique temporary files.
-
-
-MAINTENANCE:
------------
-
-- To change anything in the SOAP interface it is necessary
-  to have gSOAP installed.
-
-- To generate the SOAP stubs and skeletons use:
- 
-  soapcpp2 om_soap.hh
-
-- Don't forget to overwrite stdsoap2.cpp and stdsoap2.h with the newer versions.
-  They have to be manually copied to this directory.
-
-- To activate server debug logging, add -DDEBUG in the
-  beginning of om_soap_server_CPPFLAGS in Makefile.am
+You can find the corresponding implementations for both client and 
+server under each version directory.
