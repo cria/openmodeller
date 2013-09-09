@@ -1,0 +1,16 @@
+MAINTENANCE
+-----------
+
+- To change anything in the OMWS interface it is necessary
+  to have gSOAP installed. The API is defined in om_soap.hh.
+
+- To generate the SOAP stubs and skeletons use:
+ 
+  soapcpp2 om_soap.hh
+
+- If you are upgrading gSOAP, don't forget to overwrite 
+  stdsoap2.cpp and stdsoap2.h with the newer versions.
+  They have to be manually copied to this directory.
+
+- To activate server debug logging, uncomment the line
+  #define DEBUG in stdsoap2.h and recompile the server.
