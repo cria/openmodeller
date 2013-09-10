@@ -45,6 +45,11 @@
 #include <algorithm>
 #include <map>
 
+#include <math.h>
+#ifdef MSVC
+#include <float.h> //for _isnan
+#endif
+
 using namespace std;
 
 /*******************/
@@ -710,7 +715,19 @@ double RocCurve::getPartialAreaRatio( double e )
 
   Log::instance()->debug( "Partial area calculated as: %f / %f\n", area, diag_area );
 
-  _ratios[e] = area / diag_area;
+  double ratio = area / diag_area;
+
+#ifdef MSVC
+  bool ratio_isnan = _isnan(ratio);
+#else
+  bool ratio_isnan = isnan(ratio);
+#endif
+  if ( ratio_isnan ) {
+
+    ratio = 0.0;
+  }
+
+  _ratios[e] = ratio;
 
   return _ratios[e];
 }
