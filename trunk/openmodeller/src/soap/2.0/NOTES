@@ -1,0 +1,34 @@
+MAINTENANCE
+-----------
+
+- To change anything in the OMWS interface it is necessary
+  to have gSOAP installed. The API is defined in omws_api.hh.
+
+- To generate the SOAP stubs and skeletons for the service use:
+ 
+  soapcpp2 -p omws -q omws omws_api.hh
+
+- If you are upgrading gSOAP, don't forget to overwrite 
+  stdsoap2.cpp and stdsoap2.h with the newer versions.
+  They have to be manually copied to this directory.
+
+- To activate server debug logging, uncomment the line
+  #define DEBUG in stdsoap2.h and recompile the server.
+
+- Changes in the openModeller XML Schema are done manually
+  in the file openModeller.xsd, and they may impact the library
+  used to read and write openModeller XML content. This library
+  is used by omws_manager.cpp
+
+- To generate the library for reading and writing openModeller
+  XML content, make a backup of om.nsmap and then:
+
+  wsdl2h -d -g -t om.nsmap -q om -N "om" openModeller.xsd
+
+  soapcpp2 -L -S -w -x -0 -p om -q om -I /usr/local/src/gsoap-2.8/gsoap/import/ openModeller.h
+
+  soapcpp2 -p env env.h
+
+  note: you will need to restore om.nsmap after that, as it gets 
+        rewritten in one of these steps.
+
