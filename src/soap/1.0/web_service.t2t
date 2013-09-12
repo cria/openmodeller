@@ -34,7 +34,9 @@ Last updated: 9 February 2012
 = Introduction =
 
 This document describes the openModeller web service interface
-(OMWS). OMWS was created so that the main ecological niche modelling
+(OMWS) version 1.0. For more information about the new API version,
+please check the corresponding [OMWS 2.0 documentation web_service_2.html]. 
+OMWS was created so that the main ecological niche modelling
 functionalities provided by [openModeller http://openmodeller.sf.net] 
 (Muñoz //et al.// 2011) could be available in a standardized way over 
 the web to other programs. Therefore the target audience for this document 
@@ -68,7 +70,7 @@ http://openmodeller.cria.org.br/xml/1.0/openModeller.xsd
 So far there is only one implementation of the server developed in C++
 using [gSOAP http://www.cs.fsu.edu/~engelen/soap.html]. This 
 implementation is available as part of the openModeller code under the
-src/soap directory. The server can run as a CGI application, a stand
+src/soap/1.0 directory. The server can run as a CGI application, a stand
 alone server (daemon) or a multi-threaded server. By using gSOAP,
 stubs are also available for developers willing to write clients in C++ 
 ([openModeller Desktop http://openmodeller.sourceforge.net/index.php?Itemid=5&id=10&option=com_content&task=view], 
@@ -76,7 +78,7 @@ for example, uses them). There is also a simple command-line
 client written in Perl that depends on the 
 [SOAPLite Perl module http://www.soaplite.com/]. This client is  
 available under the same directory in the openModeller source code
-(src/soap/sampleClient.pl). [GBIF http://gbif.org] has some Java code 
+(src/soap/1.0/sampleClient.pl). [GBIF http://gbif.org] has some Java code 
 to generate niche models through its portal by interacting with the service:
 http://code.google.com/p/gbif-dataportal/source/browse/trunk/portal-web/src/main/java/org/gbif/portal/web/controller/openmodeller/
 
