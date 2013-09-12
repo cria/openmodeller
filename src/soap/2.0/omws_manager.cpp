@@ -580,6 +580,85 @@ int main(int argc, char **argv)
 
                   tp.Algorithm = model.Algorithm;
                 }
+                else if ( strcmp(dep_place.c_str(), "lpt") == 0 ) {
+
+                  string result_file = ticket_dir + OMWS_EVALUATE + _RESPONSE + dep_ticket;
+
+                  logMessage( "Getting LPT from previous job in " + result_file, fd_log );
+
+                  // This file must exist!
+                  if ( ! fileExists( result_file.c_str() ) ) {
+
+                    logMessage( "File does not exist: " + result_file, fd_log );
+                    stopExperiment( ticket_dir, exp_ticket, job_ticket, fd_log, "-2" );
+                    releaseSoap(ctx);
+                    break;
+                  }
+
+                  om::_om__ModelEvaluation eval;
+
+                  struct soap *ctx1 = newSoapContext();
+
+                  ostringstream eval_oss;
+                  readFile( result_file.c_str(), eval_oss );
+
+                  string content( "<ModelEvaluation>" );
+                  content.append( eval_oss.str() ).append("</ModelEvaluation>");
+                  istringstream iss( content );
+
+                  ctx1->is = &iss;
+
+                  // Parsing must succeed! (job is expected to be finished successfully)
+                  if ( soap_read_om__ModelEvaluationResultType( ctx1, &eval ) != SOAP_OK ) {
+
+                    logMessage( "Could not deserialize: " + result_file, fd_log );
+                    stopExperiment( ticket_dir, exp_ticket, job_ticket, fd_log, "-2" );
+                    releaseSoap(ctx1);
+                    releaseSoap(ctx);
+                    break;
+                  }
+
+                  // Determine LPT
+                  string lpt = "1";
+                  double d_lpt = 1.0;
+                  stringstream values( eval.Values.V, ios::in );
+
+                  string buf;
+                  while ( values >> buf ) {
+
+                    double temp = ::atof( buf.c_str() );
+
+                    if ( temp < d_lpt && temp > 0.0000000000001 ) {
+
+                      d_lpt = temp;
+                      lpt = string( buf );
+                    }
+                  }
+
+                  logMessage( "Determined LPT: " + lpt, fd_log );
+
+                  // Replace last decimal with smaller digit
+                  size_t dot_pos = lpt.find( "." );
+
+                  if ( dot_pos != string::npos ) {
+
+                    size_t num_decimals = lpt.size() -dot_pos -1;
+
+                    if ( num_decimals > 3 ) {
+
+                      d_lpt = d_lpt - (1.0/pow(10.0,(double)num_decimals));
+
+                      ostringstream lpt_oss;
+                      lpt_oss << d_lpt;
+
+                      lpt = string( lpt_oss.str() );
+
+                      logMessage( "Adjusted LPT to: " + lpt, fd_log );
+                    }
+                  }
+
+                  tp.Statistics->ConfusionMatrix->Threshold = new string( lpt );
+                }
                 else {
 
                   logMessage( "Ignoring unknown dependency type: " + dep_place, fd_log );
@@ -676,6 +755,85 @@ int main(int argc, char **argv)
 
                   pp.Algorithm = model.Algorithm;
                 }
+                else if ( strcmp(dep_place.c_str(), "lpt") == 0 ) {
+
+                  string result_file = ticket_dir + OMWS_EVALUATE + _RESPONSE + dep_ticket;
+
+                  logMessage( "Getting LPT from previous job in " + result_file, fd_log );
+
+                  // This file must exist!
+                  if ( ! fileExists( result_file.c_str() ) ) {
+
+                    logMessage( "File does not exist: " + result_file, fd_log );
+                    stopExperiment( ticket_dir, exp_ticket, job_ticket, fd_log, "-2" );
+                    releaseSoap(ctx);
+                    break;
+                  }
+
+                  om::_om__ModelEvaluation eval;
+
+                  struct soap *ctx1 = newSoapContext();
+
+                  ostringstream eval_oss;
+                  readFile( result_file.c_str(), eval_oss );
+
+                  string content( "<ModelEvaluation>" );
+                  content.append( eval_oss.str() ).append("</ModelEvaluation>");
+                  istringstream iss( content );
+
+                  ctx1->is = &iss;
+
+                  // Parsing must succeed! (job is expected to be finished successfully)
+                  if ( soap_read_om__ModelEvaluationResultType( ctx1, &eval ) != SOAP_OK ) {
+
+                    logMessage( "Could not deserialize: " + result_file, fd_log );
+                    stopExperiment( ticket_dir, exp_ticket, job_ticket, fd_log, "-2" );
+                    releaseSoap(ctx1);
+                    releaseSoap(ctx);
+                    break;
+                  }
+
+                  // Determine LPT
+                  string lpt = "1";
+                  double d_lpt = 1.0;
+                  stringstream values( eval.Values.V, ios::in );
+
+                  string buf;
+                  while ( values >> buf ) {
+
+                    double temp = ::atof( buf.c_str() );
+
+                    if ( temp < d_lpt && temp > 0.0000000000001 ) {
+
+                      d_lpt = temp;
+                      lpt = string( buf );
+                    }
+                  }
+
+                  logMessage( "Determined LPT: " + lpt, fd_log );
+
+                  // Replace last decimal with smaller digit
+                  size_t dot_pos = lpt.find( "." );
+
+                  if ( dot_pos != string::npos ) {
+
+                    size_t num_decimals = lpt.size() -dot_pos -1;
+
+                    if ( num_decimals > 3 ) {
+
+                      d_lpt = d_lpt - (1.0/pow(10.0,(double)num_decimals));
+
+                      ostringstream lpt_oss;
+                      lpt_oss << d_lpt;
+
+                      lpt = string( lpt_oss.str() );
+
+                      logMessage( "Adjusted LPT to: " + lpt, fd_log );
+                    }
+                  }
+
+                  pp.Statistics->AreaStatistics->PredictionThreshold = lpt.c_str();
+                }
                 else {
 
                   logMessage( "Ignoring unknown dependency type: " + dep_place, fd_log );
@@ -698,6 +856,113 @@ int main(int argc, char **argv)
                 releaseSoap(ctx);
                 break;
               }
+            }
+            ////////////////////// EVALUATION /////////////////////////
+            ///////////////////////////////////////////////////////////
+            else if ( strcmp(type.c_str(), OMWS_EVALUATE) == 0 ) {
+
+              logMessage( "Pending job is an evaluation.", fd_log );
+
+              string pend_file = ticket_dir + OMWS_EVALUATE + _PENDING_REQUEST + (*nt);
+
+              // This file must exist!
+              if ( ! fileExists( pend_file.c_str() ) ) {
+
+                logMessage( "File does not exist: " + pend_file, fd_log );
+                stopExperiment( ticket_dir, exp_ticket, job_ticket, fd_log, "-2" );
+                releaseSoap(ctx);
+                break;
+              }
+
+              ifstream fs_in( pend_file.c_str() );
+              ctx->is = &fs_in;
+
+              om::_om__ModelEvaluationParameters me;
+
+              // Parsing must succeed! (file was created using the same lib)
+              if ( soap_read_om__ModelEvaluationParametersType( ctx, &me ) != SOAP_OK ) {
+
+                logMessage( "Could not deserialize: " + pend_file, fd_log );
+                stopExperiment( ticket_dir, exp_ticket, job_ticket, fd_log, "-2" );
+                releaseSoap(ctx);
+                break;
+              }
+
+              logMessage( "Completed pending job deserialization.", fd_log );
+
+              // Get result from each dependency
+              for ( dt = dep_tickets.begin(); dt != dep_tickets.end(); ++dt ) {
+
+                string dep_ticket = (*dt).first;
+                string dep_place = (*dt).second;
+
+                if ( strcmp(dep_place.c_str(), "model") == 0 ) {
+
+                  string result_file = ticket_dir + OMWS_MODEL + _RESPONSE + dep_ticket;
+
+                  logMessage( "Getting model from previous job in " + result_file, fd_log );
+
+                  // This file must exist!
+                  if ( ! fileExists( result_file.c_str() ) ) {
+
+                    logMessage( "File does not exist: " + result_file, fd_log );
+                    stopExperiment( ticket_dir, exp_ticket, job_ticket, fd_log, "-2" );
+                    releaseSoap(ctx);
+                    break;
+                  }
+
+                  // Get model
+                  om::om__SerializedModelType model;
+
+                  struct soap *ctx3 = newSoapContext();
+
+                  ifstream fs3( result_file.c_str() );
+                  ctx3->is = &fs3;
+
+                  // Parsing must succeed! (job is expected to be finished successfully)
+                  if ( soap_read_om__SerializedModelType( ctx3, &model ) != SOAP_OK ) {
+
+                    logMessage( "Could not deserialize: " + result_file, fd_log );
+                    stopExperiment( ticket_dir, exp_ticket, job_ticket, fd_log, "-2" );
+                    releaseSoap(ctx3);
+                    releaseSoap(ctx);
+                    break;
+                  }
+
+                  logMessage( "Managed to deserialize previous job.", fd_log );
+
+                  me.Algorithm = model.Algorithm;
+
+                  // Get training points
+                  me.Sampler->Environment = model.Sampler->Environment;
+                  me.Sampler->Presence = model.Sampler->Presence;
+                }
+                else {
+
+                  logMessage( "Ignoring unknown dependency type: " + dep_place, fd_log );
+                }
+              }
+
+              // Write request to file
+              logMessage( "Writing new request file.", fd_log );
+
+              string req_file = ticket_dir + OMWS_EVALUATE + _REQUEST + (*nt);
+
+              ofstream fs_out( req_file.c_str() );
+              ctx->os = &fs_out;
+
+              // The following line reproduces the same encapsulated call used by 
+              // soap_write_om__ModelEvaluationParametersType, but here we need a different element name, 
+              // that's why soap_write is not used directly.
+              if ( ( me.soap_serialize(ctx), soap_begin_send(ctx) || me.soap_put(ctx, "om:ModelEvaluationParameters", NULL) || soap_end_send(ctx), ctx->error ) != SOAP_OK ) {
+
+                logMessage( "Failed to serialize new job request: " + req_file, fd_log );
+                stopExperiment( ticket_dir, exp_ticket, job_ticket, fd_log, "-2" );
+                releaseSoap(ctx);
+                break;
+              }
+
+              logMessage( "Done.", fd_log );
             }
 
             releaseSoap(ctx);

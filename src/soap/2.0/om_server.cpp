@@ -33,7 +33,6 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
 #include <pthread.h> 
 #include <sys/stat.h>
 #include <sys/types.h>
@@ -44,6 +43,9 @@
 #include <iostream>
 #include <sstream>
 #include <fstream>
+
+#include <string.h>
+#include <algorithm>
 using namespace std;
 
 #include "gdal_priv.h"
@@ -2165,7 +2167,7 @@ scheduleExperiment(struct soap* soap, const om::_om__ExperimentParameters& ep, o
       om::__om__union_ExperimentParametersType_Jobs job = ep.Jobs.__union_ExperimentParametersType_Jobs[i];
 
       job_id = "";
-      map<string, string> depends_on; // job_id -> result_usage (model, presence, absence)
+      map<string, string> depends_on; // job id -> result usage for it (model, presence, absence, lpt)
 
       // SamplingJobs
       if ( job.__unionAbstractJob == 1 ) {
@@ -2342,15 +2344,78 @@ scheduleExperiment(struct soap* soap, const om::_om__ExperimentParameters& ep, o
 
         tp.Sampler = &sampler;
 
+        // Check if LPT is used
+        bool use_lpt = false;
+
+        if ( test_job->Statistics->ConfusionMatrix != 0 && test_job->Statistics->ConfusionMatrix->Threshold != 0 ) {
+
+          string threshold = string( test_job->Statistics->ConfusionMatrix->Threshold->c_str() );
+
+          if ( threshold.compare("lpt") == 0 ) {
+
+            use_lpt = true;
+          }
+        }
+
         string model_ref = string( test_job->ModelRef->idref );
         if ( models.count( model_ref ) > 0 ) {
+
+          if ( use_lpt ) {
+
+            string msg = "LPT threshold cannot be used on job ";
+            msg.append( job_id ).append(" when there is no previous model creation");
+            throw OmwsException( msg.c_str() );
+          }
 
           tp.Algorithm = &models[model_ref];
         }
         else {
 
+          // Insert model dependency regardless LPT to facilitate model extraction
           depends_on.insert( pair<string, string>( model_ref, "model" ) );
-          updateNextJobs( job_id, model_ref, &next_deps );
+
+          if ( use_lpt ) {
+
+            string lpt_id = model_ref + "_lpt";
+
+            depends_on.insert( pair<string, string>( lpt_id, "lpt" ) );
+            updateNextJobs( job_id, lpt_id, &next_deps );
+            updateNextJobs( lpt_id, model_ref, &next_deps );
+
+            // manually include prev dependency for implicit job
+            map<string, string> lpt_dep;
+            lpt_dep.insert( pair<string, string>( model_ref, "model" ) );
+            prev_deps.insert( pair< string, map<string, string> >( lpt_id, lpt_dep ) );
+
+            if ( jobs.count( lpt_id ) == 0 ) {
+
+              // Create model evaluation job
+              omws::xsd__string lpt_ticket;
+              string lptRequestFileName = "";
+              createTicket( soap, OMWS_EVALUATE _PENDING_REQUEST, lpt_ticket, &lptRequestFileName );
+              created_jobs.insert( pair<string, string>( string( lpt_ticket ), OMWS_EVALUATE ) );
+              ofstream fstreamOUT( lptRequestFileName.c_str() );
+              soap->os = &fstreamOUT;
+
+              // The following line reproduces the same encapsulated call used by 
+              // soap_write_om__ModelEvaluationParametersType, but here we need a different element name, 
+              // that's why soap_write is not used directly.
+              om::_om__ModelEvaluationParameters me;
+
+              if ( ( me.soap_serialize(soap), soap_begin_send(soap) || me.soap_put(soap, "om:ModelEvaluationParameters", NULL) || soap_end_send(soap), soap->error ) != SOAP_OK ) {
+
+                string msg = "Failed to write LPT model evaluation job for ";
+                msg.append( model_ref );
+                throw OmwsException( msg.c_str() );
+              }
+
+              jobs.insert( pair<string, string>( lpt_id, string( lpt_ticket ) ) );
+            }
+          }
+          else {
+
+            updateNextJobs( job_id, model_ref, &next_deps );
+          }
         }
 
         tp.Statistics = test_job->Statistics;
@@ -2385,15 +2450,78 @@ scheduleExperiment(struct soap* soap, const om::_om__ExperimentParameters& ep, o
 
         om::_om__ProjectionParameters pp;
 
+        // Check if LPT is used
+        bool use_lpt = false;
+
+        if ( proj_job->Statistics->AreaStatistics != 0 ) {
+
+          string threshold = string( proj_job->Statistics->AreaStatistics->PredictionThreshold.c_str() );
+
+          if ( threshold.compare("lpt") == 0 ) {
+
+            use_lpt = true;
+          }
+        }
+
         string model_ref = string( proj_job->ModelRef->idref );
         if ( models.count( model_ref ) > 0 ) {
+
+          if ( use_lpt ) {
+
+            string msg = "LPT threshold cannot be used on job ";
+            msg.append( job_id ).append(" when there is no previous model creation");
+            throw OmwsException( msg.c_str() );
+          }
 
           pp.Algorithm = &models[model_ref];
         }
         else {
 
+          // Insert model dependency regardless LPT to facilitate model extraction
           depends_on.insert( pair<string, string>( model_ref, "model" ) );
-          updateNextJobs( job_id, model_ref, &next_deps );
+
+          if ( use_lpt ) {
+
+            string lpt_id = model_ref + "_lpt";
+
+            depends_on.insert( pair<string, string>( lpt_id, "lpt" ) );
+            updateNextJobs( job_id, lpt_id, &next_deps );
+            updateNextJobs( lpt_id, model_ref, &next_deps );
+
+            // manually include prev dependency for implicit job
+            map<string, string> lpt_dep;
+            lpt_dep.insert( pair<string, string>( model_ref, "model" ) );
+            prev_deps.insert( pair< string, map<string, string> >( lpt_id, lpt_dep ) );
+
+            if ( jobs.count( lpt_id ) == 0 ) {
+
+              // Create model evaluation job
+              omws::xsd__string lpt_ticket;
+              string lptRequestFileName = "";
+              createTicket( soap, OMWS_EVALUATE _PENDING_REQUEST, lpt_ticket, &lptRequestFileName );
+              created_jobs.insert( pair<string, string>( string( lpt_ticket ), OMWS_EVALUATE ) );
+              ofstream fstreamOUT( lptRequestFileName.c_str() );
+              soap->os = &fstreamOUT;
+
+              // The following line reproduces the same encapsulated call used by 
+              // soap_write_om__ModelEvaluationParametersType, but here we need a different element name, 
+              // that's why soap_write is not used directly.
+              om::_om__ModelEvaluationParameters me;
+
+              if ( ( me.soap_serialize(soap), soap_begin_send(soap) || me.soap_put(soap, "om:ModelEvaluationParameters", NULL) || soap_end_send(soap), soap->error ) != SOAP_OK ) {
+
+                string msg = "Failed to write LPT model evaluation job for ";
+                msg.append( model_ref );
+                throw OmwsException( msg.c_str() );
+              }
+
+              jobs.insert( pair<string, string>( lpt_id, string( lpt_ticket ) ) );
+            }
+          }
+          else {
+
+            updateNextJobs( job_id, model_ref, &next_deps );
+          }
         }
 
         string env_ref = string( proj_job->EnvironmentRef->idref );
@@ -2589,7 +2717,13 @@ updateNextJobs( string next_id, string prev_id, map< string, vector<string> > *n
 {
   if ( next_deps->count( prev_id ) > 0 ) {
 
-    next_deps->at( prev_id ).push_back( next_id );
+    vector<string> * vec = &next_deps->at( prev_id );
+
+    // Avoid including the same dependency
+    if ( find( vec->begin(), vec->end(), next_id ) == vec->end() ) {
+
+      vec->push_back( next_id );
+    }
   }
   else {
 

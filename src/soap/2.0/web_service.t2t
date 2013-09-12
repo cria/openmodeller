@@ -1549,9 +1549,14 @@ using the same algorithm.
 
 The response is a series of tickets, one for each job.
 
-%In this case, "lpt" can be used to
-%instruct the server to use the lowest presence threshold (lowest
-%prediction among training points).
+When a model projection or testing job is preceded by a model creation 
+job, the area statistics prediction threshold (for projections) and the 
+confusion matrix thresholds (for testings) accept the value "lpt". This
+value instructs the server to automatically calculate the lowest presence 
+threshold (lowest prediction among training points) after model creation
+to use it where "lpt" is indicated. If a model projection or testing job 
+indicates "lpt" but there is no preceding model creation job, the server 
+must raise an error.
 
 === Examples ===
 
