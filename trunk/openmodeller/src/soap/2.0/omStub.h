@@ -816,7 +816,7 @@ public:
 class SOAP_CMAC _om__ProjectionStatisticsParametersType_AreaStatistics
 {
 public:
-	double PredictionThreshold;	/* required attribute */
+	std::string PredictionThreshold;	/* required attribute */
 public:
 	virtual int soap_type() const { return 119; } /* = unique id SOAP_TYPE_om__om__ProjectionStatisticsParametersType_AreaStatistics */
 	virtual void soap_default(struct soap*);

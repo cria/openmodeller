@@ -17,7 +17,7 @@ compiling, linking, and/or using OpenSSL is allowed.
 
 namespace om {
 
-SOAP_SOURCE_STAMP("@(#) omC.cpp ver 2.8.15 2013-08-07 19:58:35 GMT")
+SOAP_SOURCE_STAMP("@(#) omC.cpp ver 2.8.15 2013-09-12 22:16:56 GMT")
 
 
 #ifndef WITH_NOGLOBAL
@@ -5387,7 +5387,7 @@ SOAP_FMAC3 void SOAP_FMAC4 soap_copy__om__OccurrencesFilterType_SpatiallyUnique(
 void _om__ProjectionStatisticsParametersType_AreaStatistics::soap_default(struct soap *soap)
 {
 	(void)soap; /* appease -Wall -Werror */
-	soap_default_om__ZeroOneIntervalType(soap, &this->_om__ProjectionStatisticsParametersType_AreaStatistics::PredictionThreshold);
+	soap_default_om__ThresholdParameterType(soap, &this->_om__ProjectionStatisticsParametersType_AreaStatistics::PredictionThreshold);
 }
 
 void _om__ProjectionStatisticsParametersType_AreaStatistics::soap_serialize(struct soap *soap) const
@@ -5404,7 +5404,7 @@ int _om__ProjectionStatisticsParametersType_AreaStatistics::soap_out(struct soap
 
 SOAP_FMAC3 int SOAP_FMAC4 soap_out__om__ProjectionStatisticsParametersType_AreaStatistics(struct soap *soap, const char *tag, int id, const _om__ProjectionStatisticsParametersType_AreaStatistics *a, const char *type)
 {
-	soap_set_attr(soap, "PredictionThreshold", soap_double2s(soap, ((_om__ProjectionStatisticsParametersType_AreaStatistics*)a)->PredictionThreshold), 1);
+	soap_set_attr(soap, "PredictionThreshold", ((_om__ProjectionStatisticsParametersType_AreaStatistics*)a)->PredictionThreshold.c_str(), 1);
 	if (soap_element_begin_out(soap, tag, soap_embedded_id(soap, id, a, SOAP_TYPE_om__om__ProjectionStatisticsParametersType_AreaStatistics), type))
 		return soap->error;
 	return soap_element_end_out(soap, tag);
@@ -5430,8 +5430,16 @@ SOAP_FMAC3 _om__ProjectionStatisticsParametersType_AreaStatistics * SOAP_FMAC4 s
 			return (_om__ProjectionStatisticsParametersType_AreaStatistics *)a->soap_in(soap, tag, type);
 		}
 	}
-	if (soap_s2double(soap, soap_attr_value(soap, "PredictionThreshold", 1), &((_om__ProjectionStatisticsParametersType_AreaStatistics*)a)->PredictionThreshold))
-		return NULL;
+	{	const char *t = soap_attr_value(soap, "PredictionThreshold", 1);
+		if (t)
+		{	char *s;
+			if (soap_s2string(soap, t, &s, 0, -1))
+				return NULL;
+			((_om__ProjectionStatisticsParametersType_AreaStatistics*)a)->PredictionThreshold.assign(s);
+		}
+		else if (soap->error)
+			return NULL;
+	}
 	if (soap->body && !*soap->href)
 	{
 		for (;;)

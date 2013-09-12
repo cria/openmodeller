@@ -179,6 +179,7 @@ ls -t $TICKET_DIRECTORY/eval_req.* 2> /dev/null | tail -n -1 | while read req; d
   resp=$TICKET_DIRECTORY"/eval_resp."$ticket
   log=$TICKET_DIRECTORY"/"$ticket
   prog=$TICKET_DIRECTORY"/prog."$ticket
+  meta=$TICKET_DIRECTORY"/job."$ticket
 
   # Rename file, avoiding that another process take it
   mv "$req" "$moved"
@@ -203,6 +204,15 @@ ls -t $TICKET_DIRECTORY/eval_req.* 2> /dev/null | tail -n -1 | while read req; d
   else
     # no Condor - execute om_evaluate directly
     "$OM_BIN_DIR"/om_evaluate --xml-req "$moved" --result "$resp" --log-file "$log" --prog-file "$prog" --config-file "$OM_CONFIGURATION"
+
+    # If this is part of an experiment
+    if [ -e $meta ]; then
+      if grep -q "EXP=" "$meta"; then
+        # Run experiment manager to trigger other actions
+        "$OM_BIN_DIR"/omws_manager --config "$CONFIG" --ticket "$ticket" 
+      fi  
+    fi
+
     finished=$TICKET_DIRECTORY"/done."$ticket
     touch "$finished"
   fi  
