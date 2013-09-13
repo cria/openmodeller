@@ -1553,10 +1553,20 @@ When a model projection or testing job is preceded by a model creation
 job, the area statistics prediction threshold (for projections) and the 
 confusion matrix thresholds (for testings) accept the value "lpt". This
 value instructs the server to automatically calculate the lowest presence 
-threshold (lowest prediction among training points) after model creation
-to use it where "lpt" is indicated. If a model projection or testing job 
-indicates "lpt" but there is no preceding model creation job, the server 
-must raise an error.
+threshold (lowest prediction among training points) after model creation,
+using it where "lpt" is indicated. However, LPT must be the lowest value
+above zero, otherwise all environmental conditions will be suitable for
+the species. If a model projection or testing job indicates "lpt" but 
+there is no preceding model creation job, the server must raise an error.
+One additional detail about LPT for server implementations relying on
+openModeller command line tools is that, for algorithms returning 
+suitability values with many decimal places, openModeller (om_evaluate, 
+in particular) may truncate the values. In such cases, when the value has 
+more than 3 decimals places, it is advisable for server implementations 
+to return the immediate lower number considering the maximum precision, 
+e.g. if the calculated LPT was 0.12345, return 0.12344. This avoids 
+the corresponding presence point being excluded by the threshold if
+its prediction value was truncated.
 
 === Examples ===
 
