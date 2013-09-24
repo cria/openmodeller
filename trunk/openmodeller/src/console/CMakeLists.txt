@@ -63,6 +63,12 @@ SET (OMEVALUATE_SRCS
      getopts/getopts.C 
      om_cmd_utils.cpp 
     )
+SET (OMLAYER_SRCS
+     om_layer.cpp 
+     getopts/getopts.C 
+     om_cmd_utils.cpp 
+     om_layer_utils.cpp 
+     )
 set (EXTRA_DIST
   request_file.hh
   om_cmd_utils.hh
@@ -90,6 +96,7 @@ INCLUDE_DIRECTORIES(
      ${EXPAT_INCLUDE_DIR}
      ${TERRALIB_INCLUDE_DIR}
      ${CURL_INCLUDE_DIR}
+     ${GDAL_INCLUDE_DIR}
   )
 
 ########################################################
@@ -135,6 +142,9 @@ TARGET_LINK_LIBRARIES(om_points openmodeller)
 ADD_EXECUTABLE (om_evaluate ${OMEVALUATE_SRCS})
 TARGET_LINK_LIBRARIES(om_evaluate openmodeller)
 
+ADD_EXECUTABLE (om_layer ${OMLAYER_SRCS})
+TARGET_LINK_LIBRARIES(om_layer openmodeller)
+
 ########################################################
 # Install
 
@@ -147,6 +157,7 @@ INSTALL(TARGETS om_project RUNTIME DESTINATION ${OM_BIN_DIR})
 INSTALL(TARGETS om_sampler RUNTIME DESTINATION ${OM_BIN_DIR})
 INSTALL(TARGETS om_test RUNTIME DESTINATION ${OM_BIN_DIR})
 INSTALL(TARGETS om_evaluate RUNTIME DESTINATION ${OM_BIN_DIR})
+INSTALL(TARGETS om_layer RUNTIME DESTINATION ${OM_BIN_DIR})
 IF (X11_FOUND)
   INSTALL(TARGETS om_viewer RUNTIME DESTINATION ${OM_BIN_DIR})
   INSTALL(TARGETS om_niche RUNTIME DESTINATION ${OM_BIN_DIR})
@@ -161,10 +172,13 @@ IF (UNIX AND NOT OM_BUNDLE)
                  ${CMAKE_CURRENT_SOURCE_DIR}/man/om_sampler.1 
                  ${CMAKE_CURRENT_SOURCE_DIR}/man/om_test.1 
                  ${CMAKE_CURRENT_SOURCE_DIR}/man/om_project.1 
+                 ${CMAKE_CURRENT_SOURCE_DIR}/man/om_evaluate.1 
+                 ${CMAKE_CURRENT_SOURCE_DIR}/man/om_layer.1 
            DESTINATION ${CMAKE_INSTALL_PREFIX}/man/man1)
 
   IF (X11_FOUND)
     INSTALL (FILES ${CMAKE_CURRENT_SOURCE_DIR}/man/om_niche.1
+                   ${CMAKE_CURRENT_SOURCE_DIR}/man/om_viewer.1
              DESTINATION ${CMAKE_INSTALL_PREFIX}/man/man1)
   ENDIF(X11_FOUND)
 

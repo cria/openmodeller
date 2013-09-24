@@ -11,3 +11,4 @@
 ./txt2man.sh -P om_niche -t om_niche om_niche.txt > man/om_niche.1
 ./txt2man.sh -P om_evaluate -t om_evaluate om_evaluate.txt > man/om_evaluate.1
 ./txt2man.sh -P om_viewer -t om_viewer om_viewer.txt > man/om_viewer.1
+./txt2man.sh -P om_layer -t om_layer om_layer.txt > man/om_layer.1
