@@ -46,6 +46,7 @@ SET (OM_SERVER_SRCS
   omC.cpp 
   dom.cpp
   stdsoap2.cpp 
+  ../../console/om_layer_utils.cpp
 )
 
 SET (OMWS_MANAGER_SRCS

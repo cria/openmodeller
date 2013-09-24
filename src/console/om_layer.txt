@@ -1,0 +1,24 @@
+NAME
+     om_layer - Layer utility functions for openModeller
+
+SYNOPSIS
+       om_layer [-] v --version | d --scan-dir DIRECTORY [s --result FILE] | l --check LAYER_ID [ --log-level LEVEL ] [ c --config-file FILE ]
+
+DESCRIPTION
+       om_layer is a command line tool that can be used to either 1) check if a specified layer can be read using one of the openModeller drivers, or 2) recursively scan a specified directory to find openModeller-compatible layers.
+
+OPTIONS
+       -v, --version     Display version info.
+
+       -d, --scan-dir    Scan this directory for layers.
+
+       -s, --result      Store scan result in this file.
+
+       -l, --check       Layer id to be checked.
+
+       --log-level       openModeller log level: debug, warn, info or error. Defaults to "info".
+
+       -c, --config-file Configuration file for openModeller.
+
+AUTHORS
+       Renato De Giovanni <renato at cria dot org dot br>
