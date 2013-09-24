@@ -83,6 +83,7 @@ static map<string, string> scheduleExperiment( struct soap* soap, const om::_om_
 static void     updateNextJobs( string next_id, string prev_id, map< string, vector<string> > *next_deps );
 static string   collateTickets( vector<string>* ids, map<string, string> *jobs );
 static string   collateTickets( map<string, string>* ids, map<string, string> *jobs );
+static void     appendResult( string &ticket_dir, string &ticket, string &type, ostringstream &oss );
 
 /****************/
 /***  Globals ***/
@@ -1382,15 +1383,9 @@ omws::omws__getResults( struct soap *soap, omws::xsd__string tickets, struct omw
 
           if ( getProgress( ticket_dir, (*at) ) == 100 ) {
 
-            string res_file = ticket_dir + type + _RESPONSE + (*at);
-
             has_result = true;
 
-            oss << "<Job Ticket=\"" << (*at) << "\">" << endl;
-
-            readFile( res_file.c_str(), oss );
-
-            oss << "</Job>" << endl;
+            appendResult( ticket_dir, (*at), type, oss );
           }
         }
       }
@@ -1398,24 +1393,9 @@ omws::omws__getResults( struct soap *soap, omws::xsd__string tickets, struct omw
 
         if ( getProgress( ticket_dir, ticket ) == 100 ) {
 
-          string res_file;
-
-          if ( type.compare(0, 4, OMWS_PROJECTION) == 0 ) {
-
-            res_file = ticket_dir + OMWS_PROJECTION_STATISTICS_PREFIX + ticket;
-          }
-          else {
-
-            res_file = ticket_dir + type + _RESPONSE + ticket;
-          }
-
           has_result = true;
 
-          oss << "<Job Ticket=\"" << ticket << "\">" << endl;
-
-          readFile( res_file.c_str(), oss );
-
-          oss << "</Job>" << endl;
+          appendResult( ticket_dir, ticket, type, oss );
         }
       }
     }
@@ -2788,4 +2768,87 @@ collateTickets( map<string, string>* ids, map<string, string> *jobs )
     }
   }
   return result;
+}
+
+/***********************/
+/**** append Result ****/
+static void
+appendResult( string &ticket_dir, string &ticket, string &type, ostringstream &oss )
+{
+  string res_file;
+  string container = "";
+  string subcontainer = "";
+  string attrs = "";
+
+  if ( type.compare(0, 4, OMWS_PROJECTION) == 0 ) {
+
+    res_file = ticket_dir + OMWS_PROJECTION_STATISTICS_PREFIX + ticket;
+
+    container = "ProjectionEnvelope";
+    subcontainer = "Statistics";
+
+    attrs = " url=\"" + gFileParser.get( "BASE_URL" );
+
+    if ( attrs.find_last_of( "/" ) != attrs.size() - 1 ) {
+
+      attrs.append( "/" );
+    }
+
+    attrs.append( getMapFile( ticket ) ).append("\"");
+  }
+  else {
+
+    res_file = ticket_dir + type + _RESPONSE + ticket;
+
+    if ( type.compare(0, 5, OMWS_MODEL) == 0 ) {
+
+      container = "ModelEnvelope";
+    }
+    else if ( type.compare(0, 4, OMWS_TEST) == 0 ) {
+
+      container = "TestEnvelope";
+    }
+  }
+
+  oss << "<Job Ticket=\"" << ticket << "\">" << endl;
+
+  if ( container.size() > 0 ) {
+
+    oss << "<" << container.c_str();
+
+    if ( attrs.size() > 0 ) {
+
+      oss << attrs.c_str();
+    }
+
+    oss << ">" << endl;
+
+    if ( subcontainer.size() > 0 ) {
+
+      readFile( res_file.c_str(), oss );
+    }
+    else {
+
+      ostringstream myoss;
+
+      readFile( res_file.c_str(), myoss );
+
+      if ( myoss.str().size() > 0 ) {
+
+        oss << "<" << subcontainer.c_str();
+
+        oss << myoss;
+
+        oss << "</" << subcontainer.c_str() << ">" << endl;
+      }
+    }
+
+    oss << "</" << container.c_str() << ">" << endl;
+  }
+  else {
+
+    readFile( res_file.c_str(), oss );
+  }
+
+  oss << "</Job>" << endl;
 }

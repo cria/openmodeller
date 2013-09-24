@@ -292,7 +292,11 @@ readFile( const char* filePath, ostringstream & oss )
     while ( ! fin.eof() )
     {
       getline( fin, line );
-      oss << line << endl;
+
+      if ( line.size() > 0 ) {
+
+        oss << line << endl;
+      }
     }
 
     fin.close();
