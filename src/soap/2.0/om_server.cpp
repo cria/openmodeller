@@ -72,7 +72,6 @@ static bool     readDirectory( const char* dir, const char* label, ostream &xml,
 static bool     isValidGdalFile( const char* fileName );
 static bool     hasValidGdalProjection( const char* fileName );
 static string   getLayerLabel( const string path, const string name, bool isDir );
-static int      getSize( FILE *fd );
 static void     logRequest( struct soap*, const char* operation, const char* params );
 static void     addHeader( struct soap* );
 static int      getStatus();
@@ -1174,8 +1173,6 @@ omws::omws__getProjectionMetadata( struct soap *soap, omws::xsd__string ticket, 
     return soap_receiver_fault( soap, "Projection unreadable", NULL );
   }
 
-  int size = getSize( fd );
-
   // Get statistics
   string statsFileName = getTicketFilePath( gFileParser.get( "TICKET_DIRECTORY" ), OMWS_PROJECTION_STATISTICS_PREFIX, ticket );
 
@@ -1193,7 +1190,6 @@ omws::omws__getProjectionMetadata( struct soap *soap, omws::xsd__string ticket, 
       oss << line << endl;
     }
 
-    out->FileSize = size;
     out->om__ProjectionEnvelope = convertToWideChar( oss.str().c_str() );
 
     fin.close();
@@ -1737,23 +1733,6 @@ getLayerLabel( const string path, const string name, bool isDir )
   }
 
   return name;  
-}
-
-/*****************/
-/**** getSize ****/
-static int 
-getSize( FILE *fd )
-{ 
-  struct stat sb;
-
-  if ( ! fstat( fileno( fd ), &sb ) ) { 
-
-    return sb.st_size;
-  }
-  else { 
-
-    return -1;
-  }
 }
 
 /********************/
