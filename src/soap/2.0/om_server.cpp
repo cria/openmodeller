@@ -2804,22 +2804,22 @@ appendResult( string &ticket_dir, string &ticket, string &type, ostringstream &o
 
     if ( subcontainer.size() > 0 ) {
 
-      readFile( res_file.c_str(), oss );
-    }
-    else {
-
       ostringstream myoss;
 
       readFile( res_file.c_str(), myoss );
 
       if ( myoss.str().size() > 0 ) {
 
-        oss << "<" << subcontainer.c_str();
+        oss << "<" << subcontainer.c_str() << ">" << endl;
 
-        oss << myoss;
+        oss << myoss.str();
 
         oss << "</" << subcontainer.c_str() << ">" << endl;
       }
+    }
+    else {
+
+      readFile( res_file.c_str(), oss );
     }
 
     oss << "</" << container.c_str() << ">" << endl;
