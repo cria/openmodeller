@@ -2547,7 +2547,7 @@ appendResult( string &ticket_dir, string &ticket, string &type, ostringstream &o
     }
     else if ( type.compare(0, 4, OMWS_TEST) == 0 ) {
 
-      container = "TestEnvelope";
+      container = "TestResultEnvelope";
     }
   }
 
