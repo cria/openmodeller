@@ -120,6 +120,7 @@ RemoteRaster::createRaster( const string& str, int categ )
 
       curl_easy_setopt( curl, CURLOPT_WRITEFUNCTION, &RemoteRaster::_writeData );
       curl_easy_setopt( curl, CURLOPT_WRITEDATA, &file_data );
+      //curl_easy_setopt( curl, CURLOPT_VERBOSE, 1 );
 
       CURLcode res = curl_easy_perform( curl );
 
