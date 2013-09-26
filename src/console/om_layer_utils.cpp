@@ -42,7 +42,7 @@ readDirectory( const char* dir, const char* label, ostream &xml, int depth, int*
 {
   bool r = true;
 
-  if ( depth == 1 ) {
+  if ( depth == 0 ) {
 
     GDALAllRegister();
 
