@@ -530,7 +530,7 @@
 
 <portType name="openModellerPortType">
  <operation name="ping">
-  <documentation>Simple method to monitor service availability.</documentation>
+  <documentation>Operation to monitor service availability.</documentation>
   <input message="tns:pingRequest"/>
   <output message="tns:pingResponse"/>
  </operation>
@@ -540,87 +540,87 @@
   <output message="tns:getAlgorithmsResponse"/>
  </operation>
  <operation name="getLayers">
-  <documentation>Returns all available layers on the server side.</documentation>
+  <documentation>Returns all available layers on the server.</documentation>
   <input message="tns:getLayers"/>
   <output message="tns:getLayersResponse"/>
  </operation>
  <operation name="createModel">
-  <documentation>Service definition of function omws__createModel</documentation>
+  <documentation>Schedules the creation of an ecological niche model.</documentation>
   <input message="tns:createModelRequest"/>
   <output message="tns:createModelResponse"/>
  </operation>
  <operation name="getModel">
-  <documentation>Service definition of function omws__getModel</documentation>
+  <documentation>Returns an ecological niche model given a ticket.</documentation>
   <input message="tns:getModel"/>
   <output message="tns:getModelResponse"/>
  </operation>
  <operation name="testModel">
-  <documentation>Service definition of function omws__testModel</documentation>
+  <documentation>Schedules a model test with the specified points and environmental scenario.</documentation>
   <input message="tns:testModelRequest"/>
   <output message="tns:testModelResponse"/>
  </operation>
  <operation name="getTestResult">
-  <documentation>Service definition of function omws__getTestResult</documentation>
+  <documentation>Returns a test result given a ticket.</documentation>
   <input message="tns:getTestResult"/>
   <output message="tns:testResponse"/>
  </operation>
  <operation name="projectModel">
-  <documentation>Service definition of function omws__projectModel</documentation>
+  <documentation>Schedules a model projection.</documentation>
   <input message="tns:projectModelRequest"/>
   <output message="tns:projectModelResponse"/>
  </operation>
  <operation name="getProgress">
-  <documentation>Service definition of function omws__getProgress</documentation>
+  <documentation>Returns the progress of one or more jobs.</documentation>
   <input message="tns:getProgressRequest"/>
   <output message="tns:getProgressResponse"/>
  </operation>
  <operation name="getLog">
-  <documentation>Service definition of function omws__getLog</documentation>
+  <documentation>Returns the log of a job.</documentation>
   <input message="tns:getLogRequest"/>
   <output message="tns:getLogResponse"/>
  </operation>
  <operation name="getLayerAsUrl">
-  <documentation>Service definition of function omws__getLayerAsUrl</documentation>
+  <documentation>Returns the URL of a projected model.</documentation>
   <input message="tns:getLayerAsUrlRequest"/>
   <output message="tns:getLayerAsUrlResponse"/>
  </operation>
  <operation name="getProjectionMetadata">
-  <documentation>Service definition of function omws__getProjectionMetadata</documentation>
+  <documentation>Returns additional data about a model projection.</documentation>
   <input message="tns:getProjectionMetadata"/>
   <output message="tns:getProjectionMetadataResponse"/>
  </operation>
  <operation name="evaluateModel">
-  <documentation>Service definition of function omws__evaluateModel</documentation>
+  <documentation>Schedules a model evaluation to get model values at the specified points and environmental scenario.</documentation>
   <input message="tns:evaluateModelRequest"/>
   <output message="tns:evaluateModelResponse"/>
  </operation>
  <operation name="getModelEvaluation">
-  <documentation>Service definition of function omws__getModelEvaluation</documentation>
+  <documentation>Returns model values given a ticket.</documentation>
   <input message="tns:getModelEvaluation"/>
   <output message="tns:modelEvaluationResponse"/>
  </operation>
  <operation name="samplePoints">
-  <documentation>Service definition of function omws__samplePoints</documentation>
+  <documentation>Schedules a sampling operation to get a random set of points in the given environment and mask.</documentation>
   <input message="tns:samplePointsRequest"/>
   <output message="tns:samplePointsResponse"/>
  </operation>
  <operation name="getSamplingResult">
-  <documentation>Service definition of function omws__getSamplingResult</documentation>
+  <documentation>Returns a set of points given a ticket.</documentation>
   <input message="tns:getSamplingResult"/>
   <output message="tns:getSamplingResultResponse"/>
  </operation>
  <operation name="runExperiment">
-  <documentation>Service definition of function omws__runExperiment</documentation>
+  <documentation>Schedules a modelling experiment, which may involve sampling points, model creation, test and/or projection.</documentation>
   <input message="tns:runExperiment"/>
   <output message="tns:runExperimentResponse"/>
  </operation>
  <operation name="getResults">
-  <documentation>Service definition of function omws__getResults</documentation>
+  <documentation>Returns job results given one or more tickets.</documentation>
   <input message="tns:getResults"/>
   <output message="tns:getResultsResponse"/>
  </operation>
  <operation name="cancel">
-  <documentation>Service definition of function omws__cancel</documentation>
+  <documentation>Cancels one or more jobs, returning the list of cancelled jobs.</documentation>
   <input message="tns:cancelRequest"/>
   <output message="tns:cancelResponse"/>
  </operation>
@@ -801,9 +801,9 @@
  </operation>
 </binding>
 
-<service name="openModeller">
- <documentation>Web Services interface for remote invocation of openModeller</documentation>
- <port name="openModeller" binding="tns:openModeller">
+<service name="openModeller web service 2.0">
+ <documentation>Second generation of a web wervice interface for remote invocation of openModeller</documentation>
+ <port name="openModeller web service 2.0" binding="tns:openModeller">
   <SOAP:address location="http://modeller.cria.org.br/ws2/om"/>
  </port>
 </service>
