@@ -1,5 +1,5 @@
 /*****************************************************************************
- * openModeller Web Service (OMWS) API
+ * openModeller Web Service (OMWS) API 2.0
  * 
  * This file contains all gSOAP definitions that are necessary to build client 
  * and/or server implementations compliant with the OMWS API:
@@ -9,10 +9,10 @@
  *
  *****************************************************************************/
 
-//gsoap omws service name: openModeller
+//gsoap omws service name: openModeller web service 2.0
 //gsoap omws service port: http://modeller.cria.org.br/ws2/om
 //gsoap omws service namespace: http://openmodeller.cria.org.br/ws/2.0
-//gsoap omws service documentation: Web Services interface for remote invocation of openModeller
+//gsoap omws service documentation: Second generation of a web wervice interface for remote invocation of openModeller
 //gsoap omws service encoding: literal
 //gsoap om schema namespace: http://openmodeller.cria.org.br/xml/2.0
 //gsoap om schema import: http://openmodeller.cria.org.br/xml/2.0/openModeller.xsd
@@ -25,13 +25,13 @@ typedef int xsd__int;
 typedef wchar_t *XML;
 typedef char *XML_;
 
-/** Simple method just to monitor the service.
+/** Operation to monitor the service.
  *
  * @param _ A void* input parameter so that some compilers (notably vc++) will not complain 
  *          about empty structs. This SOAP method should be called without any parameters.
- * @return status Integer value (1 - OK)
+ * @return status Integer value (1 - OK, 2 - unavailable)
  */
-//gsoap omws service method-documentation: ping Simple method to monitor service availability.
+//gsoap omws service method-documentation: ping Operation to monitor service availability.
 int omws__ping(void *_, xsd__int &status); 
 
 /** Return type of getAlgorithms */
@@ -56,14 +56,14 @@ struct omws__getLayersResponse
    XML om__AvailableLayers;
 };
 
-/** Get all available layers on the server side.
+/** Get all available layers on the server.
  *
  * @param _ A void* input parameter so that some compilers (notably vc++) will not complain 
  *          about empty structs. This SOAP method should be called without any parameters.
  * @param om__AvailableLayers Reference to the literal XML that will be returned.
  * @return standard gSOAP integer code
  */
-//gsoap omws service method-documentation: getLayers Returns all available layers on the server side.
+//gsoap omws service method-documentation: getLayers Returns all available layers on the server.
 int omws__getLayers(void *_, struct omws__getLayersResponse *out);
 
 /** Create a distribution model (not a map!) using all input parameters.
@@ -72,7 +72,7 @@ int omws__getLayers(void *_, struct omws__getLayersResponse *out);
  * @param ticket Job identification.
  * @return standard gSOAP integer code
  */
-//gsoap om service method-documentation: createModel Requests the creation of a spatial distribution model
+//gsoap omws service method-documentation: createModel Schedules the creation of an ecological niche model
 int omws__createModel(XML om__ModelParameters, xsd__string &ticket); 
 
 /** Return type of getModel */
@@ -85,7 +85,7 @@ struct omws__getModelResponse
  * @param ticket Job identification.
  * @return standard gSOAP integer code
  */
-//gsoap om service method-documentation: getModel Retrieves a serialized model given a ticket.
+//gsoap omws service method-documentation: getModel Returns an ecological niche model given a ticket.
 int omws__getModel(xsd__string ticket, struct omws__getModelResponse *out);
 
 /** Test a distribution model.
@@ -94,7 +94,7 @@ int omws__getModel(xsd__string ticket, struct omws__getModelResponse *out);
  * @param ticket Job identification.
  * @return standard gSOAP integer code
  */
-//gsoap om service method-documentation: testModel Test a given distribution model with the given points
+//gsoap omws service method-documentation: testModel Schedules a model test with the specified points and environmental scenario.
 int omws__testModel(XML om__TestParameters, xsd__string &ticket);
 
 /** Return type of testModel */
@@ -107,7 +107,7 @@ struct omws__testResponse
  * @param ticket Job identification.
  * @return standard gSOAP integer code
  */
-//gsoap om service method-documentation: getTestResult Retrieves the result of a test.
+//gsoap omws service method-documentation: getTestResult Returns a test result given a ticket.
 int omws__getTestResult(xsd__string ticket, struct omws__testResponse *out);
 
 /** Project a distribution model (creating a map) using all input parameters.
@@ -116,28 +116,28 @@ int omws__getTestResult(xsd__string ticket, struct omws__testResponse *out);
  * @param ticket Job identification.
  * @return standard gSOAP integer code
  */
-//gsoap om service method-documentation: projectModel Requests the projection of a spatial distribution model
+//gsoap omws service method-documentation: projectModel Schedules a model projection.
 int omws__projectModel(XML om__ProjectionParameters, xsd__string &ticket); 
 
 /** Return the progress given a list of tickets.
  * @param ticket Comma-separated job tickets.
  * @return standard gSOAP integer code
  */
-//gsoap om service method-documentation: getProgress Returns the progress of one or more jobs.
+//gsoap omws service method-documentation: getProgress Returns the progress of one or more jobs.
 int omws__getProgress(xsd__string tickets, xsd__string &progress);
 
 /** Return the log of a finished job given a ticket.
  * @param ticket Job identification.
  * @return standard gSOAP integer code
  */
-//gsoap om service method-documentation: getLog Returns the log of a job.
+//gsoap omws service method-documentation: getLog Returns the log of a job.
 int omws__getLog(xsd__string ticket, xsd__string &log);
 
 /** Return a layer as an URL.
  * @param id Layer identification.
  * @return standard gSOAP integer code
  */
-//gsoap om service method-documentation: getLayerAsUrl Returns the corresponding distribution map URL.
+//gsoap omws service method-documentation: getLayerAsUrl Returns the URL of a projected model.
 int omws__getLayerAsUrl(xsd__string id, xsd__string &url);
 
 /** Return type of getProjectionMetadata */
@@ -151,7 +151,7 @@ struct omws__getProjectionMetadataResponse
  * @param ticket Job identification.
  * @return standard gSOAP integer code
  */
-//gsoap om service method-documentation: getProjectionMetadata Retrieves additional data about the projection (area statistics and file size) given a ticket.
+//gsoap omws service method-documentation: getProjectionMetadata Returns additional data about a model projection.
 int omws__getProjectionMetadata(xsd__string ticket, struct omws__getProjectionMetadataResponse *out);
 
 /** Evaluate Model.
@@ -160,7 +160,7 @@ int omws__getProjectionMetadata(xsd__string ticket, struct omws__getProjectionMe
  * @param ticket Job identification.
  * @return standard gSOAP integer code
  */
-//gsoap om service method-documentation: evaluateModel Evaluate a given model at the specified points.
+//gsoap omws service method-documentation: evaluateModel Schedules a model evaluation to get model values at the specified points and environmental scenario.
 int omws__evaluateModel(XML om__ModelEvaluationParameters, xsd__string &ticket); 
 
 /** Return type of evaluateModel */
@@ -173,7 +173,7 @@ struct omws__modelEvaluationResponse
  * @param ticket Job identification.
  * @return standard gSOAP integer code
  */
-//gsoap om service method-documentation: getModelEvaluation Retrieves model evaluation given a ticket.
+//gsoap omws service method-documentation: getModelEvaluation Returns model values given a ticket.
 int omws__getModelEvaluation(xsd__string ticket, struct omws__modelEvaluationResponse *out);
 
 /** Sample points.
@@ -182,7 +182,7 @@ int omws__getModelEvaluation(xsd__string ticket, struct omws__modelEvaluationRes
  * @param ticket Job identification.
  * @return standard gSOAP integer code
  */
-//gsoap om service method-documentation: samplePoints Sample points in the given environment
+//gsoap omws service method-documentation: samplePoints Schedules a sampling operation to get a random set of points in the given environment and mask.
 int omws__samplePoints(XML om__SamplingParameters, xsd__string &ticket); 
 
 /** Return type of samplePoints */
@@ -195,7 +195,7 @@ struct omws__getSamplingResultResponse
  * @param ticket Job identification.
  * @return standard gSOAP integer code
  */
-//gsoap om service method-documentation: getSamplingresult Retrieves sampled points given a ticket.
+//gsoap omws service method-documentation: getSamplingresult Returns a set of points given a ticket.
 int omws__getSamplingResult(xsd__string ticket, struct omws__getSamplingResultResponse *out);
 
 /** Return type of runExperiment */
@@ -210,7 +210,7 @@ struct omws__runExperimentResponse
  * @param om__RunExperiment XML with experiment parameters 
  * @return standard gSOAP integer code
  */
-//gsoap om service method-documentation: runExperiment Run the specified experiment, which may involve sampling points, model creation, test and/or projection.
+//gsoap omws service method-documentation: runExperiment Schedules a modelling experiment, which may involve sampling points, model creation, test and/or projection.
 int omws__runExperiment(XML_ om__ExperimentParameters, struct omws__runExperimentResponse *out); 
 
 /** Return type of getResults */
@@ -223,12 +223,12 @@ struct omws__getResultsResponse
  * @param tickets Comma-separated job tickets.
  * @return standard gSOAP integer code
  */
-//gsoap om service method-documentation: getResults Retrieves job results given one or more tickets.
+//gsoap omws service method-documentation: getResults Returns job results given one or more tickets.
 int omws__getResults(xsd__string tickets, struct omws__getResultsResponse *out);
 
 /** Cancel the specified jobs.
  * @param ticket Comma-separated job tickets.
  * @return standard gSOAP integer code
  */
-//gsoap om service method-documentation: cancel Cancel one or more jobs, returning the list of cancelled jobs.
+//gsoap omws service method-documentation: cancel Cancels one or more jobs, returning the list of cancelled jobs.
 int omws__cancel(xsd__string tickets, xsd__string &cancelledTickets);
