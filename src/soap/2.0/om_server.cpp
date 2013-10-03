@@ -87,70 +87,70 @@ FileParser gFileParser( OMWS_CONFIG_FILE ); // Config file parser
 
 int main(int argc, char **argv)
 { 
-  struct soap soap;
-  soap_init(&soap);
-  soap.encodingStyle = NULL;
-
-  soap.accept_timeout = 0;  // always listening
-  soap.send_timeout = 10 OMWS_H;
-  soap.recv_timeout = 3 OMWS_MIN;
-
   // Handle HTTP GET
   char * request_method = getenv( "REQUEST_METHOD" );
 
-  if ( request_method != 0 && strcmp(request_method, "GET") == 0 ) {
+  if ( request_method != 0 ) {
 
-    char * query_string = getenv( "QUERY_STRING" );
+    if ( strcmp(request_method, "HEAD") == 0 ) {
 
-    if ( query_string != 0 && strcmp(query_string, "wsdl") == 0 ) {
-
-      // Display WSDL
-
-      // read wsdl file
-      
-      fstream fin;
-      fin.open( OMWS_WSDL_FILE, ios::in );
-
-      if ( fin.is_open() ) {
-
-        ostringstream oss;
-        string line;
-
-        while ( ! fin.eof() ) {
-          getline( fin, line );
-          oss << line << endl;
-        }
-
-        string wsdl = oss.str();
-
-        // determine service address
-        string service_address = getServiceAddress();
-
-        // replace service address in wsdl
-        string key("address location=");
-        unsigned found = wsdl.rfind( key );
-        unsigned found_closing_quote;
-        if ( found != string::npos ) {
-
-          found_closing_quote = wsdl.find( "\"", found+key.length()+1 );
-          if ( found_closing_quote != string::npos ) {
-
-            wsdl.replace( found+key.length()+1, found_closing_quote-(found+key.length())-1, service_address );
-          }
-        }
-
-        printf("Content-type: text/xml\n\n");
-        printf("%s", wsdl.c_str());
-        fin.close();
-      }
-      else {
-
-        printf("Status:404 Not found\n");
-        printf("Content-Type: text/plain\n\n");
-        printf("Resource not found\n");
-      }
-
+      printf("Content-type: text/xml\n\n");
       return 0;
+    }
+    else if ( strcmp(request_method, "GET") == 0 ) {
+
+      char * query_string = getenv( "QUERY_STRING" );
+
+      if ( query_string != 0 && strcmp(query_string, "wsdl") == 0 ) {
+
+        // Display WSDL
+
+        // read wsdl file
+      
+        fstream fin;
+        fin.open( OMWS_WSDL_FILE, ios::in );
+
+        if ( fin.is_open() ) {
+
+          ostringstream oss;
+          string line;
+
+          while ( ! fin.eof() ) {
+            getline( fin, line );
+            oss << line << endl;
+          }
+
+          string wsdl = oss.str();
+
+          // determine service address
+          string service_address = getServiceAddress();
+
+          // replace service address in wsdl
+          string key("address location=");
+          unsigned found = wsdl.rfind( key );
+          unsigned found_closing_quote;
+          if ( found != string::npos ) {
+
+            found_closing_quote = wsdl.find( "\"", found+key.length()+1 );
+            if ( found_closing_quote != string::npos ) {
+
+              wsdl.replace( found+key.length()+1, found_closing_quote-(found+key.length())-1, service_address );
+            }
+          }
+
+          printf("Content-type: text/xml\n\n");
+          printf("%s", wsdl.c_str());
+          fin.close();
+        }
+        else {
+
+          printf("Status:404 Not found\n");
+          printf("Content-Type: text/plain\n\n");
+          printf("Resource not found\n");
+        }
+
+        return 0;
+      }
     }
 
     // Display HTML
@@ -163,6 +163,14 @@ int main(int argc, char **argv)
     printf("</body></html>");
     return 0;
   }
+
+  struct soap soap;
+  soap_init(&soap);
+  soap.encodingStyle = NULL;
+
+  soap.accept_timeout = 0;  // always listening
+  soap.send_timeout = 10 OMWS_H;
+  soap.recv_timeout = 3 OMWS_MIN;
 
   // no args: assume this is a CGI application
   if ( argc < 2 ) { 
