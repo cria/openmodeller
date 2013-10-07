@@ -380,6 +380,19 @@ ls -t $TICKET_DIRECTORY/proj_req.* 2> /dev/null | tail -n -1 | while read req; d
     fi
   fi
 
+  # ASCII format creates additional files, so rename them first
+  if [[ "$proj_type" == "ByteASC" || "$proj_type" == "FloatingASC" ]]; then
+
+    orig_deriv1=$map_base".asc.aux.xml"
+    orig_deriv2=$map_base".prj"
+
+    final_deriv1=$DISTRIBUTION_MAP_DIRECTORY"/"$ticket".asc.aux.xml"
+    final_deriv2=$DISTRIBUTION_MAP_DIRECTORY"/"$ticket".prj"
+
+    mv "$orig_deriv1" "$final_deriv1"
+    mv "$orig_deriv2" "$final_deriv2"
+  fi
+
   # This must be the last step, since getProgress will only return 100% if
   # the final map exists
   mv "$map_file" "$finalmap_file"
