@@ -801,9 +801,9 @@
  </operation>
 </binding>
 
-<service name="openModeller web service 2.0">
+<service name="openModeller-web-service-2.0">
  <documentation>Second generation of a web wervice interface for remote invocation of openModeller</documentation>
- <port name="openModeller web service 2.0" binding="tns:openModeller">
+ <port name="openModeller-web-service-2.0" binding="tns:openModeller">
   <SOAP:address location="http://modeller.cria.org.br/ws2/om"/>
  </port>
 </service>

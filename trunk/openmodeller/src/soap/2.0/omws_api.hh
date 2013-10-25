@@ -9,7 +9,7 @@
  *
  *****************************************************************************/
 
-//gsoap omws service name: openModeller web service 2.0
+//gsoap omws service name: openModeller-web-service-2.0
 //gsoap omws service port: http://modeller.cria.org.br/ws2/om
 //gsoap omws service namespace: http://openmodeller.cria.org.br/ws/2.0
 //gsoap omws service documentation: Second generation of a web wervice interface for remote invocation of openModeller
