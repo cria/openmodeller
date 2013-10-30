@@ -94,8 +94,12 @@ typedef unsigned short      WORD;
  * conflict with some system or other included header.
  */
 #if defined(WIN32) || defined(__APPLE__)
+#ifndef MAX
 #define MAX(a, b)           ( (a > b)? a : b )
+#endif
+#ifndef MIN
 #define MIN(a, b)           ( (a < b)? a : b )
+#endif
 #endif
 
 int getFileSize(char * strFilename);
