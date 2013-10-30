@@ -28,7 +28,7 @@
 #ifndef _OS_SPECIFICHH_
 #define _OS_SPECIFICHH_
 
-#if (defined(__unix__) || defined(unix)) && !defined(USG)
+#if (defined(__unix__) || defined(unix) || defined(__APPLE__)) && !defined(USG)
 #include <sys/param.h>
 #define dllexp
 #define OM_ALG_DLL_EXPORT
