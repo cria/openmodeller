@@ -341,6 +341,7 @@ void EnvironmentalDistance::_calc_covariance_matrix(){
    catch ( std::exception& e ) {
       string msg = e.what();
       msg.append( "\nExperiment has no solution using Mahalanobis distance.\n" );
+      Log::instance()->error( "%s", msg.c_str() );
       throw AlgorithmException( msg.c_str() );
    }
    //Log::instance()->debug("Inv cov matrix:\n");
