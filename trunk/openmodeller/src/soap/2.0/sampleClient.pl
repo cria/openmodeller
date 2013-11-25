@@ -1711,7 +1711,7 @@ sub handle_exp_resp_start
  
     if ( substr($element, -3, 3) eq 'Job' )
     {
-        print $attrs{'Id'} . " => " . $attrs{'Ticket'} . "\n";
+        print $attrs{'id'} . " => " . $attrs{'Ticket'} . "\n";
 
         if ( length($ctickets) > 0 )
         {
