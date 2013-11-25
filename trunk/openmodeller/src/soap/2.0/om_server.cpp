@@ -781,7 +781,7 @@ omws::omws__runExperiment( struct soap *soap, omws::XML_ om__ExperimentParameter
 
       // There's no experiment id anymore (removed from protocol)
       //string exp_id = string( ep.Jobs.id ); // experiment id provided by client
-      //string result( "<Job Id=\"" );
+      //string result( "<Job id=\"" );
       //result.append( exp_id ).append("\" Ticket=\"" ).append( ticket ).append( "\"/>" );
 
       // Create individual jobs and return all of them
@@ -789,7 +789,7 @@ omws::omws__runExperiment( struct soap *soap, omws::XML_ om__ExperimentParameter
 
       for ( map<string, string>::const_iterator it = jobs.begin(); it != jobs.end(); ++it ) {
 
-        result.append( "<Job Id=\"" ).append( (*it).first ).append("\" Ticket=\"" ).append( (*it).second ).append( "\"/>" );
+        result.append( "<Job id=\"" ).append( (*it).first ).append("\" Ticket=\"" ).append( (*it).second ).append( "\"/>" );
       }
 
       out->om__ExperimentTickets = convertToWideChar( result.c_str() ); 
