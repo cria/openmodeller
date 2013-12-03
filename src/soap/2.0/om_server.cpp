@@ -758,7 +758,7 @@ omws::omws__runExperiment( struct soap *soap, omws::XML_ om__ExperimentParameter
   try {
 
     // Parse content
-    string params( "<ExperimentParameteres>" );
+    string params( "<ExperimentParameters>" );
     params.append(om__ExperimentParameters).append("</ExperimentParameters>");
     istringstream iss( params );
     ctx->is = &iss;
