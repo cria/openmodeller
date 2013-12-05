@@ -773,8 +773,7 @@ omws::omws__runExperiment( struct soap *soap, omws::XML_ om__ExperimentParameter
 
       // Store the request and create a ticket anyway, regardless using Condor DAGMan or not
       omws::xsd__string ticket;
-      wchar_t elementName[] = L"ExperimentParameters";
-      scheduleJob( soap, OMWS_EXPERIMENT _PENDING_REQUEST, params, elementName, ticket );
+      scheduleJob( soap, OMWS_EXPERIMENT _PENDING_REQUEST, params, 0, ticket );
       logRequest( soap, "runExperiment", ticket.c_str() );
 
       string result("");
@@ -1710,11 +1709,14 @@ scheduleJob( struct soap *soap, string requestPrefix, omws::XML xmlParameters, w
     throw OmwsException("Failed to create ticket (2)");
   }
 
-  // Add wrapper element
-  if ( fputws(L"<", file) < 0 || fputws(elementName, file) < 0 || fputws(L">", file) < 0 ) {
+  // Add wrapper element if necessary
+  if ( elementName != 0 ) {
 
-    fclose( file );
-    throw OmwsException("Failed to create ticket (3)");
+    if ( fputws(L"<", file) < 0 || fputws(elementName, file) < 0 || fputws(L">", file) < 0 ) {
+
+      fclose( file );
+      throw OmwsException("Failed to create ticket (3)");
+    }
   }
 
   // Put content of model request there
@@ -1724,11 +1726,14 @@ scheduleJob( struct soap *soap, string requestPrefix, omws::XML xmlParameters, w
     throw OmwsException("Failed to create ticket (4)");
   }
 
-  // Close wrapper element
-  if ( fputws(L"</", file) < 0 || fputws(elementName, file) < 0 || fputws(L">", file) < 0 ) {
+  // Close wrapper element if necessary
+  if ( elementName != 0 ) {
 
-    fclose( file );
-    throw OmwsException("Failed to create ticket (5)");
+    if ( fputws(L"</", file) < 0 || fputws(elementName, file) < 0 || fputws(L">", file) < 0 ) {
+
+      fclose( file );
+      throw OmwsException("Failed to create ticket (5)");
+    }
   }
 
   fclose( file );
