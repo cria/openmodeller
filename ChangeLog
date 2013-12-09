@@ -17,6 +17,7 @@ SVN revision: ?
 	* Renamed compiler constant PLUGINPATH and environment variable OM_ALG_PATH to OM_ALGS_DIR.
 	* New optional parameter --config-file in most command line tools to indicate a configuration file for openModeller: om_model, om_test, om_project, om_points, om_pseudo, om_evaluate, om_sampler and om_algorithm. om_console also accepts an optional third argument to specify the configuration file location.
 	* New command-line tool om_layer to either check if a specified layer id can be read from openModeller or to recursively scan a specified directory looking for openModeller-compatible layers.
+	* New configuration FETCH_WCS (true or false) allowing WCS rasters to be fetched and stored as local Erdas Imagine copies before being used.
 
 
 --------------------------
