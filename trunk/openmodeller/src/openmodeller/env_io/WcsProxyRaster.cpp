@@ -29,6 +29,9 @@
 #include <openmodeller/Exceptions.hh>
 #include <openmodeller/MapFormat.hh>
 #include <openmodeller/CacheManager.hh>
+#include <openmodeller/Settings.hh>
+
+#include <gdal.h>
 
 #include <string.h>
 #include <sstream>
@@ -63,9 +66,11 @@ WcsProxyRaster::createRaster( const string& str, int categ )
 {
   string cache_id = CacheManager::getContentIdMd5( str );
 
+  ///// Handle local proxy WCS file ///// 
+
   if ( CacheManager::isCachedMd5( str, OM_WCS_PROXY_SUBDIR ) ) {
 
-    Log::instance()->debug( "WCS raster %s already present in local cache (%s)\n", str.c_str(), cache_id.c_str() );
+    Log::instance()->debug( "WCS proxy raster %s already present in local cache (%s)\n", str.c_str(), cache_id.c_str() );
   }
   else {
 
@@ -100,7 +105,72 @@ WcsProxyRaster::createRaster( const string& str, int categ )
 
   string cached_ref = CacheManager::getContentLocationMd5( str, OM_WCS_PROXY_SUBDIR );
 
-  GdalRaster::createRaster( cached_ref, categ );
+  ///// Should we work with entire local copies ///// 
+  if ( Settings::count( "FETCH_WCS" ) == 1 && Settings::get( "FETCH_WCS" ) == "true" ) {
+
+    Log::instance()->debug( "openModeller configured to fetch WCS\n" );
+
+    std::string clone_id( cache_id );
+    clone_id.append(".img");
+
+    std::string clone_ref( cached_ref );
+    clone_ref.append(".img");
+
+    if ( CacheManager::isCached( clone_id, OM_WCS_PROXY_SUBDIR ) ) {
+
+      Log::instance()->debug( "Local WCS copy already present: %s\n", clone_ref.c_str() );
+    }
+    else {
+
+      Log::instance()->debug( "Local WCS copy does not exist. Creating  %s\n", clone_ref.c_str() );
+
+      // Open source raster 
+      GDALDatasetH hDataset = GDALOpenShared( cached_ref.c_str(), GA_ReadOnly );
+      if ( hDataset == NULL ) {
+
+        std::string msg = "Failed to open WCS raster!\n";
+        Log::instance()->error( msg.c_str() );
+        throw RasterException( msg.c_str() );
+      }
+
+      GDALDriverH hDriver = GDALGetDriverByName( "HFA" ); // Use Erdas Imagine
+      if ( hDriver == NULL ) {
+
+        GDALClose( hDataset );
+        GDALDestroyDriverManager();
+
+        std::string msg = "Could not find GDAL HFA driver!\n";
+        Log::instance()->error( msg.c_str() );
+        throw RasterException( msg.c_str() );
+      }
+
+      // Copy WCS proxy to HFA
+      GDALDatasetH hOutDS = GDALCreateCopy( hDriver, clone_ref.c_str(), hDataset, FALSE, NULL, NULL, NULL );
+
+      if ( hOutDS == NULL ) {
+
+        GDALClose( hDataset );
+        GDALDestroyDriverManager();
+
+        std::string msg = "Could not clone WCS raster!\n";
+        Log::instance()->error( msg.c_str() );
+        throw RasterException( msg.c_str() );
+      }
+
+      GDALClose( hOutDS );
+      GDALClose( hDataset );
+
+      Log::instance()->debug( "Finished creating local WCS copy %s\n", clone_ref.c_str() );
+    }
+
+    GdalRaster::createRaster( clone_ref, categ );
+  }
+  else {
+
+    Log::instance()->debug( "openModeller configured to work with remote WCS\n" );
+
+    GdalRaster::createRaster( cached_ref, categ );
+  }
 }
 
 #ifdef MPI_FOUND
