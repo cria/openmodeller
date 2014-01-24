@@ -1320,7 +1320,25 @@ omws::omws__getSamplingResult( struct soap *soap, omws::xsd__string ticket, stru
       oss << line << endl;
     }
 
-    out->om__Sampler = convertToWideChar( oss.str().c_str() );
+    // Remove first and last elements (<Sampler xxx> and </Sampler>)
+    string xml = oss.str();
+    string ini_el("<");
+    string end_el(">");
+    unsigned found_first_end = xml.find( end_el );
+    if ( found_first_end == string::npos ) {
+
+      return soap_receiver_fault( soap, "Failed processing result (1)", NULL );
+    }
+
+    unsigned found_last_ini = xml.rfind( ini_el );
+    if ( found_last_ini == string::npos ) {
+
+      return soap_receiver_fault( soap, "Failed processing result (2)", NULL );
+    }
+
+    xml = xml.substr( found_first_end+1, found_last_ini-found_first_end-1 );
+
+    out->om__Sampler = convertToWideChar( xml.c_str() );
 
     fin.close();
   }
