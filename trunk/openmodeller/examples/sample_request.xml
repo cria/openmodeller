@@ -1,0 +1,10 @@
+ <SamplingParameters>
+   <Environment>
+     <Map Id="rain_coolest.tif"/>
+   </Environment>
+   <Options NumPoints="5" Label="Test species" ProportionOfAbsences="0">
+     <OccurrencesFilter>
+       <EnvironmentallyUnique/>
+     </OccurrencesFilter>
+   </Options>
+ </SamplingParameters>
