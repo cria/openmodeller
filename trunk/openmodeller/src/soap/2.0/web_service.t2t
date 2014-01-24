@@ -819,9 +819,9 @@ reference system, as indicated by the <CoordinateSystem> element.
                    SOAP-ENV:encodingStyle="http://xml.apache.org/xml-soap/literalxml"
                    xmlns:omws="http://openmodeller.cria.org.br/ws/2.0">
   <SOAP-ENV:Body>
-    <omws:getModel>
+    <omws:getSamplingResult>
       <ticket xsi:type="xsd:string">wU48Pa</ticket>
-    </omws:getModel>
+    </omws:getSamplingResult>
   </SOAP-ENV:Body>
 </SOAP-ENV:Envelope>
 ```
@@ -836,7 +836,7 @@ reference system, as indicated by the <CoordinateSystem> element.
                    xmlns:xsd="http://www.w3.org/1999/XMLSchema" 
                    xmlns:omws="http://openmodeller.cria.org.br/ws/2.0">
   <SOAP-ENV:Body>
-    <omws:getSamplingResult>
+    <omws:getSamplingResultResponse>
       <Sampler xmlns="http://openmodeller.cria.org.br/xml/2.0">
         <Environment NumLayers="2">
           <Map Id="/layers/en/terrestrial/climate/global/worldclim/present/bioclim/10arc-minutes/14aecd40-04d9-11e1-be50-0800200c9a66"
@@ -856,7 +856,7 @@ AUTHORITY['EPSG','7022']],AUTHORITY['EPSG','6022']],PRIMEM['Greenwich',0,AUTHORI
           <Point Id="5" X="-63.17" Y="-17.80" Sample="241 103"/>
         </Presence>
       </Sampler>
-    </omws:getSamplingResult>
+    </omws:getSamplingResultResponse>
   </SOAP-ENV:Body>
 </SOAP-ENV:Envelope>
 ```
