@@ -193,6 +193,10 @@ e.g.
 
 om_pseudo --num-points 20 --mask rain_coolest.tif
 
+or
+
+om_pseudo --xml-req sample_request.xml --result sampled_points.xml
+
 Additional parameters and detailed documentation can be found in the
 corresponding man page, or just by typing om_pseudo without parameters.
 
