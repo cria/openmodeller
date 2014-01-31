@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 #################################################################################
-# This program was created for the BioVeL project to test an OMWS 1.0 endpoint
+# This program was created for the BioVeL project to test an OMWS 2.0 endpoint
 # through the BiodiversityCatalogue (http://www.biodiversitycatalogue.org).
 #
 # To run it you need Python >= 2.4 (but very likely < 3.0) and the suds library
