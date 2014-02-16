@@ -61,7 +61,7 @@ static AlgParamMetadata parameters[NUM_PARAM] = {
     "Number of background points", // Name.
     Integer,                       // Type.
     "Number of background points to be generated.", // Overview
-    "Number of background points to be generated.", // Description.
+    "Number of background points to be generated, which will be used to estimate the standard deviation of each variable in the area of interest.", // Description.
     1,      // Not zero if the parameter has lower limit.
     0,      // Parameter's lower limit.
     1,      // Not zero if the parameter has upper limit.
@@ -81,7 +81,7 @@ static AlgParamMetadata parameters[NUM_PARAM] = {
     1,   // Parameter's upper limit.
     "0"  // Parameter's typical (default) value.
   },
-  // Number of background points to be generated
+  // Suitability threshold
   {
     THRESHOLD_ID,            // Id.
     "Suitability threshold", // Name.
@@ -131,10 +131,10 @@ static AlgMetadata metadata = {
  are randomly chosen within the maximum range between\
  the mean and the extreme values of each variable.",
 
-  "",  // Author
+  "Renato De Giovanni",  // Author
 
   // Bibliography.
-  "",
+  "renato [at] cria.org.br",
 
   "Renato De Giovanni",      // Code author
   "renato [at] cria.org.br", // Code author's contact
@@ -323,6 +323,7 @@ VirtualNicheGenerator::iterate()
   background_std /= npts;
   background_std.sqrt();
 
+  // Get a random standard deviation for each variable for the niche function
   _std = _mean; // just initialize the sample
   Sample max_pdf_val = Sample(_mean.size(), 1.0); // just initialize the sample
 
