@@ -68,7 +68,7 @@ Normalizer * ScaleNormalizer::getCopy() {
 void ScaleNormalizer::computeNormalization( const ReferenceCountedPointer<const SamplerImpl>& samplerPtr ) {
 
   int dim = samplerPtr->numIndependent();
-  Sample min(dim), max(dim);
+  Sample smin(dim), smax(dim);
 
   bool get_minmax_from_sampler = true;
 
@@ -80,7 +80,7 @@ void ScaleNormalizer::computeNormalization( const ReferenceCountedPointer<const 
 
     if ( envPtr ) { 
 
-      envPtr->getMinMax( &min, &max );
+      envPtr->getMinMax( &smin, &smax );
 
       get_minmax_from_sampler = false;
     }
@@ -96,7 +96,7 @@ void ScaleNormalizer::computeNormalization( const ReferenceCountedPointer<const 
 
   if ( get_minmax_from_sampler ) {
 
-    samplerPtr->getMinMax( &min, &max );
+    samplerPtr->getMinMax( &smin, &smax );
   }
 
   _scales.resize(dim);
@@ -104,7 +104,7 @@ void ScaleNormalizer::computeNormalization( const ReferenceCountedPointer<const 
 
   for ( int i = 0; i < dim; ++i ) {
 
-    if ( max[i] == min[i] ) {
+    if ( smax[i] == smin[i] ) {
 
       Log::instance()->warn( "Min/max values for variable %d are the same during normalization!\n", (i+1));
 
@@ -113,10 +113,10 @@ void ScaleNormalizer::computeNormalization( const ReferenceCountedPointer<const 
     }
     else {
 
-      _scales[i] = (_max - _min) / (max[i] - min[i]);
+      _scales[i] = (_max - _min) / (smax[i] - smin[i]);
     }
 
-    _offsets[i] = _min - _scales[i] * min[i];
+    _offsets[i] = _min - _scales[i] * smin[i];
   }
 }
 
