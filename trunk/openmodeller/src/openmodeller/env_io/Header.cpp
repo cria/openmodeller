@@ -115,8 +115,8 @@ Header::operator=( const Header &h )
   categ = h.categ;
 
   minmax = h.minmax;
-  vmin = h.min;
-  vmax = h.max;
+  vmin = h.vmin;
+  vmax = h.vmax;
 
   proj = h.proj;
 
