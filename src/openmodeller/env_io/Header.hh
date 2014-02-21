@@ -98,8 +98,8 @@ public:
  /** If not zero 'min' and 'max' are valid values. **/
   int minmax;
 
-  Scalar min; /**< Minimum map value. */
-  Scalar max; /**< Maximum map value. */
+  Scalar vmin; /**< Minimum map value. */
+  Scalar vmax; /**< Maximum map value. */
 
   std::string proj;  /**< Projection specification (in WKT). */
 };
