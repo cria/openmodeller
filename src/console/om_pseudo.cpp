@@ -6,6 +6,7 @@
 
 #include "om_cmd_utils.hh"
 
+#include <time.h>    // used to limit the number of times that the progress is written to a file
 #include <string>
 #include <stdexcept>
 #include <iomanip>   // std::setprecision
