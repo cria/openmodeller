@@ -718,7 +718,7 @@ double RocCurve::getPartialAreaRatio( double e )
   double ratio = area / diag_area;
 
 #ifdef MSVC
-  bool ratio_isnan = _isnan(ratio);
+  bool ratio_isnan = (_isnan(ratio) == 1) ? true : false;
 #else
   bool ratio_isnan = isnan(ratio);
 #endif
