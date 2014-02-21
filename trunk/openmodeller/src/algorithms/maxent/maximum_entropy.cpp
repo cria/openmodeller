@@ -1127,7 +1127,7 @@ MaximumEntropy::lossBound( bool active, double w1, double n1, double beta1, doub
       dlb = -n1 * alpha + log( w0 + w1 * exp(alpha) ) +	beta1 * ( fabs(lambda + alpha) - fabs(lambda) );
 
 #ifdef MSVC
-      bool dlb_isnan = _isnan(dlb);
+      bool dlb_isnan = (_isnan(dlb) == 1) ? true : false;
 #else
       bool dlb_isnan = isnan(dlb);
 #endif
