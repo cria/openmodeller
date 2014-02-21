@@ -70,13 +70,6 @@ SET (OMLAYER_SRCS
      om_layer_utils.cpp 
      )
 
-IF (WIN32)
-  SET(OMLAYER_SRCS
-    ${OMLAYER_SRCS}
-    ${CMAKE_CURRENT_SOURCE_DIR}/../openmodeller/ext/dirent.c
-  )
-ENDIF (WIN32)
-
 set (EXTRA_DIST
   request_file.hh
   om_cmd_utils.hh
@@ -150,8 +143,10 @@ TARGET_LINK_LIBRARIES(om_points openmodeller)
 ADD_EXECUTABLE (om_evaluate ${OMEVALUATE_SRCS})
 TARGET_LINK_LIBRARIES(om_evaluate openmodeller)
 
-ADD_EXECUTABLE (om_layer ${OMLAYER_SRCS})
-TARGET_LINK_LIBRARIES(om_layer openmodeller)
+IF (UNIX)
+  ADD_EXECUTABLE (om_layer ${OMLAYER_SRCS})
+  TARGET_LINK_LIBRARIES(om_layer openmodeller)
+ENDIF(UNIX)
 
 ########################################################
 # Install
@@ -165,7 +160,9 @@ INSTALL(TARGETS om_project RUNTIME DESTINATION ${OM_BIN_DIR})
 INSTALL(TARGETS om_sampler RUNTIME DESTINATION ${OM_BIN_DIR})
 INSTALL(TARGETS om_test RUNTIME DESTINATION ${OM_BIN_DIR})
 INSTALL(TARGETS om_evaluate RUNTIME DESTINATION ${OM_BIN_DIR})
-INSTALL(TARGETS om_layer RUNTIME DESTINATION ${OM_BIN_DIR})
+IF (UNIX)
+  INSTALL(TARGETS om_layer RUNTIME DESTINATION ${OM_BIN_DIR})
+ENDIF(UNIX)
 IF (X11_FOUND)
   INSTALL(TARGETS om_viewer RUNTIME DESTINATION ${OM_BIN_DIR})
   INSTALL(TARGETS om_niche RUNTIME DESTINATION ${OM_BIN_DIR})

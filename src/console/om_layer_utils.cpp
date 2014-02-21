@@ -28,11 +28,7 @@
 
 #include <string>
 
-#ifndef WIN32
 #include <dirent.h>
-#else
-#include <openmodeller/ext/dirent.h>
-#endif
 
 #include "gdal_priv.h"
 
