@@ -477,6 +477,12 @@ struct SExprBinOpQuotent {
 struct SExprBinOpMin {
   SExprBinOpMin() {};
   inline Scalar operator()( Scalar a, Scalar b ) const {
+
+// avoid overlap with windows.h macros
+#ifdef WIN32
+#undef min
+#endif
+
     return std::min(a,b);
   }
 };
@@ -487,6 +493,12 @@ struct SExprBinOpMin {
 struct SExprBinOpMax {
   SExprBinOpMax() {};
   inline Scalar operator()( Scalar a, Scalar b ) const {
+
+// avoid overlap with windows.h macros
+#ifdef WIN32
+#undef max
+#endif
+
     return std::max(a,b);
   }
 };
