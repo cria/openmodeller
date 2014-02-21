@@ -59,7 +59,7 @@ SET (OMPOINTS_SRCS
      om_cmd_utils.cpp 
      )
 SET (OMEVALUATE_SRCS
-    om_evaluate.cpp 
+     om_evaluate.cpp 
      getopts/getopts.C 
      om_cmd_utils.cpp 
     )
@@ -69,6 +69,14 @@ SET (OMLAYER_SRCS
      om_cmd_utils.cpp 
      om_layer_utils.cpp 
      )
+
+IF (WIN32)
+  SET(OMLAYER_SRCS
+    ${OMLAYER_SRCS}
+    ${CMAKE_CURRENT_SOURCE_DIR}/../openmodeller/ext/dirent.c
+  )
+ENDIF (WIN32)
+
 set (EXTRA_DIST
   request_file.hh
   om_cmd_utils.hh
