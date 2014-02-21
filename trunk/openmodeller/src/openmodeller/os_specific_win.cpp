@@ -35,6 +35,7 @@
 #include <os_specific.hh>
 #include <openmodeller/Log.hh>
 #include <openmodeller/AlgorithmFactory.hh>
+#include <openmodeller/Settings.hh>
 
 #include <stdio.h>
 #include <fstream>
