@@ -61,7 +61,7 @@ void
 Raster::setMinMax( Scalar min, Scalar max )
 {
 	f_hdr.minmax = 1;
-	f_hdr.min = min;
-	f_hdr.max = max;
+	f_hdr.vmin = min;
+	f_hdr.vmax = max;
 }
 

@@ -410,11 +410,11 @@ GdalRaster::open( char mode )
   }
 
   // Minimum and maximum values.
-  f_hdr.min = band->GetMinimum( &f_hdr.minmax );
+  f_hdr.vmin = band->GetMinimum( &f_hdr.minmax );
 
   if ( f_hdr.minmax ) {
 
-    f_hdr.max = band->GetMaximum();
+    f_hdr.vmax = band->GetMaximum();
   }
 
   // Assumes grid (in place of 'pixel').
@@ -741,9 +741,9 @@ GdalRaster::getMinMax( Scalar *min, Scalar *max )
     return 0;
   }
 
-  *min = f_hdr.min;
+  *min = f_hdr.vmin;
 
-  *max = f_hdr.max;
+  *max = f_hdr.vmax;
 
   return 1;
 }
@@ -802,8 +802,8 @@ GdalRaster::calcMinMax( int band )
   Header *f_hdrNoConst = const_cast<Header*>(&f_hdr);
 
   f_hdrNoConst->minmax = 1;
-  f_hdrNoConst->min = min;
-  f_hdrNoConst->max = max;
+  f_hdrNoConst->vmin = min;
+  f_hdrNoConst->vmax = max;
 
   return 1;
 }

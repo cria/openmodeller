@@ -55,8 +55,8 @@ Header::Header( int xd, int yd, Coord xm, Coord ym,
   grid( gd ),
   categ( 0 ),
   minmax( 0 ),
-  min( 0.0 ),
-  max( 0.0 ),
+  vmin( 0.0 ),
+  vmax( 0.0 ),
   proj()
 {
   calculateCell();
@@ -115,8 +115,8 @@ Header::operator=( const Header &h )
   categ = h.categ;
 
   minmax = h.minmax;
-  min = h.min;
-  max = h.max;
+  vmin = h.min;
+  vmax = h.max;
 
   proj = h.proj;
 
@@ -187,8 +187,8 @@ Header::printHeader( char *msg ) const
 
   if ( minmax )
     {
-      Log::instance()->info( "min: %f\n", min  );
-      Log::instance()->info( "max: %f\n", max  );
+      Log::instance()->info( "min: %f\n", vmin  );
+      Log::instance()->info( "max: %f\n", vmax  );
     }
   else
     Log::instance()->info( "No minimum or maximum available.\n" );
