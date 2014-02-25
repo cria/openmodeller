@@ -195,7 +195,7 @@ try:
     ### Test initialization ###
 
     if verbosity == 3:
-        print "OMWS 2.0 test (v2)"
+        print "OMWS 2.0 test (v3)"
         print "=================="
 
     xml_ns = 'http://openmodeller.cria.org.br/xml/2.0'
