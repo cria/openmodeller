@@ -183,7 +183,7 @@ try:
                     close(method+' job reported as unknown', 2)
                 now = time.time()
                 if now - start > 20*60:
-                    close(method+' is taking too long to finish (server overload?)', 2)
+                    close(method+' is taking too long to finish (server overload?)', 1)
                 time.sleep(5)
                 progress = check_job_status( client, ticket )
         except Exception, e:
