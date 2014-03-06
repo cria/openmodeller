@@ -154,10 +154,15 @@ input data, post processing distribution maps, etc. Nevertheless,
 these core operations can still be used and combined in many different
 ways, keeping the interface simple and effective.
 
-Another important thing to mention is that, in this new version of the
-protocol, many parts of the workflow described in figure 1 can be
-encapsulated into a single runExperiment call, leaving the workflow
-management to the server side.
+In this new version of the protocol, many parts of the workflow
+described in figure 1 can actually be encapsulated into a single
+runExperiment call, leaving the workflow management to the server
+side.
+
+Service monitoring can be done by calling the [ping #toc10] operation, which
+was deliberately created for this purpose. There is also a Python
+script ([test_omws2.py http://sourceforge.net/p/openmodeller/svn/HEAD/tree/trunk/openmodeller/src/soap/2.0/test_omws2.py]) that can be used to perform more extensive service 
+tests to check if all operations are working on a specified endpoint.
 
 = Changes from version 1.0 to 2.0 =
 
