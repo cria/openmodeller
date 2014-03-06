@@ -51,7 +51,7 @@ project with funds from [CNPq http://cnpq.br] and the European Commission.
 The server was developed using [gSOAP http://gsoap2.sourceforge.net] 
 v2.8.15 in a way that it can run as a CGI application, a stand alone 
 server (daemon) or a multi-threaded server. Although the software 
-([om_soap_server.cpp http://sourceforge.net/p/openmodeller/svn/HEAD/tree/trunk/openmodeller/src/soap/2.0/om_soap_server.cpp]) 
+([om_server.cpp http://sourceforge.net/p/openmodeller/svn/HEAD/tree/trunk/openmodeller/src/soap/2.0/om_server.cpp]) 
 is written in C++ and could therefore interact directly with the 
 openModeller library, in most cases it follows a different approach 
 to benefit from high throughput computing techniques. Since 
@@ -78,9 +78,9 @@ The following table summarizes the server behaviour for each operation:
 | ping | involves direct calls to a local openModeller library and requires access to the file system to check configuration |
 | getAlgorithms | involves direct call to a local openModeller library |
 | getLayers | requires access to the file system to look for available layers (uses GDAL library to identify valid rasters) |
-| createModel #br# testModel #br# projectModel #br# evaluateModel #br# samplePoints | extract XML from SOAP Body putting it on the file system and immediatly returning a ticket |
-| runExperiment | extract XML from SOAP Body putting it on the file system, parsing it, creating all individual jobs and returning all related tickets |
-| getProgress #br# getLog #br# getModel #br# getTestResult #br# getProjectionMetadata #br# getLayerAsUrl #br# getModelEvaluation #br# getSamplingResult #br# getResults #br# cancel | only require access to the file system to read ticket information |
+| createModel #br# testModel #br# projectModel #br# evaluateModel #br# samplePoints | extracts XML from SOAP Body putting it on the file system and immediatly returning a ticket |
+| runExperiment | extracts XML from SOAP Body putting it on the file system, parsing it, creating all individual jobs and returning all related tickets |
+| getProgress #br# getLog #br# getModel #br# getTestResult #br# getProjectionMetadata #br# getLayerAsUrl #br# getModelEvaluation #br# getSamplingResult #br# getResults #br# cancel | only requires access to the file system to read ticket information |
 
 The ticketing mechanism starts with the use of the mkstmp POSIX 
 function that creates a temporary file with a 6-digit unique name.
@@ -109,8 +109,8 @@ is used in this context:
 ```
 # Example directories
 OM_CONFIGURATION=/var/www/om_server/config/om.cfg
-TICKET_DIR=/var/www/om_server/ws1/tickets
-DISTMAP_DIR=/var/www/om_server/ws1/distmaps
+TICKET_DIR=/var/www/om_server/ws2/tickets
+DISTMAP_DIR=/var/www/om_server/ws2/distmaps
 
 # sample points job
 om_pseudo --xml-req $TICKET_DIR/samp_proc.QWE123 --result $TICKET_DIR/samp_resp.QWE123 \
@@ -297,15 +297,15 @@ shown in the previous command.
 ```
 mkdir /var/www/vhosts
 mkdir /var/www/vhosts/modeller
-mkdir /var/www/vhosts/modeller/ws1
-mkdir /var/www/vhosts/modeller/ws1/cache
-mkdir /var/www/vhosts/modeller/ws1/cgi
-mkdir /var/www/vhosts/modeller/ws1/config
-mkdir /var/www/vhosts/modeller/ws1/distmaps
-mkdir /var/www/vhosts/modeller/ws1/tickets
-cp /usr/local/bin/om_soap_server /var/www/vhosts/modeller/ws1/cgi/om
-cp /etc/openmodeller/server.conf /var/www/vhosts/modeller/ws1/config
-cd /var/www/vhosts/modeller/ws1/
+mkdir /var/www/vhosts/modeller/ws2
+mkdir /var/www/vhosts/modeller/ws2/cache
+mkdir /var/www/vhosts/modeller/ws2/cgi
+mkdir /var/www/vhosts/modeller/ws2/config
+mkdir /var/www/vhosts/modeller/ws2/distmaps
+mkdir /var/www/vhosts/modeller/ws2/tickets
+cp /usr/local/src/openmodeller/build/src/soap/2.0/om /var/www/vhosts/modeller/ws2/cgi/om
+cp /etc/openmodeller/server.conf /var/www/vhosts/modeller/ws2/config
+cd /var/www/vhosts/modeller/ws2/
 chown -R modeller.modeller cache cgi distmaps tickets
 chmod g+w cache distmaps tickets
 mkdir /tmp/om
@@ -346,16 +346,16 @@ httpd.conf) and including something like this in the end of the file:
     ErrorLog logs/modeller.error_log
     CustomLog logs/modeller.access_log common
 
-    ScriptAlias /ws1/ "/var/www/vhosts/modeller/ws1/cgi/"
-    <Directory "/var/www/vhosts/modeller/ws1/cgi/">
+    ScriptAlias /ws2/ "/var/www/vhosts/modeller/ws2/cgi/"
+    <Directory "/var/www/vhosts/modeller/ws2/cgi/">
         AllowOverride None
         Options ExecCGI
         Order allow,deny
         Allow from all
     </Directory>
 
-   Alias /maps "/var/www/vhosts/modeller/ws1/distmaps/"
-    <Directory "/var/www/vhosts/modeller/ws1/distmaps/">
+   Alias /maps "/var/www/vhosts/modeller/ws2/distmaps/"
+    <Directory "/var/www/vhosts/modeller/ws2/distmaps/">
         AllowOverride None
         Options FollowSymLinks
         Order allow,deny
@@ -375,10 +375,10 @@ to indicate a cache directory and to specify accepted data sources.
 
 You can put the configuration file in the same directory of your
 service configuration, and you can use the same cache directory. This
-means editing /var/www/vhosts/modeller/ws1/config/om.cfg and typing:
+means editing /var/www/vhosts/modeller/ws2/config/om.cfg and typing:
 
 ```
-CACHE_DIRECTORY = /var/www/vhosts/modeller/ws1/cache
+CACHE_DIRECTORY = /var/www/vhosts/modeller/ws2/cache
 
 # Include as many lines as necessary, always in lower case
 # without protocol, port or path:
@@ -389,7 +389,7 @@ ALLOW_RASTER_SOURCE = cria.org.br
 
 **Step 9:** Configure the openModeller server
 
-Edit /var/www/vhosts/modeller/ws1/config/server.conf and check that
+Edit /var/www/vhosts/modeller/ws2/config/server.conf and check that
 all configurations are correct considering the directory structure
 previously created. OM_CONFIGURATION should point to the configuration 
 file for openModller created on the last step.
@@ -400,11 +400,11 @@ permissions in case there are different users for the web server and
 for the modelling tasks:
 
 || configuration | value | web server user | modelling user |
-| TICKET_DIRECTORY | /var/www/vhosts/modeller/ws1/tickets/ | RW | RW |
-| DISTRIBUTION_MAP_DIRECTORY | /var/www/vhosts/modeller/ws1/distmaps/ | R | RW |
+| TICKET_DIRECTORY | /var/www/vhosts/modeller/ws2/tickets/ | RW | RW |
+| DISTRIBUTION_MAP_DIRECTORY | /var/www/vhosts/modeller/ws2/distmaps/ | R | RW |
 | LOG_DIRECTORY | /var/log/om/ | RW | - |
 | LAYERS_DIRECTORY | /layers/ | R | R |
-| CACHE_DIRECTORY | /var/www/vhosts/modeller/ws1/cache/ | RW | - |
+| CACHE_DIRECTORY | /var/www/vhosts/modeller/ws2/cache/ | RW | - |
 | PID_DIRECTORY | /tmp/om/ | - | RW |
 
 Also make sure that the paths to the binaries are correct (OM_BIN_DIR,
@@ -428,10 +428,10 @@ You can create another script to delete all files that are older than
 a month, for example //cleanup.sh//, with the following content:
 
 ```
-find /var/www/vhosts/modeller/ws1/tickets/ -name "*" -mtime +30 -exec rm {} \;
-find /var/www/vhosts/modeller/ws1/distmaps/ -name "*.img" -mtime +30 -exec rm {} \;
-find /var/www/vhosts/modeller/ws1/distmaps/ -name "*.png" -mtime +30 -exec rm {} \;
-find /var/www/vhosts/modeller/ws1/distmaps/ -name "*.kmz" -mtime +30 -exec rm {} \;
+find /var/www/vhosts/modeller/ws2/tickets/ -name "*" -mtime +30 -exec rm {} \;
+find /var/www/vhosts/modeller/ws2/distmaps/ -name "*.img" -mtime +30 -exec rm {} \;
+find /var/www/vhosts/modeller/ws2/distmaps/ -name "*.png" -mtime +30 -exec rm {} \;
+find /var/www/vhosts/modeller/ws2/distmaps/ -name "*.kmz" -mtime +30 -exec rm {} \;
 ```
 
 Make them all executable:
@@ -449,12 +449,12 @@ crontab -e
 And finally add:
 
 ```
-0-59/1 * * * * /home/modeller/bin/scheduler.sh /var/www/vhosts/modeller/ws1/config/server.conf 0
-0-59/1 * * * * /home/modeller/bin/scheduler.sh /var/www/vhosts/modeller/ws1/config/server.conf 10
-0-59/1 * * * * /home/modeller/bin/scheduler.sh /var/www/vhosts/modeller/ws1/config/server.conf 20
-0-59/1 * * * * /home/modeller/bin/scheduler.sh /var/www/vhosts/modeller/ws1/config/server.conf 30
-0-59/1 * * * * /home/modeller/bin/scheduler.sh /var/www/vhosts/modeller/ws1/config/server.conf 40
-0-59/1 * * * * /home/modeller/bin/scheduler.sh /var/www/vhosts/modeller/ws1/config/server.conf 50
+0-59/1 * * * * /home/modeller/bin/scheduler.sh /var/www/vhosts/modeller/ws2/config/server.conf 0
+0-59/1 * * * * /home/modeller/bin/scheduler.sh /var/www/vhosts/modeller/ws2/config/server.conf 10
+0-59/1 * * * * /home/modeller/bin/scheduler.sh /var/www/vhosts/modeller/ws2/config/server.conf 20
+0-59/1 * * * * /home/modeller/bin/scheduler.sh /var/www/vhosts/modeller/ws2/config/server.conf 30
+0-59/1 * * * * /home/modeller/bin/scheduler.sh /var/www/vhosts/modeller/ws2/config/server.conf 40
+0-59/1 * * * * /home/modeller/bin/scheduler.sh /var/www/vhosts/modeller/ws2/config/server.conf 50
 0 1 1 * * /home/modeller/bin/cleanup.sh
 ```
 
@@ -467,7 +467,7 @@ Go to another machine where openModeller is installed and run the
 service command-line client inside the src/soap directory:
 
 ```
-perl sampleClient.pl --server=http://your_domain/ws1/om
+perl sampleClient.pl --server=http://your_domain/ws2/om
 ```
 
 == Other ways to run the service ==
@@ -477,7 +477,7 @@ just start it passing as a parameter the port number and then
 another parameter indicating the number of threads (=1), e.g.:
 
 ```
-./om_soap_server 8085 1 &
+./om 8085 1 &
 ```
 
 To run the server as a stand alone multi-threaded service, just
@@ -485,7 +485,7 @@ start it passing as a parameter the port number and then another
 parameter indicating the number of threads (>1), e.g.: 
 
 ```
-./om_soap_server 8085 10 &
+./om 8085 10 &
 ```
 
 = Integration with Condor =
