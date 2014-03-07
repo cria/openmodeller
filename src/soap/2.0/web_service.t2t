@@ -1520,13 +1520,14 @@ values.
 === Description ===
 
 This operation can be used to specify multiple jobs of the following
-types: sampling points, model creation, model testing or model
-projection. Dependencies can be established between:
+types: sampling points, model creation, model testing, model
+projection or model evaluation. Dependencies can be established
+between:
 
-- Points for model creation or model testing (presence and/or absence) 
-  and the result of sampling points jobs;
-- Models for testing or projection jobs and the result of model 
-  creation jobs.
+- Points for model creation, testing or evaluation (presence and/or
+absence) and the result of sampling points jobs;
+- Models for testing, projection or evaluation jobs and the result 
+of model creation jobs.
 
 
 The idea is to allow a whole workflow to be specified in a single
@@ -1829,6 +1830,11 @@ AUTHORITY['EPSG','7022']],AUTHORITY['EPSG','6022']],PRIMEM['Greenwich',0,AUTHORI
             <TemplateLayer Id="/layers/en/terrestrial/climate/global/worldclim/present/bioclim/10arc-minutes/14aecd40-04d9-11e1-be50-0800200c9a66"/>
             </OutputParameters>
           </ProjectModelJob>
+          <EvaluateModelJob id="job40">
+            <EnvironmentRef idref="environment0" />
+            <PresenceRef idref="presence1" />
+            <ModelRef idref="job20" />
+          </EvaluateModelJob>
         </Jobs>
       </ExperimentParameters>
     </omws:runExperiment>
@@ -1852,6 +1858,7 @@ AUTHORITY['EPSG','7022']],AUTHORITY['EPSG','6022']],PRIMEM['Greenwich',0,AUTHORI
        <Job id="job20" Ticket="aaa122"/>
        <Job id="job21" Ticket="aaa123"/>
        <Job id="job30" Ticket="aaa124"/>
+       <Job id="job40" Ticket="aaa125"/>
       </ExperimentTickets>
     </omws:runExperimentResponse>
   </SOAP-ENV:Body>
@@ -1880,7 +1887,7 @@ comma-separated list of tickets is passsed as a parameter.
                    xmlns:omws="http://openmodeller.cria.org.br/ws/2.0">
   <SOAP-ENV:Body>
     <omws:getResults>
-      <tickets xsi:type="xsd:string">aaa121,aaa122,aaa123,aaa124</tickets>
+      <tickets xsi:type="xsd:string">aaa121,aaa122,aaa123,aaa124,aaa125</tickets>
     </omws:getResults>
   </SOAP-ENV:Body>
 </SOAP-ENV:Envelope>
@@ -1931,11 +1938,12 @@ AXIS[&quot;Latitude&quot;,NORTH]]</CoordinateSystem>
              <Point Id="5" X="-40.9245267" Y="-6.55893261" Sample="104 311 172 442 9 89 53 692"/>
              <!-- ... -->
              <Point Id="5000" X="-61.103208" Y="-1.84124856" Sample="89 327 221 974 359 380 856 61"/>
-           </Absence></Sampler>
-         </Job>
-         <Job Ticket="2aSzie">
-           <SerializedModel>
-             <Sampler>
+           </Absence>
+         </Sampler>
+        </Job>
+        <Job Ticket="2aSzie">
+          <SerializedModel>
+            <Sampler>
               <Environment NumLayers="8">
                 <Map Id="/layers/en/terrestrial/climate/global/worldclim/present/bioclim/30arc-seconds/19afb361-0c8e-11e1-be50-0800200c9a66"
                      IsCategorical="0" Min="6" Max="210"/>
@@ -1983,9 +1991,7 @@ AUTHORITY['EPSG','7022']],AUTHORITY['EPSG','6022']],PRIMEM['Greenwich',0,AUTHORI
               <Point Id="6015" X="-46.824199" Y="-24.041222" Sample="83 291 136 872 254 872 254 55"/>
               <Point Id="6016" X="-51.916666" Y="-23.416667" Sample="129 284 85 489 198 489 261 566"/>
               <Point Id="6018" X="-40.553055" Y="-19.907499" Sample="93 277 130 548 128 355 128 809"/>
-              <Point Id="6019" X="-49.908889" Y="-29.574166" Sample="66 262 113 407 359 396 378 8"/></Presence>
-
-             <Point Id="5000" X="-61.103208" Y="-1.84124856" Sample="89 327 221 974 359 380 856 61"/>
+              <Point Id="6019" X="-49.908889" Y="-29.574166" Sample="66 262 113 407 359 396 378 8"/>
            </Presence>
            <Absence Label="Background" Count="5000">
              <CoordinateSystem>GEOGCS[&quot;WGS84&quot;, DATUM[&quot;WGS84&quot;,   
@@ -2048,6 +2054,9 @@ AXIS[&quot;Latitude&quot;,NORTH]]</CoordinateSystem>
         </Job>
         <Job Ticket="jAwxik">
           <AreaStatistics TotalCells="25501" CellsPredicted="2480" PredictionThreshold="0.5"/>
+        </Job>
+        <Job Ticket="xyz123">
+          <Values V="0.64039 0.72411 0.5000 0.47856 0.63948"/>
         </Job>
       </ResultSet>
     </omws:getResultsResponse>
