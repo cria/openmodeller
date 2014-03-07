@@ -788,7 +788,13 @@ omws::omws__runExperiment( struct soap *soap, omws::XML_ om__ExperimentParameter
 
       for ( map<string, string>::const_iterator it = jobs.begin(); it != jobs.end(); ++it ) {
 
-        result.append( "<Job id=\"" ).append( (*it).first ).append("\" Ticket=\"" ).append( (*it).second ).append( "\"/>" );
+        // Do not return implicit jobs (model evaluation for LPT)
+        string lpt_suffix("_lpt");
+        unsigned has_lpt_suffix = (*it).first.find( lpt_suffix );
+        if ( has_lpt_suffix == string::npos ) {
+
+          result.append( "<Job id=\"" ).append( (*it).first ).append("\" Ticket=\"" ).append( (*it).second ).append( "\"/>" );
+        }
       }
 
       out->om__ExperimentTickets = convertToWideChar( result.c_str() ); 
