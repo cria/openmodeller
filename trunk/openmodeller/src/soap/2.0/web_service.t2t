@@ -1673,7 +1673,7 @@ AUTHORITY['EPSG','7022']],AUTHORITY['EPSG','6022']],PRIMEM['Greenwich',0,AUTHORI
             </Parameters>
           </Algorithm>
         </AlgorithmSettings>
-        <Jobs id="jobs">
+        <Jobs>
           <CreateModelJob id="job0">
             <EnvironmentRef idref="environment0" />
             <PresenceRef idref="presence0" />
@@ -1798,7 +1798,7 @@ AUTHORITY['EPSG','7022']],AUTHORITY['EPSG','6022']],PRIMEM['Greenwich',0,AUTHORI
             </Parameters>
           </Algorithm>
         </AlgorithmSettings>
-        <Jobs id="jobs">
+        <Jobs>
           <SamplingJob id="job10">
             <EnvironmentRef idref="environment0" />
             <Options NumPoints="5000" Label="Background" ProportionOfAbsences="1.0">
