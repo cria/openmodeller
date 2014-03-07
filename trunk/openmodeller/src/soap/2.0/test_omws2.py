@@ -231,12 +231,12 @@ try:
     logging.getLogger('suds.plugin').addHandler(h)
 
     # Test configuration
-    check_layers = False
-    run_model = False
-    run_model_test = False
-    run_projection = False
-    run_model_evaluation = False
-    run_sample_points = False
+    check_layers = True
+    run_model = True
+    run_model_test = True
+    run_projection = True
+    run_model_evaluation = True
+    run_sample_points = True
     run_experiment = True
 
     #####  PING
