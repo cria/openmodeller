@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xs:schema xmlns="http://openmodeller.cria.org.br/xml/2.0" xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="http://openmodeller.cria.org.br/xml/2.0" elementFormDefault="qualified" attributeFormDefault="unqualified" version="2.0.2" xml:lang="EN">
+<xs:schema xmlns="http://openmodeller.cria.org.br/xml/2.0" xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="http://openmodeller.cria.org.br/xml/2.0" elementFormDefault="qualified" attributeFormDefault="unqualified" version="2.0.3" xml:lang="en">
 	<xs:annotation>
 		<xs:documentation xml:lang="en">
-		XML Schema with all basic element and type definitions used by openModeller and OMWS+
+		XML Schema with all basic element and type definitions used by openModeller and OMWS 2.0
 		</xs:documentation>		
 	</xs:annotation>
 	<!-- GLOBAL ELEMENTS -->
@@ -28,6 +28,7 @@
 	<xs:element name="CreateModelJob" type="CreateModelJobType" substitutionGroup="AbstractJob"/>
 	<xs:element name="TestModelJob" type="TestModelJobType" substitutionGroup="AbstractJob"/>
 	<xs:element name="ProjectModelJob" type="ProjectModelJobType" substitutionGroup="AbstractJob"/>
+	<xs:element name="EvaluateModelJob" type="EvaluateModelJobType" substitutionGroup="AbstractJob"/>
 	<!-- TYPE DEFINITIONS -->
 	<xs:complexType name="AvailableAlgorithmsType">
 		<xs:sequence>
@@ -532,6 +533,21 @@
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
+	<xs:complexType name="EvaluateModelJobType">
+		<xs:complexContent>
+			<xs:extension base="IdentifiedType">
+				<xs:sequence>
+					<xs:element name="EnvironmentRef" type="ReferenceType"/>
+					<!-- PresenceRef can point to a SamplingJob -->
+					<xs:element name="PresenceRef" type="ReferenceType"/>
+					<!-- AbsenceRef can point to a SamplingJob -->
+					<xs:element name="AbsenceRef" type="ReferenceType" minOccurs="0"/>
+					<!-- ModelRef can point to a CreateModelJob -->
+					<xs:element name="ModelRef" type="ReferenceType"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
 	<xs:complexType name="JobTicketsType">
 		<xs:sequence>
 			<xs:element name="Job" maxOccurs="unbounded">
@@ -560,6 +576,11 @@
 										<xs:element name="Statistics" type="ProjectionEnvelopeType" minOccurs="0"/>
 									</xs:sequence>
 									<xs:attribute name="url" type="xs:anyURI" use="required"/>
+								</xs:complexType>
+							</xs:element>
+							<xs:element name="Values">
+								<xs:complexType>
+									<xs:attribute name="V" type="xs:string" use="required"/>
 								</xs:complexType>
 							</xs:element>
 						</xs:choice>

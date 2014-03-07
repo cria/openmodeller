@@ -31,7 +31,7 @@ namespace om {
 
 
 #ifndef SOAP_TYPE_om_om__ThresholdCalculationType
-#define SOAP_TYPE_om_om__ThresholdCalculationType (61)
+#define SOAP_TYPE_om_om__ThresholdCalculationType (62)
 /* om:ThresholdCalculationType */
 enum om__ThresholdCalculationType { om__ThresholdCalculationType__lpt = 0 };
 #endif
@@ -113,7 +113,7 @@ public:
 #endif
 
 #ifndef SOAP_TYPE_om__om__AlgorithmMetadataType_Designers_Designer
-#define SOAP_TYPE_om__om__AlgorithmMetadataType_Designers_Designer (67)
+#define SOAP_TYPE_om__om__AlgorithmMetadataType_Designers_Designer (68)
 /* om:AlgorithmMetadataType-Designers-Designer */
 class SOAP_CMAC _om__AlgorithmMetadataType_Designers_Designer
 {
@@ -121,7 +121,7 @@ public:
 	std::string Name;	/* required attribute */
 	std::string *Contact;	/* optional attribute */
 public:
-	virtual int soap_type() const { return 67; } /* = unique id SOAP_TYPE_om__om__AlgorithmMetadataType_Designers_Designer */
+	virtual int soap_type() const { return 68; } /* = unique id SOAP_TYPE_om__om__AlgorithmMetadataType_Designers_Designer */
 	virtual void soap_default(struct soap*);
 	virtual void soap_serialize(struct soap*) const;
 	virtual int soap_put(struct soap*, const char*, const char*) const;
@@ -134,14 +134,14 @@ public:
 #endif
 
 #ifndef SOAP_TYPE_om__om__AlgorithmMetadataType_Designers
-#define SOAP_TYPE_om__om__AlgorithmMetadataType_Designers (66)
+#define SOAP_TYPE_om__om__AlgorithmMetadataType_Designers (67)
 /* om:AlgorithmMetadataType-Designers */
 class SOAP_CMAC _om__AlgorithmMetadataType_Designers
 {
 public:
 	std::vector<_om__AlgorithmMetadataType_Designers_Designer >Designer;	/* required element of type om:AlgorithmMetadataType-Designers-Designer */
 public:
-	virtual int soap_type() const { return 66; } /* = unique id SOAP_TYPE_om__om__AlgorithmMetadataType_Designers */
+	virtual int soap_type() const { return 67; } /* = unique id SOAP_TYPE_om__om__AlgorithmMetadataType_Designers */
 	virtual void soap_default(struct soap*);
 	virtual void soap_serialize(struct soap*) const;
 	virtual int soap_put(struct soap*, const char*, const char*) const;
@@ -154,7 +154,7 @@ public:
 #endif
 
 #ifndef SOAP_TYPE_om__om__AlgorithmMetadataType_Developers_Developer
-#define SOAP_TYPE_om__om__AlgorithmMetadataType_Developers_Developer (71)
+#define SOAP_TYPE_om__om__AlgorithmMetadataType_Developers_Developer (72)
 /* om:AlgorithmMetadataType-Developers-Developer */
 class SOAP_CMAC _om__AlgorithmMetadataType_Developers_Developer
 {
@@ -162,7 +162,7 @@ public:
 	std::string Name;	/* required attribute */
 	std::string *Contact;	/* optional attribute */
 public:
-	virtual int soap_type() const { return 71; } /* = unique id SOAP_TYPE_om__om__AlgorithmMetadataType_Developers_Developer */
+	virtual int soap_type() const { return 72; } /* = unique id SOAP_TYPE_om__om__AlgorithmMetadataType_Developers_Developer */
 	virtual void soap_default(struct soap*);
 	virtual void soap_serialize(struct soap*) const;
 	virtual int soap_put(struct soap*, const char*, const char*) const;
@@ -175,14 +175,14 @@ public:
 #endif
 
 #ifndef SOAP_TYPE_om__om__AlgorithmMetadataType_Developers
-#define SOAP_TYPE_om__om__AlgorithmMetadataType_Developers (70)
+#define SOAP_TYPE_om__om__AlgorithmMetadataType_Developers (71)
 /* om:AlgorithmMetadataType-Developers */
 class SOAP_CMAC _om__AlgorithmMetadataType_Developers
 {
 public:
 	std::vector<_om__AlgorithmMetadataType_Developers_Developer >Developer;	/* required element of type om:AlgorithmMetadataType-Developers-Developer */
 public:
-	virtual int soap_type() const { return 70; } /* = unique id SOAP_TYPE_om__om__AlgorithmMetadataType_Developers */
+	virtual int soap_type() const { return 71; } /* = unique id SOAP_TYPE_om__om__AlgorithmMetadataType_Developers */
 	virtual void soap_default(struct soap*);
 	virtual void soap_serialize(struct soap*) const;
 	virtual int soap_put(struct soap*, const char*, const char*) const;
@@ -195,7 +195,7 @@ public:
 #endif
 
 #ifndef SOAP_TYPE_om__om__AlgorithmMetadataType_Parameters_Parameter_AcceptedRange
-#define SOAP_TYPE_om__om__AlgorithmMetadataType_Parameters_Parameter_AcceptedRange (76)
+#define SOAP_TYPE_om__om__AlgorithmMetadataType_Parameters_Parameter_AcceptedRange (77)
 /* om:AlgorithmMetadataType-Parameters-Parameter-AcceptedRange */
 class SOAP_CMAC _om__AlgorithmMetadataType_Parameters_Parameter_AcceptedRange
 {
@@ -203,7 +203,7 @@ public:
 	double *Min;	/* optional attribute */
 	double *Max;	/* optional attribute */
 public:
-	virtual int soap_type() const { return 76; } /* = unique id SOAP_TYPE_om__om__AlgorithmMetadataType_Parameters_Parameter_AcceptedRange */
+	virtual int soap_type() const { return 77; } /* = unique id SOAP_TYPE_om__om__AlgorithmMetadataType_Parameters_Parameter_AcceptedRange */
 	virtual void soap_default(struct soap*);
 	virtual void soap_serialize(struct soap*) const;
 	virtual int soap_put(struct soap*, const char*, const char*) const;
@@ -216,14 +216,14 @@ public:
 #endif
 
 #ifndef SOAP_TYPE_om__om__AlgorithmMetadataType_Parameters_Parameter_AcceptedValues
-#define SOAP_TYPE_om__om__AlgorithmMetadataType_Parameters_Parameter_AcceptedValues (79)
+#define SOAP_TYPE_om__om__AlgorithmMetadataType_Parameters_Parameter_AcceptedValues (80)
 /* om:AlgorithmMetadataType-Parameters-Parameter-AcceptedValues */
 class SOAP_CMAC _om__AlgorithmMetadataType_Parameters_Parameter_AcceptedValues
 {
 public:
 	std::vector<std::string >Value;	/* required element of type xsd:string */
 public:
-	virtual int soap_type() const { return 79; } /* = unique id SOAP_TYPE_om__om__AlgorithmMetadataType_Parameters_Parameter_AcceptedValues */
+	virtual int soap_type() const { return 80; } /* = unique id SOAP_TYPE_om__om__AlgorithmMetadataType_Parameters_Parameter_AcceptedValues */
 	virtual void soap_default(struct soap*);
 	virtual void soap_serialize(struct soap*) const;
 	virtual int soap_put(struct soap*, const char*, const char*) const;
@@ -236,7 +236,7 @@ public:
 #endif
 
 #ifndef SOAP_TYPE_om__om__AlgorithmMetadataType_Parameters_Parameter
-#define SOAP_TYPE_om__om__AlgorithmMetadataType_Parameters_Parameter (75)
+#define SOAP_TYPE_om__om__AlgorithmMetadataType_Parameters_Parameter (76)
 /* om:AlgorithmMetadataType-Parameters-Parameter */
 class SOAP_CMAC _om__AlgorithmMetadataType_Parameters_Parameter
 {
@@ -250,7 +250,7 @@ public:
 	std::string *Default;	/* optional element of type xsd:string */
 	std::string Id;	/* required attribute */
 public:
-	virtual int soap_type() const { return 75; } /* = unique id SOAP_TYPE_om__om__AlgorithmMetadataType_Parameters_Parameter */
+	virtual int soap_type() const { return 76; } /* = unique id SOAP_TYPE_om__om__AlgorithmMetadataType_Parameters_Parameter */
 	virtual void soap_default(struct soap*);
 	virtual void soap_serialize(struct soap*) const;
 	virtual int soap_put(struct soap*, const char*, const char*) const;
@@ -263,14 +263,14 @@ public:
 #endif
 
 #ifndef SOAP_TYPE_om__om__AlgorithmMetadataType_Parameters
-#define SOAP_TYPE_om__om__AlgorithmMetadataType_Parameters (74)
+#define SOAP_TYPE_om__om__AlgorithmMetadataType_Parameters (75)
 /* om:AlgorithmMetadataType-Parameters */
 class SOAP_CMAC _om__AlgorithmMetadataType_Parameters
 {
 public:
 	std::vector<_om__AlgorithmMetadataType_Parameters_Parameter >*Parameter;	/* optional element of type om:AlgorithmMetadataType-Parameters-Parameter */
 public:
-	virtual int soap_type() const { return 74; } /* = unique id SOAP_TYPE_om__om__AlgorithmMetadataType_Parameters */
+	virtual int soap_type() const { return 75; } /* = unique id SOAP_TYPE_om__om__AlgorithmMetadataType_Parameters */
 	virtual void soap_default(struct soap*);
 	virtual void soap_serialize(struct soap*) const;
 	virtual int soap_put(struct soap*, const char*, const char*) const;
@@ -314,7 +314,7 @@ public:
 #endif
 
 #ifndef SOAP_TYPE_om__om__BasicAlgorithmDefinitionType_Parameters_Parameter
-#define SOAP_TYPE_om__om__BasicAlgorithmDefinitionType_Parameters_Parameter (85)
+#define SOAP_TYPE_om__om__BasicAlgorithmDefinitionType_Parameters_Parameter (86)
 /* om:BasicAlgorithmDefinitionType-Parameters-Parameter */
 class SOAP_CMAC _om__BasicAlgorithmDefinitionType_Parameters_Parameter
 {
@@ -322,7 +322,7 @@ public:
 	std::string Id;	/* required attribute */
 	std::string Value;	/* required attribute */
 public:
-	virtual int soap_type() const { return 85; } /* = unique id SOAP_TYPE_om__om__BasicAlgorithmDefinitionType_Parameters_Parameter */
+	virtual int soap_type() const { return 86; } /* = unique id SOAP_TYPE_om__om__BasicAlgorithmDefinitionType_Parameters_Parameter */
 	virtual void soap_default(struct soap*);
 	virtual void soap_serialize(struct soap*) const;
 	virtual int soap_put(struct soap*, const char*, const char*) const;
@@ -335,14 +335,14 @@ public:
 #endif
 
 #ifndef SOAP_TYPE_om__om__BasicAlgorithmDefinitionType_Parameters
-#define SOAP_TYPE_om__om__BasicAlgorithmDefinitionType_Parameters (84)
+#define SOAP_TYPE_om__om__BasicAlgorithmDefinitionType_Parameters (85)
 /* om:BasicAlgorithmDefinitionType-Parameters */
 class SOAP_CMAC _om__BasicAlgorithmDefinitionType_Parameters
 {
 public:
 	std::vector<_om__BasicAlgorithmDefinitionType_Parameters_Parameter >*Parameter;	/* optional element of type om:BasicAlgorithmDefinitionType-Parameters-Parameter */
 public:
-	virtual int soap_type() const { return 84; } /* = unique id SOAP_TYPE_om__om__BasicAlgorithmDefinitionType_Parameters */
+	virtual int soap_type() const { return 85; } /* = unique id SOAP_TYPE_om__om__BasicAlgorithmDefinitionType_Parameters */
 	virtual void soap_default(struct soap*);
 	virtual void soap_serialize(struct soap*) const;
 	virtual int soap_put(struct soap*, const char*, const char*) const;
@@ -378,7 +378,7 @@ public:
 #endif
 
 #ifndef SOAP_TYPE_om__om__SerializedAlgorithmType_Parameters_Parameter
-#define SOAP_TYPE_om__om__SerializedAlgorithmType_Parameters_Parameter (89)
+#define SOAP_TYPE_om__om__SerializedAlgorithmType_Parameters_Parameter (90)
 /* om:SerializedAlgorithmType-Parameters-Parameter */
 class SOAP_CMAC _om__SerializedAlgorithmType_Parameters_Parameter
 {
@@ -386,7 +386,7 @@ public:
 	std::string Id;	/* required attribute */
 	std::string Value;	/* required attribute */
 public:
-	virtual int soap_type() const { return 89; } /* = unique id SOAP_TYPE_om__om__SerializedAlgorithmType_Parameters_Parameter */
+	virtual int soap_type() const { return 90; } /* = unique id SOAP_TYPE_om__om__SerializedAlgorithmType_Parameters_Parameter */
 	virtual void soap_default(struct soap*);
 	virtual void soap_serialize(struct soap*) const;
 	virtual int soap_put(struct soap*, const char*, const char*) const;
@@ -399,14 +399,14 @@ public:
 #endif
 
 #ifndef SOAP_TYPE_om__om__SerializedAlgorithmType_Parameters
-#define SOAP_TYPE_om__om__SerializedAlgorithmType_Parameters (88)
+#define SOAP_TYPE_om__om__SerializedAlgorithmType_Parameters (89)
 /* om:SerializedAlgorithmType-Parameters */
 class SOAP_CMAC _om__SerializedAlgorithmType_Parameters
 {
 public:
 	std::vector<_om__SerializedAlgorithmType_Parameters_Parameter >*Parameter;	/* optional element of type om:SerializedAlgorithmType-Parameters-Parameter */
 public:
-	virtual int soap_type() const { return 88; } /* = unique id SOAP_TYPE_om__om__SerializedAlgorithmType_Parameters */
+	virtual int soap_type() const { return 89; } /* = unique id SOAP_TYPE_om__om__SerializedAlgorithmType_Parameters */
 	virtual void soap_default(struct soap*);
 	virtual void soap_serialize(struct soap*) const;
 	virtual int soap_put(struct soap*, const char*, const char*) const;
@@ -419,14 +419,14 @@ public:
 #endif
 
 #ifndef SOAP_TYPE_om__om__SerializedAlgorithmType_Model
-#define SOAP_TYPE_om__om__SerializedAlgorithmType_Model (93)
+#define SOAP_TYPE_om__om__SerializedAlgorithmType_Model (94)
 /* om:SerializedAlgorithmType-Model */
 class SOAP_CMAC _om__SerializedAlgorithmType_Model
 {
 public:
 	struct soap_dom_element __any;	/* external */
 public:
-	virtual int soap_type() const { return 93; } /* = unique id SOAP_TYPE_om__om__SerializedAlgorithmType_Model */
+	virtual int soap_type() const { return 94; } /* = unique id SOAP_TYPE_om__om__SerializedAlgorithmType_Model */
 	virtual void soap_default(struct soap*);
 	virtual void soap_serialize(struct soap*) const;
 	virtual int soap_put(struct soap*, const char*, const char*) const;
@@ -553,7 +553,7 @@ public:
 #endif
 
 #ifndef SOAP_TYPE_om__om__OccurrencesType_Point
-#define SOAP_TYPE_om__om__OccurrencesType_Point (102)
+#define SOAP_TYPE_om__om__OccurrencesType_Point (103)
 /* om:OccurrencesType-Point */
 class SOAP_CMAC _om__OccurrencesType_Point
 {
@@ -563,7 +563,7 @@ public:
 	std::string Y;	/* required attribute */
 	std::string *Sample;	/* optional attribute */
 public:
-	virtual int soap_type() const { return 102; } /* = unique id SOAP_TYPE_om__om__OccurrencesType_Point */
+	virtual int soap_type() const { return 103; } /* = unique id SOAP_TYPE_om__om__OccurrencesType_Point */
 	virtual void soap_default(struct soap*);
 	virtual void soap_serialize(struct soap*) const;
 	virtual int soap_put(struct soap*, const char*, const char*) const;
@@ -652,7 +652,7 @@ public:
 #endif
 
 #ifndef SOAP_TYPE_om__om__TestOptionsType_ConfusionMatrix
-#define SOAP_TYPE_om__om__TestOptionsType_ConfusionMatrix (107)
+#define SOAP_TYPE_om__om__TestOptionsType_ConfusionMatrix (108)
 /* om:TestOptionsType-ConfusionMatrix */
 class SOAP_CMAC _om__TestOptionsType_ConfusionMatrix
 {
@@ -660,7 +660,7 @@ public:
 	std::string *Threshold;	/* optional attribute */
 	bool *IgnoreAbsences;	/* optional attribute */
 public:
-	virtual int soap_type() const { return 107; } /* = unique id SOAP_TYPE_om__om__TestOptionsType_ConfusionMatrix */
+	virtual int soap_type() const { return 108; } /* = unique id SOAP_TYPE_om__om__TestOptionsType_ConfusionMatrix */
 	virtual void soap_default(struct soap*);
 	virtual void soap_serialize(struct soap*) const;
 	virtual int soap_put(struct soap*, const char*, const char*) const;
@@ -673,7 +673,7 @@ public:
 #endif
 
 #ifndef SOAP_TYPE_om__om__TestOptionsType_RocCurve
-#define SOAP_TYPE_om__om__TestOptionsType_RocCurve (110)
+#define SOAP_TYPE_om__om__TestOptionsType_RocCurve (111)
 /* om:TestOptionsType-RocCurve */
 class SOAP_CMAC _om__TestOptionsType_RocCurve
 {
@@ -683,7 +683,7 @@ public:
 	double *MaxOmission;	/* optional attribute */
 	bool *UseAbsencesAsBackground;	/* optional attribute */
 public:
-	virtual int soap_type() const { return 110; } /* = unique id SOAP_TYPE_om__om__TestOptionsType_RocCurve */
+	virtual int soap_type() const { return 111; } /* = unique id SOAP_TYPE_om__om__TestOptionsType_RocCurve */
 	virtual void soap_default(struct soap*);
 	virtual void soap_serialize(struct soap*) const;
 	virtual int soap_put(struct soap*, const char*, const char*) const;
@@ -718,7 +718,7 @@ public:
 #endif
 
 #ifndef SOAP_TYPE_om__om__TestResultType_ConfusionMatrix
-#define SOAP_TYPE_om__om__TestResultType_ConfusionMatrix (113)
+#define SOAP_TYPE_om__om__TestResultType_ConfusionMatrix (114)
 /* om:TestResultType-ConfusionMatrix */
 class SOAP_CMAC _om__TestResultType_ConfusionMatrix
 {
@@ -732,7 +732,7 @@ public:
 	int TrueNegatives;	/* required attribute */
 	int FalseNegatives;	/* required attribute */
 public:
-	virtual int soap_type() const { return 113; } /* = unique id SOAP_TYPE_om__om__TestResultType_ConfusionMatrix */
+	virtual int soap_type() const { return 114; } /* = unique id SOAP_TYPE_om__om__TestResultType_ConfusionMatrix */
 	virtual void soap_default(struct soap*);
 	virtual void soap_serialize(struct soap*) const;
 	virtual int soap_put(struct soap*, const char*, const char*) const;
@@ -745,7 +745,7 @@ public:
 #endif
 
 #ifndef SOAP_TYPE_om__om__TestResultType_RocCurve_Ratio
-#define SOAP_TYPE_om__om__TestResultType_RocCurve_Ratio (116)
+#define SOAP_TYPE_om__om__TestResultType_RocCurve_Ratio (117)
 /* om:TestResultType-RocCurve-Ratio */
 class SOAP_CMAC _om__TestResultType_RocCurve_Ratio
 {
@@ -753,7 +753,7 @@ public:
 	double E;	/* required attribute */
 	double Value;	/* required attribute */
 public:
-	virtual int soap_type() const { return 116; } /* = unique id SOAP_TYPE_om__om__TestResultType_RocCurve_Ratio */
+	virtual int soap_type() const { return 117; } /* = unique id SOAP_TYPE_om__om__TestResultType_RocCurve_Ratio */
 	virtual void soap_default(struct soap*);
 	virtual void soap_serialize(struct soap*) const;
 	virtual int soap_put(struct soap*, const char*, const char*) const;
@@ -766,7 +766,7 @@ public:
 #endif
 
 #ifndef SOAP_TYPE_om__om__TestResultType_RocCurve
-#define SOAP_TYPE_om__om__TestResultType_RocCurve (115)
+#define SOAP_TYPE_om__om__TestResultType_RocCurve (116)
 /* om:TestResultType-RocCurve */
 class SOAP_CMAC _om__TestResultType_RocCurve
 {
@@ -776,7 +776,7 @@ public:
 	std::string Points;	/* required attribute */
 	int *NumBackgroundPoints;	/* optional attribute */
 public:
-	virtual int soap_type() const { return 115; } /* = unique id SOAP_TYPE_om__om__TestResultType_RocCurve */
+	virtual int soap_type() const { return 116; } /* = unique id SOAP_TYPE_om__om__TestResultType_RocCurve */
 	virtual void soap_default(struct soap*);
 	virtual void soap_serialize(struct soap*) const;
 	virtual int soap_put(struct soap*, const char*, const char*) const;
@@ -811,14 +811,14 @@ public:
 #endif
 
 #ifndef SOAP_TYPE_om__om__ProjectionStatisticsParametersType_AreaStatistics
-#define SOAP_TYPE_om__om__ProjectionStatisticsParametersType_AreaStatistics (119)
+#define SOAP_TYPE_om__om__ProjectionStatisticsParametersType_AreaStatistics (120)
 /* om:ProjectionStatisticsParametersType-AreaStatistics */
 class SOAP_CMAC _om__ProjectionStatisticsParametersType_AreaStatistics
 {
 public:
 	std::string PredictionThreshold;	/* required attribute */
 public:
-	virtual int soap_type() const { return 119; } /* = unique id SOAP_TYPE_om__om__ProjectionStatisticsParametersType_AreaStatistics */
+	virtual int soap_type() const { return 120; } /* = unique id SOAP_TYPE_om__om__ProjectionStatisticsParametersType_AreaStatistics */
 	virtual void soap_default(struct soap*);
 	virtual void soap_serialize(struct soap*) const;
 	virtual int soap_put(struct soap*, const char*, const char*) const;
@@ -941,12 +941,12 @@ public:
 #endif
 
 #ifndef SOAP_TYPE_om__om__OccurrencesFilterType_SpatiallyUnique
-#define SOAP_TYPE_om__om__OccurrencesFilterType_SpatiallyUnique (125)
+#define SOAP_TYPE_om__om__OccurrencesFilterType_SpatiallyUnique (126)
 /* om:OccurrencesFilterType-SpatiallyUnique */
 class SOAP_CMAC _om__OccurrencesFilterType_SpatiallyUnique
 {
 public:
-	virtual int soap_type() const { return 125; } /* = unique id SOAP_TYPE_om__om__OccurrencesFilterType_SpatiallyUnique */
+	virtual int soap_type() const { return 126; } /* = unique id SOAP_TYPE_om__om__OccurrencesFilterType_SpatiallyUnique */
 	virtual void soap_default(struct soap*);
 	virtual void soap_serialize(struct soap*) const;
 	virtual int soap_put(struct soap*, const char*, const char*) const;
@@ -959,12 +959,12 @@ public:
 #endif
 
 #ifndef SOAP_TYPE_om__om__OccurrencesFilterType_EnvironmentallyUnique
-#define SOAP_TYPE_om__om__OccurrencesFilterType_EnvironmentallyUnique (127)
+#define SOAP_TYPE_om__om__OccurrencesFilterType_EnvironmentallyUnique (128)
 /* om:OccurrencesFilterType-EnvironmentallyUnique */
 class SOAP_CMAC _om__OccurrencesFilterType_EnvironmentallyUnique
 {
 public:
-	virtual int soap_type() const { return 127; } /* = unique id SOAP_TYPE_om__om__OccurrencesFilterType_EnvironmentallyUnique */
+	virtual int soap_type() const { return 128; } /* = unique id SOAP_TYPE_om__om__OccurrencesFilterType_EnvironmentallyUnique */
 	virtual void soap_default(struct soap*);
 	virtual void soap_serialize(struct soap*) const;
 	virtual int soap_put(struct soap*, const char*, const char*) const;
@@ -977,7 +977,7 @@ public:
 #endif
 
 #ifndef SOAP_TYPE_om__om__union_OccurrencesFilterType
-#define SOAP_TYPE_om__om__union_OccurrencesFilterType (129)
+#define SOAP_TYPE_om__om__union_OccurrencesFilterType (130)
 /* xsd:choice */
 union _om__union_OccurrencesFilterType
 {
@@ -1166,14 +1166,14 @@ public:
 #endif
 
 #ifndef SOAP_TYPE_om__om__ModelEvaluationResultType_Values
-#define SOAP_TYPE_om__om__ModelEvaluationResultType_Values (137)
+#define SOAP_TYPE_om__om__ModelEvaluationResultType_Values (138)
 /* om:ModelEvaluationResultType-Values */
 class SOAP_CMAC _om__ModelEvaluationResultType_Values
 {
 public:
 	std::string V;	/* required attribute */
 public:
-	virtual int soap_type() const { return 137; } /* = unique id SOAP_TYPE_om__om__ModelEvaluationResultType_Values */
+	virtual int soap_type() const { return 138; } /* = unique id SOAP_TYPE_om__om__ModelEvaluationResultType_Values */
 	virtual void soap_default(struct soap*);
 	virtual void soap_serialize(struct soap*) const;
 	virtual int soap_put(struct soap*, const char*, const char*) const;
@@ -1253,7 +1253,7 @@ public:
 #endif
 
 #ifndef SOAP_TYPE_om__om__ExperimentParametersType_Environment
-#define SOAP_TYPE_om__om__ExperimentParametersType_Environment (139)
+#define SOAP_TYPE_om__om__ExperimentParametersType_Environment (140)
 /* om:ExperimentParametersType-Environment */
 class SOAP_CMAC _om__ExperimentParametersType_Environment
 {
@@ -1263,7 +1263,7 @@ public:
 	int *NumLayers;	/* optional attribute */
 	std::string id;	/* required attribute */
 public:
-	virtual int soap_type() const { return 139; } /* = unique id SOAP_TYPE_om__om__ExperimentParametersType_Environment */
+	virtual int soap_type() const { return 140; } /* = unique id SOAP_TYPE_om__om__ExperimentParametersType_Environment */
 	virtual void soap_default(struct soap*);
 	virtual void soap_serialize(struct soap*) const;
 	virtual int soap_put(struct soap*, const char*, const char*) const;
@@ -1276,7 +1276,7 @@ public:
 #endif
 
 #ifndef SOAP_TYPE_om__om__ExperimentParametersType_Presence_Point
-#define SOAP_TYPE_om__om__ExperimentParametersType_Presence_Point (142)
+#define SOAP_TYPE_om__om__ExperimentParametersType_Presence_Point (143)
 /* om:ExperimentParametersType-Presence-Point */
 class SOAP_CMAC _om__ExperimentParametersType_Presence_Point
 {
@@ -1286,7 +1286,7 @@ public:
 	std::string Y;	/* required attribute */
 	std::string *Sample;	/* optional attribute */
 public:
-	virtual int soap_type() const { return 142; } /* = unique id SOAP_TYPE_om__om__ExperimentParametersType_Presence_Point */
+	virtual int soap_type() const { return 143; } /* = unique id SOAP_TYPE_om__om__ExperimentParametersType_Presence_Point */
 	virtual void soap_default(struct soap*);
 	virtual void soap_serialize(struct soap*) const;
 	virtual int soap_put(struct soap*, const char*, const char*) const;
@@ -1299,7 +1299,7 @@ public:
 #endif
 
 #ifndef SOAP_TYPE_om__om__ExperimentParametersType_Presence
-#define SOAP_TYPE_om__om__ExperimentParametersType_Presence (141)
+#define SOAP_TYPE_om__om__ExperimentParametersType_Presence (142)
 /* om:ExperimentParametersType-Presence */
 class SOAP_CMAC _om__ExperimentParametersType_Presence
 {
@@ -1310,7 +1310,7 @@ public:
 	std::string *Label;	/* optional attribute */
 	std::string id;	/* required attribute */
 public:
-	virtual int soap_type() const { return 141; } /* = unique id SOAP_TYPE_om__om__ExperimentParametersType_Presence */
+	virtual int soap_type() const { return 142; } /* = unique id SOAP_TYPE_om__om__ExperimentParametersType_Presence */
 	virtual void soap_default(struct soap*);
 	virtual void soap_serialize(struct soap*) const;
 	virtual int soap_put(struct soap*, const char*, const char*) const;
@@ -1323,7 +1323,7 @@ public:
 #endif
 
 #ifndef SOAP_TYPE_om__om__ExperimentParametersType_Absence_Point
-#define SOAP_TYPE_om__om__ExperimentParametersType_Absence_Point (147)
+#define SOAP_TYPE_om__om__ExperimentParametersType_Absence_Point (148)
 /* om:ExperimentParametersType-Absence-Point */
 class SOAP_CMAC _om__ExperimentParametersType_Absence_Point
 {
@@ -1333,7 +1333,7 @@ public:
 	std::string Y;	/* required attribute */
 	std::string *Sample;	/* optional attribute */
 public:
-	virtual int soap_type() const { return 147; } /* = unique id SOAP_TYPE_om__om__ExperimentParametersType_Absence_Point */
+	virtual int soap_type() const { return 148; } /* = unique id SOAP_TYPE_om__om__ExperimentParametersType_Absence_Point */
 	virtual void soap_default(struct soap*);
 	virtual void soap_serialize(struct soap*) const;
 	virtual int soap_put(struct soap*, const char*, const char*) const;
@@ -1346,7 +1346,7 @@ public:
 #endif
 
 #ifndef SOAP_TYPE_om__om__ExperimentParametersType_Absence
-#define SOAP_TYPE_om__om__ExperimentParametersType_Absence (146)
+#define SOAP_TYPE_om__om__ExperimentParametersType_Absence (147)
 /* om:ExperimentParametersType-Absence */
 class SOAP_CMAC _om__ExperimentParametersType_Absence
 {
@@ -1357,7 +1357,7 @@ public:
 	std::string *Label;	/* optional attribute */
 	std::string id;	/* required attribute */
 public:
-	virtual int soap_type() const { return 146; } /* = unique id SOAP_TYPE_om__om__ExperimentParametersType_Absence */
+	virtual int soap_type() const { return 147; } /* = unique id SOAP_TYPE_om__om__ExperimentParametersType_Absence */
 	virtual void soap_default(struct soap*);
 	virtual void soap_serialize(struct soap*) const;
 	virtual int soap_put(struct soap*, const char*, const char*) const;
@@ -1370,7 +1370,7 @@ public:
 #endif
 
 #ifndef SOAP_TYPE_om__om__ExperimentParametersType_AlgorithmSettings
-#define SOAP_TYPE_om__om__ExperimentParametersType_AlgorithmSettings (151)
+#define SOAP_TYPE_om__om__ExperimentParametersType_AlgorithmSettings (152)
 /* om:ExperimentParametersType-AlgorithmSettings */
 class SOAP_CMAC _om__ExperimentParametersType_AlgorithmSettings
 {
@@ -1378,7 +1378,7 @@ public:
 	om__BasicAlgorithmDefinitionType *Algorithm;	/* required element of type om:BasicAlgorithmDefinitionType */
 	std::string id;	/* required attribute */
 public:
-	virtual int soap_type() const { return 151; } /* = unique id SOAP_TYPE_om__om__ExperimentParametersType_AlgorithmSettings */
+	virtual int soap_type() const { return 152; } /* = unique id SOAP_TYPE_om__om__ExperimentParametersType_AlgorithmSettings */
 	virtual void soap_default(struct soap*);
 	virtual void soap_serialize(struct soap*) const;
 	virtual int soap_put(struct soap*, const char*, const char*) const;
@@ -1391,7 +1391,7 @@ public:
 #endif
 
 #ifndef SOAP_TYPE_om__om__ExperimentParametersType_SerializedAlgorithm
-#define SOAP_TYPE_om__om__ExperimentParametersType_SerializedAlgorithm (154)
+#define SOAP_TYPE_om__om__ExperimentParametersType_SerializedAlgorithm (155)
 /* om:ExperimentParametersType-SerializedAlgorithm */
 class SOAP_CMAC _om__ExperimentParametersType_SerializedAlgorithm
 {
@@ -1399,7 +1399,7 @@ public:
 	om__SerializedAlgorithmType *Algorithm;	/* required element of type om:SerializedAlgorithmType */
 	std::string id;	/* required attribute */
 public:
-	virtual int soap_type() const { return 154; } /* = unique id SOAP_TYPE_om__om__ExperimentParametersType_SerializedAlgorithm */
+	virtual int soap_type() const { return 155; } /* = unique id SOAP_TYPE_om__om__ExperimentParametersType_SerializedAlgorithm */
 	virtual void soap_default(struct soap*);
 	virtual void soap_serialize(struct soap*) const;
 	virtual int soap_put(struct soap*, const char*, const char*) const;
@@ -1412,7 +1412,7 @@ public:
 #endif
 
 #ifndef SOAP_TYPE_om__om__union_ExperimentParametersType_Jobs
-#define SOAP_TYPE_om__om__union_ExperimentParametersType_Jobs (163)
+#define SOAP_TYPE_om__om__union_ExperimentParametersType_Jobs (165)
 /* xsd:choice */
 union _om__union_ExperimentParametersType_Jobs
 {
@@ -1424,11 +1424,13 @@ union _om__union_ExperimentParametersType_Jobs
 	class om__TestModelJobType *TestModelJob;
 #define SOAP_UNION__om__union_ExperimentParametersType_Jobs_ProjectModelJob	(4)
 	class om__ProjectModelJobType *ProjectModelJob;
+#define SOAP_UNION__om__union_ExperimentParametersType_Jobs_EvaluateModelJob	(5)
+	class om__EvaluateModelJobType *EvaluateModelJob;
 };
 #endif
 
 #ifndef SOAP_TYPE_om___om__union_ExperimentParametersType_Jobs
-#define SOAP_TYPE_om___om__union_ExperimentParametersType_Jobs (158)
+#define SOAP_TYPE_om___om__union_ExperimentParametersType_Jobs (159)
 /* Operation wrapper: */
 class SOAP_CMAC __om__union_ExperimentParametersType_Jobs
 {
@@ -1436,7 +1438,7 @@ public:
 	int __unionAbstractJob;	/* union discriminant (of union defined below) */
 	union _om__union_ExperimentParametersType_Jobs __union_ExperimentParametersType_Jobs;
 public:
-	virtual int soap_type() const { return 158; } /* = unique id SOAP_TYPE_om___om__union_ExperimentParametersType_Jobs */
+	virtual int soap_type() const { return 159; } /* = unique id SOAP_TYPE_om___om__union_ExperimentParametersType_Jobs */
 	virtual void soap_default(struct soap*);
 	virtual void soap_serialize(struct soap*) const;
 	virtual int soap_put(struct soap*, const char*, const char*) const;
@@ -1449,7 +1451,7 @@ public:
 #endif
 
 #ifndef SOAP_TYPE_om__om__ExperimentParametersType_Jobs
-#define SOAP_TYPE_om__om__ExperimentParametersType_Jobs (157)
+#define SOAP_TYPE_om__om__ExperimentParametersType_Jobs (158)
 /* om:ExperimentParametersType-Jobs */
 class SOAP_CMAC _om__ExperimentParametersType_Jobs
 {
@@ -1457,7 +1459,7 @@ public:
 	int __sizeAbstractJob;	/* sequence of elements <-union-ExperimentParametersType-Jobs> */
 	__om__union_ExperimentParametersType_Jobs *__union_ExperimentParametersType_Jobs;
 public:
-	virtual int soap_type() const { return 157; } /* = unique id SOAP_TYPE_om__om__ExperimentParametersType_Jobs */
+	virtual int soap_type() const { return 158; } /* = unique id SOAP_TYPE_om__om__ExperimentParametersType_Jobs */
 	virtual void soap_default(struct soap*);
 	virtual void soap_serialize(struct soap*) const;
 	virtual int soap_put(struct soap*, const char*, const char*) const;
@@ -1538,7 +1540,7 @@ public:
 #endif
 
 #ifndef SOAP_TYPE_om__om__JobTicketsType_Job
-#define SOAP_TYPE_om__om__JobTicketsType_Job (165)
+#define SOAP_TYPE_om__om__JobTicketsType_Job (167)
 /* om:JobTicketsType-Job */
 class SOAP_CMAC _om__JobTicketsType_Job
 {
@@ -1546,7 +1548,7 @@ public:
 	std::string id;	/* required attribute */
 	std::string Ticket;	/* required attribute */
 public:
-	virtual int soap_type() const { return 165; } /* = unique id SOAP_TYPE_om__om__JobTicketsType_Job */
+	virtual int soap_type() const { return 167; } /* = unique id SOAP_TYPE_om__om__JobTicketsType_Job */
 	virtual void soap_default(struct soap*);
 	virtual void soap_serialize(struct soap*) const;
 	virtual int soap_put(struct soap*, const char*, const char*) const;
@@ -1559,7 +1561,7 @@ public:
 #endif
 
 #ifndef SOAP_TYPE_om_om__JobTicketsType
-#define SOAP_TYPE_om_om__JobTicketsType (56)
+#define SOAP_TYPE_om_om__JobTicketsType (57)
 /* om:JobTicketsType */
 class SOAP_CMAC om__JobTicketsType
 {
@@ -1567,7 +1569,7 @@ public:
 	std::vector<_om__JobTicketsType_Job >Job;	/* required element of type om:JobTicketsType-Job */
 	struct soap *soap;	/* transient */
 public:
-	virtual int soap_type() const { return 56; } /* = unique id SOAP_TYPE_om_om__JobTicketsType */
+	virtual int soap_type() const { return 57; } /* = unique id SOAP_TYPE_om_om__JobTicketsType */
 	virtual void soap_default(struct soap*);
 	virtual void soap_serialize(struct soap*) const;
 	virtual int soap_put(struct soap*, const char*, const char*) const;
@@ -1580,7 +1582,7 @@ public:
 #endif
 
 #ifndef SOAP_TYPE_om__om__ResultSetType_Job_ProjectionEnvelope
-#define SOAP_TYPE_om__om__ResultSetType_Job_ProjectionEnvelope (170)
+#define SOAP_TYPE_om__om__ResultSetType_Job_ProjectionEnvelope (172)
 /* om:ResultSetType-Job-ProjectionEnvelope */
 class SOAP_CMAC _om__ResultSetType_Job_ProjectionEnvelope
 {
@@ -1588,7 +1590,7 @@ public:
 	om__ProjectionEnvelopeType *Statistics;	/* optional element of type om:ProjectionEnvelopeType */
 	std::string url;	/* required attribute */
 public:
-	virtual int soap_type() const { return 170; } /* = unique id SOAP_TYPE_om__om__ResultSetType_Job_ProjectionEnvelope */
+	virtual int soap_type() const { return 172; } /* = unique id SOAP_TYPE_om__om__ResultSetType_Job_ProjectionEnvelope */
 	virtual void soap_default(struct soap*);
 	virtual void soap_serialize(struct soap*) const;
 	virtual int soap_put(struct soap*, const char*, const char*) const;
@@ -1600,8 +1602,28 @@ public:
 };
 #endif
 
+#ifndef SOAP_TYPE_om__om__ResultSetType_Job_Values
+#define SOAP_TYPE_om__om__ResultSetType_Job_Values (175)
+/* om:ResultSetType-Job-Values */
+class SOAP_CMAC _om__ResultSetType_Job_Values
+{
+public:
+	std::string V;	/* required attribute */
+public:
+	virtual int soap_type() const { return 175; } /* = unique id SOAP_TYPE_om__om__ResultSetType_Job_Values */
+	virtual void soap_default(struct soap*);
+	virtual void soap_serialize(struct soap*) const;
+	virtual int soap_put(struct soap*, const char*, const char*) const;
+	virtual int soap_out(struct soap*, const char*, int, const char*) const;
+	virtual void *soap_get(struct soap*, const char*, const char*);
+	virtual void *soap_in(struct soap*, const char*, const char*);
+	         _om__ResultSetType_Job_Values() { _om__ResultSetType_Job_Values::soap_default(NULL); }
+	virtual ~_om__ResultSetType_Job_Values() { }
+};
+#endif
+
 #ifndef SOAP_TYPE_om__om__union_ResultSetType_Job
-#define SOAP_TYPE_om__om__union_ResultSetType_Job (173)
+#define SOAP_TYPE_om__om__union_ResultSetType_Job (177)
 /* xsd:choice */
 union _om__union_ResultSetType_Job
 {
@@ -1613,11 +1635,13 @@ union _om__union_ResultSetType_Job
 	om__TestResultEnvelopeType *TestResultEnvelope;
 #define SOAP_UNION__om__union_ResultSetType_Job_ProjectionEnvelope	(4)
 	_om__ResultSetType_Job_ProjectionEnvelope *ProjectionEnvelope;
+#define SOAP_UNION__om__union_ResultSetType_Job_Values	(5)
+	_om__ResultSetType_Job_Values *Values;
 };
 #endif
 
 #ifndef SOAP_TYPE_om__om__ResultSetType_Job
-#define SOAP_TYPE_om__om__ResultSetType_Job (167)
+#define SOAP_TYPE_om__om__ResultSetType_Job (169)
 /* om:ResultSetType-Job */
 class SOAP_CMAC _om__ResultSetType_Job
 {
@@ -1626,7 +1650,7 @@ public:
 	union _om__union_ResultSetType_Job union_ResultSetType_Job;	/* required element of type xsd:choice */
 	std::string Ticket;	/* required attribute */
 public:
-	virtual int soap_type() const { return 167; } /* = unique id SOAP_TYPE_om__om__ResultSetType_Job */
+	virtual int soap_type() const { return 169; } /* = unique id SOAP_TYPE_om__om__ResultSetType_Job */
 	virtual void soap_default(struct soap*);
 	virtual void soap_serialize(struct soap*) const;
 	virtual int soap_put(struct soap*, const char*, const char*) const;
@@ -1639,7 +1663,7 @@ public:
 #endif
 
 #ifndef SOAP_TYPE_om_om__ResultSetType
-#define SOAP_TYPE_om_om__ResultSetType (57)
+#define SOAP_TYPE_om_om__ResultSetType (58)
 /* om:ResultSetType */
 class SOAP_CMAC om__ResultSetType
 {
@@ -1647,7 +1671,7 @@ public:
 	std::vector<_om__ResultSetType_Job >Job;	/* required element of type om:ResultSetType-Job */
 	struct soap *soap;	/* transient */
 public:
-	virtual int soap_type() const { return 57; } /* = unique id SOAP_TYPE_om_om__ResultSetType */
+	virtual int soap_type() const { return 58; } /* = unique id SOAP_TYPE_om_om__ResultSetType */
 	virtual void soap_default(struct soap*);
 	virtual void soap_serialize(struct soap*) const;
 	virtual int soap_put(struct soap*, const char*, const char*) const;
@@ -1773,6 +1797,29 @@ public:
 };
 #endif
 
+#ifndef SOAP_TYPE_om_om__EvaluateModelJobType
+#define SOAP_TYPE_om_om__EvaluateModelJobType (56)
+/* om:EvaluateModelJobType */
+class SOAP_CMAC om__EvaluateModelJobType : public om__IdentifiedType
+{
+public:
+	om__ReferenceType *EnvironmentRef;	/* required element of type om:ReferenceType */
+	om__ReferenceType *PresenceRef;	/* required element of type om:ReferenceType */
+	om__ReferenceType *AbsenceRef;	/* optional element of type om:ReferenceType */
+	om__ReferenceType *ModelRef;	/* required element of type om:ReferenceType */
+public:
+	virtual int soap_type() const { return 56; } /* = unique id SOAP_TYPE_om_om__EvaluateModelJobType */
+	virtual void soap_default(struct soap*);
+	virtual void soap_serialize(struct soap*) const;
+	virtual int soap_put(struct soap*, const char*, const char*) const;
+	virtual int soap_out(struct soap*, const char*, int, const char*) const;
+	virtual void *soap_get(struct soap*, const char*, const char*);
+	virtual void *soap_in(struct soap*, const char*, const char*);
+	         om__EvaluateModelJobType() { om__EvaluateModelJobType::soap_default(NULL); }
+	virtual ~om__EvaluateModelJobType() { }
+};
+#endif
+
 #ifndef SOAP_TYPE_om_om__LayerMetadataType
 #define SOAP_TYPE_om_om__LayerMetadataType (25)
 /* om:LayerMetadataType */
@@ -1797,12 +1844,12 @@ public:
 #ifndef WITH_NOGLOBAL
 
 #ifndef SOAP_TYPE_om_SOAP_ENV__Header
-#define SOAP_TYPE_om_SOAP_ENV__Header (197)
+#define SOAP_TYPE_om_SOAP_ENV__Header (202)
 /* SOAP Header: */
 struct SOAP_ENV__Header
 {
 public:
-	int soap_type() const { return 197; } /* = unique id SOAP_TYPE_om_SOAP_ENV__Header */
+	int soap_type() const { return 202; } /* = unique id SOAP_TYPE_om_SOAP_ENV__Header */
 #ifdef WITH_NOEMPTYSTRUCT
 private:
 	char dummy;	/* dummy member to enable compilation */
@@ -1815,7 +1862,7 @@ private:
 #ifndef WITH_NOGLOBAL
 
 #ifndef SOAP_TYPE_om_SOAP_ENV__Code
-#define SOAP_TYPE_om_SOAP_ENV__Code (198)
+#define SOAP_TYPE_om_SOAP_ENV__Code (203)
 /* SOAP Fault Code: */
 struct SOAP_ENV__Code
 {
@@ -1823,7 +1870,7 @@ public:
 	char *SOAP_ENV__Value;	/* optional element of type xsd:QName */
 	struct SOAP_ENV__Code *SOAP_ENV__Subcode;	/* optional element of type SOAP-ENV:Code */
 public:
-	int soap_type() const { return 198; } /* = unique id SOAP_TYPE_om_SOAP_ENV__Code */
+	int soap_type() const { return 203; } /* = unique id SOAP_TYPE_om_SOAP_ENV__Code */
 };
 #endif
 
@@ -1832,7 +1879,7 @@ public:
 #ifndef WITH_NOGLOBAL
 
 #ifndef SOAP_TYPE_om_SOAP_ENV__Detail
-#define SOAP_TYPE_om_SOAP_ENV__Detail (200)
+#define SOAP_TYPE_om_SOAP_ENV__Detail (205)
 /* SOAP-ENV:Detail */
 struct SOAP_ENV__Detail
 {
@@ -1841,7 +1888,7 @@ public:
 	int __type;	/* any type of element <fault> (defined below) */
 	void *fault;	/* transient */
 public:
-	int soap_type() const { return 200; } /* = unique id SOAP_TYPE_om_SOAP_ENV__Detail */
+	int soap_type() const { return 205; } /* = unique id SOAP_TYPE_om_SOAP_ENV__Detail */
 };
 #endif
 
@@ -1850,14 +1897,14 @@ public:
 #ifndef WITH_NOGLOBAL
 
 #ifndef SOAP_TYPE_om_SOAP_ENV__Reason
-#define SOAP_TYPE_om_SOAP_ENV__Reason (203)
+#define SOAP_TYPE_om_SOAP_ENV__Reason (208)
 /* SOAP-ENV:Reason */
 struct SOAP_ENV__Reason
 {
 public:
 	char *SOAP_ENV__Text;	/* optional element of type xsd:string */
 public:
-	int soap_type() const { return 203; } /* = unique id SOAP_TYPE_om_SOAP_ENV__Reason */
+	int soap_type() const { return 208; } /* = unique id SOAP_TYPE_om_SOAP_ENV__Reason */
 };
 #endif
 
@@ -1866,7 +1913,7 @@ public:
 #ifndef WITH_NOGLOBAL
 
 #ifndef SOAP_TYPE_om_SOAP_ENV__Fault
-#define SOAP_TYPE_om_SOAP_ENV__Fault (204)
+#define SOAP_TYPE_om_SOAP_ENV__Fault (209)
 /* SOAP Fault: */
 struct SOAP_ENV__Fault
 {
@@ -1881,7 +1928,7 @@ public:
 	char *SOAP_ENV__Role;	/* optional element of type xsd:string */
 	struct SOAP_ENV__Detail *SOAP_ENV__Detail;	/* optional element of type SOAP-ENV:Detail */
 public:
-	int soap_type() const { return 204; } /* = unique id SOAP_TYPE_om_SOAP_ENV__Fault */
+	int soap_type() const { return 209; } /* = unique id SOAP_TYPE_om_SOAP_ENV__Fault */
 };
 #endif
 
@@ -1919,118 +1966,123 @@ typedef std::string xsd__anyURI;
 #endif
 
 #ifndef SOAP_TYPE_om_om__ThresholdParameterType
-#define SOAP_TYPE_om_om__ThresholdParameterType (58)
+#define SOAP_TYPE_om_om__ThresholdParameterType (59)
 typedef std::string om__ThresholdParameterType;
 #endif
 
 #ifndef SOAP_TYPE_om_om__ZeroOneIntervalType
-#define SOAP_TYPE_om_om__ZeroOneIntervalType (60)
+#define SOAP_TYPE_om_om__ZeroOneIntervalType (61)
 typedef double om__ZeroOneIntervalType;
 #endif
 
 #ifndef SOAP_TYPE_om__om__AvailableAlgorithms
-#define SOAP_TYPE_om__om__AvailableAlgorithms (176)
+#define SOAP_TYPE_om__om__AvailableAlgorithms (180)
 typedef om__AvailableAlgorithmsType _om__AvailableAlgorithms;
 #endif
 
 #ifndef SOAP_TYPE_om__om__Algorithms
-#define SOAP_TYPE_om__om__Algorithms (177)
+#define SOAP_TYPE_om__om__Algorithms (181)
 typedef om__AlgorithmsMetadataType _om__Algorithms;
 #endif
 
 #ifndef SOAP_TYPE_om__om__AvailableLayers
-#define SOAP_TYPE_om__om__AvailableLayers (178)
+#define SOAP_TYPE_om__om__AvailableLayers (182)
 typedef om__AvailableLayersType _om__AvailableLayers;
 #endif
 
 #ifndef SOAP_TYPE_om__om__ModelParameters
-#define SOAP_TYPE_om__om__ModelParameters (179)
+#define SOAP_TYPE_om__om__ModelParameters (183)
 typedef om__ModelParametersType _om__ModelParameters;
 #endif
 
 #ifndef SOAP_TYPE_om__om__ModelEnvelope
-#define SOAP_TYPE_om__om__ModelEnvelope (180)
+#define SOAP_TYPE_om__om__ModelEnvelope (184)
 typedef om__ModelEnvelopeType _om__ModelEnvelope;
 #endif
 
 #ifndef SOAP_TYPE_om__om__TestParameters
-#define SOAP_TYPE_om__om__TestParameters (181)
+#define SOAP_TYPE_om__om__TestParameters (185)
 typedef om__TestParametersType _om__TestParameters;
 #endif
 
 #ifndef SOAP_TYPE_om__om__TestResultEnvelope
-#define SOAP_TYPE_om__om__TestResultEnvelope (182)
+#define SOAP_TYPE_om__om__TestResultEnvelope (186)
 typedef om__TestResultEnvelopeType _om__TestResultEnvelope;
 #endif
 
 #ifndef SOAP_TYPE_om__om__SerializedModel
-#define SOAP_TYPE_om__om__SerializedModel (183)
+#define SOAP_TYPE_om__om__SerializedModel (187)
 typedef om__SerializedModelType _om__SerializedModel;
 #endif
 
 #ifndef SOAP_TYPE_om__om__ProjectionParameters
-#define SOAP_TYPE_om__om__ProjectionParameters (184)
+#define SOAP_TYPE_om__om__ProjectionParameters (188)
 typedef om__ProjectionParametersType _om__ProjectionParameters;
 #endif
 
 #ifndef SOAP_TYPE_om__om__ProjectionEnvelope
-#define SOAP_TYPE_om__om__ProjectionEnvelope (185)
+#define SOAP_TYPE_om__om__ProjectionEnvelope (189)
 typedef om__ProjectionEnvelopeType _om__ProjectionEnvelope;
 #endif
 
 #ifndef SOAP_TYPE_om__om__ModelEvaluationParameters
-#define SOAP_TYPE_om__om__ModelEvaluationParameters (186)
+#define SOAP_TYPE_om__om__ModelEvaluationParameters (190)
 typedef om__ModelEvaluationParametersType _om__ModelEvaluationParameters;
 #endif
 
 #ifndef SOAP_TYPE_om__om__ModelEvaluation
-#define SOAP_TYPE_om__om__ModelEvaluation (187)
+#define SOAP_TYPE_om__om__ModelEvaluation (191)
 typedef om__ModelEvaluationResultType _om__ModelEvaluation;
 #endif
 
 #ifndef SOAP_TYPE_om__om__SamplingParameters
-#define SOAP_TYPE_om__om__SamplingParameters (188)
+#define SOAP_TYPE_om__om__SamplingParameters (192)
 typedef om__SamplingParametersType _om__SamplingParameters;
 #endif
 
 #ifndef SOAP_TYPE_om__om__Sampler
-#define SOAP_TYPE_om__om__Sampler (189)
+#define SOAP_TYPE_om__om__Sampler (193)
 typedef om__SamplerType _om__Sampler;
 #endif
 
 #ifndef SOAP_TYPE_om__om__ExperimentParameters
-#define SOAP_TYPE_om__om__ExperimentParameters (190)
+#define SOAP_TYPE_om__om__ExperimentParameters (194)
 typedef om__ExperimentParametersType _om__ExperimentParameters;
 #endif
 
 #ifndef SOAP_TYPE_om__om__ExperimentTickets
-#define SOAP_TYPE_om__om__ExperimentTickets (191)
+#define SOAP_TYPE_om__om__ExperimentTickets (195)
 typedef om__JobTicketsType _om__ExperimentTickets;
 #endif
 
 #ifndef SOAP_TYPE_om__om__ResultSet
-#define SOAP_TYPE_om__om__ResultSet (192)
+#define SOAP_TYPE_om__om__ResultSet (196)
 typedef om__ResultSetType _om__ResultSet;
 #endif
 
 #ifndef SOAP_TYPE_om__om__SamplingJob
-#define SOAP_TYPE_om__om__SamplingJob (193)
+#define SOAP_TYPE_om__om__SamplingJob (197)
 typedef om__SamplingJobType _om__SamplingJob;
 #endif
 
 #ifndef SOAP_TYPE_om__om__CreateModelJob
-#define SOAP_TYPE_om__om__CreateModelJob (194)
+#define SOAP_TYPE_om__om__CreateModelJob (198)
 typedef om__CreateModelJobType _om__CreateModelJob;
 #endif
 
 #ifndef SOAP_TYPE_om__om__TestModelJob
-#define SOAP_TYPE_om__om__TestModelJob (195)
+#define SOAP_TYPE_om__om__TestModelJob (199)
 typedef om__TestModelJobType _om__TestModelJob;
 #endif
 
 #ifndef SOAP_TYPE_om__om__ProjectModelJob
-#define SOAP_TYPE_om__om__ProjectModelJob (196)
+#define SOAP_TYPE_om__om__ProjectModelJob (200)
 typedef om__ProjectModelJobType _om__ProjectModelJob;
+#endif
+
+#ifndef SOAP_TYPE_om__om__EvaluateModelJob
+#define SOAP_TYPE_om__om__EvaluateModelJob (201)
+typedef om__EvaluateModelJobType _om__EvaluateModelJob;
 #endif
 
 

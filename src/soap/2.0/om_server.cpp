@@ -2318,6 +2318,90 @@ scheduleExperiment(struct soap* soap, const om::_om__ExperimentParameters& ep, o
           throw OmwsException( msg.c_str() );
         }
       }
+      // Evaluate model job
+      else if ( job.__unionAbstractJob == 5 ) {
+
+        om::om__EvaluateModelJobType * eval_job = job.__union_ExperimentParametersType_Jobs.EvaluateModelJob;
+
+        job_id = string( eval_job->id );
+
+        om::_om__ModelEvaluationParameters ep;
+
+        om::_om__Sampler sampler;
+
+        string env_ref = string( eval_job->EnvironmentRef->idref );
+        if ( environments.count( env_ref ) > 0 ) {
+
+          sampler.Environment = &environments[env_ref];
+        }
+        else {
+
+          string msg = "No Environment found for reference ";
+          msg.append( env_ref ).append( " on job " ).append( job_id );
+          throw OmwsException( msg.c_str() );
+        }
+
+        string pre_ref = string( eval_job->PresenceRef->idref );
+        if ( presences.count( pre_ref ) > 0 ) {
+
+          sampler.Presence = &presences[pre_ref];
+        }
+        else {
+
+          depends_on.insert( pair<string, string>( pre_ref, "presence" ) );
+          updateNextJobs( job_id, pre_ref, &next_deps );
+        }
+
+        if ( eval_job->AbsenceRef != 0 ) {
+
+          string abs_ref = string( eval_job->AbsenceRef->idref );
+          if ( absences.count( abs_ref ) > 0 ) {
+
+            sampler.Absence = &absences[abs_ref];
+          }
+          else {
+
+            depends_on.insert( pair<string, string>( abs_ref, "absence" ) );
+            updateNextJobs( job_id, abs_ref, &next_deps );
+          }
+        }
+
+        ep.Sampler = &sampler;
+
+        string model_ref = string( eval_job->ModelRef->idref );
+        if ( models.count( model_ref ) > 0 ) {
+
+          ep.Algorithm = &models[model_ref];
+        }
+        else {
+
+          // Insert model dependency regardless LPT to facilitate model extraction
+          depends_on.insert( pair<string, string>( model_ref, "model" ) );
+
+          updateNextJobs( job_id, model_ref, &next_deps );
+        }
+
+        string requestFileName = "";
+        createTicket( soap, OMWS_EVALUATE _PENDING_REQUEST, ticket, &requestFileName );
+        created_jobs.insert( pair<string, string>( string( ticket ), OMWS_EVALUATE ) );
+        ofstream fstreamOUT( requestFileName.c_str() );
+        soap->os = &fstreamOUT;
+
+        if ( depends_on.size() == 0 ) {
+
+          files_to_be_renamed.push_back( requestFileName );
+        }
+ 
+        // The following line reproduces the same encapsulated call used by 
+        // soap_write_om__ModelEvaluationParametersType, but here we need a different element name, 
+        // that's why soap_write is not used directly.
+        if ( ( ep.soap_serialize(soap), soap_begin_send(soap) || ep.soap_put(soap, "om:ModelEvaluationParameters", NULL) || soap_end_send(soap), soap->error ) != SOAP_OK ) {
+
+          string msg = "Failed to write evaluate model job with id ";
+          msg.append( job_id );
+          throw OmwsException( msg.c_str() );
+        }
+      }
       else {
 
         throw OmwsException( "Unknown job type" );
