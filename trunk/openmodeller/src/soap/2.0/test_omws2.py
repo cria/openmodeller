@@ -201,7 +201,7 @@ try:
     ### Test initialization ###
 
     if verbosity == 3:
-        print "OMWS 2.0 test (v3)"
+        print "OMWS 2.0 test (v4)"
         print "=================="
 
     xml_ns = 'http://openmodeller.cria.org.br/xml/2.0'
@@ -231,12 +231,12 @@ try:
     logging.getLogger('suds.plugin').addHandler(h)
 
     # Test configuration
-    check_layers = True
-    run_model = True
-    run_model_test = True
-    run_projection = True
-    run_model_evaluation = True
-    run_sample_points = True
+    check_layers = False
+    run_model = False
+    run_model_test = False
+    run_projection = False
+    run_model_evaluation = False
+    run_sample_points = False
     run_experiment = True
 
     #####  PING
@@ -819,6 +819,18 @@ try:
         out_params.append( template )
         projectmodel_job.append( out_params )
         jobs.append( projectmodel_job )
+        # evaluate model job
+        evalmodel_job = Element('EvaluateModelJob')
+        evalmodel_job.set('id', 'job5')
+        pres_ref = Element('PresenceRef')
+        pres_ref.set('idref', 'presence1')
+        model_ref = Element('ModelRef')
+        model_ref.set('idref', 'job2')
+        evalmodel_job.append( env_ref )
+        evalmodel_job.append( pres_ref )
+        evalmodel_job.append( model_ref )
+        jobs.append( evalmodel_job )
+
         exp_params.append( jobs )
 
         exp_response = call_operation(soap_client.service, 'runExperiment', exp_params)
@@ -907,6 +919,12 @@ try:
                     close('No Statistics element in project model job response', 2)
                 if not hasattr( job.ProjectionEnvelope.Statistics, 'AreaStatistics' ):
                     close('No AreaStatistics element in project model job response', 2)
+            if mapped_jobs['job5'] == ticket:
+                # Model evaluation job
+                if not hasattr( job, 'Values' ):
+                    close('No Values container element in model evaluation job response', 2)
+                if not hasattr( job.Values, '_V' ):
+                    close('No V attribute in Values element of model evaluation job response', 2)
 
         if verbosity == 3:
             print 'GetResults: OK'

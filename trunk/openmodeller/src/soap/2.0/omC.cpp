@@ -17,7 +17,7 @@ compiling, linking, and/or using OpenSSL is allowed.
 
 namespace om {
 
-SOAP_SOURCE_STAMP("@(#) omC.cpp ver 2.8.15 2013-09-12 22:16:56 GMT")
+SOAP_SOURCE_STAMP("@(#) omC.cpp ver 2.8.15 2014-03-07 18:02:41 GMT")
 
 
 #ifndef WITH_NOGLOBAL
@@ -204,6 +204,8 @@ SOAP_FMAC3 void * SOAP_FMAC4 soap_getelement(struct soap *soap, int *type)
 		return soap_in_om__ResultSetType(soap, NULL, NULL, "om:ResultSetType");
 	case SOAP_TYPE_om_om__JobTicketsType:
 		return soap_in_om__JobTicketsType(soap, NULL, NULL, "om:JobTicketsType");
+	case SOAP_TYPE_om_om__EvaluateModelJobType:
+		return soap_in_om__EvaluateModelJobType(soap, NULL, NULL, "om:EvaluateModelJobType");
 	case SOAP_TYPE_om_om__ProjectModelJobType:
 		return soap_in_om__ProjectModelJobType(soap, NULL, NULL, "om:ProjectModelJobType");
 	case SOAP_TYPE_om_om__TestModelJobType:
@@ -296,6 +298,8 @@ SOAP_FMAC3 void * SOAP_FMAC4 soap_getelement(struct soap *soap, int *type)
 		return soap_in_xsd__anyType(soap, NULL, NULL, "xsd:anyType");
 	case SOAP_TYPE_om_PointerToom__ReferenceType:
 		return soap_in_PointerToom__ReferenceType(soap, NULL, NULL, "om:ReferenceType");
+	case SOAP_TYPE_om_PointerTo_om__ResultSetType_Job_Values:
+		return soap_in_PointerTo_om__ResultSetType_Job_Values(soap, NULL, NULL, "om:ResultSetType-Job-Values");
 	case SOAP_TYPE_om_PointerTo_om__ResultSetType_Job_ProjectionEnvelope:
 		return soap_in_PointerTo_om__ResultSetType_Job_ProjectionEnvelope(soap, NULL, NULL, "om:ResultSetType-Job-ProjectionEnvelope");
 	case SOAP_TYPE_om_PointerToom__ProjectionEnvelopeType:
@@ -304,6 +308,8 @@ SOAP_FMAC3 void * SOAP_FMAC4 soap_getelement(struct soap *soap, int *type)
 		return soap_in_PointerToom__TestResultEnvelopeType(soap, NULL, NULL, "om:TestResultEnvelopeType");
 	case SOAP_TYPE_om_PointerToom__ModelEnvelopeType:
 		return soap_in_PointerToom__ModelEnvelopeType(soap, NULL, NULL, "om:ModelEnvelopeType");
+	case SOAP_TYPE_om_PointerToom__EvaluateModelJobType:
+		return soap_in_PointerToom__EvaluateModelJobType(soap, NULL, NULL, "om:EvaluateModelJobType");
 	case SOAP_TYPE_om_PointerToom__ProjectModelJobType:
 		return soap_in_PointerToom__ProjectModelJobType(soap, NULL, NULL, "om:ProjectModelJobType");
 	case SOAP_TYPE_om_PointerToom__TestModelJobType:
@@ -412,6 +418,10 @@ SOAP_FMAC3 void * SOAP_FMAC4 soap_getelement(struct soap *soap, int *type)
 		if (!soap_match_tag(soap, t, "om:JobTicketsType"))
 		{	*type = SOAP_TYPE_om_om__JobTicketsType;
 			return soap_in_om__JobTicketsType(soap, NULL, NULL, NULL);
+		}
+		if (!soap_match_tag(soap, t, "om:EvaluateModelJobType"))
+		{	*type = SOAP_TYPE_om_om__EvaluateModelJobType;
+			return soap_in_om__EvaluateModelJobType(soap, NULL, NULL, NULL);
 		}
 		if (!soap_match_tag(soap, t, "om:ProjectModelJobType"))
 		{	*type = SOAP_TYPE_om_om__ProjectModelJobType;
@@ -630,6 +640,10 @@ SOAP_FMAC3 void * SOAP_FMAC4 soap_getelement(struct soap *soap, int *type)
 			return s ? *s : NULL;
 		}
 		t = soap->tag;
+		if (!soap_match_tag(soap, t, "om:EvaluateModelJob"))
+		{	*type = SOAP_TYPE_om__om__EvaluateModelJob;
+			return soap_in__om__EvaluateModelJob(soap, NULL, NULL, NULL);
+		}
 		if (!soap_match_tag(soap, t, "om:ProjectModelJob"))
 		{	*type = SOAP_TYPE_om__om__ProjectModelJob;
 			return soap_in__om__ProjectModelJob(soap, NULL, NULL, NULL);
@@ -713,6 +727,10 @@ SOAP_FMAC3 void * SOAP_FMAC4 soap_getelement(struct soap *soap, int *type)
 		if (!soap_match_tag(soap, t, "om:AvailableAlgorithms"))
 		{	*type = SOAP_TYPE_om__om__AvailableAlgorithms;
 			return soap_in__om__AvailableAlgorithms(soap, NULL, NULL, NULL);
+		}
+		if (!soap_match_tag(soap, t, "om:ResultSetType-Job-Values"))
+		{	*type = SOAP_TYPE_om__om__ResultSetType_Job_Values;
+			return soap_in__om__ResultSetType_Job_Values(soap, NULL, NULL, NULL);
 		}
 		if (!soap_match_tag(soap, t, "om:ResultSetType-Job-ProjectionEnvelope"))
 		{	*type = SOAP_TYPE_om__om__ResultSetType_Job_ProjectionEnvelope;
@@ -918,6 +936,8 @@ SOAP_FMAC3 int SOAP_FMAC4 soap_putelement(struct soap *soap, const void *ptr, co
 		return soap_out_bool(soap, tag, id, (const bool *)ptr, "xsd:boolean");
 	case SOAP_TYPE_om_om__ThresholdCalculationType:
 		return soap_out_om__ThresholdCalculationType(soap, tag, id, (const enum om__ThresholdCalculationType *)ptr, "om:ThresholdCalculationType");
+	case SOAP_TYPE_om__om__EvaluateModelJob:
+		return soap_out__om__EvaluateModelJob(soap, "om:EvaluateModelJob", id, (const om__EvaluateModelJobType *)ptr, NULL);
 	case SOAP_TYPE_om__om__ProjectModelJob:
 		return soap_out__om__ProjectModelJob(soap, "om:ProjectModelJob", id, (const om__ProjectModelJobType *)ptr, NULL);
 	case SOAP_TYPE_om__om__TestModelJob:
@@ -960,6 +980,8 @@ SOAP_FMAC3 int SOAP_FMAC4 soap_putelement(struct soap *soap, const void *ptr, co
 		return soap_out__om__Algorithms(soap, "om:Algorithms", id, (const om__AlgorithmsMetadataType *)ptr, NULL);
 	case SOAP_TYPE_om__om__AvailableAlgorithms:
 		return soap_out__om__AvailableAlgorithms(soap, "om:AvailableAlgorithms", id, (const om__AvailableAlgorithmsType *)ptr, NULL);
+	case SOAP_TYPE_om__om__ResultSetType_Job_Values:
+		return ((_om__ResultSetType_Job_Values *)ptr)->soap_out(soap, "om:ResultSetType-Job-Values", id, NULL);
 	case SOAP_TYPE_om__om__ResultSetType_Job_ProjectionEnvelope:
 		return ((_om__ResultSetType_Job_ProjectionEnvelope *)ptr)->soap_out(soap, "om:ResultSetType-Job-ProjectionEnvelope", id, NULL);
 	case SOAP_TYPE_om__om__ResultSetType_Job:
@@ -1034,6 +1056,8 @@ SOAP_FMAC3 int SOAP_FMAC4 soap_putelement(struct soap *soap, const void *ptr, co
 		return ((om__ResultSetType *)ptr)->soap_out(soap, tag, id, "om:ResultSetType");
 	case SOAP_TYPE_om_om__JobTicketsType:
 		return ((om__JobTicketsType *)ptr)->soap_out(soap, tag, id, "om:JobTicketsType");
+	case SOAP_TYPE_om_om__EvaluateModelJobType:
+		return ((om__EvaluateModelJobType *)ptr)->soap_out(soap, tag, id, "om:EvaluateModelJobType");
 	case SOAP_TYPE_om_om__ProjectModelJobType:
 		return ((om__ProjectModelJobType *)ptr)->soap_out(soap, tag, id, "om:ProjectModelJobType");
 	case SOAP_TYPE_om_om__TestModelJobType:
@@ -1126,6 +1150,8 @@ SOAP_FMAC3 int SOAP_FMAC4 soap_putelement(struct soap *soap, const void *ptr, co
 		return soap_out_xsd__anyType(soap, tag, id, (const struct soap_dom_element *)ptr, "xsd:anyType");
 	case SOAP_TYPE_om_PointerToom__ReferenceType:
 		return soap_out_PointerToom__ReferenceType(soap, tag, id, (om__ReferenceType *const*)ptr, "om:ReferenceType");
+	case SOAP_TYPE_om_PointerTo_om__ResultSetType_Job_Values:
+		return soap_out_PointerTo_om__ResultSetType_Job_Values(soap, tag, id, (_om__ResultSetType_Job_Values *const*)ptr, "om:ResultSetType-Job-Values");
 	case SOAP_TYPE_om_PointerTo_om__ResultSetType_Job_ProjectionEnvelope:
 		return soap_out_PointerTo_om__ResultSetType_Job_ProjectionEnvelope(soap, tag, id, (_om__ResultSetType_Job_ProjectionEnvelope *const*)ptr, "om:ResultSetType-Job-ProjectionEnvelope");
 	case SOAP_TYPE_om_PointerToom__ProjectionEnvelopeType:
@@ -1134,6 +1160,8 @@ SOAP_FMAC3 int SOAP_FMAC4 soap_putelement(struct soap *soap, const void *ptr, co
 		return soap_out_PointerToom__TestResultEnvelopeType(soap, tag, id, (om__TestResultEnvelopeType *const*)ptr, "om:TestResultEnvelopeType");
 	case SOAP_TYPE_om_PointerToom__ModelEnvelopeType:
 		return soap_out_PointerToom__ModelEnvelopeType(soap, tag, id, (om__ModelEnvelopeType *const*)ptr, "om:ModelEnvelopeType");
+	case SOAP_TYPE_om_PointerToom__EvaluateModelJobType:
+		return soap_out_PointerToom__EvaluateModelJobType(soap, tag, id, (om__EvaluateModelJobType *const*)ptr, "om:EvaluateModelJobType");
 	case SOAP_TYPE_om_PointerToom__ProjectModelJobType:
 		return soap_out_PointerToom__ProjectModelJobType(soap, tag, id, (om__ProjectModelJobType *const*)ptr, "om:ProjectModelJobType");
 	case SOAP_TYPE_om_PointerToom__TestModelJobType:
@@ -1230,6 +1258,9 @@ SOAP_FMAC3 void SOAP_FMAC4 soap_markelement(struct soap *soap, const void *ptr, 
 	(void)soap; (void)ptr; (void)type; /* appease -Wall -Werror */
 	switch (type)
 	{
+	case SOAP_TYPE_om__om__EvaluateModelJob:
+		soap_serialize__om__EvaluateModelJob(soap, (const om__EvaluateModelJobType *)ptr);
+		break;
 	case SOAP_TYPE_om__om__ProjectModelJob:
 		soap_serialize__om__ProjectModelJob(soap, (const om__ProjectModelJobType *)ptr);
 		break;
@@ -1292,6 +1323,9 @@ SOAP_FMAC3 void SOAP_FMAC4 soap_markelement(struct soap *soap, const void *ptr, 
 		break;
 	case SOAP_TYPE_om__om__AvailableAlgorithms:
 		soap_serialize__om__AvailableAlgorithms(soap, (const om__AvailableAlgorithmsType *)ptr);
+		break;
+	case SOAP_TYPE_om__om__ResultSetType_Job_Values:
+		((_om__ResultSetType_Job_Values *)ptr)->soap_serialize(soap);
 		break;
 	case SOAP_TYPE_om__om__ResultSetType_Job_ProjectionEnvelope:
 		((_om__ResultSetType_Job_ProjectionEnvelope *)ptr)->soap_serialize(soap);
@@ -1406,6 +1440,9 @@ SOAP_FMAC3 void SOAP_FMAC4 soap_markelement(struct soap *soap, const void *ptr, 
 		break;
 	case SOAP_TYPE_om_om__JobTicketsType:
 		((om__JobTicketsType *)ptr)->soap_serialize(soap);
+		break;
+	case SOAP_TYPE_om_om__EvaluateModelJobType:
+		((om__EvaluateModelJobType *)ptr)->soap_serialize(soap);
 		break;
 	case SOAP_TYPE_om_om__ProjectModelJobType:
 		((om__ProjectModelJobType *)ptr)->soap_serialize(soap);
@@ -1545,6 +1582,9 @@ SOAP_FMAC3 void SOAP_FMAC4 soap_markelement(struct soap *soap, const void *ptr, 
 	case SOAP_TYPE_om_PointerToom__ReferenceType:
 		soap_serialize_PointerToom__ReferenceType(soap, (om__ReferenceType *const*)ptr);
 		break;
+	case SOAP_TYPE_om_PointerTo_om__ResultSetType_Job_Values:
+		soap_serialize_PointerTo_om__ResultSetType_Job_Values(soap, (_om__ResultSetType_Job_Values *const*)ptr);
+		break;
 	case SOAP_TYPE_om_PointerTo_om__ResultSetType_Job_ProjectionEnvelope:
 		soap_serialize_PointerTo_om__ResultSetType_Job_ProjectionEnvelope(soap, (_om__ResultSetType_Job_ProjectionEnvelope *const*)ptr);
 		break;
@@ -1559,6 +1599,9 @@ SOAP_FMAC3 void SOAP_FMAC4 soap_markelement(struct soap *soap, const void *ptr, 
 		break;
 	case SOAP_TYPE_om_PointerTo__om__union_ExperimentParametersType_Jobs:
 		soap_serialize_PointerTo__om__union_ExperimentParametersType_Jobs(soap, (__om__union_ExperimentParametersType_Jobs *const*)ptr);
+		break;
+	case SOAP_TYPE_om_PointerToom__EvaluateModelJobType:
+		soap_serialize_PointerToom__EvaluateModelJobType(soap, (om__EvaluateModelJobType *const*)ptr);
 		break;
 	case SOAP_TYPE_om_PointerToom__ProjectModelJobType:
 		soap_serialize_PointerToom__ProjectModelJobType(soap, (om__ProjectModelJobType *const*)ptr);
@@ -1835,6 +1878,8 @@ SOAP_FMAC3 void * SOAP_FMAC4 om_instantiate(struct soap *soap, int t, const char
 		return (void*)soap_instantiate_om__JobTicketsType(soap, -1, type, arrayType, n);
 	case SOAP_TYPE_om__om__ResultSetType_Job_ProjectionEnvelope:
 		return (void*)soap_instantiate__om__ResultSetType_Job_ProjectionEnvelope(soap, -1, type, arrayType, n);
+	case SOAP_TYPE_om__om__ResultSetType_Job_Values:
+		return (void*)soap_instantiate__om__ResultSetType_Job_Values(soap, -1, type, arrayType, n);
 	case SOAP_TYPE_om__om__ResultSetType_Job:
 		return (void*)soap_instantiate__om__ResultSetType_Job(soap, -1, type, arrayType, n);
 	case SOAP_TYPE_om_om__ResultSetType:
@@ -1849,6 +1894,8 @@ SOAP_FMAC3 void * SOAP_FMAC4 om_instantiate(struct soap *soap, int t, const char
 		return (void*)soap_instantiate_om__TestModelJobType(soap, -1, type, arrayType, n);
 	case SOAP_TYPE_om_om__ProjectModelJobType:
 		return (void*)soap_instantiate_om__ProjectModelJobType(soap, -1, type, arrayType, n);
+	case SOAP_TYPE_om_om__EvaluateModelJobType:
+		return (void*)soap_instantiate_om__EvaluateModelJobType(soap, -1, type, arrayType, n);
 	case SOAP_TYPE_om_om__LayerMetadataType:
 		return (void*)soap_instantiate_om__LayerMetadataType(soap, -1, type, arrayType, n);
 #ifndef WITH_NOGLOBAL
@@ -1925,6 +1972,8 @@ SOAP_FMAC3 void * SOAP_FMAC4 om_instantiate(struct soap *soap, int t, const char
 		return (void*)soap_instantiate__om__TestModelJob(soap, -1, type, arrayType, n);
 	case SOAP_TYPE_om__om__ProjectModelJob:
 		return (void*)soap_instantiate__om__ProjectModelJob(soap, -1, type, arrayType, n);
+	case SOAP_TYPE_om__om__EvaluateModelJob:
+		return (void*)soap_instantiate__om__EvaluateModelJob(soap, -1, type, arrayType, n);
 	case SOAP_TYPE_om_std__vectorTemplateOf_om__ResultSetType_Job:
 		return (void*)soap_instantiate_std__vectorTemplateOf_om__ResultSetType_Job(soap, -1, type, arrayType, n);
 	case SOAP_TYPE_om_std__vectorTemplateOf_om__JobTicketsType_Job:
@@ -2386,6 +2435,12 @@ SOAP_FMAC3 int SOAP_FMAC4 om_fdelete(struct soap_clist *p)
 		else
 			SOAP_DELETE_ARRAY((_om__ResultSetType_Job_ProjectionEnvelope*)p->ptr);
 		break;
+	case SOAP_TYPE_om__om__ResultSetType_Job_Values:
+		if (p->size < 0)
+			SOAP_DELETE((_om__ResultSetType_Job_Values*)p->ptr);
+		else
+			SOAP_DELETE_ARRAY((_om__ResultSetType_Job_Values*)p->ptr);
+		break;
 	case SOAP_TYPE_om__om__ResultSetType_Job:
 		if (p->size < 0)
 			SOAP_DELETE((_om__ResultSetType_Job*)p->ptr);
@@ -2427,6 +2482,12 @@ SOAP_FMAC3 int SOAP_FMAC4 om_fdelete(struct soap_clist *p)
 			SOAP_DELETE((om__ProjectModelJobType*)p->ptr);
 		else
 			SOAP_DELETE_ARRAY((om__ProjectModelJobType*)p->ptr);
+		break;
+	case SOAP_TYPE_om_om__EvaluateModelJobType:
+		if (p->size < 0)
+			SOAP_DELETE((om__EvaluateModelJobType*)p->ptr);
+		else
+			SOAP_DELETE_ARRAY((om__EvaluateModelJobType*)p->ptr);
 		break;
 	case SOAP_TYPE_om_om__LayerMetadataType:
 		if (p->size < 0)
@@ -2635,6 +2696,12 @@ SOAP_FMAC3 int SOAP_FMAC4 om_fdelete(struct soap_clist *p)
 			SOAP_DELETE((om__ProjectModelJobType*)p->ptr);
 		else
 			SOAP_DELETE_ARRAY((om__ProjectModelJobType*)p->ptr);
+		break;
+	case SOAP_TYPE_om__om__EvaluateModelJob:
+		if (p->size < 0)
+			SOAP_DELETE((om__EvaluateModelJobType*)p->ptr);
+		else
+			SOAP_DELETE_ARRAY((om__EvaluateModelJobType*)p->ptr);
 		break;
 	case SOAP_TYPE_om_std__vectorTemplateOf_om__ResultSetType_Job:
 		if (p->size < 0)
@@ -3166,6 +3233,135 @@ SOAP_FMAC3 enum om__ThresholdCalculationType * SOAP_FMAC4 soap_get_om__Threshold
 		if (soap_getindependent(soap))
 			return NULL;
 	return p;
+}
+
+void _om__ResultSetType_Job_Values::soap_default(struct soap *soap)
+{
+	(void)soap; /* appease -Wall -Werror */
+	soap_default_std__string(soap, &this->_om__ResultSetType_Job_Values::V);
+}
+
+void _om__ResultSetType_Job_Values::soap_serialize(struct soap *soap) const
+{
+#ifndef WITH_NOIDREF
+	(void)soap; /* appease -Wall -Werror */
+#endif
+}
+
+int _om__ResultSetType_Job_Values::soap_out(struct soap *soap, const char *tag, int id, const char *type) const
+{
+	return soap_out__om__ResultSetType_Job_Values(soap, tag, id, this, type);
+}
+
+SOAP_FMAC3 int SOAP_FMAC4 soap_out__om__ResultSetType_Job_Values(struct soap *soap, const char *tag, int id, const _om__ResultSetType_Job_Values *a, const char *type)
+{
+	soap_set_attr(soap, "V", ((_om__ResultSetType_Job_Values*)a)->V.c_str(), 1);
+	if (soap_element_begin_out(soap, tag, soap_embedded_id(soap, id, a, SOAP_TYPE_om__om__ResultSetType_Job_Values), type))
+		return soap->error;
+	return soap_element_end_out(soap, tag);
+}
+
+void *_om__ResultSetType_Job_Values::soap_in(struct soap *soap, const char *tag, const char *type)
+{	return soap_in__om__ResultSetType_Job_Values(soap, tag, this, type);
+}
+
+SOAP_FMAC3 _om__ResultSetType_Job_Values * SOAP_FMAC4 soap_in__om__ResultSetType_Job_Values(struct soap *soap, const char *tag, _om__ResultSetType_Job_Values *a, const char *type)
+{
+	(void)type; /* appease -Wall -Werror */
+	if (soap_element_begin_in(soap, tag, 0, NULL))
+		return NULL;
+	a = (_om__ResultSetType_Job_Values *)soap_class_id_enter(soap, soap->id, a, SOAP_TYPE_om__om__ResultSetType_Job_Values, sizeof(_om__ResultSetType_Job_Values), soap->type, soap->arrayType);
+	if (!a)
+		return NULL;
+	if (soap->alloced)
+	{	a->soap_default(soap);
+		if (soap->clist->type != SOAP_TYPE_om__om__ResultSetType_Job_Values)
+		{	soap_revert(soap);
+			*soap->id = '\0';
+			return (_om__ResultSetType_Job_Values *)a->soap_in(soap, tag, type);
+		}
+	}
+	{	const char *t = soap_attr_value(soap, "V", 1);
+		if (t)
+		{	char *s;
+			if (soap_s2string(soap, t, &s, 0, -1))
+				return NULL;
+			((_om__ResultSetType_Job_Values*)a)->V.assign(s);
+		}
+		else if (soap->error)
+			return NULL;
+	}
+	if (soap->body && !*soap->href)
+	{
+		for (;;)
+		{	soap->error = SOAP_TAG_MISMATCH;
+			if (soap->error == SOAP_TAG_MISMATCH)
+				soap->error = soap_ignore_element(soap);
+			if (soap->error == SOAP_NO_TAG)
+				break;
+			if (soap->error)
+				return NULL;
+		}
+		if (soap_element_end_in(soap, tag))
+			return NULL;
+	}
+	else
+	{	a = (_om__ResultSetType_Job_Values *)soap_id_forward(soap, soap->href, (void*)a, 0, SOAP_TYPE_om__om__ResultSetType_Job_Values, 0, sizeof(_om__ResultSetType_Job_Values), 0, soap_copy__om__ResultSetType_Job_Values);
+		if (soap->body && soap_element_end_in(soap, tag))
+			return NULL;
+	}
+	return a;
+}
+
+int _om__ResultSetType_Job_Values::soap_put(struct soap *soap, const char *tag, const  char *type) const
+{
+	register int id = soap_embed(soap, (void*)this, NULL, 0, tag, SOAP_TYPE_om__om__ResultSetType_Job_Values);
+	if (this->soap_out(soap, tag?tag:"om:ResultSetType-Job-Values", id, type))
+		return soap->error;
+	return soap_putindependent(soap);
+}
+
+void *_om__ResultSetType_Job_Values::soap_get(struct soap *soap, const char *tag, const char *type)
+{
+	return soap_get__om__ResultSetType_Job_Values(soap, this, tag, type);
+}
+
+SOAP_FMAC3 _om__ResultSetType_Job_Values * SOAP_FMAC4 soap_get__om__ResultSetType_Job_Values(struct soap *soap, _om__ResultSetType_Job_Values *p, const char *tag, const char *type)
+{
+	if ((p = soap_in__om__ResultSetType_Job_Values(soap, tag, p, type)))
+		if (soap_getindependent(soap))
+			return NULL;
+	return p;
+}
+
+SOAP_FMAC1 _om__ResultSetType_Job_Values * SOAP_FMAC2 soap_instantiate__om__ResultSetType_Job_Values(struct soap *soap, int n, const char *type, const char *arrayType, size_t *size)
+{
+	(void)type; (void)arrayType; /* appease -Wall -Werror */
+	DBGLOG(TEST, SOAP_MESSAGE(fdebug, "soap_instantiate__om__ResultSetType_Job_Values(%d, %s, %s)\n", n, type?type:"", arrayType?arrayType:""));
+	struct soap_clist *cp = soap_link(soap, NULL, SOAP_TYPE_om__om__ResultSetType_Job_Values, n, om_fdelete);
+	if (!cp)
+		return NULL;
+	if (n < 0)
+	{	cp->ptr = (void*)SOAP_NEW(_om__ResultSetType_Job_Values);
+		if (size)
+			*size = sizeof(_om__ResultSetType_Job_Values);
+	}
+	else
+	{	cp->ptr = (void*)SOAP_NEW_ARRAY(_om__ResultSetType_Job_Values, n);
+		if (size)
+			*size = n * sizeof(_om__ResultSetType_Job_Values);
+	}
+	DBGLOG(TEST, SOAP_MESSAGE(fdebug, "Instantiated location=%p\n", cp->ptr));
+	if (!cp->ptr)
+		soap->error = SOAP_EOM;
+	return (_om__ResultSetType_Job_Values*)cp->ptr;
+}
+
+SOAP_FMAC3 void SOAP_FMAC4 soap_copy__om__ResultSetType_Job_Values(struct soap *soap, int st, int tt, void *p, size_t len, const void *q, size_t n)
+{
+	(void)soap; (void)tt; (void)st; (void)len; (void)n; /* appease -Wall -Werror */
+	DBGLOG(TEST, SOAP_MESSAGE(fdebug, "Copying _om__ResultSetType_Job_Values %p -> %p\n", q, p));
+	*(_om__ResultSetType_Job_Values*)p = *(_om__ResultSetType_Job_Values*)q;
 }
 
 void _om__ResultSetType_Job_ProjectionEnvelope::soap_default(struct soap *soap)
@@ -8591,6 +8787,198 @@ SOAP_FMAC3 void SOAP_FMAC4 soap_copy_om__JobTicketsType(struct soap *soap, int s
 	*(om__JobTicketsType*)p = *(om__JobTicketsType*)q;
 }
 
+void om__EvaluateModelJobType::soap_default(struct soap *soap)
+{
+	this->soap = soap;
+	this->om__IdentifiedType::soap_default(soap);
+	this->om__EvaluateModelJobType::EnvironmentRef = NULL;
+	this->om__EvaluateModelJobType::PresenceRef = NULL;
+	this->om__EvaluateModelJobType::AbsenceRef = NULL;
+	this->om__EvaluateModelJobType::ModelRef = NULL;
+}
+
+void om__EvaluateModelJobType::soap_serialize(struct soap *soap) const
+{
+#ifndef WITH_NOIDREF
+	(void)soap; /* appease -Wall -Werror */
+	soap_serialize_PointerToom__ReferenceType(soap, &this->om__EvaluateModelJobType::EnvironmentRef);
+	soap_serialize_PointerToom__ReferenceType(soap, &this->om__EvaluateModelJobType::PresenceRef);
+	soap_serialize_PointerToom__ReferenceType(soap, &this->om__EvaluateModelJobType::AbsenceRef);
+	soap_serialize_PointerToom__ReferenceType(soap, &this->om__EvaluateModelJobType::ModelRef);
+	this->om__IdentifiedType::soap_serialize(soap);
+#endif
+}
+
+int om__EvaluateModelJobType::soap_out(struct soap *soap, const char *tag, int id, const char *type) const
+{
+	return soap_out_om__EvaluateModelJobType(soap, tag, id, this, type);
+}
+
+SOAP_FMAC3 int SOAP_FMAC4 soap_out_om__EvaluateModelJobType(struct soap *soap, const char *tag, int id, const om__EvaluateModelJobType *a, const char *type)
+{
+	soap_set_attr(soap, "id", ((om__IdentifiedType*)a)->id.c_str(), 1);
+	if (soap_element_begin_out(soap, tag, soap_embedded_id(soap, id, a, SOAP_TYPE_om_om__EvaluateModelJobType), "om:EvaluateModelJobType"))
+		return soap->error;
+	/* transient soap skipped */
+	if (a->om__EvaluateModelJobType::EnvironmentRef)
+	{	if (soap_out_PointerToom__ReferenceType(soap, "om:EnvironmentRef", -1, &a->om__EvaluateModelJobType::EnvironmentRef, ""))
+			return soap->error;
+	}
+	else if (soap_element_nil(soap, "om:EnvironmentRef"))
+		return soap->error;
+	if (a->om__EvaluateModelJobType::PresenceRef)
+	{	if (soap_out_PointerToom__ReferenceType(soap, "om:PresenceRef", -1, &a->om__EvaluateModelJobType::PresenceRef, ""))
+			return soap->error;
+	}
+	else if (soap_element_nil(soap, "om:PresenceRef"))
+		return soap->error;
+	if (soap_out_PointerToom__ReferenceType(soap, "om:AbsenceRef", -1, &(a->om__EvaluateModelJobType::AbsenceRef), ""))
+		return soap->error;
+	if (a->om__EvaluateModelJobType::ModelRef)
+	{	if (soap_out_PointerToom__ReferenceType(soap, "om:ModelRef", -1, &a->om__EvaluateModelJobType::ModelRef, ""))
+			return soap->error;
+	}
+	else if (soap_element_nil(soap, "om:ModelRef"))
+		return soap->error;
+	return soap_element_end_out(soap, tag);
+}
+
+void *om__EvaluateModelJobType::soap_in(struct soap *soap, const char *tag, const char *type)
+{	return soap_in_om__EvaluateModelJobType(soap, tag, this, type);
+}
+
+SOAP_FMAC3 om__EvaluateModelJobType * SOAP_FMAC4 soap_in_om__EvaluateModelJobType(struct soap *soap, const char *tag, om__EvaluateModelJobType *a, const char *type)
+{
+	(void)type; /* appease -Wall -Werror */
+	if (soap_element_begin_in(soap, tag, 0, NULL))
+		return NULL;
+	a = (om__EvaluateModelJobType *)soap_class_id_enter(soap, soap->id, a, SOAP_TYPE_om_om__EvaluateModelJobType, sizeof(om__EvaluateModelJobType), soap->type, soap->arrayType);
+	if (!a)
+		return NULL;
+	if (soap->alloced)
+	{	a->soap_default(soap);
+		if (soap->clist->type != SOAP_TYPE_om_om__EvaluateModelJobType)
+		{	soap_revert(soap);
+			*soap->id = '\0';
+			return (om__EvaluateModelJobType *)a->soap_in(soap, tag, type);
+		}
+	}
+	{	const char *t = soap_attr_value(soap, "id", 1);
+		if (t)
+		{	char *s;
+			if (soap_s2string(soap, t, &s, 0, -1))
+				return NULL;
+			((om__IdentifiedType*)a)->id.assign(s);
+		}
+		else if (soap->error)
+			return NULL;
+	}
+	size_t soap_flag_EnvironmentRef1 = 1;
+	size_t soap_flag_PresenceRef1 = 1;
+	size_t soap_flag_AbsenceRef1 = 1;
+	size_t soap_flag_ModelRef1 = 1;
+	if (soap->body && !*soap->href)
+	{
+		for (;;)
+		{	soap->error = SOAP_TAG_MISMATCH;
+			/* transient soap skipped */
+			if (soap_flag_EnvironmentRef1 && soap->error == SOAP_TAG_MISMATCH)
+				if (soap_in_PointerToom__ReferenceType(soap, "om:EnvironmentRef", &(a->om__EvaluateModelJobType::EnvironmentRef), "om:ReferenceType"))
+				{	soap_flag_EnvironmentRef1--;
+					continue;
+				}
+			if (soap_flag_PresenceRef1 && soap->error == SOAP_TAG_MISMATCH)
+				if (soap_in_PointerToom__ReferenceType(soap, "om:PresenceRef", &(a->om__EvaluateModelJobType::PresenceRef), "om:ReferenceType"))
+				{	soap_flag_PresenceRef1--;
+					continue;
+				}
+			if (soap_flag_AbsenceRef1 && soap->error == SOAP_TAG_MISMATCH)
+				if (soap_in_PointerToom__ReferenceType(soap, "om:AbsenceRef", &(a->om__EvaluateModelJobType::AbsenceRef), "om:ReferenceType"))
+				{	soap_flag_AbsenceRef1--;
+					continue;
+				}
+			if (soap_flag_ModelRef1 && soap->error == SOAP_TAG_MISMATCH)
+				if (soap_in_PointerToom__ReferenceType(soap, "om:ModelRef", &(a->om__EvaluateModelJobType::ModelRef), "om:ReferenceType"))
+				{	soap_flag_ModelRef1--;
+					continue;
+				}
+			if (soap->error == SOAP_TAG_MISMATCH)
+				soap->error = soap_ignore_element(soap);
+			if (soap->error == SOAP_NO_TAG)
+				break;
+			if (soap->error)
+				return NULL;
+		}
+		if (soap_element_end_in(soap, tag))
+			return NULL;
+	}
+	else
+	{	a = (om__EvaluateModelJobType *)soap_id_forward(soap, soap->href, (void*)a, 0, SOAP_TYPE_om_om__EvaluateModelJobType, 0, sizeof(om__EvaluateModelJobType), 0, soap_copy_om__EvaluateModelJobType);
+		if (soap->body && soap_element_end_in(soap, tag))
+			return NULL;
+	}
+	if ((soap->mode & SOAP_XML_STRICT) && (soap_flag_EnvironmentRef1 > 0 || soap_flag_PresenceRef1 > 0 || soap_flag_ModelRef1 > 0))
+	{	soap->error = SOAP_OCCURS;
+		return NULL;
+	}
+	return a;
+}
+
+int om__EvaluateModelJobType::soap_put(struct soap *soap, const char *tag, const  char *type) const
+{
+	register int id = soap_embed(soap, (void*)this, NULL, 0, tag, SOAP_TYPE_om_om__EvaluateModelJobType);
+	if (this->soap_out(soap, tag?tag:"om:EvaluateModelJobType", id, type))
+		return soap->error;
+	return soap_putindependent(soap);
+}
+
+void *om__EvaluateModelJobType::soap_get(struct soap *soap, const char *tag, const char *type)
+{
+	return soap_get_om__EvaluateModelJobType(soap, this, tag, type);
+}
+
+SOAP_FMAC3 om__EvaluateModelJobType * SOAP_FMAC4 soap_get_om__EvaluateModelJobType(struct soap *soap, om__EvaluateModelJobType *p, const char *tag, const char *type)
+{
+	if ((p = soap_in_om__EvaluateModelJobType(soap, tag, p, type)))
+		if (soap_getindependent(soap))
+			return NULL;
+	return p;
+}
+
+SOAP_FMAC1 om__EvaluateModelJobType * SOAP_FMAC2 soap_instantiate_om__EvaluateModelJobType(struct soap *soap, int n, const char *type, const char *arrayType, size_t *size)
+{
+	(void)type; (void)arrayType; /* appease -Wall -Werror */
+	DBGLOG(TEST, SOAP_MESSAGE(fdebug, "soap_instantiate_om__EvaluateModelJobType(%d, %s, %s)\n", n, type?type:"", arrayType?arrayType:""));
+	struct soap_clist *cp = soap_link(soap, NULL, SOAP_TYPE_om_om__EvaluateModelJobType, n, om_fdelete);
+	if (!cp)
+		return NULL;
+	if (n < 0)
+	{	cp->ptr = (void*)SOAP_NEW(om__EvaluateModelJobType);
+		if (size)
+			*size = sizeof(om__EvaluateModelJobType);
+		((om__EvaluateModelJobType*)cp->ptr)->soap = soap;
+	}
+	else
+	{	cp->ptr = (void*)SOAP_NEW_ARRAY(om__EvaluateModelJobType, n);
+		if (size)
+			*size = n * sizeof(om__EvaluateModelJobType);
+		if (cp->ptr)
+			for (int i = 0; i < n; i++)
+				((om__EvaluateModelJobType*)cp->ptr)[i].soap = soap;
+	}
+	DBGLOG(TEST, SOAP_MESSAGE(fdebug, "Instantiated location=%p\n", cp->ptr));
+	if (!cp->ptr)
+		soap->error = SOAP_EOM;
+	return (om__EvaluateModelJobType*)cp->ptr;
+}
+
+SOAP_FMAC3 void SOAP_FMAC4 soap_copy_om__EvaluateModelJobType(struct soap *soap, int st, int tt, void *p, size_t len, const void *q, size_t n)
+{
+	(void)soap; (void)tt; (void)st; (void)len; (void)n; /* appease -Wall -Werror */
+	DBGLOG(TEST, SOAP_MESSAGE(fdebug, "Copying om__EvaluateModelJobType %p -> %p\n", q, p));
+	*(om__EvaluateModelJobType*)p = *(om__EvaluateModelJobType*)q;
+}
+
 void om__ProjectModelJobType::soap_default(struct soap *soap)
 {
 	this->soap = soap;
@@ -9544,6 +9932,27 @@ SOAP_FMAC1 om__IdentifiedType * SOAP_FMAC2 soap_instantiate_om__IdentifiedType(s
 		if (!cp->ptr)
 			soap->error = SOAP_EOM;
 		return (om__ProjectModelJobType*)cp->ptr;
+	}
+	if (type && !soap_match_tag(soap, type, "om:EvaluateModelJobType"))
+	{	cp->type = SOAP_TYPE_om_om__EvaluateModelJobType;
+		if (n < 0)
+		{	cp->ptr = (void*)SOAP_NEW(om__EvaluateModelJobType);
+			if (size)
+				*size = sizeof(om__EvaluateModelJobType);
+			((om__EvaluateModelJobType*)cp->ptr)->soap = soap;
+		}
+		else
+		{	cp->ptr = (void*)SOAP_NEW_ARRAY(om__EvaluateModelJobType, n);
+			if (size)
+				*size = n * sizeof(om__EvaluateModelJobType);
+			if (cp->ptr)
+				for (int i = 0; i < n; i++)
+					((om__EvaluateModelJobType*)cp->ptr)[i].soap = soap;
+		}
+		DBGLOG(TEST, SOAP_MESSAGE(fdebug, "Instantiated location=%p\n", cp->ptr));
+		if (!cp->ptr)
+			soap->error = SOAP_EOM;
+		return (om__EvaluateModelJobType*)cp->ptr;
 	}
 	if (n < 0)
 	{	cp->ptr = (void*)SOAP_NEW(om__IdentifiedType);
@@ -16136,6 +16545,9 @@ SOAP_FMAC3 void SOAP_FMAC4 soap_serialize__om__union_ResultSetType_Job(struct so
 	case SOAP_UNION__om__union_ResultSetType_Job_ProjectionEnvelope:
 		soap_serialize_PointerTo_om__ResultSetType_Job_ProjectionEnvelope(soap, &a->ProjectionEnvelope);
 		break;
+	case SOAP_UNION__om__union_ResultSetType_Job_Values:
+		soap_serialize_PointerTo_om__ResultSetType_Job_Values(soap, &a->Values);
+		break;
 	default:
 		break;
 	}
@@ -16154,6 +16566,8 @@ SOAP_FMAC3 int SOAP_FMAC4 soap_out__om__union_ResultSetType_Job(struct soap *soa
 		return soap_out_PointerToom__TestResultEnvelopeType(soap, "om:TestResultEnvelope", -1, &a->TestResultEnvelope, "");
 	case SOAP_UNION__om__union_ResultSetType_Job_ProjectionEnvelope:
 		return soap_out_PointerTo_om__ResultSetType_Job_ProjectionEnvelope(soap, "om:ProjectionEnvelope", -1, &a->ProjectionEnvelope, "");
+	case SOAP_UNION__om__union_ResultSetType_Job_Values:
+		return soap_out_PointerTo_om__ResultSetType_Job_Values(soap, "om:Values", -1, &a->Values, "");
 	default:
 		break;
 	}
@@ -16182,6 +16596,11 @@ SOAP_FMAC3 union _om__union_ResultSetType_Job * SOAP_FMAC4 soap_in__om__union_Re
 	{	*choice = SOAP_UNION__om__union_ResultSetType_Job_ProjectionEnvelope;
 		return a;
 	}
+	a->Values = NULL;
+	if (soap->error == SOAP_TAG_MISMATCH && soap_in_PointerTo_om__ResultSetType_Job_Values(soap, "om:Values", &a->Values, ""))
+	{	*choice = SOAP_UNION__om__union_ResultSetType_Job_Values;
+		return a;
+	}
 	*choice = -1;
 	if (!soap->error)
 		soap->error = SOAP_TAG_MISMATCH;
@@ -16206,6 +16625,9 @@ SOAP_FMAC3 void SOAP_FMAC4 soap_serialize__om__union_ExperimentParametersType_Jo
 	case SOAP_UNION__om__union_ExperimentParametersType_Jobs_ProjectModelJob:
 		soap_serialize_PointerToom__ProjectModelJobType(soap, &a->ProjectModelJob);
 		break;
+	case SOAP_UNION__om__union_ExperimentParametersType_Jobs_EvaluateModelJob:
+		soap_serialize_PointerToom__EvaluateModelJobType(soap, &a->EvaluateModelJob);
+		break;
 	default:
 		break;
 	}
@@ -16224,6 +16646,8 @@ SOAP_FMAC3 int SOAP_FMAC4 soap_out__om__union_ExperimentParametersType_Jobs(stru
 		return soap_out_PointerToom__TestModelJobType(soap, "om:TestModelJob", -1, &a->TestModelJob, "");
 	case SOAP_UNION__om__union_ExperimentParametersType_Jobs_ProjectModelJob:
 		return soap_out_PointerToom__ProjectModelJobType(soap, "om:ProjectModelJob", -1, &a->ProjectModelJob, "");
+	case SOAP_UNION__om__union_ExperimentParametersType_Jobs_EvaluateModelJob:
+		return soap_out_PointerToom__EvaluateModelJobType(soap, "om:EvaluateModelJob", -1, &a->EvaluateModelJob, "");
 	default:
 		break;
 	}
@@ -16250,6 +16674,11 @@ SOAP_FMAC3 union _om__union_ExperimentParametersType_Jobs * SOAP_FMAC4 soap_in__
 	a->ProjectModelJob = NULL;
 	if (soap->error == SOAP_TAG_MISMATCH && soap_in_PointerToom__ProjectModelJobType(soap, "om:ProjectModelJob", &a->ProjectModelJob, "om:ProjectModelJobType"))
 	{	*choice = SOAP_UNION__om__union_ExperimentParametersType_Jobs_ProjectModelJob;
+		return a;
+	}
+	a->EvaluateModelJob = NULL;
+	if (soap->error == SOAP_TAG_MISMATCH && soap_in_PointerToom__EvaluateModelJobType(soap, "om:EvaluateModelJob", &a->EvaluateModelJob, "om:EvaluateModelJobType"))
+	{	*choice = SOAP_UNION__om__union_ExperimentParametersType_Jobs_EvaluateModelJob;
 		return a;
 	}
 	*choice = -1;
@@ -16536,6 +16965,63 @@ SOAP_FMAC3 om__ReferenceType ** SOAP_FMAC4 soap_get_PointerToom__ReferenceType(s
 	return p;
 }
 
+SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_PointerTo_om__ResultSetType_Job_Values(struct soap *soap, _om__ResultSetType_Job_Values *const*a)
+{
+#ifndef WITH_NOIDREF
+	if (!soap_reference(soap, *a, SOAP_TYPE_om__om__ResultSetType_Job_Values))
+		(*a)->soap_serialize(soap);
+#endif
+}
+
+SOAP_FMAC3 int SOAP_FMAC4 soap_out_PointerTo_om__ResultSetType_Job_Values(struct soap *soap, const char *tag, int id, _om__ResultSetType_Job_Values *const*a, const char *type)
+{
+	id = soap_element_id(soap, tag, id, *a, NULL, 0, type, SOAP_TYPE_om__om__ResultSetType_Job_Values);
+	if (id < 0)
+		return soap->error;
+	return (*a)->soap_out(soap, tag, id, type);
+}
+
+SOAP_FMAC3 _om__ResultSetType_Job_Values ** SOAP_FMAC4 soap_in_PointerTo_om__ResultSetType_Job_Values(struct soap *soap, const char *tag, _om__ResultSetType_Job_Values **a, const char *type)
+{
+	if (soap_element_begin_in(soap, tag, 1, NULL))
+		return NULL;
+	if (!a)
+		if (!(a = (_om__ResultSetType_Job_Values **)soap_malloc(soap, sizeof(_om__ResultSetType_Job_Values *))))
+			return NULL;
+	*a = NULL;
+	if (!soap->null && *soap->href != '#')
+	{	soap_revert(soap);
+		if (!(*a = (_om__ResultSetType_Job_Values *)soap_instantiate__om__ResultSetType_Job_Values(soap, -1, soap->type, soap->arrayType, NULL)))
+			return NULL;
+		(*a)->soap_default(soap);
+		if (!(*a)->soap_in(soap, tag, NULL))
+			return NULL;
+	}
+	else
+	{	_om__ResultSetType_Job_Values ** p = (_om__ResultSetType_Job_Values **)soap_id_lookup(soap, soap->href, (void**)a, SOAP_TYPE_om__om__ResultSetType_Job_Values, sizeof(_om__ResultSetType_Job_Values), 0);
+		a = p;
+		if (soap->body && soap_element_end_in(soap, tag))
+			return NULL;
+	}
+	return a;
+}
+
+SOAP_FMAC3 int SOAP_FMAC4 soap_put_PointerTo_om__ResultSetType_Job_Values(struct soap *soap, _om__ResultSetType_Job_Values *const*a, const char *tag, const char *type)
+{
+	register int id = soap_embed(soap, (void*)a, NULL, 0, tag, SOAP_TYPE_om_PointerTo_om__ResultSetType_Job_Values);
+	if (soap_out_PointerTo_om__ResultSetType_Job_Values(soap, tag?tag:"om:ResultSetType-Job-Values", id, a, type))
+		return soap->error;
+	return soap_putindependent(soap);
+}
+
+SOAP_FMAC3 _om__ResultSetType_Job_Values ** SOAP_FMAC4 soap_get_PointerTo_om__ResultSetType_Job_Values(struct soap *soap, _om__ResultSetType_Job_Values **p, const char *tag, const char *type)
+{
+	if ((p = soap_in_PointerTo_om__ResultSetType_Job_Values(soap, tag, p, type)))
+		if (soap_getindependent(soap))
+			return NULL;
+	return p;
+}
+
 SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_PointerTo_om__ResultSetType_Job_ProjectionEnvelope(struct soap *soap, _om__ResultSetType_Job_ProjectionEnvelope *const*a)
 {
 #ifndef WITH_NOIDREF
@@ -16816,6 +17302,63 @@ SOAP_FMAC3 int SOAP_FMAC4 soap_put_PointerTo__om__union_ExperimentParametersType
 SOAP_FMAC3 __om__union_ExperimentParametersType_Jobs ** SOAP_FMAC4 soap_get_PointerTo__om__union_ExperimentParametersType_Jobs(struct soap *soap, __om__union_ExperimentParametersType_Jobs **p, const char *tag, const char *type)
 {
 	if ((p = soap_in_PointerTo__om__union_ExperimentParametersType_Jobs(soap, tag, p, type)))
+		if (soap_getindependent(soap))
+			return NULL;
+	return p;
+}
+
+SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_PointerToom__EvaluateModelJobType(struct soap *soap, om__EvaluateModelJobType *const*a)
+{
+#ifndef WITH_NOIDREF
+	if (!soap_reference(soap, *a, SOAP_TYPE_om_om__EvaluateModelJobType))
+		(*a)->soap_serialize(soap);
+#endif
+}
+
+SOAP_FMAC3 int SOAP_FMAC4 soap_out_PointerToom__EvaluateModelJobType(struct soap *soap, const char *tag, int id, om__EvaluateModelJobType *const*a, const char *type)
+{
+	id = soap_element_id(soap, tag, id, *a, NULL, 0, type, SOAP_TYPE_om_om__EvaluateModelJobType);
+	if (id < 0)
+		return soap->error;
+	return (*a)->soap_out(soap, tag, id, type);
+}
+
+SOAP_FMAC3 om__EvaluateModelJobType ** SOAP_FMAC4 soap_in_PointerToom__EvaluateModelJobType(struct soap *soap, const char *tag, om__EvaluateModelJobType **a, const char *type)
+{
+	if (soap_element_begin_in(soap, tag, 1, NULL))
+		return NULL;
+	if (!a)
+		if (!(a = (om__EvaluateModelJobType **)soap_malloc(soap, sizeof(om__EvaluateModelJobType *))))
+			return NULL;
+	*a = NULL;
+	if (!soap->null && *soap->href != '#')
+	{	soap_revert(soap);
+		if (!(*a = (om__EvaluateModelJobType *)soap_instantiate_om__EvaluateModelJobType(soap, -1, soap->type, soap->arrayType, NULL)))
+			return NULL;
+		(*a)->soap_default(soap);
+		if (!(*a)->soap_in(soap, tag, NULL))
+			return NULL;
+	}
+	else
+	{	om__EvaluateModelJobType ** p = (om__EvaluateModelJobType **)soap_id_lookup(soap, soap->href, (void**)a, SOAP_TYPE_om_om__EvaluateModelJobType, sizeof(om__EvaluateModelJobType), 0);
+		a = p;
+		if (soap->body && soap_element_end_in(soap, tag))
+			return NULL;
+	}
+	return a;
+}
+
+SOAP_FMAC3 int SOAP_FMAC4 soap_put_PointerToom__EvaluateModelJobType(struct soap *soap, om__EvaluateModelJobType *const*a, const char *tag, const char *type)
+{
+	register int id = soap_embed(soap, (void*)a, NULL, 0, tag, SOAP_TYPE_om_PointerToom__EvaluateModelJobType);
+	if (soap_out_PointerToom__EvaluateModelJobType(soap, tag?tag:"om:EvaluateModelJobType", id, a, type))
+		return soap->error;
+	return soap_putindependent(soap);
+}
+
+SOAP_FMAC3 om__EvaluateModelJobType ** SOAP_FMAC4 soap_get_PointerToom__EvaluateModelJobType(struct soap *soap, om__EvaluateModelJobType **p, const char *tag, const char *type)
+{
+	if ((p = soap_in_PointerToom__EvaluateModelJobType(soap, tag, p, type)))
 		if (soap_getindependent(soap))
 			return NULL;
 	return p;
