@@ -96,11 +96,6 @@ try:
             "This method is called when the client receives an XML message"
             self.__class__.dresp = str( context.reply )
 
-    def check_job_status( client, ticket ):
-        "Check job status"
-        status = client.service.getProgress( ticket )
-        return int( status )
-
     def get_suds_element( suds_obj, element_name ):
         "Build a suds Element based on a suds-encoded response variable"
         el = Element(element_name)
@@ -123,16 +118,17 @@ try:
 
         ticket = call_and_track_progress(soap_client.service, 'createModel', mod_params)
 
-    def call_operation( service, method, params ):
-        "Call asynchronous service method and get the job ticket"
+    def call_operation( service, method, params=None, dump_req=False, dump_resp=False ):
+        "Call service operation and check for errors"
         func = getattr(service, method)
         retries = 3
         while retries:
             try:
-                ticket = func(params)
-                if ticket is None:
-                    close('No ticket returned by '+method, 2)
-                ticket = str(ticket)
+                response = func(params)
+                if type(response) is tuple and response[0] != 200:
+                    close(method+' call failure (HTTP status code '+str(response[0])+')', 2)
+                if response is None:
+                    close('No response returned by '+method, 2)
                 break
             except WebFault, f:
                 if string.find( f.fault.faultstring, 'Zlib/gzip error' ) > -1:
@@ -161,36 +157,46 @@ try:
                         msg += ': '+str(f)
                     close(msg, 2)
             except SAXParseException:
-                close(method+' call failure: could not parse response (Internal Server Error?)', 2)
+                print DumperPlugin.dreq
+                close(method+' call failure: could not parse response (premature end of script headers?)', 2)
             except Exception, e:
                 msg = method+' call failure'
                 if verbosity > 1:
                      msg += ': '+str(e)
                 close(msg, 2)
-        return ticket
+            finally:
+                if dump_req:
+                    #f = open('./temp.xml', 'w')
+                    #f.write(DumperPlugin.dreq)
+                    #f.close()
+                    print 'REQUEST:'
+                    print DumperPlugin.dreq
+                if dump_resp:
+                    print 'RESPONSE:'
+                    print DumperPlugin.dresp
+        return response
+
+    def check_job_status( client, ticket ):
+        "Check job status"
+        status = call_operation(client.service, 'getProgress', ticket)
+        return int( status )
 
     def track_progress( client, method, ticket ):
         "Track job progress until completed or aborted"
         start = time.time()
-        try:
-            progress = -1
-            while progress != 100:
-                if progress == -2:
-                    close(method+' aborted', 2)
-                if progress == -3:
-                    close(method+' cancelled', 2)
-                if progress == -4:
-                    close(method+' job reported as unknown', 2)
-                now = time.time()
-                if now - start > 20*60:
-                    close(method+' is taking too long to finish (server overload?)', 1)
-                time.sleep(5)
-                progress = check_job_status( client, ticket )
-        except Exception, e:
-            msg = 'getProgress call failure'
-            if verbosity > 1:
-                msg += ': '+str(e)
-            close(msg, 2)
+        progress = -1
+        while progress != 100:
+            if progress == -2:
+                close(method+' aborted', 2)
+            if progress == -3:
+                close(method+' cancelled', 2)
+            if progress == -4:
+                close(method+' job reported as unknown', 2)
+            now = time.time()
+            if now - start > 20*60:
+                close(method+' is taking too long to finish (server overload?)', 1)
+            time.sleep(5)
+            progress = check_job_status( client, ticket )
     
     ### Test initialization ###
 
@@ -209,7 +215,12 @@ try:
     # Instantiate SOAP client
     if verbosity == 3:
         print 'Checking endpoint:',endpoint
-    soap_client = Client(wsdl, location=endpoint, prettyxml=True, plugins=[DumperPlugin()])
+
+    try:
+        soap_client = Client(wsdl, location=endpoint, prettyxml=True, plugins=[DumperPlugin()])
+    except URLError, u:
+        close('XML Schema referenced by WSDL not found (release suds cache when changing schema location)', 1)
+
     soap_client.add_prefix('om', xml_ns)
     soap_client.add_prefix('soap', 'http://schemas.xmlsoap.org/soap/envelope/')
 
@@ -220,23 +231,17 @@ try:
     logging.getLogger('suds.plugin').addHandler(h)
 
     # Test configuration
+    check_layers = True
     run_model = True
     run_model_test = True
     run_projection = True
     run_model_evaluation = True
     run_sample_points = True
+    run_experiment = True
 
     #####  PING
     ###################################
-    try:
-        status = soap_client.service.ping()
-    except SAXParseException:
-        close('ping call failure: could not parse response (Internal Server Error?)', 2)
-    except Exception, e:
-        msg = 'ping call failure'
-        if verbosity > 1:
-            msg += ': '+str(e)
-        close(msg, 2)
+    status = call_operation(soap_client.service, 'ping')
 
     if status <> 1:
         close('Service unavailable', 2)
@@ -258,13 +263,7 @@ try:
 
     #####  GET ALGORITHMS
     ###################################
-    try:
-        algs = soap_client.service.getAlgorithms()
-    except Exception, e:
-        msg = 'getAlgorithms call failure'
-        if verbosity > 1:
-            msg += ': '+str(e)
-        close(msg, 2)
+    algs = call_operation(soap_client.service, 'getAlgorithms')
 
     num_algs = len( algs.Algorithms.Algorithm )
     if num_algs == 0:
@@ -284,13 +283,7 @@ try:
 
     #####  GET LAYERS
     ###################################
-    try:
-        group = soap_client.service.getLayers()
-    except Exception, e:
-        msg = 'getLayers call failure'
-        if verbosity > 1:
-            msg += ': '+str(e)
-        close(msg, 2)
+    group = call_operation(soap_client.service, 'getLayers')
 
     # Non recursive tree traversal
     groups = [group]
@@ -325,12 +318,14 @@ try:
         close('No layers available on server', 1)
     if verbosity == 3:
         print 'Found',num_layers,'layers'
+
     # TODO: Get one of the layers to be used by the test, instead of relying on
     #       two specific layers.
-    if not_found_layer1:
-        close('Layer 1 used by the test not found on server', 1)
-    if not_found_layer2:
-        close('Layer 2 used by the test not found on server', 1)
+    if check_layers:
+        if not_found_layer1:
+            close('Layer 1 used by the test not found on server', 1)
+        if not_found_layer2:
+            close('Layer 2 used by the test not found on server', 1)
 
     if verbosity == 3:
         print 'GetLayers: OK'
@@ -356,7 +351,7 @@ try:
         sampler.append( env )
         # Points
         presence = Element('Presence')
-        presence.set('Label', 'test_service.py')
+        presence.set('Label', 'test_omws2.py')
         coord = Element('CoordinateSystem')
         coord.setText("GEOGCS['WGS84', DATUM['WGS84', SPHEROID['WGS84', 6378137.0, 298.257223563]], PRIMEM['Greenwich', 0.0], UNIT['degree', 0.017453292519943295], AXIS['Longitude',EAST], AXIS['Latitude',NORTH]]")
         presence.append( coord )
@@ -392,7 +387,7 @@ try:
         stat_param.append( conf_matrix )
         mod_params.append( stat_param )
 
-        ticket = call_operation(soap_client.service, 'createModel', mod_params)
+        ticket = str( call_operation(soap_client.service, 'createModel', mod_params) )
 
         if verbosity == 3:
             print 'CreateModel: OK','( ticket',ticket,')'
@@ -408,16 +403,15 @@ try:
 
         #####  GET MODEL
         ###################################
-        try:
-            model = soap_client.service.getModel( ticket )
-        except Exception, e:
-            msg = 'getModel call failure'
-            if verbosity > 1:
-                msg += ': '+str(e)
-            close(msg, 2)
+        model = call_operation(soap_client.service, 'getModel', ticket)
 
         if not hasattr( model, 'SerializedModel' ):
             close('No SerializedModel element in getModel response', 2)
+
+        if not hasattr( model, 'SerializedModel' ):
+            close('No SerializedModel element in getModel response', 2)
+        if not hasattr( model.SerializedModel, 'Algorithm' ):
+            close('No Algorithm element in getModel response', 2)
 
         serialized_model = get_suds_element( model.SerializedModel.Algorithm, 'Algorithm' )
 
@@ -426,13 +420,7 @@ try:
 
         #####  GET LOG
         ###################################
-        try:
-            log = soap_client.service.getLog( ticket )
-        except Exception, e:
-            msg = 'getLog call failure'
-            if verbosity > 1:
-                msg += ': '+str(e)
-            close(msg, 2)
+        log = call_operation(soap_client.service, 'getLog', ticket)
 
         if verbosity == 3:
             print 'GetLog: OK'
@@ -456,7 +444,7 @@ try:
         sampler.append( env )
         # Points
         presence = Element('Presence')
-        presence.set('Label', 'test_service.py')
+        presence.set('Label', 'test_omws2.py')
         coord = Element('CoordinateSystem')
         coord.setText("GEOGCS['WGS84', DATUM['WGS84', SPHEROID['WGS84', 6378137.0, 298.257223563]], PRIMEM['Greenwich', 0.0], UNIT['degree', 0.017453292519943295], AXIS['Longitude',EAST], AXIS['Latitude',NORTH]]")
         presence.append( coord )
@@ -481,7 +469,7 @@ try:
         stat_param.append( conf_matrix )
         test_params.append( stat_param )
 
-        ticket = call_operation(soap_client.service, 'testModel', test_params)
+        ticket = str( call_operation(soap_client.service, 'testModel', test_params) )
 
         if verbosity == 3:
             print 'TestModel: OK','( ticket',ticket,')'
@@ -494,13 +482,7 @@ try:
 
         #####  GET TEST RESULT
         ###################################
-        try:
-            test_result = soap_client.service.getTestResult( ticket )
-        except Exception, e:
-            msg = 'getTestResult call failure'
-            if verbosity > 1:
-                msg += ': '+str(e)
-            close(msg, 2)
+        test_result = call_operation(soap_client.service, 'getTestResult', ticket)
 
         if not hasattr( test_result, 'Statistics' ):
             close('No Statistics element in getTestResult response', 2)
@@ -542,7 +524,7 @@ try:
         stat_params.append( area_params )
         proj_params.append( stat_params )
 
-        ticket = call_operation(soap_client.service, 'projectModel', proj_params)
+        ticket = str( call_operation(soap_client.service, 'projectModel', proj_params) )
 
         if verbosity == 3:
             print 'ProjectModel: OK','( ticket',ticket,')'
@@ -555,13 +537,7 @@ try:
 
         #####  GET PROJECTION METADATA
         ###################################
-        try:
-            statistics = soap_client.service.getProjectionMetadata( ticket )
-        except Exception, e:
-            msg = 'getProjectionMetadata call failure'
-            if verbosity > 1:
-                msg += ': '+str(e)
-            close(msg, 2)
+        statistics = call_operation(soap_client.service, 'getProjectionMetadata', ticket)
 
         if not hasattr( statistics, 'ProjectionEnvelope' ):
             close('No ProjectionEnvelope element in getProjectionMetadata response', 2)
@@ -576,13 +552,7 @@ try:
 
         #####  GET LAYER AS URL
         ###################################
-        try:
-            url = soap_client.service.getLayerAsUrl( ticket )
-        except Exception, e:
-            msg = 'getLayerAsUrl call failure'
-            if verbosity > 1:
-                msg += ': '+str(e)
-            close(msg, 2)
+        url = call_operation(soap_client.service, 'getLayerAsUrl', ticket)
 
         if verbosity == 3:
             print 'Projection URL',url
@@ -619,7 +589,7 @@ try:
         sampler.append( env )
         # Points
         presence = Element('Presence')
-        presence.set('Label', 'test_service.py')
+        presence.set('Label', 'test_omws2.py')
         coord = Element('CoordinateSystem')
         coord.setText("GEOGCS['WGS84', DATUM['WGS84', SPHEROID['WGS84', 6378137.0, 298.257223563]], PRIMEM['Greenwich', 0.0], UNIT['degree', 0.017453292519943295], AXIS['Longitude',EAST], AXIS['Latitude',NORTH]]")
         presence.append( coord )
@@ -638,7 +608,7 @@ try:
         # Algorithm parameter
         eval_params.append( serialized_model )
 
-        ticket = call_operation(soap_client.service, 'evaluateModel', eval_params)
+        ticket = str( call_operation(soap_client.service, 'evaluateModel', eval_params) )
 
         if verbosity == 3:
             print 'EvaluateModel: OK','( ticket',ticket,')'
@@ -651,13 +621,7 @@ try:
 
         #####  GET MODEL EVALUATION
         ###################################
-        try:
-            eval_result = soap_client.service.getModelEvaluation( ticket )
-        except Exception, e:
-            msg = 'getModelEvaluation call failure'
-            if verbosity > 1:
-                msg += ': '+str(e)
-            close(msg, 2)
+        eval_result = call_operation(soap_client.service, 'getModelEvaluation', ticket)
 
         if not hasattr( eval_result, 'Values' ):
             close('No Values container element in getModelEvaluation response', 2)
@@ -693,7 +657,7 @@ try:
         options.append( occ_filter )
         sample_params.append( options )
 
-        ticket = call_operation(soap_client.service, 'samplePoints', sample_params)
+        ticket = str( call_operation(soap_client.service, 'samplePoints', sample_params) )
 
         if verbosity == 3:
             print 'SamplePoints: OK','( ticket',ticket,')'
@@ -706,13 +670,7 @@ try:
 
         #####  GET SAMPLING RESULT
         ###################################
-        try:
-            sampling_result = soap_client.service.getSamplingResult( ticket )
-        except Exception, e:
-            msg = 'getSamplingResult call failure'
-            if verbosity > 1:
-                msg += ': '+str(e)
-            close(msg, 2)
+        sampling_result = call_operation(soap_client.service, 'getSamplingResult', ticket)
 
         if not hasattr( sampling_result, 'Environment' ):
             close('No Environment element in getSamplingResult response', 2)
@@ -734,6 +692,224 @@ try:
 
         if verbosity == 3:
             print 'GetSamplingResult: OK'
+
+    #####  RUN EXPERIMENT
+    ###################################
+    if run_experiment:
+        mapped_jobs = {'job1':'', 'job2':'', 'job3':'', 'job4':''}
+        exp_params = Element('ExperimentParameters')
+        exp_params.applyns( (None, xml_ns) )
+        ## Environment
+        env = Element('Environment')
+        env.set('id', 'environment1')
+        # Layers
+        for ref_layer in layers:
+            map_element = Element('Map')
+            map_element.set('Id', ref_layer)
+            env.append( map_element )
+        # Mask
+        mask_element = Element('Mask')
+        mask_element.set('Id', layer1)
+        env.append( mask_element )
+        exp_params.append( env )
+        ## Points
+        presence = Element('Presence')
+        presence.set('Label', 'test_omws2.py')
+        presence.set('id', 'presence1')
+        coord = Element('CoordinateSystem')
+        coord.setText("GEOGCS['WGS84', DATUM['WGS84', SPHEROID['WGS84', 6378137.0, 298.257223563]], PRIMEM['Greenwich', 0.0], UNIT['degree', 0.017453292519943295], AXIS['Longitude',EAST], AXIS['Latitude',NORTH]]")
+        presence.append( coord )
+        p1 = Element('Point')
+        p1.set('Id', '1')
+        p1.set('X', '-68.85')
+        p1.set('Y', '-11.15')
+        presence.append( p1 )
+        p2 = Element('Point')
+        p2.set('Id', '2')
+        p2.set('X', '-64.70')
+        p2.set('Y', '-15.97')
+        presence.append( p2 )
+        exp_params.append( presence )
+        ## Algorithm
+        alg_settings = Element('AlgorithmSettings')
+        alg_settings.set('id', 'algorithm1')
+        alg = Element('Algorithm')
+        alg.set('Id', 'ENVDIST')
+        alg.set('Version', '0.5')
+        params = Element('Parameters')
+        param1 = Element('Parameter') 
+        param1.set('Id', 'DistanceType')
+        param1.set('Value', '1')
+        param2 = Element('Parameter') 
+        param2.set('Id', 'NearestPoints')
+        param2.set('Value', '0')
+        param3 = Element('Parameter') 
+        param3.set('Id', 'MaxDistance')
+        param3.set('Value', '0.1')
+        params.append( param1 )
+        params.append( param2 )
+        params.append( param3 )
+        alg.append( params )
+        alg_settings.append( alg )
+        exp_params.append( alg_settings )
+        ## Jobs
+        jobs = Element('Jobs')
+        # sampling job
+        sampling_job = Element('SamplingJob')
+        sampling_job.set('id', 'job1')
+        env_ref = Element('EnvironmentRef')
+        env_ref.set('idref', 'environment1')
+        options = Element('Options')
+        options.set('NumPoints', '100')
+        options.set('Label', 'Background')
+        options.set('ProportionOfAbsences', '1.0')
+        ofilter = Element('OccurrencesFilter')
+        env_unique = Element('EnvironmentallyUnique')
+        ofilter.append( env_unique )
+        options.append( ofilter )
+        sampling_job.append( env_ref )
+        sampling_job.append( options )
+        jobs.append( sampling_job )
+        # create model job
+        createmodel_job = Element('CreateModelJob')
+        createmodel_job.set('id', 'job2')
+        pres_ref = Element('PresenceRef')
+        pres_ref.set('idref', 'presence1')
+        alg_ref = Element('AlgorithmRef')
+        alg_ref.set('idref', 'algorithm1')
+        createmodel_job.append( env_ref )
+        createmodel_job.append( pres_ref )
+        createmodel_job.append( alg_ref )
+        jobs.append( createmodel_job )
+        # test model job
+        testmodel_job = Element('TestModelJob')
+        testmodel_job.set('id', 'job3')
+        pres_ref = Element('PresenceRef')
+        pres_ref.set('idref', 'presence1')
+        abs_ref = Element('AbsenceRef')
+        abs_ref.set('idref', 'job1')
+        model_ref = Element('ModelRef')
+        model_ref.set('idref', 'job2')
+        testmodel_job.append( env_ref )
+        testmodel_job.append( pres_ref )
+        testmodel_job.append( abs_ref )
+        testmodel_job.append( model_ref )
+        stats = Element('Statistics')
+        roc = Element('RocCurve')
+        roc.set('BackgroundPoints', '100')
+        roc.set('Resolution', '10')
+        roc.set('MaxOmission', '1.0')
+        roc.set('UseAbsencesAsBackground', '1')
+        conf_matrix = Element('ConfusionMatrix')
+        conf_matrix.set('Threshold', 'lpt')
+        conf_matrix.set('IgnoreAbsences', '1')
+        stats.append( conf_matrix )
+        stats.append( roc )
+        testmodel_job.append( stats )
+        jobs.append( testmodel_job )
+        # project model job
+        projectmodel_job = Element('ProjectModelJob')
+        projectmodel_job.set('id', 'job4')
+        projectmodel_job.append( env_ref )
+        projectmodel_job.append( model_ref )
+        out_params = Element('OutputParameters')
+        out_params.set('FileType', 'ByteHFA')
+        template = Element('TemplateLayer')
+        template.set('Id', layer1)
+        out_params.append( template )
+        projectmodel_job.append( out_params )
+        jobs.append( projectmodel_job )
+        exp_params.append( jobs )
+
+        exp_response = call_operation(soap_client.service, 'runExperiment', exp_params)
+
+        tickets = []
+
+        if not hasattr( exp_response, 'Job' ):
+            close('No Jobs found in runExperiment response', 2)
+
+        for job in exp_response.Job:
+            tickets.append( job._Ticket )
+
+        if len( tickets ) == 0:
+            close('No tickets found in runExperiment response', 2)
+
+        if verbosity == 3:
+            print 'RunExperiment: OK','( tickets:',', '.join(tickets),')'
+
+        # Keep running until all jobs are finished
+        cnt = 0
+        for ticket in tickets:
+            cnt += 1
+            mapped_jobs['job'+str(cnt)] = ticket
+            track_progress(soap_client, 'runExperiment', ticket)
+            if verbosity == 3:
+                print 'Finished',ticket
+
+        #####  GET RESULTS
+        ###################################
+        results = call_operation(soap_client.service, 'getResults', ','.join(tickets))
+
+        if not hasattr( results, 'Job' ):
+            close('No Jobs found in getResults response', 2)
+
+        for job in results.Job:
+            if not hasattr( job, '_Ticket' ):
+                close('Missing ticket for job in getResults response', 2)
+            ticket = job._Ticket
+            if ticket not in mapped_jobs.values():
+                close('Unknown ticket ('+ticket+') in getResults response', 2)
+            if mapped_jobs['job1'] == ticket:
+                # Sample points job
+                if not hasattr( job, 'Sampler' ):
+                    close('No Sampler element in sample points job response', 2)
+                if not hasattr( job.Sampler, 'Environment' ):
+                    close('No Environment element in sample points job response', 2)
+                if not hasattr( job.Sampler.Environment, 'Map' ):
+                    close('No Environment/Map element in sample points job response', 2)
+                if not hasattr( job.Sampler.Environment, 'Mask' ):
+                    close('No Environment/Mask element in sample points job response', 2)
+                if not hasattr( job.Sampler, 'Absence' ):
+                    close('No Absence element in sample points job response', 2)
+                if not hasattr( job.Sampler.Absence, 'CoordinateSystem' ):
+                    close('No Absence/CoordinateSystem element in sample points job response', 2)
+                if not hasattr( job.Sampler.Absence, 'Point' ):
+                    close('No Absence/Point element in sample points job response', 2)
+            if mapped_jobs['job2'] == ticket:
+                # Model creation job
+                if not hasattr( job, 'ModelEnvelope' ):
+                    close('No ModelEnvelope element in create model job response', 2)
+                if not hasattr( job.ModelEnvelope, 'SerializedModel' ):
+                    close('No SerializedModel element in create model job response', 2)
+                if not hasattr( job.ModelEnvelope.SerializedModel, 'Algorithm' ):
+                    close('No Algorithm element in create model job response', 2)
+            if mapped_jobs['job3'] == ticket:
+                # Model testing job
+                if not hasattr( job, 'TestResultEnvelope' ):
+                    close('No TestResultEnvelope element in test model job response', 2)
+                if not hasattr( job.TestResultEnvelope, 'Statistics' ):
+                    close('No Statistics element in test model job response', 2)
+                if not hasattr( job.TestResultEnvelope.Statistics, 'ConfusionMatrix' ):
+                    close('No ConfusionMatrix element in test model job response', 2)
+                if not hasattr( job.TestResultEnvelope.Statistics.ConfusionMatrix, '_Threshold' ):
+                    close('No Threshold element in test model job response', 2)
+                threshold = float(job.TestResultEnvelope.Statistics.ConfusionMatrix._Threshold)
+                if threshold < 0.640 or threshold > 0.6405:
+                    # Exact value from openModeller is 0.64038
+                    close('Incorrect LPT threshold in test model job response', 2)
+            if mapped_jobs['job4'] == ticket:
+                # Projection job
+                if not hasattr( job, 'ProjectionEnvelope' ):
+                    close('No ProjectionEnvelope element in project model job response', 2)
+                if not hasattr( job.ProjectionEnvelope, '_url' ):
+                    close('No url attribute in project model job response', 2)
+                if not hasattr( job.ProjectionEnvelope, 'Statistics' ):
+                    close('No Statistics element in project model job response', 2)
+                if not hasattr( job.ProjectionEnvelope.Statistics, 'AreaStatistics' ):
+                    close('No AreaStatistics element in project model job response', 2)
+
+        if verbosity == 3:
+            print 'GetResults: OK'
 
     if verbosity == 3:
         print 'Finished test in',str(int(time.time()-started)),'seconds'
