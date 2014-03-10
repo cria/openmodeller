@@ -3,7 +3,8 @@
 
 
 %!target: html
-%! PostProc(html): '#bullet#' '<span class="bullet">&bull;</span>'
+%!postproc: '(?i)(<head>)' '\1\n<TITLE>openModeller</TITLE>'
+%!postproc: '#bullet#' '<span class="bullet">&bull;</span>'
 %! style: om.css
 %! encoding: utf-8
 

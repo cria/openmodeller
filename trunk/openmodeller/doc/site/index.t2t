@@ -3,7 +3,8 @@
 
 
 %!target: html
-%!postproc(html): '##(img.*)##' '<img src="\1"/>'
+%!postproc: '(?i)(<head>)' '\1\n<TITLE>openModeller</TITLE>'
+%!postproc: '##(img.*)##' '<img src="\1"/>'
 %! style: om.css
 %! encoding: utf-8
 
