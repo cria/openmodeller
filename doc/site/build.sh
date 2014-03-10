@@ -47,7 +47,7 @@ txt2tags -o om_server_2.html ../../src/soap/2.0/om_server.t2t
 
 # Change log
 cp -u ../../ChangeLog ChangeLog
-echo "\n\n\n%!target: html\n%! style: om.css\n%! encoding: utf-8\n%!include: menu.t2t\n==openModeller framework change log==" > changelog.t2t
+echo "\n\n\n%!target: html\n%!postproc: '(?i)(<head>)' '<HEAD><TITLE>openModeller</TITLE>'\n%! style: om.css\n%! encoding: utf-8\n%!include: menu.t2t\n==openModeller framework change log==" > changelog.t2t
 cat ChangeLog >> changelog.t2t
 sed -i 's/\t\*/-/g' changelog.t2t
 sed -i 's/^\(Release.*\)/**\1**/g' changelog.t2t

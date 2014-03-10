@@ -3,7 +3,8 @@
 
 
 %!target: html
-%! PostProc(html): '<HR' '<div style="clear:both;"></div><HR'
+%!postproc: '(?i)(<head>)' '\1\n<TITLE>openModeller</TITLE>'
+%!postproc: '<HR' '<div style="clear:both;"></div><HR'
 %! style: om.css
 %! encoding: utf-8
 

@@ -3,6 +3,7 @@
 
 
 %!target: html
+%!postproc: '(?i)(<head>)' '\1\n<TITLE>openModeller</TITLE>'
 %! style: om.css
 %! encoding: utf-8
 
