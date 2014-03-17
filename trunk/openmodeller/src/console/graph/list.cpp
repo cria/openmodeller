@@ -596,7 +596,7 @@ T
 OrdList<T,K>::remove( T x )
 {
   T elem;
-  for ( head(); elem = get(); next() )
+  for ( head(); (elem = get()) != 0; next() )
     if ( elem == x )
       return( remove() );
 
@@ -829,7 +829,7 @@ T
 DOrdList<T,K>::remove( T x )
 {
   T elem;
-  for ( head(); elem = get(); next() )
+  for ( head(); (elem = get()) != 0; next() )
     if ( elem == x )
       return( remove() );
 
