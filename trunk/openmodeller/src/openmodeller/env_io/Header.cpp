@@ -183,7 +183,7 @@ Header::printHeader( const std::string& msg ) const
   Log::instance()->info( "noval: %.4f\n", noval );
   Log::instance()->info( "band: %d\n", nband );
   Log::instance()->info( "grid: %d\n", grid );
-  Log::instance()->info( "var : %s\n", categ ? "categórica" : "ordenável" );
+  Log::instance()->info( "var : %s\n", categ ? "categorical" : "continuous" );
 
   if ( minmax )
     {
