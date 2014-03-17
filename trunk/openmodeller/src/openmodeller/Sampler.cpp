@@ -614,24 +614,13 @@ SamplerImpl::getPseudoAbsences( const int& numPoints, const Model& model, const 
        point = getPseudoAbsence();
      }
 
-     switch ( geoUnique ) {
+     if ( geoUnique ) {
 
-       case false:
+       if ( envUnique ) {
 
-         if ( envUnique ) {
-
-           if ( isEnvironmentallyUnique( occurrences, point ) && 
-                isEnvironmentallyUnique( _presence, point ) && 
-                isEnvironmentallyUnique( _absence, point ) ) {
-
-             std::ostringstream oss;
-             oss << idSequenceStart+i;
-             point->setId( oss.str() );
-             occurrences->insert( point );
-             i++;
-           }
-         }
-         else {
+         if ( isEnvironmentallyUnique( occurrences, point ) && 
+              isEnvironmentallyUnique( _presence, point ) && 
+              isEnvironmentallyUnique( _absence, point ) ) {
 
            std::ostringstream oss;
            oss << idSequenceStart+i;
@@ -639,39 +628,44 @@ SamplerImpl::getPseudoAbsences( const int& numPoints, const Model& model, const 
            occurrences->insert( point );
            i++;
          }
+       }
+       else {
 
-         break;
+         if ( isSpatiallyUnique( occurrences, point ) && 
+              isSpatiallyUnique( _presence, point ) && 
+              isSpatiallyUnique( _absence, point ) ) {
 
-       case true:
-
-         if ( envUnique ) {
-
-           if ( isEnvironmentallyUnique( occurrences, point ) && 
-                isEnvironmentallyUnique( _presence, point ) && 
-                isEnvironmentallyUnique( _absence, point ) ) {
-
-               std::ostringstream oss;
-               oss << idSequenceStart+i;
-               point->setId( oss.str() );
-               occurrences->insert( point );
-               i++;
-           }
+           std::ostringstream oss;
+           oss << idSequenceStart+i;
+           point->setId( oss.str() );
+           occurrences->insert( point );
+           i++;
          }
-         else {
+       }
+     }
+     else {
 
-           if ( isSpatiallyUnique( occurrences, point ) && 
-                isSpatiallyUnique( _presence, point ) && 
-                isSpatiallyUnique( _absence, point ) ) {
+       if ( envUnique ) {
 
-             std::ostringstream oss;
-             oss << idSequenceStart+i;
-             point->setId( oss.str() );
-             occurrences->insert( point );
-             i++;
-           }
+         if ( isEnvironmentallyUnique( occurrences, point ) && 
+              isEnvironmentallyUnique( _presence, point ) && 
+              isEnvironmentallyUnique( _absence, point ) ) {
+
+           std::ostringstream oss;
+           oss << idSequenceStart+i;
+           point->setId( oss.str() );
+           occurrences->insert( point );
+           i++;
          }
+       }
+       else {
 
-         break;
+         std::ostringstream oss;
+         oss << idSequenceStart+i;
+         point->setId( oss.str() );
+         occurrences->insert( point );
+         i++;
+       }
      }
 
    } while ( i < numPoints );
@@ -701,24 +695,13 @@ SamplerImpl::getPseudoPresences( const int& numPoints, const Model& model, const
        point = getPseudoPresence();
      }
 
-     switch ( geoUnique ) {
+     if ( geoUnique ) {
 
-       case false:
+       if ( envUnique ) {
 
-         if ( envUnique ) {
-
-           if ( isEnvironmentallyUnique( occurrences, point ) && 
-                isEnvironmentallyUnique( _presence, point ) && 
-                isEnvironmentallyUnique( _absence, point ) ) {
-
-             std::ostringstream oss;
-             oss << idSequenceStart+i;
-             point->setId( oss.str() );
-             occurrences->insert( point );
-             i++;
-           }
-         }
-         else {
+         if ( isEnvironmentallyUnique( occurrences, point ) && 
+              isEnvironmentallyUnique( _presence, point ) && 
+              isEnvironmentallyUnique( _absence, point ) ) {
 
            std::ostringstream oss;
            oss << idSequenceStart+i;
@@ -726,39 +709,44 @@ SamplerImpl::getPseudoPresences( const int& numPoints, const Model& model, const
            occurrences->insert( point );
            i++;
          }
+       }
+       else {
 
-         break;
+         if ( isSpatiallyUnique( occurrences, point ) && 
+              isSpatiallyUnique( _presence, point ) && 
+              isSpatiallyUnique( _absence, point ) ) {
 
-       case true:
-
-         if ( envUnique ) {
-
-           if ( isEnvironmentallyUnique( occurrences, point ) && 
-                isEnvironmentallyUnique( _presence, point ) && 
-                isEnvironmentallyUnique( _absence, point ) ) {
-
-               std::ostringstream oss;
-               oss << idSequenceStart+i;
-               point->setId( oss.str() );
-               occurrences->insert( point );
-               i++;
-           }
+           std::ostringstream oss;
+           oss << idSequenceStart+i;
+           point->setId( oss.str() );
+           occurrences->insert( point );
+           i++;
          }
-         else {
+       }
+     }
+     else {
 
-           if ( isSpatiallyUnique( occurrences, point ) && 
-                isSpatiallyUnique( _presence, point ) && 
-                isSpatiallyUnique( _absence, point ) ) {
+       if ( envUnique ) {
 
-             std::ostringstream oss;
-             oss << idSequenceStart+i;
-             point->setId( oss.str() );
-             occurrences->insert( point );
-             i++;
-           }
+         if ( isEnvironmentallyUnique( occurrences, point ) && 
+              isEnvironmentallyUnique( _presence, point ) && 
+              isEnvironmentallyUnique( _absence, point ) ) {
+
+           std::ostringstream oss;
+           oss << idSequenceStart+i;
+           point->setId( oss.str() );
+           occurrences->insert( point );
+           i++;
          }
+       }
+       else {
 
-         break;
+         std::ostringstream oss;
+         oss << idSequenceStart+i;
+         point->setId( oss.str() );
+         occurrences->insert( point );
+         i++;
+       }
      }
 
    } while ( i < numPoints );
@@ -781,24 +769,13 @@ SamplerImpl::getPseudoAbsences( const int& numPoints, const Sample * minimum, co
 
      point = getPseudoAbsenceOutsideInterval( minimum, maximum );
 
-     switch ( geoUnique ) {
+     if ( geoUnique ) {
 
-       case false:
+       if ( envUnique ) {
 
-         if ( envUnique ) {
-
-           if ( isEnvironmentallyUnique( occurrences, point ) && 
-                isEnvironmentallyUnique( _presence, point ) && 
-                isEnvironmentallyUnique( _absence, point ) ) {
-
-             std::ostringstream oss;
-             oss << idSequenceStart+i;
-             point->setId( oss.str() );
-             occurrences->insert( point );
-             i++;
-           }
-         }
-         else {
+         if ( isEnvironmentallyUnique( occurrences, point ) && 
+              isEnvironmentallyUnique( _presence, point ) && 
+              isEnvironmentallyUnique( _absence, point ) ) {
 
            std::ostringstream oss;
            oss << idSequenceStart+i;
@@ -806,39 +783,44 @@ SamplerImpl::getPseudoAbsences( const int& numPoints, const Sample * minimum, co
            occurrences->insert( point );
            i++;
          }
+       }
+       else {
 
-         break;
+         if ( isSpatiallyUnique( occurrences, point ) && 
+              isSpatiallyUnique( _presence, point ) && 
+              isSpatiallyUnique( _absence, point ) ) {
 
-       case true:
-
-         if ( envUnique ) {
-
-           if ( isEnvironmentallyUnique( occurrences, point ) && 
-                isEnvironmentallyUnique( _presence, point ) && 
-                isEnvironmentallyUnique( _absence, point ) ) {
-
-               std::ostringstream oss;
-               oss << idSequenceStart+i;
-               point->setId( oss.str() );
-               occurrences->insert( point );
-               i++;
-           }
+           std::ostringstream oss;
+           oss << idSequenceStart+i;
+           point->setId( oss.str() );
+           occurrences->insert( point );
+           i++;
          }
-         else {
+       }
+     }
+     else {
 
-           if ( isSpatiallyUnique( occurrences, point ) && 
-                isSpatiallyUnique( _presence, point ) && 
-                isSpatiallyUnique( _absence, point ) ) {
+       if ( envUnique ) {
 
-             std::ostringstream oss;
-             oss << idSequenceStart+i;
-             point->setId( oss.str() );
-             occurrences->insert( point );
-             i++;
-           }
+         if ( isEnvironmentallyUnique( occurrences, point ) && 
+              isEnvironmentallyUnique( _presence, point ) && 
+              isEnvironmentallyUnique( _absence, point ) ) {
+
+           std::ostringstream oss;
+           oss << idSequenceStart+i;
+           point->setId( oss.str() );
+           occurrences->insert( point );
+           i++;
          }
+       }
+       else {
 
-         break;
+         std::ostringstream oss;
+         oss << idSequenceStart+i;
+         point->setId( oss.str() );
+         occurrences->insert( point );
+         i++;
+       }
      }
 
    } while ( i < numPoints );
@@ -861,24 +843,13 @@ SamplerImpl::getPseudoPresences( const int& numPoints, const Sample * minimum, c
 
      point = getPseudoPresenceInsideInterval( minimum, maximum );
 
-     switch ( geoUnique ) {
+     if ( geoUnique ) {
 
-       case false:
+       if ( envUnique ) {
 
-         if ( envUnique ) {
-
-           if ( isEnvironmentallyUnique( occurrences, point ) && 
-                isEnvironmentallyUnique( _presence, point ) && 
-                isEnvironmentallyUnique( _absence, point ) ) {
-
-             std::ostringstream oss;
-             oss << idSequenceStart+i;
-             point->setId( oss.str() );
-             occurrences->insert( point );
-             i++;
-           }
-         }
-         else {
+         if ( isEnvironmentallyUnique( occurrences, point ) && 
+              isEnvironmentallyUnique( _presence, point ) && 
+              isEnvironmentallyUnique( _absence, point ) ) {
 
            std::ostringstream oss;
            oss << idSequenceStart+i;
@@ -886,39 +857,44 @@ SamplerImpl::getPseudoPresences( const int& numPoints, const Sample * minimum, c
            occurrences->insert( point );
            i++;
          }
+       }
+       else {
 
-         break;
+         if ( isSpatiallyUnique( occurrences, point ) && 
+              isSpatiallyUnique( _presence, point ) && 
+              isSpatiallyUnique( _absence, point ) ) {
 
-       case true:
-
-         if ( envUnique ) {
-
-           if ( isEnvironmentallyUnique( occurrences, point ) && 
-                isEnvironmentallyUnique( _presence, point ) && 
-                isEnvironmentallyUnique( _absence, point ) ) {
-
-               std::ostringstream oss;
-               oss << idSequenceStart+i;
-               point->setId( oss.str() );
-               occurrences->insert( point );
-               i++;
-           }
+           std::ostringstream oss;
+           oss << idSequenceStart+i;
+           point->setId( oss.str() );
+           occurrences->insert( point );
+           i++;
          }
-         else {
+       }
+     }
+     else {
 
-           if ( isSpatiallyUnique( occurrences, point ) && 
-                isSpatiallyUnique( _presence, point ) && 
-                isSpatiallyUnique( _absence, point ) ) {
+       if ( envUnique ) {
 
-             std::ostringstream oss;
-             oss << idSequenceStart+i;
-             point->setId( oss.str() );
-             occurrences->insert( point );
-             i++;
-           }
+         if ( isEnvironmentallyUnique( occurrences, point ) && 
+              isEnvironmentallyUnique( _presence, point ) && 
+              isEnvironmentallyUnique( _absence, point ) ) {
+
+           std::ostringstream oss;
+           oss << idSequenceStart+i;
+           point->setId( oss.str() );
+           occurrences->insert( point );
+           i++;
          }
+       }
+       else {
 
-         break;
+         std::ostringstream oss;
+         oss << idSequenceStart+i;
+         point->setId( oss.str() );
+         occurrences->insert( point );
+         i++;
+       }
      }
 
    } while ( i < numPoints );
