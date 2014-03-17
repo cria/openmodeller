@@ -379,7 +379,7 @@ AquaMaps::getConvergence( Scalar * const val ) const
 /********************/
 /*** get Progress ***/
 float
-AquaMaps::getProgress( )
+AquaMaps::getProgress() const
 {
   return _progress;
 }
