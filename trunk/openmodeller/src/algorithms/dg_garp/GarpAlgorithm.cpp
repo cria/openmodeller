@@ -315,7 +315,7 @@ float GarpAlgorithm::getProgress() const
 /****************************************************************/
 /****************** getConvergence ******************************/
 
-int GarpAlgorithm::getConvergence( Scalar * const val )
+int GarpAlgorithm::getConvergence( Scalar * const val ) const
 {
   *val = Convergence;
   return 0;
