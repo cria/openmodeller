@@ -71,8 +71,6 @@ private:
   // bioclim histogram
   double * _upperLevels;
   double * _lowerLevels;
-  double _levelResolution;
-  double _maxLevel;
 };
 
 /****************************************************************/
