@@ -9,7 +9,7 @@
  * 
  * Based on Bioclim alg 
  * Copyright(c) 2004 by CRIA -
- * Centro de Referência em Informação Ambiental
+ * Centro de ReferÃªncia em InformaÃ§Ã£o Ambiental
  *
  * http://www.cria.org.br
  * 
@@ -87,7 +87,7 @@ static AlgMetadata metadata = {
  snakes. In: Atlas of Elapid Snakes of Australia. (Ed.) R. Longmore,\
  pp. 4-15. Australian Flora and Fauna Series Number 7. Australian\
  Government Publishing Service: Canberra.\n\n\
- Piñeiro, R., Aguilar, J. F., Munt, D. D. & Feliner, G. N. (2007)\
+ PiÃ±eiro, R., Aguilar, J. F., Munt, D. D. & Feliner, G. N. (2007)\
  Ecology matters: Atlantic-Mediterranean disjunction in the sand-dune\
  shrub Armeria pungens (Plumbaginaceae).\
  Molecular Ecology. 16, 2155-2171.",
