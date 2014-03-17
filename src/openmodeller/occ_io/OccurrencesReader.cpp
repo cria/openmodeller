@@ -104,9 +104,9 @@ OccurrencesReader::getAbsences( const char *groupId )
 /*************/
 /*** print ***/
 void
-OccurrencesReader::printOccurrences( char *msg )
+OccurrencesReader::printOccurrences( const std::string& msg )
 {
-  printf( "%s", msg );
+  printf( "%s", msg.c_str() );
 
   printf( "\nPresences" );
 

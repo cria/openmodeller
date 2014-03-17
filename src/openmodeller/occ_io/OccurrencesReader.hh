@@ -74,7 +74,7 @@ public:
   /** Print the occurrences to cout.
    * @param msg Optional string to be printed before the occurrences.
    */
-  void printOccurrences( char *msg="" );
+  void printOccurrences( const std::string& msg="" );
 
 protected:
 
