@@ -56,7 +56,8 @@ public:
   GColor( GColor &c )  { r = c.r; g = c.g; b = c.b; }
 
   GColor( int red, int green, int blue ) { r=red; g=green; b=blue; }
-  GColor( int grey )                     { r = g = b = grey;  }
+  // Commented out to avoid ctor ambiguity when compiling with clang
+  //GColor( int grey )                     { r = g = b = grey;  }
 
   // In the range [0, 1).
   GColor( double red, double green, double blue );
