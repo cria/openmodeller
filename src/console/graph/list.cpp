@@ -28,6 +28,7 @@
 
 #include <stdio.h>
 #include "list.hh"
+using std::string;
 
 
 /******************************************************/
@@ -390,9 +391,9 @@ DList<T>::clear()
 
 template<class T>
 void
-DList<T>::print( char *top_delimiter, char *bottom_delimiter )
+DList<T>::print( const std::string& top_delimiter, const std::string& bottom_delimiter )
 {
-  printf( "%s", top_delimiter );
+  printf( "%s", top_delimiter.c_str() );
   printf( "size: %d.\n", _size );
   
   TNode *p = _head;
@@ -404,7 +405,7 @@ DList<T>::print( char *top_delimiter, char *bottom_delimiter )
       printf( "  Prev:  %p\n", p->prev );
       printf( "  Prox:  %p\n", p->next );
     }
-  printf( "%s", bottom_delimiter );
+  printf( "%s", bottom_delimiter.c_str() );
 }
 
 
@@ -631,9 +632,9 @@ OrdList<T,K>::clear()
 
 template<class T, class K>
 void
-OrdList<T,K>::print( char *top_delimiter, char *bottom_delimiter )
+OrdList<T,K>::print( const std::string& top_delimiter, const std::string& bottom_delimiter )
 {
-  printf( "%s", top_delimiter );
+  printf( "%s", top_delimiter.c_str() );
   printf( "Order:   %s.\n", _order > 0 ? "asc" : "desc" );
   printf( "size: %d.\n", _size );
   
@@ -647,7 +648,7 @@ OrdList<T,K>::print( char *top_delimiter, char *bottom_delimiter )
       printf( "  Prev:  %p\n", p->prev );
       printf( "  Prox:  %p\n", p->next );
     }
-  printf( "%s", bottom_delimiter );
+  printf( "%s", bottom_delimiter.c_str() );
 }
 
 
@@ -863,9 +864,9 @@ DOrdList<T,K>::clear()
 
 template<class T, class K>
 void
-DOrdList<T,K>::print( char *top_delimiter, char *bottom_delimiter )
+DOrdList<T,K>::print( const std::string& top_delimiter, const std::string& bottom_delimiter )
 {
-  printf( "%s", top_delimiter );
+  printf( "%s", top_delimiter.c_str() );
   printf( "Order:   %s.\n", _order > 0 ? "asc" : "desc" );
   printf( "size: %d.\n", _size );
   
@@ -879,6 +880,6 @@ DOrdList<T,K>::print( char *top_delimiter, char *bottom_delimiter )
       printf( "  Prev:  %p\n", p->prev );
       printf( "  Prox:  %p\n", p->next );
     }
-  printf( "%s", bottom_delimiter );
+  printf( "%s", bottom_delimiter.c_str() );
 }
 

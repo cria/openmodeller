@@ -29,6 +29,7 @@
 
 // Debug
 #include <stdio.h>
+using std::string;
 
 #define Limit(v)  ((v) < 0 ? 0 : (v > MAX_COLOR) ? MAX_COLOR : (v))
 
@@ -129,10 +130,9 @@ GColor::scale( double esc )
 /*************/
 /*** print ***/
 void
-GColor::print( char *msg )
+GColor::print( const std::string& msg )
 {
-  if ( msg )
-    printf( "%s: ", msg );
+  printf( "%s: ", msg.c_str() );
   printf( "(%d, %d, %d)\n", r, g, b );
 }
 
