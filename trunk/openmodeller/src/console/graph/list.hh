@@ -5,7 +5,6 @@
  *       (zero) as input, in other words, ElemType(0) must
  *       exist to represent null elements.
  * 
- * @file
  * @author Mauro E S Munoz, Josue O Freitas Jr
  * @date   1995-10-05
  * $Id$
@@ -34,6 +33,7 @@
 #ifndef _LISTHH_
 #define _LISTHH_
 
+#include <string>
 
 /***************************************************************/
 /************************* Linked List *************************/
@@ -160,7 +160,7 @@ public:
    */
   void  setPos( void *pos )    { _node = (DListNode<T> *) pos; }
 
-  void print( char *top_delimiter="", char *bottom_delimiter="" );
+  void print( const std::string& top_delimiter="", const std::string& bottom_delimiter="" );
 
 
 private:
@@ -230,7 +230,7 @@ public:
   int  size()   { return( _size ); }
   int  length() { return( _size ); }
   
-  void print( char *top_delimiter="", char *bottom_delimiter="" );
+  void print( const std::string& top_delimiter="", const std::string& bottom_delimiter="" );
 
 
 private:
@@ -311,7 +311,7 @@ public:
   int  size()   { return( _size ); }
   int  length() { return( _size ); }
   
-  void print( char *top_delimiter="", char *bottom_delimiter="" );
+  void print( const std::string& top_delimiter="", const std::string& bottom_delimiter="" );
 
 
 private:

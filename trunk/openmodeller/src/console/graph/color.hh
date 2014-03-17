@@ -28,6 +28,7 @@
 #ifndef _COLORHH_
 #define _COLORHH_
 
+#include <string>
 
 #define NUM_COLOR 256          // Maximum value of each color channel.
 #define MAX_COLOR (NUM_COLOR - 1)
@@ -83,7 +84,7 @@ public:
 
 
   // Debug
-  void print( char *msg="" );
+  void print( const std::string& msg="" );
 
 
   int r;  ///< Red
