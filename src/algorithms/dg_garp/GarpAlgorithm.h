@@ -50,7 +50,7 @@ public:
 	int done() const;
 	float getProgress() const;
 	Scalar getValue( const Sample& x ) const;
-	int getConvergence( Scalar * const val );
+	int getConvergence( Scalar * const val ) const;
 	int getGeneration() { return Gen; }
 
 

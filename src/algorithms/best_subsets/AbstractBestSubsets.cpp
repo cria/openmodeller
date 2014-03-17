@@ -557,7 +557,7 @@ Scalar AbstractBestSubsets::getValue( const Sample& x ) const
 /****************************************************************/
 /****************** getConvergence ******************************/
 
-int AbstractBestSubsets::getConvergence( Scalar * const val )
+int AbstractBestSubsets::getConvergence( Scalar * const val ) const
 {
   *val = 0;
   return 0;

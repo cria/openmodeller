@@ -104,7 +104,7 @@ public:
     * @return 
     * @param val 
     */
-  int getConvergence( Scalar * const val );
+  int getConvergence( Scalar * const val ) const;
 
   /*
    */
