@@ -168,9 +168,9 @@ Header::convertLonLat2XY( Coord lon, Coord lat ) const
 /*************/
 /*** print ***/
 void
-Header::printHeader( char *msg ) const
+Header::printHeader( const std::string& msg ) const
 {
-  Log::instance()->info( "%s\n", msg );
+  Log::instance()->info( "%s\n", msg.c_str() );
 
   Log::instance()->info( "xdim: %d\n", xdim );
   Log::instance()->info( "ydim: %d\n", ydim );
