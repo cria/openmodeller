@@ -57,7 +57,7 @@ public:
   float getProgress() const;
   int done() const;
   Scalar getValue( const Sample& x ) const;
-  int getConvergence( Scalar * const val );
+  int getConvergence( Scalar * const val ) const;
 
 private:
   void initTrainer();
