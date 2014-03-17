@@ -64,7 +64,7 @@ public:
   void  setProj( const std::string& projection );
   int   hasProj() const { return (proj.size() > 0); }
 
-  void printHeader( char *msg="" ) const; // conflicts with Python SWIG interface
+  void printHeader( const std::string& msg="" ) const;
 
   std::pair<Coord,Coord> convertXY2LonLat( int x, int y ) const;
   std::pair<int,int> convertLonLat2XY( Coord lon, Coord lat ) const;
