@@ -260,7 +260,11 @@ typedef struct dirent TDirent;
  * libraries.
  */
 #ifdef __APPLE__
+#ifdef __clang__
+int filter( const struct dirent *dir )
+#else
 int filter( TDirent *dir )
+#endif
 #else
 int filter( const TDirent *dir )
 #endif
