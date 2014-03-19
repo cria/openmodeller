@@ -260,6 +260,8 @@ typedef struct dirent TDirent;
  * libraries.
  */
 #ifdef __APPLE__
+// NOTE: The following condition may not necessarily be related with clang,
+//       but with the OS version. Anyway, it worked for clang 3.4 under Mac Mavericks
 #ifdef __clang__
 int filter( const struct dirent *dir )
 #else
