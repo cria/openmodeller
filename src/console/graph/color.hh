@@ -53,7 +53,7 @@ class GColor
 public:
 
   GColor()             { r = g = b = 0; }
-  GColor( GColor &c )  { r = c.r; g = c.g; b = c.b; }
+  GColor( const GColor &c )  { r = c.r; g = c.g; b = c.b; }
 
   GColor( int red, int green, int blue ) { r=red; g=green; b=blue; }
   // Commented out to avoid ctor ambiguity when compiling with clang
