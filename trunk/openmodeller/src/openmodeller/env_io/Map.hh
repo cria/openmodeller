@@ -90,7 +90,7 @@ public:
   int numBand() const  { return _rst->numBand(); }
 
   /** Get the map limits. */
-  int getRegion( Coord *xmin, Coord *ymin, Coord *xmax, Coord *ymax) const;
+  int getExtent( Coord *xmin, Coord *ymin, Coord *xmax, Coord *ymax) const;
 
   /** Map dimensions. */
   int getDim( int *xdim, int *ydim ) const

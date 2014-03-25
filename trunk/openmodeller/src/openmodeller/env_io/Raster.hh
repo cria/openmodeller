@@ -132,7 +132,7 @@ public:
      */
     virtual int put( Coord px, Coord py ) = 0;
 
-	/** Finds the minimum and maximum values in the first band. 
+    /** Finds the minimum and maximum values in the first band. 
      * @param min Pointer to minimum value
      * @param max Pointer to maximum value
      * @return 1 if values are present, 0 otherwise
@@ -157,6 +157,27 @@ public:
      * @return 1 if the raster was successfully deleted, 0 otherwise.
      */
     virtual int deleteRaster()= 0;
+
+    /** Indicates if the raster has a better way to carry out conversions from its
+     *  own coordinate system to the standard system used by openModeller.
+     *  @return true if raster has its own geotransform to convert to standard cs, false otherwise.
+     */
+    virtual bool hasCustomGeotransform() { return false; }
+
+    /** Calculates the raster extent in openModeller's standard coordinate system. 
+     *  IMPORTANT: Call this only if hasCustomGeotransform returns true.
+     *  When interacting with Map objects, use Map.getExtent instead, which encapsulates
+     *  a call to this method when necessary. For some projections, such as lambert azimuth 
+     *  equal area, getting the raster extent through manual coordinate conversion, as was
+     *  usually done in the Map.getExtent, can be problematic. This method provides a way 
+     *  for raster implementations to better perform the task of calculating the extent.
+     * @param xmin Pointer to minimum X value
+     * @param ymin Pointer to minimum Y value
+     * @param xmax Pointer to maximum X value
+     * @param ymax Pointer to maximum Y value
+     * @return 1 if conversion was successful, 0 otherwise.
+     */
+    virtual int getExtentInStandardCs( Coord *xmin, Coord *ymin, Coord *xmax, Coord *ymax ) { return 0; }
 
 protected:
 

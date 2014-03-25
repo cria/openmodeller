@@ -295,7 +295,7 @@ draw_occur( GGraph *graph, Map *map, const OccurrencesPtr& occurs )
 void
 findRegion( int nmap, Map **map, Coord *xmin, Coord *ymin, Coord *xmax, Coord *ymax )
 {
-  map[0]->getRegion( xmin, ymin, xmax, ymax );
+  map[0]->getExtent( xmin, ymin, xmax, ymax );
 }
 
 
