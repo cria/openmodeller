@@ -37,34 +37,11 @@
 
 using std::string;
 
-static bool compareCoordSystemStrings(char const * s1, char const * s2)
-{
- int i = 0, j = 0;
- while (s1[i])
- {
-  // skip spaces in both strings
-  while (s1[i] == ' ') i++;
-  while (s2[j] == ' ') j++; 
-
-  if (s1[i] != s2[j]) {
-    return false;
-  }  
-
-  if (s1[i]) i++;
-  if (s2[j]) j++;
- }
- // skip trailing spaces that s2 might still have
- while (s2[j] == ' ') j++;
-
- // both s1[i] and s2[j] should be NULL to be equal
- return (s1[i] == s2[j]);
-}
-
 
 /****************************************************************/
 /******************** Geographic Transformation *****************/
 
-// Coordinate systems.
+// Default spatial reference system.
 //
 #define OM_WGS84 "GEOGCS[\"WGS84\", DATUM[\"WGS84\", \
   SPHEROID[\"WGS84\", 6378137.0, 298.257223563]], \
@@ -72,9 +49,6 @@ static bool compareCoordSystemStrings(char const * s1, char const * s2)
   UNIT[\"degree\",0.017453292519943295], \
   AXIS[\"Longitude\",EAST], AXIS[\"Latitude\",NORTH]]"
 
-
-
- 
 
 void
 errorHandler( CPLErr eErrClass, int err_no, const char *msg )
@@ -275,8 +249,35 @@ GeoTransform::transfOut( double *x, double *y,
 #endif
 }
 
+/********************/
+/*** getDefaultCS ***/
 const char * GeoTransform::getDefaultCS()
 {
   return OM_WGS84;
 }
 
+
+/*********************************/
+/*** compareCoordSystemStrings ***/
+bool GeoTransform::compareCoordSystemStrings(char const * s1, char const * s2)
+{
+ int i = 0, j = 0;
+ while (s1[i])
+ {
+  // skip spaces in both strings
+  while (s1[i] == ' ') i++;
+  while (s2[j] == ' ') j++; 
+
+  if (s1[i] != s2[j]) {
+    return false;
+  }  
+
+  if (s1[i]) i++;
+  if (s2[j]) j++;
+ }
+ // skip trailing spaces that s2 might still have
+ while (s2[j] == ' ') j++;
+
+ // both s1[i] and s2[j] should be NULL to be equal
+ return (s1[i] == s2[j]);
+}
