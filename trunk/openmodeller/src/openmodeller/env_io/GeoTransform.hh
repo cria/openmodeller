@@ -81,6 +81,9 @@ public:
   // Default coordinate system.
   static char const * getDefaultCS();
 
+  // Compare two coordinate system strings (WKT).
+  static bool compareCoordSystemStrings(char const * s1, char const * s2);
+
 private:
 
   bool identity;
