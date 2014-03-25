@@ -53,7 +53,7 @@ class dllexp GdalRaster : public Raster
 public:
 
   // Empty constructor
-  GdalRaster(): f_data(0), f_size(0), f_format(-1), f_currentRow(-1), f_changed(0) {};
+  GdalRaster(): f_data(0), f_size(0), f_format(-1), f_currentRow(-1), f_changed(0), f_warped_ds(0) {};
 
   /**
   * Open an existing file -- read only.
@@ -126,6 +126,27 @@ public:
    */
   int deleteRaster();
 
+  /** Indicates if the raster has a better way to carry out conversions from its
+   *  own coordinate system to the standard system used by openModeller.
+   *  @return true if raster has its own geotransform to convert to standard cs, false otherwise.
+   */
+  bool hasCustomGeotransform() { return (f_warped_ds == 0) ? false: true; }
+
+  /** Calculates the raster extent in openModeller's standard coordinate system. 
+   *  IMPORTANT: Call this only if hasCustomGeotransform returns true.
+   *  When interacting with Map objects, use Map.getExtent instead, which encapsulates
+   *  a call to this method when necessary. For some projections, such as lambert azimuth 
+   *  equal area, getting the raster extent through manual coordinate conversion, as was
+   *  usually done in the Map.getExtent, can be problematic. This method provides a way 
+   *  for raster implementations to better perform the task of calculating the extent.
+   * @param xmin Pointer to minimum X value
+   * @param ymin Pointer to minimum Y value
+   * @param xmax Pointer to maximum X value
+   * @param ymax Pointer to maximum Y value
+   * @return 1 if conversion was successful, 0 otherwise.
+   */
+  int getExtentInStandardCs( Coord *xmin, Coord *ymin, Coord *xmax, Coord *ymax );
+
 private:
 
   /** Open a raster file. **/
@@ -168,6 +189,10 @@ private:
   // Disable copying.
   GdalRaster( const GdalRaster& );
   GdalRaster& operator=( const GdalRaster& );
+
+  // Warped data set converting to standard openModeller coordinate system.
+  // Only used when the raster cs is different from openModeller's default.
+  GDALDataset *f_warped_ds;
 };
 
 #endif

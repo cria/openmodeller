@@ -666,13 +666,13 @@ EnvironmentImpl::calcRegion()
 
   // The mask region is the default.
   if ( _mask.second )
-    _mask.second->getRegion( &_xmin, &_ymin, &_xmax, &_ymax );
+    _mask.second->getExtent( &_xmin, &_ymin, &_xmax, &_ymax );
 
   // Crop region to fit all layers.
   layers::const_iterator lay = _layers.begin();
   layers::const_iterator end = _layers.end();
   while ( lay != end ) {
-    lay->second->getRegion( &xmin, &ymin, &xmax, &ymax );
+    lay->second->getExtent( &xmin, &ymin, &xmax, &ymax );
     ++lay;
 
     if ( xmin > _xmin )

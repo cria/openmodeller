@@ -58,30 +58,38 @@ Map::~Map()
 
 
 /******************/
-/*** getRegion  ***/
+/*** getExtent  ***/
 int
-Map::getRegion( Coord *xmin, Coord *ymin, Coord *xmax,
-                Coord *ymax) const
+Map::getExtent( Coord *xmin, Coord *ymin, Coord *xmax, Coord *ymax) const
 {
-  *xmin = _rst->xMin();
-  *ymin = _rst->yMin();
-  *xmax = _rst->xMax();
-  *ymax = _rst->yMax();
+  bool result = 0;
 
-  bool result = 
-  _gt->transfOut( xmin, ymin ) &&
-  _gt->transfOut( xmax, ymax );
+  if (_rst->hasCustomGeotransform()) {
 
-  //Log::instance()->debug( "Raster boundaries after geotransform: xmin=%f, xmax=%f, ymin=%f, ymax=%f\n", *xmin, *xmax, *ymin, *ymax );
+    result = _rst->getExtentInStandardCs(xmin, ymin, xmax, ymax);
+  }
+  else {
 
-  if (*xmin > *xmax)
-  {
+    *xmin = _rst->xMin();
+    *ymin = _rst->yMin();
+    *xmax = _rst->xMax();
+    *ymax = _rst->yMax();
+
+    //Log::instance()->debug( "Raster boundaries before geotransform: xmin=%f, xmax=%f, ymin=%f, ymax=%f\n", *xmin, *xmax, *ymin, *ymax );
+
+    result = _gt->transfOut( xmin, ymin ) && _gt->transfOut( xmax, ymax );
+
+    //Log::instance()->debug( "Raster boundaries after geotransform: xmin=%f, xmax=%f, ymin=%f, ymax=%f\n", *xmin, *xmax, *ymin, *ymax );
+  }
+
+  if (*xmin > *xmax) {
+
     *xmin = -180;
     *xmax = 180;
   }
 
-  if (*ymin > *ymax)
-  {
+  if (*ymin > *ymax) {
+
     *ymin = -90;
     *ymax = 90;
   }

@@ -39,6 +39,7 @@
 #include <gdal.h>
 #include <gdal_priv.h>
 #include <cpl_string.h>
+#include <gdalwarper.h>
 
 #include <string.h>
 
@@ -374,7 +375,9 @@ GdalRaster::open( char mode )
   f_hdr.nband = f_ds->GetRasterCount();
 
   // Projection.
-  f_hdr.setProj( (char *) f_ds->GetProjectionRef() );
+  const char * projwkt = (char *)f_ds->GetProjectionRef();
+
+  f_hdr.setProj( projwkt );
 
   if ( ! f_hdr.hasProj() ) {
 
@@ -420,6 +423,14 @@ GdalRaster::open( char mode )
   // Assumes grid (in place of 'pixel').
   // todo: how can I read this with GDAL?
   f_hdr.grid = 0;
+
+  // Create warped data set when coordinate system is different
+  if ( ! GeoTransform::compareCoordSystemStrings( projwkt, GeoTransform::getDefaultCS() ) ) {
+
+    GDALWarpOptions *warpOptions = GDALCreateWarpOptions();
+
+    f_warped_ds = (GDALDataset *)GDALAutoCreateWarpedVRT( f_ds, projwkt, GeoTransform::getDefaultCS(), GRA_NearestNeighbour, 0.0, warpOptions );
+  }
 
   // Initialize the Buffer
   initBuffer();
@@ -929,6 +940,32 @@ GdalRaster::deleteRaster()
   }
 
   f_ds = 0;
+
+  return 1;
+}
+
+/*****************************/
+/*** getExtentInStandardCs ***/
+int
+GdalRaster::getExtentInStandardCs( Coord *xmin, Coord *ymin, Coord *xmax, Coord *ymax )
+{
+  if ( f_warped_ds == 0 ) {
+
+    return 0;
+  }
+
+  GDALRasterBand *band = f_warped_ds->GetRasterBand( 1 );
+
+  int xd = band->GetXSize();
+  int yd = band->GetYSize();
+
+  double cf[6];
+  f_warped_ds->GetGeoTransform( cf );
+
+  *xmin = cf[0];
+  *ymin = cf[3] + xd * cf[4] + yd * cf[5];
+  *xmax = cf[0] + xd * cf[1] + yd * cf[2];
+  *ymax = cf[3];
 
   return 1;
 }
