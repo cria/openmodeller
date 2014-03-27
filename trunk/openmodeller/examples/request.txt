@@ -1,27 +1,41 @@
 #####################
 ### Input section ###
 
-# Coordinate system and projection in WKT format.
+# The following parameter is used to specify the source of your input points. It can be one of
+# the options:
 #
-WKT Coord System = GEOGCS["WGS84", DATUM["WGS84", SPHEROID["WGS84", 6378137.0, 298.257223563]], PRIMEM["Greenwich", 0.0], UNIT["degree", 0.017453292519943295], AXIS["Longitude",EAST], AXIS["Latitude",NORTH]]
-
-# Here you can specify:
-#
-# 1) The location (in your file system) of a TAB-delimited file with a 
-#    list of occurrences. Each line is a record
-#    with: <id> <label> <longitude> <latitude> <abundance>
-# 2) The location (in your file system) of an XML file containing 
+# 1) Location in your file system of a TAB-delimited file with a 
+#    list of occurrences. Each line is a different occurrence record 
+#    with: id label longitude latitude abundance
+#    Values must be exactly in this order. Abundance is optional.
+#    Additional columns can be present and will be ignored.
+#    Don't mix longitude with latitude, or all your points will 
+#    likely end up discarded for falling in a different place.
+#    Always use dot to separate decimals. See the file below
+#    (furcata_boliviana.txt) for a working example.
+# 2) Location in your file system of an XML file containing 
 #    occurrence data following the openModeller serialization format.
-# 3) The GBIF Web Service address to search for occurrence data:
+# 3) GBIF Web Service address to search for occurrence data:
 #    http://data.gbif.org/ws/rest/occurrence/list
-# 4) A TAPIR Web Service address that mapped DarwinCore 1.4, such as the
+# 4) TAPIR Web Service address that mapped DarwinCore 1.4, such as the
 #    speciesLink TAPIR service:
 #    http://tapir.cria.org.br/tapirlink/tapir.php/specieslink
 # 
 Occurrences source = furcata_boliviana.txt
 
-# Only occurrences with this label (group id) will be used.
-# Defaults to the last label found.
+# Spatial reference system (SRS) of all input points in WKT format.
+# If your original points are not in the same SRS, you'll need to choose only one SRS to 
+# use and convert the points that are in a different SRS.
+# WKT means "well-known text". It is a format that can be used to express spatial reference 
+# systems. Check http://spatialreference.org if you're looking for the WKT representation of 
+# a particular SRS.
+# The default value below corresponds to lat long (in decimals), datum WGS84.
+#
+WKT Coord System = GEOGCS["WGS84", DATUM["WGS84", SPHEROID["WGS84", 6378137.0, 298.257223563]], PRIMEM["Greenwich", 0.0], UNIT["degree", 0.017453292519943295], AXIS["Longitude",EAST], AXIS["Latitude",NORTH]]
+
+# Only occurrences with the following label will be used (this means you can have a 
+# single file with points from many different species).
+# When not specified, defaults to the last label found.
 #
 Occurrences group = furcata boliviana
 
@@ -33,12 +47,14 @@ Occurrences group = furcata boliviana
 #
 #Environmentally unique = true
 
-# Maps to be used as environmental variables to generate the model
+# Maps (layers) to be used as environmental variables to generate the model.
+# This will usually be a path to a file or directory in your file system.
 # For TerraLib rasters, use the following pattern:
 # terralib>yourusername>yourpassword@PostgreSQL>localhost>terralib>5432>rain_coolest
 # WCS rasters can be directly accessed with this pattern:
 # wcs>wcs url>wcs layer
 # To specify a categorical map use: Categorical map = 
+# (note: none of the existing algorithms in openModeller can handle categorical maps!).
 #
 Map = rain_coolest.tif
 Map = temp_avg.tif
@@ -51,7 +67,8 @@ Map = temp_avg.tif
 #
 Mask = rain_coolest.tif
 
-# Uncomment the following lines to disable model statistics.
+# Uncomment the following lines to disable model statistics,
+# otherwise they will be calculated by default.
 #
 #Confusion matrix = false
 #AUC = false
@@ -59,31 +76,40 @@ Mask = rain_coolest.tif
 ######################
 ### Output section ###
 
+# Output model name (serialized model).
+#
+Output model = furcata.xml
+
 # File to be used as the output format.
+# openModeller will use the same cell size, SRS and extent of this file
+# in your projected map.
+# You can omit this parameter if you're not going to project your model.
 #
 Output format = rain_coolest.tif
 
 # Maps to be used as environmental variables to project the model
 # to create the output distribution map.
 # To specify a categorical map use: Categorical output map = 
+# Note: the maps can refer to a different geographical region or different 
+# period in time, but the corresponding variables must match the same order
+# of the maps in model creation!
+# You can omit this parameter if you're not going to project your model.
 #
 Output map = rain_coolest.tif
 Output map = temp_avg.tif
 
-# Mask to delimit the region to project the model onto.
+# Mask to delimit the region to project the model.
 # Note: Mask layers need to support nodata value assignment. Masked
 # areas will be those with nodata (areas with zero as data will not 
 # be masked at all).
+# You can omit this parameter if you're not going to project your model.
 #
 Output mask = rain_coolest.tif
-
-# Output model name (serialized model).
-#
-Output model = furcata.xml
 
 # Output file name (projected map).
 # Make sure to use the correct extension as shown in the Output file type
 # documentation shown below!
+# You can omit this parameter if you're not going to project your model.
 #
 Output file = furcata.img
 
@@ -106,6 +132,8 @@ Output file = furcata.img
 # FloatingASC = ARC/Info ASCII grid Floating Point (cell value = suitability value)
 #               NoData will be written as -9999. (*.asc) 
 #
+# You can omit this parameter if you're not going to project your model.
+#
 Output file type = ByteHFA
 
 
@@ -114,9 +142,9 @@ Output file type = ByteHFA
 
 # Id of the algorithm to construct the model
 # and algorithm specific parameters. Only one
-# algorithm can be run at a time. Uncommenting
-# one of the algorithms will make om_console run
-# without asking for additional input.
+# algorithm can be run at a time. You can uncomment
+# one of the algorithms to make om_console run 
+# without prompting for an algorithm choice.
 
 ########
 # AquaMaps
