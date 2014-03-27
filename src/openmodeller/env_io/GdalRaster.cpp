@@ -363,7 +363,7 @@ GdalRaster::open( char mode )
   GDALAccess gmod = (mode == 'w') ? GA_Update : GA_ReadOnly;
 
   // Opens the file.
-  f_ds = (GDALDataset *)GDALOpen( f_file.c_str(), gmod );
+  f_ds = (GDALDataset *)GDALOpenShared( f_file.c_str(), gmod );
 
   if ( ! f_ds ) {
 
