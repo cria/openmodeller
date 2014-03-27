@@ -1,8 +1,8 @@
 #####################
 ### Input section ###
 
-# The following parameter is used to specify the source of your input points. It can be one of
-# the options:
+# The following parameter is used to specify the source of your input points. 
+# It can be one of the options:
 #
 # 1) Location in your file system of a TAB-delimited file with a 
 #    list of occurrences. Each line is a different occurrence record 
@@ -24,26 +24,28 @@
 Occurrences source = furcata_boliviana.txt
 
 # Spatial reference system (SRS) of all input points in WKT format.
-# If your original points are not in the same SRS, you'll need to choose only one SRS to 
-# use and convert the points that are in a different SRS.
-# WKT means "well-known text". It is a format that can be used to express spatial reference 
-# systems. Check http://spatialreference.org if you're looking for the WKT representation of 
-# a particular SRS.
+# If your original points are not in the same SRS, you'll need to choose 
+# only one SRS to use and convert the points that are in a different SRS.
+# WKT means "well-known text". It is a format that can be used to express 
+# spatial reference systems. Check http://spatialreference.org if you're 
+# looking for the WKT representation of a particular SRS.
 # The default value below corresponds to lat long (in decimals), datum WGS84.
 #
 WKT Coord System = GEOGCS["WGS84", DATUM["WGS84", SPHEROID["WGS84", 6378137.0, 298.257223563]], PRIMEM["Greenwich", 0.0], UNIT["degree", 0.017453292519943295], AXIS["Longitude",EAST], AXIS["Latitude",NORTH]]
 
-# Only occurrences with the following label will be used (this means you can have a 
-# single file with points from many different species).
+# Only occurrences with the following label will be used (this means you 
+# can have a single file with points from many different species).
 # When not specified, defaults to the last label found.
 #
 Occurrences group = furcata boliviana
 
-# Uncomment the following line to automatically ignore duplicate points (same coordinates).
+# Uncomment the following line to automatically ignore duplicate points 
+# (same coordinates).
 #
 #Spatially unique = true
 
-# Uncomment the following line to automatically ignore duplicate points (same environment values).
+# Uncomment the following line to automatically ignore duplicate points 
+# (same environment values).
 #
 #Environmentally unique = true
 
@@ -54,7 +56,8 @@ Occurrences group = furcata boliviana
 # WCS rasters can be directly accessed with this pattern:
 # wcs>wcs url>wcs layer
 # To specify a categorical map use: Categorical map = 
-# (note: none of the existing algorithms in openModeller can handle categorical maps!).
+# (note: none of the existing algorithms in openModeller can handle 
+# categorical maps!).
 #
 Map = rain_coolest.tif
 Map = temp_avg.tif
