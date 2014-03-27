@@ -108,6 +108,21 @@ public:
    */
   static std::string getContentIdMd5( const std::string id ); 
 
+  /** Erases cached content identified by the specified id.
+   * @param id Content identifier.
+   * @param subdir Subdirectory inside cache dir. Optional.
+   * @return 0 if it worked, non zero if it failed (errno).
+   */
+  static int eraseCache( const std::string id, const std::string subdir="" );
+
+  /** Erases cached content identified by the specified id. Id is converted
+   *  to an MD5 hash.
+   * @param id Content identifier.
+   * @param subdir Subdirectory inside cache dir. Optional.
+   * @return 0 if it worked, non zero if it failed (errno).
+   */
+  static int eraseCacheMd5( const std::string id, const std::string subdir="" );
+
 private:
 
   CacheManager();

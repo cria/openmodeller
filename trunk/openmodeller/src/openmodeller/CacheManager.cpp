@@ -37,6 +37,7 @@ extern "C" {
 #include <string.h>
 #include <iostream>
 #include <sstream>
+#include <stdio.h>
 
 using namespace std;
 
@@ -275,4 +276,23 @@ CacheManager::getContentIdMd5( const std::string id )
   std::string md5_id( buffer );
 
   return md5_id;
+}
+
+
+/*******************/
+/*** erase Cache ***/
+int 
+CacheManager::eraseCache( const std::string id, const std::string subdir )
+{
+    std::string path = getContentLocation( id, subdir );
+
+    return remove(path.c_str());
+}
+
+/***********************/
+/*** erase Cache md5 ***/
+int 
+CacheManager::eraseCacheMd5( const std::string id, const std::string subdir )
+{
+  return eraseCache( getContentIdMd5( id ), subdir );
 }
