@@ -149,7 +149,7 @@ public:
 
   /** Return 0 if (x,y) falls outside the mask. If there's no 
    *  mask, return != 0 always. */
-  int check( Coord x, Coord y ) const;
+  int checkCoordinates( Coord x, Coord y ) const;
 
   /** Get rectangle that contain all valid points.
    *  If there's a mask, use its rectangle. */
