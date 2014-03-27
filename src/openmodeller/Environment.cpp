@@ -472,7 +472,7 @@ void
 EnvironmentImpl::getUnnormalizedInternal( Sample *sample, Coord x, Coord y ) const
 {
   // layers and the mask, if possible.
-  if ( ! check( x, y ) ) {
+  if ( ! checkCoordinates( x, y ) ) {
 #if defined(DEBUG_GET)
     Log::instance()->debug( "EnvironmentImpl::get() Coordinate (%f,%f) is not in common region\n",x,y);
 #endif
@@ -579,16 +579,16 @@ EnvironmentImpl::getRandom( Coord *xout, Coord *yout ) const
 }
 
 
-/*************/
-/*** check ***/
+/*************************/
+/*** check Coordinates ***/
 int
-EnvironmentImpl::check( Coord x, Coord y ) const
+EnvironmentImpl::checkCoordinates( Coord x, Coord y ) const
 {
   // Accept the point, regardless of mask, if
   // it falls in a common region among all layers.
   if ( x < _xmin || x > _xmax || y < _ymin || y > _ymax ) {
 #if defined(DEBUG_GET)
-    Log::instance()->debug( "EnvironmentImpl::check() Coordinate (%f,%f) not in extent of all regions\n",x,y);
+    Log::instance()->debug( "EnvironmentImpl::checkCoordinates() Coordinate (%f,%f) not in extent of all regions\n",x,y);
 #endif
 
     return 0;
