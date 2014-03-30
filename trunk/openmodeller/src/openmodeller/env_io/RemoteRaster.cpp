@@ -69,88 +69,193 @@ RemoteRaster::createRaster( const string& str, int categ )
   string cached_ref = CacheManager::getContentLocationMd5( str, OM_REMOTE_RASTER_SUBDIR );
   string cache_id = CacheManager::getContentIdMd5( str );
 
+  // Check if file is being downloaded (presence of lock file)
+  std::string lock_file = cache_id;
+  lock_file.append(".lock");
+
+  if ( CacheManager::isCached( lock_file, OM_REMOTE_RASTER_SUBDIR ) ) {
+
+    Log::instance()->debug( "Ongoing concurrent download\n" );
+    throw RasterException( "Ongoing concurrent download", 1 );
+  }
+
   if ( CacheManager::isCachedMd5( str, OM_REMOTE_RASTER_SUBDIR ) ) {
 
     Log::instance()->debug( "Layer %s already present in local cache (%s)\n", str.c_str(), cache_id.c_str() );
+
+    GdalRaster::createRaster( cached_ref, categ );
+
+    // TODO: send HEADER request to check if remote file has changed.
+    //       (or always try to retrieve file anyway, but including If-Modified-Since and handling 304 code)
   }
   else {
 
-    if ( _isFromRejectedSource( str ) ) {
+    if ( isFromRejectedSource( str ) ) {
 
       std::string msg = "Untrusted source for remote raster. Aborting operation.\n";
       Log::instance()->error( msg.c_str() );
       throw RasterException( msg.c_str() );
     }
 
-    Log::instance()->debug( "Fetching remote raster %s (%s)...\r", str.c_str(), cache_id.c_str() );
+    std::string retries_file = cache_id;
+    retries_file.append(".tries");
 
-    CURL *curl;
+    std::string retries_fullpath = CacheManager::getContentLocation( retries_file, OM_REMOTE_RASTER_SUBDIR );
+    int num_retries = 0;
 
-    static CacheFile file_data;
-    file_data.fileName = cached_ref.c_str();
-    file_data.stream = NULL;
+    // Check number of previous attempts
+    if ( CacheManager::isCached( retries_file, OM_REMOTE_RASTER_SUBDIR ) ) {
 
-    curl_global_init( CURL_GLOBAL_DEFAULT );
+      fstream fin;
+      fin.open( retries_fullpath.c_str(), ios::in );
 
-    curl = curl_easy_init();
+      if ( fin.is_open() ) {
 
-    if ( curl ) {
+        ostringstream oss;
+        string line;
 
-      if ( CURLE_OK != curl_easy_setopt( curl, CURLOPT_URL, str.c_str() ) ) {
+        getline( fin, line );
+        oss << line << endl;
 
-        std::string msg = "Could not configure remote raster fetcher.\n";
-        Log::instance()->error( msg.c_str() );
-        throw RasterException( msg.c_str() );
+        // Note: if the content is empty, atoi returns 0
+        num_retries = atoi( oss.str().c_str() );
+
+        fin.close();
+      }
+      else {
+
+        throw RasterException( "Could not determine number of previous download retries." );
       }
 
-      // Enable following redirections
-      curl_easy_setopt( curl, CURLOPT_FOLLOWLOCATION, 1 );
-      curl_easy_setopt( curl, CURLOPT_MAXREDIRS, 5 );
+      if ( num_retries > 3 ) {
 
-      // Timeout (30s)
-      curl_easy_setopt( curl, CURLOPT_TIMEOUT, 30 );
+        CacheManager::eraseCache( retries_file, OM_REMOTE_RASTER_SUBDIR );
+        throw RasterException( "Too many attempts to fetch raster. Aborting." );
+      }
+    }
 
-      /* NOSIGNAL should be set to true for timeout to work in multithread
-       * environments on Unix, requires libcurl 7.10 or more recent.
-       * (this force avoiding the use of signal handlers)
-       */
+    // Fetch file
+    try {
+
+      // Last minute double check
+      if ( CacheManager::isCached( lock_file, OM_REMOTE_RASTER_SUBDIR ) ) {
+
+        throw RasterException( "Ongoing concurrent download", 1 );
+      }
+
+      // Create lock file
+      ostringstream oss (ostringstream::out);
+      CacheManager::cache( lock_file, oss, OM_REMOTE_RASTER_SUBDIR );
+
+      // Increase number of retries
+      FILE *p_file = NULL;
+      p_file = fopen( retries_fullpath.c_str(), "w" );
+
+      if ( p_file == NULL ) {
+
+        // Could not open file
+        throw RasterException( "Could not store number of download retries." );
+      }
+      else {
+
+        ++num_retries;
+        char buffer[2];
+        sprintf( buffer, "%d", num_retries );
+        fputs( buffer, p_file );
+        fclose( p_file );
+      }
+
+      // Finally fetch raster
+      Log::instance()->debug( "Fetching remote raster %s (%s)...\n", str.c_str(), cache_id.c_str() );
+
+      CURL *curl;
+
+      static CacheFile file_data;
+      file_data.fileName = cached_ref.c_str();
+      file_data.stream = NULL;
+
+      curl_global_init( CURL_GLOBAL_DEFAULT );
+
+      curl = curl_easy_init();
+
+      if ( curl ) {
+
+        if ( CURLE_OK != curl_easy_setopt( curl, CURLOPT_URL, str.c_str() ) ) {
+
+          std::string msg = "Could not configure remote raster fetcher.\n";
+          Log::instance()->error( msg.c_str() );
+          throw RasterException( msg.c_str() );
+        }
+
+        // Enable following redirections
+        curl_easy_setopt( curl, CURLOPT_FOLLOWLOCATION, 1 );
+        curl_easy_setopt( curl, CURLOPT_MAXREDIRS, 5 );
+
+        // Timeout (30s)
+        curl_easy_setopt( curl, CURLOPT_TIMEOUT, 30 );
+
+        /* NOSIGNAL should be set to true for timeout to work in multithread
+         * environments on Unix, requires libcurl 7.10 or more recent.
+         * (this force avoiding the use of signal handlers)
+         */
 #ifdef CURLOPT_NOSIGNAL
-      curl_easy_setopt( curl, CURLOPT_NOSIGNAL, 1 );
+        curl_easy_setopt( curl, CURLOPT_NOSIGNAL, 1 );
 #endif
 
-      curl_easy_setopt( curl, CURLOPT_WRITEFUNCTION, &RemoteRaster::_writeData );
-      curl_easy_setopt( curl, CURLOPT_WRITEDATA, &file_data );
-      //curl_easy_setopt( curl, CURLOPT_VERBOSE, 1 );
+        curl_easy_setopt( curl, CURLOPT_WRITEFUNCTION, &RemoteRaster::_writeData );
+        curl_easy_setopt( curl, CURLOPT_WRITEDATA, &file_data );
+        //curl_easy_setopt( curl, CURLOPT_VERBOSE, 1 );
 
-      CURLcode res = curl_easy_perform( curl );
+        CURLcode res = curl_easy_perform( curl );
 
-      curl_easy_cleanup( curl );
+        curl_easy_cleanup( curl );
 
-      if ( file_data.stream ) {
+        if ( file_data.stream ) {
 
-        fclose( file_data.stream );
+          fclose( file_data.stream );
+        }
+
+        curl_global_cleanup();
+
+        if ( CURLE_OK != res ) {
+
+          std::string msg = "Could not fetch remote raster.\n";
+          Log::instance()->error( msg.c_str() );
+          throw RasterException( msg.c_str() );
+        }
       }
+      else {
 
-      curl_global_cleanup();
-
-      if ( CURLE_OK != res ) {
-
-        std::string msg = "Could not fetch remote raster.\n";
+        std::string msg = "Could not initialize remote raster fetcher.\n";
         Log::instance()->error( msg.c_str() );
         throw RasterException( msg.c_str() );
       }
-    }
-    else {
 
-      std::string msg = "Could not initialize remote raster fetcher.\n";
-      Log::instance()->error( msg.c_str() );
-      throw RasterException( msg.c_str() );
-    }
+      Log::instance()->debug( "Done!\n", str.c_str(), cache_id.c_str() );
 
-    Log::instance()->debug( "Fetching remote raster %s (%s)...done\n", str.c_str(), cache_id.c_str() );
+      GdalRaster::createRaster( cached_ref, categ );
+
+      // Erase lock and retries
+      CacheManager::eraseCache( lock_file, OM_REMOTE_RASTER_SUBDIR );
+      CacheManager::eraseCache( retries_file, OM_REMOTE_RASTER_SUBDIR );
+    }
+    catch ( RasterException& e ) {
+
+      if ( e.getCode() != 1 ) {
+
+        // Erase lock
+        CacheManager::eraseCache( lock_file, OM_REMOTE_RASTER_SUBDIR );
+      }
+
+      throw;
+    }
+    catch (...) {
+
+      // Erase lock
+      CacheManager::eraseCache( lock_file, OM_REMOTE_RASTER_SUBDIR );
+      throw;
+    }
   }
-
-  GdalRaster::createRaster( cached_ref, categ );
 }
 
 #ifdef MPI_FOUND
@@ -232,10 +337,10 @@ RemoteRaster::_writeData( void *buffer, size_t size, size_t nmemb, void *stream 
   return fwrite( buffer, size, nmemb, out->stream );
 }
 
-/*************************/
-/*** Callback for curl ***/
+/*******************************/
+/*** is From Rejected Source ***/
 bool
-RemoteRaster::_isFromRejectedSource( const std::string& str ) {
+RemoteRaster::isFromRejectedSource( const std::string& str ) {
 
   // Remote sources are untrusted by default
 

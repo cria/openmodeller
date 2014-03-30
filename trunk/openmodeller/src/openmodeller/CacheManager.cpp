@@ -208,7 +208,7 @@ CacheManager::cache( const std::string id, const std::ostringstream& content, co
   }
   else {
 
-    Log::instance()->error( "Could not cache content for %s.\n", id.c_str() );
+    Log::instance()->error( "Could not cache content for %s\n", id.c_str() );
     throw FileIOException( "Could not cache content\n", id );
   }
 }

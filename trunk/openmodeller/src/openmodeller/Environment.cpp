@@ -108,12 +108,13 @@ EnvironmentImpl::getLayerConfig( const layer& l, bool basicConfig ) {
 }
 
 EnvironmentImpl::layer
-EnvironmentImpl::makeLayer( const ConstConfigurationPtr& config ) {
+EnvironmentImpl::makeLayer( const ConstConfigurationPtr& config, Map *map ) {
 
   string filename = config->getAttribute( "Id" );
-  int categ = config->getAttributeAsInt( "IsCategorical", 0 );
+  // map should already have the categorical attribute set!
+  //int categ = config->getAttributeAsInt( "IsCategorical", 0 );
 
-  layer l = makeLayer( filename, categ );
+  layer l = makeLayer( filename, map );
 
   try {
 
@@ -140,9 +141,15 @@ EnvironmentImpl::makeLayer( const ConstConfigurationPtr& config ) {
 EnvironmentImpl::layer
 EnvironmentImpl::makeLayer( const string& filename, int categ ) {
 
-  layer l;
-
   Map *map = new Map( RasterFactory::instance().create( filename, categ ) );
+
+  return makeLayer( filename, map );
+}
+
+EnvironmentImpl::layer
+EnvironmentImpl::makeLayer( const string& filename, Map *map ) {
+
+  layer l;
 
   if ( !map ) {
 
@@ -305,30 +312,136 @@ EnvironmentImpl::setConfiguration( const ConstConfigurationPtr & config )
   clearMask();
   clearLayers();
 
+  // Store configuration references for each layer
+  // Important: users can mix continuous and categorical layers, but oM
+  //            requires categorical layers to be first, so having two
+  //            vectors can handle this.
+  std::vector<ConstConfigurationPtr> categ_layer_confs;
+  std::vector<ConstConfigurationPtr> cont_layer_confs;
+
+  // Need to have separate containers, since loadLayers requires
+  // knowing if the layer is categorical or not.
+  std::vector<string> categ_layer_ids;
+  std::vector<Map*> categ_layer_refs;
+  std::vector<string> cont_layer_ids;
+  std::vector<Map*> cont_layer_refs;
+
+  // Mask config
+  ConstConfigurationPtr mask_conf = config->getSubsection( "Mask", false );
+  std::vector<string> mask_id;
+  std::vector<Map*> mask_ref;
+
   // Suck in all the filenames.
   Configuration::subsection_list subs = config->getAllSubsections();
   Configuration::subsection_list::const_iterator it = subs.begin();
   while( it != subs.end() ) {
 
     string subname = (*it)->getName();
+    string id = (*it)->getAttribute("Id");
 
-    // Call makeLayer with the config object! This implementation is more complete
-    // than just calling it with id and categorical attributes.
-    layer l = makeLayer( (*it) );
+    if ( subname == "Mask" && mask_id.size() == 0 ) {
 
-    if ( subname == "Mask" ) {
+      // Mask
 
-      _mask = l;
+      mask_id.push_back(id);
+      mask_ref.push_back(0);
     }
-    else if ( l.second ) {
+    else {
 
-      _layers.push_back( l );
+      // Environmental layer
+
+      int categ = (*it)->getAttributeAsInt( "IsCategorical", 0 );
+
+      if ( categ == 0 ) {
+
+        cont_layer_ids.push_back(id);
+        cont_layer_refs.push_back(0);
+        const ConstConfigurationPtr lconf = (*it);
+        cont_layer_confs.push_back(lconf);
+      }
+      else {
+
+        categ_layer_ids.push_back(id);
+        categ_layer_refs.push_back(0);
+        const ConstConfigurationPtr lconf = (*it);
+        categ_layer_confs.push_back(lconf);
+      }
     }
 
     ++it;
   }
 
+  loadLayers( categ_layer_ids, categ_layer_refs, 1 );
+  loadLayers( cont_layer_ids, cont_layer_refs, 0 );
+
+  // Fill _layers attribute
+  for( unsigned int i = 0; i< categ_layer_confs.size(); i++ ) {
+
+    // Call makeLayer with the config object! This implementation is more complete
+    // than just calling it with id and categorical attributes.
+    _layers.push_back( makeLayer( categ_layer_confs[i], categ_layer_refs[i] ) );
+  }
+
+  for( unsigned int i = 0; i< cont_layer_confs.size(); i++ ) {
+
+    // Call makeLayer with the config object! This implementation is more complete
+    // than just calling it with id and categorical attributes.
+    _layers.push_back( makeLayer( cont_layer_confs[i], cont_layer_refs[i] ) );
+  }
+
+  // Assign mask
+  if ( mask_id.size() ) {
+
+    loadLayers( mask_id, mask_ref, 0 );
+    _mask = makeLayer( mask_conf, mask_ref[0] );
+  }
+
   calcRegion();
+}
+
+/*******************/
+/*** load Layers ***/
+void
+EnvironmentImpl::loadLayers( const std::vector<string>& map_ids, std::vector<Map*>& map_refs, int categ )
+{
+  bool unfinished_loading = true;
+  bool got_one = false;
+
+  while ( unfinished_loading ) {
+
+    unfinished_loading = false;
+    got_one = false;
+
+    for( unsigned int i = 0; i< map_ids.size(); i++ ) {
+
+      if ( map_refs[i] == 0 ) {
+
+        try {
+
+          map_refs[i] = new Map( RasterFactory::instance().create( map_ids[i], categ ) );
+          got_one = true;
+        }
+        catch ( RasterException& e ) {
+
+          if ( e.getCode() == 1 ) {
+
+            // layer is being downloaded by other process, 
+            // so skip it for now and try others
+            unfinished_loading = true;
+          }
+          else {
+
+            throw;
+          }
+        }
+      }
+    }
+
+    if ( unfinished_loading && !got_one ) {
+
+      Sleep(5000);
+    }
+  }
 }
 
 /*********************/
@@ -342,14 +455,35 @@ EnvironmentImpl::changeLayers( const std::vector<std::string>& categs,
 
   clearLayers();
 
-  // Categorical maps.
+  // STL maps with layer ids (unique) pointing to Map*s
+
+  // categorical data
+  std::vector<Map*> categ_layer_refs;
   for( unsigned int i = 0; i< categs.size(); i++ ) {
-    _layers.push_back( makeLayer( categs[i], 1 ) );
+
+    categ_layer_refs.push_back(0);
   }
 
-  // Copy continuos maps.
+  loadLayers( categs, categ_layer_refs, 1 );
+
+  // continuous data
+  std::vector<Map*> cont_layer_refs;
   for( unsigned int i = 0; i< maps.size(); i++ ) {
-    _layers.push_back( makeLayer( maps[i], 0 ) );
+
+    cont_layer_refs.push_back(0);
+  }
+
+  loadLayers( maps, cont_layer_refs, 0 );
+
+  // Fill _layers attribute
+  for( unsigned int i = 0; i< categs.size(); i++ ) {
+
+    _layers.push_back( makeLayer(categs[i], categ_layer_refs[i]) );
+  }
+
+  for( unsigned int i = 0; i< maps.size(); i++ ) {
+
+    _layers.push_back( makeLayer(maps[i], cont_layer_refs[i]) );
   }
 
   calcRegion();
@@ -370,7 +504,30 @@ EnvironmentImpl::changeMask( const std::string& mask_file )
   // New mask
   if ( !mask_file.empty() ) {
 
-    _mask = makeLayer( mask_file, 0 );
+    bool unfinished_loading = true;
+  
+    while ( unfinished_loading ) {
+
+      unfinished_loading = false;
+
+      try {
+
+        _mask = makeLayer( mask_file, 0 );
+      }
+      catch ( RasterException& e ) {
+
+        if ( e.getCode() == 1 ) {
+
+          // mask is being downloaded by other process
+          unfinished_loading = true;
+          Sleep(5000);
+        }
+        else {
+
+          throw;
+        }
+      }
+    }
 
     if ( !_mask.second ) {
 

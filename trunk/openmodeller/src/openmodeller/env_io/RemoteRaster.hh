@@ -116,6 +116,10 @@ public:
    */
   int deleteRaster();
 
+  /** Indicates if a remote raster comes from an untrusted source.
+   */
+  static bool isFromRejectedSource( const std::string& str );
+
 private:
 
   // Disable copying.
@@ -125,10 +129,6 @@ private:
   /** Callback method for CURL when fetching data.
    */
   static size_t _writeData(void *buffer, size_t size, size_t nmemb, void *stream);
-
-  /** Indicates if raster comes from an untrusted source.
-   */
-  bool _isFromRejectedSource( const std::string& str );
 };
 
 #endif

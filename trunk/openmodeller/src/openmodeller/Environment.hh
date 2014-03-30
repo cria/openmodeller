@@ -202,10 +202,15 @@ private:
      Is a member function so it can access the private typedefs. */
   static ConfigurationPtr getLayerConfig( const layer& l, bool basicConfig=false );
 
+  /* load specified layers. Zeros in map_refs are populated with Map instances based on the
+     corresponding ids in the other vector */
+  static void loadLayers( const std::vector<std::string>& map_ids, std::vector<Map*>& map_refs, int categ=0 );
+
   /* utility to construct a layer pair object.
      It is declared a member so it has access to the private typedef for layer */
+  static layer makeLayer( const ConstConfigurationPtr& config, Map *map );
   static layer makeLayer( const std::string& filename, int categ );
-  static layer makeLayer( const ConstConfigurationPtr& config );
+  static layer makeLayer( const std::string& filename, Map *map );
 
   /** Rebuild the layer representation. */
   int changeLayers( const std::vector<std::string>& categs, 
