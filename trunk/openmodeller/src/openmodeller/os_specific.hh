@@ -67,6 +67,16 @@
 #endif
 
 /****************************************************************/
+/****** Sleep function (millisenconds) **************************/
+#ifdef WIN32
+#include <windows.h>
+#else
+#include <unistd.h>
+#define Sleep(x) usleep((x)*1000)
+#endif
+
+
+/****************************************************************/
 /********************* Dynamic Linking Loader *******************/
 
 #ifdef WIN32 
