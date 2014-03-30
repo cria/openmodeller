@@ -137,9 +137,17 @@ public:
 //
 class RasterException : public OmException {
 public:
-  RasterException( const std::string& msg ) :
-    OmException( msg )
+  RasterException( const std::string& msg, int code=0 ) :
+    OmException( msg ),
+    code( code )
   {}
+  ~RasterException() throw() {}
+  int getCode() {
+    return code;
+  }
+private:
+  // 1= ongoing concurrent download of remote raster
+  int code;
 };
 
 //
