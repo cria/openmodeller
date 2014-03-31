@@ -1,6 +1,6 @@
 Release 1.4.0 (2014-03-31)
 
-SVN revision: 5954
+SVN revision: 5955
 
 	* New CONSENSUS algorithm that can be used to generate models with different algorithms by converting each individual model into a binary model given a threshold and then "merging" them into a final combined model according to a specified level of agreement.
 	* Upgraded gSOAP version being used by OMWS to 2.8.15.
