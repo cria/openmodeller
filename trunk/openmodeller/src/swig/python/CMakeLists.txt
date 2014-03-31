@@ -14,11 +14,14 @@ SWIG_ADD_MODULE(om python om_python.i)
 SWIG_LINK_LIBRARIES(om ${PYTHON_LIBRARIES} openmodeller)
 
 # Find Python modules installation dir
+GET_FILENAME_COMPONENT(PYTHON_LIB_INSTALL ${PYTHON_LIBRARY} PATH)
+MESSAGE(STATUS "Detected Python library dir: ${PYTHON_LIB_INSTALL}")
 EXECUTE_PROCESS (
    COMMAND ${PYTHON_EXECUTABLE} -c
-   	"import site, sys; sys.stdout.write(site.PREFIXES[-1])"
+   	"import sys; p=\"${PYTHON_LIB_INSTALL}\"; pp = p.split('/'); pr=pp[:-1] ; sys.stdout.write('/'.join(pr))"
    OUTPUT_VARIABLE PYTHON_PREFIX
 )
+MESSAGE(STATUS "Calculated Python prefix: ${PYTHON_PREFIX}")
 EXECUTE_PROCESS (
    COMMAND ${PYTHON_EXECUTABLE} -c
    	"import sys; from distutils.sysconfig import get_python_lib; sys.stdout.write(get_python_lib())"
@@ -28,7 +31,7 @@ STRING ( REGEX REPLACE "^${PYTHON_PREFIX}/" ""
    PYTHON_SITEDIR "${PYTHON_SITEDIR}"
 )
 
-MESSAGE(STATUS "Setting Python site packages dir to: ${PYTHON_SITEDIR}")
+MESSAGE(STATUS "Setting Python site packages relative dir to: ${PYTHON_SITEDIR}")
 
 INSTALL(FILES ${CMAKE_CURRENT_BINARY_DIR}/om.py DESTINATION ${PYTHON_SITEDIR} COMPONENT library)
 INSTALL(TARGETS _om LIBRARY DESTINATION ${PYTHON_SITEDIR})
