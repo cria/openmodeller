@@ -236,7 +236,7 @@ class test_Configuration : public CxxTest :: TestSuite
       }
       A->addNameValue("SampleAttr",*g);
        *e = 3.1415;
-       A->addNameValue("DoubleAttr",*e);
+       A->addNameValue("DoubleAttr",*e,5);
        *c = 42;
        A->addNameValue("IntAttr",*c);
        *a = "String Value";
@@ -489,6 +489,7 @@ class test_Configuration : public CxxTest :: TestSuite
       TS_FAIL( "No Exception Thrown" );
       }
       catch( XmlParseException& e ) {
+      std::cout << "Correct exception" << std::endl;
       TS_ASSERT(true);
       }
       catch( ... ) {
@@ -506,6 +507,7 @@ class test_Configuration : public CxxTest :: TestSuite
       TS_FAIL( "No Exception Thrown" );
       }
       catch( XmlParseException& e ) {
+      std::cout << "Correct exception" << std::endl;
       TS_ASSERT(true);
       }
       catch( ... ) {
