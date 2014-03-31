@@ -16,7 +16,7 @@
 !define PRODUCT_UNINST_KEY "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PRODUCT_NAME}"
 !define PRODUCT_UNINST_ROOT_KEY "HKLM"
 !define PRODUCT_STARTMENU_REGVAL "NSIS:StartMenuDir"
-!define PRODUCT_VERSION "1.3.0"
+!define PRODUCT_VERSION "1.4.0"
 
 ; This is where cmake builds and installs to - no space separating name and version
 !define BUILD_DIR "C:\Arquivos de Programas\${PRODUCT_NAME} ${PRODUCT_VERSION}"
