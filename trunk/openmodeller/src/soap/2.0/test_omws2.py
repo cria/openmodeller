@@ -696,7 +696,7 @@ try:
     #####  RUN EXPERIMENT
     ###################################
     if run_experiment:
-        mapped_jobs = {'job1':'', 'job2':'', 'job3':'', 'job4':''}
+        mapped_jobs = {'job1':'', 'job2':'', 'job3':'', 'job4':'', 'job5':''}
         exp_params = Element('ExperimentParameters')
         exp_params.applyns( (None, xml_ns) )
         ## Environment
@@ -839,6 +839,8 @@ try:
             close('No Jobs found in runExperiment response', 2)
 
         for job in exp_response.Job:
+            if not mapped_jobs.has_key(job._id):
+                close('Unknown job id ('+job._id+'). Job ids must match ids provided in the request (in this case: '+', '.join(mapped_jobs.keys())+')', 2)
             mapped_jobs[job._id] = job._Ticket
 
         if len( mapped_jobs ) == 0:
