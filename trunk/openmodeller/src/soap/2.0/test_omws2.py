@@ -835,32 +835,27 @@ try:
 
         exp_response = call_operation(soap_client.service, 'runExperiment', exp_params)
 
-        tickets = []
-
         if not hasattr( exp_response, 'Job' ):
             close('No Jobs found in runExperiment response', 2)
 
         for job in exp_response.Job:
-            tickets.append( job._Ticket )
+            mapped_jobs[job._id] = job._Ticket
 
-        if len( tickets ) == 0:
+        if len( mapped_jobs ) == 0:
             close('No tickets found in runExperiment response', 2)
 
         if verbosity == 3:
-            print 'RunExperiment: OK','( tickets:',', '.join(tickets),')'
+            print 'RunExperiment: OK','( tickets:',', '.join(mapped_jobs.values()),')'
 
         # Keep running until all jobs are finished
-        cnt = 0
-        for ticket in tickets:
-            cnt += 1
-            mapped_jobs['job'+str(cnt)] = ticket
+        for job,ticket in mapped_jobs.items():
             track_progress(soap_client, 'runExperiment', ticket)
             if verbosity == 3:
                 print 'Finished',ticket
 
         #####  GET RESULTS
         ###################################
-        results = call_operation(soap_client.service, 'getResults', ','.join(tickets))
+        results = call_operation(soap_client.service, 'getResults', ','.join(mapped_jobs.values()))
 
         if not hasattr( results, 'Job' ):
             close('No Jobs found in getResults response', 2)
