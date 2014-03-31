@@ -21,7 +21,7 @@ EXECUTE_PROCESS (
 )
 EXECUTE_PROCESS (
    COMMAND ${PYTHON_EXECUTABLE} -c
-   	"import site, sys; sys.stdout.write(site.getsitepackages()[-1])"
+   	"import sys; from distutils.sysconfig import get_python_lib; sys.stdout.write(get_python_lib())"
    OUTPUT_VARIABLE PYTHON_SITEDIR
 )
 STRING ( REGEX REPLACE "^${PYTHON_PREFIX}/" ""
