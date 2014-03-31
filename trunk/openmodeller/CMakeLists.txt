@@ -104,7 +104,7 @@ ELSE(WIN32 AND NOT UNIX)
   SET(CPACK_SOURCE_PACKAGE_FILE_NAME "libopenmodeller-src-${OM_MAJOR_VERSION}.${OM_MINOR_VERSION}.${OM_PATCH_VERSION}")
   SET(CPACK_SOURCE_GENERATOR "TGZ;TBZ2;ZIP")
   SET(CPACK_SOURCE_STRIP_FILES "")
-  SET(CPACK_SOURCE_IGNORE_FILES "/\\\\.svn/;/install_win/;/install_linux/;/install_mac/;/debian/;/windows/;/src/swig/java/;/doc/.*\\\\.txt;/doc/.*\\\\.dia;/doc/.*\\\\.dox;/doc/.*\\\\.png;/doc/.*\\\\.sh;/doc/.*\\\\.t2t;/doc/.*\\\\.py;/doc/.*\\\\.pdf;/doc/.*\\\\.css;/doc/openModeller\\\\.doxygen;/libopenmodeller\\\\.spec;.*~")
+  SET(CPACK_SOURCE_IGNORE_FILES "/\\\\.svn/;/install_win/;/install_linux/;/install_mac/;/debian/;/windows/;/src/swig/java/;/doc/.*\\\\.txt;/doc/.*\\\\.dia;/doc/.*\\\\.vue;/doc/.*\\\\.dox;/doc/.*\\\\.png;/doc/.*\\\\.sh;/doc/site/;/doc/.*\\\\.py;/doc/.*\\\\.pdf;/doc/.*\\\\.css;/doc/openModeller\\\\.doxygen;/libopenmodeller\\\\.spec;.*~")
 ENDIF(WIN32 AND NOT UNIX)
 
 INCLUDE(CPack)
