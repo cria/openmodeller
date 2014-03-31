@@ -62,7 +62,7 @@ Map::~Map()
 int
 Map::getExtent( Coord *xmin, Coord *ymin, Coord *xmax, Coord *ymax) const
 {
-  bool result = 0;
+  int result = 0;
 
   if (_rst->hasCustomGeotransform()) {
 
