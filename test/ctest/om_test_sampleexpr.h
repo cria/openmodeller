@@ -101,7 +101,7 @@ class test_sampleexpr : public CxxTest :: TestSuite
       std::cout << "Testing SampleExpr Nested Unary Test 2 ..." << std::endl;
       *c = sqr(sqrt(*a));
       for( unsigned int i=0; i<a->size(); ++i){
-      TS_ASSERT_DELTA((*c)[i],std::sqrt((*a)[i])*std::sqrt((*a)[i]),1e-15);
+      TS_ASSERT_DELTA((*c)[i],std::sqrt((*a)[i])*std::sqrt((*a)[i]),1e-4);
       }
     }
 
@@ -119,7 +119,7 @@ class test_sampleexpr : public CxxTest :: TestSuite
       std::cout << "Testing SampleExpr Nested Unary Test 4 ..." << std::endl;
       *c = sqr( - sqrt(*a) );
       for( unsigned int i=0; i<a->size(); ++i){
-      TS_ASSERT_DELTA((*c)[i],std::sqrt((*a)[i])*std::sqrt((*a)[i]),1e-15);
+      TS_ASSERT_DELTA((*c)[i],std::sqrt((*a)[i])*std::sqrt((*a)[i]),1e-4);
       }
     }
 
