@@ -9,6 +9,10 @@
 
 %!include: menu.t2t
 
+Do you know any interesting publication that uses openModeller? You can share with our community by subscribing to the [users mailing list http://lists.sourceforge.net/mailman/listinfo/openmodeller-users] and sending a message telling us about it. We will be happy to include a reference here. The following list is very far from being complete. It is intended to show some examples of how openModeller was used and developed over the time. Please use specific search engines for a more accurate list of openModeller citations, such as [Google Scholar http://scholar.google.com.br/scholar?q=openmodeller].
+
+-------------------------------------
+
 === openModeller: a generic approach to species’ potential distribution modelling ===
 
 Please use the following reference if you need to cite openModeller in a publication:
@@ -16,7 +20,13 @@ Please use the following reference if you need to cite openModeller in a publica
 Muñoz, M.E.S., Giovanni, R., Siqueira, M.F., Sutton, T., Brewer, P., Pereira, R.S., Canhos, D.A.L. & Canhos, V.P. (2009) "openModeller: a generic approach to species' potential distribution modelling".  GeoInformatica. DOI: 10.1007/s10707-009-0090-7
 
 http://www.springerlink.com/content/n805714x26265573/fulltext.html
- 
+
+-------------------------------------
+
+=== Seeking the flowers for the bees: Integrating biotic interactions into niche models to assess the distribution of the exotic bee species Lithurgus huberi in South America ===
+
+Silva, D.P., Gonzalez, V.H., Melo, G.A.R., Lucia, M., Alvarez, L.J. and De Marco P. (2014) "Seeking the flowers for the bees: Integrating biotic interactions into niche models to assess the distribution of the exotic bee species Lithurgus huberi in South America". Ecological Modelling, 273: 200-209.
+
 === Species distribution modelling as a macroecological tool: a case study using New World amphibians ===
 
 Vasconcelos, T.S., Rodríguez, M.Á. & Hawkins, B.A. (2011) "Species distribution modelling as a macroecological tool: a case study using New World amphibians". Ecography, 34: 001-010. DOI: 10.1111/j.1600-0587.2011.07050.x 
