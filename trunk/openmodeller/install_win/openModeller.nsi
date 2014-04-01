@@ -174,6 +174,7 @@ Section "Application" SEC01
   CreateShortCut "$SMPROGRAMS\$ICONS_GROUP\om_pseudo.lnk" "$INSTDIR\om_cmd" "$WDIR om_pseudo"
   CreateShortCut "$SMPROGRAMS\$ICONS_GROUP\om_sampler.lnk" "$INSTDIR\om_cmd" "$WDIR om_sampler"
   CreateShortCut "$SMPROGRAMS\$ICONS_GROUP\om_test.lnk" "$INSTDIR\om_cmd" "$WDIR om_test"
+  CreateShortCut "$SMPROGRAMS\$ICONS_GROUP\om_evaluate.lnk" "$INSTDIR\om_cmd" "$WDIR om_evaluate"
   SetOutPath "$INSTDIR"
   !insertmacro MUI_STARTMENU_WRITE_END
 ; Add path
@@ -353,6 +354,7 @@ Section Uninstall
   Delete "$SMPROGRAMS\$ICONS_GROUP\om_pseudo.lnk"
   Delete "$SMPROGRAMS\$ICONS_GROUP\om_sampler.lnk"
   Delete "$SMPROGRAMS\$ICONS_GROUP\om_test.lnk"
+  Delete "$SMPROGRAMS\$ICONS_GROUP\om_evaluate.lnk"
   RMDir "$SMPROGRAMS\$ICONS_GROUP"
 
   DeleteRegKey ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}"
