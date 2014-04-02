@@ -251,7 +251,7 @@ VirtualNicheGenerator::initialize()
 
   OccurrencesPtr presences = _samp->getPresences();
 
-  _background = new OccurrencesImpl( presences->name(), presences->coordSystem() );
+  _background = new OccurrencesImpl( presences->label(), presences->coordSystem() );
 
   if ( use_absences_as_background && num_absences >=0 ) {
 
