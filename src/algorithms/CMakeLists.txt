@@ -58,10 +58,10 @@ SET (LIBNICHEMOSAIC_SRCS
      niche_mosaic.hh
 )
 
-#SET (LIBVIRTUALNICHE_SRCS
-#     virtual_niche.cpp 
-#     virtual_niche.hh
-#)
+SET (LIBVIRTUALNICHE_SRCS
+     virtual_niche.cpp 
+     virtual_niche.hh
+)
 
 ########################################################
 # Build
@@ -87,8 +87,8 @@ TARGET_LINK_LIBRARIES(niche_mosaic openmodeller)
 ADD_LIBRARY (csm_bs MODULE ${LIBCSMBS_SRCS})
 TARGET_LINK_LIBRARIES(csm_bs ${GSL_LIBRARIES} openmodeller)
 
-#ADD_LIBRARY (virtual_niche MODULE ${LIBVIRTUALNICHE_SRCS})
-#TARGET_LINK_LIBRARIES(virtual_niche openmodeller)
+ADD_LIBRARY (virtual_niche MODULE ${LIBVIRTUALNICHE_SRCS})
+TARGET_LINK_LIBRARIES(virtual_niche openmodeller)
 
 INCLUDE_DIRECTORIES(
      ${CMAKE_CURRENT_SOURCE_DIR}
@@ -142,6 +142,6 @@ INSTALL(TARGETS environmental_distance RUNTIME DESTINATION ${OM_ALG_DIR} LIBRARY
 
 INSTALL(TARGETS niche_mosaic RUNTIME DESTINATION ${OM_ALG_DIR} LIBRARY DESTINATION ${OM_ALG_DIR})
 
-#INSTALL(TARGETS virtual_niche RUNTIME DESTINATION ${OM_ALG_DIR} LIBRARY DESTINATION ${OM_ALG_DIR})
+INSTALL(TARGETS virtual_niche RUNTIME DESTINATION ${OM_ALG_DIR} LIBRARY DESTINATION ${OM_ALG_DIR})
 
 INSTALL(TARGETS csm_bs RUNTIME DESTINATION ${OM_ALG_DIR} LIBRARY DESTINATION ${OM_ALG_DIR})
