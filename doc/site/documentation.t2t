@@ -13,6 +13,7 @@
 
 %!include: algorithms.t2t
 - Command line tools
+ - [Introduction for Windows users cli_intro_win.html]
  - [om_algorithm man1/om_algorithm.1.html]
  - [om_console man1/om_console.1.html]
  - [om_evaluate man1/om_evaluate.1.html]
