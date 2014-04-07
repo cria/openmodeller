@@ -52,3 +52,6 @@ cat ChangeLog >> changelog.t2t
 sed -i 's/\t\*/-/g' changelog.t2t
 sed -i 's/^\(Release.*\)/**\1**/g' changelog.t2t
 txt2tags -o changelog.html changelog.t2t
+
+# Windows CLI documentation
+cp -u ../../install_win/README.html cli_intro_win.html
