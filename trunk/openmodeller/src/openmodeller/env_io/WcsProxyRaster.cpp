@@ -97,7 +97,7 @@ WcsProxyRaster::createRaster( const string& str, int categ )
       throw RasterException( msg.c_str() );
     }
 
-    if ( RemoteRaster::isFromRejectedSource( tokens[1] ) ) {
+    if ( isFromRejectedSource( tokens[1] ) ) {
 
       std::string msg = "Untrusted source for WCS raster. Aborting operation.\n";
       Log::instance()->error( msg.c_str() );

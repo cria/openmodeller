@@ -38,6 +38,13 @@
 class GDALDataset;
 class MapFormat;
 
+/*********************************************************/
+/*********************** Functions ***********************/
+
+/** Indicates if a remote raster comes from an untrusted source.
+ */
+dllexp bool isFromRejectedSource( const std::string& str );
+
 /*************************************************************/
 /*********************** Remote Raster ***********************/
 
@@ -115,10 +122,6 @@ public:
    * @return 1 if the raster was successfully deleted, 0 otherwise.
    */
   int deleteRaster();
-
-  /** Indicates if a remote raster comes from an untrusted source.
-   */
-  static bool isFromRejectedSource( const std::string& str );
 
 private:
 
