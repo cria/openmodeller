@@ -317,7 +317,6 @@ ENDIF (MSVC)
 ########################################################
 # Install headers
 INSTALL(CODE "MESSAGE(\"Installing CORE headers...\")")
-INSTALL(FILES ${LIBOPENMODELLERXML_HDRS} DESTINATION ${OM_INCLUDE_DIR}/openmodeller)
 INSTALL(FILES ${OM_CORE_HDRS} DESTINATION ${OM_INCLUDE_DIR}/openmodeller)
 INSTALL(FILES ${OM_OCCIO_HDRS} DESTINATION ${OM_INCLUDE_DIR}/openmodeller/occ_io)
 INSTALL(FILES ${OM_ENVIO_HDRS} DESTINATION ${OM_INCLUDE_DIR}/openmodeller/env_io)
