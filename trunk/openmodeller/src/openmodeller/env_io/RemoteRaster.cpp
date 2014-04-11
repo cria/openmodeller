@@ -24,6 +24,7 @@
  * http://www.gnu.org/copyleft/gpl.html
  */
 
+#include <openmodeller/env_io/RemoteRaster.hh>
 #include <openmodeller/env_io/WcsProxyRaster.hh>
 #include <openmodeller/Log.hh>
 #include <openmodeller/Exceptions.hh>
@@ -34,6 +35,7 @@
 #include <vector>
 #include <string.h>
 #include <sstream>
+#include <stdlib.h>
 
 using namespace std;
 
