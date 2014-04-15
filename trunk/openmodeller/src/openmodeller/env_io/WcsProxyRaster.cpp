@@ -214,7 +214,7 @@ WcsProxyRaster::createRaster( const string& str, int categ )
 
       Log::instance()->debug( "Local WCS copy already present: %s\n", clone_ref.c_str() );
 
-      GdalRaster::createRaster( cached_ref, categ );
+      GdalRaster::createRaster( clone_ref, categ );
     }
     else {
 
