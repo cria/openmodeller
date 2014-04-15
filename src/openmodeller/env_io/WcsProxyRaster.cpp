@@ -148,10 +148,6 @@ WcsProxyRaster::createRaster( const string& str, int categ )
   if ( CacheManager::isCachedMd5( str, OM_WCS_PROXY_SUBDIR ) ) {
 
     Log::instance()->debug( "WCS proxy raster %s already present in local cache (%s)\n", str.c_str(), cache_id.c_str() );
-
-    string cached_ref = CacheManager::getContentLocationMd5( str, OM_WCS_PROXY_SUBDIR );
-
-    GdalRaster::createRaster( cached_ref, categ );
   }
   else {
 
