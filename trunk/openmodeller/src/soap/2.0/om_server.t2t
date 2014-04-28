@@ -365,7 +365,10 @@ httpd.conf) and including something like this in the end of the file:
 ```
 
 Note that in this case SuexecUserGroup is configured so that the web
-server user is the same as the modelling user.
+server user is the same as the modelling user. If the users are
+different, job ticket files will only be readable by the web server
+user and the command line tools will fail to write the logs and exit
+with an error.
 
 **Step 8:** Configure openModeller (optional)
 
@@ -459,7 +462,13 @@ And finally add:
 ```
 
 This will make the server process new jobs every 10 seconds and delete
-all files older than a month every day.
+all files older than a month every day. Please note that cron executes
+in a different environment than normal users, so if for instance you
+had to include a specific setting in /etc/profile to run openModeller
+(such as specifying LD_LIBRARY_PATH to find the algorithms), you will
+need extra steps to get cron working properly. Cron errors are usually
+sent by e-mail to the corresponding user, so you may want to check the
+user mailbox when testing the service.
 
 **Step 11:** Test the service
 
