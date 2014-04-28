@@ -127,8 +127,8 @@ int main(int argc, char **argv)
 
           // replace service address in wsdl
           string key("address location=");
-          unsigned found = wsdl.rfind( key );
-          unsigned found_closing_quote;
+          size_t found = wsdl.rfind( key );
+          size_t found_closing_quote;
           if ( found != string::npos ) {
 
             found_closing_quote = wsdl.find( "\"", found+key.length()+1 );
@@ -790,7 +790,7 @@ omws::omws__runExperiment( struct soap *soap, omws::XML_ om__ExperimentParameter
 
         // Do not return implicit jobs (model evaluation for LPT)
         string lpt_suffix("_lpt");
-        unsigned has_lpt_suffix = (*it).first.find( lpt_suffix );
+        size_t has_lpt_suffix = (*it).first.find( lpt_suffix );
         if ( has_lpt_suffix == string::npos ) {
 
           result.append( "<Job id=\"" ).append( (*it).first ).append("\" Ticket=\"" ).append( (*it).second ).append( "\"/>" );
@@ -1330,13 +1330,13 @@ omws::omws__getSamplingResult( struct soap *soap, omws::xsd__string ticket, stru
     string xml = oss.str();
     string ini_el("<");
     string end_el(">");
-    unsigned found_first_end = xml.find( end_el );
+    size_t found_first_end = xml.find( end_el );
     if ( found_first_end == string::npos ) {
 
       return soap_receiver_fault( soap, "Failed processing result (1)", NULL );
     }
 
-    unsigned found_last_ini = xml.rfind( ini_el );
+    size_t found_last_ini = xml.rfind( ini_el );
     if ( found_last_ini == string::npos ) {
 
       return soap_receiver_fault( soap, "Failed processing result (2)", NULL );
