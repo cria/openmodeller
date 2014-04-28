@@ -115,7 +115,7 @@ ls -t $TICKET_DIRECTORY/samp_req.* 2> /dev/null | tail -n -1 | while read req; d
     if [ -e $meta ]; then
       if grep -q "EXP=" "$meta"; then
         # Run experiment manager to trigger other actions
-        "$OM_BIN_DIR"/omws_manager --config "$CONFIG" --ticket "$ticket" 2> /dev/null
+        "$OM_BIN_DIR"/omws_manager --config "$CONFIG" --ticket "$ticket" > /dev/null 2> /dev/null
       fi
     fi
 
@@ -162,7 +162,7 @@ ls -t $TICKET_DIRECTORY/model_req.* 2> /dev/null | tail -n -1 | while read req; 
     if [ -e $meta ]; then
       if grep -q "EXP=" "$meta"; then
         # Run experiment manager to trigger other actions
-        "$OM_BIN_DIR"/omws_manager --config "$CONFIG" --ticket "$ticket" 2> /dev/null
+        "$OM_BIN_DIR"/omws_manager --config "$CONFIG" --ticket "$ticket" > /dev/null 2> /dev/null
       fi  
     fi
 
@@ -209,7 +209,7 @@ ls -t $TICKET_DIRECTORY/eval_req.* 2> /dev/null | tail -n -1 | while read req; d
     if [ -e $meta ]; then
       if grep -q "EXP=" "$meta"; then
         # Run experiment manager to trigger other actions
-        "$OM_BIN_DIR"/omws_manager --config "$CONFIG" --ticket "$ticket" 2> /dev/null
+        "$OM_BIN_DIR"/omws_manager --config "$CONFIG" --ticket "$ticket" > /dev/null 2> /dev/null
       fi  
     fi
 
@@ -256,7 +256,7 @@ ls -t $TICKET_DIRECTORY/test_req.* 2> /dev/null | tail -n -1 | while read req; d
     if [ -e $meta ]; then
       if grep -q "EXP=" "$meta"; then
         # Run experiment manager to trigger other actions
-        "$OM_BIN_DIR"/omws_manager --config "$CONFIG" --ticket "$ticket" 2> /dev/null
+        "$OM_BIN_DIR"/omws_manager --config "$CONFIG" --ticket "$ticket" > /dev/null 2> /dev/null
       fi  
     fi
 
@@ -401,7 +401,7 @@ ls -t $TICKET_DIRECTORY/proj_req.* 2> /dev/null | tail -n -1 | while read req; d
   if [ -e $meta ]; then
     if grep -q "EXP=" "$meta"; then
       # Run experiment manager to trigger other actions
-      "$OM_BIN_DIR"/omws_manager --config "$CONFIG" --ticket "$ticket" 2> /dev/null
+      "$OM_BIN_DIR"/omws_manager --config "$CONFIG" --ticket "$ticket" > /dev/null 2> /dev/null
     fi  
   fi
 
