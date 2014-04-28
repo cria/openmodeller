@@ -103,17 +103,17 @@ int main( int argc, char **argv ) {
     }
   }
 
-  // om configuration
-  if ( ! config_file.empty() ) { 
-
-    Settings::loadConfig( config_file );
-  }
-
   // Log stuff
 
   Log::Level level_code = getLogLevel( log_level );
 
   Log::instance()->setLevel( level_code );
+
+  // om configuration
+  if ( ! config_file.empty() ) { 
+
+    Settings::loadConfig( config_file );
+  }
 
   // Real work
 
