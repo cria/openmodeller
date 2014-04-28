@@ -71,14 +71,15 @@ main( int argc, char **argv )
 
     log_level.assign( argv[2] );
   }
-  if ( argc > 3 ) {
-
-    Settings::loadConfig( argv[3] );
-  }
 
   Log::Level level_code = getLogLevel( log_level );
   Log::instance()->setLevel( level_code );
   Log::instance()->setPrefix( "" );
+
+  if ( argc > 3 ) {
+
+    Settings::loadConfig( argv[3] );
+  }
 
   // Set up any related external resources
   setupExternalResources();

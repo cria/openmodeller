@@ -123,12 +123,6 @@ int main( int argc, char **argv ) {
     }
   }
 
-  // om configuration
-  if ( ! config_file.empty() ) { 
-
-    Settings::loadConfig( config_file );
-  }
-
   // Log stuff
 
   Log::Level level_code = getLogLevel( log_level );
@@ -141,6 +135,12 @@ int main( int argc, char **argv ) {
  
     // Just set the level - things will go to stderr
     Log::instance()->setLevel( level_code );
+  }
+
+  // om configuration
+  if ( ! config_file.empty() ) { 
+
+    Settings::loadConfig( config_file );
   }
 
   // Check parameters
