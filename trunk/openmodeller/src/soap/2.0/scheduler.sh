@@ -344,7 +344,7 @@ ls -t $TICKET_DIRECTORY/proj_req.* 2> /dev/null | tail -n -1 | while read req; d
       if [ -e $map_file ]; then
         # Create a virtual raster
         initial_vrt_file=$DISTRIBUTION_MAP_DIRECTORY"/"$ticket".tmp.vrt"
-        "$GDAL_BIN_DIR"/gdal_translate "$map_file" -of VRT "$initial_vrt_file"
+        "$GDAL_BIN_DIR"/gdal_translate "$map_file" -of VRT "$initial_vrt_file" > /dev/null
         if [ -e $initial_vrt_file ]; then
           # Inject color table in VRT before </VRTRasterBand>
           final_vrt_file=$DISTRIBUTION_MAP_DIRECTORY"/"$ticket".vrt"
@@ -360,12 +360,12 @@ ls -t $TICKET_DIRECTORY/proj_req.* 2> /dev/null | tail -n -1 | while read req; d
           if [ -e $final_vrt_file ]; then
             # Create PNG expanding to RGB
             png_file=$DISTRIBUTION_MAP_DIRECTORY"/"$ticket".png"
-            "$GDAL_BIN_DIR"/gdal_translate "$final_vrt_file" -of PNG -expand rgb "$png_file"
+            "$GDAL_BIN_DIR"/gdal_translate "$final_vrt_file" -of PNG -expand rgb "$png_file" > /dev/null
             if [ -e $png_file ]; then
               if [[ "$CREATE_KMZ" == "yes" ]]; then
                 # Create KMZ file based on PNG
                 kmz_file=$DISTRIBUTION_MAP_DIRECTORY"/"$ticket".kmz"
-                "$GDAL_BIN_DIR"/gdal_translate "$png_file" -of KMLSUPEROVERLAY -co format=png "$kmz_file"
+                "$GDAL_BIN_DIR"/gdal_translate "$png_file" -of KMLSUPEROVERLAY -co format=png "$kmz_file" > /dev/null
               fi
               png_xml_file=$DISTRIBUTION_MAP_DIRECTORY"/"$ticket".png.aux.xml"
               if [ -e $png_xml_file ]; then
