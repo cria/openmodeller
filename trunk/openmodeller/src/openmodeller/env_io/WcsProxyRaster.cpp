@@ -108,6 +108,11 @@ isFromRejectedSource( const std::string& str ) {
 
       size_t pos = host.find( accepted_sources[i] );
 
+      if ( pos == string::npos ) {
+
+        continue;
+      }
+
       if ( pos == host.size() - accepted_sources[i].size() ) {
 
         // Configured source must match the end of the host
