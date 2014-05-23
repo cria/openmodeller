@@ -1,3 +1,12 @@
+Release 1.5.0 (2014-?-?)
+
+SVN revision: ?
+
+	* New algorithm for generating virtual niches.
+	* Fixed bug in the web service when checking the source of remote rasters.
+
+
+--------------------------
 Release 1.4.0 (2014-03-31)
 
 SVN revision: 5955
