@@ -43,11 +43,6 @@
 #endif
 */
 
-#ifdef BSD
-#include <sys/sysctl.h>
-#include <err.h>
-#endif
-
 #include <vector>
 #include <string>
 
