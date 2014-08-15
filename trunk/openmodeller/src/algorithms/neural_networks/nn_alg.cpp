@@ -1,7 +1,7 @@
 /**
  * Definition of Neural Network algorithm class.
  * 
- * @author FabrÃ­cio Augusto Rodrigues (fabricio.rodrigues [at] poli . usp .br)
+ * @author Fabrício Augusto Rodrigues (fabricio.rodrigues [at] poli . usp .br)
  * @author Alex Oshika Avilla (alex.avilla [at] poli . usp .br)
  * $Id$
  * 
@@ -167,7 +167,7 @@ static AlgMetadata metadata = {
   // Description.
   "An artificial neural network (ANN), also called a simulated neural network (SNN) or commonly just neural network (NN), is an interconnected group of artificial neurons that uses a mathematical or computational model for information processing based on a connectionistic approach to computation. In most cases an ANN is an adaptive system that changes its structure based on external or internal information that flows through the network. In more practical terms, neural networks are non-linear statistical data modeling or decision making tools. They can be used to model complex relationships between inputs and outputs or to find patterns in data. Content retrieved from Wikipedia on the 06th of May, 2008: http://en.wikipedia.org/wiki/Neural_network",
 
-  "Chopra, Paras, modified by Alex Oshika Avilla and FabrÃ­cio Augusto Rodrigues", // Algorithm author.
+  "Chopra, Paras, modified by Alex Oshika Avilla and Fabrício Augusto Rodrigues", // Algorithm author.
   "", // Bibliography.
 
   "Alex Oshika Avilla, Fabricio Augusto Rodrigues", // Code author.

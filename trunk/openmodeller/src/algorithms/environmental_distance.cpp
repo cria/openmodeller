@@ -85,8 +85,8 @@ static AlgMetadata metadata = { // General metadata
   "0.5",                        // Version
   "Generic algorithm based on environmental dissimilarity metrics.", // Overview
   "Generic algorithm based on environmental dissimilarity metrics. When used with the Gower metric and maximum distance 1, this algorithm should produce the same result of the algorithm known as DOMAIN.", // Description
-  "Mauro E. S. Munoz, Renato De Giovanni, Danilo J. S. Bellini",    // Algorithm author
-  "Carpenter G, Gillison AN, Winter J (1993) DOMAIN: A flexible modeling procedure for mapping potential distributions of animals and plants. Biodiversity and Conservation 2: 667-680. Farber O & Kadmon R 2003. Assessment of alternative approaches for bioclimatic modeling with special emphasis on the Mahalanobis distance. Ecological Modelling 160: 115â€“130.", // Bibliography
+  "Mauro E. S. Muñoz, Renato De Giovanni, Danilo J. S. Bellini",    // Algorithm author
+  "Carpenter G, Gillison AN, Winter J (1993) DOMAIN: A flexible modeling procedure for mapping potential distributions of animals and plants. Biodiversity and Conservation 2: 667-680. Farber O & Kadmon R 2003. Assessment of alternative approaches for bioclimatic modeling with special emphasis on the Mahalanobis distance. Ecological Modelling 160: 115-130.", // Bibliography
   "Danilo J. S. Bellini, Renato De Giovanni", // Code author
   "danilo . estagio [at] gmail . com, renato [at] cria . org . br", // Code author's contact
   0,                    // Does not accept categorical data

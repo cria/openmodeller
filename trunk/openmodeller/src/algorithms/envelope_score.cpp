@@ -1,7 +1,7 @@
 /**
  * Declaration of Envelope Score Algorithm - Yesson & Sutton 2007.
  * 
- * @author EnvelopeScore implemantation by Tim Sutton and Chris Yesson
+ * @author EnvelopeScore implementation by Tim Sutton and Chris Yesson
  * @date 2007-08-22
  * $Id$
  *
@@ -9,7 +9,7 @@
  * 
  * Based on Bioclim alg 
  * Copyright(c) 2004 by CRIA -
- * Centro de ReferÃªncia em InformaÃ§Ã£o Ambiental
+ * Centro de Referência em Informação Ambiental
  *
  * http://www.cria.org.br
  * 
@@ -78,7 +78,7 @@ static AlgMetadata metadata = {
  Suitable & Marginal classes as predicted presences.\
  The Envelope Score algorithm is equivalent to the\
  inclusive 'OR' implementation of Bioclim described\
- in Pineiro et al (2007).",
+ in Piñeiro et al (2007).",
 
   "Nix, H. A.",  // Author
 
@@ -87,7 +87,7 @@ static AlgMetadata metadata = {
  snakes. In: Atlas of Elapid Snakes of Australia. (Ed.) R. Longmore,\
  pp. 4-15. Australian Flora and Fauna Series Number 7. Australian\
  Government Publishing Service: Canberra.\n\n\
- PiÃ±eiro, R., Aguilar, J. F., Munt, D. D. & Feliner, G. N. (2007)\
+ Piñeiro, R., Aguilar, J. F., Munt, D. D. & Feliner, G. N. (2007)\
  Ecology matters: Atlantic-Mediterranean disjunction in the sand-dune\
  shrub Armeria pungens (Plumbaginaceae).\
  Molecular Ecology. 16, 2155-2171.",
