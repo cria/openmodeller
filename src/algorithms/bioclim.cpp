@@ -1,14 +1,14 @@
 /**
  * Declaration of Bioclimatic Envelope Algorithm - Nix, 1986.
  * 
- * @author Mauro MuÃ±oz <mauro@cria.org.br>
+ * @author Mauro Muñoz <mauro@cria.org.br>
  * @date 2004-05-05
  * $Id$
  *
  * LICENSE INFORMATION
  * 
  * Copyright(c) 2004 by CRIA -
- * Centro de ReferÃªncia em InformaÃ§Ã£o Ambiental
+ * Centro de Referência em Informação Ambiental
  *
  * http://www.cria.org.br
  * 
@@ -118,7 +118,7 @@ Bioclim's categorical output is mapped to probabilities\
  pp. 4-15. Australian Flora and Fauna Series Number 7. Australian\
  Government Publishing Service: Canberra.",
 
-  "Mauro MuÃ±oz",             // Code author.
+  "Mauro Muñoz",             // Code author.
   "mesmunoz [at] gmail.com", // Code author's contact.
 
   0,  // Does not accept categorical data.
