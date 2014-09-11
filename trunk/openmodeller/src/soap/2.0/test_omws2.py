@@ -116,8 +116,6 @@ try:
                     el.append( sub )
         return el
 
-        ticket = call_and_track_progress(soap_client.service, 'createModel', mod_params)
-
     def call_operation( service, method, params=None, dump_req=False, dump_resp=False ):
         "Call service operation and check for errors"
         func = getattr(service, method)
