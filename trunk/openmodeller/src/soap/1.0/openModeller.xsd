@@ -4,7 +4,7 @@
  xmlns:xs="http://www.w3.org/2001/XMLSchema"
  elementFormDefault="qualified"
  attributeFormDefault="unqualified"
- version="1.0.15" xml:lang="EN">
+ version="1.0.16" xml:lang="EN">
   <xs:annotation>
     <xs:documentation xml:lang="en">
         XML Schema with all basic element and type definitions used by openModeller.
@@ -291,8 +291,17 @@
       </xs:element>
       <xs:element name="RocCurve" minOccurs="0">
         <xs:complexType>
+          <xs:sequence>
+            <xs:element name="Ratio" minOccurs="0">
+              <xs:complexType>
+                <xs:attribute name="E" type="xs:double" use="required"/>
+                <xs:attribute name="Value" type="xs:double" use="required"/>
+              </xs:complexType>
+            </xs:element>
+          </xs:sequence>
           <xs:attribute name="Auc" type="xs:double" use="required"/>
           <xs:attribute name="Points" type="xs:string" use="required"/>
+          <xs:attribute name="NumBackgroundPoints" type="xs:int"/>
         </xs:complexType>
       </xs:element>
     </xs:sequence>
