@@ -2105,7 +2105,7 @@ scheduleExperiment(struct soap* soap, const om::_om__ExperimentParameters& ep, o
         // Check if LPT is used
         bool use_lpt = false;
 
-        if ( test_job->Statistics->ConfusionMatrix != 0 && test_job->Statistics->ConfusionMatrix->Threshold != 0 ) {
+        if ( test_job->Statistics != 0 && test_job->Statistics->ConfusionMatrix != 0 && test_job->Statistics->ConfusionMatrix->Threshold != 0 ) {
 
           string threshold = string( test_job->Statistics->ConfusionMatrix->Threshold->c_str() );
 
@@ -2211,7 +2211,7 @@ scheduleExperiment(struct soap* soap, const om::_om__ExperimentParameters& ep, o
         // Check if LPT is used
         bool use_lpt = false;
 
-        if ( proj_job->Statistics != 0 && proj_job->Statistics->AreaStatistics != 0 ) {
+        if ( proj_job->Statistics != 0 && proj_job->Statistics->AreaStatistics != 0 && proj_job->Statistics->AreaStatistics->PredictionThreshold != 0 ) {
 
           string threshold = string( proj_job->Statistics->AreaStatistics->PredictionThreshold.c_str() );
 
