@@ -1942,96 +1942,97 @@ AXIS[&quot;Latitude&quot;,NORTH]]</CoordinateSystem>
          </Sampler>
         </Job>
         <Job Ticket="2aSzie">
-          <SerializedModel>
-            <Sampler>
-              <Environment NumLayers="8">
-                <Map Id="/layers/en/terrestrial/climate/global/worldclim/present/bioclim/30arc-seconds/19afb361-0c8e-11e1-be50-0800200c9a66"
-                     IsCategorical="0" Min="6" Max="210"/>
-                <Map Id="/layers/en/terrestrial/climate/global/worldclim/present/bioclim/30arc-seconds/19afb364-0c8e-11e1-be50-0800200c9a66"
-                     IsCategorical="0" Min="-203" Max="533"/>
-                <Map Id="/layers/en/terrestrial/climate/global/worldclim/present/bioclim/30arc-seconds/19afb365-0c8e-11e1-be50-0800200c9a66"
-                     IsCategorical="0" Min="-630" Max="256"/>
-                <Map Id="/layers/en/terrestrial/climate/global/worldclim/present/bioclim/30arc-seconds/19afb36f-0c8e-11e1-be50-0800200c9a66"
-                     IsCategorical="0" Min="0" Max="4056"/>
-                <Map Id="/layers/en/terrestrial/climate/global/worldclim/present/bioclim/30arc-seconds/19afb370-0c8e-11e1-be50-0800200c9a66"
-                     IsCategorical="0" Min="0" Max="1879"/>
-                <Map Id="/layers/en/terrestrial/climate/global/worldclim/present/bioclim/30arc-seconds/19afb371-0c8e-11e1-be50-0800200c9a66"
-                     IsCategorical="0" Min="0" Max="2609"/>
-                <Map Id="/layers/en/terrestrial/climate/global/worldclim/present/bioclim/30arc-seconds/19afb372-0c8e-11e1-be50-0800200c9a66"
-                     IsCategorical="0" Min="0" Max="3498"/>
-                <Map Id="/layers/en/terrestrial/topography/global/worldclim/altitude/30arc-seconds/ede38a70-16cb-11e1-be50-0800200c9a66"
-                     IsCategorical="0" Min="-431" Max="8233"/>
-                <Mask Id="/layers/en/masks/country/brazil/30arc-seconds/2c1e2d30-c492-11e1-9b21-0800200c9a66"/>
-              </Environment>
-              <Presence Label="Test species" Count="25">
-              <CoordinateSystem>GEOGCS['1924 ellipsoid',DATUM['Not_specified',SPHEROID['International 1924',6378388,297,
+          <ModelEnvelope>
+            <SerializedModel>
+              <Sampler>
+                <Environment NumLayers="8">
+                  <Map Id="/layers/en/terrestrial/climate/global/worldclim/present/bioclim/30arc-seconds/19afb361-0c8e-11e1-be50-0800200c9a66"
+                       IsCategorical="0" Min="6" Max="210"/>
+                  <Map Id="/layers/en/terrestrial/climate/global/worldclim/present/bioclim/30arc-seconds/19afb364-0c8e-11e1-be50-0800200c9a66"
+                       IsCategorical="0" Min="-203" Max="533"/>
+                  <Map Id="/layers/en/terrestrial/climate/global/worldclim/present/bioclim/30arc-seconds/19afb365-0c8e-11e1-be50-0800200c9a66"
+                       IsCategorical="0" Min="-630" Max="256"/>
+                  <Map Id="/layers/en/terrestrial/climate/global/worldclim/present/bioclim/30arc-seconds/19afb36f-0c8e-11e1-be50-0800200c9a66"
+                       IsCategorical="0" Min="0" Max="4056"/>
+                  <Map Id="/layers/en/terrestrial/climate/global/worldclim/present/bioclim/30arc-seconds/19afb370-0c8e-11e1-be50-0800200c9a66"
+                       IsCategorical="0" Min="0" Max="1879"/>
+                  <Map Id="/layers/en/terrestrial/climate/global/worldclim/present/bioclim/30arc-seconds/19afb371-0c8e-11e1-be50-0800200c9a66"
+                       IsCategorical="0" Min="0" Max="2609"/>
+                  <Map Id="/layers/en/terrestrial/climate/global/worldclim/present/bioclim/30arc-seconds/19afb372-0c8e-11e1-be50-0800200c9a66"
+                       IsCategorical="0" Min="0" Max="3498"/>
+                  <Map Id="/layers/en/terrestrial/topography/global/worldclim/altitude/30arc-seconds/ede38a70-16cb-11e1-be50-0800200c9a66"
+                       IsCategorical="0" Min="-431" Max="8233"/>
+                  <Mask Id="/layers/en/masks/country/brazil/30arc-seconds/2c1e2d30-c492-11e1-9b21-0800200c9a66"/>
+                </Environment>
+                <Presence Label="Test species" Count="25">
+                <CoordinateSystem>GEOGCS['1924 ellipsoid',DATUM['Not_specified',SPHEROID['International 1924',6378388,297,
 AUTHORITY['EPSG','7022']],AUTHORITY['EPSG','6022']],PRIMEM['Greenwich',0,AUTHORITY['EPSG','8901']],UNIT['degree',
 0.0174532925199433,AUTHORITY['EPSG','9108']],AUTHORITY['EPSG','4022']]</CoordinateSystem>
-              <Point Id="5992" X="-45.583888" Y="-22.763055" Sample="107 209 34 860 116 795 116 1699"/>
-              <Point Id="5993" X="-38.997777" Y="-15.676389" Sample="73 294 183 444 344 372 442 3"/>
-              <Point Id="5994" X="-37.724443" Y="-12.016111" Sample="84 309 187 700 221 296 533 46"/>
-              <Point Id="5995" X="-40.491666" Y="-12.310556" Sample="100 279 140 276 86 264 121 550"/>
-              <Point Id="5996" X="-38.968888" Y="-16.16361" Sample="72 293 182 507 309 309 449 20"/>
-              <Point Id="5997" X="-39.476944" Y="-12.869721" Sample="66 267 161 264 130 253 179 534"/>
-              <Point Id="5998" X="-38.293332" Y="-12.571666" Sample="78 307 190 704 256 310 494 19"/>
-              <Point Id="5999" X="-49.235588" Y="-26.365003" Sample="97 268 85 490 262 490 268 603"/>
-              <Point Id="6000" X="-49.047778" Y="-26.192499" Sample="89 258 86 558 265 558 265 679"/>
-              <Point Id="6001" X="-39.459167" Y="-13.890833" Sample="63 265 169 419 298 398 396 515"/>
-              <Point Id="6002" X="-49.862222" Y="-27.450832" Sample="105 279 84 452 295 452 325 582"/>
-              <Point Id="6003" X="-39.761667" Y="-18.940833" Sample="85 309 171 510 186 357 186 4"/>
-              <Point Id="6004" X="-49.099443" Y="-24.068888" Sample="116 279 78 498 174 498 196 741"/>
-              <Point Id="6005" X="-39.568582" Y="-15.383667" Sample="75 251 137 370 195 299 209 864"/>
-              <Point Id="6006" X="-45.079166" Y="-23.381111" Sample="93 294 127 889 228 865 228 158"/>
-              <Point Id="6007" X="-49.338861" Y="-26.365277" Sample="101 271 82 465 260 465 268 599"/>
-              <Point Id="6008" X="-49.141666" Y="-16.523889" Sample="110 303 139 676 25 206 38 748"/>
-              <Point Id="6009" X="-46.48161" Y="-14.870309" Sample="113 298 138 651 13 172 25 929"/>
-              <Point Id="6010" X="-49.049444" Y="-27.630278" Sample="82 258 90 547 261 547 279 604"/>
-              <Point Id="6011" X="-49.231405" Y="-27.181397" Sample="91 264 85 524 289 524 308 629"/>
-              <Point Id="6013" X="-50.129446" Y="-27.000294" Sample="112 266 61 440 313 440 332 810"/>
-              <Point Id="6015" X="-46.824199" Y="-24.041222" Sample="83 291 136 872 254 872 254 55"/>
-              <Point Id="6016" X="-51.916666" Y="-23.416667" Sample="129 284 85 489 198 489 261 566"/>
-              <Point Id="6018" X="-40.553055" Y="-19.907499" Sample="93 277 130 548 128 355 128 809"/>
-              <Point Id="6019" X="-49.908889" Y="-29.574166" Sample="66 262 113 407 359 396 378 8"/>
-           </Presence>
-           <Absence Label="Background" Count="5000">
-             <CoordinateSystem>GEOGCS[&quot;WGS84&quot;, DATUM[&quot;WGS84&quot;,   
+                <Point Id="5992" X="-45.583888" Y="-22.763055" Sample="107 209 34 860 116 795 116 1699"/>
+                <Point Id="5993" X="-38.997777" Y="-15.676389" Sample="73 294 183 444 344 372 442 3"/>
+                <Point Id="5994" X="-37.724443" Y="-12.016111" Sample="84 309 187 700 221 296 533 46"/>
+                <Point Id="5995" X="-40.491666" Y="-12.310556" Sample="100 279 140 276 86 264 121 550"/>
+                <Point Id="5996" X="-38.968888" Y="-16.16361" Sample="72 293 182 507 309 309 449 20"/>
+                <Point Id="5997" X="-39.476944" Y="-12.869721" Sample="66 267 161 264 130 253 179 534"/>
+                <Point Id="5998" X="-38.293332" Y="-12.571666" Sample="78 307 190 704 256 310 494 19"/>
+                <Point Id="5999" X="-49.235588" Y="-26.365003" Sample="97 268 85 490 262 490 268 603"/>
+                <Point Id="6000" X="-49.047778" Y="-26.192499" Sample="89 258 86 558 265 558 265 679"/>
+                <Point Id="6001" X="-39.459167" Y="-13.890833" Sample="63 265 169 419 298 398 396 515"/>
+                <Point Id="6002" X="-49.862222" Y="-27.450832" Sample="105 279 84 452 295 452 325 582"/>
+                <Point Id="6003" X="-39.761667" Y="-18.940833" Sample="85 309 171 510 186 357 186 4"/>
+                <Point Id="6004" X="-49.099443" Y="-24.068888" Sample="116 279 78 498 174 498 196 741"/>
+                <Point Id="6005" X="-39.568582" Y="-15.383667" Sample="75 251 137 370 195 299 209 864"/>
+                <Point Id="6006" X="-45.079166" Y="-23.381111" Sample="93 294 127 889 228 865 228 158"/>
+                <Point Id="6007" X="-49.338861" Y="-26.365277" Sample="101 271 82 465 260 465 268 599"/>
+                <Point Id="6008" X="-49.141666" Y="-16.523889" Sample="110 303 139 676 25 206 38 748"/>
+                <Point Id="6009" X="-46.48161" Y="-14.870309" Sample="113 298 138 651 13 172 25 929"/>
+                <Point Id="6010" X="-49.049444" Y="-27.630278" Sample="82 258 90 547 261 547 279 604"/>
+                <Point Id="6011" X="-49.231405" Y="-27.181397" Sample="91 264 85 524 289 524 308 629"/>
+                <Point Id="6013" X="-50.129446" Y="-27.000294" Sample="112 266 61 440 313 440 332 810"/>
+                <Point Id="6015" X="-46.824199" Y="-24.041222" Sample="83 291 136 872 254 872 254 55"/>
+                <Point Id="6016" X="-51.916666" Y="-23.416667" Sample="129 284 85 489 198 489 261 566"/>
+                <Point Id="6018" X="-40.553055" Y="-19.907499" Sample="93 277 130 548 128 355 128 809"/>
+                <Point Id="6019" X="-49.908889" Y="-29.574166" Sample="66 262 113 407 359 396 378 8"/>
+             </Presence>
+             <Absence Label="Background" Count="5000">
+               <CoordinateSystem>GEOGCS[&quot;WGS84&quot;, DATUM[&quot;WGS84&quot;,   
 SPHEROID[&quot;WGS84&quot;, 6378137.0, 298.257223563]],   PRIMEM[&quot;Greenwich&quot;, 0.0],   
 UNIT[&quot;degree&quot;,0.017453292519943295],   AXIS[&quot;Longitude&quot;,EAST], 
 AXIS[&quot;Latitude&quot;,NORTH]]</CoordinateSystem>
-             <Point Id="1" X="-61.21235" Y="-2.39865827" Sample="87 326 221 951 327 376 797 76"/>
-             <Point Id="2" X="-49.0185875" Y="-20.3735812" Sample="130 315 124 695 49 621 76 462"/>
-             <Point Id="3" X="-52.746477" Y="-9.86251739" Sample="142 359 153 1038 31 581 31 274"/>
-             <Point Id="4" X="-42.9002969" Y="-3.71466209" Sample="103 341 203 929 50 71 377 110"/>
-             <Point Id="5" X="-40.9245267" Y="-6.55893261" Sample="104 311 172 442 9 89 53 692"/>
-             <!-- ... -->
-             <Point Id="5000" X="-61.103208" Y="-1.84124856" Sample="89 327 221 974 359 380 856 61"/>
-           </Absence>
-         </Sampler>
-         <Algorithm Id="ENFA" Version="0.1.3">
-           <Parameters>
-             <Parameter Id="DiscardMethod" Value="2"/>
-             <Parameter Id="DisplayLoadings" Value="0"/>
-             <Parameter Id="NumberOfBackgroundPoints" Value="5000"/>
-             <Parameter Id="NumberOfRetries" Value="10"/>
-             <Parameter Id="RetainComponents" Value="2"/>
-             <Parameter Id="RetainVariation" Value="0.75"/>
-             <Parameter Id="VerboseDebug" Value="0"/>
-          </Parameters>
-          <Model>
-            <Enfa Marginality="1.49" Specialisation="2.45" RetainedComponents="2" 
-                  AvgBackgroundVector="110.97 320.6 164.9 758.6 137.0 365.0 364.2 322.8" 
-                  StddevBackgroundVector="17.34 20.85 41.28 230.9 145.60 186.0 357.84 257.22" 
-                  AvgVector="-1.13 -2.07 -1.01 -0.93 0.56 0.39 -0.27 0.73" 
-                  StddevVector="1.01 1.07 1.06 0.72 0.63 0.99 0.37 1.56" 
-                  EigenvalueVector="13.81 19.47 7.38 3.96 1.79 0.75 0.60 0.30" 
-                  FactorWeights="0.41 0.58 0 0 0 0 0 0" 
-                  EigenvectorMatrix="0.45 0.10 0.23 -0.47 -0.56 -0.13 0.22 -0.33 0.32 0.39 -0.23 0.56 -0.01 -0.00 -0.25 -0.55 0.42 -0.25 -0.07 
+               <Point Id="1" X="-61.21235" Y="-2.39865827" Sample="87 326 221 951 327 376 797 76"/>
+               <Point Id="2" X="-49.0185875" Y="-20.3735812" Sample="130 315 124 695 49 621 76 462"/>
+               <Point Id="3" X="-52.746477" Y="-9.86251739" Sample="142 359 153 1038 31 581 31 274"/>
+               <Point Id="4" X="-42.9002969" Y="-3.71466209" Sample="103 341 203 929 50 71 377 110"/>
+               <Point Id="5" X="-40.9245267" Y="-6.55893261" Sample="104 311 172 442 9 89 53 692"/>
+               <!-- ... -->
+               <Point Id="5000" X="-61.103208" Y="-1.84124856" Sample="89 327 221 974 359 380 856 61"/>
+             </Absence>
+           </Sampler>
+           <Algorithm Id="ENFA" Version="0.1.3">
+             <Parameters>
+               <Parameter Id="DiscardMethod" Value="2"/>
+               <Parameter Id="DisplayLoadings" Value="0"/>
+               <Parameter Id="NumberOfBackgroundPoints" Value="5000"/>
+               <Parameter Id="NumberOfRetries" Value="10"/>
+               <Parameter Id="RetainComponents" Value="2"/>
+               <Parameter Id="RetainVariation" Value="0.75"/>
+               <Parameter Id="VerboseDebug" Value="0"/>
+            </Parameters>
+            <Model>
+              <Enfa Marginality="1.49" Specialisation="2.45" RetainedComponents="2" 
+                    AvgBackgroundVector="110.97 320.6 164.9 758.6 137.0 365.0 364.2 322.8" 
+                    StddevBackgroundVector="17.34 20.85 41.28 230.9 145.60 186.0 357.84 257.22" 
+                    AvgVector="-1.13 -2.07 -1.01 -0.93 0.56 0.39 -0.27 0.73" 
+                    StddevVector="1.01 1.07 1.06 0.72 0.63 0.99 0.37 1.56" 
+                    EigenvalueVector="13.81 19.47 7.38 3.96 1.79 0.75 0.60 0.30" 
+                    FactorWeights="0.41 0.58 0 0 0 0 0 0" 
+                    EigenvectorMatrix="0.45 0.10 0.23 -0.47 -0.56 -0.13 0.22 -0.33 0.32 0.39 -0.23 0.56 -0.01 -0.00 -0.25 -0.55 0.42 -0.25 -0.07 
 -0.35 0.50 0.54 -0.12 -0.22 0.13 -0.34 0.63 0.26 0.37 -0.42 0.13 -0.23 0.42 -0.64 -0.28 0.26 -0.34 -0.11 -0.21 0.28 0.10 0.08 -0.49 -0.36 0.35 
 -0.68 -0.05 -0.01 -0.54 -0.46 -0.20 -0.10 -0.18 -0.00 -0.07 -0.62 0.07 -0.08 -0.34 0.22 0.07 0.10 0.89 -0.06" 
-                  ScoreMatrix="-0.38 0.25 -0.31 0.25 -0.51 -0.57 0.29 0.09 -0.70 -0.10 0.41 -0.51 0.59 0.15 -0.36 0.02 -0.34 0.33 -0.42 0.02 
+                    ScoreMatrix="-0.38 0.25 -0.31 0.25 -0.51 -0.57 0.29 0.09 -0.70 -0.10 0.41 -0.51 0.59 0.15 -0.36 0.02 -0.34 0.33 -0.42 0.02 
 -0.46 0.33 0.71 0.28 -0.31 0.10 -0.35 0.46 0.12 0.14 -0.25 0.21 0.19 0.55 -0.60 0.02 0.20 -0.44 0.19 0.05 0.13 -0.03 0.21 -0.40 -0.13 0.45 
 -0.34 -0.04 -0.09 -0.69 -0.04 -0.39 -0.12 -0.21 -0.20 0.12 0.24 0.02 -0.01 -0.36 0.27 0.23 0.06 0.91" 
-                  EnvironmentFactorMatrix="6.52 -0.06 -0.47 0.18 -0.32 0.79 -0.84 3.74 1.98 0.20 -0.38 -0.14 -0.08 0.04 0.61 -1.44 0.63 -0.19 
+                    EnvironmentFactorMatrix="6.52 -0.06 -0.47 0.18 -0.32 0.79 -0.84 3.74 1.98 0.20 -0.38 -0.14 -0.08 0.04 0.61 -1.44 0.63 -0.19 
 -0.30 0.14 0.00 0.16 0.25 -0.94 2.67 -0.04 0.47 0.02 -0.50 -0.20 0.95 0.00 1.88 0.07 -0.39 0.08 -0.02 0.06 0.59 -1.33 3.70 -0.25 0.45 -0.20 
 -0.05 0.77 0.99 -0.08 0.85 -0.04 -0.39 0.17 0.11 0.30 0.27 -1.05 3.69 -0.03 0.04 -0.04 0.08 -0.52 -0.35 0.04 4.23 -0.05 -0.06 -0.03 0.09 -0.05 
 -0.47 0.31 3.80 0.03 -0.40 -0.38 0.00 0.72 0.77 0.13 3.18 0.01 0.00 -0.21 0.18 -0.99 -0.30 0.02 1.06 0.12 0.39 0.07 0.03 0.30 0.24 -1.52 2.98 
@@ -2039,21 +2040,26 @@ AXIS[&quot;Latitude&quot;,NORTH]]</CoordinateSystem>
 -0.05 0.07 -0.73 -0.31 0.01 1.18 0.10 0.35 0.31 0.29 0.16 0.37 1.11 1.47 0.16 0.24 0.26 0.27 0.13 0.61 1.74 4.28 -0.17 0.04 -0.04 0.17 0.10 
 -0.52 0.02 3.99 -0.07 -0.05 -0.11 0.19 -0.33 -0.46 0.14 3.91 0.07 -0.23 -0.13 0.12 -1.39 -0.24 0.70 2.00 0.086 0.16 -0.05 -0.08 1.24 -1.37 
 -1.35 2.32 0.11 0.05 0.086 -0.53 -1.30 -0.16 0.07 2.98 0.05 0.15 -0.05 0.16 0.42 0.34 1.06 3.92 -0.14 -0.14 0.43 -0.00 -0.50 -0.11 -2.04" 
-                  LocalityGeomeans="0.60 0.61 0.62 0.64 0.64 0.64 0.65 0.66 0.66 0.67 0.70 0.70 0.71 0.72 0.73 0.73 0.76 0.81 0.88 0.95 0.97 
+                    LocalityGeomeans="0.60 0.61 0.62 0.64 0.64 0.64 0.65 0.66 0.66 0.67 0.70 0.70 0.71 0.72 0.73 0.73 0.76 0.81 0.88 0.95 0.97 
 1.0 1.14 1.32 2.31"/>
-              </Model>
-            </Algorithm>
-          </SerializedModel>
+                </Model>
+              </Algorithm>
+            </SerializedModel>
+          </ModelEnvelope>
         </Job>
         <Job Ticket="1FGxiM">
-          <Statistics>
-            <RocCurve Auc="0.855" NumBackgroundPoints="5000" 
-                      Points="0 0 0.017 0 0.021 0.04 0.036 0.12 0.043 0.2 0.056 0.28 0.057 0.32 0.085 0.4 0.089 0.48 0.098 0.56 0.11 0.64 0.13 
+          <TestResultEnvelope>
+            <Statistics>
+              <RocCurve Auc="0.855" NumBackgroundPoints="5000" 
+                        Points="0 0 0.017 0 0.021 0.04 0.036 0.12 0.043 0.2 0.056 0.28 0.057 0.32 0.085 0.4 0.089 0.48 0.098 0.56 0.11 0.64 0.13 
 0.68 0.19 0.76 0.20 0.84 0.27 0.92 1 1"/>
-          </Statistics>
+            </Statistics>
+          </TestResultEnvelope>
         </Job>
         <Job Ticket="jAwxik">
-          <AreaStatistics TotalCells="25501" CellsPredicted="2480" PredictionThreshold="0.5"/>
+          <ProjectionEnvelope url="http://some.host/someplace/jAwxik.img">
+            <AreaStatistics TotalCells="25501" CellsPredicted="2480" PredictionThreshold="0.5"/>
+          </ProjectionEnvelope>
         </Job>
         <Job Ticket="xyz123">
           <Values V="0.64039 0.72411 0.5000 0.47856 0.63948"/>
