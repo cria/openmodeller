@@ -134,18 +134,18 @@ static AlgMetadata metadata = {
  environmental conditions. The niche is represented by\
  a multivariate Gaussian distribution with the mean value\
  based on the optimum conditions and a random standard\
- deviation smaller than the standard deviation of the\
- region of interest and greater than the standard deviation\
- of the region of interest multiplied by a given factor\
- [0.0, 1.0]. Suitability is calculated by assuming\
+ deviation. Suitability is calculated by assuming\
  independence between all variables, i.e., the final\
  value is the product of the individual suitability\
  for each variable. Individual suitabilities are\
  calculated as the result of the Gaussian probability\
  density function scaled by a factor to make the\
  optimum condition correspond to 1. Standard deviations\
- are randomly chosen within the maximum range between\
- the mean and the extreme values of each variable.",
+ for each variable are randomly chosen within the range\
+ [x*S, S], where S is the standard deviation of the entire\
+ native region (calculated based on the background\
+ points) and x is the standard deviation factor parameter\
+ between 0 and 1.",
 
   "Renato De Giovanni",  // Author
 
