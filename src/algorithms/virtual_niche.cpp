@@ -44,11 +44,12 @@ using namespace std;
 /****************************************************************/
 /********************** Algorithm's Metadata ********************/
 
-#define NUM_PARAM 3
+#define NUM_PARAM 4
 
 #define BACKGROUND_ID   "NumberOfBackgroundPoints"
 #define USE_ABSENCES_ID "UseAbsencesAsBackground"
 #define THRESHOLD_ID    "SuitabilityThreshold"
+#define STD_FACTOR_ID   "StandardDeviationFactor"
 
 /****************************/
 /*** Algorithm parameters ***/
@@ -94,6 +95,19 @@ static AlgParamMetadata parameters[NUM_PARAM] = {
     1,      // Parameter's upper limit.
     "1.0"   // Parameter's typical (default) value.
   },
+  // Standard Deviation Factor
+  {
+    STD_FACTOR_ID,               // Id.
+    "Standard deviation factor", // Name.
+    Real,                        // Type.
+    "Standard deviation factor.", // Overview
+    "Factor (x) used to control the minimum limit of the random standard deviation for each variable. The random standard deviation will be a value between [x*S, S], where S is the standard deviation of the entire native region. Increase the factor to get larger niches, especially when using many environmental variables.", // Description.
+    1,      // Not zero if the parameter has lower limit.
+    0,      // Parameter's lower limit.
+    1,      // Not zero if the parameter has upper limit.
+    1,      // Parameter's upper limit.
+    "0.0"   // Parameter's typical (default) value.
+  },
 };
 
 /**************************/
@@ -103,7 +117,7 @@ static AlgMetadata metadata = {
 
   "VNG",                     // Id
   "Virtual Niche Generator", // Name
-  "0.1",                     // Version
+  "0.2",                     // Version
 
   // Overview
   "Algorithm used to create virtual niches using the\
@@ -121,7 +135,9 @@ static AlgMetadata metadata = {
  a multivariate Gaussian distribution with the mean value\
  based on the optimum conditions and a random standard\
  deviation smaller than the standard deviation of the\
- region of interest. Suitability is calculated by assuming\
+ region of interest and greater than the standard deviation\
+ of the region of interest multiplied by a given factor\
+ [0.0, 1.0]. Suitability is calculated by assuming\
  independence between all variables, i.e., the final\
  value is the product of the individual suitability\
  for each variable. Individual suitabilities are\
@@ -180,7 +196,8 @@ VirtualNicheGenerator::VirtualNicheGenerator() :
   _mean(),
   _std(),
   _scale(),
-  _threshold(1.0)
+  _threshold(1.0),
+  _std_factor(0.0)
 { }
 
 
@@ -269,6 +286,25 @@ VirtualNicheGenerator::initialize()
     }
   }
 
+  if ( ! getParameter( STD_FACTOR_ID, &_std_factor ) ) {
+
+    Log::instance()->warn( "Parameter '" STD_FACTOR_ID "' unspecified. Using default value (0).\n");
+
+    _std_factor = 0.0;
+  }
+
+  if ( _std_factor < 0.0 ) {
+
+    _std_factor = 0.0;
+  }
+  else {
+
+    if ( _std_factor > 1.0 ) {
+
+      _std_factor = 1.0;
+    }
+  }
+
   return 1;
 }
 
@@ -331,8 +367,9 @@ VirtualNicheGenerator::iterate()
 
   for (int i = 0; i < _samp->numIndependent(); ++i) {
 
-    // Random standard deviation
-    _std[i] = random(0.0, background_std[i]);
+    // Random standard deviation, restricting the interval using std factor
+    // to avoid too constrained niches
+    _std[i] = random(_std_factor*background_std[i], background_std[i]);
 
     // Maximum value of the probability density function
     max_pdf_val[i] = pdf(_mean[i], _std[i], _mean[i]);
@@ -453,7 +490,7 @@ VirtualNicheGenerator::dump()
 Scalar
 VirtualNicheGenerator::pdf(Scalar mean, Scalar std, Scalar val) const
 {
-  return (1.0/std*(sqrt(2.0*PI)))*exp(-0.5*pow((val-mean)/std, 2));
+    return (1.0/(std*sqrt(2.0*PI)))*exp(-0.5*pow((val-mean)/std, 2));
 }
 
 

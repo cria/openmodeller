@@ -341,3 +341,4 @@ Output file type = ByteHFA
 #Parameter = NumberOfBackgroundPoints 10000
 #Parameter = UseAbsencesAsBackground 0
 #Parameter = SuitabilityThreshold 1.0
+#Parameter = StandardDeviationFactor 0.0

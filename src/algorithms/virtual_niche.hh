@@ -66,12 +66,13 @@ private:
   OccurrencesPtr _background;
   int _num_background;
 
-  Sample _minimum;  ///> Mininum value for each variable.
-  Sample _maximum;  ///> Maximum value for each variable.
-  Sample _mean;     ///> Average for the normal distribution.
-  Sample _std;      ///> Standard deviation for the normal distribution.
-  Sample _scale;    ///> Factors to multiply the PDF values.
-  Scalar _threshold;///> Threshold to get a binary niche.
+  Sample _minimum;   ///> Mininum value for each variable.
+  Sample _maximum;   ///> Maximum value for each variable.
+  Sample _mean;      ///> Average for the normal distribution.
+  Sample _std;       ///> Standard deviation for the normal distribution.
+  Sample _scale;     ///> Factors to multiply the PDF values.
+  Scalar _threshold; ///> Threshold to get a binary niche.
+  Scalar _std_factor;///> Factor used to ensure larger random standard deviations. [0.0, 1.0]
 };
 
 
