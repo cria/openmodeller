@@ -333,3 +333,11 @@ Output file type = ByteHFA
 #Parameter = Alg5 
 #Parameter = Weights 1.0 1.0 1.0 0.0 0.0
 #Parameter = Agreement 2
+
+########
+# Virtual Niche Generator
+#
+#Algorithm = VNG
+#Parameter = NumberOfBackgroundPoints 10000
+#Parameter = UseAbsencesAsBackground 0
+#Parameter = SuitabilityThreshold 1.0
