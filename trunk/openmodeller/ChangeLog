@@ -4,6 +4,7 @@ SVN revision: ?
 
 	* New algorithm for generating virtual niches.
 	* Fixed bug in the web service when checking the source of remote rasters.
+	* Included missing MSVC DLLs in the Windows installer.
 
 
 --------------------------
