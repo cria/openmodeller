@@ -40,13 +40,32 @@ read_dom () {
     return $ret
 }
 
-# Separate function (because of "local") to check layer
-check_layer () {
-    eval local $ATTRIBUTES
-    # This won't exit the program if the layer doesn't exist or can't be opened
-    # (in this case users will get the error later, when the job fails). However 
-    # this command may cache remote layers locally.
-    "$OM_BIN_DIR"/om_layer --check "$Id" --config-file "$OM_CONFIGURATION"
+# Function to read key value pairs (for XML attributes)
+# Created to avoid using "eval" on external content
+read_pairs () {
+    local IFS="="
+    read KEY VALUE
+    local ret=$?
+    return $ret
+}
+
+# Find layer id and try to open it with openModeller
+find_id_and_check_layer () {
+
+  while read_pairs; do
+
+    if [[ $KEY == "Id" ]] ; then
+
+      # Remove first and last quotes
+      VALUE="${VALUE%\"}"
+      VALUE="${VALUE#\"}"
+
+      # This won't exit the program if the layer doesn't exist or can't be opened
+      # (in this case users will get the error later, when the job fails). However 
+      # this command may cache remote layers locally.
+      "$OM_BIN_DIR"/om_layer --check "$VALUE" --config-file "$OM_CONFIGURATION"
+    fi
+  done
 }
 
 # Configuration file can be passed as a parameter
@@ -114,9 +133,13 @@ ls -t $TICKET_DIRECTORY/*_req.* 2> /dev/null | tail -n -1 | while read req; do
   moved=$TICKET_DIRECTORY"/"$jobtype"_proc."$ticket
 
   # Rename file, avoiding that another process takes it
-  # note: if another process enters the loop with the same file entry, the mv command 
-  #       will simply fail and exit the program
   mv "$req" "$moved"
+
+  # Exit program if last command fails
+  if [ $? -ne 0 ]; then
+    echo "Warning: request file not found. Aborting."
+    exit 1
+  fi
 
   log=$TICKET_DIRECTORY"/"$ticket
   prog=$TICKET_DIRECTORY"/prog."$ticket
@@ -130,7 +153,11 @@ ls -t $TICKET_DIRECTORY/*_req.* 2> /dev/null | tail -n -1 | while read req; do
       if [[ ${TAG_NAME:0:1} != "/" ]] ; then
         # Map or Mask tags, with or without namespace prefix
         if [[ $TAG_NAME == "Map" || ${TAG_NAME:(-4)} == ":Map" || $TAG_NAME == "Mask" || ${TAG_NAME:(-5)} == ":Mask" ]] ; then
-          check_layer
+          # TODO: avoid duplications, as the same layer may be repeated
+          # TODO: parallelize with xargs
+
+          # Convert white spaces to newlines and feed check_layer
+          echo "$ATTRIBUTES" | sed 's/ /\n/g' | find_id_and_check_layer
         fi
       fi
     done < "$moved"
