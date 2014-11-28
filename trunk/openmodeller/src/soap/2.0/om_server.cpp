@@ -771,7 +771,7 @@ omws::omws__runExperiment( struct soap *soap, omws::XML_ om__ExperimentParameter
     }
     else {
 
-      // Store the request and create a ticket anyway, regardless using Condor DAGMan or not
+      // Store the request and create a ticket anyway, regardless using HTCondor or not
       omws::xsd__string ticket;
       scheduleJob( soap, OMWS_EXPERIMENT _PENDING_REQUEST, params, 0, ticket );
       logRequest( soap, "runExperiment", ticket.c_str() );
@@ -2487,7 +2487,8 @@ scheduleExperiment(struct soap* soap, const om::_om__ExperimentParameters& ep, o
     string jobs_line("JOBS=");
     jobs_line.append( all_tickets ).append("\n");
 
-    // This is only expected to be used by Condor/DAGMan backends
+    // This is only expected to be used by HTCondor/DAGMan backends
+    // TODO: make sure this is really necessary after recent changes
     string ids_line("IDS=");
     ids_line.append( all_ids ).append("\n");
 
@@ -2524,9 +2525,8 @@ scheduleExperiment(struct soap* soap, const om::_om__ExperimentParameters& ep, o
   }
 
   string condorIntegration( gFileParser.get( "CONDOR_INTEGRATION" ) );
-  string dagmanEnabled( gFileParser.get( "DAGMAN_ENABLED" ) );
 
-  if ( condorIntegration == "yes" && dagmanEnabled == "yes" ) {
+  if ( condorIntegration == "yes" ) {
 
     // Rename experiment job so that Condor can process it
     string exp_job_file = ticket_dir + OMWS_EXPERIMENT _PENDING_REQUEST + experiment_ticket;
