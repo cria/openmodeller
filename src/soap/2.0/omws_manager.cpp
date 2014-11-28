@@ -53,6 +53,11 @@ int main(int argc, char **argv)
   opts.addOption( "v", "version", "Display version info"    , false );
   opts.addOption( "c", "config" , "OMWS configuration file" , true );
   opts.addOption( "t", "ticket" , "Job ticket"              , true );
+  // The following option was included so that omws_manager can be used by HTCondor. If
+  // the new request file is created as _req, it may be incorrectly processed as an
+  // individual job, rather than part of an experiment. So this option allows the
+  // new request to be directly written as _proc.
+  opts.addOption( "s", "skip-request", "Write new request in proc instead of req file", false );
 
   if ( ! opts.parse( argc, argv ) ) {
 
@@ -64,6 +69,8 @@ int main(int argc, char **argv)
 
   std::string config_file;
   std::string job_ticket;
+
+  bool skip_request = false;
 
   while ( ( option = opts.cycle() ) >= 0 ) {
 
@@ -80,6 +87,9 @@ int main(int argc, char **argv)
         break;
       case 2:
         job_ticket = opts.getArgs( option );
+        break;
+      case 3:
+        skip_request = true;
         break;
       default:
         break;
@@ -421,7 +431,16 @@ int main(int argc, char **argv)
               }
 
               // Write request to file
-              string req_file = ticket_dir + OMWS_MODEL + _REQUEST + (*nt);
+              string req_file;
+
+              if ( skip_request ) {
+
+                req_file = ticket_dir + OMWS_MODEL + _PROCESSED_REQUEST + (*nt);
+              }
+              else {
+
+                req_file = ticket_dir + OMWS_MODEL + _REQUEST + (*nt);
+              }
 
               ofstream fs_out( req_file.c_str() );
               ctx->os = &fs_out;
@@ -668,7 +687,16 @@ int main(int argc, char **argv)
               // Write request to file
               logMessage( "Writing new request file.", fd_log );
 
-              string req_file = ticket_dir + OMWS_TEST + _REQUEST + (*nt);
+              string req_file;
+
+              if ( skip_request ) {
+
+                req_file = ticket_dir + OMWS_TEST + _PROCESSED_REQUEST + (*nt);
+              }
+              else {
+
+                req_file = ticket_dir + OMWS_TEST + _REQUEST + (*nt);
+              }
 
               ofstream fs_out( req_file.c_str() );
               ctx->os = &fs_out;
@@ -841,7 +869,16 @@ int main(int argc, char **argv)
               }
 
               // Write request to file
-              string req_file = ticket_dir + OMWS_PROJECTION + _REQUEST + (*nt);
+              string req_file;
+
+              if ( skip_request ) {
+
+                req_file = ticket_dir + OMWS_PROJECTION + _PROCESSED_REQUEST + (*nt);
+              }
+              else {
+
+                req_file = ticket_dir + OMWS_PROJECTION + _REQUEST + (*nt);
+              }
 
               ofstream fs_out( req_file.c_str() );
               ctx->os = &fs_out;
@@ -946,7 +983,16 @@ int main(int argc, char **argv)
               // Write request to file
               logMessage( "Writing new request file.", fd_log );
 
-              string req_file = ticket_dir + OMWS_EVALUATE + _REQUEST + (*nt);
+              string req_file;
+
+              if ( skip_request ) {
+
+                req_file = ticket_dir + OMWS_EVALUATE + _PROCESSED_REQUEST + (*nt);
+              }
+              else {
+
+                req_file = ticket_dir + OMWS_EVALUATE + _REQUEST + (*nt);
+              }
 
               ofstream fs_out( req_file.c_str() );
               ctx->os = &fs_out;
