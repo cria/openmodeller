@@ -1,0 +1,105 @@
+#!/bin/bash
+
+#######################################################################
+# Script to be run as a daemon. It checks if there are requests
+# (sample points, create, test, evaluate or project model or run
+# experiment) in the oM server tickets directory and runs the 
+# corresponding commands by calling om_run. It depends on the oM server 
+# configuration file that can be specified as the first parameter or 
+# through the OM_SERVER_CONFIG environment variable.
+# This script can process both OMWS 1.0 and OMWS 2.0 request files.
+# It replaces the old scheduler.sh, so instead of using cron, now
+# this script needs to be started.
+# Parameter 1: path to oM server configuration file (optional).
+# Parameter 2: sleep interval (optional. default 5s.)
+#######################################################################
+
+if [[ "$1" ]] && [[ "$1" == "--help" || "$1" == "-h" ]]; then
+
+  echo "Usage: om_scheduler [path_to_om_server_configuration_file] [sleep_interval]"
+  exit 0
+fi
+
+# Function to read configuration file
+function readconf {
+ 
+  while read line; do
+    # skip comments
+    [[ ${line:0:1} == "#" ]] && continue
+ 
+    # skip empty lines
+    [[ -z "$line" ]] && continue
+ 
+    # got a config line eval it
+    eval $line
+ 
+  done < "$1"
+}
+
+# When provided, configuration file is the first parameter
+if [[ "$1" ]]; then
+  OM_SERVER_CONFIG=$1
+else
+  if [[ -z "$OM_SERVER_CONFIG" ]] ; then
+    echo "Error: oM server configuration file not specified"
+    exit 1
+  fi
+fi  
+
+# If configuration file exists, read the configuration
+if [ -f "$OM_SERVER_CONFIG" ]; then
+  # read configuration
+  readconf "$OM_SERVER_CONFIG"
+else
+  echo "Error: could not find/open oM server configuration file"
+  exit 1
+fi
+
+# Sleep interval is always the second parameter
+if [[ "$2" ]]; then
+  SLEEP_INTERVAL=$2
+else
+  SLEEP_INTERVAL=5
+fi  
+
+if [[ "$LOG_DIRECTORY" && "$ENABLE_SCHEDULER_LOG" == "yes" ]]; then
+
+  OM_SCHEDULER_LOG=$LOG_DIRECTORY"/scheduler.log"
+fi
+
+while true; do
+
+  # Process oldest request
+  ls -t $TICKET_DIRECTORY/*_req.* 2> /dev/null | tail -n -1 | while read req; do
+
+    RUN="yes"
+
+    # If there's no Condor integration, don't allow number of concurrent jobs to exceed a maximum
+    if [[ "$CONDOR_INTEGRATION" == "no" ]]; then
+
+      PROCS=`pgrep -f -c om_run`
+
+      if [ "$PROCS" -ge "$MAX_SHELL_JOBS" ]; then
+
+        RUN="no"
+      fi
+    fi
+
+    if [[ "$RUN" == "yes" ]]; then
+
+      # Run job (parameters: config file and request file)
+
+      if [[ "$OM_SCHEDULER_LOG" ]]; then
+
+        echo "Processing job "$req >> $OM_SCHEDULER_LOG
+      fi
+
+      nohup "$OM_BIN_DIR"/om_run "$CONFIG" "$req" 0<&- &>/dev/null &
+    fi
+  done
+
+  sleep $SLEEP_INTERVAL
+
+  exit 0
+done
+

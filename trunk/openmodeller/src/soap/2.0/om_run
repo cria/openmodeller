@@ -1,0 +1,472 @@
+#!/bin/bash
+
+#######################################################################
+# Script used to run OMWS jobs stored in request files. It is called
+# by om_scheduler and requires two parameters: configuration file 
+# and request file. This script can process both OMWS 1.0 and OMWS 2.0 
+# requests.
+# Parameter 1: path to configuration file.
+# Parameter 2: path to request file.
+#######################################################################
+
+if [[ "$1" ]] && [[ "$1" == "--help" || "$1" == "-h" ]]; then
+
+  echo "Usage: om_run path_to_omws_configuration_file path_to_omws_request_file"
+  exit 0
+fi
+
+# Function to read configuration file
+function readconf {
+ 
+  while read line; do
+    # skip comments
+    [[ ${line:0:1} == "#" ]] && continue
+ 
+    # skip empty lines
+    [[ -z "$line" ]] && continue
+ 
+    # got a config line eval it
+    eval $line
+ 
+  done < "$1"
+}
+
+# Function to read XML
+# source: http://stackoverflow.com/questions/893585/how-to-parse-xml-in-bash
+function read_dom () {
+  local IFS=\>
+  read -d \< ENTITY CONTENT
+  local ret=$?
+  TAG_NAME=${ENTITY%% *}
+  ATTRIBUTES=${ENTITY#* }
+  return $ret
+}
+
+# Function to read key value pairs (for XML attributes)
+# Created to avoid using "eval" on external content
+function read_pairs () {
+    local IFS="="
+    read KEY VALUE
+    local ret=$?
+    return $ret
+}
+
+# Find layer id and try to open it with openModeller
+function find_id_and_check_layer () {
+
+  while read_pairs; do
+
+    if [[ "$KEY" == "Id" ]] ; then
+
+      # Remove first and last quotes
+      VALUE="${VALUE%\"}"
+      VALUE="${VALUE#\"}"
+
+      # This won't exit the program if the layer doesn't exist or can't be opened
+      # (in this case users will get the error later, when the job fails). However 
+      # this command may cache remote layers locally.
+      "$OM_BIN_DIR"/om_layer --check "$VALUE" --config-file "$OM_CONFIGURATION"
+    fi
+  done
+}
+
+# Function to check layers
+function check_layers () {
+
+  while read_dom; do
+    # Avoid closing tags
+    if [[ ${TAG_NAME:0:1} != "/" ]] ; then
+      # Map or Mask tags, with or without namespace prefix
+      if [[ $TAG_NAME == "Map" || ${TAG_NAME:(-4)} == ":Map" || $TAG_NAME == "Mask" || ${TAG_NAME:(-5)} == ":Mask" ]] ; then
+        # TODO: avoid duplications, as the same layer may be repeated
+        # TODO: parallelize with xargs
+
+        # Convert white spaces to newlines and feed check_layer
+        echo "$ATTRIBUTES" | sed 's/ /\n/g' | find_id_and_check_layer
+      fi
+    fi
+  done
+}
+
+# Function to define projection variables
+# param 1: DISTRIBUTION_MAP_DIRECTORY
+# param 2: TICKET
+# param 3: PROJECTION_REQUEST_FILE_PATH
+function define_projection_vars () {
+
+  map_base=$1"/"$2
+
+  # define image file extension based on filetype
+  filetype=`cat $3 | grep -Eo 'FileType="\w+"'`
+  proj_type=`echo $filetype | sed 's/FileType="//; s/".*//'`
+  case "$proj_type" in
+    GreyTiff)
+      proj_ext=".tif"
+      map_file=$map_base$proj_ext ;;
+    GreyTiff100)
+      proj_ext=".tif"
+      map_file=$map_base$proj_ext ;;
+    FloatingTiff)
+      proj_ext=".tif"
+      map_file=$map_base$proj_ext ;;
+    GreyBMP)
+      proj_ext=".bmp" 
+      map_file=$map_base$proj_ext ;;
+    ByteASC)
+      proj_ext=".asc" 
+      map_file=$map_base$proj_ext ;;
+    FloatingASC)
+      proj_ext=".asc" 
+      map_file=$map_base$proj_ext ;;
+    *)
+      proj_ext=".img"
+      map_file=$map_base$proj_ext ;;
+  esac
+
+  map_ige=$map_base".ige"
+}
+
+# Function to create Condor job ticket
+function create_condor_ticket () {
+
+  condor_job_file=$TICKET_DIRECTORY"/condor."$condor_ticket
+
+  echo "universe = vanilla" >> $condor_job_file
+
+  case "$jobtype" in
+
+  "samp") echo "executable = "$NODE_BIN_DIR"/om_pseudo " >> $condor_job_file
+          echo "arguments = --xml-req "$condor_moved" --result "$condor_resp" --prog-file "$condor_prog" --log-file "$condor_ticket" --config-file "$NODE_OM_CONFIGURATION >> $condor_job_file
+          ;;
+  "model") echo "executable = "$NODE_BIN_DIR"/om_model " >> $condor_job_file
+           echo "arguments = --xml-req "$condor_moved" --model-file "$condor_resp" --prog-file "$condor_prog" --log-file "$condor_ticket" --config-file "$NODE_OM_CONFIGURATION >> $condor_job_file
+           ;;
+  "eval") echo "executable = "$NODE_BIN_DIR"/om_evaluate " >> $condor_job_file
+          echo "arguments = --xml-req "$condor_moved" --result "$condor_resp" --prog-file "$condor_prog" --log-file "$condor_ticket" --config-file "$NODE_OM_CONFIGURATION >> $condor_job_file
+          ;;
+  "test") echo "executable = "$NODE_BIN_DIR"/om_test " >> $condor_job_file
+          echo "arguments = --xml-req "$condor_moved" --result-file "$condor_resp" --prog-file "$condor_prog" --log-file "$condor_ticket" --config-file "$NODE_OM_CONFIGURATION >> $condor_job_file
+          ;;
+  "proj") echo "executable = "$NODE_BIN_DIR"/om_project" >> $condor_job_file
+          echo "arguments = --xml-req "$condor_moved" --dist-map "$condor_ticket$condor_proj_ext" --stat-file "$condor_stats" --prog-file "$condor_prog" --log-file "$condor_ticket" --config-file "$NODE_OM_CONFIGURATION >> $condor_job_file
+          ;;
+  *) msg="Error: unknow job type: "$jobtype
+     if [[ "$OM_SCHEDULER_LOG" ]]; then
+
+       echo msg >> $OM_SCHEDULER_LOG
+     fi
+     ;;
+  esac
+
+  echo "environment = "$NODE_ENVIRONMENT >> $condor_job_file
+  echo "output      = "$TICKET_DIRECTORY"/condor_out."$condor_ticket >> $condor_job_file
+  echo "error       = "$TICKET_DIRECTORY$condor_ticket >> $condor_job_file
+  echo "log         = "$TICKET_DIRECTORY"/condor_log."$condor_ticket >> $condor_job_file
+  echo "getenv      = false" >> $condor_job_file
+
+  # Files transfer
+  echo "should_transfer_files = yes" >> $condor_job_file
+  echo "transfer_input_files = "$condor_moved >> $condor_job_file
+
+  transf_files="transfer_output_remaps = \""$condor_ticket"="$TICKET_DIRECTORY"/"$condor_ticket";"
+  transf_files=$transf_files"prog."$condor_ticket"="$TICKET_DIRECTORY"/"$condor_prog";"
+
+  if [[ "$jobtype" == "proj" ]]; then
+    # projection job
+    transf_files=$transf_files"stats."$condor_ticket"="$TICKET_DIRECTORY"/"$condor_stats";"
+    transf_files=$transf_files$condor_ticket$condor_proj_ext"="$DISTRIBUTION_MAP_DIRECTORY"/"$condor_ticket$condor_proj_ext
+  else
+    # non-projection job
+    transf_files=$transf_files$condor_jobtype"_resp."$condor_ticket"="$condor_resp
+  fi
+
+  if [[ "$1" ]] ; then
+    # done file will be created on working nodes
+    transf_files=$transf_files";done."$condor_ticket"="$TICKET_DIRECTORY"/done."$condor_ticket"\""
+  fi
+
+  echo $transf_files >> $condor_job_file
+
+  echo "transfer_executable = false" >> $condor_job_file
+  echo "when_to_transfer_output = on_exit" >> $condor_job_file
+
+  echo "stream_output = true" >> $condor_job_file
+  echo "stream_error = true" >> $condor_job_file
+  echo "queue" >> $condor_job_file
+
+  # Create done.ticket file
+  echo "+PostCmd = \"touch\"" >> $condor_job_file
+  echo "+PostArguments = \"done."$condor_ticket"\"" >> $condor_job_file
+
+  echo "" >> $condor_job_file
+}
+
+###########################################################
+#                      MAIN CODE                          #
+###########################################################
+
+# Configuration file must be passed as a parameter
+if [[ -z "$1" ]]; then
+  echo "Error: missing first parameter (configuration file)"
+  exit 1
+fi  
+
+# Request file must be passed as a parameter
+if [[ -z "$2" ]]; then
+  echo "Error: missing second parameter (request file)"
+  exit 1
+fi  
+
+# If configuration file exists, read the configuration
+if [ -f "$1" ]; then
+  # read configuration
+  readconf "$1"
+else
+  echo "Error: could not find configuration file"
+  exit 1
+fi
+
+# Check existence of request file
+if [ ! -f "$2" ]; then
+  echo "Error: could not find request file"
+  exit 1
+fi
+
+# variable req contains the full path
+req=$2
+
+if [[ "$LOG_DIRECTORY" && "$ENABLE_SCHEDULER_LOG" == "yes" ]]; then
+
+  OM_SCHEDULER_LOG=$LOG_DIRECTORY"/scheduler.log"
+fi
+
+# strip everything before the ticket string, which is separated by a dot, to get the ticket
+# note: ## = longest possible match, so directory names can contain dot in their names
+ticket="${req##*.}" 
+filename="${req##*/}" # strip directories
+jobtype="${filename%%_*}" # remove everything after _ to get job type
+
+moved=$TICKET_DIRECTORY"/"$jobtype"_proc."$ticket
+
+# Rename file, minimizing the chance of the scheduler processing it again
+mv "$req" "$moved"
+
+# If last commands fails, exit program
+if [ $? -ne 0 ]; then
+  echo "Warning: request file not found. Aborting."
+  exit 1
+fi
+
+log=$TICKET_DIRECTORY"/"$ticket
+prog=$TICKET_DIRECTORY"/prog."$ticket
+meta=$TICKET_DIRECTORY"/job."$ticket
+
+# Try to open all layers beforehand, depending on configuration
+if [[ "$CHECK_LAYERS" == "yes" ]]; then
+
+  check_layers < $moved
+fi  
+
+# Projection jobs need additional variables
+if [[ "$jobtype" == "proj" ]]; then
+
+  define_projection_vars $DISTRIBUTION_MAP_DIRECTORY $ticket $moved
+  stats=$TICKET_DIRECTORY"/stats."$ticket
+
+else
+
+  # All other jobs (except experiments!) produce a _resp. file
+  resp=$TICKET_DIRECTORY"/"$jobtype"_resp."$ticket
+fi  
+
+if [[ "$CONDOR_INTEGRATION" == "yes" ]]; then
+
+  ########################
+  #                      #
+  #        CONDOR        #
+  #                      #
+  ########################
+
+
+  if [[ "$jobtype" == "exp" ]] ; then
+
+    ##############
+    # Experiment #
+    ##############
+
+    # Here we always use DAGMan because omws_manager needs to be run upon completion 
+    # of each dependency (to fill in the empty parts in subsequent XML requests).
+    # If we don't use DAGMan, we would need to either 1) be able to specify post 
+    # processing commands to run on the master node (not possible at the moment), or 
+    # 2) force working nodes to install omws_manager with the corresponding service 
+    # configuration (not nice, since this is part of the front-end service) and
+    # make the file transfer more complicated if the tickets directory is not shared
+    # (because omws_manager may create additional files).
+
+    # Get jobs
+    line=`cat "$meta" | grep "JOBS="`
+    eval $line
+    jobs_array=$(echo $JOBS | sed 's/,/\n/g')
+
+    dag_file = $TICKET_DIRECTORY"/dag."$ticket
+
+    DEPS=""
+
+    # For each job
+    for job_ticket in $jobs_array
+    do
+      job_meta=$TICKET_DIRECTORY"/job."$job_ticket
+      line=`cat "$job_meta" | grep "TYPE="`
+      eval $line
+      # Create Condor ticket for the job
+      condor_ticket=$job_ticket
+      condor_jobtype=$TYPE
+
+      # These must be file names, without paths
+      condor_moved=$condor_jobtype"_proc."$job_ticket
+      condor_resp=$condor_jobtype"_resp."$job_ticket
+      condor_prog="prog."$job_ticket
+
+      if [[ "$condor_jobtype" == "proj" ]]; then
+
+        define_projection_vars $DISTRIBUTION_MAP_DIRECTORY $job_ticket $condor_moved
+
+        # This must be a file name, without a path
+        condor_stats="stats."$job_ticket
+        condor_proj_ext=$proj_ext
+      fi
+
+      condor_pend=$TICKET_DIRECTORY"/"$condor_jobtype"_pend."$job_ticket
+
+      create_condor_ticket
+
+      # After the previous function call we have the condor submission file, so add it to dag
+      echo "JOB "$condor_ticket" "$condor_job_file >> $dag_file
+
+      # Check dependencies
+      line=`cat "$job_meta" | grep "PREV="`
+      eval $line
+      line=`cat "$job_meta" | grep "NEXT="`
+      eval $line
+
+      if [[ "$PREV" ]] ; then
+
+        # Has previous jobs, so we need to run omws_manager before it
+        echo "SCRIPT PRE "$condor_ticket" "$NODE_BIN_DIR"/omws_manager --ticket "$condor_ticket" --config "$NODE_OM_CONFIGURATION" --skip-request > /dev/null 2> /dev/null" >> $dag_file
+
+        # Add job dependencies
+        parents=`echo $PREV | sed 's/,/ /g'`
+        DEPS="$DEPS\nPARENT "$parents" CHILD "$condor_ticket
+      else
+
+        # No previous jobs
+
+        # Add pre-processing just to indicate the job is being processed (runs on master node!)
+        # note: this should only be done for root jobs
+        echo "SCRIPT PRE "$condor_ticket" mv "$condor_pend" "$TICKET_DIRECTORY"/"$condor_moved >> $dag_file
+      fi
+
+      if [[ -n "$NEXT" ]] ; then
+        # Leaf node
+        # Add omws_manager post-processing if there are no further jobs (runs on master node!)
+        # This may finish the experiment.
+        echo "SCRIPT POST "$condor_ticket" "$NODE_BIN_DIR"/omws_manager --ticket "$condor_ticket" --config "$NODE_OM_CONFIGURATION" --skip-request > /dev/null 2> /dev/null" >> $dag_file
+      fi
+    done
+
+    # Add dependencies section
+    echo $DEPS >> $dag_file
+    echo "" >> $dag_file
+
+    # Submit dagman ticket
+    "$CONDOR_BIN_DIR"/condor_submit_dag $dag_file
+  else
+
+    #######################
+    # Single isolated job #
+    #######################
+
+    # Here, isolated jobs (non "exp" jobs) will never belong to an experiment
+    # because job experiments are never named *_req.ticket. They go from 
+    # _pend to _proc directly. So we don't need to rum omws_manager after the 
+    # job here.
+
+    condor_ticket=$ticket
+    condor_jobtype=$jobtype
+
+    # These must be just file names, without path
+    condor_moved=$jobtype"_proc."$ticket
+    condor_resp=$jobtype"_resp."$ticket
+    condor_prog="prog."$ticket
+
+    if [[ "$jobtype" == "proj" ]]; then
+      # This must be just a file name, without path
+      condor_stats="stats."$ticket
+      condor_proj_ext=$proj_ext
+    fi
+
+    # First parameter indicates that a post command should be included to create the done.ticket file
+    create_condor_ticket
+
+    # TODO: post-process projection results.
+    # Any adjacent projection files (such as .prj) are not being transferred.
+
+    "$CONDOR_BIN_DIR"/condor_submit $condor_job_file
+  fi
+
+else
+
+  ########################
+  #                      #
+  #       NO CONDOR      #
+  #                      #
+  ########################
+
+  # execute command directly
+  # note: experiments will never be processed here (they are already converted 
+  #       into individual tickets by the CGI).
+
+  case "$jobtype" in
+
+  "samp") "$OM_BIN_DIR"/om_pseudo --xml-req "$moved" --result "$resp" --log-file "$log" --prog-file "$prog" --config-file "$OM_CONFIGURATION"
+          ;;
+
+  "model") "$OM_BIN_DIR"/om_model --xml-req "$moved" --model-file "$resp" --log-file "$log" --prog-file "$prog" --config-file "$OM_CONFIGURATION"
+           ;;
+
+  "eval") "$OM_BIN_DIR"/om_evaluate --xml-req "$moved" --result "$resp" --log-file "$log" --prog-file "$prog" --config-file "$OM_CONFIGURATION"
+          ;;
+
+  "test") "$OM_BIN_DIR"/om_test --xml-req "$moved" --result "$resp" --log-file "$log" --prog-file "$prog" --config-file "$OM_CONFIGURATION"
+          ;;
+
+  "proj") "$OM_BIN_DIR"/om_project --xml-req "$moved" --dist-map "$map_file" --stat-file "$stats" --log-file "$log" --prog-file "$prog" --config-file "$OM_CONFIGURATION"
+          ;;
+    "exp") # When HTCondor is not used, exp requests are processed by the CGI
+           # so we should never fall in this condition (exp stats with pend and then 
+           # changes to proc in the end of the CGI procedure)
+           msg="Error: cannot process exp request with current configuration"
+           if [[ "$OM_SCHEDULER_LOG" ]]; then
+
+             echo msg >> $OM_SCHEDULER_LOG
+           fi
+           ;;
+    *) msg="Error: unknow job type: "$jobtype
+       if [[ "$OM_SCHEDULER_LOG" ]]; then
+
+         echo msg >> $OM_SCHEDULER_LOG
+       fi
+       ;;
+  esac
+
+  # If this is part of an experiment
+  if [ -e $meta ]; then
+    if grep -q "EXP=" "$meta"; then
+      # Run experiment manager to trigger other actions
+      "$OM_BIN_DIR"/omws_manager --config "$CONFIG" --ticket "$ticket" > /dev/null 2> /dev/null
+    fi
+  fi
+
+  finished=$TICKET_DIRECTORY"/done."$ticket
+  touch "$finished"
+fi
