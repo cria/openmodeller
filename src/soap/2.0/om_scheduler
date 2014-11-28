@@ -99,7 +99,5 @@ while true; do
   done
 
   sleep $SLEEP_INTERVAL
-
-  exit 0
 done
 
