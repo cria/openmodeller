@@ -94,7 +94,7 @@ while true; do
         echo "Processing job "$req >> $OM_SCHEDULER_LOG
       fi
 
-      nohup "$OM_BIN_DIR"/om_run "$CONFIG" "$req" 0<&- &>/dev/null &
+      nohup "$OM_BIN_DIR"/om_run "$OM_SERVER_CONFIG" "$req" 0<&- &>/dev/null &
     fi
   done
 
