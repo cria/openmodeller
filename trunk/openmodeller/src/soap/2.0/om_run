@@ -134,7 +134,7 @@ function create_condor_ticket () {
 
   echo "universe = vanilla" >> $condor_job_file
 
-  case "$jobtype" in
+  case "$condor_jobtype" in
 
   "samp") echo "executable = "$NODE_BIN_DIR"/om_pseudo " >> $condor_job_file
           echo "arguments = --xml-req "$condor_moved" --result "$condor_resp" --prog-file "$condor_prog" --log-file "$condor_ticket" --config-file "$NODE_OM_CONFIGURATION >> $condor_job_file
@@ -358,23 +358,31 @@ if [[ "$CONDOR_INTEGRATION" == "yes" ]]; then
       echo "JOB "$condor_ticket" "$condor_job_file >> $dag_file
 
       # Check dependencies
+      PREV=
+      NEXT=
       line=`cat "$job_meta" | grep "PREV="`
-      eval $line
+      if [[ "$line" ]] ; then
+        eval $line
+      fi
       line=`cat "$job_meta" | grep "NEXT="`
-      eval $line
+      if [[ "$line" ]] ; then
+        eval $line
+      fi
 
-      if [[ "$PREV" ]] ; then
-
-        # Add job dependencies
-        parents=`echo $PREV | sed 's/,/ /g'`
-        DEPS="$DEPS\nPARENT "$parents" CHILD "$condor_ticket
-      else
+      if [[ -z "$PREV" ]] ; then
 
         # No previous jobs
 
         # Add pre-processing just to indicate the job is being processed (runs on master node!)
         # note: this should only be done for root jobs
         echo "SCRIPT PRE "$condor_ticket" mv "$condor_pend" "$TICKET_DIRECTORY"/"$condor_moved >> $dag_file
+      fi
+
+      if [[ "$NEXT" ]] ; then
+
+        # Add job dependencies (better to do this here, because PREV contains job types)
+        children=`echo $NEXT | sed 's/,/ /g'`
+        DEPS="$DEPS\nPARENT "$condor_ticket" CHILD "$children
       fi
 
       # Always add omws_manager post-processing to create done.ticket file and inject 
