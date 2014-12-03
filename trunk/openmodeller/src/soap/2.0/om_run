@@ -151,7 +151,7 @@ function create_condor_ticket () {
   "proj") echo "executable = "$NODE_BIN_DIR"/om_project" >> $condor_job_file
           echo "arguments = --xml-req "$condor_moved" --dist-map "$condor_ticket$condor_proj_ext" --stat-file "$condor_stats" --prog-file "$condor_prog" --log-file "$condor_ticket" --config-file "$NODE_OM_CONFIGURATION >> $condor_job_file
           ;;
-  *) msg="Error: unknown job type: "$jobtype
+  *) msg="Error: unknown job type: "$condor_jobtype
      if [[ "$OM_SCHEDULER_LOG" ]]; then
 
        echo $msg >> $OM_SCHEDULER_LOG
@@ -172,7 +172,7 @@ function create_condor_ticket () {
   transf_files="transfer_output_remaps = \""$condor_ticket"="$TICKET_DIRECTORY"/"$condor_ticket";"
   transf_files=$transf_files"prog."$condor_ticket"="$TICKET_DIRECTORY"/"$condor_prog";"
 
-  if [[ "$jobtype" == "proj" ]]; then
+  if [[ "$condor_jobtype" == "proj" ]]; then
     # projection job
     transf_files=$transf_files"stats."$condor_ticket"="$TICKET_DIRECTORY"/"$condor_stats";"
     transf_files=$transf_files$condor_ticket$condor_proj_ext"="$DISTRIBUTION_MAP_DIRECTORY"/"$condor_ticket$condor_proj_ext
