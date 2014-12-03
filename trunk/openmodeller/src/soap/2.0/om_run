@@ -127,6 +127,7 @@ function define_projection_vars () {
 }
 
 # Function to create Condor job ticket
+# First parameter (yes or no) indicates that a post command should be included to create the done.ticket file
 function create_condor_ticket () {
 
   condor_job_file=$TICKET_DIRECTORY"/condor."$condor_ticket
@@ -150,7 +151,7 @@ function create_condor_ticket () {
   "proj") echo "executable = "$NODE_BIN_DIR"/om_project" >> $condor_job_file
           echo "arguments = --xml-req "$condor_moved" --dist-map "$condor_ticket$condor_proj_ext" --stat-file "$condor_stats" --prog-file "$condor_prog" --log-file "$condor_ticket" --config-file "$NODE_OM_CONFIGURATION >> $condor_job_file
           ;;
-  *) msg="Error: unknow job type: "$jobtype
+  *) msg="Error: unknown job type: "$jobtype
      if [[ "$OM_SCHEDULER_LOG" ]]; then
 
        echo $msg >> $OM_SCHEDULER_LOG
@@ -177,10 +178,10 @@ function create_condor_ticket () {
     transf_files=$transf_files$condor_ticket$condor_proj_ext"="$DISTRIBUTION_MAP_DIRECTORY"/"$condor_ticket$condor_proj_ext
   else
     # non-projection job
-    transf_files=$transf_files$condor_jobtype"_resp."$condor_ticket"="$condor_resp
+    transf_files=$transf_files$condor_jobtype"_resp."$condor_ticket"="$TICKET_DIRECTORY"/"$condor_resp
   fi
 
-  if [[ "$1" ]] ; then
+  if [[ "$1" == "yes" ]] ; then
     # done file will be created on working nodes
     transf_files=$transf_files";done."$condor_ticket"="$TICKET_DIRECTORY"/done."$condor_ticket"\""
   fi
@@ -194,9 +195,11 @@ function create_condor_ticket () {
   echo "stream_error = true" >> $condor_job_file
   echo "queue" >> $condor_job_file
 
-  # Create done.ticket file
-  echo "+PostCmd = \"touch\"" >> $condor_job_file
-  echo "+PostArguments = \"done."$condor_ticket"\"" >> $condor_job_file
+  # Create done.ticket file when job is not part of an experiment
+  if [[ "$1" == "yes" ]] ; then
+    echo "+PostCmd = \"touch\"" >> $condor_job_file
+    echo "+PostArguments = \"done."$condor_ticket"\"" >> $condor_job_file
+  fi
 
   echo "" >> $condor_job_file
 }
@@ -318,7 +321,7 @@ if [[ "$CONDOR_INTEGRATION" == "yes" ]]; then
     eval $line
     jobs_array=$(echo $JOBS | sed 's/,/\n/g')
 
-    dag_file = $TICKET_DIRECTORY"/dag."$ticket
+    dag_file=$TICKET_DIRECTORY"/dag."$ticket
 
     DEPS=""
 
@@ -337,18 +340,19 @@ if [[ "$CONDOR_INTEGRATION" == "yes" ]]; then
       condor_resp=$condor_jobtype"_resp."$job_ticket
       condor_prog="prog."$job_ticket
 
+      condor_pend=$TICKET_DIRECTORY"/"$condor_jobtype"_pend."$job_ticket
+
       if [[ "$condor_jobtype" == "proj" ]]; then
 
-        define_projection_vars $DISTRIBUTION_MAP_DIRECTORY $job_ticket $condor_moved
+        define_projection_vars $DISTRIBUTION_MAP_DIRECTORY $job_ticket $condor_pend
 
         # This must be a file name, without a path
         condor_stats="stats."$job_ticket
         condor_proj_ext=$proj_ext
       fi
 
-      condor_pend=$TICKET_DIRECTORY"/"$condor_jobtype"_pend."$job_ticket
-
-      create_condor_ticket
+      # First parameter indicates that a post command should be included to create the done.ticket file
+      create_condor_ticket "no"
 
       # After the previous function call we have the condor submission file, so add it to dag
       echo "JOB "$condor_ticket" "$condor_job_file >> $dag_file
@@ -360,9 +364,6 @@ if [[ "$CONDOR_INTEGRATION" == "yes" ]]; then
       eval $line
 
       if [[ "$PREV" ]] ; then
-
-        # Has previous jobs, so we need to run omws_manager before it
-        echo "SCRIPT PRE "$condor_ticket" "$NODE_BIN_DIR"/omws_manager --ticket "$condor_ticket" --config "$NODE_OM_CONFIGURATION" --skip-request > /dev/null 2> /dev/null" >> $dag_file
 
         # Add job dependencies
         parents=`echo $PREV | sed 's/,/ /g'`
@@ -376,16 +377,13 @@ if [[ "$CONDOR_INTEGRATION" == "yes" ]]; then
         echo "SCRIPT PRE "$condor_ticket" mv "$condor_pend" "$TICKET_DIRECTORY"/"$condor_moved >> $dag_file
       fi
 
-      if [[ -n "$NEXT" ]] ; then
-        # Leaf node
-        # Add omws_manager post-processing if there are no further jobs (runs on master node!)
-        # This may finish the experiment.
-        echo "SCRIPT POST "$condor_ticket" "$NODE_BIN_DIR"/omws_manager --ticket "$condor_ticket" --config "$NODE_OM_CONFIGURATION" --skip-request > /dev/null 2> /dev/null" >> $dag_file
-      fi
+      # Always add omws_manager post-processing to create done.ticket file and inject 
+      # any parameters in subsequent jobs. It may also finish the experiment.
+      echo "SCRIPT POST "$condor_ticket" "$NODE_BIN_DIR"/omws_manager --ticket "$condor_ticket" --config "$NODE_OM_CONFIGURATION" --skip-request --create-done > /dev/null 2> /dev/null" >> $dag_file
     done
 
     # Add dependencies section
-    echo $DEPS >> $dag_file
+    echo -e $DEPS >> $dag_file
     echo "" >> $dag_file
 
     # Submit dagman ticket
@@ -416,7 +414,7 @@ if [[ "$CONDOR_INTEGRATION" == "yes" ]]; then
     fi
 
     # First parameter indicates that a post command should be included to create the done.ticket file
-    create_condor_ticket
+    create_condor_ticket "yes"
 
     # TODO: post-process projection results.
     # Any adjacent projection files (such as .prj) are not being transferred.
@@ -461,7 +459,7 @@ else
              echo $msg >> $OM_SCHEDULER_LOG
            fi
            ;;
-    *) msg="Error: unknow job type: "$jobtype
+    *) msg="Error: unknown job type: "$jobtype
        if [[ "$OM_SCHEDULER_LOG" ]]; then
 
          echo $msg >> $OM_SCHEDULER_LOG
