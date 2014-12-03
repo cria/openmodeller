@@ -58,6 +58,10 @@ int main(int argc, char **argv)
   // individual job, rather than part of an experiment. So this option allows the
   // new request to be directly written as _proc.
   opts.addOption( "s", "skip-request", "Write new request in proc instead of req file", false );
+  // The following option was included so that omws_manager can be used by HTCondor.
+  // It tells the program to create the done.ticket file in the end, instead of relying on 
+  // an external command.
+  opts.addOption( "d", "create-done", "Write done.ticket file in the end", false );
 
   if ( ! opts.parse( argc, argv ) ) {
 
@@ -71,6 +75,7 @@ int main(int argc, char **argv)
   std::string job_ticket;
 
   bool skip_request = false;
+  bool create_done = false;
 
   while ( ( option = opts.cycle() ) >= 0 ) {
 
@@ -90,6 +95,9 @@ int main(int argc, char **argv)
         break;
       case 3:
         skip_request = true;
+        break;
+      case 4:
+        create_done = true;
         break;
       default:
         break;
@@ -1026,6 +1034,12 @@ int main(int argc, char **argv)
     }
 
     break;
+  }
+
+  if ( create_done ) {
+
+    string job_done_file = ticket_dir + OMWS_JOB_DONE_PREFIX + job_ticket;
+    createFile( job_done_file );
   }
 
   logMessage( "Finished management trigger.", fd_log );
