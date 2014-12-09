@@ -403,7 +403,7 @@ VirtualNicheGenerator::getValue( const Sample& x ) const
 {
   Scalar suitability = 1.0;
 
-  for (int i=0; i < _samp->numIndependent(); i++) {
+  for (unsigned int i=0; i < x.size(); i++) {
 
     Scalar pdf_value = pdf(_mean[i], _std[i], x[i]);
 
