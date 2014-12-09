@@ -482,6 +482,7 @@ VirtualNicheGenerator::dump()
     Log::instance()->info( " Mean     : %f\n", _mean[i] );
     Log::instance()->info( " Maximum  : %f\n", _maximum[i] );
     Log::instance()->info( " Std      : %f\n", _std[i] );
+    Log::instance()->info( " Scale    : %f\n", _scale[i] );
   }
 }
 
