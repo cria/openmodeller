@@ -200,6 +200,23 @@ om_pseudo --xml-req sample_request.xml --result sampled_points.xml
 Additional parameters and detailed documentation can be found in the
 corresponding man page, or just by typing om_pseudo without parameters.
 
+---
+
+11) om_evaluate
+
+This program can be used to return raw model values.
+
+e.g.
+
+om_evaluate --model acacia_model.xml --points test_points.txt
+
+or
+
+om_evaluate --xml-req test_request.xml
+
+Additional parameters and detailed documentation can be found in the
+corresponding man page, or just by typing om_evaluate without parameters.
+
 -----------------------------------------------------------------------
 
 ADDITIONAL INFORMATION
