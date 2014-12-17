@@ -5,6 +5,8 @@ SVN revision: ?
 	* New algorithm for generating virtual niches.
 	* Fixed bug in the web service when checking the source of remote rasters.
 	* Included missing MSVC DLLs in the Windows installer.
+	* New version of the OMWS scheduler compatible with HTCondor DagMan.
+	* Updated documentation and included metadata for the Niche Mosaic algorithm.
 
 
 --------------------------
