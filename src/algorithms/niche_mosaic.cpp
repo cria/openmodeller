@@ -77,15 +77,15 @@ static AlgMetadata metadata = {
   "0.1",    // Version.
 
   // Overview
-  "This algorithm is still experimental. You may not use it in publications without the author's permission.",
+  "This algorithm uses tabu search metaheuristic to find a collection of multidimensional niche envelopes, each envelope is centered at one of the selected presence points and consists of a suitability interval for each environmental variable.",
 
   // Description.
-  "This algorithm is still experimental. You may not use it in publications without the author's permission.",
+  "This algorithm uses tabu search metaheuristic to find a collection of multidimensional niche envelopes, each envelope is centered at one of the selected presence points and consists of a suitability interval for each environmental variable. Presence points are initially filtered to remove possible outliers and then split into a calibration set and a testing set. Pseudo-absence points are also used for internal model testing, and are generated outside the environmental envelope determined by all presence points. During each iteration the algorithm modifies the envelope intervals until the best solution is found.",
 
   "Missae Yamamoto",  // Author
 
   // Bibliography.
-  "",
+  "Glover, F. (1989). Tabu Search - part I, ORSA Journal in Computing 1: 190-206. Glover, F. (1989). Tabu Search - part II, ORSA Journal in Computing 2: 4-32.",
 
   "Missae Yamamoto",         // Code author.
   "missae [at] dpi.inpe.br", // Code author's contact.
