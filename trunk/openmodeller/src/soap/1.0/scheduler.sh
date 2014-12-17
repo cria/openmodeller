@@ -3,9 +3,12 @@
 #######################################################################
 # Script to be included in the cronjob. It checks if there are requests
 # (create model, test model or project model) in a specific directory 
-# and runs them. It depends on a configuration file that must be passed
-# as a parameter (otherwise it will try to read a file called 
-# server.conf in the same directory).
+# and runs the corresponding commands. It depends on a configuration 
+# file that must be passed as a parameter (otherwise it will try to 
+# read a file called server.conf in the same directory).
+# This script is only compatible with OMWS 1.0. If you have different
+# versions of the service running on the same machine, use the latest
+# scheduler which is backwards compatible.
 # Parameter 1: path to configuration file.
 # Parameter 2: sleep interval
 #######################################################################
