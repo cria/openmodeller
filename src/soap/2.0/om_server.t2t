@@ -66,13 +66,15 @@ later.
 Each piece of XML stored into the file system happens to follow exactly
 the same input pattern needed to run the corresponding openModeller
 command-line tool. This way, a simple job scheduler writen in shell script 
-([scheduler.sh http://sourceforge.net/p/openmodeller/svn/HEAD/tree/trunk/openmodeller/src/soap/2.0/scheduler.sh]) 
-is used to process the jobs. The script is called from Cron in 
-configurable intervals. It can also be configured to run the command-line tools
-locally (default) or use [Condor http://research.cs.wisc.edu/condor/]
-to distribute the jobs to Cluster computing nodes.
+is used to process the jobs. There are two versions of the script: an old version 
+([scheduler.sh http://sourceforge.net/p/openmodeller/svn/HEAD/tree/trunk/openmodeller/src/soap/2.0/scheduler.sh])
+created to be called from Cron in configurable intervals, and  
+a new version ([om_scheduler.sh http://sourceforge.net/p/openmodeller/svn/HEAD/tree/trunk/openmodeller/src/soap/2.0/om_scheduler]) created to be run as a daemon. Both scripts can be 
+configured to run the command-line tools locally (default) or use 
+[HTCondor http://research.cs.wisc.edu/condor/] to distribute jobs to 
+Cluster computing nodes.
 
-The following table summarizes the server behaviour for each operation:
+The following table summarizes the server front-end behaviour for each operation:
 
 || operation | server behaviour |
 | ping | involves direct calls to a local openModeller library and requires access to the file system to check configuration |
@@ -92,7 +94,7 @@ depending on the type of job. In the case of modelling experiments (runExperimen
 request), the default implementation parses and expands all jobs creating individual 
 tickets following the pattern: //model_pend.ticket//, //test_pend.ticket//,
 //proj_pend.ticket//, //samp_pend.ticket// or //eval_pend.ticket//. Jobs that can
-be started are renamed to the //*_req.ticket// pattern. 
+be started are renamed to the //*_req.ticket// pattern when processed locally.
 
 The job scheduler periodically checks the file system for //"_req."// jobs, 
 giving priority to the oldest one. When a job request is processed, its name is 
@@ -103,8 +105,8 @@ statistics, //samp_resp.ticket// the sampling points result and //eval_resp.tick
 the model evaluation result. For all operations, //prog.ticket// is used to store job 
 progress, and //done.ticket// is a flag indicating that the job was finished.
 Projection jobs also result in a potential distribution map file named after
-the ticket. The following examples illustrate how each command-line tool
-is used in this context:
+the ticket, such as ticket.tif. The following examples illustrate how each 
+command-line tool is used in this context:
 
 ```
 # Example directories
@@ -409,14 +411,20 @@ for the modelling tasks:
 | LAYERS_DIRECTORY | /layers/ | R | R |
 | CACHE_DIRECTORY | /var/www/vhosts/modeller/ws2/cache/ | RW | - |
 | PID_DIRECTORY | /tmp/om/ | - | RW |
+| OM_CONFIGURATION | /etc/om/om.cfg | R | R |
 
 Also make sure that the paths to the binaries are correct (OM_BIN_DIR,
-GDAL_BIN_DIR and CAT_BIN).
+GDAL_BIN_DIR and CAT_BIN, these last two in case you use the old
+scheduler version).
 
 Finally, set the BASE_URL value according to the machine's IP address or
 domain and the web server configuration, such as: http://your_domain/maps
 
-**Step 10:** Configure Cron
+**Step 10:** Configure the scheduler
+
+There are two options here:
+
+**alternative 1:** Using the old scheduler version with Cron
 
 Copy the job scheduler bash script to the modelling user directory
 
@@ -427,17 +435,7 @@ cd bin
 cp /etc/openmodeller/scheduler.sh ./
 ```
 
-You can create another script to delete all files that are older than
-a month, for example //cleanup.sh//, with the following content:
-
-```
-find /var/www/vhosts/modeller/ws2/tickets/ -name "*" -mtime +30 -exec rm {} \;
-find /var/www/vhosts/modeller/ws2/distmaps/ -name "*.img" -mtime +30 -exec rm {} \;
-find /var/www/vhosts/modeller/ws2/distmaps/ -name "*.png" -mtime +30 -exec rm {} \;
-find /var/www/vhosts/modeller/ws2/distmaps/ -name "*.kmz" -mtime +30 -exec rm {} \;
-```
-
-Make them all executable:
+Make it executable if necessary:
 
 ```
 chmod a+x *.sh
@@ -469,6 +467,32 @@ had to include a specific setting in /etc/profile to run openModeller
 need extra steps to get cron working properly. Cron errors are usually
 sent by e-mail to the corresponding user, so you may want to check the
 user mailbox when testing the service.
+
+**alternative 2:** Using the new scheduler version as a daemon
+
+Copy the job scheduler bash script to the modelling user directory
+
+```
+su - modeller
+mkdir bin
+cd bin
+cp /etc/openmodeller/om_scheduler ./
+```
+
+Start the daemon using a standard start/stop tool from your distribution 
+(important: you need to pass the service configuration file as a parameter).
+
+In both alternatives, you can create another script to delete all files 
+that are older than a month, for example //cleanup.sh//, with the following 
+content:
+
+```
+find /var/www/vhosts/modeller/ws2/tickets/ -name "*" -mtime +30 -exec rm {} \;
+find /var/www/vhosts/modeller/ws2/distmaps/ -name "*.img" -mtime +30 -exec rm {} \;
+find /var/www/vhosts/modeller/ws2/distmaps/ -name "*.png" -mtime +30 -exec rm {} \;
+find /var/www/vhosts/modeller/ws2/distmaps/ -name "*.tif" -mtime +30 -exec rm {} \;
+find /var/www/vhosts/modeller/ws2/distmaps/ -name "*.asc" -mtime +30 -exec rm {} \;
+```
 
 **Step 11:** Test the service
 
