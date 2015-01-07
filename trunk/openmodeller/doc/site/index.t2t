@@ -22,10 +22,10 @@ The framework was originally developed by [CRIA http://www.cria.org.br] in 2003 
 
 == Download ==
 
-- openModeller framework & command-line tools (lastest version: 1.4.0)
- - [Windows setup .exe http://sourceforge.net/projects/openmodeller/files/openModeller/1.4.0/openModellerSetup1.4.0.exe/download]
- - [Mac package http://sourceforge.net/projects/openmodeller/files/openModeller/1.4.0/openModeller-1.4.0.mac.tgz/download]
- - [Zipped source code http://sourceforge.net/projects/openmodeller/files/openModeller/1.4.0/libopenmodeller-src-1.4.0.zip/download]
+- openModeller framework & command-line tools (lastest version: 1.5.0)
+ - [Windows setup .exe http://sourceforge.net/projects/openmodeller/files/openModeller/1.5.0/openModellerSetup1.5.0.exe/download]
+ - [Mac package http://sourceforge.net/projects/openmodeller/files/openModeller/1.5.0/openModeller-1.5.0.mac.tgz/download]
+ - [Zipped source code http://sourceforge.net/projects/openmodeller/files/openModeller/1.5.0/libopenmodeller-src-1.5.0.zip/download]
  - [Complete list of versions and packages http://sourceforge.net/projects/openmodeller/files/openModeller/]
  - Development version can be checked out from the Subversion repository URL: ""http://svn.code.sf.net/p/openmodeller/svn/trunk/openmodeller"" ([browse source code https://sourceforge.net/p/openmodeller/svn/HEAD/tree/trunk/openmodeller])
 - oM Desktop interface (older version!)

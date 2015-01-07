@@ -1,10 +1,11 @@
-Release 1.5.0 (2014-?-?)
+Release 1.5.0 (2014-01-07)
 
-SVN revision: ?
+SVN revision: 6024
 
-	* New algorithm for generating virtual niches.
-	* Fixed bug in the web service when checking the source of remote rasters.
+	* New algorithm to generate virtual niches.
+	* Fixed bug in the web service when checking the origin of remote rasters.
 	* Included missing MSVC DLLs in the Windows installer.
+	* Increased string size in the Windows installer to avoid erasing the PATH environmental variable.
 	* New version of the OMWS scheduler compatible with HTCondor DagMan.
 	* Updated documentation and included metadata for the Niche Mosaic algorithm.
 
