@@ -1,3 +1,14 @@
+libopenmodeller (1.5.0-1) trusty; urgency=low
+
+  * New algorithm to generate virtual niches.
+  * Fixed bug in the web service when checking the origin of remote rasters.
+  * Included missing MSVC DLLs in the Windows installer.
+  * Increased string size in the Windows installer to avoid erasing the PATH environmental variable.
+  * New version of the OMWS scheduler compatible with HTCondor DagMan.
+  * Updated documentation and included metadata for the Niche Mosaic algorithm. 
+
+ -- Renato De Giovanni <renato@cria.org.br>  Wed, 07 Jan 2015 16:37:53 -0200
+
 libopenmodeller (1.1.0-1) karmic; urgency=low
 
   * Included missing algorithms in package libopenmodeller-algorithms. 
