@@ -1,6 +1,6 @@
 Release 1.5.0 (2015-01-07)
 
-SVN revision: 6026
+SVN revision: 6034
 
 	* New algorithm to generate virtual niches.
 	* Fixed bug in the web service when checking the origin of remote rasters.
@@ -8,6 +8,7 @@ SVN revision: 6026
 	* Increased string size in the Windows installer to avoid erasing the PATH environmental variable.
 	* New version of the OMWS scheduler compatible with HTCondor DagMan.
 	* Updated documentation and included metadata for the Niche Mosaic algorithm.
+	* New option to install Python module on Windows.
 
 
 --------------------------
