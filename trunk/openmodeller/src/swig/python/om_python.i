@@ -424,7 +424,7 @@ RCP_WRAP( AverageModelPtr, AverageModelImpl );
 %inline %{
   ReferenceCountedPointer<AverageModelImpl> makeAverageModel()
   {
-    return ReferenceCountedPointer<AverageModelImpl> ( new AverageModelImpl() );
+    return ReferenceCountedPointer<AverageModelImpl>( new AverageModelImpl() );
   }
 %}
 
