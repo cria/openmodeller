@@ -28,7 +28,7 @@ The framework was originally developed by [CRIA http://www.cria.org.br] in 2003 
  - [Zipped source code http://sourceforge.net/projects/openmodeller/files/openModeller/1.5.0/libopenmodeller-src-1.5.0.zip/download]
  - [Complete list of versions and packages http://sourceforge.net/projects/openmodeller/files/openModeller/]
  - Development version can be checked out from the Subversion repository URL: ""http://svn.code.sf.net/p/openmodeller/svn/trunk/openmodeller"" ([browse source code https://sourceforge.net/p/openmodeller/svn/HEAD/tree/trunk/openmodeller])
-- oM Desktop interface (older version!)
+- oM Desktop interface (old version currently unmaintained!)
  - [Complete list of versions and packages http://sourceforge.net/projects/openmodeller/files/openModeller%20Desktop/]
  - Development version can be checked out from the Subversion repository URL: ""http://svn.code.sf.net/p/openmodeller/svn/trunk/openModellerDesktop"" ([browse source code https://sourceforge.net/p/openmodeller/svn/HEAD/tree/trunk/openModellerDesktop])
 - Environmental data
