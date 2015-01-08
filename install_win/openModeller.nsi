@@ -52,6 +52,10 @@ Var WDIR
 !define MUI_UNICON "openmodeller64x64.ico"
 !define MUI_WELCOMEFINISHPAGE_BITMAP "om_logo.bmp"
 
+; This is used to remove environment variables
+!define env_hklm 'HKLM "SYSTEM\CurrentControlSet\Control\Session Manager\Environment"'
+!define env_hkcu 'HKCU "Environment"'
+
 ; Welcome page
 !insertmacro MUI_PAGE_WELCOME
 
@@ -221,6 +225,34 @@ Section /o "Sample Data - Aquamaps" SEC06
  !insertmacro ZIPDLL_EXTRACT "$INSTDIR\SampleData\marine2.zip" "$INSTDIR\SampleData\EnvironmentLayers\" "<ALL>"
 SectionEnd
 
+; /o means unchecked by default
+Section /o "Python module" SEC07
+  SetOutPath "$INSTDIR"
+  File "${BUILD_DIR}\_om.pyd"
+  File "${BUILD_DIR}\om.py"
+; Add PYTHONPATH
+  Push "PYTHONPATH"
+  Push "A"
+  Push "HKLM"
+  Push "$INSTDIR"
+  Call EnvVarUpdate 
+; Add OM_ALGS_DIR, removing any previous content before
+  DeleteRegValue ${env_hklm} OM_ALGS_DIR
+  Push "OM_ALGS_DIR"
+  Push "A"
+  Push "HKLM"
+  Push "$INSTDIR\algs"
+  Call EnvVarUpdate 
+; Add OM_DATA_DIR, removing any previous content before
+  DeleteRegValue ${env_hklm} OM_DATA_DIR
+  Push "OM_DATA_DIR"
+  Push "A"
+  Push "HKLM"
+  Push "$INSTDIR\data"
+  Call EnvVarUpdate 
+  SendMessage ${HWND_BROADCAST} ${WM_WININICHANGE} 0 "STR:Environment" /TIMEOUT=5000
+SectionEnd
+
 ;Section -AdditionalIcons
 ;  SetOutPath $INSTDIR
 ;  !insertmacro MUI_STARTMENU_WRITE_BEGIN Application
@@ -261,6 +293,10 @@ LangString sec05 ${LANG_PORTUGUESEBR} "Arquivos de exemplo (inclui duas camadas 
 
 LangString sec06 ${LANG_ENGLISH} "AquaMaps marine layers (~1.4MB will be downloaded from the Internet)."
 LangString sec06 ${LANG_PORTUGUESEBR} "AquaMaps - camadas ambientais marinhas (~1.4MB terão que ser baixados da Internet)."
+
+LangString sec07 ${LANG_ENGLISH} "Python module (compatible only with Python < 3.0)."
+LangString sec07 ${LANG_PORTUGUESEBR} "Módulo Python (compatível apenas com Python < 3.0)."
+
 ; Section descriptions
 !insertmacro MUI_FUNCTION_DESCRIPTION_BEGIN
   !insertmacro MUI_DESCRIPTION_TEXT ${SEC01} $(sec01)
@@ -269,6 +305,7 @@ LangString sec06 ${LANG_PORTUGUESEBR} "AquaMaps - camadas ambientais marinhas (~
   !insertmacro MUI_DESCRIPTION_TEXT ${SEC04} $(sec04) 
   !insertmacro MUI_DESCRIPTION_TEXT ${SEC05} $(sec05) 
   !insertmacro MUI_DESCRIPTION_TEXT ${SEC06} $(sec06)
+  !insertmacro MUI_DESCRIPTION_TEXT ${SEC07} $(sec07)
 !insertmacro MUI_FUNCTION_DESCRIPTION_END
 
 LangString successfully_removed ${LANG_ENGLISH} "$(^Name) was successfully removed from your computer."
@@ -356,6 +393,18 @@ Section Uninstall
   Delete "$SMPROGRAMS\$ICONS_GROUP\om_test.lnk"
   Delete "$SMPROGRAMS\$ICONS_GROUP\om_evaluate.lnk"
   RMDir "$SMPROGRAMS\$ICONS_GROUP"
+
+;------ optional Python module
+  Delete "$INSTDIR\_om.pyd"
+  Delete "$INSTDIR\om.py"
+  DeleteRegValue ${env_hklm} OM_ALGS_DIR
+  DeleteRegValue ${env_hklm} OM_DATA_DIR
+  SendMessage ${HWND_BROADCAST} ${WM_WININICHANGE} 0 "STR:Environment" /TIMEOUT=5000
+  Push "PYTHONPATH"
+  Push "R"
+  Push "HKLM"
+  Push "$INSTDIR"
+  Call un.EnvVarUpdate
 
   DeleteRegKey ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}"
   DeleteRegKey HKLM "${PRODUCT_DIR_REGKEY}"
