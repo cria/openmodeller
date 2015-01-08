@@ -34,7 +34,7 @@ CMakeCache.txt: CMakeLists.txt
 	#-D GDAL_LIBRARY=/usr/lib/libgdal1.3.2.so \
 	cmake -D CMAKE_INSTALL_PREFIX=/usr \
         -DOM_BUILD_SERVICE=ON \
-        -DOM_USE_FORTRAN=OFF \
+        -DOM_BUILD_BINDINGS=OFF \
         -DPEDANTIC=OFF \
 	.
 
@@ -82,7 +82,7 @@ binary-arch: build install
 	dh_installchangelogs ChangeLog
 	dh_installdocs
 	dh_installexamples
-	dh_install --sourcedir=debian/tmp
+	dh_install
 	dh_installman -plibopenmodeller debian/libopenModeller.1
 	dh_link
 	dh_strip
