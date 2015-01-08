@@ -11,7 +11,7 @@ class AverageModelImpl;
 
 typedef ReferenceCountedPointer<AverageModelImpl> AverageModelPtr;
 
-class AverageModelImpl : public ModelImpl
+class dllexp AverageModelImpl : public ModelImpl
 {
 
 public:

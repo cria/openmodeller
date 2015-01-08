@@ -46,7 +46,7 @@ class GeoTransform;
  */
 
 /*******/
-class Map
+class dllexp Map
 {
 public:
 
