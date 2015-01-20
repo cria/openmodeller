@@ -410,7 +410,7 @@ omws::omws__getAlgorithms( struct soap *soap, void *_, struct omws::omws__getAlg
 
   string enableCompression( gFileParser.get( "ENABLE_COMPRESSION" ) );
 
-  if ( enableCompression.compare("yes") == 0 ) {
+  if ( enableCompression.compare("\"yes\"") == 0 ) {
 #ifdef WITH_GZIP
     // client supports gzip?
     if (soap->zlib_out == SOAP_ZLIB_GZIP) { 
@@ -469,7 +469,7 @@ omws::omws__getLayers( struct soap *soap, void *_, struct omws::omws__getLayersR
 
   string enableCompression( gFileParser.get( "ENABLE_COMPRESSION" ) );
 
-  if ( enableCompression.compare("yes") == 0 ) {
+  if ( enableCompression.compare("\"yes\"") == 0 ) {
 
 #ifdef WITH_GZIP
     // client supports gzip?
@@ -997,7 +997,7 @@ omws::omws__getModel( struct soap *soap, omws::xsd__string ticket, struct omws::
 
   string enableCompression( gFileParser.get( "ENABLE_COMPRESSION" ) );
 
-  if ( enableCompression.compare("yes") == 0 ) {
+  if ( enableCompression.compare("\"yes\"") == 0 ) {
 
 #ifdef WITH_GZIP
     // client supports gzip?
@@ -1222,7 +1222,7 @@ omws::omws__getModelEvaluation( struct soap *soap, omws::xsd__string ticket, str
 
   string enableCompression( gFileParser.get( "ENABLE_COMPRESSION" ) );
 
-  if ( enableCompression.compare("yes") == 0 ) {
+  if ( enableCompression.compare("\"yes\"") == 0 ) {
 
 #ifdef WITH_GZIP
     // client supports gzip?
@@ -1287,7 +1287,7 @@ omws::omws__getSamplingResult( struct soap *soap, omws::xsd__string ticket, stru
 
   string enableCompression( gFileParser.get( "ENABLE_COMPRESSION" ) );
 
-  if ( enableCompression.compare("yes") == 0 ) {
+  if ( enableCompression.compare("\"yes\"") == 0 ) {
 
 #ifdef WITH_GZIP
     // client supports gzip?
@@ -2526,7 +2526,7 @@ scheduleExperiment(struct soap* soap, const om::_om__ExperimentParameters& ep, o
 
   string condorIntegration( gFileParser.get( "CONDOR_INTEGRATION" ) );
 
-  if ( condorIntegration.compare("no") == 0 ) {
+  if ( condorIntegration.compare("\"no\"") == 0 ) {
 
     // Rename jobs that can be executed
     for ( vector<string>::const_iterator fit = files_to_be_renamed.begin(); fit != files_to_be_renamed.end(); ++fit ) {
