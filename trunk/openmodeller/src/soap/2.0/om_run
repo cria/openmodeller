@@ -198,8 +198,8 @@ function create_condor_ticket () {
   echo "transfer_executable = false" >> $condor_job_file
   echo "when_to_transfer_output = on_exit" >> $condor_job_file
 
-  echo "stream_output = true" >> $condor_job_file
-  echo "stream_error = true" >> $condor_job_file
+  echo "stream_output = false" >> $condor_job_file
+  echo "stream_error = false" >> $condor_job_file
 
   # Create done.ticket file when job is not part of an experiment
   if [[ "$1" == "yes" ]] ; then
