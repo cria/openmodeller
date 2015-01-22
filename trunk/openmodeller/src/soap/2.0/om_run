@@ -190,10 +190,10 @@ function create_condor_ticket () {
 
   if [[ "$1" == "yes" ]] ; then
     # done file will be created on working nodes
-    transf_files=$transf_files";done."$condor_ticket"="$TICKET_DIRECTORY"/done."$condor_ticket"\""
+    transf_files=$transf_files";done."$condor_ticket"="$TICKET_DIRECTORY"/done."$condor_ticket
   fi
 
-  echo $transf_files >> $condor_job_file
+  echo $transf_files"\"" >> $condor_job_file
 
   echo "transfer_executable = false" >> $condor_job_file
   echo "when_to_transfer_output = on_exit" >> $condor_job_file
