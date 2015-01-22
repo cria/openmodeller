@@ -2526,6 +2526,8 @@ scheduleExperiment(struct soap* soap, const om::_om__ExperimentParameters& ep, o
 
   string condorIntegration( gFileParser.get( "CONDOR_INTEGRATION" ) );
 
+  string exp_job_file = ticket_dir + OMWS_EXPERIMENT _PENDING_REQUEST + experiment_ticket;
+
   if ( condorIntegration.compare("\"no\"") == 0 ) {
 
     // Rename jobs that can be executed
@@ -2537,9 +2539,12 @@ scheduleExperiment(struct soap* soap, const om::_om__ExperimentParameters& ep, o
     }
 
     // Rename experiment job, indicating that it was already processed
-    string exp_job_file = ticket_dir + OMWS_EXPERIMENT _PENDING_REQUEST + experiment_ticket;
-
     renameJobFile( exp_job_file, _PENDING_REQUEST, _PROCESSED_REQUEST );
+  }
+  else {
+
+    // Rename experiment job, so that om_scheduler can pick it and run HTCondor DAGMan
+    renameJobFile( exp_job_file, _PENDING_REQUEST, _REQUEST );
   }
 
   return jobs;
