@@ -397,7 +397,7 @@ if [[ "$CONDOR_INTEGRATION" == "yes" ]]; then
 
       # Always add omws_manager post-processing to create done.ticket file and inject 
       # any parameters in subsequent jobs. It may also finish the experiment.
-      echo "SCRIPT POST "$condor_ticket" "$OM_BIN_DIR"/omws_manager --ticket "$condor_ticket" --config "$1" --skip-request --create-done > /dev/null 2> /dev/null" >> $dag_file
+      echo "SCRIPT POST "$condor_ticket" "$OM_BIN_DIR"/omws_manager --ticket "$condor_ticket" --config "$1" --skip-request --create-done" >> $dag_file
     done
 
     # Add dependencies section
