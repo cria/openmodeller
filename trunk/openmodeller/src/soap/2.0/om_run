@@ -146,7 +146,7 @@ function create_condor_ticket () {
           echo "arguments = --xml-req "$condor_moved" --result "$condor_resp" --prog-file "$condor_prog" --log-file "$condor_ticket" --config-file "$NODE_OM_CONFIGURATION >> $condor_job_file
           ;;
   "test") echo "executable = "$NODE_BIN_DIR"/om_test " >> $condor_job_file
-          echo "arguments = --xml-req "$condor_moved" --result-file "$condor_resp" --prog-file "$condor_prog" --log-file "$condor_ticket" --config-file "$NODE_OM_CONFIGURATION >> $condor_job_file
+          echo "arguments = --xml-req "$condor_moved" --result "$condor_resp" --prog-file "$condor_prog" --log-file "$condor_ticket" --config-file "$NODE_OM_CONFIGURATION >> $condor_job_file
           ;;
   "proj") echo "executable = "$NODE_BIN_DIR"/om_project" >> $condor_job_file
           echo "arguments = --xml-req "$condor_moved" --dist-map "$condor_ticket$condor_proj_ext" --stat-file "$condor_stats" --prog-file "$condor_prog" --log-file "$condor_ticket" --config-file "$NODE_OM_CONFIGURATION >> $condor_job_file
@@ -404,6 +404,7 @@ if [[ "$CONDOR_INTEGRATION" == "yes" ]]; then
     echo "" >> $dag_file
 
     # Submit dagman ticket
+    cd "$TICKET_DIRECTORY"
     "$CONDOR_BIN_DIR"/condor_submit_dag $dag_file
   else
 
@@ -429,6 +430,8 @@ if [[ "$CONDOR_INTEGRATION" == "yes" ]]; then
       condor_stats="stats."$ticket
       condor_proj_ext=$proj_ext
     fi
+
+    cd "$TICKET_DIRECTORY"
 
     # First parameter indicates that a post command should be included to create the done.ticket file
     create_condor_ticket "yes"
