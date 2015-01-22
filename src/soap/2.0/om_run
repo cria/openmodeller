@@ -167,7 +167,14 @@ function create_condor_ticket () {
 
   # Files transfer
   echo "should_transfer_files = yes" >> $condor_job_file
-  echo "transfer_input_files = "$condor_moved >> $condor_job_file
+
+  # Always transfer input file.
+  # Transfer "touch" too when job is not part of an experiment (will be needed by PostCmd).
+  if [[ "$1" == "yes" ]] ; then
+    echo "transfer_input_files = /bin/touch,"$condor_moved >> $condor_job_file
+  else
+    echo "transfer_input_files = "$condor_moved >> $condor_job_file
+  fi
 
   transf_files="transfer_output_remaps = \""$condor_ticket"="$TICKET_DIRECTORY"/"$condor_ticket";"
   transf_files=$transf_files"prog."$condor_ticket"="$TICKET_DIRECTORY"/"$condor_prog";"
@@ -193,13 +200,15 @@ function create_condor_ticket () {
 
   echo "stream_output = true" >> $condor_job_file
   echo "stream_error = true" >> $condor_job_file
-  echo "queue" >> $condor_job_file
 
   # Create done.ticket file when job is not part of an experiment
   if [[ "$1" == "yes" ]] ; then
+    # Note: Pre/Post commands are run on nodes!
     echo "+PostCmd = \"touch\"" >> $condor_job_file
     echo "+PostArguments = \"done."$condor_ticket"\"" >> $condor_job_file
   fi
+
+  echo "queue" >> $condor_job_file
 
   echo "" >> $condor_job_file
 }
@@ -459,7 +468,7 @@ else
   "proj") "$OM_BIN_DIR"/om_project --xml-req "$moved" --dist-map "$map_file" --stat-file "$stats" --log-file "$log" --prog-file "$prog" --config-file "$OM_CONFIGURATION"
           ;;
     "exp") # When HTCondor is not used, exp requests are processed by the CGI
-           # so we should never fall in this condition (exp stats with pend and then 
+           # so we should never fall in this condition (exp starts with pend and then 
            # changes to proc in the end of the CGI procedure)
            msg="Error: cannot process exp request with current configuration"
            if [[ "$OM_SCHEDULER_LOG" ]]; then
