@@ -384,7 +384,7 @@ if [[ "$CONDOR_INTEGRATION" == "yes" ]]; then
 
         # Add pre-processing just to indicate the job is being processed (runs on master node!)
         # note: this should only be done for root jobs
-        echo "SCRIPT PRE "$condor_ticket" mv "$condor_pend" "$TICKET_DIRECTORY"/"$condor_moved >> $dag_file
+        echo "SCRIPT PRE "$condor_ticket" /bin/mv "$condor_pend" "$TICKET_DIRECTORY"/"$condor_moved >> $dag_file
       fi
 
       if [[ "$NEXT" ]] ; then
@@ -396,7 +396,7 @@ if [[ "$CONDOR_INTEGRATION" == "yes" ]]; then
 
       # Always add omws_manager post-processing to create done.ticket file and inject 
       # any parameters in subsequent jobs. It may also finish the experiment.
-      echo "SCRIPT POST "$condor_ticket" "$NODE_BIN_DIR"/omws_manager --ticket "$condor_ticket" --config "$NODE_OM_CONFIGURATION" --skip-request --create-done > /dev/null 2> /dev/null" >> $dag_file
+      echo "SCRIPT POST "$condor_ticket" "$OM_BIN_DIR"/omws_manager --ticket "$condor_ticket" --config "$OM_CONFIGURATION" --skip-request --create-done > /dev/null 2> /dev/null" >> $dag_file
     done
 
     # Add dependencies section
