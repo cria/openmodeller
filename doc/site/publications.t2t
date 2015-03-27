@@ -13,83 +13,55 @@ Do you know any interesting publication that mentions openModeller? You can shar
 
 -------------------------------------
 
-=== openModeller: a generic approach to species’ potential distribution modelling ===
-
 Please use the following reference if you need to cite openModeller in a publication:
 
-Muñoz, M.E.S., Giovanni, R., Siqueira, M.F., Sutton, T., Brewer, P., Pereira, R.S., Canhos, D.A.L. & Canhos, V.P. (2009) "openModeller: a generic approach to species' potential distribution modelling".  GeoInformatica. DOI: 10.1007/s10707-009-0090-7
+Muñoz, M.E.S., Giovanni, R., Siqueira, M.F., Sutton, T., Brewer, P., Pereira, R.S., Canhos, D.A.L. & Canhos, V.P. (2011) **"openModeller: a generic approach to species' potential distribution modelling"**. GeoInformatica, 15(1): 111-135. DOI: 10.1007/s10707-009-0090-7
 
 http://www.springerlink.com/content/n805714x26265573/fulltext.html
 
 -------------------------------------
 
-=== Seeking the flowers for the bees: Integrating biotic interactions into niche models to assess the distribution of the exotic bee species Lithurgus huberi in South America ===
+Vasconcelos, T.S. (2014) **"Tracking climatically suitable areas for an endemic Cerrado snake under climate change"**. Natureza & Conservação, 12(1): 47-52.
 
-Silva, D.P., Gonzalez, V.H., Melo, G.A.R., Lucia, M., Alvarez, L.J. and De Marco P. (2014) "Seeking the flowers for the bees: Integrating biotic interactions into niche models to assess the distribution of the exotic bee species Lithurgus huberi in South America". Ecological Modelling, 273: 200-209.
+Silva, D.P., Gonzalez, V.H., Melo, G.A.R., Lucia, M., Alvarez, L.J. and De Marco P. (2014) **"Seeking the flowers for the bees: Integrating biotic interactions into niche models to assess the distribution of the exotic bee species Lithurgus huberi in South America"**. Ecological Modelling, 273: 200-209.
 
-=== Species distribution modelling as a macroecological tool: a case study using New World amphibians ===
+Vasconcelos, T.S., Rodríguez, M.Á. & Hawkins, B.A. (2011) **"Species distribution modelling as a macroecological tool: a case study using New World amphibians"**. Ecography, 34: 001-010. DOI: 10.1111/j.1600-0587.2011.07050.x 
 
-Vasconcelos, T.S., Rodríguez, M.Á. & Hawkins, B.A. (2011) "Species distribution modelling as a macroecological tool: a case study using New World amphibians". Ecography, 34: 001-010. DOI: 10.1111/j.1600-0587.2011.07050.x 
-
-=== Mapping potential distribution of slender loris subspecies in peninsular India ===
-
-Honnavalli N. Kumara, Mohammed Irfan-Ullah and Shanthala Kumar (2009). "Mapping potential distribution of slender loris subspecies in peninsular India". Endangered Species Research, Vol. 7: 29–38. DOI: 10.3354/esr00185
+Honnavalli N.K., Irfan-Ullah M. & Kumar S. (2009) **"Mapping potential distribution of slender loris subspecies in peninsular India"**. Endangered Species Research, Vol. 7: 29–38. DOI: 10.3354/esr00185
 
 http://www.int-res.com/articles/esr2009/7/n007p029.pdf  
    
-=== Shifting Global Invasive Potential of European Plants with Climate Change ===
-
-A. Townsend Peterson, Aimee Stewart, Kamal I. Mohamed and Miguel B.  Araújo (2008). "Shifting Global Invasive Potential of European Plants with Climate Change". PLoS ONE, Vol. 3(6): e2441. doi:10.1371/journal.pone.0002441
+Peterson A.T., Stewart A., Mohamed K.I. & Araújo M.B. (2008) **"Shifting Global Invasive Potential of European Plants with Climate Change"**. PLoS ONE, Vol. 3(6): e2441. doi:10.1371/journal.pone.0002441
 
 http://specify5.specifysoftware.org/Informatics/bios/biostownpeterson/Petal_PLOSONE_2008.pdf
     
-=== Rethinking receiver operating characteristic analysis applications in ecological niche modelling ===
-
-A. Townsend Peterson, Monica Papeş and Jorge Soberón (2008). "Rethinking receiver operating characteristic analysis applications in ecological niche modelling". Ecological Modelling, 213(1): 63-72. doi:10.1016/j.ecolmodel.2007.11.008
+Peterson A.T., Papeş M. & Soberón J. (2008) **"Rethinking receiver operating characteristic analysis applications in ecological niche modelling"**. Ecological Modelling, 213(1): 63-72. doi:10.1016/j.ecolmodel.2007.11.008
 
 http://dx.doi.org/10.1016/j.ecolmodel.2007.11.008
 
-=== How Global Is the Global Biodiversity Information Facility? ===
+Yesson C., Brewer P.W., Sutton T., Caithness N., Pahwa J.S. et al. (2007) **"How Global Is the Global Biodiversity Information Facility?"**. PLoS ONE 2(11): e1124 doi:10.1371/journal.pone.0001124
 
-Yesson C, Brewer PW, Sutton T, Caithness N, Pahwa JS, et al. (2007) How Global Is the Global Biodiversity Information Facility?. PLoS ONE 2(11): e1124 doi:10.1371/journal.pone.0001124
-
-=== Introducing openModeller - A fundamental niche modelling framework ===
-
-Tim Sutton, Renato de Giovanni, Marinez Ferreira de Siqueira. Introducing openModeller - A fundamental niche modelling framework. OSGeo Journal Volume 1. ISSN 1994-1897.
+Sutton, T., Giovanni, R. & Siqueira, M.F. (2007) **"Introducing openModeller - A fundamental niche modelling framework"**. OSGeo Journal, Volume 1. ISSN 1994-1897.
 
 http://www.osgeo.org/files/journal/final_pdfs/OSGeo_vol1_openModeller.pdf
 
-=== Web Service for Cooperation in Biodiversity Modeling ===
-
-Fook, K. D., Monteiro, A. M. V., Câmara, G. (2006). Web Service for Cooperation in Biodiversity Modeling. In: VIII Brazilian Symposium on GeoInformatics, GEOINFO, Campos do Jordão. Brazilian Symposium on GeoInformatics, GEOINFO, 2006. v. 8.
+Fook, K. D., Monteiro, A. M. V. & Câmara, G. (2006) **"Web Service for Cooperation in Biodiversity Modeling. In: VIII Brazilian Symposium on GeoInformatics"**. GEOINFO, Campos do Jordão. Brazilian Symposium on GeoInformatics, GEOINFO, 2006. v. 8.
 
 http://www.geoinfo.info/geoinfo2006/papers/p40.pdf
 
-=== Phyloclimatic Modeling: Combining Phylogenetics and Bioclimatic Modeling ===
+Yesson, C. & Culham A. (2006) **"Phyloclimatic Modeling: Combining Phylogenetics and Bioclimatic Modeling"**. Syst Biol. 55(5): 788-802.
 
-Yesson, C and Culham A. 2006. Phyloclimatic Modeling: Combining Phylogenetics and Bioclimatic Modeling. Syst Biol. 55(5): 788-802.
-
-=== A Phyloclimatic Study of Cyclamen ===
-
-Yesson, C., and Culham, A. 2006. A phyloclimatic study of Cyclamen.  BMC Evolutionary Biology 6:72.
+Yesson, C. & Culham, A. (2006) **"A phyloclimatic study of Cyclamen"**.  BMC Evolutionary Biology 6:72.
 
 http://www.biomedcentral.com/1471-2148/6/72
 
-=== openModeller - an open framework for ecological niche modeling: analysis and future improvements ===
+Santana, F. S., Fonseca, R. R., Saraiva, A. M., Corrêa, P. L. P., Bravo, C., Giovanni, R. (2006) **"openModeller - an open framework for ecological niche modeling: analysis and future improvements"**. 2006 World Conference on Computers in Agriculture and Natural Resources (WCCA).
 
-Santana, F. S., Fonseca, R. R., Saraiva, A. M., Corrêa, P. L. P., Bravo, C., Giovanni, R., "openModeller - an open framework for ecological niche modeling: analysis and future improvements", 2006 World Conference on Computers in Agriculture and Natural Resources (WCCA).
+J. S. Pahwa, R. J. White, A. C. Jones, M. Burgess, W. A.  Gray, N. J. Fiddian, T. Sutton, P. Brewer, C. Yesson, N.  Caithness, A. Culham, F. A. Bisby, M. Scoble, P.  Williams, and S. Bhagwat (2006) **"Accessing Biodiversity Resources in Computational Environments from Workflow Applications"**. Workshop on Workflows in Support of Large-Scale Science (in conjunction with the 15th IEEE International Symposium on High Performance Distributed Computing), Paris, France, June 20, 2006.
 
-=== Accessing Biodiversity Resources in Computational Environments from Workflow Applications ===
+J. S. Pahwa, P. Brewer, T. Sutton, C. Yesson, M.  Burgess, X. Xu, A. C. Jones, R. J. White, W. A. Gray, N.  J. Fiddian, F. A. Bisby, A. Culham, N. Caithness, M.  Scoble, P. Williams and S. Bhagwat (2006) **"Biodiversity World: A Problem-Solving Environment for Analysing Biodiversity Patterns"**. In Proc. 6th IEEE International Symposium on Cluster Computing and the Grid (CCGRID 2006), Singapore, May 16–19, 2006.
 
-J. S. Pahwa, R. J. White, A. C. Jones, M. Burgess, W. A.  Gray, N. J. Fiddian, T. Sutton, P. Brewer, C. Yesson, N.  Caithness, A. Culham, F. A. Bisby, M. Scoble, P.  Williams, and S. Bhagwat, "Accessing Biodiversity Resources in Computational Environments from Workflow Applications", Workshop on Workflows in Support of Large-Scale Science (in conjunction with the 15th IEEE International Symposium on High Performance Distributed Computing), Paris, France, June 20, 2006.
-
-=== Biodiversity World: A Problem-Solving Environment for Analysing Biodiversity Patterns ===
-
-J. S. Pahwa, P. Brewer, T. Sutton, C. Yesson, M.  Burgess, X. Xu, A. C. Jones, R. J. White, W. A. Gray, N.  J. Fiddian, F. A. Bisby, A. Culham, N. Caithness, M.  Scoble, P. Williams and S. Bhagwat, "Biodiversity World: A Problem-Solving Environment for Analysing Biodiversity Patterns", in Proc. 6th IEEE International Symposium on Cluster Computing and the Grid (CCGRID 2006), Singapore, May 16–19, 2006.
-
-=== Novel methods improve prediction of species' distributions from occurrence data ===
-
-Elith, J., C.H. Graham, R.P. Anderson, M. Dudik, S.  Ferrier, A. Guisan, R.J. Hijmans, F. Huettmann, J.R.  Leathwick, A. Lehmann, J Li, L.G. Lohmann, B.A.  Loiselle, G. Manion, G. Moritz, M. Nakamura, Y.  Nakazawa, J. McC. Overton, A.T. Peterson, S.J. Phillips, K. Richardson, R. Scachetti-Pereira, R.E. Schapire, J.  Soberón, S. Williams, M.S. Wisz, and N.E. Zimmermann.  2006. Novel methods improve prediction of species' distributions from occurrence data. Ecography 29:129-151. Link: http://www.blackwell-synergy.com/doi/full/10.1111/j.2006.0906-7590.04596.x?cookieSet=1
+Elith, J., C.H. Graham, R.P. Anderson, M. Dudik, S.  Ferrier, A. Guisan, R.J. Hijmans, F. Huettmann, J.R.  Leathwick, A. Lehmann, J Li, L.G. Lohmann, B.A.  Loiselle, G. Manion, G. Moritz, M. Nakamura, Y.  Nakazawa, J. McC. Overton, A.T. Peterson, S.J. Phillips, K. Richardson, R. Scachetti-Pereira, R.E. Schapire, J.  Soberón, S. Williams, M.S. Wisz, and N.E. Zimmermann.  2006. **"Novel methods improve prediction of species' distributions from occurrence data"**. Ecography 29:129-151. Link: http://www.blackwell-synergy.com/doi/full/10.1111/j.2006.0906-7590.04596.x?cookieSet=1
 
 -------------------------------------
 Last updated on %%mtime(%d %B %Y)
