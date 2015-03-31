@@ -32,6 +32,7 @@
 #include <openmodeller/Settings.hh>
 
 #include <gdal.h>
+#include <cpl_string.h>
 
 #include <string.h>
 #include <sstream>
@@ -320,7 +321,10 @@ WcsProxyRaster::createRaster( const string& str, int categ )
         }
 
         // Copy WCS proxy to HFA
-        GDALDatasetH hOutDS = GDALCreateCopy( hDriver, clone_ref.c_str(), hDataset, FALSE, NULL, NULL, NULL );
+        char **papszOptions = NULL;
+        papszOptions = CSLSetNameValue( papszOptions, "COMPRESSED", "YES" );
+
+        GDALDatasetH hOutDS = GDALCreateCopy( hDriver, clone_ref.c_str(), hDataset, FALSE, papszOptions, NULL, NULL );
 
         if ( hOutDS == NULL ) {
 
