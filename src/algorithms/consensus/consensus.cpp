@@ -145,7 +145,7 @@ static AlgMetadata metadata = {
 
   "CONSENSUS", 	// Id.
   "Consensus",  // Name.
-  "0.2",       	// Version.
+  "0.3",       	// Version.
 
   // Overview
   "Builds a consensus model with the specified algorithms",
@@ -424,11 +424,14 @@ ConsensusAlgorithm::iterate()
 
     if ( ! _algs[j]->done() ) {
 
-      _done = false;
+      if ( _algs[j]->iterate() == 0 ) {
 
-      if ( ! _algs[j]->iterate() ) {
+        return 0; // something wrong happened
+      }
 
-        return 0;
+      if ( ! _algs[j]->done() ) {
+
+        _done = false;
       }
     }
   }
@@ -438,8 +441,8 @@ ConsensusAlgorithm::iterate()
 
     OccurrencesPtr presences = _samp->getPresences();
 
-    OccurrencesImpl::const_iterator p_iterator;
-    OccurrencesImpl::const_iterator p_end;
+    OccurrencesImpl::const_iterator p_iterator = presences->begin();
+    OccurrencesImpl::const_iterator p_end = presences->end();
 
     Scalar val;
 
