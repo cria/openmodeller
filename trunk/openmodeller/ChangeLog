@@ -1,3 +1,11 @@
+Release 1.6.0 (?)
+
+SVN revision: ?
+
+	* Fixed bug in consensus algorithm, which was not calculating LPT for each algorithm, so it only worked when the model was assembled outside and provided as XML.
+
+
+--------------------------
 Release 1.5.0 (2015-01-07)
 
 SVN revision: 6034
