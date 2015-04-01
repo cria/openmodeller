@@ -543,7 +543,7 @@ MaximumEntropy::initialize()
 
   if ( _num_background <= 0 ) {
 	
-    Log::instance()->warn( MAXENT_LOG_PREFIX "Parameter '" BACKGROUND_ID "' must be greater than zero.\n" );
+    Log::instance()->warn( MAXENT_LOG_PREFIX "Number of background points must be greater than zero!\n" );
     return 0;
   }
 
