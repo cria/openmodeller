@@ -2,7 +2,7 @@ Release 1.6.0 (?)
 
 SVN revision: ?
 
-	* Fixed bug in consensus algorithm, which was not calculating LPT for each algorithm, so it only worked when the model was assembled outside and provided as XML.
+	* Fixed two bugs in the consensus algorithm: it was not calculating LPT for each individual algorithm and not normalizing the environmental variables for algorithms that required normalization. With these two bugs, consensus only worked when individual models were generated outside it, assembled and provided as XML, otherwise it only worked when the real LPT coincided with the default value (1) for all individual algorithms and when none of them required normalization. 
 
 
 --------------------------

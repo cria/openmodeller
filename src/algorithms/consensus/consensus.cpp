@@ -314,7 +314,9 @@ ConsensusAlgorithm::initialize()
 
     if ( _algs[j]->needNormalization() ) {
 
-      fresh_sampler->normalize( _algs[j]->getNormalizer() );
+      fresh_sampler->resetNormalization();
+      _norms[j]->computeNormalization( fresh_sampler );
+      fresh_sampler->normalize( _norms[j] );
     }
 
     _algs[j]->setSampler( fresh_sampler );
