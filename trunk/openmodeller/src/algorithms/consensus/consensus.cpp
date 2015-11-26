@@ -404,6 +404,8 @@ ConsensusAlgorithm::_setAlgorithm( std::string alg_str )
     params.insert( std::pair<icstring,std::string>(param_id, param_val) );
   }
 
+  Log::instance()->info( CONSENSUS_LOG_PREFIX "Initializing algorithm %s.\n", alg_id.c_str() );
+
   AlgorithmPtr alg = AlgorithmFactory::newAlgorithm( alg_id );
 
   alg->setParameters( params );
