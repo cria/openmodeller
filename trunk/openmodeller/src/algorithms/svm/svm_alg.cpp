@@ -311,7 +311,7 @@ int SvmAlgorithm::needNormalization()
   }
   else {
 	  
-    if ( getParameter( SVMTYPE_ID, &svm_type ) && svm_type != 2 && _samp->numAbsence() == 0 ) {
+    if ( getParameter( SVMTYPE_ID, &svm_type ) && svm_type != 2 ) {
 
       // It will be necessary to generate pseudo absences, so do not waste
       // time normalizing things because normalization should ideally consider
