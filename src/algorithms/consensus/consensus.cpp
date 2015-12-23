@@ -227,33 +227,79 @@ int
 ConsensusAlgorithm::initialize()
 {
   std::string alg;
+  Sample has_alg(5, 0.0);
+  int num_algs_prev = 0;
+  int num_algs_cur = 0;
 
   if ( getParameter( "Alg1", &alg ) ) {
 
     if ( !_setAlgorithm( alg ) ) return 0;
   }
 
+  num_algs_cur = (int)_algs.size();
+
+  if ( num_algs_cur > num_algs_prev ) {
+
+    has_alg[0] = 1.0;
+  }
+
+  num_algs_prev = num_algs_cur;
+
   if ( getParameter( "Alg2", &alg ) ) {
 
     if ( !_setAlgorithm( alg ) ) return 0;
   }
+
+  num_algs_cur = (int)_algs.size();
+
+  if ( num_algs_cur > num_algs_prev ) {
+
+    has_alg[1] = 1.0;
+  }
+
+  num_algs_prev = num_algs_cur;
 
   if ( getParameter( "Alg3", &alg ) ) {
 
     if ( !_setAlgorithm( alg ) ) return 0;
   }
 
+  num_algs_cur = (int)_algs.size();
+
+  if ( num_algs_cur > num_algs_prev ) {
+
+    has_alg[2] = 1.0;
+  }
+
+  num_algs_prev = num_algs_cur;
+
   if ( getParameter( "Alg4", &alg ) ) {
 
     if ( !_setAlgorithm( alg ) ) return 0;
   }
+
+  num_algs_cur = (int)_algs.size();
+
+  if ( num_algs_cur > num_algs_prev ) {
+
+    has_alg[3] = 1.0;
+  }
+
+  num_algs_prev = num_algs_cur;
 
   if ( getParameter( "Alg5", &alg ) ) {
 
     if ( !_setAlgorithm( alg ) ) return 0;
   }
 
-  _num_algs = (int)_algs.size();
+  num_algs_cur = (int)_algs.size();
+
+  if ( num_algs_cur > num_algs_prev ) {
+
+    has_alg[4] = 1.0;
+  }
+
+  _num_algs = num_algs_cur;
 
   if ( _num_algs == 0 ) {
 
@@ -292,6 +338,13 @@ ConsensusAlgorithm::initialize()
 
       weight_val = 1.0;
       sscanf( weight.c_str(), "%lf", &weight_val );
+
+      // If there's no corresponding algorithm, use weight = 0
+      if ( has_alg[nw] < 0.5 ) {
+
+        weight_val = 0.0;
+      }
+
       _weights[nw] = weight_val;
       _sum_weights += weight_val;
       ++nw;
