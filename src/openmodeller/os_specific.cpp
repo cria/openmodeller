@@ -425,16 +425,18 @@ createPath( const std::string path )
 
   if ( nRC == -1 ) {
 
-    switch( errno ) {
+    switch ( errno ) {
 
       case ENOENT:
         // parent didn't exist, try to create it
-        if( createPath( path.substr(0, path.find_last_of('/')) ) )
+        if ( createPath( path.substr(0, path.find_last_of('/')) ) ) {
           // try to create again.
           ok = 0 == ::mkdir( path.c_str(), 0775 );
-        else
+	}
+        else {
           ok = false;
           break;
+        }
       case EEXIST:
         ok = true;
         break;

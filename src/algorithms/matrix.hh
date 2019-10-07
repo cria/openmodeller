@@ -224,55 +224,55 @@ public:
    ~matrix ();
 
    // Assignment operators
-   matrixT& operator = (const matrixT& m) _NO_THROW;
+   matrixT& operator = (const matrixT& m);
 
    // Value extraction method
    size_t RowNo () const { return _m->Row; }
    size_t ColNo () const { return _m->Col; }
 
    // Subscript operator
-   T& operator () (size_t row, size_t col) _THROW_MATRIX_ERROR;
-   T  operator () (size_t row, size_t col) const _THROW_MATRIX_ERROR;
+   T& operator () (size_t row, size_t col);
+   T  operator () (size_t row, size_t col) const;
 
    // Unary operators
-   matrixT operator + () _NO_THROW { return *this; }
-   matrixT operator - () _NO_THROW;
+   matrixT operator + () { return *this; }
+   matrixT operator - ();
 
    // Combined assignment - calculation operators
-   matrixT& operator += (const matrixT& m) _THROW_MATRIX_ERROR;
-   matrixT& operator -= (const matrixT& m) _THROW_MATRIX_ERROR;
-   matrixT& operator *= (const matrixT& m) _THROW_MATRIX_ERROR;
-   matrixT& operator *= (const T& c) _NO_THROW;
-   matrixT& operator /= (const T& c) _NO_THROW;
-   matrixT& operator ^= (const size_t& pow) _THROW_MATRIX_ERROR;
+   matrixT& operator += (const matrixT& m);
+   matrixT& operator -= (const matrixT& m);
+   matrixT& operator *= (const matrixT& m);
+   matrixT& operator *= (const T& c);
+   matrixT& operator /= (const T& c);
+   matrixT& operator ^= (const size_t& pow);
 
    // Miscellaneous -methods
-   void Null (const size_t& row, const size_t& col) _NO_THROW;
-   void Null () _NO_THROW;
-   void Unit (const size_t& row) _NO_THROW;
-   void Unit () _NO_THROW;
-   void SetSize (size_t row, size_t col) _NO_THROW;
+   void Null (const size_t& row, const size_t& col);
+   void Null ();
+   void Unit (const size_t& row);
+   void Unit ();
+   void SetSize (size_t row, size_t col);
 
    // Utility methods
-   matrixT Solve (const matrixT& v) const _THROW_MATRIX_ERROR;
-   matrixT Adj () _THROW_MATRIX_ERROR;
-   matrixT Inv () _THROW_MATRIX_ERROR;
-   T Det () const _THROW_MATRIX_ERROR;
-   T Norm () _NO_THROW;
-   T Cofact (size_t row, size_t col) _THROW_MATRIX_ERROR;
-   T Cond () _NO_THROW;
+   matrixT Solve (const matrixT& v) const;
+   matrixT Adj ();
+   matrixT Inv ();
+   T Det () const;
+   T Norm ();
+   T Cofact (size_t row, size_t col);
+   T Cond ();
 
    // Type of matrices
-   bool IsSquare () _NO_THROW { return (_m->Row == _m->Col); } 
-   bool IsSingular () _NO_THROW;
-   bool IsDiagonal () _NO_THROW;
-   bool IsScalar () _NO_THROW;
-   bool IsUnit () _NO_THROW;
-   bool IsNull () _NO_THROW;
-   bool IsSymmetric () _NO_THROW;
-   bool IsSkewSymmetric () _NO_THROW;
-   bool IsUpperTriangular () _NO_THROW;
-   bool IsLowerTriangular () _NO_THROW;
+   bool IsSquare () { return (_m->Row == _m->Col); } 
+   bool IsSingular ();
+   bool IsDiagonal ();
+   bool IsScalar ();
+   bool IsUnit ();
+   bool IsNull ();
+   bool IsSymmetric ();
+   bool IsSkewSymmetric ();
+   bool IsUpperTriangular ();
+   bool IsLowerTriangular ();
 
 private:
     struct base_mat
@@ -349,7 +349,7 @@ matrixT::~matrix ()
 
 // assignment operator
 MAT_TEMPLATE inline matrixT&
-matrixT::operator = (const matrixT& m) _NO_THROW
+matrixT::operator = (const matrixT& m)
 {
     m._m->Refcnt++;
     if (--_m->Refcnt == 0) delete _m;
@@ -384,7 +384,7 @@ matrixT::realloc (size_t row, size_t col)
 
 // public method for resizing matrix
 MAT_TEMPLATE inline void
-matrixT::SetSize (size_t row, size_t col) _NO_THROW
+matrixT::SetSize (size_t row, size_t col)
 {
    size_t i,j;
    size_t oldRow = _m->Row;
@@ -406,7 +406,7 @@ matrixT::SetSize (size_t row, size_t col) _NO_THROW
 
 // subscript operator to get/set individual elements
 MAT_TEMPLATE inline T&
-matrixT::operator () (size_t row, size_t col) _THROW_MATRIX_ERROR
+matrixT::operator () (size_t row, size_t col)
 {
    if (row >= _m->Row || col >= _m->Col)
       REPORT_ERROR( "matrixT::operator(): Index out of range!");
@@ -416,7 +416,7 @@ matrixT::operator () (size_t row, size_t col) _THROW_MATRIX_ERROR
 
 // subscript operator to get/set individual elements
 MAT_TEMPLATE inline T
-matrixT::operator () (size_t row, size_t col) const _THROW_MATRIX_ERROR
+matrixT::operator () (size_t row, size_t col) const
 {
    if (row >= _m->Row || col >= _m->Col)
       REPORT_ERROR( "matrixT::operator(): Index out of range!");
@@ -456,7 +456,7 @@ operator << (ostream& ostrm, const matrixT& m)
 
 // logical equal-to operator
 MAT_TEMPLATE inline bool
-operator == (const matrixT& m1, const matrixT& m2) _NO_THROW
+operator == (const matrixT& m1, const matrixT& m2)
 {
    if (m1.RowNo() != m2.RowNo() || m1.ColNo() != m2.ColNo())
       return false;
@@ -471,14 +471,14 @@ operator == (const matrixT& m1, const matrixT& m2) _NO_THROW
 
 // logical no-equal-to operator
 MAT_TEMPLATE inline bool
-operator != (const matrixT& m1, const matrixT& m2) _NO_THROW
+operator != (const matrixT& m1, const matrixT& m2)
 {
     return (m1 == m2) ? false : true;
 }
 
 // combined addition and assignment operator
 MAT_TEMPLATE inline matrixT&
-matrixT::operator += (const matrixT& m) _THROW_MATRIX_ERROR
+matrixT::operator += (const matrixT& m)
 {
    if (_m->Row != m._m->Row || _m->Col != m._m->Col)
       REPORT_ERROR( "matrixT::operator+= : Inconsistent matrix sizes in addition!");
@@ -491,7 +491,7 @@ matrixT::operator += (const matrixT& m) _THROW_MATRIX_ERROR
 
 // combined subtraction and assignment operator
 MAT_TEMPLATE inline matrixT&
-matrixT::operator -= (const matrixT& m) _THROW_MATRIX_ERROR
+matrixT::operator -= (const matrixT& m)
 {
    if (_m->Row != m._m->Row || _m->Col != m._m->Col)
       REPORT_ERROR( "matrixT::operator-= : Inconsistent matrix sizes in subtraction!");
@@ -504,7 +504,7 @@ matrixT::operator -= (const matrixT& m) _THROW_MATRIX_ERROR
 
 // combined scalar multiplication and assignment operator
 MAT_TEMPLATE inline matrixT&
-matrixT::operator *= (const T& c) _NO_THROW
+matrixT::operator *= (const T& c)
 {
     if (_m->Refcnt > 1) clone();
     for (size_t i=0; i < _m->Row; i++)
@@ -515,7 +515,7 @@ matrixT::operator *= (const T& c) _NO_THROW
 
 // combined matrix multiplication and assignment operator
 MAT_TEMPLATE inline matrixT&
-matrixT::operator *= (const matrixT& m) _THROW_MATRIX_ERROR
+matrixT::operator *= (const matrixT& m)
 {
    if (_m->Col != m._m->Row)
       REPORT_ERROR( "matrixT::operator*= : Inconsistent matrix sizes in multiplication!");
@@ -536,7 +536,7 @@ matrixT::operator *= (const matrixT& m) _THROW_MATRIX_ERROR
 
 // combined scalar division and assignment operator
 MAT_TEMPLATE inline matrixT&
-matrixT::operator /= (const T& c) _NO_THROW
+matrixT::operator /= (const T& c)
 {
     if (_m->Refcnt > 1) clone();
     for (size_t i=0; i < _m->Row; i++)
@@ -548,7 +548,7 @@ matrixT::operator /= (const T& c) _NO_THROW
 
 // combined power and assignment operator
 MAT_TEMPLATE inline matrixT&
-matrixT::operator ^= (const size_t& pow) _THROW_MATRIX_ERROR
+matrixT::operator ^= (const size_t& pow)
 {
 	matrixT temp(*this);
 
@@ -560,7 +560,7 @@ matrixT::operator ^= (const size_t& pow) _THROW_MATRIX_ERROR
 
 // unary negation operator
 MAT_TEMPLATE inline matrixT
-matrixT::operator - () _NO_THROW
+matrixT::operator - ()
 {
    matrixT temp(_m->Row,_m->Col);
 
@@ -573,7 +573,7 @@ matrixT::operator - () _NO_THROW
 
 // binary addition operator
 MAT_TEMPLATE inline matrixT
-operator + (const matrixT& m1, const matrixT& m2) _THROW_MATRIX_ERROR
+operator + (const matrixT& m1, const matrixT& m2)
 {
    matrixT temp = m1;
    temp += m2;
@@ -582,7 +582,7 @@ operator + (const matrixT& m1, const matrixT& m2) _THROW_MATRIX_ERROR
 
 // binary subtraction operator
 MAT_TEMPLATE inline matrixT
-operator - (const matrixT& m1, const matrixT& m2) _THROW_MATRIX_ERROR
+operator - (const matrixT& m1, const matrixT& m2)
 {
    matrixT temp = m1;
    temp -= m2;
@@ -591,7 +591,7 @@ operator - (const matrixT& m1, const matrixT& m2) _THROW_MATRIX_ERROR
 
 // binary scalar multiplication operator
 MAT_TEMPLATE inline matrixT
-operator * (const matrixT& m, const T& no) _NO_THROW
+operator * (const matrixT& m, const T& no)
 {
    matrixT temp = m;
    temp *= no;
@@ -601,14 +601,14 @@ operator * (const matrixT& m, const T& no) _NO_THROW
 
 // binary scalar multiplication operator
 MAT_TEMPLATE inline matrixT
-operator * (const T& no, const matrixT& m) _NO_THROW
+operator * (const T& no, const matrixT& m)
 {
    return (m * no);
 }
 
 // binary matrix multiplication operator
 MAT_TEMPLATE inline matrixT
-operator * (const matrixT& m1, const matrixT& m2) _THROW_MATRIX_ERROR
+operator * (const matrixT& m1, const matrixT& m2)
 {
    matrixT temp = m1;
    temp *= m2;
@@ -617,7 +617,7 @@ operator * (const matrixT& m1, const matrixT& m2) _THROW_MATRIX_ERROR
 
 // binary scalar division operator
 MAT_TEMPLATE inline matrixT
-operator / (const matrixT& m, const T& no) _NO_THROW
+operator / (const matrixT& m, const T& no)
 {
     return (m * (T(1) / no));
 }
@@ -625,21 +625,21 @@ operator / (const matrixT& m, const T& no) _NO_THROW
 
 // binary scalar division operator
 MAT_TEMPLATE inline matrixT
-operator / (const T& no, const matrixT& m) _THROW_MATRIX_ERROR
+operator / (const T& no, const matrixT& m)
 {
     return (!m * no);
 }
 
 // binary matrix division operator
 MAT_TEMPLATE inline matrixT
-operator / (const matrixT& m1, const matrixT& m2) _THROW_MATRIX_ERROR
+operator / (const matrixT& m1, const matrixT& m2)
 {
     return (m1 * !m2);
 }
 
 // binary power operator
 MAT_TEMPLATE inline matrixT
-operator ^ (const matrixT& m, const size_t& pow) _THROW_MATRIX_ERROR
+operator ^ (const matrixT& m, const size_t& pow)
 {
    matrixT temp = m;
    temp ^= pow;
@@ -648,7 +648,7 @@ operator ^ (const matrixT& m, const size_t& pow) _THROW_MATRIX_ERROR
 
 // unary transpose operator
 MAT_TEMPLATE inline matrixT
-operator ~ (const matrixT& m) _NO_THROW
+operator ~ (const matrixT& m)
 {
    matrixT temp(m.ColNo(),m.RowNo());
 
@@ -663,7 +663,7 @@ operator ~ (const matrixT& m) _NO_THROW
 
 // unary inversion operator
 MAT_TEMPLATE inline matrixT
-operator ! (const matrixT m) _THROW_MATRIX_ERROR
+operator ! (const matrixT m)
 {
    matrixT temp = m;
    return temp.Inv();
@@ -671,7 +671,7 @@ operator ! (const matrixT m) _THROW_MATRIX_ERROR
 
 // inversion function
 MAT_TEMPLATE inline matrixT
-matrixT::Inv () _THROW_MATRIX_ERROR
+matrixT::Inv ()
 {
    size_t i,j,k;
    T a1,a2,*rowptr;
@@ -718,7 +718,7 @@ matrixT::Inv () _THROW_MATRIX_ERROR
 
 // solve simultaneous equation
 MAT_TEMPLATE inline matrixT
-matrixT::Solve (const matrixT& v) const _THROW_MATRIX_ERROR
+matrixT::Solve (const matrixT& v) const
 {
    size_t i,j,k;
    T a1;
@@ -764,7 +764,7 @@ matrixT::Solve (const matrixT& v) const _THROW_MATRIX_ERROR
 
 // set zero to all elements of this matrix
 MAT_TEMPLATE inline void
-matrixT::Null (const size_t& row, const size_t& col) _NO_THROW
+matrixT::Null (const size_t& row, const size_t& col)
 {
     if (row != _m->Row || col != _m->Col)
 	realloc( row,col);
@@ -780,7 +780,7 @@ matrixT::Null (const size_t& row, const size_t& col) _NO_THROW
 
 // set zero to all elements of this matrix
 MAT_TEMPLATE inline void
-matrixT::Null() _NO_THROW
+matrixT::Null()
 {
     if (_m->Refcnt > 1) clone();   
     for (size_t i=0; i < _m->Row; i++)
@@ -791,7 +791,7 @@ matrixT::Null() _NO_THROW
 
 // set this matrix to unity
 MAT_TEMPLATE inline void
-matrixT::Unit (const size_t& row) _NO_THROW
+matrixT::Unit (const size_t& row)
 {
     if (row != _m->Row || row != _m->Col)
 	realloc( row, row);
@@ -807,7 +807,7 @@ matrixT::Unit (const size_t& row) _NO_THROW
 
 // set this matrix to unity
 MAT_TEMPLATE inline void
-matrixT::Unit () _NO_THROW
+matrixT::Unit ()
 {
     if (_m->Refcnt > 1) clone();   
     size_t row = min(_m->Row,_m->Col);
@@ -847,7 +847,7 @@ matrixT::pivot (size_t row)
 
 // calculate the determinant of a matrix
 MAT_TEMPLATE inline T
-matrixT::Det () const _THROW_MATRIX_ERROR
+matrixT::Det () const
 {
    size_t i,j,k;
    T piv,detVal = T(1);
@@ -878,7 +878,7 @@ matrixT::Det () const _THROW_MATRIX_ERROR
 
 // calculate the norm of a matrix
 MAT_TEMPLATE inline T
-matrixT::Norm () _NO_THROW
+matrixT::Norm ()
 {
    T retVal = T(0);
 
@@ -892,7 +892,7 @@ matrixT::Norm () _NO_THROW
 
 // calculate the condition number of a matrix
 MAT_TEMPLATE inline T
-matrixT::Cond () _NO_THROW
+matrixT::Cond ()
 {
    matrixT inv = ! (*this);
    return (Norm() * inv.Norm());
@@ -900,7 +900,7 @@ matrixT::Cond () _NO_THROW
 
 // calculate the cofactor of a matrix for a given element
 MAT_TEMPLATE inline T
-matrixT::Cofact (size_t row, size_t col) _THROW_MATRIX_ERROR
+matrixT::Cofact (size_t row, size_t col)
 {
    size_t i,i1,j,j1;
 
@@ -935,7 +935,7 @@ matrixT::Cofact (size_t row, size_t col) _THROW_MATRIX_ERROR
 
 // calculate adjoin of a matrix
 MAT_TEMPLATE inline matrixT
-matrixT::Adj () _THROW_MATRIX_ERROR
+matrixT::Adj ()
 {
    if (_m->Row != _m->Col)
       REPORT_ERROR( "matrixT::Adj(): Adjoin of a non-square matrix.");
@@ -950,7 +950,7 @@ matrixT::Adj () _THROW_MATRIX_ERROR
 
 // Determine if the matrix is singular
 MAT_TEMPLATE inline bool
-matrixT::IsSingular () _NO_THROW
+matrixT::IsSingular ()
 {
    if (_m->Row != _m->Col)
       return false;
@@ -959,7 +959,7 @@ matrixT::IsSingular () _NO_THROW
 
 // Determine if the matrix is diagonal
 MAT_TEMPLATE inline bool
-matrixT::IsDiagonal () _NO_THROW
+matrixT::IsDiagonal ()
 {
    if (_m->Row != _m->Col)
       return false;
@@ -972,7 +972,7 @@ matrixT::IsDiagonal () _NO_THROW
 
 // Determine if the matrix is scalar
 MAT_TEMPLATE inline bool
-matrixT::IsScalar () _NO_THROW
+matrixT::IsScalar ()
 {
    if (!IsDiagonal())
      return false;
@@ -985,7 +985,7 @@ matrixT::IsScalar () _NO_THROW
 
 // Determine if the matrix is a unit matrix
 MAT_TEMPLATE inline bool
-matrixT::IsUnit () _NO_THROW
+matrixT::IsUnit ()
 {
    if (IsScalar() && _m->Val[0][0] == T(1))
      return true;
@@ -994,7 +994,7 @@ matrixT::IsUnit () _NO_THROW
 
 // Determine if this is a null matrix
 MAT_TEMPLATE inline bool
-matrixT::IsNull () _NO_THROW
+matrixT::IsNull ()
 {
    for (size_t i=0; i < _m->Row; i++)
       for (size_t j=0; j < _m->Col; j++)
@@ -1005,7 +1005,7 @@ matrixT::IsNull () _NO_THROW
 
 // Determine if the matrix is symmetric
 MAT_TEMPLATE inline bool
-matrixT::IsSymmetric () _NO_THROW
+matrixT::IsSymmetric ()
 {
    if (_m->Row != _m->Col)
       return false;
@@ -1018,7 +1018,7 @@ matrixT::IsSymmetric () _NO_THROW
 	   
 // Determine if the matrix is skew-symmetric
 MAT_TEMPLATE inline bool
-matrixT::IsSkewSymmetric () _NO_THROW
+matrixT::IsSkewSymmetric ()
 {
    if (_m->Row != _m->Col)
       return false;
@@ -1031,7 +1031,7 @@ matrixT::IsSkewSymmetric () _NO_THROW
    
 // Determine if the matrix is upper triangular
 MAT_TEMPLATE inline bool
-matrixT::IsUpperTriangular () _NO_THROW
+matrixT::IsUpperTriangular ()
 {
    if (_m->Row != _m->Col)
       return false;
@@ -1044,7 +1044,7 @@ matrixT::IsUpperTriangular () _NO_THROW
 
 // Determine if the matrix is lower triangular
 MAT_TEMPLATE inline bool
-matrixT::IsLowerTriangular () _NO_THROW
+matrixT::IsLowerTriangular ()
 {
    if (_m->Row != _m->Col)
       return false;

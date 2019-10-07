@@ -350,7 +350,7 @@ Configuration::readXml( istream &file ) {
   XML_SetUserData( parser, state );
 
   // Now, let auto_ptr do it's trick for state.
-  auto_ptr<expatState> apstate( state );
+  unique_ptr<expatState> apstate( state );
 
   XML_UseParserAsHandlerArg( parser );
   XML_SetElementHandler( parser, firstStartElementHandler, endElementHandler );

@@ -4,7 +4,7 @@
  * @file
  * @author Mauro E S Muñoz (mauro@cria.org.br)
  * @date   2004-04-16
- * $Id$
+ * $Id: AlgParameter.cpp 4352 2008-06-11 16:39:53Z rdg $
  * 
  * LICENSE INFORMATION 
  * 
@@ -98,7 +98,7 @@ AlgParameter::valueReal()
 void
 AlgParameter::setValue( double value )
 {
-  char buf[32];
+  char buf[320];
   sprintf( buf, "%-32.8f", value );
 
   _value = std::string(buf);
