@@ -720,7 +720,9 @@ double RocCurve::getPartialAreaRatio( double e )
 #ifdef MSVC
   bool ratio_isnan = (_isnan(ratio) == 1) ? true : false;
 #else
-  bool ratio_isnan = isnan(ratio);
+  #ifndef isnan
+  bool ratio_isnan = std::isnan(ratio);
+  #endif
 #endif
   if ( ratio_isnan ) {
 
