@@ -8,7 +8,7 @@
 # Look for the header file.
 FIND_PATH(CURL_INCLUDE_DIR curl/curl.h
   $ENV{INCLUDE}
-  "$ENV{LIB_DIR}/include"
+  "$ENV{INCLUDE}/include"
   /usr/local/include
   /usr/include
   #mingw
