@@ -85,6 +85,8 @@ try:
     print "OMWS 1.0 test (v1)"
     print "=================="
 
+    print "Testing endpoint: " + endpoint
+
     # General settings
     wsdl = 'http://openmodeller.cria.org.br/ws/1.0/openModeller.wsdl'
 
