@@ -97,7 +97,7 @@ int main( int argc, char **argv ) {
 
       delete r;
     }
-    catch ( std::runtime_error e ) {
+    catch ( std::runtime_error &e ) {
 
       printf( "Failed to process raster %s:\n\n%s\n", layer_id.c_str(), e.what() );
       exit(1);

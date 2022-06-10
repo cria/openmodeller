@@ -249,7 +249,7 @@ int main( int argc, char **argv ) {
 
     writeOutput( cout, format, presences, absences, label );
   }
-  catch ( runtime_error e ) {
+  catch ( runtime_error &e ) {
 
     printf( "om_points: %s\n", e.what() );
     exit(-1);

@@ -343,7 +343,7 @@ int main( int argc, char **argv ) {
 
     return 0;
   }
-  catch ( runtime_error e ) {
+  catch ( runtime_error &e ) {
 
     printf( "om_sampler: %s\n", e.what() );
     exit(-1);

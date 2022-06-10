@@ -194,7 +194,7 @@ int main( int argc, char **argv ) {
       }
     }
   }
-  catch ( runtime_error e ) {
+  catch ( runtime_error &e ) {
 
     printf( "om_algorithm: %s\n", e.what() );
     exit(1);
