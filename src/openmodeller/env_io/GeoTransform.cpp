@@ -116,19 +116,8 @@ GeoTransform::change( const string& dst_desc, const string& src_desc )
 
   OGRSpatialReference src, dst;
 
-  // OGRSpatialReference::importFromWkt takes a char** as a parameter.
-  // This parameter points to a variable pointing to the firs character
-  // of the WKT.  The variable will be updated to point to the last
-  // character of the WKT used.
-  // Since pointer (dst_desc) are passed by value, we have our own
-  // local copies and can safely take it's address and let importFromWkt
-  // change it.
-  // However, we still need to cast away const-ness :(
-  char * src_desc_noconst = const_cast<char*>(src_desc.c_str());
-  char * dst_desc_noconst = const_cast<char*>(dst_desc.c_str());
-
-  if ( src.importFromWkt( &src_desc_noconst ) != OGRERR_NONE ||
-       dst.importFromWkt( &dst_desc_noconst ) != OGRERR_NONE )
+  if ( src.importFromWkt( src_desc.c_str() ) != OGRERR_NONE ||
+       dst.importFromWkt( dst_desc.c_str() ) != OGRERR_NONE )
     {
       std::string msg = "Invalid GeoTransform projection:\n src (";
       msg += src_desc.c_str();
