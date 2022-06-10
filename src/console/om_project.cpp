@@ -283,7 +283,7 @@ int main( int argc, char **argv ) {
       }
     }
   }
-  catch ( runtime_error e ) {
+  catch ( runtime_error &e ) {
 
     // If user is tracking progress
     if ( ! progress_file.empty() ) { 

@@ -548,7 +548,7 @@ int main( int argc, char **argv ) {
       progressFileCallback( 1.0, &prog_data );
     }
   }
-  catch ( runtime_error e ) {
+  catch ( runtime_error &e ) {
 
     // If user is tracking progress
     if ( ! progress_file.empty() ) { 
