@@ -226,6 +226,7 @@ char * Rule::toString()
 	int i;
 	char typ = (char) 0;
 	char * strText = new char[1024];
+	char strAux[65];
 
 	// rule type
 	typ = this->type();
@@ -234,11 +235,17 @@ char * Rule::toString()
 
 	// genes
 	for (i = 0; i < intLength; i++)
-		sprintf(strText, "%s %3d ", strText, Gene[i]);
+	{
+		sprintf(strAux, " %3d ", Gene[i]);
+		strcat(strText, strAux);
+	}
 
 	// performance
 	for (i = 0; i < 10; i++)
-		sprintf(strText, "%s %-5.3f ", strText, dblPerformance[i]);
+	{
+		sprintf(strAux, " %-5.3f ", dblPerformance[i]);
+		strcat(strText, strAux); 
+	}
 
 	// other values
 

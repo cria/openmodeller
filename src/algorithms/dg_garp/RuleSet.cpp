@@ -110,7 +110,8 @@ char * RuleSet::toXML(char * id)
   for (i = 0; i < intRules; i++)
   {
     strXMLRule = objRules[i]->toXML();
-    sprintf(strXML, "%s%s\n", strXML, strXMLRule);
+    strcat(strXML, strXMLRule);
+    strcat(strXML, "\n");
     delete[] strXMLRule;
   }
   strcat(strXML, "</RuleSet>");
