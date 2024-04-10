@@ -84,6 +84,11 @@ else
   exit 0
 fi
 
+if [[ "$SYSTEM_STATUS" eq 2 ]]; then
+  echo "System disabled by configuration (SYSTEM_STATUS)"
+  exit 0
+fi
+
 # Second parameter is sleep interval so we can be running several
 # schedulers at different intervals
 sleep $2
@@ -294,6 +299,14 @@ ls -t $TICKET_DIRECTORY/*_req.* 2> /dev/null | tail -n -1 | while read req; do
     finished=$TICKET_DIRECTORY"/done."$ticket
     touch "$finished"
   fi
+
+  # Read configuration again to check if status changed
+  readconf $CONFIG
+  if [[ "$SYSTEM_STATUS" eq 2 ]]; then
+    echo "System disabled by configuration (SYSTEM_STATUS)"
+    exit 0
+  fi
+
 done
 
 if [[ "$CONDOR_INTEGRATION" == "no" ]]; then
