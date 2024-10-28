@@ -38,6 +38,12 @@
 typedef double Coord;    ///< Type of map coordinates.
 typedef double Scalar;   ///< Type of map values.
 
+// C++17 removed the register keyword, so we define it to nothing so that
+// it doesn't cause errors.
+#if __cplusplus >= 201703L
+#define register
+#endif
+
 /** Model creation callback function.
  * @param progress A number between 0.0 and 1.0 reflecting the
  *  avance of the map creating task. 0.0 is the begin and
