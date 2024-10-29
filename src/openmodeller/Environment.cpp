@@ -48,8 +48,6 @@
 using std::string;
 using std::vector;
 
-#undef DEBUG_GET
-
 /****************************************************************/
 /*********************** factory methods ************************/
 EnvironmentPtr createEnvironment( const std::vector<std::string>& categs,
@@ -630,7 +628,7 @@ EnvironmentImpl::getUnnormalizedInternal( Sample *sample, Coord x, Coord y ) con
 {
   // layers and the mask, if possible.
   if ( ! checkCoordinates( x, y ) ) {
-#if defined(DEBUG_GET)
+#ifdef OMDEBUG
     Log::instance()->debug( "EnvironmentImpl::get() Coordinate (%f,%f) is not in common region\n",x,y);
 #endif
     return;
@@ -647,7 +645,7 @@ EnvironmentImpl::getUnnormalizedInternal( Sample *sample, Coord x, Coord y ) con
   while ( lay != end ) {
 
     if ( ! lay->second->get( x, y, s ) ) {
-#if defined(DEBUG_GET)
+#ifdef OMDEBUG
       Log::instance()->debug( "EnvironmentImpl::get() Coordinate (%f,%f) does not have data in layer %s\n",x,y,lay->first.c_str());
 #endif
       sample->resize(0);
@@ -744,7 +742,7 @@ EnvironmentImpl::checkCoordinates( Coord x, Coord y ) const
   // Accept the point, regardless of mask, if
   // it falls in a common region among all layers.
   if ( x < _xmin || x > _xmax || y < _ymin || y > _ymax ) {
-#if defined(DEBUG_GET)
+#ifdef OMDEBUG
     Log::instance()->debug( "EnvironmentImpl::checkCoordinates() Coordinate (%f,%f) not in extent of all regions\n",x,y);
 #endif
 
@@ -762,7 +760,7 @@ EnvironmentImpl::checkCoordinates( Coord x, Coord y ) const
   bool hasmaskevalue = ( _mask.second->get( x, y, &val ) > 0 );
 
   if ( ! hasmaskevalue ) {
-#if defined(DEBUG_GET)
+#ifdef OMDEBUG
     Log::instance()->debug( "EnvironmentImpl::check() Coordinate (%f,%f) has no mask value\n",x,y);
 #endif
   }
