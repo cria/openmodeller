@@ -101,7 +101,7 @@ class test_AlgParameter : public CxxTest :: TestSuite
 
     void test7 (){
       std::cout << "Testing setValue(double val) ..." << std::endl;
-      char buf[32];
+      char buf[33];
       sprintf(buf,"%-32.8f",2.0);
       A->setValue(2.0);
       TS_ASSERT(A->value()==buf);
