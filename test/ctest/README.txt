@@ -38,8 +38,13 @@ ADD_TEST(om_test_yourtest ${EXECUTABLE_OUTPUT_PATH}/om_test_yourtest)
 
 Now you need to type the following commands:
 
-$cd your_path_to_openmodeller/ctest
-$./cxxtestgen.pl --error-printer -o om_test_yourtest.cpp om_test_yourtest.h
+$cd your_path_to_openmodeller/test/ctest
+$cxxtestgen --error-printer -o om_test_yourtest.cpp om_test_yourtest.h
+
+If necessary, include the world parameter:
+$cxxtestgen --error-printer -w "test_yourtest" -o om_test_yourtest.cpp om_test_yourtest.h
+
+Add the same previous line to regenerate_tests.sh, which can be used to regenerate all tests when something changes in newer cxxtest versions.
 
 Build with the following commands:
 
