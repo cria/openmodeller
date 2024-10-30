@@ -292,6 +292,11 @@ GdalRaster::~GdalRaster()
     }
 
     GDALClose( f_ds );
+
+    if ( f_warped_ds ) {
+
+      GDALClose( f_warped_ds );
+    }
 #ifdef MPI_FOUND
   }
 #endif
@@ -430,6 +435,8 @@ GdalRaster::open( char mode )
     GDALWarpOptions *warpOptions = GDALCreateWarpOptions();
 
     f_warped_ds = (GDALDataset *)GDALAutoCreateWarpedVRT( f_ds, projwkt, GeoTransform::getDefaultCS(), GRA_NearestNeighbour, 0.0, warpOptions );
+
+    GDALDestroyWarpOptions(warpOptions);
   }
 
   // Initialize the Buffer
