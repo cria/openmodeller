@@ -117,6 +117,7 @@ AlgMetadata const *algorithmMetadata(){
 // Constructor for the algorithm class
 EnvironmentalDistance::EnvironmentalDistance() : AlgorithmImpl(&metadata){
    _cov_matrix = _cov_matrix_inv = NULL;
+   _par_dist_type = 0;
    _normalizerPtr = new ScaleNormalizer( DATA_MIN, DATA_MAX, true );
 }
 
