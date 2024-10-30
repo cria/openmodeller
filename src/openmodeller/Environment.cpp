@@ -628,9 +628,6 @@ EnvironmentImpl::getUnnormalizedInternal( Sample *sample, Coord x, Coord y ) con
 {
   // layers and the mask, if possible.
   if ( ! checkCoordinates( x, y ) ) {
-#ifdef OMDEBUG
-    Log::instance()->debug( "EnvironmentImpl::get() Coordinate (%f,%f) is not in common region\n",x,y);
-#endif
     return;
   }
 
@@ -742,10 +739,7 @@ EnvironmentImpl::checkCoordinates( Coord x, Coord y ) const
   // Accept the point, regardless of mask, if
   // it falls in a common region among all layers.
   if ( x < _xmin || x > _xmax || y < _ymin || y > _ymax ) {
-#ifdef OMDEBUG
-    Log::instance()->debug( "EnvironmentImpl::checkCoordinates() Coordinate (%f,%f) not in extent of all regions\n",x,y);
-#endif
-
+    //Log::instance()->debug( "EnvironmentImpl::checkCoordinates() Coordinate (%f,%f) not in extent of all regions\n", x, y );
     return 0;
   }
 
@@ -755,17 +749,15 @@ EnvironmentImpl::checkCoordinates( Coord x, Coord y ) const
     return 1;
   }
 
-  Scalar val;
+  Scalar val = 0;
 
-  bool hasmaskevalue = ( _mask.second->get( x, y, &val ) > 0 );
+  bool hasmaskvalue = ( _mask.second->get( x, y, &val ) > 0 );
 
-  if ( ! hasmaskevalue ) {
-#ifdef OMDEBUG
-    Log::instance()->debug( "EnvironmentImpl::check() Coordinate (%f,%f) has no mask value\n",x,y);
-#endif
+  if ( ! hasmaskvalue ) {
+    //Log::instance()->debug( "EnvironmentImpl::checkCoordinates() Coordinate (%f,%f) has no mask value above zero (%f)\n", x, y, val );
   }
 
-  return hasmaskevalue;
+  return hasmaskvalue;
 }
 
 
@@ -846,6 +838,9 @@ EnvironmentImpl::calcRegion()
   if ( (_xmin >= _xmax)  || ( _ymin >= _ymax ) ) {
     Log::instance()->warn( "Maps intersection is empty (boundaries: xmin=%f, xmax=%f, ymin=%f, ymax=%f)\n", _xmin, _xmax, _ymin, _ymax );
   }
+#ifdef OMDEBUG
+  Log::instance()->debug( "ENVIRONMENT Common region: xmin=%f, xmax=%f, ymin=%f, ymax=%f\n", _xmin, _xmax, _ymin, _ymax );
+#endif
 }
 
 
