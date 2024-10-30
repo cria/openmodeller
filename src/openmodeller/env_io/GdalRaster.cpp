@@ -702,7 +702,7 @@ GdalRaster::get( Coord px, Coord py, Scalar *val )
   // If the point is out of range, returns 0.
   if ( x < 0 || x >= f_hdr.xdim || y < 0 || y >= f_hdr.ydim ) {
 
-    //Log::instance()->debug( "Raster::get() Pixel (%d,%d) from coord (%f,%f) is not in extent (%d,%d)\n",x,y,px,py,f_hdr.xdim,f_hdr.ydim );
+    //Log::instance()->debug( "GdalRaster::get() Pixel (%d,%d) from coord (%f,%f) is not in extent (%d,%d)\n",x,y,px,py,f_hdr.xdim,f_hdr.ydim );
     return 0;
   }
 
