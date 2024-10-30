@@ -31,6 +31,8 @@
 
 #include <openmodeller/Exceptions.hh>
 
+#include "gdal_version.h"
+
 #include <ogr_api.h>
 #include <ogr_spatialref.h>
 #include <cpl_error.h>
@@ -94,7 +96,6 @@ GeoTransform::change()
 void 
 GeoTransform::change( const string& dst_desc, const string& src_desc )
 {
-
   //
   // We need to change the geotransform.
   // Reset this to the identity - a nice sane state.
@@ -127,6 +128,11 @@ GeoTransform::change( const string& dst_desc, const string& src_desc )
       Log::instance()->error( msg.c_str() );
       throw InvalidParameterException( msg );
     }
+
+#if GDAL_VERSION_MAJOR >= 3
+  src.SetAxisMappingStrategy(OAMS_TRADITIONAL_GIS_ORDER);
+  dst.SetAxisMappingStrategy(OAMS_TRADITIONAL_GIS_ORDER);
+#endif
 
   f_ctin = OGRCreateCoordinateTransformation( &src, &dst );
 
